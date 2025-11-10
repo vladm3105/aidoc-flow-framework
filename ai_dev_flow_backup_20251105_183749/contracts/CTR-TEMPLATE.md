@@ -1,0 +1,671 @@
+# CTR-NNN: [Contract Title]
+
+## Position in Development Workflow
+
+**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
+
+**CTR (API Contracts)** ← YOU ARE HERE (Layer 6 - Interface Layer)
+
+For the complete traceability workflow with visual diagram, see: [index.md - Traceability Flow](../index.md#traceability-flow)
+
+**Quick Reference**:
+```
+... → REQ → IMPL → **CTR** → SPEC → TASKS → Code → Tests → ...
+                      ↑
+              Interface Layer
+              (API contracts, event schemas, data models)
+```
+
+**CTR Purpose**: Define interface contracts between components
+- **Input**: REQ (atomic requirements), IMPL (project plan)
+- **Output**: Machine-readable schemas (.yaml) + human-readable docs (.md)
+- **Consumer**: SPEC uses CTR to implement the interface
+
+---
+
+# PART 1: Contract Context and Requirements
+
+## Status
+**Status**: Draft | Active | Deprecated
+**Date**: YYYY-MM-DD
+**Contract Owner**: [Team/Person names]
+**CTR Author**: [Name]
+**Last Updated**: YYYY-MM-DD
+**Version**: 1.0.0 (semantic versioning)
+
+## Context
+
+### Interface Problem Statement
+[What interface contract is needed? What components need to communicate?
+Example: "Portfolio Orchestrator Agent needs to validate position risk before executing trades. Risk Validation Service must provide a synchronous validation endpoint with deterministic responses."]
+
+### Background
+[Current state of component integration, existing APIs, pain points.
+Example: "Currently, each strategy agent implements its own risk validation logic, leading to inconsistency. This contract establishes a centralized risk validation interface to ensure uniform risk checks across all agents."]
+
+### Driving Forces
+[Why this contract is needed now - new feature, refactoring, service decoupling.
+- Business: Regulatory requirement for audit trail of risk decisions
+- Technical: Reduce code duplication across 11 strategy agents
+- Operational: Enable independent deployment of risk validation logic]
+
+### Constraints
+- **Technical**: Protocol limitations, serialization formats, payload size limits
+  - Must support synchronous request/response (< 100ms latency)
+  - JSON serialization for human readability
+  - Payload size < 1MB per request
+- **Business**: SLA requirements, throughput targets, latency budgets
+  - 99.9% uptime required for trading hours
+  - <100ms p99 latency to avoid trade delays
+  - 1000+ req/s throughput for portfolio rebalancing
+- **Operational**: Monitoring, versioning, backward compatibility needs
+  - Must support gradual rollout via feature flags
+  - Contract changes require 30-day migration period
+  - Full audit logging for compliance
+- **Security**: Authentication, authorization, data protection requirements
+  - mTLS for service-to-service authentication
+  - RBAC for agent authorization
+  - No PII in logs or error messages
+
+## Contract Definition
+
+### Interface Overview
+[Concise description of what this contract defines - request/response, message schema, event format.
+Example: "Synchronous REST-style request/response contract for position risk validation. Provider accepts position parameters and risk limits, returns validation result with specific violation details if applicable."]
+
+### Parties
+- **Provider**: [Service/component that implements this contract]
+  - Risk Validation Service (service layer)
+  - Implements validation logic against ADR-008 risk parameters
+- **Consumer(s)**: [Services/components that use this contract]
+  - Portfolio Orchestrator Agent (Level 1)
+  - All Strategy Execution Agents (Level 3): Iron Condor, CSP, Covered Call, Bear Call Spread
+  - Portfolio Hedging Agent
+
+### Communication Pattern
+- **Type**: Synchronous
+- **Protocol**: REST over HTTP/2
+- **Data Format**: JSON
+- **Transport**: Internal service mesh (GCP Cloud Run)
+
+## Requirements Satisfied
+
+### Primary Requirements
+
+| Requirement ID | Description | How This Contract Satisfies It |
+|----------------|-------------|-------------------------------|
+| REQ-003 | Position limit enforcement | Provides `validatePositionRisk` endpoint with limit checking |
+| REQ-008 | Centralized risk parameters | References ADR-008 configuration in validation logic |
+| SYS-004 | Audit trail for risk decisions | Response includes `decision_id` for audit logging |
+| ADR-008 | Centralized risk control | Implements single validation interface for all agents |
+
+### Source Business Logic
+[References to product strategy or business rules requiring this interface.
+- `option_strategy/integrated_strategy_algo_v5.md` Section 4.2: Dynamic Risk Budgeting requires pre-trade validation
+- `option_strategy/delta_hedging.md` Section 2.2: Portfolio delta limits must be checked before new positions]
+
+### Non-Functional Requirements
+- **Performance**: p99 latency < 100ms, throughput > 1000 req/s
+- **Security**: mTLS authentication, RBAC authorization, audit logging
+- **Scalability**: Horizontal scaling to handle 10,000 req/s during rebalancing
+- **Reliability**: Idempotent validation, retry-safe, 99.9% uptime SLA
+
+---
+
+# PART 2: Interface Specification and Schema
+
+## Schema Reference
+
+### YAML Schema File
+[Schema: CTR-NNN_descriptive_name.yaml](./CTR-NNN_descriptive_name.yaml)
+
+### Schema Overview
+Contract defines two primary operations:
+- `validatePositionRisk`: Validate single position against portfolio limits
+- `validatePortfolioRisk`: Validate entire portfolio state (future extension)
+
+### Data Types
+Common types across endpoints:
+- `Position`: Symbol, delta, gamma, vega, theta, premium, expiration
+- `PortfolioState`: Open positions, available capital, current Greeks
+- `RiskLimits`: Max positions, max heat, max delta, VIX thresholds
+- `ValidationResult`: Boolean decision + violation details
+
+## Interface Definition
+
+### Endpoints / Functions / Messages
+
+#### Endpoint 1: validatePositionRisk
+- **Description**: Validates a single proposed position against current portfolio state and risk limits
+- **Request Schema**: See YAML `request_schema` for `validatePositionRisk`
+  - `position`: Proposed position parameters (symbol, delta, premium, etc.)
+  - `portfolio_state`: Current portfolio Greeks and capital
+  - `risk_limits`: Risk parameters from ADR-008 configuration
+- **Response Schema**: See YAML `response_schema` for `validatePositionRisk`
+  - `is_valid`: Boolean - true if position passes all checks
+  - `decision_id`: UUID for audit trail
+  - `violations`: Array of specific rule violations (if any)
+  - `risk_impact`: Projected portfolio Greeks after position
+- **Idempotent**: Yes (same request always yields same result for given portfolio state)
+- **Retry Safe**: Yes (no side effects, read-only operation)
+
+#### Endpoint 2: validatePortfolioRisk (Future)
+- **Description**: Validates entire portfolio against risk limits (for batch rebalancing)
+- **Request Schema**: See YAML `request_schema` for `validatePortfolioRisk`
+- **Response Schema**: See YAML `response_schema` for `validatePortfolioRisk`
+- **Idempotent**: Yes
+- **Retry Safe**: Yes
+
+## Error Handling
+
+### Error Codes
+
+| Error Code | HTTP Status | Description | Retry Strategy |
+|------------|-------------|-------------|----------------|
+| INVALID_INPUT | 400 | Request validation failed (missing required fields, invalid types) | Do not retry |
+| INSUFFICIENT_DATA | 400 | Missing required portfolio state or risk limits | Do not retry |
+| LIMIT_EXCEEDED | 200 | Position violates risk limits (valid response, not error) | Do not retry |
+| RATE_LIMITED | 429 | Too many requests from consumer | Exponential backoff, max 3 retries |
+| SERVICE_UNAVAILABLE | 503 | Risk validation service temporarily unavailable | Exponential backoff, max 5 retries |
+| INTERNAL_ERROR | 500 | Unexpected server processing error | Exponential backoff, max 3 retries |
+
+### Failure Modes & Recovery
+- **Critical Failure Modes**:
+  - Service crash during validation (likelihood: low, SLA: 99.9%)
+  - Configuration service unavailable (ADR-008 parameters unreachable)
+  - Network partition between consumer and provider
+- **Recovery Strategies**:
+  - Circuit breaker: Open after 5 consecutive failures, half-open after 60s
+  - Fallback: Return validation failure (conservative approach)
+  - Monitoring: Alert on >1% error rate or >200ms p99 latency
+- **Circuit Breaker**: Open after 5 failures within 60s, enter half-open state after 60s cooldown
+
+## Consequences
+
+### Positive Outcomes
+
+**Requirements Satisfaction**:
+- Satisfies REQ-003 (position limit enforcement) through structured validation endpoint
+- Satisfies ADR-008 (centralized risk control) by providing single source of truth for validation
+- Enables REQ-008 audit trail through `decision_id` in every response
+
+**Technical Benefits**:
+- **Parallel Development**: Agent teams and risk service team can develop independently against contract
+- **Early Validation**: Schema validation catches integration issues before deployment
+- **Type Safety**: JSON Schema enforcement prevents runtime type errors
+- **Testability**: Contract tests validate both provider and consumer implementations
+- **Decoupling**: Risk logic changes don't require agent code changes
+
+**Business Benefits**:
+- **Faster Integration**: Clear contract reduces integration time from weeks to days
+- **Reduced Defects**: Contract testing catches 80% of integration bugs pre-production
+- **Regulatory Compliance**: Audit trail enables compliance reporting
+- **Risk Consistency**: All agents use identical validation logic
+
+### Negative Outcomes
+
+**Trade-offs**:
+- **Rigidity**: Contract changes require coordination across 11 consumer agents
+- **Latency**: Network call adds 5-10ms vs in-process validation
+- **Single Point of Failure**: Risk validation service becomes critical dependency
+
+**Risks**:
+- **Risk 1**: Contract drift if providers/consumers don't enforce schema | **Mitigation**: Contract tests in CI/CD, schema validation middleware | **Likelihood**: Low
+- **Risk 2**: Breaking changes disrupt production | **Mitigation**: Semantic versioning, 30-day deprecation policy | **Likelihood**: Medium
+- **Risk 3**: Service unavailable blocks all trading | **Mitigation**: Circuit breaker, conservative fallback, 99.9% SLA | **Likelihood**: Low
+
+**Costs**:
+- **Development**: 1 week for contract definition, validation setup, contract tests
+- **Operational**: Additional compute for dedicated risk service, monitoring overhead
+- **Maintenance**: Version management, deprecation coordination across teams
+
+---
+
+# PART 3: Non-Functional Requirements and Operations
+
+## Non-Functional Requirements
+
+### Performance Targets
+- **Max Latency**: <100ms p99 (critical for trade execution)
+- **Min Throughput**: >1000 req/s sustained (portfolio rebalancing peak)
+- **Payload Size Limit**: <1MB per request (typical: 10KB)
+
+### Reliability Requirements
+- **Idempotency**: Yes - same input always produces same output for given portfolio state
+- **Retry Strategy**: Exponential backoff (100ms, 200ms, 400ms), max 3 retries for 500/503 errors
+- **Timeout**: 5000ms request timeout (fails fast to avoid blocking agents)
+- **Circuit Breaker**:
+  - Open after 5 consecutive failures within 60s
+  - Half-open after 60s cooldown
+  - Close after 3 successful calls in half-open state
+
+### Security Requirements
+- **Authentication**: mTLS for service-to-service (GCP service mesh)
+- **Authorization**: RBAC - only agents with `risk:validate` permission can call endpoint
+- **Encryption**: TLS 1.3 in transit, no at-rest encryption needed (ephemeral data)
+- **Rate Limiting**: 100 req/s per consumer, burst up to 150 req/s
+- **Audit Logging**: Log all validation requests with `decision_id`, consumer identity, timestamp
+
+## Versioning Strategy
+
+### Version Policy
+- **Current Version**: 1.0.0
+- **Semantic Versioning**: MAJOR.MINOR.PATCH
+  - **MAJOR**: Breaking changes (incompatible request/response schema)
+  - **MINOR**: Backward-compatible additions (new optional fields, new endpoints)
+  - **PATCH**: Backward-compatible fixes (bug fixes, documentation)
+
+### Compatibility Rules
+- **Backward Compatibility**: Provider must accept requests from consumers on n-1 major version
+- **Forward Compatibility**: Consumers must ignore unknown fields in responses
+- **Breaking Changes**: Require new major version, 30-day migration period, simultaneous deployment of n and n+1
+
+### Deprecation Policy
+- **Notice Period**: 30 days minimum before removal
+- **Migration Path**: Provider supports both old and new versions simultaneously during transition
+- **Sunset Schedule**:
+  - Day 0: Announce deprecation, publish migration guide
+  - Day 30: Remove old version from documentation
+  - Day 60: Remove old version from service (enforce via contract tests)
+
+## Examples
+
+### Example 1: Successful Validation
+**Request**:
+```json
+{
+  "position": {
+    "symbol": "AAPL",
+    "delta": 25.3,
+    "gamma": 0.05,
+    "vega": 12.5,
+    "theta": -0.15,
+    "premium_collected": 250.00,
+    "expiration_dte": 30
+  },
+  "portfolio_state": {
+    "open_positions": 8,
+    "total_delta": -12.5,
+    "total_capital": 100000,
+    "heat_deployed": 15000
+  },
+  "risk_limits": {
+    "max_positions": 12,
+    "max_portfolio_heat": 25000,
+    "max_portfolio_delta": 50,
+    "max_vix_for_new_trades": 35
+  }
+}
+```
+
+**Response**:
+```json
+{
+  "is_valid": true,
+  "decision_id": "550e8400-e29b-41d4-a716-446655440000",
+  "violations": [],
+  "risk_impact": {
+    "projected_delta": 12.8,
+    "projected_positions": 9,
+    "projected_heat": 15250,
+    "heat_percentage": 15.25
+  },
+  "timestamp": "2025-11-02T14:30:00Z"
+}
+```
+
+### Example 2: Validation Failure - Position Limit Exceeded
+**Request**:
+```json
+{
+  "position": {
+    "symbol": "TSLA",
+    "delta": 30.0,
+    "premium_collected": 500.00
+  },
+  "portfolio_state": {
+    "open_positions": 12,
+    "total_capital": 100000
+  },
+  "risk_limits": {
+    "max_positions": 12
+  }
+}
+```
+
+**Response**:
+```json
+{
+  "is_valid": false,
+  "decision_id": "660e8400-e29b-41d4-a716-446655440001",
+  "violations": [
+    {
+      "rule": "max_positions",
+      "limit": 12,
+      "current": 12,
+      "projected": 13,
+      "severity": "critical",
+      "message": "Adding position would exceed maximum position limit"
+    }
+  ],
+  "risk_impact": null,
+  "timestamp": "2025-11-02T14:31:00Z"
+}
+```
+
+### Example 3: Error Response - Invalid Input
+**Request**:
+```json
+{
+  "position": {
+    "symbol": "",
+    "delta": -999
+  }
+}
+```
+
+**Response**:
+```json
+{
+  "error_code": "INVALID_INPUT",
+  "error_message": "Validation failed: 'symbol' cannot be empty, 'delta' must be >= 0, missing required field 'portfolio_state'",
+  "timestamp": "2025-11-02T14:32:00Z"
+}
+```
+
+## Monitoring & Observability
+
+### Success Metrics
+- **Request Success Rate**: Target >99.9% (exclude 400 client errors)
+- **Latency Percentiles**: p50 <20ms, p95 <50ms, p99 <100ms
+- **Throughput**: Sustained 1000 req/s, peak 5000 req/s
+
+### Error Tracking
+- **Error Rate**: Alert if >1% for 5 minutes
+- **Error Categories**: Track by error code (400, 429, 500, 503)
+- **Alert Thresholds**: Page on-call if >5% error rate or >3 consecutive service failures
+
+### Performance Metrics
+- **Latency Breakdown**: Network (5ms), validation logic (10ms), database lookup (5ms)
+- **Resource Usage**: CPU <50%, memory <70%, network <100 MB/s
+- **Queue Depths**: N/A (synchronous, no queuing)
+
+## Alternatives Considered
+
+### Alternative A: In-Process Validation (Library)
+**Description**: Distribute risk validation as a shared Python library imported by each agent
+
+**Pros**:
+- Zero network latency (in-process function call)
+- No additional infrastructure cost
+- Simpler deployment (no separate service)
+
+**Cons**:
+- Code duplication across 11 agents
+- Configuration inconsistency (each agent loads own config)
+- Difficult to update validation logic (requires redeploying all agents)
+- No centralized audit trail
+
+**Rejection Reason**: Violates ADR-008 requirement for centralized risk control. Configuration drift led to compliance issues in V3 architecture.
+**Fit Score**: Poor
+
+### Alternative B: Asynchronous Event-Driven Validation
+**Description**: Agents publish PositionProposed events, risk service responds asynchronously
+
+**Pros**:
+- Decouples agents from risk service (no blocking)
+- Better scalability (can queue validation requests)
+- Enables complex multi-step validation workflows
+
+**Cons**:
+- Adds 50-200ms latency (event propagation + processing)
+- Complex state management (agents must track validation status)
+- Difficult to implement atomic trade decisions (validate + execute)
+- Increased operational complexity (event store, dead letter queues)
+
+**Rejection Reason**: Unacceptable latency for trade execution. Synchronous validation required for atomic decision-making.
+**Fit Score**: Good for non-critical validation, poor for trade execution
+
+### Alternative C: GraphQL Contract
+**Description**: Use GraphQL schema instead of REST-style contract
+
+**Pros**:
+- Flexible querying (consumers request only needed fields)
+- Built-in schema validation and introspection
+- Strongly typed contract with code generation
+
+**Cons**:
+- Additional complexity (GraphQL server, schema evolution)
+- Overkill for simple request/response pattern
+- Team unfamiliarity with GraphQL (learning curve)
+
+**Rejection Reason**: Adds unnecessary complexity for straightforward validation use case. REST-style contract sufficient.
+**Fit Score**: Good for complex APIs, poor for simple validation
+
+---
+
+# PART 4: Testing and Implementation
+
+## Verification
+
+### Contract Testing
+**Provider Tests** (Risk Validation Service):
+- Schema validation: All responses match CTR-NNN YAML schema
+- Error handling: Each error code tested with appropriate scenarios
+- Performance: Load test validates <100ms p99 latency at 1000 req/s
+- Idempotency: Same request produces same result (deterministic)
+
+**Consumer Tests** (All Agents):
+- Request generation: Agent constructs valid requests per schema
+- Response handling: Agent correctly interprets validation results
+- Error handling: Agent handles all error codes gracefully
+- Retry logic: Exponential backoff implemented correctly
+
+**Contract Tests** (Pact/Spring Cloud Contract):
+- Consumer-driven: Each agent publishes expected request/response pairs
+- Provider validation: Risk service validates it satisfies all consumer expectations
+- CI/CD integration: Contract tests run on every PR
+
+### BDD Scenarios
+[BDD scenarios that validate this contract:
+- Scenario: Agent validates position before execution - File: BDD-012_risk_validation.feature#L15
+- Scenario: Multiple agents validate concurrently - File: BDD-012_risk_validation.feature#L45
+- Scenario: Risk service returns validation failure for limit breach - File: BDD-012_risk_validation.feature#L60]
+
+### Specification Impact
+[SPEC files that will implement this contract:
+- SPEC-005_risk_validation_service.yaml: Provider implementation
+- SPEC-001_portfolio_orchestrator.yaml: Primary consumer
+- SPEC-015_iron_condor_agent.yaml: Strategy agent consumer]
+
+### Validation Criteria
+**Technical Validation**:
+- Schema validation passes for all request/response examples
+- Performance benchmarks: p99 <100ms at 1000 req/s sustained
+- Security: mTLS authentication, RBAC authorization, audit logging implemented
+- Idempotency: Same request produces same result across 1000 test iterations
+
+**Integration Validation**:
+- Provider implements contract correctly (all contract tests pass)
+- All 11 consumer agents migrate successfully (contract tests pass)
+- End-to-end test: Portfolio rebalancing with 100 positions completes successfully
+
+## Impact Analysis
+
+### Affected Components
+- **Provider**: Risk Validation Service (new service to be created)
+- **Consumers**:
+  - Portfolio Orchestrator Agent (critical path)
+  - 11 Strategy Execution Agents (Iron Condor, CSP, Covered Call, Bear Call Spread, etc.)
+  - Portfolio Hedging Agent
+- **Data Flow**:
+  - Agent → Risk Validation Service (synchronous request)
+  - Risk Validation Service → Configuration Service (load ADR-008 parameters)
+  - Risk Validation Service → Audit Log (record decision)
+
+### Migration Strategy
+- **Phase 1**: Contract definition and validation setup (Week 1)
+  - Define CTR contract with stakeholders
+  - Create YAML schema and markdown documentation
+  - Set up contract test framework
+- **Phase 2**: Provider implementation with feature flag (Weeks 2-3)
+  - Implement Risk Validation Service
+  - Deploy behind feature flag (disabled)
+  - Run contract tests, load tests, security tests
+- **Phase 3**: Consumer migration and cleanup (Weeks 4-6)
+  - Migrate Portfolio Orchestrator Agent first (canary)
+  - Migrate remaining agents in batches (3 agents/week)
+  - Enable feature flag, monitor for 1 week
+  - Remove old in-process validation code
+
+### Testing Requirements
+- **Unit Tests**: Schema validation (request/response match YAML schema)
+- **Integration Tests**: Provider-consumer integration (end-to-end validation flow)
+- **Contract Tests**: Pact tests for each consumer-provider pair
+- **Performance Tests**: Load test at 1000 req/s for 1 hour, measure p99 latency
+- **Chaos Tests**: Inject service failures, validate circuit breaker and fallback behavior
+
+## Security
+
+### Input Validation
+- JSON schema validation on all requests (enforce required fields, types, ranges)
+- Boundary checks: Delta ≥ 0, positions ≥ 0, capital > 0
+- Malformed payload handling: Return 400 INVALID_INPUT with specific error message
+- Injection prevention: No SQL/NoSQL queries, validation logic only
+
+### Authentication & Authorization
+- **Authentication**: mTLS via GCP service mesh (mutual certificate validation)
+- **Authorization**: RBAC - consumers must have `risk:validate` permission in IAM
+- **Token Validation**: Service mesh validates service account tokens
+- **Deny by Default**: Unauthenticated requests rejected at mesh layer
+
+### Data Protection
+- **Encryption in Transit**: TLS 1.3 (enforced by service mesh)
+- **Encryption at Rest**: Not required (no persistent data, ephemeral validation)
+- **PII Handling**: No PII in requests/responses/logs (symbol/delta/premium only)
+- **Data Minimization**: Contracts include only data required for validation
+
+### Security Monitoring
+- **Authentication Failures**: Alert if >10 failures/minute (potential attack)
+- **Anomaly Detection**: Alert if consumer request pattern changes significantly
+- **Audit Logging**: Log all validation requests with decision_id, consumer, timestamp
+
+### Secrets Management
+- **Service Certificates**: Managed by GCP Certificate Authority Service
+- **Certificate Rotation**: Automatic 90-day rotation via Workload Identity
+- **API Keys**: Not applicable (mTLS authentication)
+
+## Related Contracts
+
+**Depends On**:
+- CTR-100 (Common Data Types): Shared Position/Portfolio types
+- ADR-008 (Risk Parameters): Configuration contract for risk limits
+
+**Supersedes**:
+- None (new contract, replaces informal in-process validation)
+
+**Related**:
+- CTR-002 (Greeks Calculation): Provides Greeks values used in validation
+- CTR-006 (Portfolio State): Provides current portfolio state
+
+**Impacts**:
+- CTR-010+ (Future strategy contracts): Will reference this validation contract
+
+## Implementation Notes
+
+### Development Phases
+1. **Phase 1**: Contract definition and YAML schema creation (Week 1)
+   - Collaborative contract design with agent teams
+   - YAML schema finalization
+   - Contract test framework setup
+2. **Phase 2**: Provider implementation with contract tests (Weeks 2-3)
+   - Risk Validation Service implementation
+   - Contract tests (provider validates all consumer expectations)
+   - Load testing and performance optimization
+3. **Phase 3**: Consumer integration and validation (Weeks 4-6)
+   - Agent code changes to call validation endpoint
+   - Contract tests (consumer validates provider contract)
+   - End-to-end integration testing
+
+### Code Locations
+- **Provider Implementation**: `src/services/risk_validation_service.py`
+- **Consumer Implementation**:
+  - `src/agents/portfolio_orchestrator/risk_validator_client.py`
+  - `src/agents/strategies/*/risk_validator_client.py`
+- **Contract Tests**:
+  - `tests/contracts/risk_validation/provider_contract_test.py`
+  - `tests/contracts/risk_validation/consumer_contract_test.py`
+- **Schema Validation**: `src/common/schemas/ctr_nnn_validation.py`
+
+### Configuration Management
+- **Contract Version**: Environment variable `RISK_VALIDATION_CONTRACT_VERSION=1.0.0`
+- **Feature Flags**: `ENABLE_CENTRALIZED_RISK_VALIDATION=true|false`
+- **Environment-Specific**:
+  - Dev: Lower rate limits (10 req/s)
+  - Prod: Full rate limits (100 req/s)
+
+---
+
+# PART 5: Traceability and Documentation
+
+## Traceability
+
+### Upstream Sources
+| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+|-------------|-------------|----------------|-------------------|--------------|
+| REQ | [REQ-003](../reqs/risk/lim/REQ-003_position_limit_enforcement.md) | Position Limit Enforcement | Section 3.1 | Defines validation requirements |
+| REQ | [REQ-008](../reqs/risk/cfg/REQ-008_centralized_risk_parameters.md) | Centralized Risk Parameters | Section 2.0 | Defines risk limits to validate against |
+| ADR | [ADR-008](../adrs/ADR-008_centralized_risk_parameters.md) | Centralized Risk Parameters | Section 4.0 | Architecture decision for centralization |
+| SYS | [SYS-004](../sys/SYS-004_centralized_risk_controls.md) | Centralized Risk Controls | Section 5.2 | System requirement for validation service |
+
+### Downstream Artifacts
+| Artifact Type | Document ID | Document Title | Relationship |
+|---------------|-------------|----------------|--------------|
+| SPEC | [SPEC-005](../specs/services/SPEC-005_risk_validation_service.yaml) | Risk Validation Service | Provider implementation |
+| SPEC | [SPEC-001](../specs/agents/SPEC-001_portfolio_orchestrator.yaml) | Portfolio Orchestrator Agent | Primary consumer |
+| TASKS | [TASKS-005](../ai_tasks/TASKS-005_risk_validation_implementation.md) | Risk Validation Implementation | Implementation plan |
+| Code | src/services/risk_validation_service.py | Risk Validation Service | Provider implementation |
+| Code | src/agents/portfolio_orchestrator/risk_validator_client.py | Risk Validator Client | Consumer implementation |
+
+### Document Links
+- **Anchors/IDs**: `#CTR-NNN` (internal document reference)
+- **YAML Schema**: [CTR-NNN_risk_validation.yaml](./CTR-NNN_risk_validation.yaml)
+- **Code Path(s)**:
+  - Provider: `src/services/risk_validation_service.py`
+  - Consumers: `src/agents/*/risk_validator_client.py`
+
+## References
+
+### Internal Links
+- [REQ-003: Position Limit Enforcement](../reqs/risk/lim/REQ-003_position_limit_enforcement.md)
+- [REQ-008: Centralized Risk Parameters](../reqs/risk/cfg/REQ-008_centralized_risk_parameters.md)
+- [ADR-008: Centralized Risk Parameters Architecture](../adrs/ADR-008_centralized_risk_parameters.md)
+- [SYS-004: Centralized Risk Controls](../sys/SYS-004_centralized_risk_controls.md)
+- [SPEC-005: Risk Validation Service](../specs/services/SPEC-005_risk_validation_service.yaml)
+- [BDD-012: Risk Validation Scenarios](../bbds/BDD-012_risk_validation.feature)
+
+### External Links
+- [JSON Schema Specification](https://json-schema.org/): JSON schema validation standard
+- [OpenAPI 3.0](https://spec.openapis.org/oas/v3.0.0): REST API contract standard
+- [Pact Contract Testing](https://docs.pact.io/): Consumer-driven contract testing framework
+- [gRPC Best Practices](https://grpc.io/docs/guides/): Alternative protocol considerations
+
+### Additional Context
+- **Related Patterns**:
+  - API Gateway pattern for centralized validation
+  - Circuit Breaker pattern for failure resilience
+  - Retry pattern with exponential backoff
+- **Industry Standards**:
+  - REST API design guidelines (Microsoft, Google)
+  - JSON Schema for contract validation
+  - OAuth 2.0 / mTLS for service authentication
+- **Lessons Learned**:
+  - V3 architecture: In-process validation led to configuration drift and compliance issues
+  - V4 architecture: Synchronous validation critical for atomic trade decisions
+  - Industry: Contract-first development reduces integration time by 60%
+
+---
+
+**Template Version**: 1.0
+**Last Reviewed**: YYYY-MM-DD
+**Next Review**: YYYY-MM-DD (recommend quarterly for active contracts)

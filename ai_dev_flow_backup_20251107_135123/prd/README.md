@@ -1,0 +1,324 @@
+# Product Requirements Documents (PRD)
+
+Product Requirements Documents (PRDs) serve as the foundational business requirements that drive all downstream technical development. PRDs capture "what" needs to be built before any consideration of "how," establishing the product contract between business goals and technical implementation.
+
+## Purpose
+
+PRDs transform high-level business objectives into concrete, measurable product requirements that:
+- Define the problem and business value propositions
+- Set clear scope boundaries with goals and non-goals
+- Establish measurable success criteria through KPIs
+- Provide traceability to downstream technical artifacts
+- Create the authoritative source for all implementation decisions
+
+## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+
+PRDs are the **starting point** of specification-driven development within the complete SDD workflow:
+
+```
+BRD (Business Requirements Document): High-level business needs + Architecture Decision Requirements
+        ↓
+PRD (Product Requirements Document): User needs and features + Architecture Decision Requirements
+        ↓
+SYS (System Requirements): Technical interpretation of business requirements
+        ↓
+EARS (Easy Approach to Requirements Syntax): Formal WHEN-THE-SHALL-WITHIN requirements
+        ↓
+REQ (Atomic Requirements): Single, testable requirements
+        ↓
+ADR (Architecture Decision Records) ← Created AFTER BRD/PRD based on Architecture Decision Requirements
+        ↓
+BDD (Behavior-Driven Development): Executable Gherkin acceptance scenarios
+        ↓
+IMPL (Implementation Plans): Project management (WHO/WHEN) - if complex project
+        ↓
+CTR (API Contracts): Interface specifications - if interface requirement
+        ↓
+SPEC (Technical Implementation): YAML implementation blueprints (HOW to build)
+        ↓
+TASKS (Code Generation Plans): Exact TODOs to implement SPEC
+        ↓
+Code (src/{module_name}/): Python implementation
+        ↓
+Tests (tests/{suit_name}): Test suites + contract tests
+        ↓
+Validation: BDD + contract + traceability checks
+        ↓
+Human Review: Architecture and quality gates
+        ↓
+Production-Ready Code
+```
+
+## ADR References in PRD
+
+**⚠️ CRITICAL - Workflow Order**: PRDs are created BEFORE ADRs in the SDD workflow. Therefore:
+
+❌ **Do NOT** reference specific ADR numbers (ADR-001, ADR-011, etc.) in PRD documents
+
+✅ **DO** include "Architecture Decision Requirements" section describing what decisions are needed
+
+**Correct Workflow Order**: BRD → PRD → SYS → EARS → REQ → **ADR** → BDD → IMPL → CTR → SPEC → TASKS
+
+**Rationale**:
+- BRD/PRD identify **WHAT** architectural decisions are needed
+- ADRs document **WHICH** option was chosen and **WHY**
+- This separation maintains clear workflow phases and prevents broken references
+
+**Architecture Decision Requirements Section**:
+Every PRD should include a section that lists architectural topics requiring decisions:
+
+```markdown
+#### Architecture Decision Requirements
+
+| Topic Area | Decision Needed | Business Driver (PRD Reference) | Key Considerations |
+|------------|-----------------|--------------------------------|-------------------|
+| Agent Framework | Select orchestration framework | FR-XXX (multi-agent coordination) | Google ADK, LangGraph, custom |
+| Database Technology | Choose operational database | FR-XXX (data persistence) + NFR-XXX (performance) | Cloud SQL, Firestore, BigQuery |
+| Caching Strategy | Define cache architecture | NFR-XXX (<100ms latency) | Redis, in-memory, CDN |
+
+**Purpose**: Identify architectural topics requiring decisions. Specific ADRs created AFTER this PRD.
+**Timing**: ADRs created after BRD → PRD → SYS → EARS → REQ in SDD workflow.
+```
+
+## PRD Structure
+
+### Header with Traceability Tags
+
+All PRDs include traceability links to related artifacts (note: ADR links added AFTER ADRs are created):
+
+```markdown
+@requirement:[REQ-NNN](../reqs/.../REQ-NNN_...md#REQ-NNN)
+@sys:[SYS-NNN](../sys/SYS-NNN_...md)
+@ears:[EARS-NNN](../ears/EARS-NNN_...md)
+@spec:[SPEC-NNN](../specs/.../SPEC-NNN_...yaml)
+@bdd:[BDD-NNN:scenarios](../bbds/BDD-NNN_....feature#scenarios)
+
+Note: @adr tags added to PRD AFTER ADRs are created (not during initial PRD creation)
+```
+
+### Problem Statement
+Clearly define the business problem or opportunity:
+
+```markdown
+## Problem
+[Concise description of the current state problem and its business impact]
+```
+
+### Goals
+Define what success looks like:
+
+```markdown
+## Goals
+- [Specific, achievable business outcomes]
+- [Measurable goals that drive implementation decisions]
+- [Clear success criteria for stakeholders]
+```
+
+### Non-Goals
+Explicitly define what is **not** included (critical for scope management):
+
+```markdown
+## Non-Goals
+- [Functionality explicitly excluded from this initiative]
+- [Out-of-scope features that might seem related]
+- [Technical implementation decisions made elsewhere]
+```
+
+### KPIs (Key Performance Indicators)
+Quantifiable metrics defining success:
+
+```markdown
+## KPIs
+- [Business metric] ≥ [target value] within [timeframe]
+- [Performance benchmark] < [threshold] during [conditions]
+- [Quality measure] maintained at [level] across [scenarios]
+```
+
+### Functional Requirements (Optional)
+High-level functional capabilities (may be moved to EARS for detailed requirements):
+
+```markdown
+## Functional Requirements
+- [High-level capability descriptions]
+- [Business-oriented feature descriptions]
+- [Integration requirements with existing systems]
+```
+
+### Acceptance (High-Level)
+Business-focused acceptance criteria:
+
+```markdown
+## Acceptance (High-Level)
+- [Business-verifiable outcomes]
+- [Stakeholder acceptance criteria]
+- [Integration validation requirements]
+```
+
+### Traceability
+Link to upstream and downstream artifacts:
+
+```markdown
+## Traceability
+- Downstream Artifacts: [SYS-NNN](../sys/SYS-NNN_...md), [EARS-NNN](../ears/EARS-NNN_...md), [REQ-NNN](../reqs/.../REQ-NNN_...md#REQ-NNN)
+- Anchors/IDs: `# PRD-NNN`
+- Code Path(s): `option_strategy/component/module.py`
+```
+
+## File Naming Convention
+
+```
+PRD-NNN_descriptive_title.md
+```
+
+Where:
+- `PRD` is the constant prefix
+- `NNN` is the three-digit sequence number (001, 002, 003, etc.)
+- `descriptive_title` uses snake_case for clarity
+
+**Examples:**
+- `PRD-001_alpha_vantage_integration.md`
+- `PRD-035_position_limit_enforcement.md`
+- `PRD-042_ml_model_serving.md`
+
+## Writing Guidelines
+
+### 1. Focus on Business Value
+- Start with business problems, not technical solutions
+- Emphasize user/business benefits and market needs
+- Avoid premature technical implementation details
+
+### 2. Define Scope Clearly
+- Use Non-Goals to explicitly exclude tempting but out-of-scope features
+- Document assumptions and dependencies
+- Clarify stakeholder responsibilities
+
+### 3. Make Requirements Measurable
+- Include specific KPIs and success metrics
+- Define acceptance criteria in business terms
+- Provide quantitative thresholds where possible
+
+### 4. Maintain Traceability
+- Include complete header tags linking to related artifacts
+- Reference existing systems, contracts, and dependencies
+- Update traceability sections when related artifacts are created
+
+### 5. Enable Testability
+- Write acceptance criteria that can be verified by business stakeholders
+- Avoid vague terms like "user-friendly" or "reliable"
+- Define clear success conditions for each goal
+
+## PRD Quality Gates
+
+**Every PRD must include:**
+- Clear problem statement with business context
+- Specific, achievable goals
+- Explicit non-goals defining scope boundaries
+- Measurable KPIS with quantified targets
+- Traceability tags linking to downstream artifacts
+- Business-focused acceptance criteria
+
+**PRD content standards:**
+- Business language over technical jargon where possible
+- Links resolve to existing artifacts or include placeholders for planned work
+- Assumptions and constraints are explicitly documented
+- Stakeholder acceptance criteria are verifiable
+
+## PRD Evolution and Maintenance
+
+### Initial Draft
+Focus on capturing business requirements without over-constraining solutions:
+
+```markdown
+## Problem
+Users struggle with [pain point], resulting in [business impact].
+
+## Goals
+Enable users to [business outcome] safely and efficiently.
+Measure success by [quantifiable metric].
+```
+
+### Technical Alignment
+Add technical context as system requirements emerge:
+
+```markdown
+## Goals
+Enable users to [business outcome] with [technical constraint].
+Maintain [performance target] during [conditions].
+```
+
+### Production Ready
+Include complete traceability and acceptance criteria:
+
+```markdown
+## Traceability
+- SRC: [SYS-NNN](../sys/SYS-NNN_component.md)
+- EARS: [EARS-NNN](../ears/EARS-NNN_component.md)
+- Implementation: option_strategy/component/
+```
+
+## Common Patterns
+
+### Integration PRDs
+```markdown
+## Problem
+Manual [process] creates operational friction and limits scalability.
+
+## Goals
+Seamlessly integrate [system A] with [system B] with comprehensive error handling.
+Ensure [critical business process] completes within [timeframe].
+```
+
+### Feature PRDs
+```markdown
+## Problem
+Customers cannot [desired capability], requiring workarounds with [cost].
+
+## Goals
+Provide [capability] through [user interaction].
+Enable [business benefit] with [quantified improvement].
+```
+
+### Infrastructure PRDs
+```markdown
+## Problem
+[System constraint] prevents [business growth] above [current limit].
+
+## Goals
+Extend platform to support [target scale] with [reliability standard].
+Maintain [SLA] during peak usage periods.
+```
+
+## Example PRD Template
+
+See `PRD-001_alpha_vantage_integration.md` for a complete example of a well-structured PRD that follows these conventions.
+
+## Benefits of Strong PRDs
+
+1. **Alignment**: Ensures technical work directly supports business objectives
+2. **Clarity**: Eliminates ambiguity in scope and acceptance criteria
+3. **Efficiency**: Reduces rework by establishing requirements before design
+4. **Communication**: Provides single source of truth for stakeholder questions
+5. **Traceability**: Maintains links from business needs through implementation
+
+## Avoiding Common Pitfalls
+
+1. **Technical Overload**: Don't write PRDs that read like technical specifications
+2. **Scope Creep**: Use Non-Goals liberally to prevent feature requests
+3. **Vague Metrics**: Always quantify KPIs with specific, measurable targets
+4. **Orphaned Requirements**: Maintain traceability links as development progresses
+5. **Implementation Details**: Focus on "what" not "how" (save technical details for SRC/EARS)
+
+## Integration with Product Management
+
+PRDs serve as:
+- **Product Backlog Items**: Connected to business objectives and KPIs
+- **Stakeholder Agreements**: Signed-off requirements for project approval
+- **Success Validation**: Acceptance criteria for project completion
+- **Change Control**: Baselines for scope changes and change requests
+
+## Version Control and Collaboration
+
+- PRD commits should include issue/PR references
+- Major changes require stakeholder re-approval
+- Include PRD references in specification reviews
+- Archive superseded PRDs while maintaining links to replacements
