@@ -300,6 +300,244 @@ python scripts/check_broken_references.py
 
 **Note**: Framework includes `scripts/make_framework_generic.py` for maintaining placeholder consistency.
 
+### Using Automated Validation Tooling
+
+The framework provides three main validation scripts for enforcing cumulative tagging hierarchy and traceability compliance.
+
+#### 1. Tag Extraction (`extract_tags.py`)
+
+**Purpose**: Scan codebase to extract all traceability tags from source code, documentation, and tests.
+
+**Usage**:
+```bash
+# Extract tags from all sources
+python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
+
+# Validate format only (no output file)
+python scripts/extract_tags.py --validate-only
+
+# Extract from specific artifact type
+python scripts/extract_tags.py --type REQ --show-all-upstream
+```
+
+**What It Does**:
+- Scans files for `@artifact-type: DOC-ID:REQ-ID` patterns
+- Validates tag format compliance
+- Generates JSON file with all discovered tags
+- Reports orphaned or malformed tags
+
+**Output Example**:
+```json
+{
+  "REQ-045": {
+    "brd": ["BRD-009:FR-015", "BRD-009:NFR-006"],
+    "prd": ["PRD-016:FEATURE-003"],
+    "ears": ["EARS-012:EVENT-002"],
+    "bdd": ["BDD-015:scenario-place-order"],
+    "adr": ["ADR-033"],
+    "sys": ["SYS-012:FUNC-001"]
+  }
+}
+```
+
+#### 2. Cumulative Tag Validation (`validate_tags_against_docs.py`)
+
+**Purpose**: Enforce cumulative tagging hierarchy - verify each artifact includes ALL required upstream tags.
+
+**Usage**:
+```bash
+# Full validation with cumulative tagging check
+python scripts/validate_tags_against_docs.py \
+  --source src/ docs/ tests/ \
+  --docs docs/ \
+  --validate-cumulative \
+  --strict
+
+# Validate specific artifact
+python scripts/validate_tags_against_docs.py \
+  --artifact REQ-045 \
+  --expected-layers brd,prd,ears,bdd,adr,sys \
+  --strict
+
+# Check for orphaned tags (tags without corresponding documents)
+python scripts/validate_tags_against_docs.py \
+  --tags docs/generated/tags.json \
+  --strict
+```
+
+**What It Checks**:
+1. **Layer Detection**: Automatically determines artifact layer from file path
+2. **Required Tags**: Ensures all required upstream tags are present (no gaps)
+3. **Tag Count**: Validates tag count matches layer requirements
+4. **Tag Chain**: Verifies no gaps in cumulative tag chain
+5. **Optional Layers**: Correctly handles IMPL (Layer 8) and CTR (Layer 9)
+
+**Expected Tag Counts by Layer**:
+```
+Layer 1 (BRD):    0 tags (top level)
+Layer 2 (PRD):    1 tag  (@brd)
+Layer 3 (EARS):   2 tags (@brd, @prd)
+Layer 4 (BDD):    3+ tags (@brd through @ears)
+Layer 5 (ADR):    4 tags (@brd through @bdd)
+Layer 6 (SYS):    5 tags (@brd through @adr)
+Layer 7 (REQ):    6 tags (@brd through @sys)
+Layer 8 (IMPL):   7 tags (@brd through @req) [optional]
+Layer 9 (CTR):    8 tags (@brd through @impl) [optional]
+Layer 10 (SPEC):  7-9 tags (@brd through @req + optional impl/ctr)
+Layer 11 (TASKS): 8-10 tags (@brd through @spec)
+Layer 12 (tasks_plans): 9-11 tags (@brd through @tasks)
+Layer 13 (Code):  9-11 tags (@brd through @tasks)
+Layer 14 (Tests): 10-12 tags (@brd through @code)
+```
+
+**Output Example**:
+```
+✅ VALIDATION PASSED
+
+Statistics:
+- Total artifacts validated: 147
+- Total tags validated: 1,234
+- Cumulative tagging compliance: 100%
+- No gaps found in tag chains
+```
+
+**Error Example**:
+```
+❌ CUMULATIVE TAGGING ERRORS FOUND: 3
+
+MISSING_REQUIRED_TAGS: 1
+  📄 docs/REQ/api/REQ-045_place_order.md
+     ❌ Missing required upstream tags for REQ (Layer 7): bdd
+
+TAG_CHAIN_GAP: 2
+  📄 docs/SPEC/order_service.yaml
+     ❌ Gap in cumulative tag chain: @bdd (Layer 4) missing but higher layers present
+```
+
+#### 3. Traceability Matrix Generation (`generate_traceability_matrices.py`)
+
+**Purpose**: Auto-generate traceability matrices showing bidirectional relationships between artifacts.
+
+**Usage**:
+```bash
+# Generate all matrices automatically
+python scripts/generate_traceability_matrices.py --auto
+
+# Generate matrix for specific artifact type
+python scripts/generate_traceability_matrices.py \
+  --type REQ \
+  --output docs/REQ/REQ-000_TRACEABILITY_MATRIX.md
+
+# Show coverage metrics
+python scripts/generate_traceability_matrices.py \
+  --type BDD \
+  --show-coverage
+```
+
+**What It Generates**:
+- Complete inventory of all artifacts by type
+- Upstream traceability (requirements → implementations)
+- Downstream traceability (implementations → tests)
+- Coverage metrics and gap analysis
+- Bidirectional reference validation
+
+**Output Example** (REQ Matrix):
+```markdown
+# Traceability Matrix: REQ-001 through REQ-150
+
+## Complete REQ Inventory
+| REQ ID | Title | Status | Upstream | Downstream |
+|--------|-------|--------|----------|------------|
+| REQ-045 | Place Order | Active | BRD-009, PRD-016, EARS-012, BDD-015, ADR-033, SYS-012 | SPEC-018, TASKS-015, Code |
+
+## Coverage Metrics
+- Total Requirements: 150
+- With Complete Upstream: 148 (98.7%)
+- With Downstream Implementation: 145 (96.7%)
+- Orphaned Requirements: 2 (1.3%)
+```
+
+#### 4. Complete Validation Workflow
+
+**Step 1: After Creating/Modifying Artifacts**
+```bash
+# Extract tags
+python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
+
+# Validate
+python scripts/validate_tags_against_docs.py --validate-cumulative --strict
+```
+
+**Step 2: Before Committing**
+```bash
+# Complete validation workflow
+python scripts/generate_traceability_matrices.py --auto
+```
+
+**Step 3: CI/CD Integration** (see [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md))
+```yaml
+# .github/workflows/traceability.yml
+- name: Validate Cumulative Tagging
+  run: python scripts/validate_tags_against_docs.py --validate-cumulative --strict
+```
+
+#### Common Issues and Fixes
+
+**Issue**: "Missing required upstream tags"
+```bash
+# Fix: Add missing tags to artifact's Section 7 Traceability
+# Example: REQ-045 missing @bdd tag
+```
+```markdown
+## 7. Traceability
+
+**Required Tags**:
+@brd: BRD-009:FR-015
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002
+@bdd: BDD-015:scenario-place-order  # ← Add this
+@adr: ADR-033
+@sys: SYS-012:FUNC-001
+```
+
+**Issue**: "Gap in cumulative tag chain"
+```bash
+# Fix: Ensure no layers are skipped
+# If @adr exists, @brd, @prd, @ears, @bdd must all exist
+```
+
+**Issue**: "Orphaned tag - referenced document not found"
+```bash
+# Fix: Either create the referenced document or remove invalid tag
+# Verify: ls docs/BRD/BRD-009*.md
+```
+
+**Issue**: "Insufficient tag count"
+```bash
+# Fix: Add all required upstream tags for the artifact's layer
+# REQ (Layer 7) needs exactly 6 tags: @brd through @sys
+```
+
+#### Dependencies
+
+Install required Python packages:
+```bash
+pip install pyyaml  # For YAML parsing (SPEC documents)
+```
+
+#### Performance
+
+- **extract_tags.py**: ~5-10 seconds for 1,000 files
+- **validate_tags_against_docs.py**: ~30 seconds for 100 artifacts with cumulative validation
+- **generate_traceability_matrices.py**: ~1-2 minutes for complete matrix suite
+
+#### Next Steps
+
+1. **First Time Setup**: Read [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md)
+2. **Complete Example**: Review [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md)
+3. **Pre-Commit Hooks**: Configure automatic validation before commits
+4. **CI/CD**: Add GitHub Actions workflow for pull request validation
+
 ## Core Standards Documents
 
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete SDD methodology
