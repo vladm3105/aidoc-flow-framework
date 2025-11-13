@@ -544,6 +544,59 @@ All tasks_plans documents MUST include these cumulative tags from upstream artif
 **Traceability Matrix**:
 - [TASKS_PLANS-000_TRACEABILITY_MATRIX.md](./TASKS_PLANS-000_TRACEABILITY_MATRIX.md) - Complete traceability matrix
 
+### Traceability Tags
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 12):
+```markdown
+@brd: BRD-NNN:REQUIREMENT-ID
+@prd: PRD-NNN:REQUIREMENT-ID
+@ears: EARS-NNN:STATEMENT-ID
+@bdd: BDD-NNN:SCENARIO-ID
+@adr: ADR-NNN
+@sys: SYS-NNN:SECTION-ID
+@req: REQ-NNN:REQUIREMENT-ID
+@impl: IMPL-NNN:PHASE-ID
+@ctr: CTR-NNN
+@spec: SPEC-NNN
+@tasks: TASKS-NNN
+```
+
+**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+
+**Layer 12 Requirements**: tasks_plans must reference ALL upstream artifacts:
+- `@brd`: Business Requirements Document(s)
+- `@prd`: Product Requirements Document(s)
+- `@ears`: EARS Requirements
+- `@bdd`: BDD Scenarios
+- `@adr`: Architecture Decision Records
+- `@sys`: System Requirements
+- `@req`: Atomic Requirements
+- `@impl`: Implementation Plans (optional - include if exists in chain)
+- `@ctr`: API Contracts (optional - include if exists in chain)
+- `@spec`: Technical Specifications
+- `@tasks`: Code Generation Plans
+
+**Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
+
+**Example**:
+```markdown
+@brd: BRD-001:FR-030
+@prd: PRD-003:FEATURE-002
+@ears: EARS-001:EVENT-003
+@bdd: BDD-003:scenario-realtime-quote
+@adr: ADR-033
+@sys: SYS-008:PERF-001
+@req: REQ-003:interface-spec
+@impl: IMPL-001:phase1
+@ctr: CTR-001
+@spec: SPEC-003
+@tasks: TASKS-001
+```
+
+**Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through TASKS) are properly linked.
+
+**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through implementation plans (session context). tasks_plans provides execution context with bash commands to implement TASKS specifications. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
+
 ---
 
 ## Risk Mitigation

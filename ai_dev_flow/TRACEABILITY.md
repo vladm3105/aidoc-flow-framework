@@ -296,6 +296,152 @@ From EARS-TEMPLATE.md:
 - **Cross-references**: See sections 7.1 and 7.2 above
 ```
 
+## Cumulative Tagging Hierarchy
+
+### Overview
+
+Cumulative tagging ensures complete traceability chains from business requirements through validation. Each artifact type must include tags from ALL upstream artifacts in the hierarchy, creating explicit dependency chains for impact analysis and compliance auditing.
+
+### Mandatory Hierarchy
+
+```
+Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → task_plans → Code → Tests → Validation
+```
+
+### Cumulative Inheritance Rules
+
+**Principle**: Each layer inherits ALL tags from upstream layers and adds its own.
+
+**Example**: A SPEC file includes tags from: BRD, PRD, EARS, BDD, ADR, SYS, REQ, and optionally IMPL/CTR if they exist in the chain.
+
+**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+
+**Usage**:
+- Embed tags in document metadata sections (markdown documents)
+- Embed tags in code docstrings (implementation files)
+- Embed tags in test files (BDD scenarios already use tags, unit tests use docstrings)
+- Use tags for automated traceability matrix generation
+
+### Cumulative Tagging Table
+
+| Layer | Artifact Type | Required Tags | Tracking Method | Notes |
+|-------|---------------|---------------|-----------------|-------|
+| 0 | **Strategy** | None | External | Business owner documents, no formal artifact |
+| 1 | **BRD** | None | Formal Template | Top level, no upstream dependencies |
+| 2 | **PRD** | `@brd` | Formal Template | References parent BRD |
+| 3 | **EARS** | `@brd`, `@prd` | Formal Template | Cumulative: BRD + PRD |
+| 4 | **BDD** | `@brd`, `@prd`, `@ears` | Formal Template + Gherkin Tags | Cumulative: BRD through EARS |
+| 5 | **ADR** | `@brd`, `@prd`, `@ears`, `@bdd` | Formal Template | Cumulative: BRD through BDD |
+| 6 | **SYS** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr` | Formal Template | Cumulative: BRD through ADR |
+| 7 | **REQ** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys` | Formal Template | Cumulative: BRD through SYS |
+| 8 | **IMPL** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req` | Formal Template | Cumulative: BRD through REQ |
+| 9 | **CTR** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl` | Formal Template | Cumulative: BRD through IMPL (optional layer) |
+| 10 | **SPEC** | All upstream through `@req` + optional `@impl`, `@ctr` | Formal Template (YAML) | Full upstream chain |
+| 11 | **TASKS** | All upstream through `@spec` | Formal Template | Include optional IMPL/CTR if present |
+| 12 | **task_plans** | All upstream through `@tasks` | Project Files | All formal artifact tags |
+| 13 | **Code** | **ALL tags** including `@task_plans` | Docstring Tags | Complete traceability chain |
+| 14 | **Tests** | All upstream through `@code` | Docstring Tags + BDD | All upstream + code reference |
+| 15 | **Validation** | **ALL tags from all documents** | Embedded Tags + CI/CD | Complete audit trail |
+
+### Tag Format Specification
+
+**Basic Format**:
+```
+@artifact-type: DOCUMENT-ID:REQUIREMENT-ID
+```
+
+**Components**:
+- **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`, `@task_plans`)
+- **Document ID**: Standard ID format (e.g., `BRD-001`, `REQ-003`, `SPEC-005`)
+- **Requirement ID**: Specific requirement within document (e.g., `FR-030`, `NFR-006`, `PERF-001`)
+- **Separator**: Colon (`:`) between document and requirement
+- **Multiple Values**: Comma-separated
+
+**Examples**:
+```markdown
+## Traceability Tags
+
+@brd: BRD-001:FR-030, BRD-001:NFR-006
+@prd: PRD-003:FEATURE-002
+@ears: EARS-001:EVENT-003
+@bdd: BDD-003:scenario-realtime-quote
+@adr: ADR-033
+@sys: SYS-008:PERF-001
+@req: REQ-003:interface-spec, REQ-004:validation-logic
+@impl: IMPL-001:phase1
+@ctr: CTR-001
+@spec: SPEC-003
+@tasks: TASKS-001:task-3
+```
+
+**Code Docstring Example**:
+```python
+"""
+Position Limit Service
+
+Implements real-time position limit validation and enforcement.
+
+## Traceability Tags
+
+@brd: BRD-001:FR-030
+@prd: PRD-003:FEATURE-002
+@ears: EARS-001:EVENT-003
+@bdd: BDD-003:scenario-realtime-quote
+@adr: ADR-033
+@sys: SYS-008:PERF-001
+@req: REQ-003:interface-spec
+@impl: IMPL-001:phase1
+@ctr: CTR-001
+@spec: SPEC-003
+@tasks: TASKS-001:task-3
+@task_plans: TASKS_PLANS-001
+"""
+```
+
+### Validation Rules
+
+**Mandatory Checks**:
+1. **Complete Chain**: Each artifact must include ALL upstream tags
+2. **Format Compliance**: All tags follow `@type: ID:REQ-ID` format
+3. **Document Exists**: Referenced DOCUMENT-ID must exist in repository
+4. **Requirement Exists**: REQUIREMENT-ID must exist within referenced document
+5. **No Orphans**: All tags resolve to actual artifacts
+6. **Layer Validation**: Artifact at layer N must have tags from layers 1 through N-1
+
+**Validation Commands**:
+```bash
+# Validate tag format and completeness
+python scripts/validate_tags_against_docs.py --strict
+
+# Check cumulative tag chains
+python scripts/validate_tags_against_docs.py --check-cumulative
+
+# Generate traceability matrix from tags
+python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
+```
+
+### Benefits of Cumulative Tagging
+
+**Complete Traceability**:
+- Single code file shows entire upstream dependency chain
+- Impact analysis from any artifact to all affected downstream artifacts
+- Compliance auditing with complete BRD-to-Code trace
+
+**Automated Validation**:
+- Scripts validate complete tag chains
+- CI/CD enforces tag presence and correctness
+- Automated traceability matrix generation
+
+**Change Management**:
+- Identify all affected artifacts when upstream document changes
+- Verify downstream artifacts updated after requirement changes
+- Maintain audit trail for regulatory compliance
+
+**Developer Clarity**:
+- Code clearly shows business requirements it implements
+- Test files explicitly reference requirements under test
+- Specifications document complete upstream context
+
 ## Traceability by Document Type
 
 ### BRD (Business Requirements Document)

@@ -1,5 +1,25 @@
 # ADR-NNN: [Architecture Decision Title]
 
+## Document Control
+
+| Item | Details |
+|------|---------|
+| **Project Name** | [Enter project name] |
+| **Document Version** | [e.g., 1.0] |
+| **Date** | [Current date] |
+| **Document Owner** | [Name and title] |
+| **Prepared By** | [Architect/Technical Lead name] |
+| **Status** | [Draft / In Review / Approved] |
+
+### Document Revision History
+
+| Version | Date | Author | Changes Made | Approver |
+|---------|------|--------|--------------|----------|
+| 1.0 | [Date] | [Name] | Initial draft | |
+| | | | | |
+
+---
+
 ## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
@@ -422,6 +442,38 @@ flowchart TD
 - **Test Results**: [Test run evidence and coverage reports]
 - **Performance Benchmarks**: [Before/after performance comparisons]
 - **Security Assessments**: [Security audit and penetration test results]
+
+### Traceability Tags
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
+```markdown
+@brd: BRD-NNN:REQUIREMENT-ID
+@prd: PRD-NNN:REQUIREMENT-ID
+@ears: EARS-NNN:STATEMENT-ID
+@bdd: BDD-NNN:SCENARIO-ID
+```
+
+**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+
+**Layer 5 Requirements**: ADR must reference ALL upstream artifacts:
+- `@brd`: Business Requirements Document(s)
+- `@prd`: Product Requirements Document(s)
+- `@ears`: EARS Requirements
+- `@bdd`: BDD Scenarios
+
+**Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
+
+**Example**:
+```markdown
+@brd: BRD-001:FR-030
+@prd: PRD-003:FEATURE-002
+@ears: EARS-001:EVENT-003
+@bdd: BDD-003:scenario-realtime-quote
+```
+
+**Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through BDD) are properly linked.
+
+**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through architecture decisions. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
 
 ## References
 

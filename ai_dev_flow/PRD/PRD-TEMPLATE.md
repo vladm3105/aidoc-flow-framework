@@ -557,6 +557,28 @@ The following architectural topics require formal Architecture Decision Records 
 | [BDD-NNN.feature](../BDD/BDD-NNN.feature) | Maps to PRD User Journey [name] | [Scenario list] | Acceptance test coverage |
 | [BDD-NNN.feature](../BDD/BDD-NNN.feature) | Maps to PRD Feature [name] | [Scenario list] | Functional validation |
 
+### Traceability Tags
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 2):
+```markdown
+@brd: BRD-NNN:REQUIREMENT-ID
+```
+
+**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+
+**Layer 2 Requirements**: PRD must reference upstream BRD document(s) using `@brd` tags.
+
+**Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
+
+**Example**:
+```markdown
+@brd: BRD-001:FR-030, BRD-001:NFR-006
+```
+
+**Validation**: Tags must reference existing BRD documents and requirement IDs within those documents.
+
+**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through implementation. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
+
 ### Document Links and Cross-References
 
 #### Internal Document Structure

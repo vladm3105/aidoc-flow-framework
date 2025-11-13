@@ -1,7 +1,29 @@
 # ⚠️ CRITICAL: Always reference SPEC_DRIVEN_DEVELOPMENT_GUIDE.md as the single source of truth
 #              for workflow steps, artifact definitions, and quality gates.
 #              Location: ../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
-# POSITION: BDD is in Layer 2 (Testing Layer) - defines acceptance criteria from EARS requirements
+
+## Document Control
+
+| Item | Details |
+|------|---------|
+| **Project Name** | [Enter project name] |
+| **Document Version** | [e.g., 1.0] |
+| **Date** | [Current date] |
+| **Document Owner** | [Name and title] |
+| **Prepared By** | [Business Analyst name] |
+| **Status** | [Draft / In Review / Approved] |
+
+### Document Revision History
+
+| Version | Date | Author | Changes Made | Approver |
+|---------|------|--------|--------------|----------|
+| 1.0 | [Date] | [Name] | Initial draft | |
+| | | | | |
+
+---
+# 
+
+POSITION: BDD is in Layer 2 (Testing Layer) - defines acceptance criteria from EARS requirements
 #
 # REQUIREMENTS VERIFIED:
 #   - REQ-NNN: [Brief description of primary requirement being verified]
@@ -9,7 +31,20 @@
 # TRACEABILITY:
 #   Upstream: [REQ-NNN](../reqs/.../REQ-NNN_...md#REQ-NNN), [ADR-NNN](../../../adrs/ADR-NNN_...md#ADR-NNN)
 #   Downstream: Spec(../specs/.../SPEC-NNN_...yaml), Code(`component.module`), Tasks([TASKS-NNN](../ai_tasks/TASKS-NNN_....md))
+#
+# CUMULATIVE TAGGING REQUIREMENTS (Layer 4):
+# Required Tags: @brd, @prd, @ears (plus standard @requirement, @adr, @bdd tags)
+# Format: @artifact-type: DOCUMENT-ID:REQUIREMENT-ID
+# Example:
+#   @brd: BRD-001:FR-030
+#   @prd: PRD-003:FEATURE-002
+#   @ears: EARS-001:EVENT-003
+# Purpose: Complete traceability chain from business requirements through tests
+# See: ../TRACEABILITY.md#cumulative-tagging-hierarchy
 
+@brd: BRD-NNN:REQUIREMENT-ID
+@prd: PRD-NNN:REQUIREMENT-ID
+@ears: EARS-NNN:STATEMENT-ID
 @requirement:[REQ-NNN](../reqs/.../REQ-NNN_...md#REQ-NNN)
 @adr:[ADR-NNN](../adrs/ADR-NNN_...md#ADR-NNN)
 @bdd:[BDD-NNN:scenarios](BDD-NNN_descriptive_requirements.feature#scenarios)

@@ -1,5 +1,25 @@
 # CTR-NNN: [Contract Title]
 
+## Document Control
+
+| Item | Details |
+|------|---------|
+| **Project Name** | [Enter project name] |
+| **Document Version** | [e.g., 1.0] |
+| **Date** | [Current date] |
+| **Document Owner** | [Name and title] |
+| **Prepared By** | [API Designer/Architect name] |
+| **Status** | [Draft / In Review / Approved] |
+
+### Document Revision History
+
+| Version | Date | Author | Changes Made | Approver |
+|---------|------|--------|--------------|----------|
+| 1.0 | [Date] | [Name] | Initial draft | |
+| | | | | |
+
+---
+
 ## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
@@ -633,6 +653,50 @@ Common types across endpoints:
 - **Code Path(s)**:
   - Provider: `src/services/risk_validation_service.py`
   - Consumers: `src/agents/*/risk_validator_client.py`
+
+### Traceability Tags
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
+```markdown
+@brd: BRD-NNN:REQUIREMENT-ID
+@prd: PRD-NNN:REQUIREMENT-ID
+@ears: EARS-NNN:STATEMENT-ID
+@bdd: BDD-NNN:SCENARIO-ID
+@adr: ADR-NNN
+@sys: SYS-NNN:SECTION-ID
+@req: REQ-NNN:REQUIREMENT-ID
+@impl: IMPL-NNN:PHASE-ID
+```
+
+**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+
+**Layer 9 Requirements**: CTR must reference ALL upstream artifacts:
+- `@brd`: Business Requirements Document(s)
+- `@prd`: Product Requirements Document(s)
+- `@ears`: EARS Requirements
+- `@bdd`: BDD Scenarios
+- `@adr`: Architecture Decision Records
+- `@sys`: System Requirements
+- `@req`: Atomic Requirements
+- `@impl`: Implementation Plans (optional - include if exists in chain)
+
+**Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
+
+**Example**:
+```markdown
+@brd: BRD-001:FR-030
+@prd: PRD-003:FEATURE-002
+@ears: EARS-001:EVENT-003
+@bdd: BDD-003:scenario-realtime-quote
+@adr: ADR-033
+@sys: SYS-008:PERF-001
+@req: REQ-003:interface-spec
+@impl: IMPL-001:phase1
+```
+
+**Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through IMPL) are properly linked.
+
+**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through API contracts. CTR is optional layer - only created when interface requirements exist. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
 
 ## References
 

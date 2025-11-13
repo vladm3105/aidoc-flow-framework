@@ -876,6 +876,44 @@ Document the business strategy, product requirements, system specifications, and
 - `tests/contract/[module]/test_contract.py`: Contract tests
 - `tests/performance/[module]/test_performance.py`: Performance tests
 
+### Traceability Tags
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
+```markdown
+@brd: BRD-NNN:REQUIREMENT-ID
+@prd: PRD-NNN:REQUIREMENT-ID
+@ears: EARS-NNN:STATEMENT-ID
+@bdd: BDD-NNN:SCENARIO-ID
+@adr: ADR-NNN
+@sys: SYS-NNN:SECTION-ID
+```
+
+**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+
+**Layer 7 Requirements**: REQ must reference ALL upstream artifacts:
+- `@brd`: Business Requirements Document(s)
+- `@prd`: Product Requirements Document(s)
+- `@ears`: EARS Requirements
+- `@bdd`: BDD Scenarios
+- `@adr`: Architecture Decision Records
+- `@sys`: System Requirements
+
+**Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
+
+**Example**:
+```markdown
+@brd: BRD-001:FR-030
+@prd: PRD-003:FEATURE-002
+@ears: EARS-001:EVENT-003
+@bdd: BDD-003:scenario-realtime-quote
+@adr: ADR-033
+@sys: SYS-008:PERF-001
+```
+
+**Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through SYS) are properly linked.
+
+**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through atomic requirements. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
+
 ---
 
 ## 12. Change History

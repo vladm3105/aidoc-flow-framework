@@ -314,6 +314,24 @@ traceability:
       spec_complexity: "medium"  # low, medium, high
       implementation_status: "not_started"  # not_started, in_progress, completed, deprecated
 
+  # Cumulative Tagging Hierarchy (Layer 10)
+  # Required tags from ALL upstream artifacts for complete traceability
+  # Format: artifact-type: DOCUMENT-ID:REQUIREMENT-ID
+  cumulative_tags:
+    brd: "BRD-NNN:REQUIREMENT-ID"  # Business Requirements
+    prd: "PRD-NNN:REQUIREMENT-ID"  # Product Requirements
+    ears: "EARS-NNN:STATEMENT-ID"  # Engineering Requirements
+    bdd: "BDD-NNN:SCENARIO-ID"  # BDD Test Scenarios
+    adr: "ADR-NNN"  # Architecture Decisions
+    sys: "SYS-NNN:SECTION-ID"  # System Requirements
+    req: "REQ-NNN:REQUIREMENT-ID"  # Atomic Requirements
+    impl: "IMPL-NNN:PHASE-ID"  # Implementation Plans (optional)
+    ctr: "CTR-NNN"  # API Contracts (optional)
+    # Layer 10: SPEC must include all upstream tags (BRD through REQ)
+    # Optional: IMPL and CTR if they exist in the traceability chain
+    # Purpose: Complete traceability from business requirements to implementation
+    # See: ../TRACEABILITY.md#cumulative-tagging-hierarchy
+
 # ===================
 # COMPONENT ARCHITECTURE
 # ===================

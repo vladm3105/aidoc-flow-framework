@@ -886,6 +886,56 @@ Document evidence that this task has been implemented correctly and meets all ac
 - Git hash: [Commit SHA when checked in]
 - Template compliance: ✅ Validated
 
+### Traceability Tags
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
+```markdown
+@brd: BRD-NNN:REQUIREMENT-ID
+@prd: PRD-NNN:REQUIREMENT-ID
+@ears: EARS-NNN:STATEMENT-ID
+@bdd: BDD-NNN:SCENARIO-ID
+@adr: ADR-NNN
+@sys: SYS-NNN:SECTION-ID
+@req: REQ-NNN:REQUIREMENT-ID
+@impl: IMPL-NNN:PHASE-ID
+@ctr: CTR-NNN
+@spec: SPEC-NNN
+```
+
+**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+
+**Layer 11 Requirements**: TASKS must reference ALL upstream artifacts:
+- `@brd`: Business Requirements Document(s)
+- `@prd`: Product Requirements Document(s)
+- `@ears`: EARS Requirements
+- `@bdd`: BDD Scenarios
+- `@adr`: Architecture Decision Records
+- `@sys`: System Requirements
+- `@req`: Atomic Requirements
+- `@impl`: Implementation Plans (optional - include if exists in chain)
+- `@ctr`: API Contracts (optional - include if exists in chain)
+- `@spec`: Technical Specifications
+
+**Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
+
+**Example**:
+```markdown
+@brd: BRD-001:FR-030
+@prd: PRD-003:FEATURE-002
+@ears: EARS-001:EVENT-003
+@bdd: BDD-003:scenario-realtime-quote
+@adr: ADR-033
+@sys: SYS-008:PERF-001
+@req: REQ-003:interface-spec
+@impl: IMPL-001:phase1
+@ctr: CTR-001
+@spec: SPEC-003
+```
+
+**Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through SPEC) are properly linked.
+
+**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through code generation plans. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
+
 ---
 
 ## Implementation Notes

@@ -698,6 +698,41 @@ API contracts and interface agreements for external integration.
 - Last modified: [Auto-generated on save]
 - Git hash: [Commit SHA when checked in]
 
+### Traceability Tags
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
+```markdown
+@brd: BRD-NNN:REQUIREMENT-ID
+@prd: PRD-NNN:REQUIREMENT-ID
+@ears: EARS-NNN:STATEMENT-ID
+@bdd: BDD-NNN:SCENARIO-ID
+@adr: ADR-NNN
+```
+
+**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+
+**Layer 6 Requirements**: SYS must reference ALL upstream artifacts:
+- `@brd`: Business Requirements Document(s)
+- `@prd`: Product Requirements Document(s)
+- `@ears`: EARS Requirements
+- `@bdd`: BDD Scenarios
+- `@adr`: Architecture Decision Records
+
+**Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
+
+**Example**:
+```markdown
+@brd: BRD-001:FR-030
+@prd: PRD-003:FEATURE-002
+@ears: EARS-001:EVENT-003
+@bdd: BDD-003:scenario-realtime-quote
+@adr: ADR-033
+```
+
+**Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through ADR) are properly linked.
+
+**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through system specifications. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
+
 ---
 
 ## Implementation Notes

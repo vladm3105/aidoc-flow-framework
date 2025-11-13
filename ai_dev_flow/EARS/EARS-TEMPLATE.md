@@ -742,6 +742,34 @@ Document evidence that EARS requirements have been implemented and validated cor
 
 ---
 
+### 7.7 Traceability Tags
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 3):
+```markdown
+@brd: BRD-NNN:REQUIREMENT-ID
+@prd: PRD-NNN:REQUIREMENT-ID
+```
+
+**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+
+**Layer 3 Requirements**: EARS must reference ALL upstream artifacts:
+- `@brd`: Business Requirements Document(s)
+- `@prd`: Product Requirements Document(s)
+
+**Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
+
+**Example**:
+```markdown
+@brd: BRD-001:FR-030, BRD-001:NFR-006
+@prd: PRD-003:FEATURE-002
+```
+
+**Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts are properly linked.
+
+**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through implementation. Each EARS document must include ALL upstream tags (BRD + PRD). See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
+
+---
+
 ## 8. References
 
 ### 8.1 Internal Documentation
