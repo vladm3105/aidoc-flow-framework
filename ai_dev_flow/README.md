@@ -2,9 +2,9 @@
 
 **Purpose**: Enable AI-assisted software development across any project domain through structured, traceable requirements and specifications.
 
-**Status**: Production-ready framework with generic templates, domain adaptation guidance, and validation tooling.
+**Status**: Production-ready framework with generic templates, domain adaptation guidance, cumulative tagging hierarchy, and automated validation tooling.
 
-**Version**: 1.0 | **Last Updated**: 2025-11-05
+**Version**: 2.0 | **Last Updated**: 2025-11-13
 
 ## Overview
 
@@ -21,12 +21,13 @@ This directory provides a **universal, reusable framework** for Specification-Dr
 **AI Dev Flow Solutions**:
 - ✅ **Domain-Agnostic**: Adaptable to any software project (e-commerce, SaaS, IoT, healthcare, finance)
 - ✅ **Complete Traceability**: Bidirectional links from business requirements to production code
+- ✅ **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
 - ✅ **AI-Optimized**: YAML specifications designed for deterministic code generation
-- ✅ **10-Layer Architecture**: Structured progression from business needs to deployment
+- ✅ **16-Layer Architecture**: Structured progression from strategy through validation
 - ✅ **Dual-File Contracts**: Human-readable `.md` + machine-readable `.yaml`
 - ✅ **Strict ID Standards**: Consistent naming and organization across all documents
 - ✅ **Example-Driven**: Generic examples with `[PLACEHOLDER]` format for easy customization
-- ✅ **Validation Tooling**: Scripts for ID validation, traceability checks, reference verification
+- ✅ **Automated Validation**: Scripts for tag validation, traceability matrix generation, cumulative hierarchy enforcement
 
 **📚 New to this framework?** Start with [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) for domain-specific guidance (financial, healthcare, e-commerce, SaaS, IoT, or generic software).
 
@@ -34,22 +35,30 @@ This directory provides a **universal, reusable framework** for Specification-Dr
 
 **⚠️ See [index.md](./index.md#traceability-flow) for the authoritative workflow diagram with full Mermaid visualization.**
 
-### 10-Layer Architecture
+### 16-Layer Architecture with Cumulative Tagging
 
-The AI Dev Flow transforms business requirements into production code through a structured, traceable workflow:
+The AI Dev Flow transforms business requirements into production code through a structured, traceable workflow. Each layer includes cumulative tags from ALL upstream layers, creating complete audit trails for regulatory compliance (SEC, FINRA, FDA, ISO).
 
-| Layer | Documents | Purpose | Key Decision |
-|-------|-----------|---------|--------------|
-| **1. Business** | BRD → PRD → EARS | Define business objectives and measurable requirements | WHAT needs to be built |
-| **2. Testing** | BDD | Define acceptance criteria in executable Gherkin format | HOW to verify success |
-| **3. Architecture** | ADR → SYS | Document architectural decisions and system specifications | TECHNICAL approach |
-| **4. Requirements** | REQ | Break down into atomic, testable requirements | GRANULAR specifications |
-| **5. Project Mgmt** | IMPL | Organize work into phases, teams, deliverables | WHO/WHEN to build |
-| **6. Interface** | CTR (optional) | Define API contracts for component communication | INTERFACE definitions |
-| **7. Implementation** | SPEC | YAML specifications for code generation | HOW to build |
-| **8. Code Generation** | TASKS | AI-structured implementation steps | EXACT TODOs |
-| **9. Execution** | Code → Tests | Generated implementation and test suites | RUNNABLE artifacts |
-| **10. Validation** | Validation → Review → Prod | Verify acceptance criteria and deploy | PRODUCTION-READY |
+| Layer | Artifact | Purpose | Tags Required | Key Decision |
+|-------|----------|---------|---------------|--------------|
+| **0** | Strategy | External business strategy documents | 0 | Strategic direction |
+| **1** | BRD | Business objectives and market context | 0 (top level) | WHAT needs to be built |
+| **2** | PRD | Product features and user stories | @brd (1) | Product capabilities |
+| **3** | EARS | Measurable event-driven requirements | @brd, @prd (2) | Formal requirements |
+| **4** | BDD | Executable acceptance tests (Gherkin) | @brd→@ears (3+) | HOW to verify success |
+| **5** | ADR | Architectural decisions and rationale | @brd→@bdd (4) | TECHNICAL approach |
+| **6** | SYS | System-level requirements | @brd→@adr (5) | System specifications |
+| **7** | REQ | Atomic, testable requirements | @brd→@sys (6) | GRANULAR specifications |
+| **8** | IMPL | Implementation plans (optional) | @brd→@req (7) | WHO/WHEN to build |
+| **9** | CTR | API contracts (optional) | @brd→@impl (8) | INTERFACE definitions |
+| **10** | SPEC | YAML technical specifications | @brd→@req (+optional) (7-9) | HOW to build |
+| **11** | TASKS | Implementation task breakdown | @brd→@spec (8-10) | EXACT TODOs |
+| **12** | tasks_plans | Session-specific plans | @brd→@tasks (9-11) | Session work scope |
+| **13** | Code | Source code implementation | @brd→@tasks (9-11) | RUNNABLE artifacts |
+| **14** | Tests | Test suite implementation | @brd→@code (10-12) | Quality validation |
+| **15** | Validation | Production readiness verification | All upstream (10-15) | PRODUCTION-READY |
+
+**Note**: Layers 8 (IMPL) and 9 (CTR) are optional - include only when needed for project management or API contracts.
 
 ### Critical Decision Point
 
@@ -146,6 +155,14 @@ The AI Dev Flow transforms business requirements into production code through a 
 - **1:1 mapping**: Each TASKS document corresponds to one SPEC
 - **Files**: [TASKS-000_index.md](./TASKS/TASKS-000_index.md) | [Template](./TASKS/TASKS-TEMPLATE.md)
 
+### 9. Session Planning Layer
+
+**tasks_plans/** - Session-Specific Implementation Plans
+- Organize multiple TASKS into session-scoped work packages
+- Track progress across related implementation units
+- Maintain context between AI coding sessions
+- **Files**: Session plans saved via `/save-plan` command
+
 ## Document ID Standards
 
 All documents follow strict naming conventions:
@@ -169,24 +186,60 @@ See [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) for complete rules.
 
 ## Traceability
 
-Every document maintains bidirectional traceability through tags and links:
+Every document maintains bidirectional traceability through **Cumulative Tagging Hierarchy** - each artifact includes tags from ALL upstream layers, creating complete audit trails.
 
-### Upstream Traceability
-Documents link to their source requirements:
+### Cumulative Tagging Hierarchy
+
+**Core Principle**: Each layer N includes tags from layers 1 through N-1 plus its own identifier.
+
+**Tag Format**: `@artifact-type: DOC-ID:REQ-ID`
+
+**Example Progression**:
 ```markdown
-@PRD:[PRD-001](../PRD/PRD-001_component.md)
-@SYS:[SYS-001](../SYS/SYS-001_component.md)
+# Layer 2 (PRD)
+@brd: BRD-009:FR-015
+
+# Layer 4 (BDD)
+@brd: BRD-009:FR-015
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002
+
+# Layer 7 (REQ)
+@brd: BRD-009:FR-015
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+@sys: SYS-012:FUNC-001
+
+# Layer 13 (Code)
+@brd: BRD-009:FR-015
+... [all upstream tags through @tasks]
+@impl-status: complete
 ```
 
-### Downstream Traceability
-Documents link to implementations and tests:
-```markdown
-@contract:[CTR-001](../CONTRACTS/CTR-001_component_api.md#CTR-001)
-@spec:[SPEC-001](../SPEC/services/SPEC-001_component.yaml)
-@bdd:[BDD-001](../BDD/BDD-001_requirements.feature#scenarios)
+### Benefits
+
+- **Complete Audit Trail**: Every artifact traces back to original business requirement
+- **Regulatory Compliance**: SEC, FINRA, FDA, ISO requirements for traceability
+- **Impact Analysis**: Instantly identify all downstream artifacts affected by upstream changes
+- **Automated Validation**: Scripts enforce cumulative tagging compliance
+- **Change Management**: Track complete lineage from requirements through code
+
+### Validation
+
+```bash
+# Extract tags from codebase
+python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
+
+# Validate cumulative tagging hierarchy
+python scripts/validate_tags_against_docs.py --validate-cumulative --strict
+
+# Generate traceability matrices
+python scripts/generate_traceability_matrices.py --auto
 ```
 
-See [TRACEABILITY.md](./TRACEABILITY.md) for complete guidelines.
+See [TRACEABILITY.md](./TRACEABILITY.md) and [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) for complete guidelines.
 
 ## Getting Started
 
@@ -228,19 +281,22 @@ Each directory contains:
   - Generic examples with `[PLACEHOLDER]` format
   - Domain-specific examples from original project
 
-### Validation (Optional)
+### Validation
 
-If implementing validation tooling:
+The framework includes comprehensive validation tooling:
+
 ```bash
-# ID validation
+# Cumulative tagging validation (recommended)
+python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
+python scripts/validate_tags_against_docs.py --validate-cumulative --strict
+python scripts/generate_traceability_matrices.py --auto
+
+# Legacy validation (optional)
 python scripts/validate_requirement_ids.py
-
-# Traceability matrix generation
-python scripts/complete_traceability_matrix.py
-
-# Broken reference detection
 python scripts/check_broken_references.py
 ```
+
+**CI/CD Integration**: See [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md) for pre-commit hooks and GitHub Actions workflows.
 
 **Note**: Framework includes `scripts/make_framework_generic.py` for maintaining placeholder consistency.
 
@@ -256,24 +312,35 @@ python scripts/check_broken_references.py
 
 ### Business Requirements → Production Code
 
-The AI Dev Flow follows a linear progression through 10 layers:
+The AI Dev Flow follows a structured progression through 16 layers:
 
-1. **BRD** - Define business objectives and market context
-2. **PRD** - Translate business needs to product features
-3. **EARS** - Create measurable event-driven requirements
-4. **BDD** - Write executable acceptance tests in Gherkin
-5. **ADR** - Document architectural decisions and rationale
-6. **SYS** - Specify system-level requirements
-7. **REQ** - Break down into atomic, testable requirements
-8. **IMPL** - Organize project work (WHO/WHEN/deliverables)
-9. **CTR** - Define API contracts (if interface requirement exists)
-10. **SPEC** - Provide YAML implementation details (HOW to build)
-11. **TASKS** - Generate exact TODOs for AI code generation
+**Documentation Layers (0-12)**:
+1. **Strategy** (Layer 0) - External business strategy documents
+2. **BRD** (Layer 1) - Business objectives and market context
+3. **PRD** (Layer 2) - Product features and user stories
+4. **EARS** (Layer 3) - Measurable event-driven requirements
+5. **BDD** (Layer 4) - Executable acceptance tests in Gherkin
+6. **ADR** (Layer 5) - Architectural decisions and rationale
+7. **SYS** (Layer 6) - System-level requirements
+8. **REQ** (Layer 7) - Atomic, testable requirements
+9. **IMPL** (Layer 8) - Implementation plans (optional)
+10. **CTR** (Layer 9) - API contracts (optional)
+11. **SPEC** (Layer 10) - YAML technical specifications
+12. **TASKS** (Layer 11) - Implementation task breakdown
+13. **tasks_plans** (Layer 12) - Session-specific plans
+
+**Implementation Layers (13-15)**:
+14. **Code** (Layer 13) - Source code with cumulative tags
+15. **Tests** (Layer 14) - Test suite with cumulative tags
+16. **Validation** (Layer 15) - Production readiness verification
 
 **Key Workflow Patterns**:
+- **Cumulative Tagging**: Every artifact includes tags from ALL upstream layers
 - **Complete Traceability**: Every document links upstream (requirements) and downstream (implementations)
+- **Regulatory Compliance**: Complete audit trail for SEC, FINRA, FDA, ISO requirements
 - **Dual-File Contracts**: CTR uses `.md` (human) + `.yaml` (machine) for parallel development
 - **AI Code Generation**: SPEC + TASKS enable deterministic code generation by AI assistants
+- **Automated Validation**: Scripts enforce tagging hierarchy and traceability compliance
 
 ### AI-Assisted Development
 
@@ -363,8 +430,13 @@ docs_templates/ai_dev_flow/
 ├── CONTRACTS/         # API Contracts (CTR) - dual-file format (.md + .yaml)
 ├── SPEC/             # Technical Specifications (YAML)
 ├── TASKS/          # Code Generation Plans (TASKS)
+├── tasks_plans/       # Session-specific implementation plans (Layer 12)
 ├── scripts/           # Validation and tooling scripts
-│   └── make_framework_generic.py  # Placeholder maintenance tool
+│   ├── extract_tags.py                    # Tag extraction from codebase
+│   ├── validate_tags_against_docs.py      # Cumulative tagging validation
+│   ├── generate_traceability_matrices.py  # Matrix generation
+│   ├── add_cumulative_tagging_to_matrices.py  # Matrix template updater
+│   └── make_framework_generic.py          # Placeholder maintenance tool
 ├── work_plans/        # Implementation plans (/save-plan command output)
 ├── index.md           # Detailed directory reference with Mermaid workflow
 ├── README.md          # This file (framework overview)
@@ -372,16 +444,28 @@ docs_templates/ai_dev_flow/
 ├── SPEC_DRIVEN_DEVELOPMENT_GUIDE.md  # Complete SDD methodology
 ├── ID_NAMING_STANDARDS.md      # Document identification standards
 ├── TRACEABILITY.md             # Traceability requirements and conventions
+├── TRACEABILITY_SETUP.md       # Cumulative tagging setup and CI/CD integration
+├── COMPLETE_TAGGING_EXAMPLE.md # End-to-end cumulative tagging example
 ├── WHEN_TO_CREATE_IMPL.md      # Guidance on IMPL document usage
 └── [other standards documents]
 ```
 
 ## Framework Versions and Updates
 
-**Current Version**: 1.0
-**Last Updated**: 2025-11-05
+**Current Version**: 2.0
+**Last Updated**: 2025-11-13
 
-**Recent Enhancements**:
+**Version 2.0 - Cumulative Tagging Hierarchy** (November 2025):
+- ✅ **16-Layer Architecture**: Expanded from 10 to 16 layers (added Strategy, tasks_plans, Code, Tests, Validation)
+- ✅ **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
+- ✅ **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
+- ✅ **Traceability Matrix Templates**: All 13 artifact types have cumulative tagging sections
+- ✅ **Complete Example**: COMPLETE_TAGGING_EXAMPLE.md shows end-to-end tagging
+- ✅ **Setup Guide**: TRACEABILITY_SETUP.md with CI/CD integration patterns
+- ✅ **Regulatory Compliance**: Complete audit trails for SEC, FINRA, FDA, ISO
+- ✅ **Impact Analysis**: Instant identification of affected downstream artifacts
+
+**Version 1.0 Enhancements** (November 2025):
 - Added IMPL (Implementation Plans) for project management layer
 - Created DOMAIN_ADAPTATION_GUIDE.md with 5 domain checklists
 - Introduced dual-file CTR format (.md + .yaml)
@@ -390,8 +474,9 @@ docs_templates/ai_dev_flow/
 
 **Framework Evolution**:
 - Proven in production: 48x code generation speed improvement
-- 10-layer architecture validated through real-world usage
-- Complete traceability from business needs to deployed code
+- 16-layer architecture with complete cumulative tagging
+- Automated traceability validation and matrix generation
+- Complete audit trail from business strategy to production code
 - AI-optimized YAML specifications for deterministic generation
 
 ## Related Documentation
@@ -399,9 +484,11 @@ docs_templates/ai_dev_flow/
 **Within This Framework**:
 - [index.md](./index.md) - Complete directory reference with workflow diagram
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Detailed SDD methodology
+- [TRACEABILITY.md](./TRACEABILITY.md) - Traceability format standards and cumulative tagging hierarchy
+- [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md) - Setup guide for cumulative tagging validation and CI/CD
+- [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) - End-to-end example across all 16 layers
 - [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) - Domain customization checklists
 - [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) - Document naming conventions
-- [TRACEABILITY.md](./TRACEABILITY.md) - Traceability format standards
 
 **For Original Project Context** (if using within trading project):
 - [CLAUDE.md](/opt/data/trading/CLAUDE.md) - Project-level SDD guidance
