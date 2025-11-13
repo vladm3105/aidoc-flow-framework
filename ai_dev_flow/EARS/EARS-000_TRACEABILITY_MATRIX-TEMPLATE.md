@@ -61,7 +61,136 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 
 ---
 
-## 2. Complete EARS Inventory
+## 2. Required Tags (Cumulative Tagging Hierarchy - Layer 3)
+
+### 2.1 Tag Requirements for EARS Artifacts
+
+**Layer**: 3
+**Artifact Type**: EARS (Easy Approach to Requirements Syntax)
+**Required Tags**: `@brd`, `@prd`
+**Tag Count**: 2
+
+### 2.2 Tag Format
+
+```markdown
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+```
+
+**Format Rules**:
+- Prefix: `@` symbol
+- Artifact Types: lowercase (`brd`, `prd`)
+- Separator: colon `:` after artifact type
+- Document ID: `TYPE-NNN` format
+- Requirement ID: specific requirement/section identifier
+- Multiple Values: comma-separated within each tag line
+
+### 2.3 Example: EARS with Required Tags
+
+```markdown
+# EARS-012: Trade Execution Formal Requirements
+
+## 7. Traceability
+
+### 8.1 Upstream Sources
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 3):
+```markdown
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+```
+
+- **BRD-009:FR-015**: Functional requirement for broker integration
+- **BRD-009:NFR-006**: Non-functional requirement for trade execution performance
+- **PRD-016:FEATURE-003**: Product feature for trade execution user interface
+
+### 8.2 Downstream Artifacts
+
+**Direct Dependencies**:
+- BDD-015: Trade execution test scenarios (`@ears: EARS-012:EVENT-002`)
+- REQ-045: Place limit order atomic requirement (`@ears: EARS-012:EVENT-002`)
+- ADR-033: Trade execution architecture (`@ears: EARS-012:EVENT-002`)
+```
+
+### 2.4 Example: EARS Statements with Traceability
+
+```markdown
+## 3.1 Event-Driven Requirements
+
+### EARS-012:EVENT-001
+**WHEN** user selects "Place Order" button
+**THE** system **SHALL** validate order parameters
+**WITHIN** 100 milliseconds
+
+**Traceability**:
+- Upstream: BRD-009:FR-015 (Order placement capability)
+- Upstream: PRD-016:FEATURE-003 (Order placement UI)
+- Downstream: BDD-015:scenario-place-order (Test scenario)
+- Downstream: REQ-045 (Validation logic requirement)
+
+### EARS-012:EVENT-002
+**WHEN** order validation succeeds
+**THE** system **SHALL** execute the trade
+**WITHIN** 2 seconds
+
+**Traceability**:
+- Upstream: BRD-009:NFR-006 (Performance requirement)
+- Upstream: PRD-016:FEATURE-003 (Trade execution feature)
+- Downstream: BDD-015:scenario-trade-execution (Test scenario)
+- Downstream: REQ-046 (Trade execution logic)
+```
+
+### 2.5 Validation Rules
+
+1. **Required Tags**: Each EARS MUST include both `@brd` and `@prd` tags
+2. **Format Compliance**: All tags must follow `@type: DOC-ID:REQ-ID` format
+3. **Valid References**: All referenced BRD and PRD documents must exist
+4. **No Gaps**: Cannot skip BRD layer (must reference both BRD and PRD)
+5. **Statement-Level Traceability**: Individual EARS statements should document upstream sources in their descriptions
+
+### 2.6 Tag Discovery
+
+```bash
+# Find all EARS and their upstream tags
+python scripts/extract_tags.py --type EARS --show-upstream brd,prd
+
+# Validate EARS-012 has required tags
+python scripts/validate_tags_against_docs.py \
+  --artifact EARS-012 \
+  --expected-layers brd,prd \
+  --strict
+
+# Generate EARS coverage report
+python scripts/generate_traceability_matrices.py \
+  --type EARS \
+  --show-coverage
+```
+
+### 2.7 EARS Traceability Pattern
+
+EARS at Layer 3 formalizes business and product requirements:
+
+```
+Strategy (External) → Strategic business goals
+  ↓
+BRD (Layer 1) → Business requirements
+  ↓
+PRD (Layer 2) → Product features (@brd)
+  ↓
+EARS (Layer 3) → Formal engineering requirements (@brd, @prd)
+  ↓
+BDD (Layer 4) → Test scenarios (@brd, @prd, @ears)
+  ↓
+ADR (Layer 5) → Architecture decisions (@brd through @bdd)
+  ↓
+[Complete chain through Code and Tests]
+```
+
+**Key Role**: EARS transforms informal product requirements (PRD) into formal, testable, unambiguous engineering requirements using WHEN-THE-SHALL syntax, creating the foundation for BDD test scenarios and technical implementation.
+
+---
+
+## 3. Complete EARS Inventory
 
 | EARS ID | Title | Requirement Category | Total Statements | Status | Date | Upstream Sources | Downstream Artifacts |
 |---------|-------|---------------------|------------------|--------|------|------------------|---------------------|
@@ -77,16 +206,16 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 
 ---
 
-## 3. Upstream Traceability
+## 4. Upstream Traceability
 
-### 3.1 BRD → EARS Traceability
+### 8.1 BRD → EARS Traceability
 
 | BRD ID | BRD Title | EARS IDs | EARS Titles | Relationship Description |
 |--------|-----------|----------|-------------|--------------------------|
 | BRD-001 | [Business requirement] | EARS-001, EARS-002 | [Formal requirements] | Business goals formalized as verifiable requirements |
 | BRD-NNN | ... | ... | ... | ... |
 
-### 3.2 PRD → EARS Traceability
+### 8.2 PRD → EARS Traceability
 
 | PRD ID | PRD Title | EARS IDs | EARS Titles | Relationship Description |
 |--------|-----------|----------|-------------|--------------------------|
@@ -105,9 +234,9 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 
 ---
 
-## 4. Downstream Traceability
+## 5. Downstream Traceability
 
-### 4.1 EARS → BDD Traceability
+### 8.1 EARS → BDD Traceability
 
 | EARS ID | EARS Title | BDD IDs | BDD Scenarios | Relationship |
 |---------|------------|---------|---------------|--------------|
@@ -115,7 +244,7 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 | EARS-002 | [Formal requirement] | BDD-002, BDD-003 | [Test scenarios] | Multiple test scenarios verify requirement |
 | EARS-NNN | ... | ... | ... | ... |
 
-### 4.2 EARS → REQ Traceability
+### 8.2 EARS → REQ Traceability
 
 | EARS ID | EARS Title | REQ IDs | REQ Titles | Relationship |
 |---------|------------|---------|------------|--------------|
@@ -123,7 +252,7 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 | EARS-002 | [Formal requirement] | REQ-003 | [Atomic requirement] | Direct 1:1 implementation requirement |
 | EARS-NNN | ... | ... | ... | ... |
 
-### 4.3 EARS → ADR Traceability
+### 5.3 EARS → ADR Traceability
 
 | EARS ID | EARS Title | ADR IDs | ADR Titles | Relationship |
 |---------|------------|---------|------------|--------------|
@@ -149,9 +278,9 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 
 ---
 
-## 5. EARS Statement Analysis
+## 6. EARS Statement Analysis
 
-### 5.1 EARS Syntax Pattern Distribution
+### 8.1 EARS Syntax Pattern Distribution
 
 | EARS Pattern | Count | Percentage | Examples |
 |--------------|-------|------------|----------|
@@ -162,7 +291,7 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 | **Optional** (WHERE...SHALL) | [X] | XX% | WHERE applicable, system SHALL log events |
 | **Complex** (WHEN...WHERE...SHALL...WITHIN) | [X] | XX% | Full EARS syntax with constraints |
 
-### 5.2 EARS Statement Coverage by Requirement Type
+### 8.2 EARS Statement Coverage by Requirement Type
 
 | Requirement Type | EARS Statements | BDD Coverage | REQ Coverage | Verified |
 |------------------|-----------------|--------------|--------------|----------|
@@ -176,7 +305,7 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 
 ## 6. Cross-EARS Dependencies
 
-### 6.1 EARS Relationship Map
+### 8.1 EARS Relationship Map
 
 ```mermaid
 graph TD
@@ -209,7 +338,7 @@ graph TD
     style ADR005 fill:#f3e5f5
 ```
 
-### 6.2 Inter-EARS Dependencies
+### 8.2 Inter-EARS Dependencies
 
 | Source EARS | Target EARS | Dependency Type | Description |
 |-------------|-------------|-----------------|-------------|
@@ -221,7 +350,7 @@ graph TD
 
 ## 7. Verification and Validation Status
 
-### 7.1 EARS Verification Coverage
+### 8.1 EARS Verification Coverage
 
 | EARS ID | Total Statements | BDD Scenarios | REQ Mappings | Verification % | Status |
 |---------|------------------|---------------|--------------|----------------|--------|
@@ -230,7 +359,7 @@ graph TD
 | EARS-003 | 4 | 2 | 4 | 50% | 🟡 Partial |
 | EARS-NNN | ... | ... | ... | ... | ... |
 
-### 7.2 Testability Assessment
+### 8.2 Testability Assessment
 
 | EARS ID | Testability Score | Ambiguity Level | Completeness | Issues |
 |---------|-------------------|-----------------|--------------|--------|
@@ -239,7 +368,7 @@ graph TD
 | EARS-003 | High (8/10) | Low | Complete | None |
 | EARS-NNN | ... | ... | ... | ... |
 
-### 7.3 Requirements Quality Metrics
+### 8.3 Requirements Quality Metrics
 
 | Quality Metric | Target | Current | Status |
 |----------------|--------|---------|--------|

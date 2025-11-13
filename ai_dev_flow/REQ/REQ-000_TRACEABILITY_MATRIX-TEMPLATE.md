@@ -61,7 +61,177 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 
 ---
 
-## 2. Complete REQ Inventory
+## 2. Required Tags (Cumulative Tagging Hierarchy - Layer 7)
+
+### 2.1 Tag Requirements for REQ Artifacts
+
+**Layer**: 7
+**Artifact Type**: REQ (Atomic Requirements Document)
+**Required Tags**: `@brd` through `@sys`
+**Tag Count**: 6
+
+### 2.2 Tag Format
+
+```markdown
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002, EARS-012:STATE-001
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+@sys: SYS-012:PERF-001, SYS-012:RELIABILITY-002
+```
+
+**Format Rules**:
+- Prefix: `@` symbol
+- Artifact Types: lowercase (`brd`, `prd`, `ears`, `bdd`, `adr`, `sys`)
+- Separator: colon `:` after artifact type
+- Document ID: `TYPE-NNN` format
+- Requirement ID: specific requirement/section identifier
+- Multiple Values: comma-separated within each tag line
+
+### 2.3 Example: REQ with Required Tags
+
+```markdown
+# REQ-045: Place Limit Order Atomic Requirement
+
+## 7. Traceability
+
+### 8.1 Upstream Sources
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
+```markdown
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002, EARS-012:STATE-001
+@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@adr: ADR-033
+@sys: SYS-012:PERF-001, SYS-012:RELIABILITY-002
+```
+
+**Traceability Chain**:
+- **BRD-009:FR-015**: Business requirement for order placement capability
+- **BRD-009:NFR-006**: Performance requirement (2-second execution)
+- **PRD-016:FEATURE-003**: Product feature for trade execution
+- **EARS-012:EVENT-002**: Formal requirement "WHEN order validation succeeds..."
+- **EARS-012:STATE-001**: State-driven requirement for order lifecycle
+- **BDD-015:scenario-place-order**: Acceptance test scenario
+- **BDD-015:scenario-reject-invalid**: Negative test scenario
+- **ADR-033**: Architecture decision for event-driven trade processing
+- **SYS-012:PERF-001**: System performance requirement (2-second SLA)
+- **SYS-012:RELIABILITY-002**: System reliability requirement (99.9% uptime)
+
+### 8.2 Downstream Artifacts
+
+**Direct Dependencies**:
+- SPEC-018: Order placement service specification (`@req: REQ-045:interface-spec`)
+- CTR-005: Trade execution API contract (`@req: REQ-045:validation-logic`)
+- Code: `src/execution/order_service.py` (`@req: REQ-045:interface-spec`)
+- Tests: `tests/test_order_service.py` (`@req: REQ-045`)
+```
+
+### 2.4 Example: Atomic Requirement Structure
+
+```markdown
+# REQ-045: Place Limit Order Atomic Requirement
+
+## 1. Requirement Statement
+
+The system SHALL provide an API endpoint to place limit orders with the following parameters:
+- Symbol (required, string, format: TICKER)
+- Quantity (required, positive integer)
+- Limit price (required, positive decimal, 2 decimal places)
+- Order type (required, enum: BUY, SELL)
+- Time in force (required, enum: DAY, GTC, IOC)
+
+## 2. Acceptance Criteria
+
+1. Valid limit order request SHALL return order ID within 100ms
+2. Invalid parameters SHALL return 400 error with descriptive message
+3. System SHALL validate account has sufficient funds/shares
+4. Order SHALL be placed on exchange within 2 seconds of validation
+5. System SHALL log all order placement attempts
+
+## 3. Constraints
+
+- Maximum quantity: 10,000 shares per order
+- Minimum price increment: $0.01
+- Account balance check required before placement
+- Market hours validation required (9:30 AM - 4:00 PM ET)
+
+## 4. Dependencies
+
+- Authentication service (REQ-010)
+- Account balance service (REQ-015)
+- Market data service (REQ-020)
+- Order validation service (REQ-040)
+
+## 7. Traceability
+
+[Tags as shown in example above]
+```
+
+### 2.5 Validation Rules
+
+1. **Required Tags**: Each REQ MUST include all 6 upstream tags (BRD through SYS)
+2. **Format Compliance**: All tags must follow `@type: DOC-ID:REQ-ID` format
+3. **Valid References**: All referenced documents and requirements must exist
+4. **No Gaps**: Cannot skip intermediate layers (must include all layers from BRD through SYS)
+5. **Atomic Nature**: Each REQ must be single-concern, testable, and implementation-ready
+6. **Complete Chain**: Must trace back to original business requirements (BRD)
+
+### 2.6 Tag Discovery
+
+```bash
+# Find all REQs and their complete upstream tag chain
+python scripts/extract_tags.py --type REQ --show-all-upstream
+
+# Validate REQ-045 has all required tags
+python scripts/validate_tags_against_docs.py \
+  --artifact REQ-045 \
+  --expected-layers brd,prd,ears,bdd,adr,sys \
+  --strict
+
+# Generate REQ implementation coverage report
+python scripts/generate_traceability_matrices.py \
+  --type REQ \
+  --show-downstream-coverage
+```
+
+### 2.7 REQ Traceability Pattern
+
+REQ at Layer 7 represents the atomic, implementation-ready requirements:
+
+```
+BRD (Layer 1) → Business requirements
+  ↓
+PRD (Layer 2) → Product features (@brd)
+  ↓
+EARS (Layer 3) → Formal engineering requirements (@brd, @prd)
+  ↓
+BDD (Layer 4) → Test scenarios (@brd, @prd, @ears)
+  ↓
+ADR (Layer 5) → Architecture decisions (@brd through @bdd)
+  ↓
+SYS (Layer 6) → System requirements (@brd through @adr)
+  ↓
+REQ (Layer 7) → Atomic requirements (@brd through @sys)
+  ↓
+IMPL (Layer 8) → Implementation plans (@brd through @req)
+  ↓
+CTR (Layer 9) → API contracts (@brd through @impl)
+  ↓
+SPEC (Layer 10) → Technical specifications (@brd through @req + optional)
+  ↓
+TASKS (Layer 11) → Implementation tasks (@brd through @spec)
+  ↓
+Code (Layer 13) → Source code (@brd through @tasks)
+```
+
+**Key Role**: REQ decomposes high-level requirements (EARS, SYS) into single-concern, atomic, testable requirements that map directly to code implementations, serving as the bridge between requirements and implementation.
+
+---
+
+## 3. Complete REQ Inventory
 
 | REQ ID | Title | Domain | Priority | Status | Date | Upstream Sources | Downstream Artifacts |
 |--------|-------|--------|----------|--------|------|------------------|---------------------|
@@ -73,23 +243,23 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 
 ---
 
-## 3. Upstream Traceability
+## 4. Upstream Traceability
 
-### 3.1 EARS → REQ Traceability
+### 8.1 EARS → REQ Traceability
 
 | EARS ID | EARS Title | REQ IDs | REQ Titles | Relationship |
 |---------|------------|---------|------------|--------------|
 | EARS-001 | [Formal requirement] | REQ-001, REQ-002 | [Atomic requirements] | EARS decomposed into atomic implementation requirements |
 | EARS-NNN | ... | ... | ... | ... |
 
-### 3.2 SYS → REQ Traceability
+### 8.2 SYS → REQ Traceability
 
 | SYS ID | SYS Title | REQ IDs | REQ Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
 | SYS-001 | [System requirement] | REQ-003, REQ-004, REQ-005 | [Atomic requirements] | System requirements broken down to atomic level |
 | SYS-NNN | ... | ... | ... | ... |
 
-### 3.3 ADR → REQ Traceability
+### 5.3 ADR → REQ Traceability
 
 | ADR ID | ADR Title | REQ IDs | REQ Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
@@ -98,30 +268,30 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 
 ---
 
-## 4. Downstream Traceability
+## 5. Downstream Traceability
 
-### 4.1 REQ → IMPL Traceability
+### 8.1 REQ → IMPL Traceability
 
 | REQ ID | REQ Title | IMPL IDs | IMPL Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
 | REQ-001 | [Atomic requirement] | IMPL-001 | [Implementation plan] | Requirement included in implementation plan |
 | REQ-NNN | ... | ... | ... | ... |
 
-### 4.2 REQ → CTR Traceability
+### 8.2 REQ → CTR Traceability
 
 | REQ ID | REQ Title | CTR IDs | CTR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
 | REQ-001 | [API interface requirement] | CTR-001 | [API contract] | Requirement defines API contract |
 | REQ-NNN | ... | ... | ... | ... |
 
-### 4.3 REQ → SPEC Traceability
+### 5.3 REQ → SPEC Traceability
 
 | REQ ID | REQ Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
 | REQ-001 | [Atomic requirement] | SPEC-001 | [Technical specification] | Requirement implemented in specification |
 | REQ-NNN | ... | ... | ... | ... |
 
-### 4.4 REQ → Code Traceability
+### 5.4 REQ → Code Traceability
 
 | REQ ID | REQ Title | Code Files | Functions/Classes | Relationship |
 |--------|-----------|------------|-------------------|--------------|
@@ -130,9 +300,9 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 
 ---
 
-## 5. Requirement Domains
+## 6. Requirement Domains
 
-### 5.1 REQ by Domain
+### 8.1 REQ by Domain
 
 | Domain | REQ IDs | Total | Must | Should | Could | Status |
 |--------|---------|-------|------|--------|-------|--------|
@@ -141,7 +311,7 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 | [data/] | REQ-006, REQ-007 | 2 | 1 | 1 | 0 | [Status] |
 | [risk/lim/] | REQ-008, REQ-009 | 2 | 2 | 0 | 0 | [Status] |
 
-### 5.2 Priority Distribution
+### 8.2 Priority Distribution
 
 | Priority | Count | Percentage | Implemented | Pending |
 |----------|-------|------------|-------------|---------|
@@ -177,7 +347,7 @@ graph TD
     style CTR001 fill:#fff3e0
 ```
 
-### 6.1 Inter-REQ Dependencies
+### 8.1 Inter-REQ Dependencies
 
 | Source REQ | Target REQ | Dependency Type | Description |
 |------------|------------|-----------------|-------------|
@@ -189,7 +359,7 @@ graph TD
 
 ## 7. Verification and Acceptance
 
-### 7.1 REQ Verification Status
+### 8.1 REQ Verification Status
 
 | REQ ID | Verification Method | BDD Scenarios | Code Tests | Verified | Status |
 |--------|---------------------|---------------|------------|----------|--------|
@@ -198,7 +368,7 @@ graph TD
 | REQ-003 | Unit Tests | N/A | test_feature.py | No | 🟡 |
 | REQ-NNN | ... | ... | ... | ... | ... |
 
-### 7.2 Acceptance Criteria Coverage
+### 8.2 Acceptance Criteria Coverage
 
 | REQ ID | Total Criteria | Verified | Coverage % | Status |
 |--------|----------------|----------|------------|--------|
