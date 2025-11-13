@@ -61,7 +61,158 @@ This matrix tracks all SPEC documents, mapping upstream requirements/contracts t
 
 ---
 
-## 2. Complete SPEC Inventory
+## 2. Required Tags (Cumulative Tagging Hierarchy - Layer 10)
+
+### 2.1 Tag Requirements for SPEC Artifacts
+
+**Layer**: 10
+**Artifact Type**: SPEC (Technical Specification - YAML format)
+**Required Tags**: `@brd` through `@req` + optional `@impl`, `@ctr`
+**Tag Count**: 7-9 (7 required, up to 2 optional)
+
+### 2.2 Tag Format
+
+SPEC documents use YAML format with a dedicated `cumulative_tags` section:
+
+```yaml
+cumulative_tags:
+  brd: "BRD-009:FR-015"
+  prd: "PRD-016:FEATURE-003"
+  ears: "EARS-012:EVENT-002"
+  bdd: "BDD-015:scenario-place-order"
+  adr: "ADR-033"
+  sys: "SYS-012:PERF-001"
+  req: "REQ-045:interface-spec"
+  impl: "IMPL-003:phase2"  # Optional - include if exists
+  ctr: "CTR-005"  # Optional - include if exists
+```
+
+**Format Rules**:
+- YAML mapping format (key: value pairs)
+- Keys: lowercase artifact types
+- Values: quoted strings in `DOC-ID:REQ-ID` format
+- Optional tags: IMPL and CTR - include only if they exist in traceability chain
+- Multiple references: comma-separated within quoted string
+
+### 2.3 Example: SPEC with Required Tags
+
+```yaml
+# SPEC-018: Order Placement Service Specification
+
+spec_id: SPEC-018
+title: "Order Placement Service Technical Specification"
+version: "1.0.0"
+status: active
+
+# Cumulative Tagging Hierarchy (Layer 10)
+# Required: 7 upstream tags (BRD through REQ)
+# Optional: IMPL, CTR (include if they exist in chain)
+cumulative_tags:
+  brd: "BRD-009:FR-015, BRD-009:NFR-006"
+  prd: "PRD-016:FEATURE-003"
+  ears: "EARS-012:EVENT-002, EARS-012:STATE-001"
+  bdd: "BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid"
+  adr: "ADR-033"
+  sys: "SYS-012:PERF-001, SYS-012:RELIABILITY-002"
+  req: "REQ-045:interface-spec, REQ-045:validation-logic"
+  impl: "IMPL-003:phase2"  # Optional
+  ctr: "CTR-005"  # Optional
+
+component:
+  name: "OrderPlacementService"
+  type: "service"
+  layer: "business_logic"
+
+# ... rest of YAML specification ...
+```
+
+### 2.4 Example: SPEC Without Optional Layers
+
+When IMPL and CTR don't exist in the traceability chain:
+
+```yaml
+# SPEC-040: Simple Data Processor Specification
+
+cumulative_tags:
+  brd: "BRD-001:FR-020"
+  prd: "PRD-003:FEATURE-005"
+  ears: "EARS-005:EVENT-001"
+  bdd: "BDD-008:scenario-process-data"
+  adr: "ADR-015"
+  sys: "SYS-020:PERF-003"
+  req: "REQ-030:processing-logic"
+  # No IMPL or CTR - not needed for this component
+
+component:
+  name: "DataProcessor"
+  type: "service"
+```
+
+**Tag Count**: 7 (all required, no optional layers)
+
+### 2.5 Validation Rules
+
+1. **Required Tags**: Each SPEC MUST include tags from BRD through REQ (7 tags minimum)
+2. **Optional Layers**: IMPL and CTR tags are optional - include only if they exist in chain
+3. **YAML Format**: Tags must be in YAML `cumulative_tags` mapping format
+4. **Valid References**: All referenced documents and requirements must exist
+5. **No Gaps**: Cannot skip intermediate layers (e.g., must include all layers from BRD through REQ)
+6. **Comma Separation**: Multiple values for same artifact type use comma-separated format
+
+### 2.6 Tag Discovery and Validation
+
+```bash
+# Find all SPECs and validate cumulative tags
+python scripts/extract_tags.py --type SPEC --validate-cumulative
+
+# Check SPEC-018 has all required upstream tags
+python scripts/validate_tags_against_docs.py \
+  --artifact SPEC-018 \
+  --expected-layers brd,prd,ears,bdd,adr,sys,req \
+  --strict
+
+# Generate SPEC traceability report with tag analysis
+python scripts/generate_traceability_matrices.py \
+  --type SPEC \
+  --show-tags \
+  --check-completeness
+```
+
+### 2.7 SPEC Traceability Pattern
+
+SPEC sits at Layer 10, pulling together all upstream requirements:
+
+```
+BRD (Layer 1) → Business requirements
+  ↓
+PRD (Layer 2) → Product features
+  ↓
+EARS (Layer 3) → Engineering requirements
+  ↓
+BDD (Layer 4) → Test scenarios
+  ↓
+ADR (Layer 5) → Architecture decisions
+  ↓
+SYS (Layer 6) → System requirements
+  ↓
+REQ (Layer 7) → Atomic requirements
+  ↓ (optional)
+IMPL (Layer 8) → Implementation plan
+  ↓ (optional)
+CTR (Layer 9) → API contracts
+  ↓
+SPEC (Layer 10) → Technical specification (YAML)
+  ↓
+TASKS (Layer 11) → Implementation tasks
+  ↓
+Code (Layer 13) → Source code
+```
+
+**Key Insight**: SPEC aggregates ALL design decisions and requirements into a single AI-optimized YAML document, enabling automated code generation via TASKS.
+
+---
+
+## 3. Complete SPEC Inventory
 
 | SPEC ID | Title | Spec Type | Status | Date | Upstream Sources | Downstream Artifacts |
 |---------|-------|-----------|--------|------|------------------|---------------------|
@@ -77,23 +228,23 @@ This matrix tracks all SPEC documents, mapping upstream requirements/contracts t
 
 ---
 
-## 3. Upstream Traceability
+## 4. Upstream Traceability
 
-### 3.1 REQ → SPEC Traceability
+### 8.1 REQ → SPEC Traceability
 
 | REQ ID | REQ Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
 | REQ-001 | [Atomic requirement] | SPEC-001 | [Technical specification] | Requirement implemented in specification |
 | REQ-NNN | ... | ... | ... | ... |
 
-### 3.2 ADR → SPEC Traceability
+### 8.2 ADR → SPEC Traceability
 
 | ADR ID | ADR Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
 | ADR-001 | [Architecture decision] | SPEC-001, SPEC-002 | [Technical specifications] | Architectural patterns implemented in SPEC |
 | ADR-NNN | ... | ... | ... | ... |
 
-### 3.3 CTR → SPEC Traceability
+### 5.3 CTR → SPEC Traceability
 
 | CTR ID | CTR Title | SPEC IDs | SPEC Titles | Provider/Consumer |
 |--------|-----------|----------|-------------|-------------------|
@@ -103,23 +254,23 @@ This matrix tracks all SPEC documents, mapping upstream requirements/contracts t
 
 ---
 
-## 4. Downstream Traceability
+## 5. Downstream Traceability
 
-### 4.1 SPEC → TASKS Traceability
+### 8.1 SPEC → TASKS Traceability
 
 | SPEC ID | SPEC Title | TASKS IDs | TASKS Titles | Relationship |
 |---------|------------|-----------|--------------|--------------|
 | SPEC-001 | [Technical specification] | TASKS-001 | [Code generation plan] | 1:1 mapping SPEC to TASKS |
 | SPEC-NNN | ... | ... | ... | ... |
 
-### 4.2 SPEC → Code Traceability
+### 8.2 SPEC → Code Traceability
 
 | SPEC ID | SPEC Title | Code Files | Functions/Classes | Relationship |
 |---------|------------|------------|-------------------|--------------|
 | SPEC-001 | [Technical specification] | src/service.py | ServiceClass, method1(), method2() | Direct implementation |
 | SPEC-NNN | ... | ... | ... | ... |
 
-### 4.3 SPEC → Tests Traceability
+### 5.3 SPEC → Tests Traceability
 
 | SPEC ID | SPEC Title | Test Files | Test Functions | Coverage % |
 |---------|------------|------------|----------------|------------|
@@ -130,7 +281,7 @@ This matrix tracks all SPEC documents, mapping upstream requirements/contracts t
 
 ## 5. Specification Organization
 
-### 5.1 SPEC by Type
+### 8.1 SPEC by Type
 
 | Spec Type | SPEC IDs | Total | Description |
 |-----------|---------|-------|-------------|
@@ -139,7 +290,7 @@ This matrix tracks all SPEC documents, mapping upstream requirements/contracts t
 | Infrastructure | SPEC-006, SPEC-007 | 2 | Infrastructure components |
 | Integration | SPEC-008 | 1 | External integrations |
 
-### 5.2 SPEC Validation Evidence
+### 8.2 SPEC Validation Evidence
 
 | SPEC ID | Requirements Coverage | Test Coverage | Upstream Traceability | Validation Status |
 |---------|----------------------|---------------|----------------------|-------------------|
@@ -172,7 +323,7 @@ graph TD
     style Code1 fill:#e8f5e9
 ```
 
-### 6.1 Inter-SPEC Dependencies
+### 8.1 Inter-SPEC Dependencies
 
 | Source SPEC | Target SPEC | Dependency Type | Description |
 |-------------|-------------|-----------------|-------------|
@@ -184,7 +335,7 @@ graph TD
 
 ## 7. Implementation Metrics
 
-### 7.1 SPEC Implementation Status
+### 8.1 SPEC Implementation Status
 
 | SPEC ID | YAML Valid | TASKS Status | Code Status | Tests Status | Overall | Completion % |
 |---------|------------|--------------|-------------|--------------|---------|--------------|
@@ -193,7 +344,7 @@ graph TD
 | SPEC-003 | ❌ | ⏳ Pending | ⏳ Pending | ⏳ Pending | Not Started | 0% |
 | SPEC-NNN | ... | ... | ... | ... | ... | ... |
 
-### 7.2 Code Generation Metrics
+### 8.2 Code Generation Metrics
 
 | SPEC ID | Spec Size (LOC in YAML) | Generated Code (LOC) | Generation Ratio | Quality Score |
 |---------|------------------------|---------------------|------------------|---------------|
