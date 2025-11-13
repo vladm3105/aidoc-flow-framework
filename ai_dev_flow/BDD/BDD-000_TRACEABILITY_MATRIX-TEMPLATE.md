@@ -62,7 +62,150 @@ This matrix tracks all BDD feature files, mapping upstream requirements (EARS, P
 
 ---
 
-## 2. Complete BDD Inventory
+## 2. Required Tags (Cumulative Tagging Hierarchy - Layer 4)
+
+### 2.1 Tag Requirements for BDD Artifacts
+
+**Layer**: 4
+**Artifact Type**: BDD (Behavior-Driven Development Test Scenarios)
+**Required Tags**: `@brd`, `@prd`, `@ears`
+**Tag Count**: 3+ (minimum 3, may include additional scenario-specific references)
+
+### 2.2 Tag Format
+
+**Gherkin Feature File Format**:
+```gherkin
+@brd:BRD-NNN:REQ-ID
+@prd:PRD-NNN:FEATURE-ID
+@ears:EARS-NNN:EVENT-ID
+Feature: Feature Name
+```
+
+**Markdown Documentation Format**:
+```markdown
+@brd: BRD-NNN:REQ-ID
+@prd: PRD-NNN:FEATURE-ID
+@ears: EARS-NNN:EVENT-ID
+```
+
+**Format Rules**:
+- Prefix: `@` symbol
+- Artifact Type: lowercase (`brd`, `prd`, `ears`)
+- Separator: colon `:` after artifact type, `:` between document ID and requirement ID
+- Document ID: Standard format (e.g., `BRD-009`, `PRD-016`, `EARS-012`)
+- Requirement ID: Specific requirement/section identifier
+- Multiple Values: comma-separated `@brd: BRD-001:FR-030, BRD-001:NFR-006`
+- Gherkin: Use tag-per-line format before Feature declaration
+
+### 2.3 Example: BDD Feature File with Required Tags
+
+```gherkin
+# BDD-015: Place Limit Order Acceptance Tests
+# File: features/order_placement/place_limit_order.feature
+
+@brd:BRD-009:FR-015
+@brd:BRD-009:NFR-006
+@prd:PRD-016:FEATURE-003
+@ears:EARS-012:EVENT-002
+@ears:EARS-012:STATE-001
+Feature: Place Limit Order
+  As a trader
+  I want to place limit orders with specified price and quantity
+  So that I can control my trade execution price
+
+  Background:
+    Given the trading system is connected to Interactive Brokers
+    And I have sufficient buying power
+
+  @scenario-place-order
+  Scenario: Successfully place a limit order for AAPL stock
+    Given I am authenticated as an active trader
+    When I submit a limit order to BUY 100 shares of AAPL at $150.00
+    Then the order should be accepted by the broker
+    And the order status should be "Submitted"
+    And I should receive an order confirmation with order ID
+```
+
+**Tag Analysis**:
+- `@brd:BRD-009:FR-015` - Business requirement for order placement
+- `@brd:BRD-009:NFR-006` - Non-functional requirement (performance)
+- `@prd:PRD-016:FEATURE-003` - Product feature specification
+- `@ears:EARS-012:EVENT-002` - EARS "WHEN trader submits order" event
+- `@ears:EARS-012:STATE-001` - EARS "THE system SHALL validate order" state
+
+### 2.4 Example: BDD Documentation with Upstream Tags
+
+```markdown
+# BDD-015: Place Limit Order Test Scenarios
+
+## 7. Traceability
+
+### 7.1 Upstream Sources
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 4):
+```markdown
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002, EARS-012:STATE-001
+```
+
+### 7.2 Downstream Artifacts
+- **Test Implementation**: `tests/test_order_placement.py`
+- **Code Under Test**: `src/services/order_service.py`
+- **Test Data**: `fixtures/order_test_data.json`
+```
+
+### 2.5 Validation Rules
+
+1. **Required**: Each BDD artifact MUST include at least one tag for each required layer: `@brd`, `@prd`, `@ears`
+2. **Format Compliance**: All tags must follow `@artifact-type:DOC-ID:REQ-ID` format
+3. **Valid References**: All referenced documents and requirements must exist
+4. **No Gaps**: Cannot skip any required upstream layer (BRD, PRD, EARS)
+5. **Gherkin Placement**: In feature files, tags must appear before Feature declaration
+6. **Scenario-Level Tags**: Additional tags can be added at scenario level for granular traceability
+
+### 2.6 Tag Discovery
+
+BDD tags can be discovered automatically:
+```bash
+# Find all BDDs and their upstream tags
+python scripts/extract_tags.py --type BDD --show-all-upstream
+
+# Validate BDD-015 has required tags
+python scripts/validate_tags_against_docs.py \
+  --artifact BDD-015 \
+  --expected-layers brd,prd,ears \
+  --strict
+
+# Generate BDD traceability report
+python scripts/generate_traceability_matrices.py \
+  --type BDD \
+  --show-coverage
+```
+
+### 2.7 BDD Traceability Pattern
+
+```
+Strategy (Layer 0)
+    ↓
+BRD (Layer 1) ← Business Requirements
+    ↓
+PRD (Layer 2) ← Product Features
+    ↓
+EARS (Layer 3) ← Formal Requirements
+    ↓
+[BDD (Layer 4)] ← YOU ARE HERE - Acceptance Tests
+    ↓
+ADR (Layer 5) ← Architecture Decisions
+    ↓
+Test Implementation & Code (Layers 13-14)
+```
+
+**Key Role**: BDD bridges formal requirements (EARS) and technical implementation, providing executable acceptance criteria that validate product behavior against business needs.
+
+---
+
+## 3. Complete BDD Inventory
 
 | BDD ID | Title | Feature Category | Scenarios | Steps | Status | Date | Upstream Sources | Downstream Artifacts |
 |--------|-------|------------------|-----------|-------|--------|------|------------------|---------------------|
@@ -78,9 +221,9 @@ This matrix tracks all BDD feature files, mapping upstream requirements (EARS, P
 
 ---
 
-## 3. Upstream Traceability
+## 4. Upstream Traceability
 
-### 3.1 EARS → BDD Traceability
+### 4.1 EARS → BDD Traceability
 
 | EARS ID | EARS Title | BDD IDs | BDD Scenarios | Relationship |
 |---------|------------|---------|---------------|--------------|
@@ -88,21 +231,21 @@ This matrix tracks all BDD feature files, mapping upstream requirements (EARS, P
 | EARS-002 | [Formal requirement] | BDD-002, BDD-003 | Scenarios 1-2, 1 | Multiple BDD files test requirement |
 | EARS-NNN | ... | ... | ... | ... |
 
-### 3.2 PRD → BDD Traceability
+### 4.2 PRD → BDD Traceability
 
 | PRD ID | PRD User Story | BDD IDs | BDD Scenarios | Relationship |
 |--------|----------------|---------|---------------|--------------|
 | PRD-001 | [User story] | BDD-001 | Scenarios 1-5 | Acceptance criteria defined in BDD |
 | PRD-NNN | ... | ... | ... | ... |
 
-### 3.3 REQ → BDD Traceability
+### 4.3 REQ → BDD Traceability
 
 | REQ ID | REQ Title | BDD IDs | BDD Scenarios | Relationship |
 |--------|-----------|---------|---------------|--------------|
 | REQ-001 | [Atomic requirement] | BDD-001 | Scenario 3 | Requirement verified through test |
 | REQ-NNN | ... | ... | ... | ... |
 
-### 3.4 Upstream Source Summary
+### 4.4 Upstream Source Summary
 
 | Source Category | Total Sources | BDD Files | Scenarios | Coverage % |
 |-----------------|---------------|-----------|-----------|------------|
@@ -113,9 +256,9 @@ This matrix tracks all BDD feature files, mapping upstream requirements (EARS, P
 
 ---
 
-## 4. Downstream Traceability
+## 5. Downstream Traceability
 
-### 4.1 BDD → Test Implementation Traceability
+### 5.1 BDD → Test Implementation Traceability
 
 | BDD ID | BDD Scenarios | Test Files | Test Functions | Implementation Status |
 |--------|---------------|------------|----------------|----------------------|
@@ -123,7 +266,7 @@ This matrix tracks all BDD feature files, mapping upstream requirements (EARS, P
 | BDD-002 | 3 scenarios | tests/test_api.py | test_api_scenario_1(), ... | 🟡 Partial (2/3) |
 | BDD-NNN | ... | ... | ... | ... |
 
-### 4.2 BDD → Code Implementation Traceability
+### 5.2 BDD → Code Implementation Traceability
 
 | BDD ID | BDD Scenarios | Source Files | Functions/Classes | Relationship |
 |--------|---------------|--------------|-------------------|--------------|
@@ -131,14 +274,14 @@ This matrix tracks all BDD feature files, mapping upstream requirements (EARS, P
 | BDD-002 | Scenarios 1-2 | src/api.py | APIHandler.endpoint() | Tests verify API behavior |
 | BDD-NNN | ... | ... | ... | ... |
 
-### 4.3 BDD → ADR Traceability (Architecture Verification)
+### 5.3 BDD → ADR Traceability (Architecture Verification)
 
 | BDD ID | ADR IDs | ADR Titles | Relationship |
 |--------|---------|------------|--------------|
 | BDD-001 | ADR-005 | [Architecture decision] | Tests verify architectural decision |
 | BDD-NNN | ... | ... | ... |
 
-### 4.4 Downstream Artifact Summary
+### 5.4 Downstream Artifact Summary
 
 | Artifact Type | Total Artifacts | BDD Files | Coverage % |
 |---------------|-----------------|-----------|------------|
@@ -148,9 +291,9 @@ This matrix tracks all BDD feature files, mapping upstream requirements (EARS, P
 
 ---
 
-## 5. BDD Test Coverage Analysis
+## 6. BDD Test Coverage Analysis
 
-### 5.1 Scenario Execution Status
+### 6.1 Scenario Execution Status
 
 | BDD ID | Total Scenarios | Passing | Failing | Pending | Skipped | Pass Rate |
 |--------|-----------------|---------|---------|---------|---------|-----------|
@@ -160,7 +303,7 @@ This matrix tracks all BDD feature files, mapping upstream requirements (EARS, P
 | BDD-NNN | ... | ... | ... | ... | ... | ... |
 | **Total** | **[X]** | **[Y]** | **[Z]** | **[A]** | **[B]** | **XX%** |
 
-### 5.2 Feature Category Coverage
+### 6.2 Feature Category Coverage
 
 | Feature Category | BDD Files | Scenarios | Pass Rate | Status |
 |------------------|-----------|-----------|-----------|--------|
@@ -169,7 +312,7 @@ This matrix tracks all BDD feature files, mapping upstream requirements (EARS, P
 | [Data Processing] | 2 | 10 | 100% | ✅ Complete |
 | [User Interface] | 4 | 20 | 60% | 🔴 Failing |
 
-### 5.3 Requirements Coverage
+### 6.3 Requirements Coverage
 
 | Requirement Type | Total Requirements | BDD Coverage | Coverage % | Status |
 |------------------|-------------------|--------------|------------|--------|
@@ -180,9 +323,9 @@ This matrix tracks all BDD feature files, mapping upstream requirements (EARS, P
 
 ---
 
-## 6. Cross-BDD Dependencies
+## 7. Cross-BDD Dependencies
 
-### 6.1 BDD Relationship Map
+### 7.1 BDD Relationship Map
 
 ```mermaid
 graph TD
@@ -206,7 +349,7 @@ graph TD
     style Code1 fill:#f3e5f5
 ```
 
-### 6.2 Inter-BDD Dependencies
+### 7.2 Inter-BDD Dependencies
 
 | Source BDD | Target BDD | Dependency Type | Description |
 |------------|------------|-----------------|-------------|
@@ -216,9 +359,9 @@ graph TD
 
 ---
 
-## 7. Test Execution Metrics
+## 8. Test Execution Metrics
 
-### 7.1 Execution Performance
+### 8.1 Execution Performance
 
 | BDD ID | Scenarios | Avg Duration | Total Duration | Performance Status |
 |--------|-----------|--------------|----------------|-------------------|
@@ -227,7 +370,7 @@ graph TD
 | BDD-003 | 4 | 1.2s | 4.8s | ✅ Good |
 | BDD-NNN | ... | ... | ... | ... |
 
-### 7.2 Flakiness Analysis
+### 8.2 Flakiness Analysis
 
 | BDD ID | Executions | Flaky Runs | Flakiness % | Stability |
 |--------|------------|------------|-------------|-----------|
@@ -238,9 +381,9 @@ graph TD
 
 ---
 
-## 8. Implementation Status
+## 9. Implementation Status
 
-### 8.1 BDD Implementation Progress
+### 9.1 BDD Implementation Progress
 
 | BDD ID | Scenarios Defined | Scenarios Implemented | Scenarios Passing | Completion % |
 |--------|-------------------|----------------------|-------------------|--------------|
@@ -249,7 +392,7 @@ graph TD
 | BDD-003 | 4 | 0 | 0 | 0% |
 | BDD-NNN | ... | ... | ... | ... |
 
-### 8.2 Gap Analysis
+### 9.2 Gap Analysis
 
 **Missing BDD Coverage**:
 - EARS-XXX: Formal requirement with no BDD validation
@@ -266,16 +409,16 @@ graph TD
 
 ---
 
-## 9. Immediate Next Steps
+## 10. Immediate Next Steps
 
-### 9.1 Priority Actions
+### 10.1 Priority Actions
 
 1. **Fix Failing Tests**: [X] scenarios failing
 2. **Implement Pending Scenarios**: [Y] scenarios not implemented
 3. **Add Missing BDD Coverage**: [Z] requirements need tests
 4. **Resolve Flaky Tests**: [N] unstable scenarios
 
-### 9.2 Test Quality Improvements
+### 10.2 Test Quality Improvements
 
 | Improvement Area | BDD Affected | Target Date | Owner |
 |------------------|--------------|-------------|-------|
@@ -286,7 +429,7 @@ graph TD
 
 ---
 
-## 10. Revision History
+## 11. Revision History
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
@@ -294,7 +437,7 @@ graph TD
 
 ---
 
-## 11. References
+## 12. References
 
 ### Internal Documentation
 - **BDD Index**: [BDD-000_index.feature](BDD-000_index.feature)

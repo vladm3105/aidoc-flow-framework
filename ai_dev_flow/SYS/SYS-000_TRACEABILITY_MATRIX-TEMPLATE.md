@@ -61,7 +61,91 @@ This matrix tracks all SYS documents, mapping upstream architecture decisions to
 
 ---
 
-## 2. Complete SYS Inventory
+---
+
+## 2. Required Tags (Cumulative Tagging Hierarchy - Layer 6)
+
+### 2.1 Tag Requirements for SYS Artifacts
+
+**Layer**: 6
+**Artifact Type**: SYS (System Requirements)
+**Required Tags**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`
+**Tag Count**: 5
+
+### 2.2 Tag Format
+
+```markdown
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002, EARS-012:STATE-001
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+```
+
+**Format Rules**:
+- Prefix: `@` symbol
+- Artifact Type: lowercase (`brd`, `prd`, `ears`, `bdd`, `adr`)
+- Separator: colon `:` after artifact type, `:` between document ID and requirement ID
+- Document ID: Standard format (e.g., `SYS-NNN`)
+- Requirement ID: Specific requirement/section identifier
+- Multiple Values: comma-separated for same artifact type
+
+### 2.3 Example: SYS with Required Tags
+
+```markdown
+# SYS-012: Order Service System Requirements
+
+## 7. Traceability
+
+### 7.1 Upstream Sources
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
+```markdown
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002, EARS-012:STATE-001
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+```
+
+### 7.2 Downstream Artifacts
+[Links to SPEC, TASKS, Code that reference this SYS]
+```
+
+### 2.4 Validation Rules
+
+1. **Required**: Each SYS artifact MUST include at least one tag for each required layer
+2. **Format Compliance**: All tags must follow `@artifact-type:DOC-ID:REQ-ID` format
+3. **Valid References**: All referenced documents and requirements must exist
+4. **No Gaps**: Cannot skip any required upstream layer in the chain
+5. **Tag Count**: Must have exactly 5 tags for Layer 6
+
+### 2.5 Tag Discovery
+
+SYS tags can be discovered automatically:
+```bash
+# Find all SYSs and their upstream tags
+python scripts/extract_tags.py --type SYS --show-all-upstream
+
+# Validate SYS-012 has required tags
+python scripts/validate_tags_against_docs.py \
+  --artifact SYS-012 \
+  --expected-layers brd,prd,ears,bdd,adr \
+  --strict
+
+# Generate SYS traceability report
+python scripts/generate_traceability_matrices.py \
+  --type SYS \
+  --show-coverage
+```
+
+### 2.6 SYS Traceability Pattern
+
+**Key Role**: SYS translates architecture decisions into concrete system-level requirements that can be decomposed into atomic specifications.
+
+---
+
+## 4. Complete SYS Inventory
 
 | SYS ID | Title | System Category | Total Requirements | Status | Date | Upstream Sources | Downstream Artifacts |
 |--------|-------|-----------------|-------------------|--------|------|------------------|---------------------|
@@ -71,16 +155,16 @@ This matrix tracks all SYS documents, mapping upstream architecture decisions to
 
 ---
 
-## 3. Upstream Traceability
+## 5. Upstream Traceability
 
-### 3.1 ADR → SYS Traceability
+### 4.1 ADR → SYS Traceability
 
 | ADR ID | ADR Title | SYS IDs | SYS Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
 | ADR-001 | [Architecture decision] | SYS-001, SYS-002 | [System requirements] | Architectural decisions translated to system requirements |
 | ADR-NNN | ... | ... | ... | ... |
 
-### 3.2 EARS → SYS Traceability
+### 4.2 EARS → SYS Traceability
 
 | EARS ID | EARS Title | SYS IDs | SYS Titles | Relationship |
 |---------|------------|---------|------------|--------------|
@@ -89,16 +173,16 @@ This matrix tracks all SYS documents, mapping upstream architecture decisions to
 
 ---
 
-## 4. Downstream Traceability
+## 6. Downstream Traceability
 
-### 4.1 SYS → REQ Traceability
+### 5.1 SYS → REQ Traceability
 
 | SYS ID | SYS Title | REQ IDs | REQ Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
 | SYS-001 | [System requirement] | REQ-001, REQ-002, REQ-003 | [Atomic requirements] | System requirements decomposed into atomic requirements |
 | SYS-NNN | ... | ... | ... | ... |
 
-### 4.2 SYS → SPEC Traceability
+### 5.2 SYS → SPEC Traceability
 
 | SYS ID | SYS Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
@@ -107,9 +191,9 @@ This matrix tracks all SYS documents, mapping upstream architecture decisions to
 
 ---
 
-## 5. System Requirements Categories
+## 7. System Requirements Categories
 
-### 5.1 SYS by Category
+### 6.1 SYS by Category
 
 | Category | SYS IDs | Total | Functional | Non-Functional |
 |----------|---------|-------|------------|----------------|
@@ -118,7 +202,7 @@ This matrix tracks all SYS documents, mapping upstream architecture decisions to
 | [Performance] | SYS-005 | 1 | 0 | 1 |
 | [Integration] | SYS-006, SYS-007 | 2 | 2 | 0 |
 
-### 5.2 Non-Functional Requirements Summary
+### 6.2 Non-Functional Requirements Summary
 
 | NFR Category | SYS IDs | Requirements | Status |
 |--------------|---------|--------------|--------|
@@ -130,7 +214,7 @@ This matrix tracks all SYS documents, mapping upstream architecture decisions to
 
 ---
 
-## 6. Cross-SYS Dependencies
+## 8. Cross-SYS Dependencies
 
 ```mermaid
 graph TD
@@ -152,9 +236,9 @@ graph TD
 
 ---
 
-## 7. Implementation Status
+## 9. Implementation Status
 
-### 7.1 SYS Implementation Progress
+### 8.1 SYS Implementation Progress
 
 | SYS ID | Total Requirements | REQ Created | SPEC Created | Completion % |
 |--------|-------------------|-------------|--------------|--------------|
@@ -165,16 +249,16 @@ graph TD
 
 ---
 
-## 8. Immediate Next Steps
+## 10. Immediate Next Steps
 
-### 8.1 Priority Actions
+### 9.1 Priority Actions
 1. **Complete Missing REQ Decomposition**: [X] SYS documents need atomic requirements
 2. **Create SPEC Documents**: [Y] SYS documents need technical specifications
 3. **Validate NFR Coverage**: [Z] non-functional requirements need verification
 
 ---
 
-## 9. Revision History
+## 11. Revision History
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
@@ -182,7 +266,7 @@ graph TD
 
 ---
 
-## 10. References
+## 12. References
 
 - **SYS Index**: [SYS-000_index.md](SYS-000_index.md)
 - **SYS Template**: [SYS-TEMPLATE.md](SYS-TEMPLATE.md)

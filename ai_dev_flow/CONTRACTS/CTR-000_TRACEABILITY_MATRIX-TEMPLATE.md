@@ -61,7 +61,97 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 
 ---
 
-## 2. Complete CTR Inventory
+---
+
+## 2. Required Tags (Cumulative Tagging Hierarchy - Layer 9)
+
+### 2.1 Tag Requirements for CTR Artifacts
+
+**Layer**: 9
+**Artifact Type**: CTR (API Contracts)
+**Required Tags**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`
+**Tag Count**: 8
+
+### 2.2 Tag Format
+
+```markdown
+@brd: BRD-009:FR-015
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+@sys: SYS-012:FUNC-001
+@req: REQ-045:interface-spec
+@impl: IMPL-003:phase2
+```
+
+**Format Rules**:
+- Prefix: `@` symbol
+- Artifact Type: lowercase (`brd`, `prd`, `ears`, `bdd`, `adr`, `sys`, `req`, `impl`)
+- Separator: colon `:` after artifact type, `:` between document ID and requirement ID
+- Document ID: Standard format (e.g., `CTR-NNN`)
+- Requirement ID: Specific requirement/section identifier
+- Multiple Values: comma-separated for same artifact type
+
+### 2.3 Example: CTR with Required Tags
+
+```markdown
+# CTR-005: Order Placement API Contract
+
+## 7. Traceability
+
+### 7.1 Upstream Sources
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
+```markdown
+@brd: BRD-009:FR-015
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+@sys: SYS-012:FUNC-001
+@req: REQ-045:interface-spec
+@impl: IMPL-003:phase2
+```
+
+### 7.2 Downstream Artifacts
+[Links to SPEC, TASKS, Code that reference this CTR]
+```
+
+### 2.4 Validation Rules
+
+1. **Required**: Each CTR artifact MUST include at least one tag for each required layer
+2. **Format Compliance**: All tags must follow `@artifact-type:DOC-ID:REQ-ID` format
+3. **Valid References**: All referenced documents and requirements must exist
+4. **No Gaps**: Cannot skip any required upstream layer in the chain
+5. **Tag Count**: Must have exactly 8 tags for Layer 9
+
+### 2.5 Tag Discovery
+
+CTR tags can be discovered automatically:
+```bash
+# Find all CTRs and their upstream tags
+python scripts/extract_tags.py --type CTR --show-all-upstream
+
+# Validate CTR-005 has required tags
+python scripts/validate_tags_against_docs.py \
+  --artifact CTR-005 \
+  --expected-layers brd,prd,ears,bdd,adr,sys,req,impl \
+  --strict
+
+# Generate CTR traceability report
+python scripts/generate_traceability_matrices.py \
+  --type CTR \
+  --show-coverage
+```
+
+### 2.6 CTR Traceability Pattern
+
+**Key Role**: CTR defines formal API contracts implementing requirements, ensuring interface compliance. (Optional layer - include only if exists in chain)
+
+---
+
+## 4. Complete CTR Inventory
 
 | CTR ID | Title | Contract Type | Files | Status | Date | Upstream Sources | Downstream Artifacts |
 |--------|-------|---------------|-------|--------|------|------------------|---------------------|
@@ -77,16 +167,16 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 
 ---
 
-## 3. Upstream Traceability
+## 5. Upstream Traceability
 
-### 3.1 REQ → CTR Traceability
+### 4.1 REQ → CTR Traceability
 
 | REQ ID | REQ Title | CTR IDs | CTR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
 | REQ-001 | [Atomic requirement for API] | CTR-001 | [API contract] | Requirement defines interface contract |
 | REQ-NNN | ... | ... | ... | ... |
 
-### 3.2 IMPL → CTR Traceability
+### 4.2 IMPL → CTR Traceability
 
 | IMPL ID | IMPL Title | CTR IDs | CTR Titles | Relationship |
 |---------|------------|---------|------------|--------------|
@@ -95,23 +185,23 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 
 ---
 
-## 4. Downstream Traceability
+## 6. Downstream Traceability
 
-### 4.1 CTR → SPEC Traceability (Provider)
+### 5.1 CTR → SPEC Traceability (Provider)
 
 | CTR ID | CTR Title | SPEC IDs (Provider) | SPEC Titles | Relationship |
 |--------|-----------|---------------------|-------------|--------------|
 | CTR-001 | [API contract] | SPEC-001 | [Provider specification] | Contract implemented by provider service |
 | CTR-NNN | ... | ... | ... | ... |
 
-### 4.2 CTR → SPEC Traceability (Consumer)
+### 5.2 CTR → SPEC Traceability (Consumer)
 
 | CTR ID | CTR Title | SPEC IDs (Consumer) | SPEC Titles | Relationship |
 |--------|-----------|---------------------|-------------|--------------|
 | CTR-001 | [API contract] | SPEC-002, SPEC-003 | [Consumer specifications] | Contract used by consumer services |
 | CTR-NNN | ... | ... | ... | ... |
 
-### 4.3 CTR → Code Traceability
+### 5.3 CTR → Code Traceability
 
 | CTR ID | CTR Title | Provider Code | Consumer Code | Contract Tests |
 |--------|-----------|---------------|---------------|----------------|
@@ -120,9 +210,9 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 
 ---
 
-## 5. Contract Organization
+## 7. Contract Organization
 
-### 5.1 CTR by Contract Type
+### 6.1 CTR by Contract Type
 
 | Contract Type | CTR IDs | Total | Description |
 |---------------|---------|-------|-------------|
@@ -130,7 +220,7 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 | AsyncAPI 2.0 | CTR-004, CTR-005 | 2 | Event-driven contracts |
 | gRPC | CTR-006 | 1 | RPC service contracts |
 
-### 5.2 Dual-File Validation
+### 6.2 Dual-File Validation
 
 | CTR ID | .md File Exists | .yaml File Exists | Slugs Match | Schema Valid | Status |
 |--------|-----------------|-------------------|-------------|--------------|--------|
@@ -141,7 +231,7 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 
 ---
 
-## 6. Cross-CTR Dependencies
+## 8. Cross-CTR Dependencies
 
 ```mermaid
 graph TD
@@ -164,7 +254,7 @@ graph TD
     style SPEC003 fill:#e8f5e9
 ```
 
-### 6.1 Inter-CTR Dependencies
+### 7.1 Inter-CTR Dependencies
 
 | Source CTR | Target CTR | Dependency Type | Description |
 |------------|------------|-----------------|-------------|
@@ -174,9 +264,9 @@ graph TD
 
 ---
 
-## 7. Contract Testing Status
+## 9. Contract Testing Status
 
-### 7.1 Contract Test Coverage
+### 8.1 Contract Test Coverage
 
 | CTR ID | Provider Tests | Consumer Tests | Contract Tests | Coverage % | Status |
 |--------|----------------|----------------|----------------|------------|--------|
@@ -185,7 +275,7 @@ graph TD
 | CTR-003 | ❌ | ❌ | ❌ | 0% | Not Tested |
 | CTR-NNN | ... | ... | ... | ... | ... |
 
-### 7.2 Contract Validation Results
+### 8.2 Contract Validation Results
 
 | CTR ID | Schema Valid | Examples Valid | Breaking Changes | Last Validated |
 |--------|--------------|----------------|------------------|----------------|
@@ -196,9 +286,9 @@ graph TD
 
 ---
 
-## 8. Implementation Status
+## 10. Implementation Status
 
-### 8.1 CTR Implementation Progress
+### 9.1 CTR Implementation Progress
 
 | CTR ID | Provider Status | Consumer Status | Tests Status | Overall | Completion % |
 |--------|-----------------|-----------------|--------------|---------|--------------|
@@ -207,7 +297,7 @@ graph TD
 | CTR-003 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | Started | 30% |
 | CTR-NNN | ... | ... | ... | ... | ... |
 
-### 8.2 Gap Analysis
+### 9.2 Gap Analysis
 
 **Missing Dual Files**:
 - CTR-XXX: Missing .yaml file (only .md exists)
@@ -224,15 +314,15 @@ graph TD
 
 ---
 
-## 9. Immediate Next Steps
+## 11. Immediate Next Steps
 
-### 9.1 Priority Actions
+### 10.1 Priority Actions
 1. **Fix Schema Validation Errors**: [X] CTR documents have invalid schemas
 2. **Complete Missing Dual Files**: [Y] CTR documents missing .md or .yaml
 3. **Implement Provider/Consumer Code**: [Z] CTR documents need implementation
 4. **Create Contract Tests**: [N] CTR documents need validation tests
 
-### 9.2 Contract Evolution Plan
+### 10.2 Contract Evolution Plan
 
 | CTR ID | Current Version | Planned Changes | Breaking | Target Date |
 |--------|----------------|-----------------|----------|-------------|
@@ -242,7 +332,7 @@ graph TD
 
 ---
 
-## 10. Revision History
+## 12. Revision History
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
@@ -250,7 +340,7 @@ graph TD
 
 ---
 
-## 11. References
+## 13. References
 
 - **CTR Index**: [CTR-000_index.md](CTR-000_index.md)
 - **CTR Template**: [CTR-TEMPLATE.md](CTR-TEMPLATE.md), [CTR-TEMPLATE.yaml](CTR-TEMPLATE.yaml)

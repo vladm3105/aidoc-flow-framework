@@ -62,7 +62,95 @@ This matrix tracks all IMPL documents, mapping upstream requirements to downstre
 
 ---
 
-## 2. Complete IMPL Inventory
+---
+
+## 2. Required Tags (Cumulative Tagging Hierarchy - Layer 8)
+
+### 2.1 Tag Requirements for IMPL Artifacts
+
+**Layer**: 8
+**Artifact Type**: IMPL (Implementation Plans)
+**Required Tags**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`
+**Tag Count**: 7
+
+### 2.2 Tag Format
+
+```markdown
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+@sys: SYS-012:FUNC-001
+@req: REQ-045:interface-spec
+```
+
+**Format Rules**:
+- Prefix: `@` symbol
+- Artifact Type: lowercase (`brd`, `prd`, `ears`, `bdd`, `adr`, `sys`, `req`)
+- Separator: colon `:` after artifact type, `:` between document ID and requirement ID
+- Document ID: Standard format (e.g., `IMPL-NNN`)
+- Requirement ID: Specific requirement/section identifier
+- Multiple Values: comma-separated for same artifact type
+
+### 2.3 Example: IMPL with Required Tags
+
+```markdown
+# IMPL-003: Order Service Implementation Plan
+
+## 7. Traceability
+
+### 7.1 Upstream Sources
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 8):
+```markdown
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+@sys: SYS-012:FUNC-001
+@req: REQ-045:interface-spec
+```
+
+### 7.2 Downstream Artifacts
+[Links to SPEC, TASKS, Code that reference this IMPL]
+```
+
+### 2.4 Validation Rules
+
+1. **Required**: Each IMPL artifact MUST include at least one tag for each required layer
+2. **Format Compliance**: All tags must follow `@artifact-type:DOC-ID:REQ-ID` format
+3. **Valid References**: All referenced documents and requirements must exist
+4. **No Gaps**: Cannot skip any required upstream layer in the chain
+5. **Tag Count**: Must have exactly 7 tags for Layer 8
+
+### 2.5 Tag Discovery
+
+IMPL tags can be discovered automatically:
+```bash
+# Find all IMPLs and their upstream tags
+python scripts/extract_tags.py --type IMPL --show-all-upstream
+
+# Validate IMPL-003 has required tags
+python scripts/validate_tags_against_docs.py \
+  --artifact IMPL-003 \
+  --expected-layers brd,prd,ears,bdd,adr,sys,req \
+  --strict
+
+# Generate IMPL traceability report
+python scripts/generate_traceability_matrices.py \
+  --type IMPL \
+  --show-coverage
+```
+
+### 2.6 IMPL Traceability Pattern
+
+**Key Role**: IMPL plans phased implementation of atomic requirements, providing roadmap from requirements to code. (Optional layer - include only if exists in chain)
+
+---
+
+## 4. Complete IMPL Inventory
 
 | IMPL ID | Title | Phase | Team | Status | Date | Upstream Sources | Downstream Artifacts |
 |---------|-------|-------|------|--------|------|------------------|---------------------|
@@ -72,9 +160,9 @@ This matrix tracks all IMPL documents, mapping upstream requirements to downstre
 
 ---
 
-## 3. Upstream Traceability
+## 5. Upstream Traceability
 
-### 3.1 REQ → IMPL Traceability
+### 4.1 REQ → IMPL Traceability
 
 | REQ ID | REQ Title | IMPL IDs | IMPL Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
@@ -82,7 +170,7 @@ This matrix tracks all IMPL documents, mapping upstream requirements to downstre
 | REQ-002 | [Atomic requirement] | IMPL-001 | [Implementation plan] | Multiple requirements in same plan |
 | REQ-NNN | ... | ... | ... | ... |
 
-### 3.2 ADR → IMPL Traceability
+### 4.2 ADR → IMPL Traceability
 
 | ADR ID | ADR Title | IMPL IDs | IMPL Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
@@ -91,30 +179,30 @@ This matrix tracks all IMPL documents, mapping upstream requirements to downstre
 
 ---
 
-## 4. Downstream Traceability
+## 6. Downstream Traceability
 
-### 4.1 IMPL → CTR Traceability
+### 5.1 IMPL → CTR Traceability
 
 | IMPL ID | IMPL Title | CTR IDs | CTR Titles | Relationship |
 |---------|------------|---------|------------|--------------|
 | IMPL-001 | [Implementation plan] | CTR-001, CTR-002 | [API contracts] | Implementation plan includes interface contracts |
 | IMPL-NNN | ... | ... | ... | ... |
 
-### 4.2 IMPL → SPEC Traceability
+### 5.2 IMPL → SPEC Traceability
 
 | IMPL ID | IMPL Title | SPEC IDs | SPEC Titles | Relationship |
 |---------|------------|----------|-------------|--------------|
 | IMPL-001 | [Implementation plan] | SPEC-001, SPEC-002 | [Technical specifications] | Implementation plan defines technical specifications |
 | IMPL-NNN | ... | ... | ... | ... |
 
-### 4.3 IMPL → TASKS Traceability
+### 5.3 IMPL → TASKS Traceability
 
 | IMPL ID | IMPL Title | TASKS IDs | TASKS Titles | Relationship |
 |---------|------------|-----------|--------------|--------------|
 | IMPL-001 | [Implementation plan] | TASKS-001, TASKS-002 | [Code generation plans] | Implementation plan broken into code generation tasks |
 | IMPL-NNN | ... | ... | ... | ... |
 
-### 4.4 IMPL → Code Traceability
+### 5.4 IMPL → Code Traceability
 
 | IMPL ID | IMPL Title | Code Deliverables | Relationship |
 |---------|------------|-------------------|--------------|
@@ -123,9 +211,9 @@ This matrix tracks all IMPL documents, mapping upstream requirements to downstre
 
 ---
 
-## 5. Implementation Organization
+## 7. Implementation Organization
 
-### 5.1 IMPL by Phase
+### 6.1 IMPL by Phase
 
 | Phase | IMPL IDs | Total | Start Date | End Date | Status |
 |-------|---------|-------|------------|----------|--------|
@@ -133,7 +221,7 @@ This matrix tracks all IMPL documents, mapping upstream requirements to downstre
 | Phase 2: Features | IMPL-003, IMPL-004 | 2 | YYYY-MM-DD | YYYY-MM-DD | In Progress |
 | Phase 3: Scale | IMPL-005 | 1 | YYYY-MM-DD | YYYY-MM-DD | Planning |
 
-### 5.2 IMPL by Team
+### 6.2 IMPL by Team
 
 | Team | IMPL IDs | Total | Requirements | Deliverables | Status |
 |------|---------|-------|--------------|--------------|--------|
@@ -141,7 +229,7 @@ This matrix tracks all IMPL documents, mapping upstream requirements to downstre
 | Team B: Frontend | IMPL-002 | 1 | [X] REQ | [Y] SPEC | On Track |
 | Team C: Integration | IMPL-004, IMPL-005 | 2 | [X] REQ | [Y] SPEC | Planning |
 
-### 5.3 Resource Allocation
+### 6.3 Resource Allocation
 
 | IMPL ID | Team Size | Duration (days) | Dependencies | Status |
 |---------|-----------|----------------|--------------|--------|
@@ -152,7 +240,7 @@ This matrix tracks all IMPL documents, mapping upstream requirements to downstre
 
 ---
 
-## 6. Cross-IMPL Dependencies
+## 8. Cross-IMPL Dependencies
 
 ```mermaid
 graph TD
@@ -178,7 +266,7 @@ graph TD
     style CTR001 fill:#fff3e0
 ```
 
-### 6.1 Inter-IMPL Dependencies
+### 7.1 Inter-IMPL Dependencies
 
 | Source IMPL | Target IMPL | Dependency Type | Description |
 |-------------|-------------|-----------------|-------------|
@@ -189,9 +277,9 @@ graph TD
 
 ---
 
-## 7. Milestone and Delivery Tracking
+## 9. Milestone and Delivery Tracking
 
-### 7.1 Implementation Milestones
+### 8.1 Implementation Milestones
 
 | Milestone | Target Date | IMPL IDs | Deliverables | Status | Completion % |
 |-----------|-------------|----------|--------------|--------|--------------|
@@ -199,7 +287,7 @@ graph TD
 | Feature Release | YYYY-MM-DD | IMPL-003, IMPL-004 | Enhanced features | In Progress | 60% |
 | Scale Release | YYYY-MM-DD | IMPL-005, IMPL-006 | Performance optimization | Planning | 10% |
 
-### 7.2 Deliverable Status
+### 8.2 Deliverable Status
 
 | IMPL ID | Total Deliverables | Completed | In Progress | Pending | Completion % |
 |---------|-------------------|-----------|-------------|---------|--------------|
@@ -210,9 +298,9 @@ graph TD
 
 ---
 
-## 8. Implementation Status
+## 10. Implementation Status
 
-### 8.1 IMPL Execution Progress
+### 9.1 IMPL Execution Progress
 
 | IMPL ID | REQ Coverage | CTR Status | SPEC Status | TASKS Status | Code Status | Overall | Completion % |
 |---------|--------------|------------|-------------|--------------|-------------|---------|--------------|
@@ -221,7 +309,7 @@ graph TD
 | IMPL-003 | 80% | ⏳ | ⏳ | ⏳ | ⏳ | Planning | 20% |
 | IMPL-NNN | ... | ... | ... | ... | ... | ... | ... |
 
-### 8.2 Gap Analysis
+### 9.2 Gap Analysis
 
 **Missing Downstream Artifacts**:
 - IMPL-XXX: Missing CTR (interfaces not defined)
@@ -234,15 +322,15 @@ graph TD
 
 ---
 
-## 9. Immediate Next Steps
+## 11. Immediate Next Steps
 
-### 9.1 Priority Actions
+### 10.1 Priority Actions
 1. **Complete In-Progress IMPL**: [X] implementation plans need completion
 2. **Create Missing CTR**: [Y] plans need interface contracts
 3. **Define SPEC for Pending IMPL**: [Z] plans need technical specifications
 4. **Resolve Dependencies**: [N] blocked plans need prerequisite completion
 
-### 9.2 Upcoming Sprints
+### 10.2 Upcoming Sprints
 
 | Sprint | IMPL IDs | Focus Area | Target Date |
 |--------|----------|------------|-------------|
@@ -252,7 +340,7 @@ graph TD
 
 ---
 
-## 10. Revision History
+## 12. Revision History
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
@@ -260,7 +348,7 @@ graph TD
 
 ---
 
-## 11. References
+## 13. References
 
 - **IMPL Index**: [IMPL-000_index.md](IMPL-000_index.md)
 - **IMPL Template**: [IMPL-TEMPLATE.md](IMPL-TEMPLATE.md)

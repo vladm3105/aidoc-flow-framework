@@ -87,13 +87,109 @@ This matrix tracks all tasks_plans documents, mapping:
 
 ---
 
-## 2. Required Tags Section
+---
+
+## 2. Required Tags (Cumulative Tagging Hierarchy - Layer 12)
+
+### 2.1 Tag Requirements for TASKS_PLANS Artifacts
+
+**Layer**: 12
+**Artifact Type**: tasks_plans (Session Plans)
+**Required Tags**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@spec`, `@tasks`
+**Tag Count**: 9-11 (includes all layers through @tasks)
+
+### 2.2 Tag Format
+
+```markdown
+@brd: BRD-009:FR-015
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+@sys: SYS-012:FUNC-001
+@req: REQ-045:interface-spec
+@impl: IMPL-003:phase2
+@ctr: CTR-005
+@spec: SPEC-018
+@tasks: TASKS-015
+```
+
+**Format Rules**:
+- Prefix: `@` symbol
+- Artifact Type: lowercase (`brd`, `prd`, `ears`, `bdd`, `adr`, `sys`, `req`, `spec`, `tasks`)
+- Separator: colon `:` after artifact type, `:` between document ID and requirement ID
+- Document ID: Standard format (e.g., `TASKS_PLANS-NNN`)
+- Requirement ID: Specific requirement/section identifier
+- Multiple Values: comma-separated for same artifact type
+
+### 2.3 Example: TASKS_PLANS with Required Tags
+
+```markdown
+# session-2025-11-13-order-service: Order Service Development Session
+
+## 7. Traceability
+
+### 7.1 Upstream Sources
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 12):
+```markdown
+@brd: BRD-009:FR-015
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+@sys: SYS-012:FUNC-001
+@req: REQ-045:interface-spec
+@impl: IMPL-003:phase2
+@ctr: CTR-005
+@spec: SPEC-018
+@tasks: TASKS-015
+```
+
+### 7.2 Downstream Artifacts
+[Links to SPEC, TASKS, Code that reference this TASKS_PLANS]
+```
+
+### 2.4 Validation Rules
+
+1. **Required**: Each TASKS_PLANS artifact MUST include at least one tag for each required layer
+2. **Format Compliance**: All tags must follow `@artifact-type:DOC-ID:REQ-ID` format
+3. **Valid References**: All referenced documents and requirements must exist
+4. **No Gaps**: Cannot skip any required upstream layer in the chain
+5. **Tag Count**: Must have exactly 9-11 (includes all layers through @tasks) tags for Layer 12
+
+### 2.5 Tag Discovery
+
+TASKS_PLANS tags can be discovered automatically:
+```bash
+# Find all TASKS_PLANSs and their upstream tags
+python scripts/extract_tags.py --type TASKS_PLANS --show-all-upstream
+
+# Validate session-2025-11-13-order-service has required tags
+python scripts/validate_tags_against_docs.py \
+  --artifact session-2025-11-13-order-service \
+  --expected-layers brd,prd,ears,bdd,adr,sys,req,spec,tasks \
+  --strict
+
+# Generate TASKS_PLANS traceability report
+python scripts/generate_traceability_matrices.py \
+  --type TASKS_PLANS \
+  --show-coverage
+```
+
+### 2.6 TASKS_PLANS Traceability Pattern
+
+**Key Role**: tasks_plans organizes session-specific implementation work, maintaining complete chain from business requirements through tasks.
+
+---
+
+## 4. Required Tags Section
 
 **Layer 12 Cumulative Tagging Requirements**
 
 All tasks_plans documents MUST include these tags to maintain traceability chain:
 
-### 2.1 Mandatory Tags (9 Required)
+### 3.1 Mandatory Tags (9 Required)
 
 | Tag | Layer | Artifact Type | Format | Validation Status |
 |-----|-------|---------------|--------|-------------------|
@@ -107,14 +203,14 @@ All tasks_plans documents MUST include these tags to maintain traceability chain
 | @spec | 10 | Technical Specifications | `@spec: SPEC-NNN:SECTION` | [✅/❌] |
 | @tasks | 11 | Code Generation Plans | `@tasks: TASKS-NNN:PHASE-X.Y` | [✅/❌] |
 
-### 2.2 Optional Tags (Conditional)
+### 3.2 Optional Tags (Conditional)
 
 | Tag | Layer | Artifact Type | Format | Required If... |
 |-----|-------|---------------|--------|----------------|
 | @impl | 8 | Implementation Plans | `@impl: IMPL-NNN` | Project uses IMPL artifacts |
 | @ctr | 9 | Interface Contracts | `@ctr: CTR-NNN:SECTION` | Contracts defined in project |
 
-### 2.3 Tag Format Validation
+### 3.3 Tag Format Validation
 
 **Standard Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
 
@@ -136,7 +232,7 @@ All tasks_plans documents MUST include these tags to maintain traceability chain
 ❌ Wrong: @brd BRD-001 REQ-042 (wrong separators)
 ```
 
-### 2.4 Validation Requirements for Complete Chain
+### 3.4 Validation Requirements for Complete Chain
 
 **Chain Integrity Rules**:
 1. **Completeness**: All 9 mandatory tags present (11 if @impl/@ctr exist)
@@ -163,7 +259,7 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 
 ---
 
-## 3. Complete tasks_plans Inventory
+## 5. Complete tasks_plans Inventory
 
 | ID | Title | Status | Parent TASKS | Tag Compliance | Estimated Effort | Actual Effort | Date | Upstream Tags | Downstream Artifacts |
 |----|-------|--------|--------------|----------------|------------------|---------------|------|---------------|---------------------|
@@ -187,9 +283,9 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 
 ---
 
-## 4. Upstream Traceability
+## 6. Upstream Traceability
 
-### 4.1 Complete Cumulative Tag Chain
+### 5.1 Complete Cumulative Tag Chain
 
 | tasks_plans ID | @brd | @prd | @ears | @bdd | @adr | @sys | @req | @impl | @ctr | @spec | @tasks | Tag Completeness |
 |---------------|------|------|-------|------|------|------|------|-------|------|-------|--------|------------------|
@@ -202,7 +298,7 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 - ⚠️ Yellow: Tag present but document not found
 - ❌ Red: Tag missing
 
-### 4.2 TASKS → tasks_plans Traceability
+### 5.2 TASKS → tasks_plans Traceability
 
 | TASKS ID | TASKS Title | tasks_plans IDs | tasks_plans Titles | Relationship |
 |----------|------------|-----------------|-------------------|--------------|
@@ -210,7 +306,7 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 | TASKS-002 | [Code generation plan] | TASKS_PLANS-003 | [Implementation plan] | 1:1 mapping: Single session implementation |
 | TASKS-NNN | ... | ... | ... | ... |
 
-### 4.3 Upstream Source Summary
+### 5.3 Upstream Source Summary
 
 | Source Type | Layer | Total Sources | tasks_plans Referencing | Coverage % |
 |-------------|-------|---------------|------------------------|------------|
@@ -226,7 +322,7 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 | SPEC | 10 | [X] | [Y] tasks_plans | XX% |
 | TASKS | 11 | [X] | [Y] tasks_plans | XX% |
 
-### 4.4 Tag Validation Status by Document
+### 5.4 Tag Validation Status by Document
 
 | tasks_plans ID | BRD Exists | PRD Exists | EARS Exists | BDD Exists | ADR Exists | SYS Exists | REQ Exists | SPEC Exists | TASKS Exists | Overall Status |
 |---------------|-----------|-----------|------------|-----------|-----------|-----------|-----------|------------|-------------|---------------|
@@ -236,9 +332,9 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 
 ---
 
-## 5. Downstream Traceability
+## 7. Downstream Traceability
 
-### 5.1 tasks_plans → Code Traceability
+### 6.1 tasks_plans → Code Traceability
 
 | tasks_plans ID | tasks_plans Title | Code Files | Modules/Classes | LOC | Relationship |
 |---------------|------------------|------------|-----------------|-----|--------------|
@@ -246,7 +342,7 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 | TASKS_PLANS-002 | [Implementation plan] | src/ibmcp/gateway/retry.py, src/ibmcp/gateway/circuit_breaker.py | RetryHandler, CircuitBreaker | 320 | Multi-module implementation |
 | TASKS_PLANS-NNN | ... | ... | ... | ... | ... |
 
-### 5.2 tasks_plans → Tests Traceability
+### 6.2 tasks_plans → Tests Traceability
 
 | tasks_plans ID | tasks_plans Title | Test Files | Test Functions | Coverage % | Relationship |
 |---------------|------------------|------------|----------------|------------|--------------|
@@ -254,7 +350,7 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 | TASKS_PLANS-002 | [Implementation plan] | tests/integration/test_retry.py | test_retry_logic(), ... | 85% | Integration tests verified |
 | TASKS_PLANS-NNN | ... | ... | ... | ... | ... |
 
-### 5.3 tasks_plans → Deployment Artifacts Traceability
+### 6.3 tasks_plans → Deployment Artifacts Traceability
 
 | tasks_plans ID | Deployment Files | Configuration | Infrastructure | CI/CD Pipeline |
 |---------------|------------------|---------------|----------------|----------------|
@@ -264,9 +360,9 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 
 ---
 
-## 6. Tag Completeness Validation
+## 8. Tag Completeness Validation
 
-### 6.1 Missing Tags Report
+### 7.1 Missing Tags Report
 
 | tasks_plans ID | Missing Mandatory Tags | Missing Optional Tags | Action Required |
 |---------------|----------------------|----------------------|-----------------|
@@ -278,7 +374,7 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 - ⚠️ Some tasks_plans missing optional tags (if project uses them)
 - ❌ Some tasks_plans have missing mandatory tags
 
-### 6.2 Tag Coverage Matrix
+### 7.2 Tag Coverage Matrix
 
 | tasks_plans ID | Layer 1 (BRD) | Layer 2 (PRD) | Layer 3 (EARS) | Layer 4 (BDD) | Layer 5 (ADR) | Layer 6 (SYS) | Layer 7 (REQ) | Layer 10 (SPEC) | Layer 11 (TASKS) | Coverage % |
 |---------------|--------------|--------------|---------------|--------------|--------------|--------------|--------------|----------------|----------------|------------|
@@ -288,7 +384,7 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 
 **Target**: 100% of tasks_plans documents have 100% tag coverage
 
-### 6.3 Bidirectional Link Validation
+### 7.3 Bidirectional Link Validation
 
 | tasks_plans ID | Upstream Links Valid | Downstream Links Valid | Bidirectional Status |
 |---------------|---------------------|----------------------|---------------------|
@@ -298,9 +394,9 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 
 ---
 
-## 7. Implementation Metrics
+## 9. Implementation Metrics
 
-### 7.1 Effort Tracking
+### 8.1 Effort Tracking
 
 | tasks_plans ID | Phases | Estimated Effort | Actual Effort | Variance | Variance % | Status |
 |---------------|--------|------------------|---------------|----------|------------|--------|
@@ -313,7 +409,7 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 - Total Actual: [YYY] hours
 - Average Variance: [±ZZ%]
 
-### 7.2 Test Coverage from tasks_plans
+### 8.2 Test Coverage from tasks_plans
 
 | tasks_plans ID | Unit Tests | Integration Tests | BDD Tests | Total Coverage % | Target % | Met Target |
 |---------------|------------|-------------------|-----------|------------------|----------|------------|
@@ -321,7 +417,7 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 | TASKS_PLANS-002 | 80% | 75% | 90% | 82% | 85% | ⚠️ Close |
 | TASKS_PLANS-NNN | ... | ... | ... | ... | ... | ... |
 
-### 7.3 Phase Completion Metrics
+### 8.3 Phase Completion Metrics
 
 | tasks_plans ID | Total Phases | Completed | In Progress | Pending | Blocked | Completion % |
 |---------------|--------------|-----------|-------------|---------|---------|--------------|
@@ -331,9 +427,9 @@ python scripts/generate_tag_coverage_report.py --artifact-type tasks_plans
 
 ---
 
-## 8. Implementation Status
+## 10. Implementation Status
 
-### 8.1 tasks_plans Execution Progress
+### 9.1 tasks_plans Execution Progress
 
 ```mermaid
 gantt
@@ -351,7 +447,7 @@ gantt
     Phase 4: QA            :p8, after p7, 1d
 ```
 
-### 8.2 Status Summary
+### 9.2 Status Summary
 
 | Status | Count | Percentage | tasks_plans IDs |
 |--------|-------|------------|----------------|
@@ -364,7 +460,7 @@ gantt
 
 ---
 
-## 9. Cross-tasks_plans Dependencies
+## 11. Cross-tasks_plans Dependencies
 
 ```mermaid
 graph TD
@@ -389,7 +485,7 @@ graph TD
     style Tests1 fill:#fff3e0
 ```
 
-### 9.1 Inter-tasks_plans Dependencies
+### 10.1 Inter-tasks_plans Dependencies
 
 | Source tasks_plans | Target tasks_plans | Dependency Type | Description |
 |-------------------|-------------------|-----------------|-------------|
@@ -399,9 +495,9 @@ graph TD
 
 ---
 
-## 10. Verification Methods
+## 12. Verification Methods
 
-### 10.1 Tag Validation Script
+### 11.1 Tag Validation Script
 
 **Location**: `/opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_docs.py`
 
@@ -431,7 +527,7 @@ python scripts/validate_tags_against_docs.py --artifact-type tasks_plans --repor
 ✅ Bidirectional links validated
 ```
 
-### 10.2 Manual Validation Checklist
+### 11.2 Manual Validation Checklist
 
 For each tasks_plans document:
 
@@ -447,9 +543,9 @@ For each tasks_plans document:
 
 ---
 
-## 11. Maintenance Guidelines
+## 13. Maintenance Guidelines
 
-### 11.1 Updating This Matrix
+### 12.1 Updating This Matrix
 
 **When creating new tasks_plans**:
 1. Add row to "Complete tasks_plans Inventory" (Section 3)
@@ -473,7 +569,7 @@ For each tasks_plans document:
 3. Check bidirectional link validation
 4. Update missing tags report if applicable
 
-### 11.2 Review Schedule
+### 12.2 Review Schedule
 
 - **Daily**: Developers update implementation status
 - **Weekly**: Tech leads validate tag compliance
@@ -482,7 +578,7 @@ For each tasks_plans document:
 
 ---
 
-## 12. Related Documents
+## 14. Related Documents
 
 - **Index**: [TASKS_PLANS-000_index.md](./TASKS_PLANS-000_index.md) - Master index of all tasks_plans
 - **Template**: [TASKS_PLANS-TEMPLATE.md](./TASKS_PLANS-TEMPLATE.md) - Use this to create new tasks_plans

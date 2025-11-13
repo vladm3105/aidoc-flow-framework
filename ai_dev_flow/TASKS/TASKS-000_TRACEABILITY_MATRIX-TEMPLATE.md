@@ -61,7 +61,101 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 
 ---
 
-## 2. Complete TASKS Inventory
+---
+
+## 2. Required Tags (Cumulative Tagging Hierarchy - Layer 11)
+
+### 2.1 Tag Requirements for TASKS Artifacts
+
+**Layer**: 11
+**Artifact Type**: TASKS (Implementation Tasks)
+**Required Tags**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@spec`
+**Tag Count**: 8-10 (includes @spec, optional @impl, @ctr)
+
+### 2.2 Tag Format
+
+```markdown
+@brd: BRD-009:FR-015
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+@sys: SYS-012:FUNC-001
+@req: REQ-045:interface-spec
+@impl: IMPL-003:phase2
+@ctr: CTR-005
+@spec: SPEC-018
+```
+
+**Format Rules**:
+- Prefix: `@` symbol
+- Artifact Type: lowercase (`brd`, `prd`, `ears`, `bdd`, `adr`, `sys`, `req`, `spec`)
+- Separator: colon `:` after artifact type, `:` between document ID and requirement ID
+- Document ID: Standard format (e.g., `TASKS-NNN`)
+- Requirement ID: Specific requirement/section identifier
+- Multiple Values: comma-separated for same artifact type
+
+### 2.3 Example: TASKS with Required Tags
+
+```markdown
+# TASKS-015: Order Service Implementation Tasks
+
+## 7. Traceability
+
+### 7.1 Upstream Sources
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
+```markdown
+@brd: BRD-009:FR-015
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+@sys: SYS-012:FUNC-001
+@req: REQ-045:interface-spec
+@impl: IMPL-003:phase2
+@ctr: CTR-005
+@spec: SPEC-018
+```
+
+### 7.2 Downstream Artifacts
+[Links to SPEC, TASKS, Code that reference this TASKS]
+```
+
+### 2.4 Validation Rules
+
+1. **Required**: Each TASKS artifact MUST include at least one tag for each required layer
+2. **Format Compliance**: All tags must follow `@artifact-type:DOC-ID:REQ-ID` format
+3. **Valid References**: All referenced documents and requirements must exist
+4. **No Gaps**: Cannot skip any required upstream layer in the chain
+5. **Tag Count**: Must have exactly 8-10 (includes @spec, optional @impl, @ctr) tags for Layer 11
+
+### 2.5 Tag Discovery
+
+TASKS tags can be discovered automatically:
+```bash
+# Find all TASKSs and their upstream tags
+python scripts/extract_tags.py --type TASKS --show-all-upstream
+
+# Validate TASKS-015 has required tags
+python scripts/validate_tags_against_docs.py \
+  --artifact TASKS-015 \
+  --expected-layers brd,prd,ears,bdd,adr,sys,req,spec \
+  --strict
+
+# Generate TASKS traceability report
+python scripts/generate_traceability_matrices.py \
+  --type TASKS \
+  --show-coverage
+```
+
+### 2.6 TASKS Traceability Pattern
+
+**Key Role**: TASKS breaks down technical specifications into atomic, session-scoped implementation units with complete upstream traceability.
+
+---
+
+## 4. Complete TASKS Inventory
 
 | TASKS ID | Title | Related SPEC | Total Tasks | Status | Date | Upstream Sources | Downstream Artifacts |
 |----------|-------|--------------|-------------|--------|------|------------------|---------------------|
@@ -77,9 +171,9 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 
 ---
 
-## 3. Upstream Traceability
+## 5. Upstream Traceability
 
-### 3.1 SPEC → TASKS Traceability
+### 4.1 SPEC → TASKS Traceability
 
 | SPEC ID | SPEC Title | TASKS IDs | TASKS Titles | Relationship |
 |---------|------------|-----------|--------------|--------------|
@@ -87,7 +181,7 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 | SPEC-002 | [Technical specification] | TASKS-002 | [Code generation plan] | SPEC provides HOW, TASKS provides step-by-step |
 | SPEC-NNN | ... | ... | ... | ... |
 
-### 3.2 Upstream Source Summary
+### 4.2 Upstream Source Summary
 
 | Source Type | Total Sources | TASKS Derived | Coverage % |
 |-------------|---------------|---------------|------------|
@@ -96,9 +190,9 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 
 ---
 
-## 4. Downstream Traceability
+## 6. Downstream Traceability
 
-### 4.1 TASKS → Code Traceability
+### 5.1 TASKS → Code Traceability
 
 | TASKS ID | TASKS Title | Code Files | Functions/Classes | LOC | Relationship |
 |----------|------------|------------|-------------------|-----|--------------|
@@ -106,7 +200,7 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 | TASKS-002 | [Code generation plan] | src/feature.py, src/utils.py | FeatureHandler, helper_func() | 280 | Partial implementation |
 | TASKS-NNN | ... | ... | ... | ... | ... |
 
-### 4.2 TASKS → Tests Traceability
+### 5.2 TASKS → Tests Traceability
 
 | TASKS ID | TASKS Title | Test Files | Test Functions | Coverage % | Relationship |
 |----------|------------|------------|----------------|------------|--------------|
@@ -116,9 +210,9 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 
 ---
 
-## 5. Task Organization
+## 7. Task Organization
 
-### 5.1 TASKS by Implementation Type
+### 6.1 TASKS by Implementation Type
 
 | Implementation Type | TASKS IDs | Total | Tasks Count | Status |
 |---------------------|-----------|-------|-------------|--------|
@@ -127,7 +221,7 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 | Infrastructure | TASKS-005 | 1 | 12 tasks | Pending |
 | Integration | TASKS-006 | 1 | 18 tasks | Blocked |
 
-### 5.2 Task Completion Distribution
+### 6.2 Task Completion Distribution
 
 | TASKS ID | Total Tasks | Completed | In Progress | Pending | Completion % |
 |----------|-------------|-----------|-------------|---------|--------------|
@@ -138,7 +232,7 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 
 ---
 
-## 6. Cross-TASKS Dependencies
+## 8. Cross-TASKS Dependencies
 
 ```mermaid
 graph TD
@@ -163,7 +257,7 @@ graph TD
     style Tests1 fill:#e3f2fd
 ```
 
-### 6.1 Inter-TASKS Dependencies
+### 7.1 Inter-TASKS Dependencies
 
 | Source TASKS | Target TASKS | Dependency Type | Description |
 |--------------|--------------|-----------------|-------------|
@@ -173,9 +267,9 @@ graph TD
 
 ---
 
-## 7. Implementation Metrics
+## 9. Implementation Metrics
 
-### 7.1 Code Generation Efficiency
+### 8.1 Code Generation Efficiency
 
 | TASKS ID | Tasks Count | Dev Time (hours) | LOC Generated | Time/Task (hours) | Quality Score |
 |----------|-------------|------------------|---------------|-------------------|---------------|
@@ -184,7 +278,7 @@ graph TD
 | TASKS-003 | 12 | 8 (partial) | 120 | N/A | N/A |
 | TASKS-NNN | ... | ... | ... | ... | ... |
 
-### 7.2 Test Coverage from TASKS
+### 8.2 Test Coverage from TASKS
 
 | TASKS ID | Unit Tests | Integration Tests | E2E Tests | Total Coverage % | Target % |
 |----------|------------|-------------------|-----------|------------------|----------|
@@ -195,9 +289,9 @@ graph TD
 
 ---
 
-## 8. Implementation Status
+## 10. Implementation Status
 
-### 8.1 TASKS Execution Progress
+### 9.1 TASKS Execution Progress
 
 | TASKS ID | Code Status | Tests Status | Documentation Status | Overall | Completion % |
 |----------|-------------|--------------|---------------------|---------|--------------|
@@ -206,7 +300,7 @@ graph TD
 | TASKS-003 | ⏳ Pending | ⏳ Pending | ⏳ Pending | Not Started | 0% |
 | TASKS-NNN | ... | ... | ... | ... | ... |
 
-### 8.2 AI Assistant Usage Tracking
+### 9.2 AI Assistant Usage Tracking
 
 | TASKS ID | AI Sessions | Manual Edits | AI-Generated % | Manual % | Efficiency Rating |
 |----------|-------------|--------------|----------------|----------|-------------------|
@@ -217,33 +311,33 @@ graph TD
 
 ---
 
-## 9. Gap Analysis
+## 11. Gap Analysis
 
-### 9.1 Missing Downstream Artifacts
+### 10.1 Missing Downstream Artifacts
 - TASKS-XXX: Missing code implementation (tasks not executed)
 - TASKS-YYY: Missing tests (code generated but not tested)
 - TASKS-ZZZ: Missing documentation (implementation without docs)
 
-### 9.2 Orphaned Artifacts
+### 10.2 Orphaned Artifacts
 - Code File: src/orphan.py (no TASKS traceability)
 - Test File: tests/test_unknown.py (no TASKS linkage)
 
-### 9.3 Quality Issues
+### 10.3 Quality Issues
 - TASKS-002: Test coverage below target (80% vs 85%)
 - TASKS-005: Blocked by missing dependency
 - TASKS-007: High manual edit percentage (poor task quality)
 
 ---
 
-## 10. Immediate Next Steps
+## 12. Immediate Next Steps
 
-### 10.1 Priority Actions
+### 11.1 Priority Actions
 1. **Execute Pending TASKS**: [X] code generation plans need implementation
 2. **Complete Partial Implementations**: [Y] TASKS have incomplete code
 3. **Improve Test Coverage**: [Z] TASKS below target coverage
 4. **Unblock Blocked TASKS**: [N] TASKS waiting on dependencies
 
-### 10.2 Code Generation Schedule
+### 11.2 Code Generation Schedule
 
 | Sprint | TASKS IDs | Focus Area | Target Date | Status |
 |--------|-----------|------------|-------------|--------|
@@ -253,7 +347,7 @@ graph TD
 
 ---
 
-## 11. Revision History
+## 13. Revision History
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
@@ -261,7 +355,7 @@ graph TD
 
 ---
 
-## 12. References
+## 14. References
 
 - **TASKS Index**: [TASKS-000_index.md](TASKS-000_index.md)
 - **TASKS Template**: [TASKS-TEMPLATE.md](TASKS-TEMPLATE.md)

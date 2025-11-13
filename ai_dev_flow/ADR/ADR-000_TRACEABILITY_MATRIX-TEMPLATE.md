@@ -62,7 +62,89 @@ This matrix tracks all ADRs, mapping upstream business/product requirements to d
 
 ---
 
-## 2. Complete ADR Inventory
+---
+
+## 2. Required Tags (Cumulative Tagging Hierarchy - Layer 5)
+
+### 2.1 Tag Requirements for ADR Artifacts
+
+**Layer**: 5
+**Artifact Type**: ADR (Architecture Decision Records)
+**Required Tags**: `@brd`, `@prd`, `@ears`, `@bdd`
+**Tag Count**: 4
+
+### 2.2 Tag Format
+
+```markdown
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002, EARS-012:STATE-001
+@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+```
+
+**Format Rules**:
+- Prefix: `@` symbol
+- Artifact Type: lowercase (`brd`, `prd`, `ears`, `bdd`)
+- Separator: colon `:` after artifact type, `:` between document ID and requirement ID
+- Document ID: Standard format (e.g., `ADR-NNN`)
+- Requirement ID: Specific requirement/section identifier
+- Multiple Values: comma-separated for same artifact type
+
+### 2.3 Example: ADR with Required Tags
+
+```markdown
+# ADR-033: Order Service Architecture
+
+## 7. Traceability
+
+### 7.1 Upstream Sources
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
+```markdown
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002, EARS-012:STATE-001
+@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+```
+
+### 7.2 Downstream Artifacts
+[Links to SPEC, TASKS, Code that reference this ADR]
+```
+
+### 2.4 Validation Rules
+
+1. **Required**: Each ADR artifact MUST include at least one tag for each required layer
+2. **Format Compliance**: All tags must follow `@artifact-type:DOC-ID:REQ-ID` format
+3. **Valid References**: All referenced documents and requirements must exist
+4. **No Gaps**: Cannot skip any required upstream layer in the chain
+5. **Tag Count**: Must have exactly 4 tags for Layer 5
+
+### 2.5 Tag Discovery
+
+ADR tags can be discovered automatically:
+```bash
+# Find all ADRs and their upstream tags
+python scripts/extract_tags.py --type ADR --show-all-upstream
+
+# Validate ADR-033 has required tags
+python scripts/validate_tags_against_docs.py \
+  --artifact ADR-033 \
+  --expected-layers brd,prd,ears,bdd \
+  --strict
+
+# Generate ADR traceability report
+python scripts/generate_traceability_matrices.py \
+  --type ADR \
+  --show-coverage
+```
+
+### 2.6 ADR Traceability Pattern
+
+**Key Role**: ADR documents architectural choices that implement BDD acceptance criteria, bridging validated requirements and system design.
+
+---
+
+## 4. Complete ADR Inventory
 
 | ADR ID | Title | Decision Category | Status | Date | Upstream Sources | Downstream Artifacts |
 |--------|-------|-------------------|--------|------|------------------|---------------------|
@@ -79,37 +161,37 @@ This matrix tracks all ADRs, mapping upstream business/product requirements to d
 
 ---
 
-## 3. Upstream Traceability
+## 5. Upstream Traceability
 
-### 3.1 BRD → ADR Traceability
+### 4.1 BRD → ADR Traceability
 
 | BRD ID | BRD Title | ADR IDs | ADR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
 | BRD-001 | [Business requirement] | ADR-001, ADR-005 | [Architecture decisions] | Business constraints drive technical decisions |
 | BRD-NNN | ... | ... | ... | ... |
 
-### 3.2 PRD → ADR Traceability
+### 4.2 PRD → ADR Traceability
 
 | PRD ID | PRD Title | ADR IDs | ADR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
 | PRD-001 | [Product feature] | ADR-002, ADR-008 | [Architecture decisions] | Product requirements necessitate architectural choices |
 | PRD-NNN | ... | ... | ... | ... |
 
-### 3.3 EARS → ADR Traceability
+### 4.3 EARS → ADR Traceability
 
 | EARS ID | EARS Title | ADR IDs | ADR Titles | Relationship |
 |---------|------------|---------|------------|--------------|
 | EARS-001 | [Formal requirement] | ADR-003 | [Architecture decision] | Performance requirements drive architectural patterns |
 | EARS-NNN | ... | ... | ... | ... |
 
-### 3.4 BDD → ADR Traceability
+### 4.4 BDD → ADR Traceability
 
 | BDD ID | BDD Title | ADR IDs | ADR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
 | BDD-001 | [Test scenarios] | ADR-004 | [Architecture decision] | Testing requirements influence architectural approach |
 | BDD-NNN | ... | ... | ... | ... |
 
-### 3.5 Upstream Source Summary
+### 4.5 Upstream Source Summary
 
 | Source Category | Total Sources | ADRs Derived | Coverage % |
 |-----------------|---------------|--------------|------------|
@@ -121,37 +203,37 @@ This matrix tracks all ADRs, mapping upstream business/product requirements to d
 
 ---
 
-## 4. Downstream Traceability
+## 6. Downstream Traceability
 
-### 4.1 ADR → SYS Traceability
+### 5.1 ADR → SYS Traceability
 
 | ADR ID | ADR Title | SYS IDs | SYS Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
 | ADR-001 | [Architecture decision] | SYS-001, SYS-002 | [System requirements] | Architectural decisions define system-level requirements |
 | ADR-NNN | ... | ... | ... | ... |
 
-### 4.2 ADR → REQ Traceability
+### 5.2 ADR → REQ Traceability
 
 | ADR ID | ADR Title | REQ IDs | REQ Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
 | ADR-001 | [Architecture decision] | REQ-001, REQ-002, REQ-003 | [Atomic requirements] | Architectural patterns require specific implementations |
 | ADR-NNN | ... | ... | ... | ... |
 
-### 4.3 ADR → SPEC Traceability
+### 5.3 ADR → SPEC Traceability
 
 | ADR ID | ADR Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
 | ADR-001 | [Architecture decision] | SPEC-001, SPEC-002 | [Technical specifications] | Architectural decisions implemented in specifications |
 | ADR-NNN | ... | ... | ... | ... |
 
-### 4.4 ADR → IMPL Traceability
+### 5.4 ADR → IMPL Traceability
 
 | ADR ID | ADR Title | IMPL IDs | IMPL Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
 | ADR-001 | [Architecture decision] | IMPL-001 | [Implementation plan] | Architectural changes require implementation planning |
 | ADR-NNN | ... | ... | ... | ... |
 
-### 4.5 Downstream Artifact Summary
+### 5.5 Downstream Artifact Summary
 
 | Artifact Type | Total Artifacts | ADRs Traced | Coverage % |
 |---------------|-----------------|-------------|------------|
@@ -163,9 +245,9 @@ This matrix tracks all ADRs, mapping upstream business/product requirements to d
 
 ---
 
-## 5. Architecture Decision Categories
+## 7. Architecture Decision Categories
 
-### 5.1 ADRs by Decision Category
+### 6.1 ADRs by Decision Category
 
 | Decision Category | ADR IDs | Total | Description |
 |-------------------|---------|-------|-------------|
@@ -175,7 +257,7 @@ This matrix tracks all ADRs, mapping upstream business/product requirements to d
 | [Integration] | ADR-008, ADR-009 | 2 | API design, messaging, protocols |
 | [Performance] | ADR-010 | 1 | Caching, scalability, optimization |
 
-### 5.2 Technology Stack Summary
+### 6.2 Technology Stack Summary
 
 | Technology Area | Technologies Selected | ADR IDs | Status |
 |-----------------|----------------------|---------|--------|
@@ -186,9 +268,9 @@ This matrix tracks all ADRs, mapping upstream business/product requirements to d
 
 ---
 
-## 6. Cross-ADR Dependencies
+## 8. Cross-ADR Dependencies
 
-### 6.1 ADR Relationship Map
+### 7.1 ADR Relationship Map
 
 ```mermaid
 graph TD
@@ -219,7 +301,7 @@ graph TD
     style SPEC001 fill:#e3f2fd
 ```
 
-### 6.2 Inter-ADR Dependencies
+### 7.2 Inter-ADR Dependencies
 
 | Source ADR | Target ADR | Dependency Type | Description |
 |------------|------------|-----------------|-------------|
@@ -230,9 +312,9 @@ graph TD
 
 ---
 
-## 7. Decision Impact Analysis
+## 9. Decision Impact Analysis
 
-### 7.1 Cost Impact
+### 8.1 Cost Impact
 
 | ADR ID | Technology/Service | Est. Monthly Cost | Annual Cost | Impact Level |
 |--------|-------------------|-------------------|-------------|--------------|
@@ -242,7 +324,7 @@ graph TD
 | ADR-NNN | ... | ... | ... | ... |
 | **Total** | | **$X,XXX** | **$XX,XXX** | |
 
-### 7.2 Implementation Complexity
+### 8.2 Implementation Complexity
 
 | ADR ID | ADR Title | Complexity (1-5) | Effort (days) | Team Size | Status |
 |--------|-----------|------------------|---------------|-----------|--------|
@@ -251,7 +333,7 @@ graph TD
 | ADR-003 | [Architecture decision] | 2 | 5 | 1 | Not Started |
 | ADR-NNN | ... | ... | ... | ... | ... |
 
-### 7.3 Risk Assessment
+### 8.3 Risk Assessment
 
 | ADR ID | Identified Risks | Mitigation Strategies | Risk Level |
 |--------|------------------|----------------------|------------|
@@ -262,9 +344,9 @@ graph TD
 
 ---
 
-## 8. Implementation Status
+## 10. Implementation Status
 
-### 8.1 Artifact Creation Coverage
+### 9.1 Artifact Creation Coverage
 
 | Artifact Type | Required | Created | Pending | Coverage % |
 |---------------|----------|---------|---------|------------|
@@ -275,7 +357,7 @@ graph TD
 | Code | [X] | [Y] | [Z] | XX% |
 | **Total** | **[X]** | **[Y]** | **[Z]** | **XX%** |
 
-### 8.2 ADR Implementation Status
+### 9.2 ADR Implementation Status
 
 | ADR ID | SYS Status | REQ Status | SPEC Status | Code Status | Overall Status | Completion % |
 |--------|------------|------------|-------------|-------------|----------------|--------------|
@@ -284,7 +366,7 @@ graph TD
 | ADR-003 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | ⏳ Pending | Started | 25% |
 | ADR-NNN | ... | ... | ... | ... | ... | ... |
 
-### 8.3 Gap Analysis
+### 9.3 Gap Analysis
 
 **Missing Downstream Artifacts**:
 - ADR-XXX: Missing SYS requirements (decision not translated to system requirements)
@@ -298,16 +380,16 @@ graph TD
 
 ---
 
-## 9. Immediate Next Steps
+## 11. Immediate Next Steps
 
-### 9.1 Priority Actions
+### 10.1 Priority Actions
 
 1. **Complete Missing SYS Requirements**: [X] ADRs need system requirements
 2. **Decompose into REQ**: [Y] ADRs need atomic requirements
 3. **Create SPEC Documents**: [Z] ADRs need implementation specifications
 4. **Review Superseded ADRs**: [N] ADRs need status update
 
-### 9.2 Architecture Review Schedule
+### 10.2 Architecture Review Schedule
 
 | Review Type | Target Date | ADRs Scope | Status |
 |-------------|-------------|------------|--------|
@@ -315,7 +397,7 @@ graph TD
 | [Technology Stack Review] | YYYY-MM-DD | Infrastructure ADRs | Planning |
 | [Security Architecture Review] | YYYY-MM-DD | Security ADRs | Scheduled |
 
-### 9.3 Quality Improvement Recommendations
+### 10.3 Quality Improvement Recommendations
 
 - **Decision Rationale**: Ensure all ADRs document alternatives considered
 - **Consequence Analysis**: Document both benefits and drawbacks
@@ -324,7 +406,7 @@ graph TD
 
 ---
 
-## 10. Revision History
+## 12. Revision History
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
@@ -332,7 +414,7 @@ graph TD
 
 ---
 
-## 11. References
+## 13. References
 
 ### Internal Documentation
 - **ADR Index**: [ADR-000_index-TEMPLATE.md](ADR-000_index-TEMPLATE.md)
