@@ -348,6 +348,144 @@ python scripts/validate_tags_against_docs.py --strict
 python scripts/generate_traceability_matrices.py --output docs/generated/matrices/
 ```
 
+### 2.5 Cumulative Tagging Hierarchy
+
+**Authoritative Reference**: `docs_templates/ai_dev_flow/TRACEABILITY.md#cumulative-tagging-hierarchy`
+
+**Principle**: Each artifact layer must include traceability tags from ALL upstream artifact layers, creating a complete audit trail from business requirements through production code.
+
+**Cumulative Tagging Table** (16-layer hierarchy):
+
+| Layer | Artifact Type | Required Tags | Tag Count | Format | Notes |
+|-------|---------------|---------------|-----------|--------|-------|
+| 0 | **Strategy** | None | 0 | External | Business owner documents, no formal artifact |
+| 1 | **BRD** | None | 0 | Markdown | Top level, no upstream dependencies |
+| 2 | **PRD** | `@brd` | 1 | Markdown | References parent BRD |
+| 3 | **EARS** | `@brd`, `@prd` | 2 | Markdown | Cumulative: BRD + PRD |
+| 4 | **BDD** | `@brd`, `@prd`, `@ears` | 3+ | Gherkin Tags | Cumulative: BRD through EARS |
+| 5 | **ADR** | `@brd` through `@bdd` | 4 | Markdown | Cumulative: BRD through BDD |
+| 6 | **SYS** | `@brd` through `@adr` | 5 | Markdown | Cumulative: BRD through ADR |
+| 7 | **REQ** | `@brd` through `@sys` | 6 | Markdown | Cumulative: BRD through SYS |
+| 8 | **IMPL** | `@brd` through `@req` | 7 | Markdown | Optional layer |
+| 9 | **CTR** | `@brd` through `@impl` | 8 | Markdown + YAML | Optional layer |
+| 10 | **SPEC** | `@brd` through `@req` + optional | 7-9 | YAML (`cumulative_tags`) | YAML cumulative_tags section |
+| 11 | **TASKS** | `@brd` through `@spec` | 8-10 | Markdown | Cumulative: BRD through SPEC |
+| 12 | **tasks_plans** | `@brd` through `@tasks` | 9-11 | Markdown | Implementation session plans |
+| 13 | **Code** | `@brd` through `@tasks` | 9-11 | Docstrings | Python/source code |
+| 14 | **Tests** | `@brd` through `@code` | 10-12 | Docstrings | Test suites |
+| 15 | **Validation** | All upstream | 10-15 | Various | Validation results |
+
+**Tag Format**:
+```markdown
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002, EARS-012:STATE-001
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+@sys: SYS-012:PERF-001, SYS-012:RELIABILITY-002
+@req: REQ-045:interface-spec
+@impl: IMPL-003:phase2  # Optional - include only if exists
+@ctr: CTR-005  # Optional - include only if exists
+@spec: SPEC-018
+@tasks: TASKS-015
+```
+
+**Format Rules**:
+- Separator: Use colon (`:`) to separate DOCUMENT-ID from REQUIREMENT-ID
+- Multiple refs: Comma-separated list within same tag line
+- Optional layers: Include `@impl` and `@ctr` tags only if those artifacts exist in chain
+- SPEC format: Use YAML `cumulative_tags:` mapping instead of markdown comments
+- BDD format: Use Gherkin `@` tags at feature/scenario level
+
+**Validation Rules**:
+1. **No gaps**: Each layer must include ALL upstream tags from previous layers
+2. **Format compliance**: Tags must follow `@artifact-type: DOC-ID:REQ-ID` pattern
+3. **Valid references**: All tagged document IDs must exist and be reachable
+4. **Optional layers**: `@impl` and `@ctr` included only if they exist in chain
+5. **SPEC exception**: SPEC uses YAML format, not markdown tags
+
+**Tag Discovery Commands**:
+```bash
+# Extract all tags from an artifact
+python scripts/extract_tags.py --artifact-id REQ-045 --show-all-upstream
+
+# Validate cumulative tagging for specific artifact
+python scripts/validate_tags_against_docs.py \
+  --artifact REQ-045 \
+  --expected-layers brd,prd,ears,bdd,adr,sys \
+  --strict
+
+# Generate traceability coverage report
+python scripts/generate_traceability_matrices.py \
+  --type REQ \
+  --show-coverage \
+  --validate-cumulative-tags
+```
+
+**Cumulative Tagging Example - REQ Layer** (6 tags required):
+
+```markdown
+## 7. Traceability
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
+```markdown
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002, EARS-012:STATE-001
+@bdd: BDD-015:scenario-place-order
+@adr: ADR-033
+@sys: SYS-012:PERF-001, SYS-012:RELIABILITY-002
+```
+
+- BRD-009:FR-015 - Functional requirement for broker integration
+- BRD-009:NFR-006 - Non-functional requirement for trade execution performance
+- PRD-016:FEATURE-003 - Order placement UI feature
+- EARS-012:EVENT-002 - Event-driven requirement for order validation
+- EARS-012:STATE-001 - State-driven requirement for order status
+- BDD-015:scenario-place-order - Acceptance test scenario
+- ADR-033 - Architecture decision for risk limit enforcement
+- SYS-012:PERF-001 - Performance requirement
+- SYS-012:RELIABILITY-002 - Reliability requirement
+```
+
+**SPEC YAML Format Example** (7-9 tags):
+
+```yaml
+# SPEC-018: Order Placement Service Specification
+
+spec_id: SPEC-018
+title: "Order Placement Service Technical Specification"
+version: "1.0.0"
+
+# Cumulative Tagging Hierarchy (Layer 10)
+cumulative_tags:
+  brd: "BRD-009:FR-015, BRD-009:NFR-006"
+  prd: "PRD-016:FEATURE-003"
+  ears: "EARS-012:EVENT-002, EARS-012:STATE-001"
+  bdd: "BDD-015:scenario-place-order"
+  adr: "ADR-033"
+  sys: "SYS-012:PERF-001, SYS-012:RELIABILITY-002"
+  req: "REQ-045:interface-spec, REQ-045:validation-logic"
+  impl: "IMPL-003:phase2"  # Optional
+  ctr: "CTR-005"  # Optional
+```
+
+**Benefits of Cumulative Tagging**:
+- **Complete Audit Trail**: Every artifact traces back to original business requirements
+- **Impact Analysis**: Instantly identify all downstream artifacts affected by upstream changes
+- **Regulatory Compliance**: SEC, FINRA, FDA, ISO audit requirements satisfied automatically
+- **Automated Validation**: Scripts enforce tagging compliance in CI/CD pipeline
+- **Change Management**: Know exactly what breaks when requirements change
+- **Coverage Metrics**: Measure traceability completeness across entire codebase
+
+**AI Assistant Rules**:
+1. **Always include cumulative tags**: When creating ANY artifact, include ALL upstream tags
+2. **Validate before commit**: Run tag validation scripts before committing
+3. **No gaps allowed**: Missing upstream tags will fail CI/CD validation
+4. **Update traceability matrices**: Cumulative tags must match matrix entries
+5. **SPEC format exception**: Remember SPEC uses YAML `cumulative_tags:` not markdown tags
+6. **Optional layer handling**: Only include `@impl` and `@ctr` if they actually exist in chain
+
 ### 3. Development Workflow Steps
 **Authoritative Reference**: `docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 

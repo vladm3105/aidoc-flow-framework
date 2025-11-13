@@ -55,12 +55,29 @@
 
 **Skill ID**: `doc-flow`
 **Directory**: [doc-flow/](./doc-flow/)
+**File**: [doc-flow/SKILL.md](./doc-flow/SKILL.md)
 
 **Purpose**: AI-Driven Specification-Driven Development workflow transformation (business requirements → production code)
 
-**Status**: Managed skill (external)
-**Version**: See skill directory
-**Documentation**: See skill directory for details
+**Key Features**:
+- Complete 16-layer SDD workflow (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → tasks_plans → Code → Tests → Validation)
+- **Cumulative Tagging Hierarchy**: Each artifact includes traceability tags from ALL upstream layers
+- Automated traceability validation and matrix generation
+- Tag-based audit trail for regulatory compliance (SEC, FINRA, FDA, ISO)
+- Impact analysis: instantly identify all downstream artifacts affected by upstream changes
+- Template-driven artifact creation with built-in quality gates
+
+**Use Cases**:
+- Creating formal requirements and architecture artifacts with complete traceability
+- Implementing cumulative tagging for audit trails and regulatory compliance
+- Managing complex multi-artifact development workflows
+- Validating traceability across entire codebase (business → code → tests)
+- Generating automated traceability matrices for documentation
+
+**Complexity**: Complete SDD methodology with cumulative tagging enforcement
+**Status**: Managed skill (framework-level)
+**Version**: 2.0 (with cumulative tagging hierarchy)
+**Documentation**: [doc-flow/SKILL.md](./doc-flow/SKILL.md) - Section 2.5: Cumulative Tagging Hierarchy
 
 ---
 
