@@ -59,6 +59,50 @@ python scripts/generate_traceability_matrices.py --auto
 python scripts/extract_tags.py --validate-only
 ```
 
+### Cumulative Tagging Validation (Required for Compliance)
+
+**Validate cumulative tagging hierarchy compliance:**
+```bash
+python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --validate-cumulative --strict
+```
+
+**What it checks:**
+- Each artifact layer includes ALL required upstream tags (no gaps)
+- Tag count matches expected range for each layer
+- Optional layers (IMPL, CTR) handled correctly
+- Tag chain completeness (e.g., if @adr exists, @brd through @bdd must exist)
+
+**Layer-specific validation:**
+```bash
+# Validate specific artifact type
+python scripts/validate_tags_against_docs.py \
+  --artifact REQ-045 \
+  --expected-layers brd,prd,ears,bdd,adr,sys \
+  --strict
+```
+
+**Expected tag counts by layer:**
+- Layer 1 (BRD): 0 tags (top level)
+- Layer 2 (PRD): 1 tag (@brd)
+- Layer 3 (EARS): 2 tags (@brd, @prd)
+- Layer 4 (BDD): 3+ tags (@brd through @ears)
+- Layer 5 (ADR): 4 tags (@brd through @bdd)
+- Layer 6 (SYS): 5 tags (@brd through @adr)
+- Layer 7 (REQ): 6 tags (@brd through @sys)
+- Layer 8 (IMPL): 7 tags (@brd through @req) [optional]
+- Layer 9 (CTR): 8 tags (@brd through @impl) [optional]
+- Layer 10 (SPEC): 7-9 tags (@brd through @req + optional impl/ctr)
+- Layer 11 (TASKS): 8-10 tags (@brd through @spec)
+- Layer 12 (tasks_plans): 9-11 tags (@brd through @tasks)
+- Layer 13 (Code): 9-11 tags (@brd through @tasks)
+- Layer 14 (Tests): 10-12 tags (@brd through @code)
+
+**Benefits:**
+- Regulatory compliance (SEC, FINRA, FDA, ISO audit trails)
+- Complete impact analysis (upstream → downstream traceability)
+- Automated validation prevents gaps in traceability chain
+- CI/CD enforcement ensures 100% compliance
+
 ### Legacy Manual Validation (Optional)
 
 ```bash
@@ -79,7 +123,7 @@ Create `.git/hooks/pre-commit`:
 
 ```bash
 #!/bin/bash
-# Pre-commit hook for tag-based traceability validation
+# Pre-commit hook for tag-based traceability validation with cumulative tagging
 
 echo "Running tag-based traceability validation..."
 
@@ -91,13 +135,20 @@ if [ $? -ne 0 ]; then
 fi
 
 # Validate tags against documents
-python scripts/validate_tags_against_docs.py --strict
+python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --strict
 if [ $? -ne 0 ]; then
   echo "❌ Tag validation failed - orphaned or invalid tags found"
   exit 1
 fi
 
-echo "✅ Traceability tag validation passed"
+# Validate cumulative tagging hierarchy
+python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --validate-cumulative --strict
+if [ $? -ne 0 ]; then
+  echo "❌ Cumulative tagging validation failed - missing upstream tags or gaps in chain"
+  exit 1
+fi
+
+echo "✅ Traceability tag validation passed (including cumulative tagging)"
 exit 0
 ```
 
@@ -115,7 +166,14 @@ repos:
     hooks:
       - id: validate-traceability-tags
         name: Validate Traceability Tags
-        entry: python scripts/validate_tags_against_docs.py --strict
+        entry: python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --strict
+        language: python
+        pass_filenames: false
+        always_run: true
+
+      - id: validate-cumulative-tagging
+        name: Validate Cumulative Tagging Hierarchy
+        entry: python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --validate-cumulative --strict
         language: python
         pass_filenames: false
         always_run: true
