@@ -356,11 +356,24 @@ Total Time = Σ(Group Duration) / Parallel Tracks + Stage Buffers
 ```markdown
 # Implementation Plan: [Project Name]
 
-**Plan ID**: PLAN-XXX
-**Project**: [Project Name]
-**Version**: X.0
-**Date**: YYYY-MM-DD
-**Status**: [Active / Completed / On Hold]
+## Document Control
+
+| Item | Details |
+|------|---------|
+| **Project Name** | [Name] |
+| **Plan ID** | PLAN-XXX |
+| **Version** | X.0 |
+| **Date** | YYYY-MM-DD |
+| **Status** | [Active / Completed / On Hold] |
+| **Owner** | [Name] |
+| **Preparer** | [Name] |
+
+### Document Revision History
+
+| Version | Date | Author | Changes Made | Approver |
+|---------|------|--------|--------------|----------|
+| 1.0 | YYYY-MM-DD | [Name] | Initial plan creation | |
+| | | | | |
 
 ---
 
@@ -562,6 +575,7 @@ Every invocation MUST produce:
    - Versioning: v1.0, v2.0, v3.0...
 
 2. **Required Sections**
+   - Document Control section with project metadata and revision history
    - Executive Summary
    - Progress Summary (if update)
    - Stage breakdown (MVP, MMP, MMR)

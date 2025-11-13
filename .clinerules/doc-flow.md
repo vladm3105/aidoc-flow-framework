@@ -439,6 +439,8 @@ Before making any technology decisions in ADRs, specifications, or implementatio
 ### 5. Quality Gates (Definition of Done)
 
 **Pre-Commit Checklist:**
+- [ ] Document Control section completed with all required metadata (project name, version, date, owner, preparer, status)
+- [ ] Document Revision History table initialized with at least initial version entry
 - [ ] IDs comply with `ID_NAMING_STANDARDS.md` (XXX or XXX-YY format, H1 anchors, zero-padding)
 - [ ] No ID collisions: each XXX number used only once (either atomic TYPE-XXX OR multi-doc TYPE-XXX-YY group, never both)
 - [ ] All cross-references use markdown links with valid paths and anchors
@@ -505,16 +507,17 @@ python scripts/complete_traceability_matrix.py
 5. Reserve next sequential ID number before creating file
 6. Include universal tag header at top of file
 7. Follow document structure from templates
-8. **Add Strategy References**: Link to specific `option_strategy/` sections in Traceability
-9. **CREATE/UPDATE TRACEABILITY MATRIX** ⚠️ **MANDATORY**:
+8. **Fill Document Control Section**: Complete project metadata (name, version, date, owner, preparer, status) and initialize Document Revision History table
+9. **Add Strategy References**: Link to specific `option_strategy/` sections in Traceability
+10. **CREATE/UPDATE TRACEABILITY MATRIX** ⚠️ **MANDATORY**:
    - File: `docs/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX.md`
    - Template: `docs_templates/ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md`
    - Update within same commit as artifact creation
    - Add upstream sources (which docs drove this)
    - Add downstream artifacts (which docs/code derive from this)
    - Matrix must be created/updated BEFORE committing artifact
-10. Validate all cross-references resolve
-11. Run validation scripts before committing
+11. Validate all cross-references resolve
+12. Run validation scripts before committing
 
 **Understanding Document Roles:**
 - **IMPL**: Answers "WHO does WHAT, WHEN" - project management coordination
@@ -658,15 +661,19 @@ Each artifact type directory contains:
   - `BRD-trading-template.md` - Trading-specific requirements (options trading focus)
   - Index: `BRD-000_index.md`
   - **Usage**: Choose template based on project context (general, simplified, or trading-focused)
+  - **Document Control**: All templates include Document Control section with project metadata and Document Revision History table
 - **PRD** (`PRD/`): `PRD-TEMPLATE.md`, Index: `PRD-000_index.md`, README
 - **SYS** (`SYS/`): `SYS-TEMPLATE.md`, Index: `SYS-000_index.md`, README
 - **EARS** (`EARS/`): `EARS-TEMPLATE.md`, Index: `EARS-000_index.md`, README
 - **REQ** (`REQ/`): `REQ-TEMPLATE.md`, Index: `REQ-000_index.md`, README
   - Organized by domain: `api/`, `risk/`, `ml/`, `data/`
 - **ADR** (`ADR/`): `ADR-TEMPLATE.md`, Index: `ADR-000_index-TEMPLATE.md`, README
+  - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
 - **BDD** (`BDD/`): `BDD-TEMPLATE.feature`, Index: `BDD-000_index.feature`, README
+  - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
 - **CTR** (`CONTRACTS/`): `CTR-TEMPLATE.md`, `CTR-TEMPLATE.yaml` (dual-file), Index: `CTR-000_index.md`, README
   - **MANDATORY dual-file format**: Both .md and .yaml required per contract (see ADR-CTR)
+  - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
   - Policy: [ADR-CTR_SEPARATE_FILES_POLICY.md](../../docs_templates/ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - Authoritative policy
   - Optional organization: subdirectories by service type (agents/, mcp/, infra/, shared/)
   - Examples: [CTR-001_risk_validator_api.md/.yaml](../../docs_templates/ai_dev_flow/CONTRACTS/examples/) - Complete reference implementation

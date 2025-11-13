@@ -272,6 +272,85 @@
 
 ---
 
+### 7. trace-check
+
+**Skill ID**: `trace-check`
+**Directory**: [trace-check/](./trace-check/)
+**File**: [trace-check/SKILL.md](./trace-check/SKILL.md)
+
+**Purpose**: Validate and update bidirectional traceability across SDD artifacts (project)
+
+**Use Cases**:
+- Validate traceability before commits
+- Audit documentation after artifact creation/updates
+- Detect broken links and missing reverse references
+- Calculate coverage metrics for quality reporting
+- Auto-fix bidirectional inconsistencies
+- Identify orphaned artifacts
+- Verify ID format compliance
+
+**Complexity**: Medium (requires parsing multiple file formats)
+**Version**: 1.0.0
+**Created**: 2025-11-11
+
+**Quick Start**:
+```bash
+/skill trace-check
+```
+
+**Inputs**:
+- `project_root_path`: Path to project documentation root (required)
+- `artifact_types`: Specific types to validate (default: `["all"]`)
+- `strictness_level`: `"strict"` (default), `"permissive"`, `"pedantic"`
+- `auto_fix`: Enable auto-fix with backups (default: `false`)
+- `report_format`: `"markdown"` (default), `"json"`, `"text"`
+
+**Key Features**:
+- **Bidirectional validation**: Verifies A→B implies B→A exists
+- **Link resolution**: Tests all markdown links resolve to valid files
+- **ID format compliance**: Validates TYPE-XXX or TYPE-XXX-YY format
+- **Coverage metrics**: Calculates % artifacts with complete traceability
+- **Orphan detection**: Identifies artifacts with no upstream/downstream
+- **Auto-fix capabilities**: Updates documents with backup creation
+- **Performance**: <30 seconds for 100 artifacts
+
+**Outputs**:
+- Validation report (markdown/JSON/text)
+- Broken links with file:line references
+- Bidirectional gaps with fix recommendations
+- Coverage metrics by artifact type
+- Auto-fix modifications log
+- Backup archive before changes
+
+**When to Use**:
+- Before committing documentation changes
+- After creating new artifacts (BRD, PRD, SPEC, etc.)
+- During periodic audits (weekly/sprint/release)
+- Validating traceability matrix completeness
+- Establishing baseline quality metrics
+
+**When NOT to Use**:
+- Working on code implementation (use code review tools)
+- Validating code traceability (use docstring validators)
+- For non-SDD documentation projects
+- During active editing sessions (wait until stable)
+
+**Validation Checks**:
+- ✅ ID format: TYPE-XXX or TYPE-XXX-YY
+- ✅ Link resolution: All paths resolve to valid files
+- ✅ Anchor existence: All #anchor references found
+- ✅ Bidirectional consistency: Forward and reverse links match
+- ✅ Coverage: All artifacts have Section 7 Traceability
+- ✅ Orphan detection: No artifacts missing upstream/downstream
+
+**Quality Gates**:
+- Target: ≥95% bidirectional consistency
+- Target: 100% link resolution
+- Target: 100% ID format compliance
+- Target: Zero orphaned root/leaf artifacts
+
+---
+
 ## Skill Development
 
 ### Creating New Skills
@@ -408,6 +487,9 @@
 ### Development Workflow Skills
 - `doc-flow` - SDD workflow transformation (BRD → Code)
 
+### Quality Assurance Skills
+- `trace-check` - Validate and update bidirectional traceability across SDD artifacts
+
 ### External Framework Skills
 - `google-adk` - Agent Development Kit integration
 
@@ -431,6 +513,6 @@
 
 ---
 
-**Index Version**: 1.3
-**Last Updated**: 2025-01-08
-**Next Review**: 2026-04-08 (quarterly)
+**Index Version**: 1.4
+**Last Updated**: 2025-11-11
+**Next Review**: 2026-02-11 (quarterly)

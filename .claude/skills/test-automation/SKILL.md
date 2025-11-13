@@ -638,6 +638,9 @@ UPDATE: Contract version if breaking change
 - ≥85% integration test coverage
 - Zero untested critical paths
 - Test execution time < 10 minutes
+- All test documentation and traceability matrices include Document Control sections with:
+  - Project metadata (name, version, date, owner, preparer, status)
+  - Document Revision History table tracking test plan changes
 
 ---
 

@@ -12,12 +12,14 @@ The AI Dev Flow Framework is a comprehensive template system for implementing AI
 ### Key Features
 
 - **10-Layer Workflow**: Structured progression from business requirements to production code
+- **Tag-Based Auto-Discovery**: Lightweight @tags in code auto-generate bidirectional traceability matrices
+- **Namespaced Traceability**: Explicit DOCUMENT-ID:REQUIREMENT-ID format prevents ambiguity
 - **Complete Traceability**: Bidirectional links between all artifacts (business → architecture → code)
 - **AI-Optimized Templates**: Ready for Claude Code, Gemini, GitHub Copilot, and other AI coding assistants
 - **Multiple Entry Points**: 3 BRD templates for different project contexts (general, simplified, trading-specific)
 - **Token-Efficient Design**: Optimized for AI tool context windows (50K-100K tokens per document)
 - **Contract-First Development**: Optional API contract layer (CTR) for parallel development
-- **Automated Validation**: Scripts for ID validation, broken link checking, and traceability verification
+- **Automated Validation**: Scripts for tag extraction, validation, and matrix generation with CI/CD integration
 
 ## Quick Start
 
@@ -67,7 +69,32 @@ cp -r ai_dev_flow/* your-project/docs/
 9. **API Contracts** → Specify with `CONTRACTS/CTR-TEMPLATE.md/.yaml` (if interfaces)
 10. **Technical Specs** → Design with `SPEC/SPEC-TEMPLATE.yaml`
 11. **Code Generation** → Guide with `TASKS/TASKS-TEMPLATE.md`
-12. **Implementation** → Write code with full traceability
+12. **Implementation** → Write code with traceability tags
+
+### 5. Add Traceability Tags (Recommended)
+
+Embed tags in your code docstrings:
+
+```python
+"""Service implementation.
+
+@brd: BRD-001:FR-030, BRD-001:NFR-006
+@sys: SYS-008
+@spec: SPEC-003
+@test: BDD-003:scenario-1
+@impl-status: complete
+"""
+```
+
+Then auto-generate matrices:
+
+```bash
+# Extract, validate, and generate matrices
+python scripts/generate_traceability_matrices.py --auto
+
+# View generated matrices
+ls docs/generated/matrices/
+```
 
 ## Documentation Structure
 
@@ -135,35 +162,133 @@ Layer 10: Validation Layer
 
 ## Traceability System
 
+### Tag-Based Auto-Discovery (Recommended)
+
+**Principle:** Code is the single source of truth. Traceability matrices are auto-generated from lightweight tags.
+
+#### Namespaced Tag Format
+
+Embed tags in code docstrings using namespaced format:
+
+```python
+"""Market data service implementation.
+
+@brd: BRD-001:FR-030, BRD-001:NFR-006
+@sys: SYS-008
+@spec: SPEC-003
+@test: BDD-003:scenario-realtime, BDD-008:scenario-cache
+@impl-status: complete
+"""
+```
+
+**Format:** `@tag-type: DOCUMENT-ID:REQUIREMENT-ID`
+
+**Tag Types:**
+- `@brd:` - Business Requirements Document references
+- `@prd:` - Product Requirements Document references
+- `@sys:` - System Requirements references
+- `@spec:` - Specification references
+- `@req:` - Requirements Document references
+- `@test:` - Test scenario references
+- `@impl-status:` - Implementation status (pending|in-progress|complete|deprecated)
+
+**Benefits:**
+- ✅ Single source of truth (code)
+- ✅ Automated validation (scripts check correctness)
+- ✅ No sync drift (tags can't become stale)
+- ✅ Bidirectional matrices auto-generated
+- ✅ CI/CD enforceable (pre-commit hooks)
+
+**Why Namespaced?**
+- `@brd: FR-030` ❌ Ambiguous (which BRD document?)
+- `@brd: BRD-001:FR-030` ✅ Explicit (FR-030 in BRD-001)
+
+#### Traditional Section 7 (Legacy)
+
+Manual traceability sections in documents remain supported during migration:
+
+```markdown
+## 7. Traceability
+
+**Upstream:**
+- [BRD-001](../BRD/BRD-001_requirements.md#FR-030)
+
+**Downstream:**
+- [SPEC-003](../SPEC/SPEC-003_implementation.yaml)
+```
+
+**Migration:** New projects should use tag-based approach. Existing projects can migrate gradually.
+
 ### ID Naming Standards
 
 All documents follow standardized ID formats:
 
 - **Format**: `TYPE-XXX` or `TYPE-XXX-YY`
-- **Examples**: `REQ-001`, `BRD-009-02`, `ADR-1000`
+- **Examples**: `BRD-001`, `REQ-003-02`, `ADR-1000`
 - **Rules**:
   - XXX: 3-4 digit sequential number (001-999, then 1000-9999)
   - YY: 2-3 digit sub-document number (optional, 01-99)
   - Zero-padding maintained until range exceeded
 
-### Cross-Reference Format
-
-Standard markdown links with anchors:
-
-```markdown
-[ADR-033](../ADR/ADR-033_risk_architecture.md#ADR-033)
-[REQ-001](../REQ/api/ib/REQ-001_connection.md#REQ-001)
-[BDD-007](../BDD/BDD-007_behavior_test.feature#scenario-1)
-```
-
 ### Traceability Matrices
 
-Each artifact type includes a traceability matrix:
+**AUTO-GENERATED** from code tags (recommended) or manually maintained:
 
 - `TYPE-000_TRACEABILITY_MATRIX.md`
 - Tracks upstream sources (what drove this document)
 - Tracks downstream artifacts (what derives from this document)
-- **MANDATORY**: Update matrix with each artifact creation
+- **Generation**: `python scripts/generate_traceability_matrices.py --auto`
+
+**Forward Matrix Example:**
+```markdown
+| Requirement | Implementing Files | Status |
+|-------------|-------------------|--------|
+| BRD-001:FR-030 | src/services/account.py:12 | ✓ Complete |
+```
+
+**Reverse Matrix Example:**
+```markdown
+| Source File | Requirements | Status |
+|-------------|-------------|--------|
+| src/services/account.py | FR-030, NFR-006 | Complete |
+```
+
+### Migration Guide: Section 7 → Tags
+
+**Step 1: Add Tags to New Code**
+```python
+# Start with new implementations
+"""New feature implementation.
+
+@brd: BRD-001:FR-045
+@spec: SPEC-005
+@impl-status: in-progress
+"""
+```
+
+**Step 2: Gradually Tag Existing Code**
+- Prioritize high-value files (core services, critical paths)
+- Add tags during code reviews or maintenance
+- Use coverage reports to track progress
+
+**Step 3: Validate Tags**
+```bash
+# Check tag format and document references
+python scripts/validate_tags_against_docs.py --strict
+```
+
+**Step 4: Generate Matrices**
+```bash
+# Auto-generate bidirectional matrices
+python scripts/generate_traceability_matrices.py --auto
+```
+
+**Step 5: Phase Out Section 7**
+- Once tag coverage >80%, Section 7 becomes optional
+- Keep Section 7 in documents, remove from code
+- Let auto-generated matrices be the source of truth
+
+**Coexistence:** Both approaches work together during migration. Section 7 in documents + tags in code.
 
 ## Key Concepts
 
@@ -256,9 +381,34 @@ Policy: `ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md`
 
 ## Validation Tools
 
-### Available Scripts
+### Tag-Based Automation (Recommended)
 
 Located in `scripts/` (when integrated with your project):
+
+```bash
+# Extract tags from all source files
+python scripts/extract_tags.py --source src/ docs/ --output docs/generated/tags.json
+
+# Validate tags against actual documents
+python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
+
+# Generate bidirectional traceability matrices
+python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json --auto
+
+# Complete workflow (extract + validate + generate)
+python scripts/generate_traceability_matrices.py --auto
+```
+
+**CI/CD Integration:**
+```yaml
+# .github/workflows/traceability.yml
+- name: Validate Traceability Tags
+  run: python scripts/validate_tags_against_docs.py --strict
+```
+
+### Legacy Validation Scripts
+
+For projects using traditional Section 7:
 
 ```bash
 # Validate requirement IDs and format
@@ -267,23 +417,34 @@ python scripts/validate_requirement_ids.py
 # Check for broken cross-references
 python scripts/check_broken_references.py
 
-# Generate traceability matrix
+# Generate traceability matrix manually
 python scripts/complete_traceability_matrix.py
 ```
 
 ### Quality Gates
 
 Pre-commit checklist:
+
+**Tag-Based Projects:**
+- [ ] All code files have @brd/@sys/@spec tags in docstrings
+- [ ] Tags use namespaced format (DOCUMENT-ID:REQUIREMENT-ID)
+- [ ] Tag validation passes: `python scripts/validate_tags_against_docs.py --strict`
+- [ ] Traceability matrices generated: `python scripts/generate_traceability_matrices.py --auto`
+- [ ] Implementation status tags present (@impl-status: complete|in-progress|pending)
+
+**Traditional Projects:**
 - [ ] IDs comply with naming standards (XXX or XXX-YY format)
 - [ ] No ID collisions (each XXX unique)
 - [ ] All cross-references use valid markdown links
+- [ ] Section 7 Traceability complete in all documents
+
+**All Projects:**
 - [ ] IMPL decision validated (created if complex, skipped if simple)
 - [ ] CTR decision validated (created if interface, skipped if internal)
 - [ ] SPEC interfaces match CTR contracts (if applicable)
 - [ ] CTR dual-file format (both .md and .yaml exist)
-- [ ] BDD scenarios tagged with `@requirement` and `@adr`
+- [ ] BDD scenarios have traceability references
 - [ ] File size under 50,000 tokens standard, 100,000 maximum
-- [ ] Traceability matrix updated (MANDATORY)
 
 ## Integration with AI Coding Tools
 
@@ -414,7 +575,9 @@ MIT License - See LICENSE file for details
 - [Workflow Guide](./ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete SDD methodology
 - [Index](./ai_dev_flow/index.md) - Template overview with workflow diagram
 - [ID Standards](./ai_dev_flow/ID_NAMING_STANDARDS.md) - Naming conventions
-- [Traceability](./ai_dev_flow/TRACEABILITY.md) - Cross-reference format
+- [Traceability](./ai_dev_flow/TRACEABILITY.md) - Tag-based and traditional traceability
+- [Traceability Setup](./ai_dev_flow/TRACEABILITY_SETUP.md) - Automation and validation setup
+- [Traceability Matrix Template](./ai_dev_flow/TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md) - Complete matrix examples
 
 ### Decision Guides
 - [When to Create IMPL](./ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC
@@ -422,6 +585,12 @@ MIT License - See LICENSE file for details
 
 ### AI Tool Optimization
 - [Tool Optimization Guide](./ai_dev_flow/TOOL_OPTIMIZATION_GUIDE.md) - Claude Code, Gemini, Copilot
+
+### Validation Scripts
+- `scripts/extract_tags.py` - Extract @tags from source files
+- `scripts/validate_tags_against_docs.py` - Validate tags against documents
+- `scripts/generate_traceability_matrices.py` - Generate bidirectional matrices
+- `scripts/validate_requirement_ids.py` - Validate ID format (legacy + tags)
 
 ## Support
 
@@ -438,6 +607,21 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ---
 
-**Version**: 1.0.0
-**Last Updated**: 2025-11-09
+**Version**: 1.1.0
+**Last Updated**: 2025-11-12
 **Maintained by**: Vladimir M.
+
+## Changelog
+
+### Version 1.1.0 (2025-11-12)
+- Added tag-based auto-discovery traceability system
+- Introduced namespaced tag format (DOCUMENT-ID:REQUIREMENT-ID)
+- Added automated validation scripts (extract_tags.py, validate_tags_against_docs.py, generate_traceability_matrices.py)
+- Updated quality gates for tag-based and traditional projects
+- Added CI/CD integration examples for traceability validation
+- Legacy Section 7 approach still supported during migration
+
+### Version 1.0.0 (2025-11-09)
+- Initial release with 10-layer SDD workflow
+- Complete template system for all artifact types
+- Traditional Section 7 traceability

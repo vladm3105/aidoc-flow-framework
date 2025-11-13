@@ -111,9 +111,232 @@ python scripts/generate_traceability_matrices.py --auto --report
 
 ---
 
-## 2. Complete Workflow Traceability Map
+## 2. Cumulative Tagging Hierarchy
 
-### 2.1 Business Layer Traceability
+### 2.1 Overview
+
+The Docs Flow Framework implements **cumulative tagging** where each artifact type must include traceability tags from ALL upstream artifact types. This creates complete end-to-end traceability chains from business strategy through production deployment.
+
+**Key Principle**: Each layer inherits ALL tags from upstream layers and adds its own.
+
+### 2.2 Tag Format
+
+```markdown
+@artifact-type: DOCUMENT-ID:REQUIREMENT-ID
+```
+
+**Format Rules**:
+- Prefix: `@` symbol
+- Artifact Type: lowercase (brd, prd, ears, bdd, adr, sys, req, impl, ctr, spec, tasks, task_plans)
+- Separator: colon `:` after artifact type
+- Document ID: `TYPE-NNN` format
+- Requirement ID: specific requirement/section identifier
+- Multiple Values: comma-separated `@brd: BRD-001:FR-030, BRD-001:NFR-006`
+
+### 2.3 Cumulative Tagging Table
+
+| Layer | Artifact Type | Required Tags | Tag Count | Tracking Method | Notes |
+|-------|---------------|---------------|-----------|-----------------|-------|
+| 0 | **Strategy** | None | 0 | External | Business owner documents, no formal artifact |
+| 1 | **BRD** | None | 0 | Formal Template (Markdown) | Top level, no upstream dependencies |
+| 2 | **PRD** | `@brd` | 1 | Formal Template (Markdown) | References parent BRD |
+| 3 | **EARS** | `@brd`, `@prd` | 2 | Formal Template (Markdown) | Cumulative: BRD + PRD |
+| 4 | **BDD** | `@brd`, `@prd`, `@ears` | 3+ | Formal Template + Gherkin Tags | Cumulative: BRD through EARS + standard BDD tags |
+| 5 | **ADR** | `@brd`, `@prd`, `@ears`, `@bdd` | 4 | Formal Template (Markdown) | Cumulative: BRD through BDD |
+| 6 | **SYS** | `@brd` through `@adr` | 5 | Formal Template (Markdown) | Cumulative: BRD through ADR |
+| 7 | **REQ** | `@brd` through `@sys` | 6 | Formal Template (Markdown) | Cumulative: BRD through SYS |
+| 8 | **IMPL** | `@brd` through `@req` | 7 | Formal Template (Markdown) | Optional layer - include if exists |
+| 9 | **CTR** | `@brd` through `@impl` | 8 | Formal Template (Markdown + YAML) | Optional layer - include if exists |
+| 10 | **SPEC** | `@brd` through `@req` + optional `@impl`, `@ctr` | 7-9 | Formal Template (YAML) | YAML cumulative_tags section |
+| 11 | **TASKS** | `@brd` through `@spec` | 8-10 | Formal Template (Markdown) | Cumulative: BRD through SPEC |
+| 12 | **tasks_plans** | `@brd` through `@tasks` | 9-11 | Project Files (Markdown) | Implementation session plans |
+| 13 | **Code** | `@brd` through `@tasks` + optional `@task_plans` | 9-12 | Code Docstrings (Python/JS/etc.) | Tags in module/class/function docstrings |
+| 14 | **Tests** | `@brd` through code tags + `@code` | 10-13 | BDD + Docstrings | Test files reference code + all upstream |
+| 15 | **Validation** | All upstream tags | 11-14 | Embedded + CI/CD | Deployment and validation artifacts |
+
+### 2.4 Cumulative Tag Chain Examples
+
+#### Example 1: SPEC Artifact (Layer 10)
+
+```yaml
+# SPEC-018: Order Placement Service Specification
+
+# ... spec content ...
+
+cumulative_tags:
+  brd: "BRD-009:FR-015"
+  prd: "PRD-016:FEATURE-003"
+  ears: "EARS-012:EVENT-002"
+  bdd: "BDD-015:scenario-place-order"
+  adr: "ADR-033"
+  sys: "SYS-012:PERF-001"
+  req: "REQ-045:interface-spec"
+  impl: "IMPL-003:phase2"  # Optional - included if exists
+  ctr: "CTR-005"  # Optional - included if exists
+```
+
+**Tag Count**: 9 tags (7 required + 2 optional)
+
+#### Example 2: Code Artifact (Layer 13)
+
+```python
+"""
+Order Placement Service
+
+Handles trade order placement with validation and execution.
+
+## Traceability Tags
+
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002, EARS-012:STATE-001
+@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@adr: ADR-033
+@sys: SYS-012:PERF-001, SYS-012:RELIABILITY-002
+@req: REQ-045:interface-spec, REQ-045:validation-logic
+@impl: IMPL-003:phase2
+@ctr: CTR-005
+@spec: SPEC-018
+@tasks: TASKS-018:task-3, TASKS-018:task-7
+@task_plans: TASKS_PLANS-003
+
+@impl-status: complete
+@test-coverage: 95%
+"""
+```
+
+**Tag Count**: 12 upstream tags (all required for Layer 13)
+
+#### Example 3: Test Artifact (Layer 14)
+
+```python
+"""
+Test suite for Order Placement Service
+
+## Traceability Tags
+
+@brd: BRD-009:FR-015, BRD-009:NFR-006
+@prd: PRD-016:FEATURE-003
+@ears: EARS-012:EVENT-002, EARS-012:STATE-001
+@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@adr: ADR-033
+@sys: SYS-012:PERF-001, SYS-012:RELIABILITY-002
+@req: REQ-045:interface-spec, REQ-045:validation-logic
+@impl: IMPL-003:phase2
+@ctr: CTR-005
+@spec: SPEC-018
+@tasks: TASKS-018:task-3, TASKS-018:task-7
+@task_plans: TASKS_PLANS-003
+@code: src/execution/order_service.py:OrderService
+
+@test-type: integration
+@test-coverage: 100%
+"""
+```
+
+**Tag Count**: 13 upstream tags (including code reference)
+
+### 2.5 Validation Rules
+
+#### Tag Completeness Rules
+
+1. **Required Tags**: Each artifact MUST include ALL tags from upstream layers
+2. **Optional Layers**: IMPL (Layer 8) and CTR (Layer 9) are optional - include only if they exist in chain
+3. **No Skipping**: Cannot skip intermediate layers (e.g., cannot reference BRD and REQ without intermediate layers)
+4. **Format Compliance**: All tags must follow `@type: DOC-ID:REQ-ID` format
+
+#### Validation Queries
+
+**Check for Missing Upstream Tags**:
+```bash
+# Validate that SPEC-018 has all required upstream tags
+python scripts/validate_tags_against_docs.py \
+  --artifact SPEC-018 \
+  --expected-layers brd,prd,ears,bdd,adr,sys,req \
+  --strict
+```
+
+**Check Tag Format Compliance**:
+```bash
+# Verify all tags in codebase follow correct format
+python scripts/extract_tags.py \
+  --source src/ docs/ tests/ \
+  --validate-format \
+  --strict
+```
+
+**Generate Missing Tag Report**:
+```bash
+# Find all artifacts with incomplete tag chains
+python scripts/generate_traceability_matrices.py \
+  --check-completeness \
+  --report-gaps
+```
+
+### 2.6 Benefits of Cumulative Tagging
+
+1. **Complete Traceability**: Every artifact links back to original business requirements
+2. **Impact Analysis**: Quickly identify all affected artifacts when requirements change
+3. **Automated Validation**: Scripts can verify tag completeness and format
+4. **Gap Detection**: Missing tags indicate incomplete traceability chains
+5. **Requirements Coverage**: Validate that all business requirements have implementations
+6. **Audit Trail**: Full history from strategy through production deployment
+
+### 2.7 Common Patterns
+
+#### Pattern 1: Feature Development Chain
+
+```
+Strategy Document
+  ↓ @brd
+BRD-009 (Business Requirements)
+  ↓ @brd, @prd
+PRD-016 (Product Requirements)
+  ↓ @brd, @prd, @ears
+EARS-012 (Engineering Requirements)
+  ↓ @brd, @prd, @ears, @bdd
+BDD-015 (Test Scenarios)
+  ↓ @brd through @bdd, @adr
+ADR-033 (Architecture Decision)
+  ↓ @brd through @adr, @sys
+SYS-012 (System Requirements)
+  ↓ @brd through @sys, @req
+REQ-045 (Atomic Requirement)
+  ↓ @brd through @req, @impl
+IMPL-003 (Implementation Plan)
+  ↓ @brd through @impl, @ctr
+CTR-005 (API Contract)
+  ↓ @brd through @ctr, @spec
+SPEC-018 (Technical Specification)
+  ↓ @brd through @spec, @tasks
+TASKS-018 (Implementation Tasks)
+  ↓ @brd through @tasks, @code
+Code: src/execution/order_service.py
+  ↓ @brd through @code, @test
+Tests: tests/test_order_service.py
+  ↓ All tags validated
+Production Deployment
+```
+
+#### Pattern 2: Simplified Chain (No Optional Layers)
+
+When IMPL and CTR layers don't exist:
+
+```
+BRD-001 → PRD-003 → EARS-005 → BDD-008 → ADR-015 → SYS-020 → REQ-030
+  ↓
+SPEC-040 (tags: @brd through @req = 7 tags)
+  ↓
+TASKS-040 (tags: @brd through @spec = 8 tags)
+  ↓
+Code (tags: @brd through @tasks = 9 tags)
+```
+
+---
+
+## 3. Complete Workflow Traceability Map
+
+### 3.1 Business Layer Traceability
 
 | Strategy Source | BRD ID | PRD ID | EARS ID | BDD ID | Status |
 |-----------------|--------|--------|---------|--------|--------|
@@ -122,7 +345,7 @@ python scripts/generate_traceability_matrices.py --auto --report
 | [Strategic Goal 3] | BRD-003 | PRD-004, PRD-005 | EARS-006 | BDD-004 | 🟡 Partial |
 | [Strategic Goal N] | ... | ... | ... | ... | ... |
 
-### 2.2 Architecture Layer Traceability
+### 3.2 Architecture Layer Traceability
 
 | BRD ID | PRD ID | EARS ID | ADR ID | SYS ID | REQ IDs | Status |
 |--------|--------|---------|--------|--------|---------|--------|
@@ -131,7 +354,7 @@ python scripts/generate_traceability_matrices.py --auto --report
 | BRD-003 | PRD-004 | EARS-006 | ADR-003 | SYS-003 | REQ-006 | 🟡 Partial |
 | ... | ... | ... | ... | ... | ... | ... |
 
-### 2.3 Implementation Layer Traceability
+### 3.3 Implementation Layer Traceability
 
 **Note:** This table can be auto-generated from @brd:, @req:, @spec:, @test: tags in code docstrings.
 
@@ -143,7 +366,7 @@ python scripts/generate_traceability_matrices.py --auto --report
 | REQ-004 | IMPL-002 | N/A | SPEC-004 | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Not Started |
 | ... | ... | ... | ... | ... | ... | ... | ... |
 
-### 2.4 Validation Layer Traceability
+### 3.4 Validation Layer Traceability
 
 | BDD ID | EARS ID | Code Files | Test Files | Test Results | Production Status | Status |
 |--------|---------|------------|------------|--------------|-------------------|--------|

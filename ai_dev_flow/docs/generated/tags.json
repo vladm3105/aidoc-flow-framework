@@ -1,0 +1,51 @@
+{
+  "test_tag_example.py": {
+    "tags": {
+      "brd": [
+        [
+          "BRD-001",
+          "FR-001"
+        ],
+        [
+          "BRD-001",
+          "FR-002"
+        ],
+        [
+          "BRD-001",
+          "FR-003"
+        ]
+      ],
+      "req": [
+        [
+          "REQ-001",
+          "api-interface"
+        ]
+      ],
+      "spec": [
+        [
+          "SPEC-001",
+          null
+        ]
+      ],
+      "test": [
+        [
+          "BDD-001",
+          "scenario-auth"
+        ]
+      ],
+      "impl-status": [
+        "complete",
+        "in-progress"
+      ]
+    },
+    "line_numbers": {
+      "BRD-001:FR-001": 5,
+      "BRD-001:FR-002": 5,
+      "REQ-001:api-interface": 6,
+      "SPEC-001": 7,
+      "BDD-001:scenario-auth": 8,
+      "BRD-001:FR-003": 16
+    },
+    "errors": []
+  }
+}

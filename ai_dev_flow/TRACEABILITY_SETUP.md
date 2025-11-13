@@ -32,7 +32,34 @@ Located in `scripts/` directory after project initialization:
 
 ## Quick Commands
 
-### After Creating Documents
+### Tag-Based Traceability (Recommended)
+
+**Extract all tags from codebase:**
+```bash
+python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
+```
+
+**Validate tags against documents:**
+```bash
+python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
+```
+
+**Generate bidirectional matrices:**
+```bash
+python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json --output docs/generated/matrices/
+```
+
+**Complete workflow (extract → validate → generate):**
+```bash
+python scripts/generate_traceability_matrices.py --auto
+```
+
+**Validate only (no output):**
+```bash
+python scripts/extract_tags.py --validate-only
+```
+
+### Legacy Manual Validation (Optional)
 
 ```bash
 # Validate requirement IDs
@@ -40,29 +67,6 @@ python scripts/validate_requirement_ids.py
 
 # Check for broken links
 python scripts/check_broken_references.py
-```
-
-### Generate Traceability Matrix
-
-```bash
-# For ADRs
-python scripts/generate_traceability_matrix.py --type ADR --input docs/ADR/ --output docs/TRACEABILITY_MATRIX_ADR.md
-
-# For Requirements
-python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
-
-# For Specifications
-python scripts/generate_traceability_matrix.py --type SPEC --input docs/SPEC/ --output docs/TRACEABILITY_MATRIX_SPEC.md
-```
-
-### Validate Matrix
-
-```bash
-# Validate ADR matrix
-python scripts/validate_traceability_matrix.py --matrix docs/TRACEABILITY_MATRIX_ADR.md --input docs/ADR/
-
-# Validate REQ matrix
-python scripts/validate_traceability_matrix.py --matrix docs/TRACEABILITY_MATRIX_REQ.md --input docs/REQ/
 ```
 
 ---
@@ -75,31 +79,46 @@ Create `.git/hooks/pre-commit`:
 
 ```bash
 #!/bin/bash
-# Pre-commit hook for traceability validation
+# Pre-commit hook for tag-based traceability validation
 
-echo "Running traceability validation..."
+echo "Running tag-based traceability validation..."
 
-# Validate requirement IDs
-python scripts/validate_requirement_ids.py
+# Extract and validate tags
+python scripts/extract_tags.py --validate-only
 if [ $? -ne 0 ]; then
-  echo "❌ Requirement ID validation failed"
+  echo "❌ Tag extraction/format validation failed"
   exit 1
 fi
 
-# Check for broken references
-python scripts/check_broken_references.py
+# Validate tags against documents
+python scripts/validate_tags_against_docs.py --strict
 if [ $? -ne 0 ]; then
-  echo "❌ Broken references found"
+  echo "❌ Tag validation failed - orphaned or invalid tags found"
   exit 1
 fi
 
-echo "✅ Traceability validation passed"
+echo "✅ Traceability tag validation passed"
 exit 0
 ```
 
 Make executable:
 ```bash
 chmod +x .git/hooks/pre-commit
+```
+
+### Pre-Commit Framework Configuration
+
+Add to `.pre-commit-config.yaml`:
+```yaml
+repos:
+  - repo: local
+    hooks:
+      - id: validate-traceability-tags
+        name: Validate Traceability Tags
+        entry: python scripts/validate_tags_against_docs.py --strict
+        language: python
+        pass_filenames: false
+        always_run: true
 ```
 
 ---
@@ -111,17 +130,21 @@ chmod +x .git/hooks/pre-commit
 Create `.github/workflows/traceability.yml`:
 
 ```yaml
-name: Traceability Validation
+name: Tag-Based Traceability Validation
 
 on:
   pull_request:
     paths:
+      - 'src/**'
       - 'docs/**'
+      - 'tests/**'
   push:
     branches:
       - main
     paths:
+      - 'src/**'
       - 'docs/**'
+      - 'tests/**'
 
 jobs:
   validate:
@@ -138,21 +161,20 @@ jobs:
         run: |
           pip install pyyaml
 
-      - name: Validate Requirement IDs
-        run: python scripts/validate_requirement_ids.py
+      - name: Extract Traceability Tags
+        run: python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
 
-      - name: Check Broken References
-        run: python scripts/check_broken_references.py
+      - name: Validate Tags Against Documents
+        run: python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
       - name: Generate Traceability Matrices
-        run: |
-          python scripts/generate_traceability_matrix.py --type ADR --input docs/ADR/ --output docs/TRACEABILITY_MATRIX_ADR.md
-          python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
+        run: python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json --output docs/generated/matrices/
 
-      - name: Validate Matrices
-        run: |
-          python scripts/validate_traceability_matrix.py --matrix docs/TRACEABILITY_MATRIX_ADR.md --input docs/ADR/
-          python scripts/validate_traceability_matrix.py --matrix docs/TRACEABILITY_MATRIX_REQ.md --input docs/REQ/
+      - name: Upload Generated Matrices
+        uses: actions/upload-artifact@v3
+        with:
+          name: traceability-matrices
+          path: docs/generated/matrices/
 ```
 
 ---

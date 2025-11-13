@@ -756,6 +756,9 @@ Required libraries:
 - 100% consumer-provider compatibility in same MAJOR version
 - All breaking changes documented with migration paths
 - Mock servers available for all contracts
+- All CTR documents include complete Document Control sections with:
+  - Project metadata (name, version, date, owner, preparer, status)
+  - Document Revision History table tracking all contract changes
 
 ---
 

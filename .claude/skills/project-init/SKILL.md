@@ -303,9 +303,18 @@ Enter selections (comma-separated, e.g., "1,2" or single "7"):
 
 ---
 
-### Step 6: Index File Initialization
+### Step 6: Index File Initialization + Document Control
 
 **Purpose**: Create index files for each document type
+
+**Document Control Requirements**:
+All AI Dev Flow templates include a Document Control section with:
+- Project metadata (name, version, date, owner, preparer, status)
+- Document Revision History table
+- Essential for traceability, change management, and regulatory compliance
+
+**AI Assistant Must Emphasize**:
+When creating documents from templates, users must complete the Document Control section with all required fields.
 
 **Commands**:
 ```bash
@@ -350,6 +359,7 @@ ls docs/*/index.* || ls docs/*/*_index.*
 - ✅ All 11 core directories exist (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CONTRACTS, SPEC, TASKS)
 - ✅ Domain-specific subdirectories exist (risk/, trading/, tenant/, etc.)
 - ✅ All index files created
+- ✅ All templates include Document Control sections
 - ✅ Validation scripts present (if copied)
 - ✅ work_plans directory exists (for /save-plan command)
 

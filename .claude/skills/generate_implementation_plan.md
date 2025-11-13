@@ -382,6 +382,11 @@ max_phase_duration_weeks: 4
 **Definition of Done** (for generated IMPL):
 
 1. **Document Structure**:
+   - [ ] Document Control section complete with:
+     - Project metadata (name, version, date)
+     - Owner and preparer information
+     - Status tracking
+   - [ ] Document Revision History table initialized
    - [ ] All 4 parts present (Context, Phases, Management, Tracking)
    - [ ] All phases follow template structure
    - [ ] Traceability section complete
