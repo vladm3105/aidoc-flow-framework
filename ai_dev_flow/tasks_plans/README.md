@@ -1,0 +1,1483 @@
+# Implementation Work Plans (tasks_plans): Session-Based Execution Plans
+
+Implementation Work Plans (tasks_plans) provide **session-based execution context** with bash commands, verification steps, and specific instructions for AI assistants to implement TASKS documents. tasks_plans serve as the executable bridge between code generation plans and actual implementation.
+
+## Purpose
+
+tasks_plans create the **implementation execution roadmap** that:
+- **Provides Session Context**: Bash commands, file paths, environment setup for AI assistants
+- **Guides Step-by-Step Execution**: Specific commands to run in Claude Code, Gemini CLI, or similar tools
+- **Establishes Verification Checkpoints**: Clear validation steps after each phase
+- **Maintains Implementation State**: Tracks progress through phases and tasks
+- **Enables Context Resumption**: Allows new sessions to continue work from checkpoints
+- **Ensures Traceability**: Links implementation work to TASKS plans and upstream requirements
+
+## Position in Development Workflow
+
+**Layer 12: Implementation Work Plans**
+
+tasks_plans sit between TASKS (code generation plans) and Code (implementation) in the 15-layer traceability hierarchy:
+
+```mermaid
+flowchart TD
+    BRD[Layer 1: BRD<br/>Business Requirements]
+    PRD[Layer 2: PRD<br/>Product Requirements]
+    EARS[Layer 3: EARS<br/>Event-Action-Response]
+    BDD[Layer 4: BDD<br/>Behavioral Scenarios]
+    ADR[Layer 5: ADR<br/>Architecture Decisions]
+    SYS[Layer 6: SYS<br/>System Requirements]
+    REQ[Layer 7: REQ<br/>Atomic Requirements]
+    IMPL[Layer 8: IMPL<br/>Implementation Strategies]
+    CTR[Layer 9: CTR<br/>Interface Contracts]
+    SPEC[Layer 10: SPEC<br/>Technical Specifications]
+    TASKS[Layer 11: TASKS<br/>Code Generation Plans]
+    TP[Layer 12: tasks_plans<br/>Implementation Work Plans]
+    Code[Layer 13: Code<br/>Source Implementation]
+    Tests[Layer 14: Tests<br/>Test Execution]
+    Valid[Layer 15: Validation<br/>Quality Gates]
+
+    BRD --> PRD --> EARS --> BDD --> ADR
+    ADR --> SYS --> REQ
+    REQ --> IMPL --> CTR
+    REQ --> SPEC
+    CTR --> SPEC
+    SPEC --> TASKS
+    TASKS --> TP
+    TP --> Code
+    Code --> Tests
+    Tests --> Valid
+
+    style TP fill:#e1f5fe,stroke:#01579b,stroke-width:4px
+
+    note1[YOU ARE HERE<br/>Session Context & Bash Commands<br/>Cumulative Tags: @brd through @tasks]
+    TP -.-> note1
+```
+
+**Key Workflow Position**:
+- **Upstream**: TASKS (Layer 11) - AI code generation plan (WHAT to generate)
+- **Current**: tasks_plans (Layer 12) - Implementation work plan (HOW to execute)
+- **Downstream**: Code (Layer 13) - Actual source code implementation
+
+## tasks_plans vs TASKS: Critical Distinction
+
+Understanding the difference between TASKS and tasks_plans is essential:
+
+| Aspect | TASKS (Layer 11) | tasks_plans (Layer 12) |
+|--------|------------------|------------------------|
+| **Purpose** | Code generation instructions for AI | Session-based execution plans with bash commands |
+| **Scope** | WHAT code to generate | HOW to execute implementation |
+| **Audience** | AI code generators (abstract) | AI assistants in active sessions (specific) |
+| **Content** | Classes, methods, algorithms, patterns | Bash commands, file paths, verification steps |
+| **Format** | Markdown with code examples | Markdown with executable bash blocks |
+| **Session Context** | Session-agnostic | Session-specific with environment details |
+| **Verification** | Acceptance criteria | Bash verification commands |
+| **Example** | "Implement PositionLimitService class with retry logic" | "Run: `touch src/service.py && pytest tests/` → Verify: 0 errors" |
+| **Required Tags** | @brd through @spec | @brd through @tasks (includes @tasks tag) |
+
+**Analogy**:
+- **TASKS**: Architectural blueprint showing what rooms to build and their purpose
+- **tasks_plans**: Construction work order with specific tasks, tools needed, and inspection checkpoints
+
+**Flow**:
+```
+TASKS defines WHAT → tasks_plans defines HOW → Code implements it
+```
+
+**Example Comparison**:
+
+**TASKS-001** (excerpt):
+```markdown
+### Phase 2.1: Implement Connection Service (12 hours)
+- Create IBGatewayConnectionService class
+- Implement async connect() method with retry logic
+- Add connection state machine (5 states)
+- Include circuit breaker pattern
+- Verify: Unit tests pass with 85% coverage
+```
+
+**tasks_plans-001** (corresponding section):
+```bash
+# Phase 2.1: Implement Connection Service
+cd /opt/data/ibmcp
+
+# Create module file
+touch src/ibmcp/gateway/connection_service.py
+
+# Implement class (paste from TASKS-001 specification)
+# ... implementation details ...
+
+# Run unit tests
+pytest tests/unit/gateway/test_connection_service.py -v
+
+# Verify coverage
+pytest --cov=src/ibmcp/gateway/connection_service --cov-report=term
+# Expected: ≥85% coverage
+
+# Verify type checking
+mypy src/ibmcp/gateway/connection_service.py
+# Expected: 0 errors
+```
+
+## When to Create tasks_plans Documents
+
+Create tasks_plans documents when:
+
+1. **Starting Implementation**: Beginning work on a TASKS document in a new session
+2. **Complex Setup**: Implementation requires specific environment configuration
+3. **Multi-Phase Work**: Implementation spans multiple sessions and needs state tracking
+4. **Team Handoff**: Another developer or AI assistant will continue the work
+5. **Context Preservation**: Session-specific decisions need documentation
+6. **Verification Critical**: Step-by-step validation checkpoints required
+
+**Do NOT create tasks_plans when**:
+- Simple, one-file implementations (<100 lines)
+- No environment setup needed
+- Work completed in single session without interruption
+- TASKS document already provides sufficient execution detail
+
+## Cumulative Tagging Requirements
+
+**Layer 12 Position**: tasks_plans inherits ALL tags from upstream layers (0-11)
+
+### Complete Required Tag List
+
+All tasks_plans documents MUST include these 9 mandatory tags:
+
+1. `@brd: BRD-NNN:REQ-NNN` - Business Requirements Document (Layer 1)
+2. `@prd: PRD-NNN:REQ-NNN` - Product Requirements Document (Layer 2)
+3. `@ears: EARS-NNN:REQ-NNN` - Event-Action-Response-State Requirements (Layer 3)
+4. `@bdd: BDD-NNN:SCENARIO-NNN` - Behavior-Driven Development Scenarios (Layer 4)
+5. `@adr: ADR-NNN` - Architecture Decision Records (Layer 5)
+6. `@sys: SYS-NNN:REQ-NNN` - System Requirements (Layer 6)
+7. `@req: REQ-NNN` - Atomic Requirements (Layer 7)
+8. `@spec: SPEC-NNN:SECTION` - Technical Specifications (Layer 10)
+9. `@tasks: TASKS-NNN:PHASE-X.Y` - Code Generation Plan (Layer 11)
+
+### Optional Tags (Conditional)
+
+Include these tags if present in your project:
+
+10. `@impl: IMPL-NNN` - Implementation Plan (Layer 8) - **if project uses IMPL artifacts**
+11. `@ctr: CTR-NNN:SECTION` - Interface Contracts (Layer 9) - **if contracts are defined**
+
+### Tag Format Specification
+
+**Standard Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+
+**Component Breakdown**:
+- `@artifact-type` - lowercase artifact type (brd, prd, ears, bdd, adr, sys, req, impl, ctr, spec, tasks)
+- `DOCUMENT-ID` - Uppercase with hyphens (e.g., BRD-001, SPEC-003, TASKS-001)
+- `REQUIREMENT-ID` - Specific requirement, scenario, or section referenced
+
+**Examples by Layer**:
+
+```markdown
+## Traceability Tags
+
+@brd: BRD-001:REQ-042
+@prd: PRD-001:REQ-015
+@ears: EARS-001:REQ-003
+@bdd: BDD-001:SCENARIO-005, BDD-007:SCENARIO-012
+@adr: ADR-002, ADR-005
+@sys: SYS-002:REQ-001
+@req: REQ-001, REQ-002, REQ-003, REQ-010
+@impl: IMPL-001 (optional - if project uses IMPL)
+@ctr: CTR-001:IBGatewayConnector (optional - if contracts defined)
+@spec: SPEC-001:connection_service
+@tasks: TASKS-001:PHASE-2.1, TASKS-001:PHASE-2.4
+```
+
+### Tag Inheritance Rules
+
+**Cumulative Tagging Hierarchy** (15 layers):
+
+| Layer | Artifact Type | Required Tags | New Tag Added |
+|-------|---------------|---------------|---------------|
+| 0 | Strategy | None (external) | - |
+| 1 | BRD | None | @brd |
+| 2 | PRD | @brd | @prd |
+| 3 | EARS | @brd, @prd | @ears |
+| 4 | BDD | @brd, @prd, @ears | @bdd |
+| 5 | ADR | @brd through @bdd | @adr |
+| 6 | SYS | @brd through @adr | @sys |
+| 7 | REQ | @brd through @sys | @req |
+| 8 | IMPL | @brd through @req | @impl (optional) |
+| 9 | CTR | @brd through @req, (@impl) | @ctr (optional) |
+| 10 | SPEC | @brd through @req, (@impl, @ctr) | @spec |
+| 11 | TASKS | @brd through @spec (include optional if present) | @tasks |
+| **12** | **tasks_plans** | **@brd through @tasks** | **@tasks_plans** |
+| 13 | Code | ALL tags including @tasks_plans | @code |
+| 14 | Tests | @brd through @code | @test |
+| 15 | Validation | ALL tags from all documents | @validation |
+
+**Key Principle**: Each layer inherits ALL tags from upstream layers and adds its own tag.
+
+### Tag Validation Requirements
+
+1. **Completeness Check**: All 9 mandatory tags present (11 if @impl/@ctr exist)
+2. **Chain Integrity**: Each tag references a valid, existing upstream document
+3. **Bidirectional Links**: Tagged documents reference this tasks_plans in their downstream traceability
+4. **Format Compliance**: Tags follow `@type: DOC-ID:REQ-ID` syntax exactly
+5. **Layer Hierarchy**: Tags respect the cumulative tagging hierarchy order
+
+### Validation Methods
+
+**Automated Validation**:
+```bash
+# Run tag validation script
+python /opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_docs.py \
+  --file tasks_plans/TASKS_PLANS-001_example.md
+
+# Expected output:
+# ✅ All 9 mandatory tags present
+# ✅ All tags resolve to existing documents
+# ✅ Tag format valid
+# ✅ Cumulative hierarchy respected
+```
+
+**Manual Validation Checklist**:
+- [ ] Count tags: 9 mandatory + optional @impl/@ctr if applicable
+- [ ] Verify each tag links to existing document
+- [ ] Check tag format: `@type: DOC-ID:REQ-ID`
+- [ ] Confirm upstream documents reference this tasks_plans
+- [ ] Update traceability matrix with tag status
+
+### Tag Examples by Project Type
+
+**Example 1: Project with IMPL and CTR**:
+```markdown
+@brd: BRD-001:REQ-042
+@prd: PRD-001:REQ-015
+@ears: EARS-001:REQ-003
+@bdd: BDD-001:SCENARIO-005
+@adr: ADR-002
+@sys: SYS-002:REQ-001
+@req: REQ-001, REQ-002
+@impl: IMPL-001 (present in this project)
+@ctr: CTR-001:IBGatewayConnector (present in this project)
+@spec: SPEC-001:connection_service
+@tasks: TASKS-001:PHASE-2.1
+```
+Total: 11 tags (9 mandatory + 2 optional)
+
+**Example 2: Project without IMPL and CTR**:
+```markdown
+@brd: BRD-001:REQ-042
+@prd: PRD-001:REQ-015
+@ears: EARS-001:REQ-003
+@bdd: BDD-001:SCENARIO-005
+@adr: ADR-002
+@sys: SYS-002:REQ-001
+@req: REQ-001, REQ-002
+@spec: SPEC-001:connection_service
+@tasks: TASKS-001:PHASE-2.1
+```
+Total: 9 tags (all mandatory, no optional)
+
+## Document Structure Guide
+
+### 1. Document Control Header
+
+**Purpose**: Metadata for tracking and version control
+
+**Required Fields**:
+```markdown
+| Item | Details |
+|------|---------|
+| **ID** | TASKS_PLANS-NNN |
+| **Status** | Draft/Ready/In Progress/Completed/Blocked |
+| **Version** | 1.0.0 |
+| **Created** | YYYY-MM-DD HH:MM:SS TZ |
+| **Last Updated** | YYYY-MM-DD HH:MM:SS TZ |
+| **Author** | [AI Assistant/Developer Name] |
+| **Estimated Effort** | [X hours] |
+| **Complexity** | [1-5: 1=minimal, 5=architectural] |
+| **Parent TASKS** | TASKS-NNN |
+```
+
+### 2. Position in Workflow
+
+**Purpose**: Context about Layer 12 position
+
+**Content**:
+- Quick reference diagram
+- Purpose statement
+- Input/output description
+- Consumer identification
+
+### 3. Objective Section
+
+**Purpose**: Clear deliverables statement
+
+**Format**:
+```markdown
+## Objective
+
+[1-2 sentence goal statement]
+
+**Deliverables**:
+- [Specific deliverable #1]
+- [Specific deliverable #2]
+- [Specific deliverable #3]
+```
+
+### 4. Context Section
+
+**Purpose**: Current state and key decisions
+
+**Subsections**:
+- **Current State Analysis**: Documentation/code status
+- **Key Technical Decisions**: Architecture, error handling, resilience, observability
+
+**Format**:
+```markdown
+## Context
+
+### Current State Analysis
+
+**Documentation Status**: ✅ 100% Complete
+- SPEC-001: [description]
+- REQ-001 through REQ-010: [coverage]
+- BDD-001: [scenarios]
+
+**Code Status**: ❌ 0% - Starting from Scratch
+- [Current implementation state]
+
+### Key Technical Decisions
+
+**Architecture** (from ADR-002):
+- [Decision #1]
+- [Decision #2]
+
+**Error Handling** (from SPEC-001):
+- [Strategy]
+```
+
+### 5. Task List Section
+
+**Purpose**: Phase-based checklist of tasks
+
+**Format**:
+```markdown
+## Task List
+
+### Phase 0: Documentation (COMPLETED ✅)
+- [x] Task completed
+- [x] Another completed task
+
+### Phase 1: Foundation (8 hours) - PENDING
+- [ ] **TASK-1.1**: Description
+  - Action item
+  - Verification step
+
+- [ ] **TASK-1.2**: Description
+  - Action item
+  - Verification step
+```
+
+**Best Practices**:
+- Group tasks into logical phases (0-4 typically)
+- Include time estimates per phase
+- Mark phase status (COMPLETED/PENDING/IN PROGRESS)
+- Use checkboxes for trackable progress
+- Include verification for each task
+
+### 6. Implementation Guide Section
+
+**Purpose**: Executable steps with bash commands
+
+**Subsections**:
+- **Prerequisites**: Tools, files, knowledge, environment
+- **Execution Steps**: Numbered steps with bash commands
+- **Verification Checklist**: After each phase validation
+
+**Format**:
+```markdown
+## Implementation Guide
+
+### Prerequisites
+
+**Required Tools**:
+- Python 3.11+
+- Poetry
+- Docker
+
+**Required Files Access**:
+- /opt/data/project/src/ (read/write)
+- /opt/data/project/tests/ (read/write)
+
+### Execution Steps
+
+**Step 1: Create Project Structure**
+
+```bash
+cd /opt/data/project
+mkdir -p src/module/{submodule1,submodule2}
+touch src/module/__init__.py
+```
+
+Verification:
+```bash
+ls -R src/module/
+# Expected: __init__.py, submodule1/, submodule2/
+```
+
+**Step 2: Install Dependencies**
+
+```bash
+poetry add ib_async pydantic tenacity
+poetry install
+```
+
+Verification:
+```bash
+poetry show | grep ib_async
+# Expected: ib_async version X.Y.Z
+```
+
+### Verification Checklist
+
+**After Phase 1:**
+- [ ] Directory structure exists
+- [ ] Dependencies installed
+- [ ] Configuration files valid
+```
+
+**Best Practices**:
+- Use executable bash code blocks
+- Include verification commands after each step
+- Specify expected outcomes
+- Use absolute paths where possible
+- Add comments to explain complex commands
+
+### 7. Technical Details Section
+
+**Purpose**: Module specifications and configurations
+
+**Subsections**:
+- File structure
+- Module specifications
+- Configuration parameters
+- BDD scenario mapping
+
+### 8. Traceability Tags Section (MANDATORY)
+
+**Purpose**: Complete cumulative tag chain
+
+**Required Content**:
+```markdown
+## Traceability Tags
+
+**Layer 12 Position**: tasks_plans inherits tags from all upstream artifacts (Layers 0-11)
+
+### Required Tags (Mandatory)
+
+- `@brd: BRD-001:REQ-042` - Business Requirements Document (Layer 1)
+- `@prd: PRD-001:REQ-015` - Product Requirements Document (Layer 2)
+- `@ears: EARS-001:REQ-003` - Event-Action-Response-State (Layer 3)
+- `@bdd: BDD-001:SCENARIO-005` - Behavior-Driven Development (Layer 4)
+- `@adr: ADR-002` - Architecture Decision Record (Layer 5)
+- `@sys: SYS-002:REQ-001` - System Requirements (Layer 6)
+- `@req: REQ-001` - Atomic Requirements (Layer 7)
+- `@spec: SPEC-001:connection_service` - Technical Specification (Layer 10)
+- `@tasks: TASKS-001:PHASE-2.1` - Code Generation Plan (Layer 11)
+
+### Optional Tags (If Present in Project)
+
+- `@impl: IMPL-001` - Implementation Plan (Layer 8)
+- `@ctr: CTR-001:IBGatewayConnector` - Interface Contract (Layer 9)
+```
+
+**Critical**: This section is MANDATORY and must include ALL required tags.
+
+### 9. Traceability Section
+
+**Purpose**: Upstream and downstream links
+
+**Subsections**:
+- **Upstream References**: Links TO upstream documents
+- **Downstream Impact**: Referenced BY downstream artifacts
+- **Related Documents**: Sibling and matrix documents
+
+### 10. Risk Mitigation Section
+
+**Purpose**: Identify and mitigate implementation risks
+
+**Format per risk**:
+- Description
+- Likelihood (High/Medium/Low)
+- Impact (High/Medium/Low)
+- Mitigation actions
+
+### 11. Success Criteria Section
+
+**Purpose**: Measurable completion metrics
+
+**Subsections**:
+- Coverage metrics (requirements, tests, code quality)
+- Functional validation
+- Non-functional validation
+- Documentation quality
+- Integration validation
+
+### 12. References Section
+
+**Purpose**: Links to related documentation
+
+**Categories**:
+- Framework documentation
+- Artifact templates
+- Related artifacts
+- External references
+
+## File Naming Conventions
+
+**Template File**: `TASKS_PLANS-TEMPLATE.md`
+
+**Document Files**: `TASKS_PLANS-NNN_{descriptive_slug}_YYYYMMDD_HHMMSS.md`
+
+**Components**:
+- `TASKS_PLANS` - constant prefix (uppercase with underscore)
+- `NNN` - three-digit sequence (001, 002, 003, ...)
+- `descriptive_slug` - lowercase with hyphens (describes task/feature)
+- `YYYYMMDD_HHMMSS` - creation timestamp
+- `.md` - markdown extension
+
+**Examples**:
+- `TASKS_PLANS-001_implement_gateway_connection_20251112_092843.md`
+- `TASKS_PLANS-002_add_retry_logic_20251112_143022.md`
+- `TASKS_PLANS-003_deploy_authentication_service_20251113_095500.md`
+
+**Naming Rules**:
+1. Always use `TASKS_PLANS` (not `TASKPLANS`, `TASK_PLANS`, or `tasks-plans`)
+2. Sequence numbers must be zero-padded (001, not 1)
+3. Descriptive slug uses underscores, not hyphens or camelCase
+4. Timestamp format: YYYYMMDD_HHMMSS
+5. Always use EST/EDT timezone for consistency
+
+## Integration with Other Document Types
+
+### Parent Relationship: TASKS
+
+**Integration Pattern**:
+- **One TASKS → One or More tasks_plans**
+- Each tasks_plans implements a portion or all of a TASKS document
+- tasks_plans adds session context to TASKS instructions
+
+**Example**:
+```
+TASKS-001: IB Gateway Connection Service (1,992 lines)
+  ↓
+  ├─ TASKS_PLANS-001: Implement TASKS-001 (Session 1)
+  └─ TASKS_PLANS-002: Continue TASKS-001 Phase 3 (Session 2)
+```
+
+### Upstream References: SPEC, REQ, ADR
+
+**Purpose**: Technical specifications and requirements
+
+**Integration**:
+- tasks_plans references SPEC for implementation details
+- tasks_plans satisfies REQ atomic requirements
+- tasks_plans follows ADR architecture decisions
+
+**Tagging**:
+```markdown
+@spec: SPEC-001:connection_service
+@req: REQ-001, REQ-002
+@adr: ADR-002
+```
+
+### Upstream References: BDD, EARS
+
+**Purpose**: Behavioral validation
+
+**Integration**:
+- tasks_plans implements code to satisfy BDD scenarios
+- tasks_plans handles EARS event-action-response patterns
+
+**Verification**:
+```bash
+# Run BDD scenarios
+pytest tests/bdd/ --gherkin-terminal-reporter
+
+# Verify EARS coverage
+# Check event handlers, actions, responses implemented
+```
+
+### Downstream Impact: Code
+
+**Purpose**: Source code implementation
+
+**Integration**:
+- Code files reference parent tasks_plans in comments
+- Git commits reference tasks_plans ID
+
+**Example**:
+```python
+# src/ibmcp/gateway/connection_service.py
+"""
+Connection service for IB Gateway.
+
+Implementation follows:
+- tasks_plans: TASKS_PLANS-001
+- TASKS: TASKS-001
+- SPEC: SPEC-001
+"""
+```
+
+**Git Commit**:
+```bash
+git commit -m "feat: implement gateway connection service
+
+Implements: TASKS_PLANS-001
+Parent: TASKS-001
+Satisfies: REQ-001, REQ-002
+Tests: BDD-001:SCENARIO-005
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Co-Authored-By: Claude <noreply@anthropic.com>"
+```
+
+### Sibling Relationships: Other tasks_plans
+
+**Purpose**: Related implementation work
+
+**Integration**:
+- tasks_plans can reference other tasks_plans for dependencies
+- Index file tracks all tasks_plans documents
+
+**Example**:
+```markdown
+### Dependencies
+- TASKS_PLANS-001 must be completed before TASKS_PLANS-003
+- TASKS_PLANS-002 runs in parallel with TASKS_PLANS-004
+```
+
+## Best Practices
+
+### 1. Session Context is Critical
+
+**DO**:
+✅ Include absolute file paths: `/opt/data/project/src/module.py`
+✅ Specify exact commands: `poetry add ib_async>=0.9.86`
+✅ Document environment: Python 3.11+, PostgreSQL 14
+✅ Include verification steps after each command
+✅ Capture current state: "Code Status: 35% complete, models done"
+
+**DON'T**:
+❌ Use relative paths: `../src/module.py` (ambiguous in new session)
+❌ Vague instructions: "Install dependencies" (which ones? how?)
+❌ Assume environment: "Run the tests" (which test runner? where?)
+❌ Skip verification: No way to confirm step succeeded
+❌ Omit state: Can't resume work without context
+
+### 2. Make Commands Executable
+
+**DO**:
+✅ Use copyable bash blocks
+✅ Include all necessary flags: `pytest -v --cov`
+✅ Show expected output
+✅ Provide error handling
+
+**Example**:
+```bash
+# Install dependencies with specific versions
+poetry add ib_async>=0.9.86 pydantic>=2.0
+
+# Verify installation
+poetry show | grep -E "(ib_async|pydantic)"
+# Expected output:
+# ib_async    0.9.86  ...
+# pydantic    2.5.0   ...
+
+# If ib_async not found:
+# Error: Check poetry.lock for conflicts
+# Solution: poetry update
+```
+
+### 3. Break Down Large Implementations
+
+**Pattern**:
+- Phase 0: Documentation review (prerequisite)
+- Phase 1: Setup and foundation (4-8 hours)
+- Phase 2: Core implementation (split into 2.1, 2.2, 2.3, etc.)
+- Phase 3: Testing (split by test type)
+- Phase 4: Quality and deployment
+
+**Rationale**:
+- Enables checkpoint resumption
+- Allows parallel work on independent phases
+- Provides clear progress tracking
+- Reduces cognitive load per phase
+
+### 4. Comprehensive Verification
+
+**After Every Step**:
+```bash
+# Step: Create directory
+mkdir -p src/module
+
+# Verification: Directory exists and is writable
+ls -ld src/module && touch src/module/test.tmp && rm src/module/test.tmp
+# Expected: drwxr-xr-x ... src/module/ (and test file creates/deletes successfully)
+```
+
+**After Every Phase**:
+```markdown
+### Verification Checklist
+
+**After Phase 1:**
+- [ ] Directory structure matches expected layout
+- [ ] All dependencies installed and importable
+- [ ] Configuration files valid (run validation script)
+- [ ] Test infrastructure functional (pytest --collect-only)
+```
+
+### 5. Document Decisions Made During Implementation
+
+**Capture**:
+- Deviations from original TASKS plan
+- Environment-specific configurations
+- Workarounds for issues encountered
+- Performance optimizations applied
+
+**Example**:
+```markdown
+### Implementation Notes
+
+**Deviation from TASKS-001**:
+- Changed retry delay from fixed 5s to exponential backoff (1s, 2s, 4s...)
+- Rationale: Better performance under load, recommended by ib_async docs
+- Impact: Improves connection recovery time
+- Approval: Self-approved (optimization, no functional change)
+
+**Environment-Specific**:
+- PostgreSQL connection pool size: 20 (default was 10)
+- Reason: Development machine has 32GB RAM, can handle larger pool
+- Production: Will use 10 (configured via environment variable)
+```
+
+### 6. Use Checklists Extensively
+
+**Benefits**:
+- Visual progress tracking
+- Resume point identification
+- Prevents skipped steps
+- Provides satisfaction of completion
+
+**Format**:
+```markdown
+### Phase 2: Implementation
+
+- [x] TASK-2.1: Models created ✅
+- [x] TASK-2.2: Errors defined ✅
+- [ ] TASK-2.3: Protocol interface (IN PROGRESS)
+- [ ] TASK-2.4: Connection service
+- [ ] TASK-2.5: Retry handler
+- [ ] TASK-2.6: Circuit breaker
+```
+
+### 7. Include Recovery Procedures
+
+**For Each Risk**:
+```markdown
+**Risk: PostgreSQL connection fails during tests**
+- **Symptom**: `ConnectionRefusedError: [Errno 111] Connection refused`
+- **Diagnosis**: `docker ps | grep postgres` (check if running)
+- **Fix**: `docker start postgres-dev`
+- **Verification**: `psql -h localhost -U testuser -d testdb -c "SELECT 1"`
+```
+
+### 8. Link to Parent TASKS Extensively
+
+**Throughout Document**:
+```markdown
+### Implementation of TASKS-001 Phase 2.1
+
+Per [TASKS-001:PHASE-2.1](../TASKS/path/TASKS-001.md#phase-21-implement-connection-service):
+> "Create IBGatewayConnectionService class with async connect() method..."
+
+Implementation:
+```bash
+# Create service module
+touch src/ibmcp/gateway/connection_service.py
+# ... (implement per TASKS-001 specification)
+```
+```
+
+### 9. Maintain Token Efficiency
+
+**Target**: 25-40KB per tasks_plans document (optimal for Claude Code)
+
+**Techniques**:
+- Use tables for repetitive data
+- Reference external docs instead of duplicating
+- Summarize long specifications
+- Use collapsible sections if needed (though not in markdown)
+
+**Example - Efficient**:
+```markdown
+### Module Specifications
+
+| Module | File | Purpose | Key Classes |
+|--------|------|---------|-------------|
+| Models | models.py | Data structures | ConnectionConfig, IbConnection |
+| Errors | errors.py | Exceptions | GatewayError, ConnectionError |
+| Service | service.py | Core logic | IBGatewayConnectionService |
+```
+
+**Example - Inefficient (Avoid)**:
+```markdown
+### Module Specifications
+
+**Module: Models**
+File: src/ibmcp/gateway/models.py
+Purpose: Defines data structures for gateway connections
+Key Classes:
+- ConnectionConfig: Configuration for connection parameters
+- IbConnection: Represents active connection state
+... (repeating format for each module - wastes tokens)
+```
+
+### 10. Tag Completeness Before Commit
+
+**Pre-Commit Checklist**:
+```markdown
+### Traceability Validation
+
+- [ ] All 9 mandatory tags present (@brd through @tasks)
+- [ ] Optional tags included (@impl, @ctr) if project uses them
+- [ ] Each tag references existing document (links work)
+- [ ] Tag format correct: `@type: DOC-ID:REQ-ID`
+- [ ] Upstream documents updated with downstream reference to this tasks_plans
+- [ ] Traceability matrix updated with this tasks_plans
+- [ ] Validation script passes: `python scripts/validate_tags_against_docs.py`
+```
+
+## Examples and Use Cases
+
+### Example 1: Starting New Implementation from Scratch
+
+**Scenario**: Implementing TASKS-001 Gateway Connection Service, no code exists
+
+**tasks_plans Structure**:
+```markdown
+# TASKS_PLANS-001: Implement TASKS-001 Gateway Connection from Scratch
+
+## Objective
+Implement complete gateway connection service with retry logic, circuit breaker,
+and 100% BDD coverage starting from empty repository.
+
+## Context
+**Code Status**: ❌ 0% - No /src directory exists
+
+## Task List
+### Phase 0: Documentation Review ✅
+### Phase 1: Project Foundation (8 hours)
+  - TASK-1.1: Create directory structure
+  - TASK-1.2: Set up pyproject.toml with dependencies
+  - TASK-1.3: Configure pytest
+### Phase 2: Core Implementation (38 hours)
+  - TASK-2.1 through TASK-2.6: Implement modules
+### Phase 3: Testing (20 hours)
+### Phase 4: Quality Assurance (14 hours)
+
+## Implementation Guide
+**Step 1: Create Project Structure**
+```bash
+mkdir -p /opt/data/ibmcp/src/ibmcp/gateway
+touch /opt/data/ibmcp/src/ibmcp/__init__.py
+...
+```
+```
+
+**Key Features**:
+- Starts from zero (no existing code)
+- Detailed setup instructions
+- Extensive verification steps
+- Multiple phases for checkpoint resumption
+
+### Example 2: Continuing Partially Complete Work
+
+**Scenario**: Phase 2 is 50% done, resuming in new session
+
+**tasks_plans Structure**:
+```markdown
+# TASKS_PLANS-002: Continue TASKS-001 Phase 2 Implementation
+
+## Objective
+Complete Phase 2.3 through 2.6 of TASKS-001 gateway connection service.
+
+## Context
+**Code Status**: 🟡 50% Phase 2 Complete
+- ✅ Phase 2.1: Models implemented and tested
+- ✅ Phase 2.2: Errors implemented and tested
+- ⏳ Phase 2.3: Protocol interface (IN PROGRESS - 30% done)
+- ⏸️ Phase 2.4: Connection service (NOT STARTED)
+- ⏸️ Phase 2.5: Retry handler (NOT STARTED)
+- ⏸️ Phase 2.6: Circuit breaker (NOT STARTED)
+
+**Previous Work** (from TASKS_PLANS-001):
+- Created: models.py, errors.py (fully tested)
+- Partially created: connector.py (protocol interface stubbed)
+- Environment: Poetry venv active, pytest configured
+
+## Task List
+### Phase 2 (Continued): Core Implementation
+- [x] TASK-2.1: Models ✅
+- [x] TASK-2.2: Errors ✅
+- [ ] TASK-2.3: Protocol interface (RESUME HERE 👈)
+- [ ] TASK-2.4: Connection service
+- [ ] TASK-2.5: Retry handler
+- [ ] TASK-2.6: Circuit breaker
+
+## Implementation Guide
+**Step 1: Resume Protocol Interface (TASK-2.3)**
+
+Current state:
+```bash
+cat src/ibmcp/gateway/connector.py
+# Shows: IBGatewayConnector protocol with stub methods
+```
+
+Next actions:
+```bash
+# Complete protocol interface per TASKS-001 specification
+# Add abstract methods: connect(), disconnect(), verify_connection(), get_state()
+# ... (implementation continues)
+```
+```
+
+**Key Features**:
+- Clear state of what's done vs. pending
+- References previous tasks_plans
+- Identifies resume point explicitly
+- Verifies current state before continuing
+
+### Example 3: Bug Fix or Enhancement
+
+**Scenario**: Add circuit breaker timeout configuration per new requirement
+
+**tasks_plans Structure**:
+```markdown
+# TASKS_PLANS-005: Add Circuit Breaker Timeout Configuration
+
+## Objective
+Add configurable timeout parameter to circuit breaker per REQ-042 enhancement.
+
+## Context
+**Code Status**: ✅ Existing implementation functional
+- Circuit breaker implemented in src/ibmcp/gateway/circuit_breaker.py
+- Current timeout: hardcoded 60 seconds
+- New requirement: Make timeout configurable via environment variable
+
+**Impact Analysis**:
+- Files to modify: circuit_breaker.py, models.py (add config field)
+- Tests to update: test_circuit_breaker.py (add config test cases)
+- Docs to update: README.md (document new env var)
+
+## Task List
+### Phase 1: Update Models (1 hour)
+- [ ] Add `circuit_breaker_timeout: int = 60` to ConnectionConfig
+- [ ] Update validation: timeout must be 10-300 seconds
+
+### Phase 2: Update Circuit Breaker (2 hours)
+- [ ] Modify CircuitBreaker.__init__ to accept timeout parameter
+- [ ] Read timeout from ConnectionConfig
+- [ ] Update all instantiations
+
+### Phase 3: Update Tests (2 hours)
+- [ ] Add test for custom timeout configuration
+- [ ] Add test for timeout validation (must be 10-300)
+- [ ] Update existing tests to use default timeout
+
+### Phase 4: Documentation (1 hour)
+- [ ] Update README.md with IB_CIRCUIT_BREAKER_TIMEOUT env var
+- [ ] Update SPEC-001 with new configuration parameter
+- [ ] Update TASKS-001 traceability matrix
+
+## Implementation Guide
+**Step 1: Update ConnectionConfig**
+
+File: src/ibmcp/gateway/models.py
+
+```python
+class ConnectionConfig(BaseModel):
+    # ... existing fields ...
+    circuit_breaker_timeout: int = Field(
+        default=60,
+        ge=10,
+        le=300,
+        description="Circuit breaker timeout in seconds"
+    )
+    # ... rest of class ...
+```
+
+Verification:
+```bash
+pytest tests/unit/test_models.py::test_connection_config_validation -v
+# Expected: All tests pass
+```
+
+**Step 2: Update CircuitBreaker**
+... (continues)
+```
+
+**Key Features**:
+- Focused on specific enhancement
+- Impact analysis upfront
+- Smaller, targeted phases
+- Clear modification points
+
+## Token Efficiency Guidelines
+
+### Target Sizes
+
+**Optimal**: 25,000 - 40,000 tokens (100KB - 160KB)
+- Claude Code: Handles up to 50,000 tokens (200KB) standard
+- Maximum: 100,000 tokens (400KB) before splitting
+- Gemini CLI: Use file read tool (not @) for large files
+
+**When to Split**:
+- tasks_plans exceeds 100,000 tokens
+- Logical phase boundaries exist
+- Multiple independent workstreams
+
+**Splitting Pattern**:
+```
+TASKS_PLANS-001_gateway_connection_part1_20251112_092843.md (Phase 0-2)
+TASKS_PLANS-001_gateway_connection_part2_20251112_092843.md (Phase 3-4)
+```
+
+### Efficiency Techniques
+
+**1. Use Tables for Repetitive Data**
+
+❌ Inefficient:
+```markdown
+**Module 1: Models**
+- File: models.py
+- Purpose: Data structures
+- Lines: 120
+- Test coverage: 95%
+
+**Module 2: Errors**
+- File: errors.py
+- Purpose: Exceptions
+- Lines: 85
+- Test coverage: 100%
+```
+
+✅ Efficient:
+```markdown
+| Module | File | Purpose | Lines | Coverage |
+|--------|------|---------|-------|----------|
+| Models | models.py | Data structures | 120 | 95% |
+| Errors | errors.py | Exceptions | 85 | 100% |
+```
+
+**2. Reference Instead of Duplicate**
+
+❌ Inefficient:
+```markdown
+## Error Handling
+
+(Copies entire error handling specification from SPEC-001)
+```
+
+✅ Efficient:
+```markdown
+## Error Handling
+
+Per [SPEC-001:error_handling](../SPEC/SPEC-001.yaml#error_handling):
+- 6 typed exceptions with error codes (IB_CONN_001 through IB_CONN_006)
+- Retry strategy: Exponential backoff, max 6 attempts
+- See SPEC-001 for complete specification
+```
+
+**3. Summarize Long Bash Output**
+
+❌ Inefficient:
+```markdown
+Expected output:
+(Pastes 200 lines of pytest output)
+```
+
+✅ Efficient:
+```markdown
+Expected output:
+```
+tests/unit/test_models.py::test_connection_config ✓
+tests/unit/test_models.py::test_ib_connection ✓
+... (15 more tests) ...
+================== 17 passed in 0.52s ==================
+```
+```
+
+**4. Use Abbreviations and Codes**
+
+✅ Efficient:
+```markdown
+| Error Code | Exception | Retryable | HTTP |
+|------------|-----------|-----------|------|
+| IB_CONN_001 | ConnectionError | ✓ | 503 |
+| IB_CONN_002 | ClientIDInUseError | ✓ | 409 |
+| IB_CONN_003 | TimeoutError | ✓ | 504 |
+| IB_CONN_004 | AuthenticationError | ✗ | 401 |
+```
+
+**5. Collapse Nested Details**
+
+Instead of:
+```markdown
+### Phase 2: Implementation
+#### 2.1: Models
+##### 2.1.1: ConnectionConfig
+###### Fields:
+- host: string
+- port: integer
+- ...
+```
+
+Use:
+```markdown
+### Phase 2: Implementation
+
+**TASK-2.1: Models** (6 hours)
+- File: models.py
+- Classes: ConnectionConfig (8 fields), IbConnection (5 fields), ConnectionState (enum)
+- See [SPEC-001:models](../SPEC/SPEC-001.yaml#models) for field specifications
+```
+
+## Troubleshooting
+
+### Issue 1: Missing Tags Error
+
+**Symptom**:
+```bash
+python validate_tags_against_docs.py
+Error: Missing required tag @bdd
+```
+
+**Cause**: Incomplete cumulative tag chain
+
+**Solution**:
+1. Review cumulative tagging requirements section above
+2. Identify missing layer (Layer 4: BDD in this case)
+3. Add tag with correct format: `@bdd: BDD-001:SCENARIO-005`
+4. Verify upstream BDD document exists
+5. Rerun validation script
+
+### Issue 2: Bash Commands Don't Execute
+
+**Symptom**: Copy-paste bash commands fail with errors
+
+**Causes & Solutions**:
+
+**Cause 1**: Relative paths
+```bash
+# ❌ Fails in new session
+cd ../src
+
+# ✅ Always use absolute paths
+cd /opt/data/project/src
+```
+
+**Cause 2**: Environment not activated
+```bash
+# ❌ poetry/python not found
+poetry install
+
+# ✅ Activate environment first
+source /opt/data/project/.venv/bin/activate
+poetry install
+```
+
+**Cause 3**: Missing prerequisites
+```bash
+# ❌ pytest fails (not installed)
+pytest tests/
+
+# ✅ Install dependencies first
+poetry install
+poetry run pytest tests/
+```
+
+### Issue 3: Can't Resume from Previous Session
+
+**Symptom**: Unclear where to continue work
+
+**Solution**: Update tasks_plans with progress markers
+
+```markdown
+## Task List Progress
+
+### Phase 2: Core Implementation (38 hours)
+- [x] TASK-2.1: Models ✅ (Completed 2025-11-12 10:30)
+- [x] TASK-2.2: Errors ✅ (Completed 2025-11-12 12:15)
+- [ ] TASK-2.3: Protocol interface ⏳ **RESUME HERE** 👈
+  - Current state: File created, stub methods added
+  - Next: Implement abstract methods per SPEC-001
+  - File: src/ibmcp/gateway/connector.py
+- [ ] TASK-2.4: Connection service
+```
+
+### Issue 4: Token Limit Exceeded
+
+**Symptom**: Document > 100,000 tokens
+
+**Solutions**:
+
+**Option 1**: Split into multiple tasks_plans
+```
+TASKS_PLANS-001_part1_foundation_and_setup.md
+TASKS_PLANS-001_part2_core_implementation.md
+TASKS_PLANS-001_part3_testing_and_qa.md
+```
+
+**Option 2**: Use external references
+```markdown
+## BDD Scenarios
+
+See [BDD_SCENARIO_MAPPING.md](./BDD_SCENARIO_MAPPING.md) for complete scenario-to-test mapping.
+
+Summary: 18 scenarios across BDD-001 and BDD-007
+```
+
+**Option 3**: Compress bash commands
+```markdown
+**Setup Commands** (see [setup.sh](./scripts/setup.sh)):
+```bash
+./scripts/setup.sh --env development
+```
+```
+
+### Issue 5: Traceability Links Broken
+
+**Symptom**: Tag references non-existent document
+
+**Diagnosis**:
+```bash
+# Check if document exists
+ls /opt/data/docs_flow_framework/ai_dev_flow/REQ/REQ-001.md
+# Error: No such file or directory
+```
+
+**Solutions**:
+
+**Solution 1**: Correct document path
+```markdown
+# ❌ Wrong path
+@req: REQ-001
+
+# ✅ Correct with full path verification
+@req: REQ-001 (verified: /opt/data/project/docs/REQ/REQ-001.md exists)
+```
+
+**Solution 2**: Create missing document
+```bash
+# If document truly should exist, create it
+cd /opt/data/docs_flow_framework/ai_dev_flow/REQ
+cp REQ-TEMPLATE.md REQ-001_gateway_requirements.md
+# ... (populate with requirements)
+```
+
+**Solution 3**: Use correct reference
+```markdown
+# Check parent TASKS document for correct tag
+cat /opt/data/project/docs/TASKS/TASKS-001.md | grep "@req"
+# Copy exact tag format used in TASKS
+```
+
+### Issue 6: Verification Steps Fail
+
+**Symptom**: Verification command returns unexpected output
+
+**Example**:
+```bash
+pytest --cov=src/module --cov-report=term
+# Expected: ≥85% coverage
+# Actual: 42% coverage
+```
+
+**Solutions**:
+
+**Solution 1**: Identify uncovered code
+```bash
+pytest --cov=src/module --cov-report=html
+open htmlcov/index.html
+# Review uncovered lines, add tests
+```
+
+**Solution 2**: Update verification expectation
+```markdown
+# If 42% is acceptable at this phase:
+Verification:
+```bash
+pytest --cov=src/module --cov-report=term
+# Expected: ≥40% coverage (Phase 2.1 only, will reach 85% by Phase 3)
+```
+```
+
+**Solution 3**: Fix implementation
+```bash
+# Add missing tests to reach target
+# ... (implement tests for uncovered code)
+pytest --cov=src/module --cov-report=term
+# Re-verify: ≥85% coverage ✅
+```
+
+## Appendix A: Quick Reference
+
+### Cumulative Tags Checklist
+
+```markdown
+- [ ] @brd: BRD-___:REQ-___
+- [ ] @prd: PRD-___:REQ-___
+- [ ] @ears: EARS-___:REQ-___
+- [ ] @bdd: BDD-___:SCENARIO-___
+- [ ] @adr: ADR-___
+- [ ] @sys: SYS-___:REQ-___
+- [ ] @req: REQ-___
+- [ ] @spec: SPEC-___:SECTION
+- [ ] @tasks: TASKS-___:PHASE-_._
+- [ ] @impl: IMPL-___ (optional)
+- [ ] @ctr: CTR-___:SECTION (optional)
+```
+
+### Common Bash Commands
+
+```bash
+# Project setup
+mkdir -p /opt/data/project/{src,tests,docs}
+cd /opt/data/project
+
+# Dependency management
+poetry init
+poetry add package-name
+poetry install
+poetry show
+
+# Testing
+pytest tests/ -v
+pytest --cov=src --cov-report=term
+pytest --cov=src --cov-report=html
+
+# Code quality
+ruff check .
+black --check .
+mypy src/
+
+# Git operations
+git status
+git add .
+git commit -m "message"
+git push origin branch-name
+```
+
+### File Path Patterns
+
+```
+/opt/data/PROJECT/
+├── src/
+│   └── MODULE/
+│       └── COMPONENT/
+│           ├── __init__.py
+│           ├── models.py
+│           ├── errors.py
+│           └── service.py
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│   └── bdd/
+├── docs/
+│   ├── BRD/
+│   ├── SPEC/
+│   ├── TASKS/
+│   └── tasks_plans/
+└── pyproject.toml
+```
+
+## Appendix B: Validation Scripts
+
+### Tag Validation Script
+
+**Location**: `/opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_docs.py`
+
+**Usage**:
+```bash
+python validate_tags_against_docs.py --file tasks_plans/TASKS_PLANS-001.md
+
+# Output:
+# ✅ Tag validation passed
+# ✅ Found 9/9 mandatory tags
+# ✅ Found 2/2 optional tags (@impl, @ctr)
+# ✅ All tags resolve to existing documents
+# ✅ Tag format compliant
+# ✅ Cumulative hierarchy respected
+```
+
+**Common Exit Codes**:
+- 0: All validations passed
+- 1: Missing mandatory tags
+- 2: Invalid tag format
+- 3: Broken document references
+- 4: Hierarchy violations
+
+### Traceability Matrix Update Script
+
+**Location**: `/opt/data/docs_flow_framework/ai_dev_flow/scripts/update_traceability_matrix.py`
+
+**Usage**:
+```bash
+python update_traceability_matrix.py \
+  --artifact tasks_plans/TASKS_PLANS-001.md \
+  --matrix tasks_plans/TASKS_PLANS-000_TRACEABILITY_MATRIX.md
+
+# Output:
+# ✅ Matrix updated with TASKS_PLANS-001
+# ✅ Upstream references: 11 documents
+# ✅ Downstream impacts: 6 code files
+# ✅ Coverage: 100% requirements traced
+```
+
+---
+
+## Conclusion
+
+tasks_plans documents are essential for **session-based implementation work** with AI assistants. They bridge the gap between abstract code generation plans (TASKS) and actual implementation by providing:
+
+1. **Executable bash commands** for each step
+2. **Verification checkpoints** to ensure correctness
+3. **Session context** for resumption in new conversations
+4. **Complete traceability** through cumulative tagging
+5. **Risk mitigation** through planning and documentation
+
+**Key Takeaways**:
+- tasks_plans ≠ TASKS (implementation HOW vs. code WHAT)
+- Layer 12 position requires ALL upstream tags (@brd through @tasks)
+- Bash commands must be executable and verified
+- Use checklists for progress tracking
+- Document decisions and deviations
+- Optimize for token efficiency (25-40KB target)
+- Validate tags before commit
+
+**Getting Started**:
+1. Copy [TASKS_PLANS-TEMPLATE.md](./TASKS_PLANS-TEMPLATE.md)
+2. Follow [Document Structure Guide](#document-structure-guide)
+3. Include all [Cumulative Tags](#cumulative-tagging-requirements)
+4. Write [Executable Steps](#6-implementation-guide-section)
+5. Validate with scripts
+6. Commit and track in index
+
+**Questions?**:
+- Review [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) for workflow
+- Check [TRACEABILITY.md](../TRACEABILITY.md) for tagging hierarchy
+- Consult [TASKS/README.md](../TASKS/README.md) for parent artifact guidance
+
+---
+
+**Document Version**: 1.0.0
+**Last Updated**: 2025-11-12
+**Framework Version**: AI Dev Flow 2.0

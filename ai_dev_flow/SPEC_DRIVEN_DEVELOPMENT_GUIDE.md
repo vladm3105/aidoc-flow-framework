@@ -7,9 +7,9 @@ Development Principles Guide
 
 ### Workflow Overview
 
-The SDD workflow transforms business needs into production-ready code through traceable artifacts organized in 10 distinct layers:
+The SDD workflow transforms business needs into production-ready code through traceable artifacts organized in 12 distinct layers:
 
-**Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Project Management Layer** (IMPL) → **Interface Layer** (CTR - optional) → **Implementation Layer** (SPEC) → **Code Generation Layer** (TASKS) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
+**Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Project Management Layer** (IMPL) → **Interface Layer** (CTR - optional) → **Implementation Layer** (SPEC) → **Code Generation Layer** (TASKS) → **Implementation Plans Layer** (tasks_plans) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
 
 **Key Decision Point**: After IMPL, if the requirement involves an interface (API, event schema, data model), create CTR before SPEC. Otherwise, go directly to SPEC.
 
@@ -49,11 +49,15 @@ graph LR
         TASKS[TASKS<br/>Generation Plans]
     end
 
-    subgraph L9["Layer 9: Execution"]
+    subgraph L9["Layer 9: Implementation Plans"]
+        TP[tasks_plans<br/>Session Context]
+    end
+
+    subgraph L10["Layer 10: Execution"]
         CODE[Code] --> TESTS[Tests]
     end
 
-    subgraph L10["Layer 10: Validation"]
+    subgraph L11["Layer 11: Validation"]
         VAL[Validation] --> REV[Review] --> PROD[Production]
     end
 
@@ -64,7 +68,8 @@ graph LR
     IMPL --> CTR
     CTR --> SPEC
     SPEC --> TASKS
-    TASKS --> CODE
+    TASKS --> TP
+    TP --> CODE
     TESTS --> VAL
     PROD -.-> BRD
 
@@ -79,6 +84,7 @@ graph LR
     style CTR fill:#e2e3e5,stroke:#616161,stroke-width:2px
     style SPEC fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     style TASKS fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    style TP fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     style CODE fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     style TESTS fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
     style VAL fill:#e0f2f1,stroke:#00897b,stroke-width:2px
@@ -95,8 +101,9 @@ graph LR
 - **Layer 6 - Interface** (Gray): CTR (API contracts - created when needed)
 - **Layer 7 - Implementation** (Orange): SPEC (Technical specifications - YAML)
 - **Layer 8 - Code Generation** (Pink): TASKS (Detailed implementation tasks)
-- **Layer 9 - Execution** (Purple/Green): Code → Tests (Implementation and validation)
-- **Layer 10 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
+- **Layer 9 - Implementation Plans** (Light Blue): tasks_plans (Session context with bash commands)
+- **Layer 10 - Execution** (Purple/Green): Code → Tests (Implementation and validation)
+- **Layer 11 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
 
 See [index.md](./index.md#traceability-flow) for additional workflow visualizations and [TRACEABILITY.md](./TRACEABILITY.md) for complete traceability guidelines.
 
@@ -266,34 +273,76 @@ Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructi
 - **Traceability**: Docstring links to all artifacts (PRD, EARS, REQ, ADR, CTR if applicable, BDD, SPEC)
 
 ## Universal Tag Header (Required)
-- All artifacts (Markdown/YAML/Feature/Code) must include BDD-style tags at the top of the file to declare upstream dependencies.
-- Minimum: `@requirement:[REQ-...](...)`; also add `@adr:[ADR-...](...)` when applicable. Recommended: `@PRD`, `@SYS`, `@EARS`, `@contract`, `@spec`, `@bdd`.
-- **Contract Tag**: Use `@contract:[CTR-NNN](...)` when implementing or consuming an API contract
-- Examples:
-  - Markdown:
 
-    @requirement:[REQ-003](./REQ/risk/lim/REQ-003_position_limit_enforcement.md#REQ-003)
-    @adr:[ADR-033](./ADR/ADR-033_risk_limit_enforcement_architecture.md#ADR-033)
-    @contract:[CTR-001](./CONTRACTS/CTR-001_position_risk_validation.md#CTR-001)
-    @PRD:[PRD-003](./PRD/PRD-003_position_risk_limits.md)
-    @SYS:[SYS-003](./SYS/SYS-003_position_risk_limits.md)
-    @EARS:[EARS-003](./EARS/EARS-003_position_limit_enforcement.md)
-    @spec:[position_limit_service](./SPEC/services/position_limit_service.yaml)
-    @bdd:[BDD-001](./BDD/risk_limits_requirements.feature:L28](./BDD/risk_limits_requirements.feature#L28)
-  - YAML (comment header):
+All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability tags to declare upstream dependencies.
 
-    # @requirement:[REQ-003](../REQ/risk/lim/REQ-003_position_limit_enforcement.md#REQ-003)
-    # @adr:[ADR-033](../ADR/ADR-033_risk_limit_enforcement_architecture.md#ADR-033)
-    # @contract:[CTR-001](../CONTRACTS/CTR-001_position_risk_validation.md#CTR-001)
-    # @spec:[SPEC-001](../SPEC/services/SPEC-001_position_limit_service](../SPEC/services/SPEC-001_position_limit_service.yaml)
-  - Code (Python docstring excerpt):
+### Tag Format: Namespaced Auto-Discovery
 
-    """
-    @requirement:[REQ-003](../../docs_v2/ai_dev_flow/REQ/risk/lim/REQ-003_position_limit_enforcement.md#REQ-003)
-    @adr:[ADR-033](../../docs/examples/ai_dev_flow/ADR/ADR-033_risk_limit_enforcement_architecture.md#ADR-033)
-    @contract:[CTR-001](../../docs/examples/ai_dev_flow/CONTRACTS/CTR-001_position_risk_validation.md#CTR-001)
-    @spec:[position_limit_service](../../docs/examples/ai_dev_flow/SPEC/services/position_limit_service.yaml)
-    """
+**Structure:** `@tag-type: DOCUMENT-ID:REQUIREMENT-ID`
+
+**Tag Types:**
+- `@brd:` - Business Requirements Document references
+- `@prd:` - Product Requirements Document references
+- `@ears:` - EARS requirements references
+- `@sys:` - System Requirements references
+- `@adr:` - Architecture Decision Record references
+- `@req:` - Requirements Document references (V2)
+- `@spec:` - Specification references
+- `@contract:` - Contract references (CTR)
+- `@test:` - Test scenario references (BDD)
+- `@impl-status:` - Implementation status (pending|in-progress|complete|deprecated)
+
+**Format Rules:**
+- **Multi-requirement documents:** Use namespace format: `BRD-001:FR-030`
+- **Single-document references:** Namespace optional: `SPEC-003` or `SPEC-003:main`
+- **Multiple references:** Comma-separated: `BRD-001:FR-030, BRD-001:NFR-006`
+- **Multiple documents:** `BRD-001:FR-020, BRD-002:FR-105`
+
+**Examples:**
+
+Python docstring:
+```python
+"""Market data service implementation.
+
+@brd: BRD-001:FR-010, BRD-001:FR-011, BRD-001:NFR-005
+@prd: PRD-003
+@req: REQ-003:interface-spec
+@adr: ADR-033
+@contract: CTR-001
+@spec: SPEC-002
+@test: BDD-002:scenario-realtime, BDD-008:scenario-cache
+@impl-status: complete
+"""
+```
+
+Markdown document:
+```markdown
+@brd: BRD-001:FR-030, BRD-001:NFR-006
+@prd: PRD-003
+@req: REQ-003
+@adr: ADR-033
+@contract: CTR-001
+@spec: SPEC-002
+@test: BDD-001:scenario-enforcement
+@impl-status: complete
+```
+
+YAML comment header:
+```yaml
+# @brd: BRD-001:FR-010, BRD-001:NFR-005
+# @req: REQ-003:data-schema
+# @spec: SPEC-002
+# @impl-status: complete
+```
+
+Gherkin feature file:
+```gherkin
+# @brd: BRD-001:FR-030
+# @req: REQ-003
+# @spec: SPEC-002
+
+Feature: Position Limit Enforcement
+```
 
 ## Tagging Goals
 - End-to-end traceability: Connect REQ → ADR → CTR → BDD → SPEC → Code in a verifiable chain.
@@ -302,6 +351,40 @@ Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructi
 - Quality gates: Enable automated checks (ID format, link existence, required references) before commit.
 - Consistency and discoverability: Standardized, grep-friendly headers make related artifacts easy to find.
 - Auditability and compliance: Provide clear linkage for decisions, verification, and implementation.
+
+## Auto-Discovery Validation
+
+Tags enable automated traceability validation. Code becomes the single source of truth, matrices are auto-generated.
+
+**Validation Workflow:**
+```bash
+# Extract all tags from codebase
+python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
+
+# Validate tags reference real documents
+python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
+
+# Generate bidirectional matrices
+python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json --output docs/generated/matrices/
+
+# CI/CD enforcement
+pre-commit run validate-traceability-tags
+```
+
+**Benefits Over Manual Section 7:**
+- ✅ Single source of truth: Code contains tags
+- ✅ Automated validation: Scripts check correctness
+- ✅ No drift: Tags embedded in code cannot become stale
+- ✅ Bidirectional: Forward/reverse matrices auto-generated
+- ✅ CI/CD enforceable: Pre-commit hooks validate tags
+- ✅ Namespace clarity: Explicit document identification (BRD-001:FR-030)
+
+**Tag Validation Rules:**
+1. **Format Check:** All @brd/@prd/@req tags must use DOCUMENT-ID:REQUIREMENT-ID format
+2. **Document Exists:** DOCUMENT-ID must reference existing file in docs/{TYPE}/
+3. **Requirement Exists:** REQUIREMENT-ID must exist within the document
+4. **No Orphans:** All tags must resolve to actual requirements
+5. **Implementation Status:** @impl-status must be one of: pending|in-progress|complete|deprecated
 
 ## Workflow (Spec → Code)
 
@@ -503,12 +586,13 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
 **Pre-Commit Checklist:**
 - [ ] IDs comply with ID_NAMING_STANDARDS.md
 - [ ] All cross-references use markdown links
-- [ ] **Traceability matrix updated** ⚠️ **MANDATORY**
-  - [ ] [TYPE]-000_TRACEABILITY_MATRIX.md exists
-  - [ ] This document added to matrix inventory
-  - [ ] Upstream sources documented
-  - [ ] Downstream artifacts documented (even if "To Be Created")
-  - [ ] No orphaned artifacts
+- [ ] **Traceability tags validated** ⚠️ **MANDATORY**
+  - [ ] All code files must have @brd:/@req:/@spec: tags
+  - [ ] Tag format validation passes: `python scripts/extract_tags.py --validate-only`
+  - [ ] Tags reference existing documents: `python scripts/validate_tags_against_docs.py --strict`
+  - [ ] Matrices auto-generated: `python scripts/generate_traceability_matrices.py --auto`
+  - [ ] No orphaned tags
+  - [ ] Implementation status defined (@impl-status)
 - [ ] BDD scenarios tagged with @requirement and @adr links
 - [ ] Validation scripts pass
 

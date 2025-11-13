@@ -12,11 +12,11 @@ This document defines the standard traceability practices for the AI-Driven Spec
 - **Anchors/IDs**: Primary identifiers within this document
 - **Code Path(s)**: Implementation locations (where applicable)
 
-**10-Layer Workflow**: This traceability system implements the 10-layer SDD workflow:
+**12-Layer Workflow**: This traceability system implements the 12-layer SDD workflow:
 ```
 Business (BRD/PRD/EARS) → Testing (BDD) → Architecture (ADR/SYS) → Requirements (REQ) →
 Project Management (IMPL) → Interface (CTR) → Implementation (SPEC) → Code Generation (TASKS) →
-Execution (Code/Tests) → Validation
+Implementation Plans (tasks_plans) → Execution (Code/Tests) → Validation
 ```
 
 ## Standard Traceability Section Structure
@@ -25,7 +25,7 @@ Execution (Code/Tests) → Validation
 
 **Note**: Layers group related artifacts by function. The arrows show the actual sequential workflow. Follow the connections (arrows) for the correct document order, not the layer positioning.
 
-**Sequential Flow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code → Tests → Validation
+**Sequential Flow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → tasks_plans → Code → Tests → Validation
 
 ```mermaid
 graph LR
@@ -61,11 +61,15 @@ graph LR
         TASKS[TASKS<br/>Generation Plans]
     end
 
-    subgraph L9["Execution Layer"]
+    subgraph L9["Implementation Plans Layer"]
+        TP[tasks_plans<br/>Session Context]
+    end
+
+    subgraph L10["Execution Layer"]
         CODE[Code] --> TESTS[Tests]
     end
 
-    subgraph L10["Validation Layer"]
+    subgraph L11["Validation Layer"]
         VAL[Validation] --> REV[Review] --> PROD[Production]
     end
 
@@ -76,7 +80,8 @@ graph LR
     IMPL --> CTR
     CTR --> SPEC
     SPEC --> TASKS
-    TASKS --> CODE
+    TASKS --> TP
+    TP --> CODE
     TESTS --> VAL
     PROD -.-> BRD
 
@@ -91,6 +96,7 @@ graph LR
     style CTR fill:#e2e3e5,stroke:#616161,stroke-width:2px
     style SPEC fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     style TASKS fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    style TP fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     style CODE fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     style TESTS fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
     style VAL fill:#e0f2f1,stroke:#00897b,stroke-width:2px
@@ -98,12 +104,12 @@ graph LR
     style PROD fill:#e0f2f1,stroke:#00897b,stroke-width:2px
 ```
 
-**10-Layer Workflow Flow:**
+**12-Layer Workflow Flow:**
 ```
 Business (BRD → PRD → EARS) → Testing (BDD) → Architecture (ADR → SYS) →
 Requirements (REQ) → Project Management (IMPL) → Interface (CTR - optional) →
-Implementation (SPEC) → Code Generation (TASKS) → Execution (Code → Tests) →
-Validation (Validation → Review → Production)
+Implementation (SPEC) → Code Generation (TASKS) → Implementation Plans (tasks_plans) →
+Execution (Code → Tests) → Validation (Validation → Review → Production)
 ```
 
 **Legend:**
@@ -115,8 +121,9 @@ Validation (Validation → Review → Production)
 - **Layer 6 - Interface** (Gray): CTR (API contracts - created when needed)
 - **Layer 7 - Implementation** (Orange): SPEC (Technical specifications - YAML)
 - **Layer 8 - Code Generation** (Pink): TASKS (Detailed implementation tasks)
-- **Layer 9 - Execution** (Purple/Green): Code → Tests (Implementation and validation)
-- **Layer 10 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
+- **Layer 9 - Implementation Plans** (Light Blue): tasks_plans (Session context with bash commands)
+- **Layer 10 - Execution** (Purple/Green): Code → Tests (Implementation and validation)
+- **Layer 11 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
 
 ### For Markdown Documents (PRD, SYS, EARS, REQ, ADR, CTR, IMPL, TASKS)
 
@@ -145,12 +152,97 @@ Document the technical specifications and designs derived from this document.
 | BDD | [BDD-NNN](../BDD/BDD-NNN_...feature#scenarios) | [Test scenarios] | Acceptance test scenarios |
 | SPEC | [SPEC-NNN](../SPEC/.../SPEC-NNN_...yaml) | [Technical specification] | Implementation blueprint (HOW to build) |
 | TASKS | [TASKS-NNN](../TASKS/TASKS-NNN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code |
+| tasks_plans | [TASKS_PLANS-NNN](../tasks_plans/TASKS_PLANS-NNN_...md) | [Implementation work plan] | Session context with bash commands to execute TASKS |
 
 ### Document Links
 - **Anchors/IDs**: `#PRIMARY-ID` (e.g., `#REQ-003`, `#ADR-033`, `#IMPL-001`)
 - **Code Path(s)**: `path/to/implementation.py` (if applicable)
 - **Cross-references**: [Related documents and their relationship]
 ```
+
+## Tag-Based Auto-Discovery Alternative
+
+**Principle:** Single source of truth (code) → Automated matrix generation
+
+Instead of manually maintaining Section 7, embed lightweight tags in code docstrings and documentation files. Scripts extract tags and auto-generate traceability matrices.
+
+### Tag Format
+
+```python
+"""Module description.
+
+@brd: BRD-001:FR-030, BRD-001:NFR-006, BRD-002:FR-015
+@prd: PRD-003
+@sys: SYS-008:PERF-001
+@req: REQ-003:interface-spec
+@adr: ADR-033
+@spec: SPEC-003
+@contract: CTR-001
+@test: BDD-003:scenario-1, BDD-003:scenario-5
+@impl-status: complete
+"""
+```
+
+### Tag Structure
+
+**Format:** `@tag-type: DOCUMENT-ID:REQUIREMENT-ID`
+
+**Components:**
+- **Tag Type:** @brd, @prd, @ears, @sys, @adr, @req, @spec, @contract, @test, @impl-status
+- **Document ID:** BRD-001, SYS-008, SPEC-003, CTR-001
+- **Requirement ID:** FR-030, NFR-006, PERF-001
+- **Separator:** Colon (:) separates document from requirement
+- **Multiple:** Comma-separated list
+
+**Examples:**
+```python
+# Multi-requirement document reference
+@brd: BRD-001:FR-030, BRD-001:NFR-006
+
+# Multiple documents
+@brd: BRD-001:FR-020, BRD-002:FR-105
+
+# System requirement with sub-ID
+@sys: SYS-008:PERF-001
+
+# Single document reference (no sub-ID needed)
+@spec: SPEC-003
+@contract: CTR-001
+@test: BDD-003:scenario-realtime-quote
+```
+
+### Validation
+
+**Extract tags from all files:**
+```bash
+python scripts/extract_tags.py --source src/ docs/ --output docs/generated/tags.json
+```
+
+**Validate tags against document existence:**
+```bash
+python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --docs docs/ --strict
+```
+
+**Generate bidirectional matrices:**
+```bash
+python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json --output docs/generated/matrices/
+```
+
+**Validation Rules:**
+1. **Format Check:** All @brd/@prd/@req tags must use DOCUMENT-ID:REQUIREMENT-ID format
+2. **Document Exists:** DOCUMENT-ID must reference existing file in docs/{TYPE}/
+3. **Requirement Exists:** REQUIREMENT-ID must exist within the document
+4. **No Orphans:** All tags must resolve to actual requirements
+5. **Implementation Status:** @impl-status must be one of: pending|in-progress|complete|deprecated
+
+### Benefits
+
+- ✅ Code is single source of truth
+- ✅ No manual Section 7 maintenance
+- ✅ Automated validation prevents drift
+- ✅ Bidirectional matrices auto-generated
+- ✅ CI/CD can enforce tag presence
+- ✅ Explicit document namespacing prevents ambiguity (BRD-001:FR-030 vs BRD-002:FR-030)
 
 ### Example: Complete Traceability Section
 
