@@ -442,6 +442,178 @@ python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
 - Test files explicitly reference requirements under test
 - Specifications document complete upstream context
 
+## Artifact Tracking Methods
+
+The SDD workflow employs different tracking methods for different artifact types based on their nature and usage patterns. Understanding these methods is essential for maintaining complete traceability.
+
+### Tracking Method Categories
+
+**1. External (Business Owner)**
+- Artifact exists outside the framework
+- No formal template or tagging required
+- Referenced by downstream artifacts
+
+**2. Formal Templates (No Tags)**
+- Top-level artifacts with no upstream dependencies
+- Use formal templates from framework
+- No tags required as they are root documents
+
+**3. Formal Templates (With Cumulative Tags)**
+- Middle-tier artifacts with formal templates
+- Must include ALL upstream tags (cumulative inheritance)
+- Tags embedded in document Traceability section
+
+**4. Project Files (With All Tags)**
+- Implementation execution context
+- Include complete upstream tag chain
+- Support automation and CI/CD integration
+
+**5. Code (Docstring Tags)**
+- Implementation files
+- ALL upstream tags in docstrings
+- Enables automated traceability extraction
+
+**6. Tests (BDD + Docstring Tags)**
+- Test specifications and implementations
+- BDD uses Gherkin tags
+- Unit/integration tests use docstring tags
+
+**7. Embedded Tags + CI/CD**
+- Validation artifacts
+- Tags embedded in validation documents
+- Automated enforcement through CI/CD pipelines
+
+### Artifact Type Tracking Matrix
+
+| Layer | Artifact Type | Tracking Method | Formal Template | Tags Required | Tag Count | Notes |
+|-------|---------------|-----------------|-----------------|---------------|-----------|-------|
+| 0 | Strategy | External | No | No | 0 | Business owner documents |
+| 1 | BRD | Formal Template | Yes | No | 0 | Top level, no upstream |
+| 2 | PRD | Formal Template + Tags | Yes | Yes | 1 | @brd |
+| 3 | EARS | Formal Template + Tags | Yes | Yes | 2 | @brd, @prd |
+| 4 | BDD | Formal Template + Tags | Yes (Gherkin) | Yes | 3 | @brd, @prd, @ears |
+| 5 | ADR | Formal Template + Tags | Yes | Yes | 4 | @brd through @bdd |
+| 6 | SYS | Formal Template + Tags | Yes | Yes | 5 | @brd through @adr |
+| 7 | REQ | Formal Template + Tags | Yes | Yes | 6 | @brd through @sys |
+| 8 | IMPL | Formal Template + Tags | Yes | Yes | 7 | @brd through @req |
+| 9 | CTR | Formal Template + Tags | Yes (Dual: .md + .yaml) | Yes | 8 | @brd through @impl (optional) |
+| 10 | SPEC | Formal Template + Tags | Yes (YAML) | Yes | 7-9 | @brd through @req + optional |
+| 11 | TASKS | Formal Template + Tags | Yes | Yes | 8-10 | @brd through @spec |
+| 12 | task_plans | Project Files + Tags | No (Project-specific) | Yes | 9-11 | All formal artifact tags |
+| 13 | Code | Docstring Tags | No (Implementation) | Yes | 10-12 | ALL upstream tags |
+| 14 | Tests | BDD + Docstring Tags | Mixed | Yes | 11-13 | All upstream + code |
+| 15 | Validation | Embedded Tags + CI/CD | Mixed | Yes | ALL | Complete audit trail |
+
+### Example: Complete Tag Chain in Code
+
+**Code Implementation with Full Traceability**:
+
+```python
+"""
+Position Limit Validation Service
+
+Implements real-time position limit enforcement with portfolio heat monitoring
+and automated trade rejection for risk management compliance.
+
+Business Context:
+Satisfies regulatory requirements for position limit monitoring and prevents
+excessive portfolio concentration risk through automated validation.
+
+## Traceability Tags
+
+@brd: BRD-001:FR-030, BRD-001:NFR-006
+@prd: PRD-003:FEATURE-002
+@ears: EARS-001:EVENT-003, EARS-001:STATE-002
+@bdd: BDD-003:scenario-realtime-quote, BDD-003:scenario-reject-trade
+@adr: ADR-033
+@sys: SYS-008:PERF-001, SYS-008:RELIABILITY-002
+@req: REQ-003:interface-spec, REQ-004:validation-logic
+@impl: IMPL-001:phase1
+@ctr: CTR-001
+@spec: SPEC-003
+@tasks: TASKS-001:task-3, TASKS-001:task-5
+@task_plans: TASKS_PLANS-001
+
+@impl-status: complete
+@test-coverage: 95%
+@performance: p95=45ms
+"""
+
+class PositionLimitService:
+    """
+    Validates position limits against portfolio heat thresholds.
+
+    Implements CTR-001 position_risk_validation interface.
+    """
+
+    def validate_position_limit(self, position: Position) -> ValidationResult:
+        """
+        Validate position against configured limits.
+
+        Implements: REQ-003:interface-spec, EARS-001:EVENT-003
+        Tests: BDD-003:scenario-realtime-quote
+        Performance: p95 < 50ms (SYS-008:PERF-001)
+        """
+        # Implementation
+        pass
+```
+
+**Test File with Complete Traceability**:
+
+```python
+"""
+Position Limit Validation Service Tests
+
+Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
+
+## Traceability Tags
+
+@brd: BRD-001:FR-030
+@prd: PRD-003:FEATURE-002
+@ears: EARS-001:EVENT-003
+@bdd: BDD-003:scenario-realtime-quote
+@adr: ADR-033
+@sys: SYS-008:PERF-001
+@req: REQ-003:interface-spec
+@spec: SPEC-003
+@tasks: TASKS-001:task-3
+@code: src/services/position_limit_service.py
+
+@test-type: integration
+@test-scope: position-limits
+"""
+
+def test_validate_position_limit_within_threshold():
+    """
+    Test: Position within limit is approved
+
+    BDD Scenario: BDD-003:scenario-realtime-quote
+    Requirement: REQ-003:interface-spec, EARS-001:EVENT-003
+    """
+    # Test implementation
+    pass
+```
+
+### Benefits of Mixed Tracking Methods
+
+**Flexibility**:
+- Formal templates for structured artifacts
+- Tags for automation and validation
+- External references for business context
+- Code docstrings for implementation traceability
+
+**Automation**:
+- Scripts extract tags from all sources
+- Automated validation of tag completeness
+- Generated traceability matrices
+- CI/CD enforcement of tag presence
+
+**Clarity**:
+- Each artifact type uses appropriate method
+- Consistent tagging format across all types
+- Clear documentation of tracking approach
+- Complete audit trail from strategy to validation
+
 ## Traceability by Document Type
 
 ### BRD (Business Requirements Document)
