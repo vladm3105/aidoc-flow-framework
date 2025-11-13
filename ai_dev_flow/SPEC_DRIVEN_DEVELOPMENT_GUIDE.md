@@ -15,50 +15,52 @@ The SDD workflow transforms business needs into production-ready code through tr
 
 #### Visual Workflow Diagram
 
+**Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
+
 ```mermaid
 graph LR
     subgraph L1["Layer 1: Business"]
-        BRD[BRD] --> PRD[PRD] --> EARS[EARS]
+        BRD["BRD<br/><small>(0 tags)</small>"] --> PRD["PRD<br/><small>(@brd)</small>"] --> EARS["EARS<br/><small>(@brd, @prd)</small>"]
     end
 
     subgraph L2["Layer 2: Testing"]
-        BDD[BDD<br/>Behavior Tests]
+        BDD["BDD<br/>Behavior Tests<br/><small>(@brd, @prd, @ears)</small>"]
     end
 
     subgraph L3["Layer 3: Architecture"]
-        ADR[ADR] --> SYS[SYS]
+        ADR["ADR<br/><small>(@brd through @bdd)</small>"] --> SYS["SYS<br/><small>(@brd through @adr)</small>"]
     end
 
     subgraph L4["Layer 4: Requirements"]
-        REQ[REQ<br/>Atomic Requirements]
+        REQ["REQ<br/>Atomic Requirements<br/><small>(@brd through @sys)</small>"]
     end
 
     subgraph L5["Layer 5: Project Management"]
-        IMPL[IMPL<br/><i>WHO/WHEN</i>]
+        IMPL["IMPL<br/><i>WHO/WHEN</i><br/><small>(@brd through @req)</small>"]
     end
 
     subgraph L6["Layer 6: Interface"]
-        CTR[CTR<br/><i>optional</i>]
+        CTR["CTR<br/><i>optional</i><br/><small>(@brd through @impl)</small>"]
     end
 
     subgraph L7["Layer 7: Implementation"]
-        SPEC[SPEC<br/><i>YAML</i>]
+        SPEC["SPEC<br/><i>YAML</i><br/><small>(@brd through @req + opt)</small>"]
     end
 
     subgraph L8["Layer 8: Code Generation"]
-        TASKS[TASKS<br/>Generation Plans]
+        TASKS["TASKS<br/>Generation Plans<br/><small>(@brd through @spec)</small>"]
     end
 
     subgraph L9["Layer 9: Implementation Plans"]
-        TP[tasks_plans<br/>Session Context]
+        TP["tasks_plans<br/>Session Context<br/><small>(@brd through @tasks)</small>"]
     end
 
     subgraph L10["Layer 10: Execution"]
-        CODE[Code] --> TESTS[Tests]
+        CODE["Code<br/><small>(@brd through @tasks)</small>"] --> TESTS["Tests<br/><small>(@brd through @code)</small>"]
     end
 
     subgraph L11["Layer 11: Validation"]
-        VAL[Validation] --> REV[Review] --> PROD[Production]
+        VAL["Validation<br/><small>(all upstream)</small>"] --> REV[Review] --> PROD[Production]
     end
 
     EARS --> BDD

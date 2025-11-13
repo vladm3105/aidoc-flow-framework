@@ -79,41 +79,43 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 **⚠️ AUTHORITATIVE WORKFLOW**: This is the single source of truth for the AI Dev Flow traceability chain. All template diagrams reference this section.
 
+**Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
+
 ```mermaid
 flowchart TD
     %% Business Layer
-    BRD[BRD<br/>Business Requirements<br/>High-level business needs]
-    PRD[PRD<br/>Product Requirements<br/>User needs and features]
-    EARS[EARS<br/>Event Analysis Requirements<br/>Event-driven specifications]
+    BRD[BRD<br/>Business Requirements<br/>High-level business needs<br/><small><i>0 tags</i></small>]
+    PRD[PRD<br/>Product Requirements<br/>User needs and features<br/><small><i>@brd</i></small>]
+    EARS[EARS<br/>Event Analysis Requirements<br/>Event-driven specifications<br/><small><i>@brd, @prd</i></small>]
 
     %% Testing Layer
-    BDD[BDD<br/>Behavior-Driven Development<br/>Test scenarios and acceptance criteria]
+    BDD[BDD<br/>Behavior-Driven Development<br/>Test scenarios and acceptance criteria<br/><small><i>@brd, @prd, @ears</i></small>]
 
     %% Architecture Layer
-    ADR[ADR<br/>Architecture Decision Records<br/>Technical decisions and rationale]
-    SYS[SYS<br/>System Requirements<br/>Technical system specifications]
+    ADR[ADR<br/>Architecture Decision Records<br/>Technical decisions and rationale<br/><small><i>@brd through @bdd</i></small>]
+    SYS[SYS<br/>System Requirements<br/>Technical system specifications<br/><small><i>@brd through @adr</i></small>]
 
     %% Requirements Layer
-    REQ[REQ<br/>Atomic Requirements<br/>Granular, testable requirements]
+    REQ[REQ<br/>Atomic Requirements<br/>Granular, testable requirements<br/><small><i>@brd through @sys</i></small>]
 
     %% Project Management Layer
-    IMPL[IMPL<br/>Implementation Plans<br/>WHO/WHEN - Phases, teams, deliverables]
+    IMPL[IMPL<br/>Implementation Plans<br/>WHO/WHEN - Phases, teams, deliverables<br/><small><i>@brd through @req</i></small>]
 
     %% Interface Layer
-    CTR[CTR<br/>API Contracts<br/>Interface definitions between components<br/>Dual format: .md + .yaml]
+    CTR[CTR<br/>API Contracts<br/>Interface definitions between components<br/>Dual format: .md + .yaml<br/><small><i>@brd through @impl</i></small>]
 
     %% Implementation Layer
-    SPEC[SPEC<br/>Technical Specifications<br/>HOW - Implementation blueprints<br/>YAML format with full details]
+    SPEC[SPEC<br/>Technical Specifications<br/>HOW - Implementation blueprints<br/>YAML format with full details<br/><small><i>@brd through @req + opt</i></small>]
 
     %% Code Generation Layer
-    TASKS[TASKS<br/>Code Generation Plans<br/>AI-structured implementation steps]
+    TASKS[TASKS<br/>Code Generation Plans<br/>AI-structured implementation steps<br/><small><i>@brd through @spec</i></small>]
 
     %% Execution Layer
-    Code[Code<br/>Python Implementation<br/>Generated from SPEC + TASKS]
-    Tests[Tests<br/>Test Suites<br/>Unit, Integration, E2E tests]
+    Code[Code<br/>Python Implementation<br/>Generated from SPEC + TASKS<br/><small><i>@brd through @tasks</i></small>]
+    Tests[Tests<br/>Test Suites<br/>Unit, Integration, E2E tests<br/><small><i>@brd through @code</i></small>]
 
     %% Validation Layer
-    Validation[Validation<br/>BDD Test Execution<br/>Verify acceptance criteria]
+    Validation[Validation<br/>BDD Test Execution<br/>Verify acceptance criteria<br/><small><i>all upstream</i></small>]
     Review[Human Review<br/>Architecture Review<br/>Code quality check]
     Prod[Production-Ready Code<br/>Deployed to environment]
 
