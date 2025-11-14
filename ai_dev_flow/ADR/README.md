@@ -1019,7 +1019,7 @@ When writing an ADR, include references that:
 
 See `ADR-TEMPLATE.md` for the complete structural template with all sections and helpful prompts for each part.
 
-See `/opt/data/trading/docs/ADR/ADR-000_technology_stack.md` for a comprehensive real-world example of a fully-developed ADR demonstrating all best practices including:
+See `{project_root}/docs/ADR/ADR-000_technology_stack.md` for a comprehensive real-world example of a fully-developed ADR demonstrating all best practices including:
 
 - Complete upstream source traceability to PRD/EARS/BDD
 - Detailed downstream artifact mapping to SYS/REQ/SPEC/code

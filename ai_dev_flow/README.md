@@ -778,10 +778,10 @@ ai_dev_flow/
 - [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) - Domain customization checklists
 - [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) - Document naming conventions
 
-**For Original Project Context** (if using within trading project):
-- [CLAUDE.md](/opt/data/trading/CLAUDE.md) - Project-level SDD guidance
-- [docs/SPEC/](/opt/data/trading/docs/SPEC/) - Production specifications
-- [docs/src/](/opt/data/trading/docs/src/) - Component implementations
+**For Original Project Context** (example references - replace with your project path):
+- [CLAUDE.md]({project_root}/CLAUDE.md) - Project-level SDD guidance
+- [docs/SPEC/]({project_root}/docs/SPEC/) - Production specifications
+- [docs/src/]({project_root}/docs/src/) - Component implementations
 
 ## Adoption and Support
 

@@ -296,7 +296,7 @@ flowchart TD
 
 **Technology Stack Reference**:
 Before making any technology decisions in ADRs, specifications, or implementation plans:
-1. Read `/opt/data/trading/docs/ADR/ADR-000_technology_stack.md` for approved project-wide technologies
+1. Read `{project_root}/docs/ADR/ADR-000_technology_stack.md` for approved project-wide technologies
 2. Ensure consistency with core technologies: Google ADK, MCP, A2A Protocol, GCP infrastructure
 3. If proposing new technology not in ADR-000, create a new ADR justifying the addition
 

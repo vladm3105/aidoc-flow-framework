@@ -101,7 +101,7 @@ TASKS defines WHAT → IPLAN defines HOW → Code implements it
 **IPLAN-001** (corresponding section):
 ```bash
 # Phase 2.1: Implement Connection Service
-cd /opt/data/ibmcp
+cd ${PROJECT_ROOT}
 
 # Create module file
 touch src/ibmcp/gateway/connection_service.py
@@ -889,8 +889,8 @@ and 100% BDD coverage starting from empty repository.
 ## Implementation Guide
 **Step 1: Create Project Structure**
 ```bash
-mkdir -p /opt/data/ibmcp/src/ibmcp/gateway
-touch /opt/data/ibmcp/src/ibmcp/__init__.py
+mkdir -p ${PROJECT_ROOT}/src/ibmcp/gateway
+touch ${PROJECT_ROOT}/src/ibmcp/__init__.py
 ...
 ```
 ```
