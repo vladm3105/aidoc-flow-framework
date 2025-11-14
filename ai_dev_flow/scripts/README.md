@@ -191,6 +191,94 @@ ERRORS:
 
 ---
 
+### 5. validate_documentation_paths.py
+
+Validates path references in markdown documentation to identify broken links, missing files, and path inconsistencies.
+
+**Usage:**
+```bash
+python validate_documentation_paths.py [--strict] [--root PATH]
+```
+
+**Features:**
+- Detects broken markdown links (space characters, invalid syntax)
+- Identifies missing referenced files
+- Detects case mismatches in file references
+- Validates path resolution and existence
+- Filters out intentional placeholders and example references
+- Supports severity levels: HIGH, MEDIUM, LOW
+
+**Parameters:**
+- `--strict`: Exit with non-zero status if HIGH or MEDIUM issues found (optional)
+- `--root`: Root directory to scan (optional, defaults to framework root)
+
+**Examples:**
+```bash
+# Validate all documentation paths
+python validate_documentation_paths.py
+
+# Strict mode for CI/CD pipelines
+python validate_documentation_paths.py --strict
+
+# Validate specific project
+python validate_documentation_paths.py --root /path/to/project/
+```
+
+**Validation Checks:**
+1. **Broken Links** (HIGH): Space characters in paths, invalid syntax
+2. **Missing Files** (HIGH): Referenced files that don't exist
+3. **Case Mismatches** (MEDIUM): Incorrect filename case
+4. **Path Resolution** (MEDIUM): Incorrect relative path depths
+
+**Placeholder Detection:**
+Automatically skips intentional placeholders:
+- Template patterns: `XXX`, `NNN`, `PPP`, `{variable}`
+- Example IDs: `BRD-001`, `REQ-003`, `ADR-033`, etc.
+- Example keywords: `example`, `some_`, `your_`, `_file`
+
+**Exit Codes:**
+- `0`: Validation passed (no HIGH severity issues)
+- `1`: Validation failed (HIGH severity issues found) OR strict mode with MEDIUM issues
+
+**Example Output:**
+```
+Scanning documentation in: /opt/data/docs_flow_framework
+Found 118 markdown files
+
+================================================================================
+DOCUMENTATION PATH VALIDATION REPORT
+================================================================================
+
+Total Issues Found: 0
+  HIGH:   0
+  MEDIUM: 0
+  LOW:    0
+
+✅ No issues found! All documentation paths are valid.
+
+================================================================================
+
+✅ VALIDATION PASSED
+```
+
+**Error Examples:**
+```
+HIGH SEVERITY ISSUES
+--------------------------------------------------------------------------------
+
+ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md:966
+  [HIGH] SPACE_IN_LINK
+  Space character in link path: '(.. /DOCUMENT_ID_CORE_RULES.md)'
+  💡 Suggestion: Remove space: change '(.. /' to '(../'
+
+.claude/skills/doc-flow/SKILL.md:860
+  [HIGH] MISSING_FILE
+  Referenced file not found: '../../PROJECT_CORE_PRINCIPLES.md'
+  💡 Suggestion: Verify the file exists or update the link
+```
+
+---
+
 ## Workflow Integration
 
 ### Typical Workflow
