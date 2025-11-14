@@ -24,7 +24,7 @@ No broken links detected.
 | SPEC-003 | No BDD reference in Section 7.2 | Info | Add BDD-XXX when tests created |
 
 **Details**:
-- **File**: `/opt/data/ibmcp/docs/SPEC/SPEC-003_market_data_service.yaml`
+- **File**: `{project_root}/docs/SPEC/SPEC-003_market_data_service.yaml`
 - **Line**: 45-52 (Section 7: Traceability)
 - **Issue**: Downstream section lists "To Be Created" but no specific BDD reference
 - **Impact**: Low (common for new specifications before test creation)
@@ -144,7 +144,7 @@ No orphaned artifacts detected. All SPEC files have:
 **Execution Time**: 4.2 seconds
 
 **Validation Parameters**:
-- `project_root_path`: `/opt/data/ibmcp/docs/`
+- `project_root_path`: `{project_root}/docs/`
 - `artifact_types`: `["SPEC"]`
 - `strictness_level`: `"strict"`
 - `auto_fix`: `false`

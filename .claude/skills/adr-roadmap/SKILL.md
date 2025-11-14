@@ -551,16 +551,16 @@ Complexity 5 (Architectural):
 Use the adr-roadmap skill to create implementation roadmap.
 
 Inputs:
-- ADR directory: /opt/data/ibmcp/docs/ADR/
+- ADR directory: {project_root}/docs/ADR/
 - Project context: Interactive Brokers MCP server, 3 developers, POC in 3 weeks
 - Phase model: poc-mvp-prod
 - Team size: 3
 
-Generate roadmap in /opt/data/ibmcp/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md
+Generate roadmap in {project_root}/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md
 ```
 
 **Skill Actions**:
-1. Read 27 ADRs from `/opt/data/ibmcp/docs/ADR/`
+1. Read 27 ADRs from `{project_root}/docs/ADR/`
 2. Extract complexity: ADR-002 (4/5), ADR-003 (2/5), etc.
 3. Parse dependencies: ADR-006 depends on ADR-003
 4. Create 5 phases:
@@ -587,12 +587,12 @@ Generate roadmap in /opt/data/ibmcp/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md
 Use adr-roadmap skill for microservices migration roadmap.
 
 Inputs:
-- ADR directory: /opt/data/webapp/architecture/decisions/
+- ADR directory: {example_project_a}/architecture/decisions/
 - Project context: Monolith to microservices migration, 8 developers, 9-month timeline
 - Phase model: iterative
 - Team size: 8
 
-Generate roadmap in /opt/data/webapp/architecture/decisions/ADR-000_IMPLEMENTATION-ROADMAP.md
+Generate roadmap in {example_project_a}/architecture/decisions/ADR-000_IMPLEMENTATION-ROADMAP.md
 ```
 
 **Skill Actions**:
@@ -625,13 +625,13 @@ Generate roadmap in /opt/data/webapp/architecture/decisions/ADR-000_IMPLEMENTATI
 Create 6-month data platform roadmap.
 
 Inputs:
-- ADR directory: /opt/data/analytics/docs/ADR/
+- ADR directory: {example_project_b}/docs/ADR/
 - Project context: Real-time analytics platform, 10 engineers, 6-month timeline
 - Phase model: waterfall
 - Team size: 10
 - Target phases: 6
 
-Generate roadmap in /opt/data/analytics/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md
+Generate roadmap in {example_project_b}/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md
 ```
 
 **Skill Actions**:

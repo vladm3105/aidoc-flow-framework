@@ -71,7 +71,7 @@ Code & Validation Layer: Code → Tests → Validation → Review → Production
 
 | Input | Type | Description | Example/Default |
 |-------|------|-------------|-----------------|
-| project_root_path | Required | Path to project documentation root | `/opt/data/ibmcp/docs/` |
+| project_root_path | Required | Path to project documentation root | `{project_root}/docs/` |
 | artifact_types | Optional | Specific artifact types to validate | `["BRD", "SPEC"]` or `["all"]` (default) |
 | strictness_level | Optional | Validation strictness | `"strict"` (default), `"permissive"`, `"pedantic"` |
 | validate_cumulative | Optional | **NEW**: Validate cumulative tagging hierarchy | `true` or `false` (default) |
@@ -489,7 +489,7 @@ def validate_ctr_dual_files(contracts_dir):
 
 **Backup Command**:
 ```bash
-cd /opt/data/ibmcp/docs
+cd {project_root}/docs
 tar -czf ../backups/docs_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
 ```
 
@@ -586,7 +586,7 @@ tar -czf ../backups/docs_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
 **User Request**: "Validate traceability before I commit SPEC-001"
 
 **Assistant Action**: Uses trace-check skill with:
-- project_root_path: `/opt/data/ibmcp/docs/`
+- project_root_path: `{project_root}/docs/`
 - artifact_types: `["SPEC"]`
 - strictness_level: `"strict"`
 - auto_fix: `false`
@@ -607,7 +607,7 @@ Recommendation: Update BRD-001 Section 7.2 to add SPEC-001 reference
 **User Request**: "Run full traceability audit and fix issues"
 
 **Assistant Action**: Uses trace-check skill with:
-- project_root_path: `/opt/data/ibmcp/docs/`
+- project_root_path: `{project_root}/docs/`
 - artifact_types: `["all"]`
 - strictness_level: `"strict"`
 - auto_fix: `true`
@@ -633,7 +633,7 @@ Recommendation: Update BRD-001 Section 7.2 to add SPEC-001 reference
 **User Request**: "Check all SPEC files for traceability issues"
 
 **Assistant Action**: Uses trace-check skill with:
-- project_root_path: `/opt/data/ibmcp/docs/`
+- project_root_path: `{project_root}/docs/`
 - artifact_types: `["SPEC"]`
 - strictness_level: `"pedantic"`
 
@@ -652,7 +652,7 @@ Coverage: 88% (7/8 SPEC with complete traceability)
 **User Request**: "Generate traceability coverage report"
 
 **Assistant Action**: Uses trace-check skill with:
-- project_root_path: `/opt/data/ibmcp/docs/`
+- project_root_path: `{project_root}/docs/`
 - report_format: `"markdown"`
 
 **Output**:
@@ -673,7 +673,7 @@ Coverage: 88% (7/8 SPEC with complete traceability)
 **User Request**: "Validate cumulative tagging compliance across all artifacts"
 
 **Assistant Action**: Uses trace-check skill with:
-- project_root_path: `/opt/data/ibmcp/docs/`
+- project_root_path: `{project_root}/docs/`
 - artifact_types: `["all"]`
 - strictness_level: `"strict"`
 - validate_cumulative: `true`
@@ -875,7 +875,7 @@ Recommendations:
 
 **Command**:
 ```bash
-cd /opt/data/ibmcp/docs
+cd {project_root}/docs
 tar -czf ../backups/docs_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
 ```
 
@@ -887,7 +887,7 @@ ls -lh ../backups/docs_backup_20251111_174001.tar.gz
 
 **Rollback Command** (provided in report):
 ```bash
-cd /opt/data/ibmcp/docs
+cd {project_root}/docs
 tar -xzf ../backups/docs_backup_20251111_174001.tar.gz
 ```
 
