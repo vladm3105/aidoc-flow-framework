@@ -1,6 +1,6 @@
 # Document ID & Tagging Standards — ai_dev_flow
 
-Status: Authoritative for this `docs_v2/ai_dev_flow` example set. These rules reflect the naming and linking already used here and supersede repo-wide norms within this directory (do not change existing files to match other guides).
+Status: Authoritative for this `ai_dev_flow` example set. These rules reflect the naming and linking already used here and supersede repo-wide norms within this directory (do not change existing files to match other guides).
 
 Purpose
 - Provide a single, practical guide for IDs, tags, links, file layout, and validation within this example.
