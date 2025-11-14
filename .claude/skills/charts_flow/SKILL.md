@@ -510,7 +510,6 @@ Code Implementation
 ### Internal Documentation
 - [Claude Code Skills README](./../README.md)
 - [Documentation Standards](../../../CLAUDE_INSTRUCTIONS.md)
-- [Project Core Principles](../../../PROJECT_CORE_PRINCIPLES.md)
 
 ### External Resources
 - [Mermaid Documentation](https://mermaid.js.org/)

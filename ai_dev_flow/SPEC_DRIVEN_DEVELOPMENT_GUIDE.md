@@ -963,7 +963,7 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
 - Always update Traceability sections and code docstrings to keep links current.
 
 ## References
-- Core Rules: [../../DOCUMENT_ID_CORE_RULES.md](.. /DOCUMENT_ID_CORE_RULES.md) (project-wide compliance checklist: IDs numeric, links resolve, no promotional language)
+- Core Rules: [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) (project-wide compliance checklist: IDs numeric, links resolve, no promotional language)
 - Example ID Standards: [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md)
 - Traceability Style: [Traceability Format Standards](./TRACEABILITY.md#traceability-format-standards)
 - Example Flow Index: [TRACEABILITY.md](./TRACEABILITY.md)

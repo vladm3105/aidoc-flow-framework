@@ -634,13 +634,11 @@ All documentation below is located in `ai_dev_flow/` - the **single source of tr
 - **ID Standards**: [ID_NAMING_STANDARDS.md](../../ai_dev_flow/ID_NAMING_STANDARDS.md) - File naming, ID format rules
 - **Traceability**: [TRACEABILITY.md](../../ai_dev_flow/TRACEABILITY.md) - Cross-reference format, link standards
 - **When to Create IMPL**: [WHEN_TO_CREATE_IMPL.md](../../ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC decision guide
-- **Phase 1 Completion**: [WORKFLOW_FIXES_PHASE1_COMPLETE.md](../../ai_dev_flow/WORKFLOW_FIXES_PHASE1_COMPLETE.md) - Recent fixes and standardization
 - **README**: [README.md](../../ai_dev_flow/README.md) - Getting started guide
 
 **Project Documentation:**
-- Core Principles: [PROJECT_CORE_PRINCIPLES.md](../../PROJECT_CORE_PRINCIPLES.md)
 - Claude Instructions: [CLAUDE.md](../../CLAUDE.md)
-- SDD Framework: [docs/SPECIFICATION_DRIVEN_DEVELOPMENT.md](../../docs/SPECIFICATION_DRIVEN_DEVELOPMENT.md)
+- SDD Framework: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
 **Templates and READMEs** (all in `ai_dev_flow/`):
 
