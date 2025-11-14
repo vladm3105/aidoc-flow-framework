@@ -145,24 +145,14 @@ Standard metadata including version, date, owner, status, revision history
 
 ## Available Templates
 
-This directory provides **3 BRD templates** for different use cases:
+This directory provides the **BRD-TEMPLATE.md** for business requirements documentation:
 
-1. **BRD-TEMPLATE.md** - Comprehensive business requirements (general purpose)
-   - Full-featured template with all sections
-   - Suitable for complex enterprise projects
-   - Extensive appendices and detailed tracking
+**BRD-TEMPLATE.md** - Comprehensive business requirements template
+- Full-featured template with all sections
+- Suitable for all project types
+- Includes business objectives, functional/non-functional requirements, architecture decision requirements, and acceptance criteria
 
-2. **BRD-template-2.md** - Alternative format (simplified structure)
-   - Streamlined sections for faster creation
-   - Focus on core business requirements
-   - Lighter weight for smaller projects
-
-3. **BRD-trading-template.md** - Trading-specific requirements ([DOMAIN_ACTIVITY - e.g., payment processing, content moderation] focus)
-   - Specialized for financial trading systems
-   - Includes trading-specific [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management]
-   - Options strategy and [EXTERNAL_DATA - e.g., customer data, sensor readings] integration focus
-
-**Usage**: Choose the template that best fits your project context (general, simplified, or trading-focused).
+**Usage**: Use BRD-TEMPLATE.md as the foundation for all Business Requirements Documents.
 
 ## File Naming Convention
 

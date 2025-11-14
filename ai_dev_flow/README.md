@@ -80,7 +80,7 @@ The 16-layer architecture uses the following structure:
   - Layer 9: CTR (Contracts) - optional
   - Layer 10: SPEC (Technical Specifications)
   - Layer 11: TASKS (Task Breakdowns)
-  - Layer 12: IPLAN (Implementation Plans)
+  - Layer 12: IPLAN (Implementation Work Plans)
 
 - **Layers 13-15**: Execution Layers
   - Layer 13: Code (source code files)
@@ -92,6 +92,51 @@ The 16-layer architecture uses the following structure:
 - **Mermaid diagram groupings**: May use simplified labels (L1-L11) for visual organization
 - **Always use formal layer numbers** when implementing cumulative tagging or referencing layers in documentation
 - Mermaid subgraph labels (e.g., "Layer 1 - Business") are visual groupings that may combine multiple formal layers for diagram clarity
+
+### Layer Numbering Reference
+
+#### Formal Layer Numbers (Use in Code/Tags/Documentation)
+
+| Layer | Artifact Type | Purpose |
+|-------|---------------|---------|
+| 0 | Strategy (STRAT) | Strategic business direction |
+| 1 | Business Requirements (BRD) | Business needs and goals |
+| 2 | Product Requirements (PRD) | Product features and specifications |
+| 3 | EARS | Structured requirement statements |
+| 4 | BDD | Behavior-driven test scenarios |
+| 5 | Architecture Decisions (ADR) | Technical architecture choices |
+| 6 | System Requirements (SYS) | System-level specifications |
+| 7 | Requirements (REQ) | Atomic requirements |
+| 8 | Implementation Specifications (IMPL) | Project management plans |
+| 9 | Contracts (CTR) | Interface contracts (dual-file format) |
+| 10 | Specifications (SPEC) | Detailed technical specs |
+| 11 | Tasks (TASKS) | Development task breakdown |
+| 12 | Implementation Work Plans (IPLAN) | Session execution plans |
+| 13 | Code | Actual implementation |
+| 14 | Tests | Unit/integration tests |
+| 15 | Validation | End-to-end validation |
+
+#### Mermaid Diagram Visual Groupings (L1-L11)
+
+Diagrams use simplified labels for visual clarity:
+
+- **L1**: Business Layer (contains Layers 1-3: BRD, PRD, EARS)
+- **L2**: Testing Layer (contains Layer 4: BDD)
+- **L3**: Architecture Layer (contains Layers 5-6: ADR, SYS)
+- **L4**: Requirements Layer (contains Layer 7: REQ)
+- **L5**: Project Management (contains Layer 8: IMPL)
+- **L6**: Interface Layer (contains Layer 9: CTR)
+- **L7**: Technical Specs (contains Layer 10: SPEC)
+- **L8**: Code Generation (contains Layer 11: TASKS)
+- **L9**: Session Planning (contains Layer 12: IPLAN)
+- **L10**: Code Layer (contains Layer 13: Code)
+- **L11**: Validation Layer (contains Layers 14-15: Tests, Validation)
+
+**Important**: Always use formal layer numbers (0-15) in:
+- Cumulative tagging implementations
+- Documentation references
+- Code comments
+- Traceability matrices
 
 ### Critical Decision Point
 
@@ -152,7 +197,7 @@ The 16-layer architecture uses the following structure:
 
 ### 5. Project Management Layer
 
-**IMPL/** - Implementation Plans
+**IMPL/** - Implementation Specifications (Layer 8)
 - Project management documents organizing work into phases, teams, deliverables
 - **Focus**: WHO does WHAT, WHEN - NOT technical specifications (HOW)
 - Identifies which CTR, SPEC, TASKS to create
@@ -190,7 +235,7 @@ The 16-layer architecture uses the following structure:
 
 ### 9. Session Planning Layer
 
-**IPLAN/** - Session-Specific Implementation Plans
+**IPLAN/** - Implementation Work Plans (Layer 12)
 - Organize multiple TASKS into session-scoped work packages
 - Track progress across related implementation units
 - Maintain context between AI coding sessions

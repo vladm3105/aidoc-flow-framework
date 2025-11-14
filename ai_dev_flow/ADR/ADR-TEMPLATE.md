@@ -90,28 +90,29 @@ Short description of PRD, EARS, BDD files.]
 - **Regulatory/Compliance**: Legal, security, or industry standards requirements
 
 ### Technology Stack Compliance
-**Reference**: [ADR-000: Technology Stack](ADR-000_technology_stack.md)
+
+**Optional**: If your project maintains a technology stack ADR, reference it here.
 
 Before proposing new technologies, verify compliance with project-wide technology stack:
 
-**Core Technologies (from ADR-000)**:
-- **Agent Framework**: Google ADK, MCP, A2A Protocol
-- **Cloud Infrastructure**: GCP (primary), Azure/AWS (multi-cloud)
+**Core Technologies** (example - customize for your project):
 - **Backend**: Python 3.11+, FastAPI
-- **Frontend**: React 18, Next.js 14, TypeScript, TailwindCSS
-- **IaC**: Terraform, Flyway, GitHub Actions
+- **Frontend**: React 18, TypeScript
+- **Infrastructure**: Cloud provider, IaC tools
+- **Data**: Database, message queue
+- **Testing**: Test frameworks
 
 **Compliance Check**:
-- [ ] Technology aligns with ADR-000 approved stack
+- [ ] Technology aligns with approved stack
 - [ ] If proposing new technology: Justification documented below
 - [ ] If replacing technology: Migration path and rationale documented
 
 **New Technology Justification** (if applicable):
-[If proposing technology not in ADR-000, document:
+[If proposing technology not in approved stack, document:
 - Why existing stack cannot meet requirements
-- Evaluation against alternatives in ADR-000
+- Evaluation against alternatives
 - Integration impact and migration plan
-- Recommendation to update ADR-000 if adopted]
+- Recommendation to update stack if adopted]
 
 ## Decision
 
@@ -373,7 +374,7 @@ flowchart TD
 
 ## Related Decisions
 
-**Technology Stack**: [ADR-000: Technology Stack](ADR-000_technology_stack.md) - Project-wide approved technologies
+**Technology Stack**: Project-wide approved technologies (optional - create separate ADR if needed)
 **Depends On**: [ADR-### prerequisites and architectural foundations]
 **Supersedes**: [ADR-### previous decisions replaced by this one]
 **Related**: [ADR-### complementary parallel decisions]
