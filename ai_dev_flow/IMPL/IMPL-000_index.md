@@ -46,8 +46,8 @@ When creating a new IMPL Plan:
 
 1. **Copy Template**:
    ```bash
-   cp docs_templates/ai_dev_flow/IMPL/IMPL-TEMPLATE.md \
-      docs_templates/ai_dev_flow/IMPL/IMPL-NNN_feature_name.md
+   cp ai_dev_flow/IMPL/IMPL-TEMPLATE.md \
+      ai_dev_flow/IMPL/IMPL-NNN_feature_name.md
    ```
 
 2. **Assign IMPL ID**: Use next sequential number (IMPL-002, IMPL-003, ...)

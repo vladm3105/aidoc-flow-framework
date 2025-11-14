@@ -162,7 +162,45 @@ echo "Template access:"
 ls -la "$PROJECT_DIR/.templates/"
 ```
 
-### 3. Single Project Setup
+**Note**: This script creates symlinks for shared resources only. To complete the project setup with documentation folders (`docs/`) and implementation plans folder (`work_plans/`), use:
+
+```bash
+# Recommended: Use project-init skill
+cd /opt/data/project_name
+# In Claude Code: /skill project-init
+
+# OR manually create folder structure
+mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
+mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
+mkdir -p work_plans
+mkdir -p scripts
+```
+
+### 3. Setup Script vs Project-Init Skill
+
+**`setup_project_hybrid.sh`** (Lightweight):
+- Creates `.claude/` directory structure
+- Creates symlinks to framework skills/agents/commands
+- Ideal for: Adding framework to existing projects
+- Does NOT create: `docs/` or `work_plans/` directories
+
+**`/skill project-init`** (Full Structure):
+- Creates complete documentation structure (`docs/`)
+- Creates `work_plans/` directory
+- Initializes all 13 artifact directories (BRD through IPLAN)
+- Ideal for: Starting new projects from scratch
+- Includes: Domain selection, contract decision, template customization
+
+**Decision Matrix**:
+
+| Use Case | Recommended Tool |
+|----------|------------------|
+| Adding framework to existing project | `setup_project_hybrid.sh` |
+| Starting brand new project | `/skill project-init` |
+| Need docs/ folder structure | `/skill project-init` |
+| Only need skills/commands access | `setup_project_hybrid.sh` |
+
+### 4. Single Project Setup
 
 ```bash
 # Make script executable
@@ -209,7 +247,7 @@ done
 ├── .templates/
 │   └── ai_dev_flow/                 # Symlink → framework templates
 │
-├── docs/                            # Project artifacts (not symlinked)
+├── docs/                            # Project artifacts (auto-created by project-init)
 │   ├── BRD/
 │   ├── PRD/
 │   ├── ADR/
@@ -217,7 +255,7 @@ done
 │   └── generated/
 │       └── matrices/
 │
-├── work_plans/                      # Project implementation plans
+├── work_plans/                      # Implementation plans (auto-created by project-init)
 │   └── IPLAN-001_*.md
 │
 ├── scripts/
@@ -592,13 +630,21 @@ rm -rf skills.backup_20251113
 **Scenario**: Starting new project with framework
 
 ```bash
-# 1. Create project structure
-mkdir -p /opt/data/new_project/{docs,src,tests}
+# 1. Create project root directory
+mkdir -p /opt/data/new_project
 
-# 2. Setup hybrid resources
+# 2. Setup hybrid resources (symlinks only)
 /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/new_project
 
-# 3. Result: Instant access to all framework skills + space for custom
+# 3. Create project structure (docs, work_plans, src, tests)
+cd /opt/data/new_project
+# Use /skill project-init for full structure
+# OR manually:
+mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
+mkdir -p work_plans
+mkdir -p src tests
+
+# 4. Result: Complete project setup with framework access
 ```
 
 ### Use Case 2: Existing Project Migration

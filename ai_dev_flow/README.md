@@ -298,10 +298,10 @@ See [TRACEABILITY.md](./TRACEABILITY.md) and [COMPLETE_TAGGING_EXAMPLE.md](./COM
 **Step 2: Copy Templates to Your Project**
 ```bash
 # Copy entire framework to your project
-cp -r docs_templates/ai_dev_flow/ <your_project>/docs/
+cp -r ai_dev_flow/ <your_project>/docs/
 
 # Or copy specific templates as needed
-cp docs_templates/ai_dev_flow/REQ/REQ-TEMPLATE.md <your_project>/docs/REQ/
+cp ai_dev_flow/REQ/REQ-TEMPLATE.md <your_project>/docs/REQ/
 ```
 
 **Step 3: Replace Placeholders**
@@ -697,7 +697,7 @@ Templates are optimized for AI code generation:
 ## Directory Organization
 
 ```
-docs_templates/ai_dev_flow/
+ai_dev_flow/
 ├── BRD/              # Business Requirements Documents
 ├── PRD/               # Product Requirements Documents
 ├── EARS/              # EARS Requirements (Event-driven)
@@ -787,7 +787,7 @@ docs_templates/ai_dev_flow/
 
 ### Adopting This Framework
 
-1. **Copy templates** to your project: `cp -r docs_templates/ai_dev_flow/ <your_project>/docs/`
+1. **Copy templates** to your project: `cp -r ai_dev_flow/ <your_project>/docs/`
 2. **Read domain guide**: Review [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md)
 3. **Replace placeholders**: Search for `[PLACEHOLDERS]` and customize
 4. **Create first document**: Follow Quick Start Guide above

@@ -47,8 +47,8 @@ When creating a new TASKS Plan:
 
 1. **Copy Template**:
    ```bash
-   cp docs_templates/ai_dev_flow/TASKS/TASKS-TEMPLATE.md \
-      docs_templates/ai_dev_flow/TASKS/TASKS-NNN_component_name.md
+   cp ai_dev_flow/TASKS/TASKS-TEMPLATE.md \
+      ai_dev_flow/TASKS/TASKS-NNN_component_name.md
    ```
 
 2. **Assign TASKS ID**: Use next sequential number (TASKS-002, TASKS-003, ...)

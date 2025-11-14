@@ -18,6 +18,11 @@
 # ✓ Symlinks .templates/ai_dev_flow/ → framework
 # ✓ Symlinks scripts/validate/ → framework scripts
 # ✓ Configures .gitignore
+#
+# IMPORTANT: This creates symlinks only
+# To complete project setup (create docs/, work_plans/, etc.):
+# → Use: /skill project-init (recommended)
+# → OR manually: mkdir -p docs/{BRD,PRD,...} work_plans scripts
 ```
 
 ---
@@ -54,14 +59,16 @@ done
 │   ├── validate/            → /opt/data/docs_flow_framework/scripts/
 │   └── project_*.sh         ✓ Project-specific scripts
 │
-├── docs/                    ✓ Project documentation artifacts
-├── work_plans/              ✓ Project implementation plans
+├── docs/                    ✓ Project documentation artifacts (auto-created by project-init)
+├── work_plans/              ✓ Project implementation plans (auto-created by project-init)
 └── src/                     ✓ Project source code
 ```
 
 **Legend:**
-- `→` Symlink (not tracked in git)
+
+- `→` Symlink (not tracked in git, created by setup_project_hybrid.sh)
 - `✓` Tracked in git
+- **Auto-created folders**: docs/, work_plans/ created by `/skill project-init`
 
 ---
 
@@ -281,6 +288,7 @@ chmod -R 755 /opt/data/project_name/.claude/custom_skills/
 ### What to Commit
 
 **DO commit:**
+
 - `.claude/custom_skills/`
 - `.claude/custom_commands/`
 - `.claude/custom_agents/`
@@ -291,6 +299,7 @@ chmod -R 755 /opt/data/project_name/.claude/custom_skills/
 - `.gitignore`
 
 **DO NOT commit:**
+
 - `.claude/skills/` (symlink)
 - `.claude/commands/` (symlink)
 - `.claude/agents/` (symlink)

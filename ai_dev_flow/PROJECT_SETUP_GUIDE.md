@@ -70,10 +70,17 @@ Options:
 
 **AI Assistant Action**: Create complete directory structure BEFORE creating any documents
 
+**IMPORTANT**: Ensure project root directory exists first:
+```bash
+# Create project root directory if it doesn't exist
+mkdir -p /opt/data/project_name
+cd /opt/data/project_name
+```
+
 **Commands**:
 ```bash
-# Core 10-layer directory structure (ALL PROJECTS)
-mkdir -p docs/BRD docs/PRD docs/EARS docs/BDD docs/ADR docs/SYS docs/REQ docs/IMPL docs/CTR docs/SPEC docs/TASKS
+# Core 16-layer architecture (13 documentation artifacts + 3 execution layers)
+mkdir -p docs/BRD docs/PRD docs/EARS docs/BDD docs/ADR docs/SYS docs/REQ docs/IMPL docs/CTR docs/SPEC docs/TASKS docs/IPLAN
 
 # Standard requirements subdirectories (ALL PROJECTS)
 mkdir -p docs/REQ/api docs/REQ/auth docs/REQ/data docs/REQ/core docs/REQ/integration docs/REQ/monitoring docs/REQ/reporting docs/REQ/security docs/REQ/ui
@@ -92,7 +99,7 @@ mkdir -p work_plans
 
 **Validation**:
 ```bash
-ls -la docs/  # Verify 11 directories created
+ls -la docs/  # Verify 13 artifact directories created (BRD through IPLAN)
 ls -la docs/REQ/  # Verify subdirectories
 ls -la work_plans/  # Verify work_plans directory
 ```
@@ -108,7 +115,7 @@ ls -la work_plans/  # Verify work_plans directory
 **Commands**:
 ```bash
 # Copy all templates
-cp -r /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/* docs/
+cp -r /opt/data/docs_flow_framework/ai_dev_flow/* docs/
 
 # Copy validation scripts
 cp /opt/data/docs_flow_framework/ai_dev_flow/scripts/*.py scripts/
@@ -200,7 +207,7 @@ ls scripts/*.py
 ```
 
 **Success Criteria**:
-- All 11 core directories exist
+- All 13 artifact directories exist (BRD through IPLAN)
 - Domain-specific subdirectories exist
 - All index files created
 - Validation scripts present
@@ -217,19 +224,19 @@ ls scripts/*.py
 ═══════════════════════════════════════════════════════════
 
 ✓ Domain: Financial Services
-✓ Folders: Created (11 core + domain subdirectories)
+✓ Folders: Created (13 artifact directories + domain subdirectories)
 ✓ Templates: Copied and customized
 ✓ Contracts: Included (CTR layer active)
 ✓ Index Files: Initialized
 ✓ Scripts: Ready
 
-Workflow: BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code
+Workflow: 16-layer architecture: BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → IPLAN → Code → Tests → Deployment (brackets indicate optional layers)
 
 Next Steps:
 1. Use `doc-flow` skill to begin workflow execution (recommended)
 2. Or manually review [PROJECT_KICKOFF_TASKS.md](./PROJECT_KICKOFF_TASKS.md) for Day 1-7 tasks
 3. Start with BRD-001 (Business Requirements Document)
-4. Follow 10-layer workflow sequentially
+4. Follow 16-layer architecture sequentially
 
 ═══════════════════════════════════════════════════════════
 ```
@@ -358,7 +365,7 @@ Next: Review PROJECT_KICKOFF_TASKS.md for Day 1-7 action plan
 
 ### Error: Template Not Found
 
-**Issue**: `cp: cannot stat '/opt/data/docs_flow_framework/ai_dev_flow/docs_templates/*': No such file or directory`
+**Issue**: `cp: cannot stat '/opt/data/docs_flow_framework/ai_dev_flow/*': No such file or directory`
 
 **Resolution**:
 - Verify framework path
@@ -382,7 +389,7 @@ mkdir -p scripts work_plans
 # Add domain-specific subdirectories based on Step 1
 
 # Step 3: Copy Templates
-cp -r /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/* docs/
+cp -r /opt/data/docs_flow_framework/ai_dev_flow/* docs/
 cp /opt/data/docs_flow_framework/ai_dev_flow/scripts/*.py scripts/
 
 # Step 4: Apply Domain Config

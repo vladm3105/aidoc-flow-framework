@@ -11,7 +11,7 @@
 The AI Dev Flow framework is domain-agnostic and designed for reuse across any software development project. This guide provides checklists and guidance for adapting the framework templates to specific domains.
 
 **Framework Strengths**:
-- 10-layer workflow from business requirements to production code
+- 16-layer architecture (13 documentation artifacts + 3 execution layers) from business requirements to production code
 - Complete traceability through the entire development lifecycle
 - AI-friendly YAML specifications for code generation
 - Dual-file contracts (.md + .yaml) for human and machine consumption
@@ -28,7 +28,7 @@ The AI Dev Flow framework is domain-agnostic and designed for reuse across any s
 4. **List external integrations**: Third-party services, APIs, data providers
 
 ### Step 2: Replace Placeholders
-1. **Copy templates** from `docs_templates/ai_dev_flow/` to your project's `docs/` folder
+1. **Copy templates** from `ai_dev_flow/` to your project's `docs/` folder
 2. **Search for [PLACEHOLDERS]** - all framework placeholders use `[UPPERCASE_BRACKET]` format
 3. **Replace with domain-specific values** - use your terminology consistently
 4. **Update descriptions** - customize example descriptions to match your domain

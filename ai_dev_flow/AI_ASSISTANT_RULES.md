@@ -73,7 +73,7 @@ If user does not specify or says "default", use **Financial Services** configura
 ### Execution Command
 
 ```bash
-# Core 10-layer directory structure
+# Core 16-layer architecture (13 documentation artifacts + 3 execution layers)
 mkdir -p docs/BRD
 mkdir -p docs/PRD
 mkdir -p docs/EARS
@@ -85,6 +85,7 @@ mkdir -p docs/IMPL
 mkdir -p docs/CTR
 mkdir -p docs/SPEC
 mkdir -p docs/TASKS
+mkdir -p docs/IPLAN
 
 # Requirements subdirectories (domain-agnostic structure)
 mkdir -p docs/REQ/api
@@ -252,17 +253,17 @@ Or use domain-aware template generation when creating documents.
 
 ```bash
 # Copy all templates from framework to project
-cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/BRD/* docs/BRD/
-cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/PRD/* docs/PRD/
-cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/EARS/* docs/EARS/
-cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/BDD/* docs/BDD/
-cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/ADR/* docs/ADR/
-cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/SYS/* docs/SYS/
-cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/REQ/* docs/REQ/
-cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/IMPL/* docs/IMPL/
-cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/CTR/* docs/CTR/
-cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/SPEC/* docs/SPEC/
-cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/TASKS/* docs/TASKS/
+cp /opt/data/docs_flow_framework/ai_dev_flow/BRD/* docs/BRD/
+cp /opt/data/docs_flow_framework/ai_dev_flow/PRD/* docs/PRD/
+cp /opt/data/docs_flow_framework/ai_dev_flow/EARS/* docs/EARS/
+cp /opt/data/docs_flow_framework/ai_dev_flow/BDD/* docs/BDD/
+cp /opt/data/docs_flow_framework/ai_dev_flow/ADR/* docs/ADR/
+cp /opt/data/docs_flow_framework/ai_dev_flow/SYS/* docs/SYS/
+cp /opt/data/docs_flow_framework/ai_dev_flow/REQ/* docs/REQ/
+cp /opt/data/docs_flow_framework/ai_dev_flow/IMPL/* docs/IMPL/
+cp /opt/data/docs_flow_framework/ai_dev_flow/CTR/* docs/CTR/
+cp /opt/data/docs_flow_framework/ai_dev_flow/SPEC/* docs/SPEC/
+cp /opt/data/docs_flow_framework/ai_dev_flow/TASKS/* docs/TASKS/
 
 # Copy validation scripts
 cp /opt/data/docs_flow_framework/ai_dev_flow/scripts/*.py scripts/
@@ -528,7 +529,7 @@ You MUST:
 
 All artifact types have traceability matrix templates:
 ```
-docs_templates/ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md
+ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md
 ```
 
 ### Validation Requirements
@@ -906,7 +907,7 @@ User: "Initialize new financial services trading platform project"
 
 Claude Code:
 1. Domain Selection: "Financial Services (default) detected. Loading FINANCIAL_DOMAIN_CONFIG.md"
-2. Folder Creation: "Creating 10-layer structure + finance subdirectories..."
+2. Folder Creation: "Creating 16-layer architecture (13 artifact directories) + finance subdirectories..."
    [Runs mkdir commands]
 3. Validation: "Verifying structure... ✓ All directories created"
 4. Template Setup: "Copying templates and applying financial domain placeholders..."

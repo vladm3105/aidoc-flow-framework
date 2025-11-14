@@ -34,7 +34,7 @@ After completing project initialization, AI Assistant **MUST** inform user:
 Next: Use the `doc-flow` skill to begin workflow execution:
 - Create BRD (Business Requirements)
 - Create PRD (Product Requirements)
-- Follow 10-layer workflow: BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code
+- Follow 16-layer architecture (13 documentation artifacts + 3 execution layers): BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → IPLAN → Code → Tests → Deployment
 ```
 
 ---
@@ -125,10 +125,18 @@ Enter selection (1-6) or press Enter for default (1):
 
 **Why**: Prevents "file not found" errors, ensures proper organization
 
+**IMPORTANT**: Ensure project root directory exists first:
+
+```bash
+# Create project root directory if it doesn't exist
+mkdir -p /opt/data/project_name
+cd /opt/data/project_name
+```
+
 **Commands to Execute**:
 
 ```bash
-# Core 10-layer directory structure (ALL PROJECTS)
+# Core 16-layer architecture (13 documentation artifacts + 3 execution layers)
 mkdir -p docs/BRD
 mkdir -p docs/PRD
 mkdir -p docs/EARS
@@ -140,6 +148,7 @@ mkdir -p docs/IMPL
 mkdir -p docs/CTR
 mkdir -p docs/SPEC
 mkdir -p docs/TASKS
+mkdir -p docs/IPLAN
 
 # Standard requirements subdirectories (ALL PROJECTS)
 mkdir -p docs/REQ/api
@@ -253,7 +262,7 @@ ls -la work_plans/  # Verify work_plans directory
 **Commands**:
 ```bash
 # Copy all templates (if framework templates exist)
-cp -r {project_root}/ai_dev_flow/docs_templates/* docs/
+cp -r {project_root}/ai_dev_flow/* docs/
 
 # Copy validation scripts
 cp {project_root}/ai_dev_flow/scripts/*.py scripts/
@@ -456,7 +465,7 @@ AI Assistant:
 ✓ Domain-specific subdirectories: risk, trading, portfolio, compliance, ml
 
 Step 2: Folder Creation
-Creating 10-layer structure...
+Creating 16-layer architecture (13 artifact directories)...
 ✓ Created: docs/BRD/
 ✓ Created: docs/PRD/
 ✓ Created: docs/EARS/
@@ -468,6 +477,7 @@ Creating 10-layer structure...
 ✓ Created: docs/CTR/
 ✓ Created: docs/SPEC/
 ✓ Created: docs/TASKS/
+✓ Created: docs/IPLAN/
 ✓ Created: docs/REQ/risk/
 ✓ Created: docs/REQ/trading/
 ✓ Created: docs/REQ/portfolio/
@@ -616,8 +626,8 @@ Run follow-up questions from DOMAIN_SELECTION_QUESTIONNAIRE.md:
 
 **After project-init completes, use:**
 - **doc-flow** - Main workflow execution skill
-  - Create BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
-  - Follow 10-layer workflow
+  - Create BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN
+  - Follow 16-layer architecture (13 documentation artifacts + 3 execution layers)
   - Generate code from specifications
 
 **Other complementary skills:**

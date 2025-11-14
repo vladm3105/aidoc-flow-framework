@@ -912,7 +912,7 @@ Risk Validator Service - Contract Provider
 
 1. Identify upstream REQ that need implementation coordination
 2. Reserve next IMPL-NNN number from IMPL-000_index.md
-3. Copy IMPL-TEMPLATE.md from docs_templates/ai_dev_flow/IMPL/
+3. Copy IMPL-TEMPLATE.md from ai_dev_flow/IMPL/
 4. Complete implementation plan:
    - Scope: What REQs are being implemented
    - Stakeholders: WHO (teams/roles responsible)

@@ -9,7 +9,7 @@ Usage:
     python scripts/make_framework_generic.py
 
 Features:
-    - Processes all .md and .yaml files in docs_templates/ai_dev_flow/
+    - Processes all .md and .yaml files in ai_dev_flow/ai_dev_flow/
     - Replaces trading-specific terminology with generic placeholders
     - Preserves file structure and formatting
     - Creates backup before modification

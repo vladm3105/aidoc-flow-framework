@@ -9,7 +9,7 @@
 # [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Workflow: SPEC (Technical Specifications) - Layer 10 (Technical Specification Layer)
 #
 # For complete traceability workflow with visual diagram, see:
-# docs_templates/ai_dev_flow/index.md#traceability-flow
+# ai_dev_flow/ai_dev_flow/index.md#traceability-flow
 #
 # Quick Reference: ... → CTR → **SPEC** → TASKS → Code → ...
 #

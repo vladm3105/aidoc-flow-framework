@@ -13,7 +13,7 @@ Align all Claude skills in `.claude/skills/` with the current framework structur
 
 A comprehensive analysis identified inconsistencies between Claude skills and the framework:
 
-1. **Path References**: Skills reference outdated `docs_templates/ai_dev_flow/` path instead of `ai_dev_flow/`
+1. **Path References**: Skills reference outdated `ai_dev_flow/` path instead of `ai_dev_flow/`
 2. **Layer Architecture**: `trace-check/SKILL.md` shows IPLAN as Layer 9 instead of Layer 12
 3. **Terminology**: Mixed usage of CONTRACTS vs CTR directory naming
 4. **Documentation**: Skills missing references to new framework documentation (COMPLETE_TAGGING_EXAMPLE.md, TRACEABILITY_SETUP.md, etc.)
@@ -42,7 +42,7 @@ A comprehensive analysis identified inconsistencies between Claude skills and th
 ### Phase 1: Critical Path Fixes (HIGH PRIORITY)
 
 - [ ] Fix `generate_implementation_plan.md` path references
-  - Replace all `docs_templates/ai_dev_flow/` → `{project_root}/ai_dev_flow/`
+  - Replace all `ai_dev_flow/` → `{project_root}/ai_dev_flow/`
   - Replace `/opt/data/trading/` → `{project_root}/`
   - Update ~10 path references across lines 10, 32, 213, 482, 483
 
@@ -52,7 +52,7 @@ A comprehensive analysis identified inconsistencies between Claude skills and th
   - Revise layer description from "11 Functional Layers" to simplified grouping
 
 - [ ] Fix `.claude/skills/README.md` template paths
-  - Replace `../../docs_templates/ai_dev_flow/` → `{project_root}/ai_dev_flow/`
+  - Replace `../../ai_dev_flow/` → `{project_root}/ai_dev_flow/`
   - Update ~7 template path references (lines 518-530)
 
 ### Phase 2: Terminology Standardization (MEDIUM PRIORITY)
@@ -119,7 +119,7 @@ A comprehensive analysis identified inconsistencies between Claude skills and th
 vi .claude/skills/generate_implementation_plan.md
 
 # Find and replace:
-# - "docs_templates/ai_dev_flow/" → "{project_root}/ai_dev_flow/"
+# - "ai_dev_flow/" → "{project_root}/ai_dev_flow/"
 # - "/opt/data/trading/" → "{project_root}/"
 ```
 
@@ -151,7 +151,7 @@ vi .claude/skills/README.md
 ```
 
 **Lines to update**: 518-530
-- Replace all `../../docs_templates/ai_dev_flow/` → `{project_root}/ai_dev_flow/`
+- Replace all `../../ai_dev_flow/` → `{project_root}/ai_dev_flow/`
 
 #### Step 4: Review CONTRACTS→CTR terminology
 

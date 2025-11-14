@@ -223,12 +223,12 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 
 ### Pre-Creation
 - [ ] Read upstream documents (strategy, BRD, PRD, EARS, etc.)
-- [ ] Identify which template to use from `docs_templates/ai_dev_flow/[TYPE]/`
+- [ ] Identify which template to use from `ai_dev_flow/[TYPE]/`
 - [ ] Assign next sequential ID ([TYPE]-NNN)
 - [ ] Check for existing traceability matrix: `[TYPE]-000_TRACEABILITY_MATRIX.md`
 
 ### During Creation
-- [ ] Use template from `docs_templates/ai_dev_flow/[TYPE]/[TYPE]-TEMPLATE.[ext]`
+- [ ] Use template from `ai_dev_flow/[TYPE]/[TYPE]-TEMPLATE.[ext]`
 - [ ] Include H1 header with ID: `# [TYPE]-NNN: Title`
 - [ ] Fill all required sections from template
 - [ ] Add Traceability section (Section 7) with upstream/downstream links

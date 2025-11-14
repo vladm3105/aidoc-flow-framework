@@ -167,7 +167,7 @@ IMPL Plans identify deliverables:
 ## Directory Organization
 
 ```
-docs_templates/ai_dev_flow/IMPL/
+ai_dev_flow/IMPL/
 ├── README.md                          # This file
 ├── IMPL-000_index.md                  # Master index of all IMPL plans
 ├── IMPL-TEMPLATE.md                   # Template for new IMPL plans
@@ -400,7 +400,7 @@ Throughout implementation:
 Start with `IMPL-TEMPLATE.md`:
 
 ```bash
-cp docs_templates/ai_dev_flow/IMPL/IMPL-TEMPLATE.md \
+cp ai_dev_flow/IMPL/IMPL-TEMPLATE.md \
    docs/IMPL/IMPL-042_my_feature.md
 ```
 

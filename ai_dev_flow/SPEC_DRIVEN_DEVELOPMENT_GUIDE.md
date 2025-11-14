@@ -1099,7 +1099,7 @@ Each document type has its own dedicated traceability matrix template:
 **Every time you create or update an artifact document, follow these steps:**
 
 1. **Check for Matrix File**: Look for `[TYPE]-000_TRACEABILITY_MATRIX.md` in artifact folder
-2. **Create if Missing**: Copy template from `docs_templates/ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+2. **Create if Missing**: Copy template from `ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md`
 3. **Update Matrix Sections**:
    - Section 2: Add document to inventory with ID, title, status, date
    - Section 3: Document upstream sources (which documents drove this artifact)
