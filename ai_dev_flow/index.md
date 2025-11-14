@@ -92,6 +92,8 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 
+> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid diagram below uses visual groupings for clarity. Always use formal layer numbers (0-15) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
+
 ```mermaid
 flowchart TD
     %% Business Layer

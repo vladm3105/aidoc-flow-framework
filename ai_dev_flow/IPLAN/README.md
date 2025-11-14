@@ -1095,7 +1095,7 @@ IPLAN-001_gateway_connection_part2_20251112_092843.md (Phase 3-4)
 ```markdown
 ## Error Handling
 
-Per [SPEC-001:error_handling](../SPEC/SPEC-001.yaml#error_handling):
+Per [SPEC-001:error_handling](../SPEC/SPEC-001.yaml):
 - 6 typed exceptions with error codes (IB_CONN_001 through IB_CONN_006)
 - Retry strategy: Exponential backoff, max 6 attempts
 - See SPEC-001 for complete specification
@@ -1152,7 +1152,7 @@ Use:
 **TASK-2.1: Models** (6 hours)
 - File: models.py
 - Classes: ConnectionConfig (8 fields), IbConnection (5 fields), ConnectionState (enum)
-- See [SPEC-001:models](../SPEC/SPEC-001.yaml#models) for field specifications
+- See [SPEC-001:models](../SPEC/SPEC-001.yaml) for field specifications
 ```
 
 ## Troubleshooting

@@ -20,6 +20,8 @@ The SDD workflow transforms business needs into production-ready code through tr
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 
+> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L11) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-15) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
+
 ```mermaid
 graph LR
     subgraph L1["Layer 1: Business"]

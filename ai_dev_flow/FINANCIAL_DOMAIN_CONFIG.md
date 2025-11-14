@@ -559,7 +559,7 @@ Trading desks require real-time enforcement of position limits to prevent excess
 - [ADR-005](../ADR/ADR-005_risk_architecture.md#ADR-005): Real-time risk architecture decision
 
 ### Downstream Dependencies
-- [SPEC-003](../SPEC/SPEC-003_position_limiter.yaml#SPEC-003): Position limiter technical specification
+- [SPEC-003](../SPEC/SPEC-003_position_limiter.yaml): Position limiter technical specification
 - [BDD-003](../BDD/BDD-003_position_limits.feature#BDD-003): Position limit acceptance tests
 
 ---
@@ -596,7 +596,7 @@ Trading desks require real-time enforcement of position limits to prevent excess
 ### Downstream Artifacts
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| [SPEC-003](../SPEC/SPEC-003_position_limiter.yaml#SPEC-003) | Technical Specification | Implementation spec |
+| [SPEC-003](../SPEC/SPEC-003_position_limiter.yaml) | Technical Specification | Implementation spec |
 | [TASKS-003](../TASKS/TASKS-003_position_limiter.md#TASKS-003) | Implementation Tasks | AI generation tasks |
 | [BDD-003](../BDD/BDD-003_position_limits.feature#BDD-003) | BDD Scenarios | Acceptance tests |
 | `src/risk/position_limiter.py` | Code | Implementation |

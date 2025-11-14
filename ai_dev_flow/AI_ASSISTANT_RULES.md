@@ -262,7 +262,7 @@ cp /opt/data/docs_flow_framework/ai_dev_flow/SYS/* docs/SYS/
 cp /opt/data/docs_flow_framework/ai_dev_flow/REQ/* docs/REQ/
 cp /opt/data/docs_flow_framework/ai_dev_flow/IMPL/* docs/IMPL/
 cp /opt/data/docs_flow_framework/ai_dev_flow/CTR/* docs/CTR/
-cp /opt/data/docs_flow_framework/ai_dev_flow/SPEC/* docs/SPEC/
+cp /opt/data/docs_flow_framework/ai_dev_flow/SPEC/* ai_dev_flow/SPEC/
 cp /opt/data/docs_flow_framework/ai_dev_flow/TASKS/* docs/TASKS/
 
 # Copy validation scripts
@@ -284,7 +284,7 @@ touch docs/SYS/SYS-000_index.md
 touch docs/REQ/REQ-000_index.md
 touch docs/IMPL/IMPL-000_index.md
 touch docs/CTR/CTR-000_index.md
-touch docs/SPEC/SPEC-000_index.yaml
+touch ai_dev_flow/SPEC/SPEC-000_index.yaml
 touch docs/TASKS/TASKS-000_index.md
 ```
 
@@ -463,7 +463,7 @@ AI Assistant **MUST** use this format for all document references:
 [REQ-003](../REQ/risk/REQ-003_position_limit.md#REQ-003)
 [ADR-005](../ADR/ADR-005_database_selection.md#ADR-005)
 [CTR-012](../CTR/CTR-012_market_data_api.md#CTR-012)
-[SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml#SPEC-023)
+[SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
 ```
 
 ### Section 7: Traceability
@@ -490,7 +490,7 @@ Every document **MUST** include Section 7 with:
 ### Downstream Artifacts
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml#SPEC-023) | Technical Specification | Implementation spec |
+| [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml) | Technical Specification | Implementation spec |
 | [TASKS-023](../TASKS/TASKS-023_risk_calculator.md#TASKS-023) | Implementation Tasks | AI generation tasks |
 | [BDD-015](../BDD/BDD-015_position_limits.feature#BDD-015) | BDD Scenarios | Acceptance tests |
 
@@ -718,10 +718,10 @@ Step 2: Create SPEC-023_risk_calculator.yaml
   - Upstream section: [REQ-023](../REQ/risk/REQ-023_risk_calculator.md#REQ-023)
 
 Step 3: Update REQ-023
-  - Downstream section: [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml#SPEC-023)
+  - Downstream section: [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
 
 Step 4: Create TASKS-023_implement_risk_calculator.md
-  - Upstream section: [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml#SPEC-023)
+  - Upstream section: [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
 
 Step 5: Update SPEC-023 and REQ-023
   - Add TASKS-023 to downstream sections

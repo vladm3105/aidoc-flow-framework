@@ -29,6 +29,8 @@ Code Generation (TASKS) → Implementation Plans (IPLAN) → Execution (Code/Tes
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 
+> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L11) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-15) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
+
 ```mermaid
 graph LR
     subgraph L1["Business Layer"]
@@ -108,7 +110,7 @@ graph LR
 
 > **Note on Diagram Labels**: Mermaid subgraph labels (L1-L11) are visual groupings for diagram clarity, not formal layer numbers. Always use formal layer numbers (0-15) when implementing cumulative tagging or referencing layers in code/documentation.
 
-**12-Layer Workflow Flow:**
+**16-Layer Workflow Flow:**
 ```
 Business (BRD → PRD → EARS) → Testing (BDD) → Architecture (ADR → SYS) →
 Requirements (REQ) → Project Management (IMPL) → Interface (CTR - optional) →

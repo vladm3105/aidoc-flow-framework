@@ -52,7 +52,7 @@ Example: REQ-042-01_authentication_methods.md
 Examples:
 [REQ-003](../REQ/risk/REQ-003_position_limit.md#REQ-003)
 [ADR-005](../ADR/ADR-005_database_selection.md#ADR-005)
-[SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml#SPEC-023)
+[SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
 ```
 
 ---
@@ -141,7 +141,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 ### Downstream Artifacts
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| [SPEC-023](../SPEC/SPEC-023_impl.yaml#SPEC-023) | Technical Specification | Implementation |
+| [SPEC-023](../SPEC/SPEC-023_impl.yaml) | Technical Specification | Implementation |
 | [TASKS-023](../TASKS/TASKS-023_impl.md#TASKS-023) | Implementation Tasks | TODOs |
 
 ### Primary Anchor/ID
