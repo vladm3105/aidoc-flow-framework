@@ -517,7 +517,7 @@ Code Implementation
 - [Mermaid CLI Documentation](https://github.com/mermaid-js/mermaid-cli)
 
 ### Related Templates
-- [BRD Template]({project_root}/ai_dev_flow/brd/BRD-TEMPLATE.md)
+- [BRD Template]({project_root}/ai_dev_flow/BRD/BRD-TEMPLATE.md)
 - [PRD Template]({project_root}/ai_dev_flow/PRD/PRD-TEMPLATE.md)
 - [ADR Template]({project_root}/ai_dev_flow/ADR/ADR-TEMPLATE.md)
 - [SYS Template]({project_root}/ai_dev_flow/SYS/SYS-TEMPLATE.md)

@@ -371,7 +371,7 @@ flowchart LR
 
 **Templates**: [CTR-TEMPLATE](../CTR/CTR-TEMPLATE.md) \| [SPEC-TEMPLATE](../SPEC/SPEC-TEMPLATE.yaml) \| [TASKS-TEMPLATE](../TASKS/TASKS-TEMPLATE.md)
 
-**Guidelines**: [IMPL README](./README.md) \| [YAML Spec Standard](../SPEC/YAML_SPECIFICATION_STANDARD.md)
+**Guidelines**: [IMPL README](./README.md) \| [SPEC README](../SPEC/README.md)
 
 ---
 

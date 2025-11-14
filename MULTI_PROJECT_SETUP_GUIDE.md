@@ -458,7 +458,7 @@ vim /opt/data/docs_flow_framework/.claude/skills/doc-flow/SKILL.md
 
 ```bash
 # Edit framework template
-vim /opt/data/docs_flow_framework/ai_dev_flow/BRD/BRD-template.md
+vim /opt/data/docs_flow_framework/ai_dev_flow/BRD/BRD-TEMPLATE.md
 
 # Changes immediately available to all projects
 ```

@@ -778,7 +778,7 @@ Document evidence that EARS requirements have been implemented and validated cor
 - [BRD Template](../BRD/BRD-TEMPLATE.md) - Business requirements structure
 - [ADR Template](../ADR/ADR-TEMPLATE.md) - Architecture decision record format
 - [BDD Feature Template](../BDD/BDD-TEMPLATE.feature) - Behavior-driven development scenarios
-- [YAML Specification Standard](../../docs/SPEC/YAML_SPECIFICATION_STANDARD.md) - Specification format
+- [SPEC Template](../SPEC/SPEC-TEMPLATE.yaml) - Specification format
 
 ### 8.2 External Standards
 

@@ -317,7 +317,7 @@ Before making any technology decisions in ADRs, specifications, or implementatio
    - Output: BRD with business case, stakeholder needs, success criteria, **Architecture Decision Requirements**
    - Focus: Business objectives, market requirements, strategic alignment
    - **Architecture Approach**: Identify architectural topics requiring decisions; do NOT reference specific ADR numbers (ADRs created in later phase)
-   - Templates: `ai_dev_flow/BRD/BRD-template.md` (3 templates available)
+   - Templates: `ai_dev_flow/BRD/BRD-TEMPLATE.md` (3 templates available)
    - **Traceability**: Must reference `option_strategy/` sections
 
 2. **Capture Product Requirements (PRD)**
@@ -434,7 +434,7 @@ Before making any technology decisions in ADRs, specifications, or implementatio
 - One sentence per function description maximum
 - Use tabular format for parameter specifications
 - Employ bullet points for configuration options
-- See: [TOOL_OPTIMIZATION_GUIDE.md](../../TOOL_OPTIMIZATION_GUIDE.md)
+- See: [TOOL_OPTIMIZATION_GUIDE.md](../ai_dev_flow/TOOL_OPTIMIZATION_GUIDE.md)
 
 ### 5. Quality Gates (Definition of Done)
 
@@ -654,7 +654,7 @@ Each artifact type directory contains:
 
 **Available Templates** (location: `ai_dev_flow/{artifact_type}/`):
 - **BRD** (`BRD/`): **3 templates available** for different use cases
-  - `BRD-template.md` - Comprehensive business requirements (general purpose)
+  - `BRD-TEMPLATE.md` - Comprehensive business requirements (general purpose)
   - `BRD-template-2.md` - Alternative format (simplified structure)
   - `BRD-trading-template.md` - Trading-specific requirements (options trading focus)
   - Index: `BRD-000_index.md`

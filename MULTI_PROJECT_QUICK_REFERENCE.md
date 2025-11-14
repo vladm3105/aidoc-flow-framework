@@ -239,7 +239,7 @@ cd /opt/data/project_name
 
 ```bash
 ls -la /opt/data/project_name/.templates/ai_dev_flow/BRD/
-# Should list: BRD-template.md, BRD-template-2.md, etc.
+# Should list: BRD-TEMPLATE.md, BRD-template-2.md, etc.
 ```
 
 ---
@@ -355,10 +355,10 @@ git commit -m "Add IB-specific skill"
 
 ```bash
 # 1. Access template via symlink
-cat /opt/data/project_name/.templates/ai_dev_flow/BRD/BRD-template.md
+cat /opt/data/project_name/.templates/ai_dev_flow/BRD/BRD-TEMPLATE.md
 
 # 2. Copy to project docs
-cp .templates/ai_dev_flow/BRD/BRD-template.md \
+cp .templates/ai_dev_flow/BRD/BRD-TEMPLATE.md \
    docs/BRD/BRD-001_my_requirements.md
 
 # 3. Edit project copy
