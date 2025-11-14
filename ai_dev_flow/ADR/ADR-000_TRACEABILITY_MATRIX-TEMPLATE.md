@@ -417,7 +417,7 @@ graph TD
 ## 13. References
 
 ### Internal Documentation
-- **ADR Index**: [ADR-000_index-TEMPLATE.md](ADR-000_index-TEMPLATE.md)
+- **ADR Index**: [ADR-000_index.md](ADR-000_index.md)
 - **ADR Template**: [ADR-TEMPLATE.md](ADR-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)

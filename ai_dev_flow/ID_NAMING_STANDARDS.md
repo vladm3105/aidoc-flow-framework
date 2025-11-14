@@ -6,6 +6,47 @@ Purpose
 - Provide a single, practical guide for IDs, tags, links, file layout, and validation within this example.
 - Eliminate duplication while preserving mandatory rules and quick-reference tips.
 
+## Scope Clarification: Documentation Only
+
+**IMPORTANT**: This naming standard applies ONLY to Specification-Driven Development (SDD) **documentation artifacts**. It does NOT apply to source code files.
+
+### ✅ Apply ID_NAMING_STANDARDS To:
+- Documentation files in `docs/` directories:
+  - `BRD/` - Business Requirements Documents
+  - `PRD/` - Product Requirements Documents
+  - `REQ/` - Requirements
+  - `ADR/` - Architecture Decision Records
+  - `SPEC/` - Technical Specifications (YAML)
+  - `CTR/` - API Contracts (CTR)
+  - `IMPL/` - Implementation Plans
+  - `TASKS/` - AI Task Lists
+  - `BDD/` - Feature files (`.feature` format only)
+  - `EARS/` - EARS Requirements
+  - `SYS/` - System Requirements
+
+### ❌ Do NOT Apply ID_NAMING_STANDARDS To:
+- **Python source code**: Follow PEP 8 naming conventions
+  - Modules: `snake_case.py`
+  - Classes: `PascalCase`
+  - Functions/methods: `snake_case()`
+  - Constants: `UPPER_SNAKE_CASE`
+- **Python test files**: Follow pytest conventions
+  - Test modules: `test_*.py` or `*_test.py`
+  - Test functions: `test_*()`
+  - Fixtures: `snake_case()`
+- **Other source files**: Follow language-specific conventions
+  - JavaScript/TypeScript: Per ESLint/TSLint rules
+  - Java: Per Java naming conventions
+  - Go: Per Go style guide
+
+### Exception: BDD Feature Files
+BDD test scenarios in `.feature` files (Gherkin format) located in `tests/bdd/` or similar directories **SHOULD** follow ID_NAMING_STANDARDS:
+
+```
+tests/bdd/gateway/BDD-001_connection_management.feature
+tests/bdd/gateway/BDD-002_error_handling.feature
+```
+
 Scope & Authority
 - Applies to: PRD, SYS, REQ, ADR, BDD, SPEC, EARS, CTR, IMPL, AI-TASKS in this example.
 - One document per file.
@@ -52,7 +93,7 @@ Document ID Standards (ai_dev_flow)
     - `@requirement:[REQ-NNN](../REQ/.../REQ-NNN_{slug}.md#REQ-NNN)` or `@requirement:[REQ-NNN-YY](...)`
     - `@adr:[ADR-NNN](../ADR/ADR-NNN_{slug}.md#ADR-NNN)` or `@adr:[ADR-NNN-YY](...)` (if applicable)
   - Tags appear before `Scenario:` using valid relative paths + anchors.
-  - Index: maintain `BDD/BDD-000_index.feature`.
+  - Index: maintain `BDD/BDD-000_index.md`.
   - Notes: Use sub-numbering (-YY) when single feature requires multiple related test files.
 - Technical Specifications (SPEC)
   - YAML `id:` uses lowercase snake_case; pattern: `^[a-z][a-z0-9_]*[a-z0-9]$`.
@@ -64,7 +105,7 @@ Document ID Standards (ai_dev_flow)
 - API Contracts (CTR)
   - H1 ID: `CTR-NNN` or `CTR-NNN-YY` (e.g., `# CTR-001: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Validation Contract`).
   - Filename (Dual Format): `CTR-NNN_{slug}.md` + `CTR-NNN_{slug}.yaml` or `CTR-NNN-YY_{slug}.md` + `CTR-NNN-YY_{slug}.yaml` (both required)
-  - Organization: Optional subdirectories by service type: `CONTRACTS/{agents,mcp,infra}/CTR-NNN_{slug}.{md,yaml}`
+  - Organization: Optional subdirectories by service type: `CTR/{agents,mcp,infra}/CTR-NNN_{slug}.{md,yaml}`
   - Variable Length: NNN = 3-4 digits (001-999, 1000+), YY = 2-3 digits [OPTIONAL] (01-99, 100+)
   - YAML `contract_id:` uses lowercase_snake_case (e.g., `contract_id: position_risk_validation`)
   - Notes: Both .md and .yaml must exist for each CTR-NNN; slugs must match exactly. Use sub-numbering (-YY) when single contract spans multiple related interface definitions.
@@ -79,6 +120,29 @@ Document ID Standards (ai_dev_flow)
   - Variable Length: NNN = 3-4 digits (001-999, 1000+), YY = 2-3 digits [OPTIONAL] (01-99, 100+)
   - Notes: SPEC implementation plans with exact TODOs for code generation. Each TASKS corresponds to one SPEC. Use sub-numbering (-YY) when single SPEC implementation requires multiple related task files.
   - Allocation: reserve next number, do not reuse; keep slugs stable.
+- Implementation Plans (IPLAN)
+  - Filename Format: `IPLAN-NNN_{descriptive_slug}_YYYYMMDD_HHMMSS.md`
+  - Components:
+    - `IPLAN-NNN`: Sequential ID (001, 002, etc.)
+    - `{descriptive_slug}`: Lowercase, hyphen-separated description
+    - `YYYYMMDD_HHMMSS`: Timestamp (EST timezone)
+  - Variable Length: NNN = 3-4 digits (001-999, 1000+)
+  - Purpose: Session-based execution plans with bash commands
+  - Layer: 12
+  - Scope: Time-boxed implementation tasks for specific development sessions
+  - Examples:
+    - `IPLAN-001_database_migration_20251113_143022.md`
+    - `IPLAN-002_api_refactoring_20251114_091500.md`
+    - `IPLAN-003_test_coverage_improvement_20251115_140000.md`
+  - Traceability Tag Format: `@iplan: IPLAN-001, IPLAN-002`
+  - Tag Rules:
+    - Tag format: `@iplan:` followed by comma-separated IPLAN IDs
+    - Cumulative: Includes all upstream tags (@brd through @tasks)
+    - Used in: Code files, test files, validation documents
+  - Tag Count at Layer 12: 9-11 tags
+    - Layer 1-11 tags: @brd, @prd, @ears, @bdd, @adr, @sys, @req, @impl (optional), @ctr (optional), @spec, @tasks
+    - Layer 12 tag: @iplan
+  - Notes: Unlike other artifact types, IPLAN uses timestamp-based naming to track implementation sessions chronologically. H1 ID follows standard pattern (e.g., `# IPLAN-001: Database Migration Plan`).
 - Business Requirements Documents (BRD)
   - H1 ID: `BRD-NNN` or `BRD-NNN-YY` (e.g., `# BRD-009-01: [EXTERNAL_INTEGRATION - e.g., third-party API, service provider] Integration Prerequisites`)
   - Filename: `BRD-NNN_{slug}.md` or `BRD-NNN-YY_{slug}.md`
@@ -109,17 +173,19 @@ PRD, SYS, and EARS Document Types
   - Notes: Use sub-numbering (-YY) when single EARS requirement spans multiple related documents.
 
 File Organization Rules
-- One document per file (PRD, SYS, REQ, ADR, SPEC, BDD, EARS, CTR, IMPL, AI-TASKS, BRD).
+- One document per file (PRD, SYS, REQ, ADR, SPEC, BDD, EARS, CTR, IMPL, AI-TASKS, IPLAN, BRD).
 - **Exception**: CTR (API Contracts) requires dual files: .md + .yaml per contract.
+- **Exception**: IPLAN uses timestamp-based naming: `IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md`
 - Filenames use variable-length `NNN` or `NNN-YY` numbering; H1 contains the full ID where applicable.
 - Structure (this example):
   - `REQ/{category}/{subcategory}/REQ-NNN_{slug}.md` or `REQ-NNN-YY_{slug}.md`
   - `ADR/ADR-NNN_{slug}.md` or `ADR-NNN-YY_{slug}.md`
   - `BDD/BDD-NNN_{slug}.feature` or `BDD-NNN-YY_{slug}.feature`
   - `SPEC/{type}/SPEC-NNN_{slug}.yaml` or `SPEC-NNN-YY_{slug}.yaml`
-  - `CONTRACTS/CTR-NNN_{slug}.md` + `CTR-NNN_{slug}.yaml` (optional subdirs: `CONTRACTS/{agents,mcp,infra}/`)
+  - `CTR/CTR-NNN_{slug}.md` + `CTR-NNN_{slug}.yaml` (optional subdirs: `CTR/{agents,mcp,infra}/`)
   - `IMPL/IMPL-NNN_{slug}.md` or `IMPL-NNN-YY_{slug}.md`
   - `TASKS/TASKS-NNN_{slug}.md` or `TASKS-NNN-YY_{slug}.md`
+  - `IPLAN/IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md`
   - `PRD/PRD-NNN_{slug}.md` or `PRD-NNN-YY_{slug}.md`
   - `SYS/SYS-NNN_{slug}.md` or `SYS-NNN-YY_{slug}.md`
   - `EARS/EARS-NNN_{slug}.md` or `EARS-NNN-YY_{slug}.md`
@@ -136,8 +202,8 @@ Cross-Reference Link Format (MANDATORY)
     - `[ADR-NNN](../ADR/ADR-NNN_{slug}.md#ADR-NNN)` or `[ADR-NNN-YY](...)` in Traceability section
   - CTR in SPEC:
     - `contract_ref: CTR-NNN_{slug}` or `CTR-NNN-YY_{slug}` (YAML field)
-    - `[CTR-NNN](../../CONTRACTS/CTR-NNN_{slug}.md#CTR-NNN)` or `[CTR-NNN-YY](...)` (markdown reference)
-    - `[CTR-NNN Schema](../../CONTRACTS/CTR-NNN_{slug}.yaml)` or `[CTR-NNN-YY Schema](...)` (schema reference)
+    - `[CTR-NNN](../../CTR/CTR-NNN_{slug}.md#CTR-NNN)` or `[CTR-NNN-YY](...)` (markdown reference)
+    - `[CTR-NNN Schema](../../CTR/CTR-NNN_{slug}.yaml)` or `[CTR-NNN-YY Schema](...)` (schema reference)
   - REQ/ADR in SPEC:
     - `requirements_source:
       - "[REQ-NNN](../../REQ/.../REQ-NNN_{slug}.md#REQ-NNN)"` or `"[REQ-NNN-YY](...)"`
@@ -160,8 +226,9 @@ Traceability Requirements
 - BDD: include `@requirement` (mandatory) and `@adr` (when applicable).
 - SPEC: include `requirements_source` (REQ/EARS), `architecture` (ADR), `contract_ref` (CTR if applicable), `impl_plan` (IMPL if part of phased implementation), `verification` (BDD); all as markdown links.
 - TASKS: include `@spec` (mandatory - which SPEC being implemented), `@impl` (optional - parent implementation plan if applicable).
+- IPLAN: include `@tasks` (mandatory - which TASKS being executed), cumulative tags from all upstream artifacts.
 - BRD: link downstream REQ/IMPL/CTR (if applicable), related BRD sub-documents via markdown links.
-- Code: reference SPEC and CTR (if contract implementation) in docstrings or header comments using relative paths.
+- Code: reference SPEC, CTR (if contract implementation), and IPLAN (if session-based) in docstrings or header comments using relative paths.
 
 
 Validation Rules & Aids
@@ -184,6 +251,8 @@ Validation Rules & Aids
   - IMPL filename: `IMPL-\d{3,4}(-\d{2,3})?_.+\.md$`
   - TASKS H1 ID: `^#\sTASKS-\d{3,4}(-\d{2,3})?:.+$`
   - TASKS filename: `TASKS-\d{3,4}(-\d{2,3})?_.+\.md$`
+  - IPLAN H1 ID: `^#\sIPLAN-\d{3,4}:.+$`
+  - IPLAN filename: `IPLAN-\d{3,4}_.+_\d{8}_\d{6}\.md$`
   - BRD H1 ID: `^#\sBRD-\d{3,4}(-\d{2,3})?:.+$`
   - BRD filename: `BRD-\d{3,4}(-\d{2,3})?_.+\.md$`
   - PRD H1 ID: `^#\sPRD-\d{3,4}(-\d{2,3})?:.+$`
@@ -199,11 +268,12 @@ Examples (ai_dev_flow) - Atomic Documents (XXX)
 - EARS: `EARS/EARS-003_position_limit_enforcement.md` (H1: `# EARS-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
 - REQ: `REQ/risk/lim/REQ-003_position_limit_enforcement.md` (H1: `# REQ-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
 - ADR: `ADR/ADR-033_risk_limit_enforcement_architecture.md` (H1: `# ADR-033: Risk Limit Enforcement Architecture`)
-- CTR: `CONTRACTS/CTR-001_position_risk_validation.md` + `CTR-001_position_risk_validation.yaml` (H1: `# CTR-001: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Validation Contract`, YAML: `contract_id: position_risk_validation`)
+- CTR: `CTR/CTR-001_position_risk_validation.md` + `CTR-001_position_risk_validation.yaml` (H1: `# CTR-001: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Validation Contract`, YAML: `contract_id: position_risk_validation`)
 - BDD: `BDD/BDD-003_risk_limits_requirements.feature`
 - SPEC: `SPEC/services/SPEC-003_position_limit_service.yaml` (id: `position_limit_service`)
 - IMPL: `IMPL/IMPL-001_risk_management_system.md` (H1: `# IMPL-001: [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] System Implementation`)
 - TASKS: `TASKS/TASKS-003_position_limit_service.md` (H1: `# TASKS-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
+- IPLAN: `IPLAN/IPLAN-001_database_migration_20251113_143022.md` (H1: `# IPLAN-001: Database Migration Plan`)
 - BRD: `docs/BRD/BRD-001_foundation_overview.md` (H1: `# BRD-001: Foundation & Overview`)
 
 Examples (ai_dev_flow) - Sub-Documents (XXX-YY)

@@ -230,21 +230,21 @@ Code (Layer 13) → Source code
 
 ## 4. Upstream Traceability
 
-### 8.1 REQ → SPEC Traceability
+### 9.1 REQ → SPEC Traceability
 
 | REQ ID | REQ Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
 | REQ-001 | [Atomic requirement] | SPEC-001 | [Technical specification] | Requirement implemented in specification |
 | REQ-NNN | ... | ... | ... | ... |
 
-### 8.2 ADR → SPEC Traceability
+### 9.2 ADR → SPEC Traceability
 
 | ADR ID | ADR Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
 | ADR-001 | [Architecture decision] | SPEC-001, SPEC-002 | [Technical specifications] | Architectural patterns implemented in SPEC |
 | ADR-NNN | ... | ... | ... | ... |
 
-### 5.3 CTR → SPEC Traceability
+### 6.3 CTR → SPEC Traceability
 
 | CTR ID | CTR Title | SPEC IDs | SPEC Titles | Provider/Consumer |
 |--------|-----------|----------|-------------|-------------------|
@@ -254,23 +254,23 @@ Code (Layer 13) → Source code
 
 ---
 
-## 5. Downstream Traceability
+## 6. Downstream Traceability
 
-### 8.1 SPEC → TASKS Traceability
+### 9.1 SPEC → TASKS Traceability
 
 | SPEC ID | SPEC Title | TASKS IDs | TASKS Titles | Relationship |
 |---------|------------|-----------|--------------|--------------|
 | SPEC-001 | [Technical specification] | TASKS-001 | [Code generation plan] | 1:1 mapping SPEC to TASKS |
 | SPEC-NNN | ... | ... | ... | ... |
 
-### 8.2 SPEC → Code Traceability
+### 9.2 SPEC → Code Traceability
 
 | SPEC ID | SPEC Title | Code Files | Functions/Classes | Relationship |
 |---------|------------|------------|-------------------|--------------|
 | SPEC-001 | [Technical specification] | src/service.py | ServiceClass, method1(), method2() | Direct implementation |
 | SPEC-NNN | ... | ... | ... | ... |
 
-### 5.3 SPEC → Tests Traceability
+### 6.3 SPEC → Tests Traceability
 
 | SPEC ID | SPEC Title | Test Files | Test Functions | Coverage % |
 |---------|------------|------------|----------------|------------|
@@ -279,9 +279,9 @@ Code (Layer 13) → Source code
 
 ---
 
-## 5. Specification Organization
+## 6. Specification Organization
 
-### 8.1 SPEC by Type
+### 9.1 SPEC by Type
 
 | Spec Type | SPEC IDs | Total | Description |
 |-----------|---------|-------|-------------|
@@ -290,7 +290,7 @@ Code (Layer 13) → Source code
 | Infrastructure | SPEC-006, SPEC-007 | 2 | Infrastructure components |
 | Integration | SPEC-008 | 1 | External integrations |
 
-### 8.2 SPEC Validation Evidence
+### 9.2 SPEC Validation Evidence
 
 | SPEC ID | Requirements Coverage | Test Coverage | Upstream Traceability | Validation Status |
 |---------|----------------------|---------------|----------------------|-------------------|
@@ -301,7 +301,7 @@ Code (Layer 13) → Source code
 
 ---
 
-## 6. Cross-SPEC Dependencies
+## 7. Cross-SPEC Dependencies
 
 ```mermaid
 graph TD
@@ -323,7 +323,7 @@ graph TD
     style Code1 fill:#e8f5e9
 ```
 
-### 8.1 Inter-SPEC Dependencies
+### 9.1 Inter-SPEC Dependencies
 
 | Source SPEC | Target SPEC | Dependency Type | Description |
 |-------------|-------------|-----------------|-------------|
@@ -333,9 +333,9 @@ graph TD
 
 ---
 
-## 7. Implementation Metrics
+## 8. Implementation Metrics
 
-### 8.1 SPEC Implementation Status
+### 9.1 SPEC Implementation Status
 
 | SPEC ID | YAML Valid | TASKS Status | Code Status | Tests Status | Overall | Completion % |
 |---------|------------|--------------|-------------|--------------|---------|--------------|
@@ -344,7 +344,7 @@ graph TD
 | SPEC-003 | ❌ | ⏳ Pending | ⏳ Pending | ⏳ Pending | Not Started | 0% |
 | SPEC-NNN | ... | ... | ... | ... | ... | ... |
 
-### 8.2 Code Generation Metrics
+### 9.2 Code Generation Metrics
 
 | SPEC ID | Spec Size (LOC in YAML) | Generated Code (LOC) | Generation Ratio | Quality Score |
 |---------|------------------------|---------------------|------------------|---------------|
@@ -355,9 +355,9 @@ graph TD
 
 ---
 
-## 8. Performance and Quality Targets
+## 9. Performance and Quality Targets
 
-### 8.1 Performance Targets from SPEC
+### 9.1 Performance Targets from SPEC
 
 | SPEC ID | Response Time Target | Throughput Target | Resource Limit | Achieved | Status |
 |---------|---------------------|-------------------|----------------|----------|--------|
@@ -366,7 +366,7 @@ graph TD
 | SPEC-003 | < 50ms | 2000 req/s | 1GB RAM | Not Tested | ⏳ Pending |
 | SPEC-NNN | ... | ... | ... | ... | ... |
 
-### 8.2 Observability Coverage
+### 9.2 Observability Coverage
 
 | SPEC ID | Metrics Defined | Logs Defined | Traces Defined | Alerts Defined | Coverage % |
 |---------|-----------------|--------------|----------------|----------------|------------|
@@ -377,33 +377,33 @@ graph TD
 
 ---
 
-## 9. Gap Analysis
+## 10. Gap Analysis
 
-### 9.1 Missing Downstream Artifacts
+### 10.1 Missing Downstream Artifacts
 - SPEC-XXX: Missing TASKS (no code generation plan)
 - SPEC-YYY: Missing Code (not implemented)
 - SPEC-ZZZ: Missing Tests (no test coverage)
 
-### 9.2 Orphaned Artifacts
+### 10.2 Orphaned Artifacts
 - Code File: src/orphan.py (no SPEC traceability)
 - TASKS-XXX: Code plan with no SPEC source
 
-### 9.3 Quality Issues
+### 10.3 Quality Issues
 - SPEC-002: Invalid YAML syntax
 - SPEC-005: Missing performance targets
 - SPEC-008: Incomplete observability definition
 
 ---
 
-## 10. Immediate Next Steps
+## 11. Immediate Next Steps
 
-### 10.1 Priority Actions
+### 11.1 Priority Actions
 1. **Fix YAML Validation Errors**: [X] SPEC documents have invalid syntax
 2. **Create Missing TASKS**: [Y] SPEC documents need code generation plans
 3. **Implement Pending Code**: [Z] SPEC documents need implementation
 4. **Complete Observability**: [N] SPEC documents need full observability SPEC
 
-### 10.2 Specification Review Schedule
+### 11.2 Specification Review Schedule
 
 | Review Type | Target Date | SPEC Scope | Status |
 |-------------|-------------|------------|--------|
@@ -413,7 +413,7 @@ graph TD
 
 ---
 
-## 11. Revision History
+## 12. Revision History
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
@@ -421,12 +421,12 @@ graph TD
 
 ---
 
-## 12. References
+## 13. References
 
 - **SPEC Index**: [SPEC-000_index.md](SPEC-000_index.md)
 - **SPEC Template**: [SPEC-TEMPLATE.yaml](SPEC-TEMPLATE.yaml)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
-- **Related Matrices**: [REQ](../REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md), [CTR](../CONTRACTS/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md), [TASKS](../TASKS/TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Related Matrices**: [REQ](../REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md), [CTR](../CTR/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md), [TASKS](../TASKS/TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 

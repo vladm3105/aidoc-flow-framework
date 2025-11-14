@@ -14,9 +14,9 @@ description: AI-Driven Specification-Driven Development (SDD) workflow for trans
 ---
 
 ## Purpose
-Provide AI assistants with structured guidance on implementing the AI-Driven Specification-Driven Development (SDD) workflow defined in `docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` as the **authoritative development standard**. This skill enables complete traceability from business requirements to production code through formal artifacts, with clear separation between strategy (Product Owner voice), project documentation, and development templates.
+Provide AI assistants with structured guidance on implementing the AI-Driven Specification-Driven Development (SDD) workflow defined in `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` as the **authoritative development standard**. This skill enables complete traceability from business requirements to production code through formal artifacts, with clear separation between strategy (Product Owner voice), project documentation, and development templates.
 
-**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
+**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
 ## Directory Structure and Roles
 
@@ -41,15 +41,15 @@ Provide AI assistants with structured guidance on implementing the AI-Driven Spe
 - `docs/PRD/` - Product Requirements Documents
 - `docs/ADR/` - Architecture Decision Records (HOW)
 - `docs/BDD/` - BDD acceptance tests (Behavior-Driven Development)
-- `docs/CONTRACTS/` - API Contracts (dual-file format: .md + .yaml)
+- `docs/CTR/` - API Contracts (dual-file format: .md + .yaml)
 - `docs/IMPL/` - Implementation Plans (Project Management: WHO/WHEN)
 - `docs/SPEC/` - YAML technical specifications
 - `docs/TASKS/` - Code Generation Plans (AI-structured implementation tasks)
-- `docs/tasks_plans/` - Implementation Work Plans (session-based execution with bash commands)
+- `docs/IPLAN/` - Implementation Plans (session-based execution with bash commands)
 
 **Purpose**: Document how strategy is implemented through architecture and code.
 
-### 📝 `docs_templates/ai_dev_flow/` - AUTHORITATIVE DEVELOPMENT STANDARD
+### 📝 `ai_dev_flow/` - AUTHORITATIVE DEVELOPMENT STANDARD
 **Development Standard and Templates**: The single source of truth for SDD workflow
 
 - **Status**: Authoritative development standard for this project
@@ -75,7 +75,7 @@ Provide AI assistants with structured guidance on implementing the AI-Driven Spe
 **Active Documentation Only:**
 - ✅ `option_strategy/` (current V5 strategy - excludes archived subdirs)
 - ✅ `docs/` (active project documentation)
-- ✅ `docs_templates/` (authoritative templates and standards)
+- ✅ `ai_dev_flow/` (authoritative templates and standards)
 
 **If archived content is needed:**
 - Stop immediately
@@ -109,21 +109,21 @@ Provide AI assistants with structured guidance on implementing the AI-Driven Spe
               ↓
 💻 Source Code (Python/Infrastructure)
 
-📝 docs_templates/ feeds into 📚 docs/ for consistency
+📝 ai_dev_flow/ feeds into 📚 docs/ for consistency
 ```
 
 **Golden Rules**:
 - Strategy → Documentation → Code (one-way flow)
 - Code cannot change strategy
-- Always use templates from `docs_templates/` when creating docs in `docs/`
+- Always use templates from `ai_dev_flow/` when creating docs in `docs/`
 - All trading logic must reference `option_strategy/` sections
 
 ## Core Workflow Chain
 
-**Reference**: `docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` (Authoritative Standard)
+**Reference**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` (Authoritative Standard)
 
 ```
-Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → tasks_plans → Code → Tests → Validation
+Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation
                                                                    ↓
                                                            [IF INTERFACE REQUIREMENT]
 ```
@@ -140,7 +140,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → C
 9. **CTR** (API Contracts) - [IF INTERFACE REQUIREMENT] Formal interface specifications for component-to-component communication
 10. **SPEC** (Technical Specifications) - YAML implementation blueprints: HOW to build (references CTR contracts when implementing interfaces)
 11. **TASKS** (Code Generation Plans) - AI-structured task breakdowns with exact TODOs to implement SPEC
-12. **tasks_plans** (Implementation Work Plans) - Session-based execution plans with bash commands and verification steps
+12. **IPLAN** (Implementation Plans) - Session-based execution plans with bash commands and verification steps
 13. **Code** - Python implementation matching SPEC exactly
 14. **Tests** - Test suites (unit, integration, BDD execution, contract tests)
 15. **Validation** - BDD scenario verification, contract validation, and traceability checks
@@ -165,11 +165,11 @@ flowchart TD
     IMPL --> CTR[CTR: API Contracts<br/>IF INTERFACE REQUIREMENT]
     CTR --> SPEC[SPEC: Technical Implementation YAML<br/>HOW to Build]
     SPEC --> TASKS[TASKS: Code Generation Plans<br/>Exact TODOs to Implement SPEC]
-    TASKS --> TP[tasks_plans: Implementation Work Plans<br/>Session Context with Bash Commands]
+    TASKS --> TP[IPLAN: Implementation Plans<br/>Session Context with Bash Commands]
     TP --> Code[Code: Python Implementation]
     Code --> Tests[Tests: Test Suites + Contract Tests]
     Tests --> Validation[Validation: BDD + Contract + Traceability]
-    Templates[docs_templates/ai_dev_flow/<br/>AUTHORITATIVE STANDARD] -.->|provides templates| BRD
+    Templates[ai_dev_flow/<br/>AUTHORITATIVE STANDARD] -.->|provides templates| BRD
     Templates -.-> PRD
     Templates -.-> EARS
     Templates -.-> BDD
@@ -201,17 +201,17 @@ flowchart TD
 
 **Important Traceability Notes:**
 - **Strategy First**: All requirements must reference `option_strategy/` business logic
-- **Authoritative Standard**: `docs_templates/ai_dev_flow/` defines the complete SDD methodology
-- **Templates Required**: ALWAYS use templates from `docs_templates/ai_dev_flow/{TYPE}-TEMPLATE.{ext}` when creating any artifact
-- **One-Way Flow**: Changes flow from strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → tasks_plans → code (never reverse)
+- **Authoritative Standard**: `ai_dev_flow/` defines the complete SDD methodology
+- **Templates Required**: ALWAYS use templates from `ai_dev_flow/{TYPE}-TEMPLATE.{ext}` when creating any artifact
+- **One-Way Flow**: Changes flow from strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → code (never reverse)
 - **Order Matters**: Follow the exact sequence defined in `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 
 ## Key Instructions
 
-**⚠️ CRITICAL**: All instructions below are defined in `docs_templates/ai_dev_flow/` (authoritative standard). When in doubt, consult the source documents in that directory.
+**⚠️ CRITICAL**: All instructions below are defined in `ai_dev_flow/` (authoritative standard). When in doubt, consult the source documents in that directory.
 
 ### 1. Document ID Standards
-**Authoritative Reference**: `docs_templates/ai_dev_flow/ID_NAMING_STANDARDS.md`
+**Authoritative Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
 
 **Universal Numbering Pattern (All Document Types):**
 - **Primary Number (XXX)**: 3-4 digit sequential number for atomic logical document (001-999, then 1000-9999 when needed)
@@ -227,12 +227,12 @@ flowchart TD
 **File Naming Patterns:**
 - BRD: `BRD/BRD-XXX_{slug}.md` or `BRD-XXX-YY_{slug}.md` (Business Requirements Documents) - **NEW location: docs/BRD/**
 - PRD: `PRD/PRD-XXX_{slug}.md` or `PRD-XXX-YY_{slug}.md` (Product Requirements) - **NEW location: docs/PRD/**
-- SYS: `SYS/SYS-XXX_{slug}.md` or `SYS-XXX-YY_{slug}.md` (System Requirements) - **Template location: docs_templates/ai_dev_flow/SYS/**
-- EARS: `EARS/EARS-XXX_{slug}.md` or `EARS-XXX-YY_{slug}.md` (Formal Requirements) - **Template location: docs_templates/ai_dev_flow/EARS/**
-- REQ: `REQ/{domain}/{subdomain}/REQ-XXX_{slug}.md` or `REQ-XXX-YY_{slug}.md` (Atomic Requirements) - **Template location: docs_templates/ai_dev_flow/REQ/**
+- SYS: `SYS/SYS-XXX_{slug}.md` or `SYS-XXX-YY_{slug}.md` (System Requirements) - **Template location: ai_dev_flow/SYS/**
+- EARS: `EARS/EARS-XXX_{slug}.md` or `EARS-XXX-YY_{slug}.md` (Formal Requirements) - **Template location: ai_dev_flow/EARS/**
+- REQ: `REQ/{domain}/{subdomain}/REQ-XXX_{slug}.md` or `REQ-XXX-YY_{slug}.md` (Atomic Requirements) - **Template location: ai_dev_flow/REQ/**
 - ADR: `ADR/ADR-XXX_{slug}.md` or `ADR-XXX-YY_{slug}.md` (Architecture Decisions) - **NEW location: docs/ADR/**
 - BDD: `BDD/BDD-XXX_{slug}.feature` or `BDD-XXX-YY_{slug}.feature` (Behavior-Driven Tests) - **NEW location: docs/BDD/**
-- CTR: `CONTRACTS/CTR-XXX_{slug}.md` + `CTR-XXX_{slug}.yaml` or `CTR-XXX-YY_{slug}.{md,yaml}` (API Contracts - dual-file format) - **NEW location: docs/CONTRACTS/**
+- CTR: `CTR/CTR-XXX_{slug}.md` + `CTR-XXX_{slug}.yaml` or `CTR-XXX-YY_{slug}.{md,yaml}` (API Contracts - dual-file format) - **NEW location: docs/CTR/**
 - SPEC: `SPEC/SPEC-XXX_{slug}.yaml` or `SPEC-XXX-YY_{slug}.yaml` (Technical Specifications, references CTR contracts) - **NEW location: docs/SPEC/**
 - TASKS: `TASKS/TASKS-XXX_{slug}.md` or `TASKS-XXX-YY_{slug}.md` (Code Generation Plans) - **NEW location: docs/TASKS/**
 - IMPL: `IMPL/IMPL-XXX_{slug}.md` or `IMPL-XXX-YY_{slug}.md` (Implementation Plans) - **NEW location: docs/IMPL/**
@@ -264,7 +264,7 @@ flowchart TD
 5. Verify document content matches your topic before assuming relationship
 
 ### 2. Traceability Requirements
-**Authoritative Reference**: `docs_templates/ai_dev_flow/TRACEABILITY.md`
+**Authoritative Reference**: `ai_dev_flow/TRACEABILITY.md`
 
 **Traceability Section (Required):**
 - Every document must include a `## Traceability` section (typically Section 7)
@@ -289,7 +289,7 @@ flowchart TD
 - Use relative paths from current file location
 - Examples:
   - From docs/BRD/: `[ADR-033](../ADR/ADR-033_risk_architecture.md#ADR-033)`
-  - From docs/SPEC/: `[CTR-001](../CONTRACTS/CTR-001_api_contract.md#CTR-001)`
+  - From docs/SPEC/: `[CTR-001](../CTR/CTR-001_api_contract.md#CTR-001)`
 
 ### Tag-Based Traceability Workflow
 
@@ -350,7 +350,7 @@ python scripts/generate_traceability_matrices.py --output docs/generated/matrice
 
 ### 2.5 Cumulative Tagging Hierarchy
 
-**Authoritative Reference**: `docs_templates/ai_dev_flow/TRACEABILITY.md#cumulative-tagging-hierarchy`
+**Authoritative Reference**: `ai_dev_flow/TRACEABILITY.md#cumulative-tagging-hierarchy`
 
 **Principle**: Each artifact layer must include traceability tags from ALL upstream artifact layers, creating a complete audit trail from business requirements through production code.
 
@@ -370,7 +370,7 @@ python scripts/generate_traceability_matrices.py --output docs/generated/matrice
 | 9 | **CTR** | `@brd` through `@impl` | 8 | Markdown + YAML | Optional layer |
 | 10 | **SPEC** | `@brd` through `@req` + optional | 7-9 | YAML (`cumulative_tags`) | YAML cumulative_tags section |
 | 11 | **TASKS** | `@brd` through `@spec` | 8-10 | Markdown | Cumulative: BRD through SPEC |
-| 12 | **tasks_plans** | `@brd` through `@tasks` | 9-11 | Markdown | Implementation session plans |
+| 12 | **IPLAN** | `@brd` through `@tasks` | 9-11 | Markdown | Implementation session plans |
 | 13 | **Code** | `@brd` through `@tasks` | 9-11 | Docstrings | Python/source code |
 | 14 | **Tests** | `@brd` through `@code` | 10-12 | Docstrings | Test suites |
 | 15 | **Validation** | All upstream | 10-15 | Various | Validation results |
@@ -487,11 +487,11 @@ cumulative_tags:
 6. **Optional layer handling**: Only include `@impl` and `@ctr` if they actually exist in chain
 
 ### 3. Development Workflow Steps
-**Authoritative Reference**: `docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+**Authoritative Reference**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 
 **Technology Stack Reference**:
 Before making any technology decisions in ADRs, specifications, or implementation plans:
-1. Read `/opt/data/trading/docs/ADR/ADR-000_technology_stack.md` for approved project-wide technologies
+1. Read `{project_root}/docs/ADR/ADR-000_technology_stack.md` for approved project-wide technologies
 2. Ensure consistency with core technologies: Google ADK, MCP, A2A Protocol, GCP infrastructure
 3. If proposing new technology not in ADR-000, create a new ADR justifying the addition
 
@@ -512,7 +512,7 @@ Before making any technology decisions in ADRs, specifications, or implementatio
    - Output: BRD with business case, stakeholder needs, success criteria, **Architecture Decision Requirements**
    - Focus: Business objectives, market requirements, strategic alignment
    - **Architecture Approach**: Identify architectural topics requiring decisions; do NOT reference specific ADR numbers (ADRs created in later phase)
-   - Templates: `docs_templates/ai_dev_flow/BRD/BRD-template.md` (3 templates available)
+   - Templates: `ai_dev_flow/BRD/BRD-template.md` (3 templates available)
    - **Traceability**: Must reference `option_strategy/` sections
 
 2. **Capture Product Requirements (PRD)**
@@ -554,7 +554,7 @@ Before making any technology decisions in ADRs, specifications, or implementatio
    - Organization: `REQ/{domain}/{subdomain}/REQ-NNN_*.md`
 
 8. **Plan Implementation (IMPL)** [CONDITIONAL - see decision guide]
-   - **Decision Guide**: [WHEN_TO_CREATE_IMPL.md](../../docs_templates/ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - When to create IMPL vs skip to CTR/SPEC
+   - **Decision Guide**: [WHEN_TO_CREATE_IMPL.md](../../ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - When to create IMPL vs skip to CTR/SPEC
    - **Create IMPL When**: Duration ≥2 weeks, teams ≥3, components ≥5, critical budget/timeline, external dependencies
    - **Skip IMPL When**: Single component, duration <2 weeks, single developer, low risk
    - Input: REQ atomic requirements, ADR architecture decisions
@@ -564,8 +564,8 @@ Before making any technology decisions in ADRs, specifications, or implementatio
    - Purpose: Coordinate team activities and track deliverables
 
 9. **Define API Contracts (CTR) [IF INTERFACE REQUIREMENT]**
-   - **Policy**: [ADR-CTR_SEPARATE_FILES_POLICY.md](../../docs_templates/ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - MANDATORY dual-file format
-   - **Decision Guide**: [WHEN_TO_CREATE_IMPL.md](../../docs_templates/ai_dev_flow/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr-after-impl) - CTR creation criteria
+   - **Policy**: [ADR-CTR_SEPARATE_FILES_POLICY.md](../../ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - MANDATORY dual-file format
+   - **Decision Guide**: [WHEN_TO_CREATE_IMPL.md](../../ai_dev_flow/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr-after-impl) - CTR creation criteria
    - **Create CTR When**: Public APIs, event schemas, data models, version compatibility requirements
    - **Skip CTR When**: Internal logic only, no external interface, no serialization
    - Input: Interface-focused REQ, ADR architecture decisions, IMPL deliverables list (if IMPL exists)
@@ -606,7 +606,7 @@ Before making any technology decisions in ADRs, specifications, or implementatio
     - Pre-commit: Automated validation before commit
 
 ### 4. Documentation Standards
-**Authoritative Reference**: `docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` (Appendix sections)
+**Authoritative Reference**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` (Appendix sections)
 
 **Language Requirements:**
 - Objective, factual language only
@@ -662,10 +662,10 @@ Before making any technology decisions in ADRs, specifications, or implementatio
 - **PRD**: Product requirements for position risk limits
 - **SYS**: System requirements specification
 - **EARS**: Formal WHEN-THE-SHALL-WITHIN requirements
-- **REQ**: [REQ-003_position_limit_enforcement.md](../../docs_templates/ai_dev_flow/REQ/risk/lim/REQ-003_position_limit_enforcement.md)
+- **REQ**: [REQ-003_position_limit_enforcement.md](../../ai_dev_flow/REQ/risk/lim/REQ-003_position_limit_enforcement.md)
 - **ADR**: Architecture decision for risk limit enforcement
 - **BDD**: Gherkin feature file with test scenarios
-- **CTR**: [CTR-001_position_risk_validation.md + .yaml](../../docs_templates/ai_dev_flow/CONTRACTS/) (if interface requirement)
+- **CTR**: [CTR-001_position_risk_validation.md + .yaml](../../ai_dev_flow/CTR/) (if interface requirement)
   - Markdown: Contract context, definitions, error handling, NFRs, versioning
   - YAML: JSON Schema request/response definitions, error codes, endpoint specifications
 - **SPEC**: YAML technical specification referencing CTR contract
@@ -680,16 +680,40 @@ Before making any technology decisions in ADRs, specifications, or implementatio
 
 ### 7. Validation Commands
 
-**Required Validations:**
+**Tag-Based Traceability Validation (Recommended):**
+```bash
+# Extract all tags from codebase
+python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
+
+# Validate tags against documents
+python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
+
+# Validate cumulative tagging hierarchy
+python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --validate-cumulative --strict
+
+# Generate bidirectional matrices
+python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json --output docs/generated/matrices/
+
+# Complete workflow (extract → validate → generate)
+python scripts/generate_traceability_matrices.py --auto
+```
+
+**Legacy Manual Validation (Optional):**
 ```bash
 # Validate requirement IDs and format
 python scripts/validate_requirement_ids.py
 
-# Check broken references (if available)
+# Check broken references
 python scripts/check_broken_references.py
 
-# Generate traceability matrix (if available)
+# Generate traceability matrix
 python scripts/complete_traceability_matrix.py
+```
+
+**Pre-Commit Validation:**
+```bash
+# Validate only (no output) - for pre-commit hooks
+python scripts/extract_tags.py --validate-only
 ```
 
 ### 8. AI Assistant Best Practices
@@ -697,7 +721,7 @@ python scripts/complete_traceability_matrix.py
 **When Creating New Artifacts:**
 1. **START WITH STRATEGY**: Read relevant `option_strategy/` documents FIRST
 2. **Check Technology Stack** (for ADRs/SPECs): Read `docs/ADR/ADR-000_technology_stack.md` for approved technologies
-3. **Use Templates**: Browse `docs_templates/ai_dev_flow/` for applicable template
+3. **Use Templates**: Browse `ai_dev_flow/` for applicable template
 4. **Reading order**: Strategy → Technology Stack (if applicable) → Template → Index → Workflow → Implementation Guide → Referenced artifacts
 5. Reserve next sequential ID number before creating file
 6. Include universal tag header at top of file
@@ -706,7 +730,7 @@ python scripts/complete_traceability_matrix.py
 9. **Add Strategy References**: Link to specific `option_strategy/` sections in Traceability
 10. **CREATE/UPDATE TRACEABILITY MATRIX** ⚠️ **MANDATORY**:
    - File: `docs/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX.md`
-   - Template: `docs_templates/ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+   - Template: `ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md`
    - Update within same commit as artifact creation
    - Add upstream sources (which docs drove this)
    - Add downstream artifacts (which docs/code derive from this)
@@ -721,7 +745,7 @@ python scripts/complete_traceability_matrix.py
 - **CTR**: Answers "WHAT interface" - formal contracts between components (dual-file: .md + .yaml)
 
 **Directory Context Rules:**
-- Creating docs in `docs/`: Use templates from `docs_templates/`
+- Creating docs in `docs/`: Use templates from `ai_dev_flow/`
 - Implementing trading logic: Reference `option_strategy/` sections (current V5 only)
 - Creating new strategy: Only with explicit user permission (Product Owner role)
 - Infrastructure/DevOps: Strategy references not required
@@ -744,10 +768,10 @@ python scripts/complete_traceability_matrix.py
 
 #### Policy
 
-**CRITICAL RULE**: EVERY time you create or update a document of ANY artifact type (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, tasks_plans), you MUST:
+**CRITICAL RULE**: EVERY time you create or update a document of ANY artifact type (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN), you MUST:
 
 1. **Check for existing traceability matrix**: Look for `[TYPE]-000_TRACEABILITY_MATRIX.md`
-2. **Create if missing**: Use template from `docs_templates/ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+2. **Create if missing**: Use template from `ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md`
 3. **Update if exists**: Add new document entry with:
    - Document ID and title
    - Upstream sources (documents that drove this artifact)
@@ -795,7 +819,7 @@ Each traceability matrix tracks:
 All artifact types have traceability matrix templates:
 
 ```
-docs_templates/ai_dev_flow/
+ai_dev_flow/
 ├── BRD/BRD-000_TRACEABILITY_MATRIX-TEMPLATE.md
 ├── PRD/PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md
 ├── EARS/EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md
@@ -804,7 +828,7 @@ docs_templates/ai_dev_flow/
 ├── SYS/SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md
 ├── REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md
 ├── IMPL/IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md
-├── CONTRACTS/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md
+├── CTR/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md
 ├── SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md
 └── TASKS/TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md
 ```
@@ -821,35 +845,35 @@ docs_templates/ai_dev_flow/
 
 **⭐ Primary Reference - Authoritative Development Standard:**
 
-All documentation below is located in `docs_templates/ai_dev_flow/` - the **single source of truth** for SDD methodology.
+All documentation below is located in `ai_dev_flow/` - the **single source of truth** for SDD methodology.
 
 **Core Standards:**
-- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 13-step workflow
-- **Authoritative Workflow Diagram**: [index.md](../../docs_templates/ai_dev_flow/index.md#traceability-flow) - Complete Mermaid diagram (single source of truth)
-- **ID Standards**: [ID_NAMING_STANDARDS.md](../../docs_templates/ai_dev_flow/ID_NAMING_STANDARDS.md) - File naming, ID format rules
-- **Traceability**: [TRACEABILITY.md](../../docs_templates/ai_dev_flow/TRACEABILITY.md) - Cross-reference format, link standards
-- **When to Create IMPL**: [WHEN_TO_CREATE_IMPL.md](../../docs_templates/ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC decision guide
-- **Phase 1 Completion**: [WORKFLOW_FIXES_PHASE1_COMPLETE.md](../../docs_templates/ai_dev_flow/WORKFLOW_FIXES_PHASE1_COMPLETE.md) - Recent fixes and standardization
-- **README**: [README.md](../../docs_templates/ai_dev_flow/README.md) - Getting started guide
+- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 13-step workflow
+- **Authoritative Workflow Diagram**: [index.md](../../ai_dev_flow/index.md#traceability-flow) - Complete Mermaid diagram (single source of truth)
+- **ID Standards**: [ID_NAMING_STANDARDS.md](../../ai_dev_flow/ID_NAMING_STANDARDS.md) - File naming, ID format rules
+- **Traceability**: [TRACEABILITY.md](../../ai_dev_flow/TRACEABILITY.md) - Cross-reference format, link standards
+- **When to Create IMPL**: [WHEN_TO_CREATE_IMPL.md](../../ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC decision guide
+- **Phase 1 Completion**: [WORKFLOW_FIXES_PHASE1_COMPLETE.md](../../ai_dev_flow/WORKFLOW_FIXES_PHASE1_COMPLETE.md) - Recent fixes and standardization
+- **README**: [README.md](../../ai_dev_flow/README.md) - Getting started guide
 
 **Project Documentation:**
 - Core Principles: [PROJECT_CORE_PRINCIPLES.md](../../PROJECT_CORE_PRINCIPLES.md)
 - Claude Instructions: [CLAUDE.md](../../CLAUDE.md)
 - SDD Framework: [docs/SPECIFICATION_DRIVEN_DEVELOPMENT.md](../../docs/SPECIFICATION_DRIVEN_DEVELOPMENT.md)
 
-**Templates and READMEs** (all in `docs_templates/ai_dev_flow/`):
+**Templates and READMEs** (all in `ai_dev_flow/`):
 
 **⚠️ Important Path Distinction:**
-- **Templates**: Located in `docs_templates/ai_dev_flow/{lowercase_dir}/` (lowercase directory names)
+- **Templates**: Located in `ai_dev_flow/{lowercase_dir}/` (lowercase directory names)
 - **Production Documents**: Created in `docs/{UPPERCASE_DIR}/` (uppercase directory names)
-- **Example**: Copy template from `docs_templates/ai_dev_flow/ADR/ADR-TEMPLATE.md` → Create document in `docs/ADR/ADR-033_risk_architecture.md`
+- **Example**: Copy template from `ai_dev_flow/ADR/ADR-TEMPLATE.md` → Create document in `docs/ADR/ADR-033_risk_architecture.md`
 
 Each artifact type directory contains:
 - **Index File**: `{TYPE}-000_index.{ext}` - Lists all documents of that type
 - **Template File**: `{TYPE}-TEMPLATE.{ext}` - **ALWAYS use this as starting point for new documents**
 - **README.md**: Detailed usage guide and best practices
 
-**Available Templates** (location: `docs_templates/ai_dev_flow/{artifact_type}/`):
+**Available Templates** (location: `ai_dev_flow/{artifact_type}/`):
 - **BRD** (`BRD/`): **3 templates available** for different use cases
   - `BRD-template.md` - Comprehensive business requirements (general purpose)
   - `BRD-template-2.md` - Alternative format (simplified structure)
@@ -866,12 +890,12 @@ Each artifact type directory contains:
   - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
 - **BDD** (`BDD/`): `BDD-TEMPLATE.feature`, Index: `BDD-000_index.feature`, README
   - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
-- **CTR** (`CONTRACTS/`): `CTR-TEMPLATE.md`, `CTR-TEMPLATE.yaml` (dual-file), Index: `CTR-000_index.md`, README
+- **CTR** (`CTR/`): `CTR-TEMPLATE.md`, `CTR-TEMPLATE.yaml` (dual-file), Index: `CTR-000_index.md`, README
   - **MANDATORY dual-file format**: Both .md and .yaml required per contract (see ADR-CTR)
   - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
-  - Policy: [ADR-CTR_SEPARATE_FILES_POLICY.md](../../docs_templates/ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - Authoritative policy
+  - Policy: [ADR-CTR_SEPARATE_FILES_POLICY.md](../../ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - Authoritative policy
   - Optional organization: subdirectories by service type (agents/, mcp/, infra/, shared/)
-  - Examples: [CTR-001_risk_validator_api.md/.yaml](../../docs_templates/ai_dev_flow/CONTRACTS/examples/) - Complete reference implementation
+  - Examples: [CTR-001_risk_validator_api.md/.yaml](../../ai_dev_flow/CTR/examples/) - Complete reference implementation
 - **SPEC** (`SPEC/`): `SPEC-TEMPLATE.yaml`, Index: `SPEC-000_index.md`, README
   - Organized by type: `services/`, `agents/`, `infrastructure/`
   - References CTR contracts via `contract_ref:` field
@@ -900,10 +924,10 @@ Each artifact type directory contains:
 
 When asked to implement a new feature:
 
-1. **Start**: "I'll use the doc-flow skill to implement this using SDD methodology per `docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`"
+1. **Start**: "I'll use the doc-flow skill to implement this using SDD methodology per `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`"
 2. **Read Strategy**: Review relevant `option_strategy/` documents FIRST (Product Owner voice)
-3. **Read Standard**: Review `docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` for workflow steps
-4. **Find Templates**: Browse `docs_templates/ai_dev_flow/{artifact_type}/` for applicable templates
+3. **Read Standard**: Review `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` for workflow steps
+4. **Find Templates**: Browse `ai_dev_flow/{artifact_type}/` for applicable templates
 5. **Create Artifacts**: Generate in CORRECT order: BRD → PRD → **EARS** → BDD → ADR → SYS → REQ → IMPL [IF COMPLEX] → **CTR** [IF INTERFACE] → SPEC → TASKS
 6. **Use Templates**: ALWAYS copy from `{TYPE}-TEMPLATE.{ext}` for each new document (both .md and .yaml for CTR)
 7. **Link**: Add traceability tags to each artifact (including strategy references and CTR contracts)
@@ -915,16 +939,16 @@ When asked to implement a new feature:
 
 ```text
 User: "Implement position risk limit validation"
-Assistant: "I'll use the doc-flow skill to implement this feature following the authoritative SDD methodology defined in docs_templates/ai_dev_flow/.
+Assistant: "I'll use the doc-flow skill to implement this feature following the authoritative SDD methodology defined in ai_dev_flow/.
 
 Step 1: Read strategy business logic
 - option_strategy/integrated_strategy_algo_v5.md - for risk budget algorithms (Section 4.2)
 - option_strategy/delta_hedging.md - for portfolio-level limits
 
 Step 2: Read development standard
-- docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md - for complete workflow
+- ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md - for complete workflow
 
-Step 3: Create artifact chain using templates from docs_templates/ai_dev_flow/
+Step 3: Create artifact chain using templates from ai_dev_flow/
 - BRD-015 (copy template → create in docs/BRD/)
   - Includes "Architecture Decision Requirements" section listing topics needing ADRs
   - Does NOT reference specific ADR numbers (ADRs created later)
@@ -937,7 +961,7 @@ Step 3: Create artifact chain using templates from docs_templates/ai_dev_flow/
 - SYS-015 (copy template) ← After ADR
 - REQ-003 (copy template) ← After SYS
 - IMPL-005 (copy template → create in docs/IMPL/) ← IF complex project (see WHEN_TO_CREATE_IMPL.md)
-- CTR-001 (copy both templates → create in docs/CONTRACTS/) ← IF interface requirement
+- CTR-001 (copy both templates → create in docs/CTR/) ← IF interface requirement
 - SPEC-015 (copy template → create in docs/SPEC/, reference CTR-001 if applicable)
 - TASKS-015 (copy template → create in docs/TASKS/)
 

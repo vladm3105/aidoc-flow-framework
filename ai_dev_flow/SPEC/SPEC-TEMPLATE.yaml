@@ -6,7 +6,7 @@
 #              for workflow steps, artifact definitions, and quality gates.
 #              Location: ../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
 #
-# [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Workflow: SPEC (Technical Specifications) - Layer 7 (Implementation Layer)
+# [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Workflow: SPEC (Technical Specifications) - Layer 10 (Technical Specification Layer)
 #
 # For complete traceability workflow with visual diagram, see:
 # docs_templates/ai_dev_flow/index.md#traceability-flow
@@ -93,7 +93,7 @@ traceability:
 
     implementation_plan:
       - id: "IMPL-NNN"
-        link: "../impl_plans/IMPL-NNN_...md#IMPL-NNN"
+        link: "../IMPL/IMPL-NNN_...md#IMPL-NNN"
         title: "[Implementation plan title]"
         relevant_sections: ["Phases", "Deliverables", "Team Structure"]
         relationship: "Project plan coordinating this component's development"
@@ -101,8 +101,8 @@ traceability:
 
     contracts:
       - id: "CTR-NNN"
-        link: "../CONTRACTS/CTR-NNN_...md#CTR-NNN"
-        schema: "../CONTRACTS/CTR-NNN_...yaml"
+        link: "../CTR/CTR-NNN_...md#CTR-NNN"
+        schema: "../CTR/CTR-NNN_...yaml"
         title: "[API contract title]"
         relevant_sections: ["Request Schema", "Response Schema", "Error Codes"]
         relationship: "Interface contract this component implements"
@@ -375,9 +375,9 @@ architecture:
 # See: ADR-CTR_SEPARATE_FILES_POLICY.md
 #
 # Contract References:
-# - API contracts → See CONTRACTS/CTR-NNN_{slug}.md + CTR-NNN_{slug}.yaml
-# - Event schemas → See CONTRACTS/CTR-NNN_{slug}.yaml (AsyncAPI)
-# - Data models → See CONTRACTS/CTR-NNN_{slug}.yaml (JSON Schema)
+# - API contracts → See CTR/CTR-NNN_{slug}.md + CTR-NNN_{slug}.yaml
+# - Event schemas → See CTR/CTR-NNN_{slug}.yaml (AsyncAPI)
+# - Data models → See CTR/CTR-NNN_{slug}.yaml (JSON Schema)
 #
 # This SPEC defines:
 # - Implementation classes, methods, and logic flows

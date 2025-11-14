@@ -13,9 +13,26 @@ Automated traceability validation across all SDD artifacts.
 - Validates bidirectional link consistency (upstream/downstream symmetry)
 - Verifies ID format compliance (TYPE-XXX or TYPE-XXX-YY)
 - Tests markdown link resolution (file paths and anchors)
+- **NEW**: Validates cumulative tagging hierarchy (each layer includes ALL upstream tags)
+- **NEW**: Layer-specific tag count validation (artifacts at layer N must have tags from layers 1 through N-1)
 - Calculates coverage metrics (% artifacts with complete traceability)
 - Detects orphaned artifacts (no upstream or downstream links)
 - Auto-fixes broken links with backup creation
+
+**SDD Workflow** (v2.0 - Functional Layer Groupings):
+```
+Business Layer: BRD → PRD → EARS →
+Testing Layer: BDD →
+Architecture Layer: ADR → SYS →
+Requirements Layer: REQ →
+Implementation Strategy Layer: IMPL (optional) →
+Interface Layer: CTR (optional) →
+Technical Specs Layer: SPEC →
+Execution Planning Layer: TASKS → IPLAN →
+Code & Validation Layer: Code → Tests → Validation → Review → Production
+```
+
+**Reference**: [TRACEABILITY.md v2.0]({project_root}/ai_dev_flow/TRACEABILITY.md) (updated 2025-10-31)
 
 **Complexity**: Medium (requires parsing multiple file formats)
 
@@ -57,6 +74,7 @@ Automated traceability validation across all SDD artifacts.
 | project_root_path | Required | Path to project documentation root | `/opt/data/ibmcp/docs/` |
 | artifact_types | Optional | Specific artifact types to validate | `["BRD", "SPEC"]` or `["all"]` (default) |
 | strictness_level | Optional | Validation strictness | `"strict"` (default), `"permissive"`, `"pedantic"` |
+| validate_cumulative | Optional | **NEW**: Validate cumulative tagging hierarchy | `true` or `false` (default) |
 | auto_fix | Optional | Auto-fix broken links | `true` or `false` (default) |
 | report_format | Optional | Output report format | `"markdown"` (default), `"json"`, `"text"` |
 
@@ -178,6 +196,83 @@ python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --s
 python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json --output docs/generated/matrices/
 ```
 
+### Step 2.6: Validate Cumulative Tagging Hierarchy
+
+**Actions**:
+1. For each artifact, determine its position in the artifact sequence (0-15+)
+2. Verify artifact includes ALL required upstream tags for its artifact type
+3. Check tag count matches expected range for artifact type
+4. Validate optional artifacts (IMPL, CTR) handled correctly
+5. Ensure tag chain completeness (if @adr exists, @brd through @bdd must exist)
+
+**Expected Cumulative Tag Counts by Artifact Type**:
+```
+Business Layer:
+  Strategy: 0 tags (external business docs)
+  BRD: 0 tags (top level)
+  PRD: 1 tag (@brd)
+  EARS: 2 tags (@brd, @prd)
+
+Testing Layer:
+  BDD: 3+ tags (@brd through @ears)
+
+Architecture Layer:
+  ADR: 4 tags (@brd through @bdd)
+  SYS: 5 tags (@brd through @adr)
+
+Requirements Layer:
+  REQ: 6 tags (@brd through @sys)
+
+Implementation Strategy Layer:
+  IMPL: 7 tags (@brd through @req) [optional]
+
+Interface Layer:
+  CTR: 8 tags (@brd through @impl) [optional]
+
+Technical Specs Layer:
+  SPEC: 7-9 tags (@brd through @req + optional impl/ctr)
+
+Execution Planning Layer:
+  TASKS: 8-10 tags (@brd through @spec)
+  IPLAN: 9-11 tags (@brd through @tasks)
+
+Code & Validation Layer:
+  Code: 9-11 tags (@brd through @tasks)
+  Tests: 10-12 tags (@brd through @code)
+  Validation: ALL tags from all upstream artifacts
+```
+
+**Note**: Functional layers group artifacts by purpose in the workflow. Tag counts accumulate as artifacts progress through the layers.
+
+**Validation Script**:
+```bash
+# Validate cumulative tagging hierarchy compliance
+python scripts/validate_tags_against_docs.py \
+  --source src/ docs/ tests/ \
+  --docs docs/ \
+  --validate-cumulative \
+  --strict
+```
+
+**Validation Rules**:
+1. **Complete Chain**: Each artifact must include ALL upstream tags
+2. **Layer Validation**: Artifacts must have all tags from previous functional layers
+3. **Optional Layers**: IMPL and CTR are optional; downstream artifacts adjust tag count accordingly
+4. **Tag Chain Completeness**: If higher layer tag exists (e.g., @adr), all lower layer tags must exist (@brd through @bdd)
+5. **No Gaps**: No missing tags in the cumulative chain
+
+**Error Detection**:
+- ❌ `SPEC missing @brd tag` - Incomplete upstream chain
+- ❌ `REQ has @adr but missing @bdd` - Gap in cumulative chain
+- ❌ `Code has 8 tags but should have 9-11` - Incorrect tag count for artifact type
+- ✅ `SPEC has all 9 required tags (@brd through @spec)` - Valid cumulative tagging
+
+**Benefits**:
+- Regulatory compliance (SEC, FINRA, FDA, ISO audit trails)
+- Complete impact analysis (upstream → downstream traceability)
+- Automated validation prevents gaps in traceability chain
+- CI/CD enforcement ensures 100% compliance
+
 ### Step 3: Validate ID Format Compliance
 
 **Checks**:
@@ -185,14 +280,99 @@ python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
 - H1 header contains full ID: `# BRD-001`
 - Zero-padding: `001` not `1`
 - No ID collisions (each XXX unique per type)
-- Valid TYPE: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
+- Valid TYPE: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN
+- **CTR dual-file validation**: For each CTR, both .md and .yaml must exist with matching slugs (see below)
 
-**Reference**: `/opt/data/docs_flow_framework/ai_dev_flow/ID_NAMING_STANDARDS.md`
+**Reference**: `{project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md`
 
 **Failure Examples**:
 - `BRD-9` → Should be `BRD-009`
 - `SPEC-1` → Should be `SPEC-001`
 - `REQ-42` → Should be `REQ-042`
+
+### Step 3.5: Validate CTR Dual-File Format (MANDATORY)
+
+**Purpose**: Ensure all CTR artifacts comply with dual-file format requirement (.md + .yaml)
+
+**Actions**:
+1. Scan `docs/CTR/` for all CTR files
+2. Group by CTR-ID (extract from filename)
+3. For each CTR-ID, verify:
+   - Both `CTR-XXX_{slug}.md` and `CTR-XXX_{slug}.yaml` exist
+   - Slug portion matches exactly in both filenames
+   - YAML file contains valid schema (JSON Schema, OpenAPI, or AsyncAPI)
+4. Report missing files, slug mismatches, or invalid schemas
+
+**Validation Logic**:
+```python
+def validate_ctr_dual_files(contracts_dir):
+    """Validate CTR dual-file format compliance."""
+    errors = []
+    ctr_files = glob(f"{contracts_dir}/CTR-*.{{md,yaml}}")
+
+    # Group files by CTR-ID
+    ctr_groups = {}
+    for filepath in ctr_files:
+        filename = os.path.basename(filepath)
+        # Extract: CTR-XXX_{slug}.ext → (CTR-XXX, slug, ext)
+        match = re.match(r'(CTR-\d{3}(?:-\d{2})?)_(.+)\.(md|yaml)$', filename)
+        if match:
+            ctr_id, slug, ext = match.groups()
+            if ctr_id not in ctr_groups:
+                ctr_groups[ctr_id] = {}
+            ctr_groups[ctr_id][ext] = (filepath, slug)
+
+    # Validate each CTR group
+    for ctr_id, files in ctr_groups.items():
+        # Check both files exist
+        if 'md' not in files:
+            errors.append(f"{ctr_id}: Missing .md file (MANDATORY)")
+        if 'yaml' not in files:
+            errors.append(f"{ctr_id}: Missing .yaml file (MANDATORY)")
+
+        # Check slug matches
+        if 'md' in files and 'yaml' in files:
+            md_slug = files['md'][1]
+            yaml_slug = files['yaml'][1]
+            if md_slug != yaml_slug:
+                errors.append(
+                    f"{ctr_id}: Slug mismatch - "
+                    f"MD: '{md_slug}' vs YAML: '{yaml_slug}'"
+                )
+
+        # Validate YAML schema (basic check)
+        if 'yaml' in files:
+            yaml_path = files['yaml'][0]
+            try:
+                with open(yaml_path) as f:
+                    schema = yaml.safe_load(f)
+                    # Check for required schema fields
+                    if not isinstance(schema, dict):
+                        errors.append(f"{ctr_id}: YAML must be a dictionary/object")
+                    elif 'openapi' not in schema and 'asyncapi' not in schema:
+                        # Warn if not OpenAPI/AsyncAPI (may be custom JSON Schema)
+                        errors.append(
+                            f"{ctr_id}: YAML missing 'openapi' or 'asyncapi' field "
+                            "(expected standard schema format)"
+                        )
+            except Exception as e:
+                errors.append(f"{ctr_id}: Invalid YAML - {str(e)}")
+
+    return errors
+```
+
+**Error Examples**:
+- `CTR-001: Missing .yaml file (MANDATORY)` → Only .md exists
+- `CTR-002: Missing .md file (MANDATORY)` → Only .yaml exists
+- `CTR-003: Slug mismatch - MD: 'api_contract' vs YAML: 'api_spec'` → Slugs don't match
+- `CTR-004: YAML missing 'openapi' or 'asyncapi' field` → Schema format unclear
+- `CTR-005: Invalid YAML - parsing error at line 42` → Malformed YAML
+
+**Success Criteria**:
+- ✅ All CTR artifacts have both .md and .yaml files
+- ✅ All slug portions match exactly
+- ✅ All YAML files parse successfully
+- ✅ All YAML files contain valid schema structure (OpenAPI, AsyncAPI, or JSON Schema)
 
 ### Step 4: Check Link Resolution
 
@@ -488,6 +668,42 @@ Coverage: 88% (7/8 SPEC with complete traceability)
 | **Total**     | **137** | **134** | **98%** | **2**  |
 ```
 
+### Scenario 5: Cumulative Tagging Validation (NEW)
+
+**User Request**: "Validate cumulative tagging compliance across all artifacts"
+
+**Assistant Action**: Uses trace-check skill with:
+- project_root_path: `/opt/data/ibmcp/docs/`
+- artifact_types: `["all"]`
+- strictness_level: `"strict"`
+- validate_cumulative: `true`
+
+**Actions**:
+1. Scanned 87 artifacts across 15 artifact types organized in 11 functional layers
+2. Validated tag count for each artifact against expected range for its artifact type
+3. Checked for gaps in cumulative tag chains
+4. Verified optional artifacts (IMPL, CTR) handled correctly
+
+**Output**:
+```
+✅ Artifact Type Validation: 85/87 artifacts compliant (98%)
+✅ Tag Chain Completeness: 100% (no gaps detected)
+⚠️ Tag Count Issues: 2 artifacts
+  - SPEC-004: Has 6 tags but artifact type requires 7-9 (missing @impl or @ctr)
+  - Code file position_service.py: Has 8 tags but artifact type requires 9-11 (missing upstream tags)
+❌ Cumulative Chain Gaps: 0 artifacts
+
+Recommendations:
+1. SPEC-004: Add missing @impl or @ctr tag (depending on project structure)
+2. position_service.py: Add missing @tasks or @task_plans tag to docstring
+3. Run validation weekly to catch gaps early
+```
+
+**Benefits**:
+- Ensures regulatory compliance (complete audit trails)
+- Prevents gaps in upstream traceability
+- Automated enforcement of cumulative tagging standard
+
 ## Output Report Format
 
 ### Summary Section
@@ -560,6 +776,7 @@ Coverage: 88% (7/8 SPEC with complete traceability)
 
 - [ ] 100% link resolution (all markdown links resolve)
 - [ ] 100% ID format compliance (TYPE-XXX or TYPE-XXX-YY)
+- [ ] 100% CTR dual-file compliance (both .md and .yaml exist with matching slugs)
 - [ ] ≥95% bidirectional consistency (forward and reverse links)
 - [ ] Zero orphaned root artifacts (BRD must have downstream)
 - [ ] Zero orphaned leaf artifacts (REQ must have downstream SPEC)
@@ -679,18 +896,20 @@ tar -xzf ../backups/docs_backup_20251111_174001.tar.gz
 ### SDD Workflow Standards
 
 **Primary References**:
-- [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](/opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Authoritative workflow definition
-- [ID_NAMING_STANDARDS.md](/opt/data/docs_flow_framework/ai_dev_flow/ID_NAMING_STANDARDS.md) - ID format rules and conventions
-- [TRACEABILITY.md](/opt/data/docs_flow_framework/ai_dev_flow/TRACEABILITY.md) - Traceability requirements and standards
+- [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Authoritative workflow definition
+- [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md) - ID format rules and conventions
+- [TRACEABILITY.md v2.0]({project_root}/ai_dev_flow/TRACEABILITY.md) - Traceability requirements and cumulative tagging standards (updated 2025-10-31)
+- [TRACEABILITY_SETUP.md]({project_root}/ai_dev_flow/TRACEABILITY_SETUP.md) - Setup guide for automated validation and CI/CD integration
+- [COMPLETE_TAGGING_EXAMPLE.md]({project_root}/ai_dev_flow/COMPLETE_TAGGING_EXAMPLE.md) - End-to-end cumulative tagging example
 
-**Workflow Sequence**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS
+**Workflow Sequence** (v2.0): BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR (optional) → SPEC → TASKS → IPLAN → Code → Tests → Validation
 
 ### Related Skills
 
 **Complementary Skills**:
-- [doc-flow](/opt/data/docs_flow_framework/.claude/skills/doc-flow/SKILL.md) - Create SDD artifacts from templates
-- [project-mngt](/opt/data/docs_flow_framework/.claude/skills/project-mngt/SKILL.md) - MVP/MMP/MMR project planning
-- [adr-roadmap](/opt/data/docs_flow_framework/.claude/skills/adr-roadmap/SKILL.md) - Generate implementation roadmaps from ADRs
+- [doc-flow]({project_root}/.claude/skills/doc-flow/SKILL.md) - Create SDD artifacts from templates
+- [project-mngt]({project_root}/.claude/skills/project-mngt/SKILL.md) - MVP/MMP/MMR project planning
+- [adr-roadmap]({project_root}/.claude/skills/adr-roadmap/SKILL.md) - Generate implementation roadmaps from ADRs
 
 **Workflow Integration**:
 1. Use `doc-flow` to create new artifacts
@@ -701,27 +920,60 @@ tar -xzf ../backups/docs_backup_20251111_174001.tar.gz
 ### Artifact Templates
 
 **Template Locations**:
-- BRD: `/opt/data/docs_flow_framework/ai_dev_flow/BRD/`
-- PRD: `/opt/data/docs_flow_framework/ai_dev_flow/PRD/`
-- EARS: `/opt/data/docs_flow_framework/ai_dev_flow/EARS/`
-- BDD: `/opt/data/docs_flow_framework/ai_dev_flow/BDD/`
-- ADR: `/opt/data/docs_flow_framework/ai_dev_flow/ADR/`
-- SYS: `/opt/data/docs_flow_framework/ai_dev_flow/SYS/`
-- REQ: `/opt/data/docs_flow_framework/ai_dev_flow/REQ/`
-- SPEC: `/opt/data/docs_flow_framework/ai_dev_flow/SPEC/`
+- BRD: `{project_root}/ai_dev_flow/BRD/`
+- PRD: `{project_root}/ai_dev_flow/PRD/`
+- EARS: `{project_root}/ai_dev_flow/EARS/`
+- BDD: `{project_root}/ai_dev_flow/BDD/`
+- ADR: `{project_root}/ai_dev_flow/ADR/`
+- SYS: `{project_root}/ai_dev_flow/SYS/`
+- REQ: `{project_root}/ai_dev_flow/REQ/`
+- SPEC: `{project_root}/ai_dev_flow/SPEC/`
 
 **All templates include**:
 - Section 7: Traceability with upstream/downstream structure
 - Revision history table
 - Document metadata header
 
+### Validation Scripts
+
+**Available Validators**:
+- [validate_iplan_naming.py]({project_root}/ai_dev_flow/scripts/validate_iplan_naming.py) - Validates IPLAN naming convention compliance
+- [add_cumulative_tagging_to_matrices.py]({project_root}/ai_dev_flow/scripts/add_cumulative_tagging_to_matrices.py) - Adds cumulative tagging sections to traceability matrices
+- [batch_update_matrix_templates.py]({project_root}/ai_dev_flow/scripts/batch_update_matrix_templates.py) - Batch updates matrix templates with new features
+- [validate_traceability_matrix_enforcement.py]({project_root}/ai_dev_flow/scripts/validate_traceability_matrix_enforcement.py) - Enforces traceability matrix presence and completeness
+
+**Framework Guides**:
+- [MATRIX_TEMPLATE_COMPLETION_GUIDE.md]({project_root}/ai_dev_flow/MATRIX_TEMPLATE_COMPLETION_GUIDE.md) - Guide for completing matrix templates with cumulative tagging
+
 ## Version Information
 
-**Version**: 1.0.0
-**Last Updated**: 2025-11-11
+**Version**: 2.0.1
+**Last Updated**: 2025-11-13
 **Created**: 2025-11-11
 **Status**: Active
 **Author**: SDD Framework Team
 
 **Change Log**:
+- 2.0.1 (2025-11-13): Clarity improvements and CTR validation enhancement
+  - **NEW FEATURE**: Added Step 3.5 - CTR dual-file format validation (MANDATORY)
+    - Validates both .md and .yaml files exist for each CTR
+    - Verifies slug matching between filenames
+    - Validates YAML schema structure (OpenAPI/AsyncAPI/JSON Schema)
+    - Provides detailed error reporting for compliance issues
+  - **QUALITY GATE**: Added CTR dual-file compliance to Definition of Done checklist
+  - **CLARIFICATION**: Changed "12 layers" to "11 functional layers, 15+ artifact types" for accuracy
+  - **CLARIFICATION**: Renamed tag count table from "Layer" to "Artifact Type" to avoid confusion
+  - **CLARIFICATION**: Added note explaining that numbers indicate artifact sequence, not layer numbers
+  - **CONSISTENCY**: Updated all references from "layer validation" to "artifact type validation"
+- 2.0.0 (2025-11-13): Major update for SDD Framework v2.0
+  - Added cumulative tagging hierarchy validation (Step 2.6)
+  - Added artifact-type-specific tag count validation
+  - Updated artifact types: Added IMPL, IPLAN; clarified CTR as optional
+  - Updated workflow to 11-layer structure (aligned with TRACEABILITY.md v2.0)
+  - Added new validation parameter: validate_cumulative
+  - Added expected tag counts by artifact type (Artifact 0-15)
+  - Added cumulative tagging validation scenario (Scenario 5)
+  - Updated validation scripts with --validate-cumulative flag
+  - Enhanced error detection for cumulative tag chains
+  - Added regulatory compliance benefits documentation
 - 1.0.0 (2025-11-11): Initial release with full validation and auto-fix capabilities

@@ -93,7 +93,7 @@ python scripts/validate_tags_against_docs.py \
 - Layer 9 (CTR): 8 tags (@brd through @impl) [optional]
 - Layer 10 (SPEC): 7-9 tags (@brd through @req + optional impl/ctr)
 - Layer 11 (TASKS): 8-10 tags (@brd through @spec)
-- Layer 12 (tasks_plans): 9-11 tags (@brd through @tasks)
+- Layer 12 (IPLAN): 9-11 tags (@brd through @tasks)
 - Layer 13 (Code): 9-11 tags (@brd through @tasks)
 - Layer 14 (Tests): 10-12 tags (@brd through @code)
 

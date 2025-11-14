@@ -95,9 +95,9 @@ This matrix tracks all SYS documents, mapping upstream architecture decisions to
 ```markdown
 # SYS-012: Order Service System Requirements
 
-## 7. Traceability
+## 8. Traceability
 
-### 7.1 Upstream Sources
+### 8.1 Upstream Sources
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
 ```markdown
@@ -108,7 +108,7 @@ This matrix tracks all SYS documents, mapping upstream architecture decisions to
 @adr: ADR-033
 ```
 
-### 7.2 Downstream Artifacts
+### 8.2 Downstream Artifacts
 [Links to SPEC, TASKS, Code that reference this SYS]
 ```
 
@@ -157,14 +157,14 @@ python scripts/generate_traceability_matrices.py \
 
 ## 5. Upstream Traceability
 
-### 4.1 ADR → SYS Traceability
+### 5.1 ADR → SYS Traceability
 
 | ADR ID | ADR Title | SYS IDs | SYS Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
 | ADR-001 | [Architecture decision] | SYS-001, SYS-002 | [System requirements] | Architectural decisions translated to system requirements |
 | ADR-NNN | ... | ... | ... | ... |
 
-### 4.2 EARS → SYS Traceability
+### 5.2 EARS → SYS Traceability
 
 | EARS ID | EARS Title | SYS IDs | SYS Titles | Relationship |
 |---------|------------|---------|------------|--------------|
@@ -175,14 +175,14 @@ python scripts/generate_traceability_matrices.py \
 
 ## 6. Downstream Traceability
 
-### 5.1 SYS → REQ Traceability
+### 6.1 SYS → REQ Traceability
 
 | SYS ID | SYS Title | REQ IDs | REQ Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
 | SYS-001 | [System requirement] | REQ-001, REQ-002, REQ-003 | [Atomic requirements] | System requirements decomposed into atomic requirements |
 | SYS-NNN | ... | ... | ... | ... |
 
-### 5.2 SYS → SPEC Traceability
+### 6.2 SYS → SPEC Traceability
 
 | SYS ID | SYS Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
@@ -193,7 +193,7 @@ python scripts/generate_traceability_matrices.py \
 
 ## 7. System Requirements Categories
 
-### 6.1 SYS by Category
+### 7.1 SYS by Category
 
 | Category | SYS IDs | Total | Functional | Non-Functional |
 |----------|---------|-------|------------|----------------|
@@ -202,7 +202,7 @@ python scripts/generate_traceability_matrices.py \
 | [Performance] | SYS-005 | 1 | 0 | 1 |
 | [Integration] | SYS-006, SYS-007 | 2 | 2 | 0 |
 
-### 6.2 Non-Functional Requirements Summary
+### 7.2 Non-Functional Requirements Summary
 
 | NFR Category | SYS IDs | Requirements | Status |
 |--------------|---------|--------------|--------|
@@ -238,7 +238,7 @@ graph TD
 
 ## 9. Implementation Status
 
-### 8.1 SYS Implementation Progress
+### 9.1 SYS Implementation Progress
 
 | SYS ID | Total Requirements | REQ Created | SPEC Created | Completion % |
 |--------|-------------------|-------------|--------------|--------------|
@@ -251,7 +251,7 @@ graph TD
 
 ## 10. Immediate Next Steps
 
-### 9.1 Priority Actions
+### 10.1 Priority Actions
 1. **Complete Missing REQ Decomposition**: [X] SYS documents need atomic requirements
 2. **Create SPEC Documents**: [Y] SYS documents need technical specifications
 3. **Validate NFR Coverage**: [Z] non-functional requirements need verification

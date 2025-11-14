@@ -13,6 +13,9 @@ SYS documents establish the **system behavior contracts** that:
 
 ## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
 
+**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+
+
 SYS are the **system-level specifications** that operationalize product requirements into technical boundaries within the complete SDD workflow:
 
 ```

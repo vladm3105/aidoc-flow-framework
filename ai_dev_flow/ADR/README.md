@@ -232,7 +232,7 @@ Where:
 
 ### Index File
 
-An `ADR-000_index-TEMPLATE.md` file maintains a central index of all ADRs:
+An `ADR-000_index.md` file maintains a central index of all ADRs:
 
 ```markdown
 # ADR Index

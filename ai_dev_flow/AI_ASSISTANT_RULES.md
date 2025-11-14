@@ -82,7 +82,7 @@ mkdir -p docs/ADR
 mkdir -p docs/SYS
 mkdir -p docs/REQ
 mkdir -p docs/IMPL
-mkdir -p docs/CONTRACTS
+mkdir -p docs/CTR
 mkdir -p docs/SPEC
 mkdir -p docs/TASKS
 
@@ -181,7 +181,7 @@ After folder creation, AI Assistant **MUST** verify:
 ls -la docs/
 
 # Expected output should include all 11 directories:
-# BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CONTRACTS, SPEC, TASKS
+# BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
 
 # Verify requirements subdirectories
 ls -la docs/REQ/
@@ -260,7 +260,7 @@ cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/ADR/* docs/ADR/
 cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/SYS/* docs/SYS/
 cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/REQ/* docs/REQ/
 cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/IMPL/* docs/IMPL/
-cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/CONTRACTS/* docs/CONTRACTS/
+cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/CTR/* docs/CTR/
 cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/SPEC/* docs/SPEC/
 cp /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/TASKS/* docs/TASKS/
 
@@ -277,12 +277,12 @@ AI Assistant **MUST** create index files for each document type:
 touch docs/BRD/BRD-000_index.md
 touch docs/PRD/PRD-000_index.md
 touch docs/EARS/EARS-000_index.md
-touch docs/BDD/BDD-000_index.feature
+touch docs/BDD/BDD-000_index.md
 touch docs/ADR/ADR-000_index.md
 touch docs/SYS/SYS-000_index.md
 touch docs/REQ/REQ-000_index.md
 touch docs/IMPL/IMPL-000_index.md
-touch docs/CONTRACTS/CTR-000_index.md
+touch docs/CTR/CTR-000_index.md
 touch docs/SPEC/SPEC-000_index.yaml
 touch docs/TASKS/TASKS-000_index.md
 ```
@@ -375,9 +375,27 @@ REQ → IMPL → SPEC → TASKS → Code
 
 ## Rule 6: Document ID Management
 
-### ID Naming Standards
+### Scope: Documentation Artifacts Only
 
-AI Assistant **MUST** follow these rules when creating documents:
+**CRITICAL**: ID naming standards apply ONLY to **documentation artifacts** in the SDD workflow. Source code files follow language-specific conventions.
+
+#### ✅ Apply ID Standards To:
+- Documentation in `docs/` directories: BRD, PRD, REQ, ADR, SPEC, CTR, IMPL, TASKS, EARS, SYS
+- BDD feature files (`.feature`) in `tests/bdd/` or similar directories
+
+#### ❌ Do NOT Apply ID Standards To:
+- **Python source code** (`src/`, `ibmcp/`): Follow PEP 8 conventions
+  - Modules: `snake_case.py`
+  - Classes: `PascalCase`
+  - Functions: `snake_case()`
+- **Python test files** (`tests/`): Follow pytest conventions
+  - Test modules: `test_*.py`
+  - Test functions: `test_*()`
+- **Other languages**: Follow language-specific style guides
+
+### ID Naming Standards for Documentation
+
+AI Assistant **MUST** follow these rules when creating **documentation** files:
 
 #### Format
 ```
@@ -421,8 +439,8 @@ For CTR documents, AI Assistant **MUST** create both files:
 
 ```bash
 # Create both markdown and YAML with matching slugs
-touch docs/CONTRACTS/CTR-012_market_data_api.md
-touch docs/CONTRACTS/CTR-012_market_data_api.yaml
+touch docs/CTR/CTR-012_market_data_api.md
+touch docs/CTR/CTR-012_market_data_api.yaml
 ```
 
 **Matching slug requirement**: `market_data_api` must be identical in both filenames.
@@ -443,7 +461,7 @@ AI Assistant **MUST** use this format for all document references:
 ```markdown
 [REQ-003](../REQ/risk/REQ-003_position_limit.md#REQ-003)
 [ADR-005](../ADR/ADR-005_database_selection.md#ADR-005)
-[CTR-012](../CONTRACTS/CTR-012_market_data_api.md#CTR-012)
+[CTR-012](../CTR/CTR-012_market_data_api.md#CTR-012)
 [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml#SPEC-023)
 ```
 

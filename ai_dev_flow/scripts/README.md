@@ -18,7 +18,7 @@ python generate_traceability_matrix.py --type ADR --input ../ADR/ --output TRACE
 - Extracts metadata from Section 7 Traceability
 - Calculates coverage metrics automatically
 - Generates inventory tables and Mermaid diagrams
-- Supports all document types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
+- Supports all document types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN
 
 **Parameters:**
 - `--type`: Document type (required)
@@ -119,6 +119,78 @@ python update_traceability_matrix.py --matrix ../REQ/matrix.md --input ../REQ/ -
 
 ---
 
+### 4. validate_iplan_naming.py
+
+Validates IPLAN (Implementation Plan) files against timestamp-based naming conventions.
+
+**Usage:**
+```bash
+python validate_iplan_naming.py [base_path]
+```
+
+**Features:**
+- Validates filename format: `IPLAN-NNN_{descriptive_slug}_YYYYMMDD_HHMMSS.md`
+- Checks sequential ID format (3-4 digits: 001-999, 1000+)
+- Validates descriptive slug (lowercase, hyphen-separated)
+- Verifies timestamp validity (YYYYMMDD_HHMMSS format)
+- Confirms H1 ID inside file matches filename ID
+- Detects sequential ID gaps (warnings only)
+- Skips template files (IPLAN-TEMPLATE.md, IPLAN-000_*.md)
+
+**Parameters:**
+- `base_path`: Base directory path (optional, defaults to script parent directory)
+
+**Examples:**
+```bash
+# Validate IPLAN files in default location
+python validate_iplan_naming.py
+
+# Validate IPLAN files in specific project
+python validate_iplan_naming.py /path/to/project/ai_dev_flow/
+
+# Use in CI/CD pipeline
+python validate_iplan_naming.py || exit 1
+```
+
+**Validation Checks:**
+1. **Filename Pattern**: `IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md`
+2. **ID Format**: 3 digits (001-999) or 4 digits (1000+) with proper zero-padding
+3. **Slug Format**: Lowercase alphanumeric with hyphens only, no consecutive/leading/trailing hyphens
+4. **Timestamp Validity**: Valid date and time (year: 1900-2100)
+5. **H1 ID Match**: Header ID in file matches filename ID
+6. **Sequential Order**: Warns if ID gaps exist (non-blocking)
+
+**Exit Codes:**
+- `0`: Validation passed (warnings allowed)
+- `1`: Validation failed (errors found)
+
+**Example Output:**
+```
+Validating IPLAN files in: /opt/data/docs_flow_framework/ai_dev_flow/IPLAN/
+================================================================================
+
+✅ IPLAN Naming Validation PASSED
+================================================================================
+All IPLAN files follow naming conventions.
+```
+
+**Error Examples:**
+```
+❌ IPLAN Naming Validation FAILED
+================================================================================
+
+ERRORS:
+  • IPLAN-01_test_20251113_140000.md: ID must be 3-4 digits (found 2 digits)
+  • IPLAN-001_Test_Plan_20251113_140000.md: Slug must be lowercase (found 'Test_Plan')
+  • IPLAN-001_test-plan_20251313_140000.md: Invalid month 13 (expected 1-12)
+  • IPLAN-001_test-plan_20251113_140000.md: H1 ID mismatch (filename has IPLAN-001, H1 has IPLAN-002)
+
+⚠️  WARNINGS:
+  • Sequential gap: Expected IPLAN-002, found IPLAN-003 in IPLAN-003_refactor_20251114_100000.md
+```
+
+---
+
 ## Workflow Integration
 
 ### Typical Workflow
@@ -145,6 +217,9 @@ python validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.m
 ```bash
 # Run validation as part of CI/CD pipeline
 python validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/ --strict
+
+# Validate IPLAN naming conventions
+python validate_iplan_naming.py
 ```
 
 ### Pre-Commit Hook Example
@@ -160,7 +235,10 @@ python ai_dev_flow/scripts/validate_traceability_matrix.py --matrix ai_dev_flow/
 python ai_dev_flow/scripts/validate_traceability_matrix.py --matrix ai_dev_flow/REQ/TRACEABILITY_MATRIX_REQ.md --input ai_dev_flow/REQ/ || exit 1
 python ai_dev_flow/scripts/validate_traceability_matrix.py --matrix ai_dev_flow/SPEC/TRACEABILITY_MATRIX_SPEC.md --input ai_dev_flow/SPEC/ || exit 1
 
-echo "All matrices validated successfully!"
+echo "Validating IPLAN naming conventions..."
+python ai_dev_flow/scripts/validate_iplan_naming.py || exit 1
+
+echo "All validations passed successfully!"
 ```
 
 ### CI/CD Integration Example
@@ -202,6 +280,10 @@ jobs:
             --matrix ai_dev_flow/SPEC/TRACEABILITY_MATRIX_SPEC.md \
             --input ai_dev_flow/SPEC/ \
             --strict
+
+      - name: Validate IPLAN Naming
+        run: |
+          python ai_dev_flow/scripts/validate_iplan_naming.py
 ```
 
 ---
@@ -223,6 +305,7 @@ All scripts support the following document types:
 | CTR | API Contracts | `CTR-NNN_*.md`, `CTR-NNN_*.yaml` |
 | SPEC | Technical Specifications | `SPEC-NNN_*.yaml` |
 | TASKS | Code Generation Tasks | `TASKS-NNN_*.md` |
+| IPLAN | Session Implementation Plans | `IPLAN-NNN_*_YYYYMMDD_HHMMSS.md` |
 
 Document IDs support both formats:
 - Simple: `TYPE-NNN` (e.g., `ADR-001`)
@@ -330,9 +413,10 @@ Matrix templates for each document type:
 - `SYS/SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `IMPL/IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `CONTRACTS/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `CTR/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `TASKS/TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `IPLAN/IPLAN-000_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` (master template)
 
 ---

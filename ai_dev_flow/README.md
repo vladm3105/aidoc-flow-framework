@@ -53,12 +53,45 @@ The AI Dev Flow transforms business requirements into production code through a 
 | **9** | CTR | API contracts (optional) | @brd→@impl (8) | INTERFACE definitions |
 | **10** | SPEC | YAML technical specifications | @brd→@req (+optional) (7-9) | HOW to build |
 | **11** | TASKS | Implementation task breakdown | @brd→@spec (8-10) | EXACT TODOs |
-| **12** | tasks_plans | Session-specific plans | @brd→@tasks (9-11) | Session work scope |
+| **12** | IPLAN | Session-specific plans | @brd→@tasks (9-11) | Session work scope |
 | **13** | Code | Source code implementation | @brd→@tasks (9-11) | RUNNABLE artifacts |
 | **14** | Tests | Test suite implementation | @brd→@code (10-12) | Quality validation |
 | **15** | Validation | Production readiness verification | All upstream (10-15) | PRODUCTION-READY |
 
 **Note**: Layers 8 (IMPL) and 9 (CTR) are optional - include only when needed for project management or API contracts.
+
+#### Layer Numbering Explained
+
+The 16-layer architecture uses the following structure:
+
+- **Layer 0**: Strategy (pre-artifact foundational layer)
+  - Product strategy documents, market analysis, vision statements
+  - No formal artifact type, no traceability tags
+
+- **Layers 1-12**: Formal Documentation Artifacts
+  - Layer 1: BRD (Business Requirements)
+  - Layer 2: PRD (Product Requirements)
+  - Layer 3: EARS (Easy Approach to Requirements Syntax)
+  - Layer 4: BDD (Behavior-Driven Development)
+  - Layer 5: ADR (Architecture Decision Records)
+  - Layer 6: SYS (System Architecture)
+  - Layer 7: REQ (Requirements Specifications)
+  - Layer 8: IMPL (Implementation Specifications) - optional
+  - Layer 9: CTR (Contracts) - optional
+  - Layer 10: SPEC (Technical Specifications)
+  - Layer 11: TASKS (Task Breakdowns)
+  - Layer 12: IPLAN (Implementation Plans)
+
+- **Layers 13-15**: Execution Layers
+  - Layer 13: Code (source code files)
+  - Layer 14: Tests (test implementations)
+  - Layer 15: Validation (test results, metrics)
+
+**Important Note on Layer Numbering:**
+- **Formal layer numbers (0-15)**: Used in cumulative tagging, templates, and specifications
+- **Mermaid diagram groupings**: May use simplified labels (L1-L11) for visual organization
+- **Always use formal layer numbers** when implementing cumulative tagging or referencing layers in documentation
+- Mermaid subgraph labels (e.g., "Layer 1 - Business") are visual groupings that may combine multiple formal layers for diagram clarity
 
 ### Critical Decision Point
 
@@ -75,7 +108,7 @@ The AI Dev Flow transforms business requirements into production code through a 
 **BRD/** - Business Requirements Documents
 - High-level business objectives and market context
 - Strategic goals and success criteria
-- **Files**: [BRD-000_index.md](./BRD/BRD-000_index.md) | [Template](./BRD/BRD-template.md)
+- **Files**: [BRD-000_index.md](./BRD/BRD-000_index.md) | [Template](./BRD/BRD-TEMPLATE.md)
 
 **PRD/** - Product Requirements Documents
 - User-facing features and product capabilities
@@ -99,7 +132,7 @@ The AI Dev Flow transforms business requirements into production code through a 
 **ADR/** - Architecture Decision Records
 - Architectural choices and rationale
 - Technology selections and trade-offs
-- **Files**: [ADR-000_index-TEMPLATE.md](./ADR/ADR-000_index-TEMPLATE.md) | [Template](./ADR/ADR-TEMPLATE.md)
+- **Files**: [ADR-000_index.md](./ADR/ADR-000_index.md) | [Template](./ADR/ADR-TEMPLATE.md)
 
 **SYS/** - System Requirements Specifications
 - System-level functional and non-functional requirements
@@ -128,15 +161,15 @@ The AI Dev Flow transforms business requirements into production code through a 
 
 ### 6. Interface Layer
 
-**CONTRACTS/** - API Contracts (CTR)
+**CTR/** - API Contracts (CTR)
 - Formal interface specifications for component-to-component communication
 - **Dual-file format**:
   - `.md` file: Human-readable context, business rationale, traceability links
   - `.yaml` file: Machine-readable schema (OpenAPI/AsyncAPI/JSON Schema)
 - **When to use**: Created when REQ specifies interface requirements (APIs, events, data models)
 - **Benefits**: Enables parallel development and contract testing
-- **Files**: [CTR-000_index.md](./CONTRACTS/CTR-000_index.md) | [Template .md](./CONTRACTS/CTR-TEMPLATE.md) + [Template .yaml](./CONTRACTS/CTR-TEMPLATE.yaml)
-- **Examples**: [CTR-001_service_contract_example.md](./CONTRACTS/CTR-001_service_contract_example.md) + [CTR-001_service_contract_example.yaml](./CONTRACTS/CTR-001_service_contract_example.yaml)
+- **Files**: [CTR-000_index.md](./CTR/CTR-000_index.md) | [Template .md](./CTR/CTR-TEMPLATE.md) + [Template .yaml](./CTR/CTR-TEMPLATE.yaml)
+- **Examples**: [CTR-001_service_contract_example.md](./CTR/CTR-001_service_contract_example.md) + [CTR-001_service_contract_example.yaml](./CTR/CTR-001_service_contract_example.yaml)
 
 ### 7. Implementation Layer
 
@@ -157,7 +190,7 @@ The AI Dev Flow transforms business requirements into production code through a 
 
 ### 9. Session Planning Layer
 
-**tasks_plans/** - Session-Specific Implementation Plans
+**IPLAN/** - Session-Specific Implementation Plans
 - Organize multiple TASKS into session-scoped work packages
 - Track progress across related implementation units
 - Maintain context between AI coding sessions
@@ -165,7 +198,20 @@ The AI Dev Flow transforms business requirements into production code through a 
 
 ## Document ID Standards
 
-All documents follow strict naming conventions:
+### Scope: Documentation Artifacts Only
+
+**IMPORTANT**: These ID naming standards apply ONLY to **documentation artifacts** in the SDD workflow, NOT to source code files.
+
+#### ✅ Apply To (Documentation):
+- Documents in `docs/` directories: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
+- BDD feature files (`.feature` format) in `tests/bdd/` directories
+
+#### ❌ Do NOT Apply To (Source Code):
+- **Python files**: Follow PEP 8 conventions (`snake_case.py`, `PascalCase` classes)
+- **Test files**: Follow pytest conventions (`test_*.py`, `test_*()` functions)
+- **Other languages**: Follow language-specific style guides (Java, JavaScript, Go, etc.)
+
+### Documentation Naming Format
 
 Format: `{TYPE}-{NNN}_{descriptive_slug}.{ext}`
 
@@ -385,7 +431,7 @@ Layer 8 (IMPL):   7 tags (@brd through @req) [optional]
 Layer 9 (CTR):    8 tags (@brd through @impl) [optional]
 Layer 10 (SPEC):  7-9 tags (@brd through @req + optional impl/ctr)
 Layer 11 (TASKS): 8-10 tags (@brd through @spec)
-Layer 12 (tasks_plans): 9-11 tags (@brd through @tasks)
+Layer 12 (IPLAN): 9-11 tags (@brd through @tasks)
 Layer 13 (Code):  9-11 tags (@brd through @tasks)
 Layer 14 (Tests): 10-12 tags (@brd through @code)
 ```
@@ -565,7 +611,7 @@ The AI Dev Flow follows a structured progression through 16 layers:
 10. **CTR** (Layer 9) - API contracts (optional)
 11. **SPEC** (Layer 10) - YAML technical specifications
 12. **TASKS** (Layer 11) - Implementation task breakdown
-13. **tasks_plans** (Layer 12) - Session-specific plans
+13. **IPLAN** (Layer 12) - Session-specific plans
 
 **Implementation Layers (13-15)**:
 14. **Code** (Layer 13) - Source code with cumulative tags
@@ -665,10 +711,10 @@ docs_templates/ai_dev_flow/
 │   └── risk/         # Risk management requirements (legacy examples)
 ├── IMPL/        # Implementation Plans (project management)
 │   └── examples/     # Reference implementation plan examples
-├── CONTRACTS/         # API Contracts (CTR) - dual-file format (.md + .yaml)
+├── CTR/               # API Contracts (CTR) - dual-file format (.md + .yaml)
 ├── SPEC/             # Technical Specifications (YAML)
 ├── TASKS/          # Code Generation Plans (TASKS)
-├── tasks_plans/       # Session-specific implementation plans (Layer 12)
+├── IPLAN/       # Session-specific implementation plans (Layer 12)
 ├── scripts/           # Validation and tooling scripts
 │   ├── extract_tags.py                    # Tag extraction from codebase
 │   ├── validate_tags_against_docs.py      # Cumulative tagging validation
@@ -688,13 +734,17 @@ docs_templates/ai_dev_flow/
 └── [other standards documents]
 ```
 
+<!-- Directory Structure Migration History -->
+<!-- 2025-01-13: CONTRACTS/ → CTR/ (contracts now use dual-file format) -->
+<!-- 2025-01-13: tasks_plans/ → IPLAN/ (implementation plans with timestamps) -->
+
 ## Framework Versions and Updates
 
 **Current Version**: 2.0
 **Last Updated**: 2025-11-13
 
 **Version 2.0 - Cumulative Tagging Hierarchy** (November 2025):
-- ✅ **16-Layer Architecture**: Expanded from 10 to 16 layers (added Strategy, tasks_plans, Code, Tests, Validation)
+- ✅ **16-Layer Architecture**: Expanded from 10 to 16 layers (added Strategy, IPLAN, Code, Tests, Validation)
 - ✅ **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
 - ✅ **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
 - ✅ **Traceability Matrix Templates**: All 13 artifact types have cumulative tagging sections

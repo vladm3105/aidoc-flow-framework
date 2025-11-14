@@ -66,7 +66,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-001_business_objectives.md
    - Key architectural choices
    - Technology stack decisions
    - Trade-offs documented
-3. Update BDD-000_index.feature and ADR-000_index.md
+3. Update BDD-000_index.md and ADR-000_index.md
 
 **AI Assistant Actions**:
 ```bash

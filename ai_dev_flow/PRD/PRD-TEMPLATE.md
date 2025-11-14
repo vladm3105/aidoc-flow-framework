@@ -633,7 +633,7 @@ Document evidence that PRD requirements have been translated to technical specif
 ### Internal Documentation
 
 - [PRD Writing Guidelines](../README.md) - Product requirements best practices
-- [BRD Template](../BRD/BRD-template.md) - Business requirements structure
+- [BRD Template](../BRD/BRD-TEMPLATE.md) - Business requirements structure
 - [EARS Template](../EARS/EARS-TEMPLATE.md) - Engineering requirements format
 - [ADR Template](../ADR/ADR-TEMPLATE.md) - Architecture decision records
 

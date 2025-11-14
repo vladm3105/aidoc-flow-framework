@@ -220,8 +220,8 @@ Errors: {len(self.stats['errors'])}
         print("-" * 80)
 
         directories = [
-            'REQ', 'IMPL', 'CONTRACTS', 'SPEC', 'BDD',
-            'ADR', 'PRD', 'BRD', 'EARS', 'SYS', 'TASKS'
+            'REQ', 'IMPL', 'CTR', 'SPEC', 'BDD',
+            'ADR', 'PRD', 'BRD', 'EARS', 'SYS', 'TASKS', 'IPLAN'
         ]
 
         for dir_name in directories:

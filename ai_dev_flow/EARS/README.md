@@ -11,6 +11,9 @@ EARS serves as the crucial translation layer between:
 - **Downstream**: Atomic Requirements (REQs), Architecture Decisions (ADRs), and Technical Specifications
 
 ## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+
+**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+
 ```
 BRD (Business Requirements Document): High-level business needs
         ↓

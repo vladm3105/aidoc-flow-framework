@@ -146,7 +146,7 @@
 
 #### API Interface Requirements
 
-**Note**: Define high-level interface requirements here. Detailed API contracts (endpoints, schemas, request/response formats) should be created as separate CTR documents in the CONTRACTS/ directory during the IMPL phase.
+**Note**: Define high-level interface requirements here. Detailed API contracts (endpoints, schemas, request/response formats) should be created as separate CTR documents in the CTR/ directory during the IMPL phase.
 
 - **API Design**: [RESTful, GraphQL, or other interface patterns]
   - Endpoint nouns and verbs that accurately represent resources and actions

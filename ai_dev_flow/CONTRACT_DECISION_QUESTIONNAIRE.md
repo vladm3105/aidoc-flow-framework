@@ -5,6 +5,8 @@
 **Target**: AI Coding Assistants (Claude AI, Claude Code, Gemini CLI, GitHub Copilot)
 **Status**: Production
 
+> **Note**: The artifact type for contracts is 'CTR', not 'CONTRACTS'. Files are stored in `CTR/` directory using dual-file format (`.md` + `.yaml`).
+
 ---
 
 ## Purpose
@@ -457,7 +459,7 @@ Next Steps:
 
 - [AI_ASSISTANT_RULES.md](./AI_ASSISTANT_RULES.md#rule-5-contract-decision-questionnaire) - Rule 5: Contract Questionnaire
 - [WHEN_TO_CREATE_IMPL.md](./WHEN_TO_CREATE_IMPL.md) - Implementation plan guidance
-- [CTR-TEMPLATE.md](./docs_templates/CONTRACTS/CTR-TEMPLATE.md) - Contract template
+- [CTR-TEMPLATE.md](./docs_templates/CTR/CTR-TEMPLATE.md) - Contract template
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete workflow
 - [DOMAIN_SELECTION_QUESTIONNAIRE.md](./DOMAIN_SELECTION_QUESTIONNAIRE.md) - Previous step
 

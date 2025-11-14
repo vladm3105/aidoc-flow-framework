@@ -243,7 +243,7 @@ API contracts defining interfaces for external integration (if this requirement 
 
 | CTR ID | Contract Title | Interface Defined | Relationship |
 |--------|----------------|-------------------|--------------|
-| [CTR-NNN](../../CONTRACTS/CTR-NNN.md) | [API Contract Title] | [REST API / Event Schema / Data Model] | Interface specification |
+| [CTR-NNN](../../CTR/CTR-NNN.md) | [API Contract Title] | [REST API / Event Schema / Data Model] | Interface specification |
 
 **Note**: CTR documents are created in IMPL phase, after requirements are defined. Reference CTR-IDs once contracts are created.
 

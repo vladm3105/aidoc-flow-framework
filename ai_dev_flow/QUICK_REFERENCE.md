@@ -7,14 +7,14 @@
 
 ---
 
-## 10-Layer Workflow
+## 16-Layer Workflow
 
 ```
-BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code → Tests → Validation → Production
+BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation → Production
 ```
 
-**With Contracts**: `REQ → IMPL → CTR → SPEC → TASKS`
-**Without Contracts**: `REQ → IMPL → SPEC → TASKS`
+**With Contracts**: `REQ → IMPL → CTR → SPEC → TASKS → IPLAN`
+**Without Contracts**: `REQ → IMPL → SPEC → TASKS → IPLAN`
 
 ---
 
@@ -76,9 +76,14 @@ docs/
 │   ├── tenant/    # Multi-tenancy (Software/SaaS)
 │   └── ...
 ├── IMPL/    # Implementation Plans (WHO/WHEN)
-├── CONTRACTS/     # API Contracts (dual .md + .yaml)
+├── CTR/           # API Contracts (dual .md + .yaml)
 ├── SPEC/         # Technical Specifications (YAML)
-└── TASKS/      # Implementation Tasks
+├── TASKS/      # Implementation Tasks
+└── IPLAN/       # Implementation Plans (session-based, timestamp-based naming)
+
+<!-- Migration History -->
+<!-- CONTRACTS/ migrated to CTR/ (2025-01-13) -->
+<!-- tasks_plans/ migrated to IPLAN/ (2025-01-13) -->
 
 scripts/
 ├── validate_requirement_ids.py
@@ -94,7 +99,7 @@ scripts/
 
 ```bash
 # Create folders
-mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CONTRACTS,SPEC,TASKS}
+mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
 mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
 
 # Domain-specific (Financial)
@@ -291,6 +296,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 | **CTR** | API contracts | .md + .yaml | CTR-009_market_api.md + .yaml |
 | **SPEC** | Technical SPEC | .yaml | SPEC-010_limiter.yaml |
 | **TASKS** | Implementation TODOs | .md | TASKS-010_implement_limiter.md |
+| **IPLAN** | Session execution plans | .md | IPLAN-001_db_migration_20251113_143022.md |
 
 ---
 

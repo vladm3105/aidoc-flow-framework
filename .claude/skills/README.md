@@ -60,7 +60,7 @@
 **Purpose**: AI-Driven Specification-Driven Development workflow transformation (business requirements → production code)
 
 **Key Features**:
-- Complete 16-layer SDD workflow (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → tasks_plans → Code → Tests → Validation)
+- Complete 16-layer SDD workflow (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation)
 - **Cumulative Tagging Hierarchy**: Each artifact includes traceability tags from ALL upstream layers
 - Automated traceability validation and matrix generation
 - Tag-based audit trail for regulatory compliance (SEC, FINRA, FDA, ISO)
@@ -85,12 +85,95 @@
 
 **Skill ID**: `google-adk`
 **Directory**: [google-adk/](./google-adk/)
+**File**: [google-adk/SKILL.md](./google-adk/SKILL.md)
+**Quick Reference**: [google-adk_quickref.md](./google-adk_quickref.md)
 
-**Purpose**: Agent Development Kit from Google
+**Purpose**: Develop agentic software and multi-agent systems using Google ADK in Python
 
-**Status**: Managed skill (external)
-**Version**: See skill directory
-**Documentation**: See skill directory for details
+**Use Cases**:
+- Build conversational AI agents with tool integration
+- Create multi-agent orchestration systems (coordinator, pipeline, hierarchical)
+- Develop workflow agents (sequential, parallel, iterative/loop)
+- Implement custom tools for agents (functions, OpenAPI, MCP)
+- Design agent architectures for complex task decomposition
+- Deploy agent applications (Agent Engine, Cloud Run, Docker)
+- Evaluate agent performance with criteria-based testing
+- Implement human-in-the-loop patterns for critical decisions
+
+**Complexity**: 3 (Moderate - requires agent architecture knowledge)
+**Version**: 1.0.0
+**Created**: 2025-11-13
+
+**Quick Start**:
+```bash
+# Install
+pip install google-adk
+
+# Invoke skill
+/skill google-adk
+```
+
+**Key Features**:
+- **Code-first approach**: Define agents in Python (not YAML/JSON configs)
+- **Agent types**: LlmAgent (dynamic), Sequential/Parallel/Loop Workflows (deterministic), Custom
+- **Multi-agent patterns**: Coordinator/dispatcher, sequential pipeline, parallel fan-out/gather, hierarchical decomposition, generator-critic, HITL
+- **Tool ecosystem**: Custom functions, OpenAPI integration, MCP (Model Context Protocol), built-in (Search, Code Execution)
+- **Memory & state**: Session management, conversation history, state persistence
+- **Deployment options**: Agent Engine (managed), Cloud Run, GKE, Docker (self-hosted)
+- **Evaluation framework**: Criteria-based testing, user simulation
+- **Web UI**: Interactive testing and debugging interface
+
+**Supported Technologies**:
+- **Primary language**: Python 3.9+ (`google-adk` package)
+- **Also available**: Go (`adk-go`), Java (`adk-java`)
+- **LLM models**: Gemini (optimized), other LLMs (model-agnostic)
+- **Deployment**: Google Cloud (Agent Engine, Cloud Run), Docker, self-hosted
+
+**When to Use**:
+- Building agentic applications requiring tool integration
+- Creating multi-agent systems with specialized roles
+- Implementing deterministic workflows with LLM decision-making
+- Need code-first agent development (vs configuration-based)
+- Deploying to Google Cloud infrastructure
+- Require evaluation framework for agent testing
+- Human approval needed for critical agent actions
+
+**When NOT to Use**:
+- Simple script would suffice (use Python directly)
+- No agent orchestration needed (use LLM SDK directly)
+- Real-time processing <100ms latency required
+- Extensive custom UI needed (ADK is backend framework)
+- Team prefers configuration-based frameworks (LangChain, n8n)
+- Already invested in different agent framework
+
+**Agent Complexity Ratings**:
+- Simple LlmAgent with tools: **2**
+- Sequential/Parallel workflow: **2-3**
+- Loop workflow (iterative): **3**
+- Custom agent: **3**
+- Multi-agent coordinator (2-3 agents): **4**
+- Sequential pipeline (3+ agents): **4**
+- Hierarchical multi-agent (>5 agents): **5**
+
+**Tool Development Complexity**:
+- Custom function tool: **2**
+- OpenAPI integration: **2**
+- MCP integration: **3**
+- Async tool development: **2**
+
+**Deployment Complexity**:
+- Agent Engine (managed): **2**
+- Cloud Run deployment: **2**
+- Self-hosted Docker: **3**
+
+**Outputs**:
+- Agent implementations (LlmAgent, Workflow Agents, Custom)
+- Custom tool definitions (Python functions)
+- Multi-agent architectures (coordinator, pipeline, hierarchical)
+- Deployment configurations (Agent Engine, Docker, Cloud Run)
+- Evaluation test suites (criteria-based, user simulation)
+- State management implementations
+- HITL (Human-in-the-Loop) patterns
 
 ---
 
@@ -368,6 +451,89 @@
 
 ---
 
+### 8. n8n
+
+**Skill ID**: `n8n`
+**Directory**: [n8n/](./n8n/)
+**File**: [n8n/SKILL.md](./n8n/SKILL.md)
+**Quick Reference**: [n8n_quickref.md](./n8n_quickref.md)
+
+**Purpose**: Develop workflows, custom nodes, and integrations for the n8n automation platform
+
+**Use Cases**:
+- Design automation workflows combining multiple services
+- Write JavaScript/Python code within workflow nodes
+- Build custom nodes in TypeScript
+- Integrate APIs, databases, and cloud services (500+ pre-built connectors)
+- Create AI agent workflows with LangChain
+- Implement error handling and recovery patterns
+- Plan self-hosted n8n deployments
+- Convert manual processes to automated workflows
+
+**Complexity**: 3 (Moderate - requires platform-specific knowledge)
+**Version**: 1.0.0
+**Created**: 2025-11-13
+
+**Quick Start**:
+```bash
+/skill n8n
+```
+
+**Key Features**:
+- **Workflow design methodology**: Planning, node selection, error handling, testing
+- **Code execution**: JavaScript/Python nodes with API calls, transformations, aggregations
+- **Custom node development**: Programmatic and declarative styles in TypeScript
+- **Integration patterns**: HTTP Request, webhooks, database, file operations
+- **AI agent workflows**: LangChain integration, gatekeeper pattern, RAG
+- **Deployment guidance**: Docker, environment config, scaling with queue mode
+- **Best practices**: Modularity, error resilience, performance, security
+- **Pattern library**: API sync, data enrichment, event-driven processing, human-in-the-loop
+
+**Supported Technologies**:
+- **Runtime**: Node.js, TypeScript (90.7%), Vue.js frontend
+- **Execution**: JavaScript, Python code nodes
+- **Integrations**: 500+ services (AWS, GCP, Azure, Slack, PostgreSQL, MongoDB, OpenAI, etc.)
+- **AI/ML**: LangChain, OpenAI, Anthropic, Hugging Face, Pinecone vectors
+- **Deployment**: Docker, self-hosted, cloud
+
+**When to Use**:
+- Need to automate workflows across multiple services
+- Building API integrations without writing full applications
+- Creating scheduled data synchronization tasks
+- Implementing event-driven automation
+- Developing AI agent workflows with external tools
+- Converting manual processes to code
+- Rapid prototyping of integrations
+
+**When NOT to Use**:
+- Real-time processing required (<100ms latency)
+- Complex business logic better suited to application code
+- Extensive custom UI needed
+- Single-purpose script (Python/Node.js script simpler)
+- Advanced debugging tools required
+
+**Workflow Complexity Ratings**:
+- Use native node: **1**
+- HTTP Request integration: **1**
+- Code node transformation: **2**
+- Error handling pattern: **2**
+- Declarative custom node: **2**
+- AI agent basic: **3**
+- Programmatic custom node: **3**
+- Gatekeeper pattern (human-in-loop): **4**
+- Multi-agent orchestration: **5**
+
+**Outputs**:
+- Workflow designs with node configuration
+- Code node implementations (JavaScript/Python)
+- Custom node TypeScript packages
+- Integration patterns and templates
+- Deployment configurations (Docker Compose, environment variables)
+- Error handling strategies
+- AI agent workflow patterns
+
+---
+
 ## Skill Development
 
 ### Creating New Skills
@@ -504,32 +670,55 @@
 ### Development Workflow Skills
 - `doc-flow` - SDD workflow transformation (BRD → Code)
 
+### Automation & Integration Skills
+- `n8n` - Workflow automation, custom nodes, and service integrations
+
 ### Quality Assurance Skills
 - `trace-check` - Validate and update bidirectional traceability across SDD artifacts
 
-### External Framework Skills
-- `google-adk` - Agent Development Kit integration
+### Agent Development & AI Skills
+- `google-adk` - Multi-agent systems and agentic application development with Python
 
 ---
 
 ## Related Documentation
 
 **SDD Workflow**:
-- [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Authoritative SDD workflow
-- [index.md](../../docs_templates/ai_dev_flow/index.md) - Traceability flow diagram
+- [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Authoritative SDD workflow
+- [index.md]({project_root}/ai_dev_flow/index.md) - Traceability flow diagram
 
 **Templates**:
-- [IMPL-TEMPLATE.md](../../docs_templates/ai_dev_flow/IMPL/IMPL-TEMPLATE.md) - Implementation plan template
-- [CTR-TEMPLATE.md](../../docs_templates/ai_dev_flow/CONTRACTS/CTR-TEMPLATE.md) - API contract template
-- [SPEC-TEMPLATE.yaml](../../docs_templates/ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
-- [TASKS-TEMPLATE.md](../../docs_templates/ai_dev_flow/TASKS/TASKS-TEMPLATE.md) - Code generation plan template
+- [IMPL-TEMPLATE.md]({project_root}/ai_dev_flow/IMPL/IMPL-TEMPLATE.md) - Implementation plan template
+- [CTR-TEMPLATE.md]({project_root}/ai_dev_flow/CTR/CTR-TEMPLATE.md) - API contract template
+- [SPEC-TEMPLATE.yaml]({project_root}/ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
+- [TASKS-TEMPLATE.md]({project_root}/ai_dev_flow/TASKS/TASKS-TEMPLATE.md) - Code generation plan template
 
 **Decision Guides**:
-- [WHEN_TO_CREATE_IMPL.md](../../docs_templates/ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL creation criteria
-- [ID_NAMING_STANDARDS.md](../../docs_templates/ai_dev_flow/ID_NAMING_STANDARDS.md) - Document ID conventions
+- [WHEN_TO_CREATE_IMPL.md]({project_root}/ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL creation criteria
+- [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md) - Document ID conventions
 
 ---
 
-**Index Version**: 1.4
-**Last Updated**: 2025-11-11
-**Next Review**: 2026-02-11 (quarterly)
+## Framework Architecture Note
+
+### Layer Groupings
+
+The framework uses **functional layer groupings** for workflow clarity rather than formal layer numbers. Artifacts flow through functional stages:
+
+- **Business Layer**: BRD → PRD → EARS
+- **Testing Layer**: BDD
+- **Architecture Layer**: ADR → SYS
+- **Requirements Layer**: REQ
+- **Implementation Strategy Layer**: IMPL (optional)
+- **Interface Layer**: CTR (optional)
+- **Technical Specs Layer**: SPEC
+- **Execution Planning Layer**: TASKS → IPLAN
+- **Code & Validation Layer**: Code → Tests → Validation → Review → Production
+
+This functional grouping simplifies understanding the workflow while maintaining full traceability. Each artifact accumulates tags from previous functional layers as it progresses through the workflow.
+
+---
+
+**Index Version**: 1.6
+**Last Updated**: 2025-11-13
+**Next Review**: 2026-02-13 (quarterly)

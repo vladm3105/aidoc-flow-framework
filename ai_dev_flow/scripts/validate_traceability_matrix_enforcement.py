@@ -19,7 +19,7 @@ from typing import List, Dict, Set, Tuple
 # Artifact types with traceability matrices
 ARTIFACT_TYPES = [
     'BRD', 'PRD', 'EARS', 'BDD', 'ADR', 'SYS',
-    'REQ', 'IMPL', 'CONTRACTS', 'SPEC', 'TASKS'
+    'REQ', 'IMPL', 'CTR', 'SPEC', 'TASKS', 'IPLAN'
 ]
 
 class TraceabilityValidator:
@@ -36,10 +36,7 @@ class TraceabilityValidator:
         print(f"{'='*60}")
 
         # Check 1: Matrix file exists
-        if artifact_type == 'CONTRACTS':
-            matrix_file = self.docs_dir / artifact_type / f"CTR-000_TRACEABILITY_MATRIX.md"
-        else:
-            matrix_file = self.docs_dir / artifact_type / f"{artifact_type}-000_TRACEABILITY_MATRIX.md"
+        matrix_file = self.docs_dir / artifact_type / f"{artifact_type}-000_TRACEABILITY_MATRIX.md"
 
         if not matrix_file.exists():
             self.errors.append(f"❌ Matrix file missing: {matrix_file}")
@@ -104,11 +101,7 @@ class TraceabilityValidator:
         if not directory.exists():
             return []
 
-        # Special handling for CONTRACTS type
-        if artifact_type == 'CONTRACTS':
-            pattern = f"CTR-[0-9]*.md"
-        else:
-            pattern = f"{artifact_type}-[0-9]*.md"
+        pattern = f"{artifact_type}-[0-9]*.md"
 
         files = []
         for f in directory.glob(pattern):
@@ -119,13 +112,8 @@ class TraceabilityValidator:
 
     def _extract_id(self, file_path: Path, artifact_type: str) -> str:
         """Extract artifact ID from filename"""
-        # Special handling for CONTRACTS type
-        if artifact_type == 'CONTRACTS':
-            match = re.match(r"CTR-([0-9]+)", file_path.name)
-            return f"CTR-{match.group(1)}" if match else None
-        else:
-            match = re.match(f"{artifact_type}-([0-9]+)", file_path.name)
-            return f"{artifact_type}-{match.group(1)}" if match else None
+        match = re.match(f"{artifact_type}-([0-9]+)", file_path.name)
+        return f"{artifact_type}-{match.group(1)}" if match else None
 
     def _check_references(self, content: str) -> List[str]:
         """Check if all references in matrix resolve"""
@@ -135,8 +123,6 @@ class TraceabilityValidator:
 
         for ref in references:
             ref_type = ref.split('-')[0]
-            if ref_type == 'CTR':
-                ref_type = 'CONTRACTS'
             ref_file_pattern = f"{ref}*.md"
             ref_dir = self.docs_dir / ref_type
             if not ref_dir.exists():

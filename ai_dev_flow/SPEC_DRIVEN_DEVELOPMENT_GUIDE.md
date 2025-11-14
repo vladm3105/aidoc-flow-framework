@@ -7,9 +7,9 @@ Development Principles Guide
 
 ### Workflow Overview
 
-The SDD workflow transforms business needs into production-ready code through traceable artifacts organized in 12 distinct layers:
+The SDD workflow transforms business needs into production-ready code through traceable artifacts organized in 16 layers (Layer 0: Strategy through Layer 15: Validation):
 
-**Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Project Management Layer** (IMPL) → **Interface Layer** (CTR - optional) → **Implementation Layer** (SPEC) → **Code Generation Layer** (TASKS) → **Implementation Plans Layer** (tasks_plans) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
+**Strategy Layer** (Layer 0) → **Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Project Management Layer** (IMPL) → **Interface Layer** (CTR - optional) → **Implementation Layer** (SPEC) → **Code Generation Layer** (TASKS) → **Implementation Plans Layer** (IPLAN) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
 
 **Key Decision Point**: After IMPL, if the requirement involves an interface (API, event schema, data model), create CTR before SPEC. Otherwise, go directly to SPEC.
 
@@ -52,16 +52,22 @@ graph LR
     end
 
     subgraph L9["Layer 9: Implementation Plans"]
-        TP["tasks_plans<br/>Session Context<br/><small>(@brd through @tasks)</small>"]
+        TP["IPLAN<br/>Session Context<br/><small>(@brd through @tasks)</small>"]
     end
 
-    subgraph L10["Layer 10: Execution"]
-        CODE["Code<br/><small>(@brd through @tasks)</small>"] --> TESTS["Tests<br/><small>(@brd through @code)</small>"]
+    subgraph L13["Layer 13: Code"]
+        CODE["Code<br/><small>(@brd through @tasks)</small>"]
     end
 
-    subgraph L11["Layer 11: Validation"]
+    subgraph L14["Layer 14: Tests"]
+        TESTS["Tests<br/><small>(@brd through @code)</small>"]
+    end
+
+    subgraph L15["Layer 15: Validation"]
         VAL["Validation<br/><small>(all upstream)</small>"] --> REV[Review] --> PROD[Production]
     end
+
+    CODE --> TESTS
 
     EARS --> BDD
     BDD --> ADR
@@ -94,18 +100,25 @@ graph LR
     style PROD fill:#e0f2f1,stroke:#00897b,stroke-width:2px
 ```
 
-**Layer Descriptions:**
-- **Layer 1 - Business** (Blue): BRD → PRD → EARS (Strategic direction and product vision)
-- **Layer 2 - Testing** (Yellow): BDD (Acceptance criteria and test scenarios)
-- **Layer 3 - Architecture** (Green): ADR → SYS (Technical decisions and system design)
-- **Layer 4 - Requirements** (Red): REQ (Detailed atomic requirements)
-- **Layer 5 - Project Management** (Cyan): IMPL (Implementation planning - WHO/WHEN)
-- **Layer 6 - Interface** (Gray): CTR (API contracts - created when needed)
-- **Layer 7 - Implementation** (Orange): SPEC (Technical specifications - YAML)
-- **Layer 8 - Code Generation** (Pink): TASKS (Detailed implementation tasks)
-- **Layer 9 - Implementation Plans** (Light Blue): tasks_plans (Session context with bash commands)
-- **Layer 10 - Execution** (Purple/Green): Code → Tests (Implementation and validation)
-- **Layer 11 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
+**Layer Descriptions** (Formal Layer Numbers 0-15):
+- **Layers 1-3 - Business** (Blue): BRD (L1) → PRD (L2) → EARS (L3) - Strategic direction and product vision
+- **Layer 4 - Testing** (Yellow): BDD - Acceptance criteria and test scenarios
+- **Layers 5-6 - Architecture** (Green): ADR (L5) → SYS (L6) - Technical decisions and system design
+- **Layer 7 - Requirements** (Red): REQ - Detailed atomic requirements
+- **Layer 8 - Project Management** (Cyan): IMPL - Implementation planning (WHO/WHEN) - optional
+- **Layer 9 - Interface** (Gray): CTR - API contracts (created when needed) - optional
+- **Layer 10 - Technical Specifications** (Orange): SPEC - Technical specifications (YAML)
+- **Layer 11 - Code Generation** (Pink): TASKS - Detailed implementation tasks
+- **Layer 12 - Implementation Plans** (Light Blue): IPLAN - Session context with bash commands
+- **Layer 13 - Code** (Purple): Source code implementation
+- **Layer 14 - Tests** (Green): Test execution and verification
+- **Layer 15 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
+
+**Note on Layer Numbering:**
+- **Formal layer numbers**: 0-15 (used in cumulative tagging, templates, specifications)
+- **Mermaid diagram groupings**: L1-L9, L13-L15 (visual organization for diagrams)
+- When implementing cumulative tagging, always use formal layer numbers (0-15)
+- The full 16-layer architecture includes optional layers (IMPL at layer 8, CTR at layer 9) which may not always be present
 
 See [index.md](./index.md#traceability-flow) for additional workflow visualizations and [TRACEABILITY.md](./TRACEABILITY.md) for complete traceability guidelines.
 
@@ -207,7 +220,7 @@ Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructi
 
 ### API Contracts (CTR)
 - **Purpose**: Formal interface specifications for component-to-component communication
-- **File Format (Dual)**: `CONTRACTS/CTR-NNN_descriptive_slug.md` + `CTR-NNN_descriptive_slug.yaml`
+- **File Format (Dual)**: `CTR/CTR-NNN_descriptive_slug.md` + `CTR-NNN_descriptive_slug.yaml`
 - **When to Create**: When REQ specifies interface requirements between components/services
 - **Structure**:
   - Markdown (.md): Human-readable context, requirements satisfied, NFRs, versioning, traceability
@@ -397,7 +410,7 @@ Cumulative tagging ensures complete traceability chains from business requiremen
 ### Mandatory Hierarchy
 
 ```
-Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → task_plans → Code → Tests → Validation
+Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → IPLAN → Code → Tests → Validation
 ```
 
 ### Cumulative Inheritance Rules
@@ -430,8 +443,8 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 | 9 | **CTR** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl` | Formal Template | Cumulative: BRD through IMPL (optional layer) |
 | 10 | **SPEC** | All upstream through `@req` + optional `@impl`, `@ctr` | Formal Template (YAML) | Full upstream chain |
 | 11 | **TASKS** | All upstream through `@spec` | Formal Template | Include optional IMPL/CTR if present |
-| 12 | **task_plans** | All upstream through `@tasks` | Project Files | All formal artifact tags |
-| 13 | **Code** | **ALL tags** including `@task_plans` | Docstring Tags | Complete traceability chain |
+| 12 | **IPLAN** | All upstream through `@tasks` | Project Files | All formal artifact tags |
+| 13 | **Code** | **ALL tags** including `@iplan` | Docstring Tags | Complete traceability chain |
 | 14 | **Tests** | All upstream through `@code` | Docstring Tags + BDD | All upstream + code reference |
 | 15 | **Validation** | **ALL tags from all documents** | Embedded Tags + CI/CD | Complete audit trail |
 
@@ -443,7 +456,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 ```
 
 **Components**:
-- **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`, `@task_plans`)
+- **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`, `@iplan`)
 - **Document ID**: Standard ID format (e.g., `BRD-001`, `REQ-003`, `SPEC-005`)
 - **Requirement ID**: Specific requirement within document (e.g., `FR-030`, `NFR-006`, `PERF-001`)
 - **Separator**: Colon (`:`) between document and requirement
@@ -486,7 +499,7 @@ Implements real-time position limit validation and enforcement.
 @ctr: CTR-001
 @spec: SPEC-003
 @tasks: TASKS-001:task-3
-@task_plans: TASKS_PLANS-001
+@iplan: IPLAN-001
 """
 ```
 
@@ -591,7 +604,7 @@ The SDD workflow employs different tracking methods for different artifact types
 | 9 | CTR | Formal Template + Tags | Yes (Dual: .md + .yaml) | Yes | 8 | @brd through @impl (optional) |
 | 10 | SPEC | Formal Template + Tags | Yes (YAML) | Yes | 7-9 | @brd through @req + optional |
 | 11 | TASKS | Formal Template + Tags | Yes | Yes | 8-10 | @brd through @spec |
-| 12 | task_plans | Project Files + Tags | No (Project-specific) | Yes | 9-11 | All formal artifact tags |
+| 12 | IPLAN | Project Files + Tags | No (Project-specific) | Yes | 9-11 | All formal artifact tags |
 | 13 | Code | Docstring Tags | No (Implementation) | Yes | 10-12 | ALL upstream tags |
 | 14 | Tests | BDD + Docstring Tags | Mixed | Yes | 11-13 | All upstream + code |
 | 15 | Validation | Embedded Tags + CI/CD | Mixed | Yes | ALL | Complete audit trail |
@@ -624,7 +637,7 @@ excessive portfolio concentration risk through automated validation.
 @ctr: CTR-001
 @spec: SPEC-003
 @tasks: TASKS-001:task-3, TASKS-001:task-5
-@task_plans: TASKS_PLANS-001
+@iplan: IPLAN-001
 
 @impl-status: complete
 @test-coverage: 95%
@@ -963,7 +976,7 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
 - BDD: [risk_limits_requirements.feature](./BDD/risk_limits_requirements.feature)
 - ADR: [ADR-033](./ADR/ADR-033_risk_limit_enforcement_architecture.md#ADR-033)
 - **REQ V2**: [REQ-003](./REQ/risk/lim/REQ-003_position_limit_enforcement.md#REQ-003) ← Contains complete interface/schema/error/config specifications
-- CTR: [CTR-001](./CONTRACTS/CTR-001_position_risk_validation.md#CTR-001) + [CTR-001.yaml](./CONTRACTS/CTR-001_position_risk_validation.yaml) ← Contract for [RESOURCE_INSTANCE - e.g., database connection, workflow instance] validation interface
+- CTR: [CTR-001](./CTR/CTR-001_position_risk_validation.md#CTR-001) + [CTR-001.yaml](./CTR/CTR-001_position_risk_validation.yaml) ← Contract for [RESOURCE_INSTANCE - e.g., database connection, workflow instance] validation interface
 - SPEC: [position_limit_service.yaml](./SPEC/services/position_limit_service.yaml) ← 95% derived from REQ-003 V2 content
 - TASKS: [position_limit_service_tasks.md](./TASKS/position_limit_service_tasks.md)
 - Code: `option_strategy/risk/position_limit_service.py`
@@ -1076,7 +1089,7 @@ Each document type has its own dedicated traceability matrix template:
 | **SYS** | `SYS/SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `SYS/SYS-000_TRACEABILITY_MATRIX.md` | ✅ YES |
 | **REQ** | `REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `REQ/REQ-000_TRACEABILITY_MATRIX.md` | ✅ YES |
 | **IMPL** | `IMPL/IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `IMPL/IMPL-000_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **CTR** | `CONTRACTS/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `CONTRACTS/CTR-000_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **CTR** | `CTR/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `CTR/CTR-000_TRACEABILITY_MATRIX.md` | ✅ YES |
 | **SPEC** | `SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `SPEC/SPEC-000_TRACEABILITY_MATRIX.md` | ✅ YES |
 | **TASKS** | `TASKS/TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `TASKS/TASKS-000_TRACEABILITY_MATRIX.md` | ✅ YES |
 | **Complete** | `TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` | `TRACEABILITY_MATRIX_COMPLETE.md` | ✅ YES |

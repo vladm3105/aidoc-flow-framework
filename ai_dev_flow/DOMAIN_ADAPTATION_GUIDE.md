@@ -361,6 +361,34 @@ SLA Targets:
 - **IoT**: OTA update strategy, fleet-wide rollout
 - **Generic**: Standard agile sprints, feature flags
 
+### IPLAN (Implementation Plans) by Domain
+
+Implementation plans provide session-based execution context. Customize for domain-specific workflows:
+
+#### Financial Services
+- **Focus**: Trading system execution, market data integration
+- **Bash commands**: Database migrations for time-series data, API deployments
+- **Compliance**: Include audit trail commands, regulatory checkpoint verification
+- **Example**: `IPLAN-001_options_pricing_migration_20251113_140000.md`
+
+#### Healthcare
+- **Focus**: HIPAA compliance, PHI data handling
+- **Bash commands**: Encrypted backup procedures, access logging
+- **Compliance**: Include data retention commands, audit log generation
+- **Example**: `IPLAN-002_patient_portal_deployment_20251114_090000.md`
+
+#### E-commerce
+- **Focus**: Deployment and scaling, inventory management
+- **Bash commands**: Blue-green deployment scripts, cache invalidation
+- **Performance**: Include load testing commands, monitoring setup
+- **Example**: `IPLAN-003_payment_gateway_integration_20251115_110000.md`
+
+#### SaaS
+- **Focus**: Multi-tenant rollout, feature flags
+- **Bash commands**: Tenant provisioning, configuration management
+- **Scaling**: Include database sharding, service replication
+- **Example**: `IPLAN-004_tenant_onboarding_automation_20251116_130000.md`
+
 ---
 
 ## Common Pitfalls

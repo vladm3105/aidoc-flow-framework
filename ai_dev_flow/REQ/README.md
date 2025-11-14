@@ -13,6 +13,9 @@ REQs create the **formal contract** for system behavior by:
 
 ## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
 
+**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+
+
 REQs are the **testable specification layer** that operationalizes business requirements within the complete SDD workflow:
 
 ```

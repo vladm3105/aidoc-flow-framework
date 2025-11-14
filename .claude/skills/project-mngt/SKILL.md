@@ -525,7 +525,7 @@ Create PLAN-XXX_[project_name].md following MVP/MMP/MMR methodology."
 "Use the project-mgnt skill to create an implementation plan for trading system.
 
 Inputs:
-- Requirements: /opt/data/trading/docs/BRD/BRD-*.md (11 files)
+- Requirements: {project_root}/docs/BRD/BRD-*.md (11 files)
 - Context: Options trading, 5 FTE team, paper trading first
 - Constraint: MVP in <3 months
 
@@ -930,7 +930,7 @@ See examples directory for complete worked examples:
 - New requirements added
 - Timeline adjusted, change log included
 
-*(Full examples in `/opt/data/trading/.claude/skills/project-mgnt/examples/`)*
+*(Full examples in `{project_root}/.claude/skills/project-mngt/examples/`)*
 
 ---
 

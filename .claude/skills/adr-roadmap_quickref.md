@@ -311,9 +311,9 @@ Output: /opt/data/webapp/docs/ROADMAP.md
 **Full Skill Documentation**: [SKILL.md](./adr-roadmap/SKILL.md)
 
 **Related Documentation**:
-- [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
-- [ADR-TEMPLATE.md](../../docs_templates/ADR-TEMPLATE.md)
-- [ID_NAMING_STANDARDS.md](../../docs_templates/ai_dev_flow/ID_NAMING_STANDARDS.md)
+- [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
+- [ADR-TEMPLATE.md]({project_root}/ai_dev_flow/ADR-TEMPLATE.md)
+- [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md)
 
 **Example Output**: `/opt/data/ibmcp/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md`
 

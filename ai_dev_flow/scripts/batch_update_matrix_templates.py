@@ -88,11 +88,11 @@ LAYER_CONFIGS = {
         "description": "Implementation Tasks Document",
         "example_tags": "@brd: BRD-009:FR-015\n@prd: PRD-016:FEATURE-003\n@ears: EARS-012:EVENT-002\n@bdd: BDD-015:scenario-place-order\n@adr: ADR-033\n@sys: SYS-012:PERF-001\n@req: REQ-045:interface-spec\n@impl: IMPL-003:phase2\n@ctr: CTR-005\n@spec: SPEC-018",
     },
-    "TASKS_PLANS": {
+    "IPLAN": {
         "layer": 12,
         "required_tags": "`@brd` through `@tasks`",
         "tag_count": "9-11",
-        "description": "Implementation Session Plans",
+        "description": "Implementation Plans",
         "example_tags": "@brd: BRD-009:FR-015\n@prd: PRD-016:FEATURE-003\n@ears: EARS-012:EVENT-002\n@bdd: BDD-015:scenario-place-order\n@adr: ADR-033\n@sys: SYS-012:PERF-001\n@req: REQ-045:interface-spec\n@impl: IMPL-003:phase2\n@ctr: CTR-005\n@spec: SPEC-018\n@tasks: TASKS-018:task-3",
     },
 }

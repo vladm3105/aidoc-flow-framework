@@ -20,9 +20,7 @@ Document Organization
 
 Templates
 
-- [BRD-template.md](./BRD-template.md): Comprehensive BRD template with detailed sections
-- [BRD-template-2.md](./BRD-template-2.md): Alternative BRD format
-- [BRD-trading-template.md](./BRD-trading-template.md): Trading-specific BRD template
+- [BRD-TEMPLATE.md](./BRD-TEMPLATE.md): Comprehensive BRD template with detailed sections
 
 Documents
 

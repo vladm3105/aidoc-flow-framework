@@ -406,7 +406,7 @@ The system SHALL provide an API endpoint to place limit orders with the followin
 
 ## Layer 9: CTR (API Contracts) [OPTIONAL]
 
-**Artifact**: `docs/CONTRACTS/CTR-005_order_service_api.md` + `.yaml`
+**Artifact**: `docs/CTR/CTR-005_order_service_api.md` + `.yaml`
 **Required Tags**: `@brd` through `@impl` (8 tags)
 **Format**: Markdown + YAML (dual-file)
 
@@ -595,7 +595,7 @@ implementation:
 
 ---
 
-## Layer 12: tasks_plans (Implementation Work Plans)
+## Layer 12: IPLAN (Implementation Work Plans)
 
 **Artifact**: `work_plans/implement_order_service_20251113_120000.md`
 **Required Tags**: `@brd` through `@tasks` (9-11 tags)
@@ -862,7 +862,7 @@ def test_reject_invalid_symbol():
 @ctr: CTR-005
 @spec: SPEC-018
 @tasks: TASKS-015
-@tasks_plans: implement_order_service_20251113_120000.md
+@iplan: implement_order_service_20251113_120000.md
 @code: src/services/order_service.py
 @tests: tests/services/test_order_service.py
 ```
@@ -900,8 +900,8 @@ Layer 8  (IMPL)          →  7 tags  [+ @req] *optional*
 Layer 9  (CTR)           →  8 tags  [+ @impl] *optional*
 Layer 10 (SPEC)          →  7-9 tags [+ optional @impl, @ctr]
 Layer 11 (TASKS)         →  8-10 tags [+ @spec]
-Layer 12 (tasks_plans)   →  9-11 tags [+ @tasks]
-Layer 13 (Code)          →  9-11 tags [+ @tasks_plans]
+Layer 12 (IPLAN)   →  9-11 tags [+ @tasks]
+Layer 13 (Code)          →  9-11 tags [+ @IPLAN]
 Layer 14 (Tests)         →  10-12 tags [+ @code]
 Layer 15 (Validation)    →  10-15 tags [all upstream]
 ```

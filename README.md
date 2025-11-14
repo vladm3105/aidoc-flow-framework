@@ -11,26 +11,47 @@ The AI Dev Flow Framework is a comprehensive template system for implementing AI
 
 ### Key Features
 
-- **10-Layer Workflow**: Structured progression from business requirements to production code
+- **16-Layer Architecture**: Structured progression from strategy to validation (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation)
+- **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
 - **Tag-Based Auto-Discovery**: Lightweight @tags in code auto-generate bidirectional traceability matrices
 - **Namespaced Traceability**: Explicit DOCUMENT-ID:REQUIREMENT-ID format prevents ambiguity
 - **Complete Traceability**: Bidirectional links between all artifacts (business → architecture → code)
 - **AI-Optimized Templates**: Ready for Claude Code, Gemini, GitHub Copilot, and other AI coding assistants
-- **Multiple Entry Points**: 3 BRD templates for different project contexts (general, simplified, trading-specific)
+- **Domain-Agnostic**: Adaptable to any software domain (finance, healthcare, e-commerce, SaaS, IoT)
 - **Token-Efficient Design**: Optimized for AI tool context windows (50K-100K tokens per document)
-- **Contract-First Development**: Optional API contract layer (CTR) for parallel development
-- **Automated Validation**: Scripts for tag extraction, validation, and matrix generation with CI/CD integration
+- **Dual-File Contracts**: CTR uses `.md` (human) + `.yaml` (machine) for parallel development
+- **Automated Validation**: Scripts for tag extraction, cumulative tagging validation, and matrix generation with CI/CD integration
+- **Regulatory Compliance**: Complete audit trails meet SEC, FINRA, FDA, ISO requirements
 
 ## Quick Start
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/vladm3105/ai-doc-flow-framework.git
-cd ai-doc-flow-framework
+git clone https://github.com/vladm3105/aidoc-flow-framework.git
+cd aidoc-flow-framework
 ```
 
-### 2. Explore the Templates
+### 2. Multi-Project Setup (Recommended)
+
+For organizations managing multiple projects with shared framework resources:
+
+```bash
+# Setup hybrid shared/custom resources for a project
+./scripts/setup_project_hybrid.sh /path/to/your/project
+
+# See detailed documentation:
+# - Full guide: MULTI_PROJECT_SETUP_GUIDE.md
+# - Quick reference: MULTI_PROJECT_QUICK_REFERENCE.md
+```
+
+**Benefits:**
+- Single source of truth for skills, templates, and validation scripts
+- Zero duplication across projects
+- Instant framework updates across all projects
+- Project-specific customizations supported
+
+### 3. Explore the Templates
 
 All templates are located in `ai_dev_flow/`:
 
@@ -39,7 +60,7 @@ cd ai_dev_flow
 ls -R
 ```
 
-### 3. Start Your Project
+### 4. Start Your Project
 
 Choose your entry point based on project context:
 
@@ -47,7 +68,7 @@ Choose your entry point based on project context:
 ```bash
 # Use project-init skill (if using Claude Code)
 # Or manually create directory structure
-mkdir -p docs/{BRD,PRD,EARS,ADR,SYS,REQ,BDD,IMPL,CONTRACTS,SPEC,TASKS}
+mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
 ```
 
 **Option B: Existing Project**
@@ -56,41 +77,53 @@ mkdir -p docs/{BRD,PRD,EARS,ADR,SYS,REQ,BDD,IMPL,CONTRACTS,SPEC,TASKS}
 cp -r ai_dev_flow/* your-project/docs/
 ```
 
-### 4. Follow the Workflow
+### 5. Follow the Workflow
 
-1. **Business Requirements** → Start with `BRD/BRD-template.md`
-2. **Product Requirements** → Create `PRD/PRD-TEMPLATE.md`
-3. **Formal Requirements** → Use `EARS/EARS-TEMPLATE.md`
-4. **Behavior Tests** → Write `BDD/BDD-TEMPLATE.feature`
-5. **Architecture** → Document with `ADR/ADR-TEMPLATE.md`
-6. **System Design** → Create `SYS/SYS-TEMPLATE.md`
-7. **Atomic Requirements** → Define `REQ/REQ-TEMPLATE.md`
-8. **Implementation Plan** → Organize with `IMPL/IMPL-TEMPLATE.md` (optional)
-9. **API Contracts** → Specify with `CONTRACTS/CTR-TEMPLATE.md/.yaml` (if interfaces)
-10. **Technical Specs** → Design with `SPEC/SPEC-TEMPLATE.yaml`
-11. **Code Generation** → Guide with `TASKS/TASKS-TEMPLATE.md`
-12. **Implementation** → Write code with traceability tags
+1. **Business Requirements** → Start with `BRD/BRD-TEMPLATE.md` (Layer 1)
+2. **Product Requirements** → Create `PRD/PRD-TEMPLATE.md` (Layer 2)
+3. **Formal Requirements** → Use `EARS/EARS-TEMPLATE.md` (Layer 3)
+4. **Behavior Tests** → Write `BDD/BDD-TEMPLATE.feature` (Layer 4)
+5. **Architecture** → Document with `ADR/ADR-TEMPLATE.md` (Layer 5)
+6. **System Design** → Create `SYS/SYS-TEMPLATE.md` (Layer 6)
+7. **Atomic Requirements** → Define `REQ/REQ-TEMPLATE.md` (Layer 7)
+8. **Implementation Plan** → Organize with `IMPL/IMPL-TEMPLATE.md` (Layer 8 - optional)
+9. **API Contracts** → Specify with `CTR/CTR-TEMPLATE.md + .yaml` (Layer 9 - if interfaces)
+10. **Technical Specs** → Design with `SPEC/SPEC-TEMPLATE.yaml` (Layer 10)
+11. **Code Generation** → Guide with `TASKS/TASKS-TEMPLATE.md` (Layer 11)
+12. **Session Planning** → Create `IPLAN/IPLAN-NNN_*.md` (Layer 12 - via /save-plan)
+13. **Implementation** → Write code with cumulative traceability tags (Layer 13)
 
-### 5. Add Traceability Tags (Recommended)
+### 6. Add Cumulative Traceability Tags (Recommended)
 
-Embed tags in your code docstrings:
+Embed cumulative tags in your code docstrings (each layer includes ALL upstream tags):
 
 ```python
-"""Service implementation.
+"""Order service implementation.
 
 @brd: BRD-001:FR-030, BRD-001:NFR-006
-@sys: SYS-008
+@prd: PRD-002:FEATURE-005
+@ears: EARS-003:EVENT-001
+@bdd: BDD-004:scenario-place-order
+@adr: ADR-010
+@sys: SYS-008:FUNC-002
+@req: REQ-045
 @spec: SPEC-003
-@test: BDD-003:scenario-1
+@tasks: TASKS-015
 @impl-status: complete
 """
 ```
 
-Then auto-generate matrices:
+Then validate and auto-generate matrices:
 
 ```bash
-# Extract, validate, and generate matrices
-python scripts/generate_traceability_matrices.py --auto
+# Extract tags from codebase
+python ai_dev_flow/scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
+
+# Validate cumulative tagging hierarchy
+python ai_dev_flow/scripts/validate_tags_against_docs.py --validate-cumulative --strict
+
+# Generate traceability matrices
+python ai_dev_flow/scripts/generate_traceability_matrices.py --auto
 
 # View generated matrices
 ls docs/generated/matrices/
@@ -98,51 +131,66 @@ ls docs/generated/matrices/
 
 ## Documentation Structure
 
-### Workflow Layers
+### 16-Layer Architecture with Cumulative Tagging
 
-The SDD workflow organizes artifacts into 10 distinct layers:
+The SDD workflow organizes artifacts into 16 distinct layers with cumulative tagging hierarchy:
 
 ```
-Layer 1: Business Layer
-├── BRD (Business Requirements Documents)
-├── PRD (Product Requirements Documents)
+Layer 0: Strategy Layer
+└── External strategy documents (product roadmaps, market analysis)
+
+Layer 1: Business Requirements
+└── BRD (Business Requirements Documents)
+
+Layer 2: Product Requirements
+└── PRD (Product Requirements Documents)
+
+Layer 3: Formal Requirements
 └── EARS (Event Analysis Requirements Specification)
 
-Layer 2: Testing Layer
-└── BDD (Behavior-Driven Development)
+Layer 4: Testing Requirements
+└── BDD (Behavior-Driven Development - Gherkin scenarios)
 
-Layer 3: Architecture Layer
-├── ADR (Architecture Decision Records)
+Layer 5: Architecture Decisions
+└── ADR (Architecture Decision Records)
+
+Layer 6: System Requirements
 └── SYS (System Requirements Specifications)
 
-Layer 4: Requirements Layer
-└── REQ (Atomic Requirements)
+Layer 7: Atomic Requirements
+└── REQ (Requirements Specifications)
 
-Layer 5: Project Management Layer
-└── IMPL (Implementation Plans) [OPTIONAL]
+Layer 8: Project Management [OPTIONAL]
+└── IMPL (Implementation Plans)
 
-Layer 6: Interface Layer
-└── CTR (API Contracts) [IF INTERFACE REQUIREMENT]
+Layer 9: Interface Contracts [OPTIONAL - IF INTERFACE REQUIREMENT]
+└── CTR (API Contracts - dual-file .md + .yaml)
 
-Layer 7: Implementation Layer
-└── SPEC (Technical Specifications - YAML)
+Layer 10: Technical Specifications
+└── SPEC (YAML Technical Specifications)
 
-Layer 8: Code Generation Layer
+Layer 11: Task Breakdown
 └── TASKS (Code Generation Plans)
 
-Layer 9: Execution Layer
-└── Code + Tests
+Layer 12: Session Planning
+└── IPLAN (Session-Specific Implementation Plans)
 
-Layer 10: Validation Layer
+Layer 13: Implementation
+└── Code (Source code with cumulative tags)
+
+Layer 14: Testing
+└── Tests (Test implementations with cumulative tags)
+
+Layer 15: Validation
 └── Validation → Review → Production
 ```
+
+**Cumulative Tagging**: Each layer includes tags from ALL upstream layers, creating complete audit trails for regulatory compliance.
 
 ### Template Categories
 
 #### Business Layer Templates
-- **BRD-template.md**: Comprehensive business requirements (general purpose)
-- **BRD-template-2.md**: Simplified business requirements (lean projects)
-- **BRD-trading-template.md**: Trading-specific business requirements (financial systems)
+- **BRD-TEMPLATE.md**: Comprehensive business requirements (general purpose)
 - **PRD-TEMPLATE.md**: Product requirements with features and KPIs
 - **EARS-TEMPLATE.md**: Formal WHEN-THE-SHALL-WITHIN requirements
 
@@ -155,49 +203,67 @@ Layer 10: Validation Layer
 - **BDD-TEMPLATE.feature**: Gherkin scenarios for behavior validation
 
 #### Implementation Layer Templates
-- **IMPL-TEMPLATE.md**: Implementation plans (WHO/WHEN) - project management
-- **CTR-TEMPLATE.md + .yaml**: API contracts (dual-file format)
-- **SPEC-TEMPLATE.yaml**: Technical specifications (HOW to build)
-- **TASKS-TEMPLATE.md**: Code generation plans (exact TODOs)
+- **IMPL-TEMPLATE.md**: Implementation plans (WHO/WHEN) - project management [Layer 8]
+- **CTR-TEMPLATE.md + .yaml**: API contracts (dual-file format) [Layer 9 - optional]
+- **SPEC-TEMPLATE.yaml**: Technical specifications (HOW to build) [Layer 10]
+- **TASKS-TEMPLATE.md**: Code generation plans (exact TODOs) [Layer 11]
+- **IPLAN**: Session-specific implementation plans [Layer 12]
 
 ## Traceability System
 
-### Tag-Based Auto-Discovery (Recommended)
+### Tag-Based Auto-Discovery with Cumulative Tagging (Recommended)
 
-**Principle:** Code is the single source of truth. Traceability matrices are auto-generated from lightweight tags.
+**Principle:** Code is the single source of truth. Each artifact includes tags from ALL upstream layers. Traceability matrices are auto-generated from these cumulative tags.
 
-#### Namespaced Tag Format
+#### Cumulative Namespaced Tag Format
 
-Embed tags in code docstrings using namespaced format:
+Embed cumulative tags in code docstrings using namespaced format:
 
 ```python
-"""Market data service implementation.
+"""Order placement service implementation.
 
 @brd: BRD-001:FR-030, BRD-001:NFR-006
-@sys: SYS-008
+@prd: PRD-002:FEATURE-005
+@ears: EARS-003:EVENT-001
+@bdd: BDD-004:scenario-place-order
+@adr: ADR-010
+@sys: SYS-008:FUNC-002
+@req: REQ-045
 @spec: SPEC-003
-@test: BDD-003:scenario-realtime, BDD-008:scenario-cache
+@tasks: TASKS-015
 @impl-status: complete
 """
 ```
 
 **Format:** `@tag-type: DOCUMENT-ID:REQUIREMENT-ID`
 
-**Tag Types:**
-- `@brd:` - Business Requirements Document references
-- `@prd:` - Product Requirements Document references
-- `@sys:` - System Requirements references
-- `@spec:` - Specification references
-- `@req:` - Requirements Document references
-- `@test:` - Test scenario references
+**Tag Types (Cumulative Hierarchy):**
+- `@brd:` - Business Requirements Document references (Layer 1)
+- `@prd:` - Product Requirements Document references (Layer 2)
+- `@ears:` - EARS requirements (Layer 3)
+- `@bdd:` - BDD test scenarios (Layer 4)
+- `@adr:` - Architecture Decision Records (Layer 5)
+- `@sys:` - System Requirements references (Layer 6)
+- `@req:` - Atomic Requirements (Layer 7)
+- `@impl:` - Implementation Plans (Layer 8 - optional)
+- `@ctr:` - API Contracts (Layer 9 - optional)
+- `@spec:` - Technical Specifications (Layer 10)
+- `@tasks:` - Task breakdowns (Layer 11)
 - `@impl-status:` - Implementation status (pending|in-progress|complete|deprecated)
 
 **Benefits:**
-- ✅ Single source of truth (code)
-- ✅ Automated validation (scripts check correctness)
+- ✅ Complete audit trail from strategy to code
+- ✅ Regulatory compliance (SEC, FINRA, FDA, ISO)
+- ✅ Impact analysis (identify all affected artifacts)
+- ✅ Automated cumulative validation (scripts enforce hierarchy)
 - ✅ No sync drift (tags can't become stale)
 - ✅ Bidirectional matrices auto-generated
 - ✅ CI/CD enforceable (pre-commit hooks)
+
+**Why Cumulative?**
+- Each layer N includes tags from layers 1 through N-1
+- Complete traceability chain from business requirements to implementation
+- Instant impact analysis when upstream requirements change
 
 **Why Namespaced?**
 - `@brd: FR-030` ❌ Ambiguous (which BRD document?)
@@ -221,7 +287,17 @@ Manual traceability sections in documents remain supported during migration:
 
 ### ID Naming Standards
 
-All documents follow standardized ID formats:
+**SCOPE**: These standards apply ONLY to **documentation artifacts**, NOT source code.
+
+#### ✅ Apply To:
+- Documentation files in `docs/` directories (BRD, PRD, REQ, ADR, SPEC, CTR, etc.)
+- BDD feature files (`.feature`) in test directories
+
+#### ❌ Do NOT Apply To:
+- **Source code files**: Follow language-specific conventions (PEP 8 for Python, etc.)
+- **Test files**: Follow testing framework conventions (pytest, Jest, JUnit, etc.)
+
+All documentation follows standardized ID formats:
 
 - **Format**: `TYPE-XXX` or `TYPE-XXX-YY`
 - **Examples**: `BRD-001`, `REQ-003-02`, `ADR-1000`
@@ -274,13 +350,13 @@ All documents follow standardized ID formats:
 **Step 3: Validate Tags**
 ```bash
 # Check tag format and document references
-python scripts/validate_tags_against_docs.py --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --strict
 ```
 
 **Step 4: Generate Matrices**
 ```bash
 # Auto-generate bidirectional matrices
-python scripts/generate_traceability_matrices.py --auto
+python ai_dev_flow/scripts/generate_traceability_matrices.py --auto
 ```
 
 **Step 5: Phase Out Section 7**
@@ -381,29 +457,34 @@ Policy: `ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md`
 
 ## Validation Tools
 
-### Tag-Based Automation (Recommended)
+### Cumulative Tag Automation (v2.0 - Recommended)
 
-Located in `scripts/` (when integrated with your project):
+**Validation Scripts Location**: `ai_dev_flow/scripts/` (copy to your project or use directly from framework)
 
 ```bash
-# Extract tags from all source files
-python scripts/extract_tags.py --source src/ docs/ --output docs/generated/tags.json
+# Extract cumulative tags from all source files
+python ai_dev_flow/scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
 
-# Validate tags against actual documents
-python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
+# Validate cumulative tagging hierarchy (ENFORCES all upstream tags present)
+python ai_dev_flow/scripts/validate_tags_against_docs.py \
+  --source src/ docs/ tests/ \
+  --validate-cumulative \
+  --strict
 
 # Generate bidirectional traceability matrices
-python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json --auto
+python ai_dev_flow/scripts/generate_traceability_matrices.py --auto
 
-# Complete workflow (extract + validate + generate)
-python scripts/generate_traceability_matrices.py --auto
+# Complete workflow (extract + validate cumulative + generate)
+python ai_dev_flow/scripts/generate_traceability_matrices.py --auto
 ```
 
 **CI/CD Integration:**
 ```yaml
 # .github/workflows/traceability.yml
-- name: Validate Traceability Tags
-  run: python scripts/validate_tags_against_docs.py --strict
+- name: Validate Cumulative Tagging Hierarchy
+  run: |
+    python ai_dev_flow/scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
+    python ai_dev_flow/scripts/validate_tags_against_docs.py --validate-cumulative --strict
 ```
 
 ### Legacy Validation Scripts
@@ -412,27 +493,33 @@ For projects using traditional Section 7:
 
 ```bash
 # Validate requirement IDs and format
-python scripts/validate_requirement_ids.py
+python ai_dev_flow/scripts/validate_requirement_ids.py
 
-# Check for broken cross-references
-python scripts/check_broken_references.py
+# Validate traceability matrices
+python ai_dev_flow/scripts/validate_traceability_matrix.py --matrix path/to/matrix.md --input path/to/docs/
 
-# Generate traceability matrix manually
-python scripts/complete_traceability_matrix.py
+# Update traceability matrices incrementally
+python ai_dev_flow/scripts/update_traceability_matrix.py --matrix path/to/matrix.md --input path/to/docs/
+
+# Validate IPLAN naming conventions
+python ai_dev_flow/scripts/validate_iplan_naming.py
 ```
 
 ### Quality Gates
 
 Pre-commit checklist:
 
-**Tag-Based Projects:**
-- [ ] All code files have @brd/@sys/@spec tags in docstrings
+**Cumulative Tagging Projects (v2.0):**
+- [ ] All artifacts include cumulative tags from ALL upstream layers
 - [ ] Tags use namespaced format (DOCUMENT-ID:REQUIREMENT-ID)
-- [ ] Tag validation passes: `python scripts/validate_tags_against_docs.py --strict`
-- [ ] Traceability matrices generated: `python scripts/generate_traceability_matrices.py --auto`
+- [ ] Tag extraction successful: `python ai_dev_flow/scripts/extract_tags.py --source src/ docs/ tests/`
+- [ ] Cumulative validation passes: `python ai_dev_flow/scripts/validate_tags_against_docs.py --validate-cumulative --strict`
+- [ ] No gaps in cumulative tag chains (e.g., if @adr exists, @brd through @bdd must exist)
+- [ ] Traceability matrices generated: `python ai_dev_flow/scripts/generate_traceability_matrices.py --auto`
 - [ ] Implementation status tags present (@impl-status: complete|in-progress|pending)
+- [ ] IPLAN files follow naming convention: `IPLAN-NNN_slug_YYYYMMDD_HHMMSS.md`
 
-**Traditional Projects:**
+**Traditional Projects (Legacy):**
 - [ ] IDs comply with naming standards (XXX or XXX-YY format)
 - [ ] No ID collisions (each XXX unique)
 - [ ] All cross-references use valid markdown links
@@ -445,6 +532,7 @@ Pre-commit checklist:
 - [ ] CTR dual-file format (both .md and .yaml exist)
 - [ ] BDD scenarios have traceability references
 - [ ] File size under 50,000 tokens standard, 100,000 maximum
+- [ ] Layer numbering correct (0-15, not simplified diagram labels)
 
 ## Integration with AI Coding Tools
 
@@ -472,77 +560,109 @@ Keep documents <30KB or create companion summaries for context.
 ## Project Structure
 
 ```
-ai-doc-flow-framework/
+aidoc-flow-framework/
 ├── README.md                          # This file
-├── ai_dev_flow/                       # Template system
-│   ├── index.md                       # Workflow overview
-│   ├── SPEC_DRIVEN_DEVELOPMENT_GUIDE.md  # Authoritative guide
-│   ├── ID_NAMING_STANDARDS.md         # ID format rules
-│   ├── TRACEABILITY.md                # Cross-reference standards
-│   ├── WHEN_TO_CREATE_IMPL.md         # Decision guide
+├── MULTI_PROJECT_SETUP_GUIDE.md       # Multi-project hybrid setup guide
+├── MULTI_PROJECT_QUICK_REFERENCE.md   # Quick reference for common multi-project tasks
+├── ai_dev_flow/                       # Template system (v2.0)
+│   ├── index.md                       # Workflow overview with Mermaid diagram
+│   ├── README.md                      # Framework documentation
+│   ├── SPEC_DRIVEN_DEVELOPMENT_GUIDE.md  # Authoritative SDD methodology
+│   ├── ID_NAMING_STANDARDS.md         # Document ID format rules
+│   ├── TRACEABILITY.md                # Cumulative tagging hierarchy
+│   ├── TRACEABILITY_SETUP.md          # Validation setup and CI/CD integration
+│   ├── TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md  # Complete matrix template
+│   ├── COMPLETE_TAGGING_EXAMPLE.md    # End-to-end cumulative tagging example
+│   ├── DOMAIN_ADAPTATION_GUIDE.md     # Domain customization guide
+│   ├── CONTRACT_DECISION_QUESTIONNAIRE.md  # CTR decision guide
+│   ├── WHEN_TO_CREATE_IMPL.md         # IMPL decision guide
 │   ├── TOOL_OPTIMIZATION_GUIDE.md     # AI tool optimization
-│   ├── BRD/                           # Business requirements templates
-│   │   ├── BRD-template.md
-│   │   ├── BRD-template-2.md
-│   │   └── BRD-trading-template.md
-│   ├── PRD/                           # Product requirements templates
-│   ├── EARS/                          # Formal requirements templates
-│   ├── ADR/                           # Architecture decision templates
-│   ├── SYS/                           # System requirements templates
-│   ├── REQ/                           # Atomic requirements templates
-│   ├── BDD/                           # Behavior-driven test templates
-│   ├── IMPL/                          # Implementation plan templates
-│   ├── CONTRACTS/                     # API contract templates (dual-file)
-│   ├── SPEC/                          # Technical specification templates
-│   └── TASKS/                         # Code generation templates
-├── work_plans/                        # Implementation plans
+│   ├── AI_ASSISTANT_RULES.md          # Rules for AI assistants
+│   ├── PROJECT_SETUP_GUIDE.md         # Single-project setup guide
+│   ├── PROJECT_KICKOFF_TASKS.md       # Project initialization checklist
+│   ├── QUICK_REFERENCE.md             # Quick reference guide
+│   ├── BRD/                           # Business requirements templates (Layer 1)
+│   ├── PRD/                           # Product requirements templates (Layer 2)
+│   ├── EARS/                          # Formal requirements templates (Layer 3)
+│   ├── BDD/                           # Behavior-driven test templates (Layer 4)
+│   ├── ADR/                           # Architecture decision templates (Layer 5)
+│   ├── SYS/                           # System requirements templates (Layer 6)
+│   ├── REQ/                           # Atomic requirements templates (Layer 7)
+│   ├── IMPL/                          # Implementation plan templates (Layer 8)
+│   ├── CTR/                           # API contract templates - dual-file (Layer 9)
+│   ├── SPEC/                          # Technical specification templates (Layer 10)
+│   ├── TASKS/                         # Code generation templates (Layer 11)
+│   ├── IPLAN/                         # Session planning templates (Layer 12)
+│   └── scripts/                       # Validation and automation scripts
+│       ├── extract_tags.py            # Extract tags from codebase
+│       ├── validate_tags_against_docs.py  # Validate cumulative tagging
+│       ├── generate_traceability_matrices.py  # Generate matrices
+│       ├── generate_traceability_matrix.py    # Generate single matrix (legacy)
+│       ├── validate_traceability_matrix.py    # Validate matrix (legacy)
+│       ├── update_traceability_matrix.py      # Update matrix (legacy)
+│       ├── validate_iplan_naming.py   # Validate IPLAN naming conventions
+│       ├── validate_requirement_ids.py  # Validate requirement ID format
+│       ├── add_cumulative_tagging_to_matrices.py  # Update templates
+│       ├── batch_update_matrix_templates.py  # Batch update templates
+│       ├── make_framework_generic.py  # Placeholder maintenance
+│       └── README.md                  # Scripts documentation
+├── scripts/                           # Project setup scripts (root level)
+│   ├── setup_project_hybrid.sh        # Automated hybrid project setup
+│   └── standardize_workflow_refs.sh   # Standardize workflow references
+├── work_plans/                        # Implementation plans (IPLAN output)
 └── docs/                              # Additional documentation
 ```
 
 ## Example Workflow
 
-### Complete Artifact Chain
+### Complete Artifact Chain with Cumulative Tagging
 
 ```
-Strategy Document
+Layer 0: Strategy Document (no tags)
     ↓
-BRD-001: Business Requirements
+Layer 1: BRD-001: Business Requirements
     ↓
-PRD-001: Product Requirements
+Layer 2: PRD-001: Product Requirements (@brd)
     ↓
-EARS-001: Formal Requirements (WHEN-THE-SHALL-WITHIN)
+Layer 3: EARS-001: Formal Requirements (@brd, @prd)
     ↓
-BDD-001: Behavior Tests (Gherkin scenarios)
+Layer 4: BDD-001: Behavior Tests (@brd, @prd, @ears)
     ↓
-ADR-001: Architecture Decision
+Layer 5: ADR-001: Architecture Decision (@brd→@bdd)
     ↓
-SYS-001: System Requirements
+Layer 6: SYS-001: System Requirements (@brd→@adr)
     ↓
-REQ-001: Atomic Requirement
+Layer 7: REQ-001: Atomic Requirement (@brd→@sys)
     ↓
-IMPL-001: Implementation Plan [OPTIONAL]
+Layer 8: IMPL-001: Implementation Plan [OPTIONAL] (@brd→@req)
     ↓
-CTR-001: API Contract (.md + .yaml) [IF INTERFACE]
+Layer 9: CTR-001: API Contract (.md + .yaml) [IF INTERFACE] (@brd→@impl)
     ↓
-SPEC-001: Technical Specification (YAML)
+Layer 10: SPEC-001: Technical Specification (YAML) (@brd→@req + optional impl/ctr)
     ↓
-TASKS-001: Code Generation Plan
+Layer 11: TASKS-001: Code Generation Plan (@brd→@spec)
     ↓
-Code Implementation
+Layer 12: IPLAN-001: Session Plan (@brd→@tasks)
     ↓
-Test Validation (BDD + Unit + Integration + Contract)
+Layer 13: Code Implementation (cumulative tags @brd→@tasks)
+    ↓
+Layer 14: Test Suite (cumulative tags @brd→@code)
+    ↓
+Layer 15: Production Validation (all upstream tags)
 ```
+
+**Each layer includes ALL upstream tags** for complete audit trail and regulatory compliance.
 
 ## Use Cases
 
 ### Financial Trading Systems
-- Use `BRD-trading-template.md` for trading-specific requirements
+- Use `BRD-TEMPLATE.md` with domain-specific customization
 - Example: Options trading strategy implementation
 - Full traceability from strategy documents to production code
 
 ### General Software Projects
-- Use `BRD-template.md` for comprehensive business requirements
-- Or `BRD-template-2.md` for simplified lean approach
+- Use `BRD-TEMPLATE.md` for comprehensive business requirements
+- Customize based on project complexity using domain adaptation guide
 - Scales from small prototypes to enterprise systems
 
 ### Microservices Architecture
@@ -575,9 +695,15 @@ MIT License - See LICENSE file for details
 - [Workflow Guide](./ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete SDD methodology
 - [Index](./ai_dev_flow/index.md) - Template overview with workflow diagram
 - [ID Standards](./ai_dev_flow/ID_NAMING_STANDARDS.md) - Naming conventions
-- [Traceability](./ai_dev_flow/TRACEABILITY.md) - Tag-based and traditional traceability
-- [Traceability Setup](./ai_dev_flow/TRACEABILITY_SETUP.md) - Automation and validation setup
+- [Traceability](./ai_dev_flow/TRACEABILITY.md) - Cumulative tagging hierarchy
+- [Traceability Setup](./ai_dev_flow/TRACEABILITY_SETUP.md) - Validation automation and CI/CD integration
+- [Complete Tagging Example](./ai_dev_flow/COMPLETE_TAGGING_EXAMPLE.md) - End-to-end cumulative tagging
 - [Traceability Matrix Template](./ai_dev_flow/TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md) - Complete matrix examples
+
+### Multi-Project Setup
+- [Multi-Project Setup Guide](./MULTI_PROJECT_SETUP_GUIDE.md) - Complete hybrid approach documentation
+- [Quick Reference](./MULTI_PROJECT_QUICK_REFERENCE.md) - Common commands and patterns
+- Setup Script: `scripts/setup_project_hybrid.sh` - Automated project configuration
 
 ### Decision Guides
 - [When to Create IMPL](./ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC
@@ -586,15 +712,24 @@ MIT License - See LICENSE file for details
 ### AI Tool Optimization
 - [Tool Optimization Guide](./ai_dev_flow/TOOL_OPTIMIZATION_GUIDE.md) - Claude Code, Gemini, Copilot
 
-### Validation Scripts
-- `scripts/extract_tags.py` - Extract @tags from source files
-- `scripts/validate_tags_against_docs.py` - Validate tags against documents
-- `scripts/generate_traceability_matrices.py` - Generate bidirectional matrices
-- `scripts/validate_requirement_ids.py` - Validate ID format (legacy + tags)
+### Validation Scripts (v2.0)
+- `ai_dev_flow/scripts/extract_tags.py` - Extract @tags from source files
+- `ai_dev_flow/scripts/validate_tags_against_docs.py` - Validate cumulative tagging hierarchy (use `--validate-cumulative`)
+- `ai_dev_flow/scripts/generate_traceability_matrices.py` - Generate bidirectional matrices
+- `ai_dev_flow/scripts/generate_traceability_matrix.py` - Generate single matrix (legacy)
+- `ai_dev_flow/scripts/validate_traceability_matrix.py` - Validate matrix (legacy)
+- `ai_dev_flow/scripts/update_traceability_matrix.py` - Update matrix (legacy)
+- `ai_dev_flow/scripts/add_cumulative_tagging_to_matrices.py` - Update matrix templates with cumulative sections
+- `ai_dev_flow/scripts/validate_iplan_naming.py` - Validate IPLAN naming conventions
+- `ai_dev_flow/scripts/validate_requirement_ids.py` - Validate ID format (legacy + tags)
+- `ai_dev_flow/scripts/README.md` - Complete scripts documentation
+
+### Project Setup Scripts
+- `scripts/setup_project_hybrid.sh` - Automated multi-project hybrid setup
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/vladm3105/ai-doc-flow-framework/issues)
+- **Issues**: [GitHub Issues](https://github.com/vladm3105/aidoc-flow-framework/issues)
 - **Documentation**: [ai_dev_flow/](./ai_dev_flow/)
 - **Examples**: See `ai_dev_flow/*/examples/` directories
 
@@ -607,16 +742,33 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ---
 
-**Version**: 1.1.0
-**Last Updated**: 2025-11-12
+**Version**: 2.0
+**Last Updated**: 2025-11-13
 **Maintained by**: Vladimir M.
 
 ## Changelog
 
+### Version 2.0 (2025-11-13) - Cumulative Tagging Hierarchy
+- ✅ **16-Layer Architecture**: Expanded from 10 to 16 layers (Strategy → Validation)
+- ✅ **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
+- ✅ **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
+  - `extract_tags.py` - Extract tags from codebase
+  - `validate_tags_against_docs.py` - Validate cumulative hierarchy with `--validate-cumulative`
+  - `generate_traceability_matrices.py` - Auto-generate bidirectional matrices
+- ✅ **Traceability Matrix Templates**: All 13 artifact types include cumulative tagging sections
+- ✅ **Complete Documentation**:
+  - `COMPLETE_TAGGING_EXAMPLE.md` - End-to-end cumulative tagging example
+  - `TRACEABILITY_SETUP.md` - Setup guide with CI/CD integration
+  - `DOMAIN_ADAPTATION_GUIDE.md` - Domain customization checklists
+- ✅ **Layer 12 (IPLAN)**: Session-specific implementation plans (`IPLAN-NNN_*_YYYYMMDD_HHMMSS.md`)
+- ✅ **Directory Updates**: CONTRACTS → CTR (dual-file format), TASKS_PLANS → IPLAN
+- ✅ **Regulatory Compliance**: Complete audit trails for SEC, FINRA, FDA, ISO
+- ✅ **Impact Analysis**: Instant identification of affected downstream artifacts
+
 ### Version 1.1.0 (2025-11-12)
 - Added tag-based auto-discovery traceability system
 - Introduced namespaced tag format (DOCUMENT-ID:REQUIREMENT-ID)
-- Added automated validation scripts (extract_tags.py, validate_tags_against_docs.py, generate_traceability_matrices.py)
+- Added automated validation scripts
 - Updated quality gates for tag-based and traditional projects
 - Added CI/CD integration examples for traceability validation
 - Legacy Section 7 approach still supported during migration

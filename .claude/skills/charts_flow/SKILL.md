@@ -37,7 +37,7 @@ The `charts_flow` skill automates creation and management of Mermaid diagrams fo
 
 | Input | Description | Example |
 |-------|-------------|---------|
-| **Parent File Path** | Absolute path to main document | `/opt/data/trading/docs/PRD/PRD-001_multi_agent_system_architecture.md` |
+| **Parent File Path** | Absolute path to main document | `{project_root}/docs/PRD/PRD-001_multi_agent_system_architecture.md` |
 | **Diagram Description** | Short name for diagram | `3_tier_agent_hierarchy` |
 | **Diagram Type** | Architecture diagram type | `flowchart`, `sequence`, `class`, `state`, `component`, `deployment` |
 
@@ -380,7 +380,7 @@ npm install -g @mermaid-js/mermaid-cli
 > "Create a flowchart diagram showing the user workflow for BRD-001"
 
 **Skill Actions**:
-1. Parse parent: `/opt/data/trading/docs/BRD/BRD-001_trading_requirements.md`
+1. Parse parent: `{project_root}/docs/BRD/BRD-001_trading_requirements.md`
 2. Extract ID: `BRD-001`
 3. Create file: `docs/BRD/diagrams/BRD-001-diag_user_workflow.md` (in BRD subfolder)
 4. Generate Mermaid flowchart with user journey steps
@@ -518,11 +518,11 @@ Code Implementation
 - [Mermaid CLI Documentation](https://github.com/mermaid-js/mermaid-cli)
 
 ### Related Templates
-- [BRD Template](../../../docs_templates/ai_dev_flow/brd/BRD-TEMPLATE.md)
-- [PRD Template](../../../docs_templates/ai_dev_flow/PRD/PRD-TEMPLATE.md)
-- [ADR Template](../../../docs_templates/ai_dev_flow/ADR/ADR-TEMPLATE.md)
-- [SYS Template](../../../docs_templates/ai_dev_flow/SYS/SYS-TEMPLATE.md)
-- [IMPL Template](../../../docs_templates/ai_dev_flow/IMPL/IMPL-TEMPLATE.md)
+- [BRD Template]({project_root}/ai_dev_flow/brd/BRD-TEMPLATE.md)
+- [PRD Template]({project_root}/ai_dev_flow/PRD/PRD-TEMPLATE.md)
+- [ADR Template]({project_root}/ai_dev_flow/ADR/ADR-TEMPLATE.md)
+- [SYS Template]({project_root}/ai_dev_flow/SYS/SYS-TEMPLATE.md)
+- [IMPL Template]({project_root}/ai_dev_flow/IMPL/IMPL-TEMPLATE.md)
 
 ---
 

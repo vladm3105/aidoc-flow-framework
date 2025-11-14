@@ -8,6 +8,9 @@ Implementation Plans (IMPL) are **project management documents** that organize a
 
 ## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
 
+**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+
+
 ```mermaid
 flowchart LR
     REQ[REQ<br/>Requirements<br/>WHAT to build]

@@ -9,7 +9,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Business Layer
 
 - **BRD** (`BRD/`): Business Requirements Documents defining business objectives and constraints
-  - Templates: [BRD-template.md](./BRD/BRD-template.md), [BRD-template-2.md](./BRD/BRD-template-2.md), [BRD-trading-template.md](./BRD/BRD-trading-template.md)
+  - Templates: [BRD-TEMPLATE.md](./BRD/BRD-TEMPLATE.md), [BRD-template-2.md](./BRD/BRD-template-2.md), [BRD-trading-template.md](./BRD/BRD-trading-template.md)
 - **PRD** (`PRD/`): Product Requirements Documents translating business needs to product features
   - Index: [PRD-000_index.md](./PRD/PRD-000_index.md)
   - Template: [PRD-TEMPLATE.md](./PRD/PRD-TEMPLATE.md)
@@ -31,7 +31,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Architecture Layer
 
 - **ADR** (`ADR/`): Architecture Decision Records documenting key architectural choices
-  - Index: [ADR-000_index-TEMPLATE.md](./ADR/ADR-000_index-TEMPLATE.md)
+  - Index: [ADR-000_index.md](./ADR/ADR-000_index.md)
   - Template: [ADR-TEMPLATE.md](./ADR/ADR-TEMPLATE.md)
 - **SYS** (`SYS/`): System Requirements Specifications consolidating requirements into system designs
   - Index: [SYS-000_index.md](./SYS/SYS-000_index.md)
@@ -48,9 +48,9 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Design Layer
 
-- **CTR** (`CONTRACTS/`): API Contracts defining component-to-component interfaces
-  - Index: [CTR-000_index.md](./CONTRACTS/CTR-000_index.md)
-  - Templates: [CTR-TEMPLATE.md](./CONTRACTS/CTR-TEMPLATE.md), [CTR-TEMPLATE.yaml](./CONTRACTS/CTR-TEMPLATE.yaml)
+- **CTR** (`CTR/`): API Contracts defining component-to-component interfaces
+  - Index: [CTR-000_index.md](./CTR/CTR-000_index.md)
+  - Templates: [CTR-TEMPLATE.md](./CTR/CTR-TEMPLATE.md), [CTR-TEMPLATE.yaml](./CTR/CTR-TEMPLATE.yaml)
   - Dual-file format: `.md` (human-readable context) + `.yaml` (machine-readable schema)
   - Created when REQ specifies interface requirements
   - Enables parallel development and contract testing
@@ -64,7 +64,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Testing Layer
 
 - **BDD** (`BDD/`): Behavior-Driven Development feature files defining acceptance criteria
-  - Index: [BDD-000_index.feature](./BDD/BDD-000_index.feature)
+  - Index: [BDD-000_index.md](./BDD/BDD-000_index.md)
   - Template: [BDD-TEMPLATE.feature](./BDD/BDD-TEMPLATE.feature)
 
 ### Code Generation Layer
@@ -74,6 +74,17 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Template: [TASKS-TEMPLATE.md](./TASKS/TASKS-TEMPLATE.md)
   - Purpose: Step-by-step guide to generate code from YAML SPEC
   - Each TASKS document corresponds to one SPEC
+
+### Session Execution Layer
+
+- **IPLAN** (`IPLAN/`): Implementation plans for specific coding sessions with executable bash commands
+  - Index: [IPLAN-000_index.md](./IPLAN/IPLAN-000_index.md)
+  - Template: [IPLAN-TEMPLATE.md](./IPLAN/IPLAN-TEMPLATE.md)
+  - Purpose: Session-based execution context for implementing TASKS
+  - Format: Timestamp-based naming `IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md`
+  - Enables context resumption across AI coding sessions
+  - Contains bash commands for setup, execution, and validation
+  - Each IPLAN executes one or more TASKS within a session
 
 ## Traceability Flow
 
@@ -110,8 +121,11 @@ flowchart TD
     %% Code Generation Layer
     TASKS[TASKS<br/>Code Generation Plans<br/>AI-structured implementation steps<br/><small><i>@brd through @spec</i></small>]
 
+    %% Session Execution Layer
+    IPLAN[IPLAN<br/>Session Implementation Plans<br/>Executable bash commands for sessions<br/><small><i>@brd through @tasks</i></small>]
+
     %% Execution Layer
-    Code[Code<br/>Python Implementation<br/>Generated from SPEC + TASKS<br/><small><i>@brd through @tasks</i></small>]
+    Code[Code<br/>Python Implementation<br/>Generated from SPEC + TASKS + IPLAN<br/><small><i>@brd through @iplan</i></small>]
     Tests[Tests<br/>Test Suites<br/>Unit, Integration, E2E tests<br/><small><i>@brd through @code</i></small>]
 
     %% Validation Layer
@@ -135,7 +149,8 @@ flowchart TD
 
     %% Implementation Flow
     SPEC --> TASKS
-    TASKS --> Code
+    TASKS --> IPLAN
+    IPLAN --> Code
     Code --> Tests
     Tests --> Validation
     Validation --> Review
@@ -150,6 +165,7 @@ flowchart TD
     classDef interfaceLayer fill:#f8bbd0,stroke:#c2185b,stroke-width:2px
     classDef implementationLayer fill:#dcedc8,stroke:#689f38,stroke-width:2px
     classDef codegenLayer fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef sessionLayer fill:#fff3e0,stroke:#e65100,stroke-width:2px
     classDef executionLayer fill:#d1c4e9,stroke:#512da8,stroke-width:2px
 
     class BRD,PRD,EARS businessLayer
@@ -160,6 +176,7 @@ flowchart TD
     class CTR interfaceLayer
     class SPEC implementationLayer
     class TASKS codegenLayer
+    class IPLAN sessionLayer
     class Code,Tests,Validation,Review,Prod executionLayer
 ```
 

@@ -10,7 +10,7 @@
 | Version | 1.0.0 |
 | Date Created | YYYY-MM-DD |
 | Author | [Team Name] |
-| Purpose | Track complete traceability chain: Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → tasks_plans → Code → Production |
+| Purpose | Track complete traceability chain: Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Production |
 
 ---
 
@@ -48,19 +48,20 @@ See: [TRACEABILITY.md](./TRACEABILITY.md#tag-based-auto-discovery-alternative) f
 
 ### 1.1 Complete SDD Workflow
 
-This matrix tracks the complete 12-layer AI-Driven Specification-Driven Development workflow:
+This matrix tracks the complete 16-layer AI-Driven Specification-Driven Development workflow (Layer 0: Strategy through Layer 15: Validation):
 
-**Layer 1 - Business**: BRD → PRD → EARS
-**Layer 2 - Testing**: BDD (acceptance criteria)
-**Layer 3 - Architecture**: ADR → SYS (technical decisions)
-**Layer 4 - Requirements**: REQ (atomic requirements)
-**Layer 5 - Project Management**: IMPL (WHO/WHEN)
-**Layer 6 - Interface**: CTR (API contracts - optional)
-**Layer 7 - Implementation**: SPEC (YAML blueprints)
-**Layer 8 - Code Generation**: TASKS (implementation steps)
-**Layer 9 - Implementation Plans**: tasks_plans (session context with bash commands)
-**Layer 10 - Execution**: Code → Tests
-**Layer 11 - Validation**: Validation → Review → Production
+**Layers 1-3 - Business**: BRD (L1) → PRD (L2) → EARS (L3)
+**Layer 4 - Testing**: BDD (acceptance criteria)
+**Layers 5-6 - Architecture**: ADR (L5) → SYS (L6) - technical decisions
+**Layer 7 - Requirements**: REQ (atomic requirements)
+**Layer 8 - Project Management**: IMPL (WHO/WHEN) - optional
+**Layer 9 - Interface**: CTR (API contracts) - optional
+**Layer 10 - Technical Specifications**: SPEC (YAML blueprints)
+**Layer 11 - Code Generation**: TASKS (implementation steps)
+**Layer 12 - Implementation Plans**: IPLAN (session context with bash commands)
+**Layer 13 - Code**: Source code implementation
+**Layer 14 - Tests**: Test execution and verification
+**Layer 15 - Validation**: Validation → Review → Production
 
 ### 1.2 Coverage Summary
 
@@ -90,7 +91,7 @@ python scripts/generate_traceability_matrices.py --auto --report
 | SPEC | [X]/[Y] | XX% | [Status] |
 | TASKS | [X]/[Y] | XX% | [Status] |
 | **Implementation Plans Layer** | | | |
-| tasks_plans | [X]/[Y] | XX% | [Status] |
+| IPLAN | [X]/[Y] | XX% | [Status] |
 | **Execution Layer** | | | |
 | Code Files | [X]/[Y] | XX% | [Status] |
 | Test Files | [X]/[Y] | XX% | [Status] |
@@ -127,7 +128,7 @@ The Docs Flow Framework implements **cumulative tagging** where each artifact ty
 
 **Format Rules**:
 - Prefix: `@` symbol
-- Artifact Type: lowercase (brd, prd, ears, bdd, adr, sys, req, impl, ctr, spec, tasks, task_plans)
+- Artifact Type: lowercase (brd, prd, ears, bdd, adr, sys, req, impl, ctr, spec, tasks, iplan)
 - Separator: colon `:` after artifact type
 - Document ID: `TYPE-NNN` format
 - Requirement ID: specific requirement/section identifier
@@ -149,8 +150,8 @@ The Docs Flow Framework implements **cumulative tagging** where each artifact ty
 | 9 | **CTR** | `@brd` through `@impl` | 8 | Formal Template (Markdown + YAML) | Optional layer - include if exists |
 | 10 | **SPEC** | `@brd` through `@req` + optional `@impl`, `@ctr` | 7-9 | Formal Template (YAML) | YAML cumulative_tags section |
 | 11 | **TASKS** | `@brd` through `@spec` | 8-10 | Formal Template (Markdown) | Cumulative: BRD through SPEC |
-| 12 | **tasks_plans** | `@brd` through `@tasks` | 9-11 | Project Files (Markdown) | Implementation session plans |
-| 13 | **Code** | `@brd` through `@tasks` + optional `@task_plans` | 9-12 | Code Docstrings (Python/JS/etc.) | Tags in module/class/function docstrings |
+| 12 | **IPLAN** | `@brd` through `@tasks` | 9-11 | Project Files (Markdown) | Implementation session plans |
+| 13 | **Code** | `@brd` through `@tasks` + optional `@iplan` | 9-12 | Code Docstrings (Python/JS/etc.) | Tags in module/class/function docstrings |
 | 14 | **Tests** | `@brd` through code tags + `@code` | 10-13 | BDD + Docstrings | Test files reference code + all upstream |
 | 15 | **Validation** | All upstream tags | 11-14 | Embedded + CI/CD | Deployment and validation artifacts |
 
@@ -198,7 +199,7 @@ Handles trade order placement with validation and execution.
 @ctr: CTR-005
 @spec: SPEC-018
 @tasks: TASKS-018:task-3, TASKS-018:task-7
-@task_plans: TASKS_PLANS-003
+@iplan: IPLAN-003
 
 @impl-status: complete
 @test-coverage: 95%
@@ -226,7 +227,7 @@ Test suite for Order Placement Service
 @ctr: CTR-005
 @spec: SPEC-018
 @tasks: TASKS-018:task-3, TASKS-018:task-7
-@task_plans: TASKS_PLANS-003
+@iplan: IPLAN-003
 @code: src/execution/order_service.py:OrderService
 
 @test-type: integration
@@ -358,11 +359,11 @@ Code (tags: @brd through @tasks = 9 tags)
 
 **Note:** This table can be auto-generated from @brd:, @req:, @spec:, @test: tags in code docstrings.
 
-| REQ ID | IMPL ID | CTR ID | SPEC ID | TASKS ID | tasks_plans ID | Code Files | Tag Discovery | Tests | Status |
+| REQ ID | IMPL ID | CTR ID | SPEC ID | TASKS ID | IPLAN ID | Code Files | Tag Discovery | Tests | Status |
 |--------|---------|--------|---------|----------|---------------|------------|---------------|-------|--------|
-| REQ-001 | IMPL-001 | CTR-001 | SPEC-001 | TASKS-001 | TASKS_PLANS-001 | src/module.py | @req: REQ-001:15 | test_module.py | ✅ Complete |
-| REQ-002 | IMPL-001 | N/A | SPEC-002 | TASKS-002 | TASKS_PLANS-002 | src/service.py | test_service.py | ✅ Complete |
-| REQ-003 | IMPL-002 | CTR-002 | SPEC-003 | TASKS-003 | TASKS_PLANS-003 | src/api.py | test_api.py | 🟡 In Progress |
+| REQ-001 | IMPL-001 | CTR-001 | SPEC-001 | TASKS-001 | IPLAN-001 | src/module.py | @req: REQ-001:15 | test_module.py | ✅ Complete |
+| REQ-002 | IMPL-001 | N/A | SPEC-002 | TASKS-002 | IPLAN-002 | src/service.py | test_service.py | ✅ Complete |
+| REQ-003 | IMPL-002 | CTR-002 | SPEC-003 | TASKS-003 | IPLAN-003 | src/api.py | test_api.py | 🟡 In Progress |
 | REQ-004 | IMPL-002 | N/A | SPEC-004 | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Not Started |
 | ... | ... | ... | ... | ... | ... | ... | ... |
 
@@ -811,7 +812,7 @@ python scripts/validate_requirement_ids.py \
   - [SYS Matrix](SYS/SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
   - [REQ Matrix](REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md)
   - [IMPL Matrix](IMPL/IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-  - [CTR Matrix](CONTRACTS/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+  - [CTR Matrix](CTR/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md)
   - [SPEC Matrix](SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md)
   - [TASKS Matrix](TASKS/TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 

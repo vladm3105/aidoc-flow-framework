@@ -27,6 +27,9 @@ Tasks create the **code generation roadmap** that:
 
 ## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
 
+**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+
+
 Tasks are the **code generation bridge** that connects YAML specifications to executable code:
 
 ```mermaid

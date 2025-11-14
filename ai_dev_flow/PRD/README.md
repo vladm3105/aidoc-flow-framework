@@ -13,6 +13,9 @@ PRDs transform high-level business objectives into concrete, measurable product 
 
 ## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
 
+**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+
+
 PRDs are the **starting point** of specification-driven development within the complete SDD workflow:
 
 ```

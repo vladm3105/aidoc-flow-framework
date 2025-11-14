@@ -309,10 +309,10 @@ flowchart LR
 
 | Artifact Type | Document ID | Document Title | Status | Relationship |
 |---------------|-------------|----------------|--------|--------------|
-| CTR | [CTR-NNN](../CONTRACTS/CTR-NNN.md) | [API Contract] | Pending | Interface definition |
+| CTR | [CTR-NNN](../CTR/CTR-NNN.md) | [API Contract] | Pending | Interface definition |
 | SPEC | [SPEC-NNN](../SPEC/.../SPEC-NNN.yaml) | [Technical Spec] | Pending | Implementation blueprint |
 | TASKS | [TASKS-NNN](../TASKS/TASKS-NNN.md) | [Code Generation Plan] | Pending | Code generation guide |
-| CTR | [CTR-YY](../CONTRACTS/CTR-YY.md) | [API Contract] | Pending | Interface definition |
+| CTR | [CTR-YY](../CTR/CTR-YY.md) | [API Contract] | Pending | Interface definition |
 | SPEC | [SPEC-YY](../SPEC/.../SPEC-YY.yaml) | [Technical Spec] | Pending | Implementation blueprint |
 | TASKS | [TASKS-YY](../TASKS/TASKS-YY.md) | [Code Generation Plan] | Pending | Code generation guide |
 
@@ -369,7 +369,7 @@ flowchart LR
 
 **Internal**: [REQ-NNN](../REQ/.../REQ-NNN.md) \| [ADR-PPP](../ADR/ADR-PPP.md) \| [IMPL-000 Index](./IMPL-000_index.md)
 
-**Templates**: [CTR-TEMPLATE](../CONTRACTS/CTR-TEMPLATE.md) \| [SPEC-TEMPLATE](../SPEC/SPEC-TEMPLATE.yaml) \| [TASKS-TEMPLATE](../TASKS/TASKS-TEMPLATE.md)
+**Templates**: [CTR-TEMPLATE](../CTR/CTR-TEMPLATE.md) \| [SPEC-TEMPLATE](../SPEC/SPEC-TEMPLATE.yaml) \| [TASKS-TEMPLATE](../TASKS/TASKS-TEMPLATE.md)
 
 **Guidelines**: [IMPL README](./README.md) \| [YAML Spec Standard](../SPEC/YAML_SPECIFICATION_STANDARD.md)
 

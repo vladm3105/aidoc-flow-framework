@@ -95,12 +95,12 @@ LAYER_CONFIGS = {
         },
         "traceability_role": "TASKS breaks down technical specifications into atomic, session-scoped implementation units with complete upstream traceability."
     },
-    "TASKS_PLANS": {
+    "IPLAN": {
         "layer": 12,
-        "full_name": "tasks_plans (Session Plans)",
+        "full_name": "IPLAN (Implementation Plans)",
         "required_tags": ["@brd", "@prd", "@ears", "@bdd", "@adr", "@sys", "@req", "@spec", "@tasks"],
         "tag_count": "9-11 (includes all layers through @tasks)",
-        "example_id": "session-2025-11-13-order-service",
+        "example_id": "IPLAN-001",
         "example_title": "Order Service Development Session",
         "example_tags": {
             "brd": "BRD-009:FR-015",
@@ -115,7 +115,7 @@ LAYER_CONFIGS = {
             "spec": "SPEC-018",
             "tasks": "TASKS-015"
         },
-        "traceability_role": "tasks_plans organizes session-specific implementation work, maintaining complete chain from business requirements through tasks."
+        "traceability_role": "IPLAN organizes session-specific implementation work, maintaining complete chain from business requirements through tasks."
     }
 }
 
@@ -295,9 +295,9 @@ def main():
         ("ADR", base_dir / "ADR" / "ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md"),
         ("SYS", base_dir / "SYS" / "SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md"),
         ("IMPL", base_dir / "IMPL" / "IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md"),
-        ("CTR", base_dir / "CONTRACTS" / "CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md"),
+        ("CTR", base_dir / "CTR" / "CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md"),
         ("TASKS", base_dir / "TASKS" / "TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md"),
-        ("TASKS_PLANS", base_dir / "tasks_plans" / "TASKS_PLANS-000_TRACEABILITY_MATRIX-TEMPLATE.md"),
+        ("IPLAN", base_dir / "IPLAN" / "IPLAN-000_TRACEABILITY_MATRIX-TEMPLATE.md"),
     ]
 
     updated_count = 0

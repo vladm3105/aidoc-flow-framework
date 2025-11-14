@@ -41,7 +41,7 @@ Provide Cline with structured guidance on implementing the AI-Driven Specificati
 - `docs/PRD/` - Product Requirements Documents
 - `docs/ADR/` - Architecture Decision Records (HOW)
 - `docs/BDD/` - BDD acceptance tests (Behavior-Driven Development)
-- `docs/CONTRACTS/` - API Contracts (dual-file format: .md + .yaml)
+- `docs/CTR/` - API Contracts (dual-file format: .md + .yaml)
 - `docs/IMPL/` - Implementation Plans (Project Management: WHO/WHEN)
 - `docs/SPEC/` - YAML technical specifications
 - `docs/TASKS/` - Code Generation Plans (AI-structured implementation tasks)
@@ -229,7 +229,7 @@ flowchart TD
 - REQ: `REQ/{domain}/{subdomain}/REQ-XXX_{slug}.md` or `REQ-XXX-YY_{slug}.md` (Atomic Requirements) - **Template location: docs_templates/ai_dev_flow/REQ/**
 - ADR: `ADR/ADR-XXX_{slug}.md` or `ADR-XXX-YY_{slug}.md` (Architecture Decisions) - **NEW location: docs/ADR/**
 - BDD: `BDD/BDD-XXX_{slug}.feature` or `BDD-XXX-YY_{slug}.feature` (Behavior-Driven Tests) - **NEW location: docs/BDD/**
-- CTR: `CONTRACTS/CTR-XXX_{slug}.md` + `CTR-XXX_{slug}.yaml` or `CTR-XXX-YY_{slug}.{md,yaml}` (API Contracts - dual-file format) - **NEW location: docs/CONTRACTS/**
+- CTR: `CTR/CTR-XXX_{slug}.md` + `CTR-XXX_{slug}.yaml` or `CTR-XXX-YY_{slug}.{md,yaml}` (API Contracts - dual-file format) - **NEW location: docs/CTR/**
 - SPEC: `SPEC/SPEC-XXX_{slug}.yaml` or `SPEC-XXX-YY_{slug}.yaml` (Technical Specifications, references CTR contracts) - **NEW location: docs/SPEC/**
 - TASKS: `TASKS/TASKS-XXX_{slug}.md` or `TASKS-XXX-YY_{slug}.md` (Code Generation Plans) - **NEW location: docs/TASKS/**
 - IMPL: `IMPL/IMPL-XXX_{slug}.md` or `IMPL-XXX-YY_{slug}.md` (Implementation Plans) - **NEW location: docs/IMPL/**
@@ -286,7 +286,7 @@ flowchart TD
 - Use relative paths from current file location
 - Examples:
   - From docs/BRD/: `[ADR-033](../ADR/ADR-033_risk_architecture.md#ADR-033)`
-  - From docs/SPEC/: `[CTR-001](../CONTRACTS/CTR-001_api_contract.md#CTR-001)`
+  - From docs/SPEC/: `[CTR-001](../CTR/CTR-001_api_contract.md#CTR-001)`
   - From docs/TASKS/: `[BDD-003](../BDD/BDD-003_behavior_test.feature#scenario-1)`
 - Validate all links resolve before committing
 - Prefer stable ID anchors over line anchors
@@ -470,7 +470,7 @@ Before making any technology decisions in ADRs, specifications, or implementatio
 - **REQ**: [REQ-003_position_limit_enforcement.md](../../docs_templates/ai_dev_flow/REQ/risk/lim/REQ-003_position_limit_enforcement.md)
 - **ADR**: Architecture decision for risk limit enforcement
 - **BDD**: Gherkin feature file with test scenarios
-- **CTR**: [CTR-001_position_risk_validation.md + .yaml](../../docs_templates/ai_dev_flow/CONTRACTS/) (if interface requirement)
+- **CTR**: [CTR-001_position_risk_validation.md + .yaml](../../docs_templates/ai_dev_flow/CTR/) (if interface requirement)
   - Markdown: Contract context, definitions, error handling, NFRs, versioning
   - YAML: JSON Schema request/response definitions, error codes, endpoint specifications
 - **SPEC**: YAML technical specification referencing CTR contract
@@ -609,7 +609,7 @@ docs_templates/ai_dev_flow/
 ├── SYS/SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md
 ├── REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md
 ├── IMPL/IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md
-├── CONTRACTS/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md
+├── CTR/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md
 ├── SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md
 └── TASKS/TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md
 ```
@@ -671,12 +671,12 @@ Each artifact type directory contains:
   - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
 - **BDD** (`BDD/`): `BDD-TEMPLATE.feature`, Index: `BDD-000_index.feature`, README
   - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
-- **CTR** (`CONTRACTS/`): `CTR-TEMPLATE.md`, `CTR-TEMPLATE.yaml` (dual-file), Index: `CTR-000_index.md`, README
+- **CTR** (`CTR/`): `CTR-TEMPLATE.md`, `CTR-TEMPLATE.yaml` (dual-file), Index: `CTR-000_index.md`, README
   - **MANDATORY dual-file format**: Both .md and .yaml required per contract (see ADR-CTR)
   - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
   - Policy: [ADR-CTR_SEPARATE_FILES_POLICY.md](../../docs_templates/ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - Authoritative policy
   - Optional organization: subdirectories by service type (agents/, mcp/, infra/, shared/)
-  - Examples: [CTR-001_risk_validator_api.md/.yaml](../../docs_templates/ai_dev_flow/CONTRACTS/examples/) - Complete reference implementation
+  - Examples: [CTR-001_risk_validator_api.md/.yaml](../../docs_templates/ai_dev_flow/CTR/examples/) - Complete reference implementation
 - **SPEC** (`SPEC/`): `SPEC-TEMPLATE.yaml`, Index: `SPEC-000_index.md`, README
   - Organized by type: `services/`, `agents/`, `infrastructure/`
   - References CTR contracts via `contract_ref:` field
@@ -742,7 +742,7 @@ Step 3: Create artifact chain using templates from docs_templates/ai_dev_flow/
 - SYS-015 (copy template) ← After ADR
 - REQ-003 (copy template) ← After SYS
 - IMPL-005 (copy template → create in docs/IMPL/) ← IF complex project (see WHEN_TO_CREATE_IMPL.md)
-- CTR-001 (copy both templates → create in docs/CONTRACTS/) ← IF interface requirement
+- CTR-001 (copy both templates → create in docs/CTR/) ← IF interface requirement
 - SPEC-015 (copy template → create in docs/SPEC/, reference CTR-001 if applicable)
 - TASKS-015 (copy template → create in docs/TASKS/)
 

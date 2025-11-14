@@ -137,7 +137,7 @@ mkdir -p docs/ADR
 mkdir -p docs/SYS
 mkdir -p docs/REQ
 mkdir -p docs/IMPL
-mkdir -p docs/CONTRACTS
+mkdir -p docs/CTR
 mkdir -p docs/SPEC
 mkdir -p docs/TASKS
 
@@ -253,10 +253,10 @@ ls -la work_plans/  # Verify work_plans directory
 **Commands**:
 ```bash
 # Copy all templates (if framework templates exist)
-cp -r /opt/data/docs_flow_framework/ai_dev_flow/docs_templates/* docs/
+cp -r {project_root}/ai_dev_flow/docs_templates/* docs/
 
 # Copy validation scripts
-cp /opt/data/docs_flow_framework/ai_dev_flow/scripts/*.py scripts/
+cp {project_root}/ai_dev_flow/scripts/*.py scripts/
 ```
 
 **Note**: This step is optional. Templates can also be referenced directly from framework location.
@@ -327,7 +327,7 @@ touch docs/adrs/ADR-000_index.md
 touch docs/sys/SYS-000_index.md
 touch docs/REQ/REQ-000_index.md
 touch docs/IMPL/IMPL-000_index.md
-touch docs/CONTRACTS/CTR-000_index.md
+touch docs/CTR/CTR-000_index.md
 touch docs/specs/SPEC-000_index.yaml
 touch docs/TASKS/TASKS-000_index.md
 ```
@@ -356,7 +356,7 @@ ls docs/*/index.* || ls docs/*/*_index.*
 ```
 
 **Success Criteria**:
-- ✅ All 11 core directories exist (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CONTRACTS, SPEC, TASKS)
+- ✅ All 11 core directories exist (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS)
 - ✅ Domain-specific subdirectories exist (risk/, trading/, tenant/, etc.)
 - ✅ All index files created
 - ✅ All templates include Document Control sections
@@ -416,7 +416,7 @@ Invoke: doc-flow skill to start Day 1
 
 ## Reference Files
 
-All guidance files located in: `/opt/data/docs_flow_framework/ai_dev_flow/`
+All guidance files located in: `{project_root}/ai_dev_flow/`
 
 ### Core Guidance Files
 
@@ -465,7 +465,7 @@ Creating 10-layer structure...
 ✓ Created: docs/SYS/
 ✓ Created: docs/REQ/
 ✓ Created: docs/IMPL/
-✓ Created: docs/CONTRACTS/
+✓ Created: docs/CTR/
 ✓ Created: docs/SPEC/
 ✓ Created: docs/TASKS/
 ✓ Created: docs/REQ/risk/

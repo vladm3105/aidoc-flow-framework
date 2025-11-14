@@ -7,7 +7,7 @@
 
 ## Overview
 
-This skill automates the creation of IMPL documents by analyzing BRD (Business Requirements Documents) and applying atomic phase decomposition principles. It follows the Specification-Driven Development workflow defined in `/opt/data/trading/docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`.
+This skill automates the creation of IMPL documents by analyzing BRD (Business Requirements Documents) and applying atomic phase decomposition principles. It follows the Specification-Driven Development workflow defined in `{project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`.
 
 **Skill Position in Workflow**:
 ```
@@ -29,13 +29,13 @@ BRD → PRD → EARS → BDD → ADR → SYS → REQ → **IMPL** → CTR → SP
 - Single BRD with < 2 weeks implementation (go directly REQ → SPEC)
 - Single developer, single component change
 - Low-risk bug fix or configuration change
-- See [WHEN_TO_CREATE_IMPL.md](../../docs_templates/ai_dev_flow/WHEN_TO_CREATE_IMPL.md) for decision criteria
+- See [WHEN_TO_CREATE_IMPL.md]({project_root}/ai_dev_flow/WHEN_TO_CREATE_IMPL.md) for decision criteria
 
 ## Skill Inputs
 
 **Required**:
-- `brd_directory`: Path to directory containing BRD files (e.g., `/opt/data/trading/docs/BRD/`)
-- `output_file`: Path for generated IMPL document (e.g., `/opt/data/trading/docs/BRD/BRD-000_implementation_plan.md`)
+- `brd_directory`: Path to directory containing BRD files (e.g., `{project_root}/docs/BRD/`)
+- `output_file`: Path for generated IMPL document (e.g., `{project_root}/docs/BRD/BRD-000_implementation_plan.md`)
 
 **Optional**:
 - `force_phase_1_brd`: BRD ID to prioritize as Phase 1 (e.g., `BRD-009`)
@@ -210,7 +210,7 @@ Technical Writer = 0.1 FTE (documentation phases only)
 
 ### Step 7: Generate IMPL Document
 
-**Template**: Use `/opt/data/trading/docs_templates/ai_dev_flow/IMPL/IMPL-TEMPLATE.md`
+**Template**: Use `{project_root}/ai_dev_flow/IMPL/IMPL-TEMPLATE.md`
 
 **Document Structure**:
 
@@ -308,10 +308,10 @@ grep -A5 "^### Phase" ${output_file} | grep "Duration" | \
     awk '{if ($1 > 4) print "WARNING: Phase exceeds 4 weeks: " $0}'
 
 # Check for circular dependencies
-python /opt/data/trading/scripts/validation/validate_phase_dependencies.py ${output_file}
+python {project_root}/scripts/validation/validate_phase_dependencies.py ${output_file}
 
 # Validate traceability links
-python /opt/data/trading/scripts/validation/validate_traceability.py ${output_file}
+python {project_root}/scripts/validation/validate_traceability.py ${output_file}
 ```
 
 ## Example Usage
@@ -320,8 +320,8 @@ python /opt/data/trading/scripts/validation/validate_traceability.py ${output_fi
 
 **Input**:
 ```
-brd_directory: /opt/data/trading/docs/BRD/
-output_file: /opt/data/trading/docs/BRD/BRD-000_implementation_plan.md
+brd_directory: {project_root}/docs/BRD/
+output_file: {project_root}/docs/BRD/BRD-000_implementation_plan.md
 force_phase_1_brd: BRD-009
 max_phase_duration_weeks: 4
 ```
@@ -442,7 +442,7 @@ max_phase_duration_weeks: 4
 ## Output Format
 
 **Generated IMPL Document**:
-- File: `/opt/data/trading/docs/BRD/BRD-000_implementation_plan.md`
+- File: `{project_root}/docs/BRD/BRD-000_implementation_plan.md`
 - Version: 3.0 (or next version number)
 - Date: Current date (YYYY-MM-DD)
 - Token Count: < 50,000 tokens (Claude Code standard) or < 100,000 tokens maximum
@@ -471,7 +471,7 @@ Validation Results:
 ✅ Token count: 8,742 tokens (within limit)
 
 Next Steps:
-1. Review generated IMPL: /opt/data/trading/docs/BRD/BRD-000_implementation_plan.md
+1. Review generated IMPL: {project_root}/docs/BRD/BRD-000_implementation_plan.md
 2. Obtain stakeholder approval for phasing approach
 3. Begin Phase 1: Market Data Foundation (Week 1)
 ```
@@ -479,21 +479,21 @@ Next Steps:
 ## References
 
 **SDD Workflow**:
-- [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Authoritative SDD workflow
-- [index.md](../../docs_templates/ai_dev_flow/index.md) - Traceability flow diagram
+- [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Authoritative SDD workflow
+- [index.md]({project_root}/ai_dev_flow/index.md) - Traceability flow diagram
 
 **Templates**:
-- [IMPL-TEMPLATE.md](../../docs_templates/ai_dev_flow/IMPL/IMPL-TEMPLATE.md) - IMPL document template
-- [CTR-TEMPLATE.md](../../docs_templates/ai_dev_flow/CONTRACTS/CTR-TEMPLATE.md) - API contract template
-- [SPEC-TEMPLATE.yaml](../../docs_templates/ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
+- [IMPL-TEMPLATE.md]({project_root}/ai_dev_flow/IMPL/IMPL-TEMPLATE.md) - IMPL document template
+- [CTR-TEMPLATE.md]({project_root}/ai_dev_flow/CTR/CTR-TEMPLATE.md) - API contract template
+- [SPEC-TEMPLATE.yaml]({project_root}/ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
 
 **Decision Guides**:
-- [WHEN_TO_CREATE_IMPL.md](../../docs_templates/ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL creation criteria
-- [ID_NAMING_STANDARDS.md](../../docs_templates/ai_dev_flow/ID_NAMING_STANDARDS.md) - Document ID conventions
+- [WHEN_TO_CREATE_IMPL.md]({project_root}/ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL creation criteria
+- [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md) - Document ID conventions
 
 **Validation**:
-- [validate_traceability.py](../../scripts/validation/validate_traceability.py) - Traceability validation script
-- [validate_phase_dependencies.py](../../scripts/validation/validate_phase_dependencies.py) - Dependency graph validation
+- [validate_traceability.py]({project_root}/scripts/validation/validate_traceability.py) - Traceability validation script
+- [validate_phase_dependencies.py]({project_root}/scripts/validation/validate_phase_dependencies.py) - Dependency graph validation
 
 ---
 

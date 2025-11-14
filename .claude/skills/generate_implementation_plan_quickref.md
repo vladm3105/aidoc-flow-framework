@@ -10,8 +10,8 @@
 /skill generate_implementation_plan
 
 # Required inputs (skill will prompt)
-brd_directory: /opt/data/trading/docs/BRD/
-output_file: /opt/data/trading/docs/BRD/BRD-000_implementation_plan.md
+brd_directory: {project_root}/docs/BRD/
+output_file: {project_root}/docs/BRD/BRD-000_implementation_plan.md
 
 # Optional inputs
 force_phase_1_brd: BRD-009
@@ -123,30 +123,30 @@ IMPL-001: Options Trading System Implementation Plan
 
 **Go directly**: REQ → SPEC → TASKS
 
-**Decision Criteria**: See [WHEN_TO_CREATE_IMPL.md](../../docs_templates/ai_dev_flow/WHEN_TO_CREATE_IMPL.md)
+**Decision Criteria**: See [WHEN_TO_CREATE_IMPL.md]({project_root}/ai_dev_flow/WHEN_TO_CREATE_IMPL.md)
 
 ## Quick Commands
 
 **After Generation**:
 ```bash
 # Validate traceability
-python /opt/data/trading/scripts/validation/validate_traceability.py \
-    /opt/data/trading/docs/BRD/BRD-000_implementation_plan.md
+python {project_root}/scripts/validation/validate_traceability.py \
+    {project_root}/docs/BRD/BRD-000_implementation_plan.md
 
 # Check phase dependencies
-python /opt/data/trading/scripts/validation/validate_phase_dependencies.py \
-    /opt/data/trading/docs/BRD/BRD-000_implementation_plan.md
+python {project_root}/scripts/validation/validate_phase_dependencies.py \
+    {project_root}/docs/BRD/BRD-000_implementation_plan.md
 
 # Count tokens
-wc -w /opt/data/trading/docs/BRD/BRD-000_implementation_plan.md
+wc -w {project_root}/docs/BRD/BRD-000_implementation_plan.md
 ```
 
 ## References
 
 - **Full Skill**: [generate_implementation_plan.md](./generate_implementation_plan.md)
-- **SDD Workflow**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../docs_templates/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
-- **IMPL Template**: [IMPL-TEMPLATE.md](../../docs_templates/ai_dev_flow/IMPL/IMPL-TEMPLATE.md)
-- **When to Create IMPL**: [WHEN_TO_CREATE_IMPL.md](../../docs_templates/ai_dev_flow/WHEN_TO_CREATE_IMPL.md)
+- **SDD Workflow**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
+- **IMPL Template**: [IMPL-TEMPLATE.md]({project_root}/ai_dev_flow/IMPL/IMPL-TEMPLATE.md)
+- **When to Create IMPL**: [WHEN_TO_CREATE_IMPL.md]({project_root}/ai_dev_flow/WHEN_TO_CREATE_IMPL.md)
 
 ---
 

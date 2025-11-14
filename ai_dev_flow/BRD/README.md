@@ -14,6 +14,9 @@ BRDs transform strategic business goals into concrete, actionable requirements t
 
 ## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
 
+**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+
+
 BRDs are the **first step** in specification-driven development within the complete SDD workflow:
 
 ```
@@ -144,7 +147,7 @@ Standard metadata including version, date, owner, status, revision history
 
 This directory provides **3 BRD templates** for different use cases:
 
-1. **BRD-template.md** - Comprehensive business requirements (general purpose)
+1. **BRD-TEMPLATE.md** - Comprehensive business requirements (general purpose)
    - Full-featured template with all sections
    - Suitable for complex enterprise projects
    - Extensive appendices and detailed tracking

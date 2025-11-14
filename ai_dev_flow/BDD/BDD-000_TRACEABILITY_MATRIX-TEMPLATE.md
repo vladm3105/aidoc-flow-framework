@@ -138,9 +138,9 @@ Feature: Place Limit Order
 ```markdown
 # BDD-015: Place Limit Order Test Scenarios
 
-## 7. Traceability
+## 8. Traceability
 
-### 7.1 Upstream Sources
+### 8.1 Upstream Sources
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 4):
 ```markdown
@@ -149,7 +149,7 @@ Feature: Place Limit Order
 @ears: EARS-012:EVENT-002, EARS-012:STATE-001
 ```
 
-### 7.2 Downstream Artifacts
+### 8.2 Downstream Artifacts
 - **Test Implementation**: `tests/test_order_placement.py`
 - **Code Under Test**: `src/services/order_service.py`
 - **Test Data**: `fixtures/order_test_data.json`
@@ -205,7 +205,7 @@ Test Implementation & Code (Layers 13-14)
 
 ---
 
-## 3. Complete BDD Inventory
+## 4. Complete BDD Inventory
 
 | BDD ID | Title | Feature Category | Scenarios | Steps | Status | Date | Upstream Sources | Downstream Artifacts |
 |--------|-------|------------------|-----------|-------|--------|------|------------------|---------------------|
@@ -221,9 +221,9 @@ Test Implementation & Code (Layers 13-14)
 
 ---
 
-## 4. Upstream Traceability
+## 5. Upstream Traceability
 
-### 4.1 EARS → BDD Traceability
+### 5.1 EARS → BDD Traceability
 
 | EARS ID | EARS Title | BDD IDs | BDD Scenarios | Relationship |
 |---------|------------|---------|---------------|--------------|
@@ -231,21 +231,21 @@ Test Implementation & Code (Layers 13-14)
 | EARS-002 | [Formal requirement] | BDD-002, BDD-003 | Scenarios 1-2, 1 | Multiple BDD files test requirement |
 | EARS-NNN | ... | ... | ... | ... |
 
-### 4.2 PRD → BDD Traceability
+### 5.2 PRD → BDD Traceability
 
 | PRD ID | PRD User Story | BDD IDs | BDD Scenarios | Relationship |
 |--------|----------------|---------|---------------|--------------|
 | PRD-001 | [User story] | BDD-001 | Scenarios 1-5 | Acceptance criteria defined in BDD |
 | PRD-NNN | ... | ... | ... | ... |
 
-### 4.3 REQ → BDD Traceability
+### 5.3 REQ → BDD Traceability
 
 | REQ ID | REQ Title | BDD IDs | BDD Scenarios | Relationship |
 |--------|-----------|---------|---------------|--------------|
 | REQ-001 | [Atomic requirement] | BDD-001 | Scenario 3 | Requirement verified through test |
 | REQ-NNN | ... | ... | ... | ... |
 
-### 4.4 Upstream Source Summary
+### 5.4 Upstream Source Summary
 
 | Source Category | Total Sources | BDD Files | Scenarios | Coverage % |
 |-----------------|---------------|-----------|-----------|------------|
@@ -256,9 +256,9 @@ Test Implementation & Code (Layers 13-14)
 
 ---
 
-## 5. Downstream Traceability
+## 6. Downstream Traceability
 
-### 5.1 BDD → Test Implementation Traceability
+### 6.1 BDD → Test Implementation Traceability
 
 | BDD ID | BDD Scenarios | Test Files | Test Functions | Implementation Status |
 |--------|---------------|------------|----------------|----------------------|
@@ -266,7 +266,7 @@ Test Implementation & Code (Layers 13-14)
 | BDD-002 | 3 scenarios | tests/test_api.py | test_api_scenario_1(), ... | 🟡 Partial (2/3) |
 | BDD-NNN | ... | ... | ... | ... |
 
-### 5.2 BDD → Code Implementation Traceability
+### 6.2 BDD → Code Implementation Traceability
 
 | BDD ID | BDD Scenarios | Source Files | Functions/Classes | Relationship |
 |--------|---------------|--------------|-------------------|--------------|
@@ -274,14 +274,14 @@ Test Implementation & Code (Layers 13-14)
 | BDD-002 | Scenarios 1-2 | src/api.py | APIHandler.endpoint() | Tests verify API behavior |
 | BDD-NNN | ... | ... | ... | ... |
 
-### 5.3 BDD → ADR Traceability (Architecture Verification)
+### 6.3 BDD → ADR Traceability (Architecture Verification)
 
 | BDD ID | ADR IDs | ADR Titles | Relationship |
 |--------|---------|------------|--------------|
 | BDD-001 | ADR-005 | [Architecture decision] | Tests verify architectural decision |
 | BDD-NNN | ... | ... | ... |
 
-### 5.4 Downstream Artifact Summary
+### 6.4 Downstream Artifact Summary
 
 | Artifact Type | Total Artifacts | BDD Files | Coverage % |
 |---------------|-----------------|-----------|------------|
@@ -291,9 +291,9 @@ Test Implementation & Code (Layers 13-14)
 
 ---
 
-## 6. BDD Test Coverage Analysis
+## 7. BDD Test Coverage Analysis
 
-### 6.1 Scenario Execution Status
+### 7.1 Scenario Execution Status
 
 | BDD ID | Total Scenarios | Passing | Failing | Pending | Skipped | Pass Rate |
 |--------|-----------------|---------|---------|---------|---------|-----------|
@@ -303,7 +303,7 @@ Test Implementation & Code (Layers 13-14)
 | BDD-NNN | ... | ... | ... | ... | ... | ... |
 | **Total** | **[X]** | **[Y]** | **[Z]** | **[A]** | **[B]** | **XX%** |
 
-### 6.2 Feature Category Coverage
+### 7.2 Feature Category Coverage
 
 | Feature Category | BDD Files | Scenarios | Pass Rate | Status |
 |------------------|-----------|-----------|-----------|--------|
@@ -312,7 +312,7 @@ Test Implementation & Code (Layers 13-14)
 | [Data Processing] | 2 | 10 | 100% | ✅ Complete |
 | [User Interface] | 4 | 20 | 60% | 🔴 Failing |
 
-### 6.3 Requirements Coverage
+### 7.3 Requirements Coverage
 
 | Requirement Type | Total Requirements | BDD Coverage | Coverage % | Status |
 |------------------|-------------------|--------------|------------|--------|
@@ -323,9 +323,9 @@ Test Implementation & Code (Layers 13-14)
 
 ---
 
-## 7. Cross-BDD Dependencies
+## 8. Cross-BDD Dependencies
 
-### 7.1 BDD Relationship Map
+### 8.1 BDD Relationship Map
 
 ```mermaid
 graph TD
@@ -349,7 +349,7 @@ graph TD
     style Code1 fill:#f3e5f5
 ```
 
-### 7.2 Inter-BDD Dependencies
+### 8.2 Inter-BDD Dependencies
 
 | Source BDD | Target BDD | Dependency Type | Description |
 |------------|------------|-----------------|-------------|
@@ -359,9 +359,9 @@ graph TD
 
 ---
 
-## 8. Test Execution Metrics
+## 9. Test Execution Metrics
 
-### 8.1 Execution Performance
+### 9.1 Execution Performance
 
 | BDD ID | Scenarios | Avg Duration | Total Duration | Performance Status |
 |--------|-----------|--------------|----------------|-------------------|
@@ -370,7 +370,7 @@ graph TD
 | BDD-003 | 4 | 1.2s | 4.8s | ✅ Good |
 | BDD-NNN | ... | ... | ... | ... |
 
-### 8.2 Flakiness Analysis
+### 9.2 Flakiness Analysis
 
 | BDD ID | Executions | Flaky Runs | Flakiness % | Stability |
 |--------|------------|------------|-------------|-----------|
@@ -381,9 +381,9 @@ graph TD
 
 ---
 
-## 9. Implementation Status
+## 10. Implementation Status
 
-### 9.1 BDD Implementation Progress
+### 10.1 BDD Implementation Progress
 
 | BDD ID | Scenarios Defined | Scenarios Implemented | Scenarios Passing | Completion % |
 |--------|-------------------|----------------------|-------------------|--------------|
@@ -392,7 +392,7 @@ graph TD
 | BDD-003 | 4 | 0 | 0 | 0% |
 | BDD-NNN | ... | ... | ... | ... |
 
-### 9.2 Gap Analysis
+### 10.2 Gap Analysis
 
 **Missing BDD Coverage**:
 - EARS-XXX: Formal requirement with no BDD validation
@@ -409,16 +409,16 @@ graph TD
 
 ---
 
-## 10. Immediate Next Steps
+## 11. Immediate Next Steps
 
-### 10.1 Priority Actions
+### 11.1 Priority Actions
 
 1. **Fix Failing Tests**: [X] scenarios failing
 2. **Implement Pending Scenarios**: [Y] scenarios not implemented
 3. **Add Missing BDD Coverage**: [Z] requirements need tests
 4. **Resolve Flaky Tests**: [N] unstable scenarios
 
-### 10.2 Test Quality Improvements
+### 11.2 Test Quality Improvements
 
 | Improvement Area | BDD Affected | Target Date | Owner |
 |------------------|--------------|-------------|-------|
@@ -429,7 +429,7 @@ graph TD
 
 ---
 
-## 11. Revision History
+## 12. Revision History
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
@@ -437,10 +437,10 @@ graph TD
 
 ---
 
-## 12. References
+## 13. References
 
 ### Internal Documentation
-- **BDD Index**: [BDD-000_index.feature](BDD-000_index.feature)
+- **BDD Index**: [BDD-000_index.md](BDD-000_index.md)
 - **BDD Template**: [BDD-TEMPLATE.feature](BDD-TEMPLATE.feature)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)

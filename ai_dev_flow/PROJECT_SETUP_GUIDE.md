@@ -73,7 +73,7 @@ Options:
 **Commands**:
 ```bash
 # Core 10-layer directory structure (ALL PROJECTS)
-mkdir -p docs/BRD docs/PRD docs/EARS docs/BDD docs/ADR docs/SYS docs/REQ docs/IMPL docs/CONTRACTS docs/SPEC docs/TASKS
+mkdir -p docs/BRD docs/PRD docs/EARS docs/BDD docs/ADR docs/SYS docs/REQ docs/IMPL docs/CTR docs/SPEC docs/TASKS
 
 # Standard requirements subdirectories (ALL PROJECTS)
 mkdir -p docs/REQ/api docs/REQ/auth docs/REQ/data docs/REQ/core docs/REQ/integration docs/REQ/monitoring docs/REQ/reporting docs/REQ/security docs/REQ/ui
@@ -169,12 +169,12 @@ Options:
 touch docs/BRD/BRD-000_index.md
 touch docs/PRD/PRD-000_index.md
 touch docs/EARS/EARS-000_index.md
-touch docs/BDD/BDD-000_index.feature
+touch docs/BDD/BDD-000_index.md
 touch docs/ADR/ADR-000_index.md
 touch docs/SYS/SYS-000_index.md
 touch docs/REQ/REQ-000_index.md
 touch docs/IMPL/IMPL-000_index.md
-touch docs/CONTRACTS/CTR-000_index.md
+touch docs/CTR/CTR-000_index.md
 touch docs/SPEC/SPEC-000_index.yaml
 touch docs/TASKS/TASKS-000_index.md
 ```
@@ -271,7 +271,7 @@ Creating folder structure...
 ✓ Created: docs/SYS/
 ✓ Created: docs/REQ/
 ✓ Created: docs/IMPL/
-✓ Created: docs/CONTRACTS/
+✓ Created: docs/CTR/
 ✓ Created: docs/SPEC/
 ✓ Created: docs/TASKS/
 
@@ -376,7 +376,7 @@ Next: Review PROJECT_KICKOFF_TASKS.md for Day 1-7 action plan
 # AI Assistant runs DOMAIN_SELECTION_QUESTIONNAIRE.md
 
 # Step 2: Create Folders
-mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CONTRACTS,SPEC,TASKS}
+mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
 mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
 mkdir -p scripts work_plans
 # Add domain-specific subdirectories based on Step 1
@@ -392,7 +392,7 @@ cp /opt/data/docs_flow_framework/ai_dev_flow/scripts/*.py scripts/
 # AI Assistant runs CONTRACT_DECISION_QUESTIONNAIRE.md
 
 # Step 6: Initialize Index Files
-for type in BRD PRD EARS BDD ADR SYS REQ IMPL CONTRACTS SPEC TASKS; do
+for type in BRD PRD EARS BDD ADR SYS REQ IMPL CTR SPEC TASKS; do
   touch docs/$type/*_index.*
 done
 
