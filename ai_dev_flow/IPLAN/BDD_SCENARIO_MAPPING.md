@@ -1,0 +1,266 @@
+# BDD Scenario to Test Case Mapping
+
+**Document ID**: BDD_SCENARIO_MAPPING
+**Version**: 1.0
+**Last Updated**: 2025-11-14
+**Purpose**: Complete mapping between BDD scenarios and test implementations
+
+---
+
+## Overview
+
+Maps BDD feature files to their corresponding test implementations, tracking:
+- Scenario coverage status
+- Test automation status
+- Traceability to requirements and implementations
+- Test execution results
+
+---
+
+## Mapping Structure
+
+### BDD Feature → Test Implementation
+
+| BDD ID | Feature File | Scenario Count | Test Location | Automation Status | Coverage % | Last Run |
+|--------|--------------|----------------|---------------|-------------------|------------|----------|
+| BDD-001 | [EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System]_gateway_integration.feature | 12 | tests/integration/gateway/ | Automated | 100% | Pending |
+| BDD-002 | [RESOURCE_VALIDATION - e.g., input sanitization, schema validation].feature | 8 | tests/unit/risk/ | Automated | 100% | Pending |
+| BDD-003 | [SYSTEM_STATE - e.g., operating mode, environment condition]_classifier.feature | 15 | tests/ml/classifier/ | Automated | 87% | Pending |
+| BDD-004 | sentiment_analysis.feature | 10 | tests/ml/sentiment/ | Automated | 90% | Pending |
+| BDD-005 | ensemble_signals.feature | 9 | tests/ml/ensemble/ | Automated | 100% | Pending |
+| BDD-006 | greeks_calculator.feature | 14 | tests/analytics/greeks/ | Automated | 93% | Pending |
+| BDD-007 | covered_call_strategy.feature | 11 | tests/strategies/cc/ | Automated | 100% | Pending |
+
+---
+
+## Scenario-Level Mapping
+
+### BDD-001: [EXTERNAL_SERVICE_GATEWAY] Integration
+
+**Feature**: [EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System] Gateway Integration
+**File**: `BDD-001_ib_gateway_integration.feature`
+**Requirements**: REQ-026 ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] Integration)
+**ADRs**: ADR-030 ([EXTERNAL_SERVICE_GATEWAY] Architecture)
+
+| Scenario | Description | Test File | Test Method | Status | Priority |
+|----------|-------------|-----------|-------------|--------|----------|
+| 1.1 | Successful connection establishment | test_gateway_connection.py | test_connect_success() | Automated | High |
+| 1.2 | Authentication with valid credentials | test_gateway_auth.py | test_auth_valid() | Automated | High |
+| 1.3 | Authentication failure handling | test_gateway_auth.py | test_auth_invalid() | Automated | High |
+| 1.4 | Connection timeout handling | test_gateway_connection.py | test_timeout() | Automated | Medium |
+| 1.5 | Reconnection after disconnect | test_gateway_reconnect.py | test_reconnect() | Automated | High |
+| 1.6 | Market data subscription | test_market_data.py | test_subscribe() | Automated | High |
+| 1.7 | Market data unsubscription | test_market_data.py | test_unsubscribe() | Automated | Medium |
+| 1.8 | Real-time quote updates | test_market_data.py | test_quotes() | Automated | High |
+| 1.9 | Historical data retrieval | test_historical_data.py | test_historical() | Automated | Medium |
+| 1.10 | Order placement validation | test_orders.py | test_place_order() | Automated | High |
+| 1.11 | Order status tracking | test_orders.py | test_order_status() | Automated | High |
+| 1.12 | Position reconciliation | test_positions.py | test_reconcile() | Automated | High |
+
+**Coverage**: 12/12 scenarios (100%)
+**Test Location**: `tests/integration/gateway/`
+**Execution Time**: ~45 seconds
+
+---
+
+### BDD-002: [RESOURCE_VALIDATION - e.g., input sanitization, schema validation]
+
+**Feature**: [RESOURCE_VALIDATION - e.g., input sanitization, schema validation]
+**File**: `BDD-002_risk_validation.feature`
+**Requirements**: REQ-003 ([RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement), REQ-005 ([RESOURCE_COLLECTION - e.g., user accounts, active sessions] Risk Aggregation)
+**ADRs**: ADR-015 ([RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] Framework)
+
+| Scenario | Description | Test File | Test Method | Status | Priority |
+|----------|-------------|-----------|-------------|--------|----------|
+| 2.1 | Position limit enforcement | test_limits.py | test_position_limit() | Automated | High |
+| 2.2 | Order size validation | test_limits.py | test_order_size() | Automated | High |
+| 2.3 | Account balance check | test_balance.py | test_balance_check() | Automated | High |
+| 2.4 | Margin requirement validation | test_margin.py | test_margin_req() | Automated | High |
+| 2.5 | [RESOURCE_COLLECTION - e.g., user accounts, active sessions] risk aggregation | test_portfolio_risk.py | test_aggregate() | Automated | High |
+| 2.6 | Risk threshold alerts | test_alerts.py | test_threshold() | Automated | Medium |
+| 2.7 | Circuit breaker activation | test_circuit_breaker.py | test_trigger() | Automated | High |
+| 2.8 | Risk override authorization | test_overrides.py | test_authorize() | Automated | Medium |
+
+**Coverage**: 8/8 scenarios (100%)
+**Test Location**: `tests/unit/risk/`
+**Execution Time**: ~12 seconds
+
+---
+
+### BDD-003: [SYSTEM_STATE - e.g., operating mode, environment condition] Classifier
+
+**Feature**: ML [SYSTEM_STATE - e.g., operating mode, environment condition] Classification
+**File**: `BDD-003_regime_classifier.feature`
+**Requirements**: REQ-070 ([SYSTEM_STATE - e.g., operating mode, environment condition] Detection)
+**ADRs**: ADR-050 (ML Model Architecture)
+
+| Scenario | Description | Test File | Test Method | Status | Priority |
+|----------|-------------|-----------|-------------|--------|----------|
+| 3.1 | Trending [SYSTEM_STATE - e.g., operating mode, environment condition] detection | test_classifier.py | test_trending() | Automated | High |
+| 3.2 | Mean-reverting [SYSTEM_STATE - e.g., operating mode, environment condition] detection | test_classifier.py | test_mean_reverting() | Automated | High |
+| 3.3 | High volatility [SYSTEM_STATE - e.g., operating mode, environment condition] | test_classifier.py | test_high_vol() | Automated | High |
+| 3.4 | Low volatility [SYSTEM_STATE - e.g., operating mode, environment condition] | test_classifier.py | test_low_vol() | Automated | High |
+| 3.5 | [SYSTEM_STATE - e.g., operating mode, environment condition] transition detection | test_transitions.py | test_detect_transition() | Automated | High |
+| 3.6 | Model confidence scoring | test_confidence.py | test_confidence() | Automated | Medium |
+| 3.7 | Feature engineering validation | test_features.py | test_features() | Automated | Medium |
+| 3.8 | Training data preparation | test_data_prep.py | test_prepare() | Automated | Medium |
+| 3.9 | Model retraining trigger | test_retraining.py | test_trigger() | Automated | Medium |
+| 3.10 | Model versioning | test_versioning.py | test_version() | Automated | Low |
+| 3.11 | Prediction latency | test_performance.py | test_latency() | Automated | Medium |
+| 3.12 | Batch prediction | test_batch.py | test_batch() | Automated | Medium |
+| 3.13 | Model drift detection | test_drift.py | test_detect_drift() | Not Automated | Low |
+| 3.14 | Ensemble model selection | test_ensemble.py | test_select() | Not Automated | Low |
+| 3.15 | Cross-validation results | test_validation.py | test_cross_val() | Automated | Medium |
+
+**Coverage**: 13/15 scenarios automated (87%)
+**Test Location**: `tests/ml/classifier/`
+**Execution Time**: ~2 minutes
+
+---
+
+## Test Automation Status
+
+### Overall Coverage
+
+| Category | Total Scenarios | Automated | Manual | Coverage % |
+|----------|----------------|-----------|--------|------------|
+| API Integration | 12 | 12 | 0 | 100% |
+| [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] | 8 | 8 | 0 | 100% |
+| ML Models | 48 | 43 | 5 | 90% |
+| Trading Strategies | 22 | 22 | 0 | 100% |
+| Data Architecture | 15 | 13 | 2 | 87% |
+| System Services | 18 | 18 | 0 | 100% |
+| **Total** | **123** | **116** | **7** | **94%** |
+
+### Automation Gaps
+
+**Pending Automation** (7 scenarios):
+1. BDD-003.13: Model drift detection (complexity: high)
+2. BDD-003.14: Ensemble model selection (complexity: medium)
+3. BDD-008.7: Multi-asset correlation (complexity: high)
+4. BDD-008.9: Real-time data quality (complexity: high)
+5. BDD-010.4: Log aggregation scaling (complexity: medium)
+6. BDD-011.8: Disaster recovery (complexity: high)
+7. BDD-012.5: Security penetration testing (complexity: high)
+
+**Automation Timeline**: 3-4 weeks (40-50 hours)
+
+---
+
+## Traceability Matrix
+
+### BDD → Requirements
+
+| BDD ID | Linked Requirements | Requirement Type | Coverage Status |
+|--------|---------------------|------------------|-----------------|
+| BDD-001 | REQ-026, REQ-027, REQ-028 | API, Integration | Complete |
+| BDD-002 | REQ-003, REQ-005, REQ-008 | [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management], [SAFETY_MECHANISM - e.g., rate limiter, error threshold] | Complete |
+| BDD-003 | REQ-070, REQ-071, REQ-072 | ML, Analytics | Complete |
+| BDD-004 | REQ-073, REQ-074 | ML, NLP | Complete |
+| BDD-005 | REQ-075, REQ-076, REQ-077 | ML, Signals | Complete |
+| BDD-006 | REQ-080, REQ-081 | Analytics, Math | Complete |
+| BDD-007 | REQ-090, REQ-091, REQ-092 | Strategy, Trading | Complete |
+
+### BDD → ADRs
+
+| BDD ID | Linked ADRs | Decision Category | Implementation Status |
+|--------|-------------|-------------------|----------------------|
+| BDD-001 | ADR-030 | Architecture | Implemented |
+| BDD-002 | ADR-015 | Framework | Implemented |
+| BDD-003 | ADR-050, ADR-051 | ML, Model | Implemented |
+| BDD-004 | ADR-052 | NLP | Implemented |
+| BDD-005 | ADR-053 | ML Ensemble | Implemented |
+| BDD-006 | ADR-060 | Analytics | Implemented |
+| BDD-007 | ADR-070 | Strategy | Implemented |
+
+### BDD → Implementations
+
+| BDD ID | Implementation Files | Module | Code Coverage % |
+|--------|---------------------|--------|-----------------|
+| BDD-001 | src/gateway/*.py | gateway | 92% |
+| BDD-002 | src/risk/*.py | risk | 95% |
+| BDD-003 | src/ml/classifier/*.py | ml.classifier | 88% |
+| BDD-004 | src/ml/sentiment/*.py | ml.sentiment | 91% |
+| BDD-005 | src/ml/ensemble/*.py | ml.ensemble | 94% |
+| BDD-006 | src/analytics/greeks/*.py | analytics | 89% |
+| BDD-007 | src/strategies/covered_call/*.py | strategies | 93% |
+
+---
+
+## Test Execution History
+
+### Recent Test Runs
+
+| Run Date | Total Scenarios | Passed | Failed | Skipped | Duration | Success Rate |
+|----------|----------------|--------|--------|---------|----------|--------------|
+| 2025-11-14 | 116 | 114 | 2 | 7 | 8m 32s | 98.3% |
+| 2025-11-13 | 116 | 116 | 0 | 7 | 8m 45s | 100% |
+| 2025-11-12 | 116 | 113 | 3 | 7 | 9m 12s | 97.4% |
+| 2025-11-11 | 116 | 115 | 1 | 7 | 8m 28s | 99.1% |
+| 2025-11-10 | 116 | 116 | 0 | 7 | 8m 52s | 100% |
+
+### Failed Scenarios (Current)
+
+| Scenario | Failure Reason | Assigned To | Target Fix Date |
+|----------|---------------|-------------|-----------------|
+| BDD-003.11 | Prediction latency exceeds threshold (>100ms) | ML Team | 2025-11-15 |
+| BDD-006.8 | Greeks calculation precision issue (delta) | Analytics Team | 2025-11-16 |
+
+---
+
+## CI/CD Integration
+
+### Test Execution Pipeline
+
+**Automated Triggers**:
+- Every commit to main branch
+- Every pull request
+- Nightly full regression suite
+- Weekly extended test suite
+
+**Test Stages**:
+1. **Unit Tests** (1-2 minutes): Fast, isolated component tests
+2. **Integration Tests** (3-4 minutes): API and service integration
+3. **BDD Scenarios** (8-10 minutes): End-to-end acceptance tests
+4. **Performance Tests** (15-20 minutes): Load and latency validation
+
+**Quality Gates**:
+- Test pass rate ≥ 98%
+- Code coverage ≥ 85%
+- No critical failures
+- Performance regression check
+
+---
+
+## Maintenance
+
+### Update Frequency
+
+- **Daily**: Test execution results
+- **Weekly**: Coverage metrics, automation gaps
+- **Monthly**: Traceability matrix validation
+- **Quarterly**: Scenario relevance review
+
+### Responsibilities
+
+| Area | Owner | Backup |
+|------|-------|--------|
+| BDD Scenario Authoring | QA Lead | Product Owner |
+| Test Automation | QA Engineers | Dev Team |
+| Traceability Updates | Tech Lead | Documentation Team |
+| Coverage Reporting | QA Manager | Dev Manager |
+
+---
+
+## References
+
+- [BDD-000_index.md](../BDD/BDD-000_index.md) - BDD master index
+- [BDD-TEMPLATE.feature](../BDD/BDD-TEMPLATE.feature) - Scenario template
+- [IPLAN-TEMPLATE.md](./IPLAN-TEMPLATE.md) - Implementation plan template
+- [Testing Strategy](../SYS/SYS-001_testing_strategy.md) - Overall testing approach
+
+---
+
+**Document Status**: Active
+**Maintenance**: Updated automatically by CI/CD pipeline
+**Format Version**: 1.0
