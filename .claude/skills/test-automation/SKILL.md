@@ -116,7 +116,7 @@ Generated test structure:
 import pytest
 from pytest_bdd import scenarios, given, when, then, parsers
 
-scenarios('../../BDD/authentication_scenarios.md')
+scenarios('{project_root}/BDD/authentication_scenarios.md')
 
 @given('a user with valid credentials')
 def user_with_valid_credentials(context):

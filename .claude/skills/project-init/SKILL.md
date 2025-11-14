@@ -34,7 +34,7 @@ After completing project initialization, AI Assistant **MUST** inform user:
 Next: Use the `doc-flow` skill to begin workflow execution:
 - Create BRD (Business Requirements)
 - Create PRD (Product Requirements)
-- Follow 16-layer architecture (Layers 0-15: Strategy layer + 12 documentation artifacts + 3 execution layers): BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → IPLAN → Code → Tests → Validation
+- Follow 16-layer architecture (Layers 0-15: Strategy layer + 11 functional layers (15 artifact types) + 3 execution layers): BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → IPLAN → Code → Tests → Validation
 ```
 
 ---
@@ -43,7 +43,7 @@ Next: Use the `doc-flow` skill to begin workflow execution:
 
 ### Step 0: Read Execution Rules
 
-**File**: [AI_ASSISTANT_RULES.md](../../ai_dev_flow/AI_ASSISTANT_RULES.md)
+**File**: [AI_ASSISTANT_RULES.md]({project_root}/ai_dev_flow/AI_ASSISTANT_RULES.md)
 
 **Purpose**: Understand core execution rules before starting
 
@@ -63,7 +63,7 @@ Next: Use the `doc-flow` skill to begin workflow execution:
 
 ### Step 1: Domain Selection (REQUIRED FIRST)
 
-**File**: [DOMAIN_SELECTION_QUESTIONNAIRE.md](../../ai_dev_flow/DOMAIN_SELECTION_QUESTIONNAIRE.md)
+**File**: [DOMAIN_SELECTION_QUESTIONNAIRE.md]({project_root}/ai_dev_flow/DOMAIN_SELECTION_QUESTIONNAIRE.md)
 
 **Purpose**: Determine project domain to load correct configuration
 
@@ -136,7 +136,7 @@ cd /opt/data/project_name
 **Commands to Execute**:
 
 ```bash
-# Core 16-layer architecture (Layers 0-15: Strategy layer + 12 documentation artifacts + 3 execution layers)
+# Core 16-layer architecture (Layers 0-15: Strategy layer + 11 functional layers (15 artifact types) + 3 execution layers)
 mkdir -p docs/BRD
 mkdir -p docs/PRD
 mkdir -p docs/EARS
@@ -213,9 +213,9 @@ ls -la work_plans/  # Verify work_plans directory
 ### Step 3: Load Domain Configuration
 
 **Files**:
-- [FINANCIAL_DOMAIN_CONFIG.md](../../ai_dev_flow/FINANCIAL_DOMAIN_CONFIG.md) - Default
-- [SOFTWARE_DOMAIN_CONFIG.md](../../ai_dev_flow/SOFTWARE_DOMAIN_CONFIG.md)
-- [GENERIC_DOMAIN_CONFIG.md](../../ai_dev_flow/GENERIC_DOMAIN_CONFIG.md)
+- [FINANCIAL_DOMAIN_CONFIG.md]({project_root}/ai_dev_flow/FINANCIAL_DOMAIN_CONFIG.md) - Default
+- [SOFTWARE_DOMAIN_CONFIG.md]({project_root}/ai_dev_flow/SOFTWARE_DOMAIN_CONFIG.md)
+- [GENERIC_DOMAIN_CONFIG.md]({project_root}/ai_dev_flow/GENERIC_DOMAIN_CONFIG.md)
 
 **Purpose**: Apply domain-specific terminology and placeholders
 
@@ -274,7 +274,7 @@ cp {project_root}/ai_dev_flow/scripts/*.py scripts/
 
 ### Step 5: Contract Decision (REQUIRED)
 
-**File**: [CONTRACT_DECISION_QUESTIONNAIRE.md](../../ai_dev_flow/CONTRACT_DECISION_QUESTIONNAIRE.md)
+**File**: [CONTRACT_DECISION_QUESTIONNAIRE.md]({project_root}/ai_dev_flow/CONTRACT_DECISION_QUESTIONNAIRE.md)
 
 **Purpose**: Determine if CTR (Contracts) layer should be included in workflow
 
@@ -429,19 +429,19 @@ All guidance files located in: `{project_root}/ai_dev_flow/`
 
 ### Core Guidance Files
 
-1. **[AI_ASSISTANT_RULES.md](../../ai_dev_flow/AI_ASSISTANT_RULES.md)** - 15 execution rules
-2. **[DOMAIN_SELECTION_QUESTIONNAIRE.md](../../ai_dev_flow/DOMAIN_SELECTION_QUESTIONNAIRE.md)** - Domain selection
-3. **[CONTRACT_DECISION_QUESTIONNAIRE.md](../../ai_dev_flow/CONTRACT_DECISION_QUESTIONNAIRE.md)** - Contract decision
-4. **[PROJECT_SETUP_GUIDE.md](../../ai_dev_flow/PROJECT_SETUP_GUIDE.md)** - Master setup guide
-5. **[PROJECT_KICKOFF_TASKS.md](../../ai_dev_flow/PROJECT_KICKOFF_TASKS.md)** - Week 1 tasks
-6. **[TRACEABILITY_SETUP.md](../../ai_dev_flow/TRACEABILITY_SETUP.md)** - Validation automation
-7. **[QUICK_REFERENCE.md](../../ai_dev_flow/QUICK_REFERENCE.md)** - Quick reference card
+1. **[AI_ASSISTANT_RULES.md]({project_root}/ai_dev_flow/AI_ASSISTANT_RULES.md)** - 15 execution rules
+2. **[DOMAIN_SELECTION_QUESTIONNAIRE.md]({project_root}/ai_dev_flow/DOMAIN_SELECTION_QUESTIONNAIRE.md)** - Domain selection
+3. **[CONTRACT_DECISION_QUESTIONNAIRE.md]({project_root}/ai_dev_flow/CONTRACT_DECISION_QUESTIONNAIRE.md)** - Contract decision
+4. **[PROJECT_SETUP_GUIDE.md]({project_root}/ai_dev_flow/PROJECT_SETUP_GUIDE.md)** - Master setup guide
+5. **[PROJECT_KICKOFF_TASKS.md]({project_root}/ai_dev_flow/PROJECT_KICKOFF_TASKS.md)** - Week 1 tasks
+6. **[TRACEABILITY_SETUP.md]({project_root}/ai_dev_flow/TRACEABILITY_SETUP.md)** - Validation automation
+7. **[QUICK_REFERENCE.md]({project_root}/ai_dev_flow/QUICK_REFERENCE.md)** - Quick reference card
 
 ### Domain Configuration Files
 
-8. **[FINANCIAL_DOMAIN_CONFIG.md](../../ai_dev_flow/FINANCIAL_DOMAIN_CONFIG.md)** - Financial Services (DEFAULT)
-9. **[SOFTWARE_DOMAIN_CONFIG.md](../../ai_dev_flow/SOFTWARE_DOMAIN_CONFIG.md)** - Software/SaaS
-10. **[GENERIC_DOMAIN_CONFIG.md](../../ai_dev_flow/GENERIC_DOMAIN_CONFIG.md)** - Generic/Other
+8. **[FINANCIAL_DOMAIN_CONFIG.md]({project_root}/ai_dev_flow/FINANCIAL_DOMAIN_CONFIG.md)** - Financial Services (DEFAULT)
+9. **[SOFTWARE_DOMAIN_CONFIG.md]({project_root}/ai_dev_flow/SOFTWARE_DOMAIN_CONFIG.md)** - Software/SaaS
+10. **[GENERIC_DOMAIN_CONFIG.md]({project_root}/ai_dev_flow/GENERIC_DOMAIN_CONFIG.md)** - Generic/Other
 
 ---
 
@@ -627,7 +627,7 @@ Run follow-up questions from DOMAIN_SELECTION_QUESTIONNAIRE.md:
 **After project-init completes, use:**
 - **doc-flow** - Main workflow execution skill
   - Create BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN
-  - Follow 16-layer architecture (Layers 0-15: Strategy layer + 12 documentation artifacts + 3 execution layers)
+  - Follow 16-layer architecture (Layers 0-15: Strategy layer + 11 functional layers (15 artifact types) + 3 execution layers)
   - Generate code from specifications
 
 **Other complementary skills:**
