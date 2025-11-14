@@ -28,22 +28,6 @@ Works with:
 - Various domains: Trading systems, web apps, APIs, infrastructure, ML/AI
 - Changing requirements: Update plans without restarting completed work
 
-### ID Naming Standards
-
-**Reference**: `/opt/data/docs_flow_framework/ai_dev_flow/ID_NAMING_STANDARDS.md`
-
-**Common ID Formats**:
-- **Planning Documents**: `PLAN-NNN` (e.g., PLAN-001, PLAN-002)
-- **Requirements**: `REQ-NNN` or `REQ-NNN-YY` (e.g., REQ-001, REQ-001-01)
-- **Tasks**: `TASK-NNN` or `TASK-NNN-YY` (e.g., TASK-001, TASK-001-01)
-- **Implementation Plans**: `IPLAN-NNN` (e.g., IPLAN-001)
-
-**Format Rules**:
-- Use TYPE-NNN for primary documents (three digits with leading zeros)
-- Use TYPE-NNN-YY for sub-items (two digits with leading zeros)
-- IDs are unique within their artifact type
-- Sequential numbering starts at 001
-
 ---
 
 ## MVP/MMP/MMR Framework
@@ -377,7 +361,7 @@ Total Time = Σ(Group Duration) / Parallel Tracks + Stage Buffers
 | Item | Details |
 |------|---------|
 | **Project Name** | [Name] |
-| **Plan ID** | PLAN-001 |
+| **Plan ID** | PLAN-XXX |
 | **Version** | X.0 |
 | **Date** | YYYY-MM-DD |
 | **Status** | [Active / Completed / On Hold] |

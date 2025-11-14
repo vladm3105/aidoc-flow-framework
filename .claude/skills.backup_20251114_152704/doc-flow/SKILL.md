@@ -16,7 +16,7 @@ description: AI-Driven Specification-Driven Development (SDD) workflow for trans
 ## Purpose
 Provide AI assistants with structured guidance on implementing the AI-Driven Specification-Driven Development (SDD) workflow defined in `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` as the **authoritative development standard**. This skill enables complete traceability from business requirements to production code through formal artifacts, with clear separation between strategy (Product Owner voice), project documentation, and development templates.
 
-**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
+**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
 ## Directory Structure and Roles
 
@@ -151,7 +151,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → C
 - **IMPL**: Project management document organizing work (WHO does WHAT, WHEN) - NOT technical specifications
 - **SPEC**: Technical implementation specification (HOW to build components) - YAML format for code generation
 
-**Flow Visualization** (see [index.md]({project_root}/ai_dev_flow/index.md#traceability-flow) for authoritative diagram):
+**Flow Visualization** (see [index.md](../../ai_dev_flow/index.md#traceability-flow) for authoritative diagram):
 ```mermaid
 flowchart TD
     Strategy[option_strategy/: Trading Business Logic] --> BRD[BRD: Business Requirements]
@@ -554,7 +554,7 @@ Before making any technology decisions in ADRs, specifications, or implementatio
    - Organization: `REQ/{domain}/{subdomain}/REQ-NNN_*.md`
 
 8. **Plan Implementation (IMPL)** [CONDITIONAL - see decision guide]
-   - **Decision Guide**: [WHEN_TO_CREATE_IMPL.md]({project_root}/ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - When to create IMPL vs skip to CTR/SPEC
+   - **Decision Guide**: [WHEN_TO_CREATE_IMPL.md](../../ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - When to create IMPL vs skip to CTR/SPEC
    - **Create IMPL When**: Duration ≥2 weeks, teams ≥3, components ≥5, critical budget/timeline, external dependencies
    - **Skip IMPL When**: Single component, duration <2 weeks, single developer, low risk
    - Input: REQ atomic requirements, ADR architecture decisions
@@ -564,8 +564,8 @@ Before making any technology decisions in ADRs, specifications, or implementatio
    - Purpose: Coordinate team activities and track deliverables
 
 9. **Define API Contracts (CTR) [IF INTERFACE REQUIREMENT]**
-   - **Policy**: [ADR-CTR_SEPARATE_FILES_POLICY.md]({project_root}/ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - MANDATORY dual-file format
-   - **Decision Guide**: [WHEN_TO_CREATE_IMPL.md]({project_root}/ai_dev_flow/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr-after-impl) - CTR creation criteria
+   - **Policy**: [ADR-CTR_SEPARATE_FILES_POLICY.md](../../ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - MANDATORY dual-file format
+   - **Decision Guide**: [WHEN_TO_CREATE_IMPL.md](../../ai_dev_flow/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr-after-impl) - CTR creation criteria
    - **Create CTR When**: Public APIs, event schemas, data models, version compatibility requirements
    - **Skip CTR When**: Internal logic only, no external interface, no serialization
    - Input: Interface-focused REQ, ADR architecture decisions, IMPL deliverables list (if IMPL exists)
@@ -629,7 +629,7 @@ Before making any technology decisions in ADRs, specifications, or implementatio
 - One sentence per function description maximum
 - Use tabular format for parameter specifications
 - Employ bullet points for configuration options
-- See: [TOOL_OPTIMIZATION_GUIDE.md]({project_root}/ai_dev_flow/TOOL_OPTIMIZATION_GUIDE.md)
+- See: [TOOL_OPTIMIZATION_GUIDE.md](../../ai_dev_flow/TOOL_OPTIMIZATION_GUIDE.md)
 
 ### 5. Quality Gates (Definition of Done)
 
@@ -662,10 +662,10 @@ Before making any technology decisions in ADRs, specifications, or implementatio
 - **PRD**: Product requirements for position risk limits
 - **SYS**: System requirements specification
 - **EARS**: Formal WHEN-THE-SHALL-WITHIN requirements
-- **REQ**: [REQ-003_position_limit_enforcement.md]({project_root}/ai_dev_flow/REQ/risk/lim/REQ-003_position_limit_enforcement.md)
+- **REQ**: [REQ-003_position_limit_enforcement.md](../../ai_dev_flow/REQ/risk/lim/REQ-003_position_limit_enforcement.md)
 - **ADR**: Architecture decision for risk limit enforcement
 - **BDD**: Gherkin feature file with test scenarios
-- **CTR**: [CTR-001_position_risk_validation.md + .yaml]({project_root}/ai_dev_flow/CTR/) (if interface requirement)
+- **CTR**: [CTR-001_position_risk_validation.md + .yaml](../../ai_dev_flow/CTR/) (if interface requirement)
   - Markdown: Contract context, definitions, error handling, NFRs, versioning
   - YAML: JSON Schema request/response definitions, error codes, endpoint specifications
 - **SPEC**: YAML technical specification referencing CTR contract
@@ -841,46 +841,6 @@ ai_dev_flow/
 **Change Management**: Know exactly what breaks when upstream requirements change
 **Quality Assurance**: Automated validation prevents missing links
 
-## Related Skills
-
-This skill integrates with other skills in the AI Dev Flow framework:
-
-**Core Workflow Skills:**
-
-- **`project-init`** - Initialize new project structure with artifact directories and domain configuration
-  - Use BEFORE doc-flow for greenfield projects
-  - Creates folder structure, domain setup, and baseline files
-  - Reference: `.claude/skills/project-init/SKILL.md`
-
-- **`trace-check`** - Validate traceability and document compliance after creating artifacts
-  - Use AFTER doc-flow to verify bidirectional links
-  - Validates cumulative tagging, ID formats, and link resolution
-  - Detects orphaned artifacts and traceability gaps
-  - Reference: `.claude/skills/trace-check/SKILL.md`
-
-**Planning & Architecture:**
-
-- **`adr-roadmap`** - Generate phased implementation roadmaps from ADRs
-  - Use AFTER creating ADR artifacts to plan rollout strategy
-  - Creates timeline, risk assessment, and dependency mapping
-  - Reference: `.claude/skills/adr-roadmap/SKILL.md`
-
-- **`project-mngt`** - MVP/MMP/MMR planning and task organization
-  - Use for strategic release planning across artifact lifecycle
-  - Integrates with IMPL artifacts for project management
-  - Reference: `.claude/skills/project-mngt/SKILL.md`
-
-**Typical Workflow Integration:**
-
-```text
-1. project-init    → Initialize project structure (greenfield only)
-2. doc-flow        → Create artifact chain (BRD → PRD → ... → TASKS → IPLAN)
-3. trace-check     → Validate traceability and compliance
-4. adr-roadmap     → Generate implementation roadmap from ADRs
-5. Implementation  → Execute based on IPLAN and TASKS
-6. trace-check     → Re-validate after code implementation
-```
-
 ## Related Resources
 
 **⭐ Primary Reference - Authoritative Development Standard:**
@@ -888,16 +848,16 @@ This skill integrates with other skills in the AI Dev Flow framework:
 All documentation below is located in `ai_dev_flow/` - the **single source of truth** for SDD methodology.
 
 **Core Standards:**
-- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 13-step workflow
-- **Authoritative Workflow Diagram**: [index.md]({project_root}/ai_dev_flow/index.md#traceability-flow) - Complete Mermaid diagram (single source of truth)
-- **ID Standards**: [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md) - File naming, ID format rules
-- **Traceability**: [TRACEABILITY.md]({project_root}/ai_dev_flow/TRACEABILITY.md) - Cross-reference format, link standards
-- **When to Create IMPL**: [WHEN_TO_CREATE_IMPL.md]({project_root}/ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC decision guide
-- **README**: [README.md]({project_root}/ai_dev_flow/README.md) - Getting started guide
+- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 13-step workflow
+- **Authoritative Workflow Diagram**: [index.md](../../ai_dev_flow/index.md#traceability-flow) - Complete Mermaid diagram (single source of truth)
+- **ID Standards**: [ID_NAMING_STANDARDS.md](../../ai_dev_flow/ID_NAMING_STANDARDS.md) - File naming, ID format rules
+- **Traceability**: [TRACEABILITY.md](../../ai_dev_flow/TRACEABILITY.md) - Cross-reference format, link standards
+- **When to Create IMPL**: [WHEN_TO_CREATE_IMPL.md](../../ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC decision guide
+- **README**: [README.md](../../ai_dev_flow/README.md) - Getting started guide
 
 **Project Documentation:**
 - Project Configuration: `.claude/CLAUDE.md` (project-specific instructions)
-- SDD Framework: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
+- SDD Framework: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
 **Templates and READMEs** (all in `ai_dev_flow/`):
 
@@ -931,9 +891,9 @@ Each artifact type directory contains:
 - **CTR** (`CTR/`): `CTR-TEMPLATE.md`, `CTR-TEMPLATE.yaml` (dual-file), Index: `CTR-000_index.md`, README
   - **MANDATORY dual-file format**: Both .md and .yaml required per contract (see ADR-CTR)
   - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
-  - Policy: [ADR-CTR_SEPARATE_FILES_POLICY.md]({project_root}/ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - Authoritative policy
+  - Policy: [ADR-CTR_SEPARATE_FILES_POLICY.md](../../ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - Authoritative policy
   - Optional organization: subdirectories by service type (agents/, mcp/, infra/, shared/)
-  - Examples: [CTR-001_risk_validator_api.md/.yaml]({project_root}/ai_dev_flow/CTR/examples/) - Complete reference implementation
+  - Examples: [CTR-001_risk_validator_api.md/.yaml](../../ai_dev_flow/CTR/examples/) - Complete reference implementation
 - **SPEC** (`SPEC/`): `SPEC-TEMPLATE.yaml`, Index: `SPEC-000_index.md`, README
   - Organized by type: `services/`, `agents/`, `infrastructure/`
   - References CTR contracts via `contract_ref:` field

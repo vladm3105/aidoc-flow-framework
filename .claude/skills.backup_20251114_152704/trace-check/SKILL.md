@@ -242,7 +242,7 @@ Code & Validation Layer:
   Validation: ALL tags from all upstream artifacts
 ```
 
-**Note**: Functional layers group artifacts by purpose in the workflow. Tag counts accumulate as artifacts progress through the layers. Numbers indicate artifact sequence position (0-15) in the 16-layer architecture.
+**Note**: Functional layers group artifacts by purpose in the workflow. Tag counts accumulate as artifacts progress through the layers.
 
 **Validation Script**:
 ```bash
@@ -256,7 +256,7 @@ python scripts/validate_tags_against_docs.py \
 
 **Validation Rules**:
 1. **Complete Chain**: Each artifact must include ALL upstream tags
-2. **Artifact Type Validation**: Artifacts must have all tags from previous functional layers
+2. **Layer Validation**: Artifacts must have all tags from previous functional layers
 3. **Optional Layers**: IMPL and CTR are optional; downstream artifacts adjust tag count accordingly
 4. **Tag Chain Completeness**: If higher layer tag exists (e.g., @adr), all lower layer tags must exist (@brd through @bdd)
 5. **No Gaps**: No missing tags in the cumulative chain

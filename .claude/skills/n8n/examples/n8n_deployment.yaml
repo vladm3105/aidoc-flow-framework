@@ -1,0 +1,287 @@
+# n8n Deployment Configuration Examples
+
+# =============================================================================
+# Docker Compose Configuration (Recommended)
+# =============================================================================
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    ports:
+      - "5678:5678"
+    environment:
+      # Authentication
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=secure_password
+
+      # Host configuration
+      - N8N_HOST=https://n8n.yourdomain.com
+      - WEBHOOK_URL=https://n8n.yourdomain.com/
+
+      # Timezone
+      - GENERIC_TIMEZONE=America/New_York
+
+      # Database (PostgreSQL recommended for production)
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n
+      - DB_POSTGRESDB_PASSWORD=n8n_password
+
+      # Encryption (CRITICAL: Must persist across deployments)
+      - N8N_ENCRYPTION_KEY=your_secret_encryption_key_here
+
+      # Execution data retention
+      - EXECUTIONS_DATA_SAVE_ON_ERROR=all
+      - EXECUTIONS_DATA_SAVE_ON_SUCCESS=all
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=168  # 7 days
+
+      # Performance tuning
+      - N8N_PAYLOAD_SIZE_MAX=32  # MB
+      - EXECUTIONS_TIMEOUT=3600  # seconds
+      - EXECUTIONS_TIMEOUT_MAX=7200  # seconds
+
+      # Queue mode (for scaling)
+      # - N8N_QUEUE_MODE=main  # Uncomment for main process
+
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - n8n-network
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=n8n
+      - POSTGRES_USER=n8n
+      - POSTGRES_PASSWORD=n8n_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - n8n-network
+
+  # Optional: Redis for queue mode
+  redis:
+    image: redis:7-alpine
+    networks:
+      - n8n-network
+
+volumes:
+  n8n_data:
+  postgres_data:
+
+networks:
+  n8n-network:
+    driver: bridge
+
+
+# =============================================================================
+# Queue Mode Configuration (High Volume)
+# =============================================================================
+
+# docker-compose.queue.yaml
+version: '3.8'
+
+services:
+  # Main process (UI + queue management)
+  n8n-main:
+    image: n8nio/n8n:latest
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_QUEUE_MODE=main
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      # ... other environment variables
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - redis
+      - postgres
+
+  # Worker process 1 (execution only)
+  n8n-worker-1:
+    image: n8nio/n8n:latest
+    command: worker
+    environment:
+      - N8N_QUEUE_MODE=worker
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      # ... other environment variables
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - redis
+      - postgres
+
+  # Worker process 2 (execution only)
+  n8n-worker-2:
+    image: n8nio/n8n:latest
+    command: worker
+    environment:
+      - N8N_QUEUE_MODE=worker
+      - QUEUE_BULL_REDIS_HOST=redis
+      - QUEUE_BULL_REDIS_PORT=6379
+      # ... other environment variables
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - redis
+      - postgres
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=n8n
+      - POSTGRES_USER=n8n
+      - POSTGRES_PASSWORD=n8n_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  n8n_data:
+  postgres_data:
+  redis_data:
+
+
+# =============================================================================
+# Resource Requirements
+# =============================================================================
+
+# | Workflow Volume | CPU | RAM | Database |
+# |----------------|-----|-----|----------|
+# | <100 exec/day | 1 core | 512MB | SQLite |
+# | 100-1000/day | 2 cores | 2GB | PostgreSQL |
+# | 1000-10000/day | 4 cores | 4GB | PostgreSQL |
+# | >10000/day | 8+ cores | 8GB+ | PostgreSQL + Queue mode |
+
+
+# =============================================================================
+# Essential Environment Variables
+# =============================================================================
+
+# Host configuration (REQUIRED)
+# N8N_HOST=https://n8n.yourdomain.com
+# WEBHOOK_URL=https://n8n.yourdomain.com/
+
+# Encryption (CRITICAL)
+# N8N_ENCRYPTION_KEY=your_secret_key  # Must persist across deployments
+
+# Database
+# DB_TYPE=postgresdb  # SQLite/PostgreSQL/MySQL/MariaDB
+# DB_POSTGRESDB_HOST=postgres
+# DB_POSTGRESDB_PORT=5432
+# DB_POSTGRESDB_DATABASE=n8n
+# DB_POSTGRESDB_USER=n8n
+# DB_POSTGRESDB_PASSWORD=password
+
+# Execution data
+# EXECUTIONS_DATA_SAVE_ON_ERROR=all
+# EXECUTIONS_DATA_SAVE_ON_SUCCESS=all  # Disable for high frequency
+# EXECUTIONS_DATA_PRUNE=true
+# EXECUTIONS_DATA_MAX_AGE=168  # Hours
+
+# Performance
+# N8N_PAYLOAD_SIZE_MAX=16  # MB (default)
+# EXECUTIONS_TIMEOUT=unlimited  # seconds (default)
+# EXECUTIONS_TIMEOUT_MAX=3600  # seconds (default)
+
+# Security
+# N8N_BASIC_AUTH_ACTIVE=true
+# N8N_BASIC_AUTH_USER=admin
+# N8N_BASIC_AUTH_PASSWORD=password
+
+# Timezone
+# GENERIC_TIMEZONE=America/New_York
+
+
+# =============================================================================
+# Nginx Reverse Proxy Configuration (Optional)
+# =============================================================================
+
+# server {
+#     listen 80;
+#     server_name n8n.yourdomain.com;
+#     return 301 https://$server_name$request_uri;
+# }
+#
+# server {
+#     listen 443 ssl http2;
+#     server_name n8n.yourdomain.com;
+#
+#     ssl_certificate /path/to/cert.pem;
+#     ssl_certificate_key /path/to/key.pem;
+#
+#     location / {
+#         proxy_pass http://localhost:5678;
+#         proxy_http_version 1.1;
+#         proxy_set_header Upgrade $http_upgrade;
+#         proxy_set_header Connection 'upgrade';
+#         proxy_set_header Host $host;
+#         proxy_cache_bypass $http_upgrade;
+#         proxy_set_header X-Real-IP $remote_addr;
+#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#         proxy_set_header X-Forwarded-Proto $scheme;
+#     }
+# }
+
+
+# =============================================================================
+# Monitoring Configuration
+# =============================================================================
+
+# Enable execution logging
+# EXECUTIONS_DATA_SAVE_ON_ERROR=all
+# EXECUTIONS_DATA_SAVE_ON_SUCCESS=all
+
+# Set up error workflows (Error Trigger node)
+# Monitor database size (execution history cleanup)
+# Track webhook response times
+# Set up external monitoring (e.g., Sentry, CloudWatch)
+
+
+# =============================================================================
+# Backup Strategy
+# =============================================================================
+
+# 1. Database backups (PostgreSQL)
+#    pg_dump -h postgres -U n8n n8n > backup.sql
+#
+# 2. Encryption key backup
+#    Store N8N_ENCRYPTION_KEY securely (password manager)
+#
+# 3. Workflow exports
+#    Export workflows as JSON from UI
+#    Version control in Git repository
+#
+# 4. Credentials backup
+#    Credentials are encrypted in database
+#    Cannot be exported separately
+
+
+# =============================================================================
+# Development vs Production
+# =============================================================================
+
+# Development (npm install):
+# npm install n8n -g
+# n8n start
+# Access: http://localhost:5678
+
+# Production (Docker):
+# docker-compose up -d
+# Access: https://n8n.yourdomain.com
+
+# Production (Queue mode):
+# docker-compose -f docker-compose.queue.yaml up -d

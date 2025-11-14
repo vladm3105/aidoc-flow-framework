@@ -341,8 +341,6 @@ return processed_items
 
 ### Development Styles
 
-[See Code Examples: examples/n8n_custom_node.ts]
-
 **1. Programmatic Style** (Full control)
 
 *Use for:*
@@ -351,7 +349,72 @@ return processed_items
 - Custom UI components
 - Polling operations with state management
 
-[See: `CustomNode` class in examples/n8n_custom_node.ts]
+*Structure:*
+```typescript
+import { INodeType, INodeTypeDescription, IExecuteFunctions } from 'n8n-workflow';
+
+export class CustomNode implements INodeType {
+  description: INodeTypeDescription = {
+    displayName: 'Custom Node',
+    name: 'customNode',
+    group: ['transform'],
+    version: 1,
+    description: 'Custom functionality',
+    defaults: {
+      name: 'Custom Node',
+    },
+    inputs: ['main'],
+    outputs: ['main'],
+    credentials: [
+      {
+        name: 'customApi',
+        required: true,
+      },
+    ],
+    properties: [
+      {
+        displayName: 'Operation',
+        name: 'operation',
+        type: 'options',
+        options: [
+          {
+            name: 'Get',
+            value: 'get',
+          },
+          {
+            name: 'Create',
+            value: 'create',
+          },
+        ],
+        default: 'get',
+      },
+    ],
+  };
+
+  async execute(this: IExecuteFunctions) {
+    const items = this.getInputData();
+    const returnData = [];
+
+    for (let i = 0; i < items.length; i++) {
+      const operation = this.getNodeParameter('operation', i);
+      const credentials = await this.getCredentials('customApi');
+
+      // Implementation logic
+      const result = await this.helpers.request({
+        method: 'GET',
+        url: `https://api.example.com/${operation}`,
+        headers: {
+          'Authorization': `Bearer ${credentials.apiKey}`,
+        },
+      });
+
+      returnData.push({ json: result });
+    }
+
+    return [returnData];
+  }
+}
+```
 
 **2. Declarative Style** (Simplified)
 
@@ -360,13 +423,49 @@ return processed_items
 - RESTful API wrappers
 - Simple integrations without complex logic
 
-[See: `operations` and `router` exports in examples/n8n_custom_node.ts]
+*Structure:*
+```typescript
+import { INodeProperties } from 'n8n-workflow';
 
-**Additional Examples:**
+export const operations: INodeProperties[] = [
+  {
+    displayName: 'Resource',
+    name: 'resource',
+    type: 'options',
+    options: [
+      { name: 'User', value: 'user' },
+      { name: 'Project', value: 'project' },
+    ],
+    default: 'user',
+  },
+];
 
-- Credential configuration: `customApiCredentials` in examples/n8n_custom_node.ts
-- Credential validation: `validateCredentials()` in examples/n8n_custom_node.ts
-- Polling trigger: `PollingTrigger` class in examples/n8n_custom_node.ts
+// Routing defined declaratively
+export const router: IRouter = {
+  user: {
+    get: {
+      routing: {
+        request: {
+          method: 'GET',
+          url: '=/users/{{$parameter.userId}}',
+        },
+      },
+    },
+    create: {
+      routing: {
+        request: {
+          method: 'POST',
+          url: '/users',
+          body: {
+            name: '={{$parameter.name}}',
+            email: '={{$parameter.email}}',
+          },
+        },
+      },
+    },
+  },
+};
+```
 
 ### Development Workflow
 
@@ -659,14 +758,28 @@ Query Input → Vector Store Search → Format Context → LLM → Response Outp
 
 ### Self-Hosting Options
 
-[See Code Examples: examples/n8n_deployment.yaml]
-
 **Docker (Recommended):**
-- Docker Compose with PostgreSQL
-- Queue mode configuration for scaling
-- Resource requirements by volume
+```bash
+# Docker Compose
+version: '3.8'
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=secure_password
+      - N8N_HOST=https://n8n.yourdomain.com
+      - WEBHOOK_URL=https://n8n.yourdomain.com/
+      - GENERIC_TIMEZONE=America/New_York
+    volumes:
+      - n8n_data:/home/node/.n8n
 
-[See: docker-compose configurations in examples/n8n_deployment.yaml]
+volumes:
+  n8n_data:
+```
 
 **npm (Development):**
 ```bash
@@ -677,8 +790,6 @@ n8n start
 
 **Environment Configuration:**
 
-[See: Complete environment variable reference in examples/n8n_deployment.yaml]
-
 Essential variables:
 - `N8N_HOST` - Public URL for webhooks
 - `WEBHOOK_URL` - Webhook endpoint base
@@ -687,7 +798,10 @@ Essential variables:
 - `EXECUTIONS_DATA_SAVE_ON_ERROR` - Error logging
 - `EXECUTIONS_DATA_SAVE_ON_SUCCESS` - Success logging
 
-Performance tuning variables documented in examples/n8n_deployment.yaml
+Performance tuning:
+- `N8N_PAYLOAD_SIZE_MAX` - Max request size (default: 16MB)
+- `EXECUTIONS_TIMEOUT` - Max execution time (default: unlimited)
+- `EXECUTIONS_TIMEOUT_MAX` - Hard limit (default: 3600s)
 
 ### Scaling Considerations
 
