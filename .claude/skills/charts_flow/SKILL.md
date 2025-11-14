@@ -509,7 +509,7 @@ Code Implementation
 
 ### Internal Documentation
 - [Claude Code Skills README](./../README.md)
-- [Documentation Standards](../../../CLAUDE_INSTRUCTIONS.md)
+- [SDD Framework Guide](../../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
 ### External Resources
 - [Mermaid Documentation](https://mermaid.js.org/)

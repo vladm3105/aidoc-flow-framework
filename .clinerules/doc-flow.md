@@ -637,7 +637,7 @@ All documentation below is located in `ai_dev_flow/` - the **single source of tr
 - **README**: [README.md](../../ai_dev_flow/README.md) - Getting started guide
 
 **Project Documentation:**
-- Claude Instructions: [CLAUDE.md](../../CLAUDE.md)
+- Project Configuration: `.claude/CLAUDE.md` (project-specific instructions)
 - SDD Framework: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
 **Templates and READMEs** (all in `ai_dev_flow/`):

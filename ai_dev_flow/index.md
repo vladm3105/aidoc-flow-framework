@@ -224,10 +224,18 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 Validate document structure and traceability:
 
 ```bash
-python scripts/validate_requirement_ids.py
-python scripts/complete_traceability_matrix.py
-python scripts/check_broken_references.py
+# Implemented validation scripts
+python scripts/validate_requirement_ids.py          # ✓ Available
+
+# Planned validation scripts (not yet implemented)
+# python scripts/complete_traceability_matrix.py   # ✗ Planned
+# python scripts/check_broken_references.py         # ✗ Planned
 ```
+
+**Current Status:**
+- ✓ `validate_requirement_ids.py` - Validates REQ-ID format and uniqueness
+- ✗ `complete_traceability_matrix.py` - Planned: Generate complete traceability matrix
+- ✗ `check_broken_references.py` - Planned: Check for broken internal links
 
 ## Best Practices
 

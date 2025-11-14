@@ -151,7 +151,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → C
 - **IMPL**: Project management document organizing work (WHO does WHAT, WHEN) - NOT technical specifications
 - **SPEC**: Technical implementation specification (HOW to build components) - YAML format for code generation
 
-**Flow Visualization** (corrected per SPEC_DRIVEN_DEVELOPMENT_GUIDE.md):
+**Flow Visualization** (see [index.md](../../ai_dev_flow/index.md#traceability-flow) for authoritative diagram):
 ```mermaid
 flowchart TD
     Strategy[option_strategy/: Trading Business Logic] --> BRD[BRD: Business Requirements]
@@ -629,7 +629,7 @@ Before making any technology decisions in ADRs, specifications, or implementatio
 - One sentence per function description maximum
 - Use tabular format for parameter specifications
 - Employ bullet points for configuration options
-- See: [TOOL_OPTIMIZATION_GUIDE.md](../../TOOL_OPTIMIZATION_GUIDE.md)
+- See: [TOOL_OPTIMIZATION_GUIDE.md](../../ai_dev_flow/TOOL_OPTIMIZATION_GUIDE.md)
 
 ### 5. Quality Gates (Definition of Done)
 
@@ -856,7 +856,7 @@ All documentation below is located in `ai_dev_flow/` - the **single source of tr
 - **README**: [README.md](../../ai_dev_flow/README.md) - Getting started guide
 
 **Project Documentation:**
-- Claude Instructions: [CLAUDE.md](../../CLAUDE.md)
+- Project Configuration: `.claude/CLAUDE.md` (project-specific instructions)
 - SDD Framework: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
 **Templates and READMEs** (all in `ai_dev_flow/`):

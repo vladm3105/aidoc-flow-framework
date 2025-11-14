@@ -110,7 +110,7 @@ IMPL-001: Options Trading System Implementation Plan
 - ✅ Exit criteria defined for all phases
 - ✅ Deliverables specified (CTR/SPEC/TASKS)
 - ✅ Traceability complete (all BRDs → phases)
-- ✅ Token count < 10,000
+- ✅ Token limits: Claude Code (50K-100K), Gemini CLI use file read tool >10K
 - ✅ Objective language (no promotional content)
 - ✅ No Python code blocks
 

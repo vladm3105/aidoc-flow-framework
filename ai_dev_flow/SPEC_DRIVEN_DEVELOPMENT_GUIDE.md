@@ -1,6 +1,9 @@
 
 Development Principles Guide
 
+> ⚠️ **Token Limit Update (2025-11)**: This guide contains historical 10K token limits.
+> For current token limits (Claude Code: 50K-100K), see [TOOL_OPTIMIZATION_GUIDE.md](./TOOL_OPTIMIZATION_GUIDE.md).
+
 ## The AI-Driven Specification-Driven Development Workflow
 
 **⚠️ For the complete authoritative workflow diagram, see [index.md](./index.md#traceability-flow).**

@@ -411,7 +411,8 @@ max_phase_duration_weeks: 4
 
 5. **Documentation Standards**:
    - [ ] Objective language (no promotional content)
-   - [ ] Token limit < 10,000 per file
+   - [ ] Claude Code: 50,000 tokens standard, 100,000 tokens maximum per file
+   - [ ] Gemini CLI: Use file read tool for files >10,000 tokens
    - [ ] No Python code blocks
    - [ ] Mermaid diagrams for process flows
 

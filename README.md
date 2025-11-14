@@ -283,6 +283,8 @@ Manual traceability sections in documents remain supported during migration:
 - [SPEC-003](../SPEC/SPEC-003_implementation.yaml)
 ```
 
+> **Note**: Path examples above use relative paths within a project structure. Adjust paths based on your project's directory organization.
+
 **Migration:** New projects should use tag-based approach. Existing projects can migrate gradually.
 
 ### ID Naming Standards

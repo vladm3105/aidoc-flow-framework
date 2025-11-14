@@ -1,5 +1,9 @@
 # AI Coding Tools Comparison: File Size & Context Window Guidelines
 
+> ⚠️ **Token Limit Update (2025-11)**: This comparison contains historical 10K token limits for Gemini CLI.
+> For current Claude Code token limits (50K-100K), see [TOOL_OPTIMIZATION_GUIDE.md](ai_dev_flow/TOOL_OPTIMIZATION_GUIDE.md).
+> Gemini CLI file read tool recommendations remain accurate.
+
 ## Comprehensive Comparison Table
 
 | Feature | Claude Code | Gemini CLI | OpenAI Codex CLI | GitHub Copilot |
