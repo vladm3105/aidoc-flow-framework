@@ -129,9 +129,12 @@ See [index.md](./index.md#traceability-flow) for additional workflow visualizati
 # Important Traceability Condition
 PRDs should reference the documentation in this directory, but the documentation itself should not reference PRDs. The documentation is the authoritative source for requirements and features.
 # Spec-Driven Development (SDD) Guide — Examples
-@requirement:[REQ-003](./REQ/risk/lim/REQ-003_position_limit_enforcement.md#REQ-003)
-@adr:[ADR-033](./ADR/ADR-033_risk_limit_enforcement_architecture.md#ADR-033)
-@spec:[position_limit_service](./SPEC/services/SPEC-003_position_limit_service.yaml)
+
+**Note**: File paths shown below are illustrative examples. Replace `{category}`, `{subcategory}`, `{NNN}`, and `{slug}` with actual values for your project.
+
+@requirement:[REQ-NNN](./REQ/{category}/{subcategory}/REQ-NNN_{slug}.md#REQ-NNN)
+@adr:[ADR-NNN](./ADR/ADR-NNN_{slug}.md#ADR-NNN)
+@spec:[{service_name}](./SPEC/{category}/SPEC-NNN_{slug}.yaml)
 
 Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructions/DOCUMENT_ID_CORE_RULES.md`, `docs/DOCUMENT_ID_CORE_RULES.md`, `TRACEABILITY.md`, and `ID_NAMING_STANDARDS.md`.
 
@@ -972,17 +975,20 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
 - Example Flow Index: [TRACEABILITY.md](./TRACEABILITY.md)
 - Master Index: [index.md](./index.md)
 
-## Example Mapping ([RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Limits)
-- PRD: [PRD-003](./PRD/PRD-003_position_risk_limits.md)
-- SYS: [SYS-003](./SYS/SYS-003_position_risk_limits.md)
-- EARS: [EARS-003](./EARS/EARS-003_position_limit_enforcement.md)
-- BDD: [risk_limits_requirements.feature](./BDD/risk_limits_requirements.feature)
-- ADR: [ADR-033](./ADR/ADR-033_risk_limit_enforcement_architecture.md#ADR-033)
-- **REQ V2**: [REQ-003](./REQ/risk/lim/REQ-003_position_limit_enforcement.md#REQ-003) ← Contains complete interface/schema/error/config specifications
-- CTR: [CTR-001](./CTR/CTR-001_position_risk_validation.md#CTR-001) + [CTR-001.yaml](./CTR/CTR-001_position_risk_validation.yaml) ← Contract for [RESOURCE_INSTANCE - e.g., database connection, workflow instance] validation interface
-- SPEC: [position_limit_service.yaml](./SPEC/services/position_limit_service.yaml) ← 95% derived from REQ-003 V2 content
-- TASKS: [position_limit_service_tasks.md](./TASKS/position_limit_service_tasks.md)
-- Code: `option_strategy/risk/position_limit_service.py`
+## Example Mapping (Illustrative Workflow)
+
+**Note**: File paths shown are generic examples. Replace with actual paths for your project.
+
+- PRD: [PRD-NNN](./PRD/PRD-NNN_{slug}.md)
+- SYS: [SYS-NNN](./SYS/SYS-NNN_{slug}.md)
+- EARS: [EARS-NNN](./EARS/EARS-NNN_{slug}.md)
+- BDD: [{slug}_requirements.feature](./BDD/{slug}_requirements.feature)
+- ADR: [ADR-NNN](./ADR/ADR-NNN_{slug}.md#ADR-NNN)
+- **REQ V2**: [REQ-NNN](./REQ/{category}/{subcategory}/REQ-NNN_{slug}.md#REQ-NNN) ← Contains complete interface/schema/error/config specifications
+- CTR: [CTR-NNN](./CTR/CTR-NNN_{slug}.md#CTR-NNN) + [CTR-NNN.yaml](./CTR/CTR-NNN_{slug}.yaml) ← Contract for service interface
+- SPEC: [{service_name}.yaml](./SPEC/{category}/{service_name}.yaml) ← Derived from REQ content
+- TASKS: [{service_name}_tasks.md](./TASKS/{service_name}_tasks.md)
+- Code: `{project_root}/{module}/{service_name}.py`
 
 ### Example: REQ V2 → SPEC Workflow
 

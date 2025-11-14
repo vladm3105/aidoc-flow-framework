@@ -80,7 +80,7 @@ The 16-layer architecture uses the following structure:
   - Layer 9: CTR (Contracts) - optional
   - Layer 10: SPEC (Technical Specifications)
   - Layer 11: TASKS (Task Breakdowns)
-  - Layer 12: IPLAN (Implementation Plans)
+  - Layer 12: IPLAN (Implementation Work Plans)
 
 - **Layers 13-15**: Execution Layers
   - Layer 13: Code (source code files)
@@ -152,7 +152,7 @@ The 16-layer architecture uses the following structure:
 
 ### 5. Project Management Layer
 
-**IMPL/** - Implementation Plans
+**IMPL/** - Implementation Specifications (Layer 8)
 - Project management documents organizing work into phases, teams, deliverables
 - **Focus**: WHO does WHAT, WHEN - NOT technical specifications (HOW)
 - Identifies which CTR, SPEC, TASKS to create
@@ -190,7 +190,7 @@ The 16-layer architecture uses the following structure:
 
 ### 9. Session Planning Layer
 
-**IPLAN/** - Session-Specific Implementation Plans
+**IPLAN/** - Implementation Work Plans (Layer 12)
 - Organize multiple TASKS into session-scoped work packages
 - Track progress across related implementation units
 - Maintain context between AI coding sessions

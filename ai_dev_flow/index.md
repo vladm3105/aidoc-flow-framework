@@ -9,7 +9,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Business Layer
 
 - **BRD** (`BRD/`): Business Requirements Documents defining business objectives and constraints
-  - Templates: [BRD-TEMPLATE.md](./BRD/BRD-TEMPLATE.md), [BRD-template-2.md](./BRD/BRD-template-2.md), [BRD-trading-template.md](./BRD/BRD-trading-template.md)
+  - Template: [BRD-TEMPLATE.md](./BRD/BRD-TEMPLATE.md)
 - **PRD** (`PRD/`): Product Requirements Documents translating business needs to product features
   - Index: [PRD-000_index.md](./PRD/PRD-000_index.md)
   - Template: [PRD-TEMPLATE.md](./PRD/PRD-TEMPLATE.md)
@@ -39,7 +39,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Project Management Layer
 
-- **IMPL** (`IMPL/`): Implementation Plans organizing work into phases, teams, and deliverables
+- **IMPL** (`IMPL/`): Implementation Specifications (Layer 8) organizing work into phases, teams, and deliverables
   - Index: [IMPL-000_index.md](./IMPL/IMPL-000_index.md)
   - Template: [IMPL-TEMPLATE.md](./IMPL/IMPL-TEMPLATE.md)
   - Purpose: Project management (WHO does WHAT, WHEN) - NOT technical specifications
@@ -77,7 +77,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Session Execution Layer
 
-- **IPLAN** (`IPLAN/`): Implementation plans for specific coding sessions with executable bash commands
+- **IPLAN** (`IPLAN/`): Implementation Work Plans (Layer 12) for specific coding sessions with executable bash commands
   - Index: [IPLAN-000_index.md](./IPLAN/IPLAN-000_index.md)
   - Template: [IPLAN-TEMPLATE.md](./IPLAN/IPLAN-TEMPLATE.md)
   - Purpose: Session-based execution context for implementing TASKS
@@ -110,7 +110,7 @@ flowchart TD
     REQ[REQ<br/>Atomic Requirements<br/>Granular, testable requirements<br/><small><i>@brd through @sys</i></small>]
 
     %% Project Management Layer
-    IMPL[IMPL<br/>Implementation Plans<br/>WHO/WHEN - Phases, teams, deliverables<br/><small><i>@brd through @req</i></small>]
+    IMPL[IMPL<br/>Implementation Specifications<br/>WHO/WHEN - Phases, teams, deliverables<br/><small><i>@brd through @req</i></small>]
 
     %% Interface Layer
     CTR[CTR<br/>API Contracts<br/>Interface definitions between components<br/>Dual format: .md + .yaml<br/><small><i>@brd through @impl</i></small>]
@@ -122,7 +122,7 @@ flowchart TD
     TASKS[TASKS<br/>Code Generation Plans<br/>AI-structured implementation steps<br/><small><i>@brd through @spec</i></small>]
 
     %% Session Execution Layer
-    IPLAN[IPLAN<br/>Session Implementation Plans<br/>Executable bash commands for sessions<br/><small><i>@brd through @tasks</i></small>]
+    IPLAN[IPLAN<br/>Implementation Work Plans<br/>Executable bash commands for sessions<br/><small><i>@brd through @tasks</i></small>]
 
     %% Execution Layer
     Code[Code<br/>Python Implementation<br/>Generated from SPEC + TASKS + IPLAN<br/><small><i>@brd through @iplan</i></small>]
@@ -179,6 +179,8 @@ flowchart TD
     class IPLAN sessionLayer
     class Code,Tests,Validation,Review,Prod executionLayer
 ```
+
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 
 ### Workflow Explanation
 
