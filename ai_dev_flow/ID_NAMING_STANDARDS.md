@@ -87,13 +87,18 @@ Document ID Standards (ai_dev_flow)
   - Variable Length: NNN = 3-4 digits (001-999, 1000+), YY = 2-3 digits [OPTIONAL] (01-99, 100+)
   - Notes: Use sub-numbering (-YY) when single architectural decision requires multiple related documents.
 - BDD Features and Tags
+  - **File Format Clarification**:
+    - **Test Scenarios**: `BDD-NNN_{slug}.feature` (Gherkin format - `.feature` extension)
+    - **Index/Directory**: `BDD-000_index.md` (Markdown format - `.md` extension)
+    - **Template**: `BDD-TEMPLATE.feature` (Gherkin format - `.feature` extension)
+    - **Traceability Matrix**: `BDD-000_TRACEABILITY_MATRIX-TEMPLATE.md` (Markdown format - `.md` extension)
   - Filename: `BDD/BDD-NNN_{slug}.feature` or `BDD/BDD-NNN-YY_{slug}.feature`.
   - Variable Length: NNN = 3-4 digits (001-999, 1000+), YY = 2-3 digits [OPTIONAL] (01-99, 100+)
   - Tags (mandatory):
     - `@requirement:[REQ-NNN](../REQ/.../REQ-NNN_{slug}.md#REQ-NNN)` or `@requirement:[REQ-NNN-YY](...)`
     - `@adr:[ADR-NNN](../ADR/ADR-NNN_{slug}.md#ADR-NNN)` or `@adr:[ADR-NNN-YY](...)` (if applicable)
   - Tags appear before `Scenario:` using valid relative paths + anchors.
-  - Index: maintain `BDD/BDD-000_index.md`.
+  - Index: maintain `BDD/BDD-000_index.md` (note: `.md` format, not `.feature`).
   - Notes: Use sub-numbering (-YY) when single feature requires multiple related test files.
 - Technical Specifications (SPEC)
   - YAML `id:` uses lowercase snake_case; pattern: `^[a-z][a-z0-9_]*[a-z0-9]$`.

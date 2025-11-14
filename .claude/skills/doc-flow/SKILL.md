@@ -214,35 +214,35 @@ flowchart TD
 **Authoritative Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
 
 **Universal Numbering Pattern (All Document Types):**
-- **Primary Number (XXX)**: 3-4 digit sequential number for atomic logical document (001-999, then 1000-9999 when needed)
+- **Primary Number (NNN)**: 3-4 digit sequential number for atomic logical document (001-999, then 1000-9999 when needed)
 - **Sub-Document Number (YY)**: 2-3 digit sequential number within atomic document [OPTIONAL] (01-99, then 100-999 when needed)
-- **Format**: `TYPE-XXX` or `TYPE-XXX-YY` (e.g., `REQ-001`, `BRD-009-02`, `ADR-1000`)
+- **Format**: `TYPE-NNN` or `TYPE-NNN-YY` (e.g., `REQ-001`, `BRD-009-02`, `ADR-1000`)
 - **Zero-Padding**: Always pad to minimum digit count (001, 01) until exceeding range
-- **Uniqueness Rule**: Each XXX number is unique and can be used EITHER as:
-  - Atomic document: `TYPE-XXX_{slug}.md` (e.g., `BRD-001_foundation.md`)
-  - Multi-document group: `TYPE-XXX-01_{slug}.md`, `TYPE-XXX-02_{slug}.md`, etc.
-  - ❌ INVALID: Cannot have both `BRD-009_{slug}.md` AND `BRD-009-01_{slug}.md` (XXX=009 collision)
-  - ✅ VALID: Can have `BRD-009-01_{slug}.md` AND `BRD-009-02_{slug}.md` (same XXX, different YY)
+- **Uniqueness Rule**: Each NNN number is unique and can be used EITHER as:
+  - Atomic document: `TYPE-NNN_{slug}.md` (e.g., `BRD-001_foundation.md`)
+  - Multi-document group: `TYPE-NNN-01_{slug}.md`, `TYPE-NNN-02_{slug}.md`, etc.
+  - ❌ INVALID: Cannot have both `BRD-009_{slug}.md` AND `BRD-009-01_{slug}.md` (NNN=009 collision)
+  - ✅ VALID: Can have `BRD-009-01_{slug}.md` AND `BRD-009-02_{slug}.md` (same NNN, different YY)
 
 **File Naming Patterns:**
-- BRD: `BRD/BRD-XXX_{slug}.md` or `BRD-XXX-YY_{slug}.md` (Business Requirements Documents) - **NEW location: docs/BRD/**
-- PRD: `PRD/PRD-XXX_{slug}.md` or `PRD-XXX-YY_{slug}.md` (Product Requirements) - **NEW location: docs/PRD/**
-- SYS: `SYS/SYS-XXX_{slug}.md` or `SYS-XXX-YY_{slug}.md` (System Requirements) - **Template location: ai_dev_flow/SYS/**
-- EARS: `EARS/EARS-XXX_{slug}.md` or `EARS-XXX-YY_{slug}.md` (Formal Requirements) - **Template location: ai_dev_flow/EARS/**
-- REQ: `REQ/{domain}/{subdomain}/REQ-XXX_{slug}.md` or `REQ-XXX-YY_{slug}.md` (Atomic Requirements) - **Template location: ai_dev_flow/REQ/**
-- ADR: `ADR/ADR-XXX_{slug}.md` or `ADR-XXX-YY_{slug}.md` (Architecture Decisions) - **NEW location: docs/ADR/**
-- BDD: `BDD/BDD-XXX_{slug}.feature` or `BDD-XXX-YY_{slug}.feature` (Behavior-Driven Tests) - **NEW location: docs/BDD/**
-- CTR: `CTR/CTR-XXX_{slug}.md` + `CTR-XXX_{slug}.yaml` or `CTR-XXX-YY_{slug}.{md,yaml}` (API Contracts - dual-file format) - **NEW location: docs/CTR/**
-- SPEC: `SPEC/SPEC-XXX_{slug}.yaml` or `SPEC-XXX-YY_{slug}.yaml` (Technical Specifications, references CTR contracts) - **NEW location: docs/SPEC/**
-- TASKS: `TASKS/TASKS-XXX_{slug}.md` or `TASKS-XXX-YY_{slug}.md` (Code Generation Plans) - **NEW location: docs/TASKS/**
-- IMPL: `IMPL/IMPL-XXX_{slug}.md` or `IMPL-XXX-YY_{slug}.md` (Implementation Plans) - **NEW location: docs/IMPL/**
+- BRD: `BRD/BRD-NNN_{slug}.md` or `BRD-NNN-YY_{slug}.md` (Business Requirements Documents) - **NEW location: docs/BRD/**
+- PRD: `PRD/PRD-NNN_{slug}.md` or `PRD-NNN-YY_{slug}.md` (Product Requirements) - **NEW location: docs/PRD/**
+- SYS: `SYS/SYS-NNN_{slug}.md` or `SYS-NNN-YY_{slug}.md` (System Requirements) - **Template location: ai_dev_flow/SYS/**
+- EARS: `EARS/EARS-NNN_{slug}.md` or `EARS-NNN-YY_{slug}.md` (Formal Requirements) - **Template location: ai_dev_flow/EARS/**
+- REQ: `REQ/{domain}/{subdomain}/REQ-NNN_{slug}.md` or `REQ-NNN-YY_{slug}.md` (Atomic Requirements) - **Template location: ai_dev_flow/REQ/**
+- ADR: `ADR/ADR-NNN_{slug}.md` or `ADR-NNN-YY_{slug}.md` (Architecture Decisions) - **NEW location: docs/ADR/**
+- BDD: `BDD/BDD-NNN_{slug}.feature` or `BDD-NNN-YY_{slug}.feature` (Behavior-Driven Tests) - **NEW location: docs/BDD/**
+- CTR: `CTR/CTR-NNN_{slug}.md` + `CTR-NNN_{slug}.yaml` or `CTR-NNN-YY_{slug}.{md,yaml}` (API Contracts - dual-file format) - **NEW location: docs/CTR/**
+- SPEC: `SPEC/SPEC-NNN_{slug}.yaml` or `SPEC-NNN-YY_{slug}.yaml` (Technical Specifications, references CTR contracts) - **NEW location: docs/SPEC/**
+- TASKS: `TASKS/TASKS-NNN_{slug}.md` or `TASKS-NNN-YY_{slug}.md` (Code Generation Plans) - **NEW location: docs/TASKS/**
+- IMPL: `IMPL/IMPL-NNN_{slug}.md` or `IMPL-NNN-YY_{slug}.md` (Implementation Plans) - **NEW location: docs/IMPL/**
 
 **ID Format Rules:**
 - H1 headers contain full document IDs: `# REQ-003: Position Limit Enforcement` or `# BRD-009-01: Prerequisites`
 - SPEC YAML uses `id:` field with lowercase_snake_case: `position_limit_service`
 - Categories encoded in folder paths, not ID prefixes
 - Sub-numbering (-YY) used ONLY when single logical document requires multiple related files with sequential reading order
-- Each XXX number must be unique (no collisions between atomic and multi-doc patterns)
+- Each NNN number must be unique (no collisions between atomic and multi-doc patterns)
 
 **⚠️ CRITICAL: Document ID Independence**
 
@@ -354,7 +354,7 @@ python scripts/generate_traceability_matrices.py --output docs/generated/matrice
 
 **Principle**: Each artifact layer must include traceability tags from ALL upstream artifact layers, creating a complete audit trail from business requirements through production code.
 
-**Cumulative Tagging Table** (16-layer hierarchy):
+**Cumulative Tagging Table** (16 layers: Layer 0 through Layer 15):
 
 | Layer | Artifact Type | Required Tags | Tag Count | Format | Notes |
 |-------|---------------|---------------|-----------|--------|-------|
@@ -636,8 +636,8 @@ Before making any technology decisions in ADRs, specifications, or implementatio
 **Pre-Commit Checklist:**
 - [ ] Document Control section completed with all required metadata (project name, version, date, owner, preparer, status)
 - [ ] Document Revision History table initialized with at least initial version entry
-- [ ] IDs comply with `ID_NAMING_STANDARDS.md` (XXX or XXX-YY format, H1 anchors, zero-padding)
-- [ ] No ID collisions: each XXX number used only once (either atomic TYPE-XXX OR multi-doc TYPE-XXX-YY group, never both)
+- [ ] IDs comply with `ID_NAMING_STANDARDS.md` (NNN or NNN-YY format, H1 anchors, zero-padding)
+- [ ] No ID collisions: each NNN number used only once (either atomic TYPE-NNN OR multi-doc TYPE-NNN-YY group, never both)
 - [ ] All cross-references use markdown links with valid paths and anchors
 - [ ] **IMPL decision validated**: Followed `WHEN_TO_CREATE_IMPL.md` decision criteria (created IMPL if complex project, skipped if simple task)
 - [ ] **CTR decision validated**: Followed `WHEN_TO_CREATE_IMPL.md` CTR criteria (created CTR if interface requirement, skipped if internal logic)
@@ -796,7 +796,7 @@ python scripts/extract_tags.py --validate-only
 3. ✅ **Create/Update PRD-000_TRACEABILITY_MATRIX.md** ← MANDATORY STEP
    - Add PRD-001 entry to Section 2 (Complete PRD Inventory)
    - Link upstream: BRD-001 (Section 3.1)
-   - Link downstream: EARS-001 (to be created), BDD-XXX (to be created)
+   - Link downstream: EARS-001 (to be created), BDD-NNN (to be created)
    - Status: Draft, Completion: 0%
 4. ✅ Update PRD-000_index.md
 5. ✅ Validate all links resolve
@@ -886,7 +886,7 @@ Each artifact type directory contains:
   - Organized by domain: `api/`, `risk/`, `ml/`, `data/`
 - **ADR** (`ADR/`): `ADR-TEMPLATE.md`, Index: `ADR-000_index-TEMPLATE.md`, README
   - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
-- **BDD** (`BDD/`): `BDD-TEMPLATE.feature`, Index: `BDD-000_index.feature`, README
+- **BDD** (`BDD/`): `BDD-TEMPLATE.feature`, Index: `BDD-000_index.md`, README
   - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
 - **CTR** (`CTR/`): `CTR-TEMPLATE.md`, `CTR-TEMPLATE.yaml` (dual-file), Index: `CTR-000_index.md`, README
   - **MANDATORY dual-file format**: Both .md and .yaml required per contract (see ADR-CTR)

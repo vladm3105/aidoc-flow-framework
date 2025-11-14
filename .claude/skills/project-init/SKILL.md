@@ -34,7 +34,7 @@ After completing project initialization, AI Assistant **MUST** inform user:
 Next: Use the `doc-flow` skill to begin workflow execution:
 - Create BRD (Business Requirements)
 - Create PRD (Product Requirements)
-- Follow 16-layer architecture (13 documentation artifacts + 3 execution layers): BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → IPLAN → Code → Tests → Deployment
+- Follow 16-layer architecture (Layers 0-15: Strategy layer + 12 documentation artifacts + 3 execution layers): BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → IPLAN → Code → Tests → Validation
 ```
 
 ---
@@ -136,7 +136,7 @@ cd /opt/data/project_name
 **Commands to Execute**:
 
 ```bash
-# Core 16-layer architecture (13 documentation artifacts + 3 execution layers)
+# Core 16-layer architecture (Layers 0-15: Strategy layer + 12 documentation artifacts + 3 execution layers)
 mkdir -p docs/BRD
 mkdir -p docs/PRD
 mkdir -p docs/EARS
@@ -331,7 +331,7 @@ When creating documents from templates, users must complete the Document Control
 touch docs/BRD/BRD-000_index.md
 touch docs/prd/PRD-000_index.md
 touch docs/ears/EARS-000_index.md
-touch docs/BDD/BDD-000_index.feature
+touch docs/BDD/BDD-000_index.md
 touch docs/adrs/ADR-000_index.md
 touch docs/sys/SYS-000_index.md
 touch docs/REQ/REQ-000_index.md
@@ -465,7 +465,7 @@ AI Assistant:
 ✓ Domain-specific subdirectories: risk, trading, portfolio, compliance, ml
 
 Step 2: Folder Creation
-Creating 16-layer architecture (13 artifact directories)...
+Creating 16-layer architecture (12 artifact directories)...
 ✓ Created: docs/BRD/
 ✓ Created: docs/PRD/
 ✓ Created: docs/EARS/
@@ -627,7 +627,7 @@ Run follow-up questions from DOMAIN_SELECTION_QUESTIONNAIRE.md:
 **After project-init completes, use:**
 - **doc-flow** - Main workflow execution skill
   - Create BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN
-  - Follow 16-layer architecture (13 documentation artifacts + 3 execution layers)
+  - Follow 16-layer architecture (Layers 0-15: Strategy layer + 12 documentation artifacts + 3 execution layers)
   - Generate code from specifications
 
 **Other complementary skills:**

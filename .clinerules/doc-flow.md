@@ -667,7 +667,7 @@ Each artifact type directory contains:
   - Organized by domain: `api/`, `risk/`, `ml/`, `data/`
 - **ADR** (`ADR/`): `ADR-TEMPLATE.md`, Index: `ADR-000_index-TEMPLATE.md`, README
   - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
-- **BDD** (`BDD/`): `BDD-TEMPLATE.feature`, Index: `BDD-000_index.feature`, README
+- **BDD** (`BDD/`): `BDD-TEMPLATE.feature`, Index: `BDD-000_index.md`, README
   - **Document Control**: Template includes Document Control section with project metadata and Document Revision History table
 - **CTR** (`CTR/`): `CTR-TEMPLATE.md`, `CTR-TEMPLATE.yaml` (dual-file), Index: `CTR-000_index.md`, README
   - **MANDATORY dual-file format**: Both .md and .yaml required per contract (see ADR-CTR)

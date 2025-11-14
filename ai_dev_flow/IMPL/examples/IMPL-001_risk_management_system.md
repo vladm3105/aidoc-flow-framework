@@ -1,5 +1,7 @@
 # IMPL-001: [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] System Implementation
 
+**⚠️ EXAMPLE DOCUMENT**: This is a reference implementation plan demonstrating best practices. Parameterized placeholders (e.g., `[RESOURCE_MANAGEMENT]`, `[RESOURCE_LIMIT]`) are intentional examples - replace with actual project terms. References to REQ-003 demonstrate traceability patterns using actual framework requirements.
+
 ## Document Control
 
 | Field | Value |
@@ -12,7 +14,7 @@
 | **Owner** | Agent Development Team |
 | **Last Updated** | 2025-11-02 |
 | **Version** | 1.0 |
-| **Related REQs** | [REQ-003](../../REQ/REQ-003.md), [REQ-005](../../REQ/REQ-005.md), [REQ-008](../../REQ/REQ-008.md) |
+| **Related REQs** | [REQ-003](../../REQ/risk/lim/REQ-003_position_limit_enforcement.md) |
 | **Deliverables** | CTR-003, SPEC-003, TASKS-003, CTR-005, SPEC-005, TASKS-005, CTR-008, SPEC-008, TASKS-008 |
 
 ## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
@@ -395,9 +397,9 @@ Agent Development Team (3 developers: Alice, Bob, Carol) + Infrastructure Team (
 
 ## References
 
-- [REQ-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement](../../REQ/REQ-003.md)
-- [REQ-005: [RESOURCE_COLLECTION - e.g., user accounts, active sessions] Risk Aggregation](../../REQ/REQ-005.md)
-- [REQ-008: [SAFETY_MECHANISM - e.g., rate limiter, error threshold] System](../../REQ/REQ-008.md)
+**Note**: This example references actual framework requirements to demonstrate proper traceability patterns.
+
+- [REQ-003: Position Limit Enforcement](../../REQ/risk/lim/REQ-003_position_limit_enforcement.md) - Example of risk management requirement
 - [IMPL-000: Master Index](../IMPL-000_index.md)
 
 ---
