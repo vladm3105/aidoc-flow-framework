@@ -200,11 +200,11 @@ vim /opt/data/docs_flow_framework/ai_dev_flow/REQ/REQ-TEMPLATE.md
 # If custom skill becomes useful across projects:
 
 # 1. Copy to framework
-cp -r /opt/data/project_a/.claude/custom_skills/useful-skill \
+cp -r ${PROJECT_A_PATH}/.claude/custom_skills/useful-skill \
       /opt/data/docs_flow_framework/.claude/skills/
 
 # 2. Remove from project custom
-rm -rf /opt/data/project_a/.claude/custom_skills/useful-skill
+rm -rf ${PROJECT_A_PATH}/.claude/custom_skills/useful-skill
 
 # 3. Now shared across all projects
 ```
@@ -341,8 +341,8 @@ cd /opt/data/any_project
 
 ```bash
 # 1. Create in project custom
-mkdir /opt/data/ibmcp/.claude/custom_skills/ib-specific
-vim /opt/data/ibmcp/.claude/custom_skills/ib-specific/SKILL.md
+mkdir ${PROJECT_B_PATH}/.claude/custom_skills/ib-specific
+vim ${PROJECT_B_PATH}/.claude/custom_skills/ib-specific/SKILL.md
 
 # 2. Commit to project repo
 git add .claude/custom_skills/ib-specific/

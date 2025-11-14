@@ -6,6 +6,8 @@
 
 **Last Updated**: 2025-11-13
 
+> **Note**: Examples in this guide use placeholder project paths like `${PROJECT_PATH}/` for illustration purposes. Replace these with your actual project paths (e.g., `${PROJECT_PATH}` or `/path/to/your/project/`).
+
 ---
 
 ## Architecture Overview
@@ -207,7 +209,7 @@ mkdir -p scripts
 chmod +x /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh
 
 # Setup one project
-/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/ibmcp
+/opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh ${PROJECT_PATH}
 ```
 
 ### 4. Bulk Project Setup
@@ -309,7 +311,7 @@ Priority 2: .claude/agents/            # Shared framework
 
 ### Custom Skill Example
 
-**Location**: `/opt/data/ibmcp/.claude/custom_skills/ib-api-helper/SKILL.md`
+**Location**: `${PROJECT_PATH}/.claude/custom_skills/ib-api-helper/SKILL.md`
 
 ```markdown
 # IB API Helper Skill
@@ -333,7 +335,7 @@ You are an IB API specialist...
 
 ### Custom Command Example
 
-**Location**: `/opt/data/ibmcp/.claude/custom_commands/ib-connect.md`
+**Location**: `${PROJECT_PATH}/.claude/custom_commands/ib-connect.md`
 
 ```markdown
 Test IB TWS connection and report status with diagnostics
@@ -347,7 +349,7 @@ Test IB TWS connection and report status with diagnostics
 
 ### Custom Agent Example
 
-**Location**: `/opt/data/ibmcp/.claude/custom_agents/ib_tester.json`
+**Location**: `${PROJECT_PATH}/.claude/custom_agents/ib_tester.json`
 
 ```json
 {
@@ -367,7 +369,7 @@ Test IB TWS connection and report status with diagnostics
 
 ```json
 {
-  "workingDirectory": "/opt/data/ibmcp",
+  "workingDirectory": "${PROJECT_PATH}",
   "docFlowPath": "docs/",
   "workPlansPath": "work_plans/",
   "frameworkPath": "/opt/data/docs_flow_framework",
@@ -479,11 +481,11 @@ vim /opt/data/docs_flow_framework/.claude/skills/new-skill/SKILL.md
 # If a project-specific skill proves useful across projects:
 
 # 1. Copy from project to framework
-cp -r /opt/data/ibmcp/.claude/custom_skills/useful-skill \
+cp -r ${PROJECT_PATH}/.claude/custom_skills/useful-skill \
       /opt/data/docs_flow_framework/.claude/skills/
 
 # 2. Remove from project custom
-rm -rf /opt/data/ibmcp/.claude/custom_skills/useful-skill
+rm -rf ${PROJECT_PATH}/.claude/custom_skills/useful-skill
 
 # 3. Now available to all projects via shared symlink
 ```
@@ -496,17 +498,17 @@ rm -rf /opt/data/ibmcp/.claude/custom_skills/useful-skill
 
 ```bash
 # Check symlinks are valid
-ls -la /opt/data/ibmcp/.claude/
+ls -la ${PROJECT_PATH}/.claude/
 # Should show: skills -> /opt/data/docs_flow_framework/.claude/skills
 
 # Test skill discovery
-cd /opt/data/ibmcp
+cd ${PROJECT_PATH}
 # In Claude Code session:
 # /skill doc-flow  # Should work (shared)
 # /skill ib-api-helper  # Should work (custom, if exists)
 
 # Verify template access
-ls -la /opt/data/ibmcp/.templates/ai_dev_flow/BRD/
+ls -la ${PROJECT_PATH}/.templates/ai_dev_flow/BRD/
 # Should list template files
 ```
 
@@ -673,7 +675,7 @@ mkdir /opt/data/docs_flow_framework/.claude/skills/new-feature
 vim /opt/data/docs_flow_framework/.claude/skills/new-feature/SKILL.md
 
 # 2. Test in any project (immediately available via symlink)
-cd /opt/data/ibmcp
+cd ${PROJECT_PATH}
 # Use /skill new-feature
 
 # 3. Iterate (edit framework skill, test in project)
@@ -685,11 +687,11 @@ cd /opt/data/ibmcp
 
 ```bash
 # 1. Create in project custom directory
-mkdir /opt/data/ibmcp/.claude/custom_skills/ib-validator
-vim /opt/data/ibmcp/.claude/custom_skills/ib-validator/SKILL.md
+mkdir ${PROJECT_PATH}/.claude/custom_skills/ib-validator
+vim ${PROJECT_PATH}/.claude/custom_skills/ib-validator/SKILL.md
 
 # 2. Commit to project repository
-cd /opt/data/ibmcp
+cd ${PROJECT_PATH}
 git add .claude/custom_skills/ib-validator/
 git commit -m "Add IB-specific validation skill"
 

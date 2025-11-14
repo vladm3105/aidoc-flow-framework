@@ -262,12 +262,12 @@ Project context: Trading system, 3 developers
 **Full Options**:
 ```
 Use adr-roadmap skill.
-ADR directory: /opt/data/webapp/arch/decisions/
+ADR directory: {project_root}/arch/decisions/
 Project context: Migration project, 8 engineers, 9 months
 Phase model: iterative
 Team size: 8
 Max phase duration: 4 weeks
-Output: /opt/data/webapp/docs/ROADMAP.md
+Output: {project_root}/docs/ROADMAP.md
 ```
 
 ---
@@ -315,7 +315,7 @@ Output: /opt/data/webapp/docs/ROADMAP.md
 - [ADR-TEMPLATE.md]({project_root}/ai_dev_flow/ADR-TEMPLATE.md)
 - [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md)
 
-**Example Output**: `/opt/data/ibmcp/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md`
+**Example Output**: `{project_root}/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md`
 
 ---
 
