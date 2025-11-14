@@ -602,6 +602,8 @@ graph TD
     style Production fill:#a5d6a7
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 ### 5.2 Document Type Relationships Matrix
 
 | From ↓ / To → | BRD | PRD | EARS | BDD | ADR | SYS | REQ | IMPL | CTR | SPEC | TASKS | Code |

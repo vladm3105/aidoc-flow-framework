@@ -2,7 +2,7 @@
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
-**[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: TASKS is in Layer 8 (Code Generation Layer) - creates detailed implementation plans from SPEC files.
+**[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: TASKS is in Layer 11 (Code Generation Layer) - creates detailed implementation plans from SPEC files.
 
 ## Document Control
 

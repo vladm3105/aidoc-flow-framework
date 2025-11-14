@@ -24,6 +24,8 @@ flowchart LR
     style TP fill:#e1f5fe,stroke:#01579b,stroke-width:4px
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 **Purpose**: Bridge between TASKS (WHAT to generate) and Code (HOW to execute)
 
 ## Implementation Work Plans Index
@@ -367,6 +369,8 @@ flowchart TB
     Complete --> UpdateMetrics[Update Effort Metrics]
     UpdateMetrics --> End([Implementation Ready])
 ```
+
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 
 ---
 

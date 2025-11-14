@@ -56,6 +56,8 @@ flowchart TD
     TP -.-> note1
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 **Key Workflow Position**:
 - **Upstream**: TASKS (Layer 11) - AI code generation plan (WHAT to generate)
 - **Current**: IPLAN (Layer 12) - Implementation work plan (HOW to execute)

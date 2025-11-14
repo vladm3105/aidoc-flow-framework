@@ -23,7 +23,7 @@
 ---
 # 
 
-POSITION: BDD is in Layer 2 (Testing Layer) - defines acceptance criteria from EARS requirements
+POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from EARS requirements
 #
 # REQUIREMENTS VERIFIED:
 #   - REQ-NNN: [Brief description of primary requirement being verified]

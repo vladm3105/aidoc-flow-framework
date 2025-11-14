@@ -293,6 +293,8 @@ graph TD
     style SPEC012 fill:#f3e5f5
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 *Legend: Green = Implemented, Orange = In Development, Purple = Planned*
 
 ## 9. Gap Analysis

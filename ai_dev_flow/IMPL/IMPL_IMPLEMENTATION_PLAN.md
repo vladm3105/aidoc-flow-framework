@@ -375,16 +375,22 @@ Create complete IMPL artifact system including folder structure, templates, inde
 
 | Framework Layer | Artifact Type | IMPL Relationship |
 |----------------|---------------|-------------------|
-| Layer 1: Strategy | BRD, PRD | Indirect - BRD/PRD inform REQ, REQ informs IMPL |
-| Layer 2: Analysis | EARS | Indirect - EARS inform REQ, REQ informs IMPL |
-| Layer 3: Testing | BDD | Indirect - IMPL references BDD for acceptance criteria |
-| Layer 4: Architecture | ADR, SYS | Indirect - ADR informs IMPL technical constraints |
-| **Layer 5: Requirements** | **REQ** | **Direct - IMPL takes REQ as input** |
-| **Layer 6: Project Mgmt** | **IMPL** | **This artifact type** |
-| **Layer 7: Contracts** | **CTR** | **Direct - IMPL produces CTR deliverables** |
-| **Layer 8: Specification** | **SPEC** | **Direct - IMPL produces SPEC deliverables** |
-| **Layer 9: Task Planning** | **TASKS** | **Direct - IMPL produces TASKS deliverables** |
-| Layer 10-12: Implementation | Code, Tests, Docs | Indirect - Downstream from IMPL deliverables |
+| Layer 0: Strategy | BRD | Indirect - BRD informs PRD, PRD informs downstream layers |
+| Layer 1: Discovery | N/A | No artifact - conceptual layer only |
+| Layer 2: Product | PRD | Indirect - PRD informs EARS, EARS informs downstream |
+| Layer 3: Formal Requirements | EARS | Indirect - EARS inform REQ, REQ informs IMPL |
+| Layer 4: Testing | BDD | Indirect - IMPL references BDD for acceptance criteria |
+| Layer 5: Architecture | ADR | Indirect - ADR informs IMPL technical constraints |
+| Layer 6: System | SYS | Indirect - SYS informs REQ, REQ informs IMPL |
+| Layer 7: Requirements | REQ | **Direct - IMPL takes REQ as input** |
+| **Layer 8: Project Mgmt** | **IMPL** | **This artifact type** |
+| Layer 9: Contracts | CTR | **Direct - IMPL produces CTR deliverables** |
+| Layer 10: Specification | SPEC | **Direct - IMPL produces SPEC deliverables** |
+| Layer 11: Task Planning | TASKS | **Direct - IMPL produces TASKS deliverables** |
+| Layer 12: Implementation | IPLAN | Indirect - IPLAN created from TASKS deliverables |
+| Layer 13: Code | Source Code | Indirect - Code generated from IPLAN/TASKS |
+| Layer 14: Testing | Test Suites | Indirect - Tests generated with code |
+| Layer 15: Documentation | Runtime Docs | Indirect - Documentation from implementation |
 
 ### Quality Metrics
 

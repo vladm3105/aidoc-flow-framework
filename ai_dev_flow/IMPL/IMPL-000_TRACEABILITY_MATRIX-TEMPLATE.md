@@ -266,6 +266,8 @@ graph TD
     style CTR001 fill:#fff3e0
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 ### 7.1 Inter-IMPL Dependencies
 
 | Source IMPL | Target IMPL | Dependency Type | Description |

@@ -32,6 +32,8 @@ flowchart TD
     style CTR fill:#e1f5f7,stroke:#00838f,stroke-width:3px
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 **When to Create Contracts**: After atomic requirements (REQ) define WHAT components must do, create contracts to specify HOW components communicate. Contracts precede technical specifications (SPEC) to establish interface agreements before implementation.
 
 **Workflow Summary**:

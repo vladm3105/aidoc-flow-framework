@@ -24,6 +24,8 @@ flowchart LR
     style TASKS fill:#e1f5fe,stroke:#01579b,stroke-width:3px
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 ## Code Generation Plans Index
 
 | TASKS ID | Title | Status | Related SPEC | Related CTR | Components | Generated Code | Last Updated |
@@ -249,6 +251,8 @@ flowchart TB
     Review -->|Yes| Deploy[Update Status: Completed]
     Deploy --> End([Code Ready])
 ```
+
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 
 ---
 

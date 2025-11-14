@@ -212,6 +212,8 @@ flowchart TD
     F --> I
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 [Describe the flow and key interaction points. Include error paths and monitoring points.]
 
 ## Implementation Assessment

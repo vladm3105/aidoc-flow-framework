@@ -2,7 +2,7 @@
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
-**[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: IMPL is in Layer 5 (Project Management Layer) - organizes WHO does WHAT, WHEN.
+**[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: IMPL is in Layer 8 (Project Management Layer) - organizes WHO does WHAT, WHEN.
 
 ## Document Control
 
@@ -36,6 +36,8 @@ flowchart LR
 
     style IMPL fill:#b3e5fc,stroke:#0277bd,stroke-width:3px
 ```
+
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 
 **IMPL Purpose**: Define WHO does WHAT by WHEN (Project Management Layer)
 - **Input**: REQ (atomic requirements)

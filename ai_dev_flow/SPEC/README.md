@@ -74,7 +74,7 @@ traceability:
 
 requirements_source:
   - "[PRD-NNN](../../../PRD/PRD-NNN_...md)"
-  - "[SYS-NNN](../../../SRC/SYS-NNN_...md)"
+  - "[SYS-NNN](../../../SYS/SYS-NNN_...md)"
 ```
 
 ## Interface Specifications

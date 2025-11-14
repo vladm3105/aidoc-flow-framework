@@ -33,6 +33,8 @@ flowchart LR
     IMPL -.-> note1
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 ## What IMPL Plans Are
 
 IMPL Plans are **project management documents** that:

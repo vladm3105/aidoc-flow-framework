@@ -56,6 +56,8 @@ flowchart TD
     TASKS -.-> note1
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 **Key Points**:
 - **REQ**: Business requirements (WHAT to build)
 - **IMPL**: Implementation plan (WHO does WHAT, WHEN) - project management

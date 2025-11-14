@@ -22,6 +22,8 @@ flowchart LR
     style PRD fill:#fff3e0,stroke:#ff6f00,stroke-width:3px
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 **Layer**: 2 (Product Requirements Layer)
 **Upstream**: BRD (Business Requirements)
 **Downstream**: EARS, BDD, SYS, REQ

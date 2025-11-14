@@ -447,6 +447,8 @@ gantt
     Phase 4: QA            :p8, after p7, 1d
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 ### 9.2 Status Summary
 
 | Status | Count | Percentage | iplan IDs |
@@ -484,6 +486,8 @@ graph TD
     style Code2 fill:#e8f5e9
     style Tests1 fill:#fff3e0
 ```
+
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 
 ### 10.1 Inter-iplan Dependencies
 

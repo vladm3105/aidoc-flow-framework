@@ -323,6 +323,8 @@ graph TD
     style Code1 fill:#e8f5e9
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 ### 9.1 Inter-SPEC Dependencies
 
 | Source SPEC | Target SPEC | Dependency Type | Description |

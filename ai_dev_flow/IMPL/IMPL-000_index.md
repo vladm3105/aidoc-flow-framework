@@ -23,6 +23,8 @@ flowchart LR
     style IMPL fill:#fff9c4,stroke:#f57f17,stroke-width:3px
 ```
 
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+
 ## Implementation Plans Index
 
 | IMPL ID | Title | Status | Related REQs | Deliverables | Timeline | Owner | Last Updated |
