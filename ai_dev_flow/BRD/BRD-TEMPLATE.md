@@ -152,6 +152,179 @@ This document is intended for the following stakeholders:
 |---------------|----------------|------------------|
 | [Department/Area] | [Process/System/Organizational] | [High/Medium/Low] |
 
+### 3.6 Technology Stack Prerequisites
+
+**MANDATORY for ALL Feature BRDs (006+); Platform BRDs (001-005) define foundational prerequisites**
+
+**For Platform BRDs (001-005)**:
+
+List technology choices, infrastructure components, or platform capabilities that must exist before this platform can be implemented. These prerequisites establish the foundational technology stack upon which all platform features depend.
+
+**Structure**: Organize prerequisites into logical categories (Core Platform Technologies, Partner Integrations, Infrastructure, etc.)
+
+**Format for Each Prerequisite**:
+- **Requirement**: Specific technology/component with version requirements
+- **Rationale**: Why this prerequisite is needed (link to ADR if decision documented)
+- **Business Impact**: Consequence if prerequisite not available
+
+**Example Entry** (Platform BRD):
+```markdown
+1. **PostgreSQL 14+ Database**
+   - **Requirement**: PostgreSQL 14 or later with ACID compliance, replication configured
+   - **Rationale**: Required for transactional consistency in user profiles, transaction state, audit logs (ADR-002)
+   - **Business Impact**: Without PostgreSQL, data integrity guarantees for financial transactions not possible
+```
+
+**For Feature BRDs (006+)**:
+
+Document which Platform BRDs provide required infrastructure for this Feature BRD. This section MUST reference Platform BRDs and explain relevance.
+
+**Structure**: List Platform BRD dependencies (which BRDs 001-005 are required) with relevance explanation
+
+**Format Options**:
+- **Full Sections** (Use for first 3 BRDs in category or critical workflows): Complete list with detailed relevance explanations
+- **Abbreviated Sections** (Use for token efficiency): Concise bullet list referencing Platform BRDs
+
+**Example Entry** (Feature BRD - Full):
+```markdown
+### 3.6 Technology Stack Prerequisites
+
+This Feature BRD depends on the following Platform BRDs:
+
+1. **Platform BRD-001: Platform Architecture & Technology Stack**
+   - **Required Foundation**: Node.js 18+, PostgreSQL 14+, Redis 7+, Python 3.11+
+   - **Relevance to BRD-XXX**: [Explain why these technologies are needed for this feature]
+   - **Specific Prerequisites**: See BRD-001 Section 3.6 items 1-10
+
+2. **Platform BRD-005: Multi-Agent AI System Architecture**
+   - **Required AI Infrastructure**: Google ADK, A2A Protocol, shared context store
+   - **Relevance to BRD-XXX**: [Explain why AI infrastructure is needed]
+   - **Specific Prerequisites**: See BRD-005 Section 3.6 items 1-8
+```
+
+**Example Entry** (Feature BRD - Abbreviated):
+```markdown
+### 3.6 Technology Stack Prerequisites
+
+**Feature BRDs** - *This section references Platform BRDs for infrastructure dependencies*
+
+This Feature BRD depends on the following Platform BRDs:
+
+1. **Platform BRD-001**: Node.js 18+, PostgreSQL 14+, Redis 7+, Python 3.11+, n8n (See BRD-001 Section 3.6)
+2. **Platform BRD-002**: Partner integrations (See BRD-002 Section 3.6, 3.7)
+3. **Platform BRD-003**: Security, compliance, audit retention (See BRD-003 Section 3.6, 3.7)
+4. **Platform BRD-004**: PostgreSQL schema, data model (See BRD-004 Section 3.6)
+5. **Platform BRD-005**: Google ADK, A2A Protocol, shared context store (See BRD-005 Section 3.6)
+```
+
+**Guidelines**:
+- Platform BRDs: Only include true prerequisites (not nice-to-haves)
+- Feature BRDs: MUST reference at least BRD-001; typically BRD-001 through BRD-005
+- Specify version requirements and configuration needs
+- Link to relevant ADRs using format (ADR-NNN)
+- Document business impact of missing prerequisite
+- Feature BRDs may also reference other Feature BRDs for workflow dependencies
+
+### 3.7 Mandatory Technology Conditions
+
+**MANDATORY for ALL Feature BRDs (006+); Platform BRDs (001-005) define foundational constraints**
+
+**For Platform BRDs (001-005)**:
+
+Document non-negotiable technical constraints that cannot be changed without fundamentally altering the platform architecture. These conditions are driven by regulatory requirements, business model economics, or partner dependencies.
+
+**Structure**: Organize conditions into logical categories (Regulatory & Compliance Constraints, Business Model Constraints, Partner Dependencies, Performance & Scalability Constraints, etc.)
+
+**Format for Each Condition**:
+- **Condition**: The mandatory requirement stated as MUST/SHALL constraint
+- **Rationale**: Why this condition is non-negotiable (regulatory, business, technical reason)
+- **Business Impact**: Consequence of violating this condition
+- **Exception Path**: Conditions under which exception allowed (or "None" if truly non-negotiable)
+
+**Example Entry** (Platform BRD):
+```markdown
+1. **Double-Entry Accounting Ledger**
+   - **Condition**: All financial transactions MUST use double-entry accounting with immutable journal entries
+   - **Rationale**: Required for SOC 2 Type II compliance, regulatory audit trails, proof-of-reserves validation
+   - **Business Impact**: Without double-entry accounting, platform fails financial audits; regulatory penalties apply
+   - **Exception Path**: Alternative ledger system allowed if meets same compliance requirements (requires ADR)
+```
+
+**For Feature BRDs (006+)**:
+
+Document both platform-inherited mandatory conditions and feature-specific technical requirements. All Feature BRDs MUST include 4 platform-inherited conditions plus 6-12 feature-specific conditions.
+
+**Structure**:
+- **Platform-Inherited Mandatory Conditions** (4 core conditions from Platform BRDs)
+- **Feature-Specific Mandatory Conditions** (6-12 conditions unique to this workflow)
+
+**Format Options**:
+- **Full Sections** (Use for first 3 BRDs in category or critical workflows): Complete list with detailed impact analysis
+- **Abbreviated Sections** (Use for token efficiency): 4 platform conditions + pointer to functional requirements
+
+**Example Entry** (Feature BRD - Full):
+```markdown
+### 3.7 Mandatory Technology Conditions
+
+**Platform-Inherited Mandatory Conditions**:
+
+1. **PostgreSQL High Availability** (from BRD-001)
+   - **Condition**: Multi-AZ deployment with ≤60s failover
+   - **Relevance**: [Explain why this platform condition applies to this feature]
+   - **Business Impact**: DB outage → feature blocked → business losses
+
+2. **Audit Trail Retention** (from BRD-003)
+   - **Condition**: All actions logged with 7-year retention
+   - **Relevance**: [Explain compliance requirements for this feature]
+   - **Business Impact**: Missing audit trails → compliance violations
+
+3. **Google ADK Agent Framework OR n8n Workflow Engine** (from BRD-005 or BRD-001)
+   - **Condition**: Workflow implemented using Platform-approved orchestration
+   - **Relevance**: [Explain which orchestration approach applies]
+   - **Business Impact**: Custom orchestration → platform inconsistency
+
+4. **Field-Level PII Encryption** (from BRD-003)
+   - **Condition**: All PII encrypted at field level using Platform encryption service
+   - **Relevance**: [Explain PII handling in this feature]
+   - **Business Impact**: Unencrypted PII → data breach risk
+
+**Feature-Specific Mandatory Conditions for BRD-XXX**:
+
+5. **[Feature-Specific Condition 1]**
+   - **Condition**: [Precise technical requirement]
+   - **Rationale**: [Why this condition is mandatory]
+   - **Business Impact**: [What happens if condition not met]
+   - **Exception Path**: [Fallback or "None"]
+
+6. **[Feature-Specific Condition 2]**
+   - **Condition**: [Precise technical requirement]
+   - **Rationale**: [Why this condition is mandatory]
+   - **Business Impact**: [What happens if condition not met]
+   - **Exception Path**: [Fallback or "None"]
+```
+
+**Example Entry** (Feature BRD - Abbreviated):
+```markdown
+### 3.7 Mandatory Technology Conditions
+
+**Platform-Inherited Mandatory Conditions**:
+
+1. **PostgreSQL High Availability** (from BRD-001): Multi-AZ deployment with ≤60s failover
+2. **Audit Trail Retention** (from BRD-003): All actions logged with 7-year retention
+3. **Google ADK Agent Framework OR n8n Workflow Engine** (from BRD-005 or BRD-001)
+4. **Field-Level PII Encryption** (from BRD-003): Platform encryption service required
+
+**Feature-Specific Mandatory Conditions**: See Section 5 (Functional Requirements) for workflow-specific SLAs, performance targets, and technical constraints.
+```
+
+**Guidelines**:
+- Platform BRDs: Only include truly mandatory conditions (test: "Can platform function without this?")
+- Feature BRDs: MUST include 4 platform-inherited conditions
+- Feature BRDs: Add 6-12 feature-specific conditions (performance SLAs, ML thresholds, workflow requirements)
+- Use MUST/SHALL language for regulatory/compliance constraints
+- Explain business or regulatory rationale clearly
+- Document exception paths or state "None" if no exceptions permitted
+
 ---
 
 ## 4. Stakeholders

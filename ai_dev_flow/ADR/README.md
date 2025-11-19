@@ -147,6 +147,34 @@ Requirements (PRD/EARS) → BDD Scenarios ← ADR Decision → SYS/SPEC/Implemen
 - **Team Capability**: Team must possess or be able to acquire necessary technical skills
 - **Integration Planning**: Impact on existing systems and integration points understood
 
+## Platform vs Feature BRD Context
+
+ADRs have different relationships with Platform BRDs versus Feature BRDs:
+
+**Platform BRDs → Foundation ADRs**:
+- Platform BRDs (e.g., BRD-001 Platform Architecture) inform Foundation ADRs
+- Foundation ADR-000 documents technology stack decisions that enable platform capabilities
+- Platform BRDs define "what" the platform must do; Foundation ADRs document "how" through technology choices
+- Typically created together at project inception
+
+**Feature BRDs → Feature-Specific ADRs**:
+- Feature BRDs (e.g., BRD-006 B2C KYC Onboarding) drive architectural decisions for specific features
+- Feature ADRs build upon foundation established by Platform BRDs and Foundation ADRs
+- Address feature-specific architectural concerns (e.g., API design, data models, integration patterns)
+- Reference Foundation ADRs for technology stack and infrastructure decisions
+
+**ADR File Creation Order**:
+1. **Foundation ADRs** (informed by Platform BRDs)
+   - ADR-000: Technology stack and infrastructure decisions
+   - Cross-cutting architectural patterns and standards
+
+2. **Feature-Specific ADRs** (driven by Feature BRDs)
+   - Created as needed for each feature
+   - Build upon foundation established in step 1
+   - Reference both Platform BRDs and Foundation ADRs
+
+**Reference**: See [PLATFORM_VS_FEATURE_BRD.md](../PLATFORM_VS_FEATURE_BRD.md) for BRD categorization methodology
+
 ## ADR Structure
 
 ### Header with Traceability Tags

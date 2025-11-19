@@ -167,6 +167,29 @@ Link to upstream and downstream artifacts:
 - Code Path(s): `option_strategy/component/module.py`
 ```
 
+### Platform vs Feature Categorization
+
+PRDs inherit categorization context from their source BRDs:
+
+**Platform BRDs → Foundation PRDs**:
+- Platform BRDs (e.g., BRD-001 Platform Architecture) drive foundation-level PRDs
+- These PRDs define core capabilities, infrastructure components, and cross-cutting concerns
+- Typically created early in the development workflow
+- Referenced by multiple feature-specific PRDs
+
+**Feature BRDs → Feature PRDs**:
+- Feature BRDs (e.g., BRD-006 B2C KYC Onboarding) drive feature-specific PRDs
+- These PRDs detail user-facing functionality and workflows
+- Build upon platform capabilities defined in Platform BRDs
+- Reference foundation PRDs for infrastructure dependencies
+
+**Cross-Referencing**:
+- Feature PRDs should explicitly reference the Platform BRD(s) they depend on
+- Include references in the "Dependencies" or "Technical Context" sections
+- Link to relevant foundation PRDs that provide required capabilities
+
+**Reference**: See [PLATFORM_VS_FEATURE_BRD.md](../PLATFORM_VS_FEATURE_BRD.md) for BRD categorization methodology
+
 ## File Naming Convention
 
 ```

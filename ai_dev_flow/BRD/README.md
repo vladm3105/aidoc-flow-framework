@@ -80,6 +80,76 @@ Every BRD should include a section (typically Section 5.2) that lists architectu
 **Timing**: ADRs created after BRD → PRD → SYS → EARS → REQ in SDD workflow.
 ```
 
+## BRD Categories: Platform vs Feature
+
+### Platform BRDs
+
+**Purpose**: Define infrastructure, architecture, and technology stack requirements
+
+**Characteristics**:
+- Focus on business drivers for technology decisions
+- Populate "Technology Stack Prerequisites" section (Section 3.6)
+- List required ADRs in "Mandatory Technology Conditions" (Section 3.7)
+- ADRs created BEFORE PRD
+
+**Workflow**: Platform BRD → **ADRs (critical)** → PRD → ADRs (remaining) → SPEC
+
+**Examples**:
+- BRD-001: Platform Architecture & Technology Stack
+- BRD-034: ML Infrastructure Technology Decisions
+- BRD-050: Mobile Platform Architecture
+
+**Key Template Sections**:
+- Section 3.6: Technology Stack Prerequisites (REQUIRED)
+- Section 3.7: Mandatory Technology Conditions (REQUIRED)
+
+### Feature BRDs
+
+**Purpose**: Define business features, user workflows, functional requirements
+
+**Characteristics**:
+- Focus on business objectives and user needs
+- May reference Platform BRD technology prerequisites
+- Technology decisions deferred to PRD/ADR phase
+- Standard workflow
+
+**Workflow**: Feature BRD → PRD → ADRs (if needed) → SPEC
+
+**Examples**:
+- BRD-006: B2C Progressive KYC Onboarding
+- BRD-009: Remittance Transaction Workflow
+- BRD-022: Fraud Detection Agent
+
+**Key Template Sections**:
+- Section 3.6: Technology Stack Prerequisites (OPTIONAL - may reference Platform BRD)
+- Section 3.7: Mandatory Technology Conditions (Usually empty)
+
+### Naming Conventions
+
+**Platform BRDs**:
+- Pattern: `BRD-NNN_platform_*` or `BRD-NNN_infrastructure_*`
+- Examples: `BRD-001_platform_architecture_technology_stack.md`
+
+**Feature BRDs**:
+- Pattern: `BRD-NNN_{feature_name}`
+- Examples: `BRD-006_b2c_progressive_kyc_onboarding.md`
+
+### Decision Guide
+
+**Use Platform BRD when**:
+- Building platform/infrastructure
+- Defining technology stack
+- Technology decisions constrain product features
+- ADRs needed before PRD creation
+
+**Use Feature BRD when**:
+- Building user features
+- Defining business workflows
+- Technology is already decided (reference Platform BRD)
+- Can proceed to PRD immediately
+
+**See**: [PLATFORM_VS_FEATURE_BRD.md](../PLATFORM_VS_FEATURE_BRD.md) for complete guide
+
 ## BRD Structure
 
 ### Document Control

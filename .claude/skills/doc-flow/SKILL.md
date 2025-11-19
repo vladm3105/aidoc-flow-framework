@@ -515,6 +515,39 @@ Before making any technology decisions in ADRs, specifications, or implementatio
    - Templates: `ai_dev_flow/BRD/BRD-TEMPLATE.md` (3 templates available)
    - **Traceability**: Must reference `option_strategy/` sections
 
+#### 1.1 BRD Categorization: Platform vs Feature
+
+Before creating a BRD, determine if it's a **Platform BRD** or **Feature BRD** using this questionnaire:
+
+**Questionnaire**:
+1. Does this BRD define infrastructure, technology stack, or cross-cutting concerns?
+   - Yes → Likely Platform BRD
+   - No → Continue
+
+2. Does this BRD describe a specific user-facing workflow or feature?
+   - Yes → Likely Feature BRD
+   - No → Continue
+
+3. Will other BRDs depend on or reference this BRD's architectural decisions?
+   - Yes → Likely Platform BRD
+   - No → Likely Feature BRD
+
+4. Does this BRD establish patterns, standards, or capabilities used across multiple features?
+   - Yes → Platform BRD
+   - No → Feature BRD
+
+5. Does this BRD implement functionality on top of existing platform capabilities?
+   - Yes → Feature BRD
+   - No → Platform BRD
+
+**Auto-Detection Logic**:
+- Title contains "Platform", "Architecture", "Infrastructure", "Integration" → Platform BRD
+- Title contains specific workflow names, user types (B2C, B2B), or feature names → Feature BRD
+- References/depends on BRD-001 or foundation ADRs → Feature BRD
+- Establishes technology choices or system-wide patterns → Platform BRD
+
+**Reference**: See `/opt/data/docs_flow_framework/ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md` for detailed guidance
+
 2. **Capture Product Requirements (PRD)**
    - Input: Business needs from BRD, stakeholder priorities
    - Output: PRD with problem/goals/non-goals/KPIs, **Architecture Decision Requirements**
@@ -720,6 +753,9 @@ python scripts/extract_tags.py --validate-only
 
 **When Creating New Artifacts:**
 1. **START WITH STRATEGY**: Read relevant `option_strategy/` documents FIRST
+1a. **Categorize BRD** (for BRD creation only): Use questionnaire (Section 1.1) to determine Platform vs Feature BRD
+   - Platform BRD: Complete sections 3.6 (Technology Stack Prerequisites) and 3.7 (Mandatory Technology Conditions)
+   - Feature BRD: Mark sections 3.6 and 3.7 as "N/A - See Platform BRD-XXX"
 2. **Check Technology Stack** (for ADRs/SPECs): Read `docs/ADR/ADR-000_technology_stack.md` for approved technologies
 3. **Use Templates**: Browse `ai_dev_flow/` for applicable template
 4. **Reading order**: Strategy → Technology Stack (if applicable) → Template → Index → Workflow → Implementation Guide → Referenced artifacts

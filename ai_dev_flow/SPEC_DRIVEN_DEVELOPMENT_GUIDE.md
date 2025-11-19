@@ -188,6 +188,152 @@ Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructi
 
 ## Required Artifacts (with ID standards)
 
+### Business Requirements Documents (BRD)
+- **Purpose**: Capture high-level business objectives and workflow requirements
+- **File Format**: `BRD-NNN_descriptive_title.md`
+- **Categories**:
+  - **Platform BRDs (001-005)**: Infrastructure foundation (sections 3.6/3.7 NOT required)
+  - **Feature BRDs (006+)**: Workflow-specific requirements (sections 3.6/3.7 MANDATORY)
+- **Key Sections** (Feature BRDs):
+  - Section 1: Purpose & Scope
+  - Section 2: Stakeholders & Actors
+  - Section 3: Business Context
+    - **3.1**: Problem Statement
+    - **3.2**: Business Objectives
+    - **3.6**: Technology Stack Prerequisites (references Platform BRDs 001-005)
+    - **3.7**: Mandatory Technology Conditions (4 platform + 6-12 feature-specific)
+  - Section 4: Functional Requirements
+  - Section 5: Non-Functional Requirements
+  - Section 6: Data Models & Schema
+  - Section 7: API Specifications (if applicable)
+  - Section 8: Success Metrics & KPIs
+  - Section 9: Architecture Decision Requirements (ADRs needed)
+  - Section 10: Glossary
+- **Traceability**:
+  - Platform BRDs are top-level (no upstream dependencies)
+  - Feature BRDs reference Platform BRDs in sections 3.6/3.7
+  - Feature BRDs may reference other Feature BRDs for workflow dependencies
+- **Resource Instance**: Starting point of SDD workflow - defines business requirements
+
+#### BRD Technology Prerequisites Framework
+
+**Platform BRDs (001-005)**: Foundation infrastructure documents that DO NOT require sections 3.6/3.7
+
+Platform BRDs define the technology stack and infrastructure that Feature BRDs depend on:
+- **BRD-001**: Platform Architecture & Technology Stack (Node.js, PostgreSQL, Redis, Python, n8n)
+- **BRD-002**: Partner Ecosystem Integration (Bridge, LLM providers, payment processors)
+- **BRD-003**: Security, Compliance & Regulatory Framework (encryption, audit, SOC 2)
+- **BRD-004**: Data Model, Ledger & Double-Entry Accounting (PostgreSQL schema, normalization)
+- **BRD-005**: Multi-Agent AI System Architecture (Google ADK, A2A Protocol, shared context)
+
+**Feature BRDs (006+)**: Workflow-specific documents that MUST include sections 3.6 and 3.7
+
+**Section 3.6: Technology Stack Prerequisites**
+
+**Purpose**: Document which Platform BRDs provide required infrastructure for this Feature BRD
+
+**Structure**:
+1. List Platform BRD dependencies (which BRDs 001-005 are required)
+2. Document relevance to current Feature BRD (why this dependency matters)
+3. Reference specific Platform BRD sections (e.g., "See BRD-001 Section 3.6 items 1-10")
+4. Include Feature BRD cross-references when workflows depend on each other
+
+**Example** (from BRD-022 Fraud Detection Agent):
+```markdown
+### 3.6 Technology Stack Prerequisites
+
+This AI Agent BRD depends on the following Platform BRDs:
+
+1. **Platform BRD-001: Platform Architecture & Technology Stack**
+   - **Required Foundation**: Node.js 18+, PostgreSQL 14+, Redis 7+, Python 3.11+
+   - **Relevance to BRD-022**: Fraud detection agent runs as Python microservice
+   - **Specific Prerequisites**: See BRD-001 Section 3.6 items 1-10
+
+2. **Platform BRD-005: Multi-Agent AI System Architecture**
+   - **Required AI Infrastructure**: Google ADK, A2A Protocol, shared context store
+   - **Relevance to BRD-022**: Fraud Agent communicates with Compliance Agent via A2A
+   - **Specific Prerequisites**: See BRD-005 Section 3.6 items 1-8
+
+3. **Feature BRD-016: Fraud Detection & Risk Screening** (Human Workflow)
+   - **Required Integration**: Agent augments human fraud analyst workflows
+   - **Relevance to BRD-022**: Agent provides automated first-pass screening
+```
+
+**Section 3.7: Mandatory Technology Conditions**
+
+**Purpose**: Define non-negotiable technology requirements for successful implementation
+
+**Structure**:
+- **Platform-Inherited Conditions** (4 core conditions from Platform BRDs):
+  1. PostgreSQL High Availability (from BRD-001)
+  2. Audit Trail Retention (from BRD-003)
+  3. Google ADK Agent Framework OR n8n Workflow Engine (from BRD-005 or BRD-001)
+  4. Field-Level PII Encryption (from BRD-003)
+
+- **Feature-Specific Conditions** (6-12 conditions unique to this workflow):
+  - **Condition**: Precise technical requirement
+  - **Rationale**: Why this condition is mandatory
+  - **Business Impact**: What happens if condition not met
+  - **Exception Path**: Fallback or workaround if available
+
+**Example** (from BRD-022 Fraud Detection Agent):
+```markdown
+### 3.7 Mandatory Technology Conditions
+
+**Platform-Inherited Mandatory Conditions**:
+
+1. **PostgreSQL High Availability** (from BRD-001)
+   - **Condition**: Multi-AZ deployment with ≤60s failover
+   - **Relevance**: Fraud cases stored in PostgreSQL
+   - **Business Impact**: DB outage → fraud detection blocked → losses
+
+**Feature-Specific Mandatory Conditions**:
+
+5. **Risk Score Latency SLA**
+   - **Condition**: Fraud agent MUST generate score within 200ms (p95)
+   - **Rationale**: Sub-200ms ensures no UX degradation
+   - **Business Impact**: Delays cause transaction abandonment
+   - **Exception Path**: Batch fraud review allows 5s latency
+
+6. **Model Performance Thresholds**
+   - **Condition**: ≥95% fraud detection rate AND ≤5% false positive rate
+   - **Rationale**: 95% minimizes fraud losses; 5% FP balances friction
+   - **Business Impact**: Below thresholds → fraud losses OR customer churn
+   - **Exception Path**: Performance drop triggers immediate retraining
+```
+
+**BRD Pattern Categories**
+
+**AI Agent BRD Pattern** (BRD-022 through BRD-029):
+- **Platform Dependencies**: BRD-001 (infra), BRD-005 (Google ADK/A2A)
+- **Technology Stack**: Python 3.11+, Google ADK, A2A Protocol, Redis (shared context)
+- **Mandatory Conditions**: Platform conditions + ML-specific (model performance, explainability, retraining)
+- **Example**: BRD-022 (Fraud Detection Agent), BRD-023 (Compliance Agent)
+
+**n8n Automation BRD Pattern** (BRD-030 through BRD-033):
+- **Platform Dependencies**: BRD-001 (n8n self-hosted), BRD-002 (webhooks)
+- **Technology Stack**: Node.js 18+, n8n self-hosted, PostgreSQL (workflow state)
+- **Mandatory Conditions**: Platform conditions + workflow-specific (webhook reliability, state persistence)
+- **Example**: BRD-030 (Webhook Processing Hub), BRD-031 (Notification Orchestration)
+
+**Standard Feature BRD Pattern** (BRD-006 through BRD-021):
+- **Platform Dependencies**: BRD-001 (infra), BRD-002 (partners), BRD-003 (compliance), BRD-004 (data model)
+- **Technology Stack**: Node.js 18+, PostgreSQL 14+, Redis 7+, partner APIs
+- **Mandatory Conditions**: Platform conditions + workflow-specific SLAs
+- **Example**: BRD-009 (Remittance Transaction), BRD-013 (Settlement & Reconciliation)
+
+**Abbreviated vs Full Sections**
+
+**Full Sections (BRD-022, BRD-023, BRD-024)**:
+- Section 3.6: Complete list of 7 dependencies with detailed relevance explanations
+- Section 3.7: 4 platform + 8-12 feature-specific conditions with full impact analysis
+
+**Abbreviated Sections (All Other Feature BRDs)**:
+- Section 3.6: Concise bullet list referencing Platform BRDs (avoids duplication)
+- Section 3.7: 4 core platform conditions + pointer to functional requirements for feature-specific SLAs
+
+**Rationale**: Token efficiency while maintaining doc-flow compliance and traceability
+
 ### Product Requirements Documents (PRD)
 - **Purpose**: Capture business requirements and product strategy before technical implementation
 - **File Format**: `PRD-NNN_descriptive_title.md`
@@ -442,7 +588,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 | Layer | Artifact Type | Required Tags | Tracking Method | Notes |
 |-------|---------------|---------------|-----------------|-------|
 | 0 | **Strategy** | None | External | Business owner documents, no formal artifact |
-| 1 | **BRD** | None | Formal Template | Top level, no upstream dependencies |
+| 1 | **BRD** | None | Formal Template | Top level, no upstream dependencies; Feature BRDs (006+) require sections 3.6/3.7 |
 | 2 | **PRD** | `@brd` | Formal Template | References parent BRD |
 | 3 | **EARS** | `@brd`, `@prd` | Formal Template | Cumulative: BRD + PRD |
 | 4 | **BDD** | `@brd`, `@prd`, `@ears` | Formal Template + Gherkin Tags | Cumulative: BRD through EARS |
@@ -603,7 +749,7 @@ The SDD workflow employs different tracking methods for different artifact types
 | Layer | Artifact Type | Tracking Method | Formal Template | Tags Required | Tag Count | Notes |
 |-------|---------------|-----------------|-----------------|---------------|-----------|-------|
 | 0 | Strategy | External | No | No | 0 | Business owner documents |
-| 1 | BRD | Formal Template | Yes | No | 0 | Top level, no upstream |
+| 1 | BRD | Formal Template | Yes | No | 0 | Top level, no upstream; Feature BRDs (006+) require sections 3.6/3.7 |
 | 2 | PRD | Formal Template + Tags | Yes | Yes | 1 | @brd |
 | 3 | EARS | Formal Template + Tags | Yes | Yes | 2 | @brd, @prd |
 | 4 | BDD | Formal Template + Tags | Yes (Gherkin) | Yes | 3 | @brd, @prd, @ears |
@@ -940,6 +1086,23 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
 - [ ] Validation scripts pass
 
 **Document-Specific Requirements:**
+- **BRD**:
+  - **Platform BRDs (001-005)**:
+    - [ ] Infrastructure foundation documented
+    - [ ] No sections 3.6/3.7 present (not required)
+    - [ ] Technology stack specifications complete
+  - **Feature BRDs (006+)**:
+    - [ ] Section 3.6: Technology Stack Prerequisites present
+      - [ ] Platform BRD dependencies listed (which BRDs 001-005 required)
+      - [ ] Relevance to current BRD documented
+      - [ ] Specific Platform BRD section references included
+    - [ ] Section 3.7: Mandatory Technology Conditions present
+      - [ ] 4 platform-inherited conditions documented
+      - [ ] 6-12 feature-specific conditions defined
+      - [ ] Each condition includes: requirement, rationale, business impact, exception path
+    - [ ] All Platform BRD references resolve correctly
+    - [ ] Pattern matches BRD category (AI Agent, n8n Automation, or Standard Feature)
+    - [ ] Version updated to 1.1+ if sections 3.6/3.7 added post-creation
 - **REQ V2**:
   - [ ] Section 3: Interface Specifications present (Protocol/ABC with type annotations)
   - [ ] Section 4: Data Schemas complete (JSON Schema + Pydantic + SQLAlchemy)
