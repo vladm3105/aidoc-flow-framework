@@ -2,13 +2,47 @@
 
 ## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
 
-**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
+**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
 **REQ (Atomic Requirements)** ← YOU ARE HERE (Layer 7 - Requirements Layer)
 
-For the complete traceability workflow with visual diagram, see: [index.md - Traceability Flow](../index.md#traceability-flow)
+For the complete traceability workflow with visual diagram, see: [index.md - Traceability Flow](../../../docs_flow_framework/ai_dev_flow/index.md#traceability-flow)
 
 **Quick Reference**:
+
+
+```
+
+```
+BRD (Business Requirements Document): High-level business needs
+        ↓
+PRD (Product Requirements Document): User needs and features
+        ↓
+EARS (Easy Approach to Requirements Syntax): Atomic, measurable requirements using WHEN/THEN format, Requirements Expressions). All work traces back to formal technical requirements (WHEN-THE-SHALL-WITHIN format), AI generated structured requirement formatAI transforms interfaces as code specification
+        ↓
+BDD (Behavior-Driven Development). Business + Dev + Test AI generates acceptance scenarios
+        ↓
+ADR (Architecture Decisions Requirements)
+        ↓
+SYS (System Requirements). Technical interpretation of business requirements
+        ↓
+REQ (Atomic Requirements)
+        ↓
+SPEC (Technical Implementation) 
+        ↓
+TASKS (Implementation Plans)
+        ↓
+Code (src/{module_name}/) ← AI generates Python
+        ↓
+Tests (tests/{suit_name}) ← AI generates test suites
+        ↓
+Validation ← AI runs BDD tests
+        ↓
+Human Review ← HUMAN reviews architecture only
+        ↓
+Production-Ready Code
+```
+
 ```
 ... → SYS → **REQ** → IMPL → CTR/SPEC → TASKS → Code → ...
                 ↑
@@ -33,12 +67,14 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 | **Date Created** | YYYY-MM-DD |
 | **Last Updated** | YYYY-MM-DD |
 | **Author** | [Author name and role] |
-| **Priority** | Critical/High/Medium/Low |
+| **Priority** | Critical (P1) / High (P2) / Medium (P3) / Low (P4) |
 | **Category** | Functional/Non-Functional/Security/Performance/Reliability |
-| **Source Document** | [PRD-NNN, SYS-NNN, or EARS-NNN reference] |
+| **Source Document** | [PRD-NNN, SYS-NNN, or EARS-NNN reference with section] |
 | **Verification Method** | BDD/Spec/Unit Test/Integration Test/Contract Test |
 | **Assigned Team** | [Team/Person responsible] |
-| **SPEC-Ready Score** | [0-100%] (Target: ≥90%) |
+| **SPEC-Ready Score** | ✅ XX% (Target: ≥90%) |
+| **IMPL-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **Template Version** | 3.0 |
 
 ---
 
@@ -82,8 +118,8 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 [Specific business logic that governs this requirement's behavior]
 
 **Rules**:
-1. **Rule Name**: [Condition] → [Action/Outcome]
-2. **Rule Name**: [Condition] → [Action/Outcome]
+1. **Rule Name**: IF [Condition] THEN [Action/Outcome]
+2. **Rule Name**: IF [Condition] THEN [Action/Outcome]
 
 ---
 
@@ -194,11 +230,30 @@ class DataResponse:
 
 **Base URL**: `https://api.example.com/v1`
 
-| Endpoint | Method | Request Schema | Response Schema | Rate Limit |
-|----------|--------|----------------|-----------------|------------|
-| `/data/quotes` | GET | `QuoteRequest` | `QuoteResponse` | 100/min |
-| `/data/historical` | GET | `HistoricalRequest` | `HistoricalResponse` | 75/min |
-| `/orders/create` | POST | `OrderRequest` | `OrderResponse` | 50/min |
+| Endpoint | Method | Request Schema | Response Schema | Rate Limit | Description |
+|----------|--------|----------------|-----------------|------------|-------------|
+| `/data/quotes` | GET | `QuoteRequest` | `QuoteResponse` | 100/min | Retrieve real-time quotes |
+| `/data/historical` | GET | `HistoricalRequest` | `HistoricalResponse` | 75/min | Fetch historical data |
+| `/orders/create` | POST | `OrderRequest` | `OrderResponse` | 50/min | Create new order |
+
+**Endpoint Details**:
+
+```python
+# GET /data/quotes
+@dataclass
+class QuoteRequest:
+    symbol: str  # Stock ticker (e.g., "AAPL")
+    fields: list[str] | None = None  # Optional fields to include
+
+@dataclass
+class QuoteResponse:
+    symbol: str
+    price: float
+    timestamp: datetime
+    bid: float | None
+    ask: float | None
+    volume: int | None
+```
 
 ---
 
@@ -312,10 +367,11 @@ class QuoteResponse(BaseModel):
 
 ### 4.3 Database Schema (if applicable)
 
-```sql
--- SQLAlchemy Model
-from sqlalchemy import Column, Integer, String, Float, DateTime, CheckConstraint
+```python
+# SQLAlchemy Model
+from sqlalchemy import Column, Integer, String, Float, DateTime, CheckConstraint, Index
 from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime
 
 Base = declarative_base()
 
@@ -339,6 +395,33 @@ class Quote(Base):
         CheckConstraint('volume >= 0', name='check_volume_non_negative'),
         Index('idx_symbol_timestamp', 'symbol', 'timestamp'),
     )
+```
+
+**Migration Script** (Alembic):
+
+```python
+# migrations/versions/001_create_quotes_table.py
+def upgrade():
+    op.create_table(
+        'quotes',
+        sa.Column('id', sa.Integer(), primary_key=True, autoincrement=True),
+        sa.Column('symbol', sa.String(5), nullable=False, index=True),
+        sa.Column('price', sa.Float(), nullable=False),
+        sa.Column('timestamp', sa.DateTime(), nullable=False, index=True),
+        sa.Column('bid', sa.Float(), nullable=True),
+        sa.Column('ask', sa.Float(), nullable=True),
+        sa.Column('volume', sa.Integer(), nullable=True),
+        sa.Column('created_at', sa.DateTime(), default=datetime.utcnow, nullable=False),
+        sa.CheckConstraint('price > 0', name='check_price_positive'),
+        sa.CheckConstraint('bid >= 0', name='check_bid_non_negative'),
+        sa.CheckConstraint('ask >= 0', name='check_ask_non_negative'),
+        sa.CheckConstraint('volume >= 0', name='check_volume_non_negative'),
+    )
+    op.create_index('idx_symbol_timestamp', 'quotes', ['symbol', 'timestamp'])
+
+def downgrade():
+    op.drop_index('idx_symbol_timestamp', 'quotes')
+    op.drop_table('quotes')
 ```
 
 ---
@@ -435,7 +518,7 @@ stateDiagram-v2
     end note
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in SPEC_DRIVEN_DEVELOPMENT_GUIDE.md. Diagram groupings are for visual clarity only.
 
 ### 5.4 Circuit Breaker Configuration
 
@@ -451,6 +534,36 @@ class CircuitBreakerConfig:
     timeout: float = 30.0  # Seconds circuit stays open
     half_open_max_calls: int = 1  # Calls allowed in half-open state
     excluded_exceptions: tuple = (ValidationError,)  # Don't count these
+
+    def __post_init__(self):
+        """Validate configuration parameters."""
+        if self.failure_threshold < 1:
+            raise ValueError("failure_threshold must be >= 1")
+        if self.success_threshold < 1:
+            raise ValueError("success_threshold must be >= 1")
+        if self.timeout <= 0:
+            raise ValueError("timeout must be > 0")
+```
+
+**Circuit Breaker State Transitions**:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Closed
+    Closed --> Open: failures >= threshold
+    Open --> HalfOpen: timeout_elapsed
+    HalfOpen --> Closed: successes >= threshold
+    HalfOpen --> Open: any_failure
+
+    note right of Open
+        Fail fast for all requests
+        Wait for timeout period
+    end note
+
+    note right of HalfOpen
+        Allow limited requests
+        Test if service recovered
+    end note
 ```
 
 ---
@@ -523,23 +636,25 @@ api_client:
 
 ### 6.2 Environment Variables
 
-| Variable | Type | Required | Default | Description |
-|----------|------|----------|---------|-------------|
-| `API_BASE_URL` | string | Yes | - | Base URL for API |
-| `API_TIMEOUT` | float | No | 30.0 | Request timeout in seconds |
-| `API_RATE_LIMIT` | int | No | 75 | Requests per minute |
-| `API_RETRY_ENABLED` | bool | No | true | Enable retry logic |
-| `API_CACHE_TTL` | int | No | 3600 | Cache TTL in seconds |
+| Variable | Type | Required | Default | Description | Validation |
+|----------|------|----------|---------|-------------|------------|
+| `API_BASE_URL` | string | Yes | - | Base URL for API | Must start with https:// in production |
+| `API_TIMEOUT` | float | No | 30.0 | Request timeout in seconds | 0 < value <= 300 |
+| `API_RATE_LIMIT` | int | No | 75 | Requests per minute | 1 <= value <= 10000 |
+| `API_RETRY_ENABLED` | bool | No | true | Enable retry logic | true or false |
+| `API_CACHE_TTL` | int | No | 3600 | Cache TTL in seconds | value >= 0 |
+| `API_SECRET_NAME` | string | Yes | - | Secret Manager secret name | Non-empty string |
 
 ### 6.3 Configuration Validation
 
 ```python
 from pydantic import BaseModel, Field, field_validator
+import os
 
 class APIClientConfig(BaseModel):
     """Validated configuration for API client."""
 
-    base_url: str = Field(..., regex=r'^https?://[^\s]+$')
+    base_url: str = Field(..., pattern=r'^https?://[^\s]+$')
     timeout_seconds: float = Field(30.0, gt=0, le=300)
     max_connections: int = Field(100, ge=1, le=1000)
     requests_per_minute: int = Field(75, ge=1, le=10000)
@@ -549,10 +664,24 @@ class APIClientConfig(BaseModel):
     @classmethod
     def validate_https_in_production(cls, v: str) -> str:
         """Ensure HTTPS in production environments."""
-        import os
         if os.getenv('ENV') == 'production' and not v.startswith('https://'):
             raise ValueError("Production must use HTTPS")
         return v
+
+    @field_validator('timeout_seconds')
+    @classmethod
+    def validate_reasonable_timeout(cls, v: float) -> float:
+        """Ensure timeout is reasonable for production use."""
+        if v < 1.0:
+            raise ValueError("Timeout too low for production (min 1.0s)")
+        if v > 120.0:
+            import warnings
+            warnings.warn(f"Timeout {v}s is unusually high (>120s)")
+        return v
+
+    class Config:
+        validate_assignment = True  # Validate on attribute assignment
+        frozen = False  # Allow updates for dynamic reconfiguration
 ```
 
 ---
@@ -561,30 +690,43 @@ class APIClientConfig(BaseModel):
 
 ### Performance
 
-| Metric | Target (p50) | Target (p95) | Target (p99) | Measurement Method |
-|--------|--------------|--------------|--------------|-------------------|
-| Response Time | <200ms | <500ms | <1000ms | APM traces |
-| Throughput | 100 req/s | 75 req/s | 50 req/s | Load testing |
-| Connection Time | <2s | <5s | <10s | Metrics |
+| Metric | Target (p50) | Target (p95) | Target (p99) | Measurement Method | SLI/SLO |
+|--------|--------------|--------------|--------------|-------------------|---------|
+| Response Time | <200ms | <500ms | <1000ms | APM traces (Datadog/New Relic) | SLI: p95 latency, SLO: 99.9% |
+| Throughput | 100 req/s | 75 req/s | 50 req/s | Load testing (k6/Locust) | SLI: requests/s, SLO: 99% |
+| Connection Time | <2s | <5s | <10s | Metrics (Prometheus) | SLI: connection duration, SLO: 99.5% |
 
 ### Reliability
 
 - **Availability**: 99.9% uptime (SLA: max 43 minutes downtime/month)
-- **Error Rate**: <0.1% of requests
+- **Error Rate**: <0.1% of requests (SLO: 99.9% success rate)
 - **Data Integrity**: 100% (checksums, validation)
+- **Recovery Time Objective (RTO)**: <5 minutes for service recovery
+- **Recovery Point Objective (RPO)**: <1 minute for data loss
 
 ### Security
 
 - **Authentication**: API key + TLS 1.3 minimum
-- **Data Encryption**: AES-256 at rest, TLS in transit
-- **Secrets Management**: Google Secret Manager (no plaintext)
-- **Audit Logging**: All API calls logged with request_id
+- **Data Encryption**: AES-256 at rest, TLS 1.3 in transit
+- **Secrets Management**: Google Secret Manager (no plaintext credentials)
+- **Audit Logging**: All API calls logged with request_id and user context
+- **Input Validation**: All inputs validated against schemas before processing
+- **Rate Limiting**: Per-user and per-IP rate limits to prevent abuse
 
 ### Scalability
 
-- **Horizontal Scaling**: Support 10-100 instances
+- **Horizontal Scaling**: Support 10-100 instances with linear scaling
 - **Connection Pooling**: Max 100 connections per instance
 - **Resource Limits**: CPU <20%, Memory <512MB per instance
+- **Burst Capacity**: Handle 2x normal load for 5 minutes
+- **Auto-scaling**: Scale up at 70% CPU, scale down at 30% CPU
+
+### Observability
+
+- **Metrics**: Response time, error rate, throughput, connection pool metrics
+- **Logging**: Structured JSON logs with correlation IDs
+- **Tracing**: Distributed tracing with OpenTelemetry
+- **Alerting**: Alerts for error rate >1%, latency >1s (p95), availability <99.9%
 
 ---
 
@@ -597,6 +739,12 @@ class APIClientConfig(BaseModel):
 **Pattern**: Retry with Exponential Backoff + Circuit Breaker
 
 ```python
+import asyncio
+from typing import Callable, TypeVar
+from functools import wraps
+
+T = TypeVar('T')
+
 async def fetch_with_resilience(
     client: ExternalAPIClient,
     request: DataRequest,
@@ -610,6 +758,9 @@ async def fetch_with_resilience(
     3. If closed/half-open, attempt request
     4. On failure, apply exponential backoff retry
     5. Update circuit breaker based on result
+
+    Time Complexity: O(n) where n = max_attempts
+    Space Complexity: O(1)
     """
     circuit_breaker = get_circuit_breaker('api_client')
 
@@ -619,6 +770,8 @@ async def fetch_with_resilience(
 
     # Retry loop with exponential backoff
     delay = config.initial_delay
+    last_error = None
+
     for attempt in range(1, config.max_attempts + 1):
         try:
             response = await client.fetch_data(request)
@@ -626,35 +779,61 @@ async def fetch_with_resilience(
             return response
 
         except RetryableError as e:
+            last_error = e
             if attempt == config.max_attempts:
                 circuit_breaker.record_failure()
-                raise MaxRetriesExceeded(f"Failed after {attempt} attempts") from e
+                raise MaxRetriesExceeded(
+                    f"Failed after {attempt} attempts"
+                ) from e
 
-            await asyncio.sleep(delay)
-            delay = min(delay * config.backoff_multiplier, config.max_delay)
-            logger.warning(f"Retry {attempt}/{config.max_attempts} after {delay}s")
+            # Exponential backoff with jitter
+            jitter = random.uniform(0, delay * 0.1)
+            sleep_time = min(delay + jitter, config.max_delay)
+            await asyncio.sleep(sleep_time)
+            delay *= config.backoff_multiplier
+
+            logger.warning(
+                f"Retry {attempt}/{config.max_attempts} after {sleep_time:.2f}s",
+                extra={"error": str(e), "request_id": request.request_id}
+            )
 
         except NonRetryableError as e:
             circuit_breaker.record_failure()
             raise
+
+    # Should never reach here due to raise in loop
+    raise last_error
 ```
 
 ### 8.2 Concurrency and Async Patterns
 
 ```python
 import asyncio
-from typing import AsyncIterator
+from typing import AsyncIterator, Iterable
+from collections.abc import Coroutine
 
 async def fetch_batch_concurrent(
     symbols: list[str],
-    max_concurrent: int = 10
+    max_concurrent: int = 10,
+    preserve_order: bool = False
 ) -> AsyncIterator[QuoteResponse]:
     """Fetch quotes concurrently with rate limiting.
 
     Algorithm:
     1. Create semaphore to limit concurrency
     2. Launch async tasks for each symbol
-    3. Yield results as they complete (preserving order optional)
+    3. Yield results as they complete (or in order if preserve_order=True)
+
+    Time Complexity: O(n/k) where n=symbols, k=max_concurrent
+    Space Complexity: O(n) for task storage
+
+    Args:
+        symbols: List of stock symbols to fetch
+        max_concurrent: Maximum concurrent requests
+        preserve_order: If True, yield results in input order
+
+    Yields:
+        QuoteResponse objects as they complete
     """
     semaphore = asyncio.Semaphore(max_concurrent)
 
@@ -664,41 +843,87 @@ async def fetch_batch_concurrent(
 
     tasks = [fetch_with_semaphore(symbol) for symbol in symbols]
 
-    for coro in asyncio.as_completed(tasks):
-        yield await coro
+    if preserve_order:
+        # Gather all results and yield in order
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for result in results:
+            if isinstance(result, Exception):
+                logger.error(f"Quote fetch failed: {result}")
+            else:
+                yield result
+    else:
+        # Yield results as they complete
+        for coro in asyncio.as_completed(tasks):
+            try:
+                yield await coro
+            except Exception as e:
+                logger.error(f"Quote fetch failed: {e}")
 ```
 
 ### 8.3 Dependency Injection
 
 ```python
 from dependency_injector import containers, providers
+from dependency_injector.wiring import inject, Provide
 
 class Container(containers.DeclarativeContainer):
-    """Dependency injection container."""
+    """Dependency injection container for API client components."""
 
+    # Configuration
     config = providers.Configuration()
 
-    # Infrastructure
+    # Infrastructure layers
     http_client = providers.Singleton(
         HTTPClient,
         timeout=config.timeout_seconds,
-        max_connections=config.max_connections
+        max_connections=config.max_connections,
+        keepalive=config.keepalive_seconds
     )
 
     cache = providers.Singleton(
         RedisCache,
         url=config.cache.redis_url,
-        ttl=config.cache.ttl_seconds
+        ttl=config.cache.ttl_seconds,
+        max_size_mb=config.cache.max_size_mb
     )
 
-    # Services
+    circuit_breaker = providers.Singleton(
+        CircuitBreaker,
+        config=config.circuit_breaker
+    )
+
+    # Service layer
     api_client = providers.Factory(
         ExternalAPIClientImpl,
         http_client=http_client,
         cache=cache,
+        circuit_breaker=circuit_breaker,
         config=config.api_client
     )
+
+    # Repository layer (if applicable)
+    quote_repository = providers.Factory(
+        QuoteRepository,
+        db_session=providers.Singleton(create_db_session),
+        cache=cache
+    )
+
+# Usage with automatic injection
+@inject
+async def get_quote(
+    symbol: str,
+    api_client: ExternalAPIClient = Provide[Container.api_client]
+) -> QuoteResponse:
+    """Get quote with injected dependencies."""
+    request = DataRequest(endpoint=f"/quotes/{symbol}")
+    return await api_client.fetch_data(request)
 ```
+
+**Dependency Injection Benefits**:
+- **Testability**: Easy to mock dependencies for unit tests
+- **Flexibility**: Swap implementations without changing code
+- **Configuration**: Centralized configuration management
+- **Lifecycle Management**: Automatic singleton/factory handling
 
 ---
 
@@ -710,59 +935,101 @@ class Container(containers.DeclarativeContainer):
 
 - ✅ **AC-001**: API connection established within 5 seconds using valid credentials
   - **Verification**: Integration test with test credentials
-  - **Pass Criteria**: Connection succeeds in <5s for 100% of attempts
+  - **Pass Criteria**: Connection succeeds in <5s for 100% of attempts (n=100)
+  - **Test Method**: Integration test with real API endpoint
 
 - ✅ **AC-002**: Data retrieval completes within SLA (p95 <500ms)
   - **Verification**: Load test with 1000 requests
-  - **Pass Criteria**: p95 latency <500ms, p99 <1000ms
+  - **Pass Criteria**: p50 <200ms, p95 <500ms, p99 <1000ms
+  - **Test Method**: Performance test with k6 or Locust
 
 - ✅ **AC-003**: Rate limiting enforced at 75 requests/minute (premium tier)
   - **Verification**: Send 100 requests in 1 minute
-  - **Pass Criteria**: 76th request returns 429, queues, or waits
+  - **Pass Criteria**: 76th request returns 429, queues, or waits appropriately
+  - **Test Method**: Integration test with rate limit simulation
+
+- ✅ **AC-004**: Response data validates against JSON Schema
+  - **Verification**: Schema validation tests with 1000 responses
+  - **Pass Criteria**: 100% of responses pass schema validation
+  - **Test Method**: Unit test with jsonschema library
+
+- ✅ **AC-005**: Pydantic models reject invalid data with clear errors
+  - **Verification**: Unit tests with invalid inputs (edge cases)
+  - **Pass Criteria**: ValidationError raised for all invalid inputs with descriptive messages
+  - **Test Method**: Unit test with parametrized test cases
 
 ### Error and Edge Case Criteria
 
-- ✅ **AC-004**: Connection failures trigger exponential backoff retry
+- ✅ **AC-006**: Connection failures trigger exponential backoff retry
   - **Verification**: Chaos test with network failures
-  - **Pass Criteria**: Retries at 1s, 2s, 4s, 8s, 16s intervals
+  - **Pass Criteria**: Retries at 1s, 2s, 4s, 8s, 16s intervals (±10% jitter)
+  - **Test Method**: Integration test with network fault injection
 
-- ✅ **AC-005**: Circuit breaker opens after 5 consecutive failures
+- ✅ **AC-007**: Circuit breaker opens after 5 consecutive failures
   - **Verification**: Inject 5 consecutive errors
-  - **Pass Criteria**: 6th request fails fast with CircuitOpenError
+  - **Pass Criteria**: 6th request fails fast with CircuitOpenError (<1ms)
+  - **Test Method**: Unit test with mocked failures
 
-- ✅ **AC-006**: Invalid responses return ValidationError (not crash)
+- ✅ **AC-008**: Circuit breaker transitions to half-open after timeout
+  - **Verification**: Wait for timeout period (30s) after circuit opens
+  - **Pass Criteria**: Next request allowed in half-open state
+  - **Test Method**: Integration test with time acceleration
+
+- ✅ **AC-009**: Invalid responses return ValidationError (not crash)
   - **Verification**: Send malformed JSON responses
-  - **Pass Criteria**: ValidationError raised with error details
+  - **Pass Criteria**: ValidationError raised with error details, no uncaught exceptions
+  - **Test Method**: Unit test with invalid response payloads
+
+- ✅ **AC-010**: Timeout errors trigger retry with increased timeout
+  - **Verification**: Simulate slow API responses (>30s)
+  - **Pass Criteria**: Retry with timeout increased by 50% each attempt
+  - **Test Method**: Integration test with delayed responses
 
 ### Quality and Constraint Criteria
 
-- ✅ **AC-007**: Response time <500ms at p95 under normal load
-  - **Verification**: Performance test with APM
+- ✅ **AC-011**: Response time <500ms at p95 under normal load
+  - **Verification**: Performance test with APM (Datadog/New Relic)
   - **Pass Criteria**: p95 <500ms across 10,000 requests
+  - **Test Method**: Performance test with production-like load
 
-- ✅ **AC-008**: Secrets never logged or exposed in errors
+- ✅ **AC-012**: Secrets never logged or exposed in errors
   - **Verification**: Log audit + error inspection
-  - **Pass Criteria**: Zero plaintext API keys in logs/errors
+  - **Pass Criteria**: Zero plaintext API keys/secrets in logs/errors/traces
+  - **Test Method**: Security audit with log analysis
+
+- ✅ **AC-013**: Resource usage within limits (CPU <20%, Memory <512MB)
+  - **Verification**: Resource monitoring during load test
+  - **Pass Criteria**: CPU <20%, Memory <512MB for 100 req/s load
+  - **Test Method**: Performance test with resource monitoring
 
 ### Data Validation Criteria
 
-- ✅ **AC-009**: Response data validates against JSON Schema
-  - **Verification**: Schema validation tests
-  - **Pass Criteria**: 100% of responses pass schema validation
+- ✅ **AC-014**: Database constraints enforced for all inserts
+  - **Verification**: Insert invalid data (negative prices, invalid symbols)
+  - **Pass Criteria**: Database rejects invalid data with constraint violation errors
+  - **Test Method**: Integration test with database
 
-- ✅ **AC-010**: Pydantic models reject invalid data
-  - **Verification**: Unit tests with invalid inputs
-  - **Pass Criteria**: ValidationError raised for all invalid inputs
+- ✅ **AC-015**: Data integrity maintained across API-DB pipeline
+  - **Verification**: Compare API response with database records
+  - **Pass Criteria**: 100% data match (no corruption/loss)
+  - **Test Method**: Integration test with data verification
 
 ### Integration Criteria
 
-- ✅ **AC-011**: Contract tests pass with API provider
+- ✅ **AC-016**: Contract tests pass with API provider
   - **Verification**: Pact/Spring Cloud Contract tests
-  - **Pass Criteria**: 100% contract compatibility
+  - **Pass Criteria**: 100% contract compatibility with API version
+  - **Test Method**: Contract test with Pact framework
 
-- ✅ **AC-012**: Observability metrics published (latency, errors, rate)
-  - **Verification**: Metrics dashboard inspection
+- ✅ **AC-017**: Observability metrics published (latency, errors, rate)
+  - **Verification**: Metrics dashboard inspection (Prometheus/Grafana)
   - **Pass Criteria**: All metrics present with <1min lag
+  - **Test Method**: Integration test with metrics validation
+
+- ✅ **AC-018**: Distributed tracing captures full request flow
+  - **Verification**: Inspect traces in APM (Jaeger/Zipkin)
+  - **Pass Criteria**: All spans present (API client → cache → database)
+  - **Test Method**: Integration test with trace inspection
 
 ---
 
@@ -771,57 +1038,83 @@ class Container(containers.DeclarativeContainer):
 ### Automated Testing
 
 - **BDD Scenarios**: [BDD-NNN.feature](../../BDD/BDD-NNN.feature#scenarios)
-  - Scenario: Successful API connection
-  - Scenario: Rate limiting enforcement
-  - Scenario: Retry on transient failure
-  - Scenario: Circuit breaker activation
+  - Scenario: Successful API connection with valid credentials
+  - Scenario: Rate limiting enforcement at premium tier threshold
+  - Scenario: Retry on transient failure with exponential backoff
+  - Scenario: Circuit breaker activation after failure threshold
+  - Scenario: Data validation with JSON Schema and Pydantic models
 
 - **Unit Tests**: `tests/unit/api/test_api_client.py`
-  - Test: Credential validation
-  - Test: Request building
-  - Test: Response parsing
-  - Test: Error handling
+  - Test: Credential validation (valid/invalid formats)
+  - Test: Request building with query params and headers
+  - Test: Response parsing and validation
+  - Test: Error handling for all exception types
+  - Test: Circuit breaker state transitions
+  - Test: Exponential backoff calculation
+  - **Coverage Target**: ≥95% line coverage, ≥90% branch coverage
 
 - **Integration Tests**: `tests/integration/api/test_api_integration.py`
-  - Test: End-to-end data fetch
-  - Test: Retry logic with real API
-  - Test: Rate limit handling
+  - Test: End-to-end data fetch with real API
+  - Test: Retry logic with transient failures
+  - Test: Rate limit handling with burst traffic
+  - Test: Database persistence of API responses
+  - Test: Cache hit/miss scenarios
+  - **Coverage Target**: ≥85% of critical paths
 
 - **Contract Tests**: `tests/contract/api/test_api_contract.py`
-  - Test: Request/response schema compliance
+  - Test: Request/response schema compliance (Pact)
   - Test: API version compatibility
+  - Test: Breaking change detection
+  - **Framework**: Pact or Spring Cloud Contract
 
 - **Performance Tests**: `tests/performance/api/test_api_performance.py`
-  - Test: Latency benchmarks (p50/p95/p99)
-  - Test: Throughput under load
+  - Test: Latency benchmarks (p50/p95/p99) under various loads
+  - Test: Throughput under sustained load (100 req/s for 10 minutes)
   - Test: Connection pooling efficiency
+  - Test: Resource usage (CPU/Memory) under load
+  - **Tool**: k6, Locust, or JMeter
 
 ### Technical Validation
 
 - **Specification Compliance**: [SPEC-NNN](../../SPEC/.../SPEC-NNN.yaml)
-  - Interface implementation matches protocol
-  - All methods have type annotations
+  - Interface implementation matches Protocol/ABC definition
+  - All methods have complete type annotations
   - Error handling follows specification
+  - Configuration validates correctly
 
 - **Schema Validation**:
-  - JSON Schema validation passes
-  - Pydantic models validate correctly
-  - Database constraints enforced
+  - JSON Schema validation passes for all data structures
+  - Pydantic models validate correctly with edge cases
+  - Database constraints enforced (check constraints, foreign keys)
+
+- **Static Analysis**:
+  - mypy: Type checking passes with strict mode
+  - pylint: Code quality score ≥9.0/10
+  - bandit: Security scan passes with no high/medium issues
 
 ### Manual Validation
 
 - **Code Review Checklist**:
-  - [ ] All interfaces implement Protocol/ABC
-  - [ ] Error handling covers all exception types
-  - [ ] Configuration validated with Pydantic
+  - [ ] All interfaces implement Protocol/ABC correctly
+  - [ ] Error handling covers all exception types from catalog
+  - [ ] Configuration validated with Pydantic models
   - [ ] Secrets never logged or hardcoded
-  - [ ] Metrics and logging instrumented
+  - [ ] Metrics and logging instrumented for observability
+  - [ ] Docstrings complete with Args/Returns/Raises
+  - [ ] Type hints present for all public methods
 
 - **Security Assessment**:
-  - [ ] TLS 1.3 enforced
-  - [ ] API keys in Secret Manager
-  - [ ] Input validation prevents injection
-  - [ ] Rate limiting prevents abuse
+  - [ ] TLS 1.3 enforced for all connections
+  - [ ] API keys stored in Secret Manager (not environment variables)
+  - [ ] Input validation prevents SQL injection and XSS
+  - [ ] Rate limiting prevents abuse and DoS
+  - [ ] Audit logging captures all security-relevant events
+
+- **Performance Assessment**:
+  - [ ] Connection pooling configured optimally
+  - [ ] Caching strategy reduces API calls appropriately
+  - [ ] Resource limits prevent memory leaks
+  - [ ] Async patterns used for I/O-bound operations
 
 ---
 
@@ -835,8 +1128,10 @@ Document the business strategy, product requirements, system specifications, and
 |-------------|-------------|----------------|-------------------|--------------|
 | BRD | [BRD-NNN](../../BRD/BRD-NNN_...md) | [Business requirements title] | Sections 2.4, 4.x | Business objectives justifying this requirement |
 | PRD | [PRD-NNN](../../PRD/PRD-NNN_...md) | [Product requirements title] | Functional Requirements 4.x | Product features this requirement enables |
-| SYS | [SYS-NNN](../../SYS/SYS-NNN_...md) | [System requirements title] | System Requirements 3.x | System-level specification this implements |
 | EARS | [EARS-NNN](../../EARS/EARS-NNN_...md) | [Engineering requirements] | Event-driven/State-driven statements | Formal engineering requirement this satisfies |
+| BDD | [BDD-NNN](../../BDD/BDD-NNN_...feature) | [BDD feature title] | Scenarios 1-5 | Behavioral specification this implements |
+| ADR | [ADR-NNN](../../ADR/ADR-NNN_...md) | [Architecture decision title] | Decision outcome | Architecture decision driving this requirement |
+| SYS | [SYS-NNN](../../SYS/SYS-NNN_...md) | [System requirements title] | System Requirements 3.x | System-level specification this implements |
 
 ### Downstream Artifacts
 
@@ -844,7 +1139,7 @@ Document the business strategy, product requirements, system specifications, and
 
 | ADR ID | ADR Title | Requirement Aspects Addressed | Decision Impact |
 |--------|-----------|------------------------------|-----------------|
-| [ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN) | [Architecture decision title] | Technology selection, patterns | Architectural implementation |
+| [ADR-NNN](../../ADR/ADR-NNN_...md#ADR-NNN) | [Architecture decision title] | Technology selection, patterns, trade-offs | Architectural implementation constraints |
 
 #### Technical Specifications
 
@@ -856,27 +1151,39 @@ Document the business strategy, product requirements, system specifications, and
 
 | BDD ID | Scenario Title | Acceptance Criteria Validated | Test Coverage |
 |--------|----------------|-------------------------------|---------------|
-| [BDD-NNN](../../BDD/BDD-NNN_....feature) | Feature: [Feature name] | AC-001, AC-002, AC-003 | Scenarios 1-5 |
+| [BDD-NNN](../../BDD/BDD-NNN_....feature) | Feature: [Feature name] | AC-001 through AC-018 | Scenarios 1-8 |
 
 #### API Contracts
 
 | CTR ID | Contract Title | Interface Defined | Relationship |
 |--------|----------------|-------------------|--------------|
-| [CTR-NNN](../../CTR/CTR-NNN.md) | [API Contract Title] | REST API / Event Schema | Interface specification |
+| [CTR-NNN](../../CTR/CTR-NNN.md) | [API Contract Title] | REST API / Event Schema / gRPC Proto | Interface specification and versioning |
 
 ### Code Implementation Paths
 
 **Primary Implementation**:
-- `src/[module]/client.py`: API client implementation
-- `src/[module]/models.py`: Pydantic models and schemas
-- `src/[module]/errors.py`: Exception definitions
-- `src/[module]/config.py`: Configuration classes
+- `src/[module]/client.py`: API client implementation with retry and circuit breaker
+- `src/[module]/models.py`: Pydantic models and DTOs
+- `src/[module]/schemas.py`: JSON Schema definitions
+- `src/[module]/errors.py`: Exception definitions and error handling
+- `src/[module]/config.py`: Configuration classes with validation
 
 **Test Paths**:
-- `tests/unit/[module]/test_client.py`: Unit tests
-- `tests/integration/[module]/test_integration.py`: Integration tests
-- `tests/contract/[module]/test_contract.py`: Contract tests
-- `tests/performance/[module]/test_performance.py`: Performance tests
+- `tests/unit/[module]/test_client.py`: Unit tests for API client
+- `tests/integration/[module]/test_integration.py`: Integration tests with real API
+- `tests/contract/[module]/test_contract.py`: Contract tests (Pact)
+- `tests/performance/[module]/test_performance.py`: Performance benchmarks
+- `tests/bdd/[module]/[feature].feature`: BDD scenarios
+
+**Database Paths** (if applicable):
+- `src/[module]/repositories/quote_repository.py`: Repository pattern implementation
+- `src/[module]/models/quote.py`: SQLAlchemy models
+- `migrations/versions/NNN_create_quotes_table.py`: Alembic migrations
+
+**Infrastructure Paths**:
+- `config/api_client.yaml`: Configuration file
+- `.env.example`: Environment variable examples
+- `docker-compose.yml`: Local development stack
 
 ### Traceability Tags
 
@@ -914,7 +1221,7 @@ Document the business strategy, product requirements, system specifications, and
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through SYS) are properly linked.
 
-**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through atomic requirements. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
+**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through atomic requirements. See [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
 
 ---
 
@@ -922,9 +1229,81 @@ Document the business strategy, product requirements, system specifications, and
 
 | Date | Version | Change | Author |
 |------|---------|--------|---------|
-| YYYY-MM-DD | 2.0 | Created V2 template with interface/schema/error/config sections | [Author Name] |
+| 2025-11-18 | 3.0.0 | Created unified REQ template v3.0 with 100% doc_flow framework compliance, 12 Document Control fields, REST API endpoints (3.3), Database Schema (4.3), Circuit Breaker Configuration (5.4), Dependency Injection (8.3) | System Architect |
 
-**Template Version**: 2.0 (SPEC-Ready)
-**Next Review**: YYYY-MM-DD (quarterly review recommended)
+**Template Version**: 3.0
+**Next Review**: 2025-12-18 (quarterly review recommended)
 **Technical Contact**: [Name/Email for technical clarification]
-**SPEC-Ready Checklist Passed**: ✅ Interfaces ✅ Schemas ✅ Errors ✅ Config
+**Framework Compliance**: 100% doc_flow framework aligned
+**SPEC-Ready Checklist**: ✅ Interfaces ✅ Schemas ✅ Errors ✅ Config ✅ NFRs ✅ Implementation ✅ Acceptance Criteria ✅ Traceability
+
+---
+
+## Appendix A: SPEC-Ready Score Calculation
+
+**Formula**:
+```
+SPEC-Ready Score = (
+  Interface Completeness × 15% +
+  Data Schema Completeness × 15% +
+  Error Handling Completeness × 15% +
+  Configuration Completeness × 15% +
+  NFR Completeness × 10% +
+  Implementation Guidance × 10% +
+  Acceptance Criteria × 10% +
+  Traceability Completeness × 10%
+)
+```
+
+**Minimum Threshold**: ≥90% for SPEC generation eligibility
+
+### Section Completeness Criteria
+
+| Section | 100% Complete When... |
+|---------|---------------------|
+| **3. Interface Specs** | Protocol/ABC + all DTOs defined with type hints + REST endpoints (if applicable) |
+| **4. Data Schemas** | JSON Schema + Pydantic models + DB schema (if applicable) |
+| **5. Error Handling** | Exception catalog + error response schema + recovery strategies + state diagram + circuit breaker config |
+| **6. Configuration** | YAML schema + environment variables + validation rules |
+| **7. NFRs** | Performance targets (p50/p95/p99) + reliability metrics + security requirements + scalability limits |
+| **8. Implementation** | Architecture patterns + concurrency + DI + code examples |
+| **9. Acceptance Criteria** | ≥15 criteria covering functional + error + quality + data + integration |
+| **11. Traceability** | Complete upstream chain (BRD + PRD + EARS + BDD + ADR + SYS) + downstream artifacts + code paths |
+
+---
+
+## Appendix B: Quick Reference
+
+**REQ Template v3.0 - 5-Minute Validation Checklist**:
+
+```
+□ Document Control: 11 fields formatted correctly
+□ Source Document: Verified by reading actual section
+□ Upstream Sources: ≥1 BRD + ≥1 PRD + ≥1 EARS + ≥1 BDD + ≥1 ADR + ≥1 SYS
+□ Relationships: Specific and meaningful (not generic)
+□ Sections: All 12 in correct order
+□ Interface Specs: Protocol/ABC + DTOs + REST endpoints (if applicable)
+□ Data Schemas: JSON Schema + Pydantic + Database (if applicable)
+□ Error Handling: Catalog + response schema + state diagram + circuit breaker
+□ Configuration: YAML + env vars + validation
+□ NFRs: Performance (p50/p95/p99) + reliability + security + scalability
+□ Implementation: Architecture patterns + concurrency + DI
+□ Acceptance Criteria: ≥15 criteria across 5 categories
+□ Code Paths: Actual paths (not placeholders)
+□ Change History: Entry for current version
+□ SPEC-Ready Score: ≥ 90%
+□ Traceability Tags: All 6 required (@brd, @prd, @ears, @bdd, @adr, @sys)
+□ Framework Compliance: 100% doc_flow aligned
+```
+
+---
+
+**Document Location**: `/opt/data/ibmcp/docs/REQ/REQ-TEMPLATE-V3.md`
+**Framework Alignment**: 100% doc_flow framework compliant
+**Maintained By**: System Architect, Quality Assurance Team
+**Review Frequency**: Quarterly or after major template updates
+**Support**: See [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) for complete workflow documentation
+
+---
+
+*This is the authoritative unified template v3.0 for creating SPEC-ready REQ documents with 100% doc_flow framework compliance.*

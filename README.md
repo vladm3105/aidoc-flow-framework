@@ -23,6 +23,75 @@ The AI Dev Flow Framework is a comprehensive template system for implementing AI
 - **Automated Validation**: Scripts for tag extraction, cumulative tagging validation, and matrix generation with CI/CD integration
 - **Regulatory Compliance**: Complete audit trails meet SEC, FINRA, FDA, ISO requirements
 
+## Quality Gates and Traceability Validation
+
+The framework includes automated quality gates that ensure each layer in the 16-layer SDD workflow meets maturity thresholds before progressing to downstream artifacts. Quality gates prevent immature artifacts from affecting subsequent development stages.
+
+### Quality Gate Architecture
+
+**Automatic Validation Points:**
+- **Ready Score Gates**: Each artifact includes a maturity score (e.g., `EARS-Ready Score: ✅ 95% ≥90%`)
+- **Cumulative Tag Enforcement**: All artifacts must include traceability tags from upstream layers
+- **Pre-commit Blocking**: Git hooks validate artifacts before commits
+
+**Pre-commit Quality Gates:**
+- `./scripts/validate_quality_gates.sh docs/PRD/PRD-001.md` - Validates individual artifact readiness
+- Automatic validation during `git commit` on changes to `docs/` directory
+- Refer to [`TRACEABILITY_VALIDATION.md`](./ai_dev_flow/TRACEABILITY_VALIDATION.md) for complete specification
+
+### Quality Gate Workflow By Layer
+
+Each layer transition has specific quality requirements:
+
+| **From→To** | **Quality Gate** | **Validation Command** |
+|-------------|------------------|----------------------|
+| **BRD→PRD** | `EARS-Ready Score ≥90%` | `./scripts/validate_quality_gates.sh docs/BRD/BRD-001.md` |
+| **PRD→EARS** | `BDD-Ready Score ≥90%` | `./scripts/validate_quality_gates.sh docs/PRD/PRD-001.md` |
+| **EARS→BDD** | `ADR-Ready Score ≥90%` | `./scripts/validate_quality_gates.sh docs/EARS/EARS-001.md` |
+| **BDD→ADR** | `SYS-Ready Score ≥90%` | `./scripts/validate_quality_gates.sh docs/BDD/BDD-001.feature` |
+| **ADR→SYS** | `REQ-Ready Score ≥90%` | `./scripts/validate_quality_gates.sh docs/ADR/ADR-001.md` |
+| **SYS→REQ** | `SPEC-Ready Score ≥90%` | `./scripts/validate_quality_gates.sh docs/SYS/SYS-001.md` |
+| **REQ→IMPL** | `IMPL-Ready Score ≥90%` | `./scripts/validate_quality_gates.sh docs/REQ/risk/lim/REQ-001.md` |
+| **IMPL→SPEC** | `TASKS-Ready Score ≥90%` (SPEC) | `./scripts/validate_quality_gates.sh docs/SPEC/SPEC-001.yaml` |
+| **CTR→SPEC** | Contract file validation | `./scripts/validate_quality_gates.sh docs/CTR/CTR-001.md` |
+
+**Pre-commit Hook Integration:**
+```bash
+# Automatic validation on git commit
+git add docs/SYS/SYS-001.md
+git commit -m "Add SYS requirements"
+# Output: ✅ Quality gates passed! Ready for next layer transition.
+```
+
+### Git Pre-commit Hook Activation
+
+To enable quality gates, the pre-commit hook must be active:
+
+```bash
+# Verify hook is active
+ls -la .git/hooks/pre-commit
+# Should show executable permissions
+
+# If not active, make executable
+chmod +x .git/hooks/pre-commit
+```
+
+**What Quality Gates Prevent:**
+- ✅ Undervalidating artifacts proceeding to next layer
+- ✅ Cumulatived traceability tag violations
+- ✅ Missing upstream dependencies
+- ✅ Regulator Paygrade compliance (SEC, FINRA, FDA, ISO audit requirements)
+- ✅ Implications from premature artifacts propagating downstream
+
+### Outcome Metrics
+
+Quality gates provide quantitative measures of framework effectiveness:
+
+- **Maturity Index**: Percentage of artifacts with ≥90% ready scores
+- **Traceability Compliance**: Bidirectional linking coverage percentage
+- **Development Velocity**: Reduced iteration cycles through early quality validation
+- **Regulatory Readiness**: Automated audit trail validation
+
 ## Quick Start
 
 ### 1. Clone the Repository

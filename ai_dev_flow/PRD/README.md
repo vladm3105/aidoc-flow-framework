@@ -18,39 +18,7 @@ PRDs transform high-level business objectives into concrete, measurable product 
 
 PRDs are the **starting point** of specification-driven development within the complete SDD workflow:
 
-```
-BRD (Business Requirements Document): High-level business needs + Architecture Decision Requirements
-        ↓
-PRD (Product Requirements Document): User needs and features + Architecture Decision Requirements
-        ↓
-SYS (System Requirements): Technical interpretation of business requirements
-        ↓
-EARS (Easy Approach to Requirements Syntax): Formal WHEN-THE-SHALL-WITHIN requirements
-        ↓
-REQ (Atomic Requirements): Single, testable requirements
-        ↓
-ADR (Architecture Decision Records) ← Created AFTER BRD/PRD based on Architecture Decision Requirements
-        ↓
-BDD (Behavior-Driven Development): Executable Gherkin acceptance scenarios
-        ↓
-IMPL (Implementation Plans): Project management (WHO/WHEN) - if complex project
-        ↓
-CTR (API Contracts): Interface specifications - if interface requirement
-        ↓
-SPEC (Technical Implementation): YAML implementation blueprints (HOW to build)
-        ↓
-TASKS (Code Generation Plans): Exact TODOs to implement SPEC
-        ↓
-Code (src/{module_name}/): Python implementation
-        ↓
-Tests (tests/{suit_name}): Test suites + contract tests
-        ↓
-Validation: BDD + contract + traceability checks
-        ↓
-Human Review: Architecture and quality gates
-        ↓
-Production-Ready Code
-```
+**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
 
 ## ADR References in PRD
 
@@ -189,6 +157,66 @@ PRDs inherit categorization context from their source BRDs:
 - Link to relevant foundation PRDs that provide required capabilities
 
 **Reference**: See [PLATFORM_VS_FEATURE_BRD.md](../PLATFORM_VS_FEATURE_BRD.md) for BRD categorization methodology
+
+## SYS-Ready Scoring System ⭐ NEW
+
+**Purpose**: SYS-ready scoring measures PRD maturity and readiness for progression to System Requirements (SYS) phase in SDD workflow. Minimum score of 90% required to advance to SYS creation.
+
+**Quality Gate Requirements**:
+- **SYS-Ready Score**: Must be ≥90% to pass validation and progress to SYS phase
+- **Format**: `✅ NN% (Target: ≥90%)` in Document Control table
+- **Location**: Required field in Document Control metadata
+- **Validation**: Enforced before commit via `validate_prd_template.sh`
+
+**Scoring Criteria**:
+
+**Product Requirements Completeness (40%)**:
+- All 16 sections present and populated: 10%
+- Business goals include measurable KPIs: 10%
+- Acceptance criteria with business stakeholder validation: 10%
+- Stakeholder analysis and communication plan complete: 10%
+
+**Technical Readiness (30%)**:
+- System boundaries and integration points defined: 10%
+- Non-functional requirements quantified (performance, security, etc.): 10%
+- Architecture Decision Requirements table populated: 10%
+
+**Business Alignment (20%)**:
+- ROI and business case validated with metrics: 5%
+- Competitive and market analysis complete: 5%
+- Success metrics tied to business objectives: 5%
+- Risk mitigation strategies documented: 5%
+
+**Traceability (10%)**:
+- Upstream BRD references with specific sections: 5%
+- Downstream links to planned artifacts: 5%
+
+**Usage Examples**:
+
+**High Scoring PRD (95%)**:
+```markdown
+| **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
+```
+
+**Marginal PRD (85%) - Requires Improvement**:
+```markdown
+| **SYS-Ready Score** | ⚠️ 85% (Below 90% target) |
+```
+
+**Workflow Integration**:
+1. **PRD Creation**: Include SYS-ready and EARS-ready scores in Document Control section
+2. **Quality Check**: Run `./scripts/validate_prd_template.sh docs/PRD/PRD-001_name.md`
+3. **EARS Readiness**: EARS-ready score ≥90% enables progression to EARS artifact creation
+4. **SYS Readiness**: SYS-ready score ≥90% enables progression to SYS artifact creation
+
+**Scoring Calculation Process**:
+1. Assess each criteria category against PRD content
+2. Calculate points earned vs. available points
+3. Compute percentage: (points earned / total points) × 100
+4. Update score in Document Control table
+5. Re-run validation to confirm quality gate passage
+
+**Purpose in SDD Workflow**: Ensures PRD quality meets SYS phase requirements, preventing immature product requirements from progressing to technical specification phases.
 
 ## File Naming Convention
 

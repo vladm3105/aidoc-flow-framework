@@ -12,6 +12,7 @@
 | **Document Owner** | [Name and title] |
 | **Prepared By** | [Business Analyst name] |
 | **Status** | [Draft / In Review / Approved] |
+| **ADR-Ready Score** | ✅ 95% (Target: ≥90%) |
 
 ### Document Revision History
 

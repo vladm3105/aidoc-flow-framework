@@ -21,6 +21,12 @@ Document Organization
 Templates
 
 - [BRD-TEMPLATE.md](./BRD-TEMPLATE.md): Comprehensive BRD template with detailed sections
+- [BRD_CREATION_RULES.md](./BRD_CREATION_RULES.md): Complete reference for creating BRD documents according to doc-flow SDD framework
+- [BRD_VALIDATION_RULES.md](./BRD_VALIDATION_RULES.md): Validation rules and quality gates for BRD documents
+
+Validation Tools
+
+- [validate_brd_template.sh](../../scripts/validate_brd_template.sh): Pre-commit validation script for BRD documents (12 validation checks)
 
 Documents
 

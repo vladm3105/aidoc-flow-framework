@@ -17,6 +17,8 @@
 | **Priority** | High / Medium / Low |
 | **Target Release** | [Release version/Quarter] |
 | **Estimated Effort** | [Story Points or Person-Months] |
+| **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
 
 ## Executive Summary
 

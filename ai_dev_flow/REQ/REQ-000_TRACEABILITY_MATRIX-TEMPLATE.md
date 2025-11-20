@@ -5,11 +5,14 @@
 | Item | Details |
 |------|---------|
 | Document ID | TRACEABILITY_MATRIX_REQ |
+| **Template Version** | **3.0** |
 | Title | Comprehensive Atomic Requirements Traceability Matrix |
 | Status | [Active/Draft] |
 | Version | 1.0.0 |
 | Date Created | YYYY-MM-DD |
+| Last Updated | YYYY-MM-DD |
 | Author | [Team Name] |
+| **Layer** | **7 (Requirements)** |
 | Purpose | Track bidirectional traceability for all Atomic Requirements Documents |
 
 
@@ -41,7 +44,7 @@ python scripts/generate_traceability_matrices.py --type REQ --output docs/REQ/RE
 
 **Tag Format:** `@req: REQ-001:REQ-ID` (for multi-requirement docs) or `@req: REQ-001` (for single-doc refs)
 
-See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
+See: [TRACEABILITY.md](../../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
 ---
 

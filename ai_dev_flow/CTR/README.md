@@ -14,23 +14,7 @@ Contracts enable parallel development by allowing providers and consumers to imp
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
-
-```mermaid
-flowchart TD
-    BRD[BRD: Business Requirements] --> PRD[PRD: Product Requirements]
-    PRD --> EARS[EARS: Formal Requirements]
-    EARS --> BDD[BDD: Test Scenarios]
-    BDD --> ADR[ADR: Architecture Decisions]
-    ADR --> SYS[SYS: System Requirements]
-    SYS --> REQ[REQ: Atomic Requirements]
-    REQ --> CTR[CTR: API Contracts]
-    CTR --> SPEC[SPEC: Technical Implementation]
-    SPEC --> TASKS[TASKS: Implementation Plans]
-    TASKS --> Code[Code: Python Implementation]
-    Code --> Tests[Tests: Test Suites]
-
-    style CTR fill:#e1f5f7,stroke:#00838f,stroke-width:3px
-```
+**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 

@@ -10,6 +10,7 @@
 | **Document Owner** | [Name and title] |
 | **Prepared By** | [Architect/Technical Lead name] |
 | **Status** | [Draft / In Review / Approved] |
+| **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
 
 ### Document Revision History
 

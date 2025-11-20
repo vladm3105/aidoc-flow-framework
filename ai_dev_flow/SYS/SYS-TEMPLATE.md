@@ -8,14 +8,16 @@
 
 | Item | Details |
 |------|---------|
-| **Status** | Draft/Under Review/Approved/Implemented/Verified/Deprecated |
+| **Status** | Draft / Under Review / Approved / Implemented / Verified / Deprecated |
 | **Version** | [Semantic version, e.g., 1.0.0] |
 | **Date Created** | YYYY-MM-DD |
 | **Last Updated** | YYYY-MM-DD |
 | **Author** | [Technical Lead/Architect] |
 | **Reviewers** | [Stakeholder names who have reviewed] |
 | **Owner** | [Team/Person responsible for maintenance] |
-| **Priority** | High/Medium/Low |
+| **Priority** | High / Medium / Low |
+| **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **REQ-Ready Score** | ✅ 95% (Target: ≥90%) |
 
 ## Executive Summary
 [2-3 sentence overview of what this system component accomplishes and its architectural role]

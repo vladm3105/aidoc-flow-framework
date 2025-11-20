@@ -32,6 +32,7 @@ metadata:
   status: "draft"  # draft, review, approved, implemented, deprecated
   created_date: "YYYY-MM-DD"
   last_updated: "YYYY-MM-DD"
+  task_ready_score: "✅ 95% (Target: ≥90%)"  # Added for quality gates
   authors:
     - name: "Primary Author"
       email: "author@company.com"

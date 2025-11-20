@@ -19,31 +19,7 @@ BRDs transform strategic business goals into concrete, actionable requirements t
 
 BRDs are the **first step** in specification-driven development within the complete SDD workflow:
 
-```
-BRD (Business Requirements Document): High-level business needs + Architecture Decision Requirements
-        ↓
-PRD (Product Requirements Document): User needs and features + Architecture Decision Requirements
-        ↓
-SYS (System Requirements): Technical interpretation of business requirements
-        ↓
-EARS (Easy Approach to Requirements Syntax): Formal WHEN-THE-SHALL-WITHIN requirements
-        ↓
-REQ (Atomic Requirements): Single, testable requirements
-        ↓
-ADR (Architecture Decision Records) ← Created AFTER BRD/PRD based on Architecture Decision Requirements
-        ↓
-BDD (Behavior-Driven Development): Executable Gherkin acceptance scenarios
-        ↓
-IMPL (Implementation Plans): Project management (WHO/WHEN) - if complex project
-        ↓
-CTR (API Contracts): Interface specifications - if interface requirement
-        ↓
-SPEC (Technical Implementation): YAML implementation blueprints (HOW to build)
-        ↓
-TASKS (Code Generation Plans): Exact TODOs to implement SPEC
-        ↓
-Code → Tests → Validation → Production-Ready Code
-```
+**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
 
 ## ADR References in BRD
 
@@ -279,6 +255,67 @@ Where:
 - Avoid vague terms like "user-friendly" or "efficient"
 - Define clear success conditions for each objective
 
+## PRD-Ready Scoring System
+
+BRDs now include PRD-ready scoring (mirroring REQ SPEC-ready scoring) to ensure business requirements are mature enough to proceed to PRD creation.
+
+### Purpose and Usage
+
+**PRD-Ready Score** evaluates if a BRD is complete enough to proceed to Product Requirements Document (PRD) creation in the SDD workflow:
+
+```markdown
+| **PRD-Ready Score** | ✅ 95% (Target: ≥90%) |
+```
+
+- **Format**: `✅ emoji + percentage (Target: ≥90%)`
+- **Validation**: Required in Document Control table (blocking validation)
+- **Warnings**: Scores below 90% trigger validation warnings
+
+### Scoring Criteria
+
+**Business Requirements Completeness (40%)**:
+- All 17 sections present and populated: 10%
+- Business objectives follow SMART criteria: 10%
+- Acceptance criteria quantifiable and verifiable: 10%
+- Stakeholder analysis complete: 10%
+
+**Technical Readiness (30%)**:
+- Section 3.6 & 3.7 properly populated by BRD type: 10%
+- Section 5.2 Architecture Decision Requirements table: 10%
+- No forward ADR references: 10%
+
+**Quality Standards (20%)**:
+- Document control complete: 5%
+- Strategic alignment with option_strategy/ documents: 5%
+- Cross-references resolve correctly: 5%
+- Out-of-scope clearly defined: 5%
+
+**Traceability (10%)**:
+- Proper ID formats and links: 5%
+- Business rationale provided: 5%
+
+### How to Calculate Score
+
+1. **Self-Assessment**: Manually calculate based on completeness criteria
+2. **Validation Check**: Run `./scripts/validate_brd_template.sh` - includes format validation
+3. **Required ≥90%**: Scores below 90% block progression to PRD creation
+4. **Continuous Improvement**: Update score as BRD matures during development
+
+### Integration with Validation
+
+**New Validation Check**: `CHECK 13: PRD-Ready Score Validation`
+- Verifies format: `✅ NN% (Target: ≥90%)`
+- Enforces ≥90% threshold for progression
+- Blocking validation - must pass before PRD creation
+
+### Workflow Integration
+
+```
+BRD (with PRD-Ready Score ≥90%) → PRD Creation → SYS → EARS → REQ → ADR → BDD → IMPL → CTR → SPEC → TASKS → Code
+```
+
+**Quality Gate**: BRD documents must achieve ≥90% PRD-ready score before proceeding to PRD phase, ensuring business requirements are sufficiently mature for product implementation planning.
+
 ## BRD Quality Gates
 
 **Every BRD must include:**
@@ -286,6 +323,7 @@ Where:
 - Specific, achievable business objectives
 - Explicit out-of-scope items defining boundaries
 - Measurable success criteria and KPIs
+- **PRD-Ready Score ≥90%** in Document Control
 - Architecture Decision Requirements section (Section 5.2)
 - Business-focused acceptance criteria
 - Comprehensive risk assessment

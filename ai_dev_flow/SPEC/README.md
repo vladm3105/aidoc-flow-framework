@@ -6,35 +6,7 @@ Specifications (SPEC) are machine-readable technical blueprints that define how 
 
 The workflow transforms business requirements into production-ready code through traceable artifacts:
 
-```
-BRD (Business Requirements Document): High-level business needs
-        ↓
-PRD (Product Requirements Document): User needs and features
-        ↓
-EARS (Easy Approach to Requirements Syntax): Atomic, measurable requirements using WHEN/THEN format, Requirements Expressions). All work traces back to formal technical requirements (WHEN-THE-SHALL-WITHIN format), AI generated structured requirement formatAI transforms interfaces as code specification
-        ↓
-BDD (Behavior-Driven Development). Business + Dev + Test AI generates acceptance scenarios
-        ↓
-ADR (Architecture Decisions Requirements)
-        ↓
-SYS (System Requirements). Technical interpretation of business requirements
-        ↓
-REQ (Atomic Requirements)
-        ↓
-SPEC (Technical Implementation)  ← )
-        ↓
-TASKS (Implementation Plans)
-        ↓
-Code (src/{module_name}/) ← AI generates Python
-        ↓
-Tests (tests/{suit_name}) ← AI generates test suites
-        ↓
-Validation ← AI runs BDD tests
-        ↓
-Human Review ← HUMAN reviews architecture only
-        ↓
-Production-Ready Code
-```
+**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
 
 ## Purpose
 

@@ -34,6 +34,8 @@ BDD files should be created **after** business requirements are defined but **be
 
 BDD files should be created **immediately after** initial requirements are gathered but **before** any code implementation begins:
 
+**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
+
 ```
 Business Requirements (PRD) → BDD Scenarios ← Technical Design → Implementation
                                               ↓

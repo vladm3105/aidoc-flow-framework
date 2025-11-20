@@ -21,40 +21,9 @@ IPLAN create the **implementation execution roadmap** that:
 
 IPLAN sit between TASKS (code generation plans) and Code (implementation) in the 16-layer architecture (Layer 0-15):
 
-```mermaid
-flowchart TD
-    BRD[Layer 1: BRD<br/>Business Requirements]
-    PRD[Layer 2: PRD<br/>Product Requirements]
-    EARS[Layer 3: EARS<br/>Event-Action-Response]
-    BDD[Layer 4: BDD<br/>Behavioral Scenarios]
-    ADR[Layer 5: ADR<br/>Architecture Decisions]
-    SYS[Layer 6: SYS<br/>System Requirements]
-    REQ[Layer 7: REQ<br/>Atomic Requirements]
-    IMPL[Layer 8: IMPL<br/>Implementation Strategies]
-    CTR[Layer 9: CTR<br/>Interface Contracts]
-    SPEC[Layer 10: SPEC<br/>Technical Specifications]
-    TASKS[Layer 11: TASKS<br/>Code Generation Plans]
-    TP[Layer 12: IPLAN<br/>Implementation Work Plans]
-    Code[Layer 13: Code<br/>Source Implementation]
-    Tests[Layer 14: Tests<br/>Test Execution]
-    Valid[Layer 15: Validation<br/>Quality Gates]
+**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
 
-    BRD --> PRD --> EARS --> BDD --> ADR
-    ADR --> SYS --> REQ
-    REQ --> IMPL --> CTR
-    REQ --> SPEC
-    CTR --> SPEC
-    SPEC --> TASKS
-    TASKS --> TP
-    TP --> Code
-    Code --> Tests
-    Tests --> Valid
-
-    style TP fill:#e1f5fe,stroke:#01579b,stroke-width:4px
-
-    note1[YOU ARE HERE<br/>Session Context & Bash Commands<br/>Cumulative Tags: @brd through @tasks]
-    TP -.-> note1
-```
+Use for document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 

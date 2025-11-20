@@ -10,7 +10,23 @@ Development Principles Guide
 
 ### Workflow Overview
 
-The SDD workflow transforms business needs into production-ready code through traceable artifacts organized in 16 layers (Layer 0: Strategy through Layer 15: Validation):
+The SDD workflow transforms business needs into production-ready code through traceable artifacts organized in 16 layers (Layer 0: Strategy through Layer 15: Validation). The workflow includes automated quality gates that ensure each layer meets maturity thresholds before progressing to the next layer.
+
+#### Quality Gates Integration
+
+Quality gates prevent progression to downstream layers until artifacts meet specified maturity thresholds:
+
+- **Ready Score Gates**: Each artifact includes a score field (e.g., `EARS-Ready Score: ✅ 95% ≥90%`) indicating readiness for next layer
+- **Cumulative Tag Validation**: Each artifact must include ALL upstream traceability tags (e.g., `@brd @prd @ears @bdd`)
+- **Pre-commit Blocking**: Git hooks enforce quality gates, preventing immature artifacts from being committed
+- **Automated Recovery**: Validation scripts provide specific guidance for reaching quality thresholds
+
+**Validation Commands:**
+- `./scripts/validate_quality_gates.sh docs/PRD/PRD-001.md` - Validates individual artifact readiness
+- Pre-commit automation: Quality gates run on every commit to docs/ directory
+- Refer to [TRACEABILITY_VALIDATION.md](./TRACEABILITY_VALIDATION.md) for complete quality gate specifications
+
+The quality gates ensure smooth 16-layer transitions and prevent immature artifacts from affecting downstream development.
 
 **Strategy Layer** (Layer 0) → **Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Project Management Layer** (IMPL) → **Interface Layer** (CTR - optional) → **Implementation Layer** (SPEC) → **Code Generation Layer** (TASKS) → **Implementation Plans Layer** (IPLAN) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
 
@@ -44,7 +60,7 @@ graph LR
         IMPL["IMPL<br/><i>WHO/WHEN</i><br/><small>(@brd through @req)</small>"]
     end
 
-    subgraph L6["Layer 6: Interface"]
+    subgraph L6["Layer 6: Interface Contracts"]
         CTR["CTR<br/><i>optional</i><br/><small>(@brd through @impl)</small>"]
     end
 

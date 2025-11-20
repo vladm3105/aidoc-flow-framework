@@ -1,5 +1,16 @@
 # Requirements (REQ)
 
+## Document Control
+
+| Item | Details |
+|------|---------|
+| **Template Version** | 3.0 |
+| **Last Updated** | 2025-11-19 |
+| **Layer** | 7 (Requirements) |
+| **Status** | Active |
+
+---
+
 Requirements (REQ) documents capture atomic, testable requirements that serve as the granular specification layer between high-level Product Requirements Documents (PRDs) and implementation. REQs transform business intentions into precise, verifiable statements that drive technical specification and testing.
 
 ## Purpose
@@ -11,42 +22,14 @@ REQs create the **formal contract** for system behavior by:
 - **Quality Assurance**: Establishing baselines for testing and compliance verification
 - **Traceability Bridge**: Linking business needs to architectural decisions and technical specifications
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## REQ in Development Workflow
 
-**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+**⚠️ See [index.md](../../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 
 REQs are the **testable specification layer** that operationalizes business requirements within the complete SDD workflow:
 
-```
-BRD (Business Requirements Document): High-level business needs
-        ↓
-PRD (Product Requirements Document): User needs and features
-        ↓
-EARS (Easy Approach to Requirements Syntax): Atomic, measurable requirements using WHEN/THEN format, Requirements Expressions). All work traces back to formal technical requirements (WHEN-THE-SHALL-WITHIN format), AI generated structured requirement formatAI transforms interfaces as code specification
-        ↓
-BDD (Behavior-Driven Development). Business + Dev + Test AI generates acceptance scenarios
-        ↓
-ADR (Architecture Decisions Requirements)
-        ↓
-SYS (System Requirements). Technical interpretation of business requirements
-        ↓
-REQ (Atomic Requirements)
-        ↓
-SPEC (Technical Implementation)  ← )
-        ↓
-TASKS (Implementation Plans)
-        ↓
-Code (src/{module_name}/) ← AI generates Python
-        ↓
-Tests (tests/{suit_name}) ← AI generates test suites
-        ↓
-Validation ← AI runs BDD tests
-        ↓
-Human Review ← HUMAN reviews architecture only
-        ↓
-Production-Ready Code
-```
+**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
 
 ## REQ Document Structure
 
@@ -55,10 +38,10 @@ Production-Ready Code
 Comprehensive links establish the requirement's context and relationships:
 
 ```markdown
-@adr:[ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN)
-@PRD:[PRD-NNN](../../PRD/PRD-NNN_...md)
-@SYS:[SYS-NNN](../../SYS/SYS-NNN_...md)
-@EARS:[EARS-NNN](../../EARS/EARS-NNN_...md)
+@adr:[ADR-NNN](../../ADR/ADR-NNN_...md#ADR-NNN)
+@prd:[PRD-NNN](../../PRD/PRD-NNN_...md)
+@sys:[SYS-NNN](../../SYS/SYS-NNN_...md)
+@ears:[EARS-NNN](../../EARS/EARS-NNN_...md)
 @spec:[SPEC-NNN](../../SPEC/.../SPEC-NNN_...yaml)
 @bdd:[BDD-NNN:scenarios](../../BDD/BDD-NNN.feature#scenarios)
 ```
@@ -86,8 +69,8 @@ Architecture decisions that implement or impact this requirement:
 
 ```markdown
 ### Related ADRs
-- [ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN): [Architectural approach implemented]
-- [ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN): [Alternative approaches considered]
+- [ADR-NNN](../../ADR/ADR-NNN_...md#ADR-NNN): [Architectural approach implemented]
+- [ADR-NNN](../../ADR/ADR-NNN_...md#ADR-NNN): [Alternative approaches considered]
 ```
 
 ### Source Requirements
@@ -481,9 +464,63 @@ See `REQ/api/av/REQ-001_alpha_vantage_integration.md` for a complete example of 
 
 ---
 
-## REQ Template V2: SPEC-Ready Requirements
+## REQ Template Versions
 
-**Version**: 2.0 (January 2025)
+### Current Templates
+
+| Version | File | Status | Lines | Notes |
+|---------|------|--------|-------|-------|
+| **V3.0** | [REQ-TEMPLATE.md](REQ-TEMPLATE.md) | **✅ CURRENT** | 1274 | Enhanced with REST API, DB schema, Circuit Breaker, DI setup, Layer 7, absolute paths |
+| V2.0 | [archived/REQ-TEMPLATE-V2-ARCHIVED.md](archived/REQ-TEMPLATE-V2-ARCHIVED.md) | 📦 ARCHIVED | 930 | Legacy V2 template (archived 2025-11-19) |
+| V1.0 | [archived/REQ-TEMPLATE-V1-ARCHIVED.md](archived/REQ-TEMPLATE-V1-ARCHIVED.md) | 📦 DEPRECATED | 30-48 | Basic requirements only |
+
+### Template Evolution
+
+**V3.0 Enhancements** (November 2025):
+- **Template Version field**: Required in Document Control (must be `3.0`)
+- **Layer 7**: Corrected layer numbering (was Layer 4 in V2)
+- **Absolute paths**: All cross-references use project root paths (`../../` not `../`)
+- **Priority format**: Requires P-level designation (e.g., `High (P2)`)
+- **SPEC-Ready Score**: Requires ✅ emoji (e.g., `✅ 95% (Target: ≥90%)`)
+- **Section 3.3**: REST API Endpoints table with rate limits
+- **Section 4.3**: Database schema (SQLAlchemy + Alembic migrations)
+- **Section 5.4**: Circuit breaker configuration dataclass
+- **Section 8.3**: Dependency injection container setup
+- **Document Control**: 12 fields (added Template Version)
+- **Resource tags**: Required in H1 header `[RESOURCE_TYPE]`
+- **Cumulative tagging**: All 6 upstream tags required (@brd, @prd, @ears, @bdd, @adr, @sys)
+- **18-check validation**: Shell-based script (validate_req_template_v3.sh)
+
+**V2.0 Features** (January 2025):
+- 12 mandatory sections
+- SPEC-ready principle (≥90% completeness)
+- Protocol/ABC interfaces
+- Triple schema approach (JSON Schema + Pydantic + SQLAlchemy)
+- Exception catalogs with recovery strategies
+- State machine diagrams
+- Performance targets (p50/p95/p99)
+
+### Migration Guide
+
+**V1 → V2**: Not recommended, recreate from scratch using V2 template
+
+**V2 → V3**: Additive migration (existing V2 files remain valid)
+1. Add Template Version field to Document Control (set to `3.0`)
+2. Update layer references: `Layer 4` → `Layer 7`
+3. Update all paths from relative (`../`) to absolute (`../../`)
+4. Update Priority format: add P-level (e.g., `High` → `High (P2)`)
+5. Update SPEC-Ready Score: add ✅ emoji (e.g., `95%` → `✅ 95% (Target: ≥90%)`)
+6. Add Source Document section reference (e.g., `SYS-002` → `SYS-002 Section 3.1.1`)
+7. Add resource tag to H1 header (e.g., `# REQ-001: [EXTERNAL_SERVICE_GATEWAY] Title`)
+8. Add all 6 cumulative tags to Section 11 (@brd, @prd, @ears, @bdd, @adr, @sys)
+9. Add new subsections (3.3, 4.3, 5.4, 8.3) as applicable
+10. Run `scripts/validate_req_template_v3.sh` for verification
+
+**Migration Script**: `scripts/migrate_req_v2_to_v3.py` automates transformations 1-6
+
+## REQ Template V2/V3: SPEC-Ready Requirements
+
+**Version**: 2.0 / 3.0
 **Purpose**: Create SPEC-ready requirements containing ALL information needed for automated SPEC generation
 
 ### What Makes a REQ "SPEC-Ready"?
@@ -713,7 +750,34 @@ Before marking a REQ as complete, verify:
 | **SPEC Readiness** | 40-70% | 90-95% |
 | **Line Count** | 30-48 (sparse) or 260-410 (bloated) | 400-500 (focused) |
 
-### Tools for V2 Validation
+### Validation Tools
+
+#### V3 Shell-Based Validator (Recommended)
+
+**Script**: `scripts/validate_req_template_v3.sh` (623 lines, 18 checks)
+
+```bash
+# Validate single REQ file
+./scripts/validate_req_template_v3.sh REQ/api/REQ-001_api_integration.md
+
+# Expected output (success):
+# ✅ PASSED: All validation checks passed with no warnings
+# Errors: 0
+# Warnings: 0
+
+# Validate all REQ files
+find REQ -name "REQ-*.md" ! -path "*/archived/*" -exec ./scripts/validate_req_template_v3.sh {} \;
+```
+
+**18 Validation Checks**:
+- CHECK 1-3: Required sections, Document Control fields, Traceability structure
+- CHECK 4-6: Version format, Date validation, Priority validation
+- CHECK 7-11: V2 sections (interfaces, schemas, errors, config, NFRs)
+- CHECK 12-18: V3 enhancements (filename, resource tags, cumulative tagging, link resolution, traceability matrix, SPEC-Ready content)
+
+**Validation Reference**: See [REQ-VALIDATION-RULES.md](REQ-VALIDATION-RULES.md) for detailed fix instructions for each check.
+
+#### Python-Based Validators
 
 **SPEC Readiness Checker** (`scripts/validate_req_spec_readiness.py`):
 ```bash
@@ -731,9 +795,9 @@ python scripts/validate_req_spec_readiness.py --req-file REQ/api/REQ-001.md
 # ✅ Implementation: Algorithms documented
 ```
 
-**Requirement ID Validator** (Enhanced):
+**Requirement ID Validator**:
 ```bash
-# Validate V2 mandatory sections
+# Validate V2/V3 mandatory sections
 python scripts/validate_requirement_ids.py --directory REQ/
 
 # Checks:
@@ -741,6 +805,40 @@ python scripts/validate_requirement_ids.py --directory REQ/
 # - Data Schemas section present
 # - Error Handling section present
 # - Configuration section present
+```
+
+**Link Validator** (`scripts/validate_links.py`):
+```bash
+# Check for broken links in REQ files
+python scripts/validate_links.py --directory REQ/
+
+# Detects:
+# - Missing files referenced in links
+# - Invalid path formats (spaces, case mismatches)
+# - Broken cross-references
+# Severity levels: HIGH, MEDIUM, LOW
+```
+
+**Traceability Matrix Validator** (`scripts/validate_traceability_matrix.py`):
+```bash
+# Validate matrix consistency
+python scripts/validate_traceability_matrix.py --matrix-file REQ/REQ-000_TRACEABILITY_MATRIX.md
+
+# Verifies:
+# - Document counts match actual files
+# - Cross-references are valid
+# - No orphaned requirements
+# - Coverage metrics are accurate
+```
+
+#### Additional Tools
+
+**Requirement Anchor Generator** (`scripts/add_requirement_anchors.py`):
+```bash
+# Auto-generate anchors for requirements
+python scripts/add_requirement_anchors.py --req-file REQ/api/REQ-001.md
+
+# Adds HTML anchors for all requirement IDs
 ```
 
 ### Best Practices for V2 REQs

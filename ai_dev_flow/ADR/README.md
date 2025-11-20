@@ -74,6 +74,8 @@ ADRs should be created **after** business and technical requirements are gathere
 
 ADRs should be created **immediately after** initial requirements and BDD scenarios are established but **before** system specifications and implementation plans:
 
+**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
+
 ```text
 Requirements (PRD/EARS) → BDD Scenarios ← ADR Decision → SYS/SPEC/Implementation
                                           ↓

@@ -32,29 +32,7 @@ Tasks create the **code generation roadmap** that:
 
 Tasks are the **code generation bridge** that connects YAML specifications to executable code:
 
-```mermaid
-flowchart TD
-    REQ[REQ: Requirements<br/>WHAT to build]
-    IMPL[IMPL: Implementation Plan<br/>WHO/WHEN - Project management]
-    CTR[CTR: API Contracts<br/>Interface definitions]
-    SPEC[SPEC: Technical Specs<br/>HOW to build - YAML]
-    TASKS[TASKS: Code Generation Plans<br/>Exact TODOs to implement SPEC]
-    Code[Code: Generated from SPEC<br/>Following TASKS steps]
-    Tests[Tests: BDD + Unit + Integration]
-
-    REQ --> IMPL
-    IMPL --> CTR
-    IMPL --> SPEC
-    CTR --> SPEC
-    SPEC --> TASKS
-    TASKS --> Code
-    Code --> Tests
-
-    style TASKS fill:#fce4ec,stroke:#c2185b,stroke-width:3px
-
-    note1[Code Generation Plan<br/>Step-by-step TODOs]
-    TASKS -.-> note1
-```
+**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 

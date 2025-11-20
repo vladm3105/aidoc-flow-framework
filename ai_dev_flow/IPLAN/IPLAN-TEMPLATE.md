@@ -19,6 +19,7 @@
 | **Complexity** | [1-5 scale: 1=minimal config, 5=architectural changes] |
 | **Parent TASKS** | [TASKS-NNN - code generation plan being implemented] |
 | **Related Artifacts** | [SPEC-NNN, REQ-NNN, ADR-NNN, BDD-NNN] |
+| **IPLAN-Ready Score** | ✅ 95% (Target: ≥90%) |
 
 ---
 

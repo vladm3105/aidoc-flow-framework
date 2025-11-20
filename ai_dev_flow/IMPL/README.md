@@ -11,27 +11,8 @@ Implementation Plans (IMPL) are **project management documents** that organize a
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 
-```mermaid
-flowchart LR
-    REQ[REQ<br/>Requirements<br/>WHAT to build]
-    IMPL[IMPL<br/>Implementation Plan<br/>WHO/WHEN]
-    CTR[CTR<br/>API Contracts<br/>Interfaces]
-    SPEC[SPEC<br/>Technical Specs<br/>HOW to build]
-    TASKS[TASKS<br/>Code Generation Plans<br/>SPEC → Code]
-    Code[Code<br/>Implementation]
+**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
 
-    REQ --> IMPL
-    IMPL --> CTR
-    IMPL --> SPEC
-    CTR --> SPEC
-    SPEC --> TASKS
-    TASKS --> Code
-
-    style IMPL fill:#fff9c4,stroke:#f57f17,stroke-width:3px
-
-    note1[Project Management<br/>Phases, Teams, Timeline]
-    IMPL -.-> note1
-```
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 

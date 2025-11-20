@@ -18,35 +18,7 @@ SYS documents establish the **system behavior contracts** that:
 
 SYS are the **system-level specifications** that operationalize product requirements into technical boundaries within the complete SDD workflow:
 
-```
-BRD (Business Requirements Document): High-level business needs
-        ↓
-PRD (Product Requirements Document): User needs and features
-        ↓
-EARS (Easy Approach to Requirements Syntax): Atomic, measurable requirements using WHEN/THEN format, Requirements Expressions). All work traces back to formal technical requirements (WHEN-THE-SHALL-WITHIN format), AI generated structured requirement formatAI transforms interfaces as code specification
-        ↓
-BDD (Behavior-Driven Development). Business + Dev + Test AI generates acceptance scenarios
-        ↓
-ADR (Architecture Decisions Requirements)
-        ↓
-SYS (System Requirements). Technical interpretation of business requirements
-        ↓
-REQ (Atomic Requirements)
-        ↓
-SPEC (Technical Implementation)  ← )
-        ↓
-TASKS (Implementation Plans)
-        ↓
-Code (src/{module_name}/) ← AI generates Python
-        ↓
-Tests (tests/{suit_name}) ← AI generates test suites
-        ↓
-Validation ← AI runs BDD tests
-        ↓
-Human Review ← HUMAN reviews architecture only
-        ↓
-Production-Ready Code
-```
+**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
 
 ## SYS Document Structure
 
@@ -511,3 +483,63 @@ See `SYS/SYS-001_alpha_vantage_integration.md` for a complete example of a well-
 - Continuous validation through automated testing
 - Real-time compliance monitoring and reporting
 - Proactive requirement quality assurance throughout development lifecycle
+
+## EARS-Ready Scoring System ⭐ NEW
+
+**Purpose**: EARS-ready scoring measures SYS maturity and readiness for progression to EARS decomposition phase in SDD workflow. Minimum score of 90% required to advance to EARS creation.
+
+**Quality Gate Requirements**:
+- **EARS-Ready Score**: Must be ≥90% to pass validation and progress to EARS phase
+- **Format**: `✅ NN% (Target: ≥90%)` in Document Control table
+- **Location**: Required field in Document Control metadata
+- **Validation**: Enforced before commit via `validate_sys_template.sh`
+
+**Scoring Criteria**:
+
+**System Requirements Completeness (40%)**:
+- Functional/non-functional requirements complete: 10%
+- Interface specifications defined: 10%
+- Error handling and recovery documented: 10%
+- Performance/security targets quantified: 10%
+
+**Technical Readiness (30%)**:
+- PRD traceability established: 10%
+- Data schemas and models defined: 10%
+- Integration patterns specified: 10%
+
+**Requirements Completeness (20%)**:
+- All PRD capabilities covered: 5%
+- Acceptance criteria mapping complete: 5%
+- BDD scenario foundations prepared: 5%
+- ADR integration ready: 5%
+
+**Traceability (10%)**:
+- Upstream PRD links validated: 5%
+- Downstream REQ/CODE paths mapped: 5%
+
+**Usage Examples**:
+
+**High Scoring SYS (95%)**:
+```markdown
+| **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
+```
+
+**Marginal SYS (85%) - Requires Improvement**:
+```markdown
+| **EARS-Ready Score** | ⚠️ 85% (Below 90% target) |
+```
+
+**Workflow Integration**:
+1. **SYS Creation**: Include EARS-ready score in Document Control section
+2. **Quality Check**: Run `./scripts/validate_sys_template.sh docs/SYS/SYS-001_name.md`
+3. **EARS Readiness**: Score ≥90% enables progression to EARS artifact creation
+4. **Improvement**: Rescore and revalidate if below threshold before EARS phase
+
+**Scoring Calculation Process**:
+1. Assess each criteria category against SYS content
+2. Calculate points earned vs. available points
+3. Compute percentage: (points earned / total points) × 100
+4. Update score in Document Control table
+5. Re-run validation to confirm quality gate passage
+
+**Purpose in SDD Workflow**: Ensures SYS quality meets EARS phase requirements, preventing immature system requirements from progressing to formal requirements decomposition.
