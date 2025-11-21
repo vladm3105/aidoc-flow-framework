@@ -13,6 +13,7 @@ The AI Dev Flow Framework is a comprehensive template system for implementing AI
 
 - **16-Layer Architecture**: Structured progression from strategy to validation (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation)
 - **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
+- **REQ v3.0 Support**: Enhanced REQ templates with sections 3-7 (interfaces/schemas/errors/config/NFRs) for ≥90% SPEC-readiness
 - **Tag-Based Auto-Discovery**: Lightweight @tags in code auto-generate bidirectional traceability matrices
 - **Namespaced Traceability**: Explicit DOCUMENT-ID:REQUIREMENT-ID format prevents ambiguity
 - **Complete Traceability**: Bidirectional links between all artifacts (business → architecture → code)
@@ -635,23 +636,30 @@ aidoc-flow-framework/
 ├── README.md                          # This file
 ├── MULTI_PROJECT_SETUP_GUIDE.md       # Multi-project hybrid setup guide
 ├── MULTI_PROJECT_QUICK_REFERENCE.md   # Quick reference for common multi-project tasks
-├── ai_dev_flow/                       # Template system (v2.0)
+├── ai_dev_flow/                       # Template system (v2.2)
 │   ├── index.md                       # Workflow overview with Mermaid diagram
 │   ├── README.md                      # Framework documentation
 │   ├── SPEC_DRIVEN_DEVELOPMENT_GUIDE.md  # Authoritative SDD methodology
 │   ├── ID_NAMING_STANDARDS.md         # Document ID format rules
 │   ├── TRACEABILITY.md                # Cumulative tagging hierarchy
 │   ├── TRACEABILITY_SETUP.md          # Validation setup and CI/CD integration
+│   ├── TRACEABILITY_VALIDATION.md     # Validation procedures
 │   ├── TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md  # Complete matrix template
 │   ├── COMPLETE_TAGGING_EXAMPLE.md    # End-to-end cumulative tagging example
 │   ├── DOMAIN_ADAPTATION_GUIDE.md     # Domain customization guide
+│   ├── DOMAIN_SELECTION_QUESTIONNAIRE.md  # Domain selection tool
+│   ├── FINANCIAL_DOMAIN_CONFIG.md     # Financial sector configuration
+│   ├── SOFTWARE_DOMAIN_CONFIG.md      # Generic software configuration
+│   ├── GENERIC_DOMAIN_CONFIG.md       # Minimal configuration template
 │   ├── CONTRACT_DECISION_QUESTIONNAIRE.md  # CTR decision guide
 │   ├── WHEN_TO_CREATE_IMPL.md         # IMPL decision guide
+│   ├── PLATFORM_VS_FEATURE_BRD.md     # BRD type selection guide
 │   ├── TOOL_OPTIMIZATION_GUIDE.md     # AI tool optimization
 │   ├── AI_ASSISTANT_RULES.md          # Rules for AI assistants
 │   ├── PROJECT_SETUP_GUIDE.md         # Single-project setup guide
 │   ├── PROJECT_KICKOFF_TASKS.md       # Project initialization checklist
 │   ├── QUICK_REFERENCE.md             # Quick reference guide
+│   ├── MATRIX_TEMPLATE_COMPLETION_GUIDE.md  # How to fill traceability matrices
 │   ├── BRD/                           # Business requirements templates (Layer 1)
 │   ├── PRD/                           # Product requirements templates (Layer 2)
 │   ├── EARS/                          # Formal requirements templates (Layer 3)
@@ -664,19 +672,22 @@ aidoc-flow-framework/
 │   ├── SPEC/                          # Technical specification templates (Layer 10)
 │   ├── TASKS/                         # Code generation templates (Layer 11)
 │   ├── IPLAN/                         # Session planning templates (Layer 12)
-│   └── scripts/                       # Validation and automation scripts
+│   └── scripts/                       # Validation and automation scripts (15 total)
 │       ├── extract_tags.py            # Extract tags from codebase
 │       ├── validate_tags_against_docs.py  # Validate cumulative tagging
 │       ├── generate_traceability_matrices.py  # Generate matrices
-│       ├── generate_traceability_matrix.py    # Generate single matrix (legacy)
-│       ├── validate_traceability_matrix.py    # Validate matrix (legacy)
-│       ├── update_traceability_matrix.py      # Update matrix (legacy)
+│       ├── generate_traceability_matrix.py    # Generate single matrix
+│       ├── validate_traceability_matrix.py    # Validate matrix structure
+│       ├── validate_traceability_matrix_enforcement.py  # Matrix enforcement
+│       ├── update_traceability_matrix.py      # Update existing matrices
+│       ├── validate_requirement_ids.py  # Validate REQ-ID format
+│       ├── validate_req_spec_readiness.py  # REQ SPEC-readiness scoring
 │       ├── validate_iplan_naming.py   # Validate IPLAN naming conventions
-│       ├── validate_requirement_ids.py  # Validate requirement ID format
-│       ├── add_cumulative_tagging_to_matrices.py  # Update templates
-│       ├── batch_update_matrix_templates.py  # Batch update templates
-│       ├── make_framework_generic.py  # Placeholder maintenance
-│       └── README.md                  # Scripts documentation
+│       ├── validate_documentation_paths.py  # Path consistency validation
+│       ├── validate_links.py          # Markdown link validation
+│       ├── validate_brd_template.sh   # BRD template compliance
+│       ├── validate_req_template.sh   # REQ template compliance
+│       └── README.md                  # Complete scripts documentation
 ├── scripts/                           # Project setup scripts (root level)
 │   ├── setup_project_hybrid.sh        # Automated hybrid project setup
 │   └── standardize_workflow_refs.sh   # Standardize workflow references
@@ -765,34 +776,54 @@ MIT License - See LICENSE file for details
 ### Core Documentation
 - [Workflow Guide](./ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete SDD methodology
 - [Index](./ai_dev_flow/index.md) - Template overview with workflow diagram
+- [Quick Reference](./ai_dev_flow/QUICK_REFERENCE.md) - Quick reference for common tasks
 - [ID Standards](./ai_dev_flow/ID_NAMING_STANDARDS.md) - Naming conventions
 - [Traceability](./ai_dev_flow/TRACEABILITY.md) - Cumulative tagging hierarchy
 - [Traceability Setup](./ai_dev_flow/TRACEABILITY_SETUP.md) - Validation automation and CI/CD integration
+- [Traceability Validation](./ai_dev_flow/TRACEABILITY_VALIDATION.md) - Validation procedures
 - [Complete Tagging Example](./ai_dev_flow/COMPLETE_TAGGING_EXAMPLE.md) - End-to-end cumulative tagging
 - [Traceability Matrix Template](./ai_dev_flow/TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md) - Complete matrix examples
+- [Matrix Completion Guide](./ai_dev_flow/MATRIX_TEMPLATE_COMPLETION_GUIDE.md) - How to fill matrices
 
 ### Multi-Project Setup
 - [Multi-Project Setup Guide](./MULTI_PROJECT_SETUP_GUIDE.md) - Complete hybrid approach documentation
 - [Quick Reference](./MULTI_PROJECT_QUICK_REFERENCE.md) - Common commands and patterns
 - Setup Script: `scripts/setup_project_hybrid.sh` - Automated project configuration
 
+### Domain Adaptation
+- [Domain Adaptation Guide](./ai_dev_flow/DOMAIN_ADAPTATION_GUIDE.md) - Adapting framework to specific domains
+- [Domain Selection Questionnaire](./ai_dev_flow/DOMAIN_SELECTION_QUESTIONNAIRE.md) - Domain selection tool
+- [Financial Domain Config](./ai_dev_flow/FINANCIAL_DOMAIN_CONFIG.md) - Financial sector configuration
+- [Software Domain Config](./ai_dev_flow/SOFTWARE_DOMAIN_CONFIG.md) - Generic software configuration
+- [Generic Domain Config](./ai_dev_flow/GENERIC_DOMAIN_CONFIG.md) - Minimal configuration template
+
 ### Decision Guides
 - [When to Create IMPL](./ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC
+- [Contract Decision Questionnaire](./ai_dev_flow/CONTRACT_DECISION_QUESTIONNAIRE.md) - When to create CTR
+- [Platform vs Feature BRD](./ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md) - BRD type selection
 - [CTR Policy](./ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md) - Dual-file format
 
 ### AI Tool Optimization
 - [Tool Optimization Guide](./ai_dev_flow/TOOL_OPTIMIZATION_GUIDE.md) - Claude Code, Gemini, Copilot
+- [AI Assistant Rules](./ai_dev_flow/AI_ASSISTANT_RULES.md) - Rules for AI assistants
 
-### Validation Scripts (v2.0)
+### Validation Scripts (v2.2)
+
+**Core Validation (15 scripts)**:
 - `ai_dev_flow/scripts/extract_tags.py` - Extract @tags from source files
 - `ai_dev_flow/scripts/validate_tags_against_docs.py` - Validate cumulative tagging hierarchy (use `--validate-cumulative`)
 - `ai_dev_flow/scripts/generate_traceability_matrices.py` - Generate bidirectional matrices
-- `ai_dev_flow/scripts/generate_traceability_matrix.py` - Generate single matrix (legacy)
-- `ai_dev_flow/scripts/validate_traceability_matrix.py` - Validate matrix (legacy)
-- `ai_dev_flow/scripts/update_traceability_matrix.py` - Update matrix (legacy)
-- `ai_dev_flow/scripts/add_cumulative_tagging_to_matrices.py` - Update matrix templates with cumulative sections
+- `ai_dev_flow/scripts/validate_traceability_matrix.py` - Validate matrix structure
+- `ai_dev_flow/scripts/validate_traceability_matrix_enforcement.py` - Enforce matrix rules
+- `ai_dev_flow/scripts/update_traceability_matrix.py` - Update existing matrices
+- `ai_dev_flow/scripts/validate_requirement_ids.py` - Validate REQ-ID format
+- `ai_dev_flow/scripts/validate_req_spec_readiness.py` - REQ SPEC-readiness scoring
 - `ai_dev_flow/scripts/validate_iplan_naming.py` - Validate IPLAN naming conventions
-- `ai_dev_flow/scripts/validate_requirement_ids.py` - Validate ID format (legacy + tags)
+- `ai_dev_flow/scripts/validate_documentation_paths.py` - Path consistency validation
+- `ai_dev_flow/scripts/validate_links.py` - Markdown link validation
+- `ai_dev_flow/scripts/validate_brd_template.sh` - BRD template compliance
+- `ai_dev_flow/scripts/validate_req_template.sh` - REQ template compliance
+- `ai_dev_flow/scripts/generate_traceability_matrix.py` - Generate single matrix (legacy)
 - `ai_dev_flow/scripts/README.md` - Complete scripts documentation
 
 ### Project Setup Scripts
@@ -813,11 +844,36 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ---
 
-**Version**: 2.0
-**Last Updated**: 2025-11-13
+**Version**: 2.2
+**Last Updated**: 2025-11-20
 **Maintained by**: Vladimir M.
 
 ## Changelog
+
+### Version 2.2 (2025-11-20)
+- ✅ **Validation Scripts Expansion**: Grew from 3 to 15 validation scripts
+  - Added `validate_req_spec_readiness.py` - REQ SPEC-readiness scoring
+  - Added `validate_documentation_paths.py` - Path consistency validation
+  - Added `validate_links.py` - Markdown link validation
+  - Added `validate_traceability_matrix_enforcement.py` - Matrix enforcement rules
+  - Added `validate_brd_template.sh` - BRD template compliance
+  - Added `validate_req_template.sh` - REQ template compliance
+- ✅ **Domain Adaptation**: Added comprehensive domain configuration guides
+  - `FINANCIAL_DOMAIN_CONFIG.md` - Financial sector-specific guidance
+  - `SOFTWARE_DOMAIN_CONFIG.md` - Generic software project guidance
+  - `GENERIC_DOMAIN_CONFIG.md` - Minimal configuration template
+  - `DOMAIN_SELECTION_QUESTIONNAIRE.md` - Domain selection tool
+- ✅ **Enhanced Documentation**:
+  - `PLATFORM_VS_FEATURE_BRD.md` - BRD type selection guidance
+  - `TRACEABILITY_SETUP.md` - Enhanced setup guide
+  - `TRACEABILITY_VALIDATION.md` - Validation procedures
+  - Updated `index.md` with 7 categorized documentation sections
+- ✅ **Decision Frameworks**: Contract and IMPL decision questionnaires
+- ✅ **Tool Optimization**: Token limits guide for Claude Code, Gemini CLI, GitHub Copilot
+
+### Version 2.1 (2025-11-19)
+- Added IPLAN references (Layer 12, timestamp naming)
+- Updated REQ references to v3.0 (REQ v3.0 sections 3-7 for SPEC-ready ≥90%)
 
 ### Version 2.0 (2025-11-13) - Cumulative Tagging Hierarchy
 - ✅ **16-Layer Architecture**: Expanded from 10 to 16 layers (Strategy → Validation)

@@ -1,0 +1,402 @@
+---
+name: doc-tasks
+description: Create Task Breakdown (TASKS) - Layer 11 artifact decomposing SPEC into AI-structured TODO tasks
+---
+
+# doc-tasks
+
+## Purpose
+
+Create **Task Breakdown (TASKS)** - Layer 11 artifact in the SDD workflow that decomposes SPEC into actionable, AI-structured TODO tasks for implementation.
+
+**Layer**: 11
+
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), IMPL (Layer 8), CTR (Layer 9), SPEC (Layer 10)
+
+**Downstream Artifacts**: IPLAN (Layer 12), Code (Layer 13)
+
+## Prerequisites
+
+Before creating TASKS, read:
+
+1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+2. **Upstream SPEC**: Read technical specifications (PRIMARY SOURCE)
+3. **Template**: `ai_dev_flow/TASKS/TASKS-TEMPLATE.md`
+4. **Creation Rules**: `ai_dev_flow/TASKS/TASKS_CREATION_RULES.md`
+5. **Validation Rules**: `ai_dev_flow/TASKS/TASKS_VALIDATION_RULES.md`
+6. **Validation Script**: `./ai_dev_flow/scripts/validate_tasks_template.sh` (under development - use template for manual validation until available)
+
+## When to Use This Skill
+
+Use `doc-tasks` when:
+- Have completed BRD through SPEC (Layers 1-10)
+- Ready to break down SPEC into actionable tasks
+- Preparing for implementation planning (Layer 12)
+- Need structured TODO format for AI agents
+- You are at Layer 11 of the SDD workflow
+
+## TASKS-Specific Guidance
+
+### 1. AI-Structured TODO Format
+
+**Purpose**: Break SPEC into tasks consumable by AI coding agents
+
+**Format**:
+```markdown
+## Tasks
+
+### Phase 1: Project Setup (3 tasks)
+
+**TASK-001-001: Initialize Project Structure**
+- **Action**: Create directory structure per SPEC architecture
+- **Files to Create**:
+  - `src/controllers/trade_validation_controller.py`
+  - `src/services/trade_validator.py`
+  - `src/repositories/position_repository.py`
+  - `src/models/trade_order.py`
+- **Dependencies**: None
+- **Estimated Effort**: 30 minutes
+- **SPEC Reference**: SPEC-001:implementation.modules
+- **Success Criteria**: All directories and empty files created
+
+**TASK-001-002: Set Up Development Environment**
+- **Action**: Configure Python environment and dependencies
+- **Files to Create**: `requirements.txt`, `pyproject.toml`
+- **Dependencies**: TASK-001-001
+- **Estimated Effort**: 1 hour
+- **SPEC Reference**: SPEC-001:deployment.container
+- **Success Criteria**: `pip install -r requirements.txt` succeeds
+
+### Phase 2: Data Models (2 tasks)
+
+**TASK-001-003: Implement TradeOrderRequest Model**
+- **Action**: Create Pydantic model per CTR-001 schema
+- **Files to Modify**: `src/models/trade_order.py`
+- **Dependencies**: TASK-001-002
+- **Estimated Effort**: 1 hour
+- **SPEC Reference**: SPEC-001:interfaces.data_models
+- **CTR Reference**: CTR-001#/components/schemas/TradeOrderRequest
+- **Success Criteria**: Model validates per schema, unit tests pass
+```
+
+### 2. Required Sections
+
+**Document Control** (MANDATORY - First section before all numbered sections)
+
+**Core Sections**:
+1. **Overview**: Summary of task breakdown
+2. **Task Hierarchy**: Phases and task groups
+3. **Tasks**: Detailed task breakdown (primary content)
+4. **Dependencies Graph**: Visual task dependencies (Mermaid diagram)
+5. **Effort Summary**: Total effort by phase
+6. **Traceability**: Section 7 format with cumulative tags
+
+### 3. Task Numbering Format
+
+**Format**: `TASK-{SPEC-ID}-{Task-Number}`
+
+**Example**: `TASK-001-003` means:
+- SPEC-001 (from SPEC-001_trade_validation.yaml)
+- Task 003 (third task in breakdown)
+
+**Benefits**:
+- Links task directly to SPEC
+- Unique task IDs across project
+- Easy to reference in commits
+
+### 4. Task Fields (Required)
+
+**Each task MUST include**:
+
+1. **Task ID**: TASK-{SPEC-ID}-{Task-Number}
+2. **Title**: Short description (5-10 words)
+3. **Action**: What to do (imperative form)
+4. **Files to Create/Modify**: Specific file paths
+5. **Dependencies**: Other TASK IDs (or "None")
+6. **Estimated Effort**: Time estimate
+7. **SPEC Reference**: Section in SPEC (e.g., SPEC-001:implementation.modules)
+8. **Success Criteria**: How to verify completion
+9. **Optional: CTR Reference**: Link to contract if applicable
+
+### 5. Phase Organization
+
+**Typical Phases**:
+
+1. **Phase 1: Project Setup** (infrastructure, environment)
+2. **Phase 2: Data Models** (schemas, models, validation)
+3. **Phase 3: Business Logic** (services, core algorithms)
+4. **Phase 4: API Layer** (controllers, endpoints)
+5. **Phase 5: Error Handling** (error codes, middleware)
+6. **Phase 6: Configuration** (env vars, feature flags)
+7. **Phase 7: Testing** (unit, integration, performance)
+8. **Phase 8: Deployment** (Docker, CI/CD, monitoring)
+
+### 6. Dependencies Graph
+
+**Use Mermaid diagram** to visualize task dependencies:
+
+```markdown
+## Dependencies Graph
+
+```mermaid
+graph TD
+    T001[TASK-001-001: Project Setup]
+    T002[TASK-001-002: Dev Environment]
+    T003[TASK-001-003: TradeOrderRequest Model]
+    T004[TASK-001-004: ValidationResponse Model]
+    T005[TASK-001-005: Position Repository]
+    T006[TASK-001-006: Trade Validator Service]
+    T007[TASK-001-007: API Controller]
+
+    T001 --> T002
+    T002 --> T003
+    T002 --> T004
+    T002 --> T005
+    T003 --> T006
+    T004 --> T006
+    T005 --> T006
+    T006 --> T007
+```
+```
+
+### 7. Effort Summary
+
+**Format**:
+```markdown
+## Effort Summary
+
+| Phase | Tasks | Total Effort |
+|-------|-------|--------------|
+| Phase 1: Project Setup | 2 | 1.5 hours |
+| Phase 2: Data Models | 2 | 2 hours |
+| Phase 3: Business Logic | 3 | 4 hours |
+| Phase 4: API Layer | 1 | 1.5 hours |
+| Phase 5: Error Handling | 2 | 2 hours |
+| Phase 6: Configuration | 1 | 1 hour |
+| Phase 7: Testing | 3 | 3 hours |
+| Phase 8: Deployment | 2 | 2 hours |
+| **TOTAL** | **16** | **17 hours** |
+
+**Assumptions**:
+- Developer familiar with Python and FastAPI
+- PostgreSQL database already provisioned
+- OAuth service already available
+```
+
+## Cumulative Tagging Requirements
+
+**Layer 11 (TASKS)**: Must include tags from Layers 1-10
+
+**Tag Count**: 8-10 tags (minimum 8, maximum 10)
+
+**Minimum (IMPL and CTR skipped)**:
+```markdown
+## Traceability
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
+```markdown
+@brd: BRD-001:section-3
+@prd: PRD-001:feature-2
+@ears: EARS-001:E01
+@bdd: BDD-001:scenario-validation
+@adr: ADR-033, ADR-045
+@sys: SYS-001:FR-001
+@req: REQ-risk-limits-001
+@spec: SPEC-001
+```
+
+**Maximum (IMPL and CTR included)**:
+```markdown
+@brd: BRD-001:section-3
+@prd: PRD-001:feature-2
+@ears: EARS-001:E01
+@bdd: BDD-001:scenario-validation
+@adr: ADR-033, ADR-045
+@sys: SYS-001:FR-001
+@req: REQ-risk-limits-001
+@impl: IMPL-001:technical-approach
+@contracts: CTR-001
+@spec: SPEC-001
+```
+
+## Upstream/Downstream Artifacts
+
+**Upstream Sources**:
+- **BRD** (Layer 1) - Business requirements
+- **PRD** (Layer 2) - Product features
+- **EARS** (Layer 3) - Formal requirements
+- **BDD** (Layer 4) - Test scenarios
+- **ADR** (Layer 5) - Architecture decisions
+- **SYS** (Layer 6) - System requirements
+- **REQ** (Layer 7) - Atomic requirements
+- **IMPL** (Layer 8) - Implementation approach (optional)
+- **CTR** (Layer 9) - Data contracts (optional)
+- **SPEC** (Layer 10) - Technical specifications (PRIMARY SOURCE)
+
+**Downstream Artifacts**:
+- **IPLAN** (Layer 12) - Implementation plans (created in `docs/IPLAN/`)
+- **Code** (Layer 13) - Implementation
+
+## Creation Process
+
+### Step 1: Read Upstream SPEC
+
+Read SPEC (Layer 10) - technical specifications to decompose.
+
+### Step 2: Reserve ID Number
+
+Check `ai_dev_flow/TASKS/` for next available ID number.
+
+**ID Matching**: TASKS ID typically matches SPEC ID (TASKS-001 from SPEC-001).
+
+### Step 3: Create TASKS File
+
+**File naming**: `ai_dev_flow/TASKS/TASKS-NNN_{slug}.md`
+
+**Example**: `ai_dev_flow/TASKS/TASKS-001_trade_validation.md`
+
+### Step 4: Fill Document Control Section
+
+Complete metadata and Document Revision History table.
+
+### Step 5: Write Overview
+
+Summarize task breakdown approach.
+
+### Step 6: Define Phases
+
+Organize tasks into logical phases (8 typical phases).
+
+### Step 7: Create Detailed Tasks
+
+For each task in SPEC:
+- Assign TASK ID (TASK-{SPEC-ID}-{Number})
+- Write clear Action (imperative)
+- List Files to Create/Modify
+- Identify Dependencies
+- Estimate Effort
+- Reference SPEC section
+- Define Success Criteria
+
+### Step 8: Create Dependencies Graph
+
+Use Mermaid diagram to visualize task dependencies.
+
+### Step 9: Calculate Effort Summary
+
+Summarize total effort by phase.
+
+### Step 10: Add Cumulative Tags
+
+Include all 8-10 upstream tags (@brd through @spec).
+
+### Step 11: Create/Update Traceability Matrix
+
+**MANDATORY**: Update `ai_dev_flow/TASKS/TASKS-000_TRACEABILITY_MATRIX.md`
+
+### Step 12: Validate TASKS
+
+```bash
+./ai_dev_flow/scripts/validate_tasks_template.sh ai_dev_flow/TASKS/TASKS-001_*.md
+
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact TASKS-001 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts,spec --strict
+
+python ai_dev_flow/scripts/validate_task_dependencies.py ai_dev_flow/TASKS/TASKS-001_*.md
+```
+
+### Step 13: Commit Changes
+
+Commit TASKS file and traceability matrix.
+
+## Validation
+
+### Automated Validation
+
+```bash
+# Quality gates
+./scripts/validate_quality_gates.sh ai_dev_flow/TASKS/TASKS-001_*.md
+
+# Task format validation
+./ai_dev_flow/scripts/validate_tasks_template.sh ai_dev_flow/TASKS/TASKS-001_*.md
+
+# Cumulative tagging
+python ai_dev_flow/scripts/validate_tags_against_docs.py \
+  --artifact TASKS-001 \
+  --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts,spec \
+  --strict
+
+# Dependency validation
+python ai_dev_flow/scripts/validate_task_dependencies.py ai_dev_flow/TASKS/TASKS-001_*.md
+```
+
+### Manual Checklist
+
+- [ ] Document Control section at top
+- [ ] Overview explains breakdown approach
+- [ ] Tasks organized into phases (8 typical phases)
+- [ ] Each task has TASK-{SPEC-ID}-{Number} ID
+- [ ] Each task has all required fields
+- [ ] Dependencies identified (or "None")
+- [ ] Effort estimates provided
+- [ ] SPEC references included
+- [ ] Success Criteria clear and testable
+- [ ] Dependencies Graph (Mermaid diagram) created
+- [ ] Effort Summary calculated
+- [ ] Cumulative tags: @brd through @spec (8-10 tags) included
+- [ ] Traceability matrix updated
+
+## Common Pitfalls
+
+1. **Vague tasks**: Tasks must be specific and actionable
+2. **Missing dependencies**: Must identify task dependencies
+3. **No effort estimates**: Effort required for planning
+4. **Missing SPEC references**: Each task must link to SPEC section
+5. **No success criteria**: Must define how to verify completion
+6. **Missing cumulative tags**: Layer 11 must include all 8-10 upstream tags
+
+## Next Skill
+
+After creating TASKS, use:
+
+**`doc-iplan`** - Create Implementation Plans (Layer 12)
+
+The IPLAN will:
+- Reference TASKS as upstream source
+- Include all 9-11 upstream tags
+- Convert tasks to bash command sequences
+- Provide session-based execution plan
+
+## Related Resources
+
+- **TASKS Creation Rules**: `ai_dev_flow/TASKS/TASKS_CREATION_RULES.md`
+- **TASKS Validation Rules**: `ai_dev_flow/TASKS/TASKS_VALIDATION_RULES.md`
+- **TASKS README**: `ai_dev_flow/TASKS/README.md`
+- **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+
+## Quick Reference
+
+**TASKS Purpose**: Decompose SPEC into actionable AI-structured TODO tasks
+
+**Layer**: 11
+
+**Tags Required**: @brd through @spec (8-10 tags)
+
+**Format**: AI-structured TODO with phases
+
+**Task ID Format**: TASK-{SPEC-ID}-{Task-Number}
+
+**Required Task Fields**:
+- Task ID, Title, Action
+- Files to Create/Modify
+- Dependencies
+- Estimated Effort
+- SPEC Reference
+- Success Criteria
+
+**Key Sections**:
+- Task Hierarchy (phases)
+- Detailed Tasks (primary content)
+- Dependencies Graph (Mermaid)
+- Effort Summary
+
+**Next**: doc-iplan

@@ -1,0 +1,462 @@
+---
+name: doc-iplan
+description: Create Implementation Plans (IPLAN) - Layer 12 artifact converting TASKS into session-based bash command execution plans
+---
+
+# doc-iplan
+
+## Purpose
+
+Create **Implementation Plans (IPLAN)** - Layer 12 artifact in the SDD workflow that converts TASKS into session-based, executable bash command sequences for implementation.
+
+**Layer**: 12
+
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), IMPL (Layer 8), CTR (Layer 9), SPEC (Layer 10), TASKS (Layer 11)
+
+**Downstream Artifacts**: Code (Layer 13)
+
+## Prerequisites
+
+Before creating IPLAN, read:
+
+1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+2. **Upstream TASKS**: Read task breakdown (PRIMARY SOURCE)
+3. **Template**: `ai_dev_flow/IPLAN/IPLAN-TEMPLATE.md`
+4. **Creation Rules**: `ai_dev_flow/IPLAN/IPLAN_CREATION_RULES.md`
+5. **Validation Rules**: `ai_dev_flow/IPLAN/IPLAN_VALIDATION_RULES.md`
+6. **IPLAN Conventions**: ID_NAMING_STANDARDS.md (as of 2025-11-13)
+
+## When to Use This Skill
+
+Use `doc-iplan` when:
+- Have completed BRD through TASKS (Layers 1-11)
+- Ready to convert tasks to executable bash commands
+- Preparing for implementation session
+- Need step-by-step execution plan
+- You are at Layer 12 of the SDD workflow
+
+## IPLAN-Specific Guidance
+
+### 1. File Naming Convention (New as of 2025-11-13)
+
+**Format**: `IPLAN-NNN_{descriptive_slug}_YYYYMMDD_HHMMSS.md`
+
+**Components**:
+- **IPLAN-NNN**: Sequential 3-digit ID
+- **descriptive_slug**: Short kebab-case description
+- **YYYYMMDD_HHMMSS**: Timestamp when plan created (24-hour format, EST/America/New_York timezone)
+  - YYYYMMDD: Year-Month-Day (e.g., 20251120)
+  - HHMMSS: Hour-Minute-Second in 24-hour format (e.g., 143022 for 2:30:22 PM)
+
+**Example**: `IPLAN-001_trade_validation_20250115_143022.md`
+
+**Timestamp Validation**:
+```bash
+# Validate timestamp format (must be exactly 15 chars: _YYYYMMDD_HHMMSS)
+filename="IPLAN-001_trade_validation_20251120_143022.md"
+if [[ ! $filename =~ _[0-9]{8}_[0-9]{6}\.md$ ]]; then
+  echo "ERROR: Invalid timestamp format. Must be _YYYYMMDD_HHMMSS.md"
+  exit 1
+fi
+```
+
+**Benefits**:
+- Session-based tracking (timestamp)
+- Easy chronological sorting
+- Unique plan identification
+
+**Tag Format**: `@iplan: IPLAN-001` (use ID only, NOT full filename with timestamp)
+
+### 2. Session-Based Execution Plan
+
+**Purpose**: Convert TASKS into executable bash command sequences
+
+**Format**:
+```markdown
+## Execution Plan
+
+### Session 1: Project Setup (Estimated: 1.5 hours)
+
+**Tasks**: TASK-001-001, TASK-001-002
+
+**Commands**:
+```bash
+# TASK-001-001: Initialize Project Structure
+mkdir -p src/controllers src/services src/repositories src/models
+mkdir -p tests/unit tests/integration
+touch src/controllers/trade_validation_controller.py
+touch src/services/trade_validator.py
+touch src/repositories/position_repository.py
+touch src/models/trade_order.py
+touch src/__init__.py
+
+# Verify structure created
+ls -R src/
+
+# TASK-001-002: Set Up Development Environment
+cat > requirements.txt <<EOF
+fastapi==0.104.1
+pydantic==2.5.0
+sqlalchemy==2.0.23
+pytest==7.4.3
+pytest-cov==4.1.0
+EOF
+
+cat > pyproject.toml <<EOF
+[project]
+name = "trade-validator"
+version = "1.0.0"
+requires-python = ">=3.11"
+EOF
+
+# Install dependencies
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# Verify installation
+pip list | grep fastapi
+```
+
+**Validation**:
+```bash
+# Verify all files created
+test -f src/controllers/trade_validation_controller.py && echo "✓ Controller file exists"
+test -f src/services/trade_validator.py && echo "✓ Service file exists"
+
+# Verify dependencies installed
+python -c "import fastapi; print(f'✓ FastAPI {fastapi.__version__} installed')"
+```
+
+**Rollback** (if needed):
+```bash
+rm -rf src/ tests/ requirements.txt pyproject.toml .venv
+```
+```
+
+### 3. Required Sections
+
+**Document Control** (MANDATORY - First section before all numbered sections)
+
+**Core Sections**:
+1. **Overview**: Session-based execution summary
+2. **Prerequisites**: What must be ready before starting
+3. **Execution Plan**: Session-by-session commands (primary content)
+4. **Validation Commands**: How to verify each session
+5. **Rollback Procedures**: How to undo if needed
+6. **Notes and Warnings**: Important considerations
+7. **Traceability**: Section 7 format with cumulative tags
+
+### 4. Session Organization
+
+**Typical Sessions**:
+
+1. **Session 1: Project Setup** (infrastructure)
+2. **Session 2: Data Models** (schemas, Pydantic models)
+3. **Session 3: Business Logic** (services, algorithms)
+4. **Session 4: API Layer** (controllers, routing)
+5. **Session 5: Error Handling** (middleware, error codes)
+6. **Session 6: Configuration** (env vars, settings)
+7. **Session 7: Testing** (unit, integration tests)
+8. **Session 8: Deployment** (Docker, CI/CD)
+
+**Each Session Includes**:
+- Tasks covered (TASK IDs)
+- Bash commands (executable)
+- Validation commands
+- Rollback procedure
+
+### 5. Command Format
+
+**Bash Commands**:
+- Must be executable (copy-paste ready)
+- Include comments explaining each step
+- Use heredocs for multi-line files
+- Include error checking
+
+**Example**:
+```bash
+# Create FastAPI controller
+cat > src/controllers/trade_validation_controller.py <<'EOF'
+from fastapi import APIRouter, HTTPException
+from src.models.trade_order import TradeOrderRequest, ValidationResponse
+from src.services.trade_validator import validate_trade_order
+
+router = APIRouter()
+
+@router.post("/api/v1/trades/validate", response_model=ValidationResponse)
+async def validate_trade(order: TradeOrderRequest):
+    """Validate trade order endpoint"""
+    try:
+        result = await validate_trade_order(order)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+EOF
+
+# Verify file created and syntax valid
+test -f src/controllers/trade_validation_controller.py || exit 1
+python -m py_compile src/controllers/trade_validation_controller.py
+```
+
+### 6. Validation Commands
+
+**After Each Session**: Provide commands to verify success
+
+**Format**:
+```markdown
+**Validation**:
+```bash
+# Verify files exist
+test -f src/controllers/trade_validation_controller.py && echo "✓ Controller created"
+test -f src/services/trade_validator.py && echo "✓ Service created"
+
+# Verify syntax valid
+python -m py_compile src/controllers/*.py
+python -m py_compile src/services/*.py
+
+# Run unit tests
+pytest tests/unit/ -v
+
+# Check test coverage
+pytest tests/unit/ --cov=src --cov-report=term-missing
+```
+```
+
+### 7. Rollback Procedures
+
+**For Each Session**: Provide commands to undo changes
+
+**Format**:
+```markdown
+**Rollback** (if needed):
+```bash
+# Remove created files
+rm -f src/controllers/trade_validation_controller.py
+rm -f src/services/trade_validator.py
+
+# Reset git (if committed)
+git reset --hard HEAD~1
+```
+```
+
+## Cumulative Tagging Requirements
+
+**Layer 12 (IPLAN)**: Must include tags from Layers 1-11
+
+**Tag Count**: 9-11 tags (minimum 9, maximum 11)
+
+**Minimum (IMPL and CTR skipped)**:
+```markdown
+## Traceability
+
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 12):
+```markdown
+@brd: BRD-001:section-3
+@prd: PRD-001:feature-2
+@ears: EARS-001:E01
+@bdd: BDD-001:scenario-validation
+@adr: ADR-033, ADR-045
+@sys: SYS-001:FR-001
+@req: REQ-risk-limits-001
+@spec: SPEC-001
+@tasks: TASKS-001
+```
+
+**Maximum (IMPL and CTR included)**:
+```markdown
+@brd: BRD-001:section-3
+@prd: PRD-001:feature-2
+@ears: EARS-001:E01
+@bdd: BDD-001:scenario-validation
+@adr: ADR-033, ADR-045
+@sys: SYS-001:FR-001
+@req: REQ-risk-limits-001
+@impl: IMPL-001:technical-approach
+@contracts: CTR-001
+@spec: SPEC-001
+@tasks: TASKS-001
+```
+
+## Upstream/Downstream Artifacts
+
+**Upstream Sources**:
+- **BRD** (Layer 1) - Business requirements
+- **PRD** (Layer 2) - Product features
+- **EARS** (Layer 3) - Formal requirements
+- **BDD** (Layer 4) - Test scenarios
+- **ADR** (Layer 5) - Architecture decisions
+- **SYS** (Layer 6) - System requirements
+- **REQ** (Layer 7) - Atomic requirements
+- **IMPL** (Layer 8) - Implementation approach (optional)
+- **CTR** (Layer 9) - Data contracts (optional)
+- **SPEC** (Layer 10) - Technical specifications
+- **TASKS** (Layer 11) - Task breakdown (PRIMARY SOURCE)
+
+**Downstream Artifacts**:
+- **Code** (Layer 13) - Implementation
+
+## Creation Process
+
+### Step 1: Read Upstream TASKS
+
+Read TASKS (Layer 11) - task breakdown to convert to commands.
+
+### Step 2: Reserve ID Number and Generate Timestamp
+
+Check `docs/IPLAN/` for next available ID number.
+
+Generate timestamp: `YYYYMMDD_HHMMSS`
+
+### Step 3: Create IPLAN File
+
+**Location**: `docs/IPLAN/IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md` (template available at `ai_dev_flow/IPLAN/`)
+
+**Example**: `docs/IPLAN/IPLAN-001_trade_validation_20250115_143022.md`
+
+### Step 4: Fill Document Control Section
+
+Complete metadata and Document Revision History table.
+
+### Step 5: Write Overview
+
+Summarize session-based execution approach.
+
+### Step 6: Define Prerequisites
+
+List what must be ready before starting (database, credentials, etc.).
+
+### Step 7: Create Session-by-Session Execution Plan
+
+For each session:
+1. List tasks covered (TASK IDs)
+2. Write executable bash commands
+3. Add comments explaining each step
+4. Include error checking
+
+### Step 8: Add Validation Commands
+
+For each session, provide commands to verify success.
+
+### Step 9: Add Rollback Procedures
+
+For each session, provide commands to undo changes.
+
+### Step 10: Document Notes and Warnings
+
+Important considerations, potential issues.
+
+### Step 11: Add Cumulative Tags
+
+Include all 9-11 upstream tags (@brd through @tasks).
+
+### Step 12: Create/Update Traceability Matrix
+
+**MANDATORY**: Update `docs/IPLAN/IPLAN-000_TRACEABILITY_MATRIX.md`
+
+### Step 13: Validate IPLAN
+
+```bash
+./ai_dev_flow/scripts/validate_iplan_template.sh docs/IPLAN/IPLAN-001_*.md
+
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact IPLAN-001 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts,spec,tasks --strict
+
+# Test bash commands (dry-run)
+bash -n docs/IPLAN/IPLAN-001_*.md  # syntax check
+```
+
+### Step 14: Commit Changes
+
+Commit IPLAN file and traceability matrix.
+
+## Validation
+
+### Automated Validation
+
+```bash
+# Quality gates
+./scripts/validate_quality_gates.sh docs/IPLAN/IPLAN-001_*.md
+
+# IPLAN format validation
+./ai_dev_flow/scripts/validate_iplan_template.sh docs/IPLAN/IPLAN-001_*.md
+
+# Cumulative tagging
+python ai_dev_flow/scripts/validate_tags_against_docs.py \
+  --artifact IPLAN-001 \
+  --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts,spec,tasks \
+  --strict
+
+# Bash syntax check
+bash -n docs/IPLAN/IPLAN-001_*.md
+```
+
+### Manual Checklist
+
+- [ ] File naming follows IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md format
+- [ ] Document Control section at top
+- [ ] Overview explains session-based approach
+- [ ] Prerequisites listed (database, credentials, etc.)
+- [ ] Execution Plan organized into sessions
+- [ ] Each session lists covered TASK IDs
+- [ ] Bash commands are executable (copy-paste ready)
+- [ ] Comments explain each command
+- [ ] Validation commands provided for each session
+- [ ] Rollback procedures provided for each session
+- [ ] Notes and Warnings documented
+- [ ] Cumulative tags: @brd through @tasks (9-11 tags) included
+- [ ] Traceability matrix updated
+- [ ] Bash syntax valid (bash -n passes)
+
+## Common Pitfalls
+
+1. **Non-executable commands**: Commands must be copy-paste ready
+2. **Missing validation**: Each session needs validation commands
+3. **No rollback**: Must provide undo procedures
+4. **Wrong file naming**: Must use IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md format
+5. **Missing cumulative tags**: Layer 12 must include all 9-11 upstream tags
+6. **No error checking**: Commands should check for errors
+
+## Next Skill
+
+After creating IPLAN, proceed to:
+
+**Code Implementation** (Layer 13)
+
+Execute the IPLAN session-by-session to implement the code.
+
+## Related Resources
+
+- **IPLAN Creation Rules**: `ai_dev_flow/IPLAN/IPLAN_CREATION_RULES.md`
+- **IPLAN Validation Rules**: `ai_dev_flow/IPLAN/IPLAN_VALIDATION_RULES.md`
+- **IPLAN README**: `ai_dev_flow/IPLAN/README.md`
+- **ID Naming Standards**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
+- **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+
+## Quick Reference
+
+**IPLAN Purpose**: Convert TASKS into session-based bash command execution plans
+
+**Layer**: 12
+
+**Tags Required**: @brd through @tasks (9-11 tags)
+
+**Format**: Session-based execution plan with bash commands
+
+**File Naming**: `IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md`
+
+**Tag Format**: `@iplan: IPLAN-001` (use ID only, not full filename)
+
+**Key Sections**:
+- Prerequisites
+- Execution Plan (session-by-session)
+- Validation Commands
+- Rollback Procedures
+- Notes and Warnings
+
+**Session Structure**:
+- Tasks covered (TASK IDs)
+- Executable bash commands
+- Validation commands
+- Rollback procedure
+
+**Next**: Code Implementation (Layer 13)

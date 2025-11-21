@@ -2,89 +2,114 @@
 
 This directory provides comprehensive templates for the AI-Driven Specification-Driven Development (SDD) workflow. All artifacts follow numeric ID standards and use relative markdown links for traceability.
 
+## Recent Updates (2025-11-20)
+
+- ✅ **Validation Scripts**: Expanded from 1 to 13 validation scripts covering IDs, naming, tags, links, and traceability matrices
+- ✅ **Domain Adaptation**: Added domain-specific configuration guides (Financial, Software, Generic) with [PLACEHOLDER] examples
+- ✅ **Project Setup**: New comprehensive setup guide with domain selection questionnaire
+- ✅ **Traceability Enhancements**: Added setup guide, validation guide, and complete tagging examples
+- ✅ **Decision Frameworks**: Contract decision questionnaire and IMPL creation guidelines
+- ✅ **Tool Optimization**: Token limits and optimization strategies for Claude Code, Gemini CLI, GitHub Copilot
+- ✅ **BRD Guidance**: Platform vs Feature BRD selection guide
+- ✅ **IPLAN Layer**: Formalized Layer 12 Implementation Plans with timestamp-based naming convention
+
 ## Document Structure
 
 The AI Dev Flow organizes documentation through a hierarchical, traceable structure:
 
-### Business Layer
+### Business Layer (Layers 1-3)
 
-- **BRD** (`BRD/`): Business Requirements Documents defining business objectives and constraints
+- **BRD** (`BRD/`) - Layer 1: Business Requirements Documents defining business objectives and constraints
   - Template: [BRD-TEMPLATE.md](./BRD/BRD-TEMPLATE.md)
-- **PRD** (`PRD/`): Product Requirements Documents translating business needs to product features
+  - Index: [BRD-000_index.md](./BRD/BRD-000_index.md)
+  - Guidance: [PLATFORM_VS_FEATURE_BRD.md](./PLATFORM_VS_FEATURE_BRD.md)
+- **PRD** (`PRD/`) - Layer 2: Product Requirements Documents translating business needs to product features
   - Index: [PRD-000_index.md](./PRD/PRD-000_index.md)
   - Template: [PRD-TEMPLATE.md](./PRD/PRD-TEMPLATE.md)
-- **EARS** (`EARS/`): Event Analysis Requirements Specification for event-driven requirements
+- **EARS** (`EARS/`) - Layer 3: Event Analysis Requirements Specification for event-driven requirements
   - Index: [EARS-000_index.md](./EARS/EARS-000_index.md)
   - Template: [EARS-TEMPLATE.md](./EARS/EARS-TEMPLATE.md)
 
-### Requirements Layer
+### Testing Layer (Layer 4)
 
-- **REQ** (`REQ/`): Formal requirements with functional/non-functional specifications
-  - Index: [REQ-000_index.md](./REQ/REQ-000_index.md)
-  - Template: [REQ-TEMPLATE.md](./REQ/REQ-TEMPLATE.md)
-  - Organization: `api/`, `risk/`, `ml/`, `data/` subdirectories
-  - Examples:
-    - [REQ-001](./REQ/api/av/REQ-001_alpha_vantage_integration.md) ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] Integration)
-    - [REQ-002](./REQ/api/ib/REQ-002_ib_gateway_integration.md) ([EXTERNAL_SERVICE_GATEWAY] Integration)
-    - [REQ-003](./REQ/risk/lim/REQ-003_position_limit_enforcement.md) ([RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Limits)
+- **BDD** (`BDD/`) - Layer 4: Behavior-Driven Development feature files defining acceptance criteria
+  - Index: [BDD-000_index.md](./BDD/BDD-000_index.md)
+  - Template: [BDD-TEMPLATE.feature](./BDD/BDD-TEMPLATE.feature)
+  - Purpose: Executable acceptance tests written before implementation (Test-First approach)
+  - Maps to IPLAN scenarios for test-driven development workflow
 
-### Architecture Layer
+### Architecture Layer (Layers 5-6)
 
-- **ADR** (`ADR/`): Architecture Decision Records documenting key architectural choices
+- **ADR** (`ADR/`) - Layer 5: Architecture Decision Records documenting key architectural choices
   - Index: [ADR-000_index.md](./ADR/ADR-000_index.md)
   - Template: [ADR-TEMPLATE.md](./ADR/ADR-TEMPLATE.md)
-- **SYS** (`SYS/`): System Requirements Specifications consolidating requirements into system designs
+  - Purpose: Technical decisions with context, decision, and consequences
+- **SYS** (`SYS/`) - Layer 6: System Requirements Specifications consolidating requirements into system designs
   - Index: [SYS-000_index.md](./SYS/SYS-000_index.md)
   - Template: [SYS-TEMPLATE.md](./SYS/SYS-TEMPLATE.md)
+  - Purpose: System-level functional and non-functional requirements
 
-### Project Management Layer
+### Requirements Layer (Layer 7)
 
-- **IMPL** (`IMPL/`): Implementation Specifications (Layer 8) organizing work into phases, teams, and deliverables
+- **REQ** (`REQ/`) - Layer 7: Atomic, testable requirements with SPEC-readiness scoring
+  - Index: [REQ-000_index.md](./REQ/REQ-000_index.md)
+  - Template: [REQ-TEMPLATE.md](./REQ/REQ-TEMPLATE.md)
+  - Organization: Domain-specific subdirectories (`api/`, `risk/`, `ml/`, `data/`)
+  - Format: 12-section framework with validation rules
+  - Examples:
+    - [REQ-001](./REQ/api/av/REQ-001_alpha_vantage_integration.md) (API Integration)
+    - [REQ-002](./REQ/api/ib/REQ-002_ib_gateway_integration.md) (Gateway Integration)
+    - [REQ-003](./REQ/risk/lim/REQ-003_position_limit_enforcement.md) (Risk Limits)
+
+### Project Management Layer (Layer 8 - Optional)
+
+- **IMPL** (`IMPL/`) - Layer 8: Implementation planning documents organizing work into phases
   - Index: [IMPL-000_index.md](./IMPL/IMPL-000_index.md)
   - Template: [IMPL-TEMPLATE.md](./IMPL/IMPL-TEMPLATE.md)
   - Purpose: Project management (WHO does WHAT, WHEN) - NOT technical specifications
   - Identifies deliverables: which CTR, SPEC, TASKS to create
-  - Example: [IMPL-001](./IMPL/examples/IMPL-001_risk_management_system.md) ([RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] System)
+  - When to use: [WHEN_TO_CREATE_IMPL.md](./WHEN_TO_CREATE_IMPL.md)
+  - Example: [IMPL-001](./IMPL/examples/IMPL-001_risk_management_system.md)
 
-### Design Layer
+### Interface Layer (Layer 9 - Optional)
 
-- **CTR** (`CTR/`): API Contracts defining component-to-component interfaces
+- **CTR** (`CTR/`) - Layer 9: API Contracts defining component-to-component interfaces
   - Index: [CTR-000_index.md](./CTR/CTR-000_index.md)
   - Templates: [CTR-TEMPLATE.md](./CTR/CTR-TEMPLATE.md), [CTR-TEMPLATE.yaml](./CTR/CTR-TEMPLATE.yaml)
   - Dual-file format: `.md` (human-readable context) + `.yaml` (machine-readable schema)
-  - Created when REQ specifies interface requirements
+  - When to use: [CONTRACT_DECISION_QUESTIONNAIRE.md](./CONTRACT_DECISION_QUESTIONNAIRE.md)
   - Enables parallel development and contract testing
   - Optional organization: subdirectories by service type (agents/, mcp/, infra/)
-- **SPEC** (`SPEC/`): Technical specifications ready for code generation (HOW to build)
+  - Examples: [CTR-001](./CTR/examples/CTR-001_risk_validator_api.md)
+
+### Implementation Layer (Layer 10)
+
+- **SPEC** (`SPEC/`) - Layer 10: Technical specifications ready for code generation
   - Index: [SPEC-000_index.md](./SPEC/SPEC-000_index.md)
   - Template: [SPEC-TEMPLATE.yaml](./SPEC/SPEC-TEMPLATE.yaml)
-  - YAML format with classes, methods, algorithms
+  - Purpose: YAML format with classes, methods, algorithms (HOW to build)
   - References CTR contracts when implementing interfaces
+  - Example: [SPEC-001](./SPEC/SPEC-001_api_client_example.yaml)
 
-### Testing Layer
+### Code Generation Layer (Layer 11)
 
-- **BDD** (`BDD/`): Behavior-Driven Development feature files defining acceptance criteria
-  - Index: [BDD-000_index.md](./BDD/BDD-000_index.md)
-  - Template: [BDD-TEMPLATE.feature](./BDD/BDD-TEMPLATE.feature)
-
-### Code Generation Layer
-
-- **TASKS** (`TASKS/`): Code generation plans with exact TODOs to implement SPEC in source code
+- **TASKS** (`TASKS/`) - Layer 11: Code generation plans with exact TODOs
   - Index: [TASKS-000_index.md](./TASKS/TASKS-000_index.md)
   - Template: [TASKS-TEMPLATE.md](./TASKS/TASKS-TEMPLATE.md)
   - Purpose: Step-by-step guide to generate code from YAML SPEC
   - Each TASKS document corresponds to one SPEC
 
-### Session Execution Layer
+### Session Execution Layer (Layer 12)
 
-- **IPLAN** (`IPLAN/`): Implementation Work Plans (Layer 12) for specific coding sessions with executable bash commands
+- **IPLAN** (`IPLAN/`) - Layer 12: Implementation Work Plans for specific coding sessions
   - Index: [IPLAN-000_index.md](./IPLAN/IPLAN-000_index.md)
   - Template: [IPLAN-TEMPLATE.md](./IPLAN/IPLAN-TEMPLATE.md)
-  - Purpose: Session-based execution context for implementing TASKS
+  - Purpose: Session-based execution context with executable bash commands
   - Format: Timestamp-based naming `IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md`
   - Enables context resumption across AI coding sessions
   - Contains bash commands for setup, execution, and validation
   - Each IPLAN executes one or more TASKS within a session
+  - BDD Scenario Mapping: [BDD_SCENARIO_MAPPING.md](./IPLAN/BDD_SCENARIO_MAPPING.md)
 
 ## Traceability Flow
 
@@ -208,10 +233,47 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 
 ## Core Standards Documents
 
+### Workflow & Methodology
+
 - **Workflow Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete SDD methodology
+- **Quick Reference**: [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) - Quick reference for common tasks
+
+### Naming & Organization
+
 - **ID Naming**: [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) - Document identification standards
 - **Traceability**: [TRACEABILITY.md](./TRACEABILITY.md) - Traceability requirements and conventions
 - **Traceability Style**: [Traceability Format Standards](./TRACEABILITY.md#traceability-format-standards) - Style guide for traceability links
+- **Traceability Setup**: [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md) - Setting up traceability in projects
+- **Traceability Validation**: [TRACEABILITY_VALIDATION.md](./TRACEABILITY_VALIDATION.md) - Validation procedures
+
+### Domain Adaptation
+
+- **Domain Adaptation Guide**: [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) - Adapting framework to specific domains
+- **Domain Selection**: [DOMAIN_SELECTION_QUESTIONNAIRE.md](./DOMAIN_SELECTION_QUESTIONNAIRE.md) - Questionnaire for selecting domain
+- **Financial Domain**: [FINANCIAL_DOMAIN_CONFIG.md](./FINANCIAL_DOMAIN_CONFIG.md) - Financial sector configuration
+- **Software Domain**: [SOFTWARE_DOMAIN_CONFIG.md](./SOFTWARE_DOMAIN_CONFIG.md) - Generic software configuration
+- **Generic Domain**: [GENERIC_DOMAIN_CONFIG.md](./GENERIC_DOMAIN_CONFIG.md) - Minimal configuration template
+
+### Project Setup
+
+- **Project Setup**: [PROJECT_SETUP_GUIDE.md](./PROJECT_SETUP_GUIDE.md) - Complete project initialization guide
+- **Project Kickoff**: [PROJECT_KICKOFF_TASKS.md](./PROJECT_KICKOFF_TASKS.md) - Initial project tasks checklist
+- **Platform vs Feature BRD**: [PLATFORM_VS_FEATURE_BRD.md](./PLATFORM_VS_FEATURE_BRD.md) - BRD type selection guide
+
+### Decision Frameworks
+
+- **Contract Decision**: [CONTRACT_DECISION_QUESTIONNAIRE.md](./CONTRACT_DECISION_QUESTIONNAIRE.md) - When to create CTR documents
+- **IMPL Decision**: [WHEN_TO_CREATE_IMPL.md](./WHEN_TO_CREATE_IMPL.md) - When to create IMPL documents
+
+### Tool Optimization
+
+- **Tool Optimization**: [TOOL_OPTIMIZATION_GUIDE.md](./TOOL_OPTIMIZATION_GUIDE.md) - AI tool token limits and optimization strategies
+- **AI Assistant Rules**: [AI_ASSISTANT_RULES.md](./AI_ASSISTANT_RULES.md) - Rules for AI assistants working with framework
+
+### Templates & Examples
+
+- **Complete Tagging Example**: [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) - Full example of cumulative tagging
+- **Matrix Template Guide**: [MATRIX_TEMPLATE_COMPLETION_GUIDE.md](./MATRIX_TEMPLATE_COMPLETION_GUIDE.md) - How to fill traceability matrices
 
 ## Creating New Documents
 
@@ -225,21 +287,37 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 
 ## Validation
 
-Validate document structure and traceability:
+Validate document structure and traceability using automated scripts:
 
 ```bash
-# Implemented validation scripts
-python scripts/validate_requirement_ids.py          # ✓ Available
+# Core validation scripts
+python scripts/validate_requirement_ids.py               # REQ-ID format and uniqueness
+python scripts/validate_req_spec_readiness.py            # REQ SPEC-readiness scoring
+python scripts/validate_iplan_naming.py                  # IPLAN naming conventions
+python scripts/validate_documentation_paths.py           # Path consistency
+python scripts/validate_links.py                         # Markdown link validation
+python scripts/validate_tags_against_docs.py             # Tag extraction and validation
+python scripts/validate_traceability_matrix.py           # Traceability matrix structure
+python scripts/validate_traceability_matrix_enforcement.py  # Matrix enforcement rules
 
-# Planned validation scripts (not yet implemented)
-# python scripts/complete_traceability_matrix.py   # ✗ Planned
-# python scripts/check_broken_references.py         # ✗ Planned
+# Template validation scripts
+bash scripts/validate_brd_template.sh                    # BRD template compliance
+bash scripts/validate_req_template.sh                    # REQ template compliance
+
+# Traceability generation
+python scripts/generate_traceability_matrix.py           # Generate traceability matrices
+python scripts/update_traceability_matrix.py             # Update existing matrices
+python scripts/extract_tags.py                           # Extract tags to JSON
 ```
 
-**Current Status:**
-- ✓ `validate_requirement_ids.py` - Validates REQ-ID format and uniqueness
-- ✗ `complete_traceability_matrix.py` - Planned: Generate complete traceability matrix
-- ✗ `check_broken_references.py` - Planned: Check for broken internal links
+**Script Categories:**
+
+- **ID & Naming Validation**: Validates document IDs, naming conventions, and file paths
+- **Content Validation**: Checks template compliance, tag usage, and link validity
+- **Traceability Tools**: Generates and validates traceability matrices
+- **Readiness Scoring**: Assesses REQ SPEC-readiness using 12-section framework
+
+See [scripts/README.md](./scripts/README.md) for detailed script documentation.
 
 ## Best Practices
 
