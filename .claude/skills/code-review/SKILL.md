@@ -1,3 +1,17 @@
+---
+name: code-review
+description: Code review skill for quality, standards compliance, and best practices
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - quality-assurance
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+---
+
 # code-review
 
 **Description**: Automated code quality analysis, static analysis, security scanning, and best practices enforcement

@@ -1,6 +1,24 @@
 ---
 name: doc-impl
 description: Create Implementation Approach (IMPL) - Optional Layer 8 artifact documenting WHO-WHEN-WHAT implementation strategy
+tags:
+  - sdd-workflow
+  - layer-8-artifact
+  - shared-architecture
+  - documentation-skill
+custom_fields:
+  layer: 8
+  artifact_type: IMPL
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: core-workflow
+  upstream_artifacts: [REQ]
+  downstream_artifacts: [CTR,SPEC]
+---
+
+name: doc-impl
+description: Create Implementation Approach (IMPL) - Optional Layer 8 artifact documenting WHO-WHEN-WHAT implementation strategy
 ---
 
 # doc-impl

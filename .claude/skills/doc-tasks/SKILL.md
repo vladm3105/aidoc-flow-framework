@@ -1,6 +1,24 @@
 ---
 name: doc-tasks
 description: Create Task Breakdown (TASKS) - Layer 11 artifact decomposing SPEC into AI-structured TODO tasks
+tags:
+  - sdd-workflow
+  - layer-11-artifact
+  - shared-architecture
+  - documentation-skill
+custom_fields:
+  layer: 11
+  artifact_type: TASKS
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: core-workflow
+  upstream_artifacts: [SPEC]
+  downstream_artifacts: [IPLAN]
+---
+
+name: doc-tasks
+description: Create Task Breakdown (TASKS) - Layer 11 artifact decomposing SPEC into AI-structured TODO tasks
 ---
 
 # doc-tasks

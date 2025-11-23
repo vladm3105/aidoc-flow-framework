@@ -1,6 +1,24 @@
 ---
 name: doc-ears
 description: Create EARS (Easy Approach to Requirements Syntax) formal requirements - Layer 3 artifact using WHEN-THE-SHALL-WITHIN format
+tags:
+  - sdd-workflow
+  - layer-3-artifact
+  - shared-architecture
+  - documentation-skill
+custom_fields:
+  layer: 3
+  artifact_type: EARS
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: core-workflow
+  upstream_artifacts: [BRD,PRD]
+  downstream_artifacts: [BDD,ADR]
+---
+
+name: doc-ears
+description: Create EARS (Easy Approach to Requirements Syntax) formal requirements - Layer 3 artifact using WHEN-THE-SHALL-WITHIN format
 ---
 
 # doc-ears

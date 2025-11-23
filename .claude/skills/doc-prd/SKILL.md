@@ -1,6 +1,24 @@
 ---
 name: doc-prd
 description: Create Product Requirements Documents (PRD) following SDD methodology - Layer 2 artifact defining product features and user needs
+tags:
+  - sdd-workflow
+  - layer-2-artifact
+  - shared-architecture
+  - documentation-skill
+custom_fields:
+  layer: 2
+  artifact_type: PRD
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: core-workflow
+  upstream_artifacts: [BRD]
+  downstream_artifacts: [EARS,BDD]
+---
+
+name: doc-prd
+description: Create Product Requirements Documents (PRD) following SDD methodology - Layer 2 artifact defining product features and user needs
 ---
 
 # doc-prd

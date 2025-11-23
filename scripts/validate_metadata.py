@@ -41,6 +41,7 @@ VALID_TAGS = {
     'validation-rules',
 
     # Layer artifacts
+    'layer-0-artifact',  # META (doc-flow orchestrator)
     'layer-1-artifact',  # BRD
     'layer-2-artifact',  # PRD
     'layer-3-artifact',  # EARS
@@ -80,8 +81,9 @@ REQUIRED_FIELDS = {
 
 # Required custom_fields by document type
 REQUIRED_CUSTOM_FIELDS = {
-    'skill': ['layer', 'artifact_type', 'architecture_approaches', 'priority',
-              'development_status', 'skill_category'],
+    'skill': ['architecture_approaches', 'priority', 'development_status', 'skill_category'],
+    'skill_core_workflow': ['layer', 'artifact_type', 'architecture_approaches', 'priority',
+                            'development_status', 'skill_category'],
     'index': ['document_type', 'artifact_type', 'layer', 'priority'],
     'guide': ['document_type', 'priority', 'development_status'],
     'default': [],
@@ -146,7 +148,16 @@ class MetadataValidator:
         # Validate custom_fields if present
         if 'custom_fields' in metadata:
             custom_fields = metadata['custom_fields']
-            required_custom = REQUIRED_CUSTOM_FIELDS.get(doc_type, [])
+
+            # For skills, check if it's core-workflow to determine requirements
+            if doc_type == 'skill':
+                skill_category = custom_fields.get('skill_category', '')
+                if skill_category == 'core-workflow':
+                    required_custom = REQUIRED_CUSTOM_FIELDS['skill_core_workflow']
+                else:
+                    required_custom = REQUIRED_CUSTOM_FIELDS['skill']
+            else:
+                required_custom = REQUIRED_CUSTOM_FIELDS.get(doc_type, [])
 
             for field in required_custom:
                 if field not in custom_fields:

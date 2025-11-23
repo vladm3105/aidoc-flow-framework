@@ -1,3 +1,17 @@
+---
+name: security-audit
+description: Security analysis, vulnerability assessment, and security code reviews
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - quality-assurance
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+---
+
 # security-audit
 
 **Description**: Security requirements validation, vulnerability assessment, and compliance checking

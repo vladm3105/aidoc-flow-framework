@@ -1,6 +1,24 @@
 ---
 name: doc-adr
 description: Create Architecture Decision Records (ADR) - Layer 5 artifact documenting architectural decisions with Context-Decision-Consequences format
+tags:
+  - sdd-workflow
+  - layer-5-artifact
+  - shared-architecture
+  - documentation-skill
+custom_fields:
+  layer: 5
+  artifact_type: ADR
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: core-workflow
+  upstream_artifacts: [BDD,EARS]
+  downstream_artifacts: [SYS,REQ]
+---
+
+name: doc-adr
+description: Create Architecture Decision Records (ADR) - Layer 5 artifact documenting architectural decisions with Context-Decision-Consequences format
 ---
 
 # doc-adr

@@ -1,5 +1,18 @@
 ---
 name: project-init
+description: Initialize projects with AI Dev Flow framework using domain-aware setup
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - utility-skill
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: utility
+---
+
+name: project-init
 description: Initialize brand new projects with AI Dev Flow framework using domain-aware setup, automated folder creation, and contract decision logic
 ---
 

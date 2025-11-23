@@ -1,6 +1,24 @@
 ---
 name: doc-bdd
 description: Create BDD (Behavior-Driven Development) test scenarios - Layer 4 artifact using Gherkin Given-When-Then format
+tags:
+  - sdd-workflow
+  - layer-4-artifact
+  - shared-architecture
+  - documentation-skill
+custom_fields:
+  layer: 4
+  artifact_type: BDD
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: core-workflow
+  upstream_artifacts: [BRD,PRD,EARS]
+  downstream_artifacts: [ADR,SYS]
+---
+
+name: doc-bdd
+description: Create BDD (Behavior-Driven Development) test scenarios - Layer 4 artifact using Gherkin Given-When-Then format
 ---
 
 # doc-bdd

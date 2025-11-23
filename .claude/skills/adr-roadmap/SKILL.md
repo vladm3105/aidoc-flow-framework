@@ -1,5 +1,18 @@
 ---
 name: adr-roadmap
+description: Generate phased implementation roadmaps from Architecture Decision Records
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - utility-skill
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: utility
+---
+
+name: adr-roadmap
 description: Generate comprehensive phased implementation roadmaps from Architecture Decision Records for any project
 ---
 

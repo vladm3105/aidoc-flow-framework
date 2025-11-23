@@ -1,3 +1,17 @@
+---
+name: refactor-flow
+description: Improve code quality, reduce technical debt, restructure for maintainability
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - utility-skill
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: utility
+---
+
 # refactor-flow
 
 **Description**: Code refactoring assistance, technical debt management, and documentation synchronization

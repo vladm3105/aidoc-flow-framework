@@ -1,4 +1,17 @@
 ---
+name: n8n
+description: Develop workflows, custom nodes, and integrations for n8n automation platform
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - domain-specific
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: domain-specific
+---
+
 skill_id: n8n
 name: n8n Workflow Automation
 description: Develop workflows, custom nodes, and integrations for the n8n automation platform

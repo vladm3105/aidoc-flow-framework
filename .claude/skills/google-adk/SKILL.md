@@ -1,4 +1,17 @@
 ---
+name: google-adk
+description: Develop agentic software and multi-agent systems using Google ADK in Python
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - domain-specific
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: domain-specific
+---
+
 skill_id: google-adk
 name: Google Agent Development Kit (ADK)
 description: Develop agentic software and multi-agent systems using Google ADK in Python

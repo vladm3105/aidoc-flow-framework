@@ -1,3 +1,17 @@
+---
+name: test-automation
+description: Create test plans, write tests, validate code quality through testing
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - quality-assurance
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+---
+
 # test-automation
 
 **Description**: Automated test generation, BDD execution, coverage analysis, and contract testing

@@ -1,3 +1,17 @@
+---
+name: analytics-flow
+description: Analytics and data analysis workflow skill
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - domain-specific
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: domain-specific
+---
+
 # analytics-flow
 
 **Description**: Project metrics, documentation analytics, progress tracking, and trend analysis

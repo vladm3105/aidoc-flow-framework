@@ -1,6 +1,24 @@
 ---
 name: doc-spec
 description: Create Technical Specifications (SPEC) - Layer 10 artifact using YAML format for implementation-ready specifications
+tags:
+  - sdd-workflow
+  - layer-10-artifact
+  - shared-architecture
+  - documentation-skill
+custom_fields:
+  layer: 10
+  artifact_type: SPEC
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: core-workflow
+  upstream_artifacts: [REQ,IMPL,CTR]
+  downstream_artifacts: [TASKS]
+---
+
+name: doc-spec
+description: Create Technical Specifications (SPEC) - Layer 10 artifact using YAML format for implementation-ready specifications
 ---
 
 # doc-spec

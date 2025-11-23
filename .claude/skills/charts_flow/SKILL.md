@@ -1,5 +1,18 @@
 ---
 name: charts_flow
+description: Create and manage Mermaid architecture diagrams with automatic SVG generation
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - utility-skill
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: utility
+---
+
+name: charts_flow
 description: Create and manage Mermaid architecture diagrams with automatic SVG generation for documentation
 ---
 

@@ -1,3 +1,17 @@
+---
+name: devops-flow
+description: DevOps, MLOps, DevSecOps practices for cloud environments (GCP, Azure, AWS)
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - domain-specific
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: domain-specific
+---
+
 # devops-flow
 
 **Description**: Infrastructure as Code, CI/CD pipeline automation, and deployment management

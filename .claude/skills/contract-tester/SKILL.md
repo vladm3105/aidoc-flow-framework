@@ -1,3 +1,17 @@
+---
+name: contract-tester
+description: Test and validate API contracts against specifications
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - quality-assurance
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+---
+
 # contract-tester
 
 **Description**: API contract validation, breaking change detection, and consumer-driven contract testing
