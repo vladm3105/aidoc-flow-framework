@@ -1,3 +1,17 @@
+---
+title: "EARS Validation Rules Reference"
+tags:
+  - validation-rules
+  - layer-3-artifact
+  - shared-architecture
+custom_fields:
+  document_type: validation-rules
+  artifact_type: EARS
+  layer: 3
+  priority: shared
+  development_status: active
+---
+
 # EARS Validation Rules Reference
 
 **Version**: 1.0

@@ -1,3 +1,17 @@
+---
+title: "ADR Creation Rules"
+tags:
+  - creation-rules
+  - layer-5-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: ADR
+  layer: 5
+  priority: shared
+  development_status: active
+---
+
 # ADR Creation Rules
 
 **Version**: 1.0

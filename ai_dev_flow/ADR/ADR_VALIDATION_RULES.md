@@ -1,3 +1,17 @@
+---
+title: "ADR Validation Rules Reference"
+tags:
+  - validation-rules
+  - layer-5-artifact
+  - shared-architecture
+custom_fields:
+  document_type: validation-rules
+  artifact_type: ADR
+  layer: 5
+  priority: shared
+  development_status: active
+---
+
 # ADR Validation Rules Reference
 
 **Version**: 1.0

@@ -1,3 +1,17 @@
+---
+title: "BDD Creation Rules"
+tags:
+  - creation-rules
+  - layer-4-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: BDD
+  layer: 4
+  priority: shared
+  development_status: active
+---
+
 # BDD Creation Rules
 
 **Version**: 1.0

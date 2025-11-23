@@ -1,3 +1,17 @@
+---
+title: "EARS Creation Rules"
+tags:
+  - creation-rules
+  - layer-3-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: EARS
+  layer: 3
+  priority: shared
+  development_status: active
+---
+
 # EARS Creation Rules
 
 **Version**: 1.0

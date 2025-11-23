@@ -1,3 +1,17 @@
+---
+title: "SYS Validation Rules Reference"
+tags:
+  - validation-rules
+  - layer-6-artifact
+  - shared-architecture
+custom_fields:
+  document_type: validation-rules
+  artifact_type: SYS
+  layer: 6
+  priority: shared
+  development_status: active
+---
+
 # SYS Validation Rules Reference
 
 **Version**: 1.0

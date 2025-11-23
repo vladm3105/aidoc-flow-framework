@@ -1,3 +1,17 @@
+---
+title: "PRD Creation Rules"
+tags:
+  - creation-rules
+  - layer-2-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: PRD
+  layer: 2
+  priority: shared
+  development_status: active
+---
+
 # PRD Creation Rules
 
 **Version**: 1.0

@@ -1,3 +1,17 @@
+---
+title: "BRD Validation Rules Reference"
+tags:
+  - validation-rules
+  - layer-1-artifact
+  - shared-architecture
+custom_fields:
+  document_type: validation-rules
+  artifact_type: BRD
+  layer: 1
+  priority: shared
+  development_status: active
+---
+
 # BRD Validation Rules Reference
 
 **Version**: 1.1.0

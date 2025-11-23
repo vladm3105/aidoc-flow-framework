@@ -1,3 +1,17 @@
+---
+title: "REQ Creation Rules"
+tags:
+  - creation-rules
+  - layer-7-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: REQ
+  layer: 7
+  priority: shared
+  development_status: active
+---
+
 # REQ Creation Rules
 
 **Version**: 3.0

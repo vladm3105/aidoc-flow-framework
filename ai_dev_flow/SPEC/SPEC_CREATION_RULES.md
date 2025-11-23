@@ -1,3 +1,17 @@
+---
+title: "SPEC Creation Rules"
+tags:
+  - creation-rules
+  - layer-10-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: SPEC
+  layer: 10
+  priority: shared
+  development_status: active
+---
+
 # SPEC Creation Rules
 
 **Version**: 1.0

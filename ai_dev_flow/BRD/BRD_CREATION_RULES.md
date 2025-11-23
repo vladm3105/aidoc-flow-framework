@@ -1,3 +1,17 @@
+---
+title: "BRD Creation Rules"
+tags:
+  - creation-rules
+  - layer-1-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: BRD
+  layer: 1
+  priority: shared
+  development_status: active
+---
+
 # BRD Creation Rules
 
 **Version**: 1.1

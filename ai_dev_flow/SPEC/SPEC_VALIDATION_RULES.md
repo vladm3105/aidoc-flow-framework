@@ -1,3 +1,17 @@
+---
+title: "SPEC Validation Rules Reference"
+tags:
+  - validation-rules
+  - layer-10-artifact
+  - shared-architecture
+custom_fields:
+  document_type: validation-rules
+  artifact_type: SPEC
+  layer: 10
+  priority: shared
+  development_status: active
+---
+
 # SPEC Validation Rules Reference
 
 **Version**: 1.0

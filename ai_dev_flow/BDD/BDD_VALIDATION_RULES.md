@@ -1,3 +1,17 @@
+---
+title: "BDD Validation Rules Reference"
+tags:
+  - validation-rules
+  - layer-4-artifact
+  - shared-architecture
+custom_fields:
+  document_type: validation-rules
+  artifact_type: BDD
+  layer: 4
+  priority: shared
+  development_status: active
+---
+
 # BDD Validation Rules Reference
 
 **Version**: 1.0

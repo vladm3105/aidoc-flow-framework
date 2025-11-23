@@ -1,3 +1,17 @@
+---
+title: "SYS Creation Rules"
+tags:
+  - creation-rules
+  - layer-6-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: SYS
+  layer: 6
+  priority: shared
+  development_status: active
+---
+
 # SYS Creation Rules
 
 **Version**: 1.0
