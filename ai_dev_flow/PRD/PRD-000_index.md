@@ -1,3 +1,16 @@
+---
+title: "PRD-000: PRD Index"
+tags:
+  - index-document
+  - layer-2-artifact
+  - shared-architecture
+custom_fields:
+  document_type: index
+  artifact_type: PRD
+  layer: 2
+  priority: shared
+---
+
 # PRD-000: Product Requirements Documents Master Index
 
 ## Purpose

@@ -1,3 +1,16 @@
+---
+title: "REQ-000: REQ Index"
+tags:
+  - index-document
+  - layer-7-artifact
+  - shared-architecture
+custom_fields:
+  document_type: index
+  artifact_type: REQ
+  layer: 7
+  priority: shared
+---
+
 # Requirements Index (REQ)
 
 ## Document Control

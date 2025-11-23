@@ -1,3 +1,16 @@
+---
+title: "BDD-000: BDD Index"
+tags:
+  - index-document
+  - layer-4-artifact
+  - shared-architecture
+custom_fields:
+  document_type: index
+  artifact_type: BDD
+  layer: 4
+  priority: shared
+---
+
 # BDD Index
 
 ## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow

@@ -1,3 +1,16 @@
+---
+title: "TASKS-000: TASKS Index"
+tags:
+  - index-document
+  - layer-11-artifact
+  - shared-architecture
+custom_fields:
+  document_type: index
+  artifact_type: TASKS
+  layer: 11
+  priority: shared
+---
+
 # TASKS-000: Code Generation Plans Master Index
 
 ## Purpose

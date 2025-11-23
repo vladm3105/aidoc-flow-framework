@@ -1,3 +1,16 @@
+---
+title: "SPEC-000: SPEC Index"
+tags:
+  - index-document
+  - layer-10-artifact
+  - shared-architecture
+custom_fields:
+  document_type: index
+  artifact_type: SPEC
+  layer: 10
+  priority: shared
+---
+
 # SPEC-000: Technical Specifications Master Index
 
 ## Purpose

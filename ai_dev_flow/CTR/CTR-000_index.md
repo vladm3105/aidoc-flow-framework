@@ -1,3 +1,16 @@
+---
+title: "CTR-000: CTR Index"
+tags:
+  - index-document
+  - layer-9-artifact
+  - shared-architecture
+custom_fields:
+  document_type: index
+  artifact_type: CTR
+  layer: 9
+  priority: shared
+---
+
 # CTR-000: API Contracts Master Index
 
 ## Purpose

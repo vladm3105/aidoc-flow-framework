@@ -1,3 +1,19 @@
+---
+title: "AI Coding Tool Optimization Guide"
+tags:
+  - framework-guide
+  - shared-architecture
+  - required-both-approaches
+  - active
+custom_fields:
+  document_type: optimization-guide
+  priority: shared
+  development_status: active
+  applies_to: [all-artifacts, ai-tools]
+  version: "1.0"
+  last_updated: "2025-11-07"
+---
+
 # AI Coding Tool Optimization Guide
 
 **Version**: 1.0
@@ -349,6 +365,68 @@ flowchart TD
 
 ---
 
+## Metadata Tagging for Documentation Sites
+
+### Purpose
+
+When building documentation sites (Docusaurus, MkDocs) for dual-architecture projects, use YAML frontmatter metadata to:
+- Indicate architectural priority (recommended vs fallback)
+- Enable visual hierarchy in navigation
+- Support bidirectional cross-references
+- Allow filtering/querying by architecture approach
+
+### Tool Compatibility
+
+**Claude Code:**
+- ✅ Fully supports YAML frontmatter editing
+- ✅ Can add metadata to multiple files efficiently
+- ✅ Validates YAML syntax automatically
+- ✅ Optimal for bulk metadata migration
+
+**Gemini CLI:**
+- ✅ Supports YAML frontmatter
+- ⚠️ Use file read tool for files >10K tokens
+- ✅ Good for single-file metadata updates
+
+**GitHub Copilot:**
+- ✅ Supports YAML frontmatter
+- ⚠️ Limited context for bulk operations
+- ✅ Good for individual file updates
+
+### Token Impact
+
+**Metadata Overhead:**
+- YAML frontmatter: ~200-400 tokens (0.8-1.6KB)
+- Custom admonitions: ~150-250 tokens (0.6-1KB)
+- Total per document: ~350-650 tokens (1.4-2.6KB)
+
+**Impact on File Sizes:**
+- Minimal impact on token budgets
+- <5% increase for typical documents
+- Does not affect 50K/100K token limits
+
+### Quick Template Reference
+
+**Primary (Recommended) Implementation:**
+```yaml
+---
+title: "DOC-XXX: Feature Name"
+tags:
+  - feature-doc
+  - ai-agent-primary
+  - recommended-approach
+custom_fields:
+  architecture_approach: ai-agent-based
+  priority: primary
+  development_status: active
+---
+```
+
+**Complete Guide:**
+See [METADATA_TAGGING_GUIDE.md](./METADATA_TAGGING_GUIDE.md) for comprehensive standards, validation scripts, and migration procedures.
+
+---
+
 ## Summary
 
 ### Token Limits Quick Reference
@@ -384,3 +462,4 @@ flowchart TD
 - [AI_Coding_Tools_Comparison.md](../AI_Coding_Tools_Comparison.md) - Detailed comparison of all tools
 - [Gemini_CLI_Large_File_Workarounds.md](../Gemini_CLI_Large_File_Workarounds.md) - Gemini CLI file handling strategies
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete framework documentation standards
+- [METADATA_TAGGING_GUIDE.md](./METADATA_TAGGING_GUIDE.md) - Dual-architecture metadata standards for documentation sites

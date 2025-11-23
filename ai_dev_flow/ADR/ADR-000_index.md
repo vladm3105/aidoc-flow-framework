@@ -1,3 +1,16 @@
+---
+title: "ADR-000: ADR Index"
+tags:
+  - index-document
+  - layer-5-artifact
+  - shared-architecture
+custom_fields:
+  document_type: index
+  artifact_type: ADR
+  layer: 5
+  priority: shared
+---
+
 # ADR-000: Architecture Decision Records Master Index
 
 ## Purpose

@@ -1,3 +1,19 @@
+---
+title: "Document ID & Tagging Standards"
+tags:
+  - framework-guide
+  - shared-architecture
+  - required-both-approaches
+  - active
+custom_fields:
+  document_type: naming-standards
+  priority: shared
+  development_status: active
+  applies_to: [all-artifacts, documentation]
+  version: "1.0"
+  scope: documentation-only
+---
+
 # Document ID & Tagging Standards — ai_dev_flow
 
 Status: Authoritative for this `ai_dev_flow` example set. These rules reflect the naming and linking already used here and supersede repo-wide norms within this directory (do not change existing files to match other guides).

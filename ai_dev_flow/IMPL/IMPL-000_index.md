@@ -1,3 +1,16 @@
+---
+title: "IMPL-000: IMPL Index"
+tags:
+  - index-document
+  - layer-8-artifact
+  - shared-architecture
+custom_fields:
+  document_type: index
+  artifact_type: IMPL
+  layer: 8
+  priority: shared
+---
+
 # IMPL-000: Implementation Plans Master Index
 
 ## Purpose

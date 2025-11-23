@@ -1,3 +1,16 @@
+---
+title: "BRD-000: BRD Index"
+tags:
+  - index-document
+  - layer-1-artifact
+  - shared-architecture
+custom_fields:
+  document_type: index
+  artifact_type: BRD
+  layer: 1
+  priority: shared
+---
+
 # BRD Index (Business Requirements Documents)
 
 Purpose

@@ -1,3 +1,16 @@
+---
+title: "IPLAN-000: IPLAN Index"
+tags:
+  - index-document
+  - layer-12-artifact
+  - shared-architecture
+custom_fields:
+  document_type: index
+  artifact_type: IPLAN
+  layer: 12
+  priority: shared
+---
+
 # IPLAN-000: Implementation Work Plans Master Index
 
 ## Purpose

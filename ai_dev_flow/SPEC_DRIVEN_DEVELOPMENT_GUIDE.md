@@ -1,3 +1,18 @@
+---
+title: "Specification-Driven Development Principles Guide"
+tags:
+  - framework-guide
+  - shared-architecture
+  - required-both-approaches
+  - active
+custom_fields:
+  document_type: methodology-guide
+  priority: shared
+  development_status: active
+  applies_to: [all-artifacts, sdd-workflow]
+  version: "1.0"
+  workflow_layers: 16
+---
 
 Development Principles Guide
 

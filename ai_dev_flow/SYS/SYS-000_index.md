@@ -1,3 +1,16 @@
+---
+title: "SYS-000: SYS Index"
+tags:
+  - index-document
+  - layer-6-artifact
+  - shared-architecture
+custom_fields:
+  document_type: index
+  artifact_type: SYS
+  layer: 6
+  priority: shared
+---
+
 # SYS-000: System Requirements Specification Master Index
 
 ## Purpose

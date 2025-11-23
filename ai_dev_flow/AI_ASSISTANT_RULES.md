@@ -1,3 +1,19 @@
+---
+title: "AI Assistant Execution Rules"
+tags:
+  - framework-guide
+  - shared-architecture
+  - required-both-approaches
+  - active
+custom_fields:
+  document_type: execution-rules
+  priority: shared
+  development_status: active
+  applies_to: [project-initialization, ai-assistants]
+  version: "1.0"
+  target_tools: [Claude AI, Claude Code, Gemini CLI, GitHub Copilot, Cursor, Windsurf]
+---
+
 # AI Assistant Execution Rules
 
 **Version**: 1.0
@@ -937,6 +953,127 @@ Gemini CLI:
 
 ---
 
+## Rule 10: Metadata Tagging for Dual-Architecture Projects
+
+### Purpose
+
+When projects support multiple architectural approaches (e.g., AI Agent-Based vs Traditional implementations), use YAML frontmatter metadata to:
+- Indicate architectural priority (primary/recommended vs fallback/reference)
+- Enable visual hierarchy in documentation sites
+- Provide bidirectional cross-references between equivalent implementations
+- Support filtering and querying by architecture approach
+
+### When to Apply Metadata Tagging
+
+**Use metadata tagging when:**
+- ✅ Project supports dual/multiple architectural approaches
+- ✅ Need to indicate recommendation between approaches
+- ✅ Building documentation sites (Docusaurus, MkDocs)
+- ✅ Require cross-referencing between equivalent implementations
+
+**Do NOT use when:**
+- ❌ Project has single architecture only
+- ❌ All documents apply equally to all approaches
+
+### Quick Reference Templates
+
+**Primary (Recommended) Implementation:**
+```yaml
+---
+title: "BRD-XXX: Feature Name"
+tags:
+  - feature-brd
+  - ai-agent-primary
+  - recommended-approach
+custom_fields:
+  architecture_approach: ai-agent-based
+  priority: primary
+  development_status: active
+  agent_id: AGENT-XXX
+  fallback_reference: BRD-YYY
+---
+```
+
+**Fallback (Reference) Implementation:**
+```yaml
+---
+title: "BRD-XXX: Feature Name"
+tags:
+  - feature-brd
+  - traditional-fallback
+  - reference-implementation
+custom_fields:
+  architecture_approach: traditional-8layer
+  priority: fallback
+  development_status: reference
+  primary_alternative: BRD-YYY_name
+---
+```
+
+**Shared Platform Requirements:**
+```yaml
+---
+title: "BRD-XXX: Platform Feature"
+tags:
+  - platform-brd
+  - shared-architecture
+  - required-both-approaches
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  implementation_differs: false
+  primary_implementation: ai-agent-based
+---
+```
+
+### Custom Admonitions
+
+Add visual indicators for primary/fallback documents:
+
+**Recommended Approach:**
+```markdown
+:::recommended Primary Implementation (AI Agent-Based)
+**Architecture**: AI Agent-Based Platform (@adr: ADR-REF-002)
+**Priority**: ✅ Recommended approach
+**Status**: Active development
+
+**Fallback Alternative**: [@brd: BRD-YYY](./BRD-YYY_name.md)
+:::
+```
+
+**Fallback Approach:**
+```markdown
+:::fallback Fallback Implementation (Traditional)
+**Architecture**: Traditional Platform (@adr: ADR-REF-001)
+**Priority**: ⚠️ Fallback option (use only if primary not viable)
+**Status**: Reference implementation
+
+**Recommended Alternative**: [@brd: BRD-XXX](./BRD-XXX_name.md)
+:::
+```
+
+### AI Assistant Actions
+
+When creating documents for dual-architecture projects:
+
+1. **Identify Document Type**: Determine if primary, fallback, or shared
+2. **Apply Metadata Template**: Use appropriate template from above
+3. **Add Custom Admonition**: For key documents (e.g., BRD-022, BRD-016)
+4. **Create Bidirectional References**: Link primary ↔ fallback
+5. **Validate**: Ensure YAML syntax correct, references exist
+
+### Complete Reference
+
+See [METADATA_TAGGING_GUIDE.md](./METADATA_TAGGING_GUIDE.md) for:
+- Complete metadata structure standards
+- Tag taxonomy
+- Validation scripts
+- Documentation site integration
+- Migration guide
+- Troubleshooting
+
+---
+
 ## References
 
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete SDD methodology
@@ -947,6 +1084,7 @@ Gemini CLI:
 - [GENERIC_DOMAIN_CONFIG.md](./GENERIC_DOMAIN_CONFIG.md) - Universal configuration
 - [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) - Document ID rules
 - [TRACEABILITY.md](./TRACEABILITY.md) - Traceability guidelines
+- [METADATA_TAGGING_GUIDE.md](./METADATA_TAGGING_GUIDE.md) - Dual-architecture metadata standards
 - [TOOL_OPTIMIZATION_GUIDE.md](./TOOL_OPTIMIZATION_GUIDE.md) - AI tool selection
 
 ---

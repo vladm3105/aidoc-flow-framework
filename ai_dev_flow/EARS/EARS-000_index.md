@@ -1,3 +1,16 @@
+---
+title: "EARS-000: EARS Index"
+tags:
+  - index-document
+  - layer-3-artifact
+  - shared-architecture
+custom_fields:
+  document_type: index
+  artifact_type: EARS
+  layer: 3
+  priority: shared
+---
+
 # EARS-000: EARS Requirements Master Index
 
 ## Purpose
