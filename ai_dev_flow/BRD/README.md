@@ -1,3 +1,16 @@
+---
+title: "Business Requirements Documents (BRD)"
+tags:
+  - index-document
+  - layer-1-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: BRD
+  layer: 1
+  priority: shared
+---
+
 # Business Requirements Documents (BRD)
 
 Business Requirements Documents (BRDs) serve as the highest-level business requirements that establish the strategic foundation for all downstream development. BRDs capture business objectives, stakeholder needs, and success criteria before any product or technical considerations.

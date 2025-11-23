@@ -1,3 +1,16 @@
+---
+title: "IPLAN Example Documents"
+tags:
+  - index-document
+  - layer-12-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: IPLAN
+  layer: 12
+  priority: shared
+---
+
 # IPLAN Example Documents
 
 ## Purpose

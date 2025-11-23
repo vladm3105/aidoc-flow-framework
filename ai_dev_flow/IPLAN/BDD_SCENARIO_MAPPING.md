@@ -1,3 +1,14 @@
+---
+title: "BDD Scenario to Test Case Mapping"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # BDD Scenario to Test Case Mapping
 
 **Document ID**: BDD_SCENARIO_MAPPING

@@ -1,3 +1,16 @@
+---
+title: "API Contracts (CTR) - README"
+tags:
+  - index-document
+  - layer-9-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: CTR
+  layer: 9
+  priority: shared
+---
+
 # API Contracts (CTR) - README
 
 ## 1. Purpose

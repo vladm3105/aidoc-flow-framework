@@ -1,3 +1,16 @@
+---
+title: "Specifications (SPEC)"
+tags:
+  - index-document
+  - layer-10-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: SPEC
+  layer: 10
+  priority: shared
+---
+
 # Specifications (SPEC)
 
 Specifications (SPEC) are machine-readable technical blueprints that define how software components should be implemented. SPECs transform requirements into actionable design decisions, providing complete implementation guidance for developers while establishing contracts for testing and integration.

@@ -1,3 +1,14 @@
+---
+title: "Complete Cumulative Tagging Example"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # Complete Cumulative Tagging Example
 
 **Version**: 1.0

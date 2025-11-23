@@ -1,3 +1,14 @@
+---
+title: "Quick Reference Card"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # Quick Reference Card
 
 **Version**: 1.0

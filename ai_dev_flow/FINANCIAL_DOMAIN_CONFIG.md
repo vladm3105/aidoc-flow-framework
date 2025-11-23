@@ -1,3 +1,14 @@
+---
+title: "Financial Services Domain Configuration"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # Financial Services Domain Configuration
 
 **Version**: 1.0

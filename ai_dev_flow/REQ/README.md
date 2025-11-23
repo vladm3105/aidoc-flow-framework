@@ -1,3 +1,16 @@
+---
+title: "Requirements (REQ)"
+tags:
+  - index-document
+  - layer-7-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: REQ
+  layer: 7
+  priority: shared
+---
+
 # Requirements (REQ)
 
 ## Document Control

@@ -1,3 +1,14 @@
+---
+title: "Platform vs Feature BRDs - Quick Reference"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # Platform vs Feature BRDs - Quick Reference
 
 ## Overview

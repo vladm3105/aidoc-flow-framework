@@ -1,3 +1,14 @@
+---
+title: "Traceability Setup Guide"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # Traceability Setup Guide
 
 **Version**: 1.0

@@ -1,3 +1,14 @@
+---
+title: "Software/SaaS Domain Configuration"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # Software/SaaS Domain Configuration
 
 **Version**: 1.0

@@ -1,3 +1,16 @@
+---
+title: "Implementation Plans (IPLAN): Session-Based Execution Plans"
+tags:
+  - index-document
+  - layer-12-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: IPLAN
+  layer: 12
+  priority: shared
+---
+
 # Implementation Plans (IPLAN): Session-Based Execution Plans
 
 Implementation Plans (IPLAN) provide **session-based execution context** with bash commands, verification steps, and specific instructions for AI assistants to implement TASKS documents. IPLAN serve as the executable bridge between code generation plans and actual implementation.

@@ -1,3 +1,14 @@
+---
+title: "Project Kickoff Tasks"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # Project Kickoff Tasks
 
 **Version**: 1.0

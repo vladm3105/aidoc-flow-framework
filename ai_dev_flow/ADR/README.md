@@ -1,3 +1,16 @@
+---
+title: "Architecture Decision Records (ADRs)"
+tags:
+  - index-document
+  - layer-5-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: ADR
+  layer: 5
+  priority: shared
+---
+
 # Architecture Decision Records (ADRs)
 
 Architecture Decision Records (ADRs) document significant architectural decisions, their context, consequences, and the rationale for choosing one approach over alternatives. ADRs create a historical record of how and why architectural choices were made, enabling teams to understand design decisions years later and avoid repeating past mistakes.

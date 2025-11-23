@@ -1,3 +1,16 @@
+---
+title: "SYS (System Requirements Specifications)"
+tags:
+  - index-document
+  - layer-6-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: SYS
+  layer: 6
+  priority: shared
+---
+
 # SYS (System Requirements Specifications)
 
 System Requirements Specifications (SYS) capture comprehensive system-level requirements that bridge the gap between high-level business objectives and technical implementation. SYS documents define what the system must accomplish from a behavioral and performance perspective while remaining technology-agnostic.

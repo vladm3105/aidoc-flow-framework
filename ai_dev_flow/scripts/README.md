@@ -1,3 +1,13 @@
+---
+title: "Traceability Matrix Automation Scripts"
+tags:
+  - index-document
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  priority: shared
+---
+
 # Traceability Matrix Automation Scripts
 
 This directory contains Python scripts for automated generation, validation, and maintenance of traceability matrices for the AI-Driven Specification-Driven Development (SDD) framework.

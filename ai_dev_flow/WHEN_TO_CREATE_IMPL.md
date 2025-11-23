@@ -1,3 +1,14 @@
+---
+title: "When to Create an IMPL (Implementation Plan)"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # When to Create an IMPL (Implementation Plan)
 
 **Purpose**: Guide developers on when an IMPL document is necessary vs when to skip directly from REQ → CTR/SPEC

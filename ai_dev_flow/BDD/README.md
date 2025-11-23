@@ -1,3 +1,16 @@
+---
+title: "Behavior-Driven Development (BDD) Features"
+tags:
+  - index-document
+  - layer-4-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: BDD
+  layer: 4
+  priority: shared
+---
+
 # Behavior-Driven Development (BDD) Features
 
 Behavior-Driven Development (BDD) feature files capture executable specifications written in natural language, enabling collaboration between business stakeholders, developers, and testers. BDD files transform requirements into concrete, verifiable scenarios that drive automated testing and development validation.

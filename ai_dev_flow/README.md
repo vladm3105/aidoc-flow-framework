@@ -1,3 +1,13 @@
+---
+title: "AI Dev Flow - Universal Specification-Driven Development Framework"
+tags:
+  - index-document
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  priority: shared
+---
+
 # AI Dev Flow - Universal Specification-Driven Development Framework
 
 **Purpose**: Enable AI-assisted software development across any project domain through structured, traceable requirements and specifications.

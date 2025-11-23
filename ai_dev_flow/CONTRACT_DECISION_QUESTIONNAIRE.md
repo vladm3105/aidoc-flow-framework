@@ -1,3 +1,14 @@
+---
+title: "Contract Decision Questionnaire"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # Contract Decision Questionnaire
 
 **Version**: 1.0

@@ -1,3 +1,16 @@
+---
+title: "Product Requirements Documents (PRD)"
+tags:
+  - index-document
+  - layer-2-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: PRD
+  layer: 2
+  priority: shared
+---
+
 # Product Requirements Documents (PRD)
 
 Product Requirements Documents (PRDs) serve as the foundational business requirements that drive all downstream technical development. PRDs capture "what" needs to be built before any consideration of "how," establishing the product contract between business goals and technical implementation.

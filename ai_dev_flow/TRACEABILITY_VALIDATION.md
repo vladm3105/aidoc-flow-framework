@@ -1,3 +1,14 @@
+---
+title: "Quality Gates Integration with 16-Layer Traceability"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # Quality Gates Integration with 16-Layer Traceability
 
 **Version**: 1.0

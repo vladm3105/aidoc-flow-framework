@@ -1,3 +1,16 @@
+---
+title: "EARS (Easy Approach to Requirements Syntax)"
+tags:
+  - index-document
+  - layer-3-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: EARS
+  layer: 3
+  priority: shared
+---
+
 # EARS (Easy Approach to Requirements Syntax)
 
 ## Overview

@@ -1,3 +1,16 @@
+---
+title: "AI Tasks (TASKS): SPEC Implementation Plans and TODOs"
+tags:
+  - index-document
+  - layer-11-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: TASKS
+  layer: 11
+  priority: shared
+---
+
 # AI Tasks (TASKS): SPEC Implementation Plans and TODOs
 
 AI Tasks provide **exact implementation plans and TODOs** for generating code from YAML specifications. Tasks serve as precise, AI-friendly instructions that guide code generation from SPEC files with clear steps, constraints, and verification criteria.

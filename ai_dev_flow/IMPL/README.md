@@ -1,3 +1,16 @@
+---
+title: "Implementation Plans (IMPL): Project Management Layer"
+tags:
+  - index-document
+  - layer-8-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: IMPL
+  layer: 8
+  priority: shared
+---
+
 # Implementation Plans (IMPL): Project Management Layer
 
 ## Purpose

@@ -1,3 +1,16 @@
+---
+title: "BRD Archived Documents"
+tags:
+  - index-document
+  - layer-1-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: BRD
+  layer: 1
+  priority: shared
+---
+
 # BRD Archived Documents
 
 ## Purpose
