@@ -1,3 +1,20 @@
+---
+title: "IPLAN-TEMPLATE: implementation-plan"
+tags:
+  - iplan-template
+  - layer-12-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: IPLAN
+  layer: 12
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: implementation-plan
+---
+
 # Implementation Plan - IPLAN-NNN: [Descriptive Task/Feature Name]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.

@@ -1,3 +1,20 @@
+---
+title: "TASKS-TEMPLATE: task-breakdown-document"
+tags:
+  - tasks-template
+  - layer-11-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: TASKS
+  layer: 11
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: task-breakdown-document
+---
+
 # TASKS-NNN: [Descriptive Component/Feature Name]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.

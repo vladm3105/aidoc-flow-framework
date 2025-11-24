@@ -1,3 +1,20 @@
+---
+title: "PRD-000 TRACEABILITY_MATRIX TEMPLATE"
+tags:
+  - traceability-matrix-template
+  - layer-2-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: PRD-TRACEABILITY-MATRIX
+  layer: 2
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: traceability-matrix
+---
+
 # Traceability Matrix: PRD-001 through PRD-NNN
 
 ## Document Control

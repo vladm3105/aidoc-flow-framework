@@ -1,3 +1,20 @@
+---
+title: "ADR-000 TRACEABILITY_MATRIX TEMPLATE"
+tags:
+  - traceability-matrix-template
+  - layer-5-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: ADR-TRACEABILITY-MATRIX
+  layer: 5
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: traceability-matrix
+---
+
 # Traceability Matrix: ADR-001 through ADR-NNN
 
 ## Document Control

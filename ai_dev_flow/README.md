@@ -41,6 +41,84 @@ This directory provides a **universal, reusable framework** for Specification-Dr
 
 **📚 New to this framework?** Start with [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) for domain-specific guidance (financial, healthcare, e-commerce, SaaS, IoT, or generic software).
 
+## Metadata Management in AI Dev Flow
+
+AI Dev Flow uses **dual metadata approaches** to serve both human and machine audiences:
+
+### 1. YAML Frontmatter (Machine-Readable)
+
+**Purpose**: Enables tooling integration, automated validation, and documentation site generation (e.g., Docusaurus).
+
+**Location**: Top of markdown files, enclosed in `---` markers.
+
+**Required in**: All templates, index files, and published documentation artifacts.
+
+**Example**:
+```yaml
+---
+title: "BRD-002: Partner Ecosystem Integration"
+tags:
+  - platform-brd
+  - shared-architecture
+  - layer-1-artifact
+custom_fields:
+  document_type: brd
+  artifact_type: BRD
+  layer: 1
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+---
+```
+
+### 2. Document Control Tables (Human-Readable)
+
+**Purpose**: Provide version history, authorship, and approval tracking for human reviewers.
+
+**Location**: "Document Control" section within markdown body (typically Section 1).
+
+**Required in**: All production documents (BRD through IPLAN).
+
+**Example**:
+```markdown
+## Document Control
+
+| Item | Details |
+|------|---------|
+| Document ID | BRD-002 |
+| Version | 1.2.0 |
+| Status | Approved |
+| Author | Product Team |
+| Last Updated | 2025-11-15 |
+| Approved By | Chief Product Officer |
+```
+
+### 3. Metadata vs. Traceability Tags
+
+**IMPORTANT**: Metadata (YAML frontmatter) is DIFFERENT from traceability tags (`@artifact: ID`).
+
+| Aspect | YAML Frontmatter | Traceability Tags |
+|--------|------------------|-------------------|
+| **Purpose** | Document classification, tooling | Audit trail, compliance |
+| **Location** | Top of file (lines 1-20) | Section 7 (body) |
+| **Format** | YAML key-value pairs | `@artifact: ID (Description)` |
+| **Validation** | `validate_metadata.py` | `trace-check` skill |
+| **Changeability** | Can be updated | Immutable after approval |
+
+**Learn More**:
+- [METADATA_VS_TRACEABILITY.md](./METADATA_VS_TRACEABILITY.md) - Quick reference comparing both systems
+- [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md#metadata-management-approaches) - Detailed methodology
+- [scripts/validate_metadata.py](./scripts/validate_metadata.py) - YAML validation tool
+
+**Validation**:
+```bash
+# Validate YAML frontmatter
+python3 scripts/validate_metadata.py .
+
+# Validate traceability tags (use Claude Code trace-check skill)
+# Checks bidirectional links and cumulative tagging hierarchy
+```
+
 ## Complete Development Workflow
 
 **⚠️ See [index.md](./index.md#traceability-flow) for the authoritative workflow diagram with full Mermaid visualization.**

@@ -1,3 +1,20 @@
+---
+title: "SPEC-000 TRACEABILITY_MATRIX TEMPLATE"
+tags:
+  - traceability-matrix-template
+  - layer-10-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: SPEC-TRACEABILITY-MATRIX
+  layer: 10
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: traceability-matrix
+---
+
 # Traceability Matrix: SPEC-001 through SPEC-NNN
 
 ## Document Control

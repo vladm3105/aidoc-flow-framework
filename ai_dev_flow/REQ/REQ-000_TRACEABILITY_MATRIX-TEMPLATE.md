@@ -1,3 +1,20 @@
+---
+title: "REQ-000 TRACEABILITY_MATRIX TEMPLATE"
+tags:
+  - traceability-matrix-template
+  - layer-7-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: REQ-TRACEABILITY-MATRIX
+  layer: 7
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: traceability-matrix
+---
+
 # Traceability Matrix: REQ-001 through REQ-NNN
 
 ## Document Control

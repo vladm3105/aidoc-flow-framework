@@ -1,3 +1,18 @@
+---
+title: "Traceability Matrix Template Completion Guide"
+tags:
+  - supporting-document
+  - traceability-guide
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: guide
+  purpose: template-completion-reference
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+---
+
 # Traceability Matrix Template Completion Guide
 
 ## Status Summary

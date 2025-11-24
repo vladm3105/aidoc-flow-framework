@@ -1,3 +1,20 @@
+---
+title: "IPLAN-000 TRACEABILITY_MATRIX TEMPLATE"
+tags:
+  - traceability-matrix-template
+  - layer-12-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: IPLAN-TRACEABILITY-MATRIX
+  layer: 12
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: traceability-matrix
+---
+
 # Traceability Matrix: IPLAN-001 through IPLAN-NNN
 
 ## Document Control

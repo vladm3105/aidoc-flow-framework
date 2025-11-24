@@ -1,3 +1,20 @@
+---
+title: "BDD-000 TRACEABILITY_MATRIX TEMPLATE"
+tags:
+  - traceability-matrix-template
+  - layer-4-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: BDD-TRACEABILITY-MATRIX
+  layer: 4
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: traceability-matrix
+---
+
 # Traceability Matrix: BDD-001 through BDD-NNN
 
 ## Document Control

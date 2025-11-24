@@ -1,3 +1,20 @@
+---
+title: "CTR-TEMPLATE: contract-specification"
+tags:
+  - ctr-template
+  - layer-9-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: CTR
+  layer: 9
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: contract-specification
+---
+
 # CTR-NNN: [Contract Title]
 
 ## Document Control

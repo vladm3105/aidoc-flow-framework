@@ -1,3 +1,20 @@
+---
+title: "BRD-TEMPLATE: Business Requirements Document"
+tags:
+  - brd-template
+  - layer-1-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: BRD
+  layer: 1
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: business-requirements-document
+---
+
 # Business Requirements Document (BRD)
 
 ## Document Control

@@ -193,6 +193,116 @@ Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructi
 - **Document Structure Simplicity**: Keep documents as single comprehensive files with clear section headings. Only split into multiple files when file exceeds 1,000 lines AND has multiple distinct audience needs OR complex dependency chains requiring separate documentation. Use table of contents for navigation within single documents.
 - Document ID Independence: IDs are sequential within artifact type; consult index files (ID: 000) to discover documents by topic or content
 
+## Metadata Management Approaches
+
+AI Dev Flow uses **dual metadata approaches** to serve both human and machine readers:
+
+### 1. YAML Frontmatter (Machine-Readable)
+
+**Purpose**: Enables tooling integration, automated validation, and documentation site generation (e.g., Docusaurus)
+
+**Location**: Top of markdown files, enclosed in `---` markers
+
+**Required in**: All templates, index files, and published documentation artifacts
+
+**Example**:
+```yaml
+---
+title: "BRD-002: Partner Ecosystem Integration"
+tags:
+  - platform-brd
+  - shared-architecture
+  - required-both-approaches
+custom_fields:
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  layer: 1
+  artifact_type: BRD
+---
+```
+
+### 2. Document Control Tables (Human-Readable)
+
+**Purpose**: Provides version history, ownership, and approval tracking for stakeholders
+
+**Location**: Immediately after main heading in documents
+
+**Required in**: All production documents (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN)
+
+**Example**:
+```markdown
+## Document Control
+
+| Item | Details |
+|------|---------|
+| **Project Name** | Partner Ecosystem Integration |
+| **Document Version** | 1.2.0 |
+| **Date Created** | 2025-01-15 |
+| **Last Updated** | 2025-02-20 |
+| **Status** | Approved |
+```
+
+### 3. Metadata vs. Traceability Tags
+
+**Critical Distinction**:
+
+- **YAML Frontmatter (Metadata)**: Document classification, tooling integration, NOT for audit trail
+- **Traceability Tags** (`@artifact: ID`): Bidirectional cross-document references in Section 7, for audit trail and compliance
+
+**Comparison Table**:
+
+| Aspect | YAML Frontmatter | Traceability Tags |
+|--------|------------------|-------------------|
+| **Purpose** | Classification, tooling | Audit trail, compliance |
+| **Location** | Document top | Section 7 (Traceability) |
+| **Format** | YAML key-value pairs | `@artifact: ID` inline |
+| **Audience** | Tools, documentation systems | Auditors, reviewers, AI assistants |
+| **Changeability** | Can be updated | Immutable after approval |
+| **Validation** | Schema-based | Bidirectional link checking |
+
+**Example - YAML Frontmatter (REQ document)**:
+```yaml
+custom_fields:
+  layer: 7
+  artifact_type: REQ
+  upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS]
+  downstream_artifacts: [IMPL, CTR, SPEC]
+```
+
+**Example - Traceability Tags (same REQ document)**:
+```markdown
+## 7. Traceability
+
+### Upstream References
+- @brd: BRD-001 (Platform Architecture & Technology Stack)
+- @prd: PRD-003 (Unified Quoteboard Product Definition)
+- @ears: EARS-002 (Exchange Integration Requirements)
+- @bdd: BDD-001 (Quote Display Acceptance Criteria)
+- @adr: ADR-005 (WebSocket Connection Architecture)
+- @sys: SYS-001 (Quoteboard System Requirements)
+
+### Downstream References
+- @impl: IMPL-001 (Quoteboard Implementation Approach)
+- @spec: SPEC-001 (WebSocket Quote Ingestion Technical Spec)
+```
+
+### 4. Cumulative Tagging Hierarchy
+
+Each layer in the SDD workflow inherits ALL upstream traceability tags:
+
+| Layer | Required Traceability Tags | Count |
+|-------|----------------------------|-------|
+| Layer 1 (BRD) | None (source document) | 0 |
+| Layer 2 (PRD) | @brd | 1 |
+| Layer 3 (EARS) | @brd, @prd | 2 |
+| Layer 4 (BDD) | @brd, @prd, @ears | 3 |
+| Layer 5 (ADR) | @brd, @prd, @ears, @bdd | 4 |
+| Layer 6 (SYS) | @brd, @prd, @ears, @bdd, @adr | 5 |
+| Layer 7 (REQ) | @brd, @prd, @ears, @bdd, @adr, @sys | 6 |
+| Layer 8-12 | Cumulative inheritance continues | 6-12 |
+
+**Quick Reference**: See [METADATA_VS_TRACEABILITY.md](./METADATA_VS_TRACEABILITY.md) for detailed comparison
+
 ## Document Discovery and ID Independence
 
 **⚠️ CRITICAL: Document IDs are independent of document content**

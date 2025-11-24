@@ -1,3 +1,20 @@
+---
+title: "BRD-000 TRACEABILITY_MATRIX TEMPLATE"
+tags:
+  - traceability-matrix-template
+  - layer-1-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: BRD-TRACEABILITY-MATRIX
+  layer: 1
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: traceability-matrix
+---
+
 # Traceability Matrix: BRD-001 through BRD-NNN
 
 ## Document Control

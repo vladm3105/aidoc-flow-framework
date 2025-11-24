@@ -1,3 +1,20 @@
+---
+title: "IMPL-000 TRACEABILITY_MATRIX TEMPLATE"
+tags:
+  - traceability-matrix-template
+  - layer-8-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: IMPL-TRACEABILITY-MATRIX
+  layer: 8
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: traceability-matrix
+---
+
 # Traceability Matrix: IMPL-001 through IMPL-NNN
 
 ## Document Control

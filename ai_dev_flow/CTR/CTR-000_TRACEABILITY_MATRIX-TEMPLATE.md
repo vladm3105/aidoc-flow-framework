@@ -1,3 +1,20 @@
+---
+title: "CTR-000 TRACEABILITY_MATRIX TEMPLATE"
+tags:
+  - traceability-matrix-template
+  - layer-9-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: CTR-TRACEABILITY-MATRIX
+  layer: 9
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: traceability-matrix
+---
+
 # Traceability Matrix: CTR-001 through CTR-NNN
 
 ## Document Control

@@ -1,3 +1,20 @@
+---
+title: "EARS-000 TRACEABILITY_MATRIX TEMPLATE"
+tags:
+  - traceability-matrix-template
+  - layer-3-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: EARS-TRACEABILITY-MATRIX
+  layer: 3
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: traceability-matrix
+---
+
 # Traceability Matrix: EARS-001 through EARS-NNN
 
 ## Document Control

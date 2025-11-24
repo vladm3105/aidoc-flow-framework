@@ -1,3 +1,20 @@
+---
+title: "ADR-TEMPLATE: Architecture Decision Record"
+tags:
+  - adr-template
+  - layer-5-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: ADR
+  layer: 5
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: architecture-decision-record
+---
+
 # ADR-NNN: [Architecture Decision Title]
 
 ## Document Control

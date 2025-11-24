@@ -1,3 +1,20 @@
+---
+title: "REQ-TEMPLATE: atomic-requirements-document"
+tags:
+  - req-template
+  - layer-7-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: REQ
+  layer: 7
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: atomic-requirements-document
+---
+
 # REQ-NNN: [Descriptive Requirement Title]
 
 ## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow

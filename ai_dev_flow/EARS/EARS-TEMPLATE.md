@@ -1,3 +1,20 @@
+---
+title: "EARS-TEMPLATE: Engineering Requirements (EARS Format)"
+tags:
+  - ears-template
+  - layer-3-artifact
+  - shared-architecture
+  - document-template
+custom_fields:
+  document_type: template
+  artifact_type: EARS
+  layer: 3
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  template_for: engineering-requirements-document
+---
+
 # EARS-NNN: [Short Descriptive Title]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
