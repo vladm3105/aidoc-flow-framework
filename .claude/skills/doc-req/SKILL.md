@@ -17,10 +17,6 @@ custom_fields:
   downstream_artifacts: [IMPL,SPEC]
 ---
 
-name: doc-req
-description: Create Atomic Requirements (REQ) - Layer 7 artifact using REQ v3.0 format with 12 sections and SPEC-readiness scoring
----
-
 # doc-req
 
 ## Purpose

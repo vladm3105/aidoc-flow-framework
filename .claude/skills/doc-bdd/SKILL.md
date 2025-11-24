@@ -17,10 +17,6 @@ custom_fields:
   downstream_artifacts: [ADR,SYS]
 ---
 
-name: doc-bdd
-description: Create BDD (Behavior-Driven Development) test scenarios - Layer 4 artifact using Gherkin Given-When-Then format
----
-
 # doc-bdd
 
 ## Purpose

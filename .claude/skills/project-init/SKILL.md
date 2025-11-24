@@ -12,10 +12,6 @@ custom_fields:
   skill_category: utility
 ---
 
-name: project-init
-description: Initialize brand new projects with AI Dev Flow framework using domain-aware setup, automated folder creation, and contract decision logic
----
-
 # project-init
 
 ## Purpose

@@ -17,10 +17,6 @@ custom_fields:
   downstream_artifacts: [IPLAN]
 ---
 
-name: doc-tasks
-description: Create Task Breakdown (TASKS) - Layer 11 artifact decomposing SPEC into AI-structured TODO tasks
----
-
 # doc-tasks
 
 ## Purpose

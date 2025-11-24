@@ -12,10 +12,6 @@ custom_fields:
   skill_category: quality-assurance
 ---
 
-name: trace-check
-description: Validate and update bidirectional traceability across SDD artifacts (project)
----
-
 # trace-check
 
 ## Purpose

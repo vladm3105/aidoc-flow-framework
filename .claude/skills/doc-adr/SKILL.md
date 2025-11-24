@@ -17,10 +17,6 @@ custom_fields:
   downstream_artifacts: [SYS,REQ]
 ---
 
-name: doc-adr
-description: Create Architecture Decision Records (ADR) - Layer 5 artifact documenting architectural decisions with Context-Decision-Consequences format
----
-
 # doc-adr
 
 ## Purpose

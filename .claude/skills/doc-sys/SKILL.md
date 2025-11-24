@@ -17,10 +17,6 @@ custom_fields:
   downstream_artifacts: [REQ]
 ---
 
-name: doc-sys
-description: Create System Requirements (SYS) - Layer 6 artifact defining functional and non-functional system requirements
----
-
 # doc-sys
 
 ## Purpose

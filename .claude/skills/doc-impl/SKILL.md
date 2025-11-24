@@ -17,10 +17,6 @@ custom_fields:
   downstream_artifacts: [CTR,SPEC]
 ---
 
-name: doc-impl
-description: Create Implementation Approach (IMPL) - Optional Layer 8 artifact documenting WHO-WHEN-WHAT implementation strategy
----
-
 # doc-impl
 
 ## Purpose

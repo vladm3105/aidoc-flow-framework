@@ -17,10 +17,6 @@ custom_fields:
   downstream_artifacts: [EARS,BDD]
 ---
 
-name: doc-prd
-description: Create Product Requirements Documents (PRD) following SDD methodology - Layer 2 artifact defining product features and user needs
----
-
 # doc-prd
 
 ## Purpose

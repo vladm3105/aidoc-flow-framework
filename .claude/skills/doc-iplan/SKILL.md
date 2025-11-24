@@ -17,10 +17,6 @@ custom_fields:
   downstream_artifacts: [Code]
 ---
 
-name: doc-iplan
-description: Create Implementation Plans (IPLAN) - Layer 12 artifact converting TASKS into session-based bash command execution plans
----
-
 # doc-iplan
 
 ## Purpose

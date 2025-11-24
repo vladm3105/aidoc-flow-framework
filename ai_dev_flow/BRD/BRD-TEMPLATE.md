@@ -184,11 +184,15 @@ List technology choices, infrastructure components, or platform capabilities tha
 - **Rationale**: Why this prerequisite is needed (link to ADR if decision documented)
 - **Business Impact**: Consequence if prerequisite not available
 
+<!-- WARNING: Do NOT reference specific ADR numbers (e.g., ADR-002, ADR-033) in BRD content.
+     Per traceability rules: BRDs identify architecture decision TOPICS in Section 9, not specific ADR IDs.
+     Use: "architecture decision required" or "see Section 9 Architecture Decision Requirements" -->
+
 **Example Entry** (Platform BRD):
 ```markdown
 1. **PostgreSQL 14+ Database**
    - **Requirement**: PostgreSQL 14 or later with ACID compliance, replication configured
-   - **Rationale**: Required for transactional consistency in user profiles, transaction state, audit logs (ADR-002)
+   - **Rationale**: Required for transactional consistency in user profiles, transaction state, audit logs (architecture decision required)
    - **Business Impact**: Without PostgreSQL, data integrity guarantees for financial transactions not possible
 ```
 

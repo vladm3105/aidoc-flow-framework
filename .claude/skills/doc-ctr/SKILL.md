@@ -1,7 +1,6 @@
 ---
 name: doc-ctr
 description: Create Data Contracts (CTR) - Optional Layer 9 artifact using dual-file format (.md + .yaml) for API/data contracts
-description: Configuration schema for position limits
 tags:
   - sdd-workflow
   - layer-9-artifact
@@ -16,10 +15,6 @@ custom_fields:
   skill_category: core-workflow
   upstream_artifacts: [IMPL]
   downstream_artifacts: [SPEC]
----
-
-name: doc-ctr
-description: Create Data Contracts (CTR) - Optional Layer 9 artifact using dual-file format (.md + .yaml) for API/data contracts
 ---
 
 # doc-ctr

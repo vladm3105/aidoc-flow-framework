@@ -1,3 +1,21 @@
+---
+name: doc-validator
+description: Automated validation of documentation standards for SDD framework compliance
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - quality-assurance
+custom_fields:
+  architecture_approaches:
+    - ai-agent-based
+    - traditional-8layer
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+  applies_to: all-artifacts
+  layer: N/A
+---
+
 # doc-validator
 
 **Description**: Automated validation of documentation standards for SDD framework compliance

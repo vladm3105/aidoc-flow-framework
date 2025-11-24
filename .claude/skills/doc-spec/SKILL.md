@@ -17,10 +17,6 @@ custom_fields:
   downstream_artifacts: [TASKS]
 ---
 
-name: doc-spec
-description: Create Technical Specifications (SPEC) - Layer 10 artifact using YAML format for implementation-ready specifications
----
-
 # doc-spec
 
 ## Purpose

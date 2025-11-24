@@ -17,10 +17,6 @@ custom_fields:
   downstream_artifacts: [BDD,ADR]
 ---
 
-name: doc-ears
-description: Create EARS (Easy Approach to Requirements Syntax) formal requirements - Layer 3 artifact using WHEN-THE-SHALL-WITHIN format
----
-
 # doc-ears
 
 ## Purpose
