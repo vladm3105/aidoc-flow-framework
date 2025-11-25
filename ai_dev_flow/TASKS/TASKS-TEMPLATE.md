@@ -310,6 +310,239 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ---
 
+## Integration Contracts
+
+### Contract Overview
+
+**Purpose**: Define type-safe interfaces between this TASKS and dependent TASKS, enabling parallel development and preventing integration failures.
+
+**Contract Status**: [Required/Optional/Not Applicable]
+
+**Validation Status**: [mypy --strict passed/pending/N/A]
+
+### Dependency Analysis
+
+#### Upstream Dependencies (Contracts Consumed)
+
+**TASKS Dependencies** (contracts this TASKS depends on):
+
+| TASKS ID | Contract Name | Contract Type | Purpose | Status |
+|----------|---------------|---------------|---------|--------|
+| [TASKS-NNN](./TASKS-NNN.md) | [Interface Name] | Protocol/Exception/State/Data/DI | [What this TASKS needs from dependency] | Available/Pending |
+
+**Example**:
+```
+| TASKS-005 | ClientIDValidator | DI Interface | Validate and reserve client IDs | Available |
+| TASKS-008 | ConfigLoader | Protocol | Load connection configuration | Available |
+```
+
+**Integration Requirements**:
+- [Specific interface methods required from TASKS-NNN]
+- [Data models/types required from TASKS-MMM]
+- [Exception types handled from TASKS-PPP]
+
+#### Downstream Dependencies (Contracts Provided)
+
+**Consuming TASKS** (files that depend on contracts from this TASKS):
+
+| TASKS ID | Consuming Purpose | Contract Used | Blocking Status |
+|----------|------------------|---------------|-----------------|
+| [TASKS-AAA](./TASKS-AAA.md) | [How they use this contract] | [Contract name] | Unblocked when: [condition] |
+| [TASKS-BBB](./TASKS-BBB.md) | [How they use this contract] | [Contract name] | Unblocked when: [condition] |
+
+**Example**:
+```
+| TASKS-002 | Market data streaming needs connection | IBGatewayConnector | Unblocked when contract published |
+| TASKS-003 | Order management needs connection | IBGatewayConnector | Unblocked when contract published |
+| TASKS-006 | Position tracking needs connection | IBGatewayConnector | Unblocked when contract published |
+```
+
+**Parallel Development Impact**:
+- [N downstream TASKS can develop concurrently using contracts]
+- [Estimated time saved: X weeks of sequential development avoided]
+- [Integration risk reduced: type-safe interfaces prevent mismatches]
+
+### Contracts Provided by This TASKS
+
+#### Contract 1: [Contract Name]
+
+**Type**: [Protocol Interface/Exception Hierarchy/State Machine/Data Model/DI Interface]
+
+**Purpose**: [Single sentence describing what this contract enables]
+
+**Consumers** ([N] TASKS):
+- [TASKS-AAA](./TASKS-AAA.md): [How they use it]
+- [TASKS-BBB](./TASKS-BBB.md): [How they use it]
+- [TASKS-CCC](./TASKS-CCC.md): [How they use it]
+
+**Contract Definition**:
+
+```python
+# For Protocol Interfaces:
+from typing import Protocol
+from enum import Enum
+
+class ConnectionState(str, Enum):
+    DISCONNECTED = "disconnected"
+    CONNECTING = "connecting"
+    CONNECTED = "connected"
+    FAILED = "failed"
+
+class IBGatewayConnector(Protocol):
+    """Async interface for IB Gateway connections."""
+
+    async def connect(
+        self,
+        host: str,
+        port: int,
+        client_id: int,
+        timeout: float = 30.0
+    ) -> None:
+        """
+        Establish connection to IB Gateway.
+
+        Raises:
+            GatewayConnectionError: Connection failed
+            ClientIDInUseError: Client ID already connected
+            TimeoutError: Connection timeout exceeded
+        """
+        ...
+
+    async def disconnect(self) -> None:
+        """Graceful disconnection from IB Gateway."""
+        ...
+
+    @property
+    def state(self) -> ConnectionState:
+        """Current connection state."""
+        ...
+
+    @property
+    def is_connected(self) -> bool:
+        """Connection status indicator."""
+        ...
+```
+
+**Usage Example**:
+```python
+# Consumer code example
+async def use_gateway_connector(connector: IBGatewayConnector):
+    """Example of using the connector protocol."""
+    await connector.connect("localhost", 4002, client_id=1)
+
+    if connector.is_connected:
+        print(f"Connected with state: {connector.state}")
+        await connector.disconnect()
+```
+
+**Mock Implementation** (for testing):
+```python
+class MockGatewayConnector:
+    """Mock implementation for testing consumers."""
+
+    def __init__(self):
+        self._state = ConnectionState.DISCONNECTED
+
+    async def connect(
+        self, host: str, port: int, client_id: int, timeout: float = 30.0
+    ) -> None:
+        self._state = ConnectionState.CONNECTED
+
+    async def disconnect(self) -> None:
+        self._state = ConnectionState.DISCONNECTED
+
+    @property
+    def state(self) -> ConnectionState:
+        return self._state
+
+    @property
+    def is_connected(self) -> bool:
+        return self._state == ConnectionState.CONNECTED
+```
+
+**Validation Checklist**:
+- [x] All methods have type hints
+- [x] All exceptions documented in docstrings
+- [x] `mypy --strict` passes on contract
+- [x] Mock implementation provided
+- [x] Usage examples provided
+
+#### Contract 2: [Another Contract Name]
+
+[Repeat structure above for additional contracts]
+
+### Contracts Consumed by This TASKS
+
+#### Consumed Contract 1: [Contract Name from TASKS-NNN]
+
+**Source**: [TASKS-NNN](./TASKS-NNN.md) - [Contract Name]
+
+**Type**: [Protocol/Exception/State/Data/DI]
+
+**Purpose**: [What this TASKS uses it for]
+
+**Usage in This TASKS**:
+```python
+# How this TASKS uses the consumed contract
+from contracts.tasks_nnn import ContractInterface
+
+class ThisComponent:
+    def __init__(self, dependency: ContractInterface):
+        self._dependency = dependency
+
+    async def operation(self):
+        # Uses consumed contract
+        result = await self._dependency.method()
+```
+
+**Integration Points**:
+- Used in: `src/[module]/[component].py:method_name()`
+- Injected via: Constructor dependency injection
+- Mocked in: `tests/unit/test_[component].py`
+
+### Parallel Development Plan
+
+**Timeline with Contracts**:
+- **Week 1**: Publish contracts, enable downstream TASKS to start
+- **Week 2-3**: Implement this TASKS + parallel downstream development
+- **Week 4**: Integration and validation
+
+**Timeline without Contracts** (sequential):
+- **Week 1-3**: Implement this TASKS (downstream blocked)
+- **Week 4-10**: Downstream TASKS implement sequentially (7 TASKS × 1 week each)
+- **Week 11**: Integration and validation
+
+**Time Saved**: [X weeks] of sequential development avoided
+
+**Risk Reduction**:
+- **Integration bugs prevented**: Type checking catches interface mismatches pre-merge
+- **Rework avoided**: Stable contracts prevent cascade changes when implementation details change
+- **Parallel development enabled**: [N downstream TASKS] can develop simultaneously
+
+### Contract Validation Checklist
+
+**Pre-Distribution Validation**:
+- [ ] All contract types have complete type hints
+- [ ] All exceptions documented with error codes and retry semantics
+- [ ] All state machines have valid transition mappings
+- [ ] All data models have validation rules defined
+- [ ] All DI interfaces are abstract base classes
+- [ ] `mypy --strict` passes on all contracts
+- [ ] Mock implementations provided for all protocols
+- [ ] Usage examples provided for all contracts
+- [ ] Downstream consumers notified of contract availability
+
+**Post-Distribution Validation**:
+- [ ] All consuming TASKS have validated contracts work for their use cases
+- [ ] Integration tests pass with mock implementations
+- [ ] Contract documentation reviewed and approved
+- [ ] Contract changes follow semantic versioning (MAJOR.MINOR.PATCH)
+- [ ] Breaking changes communicated to all consumers
+
+**Reference**: See [INTEGRATION_CONTRACTS_GUIDE.md](./INTEGRATION_CONTRACTS_GUIDE.md) for detailed contract creation process and best practices.
+
+---
+
 ## Constraints
 
 ### Technical Constraints

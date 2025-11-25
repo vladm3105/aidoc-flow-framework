@@ -27,6 +27,7 @@ custom_fields:
 | **Document Owner** | [Name and title] |
 | **Prepared By** | [Business Analyst name] |
 | **Status** | [Draft / In Review / Approved] |
+| **PRD-Ready Score** | [Score]/100 (Target: ≥90/100) |
 
 ### Document Revision History
 
@@ -378,50 +379,92 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 ### 5.2 Functional Requirements by Category
 
-#### 5.2.1 [Requirement Category 1: e.g., User Management]
+**NOTE**: Functional requirements must be written at business level, NOT technical/implementation level. See Appendix B for PRD-level content exclusions and Appendix C for reference examples.
 
-[Provide context for this category of requirements]
+#### FR-001: [Requirement Title - Business Capability Name]
 
-| Req ID | Requirement Description | Priority | Business Rationale | Acceptance Criteria | Dependencies | Source |
-|--------|------------------------|----------|-------------------|---------------------|--------------|--------|
-| FR-001 | The system shall [specific functional requirement] | P1 | [Why this is needed] | [How to verify it works] | [Related requirements] | [Stakeholder] |
-| FR-002 | The system shall [specific functional requirement] | P1 | [Why this is needed] | [How to verify it works] | [Related requirements] | [Stakeholder] |
-| FR-003 | The system should [specific functional requirement] | P2 | [Why this is needed] | [How to verify it works] | [Related requirements] | [Stakeholder] |
+**Business Capability**: [One-sentence high-level description of what business capability this requirement enables]
 
-#### 5.2.2 [Requirement Category 2: e.g., Data Management]
+**Business Requirements**:
+- [Business need 1 - what must be accomplished from business perspective]
+- [Business need 2 - include partner dependencies at business level]
+- [Business need 3 - regulatory or compliance requirements]
+- [Business need 4 - business constraints or policies]
+- [Business need 5 - integration with platform BRDs if applicable]
 
-[Provide context for this category of requirements]
+**Business Rules**:
+- [Policy constraint 1 - business rules that govern behavior]
+- [Policy constraint 2 - regulatory limits or thresholds]
+- [Policy constraint 3 - business logic that must be enforced]
+- [Policy constraint 4 - partner SLA requirements at business level]
 
-| Req ID | Requirement Description | Priority | Business Rationale | Acceptance Criteria | Dependencies | Source |
-|--------|------------------------|----------|-------------------|---------------------|--------------|--------|
-| FR-004 | The system shall [specific functional requirement] | P1 | [Why this is needed] | [How to verify it works] | [Related requirements] | [Stakeholder] |
-| FR-005 | The system shall [specific functional requirement] | P2 | [Why this is needed] | [How to verify it works] | [Related requirements] | [Stakeholder] |
+**Business Acceptance Criteria**:
+- [Measurable success criterion 1 with target: e.g., "Process completion time <X seconds for Y% of transactions"]
+- [Measurable success criterion 2 with business impact: e.g., "Fee transparency displayed before authorization (100% of transactions)"]
+- [Measurable success criterion 3 with quantifiable target: e.g., "Regulatory compliance rate ≥99.9%"]
+- [Measurable success criterion 4 with business outcome: e.g., "Customer satisfaction score ≥4.5/5"]
 
-#### 5.2.3 [Requirement Category 3: e.g., Reporting and Analytics]
+**Related Requirements**:
+- Platform BRDs: [e.g., BRD-001 (Platform Architecture), BRD-002 (Partner Ecosystem)]
+- Partner Integration BRDs: [e.g., BRD-XXX (Partner Name)]
+- Related Feature BRDs: [e.g., BRD-YYY (Related Feature)]
+- Compliance BRDs: [e.g., BRD-003 (Security & Compliance)]
 
-[Provide context for this category of requirements]
+**Complexity**: X/5 ([Business-level rationale: number of partners involved, regulatory scope, business constraints, cross-BRD dependencies])
 
-| Req ID | Requirement Description | Priority | Business Rationale | Acceptance Criteria | Dependencies | Source |
-|--------|------------------------|----------|-------------------|---------------------|--------------|--------|
-| FR-006 | The system shall [specific functional requirement] | P1 | [Why this is needed] | [How to verify it works] | [Related requirements] | [Stakeholder] |
-| FR-007 | The system should [specific functional requirement] | P2 | [Why this is needed] | [How to verify it works] | [Related requirements] | [Stakeholder] |
+---
 
-#### 5.2.4 [Requirement Category 4: e.g., Integration]
+#### FR-002: [Next Requirement Title]
 
-[Provide context for this category of requirements]
+**Business Capability**: [One-sentence description]
 
-| Req ID | Requirement Description | Priority | Business Rationale | Acceptance Criteria | Dependencies | Source |
-|--------|------------------------|----------|-------------------|---------------------|--------------|--------|
-| FR-008 | The system shall [specific functional requirement] | P1 | [Why this is needed] | [How to verify it works] | [Related requirements] | [Stakeholder] |
+**Business Requirements**:
+- [Requirement 1]
+- [Requirement 2]
 
-#### 5.2.5 [Requirement Category 5: e.g., Workflow and Notifications]
+**Business Rules**:
+- [Rule 1]
+- [Rule 2]
 
-[Provide context for this category of requirements]
+**Business Acceptance Criteria**:
+- [Criterion 1]
+- [Criterion 2]
 
-| Req ID | Requirement Description | Priority | Business Rationale | Acceptance Criteria | Dependencies | Source |
-|--------|------------------------|----------|-------------------|---------------------|--------------|--------|
-| FR-009 | The system shall [specific functional requirement] | P2 | [Why this is needed] | [How to verify it works] | [Related requirements] | [Stakeholder] |
-| FR-010 | The system may [specific functional requirement] | P3 | [Why this is needed] | [How to verify it works] | [Related requirements] | [Stakeholder] |
+**Related Requirements**:
+- [Cross-references to related BRDs]
+
+**Complexity**: X/5 ([Rationale])
+
+---
+
+**Additional FR Template Guidance**:
+
+1. **REMOVE from FRs** (PRD-level content - see Appendix B):
+   - UI interaction flows, screen layouts, button placements
+   - API endpoint specifications, request/response formats
+   - Technical implementation details, algorithms, code logic
+   - State machine transitions, workflow sequences
+   - Database schemas, table structures
+   - Specific timeout values, retry logic, error codes
+   - Technology stack prescriptions
+
+2. **KEEP in FRs** (Business-level content):
+   - Business capabilities and outcomes
+   - Regulatory and compliance requirements
+   - Fee structures and pricing models
+   - Business rules and policies
+   - Partner dependencies (business-level SLAs)
+   - Measurable business acceptance criteria
+   - Business process states (names only, not transitions)
+
+3. **Complexity Rating Scale**:
+   - 1/5: Single partner, no regulatory constraints, straightforward business logic
+   - 2/5: 2-3 partners, standard compliance requirements, moderate business complexity
+   - 3/5: 3-4 partners, sector-specific regulations, complex fee structures or multi-tier logic
+   - 4/5: 4+ partners, multi-jurisdiction compliance, cross-border requirements, high integration complexity
+   - 5/5: Extensive partner ecosystem, complex regulatory framework, multi-currency/multi-corridor, AI/ML business outcomes
+
+4. **Cross-References**: Always reference related Platform BRDs (BRD-001 through BRD-005), Partner Integration BRDs, and Feature BRDs for traceability
 
 ### 5.3 Business Rules
 
@@ -1296,7 +1339,436 @@ If acceptance criteria are not met:
 |---------------|-------------|---------|----------|------|
 | [Document] | [Brief description] | [Version] | [URL/Path] | [Date] |
 
-### Appendix B: Process Flow Diagrams
+### Appendix B: PRD-Level Content Exclusions (Critical Reference)
+
+**Purpose**: This appendix defines the boundary between Business Requirements (BRD-level) and Product/Technical Requirements (PRD-level). Use this guide to ensure Functional Requirements stay at business level and achieve PRD-Ready Score ≥90/100.
+
+---
+
+#### ❌ REMOVE from Functional Requirements (PRD-Level Content)
+
+**1. UI Interaction Flows**
+- "User clicks X button"
+- "System displays Y screen"
+- "Form shows Z fields"
+- Screen layouts, button placements, UI element specifications
+- Examples: "User clicks 'Send Money' button", "Dashboard displays transaction history table"
+
+**2. API Endpoint Specifications**
+- POST /quotes, GET /transactions
+- JSON request/response payloads
+- HTTP status codes (200, 400, 500)
+- API versioning, rate limiting headers
+- Examples: "POST /api/v1/transactions with JSON payload", "Return 400 on validation failure"
+
+**3. Technical Implementation Details**
+- Debounced inputs (500ms delay)
+- WebSocket connections for real-time updates
+- Database transactions (BEGIN...COMMIT)
+- Caching strategies, session management
+- Examples: "Cache quote for 60 seconds", "Use Redis for session storage"
+
+**4. State Machine Transitions**
+- INITIATED → FUNDED → COMPLETED with event handlers
+- State management logic (on wallet_debited event, transition to FUNDED)
+- Technical state coordination
+- Examples: "On webhook received, trigger state transition to COMPLETED"
+
+**5. Specific Timeout Values**
+- 90-second quote validity
+- 500ms debounce delay
+- 30-second API timeout
+- Examples: "WebSocket timeout = 5000ms", "Retry after 2000ms exponential backoff"
+
+**6. UI Element Specifications**
+- Countdown timers showing quote expiry
+- Progress bars, loading spinners
+- Badge colors, icon specifications
+- Form validation error messages (UI text)
+- Examples: "Display red badge for failed transactions", "Show loading spinner during API call"
+
+**7. Detailed Workflow Sequences**
+- Step 1: Call API, Step 2: Update database, Step 3: Send webhook
+- Technical orchestration details
+- Distributed transaction coordination
+- Examples: "Call Bridge API, wait for response, update PostgreSQL, publish Kafka event"
+
+**8. Code-Level Logic**
+- Idempotency key generation (UUID, SHA256 hashing)
+- Retry exponential backoff algorithms
+- Webhook signature verification (HMAC-SHA256)
+- Feature engineering functions for ML models
+- Examples: "Generate idempotency_key = SHA256(user_id + timestamp)", "XGBoost model with max_depth=5"
+
+**9. Technical Error Handling**
+- Rollback transaction logic
+- Database constraint violations
+- Circuit breaker patterns
+- Technical fault tolerance mechanisms
+- Examples: "If database INSERT fails, ROLLBACK transaction", "Circuit breaker opens after 5 failures"
+
+**10. Code Blocks**
+- Python functions and pseudocode
+- JSON schema examples
+- SQL queries
+- Algorithm implementations
+- Examples: Any content within ``` code fences
+
+---
+
+#### ✅ KEEP in Functional Requirements (Business-Level Content)
+
+**1. Business Capability Required**
+- "System must enable customers to select recipients"
+- "System must validate sufficient wallet balance"
+- "System must screen transactions against OFAC sanctions"
+- Focus: WHAT business capability is needed
+
+**2. Business Rules and Policies**
+- Transaction limits based on KYC verification tier (L1: $200, L2: $1,000, L3: $10,000)
+- Maximum 5 transactions per day (anti-structuring control)
+- Recipients validated successfully become saved for future reuse
+- Focus: Business policies, regulatory constraints, business logic rules
+
+**3. Regulatory/Compliance Requirements**
+- OFAC/PEP screening required for 100% of transactions
+- SAR filing within 30 days of suspicious activity detection per FinCEN
+- Travel Rule compliance for transactions ≥$3,000
+- Focus: Legal/regulatory obligations with specific regulations cited
+
+**4. Business Acceptance Criteria with Measurable Targets**
+- Screening completion time: ≤3 seconds for 95% of transactions
+- False positive rate: ≤3% (minimize blocking legitimate customers)
+- Refund processing time: <1 hour from delivery failure (95% of cases)
+- Focus: Customer-facing SLAs, business outcomes with quantifiable targets
+
+**5. Business Outcomes and Metrics**
+- First-attempt delivery success: ≥95% of transactions
+- Customer notification latency: ≤60 seconds from delivery confirmation
+- Refund rate: <2% of total transaction volume
+- Focus: Business KPIs that measure customer experience or regulatory compliance
+
+**6. Partner Dependencies and SLAs (Business-Level)**
+- Asterium FX quote with 90-second validity window (business SLA)
+- Paynet delivery confirmation with unique confirmation code
+- Bridge custody provider for USDC wallet operations (partner capability)
+- Focus: Partner business capabilities and customer-facing SLAs, NOT API implementation details
+
+**7. Business Constraints**
+- Minimum transaction: $10 (economic viability threshold)
+- Maximum transaction: Determined by KYC tier for regulatory compliance
+- Quote expiry prevents FX arbitrage by customers
+- Focus: Business rationale for constraints, competitive positioning
+
+**8. Fee Structures and Pricing Models (Business Economics)**
+- $10-$100 tier: $3.00 flat fee (3.0% effective cost)
+- $501-$2,000 tier: $5.00 flat fee (1.0%-0.25% effective cost)
+- FX margin: 1.5-2.0% competitive with Western Union 3-5%
+- Focus: Pricing tiers, competitive benchmarks, business economics (as tables)
+
+**9. Business Process States (Names Only)**
+- Transaction progresses through: INITIATED → FUNDED → COMPLETED
+- Refund states: PROCESSING → COMPLETED
+- Focus: Business process state NAMES only; remove technical state management logic
+
+---
+
+#### Edge Case Handling Rules
+
+**Edge Case 1: Technology Prescriptions**
+
+❌ **REMOVE**: "Platform MUST use Bridge custody provider for USDC wallet operations"
+
+✅ **KEEP**: "Platform requires segregated USDC custody with MTL sponsorship (BRD-002 partner selection)"
+
+**Rule**: Convert "MUST use [vendor]" to "Platform requires [business capability] provided by [partner type]" with Platform BRD reference.
+
+**Edge Case 2: Quantitative Thresholds - Customer SLA vs Technical Metrics**
+
+✅ **KEEP (Customer-Facing SLAs)**:
+- 95% of transactions complete in <15 minutes
+- Email delivery: ≥95% within 60 seconds
+- Screening completion: ≤3 seconds for 95% of transactions
+
+❌ **REMOVE (Technical Metrics)**:
+- API latency <200ms (95th percentile)
+- Database query time <50ms
+- WebSocket connection establishment <500ms
+
+**Rule**: Keep business outcomes affecting customer experience or regulatory compliance; remove technical performance metrics (move to PRD/SPEC).
+
+**Edge Case 3: State Machines and Business Processes**
+
+✅ **KEEP (Business State Names)**:
+- Transaction states: INITIATED, FUNDED, COMPLETED, FAILED
+- Compliance review states: APPROVED, MANUAL_REVIEW, DECLINED
+- Business process flow: Initiation → Compliance → Funding → Delivery
+
+❌ **REMOVE (State Management Implementation)**:
+- Event handlers (on wallet_debited event, transition to FUNDED)
+- State machine coordination logic
+- Technical state transitions with database updates
+
+**Rule**: Document business process states and flow; remove technical state management implementation.
+
+**Edge Case 4: Code Blocks in BRDs**
+
+❌ **REMOVE ALL code blocks** - Python functions, JSON schemas, SQL queries, algorithm implementations
+
+✅ **KEEP (Alternative)**: High-level business process descriptions
+- "High-value transactions (>$1,000) receive additional risk scoring weight"
+- "First-time recipients flagged for enhanced review"
+- "Risk scoring algorithm documented in PRD-022 Fraud Detection implementation"
+
+**Exception**: High-level business process diagrams (Mermaid flowcharts showing business states only - NOT technical implementation).
+
+**Edge Case 5: ML Model Specifications (AI Agent BRDs)**
+
+❌ **REMOVE (PRD-Level)**:
+- Feature extraction code (transaction_amount, device_risk_score, etc.)
+- Model hyperparameters (max_depth=5, learning_rate=0.1)
+- Training pipeline specifications
+
+✅ **KEEP (Business-Level)**:
+- **Business Capability**: System must assess transaction fraud risk using ML-based scoring model
+- **Business Requirements**: Analyze transaction characteristics, assign risk score 0-100, support automated decisions
+- **Business Rules**: Risk score 0-59 = auto-approve; 60-79 = manual review; 80-100 = auto-decline
+- **Business Acceptance Criteria**: True positive rate ≥95%, false positive rate ≤3%, inference latency <200ms
+
+**Rule**: Extract business risk policies, scoring thresholds, and operational outcomes; move ML model architecture to PRD/SPEC.
+
+---
+
+#### Quick Self-Check Questions
+
+Before finalizing each Functional Requirement, ask:
+
+1. **Could this FR be implemented in multiple ways?** (✅ Business-level)
+   - vs. **Does this FR prescribe a specific implementation?** (❌ PRD-level)
+
+2. **Does this describe a business capability or outcome?** (✅ Business-level)
+   - vs. **Does this describe HOW to build it technically?** (❌ PRD-level)
+
+3. **Would a non-technical stakeholder understand this?** (✅ Business-level)
+   - vs. **Does this require technical expertise to understand?** (❌ PRD-level)
+
+4. **Does this reference business rules, regulations, or policies?** (✅ Business-level)
+   - vs. **Does this reference APIs, databases, or code?** (❌ PRD-level)
+
+5. **Are there code blocks, JSON examples, or SQL?** (❌ PRD-level - remove ALL)
+
+---
+
+#### Reference: BRD-009 Gold Standard (100/100 Score)
+
+See `/opt/data/blocal_n8n/docs/BRD/BRD-009_remittance_transaction_us_to_uzbekistan.md` for examples of business-level FRs that achieved perfect PRD-Ready Score.
+
+**Key Success Factors from BRD-009**:
+- Zero code blocks in entire document
+- FRs structured with Business Capability → Business Requirements → Business Rules → Business Acceptance Criteria
+- All technical implementation details deferred to PRD references
+- Complexity ratings include business-level rationale (partner count, regulatory scope)
+- Cross-references to Platform BRDs (BRD-001 through BRD-005) for traceability
+
+---
+
+### Appendix C: FR Reference Examples (Gold Standard)
+
+**Purpose**: Concrete examples of properly structured business-level Functional Requirements, demonstrating what achieves PRD-Ready Score ≥90/100.
+
+---
+
+#### Example 1: Simple FR (Complexity 2/5)
+
+**FR-001: Recipient Selection and Management**
+
+**Business Capability**: System must enable customers to select existing recipients or add new recipients for remittance transactions.
+
+**Business Requirements**:
+- Support recipient reuse from saved recipient list (managed per BRD-011 Recipient Management)
+- Enable first-time recipient creation during transaction initiation
+- Validate recipient information meets Paynet delivery network requirements
+- Support multiple payout methods (bank accounts, mobile wallets, Paynet cards)
+- Accept recipient names in both Cyrillic and Latin scripts (Uzbek naming conventions)
+- Enforce Uzbekistan phone number format (+998 country code)
+
+**Business Rules**:
+- Recipients validated successfully in first transaction become saved for future reuse
+- Recipient information must match Paynet network requirements for successful delivery
+- Invalid recipient data must be rejected before transaction initiation to prevent delivery failures
+
+**Business Acceptance Criteria**:
+- Recipient selection process completes within business-acceptable timeframe (<1 second for list retrieval)
+- New recipient creation completes efficiently (median ≤30 seconds)
+- Validation errors communicated immediately to prevent failed transactions
+- First-time recipients automatically saved after successful delivery (reduces friction for repeat sends)
+
+**Related Requirements**:
+- Partner Integration: BRD-011 (Recipient Management)
+- Delivery Network: BRD-002 (Paynet Partner Integration)
+
+**Complexity**: 2/5 (Standard customer data management; requires recipient validation API integration from BRD-011)
+
+---
+
+#### Example 2: Complex FR (Complexity 4/5)
+
+**FR-002A: Multi-Region Wallet Funding Support**
+
+**Business Capability**: System must support remittances funded from multiple wallet funding sources across US and EU markets.
+
+**Business Requirements**:
+- Accept wallet funds from Bridge custody provider (US ACH, card, EU SEPA deposits per BRD-008)
+- Support USD-denominated wallet balance from multiple funding sources
+- Enable remittances from either US-sourced (ACH/card) or EU-sourced (SEPA) wallet funding
+- Present unified wallet balance regardless of original funding source
+- Maintain fee transparency across all funding paths
+
+**Multi-Region Funding Sources**:
+| Region | Funding Methods | Settlement Time to Remittance-Ready | Managed By |
+|--------|----------------|-------------------------------------|------------|
+| US | ACH bank transfer | 1-3 business days | BRD-008 (Bridge custody) |
+| US | Debit/credit card | Instant | BRD-008 (Bridge custody) |
+| EU | EUR SEPA transfer | <10 minutes after EUR receipt | BRD-008 (Bridge custody) |
+
+**Fee Structure - EU Customer Example**:
+For €200 EUR deposit → $200 USD remittance to Uzbekistan:
+- EUR→USD conversion: Included in Bridge custody fee (waived initially per BRD-008)
+- BeeLocal service fee: $3.00 flat (per FR-002)
+- FX spread (USDC→UZS): 1.5-2.0% (per FR-003)
+- Total effective cost: ~$6.50 on $200 send (~3.25% all-in cost)
+
+**Business Rules**:
+- All remittances execute from single USD wallet balance (Bridge custody)
+- EU customers use Bridge SEPA path for EUR deposits with automatic EUR→USD conversion
+- US customers use Bridge ACH or card path for direct USD deposits
+- Wallet balance displays in USD regardless of original deposit currency
+- Remittance execution process identical for US and EU customers
+
+**Business Acceptance Criteria**:
+- EU customers can initiate remittance within <10 minutes of EUR clearing (95% of transactions)
+- Unified wallet balance displayed across all funding sources (100% consistency)
+- Fee transparency maintained for all funding paths (no hidden conversion fees)
+- Cross-border funding enables EU market expansion without separate infrastructure
+
+**Related Requirements**:
+- Platform: BRD-001 (Platform Architecture), BRD-002 (Partner Ecosystem)
+- Partner Integration: BRD-008 (Wallet Funding via Bridge)
+- Compliance: BRD-003 (Multi-jurisdiction KYC/AML)
+
+**Complexity**: 4/5 (Dual-region funding architecture; requires custody provider integration with ACH and SEPA paths; unified wallet balance across currency sources; multi-jurisdiction compliance)
+
+---
+
+#### Example 3: AI/ML FR (Complexity 3/5)
+
+**FR-004: Pre-Transaction Risk and Compliance Screening**
+
+**Business Capability**: System must perform comprehensive fraud detection and regulatory compliance screening before authorizing remittance transactions.
+
+**Business Requirements**:
+- Execute OFAC/PEP sanctions screening for 100% of transactions (sender and recipient)
+- Assess fraud risk using ML-based scoring model with automated decision thresholds
+- Enforce velocity limits (transaction count and amount per day/week/month) for structuring prevention
+- Validate sender geolocation (US-based) and recipient geolocation (Uzbekistan-based)
+- Apply Travel Rule compliance for transactions ≥$3,000 (identity disclosure requirements)
+- Flag structured transactions (multiple small transactions to evade reporting thresholds)
+
+**Business Rules**:
+- **Sanctions Screening**: Auto-decline on OFAC/PEP exact match; queue for manual review on fuzzy match (≥85% similarity)
+- **Fraud Risk Scoring** (ML-based):
+  - Risk score 0-59: Auto-approve transaction
+  - Risk score 60-79: Queue for manual compliance review (target <5% of volume)
+  - Risk score 80-100: Auto-decline with SAR consideration
+- **Velocity Limits** (Anti-Structuring):
+  - L1 KYC: Max 3 transactions/day, $500 daily limit
+  - L2 KYC: Max 5 transactions/day, $2,000 daily limit
+  - L3 KYC: Max 10 transactions/day, $10,000 daily limit
+- **Geolocation Validation**: Sender IP must resolve to US; recipient phone must be Uzbekistan (+998)
+
+**Business Acceptance Criteria**:
+- Screening completion time: ≤3 seconds for 95% of transactions (customer experience requirement)
+- False positive rate: ≤3% (minimize blocking legitimate customers unnecessarily)
+- True positive rate: ≥95% (catch actual fraudulent/sanctioned transactions)
+- Manual review queue processing: ≤2 hours during business hours for 90% of cases
+- Sanctions list updates: Applied within 24 hours of OFAC publication (regulatory requirement)
+
+**Related Requirements**:
+- Platform: BRD-003 (Security & Compliance Framework)
+- AI Agent: BRD-022 (Fraud Detection Agent - ML implementation details)
+- Compliance: BRD-017 (Compliance Monitoring & SAR Generation)
+- KYC: BRD-006 (B2C KYC Onboarding - tiering logic)
+
+**Complexity**: 3/5 (Multiple screening systems integration; ML model inference with business rule thresholds; regulatory compliance across sanctions, AML, and Travel Rule; manual review workflow coordination)
+
+---
+
+#### Before/After Refactoring Example
+
+**BEFORE (PRD-Level - Score 65/100)**:
+
+```markdown
+**FR-004: Risk Screening API Integration**
+
+- Call POST /screening/ofac with sender/recipient data
+- Receive JSON response with match_score (0-100)
+- If match_score >= 85, display warning modal to user
+- Store screening result in PostgreSQL screening_results table
+- Trigger webhook to compliance team if match detected
+- Implement retry logic with exponential backoff (500ms, 1000ms, 2000ms)
+```
+
+**Problems**:
+- ❌ API endpoint specification (POST /screening/ofac)
+- ❌ JSON response format details
+- ❌ UI interaction (display warning modal)
+- ❌ Database table name (PostgreSQL screening_results)
+- ❌ Webhook implementation details
+- ❌ Code-level retry logic (exponential backoff values)
+
+**AFTER (Business-Level - Score 100/100)**:
+
+**FR-004: Pre-Transaction Sanctions Screening**
+
+**Business Capability**: System must screen all transactions against OFAC/PEP sanctions lists before authorization.
+
+**Business Requirements**:
+- Execute OFAC/PEP screening for 100% of transactions (sender and recipient)
+- Validate against current sanctions lists updated within 24 hours of OFAC publication
+- Support fuzzy matching to catch name variations and misspellings
+- Provide screening results to compliance team for manual review queue
+- Maintain screening audit trail for regulatory examination
+
+**Business Rules**:
+- Exact match (100% similarity): Auto-decline transaction immediately
+- Fuzzy match (≥85% similarity): Queue for manual compliance review within 2 hours
+- Low match (<85% similarity): Auto-approve with screening result logged
+- Screening must complete before transaction authorization (blocking operation)
+
+**Business Acceptance Criteria**:
+- Screening completion time: ≤3 seconds for 95% of transactions
+- False positive rate: ≤3% (minimize blocking legitimate customers)
+- Sanctions list staleness: ≤24 hours from OFAC publication
+- Audit trail retention: 7 years per FinCEN recordkeeping requirements
+
+**Related Requirements**:
+- Platform: BRD-003 (Security & Compliance Framework)
+- Compliance: BRD-017 (Compliance Monitoring & SAR Generation)
+
+**Complexity**: 2/5 (Standard sanctions screening integration; requires compliance workflow for manual review queue)
+
+**What Changed**:
+- ✅ Removed API specifications → Kept business capability ("screen all transactions")
+- ✅ Removed JSON format → Kept business rules (auto-decline, queue for review)
+- ✅ Removed UI details → Kept business acceptance criteria (completion time ≤3 seconds)
+- ✅ Removed database/webhook → Kept business requirement (audit trail for regulatory examination)
+- ✅ Removed retry logic → Kept business SLA (completion time target)
+- ✅ Added complexity rating with business rationale
+- ✅ Added cross-references to related Platform and Compliance BRDs
+
+---
+
+### Appendix D: Process Flow Diagrams
 
 [Include current state and future state process diagrams]
 
@@ -1306,7 +1778,7 @@ If acceptance criteria are not met:
 **Future State Process:**
 [Insert diagram or reference to diagram location]
 
-### Appendix C: Data Requirements and Mapping [Optional]
+### Appendix E: Data Requirements and Mapping [Optional]
 
 [Detail specific data needs, data dictionary, and data mapping]
 
@@ -1316,13 +1788,13 @@ If acceptance criteria are not met:
 |--------------|-------------|-----------|---------------|---------------|---------------------|
 | [Element] | [Description] | [Type] | [System] | [System] | [Rules] |
 
-### Appendix D: User Interface Mockups [Optional]
+### Appendix F: User Interface Mockups [Optional]
 
 [Include wireframes, mockups, or prototypes if available]
 
 [Reference to mockup location or insert images]
 
-### Appendix E: Integration Specifications [Optional]
+### Appendix G: Integration Specifications [Optional]
 
 [Detail integration points and technical specifications]
 
@@ -1330,7 +1802,7 @@ If acceptance criteria are not met:
 |-------------|--------|--------|----------|-------------|-----------|----------------|
 | [Name] | [System] | [System] | [API/File] | [Format] | [Timing] | [Approach] |
 
-### Appendix F: Stakeholder Interview Notes
+### Appendix H: Stakeholder Interview Notes
 
 [Summary of key findings from stakeholder interviews]
 
@@ -1338,7 +1810,7 @@ If acceptance criteria are not met:
 |------|-------------|------------|------------------------|-----------------|
 | [Date] | [Name] | [Summary] | [Requirements] | [Issues] |
 
-### Appendix G: References
+### Appendix I: References
 
 [List all reference materials, standards, regulations, and best practices cited in this document]
 
@@ -1348,7 +1820,7 @@ If acceptance criteria are not met:
 2. [Reference 2 - Full citation]
 3. [Reference 3 - Full citation]
 
-### Appendix H: Compliance Documentation
+### Appendix J: Compliance Documentation
 
 [Include relevant compliance certifications, audit reports, or regulatory documentation]
 

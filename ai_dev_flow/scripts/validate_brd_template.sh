@@ -467,6 +467,419 @@ fi
 echo ""
 
 # ============================================
+# CHECK 13: PRD-Ready Score Validation
+# ============================================
+echo "CHECK 13: PRD-Ready Score Validation"
+echo "-----------------------------------------"
+
+# Check for PRD-Ready Score field in Document Control
+if grep -q "| \*\*PRD-Ready Score\*\* |" "$BRD_FILE"; then
+  echo "  ✅ Found: PRD-Ready Score field in Document Control"
+
+  # Extract score value
+  score_line=$(grep "| \*\*PRD-Ready Score\*\* |" "$BRD_FILE" || echo "")
+
+  # Check format: should have ✅ emoji and percentage
+  if echo "$score_line" | grep -qE "✅.*[0-9]+/100"; then
+    score_value=$(echo "$score_line" | grep -oE "[0-9]+/100" | head -1 | cut -d'/' -f1)
+    echo "  ✅ PRD-Ready Score format valid: $score_value/100"
+
+    # Check threshold
+    if [ "$score_value" -ge 90 ]; then
+      echo "  ✅ PRD-Ready Score meets ≥90/100 threshold"
+    elif [ "$score_value" -ge 70 ]; then
+      echo "  ⚠️  WARNING: PRD-Ready Score below 90/100: $score_value/100"
+      echo "           Recommended: Refactor to achieve ≥90/100"
+      ((WARNINGS++))
+    else
+      echo "  ❌ ERROR: PRD-Ready Score below minimum threshold: $score_value/100"
+      echo "           Target: ≥90/100"
+      ((ERRORS++))
+    fi
+  else
+    echo "  ❌ ERROR: PRD-Ready Score missing ✅ emoji and/or proper format"
+    echo "           Expected: ✅ [Score]/100 (Target: ≥90/100)"
+    ((ERRORS++))
+  fi
+else
+  echo "  ❌ MISSING: PRD-Ready Score field in Document Control"
+  echo "           Add: | **PRD-Ready Score** | ✅ [Score]/100 (Target: ≥90/100) |"
+  ((ERRORS++))
+fi
+
+echo ""
+
+# ============================================
+# CHECK 14: Code Blocks in Functional Requirements
+# ============================================
+echo "CHECK 14: Code Blocks in Functional Requirements"
+echo "-----------------------------------------"
+
+# Extract Section 4 content
+section4_start=$(grep -n "^## 4\. " "$BRD_FILE" | head -1 | cut -d':' -f1)
+section5_start=$(grep -n "^## 5\. " "$BRD_FILE" | head -1 | cut -d':' -f1)
+
+code_blocks_found=0
+code_block_lines=""
+
+if [ -n "$section4_start" ] && [ -n "$section5_start" ]; then
+  # Search for code blocks between Section 4 and Section 5
+  code_block_lines=$(sed -n "${section4_start},${section5_start}p" "$BRD_FILE" | grep -n '```' | cut -d':' -f1 || echo "")
+
+  if [ -n "$code_block_lines" ]; then
+    code_blocks_found=$(echo "$code_block_lines" | wc -l)
+    code_blocks_found=$((code_blocks_found / 2))  # Divide by 2 (opening and closing ```)
+
+    echo "  ❌ ERROR: Found $code_blocks_found code block(s) in Section 4 (Functional Requirements)"
+    echo "           Code blocks are PRD-level content and must be removed from BRDs"
+    echo "           Replace with business-level descriptions (see BRD-TEMPLATE.md Appendix B)"
+    ((ERRORS++))
+  else
+    echo "  ✅ No code blocks found in Section 4"
+  fi
+else
+  echo "  ⚠️  WARNING: Could not locate Section 4 boundaries for code block scanning"
+  ((WARNINGS++))
+fi
+
+echo ""
+
+# ============================================
+# CHECK 15: API/Technical Terminology in FRs
+# ============================================
+echo "CHECK 15: API/Technical Terminology in Functional Requirements"
+echo "-----------------------------------------"
+
+technical_terms=(
+  "POST" "GET" "PUT" "DELETE" "PATCH"
+  "JSON" "XML" "YAML"
+  "endpoint" "API" "request" "response" "payload" "header"
+  "database" "table" "column" "query" "schema"
+  "INSERT" "UPDATE" "SELECT" "DELETE"
+)
+
+technical_term_count=0
+technical_term_lines=""
+
+if [ -n "$section4_start" ] && [ -n "$section5_start" ]; then
+  for term in "${technical_terms[@]}"; do
+    # Case-insensitive search in Section 4
+    matches=$(sed -n "${section4_start},${section5_start}p" "$BRD_FILE" | grep -i "$term" || echo "")
+    if [ -n "$matches" ]; then
+      match_count=$(echo "$matches" | wc -l)
+      technical_term_count=$((technical_term_count + match_count))
+    fi
+  done
+
+  if [ $technical_term_count -gt 0 ]; then
+    echo "  ⚠️  WARNING: Found $technical_term_count technical term instance(s) in Section 4"
+    echo "           Technical terms indicate potential PRD-level contamination"
+    echo "           Suggested: Replace with business-level language"
+    echo "           Example: 'Customer initiates transaction' (not 'POST /api/v1/transactions')"
+    ((WARNINGS++))
+  else
+    echo "  ✅ No technical terminology found in Section 4"
+  fi
+else
+  echo "  ⚠️  WARNING: Could not locate Section 4 for technical term scanning"
+  ((WARNINGS++))
+fi
+
+echo ""
+
+# ============================================
+# CHECK 16: UI-Specific Language in FRs
+# ============================================
+echo "CHECK 16: UI-Specific Language in Functional Requirements"
+echo "-----------------------------------------"
+
+ui_terms=(
+  "button" "dropdown" "modal" "dialog" "popup"
+  "form" "checkbox" "radio button"
+  "click" "tap" "swipe" "scroll"
+  "screen" "page" "view" "panel"
+  "display" "show" "hide"
+)
+
+ui_term_count=0
+
+if [ -n "$section4_start" ] && [ -n "$section5_start" ]; then
+  for term in "${ui_terms[@]}"; do
+    # Case-insensitive search in Section 4
+    matches=$(sed -n "${section4_start},${section5_start}p" "$BRD_FILE" | grep -i "$term" || echo "")
+    if [ -n "$matches" ]; then
+      match_count=$(echo "$matches" | wc -l)
+      ui_term_count=$((ui_term_count + match_count))
+    fi
+  done
+
+  if [ $ui_term_count -gt 0 ]; then
+    echo "  ⚠️  WARNING: Found $ui_term_count UI-specific term instance(s) in Section 4"
+    echo "           UI terms indicate potential PRD-level contamination"
+    echo "           Suggested: Replace with business action descriptions"
+    echo "           Example: 'Customer selects recipient' (not 'Customer clicks dropdown')"
+    ((WARNINGS++))
+  else
+    echo "  ✅ No UI-specific language found in Section 4"
+  fi
+else
+  echo "  ⚠️  WARNING: Could not locate Section 4 for UI term scanning"
+  ((WARNINGS++))
+fi
+
+echo ""
+
+# ============================================
+# CHECK 17: FR 6-Subsection Structure
+# ============================================
+echo "CHECK 17: Functional Requirement 6-Subsection Structure"
+echo "-----------------------------------------"
+
+# Find all FRs (#### FR-NNN: format)
+fr_count=$(grep -c "^#### FR-[0-9]\+:" "$BRD_FILE" || echo "0")
+
+if [ "$fr_count" -gt 0 ]; then
+  echo "  Found $fr_count Functional Requirement(s)"
+
+  incomplete_frs=0
+
+  # Check each FR for 6 required subsections
+  grep -n "^#### FR-[0-9]\+:" "$BRD_FILE" | while IFS=: read -r line_num fr_title; do
+    fr_id=$(echo "$fr_title" | grep -oE "FR-[0-9]+" | head -1)
+
+    # Get FR content (from this FR to next FR or end of section)
+    next_fr_line=$(grep -n "^#### FR-[0-9]\+:" "$BRD_FILE" | grep -A1 "^${line_num}:" | tail -1 | cut -d':' -f1)
+    if [ "$next_fr_line" = "$line_num" ]; then
+      # Last FR - go to next section
+      next_fr_line=$(grep -n "^## 5\. " "$BRD_FILE" | head -1 | cut -d':' -f1)
+    fi
+
+    fr_content=$(sed -n "${line_num},${next_fr_line}p" "$BRD_FILE")
+
+    # Check for 6 required subsections
+    missing_subsections=""
+
+    if ! echo "$fr_content" | grep -q "^\*\*Business Capability\*\*:"; then
+      missing_subsections="${missing_subsections}Business Capability, "
+    fi
+
+    if ! echo "$fr_content" | grep -q "^\*\*Business Requirements\*\*:"; then
+      missing_subsections="${missing_subsections}Business Requirements, "
+    fi
+
+    if ! echo "$fr_content" | grep -q "^\*\*Business Rules\*\*:"; then
+      missing_subsections="${missing_subsections}Business Rules, "
+    fi
+
+    if ! echo "$fr_content" | grep -q "^\*\*Business Acceptance Criteria\*\*:"; then
+      missing_subsections="${missing_subsections}Business Acceptance Criteria, "
+    fi
+
+    if ! echo "$fr_content" | grep -q "^\*\*Related Requirements\*\*:"; then
+      missing_subsections="${missing_subsections}Related Requirements, "
+    fi
+
+    if ! echo "$fr_content" | grep -q "^\*\*Complexity\*\*:"; then
+      missing_subsections="${missing_subsections}Complexity, "
+    fi
+
+    if [ -n "$missing_subsections" ]; then
+      echo "  ❌ ERROR: $fr_id missing subsections: ${missing_subsections%, }"
+      incomplete_frs=$((incomplete_frs + 1))
+    fi
+  done
+
+  if [ $incomplete_frs -gt 0 ]; then
+    echo "  ❌ ERROR: $incomplete_frs FR(s) missing required subsections"
+    echo "           All FRs must have: Business Capability, Business Requirements, Business Rules,"
+    echo "           Business Acceptance Criteria, Related Requirements, Complexity"
+    ((ERRORS++))
+  else
+    echo "  ✅ All FRs have complete 6-subsection structure"
+  fi
+else
+  echo "  ⚠️  WARNING: No Functional Requirements found (#### FR-NNN: format expected)"
+  ((WARNINGS++))
+fi
+
+echo ""
+
+# ============================================
+# CHECK 18: Related Requirements Cross-Reference Validation
+# ============================================
+echo "CHECK 18: Related Requirements Cross-Reference Validation"
+echo "-----------------------------------------"
+
+# Find all BRD-NNN references in Related Requirements subsections
+brd_refs=$(grep -A 5 "^\*\*Related Requirements\*\*:" "$BRD_FILE" | grep -oE "BRD-[0-9]+" || echo "")
+
+if [ -n "$brd_refs" ]; then
+  brd_ref_count=$(echo "$brd_refs" | wc -l)
+  echo "  Found $brd_ref_count BRD cross-reference(s)"
+
+  invalid_refs=0
+  brd_dir=$(dirname "$BRD_FILE")
+
+  echo "$brd_refs" | sort -u | while read -r brd_ref; do
+    # Check if BRD file exists (BRD-NNN_*.md pattern)
+    brd_files=$(find "$brd_dir" -name "${brd_ref}_*.md" 2>/dev/null || echo "")
+
+    if [ -z "$brd_files" ]; then
+      echo "  ⚠️  WARNING: Referenced BRD not found: $brd_ref"
+      echo "           Expected file: ${brd_dir}/${brd_ref}_*.md"
+      invalid_refs=$((invalid_refs + 1))
+    fi
+  done
+
+  if [ $invalid_refs -gt 0 ]; then
+    echo "  ⚠️  WARNING: $invalid_refs invalid BRD cross-reference(s) found"
+    echo "           Verify all referenced BRD files exist"
+    ((WARNINGS++))
+  else
+    echo "  ✅ All BRD cross-references valid"
+  fi
+else
+  echo "  ⚠️  WARNING: No BRD cross-references found in Related Requirements"
+  echo "           FRs should reference Platform BRDs (BRD-001 through BRD-005)"
+  ((WARNINGS++))
+fi
+
+echo ""
+
+# ============================================
+# PRD-READY SCORE CALCULATION
+# ============================================
+echo "========================================="
+echo "PRD-READY SCORE CALCULATION"
+echo "========================================="
+
+# Initialize deduction categories
+deduction_cat1=0  # PRD-Level Content Contamination (max 50)
+deduction_cat2=0  # FR Structure Completeness (max 30)
+deduction_cat3=0  # Document Structure and Quality (max 20)
+
+# Category 1: PRD-Level Content Contamination
+echo "Category 1: PRD-Level Content Contamination"
+echo "-----------------------------------------"
+
+# Code blocks: -10 points per block (max -50)
+if [ $code_blocks_found -gt 0 ]; then
+  code_block_deduction=$((code_blocks_found * 10))
+  if [ $code_block_deduction -gt 50 ]; then
+    code_block_deduction=50
+  fi
+  deduction_cat1=$((deduction_cat1 + code_block_deduction))
+  echo "  Code blocks: $code_blocks_found found → -$code_block_deduction points"
+fi
+
+# API/Technical terms: -2 points per instance (max -20)
+if [ $technical_term_count -gt 0 ]; then
+  tech_term_deduction=$((technical_term_count * 2))
+  if [ $tech_term_deduction -gt 20 ]; then
+    tech_term_deduction=20
+  fi
+  deduction_cat1=$((deduction_cat1 + tech_term_deduction))
+  echo "  API/technical terms: $technical_term_count instances → -$tech_term_deduction points"
+fi
+
+# UI terms: -2 points per instance (max -20)
+if [ $ui_term_count -gt 0 ]; then
+  ui_term_deduction=$((ui_term_count * 2))
+  if [ $ui_term_deduction -gt 20 ]; then
+    ui_term_deduction=20
+  fi
+  deduction_cat1=$((deduction_cat1 + ui_term_deduction))
+  echo "  UI-specific terms: $ui_term_count instances → -$ui_term_deduction points"
+fi
+
+if [ $deduction_cat1 -eq 0 ]; then
+  echo "  ✅ No PRD-level contamination detected → -0 points"
+fi
+
+echo "Category 1 Total: -$deduction_cat1 points"
+echo ""
+
+# Category 2: FR Structure Completeness
+echo "Category 2: FR Structure Completeness"
+echo "-----------------------------------------"
+
+# Missing FR subsections: -5 points per incomplete FR (max -30)
+if [ $incomplete_frs -gt 0 ]; then
+  fr_structure_deduction=$((incomplete_frs * 5))
+  if [ $fr_structure_deduction -gt 30 ]; then
+    fr_structure_deduction=30
+  fi
+  deduction_cat2=$((deduction_cat2 + fr_structure_deduction))
+  echo "  Incomplete FRs: $incomplete_frs FRs missing subsections → -$fr_structure_deduction points"
+fi
+
+# Invalid cross-references: -2 points per invalid ref (max -10)
+if [ $invalid_refs -gt 0 ]; then
+  crossref_deduction=$((invalid_refs * 2))
+  if [ $crossref_deduction -gt 10 ]; then
+    crossref_deduction=10
+  fi
+  deduction_cat2=$((deduction_cat2 + crossref_deduction))
+  echo "  Invalid cross-refs: $invalid_refs references → -$crossref_deduction points"
+fi
+
+if [ $deduction_cat2 -eq 0 ]; then
+  echo "  ✅ Complete FR structure with valid cross-references → -0 points"
+fi
+
+echo "Category 2 Total: -$deduction_cat2 points"
+echo ""
+
+# Category 3: Document Structure and Quality
+echo "Category 3: Document Structure and Quality"
+echo "-----------------------------------------"
+
+# PRD-Ready Score field missing: -5 points
+if ! grep -q "| \*\*PRD-Ready Score\*\* |" "$BRD_FILE"; then
+  deduction_cat3=$((deduction_cat3 + 5))
+  echo "  PRD-Ready Score field missing → -5 points"
+fi
+
+# Document Control fields: -3 points if any missing (already checked in CHECK 2)
+# Section validation: -1 point per missing section (already checked in CHECK 1)
+# Revision History: -3 points if missing (already checked in CHECK 3)
+
+if [ $deduction_cat3 -eq 0 ]; then
+  echo "  ✅ Complete document structure → -0 points"
+fi
+
+echo "Category 3 Total: -$deduction_cat3 points"
+echo ""
+
+# Calculate final score
+total_deductions=$((deduction_cat1 + deduction_cat2 + deduction_cat3))
+prd_ready_score=$((100 - total_deductions))
+
+echo "========================================="
+echo "Total Deductions: -$total_deductions points"
+echo "PRD-Ready Score: $prd_ready_score/100"
+echo "========================================="
+echo ""
+
+# Validation outcome based on score
+if [ $prd_ready_score -ge 90 ]; then
+  echo "✅ EXCELLENT: PRD-Ready Score meets ≥90/100 threshold"
+  echo "   BRD ready for PRD development"
+elif [ $prd_ready_score -ge 70 ]; then
+  echo "⚠️  MODERATE: PRD-Ready Score 70-89/100"
+  echo "   Moderate PRD-level contamination detected"
+  echo "   Recommendation: Refactor to achieve ≥90/100"
+  echo "   See BRD_REFACTORING_GUIDE.md for guidance"
+else
+  echo "❌ NEEDS IMPROVEMENT: PRD-Ready Score <70/100"
+  echo "   Heavy PRD-level contamination detected"
+  echo "   Action Required: Major refactoring needed"
+  echo "   See BRD_REFACTORING_GUIDE.md for step-by-step guidance"
+fi
+
+echo ""
+
+# ============================================
 # SUMMARY
 # ============================================
 echo "========================================="
