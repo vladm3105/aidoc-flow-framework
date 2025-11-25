@@ -607,147 +607,206 @@ The following architectural topics require formal Architecture Decision Records 
 
 ---
 
-## 7. Assumptions and Constraints
+## 7. Business Constraints and Assumptions
 
-### 7.1 Assumptions
+This section documents business-level constraints that limit solution design and assumptions that underpin business requirements. Each constraint and assumption uses standardized ID format for traceability.
 
-[List all assumptions that are being made for project planning purposes. These should be validated as the project progresses.]
+### 7.1 Business Constraints
 
-| Assumption ID | Assumption Description | Impact if Invalid | Validation Method | Owner |
-|---------------|------------------------|-------------------|-------------------|-------|
-| A-001 | [Assumption statement] | [What happens if not true] | [How to validate] | [Name] |
-| A-002 | [Assumption statement] | [What happens if not true] | [How to validate] | [Name] |
-| A-003 | [Assumption statement] | [What happens if not true] | [How to validate] | [Name] |
-| A-004 | [Assumption statement] | [What happens if not true] | [How to validate] | [Name] |
+Business constraints are external limitations that restrict how business requirements can be fulfilled. These are non-negotiable factors that the solution must accommodate.
 
-**Examples of Common Assumptions:**
-- Budget will be approved as requested
-- Required resources will be available when needed
-- Current infrastructure can support the new solution
-- Users will be available for testing and training
-- Third-party vendors will deliver on schedule
-- Regulatory requirements will not change during project
+**ID Format**: `BC-XXX` (Business Constraint)
 
-### 7.2 Constraints
+#### 7.1.1 Regulatory Constraints
 
-[Document all limitations and restrictions that will impact the project]
+Constraints imposed by laws, regulations, and compliance requirements.
 
-#### 7.2.1 Budget Constraints
+| ID | Constraint | Impact on Requirements | Source |
+|----|-----------|----------------------|--------|
+| BC-001 | [Regulatory constraint statement] | [How this affects business requirements] | [Regulation/Law reference] |
+| BC-002 | [Regulatory constraint statement] | [How this affects business requirements] | [Regulation/Law reference] |
 
-| Constraint | Description | Impact | Mitigation Strategy |
-|------------|-------------|--------|---------------------|
-| [Constraint] | [Details] | [Effect on project] | [How to address] |
+**Examples**:
+- BC-001: FinCEN recordkeeping requires 5-year transaction audit trail retention
+- BC-002: OFAC compliance requires real-time sanctions screening for all transactions
+- BC-003: State MTL licensing restricts operations to approved jurisdictions
 
-**Budget Details:**
-- Total approved budget: $[Amount]
-- Budget allocation by phase: [Breakdown]
-- Contingency reserve: [Percentage or amount]
-- Budget approval authority: [Name/Title]
+#### 7.1.2 Partner SLA Constraints
 
-#### 7.2.2 Schedule Constraints
+Constraints imposed by partner agreements and service level commitments.
 
-| Constraint | Description | Impact | Mitigation Strategy |
-|------------|-------------|--------|---------------------|
-| [Constraint] | [Details] | [Effect on project] | [How to address] |
+| ID | Constraint | Partner | Impact on Requirements |
+|----|-----------|---------|----------------------|
+| BC-0XX | [Partner SLA constraint] | [Partner name] | [How this affects business requirements] |
 
-**Schedule Details:**
-- Project start date: [Date]
-- Required completion date: [Date]
-- Key milestone dates: [List critical dates]
-- Blackout periods: [Dates when work cannot occur]
+**Examples**:
+- BC-010: Bridge custody settlement requires T+1 for ACH deposits
+- BC-011: Paynet delivery confirmation SLA is 24-48 hours for bank transfers
+- BC-012: Partner API rate limits cap at 1,000 requests per minute
 
-#### 7.2.3 Resource Constraints
+#### 7.1.3 Technical Platform Constraints
 
-| Constraint | Description | Impact | Mitigation Strategy |
-|------------|-------------|--------|---------------------|
-| [Constraint] | [Details] | [Effect on project] | [How to address] |
+Constraints from existing technical infrastructure and platform capabilities.
 
-**Resource Details:**
-- Available team size: [Number of people]
-- Skill gaps: [Missing expertise]
-- Resource availability: [Part-time/Full-time percentages]
-- Competing priorities: [Other projects affecting resources]
+| ID | Constraint | Platform Component | Impact on Requirements |
+|----|-----------|-------------------|----------------------|
+| BC-0XX | [Technical constraint] | [Component] | [How this affects business requirements] |
 
-#### 7.2.4 Technical Constraints
+**Examples**:
+- BC-020: Platform wallet architecture requires single-currency (USD) balance
+- BC-021: Mobile app deployment requires App Store/Play Store approval cycles
+- BC-022: API gateway timeout limits maximum transaction processing to 30 seconds
 
-| Constraint | Description | Impact | Mitigation Strategy |
-|------------|-------------|--------|---------------------|
-| [Constraint] | [Details] | [Effect on project] | [How to address] |
+#### 7.1.4 Operational Constraints
 
-**Technical Details:**
-- Existing technology stack: [Technologies that must be used]
-- System limitations: [Known technical limitations]
-- Infrastructure constraints: [Hardware/network limitations]
-- Integration restrictions: [Systems that must/cannot be integrated]
+Constraints from business operations, support capacity, and organizational policies.
 
-#### 7.2.5 Organizational Constraints
+| ID | Constraint | Operational Area | Impact on Requirements |
+|----|-----------|-----------------|----------------------|
+| BC-0XX | [Operational constraint] | [Area] | [How this affects business requirements] |
 
-| Constraint | Description | Impact | Mitigation Strategy |
-|------------|-------------|--------|---------------------|
-| [Constraint] | [Details] | [Effect on project] | [How to address] |
+**Examples**:
+- BC-030: Compliance team capacity limits manual review queue to 500 cases/day
+- BC-031: Customer support hours (9 AM - 9 PM EST) limit real-time escalation availability
+- BC-032: Quarterly compliance audits require feature freeze periods
 
-**Organizational Details:**
-- Policy requirements: [Organizational policies that must be followed]
-- Change freeze periods: [Times when changes are not allowed]
-- Approval processes: [Required approval workflows]
-- Organizational structure: [Reporting lines affecting project]
+#### 7.1.5 Budget Constraints
 
-#### 7.2.6 Regulatory and Compliance Constraints
+Constraints from approved budget allocations and cost limitations.
 
-| Constraint | Description | Impact | Mitigation Strategy |
-|------------|-------------|--------|---------------------|
-| [Constraint] | [Details] | [Effect on project] | [How to address] |
+| ID | Constraint | Budget Category | Impact on Requirements |
+|----|-----------|----------------|----------------------|
+| BC-0XX | [Budget constraint] | [Category] | [How this affects business requirements] |
 
-**Compliance Details:**
-- Applicable regulations: [List relevant regulations]
-- Certification requirements: [Required certifications]
-- Audit requirements: [Audit frequency and scope]
-- Data residency: [Data storage location requirements]
+**Examples**:
+- BC-040: Partner integration budget limits initial corridors to 3 countries
+- BC-041: Marketing budget caps launch promotions at 90-day fee waiver period
+- BC-042: Infrastructure budget requires shared hosting for non-production environments
 
-### 7.3 Dependencies
+#### 7.1.6 Timeline Constraints
 
-#### 7.3.1 Internal Dependencies
+Constraints from business deadlines, market windows, and regulatory dates.
 
-[List dependencies on other projects, teams, or systems within the organization]
+| ID | Constraint | Timeline Driver | Impact on Requirements |
+|----|-----------|----------------|----------------------|
+| BC-0XX | [Timeline constraint] | [Driver] | [How this affects business requirements] |
 
-| Dependency ID | Description | Dependent On | Required By Date | Risk Level | Owner | Status |
-|---------------|-------------|--------------|------------------|------------|-------|--------|
-| D-001 | [What is needed] | [Provider] | [Date] | [High/Med/Low] | [Name] | [On Track/At Risk/Delayed] |
-| D-002 | [What is needed] | [Provider] | [Date] | [High/Med/Low] | [Name] | [On Track/At Risk/Delayed] |
+**Examples**:
+- BC-050: Ramadan corridor launch requires completion before religious calendar dates
+- BC-051: Regulatory filing deadline requires compliance features by Q4
+- BC-052: Partner contract renewal requires integration completion within 6 months
 
-**Categories of Internal Dependencies:**
-- Other project deliverables
-- Infrastructure upgrades
-- Data migration from existing systems
-- Internal approvals or decisions
-- Resource availability
-- Training completion
+---
 
-#### 7.3.2 External Dependencies
+### 7.2 Business Assumptions
 
-[List dependencies on vendors, partners, or external factors]
+Business assumptions are conditions believed to be true for planning purposes. Each assumption must be validated and has defined impact if proven false.
 
-| Dependency ID | Description | External Party | Required By Date | Risk Level | Contract Status | Contingency Plan |
-|---------------|-------------|----------------|------------------|------------|-----------------|------------------|
-| D-003 | [What is needed] | [Vendor/Partner] | [Date] | [High/Med/Low] | [Signed/Pending] | [Alternative approach] |
-| D-004 | [What is needed] | [Vendor/Partner] | [Date] | [High/Med/Low] | [Signed/Pending] | [Alternative approach] |
+**ID Format**: `BA-XXX` (Business Assumption)
 
-**Categories of External Dependencies:**
-- Vendor software or services
-- Third-party integrations
-- Regulatory approvals
-- External data sources
-- Hardware procurement
-- Consulting services
+#### 7.2.1 Market Assumptions
 
-#### 7.3.3 Dependency Management Plan
+Assumptions about market conditions, customer demand, and competitive landscape.
 
-[Describe how dependencies will be tracked and managed]
+| ID | Assumption | Validation Method | Impact if Invalid |
+|----|-----------|------------------|-------------------|
+| BA-001 | [Market assumption] | [How to validate] | [Business impact] |
 
-- **Monitoring approach:** [How dependencies will be tracked]
-- **Communication protocol:** [How issues will be communicated]
-- **Escalation process:** [How problems will be escalated]
-- **Review frequency:** [How often dependencies are reviewed]
+**Examples**:
+- BA-001: US-Uzbekistan remittance corridor has sufficient demand (>10,000 monthly transactions)
+- BA-002: Target customers prefer mobile-first remittance experience
+- BA-003: Competitive pricing at 3% all-in cost will drive customer acquisition
+
+#### 7.2.2 Partner Assumptions
+
+Assumptions about partner capabilities, availability, and performance.
+
+| ID | Assumption | Partner | Validation Method | Impact if Invalid |
+|----|-----------|---------|------------------|-------------------|
+| BA-0XX | [Partner assumption] | [Partner] | [How to validate] | [Business impact] |
+
+**Examples**:
+- BA-010: Bridge custody provider will maintain 99.9% API availability
+- BA-011: Paynet delivery network covers 95% of Uzbekistan banking infrastructure
+- BA-012: Partner onboarding will complete within 30 days of contract signing
+
+#### 7.2.3 User Behavior Assumptions
+
+Assumptions about how customers will interact with the solution.
+
+| ID | Assumption | User Segment | Validation Method | Impact if Invalid |
+|----|-----------|-------------|------------------|-------------------|
+| BA-0XX | [User behavior assumption] | [Segment] | [How to validate] | [Business impact] |
+
+**Examples**:
+- BA-020: Users will complete KYC within single session (no drop-off mid-process)
+- BA-021: Repeat senders will use saved recipient feature (80% reuse rate)
+- BA-022: Users accept mobile-only experience (no desktop requirement)
+
+#### 7.2.4 Technical Assumptions
+
+Assumptions about technical capabilities, integrations, and system behavior.
+
+| ID | Assumption | Technical Area | Validation Method | Impact if Invalid |
+|----|-----------|---------------|------------------|-------------------|
+| BA-0XX | [Technical assumption] | [Area] | [How to validate] | [Business impact] |
+
+**Examples**:
+- BA-030: Partner APIs will support required transaction volumes (10,000 TPS peak)
+- BA-031: Existing fraud detection model will achieve ≤3% false positive rate
+- BA-032: Mobile app can achieve <3 second transaction initiation time
+
+#### 7.2.5 Financial Assumptions
+
+Assumptions about pricing, costs, and financial viability.
+
+| ID | Assumption | Financial Area | Validation Method | Impact if Invalid |
+|----|-----------|---------------|------------------|-------------------|
+| BA-0XX | [Financial assumption] | [Area] | [How to validate] | [Business impact] |
+
+**Examples**:
+- BA-040: FX spread of 1.5-2% will be competitive in target market
+- BA-041: Customer acquisition cost will be <$50 per active customer
+- BA-042: Break-even achievable at 5,000 monthly active users
+
+#### 7.2.6 Regulatory Assumptions
+
+Assumptions about regulatory environment, licensing, and compliance requirements.
+
+| ID | Assumption | Regulatory Area | Validation Method | Impact if Invalid |
+|----|-----------|----------------|------------------|-------------------|
+| BA-0XX | [Regulatory assumption] | [Area] | [How to validate] | [Business impact] |
+
+**Examples**:
+- BA-050: MTL licensing will be maintained in all operating states
+- BA-051: Uzbekistan regulatory environment will remain stable for remittance services
+- BA-052: KYC requirements will not significantly change during development period
+
+---
+
+### 7.3 Dependency Clarifications
+
+This section clarifies dependency types and their impact on requirement prioritization.
+
+| Dependency ID | Description | Dependency Type | Upstream BRD | Impact if Delayed | Mitigation |
+|---------------|-------------|-----------------|--------------|-------------------|------------|
+| DEP-001 | [Dependency description] | Hard/Medium/Soft | BRD-XXX | [Business impact] | [Alternative approach] |
+| DEP-002 | [Dependency description] | Hard/Medium/Soft | BRD-XXX | [Business impact] | [Alternative approach] |
+
+**Dependency Type Definitions**:
+| Type | Definition | Example |
+|------|-----------|---------|
+| **Hard** | Blocker - requirement cannot be implemented without this | KYC system required before transaction processing |
+| **Medium** | Degrades functionality - can proceed with reduced capability | ML fraud detection; can use rule-based fallback |
+| **Soft** | Nice-to-have - affects user experience but not core functionality | Push notifications; email fallback acceptable |
+
+**Example Dependency Clarifications**:
+| Dependency ID | Description | Dependency Type | Upstream BRD | Impact if Delayed | Mitigation |
+|---------------|-------------|-----------------|--------------|-------------------|------------|
+| DEP-001 | Wallet funding via custody provider | Hard | BRD-008 | Cannot process transactions | No alternative - hard blocker |
+| DEP-002 | ML-based fraud detection scoring | Medium | BRD-022 | Higher false positive rate | Rule-based screening as fallback |
+| DEP-003 | Push notification delivery | Soft | BRD-015 | Reduced user engagement | Email/SMS notification fallback |
+| DEP-004 | Real-time FX rate display | Medium | BRD-010 | Slightly stale rates (1-min cache) | Cached rates with staleness indicator |
 
 ---
 
@@ -893,41 +952,156 @@ If acceptance criteria are not met:
 
 ---
 
-## 9. [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management]
+## 9. Business Risk Management
 
-### 9.1 [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] Overview
+This section documents business-level risks that could impact requirement delivery or business outcomes. Each risk uses standardized scoring methodology for prioritization.
 
-[Describe the approach to identifying, assessing, and managing project risks]
+### 9.1 Risk Scoring Methodology
 
-**Risk Scoring:**
-- **Probability:** High (>50%), Medium (20-50%), Low (<20%)
-- **Impact:** High (Major effect on cost/schedule/quality), Medium (Moderate effect), Low (Minor effect)
-- **Risk Score:** Probability × Impact (High=3, Medium=2, Low=1)
+**Risk Score Formula**: Likelihood (1-3) × Impact (3-15) = Risk Score (maximum 15)
 
-### 9.2 Identified Risks
+**Likelihood Scale**:
+| Level | Score | Definition | Probability |
+|-------|-------|-----------|-------------|
+| Low | 1 | Unlikely to occur based on current conditions | <20% |
+| Medium | 2 | Possible given known factors | 20-60% |
+| High | 3 | Likely based on current trajectory | >60% |
 
-| Risk ID | Risk Description | Category | Probability | Impact | Risk Score | Root Cause | Impact if Occurs | Mitigation Strategy | Contingency Plan | Owner | Status |
-|---------|------------------|----------|-------------|--------|------------|------------|------------------|---------------------|------------------|-------|--------|
-| R-001 | [Risk description] | [Technical/Business/Resource] | [H/M/L] | [H/M/L] | [1-9] | [Why might this occur] | [Consequences] | [Preventive actions] | [If it happens] | [Name] | [Open/Mitigated/Closed] |
-| R-002 | [Risk description] | [Technical/Business/Resource] | [H/M/L] | [H/M/L] | [1-9] | [Why might this occur] | [Consequences] | [Preventive actions] | [If it happens] | [Name] | [Open/Mitigated/Closed] |
-| R-003 | [Risk description] | [Technical/Business/Resource] | [H/M/L] | [H/M/L] | [1-9] | [Why might this occur] | [Consequences] | [Preventive actions] | [If it happens] | [Name] | [Open/Mitigated/Closed] |
+**Impact Scale** (Business-Focused):
+| Level | Score | Definition | Business Examples |
+|-------|-------|-----------|-------------------|
+| Minor | 3 | Limited business impact | Delayed feature, minor UX degradation |
+| Moderate | 5 | Noticeable business impact | Reduced functionality, increased costs |
+| Significant | 8 | Substantial business impact | Competitive disadvantage, customer churn |
+| Major | 10 | Severe business impact | Regulatory action, significant revenue loss |
+| Critical | 15 | Existential business impact | License revocation, market exit |
 
-### 9.3 Risk Categories
+**Risk Priority Matrix**:
+| Risk Score | Priority | Action Required |
+|------------|----------|-----------------|
+| 1-5 | Low | Monitor quarterly |
+| 6-15 | Medium | Monthly review, mitigation plan required |
+| 16-30 | High | Weekly review, active mitigation |
+| 31-45 | Critical | Immediate escalation, executive attention |
 
-**Common Risk Categories:**
-- **Technical Risks:** Technology failures, integration issues, performance problems
-- **Resource Risks:** Staff availability, skill gaps, turnover
-- **Schedule Risks:** Delays, dependency issues, unrealistic timelines
-- **Budget Risks:** Cost overruns, funding cuts, hidden costs
-- **Business Risks:** Changing requirements, stakeholder conflicts, organizational changes
-- **External Risks:** Vendor issues, regulatory changes, market conditions
+---
+
+### 9.2 Risk Register by Category
+
+**ID Format**: `RISK-XXX` (Business Risk)
+
+#### 9.2.1 Market & Competitive Risks
+
+Risks from market conditions, competitive pressure, and demand uncertainty.
+
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-001 | [Market/competitive risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-001: Competitor launches similar corridor with lower fees (L:2 × I:8 = 16)
+- RISK-002: Target market demand lower than projected (L:2 × I:10 = 20)
+- RISK-003: Exchange rate volatility reduces margin competitiveness (L:3 × I:5 = 15)
+
+#### 9.2.2 Regulatory & Compliance Risks
+
+Risks from regulatory changes, licensing requirements, and compliance obligations.
+
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-0XX | [Regulatory risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-010: MTL license renewal delayed or denied (L:1 × I:15 = 15)
+- RISK-011: New AML regulations require system modifications (L:2 × I:8 = 16)
+- RISK-012: Destination country restricts inbound remittances (L:1 × I:15 = 15)
+
+#### 9.2.3 Partner & Operational Risks
+
+Risks from partner dependencies, SLA failures, and operational disruptions.
+
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-0XX | [Partner/operational risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-020: Custody provider experiences extended outage (L:1 × I:10 = 10)
+- RISK-021: Delivery partner fails to meet SLA commitments (L:2 × I:8 = 16)
+- RISK-022: Partner API changes require emergency integration updates (L:2 × I:5 = 10)
+
+#### 9.2.4 Financial & Economic Risks
+
+Risks from pricing, costs, profitability, and economic conditions.
+
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-0XX | [Financial risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-030: Partner fee increases erode transaction margins (L:2 × I:8 = 16)
+- RISK-031: Customer acquisition costs exceed projections (L:2 × I:5 = 10)
+- RISK-032: Economic downturn reduces remittance volumes (L:2 × I:10 = 20)
+
+#### 9.2.5 Customer Experience & Reputation Risks
+
+Risks affecting customer satisfaction, brand perception, and trust.
+
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-0XX | [CX/reputation risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-040: High false positive rate blocks legitimate customers (L:2 × I:8 = 16)
+- RISK-041: Transaction delivery delays exceed customer expectations (L:2 × I:8 = 16)
+- RISK-042: Negative reviews impact App Store rating below 4.0 (L:2 × I:5 = 10)
+
+#### 9.2.6 Technology & Platform Risks
+
+Risks from technical failures, scalability, and system dependencies.
+
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-0XX | [Technology risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-050: Platform cannot scale to handle transaction volume (L:1 × I:10 = 10)
+- RISK-051: Security breach compromises customer data (L:1 × I:15 = 15)
+- RISK-052: Third-party dependency vulnerability requires emergency patching (L:2 × I:5 = 10)
+
+#### 9.2.7 Strategic & Business Model Risks
+
+Risks to business strategy, market positioning, and long-term viability.
+
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-0XX | [Strategic risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-060: Single-corridor dependency limits growth options (L:2 × I:8 = 16)
+- RISK-061: Business model disrupted by new payment rail technology (L:1 × I:10 = 10)
+- RISK-062: Key partnership exclusivity limits competitive positioning (L:2 × I:5 = 10)
+
+---
+
+### 9.3 Risk Summary Dashboard
+
+| Category | High Risks (>15) | Medium Risks (6-15) | Low Risks (1-5) | Total |
+|----------|-----------------|---------------------|-----------------|-------|
+| Market & Competitive | [Count] | [Count] | [Count] | [Total] |
+| Regulatory & Compliance | [Count] | [Count] | [Count] | [Total] |
+| Partner & Operational | [Count] | [Count] | [Count] | [Total] |
+| Financial & Economic | [Count] | [Count] | [Count] | [Total] |
+| Customer Experience | [Count] | [Count] | [Count] | [Total] |
+| Technology & Platform | [Count] | [Count] | [Count] | [Total] |
+| Strategic & Business Model | [Count] | [Count] | [Count] | [Total] |
+| **Total** | [Total High] | [Total Medium] | [Total Low] | [Grand Total] |
 
 ### 9.4 Risk Monitoring and Review
 
-- **Risk Review Frequency:** [Weekly/Biweekly/Monthly]
-- **Risk Review Forum:** [Steering committee meeting/Project team meeting]
-- **Risk Escalation Criteria:** [When risks are escalated]
-- **Risk Register Location:** [Where risks are tracked]
+- **Risk Review Frequency**: [Weekly for High/Critical, Monthly for Medium, Quarterly for Low]
+- **Risk Review Forum**: [Steering committee, Project team meeting]
+- **Escalation Criteria**: Score increase >5 points, new High/Critical risks
+- **Risk Register Owner**: [Name/Role]
 
 ---
 
@@ -1768,6 +1942,337 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 
 ---
 
+#### FR 4-Subsection Detailed Guidance
+
+This section provides detailed patterns for each FR subsection to achieve PRD-Ready Score ≥90/100.
+
+---
+
+##### Subsection 1: Business Capability (Required)
+
+**Purpose**: One-sentence statement defining WHAT the system must enable from a business perspective.
+
+**Pattern**: `System must [enable/support/provide] [business actor] to [business action] [business outcome/context].`
+
+**Format Rules**:
+- Single sentence (maximum 30 words)
+- Starts with "System must"
+- Uses business verbs: enable, support, provide, ensure, maintain
+- Excludes technical terms: API, endpoint, database, webhook, payload
+- Focuses on business outcome, not implementation mechanism
+
+**Examples by Complexity**:
+
+| Complexity | Business Capability Example |
+|------------|----------------------------|
+| 1/5 | System must enable customers to view their transaction history for all completed remittances. |
+| 2/5 | System must support recipient management including creation, validation, and reuse for future transactions. |
+| 3/5 | System must perform comprehensive fraud detection and regulatory compliance screening before authorizing remittance transactions. |
+| 4/5 | System must support remittances funded from multiple wallet funding sources across US and EU markets with unified balance presentation. |
+| 5/5 | System must orchestrate end-to-end remittance lifecycle across multiple partners with automated failure recovery and regulatory compliance across jurisdictions. |
+
+**Anti-Patterns (Avoid)**:
+- ❌ "System must call the fraud detection API endpoint"
+- ❌ "System must store transaction data in PostgreSQL"
+- ❌ "System must display a modal dialog for confirmation"
+- ❌ "System must implement webhook handlers for partner callbacks"
+
+---
+
+##### Subsection 2: Business Requirements (Required)
+
+**Purpose**: Bulleted list of 6-8 specific business needs that elaborate the Business Capability.
+
+**Pattern**: Each bullet follows `[Action verb] [business object] [business context/constraint]`
+
+**Format Rules**:
+- 6-8 bullets per FR (minimum 4, maximum 10)
+- Each bullet is 1-2 sentences maximum
+- Uses business action verbs: Accept, Support, Validate, Enable, Enforce, Maintain, Provide
+- Includes cross-references to related BRDs using format: `(per BRD-XXX)` or `(managed per BRD-XXX)`
+- Excludes implementation details: field names, data types, API parameters
+
+**Example Structure**:
+```markdown
+**Business Requirements**:
+- [Primary capability requirement with BRD cross-reference]
+- [Secondary capability requirement]
+- [Validation/quality requirement]
+- [Support for variations/edge cases]
+- [Compliance/regulatory requirement if applicable]
+- [Integration requirement with partner BRD reference]
+- [Performance/availability business need]
+- [Audit/reporting business need]
+```
+
+**Example (FR-002: Fee Calculation)**:
+```markdown
+**Business Requirements**:
+- Calculate flat service fee based on transaction amount tiers (per Fee Schedule in Section 10)
+- Apply corridor-specific FX spread for USD→UZS conversion (per FR-003)
+- Present total cost breakdown before customer confirmation (fee transparency requirement)
+- Support fee waiver promotions during initial launch period (per Marketing campaign requirements)
+- Maintain fee audit trail for regulatory examination and customer dispute resolution
+- Calculate delivery partner fees based on payout method (bank vs mobile wallet vs Paynet card)
+```
+
+**Cross-Reference Pattern**:
+| Reference Type | Format | Example |
+|---------------|--------|---------|
+| Platform BRD | `(per BRD-XXX)` | `(per BRD-008)` |
+| Feature BRD | `(managed per BRD-XXX)` | `(managed per BRD-011)` |
+| Internal Section | `(per Section X)` | `(per Fee Schedule in Section 10)` |
+| Related FR | `(per FR-XXX)` | `(per FR-003)` |
+
+---
+
+##### Subsection 3: Business Rules (Required)
+
+**Purpose**: Decision logic, thresholds, and conditional behaviors expressed in business terms.
+
+**When to Use Tables vs Bullets**:
+
+| Use Tables When | Use Bullets When |
+|-----------------|------------------|
+| ≥3 decision variables | Simple if/then rules |
+| Tiered thresholds (KYC levels, fee tiers) | Sequential business rules |
+| Multi-column decision matrix | Rules with single condition |
+| Comparing options (funding methods, payout types) | Rules requiring narrative explanation |
+
+**Table Pattern (Tiered Thresholds)**:
+```markdown
+**Business Rules**:
+
+| KYC Level | Daily Limit | Per-Transaction Limit | Velocity Limit |
+|-----------|-------------|----------------------|----------------|
+| L1 (Basic) | $500 | $200 | 3 transactions/day |
+| L2 (Enhanced) | $2,000 | $500 | 5 transactions/day |
+| L3 (Full) | $10,000 | $2,500 | 10 transactions/day |
+```
+
+**Table Pattern (Decision Matrix)**:
+```markdown
+**Business Rules**:
+
+| Risk Score | Action | SLA | Escalation |
+|------------|--------|-----|------------|
+| 0-59 | Auto-approve | Immediate | None |
+| 60-79 | Manual review | ≤2 hours | Compliance team |
+| 80-100 | Auto-decline | Immediate | SAR consideration |
+```
+
+**Bullet Pattern (Sequential Rules)**:
+```markdown
+**Business Rules**:
+- Recipients validated successfully in first transaction become saved for future reuse
+- Recipient information must match Paynet network requirements for successful delivery
+- Invalid recipient data must be rejected before transaction initiation to prevent delivery failures
+- Duplicate recipient detection within same customer profile (name + phone number match)
+```
+
+**Examples by Business Rule Type**:
+
+| Rule Type | Example |
+|-----------|---------|
+| Threshold | "Transactions ≥$3,000 require Travel Rule compliance (identity disclosure)" |
+| Conditional | "EU customers use SEPA path; US customers use ACH or card path" |
+| Validation | "Sender IP must resolve to US; recipient phone must be Uzbekistan (+998)" |
+| Sequencing | "Sanctions screening must complete before transaction authorization (blocking operation)" |
+| Default | "Wallet balance displays in USD regardless of original deposit currency" |
+
+---
+
+##### Subsection 4: Business Acceptance Criteria (Required)
+
+**Purpose**: Measurable success criteria with quantitative thresholds and business justification.
+
+**Pattern**: `[Metric]: [Threshold] ([Percentile/Target]) ([Business Justification])`
+
+**Format Rules**:
+- Each criterion has quantitative threshold (number, percentage, time)
+- Include percentile or target qualifier (95%, median, 100%)
+- Include business justification in parentheses
+- 4-6 acceptance criteria per FR
+- Focus on business outcomes, not technical metrics
+
+**Quantitative Patterns**:
+
+| Metric Type | Pattern | Example |
+|-------------|---------|---------|
+| Response Time | `≤[time] for [percentile]% of [operations]` | `≤3 seconds for 95% of transactions` |
+| Accuracy | `≤[rate]% [error type] rate` | `≤3% false positive rate` |
+| Availability | `[percentage]% [consistency/uptime]` | `100% balance consistency across funding sources` |
+| Compliance | `≤[time] from [trigger event]` | `≤24 hours from OFAC publication` |
+| Throughput | `[count] [unit] per [time period]` | `10,000 transactions per day capacity` |
+| Quality | `≥[percentage]% [quality metric]` | `≥95% true positive rate for fraud detection` |
+
+**Example (FR-004: Risk Screening)**:
+```markdown
+**Business Acceptance Criteria**:
+- Screening completion time: ≤3 seconds for 95% of transactions (customer experience requirement)
+- False positive rate: ≤3% (minimize blocking legitimate customers unnecessarily)
+- True positive rate: ≥95% (catch actual fraudulent/sanctioned transactions)
+- Manual review queue processing: ≤2 hours during business hours for 90% of cases
+- Sanctions list updates: Applied within 24 hours of OFAC publication (regulatory requirement)
+```
+
+**Justification Phrases**:
+| Justification Type | Phrase Pattern |
+|-------------------|----------------|
+| Customer Experience | `(customer experience requirement)` |
+| Regulatory | `(regulatory requirement)`, `(per FinCEN/OFAC mandate)` |
+| Operational | `(operational efficiency)`, `(reduce manual processing)` |
+| Business | `(reduces friction for repeat sends)`, `(enables market expansion)` |
+| Risk | `(minimize false blocks)`, `(prevent delivery failures)` |
+
+---
+
+##### Subsection 5: Related Requirements (Required)
+
+**Purpose**: Cross-references to Platform BRDs, Partner Integration BRDs, and other Feature BRDs.
+
+**Format**:
+```markdown
+**Related Requirements**:
+- Platform: BRD-001 (Platform Architecture), BRD-002 (Partner Ecosystem)
+- Partner Integration: BRD-008 (Wallet Funding via Bridge), BRD-011 (Recipient Management)
+- Compliance: BRD-003 (Security & Compliance Framework), BRD-017 (Compliance Monitoring)
+- AI Agent: BRD-022 (Fraud Detection Agent - ML implementation details)
+```
+
+**Category Definitions**:
+| Category | BRD Range | Purpose |
+|----------|-----------|---------|
+| Platform | BRD-001 through BRD-005 | Core platform capabilities |
+| Partner Integration | BRD-006 through BRD-015 | External partner integrations |
+| Compliance | BRD-016 through BRD-020 | Regulatory and compliance |
+| AI Agent | BRD-021 through BRD-030 | AI/ML agent capabilities |
+| Feature | BRD-031+ | Specific business features |
+
+---
+
+##### Subsection 6: Complexity Rating (Required)
+
+**Purpose**: 1-5 scale rating with business-level justification.
+
+**Pattern**: `[Rating]/5 ([Partner chain]; [Regulatory scope]; [Business constraint count])`
+
+**Complexity Factors**:
+| Factor | Low (1-2) | Medium (3) | High (4-5) |
+|--------|-----------|------------|------------|
+| Partner Count | 0-1 partners | 2 partners | 3+ partners |
+| Regulatory Scope | Single jurisdiction | Dual jurisdiction | Multi-jurisdiction |
+| Business Constraints | 1-2 constraints | 3-4 constraints | 5+ constraints |
+| Integration Complexity | Single integration | Chain (A→B) | Multi-chain (A→B→C) |
+| Business Rule Count | 1-3 rules | 4-6 rules | 7+ rules |
+
+**Multi-Partner Chain Notation**: Use arrow notation to show partner dependencies.
+- Simple: `(BeeLocal→Bridge→Paynet)`
+- Complex: `(BeeLocal→Bridge→Paynet; BeeLocal→Compliance→OFAC)`
+
+**Examples**:
+```markdown
+**Complexity**: 2/5 (Standard customer data management; requires recipient validation API integration from BRD-011)
+
+**Complexity**: 3/5 (Multiple screening systems integration; ML model inference with business rule thresholds; regulatory compliance across sanctions, AML, and Travel Rule; manual review workflow coordination)
+
+**Complexity**: 4/5 (Dual-region funding architecture; requires custody provider integration with ACH and SEPA paths; unified wallet balance across currency sources; multi-jurisdiction compliance)
+
+**Complexity**: 5/5 (End-to-end orchestration: BeeLocal→Bridge→Paynet partner chain; 7 business constraints including regulatory hold periods; multi-jurisdiction compliance US+Uzbekistan; automated retry with business escalation; 12 business rules across 4 decision categories)
+```
+
+---
+
+##### Subsection 7: Customer-Facing Language [Optional]
+
+**Purpose**: Document customer-visible text, notifications, error messages, and communication templates for customer-facing BRDs. This subsection ensures consistent messaging across all customer touchpoints.
+
+**When Required**: Include this subsection when the FR involves:
+- Customer-visible UI text or messages
+- Email/SMS/push notifications triggered by the FR
+- Error messages displayed to customers
+- Terms and conditions language
+- Customer support scripts or FAQs
+
+**Cross-Reference**: Full communication templates are documented in **Appendix N: Customer Communication Templates**. This subsection provides FR-specific excerpts.
+
+**Content Categories**:
+
+| Category | Purpose | Example |
+|----------|---------|---------|
+| **Success Messages** | Confirmation text shown after successful actions | "Your transfer of $[amount] to [recipient] is being processed" |
+| **Error Messages** | Customer-friendly explanations of failures | "We couldn't complete your transfer. Your payment method was declined." |
+| **Notification Text** | Push/SMS/email notification content | "Your transfer to [recipient] has been delivered successfully" |
+| **Help/FAQ Text** | Self-service support content | "Transfers typically arrive within 1-3 business days" |
+| **Legal/Disclosure** | Required regulatory or compliance text | "Transfer fees and exchange rates are locked at time of confirmation" |
+
+**Format Pattern**:
+```markdown
+**Customer-Facing Language**:
+
+**Success Messages**:
+| Trigger Event | Message | Channel |
+|---------------|---------|---------|
+| Transaction initiated | "Your transfer of $[amount] to [recipient] is being processed. Estimated delivery: [date]" | In-app, Email |
+| Transaction delivered | "Great news! [recipient] has received your transfer of $[amount] ([local_amount] UZS)" | Push, SMS |
+
+**Error Messages**:
+| Error Condition | Customer Message | Support Code |
+|-----------------|------------------|--------------|
+| Insufficient funds | "Your payment couldn't be completed. Please check your balance and try again." | ERR-001 |
+| Recipient validation failed | "We couldn't verify the recipient's information. Please check the details and try again." | ERR-002 |
+
+**Regulatory Disclosures**:
+- Pre-transfer disclosure: "You will be charged $[fee]. Exchange rate: 1 USD = [rate] UZS. [recipient] will receive [local_amount] UZS."
+- Transfer Rights disclosure: "For questions or complaints about this transfer, contact us at [support] or visit [URL]"
+```
+
+**Example (FR-001: Transaction Initiation)**:
+```markdown
+**Customer-Facing Language**:
+
+**Success Messages**:
+| Trigger | Message | Channel |
+|---------|---------|---------|
+| Quote generated | "Send $[amount] to [recipient]. Fee: $[fee]. [recipient] receives [local_amount] UZS." | In-app |
+| Transaction submitted | "Your transfer is on its way! We'll notify you when [recipient] receives the funds." | In-app, Email |
+
+**Error Messages**:
+| Condition | Customer Message | Support Code |
+|-----------|------------------|--------------|
+| Daily limit exceeded | "You've reached your daily transfer limit of $[limit]. Try again tomorrow or contact support to increase your limit." | TXN-LIMIT |
+| Recipient country blocked | "We're unable to send transfers to this destination at this time." | TXN-DEST |
+
+**Notification Text**:
+- Push (initiation): "Transfer started: $[amount] to [recipient_name]"
+- Push (delivered): "✓ Delivered: [recipient_name] received [local_amount] UZS"
+- SMS (delivered): "BeeLocal: Your transfer of [local_amount] UZS to [recipient_name] has been delivered."
+```
+
+**Language Guidelines**:
+| Guideline | Do | Don't |
+|-----------|-----|-------|
+| Tone | Friendly, clear, helpful | Technical, formal, jargon-heavy |
+| Specificity | Include amounts, names, dates | Use vague placeholders |
+| Action | Tell customer what to do next | Leave customer uncertain |
+| Blame | "We couldn't complete" | "You failed to" |
+| Technical terms | "Your bank declined" | "ACH return code R01" |
+
+**Placeholder Standards**:
+| Placeholder | Description | Example Rendering |
+|-------------|-------------|-------------------|
+| `[amount]` | USD amount with currency symbol | "$150.00" |
+| `[local_amount]` | Destination currency amount | "1,875,000 UZS" |
+| `[recipient]` | Recipient display name | "Dilshod A." |
+| `[recipient_name]` | Recipient full name | "Dilshod Alimov" |
+| `[fee]` | Fee amount | "$4.99" |
+| `[date]` | Expected delivery date | "December 15, 2024" |
+| `[rate]` | Exchange rate | "12,500" |
+| `[limit]` | Applicable limit | "$2,000" |
+| `[support]` | Support contact | "1-800-XXX-XXXX" |
+
+---
+
 ### Appendix D: Process Flow Diagrams
 
 [Include current state and future state process diagrams]
@@ -1826,7 +2331,153 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 
 ---
 
+### Appendix K: Fee Schedule Template [Required for Financial BRDs]
 
+**Purpose**: Document all customer-facing fees and internal cost structures for financial transactions.
+
+#### K.1 Customer-Facing Fee Structure
+
+| Fee Type | Amount | Trigger | Calculation Basis | Customer Communication |
+|----------|--------|---------|-------------------|----------------------|
+| Service Fee | [Amount or formula] | [When charged] | [How calculated] | [How displayed to customer] |
+| FX Spread | [Percentage range] | [On FX conversion] | [Mid-market rate + spread] | [Disclosed as "Exchange rate includes..."] |
+| Delivery Fee | [Amount or formula] | [On payout] | [Based on method] | [Shown in fee breakdown] |
+
+**Example (Remittance):**
+| Fee Type | Amount | Trigger | Calculation Basis | Customer Communication |
+|----------|--------|---------|-------------------|----------------------|
+| Service Fee | $3.00 flat | Per transaction | Fixed regardless of amount | "BeeLocal service fee: $3.00" |
+| FX Spread | 1.5-2.0% | USD→UZS conversion | Mid-market rate + 1.5-2% | "Rate includes ~1.5% exchange margin" |
+| Delivery Fee | $0.00 | Standard delivery | Absorbed in FX spread | "No additional delivery fee" |
+
+#### K.2 Partner Cost Structure (Internal Reference)
+
+| Partner | Cost Type | Rate | Settlement Terms | Volume Tiers |
+|---------|-----------|------|------------------|--------------|
+| [Partner] | [Fee type] | [Rate/amount] | [Payment terms] | [Volume discounts] |
+
+#### K.3 Margin Analysis
+
+| Transaction Size | Total Customer Cost | Partner Costs | Gross Margin | Target Margin |
+|-----------------|--------------------| --------------|--------------|---------------|
+| $100 | [Total] | [Costs] | [Margin %] | [Target %] |
+| $500 | [Total] | [Costs] | [Margin %] | [Target %] |
+| $1,000 | [Total] | [Costs] | [Margin %] | [Target %] |
+
+---
+
+### Appendix L: Partner SLA Summary [Required for Partner Integration BRDs]
+
+**Purpose**: Consolidate partner service level agreements relevant to business requirements.
+
+#### L.1 Partner SLA Matrix
+
+| Partner | Service | Availability SLA | Response Time SLA | Error Rate SLA | Escalation Contact |
+|---------|---------|-----------------|-------------------|----------------|-------------------|
+| [Partner] | [Service] | [%] | [Time] | [%] | [Contact] |
+
+**Example:**
+| Partner | Service | Availability SLA | Response Time SLA | Error Rate SLA | Escalation Contact |
+|---------|---------|-----------------|-------------------|----------------|-------------------|
+| Bridge | Custody API | 99.9% | <2 seconds (95th) | <0.1% | bridge-support@example.com |
+| Paynet | Delivery API | 99.5% | <5 seconds (95th) | <0.5% | paynet-ops@example.com |
+| Sardine | Risk Screening | 99.9% | <3 seconds (95th) | <0.01% | sardine-sla@example.com |
+
+#### L.2 SLA Impact on Business Requirements
+
+| SLA Metric | Business Requirement Impact | Mitigation if SLA Missed |
+|------------|----------------------------|-------------------------|
+| [SLA] | [Impact on FR/NFR] | [Fallback/contingency] |
+
+---
+
+### Appendix M: Regulatory Reference Matrix [Required for Compliance BRDs]
+
+**Purpose**: Map regulatory requirements to business requirements for compliance traceability.
+
+#### M.1 Regulatory Requirements Mapping
+
+| Regulation | Section/Rule | Requirement Summary | BRD Section | FR Reference | Compliance Approach |
+|------------|--------------|---------------------|-------------|--------------|---------------------|
+| [Regulation] | [Section] | [Summary] | [Section #] | [FR-XXX] | [How complied] |
+
+**Example:**
+| Regulation | Section/Rule | Requirement Summary | BRD Section | FR Reference | Compliance Approach |
+|------------|--------------|---------------------|-------------|--------------|---------------------|
+| FinCEN MSB | 31 CFR 1010.410 | Recordkeeping for 5 years | Section 6 | FR-012 | Transaction audit trail with 5-year retention |
+| OFAC SDN | 31 CFR 501.603 | Sanctions screening | Section 5 | FR-004 | Real-time OFAC screening before authorization |
+| Travel Rule | 31 CFR 1010.410(f) | Identity for ≥$3,000 | Section 5 | FR-004 | Sender/recipient identity capture above threshold |
+
+#### M.2 Regulatory Calendar
+
+| Regulation | Reporting Requirement | Frequency | Due Date | Owner | Source System |
+|------------|----------------------|-----------|----------|-------|---------------|
+| [Regulation] | [Report name] | [Frequency] | [Date/deadline] | [Role] | [System] |
+
+---
+
+### Appendix N: Customer Communication Templates [Required for Customer-Facing BRDs]
+
+**Purpose**: Define business-approved messaging for customer communications at key touchpoints.
+
+#### N.1 Transaction Status Messages
+
+| Status | Customer Message | Channel | Trigger |
+|--------|-----------------|---------|---------|
+| [Status] | [Approved message text] | [Push/Email/SMS/In-App] | [When sent] |
+
+**Example:**
+| Status | Customer Message | Channel | Trigger |
+|--------|-----------------|---------|---------|
+| Initiated | "Your transfer of $[amount] to [recipient] has been initiated." | Push + Email | On transaction creation |
+| Delivered | "Great news! Your $[amount] transfer to [recipient] was delivered successfully." | Push + Email | On delivery confirmation |
+| Failed | "We couldn't complete your transfer. [Reason]. Funds will be returned within [X] days." | Push + Email | On delivery failure |
+
+#### N.2 Error Messages
+
+| Error Condition | Customer Message | Recommended Action | Support Escalation |
+|----------------|-----------------|-------------------|-------------------|
+| [Condition] | [Message] | [CTA] | [When to escalate] |
+
+#### N.3 Promotional Messages (If Applicable)
+
+| Campaign | Message | Eligibility | Duration | Terms Link |
+|----------|---------|-------------|----------|-----------|
+| [Campaign] | [Message] | [Who qualifies] | [Start-End] | [URL] |
+
+---
+
+### Appendix O: Business Metrics Dashboard [Required for All BRDs]
+
+**Purpose**: Define key business metrics for monitoring requirement success and ongoing performance.
+
+#### O.1 Success Metrics
+
+| Metric | Definition | Target | Baseline | Data Source | Review Frequency |
+|--------|-----------|--------|----------|-------------|-----------------|
+| [Metric name] | [How measured] | [Target value] | [Current/starting value] | [System/report] | [Daily/Weekly/Monthly] |
+
+**Example:**
+| Metric | Definition | Target | Baseline | Data Source | Review Frequency |
+|--------|-----------|--------|----------|-------------|-----------------|
+| Transaction Success Rate | Successful deliveries / Total transactions | ≥98% | N/A (new) | Transaction logs | Daily |
+| Average Delivery Time | Time from initiation to delivery confirmation | <15 min (95th) | N/A (new) | Timestamp delta | Daily |
+| Customer Satisfaction | Post-transaction NPS score | ≥50 | N/A (new) | Survey responses | Monthly |
+| False Positive Rate | Legitimate transactions blocked / Total transactions | ≤3% | N/A (new) | Screening logs | Weekly |
+
+#### O.2 Operational Metrics
+
+| Metric | Definition | Alert Threshold | Escalation |
+|--------|-----------|----------------|------------|
+| [Metric] | [Definition] | [When to alert] | [Who to notify] |
+
+#### O.3 Business Health Indicators
+
+| Indicator | Formula | Green | Yellow | Red |
+|-----------|---------|-------|--------|-----|
+| [Indicator] | [Calculation] | [Good range] | [Warning range] | [Critical range] |
+
+---
 
 ## Document Control Notes
 

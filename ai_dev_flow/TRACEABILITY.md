@@ -406,7 +406,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 | 8 | **IMPL** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req` | Formal Template | Cumulative: BRD through REQ |
 | 9 | **CTR** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl` | Formal Template | Cumulative: BRD through IMPL (optional layer) |
 | 10 | **SPEC** | All upstream through `@req` + optional `@impl`, `@ctr` | Formal Template (YAML) | Full upstream chain |
-| 11 | **TASKS** | All upstream through `@spec` | Formal Template | Include optional IMPL/CTR if present |
+| 11 | **TASKS** | All upstream through `@spec` + optional `@icon` | Formal Template | Include optional IMPL/CTR/ICON if present |
 | 12 | **IPLAN** | All upstream through `@tasks` | Project Files | All formal artifact tags |
 | 13 | **Code** | **ALL tags** including `@iplan` | Docstring Tags | Complete traceability chain |
 | 14 | **Tests** | All upstream through `@code` | Docstring Tags + BDD | All upstream + code reference |
@@ -420,11 +420,12 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 ```
 
 **Components**:
-- **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`, `@iplan`)
-- **Document ID**: Standard ID format (e.g., `BRD-001`, `REQ-003`, `SPEC-005`)
-- **Requirement ID**: Specific requirement within document (e.g., `FR-030`, `NFR-006`, `PERF-001`)
+- **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`, `@icon`, `@iplan`)
+- **Document ID**: Standard ID format (e.g., `BRD-001`, `REQ-003`, `SPEC-005`, `ICON-001`)
+- **Requirement ID**: Specific requirement within document (e.g., `FR-030`, `NFR-006`, `PERF-001`, `ContractName`)
 - **Separator**: Colon (`:`) between document and requirement
 - **Multiple Values**: Comma-separated
+- **Special**: `@icon` includes optional `@icon-role: provider|consumer`
 
 **Examples**:
 ```markdown
@@ -441,6 +442,26 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @ctr: CTR-001
 @spec: SPEC-003
 @tasks: TASKS-001:task-3
+@icon: TASKS-001:IBGatewayConnector
+@icon-role: consumer
+```
+
+**Implementation Contracts** (`@icon` - Layer 11, optional):
+- Tags implementation contracts for parallel development
+- Format: `@icon: TASKS-XXX:ContractName` or `@icon: ICON-XXX:ContractName`
+- Optional role: `@icon-role: provider|consumer`
+- Distinguishes from `@ctr` (Layer 9 external API contracts)
+- Embedded in TASKS (default) or standalone ICON files (5+ consumers)
+
+**Example**:
+```markdown
+## Provider TASKS (TASKS-001)
+@icon: TASKS-001:IBGatewayConnector
+@icon-role: provider
+
+## Consumer TASKS (TASKS-002)
+@icon: TASKS-001:IBGatewayConnector
+@icon-role: consumer
 ```
 
 **Code Docstring Example**:
@@ -567,7 +588,7 @@ The SDD workflow employs different tracking methods for different artifact types
 | 8 | IMPL | Formal Template + Tags | Yes | Yes | 7 | @brd through @req |
 | 9 | CTR | Formal Template + Tags | Yes (Dual: .md + .yaml) | Yes | 8 | @brd through @impl (optional) |
 | 10 | SPEC | Formal Template + Tags | Yes (YAML) | Yes | 7-9 | @brd through @req + optional |
-| 11 | TASKS | Formal Template + Tags | Yes | Yes | 8-10 | @brd through @spec |
+| 11 | TASKS | Formal Template + Tags | Yes | Yes | 8-11 | @brd through @spec + optional @icon |
 | 12 | IPLAN | Project Files + Tags | No (Project-specific) | Yes | 9-11 | All formal artifact tags |
 | 13 | Code | Docstring Tags | No (Implementation) | Yes | 10-12 | ALL upstream tags |
 | 14 | Tests | BDD + Docstring Tags | Mixed | Yes | 11-13 | All upstream + code |
@@ -739,9 +760,18 @@ def test_validate_position_limit_within_threshold():
 - **Format**: YAML with `traceability` mapping and `contract_ref` field (if implementing contract)
 
 ### TASKS (Implementation Plans)
-- **Upstream**: SPEC, REQ (requirements)
-- **Downstream**: Code (implementation), Tests
+- **Upstream**: SPEC, REQ (requirements), ICON (optional - implementation contracts)
+- **Downstream**: Code (implementation), Tests, ICON (optional - contracts provided)
 - **Section**: Implementation scope with requirement links
+- **Contracts**: Use `@icon:` tag for implementation contracts (embedded or standalone ICON files)
+- **Layer**: 11 (Code Generation)
+
+**Implementation Contracts** (optional):
+- Embedded in TASKS files (default) - Section 8: Implementation Contracts
+- Standalone ICON files (when 5+ consumers, >500 lines, platform-level)
+- Use `@icon: TASKS-XXX:ContractName` or `@icon: ICON-XXX:ContractName`
+- Optional role: `@icon-role: provider|consumer`
+- Distinguishes from `@ctr:` (Layer 9 external API contracts)
 
 ## Cross-Reference Link Format
 

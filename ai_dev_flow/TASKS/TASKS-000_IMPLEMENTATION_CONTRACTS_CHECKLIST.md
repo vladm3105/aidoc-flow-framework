@@ -1,5 +1,5 @@
 ---
-title: "TASKS-000: Integration Contracts Quick Reference Checklist"
+title: "TASKS-000: Implementation Contracts Quick Reference Checklist"
 tags:
   - tasks-checklist
   - layer-11-artifact
@@ -14,7 +14,7 @@ custom_fields:
   development_status: active
 ---
 
-# TASKS-000: Integration Contracts Quick Reference Checklist
+# TASKS-000: Implementation Contracts Quick Reference Checklist
 
 ## Purpose
 
@@ -26,7 +26,7 @@ Quick reference guide for determining when to create integration contracts, sele
 
 ---
 
-## 1. When to Create Integration Contracts
+## 1. When to Create Implementation Contracts
 
 ### Decision Matrix
 
@@ -118,7 +118,7 @@ Select contract type(s) based on what you're sharing:
 - [ ] Review TASKS file for dependencies
 - [ ] Count downstream TASKS (how many depend on this?)
 - [ ] Identify shared interfaces
-- [ ] Document in "Integration Contracts" section
+- [ ] Document in "Implementation Contracts" section
 
 **Output**: List of upstream/downstream dependencies
 
@@ -140,7 +140,7 @@ Select contract type(s) based on what you're sharing:
 **Output**: Contract code ready for validation
 
 #### Step 4: Contract Documentation ✓
-- [ ] Add "Integration Contracts" section to TASKS
+- [ ] Add "Implementation Contracts" section to TASKS
 - [ ] Document contract purpose and scope
 - [ ] Provide usage examples
 - [ ] List consuming TASKS files
@@ -339,7 +339,7 @@ class ServiceConfig(BaseModel):
 - [ ] Edge cases documented
 
 **Distribution**:
-- [ ] Contract added to TASKS "Integration Contracts" section
+- [ ] Contract added to TASKS "Implementation Contracts" section
 - [ ] Downstream consumers notified
 - [ ] Contract location documented
 - [ ] Version number assigned (1.0.0)
@@ -487,7 +487,7 @@ mypy --strict your_contracts.py
 
 **Step 5** (1 min): Document in TASKS
 ```markdown
-## Integration Contracts
+## Implementation Contracts
 
 ### Contract 1: YourInterface
 **Type**: Protocol
@@ -540,10 +540,85 @@ except ValidationError as e:
 
 ---
 
-## 10. Reference Links
+## 10. @icon Tag Quick Reference
+
+### Tag Format
+
+**Primary**:
+```yaml
+@icon: TASKS-XXX:ContractName
+```
+
+**With Role**:
+```yaml
+@icon: TASKS-001:IBGatewayConnector
+@icon-role: provider
+```
+
+### Role Types
+- `provider` - Implements the contract
+- `consumer` - Depends on the contract
+- (no role) - Reference only
+
+### Usage Examples
+
+**Provider** (in TASKS-001):
+```markdown
+## 8. Implementation Contracts
+@icon: TASKS-001:IBGatewayConnector
+@icon-role: provider
+```
+
+**Consumer** (in TASKS-002):
+```markdown
+## 3. Dependencies
+@icon: TASKS-001:IBGatewayConnector
+@icon-role: consumer
+```
+
+**Code Comment**:
+```python
+# @icon: TASKS-001:IBGatewayConnector
+# @icon-role: provider
+class IBGatewayConnector(Protocol):
+    ...
+```
+
+### Relationship to Other Tags
+- `@ctr:` - Layer 9 external API contracts
+- `@icon:` - Layer 11 internal implementation contracts
+- `@iplan:` - Layer 12 implementation plans
+
+---
+
+## 11. ICON File Decision (Optional)
+
+**Default**: Embed contracts in TASKS files
+
+**Use Standalone ICON Files When** (ALL must be met):
+- [ ] 5+ consumer TASKS files
+- [ ] Contract definition >500 lines
+- [ ] Platform-level shared interface
+- [ ] Cross-project usage
+
+**ICON Resources**:
+- [ICON Directory README](../ICON/README.md)
+- [ICON_CREATION_RULES.md](../ICON/ICON_CREATION_RULES.md)
+- [ICON-000_index.md](../ICON/ICON-000_index.md)
+- [ICON-TEMPLATE.md](../ICON/ICON-TEMPLATE.md)
+
+**Quick Decision**:
+```
+3 consumers, 200 lines → Embed in TASKS ✅
+8 consumers, 600 lines, 3 projects → Create ICON ✅
+```
+
+---
+
+## 12. Reference Links
 
 ### Internal Documentation
-- [INTEGRATION_CONTRACTS_GUIDE.md](./INTEGRATION_CONTRACTS_GUIDE.md) - Comprehensive guide
+- [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) - Comprehensive guide
 - [TASKS-TEMPLATE.md](./TASKS-TEMPLATE.md) - TASKS template with contracts section
 - [CLAUDE.md](/home/ya/.claude/CLAUDE.md) - Global instructions with contracts strategy
 
@@ -557,9 +632,9 @@ except ValidationError as e:
 
 ## Document Metadata
 
-**Version**: 1.0.0
+**Version**: 1.1.0
 **Created**: 2025-11-24
-**Last Updated**: 2025-11-24
+**Last Updated**: 2025-11-25
 **Document Type**: Quick Reference Checklist
 **Complexity**: 2/5
 **Token Count**: ~3,500 tokens

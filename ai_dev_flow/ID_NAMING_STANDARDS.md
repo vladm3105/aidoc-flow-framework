@@ -164,6 +164,34 @@ Document ID Standards (ai_dev_flow)
     - Layer 1-11 tags: @brd, @prd, @ears, @bdd, @adr, @sys, @req, @impl (optional), @ctr (optional), @spec, @tasks
     - Layer 12 tag: @iplan
   - Notes: Unlike other artifact types, IPLAN uses timestamp-based naming to track implementation sessions chronologically. H1 ID follows standard pattern (e.g., `# IPLAN-001: Database Migration Plan`).
+- Implementation Contracts (ICON) - Optional
+  - **Default**: Embed contracts in TASKS files (Section 8: Implementation Contracts)
+  - **Standalone ICON Files** (when 5+ consumers, >500 lines, platform-level):
+    - H1 ID: `ICON-NNN` (e.g., `# ICON-001: Gateway Connector Protocol`)
+    - Filename Format: `ICON-NNN_descriptive_name.md`
+    - Components:
+      - `ICON-NNN`: Sequential ID (001, 002, etc.)
+      - `descriptive_name`: Lowercase with underscores
+    - Variable Length: NNN = 3-4 digits (001-999, 1000+)
+    - Location: `ai_dev_flow/ICON/` or `docs/ICON/`
+    - Layer: 11 (same as TASKS)
+    - Purpose: Standalone implementation contracts for parallel development coordination
+    - Examples:
+      - `ICON-001_gateway_connector_protocol.md`
+      - `ICON-002_market_data_event_bus.md`
+      - `ICON-003_order_execution_exceptions.md`
+    - Traceability Tag Format: `@icon: TASKS-XXX:ContractName` or `@icon: ICON-XXX:ContractName`
+    - Tag Rules:
+      - Tag format: `@icon:` with contract reference and optional `@icon-role: provider|consumer`
+      - Used in: TASKS files (provider/consumer), Code files (implementation)
+      - Distinguishes from `@ctr:` (Layer 9 external API contracts)
+    - Decision Criteria (ALL must be met):
+      - 5+ consumer TASKS files
+      - Contract definition >500 lines
+      - Platform-level shared interface
+      - Cross-project usage
+    - Registry: `ICON-000_index.md` tracks all standalone contracts
+    - Notes: Most implementation contracts should be embedded in TASKS files. Use standalone ICON only when criteria met. See [ICON_CREATION_RULES.md](ICON/ICON_CREATION_RULES.md).
 - Business Requirements Documents (BRD)
   - H1 ID: `BRD-NNN` or `BRD-NNN-YY` (e.g., `# BRD-009-01: [EXTERNAL_INTEGRATION - e.g., third-party API, service provider] Integration Prerequisites`)
   - Filename: `BRD-NNN_{slug}.md` or `BRD-NNN-YY_{slug}.md`

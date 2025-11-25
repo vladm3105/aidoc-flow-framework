@@ -310,7 +310,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ---
 
-## Integration Contracts
+## Implementation Contracts
 
 ### Contract Overview
 
@@ -1150,6 +1150,7 @@ Document evidence that this task has been implemented correctly and meets all ac
 @impl: IMPL-NNN:PHASE-ID
 @ctr: CTR-NNN
 @spec: SPEC-NNN
+@icon: TASKS-XXX:ContractName (if providing/consuming implementation contracts)
 ```
 
 **Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
@@ -1165,6 +1166,7 @@ Document evidence that this task has been implemented correctly and meets all ac
 - `@impl`: Implementation Plans (optional - include if exists in chain)
 - `@ctr`: API Contracts (optional - include if exists in chain)
 - `@spec`: Technical Specifications
+- `@icon`: Implementation Contracts (optional - for parallel development coordination)
 
 **Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
 
@@ -1180,6 +1182,8 @@ Document evidence that this task has been implemented correctly and meets all ac
 @impl: IMPL-001:phase1
 @ctr: CTR-001
 @spec: SPEC-003
+@icon: TASKS-001:IBGatewayConnector
+@icon-role: consumer
 ```
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through SPEC) are properly linked.

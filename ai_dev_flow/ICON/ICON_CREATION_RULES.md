@@ -1,0 +1,287 @@
+---
+title: ICON Creation Rules
+tags:
+  - framework-guide
+  - implementation-contract
+  - layer-11-artifact
+  - decision-criteria
+custom_fields:
+  document_type: guide
+  artifact_type: ICON
+  layer: 11
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+---
+
+# ICON Creation Rules
+
+## Purpose
+
+Decision framework for when to create standalone ICON files versus embedding implementation contracts in TASKS files.
+
+**Default**: Embed contracts in TASKS files (Section 8: Implementation Contracts)
+
+---
+
+## Decision Matrix
+
+### Use Standalone ICON Files When
+
+**Criteria** (ALL must be met):
+
+| Criterion | Threshold | Rationale |
+|-----------|-----------|-----------|
+| **Consumer Count** | 5+ TASKS files | High coordination overhead |
+| **Contract Size** | >500 lines | Too large to embed cleanly |
+| **Scope** | Platform-level | Shared across multiple components |
+| **Projects** | Cross-project usage | Needs central management |
+
+**Example**: Platform event bus used by 8 TASKS across 3 projects with 600-line protocol definition → Standalone ICON file
+
+### Embed in TASKS Files When
+
+**Criteria** (ANY condition):
+
+| Criterion | Threshold | Rationale |
+|-----------|-----------|-----------|
+| **Consumer Count** | <5 TASKS files | Low coordination overhead |
+| **Contract Size** | <500 lines | Fits cleanly in TASKS |
+| **Scope** | Component-level | Single component boundary |
+| **Projects** | Single project | No cross-project sharing |
+
+**Example**: Gateway connector used by 3 TASKS within single project with 200-line protocol → Embed in TASKS-001
+
+---
+
+## Detailed Decision Rules
+
+### Rule 1: Consumer Count
+
+**5+ Consumers → Standalone ICON**:
+- High coordination overhead
+- Central change management required
+- Breaking changes impact many TASKS
+- Single source of truth critical
+
+**<5 Consumers → Embed in TASKS**:
+- Low coordination overhead
+- Direct communication between teams
+- Changes easily coordinated
+- Less management overhead
+
+### Rule 2: Contract Size
+
+**>500 Lines → Standalone ICON**:
+- Too large to embed in TASKS
+- Overwhelming TASKS document
+- Difficult to maintain inline
+- Better as separate artifact
+
+**<500 Lines → Embed in TASKS**:
+- Manageable inline size
+- Self-contained TASKS file
+- Easier to review together
+- Reduced file proliferation
+
+### Rule 3: Scope Level
+
+**Platform-Level → Standalone ICON**:
+- Shared across multiple components
+- System-wide impact
+- Architectural significance
+- Needs formal governance
+
+**Component-Level → Embed in TASKS**:
+- Single component boundary
+- Local implementation detail
+- Minimal architectural impact
+- Lightweight management
+
+### Rule 4: Project Scope
+
+**Cross-Project → Standalone ICON**:
+- Multiple projects depend on contract
+- Shared infrastructure
+- Requires versioning strategy
+- Central maintenance
+
+**Single Project → Embed in TASKS**:
+- Project-specific contract
+- No external dependencies
+- Simpler lifecycle
+- Project-local management
+
+---
+
+## Decision Examples
+
+### Example 1: Gateway Connector (Embed in TASKS)
+
+**Analysis**:
+- Consumer Count: 3 TASKS files ❌ (<5)
+- Contract Size: 200 lines ❌ (<500)
+- Scope: Component-level ❌
+- Projects: Single project ❌
+
+**Decision**: Embed in TASKS-001
+**Rationale**: Small contract with few consumers, component-level scope
+
+### Example 2: Platform Event Bus (Standalone ICON)
+
+**Analysis**:
+- Consumer Count: 8 TASKS files ✅ (>5)
+- Contract Size: 600 lines ✅ (>500)
+- Scope: Platform-level ✅
+- Projects: 3 projects ✅
+
+**Decision**: Create ICON-002
+**Rationale**: Large contract with many consumers across multiple projects
+
+### Example 3: Order Execution Protocol (Standalone ICON)
+
+**Analysis**:
+- Consumer Count: 6 TASKS files ✅ (>5)
+- Contract Size: 350 lines ❌ (<500)
+- Scope: Platform-level ✅
+- Projects: Single project ❌
+
+**Decision**: Borderline - Consider future growth
+**Recommendation**:
+- Start: Embed in TASKS if stable
+- Migrate: To ICON if grows or adds consumers
+
+### Example 4: Market Data Exception Hierarchy (Embed in TASKS)
+
+**Analysis**:
+- Consumer Count: 2 TASKS files ❌ (<5)
+- Contract Size: 150 lines ❌ (<500)
+- Scope: Component-level ❌
+- Projects: Single project ❌
+
+**Decision**: Embed in TASKS-003
+**Rationale**: Small exception hierarchy with few consumers
+
+---
+
+## Migration Strategy
+
+### When to Migrate from TASKS to ICON
+
+**Triggers**:
+1. Consumer count reaches 5+
+2. Contract size exceeds 500 lines
+3. Cross-project usage emerges
+4. Platform-level significance recognized
+
+**Process**:
+1. Create ICON file from embedded contract
+2. Assign ICON-NNN ID
+3. Update ICON-000_index.md registry
+4. Update all TASKS files to reference ICON
+5. Archive embedded versions
+6. Notify all stakeholders
+
+### When to Migrate from ICON to TASKS
+
+**Triggers**:
+1. Consumer count drops below 3
+2. Contract size shrinks below 300 lines
+3. Single project usage only
+4. Component-level scope identified
+
+**Process**:
+1. Identify primary provider TASKS
+2. Embed contract in provider TASKS
+3. Update consumer TASKS references
+4. Deprecate ICON file
+5. Update ICON-000_index.md registry
+6. Archive ICON after transition period
+
+---
+
+## Anti-Patterns
+
+### ❌ Premature ICON Creation
+
+**Problem**: Creating ICON files for small contracts with few consumers
+**Impact**: File proliferation, management overhead
+**Solution**: Start with embedded contracts, migrate when criteria met
+
+### ❌ ICON Avoidance
+
+**Problem**: Keeping large contracts embedded despite 10+ consumers
+**Impact**: Difficult coordination, version conflicts, maintenance burden
+**Solution**: Migrate to ICON when thresholds exceeded
+
+### ❌ Inconsistent Criteria
+
+**Problem**: Creating ICON files without following decision matrix
+**Impact**: Arbitrary decisions, inconsistent architecture
+**Solution**: Always apply decision matrix, document exceptions
+
+### ❌ Missing Migration
+
+**Problem**: Not migrating contracts when criteria change
+**Impact**: Technical debt accumulation, maintenance issues
+**Solution**: Regular review of embedded contracts, proactive migration
+
+---
+
+## Governance
+
+### Review Process
+
+**Quarterly Review**:
+1. Audit all embedded contracts in TASKS files
+2. Identify contracts meeting ICON criteria
+3. Plan migration for threshold-exceeding contracts
+4. Review existing ICON files for relevance
+
+**Metrics to Track**:
+- Consumer count per contract
+- Contract size (lines of code)
+- Cross-project usage
+- Change frequency
+- Breaking change incidents
+
+### Exception Handling
+
+**When to Override Rules**:
+1. Architectural significance (strategic contract)
+2. External compliance requirements
+3. Performance-critical interfaces
+4. Legacy system integration points
+
+**Exception Process**:
+1. Document rationale in contract
+2. Record in ICON-000_index.md
+3. Review exception in quarterly audit
+4. Re-evaluate when conditions change
+
+---
+
+## References
+
+### Internal Documentation
+- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
+- [ICON-000_index.md](./ICON-000_index.md)
+- [ICON-TEMPLATE.md](./ICON-TEMPLATE.md)
+- [TASKS-TEMPLATE.md](../TASKS/TASKS-TEMPLATE.md)
+
+### Decision Examples
+- Example 1: Gateway Connector (embedded)
+- Example 2: Platform Event Bus (ICON)
+- Example 3: Order Execution Protocol (borderline)
+- Example 4: Market Data Exceptions (embedded)
+
+---
+
+## Document Metadata
+
+**Version**: 1.0.0
+**Created**: 2025-11-25
+**Last Updated**: 2025-11-25
+**Document Type**: Decision Framework
+**Complexity**: 2/5
+**Token Count**: ~2,000 tokens

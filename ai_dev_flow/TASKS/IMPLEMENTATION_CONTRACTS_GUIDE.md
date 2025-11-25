@@ -1,5 +1,5 @@
 ---
-title: Integration Contracts Guide
+title: Implementation Contracts Guide
 tags:
   - framework-guide
   - shared-architecture
@@ -22,11 +22,11 @@ custom_fields:
     - Code
 ---
 
-# Integration Contracts Guide
+# Implementation Contracts Guide
 
 ## 1. Introduction & Purpose
 
-Integration contracts define type-safe interfaces between dependent TASKS files, enabling parallel development and preventing integration failures.
+Implementation Contracts define type-safe interfaces between dependent TASKS files, enabling parallel development and preventing integration failures.
 
 **Purpose**:
 - Enable parallel development across dependent TASKS
@@ -40,7 +40,7 @@ Integration contracts define type-safe interfaces between dependent TASKS files,
 
 ---
 
-## 2. Integration Contract Types
+## 2. Implementation Contract Types
 
 ### 2.1 Protocol Interfaces
 
@@ -460,7 +460,7 @@ Decision: Create contracts (8 downstream dependencies)
 - Specify validation rules
 
 **Step 4: Documentation**
-- Add "Integration Contracts" section to TASKS file
+- Add "Implementation Contracts" section to TASKS file
 - Document contract purpose and scope
 - Provide usage examples
 - List consuming TASKS files
@@ -474,7 +474,7 @@ Decision: Create contracts (8 downstream dependencies)
 ### 4.2 Contract Documentation Template
 
 ```markdown
-## Integration Contracts
+## Implementation Contracts
 
 ### Contract Overview
 - **Provided Contracts**: List of contracts defined in this TASKS
@@ -1178,7 +1178,7 @@ await connector.connect("localhost", 4002)
 ### 12.1 Internal Documentation
 
 - `/opt/data/docs_flow_framework/ai_dev_flow/TASKS/TASKS-TEMPLATE.md` - TASKS file template with contracts section
-- `/opt/data/docs_flow_framework/ai_dev_flow/TASKS/TASKS-000_INTEGRATION_CONTRACTS_CHECKLIST.md` - Quick reference checklist
+- `/opt/data/docs_flow_framework/ai_dev_flow/TASKS/TASKS-000_IMPLEMENTATION_CONTRACTS_CHECKLIST.md` - Quick reference checklist
 - `/opt/data/docs_flow_framework/ai_dev_flow/METADATA_TAGGING_GUIDE.md` - Metadata standards
 - `/home/ya/.claude/CLAUDE.md` - Global instructions with contracts strategy
 
@@ -1198,11 +1198,277 @@ await connector.connect("localhost", 4002)
 
 ---
 
+## 13. Traceability with @icon Tags
+
+### 13.1 Overview
+
+The `@icon` tag provides concise traceability for implementation contracts within the SDD workflow. Use this tag to link contract definitions to their providers and consumers.
+
+**Tag Format**: `@icon: TASKS-XXX:ContractName`
+
+**Purpose**:
+- Link contract definitions to TASKS files
+- Identify providers and consumers
+- Enable automated traceability validation
+- Distinguish from `@ctr` (Layer 9 API contracts)
+
+### 13.2 Tag Syntax
+
+**Primary Format**:
+```yaml
+@icon: TASKS-001:IBGatewayConnector
+```
+
+**With Role Specification** (optional):
+```yaml
+@icon: TASKS-001:IBGatewayConnector
+@icon-role: provider
+```
+
+```yaml
+@icon: TASKS-002:IBGatewayConnector
+@icon-role: consumer
+```
+
+**For Standalone ICON Files** (optional, see Section 14):
+```yaml
+@icon: ICON-001:PlatformEventBus
+```
+
+### 13.3 Usage Examples
+
+**In TASKS Provider File** (TASKS-001):
+```markdown
+## 8. Implementation Contracts
+
+### 8.1 IBGatewayConnector Protocol
+
+@icon: TASKS-001:IBGatewayConnector
+@icon-role: provider
+
+[Contract definition...]
+```
+
+**In TASKS Consumer File** (TASKS-002):
+```markdown
+## 3. Dependencies
+
+### 3.1 Connection Service
+
+@icon: TASKS-001:IBGatewayConnector
+@icon-role: consumer
+
+Requires IBGatewayConnector protocol for gateway connections.
+```
+
+**In Python Implementation**:
+```python
+# src/services/gateway_connector.py
+# @icon: TASKS-001:IBGatewayConnector
+# @icon-role: provider
+
+from typing import Protocol
+
+class IBGatewayConnector(Protocol):
+    """Protocol for IB Gateway connection services."""
+    ...
+```
+
+### 13.4 Role Types
+
+| Role | Description | Usage |
+|------|-------------|-------|
+| `provider` | Implements the contract | TASKS file defining contract |
+| `consumer` | Depends on the contract | TASKS files using contract |
+| (no role) | Reference only | Documentation references |
+
+### 13.5 Relationship to Other Tags
+
+**Layer 9 (@ctr)**: External API contracts
+```yaml
+@ctr: CTR-001:IBGatewayAPI
+```
+
+**Layer 11 (@icon)**: Internal implementation contracts
+```yaml
+@icon: TASKS-001:IBGatewayConnector
+```
+
+**Layer 12 (@iplan)**: Implementation plans
+```yaml
+@iplan: IPLAN-001
+```
+
+**Key Distinction**: `@ctr` tags reference external API contracts (Layer 9), while `@icon` tags reference internal implementation contracts (Layer 11 TASKS).
+
+### 13.6 Validation
+
+Check for `@icon` tag consistency:
+```bash
+# Find all @icon tags
+grep -r "@icon:" docs/TASKS/
+
+# Verify provider/consumer pairs
+grep -A1 "@icon: TASKS-001:IBGatewayConnector" docs/TASKS/
+```
+
+---
+
+## 14. Standalone ICON Files (Optional)
+
+### 14.1 When to Use ICON Files
+
+**Default**: Embed implementation contracts in TASKS files (Section 8: Implementation Contracts)
+
+**Use Standalone ICON Files When** (ALL criteria met):
+1. **5+ Consumer TASKS**: Contract used by 5 or more TASKS files
+2. **Large Contract**: Definition exceeds 500 lines
+3. **Platform-Level**: Shared across multiple system components
+4. **Cross-Project**: Used in multiple projects
+
+**Benefits**:
+- Central management for high-use contracts
+- Single source of truth
+- Formal versioning and change control
+- Reduced duplication
+
+**Drawbacks**:
+- Additional file management overhead
+- More formal governance required
+- Potential for premature abstraction
+
+### 14.2 ICON File Structure
+
+**Location**:
+- Framework: `/opt/data/docs_flow_framework/ai_dev_flow/ICON/`
+- Projects: `[project_root]/docs/ICON/` or `[project_root]/ai_dev_flow/ICON/`
+
+**Naming Convention**: `ICON-NNN_descriptive_name.md`
+
+**Examples**:
+- `ICON-001_gateway_connector_protocol.md`
+- `ICON-002_market_data_event_bus.md`
+- `ICON-003_order_execution_exceptions.md`
+
+### 14.3 ICON File Contents
+
+**Required Sections**:
+1. **Document Control**: Status, version, providers, consumers
+2. **Contract Definition**: Type-safe interface specification
+3. **Provider Requirements**: Implementation obligations
+4. **Consumer Requirements**: Usage obligations
+5. **Change Management**: Versioning strategy, breaking change protocol
+6. **Testing Requirements**: Provider and consumer test specifications
+7. **Traceability**: Upstream artifacts, provider/consumer tags
+
+**Template**: Use [ICON-TEMPLATE.md](../ICON/ICON-TEMPLATE.md)
+
+### 14.4 ICON Registry
+
+**Centralized Tracking**: [ICON-000_index.md](../ICON/ICON-000_index.md)
+
+**Registry Contents**:
+- Contract ID, name, type, status
+- Provider and consumer TASKS lists
+- Creation and update dates
+- File location
+
+**Maintenance**:
+- Update when creating new ICON files
+- Track version changes
+- Monitor consumer counts
+- Flag deprecated contracts
+
+### 14.5 Migration Strategy
+
+**TASKS → ICON** (when criteria met):
+1. Create ICON file from embedded contract
+2. Assign ICON-NNN ID
+3. Update ICON-000_index.md registry
+4. Update all TASKS files to reference ICON
+5. Archive embedded versions
+6. Notify stakeholders
+
+**ICON → TASKS** (when criteria no longer met):
+1. Identify primary provider TASKS
+2. Embed contract in provider TASKS
+3. Update consumer TASKS references
+4. Deprecate ICON file
+5. Update registry
+6. Archive after transition
+
+### 14.6 ICON Traceability Tags
+
+**Contract Definition**:
+```markdown
+@icon: ICON-001:GatewayConnector
+```
+
+**Provider TASKS**:
+```markdown
+@icon: ICON-001:GatewayConnector
+@icon-role: provider
+
+See [ICON-001_gateway_connector.md](../../ai_dev_flow/ICON/ICON-001_gateway_connector.md)
+```
+
+**Consumer TASKS**:
+```markdown
+@icon: ICON-001:GatewayConnector
+@icon-role: consumer
+
+Requires GatewayConnector protocol for gateway connections.
+```
+
+### 14.7 Decision Examples
+
+**Example 1: Embed in TASKS** (3 consumers, 200 lines):
+- Consumer Count: 3 ❌ (<5)
+- Contract Size: 200 lines ❌ (<500)
+- Scope: Component-level ❌
+- **Decision**: Embed in TASKS-001
+
+**Example 2: Create ICON** (8 consumers, 600 lines, 3 projects):
+- Consumer Count: 8 ✅ (>5)
+- Contract Size: 600 lines ✅ (>500)
+- Scope: Platform-level ✅
+- Projects: 3 ✅
+- **Decision**: Create ICON-002
+
+### 14.8 ICON Resources
+
+**Documentation**:
+- [ICON Directory README](../ICON/README.md) - Overview and quick start
+- [ICON_CREATION_RULES.md](../ICON/ICON_CREATION_RULES.md) - Detailed decision framework
+- [ICON-000_index.md](../ICON/ICON-000_index.md) - Contract registry
+- [ICON-TEMPLATE.md](../ICON/ICON-TEMPLATE.md) - Contract template
+
+**Validation**:
+```bash
+# Find all ICON references
+grep -r "@icon: ICON-" docs/
+
+# List ICON files
+ls -la docs/ICON/ICON-*.md
+
+# Verify provider/consumer pairs
+grep -A1 "@icon: ICON-001" docs/TASKS/
+
+# Check for orphaned contracts
+for file in docs/ICON/ICON-*.md; do
+  id=$(basename "$file" | cut -d_ -f1)
+  count=$(grep -r "@icon: $id" docs/TASKS/ | wc -l)
+  echo "$id: $count references"
+done
+```
+
+---
+
 ## Document Metadata
 
-**Version**: 1.0.0
+**Version**: 1.1.0
 **Created**: 2025-11-24
-**Last Updated**: 2025-11-24
+**Last Updated**: 2025-11-25
 **Author**: AI Dev Flow Framework Team
 **Complexity**: 3/5
 **Token Count**: ~12,000 tokens
