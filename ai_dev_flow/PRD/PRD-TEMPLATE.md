@@ -21,7 +21,7 @@ custom_fields:
 
 **[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: PRD is in Layer 2 (Product Requirements Layer) - defines product requirements from BRD business needs.
 
-## Document Control
+## 0. Document Control
 
 | Item | Details |
 |------|---------|
@@ -37,7 +37,7 @@ custom_fields:
 | **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
 | **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
 
-## Executive Summary
+## 1. Executive Summary
 
 [2-3 sentence high-level overview of what this product/feature accomplishes, who benefits, and the expected business impact]
 
@@ -55,7 +55,7 @@ custom_fields:
 
 ---
 
-## Problem Statement
+## 2. Problem Statement
 
 ### Current State
 
@@ -92,7 +92,7 @@ custom_fields:
 
 ---
 
-## Target Audience & User Personas
+## 3. Target Audience & User Personas
 
 ### Primary Users
 
@@ -118,7 +118,7 @@ custom_fields:
 
 ---
 
-## Success Metrics (KPIs)
+## 4. Success Metrics (KPIs)
 
 ### Primary KPIs
 
@@ -153,7 +153,7 @@ custom_fields:
 
 ---
 
-## Goals & Objectives
+## 5. Goals & Objectives
 
 ### Primary Business Goals
 
@@ -177,7 +177,7 @@ custom_fields:
 
 ---
 
-## Scope & Requirements
+## 6. Scope & Requirements
 
 ### In Scope (Included Features/Capabilities)
 
@@ -243,7 +243,105 @@ custom_fields:
 
 ---
 
-## Functional Requirements
+## 7. User Stories & User Roles
+
+This section documents user stories that capture who benefits from the system, what they need to accomplish, and why it matters to them. User stories provide a user-centric view of requirements and help ensure the solution meets actual user needs.
+
+### Layer Separation
+
+**PRD (Layer 2) Scope**:
+- User role definitions (who they are)
+- User story titles and summaries (what they need)
+- High-level capability requirements (business value)
+- Product-level acceptance criteria
+
+**EARS (Layer 3) Scope**:
+- Detailed behavioral scenarios with technical specifications
+- Engineering requirements in WHEN-THE-SHALL-WITHIN format
+- System-level acceptance criteria
+
+**BDD (Layer 4) Scope**:
+- Test cases with Given-When-Then format
+- Executable specifications
+- Acceptance testing scenarios
+
+> **Scope Note**: This section provides role definitions and story summaries. Detailed behavioral requirements are captured in EARS; executable test specifications are in BDD feature files.
+
+### User Story Format
+
+User stories follow the standard format:
+**As a** [user type/persona], **I want to** [goal/action], **so that** [business value/benefit].
+
+### Primary User Stories
+
+[Document user stories for the primary personas identified in the stakeholder analysis]
+
+#### Primary Persona 1: [Name - e.g., End User, Customer, Admin]
+
+| Story ID | User Story | Priority | Acceptance Criteria | Related FR |
+|----------|------------|----------|---------------------|------------|
+| US-001 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | FR-XXX |
+| US-002 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | FR-XXX |
+| US-003 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | FR-XXX |
+
+**Example User Stories**:
+- US-001: As a **sender**, I want to **view transparent fee breakdown before confirming transaction**, so that **I understand total cost with no surprises**.
+- US-002: As a **sender**, I want to **save recipient details for future transactions**, so that **repeat sends are faster and more convenient**.
+- US-003: As a **recipient**, I want to **receive SMS notification when money arrives**, so that **I know funds are available immediately**.
+
+#### Primary Persona 2: [Name - e.g., Support Agent, Compliance Officer]
+
+| Story ID | User Story | Priority | Acceptance Criteria | Related FR |
+|----------|------------|----------|---------------------|------------|
+| US-0XX | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | FR-XXX |
+
+### Operational User Stories
+
+[Document user stories for internal operations, support, and administrative personas]
+
+| Story ID | User Story | Priority | Acceptance Criteria | Related FR |
+|----------|------------|----------|---------------------|------------|
+| US-0XX | As a **compliance officer**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | FR-XXX |
+| US-0XX | As a **support agent**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | FR-XXX |
+| US-0XX | As an **operations manager**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | FR-XXX |
+
+### User Story Summary
+
+| Category | P1 Stories | P2 Stories | P3 Stories | Total |
+|----------|------------|------------|------------|-------|
+| [Primary Persona 1] | [Count] | [Count] | [Count] | [Total] |
+| [Primary Persona 2] | [Count] | [Count] | [Count] | [Total] |
+| Operational | [Count] | [Count] | [Count] | [Total] |
+| **Total** | [Total P1] | [Total P2] | [Total P3] | [Grand Total] |
+
+### User Story to Business Objective Mapping
+
+[Map user stories to business objectives to demonstrate alignment]
+
+| Business Objective | Related User Stories | Coverage Notes |
+|--------------------|---------------------|----------------|
+| [BO-1: Objective description] | US-001, US-003, US-008 | [How stories address objective] |
+| [BO-2: Objective description] | US-002, US-005, US-012 | [How stories address objective] |
+| [BO-3: Objective description] | US-004, US-009, US-015 | [How stories address objective] |
+
+### User Roles and Permissions
+
+[Define detailed user roles with specific permissions - more granular than BRD stakeholder identification]
+
+| Role | Description | Key Responsibilities | Permissions | Related User Stories |
+|------|-------------|---------------------|-------------|---------------------|
+| [Role Name] | [Who this role represents] | [What they do] | [What access they have] | US-XXX, US-YYY |
+
+**Example Roles**:
+- **Primary User**: End customers who initiate transactions, save recipients, view transaction history
+- **Support Agent**: Internal staff who can view user accounts, transactions, assist with issues (read-only financial data)
+- **Compliance Officer**: Internal staff who can review flagged transactions, approve/reject sanctions screening, access audit logs
+- **Operations Manager**: Internal staff who can view dashboards, generate reports, modify system configuration
+- **System Administrator**: Technical staff with full system access for maintenance, monitoring, troubleshooting
+
+---
+
+## 8. Functional Requirements
 
 ### User Journey Mapping
 
@@ -277,7 +375,77 @@ custom_fields:
 
 ---
 
-## Acceptance Criteria
+## 9. Customer-Facing Content & Messaging (MANDATORY)
+
+**Purpose**: Define product-approved messaging for customer communications at key touchpoints. This ensures consistency, compliance, and optimal user experience across all customer interactions.
+
+**📚 Complete Business Context**: For business-level messaging requirements and approval workflows, see:
+- **[BRD Template - Appendix N: Customer Communication Templates](../BRD/BRD-TEMPLATE.md#appendix-n-customer-communication-templates-required-for-customer-facing-brds)** - Business approval and messaging strategy
+
+### Transaction Status Messages
+
+| Status | Customer Message | Channel | Trigger |
+|--------|-----------------|---------|---------|
+| [Status] | [Approved message text] | [Push/Email/SMS/In-App] | [When sent] |
+
+**Example:**
+| Status | Customer Message | Channel | Trigger |
+|--------|-----------------|---------|---------|
+| Initiated | "Your transfer of $[amount] to [recipient] has been initiated." | Push + Email | On transaction creation |
+| Delivered | "Great news! Your $[amount] transfer to [recipient] was delivered successfully." | Push + Email | On delivery confirmation |
+| Failed | "We couldn't complete your transfer. [Reason]. Funds will be returned within [X] days." | Push + Email | On delivery failure |
+
+### Error Messages
+
+| Error Condition | Customer Message | Recommended Action | Support Escalation |
+|----------------|-----------------|-------------------|-------------------|
+| [Condition] | [Message] | [CTA] | [When to escalate] |
+
+**Example:**
+| Error Condition | Customer Message | Recommended Action | Support Escalation |
+|----------------|-----------------|-------------------|-------------------|
+| Insufficient Balance | "Your balance is too low to complete this transfer. Please add funds." | "Add Funds" button | None - self-service |
+| Recipient Blocked | "We cannot send to this recipient. Please contact support for details." | "Contact Support" | Immediate - compliance |
+| Network Timeout | "Connection lost. We'll retry automatically. Check status in 5 minutes." | "View Status" | After 3 retries |
+
+### Promotional Messages (If Applicable)
+
+| Campaign | Message | Eligibility | Duration | Terms Link |
+|----------|---------|-------------|----------|-----------|
+| [Campaign] | [Message] | [Who qualifies] | [Start-End] | [URL] |
+
+**Example:**
+| Campaign | Message | Eligibility | Duration | Terms Link |
+|----------|---------|-------------|----------|-----------|
+| First Transfer Free | "Send your first transfer fee-free! No promo code needed." | New users, first 30 days | 2025-Q1 | /terms/promo-q1 |
+
+### In-App Guidance & Tooltips
+
+| Feature/Screen | Element | Tooltip/Help Text | Trigger |
+|----------------|---------|------------------|---------|
+| [Screen name] | [Field/button] | [Help text] | [On hover/tap/first use] |
+
+**Example:**
+| Feature/Screen | Element | Tooltip/Help Text | Trigger |
+|----------------|---------|------------------|---------|
+| Send Money | Amount Field | "Enter amount in USD. Recipient gets [currency] at [rate]." | On focus |
+| Recipient List | Save Button | "Save this recipient for faster future transfers." | On hover |
+
+### Compliance & Legal Disclosures
+
+| Requirement | Disclosure Text | Placement | Acknowledgment Required |
+|-------------|----------------|-----------|------------------------|
+| [Regulation] | [Required text] | [Where shown] | [Yes/No] |
+
+**Example:**
+| Requirement | Disclosure Text | Placement | Acknowledgment Required |
+|-------------|----------------|-----------|------------------------|
+| EFTA Disclosure | "Your rights under the Electronic Fund Transfer Act: [link]" | Transaction confirmation | No - informational |
+| Fee Disclosure | "Total fees: $[amount]. Exchange rate: [rate]. Total cost: $[total]." | Pre-confirmation screen | Yes - tap "I Agree" |
+
+---
+
+## 10. Acceptance Criteria
 
 ### Business Acceptance Criteria
 
@@ -332,7 +500,7 @@ custom_fields:
 
 ---
 
-## Constraints & Assumptions
+## 11. Constraints & Assumptions
 
 ### Business Constraints
 
@@ -370,7 +538,7 @@ custom_fields:
 
 ---
 
-## Risk Assessment
+## 12. Risk Assessment
 
 ### High-Risk Items
 
@@ -396,7 +564,7 @@ custom_fields:
 
 ---
 
-## Success Definition
+## 13. Success Definition
 
 ### Go-Live Success Criteria
 
@@ -425,7 +593,7 @@ custom_fields:
 
 ---
 
-## Stakeholders & Communication
+## 14. Stakeholders & Communication
 
 ### Core Team
 
@@ -450,7 +618,7 @@ custom_fields:
 
 ---
 
-## Implementation Approach
+## 15. Implementation Approach
 
 ### Development Phases
 
@@ -484,7 +652,7 @@ custom_fields:
 
 ---
 
-## Budget & Resources
+## 16. Budget & Resources
 
 ### Development Budget
 
@@ -503,7 +671,7 @@ custom_fields:
 
 ---
 
-## Traceability
+## 17. Traceability
 
 ### Upstream Sources
 
@@ -591,7 +759,7 @@ The following architectural topics require formal Architecture Decision Records 
 
 **Example**:
 ```markdown
-@brd: BRD-001:FR-030, BRD-001:NFR-006
+@brd: BRD-NNN:FR-XXX, BRD-NNN:NFR-YYY
 ```
 
 **Validation**: Tags must reference existing BRD documents and requirement IDs within those documents.
@@ -647,7 +815,7 @@ Document evidence that PRD requirements have been translated to technical specif
 
 ---
 
-## References
+## 18. References
 
 ### Internal Documentation
 
