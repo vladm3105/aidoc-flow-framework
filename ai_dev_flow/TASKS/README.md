@@ -508,6 +508,66 @@ ai-codegen --task TASKS/TASKS-001_position_limit_service_tasks.md --framework fa
 
 See `TASKS-001_position_limit_service_tasks.md` for a complete example of a well-structured tasks document that includes scope definition, implementation plan, constraints, acceptance criteria, and comprehensive traceability.
 
+## ICON Contract Integration Rules
+
+### CRITICAL: Section 8 is Mandatory
+
+Every TASKS document MUST include "## 8. Implementation Contracts":
+- If providing contracts: Complete Section 8.1
+- If consuming contracts: Complete Section 8.2
+- If neither: State "No implementation contracts for this TASKS"
+
+### Integration Validation Commands
+
+**Check total @icon tags**:
+```bash
+grep -r "@icon:" docs/TASKS/ | wc -l
+```
+
+**Check Section 8 count**:
+```bash
+grep -r "## 8. Implementation Contracts" docs/TASKS/ | wc -l
+```
+
+**Check specific ICON integration**:
+```bash
+grep -r "@icon: ICON-001" docs/TASKS/
+```
+
+**Check provider/consumer roles**:
+```bash
+grep -r "@icon-role: provider" docs/TASKS/
+grep -r "@icon-role: consumer" docs/TASKS/
+```
+
+### Common Anti-Patterns to Avoid
+
+❌ **Anti-Pattern 1**: ICON file exists but 0 TASKS references
+```bash
+# Bad: This should never return 0
+grep -r "@icon: ICON-001" docs/TASKS/ | wc -l
+```
+
+❌ **Anti-Pattern 2**: Provider TASKS missing Section 8
+```
+TASKS-001 provides ICON-001
+But TASKS-001 has no "## 8. Implementation Contracts"
+```
+
+❌ **Anti-Pattern 3**: Consumer TASKS missing Section 8
+```
+TASKS-002 consumes ICON-001
+But TASKS-002 has no "## 8. Implementation Contracts"
+```
+
+✅ **Correct Pattern**: Bidirectional integration
+```
+ICON-001 created → TASKS-001 Section 8.1 added → TASKS-002 Section 8.2 added
+grep "@icon: ICON-001" docs/TASKS/ returns 2+ matches
+```
+
+---
+
 ## Task Maturity Model
 
 ### Level 1 - Basic Tasks
@@ -527,9 +587,11 @@ See `TASKS-001_position_limit_service_tasks.md` for a complete example of a well
 - Complete constraints and operational requirements
 - Automated verification and quality gates
 - Full traceability to all development artifacts
+- Section 8 contracts defined and integrated
 
 ### Level 4 - AI-Driven Tasks
 - Specification-derived task generation
 - Real-time verification and feedback
 - Adaptive planning based on implementation progress
 - Automated dependency and risk analysis
+- Bidirectional contract integration validated

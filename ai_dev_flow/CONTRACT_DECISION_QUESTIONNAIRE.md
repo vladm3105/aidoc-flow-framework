@@ -412,7 +412,7 @@ BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → SPEC → TASKS
 | Batch processing | **NO** (unless file exchange) | Internal processing logic |
 | Mobile/Web frontend | **YES** | Frontend consumes backend API |
 | Background jobs | **NO** | Internal scheduled tasks |
-| Third-party integrations | **YES** | Integration contracts needed |
+| Third-party integrations | **YES** | Implementation contracts needed |
 | Library/SDK | **YES** | Public API surface area |
 
 ---

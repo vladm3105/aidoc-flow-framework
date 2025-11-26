@@ -38,6 +38,64 @@ custom_fields:
 | **Providers** | [TASKS-IDs implementing this contract] |
 | **Consumers** | [TASKS-IDs depending on this contract] |
 
+## CRITICAL: Bidirectional Integration Required
+
+**WARNING**: Creating an ICON file is ONLY 50% of the work. You MUST also integrate it into TASKS files.
+
+### Integration Requirements
+
+After creating this ICON file, you MUST:
+
+1. **Update Provider TASKS** (1 file):
+   - Add Section 8.1: Contracts Provided
+   - List this ICON contract with full details
+   - Add `@icon: ICON-XXX:ContractName` tag
+   - Add `@icon-role: provider` tag
+
+2. **Update Consumer TASKS** (N files):
+   - Add Section 8.2: Contracts Consumed to each consumer
+   - List this ICON contract with provider reference
+   - Add `@icon: ICON-XXX:ContractName` tag to each
+   - Add `@icon-role: consumer` tag to each
+
+3. **Validate Integration**:
+   ```bash
+   # This command MUST return N+1 (1 provider + N consumers)
+   grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l
+   ```
+
+### Validation Checklist
+
+Before marking this ICON as "Active":
+- [ ] ICON file created in `/opt/data/ibmcp/docs/ICON/`
+- [ ] Provider TASKS updated with Section 8.1
+- [ ] All consumer TASKS updated with Section 8.2
+- [ ] Validation command returns expected count
+- [ ] Bidirectional traceability verified
+- [ ] mypy --strict passes on contract code
+
+### Common Errors
+
+❌ **ERROR**: Orphaned ICON file (0 TASKS references)
+```bash
+grep -r "@icon: ICON-XXX" docs/TASKS/
+# Returns nothing → ICON is orphaned!
+```
+
+❌ **ERROR**: Provider missing Section 8
+```
+ICON-XXX Provider: TASKS-YYY
+But TASKS-YYY has no Section 8 → Integration incomplete
+```
+
+✅ **SUCCESS**: Full integration
+```bash
+grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l
+# Returns N+1 → 1 provider + N consumers
+```
+
+---
+
 ## Executive Summary
 
 [2-3 sentence overview of what this contract defines, why it exists as a standalone file, and its role in coordinating parallel development]

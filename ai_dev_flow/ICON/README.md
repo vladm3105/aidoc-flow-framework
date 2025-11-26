@@ -16,6 +16,55 @@ custom_fields:
 
 **⚠️ IMPORTANT**: Most implementation contracts should be embedded in TASKS files. Use standalone ICON files only when criteria are met (see ICON_CREATION_RULES.md).
 
+## Integration Workflow (CRITICAL)
+
+### Step-by-Step Process
+
+1. **Identify Need**: TASKS file analysis shows 3+ downstream dependencies
+2. **Create ICON File**: Use ICON-TEMPLATE.md
+3. **Update Provider TASKS**: Add Section 8.1 with contract details
+4. **Update Consumer TASKS**: Add Section 8.2 to each consumer
+5. **Validate Integration**: Run validation commands
+6. **Mark ICON as Active**: Only after validation passes
+
+### Validation Commands
+
+**Before marking ICON as Active, run these commands**:
+
+```bash
+# Navigate to project root
+cd /opt/data/ibmcp/
+
+# Check total references (must equal 1 provider + N consumers)
+grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l
+
+# Verify provider role exists
+grep -r "@icon-role: provider" docs/TASKS/ | grep "ICON-XXX"
+
+# Verify consumer roles exist (count must equal N consumers)
+grep -r "@icon-role: consumer" docs/TASKS/ | grep "ICON-XXX" | wc -l
+
+# Check no orphaned ICON files
+for icon in ICON-001 ICON-002 ICON-003; do
+  count=$(grep -r "@icon: $icon" docs/TASKS/ | wc -l)
+  if [ $count -eq 0 ]; then
+    echo "ERROR: $icon is orphaned (0 TASKS references)"
+  else
+    echo "OK: $icon has $count TASKS references"
+  fi
+done
+```
+
+### Anti-Pattern Prevention
+
+❌ **NEVER**: Create ICON file and stop
+❌ **NEVER**: Skip TASKS file updates
+❌ **NEVER**: Mark ICON as "Active" before validation
+
+✅ **ALWAYS**: Complete full integration workflow
+✅ **ALWAYS**: Validate bidirectional traceability
+✅ **ALWAYS**: Run validation commands before marking Active
+
 ---
 
 ## Directory Contents

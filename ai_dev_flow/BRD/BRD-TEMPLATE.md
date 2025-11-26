@@ -170,6 +170,89 @@ This document is intended for the following stakeholders:
 |---------------|----------------|------------------|
 | [Department/Area] | [Process/System/Organizational] | [High/Medium/Low] |
 
+#### 3.5.4 End-to-End Workflow Diagram
+
+[Include a high-level workflow diagram showing the end-to-end business process. Use Mermaid sequence diagrams for complex multi-participant flows.]
+
+**Diagram Guidelines:**
+- Show all key participants (users, systems, partners)
+- Focus on business-level interactions, not technical implementation
+- Highlight decision points and branching paths
+- Include happy path and key exception paths
+
+**Example Mermaid Sequence Diagram:**
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant App
+    participant API
+    participant Partner1
+    participant Partner2
+
+    User->>App: Initiate action
+    App->>API: Request operation
+    API->>Partner1: Process request
+    Partner1-->>API: Confirmation
+    API->>Partner2: Complete operation
+    Partner2-->>API: Final status
+    API-->>App: Operation result
+    App->>User: Display outcome
+```
+
+**Workflow Summary Table:**
+
+| Step | Actor | Action | System | Business Rule | Success Criteria |
+|------|-------|--------|--------|---------------|------------------|
+| 1 | [Actor] | [Action description] | [System] | [Business rule applied] | [Success criteria] |
+| 2 | [Actor] | [Action description] | [System] | [Business rule applied] | [Success criteria] |
+| 3 | [Actor] | [Action description] | [System] | [Business rule applied] | [Success criteria] |
+
+#### 3.5.5 Error and Exception Handling Workflows
+
+[Document how business processes handle errors, failures, and exception scenarios.]
+
+**Exception Categories:**
+
+| Category | Trigger Condition | Business Response | Customer Impact | Recovery Path |
+|----------|-------------------|-------------------|-----------------|---------------|
+| Validation Failure | [When this occurs] | [How business responds] | [Impact to customer] | [How to recover] |
+| Partner Error | [When this occurs] | [How business responds] | [Impact to customer] | [How to recover] |
+| Timeout/Unavailable | [When this occurs] | [How business responds] | [Impact to customer] | [How to recover] |
+| Business Rule Violation | [When this occurs] | [How business responds] | [Impact to customer] | [How to recover] |
+
+**Refund/Reversal Workflow** (if applicable):
+
+[For financial processes, document the refund or reversal workflow]
+
+| Trigger | Refund Policy | Processing Time | Customer Notification | Ledger Impact |
+|---------|---------------|-----------------|----------------------|---------------|
+| [Trigger scenario] | [What is refunded] | [SLA for completion] | [How customer notified] | [Accounting treatment] |
+
+**Example Exception Handling Diagram:**
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant System
+    participant Support
+
+    User->>System: Submit request
+    System->>System: Validate request
+    alt Validation passes
+        System->>System: Process request
+        System->>User: Success response
+    else Validation fails
+        System->>User: Error message with guidance
+        User->>System: Corrected request
+    else System error
+        System->>Support: Alert triggered
+        System->>User: Temporary unavailable message
+        Support->>System: Investigate and resolve
+        System->>User: Retry notification
+    end
+```
+
 ### 3.6 Technology Stack Prerequisites
 
 **MANDATORY for ALL Feature BRDs (006+); Platform BRDs (001-005) define foundational prerequisites**
@@ -365,11 +448,74 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 |-------------|-----------------|----------------|-----------------|------------------|-------------------|---------------------|
 | [Name/Group] | [Sponsor/User/Approver] | [High/Med/Low] | [High/Med/Low] | [What they expect] | [What they're worried about] | [How to engage] |
 
+---
 
+## 5. User Stories
 
-## 5. Functional Requirements
+This section documents user stories that capture who benefits from the system, what they need to accomplish, and why it matters to them. User stories provide a user-centric view of requirements and help ensure the solution meets actual user needs.
 
-### 5.1 Requirements Overview
+### 5.1 User Story Format
+
+User stories follow the standard format:
+**As a** [user type/persona], **I want to** [goal/action], **so that** [business value/benefit].
+
+### 5.2 Primary User Stories
+
+[Document user stories for the primary personas identified in the stakeholder analysis]
+
+#### 5.2.1 [Primary Persona Name - e.g., End User, Customer, Admin]
+
+| Story ID | User Story | Priority | Acceptance Criteria | Related FR |
+|----------|------------|----------|---------------------|------------|
+| US-001 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | FR-XXX |
+| US-002 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | FR-XXX |
+| US-003 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | FR-XXX |
+
+**Example User Stories**:
+- US-001: As a **sender**, I want to **view transparent fee breakdown before confirming transaction**, so that **I understand total cost with no surprises**.
+- US-002: As a **sender**, I want to **save recipient details for future transactions**, so that **repeat sends are faster and more convenient**.
+- US-003: As a **recipient**, I want to **receive SMS notification when money arrives**, so that **I know funds are available immediately**.
+
+#### 5.2.2 [Secondary Persona Name - e.g., Support Agent, Compliance Officer]
+
+| Story ID | User Story | Priority | Acceptance Criteria | Related FR |
+|----------|------------|----------|---------------------|------------|
+| US-0XX | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | FR-XXX |
+
+### 5.3 Operational User Stories
+
+[Document user stories for internal operations, support, and administrative personas]
+
+| Story ID | User Story | Priority | Acceptance Criteria | Related FR |
+|----------|------------|----------|---------------------|------------|
+| US-0XX | As a **compliance officer**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | FR-XXX |
+| US-0XX | As a **support agent**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | FR-XXX |
+| US-0XX | As an **operations manager**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | FR-XXX |
+
+### 5.4 User Story Summary
+
+| Category | P1 Stories | P2 Stories | P3 Stories | Total |
+|----------|------------|------------|------------|-------|
+| [Primary Persona 1] | [Count] | [Count] | [Count] | [Total] |
+| [Primary Persona 2] | [Count] | [Count] | [Count] | [Total] |
+| Operational | [Count] | [Count] | [Count] | [Total] |
+| **Total** | [Total P1] | [Total P2] | [Total P3] | [Grand Total] |
+
+### 5.5 User Story to Business Objective Mapping
+
+[Map user stories to business objectives to demonstrate alignment]
+
+| Business Objective | Related User Stories | Coverage Notes |
+|--------------------|---------------------|----------------|
+| [BO-1: Objective description] | US-001, US-003, US-008 | [How stories address objective] |
+| [BO-2: Objective description] | US-002, US-005, US-012 | [How stories address objective] |
+| [BO-3: Objective description] | US-004, US-009, US-015 | [How stories address objective] |
+
+---
+
+## 6. Functional Requirements
+
+### 6.1 Requirements Overview
 [Provide an introduction to the functional requirements section, explaining how requirements are organized and prioritized. For complex projects, detailed requirements may be documented in appendices rather than inline tables.]
 
 **Priority Definitions:**
@@ -377,7 +523,7 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 - **P2 (High/Should Have):** Important requirements that significantly enhance value but workarounds exist
 - **P3 (Medium/Nice to Have):** Desirable features that improve user experience but are not essential
 
-### 5.2 Functional Requirements by Category
+### 6.2 Functional Requirements by Category
 
 **NOTE**: Functional requirements must be written at business level, NOT technical/implementation level. See Appendix B for PRD-level content exclusions and Appendix C for reference examples.
 
@@ -466,7 +612,7 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 4. **Cross-References**: Always reference related Platform BRDs (BRD-001 through BRD-005), Partner Integration BRDs, and Feature BRDs for traceability
 
-### 5.3 Business Rules
+### 6.3 Business Rules
 
 [Document business rules that govern how the system must behave under specific conditions]
 
@@ -475,7 +621,7 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 | BR-001 | [Rule statement] | [When this condition exists] | [System must do this] | [What happens if rule cannot be applied] |
 | BR-002 | [Rule statement] | [When this condition exists] | [System must do this] | [What happens if rule cannot be applied] |
 
-### 5.4 User Roles and Permissions
+### 6.4 User Roles and Permissions
 
 [Define different user types and their access rights]
 
@@ -486,12 +632,12 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 ---
 
-## 6. Non-Functional Requirements
+## 7. Non-Functional Requirements
 
-### 6.1 Non-Functional Requirements Overview
+### 7.1 Non-Functional Requirements Overview
 [Explain that non-functional requirements define system qualities and characteristics rather than specific behaviors. These quality attributes are critical success factors for the system.]
 
-### 6.2 Architecture Decision Requirements
+### 7.2 Architecture Decision Requirements
 
 The following architectural topics require formal Architecture Decision Records (ADRs) to be created in the ADR phase of the SDD workflow:
 
@@ -514,7 +660,7 @@ The following architectural topics require formal Architecture Decision Records 
 
 ---
 
-### 6.3 Performance Requirements
+### 7.3 Performance Requirements
 
 | Req ID | Requirement Description | Metric | Target | Priority | Rationale |
 |--------|------------------------|--------|--------|----------|-----------|
@@ -524,7 +670,7 @@ The following architectural topics require formal Architecture Decision Records 
 | NFR-004 | Page load time | Load time | [X] seconds | P2 | [Business reason] |
 | NFR-005 | Report generation time | Processing time | [X] minutes | P2 | [Business reason] |
 
-### 6.3 Security Requirements
+### 7.4 Security Requirements
 
 | Req ID | Requirement Description | Standard/Framework | Priority | Validation Method |
 |--------|------------------------|-------------------|----------|-------------------|
@@ -536,7 +682,7 @@ The following architectural topics require formal Architecture Decision Records 
 | NFR-011 | Password complexity | [Password policy requirements] | P2 | [How to verify] |
 | NFR-012 | Session timeout | [e.g., 15 minutes of inactivity] | P2 | [How to verify] |
 
-### 6.4 Availability and Reliability Requirements
+### 7.5 Availability and Reliability Requirements
 
 | Req ID | Requirement Description | Target | Priority | Measurement Period |
 |--------|------------------------|--------|----------|-------------------|
@@ -548,7 +694,7 @@ The following architectural topics require formal Architecture Decision Records 
 | NFR-018 | Recovery Time Objective (RTO) | [X hours] | P1 | [Per incident] |
 | NFR-019 | Recovery Point Objective (RPO) | [X hours] | P1 | [Per incident] |
 
-### 6.5 Scalability Requirements
+### 7.6 Scalability Requirements
 
 | Req ID | Requirement Description | Current | Year 1 | Year 3 | Priority |
 |--------|------------------------|---------|--------|--------|----------|
@@ -557,7 +703,7 @@ The following architectural topics require formal Architecture Decision Records 
 | NFR-022 | Transaction volume growth | [X per day] | [X per day] | [X per day] | P2 |
 | NFR-023 | Storage expansion capability | [Description] | [Target] | [Target] | P2 |
 
-### 6.6 Usability Requirements
+### 7.7 Usability Requirements
 
 | Req ID | Requirement Description | Standard/Guideline | Priority | Validation Method |
 |--------|------------------------|-------------------|----------|-------------------|
@@ -569,7 +715,7 @@ The following architectural topics require formal Architecture Decision Records 
 | NFR-029 | Online help availability | [Context-sensitive help] | P2 | [Documentation review] |
 | NFR-030 | Multilingual support | [Languages required] | P3 | [Translation verification] |
 
-### 6.7 Compatibility Requirements
+### 7.8 Compatibility Requirements
 
 | Req ID | Requirement Description | Specification | Priority | Notes |
 |--------|------------------------|---------------|----------|-------|
@@ -578,7 +724,7 @@ The following architectural topics require formal Architecture Decision Records 
 | NFR-033 | Integration standards | [e.g., REST API, SOAP] | P1 | [Additional details] |
 | NFR-034 | Legacy system integration | [Systems to integrate with] | P2 | [Additional details] |
 
-### 6.8 Compliance and Regulatory Requirements
+### 7.9 Compliance and Regulatory Requirements
 
 | Req ID | Regulation/Standard | Requirement Description | Applicability | Priority | Validation |
 |--------|---------------------|------------------------|---------------|----------|------------|
@@ -587,7 +733,7 @@ The following architectural topics require formal Architecture Decision Records 
 | NFR-037 | [e.g., [COMPLIANCE_STANDARD - e.g., PCI-DSS, ISO27001]] | [Specific compliance requirement] | [Region/Department] | P1 | [Audit method] |
 | NFR-038 | [e.g., PCI-DSS] | [Specific compliance requirement] | [Region/Department] | P1 | [Audit method] |
 
-### 6.9 Maintainability Requirements
+### 7.10 Maintainability Requirements
 
 | Req ID | Requirement Description | Target | Priority | Measurement |
 |--------|------------------------|--------|----------|-------------|
@@ -607,11 +753,11 @@ The following architectural topics require formal Architecture Decision Records 
 
 ---
 
-## 7. Business Constraints and Assumptions
+## 8. Business Constraints and Assumptions
 
 This section documents business-level constraints that limit solution design and assumptions that underpin business requirements. Each constraint and assumption uses standardized ID format for traceability.
 
-### 7.1 Business Constraints
+### 8.1 Business Constraints
 
 Business constraints are external limitations that restrict how business requirements can be fulfilled. These are non-negotiable factors that the solution must accommodate.
 
@@ -698,13 +844,13 @@ Constraints from business deadlines, market windows, and regulatory dates.
 
 ---
 
-### 7.2 Business Assumptions
+### 8.2 Business Assumptions
 
 Business assumptions are conditions believed to be true for planning purposes. Each assumption must be validated and has defined impact if proven false.
 
 **ID Format**: `BA-XXX` (Business Assumption)
 
-#### 7.2.1 Market Assumptions
+#### 8.2.1 Market Assumptions
 
 Assumptions about market conditions, customer demand, and competitive landscape.
 
@@ -717,7 +863,7 @@ Assumptions about market conditions, customer demand, and competitive landscape.
 - BA-002: Target customers prefer mobile-first remittance experience
 - BA-003: Competitive pricing at 3% all-in cost will drive customer acquisition
 
-#### 7.2.2 Partner Assumptions
+#### 8.2.2 Partner Assumptions
 
 Assumptions about partner capabilities, availability, and performance.
 
@@ -730,7 +876,7 @@ Assumptions about partner capabilities, availability, and performance.
 - BA-011: Paynet delivery network covers 95% of Uzbekistan banking infrastructure
 - BA-012: Partner onboarding will complete within 30 days of contract signing
 
-#### 7.2.3 User Behavior Assumptions
+#### 8.2.3 User Behavior Assumptions
 
 Assumptions about how customers will interact with the solution.
 
@@ -743,7 +889,7 @@ Assumptions about how customers will interact with the solution.
 - BA-021: Repeat senders will use saved recipient feature (80% reuse rate)
 - BA-022: Users accept mobile-only experience (no desktop requirement)
 
-#### 7.2.4 Technical Assumptions
+#### 8.2.4 Technical Assumptions
 
 Assumptions about technical capabilities, integrations, and system behavior.
 
@@ -756,7 +902,7 @@ Assumptions about technical capabilities, integrations, and system behavior.
 - BA-031: Existing fraud detection model will achieve ≤3% false positive rate
 - BA-032: Mobile app can achieve <3 second transaction initiation time
 
-#### 7.2.5 Financial Assumptions
+#### 8.2.5 Financial Assumptions
 
 Assumptions about pricing, costs, and financial viability.
 
@@ -769,7 +915,7 @@ Assumptions about pricing, costs, and financial viability.
 - BA-041: Customer acquisition cost will be <$50 per active customer
 - BA-042: Break-even achievable at 5,000 monthly active users
 
-#### 7.2.6 Regulatory Assumptions
+#### 8.2.6 Regulatory Assumptions
 
 Assumptions about regulatory environment, licensing, and compliance requirements.
 
@@ -784,7 +930,7 @@ Assumptions about regulatory environment, licensing, and compliance requirements
 
 ---
 
-### 7.3 Dependency Clarifications
+### 8.3 Dependency Clarifications
 
 This section clarifies dependency types and their impact on requirement prioritization.
 
@@ -810,15 +956,15 @@ This section clarifies dependency types and their impact on requirement prioriti
 
 ---
 
-## 8. Acceptance Criteria
+## 9. Acceptance Criteria
 
-### 8.1 Acceptance Criteria Overview
+### 9.1 Acceptance Criteria Overview
 
 [Explain the purpose of acceptance criteria and how they will be used to validate project success]
 
 Acceptance criteria define the conditions that must be satisfied for the project deliverables to be accepted by stakeholders. These criteria provide objective measures to determine when requirements have been successfully met.
 
-### 8.2 Business Acceptance Criteria
+### 9.2 Business Acceptance Criteria
 
 [Define high-level business criteria that must be met for business stakeholders to accept the solution]
 
@@ -835,7 +981,7 @@ Acceptance criteria define the conditions that must be satisfied for the project
 - Data migration completes with 100% accuracy
 - All P1 requirements are implemented and tested
 
-### 8.3 Functional Acceptance Criteria
+### 9.3 Functional Acceptance Criteria
 
 [Map acceptance criteria to specific functional requirements]
 
@@ -845,7 +991,7 @@ Acceptance criteria define the conditions that must be satisfied for the project
 | FR-002 | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
 | FR-003 | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
 
-### 8.4 Non-Functional Acceptance Criteria
+### 9.4 Non-Functional Acceptance Criteria
 
 [Define acceptance criteria for non-functional requirements]
 
@@ -855,24 +1001,24 @@ Acceptance criteria define the conditions that must be satisfied for the project
 | NFR-006 | [Security criterion] | [Security audit] | [Standard compliance] | [Audit process] | [100% compliance] |
 | NFR-013 | [Availability criterion] | [Monitoring logs] | [99.9% uptime] | [30-day monitoring] | [Meets or exceeds target] |
 
-### 8.5 User Acceptance Testing (UAT) Criteria
+### 9.5 User Acceptance Testing (UAT) Criteria
 
 [Define the UAT approach and success criteria]
 
-#### 8.5.1 UAT Scope
+#### 9.5.1 UAT Scope
 [Describe what will be tested during UAT]
 
 - [Scope item 1]
 - [Scope item 2]
 - [Scope item 3]
 
-#### 8.5.2 UAT Participants
+#### 9.5.2 UAT Participants
 
 | Role | Department | Number of Users | Responsibilities |
 |------|------------|-----------------|------------------|
 | [Role] | [Department] | [#] | [What they will do] |
 
-#### 8.5.3 UAT Test Scenarios
+#### 9.5.3 UAT Test Scenarios
 
 [List key business scenarios that will be tested]
 
@@ -881,14 +1027,14 @@ Acceptance criteria define the conditions that must be satisfied for the project
 | UAT-001 | [End-to-end business scenario] | [Setup required] | [What should happen] | [How to measure success] |
 | UAT-002 | [End-to-end business scenario] | [Setup required] | [What should happen] | [How to measure success] |
 
-#### 8.5.4 UAT Schedule
+#### 9.5.4 UAT Schedule
 
 - **UAT Start Date:** [Date]
 - **UAT Duration:** [Number of days/weeks]
 - **UAT End Date:** [Date]
 - **Sign-off Date:** [Date]
 
-#### 8.5.5 UAT Success Criteria
+#### 9.5.5 UAT Success Criteria
 
 [Define what constitutes successful UAT completion]
 
@@ -897,7 +1043,7 @@ Acceptance criteria define the conditions that must be satisfied for the project
 - [Criterion 3: e.g., 95% user satisfaction rating]
 - [Criterion 4: e.g., All required documentation delivered]
 
-### 8.6 Go-Live Readiness Criteria
+### 9.6 Go-Live Readiness Criteria
 
 [Define criteria that must be met before production deployment]
 
@@ -914,7 +1060,7 @@ Acceptance criteria define the conditions that must be satisfied for the project
 | Support | Support team trained | 100% of team | Training records | [Support Manager] |
 | Approvals | Business sponsor sign-off | Approved | Sign-off document | [Project Sponsor] |
 
-### 8.7 Success Metrics and KPIs
+### 9.7 Success Metrics and KPIs
 
 [Define how project success will be measured post-implementation]
 
@@ -924,9 +1070,9 @@ Acceptance criteria define the conditions that must be satisfied for the project
 | [Key performance indicator] | [Current value] | [Goal] | [Daily/Weekly/Monthly] | [How measured] | [Name] |
 | [Key performance indicator] | [Current value] | [Goal] | [Daily/Weekly/Monthly] | [How measured] | [Name] |
 
-### 8.8 Acceptance Sign-Off Process
+### 9.8 Acceptance Sign-Off Process
 
-#### 8.8.1 Sign-Off Requirements
+#### 9.8.1 Sign-Off Requirements
 
 [Define who must sign off and what they are approving]
 
@@ -938,7 +1084,7 @@ Acceptance criteria define the conditions that must be satisfied for the project
 | Security Acceptance | [Security Officer] | Security requirements met | Security assessment passed | [Date] |
 | Final Acceptance | [Project Director] | All criteria met | All other sign-offs completed | [Date] |
 
-#### 8.8.2 Acceptance Criteria Not Met
+#### 9.8.2 Acceptance Criteria Not Met
 
 [Define the process if acceptance criteria are not met]
 
@@ -952,11 +1098,11 @@ If acceptance criteria are not met:
 
 ---
 
-## 9. Business Risk Management
+## 10. Business Risk Management
 
 This section documents business-level risks that could impact requirement delivery or business outcomes. Each risk uses standardized scoring methodology for prioritization.
 
-### 9.1 Risk Scoring Methodology
+### 10.1 Risk Scoring Methodology
 
 **Risk Score Formula**: Likelihood (1-3) × Impact (3-15) = Risk Score (maximum 15)
 
@@ -986,11 +1132,11 @@ This section documents business-level risks that could impact requirement delive
 
 ---
 
-### 9.2 Risk Register by Category
+### 10.2 Risk Register by Category
 
 **ID Format**: `RISK-XXX` (Business Risk)
 
-#### 9.2.1 Market & Competitive Risks
+#### 10.2.1 Market & Competitive Risks
 
 Risks from market conditions, competitive pressure, and demand uncertainty.
 
@@ -1003,7 +1149,7 @@ Risks from market conditions, competitive pressure, and demand uncertainty.
 - RISK-002: Target market demand lower than projected (L:2 × I:10 = 20)
 - RISK-003: Exchange rate volatility reduces margin competitiveness (L:3 × I:5 = 15)
 
-#### 9.2.2 Regulatory & Compliance Risks
+#### 10.2.2 Regulatory & Compliance Risks
 
 Risks from regulatory changes, licensing requirements, and compliance obligations.
 
@@ -1016,7 +1162,7 @@ Risks from regulatory changes, licensing requirements, and compliance obligation
 - RISK-011: New AML regulations require system modifications (L:2 × I:8 = 16)
 - RISK-012: Destination country restricts inbound remittances (L:1 × I:15 = 15)
 
-#### 9.2.3 Partner & Operational Risks
+#### 10.2.3 Partner & Operational Risks
 
 Risks from partner dependencies, SLA failures, and operational disruptions.
 
@@ -1029,7 +1175,7 @@ Risks from partner dependencies, SLA failures, and operational disruptions.
 - RISK-021: Delivery partner fails to meet SLA commitments (L:2 × I:8 = 16)
 - RISK-022: Partner API changes require emergency integration updates (L:2 × I:5 = 10)
 
-#### 9.2.4 Financial & Economic Risks
+#### 10.2.4 Financial & Economic Risks
 
 Risks from pricing, costs, profitability, and economic conditions.
 
@@ -1042,7 +1188,7 @@ Risks from pricing, costs, profitability, and economic conditions.
 - RISK-031: Customer acquisition costs exceed projections (L:2 × I:5 = 10)
 - RISK-032: Economic downturn reduces remittance volumes (L:2 × I:10 = 20)
 
-#### 9.2.5 Customer Experience & Reputation Risks
+#### 10.2.5 Customer Experience & Reputation Risks
 
 Risks affecting customer satisfaction, brand perception, and trust.
 
@@ -1055,7 +1201,7 @@ Risks affecting customer satisfaction, brand perception, and trust.
 - RISK-041: Transaction delivery delays exceed customer expectations (L:2 × I:8 = 16)
 - RISK-042: Negative reviews impact App Store rating below 4.0 (L:2 × I:5 = 10)
 
-#### 9.2.6 Technology & Platform Risks
+#### 10.2.6 Technology & Platform Risks
 
 Risks from technical failures, scalability, and system dependencies.
 
@@ -1068,7 +1214,7 @@ Risks from technical failures, scalability, and system dependencies.
 - RISK-051: Security breach compromises customer data (L:1 × I:15 = 15)
 - RISK-052: Third-party dependency vulnerability requires emergency patching (L:2 × I:5 = 10)
 
-#### 9.2.7 Strategic & Business Model Risks
+#### 10.2.7 Strategic & Business Model Risks
 
 Risks to business strategy, market positioning, and long-term viability.
 
@@ -1083,7 +1229,7 @@ Risks to business strategy, market positioning, and long-term viability.
 
 ---
 
-### 9.3 Risk Summary Dashboard
+### 10.3 Risk Summary Dashboard
 
 | Category | High Risks (>15) | Medium Risks (6-15) | Low Risks (1-5) | Total |
 |----------|-----------------|---------------------|-----------------|-------|
@@ -1096,7 +1242,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Strategic & Business Model | [Count] | [Count] | [Count] | [Total] |
 | **Total** | [Total High] | [Total Medium] | [Total Low] | [Grand Total] |
 
-### 9.4 Risk Monitoring and Review
+### 10.4 Risk Monitoring and Review
 
 - **Risk Review Frequency**: [Weekly for High/Critical, Monthly for Medium, Quarterly for Low]
 - **Risk Review Forum**: [Steering committee, Project team meeting]
@@ -1105,9 +1251,9 @@ Risks to business strategy, market positioning, and long-term viability.
 
 ---
 
-## 10. Implementation Approach
+## 11. Implementation Approach
 
-### 10.1 Implementation Strategy
+### 11.1 Implementation Strategy
 
 [Describe the high-level approach to implementing the solution]
 
@@ -1115,7 +1261,7 @@ Risks to business strategy, market positioning, and long-term viability.
 
 **Rationale:** [Why this approach was selected]
 
-### 10.2 Implementation Phases
+### 11.2 Implementation Phases
 
 | Phase | Description | Key Activities | Duration | Start Date | End Date | Deliverables |
 |-------|-------------|----------------|----------|------------|----------|--------------|
@@ -1123,7 +1269,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Phase 2 | [Phase name] | [Key activities] | [Weeks] | [Date] | [Date] | [What's delivered] |
 | Phase 3 | [Phase name] | [Key activities] | [Weeks] | [Date] | [Date] | [What's delivered] |
 
-### 10.3 Rollout Plan
+### 11.3 Rollout Plan
 
 [Describe how the solution will be deployed to users]
 
@@ -1132,7 +1278,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | [Stage 1] | [User group] | [#] | [Date] | [Criteria] | [If problems occur] |
 | [Stage 2] | [User group] | [#] | [Date] | [Criteria] | [If problems occur] |
 
-### 10.4 Data Migration Plan
+### 11.4 Data Migration Plan
 
 [If applicable, describe how existing data will be migrated]
 
@@ -1142,7 +1288,7 @@ Risks to business strategy, market positioning, and long-term viability.
 |-----------------|---------------|--------|---------------|---------------|----------------|-------------------|
 | [Phase] | [Type of data] | [Records/GB] | [System] | [System] | [Date] | [How validated] |
 
-### 10.5 Integration Plan
+### 11.5 Integration Plan
 
 [Describe how the solution will integrate with existing systems]
 
@@ -1152,9 +1298,9 @@ Risks to business strategy, market positioning, and long-term viability.
 
 ---
 
-## 11. Training and Change Management
+## 12. Training and Change Management
 
-### 11.1 Training Strategy
+### 12.1 Training Strategy
 
 [Describe the overall approach to training users]
 
@@ -1163,13 +1309,13 @@ Risks to business strategy, market positioning, and long-term viability.
 - [Objective 2]
 - [Objective 3]
 
-### 11.2 Training Plan
+### 12.2 Training Plan
 
 | User Group | Number of Users | Training Type | Duration | Delivery Method | Schedule | Materials Needed | Trainer |
 |------------|-----------------|---------------|----------|-----------------|----------|------------------|---------|
 | [Group] | [#] | [Type] | [Hours] | [In-person/Online/Hybrid] | [Dates] | [List] | [Name] |
 
-### 11.3 Training Materials
+### 12.3 Training Materials
 
 [List all training materials that will be developed]
 
@@ -1180,23 +1326,23 @@ Risks to business strategy, market positioning, and long-term viability.
 - FAQs
 - Job aids
 
-### 11.4 Change Management Strategy
+### 12.4 Change Management Strategy
 
 [Describe how organizational change will be managed]
 
-#### 11.4.1 Change Impact Assessment
+#### 12.4.1 Change Impact Assessment
 
 | Stakeholder Group | Current State | Future State | Impact Level | Change Type | Resistance Level |
 |-------------------|---------------|--------------|--------------|-------------|------------------|
 | [Group] | [How they work now] | [How they will work] | [High/Med/Low] | [Process/System/Role] | [High/Med/Low] |
 
-#### 11.4.2 Communication Plan
+#### 12.4.2 Communication Plan
 
 | Audience | Message | Communication Method | Frequency | Sender | Timing |
 |----------|---------|---------------------|-----------|--------|--------|
 | [Group] | [Key messages] | [Email/Meeting/Newsletter] | [When] | [Who sends] | [When] |
 
-#### 11.4.3 Change Readiness Activities
+#### 12.4.3 Change Readiness Activities
 
 - [Activity 1: e.g., Town hall meetings]
 - [Activity 2: e.g., Champions program]
@@ -1205,9 +1351,9 @@ Risks to business strategy, market positioning, and long-term viability.
 
 ---
 
-## 12. Support and Maintenance
+## 13. Support and Maintenance
 
-### 12.1 Support Model
+### 13.1 Support Model
 
 [Define how users will be supported after implementation]
 
@@ -1216,7 +1362,7 @@ Risks to business strategy, market positioning, and long-term viability.
 - **Tier 2 Support:** [Who provides, what they handle]
 - **Tier 3 Support:** [Who provides, what they handle]
 
-### 12.2 Support Services
+### 13.2 Support Services
 
 | Support Element | Description | Availability | Contact Method | Response Time SLA |
 |-----------------|-------------|--------------|----------------|-------------------|
@@ -1224,7 +1370,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Self-Service | [Description] | [24/7] | [Knowledge base/Portal] | [Immediate] |
 | On-Site Support | [Description] | [By appointment] | [Request process] | [Timeframe] |
 
-### 12.3 Service Level Agreements (SLAs)
+### 13.3 Service Level Agreements (SLAs)
 
 | Priority Level | Definition | Response Time | Resolution Time | Escalation |
 |----------------|------------|---------------|-----------------|------------|
@@ -1233,7 +1379,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Medium (P3) | [Moderate impact] | [X hours] | [X days] | [After X days] |
 | Low (P4) | [Minor issue, cosmetic] | [X days] | [X days] | [As needed] |
 
-### 12.4 Maintenance Plan
+### 13.4 Maintenance Plan
 
 **Planned Maintenance:**
 - **Frequency:** [Weekly/Monthly/Quarterly]
@@ -1248,11 +1394,11 @@ Risks to business strategy, market positioning, and long-term viability.
 
 ---
 
-## 13. Cost-Benefit Analysis
+## 14. Cost-Benefit Analysis
 
-### 13.1 Cost Summary
+### 14.1 Cost Summary
 
-#### 13.1.1 One-Time Costs
+#### 14.1.1 One-Time Costs
 
 | Cost Category | Description | Estimated Cost | Actual Cost | Variance |
 |---------------|-------------|----------------|-------------|----------|
@@ -1268,7 +1414,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Contingency (10-15%) | [Buffer for unknowns] | $[Amount] | $[Amount] | $[Amount] |
 | **Total One-Time Costs** | | **$[Amount]** | **$[Amount]** | **$[Amount]** |
 
-#### 13.1.2 Recurring Annual Costs
+#### 14.1.2 Recurring Annual Costs
 
 | Cost Category | Description | Year 1 | Year 2 | Year 3 |
 |---------------|-------------|--------|--------|--------|
@@ -1280,7 +1426,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Upgrades/Enhancements | [Planned improvements] | $[Amount] | $[Amount] | $[Amount] |
 | **Total Annual Costs** | | **$[Amount]** | **$[Amount]** | **$[Amount]** |
 
-#### 13.1.3 Total Cost of Ownership (3 Years)
+#### 14.1.3 Total Cost of Ownership (3 Years)
 
 | Cost Type | Amount |
 |-----------|--------|
@@ -1290,9 +1436,9 @@ Risks to business strategy, market positioning, and long-term viability.
 | Year 3 Recurring | $[Amount] |
 | **Total 3-Year TCO** | **$[Amount]** |
 
-### 13.2 Benefit Summary
+### 14.2 Benefit Summary
 
-#### 13.2.1 Quantifiable Benefits
+#### 14.2.1 Quantifiable Benefits
 
 | Benefit Category | Description | Year 1 | Year 2 | Year 3 | 3-Year Total | Calculation Method |
 |------------------|-------------|--------|--------|--------|--------------|-------------------|
@@ -1303,7 +1449,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Efficiency Gains | [Productivity improvements] | $[Amount] | $[Amount] | $[Amount] | $[Amount] | [How calculated] |
 | **Total Quantifiable Benefits** | | **$[Amount]** | **$[Amount]** | **$[Amount]** | **$[Amount]** | |
 
-#### 13.2.2 Qualitative Benefits
+#### 14.2.2 Qualitative Benefits
 
 [List benefits that cannot be easily quantified but provide significant value]
 
@@ -1316,9 +1462,9 @@ Risks to business strategy, market positioning, and long-term viability.
 - **Innovation:** [Description of innovation enablement]
 - **Scalability:** [Description of growth support]
 
-### 13.3 Financial Analysis
+### 14.3 Financial Analysis
 
-#### 13.3.1 Return on Investment (ROI)
+#### 14.3.1 Return on Investment (ROI)
 
 | Metric | Formula | Year 1 | Year 2 | Year 3 | 3-Year |
 |--------|---------|--------|--------|--------|--------|
@@ -1326,20 +1472,20 @@ Risks to business strategy, market positioning, and long-term viability.
 | ROI % | (Net Benefit / Total Cost) × 100 | [%] | [%] | [%] | [%] |
 | Cumulative ROI | | [%] | [%] | [%] | [%] |
 
-#### 13.3.2 Payback Period
+#### 14.3.2 Payback Period
 
 **Payback Period:** [Number of months/years until investment is recovered]
 
 **Breakeven Point:** [Date when cumulative benefits equal cumulative costs]
 
-#### 13.3.3 Net Present Value (NPV)
+#### 14.3.3 Net Present Value (NPV)
 
 [If applicable, calculate NPV using appropriate discount rate]
 
 - **Discount Rate:** [%]
 - **NPV:** $[Amount]
 
-### 13.4 Sensitivity Analysis
+### 14.4 Sensitivity Analysis
 
 [Analyze how changes in key assumptions affect ROI]
 
@@ -1351,13 +1497,13 @@ Risks to business strategy, market positioning, and long-term viability.
 
 ---
 
-## 14. Project Governance
+## 15. Project Governance
 
-### 14.1 Governance Structure
+### 15.1 Governance Structure
 
 [Define the decision-making and oversight structure]
 
-#### 14.1.1 Steering Committee
+#### 15.1.1 Steering Committee
 
 **Purpose:** Provide strategic oversight and make major decisions
 
@@ -1375,7 +1521,7 @@ Risks to business strategy, market positioning, and long-term viability.
 - Approve phase gate transitions
 - Ensure resource availability
 
-#### 14.1.2 Project Team
+#### 15.1.2 Project Team
 
 **Core Team Members:**
 
@@ -1386,7 +1532,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | [Name] | Technical Lead | [Dept] | [%] | [Responsibilities] |
 | [Name] | Subject Matter Expert | [Dept] | [%] | [Responsibilities] |
 
-### 14.2 Decision-Making Authority
+### 15.2 Decision-Making Authority
 
 | Decision Type | Authority Level | Approver(s) | Delegation Allowed |
 |---------------|----------------|-------------|-------------------|
@@ -1398,7 +1544,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Schedule changes > [X] days | Steering Committee | [Committee] | No |
 | Resource allocation | Functional Manager | [Name] | Yes |
 
-### 14.3 Status Reporting
+### 15.3 Status Reporting
 
 | Report Type | Audience | Frequency | Content | Owner |
 |-------------|----------|-----------|---------|-------|
@@ -1407,7 +1553,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Team Status | Project Team | [Weekly] | [Detailed progress, blockers] | Project Manager |
 | Stakeholder Update | All Stakeholders | [Biweekly] | [Progress, upcoming activities] | Project Manager |
 
-### 14.4 Change Control Process
+### 15.4 Change Control Process
 
 [Define how changes to scope, schedule, or budget are managed]
 
@@ -1428,11 +1574,59 @@ Risks to business strategy, market positioning, and long-term viability.
 - Recommendation
 - Approval signatures
 
+### 15.5 Approval and Sign-off
+
+This section documents the formal approval process for the BRD and criteria for acceptance.
+
+#### 15.5.1 Document Approval
+
+| Role | Name | Title | Approval Date | Signature |
+|------|------|-------|---------------|-----------|
+| Executive Sponsor | [TBD] | [Title] | [Pending] | |
+| Product Owner | [TBD] | [Title] | [Pending] | |
+| Business Lead | [TBD] | [Title] | [Pending] | |
+| Technology Lead | [TBD] | [Title] | [Pending] | |
+| Compliance Lead | [TBD] | [Title] | [Pending] | |
+| Finance Lead | [TBD] | [Title] | [Pending] | |
+
+#### 15.5.2 Approval Criteria
+
+This BRD is considered approved when:
+
+1. All stakeholders listed in Section 15.5.1 have provided written approval
+2. All critical business risks (Section 10) with risk score ≥12 have documented mitigation strategies
+3. Regulatory compliance requirements have been validated by legal counsel (if applicable)
+4. Required dependencies (Section 17.2) are confirmed available or have mitigation plans
+5. Budget allocation has been approved by appropriate financial authority
+
+#### 15.5.3 Change Control Process for Approved BRD
+
+Changes to this approved BRD must follow this process:
+
+| Change Type | Approval Required | Process | Version Impact |
+|-------------|------------------|---------|----------------|
+| Minor (clarifications, typos) | Product Owner | Update document + review | Increment patch (e.g., 1.2.1) |
+| Moderate (new requirements, scope changes) | Product Owner + Tech Lead | Impact assessment + stakeholder review | Increment minor (e.g., 1.3) |
+| Major (business model changes, new partners) | All stakeholders | Full BRD review cycle | Increment major (e.g., 2.0) |
+
+#### 15.5.4 Approval Status Tracking
+
+| Approver | Review Status | Review Date | Comments | Approval Status |
+|----------|--------------|-------------|----------|-----------------|
+| [Executive Sponsor] | Not Started / In Review / Complete | [Date] | [Comments] | Pending / Approved / Rejected |
+| [Product Owner] | Not Started / In Review / Complete | [Date] | [Comments] | Pending / Approved / Rejected |
+| [Business Lead] | Not Started / In Review / Complete | [Date] | [Comments] | Pending / Approved / Rejected |
+| [Technology Lead] | Not Started / In Review / Complete | [Date] | [Comments] | Pending / Approved / Rejected |
+
+**Overall Approval Status:** [Not Started / In Progress / Approved / Conditional Approval]
+
+**Conditional Approval Notes:** [If conditionally approved, list conditions that must be met]
+
 ---
 
-## 15. Quality Assurance
+## 16. Quality Assurance
 
-### 15.1 Quality Standards
+### 16.1 Quality Standards
 
 [Define quality standards and criteria for deliverables]
 
@@ -1444,9 +1638,9 @@ Risks to business strategy, market positioning, and long-term viability.
 | Test Cases | [Standard] | [Review method] | [Who approves] |
 | User Documentation | [Standard] | [Review method] | [Who approves] |
 
-### 15.2 Testing Strategy
+### 16.2 Testing Strategy
 
-#### 15.2.1 Testing Types
+#### 16.2.1 Testing Types
 
 | Test Type | Purpose | Responsibility | Schedule | Exit Criteria |
 |-----------|---------|----------------|----------|---------------|
@@ -1457,7 +1651,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Security Testing | [Purpose] | [Security Team] | [Phase] | [Criteria] |
 | User Acceptance Testing | [Purpose] | [Business Users] | [Phase] | [Criteria] |
 
-#### 15.2.2 Defect Management
+#### 16.2.2 Defect Management
 
 **Defect Severity Definitions:**
 - **Critical:** System unavailable or data loss
@@ -1476,17 +1670,151 @@ Risks to business strategy, market positioning, and long-term viability.
 
 ---
 
-## 16. Glossary
+## 17. Traceability
 
-[Define project-specific and domain-specific terms. Add business-specific terminology relevant to your project domain.]
+This section maps BRD requirements to upstream business objectives and downstream technical artifacts, ensuring complete requirements coverage and enabling impact analysis.
 
-| Term | Definition | Acronym |
+### 17.1 Requirements Traceability Matrix
+
+[Map functional requirements to business objectives and downstream deliverables]
+
+#### 17.1.1 Business Objectives → Functional Requirements
+
+| Business Objective | Related Functional Requirements | Related User Stories | Coverage Status |
+|--------------------|--------------------------------|----------------------|-----------------|
+| [BO-1: Objective description] | FR-001, FR-002, FR-005 | US-001, US-003, US-008 | Complete/Partial/Gap |
+| [BO-2: Objective description] | FR-003, FR-004, FR-006 | US-002, US-005, US-012 | Complete/Partial/Gap |
+| [BO-3: Objective description] | FR-007, FR-008, FR-009 | US-004, US-009, US-015 | Complete/Partial/Gap |
+
+#### 17.1.2 Functional Requirements → Technical Specifications
+
+[Map functional requirements to downstream technical artifacts (planned)]
+
+| Functional Requirement | Downstream SPEC (Planned) | Downstream IMPL (Planned) | Status |
+|------------------------|---------------------------|---------------------------|--------|
+| FR-001: [Requirement title] | SPEC-XXX-001: [Specification name] | IMPL-XXX-001: [Implementation name] | Planned |
+| FR-002: [Requirement title] | SPEC-XXX-002: [Specification name] | IMPL-XXX-002: [Implementation name] | Planned |
+| FR-003: [Requirement title] | SPEC-XXX-003: [Specification name] | IMPL-XXX-003: [Implementation name] | Planned |
+
+#### 17.1.3 Non-Functional Requirements → Technical Specifications
+
+| NFR Category | Related NFR IDs | Downstream SPEC (Planned) | Validation Method |
+|--------------|----------------|---------------------------|-------------------|
+| Performance SLAs | NFR-001 through NFR-005 | SPEC-XXX-NFR-P: Performance Testing | Load testing |
+| Security & Compliance | NFR-006 through NFR-012 | SPEC-XXX-NFR-S: Security Controls | Security audit |
+| Availability | NFR-013 through NFR-019 | SPEC-XXX-NFR-A: Deployment Architecture | Uptime monitoring |
+
+### 17.2 Cross-BRD Dependencies
+
+[Document dependencies on other BRDs in the system]
+
+| This BRD | Depends On | Dependency Type | Impact if Missing | Status |
+|----------|------------|-----------------|-------------------|--------|
+| BRD-XXX | BRD-001 (Platform) | Hard | [Impact description] | Required |
+| BRD-XXX | BRD-002 (Partners) | Hard | [Impact description] | Required |
+| BRD-XXX | BRD-YYY (Feature) | Medium | [Impact description] | Optional |
+
+**Dependency Types:**
+- **Hard**: Blocking dependency - this BRD cannot proceed without the dependency
+- **Medium**: Important dependency - workarounds possible but not ideal
+- **Soft**: Nice-to-have dependency - enhances functionality but not required
+
+### 17.3 Test Coverage Traceability
+
+[Map requirements to test artifacts]
+
+| Requirement Category | Test Type Required | Planned Test Specification | Coverage Target |
+|----------------------|-------------------|---------------------------|-----------------|
+| FR-001 through FR-XXX | Unit Tests | TEST-XXX-UNIT: FR Unit Test Suite | 95% |
+| FR-001 through FR-XXX | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
+| User Stories (US-001 through US-XXX) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
+| NFR Performance | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
+| NFR Security | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
+
+### 17.4 Traceability Summary
+
+| Category | Total Items | Traced Forward | Traced Backward | Coverage % |
+|----------|-------------|----------------|-----------------|------------|
+| Business Objectives | [Count] | [Count with FR links] | N/A | [%] |
+| Functional Requirements | [Count] | [Count with SPEC links] | [Count with BO links] | [%] |
+| Non-Functional Requirements | [Count] | [Count with SPEC links] | [Count with BO links] | [%] |
+| User Stories | [Count] | [Count with FR links] | [Count with BO links] | [%] |
+
+**Traceability Health Score:** [X]% (Target: ≥90%)
+
+---
+
+## 18. Glossary
+
+This section provides definitions for terms used throughout this BRD, organized by category for easy reference.
+
+### 18.1 Business Terms
+
+[Define business and domain-specific terminology relevant to this project]
+
+| Term | Definition | Context |
 |------|------------|---------|
-| [Domain_Term_1: e.g., Claim, Transaction, Policy] | [Clear, concise definition accessible to all stakeholders] | [If applicable] |
-| [Domain_Term_2: e.g., Workflow, Dashboard, Module] | [Clear, concise definition accessible to all stakeholders] | [If applicable] |
-| [Domain_Term_3: e.g., Integration, Pipeline, Service] | [Clear, concise definition accessible to all stakeholders] | [If applicable] |
+| [Business_Term_1] | [Clear, concise definition accessible to all stakeholders] | [Where/how used in this BRD] |
+| [Business_Term_2] | [Clear, concise definition accessible to all stakeholders] | [Where/how used in this BRD] |
+| [Business_Term_3] | [Clear, concise definition accessible to all stakeholders] | [Where/how used in this BRD] |
 
-**Standard BRD Terminology:**
+**Example entries:**
+- **Transaction**: Single business operation or exchange of value | Core business model
+- **Workflow**: Sequence of steps to complete a business process | Process scope definition
+- **KPI**: Key Performance Indicator measuring business success | Acceptance criteria
+
+### 18.2 Technical Terms
+
+[Define technical terminology that business stakeholders need to understand]
+
+| Term | Definition | Context |
+|------|------------|---------|
+| [Technical_Term_1] | [Business-accessible explanation of technical concept] | [Where/how used in this BRD] |
+| [Technical_Term_2] | [Business-accessible explanation of technical concept] | [Where/how used in this BRD] |
+
+**Example entries:**
+- **API**: Application Programming Interface - method for systems to communicate | Partner integrations
+- **Webhook**: Automated notification sent from one system to another when events occur | Status updates
+
+### 18.3 Regulatory & Compliance Terms
+
+[Define regulatory terminology relevant to this project domain]
+
+| Term | Definition | Context |
+|------|------------|---------|
+| [Regulatory_Term_1] | [Clear definition with regulatory source] | [Compliance requirements] |
+| [Regulatory_Term_2] | [Clear definition with regulatory source] | [Compliance requirements] |
+
+**Example entries:**
+- **KYC**: Know Your Customer - identity verification process required by financial regulations | User onboarding
+- **AML**: Anti-Money Laundering - regulations preventing illicit financial activity | Transaction monitoring
+
+### 18.4 Partner & System Terms
+
+[Define terms specific to partner systems or external integrations]
+
+| Term | Definition | Context |
+|------|------------|---------|
+| [Partner/System_Term_1] | [Definition explaining partner or system role] | [Integration context] |
+| [Partner/System_Term_2] | [Definition explaining partner or system role] | [Integration context] |
+
+### 18.5 Abbreviations
+
+| Abbreviation | Full Term |
+|--------------|-----------|
+| AC | Acceptance Criteria |
+| API | Application Programming Interface |
+| BA | Business Analyst |
+| BRD | Business Requirements Document |
+| FR | Functional Requirement |
+| KPI | Key Performance Indicator |
+| NFR | Non-Functional Requirement |
+| ROI | Return on Investment |
+| SLA | Service Level Agreement |
+| SME | Subject Matter Expert |
+| UAT | User Acceptance Testing |
+
+### 18.6 Standard BRD Terminology
 
 | Term | Definition | Acronym |
 |------|------------|---------|
@@ -1503,7 +1831,7 @@ Risks to business strategy, market positioning, and long-term viability.
 
 ---
 
-## 17. Appendices
+## 19. Appendices
 
 ### Appendix A: Supporting Documentation
 

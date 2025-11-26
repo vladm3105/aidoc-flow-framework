@@ -7,6 +7,7 @@ tags:
   - layer-11-artifact
   - active
 custom_fields:
+  document_type: guide
   layer: 11
   artifact_type: TASKS
   architecture_approaches:
@@ -1010,7 +1011,7 @@ class IBGatewayConnector(Protocol):
 
 **Problem**: All 8 TASKS blocked until TASKS-001 complete.
 
-**Solution**: Create 4 integration contracts.
+**Solution**: Create 4 implementation contracts.
 
 ### 10.2 Contracts Created
 

@@ -539,7 +539,7 @@ class ThisComponent:
 - [ ] Contract changes follow semantic versioning (MAJOR.MINOR.PATCH)
 - [ ] Breaking changes communicated to all consumers
 
-**Reference**: See [INTEGRATION_CONTRACTS_GUIDE.md](./INTEGRATION_CONTRACTS_GUIDE.md) for detailed contract creation process and best practices.
+**Reference**: See [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) for detailed contract creation process and best practices.
 
 ---
 
@@ -944,6 +944,76 @@ class ThisComponent:
 - **Knowledge Sharing**: Implementation notes reviewed by 2+ team members
 - **Skill Development**: New techniques/patterns documented for team learning
 - **Morale**: Task completed within estimated timeline without overtime
+
+---
+
+## 8. Implementation Contracts
+
+**Purpose**: Define interfaces that enable parallel development of dependent TASKS files.
+
+### 8.1 Contracts Provided by This TASKS (if provider)
+
+**Use this section if this TASKS provides contracts to downstream TASKS.**
+
+For each contract provided:
+
+#### ICON-XXX: Contract Name
+
+- **Purpose**: [Brief description of what the contract defines]
+- **Location**: `/opt/data/ibmcp/docs/ICON/ICON-XXX_contract_name.md`
+- **Contract Type**: [Protocol Interface | State Machine | Exception Hierarchy | Data Model | DI Interface]
+- **Consumers**: [List consumer TASKS IDs]
+  - TASKS-YYY: [Purpose of consumption]
+- **Key Interfaces**:
+  - `InterfaceName`: [Brief description]
+  - `method_name()`: [Brief description]
+- **Traceability**: @icon: ICON-XXX:ContractName
+- **Role**: @icon-role: provider
+
+**Validation**:
+- [ ] Contract file exists at specified location
+- [ ] All consumer TASKS list this contract in their Section 8.2
+- [ ] mypy --strict passes on contract code
+
+### 8.2 Contracts Consumed by This TASKS (if consumer)
+
+**Use this section if this TASKS consumes contracts from upstream TASKS.**
+
+For each contract consumed:
+
+#### ICON-XXX: Contract Name
+
+- **Provider**: TASKS-YYY
+- **Location**: `/opt/data/ibmcp/docs/ICON/ICON-XXX_contract_name.md`
+- **Purpose**: [Why this TASKS needs this contract]
+- **Used Interfaces**: [List specific interfaces/types used]
+  - `InterfaceName.method()`: [How it's used]
+  - `ExceptionType`: [How it's handled]
+- **Traceability**: @icon: ICON-XXX:ContractName
+- **Role**: @icon-role: consumer
+
+### 8.3 Contract Integration Checklist
+
+**For Provider TASKS**:
+- [ ] Created ICON file in `/opt/data/ibmcp/docs/ICON/`
+- [ ] Documented all provided contracts in Section 8.1
+- [ ] Added @icon: traceability tags
+- [ ] Added @icon-role: provider
+- [ ] Listed all consumer TASKS
+- [ ] Ran mypy --strict validation
+
+**For Consumer TASKS**:
+- [ ] Documented all consumed contracts in Section 8.2
+- [ ] Added @icon: traceability tags for each contract
+- [ ] Added @icon-role: consumer
+- [ ] Referenced provider TASKS
+- [ ] Imported contract interfaces in implementation
+- [ ] Type hints match contract signatures
+
+**For All TASKS**:
+- [ ] Section 8 is mandatory (not optional)
+- [ ] If no contracts: State "No implementation contracts" and skip to Section 9
+- [ ] Validated bidirectional references (provider ↔ consumer)
 
 ---
 

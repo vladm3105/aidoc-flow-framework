@@ -18,11 +18,11 @@ custom_fields:
 
 ## Purpose
 
-Quick reference guide for determining when to create integration contracts, selecting contract types, and validating contract implementations. Use this checklist before implementing any TASKS file with dependencies.
+Quick reference guide for determining when to create implementation contracts, selecting contract types, and validating contract implementations. Use this checklist before implementing any TASKS file with dependencies.
 
 **Complexity**: 2/5 (straightforward decision process)
 
-**Reference**: See [INTEGRATION_CONTRACTS_GUIDE.md](./INTEGRATION_CONTRACTS_GUIDE.md) for detailed documentation.
+**Reference**: See [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) for detailed documentation.
 
 ---
 
@@ -30,7 +30,7 @@ Quick reference guide for determining when to create integration contracts, sele
 
 ### Decision Matrix
 
-Use this matrix to determine if integration contracts are required:
+Use this matrix to determine if implementation contracts are required:
 
 | Criterion | Threshold | Your TASKS | Create Contracts? |
 |-----------|-----------|------------|-------------------|
