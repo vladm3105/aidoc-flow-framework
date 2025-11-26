@@ -532,6 +532,199 @@ WITHIN [operational hours].
 
 ---
 
+### 5.6 Business vs Technical Requirements Boundary
+
+**Purpose**: This section defines the boundary between Business Requirements (BRD-level) and Product/Technical Requirements (PRD-level) when writing EARS statements. Use this guide to ensure EARS requirements stay appropriately abstract and implementation-agnostic.
+
+#### ❌ EXCLUDE from EARS Statements (PRD-Level/SPEC-Level Content)
+
+**1. UI Interaction Flows**
+- "User clicks X button"
+- "System displays Y screen"
+- "Form shows Z fields"
+- Screen layouts, button placements, UI element specifications
+
+**2. API Endpoint Specifications**
+- POST /quotes, GET /transactions
+- JSON request/response payloads
+- HTTP status codes (200, 400, 500)
+- API versioning, rate limiting headers
+
+**3. Technical Implementation Details**
+- Debounced inputs (500ms delay)
+- WebSocket connections for real-time updates
+- Database transactions (BEGIN...COMMIT)
+- Caching strategies, session management
+
+**4. State Machine Transitions**
+- INITIATED → FUNDED → COMPLETED with event handlers
+- State management logic (on wallet_debited event, transition to FUNDED)
+- Technical state coordination
+
+**5. Specific Timeout Values**
+- 90-second quote validity
+- 500ms debounce delay
+- 30-second API timeout
+
+**6. Code-Level Logic**
+- Idempotency key generation (UUID, SHA256 hashing)
+- Retry exponential backoff algorithms
+- Webhook signature verification (HMAC-SHA256)
+- Feature engineering functions for ML models
+
+**7. Technical Error Handling**
+- Rollback transaction logic
+- Database constraint violations
+- Circuit breaker patterns
+- Technical fault tolerance mechanisms
+
+**8. Code Blocks**
+- Python functions and pseudocode
+- JSON schema examples
+- SQL queries
+- Algorithm implementations
+
+---
+
+#### ✅ INCLUDE in EARS Statements (Business/Functional Requirements)
+
+**1. Business Capability Required**
+```
+WHEN customer initiates recipient selection,
+THE System SHALL enable selection from saved recipients or creation of new recipient
+WITHIN transaction initiation workflow.
+```
+
+**2. Business Rules and Policies**
+```
+WHEN transaction amount is determined,
+THE System SHALL enforce transaction limits based on KYC verification tier
+(L1: $200, L2: $1,000, L3: $10,000)
+WITHIN transaction validation process.
+```
+
+**3. Regulatory/Compliance Requirements**
+```
+WHEN transaction is submitted,
+THE System SHALL screen transaction against OFAC sanctions list
+and complete screening within 3 seconds for 95% of transactions.
+```
+
+**4. Business Acceptance Criteria with Measurable Targets**
+```
+WHEN screening is completed,
+THE System SHALL maintain false positive rate ≤3%
+to minimize blocking legitimate customers.
+```
+
+**5. Business Outcomes and Metrics**
+```
+WHEN transaction is initiated,
+THE System SHALL achieve first-attempt delivery success ≥95%
+and notify customer within 60 seconds of delivery confirmation.
+```
+
+**6. Partner Dependencies (Business-Level)**
+```
+WHEN FX quote is requested,
+THE System SHALL obtain quote from FX provider with 90-second validity window
+WITHIN quote request workflow.
+```
+
+**7. Business Constraints**
+```
+THE System SHALL enforce minimum transaction amount of $10
+and maximum transaction determined by KYC tier
+WITHIN regulatory compliance boundaries.
+```
+
+---
+
+#### Edge Case Handling Rules
+
+**Edge Case 1: Quantitative Thresholds - Customer SLA vs Technical Metrics**
+
+✅ **INCLUDE (Customer-Facing SLAs)**:
+```
+WHEN transaction is submitted,
+THE System SHALL complete end-to-end processing within 15 minutes
+for 95% of transactions.
+```
+
+❌ **EXCLUDE (Technical Metrics)**:
+- API latency <200ms (95th percentile)
+- Database query time <50ms
+- WebSocket connection establishment <500ms
+
+**Rule**: Include business outcomes affecting customer experience or regulatory compliance; exclude technical performance metrics (move to SPEC/NFRs).
+
+**Edge Case 2: State Machines and Business Processes**
+
+✅ **INCLUDE (Business State Names)**:
+```
+WHEN transaction progresses,
+THE System SHALL transition through states: INITIATED, FUNDED, COMPLETED, FAILED
+WITHIN business process workflow.
+```
+
+❌ **EXCLUDE (State Management Implementation)**:
+- Event handlers (on wallet_debited event, transition to FUNDED)
+- State machine coordination logic
+- Technical state transitions with database updates
+
+**Rule**: Document business process states and flow; exclude technical state management implementation.
+
+**Edge Case 3: ML Model Specifications (AI Agent Requirements)**
+
+✅ **INCLUDE (Business-Level)**:
+```
+WHEN transaction is submitted,
+THE System SHALL assess fraud risk using ML-based scoring model
+and assign risk score 0-100 with decision rules:
+  - Score 0-59: auto-approve
+  - Score 60-79: manual review
+  - Score 80-100: auto-decline
+WITHIN 200ms inference latency at 95th percentile.
+```
+
+❌ **EXCLUDE (PRD-Level)**:
+- Feature extraction code (transaction_amount, device_risk_score, etc.)
+- Model hyperparameters (max_depth=5, learning_rate=0.1)
+- Training pipeline specifications
+
+**Rule**: Include business risk policies, scoring thresholds, and operational outcomes; exclude ML model architecture details.
+
+---
+
+#### Quick Self-Check Questions for EARS Writers
+
+Before finalizing each EARS statement, ask:
+
+1. **Could this requirement be implemented in multiple ways?** (✅ Appropriate abstraction)
+   - vs. **Does this prescribe a specific implementation?** (❌ Too technical)
+
+2. **Does this describe a business capability or outcome?** (✅ Business-level)
+   - vs. **Does this describe HOW to build it technically?** (❌ Implementation-level)
+
+3. **Would a solution architect understand the intent without implementation details?** (✅ Appropriate)
+   - vs. **Does this require reading code or API docs to understand?** (❌ Too specific)
+
+4. **Does this reference business rules, regulations, or SLAs?** (✅ Business-level)
+   - vs. **Does this reference APIs, databases, or code?** (❌ Technical-level)
+
+5. **Is this testable through BDD scenarios without knowing implementation?** (✅ Good EARS)
+   - vs. **Does testing require knowing internal system architecture?** (❌ Too coupled)
+
+---
+
+#### Reference
+
+For complete guidance on BRD-level content boundaries, see:
+- [BRD Template - Appendix B (full version)](../BRD/BRD-TEMPLATE.md#appendix-b-prd-level-content-exclusions-critical-reference)
+- [FR Examples Guide](../BRD/FR_EXAMPLES_GUIDE.md) - Examples of business-level requirements
+
+---
+
 ### 5.5 Common Pitfalls
 
 #### Pitfall 1: Vague Language

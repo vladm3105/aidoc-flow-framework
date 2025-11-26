@@ -1,6 +1,28 @@
 # ⚠️ CRITICAL: Always reference SPEC_DRIVEN_DEVELOPMENT_GUIDE.md as the single source of truth
 #              for workflow steps, artifact definitions, and quality gates.
 #              Location: ../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
+#
+# QUICK SELF-CHECK BEFORE WRITING BDD SCENARIOS:
+# Use these questions to verify your requirements are at the appropriate abstraction level:
+#
+# 1. Could this requirement be implemented in multiple ways? (✅ Good abstraction)
+#    vs. Does this prescribe a specific implementation? (❌ Too technical for BDD)
+#
+# 2. Does this describe a business capability or outcome? (✅ Business-level)
+#    vs. Does this describe HOW to build it technically? (❌ Implementation-level)
+#
+# 3. Would a solution architect understand the intent without implementation details? (✅ Appropriate)
+#    vs. Does this require reading code or API docs to understand? (❌ Too specific)
+#
+# 4. Does this reference business rules, regulations, or SLAs? (✅ Business-level)
+#    vs. Does this reference APIs, databases, or code? (❌ Technical-level)
+#
+# 5. Is this testable through BDD scenarios without knowing implementation? (✅ Good BDD)
+#    vs. Does testing require knowing internal system architecture? (❌ Too coupled)
+#
+# For detailed guidance on requirements boundaries, see:
+#   - ../EARS/EARS-TEMPLATE.md#5.6 (Business vs Technical Requirements Boundary)
+#   - ../BRD/BRD-TEMPLATE.md#appendix-b (PRD-Level Content Exclusions)
 
 ## Document Control
 

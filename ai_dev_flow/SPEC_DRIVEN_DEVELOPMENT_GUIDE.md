@@ -139,7 +139,9 @@ graph LR
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 
 **Layer Descriptions** (Formal Layer Numbers 0-15):
-- **Layers 1-3 - Business** (Blue): BRD (L1) → PRD (L2) → EARS (L3) - Strategic direction and product vision
+- **Layer 1 - Business Requirements** (Blue): BRD - Business objectives, stakeholder groups (business-level), high-level functional/non-functional requirements, business constraints
+- **Layer 2 - Product Requirements** (Blue): PRD - User personas, user stories, user roles, product features, detailed functional requirements derived from business objectives
+- **Layer 3 - Formal Requirements** (Blue): EARS - Formal requirements syntax with business/product boundary guidance
 - **Layer 4 - Testing** (Yellow): BDD - Acceptance criteria and test scenarios
 - **Layers 5-6 - Architecture** (Green): ADR (L5) → SYS (L6) - Technical decisions and system design
 - **Layer 7 - Requirements** (Red): REQ - Detailed atomic requirements
@@ -157,6 +159,12 @@ graph LR
 - **Mermaid diagram groupings**: L1-L9, L13-L15 (visual organization for diagrams)
 - When implementing cumulative tagging, always use formal layer numbers (0-15)
 - The full 16-layer architecture includes optional layers (IMPL at layer 8, CTR at layer 9) which may not always be present
+
+**Template Optimization (Updated 2025-11-26):**
+- BRD template optimized to ~21K tokens through modular appendices and content extraction
+- Teaching materials (FR examples, content exclusion rules) moved to standalone reference guides
+- User stories, user roles, and product appendices relocated to PRD for proper layer separation
+- See [BRD/FR_EXAMPLES_GUIDE.md](./BRD/FR_EXAMPLES_GUIDE.md) for functional requirement examples
 
 See [index.md](./index.md#traceability-flow) for additional workflow visualizations and [TRACEABILITY.md](./TRACEABILITY.md) for complete traceability guidelines.
 
@@ -185,7 +193,7 @@ Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructi
 - Single Source of Truth: The technical specification defines the implementation.
 - One-Doc-Per-ID: Each REQ/ADR/SPEC file holds one document; filenames include IDs.
 - Specification-First: Technical specifications precede implementation.
-- Complete Traceability: All cross-references use markdown link format with anchors.
+- Complete Traceability: All cross-references use markdown link format with anchors. User story derivation flows: Business Objectives (BRD) → User Stories (PRD) → Functional Requirements (PRD) with full bidirectional traceability.
 - Executable Examples: Provide concrete I/O examples in SPEC for deterministic codegen.
 - Non-Functional First-Class: Performance, reliability, observability, and security are explicit in SPEC.
 - Minimal, Reviewable Diffs: Small steps; verify at each gate.
