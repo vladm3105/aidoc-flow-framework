@@ -33,7 +33,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 | **Last Updated** | YYYY-MM-DD |
 | **Author** | [Author name and role] |
 | **Priority** | Critical/High/Medium/Low |
-| **Category** | Functional/Non-Functional/Security/Performance/Reliability |
+| **Category** | Functional/Non-Functional/security/Performance/Reliability |
 | **Source Document** | [PRD-NNN, SYS-NNN, or EARS-NNN reference] |
 | **Verification Method** | BDD/Spec/Unit Test/Integration Test |
 | **Assigned Team** | [Team/Person responsible] |
@@ -74,7 +74,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 ### Quality and Constraint Criteria
 
 - [Performance benchmarks (response time, throughput, resource usage)]
-- [Security requirements (authentication, authorization, data protection)]
+- [security requirements (authentication, authorization, data protection)]
 - [Reliability standards (uptime, error rates, fault tolerance)]
 - [Compliance requirements (audit trails, logging, monitoring)]
 
@@ -124,7 +124,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 - [Platform, language, or framework limitations]
 - [Performance or scalability restrictions]
-- [Security or compliance requirements that apply]
+- [security or compliance requirements that apply]
 
 ### Operational Constraints
 
@@ -162,7 +162,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 - **User Acceptance Testing**: [UAT scenarios and success criteria]
 - **Code Review**: [Specific implementation patterns that must be verified]
-- **Security Assessment**: [Vulnerability or compliance testing requirements]
+- **security Assessment**: [Vulnerability or compliance testing requirements]
 
 ## Traceability
 
@@ -170,9 +170,9 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 Document the business strategy, product requirements, system specifications, and engineering requirements that drive this atomic requirement.
 
-| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+| Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-NNN](../../BRD/BRD-NNN_...md) | [Business requirements title] | Sections 2.4, 4.x | Business objectives justifying this requirement |
+| BRD | [BRD-NNN](../../BRD/BRD-NNN_...md) | [Business requirements title] | sections 2.4, 4.x | Business objectives justifying this requirement |
 | PRD | [PRD-NNN](../../PRD/PRD-NNN_...md) | [Product requirements title] | Functional Requirements 4.x | Product features this requirement enables |
 | SYS | [SYS-NNN](../../SYS/SYS-NNN_...md) | [System requirements title] | System Requirements 3.x | System-level specification this implements |
 | EARS | [EARS-NNN](../../EARS/EARS-NNN_...md) | [Engineering requirements] | Event-driven/State-driven statements | Formal engineering requirement this satisfies |
@@ -286,14 +286,14 @@ AI-assisted implementation plans derived from this requirement.
 **Configuration Paths**:
 - `config/[module_name].yaml`: Component configuration
 - `config/environments/[env]/[module_name].yaml`: Environment-specific config
-- `secrets/[module_name]/`: Secrets and credentials (not in version control)
+- `regulatoryrets/[module_name]/`: regulatoryrets and credentials (not in version control)
 
 **Test Paths**:
 - `tests/unit/[module_name]/test_[component].py`: Unit tests for this requirement
 - `tests/integration/[module_name]/test_[workflow].py`: Integration tests
 - `tests/acceptance/[module_name]/`: BDD scenarios and acceptance tests
 - `tests/performance/[module_name]/`: Load and performance tests
-- `tests/security/[module_name]/`: Security and vulnerability tests
+- `tests/security/[module_name]/`: security and vulnerability tests
 - `tests/contract/[module_name]/`: Contract validation tests
 
 **Supporting Components**:
@@ -307,12 +307,12 @@ AI-assisted implementation plans derived from this requirement.
 **Internal Document References**:
 - Anchor ID: `#REQ-NNN` (for direct linking within this document)
 - Related Requirements: Links to other REQ documents for dependent/related requirements
-- Change History: See Section "Change History" for version evolution
+- Change History: See section "Change History" for version evolution
 
 **External References**:
 - [Technology Documentation](URL): Reference for chosen technology/library
 - [API Standards](URL): RESTful API design standards and conventions
-- [Security Standards](URL): Security compliance frameworks (NIST, ISO 27001)
+- [security Standards](URL): security compliance frameworks (NIST, ISO 27001)
 - [Industry Best Practices](URL): Relevant industry standards and benchmarks
 - [RFCs and Specifications](URL): Industry standards this requirement follows
 
@@ -320,7 +320,7 @@ AI-assisted implementation plans derived from this requirement.
 - [Wireframes/Mockups](link): Visual design supporting this requirement
 - [Technical Research](link): Technical feasibility and approach analysis
 - [Performance Benchmarks](link): Performance testing results and capacity planning
-- [Security Assessment](link): Security analysis and vulnerability assessment
+- [security Assessment](link): security analysis and vulnerability assessment
 
 ### Validation Evidence
 
@@ -345,7 +345,7 @@ AI-assisted implementation plans derived from this requirement.
 **Verification Status**:
 - Automated tests passing: [X/Y] tests (target: 100%)
 - Manual validation complete: [Yes/No]
-- Security assessment complete: [Yes/No]
+- security assessment complete: [Yes/No]
 - Performance benchmarks met: [Yes/No]
 
 ### Cross-Reference Validation

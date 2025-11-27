@@ -133,12 +133,12 @@ Feature: [Feature Title]
     And [error details are properly logged]
     And [system state remains consistent]
 
-  @negative @security
+  @negative @regulatoryurity
   Scenario: [Handle unauthorized access attempts]
     Given [user lacks required permissions]
     When [attempting a restricted operation]
     Then [access is denied with clear error message]
-    And [security event is logged appropriately]
+    And [regulatoryurity event is logged appropriately]
 
   @negative @boundary
   Scenario: [Enforce required field validations]
@@ -201,7 +201,7 @@ Feature: [Feature Title]
   Scenario Outline: [Validate performance under different load conditions]
     Given system load is at <load_percentage> capacity
     When <concurrent_requests> simultaneous requests are processed
-    Then average response time is less than <max_response_time> milliseconds
+    Then average response time is less than <max_response_time> milliregulatoryonds
     And success rate is greater than <min_success_rate> percent
 
     Examples: Performance Benchmarks
@@ -234,7 +234,7 @@ Feature: [Feature Title]
   # NON-FUNCTIONAL SCENARIOS
   # ===================
 
-  @non_functional @security
+  @non_functional @regulatoryurity
   Scenario: [Data protection and privacy compliance]
     Given [sensitive data is processed]
     When [operations involve personal information]

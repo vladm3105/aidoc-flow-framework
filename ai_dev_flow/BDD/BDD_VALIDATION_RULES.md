@@ -118,7 +118,7 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 
 **Requirements**:
 - Performance targets quantifiable
-- Security scenarios included
+- security scenarios included
 - Integration points specified
 - Scalability requirements defined
 

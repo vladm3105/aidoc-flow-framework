@@ -85,7 +85,7 @@ versioning:
   deprecation_date: null
   migration_guide_url: null
 
-# Security
+# security
 security:
   authentication_required: true
   authentication_method: [api_key|oauth|mtls]

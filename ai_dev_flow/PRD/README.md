@@ -48,7 +48,7 @@ PRDs are the **starting point** of specification-driven development within the c
 - ADRs document **WHICH** option was chosen and **WHY**
 - This separation maintains clear workflow phases and prevents broken references
 
-**Architecture Decision Requirements Section**:
+**Architecture Decision Requirements section**:
 Every PRD should include a section that lists architectural topics requiring decisions:
 
 ```markdown
@@ -145,7 +145,7 @@ Link to upstream and downstream artifacts:
 ## Traceability
 - Downstream Artifacts: [SYS-NNN](../SYS/SYS-NNN_...md), [EARS-NNN](../EARS/EARS-NNN_...md), [REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN)
 - Anchors/IDs: `# PRD-NNN`
-- Code Path(s): `option_strategy/component/module.py`
+- Code Path(s): `src/component/module.py`
 ```
 
 ### Platform vs Feature Categorization
@@ -243,8 +243,8 @@ Where:
 - `descriptive_title` uses snake_case for clarity
 
 **Examples:**
-- `PRD-001_alpha_vantage_integration.md`
-- `PRD-035_position_limit_enforcement.md`
+- `PRD-001_external_api_integration.md`
+- `PRD-035_resource_limit_enforcement.md`
 - `PRD-042_ml_model_serving.md`
 
 ## Writing Guidelines
@@ -320,7 +320,7 @@ Include complete traceability and acceptance criteria:
 ## Traceability
 - SRC: [SYS-NNN](../SYS/SYS-NNN_component.md)
 - EARS: [EARS-NNN](../EARS/EARS-NNN_component.md)
-- Implementation: option_strategy/component/
+- Implementation: src/component/
 ```
 
 ## Common Patterns
@@ -357,7 +357,7 @@ Maintain [SLA] during peak usage periods.
 
 ## Example PRD Template
 
-See `PRD-001_alpha_vantage_integration.md` for a complete example of a well-structured PRD that follows these conventions.
+See `PRD-001_external_api_integration.md` for a complete example of a well-structured PRD that follows these conventions.
 
 ## Benefits of Strong PRDs
 

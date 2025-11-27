@@ -468,7 +468,7 @@ Link: </api/v2/users>; rel="successor-version"
 
 ---
 
-## Security
+## security
 
 ### Authentication
 - **Required**: All endpoints except `/health`, `/metrics`

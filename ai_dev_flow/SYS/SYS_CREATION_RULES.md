@@ -26,7 +26,7 @@ custom_fields:
 ## Table of Contents
 
 1. [File Organization and Directory Structure](#1-file-organization-and-directory-structure)
-2. [Document Structure (Required Sections)](#2-document-structure-required-sections)
+2. [Document Structure (Required sections)](#2-document-structure-required-sections)
 3. [Document Control Requirements](#3-document-control-requirements)
 4. [ID and Naming Standards](#4-id-and-naming-standards)
 5. [System Component Categorization](#5-system-component-categorization)
@@ -47,7 +47,7 @@ custom_fields:
 
 ---
 
-## 2. Document Structure (Required Sections)
+## 2. Document Structure (Required sections)
 
 SYS documents follow a comprehensive structure translating ADR decisions into system requirements:
 
@@ -143,7 +143,7 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 **NFR Quantification (30%)**:
 - Performance NFRs quantified with percentiles and thresholds: 15%
 - Reliability NFRs specified with uptime/SLA targets: 5%
-- Security NFRs defined with compliance framework references: 5%
+- security NFRs defined with compliance framework references: 5%
 - Scalability NFRs quantified for resource and capacity growth: 5%
 
 **Interface Specifications (20%)**:
@@ -210,7 +210,7 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 
 - System boundaries must prevent requirement bleed between components
 - NFRs must be prioritized and quantified with measurable thresholds
-- Security and compliance requirements must reference specific standards
+- security and compliance requirements must reference specific standards
 - Performance and scalability targets must be justified with business needs
 
 ---

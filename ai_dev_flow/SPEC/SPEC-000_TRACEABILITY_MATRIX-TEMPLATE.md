@@ -114,10 +114,10 @@ cumulative_tags:
 ### 2.3 Example: SPEC with Required Tags
 
 ```yaml
-# SPEC-018: Order Placement Service Specification
+# SPEC-018: request submission Service Specification
 
 spec_id: SPEC-018
-title: "Order Placement Service Technical Specification"
+title: "request submission Service Technical Specification"
 version: "1.0.0"
 status: active
 
@@ -428,7 +428,7 @@ graph TD
 |-------------|-------------|------------|--------|
 | Technical Review | YYYY-MM-DD | All active SPEC | Scheduled |
 | Performance Review | YYYY-MM-DD | Service SPEC | Planning |
-| Security Review | YYYY-MM-DD | All SPEC | Scheduled |
+| security Review | YYYY-MM-DD | All SPEC | Scheduled |
 
 ---
 

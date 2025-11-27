@@ -44,7 +44,7 @@ custom_fields:
 This Business Requirements Document (BRD) defines the business requirements for [Project Name]. The document serves as the foundation for project planning, design, development, and validation activities. It provides a clear understanding of business needs, objectives, scope, and success criteria for all stakeholders.
 
 ### 1.2 Document Scope
-This document covers the business perspective of the project requirements. It includes business objectives, functional and non-functional requirements, stakeholder information, constraints, assumptions, dependencies, acceptance criteria, and Architecture Decision Requirements (Section 6.2). Technical specifications and detailed design documents are maintained separately and referenced where applicable. Architecture Decision Records (ADRs) are created AFTER this BRD based on the Architecture Decision Requirements section.
+This document covers the business perspective of the project requirements. It includes business objectives, functional and non-functional requirements, stakeholder information, constraints, assumptions, dependencies, acceptance criteria, and Architecture Decision Requirements (section 6.2). Technical specifications and detailed design documents are maintained separately and referenced where applicable. Architecture Decision Records (ADRs) are created AFTER this BRD based on the Architecture Decision Requirements section.
 
 ### 1.3 Intended Audience
 This document is intended for the following stakeholders:
@@ -63,7 +63,7 @@ This document is intended for the following stakeholders:
 ### 1.5 References
 [List any reference documents, standards, policies, or related documentation]
 
-**Note**: Do NOT list ADRs here. Architecture decisions will be documented in separate ADRs created AFTER this BRD is approved. See Section 6.2 for Architecture Decision Requirements.
+**Note**: Do NOT list ADRs here. Architecture decisions will be documented in separate ADRs created AFTER this BRD is approved. See section 6.2 for Architecture Decision Requirements.
 
 | Document Name | Version | Location/URL |
 |---------------|---------|--------------|
@@ -269,8 +269,8 @@ List technology choices, infrastructure components, or platform capabilities tha
 - **Business Impact**: Consequence if prerequisite not available
 
 <!-- WARNING: Do NOT reference specific ADR numbers (e.g., ADR-002, ADR-033) in BRD content.
-     Per traceability rules: BRDs identify architecture decision TOPICS in Section 9, not specific ADR IDs.
-     Use: "architecture decision required" or "see Section 9 Architecture Decision Requirements" -->
+     Per traceability rules: BRDs identify architecture decision TOPICS in section 9, not specific ADR IDs.
+     Use: "architecture decision required" or "see section 9 Architecture Decision Requirements" -->
 
 **Example Entry** (Platform BRD):
 ```markdown
@@ -287,8 +287,8 @@ Document which Platform BRDs provide required infrastructure for this Feature BR
 **Structure**: List Platform BRD dependencies (which BRDs 001-005 are required) with relevance explanation
 
 **Format Options**:
-- **Full Sections** (Use for first 3 BRDs in category or critical workflows): Complete list with detailed relevance explanations
-- **Abbreviated Sections** (Use for token efficiency): Concise bullet list referencing Platform BRDs
+- **Full sections** (Use for first 3 BRDs in category or critical workflows): Complete list with detailed relevance explanations
+- **Abbreviated sections** (Use for token efficiency): Concise bullet list referencing Platform BRDs
 
 **Example Entry** (Feature BRD - Full):
 ```markdown
@@ -299,12 +299,12 @@ This Feature BRD depends on the following Platform BRDs:
 1. **Platform BRD (e.g., BRD-001): Platform Architecture & Technology Stack**
    - **Required Foundation**: Node.js 18+, PostgreSQL 14+, Redis 7+, Python 3.11+
    - **Relevance to BRD-XXX**: [Explain why these technologies are needed for this feature]
-   - **Specific Prerequisites**: See BRD-NNN Section 3.6 items 1-10
+   - **Specific Prerequisites**: See BRD-NNN section 3.6 items 1-10
 
 2. **Platform BRD (e.g., BRD-001): Multi-Agent AI System Architecture**
    - **Required AI Infrastructure**: Google ADK, A2A Protocol, shared context store
    - **Relevance to BRD-XXX**: [Explain why AI infrastructure is needed]
-   - **Specific Prerequisites**: See BRD-NNN Section 3.6 items 1-8
+   - **Specific Prerequisites**: See BRD-NNN section 3.6 items 1-8
 ```
 
 **Example Entry** (Feature BRD - Abbreviated):
@@ -315,11 +315,11 @@ This Feature BRD depends on the following Platform BRDs:
 
 This Feature BRD depends on the following Platform BRDs:
 
-1. **Platform BRD (e.g., BRD-001)**: Node.js 18+, PostgreSQL 14+, Redis 7+, Python 3.11+, n8n (See BRD-NNN Section 3.6)
-2. **Platform BRD (e.g., BRD-001)**: Partner integrations (See BRD-NNN Section 3.6, 3.7)
-3. **Platform BRD (e.g., BRD-001)**: Security, compliance, audit retention (See BRD-NNN Section 3.6, 3.7)
-4. **Platform BRD (e.g., BRD-001)**: PostgreSQL schema, data model (See BRD-NNN Section 3.6)
-5. **Platform BRD (e.g., BRD-001)**: Google ADK, A2A Protocol, shared context store (See BRD-NNN Section 3.6)
+1. **Platform BRD (e.g., BRD-001)**: Node.js 18+, PostgreSQL 14+, Redis 7+, Python 3.11+, n8n (See BRD-NNN section 3.6)
+2. **Platform BRD (e.g., BRD-001)**: Partner integrations (See BRD-NNN section 3.6, 3.7)
+3. **Platform BRD (e.g., BRD-001)**: security, compliance, audit retention (See BRD-NNN section 3.6, 3.7)
+4. **Platform BRD (e.g., BRD-001)**: PostgreSQL schema, data model (See BRD-NNN section 3.6)
+5. **Platform BRD (e.g., BRD-001)**: Google ADK, A2A Protocol, shared context store (See BRD-NNN section 3.6)
 ```
 
 **Guidelines**:
@@ -364,8 +364,8 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 - **Feature-Specific Mandatory Conditions** (6-12 conditions unique to this workflow)
 
 **Format Options**:
-- **Full Sections** (Use for first 3 BRDs in category or critical workflows): Complete list with detailed impact analysis
-- **Abbreviated Sections** (Use for token efficiency): 4 platform conditions + pointer to functional requirements
+- **Full sections** (Use for first 3 BRDs in category or critical workflows): Complete list with detailed impact analysis
+- **Abbreviated sections** (Use for token efficiency): 4 platform conditions + pointer to functional requirements
 
 **Example Entry** (Feature BRD - Full):
 ```markdown
@@ -419,7 +419,7 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 3. **Google ADK Agent Framework OR n8n Workflow Engine** (from BRD-NNN or BRD-NNN)
 4. **Field-Level PII Encryption** (from BRD-NNN): Platform encryption service required
 
-**Feature-Specific Mandatory Conditions**: See Section 5 (Functional Requirements) for workflow-specific SLAs, performance targets, and technical constraints.
+**Feature-Specific Mandatory Conditions**: See section 5 (Functional Requirements) for workflow-specific SLAs, performance targets, and technical constraints.
 ```
 
 **Guidelines**:
@@ -435,7 +435,7 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 ## 4. Stakeholders (High-Level)
 
 **📚 Complete Stakeholder Details**: For detailed stakeholder analysis, communication plans, and team structure, see:
-- **[PRD Template - Stakeholders & Communication Section](../PRD/PRD-TEMPLATE.md#stakeholders--communication)** - Full stakeholder matrix and engagement strategy
+- **[PRD Template - Stakeholders & Communication section](../PRD/PRD-TEMPLATE.md#stakeholders--communication)** - Full stakeholder matrix and engagement strategy
 
 **Purpose**: Identify key business stakeholders who approve/sponsor this initiative. Detailed communication plans belong in PRD (Layer 2).
 
@@ -453,7 +453,7 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 ## 5. User Stories (High-Level Summary)
 
 **📚 Complete User Stories**: For detailed user stories with acceptance criteria, permissions, and user roles, see:
-- **[PRD Template - User Stories & User Roles Section](../PRD/PRD-TEMPLATE.md#user-stories--user-roles)** - Full user story tables and role definitions
+- **[PRD Template - User Stories & User Roles section](../PRD/PRD-TEMPLATE.md#user-stories--user-roles)** - Full user story tables and role definitions
 
 **Purpose**: This section provides a high-level summary of key user stories to demonstrate business value and user needs. Detailed user stories belong in the PRD (Layer 2).
 
@@ -483,9 +483,9 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 [High-level mapping only - detailed mapping in PRD]
 
-- **Business Objective 1**: Supported by [XX] user stories (See PRD Section: User Story to Business Objective Mapping)
-- **Business Objective 2**: Supported by [YY] user stories (See PRD Section: User Story to Business Objective Mapping)
-- **Business Objective 3**: Supported by [ZZ] user stories (See PRD Section: User Story to Business Objective Mapping)
+- **Business Objective 1**: Supported by [XX] user stories (See PRD section: User Story to Business Objective Mapping)
+- **Business Objective 2**: Supported by [YY] user stories (See PRD section: User Story to Business Objective Mapping)
+- **Business Objective 3**: Supported by [ZZ] user stories (See PRD section: User Story to Business Objective Mapping)
 
 ---
 
@@ -530,7 +530,7 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 - Platform BRDs: [e.g., BRD-NNN (Platform Architecture), BRD-NNN (Partner Ecosystem)]
 - Partner Integration BRDs: [e.g., BRD-XXX (Partner Name)]
 - Related Feature BRDs: [e.g., BRD-YYY (Related Feature)]
-- Compliance BRDs: [e.g., BRD-NNN (Security & Compliance)]
+- Compliance BRDs: [e.g., BRD-NNN (security & Compliance)]
 
 **Complexity**: X/5 ([Business-level rationale: number of partners involved, regulatory scope, business constraints, cross-BRD dependencies])
 
@@ -582,7 +582,7 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 3. **Complexity Rating Scale**:
    - 1/5: Single partner, no regulatory constraints, straightforward business logic
    - 2/5: 2-3 partners, standard compliance requirements, moderate business complexity
-   - 3/5: 3-4 partners, sector-specific regulations, complex fee structures or multi-tier logic
+   - 3/5: 3-4 partners, regulatorytor-specific regulations, complex fee structures or multi-tier logic
    - 4/5: 4+ partners, multi-jurisdiction compliance, cross-border requirements, high integration complexity
    - 5/5: Extensive partner ecosystem, complex regulatory framework, multi-currency/multi-corridor, AI/ML business outcomes
 
@@ -600,7 +600,7 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 ### 6.4 User Roles and Permissions (High-Level)
 
 **📚 Complete User Roles**: For detailed user roles with permissions and responsibilities, see:
-- **[PRD Template - User Roles and Permissions Section](../PRD/PRD-TEMPLATE.md#user-roles-and-permissions)** - Full role definitions with permissions matrix
+- **[PRD Template - User Roles and Permissions section](../PRD/PRD-TEMPLATE.md#user-roles-and-permissions)** - Full role definitions with permissions matrix
 
 **Purpose**: Provide high-level identification of user roles. Detailed permissions belong in PRD (Layer 2).
 
@@ -627,7 +627,7 @@ The following architectural topics require formal Architecture Decision Records 
 | [Topic 2] | [What architectural decision is needed] | [Which business objectives/requirements drive this] | [Technologies, patterns, or approaches to evaluate] |
 
 **Example Topics**:
-- **Authentication/Authorization**: Select authentication mechanism (driven by NFR-XXX: Security requirements)
+- **Authentication/Authorization**: Select authentication mechanism (driven by NFR-XXX: security requirements)
 - **Data Storage**: Choose database technology for operational data (driven by FR-XXX: Data persistence requirements)
 - **Integration Architecture**: Define API integration pattern (driven by FR-XXX: System integration)
 - **Caching Strategy**: Choose caching approach (driven by NFR-XXX: Performance requirements)
@@ -650,7 +650,7 @@ The following architectural topics require formal Architecture Decision Records 
 | NFR-XXX | Page load time | Load time | [X] seconds | P2 | [Business reason] |
 | NFR-XXX | Report generation time | Processing time | [X] minutes | P2 | [Business reason] |
 
-### 7.4 Security Requirements
+### 7.4 security Requirements
 
 | Req ID | Requirement Description | Standard/Framework | Priority | Validation Method |
 |--------|------------------------|-------------------|----------|-------------------|
@@ -688,7 +688,7 @@ The following architectural topics require formal Architecture Decision Records 
 | Req ID | Requirement Description | Standard/Guideline | Priority | Validation Method |
 |--------|------------------------|-------------------|----------|-------------------|
 | NFR-024 | User interface design standards | [e.g., WCAG 2.1 AA] | P1 | [Usability testing] |
-| NFR-025 | Accessibility compliance | [e.g., Section 508, ADA] | P1 | [Accessibility audit] |
+| NFR-025 | Accessibility compliance | [e.g., section 508, ADA] | P1 | [Accessibility audit] |
 | NFR-026 | Browser compatibility | [List supported browsers/versions] | P1 | [Cross-browser testing] |
 | NFR-027 | Mobile device support | [iOS/Android versions] | P2 | [Device testing] |
 | NFR-028 | User training requirements | [Maximum training time: X hours] | P2 | [User feedback] |
@@ -978,7 +978,7 @@ Acceptance criteria define the conditions that must be satisfied for the project
 | Requirement ID | Acceptance Criterion | Measurement Method | Target | Test Approach | Pass Threshold |
 |----------------|---------------------|-------------------|--------|---------------|----------------|
 | NFR-XXX | [Performance criterion] | [Load testing] | [X seconds] | [Test scenario] | [95% within target] |
-| NFR-XXX | [Security criterion] | [Security audit] | [Standard compliance] | [Audit process] | [100% compliance] |
+| NFR-XXX | [security criterion] | [security audit] | [Standard compliance] | [Audit process] | [100% compliance] |
 | NFR-013 | [Availability criterion] | [Monitoring logs] | [99.9% uptime] | [30-day monitoring] | [Meets or exceeds target] |
 
 ### 9.5 User Acceptance Testing (UAT) Criteria
@@ -1035,7 +1035,7 @@ Acceptance criteria define the conditions that must be satisfied for the project
 | Documentation | User documentation delivered | Complete and approved | Documentation review | [Business Analyst] |
 | Documentation | Technical documentation delivered | Complete and approved | Documentation review | [Technical Lead] |
 | Infrastructure | Production environment ready | Fully configured | Environment checklist | [IT Operations] |
-| Security | Security assessment completed | Approved | Security report | [Security Team] |
+| security | security assessment completed | Approved | security report | [security Team] |
 | Data | Data migration validated | 100% accuracy | Data validation report | [Data Team] |
 | Support | Support team trained | 100% of team | Training records | [Support Manager] |
 | Approvals | Business sponsor sign-off | Approved | Sign-off document | [Project Sponsor] |
@@ -1061,7 +1061,7 @@ Acceptance criteria define the conditions that must be satisfied for the project
 | Business Acceptance | [Business Sponsor] | Business requirements met | UAT completed successfully | [Date] |
 | Technical Acceptance | [Technical Lead] | Technical requirements met | System testing completed | [Date] |
 | User Acceptance | [User Representative] | Solution meets user needs | UAT completed | [Date] |
-| Security Acceptance | [Security Officer] | Security requirements met | Security assessment passed | [Date] |
+| security Acceptance | [security Officer] | security requirements met | security assessment passed | [Date] |
 | Final Acceptance | [Project Director] | All criteria met | All other sign-offs completed | [Date] |
 
 #### 9.8.2 Acceptance Criteria Not Met
@@ -1191,7 +1191,7 @@ Risks from technical failures, scalability, and system dependencies.
 
 **Examples**:
 - RISK-050: Platform cannot scale to handle transaction volume (L:1 × I:10 = 10)
-- RISK-051: Security breach compromises customer data (L:1 × I:15 = 15)
+- RISK-051: security breach compromises customer data (L:1 × I:15 = 15)
 - RISK-052: Third-party dependency vulnerability requires emergency patching (L:2 × I:5 = 10)
 
 #### 10.2.7 Strategic & Business Model Risks
@@ -1573,10 +1573,10 @@ This section documents the formal approval process for the BRD and criteria for 
 
 This BRD is considered approved when:
 
-1. All stakeholders listed in Section 15.5.1 have provided written approval
-2. All critical business risks (Section 10) with risk score ≥12 have documented mitigation strategies
+1. All stakeholders listed in section 15.5.1 have provided written approval
+2. All critical business risks (section 10) with risk score ≥12 have documented mitigation strategies
 3. Regulatory compliance requirements have been validated by legal counsel (if applicable)
-4. Required dependencies (Section 17.2) are confirmed available or have mitigation plans
+4. Required dependencies (section 17.2) are confirmed available or have mitigation plans
 5. Budget allocation has been approved by appropriate financial authority
 
 #### 15.5.3 Change Control Process for Approved BRD
@@ -1628,7 +1628,7 @@ Changes to this approved BRD must follow this process:
 | Integration Testing | [Purpose] | [QA Team] | [Phase] | [Criteria] |
 | System Testing | [Purpose] | [QA Team] | [Phase] | [Criteria] |
 | Performance Testing | [Purpose] | [QA Team] | [Phase] | [Criteria] |
-| Security Testing | [Purpose] | [Security Team] | [Phase] | [Criteria] |
+| security Testing | [Purpose] | [security Team] | [Phase] | [Criteria] |
 | User Acceptance Testing | [Purpose] | [Business Users] | [Phase] | [Criteria] |
 
 #### 16.2.2 Defect Management
@@ -1681,7 +1681,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | NFR Category | Related NFR IDs | Downstream SPEC (Planned) | Validation Method |
 |--------------|----------------|---------------------------|-------------------|
 | Performance SLAs | NFR-XXX through NFR-XXX | SPEC-XXX-NFR-P: Performance Testing | Load testing |
-| Security & Compliance | NFR-XXX through NFR-012 | SPEC-XXX-NFR-S: Security Controls | Security audit |
+| security & Compliance | NFR-XXX through NFR-012 | SPEC-XXX-NFR-S: security Controls | security audit |
 | Availability | NFR-013 through NFR-019 | SPEC-XXX-NFR-A: Deployment Architecture | Uptime monitoring |
 
 ### 17.2 Cross-BRD Dependencies
@@ -1709,7 +1709,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | FR-XXX through FR-XXX | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
 | User Stories (US-001 through US-XXX) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
 | NFR Performance | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
-| NFR Security | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
+| NFR security | security Tests | TEST-XXX-regulatory: security Audit | All controls |
 
 ### 17.4 Traceability Summary
 
@@ -1733,7 +1733,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 **Step 1: Check the Master Glossary First**
 - Review [BRD-000_GLOSSARY.md](BRD-000_GLOSSARY.md) before defining any term
 - Reference master glossary entries instead of duplicating definitions
-- Use format: "See BRD-000_GLOSSARY.md Section X for definition"
+- Use format: "See BRD-000_GLOSSARY.md section X for definition"
 
 **Step 2: Define Project-Specific Terms Only**
 - Add terms unique to THIS project that don't appear in master glossary
@@ -1761,7 +1761,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [Project_Business_Term_1] | [Clear, concise definition accessible to all stakeholders] | [Where/how used in this BRD] |
 | [Project_Business_Term_2] | [Clear, concise definition accessible to all stakeholders] | [Where/how used in this BRD] |
 
-**Note**: For standard business terms (KPI, ROI, stakeholder, etc.), see [BRD-000_GLOSSARY.md Section 1](BRD-000_GLOSSARY.md#1-business-terms)
+**Note**: For standard business terms (KPI, ROI, stakeholder, etc.), see [BRD-000_GLOSSARY.md section 1](BRD-000_GLOSSARY.md#1-business-terms)
 
 ---
 
@@ -1774,7 +1774,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [Project_Technical_Term_1] | [Business-accessible explanation of technical concept] | [Where/how used in this BRD] |
 | [Project_Technical_Term_2] | [Business-accessible explanation of technical concept] | [Where/how used in this BRD] |
 
-**Note**: For standard technical terms (API, webhook, SLA, etc.), see [BRD-000_GLOSSARY.md Section 2](BRD-000_GLOSSARY.md#2-technical-terms)
+**Note**: For standard technical terms (API, webhook, SLA, etc.), see [BRD-000_GLOSSARY.md section 2](BRD-000_GLOSSARY.md#2-technical-terms)
 
 ---
 
@@ -1787,7 +1787,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [Project_Domain_Term_1] | [Clear definition with domain context] | [Industry/Domain] | [Where/how used in this BRD] |
 | [Project_Domain_Term_2] | [Clear definition with domain context] | [Industry/Domain] | [Where/how used in this BRD] |
 
-**Note**: For standard regulatory/compliance terms (KYC, AML, etc.), see [BRD-000_GLOSSARY.md Section 3](BRD-000_GLOSSARY.md#3-domain-specific-terms)
+**Note**: For standard regulatory/compliance terms (KYC, AML, etc.), see [BRD-000_GLOSSARY.md section 3](BRD-000_GLOSSARY.md#3-domain-specific-terms)
 
 ---
 
@@ -1800,7 +1800,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [Project_Acronym_1] | [Full term] | [Business/Technical/Domain] |
 | [Project_Acronym_2] | [Full term] | [Business/Technical/Domain] |
 
-**Note**: For standard BRD framework acronyms (FR, NFR, BO, AC, etc.), see [BRD-000_GLOSSARY.md Section 4](BRD-000_GLOSSARY.md#4-acronyms)
+**Note**: For standard BRD framework acronyms (FR, NFR, BO, AC, etc.), see [BRD-000_GLOSSARY.md section 4](BRD-000_GLOSSARY.md#4-acronyms)
 
 ---
 
@@ -1808,17 +1808,17 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 [Link to related BRDs, external documents, and dependencies for this project]
 
-| Term/Concept | Referenced Document | Section | Relationship |
+| Term/Concept | Referenced Document | section | Relationship |
 |--------------|---------------------|---------|--------------|
-| [Concept_1] | [Document ID or path] | [Section #] | [Dependency/Related/Prerequisite] |
-| [Concept_2] | [Document ID or path] | [Section #] | [Dependency/Related/Prerequisite] |
+| [Concept_1] | [Document ID or path] | [section #] | [Dependency/Related/Prerequisite] |
+| [Concept_2] | [Document ID or path] | [section #] | [Dependency/Related/Prerequisite] |
 
 **Example entries:**
 - Platform Architecture | BRD-001_platform_architecture.md | N/A | Foundational dependency
-- Partner Integration | BRD-002_partner_ecosystem.md | Section 6 | Related requirements
+- Partner Integration | BRD-002_partner_ecosystem.md | section 6 | Related requirements
 - Authentication System | REQ-005_user_authentication.md | All | Upstream dependency
 
-**Note**: For framework-level cross-references, see [BRD-000_GLOSSARY.md Section 5](BRD-000_GLOSSARY.md#5-cross-references)
+**Note**: For framework-level cross-references, see [BRD-000_GLOSSARY.md section 5](BRD-000_GLOSSARY.md#5-cross-references)
 
 ---
 
@@ -1826,12 +1826,12 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 [Define regulatory, industry, or technical standards specific to this project NOT in master glossary]
 
-| Standard | Organization | Relevance | Section |
+| Standard | Organization | Relevance | section |
 |----------|--------------|-----------|---------|
 | [Project_Standard_1] | [Standards body/org] | [Why relevant to this project] | [Where used in BRD] |
 | [Project_Standard_2] | [Standards body/org] | [Why relevant to this project] | [Where used in BRD] |
 
-**Note**: For common standards (PCI-DSS, GDPR, ISO 27001, etc.), see [BRD-000_GLOSSARY.md Section 6](BRD-000_GLOSSARY.md#6-external-standards)
+**Note**: For common standards (PCI-DSS, GDPR, ISO 27001, etc.), see [BRD-000_GLOSSARY.md section 6](BRD-000_GLOSSARY.md#6-external-standards)
 
 ---
 
@@ -1850,7 +1850,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 **Purpose**: This appendix defines the boundary between Business Requirements (BRD-level) and Product/Technical Requirements (PRD-level). Use this guide to ensure Functional Requirements stay at business level and achieve PRD-Ready Score ≥90/100.
 
 **📚 Complete Reference**: For detailed guidance with examples, edge cases, and self-check questions, see:
-- **[EARS Template - Section 5.6: Business vs Technical Requirements Boundary](../EARS/EARS-TEMPLATE.md#56-business-vs-technical-requirements-boundary)** - Full guidance for requirements writers
+- **[EARS Template - section 5.6: Business vs Technical Requirements Boundary](../EARS/EARS-TEMPLATE.md#56-business-vs-technical-requirements-boundary)** - Full guidance for requirements writers
 - **[BDD Template - Header: Quick Self-Check Questions](../BDD/BDD-TEMPLATE.feature)** - Fast validation checklist
 
 **Quick Summary**:
@@ -1932,7 +1932,7 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 
 [List all reference materials, standards, regulations, and best practices cited in this document]
 
-**Note**: Architecture Decision Records (ADRs) are created AFTER BRD approval. Do NOT list ADR numbers here. See Section 6.2 Architecture Decision Requirements for topics requiring architectural decisions.
+**Note**: Architecture Decision Records (ADRs) are created AFTER BRD approval. Do NOT list ADR numbers here. See section 6.2 Architecture Decision Requirements for topics requiring architectural decisions.
 
 1. [Reference 1 - Full citation]
 2. [Reference 2 - Full citation]
@@ -2010,16 +2010,16 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 
 #### M.1 Regulatory Requirements Mapping
 
-| Regulation | Section/Rule | Requirement Summary | BRD Section | FR Reference | Compliance Approach |
+| Regulation | section/Rule | Requirement Summary | BRD section | FR Reference | Compliance Approach |
 |------------|--------------|---------------------|-------------|--------------|---------------------|
-| [Regulation] | [Section] | [Summary] | [Section #] | [FR-XXX] | [How complied] |
+| [Regulation] | [section] | [Summary] | [section #] | [FR-XXX] | [How complied] |
 
 **Example:**
-| Regulation | Section/Rule | Requirement Summary | BRD Section | FR Reference | Compliance Approach |
+| Regulation | section/Rule | Requirement Summary | BRD section | FR Reference | Compliance Approach |
 |------------|--------------|---------------------|-------------|--------------|---------------------|
-| FinCEN MSB | 31 CFR 1010.410 | Recordkeeping for 5 years | Section 6 | FR-012 | Transaction audit trail with 5-year retention |
-| OFAC SDN | 31 CFR 501.603 | Sanctions screening | Section 5 | FR-XXX | Real-time OFAC screening before authorization |
-| Travel Rule | 31 CFR 1010.410(f) | Identity for ≥$3,000 | Section 5 | FR-XXX | Sender/recipient identity capture above threshold |
+| FinCEN MSB | 31 CFR 1010.410 | Recordkeeping for 5 years | section 6 | FR-012 | Transaction audit trail with 5-year retention |
+| OFAC SDN | 31 CFR 501.603 | Sanctions screening | section 5 | FR-XXX | Real-time OFAC screening before authorization |
+| Travel Rule | 31 CFR 1010.410(f) | Identity for ≥$3,000 | section 5 | FR-XXX | Sender/recipient identity capture above threshold |
 
 #### M.2 Regulatory Calendar
 
@@ -2033,7 +2033,7 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 
 **📚 Complete Customer-Facing Content Guidance**: For detailed messaging templates, error messages, promotional content, tooltips, and compliance disclosures, see:
 
-- **[PRD Template - Customer-Facing Content & Messaging Section](../PRD/PRD-TEMPLATE.md#customer-facing-content--messaging)** - Product-level messaging templates and examples
+- **[PRD Template - Customer-Facing Content & Messaging section](../PRD/PRD-TEMPLATE.md#customer-facing-content--messaging)** - Product-level messaging templates and examples
 
 **Purpose**: At the BRD level, identify that customer-facing messaging is required and document high-level business approval requirements. Detailed message templates belong in the PRD (Layer 2).
 

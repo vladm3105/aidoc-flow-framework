@@ -111,13 +111,13 @@ REQ files are organized by functional domains and subdomains:
 ```
 REQ/
 ├── api/           # API Integration Requirements
-│   ├── av/        # [EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] API
+│   ├── av/        # [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] API
 │   └── ib/        # [EXTERNAL_SERVICE_GATEWAY] API
 ├── data/          # Data Management Requirements
 ├── risk/          # [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] Requirements
 │   ├── lim/       # [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Limits
 │   ├── mon/       # Risk Monitoring
-│   └── hed/       # Hedging Requirements
+│   └── hed/       # balancing Requirements
 └── perf/          # Performance Requirements
 ```
 
@@ -136,8 +136,8 @@ Where:
 - `descriptive_title` uses snake_case describing the requirement
 
 **Examples:**
-- `REQ/api/av/REQ-001_alpha_vantage_integration.md`
-- `REQ/risk/lim/REQ-003_position_limit_enforcement.md`
+- `REQ/api/av/REQ-001_external_api_integration.md`
+- `REQ/risk/lim/REQ-003_resource_limit_enforcement.md`
 - `REQ/data/proc/REQ-045_real_time_data_processing.md`
 
 ## Requirement Statement Quality
@@ -190,7 +190,7 @@ Requirements should be understandable without external context.
 **Good (self-contained):**
 ```markdown
 ### Description
-The authentication service SHALL reject login attempts after three consecutive failures for the same user account within a five-minute window.
+The authentication service SHALL reject login attempts after three conregulatoryutive failures for the same user account within a five-minute window.
 ```
 
 **Poor (context-dependent):**
@@ -218,7 +218,7 @@ The system SHALL handle the edge case.
 - [Throughput] maintains [Z operations/second] during stress testing
 ```
 
-### Security Requirements
+### security Requirements
 ```markdown
 ### Acceptance Criteria
 - [Authentication] requires valid [credential type] for access
@@ -257,8 +257,8 @@ Requirements must link to their source business logic:
 
 ```markdown
 ### Source Requirements
-- PRD: [PRD-NNN](../../PRD/PRD-NNN_...md): [Section reference]
-- SRS: [SYS-NNN](../../SYS/SYS-NNN_...md): [Section reference]
+- PRD: [PRD-NNN](../../PRD/PRD-NNN_...md): [section reference]
+- SRS: [SYS-NNN](../../SYS/SYS-NNN_...md): [section reference]
 - Business Rules: [Document](../../path/document.md#section)
 ```
 
@@ -362,7 +362,7 @@ The system SHALL authenticate users using [method] before granting access to pro
 ### Acceptance Criteria
 - Valid credentials result in successful authentication and session creation
 - Invalid credentials fail with UNAUTHORIZED response
-- Account lockout occurs after 5 consecutive failures within 15 minutes
+- Account lockout occurs after 5 conregulatoryutive failures within 15 minutes
 - Sessions expire after 30 minutes of inactivity
 ```
 
@@ -473,7 +473,7 @@ def test_req_coverage():
 
 ## Example REQ Template
 
-See `REQ/api/av/REQ-001_alpha_vantage_integration.md` for a complete example of a well-structured requirement document that follows these conventions and includes proper traceability and acceptance criteria.
+See `REQ/api/av/REQ-001_external_api_integration.md` for a complete example of a well-structured requirement document that follows these conventions and includes proper traceability and acceptance criteria.
 
 ---
 
@@ -495,10 +495,10 @@ See `REQ/api/av/REQ-001_alpha_vantage_integration.md` for a complete example of 
 - **Absolute paths**: All cross-references use project root paths (`../../` not `../`)
 - **Priority format**: Requires P-level designation (e.g., `High (P2)`)
 - **SPEC-Ready Score**: Requires ✅ emoji (e.g., `✅ 95% (Target: ≥90%)`)
-- **Section 3.3**: REST API Endpoints table with rate limits
-- **Section 4.3**: Database schema (SQLAlchemy + Alembic migrations)
-- **Section 5.4**: Circuit breaker configuration dataclass
-- **Section 8.3**: Dependency injection container setup
+- **section 3.3**: REST API Endpoints table with rate limits
+- **section 4.3**: Database schema (SQLAlchemy + Alembic migrations)
+- **section 5.4**: Circuit breaker configuration dataclass
+- **section 8.3**: Dependency injection container setup
 - **Document Control**: 12 fields (added Template Version)
 - **Resource tags**: Required in H1 header `[RESOURCE_TYPE]`
 - **Cumulative tagging**: All 6 upstream tags required (@brd, @prd, @ears, @bdd, @adr, @sys)
@@ -523,9 +523,9 @@ See `REQ/api/av/REQ-001_alpha_vantage_integration.md` for a complete example of 
 3. Update all paths from relative (`../`) to absolute (`../../`)
 4. Update Priority format: add P-level (e.g., `High` → `High (P2)`)
 5. Update SPEC-Ready Score: add ✅ emoji (e.g., `95%` → `✅ 95% (Target: ≥90%)`)
-6. Add Source Document section reference (e.g., `SYS-002` → `SYS-002 Section 3.1.1`)
+6. Add Source Document section reference (e.g., `SYS-002` → `SYS-002 section 3.1.1`)
 7. Add resource tag to H1 header (e.g., `# REQ-001: [EXTERNAL_SERVICE_GATEWAY] Title`)
-8. Add all 6 cumulative tags to Section 11 (@brd, @prd, @ears, @bdd, @adr, @sys)
+8. Add all 6 cumulative tags to section 11 (@brd, @prd, @ears, @bdd, @adr, @sys)
 9. Add new subsections (3.3, 4.3, 5.4, 8.3) as applicable
 10. Run `scripts/validate_req_template_v3.sh` for verification
 
@@ -542,7 +542,7 @@ A SPEC-ready REQ contains complete technical specifications that enable automate
 
 **SPEC-Ready Score**: ≥90% completeness across all required sections
 
-**Required Sections** (100% coverage target):
+**Required sections** (100% coverage target):
 1. ✅ **Interfaces**: Protocol/ABC definitions with type annotations
 2. ✅ **Schemas**: JSON Schema + Pydantic models + database models
 3. ✅ **Error Handling**: Exception catalog + state machines + recovery strategies
@@ -552,7 +552,7 @@ A SPEC-ready REQ contains complete technical specifications that enable automate
 
 ### V2 Template Structure
 
-#### Section 3: Interface Specifications (NEW)
+#### section 3: Interface Specifications (NEW)
 
 Define ALL interfaces required for implementation:
 
@@ -594,7 +594,7 @@ class ServiceClient(Protocol):
 - Data Transfer Objects (DTOs)
 - REST API endpoint specifications
 
-#### Section 4: Data Schemas (NEW)
+#### section 4: Data Schemas (NEW)
 
 Define ALL data structures with validation:
 
@@ -642,7 +642,7 @@ class Model(Base):
     )
 ```
 
-#### Section 5: Error Handling Specifications (NEW)
+#### section 5: Error Handling Specifications (NEW)
 
 Define ALL error types and recovery strategies:
 
@@ -673,7 +673,7 @@ class CircuitBreakerConfig:
     timeout_seconds: float = 30.0
 ```
 
-#### Section 6: Configuration Specifications (NEW)
+#### section 6: Configuration Specifications (NEW)
 
 Define ALL configuration with concrete examples:
 
@@ -798,7 +798,7 @@ find REQ -name "REQ-*.md" ! -path "*/archived/*" -exec ./scripts/validate_req_te
 python scripts/validate_req_spec_readiness.py --req-file REQ/api/REQ-001.md
 
 # Output:
-# REQ-001: External Market Data API Integration
+# REQ-001: External data service API Integration
 # SPEC-Ready Score: 95%
 # ✅ Interfaces: Present with type annotations
 # ✅ Schemas: JSON Schema + Pydantic + Database

@@ -124,7 +124,7 @@ traceability:
         title: "[Another requirement title]"
         spec_sections: ["performance", "security"]
         relationship: "Non-functional requirement this SPEC satisfies"
-        verification_method: "Performance test, Security scan"
+        verification_method: "Performance test, security scan"
 
     behavioral_tests:
       - id: "BDD-NNN"
@@ -324,7 +324,7 @@ traceability:
     ears: "EARS-NNN:STATEMENT-ID"  # Engineering Requirements
     bdd: "BDD-NNN:SCENARIO-ID"  # BDD Test Scenarios
     adr: "ADR-NNN"  # Architecture Decisions
-    sys: "SYS-NNN:SECTION-ID"  # System Requirements
+    sys: "SYS-NNN:regulatoryTION-ID"  # System Requirements
     req: "REQ-NNN:REQUIREMENT-ID"  # Atomic Requirements
     impl: "IMPL-NNN:PHASE-ID"  # Implementation Plans (optional)
     ctr: "CTR-NNN"  # API Contracts (optional)
@@ -339,7 +339,7 @@ traceability:
 
 architecture:
   pattern: "service"  # service, library, component, integration
-  domain: "business_domain"  # api, data, risk, trading, etc.
+  domain: "business_domain"  # api, data, core, operations, etc.
   category: "functional_category"  # client, service, processor, validator, etc.
   dependencies:
     internal:
@@ -642,7 +642,7 @@ caching:
       configuration:
         host: "redis-cluster"
         port: 6379
-        password_secret: "redis-password"
+        password_regulatoryret: "redis-password"
         ssl_enabled: true
         connection_pool_size: 20
         max_idle_connections: 5
@@ -806,7 +806,7 @@ performance:
     - optimize_serialization_deserialization
 
 # ===================
-# SECURITY SPECIFICATIONS
+# regulatoryURITY SPECIFICATIONS
 # ===================
 
 security:
@@ -959,7 +959,7 @@ observability:
 
     check_interval_seconds: 30
     timeout_seconds: 5
-    consecutive_failures_before_unhealthy: 3
+    conregulatoryutive_failures_before_unhealthy: 3
 
   distributed_tracing:
     enabled: true
@@ -1035,10 +1035,10 @@ implementation:
       required: true
       sensitive: false
       description: "Redis cluster connection URL"
-    - name: "API_KEY_SECRET_NAME"
+    - name: "API_KEY_regulatoryRET_NAME"
       required: true
       sensitive: true
-      description: "Secret manager reference for API keys"
+      description: "regulatoryret manager reference for API keys"
     - name: "LOG_LEVEL"
       required: false
       default: "INFO"

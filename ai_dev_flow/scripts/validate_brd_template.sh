@@ -363,19 +363,20 @@ echo "-----------------------------------------"
 
 strategy_refs=""
 
-# Check for option_strategy document references
-if grep -q "option_strategy" "$BRD_FILE"; then
-  echo "  ✅ References to option_strategy/ documents found"
+# Check for domain-specific business logic document references
+# Accepts: {domain_strategy}/, domain-specific business logic, or actual strategy paths
+if grep -qE "\{domain_strategy\}|domain-specific business logic|strategy.*\.md" "$BRD_FILE"; then
+  echo "  ✅ References to domain-specific business logic documents found"
 
-  # Check for specific document references
-  if grep -qE "integrated_strategy_algo_v5\.md|Integrated_strategy_desc\.md|README\.md" "$BRD_FILE"; then
+  # Check for specific document references (generic or actual strategy files)
+  if grep -qE "\.md|business_logic|risk_management|strategy" "$BRD_FILE"; then
     echo "  ✅ Specific strategy documents referenced"
   else
-    echo "  ⚠️  WARNING: General option_strategy/ reference but no specific document references"
+    echo "  ⚠️  WARNING: General strategy reference but no specific document references"
     ((WARNINGS++))
   fi
 else
-  echo "  ⚠️  WARNING: No references to option_strategy/ documents found"
+  echo "  ⚠️  WARNING: No references to domain-specific business logic documents found"
   ((WARNINGS++))
 fi
 

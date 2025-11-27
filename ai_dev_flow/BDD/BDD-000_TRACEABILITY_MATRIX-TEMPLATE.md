@@ -128,23 +128,23 @@ Feature: Feature Name
 Feature: Place Limit Order
   As a trader
   I want to place limit orders with specified price and quantity
-  So that I can control my trade execution price
+  So that I can control my operation execution price
 
   Background:
-    Given the trading system is connected to Interactive Brokers
+    Given the service system is connected to Interactive providers
     And I have sufficient buying power
 
   @scenario-place-order
-  Scenario: Successfully place a limit order for AAPL stock
+  Scenario: Successfully place a limit order for ITEM-001 item
     Given I am authenticated as an active trader
-    When I submit a limit order to BUY 100 shares of AAPL at $150.00
-    Then the order should be accepted by the broker
+    When I submit a limit order to BUY 100 shares of ITEM-001 at $150.00
+    Then the order should be accepted by the provider
     And the order status should be "Submitted"
     And I should receive an order confirmation with order ID
 ```
 
 **Tag Analysis**:
-- `@brd:BRD-009:FR-015` - Business requirement for order placement
+- `@brd:BRD-009:FR-015` - Business requirement for request submission
 - `@brd:BRD-009:NFR-006` - Non-functional requirement (performance)
 - `@prd:PRD-016:FEATURE-003` - Product feature specification
 - `@ears:EARS-012:EVENT-002` - EARS "WHEN trader submits order" event
@@ -335,7 +335,7 @@ Test Implementation & Code (Layers 13-14)
 |------------------|-------------------|--------------|------------|--------|
 | Functional | [X] | [Y] | XX% | [Status] |
 | Non-Functional | [X] | [Y] | XX% | [Status] |
-| Security | [X] | [Y] | XX% | [Status] |
+| security | [X] | [Y] | XX% | [Status] |
 | Performance | [X] | [Y] | XX% | [Status] |
 
 ---

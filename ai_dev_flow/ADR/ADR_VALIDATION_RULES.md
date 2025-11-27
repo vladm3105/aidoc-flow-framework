@@ -62,7 +62,7 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 **Type**: Error (blocking)
 
-**Required Sections**: Status, Context, Decision, Consequences, Architecture Flow, Alternatives Considered
+**Required sections**: Status, Context, Decision, Consequences, Architecture Flow, Alternatives Considered
 
 ### CHECK 3: SYS-Ready Score Validation ⭐ NEW
 

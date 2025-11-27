@@ -47,13 +47,13 @@ custom_fields:
 After creating this ICON file, you MUST:
 
 1. **Update Provider TASKS** (1 file):
-   - Add Section 8.1: Contracts Provided
+   - Add section 8.1: Contracts Provided
    - List this ICON contract with full details
    - Add `@icon: ICON-XXX:ContractName` tag
    - Add `@icon-role: provider` tag
 
 2. **Update Consumer TASKS** (N files):
-   - Add Section 8.2: Contracts Consumed to each consumer
+   - Add section 8.2: Contracts Consumed to each consumer
    - List this ICON contract with provider reference
    - Add `@icon: ICON-XXX:ContractName` tag to each
    - Add `@icon-role: consumer` tag to each
@@ -68,8 +68,8 @@ After creating this ICON file, you MUST:
 
 Before marking this ICON as "Active":
 - [ ] ICON file created in `/opt/data/ibmcp/docs/ICON/`
-- [ ] Provider TASKS updated with Section 8.1
-- [ ] All consumer TASKS updated with Section 8.2
+- [ ] Provider TASKS updated with section 8.1
+- [ ] All consumer TASKS updated with section 8.2
 - [ ] Validation command returns expected count
 - [ ] Bidirectional traceability verified
 - [ ] mypy --strict passes on contract code
@@ -82,10 +82,10 @@ grep -r "@icon: ICON-XXX" docs/TASKS/
 # Returns nothing → ICON is orphaned!
 ```
 
-❌ **ERROR**: Provider missing Section 8
+❌ **ERROR**: Provider missing section 8
 ```
 ICON-XXX Provider: TASKS-YYY
-But TASKS-YYY has no Section 8 → Integration incomplete
+But TASKS-YYY has no section 8 → Integration incomplete
 ```
 
 ✅ **SUCCESS**: Full integration
@@ -309,7 +309,7 @@ def mock_connector():
     connector.state = ConnectionState.DISCONNECTED
     return connector
 
-def test_market_data_service_with_mock(mock_connector):
+def test_external_data_service_with_mock(mock_connector):
     """Test market data service with mocked connector."""
     service = MarketDataService(mock_connector)
     # ... test logic

@@ -55,9 +55,9 @@ What is the purpose and focus of this new project?
 Select one:
 
 1. Financial Services (DEFAULT)
-   - Trading platforms, banking, insurance, portfolio management
-   - Regulatory: SEC, FINRA, SOX, Basel III, PCI-DSS
-   - Terminology: Portfolio, Position, Trade, Greeks, VaR, Risk
+   - Trading platforms, banking, insurance, collection management
+   - Regulatory: regulatory, SOX, Basel III, PCI-DSS
+   - Terminology: collection, Position, Trade, Greeks, VaR, Risk
 
 2. Software/SaaS
    - B2B/B2C software services, multi-tenant applications
@@ -93,7 +93,7 @@ Enter selection (1-6) or press Enter for default (1):
 
 | User Input | Domain | Config File | Subdirectories |
 |------------|--------|-------------|----------------|
-| 1 or Enter or "default" | Financial Services | `FINANCIAL_DOMAIN_CONFIG.md` | risk, trading, portfolio, compliance, ml |
+| 1 or Enter or "default" | Financial Services | `FINANCIAL_DOMAIN_CONFIG.md` | risk, trading, collection, compliance, ml |
 | 2 or "software" or "saas" | Software/SaaS | `SOFTWARE_DOMAIN_CONFIG.md` | tenant, subscription, billing, workspace |
 | 3 or "healthcare" | Healthcare | `DOMAIN_ADAPTATION_GUIDE.md` (Healthcare) | patient, clinical, ehr, hipaa |
 | 4 or "ecommerce" or "e-commerce" | E-commerce | `DOMAIN_ADAPTATION_GUIDE.md` (E-commerce) | catalog, cart, order, payment, inventory |
@@ -110,7 +110,7 @@ Enter selection (1-6) or press Enter for default (1):
 - Trading platforms (equities, options, futures, crypto)
 - Banking applications (retail, commercial, investment)
 - Insurance systems (underwriting, claims, actuarial)
-- Portfolio management (asset allocation, rebalancing)
+- collection management (asset allocation, rebalancing)
 - Risk management (VaR, stress testing, limit monitoring)
 - Compliance reporting (regulatory filings, audit trails)
 
@@ -124,27 +124,27 @@ Enter selection (1-6) or press Enter for default (1):
 
 **Placeholder Mappings**:
 ```
-[RESOURCE_COLLECTION] → Portfolio
+[RESOURCE_COLLECTION] → collection
 [RESOURCE_ITEM] → Position
-[RESOURCE_ACTION] → Trade Execution
+[RESOURCE_ACTION] → operation execution
 [EXTERNAL_DATA_PROVIDER] → Market Data Feed
 [CALCULATION_ENGINE] → Greeks Calculator
-[USER_ROLE] → Trader / Portfolio Manager
+[USER_ROLE] → Trader / collection Manager
 [TRANSACTION] → Trade
 [CONSTRAINT] → Position Limit
-[REGULATORY_REQUIREMENT] → SEC Rule 15c3-5
+[REGULATORY_REQUIREMENT] → regulatory Rule 15c3-5
 ```
 
 **Requirements Subdirectories**:
 - `docs/REQ/risk/` - Risk management requirements
-- `docs/REQ/trading/` - Trade execution requirements
-- `docs/REQ/portfolio/` - Portfolio management requirements
+- `docs/REQ/trading/` - operation execution requirements
+- `docs/REQ/collection/` - collection management requirements
 - `docs/REQ/compliance/` - Regulatory compliance requirements
 - `docs/REQ/ml/` - ML model requirements (pricing, sentiment, regime detection)
 
 **Example Use Cases**:
 - Algorithmic trading platform
-- Portfolio optimization system
+- collection optimization system
 - Risk analytics dashboard
 - Regulatory reporting system
 - Market data aggregation service
@@ -264,7 +264,7 @@ Enter selection (1-6) or press Enter for default (1):
 **Placeholder Mappings**:
 ```
 [RESOURCE_COLLECTION] → Product Catalog
-[RESOURCE_ITEM] → SKU (Stock Keeping Unit)
+[RESOURCE_ITEM] → SKU (item Keeping Unit)
 [RESOURCE_ACTION] → Purchase
 [EXTERNAL_DATA_PROVIDER] → Payment Gateway
 [CALCULATION_ENGINE] → Pricing Engine
@@ -415,7 +415,7 @@ def process_domain_selection(user_input):
     # Load configuration
     if domain == "financial":
         config_file = "FINANCIAL_DOMAIN_CONFIG.md"
-        subdirs = ["risk", "trading", "portfolio", "compliance", "ml"]
+        subdirs = ["risk", "trading", "collection", "compliance", "ml"]
     elif domain == "software":
         config_file = "SOFTWARE_DOMAIN_CONFIG.md"
         subdirs = ["tenant", "subscription", "billing", "workspace"]
@@ -460,7 +460,7 @@ After domain selection, AI Assistant **MAY** ask clarifying questions:
 
 #### For Financial Services:
 ```
-"Which financial sector applies to this project?"
+"Which financial regulatorytor applies to this project?"
 1. Retail Trading (individual investors)
 2. Institutional Trading (hedge funds, asset managers)
 3. Banking (retail, commercial, investment)
@@ -506,7 +506,7 @@ After domain selection, AI Assistant **MAY** ask clarifying questions:
 
 1. **FINANCIAL_DOMAIN_CONFIG.md**
    - Complete financial services configuration
-   - Regulatory mappings (SEC, FINRA, SOX, Basel III)
+   - Regulatory mappings (regulatory, SOX, Basel III)
    - Financial terminology dictionary
    - Example use cases and templates
 

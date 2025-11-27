@@ -40,7 +40,7 @@ WHEN [triggering condition] THE [system] SHALL [response action] WITHIN [timefra
 
 **Example:**
 ```markdown
-WHEN the [DATA_ANALYSIS - e.g., user behavior analysis, trend detection] Agent requests historical data, the client SHALL retrieve data from [EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] and cache the response with endpoint-appropriate TTL.
+WHEN the [DATA_ANALYSIS - e.g., user behavior analysis, trend detection] Agent requests historical data, the client SHALL retrieve data from [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] and cache the response with endpoint-appropriate TTL.
 ```
 
 ### State-Driven Requirements
@@ -52,7 +52,7 @@ WHILE [state condition] THE [system] SHALL [behavior] WITHIN [constraint]
 
 **Example:**
 ```markdown
-WHILE [EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] is degraded, the client SHALL use the last valid cached response if freshness SLA is met.
+WHILE [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] is degraded, the client SHALL use the last valid cached response if freshness SLA is met.
 ```
 
 ### Unwanted Behavior Requirements
@@ -96,7 +96,7 @@ All EARS files start with traceability tags linking to related artifacts:
 @bdd:[BDD-NNN:scenarios](../BDD/BDD-NNN_....feature#scenarios)
 ```
 
-### Requirements Section
+### Requirements section
 
 Organize statements by type with clear headers:
 
@@ -120,7 +120,7 @@ Organize statements by type with clear headers:
 - THE [system] SHALL [quality attribute] WITHIN [threshold].
 ```
 
-### Traceability Section
+### Traceability section
 
 Document upstream sources and downstream artifacts:
 
@@ -129,7 +129,7 @@ Document upstream sources and downstream artifacts:
 - Upstream Sources: [PRD-NNN](../PRD/PRD-NNN_...md), [SYS-NNN](../SYS/SYS-NNN_...md)
 - Downstream Artifacts: [REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN), [SPEC-NNN](../SPEC/.../SPEC-NNN_...yaml)
 - Anchors/IDs: `# EARS-NNN`
-- Code Path(s): `option_strategy/component/module.py`
+- Code Path(s): `src/domain/component/module.py`
 ```
 
 ## File Naming Convention
@@ -144,8 +144,8 @@ Where:
 - `descriptive_title` uses snake_case for clarity
 
 **Examples:**
-- `EARS-001_alpha_vantage_integration.md`
-- `EARS-035_position_limit_enforcement.md`
+- `EARS-001_external_api_integration.md`
+- `EARS-035_resource_limit_enforcement.md`
 - `EARS-042_ml_model_serving.md`
 
 ## Guidelines for Writing EARS Statements
@@ -217,7 +217,7 @@ Where:
 
 ## Example Template
 
-See `EARS-001_alpha_vantage_integration.md` for a complete example of a well-structured EARS file.
+See `EARS-001_external_api_integration.md` for a complete example of a well-structured EARS file.
 
 ## Benefits
 
@@ -229,7 +229,7 @@ See `EARS-001_alpha_vantage_integration.md` for a complete example of a well-str
 
 ## Common Pitfalls
 
-1. **Vague Language**: Avoid terms like "fast," "reliable," "secure" without quantification
+1. **Vague Language**: Avoid terms like "fast," "reliable," "regulatoryure" without quantification
 2. **Overloading**: Don't combine multiple behaviors into single statements
 3. **Missing Context**: Always specify the subject system and triggering conditions
 4. **Orphaned Statements**: Ensure each statement can be traced to a PRD source

@@ -65,7 +65,7 @@ Each contract consists of TWO synchronized files:
 - Error codes: Code, HTTP status, description, retry safety
 - Non-functional requirements: Latency, throughput, timeouts
 - Versioning metadata: Breaking changes, compatibility flags
-- Security requirements: Authentication, authorization, encryption
+- security requirements: Authentication, authorization, encryption
 
 **Audience**: Code generators, schema validators, contract test frameworks
 
@@ -97,11 +97,11 @@ CTR-NNN_descriptive_slug.yaml
 
 ### 4.2 Examples
 ```
-CTR-001_position_risk_validation.md
-CTR-001_position_risk_validation.yaml
+CTR-001_data_validation.md
+CTR-001_data_validation.yaml
 
-CTR-010_portfolio_orchestrator_api.md
-CTR-010_portfolio_orchestrator_api.yaml
+CTR-010_service_orchestrator_api.md
+CTR-010_service_orchestrator_api.yaml
 
 CTR-025_pubsub_trade_event_schema.md
 CTR-025_pubsub_trade_event_schema.yaml
@@ -122,10 +122,10 @@ Organize contracts in subdirectories by service type for better document managem
 ```
 CTR/
 ├── agents/              # Agent-to-agent communication contracts
-│   ├── CTR-001_portfolio_orchestrator_api.md
-│   ├── CTR-001_portfolio_orchestrator_api.yaml
-│   ├── CTR-002_stock_selection_interface.md
-│   └── CTR-002_stock_selection_interface.yaml
+│   ├── CTR-001_service_orchestrator_api.md
+│   ├── CTR-001_service_orchestrator_api.yaml
+│   ├── CTR-002_item_selection_interface.md
+│   └── CTR-002_item_selection_interface.yaml
 ├── mcp/                 # MCP server contracts
 │   ├── CTR-010_risk_validator_mcp.md
 │   ├── CTR-010_risk_validator_mcp.yaml
@@ -397,9 +397,9 @@ Contracts MUST reference:
 **Format** (in .md Traceability section):
 ```markdown
 ### Upstream Sources
-| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+| Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| REQ | [REQ-003](../REQ/.../REQ-003.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement | Section 3.1 | Interface requirement |
+| REQ | [REQ-003](../REQ/.../REQ-003.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement | section 3.1 | Interface requirement |
 | ADR | [ADR-008](../ADR/ADR-008.md) | Centralized Risk Parameters | Architecture pattern |
 ```
 
@@ -429,11 +429,11 @@ Contracts MUST link to:
 ### 9.3 Cross-Reference Format
 ```markdown
 # In markdown files
-[CTR-001](../CTR/CTR-001_position_risk_validation.md#CTR-001)
-[CTR-001 Schema](../CTR/CTR-001_position_risk_validation.yaml)
+[CTR-001](../CTR/CTR-001_data_validation.md#CTR-001)
+[CTR-001 Schema](../CTR/CTR-001_data_validation.yaml)
 
 # If using subdirectories
-[CTR-001](../CTR/agents/CTR-001_portfolio_orchestrator_api.md)
+[CTR-001](../CTR/agents/CTR-001_service_orchestrator_api.md)
 ```
 
 ## 10. Integration with Workflow
@@ -447,7 +447,7 @@ component_type: service
 
 # Contract reference
 interface:
-  contract_ref: CTR-001_position_risk_validation
+  contract_ref: CTR-001_data_validation
   contract_version: "1.0.0"
   role: provider  # or consumer
 
@@ -457,11 +457,11 @@ interface:
   error_handling: standard_error_handler
 ```
 
-**SPEC Markdown Section**:
+**SPEC Markdown section**:
 ```markdown
 ## Interface Contract
 
-This service implements **[CTR-001: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Validation](../CTR/CTR-001_position_risk_validation.md)** as the provider.
+This service implements **[CTR-001: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Validation](../CTR/CTR-001_data_validation.md)** as the provider.
 
 **Contract Compliance**:
 - Request validation: JSON Schema validation against CTR-001.yaml
@@ -491,7 +491,7 @@ def test_validatePosition_success(pact_provider):
 ```python
 # tests/CTR/risk_validation/test_consumer_contract.py
 import pact
-from src.agents.portfolio_orchestrator.risk_validator_client import RiskValidatorClient
+from src.agents.service_orchestrator.risk_validator_client import RiskValidatorClient
 
 def test_consumer_expects_ctr001_schema(pact_consumer):
     """Consumer expects CTR-001 response schema"""
@@ -581,16 +581,16 @@ retry_library: tenacity
 ### 13.1 YAML Validators
 ```bash
 # yamllint - YAML syntax validation
-yamllint CTR/CTR-001_position_risk_validation.yaml
+yamllint CTR/CTR-001_data_validation.yaml
 
 # JSON Schema validator - Schema structure validation
-check-jsonschema --schemafile CTR/CTR-001_position_risk_validation.yaml
+check-jsonschema --schemafile CTR/CTR-001_data_validation.yaml
 ```
 
 ### 13.2 OpenAPI Linters
 ```bash
 # Spectral - OpenAPI/AsyncAPI linter
-spectral lint CTR/CTR-001_position_risk_validation.yaml
+spectral lint CTR/CTR-001_data_validation.yaml
 ```
 
 ### 13.3 Contract Testing Tools
@@ -604,7 +604,7 @@ spectral lint CTR/CTR-001_position_risk_validation.yaml
 from jsonschema import validate, ValidationError
 import yaml
 
-with open("CTR-001_position_risk_validation.yaml") as f:
+with open("CTR-001_data_validation.yaml") as f:
     contract = yaml.safe_load(f)
     schema = contract["endpoints"][0]["request_schema"]
 
@@ -625,17 +625,17 @@ except ValidationError as e:
 **Scenario 1: Synchronous Validation Endpoint**
 - Use Case: Validate [RESOURCE_INSTANCE - e.g., database connection, workflow instance] before [OPERATION_EXECUTION - e.g., order processing, task execution]
 - Pattern: Request/response, <100ms latency
-- Template Section: Synchronous Request/Response
+- Template section: Synchronous Request/Response
 
 **Scenario 2: Asynchronous Event Schema**
 - Use Case: Notify agents when [RESOURCE_COLLECTION - e.g., user accounts, active sessions] rebalances
 - Pattern: Pub/Sub, fire-and-forget
-- Template Section: Asynchronous Message Contracts
+- Template section: Asynchronous Message Contracts
 
 **Scenario 3: Paginated List Endpoint**
 - Use Case: Retrieve all open positions
 - Pattern: Cursor-based pagination
-- Template Section: Pagination Patterns
+- Template section: Pagination Patterns
 
 ---
 

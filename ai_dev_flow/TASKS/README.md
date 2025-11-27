@@ -123,9 +123,9 @@ Tasks map to specific architectural components:
 
 ```
 TASKS/
-├── TASKS-001_position_limit_service_tasks.md     # Service component
+├── TASKS-001_resource_limit_service_tasks.md     # Service component
 ├── TASKS-002_ib_gateway_integration_tasks.md      # Integration component
-├── TASKS-003_alpha_vantage_integration_tasks.md    # API client component
+├── TASKS-003_external_api_integration_tasks.md    # API client component
 └── TASKS-004_user_interface_implementation_tasks.md # UI component
 ```
 
@@ -143,9 +143,9 @@ Where:
 - `.md` is the required file extension
 
 **Examples:**
-- `TASKS-001_position_limit_service_tasks.md`
+- `TASKS-001_resource_limit_service_tasks.md`
 - `TASKS-002_ib_gateway_integration_tasks.md`
-- `TASKS-003_alpha_vantage_integration_tasks.md`
+- `TASKS-003_external_api_integration_tasks.md`
 
 ## Writing Guidelines
 
@@ -155,7 +155,7 @@ Define clear boundaries for implementation:
 **Good Scope Statement:**
 ```markdown
 ## Scope
-Implement a minimal `position_limit_service` that validates orders per the spec and contract.
+Implement a minimal `resource_limit_service` that validates orders per the spec and contract.
 ```
 
 **Poor Scope Statement:**
@@ -308,7 +308,7 @@ Implement the [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] servic
 ### Integration Component Tasks
 ```markdown
 ## Scope
-Build [EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] API client with rate limiting and normalization.
+Build [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] API client with rate limiting and normalization.
 
 ## Plan
 1. Create client module with configuration management.
@@ -336,7 +336,7 @@ Build [EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] API client wi
 ### User Interface Tasks
 ```markdown
 ## Scope
-Implement trading dashboard with real-time [RESOURCE_INSTANCE - e.g., database connection, workflow instance] monitoring.
+Implement service dashboard with real-time [RESOURCE_INSTANCE - e.g., database connection, workflow instance] monitoring.
 
 ## Plan
 1. Create React component skeleton with TypeScript definitions.
@@ -421,7 +421,7 @@ Modify tasks as understanding evolves:
 
 ```markdown
 ## Task Updates
-**Added Step 4.5**: Security header validation
+**Added Step 4.5**: security header validation
 - **Reason**: New security requirements from updated ADR
 - **Impact**: Additional implementation complexity
 - **Acceptance**: Extend existing BDD scenarios
@@ -499,22 +499,22 @@ python show_task_dependencies.py --output dependencies.png
 ### Code Generation Integration
 ```bash
 # Generate implementation from task
-ai-codegen --task TASKS/TASKS-001_position_limit_service_tasks.md --framework fastapi
+ai-codegen --task TASKS/TASKS-001_resource_limit_service_tasks.md --framework fastapi
 
 # Validate generated code against contracts
 ```
 
 ## Example Task Template
 
-See `TASKS-001_position_limit_service_tasks.md` for a complete example of a well-structured tasks document that includes scope definition, implementation plan, constraints, acceptance criteria, and comprehensive traceability.
+See `TASKS-001_resource_limit_service_tasks.md` for a complete example of a well-structured tasks document that includes scope definition, implementation plan, constraints, acceptance criteria, and comprehensive traceability.
 
 ## ICON Contract Integration Rules
 
-### CRITICAL: Section 8 is Mandatory
+### CRITICAL: section 8 is Mandatory
 
 Every TASKS document MUST include "## 8. Implementation Contracts":
-- If providing contracts: Complete Section 8.1
-- If consuming contracts: Complete Section 8.2
+- If providing contracts: Complete section 8.1
+- If consuming contracts: Complete section 8.2
 - If neither: State "No implementation contracts for this TASKS"
 
 ### Integration Validation Commands
@@ -524,7 +524,7 @@ Every TASKS document MUST include "## 8. Implementation Contracts":
 grep -r "@icon:" docs/TASKS/ | wc -l
 ```
 
-**Check Section 8 count**:
+**Check section 8 count**:
 ```bash
 grep -r "## 8. Implementation Contracts" docs/TASKS/ | wc -l
 ```
@@ -548,13 +548,13 @@ grep -r "@icon-role: consumer" docs/TASKS/
 grep -r "@icon: ICON-001" docs/TASKS/ | wc -l
 ```
 
-❌ **Anti-Pattern 2**: Provider TASKS missing Section 8
+❌ **Anti-Pattern 2**: Provider TASKS missing section 8
 ```
 TASKS-001 provides ICON-001
 But TASKS-001 has no "## 8. Implementation Contracts"
 ```
 
-❌ **Anti-Pattern 3**: Consumer TASKS missing Section 8
+❌ **Anti-Pattern 3**: Consumer TASKS missing section 8
 ```
 TASKS-002 consumes ICON-001
 But TASKS-002 has no "## 8. Implementation Contracts"
@@ -562,7 +562,7 @@ But TASKS-002 has no "## 8. Implementation Contracts"
 
 ✅ **Correct Pattern**: Bidirectional integration
 ```
-ICON-001 created → TASKS-001 Section 8.1 added → TASKS-002 Section 8.2 added
+ICON-001 created → TASKS-001 section 8.1 added → TASKS-002 section 8.2 added
 grep "@icon: ICON-001" docs/TASKS/ returns 2+ matches
 ```
 
@@ -587,7 +587,7 @@ grep "@icon: ICON-001" docs/TASKS/ returns 2+ matches
 - Complete constraints and operational requirements
 - Automated verification and quality gates
 - Full traceability to all development artifacts
-- Section 8 contracts defined and integrated
+- section 8 contracts defined and integrated
 
 ### Level 4 - AI-Driven Tasks
 - Specification-derived task generation

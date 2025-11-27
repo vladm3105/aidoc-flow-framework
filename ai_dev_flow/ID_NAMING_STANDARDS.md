@@ -93,8 +93,8 @@ Universal Numbering Pattern (All Document Types)
 
 Document ID Standards (ai_dev_flow)
 - Requirements (REQ)
-  - H1 ID: `REQ-NNN` or `REQ-NNN-YY` (e.g., `# REQ-001: [EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] Integration`). Do not use category-coded IDs like `REQ-API-AV-001`.
-  - Filename: `REQ-NNN_{slug}.md` or `REQ-NNN-YY_{slug}.md` under category folders: `REQ/{category}/{subcategory}/REQ-NNN_{slug}.md` (e.g., `REQ/api/av/REQ-001_alpha_vantage_integration.md`).
+  - H1 ID: `REQ-NNN` or `REQ-NNN-YY` (e.g., `# REQ-001: [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] Integration`). Do not use category-coded IDs like `REQ-API-AV-001`.
+  - Filename: `REQ-NNN_{slug}.md` or `REQ-NNN-YY_{slug}.md` under category folders: `REQ/{category}/{subcategory}/REQ-NNN_{slug}.md` (e.g., `REQ/api/av/REQ-001_external_api_integration.md`).
   - Variable Length: NNN = 3-4 digits (001-999, 1000+), YY = 2-3 digits [OPTIONAL] (01-99, 100+)
   - Notes: Categories are encoded by folders. Use sub-numbering (-YY) when single logical requirement spans multiple related documents.
 - ADRs
@@ -118,7 +118,7 @@ Document ID Standards (ai_dev_flow)
   - Notes: Use sub-numbering (-YY) when single feature requires multiple related test files.
 - Technical Specifications (SPEC)
   - YAML `id:` uses lowercase snake_case; pattern: `^[a-z][a-z0-9_]*[a-z0-9]$`.
-  - Filename: `SPEC/{type}/SPEC-NNN_{slug}.yaml` or `SPEC/{type}/SPEC-NNN-YY_{slug}.yaml` (e.g., `SPEC/services/SPEC-003_position_limit_service.yaml`).
+  - Filename: `SPEC/{type}/SPEC-NNN_{slug}.yaml` or `SPEC/{type}/SPEC-NNN-YY_{slug}.yaml` (e.g., `SPEC/services/SPEC-003_resource_limit_service.yaml`).
   - Variable Length: NNN = 3-4 digits (001-999, 1000+), YY = 2-3 digits [OPTIONAL] (01-99, 100+)
   - The `id:` may differ from the filename; tags and prose should use the `id:` as the human-readable spec name.
   - Include traceability fields with markdown links: `requirements_source`, `architecture`, `verification`.
@@ -142,19 +142,18 @@ Document ID Standards (ai_dev_flow)
   - Notes: SPEC implementation plans with exact TODOs for code generation. Each TASKS corresponds to one SPEC. Use sub-numbering (-YY) when single SPEC implementation requires multiple related task files.
   - Allocation: reserve next number, do not reuse; keep slugs stable.
 - Implementation Plans (IPLAN)
-  - Filename Format: `IPLAN-NNN_{descriptive_slug}_YYYYMMDD_HHMMSS.md`
+  - Filename Format: `IPLAN-NNN_{descriptive_slug}.md`
   - Components:
     - `IPLAN-NNN`: Sequential ID (001, 002, etc.)
-    - `{descriptive_slug}`: Lowercase, hyphen-separated description
-    - `YYYYMMDD_HHMMSS`: Timestamp (EST timezone)
+    - `{descriptive_slug}`: Lowercase, underscore-separated description
   - Variable Length: NNN = 3-4 digits (001-999, 1000+)
   - Purpose: Session-based execution plans with bash commands
   - Layer: 12
-  - Scope: Time-boxed implementation tasks for specific development sessions
+  - Scope: Implementation tasks organized into executable sessions
   - Examples:
-    - `IPLAN-001_database_migration_20251113_143022.md`
-    - `IPLAN-002_api_refactoring_20251114_091500.md`
-    - `IPLAN-003_test_coverage_improvement_20251115_140000.md`
+    - `IPLAN-001_database_migration.md`
+    - `IPLAN-002_api_refactoring.md`
+    - `IPLAN-003_test_coverage_improvement.md`
   - Traceability Tag Format: `@iplan: IPLAN-001, IPLAN-002`
   - Tag Rules:
     - Tag format: `@iplan:` followed by comma-separated IPLAN IDs
@@ -163,9 +162,9 @@ Document ID Standards (ai_dev_flow)
   - Tag Count at Layer 12: 9-11 tags
     - Layer 1-11 tags: @brd, @prd, @ears, @bdd, @adr, @sys, @req, @impl (optional), @ctr (optional), @spec, @tasks
     - Layer 12 tag: @iplan
-  - Notes: Unlike other artifact types, IPLAN uses timestamp-based naming to track implementation sessions chronologically. H1 ID follows standard pattern (e.g., `# IPLAN-001: Database Migration Plan`).
+  - Notes: H1 ID follows standard pattern (e.g., `# IPLAN-001: Database Migration Plan`). Version history tracked via Git.
 - Implementation Contracts (ICON) - Optional
-  - **Default**: Embed contracts in TASKS files (Section 8: Implementation Contracts)
+  - **Default**: Embed contracts in TASKS files (section 8: Implementation Contracts)
   - **Standalone ICON Files** (when 5+ consumers, >500 lines, platform-level):
     - H1 ID: `ICON-NNN` (e.g., `# ICON-001: Gateway Connector Protocol`)
     - Filename Format: `ICON-NNN_descriptive_name.md`
@@ -178,7 +177,7 @@ Document ID Standards (ai_dev_flow)
     - Purpose: Standalone implementation contracts for parallel development coordination
     - Examples:
       - `ICON-001_gateway_connector_protocol.md`
-      - `ICON-002_market_data_event_bus.md`
+      - `ICON-002_external_data_event_bus.md`
       - `ICON-003_order_execution_exceptions.md`
     - Traceability Tag Format: `@icon: TASKS-XXX:ContractName` or `@icon: ICON-XXX:ContractName`
     - Tag Rules:
@@ -200,7 +199,7 @@ Document ID Standards (ai_dev_flow)
   - Notes: Follows universal numbering pattern. Use sub-numbering (-YY) when single business requirement spans multiple related documents forming cohesive unit with logical reading order (e.g., 01=prerequisites, 02=main spec, 03=quick reference).
   - Examples:
     - Single atomic: `BRD-001_foundation_overview.md`
-    - Multi-doc group: `BRD-009-01_prerequisites.md`, `BRD-009-02_broker_integration_pilot.md`, `BRD-009-03_phase_gates_quick_reference.md`
+    - Multi-doc group: `BRD-009-01_prerequisites.md`, `BRD-009-02_provider_integration_pilot.md`, `BRD-009-03_phase_gates_quick_reference.md`
     - Extended atomic: `BRD-1000_advanced_feature.md` (when >999 BRDs)
     - Extended sub-doc: `BRD-009-100_detailed_appendix.md` (when >99 sub-docs)
 
@@ -224,7 +223,6 @@ PRD, SYS, and EARS Document Types
 File Organization Rules
 - One document per file (PRD, SYS, REQ, ADR, SPEC, BDD, EARS, CTR, IMPL, AI-TASKS, IPLAN, BRD).
 - **Exception**: CTR (API Contracts) requires dual files: .md + .yaml per contract.
-- **Exception**: IPLAN uses timestamp-based naming: `IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md`
 - Filenames use variable-length `NNN` or `NNN-YY` numbering; H1 contains the full ID where applicable.
 - Structure (this example):
   - `REQ/{category}/{subcategory}/REQ-NNN_{slug}.md` or `REQ-NNN-YY_{slug}.md`
@@ -234,7 +232,7 @@ File Organization Rules
   - `CTR/CTR-NNN_{slug}.md` + `CTR-NNN_{slug}.yaml` (optional subdirs: `CTR/{agents,mcp,infra}/`)
   - `IMPL/IMPL-NNN_{slug}.md` or `IMPL-NNN-YY_{slug}.md`
   - `TASKS/TASKS-NNN_{slug}.md` or `TASKS-NNN-YY_{slug}.md`
-  - `IPLAN/IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md`
+  - `IPLAN/IPLAN-NNN_{slug}.md`
   - `PRD/PRD-NNN_{slug}.md` or `PRD-NNN-YY_{slug}.md`
   - `SYS/SYS-NNN_{slug}.md` or `SYS-NNN-YY_{slug}.md`
   - `EARS/EARS-NNN_{slug}.md` or `EARS-NNN-YY_{slug}.md`
@@ -301,7 +299,7 @@ Validation Rules & Aids
   - TASKS H1 ID: `^#\sTASKS-\d{3,4}(-\d{2,3})?:.+$`
   - TASKS filename: `TASKS-\d{3,4}(-\d{2,3})?_.+\.md$`
   - IPLAN H1 ID: `^#\sIPLAN-\d{3,4}:.+$`
-  - IPLAN filename: `IPLAN-\d{3,4}_.+_\d{8}_\d{6}\.md$`
+  - IPLAN filename: `IPLAN-\d{3,4}_.+\.md$`
   - BRD H1 ID: `^#\sBRD-\d{3,4}(-\d{2,3})?:.+$`
   - BRD filename: `BRD-\d{3,4}(-\d{2,3})?_.+\.md$`
   - PRD H1 ID: `^#\sPRD-\d{3,4}(-\d{2,3})?:.+$`
@@ -314,33 +312,33 @@ Validation Rules & Aids
 Examples (ai_dev_flow) - Atomic Documents (XXX)
 - PRD: `PRD/PRD-003_position_risk_limits.md` (H1: `# PRD-003: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Limits`)
 - SYS: `SYS/SYS-003_position_risk_limits.md` (H1: `# SYS-003: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Limits`)
-- EARS: `EARS/EARS-003_position_limit_enforcement.md` (H1: `# EARS-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
-- REQ: `REQ/risk/lim/REQ-003_position_limit_enforcement.md` (H1: `# REQ-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
+- EARS: `EARS/EARS-003_resource_limit_enforcement.md` (H1: `# EARS-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
+- REQ: `REQ/risk/lim/REQ-003_resource_limit_enforcement.md` (H1: `# REQ-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
 - ADR: `ADR/ADR-033_risk_limit_enforcement_architecture.md` (H1: `# ADR-033: Risk Limit Enforcement Architecture`)
 - CTR: `CTR/CTR-001_position_risk_validation.md` + `CTR-001_position_risk_validation.yaml` (H1: `# CTR-001: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Validation Contract`, YAML: `contract_id: position_risk_validation`)
 - BDD: `BDD/BDD-003_risk_limits_requirements.feature`
-- SPEC: `SPEC/services/SPEC-003_position_limit_service.yaml` (id: `position_limit_service`)
+- SPEC: `SPEC/services/SPEC-003_resource_limit_service.yaml` (id: `resource_limit_service`)
 - IMPL: `IMPL/IMPL-001_risk_management_system.md` (H1: `# IMPL-001: [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] System Implementation`)
-- TASKS: `TASKS/TASKS-003_position_limit_service.md` (H1: `# TASKS-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
+- TASKS: `TASKS/TASKS-003_resource_limit_service.md` (H1: `# TASKS-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
 - IPLAN: `IPLAN/IPLAN-001_database_migration_20251113_143022.md` (H1: `# IPLAN-001: Database Migration Plan`)
 - BRD: `docs/BRD/BRD-001_foundation_overview.md` (H1: `# BRD-001: Foundation & Overview`)
 
 Examples (ai_dev_flow) - Sub-Documents (XXX-YY)
 - BRD-009 multi-document group ([EXTERNAL_INTEGRATION - e.g., third-party API, service provider] integration pilot):
   - Prerequisites: `docs/BRD/BRD-009-01_prerequisites.md` (H1: `# BRD-009-01: [EXTERNAL_INTEGRATION - e.g., third-party API, service provider] Integration Prerequisites`)
-  - Main specification: `docs/BRD/BRD-009-02_broker_integration_pilot.md` (H1: `# BRD-009-02: [EXTERNAL_INTEGRATION - e.g., third-party API, service provider] Integration Pilot`)
+  - Main specification: `docs/BRD/BRD-009-02_provider_integration_pilot.md` (H1: `# BRD-009-02: [EXTERNAL_INTEGRATION - e.g., third-party API, service provider] Integration Pilot`)
   - Quick reference: `docs/BRD/BRD-009-03_phase_gates_quick_reference.md` (H1: `# BRD-009-03: Phase Gates Quick Reference`)
 - Extended atomic (when >999 documents): `BRD-1000_advanced_feature.md`
 - Extended sub-doc (when >99 sub-docs): `BRD-009-100_detailed_appendix.md`
 
 Component Abbreviations (examples)
 - SVC (Service), CL (Client), SRV (Server), GW (Gateway), AGG (Aggregator), MGR (Manager), CTRL (Controller), ADPT (Adapter), REPO (Repository), PROC (Processor), VAL (Validator), ORCH (Orchestrator), PROV (Provider)
-- IB ([EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System]), AV ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API]), MKT (Market), ORD (Order), EXEC (Execution), POS ([RESOURCE_INSTANCE - e.g., database connection, workflow instance]), LIM (Limit), RISK (Risk), ACCT (Account), PFOL ([RESOURCE_COLLECTION - e.g., user accounts, active sessions]), CFG (Configuration), AUTH (Authentication), AUTHZ (Authorization), REDIS, PUBSUB, BQ (BigQuery), CSQL (Cloud SQL), GCR (Cloud Run), GSM (Secrets Manager)
+- IB ([EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System]), AV ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API]), MKT (Market), ORD (Order), EXEC (Execution), POS ([RESOURCE_INSTANCE - e.g., database connection, workflow instance]), LIM (Limit), RISK (Risk), ACCT (Account), PFOL ([RESOURCE_COLLECTION - e.g., user accounts, active sessions]), CFG (Configuration), AUTH (Authentication), AUTHZ (Authorization), REDIS, PUBSUB, BQ (BigQuery), CSQL (Cloud SQL), GCR (Cloud Run), GSM (regulatoryrets Manager)
 
 BDD Tag Examples
 ```gherkin
 # Atomic document references (XXX)
-@requirement:[REQ-003](../REQ/risk/lim/REQ-003_position_limit_enforcement.md#REQ-003)
+@requirement:[REQ-003](../REQ/risk/lim/REQ-003_resource_limit_enforcement.md#REQ-003)
 @adr:[ADR-033](../ADR/ADR-033_risk_limit_enforcement_architecture.md#ADR-033)
 
 # Sub-document references (XXX-YY)

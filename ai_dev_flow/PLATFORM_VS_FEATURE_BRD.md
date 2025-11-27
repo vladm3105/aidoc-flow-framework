@@ -35,9 +35,9 @@ BRDs fall into two categories based on their focus. Both use the same template (
 Platform BRD → ADRs (critical technology decisions) → PRD → ADRs (implementation details) → SPEC
 ```
 
-**Key Sections**:
-- Section 3.6: Technology Stack Prerequisites (REQUIRED)
-- Section 3.7: Mandatory Technology Conditions (REQUIRED - lists ADRs needed before PRD)
+**Key sections**:
+- section 3.6: Technology Stack Prerequisites (REQUIRED)
+- section 3.7: Mandatory Technology Conditions (REQUIRED - lists ADRs needed before PRD)
 
 ## Feature BRDs
 
@@ -59,9 +59,9 @@ Platform BRD → ADRs (critical technology decisions) → PRD → ADRs (implemen
 Feature BRD → PRD → ADRs (if needed for implementation) → SPEC
 ```
 
-**Key Sections**:
-- Section 3.6: Technology Stack Prerequisites (OPTIONAL - may reference Platform BRD)
-- Section 3.7: Mandatory Technology Conditions (Usually empty)
+**Key sections**:
+- section 3.6: Technology Stack Prerequisites (OPTIONAL - may reference Platform BRD)
+- section 3.7: Mandatory Technology Conditions (Usually empty)
 
 ## Decision Tree
 
@@ -107,9 +107,9 @@ Feature BRD → PRD → ADRs (if needed for implementation) → SPEC
 | **Example** | BRD-001 | BRD-006 |
 | **Next Step** | Create ADRs first | Create PRD first |
 
-## Section 3.6 & 3.7 Implementation Guide
+## section 3.6 & 3.7 Implementation Guide
 
-### Platform BRD: Section 3.6 Example (Technology Stack Prerequisites)
+### Platform BRD: section 3.6 Example (Technology Stack Prerequisites)
 
 **Required**: Populate with detailed prerequisites organized by category
 
@@ -138,7 +138,7 @@ Feature BRD → PRD → ADRs (if needed for implementation) → SPEC
    - **Business Impact**: Without Partner X, platform cannot deliver core value proposition
 ```
 
-### Platform BRD: Section 3.7 Example (Mandatory Technology Conditions)
+### Platform BRD: section 3.7 Example (Mandatory Technology Conditions)
 
 **Required**: Populate with non-negotiable constraints organized by category
 
@@ -164,35 +164,35 @@ Feature BRD → PRD → ADRs (if needed for implementation) → SPEC
    - **Exception Path**: None - stablecoin rails fundamental to business value proposition
 ```
 
-### Feature BRD: Section 3.6 Example (Reference Platform BRD)
+### Feature BRD: section 3.6 Example (Reference Platform BRD)
 
 **Required**: Reference Platform BRD instead of duplicating
 
 ```markdown
 ### 3.6 Technology Stack Prerequisites
 
-**N/A - See Platform BRD-001 Section 3.6**
+**N/A - See Platform BRD-001 section 3.6**
 
 This feature BRD assumes all Platform BRD-001 technology prerequisites are satisfied. Specifically:
-- Node.js backend services (Platform BRD-001 Section 3.6 Item 2)
-- PostgreSQL database (Platform BRD-001 Section 3.6 Item 1)
-- Partner X API integration (Platform BRD-001 Section 3.6 Item 3)
+- Node.js backend services (Platform BRD-001 section 3.6 Item 2)
+- PostgreSQL database (Platform BRD-001 section 3.6 Item 1)
+- Partner X API integration (Platform BRD-001 section 3.6 Item 3)
 
 No additional technology prerequisites required for this feature.
 ```
 
-### Feature BRD: Section 3.7 Example (Reference Platform BRD)
+### Feature BRD: section 3.7 Example (Reference Platform BRD)
 
 **Required**: Reference Platform BRD and note any feature-specific constraints
 
 ```markdown
 ### 3.7 Mandatory Technology Conditions
 
-**N/A - See Platform BRD-001 Section 3.7**
+**N/A - See Platform BRD-001 section 3.7**
 
 This feature must comply with all Platform BRD-001 mandatory technology conditions. No feature-specific mandatory conditions beyond platform requirements.
 
-**Note**: Feature design conflicts with Platform BRD-001 Section 3.7 Item 2 (stablecoin payment rails) require Platform BRD amendment - consult architecture team before proceeding.
+**Note**: Feature design conflicts with Platform BRD-001 section 3.7 Item 2 (stablecoin payment rails) require Platform BRD amendment - consult architecture team before proceeding.
 ```
 
 ## Quick Reference
@@ -208,9 +208,9 @@ This feature must comply with all Platform BRD-001 mandatory technology conditio
 - [ ] Create ADRs before moving to PRD phase
 
 **Feature BRD Checklist**:
-- [ ] Add "**N/A - See Platform BRD-XXX Section 3.6**" to section 3.6
+- [ ] Add "**N/A - See Platform BRD-XXX section 3.6**" to section 3.6
 - [ ] Reference specific Platform BRD prerequisites relevant to feature
-- [ ] Add "**N/A - See Platform BRD-XXX Section 3.7**" to section 3.7
+- [ ] Add "**N/A - See Platform BRD-XXX section 3.7**" to section 3.7
 - [ ] Note any feature-specific constraints beyond platform requirements
 - [ ] Focus on business value and user workflows (sections 2, 5)
 - [ ] Proceed to PRD creation after BRD approval
@@ -220,15 +220,15 @@ This feature must comply with all Platform BRD-001 mandatory technology conditio
 
 ### ❌ Platform BRD Mistakes
 
-1. **Empty Sections 3.6/3.7**: Platform BRDs must populate both sections
+1. **Empty sections 3.6/3.7**: Platform BRDs must populate both sections
 2. **Missing "Platform BRDs Only" Label**: Feature BRD authors won't know to skip
 3. **No Business Impact**: Must explain consequence of missing each prerequisite
-4. **Missing Exception Paths**: Section 3.7 must state exception conditions or "None"
+4. **Missing Exception Paths**: section 3.7 must state exception conditions or "None"
 
 ### ❌ Feature BRD Mistakes
 
 1. **Duplicating Prerequisites**: Feature BRDs should reference Platform BRD, not duplicate
-2. **Populating Sections 3.6/3.7**: Feature BRDs use "N/A - See Platform BRD-XXX"
+2. **Populating sections 3.6/3.7**: Feature BRDs use "N/A - See Platform BRD-XXX"
 3. **Not Referencing Platform BRD**: Must explicitly state Platform BRD dependency
 4. **Creating ADRs Before PRD**: Feature BRDs create ADRs during implementation, not before
 

@@ -40,10 +40,10 @@ custom_fields:
 
 ## Organization
 
-- **`api/`**: External API integration requirements (brokers, data vendors)
-- **`risk/`**: Risk management and validation requirements
-- **`ml/`**: Machine learning model requirements
+- **`api/`**: External API integration requirements
 - **`data/`**: Data architecture and storage requirements
+- **`auth/`**: Authentication and authorization requirements
+- **`core/`**: Core business logic requirements
 
 ## Framework Templates
 
@@ -58,10 +58,7 @@ custom_fields:
 
 | ID | Domain | File | Version | Description |
 |----|--------|------|---------|-------------|
-| REQ-001 | API/AV | [examples/api/av/REQ-001_alpha_vantage_integration.md](examples/api/av/REQ-001_alpha_vantage_integration.md) | V2 | Alpha Vantage API integration |
-| REQ-002 | API/IB | [examples/api/ib/REQ-002_ib_gateway_integration.md](examples/api/ib/REQ-002_ib_gateway_integration.md) | V2 | IB Gateway integration |
-| REQ-003 | Risk/Limits | [examples/risk/lim/REQ-003_position_limit_enforcement.md](examples/risk/lim/REQ-003_position_limit_enforcement.md) | V1 | Position limit enforcement |
-| REQ-001 | API | [examples/api/REQ-001_api_integration_example.md](examples/api/REQ-001_api_integration_example.md) | V2 | Complete API integration example |
+| REQ-001 | API | [examples/api/REQ-001_api_integration_example.md](examples/api/REQ-001_api_integration_example.md) | V2.1 | External API integration example |
 | REQ-002 | Data | [examples/data/REQ-002_data_validation_example.md](examples/data/REQ-002_data_validation_example.md) | V2 | Data validation pipeline example |
 | REQ-003 | Auth | [examples/auth/REQ-003_access_control_example.md](examples/auth/REQ-003_access_control_example.md) | V2 | RBAC access control example |
 

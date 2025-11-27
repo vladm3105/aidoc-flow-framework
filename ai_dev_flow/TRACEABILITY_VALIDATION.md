@@ -361,8 +361,8 @@ git diff --name-only | grep '^docs/' | xargs ./scripts/validate_quality_gates.sh
 # Get specific improvement recommendations
 ./scripts/suggest_quality_improvements.sh docs/REQ/REQ-001.md
 # Output: 
-# 💡 IMPROVEMENT: Add interface schemas (Section 3)
-# 💡 IMPROVEMENT: Add error handling examples (Section 5)
+# 💡 IMPROVEMENT: Add interface schemas (section 3)
+# 💡 IMPROVEMENT: Add error handling examples (section 5)
 # 💡 IMPROVEMENT: IMPROVEMENT Connect 2 upstream sources to reach 90%
 ```
 

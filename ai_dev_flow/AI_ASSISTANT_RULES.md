@@ -46,7 +46,7 @@ At project initialization, AI Assistant **MUST** ask:
 "What is the purpose and focus of this new project?"
 
 Options:
-1. Financial Services (default - trading, banking, insurance, portfolio management)
+1. Financial Services (default - trading, banking, insurance, collection management)
 2. Software/SaaS (B2B/B2C software service, multi-tenant applications)
 3. Healthcare (EMR, telemedicine, medical devices, patient management)
 4. E-commerce (retail, marketplace, subscription services)
@@ -75,7 +75,7 @@ If user does not specify or says "default", use **Financial Services** configura
 
 ---
 
-## Rule 2: Folder Structure Creation (SECOND STEP)
+## Rule 2: Folder Structure Creation (regulatoryOND STEP)
 
 ### Critical Rule
 **AI Assistant MUST create complete directory structure BEFORE creating any documents.**
@@ -118,7 +118,7 @@ mkdir -p docs/REQ/ui
 # For Financial Services:
 mkdir -p docs/REQ/risk
 mkdir -p docs/REQ/trading
-mkdir -p docs/REQ/portfolio
+mkdir -p docs/REQ/collection
 mkdir -p docs/REQ/compliance
 
 # For Healthcare:
@@ -151,7 +151,7 @@ mkdir -p .
 ```bash
 mkdir -p docs/REQ/risk
 mkdir -p docs/REQ/trading
-mkdir -p docs/REQ/portfolio
+mkdir -p docs/REQ/collection
 mkdir -p docs/REQ/compliance
 mkdir -p docs/REQ/ml
 ```
@@ -237,9 +237,9 @@ Domain configuration files contain mappings like:
 
 ```yaml
 # Example from FINANCIAL_DOMAIN_CONFIG.md
-[RESOURCE_COLLECTION] → Portfolio
+[RESOURCE_COLLECTION] → collection
 [RESOURCE_ITEM] → Position
-[RESOURCE_ACTION] → Trade Execution
+[RESOURCE_ACTION] → operation execution
 [EXTERNAL_DATA_PROVIDER] → Market Data Feed
 [CALCULATION_ENGINE] → Greeks Calculator
 ```
@@ -254,7 +254,7 @@ AI Assistant **MUST**:
 
 ```bash
 # For each template file copied:
-sed -i 's/\[RESOURCE_COLLECTION\]/Portfolio/g' docs/REQ/REQ-001_example.md
+sed -i 's/\[RESOURCE_COLLECTION\]/collection/g' docs/REQ/REQ-001_example.md
 sed -i 's/\[RESOURCE_ITEM\]/Position/g' docs/REQ/REQ-001_example.md
 # ... apply all domain mappings
 ```
@@ -433,10 +433,10 @@ or for sub-documents:
 
 #### Examples
 ```
-REQ-001_position_limit_enforcement.md
+REQ-001_resource_limit_enforcement.md
 ADR-005_database_selection.md
-CTR-012_market_data_api.md
-CTR-012_market_data_api.yaml  (dual-file contract)
+CTR-012_data_service_api.md
+CTR-012_data_service_api.yaml  (dual-file contract)
 SPEC-023_risk_calculator.yaml
 TASKS-023_implement_risk_calculator.md
 REQ-042-01_authentication_methods.md  (sub-document)
@@ -456,11 +456,11 @@ For CTR documents, AI Assistant **MUST** create both files:
 
 ```bash
 # Create both markdown and YAML with matching slugs
-touch docs/CTR/CTR-012_market_data_api.md
-touch docs/CTR/CTR-012_market_data_api.yaml
+touch docs/CTR/CTR-012_data_service_api.md
+touch docs/CTR/CTR-012_data_service_api.yaml
 ```
 
-**Matching slug requirement**: `market_data_api` must be identical in both filenames.
+**Matching slug requirement**: `data_service_api` must be identical in both filenames.
 
 ---
 
@@ -476,22 +476,22 @@ AI Assistant **MUST** use this format for all document references:
 
 #### Examples
 ```markdown
-[REQ-003](../REQ/risk/REQ-003_position_limit.md#REQ-003)
+[REQ-003](../REQ/risk/REQ-003_resource_limit.md#REQ-003)
 [ADR-005](../ADR/ADR-005_database_selection.md#ADR-005)
-[CTR-012](../CTR/CTR-012_market_data_api.md#CTR-012)
+[CTR-012](../CTR/CTR-012_data_service_api.md#CTR-012)
 [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
 ```
 
-### Section 7: Traceability
+### section 7: Traceability
 
-Every document **MUST** include Section 7 with:
+Every document **MUST** include section 7 with:
 
 1. **Upstream Sources** - Documents driving this artifact
 2. **Downstream Artifacts** - Documents/code derived from this
 3. **Primary Anchor/ID** - Main identifier for this document
 4. **Code Paths** - Implementation locations (if applicable)
 
-### Example Section 7
+### Example section 7
 
 ```markdown
 ## 7. Traceability
@@ -500,7 +500,7 @@ Every document **MUST** include Section 7 with:
 | Source | Type | Reference |
 |--------|------|-----------|
 | [BRD-001](../BRD/BRD-001_trading_platform.md#BRD-001) | Business Requirements | Risk management objectives |
-| [PRD-002](../PRD/PRD-002_risk_controls.md#PRD-002) | Product Requirements | Position limit feature |
+| [PRD-002](../PRD/PRD-002_risk_controls.md#PRD-002) | Product Requirements | resource limit feature |
 | [ADR-008](../ADR/ADR-008_risk_architecture.md#ADR-008) | Architecture Decision | Real-time limit enforcement |
 
 ### Downstream Artifacts
@@ -508,14 +508,14 @@ Every document **MUST** include Section 7 with:
 |----------|------|-----------|
 | [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml) | Technical Specification | Implementation spec |
 | [TASKS-023](../TASKS/TASKS-023_risk_calculator.md#TASKS-023) | Implementation Tasks | AI generation tasks |
-| [BDD-015](../BDD/BDD-015_position_limits.feature#BDD-015) | BDD Scenarios | Acceptance tests |
+| [BDD-015](../BDD/BDD-015_resource_limits.feature#BDD-015) | BDD Scenarios | Acceptance tests |
 
 ### Primary Anchor/ID
-- **REQ-003**: Position limit enforcement requirement
+- **REQ-003**: resource limit enforcement requirement
 
 ### Code Paths
-- `src/risk/position_limiter.py::PositionLimiter.enforce_limit()`
-- `tests/risk/test_position_limits.py::test_hard_limit_enforcement()`
+- `src/risk/resource_limiter.py::PositionLimiter.enforce_limit()`
+- `tests/risk/test_resource_limits.py::test_hard_limit_enforcement()`
 ```
 
 ---
@@ -533,9 +533,9 @@ When creating ANY artifact document type:
 
 You MUST:
 1. Create or update the corresponding `[TYPE]-000_TRACEABILITY_MATRIX.md`
-2. Add the new document to Section 2 (Complete Inventory)
-3. Document upstream sources in Section 3
-4. Document downstream artifacts in Section 4 (even if "To Be Created")
+2. Add the new document to section 2 (Complete Inventory)
+3. Document upstream sources in section 3
+4. Document downstream artifacts in section 4 (even if "To Be Created")
 5. Update status and completion percentage
 6. Commit matrix in SAME commit as artifact
 
@@ -552,9 +552,9 @@ ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md
 
 **Pre-Commit Checks**:
 - [ ] Traceability matrix file exists for artifact type
-- [ ] New document appears in matrix inventory (Section 2)
-- [ ] Upstream sources documented (Section 3)
-- [ ] Downstream artifacts documented (Section 4)
+- [ ] New document appears in matrix inventory (section 2)
+- [ ] Upstream sources documented (section 3)
+- [ ] Downstream artifacts documented (section 4)
 - [ ] All references resolve correctly
 - [ ] No orphaned artifacts (documents missing from matrix)
 
@@ -570,7 +570,7 @@ python scripts/check_traceability_coverage.py --all
 ### Why This Is Critical
 
 **Impact Analysis**: Determine what breaks when upstream requirements change
-**Regulatory Compliance**: SEC, FINRA, FDA, ISO audits require complete traceability
+**Regulatory Compliance**: regulatory, FDA, ISO audits require complete traceability
 **Quality Assurance**: Prevent orphaned requirements and missing implementations
 **Change Management**: Understand ripple effects across entire workflow
 **Automated Validation**: Enable pre-commit hooks and CI/CD quality gates
@@ -665,7 +665,7 @@ AI Assistant should run validation:
 | "File not found" | Incorrect relative path | Verify path from document location |
 | "Broken reference" | Document doesn't exist or wrong ID | Check index file for correct ID |
 | "Duplicate ID" | Reused ID from index | Assign next sequential ID |
-| "Missing Section 7" | Incomplete template | Add traceability section |
+| "Missing section 7" | Incomplete template | Add traceability section |
 | "Slug mismatch" | CTR .md and .yaml different slugs | Rename to match |
 
 ### Error Reporting
@@ -690,13 +690,13 @@ For each document, AI Assistant **MUST**:
 3. **Load template** for document type
 4. **Apply domain config** (placeholder replacement)
 5. **Fill all sections** (no empty placeholders)
-6. **Add Section 7** (traceability with upstream/downstream)
+6. **Add section 7** (traceability with upstream/downstream)
 7. **Add anchor** at top: `<a id="{TYPE}-{ID}"></a>`
 8. **Save file** with correct naming
 9. **Update index file** with new entry
 10. **Validate links** (run validation script)
 
-### Template Section Requirements
+### Template section Requirements
 
 AI Assistant **MUST** complete these sections in every document:
 
@@ -706,7 +706,7 @@ AI Assistant **MUST** complete these sections in every document:
 - **Acceptance Criteria**: Measurable, testable conditions (for REQ)
 - **Dependencies**: Prerequisites and constraints
 - **Risks**: Potential issues and mitigations
-- **Section 7: Traceability**: Complete upstream/downstream tables
+- **section 7: Traceability**: Complete upstream/downstream tables
 - **Change History**: Version tracking
 
 ---
@@ -826,13 +826,13 @@ AI Assistant **MUST** inject traceability comments:
 ```python
 # TRACEABILITY: REQ-023, ADR-008, BDD-015
 # SPEC: SPEC-023_risk_calculator.yaml
-# PURPOSE: Enforce position limits per REQ-023 acceptance criteria
+# PURPOSE: Enforce resource limits per REQ-023 acceptance criteria
 class PositionLimiter:
     """
-    Position limit enforcement per [REQ-023](../docs/REQ/risk/REQ-023_position_limit.md).
+    resource limit enforcement per [REQ-023](../docs/REQ/risk/REQ-023_resource_limit.md).
 
     Architecture: [ADR-008](../docs/ADR/ADR-008_risk_architecture.md) - Real-time enforcement
-    Acceptance Tests: [BDD-015](../docs/BDD/BDD-015_position_limits.feature)
+    Acceptance Tests: [BDD-015](../docs/BDD/BDD-015_resource_limits.feature)
     """
 
     def enforce_limit(self, position: Position) -> EnforcementResult:
@@ -850,7 +850,7 @@ AI Assistant **MUST** generate tests matching BDD scenarios:
 
 ```python
 # TRACEABILITY: BDD-015, REQ-023
-# TEST: Position limit enforcement per acceptance criteria
+# TEST: resource limit enforcement per acceptance criteria
 def test_hard_limit_enforcement():
     """
     BDD: BDD-015 Scenario "Hard limit prevents position increase"
@@ -905,7 +905,7 @@ AI Assistant **MUST** complete this checklist for every new project:
 - [ ] **Step 6**: Initialize all index files ({TYPE}-000_index.{ext})
 - [ ] **Step 7**: Validate folder structure (ls -laR docs/)
 - [ ] **Step 8**: Begin document creation following kickoff tasks
-- [ ] **Step 9**: Maintain traceability (Section 7 in all documents)
+- [ ] **Step 9**: Maintain traceability (section 7 in all documents)
 - [ ] **Step 10**: Run validation scripts after each document
 - [ ] **Step 11**: Generate code with traceability comments
 - [ ] **Step 12**: Create tests matching BDD scenarios

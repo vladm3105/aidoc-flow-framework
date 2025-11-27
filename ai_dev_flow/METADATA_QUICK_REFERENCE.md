@@ -106,7 +106,7 @@ custom_fields:
 | Priority | Indicator | Meaning | Visual |
 |----------|-----------|---------|--------|
 | `primary` | ✅ | Recommended approach | Green, expanded |
-| `fallback` | ⚠️ | Secondary option | Yellow, collapsed |
+| `fallback` | ⚠️ | secondary option | Yellow, collapsed |
 | `shared` | ⚙️ | Required by all | Neutral |
 | `deprecated` | ⛔ | Legacy/archived | Red |
 

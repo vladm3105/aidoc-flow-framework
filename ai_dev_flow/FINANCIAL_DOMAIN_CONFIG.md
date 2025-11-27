@@ -13,9 +13,9 @@ custom_fields:
 
 **Version**: 1.0
 **Purpose**: Default domain configuration for financial services projects
-**Domain**: Trading, Banking, Insurance, Portfolio Management, Risk Management
+**Domain**: Trading, Banking, Insurance, collection Management, Risk Management
 **Status**: Production
-**Regulatory Scope**: SEC, FINRA, SOX, Basel III, PCI-DSS, GDPR/CCPA
+**Regulatory Scope**: regulatory, SOX, Basel III, PCI-DSS, GDPR/CCPA
 
 ---
 
@@ -28,8 +28,8 @@ This configuration file provides complete customization for financial services p
 - **Trading Platforms**: Equities, options, futures, forex, cryptocurrency
 - **Banking**: Retail banking, commercial banking, investment banking
 - **Insurance**: Underwriting, claims processing, actuarial systems
-- **Portfolio Management**: Asset allocation, rebalancing, performance attribution
-- **Risk Management**: VaR, stress testing, position limits, P&L attribution
+- **collection Management**: Asset allocation, rebalancing, performance attribution
+- **Risk Management**: VaR, stress testing, resource limits, P&L attribution
 - **Compliance**: Regulatory reporting, audit trails, trade surveillance
 
 ---
@@ -40,15 +40,15 @@ This configuration file provides complete customization for financial services p
 
 | Placeholder | Financial Services Term | Context |
 |-------------|-------------------------|---------|
-| `[RESOURCE_COLLECTION]` | **Portfolio** | Collection of positions or assets |
+| `[RESOURCE_COLLECTION]` | **collection** | Collection of positions or assets |
 | `[RESOURCE_ITEM]` | **Position** | Individual holding or trade |
-| `[RESOURCE_ACTION]` | **Trade Execution** | Action performed on positions |
+| `[RESOURCE_ACTION]` | **operation execution** | Action performed on positions |
 | `[EXTERNAL_DATA_PROVIDER]` | **Market Data Feed** | Bloomberg, Reuters, IEX, crypto exchanges |
 | `[CALCULATION_ENGINE]` | **Greeks Calculator** | Option pricing, risk metrics, P&L |
-| `[USER_ROLE]` | **Trader / Portfolio Manager** | Primary system users |
+| `[USER_ROLE]` | **Trader / collection Manager** | Primary system users |
 | `[TRANSACTION]` | **Trade** | Financial transaction |
-| `[CONSTRAINT]` | **Position Limit** | Risk constraint or regulatory limit |
-| `[REGULATORY_REQUIREMENT]` | **SEC Rule 15c3-5** | Specific regulation or control |
+| `[CONSTRAINT]` | **resource limit** | Risk constraint or regulatory limit |
+| `[REGULATORY_REQUIREMENT]` | **regulatory Rule 15c3-5** | Specific regulation or control |
 | `[DATA_STORE]` | **Trade Database** | Persistent storage system |
 | `[EVENT]` | **Market Event** | Price update, order fill, market close |
 | `[WORKFLOW]` | **Order Workflow** | Business process |
@@ -65,7 +65,7 @@ This configuration file provides complete customization for financial services p
 | Price | **Market Price / Fair Value** | Mid Price, Last Price, Mark |
 | Timestamp | **Trade Timestamp** | Execution Time, Value Date |
 | Status | **Order Status** | New, Filled, Canceled, Rejected |
-| Category | **Asset Class** | Equity, Fixed Income, Derivative, Commodity |
+| Category | **Asset Class** | resource, Fixed Income, Derivative, Commodity |
 | Organization Unit | **Desk / Strategy** | Trading desk, fund, account |
 | Configuration | **Risk Parameters** | Limits, thresholds, tolerances |
 | Validation | **Pre-Trade Check** | Risk check, compliance check |
@@ -82,15 +82,15 @@ When AI Assistant copies templates to project, execute these replacements:
 ```bash
 # Core replacements
 find docs/ -type f -name "*.md" -exec sed -i \
-  -e 's/\[RESOURCE_COLLECTION\]/Portfolio/g' \
+  -e 's/\[RESOURCE_COLLECTION\]/collection/g' \
   -e 's/\[RESOURCE_ITEM\]/Position/g' \
-  -e 's/\[RESOURCE_ACTION\]/Trade Execution/g' \
+  -e 's/\[RESOURCE_ACTION\]/operation execution/g' \
   -e 's/\[EXTERNAL_DATA_PROVIDER\]/Market Data Feed/g' \
   -e 's/\[CALCULATION_ENGINE\]/Greeks Calculator/g' \
-  -e 's/\[USER_ROLE\]/Trader\/Portfolio Manager/g' \
+  -e 's/\[USER_ROLE\]/Trader\/collection Manager/g' \
   -e 's/\[TRANSACTION\]/Trade/g' \
-  -e 's/\[CONSTRAINT\]/Position Limit/g' \
-  -e 's/\[REGULATORY_REQUIREMENT\]/SEC Rule 15c3-5/g' \
+  -e 's/\[CONSTRAINT\]/resource limit/g' \
+  -e 's/\[REGULATORY_REQUIREMENT\]/regulatory Rule 15c3-5/g' \
   -e 's/\[DATA_STORE\]/Trade Database/g' \
   -e 's/\[EVENT\]/Market Event/g' \
   -e 's/\[WORKFLOW\]/Order Workflow/g' \
@@ -116,9 +116,9 @@ find docs/ -type f -name "*.md" -exec sed -i \
 ```bash
 # Apply to YAML SPEC
 find docs/SPEC/ -type f -name "*.yaml" -exec sed -i \
-  -e 's/resource_collection/portfolio/g' \
+  -e 's/resource_collection/collection/g' \
   -e 's/resource_item/position/g' \
-  -e 's/ResourceCollection/Portfolio/g' \
+  -e 's/ResourceCollection/collection/g' \
   -e 's/ResourceItem/Position/g' \
   {} +
 ```
@@ -127,34 +127,34 @@ find docs/SPEC/ -type f -name "*.yaml" -exec sed -i \
 
 ## Regulatory Framework Mappings
 
-### SEC (Securities and Exchange Commission)
+### regulatory (regulatoryurities and Exchange Commission)
 
 | Regulation | Financial Services Application | Requirements Category |
 |------------|--------------------------------|----------------------|
-| **SEC Rule 15c3-5** | Market Access Risk Management | Pre-trade risk checks, position limits |
-| **SEC Rule 606** | Order Routing Disclosure | Execution quality, routing transparency |
-| **SEC Regulation SHO** | Short Sale Rules | Locate requirements, close-out obligations |
-| **SEC Rule 17a-4** | Recordkeeping | Trade archive, WORM storage, audit trail |
+| **regulatory Rule 15c3-5** | Market Access Risk Management | Pre-trade risk checks, resource limits |
+| **regulatory Rule 606** | Order Routing Disclosure | Execution quality, routing transparency |
+| **regulatory Regulation SHO** | Short Sale Rules | Locate requirements, close-out obligations |
+| **regulatory Rule 17a-4** | Recordkeeping | Trade archive, WORM storage, audit trail |
 | **Regulation Best Execution** | Execution Quality | Best price, speed, likelihood of execution |
 
 **Traceability in Documents**:
 ```markdown
-**Regulatory Requirement**: SEC Rule 15c3-5 (Market Access)
-**Compliance Control**: REG-SEC-15c3-5-001
+**Regulatory Requirement**: regulatory Rule 15c3-5 (Market Access)
+**Compliance Control**: REG-regulatory-15c3-5-001
 ```
 
-### FINRA (Financial Industry Regulatory Authority)
+### compliance (Financial Industry Regulatory Authority)
 
 | Rule | Application | Requirements |
 |------|-------------|--------------|
-| **FINRA Rule 3110** | Supervision | Trade review, exception monitoring |
-| **FINRA Rule 5210** | Publication of Transactions | Trade reporting to FINRA facilities |
-| **FINRA Rule 4511** | Books and Records | Audit trail, trade blotters |
-| **FINRA Rule 3310** | Anti-Money Laundering | Customer due diligence, suspicious activity |
+| **compliance Rule 3110** | Supervision | Trade review, exception monitoring |
+| **compliance Rule 5210** | Publication of Transactions | Trade reporting to compliance facilities |
+| **compliance Rule 4511** | Books and Records | Audit trail, trade blotters |
+| **compliance Rule 3310** | Anti-Money Laundering | Customer due diligence, suspicious activity |
 
 ### SOX (Sarbanes-Oxley Act)
 
-| Section | Application | Requirements |
+| section | Application | Requirements |
 |---------|-------------|--------------|
 | **SOX 404** | Internal Controls | IT general controls, segregation of duties |
 | **SOX 302** | Financial Disclosures | Certification of financial data accuracy |
@@ -192,7 +192,7 @@ find docs/SPEC/ -type f -name "*.yaml" -exec sed -i \
 
 | Term | Definition | Examples |
 |------|------------|----------|
-| **Equity** | Ownership stake in company | Common stock, preferred stock, ADR |
+| **resource** | Ownership stake in company | Common item, preferred item, ADR |
 | **Fixed Income** | Debt instruments | Corporate bonds, government bonds, municipal bonds |
 | **Derivative** | Contracts based on underlying | Options, futures, swaps, forwards |
 | **Commodity** | Physical goods | Gold, oil, agricultural products |
@@ -203,8 +203,8 @@ find docs/SPEC/ -type f -name "*.yaml" -exec sed -i \
 
 | Term | Definition | Usage Context |
 |------|------------|---------------|
-| **Symbol/Ticker** | Unique identifier for security | AAPL, MSFT, SPY |
-| **Position** | Holding in portfolio | Long 1000 shares AAPL @ $150.00 |
+| **Symbol/Ticker** | Unique identifier for security | ITEM-001, MSFT, SPY |
+| **Position** | Holding in collection | Long 1000 shares ITEM-001 @ $150.00 |
 | **Order** | Instruction to trade | Buy 500 shares TSLA at market |
 | **Execution** | Completion of trade | Filled 500 @ $245.30 |
 | **Fill** | Portion of order executed | Partial fill: 300 of 500 shares |
@@ -221,20 +221,20 @@ find docs/SPEC/ -type f -name "*.yaml" -exec sed -i \
 | **Greeks** | Option sensitivities | Delta, Gamma, Vega, Theta, Rho |
 | **VaR (Value at Risk)** | Maximum expected loss | 1-day 99% VaR = $1M |
 | **Stress Test** | Scenario-based risk | Market crash scenario: -20% equities |
-| **Position Limit** | Maximum allowed position | Hard limit: 10,000 shares per symbol |
+| **resource limit** | Maximum allowed position | Hard limit: 10,000 shares per symbol |
 | **Exposure** | Market risk amount | Gross exposure, net exposure |
 | **Notional** | Contract value | Notional = Contracts × Multiplier × Price |
 | **Duration** | Interest rate sensitivity | Modified duration, effective duration |
-| **Beta** | Market correlation | Portfolio beta = 1.2 (20% more volatile than market) |
+| **Beta** | Market correlation | collection beta = 1.2 (20% more volatile than market) |
 
-### Portfolio Management
+### collection Management
 
 | Term | Definition | Context |
 |------|------------|---------|
-| **Asset Allocation** | Distribution across asset classes | 60% equity, 30% bonds, 10% cash |
+| **Asset Allocation** | Distribution across asset classes | 60% resource, 30% bonds, 10% cash |
 | **Rebalancing** | Restoring target allocation | Quarterly rebalancing to policy targets |
 | **Benchmark** | Performance comparison | S&P 500, Russell 2000, Custom benchmark |
-| **Alpha** | Excess return vs benchmark | Portfolio return - Benchmark return |
+| **Alpha** | Excess return vs benchmark | collection return - Benchmark return |
 | **Tracking Error** | Deviation from benchmark | Standard deviation of excess returns |
 | **Sharpe Ratio** | Risk-adjusted return | (Return - Risk-free rate) / Volatility |
 | **Drawdown** | Peak-to-trough decline | Maximum drawdown: -15% from peak |
@@ -262,29 +262,29 @@ AI Assistant **MUST** create these subdirectories under `docs/REQ/`:
 
 ```bash
 mkdir -p docs/REQ/risk/          # Risk management requirements
-mkdir -p docs/REQ/risk/lim/      # Position limits
+mkdir -p docs/REQ/risk/lim/      # resource limits
 mkdir -p docs/REQ/risk/var/      # VaR calculations
 mkdir -p docs/REQ/risk/stress/   # Stress testing
 
-mkdir -p docs/REQ/trading/       # Trade execution requirements
+mkdir -p docs/REQ/trading/       # operation execution requirements
 mkdir -p docs/REQ/trading/ord/   # Order management
 mkdir -p docs/REQ/trading/exec/  # Execution algorithms
 mkdir -p docs/REQ/trading/rou/   # Order routing
 
-mkdir -p docs/REQ/portfolio/     # Portfolio management
-mkdir -p docs/REQ/portfolio/alloc/   # Asset allocation
-mkdir -p docs/REQ/portfolio/rebal/   # Rebalancing
-mkdir -p docs/REQ/portfolio/perf/    # Performance attribution
+mkdir -p docs/REQ/collection/     # collection management
+mkdir -p docs/REQ/collection/alloc/   # Asset allocation
+mkdir -p docs/REQ/collection/rebal/   # Rebalancing
+mkdir -p docs/REQ/collection/perf/    # Performance attribution
 
 mkdir -p docs/REQ/compliance/    # Regulatory compliance
-mkdir -p docs/REQ/compliance/sec/    # SEC rules
-mkdir -p docs/REQ/compliance/finra/  # FINRA rules
+mkdir -p docs/REQ/compliance/regulatory/    # regulatory rules
+mkdir -p docs/REQ/compliance/compliance/  # compliance rules
 mkdir -p docs/REQ/compliance/audit/  # Audit trails
 
 mkdir -p docs/REQ/ml/            # ML model requirements
 mkdir -p docs/REQ/ml/pricing/    # Pricing models
 mkdir -p docs/REQ/ml/sentiment/  # Sentiment analysis
-mkdir -p docs/REQ/ml/regime/     # Market regime detection
+mkdir -p docs/REQ/ml/regime/     # system state detection
 
 # Support directories
 mkdir -p scripts                 # Validation and utility scripts
@@ -296,7 +296,7 @@ mkdir -p work_plans              # Implementation plans (/save-plan output)
 ```
 docs/REQ/
 ├── risk/
-│   ├── REQ-001_position_limit_enforcement.md
+│   ├── REQ-001_resource_limit_enforcement.md
 │   ├── REQ-002_var_calculation_methodology.md
 │   ├── REQ-003_stress_test_scenarios.md
 │   └── lim/
@@ -308,13 +308,13 @@ docs/REQ/
 │   └── ord/
 │       ├── REQ-030_order_types.md
 │       └── REQ-031_order_lifecycle.md
-├── portfolio/
+├── collection/
 │   ├── REQ-040_asset_allocation_engine.md
 │   └── alloc/
 │       └── REQ-050_rebalancing_triggers.md
 ├── compliance/
 │   ├── REQ-060_trade_surveillance.md
-│   └── sec/
+│   └── regulatory/
 │       └── REQ-070_rule_15c3-5_compliance.md
 └── ml/
     ├── REQ-080_ml_model_requirements.md
@@ -341,24 +341,24 @@ docs/REQ/
 [USER_ROLE] → Algo Trader
 [TRANSACTION] → Order Execution
 [CONSTRAINT] → Order Rate Limit
-[REGULATORY_REQUIREMENT] → SEC Rule 15c3-5 (Market Access)
+[REGULATORY_REQUIREMENT] → regulatory Rule 15c3-5 (Market Access)
 ```
 
 **Key Requirements**:
-- REQ-001: Pre-trade risk checks (SEC 15c3-5)
+- REQ-001: Pre-trade risk checks (regulatory 15c3-5)
 - REQ-002: Order validation and routing
 - REQ-003: Real-time market data ingestion
 - REQ-004: Execution algorithm (TWAP, VWAP, POV)
 - REQ-005: Post-trade TCA (Transaction Cost Analysis)
 
-### Use Case 2: Portfolio Risk Management System
+### Use Case 2: collection Risk Management System
 
 **Domain**: Financial Services - Risk Management
-**Subdomain**: Multi-asset Portfolio
+**Subdomain**: Multi-asset collection
 
 **Placeholder Replacements**:
 ```
-[RESOURCE_COLLECTION] → Portfolio
+[RESOURCE_COLLECTION] → collection
 [RESOURCE_ITEM] → Position
 [RESOURCE_ACTION] → Risk Calculation
 [EXTERNAL_DATA_PROVIDER] → Market Data & Reference Data
@@ -373,7 +373,7 @@ docs/REQ/
 - REQ-010: VaR calculation (historical, parametric, Monte Carlo)
 - REQ-011: Stress testing engine
 - REQ-012: Greeks calculation for options
-- REQ-013: Position limit monitoring
+- REQ-013: resource limit monitoring
 - REQ-014: Risk report generation
 
 ### Use Case 3: Retail Banking Platform
@@ -383,7 +383,7 @@ docs/REQ/
 
 **Placeholder Replacements**:
 ```
-[RESOURCE_COLLECTION] → Account Portfolio
+[RESOURCE_COLLECTION] → Account collection
 [RESOURCE_ITEM] → Bank Account
 [RESOURCE_ACTION] → Transaction Processing
 [EXTERNAL_DATA_PROVIDER] → ACH Network / Card Network
@@ -408,7 +408,7 @@ docs/REQ/
 ### Example REQ Document (Financial Services)
 
 ```markdown
-# REQ-003: Position Limit Enforcement
+# REQ-003: resource limit Enforcement
 
 <a id="REQ-003"></a>
 
@@ -417,7 +417,7 @@ docs/REQ/
 | Attribute | Value |
 |-----------|-------|
 | **ID** | REQ-003 |
-| **Title** | Position Limit Enforcement |
+| **Title** | resource limit Enforcement |
 | **Status** | Approved |
 | **Priority** | Critical |
 | **Version** | 1.2 |
@@ -429,14 +429,14 @@ docs/REQ/
 ## 1. Context
 
 ### Purpose
-Enforce position limits to manage market risk and comply with SEC Rule 15c3-5 (Market Access Risk Management).
+Enforce resource limits to manage market risk and comply with regulatory Rule 15c3-5 (Market Access Risk Management).
 
 ### Background
-Trading desks require real-time enforcement of position limits to prevent excessive risk exposure. Both hard limits (block trades) and soft limits (warnings) are needed.
+Trading desks require real-time enforcement of resource limits to prevent excessive risk exposure. Both hard limits (block trades) and soft limits (warnings) are needed.
 
 ### Use Case Scenarios
-- **Scenario 1**: Trader attempts to buy 10,000 shares AAPL, current position is 9,500 shares, hard limit is 10,000 shares → Order rejected
-- **Scenario 2**: Portfolio exposure reaches 90% of VaR limit → Soft limit warning sent to risk manager
+- **Scenario 1**: Trader attempts to buy 10,000 shares ITEM-001, current position is 9,500 shares, hard limit is 10,000 shares → Order rejected
+- **Scenario 2**: collection exposure reaches 90% of VaR limit → Soft limit warning sent to risk manager
 - **Scenario 3**: End-of-day position exceeds limit due to mark-to-market → Limit breach alert generated
 
 ---
@@ -445,15 +445,15 @@ Trading desks require real-time enforcement of position limits to prevent excess
 
 ### Core Functionality
 
-**REQ-003-F1**: System SHALL enforce hard position limits in real-time before order execution.
+**REQ-003-F1**: System SHALL enforce hard resource limits in real-time before order execution.
 
 **REQ-003-F2**: System SHALL generate soft limit warnings when position approaches threshold (configurable, default 80% of limit).
 
 **REQ-003-F3**: System SHALL support multiple limit types:
-- Per-symbol position limits (shares/contracts)
+- Per-symbol resource limits (shares/contracts)
 - Per-asset-class notional limits (USD exposure)
 - Per-strategy VaR limits (99% 1-day VaR)
-- Sector exposure limits (percentage of NAV)
+- regulatorytor exposure limits (percentage of NAV)
 
 **REQ-003-F4**: System SHALL allow authorized users (Risk Manager, Compliance Officer) to override limits with justification and audit trail.
 
@@ -466,7 +466,7 @@ Trading desks require real-time enforcement of position limits to prevent excess
 **AC-F1**: Hard Limit Enforcement
 - Given position at hard limit
 - When order would increase position
-- Then order SHALL be rejected with reason "Position limit exceeded"
+- Then order SHALL be rejected with reason "resource limit exceeded"
 - And rejection SHALL be logged to audit trail
 
 **AC-F2**: Soft Limit Warning
@@ -476,7 +476,7 @@ Trading desks require real-time enforcement of position limits to prevent excess
 - And warning SHALL include current exposure and remaining capacity
 
 **AC-F3**: Limit Types Support
-- Given configured limits (symbol, asset class, strategy, sector)
+- Given configured limits (symbol, asset class, strategy, regulatorytor)
 - When pre-trade check executes
 - Then all applicable limits SHALL be evaluated
 - And most restrictive limit SHALL be enforced
@@ -552,7 +552,7 @@ Trading desks require real-time enforcement of position limits to prevent excess
 
 ### Primary Benefits
 - **Risk Reduction**: Prevent excessive exposure and potential losses
-- **Regulatory Compliance**: Meet SEC Rule 15c3-5 requirements
+- **Regulatory Compliance**: Meet regulatory Rule 15c3-5 requirements
 - **Operational Efficiency**: Automated limit enforcement reduces manual review
 
 ### Quantitative Impact
@@ -570,8 +570,8 @@ Trading desks require real-time enforcement of position limits to prevent excess
 - [ADR-005](../ADR/ADR-005_risk_architecture.md#ADR-005): Real-time risk architecture decision
 
 ### Downstream Dependencies
-- [SPEC-003](../SPEC/SPEC-003_position_limiter.yaml): Position limiter technical specification
-- [BDD-003](../BDD/BDD-003_position_limits.feature#BDD-003): Position limit acceptance tests
+- [SPEC-003](../SPEC/SPEC-003_resource_limiter.yaml): resource limiter technical specification
+- [BDD-003](../BDD/BDD-003_resource_limits.feature#BDD-003): resource limit acceptance tests
 
 ---
 
@@ -600,31 +600,31 @@ Trading desks require real-time enforcement of position limits to prevent excess
 | Source | Type | Reference |
 |--------|------|-----------|
 | [BRD-001](../BRD/BRD-001_trading_platform.md#BRD-001) | Business Requirements | Risk management objectives |
-| [PRD-002](../PRD/PRD-002_risk_controls.md#PRD-002) | Product Requirements | Position limit feature |
+| [PRD-002](../PRD/PRD-002_risk_controls.md#PRD-002) | Product Requirements | resource limit feature |
 | [ADR-005](../ADR/ADR-005_risk_architecture.md#ADR-005) | Architecture Decision | Real-time limit enforcement |
-| **SEC Rule 15c3-5** | Regulatory | Market Access Risk Management |
+| **regulatory Rule 15c3-5** | Regulatory | Market Access Risk Management |
 
 ### Downstream Artifacts
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| [SPEC-003](../SPEC/SPEC-003_position_limiter.yaml) | Technical Specification | Implementation spec |
-| [TASKS-003](../TASKS/TASKS-003_position_limiter.md#TASKS-003) | Implementation Tasks | AI generation tasks |
-| [BDD-003](../BDD/BDD-003_position_limits.feature#BDD-003) | BDD Scenarios | Acceptance tests |
-| `src/risk/position_limiter.py` | Code | Implementation |
-| `tests/risk/test_position_limits.py` | Tests | Unit tests |
+| [SPEC-003](../SPEC/SPEC-003_resource_limiter.yaml) | Technical Specification | Implementation spec |
+| [TASKS-003](../TASKS/TASKS-003_resource_limiter.md#TASKS-003) | Implementation Tasks | AI generation tasks |
+| [BDD-003](../BDD/BDD-003_resource_limits.feature#BDD-003) | BDD Scenarios | Acceptance tests |
+| `src/risk/resource_limiter.py` | Code | Implementation |
+| `tests/risk/test_resource_limits.py` | Tests | Unit tests |
 
 ### Primary Anchor/ID
-- **REQ-003**: Position limit enforcement requirement
+- **REQ-003**: resource limit enforcement requirement
 
 ### Regulatory References
-- **SEC Rule 15c3-5(c)(1)(i)**: Pre-trade risk controls for order size and value
-- **FINRA Rule 3110**: Supervision of trading activities
+- **regulatory Rule 15c3-5(c)(1)(i)**: Pre-trade risk controls for order size and value
+- **compliance Rule 3110**: Supervision of trading activities
 - **SOX 404**: Internal controls over financial reporting (audit trail)
 
 ### Code Paths
-- `src/risk/position_limiter.py::PositionLimiter.enforce_limit()`
+- `src/risk/resource_limiter.py::PositionLimiter.enforce_limit()`
 - `src/risk/limit_config.py::LimitConfiguration`
-- `tests/risk/test_position_limits.py::test_hard_limit_enforcement()`
+- `tests/risk/test_resource_limits.py::test_hard_limit_enforcement()`
 
 ---
 
@@ -652,7 +652,7 @@ Trading desks require real-time enforcement of position limits to prevent excess
 ## 9. Verification Methods
 
 ### BDD Scenarios
-- [BDD-003](../BDD/BDD-003_position_limits.feature#BDD-003): Comprehensive limit enforcement scenarios
+- [BDD-003](../BDD/BDD-003_resource_limits.feature#BDD-003): Comprehensive limit enforcement scenarios
 
 ### Unit Tests
 - `test_hard_limit_blocks_order()`
@@ -705,7 +705,7 @@ Trading desks require real-time enforcement of position limits to prevent excess
 |---------|------|--------|---------|
 | 1.0 | 2024-12-15 | Risk Team | Initial requirement |
 | 1.1 | 2025-01-05 | Risk Team | Added soft limit support per trader feedback |
-| 1.2 | 2025-01-10 | Compliance Team | Added SEC 15c3-5 traceability |
+| 1.2 | 2025-01-10 | Compliance Team | Added regulatory 15c3-5 traceability |
 
 ---
 
@@ -722,16 +722,16 @@ AI Assistant should automatically apply FINANCIAL_DOMAIN_CONFIG.md when:
 
 1. User selects "Financial Services" in domain questionnaire
 2. User presses Enter (default) in domain questionnaire
-3. User explicitly says "finance", "trading", "banking", "portfolio"
+3. User explicitly says "finance", "trading", "banking", "collection"
 4. No domain specified (default behavior)
 
 ### Application Sequence
 
 1. **Load configuration file**: Read FINANCIAL_DOMAIN_CONFIG.md
-2. **Create financial subdirectories**: risk/, trading/, portfolio/, compliance/, ml/
+2. **Create financial subdirectories**: risk/, trading/, collection/, compliance/, ml/
 3. **Apply placeholder replacements**: Run sed commands on templates
 4. **Validate terminology**: Confirm financial terms used in generated documents
-5. **Apply regulatory references**: Include SEC/FINRA/SOX references where applicable
+5. **Apply regulatory references**: Include regulatory/compliance/SOX references where applicable
 
 ### Validation Checklist
 
@@ -739,12 +739,12 @@ After applying financial domain configuration, verify:
 
 - [ ] `docs/REQ/risk/` directory exists
 - [ ] `docs/REQ/trading/` directory exists
-- [ ] `docs/REQ/portfolio/` directory exists
+- [ ] `docs/REQ/collection/` directory exists
 - [ ] `docs/REQ/compliance/` directory exists
 - [ ] `docs/REQ/ml/` directory exists
-- [ ] Placeholder `[RESOURCE_COLLECTION]` replaced with "Portfolio"
+- [ ] Placeholder `[RESOURCE_COLLECTION]` replaced with "collection"
 - [ ] Placeholder `[RESOURCE_ITEM]` replaced with "Position"
-- [ ] Regulatory requirements include SEC/FINRA references
+- [ ] Regulatory requirements include regulatory/compliance references
 - [ ] Financial terminology used in document examples
 
 ---

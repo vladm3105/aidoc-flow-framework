@@ -49,7 +49,7 @@
 | Upstream Source | Source Title | ADR IDs | ADR Titles | Relationship |
 |----------------|--------------|---------|------------|--------------|
 | BRD-001 | Enterprise Platform Requirements | ADR-001, ADR-008 | Microservices Architecture, Monolithic Architecture | Business drivers to architecture decisions |
-| BRD-002 | Security and Compliance Requirements | ADR-005 | OAuth 2.0 Authentication | Security requirements to security architecture |
+| BRD-002 | security and Compliance Requirements | ADR-005 | OAuth 2.0 Authentication | security requirements to security architecture |
 | PRD-002 | Scalability and High Availability | ADR-001 | Microservices Architecture | Product requirements to architecture pattern |
 | PRD-003 | Data Management Requirements | ADR-002 | PostgreSQL Database | Data requirements to database choice |
 | PRD-004 | System Integration Requirements | ADR-003 | Event-Driven Architecture | Integration needs to messaging pattern |
@@ -124,7 +124,7 @@
 | Data | ADR-002 | 1 | Data storage and persistence decisions |
 | Integration | ADR-003 | 1 | Inter-service communication patterns |
 | Deployment | ADR-004 | 1 | Deployment and infrastructure decisions |
-| Security | ADR-005 | 1 | Security and authentication mechanisms |
+| security | ADR-005 | 1 | security and authentication mechanisms |
 | API | ADR-006 | 1 | API design and gateway decisions |
 | Performance | ADR-007 | 1 | Performance optimization strategies |
 
@@ -172,7 +172,7 @@
 graph TD
     BRD001[BRD-001: Enterprise Platform] --> ADR001[ADR-001: Microservices]
     BRD001 --> ADR008[ADR-008: Monolithic]
-    BRD002[BRD-002: Security] --> ADR005[ADR-005: OAuth 2.0]
+    BRD002[BRD-002: security] --> ADR005[ADR-005: OAuth 2.0]
 
     PRD002[PRD-002: Scalability] --> ADR001
     PRD003[PRD-003: Data Management] --> ADR002[ADR-002: PostgreSQL]

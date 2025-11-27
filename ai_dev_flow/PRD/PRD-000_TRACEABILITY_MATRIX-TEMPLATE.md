@@ -104,7 +104,7 @@ This matrix tracks all PRD documents, mapping upstream business requirements (BR
 ### 2.3 Example: PRD with Required Tags
 
 ```markdown
-# PRD-016: Trade Execution Product Requirements
+# PRD-016: operation execution Product Requirements
 
 ## 8. Traceability
 
@@ -115,8 +115,8 @@ This matrix tracks all PRD documents, mapping upstream business requirements (BR
 @brd: BRD-009:FR-015, BRD-009:NFR-006
 ```
 
-- **BRD-009:FR-015**: Functional requirement for broker integration
-- **BRD-009:NFR-006**: Non-functional requirement for trade execution performance
+- **BRD-009:FR-015**: Functional requirement for service integration
+- **BRD-009:NFR-006**: Non-functional requirement for operation execution performance
 ```
 
 ### 2.4 Validation Rules
@@ -282,7 +282,7 @@ graph TD
 | [User Experience] | PRD-004, PRD-005 | 2 | User-facing workflows and interfaces |
 | [Integration] | PRD-006, PRD-007 | 2 | External system connections |
 | [Analytics] | PRD-008 | 1 | Reporting and insights |
-| [Security] | PRD-009, PRD-010 | 2 | Authentication, authorization, data protection |
+| [security] | PRD-009, PRD-010 | 2 | Authentication, authorization, data protection |
 
 ### 8.2 User Persona Alignment
 

@@ -57,9 +57,9 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Organization: Domain-specific subdirectories (`api/`, `risk/`, `ml/`, `data/`)
   - Format: 12-section framework with validation rules
   - Examples:
-    - [REQ-001](./REQ/api/av/REQ-001_alpha_vantage_integration.md) (API Integration)
+    - [REQ-001](./REQ/api/av/REQ-001_external_api_integration.md) (API Integration)
     - [REQ-002](./REQ/api/ib/REQ-002_ib_gateway_integration.md) (Gateway Integration)
-    - [REQ-003](./REQ/risk/lim/REQ-003_position_limit_enforcement.md) (Risk Limits)
+    - [REQ-003](./REQ/risk/lim/REQ-003_resource_limit_enforcement.md) (Risk Limits)
 
 ### Project Management Layer (Layer 8 - Optional)
 
@@ -250,7 +250,7 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 
 - **Domain Adaptation Guide**: [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) - Adapting framework to specific domains
 - **Domain Selection**: [DOMAIN_SELECTION_QUESTIONNAIRE.md](./DOMAIN_SELECTION_QUESTIONNAIRE.md) - Questionnaire for selecting domain
-- **Financial Domain**: [FINANCIAL_DOMAIN_CONFIG.md](./FINANCIAL_DOMAIN_CONFIG.md) - Financial sector configuration
+- **Financial Domain**: [FINANCIAL_DOMAIN_CONFIG.md](./FINANCIAL_DOMAIN_CONFIG.md) - Financial regulatorytor configuration
 - **Software Domain**: [SOFTWARE_DOMAIN_CONFIG.md](./SOFTWARE_DOMAIN_CONFIG.md) - Generic software configuration
 - **Generic Domain**: [GENERIC_DOMAIN_CONFIG.md](./GENERIC_DOMAIN_CONFIG.md) - Minimal configuration template
 

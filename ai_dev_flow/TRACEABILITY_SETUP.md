@@ -109,7 +109,7 @@ python scripts/validate_tags_against_docs.py \
 - Layer 14 (Tests): 10-12 tags (@brd through @code)
 
 **Benefits:**
-- Regulatory compliance (SEC, FINRA, FDA, ISO audit trails)
+- Regulatory compliance (regulatory, FDA, ISO audit trails)
 - Complete impact analysis (upstream → downstream traceability)
 - Automated validation prevents gaps in traceability chain
 - CI/CD enforcement ensures 100% compliance
@@ -297,7 +297,7 @@ def end_of_day_validation():
 |--------|-----------|--------------|
 | Broken references | 0 | Block commit |
 | Duplicate IDs | 0 | Block commit |
-| Missing Section 7 | 0 | Warning |
+| Missing section 7 | 0 | Warning |
 | Orphaned documents | <5% | Warning |
 | Traceability coverage | >95% | Warning if below |
 
@@ -329,7 +329,7 @@ def send_metrics():
 1. Check if referenced document exists
 2. Verify file path is correct (relative from current document)
 3. Verify anchor ID matches document ID
-4. Example fix: `[REQ-003](../REQ/risk/REQ-003_position_limit.md#REQ-003)`
+4. Example fix: `[REQ-003](../REQ/risk/REQ-003_resource_limit.md#REQ-003)`
 
 **Issue**: Duplicate requirement IDs
 

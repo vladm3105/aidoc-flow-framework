@@ -42,12 +42,12 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 
 ## Validation Checks
 
-### CHECK 1: Required Sections
+### CHECK 1: Required sections
 
 **Purpose**: Verify all 12 mandatory sections exist
 **Type**: Error (blocking)
 
-**Required Sections**:
+**Required sections**:
 ```markdown
 ## 1. Description
 ## 2. Functional Requirements
@@ -71,7 +71,7 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 **Fix**:
 1. Add missing section header
 2. Ensure exact spelling and numbering
-3. Sections must be in order (1-12)
+3. sections must be in order (1-12)
 
 ---
 
@@ -104,7 +104,7 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 
 **Fix**:
 ```markdown
-| **Source Document** | SYS-002 Section 3.1.1 |
+| **Source Document** | SYS-002 section 3.1.1 |
 | **Author** | System Architect |
 | **Category** | Functional |
 | **Verification Method** | BDD + Integration Test |
@@ -125,7 +125,7 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 
 **Error Message**:
 ```
-❌ MISSING: Upstream Sources subsection in Section 11
+❌ MISSING: Upstream Sources subsection in section 11
 ```
 
 **Fix**:
@@ -134,7 +134,7 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 
 ### Upstream Sources
 
-| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+| Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
 | BRD | [BRD-001](../../BRD/BRD-001.md) | ... | ... | ... |
 ```
@@ -244,21 +244,21 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 **Type**: Warning
 
 **Valid Examples**:
-- `SYS-002 Section 3.1.1` ✅
-- `BRD-001 Section 4.2` ✅
+- `SYS-002 section 3.1.1` ✅
+- `BRD-001 section 4.2` ✅
 
 **Invalid Examples**:
 - `SYS-002` ❌
-- `Section 3.1.1` ❌
+- `section 3.1.1` ❌
 
 **Warning Message**:
 ```
-⚠️  WARNING: Source Document should include section number (e.g., 'SYS-002 Section 3.1.1')
+⚠️  WARNING: Source Document should include section number (e.g., 'SYS-002 section 3.1.1')
 ```
 
 **Fix**:
 ```markdown
-| **Source Document** | SYS-002 Section 3.1.1 |
+| **Source Document** | SYS-002 section 3.1.1 |
 ```
 
 ---
@@ -478,7 +478,7 @@ brd: BRD-009:FR-015 ❌ (missing @ prefix)
 ❌ ERROR: Missing cumulative tags (Layer 7 requires all 6):
          Missing: @ears @bdd @adr
          Required: @brd, @prd, @ears, @bdd, @adr, @sys
-         Reference: doc-flow TRACEABILITY.md Section 2.5
+         Reference: doc-flow TRACEABILITY.md section 2.5
 
 ❌ ERROR: Invalid tag format: @brd BRD-009:FR-015
          Expected: @type: DOC-ID:REQ-ID
@@ -486,11 +486,11 @@ brd: BRD-009:FR-015 ❌ (missing @ prefix)
 ```
 
 **Fix**:
-1. Add all 6 missing tags to Section 11 (Traceability)
+1. Add all 6 missing tags to section 11 (Traceability)
 2. Use format: `@type: DOCUMENT-ID:REQUIREMENT-ID`
 3. Verify all referenced documents exist
 
-**Reference**: `TRACEABILITY.md` Section 2.5 (Cumulative Tagging Hierarchy)
+**Reference**: `TRACEABILITY.md` section 2.5 (Cumulative Tagging Hierarchy)
 
 ---
 
@@ -511,7 +511,7 @@ brd: BRD-009:FR-015 ❌ (missing @ prefix)
 ```markdown
 ### Upstream Sources
 
-| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+| Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
 | BRD | [BRD-001](...) | ... | ... | Primary business need |
 | PRD | [PRD-001](...) | ... | ... | Product requirement |
@@ -525,7 +525,7 @@ brd: BRD-009:FR-015 ❌ (missing @ prefix)
 ```
 ❌ ERROR: Incomplete upstream chain - missing: EARS BDD ADR
          Complete chain required: BRD → PRD → EARS → BDD → ADR → SYS
-         Reference: REQ-TEMPLATE-V3.md Section 11 (Traceability)
+         Reference: REQ-TEMPLATE-V3.md section 11 (Traceability)
 ```
 
 **Fix**:
@@ -533,7 +533,7 @@ brd: BRD-009:FR-015 ❌ (missing @ prefix)
 2. Ensure markdown links include relative paths
 3. Add specific relationship descriptions (not generic)
 
-**Reference**: `REQ-TEMPLATE-V3.md` Section 11 (Traceability - Complete Upstream Chain)
+**Reference**: `REQ-TEMPLATE-V3.md` section 11 (Traceability - Complete Upstream Chain)
 
 ---
 
@@ -544,7 +544,7 @@ brd: BRD-009:FR-015 ❌ (missing @ prefix)
 
 **Valid Link Format**:
 ```markdown
-[REQ-003](../REQ/risk/lim/REQ-003_position_limit.md#REQ-003) ✅
+[REQ-003](../REQ/risk/lim/REQ-003_resource_limit.md#REQ-003) ✅
 [ADR-033](../../ADR/ADR-033_architecture.md#ADR-033) ✅
 ```
 
@@ -584,11 +584,11 @@ brd: BRD-009:FR-015 ❌ (missing @ prefix)
 
 **Warning Message**:
 ```
-⚠️  WARNING: Complex REQ detected but Section 11.4 (Traceability Matrix) missing
+⚠️  WARNING: Complex REQ detected but section 11.4 (Traceability Matrix) missing
          Upstream sources: 7 (≥5 suggests complexity)
          Sub-components: yes
-         Recommendation: Add Section 11.4 or create separate REQ-NNN_TRACEABILITY_MATRIX.md
-         Reference: REQ-TEMPLATE-V3.md Section 11 (Traceability)
+         Recommendation: Add section 11.4 or create separate REQ-NNN_TRACEABILITY_MATRIX.md
+         Reference: REQ-TEMPLATE-V3.md section 11 (Traceability)
 ```
 
 **Fix Options**:
@@ -606,9 +606,9 @@ brd: BRD-009:FR-015 ❌ (missing @ prefix)
 **Option 2 - Separate File** (10+ components):
 - Create: `REQ-045_TRACEABILITY_MATRIX.md`
 - Template: Available in doc_flow framework
-- Link from Section 11
+- Link from section 11
 
-**Reference**: `REQ-TEMPLATE-V3.md` Section 11 (Traceability - includes matrix guidance)
+**Reference**: `REQ-TEMPLATE-V3.md` section 11 (Traceability - includes matrix guidance)
 
 ---
 
@@ -620,22 +620,22 @@ brd: BRD-009:FR-015 ❌ (missing @ prefix)
 **Applies When**: SPEC-Ready Score ≥ 90%
 
 **Checks**:
-1. **Section 3**: Protocol/ABC class present
-2. **Section 4**: Pydantic/dataclass models present
-3. **Section 5**: Exception definitions present
-4. **Section 6**: YAML configuration present
+1. **section 3**: Protocol/ABC class present
+2. **section 4**: Pydantic/dataclass models present
+3. **section 5**: Exception definitions present
+4. **section 6**: YAML configuration present
 
 **Warning Messages**:
 ```
-⚠️  WARNING: SPEC-Ready ≥90% but no Protocol/ABC class in Section 3
-⚠️  WARNING: SPEC-Ready ≥90% but no Pydantic/dataclass models in Section 4
-⚠️  WARNING: SPEC-Ready ≥90% but no exception definitions in Section 5
-⚠️  WARNING: SPEC-Ready ≥90% but no YAML configuration in Section 6
+⚠️  WARNING: SPEC-Ready ≥90% but no Protocol/ABC class in section 3
+⚠️  WARNING: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4
+⚠️  WARNING: SPEC-Ready ≥90% but no exception definitions in section 5
+⚠️  WARNING: SPEC-Ready ≥90% but no YAML configuration in section 6
 ```
 
 **Fix**: Add missing code examples to achieve claimed SPEC-Ready score
 
-**Example - Section 3**:
+**Example - section 3**:
 ```python
 from typing import Protocol
 
@@ -644,13 +644,13 @@ class HealthCheckMonitor(Protocol):
         ...
 ```
 
-**Example - Section 4**:
+**Example - section 4**:
 ```python
 from pydantic import BaseModel, Field
 
 class HeartbeatConfig(BaseModel):
-    heartbeat_interval_sec: float = Field(30.0, ge=1.0, le=300.0)
-    connection_timeout_sec: float = Field(5.0, gt=0, le=60.0)
+    heartbeat_interval_regulatory: float = Field(30.0, ge=1.0, le=300.0)
+    connection_timeout_regulatory: float = Field(5.0, gt=0, le=60.0)
 ```
 
 ### CHECK 19: IMPL-Ready Score Validation ⭐ NEW
@@ -674,7 +674,7 @@ class HeartbeatConfig(BaseModel):
 
 | Error Check | Quick Fix |
 |-------------|-----------|
-| **CHECK 1** | Add missing section: `## N. Section Name` |
+| **CHECK 1** | Add missing section: `## N. section Name` |
 | **CHECK 2** | Add all 11 required fields to Document Control table |
 | **CHECK 5** | Change version to semver: `2.0.1` |
 | **CHECK 6** | Change dates to ISO 8601: `2025-11-18` |
@@ -848,13 +848,13 @@ Warnings: 1
 
 **Warning**:
 ```
-⚠️  WARNING: SPEC-Ready ≥90% but no Protocol/ABC class in Section 3
-⚠️  WARNING: SPEC-Ready ≥90% but no Pydantic/dataclass models in Section 4
+⚠️  WARNING: SPEC-Ready ≥90% but no Protocol/ABC class in section 3
+⚠️  WARNING: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4
 ```
 
 **Cause**: Claimed SPEC-Ready score but missing implementation code
 
-**Fix**: Add code examples to Sections 3-6 or reduce score to match completeness
+**Fix**: Add code examples to sections 3-6 or reduce score to match completeness
 
 ---
 

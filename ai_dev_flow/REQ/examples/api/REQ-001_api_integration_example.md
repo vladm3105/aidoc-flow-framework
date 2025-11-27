@@ -1,19 +1,19 @@
-# REQ-001: External Market Data API Integration
+# REQ-001: External API Integration
 
 ## Requirements in Development Workflow
 
-**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
+**REQ (Atomic Requirements)** ← YOU ARE HERE (Layer 7 - Requirements Layer)
 
-**REQ (Atomic Requirements)** ← YOU ARE HERE (Layer 4 - Requirements Layer)
+**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
-For the complete traceability workflow with visual diagram, see: [index.md - Traceability Flow](../../index.md#traceability-flow)
+For the complete traceability workflow with visual diagram, see: [index.md - Traceability Flow](../../../index.md#traceability-flow)
 
 **Quick Reference**:
 ```
-... → SYS → **REQ** → IMPL → CTR/SPEC → TASKS → Code → ...
-                ↑
-        Requirements Layer
-        (Granular, testable, SPEC-ready requirements)
+... → SYS → **REQ** → ADR → BDD → IMPL → CTR → SPEC → TASKS → Code → ...
+               ↑
+       Requirements Layer
+       (Granular, testable, SPEC-ready requirements)
 ```
 
 **REQ Purpose**: Define atomic, implementable, SPEC-ready requirements
@@ -31,7 +31,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 | **Status** | Example/Approved |
 | **Version** | 2.0.0 |
 | **Date Created** | 2025-01-09 |
-| **Last Updated** | 2025-01-09 |
+| **Last Updated** | 2025-11-26 |
 | **Author** | Platform Team |
 | **Priority** | High |
 | **Category** | Functional - External Integration |
@@ -44,30 +44,30 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ## 1. Description
 
-The system SHALL integrate with external market data API providers to fetch real-time stock quotes, historical prices, and market metadata with tier-appropriate rate limiting, authentication, caching, and circuit breaker protection.
+The system SHALL integrate with external API providers to fetch real-time data, historical records, and metadata with tier-appropriate rate limiting, authentication, caching, and circuit breaker protection.
 
-This requirement enables the trading platform to consume third-party financial data APIs with resilience patterns including exponential backoff retries, circuit breakers, request queueing, and automatic failover to alternative providers.
+This requirement enables the platform to consume third-party APIs with resilience patterns including exponential backoff retries, circuit breakers, request queueing, and automatic failover to alternative providers.
 
 ### Context
 
-Market data APIs provide critical real-time and historical financial information required for trading decisions. The integration must handle API rate limits (free tier: 5 req/min, premium tier: 75 req/min), transient network failures, API outages, and data format variations across providers.
+External APIs provide critical data required for application functionality. The integration must handle API rate limits (free tier: 5 req/min, premium tier: 75 req/min), transient network failures, API outages, and data format variations across providers.
 
 ### Use Case Scenario
 
 **Primary Flow**:
-1. Trading engine requests current quote for symbol "AAPL"
-2. API client validates request parameters (symbol format, request type)
+1. Application requests data for identifier "ITEM-001"
+2. API client validates request parameters (identifier format, request type)
 3. Client checks circuit breaker state and rate limit budget
 4. Client sends authenticated HTTP GET request to API endpoint
-5. API returns JSON response with quote data (price, bid, ask, volume, timestamp)
+5. API returns JSON response with data (value, metadata, timestamp)
 6. Client validates response against JSON schema
-7. Client caches response with 30-second TTL
-8. Client returns parsed QuoteResponse to trading engine
+7. Client caches response with configurable TTL
+8. Client returns parsed DataResponse to application
 
 **Alternative Flows**:
 - **Rate Limit Hit**: When 429 received, client queues request and waits for rate limit reset
 - **Connection Timeout**: When request exceeds 30s, client retries with exponential backoff (1s, 2s, 4s, 8s, 16s)
-- **Circuit Open**: When 5 consecutive failures detected, circuit opens for 30s, subsequent requests fail fast
+- **Circuit Open**: When 5 conregulatoryutive failures detected, circuit opens for 30s, subsequent requests fail fast
 - **Invalid Response**: When response fails schema validation, client logs error and raises ValidationError
 
 ---
@@ -76,14 +76,14 @@ Market data APIs provide critical real-time and historical financial information
 
 ### Primary Functionality
 
-The API client provides asynchronous methods for fetching quotes, historical data, and market metadata with built-in resilience patterns (retry, circuit breaker, rate limiting).
+The API client provides asynchronous methods for fetching data with built-in resilience patterns (retry, circuit breaker, rate limiting).
 
 **Required Capabilities**:
-- **Quote Fetching**: Retrieve real-time quote (price, bid, ask, volume) for single symbol with <500ms p95 latency
-- **Batch Retrieval**: Fetch quotes for multiple symbols concurrently (max 10 concurrent) with result streaming
-- **Historical Data**: Retrieve daily OHLCV data for date ranges with pagination support
+- **Data Fetching**: Retrieve real-time data for single identifier with <500ms p95 latency
+- **Batch Retrieval**: Fetch data for multiple identifiers concurrently (max 10 concurrent) with result streaming
+- **Historical Data**: Retrieve historical records for date ranges with pagination support
 - **Connection Management**: Establish/maintain HTTP/2 connection pool with 100 max connections and 60s keepalive
-- **Authentication**: Support API key authentication with automatic refresh from Google Secret Manager
+- **Authentication**: Support API key authentication with automatic refresh from regulatoryret Manager
 
 ### Business Rules
 
@@ -98,10 +98,10 @@ The API client provides asynchronous methods for fetching quotes, historical dat
 3. **Retry Schedule**: Exponential backoff with jitter: 1s, 2s, 4s, 8s, 16s (max 5 attempts)
 
 **Circuit Breaker Rules**:
-1. **Open Trigger**: 5 consecutive failures within 1-minute window
+1. **Open Trigger**: 5 conregulatoryutive failures within 1-minute window
 2. **Cooldown Period**: Circuit stays open for 30 seconds
 3. **Half-Open Test**: Allow 1 request to test recovery
-4. **Close Trigger**: 2 consecutive successes in half-open state
+4. **Close Trigger**: 2 conregulatoryutive successes in half-open state
 
 ---
 
@@ -117,11 +117,11 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import date, datetime
 
-class MarketDataAPIClient(Protocol):
-    """Protocol defining the contract for market data API integration.
+class ExternalAPIClient(Protocol):
+    """Protocol defining the contract for external API integration.
 
     Implementations must provide these methods with exact signatures.
-    All methods are async and raise specific exceptions defined in Section 5.
+    All methods are async and raise specific exceptions defined in section 5.
     """
 
     async def connect(
@@ -129,7 +129,7 @@ class MarketDataAPIClient(Protocol):
         credentials: APICredentials,
         timeout: float = 5.0
     ) -> ConnectionResult:
-        """Establish connection to market data API.
+        """Establish connection to external API.
 
         Args:
             credentials: API authentication credentials
@@ -145,65 +145,65 @@ class MarketDataAPIClient(Protocol):
         """
         ...
 
-    async def get_quote(
+    async def get_data(
         self,
-        symbol: str,
+        identifier: str,
         retry_config: RetryConfig | None = None
-    ) -> QuoteResponse:
-        """Fetch real-time quote for single symbol.
+    ) -> DataResponse:
+        """Fetch real-time data for single identifier.
 
         Args:
-            symbol: Stock ticker symbol (1-5 uppercase letters)
+            identifier: Unique identifier (alphanumeric, 1-20 characters)
             retry_config: Optional retry configuration (uses default if None)
 
         Returns:
-            QuoteResponse with price, bid, ask, volume, timestamp
+            DataResponse with value, metadata, timestamp
 
         Raises:
             RateLimitExceeded: When API rate limit is hit
-            ValidationError: When symbol format is invalid
+            ValidationError: When identifier format is invalid
             APIError: When API returns error response
             CircuitOpenError: When circuit breaker is open
         """
         ...
 
-    async def get_quotes_batch(
+    async def get_data_batch(
         self,
-        symbols: list[str],
+        identifiers: list[str],
         max_concurrent: int = 10
-    ) -> AsyncIterator[QuoteResponse]:
-        """Fetch quotes for multiple symbols concurrently.
+    ) -> AsyncIterator[DataResponse]:
+        """Fetch data for multiple identifiers concurrently.
 
         Args:
-            symbols: List of ticker symbols
+            identifiers: List of identifiers
             max_concurrent: Maximum concurrent API requests
 
         Yields:
-            QuoteResponse for each symbol as completed
+            DataResponse for each identifier as completed
 
         Raises:
             RateLimitExceeded: When rate limit exceeded during batch
-            ValidationError: When any symbol is invalid
+            ValidationError: When any identifier is invalid
         """
         ...
 
     async def get_historical(
         self,
-        symbol: str,
+        identifier: str,
         start_date: date,
         end_date: date,
         interval: str = "daily"
     ) -> HistoricalDataResponse:
-        """Fetch historical OHLCV data for date range.
+        """Fetch historical data for date range.
 
         Args:
-            symbol: Stock ticker symbol
+            identifier: Unique identifier
             start_date: Start date (inclusive)
             end_date: End date (inclusive)
             interval: Data interval (daily, weekly, monthly)
 
         Returns:
-            HistoricalDataResponse with OHLCV bars
+            HistoricalDataResponse with data records
 
         Raises:
             RateLimitExceeded: When rate limit exceeded
@@ -246,7 +246,7 @@ class RateLimitTier(str, Enum):
 class APICredentials:
     """Credentials for API authentication."""
     api_key: str
-    secret_key: str | None = None
+    regulatoryret_key: str | None = None
     tier: RateLimitTier = RateLimitTier.FREE
 
 @dataclass
@@ -259,32 +259,27 @@ class ConnectionResult:
     error_message: str | None = None
 
 @dataclass
-class QuoteResponse:
-    """Real-time quote response."""
-    symbol: str
-    price: float
-    bid: float | None
-    ask: float | None
-    volume: int
+class DataResponse:
+    """Real-time data response."""
+    identifier: str
+    value: float
+    metadata: dict | None
     timestamp: datetime
     request_id: str
 
 @dataclass
-class OHLCVBar:
-    """OHLCV data for single time period."""
+class HistoricalRecord:
+    """Historical data for single time period."""
     date: date
-    open: float
-    high: float
-    low: float
-    close: float
-    volume: int
+    value: float
+    metadata: dict | None
 
 @dataclass
 class HistoricalDataResponse:
     """Historical data response."""
-    symbol: str
+    identifier: str
     interval: str
-    bars: list[OHLCVBar]
+    records: list[HistoricalRecord]
     request_id: str
 
 @dataclass
@@ -315,20 +310,20 @@ class RetryConfig:
 
 ### 3.3 REST API Endpoints
 
-**Base URL**: `https://api.marketdata.example.com/v1`
+**Base URL**: `https://api.example.com/v1`
 
 **Authentication**: API Key in header `X-API-Key: {api_key}`
 
 | Endpoint | Method | Request Params | Response Schema | Rate Limit (Free/Premium) |
 |----------|--------|----------------|-----------------|---------------------------|
-| `/quotes/{symbol}` | GET | `symbol` (path) | `QuoteResponse` | 5/min, 75/min |
-| `/quotes/batch` | POST | `symbols[]` (body) | `QuoteResponse[]` | 5/min, 75/min |
-| `/historical/{symbol}` | GET | `symbol`, `start`, `end`, `interval` (query) | `HistoricalDataResponse` | 5/min, 75/min |
+| `/data/{identifier}` | GET | `identifier` (path) | `DataResponse` | 5/min, 75/min |
+| `/data/batch` | POST | `identifiers[]` (body) | `DataResponse[]` | 5/min, 75/min |
+| `/historical/{identifier}` | GET | `identifier`, `start`, `end`, `interval` (query) | `HistoricalDataResponse` | 5/min, 75/min |
 
 **Example Request**:
 ```http
-GET /v1/quotes/AAPL HTTP/2
-Host: api.marketdata.example.com
+GET /v1/data/ITEM-001 HTTP/2
+Host: api.example.com
 X-API-Key: sk_live_abc123xyz789
 Accept: application/json
 ```
@@ -336,11 +331,9 @@ Accept: application/json
 **Example Response**:
 ```json
 {
-  "symbol": "AAPL",
-  "price": 182.50,
-  "bid": 182.45,
-  "ask": 182.55,
-  "volume": 1000000,
+  "identifier": "ITEM-001",
+  "value": 182.50,
+  "metadata": {"category": "A", "region": "US"},
   "timestamp": "2025-01-09T14:30:00Z",
   "request_id": "req_abc123"
 }
@@ -357,43 +350,28 @@ Accept: application/json
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "QuoteResponse",
+  "title": "DataResponse",
   "type": "object",
-  "required": ["symbol", "price", "volume", "timestamp", "request_id"],
+  "required": ["identifier", "value", "timestamp", "request_id"],
   "properties": {
-    "symbol": {
+    "identifier": {
       "type": "string",
-      "pattern": "^[A-Z]{1,5}$",
-      "description": "Stock ticker symbol (1-5 uppercase letters)",
-      "examples": ["AAPL", "MSFT", "GOOGL"]
+      "pattern": "^[A-Z0-9-]{1,20}$",
+      "description": "Unique identifier (alphanumeric with hyphens, 1-20 characters)",
+      "examples": ["ITEM-001", "USER-123", "ORDER-456"]
     },
-    "price": {
+    "value": {
       "type": "number",
-      "minimum": 0.01,
-      "multipleOf": 0.01,
-      "description": "Current price in USD with 2 decimal precision"
+      "description": "Numeric value with decimal precision"
     },
-    "bid": {
-      "type": ["number", "null"],
-      "minimum": 0,
-      "multipleOf": 0.01,
-      "description": "Bid price (may be null if market closed)"
-    },
-    "ask": {
-      "type": ["number", "null"],
-      "minimum": 0,
-      "multipleOf": 0.01,
-      "description": "Ask price (may be null if market closed)"
-    },
-    "volume": {
-      "type": "integer",
-      "minimum": 0,
-      "description": "Trading volume (shares traded)"
+    "metadata": {
+      "type": ["object", "null"],
+      "description": "Optional metadata object"
     },
     "timestamp": {
       "type": "string",
       "format": "date-time",
-      "description": "ISO 8601 timestamp of quote"
+      "description": "ISO 8601 timestamp"
     },
     "request_id": {
       "type": "string",
@@ -413,61 +391,37 @@ from datetime import datetime
 from typing import Literal
 import re
 
-class QuoteResponseModel(BaseModel):
-    """Quote response with comprehensive validation."""
+class DataResponseModel(BaseModel):
+    """Data response with comprehensive validation."""
 
-    symbol: str = Field(
+    identifier: str = Field(
         ...,
         min_length=1,
-        max_length=5,
-        pattern=r"^[A-Z]{1,5}$",
-        description="Stock ticker symbol",
-        examples=["AAPL", "MSFT"]
+        max_length=20,
+        pattern=r"^[A-Z0-9-]{1,20}$",
+        description="Unique identifier",
+        examples=["ITEM-001", "USER-123"]
     )
-    price: float = Field(
+    value: float = Field(
         ...,
-        gt=0,
-        description="Current price in USD"
+        description="Numeric value"
     )
-    bid: float | None = Field(None, ge=0)
-    ask: float | None = Field(None, ge=0)
-    volume: int = Field(..., ge=0)
+    metadata: dict | None = Field(None)
     timestamp: datetime
     request_id: str = Field(..., pattern=r"^req_[a-z0-9]{6,}$")
 
-    @field_validator('symbol')
+    @field_validator('identifier')
     @classmethod
-    def validate_symbol_format(cls, v: str) -> str:
-        """Ensure symbol is uppercase letters only."""
-        if not re.match(r'^[A-Z]{1,5}$', v):
+    def validate_identifier_format(cls, v: str) -> str:
+        """Ensure identifier matches expected format."""
+        if not re.match(r'^[A-Z0-9-]{1,20}$', v):
             raise ValueError(
-                f"Symbol must be 1-5 uppercase letters, got: {v}"
-            )
-        return v
-
-    @field_validator('price', 'bid', 'ask')
-    @classmethod
-    def validate_price_precision(cls, v: float | None) -> float | None:
-        """Ensure prices have maximum 2 decimal places."""
-        if v is not None and round(v, 2) != v:
-            raise ValueError(
-                f"Price must have max 2 decimal places, got {v}"
+                f"Identifier must be 1-20 alphanumeric characters with hyphens, got: {v}"
             )
         return v
 
     @model_validator(mode='after')
-    def validate_bid_ask_spread(self) -> 'QuoteResponseModel':
-        """Ensure bid <= price <= ask when all present."""
-        if self.bid and self.ask and self.price:
-            if not (self.bid <= self.price <= self.ask):
-                raise ValueError(
-                    f"Invalid spread: bid={self.bid}, "
-                    f"price={self.price}, ask={self.ask}"
-                )
-        return self
-
-    @model_validator(mode='after')
-    def validate_timestamp_not_future(self) -> 'QuoteResponseModel':
+    def validate_timestamp_not_future(self) -> 'DataResponseModel':
         """Ensure timestamp is not in future."""
         if self.timestamp > datetime.utcnow():
             raise ValueError(
@@ -477,25 +431,12 @@ class QuoteResponseModel(BaseModel):
 
     class Config:
         frozen = True  # Immutable after creation
-        json_schema_extra = {
-            "examples": [
-                {
-                    "symbol": "AAPL",
-                    "price": 182.50,
-                    "bid": 182.45,
-                    "ask": 182.55,
-                    "volume": 1000000,
-                    "timestamp": "2025-01-09T14:30:00Z",
-                    "request_id": "req_abc123"
-                }
-            ]
-        }
 
 
 class HistoricalDataRequestModel(BaseModel):
     """Historical data request validation."""
 
-    symbol: str = Field(..., pattern=r"^[A-Z]{1,5}$")
+    identifier: str = Field(..., pattern=r"^[A-Z0-9-]{1,20}$")
     start_date: date
     end_date: date
     interval: Literal["daily", "weekly", "monthly"] = "daily"
@@ -524,29 +465,27 @@ class HistoricalDataRequestModel(BaseModel):
 ### 4.3 Database Schema (Caching Layer)
 
 ```python
-from sqlalchemy import Column, Integer, String, Float, DateTime, Index
+from sqlalchemy import Column, Integer, String, Float, DateTime, Index, JSON
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 
 Base = declarative_base()
 
-class CachedQuote(Base):
-    """Cached quote model with TTL enforcement."""
-    __tablename__ = 'cached_quotes'
+class CachedData(Base):
+    """Cached data model with TTL enforcement."""
+    __tablename__ = 'cached_data'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    symbol = Column(String(5), nullable=False, index=True)
-    price = Column(Float, nullable=False)
-    bid = Column(Float, nullable=True)
-    ask = Column(Float, nullable=True)
-    volume = Column(Integer, nullable=False)
-    quote_timestamp = Column(DateTime, nullable=False)
+    identifier = Column(String(20), nullable=False, index=True)
+    value = Column(Float, nullable=False)
+    metadata = Column(JSON, nullable=True)
+    data_timestamp = Column(DateTime, nullable=False)
     cached_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     ttl_seconds = Column(Integer, default=30, nullable=False)
     request_id = Column(String(50), nullable=False)
 
     __table_args__ = (
-        Index('idx_symbol_cached_at', 'symbol', 'cached_at'),
+        Index('idx_identifier_cached_at', 'identifier', 'cached_at'),
         Index('idx_cached_at_ttl', 'cached_at', 'ttl_seconds'),
     )
 
@@ -568,13 +507,13 @@ class CachedQuote(Base):
 | Exception Type | HTTP Code | Error Code | Retry? | Recovery Strategy |
 |----------------|-----------|------------|--------|-------------------|
 | `ConnectionError` | 503 | `CONN_001` | Yes (5x) | Exponential backoff: 1s, 2s, 4s, 8s, 16s |
-| `AuthenticationError` | 401 | `AUTH_001` | No | Refresh credentials from Secret Manager, alert admin |
+| `AuthenticationError` | 401 | `AUTH_001` | No | Refresh credentials from regulatoryret Manager, alert admin |
 | `RateLimitExceeded` | 429 | `RATE_001` | Yes | Queue request, wait for rate_limit_reset |
 | `ValidationError` | 400 | `VALID_001` | No | Log detailed error, return to caller with field details |
 | `APIError` | 5xx | `API_001` | Yes (5x) | Retry with backoff, fallback to cache if available |
 | `TimeoutError` | 504 | `TIMEOUT_001` | Yes (3x) | Retry with increased timeout (30s → 45s → 60s) |
 | `CircuitOpenError` | 503 | `CIRCUIT_001` | No | Fail fast, use cached data or alternative provider |
-| `SymbolNotFoundError` | 404 | `SYMBOL_001` | No | Return error to caller, log for investigation |
+| `NotFoundError` | 404 | `NOTFOUND_001` | No | Return error to caller, log for investigation |
 
 ### 5.2 Error Response Schema
 
@@ -602,33 +541,12 @@ class ErrorResponse(BaseModel):
         "APIError",
         "TimeoutError",
         "CircuitOpenError",
-        "SymbolNotFoundError"
+        "NotFoundError"
     ]
     timestamp: datetime
     request_id: str
-    retry_after: int | None = None  # Seconds until retry allowed
+    retry_after: int | None = None  # seconds until retry allowed
     details: list[ErrorDetail] | None = None
-
-    class Config:
-        json_schema_extra = {
-            "examples": [
-                {
-                    "error_code": "RATE_001",
-                    "error_message": "Rate limit exceeded: 75 requests per minute",
-                    "error_type": "RateLimitExceeded",
-                    "timestamp": "2025-01-09T14:30:00Z",
-                    "request_id": "req_abc123",
-                    "retry_after": 45,
-                    "details": [
-                        {
-                            "field": "rate_limit",
-                            "message": "Current tier allows 75 req/min, received 80",
-                            "code": "TIER_LIMIT_EXCEEDED"
-                        }
-                    ]
-                }
-            ]
-        }
 ```
 
 ### 5.3 State Machine Diagram
@@ -650,7 +568,7 @@ stateDiagram-v2
 
     Active --> Retrying: retryable_error
     Retrying --> Active: retry_success
-    Retrying --> CircuitOpen: 5_consecutive_failures
+    Retrying --> CircuitOpen: 5_conregulatoryutive_failures
 
     CircuitOpen --> HalfOpen: 30s_timeout
     HalfOpen --> Active: test_request_success
@@ -681,8 +599,6 @@ stateDiagram-v2
     end note
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
-
 ### 5.4 Circuit Breaker Configuration
 
 ```python
@@ -694,11 +610,11 @@ class CircuitBreakerConfig:
     """Circuit breaker thresholds and behavior."""
 
     # Threshold to open circuit
-    failure_threshold: int = 5  # Open after 5 consecutive failures
+    failure_threshold: int = 5  # Open after 5 conregulatoryutive failures
     failure_window_seconds: int = 60  # Within 60-second window
 
     # Threshold to close circuit
-    success_threshold: int = 2  # Close after 2 consecutive successes
+    success_threshold: int = 2  # Close after 2 conregulatoryutive successes
 
     # Timing
     open_timeout_seconds: float = 30.0  # Circuit stays open for 30s
@@ -712,7 +628,7 @@ class CircuitBreakerConfig:
     )
     ignored_exceptions: Tuple[type, ...] = (
         ValidationError,
-        SymbolNotFoundError,
+        NotFoundError,
     )
 
     # Monitoring
@@ -729,11 +645,11 @@ class CircuitBreakerConfig:
 ### 6.1 Configuration Schema (YAML)
 
 ```yaml
-# config/market_data_api_client.yaml
-market_data_api:
+# config/external_api_client.yaml
+external_api:
   # Connection settings
   connection:
-    base_url: "https://api.marketdata.example.com/v1"
+    base_url: "https://api.example.com/v1"
     timeout_seconds: 30.0
     max_connections: 100
     keepalive_seconds: 60
@@ -742,9 +658,9 @@ market_data_api:
   # Authentication
   authentication:
     type: "api_key"  # api_key | oauth2
-    credentials_source: "google_secret_manager"
-    secret_name: "market_data_api_key_prod"
-    secret_project: "trading-platform-prod"
+    credentials_source: "regulatoryret_manager"
+    regulatoryret_name: "external_api_key_prod"
+    regulatoryret_project: "my-project-prod"
     refresh_interval_hours: 24
 
   # Rate limiting
@@ -789,7 +705,7 @@ market_data_api:
     backend: "redis"  # redis | memory
     redis_url: "redis://localhost:6379/0"
     ttl_seconds:
-      quotes: 30
+      data: 30
       historical_daily: 3600
       historical_weekly: 86400
       metadata: 86400
@@ -810,69 +726,15 @@ market_data_api:
 
 | Variable | Type | Required | Default | Description | Example |
 |----------|------|----------|---------|-------------|---------|
-| `MARKET_DATA_API_URL` | string | Yes | - | Base URL for API | `https://api.example.com/v1` |
-| `MARKET_DATA_API_TIMEOUT` | float | No | 30.0 | Request timeout (seconds) | `30.0` |
-| `MARKET_DATA_RATE_LIMIT` | int | No | 75 | Requests per minute | `75` |
-| `MARKET_DATA_RATE_TIER` | string | No | `premium` | Rate limit tier | `free`, `premium`, `enterprise` |
-| `MARKET_DATA_RETRY_ENABLED` | bool | No | `true` | Enable retry logic | `true`, `false` |
-| `MARKET_DATA_CACHE_TTL` | int | No | 30 | Cache TTL (seconds) | `30` |
-| `MARKET_DATA_CIRCUIT_ENABLED` | bool | No | `true` | Enable circuit breaker | `true`, `false` |
-| `GCP_SECRET_PROJECT` | string | Yes | - | GCP project for secrets | `trading-platform-prod` |
-| `GCP_SECRET_NAME` | string | Yes | - | Secret name in GSM | `market_data_api_key_prod` |
-
-### 6.3 Configuration Validation
-
-```python
-from pydantic import BaseModel, Field, field_validator, HttpUrl
-from typing import Literal
-import os
-
-class MarketDataAPIConfig(BaseModel):
-    """Validated configuration for market data API client."""
-
-    # Connection
-    base_url: HttpUrl = Field(..., description="API base URL")
-    timeout_seconds: float = Field(30.0, gt=0, le=300)
-    max_connections: int = Field(100, ge=1, le=1000)
-
-    # Rate limiting
-    rate_tier: Literal["free", "premium", "enterprise"] = "premium"
-    requests_per_minute: int = Field(75, ge=1, le=10000)
-
-    # Retry
-    retry_enabled: bool = True
-    max_retry_attempts: int = Field(5, ge=0, le=10)
-    initial_delay_seconds: float = Field(1.0, gt=0, le=60)
-
-    # Circuit breaker
-    circuit_enabled: bool = True
-    failure_threshold: int = Field(5, ge=1, le=20)
-
-    # Caching
-    cache_enabled: bool = True
-    cache_ttl_seconds: int = Field(30, ge=0, le=86400)
-
-    @field_validator('base_url')
-    @classmethod
-    def validate_https_in_production(cls, v: HttpUrl) -> HttpUrl:
-        """Ensure HTTPS in production environments."""
-        env = os.getenv('ENV', 'development')
-        if env == 'production' and not str(v).startswith('https://'):
-            raise ValueError("Production must use HTTPS")
-        return v
-
-    @field_validator('requests_per_minute')
-    @classmethod
-    def validate_rate_limit_tier(cls, v: int, values) -> int:
-        """Ensure rate limit matches tier."""
-        tier = values.data.get('rate_tier')
-        limits = {'free': 5, 'premium': 75, 'enterprise': 1000}
-        if tier and v > limits[tier]:
-            raise ValueError(
-                f"Rate limit {v} exceeds tier {tier} max {limits[tier]}"
-            )
-        return v
-```
+| `EXTERNAL_API_URL` | string | Yes | - | Base URL for API | `https://api.example.com/v1` |
+| `EXTERNAL_API_TIMEOUT` | float | No | 30.0 | Request timeout (seconds) | `30.0` |
+| `EXTERNAL_API_RATE_LIMIT` | int | No | 75 | Requests per minute | `75` |
+| `EXTERNAL_API_RATE_TIER` | string | No | `premium` | Rate limit tier | `free`, `premium`, `enterprise` |
+| `EXTERNAL_API_RETRY_ENABLED` | bool | No | `true` | Enable retry logic | `true`, `false` |
+| `EXTERNAL_API_CACHE_TTL` | int | No | 30 | Cache TTL (seconds) | `30` |
+| `EXTERNAL_API_CIRCUIT_ENABLED` | bool | No | `true` | Enable circuit breaker | `true`, `false` |
+| `regulatoryRET_PROJECT` | string | Yes | - | Project for regulatoryrets | `my-project-prod` |
+| `regulatoryRET_NAME` | string | Yes | - | regulatoryret name | `external_api_key_prod` |
 
 ---
 
@@ -882,8 +744,8 @@ class MarketDataAPIConfig(BaseModel):
 
 | Metric | Target (p50) | Target (p95) | Target (p99) | Measurement Method |
 |--------|--------------|--------------|--------------|-------------------|
-| Single Quote Response Time | <150ms | <500ms | <1000ms | APM (Datadog/New Relic) |
-| Batch Quote Response Time (10 symbols) | <800ms | <2000ms | <3000ms | Load testing |
+| Single Data Response Time | <150ms | <500ms | <1000ms | APM |
+| Batch Data Response Time (10 items) | <800ms | <2000ms | <3000ms | Load testing |
 | Historical Data Response Time | <1s | <3s | <5s | APM |
 | Connection Establishment | <2s | <5s | <10s | Metrics |
 | Throughput (Premium Tier) | 75 req/min sustained | 85 req/min burst | - | Load testing |
@@ -893,14 +755,14 @@ class MarketDataAPIConfig(BaseModel):
 - **Availability**: 99.5% uptime (excluding API provider downtime)
 - **Error Rate**: <0.5% of requests (excluding rate limit and circuit breaker)
 - **Retry Success Rate**: >80% of retried requests succeed
-- **Cache Hit Rate**: >70% for quote requests (30s TTL)
+- **Cache Hit Rate**: >70% for data requests (30s TTL)
 - **Circuit Breaker Recovery**: <60s from open to closed state
 
-### Security
+### security
 
-- **Authentication**: API key stored in Google Secret Manager, never logged
-- **Transport Security**: TLS 1.3 minimum, certificate pinning recommended
-- **Secrets Rotation**: Automatic credential refresh every 24 hours
+- **Authentication**: API key stored in regulatoryret Manager, never logged
+- **Transport security**: TLS 1.3 minimum
+- **regulatoryrets Rotation**: Automatic credential refresh every 24 hours
 - **Input Validation**: All requests validated against Pydantic models
 - **Audit Logging**: All API calls logged with request_id (no credentials)
 
@@ -928,12 +790,12 @@ import httpx
 from datetime import datetime, timedelta
 from typing import AsyncIterator
 
-class MarketDataAPIClientImpl:
+class ExternalAPIClientImpl:
     """Production implementation with resilience patterns."""
 
     def __init__(
         self,
-        config: MarketDataAPIConfig,
+        config: ExternalAPIConfig,
         circuit_breaker: CircuitBreaker,
         rate_limiter: RateLimiter,
         cache: Cache
@@ -949,22 +811,22 @@ class MarketDataAPIClientImpl:
             limits=httpx.Limits(max_connections=config.max_connections)
         )
 
-    async def get_quote(
+    async def get_data(
         self,
-        symbol: str,
+        identifier: str,
         retry_config: RetryConfig | None = None
-    ) -> QuoteResponse:
-        """Fetch quote with caching, retry, and circuit breaker."""
+    ) -> DataResponse:
+        """Fetch data with caching, retry, and circuit breaker."""
 
         # 1. Validate input
-        if not re.match(r'^[A-Z]{1,5}$', symbol):
-            raise ValidationError(f"Invalid symbol format: {symbol}")
+        if not re.match(r'^[A-Z0-9-]{1,20}$', identifier):
+            raise ValidationError(f"Invalid identifier format: {identifier}")
 
         # 2. Check cache
         if self.cache.enabled:
-            cached = await self.cache.get(f"quote:{symbol}")
+            cached = await self.cache.get(f"data:{identifier}")
             if cached:
-                return QuoteResponseModel.parse_raw(cached)
+                return DataResponseModel.parse_raw(cached)
 
         # 3. Check circuit breaker
         if self.circuit_breaker.is_open():
@@ -976,13 +838,13 @@ class MarketDataAPIClientImpl:
         # 5. Execute with retry
         retry_cfg = retry_config or self.default_retry_config
         response = await self._fetch_with_retry(
-            endpoint=f"/quotes/{symbol}",
+            endpoint=f"/data/{identifier}",
             retry_config=retry_cfg
         )
 
         # 6. Validate and parse response
         try:
-            quote = QuoteResponseModel.parse_obj(response.json())
+            data = DataResponseModel.parse_obj(response.json())
             self.circuit_breaker.record_success()
         except ValidationError as e:
             self.circuit_breaker.record_failure()
@@ -991,65 +853,12 @@ class MarketDataAPIClientImpl:
         # 7. Cache response
         if self.cache.enabled:
             await self.cache.set(
-                f"quote:{symbol}",
-                quote.json(),
+                f"data:{identifier}",
+                data.json(),
                 ttl=self.config.cache_ttl_seconds
             )
 
-        return quote
-
-    async def _fetch_with_retry(
-        self,
-        endpoint: str,
-        retry_config: RetryConfig
-    ) -> httpx.Response:
-        """Execute HTTP request with exponential backoff retry."""
-
-        delay = retry_config.initial_delay_seconds
-
-        for attempt in range(1, retry_config.max_attempts + 1):
-            try:
-                response = await self.http_client.get(
-                    endpoint,
-                    headers={"X-API-Key": await self._get_api_key()}
-                )
-
-                # Check for retryable errors
-                if response.status_code in [429, 500, 502, 503, 504]:
-                    if attempt == retry_config.max_attempts:
-                        raise APIError(
-                            f"API error {response.status_code} "
-                            f"after {attempt} attempts"
-                        )
-                    # Log and retry
-                    logger.warning(
-                        f"Retry {attempt}/{retry_config.max_attempts} "
-                        f"after {delay}s (status {response.status_code})"
-                    )
-                    await asyncio.sleep(delay)
-                    delay = min(
-                        delay * retry_config.backoff_multiplier,
-                        retry_config.max_delay_seconds
-                    )
-                    if retry_config.add_jitter:
-                        delay += random.uniform(0, 0.5)
-                    continue
-
-                # Success or non-retryable error
-                response.raise_for_status()
-                return response
-
-            except (httpx.TimeoutException, httpx.ConnectError) as e:
-                if attempt == retry_config.max_attempts:
-                    raise ConnectionError(
-                        f"Connection failed after {attempt} attempts"
-                    ) from e
-
-                await asyncio.sleep(delay)
-                delay = min(
-                    delay * retry_config.backoff_multiplier,
-                    retry_config.max_delay_seconds
-                )
+        return data
 ```
 
 ### 8.2 Rate Limiting Algorithm (Token Bucket)
@@ -1073,14 +882,7 @@ class TokenBucketRateLimiter:
         self.lock = asyncio.Lock()
 
     async def acquire(self, tokens: int = 1) -> None:
-        """Acquire tokens, waiting if necessary.
-
-        Algorithm:
-        1. Calculate tokens to add based on time elapsed
-        2. Add tokens up to capacity
-        3. If sufficient tokens, consume and return
-        4. Otherwise, calculate wait time and sleep
-        """
+        """Acquire tokens, waiting if necessary."""
         async with self.lock:
             while True:
                 now = datetime.utcnow()
@@ -1104,39 +906,6 @@ class TokenBucketRateLimiter:
                 await asyncio.sleep(wait_seconds)
 ```
 
-### 8.3 Concurrent Batch Fetching
-
-```python
-async def get_quotes_batch(
-    self,
-    symbols: list[str],
-    max_concurrent: int = 10
-) -> AsyncIterator[QuoteResponse]:
-    """Fetch quotes concurrently with semaphore limiting."""
-
-    semaphore = asyncio.Semaphore(max_concurrent)
-
-    async def fetch_with_semaphore(symbol: str) -> QuoteResponse:
-        async with semaphore:
-            return await self.get_quote(symbol)
-
-    # Create tasks for all symbols
-    tasks = [
-        asyncio.create_task(fetch_with_semaphore(symbol))
-        for symbol in symbols
-    ]
-
-    # Yield results as they complete
-    for coro in asyncio.as_completed(tasks):
-        try:
-            quote = await coro
-            yield quote
-        except Exception as e:
-            logger.error(f"Failed to fetch quote in batch: {e}")
-            # Continue with remaining requests
-            continue
-```
-
 ---
 
 ## 9. Acceptance Criteria
@@ -1145,85 +914,24 @@ async def get_quotes_batch(
 
 ### Primary Functional Criteria
 
-- ✅ **AC-001**: API connection established within 5 seconds using valid API key
-  - **Verification**: Integration test with production-like credentials
-  - **Pass Criteria**: Connection succeeds in <5s for 100% of attempts (10/10 runs)
-
-- ✅ **AC-002**: Single quote retrieval completes within SLA (p95 <500ms)
-  - **Verification**: Load test with 1000 sequential requests
-  - **Pass Criteria**: p50 <150ms, p95 <500ms, p99 <1000ms
-
-- ✅ **AC-003**: Batch quote retrieval (10 symbols) completes within 2s at p95
-  - **Verification**: Load test fetching 10-symbol batches
-  - **Pass Criteria**: p95 <2000ms, all symbols returned or errors reported
-
-- ✅ **AC-004**: Rate limiting enforced at tier-specific limits
-  - **Verification**: Send 100 requests in 1 minute (premium tier: 75/min limit)
-  - **Pass Criteria**: 76th request returns 429 or queues, no requests lost
+- **AC-001**: API connection established within 5 seconds using valid API key
+- **AC-002**: Single data retrieval completes within SLA (p95 <500ms)
+- **AC-003**: Batch data retrieval (10 items) completes within 2s at p95
+- **AC-004**: Rate limiting enforced at tier-specific limits
 
 ### Error and Edge Case Criteria
 
-- ✅ **AC-005**: Connection failures trigger exponential backoff retry
-  - **Verification**: Chaos test with network failures injected
-  - **Pass Criteria**: Retries at 1s, 2s, 4s, 8s, 16s intervals (±10% jitter)
-
-- ✅ **AC-006**: Circuit breaker opens after 5 consecutive failures
-  - **Verification**: Inject 5 consecutive API errors (500, 503)
-  - **Pass Criteria**: 6th request fails fast with CircuitOpenError (<10ms)
-
-- ✅ **AC-007**: Circuit breaker closes after 2 successes in half-open state
-  - **Verification**: Wait for circuit timeout (30s), send 2 successful requests
-  - **Pass Criteria**: Circuit transitions to closed, normal requests resume
-
-- ✅ **AC-008**: Invalid symbol format raises ValidationError immediately
-  - **Verification**: Request quotes for "123", "aapl", "TOOLONG"
-  - **Pass Criteria**: ValidationError raised with field details, no API call made
-
-- ✅ **AC-009**: API errors (5xx) retry up to 5 times before failing
-  - **Verification**: Mock API returns 503 for 3 attempts, then 200
-  - **Pass Criteria**: Request succeeds on 4th attempt with exponential backoff
+- **AC-005**: Connection failures trigger exponential backoff retry
+- **AC-006**: Circuit breaker opens after 5 conregulatoryutive failures
+- **AC-007**: Circuit breaker closes after 2 successes in half-open state
+- **AC-008**: Invalid identifier format raises ValidationError immediately
+- **AC-009**: API errors (5xx) retry up to 5 times before failing
 
 ### Quality and Constraint Criteria
 
-- ✅ **AC-010**: Response time <500ms at p95 under sustained load
-  - **Verification**: Performance test with 75 req/min for 10 minutes
-  - **Pass Criteria**: p95 latency <500ms throughout test duration
-
-- ✅ **AC-011**: API keys never logged or exposed in error messages
-  - **Verification**: Log audit + error message inspection
-  - **Pass Criteria**: Zero plaintext API keys in logs, errors, or traces
-
-- ✅ **AC-012**: Memory usage <512MB per instance under load
-  - **Verification**: Resource monitoring during load test
-  - **Pass Criteria**: Peak memory <512MB, no memory leaks detected
-
-### Data Validation Criteria
-
-- ✅ **AC-013**: Response data validates against JSON Schema
-  - **Verification**: Schema validation on 1000 API responses
-  - **Pass Criteria**: 100% of valid responses pass schema validation
-
-- ✅ **AC-014**: Pydantic models reject invalid responses
-  - **Verification**: Unit tests with malformed API responses
-  - **Pass Criteria**: ValidationError raised for all invalid inputs with field details
-
-- ✅ **AC-015**: Bid-ask spread validation enforced (bid <= price <= ask)
-  - **Verification**: Test with responses where bid > price or ask < price
-  - **Pass Criteria**: ValidationError raised with spread details
-
-### Integration Criteria
-
-- ✅ **AC-016**: Cache hit rate >70% for quote requests (30s TTL)
-  - **Verification**: Load test with repeated requests for same symbols
-  - **Pass Criteria**: >70% requests served from cache
-
-- ✅ **AC-017**: Metrics published with <1min lag (latency, errors, cache hits)
-  - **Verification**: Metrics dashboard inspection during load test
-  - **Pass Criteria**: All metrics present with <60s delay
-
-- ✅ **AC-018**: Credentials refreshed from Secret Manager every 24 hours
-  - **Verification**: Monitor credential access logs over 48 hours
-  - **Pass Criteria**: Credentials fetched at 24-hour intervals (±5 min)
+- **AC-010**: Response time <500ms at p95 under sustained load
+- **AC-011**: API keys never logged or exposed in error messages
+- **AC-012**: Memory usage <512MB per instance under load
 
 ---
 
@@ -1232,75 +940,10 @@ async def get_quotes_batch(
 ### Automated Testing
 
 - **BDD Scenarios**: `features/api_integration.feature`
-  - Scenario: Successful quote retrieval for valid symbol
-  - Scenario: Rate limit enforcement and queueing
-  - Scenario: Retry on transient API failure
-  - Scenario: Circuit breaker activation and recovery
-  - Scenario: Cache hit for recently fetched quote
-  - Scenario: Validation error for invalid symbol format
-
-- **Unit Tests**: `tests/unit/api/test_market_data_client.py`
-  - Test: API key validation and formatting
-  - Test: Request building with correct headers
-  - Test: Response parsing and Pydantic validation
-  - Test: Error mapping (HTTP status → exception types)
-  - Test: Token bucket rate limiter algorithm
-  - Test: Circuit breaker state transitions
-
-- **Integration Tests**: `tests/integration/api/test_market_data_integration.py`
-  - Test: End-to-end quote fetch with real API (test environment)
-  - Test: Retry logic with API returning 503 then 200
-  - Test: Rate limit handling with tier-specific limits
-  - Test: Cache integration (write and read)
-  - Test: Metrics collection and publishing
-
-- **Contract Tests**: `tests/contract/api/test_market_data_contract.py`
-  - Test: Quote response schema compatibility
-  - Test: Historical data response schema compatibility
-  - Test: Error response format compliance
-
-- **Performance Tests**: `tests/performance/api/test_market_data_performance.py`
-  - Test: Latency benchmarks (p50/p95/p99) under load
-  - Test: Throughput at rate limit (75 req/min sustained)
-  - Test: Connection pool efficiency
-  - Test: Memory usage under sustained load
-
-- **Chaos Tests**: `tests/chaos/api/test_market_data_resilience.py`
-  - Test: Network failures during request
-  - Test: API timeout scenarios
-  - Test: Intermittent 5xx errors
-  - Test: Rate limit exceeded scenarios
-
-### Technical Validation
-
-- **Specification Compliance**: `SPEC-001_market_data_api_client.yaml`
-  - Interface implementation matches `MarketDataAPIClient` Protocol
-  - All methods have type annotations and docstrings
-  - Error handling follows exception catalog
-
-- **Schema Validation**:
-  - JSON Schema validation passes for all response types
-  - Pydantic models validate successfully
-  - Database schema constraints enforced
-
-### Manual Validation
-
-- **Code Review Checklist**:
-  - [ ] All interfaces implement Protocol/ABC with exact signatures
-  - [ ] Error handling covers all exception types from catalog
-  - [ ] Configuration validated with Pydantic model
-  - [ ] Secrets fetched from Secret Manager, never hardcoded
-  - [ ] Metrics and logging instrumented
-  - [ ] Circuit breaker and retry logic implemented correctly
-  - [ ] Rate limiting uses token bucket algorithm
-  - [ ] Cache integration follows TTL strategy
-
-- **Security Assessment**:
-  - [ ] TLS 1.3 enforced for API connections
-  - [ ] API keys stored in Google Secret Manager
-  - [ ] Input validation prevents injection attacks
-  - [ ] Rate limiting prevents API abuse
-  - [ ] Audit logging complete (request_id tracing)
+- **Unit Tests**: `tests/unit/api/test_external_api_client.py`
+- **Integration Tests**: `tests/integration/api/test_external_api_integration.py`
+- **Contract Tests**: `tests/contract/api/test_external_api_contract.py`
+- **Performance Tests**: `tests/performance/api/test_external_api_performance.py`
 
 ---
 
@@ -1308,45 +951,24 @@ async def get_quotes_batch(
 
 ### Upstream Sources
 
-| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+| Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | BRD-001 | Market Data Integration Business Requirements | Section 3: External Data Integration | Business need for real-time market data |
-| PRD | PRD-001 | Trading Platform Product Requirements | Section 4.2: Market Data APIs | Product feature enabling data consumption |
-| SYS | SYS-001 | System Architecture Requirements | Section 5: External Integration Layer | System-level API integration patterns |
-| EARS | EARS-001 | Market Data Integration Engineering Requirements | WHEN market data requested THEN fetch with resilience | Formal engineering requirement |
+| BRD | BRD-001 | External Integration Business Requirements | section 3: External Data Integration | Business need for external data |
+| PRD | PRD-001 | Platform Product Requirements | section 4.2: External APIs | Product feature enabling data consumption |
+| SYS | SYS-001 | System Architecture Requirements | section 5: External Integration Layer | System-level API integration patterns |
 
 ### Downstream Artifacts
 
-#### Architecture Decisions
-
-| ADR ID | ADR Title | Requirement Aspects Addressed | Decision Impact |
-|--------|-----------|------------------------------|-----------------|
-| ADR-005 | External API Integration Architecture | Rate limiting, circuit breaker, retry patterns | Resilience pattern selection |
-| ADR-012 | Secret Management with Google Secret Manager | API key storage and rotation | Security implementation |
-| ADR-018 | Caching Strategy for Market Data | Cache TTLs and invalidation | Performance optimization |
-
-#### Technical Specifications
-
-| SPEC ID | Specification Title | Requirement Aspects Implemented | Implementation Path |
-|---------|-------------------|--------------------------------|---------------------|
-| SPEC-001 | Market Data API Client | All interfaces, schemas, errors, config | `src/integrations/market_data_client.py` |
-
-#### Behavioral Specifications
-
-| BDD ID | Scenario Title | Acceptance Criteria Validated | Test Coverage |
-|--------|----------------|-------------------------------|---------------|
-| BDD-001 | Market Data API Integration | AC-001 through AC-018 | `features/api_integration.feature` |
-
-#### API Contracts
-
-| CTR ID | Contract Title | Interface Defined | Relationship |
-|--------|----------------|-------------------|--------------|
-| CTR-001 | Market Data API Contract | REST API endpoints and schemas | External API contract |
+| Artifact Type | Document ID | Title | Relationship |
+|---------------|-------------|-------|--------------|
+| ADR | ADR-005 | External API Integration Architecture | Resilience pattern selection |
+| SPEC | SPEC-001 | External API Client | Technical specification |
+| BDD | BDD-001 | API Integration Scenarios | Test scenarios |
 
 ### Code Implementation Paths
 
 **Primary Implementation**:
-- `src/integrations/market_data_client.py`: Main client implementation
+- `src/integrations/external_api_client.py`: Main client implementation
 - `src/integrations/models.py`: Pydantic models and DTOs
 - `src/integrations/errors.py`: Exception definitions
 - `src/integrations/config.py`: Configuration validation
@@ -1354,10 +976,8 @@ async def get_quotes_batch(
 - `src/integrations/rate_limiter.py`: Token bucket rate limiter
 
 **Test Paths**:
-- `tests/unit/integrations/test_market_data_client.py`: Unit tests
-- `tests/integration/integrations/test_market_data_integration.py`: Integration tests
-- `tests/contract/integrations/test_market_data_contract.py`: Contract tests
-- `tests/performance/integrations/test_market_data_performance.py`: Performance tests
+- `tests/unit/integrations/test_external_api_client.py`: Unit tests
+- `tests/integration/integrations/test_external_api_integration.py`: Integration tests
 - `features/api_integration.feature`: BDD scenarios
 
 ---
@@ -1367,8 +987,7 @@ async def get_quotes_batch(
 | Date | Version | Change | Author |
 |------|---------|--------|---------|
 | 2025-01-09 | 2.0.0 | Created comprehensive V2 example with interfaces, schemas, errors, config | Platform Team |
+| 2025-11-26 | 2.1.0 | Generalized to domain-agnostic example | Platform Team |
 
 **Template Version**: 2.0 (SPEC-Ready)
-**Next Review**: 2025-04-09 (quarterly review)
-**Technical Contact**: platform-team@example.com
-**SPEC-Ready Checklist Passed**: ✅ Interfaces ✅ Schemas ✅ Errors ✅ Config ✅ NFRs ✅ Implementation Guidance
+**SPEC-Ready Checklist Passed**: Interfaces / Schemas / Errors / Config / NFRs / Implementation Guidance

@@ -215,7 +215,7 @@ python scripts/generate_traceability_matrices.py \
 | Category | SYS IDs | Total | Functional | Non-Functional |
 |----------|---------|-------|------------|----------------|
 | [Infrastructure] | SYS-001, SYS-002 | 2 | 1 | 1 |
-| [Security] | SYS-003, SYS-004 | 2 | 2 | 0 |
+| [security] | SYS-003, SYS-004 | 2 | 2 | 0 |
 | [Performance] | SYS-005 | 1 | 0 | 1 |
 | [Integration] | SYS-006, SYS-007 | 2 | 2 | 0 |
 
@@ -225,7 +225,7 @@ python scripts/generate_traceability_matrices.py \
 |--------------|---------|--------------|--------|
 | Performance | SYS-005 | [X] | [Status] |
 | Scalability | SYS-002 | [X] | [Status] |
-| Security | SYS-003, SYS-004 | [X] | [Status] |
+| security | SYS-003, SYS-004 | [X] | [Status] |
 | Reliability | SYS-008 | [X] | [Status] |
 | Maintainability | SYS-009 | [X] | [Status] |
 

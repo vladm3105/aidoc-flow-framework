@@ -291,7 +291,7 @@ implementation:
     enable_metrics: true
     enable_circuit_breaker: true
   custom_extensions:
-    - alpha_vantage_normalization.py
+    - external_api_normalization.py
     - rate_limiting_custom.py
 ```
 
@@ -300,7 +300,7 @@ implementation:
 ```
 SPEC/
 ├── services/         # Service component specifications
-│   ├── SPEC-001_alpha_vantage_client.yaml
+│   ├── SPEC-001_external_api_client.yaml
 │   └── SPEC-002_ib_gateway_service.yaml
 ├── data/            # Data processing and storage SPEC
 ├── api/             # API gateway and routing SPEC
@@ -323,9 +323,9 @@ Where:
 - `.yaml` is the required file extension
 
 **Examples:**
-- `SPEC/services/SPEC-001_alpha_vantage_client.yaml`
+- `SPEC/services/SPEC-001_external_api_client.yaml`
 - `SPEC/data/SPEC-042_real_time_price_processor.yaml`
-- `SPEC/api/SPEC-102_trading_api_gateway.yaml`
+- `SPEC/api/SPEC-102_service_api_gateway.yaml`
 
 ## SPEC Quality Gates
 
@@ -592,13 +592,13 @@ monitoring:
 ### Code Generation
 ```bash
 # Generate Python client from SPEC
-generate-client --spec SPEC/services/SPEC-001_alpha_vantage_client.yaml --output client_sdk/
+generate-client --spec SPEC/services/SPEC-001_external_api_client.yaml --output client_sdk/
 
 # Generate interface stubs
 generate-stubs --spec SPEC/services/SPEC-002_ib_gateway_service.yaml --language python --framework flask
 
 # Generate tests from SPEC
-generate-tests --spec SPEC/services/SPEC-003_position_limit_service.yaml --framework pytest
+generate-tests --spec SPEC/services/SPEC-003_resource_limit_service.yaml --framework pytest
 ```
 
 ### Validation and Compliance
@@ -607,7 +607,7 @@ generate-tests --spec SPEC/services/SPEC-003_position_limit_service.yaml --frame
 validate-spec --spec SPEC/services/SPEC-001.yaml --schema spec_schema.json
 
 # Check SPEC-test alignment
-verify-spec-coverage --spec SPEC/services/SPEC-001.yaml --tests test_alpha_vantage/
+verify-spec-coverage --spec SPEC/services/SPEC-001.yaml --tests test_external_api/
 
 # Generate API documentation
 generate-docs --spec SPEC/services/SPEC-001.yaml --format openapi --output docs/api/
@@ -624,4 +624,4 @@ validate-metrics --spec SPEC/services/SPEC-001.yaml --actual-metrics metrics.jso
 
 ## Example SPEC Template
 
-See `SPEC/services/SPEC-001_alpha_vantage_client.yaml` for a complete example of a well-structured specification that includes interface definitions, operational characteristics, observability requirements, and comprehensive traceability.
+See `SPEC/services/SPEC-001_external_api_client.yaml` for a complete example of a well-structured specification that includes interface definitions, operational characteristics, observability requirements, and comprehensive traceability.

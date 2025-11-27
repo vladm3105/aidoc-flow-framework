@@ -1,4 +1,4 @@
-# REQ-002: Trading Order Data Validation
+# REQ-002: Request Data Validation
 
 ## Document Control
 
@@ -13,22 +13,22 @@
 
 ## 1. Description
 
-The system SHALL validate all incoming trading order data against comprehensive schemas, business rules, and constraints before persistence or processing, rejecting invalid data with detailed field-level error messages.
+The system SHALL validate all incoming request data against comprehensive schemas, business rules, and constraints before persistence or processing, rejecting invalid data with detailed field-level error messages.
 
 ### Context
 
-Trading orders must pass multi-layer validation to prevent: invalid trades execution, regulatory violations, system crashes from malformed data, and data corruption.
+Requests must pass multi-layer validation to prevent: invalid operation execution, rule violations, system crashes from malformed data, and data corruption.
 
 ### Use Case Scenario
 
 **Primary Flow**:
-1. API receives order submission (POST /orders)
+1. API receives request submission (POST /requests)
 2. Validator deserializes JSON to Pydantic model
 3. Validator executes field-level validation (type, format, range)
-4. Validator executes cross-field validation (stop price logic)
-5. Validator executes business rule validation (market hours, position limits)
-6. Validator checks database constraints (symbol exists)
-7. Valid order passed to processing engine
+4. Validator executes cross-field validation (conditional logic)
+5. Validator executes business rule validation (operating hours, resource limits)
+6. Validator checks database constraints (entity exists)
+7. Valid request passed to processing engine
 
 **Error Flows**:
 - Schema violation → 400 with field errors
@@ -41,18 +41,18 @@ Trading orders must pass multi-layer validation to prevent: invalid trades execu
 from typing import Protocol
 from dataclasses import dataclass
 
-class OrderValidator(Protocol):
-    """Protocol for trading order validation."""
+class RequestValidator(Protocol):
+    """Protocol for request data validation."""
 
-    def validate_schema(self, order_data: dict) -> ValidationResult:
-        """Validate order against JSON Schema."""
+    def validate_schema(self, request_data: dict) -> ValidationResult:
+        """Validate request against JSON Schema."""
         ...
 
-    def validate_business_rules(self, order: Order) -> ValidationResult:
-        """Validate order against business rules."""
+    def validate_business_rules(self, request: Request) -> ValidationResult:
+        """Validate request against business rules."""
         ...
 
-    def validate_order(self, order_data: dict) -> ValidatedOrder:
+    def validate_request(self, request_data: dict) -> ValidatedRequest:
         """Execute full validation pipeline."""
         ...
 
@@ -76,33 +76,33 @@ class ValidationResult:
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "TradingOrder",
+  "title": "ServiceRequest",
   "type": "object",
-  "required": ["symbol", "order_type", "side", "quantity"],
+  "required": ["identifier", "request_type", "action", "quantity"],
   "properties": {
-    "symbol": {
+    "identifier": {
       "type": "string",
-      "pattern": "^[A-Z]{1,5}$"
+      "pattern": "^[A-Z0-9]{1,10}$"
     },
-    "order_type": {
+    "request_type": {
       "type": "string",
-      "enum": ["market", "limit", "stop", "stop_limit"]
+      "enum": ["standard", "priority", "scheduled", "batch"]
     },
-    "side": {
+    "action": {
       "type": "string",
-      "enum": ["buy", "sell"]
+      "enum": ["create", "update"]
     },
     "quantity": {
       "type": "integer",
       "minimum": 1,
       "maximum": 10000
     },
-    "limit_price": {
+    "threshold_value": {
       "type": "number",
       "minimum": 0.01,
       "multipleOf": 0.01
     },
-    "stop_price": {
+    "trigger_value": {
       "type": "number",
       "minimum": 0.01,
       "multipleOf": 0.01
@@ -117,47 +117,47 @@ class ValidationResult:
 from pydantic import BaseModel, Field, field_validator, model_validator
 from typing import Literal
 
-class TradingOrderModel(BaseModel):
-    """Trading order with comprehensive validation."""
+class ServiceRequestModel(BaseModel):
+    """Service request with comprehensive validation."""
 
-    symbol: str = Field(..., pattern=r"^[A-Z]{1,5}$")
-    order_type: Literal["market", "limit", "stop", "stop_limit"]
-    side: Literal["buy", "sell"]
+    identifier: str = Field(..., pattern=r"^[A-Z0-9]{1,10}$")
+    request_type: Literal["standard", "priority", "scheduled", "batch"]
+    action: Literal["create", "update"]
     quantity: int = Field(..., ge=1, le=10000)
-    limit_price: float | None = Field(None, ge=0.01)
-    stop_price: float | None = Field(None, ge=0.01)
+    threshold_value: float | None = Field(None, ge=0.01)
+    trigger_value: float | None = Field(None, ge=0.01)
 
-    @field_validator('limit_price', 'stop_price')
+    @field_validator('threshold_value', 'trigger_value')
     @classmethod
-    def validate_price_precision(cls, v: float | None) -> float | None:
-        """Ensure prices have max 2 decimal places."""
+    def validate_value_precision(cls, v: float | None) -> float | None:
+        """Ensure values have max 2 decimal places."""
         if v is not None and round(v, 2) != v:
-            raise ValueError(f"Price must have max 2 decimals: {v}")
+            raise ValueError(f"Value must have max 2 decimals: {v}")
         return v
 
     @model_validator(mode='after')
-    def validate_order_type_requirements(self) -> 'TradingOrderModel':
-        """Validate required fields based on order type."""
-        if self.order_type == "limit" and not self.limit_price:
-            raise ValueError("Limit orders require limit_price")
-        if self.order_type == "stop" and not self.stop_price:
-            raise ValueError("Stop orders require stop_price")
-        if self.order_type == "stop_limit":
-            if not self.limit_price or not self.stop_price:
-                raise ValueError("Stop-limit requires both prices")
+    def validate_request_type_requirements(self) -> 'ServiceRequestModel':
+        """Validate required fields based on request type."""
+        if self.request_type == "priority" and not self.threshold_value:
+            raise ValueError("Priority requests require threshold_value")
+        if self.request_type == "scheduled" and not self.trigger_value:
+            raise ValueError("Scheduled requests require trigger_value")
+        if self.request_type == "batch":
+            if not self.threshold_value or not self.trigger_value:
+                raise ValueError("Batch requests require both values")
         return self
 
     @model_validator(mode='after')
-    def validate_stop_limit_logic(self) -> 'TradingOrderModel':
-        """Validate stop price vs limit price logic."""
-        if self.order_type == "stop_limit":
-            if self.side == "buy" and self.stop_price <= self.limit_price:
+    def validate_conditional_logic(self) -> 'ServiceRequestModel':
+        """Validate trigger value vs threshold value logic."""
+        if self.request_type == "batch":
+            if self.action == "create" and self.trigger_value <= self.threshold_value:
                 raise ValueError(
-                    f"Buy stop-limit: stop_price must be > limit_price"
+                    f"Create batch: trigger_value must be > threshold_value"
                 )
-            if self.side == "sell" and self.stop_price >= self.limit_price:
+            if self.action == "update" and self.trigger_value >= self.threshold_value:
                 raise ValueError(
-                    f"Sell stop-limit: stop_price must be < limit_price"
+                    f"Update batch: trigger_value must be < threshold_value"
                 )
         return self
 ```
@@ -167,22 +167,22 @@ class TradingOrderModel(BaseModel):
 ```python
 from sqlalchemy import Column, String, Float, Integer, CheckConstraint
 
-class Order(Base):
-    """Order model with database constraints."""
-    __tablename__ = 'orders'
+class Request(Base):
+    """Request model with database constraints."""
+    __tablename__ = 'requests'
 
     id = Column(String(36), primary_key=True)
-    symbol = Column(String(5), nullable=False)
-    order_type = Column(Enum('market', 'limit', 'stop', 'stop_limit'), nullable=False)
-    side = Column(Enum('buy', 'sell'), nullable=False)
+    identifier = Column(String(10), nullable=False)
+    request_type = Column(Enum('standard', 'priority', 'scheduled', 'batch'), nullable=False)
+    action = Column(Enum('create', 'update'), nullable=False)
     quantity = Column(Integer, nullable=False)
-    limit_price = Column(Float, nullable=True)
-    stop_price = Column(Float, nullable=True)
+    threshold_value = Column(Float, nullable=True)
+    trigger_value = Column(Float, nullable=True)
 
     __table_args__ = (
         CheckConstraint('quantity > 0 AND quantity <= 10000'),
-        CheckConstraint('limit_price IS NULL OR limit_price > 0'),
-        CheckConstraint('stop_price IS NULL OR stop_price > 0'),
+        CheckConstraint('threshold_value IS NULL OR threshold_value > 0'),
+        CheckConstraint('trigger_value IS NULL OR trigger_value > 0'),
     )
 ```
 
@@ -234,7 +234,7 @@ stateDiagram-v2
     ConstraintValidation --> ConstraintViolated: fail
     ConstraintViolated --> [*]: 409_error
 
-    Validated --> [*]: validated_order
+    Validated --> [*]: validated_request
 ```
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
@@ -242,21 +242,21 @@ stateDiagram-v2
 ## 6. Configuration Specifications
 
 ```yaml
-# config/order_validation.yaml
-order_validation:
+# config/request_validation.yaml
+request_validation:
   schema:
     strict_mode: true
     schema_version: "v1.0"
 
   business_rules:
-    market_hours:
-      start: "09:30"
-      end: "16:00"
+    operating_hours:
+      start: "09:00"
+      end: "18:00"
       timezone: "America/New_York"
 
-    position_limits:
-      max_shares_per_symbol: 10000
-      max_total_exposure_usd: 1000000
+    resource_limits:
+      max_quantity_per_request: 10000
+      max_total_value: 1000000
 
   pipeline:
     fail_fast: false
@@ -267,52 +267,52 @@ order_validation:
 
 | Metric | Target (p95) | Measurement |
 |--------|--------------|-------------|
-| Single Order Validation | <50ms | APM traces |
-| Batch (100 orders) | <2s | Load testing |
+| Single Request Validation | <50ms | APM traces |
+| Batch (100 requests) | <2s | Load testing |
 
 ## 8. Implementation Guidance
 
 ```python
-class OrderValidatorImpl:
+class RequestValidatorImpl:
     """Multi-layer validation pipeline."""
 
-    def validate_order(self, order_data: dict) -> ValidatedOrder:
+    def validate_request(self, request_data: dict) -> ValidatedRequest:
         # Layer 1: Schema validation
         try:
-            order = TradingOrderModel.parse_obj(order_data)
+            request = ServiceRequestModel.parse_obj(request_data)
         except ValidationError as e:
             raise SchemaValidationError(e.errors())
 
         # Layer 2: Business rules
-        rule_errors = self._validate_business_rules(order)
+        rule_errors = self._validate_business_rules(request)
         if rule_errors:
             raise BusinessRuleViolation(rule_errors)
 
         # Layer 3: Database constraints
-        constraint_errors = self._validate_constraints(order)
+        constraint_errors = self._validate_constraints(request)
         if constraint_errors:
             raise ConstraintViolation(constraint_errors)
 
-        return ValidatedOrder(**order.dict())
+        return ValidatedRequest(**request.dict())
 ```
 
 ## 9. Acceptance Criteria
 
-- ✅ **AC-001**: Valid orders pass all layers (100% acceptance)
-- ✅ **AC-002**: Invalid schema rejected with field errors (400 response)
-- ✅ **AC-003**: Business rules enforced (422 with details)
-- ✅ **AC-004**: Stop-limit logic validated (cross-field check)
-- ✅ **AC-005**: Pydantic rejects invalid data (ValidationError)
-- ✅ **AC-006**: Database constraints enforced (ConstraintViolation)
+- **AC-001**: Valid requests pass all layers (100% acceptance)
+- **AC-002**: Invalid schema rejected with field errors (400 response)
+- **AC-003**: Business rules enforced (422 with details)
+- **AC-004**: Conditional logic validated (cross-field check)
+- **AC-005**: Pydantic rejects invalid data (ValidationError)
+- **AC-006**: Database constraints enforced (ConstraintViolation)
 
 ## 10. Verification Methods
 
-**BDD Scenarios**: `features/order_validation.feature`
-- Valid limit order accepted
+**BDD Scenarios**: `features/request_validation.feature`
+- Valid priority request accepted
 - Invalid schema rejected
-- Stop-limit logic validation
+- Conditional logic validation
 
-**Unit Tests**: `tests/unit/validation/test_order_validator.py`
+**Unit Tests**: `tests/unit/validation/test_request_validator.py`
 - Schema validation
 - Business rule checks
 - Cross-field validation
@@ -324,18 +324,18 @@ class OrderValidatorImpl:
 ## 11. Traceability
 
 ### Upstream Sources
-- BRD-002: Trading Platform Business Requirements
-- PRD-002: Order Management Product Requirements
+- BRD-002: Platform Business Requirements
+- PRD-002: Request Management Product Requirements
 - SYS-002: Data Validation System Requirements
 
 ### Downstream Artifacts
-- SPEC-002: Order Validation Service
-- BDD-002: Order Validation Scenarios
+- SPEC-002: Request Validation Service
+- BDD-002: Request Validation Scenarios
 
 ### Code Paths
-- `src/validation/order_validator.py`
+- `src/validation/request_validator.py`
 - `src/validation/models.py`
-- `tests/unit/validation/test_order_validator.py`
+- `tests/unit/validation/test_request_validator.py`
 
 ## 12. Change History
 
@@ -343,4 +343,4 @@ class OrderValidatorImpl:
 |------|---------|--------|---------|
 | 2025-01-09 | 2.0.0 | V2 with comprehensive validation patterns | Platform Team |
 
-**SPEC-Ready Checklist**: ✅ Interfaces ✅ Schemas ✅ Errors ✅ Config ✅ Rules
+**SPEC-Ready Checklist**: Interfaces | Schemas | Errors | Config | Rules

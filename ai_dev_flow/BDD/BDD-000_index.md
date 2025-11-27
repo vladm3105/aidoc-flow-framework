@@ -68,10 +68,10 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 ## Organization
 
 **Functional Areas**:
-- **API Integrations**: External service integrations ([EXTERNAL_SERVICE_GATEWAY], [EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API])
+- **API Integrations**: External service integrations ([EXTERNAL_SERVICE_GATEWAY], [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API])
 - **[RESOURCE_MANAGEMENT - e.g., capacity planning, quota management]**: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] limits, risk validation, circuit breakers
 - **ML Models**: [SYSTEM_STATE - e.g., operating mode, environment condition] classifier, sentiment analysis, ensemble signals
-- **Trading Strategies**: Covered calls, covered puts, iron condors, [RESOURCE_COLLECTION - e.g., user accounts, active sessions] hedging
+- **Service Strategies**: Standard operations, batch processing, [RESOURCE_COLLECTION - e.g., user accounts, active sessions] balancing
 - **Data Architecture**: Data ingestion, storage, analytics, correlation
 - **System Services**: Authentication, monitoring, logging, configuration
 
@@ -103,7 +103,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 Example format:
 - **BDD-001**: [[EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System] Gateway Integration](./BDD-001_ib_gateway_integration.feature)
-  - **Requirements**: REQ-026 ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] Integration), REQ-XXX ([EXTERNAL_SERVICE_GATEWAY])
+  - **Requirements**: REQ-026 ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] Integration), REQ-XXX ([EXTERNAL_SERVICE_GATEWAY])
   - **ADRs**: ADR-030 ([EXTERNAL_SERVICE_GATEWAY] Architecture)
   - **Status**: Pending
 
@@ -122,17 +122,17 @@ Example format:
 *[BDD scenarios for machine learning model validation will be listed here]*
 
 Example format:
-- **BDD-003**: [[SYSTEM_STATE - e.g., operating mode, environment condition] Classifier Behavior](./BDD-003_market_regime_classifier.feature)
+- **BDD-003**: [[SYSTEM_STATE - e.g., operating mode, environment condition] Classifier Behavior](./BDD-003_system_state_classifier.feature)
   - **Requirements**: REQ-XXX (ML Models)
   - **ADRs**: ADR-XXX (ML Architecture)
   - **Status**: Pending
 
-### Trading Strategies
+### Service Strategies
 
 *[BDD scenarios for [DOMAIN_ACTIVITY - e.g., payment processing, content moderation] strategies will be listed here]*
 
 Example format:
-- **BDD-004**: [[STRATEGY_NAME] Strategy Execution](./BDD-004_covered_call_strategy.feature)
+- **BDD-004**: [Service Strategy Execution](./BDD-004_service_strategy.feature)
   - **Requirements**: REQ-001 through REQ-007 (Covered Calls)
   - **ADRs**: ADR-015 (Covered Calls Strategy Agent)
   - **Status**: Pending

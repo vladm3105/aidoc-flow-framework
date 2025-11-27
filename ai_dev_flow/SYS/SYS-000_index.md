@@ -62,7 +62,7 @@ flowchart LR
 | Category | Description | Examples |
 |----------|-------------|----------|
 | **Infrastructure** | System infrastructure and deployment | Compute, storage, networking |
-| **Security** | Authentication, authorization, compliance | Identity management, encryption |
+| **security** | Authentication, authorization, compliance | Identity management, encryption |
 | **Performance** | Throughput, latency, scalability | Response times, concurrent users |
 | **Integration** | External system connections | APIs, message queues, webhooks |
 | **Data Management** | Data storage, processing, analytics | Databases, caching, ETL |
@@ -98,7 +98,7 @@ When creating a new SYS document:
 ### Infrastructure
 - None
 
-### Security
+### security
 - None
 
 ### Performance
@@ -147,7 +147,7 @@ When creating a new SYS document:
 |--------------|---------------|--------------------|--------|
 | Performance | - | 0 | - |
 | Scalability | - | 0 | - |
-| Security | - | 0 | - |
+| security | - | 0 | - |
 | Reliability | - | 0 | - |
 | Maintainability | - | 0 | - |
 

@@ -40,7 +40,7 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 | BDD-004 | sentiment_analysis.feature | 10 | tests/ml/sentiment/ | Automated | 90% | Pending |
 | BDD-005 | ensemble_signals.feature | 9 | tests/ml/ensemble/ | Automated | 100% | Pending |
 | BDD-006 | greeks_calculator.feature | 14 | tests/analytics/greeks/ | Automated | 93% | Pending |
-| BDD-007 | covered_call_strategy.feature | 11 | tests/strategies/cc/ | Automated | 100% | Pending |
+| BDD-007 | service_strategy.feature | 11 | tests/strategies/cc/ | Automated | 100% | Pending |
 
 ---
 
@@ -50,7 +50,7 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 **Feature**: [EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System] Gateway Integration
 **File**: `BDD-001_ib_gateway_integration.feature`
-**Requirements**: REQ-026 ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] Integration)
+**Requirements**: REQ-026 ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] Integration)
 **ADRs**: ADR-030 ([EXTERNAL_SERVICE_GATEWAY] Architecture)
 
 | Scenario | Description | Test File | Test Method | Status | Priority |
@@ -60,13 +60,13 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 | 1.3 | Authentication failure handling | test_gateway_auth.py | test_auth_invalid() | Automated | High |
 | 1.4 | Connection timeout handling | test_gateway_connection.py | test_timeout() | Automated | Medium |
 | 1.5 | Reconnection after disconnect | test_gateway_reconnect.py | test_reconnect() | Automated | High |
-| 1.6 | Market data subscription | test_market_data.py | test_subscribe() | Automated | High |
-| 1.7 | Market data unsubscription | test_market_data.py | test_unsubscribe() | Automated | Medium |
-| 1.8 | Real-time quote updates | test_market_data.py | test_quotes() | Automated | High |
+| 1.6 | Market data subscription | test_external_data.py | test_subscribe() | Automated | High |
+| 1.7 | Market data unsubscription | test_external_data.py | test_unsubscribe() | Automated | Medium |
+| 1.8 | Real-time data updates | test_external_data.py | test_data() | Automated | High |
 | 1.9 | Historical data retrieval | test_historical_data.py | test_historical() | Automated | Medium |
-| 1.10 | Order placement validation | test_orders.py | test_place_order() | Automated | High |
+| 1.10 | request submission validation | test_orders.py | test_place_order() | Automated | High |
 | 1.11 | Order status tracking | test_orders.py | test_order_status() | Automated | High |
-| 1.12 | Position reconciliation | test_positions.py | test_reconcile() | Automated | High |
+| 1.12 | Data reconciliation | test_resources.py | test_data_sync() | Automated | High |
 
 **Coverage**: 12/12 scenarios (100%)
 **Test Location**: `tests/integration/gateway/`
@@ -83,11 +83,11 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 | Scenario | Description | Test File | Test Method | Status | Priority |
 |----------|-------------|-----------|-------------|--------|----------|
-| 2.1 | Position limit enforcement | test_limits.py | test_position_limit() | Automated | High |
+| 2.1 | resource limit enforcement | test_limits.py | test_resource_limit() | Automated | High |
 | 2.2 | Order size validation | test_limits.py | test_order_size() | Automated | High |
 | 2.3 | Account balance check | test_balance.py | test_balance_check() | Automated | High |
 | 2.4 | Margin requirement validation | test_margin.py | test_margin_req() | Automated | High |
-| 2.5 | [RESOURCE_COLLECTION - e.g., user accounts, active sessions] risk aggregation | test_portfolio_risk.py | test_aggregate() | Automated | High |
+| 2.5 | [RESOURCE_COLLECTION - e.g., user accounts, active sessions] risk aggregation | test_collection_risk.py | test_aggregate() | Automated | High |
 | 2.6 | Risk threshold alerts | test_alerts.py | test_threshold() | Automated | Medium |
 | 2.7 | Circuit breaker activation | test_circuit_breaker.py | test_trigger() | Automated | High |
 | 2.8 | Risk override authorization | test_overrides.py | test_authorize() | Automated | Medium |
@@ -138,7 +138,7 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 | API Integration | 12 | 12 | 0 | 100% |
 | [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] | 8 | 8 | 0 | 100% |
 | ML Models | 48 | 43 | 5 | 90% |
-| Trading Strategies | 22 | 22 | 0 | 100% |
+| Service Strategies | 22 | 22 | 0 | 100% |
 | Data Architecture | 15 | 13 | 2 | 87% |
 | System Services | 18 | 18 | 0 | 100% |
 | **Total** | **123** | **116** | **7** | **94%** |
@@ -152,7 +152,7 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 4. BDD-008.9: Real-time data quality (complexity: high)
 5. BDD-010.4: Log aggregation scaling (complexity: medium)
 6. BDD-011.8: Disaster recovery (complexity: high)
-7. BDD-012.5: Security penetration testing (complexity: high)
+7. BDD-012.5: security penetration testing (complexity: high)
 
 **Automation Timeline**: 3-4 weeks (40-50 hours)
 
@@ -170,7 +170,7 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 | BDD-004 | REQ-073, REQ-074 | ML, NLP | Complete |
 | BDD-005 | REQ-075, REQ-076, REQ-077 | ML, Signals | Complete |
 | BDD-006 | REQ-080, REQ-081 | Analytics, Math | Complete |
-| BDD-007 | REQ-090, REQ-091, REQ-092 | Strategy, Trading | Complete |
+| BDD-007 | REQ-090, REQ-091, REQ-092 | Strategy, Service | Complete |
 
 ### BDD → ADRs
 
@@ -194,7 +194,7 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 | BDD-004 | src/ml/sentiment/*.py | ml.sentiment | 91% |
 | BDD-005 | src/ml/ensemble/*.py | ml.ensemble | 94% |
 | BDD-006 | src/analytics/greeks/*.py | analytics | 89% |
-| BDD-007 | src/strategies/covered_call/*.py | strategies | 93% |
+| BDD-007 | src/strategies/service_strategy/*.py | strategies | 93% |
 
 ---
 

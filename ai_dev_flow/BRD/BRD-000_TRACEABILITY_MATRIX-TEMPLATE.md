@@ -98,7 +98,7 @@ However, BRD documents should reference their strategic sources in the "Upstream
 
 ### 12.1 Upstream Sources
 
-**Strategic Source**: Market Analysis Report Section 4.2 - Broker Integration Requirements
+**Strategic Source**: Market Analysis Report section 4.2 - service integration Requirements
 **Business Justification**: Q4 2024 Strategic Initiative - Platform Modernization
 **Stakeholder Input**: Executive Steering Committee Meeting 2024-09-15
 ```
@@ -106,7 +106,7 @@ However, BRD documents should reference their strategic sources in the "Upstream
 ### 2.3 Example: BRD with Strategic References
 
 ```markdown
-# BRD-009: Broker Integration Business Requirements
+# BRD-009: service integration Business Requirements
 
 ## 10. Traceability
 
@@ -116,17 +116,17 @@ However, BRD documents should reference their strategic sources in the "Upstream
 - None (BRD is top-level artifact)
 
 **Strategic Sources**:
-- Market Analysis Report Section 4.2: "Broker Integration Market Opportunity"
+- Market Analysis Report section 4.2: "service integration Market Opportunity"
 - Q4 2024 Strategic Plan: "Platform Modernization Initiative"
-- Executive Committee Decision (2024-09-15): "Approved broker integration roadmap"
-- Stakeholder Interviews (2024-08-20 through 2024-09-10): Broker connectivity pain points
+- Executive Committee Decision (2024-09-15): "Approved service integration roadmap"
+- Stakeholder Interviews (2024-08-20 through 2024-09-10): provider connectivity pain points
 
 ### 12.2 Downstream Artifacts
 
 **Direct Dependencies**:
-- PRD-016: Trade Execution Product Requirements (`@brd: BRD-009:FR-015`)
+- PRD-016: operation execution Product Requirements (`@brd: BRD-009:FR-015`)
 - PRD-017: Order Management Features (`@brd: BRD-009:FR-020`)
-- EARS-012: Formal trade execution requirements (`@brd: BRD-009:FR-015`)
+- EARS-012: Formal operation execution requirements (`@brd: BRD-009:FR-015`)
 ```
 
 ### 2.4 Validation Rules
@@ -191,7 +191,7 @@ Strategy (External) → BRD (Layer 1)
 | Source Type | Source ID/Reference | BRD IDs | Relationship Description |
 |-------------|---------------------|---------|--------------------------|
 | Market Research | [Research Report Name/Date] | BRD-001, BRD-004 | Market opportunity analysis drives business requirements |
-| Strategic Plan | [Strategic Plan Section X.Y] | BRD-002, BRD-005 | Corporate strategy defines business objectives |
+| Strategic Plan | [Strategic Plan section X.Y] | BRD-002, BRD-005 | Corporate strategy defines business objectives |
 | Stakeholder Interviews | [Interview Notes Date] | BRD-003, BRD-006 | Stakeholder needs inform requirement priorities |
 | Competitive Analysis | [Analysis Document] | BRD-007, BRD-008 | Competitive positioning drives feature requirements |
 | Regulatory Requirements | [Regulation Reference] | BRD-009 | Compliance mandates business requirements |
@@ -257,7 +257,7 @@ graph TD
     BRD002[BRD-002: Stakeholder Needs] --> PRD003[PRD-003: User Stories]
     BRD002 --> EARS002[EARS-002: Acceptance Criteria]
 
-    BRD003[BRD-003: Compliance Requirements] --> ADR005[ADR-005: Security Architecture]
+    BRD003[BRD-003: Compliance Requirements] --> ADR005[ADR-005: security Architecture]
     BRD003 --> EARS003[EARS-003: Compliance Requirements]
 
     PRD001 --> EARS004[EARS-004: Feature Requirements]
@@ -298,7 +298,7 @@ graph TD
 |-----------------|---------|-------|-------------|
 | [Core Platform] | BRD-001, BRD-002, BRD-003 | 3 | Fundamental platform capabilities |
 | [User Experience] | BRD-004, BRD-005 | 2 | User-facing features and workflows |
-| [Security & Compliance] | BRD-006, BRD-007 | 2 | Security requirements and regulatory compliance |
+| [security & Compliance] | BRD-006, BRD-007 | 2 | security requirements and regulatory compliance |
 | [Integration] | BRD-008, BRD-009 | 2 | External system integration requirements |
 | [Analytics & Reporting] | BRD-010 | 1 | Business intelligence and reporting |
 

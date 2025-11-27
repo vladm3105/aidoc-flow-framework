@@ -51,11 +51,11 @@ The EARS validation script performs checks ensuring EARS documents enable direct
 
 ## Validation Checks
 
-### CHECK 1: Required Sections
+### CHECK 1: Required sections
 
 **Type**: Error (blocking)
 
-**Required Sections**:
+**Required sections**:
 - Document Control, Purpose and Context, Requirements (all 4 types), Non-Functional Requirements, Guidelines, Quality Checklist, Traceability, References
 
 ### CHECK 2: Document Control Fields
@@ -147,7 +147,7 @@ find docs/EARS -name "EARS-*.md" -exec ./scripts/validate_ears_template.sh {} \;
 
 **NFR Completeness (15%)**:
 - Performance with percentiles: 5%
-- Security/compliance: 5%
+- security/compliance: 5%
 - Reliability/scalability: 5%
 
 **Strategic Alignment (10%)**:

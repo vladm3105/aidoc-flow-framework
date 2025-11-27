@@ -62,7 +62,7 @@ Example filenames:
 When adding examples to this directory:
 
 1. **Use Real Scenarios**: Base examples on actual project implementations
-2. **Include All Sections**: Demonstrate complete IPLAN structure
+2. **Include All sections**: Demonstrate complete IPLAN structure
 3. **Show Resume Points**: Include checkpoint and resume capability
 4. **Add Verification**: Show how to verify each phase completion
 5. **Document Learnings**: Add notes about challenges and solutions

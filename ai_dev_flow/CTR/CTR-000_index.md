@@ -74,11 +74,11 @@ For projects with 10+ contracts or multiple service types, consider organizing c
 ```
 CTR/
 ├── agents/
-│   ├── CTR-001_portfolio_orchestrator_api.md
-│   └── CTR-001_portfolio_orchestrator_api.yaml
+│   ├── CTR-001_data_processor_api.md
+│   └── CTR-001_data_processor_api.yaml
 ├── mcp/
-│   ├── CTR-010_risk_validator_mcp.md
-│   └── CTR-010_risk_validator_mcp.yaml
+│   ├── CTR-010_validation_service_mcp.md
+│   └── CTR-010_validation_service_mcp.yaml
 └── infra/
     ├── CTR-020_pubsub_message_schema.md
     └── CTR-020_pubsub_message_schema.yaml
@@ -106,7 +106,7 @@ CTR/
 
 ## Cross-References
 
-### Workflow [RESOURCE_INSTANCE - e.g., database connection, workflow instance]
+### Workflow Position
 ```
 REQ (Atomic Requirements)
     ↓

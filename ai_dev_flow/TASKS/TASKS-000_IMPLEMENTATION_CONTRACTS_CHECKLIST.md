@@ -475,7 +475,7 @@ grep -r "TASKS-YOUR-ID" ../TASKS/*.md | wc -l
 
 **Step 3** (5 min): Write contract
 ```python
-# Use templates from Section 4 above
+# Use templates from section 4 above
 # Add type hints to all methods
 # Document all parameters
 ```

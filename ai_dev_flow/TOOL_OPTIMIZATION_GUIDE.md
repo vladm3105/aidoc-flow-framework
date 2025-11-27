@@ -72,7 +72,7 @@ Reference: [AI_Coding_Tools_Comparison.md](../AI_Coding_Tools_Comparison.md)
 
 ---
 
-### Gemini CLI (Secondary Tool - Alternative)
+### Gemini CLI (secondary Tool - Alternative)
 
 **Context Window**: 1,000,000 tokens (conversation total)
 
@@ -347,7 +347,7 @@ def calculate_risk(position, volatility):
 ### Large Implementations (>50 lines)
 **Create separate `.py` files:**
 - File: `examples/risk_calculator.py`
-- Reference: `[See Code Example: risk_calculator.py - calculate_portfolio_risk()]`
+- Reference: `[See Code Example: risk_calculator.py - calculate_collection_risk()]`
 
 ### Complex Logic
 **Use Mermaid flowcharts** for visualization:

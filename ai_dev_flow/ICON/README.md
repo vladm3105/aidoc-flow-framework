@@ -22,8 +22,8 @@ custom_fields:
 
 1. **Identify Need**: TASKS file analysis shows 3+ downstream dependencies
 2. **Create ICON File**: Use ICON-TEMPLATE.md
-3. **Update Provider TASKS**: Add Section 8.1 with contract details
-4. **Update Consumer TASKS**: Add Section 8.2 to each consumer
+3. **Update Provider TASKS**: Add section 8.1 with contract details
+4. **Update Consumer TASKS**: Add section 8.2 to each consumer
 5. **Validate Integration**: Run validation commands
 6. **Mark ICON as Active**: Only after validation passes
 
@@ -90,7 +90,7 @@ done
 - [ ] Platform-level shared interface
 - [ ] Cross-project usage
 
-**If NO to any**: Embed in TASKS file instead (Section 8: Implementation Contracts)
+**If NO to any**: Embed in TASKS file instead (section 8: Implementation Contracts)
 
 See [ICON_CREATION_RULES.md](./ICON_CREATION_RULES.md) for detailed decision framework.
 
@@ -153,9 +153,9 @@ Requires GatewayConnector protocol for gateway connections.
 
 **Examples**:
 - `ICON-001_gateway_connector_protocol.md`
-- `ICON-002_market_data_event_bus.md`
+- `ICON-002_external_data_event_bus.md`
 - `ICON-003_order_execution_exceptions.md`
-- `ICON-004_position_state_machine.md`
+- `ICON-004_resource_state_machine.md`
 
 ---
 
@@ -187,23 +187,213 @@ Requires GatewayConnector protocol for gateway connections.
 | `consumer` | Depends on the contract | TASKS files using contract |
 | (no role) | Reference only | Documentation references |
 
+---
+
+## Providers vs Consumers
+
+### Conceptual Overview
+
+Think of ICON contracts like a **power outlet standard**:
+
+| Role | Analogy | ICON Context |
+|------|---------|--------------|
+| **Provider** | Power company that builds outlets to spec | TASKS that **implements** the contract interface |
+| **Consumer** | Devices that plug into outlets | TASKS that **uses/depends on** the contract |
+
+### Architecture Diagram
+
+```mermaid
+flowchart TB
+    subgraph ICON["ICON-001: GatewayConnector Protocol"]
+        direction TB
+        I1["async def connect(host, port, client_id)"]
+        I2["async def disconnect()"]
+        I3["property: state, is_connected"]
+    end
+
+    subgraph Provider["TASKS-001 (Provider)"]
+        direction TB
+        P1["@icon-role: provider"]
+        P2["Writes actual implementation"]
+        P3["RealGatewayConnector class"]
+    end
+
+    subgraph Consumers["Consumers"]
+        direction TB
+        subgraph C1["TASKS-003"]
+            C1a["@icon-role: consumer"]
+            C1b["MarketDataService"]
+        end
+        subgraph C2["TASKS-004"]
+            C2a["@icon-role: consumer"]
+            C2b["OrderExecutionService"]
+        end
+        subgraph C3["TASKS-005"]
+            C3a["@icon-role: consumer"]
+            C3b["PortfolioService"]
+        end
+    end
+
+    ICON -->|"implements"| Provider
+    ICON -->|"depends on"| Consumers
+```
+
+### Provider (1 per contract)
+
+**Definition**: The TASKS file responsible for **implementing** the contract interface.
+
+**Responsibilities**:
+- Write the actual code that fulfills the protocol
+- Implement all methods defined in the contract
+- Honor all type signatures
+- Raise specified exceptions
+- Pass `mypy --strict` validation
+
+**TASKS Reference Example**:
+```markdown
+# TASKS-001: Gateway Connection Service
+
+## 8.1 Contracts Provided
+
+@icon: ICON-001:GatewayConnector
+@icon-role: provider
+
+This TASKS implements the GatewayConnector protocol.
+```
+
+**Implementation Example**:
+```python
+class RealGatewayConnector:
+    """Actual implementation of GatewayConnector protocol."""
+
+    async def connect(self, host: str, port: int, client_id: int) -> None:
+        # Real connection logic here
+        ...
+
+    async def disconnect(self) -> None:
+        # Real disconnection logic
+        ...
+```
+
+### Consumer (N per contract)
+
+**Definition**: TASKS files that **depend on** and **use** the contract interface.
+
+**Responsibilities**:
+- Import protocol type only (not implementation)
+- Type hint all protocol references
+- Handle all specified exceptions
+- Work with any implementation that matches the protocol
+
+**TASKS Reference Example**:
+```markdown
+# TASKS-003: Market Data Service
+
+## 8.2 Contracts Consumed
+
+@icon: ICON-001:GatewayConnector
+@icon-role: consumer
+
+Requires GatewayConnector for market data subscriptions.
+```
+
+**Usage Example**:
+```python
+class MarketDataService:
+    """Consumes GatewayConnector - doesn't implement it."""
+
+    def __init__(self, connector: GatewayConnector):  # Type hint only
+        self._connector = connector  # Injected dependency
+
+    async def subscribe(self, symbol: str) -> None:
+        if not self._connector.is_connected:
+            await self._connector.connect("localhost", 7497, 1)
+        # Use connector without knowing implementation details
+```
+
+### Key Differences
+
+| Aspect | Provider | Consumer |
+|--------|----------|----------|
+| **Count** | Exactly 1 | 0 to N |
+| **Action** | Implements interface | Uses interface |
+| **Knowledge** | Knows implementation details | Only knows contract |
+| **Dependency** | None on consumers | Depends on provider |
+| **Testing** | Unit tests for compliance | Integration tests with mocks |
+| **Breaking changes** | Must notify all consumers | Must adapt to changes |
+
+### Parallel Development Benefit
+
+```mermaid
+gantt
+    title Development Timeline Comparison
+    dateFormat  YYYY-MM-DD
+    section Without Contracts
+    TASKS-001 Provider      :a1, 2025-01-01, 14d
+    TASKS-003 Consumer      :a2, after a1, 7d
+    TASKS-004 Consumer      :a3, after a2, 7d
+    TASKS-005 Consumer      :a4, after a3, 7d
+    section With Contracts
+    Define ICON-001         :b1, 2025-01-01, 2d
+    TASKS-001 Provider      :b2, after b1, 14d
+    TASKS-003 Consumer      :b3, after b1, 14d
+    TASKS-004 Consumer      :b4, after b1, 14d
+    TASKS-005 Consumer      :b5, after b1, 14d
+    Integration             :b6, after b2, 2d
+```
+
+**Without contracts**: Sequential development (5+ weeks)
+**With contracts**: Parallel development (2.5 weeks) = **50%+ faster**
+
+### Workflow Sequence
+
+```mermaid
+sequenceDiagram
+    participant ICON as ICON-001 Contract
+    participant Provider as TASKS-001 (Provider)
+    participant Consumer1 as TASKS-003 (Consumer)
+    participant Consumer2 as TASKS-004 (Consumer)
+
+    Note over ICON: Week 1: Define Contract
+    ICON->>Provider: Protocol specification
+    ICON->>Consumer1: Protocol specification
+    ICON->>Consumer2: Protocol specification
+
+    Note over Provider,Consumer2: Week 1-2: Parallel Development
+    Provider->>Provider: Implement RealGatewayConnector
+    Consumer1->>Consumer1: Code with mock connector
+    Consumer2->>Consumer2: Code with mock connector
+
+    Note over Provider,Consumer2: Week 3: Integration
+    Provider->>Consumer1: Inject real implementation
+    Provider->>Consumer2: Inject real implementation
+    Consumer1->>Consumer1: Integration tests pass
+    Consumer2->>Consumer2: Integration tests pass
+```
+
 ### Validation Commands
 
 ```bash
-# Find all ICON references
-grep -r "@icon: ICON-" docs/
+# Verify exactly 1 provider exists
+grep -r "@icon-role: provider" docs/TASKS/ | grep "ICON-001"
 
-# List ICON files
-ls -la docs/ICON/ICON-*.md
+# Count consumers (should be N)
+grep -r "@icon-role: consumer" docs/TASKS/ | grep "ICON-001" | wc -l
 
-# Verify provider/consumer pairs
-grep -A1 "@icon: ICON-001" docs/TASKS/
+# Total references should equal 1 provider + N consumers
+grep -r "@icon: ICON-001" docs/TASKS/ | wc -l
 
-# Check for orphaned contracts (no consumers)
-for file in docs/ICON/ICON-*.md; do
-  id=$(basename "$file" | cut -d_ -f1)
-  count=$(grep -r "@icon: $id" docs/TASKS/ | wc -l)
-  echo "$id: $count references"
+# Validate no orphaned ICON (must have provider + at least 1 consumer)
+for icon in ICON-001 ICON-002; do
+  provider=$(grep -r "@icon-role: provider" docs/TASKS/ | grep "$icon" | wc -l)
+  consumers=$(grep -r "@icon-role: consumer" docs/TASKS/ | grep "$icon" | wc -l)
+  echo "$icon: $provider provider(s), $consumers consumer(s)"
+  if [ $provider -ne 1 ]; then
+    echo "  ERROR: Must have exactly 1 provider"
+  fi
+  if [ $consumers -lt 1 ]; then
+    echo "  WARNING: No consumers found"
+  fi
 done
 ```
 
@@ -370,9 +560,16 @@ done
 
 ## Document Metadata
 
-**Version**: 1.0.0
+**Version**: 1.1.0
 **Created**: 2025-11-25
-**Last Updated**: 2025-11-25
+**Last Updated**: 2025-11-27
 **Document Type**: Directory Overview
-**Complexity**: 1/5
-**Token Count**: ~2,000 tokens
+**Complexity**: 2/5
+**Token Count**: ~4,500 tokens
+
+### Change History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.1.0 | 2025-11-27 | Added "Providers vs Consumers" section with Mermaid diagrams |
+| 1.0.0 | 2025-11-25 | Initial version |

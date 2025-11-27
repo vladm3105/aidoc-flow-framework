@@ -141,7 +141,7 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 - Sanctions list updates: Applied within 24 hours of OFAC publication (regulatory requirement)
 
 **Related Requirements**:
-- Platform: BRD-003 (Security & Compliance Framework)
+- Platform: BRD-003 (security & Compliance Framework)
 - AI Agent: BRD-022 (Fraud Detection Agent - ML implementation details)
 - Compliance: BRD-017 (Compliance Monitoring & SAR Generation)
 - KYC: BRD-006 (B2C KYC Onboarding - tiering logic)
@@ -199,7 +199,7 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 - Audit trail retention: 7 years per FinCEN recordkeeping requirements
 
 **Related Requirements**:
-- Platform: BRD-003 (Security & Compliance Framework)
+- Platform: BRD-003 (security & Compliance Framework)
 - Compliance: BRD-017 (Compliance Monitoring & SAR Generation)
 
 **Complexity**: 2/5 (Standard sanctions screening integration; requires compliance workflow for manual review queue)
@@ -269,7 +269,7 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 ```markdown
 **Business Requirements**:
 - [Primary capability requirement with BRD cross-reference]
-- [Secondary capability requirement]
+- [secondary capability requirement]
 - [Validation/quality requirement]
 - [Support for variations/edge cases]
 - [Compliance/regulatory requirement if applicable]
@@ -281,7 +281,7 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 **Example (FR-002: Fee Calculation)**:
 ```markdown
 **Business Requirements**:
-- Calculate flat service fee based on transaction amount tiers (per Fee Schedule in Section 10)
+- Calculate flat service fee based on transaction amount tiers (per Fee Schedule in section 10)
 - Apply corridor-specific FX spread for USD→UZS conversion (per FR-003)
 - Present total cost breakdown before customer confirmation (fee transparency requirement)
 - Support fee waiver promotions during initial launch period (per Marketing campaign requirements)
@@ -294,7 +294,7 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 |---------------|--------|---------|
 | Platform BRD | `(per BRD-XXX)` | `(per BRD-008)` |
 | Feature BRD | `(managed per BRD-XXX)` | `(managed per BRD-011)` |
-| Internal Section | `(per Section X)` | `(per Fee Schedule in Section 10)` |
+| Internal section | `(per section X)` | `(per Fee Schedule in section 10)` |
 | Related FR | `(per FR-XXX)` | `(per FR-003)` |
 
 ---
@@ -409,7 +409,7 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 **Related Requirements**:
 - Platform: BRD-001 (Platform Architecture), BRD-002 (Partner Ecosystem)
 - Partner Integration: BRD-008 (Wallet Funding via Bridge), BRD-011 (Recipient Management)
-- Compliance: BRD-003 (Security & Compliance Framework), BRD-017 (Compliance Monitoring)
+- Compliance: BRD-003 (security & Compliance Framework), BRD-017 (Compliance Monitoring)
 - AI Agent: BRD-022 (Fraud Detection Agent - ML implementation details)
 ```
 

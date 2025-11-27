@@ -28,7 +28,7 @@ custom_fields:
 
 1. [Overview](#overview)
 2. [Document Control Validation](#document-control-validation)
-3. [Section-by-Section Validation](#section-by-section-validation)
+3. [section-by-section Validation](#section-by-section-validation)
 4. [Quality Gates](#quality-gates)
 5. [Common Issues](#common-issues)
 
@@ -85,7 +85,7 @@ All PRD requirements must include:
 **Purpose**: Verify all 11 mandatory Document Control fields exist
 **Type**: Error (blocking)
 
-**Required Fields**:
+**Required Fields** (11 mandatory + 4 optional):
 
 | Field | Format | Requirement |
 |-------|--------|-------------|
@@ -100,6 +100,11 @@ All PRD requirements must include:
 | BRD Reference | @brd: BRD-XXX tag | MANDATORY |
 | SYS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
 | EARS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
+| Priority | High / Medium / Low | OPTIONAL |
+| Target Release | Release version/Quarter | OPTIONAL |
+| Estimated Effort | Story Points or Person-Months | OPTIONAL |
+
+**Note**: Optional fields are recommended but not validation-blocking. Document Revision History table is also optional but recommended.
 
 **Error Messages**:
 ```
@@ -168,7 +173,7 @@ All PRD requirements must include:
 ```
 
 **Resolution Steps**:
-1. Review scoring criteria in PRD_CREATION_RULES.md Section 8 (SYS-Ready) and Section 9 (EARS-Ready)
+1. Review scoring criteria in PRD_CREATION_RULES.md section 8 (SYS-Ready) and section 9 (EARS-Ready)
 2. Address gaps in completeness, technical readiness, or traceability
 3. Update Document Control score after improvements
 4. Re-validate before commit
@@ -179,14 +184,14 @@ All PRD requirements must include:
 
 ---
 
-## 3. Section-by-Section Validation
+## 3. section-by-section Validation
 
-### CHECK 4: Section Numbering Validation
+### CHECK 4: section Numbering Validation
 
 **Purpose**: Verify all 19 sections (0-18) are numbered explicitly
 **Type**: Error (blocking)
 
-**Required Section Numbers**:
+**Required section Numbers**:
 ```markdown
 ## 0. Document Control
 ## 1. Executive Summary
@@ -211,28 +216,28 @@ All PRD requirements must include:
 
 **Error Messages**:
 ```
-❌ MISSING NUMBER: Section header must be "## 0. Document Control"
+❌ MISSING NUMBER: section header must be "## 0. Document Control"
 ❌ INCORRECT NUMBER: Found "## Document Control", expected "## 0. Document Control"
-❌ DUPLICATE NUMBER: Section number 6 appears twice
+❌ DUPLICATE NUMBER: section number 6 appears twice
 ```
 
 **Resolution Steps**:
 1. Add explicit section number to each header
-2. Use format: `## N. Section Title`
+2. Use format: `## N. section Title`
 3. Verify sequential numbering (0-18)
 4. Check for duplicates or skipped numbers
 
-### CHECK 5: Mandatory Sections Presence
+### CHECK 5: Mandatory sections Presence
 
 **Purpose**: Verify all 19 sections exist in document
 **Type**: Error (blocking)
 
-**All Sections MANDATORY**: Every PRD must contain all 19 sections (0-18) with substantive content, not placeholders.
+**All sections MANDATORY**: Every PRD must contain all 19 sections (0-18) with substantive content, not placeholders.
 
 **Error Messages**:
 ```
-❌ MISSING SECTION: ## 6. User Stories & User Roles
-❌ MISSING SECTION: ## 8. Customer-Facing Content & Messaging (MANDATORY)
+❌ MISSING regulatoryTION: ## 6. User Stories & User Roles
+❌ MISSING regulatoryTION: ## 8. Customer-Facing Content & Messaging (MANDATORY)
 ```
 
 **Resolution Steps**:
@@ -240,28 +245,28 @@ All PRD requirements must include:
 2. Populate with substantive content (not "TBD" or "TODO")
 3. Follow section-specific requirements from PRD-TEMPLATE.md
 
-### CHECK 6: Section Title Consistency
+### CHECK 6: section Title Consistency
 
 **Purpose**: Verify section titles match template exactly
 **Type**: Warning (recommended fix)
 
 **Title Matching Rules**:
-- Section titles must match PRD-TEMPLATE.md character-for-character
+- section titles must match PRD-TEMPLATE.md character-for-character
 - Capitalization must be identical
 - Special markers like (MANDATORY) must be included where specified
 
 **Error Messages**:
 ```
-⚠️ WARNING: Section 8 title should be "Customer-Facing Content & Messaging (MANDATORY)"
-⚠️ WARNING: Section 3 title should use "&" not "and"
+⚠️ WARNING: section 8 title should be "Customer-Facing Content & Messaging (MANDATORY)"
+⚠️ WARNING: section 3 title should use "&" not "and"
 ```
 
 **Resolution Steps**:
 1. Copy exact title from PRD-TEMPLATE.md
 2. Preserve capitalization and punctuation
-3. Include (MANDATORY) marker for Section 8
+3. Include (MANDATORY) marker for section 8
 
-### CHECK 7: User Stories Scope Validation (Section 7)
+### CHECK 7: User Stories Scope Validation (section 7)
 
 **Purpose**: Ensure PRD-level user stories stay within Layer 2 scope
 **Type**: Error (blocking)
@@ -281,16 +286,16 @@ All PRD requirements must include:
 - System architecture decisions → ADR (Layer 5)
 
 **Required Elements**:
-1. **Scope Note Present**: Section 6 must include layer separation explanation
+1. **Scope Note Present**: section 7 must include layer separation explanation
 2. **Role Definitions**: User personas with characteristics and needs
 3. **Story Summaries**: High-level capability descriptions
 4. **No Technical Details**: No EARS/BDD/SYS-level content
 
 **Error Messages**:
 ```
-❌ SCOPE VIOLATION: Section 7 contains WHEN-THE-SHALL format (belongs in EARS)
-❌ SCOPE VIOLATION: Section 7 contains Given-When-Then scenarios (belongs in BDD)
-❌ MISSING: Section 7 scope note explaining layer separation
+❌ SCOPE VIOLATION: section 7 contains WHEN-THE-SHALL format (belongs in EARS)
+❌ SCOPE VIOLATION: section 7 contains Given-When-Then scenarios (belongs in BDD)
+❌ MISSING: section 7 scope note explaining layer separation
 ```
 
 **Resolution Steps**:
@@ -299,14 +304,16 @@ All PRD requirements must include:
 3. Move BDD-level content to placeholder for future BDD tests
 4. Keep only PRD-level role definitions and story summaries
 
-### CHECK 8: Customer-Facing Content Mandatory (Section 9)
+### CHECK 8: Customer-Facing Content Mandatory (section 9)
 
-**Purpose**: Enforce Section 9 as blocking requirement
+> **Note**: CHECK numbers are sequential validation steps; they do not correspond to PRD section numbers.
+
+**Purpose**: Enforce section 9 as blocking requirement
 **Type**: Error (blocking)
 
 **Requirements**:
-- Section 9 header must include (MANDATORY) designation
-- Section must contain substantive content (not placeholders)
+- section 9 header must include (MANDATORY) designation
+- section must contain substantive content (not placeholders)
 - Content must address customer-visible materials
 
 **Required Content Categories**:
@@ -322,13 +329,13 @@ All PRD requirements must include:
 
 **Error Messages**:
 ```
-❌ BLOCKING ERROR: Section 9 (Customer-Facing Content) is missing
-❌ BLOCKING ERROR: Section 9 header missing (MANDATORY) designation
-❌ BLOCKING ERROR: Section 9 contains only placeholder text
+❌ BLOCKING ERROR: section 9 (Customer-Facing Content) is missing
+❌ BLOCKING ERROR: section 9 header missing (MANDATORY) designation
+❌ BLOCKING ERROR: section 9 contains only placeholder text
 ```
 
 **Resolution Steps**:
-1. Add Section 9 if missing
+1. Add section 9 if missing
 2. Include (MANDATORY) in header
 3. Populate with substantive customer-facing content
 4. Address at least 3 content categories from required list
@@ -396,90 +403,90 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 **Resolution Steps**:
 1. Add @brd tag referencing source BRD requirement
 2. Add planned downstream artifact tags (optional)
-3. Populate Traceability section (Section 17)
+3. Populate Traceability section (section 17)
 
-### Per-Section Validation Criteria
+### Per-section Validation Criteria
 
-**Section 0 - Document Control**:
+**section 0 - Document Control**:
 - 11 required fields present (See CHECK 1)
 - Dual scoring with ≥90% thresholds (See CHECK 2-3)
 - Document Revision History table with at least one entry
 
-**Section 1 - Executive Summary**:
+**section 1 - Executive Summary**:
 - 2-3 sentence overview
 - Business Value Proposition subsection
 - Timeline subsection with 5 phases
 
-**Section 2 - Problem Statement**:
+**section 2 - Problem Statement**:
 - Current State, Business Impact, Root Cause Analysis, Opportunity Assessment subsections
 - Quantified business impact metrics
 - Clear problem articulation
 
-**Section 3 - Target Audience & User Personas**:
-- Primary Users, Secondary Users, Business Stakeholders subsections
+**section 3 - Target Audience & User Personas**:
+- Primary Users, secondary Users, Business Stakeholders subsections
 - At least 2 user personas with demographics, goals, pain points
 
-**Section 4 - Success Metrics (KPIs)**:
-- Primary KPIs, Secondary KPIs, Success Criteria by Phase subsections
+**section 4 - Success Metrics (KPIs)**:
+- Primary KPIs, secondary KPIs, Success Criteria by Phase subsections
 - At least 3 measurable KPIs
 - Baseline and target values specified
 
-**Section 5 - Goals & Objectives**:
-- Primary Business Goals, Secondary Objectives, Stretch Goals subsections
+**section 5 - Goals & Objectives**:
+- Primary Business Goals, secondary Objectives, Stretch Goals subsections
 - SMART criteria applied (Specific, Measurable, Achievable, Relevant, Time-bound)
 
-**Section 6 - Scope & Requirements**:
+**section 6 - Scope & Requirements**:
 - In Scope, Out of Scope, Dependencies, Assumptions subsections
 - Clear boundary definitions
 
-**Section 7 - User Stories & User Roles**:
+**section 7 - User Stories & User Roles**:
 - Layer Separation scope note present (See CHECK 7)
 - User role definitions
 - Story summaries (not EARS/BDD-level detail)
 
-**Section 8 - Functional Requirements**:
+**section 8 - Functional Requirements**:
 - User Journey Mapping, Capability Requirements subsections
 - Requirements numbered (FR-001, FR-002, etc.)
 - Each requirement testable
 
-**Section 9 - Customer-Facing Content & Messaging**:
+**section 9 - Customer-Facing Content & Messaging**:
 - (MANDATORY) designation in header (See CHECK 8)
 - Substantive content addressing customer-visible materials
 - At least 3 content categories covered
 
-**Section 10 - Acceptance Criteria**:
+**section 10 - Acceptance Criteria**:
 - Business Acceptance, Technical Acceptance, Quality Assurance subsections
 - Criteria verifiable by business stakeholders
 
-**Section 11 - Constraints & Assumptions**:
+**section 11 - Constraints & Assumptions**:
 - Business Constraints, Technical Constraints, External Constraints, Key Assumptions subsections
 - Each assumption identified with validation plan
 
-**Section 12 - Risk Assessment**:
+**section 12 - Risk Assessment**:
 - High-Risk Items, Risk Mitigation Plan subsections
 - Risks categorized by severity and likelihood
 
-**Section 13 - Success Definition**:
+**section 13 - Success Definition**:
 - Go-Live Criteria, Post-Launch Validation, Measurement Timeline subsections
 - Specific success thresholds
 
-**Section 14 - Stakeholders & Communication**:
+**section 14 - Stakeholders & Communication**:
 - Core Team, Stakeholders, Communication Plan subsections
 - RACI matrix or equivalent
 
-**Section 15 - Implementation Approach**:
+**section 15 - Implementation Approach**:
 - Development Phases, Testing Strategy subsections
 - High-level timeline
 
-**Section 16 - Budget & Resources**:
+**section 16 - Budget & Resources**:
 - Development Budget, Operational Budget, Resource Requirements subsections
 - Cost estimates with justification
 
-**Section 17 - Traceability**:
+**section 17 - Traceability**:
 - Upstream Sources, Downstream Artifacts, Traceability Tags, Validation Evidence subsections
 - @brd tag present (See CHECK 10)
 
-**Section 18 - References**:
+**section 18 - References**:
 - Internal Documentation, External Standards, Domain References, Technology References subsections
 - All references valid and accessible
 
@@ -492,10 +499,10 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 **Before committing PRD to repository, verify**:
 
 - [ ] **All 19 sections present** (0-18) with substantive content
-- [ ] **Section numbering explicit** (## N. Title format)
+- [ ] **section numbering explicit** (## N. Title format)
 - [ ] **Dual scoring ≥90%** (SYS-Ready and EARS-Ready)
-- [ ] **Customer-Facing Content (Section 9)** populated with (MANDATORY) designation
-- [ ] **User Stories (Section 7)** include scope note, stay within PRD layer
+- [ ] **Customer-Facing Content (section 9)** populated with (MANDATORY) designation
+- [ ] **User Stories (section 7)** include scope note, stay within PRD layer
 - [ ] **No ADR-XXX forward references** (use topics only)
 - [ ] **@brd upstream tag** present in Traceability section
 - [ ] **Document Control** has all 11 required fields
@@ -521,7 +528,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 |--------|---------|--------|----------|
 | SYS-Ready Score | 90% | 95% | Yes |
 | EARS-Ready Score | 90% | 95% | Yes |
-| Section Completeness | 100% | 100% | Yes |
+| section Completeness | 100% | 100% | Yes |
 | Traceability Links | 80% | 100% | No |
 | User Story Scope Compliance | 100% | 100% | Yes |
 | Customer-Facing Content | Present | Comprehensive | Yes |
@@ -531,16 +538,16 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 **When to Advance to EARS/SYS**:
 - ✅ Both SYS-Ready and EARS-Ready scores ≥90%
 - ✅ All 19 sections complete with substantive content
-- ✅ Section 9 (Customer-Facing Content) populated
-- ✅ Section 7 (User Stories) within PRD scope
+- ✅ section 9 (Customer-Facing Content) populated
+- ✅ section 7 (User Stories) within PRD scope
 - ✅ @brd upstream reference valid
 - ✅ No blocking validation errors
 
 **Blocking Conditions**:
 - ❌ Either score <90%
 - ❌ Missing mandatory sections
-- ❌ Section 9 missing or placeholder-only
-- ❌ Section 7 contains EARS/BDD-level detail
+- ❌ section 9 missing or placeholder-only
+- ❌ section 7 contains EARS/BDD-level detail
 - ❌ ADR-XXX forward references present
 - ❌ Missing Document Control fields
 
@@ -564,15 +571,15 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
    | **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
    | **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
    ```
-2. Calculate scores using criteria in PRD_CREATION_RULES.md Sections 8-9
+2. Calculate scores using criteria in PRD_CREATION_RULES.md sections 8-9
 3. Ensure both scores ≥90% before commit
 
-### Issue 2: Section Numbering Inconsistencies
+### Issue 2: section Numbering Inconsistencies
 
 **Symptoms**:
 ```
 ❌ MISSING NUMBER: Found "## Document Control", expected "## 0. Document Control"
-❌ DUPLICATE NUMBER: Section number 6 appears twice
+❌ DUPLICATE NUMBER: section number 6 appears twice
 ```
 
 **Root Cause**: Manual editing without systematic renumbering or old template format
@@ -591,14 +598,14 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 **Symptoms**:
 ```
-❌ SCOPE VIOLATION: Section 7 contains WHEN-THE-SHALL format (belongs in EARS)
-❌ SCOPE VIOLATION: Section 7 contains Given-When-Then scenarios (belongs in BDD)
+❌ SCOPE VIOLATION: section 7 contains WHEN-THE-SHALL format (belongs in EARS)
+❌ SCOPE VIOLATION: section 7 contains Given-When-Then scenarios (belongs in BDD)
 ```
 
 **Root Cause**: Mixing PRD-level requirements with EARS/BDD-level technical details
 
 **Fix**:
-1. Add scope note from PRD-TEMPLATE.md to Section 7
+1. Add scope note from PRD-TEMPLATE.md to section 7
 2. Keep only PRD-level content:
    - User role definitions (who they are)
    - Story titles and summaries (what they need)
@@ -611,14 +618,14 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 **Symptoms**:
 ```
-❌ BLOCKING ERROR: Section 9 (Customer-Facing Content) is missing
-❌ BLOCKING ERROR: Section 9 contains only placeholder text
+❌ BLOCKING ERROR: section 9 (Customer-Facing Content) is missing
+❌ BLOCKING ERROR: section 9 contains only placeholder text
 ```
 
-**Root Cause**: Section 9 treated as optional or overlooked as new mandatory requirement
+**Root Cause**: section 9 treated as optional or overlooked as new mandatory requirement
 
 **Fix**:
-1. Add Section 9 header with (MANDATORY) designation:
+1. Add section 9 header with (MANDATORY) designation:
    ```markdown
    ## 9. Customer-Facing Content & Messaging (MANDATORY)
    ```
@@ -642,7 +649,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 **Fix**:
 1. Remove all ADR-XXX specific references
-2. Add topics to "Architecture Decision Requirements" table in Section 17:
+2. Add topics to "Architecture Decision Requirements" table in section 17:
    ```markdown
    | Topic Area | Decision Needed | Business Driver |
    |------------|-----------------|-----------------|

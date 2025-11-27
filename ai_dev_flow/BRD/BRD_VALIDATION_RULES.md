@@ -56,12 +56,12 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 
 ## Validation Checks
 
-### CHECK 1: Required Sections
+### CHECK 1: Required sections
 
 **Purpose**: Verify all 19 mandatory sections exist
 **Type**: Error (blocking)
 
-**Required Sections**:
+**Required sections**:
 ```markdown
 ## 1. Introduction
 ## 2. Business Objectives
@@ -86,9 +86,9 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 ```
 
 **Note**: All 19 sections are mandatory. Template version 1.1 expanded from 17 to 19 sections by adding:
-- Section 4: Stakeholders
-- Section 5: User Stories
-- Section 17: Traceability
+- section 4: Stakeholders
+- section 5: User Stories
+- section 17: Traceability
 
 **Error Message**:
 ```
@@ -98,7 +98,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 **Fix**:
 1. Add missing section header
 2. Ensure exact spelling and numbering
-3. Sections 1-19 must be in order (Document Control at top)
+3. sections 1-19 must be in order (Document Control at top)
 
 ---
 
@@ -171,7 +171,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 **Valid Examples**:
 - `BRD-001_platform_architecture_technology_stack.md` ✅
 - `BRD-006_b2c_progressive_kyc_onboarding.md` ✅
-- `BRD-009-01_broker_integration_prerequisites.md` ✅
+- `BRD-009-01_provider_integration_prerequisites.md` ✅
 
 **Invalid Examples**:
 - `BRD-001.md` ❌ (missing description)
@@ -195,7 +195,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 1. Rename file to match Platform (`BRD-NNN_platform_*`) or Feature (`BRD-NNN_{feature_name}`) pattern
 2. Use lowercase with underscores for descriptive title
 
-**Reference**: `BRD_CREATION_RULES.md` Section 4 (ID and Naming Standards)
+**Reference**: `BRD_CREATION_RULES.md` section 4 (ID and Naming Standards)
 
 ---
 
@@ -206,45 +206,45 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 
 **Platform BRD Requirements**:
 - Filename contains "platform" or "infrastructure"
-- Section 3.6: MUST exist and define foundational technology stacks/prerequisites
-- Section 3.7: MUST exist and define mandatory technical constraints
+- section 3.6: MUST exist and define foundational technology stacks/prerequisites
+- section 3.7: MUST exist and define mandatory technical constraints
 
 **Feature BRD Requirements**:
 - Filename does NOT contain "platform" or "infrastructure"
-- Section 3.6: MUST exist and reference Platform BRD dependencies
-- Section 3.7: MUST exist and include platform-inherited conditions plus feature-specific requirements
+- section 3.6: MUST exist and reference Platform BRD dependencies
+- section 3.7: MUST exist and include platform-inherited conditions plus feature-specific requirements
 
 **General Requirements** (Both types):
-- Section 3.6: MUST be present and populated with appropriate content
-- Section 3.7: MUST be present and populated with appropriate content
+- section 3.6: MUST be present and populated with appropriate content
+- section 3.7: MUST be present and populated with appropriate content
 
 **Error Message**:
 ```
-❌ ERROR: Platform BRD missing required Section 3.6 (Technology Stack Prerequisites)
-❌ ERROR: Platform BRD missing required Section 3.7 (Mandatory Technology Conditions)
-❌ ERROR: Feature BRD missing required Section 3.6 (Technology Stack Prerequisites)
-❌ ERROR: Feature BRD missing required Section 3.7 (Mandatory Technology Conditions)
+❌ ERROR: Platform BRD missing required section 3.6 (Technology Stack Prerequisites)
+❌ ERROR: Platform BRD missing required section 3.7 (Mandatory Technology Conditions)
+❌ ERROR: Feature BRD missing required section 3.6 (Technology Stack Prerequisites)
+❌ ERROR: Feature BRD missing required section 3.7 (Mandatory Technology Conditions)
 ```
 
 **Fix**:
 1. Ensure both sections 3.6 and 3.7 exist for all BRD types
 ---
 
-### CHECK 6: Architecture Decision Requirements Section
+### CHECK 6: Architecture Decision Requirements section
 
-**Purpose**: Verify Section 5.2 exists and has required structure
+**Purpose**: Verify section 5.2 exists and has required structure
 **Type**: Error (blocking)
 
 **Requirements**:
-1. Section 5.2 "Architecture Decision Requirements" exists
+1. section 5.2 "Architecture Decision Requirements" exists
 2. Contains table with columns: Topic Area, Decision Needed, Business Driver, Key Considerations
 3. At least 3 architectural topics identified
 
 **Error Message**:
 ```
-❌ MISSING: Section 5.2 Architecture Decision Requirements
-❌ ERROR: Section 5.2 missing required table structure (Topic Area, Decision Needed, Business Driver, Key Considerations)
-❌ ERROR: Section 5.2 must identify at least 3 architectural topics
+❌ MISSING: section 5.2 Architecture Decision Requirements
+❌ ERROR: section 5.2 missing required table structure (Topic Area, Decision Needed, Business Driver, Key Considerations)
+❌ ERROR: section 5.2 must identify at least 3 architectural topics
 ```
 
 **Fix**:
@@ -258,7 +258,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 | Communication Protocol | Select inter-system messaging | FR-015: Real-time updates | Pub/Sub, gRPC, REST WebSocket |
 ```
 
-**Reference**: `BRD_CREATION_RULES.md` Section 9 (Architecture Decision Requirements)
+**Reference**: `BRD_CREATION_RULES.md` section 9 (Architecture Decision Requirements)
 
 ---
 
@@ -285,10 +285,10 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 
 **Fix**:
 ```markdown
-BO-003: Reduce transaction processing time from 10 seconds to 5 seconds (50% improvement) within 6 months of implementation, enabling <2-second competitive response times as specified in integrated_strategy_algo_v5.md Section 4.2.
+BO-003: Reduce transaction processing time from 10 seconds to 5 seconds (50% improvement) within 6 months of implementation, enabling <2-second competitive response times as specified in integrated_strategy_algo_v5.md section 4.2.
 ```
 
-**Reference**: `BRD_CREATION_RULES.md` Section 10 (Business Objectives and Success Criteria)
+**Reference**: `BRD_CREATION_RULES.md` section 10 (Business Objectives and Success Criteria)
 
 ---
 
@@ -319,7 +319,7 @@ BO-003: Reduce transaction processing time from 10 seconds to 5 seconds (50% imp
 | Error Rate | 10% | <5% | Hourly | Error logs | QA Manager |
 ```
 
-**Reference**: `BRD_TEMPLATE.md` Section 8 (Acceptance Criteria)
+**Reference**: `BRD_TEMPLATE.md` section 8 (Acceptance Criteria)
 
 ---
 
@@ -340,16 +340,16 @@ BO-003: Reduce transaction processing time from 10 seconds to 5 seconds (50% imp
 **Error Message**:
 ```
 ❌ ERROR: BRD must not reference specific ADR numbers (ADR-XXX)
-         BRDs are created BEFORE ADRs - only identify decision topics in Section 5.2
+         BRDs are created BEFORE ADRs - only identify decision topics in section 5.2
          Found: ADR-033_risk_architecture.md
 ```
 
 **Fix**:
 1. Remove any ADR-NNN references
-2. Ensure ADR references are only in Section 5.2 as topic identification
+2. Ensure ADR references are only in section 5.2 as topic identification
 3. Add ADR references AFTER BRD approval when ADRs are created
 
-**Reference**: `BRD_CREATION_RULES.md` Section 7 (ADR Relationship Guidelines)
+**Reference**: `BRD_CREATION_RULES.md` section 7 (ADR Relationship Guidelines)
 
 ---
 
@@ -359,25 +359,25 @@ BO-003: Reduce transaction processing time from 10 seconds to 5 seconds (50% imp
 **Type**: Warning
 
 **Requirements**:
-1. References to `option_strategy/` documents
+1. References to domain-specific business logic documents
 2. Specific sections in strategy documents
 3. Business rationale for each major requirement
 
 **Warning Messages**:
 ```
 ⚠️  WARNING: Business objective missing strategy document reference
-⚠️  WARNING: No references to option_strategy/ documents found
+⚠️  WARNING: No references to domain-specific business logic documents found
 ⚠️  WARNING: Strategic alignment references should include specific sections
 ```
 
 **Fix**:
 ```markdown
-- **Strategic Context**: Aligns with objectives in `option_strategy/integrated_strategy_algo_v5.md` Section 4.2 (Portfolio Risk Management)
-- **Performance Targets**: Matches targets defined in `option_strategy/README.md` Section 2.1 (Benchmark Performance Goals)
-- **Business Rationale**: Enables algorithmic trading execution as specified in `option_strategy/Integrated_strategy_desc.md` Section 3.4
+- **Strategic Context**: Aligns with objectives in `{domain_strategy}/business_logic.md` section 4.2 (collection Risk Management)
+- **Performance Targets**: Matches targets defined in `{domain_strategy}/README.md` section 2.1 (Benchmark Performance Goals)
+- **Business Rationale**: Enables business execution as specified in `{domain_strategy}/strategy_description.md` section 3.4
 ```
 
-**Reference**: `BRD_CREATION_RULES.md` Section 8 (Traceability Requirements)
+**Reference**: `BRD_CREATION_RULES.md` section 8 (Traceability Requirements)
 
 ---
 
@@ -423,7 +423,7 @@ BO-003: Reduce transaction processing time from 10 seconds to 5 seconds (50% imp
 **Type**: Warning
 
 **Requirements**:
-1. Section 3.3 Out-of-Scope Items exists and is non-empty
+1. section 3.3 Out-of-Scope Items exists and is non-empty
 2. Includes rationale for exclusion
 3. Prevents scope creep expectations
 
@@ -439,11 +439,11 @@ BO-003: Reduce transaction processing time from 10 seconds to 5 seconds (50% imp
 ### 3.3 Out-of-Scope Items
 
 1. **Legacy System Migration**: Complete replacement of existing IB Gateway infrastructure - excluded due to 6-month migration timeline conflict with phased rollout approach
-2. **Mobile Application Development**: Native iOS/Android apps - excluded as desktop trading terminal capabilities sufficient for initial release
-3. **Multi-Asset Trading Support**: Crypto, forex, options - excluded to focus on cash equities as core competency
+2. **Mobile Application Development**: Native iOS/Android apps - excluded as desktop application capabilities sufficient for initial release
+3. **Multi-Mode Operation Support**: Additional modes - excluded to focus on core operations
 ```
 
-**Reference**: `BRD_TEMPLATE.md` Section 3.3 (Out-of-Scope Items)
+**Reference**: `BRD_TEMPLATE.md` section 3.3 (Out-of-Scope Items)
 
 ---
 
@@ -495,7 +495,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 #### Category 1: PRD-Level Content Contamination (50 points maximum deduction)
 
 **Code Blocks in FRs** (CHECK 14):
-- **Deduction**: -10 points per code block found in Section 4
+- **Deduction**: -10 points per code block found in section 4
 - **Rationale**: Code blocks (Python, JSON, SQL) are strictly PRD-level implementation
 - **Examples**:
   - 1 code block = -10 points
@@ -559,7 +559,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 - **Deduction**: -3 points if any other Document Control field missing (max -6 points for 2+ missing fields)
 - **Required Fields**: Project Name, Document Version, Date, Document Owner, Prepared By, Status, PRD-Ready Score
 
-**Required Sections** (CHECK 1):
+**Required sections** (CHECK 1):
 - **Deduction**: -1 point per missing section (max -10 points)
 - **Required**: All 17 sections from BRD-TEMPLATE.md
 
@@ -575,13 +575,13 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 ### PRD-Ready Score Calculation Example
 
 **Example BRD Analysis**:
-- **Code blocks found**: 2 in Section 4 FRs → -20 points
+- **Code blocks found**: 2 in section 4 FRs → -20 points
 - **API terms found**: 8 instances (GET, POST, JSON, endpoint) → -16 points
 - **UI terms found**: 4 instances (button, modal, click, screen) → -8 points
 - **Missing subsections**: 2 FRs each missing Complexity subsection → -10 points
 - **Invalid cross-references**: 1 reference to non-existent BRD-099 → -2 points
 - **Document Control**: All fields present → 0 points
-- **Required Sections**: All 17 sections present → 0 points
+- **Required sections**: All 17 sections present → 0 points
 - **Revision History**: Table present → 0 points
 
 **Total Deductions**: 20 + 16 + 8 + 10 + 2 = 56 points
@@ -599,7 +599,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 - **Missing subsections**: 0 → -0 points
 - **Invalid cross-references**: 0 → -0 points
 - **Document Control**: Complete → -0 points
-- **Required Sections**: Complete → -0 points
+- **Required sections**: Complete → -0 points
 - **Revision History**: Complete → -0 points
 
 **Total Deductions**: 0 points
@@ -639,7 +639,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 **Purpose**: Prevent PRD-level technical implementation from appearing in BRD Functional Requirements
 **Type**: Error (blocking) - Code blocks are strictly prohibited in BRD FRs
 
-**Scan Pattern**: Search for triple backticks (```) within Section 4 (Functional Requirements)
+**Scan Pattern**: Search for triple backticks (```) within section 4 (Functional Requirements)
 
 **Prohibited Content**:
 - ❌ Python/JavaScript/SQL code blocks
@@ -669,7 +669,7 @@ def calculate_fee(amount):
 
 **Error Message**:
 ```
-❌ ERROR: Code block found in Functional Requirements (Section 4)
+❌ ERROR: Code block found in Functional Requirements (section 4)
 Line X: ```python (or ```json, ```sql, etc.)
 
 Code blocks are PRD-level content and must be removed from BRDs.
@@ -691,7 +691,7 @@ Code blocks are PRD-level content and must be removed from BRDs.
 **Purpose**: Prevent technical API/database terminology from appearing in business-level FRs
 **Type**: Warning (non-blocking) - Technical terms indicate potential PRD-level contamination
 
-**Scan Pattern**: Search for technical keywords in Section 4 (Functional Requirements)
+**Scan Pattern**: Search for technical keywords in section 4 (Functional Requirements)
 
 **Prohibited Technical Terms**:
 - **HTTP Methods**: POST, GET, PUT, DELETE, PATCH
@@ -725,7 +725,7 @@ See BRD-TEMPLATE.md Appendix B for REMOVE/KEEP guidelines.
 2. Rewrite in business-level language (what business capability, not how technically implemented)
 3. Defer technical implementation to PRD Related Requirements
 
-**Reference**: BRD-TEMPLATE.md Appendix B (REMOVE/KEEP Rules), BRD_CREATION_RULES.md Section 6.5 (Edge Cases)
+**Reference**: BRD-TEMPLATE.md Appendix B (REMOVE/KEEP Rules), BRD_CREATION_RULES.md section 6.5 (Edge Cases)
 
 ---
 
@@ -734,7 +734,7 @@ See BRD-TEMPLATE.md Appendix B for REMOVE/KEEP guidelines.
 **Purpose**: Prevent UI implementation details from appearing in business-level FRs
 **Type**: Warning (non-blocking) - UI terms indicate potential PRD-level contamination
 
-**Scan Pattern**: Search for UI-specific keywords in Section 4 (Functional Requirements)
+**Scan Pattern**: Search for UI-specific keywords in section 4 (Functional Requirements)
 
 **Prohibited UI Terms**:
 - **UI Components**: button, dropdown, modal, dialog, popup, form field, checkbox, radio button, tab
@@ -824,15 +824,15 @@ Found structure:
 ❌ Business Capability
 ❌ Complexity
 
-Fix: Add missing subsections per BRD-TEMPLATE.md Section 5.2 format
+Fix: Add missing subsections per BRD-TEMPLATE.md section 5.2 format
 ```
 
 **Fix**:
 1. Verify each FR has all 6 subsections in correct order
-2. Add missing subsections using BRD-TEMPLATE.md Section 5.2 as reference
+2. Add missing subsections using BRD-TEMPLATE.md section 5.2 as reference
 3. Ensure subsection headers match exactly (case-sensitive)
 
-**Reference**: BRD-TEMPLATE.md Section 5.2, BRD_CREATION_RULES.md Section 5.5 (Complexity Rating)
+**Reference**: BRD-TEMPLATE.md section 5.2, BRD_CREATION_RULES.md section 5.5 (Complexity Rating)
 
 ---
 
@@ -883,7 +883,7 @@ Fix: Verify all BRD references exist and use correct ID format (BRD-NNN)
 **Purpose**: Validate Executive Summary contains 6 required quantitative elements for business impact assessment
 **Type**: Warning (non-blocking) - Quantitative Executive Summary improves stakeholder comprehension
 
-**Location**: Section 1.1 (Executive Summary) within Introduction
+**Location**: section 1.1 (Executive Summary) within Introduction
 
 **Required 6 Elements**:
 1. **Problem Statement with Market Data**: Market size, volume, or quantified gap
@@ -937,25 +937,25 @@ Reference: BRD-TEMPLATE.md lines 76-111 for Executive Summary pattern
 4. Mention implementation timeline (phases, quarters, duration)
 5. Reference investment level if known at BRD stage
 
-**Reference**: BRD-TEMPLATE.md Section 1.1, BRD_CREATION_RULES.md Section 2.2
+**Reference**: BRD-TEMPLATE.md section 1.1, BRD_CREATION_RULES.md section 2.2
 
 ---
 
-### CHECK 20: User Stories Section ⭐ UPDATED 2025-11-26
+### CHECK 20: User Stories section ⭐ UPDATED 2025-11-26
 
-**Purpose**: Verify Section 5 (User Stories) exists as HIGH-LEVEL SUMMARY (detailed user stories in PRD)
+**Purpose**: Verify section 5 (User Stories) exists as HIGH-LEVEL SUMMARY (detailed user stories in PRD)
 **Type**: Error (blocking) - User Stories section mandatory in BRD, but simplified format
 
-**Updated Guidance (2025-11-26)**: BRD Section 5 now contains only a high-level summary of key user story categories. Detailed user story tables, acceptance criteria, and role definitions have been moved to PRD.
+**Updated Guidance (2025-11-26)**: BRD section 5 now contains only a high-level summary of key user story categories. Detailed user story tables, acceptance criteria, and role definitions have been moved to PRD.
 
-**Location**: Section 5 (User Stories - High-Level Summary)
+**Location**: section 5 (User Stories - High-Level Summary)
 
 **Required Structure** (Simplified):
 ```markdown
 ## 5. User Stories (High-Level Summary)
 
 📚 Complete User Stories: For detailed user stories with acceptance criteria, permissions, and user roles, see:
-- [PRD Template - User Stories & User Roles Section](../PRD/PRD-TEMPLATE.md#user-stories--user-roles)
+- [PRD Template - User Stories & User Roles section](../PRD/PRD-TEMPLATE.md#user-stories--user-roles)
 
 ### Key User Story Categories
 [List 2-3 primary user categories with 3-5 sample stories]
@@ -970,7 +970,7 @@ Reference: BRD-TEMPLATE.md lines 76-111 for Executive Summary pattern
 ```
 
 **Validation Checks** (Simplified):
-- [ ] Section 5 header exists: `## 5. User Stories`
+- [ ] section 5 header exists: `## 5. User Stories`
 - [ ] Reference link to PRD exists
 - [ ] At least 2-3 key user story categories listed (bullet format)
 - [ ] Aggregate summary statistics present (counts only, no detailed tables)
@@ -978,7 +978,7 @@ Reference: BRD-TEMPLATE.md lines 76-111 for Executive Summary pattern
 
 **Error Message**:
 ```
-❌ MISSING: Section 5 (User Stories)
+❌ MISSING: section 5 (User Stories)
 Required in BRD template (simplified format as of 2025-11-26)
 
 Add section with high-level summary:
@@ -986,12 +986,12 @@ Add section with high-level summary:
 - Aggregate counts (Primary, Operational, Total)
 - Reference link to PRD for complete details
 
-Reference: BRD-TEMPLATE.md Section 5 (lines 453-488)
+Reference: BRD-TEMPLATE.md section 5 (lines 453-488)
 ```
 
 **Warning Message** (quality issues):
 ```
-⚠️  WARNING: Section 5 should be high-level summary only
+⚠️  WARNING: section 5 should be high-level summary only
 Issues found:
 - Contains detailed user story tables (belongs in PRD)
 - Contains acceptance criteria (belongs in PRD)
@@ -1006,20 +1006,20 @@ Fix: Simplify to high-level summary and add PRD reference link
 3. Add reference link to PRD-TEMPLATE.md User Stories section
 4. Keep only business-level summary (detailed content belongs in PRD)
 
-**Reference**: BRD-TEMPLATE.md Section 5 (simplified), BRD_CREATION_RULES.md Section 5.6, PRD-TEMPLATE.md User Stories & User Roles
+**Reference**: BRD-TEMPLATE.md section 5 (simplified), BRD_CREATION_RULES.md section 5.6, PRD-TEMPLATE.md User Stories & User Roles
 
 ---
 
 ### CHECK 21: Workflow Diagrams ⭐ NEW
 
-**Purpose**: Validate Sections 3.5.4-3.5.5 contain required Mermaid workflow diagrams
+**Purpose**: Validate sections 3.5.4-3.5.5 contain required Mermaid workflow diagrams
 **Type**: Warning (non-blocking) - Workflow diagrams improve business process clarity
 
-**Location**: Section 3.5.4 (End-to-End Workflow Diagram), Section 3.5.5 (Exception Handling Workflow)
+**Location**: section 3.5.4 (End-to-End Workflow Diagram), section 3.5.5 (Exception Handling Workflow)
 
 **Required Elements**:
-- [ ] Section 3.5.4 exists with Mermaid sequence diagram
-- [ ] Section 3.5.5 exists with exception handling workflow
+- [ ] section 3.5.4 exists with Mermaid sequence diagram
+- [ ] section 3.5.5 exists with exception handling workflow
 - [ ] Mermaid diagrams use correct syntax (```mermaid sequenceDiagram)
 - [ ] Workflow summary table documents each step
 - [ ] Participants represent business actors (not technical components)
@@ -1054,8 +1054,8 @@ sequenceDiagram
 ```
 ⚠️  WARNING: Workflow diagrams missing or incomplete
 Missing sections:
-- Section 3.5.4 (End-to-End Workflow) not found
-- Section 3.5.5 (Exception Handling) not found
+- section 3.5.4 (End-to-End Workflow) not found
+- section 3.5.5 (Exception Handling) not found
 
 Recommendation: Add Mermaid sequence diagrams to visualize business processes
 Reference: BRD-TEMPLATE.md lines 173-254
@@ -1067,22 +1067,22 @@ Reference: BRD-TEMPLATE.md lines 173-254
 - [ ] Workflow summary table documents business outcomes, not technical results
 
 **Fix**:
-1. Add Section 3.5.4 within Section 3 (Project Scope)
+1. Add section 3.5.4 within section 3 (Project Scope)
 2. Create Mermaid sequence diagram showing happy path business workflow
 3. Add workflow summary table documenting each step
-4. Add Section 3.5.5 for exception handling workflows
+4. Add section 3.5.5 for exception handling workflows
 5. Ensure participants and actions are business-level (no technical implementation)
 
-**Reference**: BRD-TEMPLATE.md Sections 3.5.4-3.5.5, BRD_CREATION_RULES.md Section 2.3
+**Reference**: BRD-TEMPLATE.md sections 3.5.4-3.5.5, BRD_CREATION_RULES.md section 2.3
 
 ---
 
 ### CHECK 22: Traceability Matrix ⭐ NEW
 
-**Purpose**: Verify Section 17 (Traceability) contains complete bidirectional requirements mapping
+**Purpose**: Verify section 17 (Traceability) contains complete bidirectional requirements mapping
 **Type**: Error (blocking) - Traceability mandatory in BRD v1.1
 
-**Location**: Section 17 (Traceability)
+**Location**: section 17 (Traceability)
 
 **Required Subsections**:
 - [ ] 17.1 Requirements Traceability Matrix
@@ -1094,7 +1094,7 @@ Reference: BRD-TEMPLATE.md lines 173-254
 - [ ] 17.4 Traceability Summary (with Health Score)
 
 **Validation Checks**:
-- [ ] Section 17 header exists
+- [ ] section 17 header exists
 - [ ] All 4 subsections present (17.1-17.4)
 - [ ] Business Objectives table includes Coverage Status column
 - [ ] Functional Requirements table includes downstream SPEC/IMPL references
@@ -1104,7 +1104,7 @@ Reference: BRD-TEMPLATE.md lines 173-254
 
 **Error Message**:
 ```
-❌ MISSING: Section 17 (Traceability)
+❌ MISSING: section 17 (Traceability)
 Required in BRD v1.1 template
 
 Add section with structure:
@@ -1139,24 +1139,24 @@ Fix: Ensure bidirectional links for all objectives, FRs, and user stories
 - [ ] All FRs have planned downstream SPEC references
 
 **Fix**:
-1. Add Section 17 with all 4 subsections
-2. Create Business Objectives → FRs table listing all BOs from Section 2.4
+1. Add section 17 with all 4 subsections
+2. Create Business Objectives → FRs table listing all BOs from section 2.4
 3. Create FRs → Technical Specs table with planned SPEC-XXX-NNN references
 4. Document Cross-BRD Dependencies if any exist
 5. Map requirements to planned test artifacts (TEST-XXX-UNIT, TEST-XXX-INT, etc.)
 6. Calculate Traceability Health Score: Average of all coverage percentages
 7. Ensure score ≥90% by eliminating orphans
 
-**Reference**: BRD-TEMPLATE.md Section 17, BRD_CREATION_RULES.md Section 8
+**Reference**: BRD-TEMPLATE.md section 17, BRD_CREATION_RULES.md section 8
 
 ---
 
-### CHECK 23: Approval and Sign-off Section ⭐ NEW
+### CHECK 23: Approval and Sign-off section ⭐ NEW
 
-**Purpose**: Verify Section 15.5 (Approval and Sign-off) contains approval workflow and change control
+**Purpose**: Verify section 15.5 (Approval and Sign-off) contains approval workflow and change control
 **Type**: Error (blocking) - Approval process mandatory in BRD v1.1
 
-**Location**: Section 15.5 (Approval and Sign-off) within Project Governance
+**Location**: section 15.5 (Approval and Sign-off) within Project Governance
 
 **Required Subsections**:
 - [ ] 15.5.1 Document Approval Table
@@ -1165,17 +1165,17 @@ Fix: Ensure bidirectional links for all objectives, FRs, and user stories
 - [ ] 15.5.4 Approval Status Tracking (optional)
 
 **Validation Checks**:
-- [ ] Section 15.5 exists within Section 15 (Project Governance)
+- [ ] section 15.5 exists within section 15 (Project Governance)
 - [ ] Document Approval Table includes minimum 4 roles: Executive Sponsor, Product Owner, Business Lead, Technology Lead
 - [ ] Approval Criteria lists at least 5 conditions for BRD approval
 - [ ] Change Control Process table defines Minor/Moderate/Major changes with version impact
 
 **Error Message**:
 ```
-❌ MISSING: Section 15.5 (Approval and Sign-off)
+❌ MISSING: section 15.5 (Approval and Sign-off)
 Required in BRD v1.1 template
 
-Add subsection within Section 15 (Project Governance):
+Add subsection within section 15 (Project Governance):
 - 15.5.1 Document Approval Table (stakeholders)
 - 15.5.2 Approval Criteria (conditions for approval)
 - 15.5.3 Change Control Process (version management)
@@ -1204,17 +1204,17 @@ Reference: BRD-TEMPLATE.md lines 1577-1625
 
 **Warning Message** (incomplete approval table):
 ```
-⚠️  WARNING: Incomplete approval workflow in Section 15.5
+⚠️  WARNING: Incomplete approval workflow in section 15.5
 Issues found:
 - Approval table missing Compliance Lead (required for regulatory projects)
 - Approval Criteria lists only 3 conditions (minimum 5 required)
 - Change Control missing version impact definitions
 
-Fix: Complete all required subsections per BRD-TEMPLATE.md Section 15.5
+Fix: Complete all required subsections per BRD-TEMPLATE.md section 15.5
 ```
 
 **Fix**:
-1. Add Section 15.5 within Section 15 (Project Governance)
+1. Add section 15.5 within section 15 (Project Governance)
 2. Create Document Approval Table with minimum 4 roles (add Compliance/Finance if applicable)
 3. List approval criteria (minimum 5 conditions):
    - All stakeholders approved
@@ -1225,16 +1225,16 @@ Fix: Complete all required subsections per BRD-TEMPLATE.md Section 15.5
 4. Define Change Control Process table with version impact rules
 5. Use semantic versioning: major.minor.patch
 
-**Reference**: BRD-TEMPLATE.md Section 15.5, BRD_CREATION_RULES.md Section 11.5
+**Reference**: BRD-TEMPLATE.md section 15.5, BRD_CREATION_RULES.md section 11.5
 
 ---
 
 ### CHECK 24: Glossary Subsections ⭐ NEW
 
-**Purpose**: Verify Section 18 (Glossary) contains all 6 required subsections for comprehensive terminology documentation
+**Purpose**: Verify section 18 (Glossary) contains all 6 required subsections for comprehensive terminology documentation
 **Type**: Warning (non-blocking) - Complete glossary improves document clarity and reduces ambiguity
 
-**Location**: Section 18 (Glossary)
+**Location**: section 18 (Glossary)
 
 **Required Subsections**:
 - [ ] 18.1 Business Terms
@@ -1245,7 +1245,7 @@ Fix: Complete all required subsections per BRD-TEMPLATE.md Section 15.5
 - [ ] 18.6 External Standards
 
 **Validation Checks**:
-- [ ] Section 18 header exists: `## 18. Glossary`
+- [ ] section 18 header exists: `## 18. Glossary`
 - [ ] All 6 subsections present (18.1-18.6)
 - [ ] Each subsection contains at least one term definition
 - [ ] Business Terms (18.1) defines business-level concepts (ROI, KPI, SLA, etc.)
@@ -1257,7 +1257,7 @@ Fix: Complete all required subsections per BRD-TEMPLATE.md Section 15.5
 
 **Warning Message**:
 ```
-⚠️  WARNING: Incomplete Glossary structure in Section 18
+⚠️  WARNING: Incomplete Glossary structure in section 18
 Missing subsections:
 - 18.3 Domain-Specific Terms not found
 - 18.5 Cross-References not found
@@ -1272,45 +1272,45 @@ Reference: BRD-TEMPLATE.md lines 1747-1831
 ## 18. Glossary
 
 ### 18.1 Business Terms
-| Term | Definition | Related Section |
+| Term | Definition | Related section |
 |------|------------|-----------------|
-| KPI | Key Performance Indicator - measurable value demonstrating effectiveness | Section 7 (Acceptance Criteria) |
+| KPI | Key Performance Indicator - measurable value demonstrating effectiveness | section 7 (Acceptance Criteria) |
 
 ### 18.2 Technical Terms
-| Term | Definition | Related Section |
+| Term | Definition | Related section |
 |------|------------|-----------------|
-| API | Application Programming Interface - defines interactions between software | Section 4.3 (Integration Requirements) |
+| API | Application Programming Interface - defines interactions between software | section 4.3 (Integration Requirements) |
 
 ### 18.3 Domain-Specific Terms
-| Term | Definition | Related Section |
+| Term | Definition | Related section |
 |------|------------|-----------------|
-| Remittance | Transfer of money by foreign worker to home country | Section 1 (Introduction) |
+| Remittance | Transfer of money by foreign worker to home country | section 1 (Introduction) |
 
 ### 18.4 Acronyms
 | Acronym | Full Form | First Use |
 |---------|-----------|-----------|
-| GMV | Gross Merchandise Value | Section 2.4 (Business Objectives) |
+| GMV | Gross Merchandise Value | section 2.4 (Business Objectives) |
 
 ### 18.5 Cross-References
-| Term | Referenced Document | Section |
+| Term | Referenced Document | section |
 |------|---------------------|---------|
-| Platform Architecture | BRD-001_platform_architecture_technology_stack.md | Section 17.2 |
+| Platform Architecture | BRD-001_platform_architecture_technology_stack.md | section 17.2 |
 
 ### 18.6 External Standards
-| Standard | Organization | Relevance | Section |
+| Standard | Organization | Relevance | section |
 |----------|--------------|-----------|---------|
-| PCI-DSS | Payment Card Industry | Payment security compliance | Section 7.3 (Security Requirements) |
+| PCI-DSS | Payment Card Industry | Payment security compliance | section 7.3 (security Requirements) |
 ```
 
 **Quality Checks**:
 - [ ] No duplicate terms across subsections
 - [ ] All acronyms used in document are defined
-- [ ] Related Section column populated for key terms
+- [ ] Related section column populated for key terms
 - [ ] Cross-references link to existing documents
 - [ ] External standards include organization and relevance
 
 **Fix**:
-1. Add Section 18 if missing, or enhance existing section
+1. Add section 18 if missing, or enhance existing section
 2. Create all 6 subsections (18.1-18.6)
 3. Populate Business Terms with business-level concepts from document
 4. Define Technical Terms mentioned in Functional Requirements
@@ -1319,7 +1319,7 @@ Reference: BRD-TEMPLATE.md lines 1747-1831
 7. List Cross-References to related BRDs and documents
 8. Document External Standards referenced (regulatory, industry, technical)
 
-**Reference**: BRD-TEMPLATE.md Section 18, BRD_CREATION_RULES.md Section 2 (line 76)
+**Reference**: BRD-TEMPLATE.md section 18, BRD_CREATION_RULES.md section 2 (line 76)
 
 ---
 
@@ -1329,26 +1329,26 @@ Reference: BRD-TEMPLATE.md lines 1747-1831
 
 | Error Check | Quick Fix |
 |-------------|-----------|
-| **CHECK 1** | Add missing section: `## N. Section Title` |
+| **CHECK 1** | Add missing section: `## N. section Title` |
 | **CHECK 2** | Add all 6 required fields to Document Control table |
 | **CHECK 3** | Add initial entry to Document Revision History table |
 | **CHECK 4** | Rename file to Platform (`BRD-NNN_platform_*`) or Feature (`BRD-NNN_{feature_name_name}`) pattern |
-| **CHECK 5** | Ensure Section 3.6 & 3.7 exist with appropriate content by BRD type |
-| **CHECK 6** | Add Section 5.2 with table structure and at least 3 architectural topics |
-| **CHECK 9** | Remove ADR-NNN references; ensure ADRs only identified as topics in Section 5.2 |
+| **CHECK 5** | Ensure section 3.6 & 3.7 exist with appropriate content by BRD type |
+| **CHECK 6** | Add section 5.2 with table structure and at least 3 architectural topics |
+| **CHECK 9** | Remove ADR-NNN references; ensure ADRs only identified as topics in section 5.2 |
 | **CHECK 11** | Fix broken links, use relative paths, verify target files exist |
 | **CHECK 13** | Add PRD-Ready Score to Document Control: `✅ [Score]/100 (Target: ≥90/100)` |
-| **CHECK 14** | Remove all code blocks (```) from Section 4 FRs; replace with business-level descriptions |
+| **CHECK 14** | Remove all code blocks (```) from section 4 FRs; replace with business-level descriptions |
 | **CHECK 15** | Replace API/technical terms (POST, GET, JSON, database, query) with business-level language |
 | **CHECK 16** | Replace UI terms (button, modal, click, screen) with business action descriptions |
 | **CHECK 17** | Add missing FR subsections: Business Capability, Business Requirements, Business Rules, Business Acceptance Criteria, Related Requirements, Complexity |
 | **CHECK 18** | Fix invalid BRD cross-references in Related Requirements; verify BRD files exist |
 | **CHECK 19** | Add quantitative elements to Executive Summary (market data, outcomes, segments, timeline, investment) |
-| **CHECK 20** | Add Section 5 (User Stories) with standard format and FR traceability |
-| **CHECK 21** | Add Sections 3.5.4-3.5.5 with Mermaid workflow diagrams and summary tables |
-| **CHECK 22** | Add Section 17 (Traceability) with complete bidirectional mapping and Health Score ≥90% |
-| **CHECK 23** | Add Section 15.5 (Approval and Sign-off) with approval table, criteria, and change control process |
-| **CHECK 24** | Add Section 18 subsections 18.1-18.6 for complete Glossary (Business Terms, Technical Terms, Domain-Specific, Acronyms, Cross-References, External Standards) |
+| **CHECK 20** | Add section 5 (User Stories) with standard format and FR traceability |
+| **CHECK 21** | Add sections 3.5.4-3.5.5 with Mermaid workflow diagrams and summary tables |
+| **CHECK 22** | Add section 17 (Traceability) with complete bidirectional mapping and Health Score ≥90% |
+| **CHECK 23** | Add section 15.5 (Approval and Sign-off) with approval table, criteria, and change control process |
+| **CHECK 24** | Add section 18 subsections 18.1-18.6 for complete Glossary (Business Terms, Technical Terms, Domain-Specific, Acronyms, Cross-References, External Standards) |
 
 ---
 
@@ -1368,13 +1368,13 @@ Reference: BRD-TEMPLATE.md lines 1747-1831
 - Stakeholder analysis complete: 10%
 
 **Technical Readiness (30%)**:
-- Section 3.6 & 3.7 properly populated by BRD type: 10%
-- Section 5.2 Architecture Decision Requirements table: 10%
+- section 3.6 & 3.7 properly populated by BRD type: 10%
+- section 5.2 Architecture Decision Requirements table: 10%
 - No forward ADR references: 10%
 
 **Quality Standards (20%)**:
 - Document control complete: 5%
-- Strategic alignment with option_strategy/ documents: 5%
+- Strategic alignment with domain-specific business logic documents: 5%
 - Cross-references resolve correctly: 5%
 - Out-of-scope clearly defined: 5%
 
@@ -1417,7 +1417,7 @@ Warnings: 1
 ```markdown
 | Item | Details |
 |------|---------|
-| **Project Name** | Trading Platform Enhancement |
+| **Project Name** | Service Platform Enhancement |
 | **Document Version** | 1.0 |
 | **Date** | 2025-11-19 |
 | **Document Owner** | Jane Smith, VP Product Management |
@@ -1447,8 +1447,8 @@ Warnings: 1
 
 **Error**:
 ```
-❌ MISSING: Section 5.2 Architecture Decision Requirements
-❌ ERROR: Section 5.2 must identify at least 3 architectural topics
+❌ MISSING: section 5.2 Architecture Decision Requirements
+❌ ERROR: section 5.2 must identify at least 3 architectural topics
 ```
 
 **Cause**: Missing required section or empty/inadequate table
@@ -1460,7 +1460,7 @@ Warnings: 1
 | Topic Area | Decision Needed | Business Driver | Key Considerations |
 |------------|-----------------|---------------|-------------------|
 | Database Technology | Select data storage solution | NFR-001: High availability requirements | PostgreSQL, Cloud SQL, DynamoDB |
-| Authentication | Choose identity management | FR-003: Secure user access | OAuth2, SAML, Firebase Auth |
+| Authentication | Choose identity management | FR-003: regulatoryure user access | OAuth2, SAML, Firebase Auth |
 | API Architecture | Define service communication | FR-015: System integration | REST APIs, gRPC, GraphQL |
 ```
 
@@ -1478,24 +1478,24 @@ Warnings: 1
 
 **Fix**:
 1. Remove ADR-NNN references
-2. Convert to topic identification in Section 5.2
+2. Convert to topic identification in section 5.2
 3. Add ADR links AFTER BRD approval when ADRs are created
 
 ---
 
-### Mistake #5: Platform BRD Missing Technology Sections
+### Mistake #5: Platform BRD Missing Technology sections
 
 **Error**:
 ```
-❌ ERROR: Platform BRD missing required Section 3.6 (Technology Stack Prerequisites)
-❌ ERROR: Platform BRD missing required Section 3.7 (Mandatory Technology Conditions)
+❌ ERROR: Platform BRD missing required section 3.6 (Technology Stack Prerequisites)
+❌ ERROR: Platform BRD missing required section 3.7 (Mandatory Technology Conditions)
 ```
 
 **Cause**: Platform BRD filename pattern but missing required technology sections
 
 **Fix**:
-1. Add Section 3.6 with technology prerequisites
-2. Add Section 3.7 with mandatory technology conditions
+1. Add section 3.6 with technology prerequisites
+2. Add section 3.7 with mandatory technology conditions
 3. Include business impact analysis for each prerequisite
 
 ---
@@ -1512,7 +1512,7 @@ Warnings: 1
 
 **Fix**:
 ```markdown
-BO-003: Reduce average order processing time from current 10 seconds to 5 seconds (50% improvement), measured by 95th percentile response time, within 6 months of implementation to match competitive trading platforms.
+BO-003: Reduce average order processing time from current 10 seconds to 5 seconds (50% improvement), measured by 95th percentile response time, within 6 months of implementation to match competitive service platforms.
 ```
 
 ---

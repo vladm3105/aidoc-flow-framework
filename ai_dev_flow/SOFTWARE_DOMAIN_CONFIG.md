@@ -146,7 +146,7 @@ find docs/SPEC/ -type f -name "*.yaml" -exec sed -i \
 |-------------|-------------|----------------|
 | **Article 17 - Right to Erasure** | Data Deletion | User data deletion API |
 | **Article 20 - Data Portability** | Data Export | Export user data in machine-readable format |
-| **Article 32 - Security** | Data Protection | Encryption, access controls, pseudonymization |
+| **Article 32 - security** | Data Protection | Encryption, access controls, pseudonymization |
 | **Article 33 - Breach Notification** | Incident Response | 72-hour notification procedures |
 
 ### CCPA (California Consumer Privacy Act)
@@ -157,13 +157,13 @@ find docs/SPEC/ -type f -name "*.yaml" -exec sed -i \
 | **Right to Delete** | Data Deletion | Delete personal information upon request |
 | **Right to Opt-Out** | Do Not Sell | Opt-out mechanism for data sales |
 
-### ISO 27001 (Information Security)
+### ISO 27001 (Information security)
 
 | Control | Application | Requirements |
 |---------|-------------|--------------|
 | **A.9 Access Control** | Identity Management | User authentication, authorization |
-| **A.12 Operations Security** | Security Operations | Vulnerability management, malware protection |
-| **A.14 System Acquisition** | Secure SDLC | Security requirements in development |
+| **A.12 Operations security** | security Operations | Vulnerability management, malware protection |
+| **A.14 System Acquisition** | regulatoryure SDLC | security requirements in development |
 | **A.17 Business Continuity** | DR/BCP | Backup, disaster recovery, failover |
 
 ---

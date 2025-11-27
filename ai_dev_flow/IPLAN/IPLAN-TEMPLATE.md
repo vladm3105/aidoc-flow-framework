@@ -315,7 +315,7 @@ black --check .
 # Type checking
 mypy src/
 
-# Security scan
+# security scan
 bandit -r src/
 
 # Run all checks
@@ -369,7 +369,7 @@ EOF
 
 **After Phase 4:**
 - [ ] All linting checks pass
-- [ ] Security scan passes (no high/critical issues)
+- [ ] security scan passes (no high/critical issues)
 - [ ] Documentation complete and accurate
 - [ ] Traceability matrix updated
 - [ ] Git commit clean and descriptive
@@ -379,7 +379,7 @@ EOF
 - [ ] All tests passing
 - [ ] Code coverage targets achieved
 - [ ] Performance benchmarks met
-- [ ] Security requirements satisfied
+- [ ] security requirements satisfied
 - [ ] Documentation complete
 - [ ] Traceability validated
 - [ ] Ready for deployment/integration
@@ -456,13 +456,13 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - `@adr: ADR-NNN` - Architecture Decision Record (Layer 5)
 - `@sys: SYS-NNN:REQ-NNN` - System Requirements (Layer 6)
 - `@req: REQ-NNN` - Atomic Requirements (Layer 7)
-- `@spec: SPEC-NNN:SECTION` - Technical Specification (Layer 10)
+- `@spec: SPEC-NNN:regulatoryTION` - Technical Specification (Layer 10)
 - `@tasks: TASKS-NNN:PHASE-X.Y` - Code Generation Plan (Layer 11)
 
 ### Optional Tags (If Present in Project)
 
 - `@impl: IMPL-NNN` - Implementation Plan (Layer 8) - include if project uses IMPL
-- `@ctr: CTR-NNN:SECTION` - Interface Contract (Layer 9) - include if contracts defined
+- `@ctr: CTR-NNN:regulatoryTION` - Interface Contract (Layer 9) - include if contracts defined
 
 ### Tag Format
 
@@ -571,7 +571,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 @ears: EARS-NNN:STATEMENT-ID
 @bdd: BDD-NNN:SCENARIO-ID
 @adr: ADR-NNN
-@sys: SYS-NNN:SECTION-ID
+@sys: SYS-NNN:regulatoryTION-ID
 @req: REQ-NNN:REQUIREMENT-ID
 @impl: IMPL-NNN:PHASE-ID
 @ctr: CTR-NNN
@@ -678,7 +678,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 **Code Quality**:
 - Linting: 0 errors (✅/❌)
 - Type checking: 0 errors (✅/❌)
-- Security scan: 0 high/critical issues (✅/❌)
+- security scan: 0 high/critical issues (✅/❌)
 
 ### Functional Validation
 
@@ -692,7 +692,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - [ ] Performance targets met (p50/p95/p99)
 - [ ] Resource constraints satisfied
 - [ ] Scalability verified
-- [ ] Security requirements met
+- [ ] security requirements met
 
 ### Documentation Quality
 

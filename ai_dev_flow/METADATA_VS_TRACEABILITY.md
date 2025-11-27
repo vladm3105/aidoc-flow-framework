@@ -31,7 +31,7 @@ AI Dev Flow uses **TWO SEPARATE SYSTEMS** for document information:
 | Aspect | YAML Frontmatter | Traceability Tags |
 |--------|------------------|-------------------|
 | **Primary Purpose** | Document classification, search, tooling | Audit trail, compliance, dependency tracking |
-| **Location** | Top of file (lines 1-20) | Section 7 (Traceability) in document body |
+| **Location** | Top of file (lines 1-20) | section 7 (Traceability) in document body |
 | **Format** | YAML key-value pairs | Markdown inline: `@artifact: ID (Description)` |
 | **Audience** | Documentation systems (Docusaurus), validation tools | Auditors, reviewers, QA, AI assistants |
 | **Validation** | Schema-based (validate_metadata.py) | Bidirectional link checking (trace-check skill) |
@@ -108,12 +108,12 @@ custom_fields:
 
 #### Business Requirements (@brd)
 - @brd: BRD-001 (Platform Architecture & Technology Stack)
-  - Section 5.2.3: Real-time data streaming requirements
+  - section 5.2.3: Real-time data streaming requirements
   - Establishes need for persistent connections
 
 #### Product Requirements (@prd)
 - @prd: PRD-003 (Unified Quoteboard Product Definition)
-  - Section 4.1: Live quote updates with <500ms latency
+  - section 4.1: Live quote updates with <500ms latency
   - Drives WebSocket choice over polling
 
 #### Engineering Requirements (@ears)
@@ -140,12 +140,12 @@ custom_fields:
 
 #### Implementation Approach (@impl)
 - @impl: IMPL-001 (Quoteboard Implementation Approach)
-  - Section 3.2: Connection management strategy
+  - section 3.2: Connection management strategy
 
 #### Technical Specifications (@spec)
 - @spec: SPEC-001 (WebSocket Quote Ingestion Technical Spec)
-  - Section 4: Reconnection algorithm implementation
-  - Section 5: Error handling and logging
+  - section 4: Reconnection algorithm implementation
+  - section 5: Error handling and logging
 ```
 
 **What This Tells Us**:
@@ -237,9 +237,9 @@ custom_fields:
 
 ### Upstream References
 - @brd: BRD-001 (Platform Architecture)
-  - Section 3.5: Technology stack requirements
+  - section 3.5: Technology stack requirements
 - @prd: PRD-003 (Quoteboard Product)
-  - Section 4: Real-time data requirements
+  - section 4: Real-time data requirements
 ```
 
 **Benefit**: Full context, audit-ready, human-readable
@@ -323,7 +323,7 @@ Need AI assistant to follow dependency chains?
 
 ## See Also
 
-- [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Section "Metadata Management Approaches"
-- [/home/ya/.claude/CLAUDE.md](../../.claude/CLAUDE.md) - Section "Metadata Standards"
+- [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - section "Metadata Management Approaches"
+- [/home/ya/.claude/CLAUDE.md](../../.claude/CLAUDE.md) - section "Metadata Standards"
 - [scripts/validate_metadata.py](../scripts/validate_metadata.py) - YAML validation tool
 - Claude Code skill: `trace-check` - Traceability validation tool

@@ -20,7 +20,7 @@ custom_fields:
 
 Decision framework for when to create standalone ICON files versus embedding implementation contracts in TASKS files.
 
-**Default**: Embed contracts in TASKS files (Section 8: Implementation Contracts)
+**Default**: Embed contracts in TASKS files (section 8: Implementation Contracts)
 
 ---
 

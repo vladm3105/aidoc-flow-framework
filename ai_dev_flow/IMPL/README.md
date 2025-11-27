@@ -77,7 +77,7 @@ This is the most critical distinction:
 | **Scope** | Entire system or feature | One YAML specification |
 | **Audience** | Project managers, architects | AI code generators, developers |
 | **Content** | Phases, teams, deliverables | Exact code generation steps |
-| **Granularity** | "Phase 1: Build [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] (Week 1-2)" | "Step 3: Generate PositionLimitService class from SPEC-003.yaml" |
+| **Granularity** | "Phase 1: Build [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] (Week 1-2)" | "Step 3: Generate ResourceLimitService class from SPEC-003.yaml" |
 | **Timeline** | Weeks or months | Hours or days |
 | **Deliverables** | List of CTR/SPEC/TASKS to create | Source code files |
 | **Traceability** | IMPL → CTR, SPEC, TASKS | TASKS → Code |
@@ -85,9 +85,9 @@ This is the most critical distinction:
 **Example Flow**:
 1. **REQ-003**: "System must enforce [RESOURCE_INSTANCE - e.g., database connection, workflow instance] limits"
 2. **IMPL-001**: "[RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] System" - Phase 1: Build [RESOURCE_INSTANCE - e.g., database connection, workflow instance] limits (Week 1-2, Agent Team) → Deliverables: CTR-003, SPEC-003, TASKS-003
-3. **SPEC-003.yaml**: Technical spec with PositionLimitService class, methods, algorithms
+3. **SPEC-003.yaml**: Technical spec with ResourceLimitService class, methods, algorithms
 4. **TASKS-003**: Step-by-step TODOs to generate code from SPEC-003.yaml
-5. **Code**: `position_limit_service.py` generated following TASKS-003
+5. **Code**: `resource_limit_service.py` generated following TASKS-003
 
 ## When to Create IMPL Plans
 
@@ -137,8 +137,8 @@ IMPL Plans follow a **4-part structure** (adapted from ADR-TEMPLATE.md):
 
 **Examples**:
 - `IMPL-001_risk_management_system.md`
-- `IMPL-002_market_data_integration.md`
-- `IMPL-003_portfolio_orchestrator_agent.md`
+- `IMPL-002_external_data_integration.md`
+- `IMPL-003_service_orchestrator_agent.md`
 
 **ID Format**: `IMPL-NNN` where NNN is zero-padded number (001, 002, ...)
 
@@ -215,8 +215,8 @@ Before completing an IMPL Plan, verify:
 ```markdown
 ## Phase 1: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service
 
-The PositionLimitService class will implement a Redis-backed cache with
-TTL of 60 seconds. The calculate_position_limit() method uses the formula:
+The ResourceLimitService class will implement a Redis-backed cache with
+TTL of 60 seconds. The calculate_resource_limit() method uses the formula:
 limit = base_limit * (1 - risk_factor * 0.1)
 ```
 
@@ -420,7 +420,7 @@ Check IMPL Plan quality:
 ## PART 1: Project Context
 **Overview**: Implement OAuth2 authentication for API access
 
-**Business Objectives**: REQ-042 (secure API access)
+**Business Objectives**: REQ-042 (regulatoryure API access)
 
 **Scope**:
 - OAuth2 provider integration
@@ -435,7 +435,7 @@ Check IMPL Plan quality:
 - SPEC-042: OAuth2 Service Specification
 - TASKS-042: Code Generation Plan
 
-**Team**: Security Team (2 developers)
+**Team**: security Team (2 developers)
 **Dependencies**: None
 
 ### Phase 2: Session Management (Week 2)
@@ -443,7 +443,7 @@ Check IMPL Plan quality:
 - SPEC-043: Session Service Specification
 - TASKS-043: Code Generation Plan
 
-**Team**: Security Team
+**Team**: security Team
 **Dependencies**: Phase 1 complete
 
 ## PART 3: Project Management

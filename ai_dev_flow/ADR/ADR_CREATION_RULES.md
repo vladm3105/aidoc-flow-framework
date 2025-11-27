@@ -26,7 +26,7 @@ custom_fields:
 ## Table of Contents
 
 1. [File Organization and Directory Structure](#1-file-organization-and-directory-structure)
-2. [Document Structure (Required Sections)](#2-document-structure-required-sections)
+2. [Document Structure (Required sections)](#2-document-structure-required-sections)
 3. [Document Control Requirements](#3-document-control-requirements)
 4. [ID and Naming Standards](#4-id-and-naming-standards)
 5. [ADR Decision Categories](#5-adr-decision-categories)
@@ -47,7 +47,7 @@ custom_fields:
 
 ---
 
-## 2. Document Structure (Required Sections)
+## 2. Document Structure (Required sections)
 
 ADR documents follow a comprehensive 4-part structure:
 
@@ -58,7 +58,7 @@ ADR documents follow a comprehensive 4-part structure:
 - Consequences, Architecture Flow, Implementation Assessment, Impact Analysis
 
 #### **Part 3: Implementation and Operations**
-- Security, Related Decisions, Implementation Notes
+- security, Related Decisions, Implementation Notes
 
 #### **Part 4: Traceability and Documentation**
 - Traceability, References
@@ -102,7 +102,7 @@ ADR documents follow a comprehensive 4-part structure:
 
 **Quality Attribute Decisions**:
 - Performance, scalability, and reliability requirements
-- Security and compliance approaches
+- security and compliance approaches
 - Operational and monitoring strategies
 
 **Integration Decisions**:
@@ -195,7 +195,7 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 **Operational Viability**: Long-term maintenance and scaling considerations
 
-**Security Compliance**: Security architecture meets regulatory requirements
+**security Compliance**: security architecture meets regulatory requirements
 
 ---
 

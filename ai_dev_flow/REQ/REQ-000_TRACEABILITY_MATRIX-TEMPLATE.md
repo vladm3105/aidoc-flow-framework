@@ -129,9 +129,9 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 ```
 
 **Traceability Chain**:
-- **BRD-009:FR-015**: Business requirement for order placement capability
+- **BRD-009:FR-015**: Business requirement for request submission capability
 - **BRD-009:NFR-006**: Performance requirement (2-second execution)
-- **PRD-016:FEATURE-003**: Product feature for trade execution
+- **PRD-016:FEATURE-003**: Product feature for operation execution
 - **EARS-012:EVENT-002**: Formal requirement "WHEN order validation succeeds..."
 - **EARS-012:STATE-001**: State-driven requirement for order lifecycle
 - **BDD-015:scenario-place-order**: Acceptance test scenario
@@ -143,8 +143,8 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 ### 15.2 Downstream Artifacts
 
 **Direct Dependencies**:
-- SPEC-018: Order placement service specification (`@req: REQ-045:interface-spec`)
-- CTR-005: Trade execution API contract (`@req: REQ-045:validation-logic`)
+- SPEC-018: request submission service specification (`@req: REQ-045:interface-spec`)
+- CTR-005: operation execution API contract (`@req: REQ-045:validation-logic`)
 - Code: `src/execution/order_service.py` (`@req: REQ-045:interface-spec`)
 - Tests: `tests/test_order_service.py` (`@req: REQ-045`)
 ```
@@ -157,7 +157,7 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 ## 4. Requirement Statement
 
 The system SHALL provide an API endpoint to place limit orders with the following parameters:
-- Symbol (required, string, format: TICKER)
+- Symbol (required, string, format: identifier)
 - Quantity (required, positive integer)
 - Limit price (required, positive decimal, 2 decimal places)
 - Order type (required, enum: BUY, SELL)
@@ -169,7 +169,7 @@ The system SHALL provide an API endpoint to place limit orders with the followin
 2. Invalid parameters SHALL return 400 error with descriptive message
 3. System SHALL validate account has sufficient funds/shares
 4. Order SHALL be placed on exchange within 2 seconds of validation
-5. System SHALL log all order placement attempts
+5. System SHALL log all request submission attempts
 
 ## 9. Constraints
 

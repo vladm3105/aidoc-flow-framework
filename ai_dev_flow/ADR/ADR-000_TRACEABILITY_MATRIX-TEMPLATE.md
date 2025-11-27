@@ -270,7 +270,7 @@ python scripts/generate_traceability_matrices.py \
 |-------------------|---------|-------|-------------|
 | [Infrastructure] | ADR-001, ADR-002, ADR-003 | 3 | Cloud platform, deployment, hosting |
 | [Data Architecture] | ADR-004, ADR-005 | 2 | Database, storage, data flow |
-| [Security] | ADR-006, ADR-007 | 2 | Authentication, encryption, access control |
+| [security] | ADR-006, ADR-007 | 2 | Authentication, encryption, access control |
 | [Integration] | ADR-008, ADR-009 | 2 | API design, messaging, protocols |
 | [Performance] | ADR-010 | 1 | Caching, scalability, optimization |
 
@@ -414,7 +414,7 @@ graph TD
 |-------------|-------------|------------|--------|
 | [Quarterly Architecture Review] | YYYY-MM-DD | All active ADRs | Scheduled |
 | [Technology Stack Review] | YYYY-MM-DD | Infrastructure ADRs | Planning |
-| [Security Architecture Review] | YYYY-MM-DD | Security ADRs | Scheduled |
+| [security Architecture Review] | YYYY-MM-DD | security ADRs | Scheduled |
 
 ### 10.3 Quality Improvement Recommendations
 

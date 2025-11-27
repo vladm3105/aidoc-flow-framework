@@ -49,15 +49,15 @@ BRDs are the **first step** in specification-driven development within the compl
 - ADRs document **WHICH** option was chosen and **WHY**
 - This separation maintains clear workflow phases and prevents broken references
 
-**Architecture Decision Requirements Section**:
-Every BRD should include a section (typically Section 5.2) that lists architectural topics requiring decisions:
+**Architecture Decision Requirements section**:
+Every BRD should include a section (typically section 5.2) that lists architectural topics requiring decisions:
 
 ```markdown
 ## 5.2 Architecture Decision Requirements
 
 | Topic Area | Decision Needed | Business Driver (BRD Reference) | Key Considerations |
 |------------|-----------------|--------------------------------|-------------------|
-| Multi-Agent Framework | Select orchestration framework | BO-XXX (autonomous trading) | Google ADK, LangGraph, custom |
+| Multi-Agent Framework | Select orchestration framework | BO-XXX (automated operations) | Google ADK, LangGraph, custom |
 | State Management | Define persistence strategy | NFR-XXX (99.99% reliability) | Cloud SQL, Firestore, Redis |
 | Communication Protocol | Choose messaging pattern | NFR-XXX (<50ms latency) | Pub/Sub, gRPC, REST |
 
@@ -77,8 +77,8 @@ Every BRD should include a section (typically Section 5.2) that lists architectu
 
 **Characteristics**:
 - Focus on business drivers for technology decisions
-- Populate "Technology Stack Prerequisites" section (Section 3.6)
-- List required ADRs in "Mandatory Technology Conditions" (Section 3.7)
+- Populate "Technology Stack Prerequisites" section (section 3.6)
+- List required ADRs in "Mandatory Technology Conditions" (section 3.7)
 - ADRs created BEFORE PRD
 
 **Workflow**: Platform BRD → **ADRs (critical)** → PRD → ADRs (remaining) → SPEC
@@ -88,9 +88,9 @@ Every BRD should include a section (typically Section 5.2) that lists architectu
 - BRD-034: ML Infrastructure Technology Decisions
 - BRD-050: Mobile Platform Architecture
 
-**Key Template Sections**:
-- Section 3.6: Technology Stack Prerequisites (REQUIRED)
-- Section 3.7: Mandatory Technology Conditions (REQUIRED)
+**Key Template sections**:
+- section 3.6: Technology Stack Prerequisites (REQUIRED)
+- section 3.7: Mandatory Technology Conditions (REQUIRED)
 
 ### Feature BRDs
 
@@ -109,9 +109,9 @@ Every BRD should include a section (typically Section 5.2) that lists architectu
 - BRD-009: Remittance Transaction Workflow
 - BRD-022: Fraud Detection Agent
 
-**Key Template Sections**:
-- Section 3.6: Technology Stack Prerequisites (OPTIONAL - may reference Platform BRD)
-- Section 3.7: Mandatory Technology Conditions (Usually empty)
+**Key Template sections**:
+- section 3.6: Technology Stack Prerequisites (OPTIONAL - may reference Platform BRD)
+- section 3.7: Mandatory Technology Conditions (Usually empty)
 
 ### Naming Conventions
 
@@ -175,7 +175,7 @@ Standard metadata including version, date, owner, status, revision history
 ### Non-Functional Requirements
 - **Overview**: Quality attributes (performance, security, availability)
 - **Detailed Requirements**: NFR-XXX IDs with metrics, targets, priorities
-- **Architecture Decision Requirements**: Architectural topics needing decisions (Section 5.2)
+- **Architecture Decision Requirements**: Architectural topics needing decisions (section 5.2)
 
 ### Assumptions and Constraints
 - **Assumptions**: Assumed conditions with validation methods
@@ -228,8 +228,8 @@ Where:
 
 **Examples:**
 - `BRD-001_foundation_overview.md` (atomic document)
-- `BRD-009-01_broker_integration_prerequisites.md` (multi-part document)
-- `BRD-009-02_broker_integration_pilot.md` (multi-part document)
+- `BRD-009-01_provider_integration_prerequisites.md` (multi-part document)
+- `BRD-009-02_provider_integration_pilot.md` (multi-part document)
 
 **Important**: Each XXX number must be unique. Cannot have both `BRD-009.md` AND `BRD-009-01.md` (collision).
 
@@ -239,7 +239,7 @@ Where:
 - Start with business problems and market opportunities
 - Emphasize strategic benefits and organizational impact
 - Avoid premature technical implementation details
-- Reference business strategy materials from `option_strategy/` where applicable
+- Reference business strategy materials from domain-specific business logic documents where applicable
 
 ### 2. Define Scope Clearly
 - Use Out-of-Scope to explicitly exclude tempting features
@@ -258,7 +258,7 @@ Where:
 - List technologies/approaches to be evaluated in ADRs
 
 ### 5. Maintain Traceability
-- Link to business strategy documents (`option_strategy/`)
+- Link to business strategy documents (domain-specific business logic)
 - Reference existing systems, policies, and standards
 - Update traceability sections when downstream artifacts are created
 - Note: ADR links added AFTER ADRs are created
@@ -293,13 +293,13 @@ BRDs now include PRD-ready scoring (mirroring REQ SPEC-ready scoring) to ensure 
 - Stakeholder analysis complete: 10%
 
 **Technical Readiness (30%)**:
-- Section 3.6 & 3.7 properly populated by BRD type: 10%
-- Section 5.2 Architecture Decision Requirements table: 10%
+- section 3.6 & 3.7 properly populated by BRD type: 10%
+- section 5.2 Architecture Decision Requirements table: 10%
 - No forward ADR references: 10%
 
 **Quality Standards (20%)**:
 - Document control complete: 5%
-- Strategic alignment with option_strategy/ documents: 5%
+- Strategic alignment with domain-specific business logic documents: 5%
 - Cross-references resolve correctly: 5%
 - Out-of-scope clearly defined: 5%
 
@@ -337,7 +337,7 @@ BRD (with PRD-Ready Score ≥90%) → PRD Creation → SYS → EARS → REQ → 
 - Explicit out-of-scope items defining boundaries
 - Measurable success criteria and KPIs
 - **PRD-Ready Score ≥90%** in Document Control
-- Architecture Decision Requirements section (Section 5.2)
+- Architecture Decision Requirements section (section 5.2)
 - Business-focused acceptance criteria
 - Comprehensive risk assessment
 
@@ -417,6 +417,6 @@ BRDs serve as:
 
 See existing BRD documents in `docs/BRD/` for complete examples:
 - `BRD-001-01_foundation_overview.md` - Multi-agent system strategic overview
-- `BRD-009-02_broker_integration_pilot.md` - [EXTERNAL_SERVICE_GATEWAY] integration pilot
+- `BRD-009-02_provider_integration_pilot.md` - [EXTERNAL_SERVICE_GATEWAY] integration pilot
 
 These demonstrate well-structured BRDs following these conventions with proper Architecture Decision Requirements sections.

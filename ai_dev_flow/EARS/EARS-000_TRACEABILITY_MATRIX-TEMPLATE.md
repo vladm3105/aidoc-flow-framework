@@ -105,7 +105,7 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 ### 2.3 Example: EARS with Required Tags
 
 ```markdown
-# EARS-012: Trade Execution Formal Requirements
+# EARS-012: operation execution Formal Requirements
 
 ## 10. Traceability
 
@@ -117,16 +117,16 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 @prd: PRD-016:FEATURE-003
 ```
 
-- **BRD-009:FR-015**: Functional requirement for broker integration
-- **BRD-009:NFR-006**: Non-functional requirement for trade execution performance
-- **PRD-016:FEATURE-003**: Product feature for trade execution user interface
+- **BRD-009:FR-015**: Functional requirement for service integration
+- **BRD-009:NFR-006**: Non-functional requirement for operation execution performance
+- **PRD-016:FEATURE-003**: Product feature for operation execution user interface
 
 ### 11.2 Downstream Artifacts
 
 **Direct Dependencies**:
-- BDD-015: Trade execution test scenarios (`@ears: EARS-012:EVENT-002`)
+- BDD-015: operation execution test scenarios (`@ears: EARS-012:EVENT-002`)
 - REQ-045: Place limit order atomic requirement (`@ears: EARS-012:EVENT-002`)
-- ADR-033: Trade execution architecture (`@ears: EARS-012:EVENT-002`)
+- ADR-033: operation execution architecture (`@ears: EARS-012:EVENT-002`)
 ```
 
 ### 2.4 Example: EARS Statements with Traceability
@@ -140,8 +140,8 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 **WITHIN** 100 milliseconds
 
 **Traceability**:
-- Upstream: BRD-009:FR-015 (Order placement capability)
-- Upstream: PRD-016:FEATURE-003 (Order placement UI)
+- Upstream: BRD-009:FR-015 (request submission capability)
+- Upstream: PRD-016:FEATURE-003 (request submission UI)
 - Downstream: BDD-015:scenario-place-order (Test scenario)
 - Downstream: REQ-045 (Validation logic requirement)
 
@@ -152,9 +152,9 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 
 **Traceability**:
 - Upstream: BRD-009:NFR-006 (Performance requirement)
-- Upstream: PRD-016:FEATURE-003 (Trade execution feature)
+- Upstream: PRD-016:FEATURE-003 (operation execution feature)
 - Downstream: BDD-015:scenario-trade-execution (Test scenario)
-- Downstream: REQ-046 (Trade execution logic)
+- Downstream: REQ-046 (operation execution logic)
 ```
 
 ### 2.5 Validation Rules
@@ -314,7 +314,7 @@ ADR (Layer 5) → Architecture decisions (@brd through @bdd)
 |------------------|-----------------|--------------|--------------|----------|
 | Functional | [X] | XX% | XX% | [Y] statements |
 | Performance | [X] | XX% | XX% | [Y] statements |
-| Security | [X] | XX% | XX% | [Y] statements |
+| security | [X] | XX% | XX% | [Y] statements |
 | Usability | [X] | XX% | XX% | [Y] statements |
 | Reliability | [X] | XX% | XX% | [Y] statements |
 

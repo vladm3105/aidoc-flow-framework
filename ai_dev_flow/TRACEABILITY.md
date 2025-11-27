@@ -22,7 +22,7 @@ This document defines the standard traceability practices for the AI-Driven Spec
 
 ## Core Principle
 
-**Every document must include a `## Traceability` section** (typically Section 7) that documents:
+**Every document must include a `## Traceability` section** (typically section 7) that documents:
 - **Upstream Sources**: Documents that drive this artifact
 - **Downstream Artifacts**: Documents/code that derive from this artifact
 - **Anchors/IDs**: Primary identifiers within this document
@@ -35,7 +35,7 @@ Requirements (REQ) → Project Management (IMPL) → Interface (CTR) → Impleme
 Code Generation (TASKS) → Implementation Plans (IPLAN) → Execution (Code/Tests) → Validation
 ```
 
-## Standard Traceability Section Structure
+## Standard Traceability section Structure
 
 ### Traceability Flow Visualization
 
@@ -201,9 +201,9 @@ Diagrams use simplified labels for visual clarity:
 ### Upstream Sources
 Document the business and product requirements that drive this specification.
 
-| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+| Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-NNN](../BRD/BRD-NNN_...md) | [Business requirement title] | Sections X.Y | Business objectives driving these requirements |
+| BRD | [BRD-NNN](../BRD/BRD-NNN_...md) | [Business requirement title] | sections X.Y | Business objectives driving these requirements |
 | PRD | [PRD-NNN](../PRD/PRD-NNN_...md) | [Product requirement title] | Functional Requirements X | Product features and user needs |
 | SYS | [SYS-NNN](../SYS/SYS-NNN_...md) | [System requirement title] | System architecture section X | Technical system constraints |
 | EARS | [EARS-NNN](../EARS/EARS-NNN_...md) | [EARS requirement title] | Statement IDs X-Y | Formal requirements driving this specification |
@@ -232,7 +232,7 @@ Document the technical specifications and designs derived from this document.
 
 **Principle:** Single source of truth (code) → Automated matrix generation
 
-Instead of manually maintaining Section 7, embed lightweight tags in code docstrings and documentation files. Scripts extract tags and auto-generate traceability matrices.
+Instead of manually maintaining section 7, embed lightweight tags in code docstrings and documentation files. Scripts extract tags and auto-generate traceability matrices.
 
 ### Tag Format
 
@@ -307,13 +307,13 @@ python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
 ### Benefits
 
 - ✅ Code is single source of truth
-- ✅ No manual Section 7 maintenance
+- ✅ No manual section 7 maintenance
 - ✅ Automated validation prevents drift
 - ✅ Bidirectional matrices auto-generated
 - ✅ CI/CD can enforce tag presence
 - ✅ Explicit document namespacing prevents ambiguity (BRD-001:FR-030 vs BRD-002:FR-030)
 
-### Example: Complete Traceability Section
+### Example: Complete Traceability section
 
 From EARS-TEMPLATE.md:
 
@@ -322,11 +322,11 @@ From EARS-TEMPLATE.md:
 
 ### 7.1 Upstream Sources
 
-| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+| Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-001](../BRD/BRD-001_trading_platform.md) | [APPLICATION_TYPE - e.g., e-commerce platform, SaaS application] Requirements | Sections 2.4, 4.x | Business objectives driving these requirements |
+| BRD | [BRD-001](../BRD/BRD-001_service_platform.md) | [APPLICATION_TYPE - e.g., e-commerce platform, SaaS application] Requirements | sections 2.4, 4.x | Business objectives driving these requirements |
 | PRD | [PRD-001](../PRD/PRD-001_risk_management.md) | [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] Product Requirements | Functional Requirements 4.x | Product features and user needs |
-| SYS | [SYS-001](../SYS/SYS-001_position_limits.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] System Requirements | System architecture section 3 | Technical system constraints |
+| SYS | [SYS-001](../SYS/SYS-001_resource_limits.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] System Requirements | System architecture section 3 | Technical system constraints |
 
 **Key Business Objectives Satisfied**:
 - BO-001: Prevent excessive [RESOURCE_COLLECTION - e.g., user accounts, active sessions] heat → Satisfied by EARS statements EVENT-001, EVENT-002
@@ -349,8 +349,8 @@ From EARS-TEMPLATE.md:
 
 | REQ ID | Requirement Title | Source EARS Statements | Relationship |
 |--------|------------------|----------------------|--------------|
-| [REQ-003](../REQ/risk/lim/REQ-003_position_limit.md#REQ-003) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Validation | Derived from EARS EVENT-001, EVENT-002 | Detailed implementation requirement |
-| [REQ-004](../REQ/risk/lim/REQ-004_portfolio_heat.md#REQ-004) | [RESOURCE_COLLECTION - e.g., user accounts, active sessions] Heat Calculation | Derived from EARS STATE-001 | Detailed implementation requirement |
+| [REQ-003](../REQ/risk/lim/REQ-003_resource_limit.md#REQ-003) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Validation | Derived from EARS EVENT-001, EVENT-002 | Detailed implementation requirement |
+| [REQ-004](../REQ/risk/lim/REQ-004_resource_usage.md#REQ-004) | [RESOURCE_COLLECTION - e.g., user accounts, active sessions] Heat Calculation | Derived from EARS STATE-001 | Detailed implementation requirement |
 
 #### 7.2.3 BDD Scenarios
 
@@ -467,9 +467,9 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 **Code Docstring Example**:
 ```python
 """
-Position Limit Service
+resource limit Service
 
-Implements real-time position limit validation and enforcement.
+Implements real-time resource limit validation and enforcement.
 
 ## Traceability Tags
 
@@ -547,7 +547,7 @@ Implementation Contracts (ICON) enable parallel development by defining type-saf
 ```
 SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) → Code
                 ↓                       ↓              ↓
-         Section 8.1             Contract Def    Section 8.2
+         section 8.1             Contract Def    section 8.2
          @icon-role:            Type-Safe       @icon-role:
           provider              Interface         consumer
 ```
@@ -559,7 +559,7 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 When creating a provider TASKS file with 3+ downstream dependencies:
 - Determine if implementation contracts are needed
 - Identify contract types: Protocol, State Machine, Exception Hierarchy, Data Model, DI Interface
-- Document decision in Section 8.1
+- Document decision in section 8.1
 
 **Step 2: Create ICON File (if standalone required)**
 
@@ -569,9 +569,9 @@ Standalone ICON file required when:
 - Platform-level shared interface
 - Complex state machines or exception hierarchies
 
-Otherwise embed contract in TASKS Section 8.1.
+Otherwise embed contract in TASKS section 8.1.
 
-**Step 3: Update Provider TASKS-001 with Section 8.1**
+**Step 3: Update Provider TASKS-001 with section 8.1**
 
 Mandatory integration in TASKS-001:
 
@@ -607,11 +607,11 @@ Mandatory integration in TASKS-001:
 **Step 1: Identify Contracts Needed (in TASKS-002)**
 
 When creating consumer TASKS files:
-- Review upstream TASKS files for provided contracts (Section 8.1)
+- Review upstream TASKS files for provided contracts (section 8.1)
 - Identify which contracts this TASKS consumes
-- Document in Section 8.2
+- Document in section 8.2
 
-**Step 2: Update Consumer TASKS-002 with Section 8.2**
+**Step 2: Update Consumer TASKS-002 with section 8.2**
 
 Mandatory integration in consumer TASKS:
 
@@ -656,7 +656,7 @@ find docs/ICON/ -name "ICON-*.md" | wc -l
 # Count @icon: references in TASKS files
 grep -r "@icon:" docs/TASKS/ | wc -l
 
-# Count Section 8 headers in TASKS files
+# Count section 8 headers in TASKS files
 grep -r "## 8. Implementation Contracts" docs/TASKS/ | wc -l
 
 # Verify specific ICON integration
@@ -671,7 +671,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 
 **Expected Results (IB MCP Project)**:
 - 3 ICON files → 21 @icon: tags (1 provider + 6 consumers × 3 contracts = 21)
-- 9 TASKS files with Section 8 (2 providers + 7 consumers)
+- 9 TASKS files with section 8 (2 providers + 7 consumers)
 - 3 provider role tags (TASKS-001 × 2 contracts + TASKS-005 × 1 contract)
 - 18 consumer role tags (8 consumers × ICON-001 + 7 consumers × ICON-002 + 3 consumers × ICON-003)
 
@@ -728,36 +728,36 @@ grep -r "@icon-role: consumer" docs/TASKS/
 ❌ **Problem**: ICON file created but no TASKS files reference it
 - ICON-001 exists in `docs/ICON/`
 - `grep -r "@icon: ICON-001" docs/TASKS/` returns 0 results
-- No Section 8 in any TASKS file
+- No section 8 in any TASKS file
 
-✅ **Solution**: Update all provider and consumer TASKS files with Section 8
+✅ **Solution**: Update all provider and consumer TASKS files with section 8
 
-**Anti-Pattern 2: Missing Provider Section 8.1**
+**Anti-Pattern 2: Missing Provider section 8.1**
 
 ❌ **Problem**: Provider TASKS doesn't document contracts it provides
 - TASKS-001 implements IBGatewayConnector interface
-- No Section 8.1 documenting ICON-001
+- No section 8.1 documenting ICON-001
 - Consumers don't know contract exists
 
-✅ **Solution**: Add Section 8.1 to TASKS-001 with contract details
+✅ **Solution**: Add section 8.1 to TASKS-001 with contract details
 
-**Anti-Pattern 3: Missing Consumer Section 8.2**
+**Anti-Pattern 3: Missing Consumer section 8.2**
 
 ❌ **Problem**: Consumer TASKS doesn't document contracts it uses
 - TASKS-002 uses IBGatewayConnector methods
-- No Section 8.2 documenting dependency on ICON-001
+- No section 8.2 documenting dependency on ICON-001
 - Unclear which contracts are required
 
-✅ **Solution**: Add Section 8.2 to TASKS-002 listing all consumed contracts
+✅ **Solution**: Add section 8.2 to TASKS-002 listing all consumed contracts
 
 **Anti-Pattern 4: Missing @icon: Tags**
 
-❌ **Problem**: Section 8 exists but no traceability tags
-- TASKS-001 has Section 8.1
+❌ **Problem**: section 8 exists but no traceability tags
+- TASKS-001 has section 8.1
 - No @icon: ICON-001:IBGatewayConnector tag
 - Automated validation fails
 
-✅ **Solution**: Add @icon: and @icon-role: tags to all TASKS files with Section 8
+✅ **Solution**: Add @icon: and @icon-role: tags to all TASKS files with section 8
 
 **Anti-Pattern 5: Missing Role Tags**
 
@@ -797,7 +797,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 **ICON (Implementation Contracts)** - Layer 11 (Internal):
 - **Purpose**: Enable parallel development within codebase
 - **Audience**: Internal implementation teams (provider and consumer TASKS)
-- **Format**: Embedded in TASKS Section 8 OR standalone ICON files
+- **Format**: Embedded in TASKS section 8 OR standalone ICON files
 - **Examples**: `IBGatewayConnector` Protocol, `ConnectionState` State Machine
 - **Tag**: `@icon: TASKS-001:IBGatewayConnector` or `@icon: ICON-001:IBGatewayConnector`
 - **Location**: `docs/ICON/` or embedded in `docs/TASKS/`
@@ -817,15 +817,15 @@ grep -r "@icon-role: consumer" docs/TASKS/
 **Before Marking ICON as Active**:
 
 - [ ] ICON file created (if standalone required)
-- [ ] Provider TASKS has Section 8.1 documenting contract
+- [ ] Provider TASKS has section 8.1 documenting contract
 - [ ] Provider TASKS has @icon: and @icon-role: provider tags
-- [ ] All consumer TASKS have Section 8.2 documenting contract usage
+- [ ] All consumer TASKS have section 8.2 documenting contract usage
 - [ ] All consumer TASKS have @icon: and @icon-role: consumer tags
 - [ ] Validation commands return expected counts:
   - [ ] `grep -r "@icon:" docs/TASKS/ | wc -l` ≥ (1 provider + N consumers)
   - [ ] `grep -r "@icon-role: provider" docs/TASKS/ | wc -l` = 1 per contract
   - [ ] `grep -r "@icon-role: consumer" docs/TASKS/ | wc -l` = N consumers
-- [ ] Section 8 exists in all provider and consumer TASKS
+- [ ] section 8 exists in all provider and consumer TASKS
 - [ ] Contract type documented (Protocol/State Machine/Exception/Data Model/DI)
 - [ ] Usage examples provided for consumers
 
@@ -910,14 +910,14 @@ The SDD workflow employs different tracking methods for different artifact types
 
 ```python
 """
-Position Limit Validation Service
+resource limit Validation Service
 
-Implements real-time position limit enforcement with portfolio heat monitoring
+Implements real-time resource limit enforcement with resource usage monitoring
 and automated trade rejection for risk management compliance.
 
 Business Context:
-Satisfies regulatory requirements for position limit monitoring and prevents
-excessive portfolio concentration risk through automated validation.
+Satisfies regulatory requirements for resource limit monitoring and prevents
+excessive collection concentration risk through automated validation.
 
 ## Traceability Tags
 
@@ -941,12 +941,12 @@ excessive portfolio concentration risk through automated validation.
 
 class PositionLimitService:
     """
-    Validates position limits against portfolio heat thresholds.
+    Validates resource limits against resource usage thresholds.
 
     Implements CTR-001 position_risk_validation interface.
     """
 
-    def validate_position_limit(self, position: Position) -> ValidationResult:
+    def validate_resource_limit(self, position: Position) -> ValidationResult:
         """
         Validate position against configured limits.
 
@@ -962,7 +962,7 @@ class PositionLimitService:
 
 ```python
 """
-Position Limit Validation Service Tests
+resource limit Validation Service Tests
 
 Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
 
@@ -977,13 +977,13 @@ Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
 @req: REQ-003:interface-spec
 @spec: SPEC-003
 @tasks: TASKS-001:task-3
-@code: src/services/position_limit_service.py
+@code: src/services/resource_limit_service.py
 
 @test-type: integration
 @test-scope: position-limits
 """
 
-def test_validate_position_limit_within_threshold():
+def test_validate_resource_limit_within_threshold():
     """
     Test: Position within limit is approved
 
@@ -1019,49 +1019,49 @@ def test_validate_position_limit_within_threshold():
 ### BRD (Business Requirements Document)
 - **Upstream**: Market research, stakeholder needs, strategic goals
 - **Downstream**: PRD (product features)
-- **Section**: Business case and strategic alignment
+- **section**: Business case and strategic alignment
 
 ### PRD (Product Requirements Document)
 - **Upstream**: BRD (business objectives), product strategy
 - **Downstream**: EARS (formal requirements)
-- **Section**: Feature traceability to business objectives
+- **section**: Feature traceability to business objectives
 
 ### EARS (Engineering Requirements)
 - **Upstream**: PRD (product requirements)
 - **Downstream**: BDD (acceptance tests), ADR (architecture), REQ (atomic requirements)
-- **Section**: Formal WHEN-THE-SHALL-WITHIN statements with traceability tables
+- **section**: Formal WHEN-THE-SHALL-WITHIN statements with traceability tables
 
 ### BDD (Behavior-Driven Development)
 - **Upstream**: EARS (requirements being tested)
 - **Downstream**: ADR (architecture decisions), Code (implementation), Test results
-- **Format**: Gherkin tags at scenario level (not Section 7)
+- **Format**: Gherkin tags at scenario level (not section 7)
 
 ### ADR (Architecture Decision Record)
 - **Upstream**: BRD/PRD (Architecture Decision Requirements identified in business/product docs), BDD (test scenarios), EARS (requirements)
 - **Downstream**: SYS (system requirements), REQ (atomic requirements), CTR (contracts implementing architecture), SPEC (implementation)
-- **Section**: Context, decision, consequences with full traceability
+- **section**: Context, decision, consequences with full traceability
 
 ### SYS (System Requirements Specification)
 - **Upstream**: ADR (architecture decisions), PRD (product features)
 - **Downstream**: REQ (atomic requirements)
-- **Section**: System-level functional/non-functional requirements within architectural framework
+- **section**: System-level functional/non-functional requirements within architectural framework
 
 ### REQ (Atomic Requirements)
 - **Upstream**: EARS (formal requirements), SYS (system requirements), ADR (architectural constraints)
 - **Downstream**: IMPL (implementation plans), CTR (interface contracts if interface requirement), BDD (test scenarios), SPEC (implementation), Code
-- **Section**: Detailed requirement with acceptance criteria
+- **section**: Detailed requirement with acceptance criteria
 
 ### IMPL (Implementation Plans)
 - **Upstream**: REQ (requirements to implement), ADR (architectural constraints)
 - **Downstream**: CTR (interface contracts), SPEC (technical specifications), TASKS (implementation tasks)
 - **Purpose**: Project management artifacts defining WHO implements and WHEN (schedule/phases)
-- **Section**: Scope, stakeholders, milestones, dependencies, traceability to requirements
+- **section**: Scope, stakeholders, milestones, dependencies, traceability to requirements
 - **[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: Project management layer between requirements (WHAT) and implementation (HOW)
 
 ### CTR (API Contracts)
 - **Upstream**: REQ (interface requirements), ADR (architecture decisions), IMPL (implementation schedules)
 - **Downstream**: SPEC (technical implementation), TASKS (implementation plans), Code (provider/consumer implementations)
-- **Format**: Dual-file format (.md + .yaml), Section 7 Traceability in markdown
+- **Format**: Dual-file format (.md + .yaml), section 7 Traceability in markdown
 - **Note**: Both .md and .yaml files must exist for each CTR-NNN
 
 ### SPEC (Technical Specifications)
@@ -1072,12 +1072,12 @@ def test_validate_position_limit_within_threshold():
 ### TASKS (Implementation Plans)
 - **Upstream**: SPEC, REQ (requirements), ICON (optional - implementation contracts)
 - **Downstream**: Code (implementation), Tests, ICON (optional - contracts provided)
-- **Section**: Implementation scope with requirement links
+- **section**: Implementation scope with requirement links
 - **Contracts**: Use `@icon:` tag for implementation contracts (embedded or standalone ICON files)
 - **Layer**: 11 (Code Generation)
 
 **Implementation Contracts** (optional):
-- Embedded in TASKS files (default) - Section 8: Implementation Contracts
+- Embedded in TASKS files (default) - section 8: Implementation Contracts
 - Standalone ICON files (when 5+ consumers, >500 lines, platform-level)
 - Use `@icon: TASKS-XXX:ContractName` or `@icon: ICON-XXX:ContractName`
 - Optional role: `@icon-role: provider|consumer`
@@ -1090,7 +1090,7 @@ def test_validate_position_limit_within_threshold():
 All traceability references MUST use markdown links with anchors:
 
 ```markdown
-[REQ-003](../REQ/risk/lim/REQ-003_position_limit_enforcement.md#REQ-003)
+[REQ-003](../REQ/risk/lim/REQ-003_resource_limit_enforcement.md#REQ-003)
 [ADR-033](../ADR/ADR-033_risk_limit_enforcement_architecture.md#ADR-033)
 [CTR-001](../CTR/CTR-001_position_risk_validation.md#CTR-001)
 [CTR-001 Schema](../CTR/CTR-001_position_risk_validation.yaml)
@@ -1132,7 +1132,7 @@ All traceability references MUST use markdown links with anchors:
 
 Before committing any document:
 
-- [ ] `## Traceability` section exists (Section 7 for most documents)
+- [ ] `## Traceability` section exists (section 7 for most documents)
 - [ ] All upstream sources documented with valid links
 - [ ] All downstream artifacts documented with valid links
 - [ ] Markdown links include anchors where applicable
@@ -1145,7 +1145,7 @@ Before committing any document:
 - [ ] Both `.md` and `.yaml` files exist for the contract
 - [ ] Slugs match exactly between `.md` and `.yaml` files
 - [ ] YAML `contract_id:` field uses lowercase_snake_case matching slug
-- [ ] Contract markdown file includes Section 7 Traceability with upstream REQ/ADR links
+- [ ] Contract markdown file includes section 7 Traceability with upstream REQ/ADR links
 - [ ] Contract markdown file includes downstream SPEC/Code links
 - [ ] YAML schema is valid (passes JSON Schema validation)
 - [ ] Both files are referenced correctly from SPEC (if implemented)
@@ -1154,7 +1154,7 @@ Before committing any document:
 - [ ] IMPL file references upstream REQ/ADR that drive the implementation
 - [ ] Stakeholders (WHO) are clearly defined
 - [ ] Schedule/phases (WHEN) are documented with dependencies
-- [ ] Section 7 Traceability links to upstream REQ/ADR
+- [ ] section 7 Traceability links to upstream REQ/ADR
 - [ ] Downstream artifacts (CTR/SPEC/TASKS) are identified
 - [ ] Milestone dates are realistic and dependency-aware
 
@@ -1236,7 +1236,7 @@ BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC �
 ### Granular Relationships
 
 - Don't just link documents - specify sections
-- Example: "PRD-001 Section 4.2 drives EARS-001 Statement EVENT-003"
+- Example: "PRD-001 section 4.2 drives EARS-001 Statement EVENT-003"
 - Enables precise change impact assessment
 
 ### Table Format for Complex Traceability
@@ -1245,7 +1245,7 @@ Use tables for multiple relationships:
 
 | Source | Target | Relationship Type | Notes |
 |--------|--------|------------------|-------|
-| BRD-001 Section 2.4 | PRD-001 Feature-003 | Business objective → Product feature | [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] capability |
+| BRD-001 section 2.4 | PRD-001 Feature-003 | Business objective → Product feature | [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] capability |
 | PRD-001 Feature-003 | EARS-001 EVENT-001 | Product feature → Formal requirement | Real-time validation |
 
 ### Code Traceability
@@ -1261,7 +1261,7 @@ In code docstrings, include:
 - Architecture: ADR-033
 - Implementation Plan: IMPL-001_phase1_risk_services
 - Contract: CTR-001_position_risk_validation (if implementing contract)
-- Specification: SPEC-003_position_limit_service.yaml
+- Specification: SPEC-003_resource_limit_service.yaml
 - BDD: BDD-003_risk_limits.feature
 """
 ```
@@ -1302,7 +1302,7 @@ Risk Validator Service - Contract Provider
    - Status, Context, Contract Definition
    - Interface specification with request/response schemas
    - Error handling, NFRs, versioning strategy
-   - Section 7 Traceability with upstream REQ/ADR links
+   - section 7 Traceability with upstream REQ/ADR links
 6. Complete YAML file:
    - contract_id (lowercase_snake_case)
    - endpoints with JSON Schema definitions
@@ -1322,7 +1322,7 @@ Risk Validator Service - Contract Provider
    - Scope: What REQs are being implemented
    - Stakeholders: WHO (teams/roles responsible)
    - Schedule: WHEN (phases, milestones, dependencies)
-   - Section 7 Traceability with upstream REQ/ADR links
+   - section 7 Traceability with upstream REQ/ADR links
 5. Identify if any REQ requires interfaces (CTR)
 6. Create placeholder downstream entries (CTR if needed, SPEC, TASKS)
 7. Update IMPL-000_index.md with new plan entry

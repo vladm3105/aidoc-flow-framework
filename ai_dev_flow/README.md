@@ -75,7 +75,7 @@ custom_fields:
 
 **Purpose**: Provide version history, authorship, and approval tracking for human reviewers.
 
-**Location**: "Document Control" section within markdown body (typically Section 1).
+**Location**: "Document Control" section within markdown body (typically section 1).
 
 **Required in**: All production documents (BRD through IPLAN).
 
@@ -100,7 +100,7 @@ custom_fields:
 | Aspect | YAML Frontmatter | Traceability Tags |
 |--------|------------------|-------------------|
 | **Purpose** | Document classification, tooling | Audit trail, compliance |
-| **Location** | Top of file (lines 1-20) | Section 7 (body) |
+| **Location** | Top of file (lines 1-20) | section 7 (body) |
 | **Format** | YAML key-value pairs | `@artifact: ID (Description)` |
 | **Validation** | `validate_metadata.py` | `trace-check` skill |
 | **Changeability** | Can be updated | Immutable after approval |
@@ -125,7 +125,7 @@ python3 scripts/validate_metadata.py .
 
 ### 16-Layer Architecture with Cumulative Tagging
 
-The AI Dev Flow transforms business requirements into production code through a structured, traceable workflow. Each layer includes cumulative tags from ALL upstream layers, creating complete audit trails for regulatory compliance (SEC, FINRA, FDA, ISO).
+The AI Dev Flow transforms business requirements into production code through a structured, traceable workflow. Each layer includes cumulative tags from ALL upstream layers, creating complete audit trails for regulatory compliance (regulatory, FDA, ISO).
 
 | Layer | Artifact | Purpose | Tags Required | Key Decision |
 |-------|----------|---------|---------------|--------------|
@@ -280,7 +280,7 @@ Diagrams use simplified labels for visual clarity:
   - `api/` - API integration requirements (examples: REQ-001_api_integration_example.md)
   - `auth/` - Authentication/authorization (examples: REQ-003_access_control_example.md)
   - `data/` - Data architecture (examples: REQ-002_data_validation_example.md)
-  - `risk/` - Risk management (legacy: REQ-003_position_limit_enforcement.md)
+  - `risk/` - Risk management (legacy: REQ-003_resource_limit_enforcement.md)
 - **Files**: [REQ-000_index.md](./REQ/REQ-000_index.md) | [Template](./REQ/REQ-TEMPLATE.md)
 
 ### 5. Project Management Layer
@@ -354,9 +354,9 @@ Format: `{TYPE}-{NNN}_{descriptive_slug}.{ext}`
 - **ext**: File extension (md, feature, yaml)
 
 Examples:
-- `PRD-001_alpha_vantage_integration.md`
+- `PRD-001_external_api_integration.md`
 - `BDD-003_risk_limits_requirements.feature`
-- `CTR-001_position_risk_validation.md` + `CTR-001_position_risk_validation.yaml` (dual-file format)
+- `CTR-001_data_validation.md` + `CTR-001_data_validation.yaml` (dual-file format)
 - `SPEC-042_real_time_processor.yaml`
 
 **Note**: CTR (API Contracts) requires both `.md` and `.yaml` files with matching slugs.
@@ -400,7 +400,7 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 ### Benefits
 
 - **Complete Audit Trail**: Every artifact traces back to original business requirement
-- **Regulatory Compliance**: SEC, FINRA, FDA, ISO requirements for traceability
+- **Regulatory Compliance**: regulatory, FDA, ISO requirements for traceability
 - **Impact Analysis**: Instantly identify all downstream artifacts affected by upstream changes
 - **Automated Validation**: Scripts enforce cumulative tagging compliance
 - **Change Management**: Track complete lineage from requirements through code
@@ -664,7 +664,7 @@ python scripts/generate_traceability_matrices.py --auto
 
 **Issue**: "Missing required upstream tags"
 ```bash
-# Fix: Add missing tags to artifact's Section 7 Traceability
+# Fix: Add missing tags to artifact's section 7 Traceability
 # Example: REQ-045 missing @bdd tag
 ```
 ```markdown
@@ -754,7 +754,7 @@ The AI Dev Flow follows a structured progression through 16 layers:
 **Key Workflow Patterns**:
 - **Cumulative Tagging**: Every artifact includes tags from ALL upstream layers
 - **Complete Traceability**: Every document links upstream (requirements) and downstream (implementations)
-- **Regulatory Compliance**: Complete audit trail for SEC, FINRA, FDA, ISO requirements
+- **Regulatory Compliance**: Complete audit trail for regulatory, FDA, ISO requirements
 - **Dual-File Contracts**: CTR uses `.md` (human) + `.yaml` (machine) for parallel development
 - **AI Code Generation**: SPEC + TASKS enable deterministic code generation by AI assistants
 - **Automated Validation**: Scripts enforce tagging hierarchy and traceability compliance
@@ -822,7 +822,7 @@ Templates are optimized for AI code generation:
 - **Cross-References**: Use relative paths within template directory
 - **Token Limits (Tool-Optimized)**:
   - **Claude Code** (Primary): Up to 50,000 tokens (200KB) standard, 100,000 tokens (400KB) maximum
-  - **Gemini CLI** (Secondary): Use file read tool (not `@`) for files >10,000 tokens
+  - **Gemini CLI** (secondary): Use file read tool (not `@`) for files >10,000 tokens
   - **GitHub Copilot**: Keep <30KB or create companion summaries
   - See: [TOOL_OPTIMIZATION_GUIDE.md](TOOL_OPTIMIZATION_GUIDE.md) and [Gemini_CLI_Large_File_Workarounds.md](../Gemini_CLI_Large_File_Workarounds.md)
 - **Update History**: Document version and last updated date in headers
@@ -883,7 +883,7 @@ ai_dev_flow/
 - ✅ **Traceability Matrix Templates**: All 13 artifact types have cumulative tagging sections
 - ✅ **Complete Example**: COMPLETE_TAGGING_EXAMPLE.md shows end-to-end tagging
 - ✅ **Setup Guide**: TRACEABILITY_SETUP.md with CI/CD integration patterns
-- ✅ **Regulatory Compliance**: Complete audit trails for SEC, FINRA, FDA, ISO
+- ✅ **Regulatory Compliance**: Complete audit trails for regulatory, FDA, ISO
 - ✅ **Impact Analysis**: Instant identification of affected downstream artifacts
 
 **Version 1.0 Enhancements** (November 2025):

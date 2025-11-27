@@ -58,7 +58,7 @@ Understanding the difference between TASKS and IPLAN is essential:
 | **Format** | Markdown with code examples | Markdown with executable bash blocks |
 | **Session Context** | Session-agnostic | Session-specific with environment details |
 | **Verification** | Acceptance criteria | Bash verification commands |
-| **Example** | "Implement PositionLimitService class with retry logic" | "Run: `touch src/service.py && pytest tests/` → Verify: 0 errors" |
+| **Example** | "Implement ResourceLimitService class with retry logic" | "Run: `touch src/service.py && pytest tests/` → Verify: 0 errors" |
 | **Required Tags** | @brd through @spec | @brd through @tasks (includes @tasks tag) |
 
 **Analogy**:
@@ -137,7 +137,7 @@ All IPLAN documents MUST include these 9 mandatory tags:
 5. `@adr: ADR-NNN` - Architecture Decision Records (Layer 5)
 6. `@sys: SYS-NNN:REQ-NNN` - System Requirements (Layer 6)
 7. `@req: REQ-NNN` - Atomic Requirements (Layer 7)
-8. `@spec: SPEC-NNN:SECTION` - Technical Specifications (Layer 10)
+8. `@spec: SPEC-NNN:regulatoryTION` - Technical Specifications (Layer 10)
 9. `@tasks: TASKS-NNN:PHASE-X.Y` - Code Generation Plan (Layer 11)
 
 ### Optional Tags (Conditional)
@@ -145,7 +145,7 @@ All IPLAN documents MUST include these 9 mandatory tags:
 Include these tags if present in your project:
 
 10. `@impl: IMPL-NNN` - Implementation Plan (Layer 8) - **if project uses IMPL artifacts**
-11. `@ctr: CTR-NNN:SECTION` - Interface Contracts (Layer 9) - **if contracts are defined**
+11. `@ctr: CTR-NNN:regulatoryTION` - Interface Contracts (Layer 9) - **if contracts are defined**
 
 ### Tag Format Specification
 
@@ -292,7 +292,7 @@ Total: 9 tags (all mandatory, no optional)
 - Input/output description
 - Consumer identification
 
-### 3. Objective Section
+### 3. Objective section
 
 **Purpose**: Clear deliverables statement
 
@@ -308,7 +308,7 @@ Total: 9 tags (all mandatory, no optional)
 - [Specific deliverable #3]
 ```
 
-### 4. Context Section
+### 4. Context section
 
 **Purpose**: Current state and key decisions
 
@@ -340,7 +340,7 @@ Total: 9 tags (all mandatory, no optional)
 - [Strategy]
 ```
 
-### 5. Task List Section
+### 5. Task List section
 
 **Purpose**: Phase-based checklist of tasks
 
@@ -369,7 +369,7 @@ Total: 9 tags (all mandatory, no optional)
 - Use checkboxes for trackable progress
 - Include verification for each task
 
-### 6. Implementation Guide Section
+### 6. Implementation Guide section
 
 **Purpose**: Executable steps with bash commands
 
@@ -437,7 +437,7 @@ poetry show | grep ib_async
 - Use absolute paths where possible
 - Add comments to explain complex commands
 
-### 7. Technical Details Section
+### 7. Technical Details section
 
 **Purpose**: Module specifications and configurations
 
@@ -447,7 +447,7 @@ poetry show | grep ib_async
 - Configuration parameters
 - BDD scenario mapping
 
-### 8. Traceability Tags Section (MANDATORY)
+### 8. Traceability Tags section (MANDATORY)
 
 **Purpose**: Complete cumulative tag chain
 
@@ -477,7 +477,7 @@ poetry show | grep ib_async
 
 **Critical**: This section is MANDATORY and must include ALL required tags.
 
-### 9. Traceability Section
+### 9. Traceability section
 
 **Purpose**: Upstream and downstream links
 
@@ -486,7 +486,7 @@ poetry show | grep ib_async
 - **Downstream Impact**: Referenced BY downstream artifacts
 - **Related Documents**: Sibling and matrix documents
 
-### 10. Risk Mitigation Section
+### 10. Risk Mitigation section
 
 **Purpose**: Identify and mitigate implementation risks
 
@@ -496,7 +496,7 @@ poetry show | grep ib_async
 - Impact (High/Medium/Low)
 - Mitigation actions
 
-### 11. Success Criteria Section
+### 11. Success Criteria section
 
 **Purpose**: Measurable completion metrics
 
@@ -507,7 +507,7 @@ poetry show | grep ib_async
 - Documentation quality
 - Integration validation
 
-### 12. References Section
+### 12. References section
 
 **Purpose**: Links to related documentation
 
@@ -1327,10 +1327,10 @@ pytest --cov=src/module --cov-report=term
 - [ ] @adr: ADR-___
 - [ ] @sys: SYS-___:REQ-___
 - [ ] @req: REQ-___
-- [ ] @spec: SPEC-___:SECTION
+- [ ] @spec: SPEC-___:regulatoryTION
 - [ ] @tasks: TASKS-___:PHASE-_._
 - [ ] @impl: IMPL-___ (optional)
-- [ ] @ctr: CTR-___:SECTION (optional)
+- [ ] @ctr: CTR-___:regulatoryTION (optional)
 ```
 
 ### Common Bash Commands

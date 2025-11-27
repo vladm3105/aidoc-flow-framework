@@ -49,7 +49,7 @@ flowchart LR
 
 ### Example Entry (for reference):
 ```markdown
-| IPLAN-001 | Implement Gateway Connection | In Progress | TASKS-001 | ✅ 9/9 tags | Gateway Service | 80 hours | 2025-11-12 | - | [Link](./IPLAN-001_implement_gateway_connection_20251112_092843.md) |
+| IPLAN-001 | Implement Gateway Connection | In Progress | TASKS-001 | ✅ 9/9 tags | Gateway Service | 80 hours | 2025-11-12 | - | [Link](./IPLAN-001_implement_gateway_connection.md) |
 ```
 
 ## Status Definitions
@@ -107,7 +107,7 @@ When creating a new IPLAN document:
 1. **Copy Template**:
    ```bash
    cp /opt/data/docs_flow_framework/ai_dev_flow/IPLAN/IPLAN-TEMPLATE.md \
-      /opt/data/docs_flow_framework/ai_dev_flow/IPLAN/IPLAN-NNN_descriptive_name_YYYYMMDD_HHMMSS.md
+      /opt/data/docs_flow_framework/ai_dev_flow/IPLAN/IPLAN-NNN_descriptive_name.md
    ```
 
 2. **Assign ID**: Use next sequential number (IPLAN-001, IPLAN-002, ...)
@@ -146,11 +146,11 @@ When creating a new IPLAN document:
 
 - **Numbering**: Allocate sequentially starting at `001`; keep numbers stable
 - **One Plan Per File**: Each `IPLAN-NNN` file covers one implementation session or phase
-- **Timestamp Required**: Always include creation timestamp in filename (`YYYYMMDD_HHMMSS`)
 - **Slugs**: Short, descriptive, lower_case_with_underscores
 - **Cross-Links**: Reference parent TASKS and all upstream artifacts via tags
 - **Index Updates**: Add entry for every new plan; do not remove past entries
 - **Tag Completeness**: Verify all 9 mandatory tags present before adding to index
+- **Version Control**: Git tracks file history and timestamps
 
 ## Index by Status
 
@@ -336,14 +336,14 @@ This index should be reviewed:
 
 ## Best Practices
 
-1. **Always Include Timestamps**: Filename must have `YYYYMMDD_HHMMSS` for session tracking
-2. **Complete Tags Before Adding to Index**: Verify all 9 mandatory tags present
-3. **Update Status Promptly**: Keep status current for team visibility
-4. **Track Actual Effort**: Update when completing phases for future estimation
-5. **Document Blockers**: Clear blocker descriptions help team assist
-6. **Maintain Resume Points**: Enable seamless session continuity
-7. **Validate Before Completing**: Run all verification checklists before marking complete
-8. **Link to Parent TASKS**: Always reference the parent TASKS document
+1. **Complete Tags Before Adding to Index**: Verify all 9 mandatory tags present
+2. **Update Status Promptly**: Keep status current for team visibility
+3. **Track Actual Effort**: Update when completing phases for future estimation
+4. **Document Blockers**: Clear blocker descriptions help team assist
+5. **Maintain Resume Points**: Enable seamless session continuity
+6. **Validate Before Completing**: Run all verification checklists before marking complete
+7. **Link to Parent TASKS**: Always reference the parent TASKS document
+8. **Use Descriptive Slugs**: Choose clear, stable slugs that describe the work
 
 ## Traceability Validation
 

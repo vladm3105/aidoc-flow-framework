@@ -79,7 +79,7 @@ Quality attributes and operational characteristics:
 - **Performance**: [Latency/threshold] < [quantitative value] for [operation type] under [conditions]
 - **Reliability**: [Availability/uptime] ≥ [percentage] with [MTTR] < [timeframe]
 - **Scalability**: Support [concurrent users/throughput] ≥ [value] maintaining [SLA]
-- **Security**: [Authentication/authorization/confidentiality] requirements with [specifications]
+- **security**: [Authentication/authorization/confidentiality] requirements with [specifications]
 - **Observability**: Logs/metrics/traces for [critical operations] with [retention/SLA]
 - **Maintainability**: [Deployment/rollback/updates] within [timeframes] with [downtime]
 ```
@@ -136,7 +136,7 @@ Quality attributes and operational characteristics:
 - **Disaster Recovery**: Restore service within 1 hour following region failure
 ```
 
-### Security Requirements
+### security Requirements
 ```markdown
 ## Non-Functional Requirements
 - **Authentication**: Require valid JWT tokens issued by configured identity provider
@@ -167,7 +167,7 @@ Where:
 - `descriptive_title` uses snake_case describing the system or component
 
 **Examples:**
-- `SYS-001_alpha_vantage_integration.md`
+- `SYS-001_external_api_integration.md`
 - `SYS-002_ib_gateway_integration.md`
 - `SYS-003_position_risk_limits.md`
 
@@ -201,8 +201,8 @@ Review PRDs to understand system boundaries and business context:
 
 ```markdown
 ## Context Analysis
-**Problem Solved**: Enable real-time data retrieval from [EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] API
-**Business Value**: Cost-effective supplemental [EXTERNAL_DATA - e.g., customer data, sensor readings] for trading decisions
+**Problem Solved**: Enable real-time data retrieval from [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] API
+**Business Value**: Cost-effective supplemental [EXTERNAL_DATA - e.g., customer data, sensor readings] for service decisions
 **Key Constraints**: API rate limits, data freshness requirements, error handling
 **Success Criteria**: ≥98% SLA compliance, <0.1% data error rate
 ```
@@ -233,7 +233,7 @@ Define quality attributes based on system criticality:
 ## Non-Functional Requirements Specification
 
 ### Performance Tier Assessment
-- **Business Impact**: High (trading decisions depend on timely data)
+- **Business Impact**: High (service decisions depend on timely data)
 - **User Expectations**: Sub-second response times for critical queries
 - **Load Characteristics**: Peak usage during market hours, variable throughout day
 
@@ -249,7 +249,7 @@ Define external interactions clearly:
 ```markdown
 ## Integration Requirements
 
-### [EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] API Interface
+### [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] API Interface
 - **Endpoints Used**: GLOBAL_QUOTE, TIME_SERIES_INTRADAY, SYMBOL_SEARCH, OVERVIEW
 - **Authentication**: API key via X-RapidAPI-Key header
 - **Rate Limits**: 5/minute free tier, 75/minute [VALUE - e.g., subscription fee, processing cost] tier
@@ -269,7 +269,7 @@ Define how system correctness will be measured:
 ## Acceptance Criteria
 
 ### Functional Validation
-- [ ] Retrieve valid quote data for known symbols (AAPL, MSFT, GOOGL)
+- [ ] Retrieve valid quote data for known symbols (ITEM-001, MSFT, GOOGL)
 - [ ] Handle 404 responses for invalid symbols gracefully
 - [ ] Transform all API response formats to internal schema consistently
 - [ ] Cache responses and serve stale data when API unavailable
@@ -394,7 +394,7 @@ Use SYS as constraints for architectural decision-making:
 - Performance requirements guide technology selection (language, databases, caching)
 - Scaling needs influence service boundaries and data partitioning strategies
 - Reliability requirements drive redundancy and failure handling approaches
-- Security requirements determine authentication and authorization architectures
+- security requirements determine authentication and authorization architectures
 
 ### Implementation Planning
 Translate SYS into development tasks and acceptance criteria:
@@ -445,16 +445,16 @@ Prepare for production deployment based on SYS requirements:
 python validate_SYS.py --directory SYS/
 
 # Check requirement completeness
-python check_SYS_coverage.py --SYS-file SYS/SYS-001_alpha_vantage_integration.md
+python check_SYS_coverage.py --SYS-file SYS/SYS-001_external_api_integration.md
 
 # Generate traceability reports
-python generate_SYS_traceability.py --system trading_platform --format html
+python generate_SYS_traceability.py --system service_platform --format html
 ```
 
 ### Requirements Testing Tools
 ```bash
 # Generate BDD scenarios from SYS
-python SYS_to_bdd.py --SYS SYS/SYS-001_alpha_vantage_integration.md --output features/
+python SYS_to_bdd.py --SYS SYS/SYS-001_external_api_integration.md --output features/
 
 # Validate implementation against SYS requirements
 python verify_SYS_compliance.py --SYS SYS/SYS-001.yaml --implementation ./SYS/
@@ -471,7 +471,7 @@ python generate_req_matrix.py --SYS SYS/SYS-*.md --format json --output reports/
 
 ## Example SYS Template
 
-See `SYS/SYS-001_alpha_vantage_integration.md` for a complete example of a well-structured system requirements specification that includes functional requirements, performance criteria, integration details, and comprehensive traceability.
+See `SYS/SYS-001_external_api_integration.md` for a complete example of a well-structured system requirements specification that includes functional requirements, performance criteria, integration details, and comprehensive traceability.
 
 ## SYS Maturity Model
 

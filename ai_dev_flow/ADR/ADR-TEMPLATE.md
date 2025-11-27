@@ -165,7 +165,7 @@ Before proposing new technologies, verify compliance with project-wide technolog
 ### Non-Functional Requirements
 [Links to NFRs (performance, security, scalability, reliability) addressed by this decision:
 - Performance: [specific metrics/constraints satisfied]
-- Security: [security requirements addressed]
+- security: [security requirements addressed]
 - Scalability: [capacity/throughput requirements met]
 - Reliability: [uptime/availability requirements satisfied]]
 
@@ -245,7 +245,7 @@ flowchart TD
 ### Dependencies
 - **Required Components**: [List with interfaces/contracts needed]
 - **External Services**: [APIs, databases, third-party services]
-- **Configuration**: [Required settings, secrets, certificates]
+- **Configuration**: [Required settings, regulatoryrets, certificates]
 - **Infrastructure**: [Compute, network, storage requirements]
 
 ### Resources
@@ -284,7 +284,7 @@ flowchart TD
 - **Direct Impact**: [Components requiring modification]
 - **Downstream Systems**: [Services affected by interface changes]
 - **Data Flow**: [Information flow changes and new dependencies]
-- **Cross-cutting Concerns**: [Security, monitoring, configuration impacts]
+- **Cross-cutting Concerns**: [security, monitoring, configuration impacts]
 
 ### Migration Strategy
 - **Phase 1**: [Immediate changes, low risk]
@@ -318,7 +318,7 @@ flowchart TD
 **Technical Validation:**
 - [Measurable technical outcomes and acceptance criteria]
 - [Performance benchmarks and service level objectives]
-- [Security compliance and vulnerability assessments]
+- [security compliance and vulnerability assessments]
 
 **Business Validation:**
 - [Business outcome measures and success metrics]
@@ -366,7 +366,7 @@ flowchart TD
 **Rejection Reason**: [Specific justification]
 **Fit Score**: Poor/Good/Better (relative ranking)
 
-## Security
+## security
 
 ### Input Validation
 - [Schema validation, type enforcement, boundary checks]
@@ -380,12 +380,12 @@ flowchart TD
 - [Encryption at rest and in transit requirements]
 - [PII handling, retention policies, and data minimization]
 
-### Security Monitoring
+### security Monitoring
 - [Intrusion detection and anomaly alerting]
 - [Audit logging requirements and security event tracking]
 
-### Secrets Management
-- [Credential handling following ADR-### for secrets management]
+### regulatoryrets Management
+- [Credential handling following ADR-### for regulatoryrets management]
 - [Key rotation, access control, and compromise response]
 
 ### Compliance
@@ -415,7 +415,7 @@ flowchart TD
 
 ### Configuration Management
 - [Required configuration parameters and validation]
-- [Environment-specific overrides and secrets handling]
+- [Environment-specific overrides and regulatoryrets handling]
 - [Configuration deployment and rollback procedures]
 
 ### Rollback Procedures
@@ -462,7 +462,7 @@ flowchart TD
 ### Validation Artifacts
 - **Test Results**: [Test run evidence and coverage reports]
 - **Performance Benchmarks**: [Before/after performance comparisons]
-- **Security Assessments**: [Security audit and penetration test results]
+- **security Assessments**: [security audit and penetration test results]
 
 ### Traceability Tags
 

@@ -91,7 +91,7 @@ cumulative_tags:
   ears: "EARS-NNN:STATEMENT-ID"
   bdd: "BDD-NNN:SCENARIO-ID"
   adr: "ADR-NNN"
-  sys: "SYS-NNN:SECTION-ID"
+  sys: "SYS-NNN:regulatoryTION-ID"
   req: "REQ-NNN:REQUIREMENT-ID"
 ```
 

@@ -61,12 +61,12 @@ Options:
 ```
 ✓ Domain selected: Financial Services
 ✓ Loading configuration: FINANCIAL_DOMAIN_CONFIG.md
-✓ Domain-specific subdirectories: risk, trading, portfolio, compliance, ml
+✓ Domain-specific subdirectories: risk, operations, data, compliance, ml
 ```
 
 ---
 
-### Step 2: Folder Structure Creation (REQUIRED SECOND)
+### Step 2: Folder Structure Creation (REQUIRED regulatoryOND)
 
 **AI Assistant Action**: Create complete directory structure BEFORE creating any documents
 
@@ -87,7 +87,7 @@ mkdir -p docs/REQ/api docs/REQ/auth docs/REQ/data docs/REQ/core docs/REQ/integra
 
 # Domain-specific subdirectories (based on Step 1 selection)
 # Financial Services:
-mkdir -p docs/REQ/risk docs/REQ/trading docs/REQ/portfolio docs/REQ/compliance docs/REQ/ml
+mkdir -p docs/REQ/core docs/REQ/operations docs/REQ/collection docs/REQ/compliance docs/REQ/ml
 
 # Software/SaaS:
 mkdir -p docs/REQ/tenant docs/REQ/subscription docs/REQ/billing docs/REQ/workspace
@@ -130,7 +130,7 @@ cp /opt/data/docs_flow_framework/ai_dev_flow/scripts/*.py scripts/
 **Financial Services Example**:
 ```bash
 find docs/ -type f -name "*.md" -exec sed -i \
-  -e 's/\[RESOURCE_COLLECTION\]/Portfolio/g' \
+  -e 's/\[RESOURCE_COLLECTION\]/collection/g' \
   -e 's/\[RESOURCE_ITEM\]/Position/g' \
   -e 's/\[USER_ROLE\]/Trader/g' \
   {} +
@@ -243,7 +243,7 @@ Next Steps:
 
 ---
 
-## Complete Example: Financial Services Trading Platform
+## Complete Example: Enterprise Service Platform
 
 ### Initialization Transcript
 
@@ -267,7 +267,7 @@ User: [Enter] (selects default: Financial Services)
 AI Assistant:
 ✓ Domain selected: Financial Services
 ✓ Loading configuration: FINANCIAL_DOMAIN_CONFIG.md
-✓ Domain-specific subdirectories: risk, trading, portfolio, compliance, ml
+✓ Domain-specific subdirectories: risk, operations, data, compliance, ml
 
 Creating folder structure...
 ✓ Created: docs/BRD/
@@ -286,8 +286,8 @@ Creating folder structure...
 ✓ Created: docs/REQ/auth/
 ✓ Created: docs/REQ/data/
 ✓ Created: docs/REQ/risk/
-✓ Created: docs/REQ/trading/
-✓ Created: docs/REQ/portfolio/
+✓ Created: docs/REQ/operations/
+✓ Created: docs/REQ/collection/
 ✓ Created: docs/REQ/compliance/
 ✓ Created: docs/REQ/ml/
 
@@ -298,10 +298,10 @@ Copying templates...
 ✓ Templates copied from framework
 
 Applying Financial Services domain configuration...
-✓ [RESOURCE_COLLECTION] → Portfolio
+✓ [RESOURCE_COLLECTION] → collection
 ✓ [RESOURCE_ITEM] → Position
 ✓ [USER_ROLE] → Trader
-✓ [REGULATORY_REQUIREMENT] → SEC Rule 15c3-5
+✓ [REGULATORY_REQUIREMENT] → regulatory Rule 15c3-5
 
 Running contract decision questionnaire...
 

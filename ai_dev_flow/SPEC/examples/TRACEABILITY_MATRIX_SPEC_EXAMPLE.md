@@ -65,7 +65,7 @@
 | REQ-012 | Health checks | SPEC-007 | Kubernetes Deployment | Health requirement in deployment spec |
 | REQ-013 | Rolling updates | SPEC-007 | Kubernetes Deployment | Deployment requirement in K8s spec |
 | REQ-014 | Token expiration | SPEC-006 | OAuth Token Service | Auth requirement in security spec |
-| REQ-015 | Token rotation | SPEC-006 | OAuth Token Service | Security requirement in auth spec |
+| REQ-015 | Token rotation | SPEC-006 | OAuth Token Service | security requirement in auth spec |
 | REQ-016 | Password complexity | SPEC-006 | OAuth Token Service | Password requirement in auth spec |
 | REQ-017 | Query validation | SPEC-005 | GraphQL Gateway | API requirement in gateway spec |
 | REQ-018 | Query depth limit | SPEC-005 | GraphQL Gateway | API safety requirement in spec |
@@ -74,7 +74,7 @@
 | REQ-021 | Cache hit ratio | SPEC-009 | Redis Caching | Performance requirement in cache spec |
 | REQ-022 | P95 latency dashboard | SPEC-010 | Monitoring Dashboard | Observability requirement in monitoring spec |
 | REQ-024 | Distributed tracing | SPEC-011 | Distributed Tracing | Tracing requirement in observability spec |
-| REQ-025 | Rate limiting | SPEC-012 | API Rate Limiting | Security requirement in API spec |
+| REQ-025 | Rate limiting | SPEC-012 | API Rate Limiting | security requirement in API spec |
 
 ### 3.2 ADR → SPEC Traceability
 

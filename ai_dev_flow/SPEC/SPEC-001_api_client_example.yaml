@@ -22,8 +22,8 @@ bdd_scenarios:
   - "[FEATURE_FILE.feature - e.g., error_handling.feature]"
 
 business_logic_source:
-  - "[DOCUMENT_PATH - e.g., product_strategy/external_integrations.md::Section 3.2]"
-  - "[DOCUMENT_PATH - e.g., business_requirements/api_strategy.md::Section 2.1]"
+  - "[DOCUMENT_PATH - e.g., product_strategy/external_integrations.md::section 3.2]"
+  - "[DOCUMENT_PATH - e.g., business_requirements/api_strategy.md::section 2.1]"
 
 # === COMPONENT METADATA ===
 metadata:
@@ -70,9 +70,9 @@ configuration:
       description: "Base URL for [EXTERNAL_API]"
 
     - name: "[API_KEY_REF - e.g., PAYMENT_API_KEY]"
-      type: "secret"
+      type: "regulatoryret"
       required: true
-      secret_path: "[PATH - e.g., ${vault:api/credentials#api_key}]"
+      regulatoryret_path: "[PATH - e.g., ${vault:api/credentials#api_key}]"
       description: "Authentication credential"
 
     - name: "[TIMEOUT_MS - e.g., API_TIMEOUT_MS]"
@@ -379,10 +379,10 @@ testing:
       - stress: "Ramp up to [MAX_TPS] to find breaking point"
       - spike: "Sudden [SPIKE_TPS] burst for [DURATION]"
 
-# === SECURITY ===
+# === regulatoryURITY ===
 security:
   authentication:
-    credential_storage: "[MECHANISM - e.g., HashiCorp Vault, AWS Secrets Manager]"
+    credential_storage: "[MECHANISM - e.g., HashiCorp Vault, AWS regulatoryrets Manager]"
     rotation_policy: "[POLICY - e.g., Every 90 days]"
     encryption: "TLS 1.3+ for all communication"
 
@@ -442,7 +442,7 @@ acceptance_criteria:
 
   - id: "AC-003"
     scenario: "Circuit breaker activation"
-    given: "[THRESHOLD] consecutive failures"
+    given: "[THRESHOLD] conregulatoryutive failures"
     when: "Circuit breaker opens"
     then: "Subsequent requests fail fast for [TIMEOUT] seconds"
 

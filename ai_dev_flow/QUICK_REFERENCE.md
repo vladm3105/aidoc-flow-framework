@@ -38,10 +38,10 @@ BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC �
 
 ### Examples
 ```
-REQ-001_position_limit_enforcement.md
+REQ-001_resource_limit_enforcement.md
 ADR-005_database_selection.md
-CTR-012_market_data_api.md
-CTR-012_market_data_api.yaml  (dual-file)
+CTR-012_data_service_api.md
+CTR-012_data_service_api.yaml  (dual-file)
 SPEC-023_risk_calculator.yaml
 TASKS-023_implement_risk_calculator.md
 ```
@@ -61,7 +61,7 @@ Example: REQ-042-01_authentication_methods.md
 [{TYPE}-{ID}](../path/to/document.md#{TYPE}-{ID})
 
 Examples:
-[REQ-003](../REQ/risk/REQ-003_position_limit.md#REQ-003)
+[REQ-003](../REQ/risk/REQ-003_resource_limit.md#REQ-003)
 [ADR-005](../ADR/ADR-005_database_selection.md#ADR-005)
 [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
 ```
@@ -83,7 +83,7 @@ docs/
 │   ├── auth/      # Authentication
 │   ├── data/      # Data management
 │   ├── risk/      # Risk management (Financial)
-│   ├── trading/   # Trading (Financial)
+│   ├── operations/   # Operations (Domain)
 │   ├── tenant/    # Multi-tenancy (Software/SaaS)
 │   └── ...
 ├── IMPL/    # Implementation Plans (WHO/WHEN)
@@ -114,7 +114,7 @@ mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
 mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
 
 # Domain-specific (Financial)
-mkdir -p docs/REQ/{risk,trading,portfolio,compliance,ml}
+mkdir -p docs/REQ/{core,operations,data,compliance,ml}
 
 # Domain-specific (Software/SaaS)
 mkdir -p docs/REQ/{tenant,subscription,billing,workspace}
@@ -138,7 +138,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 
 ---
 
-## Section 7: Traceability Template
+## section 7: Traceability Template
 
 ```markdown
 ## 7. Traceability
@@ -156,11 +156,11 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 | [TASKS-023](../TASKS/TASKS-023_impl.md#TASKS-023) | Implementation Tasks | TODOs |
 
 ### Primary Anchor/ID
-- **REQ-003**: Position limit enforcement requirement
+- **REQ-003**: resource limit enforcement requirement
 
 ### Code Paths
-- `src/risk/position_limiter.py::PositionLimiter.enforce_limit()`
-- `tests/risk/test_position_limits.py::test_hard_limit_enforcement()`
+- `src/risk/resource_limiter.py::PositionLimiter.enforce_limit()`
+- `tests/risk/test_resource_limits.py::test_hard_limit_enforcement()`
 ```
 
 ---
@@ -169,11 +169,11 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 
 ### Financial Services (Default)
 ```
-[RESOURCE_COLLECTION] → Portfolio
+[RESOURCE_COLLECTION] → collection
 [RESOURCE_ITEM] → Position
 [USER_ROLE] → Trader
 [TRANSACTION] → Trade
-[REGULATORY_REQUIREMENT] → SEC Rule 15c3-5
+[REGULATORY_REQUIREMENT] → regulatory Rule 15c3-5
 ```
 
 ### Software/SaaS
@@ -222,7 +222,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 3. **Apply Domain Config** - Replace placeholders with domain terms
 4. **Run Contract Questionnaire** - Determine if CTR layer needed
 5. **Initialize Index Files** - Create all {TYPE}-000_index files
-6. **Maintain Traceability** - Section 7 in every document
+6. **Maintain Traceability** - section 7 in every document
 7. **Validate Continuously** - Run validation after each document
 8. **Follow ID Standards** - Sequential numbering, stable IDs
 9. **Dual-File Contracts** - Both .md and .yaml for CTR
@@ -242,20 +242,20 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 - [ ] Use template from `ai_dev_flow/[TYPE]/[TYPE]-TEMPLATE.[ext]`
 - [ ] Include H1 header with ID: `# [TYPE]-NNN: Title`
 - [ ] Fill all required sections from template
-- [ ] Add Traceability section (Section 7) with upstream/downstream links
+- [ ] Add Traceability section (section 7) with upstream/downstream links
 - [ ] Validate inline cross-references use anchor format: `#[TYPE]-NNN`
 
 ### Post-Creation (MANDATORY)
 - [ ] **CREATE/UPDATE TRACEABILITY MATRIX** ⚠️ **CRITICAL STEP**
   - [ ] Check if `[TYPE]-000_TRACEABILITY_MATRIX.md` exists
   - [ ] If missing: Create from `[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-  - [ ] Add this document to Section 2 (Complete Inventory) with:
+  - [ ] Add this document to section 2 (Complete Inventory) with:
     - Document ID, title, status, date
     - Upstream sources (which documents drove this)
     - Downstream artifacts (which documents/code derive from this)
-  - [ ] Update Section 3 (Upstream Traceability)
-  - [ ] Update Section 4 (Downstream Traceability)
-  - [ ] Update Section 8 (Implementation Status)
+  - [ ] Update section 3 (Upstream Traceability)
+  - [ ] Update section 4 (Downstream Traceability)
+  - [ ] Update section 8 (Implementation Status)
 - [ ] Update index file: `[TYPE]-000_index.md`
 - [ ] Validate all markdown links resolve correctly
 - [ ] Run validation scripts:
@@ -278,17 +278,17 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 ## Regulatory Mappings
 
 ### Financial Services
-- SEC Rule 15c3-5 (Market Access)
-- FINRA Rule 3110 (Supervision)
+- regulatory Rule 15c3-5 (Market Access)
+- compliance Rule 3110 (Supervision)
 - SOX 404 (Internal Controls)
 - Basel III (Capital Adequacy)
-- PCI-DSS (Payment Card Security)
+- PCI-DSS (Payment Card security)
 
 ### Software/SaaS
 - SOC2 CC6.1 (Access Control)
 - GDPR Article 17 (Right to Erasure)
 - CCPA (Data Privacy)
-- ISO 27001 (Information Security)
+- ISO 27001 (Information security)
 
 ---
 
@@ -296,10 +296,10 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 
 | Type | Purpose | Format | Example |
 |------|---------|--------|---------|
-| **BRD** | Business objectives | .md | BRD-001_trading_platform.md |
+| **BRD** | Business objectives | .md | BRD-001_service_platform.md |
 | **PRD** | Product features | .md | PRD-002_risk_controls.md |
 | **EARS** | Measurable requirements | .md | EARS-003_performance.md |
-| **BDD** | Acceptance tests | .feature | BDD-004_position_limits.feature |
+| **BDD** | Acceptance tests | .feature | BDD-004_resource_limits.feature |
 | **ADR** | Architecture decisions | .md | ADR-005_database_selection.md |
 | **SYS** | System specifications | .md | SYS-006_api_gateway.md |
 | **REQ** | Atomic requirements | .md | REQ-007_limit_enforcement.md |
@@ -318,7 +318,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 - [ ] Index files initialized
 - [ ] Requirement IDs unique and sequential
 - [ ] No broken references
-- [ ] Section 7 in all documents
+- [ ] section 7 in all documents
 - [ ] Dual files for CTR (.md + .yaml)
 - [ ] Traceability matrices generated
 - [ ] Code includes traceability comments
@@ -350,7 +350,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 python scripts/check_broken_references.py
 
 # Fix pattern
-[REQ-003](../REQ/risk/REQ-003_position_limit.md#REQ-003)
+[REQ-003](../REQ/risk/REQ-003_resource_limit.md#REQ-003)
          ^^^^^ correct path ^^^^^ ^^^^^^^ anchor matches ID ^^^^^^^
 ```
 
@@ -363,7 +363,7 @@ python scripts/validate_requirement_ids.py
 # Update all references to new ID
 ```
 
-### Missing Section 7
+### Missing section 7
 ```markdown
 ## 7. Traceability
 

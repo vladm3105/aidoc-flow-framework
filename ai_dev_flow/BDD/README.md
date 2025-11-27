@@ -217,7 +217,7 @@ Establishes the initial state before action:
 ```gherkin
 Given the user is authenticated
 Given the account has sufficient balance
-Given the market is open for trading
+Given the market is available for operations
 ```
 
 ### When - Action Performed
@@ -261,7 +261,7 @@ Where:
 - `.feature` is the mandatory Gherkin file extension
 
 **Examples:**
-- `BDD-001_alpha_vantage_integration_requirements.feature`
+- `BDD-001_external_api_integration_requirements.feature`
 - `BDD-003_risk_limits_requirements.feature`
 - `BDD-042_ml_model_serving_requirements.feature`
 
@@ -535,4 +535,4 @@ Scenario: Response within time limits
 
 ## Example BDD Template
 
-See `BDD-001_alpha_vantage_integration_requirements.feature` for a complete example of a well-structured BDD feature file that follows these conventions.
+See `BDD-001_external_api_integration_requirements.feature` for a complete example of a well-structured BDD feature file that follows these conventions.

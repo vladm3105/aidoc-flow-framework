@@ -86,7 +86,7 @@ The SYS validation script ensures system requirements meet quality standards for
 **Requirements**:
 - Performance NFRs include percentiles and thresholds
 - Reliability NFRs specify uptime/SLA targets
-- Security/compliance NFRs reference specific standards
+- security/compliance NFRs reference specific standards
 
 ### CHECK 5: System Boundaries
 
@@ -160,7 +160,7 @@ find docs/SYS -name "SYS-*.md" -exec ./scripts/validate_sys_template.sh {} \;
 **NFR Quantification (30%)**:
 - Performance with percentiles and thresholds: 15%
 - Reliability with uptime/SLA targets: 5%
-- Security with compliance framework references: 5%
+- security with compliance framework references: 5%
 - Scalability quantified for growth: 5%
 
 **Interface Specifications (20%)**:

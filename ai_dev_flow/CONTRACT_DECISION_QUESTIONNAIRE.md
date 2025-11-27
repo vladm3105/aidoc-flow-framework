@@ -69,7 +69,7 @@ Enter selections (comma-separated, e.g., "1,2" or single "7"):
 |-----------|----------------|--------------|----------|
 | 1, 2, 3, 4, 5, 6 | External interfaces exist | **YES** | REQ → IMPL → CTR → SPEC → TASKS |
 | 7 | Internal logic only | **NO** | REQ → IMPL → SPEC → TASKS |
-| 8 | Unsure | **Ask follow-up questions** | See Follow-Up Section |
+| 8 | Unsure | **Ask follow-up questions** | See Follow-Up section |
 
 ---
 
@@ -88,8 +88,8 @@ Enter selections (comma-separated, e.g., "1,2" or single "7"):
 
 **Example**:
 ```
-CTR-012_market_data_api.md
-CTR-012_market_data_api.yaml (OpenAPI 3.0)
+CTR-012_data_service_api.md
+CTR-012_data_service_api.yaml (OpenAPI 3.0)
 ```
 
 **Skip CTR If**:
@@ -102,7 +102,7 @@ CTR-012_market_data_api.yaml (OpenAPI 3.0)
 ### 2. Event Schemas
 
 **When to Create CTR**:
-- Publishing events to message broker (Kafka, RabbitMQ, AWS SNS/SQS)
+- Publishing events to message provider (Kafka, RabbitMQ, AWS SNS/SQS)
 - Webhook callbacks to external systems
 - Event-driven microservices
 - Event sourcing architecture
@@ -113,8 +113,8 @@ CTR-012_market_data_api.yaml (OpenAPI 3.0)
 
 **Example**:
 ```
-CTR-015_trade_execution_event.md
-CTR-015_trade_execution_event.yaml (AsyncAPI 2.6)
+CTR-015_operation_execution_event.md
+CTR-015_operation_execution_event.yaml (AsyncAPI 2.6)
 ```
 
 **Skip CTR If**:
@@ -257,9 +257,9 @@ else:
 
 ## Decision Examples
 
-### Example 1: Trading Platform with REST API
+### Example 1: Service Platform with REST API
 
-**Scenario**: Algorithmic trading platform with REST API for order submission
+**Scenario**: Algorithmic Service Platform with REST API for request submission
 
 **Questions**:
 1. External interfaces? **YES** - REST API for traders
@@ -270,7 +270,7 @@ else:
 **Workflow**: `REQ → IMPL → CTR → SPEC → TASKS → Code`
 
 **Contracts to Create**:
-- CTR-001: Order Submission API (OpenAPI 3.0)
+- CTR-001: request submission API (OpenAPI 3.0)
 - CTR-002: Order Execution Event (AsyncAPI 2.x)
 - CTR-003: Position Data Model (JSON Schema)
 

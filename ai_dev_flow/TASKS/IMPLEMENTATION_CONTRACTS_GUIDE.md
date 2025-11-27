@@ -432,7 +432,7 @@ Downstream Dependencies (8 TASKS):
 - TASKS-006: Position Tracking (needs IBGatewayConnector)
 - TASKS-007: Historical Data (needs IBGatewayConnector)
 - TASKS-009: Real-time PnL (needs IBGatewayConnector)
-- TASKS-010: Trade Execution (needs IBGatewayConnector)
+- TASKS-010: operation execution (needs IBGatewayConnector)
 - TASKS-011: Risk Management (needs IBGatewayConnector)
 
 Decision: Create contracts (8 downstream dependencies)
@@ -450,7 +450,7 @@ Decision: Create contracts (8 downstream dependencies)
 - Identify shared interfaces
 
 **Step 2: Contract Type Selection**
-- Select from 5 contract types (Section 2)
+- Select from 5 contract types (section 2)
 - Match contract type to interface characteristics
 - Combine multiple types if needed
 
@@ -1006,7 +1006,7 @@ class IBGatewayConnector(Protocol):
 - TASKS-006: Position Tracking
 - TASKS-007: Historical Data
 - TASKS-009: Real-time PnL
-- TASKS-010: Trade Execution
+- TASKS-010: operation execution
 - TASKS-011: Risk Management
 
 **Problem**: All 8 TASKS blocked until TASKS-001 complete.
@@ -1231,7 +1231,7 @@ The `@icon` tag provides concise traceability for implementation contracts withi
 @icon-role: consumer
 ```
 
-**For Standalone ICON Files** (optional, see Section 14):
+**For Standalone ICON Files** (optional, see section 14):
 ```yaml
 @icon: ICON-001:PlatformEventBus
 ```
@@ -1319,7 +1319,7 @@ grep -A1 "@icon: TASKS-001:IBGatewayConnector" docs/TASKS/
 
 ### 14.1 When to Use ICON Files
 
-**Default**: Embed implementation contracts in TASKS files (Section 8: Implementation Contracts)
+**Default**: Embed implementation contracts in TASKS files (section 8: Implementation Contracts)
 
 **Use Standalone ICON Files When** (ALL criteria met):
 1. **5+ Consumer TASKS**: Contract used by 5 or more TASKS files
@@ -1348,12 +1348,12 @@ grep -A1 "@icon: TASKS-001:IBGatewayConnector" docs/TASKS/
 
 **Examples**:
 - `ICON-001_gateway_connector_protocol.md`
-- `ICON-002_market_data_event_bus.md`
+- `ICON-002_external_data_event_bus.md`
 - `ICON-003_order_execution_exceptions.md`
 
 ### 14.3 ICON File Contents
 
-**Required Sections**:
+**Required sections**:
 1. **Document Control**: Status, version, providers, consumers
 2. **Contract Definition**: Type-safe interface specification
 3. **Provider Requirements**: Implementation obligations

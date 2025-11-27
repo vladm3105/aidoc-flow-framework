@@ -1,4 +1,4 @@
-# REQ-003: Role-Based Access Control (RBAC) for Trading Platform
+# REQ-003: Role-Based Access Control (RBAC) for Platform Resources
 
 ## Document Control
 
@@ -13,19 +13,19 @@
 
 ## 1. Description
 
-The system SHALL enforce Role-Based Access Control (RBAC) to protect trading platform resources (APIs, data, operations) from unauthorized access, with role-permission mappings, hierarchical roles, and comprehensive audit logging.
+The system SHALL enforce Role-Based Access Control (RBAC) to protect platform resources (APIs, data, operations) from unauthorized access, with role-permission mappings, hierarchical roles, and comprehensive audit logging.
 
 ### Context
 
-Trading platform requires fine-grained authorization to: prevent unauthorized trades, protect sensitive financial data, enforce regulatory compliance (SOC2, SOX), enable role separation (trader vs compliance officer), and maintain audit trails for security reviews.
+Platform requires fine-grained authorization to: prevent unauthorized operations, protect sensitive data, enforce compliance requirements (SOC2), enable role separation (operator vs administrator), and maintain audit trails for security reviews.
 
 ### Use Case Scenario
 
 **Primary Flow**:
 1. User authenticates and receives JWT with role claims
-2. User requests protected resource (GET /api/orders/{id})
+2. User requests protected resource (GET /api/resources/{id})
 3. Authorization middleware extracts user ID and roles from JWT
-4. Middleware queries permission service: does user have 'orders:read' permission?
+4. Middleware queries permission service: does user have 'resources:read' permission?
 5. Permission service checks user roles → role permissions mapping
 6. If authorized: request proceeds, audit log created
 7. If denied: 403 Forbidden returned with reason
@@ -55,7 +55,7 @@ class AuthorizationService(Protocol):
 
         Args:
             user_id: Unique user identifier
-            resource: Resource being accessed (e.g., "orders", "accounts")
+            resource: Resource being accessed (e.g., "resources", "accounts")
             action: Action to perform (e.g., "read", "write", "delete")
 
         Returns:
@@ -75,7 +75,7 @@ class AuthorizationService(Protocol):
 
         Args:
             user_id: Unique user identifier
-            permission: Permission string (e.g., "orders:read")
+            permission: Permission string (e.g., "resources:read")
 
         Returns:
             True if user has permission
@@ -88,10 +88,10 @@ class AuthorizationService(Protocol):
 
 class Permission(str, Enum):
     """Predefined permission constants."""
-    ORDERS_READ = "orders:read"
-    ORDERS_CREATE = "orders:create"
-    ORDERS_CANCEL = "orders:cancel"
-    ORDERS_ADMIN = "orders:admin"
+    RESOURCES_READ = "resources:read"
+    RESOURCES_CREATE = "resources:create"
+    RESOURCES_DELETE = "resources:delete"
+    RESOURCES_ADMIN = "resources:admin"
     ACCOUNTS_READ = "accounts:read"
     ACCOUNTS_WRITE = "accounts:write"
     REPORTS_VIEW = "reports:view"
@@ -145,29 +145,29 @@ class PermissionCheck(BaseModel):
 ```yaml
 # config/roles.yaml
 roles:
-  - role_id: "ROLE_TRADER"
-    role_name: "Trader"
-    description: "Standard trader with order execution rights"
+  - role_id: "ROLE_OPERATOR"
+    role_name: "Operator"
+    description: "Standard operator with execution rights"
     permissions:
-      - "orders:read"
-      - "orders:create"
-      - "orders:cancel"
+      - "resources:read"
+      - "resources:create"
+      - "resources:delete"
       - "accounts:read"
       - "reports:view"
 
-  - role_id: "ROLE_SENIOR_TRADER"
-    role_name: "Senior Trader"
-    description: "Experienced trader with elevated limits"
-    parent_role: "ROLE_TRADER"  # Inherits TRADER permissions
+  - role_id: "ROLE_SENIOR_OPERATOR"
+    role_name: "Senior Operator"
+    description: "Experienced operator with elevated limits"
+    parent_role: "ROLE_OPERATOR"  # Inherits OPERATOR permissions
     permissions:
-      - "orders:modify"  # Additional permission
+      - "resources:modify"  # Additional permission
       - "reports:export"
 
-  - role_id: "ROLE_COMPLIANCE_OFFICER"
-    role_name: "Compliance Officer"
+  - role_id: "ROLE_AUDITOR"
+    role_name: "Auditor"
     description: "Compliance oversight with read-only access"
     permissions:
-      - "orders:read"
+      - "resources:read"
       - "accounts:read"
       - "reports:view"
       - "reports:export"
@@ -253,10 +253,10 @@ class AuthorizationError(BaseModel):
             "examples": [
                 {
                     "error_code": "AUTH_004",
-                    "error_message": "Permission denied: requires orders:cancel",
-                    "required_permission": "orders:cancel",
-                    "user_roles": ["ROLE_TRADER"],
-                    "user_permissions": ["orders:read", "orders:create"],
+                    "error_message": "Permission denied: requires resources:delete",
+                    "required_permission": "resources:delete",
+                    "user_roles": ["ROLE_OPERATOR"],
+                    "user_permissions": ["resources:read", "resources:create"],
                     "timestamp": "2025-01-09T14:30:00Z",
                     "request_id": "req_abc123"
                 }
@@ -335,7 +335,7 @@ authorization:
 ### Security
 
 - **Principle of Least Privilege**: Users granted minimum required permissions
-- **Role Separation**: No single role has both trading and compliance admin
+- **Role Separation**: No single role has both operation and compliance admin
 - **Audit Trail**: All authorization decisions logged with user/resource/action/result
 - **Token Security**: JWT with HS256/RS256, 15-minute expiry, secure storage
 
@@ -408,13 +408,13 @@ def get_all_permissions(role_id: str, visited: set = None) -> set[str]:
 
 ## 9. Acceptance Criteria
 
-- ✅ **AC-001**: Authorized requests succeed (user has required permission)
-- ✅ **AC-002**: Unauthorized requests denied (401 for missing token)
-- ✅ **AC-003**: Forbidden requests denied (403 for insufficient permission)
-- ✅ **AC-004**: Role hierarchy works (child inherits parent permissions)
-- ✅ **AC-005**: Superuser bypass (system:admin grants all permissions)
-- ✅ **AC-006**: Authorization checks cached (<1ms for repeated checks)
-- ✅ **AC-007**: All authorization decisions logged to audit trail
+- **AC-001**: Authorized requests succeed (user has required permission)
+- **AC-002**: Unauthorized requests denied (401 for missing token)
+- **AC-003**: Forbidden requests denied (403 for insufficient permission)
+- **AC-004**: Role hierarchy works (child inherits parent permissions)
+- **AC-005**: Superuser bypass (system:admin grants all permissions)
+- **AC-006**: Authorization checks cached (<1ms for repeated checks)
+- **AC-007**: All authorization decisions logged to audit trail
 
 ## 10. Verification Methods
 
@@ -442,7 +442,7 @@ def get_all_permissions(role_id: str, visited: set = None) -> set[str]:
 ## 11. Traceability
 
 ### Upstream Sources
-- BRD-003: Trading Platform Security Requirements
+- BRD-003: Platform Security Requirements
 - PRD-003: Authorization and Access Control
 - SYS-003: RBAC System Architecture
 
@@ -462,4 +462,4 @@ def get_all_permissions(role_id: str, visited: set = None) -> set[str]:
 |------|---------|--------|---------|
 | 2025-01-09 | 2.0.0 | V2 with comprehensive RBAC patterns | Platform Team |
 
-**SPEC-Ready Checklist**: ✅ Interfaces ✅ Schemas ✅ Errors ✅ Config ✅ Hierarchy ✅ Audit
+**SPEC-Ready Checklist**: Interfaces | Schemas | Errors | Config | Hierarchy | Audit

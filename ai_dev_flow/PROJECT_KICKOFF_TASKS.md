@@ -99,7 +99,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-001_business_objectives.md
    - Integration points
 2. Begin creating REQ documents
    - One atomic requirement per file
-   - Complete Section 7 traceability
+   - Complete section 7 traceability
    - Acceptance criteria per REQ
 3. Update SYS-000_index.md and REQ-000_index.md
 
@@ -107,7 +107,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-001_business_objectives.md
 ```bash
 # Create SYS-001
 # Create first 5-10 REQ documents
-# Organize by subdirectory (risk/, trading/, api/, etc.)
+# Organize by subdirectory (risk/, service/, api/, etc.)
 ```
 
 **Deliverable**: SYS-001 and initial REQs approved
@@ -192,7 +192,7 @@ For each day, AI Assistant should:
 1. **Review previous day's deliverables**
 2. **Create documents per daily tasks**
 3. **Fill all required sections** (no empty placeholders)
-4. **Add Section 7 traceability** (upstream and downstream)
+4. **Add section 7 traceability** (upstream and downstream)
 5. **Update index files** with new documents
 6. **Run validation** after each document
 7. **Confirm completion** with user
@@ -210,18 +210,18 @@ Task 1-4: ✓ Project initialization complete (from PROJECT_SETUP_GUIDE.md)
 
 Task 5: Creating BRD-001 (Business Requirements Document)
 
-Creating docs/BRD/BRD-001_trading_platform.md...
+Creating docs/BRD/BRD-001_service_platform.md...
 
 Content:
-- Strategic Objectives: Build algorithmic trading platform
-- Market Context: Retail trading growth, API-first demand
+- Strategic Objectives: Build algorithmic service platform
+- Market Context: Retail service growth, API-first demand
 - Success Criteria:
   * 99.9% uptime
   * <100ms order latency
-  * SEC Rule 15c3-5 compliant
-- Stakeholders: Traders, Portfolio Managers, Compliance Officers
+  * regulatory Rule 15c3-5 compliant
+- Stakeholders: Traders, collection Managers, Compliance Officers
 
-Section 7 Traceability:
+section 7 Traceability:
 - Upstream Sources: (Initial BRD, no upstream)
 - Downstream Artifacts: PRD-001 (to be created)
 
@@ -230,7 +230,7 @@ Section 7 Traceability:
 Task 6: Updating BRD-000_index.md...
 
 Added entry:
-| BRD-001 | Trading Platform Business Requirements | Draft | High | 2025-01-15 | 2025-01-15 |
+| BRD-001 | service Platform Business Requirements | Draft | High | 2025-01-15 | 2025-01-15 |
 
 ✓ Index updated
 
@@ -241,7 +241,7 @@ Running: python scripts/validate_requirement_ids.py
 Day 1 Complete!
 
 Deliverables:
-- BRD-001: docs/BRD/BRD-001_trading_platform.md ✓
+- BRD-001: docs/BRD/BRD-001_service_platform.md ✓
 
 Next: Day 2 - Product Requirements & Acceptance Criteria
 ```

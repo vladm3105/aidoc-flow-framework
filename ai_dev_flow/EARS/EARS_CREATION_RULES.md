@@ -26,7 +26,7 @@ custom_fields:
 ## Table of Contents
 
 1. [File Organization and Directory Structure](#1-file-organization-and-directory-structure)
-2. [Document Structure (Required Sections)](#2-document-structure-required-sections)
+2. [Document Structure (Required sections)](#2-document-structure-required-sections)
 3. [Document Control Requirements](#3-document-control-requirements)
 4. [ID and Naming Standards](#4-id-and-naming-standards)
 5. [EARS Syntax Patterns](#5-ears-syntax-patterns)
@@ -48,15 +48,15 @@ custom_fields:
 
 ---
 
-## 2. Document Structure (Required Sections)
+## 2. Document Structure (Required sections)
 
 EARS documents require specific structural elements for behavioral specification:
 
-#### Required Sections:
+#### Required sections:
 1. **Document Control** - Metadata with BDD-Ready Score
 2. **Purpose and Context** - Business and technical objectives
 3. **Requirements** - Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous
-4. **Non-Functional Requirements** - Performance, Security, Reliability, etc.
+4. **Non-Functional Requirements** - Performance, security, Reliability, etc.
 5. **Guidelines for Writing EARS Statements** - Precision and measurability rules
 6. **Quality Checklist** - Completeness validation
 7. **Traceability** - Upstream/downstream artifacts
@@ -112,7 +112,7 @@ EARS documents require specific structural elements for behavioral specification
 ## 6. Quality Attributes (NFRs)
 
 **Performance**: Quantified latency, throughput, response time constraints
-**Security**: Authentication, authorization, encryption standards
+**security**: Authentication, authorization, encryption standards
 **Reliability**: Availability SLAs, fault tolerance, recovery objectives
 **Scalability**: Concurrent users, data volumes, growth projections
 **Observability**: Logging, monitoring, tracing, alerting requirements
@@ -153,7 +153,7 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 
 **NFR Completeness (15%)**:
 - Performance targets quantifiable with percentiles: 5%
-- Security/compliance requirements complete: 5%
+- security/compliance requirements complete: 5%
 - Reliability/scalability targets measurable: 5%
 
 **Strategic Alignment (10%)**:

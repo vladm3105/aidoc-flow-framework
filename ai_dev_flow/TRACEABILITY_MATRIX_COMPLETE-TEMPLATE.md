@@ -160,7 +160,7 @@ The Docs Flow Framework implements **cumulative tagging** where each artifact ty
 #### Example 1: SPEC Artifact (Layer 10)
 
 ```yaml
-# SPEC-018: Order Placement Service Specification
+# SPEC-018: request submission Service Specification
 
 # ... spec content ...
 
@@ -182,9 +182,9 @@ cumulative_tags:
 
 ```python
 """
-Order Placement Service
+request submission Service
 
-Handles trade order placement with validation and execution.
+Handles trade request submission with validation and execution.
 
 ## Traceability Tags
 
@@ -212,7 +212,7 @@ Handles trade order placement with validation and execution.
 
 ```python
 """
-Test suite for Order Placement Service
+Test suite for request submission Service
 
 ## Traceability Tags
 
@@ -384,29 +384,29 @@ Code (tags: @brd through @tasks = 9 tags)
 ### Example 1: Complete Feature Implementation Chain
 
 ```
-Strategy: [Strategic Document Section X.Y]
+Strategy: [Strategic Document section X.Y]
    ↓ drives
-BRD-009: Broker Integration Business Requirements
+BRD-009: service integration Business Requirements
    ↓ defines
-PRD-016: Trade Execution Product Requirements
+PRD-016: operation execution Product Requirements
    ↓ formalizes
-EARS-012: Trade execution formal requirements (WHEN user places order, THE system SHALL execute trade WITHIN 2 seconds)
+EARS-012: operation execution formal requirements (WHEN user places order, THE system SHALL execute trade WITHIN 2 seconds)
    ↓ validates
-BDD-015: Trade execution acceptance tests (Gherkin scenarios)
+BDD-015: operation execution acceptance tests (Gherkin scenarios)
    ↓ informs
-ADR-033: Trade execution architecture decision (Event-driven architecture for trade processing)
+ADR-033: operation execution architecture decision (Event-driven architecture for trade processing)
    ↓ defines
-SYS-012: Trade execution system requirements (Event bus, order processing service)
+SYS-012: operation execution system requirements (Event bus, order processing service)
    ↓ decomposes
 REQ-045: Place limit order atomic requirement
    ↓ plans
-IMPL-003: Trade execution implementation plan (Phase 2, Team B, 3 developers, 20 days)
+IMPL-003: operation execution implementation plan (Phase 2, Team B, 3 developers, 20 days)
    ↓ specifies
-CTR-005: Trade execution API contract (.md + .yaml)
+CTR-005: operation execution API contract (.md + .yaml)
    ↓ implements
-SPEC-018: Order placement service specification (YAML blueprint)
+SPEC-018: request submission service specification (YAML blueprint)
    ↓ guides
-TASKS-018: Order placement implementation tasks (15 step-by-step TODOs)
+TASKS-018: request submission implementation tasks (15 step-by-step TODOs)
    ↓ generates
 Code: src/execution/order_service.py (implements CTR-005, 350 LOC)
    ↓ verifies
@@ -422,7 +422,7 @@ Production: Deployed v1.2.0 (YYYY-MM-DD)
 ### Example 2: Partial Implementation Chain (Gap Identification)
 
 ```
-Strategy: [Market Analysis Report Section 4.3]
+Strategy: [Market Analysis Report section 4.3]
    ↓
 BRD-015: ML-Based Market Sentiment Analysis
    ↓
@@ -464,13 +464,13 @@ BRD-012: External data provider integration
    ↓
 PRD-020: Alpha Vantage API integration
    ↓
-EARS-015: WHEN system requests stock data, THE system SHALL receive response WITHIN 2 seconds
+EARS-015: WHEN system requests item data, THE system SHALL receive response WITHIN 2 seconds
    ↓
 BDD-022: API integration test scenarios
    ↓
 ADR-038: External API integration architecture
    ↓
-REQ-062: Fetch real-time stock quotes from Alpha Vantage
+REQ-062: Fetch real-time item quotes from Alpha Vantage
    ↓
 IMPL-005: Integration implementation plan (Phase 2, Team C)
    ↓
@@ -481,13 +481,13 @@ CTR-003: Alpha Vantage API contract (.md + .yaml)
 TASKS-025: API client implementation tasks
 TASKS-026: Data transformation tasks
    ↓
-Code: src/integrations/alpha_vantage/
+Code: src/integrations/external_api/
    ├─ client.py (implements CTR-003 consumer)
    ├─ transformer.py (data processing)
    └─ rate_limiter.py (API throttling)
    ↓
 Tests:
-   ├─ tests/integration/test_alpha_vantage.py
+   ├─ tests/integration/test_external_api.py
    ├─ tests/contract/test_ctr_003.py
    └─ tests/unit/test_transformer.py
    ↓
@@ -659,9 +659,9 @@ Final Impact (Tier 3+):
 
 **Example: Changing BRD-009 (Business Requirement Change)**
 ```
-BRD-009: Broker Integration Requirements
+BRD-009: service integration Requirements
    ↓ Direct Impact (Tier 1)
-   PRD-016: Trade Execution Features (Requires review and potential update)
+   PRD-016: operation execution Features (Requires review and potential update)
    ↓ Indirect Impact (Tier 2)
    EARS-012: Formal trade requirements (May need revision)
    BDD-015: Test scenarios (May need new scenarios)
@@ -704,7 +704,7 @@ Before making changes, verify:
 **Document Creation Validation**:
 - [ ] All new documents linked to upstream sources
 - [ ] Document follows naming conventions (TYPE-NNN_slug)
-- [ ] Section 7 Traceability complete (upstream + downstream)
+- [ ] section 7 Traceability complete (upstream + downstream)
 - [ ] All referenced documents exist
 - [ ] All markdown links include anchors
 - [ ] Relative paths correct

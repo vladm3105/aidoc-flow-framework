@@ -20,20 +20,20 @@ custom_fields:
 
 ## Purpose
 
-This document provides centralized definitions for common business, technical, regulatory, and domain-specific terminology used across all Business Requirements Documents (BRDs) in the AI Dev Flow framework. Individual BRDs reference this glossary and define project-specific terms only in their local Section 18.
+This document provides centralized definitions for common business, technical, regulatory, and domain-specific terminology used across all Business Requirements Documents (BRDs) in the AI Dev Flow framework. Individual BRDs reference this glossary and define project-specific terms only in their local section 18.
 
 ## Usage Guidelines
 
 ### For BRD Authors
 
-1. **Check this glossary first** before defining any term in individual BRD Section 18
+1. **Check this glossary first** before defining any term in individual BRD section 18
 2. **Reference entries** from this glossary instead of duplicating definitions
-3. **Add project-specific terms** to individual BRD Section 18 when they don't belong here
+3. **Add project-specific terms** to individual BRD section 18 when they don't belong here
 4. **Propose additions** to this master glossary when terms are used across 3+ BRDs
 
 ### When to Define Terms Here vs. Individual BRD
 
-| Define in BRD-000_GLOSSARY.md | Define in Individual BRD Section 18 |
+| Define in BRD-000_GLOSSARY.md | Define in Individual BRD section 18 |
 |-------------------------------|-------------------------------------|
 | ✅ Terms used across 3+ BRDs | ✅ Project-specific terminology |
 | ✅ Standard BRD framework terms (FR, NFR, BO) | ✅ Unique partner names |
@@ -56,17 +56,17 @@ Common business terminology used across multiple BRDs.
 
 | Term | Definition | Common Usage Context |
 |------|------------|---------------------|
-| Acceptance Criteria | Conditions that must be met for deliverables to be accepted by stakeholders | Section 9 of BRDs, validation checkpoints |
-| Business Objective | Specific, measurable goal aligned with organizational strategic priorities | Section 2.4 of BRDs, strategic alignment |
-| Business Process | Sequence of activities performed to achieve a business outcome | Process scope, Section 5 |
+| Acceptance Criteria | Conditions that must be met for deliverables to be accepted by stakeholders | section 9 of BRDs, validation checkpoints |
+| Business Objective | Specific, measurable goal aligned with organizational strategic priorities | section 2.4 of BRDs, strategic alignment |
+| Business Process | Sequence of activities performed to achieve a business outcome | Process scope, section 5 |
 | Deliverable | Tangible or intangible output produced as part of project execution | Project scope, milestones |
-| KPI | Key Performance Indicator - measurable value demonstrating effectiveness toward achieving objectives | Success metrics, Section 9.7 |
-| Milestone | Significant point in project timeline marking completion of major phase | Project timeline, Section 15 |
-| ROI | Return on Investment - measure of profitability relative to cost | Cost-benefit analysis, Section 14 |
-| Stakeholder | Person or group with interest in or influence over project outcome | Stakeholder analysis, Section 4 |
-| Success Metric | Quantifiable measure used to evaluate achievement of objectives | Acceptance criteria, Section 9 |
+| KPI | Key Performance Indicator - measurable value demonstrating effectiveness toward achieving objectives | Success metrics, section 9.7 |
+| Milestone | Significant point in project timeline marking completion of major phase | Project timeline, section 15 |
+| ROI | Return on Investment - measure of profitability relative to cost | Cost-benefit analysis, section 14 |
+| Stakeholder | Person or group with interest in or influence over project outcome | Stakeholder analysis, section 4 |
+| Success Metric | Quantifiable measure used to evaluate achievement of objectives | Acceptance criteria, section 9 |
 | Transaction | Single business operation or exchange of value | Core business model, process flows |
-| Workflow | Sequence of steps to complete a business process | Process scope definition, Section 5 |
+| Workflow | Sequence of steps to complete a business process | Process scope definition, section 5 |
 
 ---
 
@@ -76,9 +76,9 @@ Common technical terminology explained for business stakeholders.
 
 | Term | Definition | Common Usage Context |
 |------|------------|---------------------|
-| API | Application Programming Interface - method for systems to communicate and exchange data | Partner integrations, Section 6 FRs |
+| API | Application Programming Interface - method for systems to communicate and exchange data | Partner integrations, section 6 FRs |
 | Integration | Connection between two or more systems to share data and functionality | Partner ecosystems, external systems |
-| SLA | Service Level Agreement - commitment between service provider and client defining service expectations | NFRs Section 7.5, performance requirements |
+| SLA | Service Level Agreement - commitment between service provider and client defining service expectations | NFRs section 7.5, performance requirements |
 | Webhook | Automated notification sent from one system to another when specific events occur | Status updates, real-time integrations |
 
 ---
@@ -89,8 +89,8 @@ Industry/domain terminology requiring definition for cross-domain understanding.
 
 | Term | Definition | Domain | Common Usage Context |
 |------|------------|--------|---------------------|
-| AML | Anti-Money Laundering - regulations and procedures preventing illicit financial activity | FinTech/Compliance | Transaction monitoring FRs, Section 6 |
-| KYC | Know Your Customer - identity verification process required by financial regulations | FinTech/Compliance | User onboarding, Section 6 FRs |
+| AML | Anti-Money Laundering - regulations and procedures preventing illicit financial activity | FinTech/Compliance | Transaction monitoring FRs, section 6 |
+| KYC | Know Your Customer - identity verification process required by financial regulations | FinTech/Compliance | User onboarding, section 6 FRs |
 | Remittance | Transfer of money by foreign worker to individual in home country | Financial Services | Cross-border payment BRDs |
 
 ---
@@ -130,7 +130,7 @@ Standard abbreviations used across BRD framework.
 
 References to related BRDs and framework documents.
 
-| Term/Concept | Referenced Document | Section | Relationship |
+| Term/Concept | Referenced Document | section | Relationship |
 |--------------|---------------------|---------|--------------|
 | BRD Template | ai_dev_flow/BRD/BRD-TEMPLATE.md | All | Reference template for creating BRDs |
 | BRD Creation Rules | ai_dev_flow/BRD/BRD_CREATION_RULES.md | N/A | Authoring guidelines and best practices |
@@ -146,12 +146,12 @@ Regulatory, industry, and technical standards referenced in BRDs.
 
 | Standard | Organization | Relevance | Common Application |
 |----------|--------------|-----------|-------------------|
-| PCI-DSS | Payment Card Industry Security Standards Council | Payment security compliance | Payment processing BRDs, NFRs Section 7.3 |
-| GDPR | European Union | Data privacy regulation | Data handling, NFR Section 7.3 |
-| CCPA | State of California | Consumer privacy rights | Data handling, NFR Section 7.3 |
-| SOC 2 | AICPA | Security and availability controls | Security NFRs, audit requirements |
-| ISO 27001 | International Organization for Standardization | Information security management | Security NFRs, Section 7.3 |
-| WCAG 2.1 | W3C | Web accessibility standards | Accessibility NFRs, Section 7.8 |
+| PCI-DSS | Payment Card Industry security Standards Council | Payment security compliance | Payment processing BRDs, NFRs section 7.3 |
+| GDPR | European Union | Data privacy regulation | Data handling, NFR section 7.3 |
+| CCPA | State of California | Consumer privacy rights | Data handling, NFR section 7.3 |
+| SOC 2 | AICPA | security and availability controls | security NFRs, audit requirements |
+| ISO 27001 | International Organization for Standardization | Information security management | security NFRs, section 7.3 |
+| WCAG 2.1 | W3C | Web accessibility standards | Accessibility NFRs, section 7.8 |
 | FinCEN | US Department of Treasury | AML/CFT compliance | Financial services BRDs, regulatory requirements |
 | OFAC | US Department of Treasury Office of Foreign Assets Control | Sanctions screening | Cross-border transactions, compliance FRs |
 
@@ -191,7 +191,7 @@ Add terms to this glossary when they meet ANY of these criteria:
 
 ### Proposal Process
 
-1. **Identify candidate term** in individual BRD Section 18
+1. **Identify candidate term** in individual BRD section 18
 2. **Check usage frequency** across existing BRDs
 3. **Submit proposal** to Business Analyst Team with:
    - Term definition

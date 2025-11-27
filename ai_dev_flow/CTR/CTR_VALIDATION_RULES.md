@@ -1,0 +1,405 @@
+---
+title: "CTR Validation Rules"
+tags:
+  - validation-rules
+  - layer-9-artifact
+  - shared-architecture
+custom_fields:
+  document_type: validation_rules
+  artifact_type: CTR
+  layer: 9
+  priority: shared
+  development_status: active
+---
+
+# CTR Validation Rules
+
+Rules for validating Data Contracts (CTR) documents in the SDD framework.
+
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| **Version** | 1.0.0 |
+| **Created** | 2025-11-27 |
+| **Last Updated** | 2025-11-27 |
+| **Status** | Active |
+
+---
+
+## 1. Filename Validation
+
+### Pattern
+
+```regex
+^CTR-[0-9]{3,4}(_[a-z0-9_]+)?\.(md|yaml)$
+```
+
+### Rules
+
+| Rule | Check | Error Level |
+|------|-------|-------------|
+| CTR prefix | Must start with "CTR-" | ERROR |
+| ID format | NNN or NNNN digits | ERROR |
+| Slug format | lowercase, underscores only | ERROR |
+| Extension | .md or .yaml | ERROR |
+| Dual files | Both .md and .yaml should exist | WARNING |
+
+### Examples
+
+| Filename | Valid | Reason |
+|----------|-------|--------|
+| `CTR-001_user_api.md` | ✅ | Correct format |
+| `CTR-001_user_api.yaml` | ✅ | Correct format |
+| `ctr-001_user_api.md` | ❌ | Lowercase prefix |
+| `CTR-1_user_api.md` | ❌ | Single digit ID |
+| `CTR-001-user-api.md` | ❌ | Hyphens in slug |
+
+---
+
+## 2. Frontmatter Validation
+
+### Required Fields
+
+| Field | Type | Required | Validation |
+|-------|------|----------|------------|
+| title | string | Yes | Must match "CTR-NNN: [Name]" |
+| tags | array | Yes | Must include layer-9-artifact |
+| custom_fields.artifact_type | string | Yes | Must equal "CTR" |
+| custom_fields.layer | integer | Yes | Must equal 9 |
+| custom_fields.contract_version | string | Yes | Semantic version format |
+
+### Validation Script
+
+```bash
+# Check frontmatter presence
+if ! grep -q "^---" "$CTR_FILE"; then
+  echo "ERROR: Missing YAML frontmatter"
+fi
+
+# Check artifact type
+if ! grep -q "artifact_type: CTR" "$CTR_FILE"; then
+  echo "ERROR: artifact_type must be CTR"
+fi
+```
+
+---
+
+## 3. Document Control Table Validation
+
+### Required Fields
+
+| Field | Required | Format |
+|-------|----------|--------|
+| Contract ID | Yes | CTR-NNN |
+| Title | Yes | Non-empty string |
+| Version | Yes | X.Y.Z (semantic) |
+| Status | Yes | Draft/Active/Deprecated |
+| Created | Yes | YYYY-MM-DD |
+| Last Updated | Yes | YYYY-MM-DD |
+| Author | Yes | Non-empty string |
+| Consumers | Yes | List or "None" |
+| Providers | Yes | List or "None" |
+
+### Validation Rules
+
+1. **Contract ID** must match filename pattern
+2. **Version** must follow semantic versioning
+3. **Status** must be valid enum value
+4. **Dates** must be valid ISO 8601 format
+5. **Last Updated** >= Created date
+
+---
+
+## 4. Section Structure Validation
+
+### Required Sections (Markdown)
+
+| Section | Required | Validation |
+|---------|----------|------------|
+| Executive Summary | Yes | Non-empty content |
+| API Endpoints | Yes | At least one endpoint |
+| Data Models | Yes | At least one model |
+| Authentication | Yes | Security defined or "None required" |
+| Error Handling | Yes | Error codes documented |
+| Versioning Strategy | Yes | Strategy documented |
+| SLA Requirements | Yes | Targets defined |
+| Traceability Tags | Yes | Valid tag format |
+
+### Validation Commands
+
+```bash
+# Check required sections
+required_sections=(
+  "## 1. Executive Summary"
+  "## 2. API Endpoints"
+  "## 3. Data Models"
+  "## 4. Authentication"
+  "## 5. Error Handling"
+  "## 6. Versioning Strategy"
+  "## 7. SLA Requirements"
+  "## Traceability"
+)
+
+for section in "${required_sections[@]}"; do
+  if ! grep -q "$section" "$CTR_FILE"; then
+    echo "ERROR: Missing section: $section"
+  fi
+done
+```
+
+---
+
+## 5. YAML Schema Validation
+
+### OpenAPI Requirements
+
+| Component | Required | Validation |
+|-----------|----------|------------|
+| openapi | Yes | Must be "3.0.x" or "3.1.x" |
+| info.title | Yes | Must match .md title |
+| info.version | Yes | Must match contract version |
+| paths | Yes | At least one path |
+| components.schemas | Conditional | If data models exist |
+
+### Validation Commands
+
+```bash
+# Validate OpenAPI schema
+openapi-generator-cli validate -i "$CTR_YAML_FILE"
+
+# Check version consistency
+md_version=$(grep "Version" "$CTR_MD_FILE" | head -1)
+yaml_version=$(grep "version:" "$CTR_YAML_FILE" | head -1)
+```
+
+---
+
+## 6. Traceability Tag Validation
+
+### Required Tags
+
+| Tag | Required | Format |
+|-----|----------|--------|
+| @req | Yes | REQ-NNN |
+| @adr | Conditional | ADR-NNN (if architecture decisions exist) |
+| @spec | Conditional | SPEC-NNN (if specifications exist) |
+
+### Tag Format Rules
+
+```markdown
+# Correct formats
+@req: REQ-001, REQ-002
+@adr: ADR-003
+@spec: SPEC-001:api_client
+
+# Incorrect formats
+@req: REQ001          # Missing hyphen
+@req REQ-001          # Missing colon
+@requirement: REQ-001 # Wrong tag name
+```
+
+### Validation Commands
+
+```bash
+# Check for required @req tag
+if ! grep -qE "^@req:" "$CTR_FILE"; then
+  echo "ERROR: Missing @req traceability tag"
+fi
+
+# Validate tag format
+if grep -qE "@req:\s*$" "$CTR_FILE"; then
+  echo "ERROR: @req tag has no references"
+fi
+```
+
+---
+
+## 7. Cross-Reference Validation
+
+### Link Resolution
+
+| Link Type | Validation | Error Level |
+|-----------|------------|-------------|
+| Internal links | File must exist | ERROR |
+| Anchor links | Anchor must exist | WARNING |
+| External URLs | HTTP 200 response | WARNING |
+
+### Validation Commands
+
+```bash
+# Extract and validate internal links
+grep -oE '\[.*?\]\([^)]+\)' "$CTR_FILE" | while read -r link; do
+  path=$(echo "$link" | sed -E 's/.*\(([^)]+)\).*/\1/')
+
+  # Skip external URLs
+  if [[ "$path" =~ ^https?:// ]]; then
+    continue
+  fi
+
+  # Check file exists
+  resolved_path="$(dirname "$CTR_FILE")/$path"
+  if [ ! -f "$resolved_path" ]; then
+    echo "ERROR: Broken link: $path"
+  fi
+done
+```
+
+---
+
+## 8. Consumer/Provider Validation
+
+### Rules
+
+1. **At least one consumer** - Contract must have consumers
+2. **At least one provider** - Contract must have providers
+3. **Valid references** - Referenced systems must exist
+4. **Bidirectional links** - Consumers should reference this contract
+
+### Validation Commands
+
+```bash
+# Check consumers exist
+if grep -q "| \*\*Consumers\*\* | None |" "$CTR_FILE"; then
+  echo "WARNING: No consumers defined"
+fi
+
+# Check providers exist
+if grep -q "| \*\*Providers\*\* | None |" "$CTR_FILE"; then
+  echo "WARNING: No providers defined"
+fi
+```
+
+---
+
+## 9. Versioning Validation
+
+### Semantic Version Rules
+
+| Change Type | Version Bump | Description |
+|-------------|--------------|-------------|
+| Breaking | Major (X.0.0) | Incompatible API changes |
+| Feature | Minor (0.X.0) | Backwards-compatible additions |
+| Fix | Patch (0.0.X) | Backwards-compatible fixes |
+
+### Validation
+
+```bash
+# Extract version
+version=$(grep -oE "[0-9]+\.[0-9]+\.[0-9]+" "$CTR_FILE" | head -1)
+
+# Validate format
+if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "ERROR: Invalid semantic version format: $version"
+fi
+```
+
+---
+
+## 10. Error Severity Levels
+
+### Error Levels
+
+| Level | Action Required | Examples |
+|-------|-----------------|----------|
+| ERROR | Must fix before merge | Missing sections, invalid format |
+| WARNING | Should fix | Missing consumers, incomplete docs |
+| INFO | Optional improvement | Style suggestions |
+
+### Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| 0 | Validation passed |
+| 1 | Errors found |
+| 2 | Warnings only |
+
+---
+
+## 11. Validation Script Usage
+
+### Command
+
+```bash
+./scripts/validate_ctr.sh <CTR_FILE>
+```
+
+### Options
+
+```bash
+./scripts/validate_ctr.sh --help
+./scripts/validate_ctr.sh --verbose CTR-001_api.md
+./scripts/validate_ctr.sh --strict CTR-001_api.md  # Treat warnings as errors
+```
+
+### Output Format
+
+```
+=========================================
+CTR Validation Report
+=========================================
+File: CTR-001_user_api.md
+Version: 1.0.0
+
+CHECK 1: Filename Format
+  ✅ Filename format valid
+
+CHECK 2: Frontmatter
+  ✅ YAML frontmatter present
+  ✅ Required fields present
+
+CHECK 3: Required Sections
+  ✅ All 8 required sections found
+
+CHECK 4: YAML Schema (if .yaml exists)
+  ✅ OpenAPI schema valid
+
+CHECK 5: Traceability Tags
+  ✅ @req tag present
+  ⚠️  WARNING: @adr tag missing
+
+=========================================
+SUMMARY
+=========================================
+Errors: 0
+Warnings: 1
+Result: PASSED WITH WARNINGS
+```
+
+---
+
+## 12. Common Validation Errors
+
+### Error: Missing @req Tag
+
+**Symptom**: Validation fails on traceability check
+**Fix**: Add `@req: REQ-NNN` tag with valid requirement references
+
+### Error: Version Mismatch
+
+**Symptom**: .md and .yaml versions differ
+**Fix**: Ensure both files have identical version numbers
+
+### Error: Broken Internal Links
+
+**Symptom**: Referenced files not found
+**Fix**: Verify file paths are correct relative to CTR location
+
+### Warning: No Consumers Defined
+
+**Symptom**: Consumers field is empty or "None"
+**Fix**: Identify and list systems that consume this contract
+
+---
+
+## References
+
+- [CTR_CREATION_RULES.md](./CTR_CREATION_RULES.md) - Creation guidelines
+- [CTR-TEMPLATE.md](./CTR-TEMPLATE.md) - Contract template
+- [validate_ctr.sh](../scripts/validate_ctr.sh) - Validation script
+- [README.md](./README.md) - Directory overview
+
+---
+
+**Document Version**: 1.0.0
+**Last Updated**: 2025-11-27

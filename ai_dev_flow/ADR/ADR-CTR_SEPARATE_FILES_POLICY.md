@@ -68,7 +68,7 @@ Every API contract requires:
 ### Applies To
 
 - **Internal APIs**: Service-to-service contracts within the system
-- **External APIs**: Third-party integrations ([EXTERNAL_SERVICE_GATEWAY], [EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API])
+- **External APIs**: Third-party integrations ([EXTERNAL_SERVICE_GATEWAY], [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API])
 - **Event Schemas**: Pub/Sub message contracts
 - **Data Models**: Shared data structure contracts
 

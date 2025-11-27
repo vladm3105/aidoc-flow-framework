@@ -11,9 +11,10 @@ custom_fields:
 
 # Complete Cumulative Tagging Example
 
-**Version**: 1.0
+**Version**: 1.1
 **Purpose**: End-to-end example of cumulative tagging from BRD through Code
 **Created**: 2025-11-13
+**Updated**: 2025-11-26
 **Status**: Reference Example
 
 ---
@@ -27,26 +28,26 @@ This document demonstrates complete cumulative tagging through all 16 layers of 
 - Tag format (markdown, YAML, or Gherkin)
 - Traceability to all upstream sources
 
-**Example Feature**: Order Placement Service
+**Example Feature**: Notification Service
 
 ---
 
 ## Layer 0: Strategy (External)
 
-**Artifact**: `option_strategy/integrated_strategy_algo_v5.md`
+**Artifact**: `{domain_strategy}/product_strategy_v5.md`
 **Required Tags**: None (0 tags)
 **Format**: External document (not part of formal SDD workflow)
 
 **Content Example**:
 ```markdown
-## 4.2 Order Placement Logic
+## 4.2 Notification Logic
 
-When entry criteria satisfied:
-1. Calculate position size based on risk budget
-2. Determine order type (limit, market, stop-limit)
-3. Place order with broker integration
-4. Monitor execution status
-5. Update position tracking
+When notification criteria satisfied:
+1. Determine notification channel (email, SMS, push)
+2. Format message based on template
+3. Send notification via provider integration
+4. Track delivery status
+5. Update notification history
 ```
 
 **Note**: Strategy documents are external business logic. BRD references them but does not tag them.
@@ -55,17 +56,17 @@ When entry criteria satisfied:
 
 ## Layer 1: BRD (Business Requirements Document)
 
-**Artifact**: `docs/BRD/BRD-009_broker_integration.md`
+**Artifact**: `docs/BRD/BRD-009_notification_system.md`
 **Required Tags**: None (0 tags)
 **Format**: Markdown
 
 **Content Example**:
 ```markdown
-# BRD-009: Broker Integration Business Requirements
+# BRD-009: Notification System Business Requirements
 
 ## 1. Executive Summary
 
-Enable automated order placement through Interactive Brokers API to execute trading strategy.
+Enable automated notification delivery through external provider APIs to support user communication.
 
 ## 7. Traceability
 
@@ -75,10 +76,10 @@ Enable automated order placement through Interactive Brokers API to execute trad
 ```
 
 **Upstream Sources**:
-- Strategy: `option_strategy/integrated_strategy_algo_v5.md` Section 4.2
+- Strategy: `{domain_strategy}/product_strategy_v5.md` section 4.2
 
 **Downstream Artifacts**:
-- PRD-016 (Product requirements for order placement)
+- PRD-016 (Product requirements for notification service)
 - EARS-012 (Formal requirements)
 ```
 
@@ -91,17 +92,17 @@ Enable automated order placement through Interactive Brokers API to execute trad
 
 ## Layer 2: PRD (Product Requirements Document)
 
-**Artifact**: `docs/PRD/PRD-016_order_placement.md`
+**Artifact**: `docs/PRD/PRD-016_notification_service.md`
 **Required Tags**: `@brd` (1 tag)
 **Format**: Markdown
 
 **Content Example**:
 ```markdown
-# PRD-016: Order Placement Product Requirements
+# PRD-016: Notification Service Product Requirements
 
 ## 2. Problem Statement
 
-Need UI and API for placing orders with Interactive Brokers.
+Need UI and API for sending notifications through multiple channels.
 
 ## 7. Traceability
 
@@ -111,11 +112,11 @@ Need UI and API for placing orders with Interactive Brokers.
 ```
 
 **Tag Explanation**:
-- BRD-009:FR-015 - Functional requirement for broker integration
-- BRD-009:NFR-006 - Non-functional requirement for trade execution performance
+- BRD-009:FR-015 - Functional requirement for provider integration
+- BRD-009:NFR-006 - Non-functional requirement for delivery performance
 
 **Upstream Sources**:
-- BRD-009 (Broker Integration Business Requirements)
+- BRD-009 (Notification System Business Requirements)
 
 **Downstream Artifacts**:
 - EARS-012 (Formal WHEN-THE-SHALL-WITHIN requirements)
@@ -130,24 +131,24 @@ Need UI and API for placing orders with Interactive Brokers.
 
 ## Layer 3: EARS (Easy Approach to Requirements Syntax)
 
-**Artifact**: `docs/EARS/EARS-012_order_validation.md`
+**Artifact**: `docs/EARS/EARS-012_notification_validation.md`
 **Required Tags**: `@brd`, `@prd` (2 tags)
 **Format**: Markdown
 
 **Content Example**:
 ```markdown
-# EARS-012: Order Validation Requirements
+# EARS-012: Notification Validation Requirements
 
 ## 3.1 Event-Driven Requirements
 
 ### EARS-012:EVENT-001
-**WHEN** user selects "Place Order" button
-**THE** system **SHALL** validate order parameters
+**WHEN** user selects "Send Notification" button
+**THE** system **SHALL** validate notification parameters
 **WITHIN** 100 milliseconds
 
 ### EARS-012:EVENT-002
-**WHEN** order validation succeeds
-**THE** system **SHALL** submit order to broker API
+**WHEN** notification validation succeeds
+**THE** system **SHALL** submit notification to provider API
 **WITHIN** 200 milliseconds
 
 ## 7. Traceability
@@ -159,16 +160,16 @@ Need UI and API for placing orders with Interactive Brokers.
 ```
 
 **Tag Explanation**:
-- BRD-009:FR-015 - Broker integration capability
+- BRD-009:FR-015 - Provider integration capability
 - BRD-009:NFR-006 - Performance requirements
-- PRD-016:FEATURE-003 - Order placement UI feature
+- PRD-016:FEATURE-003 - Notification UI feature
 
 **Upstream Sources**:
 - BRD-009 (Business requirements)
 - PRD-016 (Product requirements)
 
 **Downstream Artifacts**:
-- BDD-015 (Test scenarios for order placement)
+- BDD-015 (Test scenarios for notification service)
 ```
 
 **Tag Analysis**:
@@ -180,38 +181,38 @@ Need UI and API for placing orders with Interactive Brokers.
 
 ## Layer 4: BDD (Behavior-Driven Development)
 
-**Artifact**: `docs/BDD/BDD-015_order_placement.feature`
+**Artifact**: `docs/BDD/BDD-015_notification_service.feature`
 **Required Tags**: `@brd`, `@prd`, `@ears` (3+ tags)
 **Format**: Gherkin with tags
 
 **Content Example**:
 ```gherkin
-# BDD-015: Order Placement Test Scenarios
+# BDD-015: Notification Service Test Scenarios
 
 @brd:BRD-009:FR-015
 @brd:BRD-009:NFR-006
 @prd:PRD-016:FEATURE-003
 @ears:EARS-012:EVENT-001
 @ears:EARS-012:EVENT-002
-Feature: Order Placement
+Feature: Notification Service
 
-  Scenario: Place valid limit order
+  Scenario: Send valid email notification
     Given user is authenticated
-    And account has sufficient buying power
-    When user places limit order for AAPL with:
-      | Quantity | 100      |
-      | Price    | 150.00   |
-      | Type     | BUY      |
-      | TIF      | DAY      |
-    Then order validation completes within 100ms
-    And order is submitted to broker within 200ms
-    And order confirmation is displayed
+    And notification service is available
+    When user sends email notification with:
+      | Recipient  | user@example.com |
+      | Subject    | Test Message     |
+      | Channel    | EMAIL            |
+      | Priority   | HIGH             |
+    Then notification validation completes within 100ms
+    And notification is submitted to provider within 200ms
+    And delivery confirmation is displayed
 
-  Scenario: Reject invalid order (insufficient funds)
+  Scenario: Reject invalid notification (missing recipient)
     Given user is authenticated
-    And account has insufficient buying power
-    When user attempts to place order
-    Then system rejects order with error "INSUFFICIENT_FUNDS"
+    And notification service is available
+    When user attempts to send notification without recipient
+    Then system rejects notification with error "MISSING_RECIPIENT"
     And error message is displayed within 100ms
 ```
 
@@ -225,22 +226,22 @@ Feature: Order Placement
 
 ## Layer 5: ADR (Architecture Decision Record)
 
-**Artifact**: `docs/ADR/ADR-033_risk_limit_enforcement.md`
+**Artifact**: `docs/ADR/ADR-033_notification_routing.md`
 **Required Tags**: `@brd`, `@prd`, `@ears`, `@bdd` (4 tags)
 **Format**: Markdown
 
 **Content Example**:
 ```markdown
-# ADR-033: Risk Limit Enforcement Architecture
+# ADR-033: Notification Routing Architecture
 
 ## Status
 Accepted
 
 ## Context
-Need architectural approach for enforcing position limits before order submission.
+Need architectural approach for routing notifications to appropriate providers.
 
 ## Decision
-Implement synchronous validation layer between UI and broker API.
+Implement asynchronous routing layer between API and provider integrations.
 
 ## 7. Traceability
 
@@ -249,14 +250,14 @@ Implement synchronous validation layer between UI and broker API.
 @brd: BRD-009:FR-015, BRD-009:NFR-006
 @prd: PRD-016:FEATURE-003
 @ears: EARS-012:EVENT-001, EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@bdd: BDD-015:scenario-send-notification, BDD-015:scenario-reject-invalid
 ```
 
 **Tag Explanation**:
 - BRD-009:FR-015, NFR-006 - Business and performance requirements
 - PRD-016:FEATURE-003 - Product feature specification
 - EARS-012:EVENT-001, EVENT-002 - Formal behavioral requirements
-- BDD-015:scenario-place-order, scenario-reject-invalid - Test coverage
+- BDD-015:scenario-send-notification, scenario-reject-invalid - Test coverage
 
 **Upstream Sources**:
 - BRD-009, PRD-016, EARS-012, BDD-015
@@ -275,21 +276,21 @@ Implement synchronous validation layer between UI and broker API.
 
 ## Layer 6: SYS (System Requirements)
 
-**Artifact**: `docs/SYS/SYS-012_order_service_system.md`
+**Artifact**: `docs/SYS/SYS-012_notification_service_system.md`
 **Required Tags**: `@brd` through `@adr` (5 tags)
 **Format**: Markdown
 
 **Content Example**:
 ```markdown
-# SYS-012: Order Service System Requirements
+# SYS-012: Notification Service System Requirements
 
 ## 2. Functional Requirements
 
 ### SYS-012:FUNC-001
-System shall provide REST API endpoint for order submission.
+System shall provide REST API endpoint for notification submission.
 
 ### SYS-012:PERF-001
-Order validation latency shall not exceed 100ms at 95th percentile.
+Notification validation latency shall not exceed 100ms at 95th percentile.
 
 ## 7. Traceability
 
@@ -298,7 +299,7 @@ Order validation latency shall not exceed 100ms at 95th percentile.
 @brd: BRD-009:FR-015, BRD-009:NFR-006
 @prd: PRD-016:FEATURE-003
 @ears: EARS-012:EVENT-001, EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@bdd: BDD-015:scenario-send-notification, BDD-015:scenario-reject-invalid
 @adr: ADR-033
 ```
 
@@ -322,22 +323,22 @@ Order validation latency shall not exceed 100ms at 95th percentile.
 
 ## Layer 7: REQ (Atomic Requirements)
 
-**Artifact**: `docs/REQ/api/order/REQ-045_place_limit_order.md`
+**Artifact**: `docs/REQ/api/notification/REQ-045_send_notification.md`
 **Required Tags**: `@brd` through `@sys` (6 tags)
 **Format**: Markdown
 
 **Content Example**:
 ```markdown
-# REQ-045: Place Limit Order Atomic Requirement
+# REQ-045: Send Notification Atomic Requirement
 
 ## 1. Requirement Statement
 
-The system SHALL provide an API endpoint to place limit orders with the following parameters:
-- Symbol (required, string, format: TICKER)
-- Quantity (required, positive integer)
-- Limit price (required, positive decimal, 2 decimal places)
-- Order type (required, enum: BUY, SELL)
-- Time in force (required, enum: DAY, GTC, IOC)
+The system SHALL provide an API endpoint to send notifications with the following parameters:
+- Recipient (required, string, format: EMAIL or PHONE)
+- Subject (required, string, max 200 characters)
+- Body (required, string, max 5000 characters)
+- Channel (required, enum: EMAIL, SMS, PUSH)
+- Priority (required, enum: LOW, NORMAL, HIGH)
 
 ## 7. Traceability
 
@@ -346,7 +347,7 @@ The system SHALL provide an API endpoint to place limit orders with the followin
 @brd: BRD-009:FR-015, BRD-009:NFR-006
 @prd: PRD-016:FEATURE-003
 @ears: EARS-012:EVENT-001, EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order
+@bdd: BDD-015:scenario-send-notification
 @adr: ADR-033
 @sys: SYS-012:FUNC-001, SYS-012:PERF-001
 ```
@@ -374,19 +375,19 @@ The system SHALL provide an API endpoint to place limit orders with the followin
 
 ## Layer 8: IMPL (Implementation Plan) [OPTIONAL]
 
-**Artifact**: `docs/IMPL/IMPL-003_broker_integration_phase2.md`
+**Artifact**: `docs/IMPL/IMPL-003_notification_integration_phase2.md`
 **Required Tags**: `@brd` through `@req` (7 tags)
 **Format**: Markdown
 
 **Content Example**:
 ```markdown
-# IMPL-003: Broker Integration Phase 2 Implementation Plan
+# IMPL-003: Notification Integration Phase 2 Implementation Plan
 
 ## 2. Implementation Phases
 
-### Phase 2.1: Order Service Development (Weeks 5-6)
+### Phase 2.1: Notification Service Development
 - Team: Backend Team
-- Deliverables: SPEC-018, TASKS-015, order_service.py
+- Deliverables: SPEC-018, TASKS-015, notification_service.py
 
 ## 7. Traceability
 
@@ -395,7 +396,7 @@ The system SHALL provide an API endpoint to place limit orders with the followin
 @brd: BRD-009:FR-015, BRD-009:NFR-006
 @prd: PRD-016:FEATURE-003
 @ears: EARS-012:EVENT-001, EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order
+@bdd: BDD-015:scenario-send-notification
 @adr: ADR-033
 @sys: SYS-012:FUNC-001, SYS-012:PERF-001
 @req: REQ-045:interface-spec, REQ-045:validation-logic
@@ -417,17 +418,17 @@ The system SHALL provide an API endpoint to place limit orders with the followin
 
 ## Layer 9: CTR (API Contracts) [OPTIONAL]
 
-**Artifact**: `docs/CTR/CTR-005_order_service_api.md` + `.yaml`
+**Artifact**: `docs/CTR/CTR-005_notification_service_api.md` + `.yaml`
 **Required Tags**: `@brd` through `@impl` (8 tags)
 **Format**: Markdown + YAML (dual-file)
 
-**Content Example** (CTR-005_order_service_api.md):
+**Content Example** (CTR-005_notification_service_api.md):
 ```markdown
-# CTR-005: Order Service API Contract
+# CTR-005: Notification Service API Contract
 
 ## 1. Contract Overview
 
-REST API contract for order placement service.
+REST API contract for notification service.
 
 ## 7. Traceability
 
@@ -436,7 +437,7 @@ REST API contract for order placement service.
 @brd: BRD-009:FR-015, BRD-009:NFR-006
 @prd: PRD-016:FEATURE-003
 @ears: EARS-012:EVENT-001, EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order
+@bdd: BDD-015:scenario-send-notification
 @adr: ADR-033
 @sys: SYS-012:FUNC-001, SYS-012:PERF-001
 @req: REQ-045:interface-spec
@@ -450,37 +451,37 @@ REST API contract for order placement service.
 **Note**: CTR is optional layer. Include @ctr tags in downstream only if CTR exists.
 ```
 
-**YAML Schema** (CTR-005_order_service_api.yaml):
+**YAML Schema** (CTR-005_notification_service_api.yaml):
 ```yaml
 openapi: 3.0.0
 info:
-  title: Order Service API
+  title: Notification Service API
   version: 1.0.0
 
 # Traceability embedded in description
 description: |
-  Order placement API for Interactive Brokers integration.
+  Notification API for external provider integration.
 
   Traceability:
   - @brd: BRD-009:FR-015, BRD-009:NFR-006
   - @prd: PRD-016:FEATURE-003
   - @ears: EARS-012:EVENT-001, EARS-012:EVENT-002
-  - @bdd: BDD-015:scenario-place-order
+  - @bdd: BDD-015:scenario-send-notification
   - @adr: ADR-033
   - @sys: SYS-012:FUNC-001, SYS-012:PERF-001
   - @req: REQ-045:interface-spec
   - @impl: IMPL-003:phase2
 
 paths:
-  /api/v1/orders:
+  /api/v1/notifications:
     post:
-      summary: Place limit order
+      summary: Send notification
       requestBody:
         content:
           application/json:
             schema:
               type: object
-              required: [symbol, quantity, price, type, tif]
+              required: [recipient, subject, body, channel, priority]
 ```
 
 **Tag Analysis**:
@@ -493,16 +494,16 @@ paths:
 
 ## Layer 10: SPEC (Technical Specification)
 
-**Artifact**: `docs/SPEC/services/SPEC-018_order_service.yaml`
+**Artifact**: `docs/SPEC/services/SPEC-018_notification_service.yaml`
 **Required Tags**: `@brd` through `@req` + optional `@impl`, `@ctr` (7-9 tags)
 **Format**: YAML with `cumulative_tags` section
 
 **Content Example**:
 ```yaml
-# SPEC-018: Order Placement Service Technical Specification
+# SPEC-018: Notification Service Technical Specification
 
 spec_id: SPEC-018
-title: "Order Placement Service Technical Specification"
+title: "Notification Service Technical Specification"
 version: "1.0.0"
 status: active
 
@@ -513,7 +514,7 @@ cumulative_tags:
   brd: "BRD-009:FR-015, BRD-009:NFR-006"
   prd: "PRD-016:FEATURE-003"
   ears: "EARS-012:EVENT-001, EARS-012:EVENT-002"
-  bdd: "BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid"
+  bdd: "BDD-015:scenario-send-notification, BDD-015:scenario-reject-invalid"
   adr: "ADR-033"
   sys: "SYS-012:FUNC-001, SYS-012:PERF-001"
   req: "REQ-045:interface-spec, REQ-045:validation-logic"
@@ -521,27 +522,27 @@ cumulative_tags:
   ctr: "CTR-005"  # Optional - included because CTR-005 exists
 
 implementation:
-  service_name: order_placement_service
+  service_name: notification_service
   language: python
   framework: fastapi
 
   interfaces:
     rest_api:
       contract_ref: CTR-005  # References optional CTR layer
-      endpoint: /api/v1/orders
+      endpoint: /api/v1/notifications
       method: POST
 
   validation:
-    - Validate symbol format (TICKER pattern)
-    - Check quantity > 0
-    - Verify limit price precision (2 decimals)
-    - Validate order type enum
-    - Check time in force enum
+    - Validate recipient format (EMAIL or PHONE pattern)
+    - Check subject length <= 200 characters
+    - Verify body length <= 5000 characters
+    - Validate channel enum
+    - Check priority enum
 
   error_handling:
-    - INVALID_SYMBOL: 400
-    - INSUFFICIENT_FUNDS: 400
-    - BROKER_ERROR: 502
+    - MISSING_RECIPIENT: 400
+    - INVALID_CHANNEL: 400
+    - PROVIDER_ERROR: 502
     - TIMEOUT: 504
 ```
 
@@ -555,25 +556,25 @@ implementation:
 
 ## Layer 11: TASKS (Code Generation Plans)
 
-**Artifact**: `docs/TASKS/TASKS-015_order_service_implementation.md`
+**Artifact**: `docs/TASKS/TASKS-015_notification_service_implementation.md`
 **Required Tags**: `@brd` through `@spec` (8-10 tags)
 **Format**: Markdown
 
 **Content Example**:
 ```markdown
-# TASKS-015: Order Service Implementation Tasks
+# TASKS-015: Notification Service Implementation Tasks
 
 ## 2. Implementation Plan
 
 ### Task 1: REST API Endpoint
-**File**: `src/services/order_service.py`
-**Function**: `place_limit_order()`
+**File**: `src/services/notification_service.py`
+**Function**: `send_notification()`
 **Dependencies**: SPEC-018, CTR-005
-**Acceptance**: BDD-015:scenario-place-order passes
+**Acceptance**: BDD-015:scenario-send-notification passes
 
 ### Task 2: Validation Logic
-**File**: `src/services/order_validator.py`
-**Function**: `validate_order_params()`
+**File**: `src/services/notification_validator.py`
+**Function**: `validate_notification_params()`
 **Dependencies**: REQ-045, SPEC-018
 **Acceptance**: All validation rules enforced
 
@@ -584,7 +585,7 @@ implementation:
 @brd: BRD-009:FR-015, BRD-009:NFR-006
 @prd: PRD-016:FEATURE-003
 @ears: EARS-012:EVENT-001, EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@bdd: BDD-015:scenario-send-notification, BDD-015:scenario-reject-invalid
 @adr: ADR-033
 @sys: SYS-012:FUNC-001, SYS-012:PERF-001
 @req: REQ-045:interface-spec, REQ-045:validation-logic
@@ -608,13 +609,13 @@ implementation:
 
 ## Layer 12: IPLAN (Implementation Work Plans)
 
-**Artifact**: `work_plans/implement_order_service_20251113_120000.md`
+**Artifact**: `work_plans/implement_notification_service_20251113_120000.md`
 **Required Tags**: `@brd` through `@tasks` (9-11 tags)
 **Format**: Markdown
 
 **Content Example**:
 ```markdown
-# Implementation Work Plan: Order Service
+# Implementation Work Plan: Notification Service
 **Session**: 2025-11-13 12:00:00
 **Duration**: 2 hours
 **Engineer**: Backend Team
@@ -622,12 +623,12 @@ implementation:
 ## Phase 1: Setup (15 min)
 ```bash
 cd src/services
-touch order_service.py order_validator.py
+touch notification_service.py notification_validator.py
 ```
 
 ## Phase 2: Implementation (90 min)
-- Implement place_limit_order() per SPEC-018
-- Implement validate_order_params() per REQ-045
+- Implement send_notification() per SPEC-018
+- Implement validate_notification_params() per REQ-045
 - Add error handling per SPEC-018 error codes
 
 ## Traceability
@@ -637,7 +638,7 @@ touch order_service.py order_validator.py
 @brd: BRD-009:FR-015, BRD-009:NFR-006
 @prd: PRD-016:FEATURE-003
 @ears: EARS-012:EVENT-001, EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@bdd: BDD-015:scenario-send-notification, BDD-015:scenario-reject-invalid
 @adr: ADR-033
 @sys: SYS-012:FUNC-001, SYS-012:PERF-001
 @req: REQ-045:interface-spec, REQ-045:validation-logic
@@ -661,18 +662,18 @@ touch order_service.py order_validator.py
 
 ## Layer 13: Code (Implementation)
 
-**Artifact**: `src/services/order_service.py`
+**Artifact**: `src/services/notification_service.py`
 **Required Tags**: `@brd` through `@tasks` (9-11 tags)
 **Format**: Python docstrings
 
 **Content Example**:
 ```python
-"""Order placement service implementation.
+"""Notification service implementation.
 
 @brd: BRD-009:FR-015, BRD-009:NFR-006
 @prd: PRD-016:FEATURE-003
 @ears: EARS-012:EVENT-001, EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@bdd: BDD-015:scenario-send-notification, BDD-015:scenario-reject-invalid
 @adr: ADR-033
 @sys: SYS-012:FUNC-001, SYS-012:PERF-001
 @req: REQ-045:interface-spec, REQ-045:validation-logic
@@ -690,36 +691,36 @@ from typing import Literal
 router = APIRouter()
 
 
-class LimitOrderRequest(BaseModel):
-    """Limit order request model.
+class NotificationRequest(BaseModel):
+    """Notification request model.
 
     Implements: CTR-005 (API Contract)
     Validates: REQ-045 (Atomic Requirement)
     """
-    symbol: str
-    quantity: int
-    price: float
-    type: Literal["BUY", "SELL"]
-    tif: Literal["DAY", "GTC", "IOC"]
+    recipient: str
+    subject: str
+    body: str
+    channel: Literal["EMAIL", "SMS", "PUSH"]
+    priority: Literal["LOW", "NORMAL", "HIGH"]
 
 
-@router.post("/api/v1/orders")
-async def place_limit_order(order: LimitOrderRequest):
-    """Place limit order endpoint.
+@router.post("/api/v1/notifications")
+async def send_notification(notification: NotificationRequest):
+    """Send notification endpoint.
 
-    Implements SPEC-018 order placement specification.
-    Satisfies BDD-015:scenario-place-order acceptance criteria.
+    Implements SPEC-018 notification service specification.
+    Satisfies BDD-015:scenario-send-notification acceptance criteria.
     Enforces SYS-012:PERF-001 latency requirement (100ms).
 
     Args:
-        order: Limit order parameters per CTR-005
+        notification: Notification parameters per CTR-005
 
     Returns:
-        Order confirmation with order ID
+        Notification confirmation with notification ID
 
     Raises:
         HTTPException: 400 for validation errors per SPEC-018
-        HTTPException: 502 for broker errors per SPEC-018
+        HTTPException: 502 for provider errors per SPEC-018
     """
     # Implementation omitted for brevity
     pass
@@ -735,18 +736,18 @@ async def place_limit_order(order: LimitOrderRequest):
 
 ## Layer 14: Tests (Test Suites)
 
-**Artifact**: `tests/services/test_order_service.py`
+**Artifact**: `tests/services/test_notification_service.py`
 **Required Tags**: `@brd` through `@code` (10-12 tags)
 **Format**: Python docstrings
 
 **Content Example**:
 ```python
-"""Test suite for order placement service.
+"""Test suite for notification service.
 
 @brd: BRD-009:FR-015, BRD-009:NFR-006
 @prd: PRD-016:FEATURE-003
 @ears: EARS-012:EVENT-001, EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@bdd: BDD-015:scenario-send-notification, BDD-015:scenario-reject-invalid
 @adr: ADR-033
 @sys: SYS-012:FUNC-001, SYS-012:PERF-001
 @req: REQ-045:interface-spec, REQ-045:validation-logic
@@ -754,58 +755,58 @@ async def place_limit_order(order: LimitOrderRequest):
 @ctr: CTR-005
 @spec: SPEC-018
 @tasks: TASKS-015
-@code: src/services/order_service.py
+@code: src/services/notification_service.py
 @impl-status: complete
 """
 
 import pytest
 from fastapi.testclient import TestClient
-from src.services.order_service import router, LimitOrderRequest
+from src.services.notification_service import router, NotificationRequest
 
 client = TestClient(router)
 
 
-def test_place_valid_limit_order():
-    """Test placing valid limit order.
+def test_send_valid_notification():
+    """Test sending valid notification.
 
-    Validates: BDD-015:scenario-place-order
+    Validates: BDD-015:scenario-send-notification
     Contract: CTR-005 request/response format
     Performance: SYS-012:PERF-001 (< 100ms)
     """
-    order = {
-        "symbol": "AAPL",
-        "quantity": 100,
-        "price": 150.00,
-        "type": "BUY",
-        "tif": "DAY"
+    notification = {
+        "recipient": "user@example.com",
+        "subject": "Test Message",
+        "body": "This is a test notification.",
+        "channel": "EMAIL",
+        "priority": "HIGH"
     }
 
-    response = client.post("/api/v1/orders", json=order)
+    response = client.post("/api/v1/notifications", json=notification)
 
     assert response.status_code == 200
-    assert response.json()["order_id"]
+    assert response.json()["notification_id"]
     # Performance assertion omitted for brevity
 
 
-def test_reject_invalid_symbol():
-    """Test rejection of invalid symbol.
+def test_reject_missing_recipient():
+    """Test rejection of missing recipient.
 
     Validates: BDD-015:scenario-reject-invalid
     Contract: CTR-005 error response format
     Requirement: REQ-045:validation-logic
     """
-    order = {
-        "symbol": "INVALID!@#",
-        "quantity": 100,
-        "price": 150.00,
-        "type": "BUY",
-        "tif": "DAY"
+    notification = {
+        "recipient": "",
+        "subject": "Test Message",
+        "body": "This is a test notification.",
+        "channel": "EMAIL",
+        "priority": "HIGH"
     }
 
-    response = client.post("/api/v1/orders", json=order)
+    response = client.post("/api/v1/notifications", json=notification)
 
     assert response.status_code == 400
-    assert response.json()["error"] == "INVALID_SYMBOL"
+    assert response.json()["error"] == "MISSING_RECIPIENT"
 ```
 
 **Tag Analysis**:
@@ -819,13 +820,13 @@ def test_reject_invalid_symbol():
 
 ## Layer 15: Validation (Validation Results)
 
-**Artifact**: `docs/validation/VALIDATION-015_order_service.md`
+**Artifact**: `docs/validation/VALIDATION-015_notification_service.md`
 **Required Tags**: All upstream (10-15 tags)
 **Format**: Markdown
 
 **Content Example**:
 ```markdown
-# VALIDATION-015: Order Service Validation Results
+# VALIDATION-015: Notification Service Validation Results
 
 **Validation Date**: 2025-11-13
 **Engineer**: QA Team
@@ -833,28 +834,28 @@ def test_reject_invalid_symbol():
 
 ## 1. BDD Scenario Execution
 
-### BDD-015:scenario-place-order
-- **Status**: PASSED ✅
+### BDD-015:scenario-send-notification
+- **Status**: PASSED
 - **Execution Time**: 87ms (< 100ms requirement per SYS-012:PERF-001)
 - **Contract Compliance**: CTR-005 validated
 - **Requirement Coverage**: REQ-045:interface-spec satisfied
 
 ### BDD-015:scenario-reject-invalid
-- **Status**: PASSED ✅
+- **Status**: PASSED
 - **Error Handling**: SPEC-018 error codes validated
 - **Contract Compliance**: CTR-005 error schema validated
 
 ## 2. Contract Testing
 
 ### CTR-005 Compliance
-- **Request Schema**: PASSED ✅
-- **Response Schema**: PASSED ✅
-- **Error Schema**: PASSED ✅
+- **Request Schema**: PASSED
+- **Response Schema**: PASSED
+- **Error Schema**: PASSED
 
 ## 3. Traceability Validation
 
-**Traceability Check**: PASSED ✅
-- All tags validated from BRD-009 through test_order_service.py
+**Traceability Check**: PASSED
+- All tags validated from BRD-009 through test_notification_service.py
 - No gaps in cumulative tag chain
 - Tag count compliance: 12 tags in test layer
 
@@ -865,7 +866,7 @@ def test_reject_invalid_symbol():
 @brd: BRD-009:FR-015, BRD-009:NFR-006
 @prd: PRD-016:FEATURE-003
 @ears: EARS-012:EVENT-001, EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@bdd: BDD-015:scenario-send-notification, BDD-015:scenario-reject-invalid
 @adr: ADR-033
 @sys: SYS-012:FUNC-001, SYS-012:PERF-001
 @req: REQ-045:interface-spec, REQ-045:validation-logic
@@ -873,9 +874,9 @@ def test_reject_invalid_symbol():
 @ctr: CTR-005
 @spec: SPEC-018
 @tasks: TASKS-015
-@iplan: implement_order_service_20251113_120000.md
-@code: src/services/order_service.py
-@tests: tests/services/test_order_service.py
+@iplan: implement_notification_service_20251113_120000.md
+@code: src/services/notification_service.py
+@tests: tests/services/test_notification_service.py
 ```
 
 **Validation Summary**:
@@ -899,22 +900,22 @@ def test_reject_invalid_symbol():
 ### Tag Progression by Layer
 
 ```
-Layer 0  (Strategy)      →  0 tags  [External]
-Layer 1  (BRD)           →  0 tags  [Top level]
-Layer 2  (PRD)           →  1 tag   [@brd]
-Layer 3  (EARS)          →  2 tags  [@brd, @prd]
-Layer 4  (BDD)           →  3 tags  [@brd, @prd, @ears]
-Layer 5  (ADR)           →  4 tags  [+ @bdd]
-Layer 6  (SYS)           →  5 tags  [+ @adr]
-Layer 7  (REQ)           →  6 tags  [+ @sys]
-Layer 8  (IMPL)          →  7 tags  [+ @req] *optional*
-Layer 9  (CTR)           →  8 tags  [+ @impl] *optional*
-Layer 10 (SPEC)          →  7-9 tags [+ optional @impl, @ctr]
-Layer 11 (TASKS)         →  8-10 tags [+ @spec]
-Layer 12 (IPLAN)   →  9-11 tags [+ @tasks]
-Layer 13 (Code)          →  9-11 tags [+ @IPLAN]
-Layer 14 (Tests)         →  10-12 tags [+ @code]
-Layer 15 (Validation)    →  10-15 tags [all upstream]
+Layer 0  (Strategy)      ->  0 tags  [External]
+Layer 1  (BRD)           ->  0 tags  [Top level]
+Layer 2  (PRD)           ->  1 tag   [@brd]
+Layer 3  (EARS)          ->  2 tags  [@brd, @prd]
+Layer 4  (BDD)           ->  3 tags  [@brd, @prd, @ears]
+Layer 5  (ADR)           ->  4 tags  [+ @bdd]
+Layer 6  (SYS)           ->  5 tags  [+ @adr]
+Layer 7  (REQ)           ->  6 tags  [+ @sys]
+Layer 8  (IMPL)          ->  7 tags  [+ @req] *optional*
+Layer 9  (CTR)           ->  8 tags  [+ @impl] *optional*
+Layer 10 (SPEC)          ->  7-9 tags [+ optional @impl, @ctr]
+Layer 11 (TASKS)         ->  8-10 tags [+ @spec]
+Layer 12 (IPLAN)   ->  9-11 tags [+ @tasks]
+Layer 13 (Code)          ->  9-11 tags [+ @IPLAN]
+Layer 14 (Tests)         ->  10-12 tags [+ @code]
+Layer 15 (Validation)    ->  10-15 tags [all upstream]
 ```
 
 ### Cumulative Tagging Benefits Demonstrated
@@ -930,11 +931,11 @@ Layer 15 (Validation)    →  10-15 tags [all upstream]
      * BDD-015 (test scenarios)
      * ADR-033 (architecture)
      * SYS-012, REQ-045, SPEC-018, TASKS-015
-     * order_service.py (code)
-     * test_order_service.py (tests)
+     * notification_service.py (code)
+     * test_notification_service.py (tests)
 
 3. **Regulatory Compliance**
-   - SEC, FINRA, FDA, ISO audit requirements satisfied
+   - Audit requirements satisfied for regulated industries
    - Complete traceability from business requirements to validation
    - No orphaned code or requirements
 
@@ -971,10 +972,10 @@ python scripts/validate_tags_against_docs.py \
 
 ### Expected Output
 ```
-✓ Indexed 15 documents
-✓ Validated 15 artifacts
-✓ No validation errors found
-✅ Cumulative tagging validation passed
+Indexed 15 documents
+Validated 15 artifacts
+No validation errors found
+Cumulative tagging validation passed
 
 COVERAGE METRICS
 ================

@@ -51,14 +51,14 @@ The AI Dev Flow framework is domain-agnostic and designed for reuse across any s
 ### Financial Services (Trading, Banking, Insurance)
 
 **Regulatory Landscape**:
-- SEC (Securities), FINRA (Broker-dealers), SOX (Financial reporting)
+- regulatory (regulatoryurities), compliance (provider-dealers), SOX (Financial reporting)
 - Basel III (Banking capital), Dodd-Frank (Financial reform)
 - PCI-DSS (Card payments), AML (Anti-money laundering)
 
 **Key Terminology**:
 - **Replace**: `[EXTERNAL_DATA_PROVIDER]` → Market data vendors (Bloomberg, Reuters, Alpha Vantage)
-- **Replace**: `[RESOURCE_COLLECTION]` → Portfolio, account, position
-- **Replace**: `[OPERATION_EXECUTION]` → Trade execution, order management
+- **Replace**: `[RESOURCE_COLLECTION]` → collection, account, position
+- **Replace**: `[OPERATION_EXECUTION]` → operation execution, order management
 - **Replace**: `[METRICS]` → Greeks (Delta, Gamma, Theta, Vega), VaR, Sharpe ratio
 - **Replace**: `[SAFETY_MECHANISM]` → Circuit breakers, position limits, risk budgets
 
@@ -86,7 +86,7 @@ The AI Dev Flow framework is domain-agnostic and designed for reuse across any s
 ### Healthcare (EMR, Telemedicine, Medical Devices)
 
 **Regulatory Landscape**:
-- HIPAA (Privacy and Security Rules)
+- HIPAA (Privacy and security Rules)
 - FDA (Medical device approval)
 - HITECH (Electronic health records)
 - 21 CFR Part 11 (Electronic records/signatures)
@@ -160,7 +160,7 @@ The AI Dev Flow framework is domain-agnostic and designed for reuse across any s
 **Regulatory Landscape**:
 - SOC2 (Service Organization Control)
 - GDPR/CCPA (Privacy)
-- ISO 27001 (Information Security)
+- ISO 27001 (Information security)
 - Data residency requirements (region-specific)
 
 **Key Terminology**:
@@ -277,10 +277,10 @@ Primary Use Cases:
 ```
 Applicable Standards:
   [ ] GDPR/CCPA (Privacy)
-  [ ] SOC2 (Security controls)
+  [ ] SOC2 (security controls)
   [ ] HIPAA (Healthcare)
   [ ] PCI-DSS (Payments)
-  [ ] ISO 27001 (InfoSec)
+  [ ] ISO 27001 (Inforegulatory)
   [ ] FedRAMP (Government cloud)
   [ ] Other: ____________________
 ```
@@ -428,7 +428,7 @@ Implementation plans provide session-based execution context. Customize for doma
 
 ## Additional Resources
 
-- **OWASP Application Security**: https://owasp.org/
+- **OWASP Application security**: https://owasp.org/
 - **NIST Cybersecurity Framework**: https://www.nist.gov/cyberframework
 - **Regulatory Compliance Guides**:
   - GDPR: https://gdpr.eu/

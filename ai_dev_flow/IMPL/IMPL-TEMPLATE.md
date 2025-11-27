@@ -269,7 +269,7 @@ flowchart LR
 
 **Project Management Validation** (Technical validation in SPEC/BDD/TASKS):
 - [ ] All phases completed on schedule (or variance documented with approval)
-- [ ] All deliverable documents created (CTR/SPEC/TASKS listed in Section 4.1)
+- [ ] All deliverable documents created (CTR/SPEC/TASKS listed in section 4.1)
 - [ ] All project risks mitigated or accepted by stakeholders
 - [ ] All dependencies resolved or escalated
 - [ ] Resource allocation tracked against estimates (variance documented)
@@ -278,16 +278,16 @@ flowchart LR
 
 **Business Validation**:
 - [ ] Requirements satisfied (REQ-NNN validation complete)
-- [ ] Success criteria met (from Section 1.2)
+- [ ] Success criteria met (from section 1.2)
 - [ ] Final stakeholder approval received
 - [ ] Handoff to operations complete (if applicable)
 
 ### 4.3 Project Completion Criteria
 
 **Project Complete When**:
-1. **All Deliverables Created**: CTR/SPEC/TASKS documents listed in Section 4.1
-2. **All Phases Complete**: Each phase meets its success criteria (Section 2.x)
-3. **Stakeholder Sign-off**: Product Owner + Technical Lead approval (Section 4.5)
+1. **All Deliverables Created**: CTR/SPEC/TASKS documents listed in section 4.1
+2. **All Phases Complete**: Each phase meets its success criteria (section 2.x)
+3. **Stakeholder Sign-off**: Product Owner + Technical Lead approval (section 4.5)
 4. **Handoff Complete**: Operations team ready to support (if applicable)
 
 ### 4.4 Lessons Learned (Post-Implementation)
@@ -317,12 +317,12 @@ flowchart LR
 
 ### Upstream Sources
 
-| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+| Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| REQ | [REQ-NNN](../REQ/.../REQ-NNN.md) | [Requirement Title] | Section X.Y | Business requirement |
-| REQ | [REQ-MMM](../REQ/.../REQ-MMM.md) | [Another Requirement] | Section Z | Functional requirement |
+| REQ | [REQ-NNN](../REQ/.../REQ-NNN.md) | [Requirement Title] | section X.Y | Business requirement |
+| REQ | [REQ-MMM](../REQ/.../REQ-MMM.md) | [Another Requirement] | section Z | Functional requirement |
 | ADR | [ADR-PPP](../ADR/ADR-PPP.md) | [Architecture Decision] | All | Architecture guidance |
-| SYS | [SYS-QQQ](../SYS/SYS-QQQ.md) | [System Requirement] | Section A | System constraint |
+| SYS | [SYS-QQQ](../SYS/SYS-QQQ.md) | [System Requirement] | section A | System constraint |
 
 ### Downstream Artifacts (Deliverables)
 
@@ -350,7 +350,7 @@ flowchart LR
 @ears: EARS-NNN:STATEMENT-ID
 @bdd: BDD-NNN:SCENARIO-ID
 @adr: ADR-NNN
-@sys: SYS-NNN:SECTION-ID
+@sys: SYS-NNN:regulatoryTION-ID
 @req: REQ-NNN:REQUIREMENT-ID
 ```
 

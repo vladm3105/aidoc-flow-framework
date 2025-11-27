@@ -255,14 +255,14 @@ custom_fields:
 **Critical Distinction**:
 
 - **YAML Frontmatter (Metadata)**: Document classification, tooling integration, NOT for audit trail
-- **Traceability Tags** (`@artifact: ID`): Bidirectional cross-document references in Section 7, for audit trail and compliance
+- **Traceability Tags** (`@artifact: ID`): Bidirectional cross-document references in section 7, for audit trail and compliance
 
 **Comparison Table**:
 
 | Aspect | YAML Frontmatter | Traceability Tags |
 |--------|------------------|-------------------|
 | **Purpose** | Classification, tooling | Audit trail, compliance |
-| **Location** | Document top | Section 7 (Traceability) |
+| **Location** | Document top | section 7 (Traceability) |
 | **Format** | YAML key-value pairs | `@artifact: ID` inline |
 | **Audience** | Tools, documentation systems | Auditors, reviewers, AI assistants |
 | **Changeability** | Can be updated | Immutable after approval |
@@ -343,21 +343,21 @@ Each layer in the SDD workflow inherits ALL upstream traceability tags:
 - **Categories**:
   - **Platform BRDs (001-005)**: Infrastructure foundation (sections 3.6/3.7 NOT required)
   - **Feature BRDs (006+)**: Workflow-specific requirements (sections 3.6/3.7 MANDATORY)
-- **Key Sections** (Feature BRDs):
-  - Section 1: Purpose & Scope
-  - Section 2: Stakeholders & Actors
-  - Section 3: Business Context
+- **Key sections** (Feature BRDs):
+  - section 1: Purpose & Scope
+  - section 2: Stakeholders & Actors
+  - section 3: Business Context
     - **3.1**: Problem Statement
     - **3.2**: Business Objectives
     - **3.6**: Technology Stack Prerequisites (references Platform BRDs 001-005)
     - **3.7**: Mandatory Technology Conditions (4 platform + 6-12 feature-specific)
-  - Section 4: Functional Requirements
-  - Section 5: Non-Functional Requirements
-  - Section 6: Data Models & Schema
-  - Section 7: API Specifications (if applicable)
-  - Section 8: Success Metrics & KPIs
-  - Section 9: Architecture Decision Requirements (ADRs needed)
-  - Section 10: Glossary
+  - section 4: Functional Requirements
+  - section 5: Non-Functional Requirements
+  - section 6: Data Models & Schema
+  - section 7: API Specifications (if applicable)
+  - section 8: Success Metrics & KPIs
+  - section 9: Architecture Decision Requirements (ADRs needed)
+  - section 10: Glossary
 - **Traceability**:
   - Platform BRDs are top-level (no upstream dependencies)
   - Feature BRDs reference Platform BRDs in sections 3.6/3.7
@@ -371,20 +371,20 @@ Each layer in the SDD workflow inherits ALL upstream traceability tags:
 Platform BRDs define the technology stack and infrastructure that Feature BRDs depend on:
 - **BRD-001**: Platform Architecture & Technology Stack (Node.js, PostgreSQL, Redis, Python, n8n)
 - **BRD-002**: Partner Ecosystem Integration (Bridge, LLM providers, payment processors)
-- **BRD-003**: Security, Compliance & Regulatory Framework (encryption, audit, SOC 2)
+- **BRD-003**: security, Compliance & Regulatory Framework (encryption, audit, SOC 2)
 - **BRD-004**: Data Model, Ledger & Double-Entry Accounting (PostgreSQL schema, normalization)
 - **BRD-005**: Multi-Agent AI System Architecture (Google ADK, A2A Protocol, shared context)
 
 **Feature BRDs (006+)**: Workflow-specific documents that MUST include sections 3.6 and 3.7
 
-**Section 3.6: Technology Stack Prerequisites**
+**section 3.6: Technology Stack Prerequisites**
 
 **Purpose**: Document which Platform BRDs provide required infrastructure for this Feature BRD
 
 **Structure**:
 1. List Platform BRD dependencies (which BRDs 001-005 are required)
 2. Document relevance to current Feature BRD (why this dependency matters)
-3. Reference specific Platform BRD sections (e.g., "See BRD-001 Section 3.6 items 1-10")
+3. Reference specific Platform BRD sections (e.g., "See BRD-001 section 3.6 items 1-10")
 4. Include Feature BRD cross-references when workflows depend on each other
 
 **Example** (from BRD-022 Fraud Detection Agent):
@@ -396,19 +396,19 @@ This AI Agent BRD depends on the following Platform BRDs:
 1. **Platform BRD-001: Platform Architecture & Technology Stack**
    - **Required Foundation**: Node.js 18+, PostgreSQL 14+, Redis 7+, Python 3.11+
    - **Relevance to BRD-022**: Fraud detection agent runs as Python microservice
-   - **Specific Prerequisites**: See BRD-001 Section 3.6 items 1-10
+   - **Specific Prerequisites**: See BRD-001 section 3.6 items 1-10
 
 2. **Platform BRD-005: Multi-Agent AI System Architecture**
    - **Required AI Infrastructure**: Google ADK, A2A Protocol, shared context store
    - **Relevance to BRD-022**: Fraud Agent communicates with Compliance Agent via A2A
-   - **Specific Prerequisites**: See BRD-005 Section 3.6 items 1-8
+   - **Specific Prerequisites**: See BRD-005 section 3.6 items 1-8
 
 3. **Feature BRD-016: Fraud Detection & Risk Screening** (Human Workflow)
    - **Required Integration**: Agent augments human fraud analyst workflows
    - **Relevance to BRD-022**: Agent provides automated first-pass screening
 ```
 
-**Section 3.7: Mandatory Technology Conditions**
+**section 3.7: Mandatory Technology Conditions**
 
 **Purpose**: Define non-negotiable technology requirements for successful implementation
 
@@ -471,15 +471,15 @@ This AI Agent BRD depends on the following Platform BRDs:
 - **Mandatory Conditions**: Platform conditions + workflow-specific SLAs
 - **Example**: BRD-009 (Remittance Transaction), BRD-013 (Settlement & Reconciliation)
 
-**Abbreviated vs Full Sections**
+**Abbreviated vs Full sections**
 
-**Full Sections (BRD-022, BRD-023, BRD-024)**:
-- Section 3.6: Complete list of 7 dependencies with detailed relevance explanations
-- Section 3.7: 4 platform + 8-12 feature-specific conditions with full impact analysis
+**Full sections (BRD-022, BRD-023, BRD-024)**:
+- section 3.6: Complete list of 7 dependencies with detailed relevance explanations
+- section 3.7: 4 platform + 8-12 feature-specific conditions with full impact analysis
 
-**Abbreviated Sections (All Other Feature BRDs)**:
-- Section 3.6: Concise bullet list referencing Platform BRDs (avoids duplication)
-- Section 3.7: 4 core platform conditions + pointer to functional requirements for feature-specific SLAs
+**Abbreviated sections (All Other Feature BRDs)**:
+- section 3.6: Concise bullet list referencing Platform BRDs (avoids duplication)
+- section 3.7: 4 core platform conditions + pointer to functional requirements for feature-specific SLAs
 
 **Rationale**: Token efficiency while maintaining doc-flow compliance and traceability
 
@@ -488,7 +488,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 - **File Format**: `PRD-NNN_descriptive_title.md`
 - **Contents**: Problem statement, goals, non-goals, KPIs, acceptance criteria
 - **[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: Starting point of development workflow - defines "what" needs to be built
-- **Key Sections**:
+- **Key sections**:
   - Problem: Current state issues and business impact
   - Goals: Measurable outcomes and success criteria
   - Non-Goals: Explicit scope boundaries
@@ -530,7 +530,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 - **Structure**:
   - Markdown (.md): Human-readable context, requirements satisfied, NFRs, versioning, traceability
   - YAML (.yaml): Machine-readable request/response schemas, error codes, performance targets
-- **Key Sections**:
+- **Key sections**:
   - Contract Definition: Interface overview, parties (provider/consumer), communication pattern
   - Interface Specification: Request/response schemas using JSON Schema
   - Error Handling: Complete error taxonomy with codes and retry policies
@@ -568,7 +568,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 ### Technical Specifications (SPEC)
 - **Purpose**: Machine-readable technical blueprints for implementation
 - **File Format**: `SPEC/{domain}/SPEC-NNN_{component_name}.yaml`
-- **Core Sections**:
+- **Core sections**:
   - Interface definitions (functions, classes, schemas)
   - Behavioral specifications (states, error handling, circuit breakers)
   - Operational requirements (caching, rate limiting, observability)
@@ -661,7 +661,7 @@ Gherkin feature file:
 # @req: REQ-003
 # @spec: SPEC-002
 
-Feature: Position Limit Enforcement
+Feature: resource limit Enforcement
 ```
 
 ## Tagging Goals
@@ -691,7 +691,7 @@ python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
 pre-commit run validate-traceability-tags
 ```
 
-**Benefits Over Manual Section 7:**
+**Benefits Over Manual section 7:**
 - ✅ Single source of truth: Code contains tags
 - ✅ Automated validation: Scripts check correctness
 - ✅ No drift: Tags embedded in code cannot become stale
@@ -787,9 +787,9 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 **Code Docstring Example**:
 ```python
 """
-Position Limit Service
+resource limit Service
 
-Implements real-time position limit validation and enforcement.
+Implements real-time resource limit validation and enforcement.
 
 ## Traceability Tags
 
@@ -920,14 +920,14 @@ The SDD workflow employs different tracking methods for different artifact types
 
 ```python
 """
-Position Limit Validation Service
+resource limit Validation Service
 
-Implements real-time position limit enforcement with portfolio heat monitoring
+Implements real-time resource limit enforcement with resource usage monitoring
 and automated trade rejection for risk management compliance.
 
 Business Context:
-Satisfies regulatory requirements for position limit monitoring and prevents
-excessive portfolio concentration risk through automated validation.
+Satisfies regulatory requirements for resource limit monitoring and prevents
+excessive collection concentration risk through automated validation.
 
 ## Traceability Tags
 
@@ -951,12 +951,12 @@ excessive portfolio concentration risk through automated validation.
 
 class PositionLimitService:
     """
-    Validates position limits against portfolio heat thresholds.
+    Validates resource limits against resource usage thresholds.
 
     Implements CTR-001 position_risk_validation interface.
     """
 
-    def validate_position_limit(self, position: Position) -> ValidationResult:
+    def validate_resource_limit(self, position: Position) -> ValidationResult:
         """
         Validate position against configured limits.
 
@@ -972,7 +972,7 @@ class PositionLimitService:
 
 ```python
 """
-Position Limit Validation Service Tests
+resource limit Validation Service Tests
 
 Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
 
@@ -987,13 +987,13 @@ Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
 @req: REQ-003:interface-spec
 @spec: SPEC-003
 @tasks: TASKS-001:task-3
-@code: src/services/position_limit_service.py
+@code: src/services/resource_limit_service.py
 
 @test-type: integration
 @test-scope: position-limits
 """
 
-def test_validate_position_limit_within_threshold():
+def test_validate_resource_limit_within_threshold():
     """
     Test: Position within limit is approved
 
@@ -1126,18 +1126,18 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
 ### 6. Author Technical Specifications (SPEC)
 - **Input**: REQ acceptance criteria with interface/schema/error definitions, ADR constraints
 - **Output**: YAML blueprints defining implementation specifications
-- **Core Sections**:
-  - Interface definitions with function/class signatures and data schemas (from REQ Section 3)
-  - Behavioral specifications (states, error handling, circuit breakers) (from REQ Section 5)
-  - Operational requirements (caching, rate limiting, observability) (from REQ Section 6)
-  - Performance targets with quantitative metrics (from REQ Section 7)
+- **Core sections**:
+  - Interface definitions with function/class signatures and data schemas (from REQ section 3)
+  - Behavioral specifications (states, error handling, circuit breakers) (from REQ section 5)
+  - Operational requirements (caching, rate limiting, observability) (from REQ section 6)
+  - Performance targets with quantitative metrics (from REQ section 7)
   - Verification mapping to BDD scenarios and load tests
 - **REQ V2 → SPEC Translation**:
-  - Copy interface signatures from REQ Section 3 (Interface Specifications)
-  - Copy data schemas from REQ Section 4 (JSON Schema, Pydantic, SQLAlchemy)
-  - Copy error catalog from REQ Section 5 (exception types, HTTP codes, recovery strategies)
-  - Copy configuration templates from REQ Section 6 (YAML structures with validation)
-  - Reference NFRs from REQ Section 7 (performance targets, security requirements)
+  - Copy interface signatures from REQ section 3 (Interface Specifications)
+  - Copy data schemas from REQ section 4 (JSON Schema, Pydantic, SQLAlchemy)
+  - Copy error catalog from REQ section 5 (exception types, HTTP codes, recovery strategies)
+  - Copy configuration templates from REQ section 6 (YAML structures with validation)
+  - Reference NFRs from REQ section 7 (performance targets, security requirements)
   - Add implementation-specific details (retry policies, circuit breaker thresholds, caching strategies)
 - **Guidelines**:
   - Machine-readable; complete specifications; feasibility of automated code generation
@@ -1159,7 +1159,7 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
      - Error Handling: Complete error taxonomy with retry policies
      - Non-Functional Requirements: Latency, idempotency, rate limiting
      - Versioning Strategy: Semantic versioning rules, deprecation policy
-     - Section 7 Traceability: Upstream REQ/ADR links, downstream SPEC placeholders
+     - section 7 Traceability: Upstream REQ/ADR links, downstream SPEC placeholders
   5. Complete YAML file:
      - contract_id (lowercase_snake_case matching slug)
      - endpoints with JSON Schema request/response definitions
@@ -1210,7 +1210,7 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
   - Contract exceeds 500 lines
   - Platform-level shared interface
   - Complex state machines or exception hierarchies
-- **Embedded in TASKS Section 8** otherwise (default)
+- **Embedded in TASKS section 8** otherwise (default)
 
 #### Contract Types
 
@@ -1280,12 +1280,12 @@ class EventCallbackRegistry(ABC):
 ```
 SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) → Code
                 ↓                       ↓              ↓
-         Section 8.1             Contract Def    Section 8.2
+         section 8.1             Contract Def    section 8.2
          @icon-role:            Type-Safe       @icon-role:
           provider              Interface         consumer
 ```
 
-#### Provider TASKS Integration (Section 8.1)
+#### Provider TASKS Integration (section 8.1)
 
 **In TASKS-001 (Provider)**:
 
@@ -1327,7 +1327,7 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 @icon-role: provider
 ```
 
-#### Consumer TASKS Integration (Section 8.2)
+#### Consumer TASKS Integration (section 8.2)
 
 **In TASKS-002 (Consumer)**:
 
@@ -1402,7 +1402,7 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 **ICON (Implementation Contracts)** - Layer 11 (Internal):
 - **Purpose**: Enable parallel development within codebase
 - **Audience**: Internal implementation teams (provider and consumer TASKS)
-- **Format**: Embedded in TASKS Section 8 OR standalone ICON files
+- **Format**: Embedded in TASKS section 8 OR standalone ICON files
 - **Examples**: `IBGatewayConnector` Protocol, `ConnectionState` State Machine
 - **Tag**: `@icon: TASKS-001:IBGatewayConnector` or `@icon: ICON-001:IBGatewayConnector`
 - **Location**: `docs/ICON/` or embedded in `docs/TASKS/`
@@ -1430,7 +1430,7 @@ find docs/ICON/ -name "ICON-*.md" | wc -l
 # Count @icon: references in TASKS files
 grep -r "@icon:" docs/TASKS/ | wc -l
 
-# Count Section 8 headers in TASKS files
+# Count section 8 headers in TASKS files
 grep -r "## 8. Implementation Contracts" docs/TASKS/ | wc -l
 
 # Verify specific ICON integration
@@ -1445,7 +1445,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 
 **Expected Results** (IB MCP Project):
 - 3 ICON files → 21 @icon: tags (1 provider + 6 consumers × 3 contracts = 21)
-- 9 TASKS files with Section 8 (2 providers + 7 consumers)
+- 9 TASKS files with section 8 (2 providers + 7 consumers)
 - 3 provider role tags (TASKS-001 × 2 contracts + TASKS-005 × 1 contract)
 - 18 consumer role tags (8 consumers × ICON-001 + 7 consumers × ICON-002 + 3 consumers × ICON-003)
 
@@ -1456,55 +1456,55 @@ grep -r "@icon-role: consumer" docs/TASKS/
 ❌ **Problem**: ICON file created but no TASKS files reference it
 - ICON-001 exists in `docs/ICON/`
 - `grep -r "@icon: ICON-001" docs/TASKS/` returns 0 results
-- No Section 8 in any TASKS file
+- No section 8 in any TASKS file
 
-✅ **Solution**: Update all provider and consumer TASKS files with Section 8
+✅ **Solution**: Update all provider and consumer TASKS files with section 8
 
-**Anti-Pattern 2: Missing Provider Section 8.1**
+**Anti-Pattern 2: Missing Provider section 8.1**
 
 ❌ **Problem**: Provider TASKS doesn't document contracts it provides
 - TASKS-001 implements IBGatewayConnector interface
-- No Section 8.1 documenting ICON-001
+- No section 8.1 documenting ICON-001
 - Consumers don't know contract exists
 
-✅ **Solution**: Add Section 8.1 to TASKS-001 with contract details
+✅ **Solution**: Add section 8.1 to TASKS-001 with contract details
 
-**Anti-Pattern 3: Missing Consumer Section 8.2**
+**Anti-Pattern 3: Missing Consumer section 8.2**
 
 ❌ **Problem**: Consumer TASKS doesn't document contracts it uses
 - TASKS-002 uses IBGatewayConnector methods
-- No Section 8.2 documenting dependency on ICON-001
+- No section 8.2 documenting dependency on ICON-001
 - Unclear which contracts are required
 
-✅ **Solution**: Add Section 8.2 to TASKS-002 listing all consumed contracts
+✅ **Solution**: Add section 8.2 to TASKS-002 listing all consumed contracts
 
 **Anti-Pattern 4: Missing @icon: Tags**
 
-❌ **Problem**: Section 8 exists but no traceability tags
-- TASKS-001 has Section 8.1
+❌ **Problem**: section 8 exists but no traceability tags
+- TASKS-001 has section 8.1
 - No @icon: ICON-001:IBGatewayConnector tag
 - Automated validation fails
 
-✅ **Solution**: Add @icon: and @icon-role: tags to all TASKS files with Section 8
+✅ **Solution**: Add @icon: and @icon-role: tags to all TASKS files with section 8
 
 #### Validation Checklist
 
 **Before Marking ICON as Active**:
 
 - [ ] ICON file created (if standalone required)
-- [ ] Provider TASKS has Section 8.1 documenting contract
+- [ ] Provider TASKS has section 8.1 documenting contract
 - [ ] Provider TASKS has @icon: and @icon-role: provider tags
-- [ ] All consumer TASKS have Section 8.2 documenting contract usage
+- [ ] All consumer TASKS have section 8.2 documenting contract usage
 - [ ] All consumer TASKS have @icon: and @icon-role: consumer tags
 - [ ] Validation commands return expected counts
-- [ ] Section 8 exists in all provider and consumer TASKS
+- [ ] section 8 exists in all provider and consumer TASKS
 - [ ] Contract type documented (Protocol/State Machine/Exception/Data Model/DI)
 - [ ] Usage examples provided for consumers
 
 #### Guidelines
 
 - **Create contracts early**: Define ICON immediately after SPEC-001, before TASKS-002-009 start
-- **Section 8 is mandatory**: All TASKS files with contracts must have Section 8
+- **section 8 is mandatory**: All TASKS files with contracts must have section 8
 - **Bidirectional traceability**: Provider lists consumers, consumers list provider
 - **Type safety first**: Use `typing.Protocol`, `@runtime_checkable`, validate with mypy
 - **Contract tests**: Write contract validation tests before implementation
@@ -1565,11 +1565,11 @@ grep -r "@icon-role: consumer" docs/TASKS/
     - [ ] No sections 3.6/3.7 present (not required)
     - [ ] Technology stack specifications complete
   - **Feature BRDs (006+)**:
-    - [ ] Section 3.6: Technology Stack Prerequisites present
+    - [ ] section 3.6: Technology Stack Prerequisites present
       - [ ] Platform BRD dependencies listed (which BRDs 001-005 required)
       - [ ] Relevance to current BRD documented
       - [ ] Specific Platform BRD section references included
-    - [ ] Section 3.7: Mandatory Technology Conditions present
+    - [ ] section 3.7: Mandatory Technology Conditions present
       - [ ] 4 platform-inherited conditions documented
       - [ ] 6-12 feature-specific conditions defined
       - [ ] Each condition includes: requirement, rationale, business impact, exception path
@@ -1577,10 +1577,10 @@ grep -r "@icon-role: consumer" docs/TASKS/
     - [ ] Pattern matches BRD category (AI Agent, n8n Automation, or Standard Feature)
     - [ ] Version updated to 1.1+ if sections 3.6/3.7 added post-creation
 - **REQ V2**:
-  - [ ] Section 3: Interface Specifications present (Protocol/ABC with type annotations)
-  - [ ] Section 4: Data Schemas complete (JSON Schema + Pydantic + SQLAlchemy)
-  - [ ] Section 5: Error Handling Specifications defined (exception catalog + state machines)
-  - [ ] Section 6: Configuration Specifications provided (YAML + validation + env vars)
+  - [ ] section 3: Interface Specifications present (Protocol/ABC with type annotations)
+  - [ ] section 4: Data Schemas complete (JSON Schema + Pydantic + SQLAlchemy)
+  - [ ] section 5: Error Handling Specifications defined (exception catalog + state machines)
+  - [ ] section 6: Configuration Specifications provided (YAML + validation + env vars)
   - [ ] No placeholders (all examples use concrete values)
   - [ ] SPEC-Ready Score ≥90% (run `validate_req_spec_readiness.py`)
   - [ ] Mermaid state machines for complex workflows
@@ -1588,7 +1588,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 - CTR (if applicable):
   - Both .md and .yaml files exist with matching slugs
   - YAML contract_id uses lowercase_snake_case matching slug
-  - Upstream REQ/ADR links present in Section 7 Traceability
+  - Upstream REQ/ADR links present in section 7 Traceability
   - Schema validation passes (valid JSON Schema in YAML)
   - Contract version follows semantic versioning
 - SPEC: Interface definitions and data schemas are complete and unambiguous.
@@ -1635,20 +1635,20 @@ grep -r "@icon-role: consumer" docs/TASKS/
 **Scenario**: API Integration for Market Data
 
 **Step 1: Create REQ V2** (REQ-001_api_integration_example.md)
-- Section 3: Define `MarketDataAPIClient` Protocol with 5 async methods (connect, get_quote, get_chain, disconnect, health_check)
-- Section 4: Provide JSON Schema + Pydantic models (QuoteRequest, QuoteResponse, OptionChainRequest) with validators
-- Section 5: Document 8 exception types (ConnectionError, AuthenticationError, RateLimitError, etc.) with HTTP codes
-- Section 6: Provide complete YAML configuration (endpoints, authentication, retry_policy, rate_limits, circuit_breaker)
-- Section 7: Specify NFRs (p95 latency <100ms, 99.9% uptime, rate limit 60 req/min)
+- section 3: Define `MarketDataAPIClient` Protocol with 5 async methods (connect, get_quote, get_chain, disconnect, health_check)
+- section 4: Provide JSON Schema + Pydantic models (QuoteRequest, QuoteResponse, OptionChainRequest) with validators
+- section 5: Document 8 exception types (ConnectionError, AuthenticationError, RateLimitError, etc.) with HTTP codes
+- section 6: Provide complete YAML configuration (endpoints, authentication, retry_policy, rate_limits, circuit_breaker)
+- section 7: Specify NFRs (p95 latency <100ms, 99.9% uptime, rate limit 60 req/min)
 
-**Step 2: Generate SPEC** (SPEC-001_market_data_client.yaml)
+**Step 2: Generate SPEC** (SPEC-001_external_data_client.yaml)
 ```yaml
 # @requirement:[REQ-001](../REQ/api/REQ-001_api_integration_example.md#REQ-001)
 
-id: market_data_client
+id: external_data_client
 interfaces:
   - name: MarketDataAPIClient
-    # Copy from REQ-001 Section 3
+    # Copy from REQ-001 section 3
     methods:
       - name: connect
         parameters:
@@ -1658,21 +1658,21 @@ interfaces:
         raises: [ConnectionError, AuthenticationError]
 
 schemas:
-  # Copy from REQ-001 Section 4
+  # Copy from REQ-001 section 4
   QuoteRequest: {$ref: "../REQ/api/REQ-001_api_integration_example.md#json-schema"}
   QuoteResponse: {$ref: "../REQ/api/REQ-001_api_integration_example.md#pydantic-model"}
 
 errors:
-  # Copy from REQ-001 Section 5
+  # Copy from REQ-001 section 5
   - error_code: "API_001"
     exception: ConnectionError
     http_status: 503
     retry_strategy: exponential_backoff
 
 configuration:
-  # Copy from REQ-001 Section 6
+  # Copy from REQ-001 section 6
   endpoints:
-    base_url: "${MARKET_DATA_API_URL}"
+    base_url: "${data_service_api_URL}"
   retry_policy:
     max_attempts: 3
     backoff_multiplier: 2
@@ -1684,7 +1684,7 @@ configuration:
       alert_threshold: 0.05
 
 performance:
-  # Reference REQ-001 Section 7 NFRs
+  # Reference REQ-001 section 7 NFRs
   max_latency_p95_ms: 100
   target_availability: 0.999
 ```
@@ -1749,44 +1749,44 @@ Each document type has its own dedicated traceability matrix template:
 
 1. **Check for Matrix File**: Look for `[TYPE]-000_TRACEABILITY_MATRIX.md` in artifact folder
 2. **Create if Missing**: Copy template from `ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-3. **Update Matrix Sections**:
-   - Section 2: Add document to inventory with ID, title, status, date
-   - Section 3: Document upstream sources (which documents drove this artifact)
-   - Section 4: Document downstream artifacts (which documents/code derive from this - even if "To Be Created")
-   - Section 8: Update implementation status and completion percentage
+3. **Update Matrix sections**:
+   - section 2: Add document to inventory with ID, title, status, date
+   - section 3: Document upstream sources (which documents drove this artifact)
+   - section 4: Document downstream artifacts (which documents/code derive from this - even if "To Be Created")
+   - section 8: Update implementation status and completion percentage
 4. **Validate Matrix**: Run `python scripts/validate_traceability_matrix.py --type [TYPE]`
 5. **Commit Together**: Commit artifact + matrix + index in same commit
 
-### Matrix Sections to Update
+### Matrix sections to Update
 
 When updating a traceability matrix, you MUST update these sections:
 
-- **Section 2 (Complete Inventory)**: Add new document entry with:
+- **section 2 (Complete Inventory)**: Add new document entry with:
   - Document ID, title, status, date
   - Upstream sources (BRD, PRD, EARS, etc.)
   - Downstream artifacts (SPEC, Code, Tests, etc.)
 
-- **Section 3 (Upstream Traceability)**: Document which artifacts drove creation
+- **section 3 (Upstream Traceability)**: Document which artifacts drove creation
   - BRD → PRD
   - PRD → EARS
   - EARS → BDD, ADR
   - REQ → IMPL, CTR, SPEC
 
-- **Section 4 (Downstream Traceability)**: Document which artifacts derive from this
+- **section 4 (Downstream Traceability)**: Document which artifacts derive from this
   - BRD → PRD, EARS
   - PRD → EARS, BDD
   - SPEC → Code, Tests
   - Even if artifacts don't exist yet, document as "To Be Created"
 
-- **Section 8 (Implementation Status)**: Update completion percentage and validation status
+- **section 8 (Implementation Status)**: Update completion percentage and validation status
 
 ### Validation Requirements
 
 Before committing, verify:
 - [ ] Matrix file exists for artifact type
-- [ ] New document appears in matrix inventory (Section 2)
-- [ ] Upstream sources documented (Section 3)
-- [ ] Downstream artifacts documented (Section 4)
+- [ ] New document appears in matrix inventory (section 2)
+- [ ] Upstream sources documented (section 3)
+- [ ] Downstream artifacts documented (section 4)
 - [ ] All references resolve correctly
 - [ ] No orphaned artifacts (documents missing from matrix)
 - [ ] Validation script passes: `python scripts/validate_traceability_matrix.py --type [TYPE] --strict`
@@ -1795,7 +1795,7 @@ Before committing, verify:
 
 **Impact Analysis**: When BRD-001 changes, matrix shows affected PRDs, EARS, BDD, REQ, SPEC, Code
 
-**Regulatory Compliance**: SEC, FINRA, FDA, ISO audits require complete traceability
+**Regulatory Compliance**: regulatory, FDA, ISO audits require complete traceability
 
 **Quality Assurance**: Automated validation prevents orphaned requirements and missing implementations
 
@@ -1833,16 +1833,16 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 - Objective tone only: exclude promotional language, subjective claims, and business benefits.
 - Do not include Python code blocks in documentation; prefer Mermaid flowcharts or structured pseudocode.
 - Use flowcharts for logic with decision points and error paths; keep diagrams concise.
-- Reference code with explicit paths and optional symbol hints: `[See Code Example: option_strategy/risk/position_limit_service.py - validate_position_limit()]`.
+- Reference code with explicit paths and optional symbol hints: `[See Code Example: src/domain/risk/resource_limit_service.py - validate_resource_limit()]`.
 
 ## Non-Functional Requirements Templates
 - **Performance**: Add to SPEC performance section, e.g., latency_p95_ms: 50, throughput: 1000 rps; to ADR impact analysis, e.g., "p95 latency < 50 ms, trade-off: reduced batch size".
 - **Reliability**: SYS/REQ: "System availability > 99.9%"; ADR: [SAFETY_MECHANISM - e.g., rate limiter, error threshold] on >5 failures/1min; SPEC: retry_policy with exponential backoff.
-- **Security**: ADR: "Input validation per OWASP; no secrets in logs"; SPEC: errors for auth failures, observability: log correlation_id only (avoid PII).
+- **security**: ADR: "Input validation per OWASP; no regulatoryrets in logs"; SPEC: errors for auth failures, observability: log correlation_id only (avoid PII).
 - **Observability**: SPEC: logs with fields [correlation_id, error_code, timestamp]; ADR: "Alert on >10% reject rate, monitor via Cloud Monitoring".
 - **Compliance Checklist**: 
   - [ ] NFRs quantified in SYS/REQ (e.g., uptime, latency bounds).
-  - [ ] Security in ADR/SPEC (validation, secrets policy).
+  - [ ] security in ADR/SPEC (validation, regulatoryrets policy).
   - [ ] Observability in SPEC (log fields, metrics).
   - [ ] Trace to PROJECT_CORE_RULES: numeric IDs, absolute link validation.
 
@@ -1857,7 +1857,7 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 - Can handle 30-50 files simultaneously
 - Benefits: Single-file comprehensive documentation, no artificial splitting required
 
-**Gemini CLI (Alternative - Secondary Tool):**
+**Gemini CLI (Alternative - secondary Tool):**
 - `@` Reference: Limited to 10,000 tokens (40KB) per file
 - File Read Tool: No practical limit - use for files >10,000 tokens
 - Method: Don't use `@large_file.md`, instead: "Read large_file.md and..."
@@ -1882,17 +1882,17 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 ## Developer Checklist (Copyable)
 - PRD/EARS/BDD/ADR/SYS/REQ updated; H1 contains IDs and anchors.
 - **REQ V2 Completeness**:
-  - [ ] Section 3: Interface Specifications (Protocol/ABC with type annotations)
-  - [ ] Section 4: Data Schemas (JSON Schema + Pydantic + SQLAlchemy)
-  - [ ] Section 5: Error Handling (exception catalog + state machines)
-  - [ ] Section 6: Configuration (YAML + validation + env vars)
+  - [ ] section 3: Interface Specifications (Protocol/ABC with type annotations)
+  - [ ] section 4: Data Schemas (JSON Schema + Pydantic + SQLAlchemy)
+  - [ ] section 5: Error Handling (exception catalog + state machines)
+  - [ ] section 6: Configuration (YAML + validation + env vars)
   - [ ] No placeholders (concrete examples only)
   - [ ] SPEC-Ready Score ≥90% (`validate_req_spec_readiness.py`)
 - ADR updated with Impact Analysis and Implementation Assessment sections.
 - Tech Spec updated: `id` equals filename; includes upstream/downstream links, interfaces, data model, states, errors, performance, observability.
 - BDD scenarios tagged with markdown-link format `@requirement:[REQ-...](...)` and `@adr:[ADR-...](...)`.
 - AI tasks file includes scope, plan, constraints, acceptance criteria, and traceability links.
-- Security implications documented (input validation, secrets policy references, correlation id handling).
+- security implications documented (input validation, regulatoryrets policy references, correlation id handling).
 - Run validators:
   - `python scripts/validate_req_spec_readiness.py --req-file REQ/{domain}/REQ-NNN.md`
   - `python scripts/validate_requirement_ids.py`
@@ -1932,7 +1932,7 @@ Use flowcharts for complex logic visualization.
 
 NFR clarification (allowed)
 - It is acceptable to specify non-functional requirement targets (e.g., latency, availability, resource limits) as engineering constraints.
-- State targets quantitatively and contextually (e.g., "p95 latency < 50 ms during trading hours").
+- State targets quantitatively and contextually (e.g., "p95 latency < 50 ms during operating hours").
 - Avoid promotional phrasing; present NFRs as measurable constraints, not benefits.
 
 ### Code Separation Requirements
@@ -1995,7 +1995,7 @@ NFR clarification (allowed)
 
 **Example: BRD-009 Multi-Document Structure (Justified Case):**
 - BRD-009-01_prerequisites.md (20K) - Audience: Architects, PMs - Focus: Critical path dependencies
-- BRD-009-02_broker_integration_pilot.md (51K) - Audience: Developers - Focus: Full technical requirements
+- BRD-009-02_provider_integration_pilot.md (51K) - Audience: Developers - Focus: Full technical requirements
 - BRD-009-03_phase_gates_quick_reference.md (12K) - Audience: PMs, QA - Focus: Go/no-go checklists
 - **Justification**: BRD-009 is Phase 1 critical prerequisite blocking 6 downstream BRDs, requires separate phase gate documentation, serves 3 distinct audiences with different information needs
 
@@ -2122,9 +2122,9 @@ CONSTRAINTS:
 [Code Reference: authentication_example_001.py]
 Function: validate_token()
 Purpose: JWT token validation with [DEADLINE - e.g., session timeout, cache expiry] check
-Input: token_string, secret_key
+Input: token_string, regulatoryret_key
 Output: validation_result, user_payload
-Flowchart: See Section 3.2.1
+Flowchart: See section 3.2.1
 ```
 
 **File Structure Requirements:**

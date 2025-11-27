@@ -92,14 +92,14 @@ Example: "Currently, each strategy agent implements its own risk validation logi
   - JSON serialization for human readability
   - Payload size < 1MB per request
 - **Business**: SLA requirements, throughput targets, latency budgets
-  - 99.9% uptime required for trading hours
+  - 99.9% uptime required for operating hours
   - <100ms p99 latency to avoid trade delays
   - 1000+ req/s throughput for [RESOURCE_COLLECTION - e.g., user accounts, active sessions] rebalancing
 - **Operational**: Monitoring, versioning, backward compatibility needs
   - Must support gradual rollout via feature flags
   - Contract changes require 30-day migration period
   - Full audit logging for compliance
-- **Security**: Authentication, authorization, data protection requirements
+- **security**: Authentication, authorization, data protection requirements
   - mTLS for service-to-service authentication
   - RBAC for agent authorization
   - No PII in logs or error messages
@@ -117,7 +117,7 @@ Example: "Synchronous REST-style request/response contract for [RESOURCE_INSTANC
 - **Consumer(s)**: [Services/components that use this contract]
   - [ORCHESTRATION_COMPONENT] (Level 1)
   - All Strategy Execution Agents (Level 3): [STRATEGY_NAME - e.g., multi-step workflow, approval process], CSP, [STRATEGY_NAME], [STRATEGY_NAME]
-  - [RESOURCE_COLLECTION - e.g., user accounts, active sessions] Hedging Agent
+  - [RESOURCE_COLLECTION - e.g., user accounts, active sessions] balancing Agent
 
 ### Communication Pattern
 - **Type**: Synchronous
@@ -138,12 +138,12 @@ Example: "Synchronous REST-style request/response contract for [RESOURCE_INSTANC
 
 ### Source Business Logic
 [References to product strategy or business rules requiring this interface.
-- `option_strategy/integrated_strategy_algo_v5.md` Section 4.2: Dynamic Risk Budgeting requires pre-trade validation
-- `option_strategy/delta_hedging.md` Section 2.2: [RESOURCE_COLLECTION - e.g., user accounts, active sessions] [METRIC_1 - e.g., error rate, response time] limits must be checked before new positions]
+- `{domain_strategy}/business_logic.md` section 4.2: Dynamic Risk Budgeting requires pre-trade validation
+- `{domain_strategy}/risk_management.md` section 2.2: Resource limits must be checked before new positions]
 
 ### Non-Functional Requirements
 - **Performance**: p99 latency < 100ms, throughput > 1000 req/s
-- **Security**: mTLS authentication, RBAC authorization, audit logging
+- **security**: mTLS authentication, RBAC authorization, audit logging
 - **Scalability**: Horizontal scaling to handle 10,000 req/s during rebalancing
 - **Reliability**: Idempotent validation, retry-safe, 99.9% uptime SLA
 
@@ -159,12 +159,12 @@ Example: "Synchronous REST-style request/response contract for [RESOURCE_INSTANC
 ### Schema Overview
 Contract defines two primary operations:
 - `validatePositionRisk`: Validate single [RESOURCE_INSTANCE - e.g., database connection, workflow instance] against [RESOURCE_COLLECTION - e.g., user accounts, active sessions] limits
-- `validatePortfolioRisk`: Validate entire [RESOURCE_COLLECTION - e.g., user accounts, active sessions] state (future extension)
+- `validatecollectionRisk`: Validate entire [RESOURCE_COLLECTION - e.g., user accounts, active sessions] state (future extension)
 
 ### Data Types
 Common types across endpoints:
 - `[RESOURCE_INSTANCE - e.g., database connection, workflow instance]`: Symbol, [METRIC_1 - e.g., error rate, response time], [METRIC_2 - e.g., throughput, success rate], [METRIC_4], [METRIC_3], [VALUE - e.g., subscription fee, processing cost], [DEADLINE - e.g., session timeout, cache expiry]
-- `PortfolioState`: Open positions, available capital, current [METRICS - e.g., performance indicators, quality scores]
+- `collectionState`: Open positions, available capital, current [METRICS - e.g., performance indicators, quality scores]
 - `RiskLimits`: Max positions, max heat, max [METRIC_1 - e.g., error rate, response time], [VOLATILITY_INDICATOR - e.g., system load, error frequency] thresholds
 - `ValidationResult`: Boolean decision + violation details
 
@@ -176,7 +176,7 @@ Common types across endpoints:
 - **Description**: Validates a single proposed [RESOURCE_INSTANCE - e.g., database connection, workflow instance] against current [RESOURCE_COLLECTION - e.g., user accounts, active sessions] state and risk limits
 - **Request Schema**: See YAML `request_schema` for `validatePositionRisk`
   - `[RESOURCE_INSTANCE - e.g., database connection, workflow instance]`: Proposed [RESOURCE_INSTANCE - e.g., database connection, workflow instance] parameters (symbol, [METRIC_1 - e.g., error rate, response time], [VALUE - e.g., subscription fee, processing cost], etc.)
-  - `portfolio_state`: Current [RESOURCE_COLLECTION - e.g., user accounts, active sessions] [METRICS - e.g., performance indicators, quality scores] and capital
+  - `collection_state`: Current [RESOURCE_COLLECTION - e.g., user accounts, active sessions] [METRICS - e.g., performance indicators, quality scores] and capital
   - `risk_limits`: Risk parameters from ADR-008 configuration
 - **Response Schema**: See YAML `response_schema` for `validatePositionRisk`
   - `is_valid`: Boolean - true if [RESOURCE_INSTANCE - e.g., database connection, workflow instance] passes all checks
@@ -186,10 +186,10 @@ Common types across endpoints:
 - **Idempotent**: Yes (same request always yields same result for given [RESOURCE_COLLECTION - e.g., user accounts, active sessions] state)
 - **Retry Safe**: Yes (no side effects, read-only operation)
 
-#### Endpoint 2: validatePortfolioRisk (Future)
+#### Endpoint 2: validatecollectionRisk (Future)
 - **Description**: Validates entire [RESOURCE_COLLECTION - e.g., user accounts, active sessions] against risk limits (for batch rebalancing)
-- **Request Schema**: See YAML `request_schema` for `validatePortfolioRisk`
-- **Response Schema**: See YAML `response_schema` for `validatePortfolioRisk`
+- **Request Schema**: See YAML `request_schema` for `validatecollectionRisk`
+- **Response Schema**: See YAML `response_schema` for `validatecollectionRisk`
 - **Idempotent**: Yes
 - **Retry Safe**: Yes
 
@@ -212,7 +212,7 @@ Common types across endpoints:
   - Configuration service unavailable (ADR-008 parameters unreachable)
   - Network partition between consumer and provider
 - **Recovery Strategies**:
-  - [SAFETY_MECHANISM - e.g., rate limiter, error threshold]: Open after 5 consecutive failures, half-open after 60s
+  - [SAFETY_MECHANISM - e.g., rate limiter, error threshold]: Open after 5 conregulatoryutive failures, half-open after 60s
   - Fallback: Return validation failure (conservative approach)
   - Monitoring: Alert on >1% error rate or >200ms p99 latency
 - **[SAFETY_MECHANISM - e.g., rate limiter, error threshold]**: Open after 5 failures within 60s, enter half-open state after 60s cooldown
@@ -249,7 +249,7 @@ Common types across endpoints:
 **Risks**:
 - **Risk 1**: Contract drift if providers/consumers don't enforce schema | **Mitigation**: Contract tests in CI/CD, schema validation middleware | **Likelihood**: Low
 - **Risk 2**: Breaking changes disrupt production | **Mitigation**: Semantic versioning, 30-day deprecation policy | **Likelihood**: Medium
-- **Risk 3**: Service unavailable blocks all trading | **Mitigation**: [SAFETY_MECHANISM - e.g., rate limiter, error threshold], conservative fallback, 99.9% SLA | **Likelihood**: Low
+- **Risk 3**: Service unavailable blocks all operations | **Mitigation**: [SAFETY_MECHANISM - e.g., rate limiter, error threshold], conservative fallback, 99.9% SLA | **Likelihood**: Low
 
 **Costs**:
 - **Development**: 1 week for contract definition, validation setup, contract tests
@@ -272,11 +272,11 @@ Common types across endpoints:
 - **Retry Strategy**: Exponential backoff (100ms, 200ms, 400ms), max 3 retries for 500/503 errors
 - **Timeout**: 5000ms request timeout (fails fast to avoid blocking agents)
 - **[SAFETY_MECHANISM - e.g., rate limiter, error threshold]**:
-  - Open after 5 consecutive failures within 60s
+  - Open after 5 conregulatoryutive failures within 60s
   - Half-open after 60s cooldown
   - Close after 3 successful calls in half-open state
 
-### Security Requirements
+### security Requirements
 - **Authentication**: mTLS for service-to-service (GCP service mesh)
 - **Authorization**: RBAC - only agents with `risk:validate` permission can call endpoint
 - **Encryption**: TLS 1.3 in transit, no at-rest encryption needed (ephemeral data)
@@ -312,7 +312,7 @@ Common types across endpoints:
 ```json
 {
   "[RESOURCE_INSTANCE - e.g., database connection, workflow instance]": {
-    "symbol": "AAPL",
+    "symbol": "ITEM-001",
     "[METRIC_1 - e.g., error rate, response time]": 25.3,
     "[METRIC_2 - e.g., throughput, success rate]": 0.05,
     "[METRIC_4]": 12.5,
@@ -320,7 +320,7 @@ Common types across endpoints:
     "premium_collected": 250.00,
     "expiration_dte": 30
   },
-  "portfolio_state": {
+  "collection_state": {
     "open_positions": 8,
     "total_delta": -12.5,
     "total_capital": 100000,
@@ -328,9 +328,9 @@ Common types across endpoints:
   },
   "risk_limits": {
     "max_positions": 12,
-    "max_portfolio_heat": 25000,
-    "max_portfolio_delta": 50,
-    "max_vix_for_new_trades": 35
+    "max_resource_usage": 25000,
+    "max_collection_delta": 50,
+    "max_system_load_for_new_trades": 35
   }
 }
 ```
@@ -360,7 +360,7 @@ Common types across endpoints:
     "[METRIC_1 - e.g., error rate, response time]": 30.0,
     "premium_collected": 500.00
   },
-  "portfolio_state": {
+  "collection_state": {
     "open_positions": 12,
     "total_capital": 100000
   },
@@ -405,7 +405,7 @@ Common types across endpoints:
 ```json
 {
   "error_code": "INVALID_INPUT",
-  "error_message": "Validation failed: 'symbol' cannot be empty, '[METRIC_1 - e.g., error rate, response time]' must be >= 0, missing required field 'portfolio_state'",
+  "error_message": "Validation failed: 'symbol' cannot be empty, '[METRIC_1 - e.g., error rate, response time]' must be >= 0, missing required field 'collection_state'",
   "timestamp": "2025-11-02T14:32:00Z"
 }
 ```
@@ -420,7 +420,7 @@ Common types across endpoints:
 ### Error Tracking
 - **Error Rate**: Alert if >1% for 5 minutes
 - **Error Categories**: Track by error code (400, 429, 500, 503)
-- **Alert Thresholds**: Page on-call if >5% error rate or >3 consecutive service failures
+- **Alert Thresholds**: Page on-call if >5% error rate or >3 conregulatoryutive service failures
 
 ### Performance Metrics
 - **Latency Breakdown**: Network (5ms), validation logic (10ms), database lookup (5ms)
@@ -512,14 +512,14 @@ Common types across endpoints:
 ### Specification Impact
 [SPEC files that will implement this contract:
 - SPEC-005_risk_validation_service.yaml: Provider implementation
-- SPEC-001_portfolio_orchestrator.yaml: Primary consumer
-- SPEC-015_iron_condor_agent.yaml: Strategy agent consumer]
+- SPEC-001_service_orchestrator.yaml: Primary consumer
+- SPEC-015_service_request_agent.yaml: Strategy agent consumer]
 
 ### Validation Criteria
 **Technical Validation**:
 - Schema validation passes for all request/response examples
 - Performance benchmarks: p99 <100ms at 1000 req/s sustained
-- Security: mTLS authentication, RBAC authorization, audit logging implemented
+- security: mTLS authentication, RBAC authorization, audit logging implemented
 - Idempotency: Same request produces same result across 1000 test iterations
 
 **Integration Validation**:
@@ -534,7 +534,7 @@ Common types across endpoints:
 - **Consumers**:
   - [ORCHESTRATION_COMPONENT] (critical path)
   - 11 Strategy Execution Agents ([STRATEGY_NAME - e.g., multi-step workflow, approval process], CSP, [STRATEGY_NAME], [STRATEGY_NAME], etc.)
-  - [RESOURCE_COLLECTION - e.g., user accounts, active sessions] Hedging Agent
+  - [RESOURCE_COLLECTION - e.g., user accounts, active sessions] balancing Agent
 - **Data Flow**:
   - Agent → Risk Validation Service (synchronous request)
   - Risk Validation Service → Configuration Service (load ADR-008 parameters)
@@ -562,7 +562,7 @@ Common types across endpoints:
 - **Performance Tests**: Load test at 1000 req/s for 1 hour, measure p99 latency
 - **Chaos Tests**: Inject service failures, validate [SAFETY_MECHANISM - e.g., rate limiter, error threshold] and fallback behavior
 
-## Security
+## security
 
 ### Input Validation
 - JSON schema validation on all requests (enforce required fields, types, ranges)
@@ -582,12 +582,12 @@ Common types across endpoints:
 - **PII Handling**: No PII in requests/responses/logs (symbol/[METRIC_1 - e.g., error rate, response time]/[VALUE - e.g., subscription fee, processing cost] only)
 - **Data Minimization**: Contracts include only data required for validation
 
-### Security Monitoring
+### security Monitoring
 - **Authentication Failures**: Alert if >10 failures/minute (potential attack)
 - **Anomaly Detection**: Alert if consumer request pattern changes significantly
 - **Audit Logging**: Log all validation requests with decision_id, consumer, timestamp
 
-### Secrets Management
+### regulatoryrets Management
 - **Service Certificates**: Managed by GCP Certificate Authority Service
 - **Certificate Rotation**: Automatic 90-day rotation via Workload Identity
 - **API Keys**: Not applicable (mTLS authentication)
@@ -627,7 +627,7 @@ Common types across endpoints:
 ### Code Locations
 - **Provider Implementation**: `src/services/risk_validation_service.py`
 - **Consumer Implementation**:
-  - `src/agents/portfolio_orchestrator/risk_validator_client.py`
+  - `src/agents/service_orchestrator/risk_validator_client.py`
   - `src/agents/strategies/*/risk_validator_client.py`
 - **Contract Tests**:
   - `tests/CTR/risk_validation/provider_contract_test.py`
@@ -648,21 +648,21 @@ Common types across endpoints:
 ## Traceability
 
 ### Upstream Sources
-| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+| Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| REQ | [REQ-003](../REQ/risk/lim/REQ-003_position_limit_enforcement.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement | Section 3.1 | Defines validation requirements |
-| REQ | [REQ-008](../REQ/risk/cfg/REQ-008_centralized_risk_parameters.md) | Centralized Risk Parameters | Section 2.0 | Defines risk limits to validate against |
-| ADR | [ADR-008](../ADR/ADR-008_centralized_risk_parameters.md) | Centralized Risk Parameters | Section 4.0 | Architecture decision for centralization |
-| SYS | [SYS-004](../SYS/SYS-004_centralized_risk_controls.md) | Centralized Risk Controls | Section 5.2 | System requirement for validation service |
+| REQ | [REQ-003](../REQ/risk/lim/REQ-003_resource_limit_enforcement.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement | section 3.1 | Defines validation requirements |
+| REQ | [REQ-008](../REQ/risk/cfg/REQ-008_centralized_risk_parameters.md) | Centralized Risk Parameters | section 2.0 | Defines risk limits to validate against |
+| ADR | [ADR-008](../ADR/ADR-008_centralized_risk_parameters.md) | Centralized Risk Parameters | section 4.0 | Architecture decision for centralization |
+| SYS | [SYS-004](../SYS/SYS-004_centralized_risk_controls.md) | Centralized Risk Controls | section 5.2 | System requirement for validation service |
 
 ### Downstream Artifacts
 | Artifact Type | Document ID | Document Title | Relationship |
 |---------------|-------------|----------------|--------------|
 | SPEC | [SPEC-005](../SPEC/services/SPEC-005_risk_validation_service.yaml) | Risk Validation Service | Provider implementation |
-| SPEC | [SPEC-001](../SPEC/agents/SPEC-001_portfolio_orchestrator.yaml) | [ORCHESTRATION_COMPONENT] | Primary consumer |
+| SPEC | [SPEC-001](../SPEC/agents/SPEC-001_service_orchestrator.yaml) | [ORCHESTRATION_COMPONENT] | Primary consumer |
 | TASKS | [TASKS-005](../TASKS/TASKS-005_risk_validation_implementation.md) | Risk Validation Implementation | Implementation plan |
 | Code | src/services/risk_validation_service.py | Risk Validation Service | Provider implementation |
-| Code | src/agents/portfolio_orchestrator/risk_validator_client.py | Risk Validator Client | Consumer implementation |
+| Code | src/agents/service_orchestrator/risk_validator_client.py | Risk Validator Client | Consumer implementation |
 
 ### Document Links
 - **Anchors/IDs**: `#CTR-NNN` (internal document reference)
@@ -680,7 +680,7 @@ Common types across endpoints:
 @ears: EARS-NNN:STATEMENT-ID
 @bdd: BDD-NNN:SCENARIO-ID
 @adr: ADR-NNN
-@sys: SYS-NNN:SECTION-ID
+@sys: SYS-NNN:regulatoryTION-ID
 @req: REQ-NNN:REQUIREMENT-ID
 @impl: IMPL-NNN:PHASE-ID
 ```
@@ -718,7 +718,7 @@ Common types across endpoints:
 ## References
 
 ### Internal Links
-- [REQ-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement](../REQ/risk/lim/REQ-003_position_limit_enforcement.md)
+- [REQ-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement](../REQ/risk/lim/REQ-003_resource_limit_enforcement.md)
 - [REQ-008: Centralized Risk Parameters](../REQ/risk/cfg/REQ-008_centralized_risk_parameters.md)
 - [ADR-008: Centralized Risk Parameters Architecture](../ADR/ADR-008_centralized_risk_parameters.md)
 - [SYS-004: Centralized Risk Controls](../SYS/SYS-004_centralized_risk_controls.md)

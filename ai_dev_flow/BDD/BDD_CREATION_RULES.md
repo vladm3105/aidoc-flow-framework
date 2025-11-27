@@ -99,7 +99,7 @@ Feature: [Business Capability Title]
 
 | Item | Details |
 |------|---------|
-| **Project Name** | [Trading Platform v2.0] |
+| **Project Name** | [Service Platform v2.0] |
 | **ADR-Ready Score** | ✅ 95% (Target: ≥90%) |
 ```
 
@@ -132,7 +132,7 @@ Feature: [Business Capability Title]
 **5.2 Error Path Scenarios** (@negative):
 - Invalid inputs and error conditions
 - Graceful error handling
-- Security boundary validation
+- security boundary validation
 
 **5.3 Edge Case Scenarios** (@boundary @edge_case):
 - Boundary conditions and limits
@@ -222,7 +222,7 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 
 **Performance Validation**: Response time and throughput benchmarks included
 
-**Security Testing**: Authentication, authorization, and data protection scenarios
+**security Testing**: Authentication, authorization, and data protection scenarios
 
 **Reliability Validation**: Error handling and resilience scenarios
 

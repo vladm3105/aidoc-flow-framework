@@ -147,14 +147,14 @@ WITHIN [Transition_Time: e.g., 30 seconds] of event timestamp.
 #### Example 1: Maintenance Mode
 ```
 WHILE the system is in maintenance mode,
-THE Trading Engine SHALL reject all new trade requests with HTTP 503 status
+THE processing engine SHALL reject all new trade requests with HTTP 503 status
 and queue non-critical background tasks
 WITHIN the maintenance window (no more than 4 hours).
 ```
 
 #### Example 2: Degraded Service
 ```
-WHILE the [EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] API returns HTTP 429 rate limit errors,
+WHILE the [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] API returns HTTP 429 rate limit errors,
 THE [EXTERNAL_DATA - e.g., customer data, sensor readings] Client SHALL serve cached responses if freshness is within 5 minutes
 and surface [SAFETY_MECHANISM - e.g., rate limiter, error threshold] state to upstream callers.
 ```
@@ -214,7 +214,7 @@ and escalate to manual review after 3 failed attempts
 WITHIN 30 seconds of initial deadlock detection.
 ```
 
-#### Example 4: Security Breach Detection
+#### Example 4: security Breach Detection
 ```
 IF unauthorized API access is detected (invalid token, failed authentication after 3 attempts),
 THE Authentication Service SHALL terminate the session, revoke credentials,
@@ -260,7 +260,7 @@ THE [System_Component: e.g., Processing Engine, Workflow Orchestrator] SHALL com
 WITHIN [Latency_Target: e.g., 500 milliseconds] at [Percentile: e.g., p95] latency during [Operational_Period: e.g., business hours, peak load].
 ```
 
-#### Example 3: Security Standard
+#### Example 3: security Standard
 ```
 THE System SHALL encrypt all data at rest using AES-256 encryption
 and all data in transit using TLS 1.2 or higher
@@ -310,21 +310,21 @@ Define latency, throughput, response time, and resource utilization constraints.
 
 ---
 
-### 4.2 Security Requirements
+### 4.2 security Requirements
 
-Define authentication, authorization, encryption, secrets management, and audit requirements.
+Define authentication, authorization, encryption, regulatoryrets management, and audit requirements.
 
 | NFR ID | Requirement Statement | Standard/Framework | Priority | Validation Method |
 |--------|----------------------|-------------------|----------|-------------------|
-| NFR-SEC-001 | THE System SHALL authenticate all API requests | OAuth 2.0 / OpenID Connect | High | Penetration testing, auth flow validation |
-| NFR-SEC-002 | THE System SHALL enforce role-based access control (RBAC) | Least privilege principle | High | Access audit logs, permission matrix review |
-| NFR-SEC-003 | THE System SHALL rotate secrets and credentials | 90-day rotation cadence | Medium | Secrets management audit, rotation logs |
-| NFR-SEC-004 | THE System SHALL audit all privileged operations | WORM/tamper-evident logging | High | Compliance audit, log integrity verification |
+| NFR-regulatory-001 | THE System SHALL authenticate all API requests | OAuth 2.0 / OpenID Connect | High | Penetration testing, auth flow validation |
+| NFR-regulatory-002 | THE System SHALL enforce role-based access control (RBAC) | Least privilege principle | High | Access audit logs, permission matrix review |
+| NFR-regulatory-003 | THE System SHALL rotate regulatoryrets and credentials | 90-day rotation cadence | Medium | regulatoryrets management audit, rotation logs |
+| NFR-regulatory-004 | THE System SHALL audit all privileged operations | WORM/tamper-evident logging | High | Compliance audit, log integrity verification |
 
 **Guidelines**:
 - Reference specific security standards (OWASP, NIST)
 - Define separation-of-duties (SoD) requirements
-- Specify secrets management approach (e.g., Google Secret Manager)
+- Specify regulatoryrets management approach (e.g., Google regulatoryret Manager)
 - Include threat model references
 
 ---
@@ -741,7 +741,7 @@ For complete guidance on BRD-level content boundaries, see:
 
 #### Pitfall 3: Compound Requirements
 ```
-✗ WHEN market opens, THE system SHALL scan stocks, calculate [METRICS - e.g., performance indicators, quality scores], evaluate strategies,
+✗ WHEN market opens, THE system SHALL scan items, calculate [METRICS - e.g., performance indicators, quality scores], evaluate strategies,
    check risk limits, and place orders.
 ✓ [Split into 5 separate EARS statements, one per action]
 ```
@@ -815,9 +815,9 @@ Before finalizing an EARS document, verify:
 
 Document the business and product requirements that drive this EARS specification.
 
-| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+| Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-NNN](../BRD/BRD-NNN_...md) | [Business requirement title] | Sections 2.4, 4.x | Business objectives driving these requirements |
+| BRD | [BRD-NNN](../BRD/BRD-NNN_...md) | [Business requirement title] | sections 2.4, 4.x | Business objectives driving these requirements |
 | PRD | [PRD-NNN](../PRD/PRD-NNN_...md) | [Product requirement title] | Functional Requirements 4.x | Product features and user needs |
 | SYS | [SYS-NNN](../SYS/SYS-NNN_...md) | [System requirement title] | System architecture section X | Technical system constraints |
 
@@ -870,7 +870,7 @@ Map EARS statements to BDD scenarios for validation and acceptance testing.
 | Event-001 | [EXTERNAL_DATA - e.g., customer data, sensor readings] processing latency | [BDD-NNN.feature](../BDD/BDD-NNN.feature#L10) | Scenario: Process [EXTERNAL_DATA - e.g., customer data, sensor readings] within latency target | Unit + Integration |
 | State-001 | Maintenance mode behavior | [BDD-NNN.feature](../BDD/BDD-NNN.feature#L25) | Scenario: Reject trades during maintenance | Integration |
 | Unwanted-001 | Rate limit error handling | [BDD-NNN.feature](../BDD/BDD-NNN.feature#L40) | Scenario: Handle API rate limit gracefully | Unit + Integration |
-| Ubiquitous-001 | Data normalization | [BDD-NNN.feature](../BDD/BDD-NNN.feature#L55) | Scenario: Normalize [EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] to IB schema | Unit |
+| Ubiquitous-001 | Data normalization | [BDD-NNN.feature](../BDD/BDD-NNN.feature#L55) | Scenario: Normalize [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] to IB schema | Unit |
 
 **BDD Coverage Summary**:
 - Total EARS statements: [count]
@@ -886,10 +886,10 @@ Document where EARS requirements are implemented in the codebase.
 
 | EARS Statement ID | Primary Implementation | Supporting Modules | Test Files | Notes |
 |-------------------|----------------------|-------------------|------------|-------|
-| Event-001 | `src/market_data/handler.py:MarketDataHandler.process_tick()` | `src/cache/redis_client.py` | `tests/unit/test_market_data_handler.py` | Lines 142-178 |
-| State-001 | `src/engine/state_machine.py:TradingEngine.set_maintenance_mode()` | `src/api/middleware.py` | `tests/integration/test_maintenance_mode.py` | Lines 89-115 |
+| Event-001 | `src/external_data/handler.py:MarketDataHandler.process_tick()` | `src/cache/redis_client.py` | `tests/unit/test_external_data_handler.py` | Lines 142-178 |
+| State-001 | `src/engine/state_machine.py:ServiceEngine.set_maintenance_mode()` | `src/api/middleware.py` | `tests/integration/test_maintenance_mode.py` | Lines 89-115 |
 | Unwanted-001 | `src/integrations/api_client.py:APIClient.handle_rate_limit()` | `src/utils/retry.py` | `tests/unit/test_api_client_errors.py` | Lines 203-245 |
-| Ubiquitous-001 | `src/adapters/alpha_vantage_adapter.py:normalize_response()` | `src/schemas/market_data.py` | `tests/unit/test_alpha_vantage_adapter.py` | Lines 67-102 |
+| Ubiquitous-001 | `src/adapters/external_api_adapter.py:normalize_response()` | `src/schemas/external_data.py` | `tests/unit/test_external_api_adapter.py` | Lines 67-102 |
 
 **Implementation Status**:
 - Fully implemented: [count] requirements
@@ -904,13 +904,13 @@ Document where EARS requirements are implemented in the codebase.
 #### 7.5.1 Internal Document Structure
 
 - **Anchors/IDs**: `#EARS-NNN` (for referencing this document)
-- **Section References**: Use `#3.1` for Event-Driven Requirements section
+- **section References**: Use `#3.1` for Event-Driven Requirements section
 - **Statement References**: Use unique IDs within document (e.g., `Event-001`, `State-001`)
 
 #### 7.5.2 External References
 
 **Product Strategy Documents**:
-- [Strategy_Document: e.g., Product Strategy, Technical Vision](../../[domain_folder]/[strategy_doc].md) - [Relevant_Sections: e.g., Sections 2.1, 4.2]
+- [Strategy_Document: e.g., Product Strategy, Technical Vision](../../[domain_folder]/[strategy_doc].md) - [Relevant_sections: e.g., sections 2.1, 4.2]
 - [Business_Rules: e.g., Domain Rules, Business Logic](../../[domain_folder]/[business_rules].md) - [Topic: e.g., Key calculations, Decision logic]
 
 **Architecture Documentation**:
@@ -938,11 +938,11 @@ Document evidence that EARS requirements have been implemented and validated cor
 
 | EARS Statement ID | Validation Method | Evidence Location | Result | Date Validated |
 |-------------------|------------------|-------------------|--------|----------------|
-| Event-001 | Unit test execution | `tests/unit/test_market_data_handler.py::test_process_tick_latency` | PASS (p95=45ms) | YYYY-MM-DD |
+| Event-001 | Unit test execution | `tests/unit/test_external_data_handler.py::test_process_tick_latency` | PASS (p95=45ms) | YYYY-MM-DD |
 | State-001 | Integration test | `tests/integration/test_maintenance_mode.py::test_reject_trades` | PASS | YYYY-MM-DD |
 | Unwanted-001 | Manual API testing | `test_evidence/api_rate_limit_test_2024-01-15.log` | PASS | YYYY-MM-DD |
 | NFR-PERF-001 | Load test | `load_tests/results/2024-01-15-market-data-latency.html` | PASS (p95=48ms) | YYYY-MM-DD |
-| NFR-SEC-001 | Security audit | `audits/security_review_2024-Q1.pdf` | PASS | YYYY-MM-DD |
+| NFR-regulatory-001 | security audit | `audits/security_review_2024-Q1.pdf` | PASS | YYYY-MM-DD |
 
 **Validation Status Summary**:
 - Validated requirements: [count] / [total]

@@ -26,7 +26,7 @@ custom_fields:
 ## Table of Contents
 
 1. [File Organization and Directory Structure](#1-file-organization-and-directory-structure)
-2. [Document Structure (17 Required Sections)](#2-document-structure-17-required-sections)
+2. [Document Structure (17 Required sections)](#2-document-structure-17-required-sections)
 3. [Document Control Requirements](#3-document-control-requirements)
 4. [ID and Naming Standards](#4-id-and-naming-standards)
 5. [Business Requirements Principles](#5-business-requirements-principles)
@@ -50,9 +50,9 @@ custom_fields:
 
 ---
 
-## 2. Document Structure (19 Required Numbered Sections)
+## 2. Document Structure (19 Required Numbered sections)
 
-**Document Control Section**: Located at the very beginning (before all numbered sections)
+**Document Control section**: Located at the very beginning (before all numbered sections)
 
 Every BRD must contain these exact 19 numbered sections in order:
 
@@ -77,12 +77,12 @@ Every BRD must contain these exact 19 numbered sections in order:
 19. **Appendices** - References, supporting documentation, process flow diagrams, data requirements, UI mockups, integration specifications, stakeholder interview notes
 
 **Important Updates (2025-11-26)**: Several sections have been simplified for better BRD/PRD layer separation:
-- **Section 4 (Stakeholders)**: Now high-level identification only. Detailed stakeholder analysis, communication plans, and team structure moved to PRD.
-- **Section 5 (User Stories)**: Now high-level summary only (3-5 key categories). Detailed user story tables, acceptance criteria, and role definitions moved to PRD.
-- **Section 6.4 (User Roles)**: Now high-level role identification only. Detailed permissions matrices and role responsibilities moved to PRD.
+- **section 4 (Stakeholders)**: Now high-level identification only. Detailed stakeholder analysis, communication plans, and team structure moved to PRD.
+- **section 5 (User Stories)**: Now high-level summary only (3-5 key categories). Detailed user story tables, acceptance criteria, and role definitions moved to PRD.
+- **section 6.4 (User Roles)**: Now high-level role identification only. Detailed permissions matrices and role responsibilities moved to PRD.
 - **Appendix N (Customer Communication)**: Now business-level approval requirements only. Detailed messaging templates, error messages, and promotional content moved to PRD.
 
-See Section 5.6 below for detailed guidance on the simplified user stories approach.
+See section 5.6 below for detailed guidance on the simplified user stories approach.
 
 ### 2.2 Executive Summary Quantitative Pattern
 
@@ -118,15 +118,15 @@ See Section 5.6 below for detailed guidance on the simplified user stories appro
 - ❌ "The solution will significantly improve the customer experience" - Subjective, not measurable
 - ❌ "We expect strong market adoption" - No specific targets
 
-**Reference**: See BRD-TEMPLATE.md Section 1 (Introduction) and Section 3 (Business Objectives) for template structure.
+**Reference**: See BRD-TEMPLATE.md section 1 (Introduction) and section 3 (Business Objectives) for template structure.
 
-### 2.3 Workflow Diagram Requirements (Template Sections 3.5.4-3.5.5)
+### 2.3 Workflow Diagram Requirements (Template sections 3.5.4-3.5.5)
 
 **Purpose**: Visualize business processes and exception handling using Mermaid diagrams. Workflow diagrams document the end-to-end business process from user and system perspectives.
 
-**Location in Template**: Section 3.5.4 (End-to-End Workflow Diagram) and Section 3.5.5 (Error and Exception Handling Workflows) within Project Scope
+**Location in Template**: section 3.5.4 (End-to-End Workflow Diagram) and section 3.5.5 (Error and Exception Handling Workflows) within Project Scope
 
-#### Section 3.5.4: End-to-End Workflow Diagram
+#### section 3.5.4: End-to-End Workflow Diagram
 
 **Required Components**:
 1. **Mermaid Sequence Diagram**: Shows business-level interactions between participants
@@ -162,7 +162,7 @@ sequenceDiagram
 - ❌ Code-level operations ("validate JWT token", "serialize JSON")
 - ✓ Business-level actions ("Submit transaction request", "Verify customer identity")
 
-#### Section 3.5.5: Error and Exception Handling Workflows
+#### section 3.5.5: Error and Exception Handling Workflows
 
 **Purpose**: Document how business processes handle errors, failures, and exception scenarios
 
@@ -198,7 +198,7 @@ sequenceDiagram
 - Define escalation paths for different error types
 - Include retry policies and backoff strategies (business terms)
 
-**Reference**: See BRD-TEMPLATE.md Sections 3.5.4 and 3.5.5 for complete examples and table structures.
+**Reference**: See BRD-TEMPLATE.md sections 3.5.4 and 3.5.5 for complete examples and table structures.
 
 ---
 
@@ -354,7 +354,7 @@ When performing major refactoring (version X.0), document the transformation:
 1. Assess current PRD-Ready Score (should be <90/100 to justify refactoring)
 2. Create backup of current version (`.backup_vX.Y` suffix)
 3. Increment to next major version (1.0 → 2.0)
-4. Transform FRs using 4-subsection structure (see BRD-TEMPLATE.md Section 5.2)
+4. Transform FRs using 4-subsection structure (see BRD-TEMPLATE.md section 5.2)
 5. Remove PRD-level content per Appendix B exclusion rules
 6. Add Complexity ratings and Related Requirements
 7. Document changes in Revision History with "Major Refactoring" label
@@ -376,7 +376,7 @@ When performing major refactoring (version X.0), document the transformation:
 
 ### 4.2 Business Objectives Baseline Pattern
 
-**Purpose**: Provide quantitative baseline pattern for Business Objectives in Section 3 of BRDs. Baselines enable measurable success criteria and impact assessment.
+**Purpose**: Provide quantitative baseline pattern for Business Objectives in section 3 of BRDs. Baselines enable measurable success criteria and impact assessment.
 
 **Baseline Table Format**:
 
@@ -621,19 +621,19 @@ When performing major refactoring (version X.0), document the transformation:
 
 ---
 
-## 5.6 User Stories Requirements (BRD Template Section 5)
+## 5.6 User Stories Requirements (BRD Template section 5)
 
 **Updated Guidance (2025-11-26)**: User Stories are now HIGH-LEVEL SUMMARIES in BRD (Layer 1), with complete details in PRD (Layer 2).
 
 **Purpose**: Provide high-level summary of key user stories to demonstrate business value and user needs. Detailed user stories with full acceptance criteria belong in PRD.
 
-**Location in Template**: Section 5 (between Stakeholders and Functional Requirements)
+**Location in Template**: section 5 (between Stakeholders and Functional Requirements)
 
-**Reference**: See [PRD-TEMPLATE.md - User Stories & User Roles Section](../PRD/PRD-TEMPLATE.md#user-stories--user-roles) for detailed user story tables, role definitions, and mapping
+**Reference**: See [PRD-TEMPLATE.md - User Stories & User Roles section](../PRD/PRD-TEMPLATE.md#user-stories--user-roles) for detailed user story tables, role definitions, and mapping
 
 ### Simplified BRD Requirements (High-Level Summary)
 
-**BRD Section 5 Content** (as of 2025-11-26):
+**BRD section 5 Content** (as of 2025-11-26):
 - High-level summary of key user story categories (3-5 bullet points per category)
 - Aggregate counts only (no detailed tables): Primary users, Operational users, Total
 - High-level business objective alignment (mapping details in PRD)
@@ -652,7 +652,7 @@ When performing major refactoring (version X.0), document the transformation:
 3. **Business Objective Alignment**: High-level mapping only
    - Example: "Business Objective 1: Supported by [XX] user stories (See PRD for details)"
 
-**Complete Requirements Moved to PRD**: The following detailed content now belongs in PRD-TEMPLATE.md Section "User Stories & User Roles":
+**Complete Requirements Moved to PRD**: The following detailed content now belongs in PRD-TEMPLATE.md section "User Stories & User Roles":
 - ❌ ~~Detailed user story tables with Story ID, Priority, Acceptance Criteria~~
 - ❌ ~~User story to FR mapping tables~~
 - ❌ ~~Detailed user story to business objective mapping~~
@@ -680,7 +680,7 @@ When performing major refactoring (version X.0), document the transformation:
 - ❌ "As a user, I want to click the submit button" - UI implementation detail
 - ✓ "As a **sender**, I want to **track transaction status in real-time**, so that **I know when funds are received**" - business-level need
 
-**Reference**: See BRD-TEMPLATE.md Section 5 for complete structure and additional examples.
+**Reference**: See BRD-TEMPLATE.md section 5 for complete structure and additional examples.
 
 ---
 
@@ -688,14 +688,14 @@ When performing major refactoring (version X.0), document the transformation:
 
 ### Platform BRDs (e.g., BRD-001, BRD-034)
 - **Purpose**: Define foundational capabilities, technology stacks, prerequisites
-- **Sections 3.6 & 3.7**: ALWAYS PRESENT - Define foundational technology stacks and mandatory constraints
+- **sections 3.6 & 3.7**: ALWAYS PRESENT - Define foundational technology stacks and mandatory constraints
 - **ADR Timing**: ADRs created BEFORE PRD to validate architectural decisions
 - **Technology Focus**: Infrastructure, security, compliance foundations
 - **Interdependencies**: Establish foundation for Feature BRDs
 
 ### Feature BRDs (e.g., BRD-006, BRD-009)
 - **Purpose**: Define business features and user workflows
-- **Sections 3.6 & 3.7**: ALWAYS PRESENT - Reference Platform BRD dependencies and feature-specific conditions
+- **sections 3.6 & 3.7**: ALWAYS PRESENT - Reference Platform BRD dependencies and feature-specific conditions
 - **ADR Timing**: Standard workflow (BRD → PRD → SYS → EARS → REQ → ADR)
 - **Business Focus**: User problems, business processes, acceptance criteria
 - **Dependencies**: Reference Platform BRDs for technology foundations
@@ -811,7 +811,7 @@ Business Rules Count?
 **When to Reference Platform BRDs**:
 - BRD-001: Platform architecture and technology stack
 - BRD-002: Partner ecosystem and integration requirements
-- BRD-003: Security, compliance, and authentication requirements
+- BRD-003: security, compliance, and authentication requirements
 - BRD-004: Data model and ledger architecture
 - BRD-005: AI/ML agent system architecture
 
@@ -1168,7 +1168,7 @@ if (amount >= 501 && amount <= 2000) {
 2. ADRs document which option was chosen and WHY
 3. This separation maintains workflow integrity and prevents forward references
 
-**Section 6.1: Architecture Decision Requirements**
+**section 6.1: Architecture Decision Requirements**
 ```markdown
 | Topic Area | Decision Needed | Business Driver | Key Considerations |
 |------------|-----------------|---------------|-------------------|
@@ -1181,9 +1181,9 @@ if (amount >= 501 && amount <= 2000) {
 
 **Purpose**: Establish bidirectional linkage between business objectives, functional requirements, and downstream technical artifacts to ensure complete coverage, enable impact analysis, and prevent orphaned requirements.
 
-**Location in Template**: Section 17 (Traceability)
+**Location in Template**: section 17 (Traceability)
 
-### 8.1 Requirements Traceability Matrix (Template Section 17.1)
+### 8.1 Requirements Traceability Matrix (Template section 17.1)
 
 The traceability matrix provides three levels of bidirectional mapping to ensure complete requirements coverage:
 
@@ -1195,7 +1195,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 | [BO-1: Objective description] | FR-001, FR-002, FR-005 | US-001, US-003, US-008 | Complete/Partial/Gap |
 
 **Requirements**:
-- Every Business Objective (Section 2.4) MUST appear in this table
+- Every Business Objective (section 2.4) MUST appear in this table
 - Coverage Status: "Complete" (all requirements documented), "Partial" (known gaps exist), "Gap" (no requirements yet)
 - Related FRs: Reference all Functional Requirement IDs that contribute to the objective
 - Related User Stories: Reference all User Story IDs demonstrating the objective
@@ -1213,7 +1213,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 | FR-001: [Requirement title] | SPEC-XXX-001: [Specification name] | IMPL-XXX-001: [Implementation name] | Planned |
 
 **Requirements**:
-- Every Functional Requirement (Section 4) MUST appear in this table
+- Every Functional Requirement (section 4) MUST appear in this table
 - Downstream artifacts initially marked "Planned" (created during PRD/SPEC phases)
 - SPEC-XXX format: Use BRD ID as XXX (e.g., BRD-005 → SPEC-005-001)
 - IMPL-XXX format: Use BRD ID as XXX (e.g., BRD-005 → IMPL-005-001)
@@ -1226,15 +1226,15 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 | NFR Category | Related NFR IDs | Downstream SPEC (Planned) | Validation Method |
 |--------------|----------------|---------------------------|-------------------|
 | Performance SLAs | NFR-001 through NFR-005 | SPEC-XXX-NFR-P: Performance Testing | Load testing |
-| Security & Compliance | NFR-006 through NFR-012 | SPEC-XXX-NFR-S: Security Controls | Security audit |
+| security & Compliance | NFR-006 through NFR-012 | SPEC-XXX-NFR-S: security Controls | security audit |
 | Availability | NFR-013 through NFR-019 | SPEC-XXX-NFR-A: Deployment Architecture | Uptime monitoring |
 
 **Requirements**:
-- Group NFRs by category (Performance, Security, Availability, Scalability, etc.)
+- Group NFRs by category (Performance, security, Availability, Scalability, etc.)
 - Specify validation method for each category (testing, audit, monitoring)
 - Use NFR-specific SPEC naming convention (SPEC-XXX-NFR-[Category])
 
-### 8.2 Cross-BRD Dependencies (Template Section 17.2)
+### 8.2 Cross-BRD Dependencies (Template section 17.2)
 
 **Purpose**: Document dependencies on other BRDs to prevent integration issues and support parallel development.
 
@@ -1255,7 +1255,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 - Document impact if dependency missing (risk assessment)
 - Status: "Required" (blocking), "Optional" (nice-to-have)
 
-### 8.3 Test Coverage Traceability (Template Section 17.3)
+### 8.3 Test Coverage Traceability (Template section 17.3)
 
 **Purpose**: Map requirements to planned test artifacts to ensure comprehensive test coverage.
 
@@ -1266,7 +1266,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 | FR-001 through FR-XXX | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
 | User Stories (US-001 through US-XXX) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
 | NFR Performance | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
-| NFR Security | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
+| NFR security | security Tests | TEST-XXX-regulatory: security Audit | All controls |
 
 **Coverage Targets**:
 - **Unit Tests**: 95% code coverage for functional requirements
@@ -1274,7 +1274,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 - **Acceptance Tests**: 100% coverage for user stories (BDD scenarios)
 - **NFR Tests**: 100% coverage for all SLA thresholds and security controls
 
-### 8.4 Traceability Summary (Template Section 17.4)
+### 8.4 Traceability Summary (Template section 17.4)
 
 **Purpose**: Quantify traceability coverage to ensure no orphaned or unlinked requirements.
 
@@ -1305,7 +1305,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 For projects with existing strategy documents:
 
 **Required Traceability Fields**:
-- **Upstream Sources**: Business strategy documents (`option_strategy/` sections, integrated_strategy_algo_v5.md)
+- **Upstream Sources**: Business strategy documents (domain-specific business logic sections)
 - **Downstream Artifacts**: PRD, SYS, EARS, BDD, REQ sequences
 - **Strategy References**: Specific sections from strategy documents
 - **Business Rationale**: Business justification for each requirement
@@ -1317,13 +1317,13 @@ For projects with existing strategy documents:
 
 ## 9. Architecture Decision Requirements
 
-Every BRD must include Section 6.1: "Architecture Decision Requirements"
+Every BRD must include section 6.1: "Architecture Decision Requirements"
 
 | Field | Description | Example |
 |-------|-------------|---------|
 | **Topic Area** | Technology or architecture domain | "Multi-Agent Framework", "Data Storage", "Authentication Protocol" |
 | **Decision Needed** | What architectural choice is required | "Select orchestration mechanism for agent coordination" |
-| **Business Driver** | Which BRD requirement necessitates this | "BO-003: Autonomous trading execution" |
+| **Business Driver** | Which BRD requirement necessitates this | "BO-003: Automated service execution" |
 | **Key Considerations** | Technologies/patterns to evaluate | "Google ADK, n8n workflow engine, custom orchestration" |
 
 **Purpose**: Identifies architectural topics requiring formal evaluation BEFORE PRD creation (for critical decisions) or standard workflow timing (for feature decisions)
@@ -1333,7 +1333,7 @@ Every BRD must include Section 6.1: "Architecture Decision Requirements"
 ## 10. Business Objectives and Success Criteria
 
 ### SMART Objectives Format
-All business objectives in Section 2.4 must follow SMART criteria:
+All business objectives in section 2.4 must follow SMART criteria:
 
 | Component | Description | Example |
 |-----------|-------------|---------|
@@ -1361,11 +1361,11 @@ All business objectives in Section 2.4 must follow SMART criteria:
 
 ---
 
-## 11.5 Approval and Sign-off Requirements (Template Section 15.5)
+## 11.5 Approval and Sign-off Requirements (Template section 15.5)
 
 **Purpose**: Document formal approval process, approval criteria, and change control for the BRD after approval.
 
-**Location in Template**: Section 15.5 (Approval and Sign-off) within Project Governance
+**Location in Template**: section 15.5 (Approval and Sign-off) within Project Governance
 
 ### Required Subsections (15.5.1-15.5.4)
 
@@ -1394,9 +1394,9 @@ All business objectives in Section 2.4 must follow SMART criteria:
 
 **Required Criteria** (minimum):
 1. All stakeholders listed in 15.5.1 have provided written approval
-2. All critical business risks (Section 10) with risk score ≥12 have documented mitigation strategies
+2. All critical business risks (section 10) with risk score ≥12 have documented mitigation strategies
 3. Regulatory compliance requirements validated by legal counsel (if applicable)
-4. Required dependencies (Section 17.2) confirmed available or have mitigation plans
+4. Required dependencies (section 17.2) confirmed available or have mitigation plans
 5. Budget allocation approved by appropriate financial authority
 
 **Format**: Numbered list with specific, verifiable conditions
@@ -1435,13 +1435,13 @@ All business objectives in Section 2.4 must follow SMART criteria:
 ### Best Practices
 
 **Document Approval**:
-- Identify all approvers at BRD draft stage (Section 15.5.1)
-- Set approval criteria before starting stakeholder review (Section 15.5.2)
-- Track approval status throughout review cycle (Section 15.5.4)
-- Use change control process for all post-approval changes (Section 15.5.3)
+- Identify all approvers at BRD draft stage (section 15.5.1)
+- Set approval criteria before starting stakeholder review (section 15.5.2)
+- Track approval status throughout review cycle (section 15.5.4)
+- Use change control process for all post-approval changes (section 15.5.3)
 
 **Approval Criteria**:
-- Link to specific BRD sections (e.g., "Section 10 critical risks")
+- Link to specific BRD sections (e.g., "section 10 critical risks")
 - Make criteria measurable and verifiable
 - Include external validations (legal, compliance, finance)
 - Reference dependency confirmation from Traceability section
@@ -1458,7 +1458,7 @@ All business objectives in Section 2.4 must follow SMART criteria:
 - ❌ No change control process defined
 - ❌ Approval table left entirely blank (populate with [TBD])
 
-**Reference**: See BRD-TEMPLATE.md Section 15.5 for complete structure and table examples.
+**Reference**: See BRD-TEMPLATE.md section 15.5 for complete structure and table examples.
 
 ---
 

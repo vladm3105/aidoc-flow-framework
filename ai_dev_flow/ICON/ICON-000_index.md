@@ -75,7 +75,7 @@ custom_fields:
 3. **Platform-Level**: Shared across multiple system components
 4. **Cross-Project**: Used in multiple projects
 
-**Default**: Embed contracts in TASKS files (Section 8: Implementation Contracts)
+**Default**: Embed contracts in TASKS files (section 8: Implementation Contracts)
 
 ### File Naming Convention
 
@@ -83,7 +83,7 @@ custom_fields:
 
 **Examples**:
 - `ICON-001_gateway_connector_protocol.md`
-- `ICON-002_market_data_event_bus.md`
+- `ICON-002_external_data_event_bus.md`
 - `ICON-003_order_execution_exceptions.md`
 
 ### Directory Location

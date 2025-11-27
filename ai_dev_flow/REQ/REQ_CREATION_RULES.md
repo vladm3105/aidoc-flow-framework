@@ -24,7 +24,7 @@ custom_fields:
 ## Table of Contents
 
 1. [File Organization and Directory Structure](#1-file-organization-and-directory-structure)
-2. [Document Structure (12 Required Sections)](#2-document-structure-12-required-sections)
+2. [Document Structure (12 Required sections)](#2-document-structure-12-required-sections)
 3. [Document Control Requirements](#3-document-control-requirements)
 4. [ID and Naming Standards](#4-id-and-naming-standards)
 5. [Atomic Requirement Principles](#5-atomic-requirement-principles)
@@ -46,7 +46,7 @@ custom_fields:
 
 ---
 
-## 2. Document Structure (12 Required Sections)
+## 2. Document Structure (12 Required sections)
 
 Every REQ must contain these exact sections in order:
 
@@ -69,14 +69,14 @@ Every REQ must contain these exact sections in order:
 
 - Status, Version (semantic X.Y.Z), Date Created (ISO 8601), Last Updated
 - Author, Priority (with P-level: P1/P2/P3/P4), Category (Functional/Non-Functional/etc.)
-- Source Document (format: "DOC-ID Section X.Y.Z"), Verification Method, Assigned Team
+- Source Document (format: "DOC-ID section X.Y.Z"), Verification Method, Assigned Team
 - SPEC-Ready Score (format: "✅ XX% (Target: ≥90%)"), IMPL-Ready Score (format: "✅ XX% (Target: ≥90%)"), Template Version (must be "3.0")
 
 ---
 
 ## 4. ID and Naming Standards
 
-- **Filename**: `REQ-NNN_slug.md` (e.g., `REQ-003_position_limit_enforcement.md`)
+- **Filename**: `REQ-NNN_slug.md` (e.g., `REQ-003_resource_limit_enforcement.md`)
 - **H1 Header**: `# REQ-NNN: [RESOURCE_INSTANCE] Title` (Template V2+) - includes resource classification tag
 - **Template Version**: Must use 3.0 (current) - not legacy V1 or V2
 - **Uniqueness**: Each NNN number used once (either single REQ-NNN or REQ-NNN-YY group)
@@ -148,7 +148,7 @@ Every REQ must contain these exact sections in order:
 - **Dependency Injection**: Container setup with providers for modular design
 - **Database Integration**: SQLAlchemy models with constraints and migrations (if applicable)
 - **Concurrent Patterns**: Async handling with semaphore and task management
-- **Security Requirements**: Authentication, data encryption, audit logging
+- **security Requirements**: Authentication, data encryption, audit logging
 - **Resource Tags**: Classify by component type (e.g., [EXTERNAL_SERVICE_GATEWAY])
 
 ---

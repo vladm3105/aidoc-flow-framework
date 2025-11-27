@@ -25,7 +25,7 @@ python generate_traceability_matrix.py --type ADR --input ../ADR/ --output TRACE
 
 **Features:**
 - Scans directories for documents matching TYPE-NNN pattern
-- Extracts metadata from Section 7 Traceability
+- Extracts metadata from section 7 Traceability
 - Calculates coverage metrics automatically
 - Generates inventory tables and Mermaid diagrams
 - Supports all document types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN
@@ -165,7 +165,7 @@ python validate_iplan_naming.py || exit 1
 **Validation Checks:**
 1. **Filename Pattern**: `IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md`
 2. **ID Format**: 3 digits (001-999) or 4 digits (1000+) with proper zero-padding
-3. **Slug Format**: Lowercase alphanumeric with hyphens only, no consecutive/leading/trailing hyphens
+3. **Slug Format**: Lowercase alphanumeric with hyphens only, no conregulatoryutive/leading/trailing hyphens
 4. **Timestamp Validity**: Valid date and time (year: 1900-2100)
 5. **H1 ID Match**: Header ID in file matches filename ID
 6. **Sequential Order**: Warns if ID gaps exist (non-blocking)
@@ -461,7 +461,7 @@ python update_traceability_matrix.py --matrix ../ADR/examples/TRACEABILITY_MATRI
 - **Solution**: Run update script to sync matrix with actual documents
 
 **Issue**: "Orphaned documents" warnings
-- **Solution**: Review documents without upstream traceability, add links to upstream sources in Section 7
+- **Solution**: Review documents without upstream traceability, add links to upstream sources in section 7
 
 ---
 
@@ -479,8 +479,8 @@ All three scripts follow consistent design principles:
 - Title from H1 heading
 - Status from document control table
 - Date from document control table
-- Upstream sources from Section 7 → Upstream Sources table
-- Downstream artifacts from Section 7 → Downstream Artifacts table
+- Upstream sources from section 7 → Upstream Sources table
+- Downstream artifacts from section 7 → Downstream Artifacts table
 - Category from directory structure
 
 **Error Handling:**

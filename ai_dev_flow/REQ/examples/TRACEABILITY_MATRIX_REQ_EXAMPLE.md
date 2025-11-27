@@ -36,7 +36,7 @@
 | REQ-001 | Service registry MUST support automatic service discovery | service-discovery | Approved | 2024-11-16 | EARS-005, SYS-001, ADR-001 | IMPL-001, CTR-003, SPEC-008 |
 | REQ-002 | API gateway MUST route requests based on service path | api-gateway | Approved | 2024-11-16 | EARS-006, SYS-002, ADR-001 | IMPL-001, CTR-004, SPEC-009 |
 | REQ-003 | Load balancer MUST distribute traffic using round-robin algorithm | load-balancing | Approved | 2024-11-17 | EARS-007, SYS-001, ADR-001 | IMPL-002, SPEC-010 |
-| REQ-004 | Circuit breaker MUST open after 5 consecutive failures | resilience | Approved | 2024-11-17 | EARS-008, SYS-002, ADR-001 | IMPL-002, SPEC-011 |
+| REQ-004 | Circuit breaker MUST open after 5 conregulatoryutive failures | resilience | Approved | 2024-11-17 | EARS-008, SYS-002, ADR-001 | IMPL-002, SPEC-011 |
 | REQ-005 | Database connection pool MUST maintain minimum 10 connections | database | Approved | 2024-11-19 | EARS-010, SYS-003, ADR-002 | IMPL-003, CTR-005, SPEC-012 |
 | REQ-006 | Transaction isolation MUST use Read Committed level | database | Approved | 2024-11-19 | EARS-011, SYS-003, ADR-002 | IMPL-003, SPEC-013 |
 | REQ-007 | Database backup MUST run daily at 2 AM UTC | database | Approved | 2024-11-19 | EARS-012, SYS-003, ADR-002 | IMPL-003 |
@@ -117,7 +117,7 @@
 | REQ-005, REQ-006, REQ-007 | Database requirements | IMPL-003 | PostgreSQL Setup and Configuration | Database requirements drive data implementation |
 | REQ-008, REQ-009, REQ-010 | Messaging requirements | IMPL-004 | Kafka Event Bus Implementation | Messaging requirements drive event implementation |
 | REQ-011, REQ-012, REQ-013 | Deployment requirements | IMPL-005 | Kubernetes Cluster Setup | Infrastructure requirements drive deployment plan |
-| REQ-014, REQ-015, REQ-016 | Auth requirements | IMPL-006 | OAuth 2.0 Identity Server | Security requirements drive auth implementation |
+| REQ-014, REQ-015, REQ-016 | Auth requirements | IMPL-006 | OAuth 2.0 Identity Server | security requirements drive auth implementation |
 | REQ-017, REQ-018 | API requirements | IMPL-007 | GraphQL Gateway Implementation | API requirements drive gateway implementation |
 
 ### 4.2 REQ → CTR Traceability
@@ -190,8 +190,8 @@
 | REQ-011 | Integration test | Automated | ✅ Verified |
 | REQ-012 | Health check | Automated | ✅ Verified |
 | REQ-013 | Deployment test | Automated | ✅ Verified |
-| REQ-014 | Security test | Automated | ✅ Verified |
-| REQ-015 | Security test | Automated | ✅ Verified |
+| REQ-014 | security test | Automated | ✅ Verified |
+| REQ-015 | security test | Automated | ✅ Verified |
 | REQ-016 | Unit test | Automated | ✅ Verified |
 | REQ-017 | API test | Automated | ✅ Verified |
 | REQ-018 | API test | Automated | ✅ Verified |

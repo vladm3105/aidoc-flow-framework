@@ -19,7 +19,7 @@ custom_fields:
 **Last Updated**: 2025-11-26
 **Source**: Extracted from PRD-TEMPLATE.md, PRD-VALIDATION_RULES.md, README.md, and PRD-000_index.md
 **Purpose**: Complete reference for creating PRD files according to doc-flow SDD framework
-**Changes**: Implemented 19-section structure (0-18), added Section 6 (User Stories), Section 8 (Customer-Facing Content MANDATORY), dual scoring requirements
+**Changes**: Implemented 19-section structure (0-18), added section 6 (User Stories), section 8 (Customer-Facing Content MANDATORY), dual scoring requirements
 
 ---
 
@@ -27,7 +27,7 @@ custom_fields:
 
 0. [Document Control](#0-document-control)
 1. [File Organization and Directory Structure](#1-file-organization-and-directory-structure)
-2. [Document Structure (Required Sections)](#2-document-structure-required-sections)
+2. [Document Structure (Required sections)](#2-document-structure-required-sections)
 3. [Document Control Requirements](#3-document-control-requirements)
 4. [ID and Naming Standards](#4-id-and-naming-standards)
 5. [Product Requirements Principles](#5-product-requirements-principles)
@@ -48,9 +48,9 @@ custom_fields:
 
 **Purpose**: Establishes document metadata, versioning, and dual scoring requirements for PRD quality gates.
 
-**Position**: Must be Section 0 at the very beginning of PRD (before all numbered sections)
+**Position**: Must be section 0 at the very beginning of PRD (before all numbered sections)
 
-**Required Fields** (11 total):
+**Required Fields** (11 mandatory + 4 optional):
 
 | Field | Description | Requirement |
 |-------|-------------|-------------|
@@ -65,6 +65,11 @@ custom_fields:
 | BRD Reference | @brd: BRD-XXX tag | MANDATORY |
 | SYS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
 | EARS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
+| Priority | High / Medium / Low | OPTIONAL |
+| Target Release | Release version/Quarter | OPTIONAL |
+| Estimated Effort | Story Points or Person-Months | OPTIONAL |
+
+**Note**: Optional fields are recommended but not validation-blocking. Document Revision History table is also optional but recommended for tracking changes.
 
 **Dual Scoring Requirements**:
 - Both SYS-Ready Score and EARS-Ready Score must be present
@@ -83,7 +88,9 @@ custom_fields:
 | **Date Created** | YYYY-MM-DD |
 | **Last Updated** | YYYY-MM-DD |
 | **Author** | [Product Manager/Owner Name] |
+| **Reviewer** | [Technical Reviewer Name] |
 | **Approver** | [Stakeholder Name] |
+| **BRD Reference** | @brd: BRD-NNN |
 | **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
 | **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
 ```
@@ -98,11 +105,11 @@ custom_fields:
 
 ---
 
-## 2. Document Structure (Required Sections)
+## 2. Document Structure (Required sections)
 
-Every PRD must contain these exact 19 sections (0-18) in order. Section numbering must be explicit in all headers.
+Every PRD must contain these exact 19 sections (0-18) in order. section numbering must be explicit in all headers.
 
-#### Required Sections in Order (19 total):
+#### Required sections in Order (19 total):
 
 0. **Document Control** - Metadata, versioning, dual scoring (SYS-Ready + EARS-Ready ≥90%)
 1. **Executive Summary** - Business value and timeline overview
@@ -126,8 +133,8 @@ Every PRD must contain these exact 19 sections (0-18) in order. Section numberin
 
 **Critical Notes**:
 - All 19 sections are MANDATORY with explicit numbering (## 0. Title, ## 1. Title, etc.)
-- Section 9 (Customer-Facing Content) is blocking requirement - must contain substantive content
-- Section 7 (User Stories) must include layer separation scope note
+- section 9 (Customer-Facing Content) is blocking requirement - must contain substantive content
+- section 7 (User Stories) must include layer separation scope note
 
 ---
 
@@ -135,15 +142,18 @@ Every PRD must contain these exact 19 sections (0-18) in order. Section numberin
 
 **Position**: Must be the first section at the very top of the PRD (before all numbered sections)
 
-**Required Fields** (7 mandatory):
-- Project Name: [Enter project name]
-- Document Version: [e.g., 1.0] (semantic versioning X.Y)
-- Date: [Current date in YYYY-MM-DD format]
+**Required Fields** (11 mandatory):
+- Document ID: PRD-XXX format in H1 header
+- Version: Semantic versioning (X.Y.Z)
+- Status: Draft / Review / Approved / Implemented
+- Date Created: YYYY-MM-DD format
+- Last Updated: YYYY-MM-DD format
 - Author: [Product Manager/Owner Name]
+- Reviewer: [Technical Reviewer Name]
 - Approver: [Stakeholder Name]
-- Status: [Draft / Review / Approved / Implemented]
-- SYS-Ready Score (⭐ NEW - v1.0): Format `✅ NN% (Target: ≥90%)`
-- EARS-Ready Score (⭐ NEW - v1.0): Format `✅ NN% (Target: ≥90%)`
+- BRD Reference: @brd: BRD-XXX tag
+- SYS-Ready Score: Format `✅ NN% (Target: ≥90%)`
+- EARS-Ready Score: Format `✅ NN% (Target: ≥90%)`
 
 **Also Required**: Document Revision History table with at least one initial entry
 
@@ -151,29 +161,31 @@ Every PRD must contain these exact 19 sections (0-18) in order. Section numberin
 ```markdown
 | Item | Details |
 |------|---------|
-| **Project Name** | [Enter project name] |
-| **Document Version** | [e.g., 1.0] |
-| **Date** | [Current date] |
+| **Status** | Draft / Review / Approved / Implemented |
+| **Version** | [Semantic version, e.g., 1.0.0] |
+| **Date Created** | YYYY-MM-DD |
+| **Last Updated** | YYYY-MM-DD |
 | **Author** | [Product Manager/Owner Name] |
+| **Reviewer** | [Technical Reviewer Name] |
 | **Approver** | [Stakeholder Name] |
-| **Status** | [Draft / Review / Approved / Implemented] |
+| **BRD Reference** | @brd: BRD-NNN |
 | **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
 
 ### Document Revision History
 
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
-| 1.0 | [Date] | [Name] | Initial draft | |
-| | | | | |
+| 1.0.0 | [Date] | [Name] | Initial draft | |
 ```
 
 ---
 
 ## 4. ID and Naming Standards
 
-- **Filename**: `PRD-NNN_descriptive_title.md` (e.g., `PRD-001_alpha_vantage_integration.md`)
+- **Filename**: `PRD-NNN_descriptive_title.md` (e.g., `PRD-001_external_api_integration.md`)
 - **H1 Header**: `# PRD-NNN: [Descriptive Product Name/Feature Name]`
-- **Document Title**: Include in H1 as subtitle (e.g., "PRD-001: Alpha Vantage Integration")
+- **Document Title**: Include in H1 as subtitle (e.g., "PRD-001: External API Integration")
 - **ID Format**: PRD-NNN (3-digit sequential), PRD-NNN-YY for multi-part documents
 - **Uniqueness Rule**: Each NNN number unique across all PRDs
 
@@ -192,8 +204,6 @@ Every PRD must contain these exact 19 sections (0-18) in order. Section numberin
 ## 6. User Stories & User Roles
 
 **Purpose**: Define PRD-level user roles and story summaries. Detailed behavioral scenarios belong in EARS (Layer 3) and BDD tests (Layer 4).
-
-**Note**: This corresponds to Section 7 in the PRD template (after Scope & Requirements).
 
 **Layer Separation**:
 - **PRD (Layer 2)**: User role definitions, story titles, capability requirements
@@ -226,7 +236,7 @@ Define who the users are (personas):
 
 ### Scope Note
 
-**MANDATORY**: Include this note in PRD Section 7:
+**MANDATORY**: Include this note in PRD section 7:
 
 > This section provides role definitions and story summaries. Detailed behavioral requirements are captured in EARS; executable test specifications are in BDD feature files.
 
@@ -234,12 +244,12 @@ Define who the users are (personas):
 
 ## 7. Architecture Decision Requirements
 
-Every PRD must include Section 15.2 (Traceability) with "Architecture Decision Requirements" subsection
+Every PRD must include section 17 (Traceability) with "Architecture Decision Requirements" subsection
 
 **Purpose**: Identifies architectural topics requiring formal evaluation BEFORE progression to SYS phase
 
 **Requirements**:
-1. Section exists and has table with columns: Topic Area, Decision Needed, Business Driver, Key Considerations
+1. section exists and has table with columns: Topic Area, Decision Needed, Business Driver, Key Considerations
 2. Table includes decision topics that will become formal ADRs in later workflow phase
 3. Topics must have clear business rationale linked to PRD requirements
 
@@ -258,8 +268,6 @@ Every PRD must include Section 15.2 (Traceability) with "Architecture Decision R
 ## 8. Customer-Facing Content & Messaging (MANDATORY)
 
 **Status**: MANDATORY - blocking error if missing or contains only placeholder text
-
-**Note**: This corresponds to Section 9 in the PRD template (after Functional Requirements).
 
 **Purpose**: Define all customer-visible content, messaging, and communication materials.
 
@@ -287,7 +295,7 @@ All customer-facing content must meet:
 
 ### Validation Requirements
 
-- Section 9 header must include (MANDATORY) designation
+- section 9 header must include (MANDATORY) designation
 - Content must be substantive (no "TBD", "TODO", or placeholder-only text)
 - Minimum 3 content categories addressed
 - Quality standards applied to all content
@@ -322,7 +330,7 @@ SYS-ready scoring measures PRD maturity and readiness for progression to System 
 ### Scoring Criteria
 
 **Product Requirements Completeness (40%)**:
-- All 16 sections present and populated: 10%
+- All 19 sections present and populated: 10%
 - Business goals include measurable KPIs: 10%
 - Acceptance criteria with business stakeholder validation: 10%
 - Stakeholder analysis and communication plan complete: 10%
@@ -375,7 +383,7 @@ EARS-ready scoring measures PRD maturity and readiness for progression to Engine
 - Non-functional requirements quantified (performance, reliability): 10%
 
 **Strategic Alignment (5%)**:
-- References to option_strategy/ business logic sections: 5%
+- References to domain-specific business logic documents: 5%
 
 ### Quality Gate Enforcement
 - **Blocking Validation**: Score <90% prevents progression to EARS phase
@@ -388,7 +396,7 @@ EARS-ready scoring measures PRD maturity and readiness for progression to Engine
 
 - **Upstream Sources**: Must reference BRD business requirements and strategy documents
 - **Downstream Artifacts**: Map to SYS, EARS, BDD, REQ sequences
-- **Strategy References**: Include specific sections from `option_strategy/` documents
+- **Strategy References**: Include specific sections from domain-specific business logic documents
 - **Business Rationale**: Each requirement includes business justification
 - **Acceptance Criteria**: Verifiable by business stakeholders
 

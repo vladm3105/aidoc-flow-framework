@@ -208,7 +208,7 @@ custom_fields:
 | Priority | Meaning | Visual Indicator | Use Case |
 |----------|---------|------------------|----------|
 | `primary` | Recommended approach | ✅ Green, expanded | AI Agent-based implementation (recommended) |
-| `fallback` | Secondary/reference option | ⚠️ Yellow, collapsed | Traditional implementation (use if primary not viable) |
+| `fallback` | secondary/reference option | ⚠️ Yellow, collapsed | Traditional implementation (use if primary not viable) |
 | `shared` | Required by all approaches | ⚙️ Neutral | Platform requirements, shared infrastructure |
 | `deprecated` | No longer recommended | ⛔ Red | Legacy documentation (archived) |
 
@@ -736,7 +736,7 @@ echo "✅ Metadata validation passed"
 - Is this shared across all architectures?
 
 **Step 2: Select Template**
-- Use templates from Section 4
+- Use templates from section 4
 
 **Step 3: Add Frontmatter**
 ```markdown
@@ -750,7 +750,7 @@ echo "✅ Metadata validation passed"
 
 **Step 4: Add Custom Admonition (if applicable)**
 - Add after title for key documents
-- Use templates from Section 5
+- Use templates from section 5
 
 **Step 5: Update Cross-References**
 - Ensure bidirectional references between primary/fallback
@@ -1226,15 +1226,15 @@ custom_fields:
 
 ### 13.5 Template Reference Shortcuts
 
-You can reference templates from Section 4 directly in prompts:
+You can reference templates from section 4 directly in prompts:
 
 | Prompt Reference | Template Applied |
 |------------------|------------------|
-| "Use Primary AI Agent BRD template" | Section 4.1 template |
-| "Use Fallback Traditional BRD template" | Section 4.2 template |
-| "Use Shared Platform BRD template" | Section 4.3 template |
-| "Use Primary ADR template" | Section 4.4 template |
-| "Use PRD template" | Section 4.6 template |
+| "Use Primary AI Agent BRD template" | section 4.1 template |
+| "Use Fallback Traditional BRD template" | section 4.2 template |
+| "Use Shared Platform BRD template" | section 4.3 template |
+| "Use Primary ADR template" | section 4.4 template |
+| "Use PRD template" | section 4.6 template |
 
 **Example:**
 ```

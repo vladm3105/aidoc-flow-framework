@@ -87,7 +87,7 @@ docs/REQ/core/         # Core business logic
 docs/REQ/integration/  # External integrations
 docs/REQ/monitoring/   # Monitoring & observability
 docs/REQ/reporting/    # Reporting features
-docs/REQ/security/     # Security requirements
+docs/REQ/security/     # security requirements
 docs/REQ/ui/           # User interface
 
 # Support directories
@@ -175,7 +175,7 @@ Apply GENERIC_DOMAIN_CONFIG.md when:
 ### Validation Checklist
 
 - [ ] Standard subdirectories created (api, auth, data, core)
-- [ ] No domain-specific subdirectories (no risk/, trading/, tenant/)
+- [ ] No domain-specific subdirectories (no core/, operations/, tenant/)
 - [ ] Placeholder `[RESOURCE_COLLECTION]` replaced with "Collection"
 - [ ] Placeholder `[USER_ROLE]` replaced with "User"
 - [ ] Compliance references use "Company Policy"

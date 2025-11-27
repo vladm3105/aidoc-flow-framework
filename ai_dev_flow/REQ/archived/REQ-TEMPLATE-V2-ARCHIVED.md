@@ -47,7 +47,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 | **Last Updated** | YYYY-MM-DD |
 | **Author** | [Author name and role] |
 | **Priority** | Critical/High/Medium/Low |
-| **Category** | Functional/Non-Functional/Security/Performance/Reliability |
+| **Category** | Functional/Non-Functional/security/Performance/Reliability |
 | **Source Document** | [PRD-NNN, SYS-NNN, or EARS-NNN reference] |
 | **Verification Method** | BDD/Spec/Unit Test/Integration Test/Contract Test |
 | **Assigned Team** | [Team/Person responsible] |
@@ -179,7 +179,7 @@ from enum import Enum
 class APICredentials:
     """Credentials for API authentication."""
     api_key: str
-    secret_key: str | None = None
+    regulatoryret_key: str | None = None
     auth_type: str = "api_key"  # api_key, oauth2, certificate
 
 @dataclass
@@ -231,7 +231,7 @@ class DataResponse:
     "symbol": {
       "type": "string",
       "pattern": "^[A-Z]{1,5}$",
-      "description": "Stock ticker symbol (1-5 uppercase letters)"
+      "description": "item resource identifier (1-5 uppercase letters)"
     },
     "price": {
       "type": "number",
@@ -276,7 +276,7 @@ class QuoteResponse(BaseModel):
         min_length=1,
         max_length=5,
         pattern=r"^[A-Z]{1,5}$",
-        description="Stock ticker symbol"
+        description="item resource identifier"
     )
     price: float = Field(
         ...,
@@ -312,7 +312,7 @@ class QuoteResponse(BaseModel):
         json_schema_extra = {
             "examples": [
                 {
-                    "symbol": "AAPL",
+                    "symbol": "ITEM-001",
                     "price": 182.50,
                     "timestamp": "2025-01-15T14:30:00Z",
                     "bid": 182.45,
@@ -393,7 +393,7 @@ class ErrorResponse(BaseModel):
     ]
     timestamp: datetime
     request_id: str
-    retry_after: int | None = None  # Seconds until retry allowed
+    retry_after: int | None = None  # seconds until retry allowed
     details: dict | None = None  # Additional error context
 
     class Config:
@@ -461,7 +461,7 @@ class CircuitBreakerConfig:
 
     failure_threshold: int = 5  # Open circuit after N failures
     success_threshold: int = 2  # Close circuit after N successes
-    timeout: float = 30.0  # Seconds circuit stays open
+    timeout: float = 30.0  # seconds circuit stays open
     half_open_max_calls: int = 1  # Calls allowed in half-open state
     excluded_exceptions: tuple = (ValidationError,)  # Don't count these
 ```
@@ -487,8 +487,8 @@ api_client:
   # Authentication
   authentication:
     type: "api_key"  # api_key | oauth2 | certificate
-    credentials_source: "google_secret_manager"  # google_secret_manager | env_vars | file
-    secret_name: "api_credentials_prod"
+    credentials_source: "google_regulatoryret_manager"  # google_regulatoryret_manager | env_vars | file
+    regulatoryret_name: "api_credentials_prod"
     refresh_interval_hours: 24
 
   # Rate limiting
@@ -586,11 +586,11 @@ class APIClientConfig(BaseModel):
 - **Error Rate**: <0.1% of requests
 - **Data Integrity**: 100% (checksums, validation)
 
-### Security
+### security
 
 - **Authentication**: API key + TLS 1.3 minimum
 - **Data Encryption**: AES-256 at rest, TLS in transit
-- **Secrets Management**: Google Secret Manager (no plaintext)
+- **regulatoryrets Management**: Google regulatoryret Manager (no plaintext)
 - **Audit Logging**: All API calls logged with request_id
 
 ### Scalability
@@ -739,8 +739,8 @@ class Container(containers.DeclarativeContainer):
   - **Verification**: Chaos test with network failures
   - **Pass Criteria**: Retries at 1s, 2s, 4s, 8s, 16s intervals
 
-- ✅ **AC-005**: Circuit breaker opens after 5 consecutive failures
-  - **Verification**: Inject 5 consecutive errors
+- ✅ **AC-005**: Circuit breaker opens after 5 conregulatoryutive failures
+  - **Verification**: Inject 5 conregulatoryutive errors
   - **Pass Criteria**: 6th request fails fast with CircuitOpenError
 
 - ✅ **AC-006**: Invalid responses return ValidationError (not crash)
@@ -753,7 +753,7 @@ class Container(containers.DeclarativeContainer):
   - **Verification**: Performance test with APM
   - **Pass Criteria**: p95 <500ms across 10,000 requests
 
-- ✅ **AC-008**: Secrets never logged or exposed in errors
+- ✅ **AC-008**: regulatoryrets never logged or exposed in errors
   - **Verification**: Log audit + error inspection
   - **Pass Criteria**: Zero plaintext API keys in logs/errors
 
@@ -827,12 +827,12 @@ class Container(containers.DeclarativeContainer):
   - [ ] All interfaces implement Protocol/ABC
   - [ ] Error handling covers all exception types
   - [ ] Configuration validated with Pydantic
-  - [ ] Secrets never logged or hardcoded
+  - [ ] regulatoryrets never logged or hardcoded
   - [ ] Metrics and logging instrumented
 
-- **Security Assessment**:
+- **security Assessment**:
   - [ ] TLS 1.3 enforced
-  - [ ] API keys in Secret Manager
+  - [ ] API keys in regulatoryret Manager
   - [ ] Input validation prevents injection
   - [ ] Rate limiting prevents abuse
 
@@ -844,9 +844,9 @@ class Container(containers.DeclarativeContainer):
 
 Document the business strategy, product requirements, system specifications, and engineering requirements that drive this atomic requirement.
 
-| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+| Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-NNN](../../BRD/BRD-NNN_...md) | [Business requirements title] | Sections 2.4, 4.x | Business objectives justifying this requirement |
+| BRD | [BRD-NNN](../../BRD/BRD-NNN_...md) | [Business requirements title] | sections 2.4, 4.x | Business objectives justifying this requirement |
 | PRD | [PRD-NNN](../../PRD/PRD-NNN_...md) | [Product requirements title] | Functional Requirements 4.x | Product features this requirement enables |
 | SYS | [SYS-NNN](../../SYS/SYS-NNN_...md) | [System requirements title] | System Requirements 3.x | System-level specification this implements |
 | EARS | [EARS-NNN](../../EARS/EARS-NNN_...md) | [Engineering requirements] | Event-driven/State-driven statements | Formal engineering requirement this satisfies |
@@ -900,7 +900,7 @@ Document the business strategy, product requirements, system specifications, and
 @ears: EARS-NNN:STATEMENT-ID
 @bdd: BDD-NNN:SCENARIO-ID
 @adr: ADR-NNN
-@sys: SYS-NNN:SECTION-ID
+@sys: SYS-NNN:regulatoryTION-ID
 ```
 
 **Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`

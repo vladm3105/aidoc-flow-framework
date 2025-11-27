@@ -207,7 +207,7 @@ REQ-075 → IMPL-075 → CTR-075 (Trade Event Schema) → SPEC-075 → TASKS-075
 - Duration: 6 weeks (3 phases)
 - Teams: 4 (agent dev, infrastructure, testing, docs)
 - Components: 8 (orchestrator + 7 strategy agents)
-- External: [EXTERNAL_SERVICE_GATEWAY] integration, [EXTERNAL_DATA_PROVIDER - e.g., Weather API, Stock Data API] API
+- External: [EXTERNAL_SERVICE_GATEWAY] integration, [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] API
 
 **IMPL Required**: Complex multi-phase project with cross-team coordination
 

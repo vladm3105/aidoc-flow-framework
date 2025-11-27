@@ -66,8 +66,8 @@ python scripts/generate_traceability_matrices.py --type iplan --output ai_dev_fl
 - `@sys: SYS-NNN:REQ-NNN` (System Requirements)
 - `@req: REQ-NNN` (Atomic Requirements)
 - `@impl: IMPL-NNN` (Implementation Plans - optional)
-- `@ctr: CTR-NNN:SECTION` (Contracts - optional)
-- `@spec: SPEC-NNN:SECTION` (Technical Specifications)
+- `@ctr: CTR-NNN:regulatoryTION` (Contracts - optional)
+- `@spec: SPEC-NNN:regulatoryTION` (Technical Specifications)
 - `@tasks: TASKS-NNN:PHASE-X.Y` (Code Generation Plans)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete tag-based workflow.
@@ -200,7 +200,7 @@ python scripts/generate_traceability_matrices.py \
 
 ---
 
-## 4. Required Tags Section
+## 4. Required Tags section
 
 **Layer 12 Cumulative Tagging Requirements**
 
@@ -217,7 +217,7 @@ All iplan documents MUST include these tags to maintain traceability chain:
 | @adr | 5 | Architecture Decisions | `@adr: ADR-NNN` | [✅/❌] |
 | @sys | 6 | System Requirements | `@sys: SYS-NNN:REQ-NNN` | [✅/❌] |
 | @req | 7 | Atomic Requirements | `@req: REQ-NNN` | [✅/❌] |
-| @spec | 10 | Technical Specifications | `@spec: SPEC-NNN:SECTION` | [✅/❌] |
+| @spec | 10 | Technical Specifications | `@spec: SPEC-NNN:regulatoryTION` | [✅/❌] |
 | @tasks | 11 | Code Generation Plans | `@tasks: TASKS-NNN:PHASE-X.Y` | [✅/❌] |
 
 ### 3.2 Optional Tags (Conditional)
@@ -225,7 +225,7 @@ All iplan documents MUST include these tags to maintain traceability chain:
 | Tag | Layer | Artifact Type | Format | Required If... |
 |-----|-------|---------------|--------|----------------|
 | @impl | 8 | Implementation Plans | `@impl: IMPL-NNN` | Project uses IMPL artifacts |
-| @ctr | 9 | Interface Contracts | `@ctr: CTR-NNN:SECTION` | Contracts defined in project |
+| @ctr | 9 | Interface Contracts | `@ctr: CTR-NNN:regulatoryTION` | Contracts defined in project |
 
 ### 3.3 Tag Format Validation
 
@@ -569,11 +569,11 @@ For each iplan document:
 ### 12.1 Updating This Matrix
 
 **When creating new iplan**:
-1. Add row to "Complete iplan Inventory" (Section 3)
-2. Add tag chain to "Complete Cumulative Tag Chain" (Section 4.1)
+1. Add row to "Complete iplan Inventory" (section 3)
+2. Add tag chain to "Complete Cumulative Tag Chain" (section 4.1)
 3. Validate all tags exist: `python scripts/validate_tags_against_docs.py`
-4. Update parent TASKS relationship (Section 4.2)
-5. Update tag coverage matrix (Section 6.2)
+4. Update parent TASKS relationship (section 4.2)
+5. Update tag coverage matrix (section 6.2)
 6. Run matrix generation script to auto-populate
 
 **When completing iplan**:
@@ -582,7 +582,7 @@ For each iplan document:
 3. Calculate variance
 4. Add downstream code and test files
 5. Verify test coverage metrics
-6. Update phase completion (Section 7.3)
+6. Update phase completion (section 7.3)
 
 **When tags are modified**:
 1. Re-run validation script
