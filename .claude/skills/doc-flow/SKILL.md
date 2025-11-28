@@ -285,6 +285,36 @@ Validation (Layer 15)
 - Bidirectional traceability matrices
 - Automated validation scripts
 
+### 5. Upstream Artifact Policy (CRITICAL)
+
+**⚠️ MANDATORY RULE**: Do NOT create missing upstream artifacts. Skip functionality instead.
+
+**Policy Statement**:
+If a required upstream artifact is missing, the downstream functionality **MUST NOT be implemented**. This enforces the SDD document hierarchy where every implementation must have proper business/product justification through the complete artifact chain.
+
+**Decision Rules**:
+
+| Situation | Action |
+|-----------|--------|
+| Upstream exists | Reference with exact document ID |
+| Upstream required but missing | **Skip that functionality** - do NOT implement |
+| Upstream optional and missing | Use `null` in traceability tag |
+| Upstream not applicable | Omit tag entirely |
+
+**Rationale**:
+- **Prevents orphaned code**: No implementation without business justification
+- **Enforces governance**: Changes must flow through proper channels
+- **Maintains audit trail**: Every feature traces to business need
+- **Reduces technical debt**: No undocumented "nice-to-have" features
+
+**When Upstream is Missing**:
+1. **Stop** - Do not proceed with implementation
+2. **Report** - Inform user which upstream artifact is missing
+3. **Advise** - Recommend creating upstream artifacts first through proper channels
+4. **Skip** - Move on to functionality that has complete upstream chain
+
+**Reference**: `ai_dev_flow/TRACEABILITY.md` - Section "Step 3: Decision Rules"
+
 ---
 
 ## Integration with Other Skills
@@ -464,13 +494,16 @@ python ai_dev_flow/scripts/generate_traceability_matrices.py --output docs/gener
 **Assistant**: "I'll guide you through the SDD workflow. Let me check what artifacts you have:
 
 **Current Status Check**:
-- Do you have a BRD documenting business requirements? [If no, use `doc-brd` skill]
-- Do you have a PRD with product requirements? [If no, use `doc-prd` skill]
-- Do you have EARS formal requirements? [If no, use `doc-ears` skill]
-- Do you have BDD test scenarios? [If no, use `doc-bdd` skill]
-- Do you have ADR architecture decisions? [If no, use `doc-adr` skill]
-- Do you have SYS system requirements? [If no, use `doc-sys` skill]
-- Do you have REQ atomic requirements? [If no, use `doc-req` skill]
+- Do you have a BRD documenting business requirements? [If no → **SKIP** this functionality]
+- Do you have a PRD with product requirements? [If no → **SKIP** this functionality]
+- Do you have EARS formal requirements? [If no → **SKIP** this functionality]
+- Do you have BDD test scenarios? [If no → **SKIP** this functionality]
+- Do you have ADR architecture decisions? [If no → **SKIP** this functionality]
+- Do you have SYS system requirements? [If no → **SKIP** this functionality]
+- Do you have REQ atomic requirements? [If no → **SKIP** this functionality]
+
+**⚠️ CRITICAL: Upstream Artifact Policy**:
+If ANY required upstream artifact is missing, **do NOT create it** and **do NOT implement the downstream functionality**. The SDD workflow enforces strict document hierarchy - functionality without proper business/product justification should not exist.
 
 **Next Steps**:
 Based on your current progress, I'll recommend the appropriate skill to use next. Each skill will guide you through creating that specific artifact type with proper templates, traceability, and validation."
