@@ -38,7 +38,7 @@ Before creating IMPL, read:
 3. **Template**: `ai_dev_flow/IMPL/IMPL-TEMPLATE.md`
 4. **Creation Rules**: `ai_dev_flow/IMPL/IMPL_CREATION_RULES.md` (refer to template if not available)
 5. **Validation Rules**: `ai_dev_flow/IMPL/IMPL_VALIDATION_RULES.md` (refer to template if not available)
-6. **Validation Script**: `./ai_dev_flow/scripts/validate_impl_template.sh` (under development - use template for manual validation)
+6. **Validation Script**: `./ai_dev_flow/scripts/validate_impl.sh`
 
 ## When to Use This Skill
 
@@ -74,27 +74,40 @@ Use `doc-impl` when:
 - Day 11-14: Testing and validation
 
 ### WHAT: Implementation Scope
-**Requirements**: REQ-risk-limits-001, REQ-risk-limits-002
+**Requirements**: REQ-data-validation-001, REQ-data-validation-002
 **Deliverables**:
-- Trade validation service
-- Position limit checker
+- Data validation service
+- Data processing module
 - Error handling middleware
 - Unit tests (>80% coverage)
 - Integration tests
 ```
 
-### 2. Required Sections
+### 2. Required Sections (4-PART Structure)
 
 **Document Control** (MANDATORY - First section before all numbered sections)
 
-**Core Sections**:
-1. **Implementation Overview**: Summary of what will be implemented
-2. **WHO-WHEN-WHAT**: Resource assignments, timeline, scope
-3. **Technical Approach**: High-level implementation strategy
-4. **Dependencies**: External dependencies, blockers
-5. **Risk Assessment**: Implementation risks and mitigations
-6. **Testing Approach**: Testing strategy overview
-7. **Traceability**: Section 7 format with cumulative tags
+**4-PART Structure**:
+
+**PART 1: Project Context and Strategy**
+- 1.1 Overview: What system/feature is being implemented
+- 1.2 Business Objectives: Requirements satisfied, success criteria
+- 1.3 Scope: In-scope and out-of-scope boundaries
+
+**PART 2: Implementation Strategy (WHO-WHEN-WHAT)**
+- 2.1 Phases and Milestones: Implementation timeline
+- 2.2 Team and Responsibilities (WHO): Team assignments
+- 2.3 Deliverables (WHAT): Per-phase outputs
+- 2.4 Dependencies and Blockers
+
+**PART 3: Risk Management**
+- 3.1 Risk Assessment: Risks with likelihood, impact, mitigation
+- 3.2 Contingency Plans: Backup strategies
+
+**PART 4: Traceability**
+- 4.1 Upstream Sources: Links to BRD, PRD, EARS, BDD, ADR, SYS, REQ
+- 4.2 Downstream Artifacts: CTR, SPEC, TASKS to be created
+- 4.3 Cumulative Tags: @brd through @req (7 tags)
 
 ### 3. Technical Approach Section
 
@@ -128,7 +141,7 @@ Use `doc-impl` when:
 ## Dependencies
 
 ### Upstream Dependencies
-- REQ-risk-limits-001: Position validation requirements
+- REQ-data-validation-001: Data validation requirements
 - ADR-033: Database technology decision
 - ADR-045: API design pattern
 
@@ -174,7 +187,7 @@ Use `doc-impl` when:
 @bdd: BDD-001:scenario-validation
 @adr: ADR-033, ADR-045
 @sys: SYS-001:FR-001
-@req: REQ-risk-limits-001, REQ-risk-limits-002
+@req: REQ-data-validation-001, REQ-data-validation-002
 ```
 
 **Upstream Sources**:
@@ -184,7 +197,7 @@ Use `doc-impl` when:
 - [BDD-001](../BDD/BDD-001_limits.feature)
 - [ADR-033](../ADR/ADR-033_database.md#ADR-033)
 - [SYS-001](../SYS/SYS-001_order.md#SYS-001)
-- [REQ-risk-limits-001](../REQ/REQ-risk-limits-001_*.md)
+- [REQ-data-validation-001](../REQ/REQ-data-validation-001_*.md)
 
 **Downstream Artifacts**:
 - CTR-NNN (to be created) - Data contracts
@@ -266,7 +279,7 @@ Include all 7 upstream tags (@brd through @req).
 ### Step 12: Validate IMPL
 
 ```bash
-./ai_dev_flow/scripts/validate_impl_template.sh ai_dev_flow/IMPL/IMPL-001_*.md
+./ai_dev_flow/scripts/validate_impl.sh ai_dev_flow/IMPL/IMPL-001_*.md
 
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact IMPL-001 --expected-layers brd,prd,ears,bdd,adr,sys,req --strict
 ```
@@ -345,15 +358,13 @@ The SPEC will:
 
 **Tags Required**: @brd through @req (7 tags)
 
-**Format**: WHO-WHEN-WHAT framework
+**Format**: 4-PART Structure
 
-**Key Sections**:
-- WHO: Team assignments
-- WHEN: Timeline and milestones
-- WHAT: Implementation scope
-- Technical approach
-- Dependencies and blockers
-- Risk assessment
+**Key Parts**:
+- **PART 1**: Project Context and Strategy (Overview, Business Objectives, Scope)
+- **PART 2**: Implementation Strategy - WHO-WHEN-WHAT (Phases, Team, Deliverables)
+- **PART 3**: Risk Management (Assessment, Contingency)
+- **PART 4**: Traceability (Upstream, Downstream, Tags)
 
 **Optional**: Skip this layer if implementation approach is straightforward
 

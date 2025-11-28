@@ -451,9 +451,9 @@ graph TD
 
 ---
 
-## Appendix A: Matrix Maintenance
+## 19. Appendix A: Matrix Maintenance
 
-### Automated Generation
+### 19.1 Automated Generation
 ```bash
 python ../scripts/generate_traceability_matrix.py \
   --type REQ \

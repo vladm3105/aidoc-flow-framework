@@ -410,34 +410,34 @@ graph TD
 
 ## 14. References
 
-### Internal Documentation
+### 14.1 Internal Documentation
 - **BRD Index**: [BRD-000_index.md](BRD-000_index.md)
 - **BRD Template**: [BRD-TEMPLATE.md](BRD-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
 - **SDD Workflow Guide**: [../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
-### External Standards
+### 14.2 External Standards
 - ISO/IEC/IEEE 29148:2018 - Systems and software engineering requirements
 - BABOK (Business Analysis Body of Knowledge) - Business Requirements Standards
 - PMI Business Analysis for Practitioners Guide
 
-### Related Matrices
+### 14.3 Related Matrices
 - [PRD Traceability Matrix](../PRD/PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 - [EARS Traceability Matrix](../EARS/EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 - [ADR Traceability Matrix](../ADR/ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 
-## Appendix A: Matrix Maintenance Guidelines
+## 15. Appendix A: Matrix Maintenance Guidelines
 
-### When to Update This Matrix
+### 15.1 When to Update This Matrix
 1. **After Creating/Updating BRDs**: Add new entries within 1 business day
 2. **Milestone Completions**: Full matrix review and validation
 3. **Quarterly Reviews**: Validate all links and coverage metrics
 4. **Strategic Planning Cycles**: Align BRDs with updated business strategy
 
-### Automated Generation
+### 15.2 Automated Generation
 ```bash
 # Generate matrix from BRD directory
 python ../scripts/generate_traceability_matrix.py \
@@ -457,7 +457,7 @@ python ../scripts/update_traceability_matrix.py \
   --preserve-annotations
 ```
 
-### Quality Checklist
+### 15.3 Quality Checklist
 - [ ] All BRD documents included in inventory
 - [ ] Upstream sources documented for each BRD
 - [ ] Downstream artifacts mapped (PRD, EARS, ADR, BDD)

@@ -449,9 +449,9 @@ graph TD
 
 ---
 
-## Appendix A: Matrix Maintenance
+## 14. Appendix A: Matrix Maintenance
 
-### Automated Generation
+### 14.1 Automated Generation
 ```bash
 python ../scripts/generate_traceability_matrix.py \
   --type SPEC \
@@ -461,7 +461,7 @@ python ../scripts/generate_traceability_matrix.py \
   --validate-yaml
 ```
 
-### Quality Checklist
+### 14.2 Quality Checklist
 - [ ] All SPEC documents are valid YAML
 - [ ] Upstream sources documented (REQ, ADR, CTR)
 - [ ] Downstream artifacts mapped (TASKS, Code, Tests)

@@ -38,7 +38,7 @@ Before creating CTR, read:
 3. **Template**: `ai_dev_flow/CTR/CTR-TEMPLATE.md` and `CTR-TEMPLATE.yaml`
 4. **Creation Rules**: `ai_dev_flow/CTR/CTR_CREATION_RULES.md`
 5. **Validation Rules**: `ai_dev_flow/CTR/CTR_VALIDATION_RULES.md`
-6. **Validation Script**: `./ai_dev_flow/scripts/validate_ctr_template.sh` (under development - use template for manual validation)
+6. **Validation Script**: `./ai_dev_flow/scripts/validate_ctr.sh`
 
 ## When to Use This Skill
 
@@ -71,8 +71,8 @@ Use `doc-ctr` when:
 
 **Example**:
 ```
-ai_dev_flow/CTR/CTR-001_trade_validation.md
-ai_dev_flow/CTR/CTR-001_trade_validation.yaml
+ai_dev_flow/CTR/CTR-001_data_validation.md
+ai_dev_flow/CTR/CTR-001_data_validation.yaml
 ```
 
 ### 2. Required Sections (Markdown File)
@@ -94,21 +94,21 @@ ai_dev_flow/CTR/CTR-001_trade_validation.yaml
 ```yaml
 openapi: 3.0.3
 info:
-  title: Trade Validation API
+  title: Data Validation API
   version: 1.0.0
-  description: Contract for trade order validation
+  description: Contract for data validation
 
 paths:
-  /api/v1/trades/validate:
+  /api/v1/data/validate:
     post:
-      summary: Validate trade order
-      operationId: validateTradeOrder
+      summary: Validate data record
+      operationId: validateDataRecord
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TradeOrderRequest'
+              $ref: '#/components/schemas/DataRequest'
       responses:
         '200':
           description: Validation successful
@@ -125,27 +125,25 @@ paths:
 
 components:
   schemas:
-    TradeOrderRequest:
+    DataRequest:
       type: object
       required:
-        - symbol
-        - quantity
-        - price
+        - record_type
+        - record_id
+        - data
         - account_id
       properties:
-        symbol:
+        record_type:
           type: string
-          pattern: ^[A-Z]{1,5}$
-          example: "SPY"
-        quantity:
-          type: integer
-          minimum: 1
-          maximum: 10000
-          example: 100
-        price:
-          type: number
-          minimum: 0.01
-          example: 450.25
+          pattern: ^[A-Z]{1,10}$
+          example: "METRIC"
+        record_id:
+          type: string
+          format: uuid
+          example: "abc123"
+        data:
+          type: object
+          example: {}
         account_id:
           type: string
           format: uuid
@@ -190,41 +188,41 @@ components:
 **JSON Schema Format** (for data models):
 ```yaml
 $schema: "http://json-schema.org/draft-07/schema#"
-title: PositionLimitConfig
-description: Configuration schema for position limits
+title: DataProcessingConfig
+description: Configuration schema for data processing
 
 type: object
 required:
-  - max_delta
-  - max_gamma
+  - max_batch_size
+  - timeout_seconds
   - check_frequency
 
 properties:
-  max_delta:
-    type: number
-    minimum: 0
-    maximum: 1.0
-    description: Maximum portfolio delta (absolute value)
-    example: 0.50
+  max_batch_size:
+    type: integer
+    minimum: 1
+    maximum: 10000
+    description: Maximum records per batch
+    example: 1000
 
-  max_gamma:
-    type: number
-    minimum: 0
-    maximum: 1.0
-    description: Maximum portfolio gamma (absolute value)
-    example: 0.30
+  timeout_seconds:
+    type: integer
+    minimum: 1
+    maximum: 300
+    description: Processing timeout in seconds
+    example: 60
 
   check_frequency:
     type: string
     enum: ["realtime", "1min", "5min", "15min"]
-    description: How often to check limits
+    description: How often to check processing status
     example: "1min"
 
   alert_threshold:
     type: number
     minimum: 0
     maximum: 1.0
-    description: Alert when limit usage exceeds this fraction
+    description: Alert when queue depth exceeds this fraction
     default: 0.80
     example: 0.80
 ```
@@ -240,9 +238,9 @@ properties:
 **Request**:
 ```json
 {
-  "symbol": "SPY",
-  "quantity": 100,
-  "price": 450.25,
+  "record_type": "METRIC",
+  "record_id": "abc123",
+  "data": {"value": 100},
   "account_id": "123e4567-e89b-12d3-a456-426614174000"
 }
 ```
@@ -256,14 +254,14 @@ properties:
 }
 ```
 
-### Example 2: Invalid Symbol
+### Example 2: Invalid Record Type
 
 **Request**:
 ```json
 {
-  "symbol": "INVALID",
-  "quantity": 100,
-  "price": 450.25,
+  "record_type": "invalid",
+  "record_id": "abc123",
+  "data": {"value": 100},
   "account_id": "123e4567-e89b-12d3-a456-426614174000"
 }
 ```
@@ -271,11 +269,11 @@ properties:
 **Response** (400 Bad Request):
 ```json
 {
-  "error_code": "INVALID_SYMBOL",
-  "message": "Symbol 'INVALID' not found in approved list",
+  "error_code": "INVALID_RECORD_TYPE",
+  "message": "Record type 'invalid' not found in approved list",
   "details": {
-    "symbol": "INVALID",
-    "approved_exchanges": ["NYSE", "NASDAQ"]
+    "record_type": "invalid",
+    "approved_types": ["METRIC", "EVENT", "LOG"]
   }
 }
 ```
@@ -294,12 +292,12 @@ properties:
 ```yaml
 openapi: 3.0.3
 info:
-  title: Trade Validation API
+  title: Data Validation API
   version: 2.1.0  # Major.Minor.Patch
   description: |
     Version 2.1.0 (2025-01-15)
     - Added: optional 'warnings' field in response (minor)
-    - Fixed: validation error for edge case prices (patch)
+    - Fixed: validation error for edge case data (patch)
 
     Breaking changes from v1.x:
     - Changed: account_id now requires UUID format (was string)
@@ -323,7 +321,7 @@ info:
 @bdd: BDD-001:scenario-validation
 @adr: ADR-033, ADR-045
 @sys: SYS-001:FR-001
-@req: REQ-risk-limits-001:section-3
+@req: REQ-data-validation-001:section-3
 @impl: IMPL-001:technical-approach
 ```
 
@@ -335,7 +333,7 @@ info:
 @bdd: BDD-001:scenario-validation
 @adr: ADR-033, ADR-045
 @sys: SYS-001:FR-001
-@req: REQ-risk-limits-001:section-3
+@req: REQ-data-validation-001:section-3
 ```
 
 ## Upstream/Downstream Artifacts
@@ -371,8 +369,8 @@ Check `ai_dev_flow/CTR/` for next available ID number.
 **YAML file**: `ai_dev_flow/CTR/CTR-NNN_{slug}.yaml`
 
 **Example**:
-- `ai_dev_flow/CTR/CTR-001_trade_validation.md`
-- `ai_dev_flow/CTR/CTR-001_trade_validation.yaml`
+- `ai_dev_flow/CTR/CTR-001_data_validation.md`
+- `ai_dev_flow/CTR/CTR-001_data_validation.yaml`
 
 ### Step 4: Fill Document Control Section (Markdown)
 

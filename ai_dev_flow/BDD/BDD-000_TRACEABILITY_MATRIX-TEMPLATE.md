@@ -458,27 +458,27 @@ graph TD
 
 ## 13. References
 
-### Internal Documentation
+### 13.1 Internal Documentation
 - **BDD Index**: [BDD-000_index.md](BDD-000_index.md)
 - **BDD Template**: [BDD-TEMPLATE.feature](BDD-TEMPLATE.feature)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
 
-### BDD Standards
+### 13.2 BDD Standards
 - Gherkin Reference Documentation
 - Cucumber Best Practices
 - BDD Testing Patterns
 
-### Related Matrices
+### 13.3 Related Matrices
 - [EARS Traceability Matrix](../EARS/EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 - [PRD Traceability Matrix](../PRD/PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 - [REQ Traceability Matrix](../REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 
-## Appendix A: Matrix Maintenance Guidelines
+## 14. Appendix A: Matrix Maintenance Guidelines
 
-### Automated Generation
+### 14.1 Automated Generation
 ```bash
 # Generate matrix from BDD directory
 python ../scripts/generate_traceability_matrix.py \
@@ -498,7 +498,7 @@ python ../scripts/update_traceability_matrix.py \
   --sync-test-results
 ```
 
-### Quality Checklist
+### 14.2 Quality Checklist
 - [ ] All BDD files included in inventory
 - [ ] Upstream sources documented (EARS, PRD, REQ)
 - [ ] Downstream test implementations mapped

@@ -435,27 +435,27 @@ graph TD
 
 ## 13. References
 
-### Internal Documentation
+### 13.1 Internal Documentation
 - **ADR Index**: [ADR-000_index.md](ADR-000_index.md)
 - **ADR Template**: [ADR-TEMPLATE.md](ADR-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
 
-### ADR Standards
+### 13.2 ADR Standards
 - Michael Nygard's ADR Template
 - ThoughtWorks Technology Radar
 - Architecture Decision Records GitHub Organization
 
-### Related Matrices
+### 13.3 Related Matrices
 - [SYS Traceability Matrix](../SYS/SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 - [REQ Traceability Matrix](../REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 - [SPEC Traceability Matrix](../SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 
-## Appendix A: Matrix Maintenance Guidelines
+## 14. Appendix A: Matrix Maintenance Guidelines
 
-### Automated Generation
+### 14.1 Automated Generation
 ```bash
 # Generate matrix from ADR directory
 python ../scripts/generate_traceability_matrix.py \
@@ -475,7 +475,7 @@ python ../scripts/update_traceability_matrix.py \
   --preserve-annotations
 ```
 
-### Quality Checklist
+### 14.2 Quality Checklist
 - [ ] All ADR documents included in inventory
 - [ ] Upstream sources documented (BRD, PRD, EARS, BDD)
 - [ ] Downstream artifacts mapped (SYS, REQ, SPEC, IMPL)

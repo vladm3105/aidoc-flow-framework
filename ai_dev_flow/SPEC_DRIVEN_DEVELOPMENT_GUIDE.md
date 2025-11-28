@@ -1692,6 +1692,8 @@ performance:
 **Result**: SPEC is 95% complete from REQ V2 content, requiring only operational monitoring details
 
 ## Validation Commands
+
+### Core Validation Scripts
 - **REQ V2 Validation**: `python scripts/validate_req_spec_readiness.py --req-file REQ/api/REQ-001.md`
   - Checks for interface definitions with type signatures
   - Validates schema completeness (JSON Schema/Pydantic)
@@ -1702,6 +1704,18 @@ performance:
   - Enhanced to validate REQ V2 mandatory sections
 - Check links (repo-level tools if available): `python scripts/check_broken_references.py`
 - Generate matrices (if available): `python scripts/complete_traceability_matrix.py`
+
+### Artifact-Specific Validation Scripts
+```bash
+# Document structure validation (available scripts)
+bash scripts/validate_brd_template.sh docs/BRD/BRD-001.md    # BRD template compliance
+bash scripts/validate_req_template.sh docs/REQ/REQ-001.md    # REQ 12-section format
+bash scripts/validate_ctr.sh docs/CTR/CTR-001_*.md           # CTR dual-file format (.md + .yaml)
+bash scripts/validate_impl.sh docs/IMPL/IMPL-001_*.md        # IMPL 4-PART structure
+bash scripts/validate_tasks.sh docs/TASKS/TASKS-001_*.md     # TASKS format including Section 8
+bash scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md     # IPLAN session-based execution plans
+bash scripts/validate_icon.sh docs/ICON/ICON-001_*.md        # ICON Implementation Contracts
+```
 
 ## Traceability Matrix Management (MANDATORY)
 

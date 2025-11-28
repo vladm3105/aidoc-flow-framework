@@ -134,7 +134,7 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 ```markdown
 ## 5.1 Event-Driven Requirements
 
-### EARS-012:EVENT-001
+### 5.1 EARS-012:EVENT-001
 **WHEN** user selects "Place Order" button
 **THE** system **SHALL** validate order parameters
 **WITHIN** 100 milliseconds
@@ -145,7 +145,7 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 - Downstream: BDD-015:scenario-place-order (Test scenario)
 - Downstream: REQ-045 (Validation logic requirement)
 
-### EARS-012:EVENT-002
+### 5.2 EARS-012:EVENT-002
 **WHEN** order validation succeeds
 **THE** system **SHALL** execute the trade
 **WITHIN** 2 seconds
@@ -485,19 +485,19 @@ graph TD
 
 ## 14. References
 
-### Internal Documentation
+### 14.1 Internal Documentation
 - **EARS Index**: [EARS-000_index.md](EARS-000_index.md)
 - **EARS Template**: [EARS-TEMPLATE.md](EARS-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
 - **SDD Workflow Guide**: [../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
-### EARS Standards and Guides
+### 14.2 EARS Standards and Guides
 - EARS (Easy Approach to Requirements Syntax) - Alistair Mavin et al.
 - ISO/IEC/IEEE 29148:2018 - Requirements engineering
 - INCOSE Guide to Writing Requirements
 
-### Related Matrices
+### 14.3 Related Matrices
 - [PRD Traceability Matrix](../PRD/PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 - [BDD Traceability Matrix](../BDD/BDD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 - [REQ Traceability Matrix](../REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md)
@@ -505,15 +505,15 @@ graph TD
 
 ---
 
-## Appendix A: Matrix Maintenance Guidelines
+## 15. Appendix A: Matrix Maintenance Guidelines
 
-### When to Update This Matrix
+### 15.1 When to Update This Matrix
 1. **After Creating/Updating EARS**: Add new entries within 1 business day
 2. **BDD Scenario Creation**: Link new test scenarios to EARS statements
 3. **Requirements Refinement**: Update when clarifying ambiguous statements
 4. **Validation Reviews**: Full matrix review before testing phases
 
-### Automated Generation
+### 15.2 Automated Generation
 ```bash
 # Generate matrix from EARS directory
 python ../scripts/generate_traceability_matrix.py \
@@ -534,7 +534,7 @@ python ../scripts/update_traceability_matrix.py \
   --preserve-annotations
 ```
 
-### Quality Checklist
+### 15.3 Quality Checklist
 - [ ] All EARS documents included in inventory
 - [ ] Upstream PRD/BRD sources documented for each EARS
 - [ ] Downstream artifacts mapped (BDD, REQ, ADR, SYS)

@@ -186,7 +186,7 @@ request submission Service
 
 Handles trade request submission with validation and execution.
 
-## Traceability Tags
+## 3. Traceability Tags
 
 @brd: BRD-009:FR-015, BRD-009:NFR-006
 @prd: PRD-016:FEATURE-003
@@ -214,7 +214,7 @@ Handles trade request submission with validation and execution.
 """
 Test suite for request submission Service
 
-## Traceability Tags
+## 4. Traceability Tags
 
 @brd: BRD-009:FR-015, BRD-009:NFR-006
 @prd: PRD-016:FEATURE-003
@@ -381,7 +381,7 @@ Code (tags: @brd through @tasks = 9 tags)
 
 ## 3. End-to-End Traceability Examples
 
-### Example 1: Complete Feature Implementation Chain
+### 3.1 Example 1: Complete Feature Implementation Chain
 
 ```
 Strategy: [Strategic Document section X.Y]
@@ -419,7 +419,7 @@ Production: Deployed v1.2.0 (YYYY-MM-DD)
 
 **Status**: ✅ Complete end-to-end traceability
 
-### Example 2: Partial Implementation Chain (Gap Identification)
+### 3.2 Example 2: Partial Implementation Chain (Gap Identification)
 
 ```
 Strategy: [Market Analysis Report section 4.3]
@@ -457,7 +457,7 @@ Production: ⏳ Not deployed
 
 **Status**: 🔴 Incomplete chain with multiple gaps
 
-### Example 3: Interface-Heavy Implementation
+### 3.3 Example 3: Interface-Heavy Implementation
 
 ```
 BRD-012: External data provider integration
@@ -804,7 +804,7 @@ python scripts/validate_requirement_ids.py \
 
 ## 9. References
 
-### Internal Documentation
+### 9.1 Internal Documentation
 - **Individual Matrix Templates**:
   - [BRD Matrix](BRD/BRD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
   - [PRD Matrix](PRD/PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
@@ -823,13 +823,13 @@ python scripts/validate_requirement_ids.py \
   - [TRACEABILITY.md](TRACEABILITY.md)
   - [index.md - Traceability Flow](index.md#traceability-flow)
 
-### External Standards
+### 9.2 External Standards
 - ISO/IEC/IEEE 29148:2018 - Systems and software engineering requirements
 - ISO/IEC/IEEE 15288:2023 - Systems engineering life cycle processes
 - CMMI for Development - Requirements Development and Management
 - Agile Traceability Best Practices
 
-### Traceability Tools
+### 9.3 Traceability Tools
 - Python validation scripts in `/scripts/` directory
 - Automated matrix generation tools
 - CI/CD pipeline integration
@@ -838,7 +838,7 @@ python scripts/validate_requirement_ids.py \
 
 ## 10. Appendix A: Matrix Usage Scenarios
 
-### Scenario 1: New Feature Development
+### 10.1 Scenario 1: New Feature Development
 1. **Start**: Strategic goal identified
 2. **Create**: BRD → PRD → EARS → BDD
 3. **Design**: ADR → SYS → REQ
@@ -847,7 +847,7 @@ python scripts/validate_requirement_ids.py \
 6. **Validate**: BDD scenarios → Production
 7. **Update Matrix**: Track all artifacts created
 
-### Scenario 2: Production Issue Investigation
+### 10.2 Scenario 2: Production Issue Investigation
 1. **Identify**: Issue in production code
 2. **Trace Back**: Code → TASKS → SPEC → REQ → EARS → PRD → BRD
 3. **Analyze**: Determine if issue is:
@@ -861,7 +861,7 @@ python scripts/validate_requirement_ids.py \
 6. **Remediate**: Update downstream artifacts
 7. **Validate**: Re-run BDD scenarios
 
-### Scenario 3: Requirements Change Request
+### 10.3 Scenario 3: Requirements Change Request
 1. **Change Request**: Update to EARS-012
 2. **Impact Analysis**: Use matrix to find:
    - Upstream: Which PRD/BRD drives this requirement?
@@ -872,7 +872,7 @@ python scripts/validate_requirement_ids.py \
 6. **Validate**: Run affected BDD scenarios
 7. **Update Matrix**: Reflect changes
 
-### Scenario 4: Architecture Decision Update
+### 10.4 Scenario 4: Architecture Decision Update
 1. **New ADR**: ADR-050 supersedes ADR-033
 2. **Find Affected**:
    - Upstream: Which BRD/PRD/EARS drove ADR-033?

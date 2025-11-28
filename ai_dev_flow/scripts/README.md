@@ -289,6 +289,105 @@ ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md:966
 
 ---
 
+## Bash Validation Scripts
+
+The following bash scripts validate artifact-specific document structure and compliance:
+
+### 6. validate_brd_template.sh
+
+Validates Business Requirements Document (BRD) structure and template compliance.
+
+**Usage:**
+```bash
+./scripts/validate_brd_template.sh docs/BRD/BRD-001_*.md
+```
+
+### 7. validate_req_template.sh
+
+Validates REQ documents against the 12-section REQ v3.0 format.
+
+**Usage:**
+```bash
+./scripts/validate_req_template.sh docs/REQ/REQ-001_*.md
+```
+
+### 8. validate_ctr.sh
+
+Validates CTR (Contract) documents for dual-file format compliance (.md + .yaml).
+
+**Usage:**
+```bash
+./scripts/validate_ctr.sh docs/CTR/CTR-001_*.md
+```
+
+**Features:**
+- Verifies both .md and .yaml files exist
+- Validates YAML syntax
+- Checks OpenAPI/JSON Schema compliance
+- Validates cross-references between files
+
+### 9. validate_impl.sh
+
+Validates IMPL documents for 4-PART structure compliance.
+
+**Usage:**
+```bash
+./scripts/validate_impl.sh docs/IMPL/IMPL-001_*.md
+```
+
+**Validates:**
+- PART 1: Project Context
+- PART 2: Implementation Strategy
+- PART 3: Risk Management
+- PART 4: Traceability
+
+### 10. validate_tasks.sh
+
+Validates TASKS documents including Section 8 Implementation Contracts.
+
+**Usage:**
+```bash
+./scripts/validate_tasks.sh docs/TASKS/TASKS-001_*.md
+```
+
+**Features:**
+- Validates 8-section TASKS format
+- Checks Section 8 Implementation Contracts structure
+- Verifies `@icon` tag integration
+- Validates cumulative tagging hierarchy
+
+### 11. validate_iplan.sh
+
+Validates IPLAN (Implementation Plan) session-based execution plans.
+
+**Usage:**
+```bash
+./scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md
+```
+
+**Features:**
+- Validates timestamp-based filename format
+- Checks session structure
+- Verifies bash command syntax
+- Validates cumulative tagging (Layers 1-11)
+
+### 12. validate_icon.sh
+
+Validates ICON (Implementation Contracts) documents.
+
+**Usage:**
+```bash
+./scripts/validate_icon.sh docs/ICON/ICON-001_*.md
+```
+
+**Features:**
+- Validates contract type definitions
+- Checks provider/consumer documentation
+- Verifies protocol interface syntax
+- Validates `@icon` tag references
+
+---
+
 ## Workflow Integration
 
 ### Typical Workflow

@@ -15,13 +15,13 @@ custom_fields:
 
 # Traceability Matrix Template Completion Guide
 
-## Status Summary
+## 1. Status Summary
 
 **Completion**: 13 of 13 matrix templates updated with cumulative tagging sections (100% complete) ✅
 
 **Phase 3 Status**: COMPLETE - All traceability matrix templates now have cumulative tagging sections
 
-## Completed Templates
+## 2. Completed Templates
 
 ### ✅ Complete Templates (13/13)
 
@@ -90,11 +90,11 @@ custom_fields:
     - Tag count: 9-11
     - Session-specific implementation plans
 
-## Remaining Templates
+## 3. Remaining Templates
 
 ✅ **NONE** - All 13 templates now complete with cumulative tagging sections!
 
-## Established Pattern
+## 4. Established Pattern
 
 ### section Structure
 
@@ -147,9 +147,9 @@ After adding section 2 (Required Tags), all subsequent sections are renumbered:
 - Original section 3 → section 4
 - ... and so on
 
-## Completion Instructions
+## 3. Completion Instructions
 
-### For Each Remaining Template:
+### 3.1 For Each Remaining Template:
 
 1. **Read the existing template**
    ```bash
@@ -174,7 +174,7 @@ After adding section 2 (Required Tags), all subsequent sections are renumbered:
    - Individual commit per template or batch commit
    - Reference this guide in commit messages
 
-### Example Tag Requirements by Layer
+### 3.2 Example Tag Requirements by Layer
 
 ```
 Layer 1 (BRD): None (0 tags)
@@ -191,7 +191,7 @@ Layer 11 (TASKS): @brd through @spec (8-10 tags)
 Layer 12 (IPLAN): @brd through @tasks (9-11 tags)
 ```
 
-### Validation Commands Template
+### 3.3 Validation Commands Template
 
 ```bash
 # Find all [ARTIFACT]s and their upstream tags
@@ -209,7 +209,7 @@ python scripts/generate_traceability_matrices.py \
   --show-coverage
 ```
 
-## References
+## 4. References
 
 - **Core Documentation**:
   - [TRACEABILITY.md](TRACEABILITY.md#cumulative-tagging-hierarchy) - Cumulative tagging hierarchy specification
@@ -224,7 +224,7 @@ python scripts/generate_traceability_matrices.py \
   - Complex (6 tags): REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md
   - YAML (7-9 tags): SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md
 
-## Completion Summary
+## 5. Completion Summary
 
 ✅ **Phase 3 Complete**: All 13 traceability matrix templates updated with cumulative tagging sections
 

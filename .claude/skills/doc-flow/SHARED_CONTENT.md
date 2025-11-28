@@ -36,6 +36,7 @@ This document contains standards and guidelines shared across all document artif
 - SPEC: `SPEC/SPEC-NNN_{slug}.yaml` or `SPEC-NNN-YY_{slug}.yaml` (Technical Specifications) - **Location: docs/SPEC/**
 - TASKS: `TASKS/TASKS-NNN_{slug}.md` or `TASKS-NNN-YY_{slug}.md` (Code Generation Plans) - **Location: docs/TASKS/**
 - IPLAN: `IPLAN/IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md` (Implementation Plans - session-based) - **Location: docs/IPLAN/**
+- ICON: `ICON/ICON-NNN_{slug}.md` (Implementation Contracts) - **Location: docs/ICON/**
 
 ### ID Format Rules
 
@@ -175,6 +176,7 @@ Each artifact layer must include traceability tags from ALL upstream artifact la
 @spec: SPEC-018
 @tasks: TASKS-015
 @iplan: IPLAN-001  # Use ID only (IPLAN-NNN), NOT full filename with timestamp
+@icon: TASKS-001:ContractName  # Implementation Contract (optional, Layer 11)
 ```
 
 ### Format Rules
@@ -242,22 +244,28 @@ Before creating ANY artifact, consult:
 2. **Validation Rules**: `ai_dev_flow/{TYPE}/{TYPE}_VALIDATION_RULES.md` - Quality validation requirements
 3. **Template**: `ai_dev_flow/{TYPE}/{TYPE}-TEMPLATE.{ext}` - Starting structure
 
-**Available for artifact types**: BRD, PRD, EARS, BDD, ADR, SYS, REQ, SPEC
+**Available for artifact types**: BRD, PRD, EARS, BDD, ADR, SYS, REQ, SPEC, IMPL, CTR, TASKS, IPLAN, ICON
 
-**Note**: IMPL, CTR, TASKS, and IPLAN may reference creation/validation rules files in their Prerequisites sections. If these files do not exist yet, refer to the template and SHARED_CONTENT.md for guidance.
+**Note**: All artifact types have creation/validation rules files in their respective `ai_dev_flow/{TYPE}/` directories. Consult `{TYPE}_CREATION_RULES.md` and `{TYPE}_VALIDATION_RULES.md` for authoritative guidance.
 
 ### Validation Script Status
 
 **Available Scripts**:
 - BRD: `./ai_dev_flow/scripts/validate_brd_template.sh` ✓
-- ADR: `./ai_dev_flow/scripts/validate_adr_template.sh` ✓
-- REQ: `./ai_dev_flow/scripts/validate_req_template_v3.sh` ✓
+- REQ: `./ai_dev_flow/scripts/validate_req_template.sh` ✓
+- CTR: `./ai_dev_flow/scripts/validate_ctr.sh` ✓
+- IMPL: `./ai_dev_flow/scripts/validate_impl.sh` ✓
+- TASKS: `./ai_dev_flow/scripts/validate_tasks.sh` ✓
+- IPLAN: `./ai_dev_flow/scripts/validate_iplan.sh` ✓
+- ICON: `./ai_dev_flow/scripts/validate_icon.sh` ✓
 
 **Under Development**:
-- PRD: `./ai_dev_flow/scripts/validate_prd_template.sh` (planned)
-- EARS: `./ai_dev_flow/scripts/validate_ears_template.sh` (planned)
-- IMPL: `./ai_dev_flow/scripts/validate_impl_template.sh` (planned)
-- CTR: `./ai_dev_flow/scripts/validate_ctr_template.sh` (planned)
+- PRD: `./ai_dev_flow/scripts/validate_prd.sh` (planned)
+- EARS: `./ai_dev_flow/scripts/validate_ears.sh` (planned)
+- BDD: `./ai_dev_flow/scripts/validate_bdd.sh` (planned)
+- ADR: `./ai_dev_flow/scripts/validate_adr.sh` (planned)
+- SYS: `./ai_dev_flow/scripts/validate_sys.sh` (planned)
+- SPEC: `./ai_dev_flow/scripts/validate_spec.sh` (planned)
 
 **Note**: If validation script not available, use template and SHARED_CONTENT.md for manual validation.
 

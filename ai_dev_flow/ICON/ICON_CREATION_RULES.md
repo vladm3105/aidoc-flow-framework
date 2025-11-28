@@ -261,12 +261,113 @@ Decision framework for when to create standalone ICON files versus embedding imp
 
 ---
 
+## Enforcement Mechanisms
+
+### Validation Gates
+
+| Gate | Timing | Script | Failure Action |
+|------|--------|--------|----------------|
+| Pre-Flight | Before ICON creation | `preflight_icon_creation.sh` | Block creation, fix TASKS first |
+| Post-Creation | After section 7 complete | `validate_icon_complete.sh` | Block "active" status |
+| Integration | After TASKS updates | `validate_icon_integration.sh` | Block merge to main branch |
+
+### Mandatory Validation Workflow
+
+```mermaid
+graph TD
+    A[Identify Need for ICON] --> B{Run Pre-Flight Script}
+    B -->|Pass| C[Create ICON-XXX.md]
+    B -->|Fail| Z[Fix TASKS Files]
+    Z --> B
+    C --> D[Complete Sections 1-7]
+    D --> E{Run Post-Creation Script}
+    E -->|Pass| F[Update Provider TASKS 8.1]
+    E -->|Fail| Y[Fix Missing Sections]
+    Y --> E
+    F --> G[Update N Consumer TASKS 8.2]
+    G --> H[Update README.md]
+    H --> I{Run Integration Script}
+    I -->|Pass| J[Mark development_status: active]
+    I -->|Fail| X[Fix Integration Issues]
+    X --> I
+```
+
+### Validation Script Requirements
+
+**Pre-Flight Script** (`scripts/preflight_icon_creation.sh`):
+- Accepts: `ICON-XXX` and `TASKS-XXX` (provider)
+- Validates:
+  - Provider TASKS exists with section 8.1
+  - Consumer count calculated via grep
+  - No self-reference detected
+  - No duplicate ICON-XXX in docs/ICON/
+- Exit code: 0 (pass) or 1 (fail with error message)
+
+**Post-Creation Script** (`scripts/validate_icon_complete.sh`):
+- Accepts: `ICON-XXX`
+- Validates:
+  - YAML frontmatter present with all 9 fields
+  - All 10 contract sections present
+  - Consumer count matches grep results
+  - Performance requirements present (if contract_type requires)
+  - Mock implementation template present (if Protocol)
+- Exit code: 0 (pass) or 1 (fail with error message)
+
+**Integration Script** (`scripts/validate_icon_integration.sh`):
+- Accepts: `ICON-XXX`
+- Validates:
+  - Provider TASKS has @icon tag in section 8.1
+  - N consumer TASKS have @icon tags in section 8.2
+  - README.md active contracts table updated
+  - Bidirectional traceability complete
+- Exit code: 0 (pass) or 1 (fail with error message)
+
+---
+
+## Common Violations and Fixes
+
+| Violation | Detection | Fix Procedure | Prevention |
+|-----------|-----------|---------------|------------|
+| **Orphaned ICON** | 0 TASKS references | See ICON_ERROR_RECOVERY.md §2.1 | Run pre-flight script |
+| **Consumer Count Mismatch** | grep ≠ frontmatter | Run `grep -r "@icon: ICON-XXX" \| wc -l`, update frontmatter | Use grep in step 5 |
+| **Self-Reference** | Provider in consumer list | Remove section 8.2 from provider TASKS | Check pre-flight output |
+| **Missing YAML** | No frontmatter | Copy from ICON-TEMPLATE.md lines 1-15 | Use template |
+| **Incomplete Sections** | < 10 sections | See ICON_ERROR_RECOVERY.md §2.5 | Use template checklist |
+| **Wrong Contract Type** | Type doesn't match content | Update custom_fields.contract_type | Review before creation |
+| **No Mock Template** | Protocol without mock | Add section 6 from ICON-001 | Check template requirements |
+| **Missing Performance** | State/Protocol without perf | Add section 4 from ICON-006 | Check contract type rules |
+
+### Metrics Tracking
+
+**ICON Health Metrics**:
+```bash
+# Calculate ICON completion rate
+total_icons=$(ls docs/ICON/ICON-*.md | wc -l)
+complete_icons=$(./scripts/validate_all_icons.sh | grep "✓ PASS" | wc -l)
+completion_rate=$((complete_icons * 100 / total_icons))
+
+# Calculate consumer count accuracy
+grep -r "consumer_count:" docs/ICON/ | while read -r line; do
+    icon_file=$(echo "$line" | cut -d: -f1)
+    declared_count=$(echo "$line" | cut -d: -f3 | xargs)
+    icon_id=$(basename "$icon_file" .md)
+    actual_count=$(grep -r "@icon: $icon_id" docs/TASKS/ | wc -l)
+    if [ "$declared_count" -ne "$actual_count" ]; then
+        echo "MISMATCH: $icon_id (declared=$declared_count, actual=$actual_count)"
+    fi
+done
+```
+
+---
+
 ## References
 
 ### Internal Documentation
 - [IMPLEMENTATION_CONTRACTS_GUIDE.md](../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
 - [ICON-000_index.md](./ICON-000_index.md)
 - [ICON-TEMPLATE.md](./ICON-TEMPLATE.md)
+- [ICON_INTEGRATION_WORKFLOW.md](./ICON_INTEGRATION_WORKFLOW.md)
+- [ICON_ERROR_RECOVERY.md](./ICON_ERROR_RECOVERY.md)
 - [TASKS-TEMPLATE.md](../TASKS/TASKS-TEMPLATE.md)
 
 ### Decision Examples

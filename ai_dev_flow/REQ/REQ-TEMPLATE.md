@@ -101,11 +101,11 @@ Production-Ready Code
 
 [Additional context explaining why this requirement exists and what problem it solves. Include business justification and importance.]
 
-### Context
+### 1.1 Context
 
 [What makes this requirement necessary and how it fits into the larger system capabilities]
 
-### Use Case Scenario
+### 1.2 Use Case Scenario
 
 **Primary Flow**:
 1. User/System initiates [action/trigger event]
@@ -121,7 +121,7 @@ Production-Ready Code
 
 ## 2. Functional Requirements
 
-### Primary Functionality
+### 2.1 Primary Functionality
 
 [Detailed description of the core functional behavior this requirement implements]
 
@@ -130,7 +130,7 @@ Production-Ready Code
 - Capability 2: [Specific functional capability with measurable outcome]
 - Capability 3: [Specific functional capability with measurable outcome]
 
-### Business Rules
+### 2.2 Business Rules
 
 [Specific business logic that governs this requirement's behavior]
 
@@ -705,7 +705,7 @@ class APIClientConfig(BaseModel):
 
 ## 7. Non-Functional Requirements (NFRs)
 
-### Performance
+### 7.1 Performance
 
 | Metric | Target (p50) | Target (p95) | Target (p99) | Measurement Method | SLI/SLO |
 |--------|--------------|--------------|--------------|-------------------|---------|
@@ -713,7 +713,7 @@ class APIClientConfig(BaseModel):
 | Throughput | 100 req/s | 75 req/s | 50 req/s | Load testing (k6/Locust) | SLI: requests/s, SLO: 99% |
 | Connection Time | <2s | <5s | <10s | Metrics (Prometheus) | SLI: connection duration, SLO: 99.5% |
 
-### Reliability
+### 7.2 Reliability
 
 - **Availability**: 99.9% uptime (SLA: max 43 minutes downtime/month)
 - **Error Rate**: <0.1% of requests (SLO: 99.9% success rate)
@@ -730,7 +730,7 @@ class APIClientConfig(BaseModel):
 - **Input Validation**: All inputs validated against schemas before processing
 - **Rate Limiting**: Per-user and per-IP rate limits to prevent abuse
 
-### Scalability
+### 7.3 Scalability
 
 - **Horizontal Scaling**: Support 10-100 instances with linear scaling
 - **Connection Pooling**: Max 100 connections per instance
@@ -738,7 +738,7 @@ class APIClientConfig(BaseModel):
 - **Burst Capacity**: Handle 2x normal load for 5 minutes
 - **Auto-scaling**: Scale up at 70% CPU, scale down at 30% CPU
 
-### Observability
+### 7.4 Observability
 
 - **Metrics**: Response time, error rate, throughput, connection pool metrics
 - **Logging**: Structured JSON logs with correlation IDs
@@ -948,7 +948,7 @@ async def get_quote(
 
 **Purpose**: Define measurable conditions that prove requirement satisfaction.
 
-### Primary Functional Criteria
+### 9.1 Primary Functional Criteria
 
 - ✅ **AC-001**: API connection established within 5 seconds using valid credentials
   - **Verification**: Integration test with test credentials
@@ -975,7 +975,7 @@ async def get_quote(
   - **Pass Criteria**: ValidationError raised for all invalid inputs with descriptive messages
   - **Test Method**: Unit test with parametrized test cases
 
-### Error and Edge Case Criteria
+### 9.2 Error and Edge Case Criteria
 
 - ✅ **AC-006**: Connection failures trigger exponential backoff retry
   - **Verification**: Chaos test with network failures
@@ -1002,7 +1002,7 @@ async def get_quote(
   - **Pass Criteria**: Retry with timeout increased by 50% each attempt
   - **Test Method**: Integration test with delayed responses
 
-### Quality and Constraint Criteria
+### 9.3 Quality and Constraint Criteria
 
 - ✅ **AC-011**: Response time <500ms at p95 under normal load
   - **Verification**: Performance test with APM (Datadog/New Relic)
@@ -1019,7 +1019,7 @@ async def get_quote(
   - **Pass Criteria**: CPU <20%, Memory <512MB for 100 req/s load
   - **Test Method**: Performance test with resource monitoring
 
-### Data Validation Criteria
+### 9.4 Data Validation Criteria
 
 - ✅ **AC-014**: Database constraints enforced for all inserts
   - **Verification**: Insert invalid data (negative prices, invalid symbols)
@@ -1031,7 +1031,7 @@ async def get_quote(
   - **Pass Criteria**: 100% data match (no corruption/loss)
   - **Test Method**: Integration test with data verification
 
-### Integration Criteria
+### 9.5 Integration Criteria
 
 - ✅ **AC-016**: Contract tests pass with API provider
   - **Verification**: Pact/Spring Cloud Contract tests
@@ -1052,7 +1052,7 @@ async def get_quote(
 
 ## 10. Verification Methods
 
-### Automated Testing
+### 10.1 Automated Testing
 
 - **BDD Scenarios**: [BDD-NNN.feature](../../BDD/BDD-NNN.feature#scenarios)
   - Scenario: Successful API connection with valid credentials
@@ -1091,7 +1091,7 @@ async def get_quote(
   - Test: Resource usage (CPU/Memory) under load
   - **Tool**: k6, Locust, or JMeter
 
-### Technical Validation
+### 10.2 Technical Validation
 
 - **Specification Compliance**: [SPEC-NNN](../../SPEC/.../SPEC-NNN.yaml)
   - Interface implementation matches Protocol/ABC definition
@@ -1109,7 +1109,7 @@ async def get_quote(
   - pylint: Code quality score ≥9.0/10
   - bandit: security scan passes with no high/medium issues
 
-### Manual Validation
+### 10.3 Manual Validation
 
 - **Code Review Checklist**:
   - [ ] All interfaces implement Protocol/ABC correctly
@@ -1137,7 +1137,7 @@ async def get_quote(
 
 ## 11. Traceability
 
-### Upstream Sources
+### 11.1 Upstream Sources
 
 Document the business strategy, product requirements, system specifications, and engineering requirements that drive this atomic requirement.
 
@@ -1150,7 +1150,7 @@ Document the business strategy, product requirements, system specifications, and
 | ADR | [ADR-NNN](../../ADR/ADR-NNN_...md) | [Architecture decision title] | Decision outcome | Architecture decision driving this requirement |
 | SYS | [SYS-NNN](../../SYS/SYS-NNN_...md) | [System requirements title] | System Requirements 3.x | System-level specification this implements |
 
-### Downstream Artifacts
+### 11.2 Downstream Artifacts
 
 #### Architecture Decisions
 
@@ -1176,7 +1176,7 @@ Document the business strategy, product requirements, system specifications, and
 |--------|----------------|-------------------|--------------|
 | [CTR-NNN](../../CTR/CTR-NNN.md) | [API Contract Title] | REST API / Event Schema / gRPC Proto | Interface specification and versioning |
 
-### Code Implementation Paths
+### 11.3 Code Implementation Paths
 
 **Primary Implementation**:
 - `src/[module]/client.py`: API client implementation with retry and circuit breaker
@@ -1202,7 +1202,7 @@ Document the business strategy, product requirements, system specifications, and
 - `.env.example`: Environment variable examples
 - `docker-compose.yml`: Local development stack
 
-### Traceability Tags
+### 11.4 Traceability Tags
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
 ```markdown
@@ -1256,7 +1256,7 @@ Document the business strategy, product requirements, system specifications, and
 
 ---
 
-## Appendix A: SPEC-Ready Score Calculation
+## 13. Appendix A: SPEC-Ready Score Calculation
 
 **Formula**:
 ```
@@ -1289,7 +1289,7 @@ SPEC-Ready Score = (
 
 ---
 
-## Appendix B: Quick Reference
+## 14. Appendix B: Quick Reference
 
 **REQ Template v3.0 - 5-Minute Validation Checklist**:
 

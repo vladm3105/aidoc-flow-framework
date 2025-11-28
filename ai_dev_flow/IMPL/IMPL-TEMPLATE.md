@@ -21,7 +21,7 @@ custom_fields:
 
 **[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: IMPL is in Layer 8 (Project Management Layer) - organizes WHO does WHAT, WHEN.
 
-## Document Control
+## 1. Document Control
 
 | Field | Value |
 |-------|-------|
@@ -69,7 +69,7 @@ flowchart LR
 
 ---
 
-## PART 1: Project Context and Strategy
+## 2. PART 1: Project Context and Strategy
 
 ### 1.1 Overview
 
@@ -135,9 +135,9 @@ flowchart LR
 
 ---
 
-## PART 2: Phased Implementation and Work Breakdown
+## 3. PART 2: Phased Implementation and Work Breakdown
 
-### Phase 1: [Phase Name]
+### 3.1 Phase 1: [Phase Name]
 
 | Attribute | Details |
 |-----------|---------|
@@ -153,7 +153,7 @@ flowchart LR
 
 ---
 
-### Phase 2: [Phase Name]
+### 3.2 Phase 2: [Phase Name]
 
 | Attribute | Details |
 |-----------|---------|
@@ -169,7 +169,7 @@ flowchart LR
 
 ---
 
-### Phase N: [Final Phase]
+### 3.3 Phase N: [Final Phase]
 
 | Attribute | Details |
 |-----------|---------|
@@ -183,7 +183,7 @@ flowchart LR
 
 ---
 
-## PART 3: Project Management and Risk
+## 4. PART 3: Project Management and Risk
 
 ### 3.1 Resources, Timeline, and Dependencies
 
@@ -237,7 +237,7 @@ flowchart LR
 
 ---
 
-## PART 4: Tracking and Completion
+## 5. PART 4: Tracking and Completion
 
 ### 4.1 Deliverables Checklist
 
@@ -313,9 +313,9 @@ flowchart LR
 
 ---
 
-## Traceability
+## 6. Traceability
 
-### Upstream Sources
+### 6.1 Upstream Sources
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
@@ -324,7 +324,7 @@ flowchart LR
 | ADR | [ADR-PPP](../ADR/ADR-PPP.md) | [Architecture Decision] | All | Architecture guidance |
 | SYS | [SYS-QQQ](../SYS/SYS-QQQ.md) | [System Requirement] | section A | System constraint |
 
-### Downstream Artifacts (Deliverables)
+### 6.2 Downstream Artifacts (Deliverables)
 
 | Artifact Type | Document ID | Document Title | Status | Relationship |
 |---------------|-------------|----------------|--------|--------------|
@@ -335,13 +335,13 @@ flowchart LR
 | SPEC | [SPEC-YY](../SPEC/.../SPEC-YY.yaml) | [Technical Spec] | Pending | Implementation blueprint |
 | TASKS | [TASKS-YY](../TASKS/TASKS-YY.md) | [Code Generation Plan] | Pending | Code generation guide |
 
-### Related IMPL Plans
+### 6.3 Related IMPL Plans
 
 **Depends On**: [IMPL-NNN previous implementation plans this depends on]
 **Related**: [IMPL-YY complementary implementation plans]
 **Supersedes**: [IMPL-ZZZ older plans replaced by this one]
 
-### Traceability Tags
+### 6.4 Traceability Tags
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 8):
 ```markdown
@@ -384,7 +384,7 @@ flowchart LR
 
 ---
 
-## References
+## 7. References
 
 **Internal**: [REQ-NNN](../REQ/.../REQ-NNN.md) \| [ADR-PPP](../ADR/ADR-PPP.md) \| [IMPL-000 Index](./IMPL-000_index.md)
 
@@ -394,7 +394,7 @@ flowchart LR
 
 ---
 
-## Template Instructions
+## 8. Template Instructions
 
 **Usage**: `cp IMPL-TEMPLATE.md IMPL-042_my_feature.md`
 

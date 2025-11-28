@@ -368,9 +368,9 @@ graph TD
 
 ---
 
-## Appendix A: Contract Validation
+## 14. Appendix A: Contract Validation
 
-### Automated Validation
+### 14.1 Automated Validation
 ```bash
 # Validate dual-file consistency
 python ../scripts/validate_traceability_matrix.py \
@@ -384,7 +384,7 @@ python ../scripts/contract_change_validator.py \
   --baseline v1.0
 ```
 
-### Quality Checklist
+### 14.2 Quality Checklist
 - [ ] All CTR documents have both .md and .yaml files
 - [ ] File slugs match between .md and .yaml
 - [ ] YAML `contract_id:` uses lowercase_snake_case

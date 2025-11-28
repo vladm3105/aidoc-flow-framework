@@ -241,6 +241,53 @@ Required tools for validation:
 
 ---
 
+## Validation Scripts
+
+The following artifact-specific validation scripts are available in `ai_dev_flow/scripts/`:
+
+### Available Scripts (Ready to Use)
+
+| Artifact | Script | Description |
+|----------|--------|-------------|
+| BRD | `validate_brd_template.sh` | Validates BRD document structure and content |
+| REQ | `validate_req_template.sh` | Validates REQ v3.0 12-section format |
+| CTR | `validate_ctr.sh` | Validates dual-file contract format (.md + .yaml) |
+| IMPL | `validate_impl.sh` | Validates 4-PART IMPL structure |
+| TASKS | `validate_tasks.sh` | Validates TASKS format including Section 8 |
+| IPLAN | `validate_iplan.sh` | Validates session-based execution plans |
+| ICON | `validate_icon.sh` | Validates Implementation Contracts |
+
+### Under Development
+
+| Artifact | Script | Status |
+|----------|--------|--------|
+| PRD | `validate_prd.sh` | Planned |
+| EARS | `validate_ears.sh` | Planned |
+| BDD | `validate_bdd.sh` | Planned |
+| ADR | `validate_adr.sh` | Planned |
+| SYS | `validate_sys.sh` | Planned |
+| SPEC | `validate_spec.sh` | Planned |
+
+### Usage Examples
+
+```bash
+# Validate BRD document
+./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-001_platform.md
+
+# Validate TASKS document
+./ai_dev_flow/scripts/validate_tasks.sh docs/TASKS/TASKS-001_*.md
+
+# Validate Implementation Contracts
+./ai_dev_flow/scripts/validate_icon.sh docs/ICON/ICON-001_*.md
+
+# Validate IPLAN document
+./ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md
+```
+
+**Note**: For artifacts without validation scripts, use the template and SHARED_CONTENT.md for manual validation.
+
+---
+
 ## Integration Points
 
 ### With doc-flow

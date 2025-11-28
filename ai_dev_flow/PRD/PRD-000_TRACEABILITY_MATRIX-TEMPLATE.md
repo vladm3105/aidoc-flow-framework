@@ -397,19 +397,19 @@ graph TD
 
 ## 13. References
 
-### Internal Documentation
+### 13.1 Internal Documentation
 - **PRD Index**: [PRD-000_index.md](PRD-000_index.md)
 - **PRD Template**: [PRD-TEMPLATE.md](PRD-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
 - **SDD Workflow Guide**: [../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
-### External Standards
+### 13.2 External Standards
 - ISO/IEC/IEEE 29148:2018 - Systems and software engineering requirements
 - SAFe Product Requirements Documentation Standards
 - Agile Alliance User Story Best Practices
 
-### Related Matrices
+### 13.3 Related Matrices
 - [BRD Traceability Matrix](../BRD/BRD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 - [EARS Traceability Matrix](../EARS/EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
 - [BDD Traceability Matrix](../BDD/BDD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
@@ -417,15 +417,15 @@ graph TD
 
 ---
 
-## Appendix A: Matrix Maintenance Guidelines
+## 14. Appendix A: Matrix Maintenance Guidelines
 
-### When to Update This Matrix
+### 14.1 When to Update This Matrix
 1. **After Creating/Updating PRDs**: Add new entries within 1 business day
 2. **Sprint Planning**: Review PRD coverage before sprint commitments
 3. **Release Preparation**: Full validation of traceability chain
 4. **Feature Prioritization**: Ensure alignment with business requirements
 
-### Automated Generation
+### 14.2 Automated Generation
 ```bash
 # Generate matrix from PRD directory
 python ../scripts/generate_traceability_matrix.py \
@@ -445,7 +445,7 @@ python ../scripts/update_traceability_matrix.py \
   --preserve-annotations
 ```
 
-### Quality Checklist
+### 14.3 Quality Checklist
 - [ ] All PRD documents included in inventory
 - [ ] Upstream BRD sources documented for each PRD
 - [ ] Downstream artifacts mapped (EARS, BDD, ADR, REQ)

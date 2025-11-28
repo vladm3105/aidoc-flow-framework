@@ -13,7 +13,7 @@ custom_fields:
   development_status: active
   skill_category: core-workflow
   upstream_artifacts: []
-  downstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN]
+  downstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, ICON]
 ---
 
 # doc-flow (Orchestrator)
@@ -60,6 +60,7 @@ Answer these questions to find the right skill:
 - **Have REQ/IMPL, need API contracts** → Use `doc-ctr` skill (if interface requirement)
 - **Have REQ/CTR, need technical specifications** → Use `doc-spec` skill
 - **Have SPEC, need task breakdown** → Use `doc-tasks` skill
+- **Have TASKS, need implementation contracts** → Add Section 8 to TASKS (see `doc-tasks` skill)
 - **Have TASKS, need execution plan** → Use `doc-iplan` skill
 - **Have IPLAN, ready to code** → Implement code per IPLAN
 
@@ -76,6 +77,7 @@ Answer these questions to find the right skill:
 - **Define API contracts** → `doc-ctr`
 - **Write technical specifications** → `doc-spec`
 - **Break down into AI tasks** → `doc-tasks`
+- **Define implementation contracts for parallel dev** → Add Section 8 to TASKS (see `doc-tasks` skill)
 - **Create session execution plan** → `doc-iplan`
 - **General guidance or unsure** → Stay with `doc-flow` (this skill)
 
@@ -137,6 +139,7 @@ Validation (Layer 15)
 | 9 | **CTR** | API contracts [OPTIONAL - IF INTERFACE] | `doc-ctr` |
 | 10 | **SPEC** | Technical specifications (HOW) | `doc-spec` |
 | 11 | **TASKS** | Task breakdown for implementation | `doc-tasks` |
+| 11+ | **ICON** | Implementation Contracts (Section 8 of TASKS) | `doc-tasks` |
 | 12 | **IPLAN** | Session execution plans | `doc-iplan` |
 | 13 | **Code** | Python implementation | Implementation |
 | 14 | **Tests** | Test suites | Implementation |
@@ -411,7 +414,8 @@ python ai_dev_flow/scripts/generate_traceability_matrices.py --output docs/gener
 - **IMPL** (`IMPL/`): `IMPL-TEMPLATE.md`
 - **CTR** (`CTR/`): `CTR-TEMPLATE.md` + `CTR-TEMPLATE.yaml` (dual-file)
 - **SPEC** (`SPEC/`): `SPEC-TEMPLATE.yaml`
-- **TASKS** (`TASKS/`): `TASKS-TEMPLATE.md`
+- **TASKS** (`TASKS/`): `TASKS-TEMPLATE.md` (includes Section 8 for ICON)
+- **ICON** (`ICON/`): `ICON-TEMPLATE.md` (Implementation Contracts)
 - **IPLAN** (`IPLAN/`): `IPLAN-TEMPLATE.md`
 
 **Each artifact type directory also contains:**

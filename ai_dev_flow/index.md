@@ -98,6 +98,14 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Template: [TASKS-TEMPLATE.md](./TASKS/TASKS-TEMPLATE.md)
   - Purpose: Step-by-step guide to generate code from YAML SPEC
   - Each TASKS document corresponds to one SPEC
+  - **Section 8**: Implementation Contracts for parallel development coordination
+
+- **ICON** (`ICON/`) - Layer 11+: Implementation Contracts (Optional)
+  - Index: [ICON-000_index.md](./ICON/ICON-000_index.md)
+  - Template: [ICON-TEMPLATE.md](./ICON/ICON-TEMPLATE.md)
+  - Purpose: Standalone contracts for parallel development coordination
+  - Default: Embed contracts in TASKS Section 8 (standalone only when 5+ consumers)
+  - Creation Guide: [ICON_CREATION_RULES.md](./ICON/ICON_CREATION_RULES.md)
 
 ### Session Execution Layer (Layer 12)
 
@@ -146,7 +154,7 @@ flowchart TD
     SPEC[SPEC<br/>Technical Specifications<br/>HOW - Implementation blueprints<br/>YAML format with full details<br/><small><i>@brd through @req + opt</i></small>]
 
     %% Code Generation Layer
-    TASKS[TASKS<br/>Code Generation Plans<br/>AI-structured implementation steps<br/><small><i>@brd through @spec</i></small>]
+    TASKS[TASKS<br/>Code Generation Plans<br/>AI-structured implementation steps<br/>Section 8: Implementation Contracts<br/><small><i>@brd through @spec + opt @icon</i></small>]
 
     %% Session Execution Layer
     IPLAN[IPLAN<br/>Implementation Work Plans<br/>Executable bash commands for sessions<br/><small><i>@brd through @tasks</i></small>]
@@ -303,6 +311,11 @@ python scripts/validate_traceability_matrix_enforcement.py  # Matrix enforcement
 # Template validation scripts
 bash scripts/validate_brd_template.sh                    # BRD template compliance
 bash scripts/validate_req_template.sh                    # REQ template compliance
+bash scripts/validate_ctr.sh                             # CTR dual-file format compliance
+bash scripts/validate_impl.sh                            # IMPL 4-PART structure compliance
+bash scripts/validate_tasks.sh                           # TASKS format including Section 8
+bash scripts/validate_iplan.sh                           # IPLAN session-based execution plans
+bash scripts/validate_icon.sh                            # ICON Implementation Contracts
 
 # Traceability generation
 python scripts/generate_traceability_matrix.py           # Generate traceability matrices

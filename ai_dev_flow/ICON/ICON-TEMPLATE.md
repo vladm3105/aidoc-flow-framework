@@ -11,13 +11,46 @@ custom_fields:
   layer: 11
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
-  development_status: active
+  development_status: draft
   contract_type: [protocol|exception|state-machine|data-model|di-interface]
+  provider_tasks: TASKS-XXX
+  consumer_count: N
   providers: []
   consumers: []
 ---
 
+<!-- ⚠️ CRITICAL WARNINGS - READ BEFORE CREATION ⚠️ -->
+<!--
+ICON creation is an 8-file atomic operation:
+1. Create ICON-XXX.md (this file)
+2. Update provider TASKS-XXX.md section 8.1 with @icon tag
+3. Update N consumer TASKS-YYY.md section 8.2 with @icon tags
+4. Update docs/ICON/README.md active contracts table
+5. Update consumer_count in this file's frontmatter (must match grep)
+6. Run scripts/preflight_icon_creation.sh
+7. Run scripts/validate_icon_complete.sh
+8. Only then mark development_status: active
+
+FAILURE TO COMPLETE ALL 8 STEPS = ORPHANED CONTRACT
+See ICON_INTEGRATION_WORKFLOW.md for detailed procedure.
+-->
+
 # ICON-NNN: [Contract Name]
+
+## 1. Pre-Creation Checklist
+
+Before creating this ICON, verify:
+
+- [ ] Provider TASKS file exists with complete section 8.1
+- [ ] All N consumer TASKS identified with grep verification
+- [ ] Consumer count calculated: `grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l`
+- [ ] No self-reference (provider TASKS not in consumer list)
+- [ ] Contract type selected (Protocol/Exception/State/Model/DI)
+- [ ] Performance requirements defined (if applicable)
+- [ ] Exception hierarchy designed (if applicable)
+- [ ] Mock implementation template ready
+
+**If any item fails, STOP. Fix TASKS files first.**
 
 **⚠️ NOTE**: Most implementation contracts should be embedded in TASKS files. Use standalone ICON files only when:
 - 5+ consumer TASKS files
@@ -38,69 +71,29 @@ custom_fields:
 | **Providers** | [TASKS-IDs implementing this contract] |
 | **Consumers** | [TASKS-IDs depending on this contract] |
 
-## CRITICAL: Bidirectional Integration Required
+## 2. Integration Workflow
 
-**WARNING**: Creating an ICON file is ONLY 50% of the work. You MUST also integrate it into TASKS files.
+See [ICON_INTEGRATION_WORKFLOW.md](./ICON_INTEGRATION_WORKFLOW.md) for:
+- Pre-creation validation procedure
+- 8-file atomic operation steps
+- Post-creation validation gates
+- Error recovery procedures
 
-### Integration Requirements
-
-After creating this ICON file, you MUST:
-
-1. **Update Provider TASKS** (1 file):
-   - Add section 8.1: Contracts Provided
-   - List this ICON contract with full details
-   - Add `@icon: ICON-XXX:ContractName` tag
-   - Add `@icon-role: provider` tag
-
-2. **Update Consumer TASKS** (N files):
-   - Add section 8.2: Contracts Consumed to each consumer
-   - List this ICON contract with provider reference
-   - Add `@icon: ICON-XXX:ContractName` tag to each
-   - Add `@icon-role: consumer` tag to each
-
-3. **Validate Integration**:
-   ```bash
-   # This command MUST return N+1 (1 provider + N consumers)
-   grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l
-   ```
-
-### Validation Checklist
-
-Before marking this ICON as "Active":
-- [ ] ICON file created in `/opt/data/ibmcp/docs/ICON/`
-- [ ] Provider TASKS updated with section 8.1
-- [ ] All consumer TASKS updated with section 8.2
-- [ ] Validation command returns expected count
-- [ ] Bidirectional traceability verified
-- [ ] mypy --strict passes on contract code
-
-### Common Errors
-
-❌ **ERROR**: Orphaned ICON file (0 TASKS references)
-```bash
-grep -r "@icon: ICON-XXX" docs/TASKS/
-# Returns nothing → ICON is orphaned!
-```
-
-❌ **ERROR**: Provider missing section 8
-```
-ICON-XXX Provider: TASKS-YYY
-But TASKS-YYY has no section 8 → Integration incomplete
-```
-
-✅ **SUCCESS**: Full integration
-```bash
-grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l
-# Returns N+1 → 1 provider + N consumers
-```
+**Required Phases**:
+1. Pre-Flight Validation (script-based)
+2. Contract Creation (this file)
+3. Provider TASKS Update (section 8.1)
+4. Consumer TASKS Updates (section 8.2 × N)
+5. README Update (active contracts table)
+6. Post-Flight Validation (script-based)
 
 ---
 
-## Executive Summary
+## 3. Executive Summary
 
 [2-3 sentence overview of what this contract defines, why it exists as a standalone file, and its role in coordinating parallel development]
 
-### Scope
+### 3.1 Scope
 
 **Purpose**: [What this contract enables]
 **Boundary**: [What is included/excluded]
@@ -383,7 +376,30 @@ def test_external_data_service_with_mock(mock_connector):
 
 ---
 
-## Document Metadata
+## 9. Validation Gates
+
+### 9.1 Pre-Activation Validation
+
+**Before marking development_status: active**:
+
+```bash
+# Run validation scripts
+./scripts/preflight_icon_creation.sh ICON-XXX TASKS-XXX
+./scripts/validate_icon_complete.sh ICON-XXX
+
+# Verify output shows:
+# ✓ Provider TASKS has section 8.1 with @icon tag
+# ✓ Consumer count matches grep results (N consumers)
+# ✓ Bidirectional @icon tags present
+# ✓ YAML frontmatter complete
+# ✓ All 10 contract sections present
+```
+
+**If any check fails**: See ICON_ERROR_RECOVERY.md
+
+---
+
+## 10. Document Metadata
 
 **Version**: 1.0.0
 **Created**: YYYY-MM-DD

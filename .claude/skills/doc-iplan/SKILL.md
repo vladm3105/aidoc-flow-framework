@@ -38,7 +38,8 @@ Before creating IPLAN, read:
 3. **Template**: `ai_dev_flow/IPLAN/IPLAN-TEMPLATE.md`
 4. **Creation Rules**: `ai_dev_flow/IPLAN/IPLAN_CREATION_RULES.md`
 5. **Validation Rules**: `ai_dev_flow/IPLAN/IPLAN_VALIDATION_RULES.md`
-6. **IPLAN Conventions**: ID_NAMING_STANDARDS.md (as of 2025-11-13)
+6. **Validation Script**: `./ai_dev_flow/scripts/validate_iplan.sh`
+7. **IPLAN Conventions**: ID_NAMING_STANDARDS.md (as of 2025-11-26)
 
 ## When to Use This Skill
 
@@ -62,12 +63,12 @@ Use `doc-iplan` when:
   - YYYYMMDD: Year-Month-Day (e.g., 20251120)
   - HHMMSS: Hour-Minute-Second in 24-hour format (e.g., 143022 for 2:30:22 PM)
 
-**Example**: `IPLAN-001_trade_validation_20250115_143022.md`
+**Example**: `IPLAN-001_data_validation_20250115_143022.md`
 
 **Timestamp Validation**:
 ```bash
 # Validate timestamp format (must be exactly 15 chars: _YYYYMMDD_HHMMSS)
-filename="IPLAN-001_trade_validation_20251120_143022.md"
+filename="IPLAN-001_data_validation_20251120_143022.md"
 if [[ ! $filename =~ _[0-9]{8}_[0-9]{6}\.md$ ]]; then
   echo "ERROR: Invalid timestamp format. Must be _YYYYMMDD_HHMMSS.md"
   exit 1
@@ -98,10 +99,10 @@ fi
 # TASK-001-001: Initialize Project Structure
 mkdir -p src/controllers src/services src/repositories src/models
 mkdir -p tests/unit tests/integration
-touch src/controllers/trade_validation_controller.py
-touch src/services/trade_validator.py
-touch src/repositories/position_repository.py
-touch src/models/trade_order.py
+touch src/controllers/data_validation_controller.py
+touch src/services/data_validator.py
+touch src/repositories/data_repository.py
+touch src/models/data_request.py
 touch src/__init__.py
 
 # Verify structure created
@@ -118,7 +119,7 @@ EOF
 
 cat > pyproject.toml <<EOF
 [project]
-name = "trade-validator"
+name = "data-validator"
 version = "1.0.0"
 requires-python = ">=3.11"
 EOF
@@ -135,8 +136,8 @@ pip list | grep fastapi
 **Validation**:
 ```bash
 # Verify all files created
-test -f src/controllers/trade_validation_controller.py && echo "✓ Controller file exists"
-test -f src/services/trade_validator.py && echo "✓ Service file exists"
+test -f src/controllers/data_validation_controller.py && echo "✓ Controller file exists"
+test -f src/services/data_validator.py && echo "✓ Service file exists"
 
 # Verify dependencies installed
 python -c "import fastapi; print(f'✓ FastAPI {fastapi.__version__} installed')"
@@ -191,26 +192,26 @@ rm -rf src/ tests/ requirements.txt pyproject.toml .venv
 **Example**:
 ```bash
 # Create FastAPI controller
-cat > src/controllers/trade_validation_controller.py <<'EOF'
+cat > src/controllers/data_validation_controller.py <<'EOF'
 from fastapi import APIRouter, HTTPException
-from src.models.trade_order import TradeOrderRequest, ValidationResponse
-from src.services.trade_validator import validate_trade_order
+from src.models.data_request import DataRequest, ValidationResponse
+from src.services.data_validator import validate_data_request
 
 router = APIRouter()
 
-@router.post("/api/v1/trades/validate", response_model=ValidationResponse)
-async def validate_trade(order: TradeOrderRequest):
-    """Validate trade order endpoint"""
+@router.post("/api/v1/data/validate", response_model=ValidationResponse)
+async def validate_data(record: DataRequest):
+    """Validate data record endpoint"""
     try:
-        result = await validate_trade_order(order)
+        result = await validate_data_request(record)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 EOF
 
 # Verify file created and syntax valid
-test -f src/controllers/trade_validation_controller.py || exit 1
-python -m py_compile src/controllers/trade_validation_controller.py
+test -f src/controllers/data_validation_controller.py || exit 1
+python -m py_compile src/controllers/data_validation_controller.py
 ```
 
 ### 6. Validation Commands
@@ -222,8 +223,8 @@ python -m py_compile src/controllers/trade_validation_controller.py
 **Validation**:
 ```bash
 # Verify files exist
-test -f src/controllers/trade_validation_controller.py && echo "✓ Controller created"
-test -f src/services/trade_validator.py && echo "✓ Service created"
+test -f src/controllers/data_validation_controller.py && echo "✓ Controller created"
+test -f src/services/data_validator.py && echo "✓ Service created"
 
 # Verify syntax valid
 python -m py_compile src/controllers/*.py
@@ -246,8 +247,8 @@ pytest tests/unit/ --cov=src --cov-report=term-missing
 **Rollback** (if needed):
 ```bash
 # Remove created files
-rm -f src/controllers/trade_validation_controller.py
-rm -f src/services/trade_validator.py
+rm -f src/controllers/data_validation_controller.py
+rm -f src/services/data_validator.py
 
 # Reset git (if committed)
 git reset --hard HEAD~1
@@ -272,7 +273,7 @@ git reset --hard HEAD~1
 @bdd: BDD-001:scenario-validation
 @adr: ADR-033, ADR-045
 @sys: SYS-001:FR-001
-@req: REQ-risk-limits-001
+@req: REQ-data-validation-001
 @spec: SPEC-001
 @tasks: TASKS-001
 ```
@@ -285,9 +286,9 @@ git reset --hard HEAD~1
 @bdd: BDD-001:scenario-validation
 @adr: ADR-033, ADR-045
 @sys: SYS-001:FR-001
-@req: REQ-risk-limits-001
+@req: REQ-data-validation-001
 @impl: IMPL-001:technical-approach
-@contracts: CTR-001
+@ctr: CTR-001
 @spec: SPEC-001
 @tasks: TASKS-001
 ```
@@ -326,7 +327,7 @@ Generate timestamp: `YYYYMMDD_HHMMSS`
 
 **Location**: `docs/IPLAN/IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md` (template available at `ai_dev_flow/IPLAN/`)
 
-**Example**: `docs/IPLAN/IPLAN-001_trade_validation_20250115_143022.md`
+**Example**: `docs/IPLAN/IPLAN-001_data_validation_20250115_143022.md`
 
 ### Step 4: Fill Document Control Section
 
@@ -371,9 +372,9 @@ Include all 9-11 upstream tags (@brd through @tasks).
 ### Step 13: Validate IPLAN
 
 ```bash
-./ai_dev_flow/scripts/validate_iplan_template.sh docs/IPLAN/IPLAN-001_*.md
+./ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md
 
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact IPLAN-001 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts,spec,tasks --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact IPLAN-001 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,ctr,spec,tasks --strict
 
 # Test bash commands (dry-run)
 bash -n docs/IPLAN/IPLAN-001_*.md  # syntax check
@@ -392,12 +393,12 @@ Commit IPLAN file and traceability matrix.
 ./scripts/validate_quality_gates.sh docs/IPLAN/IPLAN-001_*.md
 
 # IPLAN format validation
-./ai_dev_flow/scripts/validate_iplan_template.sh docs/IPLAN/IPLAN-001_*.md
+./ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md
 
 # Cumulative tagging
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
   --artifact IPLAN-001 \
-  --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts,spec,tasks \
+  --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,ctr,spec,tasks \
   --strict
 
 # Bash syntax check

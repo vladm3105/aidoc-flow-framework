@@ -383,9 +383,9 @@ graph TD
 
 ---
 
-## Appendix A: Matrix Maintenance
+## 15. Appendix A: Matrix Maintenance
 
-### Automated Generation
+### 15.1 Automated Generation
 ```bash
 python ../scripts/generate_traceability_matrix.py \
   --type TASKS \
@@ -395,7 +395,7 @@ python ../scripts/generate_traceability_matrix.py \
   --scan-code-repo
 ```
 
-### Quality Checklist
+### 15.2 Quality Checklist
 - [ ] All TASKS documents included in inventory
 - [ ] Upstream SPEC sources documented
 - [ ] Downstream code/tests mapped

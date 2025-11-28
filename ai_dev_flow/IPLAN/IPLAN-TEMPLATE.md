@@ -21,7 +21,7 @@ custom_fields:
 
 **Position**: Layer 12 (Implementation Work Plans) - translates TASKS into executable session plans with bash commands and verification steps.
 
-## Document Control
+## 1. Document Control
 
 | Item | Details |
 |------|---------|
@@ -40,7 +40,7 @@ custom_fields:
 
 ---
 
-## Position in Development Workflow
+## 2. Position in Development Workflow
 
 **IPLAN (Implementation Work Plans)** ← YOU ARE HERE
 
@@ -65,7 +65,7 @@ For complete traceability workflow with visual diagram, see: [index.md - Traceab
 
 ---
 
-## Objective
+## 3. Objective
 
 [1-2 sentence statement of what this implementation plan delivers, e.g., "Implement TASKS-001 Gateway Connection Service from scratch, creating async TCP connection management with retry logic, circuit breaker, comprehensive error handling, and 100% BDD test coverage."]
 
@@ -77,9 +77,9 @@ For complete traceability workflow with visual diagram, see: [index.md - Traceab
 
 ---
 
-## Context
+## 4. Context
 
-### Current State Analysis
+### 4.1 Current State Analysis
 
 **Documentation Status**: [✅/⚠️/❌ percentage% Complete]
 - [List key documentation artifacts with status]
@@ -102,7 +102,7 @@ For complete traceability workflow with visual diagram, see: [index.md - Traceab
 2. [✅/❌] [Documentation reviewed]
 3. [✅/❌] [Environment prepared]
 
-### Key Technical Decisions
+### 4.2 Key Technical Decisions
 
 **Architecture** (from [ADR-NNN]):
 - [Key architectural decision #1]
@@ -137,16 +137,16 @@ For complete traceability workflow with visual diagram, see: [index.md - Traceab
 
 ---
 
-## Task List
+## 5. Task List
 
-### Phase 0: Documentation Review (COMPLETED ✅ / PENDING)
+### 5.1 Phase 0: Documentation Review (COMPLETED ✅ / PENDING)
 - [x/☐] Read templates and standards
 - [x/☐] Analyze SPEC and upstream artifacts
 - [x/☐] Review TASKS document
 - [x/☐] Validate traceability matrix
 - [x/☐] Verify all cross-references
 
-### Phase 1: Project Foundation & Setup ([X hours])
+### 5.2 Phase 1: Project Foundation & Setup ([X hours])
 - [ ] **TASK-1.1**: [Task name]
   - [Specific action to take]
   - [Files/directories to create]
@@ -162,7 +162,7 @@ For complete traceability workflow with visual diagram, see: [index.md - Traceab
   - [Dependencies to install]
   - [Verification step]
 
-### Phase 2: Core Implementation ([X hours])
+### 5.3 Phase 2: Core Implementation ([X hours])
 - [ ] **TASK-2.1**: [Component name] ([X hours])
   - File: [path/to/file.py]
   - [Implementation details]
@@ -175,7 +175,7 @@ For complete traceability workflow with visual diagram, see: [index.md - Traceab
   - [Interfaces to implement]
   - Verify: [Acceptance criteria]
 
-### Phase 3: Testing & Validation ([X hours])
+### 5.4 Phase 3: Testing & Validation ([X hours])
 - [ ] **TASK-3.1**: Unit tests ([X hours])
   - File: [test file path]
   - [Test scenarios to cover]
@@ -191,7 +191,7 @@ For complete traceability workflow with visual diagram, see: [index.md - Traceab
   - [Scenarios to validate]
   - Target: 100% BDD coverage
 
-### Phase 4: Quality Assurance & Deployment ([X hours])
+### 5.5 Phase 4: Quality Assurance & Deployment ([X hours])
 - [ ] **TASK-4.1**: Code quality checks
   - [Linting, type checking, security scans]
   - [Fix all issues found]
@@ -207,9 +207,9 @@ For complete traceability workflow with visual diagram, see: [index.md - Traceab
 
 ---
 
-## Implementation Guide
+## 6. Implementation Guide
 
-### Prerequisites
+### 6.1 Prerequisites
 
 **Required Tools**:
 - [Tool #1: e.g., Python 3.11+, Poetry]
@@ -231,7 +231,7 @@ For complete traceability workflow with visual diagram, see: [index.md - Traceab
 - [Service dependencies (databases, APIs)]
 - [Network/firewall requirements]
 
-### Execution Steps
+### 6.2 Execution Steps
 
 **Step 1: [Phase Name]**
 
@@ -347,7 +347,7 @@ EOF
 )"
 ```
 
-### Verification Checklist
+### 6.3 Verification Checklist
 
 **After Phase 1:**
 - [ ] Project directory structure exists
@@ -386,9 +386,9 @@ EOF
 
 ---
 
-## Technical Details
+## 7. Technical Details
 
-### File Structure
+### 7.1 File Structure
 
 ```
 [project-root]/
@@ -409,7 +409,7 @@ EOF
 └── [documentation]
 ```
 
-### Module Specifications
+### 7.2 Module Specifications
 
 **Module 1: [Name]**
 - File: `[path/to/file.py]`
@@ -425,14 +425,14 @@ EOF
 - Functions: [List of key functions]
 - Dependencies: [Required imports]
 
-### Configuration Parameters
+### 7.3 Configuration Parameters
 
 | Parameter | Type | Default | Description | Source |
 |-----------|------|---------|-------------|--------|
 | [PARAM_1] | [type] | [value] | [Description] | [SPEC-NNN] |
 | [PARAM_2] | [type] | [value] | [Description] | [SPEC-NNN] |
 
-### BDD Scenario Mapping
+### 7.4 BDD Scenario Mapping
 
 | BDD Document | Scenario | Implementation | Verification Method |
 |--------------|----------|----------------|---------------------|
@@ -441,11 +441,11 @@ EOF
 
 ---
 
-## Traceability Tags
+## 8. Traceability Tags
 
 **Layer 12 Position**: IPLAN inherits tags from all upstream artifacts (Layers 0-11)
 
-### Required Tags (Mandatory)
+### 8.1 Required Tags (Mandatory)
 
 All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
@@ -459,12 +459,12 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - `@spec: SPEC-NNN:regulatoryTION` - Technical Specification (Layer 10)
 - `@tasks: TASKS-NNN:PHASE-X.Y` - Code Generation Plan (Layer 11)
 
-### Optional Tags (If Present in Project)
+### 8.2 Optional Tags (If Present in Project)
 
 - `@impl: IMPL-NNN` - Implementation Plan (Layer 8) - include if project uses IMPL
 - `@ctr: CTR-NNN:regulatoryTION` - Interface Contract (Layer 9) - include if contracts defined
 
-### Tag Format
+### 8.3 Tag Format
 
 **Standard Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
 
@@ -483,7 +483,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 @ctr: CTR-001:IBGatewayConnector (optional)
 ```
 
-### Tag Validation Requirements
+### 8.4 Tag Validation Requirements
 
 1. **Completeness**: All 9 mandatory tags MUST be present (11 if @impl/@ctr exist in project)
 2. **Chain Integrity**: Each tag MUST reference a valid upstream document
@@ -491,7 +491,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 4. **Format Compliance**: Tags MUST follow `@type: DOC-ID:REQ-ID` pattern
 5. **Layer Hierarchy**: Tags MUST respect the 16-layer cumulative tagging hierarchy (Layer 0-15)
 
-### Validation Methods
+### 8.5 Validation Methods
 
 - **Automated**: Run `/opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_docs.py`
 - **Manual**: Verify each tag resolves to existing document in framework
@@ -499,9 +499,9 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 ---
 
-## Traceability
+## 9. Traceability
 
-### Upstream References (→ references TO)
+### 9.1 Upstream References (→ references TO)
 
 **Direct Parent**:
 - [TASKS-NNN](../TASKS/[path]/TASKS-NNN.md) - Code generation plan being implemented
@@ -538,7 +538,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - [IMPL-NNN](../IMPL/[path]/IMPL-NNN.md) - Implementation strategies
 - [CTR-NNN](../CTR/[path]/CTR-NNN.md) - Interface contracts to implement
 
-### Downstream Impact (← referenced BY)
+### 9.2 Downstream Impact (← referenced BY)
 
 **Code Implementation**:
 - [src/module/file.py:function] - Code implementing this plan
@@ -553,7 +553,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - [config/deployment.yaml] - Deployment configurations
 - [.github/workflows/ci.yml] - CI/CD pipeline definitions
 
-### Related Documents
+### 9.3 Related Documents
 
 **Sibling Documents**:
 - [IPLAN-NNN](./IPLAN-NNN.md) - Related implementation plans
@@ -562,7 +562,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 **Traceability Matrix**:
 - [IPLAN-000_TRACEABILITY_MATRIX.md](./IPLAN-000_TRACEABILITY_MATRIX.md) - Complete traceability matrix
 
-### Traceability Tags
+### 9.4 Traceability Tags
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 12):
 ```markdown
@@ -617,9 +617,9 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 ---
 
-## Risk Mitigation
+## 10. Risk Mitigation
 
-### Implementation Risks
+### 10.1 Implementation Risks
 
 **Risk 1: [Risk Title]**
 - **Description**: [What could go wrong]
@@ -639,7 +639,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
   - [Detection method]
   - [Response plan]
 
-### Technical Risks
+### 10.2 Technical Risks
 
 **Risk 3: [Technical Risk]**
 - **Description**: [Technical challenge or uncertainty]
@@ -649,7 +649,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
   - [Proof of concept needed]
   - [Alternative approaches]
 
-### Dependency Risks
+### 10.3 Dependency Risks
 
 **Risk 4: [Dependency Risk]**
 - **Description**: [External dependency issue]
@@ -661,9 +661,9 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 ---
 
-## Success Criteria
+## 11. Success Criteria
 
-### Coverage Metrics
+### 11.1 Coverage Metrics
 
 **Requirements Coverage**:
 - [X/Y] atomic requirements implemented (target: 100%)
@@ -680,7 +680,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - Type checking: 0 errors (✅/❌)
 - security scan: 0 high/critical issues (✅/❌)
 
-### Functional Validation
+### 11.2 Functional Validation
 
 **Feature Completeness**:
 - [ ] All modules implemented per specification
@@ -694,7 +694,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - [ ] Scalability verified
 - [ ] security requirements met
 
-### Documentation Quality
+### 11.3 Documentation Quality
 
 **Deliverables**:
 - [ ] All code documented (docstrings, comments)
@@ -703,7 +703,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - [ ] Deployment guide created
 - [ ] Traceability matrix updated
 
-### Integration Validation
+### 11.4 Integration Validation
 
 **System Integration**:
 - [ ] Interfaces work with dependent systems
@@ -713,40 +713,40 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 ---
 
-## References
+## 12. References
 
-### Framework Documentation
+### 12.1 Framework Documentation
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Workflow guide
 - [TRACEABILITY.md](../TRACEABILITY.md) - Cumulative tagging hierarchy
 - [TOOL_OPTIMIZATION_GUIDE.md](../TOOL_OPTIMIZATION_GUIDE.md) - Token efficiency guidelines
 
-### Artifact Templates
+### 12.2 Artifact Templates
 - [TASKS-TEMPLATE.md](../TASKS/TASKS-TEMPLATE.md) - Parent artifact template
 - [SPEC-TEMPLATE.yaml](../SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
 - [BDD-TEMPLATE.feature](../BDD/BDD-TEMPLATE.feature) - BDD scenario template
 
-### Related Artifacts
+### 12.3 Related Artifacts
 - [TASKS-NNN](../TASKS/[path]/TASKS-NNN.md) - Parent code generation plan
 - [SPEC-NNN](../SPEC/[path]/SPEC-NNN.yaml) - Technical specification
 - [REQ-NNN](../REQ/[path]/REQ-NNN.md) - Requirements being implemented
 
-### External References
+### 12.4 External References
 - [External documentation or API references]
 - [Library/framework documentation]
 - [Standards or compliance documents]
 
 ---
 
-## Appendix
+## 13. Appendix
 
-### Glossary
+### 13.1 Glossary
 
 | Term | Definition |
 |------|------------|
 | [Technical term 1] | [Definition] |
 | [Technical term 2] | [Definition] |
 
-### Command Reference
+### 13.2 Command Reference
 
 Quick reference for common commands used in this implementation:
 
@@ -764,7 +764,7 @@ Quick reference for common commands used in this implementation:
 [deployment commands]
 ```
 
-### Troubleshooting
+### 13.3 Troubleshooting
 
 **Issue 1: [Common Problem]**
 - **Symptom**: [What user sees]

@@ -38,7 +38,8 @@ Before creating TASKS, read:
 3. **Template**: `ai_dev_flow/TASKS/TASKS-TEMPLATE.md`
 4. **Creation Rules**: `ai_dev_flow/TASKS/TASKS_CREATION_RULES.md`
 5. **Validation Rules**: `ai_dev_flow/TASKS/TASKS_VALIDATION_RULES.md`
-6. **Validation Script**: `./ai_dev_flow/scripts/validate_tasks_template.sh` (under development - use template for manual validation until available)
+6. **Validation Script**: `./ai_dev_flow/scripts/validate_tasks.sh`
+7. **Implementation Contracts Guide**: `ai_dev_flow/TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md`
 
 ## When to Use This Skill
 
@@ -64,10 +65,10 @@ Use `doc-tasks` when:
 **TASK-001-001: Initialize Project Structure**
 - **Action**: Create directory structure per SPEC architecture
 - **Files to Create**:
-  - `src/controllers/trade_validation_controller.py`
-  - `src/services/trade_validator.py`
-  - `src/repositories/position_repository.py`
-  - `src/models/trade_order.py`
+  - `src/controllers/data_validation_controller.py`
+  - `src/services/data_validator.py`
+  - `src/repositories/data_repository.py`
+  - `src/models/data_request.py`
 - **Dependencies**: None
 - **Estimated Effort**: 30 minutes
 - **SPEC Reference**: SPEC-001:implementation.modules
@@ -83,13 +84,13 @@ Use `doc-tasks` when:
 
 ### Phase 2: Data Models (2 tasks)
 
-**TASK-001-003: Implement TradeOrderRequest Model**
+**TASK-001-003: Implement DataRequest Model**
 - **Action**: Create Pydantic model per CTR-001 schema
-- **Files to Modify**: `src/models/trade_order.py`
+- **Files to Modify**: `src/models/data_request.py`
 - **Dependencies**: TASK-001-002
 - **Estimated Effort**: 1 hour
 - **SPEC Reference**: SPEC-001:interfaces.data_models
-- **CTR Reference**: CTR-001#/components/schemas/TradeOrderRequest
+- **CTR Reference**: CTR-001#/components/schemas/DataRequest
 - **Success Criteria**: Model validates per schema, unit tests pass
 ```
 
@@ -104,13 +105,14 @@ Use `doc-tasks` when:
 4. **Dependencies Graph**: Visual task dependencies (Mermaid diagram)
 5. **Effort Summary**: Total effort by phase
 6. **Traceability**: Section 7 format with cumulative tags
+7. **Implementation Contracts**: Section 8 (MANDATORY) - Contracts provided/consumed
 
 ### 3. Task Numbering Format
 
 **Format**: `TASK-{SPEC-ID}-{Task-Number}`
 
 **Example**: `TASK-001-003` means:
-- SPEC-001 (from SPEC-001_trade_validation.yaml)
+- SPEC-001 (from SPEC-001_data_validation.yaml)
 - Task 003 (third task in breakdown)
 
 **Benefits**:
@@ -156,10 +158,10 @@ Use `doc-tasks` when:
 graph TD
     T001[TASK-001-001: Project Setup]
     T002[TASK-001-002: Dev Environment]
-    T003[TASK-001-003: TradeOrderRequest Model]
+    T003[TASK-001-003: DataRequest Model]
     T004[TASK-001-004: ValidationResponse Model]
-    T005[TASK-001-005: Position Repository]
-    T006[TASK-001-006: Trade Validator Service]
+    T005[TASK-001-005: Data Repository]
+    T006[TASK-001-006: Data Validator Service]
     T007[TASK-001-007: API Controller]
 
     T001 --> T002
@@ -197,6 +199,52 @@ graph TD
 - OAuth service already available
 ```
 
+### 8. Implementation Contracts (MANDATORY)
+
+**Section 8 is required for ALL TASKS files**. Implementation Contracts enable parallel development of dependent TASKS files.
+
+**Structure**:
+
+```markdown
+## 8. Implementation Contracts
+
+### 8.1 Contracts Provided by This TASKS
+@icon: TASKS-XXX:ContractName
+@icon-role: provider
+
+- **Contract Name**: [Interface name]
+- **Type**: Protocol Interface | Exception Hierarchy | State Machine | Data Model | DI Interface
+- **Consumers**: List of TASKS IDs that depend on this contract
+- **Purpose**: Brief description
+
+### 8.2 Contracts Consumed by This TASKS
+@icon: TASKS-YYY:OtherContract
+@icon-role: consumer
+
+- **Provider**: TASKS-YYY
+- **Contract Name**: [Interface name]
+- **Purpose**: Why this TASKS needs this contract
+
+### 8.3 No Contracts
+If this TASKS provides no contracts and consumes no contracts, state explicitly:
+"This TASKS document neither provides nor consumes implementation contracts."
+```
+
+**When to Create Contracts**:
+- TASKS has 3+ downstream dependencies
+- Shared interfaces across multiple implementation sessions
+- Complex state machines or exception hierarchies
+- Parallel development required
+
+**Contract Types**:
+1. **Protocol Interfaces**: `typing.Protocol` with method signatures
+2. **Exception Hierarchies**: Typed exceptions with error codes
+3. **State Machine Contracts**: `Enum` states with valid transitions
+4. **Data Models**: Pydantic/TypedDict schemas
+5. **DI Interfaces**: ABC classes for dependency injection
+
+**Reference**: See `ai_dev_flow/TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md` for detailed guidance.
+
 ## Cumulative Tagging Requirements
 
 **Layer 11 (TASKS)**: Must include tags from Layers 1-10
@@ -215,11 +263,11 @@ graph TD
 @bdd: BDD-001:scenario-validation
 @adr: ADR-033, ADR-045
 @sys: SYS-001:FR-001
-@req: REQ-risk-limits-001
+@req: REQ-data-validation-001
 @spec: SPEC-001
 ```
 
-**Maximum (IMPL and CTR included)**:
+**Maximum (IMPL, CTR, and ICON included)**:
 ```markdown
 @brd: BRD-001:section-3
 @prd: PRD-001:feature-2
@@ -227,10 +275,12 @@ graph TD
 @bdd: BDD-001:scenario-validation
 @adr: ADR-033, ADR-045
 @sys: SYS-001:FR-001
-@req: REQ-risk-limits-001
+@req: REQ-data-validation-001
 @impl: IMPL-001:technical-approach
-@contracts: CTR-001
+@ctr: CTR-001
 @spec: SPEC-001
+@icon: TASKS-001:DataValidator  # if providing or consuming implementation contracts
+@icon-role: provider  # or consumer
 ```
 
 ## Upstream/Downstream Artifacts
@@ -267,7 +317,7 @@ Check `ai_dev_flow/TASKS/` for next available ID number.
 
 **File naming**: `ai_dev_flow/TASKS/TASKS-NNN_{slug}.md`
 
-**Example**: `ai_dev_flow/TASKS/TASKS-001_trade_validation.md`
+**Example**: `ai_dev_flow/TASKS/TASKS-001_data_validation.md`
 
 ### Step 4: Fill Document Control Section
 
@@ -311,7 +361,7 @@ Include all 8-10 upstream tags (@brd through @spec).
 ### Step 12: Validate TASKS
 
 ```bash
-./ai_dev_flow/scripts/validate_tasks_template.sh ai_dev_flow/TASKS/TASKS-001_*.md
+./ai_dev_flow/scripts/validate_tasks.sh ai_dev_flow/TASKS/TASKS-001_*.md
 
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact TASKS-001 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts,spec --strict
 
@@ -331,7 +381,7 @@ Commit TASKS file and traceability matrix.
 ./scripts/validate_quality_gates.sh ai_dev_flow/TASKS/TASKS-001_*.md
 
 # Task format validation
-./ai_dev_flow/scripts/validate_tasks_template.sh ai_dev_flow/TASKS/TASKS-001_*.md
+./ai_dev_flow/scripts/validate_tasks.sh ai_dev_flow/TASKS/TASKS-001_*.md
 
 # Cumulative tagging
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
@@ -356,7 +406,9 @@ python ai_dev_flow/scripts/validate_task_dependencies.py ai_dev_flow/TASKS/TASKS
 - [ ] Success Criteria clear and testable
 - [ ] Dependencies Graph (Mermaid diagram) created
 - [ ] Effort Summary calculated
+- [ ] **Section 8 Implementation Contracts** completed (provider/consumer/none)
 - [ ] Cumulative tags: @brd through @spec (8-10 tags) included
+- [ ] `@icon` tags added if providing/consuming contracts
 - [ ] Traceability matrix updated
 
 ## Common Pitfalls
@@ -367,6 +419,7 @@ python ai_dev_flow/scripts/validate_task_dependencies.py ai_dev_flow/TASKS/TASKS
 4. **Missing SPEC references**: Each task must link to SPEC section
 5. **No success criteria**: Must define how to verify completion
 6. **Missing cumulative tags**: Layer 11 must include all 8-10 upstream tags
+7. **Missing Section 8**: Implementation Contracts section is MANDATORY
 
 ## Next Skill
 

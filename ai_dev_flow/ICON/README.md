@@ -82,43 +82,74 @@ done
 
 ## Quick Start
 
-### 1. Should You Create an ICON File?
+### 8-Step ICON Creation Workflow
 
-**Decision Criteria** (ALL must be met):
-- [ ] 5+ consumer TASKS files
-- [ ] Contract definition >500 lines
-- [ ] Platform-level shared interface
-- [ ] Cross-project usage
+**Prerequisites**: Provider TASKS file complete with dependencies identified
 
-**If NO to any**: Embed in TASKS file instead (section 8: Implementation Contracts)
+1. **Pre-Flight Validation** (5 min):
+   ```bash
+   ./scripts/preflight_icon_creation.sh ICON-XXX TASKS-XXX
+   # Must show: ✓ All checks passed
+   ```
 
-See [ICON_CREATION_RULES.md](./ICON_CREATION_RULES.md) for detailed decision framework.
+2. **Create ICON File** (30 min):
+   - Copy `ICON-TEMPLATE.md` to `docs/ICON/ICON-XXX_descriptive_name.md`
+   - Update YAML frontmatter with correct provider_tasks and consumer_count
+   - Complete sections 1-10 using template guidance
 
-### 2. Creating a New ICON File
+3. **Post-Creation Validation** (2 min):
+   ```bash
+   ./scripts/validate_icon_complete.sh ICON-XXX
+   # Must show: ✓ All sections complete
+   ```
 
-```bash
-# 1. Copy template
-cp ICON-TEMPLATE.md ICON-001_your_contract_name.md
+4. **Update Provider TASKS** (5 min):
+   - Open provider TASKS file (e.g., `docs/TASKS/TASKS-XXX.md`)
+   - Add section 8.1 with @icon tag:
+     ```markdown
+     ## 8. Implementation Contracts
 
-# 2. Update frontmatter and metadata
-# - Assign ICON-001 (next available ID)
-# - Set contract_type (protocol/exception/state-machine/data-model/di-interface)
-# - List providers and consumers
+     ### 8.1 Provided Contracts
 
-# 3. Complete contract definition
-# - Define type-safe interfaces
-# - Document provider requirements
-# - Document consumer requirements
-# - Add validation examples
+     @icon: ICON-XXX:ContractName
+     @icon-role: provider
+     ```
 
-# 4. Update registry
-# Edit ICON-000_index.md to add new contract entry
+5. **Update Consumer TASKS** (5 min × N):
+   - For each of N consumer TASKS files:
+     ```markdown
+     ### 8.2 Consumed Contracts
 
-# 5. Notify stakeholders
-# Inform provider and consumer TASKS owners
-```
+     @icon: ICON-XXX:ContractName
+     @icon-role: consumer
+     ```
 
-### 3. Using Existing ICON Files
+6. **Update README** (2 min):
+   - Add row to "Active Contracts" table in `docs/ICON/README.md`
+
+7. **Integration Validation** (2 min):
+   ```bash
+   ./scripts/validate_icon_integration.sh ICON-XXX
+   # Must show: ✓ Bidirectional traceability complete
+   ```
+
+8. **Activate Contract** (1 min):
+   - Update YAML frontmatter: `development_status: active`
+   - Commit all 8 files atomically
+
+**Total time**: ~50 minutes + (5 min × N consumers)
+
+### Success Criteria
+
+- [ ] All 3 validation scripts pass (exit code 0)
+- [ ] Consumer count matches grep results exactly
+- [ ] No self-references detected
+- [ ] All 10 contract sections present
+- [ ] Bidirectional @icon tags verified
+- [ ] README.md updated
+- [ ] development_status set to "active"
+
+### Using Existing ICON Files
 
 **Provider TASKS** (implements contract):
 ```markdown
@@ -138,6 +169,57 @@ See [ICON-001_gateway_connector.md](../../ai_dev_flow/ICON/ICON-001_gateway_conn
 @icon-role: consumer
 
 Requires GatewayConnector protocol for gateway connections.
+```
+
+---
+
+## Troubleshooting
+
+### Common Errors and Solutions
+
+| Error | Symptom | Solution | Reference |
+|-------|---------|----------|-----------|
+| **Orphaned ICON** | 0 TASKS references found | Add @icon tags to provider/consumer TASKS | ICON_ERROR_RECOVERY.md §2.1 |
+| **Consumer Count Mismatch** | grep count ≠ frontmatter | Update frontmatter with: `grep -r "@icon: ICON-XXX" docs/TASKS/ \| wc -l` | ICON_ERROR_RECOVERY.md §2.2 |
+| **Self-Reference** | Provider TASKS has section 8.2 | Remove section 8.2, keep only 8.1 | ICON_ERROR_RECOVERY.md §2.3 |
+| **Missing YAML** | No frontmatter in ICON file | Copy lines 1-15 from ICON-TEMPLATE.md | ICON_ERROR_RECOVERY.md §2.4 |
+| **Incomplete Sections** | < 10 sections in ICON | Use ICON-TEMPLATE.md checklist | ICON_ERROR_RECOVERY.md §2.5 |
+| **Pre-Flight Fail** | Script exits with error | Fix TASKS files before creating ICON | ICON_CREATION_RULES.md §4.1 |
+| **No Mock Template** | Protocol without section 6 | Add mock from ICON-001 example | ICON-TEMPLATE.md §6 |
+
+### Validation Script Debugging
+
+**Pre-Flight Script Failures**:
+```bash
+# Show detailed output
+./scripts/preflight_icon_creation.sh ICON-XXX TASKS-XXX --verbose
+
+# Common fixes:
+# - "Provider TASKS not found" → Create TASKS-XXX.md first
+# - "No consumer TASKS identified" → Add section 3.2 dependencies to TASKS-XXX
+# - "Self-reference detected" → Remove TASKS-XXX from consumer list
+```
+
+**Post-Creation Script Failures**:
+```bash
+# Show missing sections
+./scripts/validate_icon_complete.sh ICON-XXX --show-missing
+
+# Common fixes:
+# - "YAML frontmatter missing" → Add lines 1-15 from template
+# - "Consumer count mismatch" → Run grep and update frontmatter
+# - "Section X missing" → Add section using template
+```
+
+**Integration Script Failures**:
+```bash
+# Show traceability gaps
+./scripts/validate_icon_integration.sh ICON-XXX --show-gaps
+
+# Common fixes:
+# - "Provider TASKS missing @icon tag" → Add section 8.1
+# - "Consumer TASKS-YYY missing @icon tag" → Add section 8.2
+# - "README.md not updated" → Add row to active contracts table
 ```
 
 ---
