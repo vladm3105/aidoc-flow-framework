@@ -28,6 +28,70 @@ This document defines the standard traceability practices for the AI-Driven Spec
 - **Anchors/IDs**: Primary identifiers within this document
 - **Code Path(s)**: Implementation locations (where applicable)
 
+## ⚠️ Upstream Artifact Verification (CRITICAL)
+
+**Before completing traceability tags in ANY document, you MUST:**
+
+### Step 1: Inventory Existing Upstream Artifacts
+
+```bash
+# List all existing artifacts before adding traceability references
+ls -la docs/BRD/    # Layer 1 - Business Requirements
+ls -la docs/PRD/    # Layer 2 - Product Requirements
+ls -la docs/EARS/   # Layer 3 - Engineering Requirements
+ls -la docs/BDD/    # Layer 4 - Behavior Tests
+ls -la docs/ADR/    # Layer 5 - Architecture Decisions
+ls -la docs/SYS/    # Layer 6 - System Requirements
+ls -la docs/REQ/    # Layer 7 - Atomic Requirements
+ls -la docs/IMPL/   # Layer 8 - Implementation Plans
+ls -la docs/CTR/    # Layer 9 - Contracts
+ls -la docs/SPEC/   # Layer 10 - Specifications
+ls -la docs/TASKS/  # Layer 11 - Task Breakdowns
+ls -la docs/IPLAN/  # Layer 12 - Implementation Plans
+```
+
+### Step 2: Map Existing Documents to Traceability Tags
+
+| Tag | Required for Your Layer | Existing Document | Action |
+|-----|------------------------|-------------------|--------|
+| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @ears | Yes/No | EARS-001 or null | Reference/Create/Skip |
+| ... | ... | ... | ... |
+
+### Step 3: Decision Rules
+
+| Situation | Action |
+|-----------|--------|
+| Upstream exists | Reference with **exact document ID** |
+| Upstream required but missing | **Skip that functionality** - do NOT implement |
+| Upstream optional and missing | Use `null` in traceability tag |
+| Upstream not applicable | Omit tag entirely |
+
+### Traceability Tag Rules
+
+- **NEVER** use placeholder IDs like `BRD-XXX`, `PRD-NNN`, or `TBD`
+- **NEVER** reference documents that don't exist
+- **ALWAYS** verify document exists before adding reference
+- **USE** `null` only when artifact type is genuinely not applicable
+- **SKIP** functionality when required upstream artifacts are missing
+
+### Example: Correct vs Incorrect References
+
+**❌ INCORRECT** (phantom references):
+```markdown
+@brd: BRD-001  # Document doesn't exist yet
+@prd: PRD-NNN  # Placeholder ID
+@adr: TBD      # Invalid reference
+```
+
+**✅ CORRECT** (verified references):
+```markdown
+@brd: BRD-001:FR-030  # Verified: docs/BRD/BRD-001_project.md exists
+@prd: null            # No PRD exists for this feature (legitimate)
+@adr: ADR-005         # Verified: docs/ADR/ADR-005_architecture.md exists
+```
+
 **16-Layer Workflow**: This traceability system implements the 16-layer SDD workflow (Layer 0: Strategy through Layer 15: Validation):
 ```
 Strategy (Layer 0) → Business (BRD/PRD/EARS) → Testing (BDD) → Architecture (ADR/SYS) →

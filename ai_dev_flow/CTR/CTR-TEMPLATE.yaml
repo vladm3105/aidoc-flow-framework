@@ -1,3 +1,8 @@
+# 📋 Document Authority: This is the PRIMARY STANDARD for CTR YAML structure.
+# - All CTR YAML files must conform to this template
+# - CTR_CREATION_RULES.md - Helper guidance for template usage
+# - CTR_VALIDATION_RULES.md - Post-creation validation checks
+
 # Contract ID: Must match filename (CTR-XXX_name)
 contract_id: template_contract
 contract_version: "1.0.0"

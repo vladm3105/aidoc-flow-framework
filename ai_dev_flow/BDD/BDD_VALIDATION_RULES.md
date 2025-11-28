@@ -12,6 +12,11 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for BDD documents.
+> - Apply these rules after BDD creation or modification
+> - **Authority**: Validates compliance with `BDD-TEMPLATE.feature` (the primary standard)
+> - **Scope**: Use for quality gates before committing BDD changes
+
 # BDD Validation Rules Reference
 
 **Version**: 1.0

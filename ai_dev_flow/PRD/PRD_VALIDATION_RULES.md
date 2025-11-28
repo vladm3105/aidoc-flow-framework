@@ -12,6 +12,11 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for PRD documents.
+> - Apply these rules after PRD creation or modification
+> - **Authority**: Validates compliance with `PRD-TEMPLATE.md` (the primary standard)
+> - **Scope**: Use for quality gates before committing PRD changes
+
 # PRD Validation Rules Reference
 
 **Version**: 1.0.0

@@ -12,6 +12,11 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for IPLAN documents.
+> - Apply these rules after IPLAN creation or modification
+> - **Authority**: Validates compliance with `IPLAN-TEMPLATE.md` (the primary standard)
+> - **Scope**: Use for quality gates before committing IPLAN changes
+
 # IPLAN Validation Rules
 
 Rules for validating Implementation Plans (IPLAN) documents in the SDD framework.
@@ -32,7 +37,7 @@ Rules for validating Implementation Plans (IPLAN) documents in the SDD framework
 ### Pattern
 
 ```regex
-^IPLAN-[0-9]{3,4}_[a-z0-9_]+_[0-9]{8}_[0-9]{6}\.md$
+^IPLAN-[0-9]{3,4}_[a-z0-9_]+\.md$
 ```
 
 ### Rules
@@ -42,18 +47,18 @@ Rules for validating Implementation Plans (IPLAN) documents in the SDD framework
 | IPLAN prefix | Must start with "IPLAN-" | ERROR |
 | ID format | NNN or NNNN digits | ERROR |
 | Slug format | lowercase, underscores only | ERROR |
-| Timestamp | YYYYMMDD_HHMMSS format | ERROR |
 | Extension | .md only | ERROR |
 
 ### Examples
 
 | Filename | Valid | Reason |
 |----------|-------|--------|
-| `IPLAN-001_gateway_connection_20251127_092843.md` | ✅ | Correct format |
-| `iplan-001_gateway_connection_20251127_092843.md` | ❌ | Lowercase prefix |
-| `IPLAN-1_gateway_connection_20251127_092843.md` | ❌ | Single digit ID |
-| `IPLAN-001_gateway_connection.md` | ❌ | Missing timestamp |
-| `IPLAN-001-gateway-connection-20251127-092843.md` | ❌ | Hyphens in slug |
+| `IPLAN-001_gateway_connection.md` | ✅ | Correct format |
+| `IPLAN-001_trade_validation.md` | ✅ | Correct format |
+| `iplan-001_gateway_connection.md` | ❌ | Lowercase prefix |
+| `IPLAN-1_gateway_connection.md` | ❌ | Single digit ID |
+| `IPLAN-001-gateway-connection.md` | ❌ | Hyphens in slug |
+| `IPLAN-001_Gateway_Connection.md` | ❌ | Uppercase in slug |
 
 ---
 
@@ -470,12 +475,11 @@ fi
 =========================================
 IPLAN Validation Report
 =========================================
-File: IPLAN-001_gateway_connection_20251127_092843.md
+File: IPLAN-001_gateway_connection.md
 Version: 1.0.0
 
 CHECK 1: Filename Format
   ✅ Filename format valid
-  ✅ Timestamp present
 
 CHECK 2: Frontmatter
   ✅ YAML frontmatter present
@@ -521,10 +525,15 @@ Result: PASSED WITH WARNINGS
 
 ## 14. Common Validation Errors
 
-### Error: Missing Timestamp in Filename
+### Error: Invalid Filename Format
 
-**Symptom**: "ERROR: Missing timestamp in filename"
-**Fix**: Add YYYYMMDD_HHMMSS to filename: `IPLAN-001_feature_20251127_143022.md`
+**Symptom**: "ERROR: Filename does not match IPLAN-NNN_{slug}.md format"
+**Fix**: Ensure filename follows `IPLAN-NNN_{descriptive_slug}.md` pattern
+
+**Examples**:
+- ✅ `IPLAN-001_gateway_connection.md`
+- ❌ `IPLAN-001-gateway-connection.md` (hyphens in slug)
+- ❌ `IPLAN_001_gateway.md` (missing hyphen after IPLAN)
 
 ### Error: Missing Required Tags
 

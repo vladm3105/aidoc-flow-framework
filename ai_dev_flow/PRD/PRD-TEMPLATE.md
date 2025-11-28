@@ -15,6 +15,11 @@ custom_fields:
   template_for: product-requirements-document
 ---
 
+> **📋 Document Authority**: This is the **PRIMARY STANDARD** for PRD structure.
+> - All PRDs must conform to this template (19 sections: 0-18)
+> - `PRD_CREATION_RULES.md` - Helper guidance for template usage
+> - `PRD_VALIDATION_RULES.md` - Post-creation validation checks
+
 # PRD-NNN: [Descriptive Product Name/Feature Name]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
@@ -62,6 +67,15 @@ custom_fields:
 - **Post-Launch Monitoring**: YYYY-MM-DD onwards ([duration])
 
 ---
+
+> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
+> 1. **Check existing artifacts**: List what upstream documents actually exist in `docs/`
+> 2. **Reference only existing documents**: Use actual document IDs, not placeholders
+> 3. **Use `null` appropriately**: Only when upstream artifact type genuinely doesn't exist for this feature
+> 4. **Do NOT create phantom references**: Never reference documents that don't exist
+> 5. **Do NOT create missing upstream artifacts**: If upstream artifacts are missing, skip that functionality. Only create functionality for existing upstream artifacts.
+
+
 
 ## 2. Problem Statement
 

@@ -12,6 +12,11 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for SPEC documents.
+> - Apply these rules after SPEC creation or modification
+> - **Authority**: Validates compliance with `SPEC-TEMPLATE.yaml` (the primary standard)
+> - **Scope**: Use for quality gates before committing SPEC changes
+
 # SPEC Validation Rules Reference
 
 **Version**: 1.0

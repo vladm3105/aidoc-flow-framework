@@ -1,3 +1,8 @@
+# 📋 Document Authority: This is the PRIMARY STANDARD for SPEC YAML structure.
+# - All SPEC YAML files must conform to this template
+# - SPEC_CREATION_RULES.md - Helper guidance for template usage
+# - SPEC_VALIDATION_RULES.md - Post-creation validation checks
+
 # ===================
 # SPEC-NNN: [Component Name]
 # ===================
@@ -26,6 +31,14 @@ summary: Single-sentence description of component purpose, scope, and primary va
 # ===================
 # METADATA & DOCUMENT CONTROL
 # ===================
+#
+# ⚠️ UPSTREAM ARTIFACT REQUIREMENT: Before completing traceability tags:
+# 1. Check existing artifacts: List what upstream documents actually exist in docs/
+# 2. Reference only existing documents: Use actual document IDs, not placeholders
+# 3. Use null appropriately: Only when upstream artifact type genuinely doesn't exist
+# 4. Do NOT create phantom references: Never reference documents that don't exist
+# 5. Do NOT create missing upstream artifacts: If upstream are missing, skip that functionality
+#
 
 metadata:
   version: "1.0.0"

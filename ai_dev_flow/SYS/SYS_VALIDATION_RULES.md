@@ -12,6 +12,11 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for SYS documents.
+> - Apply these rules after SYS creation or modification
+> - **Authority**: Validates compliance with `SYS-TEMPLATE.md` (the primary standard)
+> - **Scope**: Use for quality gates before committing SYS changes
+
 # SYS Validation Rules Reference
 
 **Version**: 1.0

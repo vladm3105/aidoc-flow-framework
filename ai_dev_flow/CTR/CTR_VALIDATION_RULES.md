@@ -12,6 +12,11 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for CTR documents.
+> - Apply these rules after CTR creation or modification
+> - **Authority**: Validates compliance with `CTR-TEMPLATE.md/.yaml` (the primary standards)
+> - **Scope**: Use for quality gates before committing CTR changes
+
 # CTR Validation Rules
 
 Rules for validating Data Contracts (CTR) documents in the SDD framework.

@@ -12,6 +12,11 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for ADR documents.
+> - Apply these rules after ADR creation or modification
+> - **Authority**: Validates compliance with `ADR-TEMPLATE.md` (the primary standard)
+> - **Scope**: Use for quality gates before committing ADR changes
+
 # ADR Validation Rules Reference
 
 **Version**: 1.0

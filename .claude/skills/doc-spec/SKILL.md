@@ -31,6 +31,21 @@ Create **Technical Specifications (SPEC)** - Layer 10 artifact in the SDD workfl
 
 ## Prerequisites
 
+### Upstream Artifact Verification (CRITICAL)
+
+**Before creating this document, you MUST:**
+
+1. **List existing upstream artifacts**:
+   ```bash
+   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ 2>/dev/null
+   ```
+
+2. **Reference only existing documents** in traceability tags
+3. **Use `null`** only when upstream artifact type genuinely doesn't exist
+4. **NEVER use placeholders** like `BRD-XXX` or `TBD`
+5. **Do NOT create missing upstream artifacts** - skip functionality instead
+
+
 Before creating SPEC, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`

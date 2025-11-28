@@ -12,6 +12,10 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is a **CREATION HELPER** for IMPL-TEMPLATE.md.
+> - **Authority**: `IMPL-TEMPLATE.md` is the single source of truth for IMPL structure
+> - **Validation**: Use `IMPL_VALIDATION_RULES.md` after IMPL creation/changes
+
 # IMPL Creation Rules
 
 Rules for creating Implementation Plans (IMPL) documents in the SDD framework.
@@ -404,6 +408,49 @@ IMPL produces (as deliverables):
 - [ ] Registered in IMPL-000_index.md
 
 ---
+
+## 13. Upstream Artifact Verification Process
+
+### Before Creating This Document
+
+**Step 1: Inventory Existing Upstream Artifacts**
+
+```bash
+# List existing upstream artifacts for this layer
+ls -la docs/BRD/    # Layer 1
+ls -la docs/PRD/    # Layer 2
+ls -la docs/EARS/   # Layer 3
+ls -la docs/BDD/    # Layer 4
+ls -la docs/ADR/    # Layer 5
+ls -la docs/SYS/    # Layer 6
+ls -la docs/REQ/    # Layer 7
+# ... continue for applicable layers
+```
+
+**Step 2: Map Existing Documents to Traceability Tags**
+
+| Tag | Required for This Layer | Existing Document | Action |
+|-----|------------------------|-------------------|--------|
+| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| ... | ... | ... | ... |
+
+**Step 3: Decision Rules**
+
+| Situation | Action |
+|-----------|--------|
+| Upstream exists | Reference with exact document ID |
+| Upstream required but missing | Skip that functionality - do NOT implement |
+| Upstream optional and missing | Use `null` in traceability tag |
+| Upstream not applicable | Omit tag entirely |
+
+### Traceability Tag Rules
+
+- **NEVER** use placeholder IDs like `BRD-XXX` or `TBD`
+- **NEVER** reference documents that don't exist
+- **ALWAYS** verify document exists before adding reference
+- **USE** `null` only when artifact type is genuinely not applicable
+
 
 ## References
 

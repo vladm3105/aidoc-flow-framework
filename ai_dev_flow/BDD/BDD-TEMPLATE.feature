@@ -23,6 +23,11 @@
 # For detailed guidance on requirements boundaries, see:
 #   - ../EARS/EARS-TEMPLATE.md#5.6 (Business vs Technical Requirements Boundary)
 #   - ../BRD/BRD-TEMPLATE.md#appendix-b (PRD-Level Content Exclusions)
+#
+# 📋 Document Authority: This is the PRIMARY STANDARD for BDD structure.
+# - All BDD feature files must conform to this template
+# - BDD_CREATION_RULES.md - Helper guidance for template usage
+# - BDD_VALIDATION_RULES.md - Post-creation validation checks
 
 ## Document Control
 
@@ -44,6 +49,14 @@
 | | | | | |
 
 ---
+
+> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
+> 1. **Check existing artifacts**: List what upstream documents actually exist in `docs/`
+> 2. **Reference only existing documents**: Use actual document IDs, not placeholders
+> 3. **Use `null` appropriately**: Only when upstream artifact type genuinely doesn't exist for this feature
+> 4. **Do NOT create phantom references**: Never reference documents that don't exist
+> 5. **Do NOT create missing upstream artifacts**: If upstream artifacts are missing, skip that functionality. Only create functionality for existing upstream artifacts.
+
 # 
 
 POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from EARS requirements

@@ -89,6 +89,15 @@ See [ICON_INTEGRATION_WORKFLOW.md](./ICON_INTEGRATION_WORKFLOW.md) for:
 
 ---
 
+> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
+> 1. **Check existing artifacts**: List what upstream documents actually exist in `docs/`
+> 2. **Reference only existing documents**: Use actual document IDs, not placeholders
+> 3. **Use `null` appropriately**: Only when upstream artifact type genuinely doesn't exist for this feature
+> 4. **Do NOT create phantom references**: Never reference documents that don't exist
+> 5. **Do NOT create missing upstream artifacts**: If upstream artifacts are missing, skip that functionality. Only create functionality for existing upstream artifacts.
+
+
+
 ## 3. Executive Summary
 
 [2-3 sentence overview of what this contract defines, why it exists as a standalone file, and its role in coordinating parallel development]

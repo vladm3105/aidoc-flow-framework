@@ -12,6 +12,11 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for BRD documents.
+> - Apply these rules after BRD creation or modification
+> - **Authority**: Validates compliance with `BRD-TEMPLATE.md` (the primary standard)
+> - **Scope**: Use for quality gates before committing BRD changes
+
 # BRD Validation Rules Reference
 
 **Version**: 1.1.0

@@ -12,6 +12,11 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for IMPL documents.
+> - Apply these rules after IMPL creation or modification
+> - **Authority**: Validates compliance with `IMPL-TEMPLATE.md` (the primary standard)
+> - **Scope**: Use for quality gates before committing IMPL changes
+
 # IMPL Validation Rules
 
 Rules for validating Implementation Plans (IMPL) documents in the SDD framework.

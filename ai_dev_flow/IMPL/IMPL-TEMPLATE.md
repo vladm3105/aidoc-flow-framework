@@ -15,6 +15,11 @@ custom_fields:
   template_for: implementation-approach-document
 ---
 
+> **📋 Document Authority**: This is the **PRIMARY STANDARD** for IMPL structure.
+> - All IMPL documents must conform to this template
+> - `IMPL_CREATION_RULES.md` - Helper guidance for template usage
+> - `IMPL_VALIDATION_RULES.md` - Post-creation validation checks
+
 # IMPL-NNN: [Implementation Plan Title]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
@@ -68,6 +73,15 @@ flowchart LR
 - **IMPL is project management**, not technical design
 
 ---
+
+> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
+> 1. **Check existing artifacts**: List what upstream documents actually exist in `docs/`
+> 2. **Reference only existing documents**: Use actual document IDs, not placeholders
+> 3. **Use `null` appropriately**: Only when upstream artifact type genuinely doesn't exist for this feature
+> 4. **Do NOT create phantom references**: Never reference documents that don't exist
+> 5. **Do NOT create missing upstream artifacts**: If upstream artifacts are missing, skip that functionality. Only create functionality for existing upstream artifacts.
+
+
 
 ## 2. PART 1: Project Context and Strategy
 

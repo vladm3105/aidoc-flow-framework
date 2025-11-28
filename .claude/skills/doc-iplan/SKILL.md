@@ -31,6 +31,21 @@ Create **Implementation Plans (IPLAN)** - Layer 12 artifact in the SDD workflow 
 
 ## Prerequisites
 
+### Upstream Artifact Verification (CRITICAL)
+
+**Before creating this document, you MUST:**
+
+1. **List existing upstream artifacts**:
+   ```bash
+   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ 2>/dev/null
+   ```
+
+2. **Reference only existing documents** in traceability tags
+3. **Use `null`** only when upstream artifact type genuinely doesn't exist
+4. **NEVER use placeholders** like `BRD-XXX` or `TBD`
+5. **Do NOT create missing upstream artifacts** - skip functionality instead
+
+
 Before creating IPLAN, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
@@ -52,35 +67,69 @@ Use `doc-iplan` when:
 
 ## IPLAN-Specific Guidance
 
-### 1. File Naming Convention (New as of 2025-11-13)
+### 1. File Naming Convention
 
-**Format**: `IPLAN-NNN_{descriptive_slug}_YYYYMMDD_HHMMSS.md`
+**Format**: `IPLAN-NNN_{descriptive_slug}.md`
 
 **Components**:
-- **IPLAN-NNN**: Sequential 3-digit ID
-- **descriptive_slug**: Short kebab-case description
-- **YYYYMMDD_HHMMSS**: Timestamp when plan created (24-hour format, EST/America/New_York timezone)
-  - YYYYMMDD: Year-Month-Day (e.g., 20251120)
-  - HHMMSS: Hour-Minute-Second in 24-hour format (e.g., 143022 for 2:30:22 PM)
+- **IPLAN-NNN**: Sequential 3-digit ID (e.g., IPLAN-001, IPLAN-002)
+- **descriptive_slug**: Short lowercase description with underscores (e.g., gateway_connection, trade_validation)
 
-**Example**: `IPLAN-001_data_validation_20250115_143022.md`
+**Examples**:
+- `IPLAN-001_gateway_connection.md`
+- `IPLAN-002_trade_validation.md`
+- `IPLAN-003_market_data_streaming.md`
 
-**Timestamp Validation**:
+**Filename Validation**:
 ```bash
-# Validate timestamp format (must be exactly 15 chars: _YYYYMMDD_HHMMSS)
-filename="IPLAN-001_data_validation_20251120_143022.md"
-if [[ ! $filename =~ _[0-9]{8}_[0-9]{6}\.md$ ]]; then
-  echo "ERROR: Invalid timestamp format. Must be _YYYYMMDD_HHMMSS.md"
+# Validate filename format
+filename="IPLAN-001_gateway_connection.md"
+if [[ ! $filename =~ ^IPLAN-[0-9]{3,4}_[a-z0-9_]+\.md$ ]]; then
+  echo "ERROR: Invalid format. Must be IPLAN-NNN_{slug}.md"
   exit 1
 fi
 ```
 
-**Benefits**:
-- Session-based tracking (timestamp)
-- Easy chronological sorting
-- Unique plan identification
+**Tag Format**: `@iplan: IPLAN-001` (use ID only, not full filename)
 
-**Tag Format**: `@iplan: IPLAN-001` (use ID only, NOT full filename with timestamp)
+### 1.1 Required Frontmatter Structure
+
+**CRITICAL**: Every IPLAN file MUST include this frontmatter structure with the `tags:` section:
+
+```yaml
+---
+tags:
+  - implementation-plan
+  - layer-12-artifact
+  - active
+title: "IPLAN-NNN: [Descriptive Task/Feature Name]"
+layer: 12
+artifact_type: IPLAN
+parent_tasks: TASKS-NNN
+dependencies: []
+status: ready
+created: YYYY-MM-DD
+estimated_effort_hours: NN
+# Layer 12 Cumulative Traceability Tags
+traceability:
+  brd: "BRD-NNN" or null
+  prd: "PRD-NNN" or null
+  ears: "EARS-NNN" or null
+  bdd: "BDD-NNN" or null
+  adr: "ADR-NNN" or null
+  sys: "SYS-NNN"
+  req: "REQ-NNN"
+  spec: "SPEC-NNN"
+  tasks: "TASKS-NNN"
+---
+```
+
+**MANDATORY TAGS**:
+- `implementation-plan` - Identifies document type
+- `layer-12-artifact` - **REQUIRED** for validation (validation will FAIL without this)
+- `active` - Document status
+
+**Validation will reject files missing `layer-12-artifact` tag.**
 
 ### 2. Session-Based Execution Plan
 
@@ -317,17 +366,15 @@ git reset --hard HEAD~1
 
 Read TASKS (Layer 11) - task breakdown to convert to commands.
 
-### Step 2: Reserve ID Number and Generate Timestamp
+### Step 2: Reserve ID Number
 
 Check `docs/IPLAN/` for next available ID number.
 
-Generate timestamp: `YYYYMMDD_HHMMSS`
-
 ### Step 3: Create IPLAN File
 
-**Location**: `docs/IPLAN/IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md` (template available at `ai_dev_flow/IPLAN/`)
+**Location**: `docs/IPLAN/IPLAN-NNN_{slug}.md` (template available at `ai_dev_flow/IPLAN/`)
 
-**Example**: `docs/IPLAN/IPLAN-001_data_validation_20250115_143022.md`
+**Example**: `docs/IPLAN/IPLAN-001_data_validation.md`
 
 ### Step 4: Fill Document Control Section
 
@@ -407,7 +454,7 @@ bash -n docs/IPLAN/IPLAN-001_*.md
 
 ### Manual Checklist
 
-- [ ] File naming follows IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md format
+- [ ] File naming follows IPLAN-NNN_{slug}.md format
 - [ ] Document Control section at top
 - [ ] Overview explains session-based approach
 - [ ] Prerequisites listed (database, credentials, etc.)
@@ -427,7 +474,7 @@ bash -n docs/IPLAN/IPLAN-001_*.md
 1. **Non-executable commands**: Commands must be copy-paste ready
 2. **Missing validation**: Each session needs validation commands
 3. **No rollback**: Must provide undo procedures
-4. **Wrong file naming**: Must use IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md format
+4. **Wrong file naming**: Must use IPLAN-NNN_{slug}.md format
 5. **Missing cumulative tags**: Layer 12 must include all 9-11 upstream tags
 6. **No error checking**: Commands should check for errors
 
@@ -457,7 +504,7 @@ Execute the IPLAN session-by-session to implement the code.
 
 **Format**: Session-based execution plan with bash commands
 
-**File Naming**: `IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md`
+**File Naming**: `IPLAN-NNN_{slug}.md`
 
 **Tag Format**: `@iplan: IPLAN-001` (use ID only, not full filename)
 

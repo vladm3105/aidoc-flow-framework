@@ -15,6 +15,11 @@ custom_fields:
   template_for: business-requirements-document
 ---
 
+> **📋 Document Authority**: This is the **PRIMARY STANDARD** for BRD structure.
+> - All BRDs must conform to this template
+> - `BRD_CREATION_RULES.md` - Helper guidance for template usage
+> - `BRD_VALIDATION_RULES.md` - Post-creation validation checks
+
 # Business Requirements Document (BRD)
 
 ## Document Control
@@ -37,6 +42,15 @@ custom_fields:
 | | | | | |
 
 ---
+
+> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
+> 1. **Check existing artifacts**: List what upstream documents actually exist in `docs/`
+> 2. **Reference only existing documents**: Use actual document IDs, not placeholders
+> 3. **Use `null` appropriately**: Only when upstream artifact type genuinely doesn't exist for this feature
+> 4. **Do NOT create phantom references**: Never reference documents that don't exist
+> 5. **Do NOT create missing upstream artifacts**: If upstream artifacts are missing, skip that functionality. Only create functionality for existing upstream artifacts.
+
+
 
 ## 1. Introduction
 

@@ -15,6 +15,11 @@ custom_fields:
   template_for: architecture-decision-record
 ---
 
+> **📋 Document Authority**: This is the **PRIMARY STANDARD** for ADR structure.
+> - All ADRs must conform to this template
+> - `ADR_CREATION_RULES.md` - Helper guidance for template usage
+> - `ADR_VALIDATION_RULES.md` - Post-creation validation checks
+
 # ADR-NNN: [Architecture Decision Title]
 
 ## 1. Document Control
@@ -37,6 +42,15 @@ custom_fields:
 | | | | | |
 
 ---
+
+> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
+> 1. **Check existing artifacts**: List what upstream documents actually exist in `docs/`
+> 2. **Reference only existing documents**: Use actual document IDs, not placeholders
+> 3. **Use `null` appropriately**: Only when upstream artifact type genuinely doesn't exist for this feature
+> 4. **Do NOT create phantom references**: Never reference documents that don't exist
+> 5. **Do NOT create missing upstream artifacts**: If upstream artifacts are missing, skip that functionality. Only create functionality for existing upstream artifacts.
+
+
 
 ## 2. Position in Development Workflow
 

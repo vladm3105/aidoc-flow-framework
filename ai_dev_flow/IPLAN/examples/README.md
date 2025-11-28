@@ -49,13 +49,13 @@ This directory contains example Implementation Plans (IPLANs) demonstrating best
 Examples follow IPLAN naming with `_example` suffix:
 
 ```
-IPLAN-NNN_{feature_name}_example_YYYYMMDD_HHMMSS.md
+IPLAN-NNN_{feature_name}_example.md
 ```
 
 Example filenames:
-- `IPLAN-001_api_integration_example_20251113_143000.md`
-- `IPLAN-002_database_migration_example_20251113_150000.md`
-- `IPLAN-003_service_deployment_example_20251113_160000.md`
+- `IPLAN-001_api_integration_example.md`
+- `IPLAN-002_database_migration_example.md`
+- `IPLAN-003_service_deployment_example.md`
 
 ## Creating New Examples
 

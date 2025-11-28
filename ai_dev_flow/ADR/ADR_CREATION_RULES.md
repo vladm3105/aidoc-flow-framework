@@ -12,6 +12,10 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is a **CREATION HELPER** for ADR-TEMPLATE.md.
+> - **Authority**: `ADR-TEMPLATE.md` is the single source of truth for ADR structure
+> - **Validation**: Use `ADR_VALIDATION_RULES.md` after ADR creation/changes
+
 # ADR Creation Rules
 
 **Version**: 1.0
@@ -219,3 +223,46 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 **Framework Compliance**: 100% doc_flow SDD framework (Layer 5)
 **Integration**: Enforces ADR → SYS progression quality gates
+
+
+## 12. Upstream Artifact Verification Process
+
+### Before Creating This Document
+
+**Step 1: Inventory Existing Upstream Artifacts**
+
+```bash
+# List existing upstream artifacts for this layer
+ls -la docs/BRD/    # Layer 1
+ls -la docs/PRD/    # Layer 2
+ls -la docs/EARS/   # Layer 3
+ls -la docs/BDD/    # Layer 4
+ls -la docs/ADR/    # Layer 5
+ls -la docs/SYS/    # Layer 6
+ls -la docs/REQ/    # Layer 7
+# ... continue for applicable layers
+```
+
+**Step 2: Map Existing Documents to Traceability Tags**
+
+| Tag | Required for This Layer | Existing Document | Action |
+|-----|------------------------|-------------------|--------|
+| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| ... | ... | ... | ... |
+
+**Step 3: Decision Rules**
+
+| Situation | Action |
+|-----------|--------|
+| Upstream exists | Reference with exact document ID |
+| Upstream required but missing | Skip that functionality - do NOT implement |
+| Upstream optional and missing | Use `null` in traceability tag |
+| Upstream not applicable | Omit tag entirely |
+
+### Traceability Tag Rules
+
+- **NEVER** use placeholder IDs like `BRD-XXX` or `TBD`
+- **NEVER** reference documents that don't exist
+- **ALWAYS** verify document exists before adding reference
+- **USE** `null` only when artifact type is genuinely not applicable

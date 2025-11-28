@@ -1,3 +1,8 @@
+> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for REQ documents.
+> - Apply these rules after REQ creation or modification
+> - **Authority**: Validates compliance with `REQ-TEMPLATE.md` (the primary standard)
+> - **Scope**: Use for quality gates before committing REQ changes
+
 # REQ Validation Rules Reference
 
 **Version**: 3.0.0

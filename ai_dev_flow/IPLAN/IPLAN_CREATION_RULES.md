@@ -12,6 +12,10 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is a **CREATION HELPER** for IPLAN-TEMPLATE.md.
+> - **Authority**: `IPLAN-TEMPLATE.md` is the single source of truth for IPLAN structure
+> - **Validation**: Use `IPLAN_VALIDATION_RULES.md` after IPLAN creation/changes
+
 # IPLAN Creation Rules
 
 Rules for creating Implementation Plans (IPLAN) documents in the SDD framework.
@@ -52,29 +56,27 @@ Rules for creating Implementation Plans (IPLAN) documents in the SDD framework.
 ### Format
 
 ```
-IPLAN-NNN_{descriptive_slug}_YYYYMMDD_HHMMSS.md
+IPLAN-NNN_{descriptive_slug}.md
 ```
 
 ### Rules
 
 1. **IPLAN-NNN**: Sequential numbering starting from 001
 2. **descriptive_slug**: Lowercase with underscores
-3. **Timestamp**: YYYYMMDD_HHMMSS format (EST/EDT timezone)
-4. **Extension**: Always `.md`
+3. **Extension**: Always `.md`
 
 ### Examples
 
-- `IPLAN-001_implement_gateway_connection_20251127_092843.md`
-- `IPLAN-002_add_retry_logic_20251127_143022.md`
-- `IPLAN-003_deploy_authentication_service_20251128_095500.md`
+- `IPLAN-001_implement_gateway_connection.md`
+- `IPLAN-002_add_retry_logic.md`
+- `IPLAN-003_deploy_authentication_service.md`
 
 ### Naming Rules
 
 1. Always use `IPLAN` (not `IPLAN_S`, `IMPLPLAN`, or `iplan`)
 2. Sequence numbers must be zero-padded (001, not 1)
 3. Descriptive slug uses underscores, not hyphens or camelCase
-4. Timestamp required for session tracking
-5. Always use EST/EDT timezone for consistency
+4. Do NOT include timestamps in filename (use Document Control for versioning)
 
 ---
 
@@ -97,6 +99,23 @@ custom_fields:
   complexity: [1-5]
 ---
 ```
+
+### 3.1.1 Immediate Validation After Creation
+
+**MANDATORY**: Run validation immediately after creating each IPLAN file.
+
+```bash
+# Validate immediately after creation
+./ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-NNN_*.md
+
+# Quick check for required tag
+grep -q "layer-12-artifact" docs/IPLAN/IPLAN-NNN_*.md || echo "ERROR: Missing layer-12-artifact tag"
+
+# Quick check for tags section
+grep -q "^tags:" docs/IPLAN/IPLAN-NNN_*.md || echo "ERROR: Missing tags: section"
+```
+
+**CRITICAL**: Do NOT proceed to next IPLAN until validation passes. Files missing `layer-12-artifact` tag will fail validation.
 
 ### 3.2 Document Control Table
 
@@ -437,8 +456,8 @@ poetry show | grep -E "(ib_async|pydantic)"
 ### Splitting Pattern
 
 ```
-IPLAN-001_feature_part1_20251127_092843.md (Phase 0-2)
-IPLAN-001_feature_part2_20251127_092843.md (Phase 3-4)
+IPLAN-001_feature_part1.md (Phase 0-2)
+IPLAN-001_feature_part2.md (Phase 3-4)
 ```
 
 ### Efficiency Techniques
@@ -457,7 +476,7 @@ IPLAN-001_feature_part2_20251127_092843.md (Phase 3-4)
 1. **No verification steps** - Every command needs verification
 2. **Relative paths** - Use absolute paths always
 3. **Vague commands** - Be specific with versions, flags
-4. **Missing timestamps** - Include in filename
+4. **Wrong filename format** - Use IPLAN-NNN_{slug}.md (no timestamps)
 5. **Incomplete tags** - All 9 required tags mandatory
 6. **Technical design** - HOW belongs in SPEC, not IPLAN
 7. **No resume markers** - Mark where to continue
@@ -469,12 +488,12 @@ IPLAN-001_feature_part2_20251127_092843.md (Phase 3-4)
 ### Automated Validation
 
 ```bash
-./scripts/validate_iplan.sh /path/to/IPLAN-NNN_name_timestamp.md
+./scripts/validate_iplan.sh /path/to/IPLAN-NNN_{slug}.md
 ```
 
 ### Manual Checklist
 
-- [ ] Filename follows convention with timestamp
+- [ ] Filename follows convention (IPLAN-NNN_{slug}.md)
 - [ ] All required sections present
 - [ ] Bash commands are executable
 - [ ] Verification after each step
@@ -483,6 +502,49 @@ IPLAN-001_feature_part2_20251127_092843.md (Phase 3-4)
 - [ ] Token count < 100KB
 
 ---
+
+## 14. Upstream Artifact Verification Process
+
+### Before Creating This Document
+
+**Step 1: Inventory Existing Upstream Artifacts**
+
+```bash
+# List existing upstream artifacts for this layer
+ls -la docs/BRD/    # Layer 1
+ls -la docs/PRD/    # Layer 2
+ls -la docs/EARS/   # Layer 3
+ls -la docs/BDD/    # Layer 4
+ls -la docs/ADR/    # Layer 5
+ls -la docs/SYS/    # Layer 6
+ls -la docs/REQ/    # Layer 7
+# ... continue for applicable layers
+```
+
+**Step 2: Map Existing Documents to Traceability Tags**
+
+| Tag | Required for This Layer | Existing Document | Action |
+|-----|------------------------|-------------------|--------|
+| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| ... | ... | ... | ... |
+
+**Step 3: Decision Rules**
+
+| Situation | Action |
+|-----------|--------|
+| Upstream exists | Reference with exact document ID |
+| Upstream required but missing | Skip that functionality - do NOT implement |
+| Upstream optional and missing | Use `null` in traceability tag |
+| Upstream not applicable | Omit tag entirely |
+
+### Traceability Tag Rules
+
+- **NEVER** use placeholder IDs like `BRD-XXX` or `TBD`
+- **NEVER** reference documents that don't exist
+- **ALWAYS** verify document exists before adding reference
+- **USE** `null` only when artifact type is genuinely not applicable
+
 
 ## References
 

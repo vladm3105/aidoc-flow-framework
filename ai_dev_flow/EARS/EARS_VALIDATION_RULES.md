@@ -12,6 +12,11 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for EARS documents.
+> - Apply these rules after EARS creation or modification
+> - **Authority**: Validates compliance with `EARS-TEMPLATE.md` (the primary standard)
+> - **Scope**: Use for quality gates before committing EARS changes
+
 # EARS Validation Rules Reference
 
 **Version**: 1.0

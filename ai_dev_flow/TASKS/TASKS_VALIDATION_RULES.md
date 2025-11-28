@@ -12,6 +12,11 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for TASKS documents.
+> - Apply these rules after TASKS creation or modification
+> - **Authority**: Validates compliance with `TASKS-TEMPLATE.md` (the primary standard)
+> - **Scope**: Use for quality gates before committing TASKS changes
+
 # TASKS Validation Rules
 
 Rules for validating AI Tasks (TASKS) documents in the SDD framework.

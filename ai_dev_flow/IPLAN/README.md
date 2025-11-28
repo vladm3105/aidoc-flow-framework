@@ -521,26 +521,24 @@ poetry show | grep ib_async
 
 **Template File**: `IPLAN-TEMPLATE.md`
 
-**Document Files**: `IPLAN-NNN_{descriptive_slug}_YYYYMMDD_HHMMSS.md`
+**Document Files**: `IPLAN-NNN_{descriptive_slug}.md`
 
 **Components**:
 - `IPLAN` - constant prefix (uppercase)
 - `NNN` - three-digit sequence (001, 002, 003, ...)
 - `descriptive_slug` - lowercase with underscores (describes task/feature)
-- `YYYYMMDD_HHMMSS` - creation timestamp
 - `.md` - markdown extension
 
 **Examples**:
-- `IPLAN-001_implement_gateway_connection_20251112_092843.md`
-- `IPLAN-002_add_retry_logic_20251112_143022.md`
-- `IPLAN-003_deploy_authentication_service_20251113_095500.md`
+- `IPLAN-001_implement_gateway_connection.md`
+- `IPLAN-002_add_retry_logic.md`
+- `IPLAN-003_deploy_authentication_service.md`
 
 **Naming Rules**:
 1. Always use `IPLAN` (not `IPLAN_S`, `IMPLPLAN`, or `iplan`)
 2. Sequence numbers must be zero-padded (001, not 1)
 3. Descriptive slug uses underscores, not hyphens or camelCase
-4. Timestamp format: YYYYMMDD_HHMMSS
-5. Always use EST/EDT timezone for consistency
+4. Do NOT include timestamps in filename (use Document Control for versioning)
 
 ## Integration with Other Document Types
 
@@ -1033,8 +1031,8 @@ pytest tests/unit/test_models.py::test_connection_config_validation -v
 
 **Splitting Pattern**:
 ```
-IPLAN-001_gateway_connection_part1_20251112_092843.md (Phase 0-2)
-IPLAN-001_gateway_connection_part2_20251112_092843.md (Phase 3-4)
+IPLAN-001_gateway_connection_part1.md (Phase 0-2)
+IPLAN-001_gateway_connection_part2.md (Phase 3-4)
 ```
 
 ### Efficiency Techniques

@@ -12,6 +12,10 @@ custom_fields:
   development_status: active
 ---
 
+> **📋 Document Role**: This is a **CREATION HELPER** for REQ-TEMPLATE.md.
+> - **Authority**: `REQ-TEMPLATE.md` is the single source of truth for REQ structure
+> - **Validation**: Use `REQ_VALIDATION_RULES.md` after REQ creation/changes
+
 # REQ Creation Rules
 
 **Version**: 3.0
@@ -175,3 +179,46 @@ find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template_v3.sh {} \;
 **Review Frequency**: Updated with template and validation rule changes
 
 ---
+
+
+## 12. Upstream Artifact Verification Process
+
+### Before Creating This Document
+
+**Step 1: Inventory Existing Upstream Artifacts**
+
+```bash
+# List existing upstream artifacts for this layer
+ls -la docs/BRD/    # Layer 1
+ls -la docs/PRD/    # Layer 2
+ls -la docs/EARS/   # Layer 3
+ls -la docs/BDD/    # Layer 4
+ls -la docs/ADR/    # Layer 5
+ls -la docs/SYS/    # Layer 6
+ls -la docs/REQ/    # Layer 7
+# ... continue for applicable layers
+```
+
+**Step 2: Map Existing Documents to Traceability Tags**
+
+| Tag | Required for This Layer | Existing Document | Action |
+|-----|------------------------|-------------------|--------|
+| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| ... | ... | ... | ... |
+
+**Step 3: Decision Rules**
+
+| Situation | Action |
+|-----------|--------|
+| Upstream exists | Reference with exact document ID |
+| Upstream required but missing | Skip that functionality - do NOT implement |
+| Upstream optional and missing | Use `null` in traceability tag |
+| Upstream not applicable | Omit tag entirely |
+
+### Traceability Tag Rules
+
+- **NEVER** use placeholder IDs like `BRD-XXX` or `TBD`
+- **NEVER** reference documents that don't exist
+- **ALWAYS** verify document exists before adding reference
+- **USE** `null` only when artifact type is genuinely not applicable

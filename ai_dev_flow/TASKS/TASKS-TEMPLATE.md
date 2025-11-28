@@ -15,6 +15,11 @@ custom_fields:
   template_for: task-breakdown-document
 ---
 
+> **📋 Document Authority**: This is the **PRIMARY STANDARD** for TASKS structure.
+> - All TASKS documents must conform to this template
+> - `TASKS_CREATION_RULES.md` - Helper guidance for template usage
+> - `TASKS_VALIDATION_RULES.md` - Post-creation validation checks
+
 # TASKS-NNN: [Descriptive Component/Feature Name]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
@@ -1500,6 +1505,15 @@ Document evidence that this task has been implemented correctly and meets all ac
 **Product Owner**: [Name/Email for requirements clarification]
 
 ---
+
+> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
+> 1. **Check existing artifacts**: List what upstream documents actually exist in `docs/`
+> 2. **Reference only existing documents**: Use actual document IDs, not placeholders
+> 3. **Use `null` appropriately**: Only when upstream artifact type genuinely doesn't exist for this feature
+> 4. **Do NOT create phantom references**: Never reference documents that don't exist
+> 5. **Do NOT create missing upstream artifacts**: If upstream artifacts are missing, skip that functionality. Only create functionality for existing upstream artifacts.
+
+
 
 ## 12. References
 

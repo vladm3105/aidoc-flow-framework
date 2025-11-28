@@ -15,6 +15,11 @@ custom_fields:
   template_for: engineering-requirements-document
 ---
 
+> **📋 Document Authority**: This is the **PRIMARY STANDARD** for EARS structure.
+> - All EARS documents must conform to this template
+> - `EARS_CREATION_RULES.md` - Helper guidance for template usage
+> - `EARS_VALIDATION_RULES.md` - Post-creation validation checks
+
 # EARS-NNN: [Short Descriptive Title]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
@@ -49,6 +54,15 @@ This document covers [specific system/component/feature] requirements derived fr
 - Product managers validating requirement completeness
 
 ---
+
+> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
+> 1. **Check existing artifacts**: List what upstream documents actually exist in `docs/`
+> 2. **Reference only existing documents**: Use actual document IDs, not placeholders
+> 3. **Use `null` appropriately**: Only when upstream artifact type genuinely doesn't exist for this feature
+> 4. **Do NOT create phantom references**: Never reference documents that don't exist
+> 5. **Do NOT create missing upstream artifacts**: If upstream artifacts are missing, skip that functionality. Only create functionality for existing upstream artifacts.
+
+
 
 ## 2. [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
 
