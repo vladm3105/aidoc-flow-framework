@@ -534,6 +534,259 @@ pip install google-adk
 
 ---
 
+### 9. skill-recommender
+
+**Skill ID**: `skill-recommender`
+**Directory**: [skill-recommender/](./skill-recommender/)
+**File**: [skill-recommender/SKILL.md](./skill-recommender/SKILL.md)
+
+**Purpose**: Intelligent skill suggestion engine that analyzes user intent and project context to recommend appropriate documentation skills
+
+**Use Cases**:
+- User is unsure which skill to use for a documentation task
+- Starting a new documentation workflow and need guidance
+- Want to discover available skills for a specific intent
+- Need help navigating the skill catalog
+
+**Complexity**: Low-Medium (intent parsing and skill matching)
+**Version**: 1.0.0
+**Created**: 2025-11-29
+
+**Quick Start**:
+```bash
+/skill skill-recommender
+```
+
+**Key Features**:
+- **Intent parsing**: Extract action verbs and targets from user requests
+- **Skill matching**: Map parsed intent to skill catalog with confidence scores
+- **Ranked recommendations**: Priority-ordered suggestions with rationale
+- **Ambiguity handling**: Clarification questions when intent unclear
+- **Context awareness**: Uses project state for better recommendations
+
+**Inputs**:
+- `user_request`: Natural language description of documentation task (required)
+- `project_context`: Project structure and existing artifacts (optional)
+- `max_recommendations`: Maximum recommendations to return (default: 3)
+
+**Outputs**:
+- Ranked skill recommendations with confidence scores
+- Rationale for each recommendation
+- Clarification questions when ambiguous
+- Next steps guidance
+
+**When to Use**:
+- Don't know which doc-* skill to invoke
+- New to the framework and need discovery
+- Want to validate skill selection before starting
+
+**When NOT to Use**:
+- Already know the specific skill needed
+- Non-documentation tasks
+- Experienced user with clear intent
+
+---
+
+### 10. context-analyzer
+
+**Skill ID**: `context-analyzer`
+**Directory**: [context-analyzer/](./context-analyzer/)
+**File**: [context-analyzer/SKILL.md](./context-analyzer/SKILL.md)
+
+**Purpose**: Project context analysis engine that scans project structure and surfaces relevant information for documentation creation
+
+**Use Cases**:
+- Starting documentation work in an existing project
+- Creating a new artifact that needs upstream references
+- Need to understand what documentation already exists
+- Want to identify gaps in documentation coverage
+- Preparing context for doc-* skill invocation
+
+**Complexity**: Medium (project scanning and context building)
+**Version**: 1.0.0
+**Created**: 2025-11-29
+
+**Quick Start**:
+```bash
+/skill context-analyzer
+```
+
+**Key Features**:
+- **Project scanning**: Enumerate artifacts by type and location
+- **Metadata extraction**: Parse YAML frontmatter and Document Control sections
+- **Traceability mapping**: Build artifact relationship graph
+- **Workflow position**: Calculate current position in SDD layers
+- **Upstream identification**: Find relevant upstream candidates for new artifacts
+- **Key term extraction**: Build project vocabulary from existing docs
+
+**Inputs**:
+- `project_root`: Root path of project to analyze (required)
+- `target_artifact_type`: Artifact type being created (optional)
+- `depth`: Analysis depth: "quick", "standard" (default), "deep"
+
+**Outputs**:
+- Artifact inventory by type
+- Traceability graph
+- Workflow position analysis
+- Upstream candidates with relevance scores
+- Key terms and domain vocabulary
+- Coverage gap identification
+
+**When to Use**:
+- Starting documentation in existing project
+- Need context for new artifact creation
+- Identifying documentation gaps
+- Understanding project state
+
+**When NOT to Use**:
+- Project has no existing documentation
+- Working on isolated single document
+- Full project audit needed (use trace-check)
+
+---
+
+### 11. quality-advisor
+
+**Skill ID**: `quality-advisor`
+**Directory**: [quality-advisor/](./quality-advisor/)
+**File**: [quality-advisor/SKILL.md](./quality-advisor/SKILL.md)
+
+**Purpose**: Proactive quality guidance system that monitors artifact creation and provides real-time feedback on documentation quality
+
+**Use Cases**:
+- Creating a new documentation artifact
+- Reviewing an artifact before submission
+- Want to check compliance with template requirements
+- Need guidance on common mistakes to avoid
+- Validating cumulative tagging compliance
+
+**Complexity**: Medium (template validation and anti-pattern detection)
+**Version**: 1.0.0
+**Created**: 2025-11-29
+
+**Quick Start**:
+```bash
+/skill quality-advisor
+```
+
+**Key Features**:
+- **Section monitoring**: Track completion against template requirements
+- **Anti-pattern detection**: Identify 10+ common documentation mistakes
+- **Tag validation**: Verify cumulative tagging compliance by layer
+- **Naming compliance**: Validate ID format and filename conventions
+- **Quality scoring**: Calculate overall completeness percentage
+- **Actionable suggestions**: Provide specific fix recommendations
+
+**Inputs**:
+- `artifact_content`: Current content of artifact being created (required)
+- `artifact_type`: Type of artifact (BRD, PRD, SPEC, etc.) (required)
+- `artifact_id`: Document ID if assigned (optional)
+- `check_level`: "quick", "standard" (default), "strict"
+
+**Outputs**:
+- Quality report with overall status
+- Section completion scores
+- Anti-pattern issues with severity levels
+- Tag compliance validation
+- Naming convention checks
+- Prioritized recommendations (high/medium/low)
+
+**Anti-Patterns Detected**:
+- AP-001: Missing Document Control
+- AP-002: Placeholder text ([TBD], TODO)
+- AP-003: Vague acceptance criteria
+- AP-004: Missing traceability tags
+- AP-005: Broken internal links
+- AP-006: ID format violations
+- AP-007: Empty required sections
+- AP-008: Orphan artifacts
+- AP-009: Missing anchors
+- AP-010: Duplicate ID references
+
+**When to Use**:
+- During artifact creation for real-time feedback
+- Before submitting for review
+- Validating compliance with SDD standards
+
+**When NOT to Use**:
+- Full traceability validation (use trace-check)
+- Batch project validation (use doc-validator)
+- Non-SDD documentation
+
+---
+
+### 12. workflow-optimizer
+
+**Skill ID**: `workflow-optimizer`
+**Directory**: [workflow-optimizer/](./workflow-optimizer/)
+**File**: [workflow-optimizer/SKILL.md](./workflow-optimizer/SKILL.md)
+
+**Purpose**: Workflow navigation assistant that recommends next steps and optimizes documentation sequence through the SDD workflow
+
+**Use Cases**:
+- Completed an artifact and need guidance on next steps
+- Starting documentation and need workflow overview
+- Want to identify parallel work opportunities
+- Need progress report on documentation completion
+- Unsure which artifacts to create next
+
+**Complexity**: Medium (workflow analysis and dependency tracking)
+**Version**: 1.0.0
+**Created**: 2025-11-29
+
+**Quick Start**:
+```bash
+/skill workflow-optimizer
+```
+
+**Key Features**:
+- **Project state analysis**: Scan and categorize all existing artifacts
+- **Workflow position**: Map artifacts to 12-layer SDD workflow
+- **Dependency analysis**: Identify blocked and ready layers
+- **Next-step recommendations**: Prioritized actions (P0, P1, P2) with rationale
+- **Parallel opportunities**: Find work that can proceed simultaneously
+- **Progress metrics**: Track completion percentage and milestones
+
+**Inputs**:
+- `project_root`: Root path of project to analyze (required)
+- `completed_artifact`: ID of just-completed artifact (optional)
+- `focus_area`: Filter: "core-workflow", "quality", "planning" (optional)
+
+**Outputs**:
+- Project state model with artifact inventory
+- Workflow position (completed, in-progress, blocked layers)
+- Next-step recommendations with skill invocations
+- Parallel work opportunities
+- Progress metrics and critical path
+- Workflow guidance (short-term, medium-term)
+
+**Workflow Layers**:
+1. BRD (Business Requirements)
+2. PRD (Product Requirements)
+3. EARS (Formal Requirements)
+4. BDD (Behavior Tests)
+5. ADR (Architecture Decisions)
+6. SYS (System Requirements)
+7. REQ (Atomic Requirements)
+8. IMPL (Implementation Plan) - optional
+9. CTR (Interface Contracts) - optional
+10. SPEC (Technical Specifications)
+11. TASKS (Implementation Tasks)
+12. IPLAN (Execution Plans)
+
+**When to Use**:
+- After completing any artifact
+- Starting documentation workflow
+- Planning parallel development
+- Tracking overall progress
+
+**When NOT to Use**:
+- Need skill recommendation for specific task (use skill-recommender)
+- Need project context (use context-analyzer)
+- Validating artifacts (use trace-check or quality-advisor)
+
+---
+
 ## Skill Development
 
 ### Creating New Skills
@@ -679,6 +932,12 @@ pip install google-adk
 ### Agent Development & AI Skills
 - `google-adk` - Multi-agent systems and agentic application development with Python
 
+### AI Assistant Skills
+- `skill-recommender` - Intelligent skill suggestion based on user intent and project context
+- `context-analyzer` - Project structure scanning and context building for documentation
+- `quality-advisor` - Proactive quality guidance and anti-pattern detection during artifact creation
+- `workflow-optimizer` - SDD workflow navigation and next-step recommendations
+
 ---
 
 ## Related Documentation
@@ -719,6 +978,6 @@ This functional grouping simplifies understanding the workflow while maintaining
 
 ---
 
-**Index Version**: 1.6
-**Last Updated**: 2025-11-13
-**Next Review**: 2026-02-13 (quarterly)
+**Index Version**: 1.7
+**Last Updated**: 2025-11-29
+**Next Review**: 2026-02-29 (quarterly)
