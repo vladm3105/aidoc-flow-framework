@@ -398,6 +398,135 @@ EOF
 - [ ] Traceability validated
 - [ ] Ready for deployment/integration
 
+### 6.4 Pre-Implementation Checklist
+
+**MANDATORY** - Complete before writing code:
+
+#### Code Reuse Search
+- [ ] Search codebase for existing utilities: `grep -r "function_name" src/`
+- [ ] Check for similar implementations in related modules
+- [ ] Document reusable components found: ____________
+- [ ] If duplicating code, document justification: ____________
+
+#### Interface Definition
+- [ ] Define Protocol/ABC interfaces before implementation
+- [ ] Document interface contracts with type hints
+- [ ] Specify return types for all public methods
+
+#### Dependency Verification
+- [ ] Verify all imports exist in project dependencies
+- [ ] Check import compatibility with Python version
+- [ ] Run syntax check: `python -m py_compile <file>`
+
+### 6.5 Security Checklist
+
+**MANDATORY** for code handling external input:
+
+#### Input Validation
+- [ ] Validate all string inputs (empty, length, pattern)
+- [ ] Validate numeric ranges (min, max, precision)
+- [ ] Sanitize file paths (no path traversal)
+- [ ] Validate identifiers (no empty strings, proper format)
+
+#### Hash/Crypto Selection
+- [ ] Document hash algorithm choice and rationale
+- [ ] Use SHA-256+ for security-sensitive hashing
+- [ ] MD5/SHA-1 only for non-security checksums (document why)
+
+#### Credential Handling
+- [ ] No credentials in code or logs
+- [ ] Use environment variables or secrets manager
+- [ ] Mask sensitive data in error messages
+
+### 6.6 Error Handling Standard
+
+**MANDATORY** - All exception handling must follow:
+
+#### Exception Rules
+- [ ] NEVER use bare `except:` or `except Exception:` without re-raise
+- [ ] Always use exception chaining: `raise NewError() from original`
+- [ ] Log exceptions before handling: `logger.error("msg", exc_info=True)`
+- [ ] Document retry behavior for recoverable errors
+
+#### Required Pattern
+```python
+try:
+    result = operation()
+except SpecificError as e:
+    logger.error("Operation failed: %s", e, exc_info=True)
+    raise ServiceError("Descriptive message") from e
+```
+
+#### Prohibited Patterns
+```python
+# PROHIBITED - Silent swallowing
+except Exception:
+    pass
+
+# PROHIBITED - No chaining
+except ValueError:
+    raise CustomError("msg")  # Missing 'from e'
+
+# PROHIBITED - Bare except
+except:
+    return default_value
+```
+
+### 6.7 Async/Concurrency Checklist
+
+**MANDATORY** for async code:
+
+#### Lock Selection
+- [ ] Use `asyncio.Lock()` for async code (NOT `threading.Lock`)
+- [ ] Use `threading.RLock()` only for sync code with reentrant needs
+- [ ] Document lock scope and what it protects
+
+#### Resource Management
+- [ ] Implement `async with` context manager for resources
+- [ ] Add cleanup/close methods for stateful classes
+- [ ] Cancel pending tasks in cleanup: `task.cancel()`
+
+#### Cache Patterns
+- [ ] Add cache invalidation method
+- [ ] Add cache clearing method
+- [ ] Document TTL and eviction strategy
+- [ ] Use `asyncio.Lock` for cache updates in async code
+
+#### Required Pattern for Resources
+```python
+class ResourceManager:
+    async def __aenter__(self):
+        await self._acquire()
+        return self
+
+    async def __aexit__(self, *args):
+        await self.cleanup()
+
+    async def cleanup(self):
+        """Release all resources."""
+        # Cancel tasks, close connections, clear caches
+```
+
+### 6.8 Documentation Standard
+
+**MANDATORY** for all public APIs:
+
+#### Docstring Requirements
+- [ ] All Protocol methods have docstrings with Args/Returns
+- [ ] All public classes have class-level docstrings
+- [ ] Complex algorithms have inline comments
+
+#### Type Hint Quality
+- [ ] NO `Any` type without documented justification
+- [ ] Use specific types: `Optional[SpecificType]` not `Optional[Any]`
+- [ ] Define TypeAlias for complex types
+- [ ] Use Protocol for duck typing instead of Any
+
+#### Module Documentation
+- [ ] `__init__.py` has module docstring
+- [ ] `__all__` exports are documented
+- [ ] Usage examples in module docstring or README
+
 ---
 
 ## 7. Technical Details
@@ -510,6 +639,21 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - **Automated**: Run `/opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_docs.py`
 - **Manual**: Verify each tag resolves to existing document in framework
 - **Traceability Matrix**: Update `IPLAN-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+
+### 8.6 Same-Type References (Conditional)
+
+**Include this section only if same-type relationships exist between IPLAN documents.**
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | [IPLAN-NNN](./IPLAN-NNN_...md) | [Related IPLAN title] | Shared session context |
+| Depends | [IPLAN-NNN](./IPLAN-NNN_...md) | [Prerequisite IPLAN title] | Must complete before this |
+
+**Tags:**
+```markdown
+@related-iplan: IPLAN-NNN
+@depends-iplan: IPLAN-NNN
+```
 
 ---
 

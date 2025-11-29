@@ -346,6 +346,13 @@ traceability:
     # Purpose: Complete traceability from business requirements to implementation
     # See: ../TRACEABILITY.md#cumulative-tagging-hierarchy
 
+  # Same-Type References (Conditional)
+  # Include only if same-type relationships exist between SPEC documents
+  same_type_references:
+    related_spec: []  # List of related SPEC-NNN IDs sharing domain context
+    depends_spec: []  # List of prerequisite SPEC-NNN IDs (must complete before this)
+    # Tags: @related-spec: SPEC-NNN, @depends-spec: SPEC-NNN
+
 # ===================
 # COMPONENT ARCHITECTURE
 # ===================

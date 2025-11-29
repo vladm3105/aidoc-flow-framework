@@ -722,7 +722,22 @@ API contracts and interface agreements for external integration.
 - Last modified: [Auto-generated on save]
 - Git hash: [Commit SHA when checked in]
 
-### 13.8 Traceability Tags
+### 13.8 Same-Type References (Conditional)
+
+**Include this section only if same-type relationships exist between SYS documents.**
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | [SYS-NNN](./SYS-NNN_...md) | [Related SYS title] | Shared system context |
+| Depends | [SYS-NNN](./SYS-NNN_...md) | [Prerequisite SYS title] | Must complete before this |
+
+**Tags:**
+```markdown
+@related-sys: SYS-NNN
+@depends-sys: SYS-NNN
+```
+
+### 13.9 Traceability Tags
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
 ```markdown

@@ -418,6 +418,21 @@ ls -la docs/REQ/    # Layer 7
 - **ALWAYS** verify document exists before adding reference
 - **USE** `null` only when artifact type is genuinely not applicable
 
+### Same-Type References (Conditional)
+
+Include ONLY if relationships exist between TASKS documents sharing implementation context or execution dependencies.
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | TASKS-NNN | [Related TASKS title] | Shared implementation context |
+| Depends | TASKS-NNN | [Prerequisite TASKS title] | Must complete before this |
+
+**Tags**:
+```markdown
+@related-tasks: TASKS-NNN
+@depends-tasks: TASKS-NNN
+```
+
 
 ## References
 

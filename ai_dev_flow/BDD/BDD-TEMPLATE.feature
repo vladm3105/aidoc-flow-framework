@@ -68,6 +68,11 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 #   Upstream: [REQ-NNN](../reqs/.../REQ-NNN_...md#REQ-NNN), [ADR-NNN](../../../adrs/ADR-NNN_...md#ADR-NNN)
 #   Downstream: Spec(../specs/.../SPEC-NNN_...yaml), Code(`component.module`), Tasks([TASKS-NNN](../ai_tasks/TASKS-NNN_....md))
 #
+# SAME-TYPE REFERENCES (Conditional):
+#   Include only if same-type relationships exist between BDD features.
+#   @related-bdd: BDD-NNN  # Related BDD feature sharing domain context
+#   @depends-bdd: BDD-NNN  # Prerequisite BDD feature that must be implemented first
+#
 # CUMULATIVE TAGGING REQUIREMENTS (Layer 4):
 # Required Tags: @brd, @prd, @ears (plus standard @requirement, @adr, @bdd tags)
 # Format: @artifact-type: DOCUMENT-ID:REQUIREMENT-ID

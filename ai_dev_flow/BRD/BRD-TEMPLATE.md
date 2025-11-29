@@ -1698,9 +1698,20 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | security & Compliance | NFR-XXX through NFR-012 | SPEC-XXX-NFR-S: security Controls | security audit |
 | Availability | NFR-013 through NFR-019 | SPEC-XXX-NFR-A: Deployment Architecture | Uptime monitoring |
 
-### 17.2 Cross-BRD Dependencies
+### 17.2 Same-Type References (Conditional)
+
+**Include this section only if same-type relationships exist between BRDs.**
+
+#### Cross-BRD Dependencies
 
 [Document dependencies on other BRDs in the system]
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | [BRD-NNN](./BRD-NNN_...md) | [Related BRD title] | Shared domain context |
+| Depends | [BRD-NNN](./BRD-NNN_...md) | [Prerequisite BRD title] | Must complete before this |
+
+**Detailed Dependency Table:**
 
 | This BRD | Depends On | Dependency Type | Impact if Missing | Status |
 |----------|------------|-----------------|-------------------|--------|
@@ -1712,6 +1723,12 @@ This section maps BRD requirements to upstream business objectives and downstrea
 - **Hard**: Blocking dependency - this BRD cannot proceed without the dependency
 - **Medium**: Important dependency - workarounds possible but not ideal
 - **Soft**: Nice-to-have dependency - enhances functionality but not required
+
+**Tags:**
+```markdown
+@related-brd: BRD-NNN
+@depends-brd: BRD-NNN
+```
 
 ### 17.3 Test Coverage Traceability
 

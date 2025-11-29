@@ -1211,7 +1211,22 @@ Document evidence that this task has been implemented correctly and meets all ac
 - Git hash: [Commit SHA when checked in]
 - Template compliance: ✅ Validated
 
-### 9.7 Traceability Tags
+### 9.7 Same-Type References (Conditional)
+
+**Include this section only if same-type relationships exist between TASKS documents.**
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | [TASKS-NNN](./TASKS-NNN_...md) | [Related TASKS title] | Shared implementation context |
+| Depends | [TASKS-NNN](./TASKS-NNN_...md) | [Prerequisite TASKS title] | Must complete before this |
+
+**Tags:**
+```markdown
+@related-tasks: TASKS-NNN
+@depends-tasks: TASKS-NNN
+```
+
+### 9.8 Traceability Tags
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
 ```markdown

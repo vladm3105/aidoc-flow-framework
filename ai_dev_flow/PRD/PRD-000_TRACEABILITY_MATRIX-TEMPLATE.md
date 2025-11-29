@@ -138,11 +138,11 @@ python scripts/extract_tags.py --type PRD --show-upstream brd
 
 ## 4. Complete PRD Inventory
 
-| PRD ID | Title | Feature Category | Status | Date | Upstream Sources | Downstream Artifacts |
-|--------|-------|------------------|--------|------|------------------|---------------------|
-| PRD-001 | [Product feature title] | [Category] | Active | YYYY-MM-DD | BRD-001, BRD-002 | EARS-001, EARS-002, BDD-001, ADR-005 |
-| PRD-002 | [Product feature title] | [Category] | Active | YYYY-MM-DD | BRD-003 | EARS-003, BDD-002 |
-| PRD-NNN | ... | ... | ... | ... | ... | ... |
+| PRD ID | Title | Feature Category | Status | Date | Upstream Sources | Downstream Artifacts | Bidir | EARS | Variant | Migration |
+|--------|-------|------------------|--------|------|------------------|---------------------|-------|------|---------|-----------|
+| PRD-001 | [Product feature title] | [Category] | Active | YYYY-MM-DD | BRD-001, BRD-002 | EARS-001, EARS-002, BDD-001, ADR-005 | ✓ | 95 | S | Current |
+| PRD-002 | [Product feature title] | [Category] | Active | YYYY-MM-DD | BRD-003 | EARS-003, BDD-002 | ✓ | 88 | S | Current |
+| PRD-NNN | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
 
 **Document Status Legend**:
 - **Active**: Current and actively referenced
@@ -150,6 +150,12 @@ python scripts/extract_tags.py --type PRD --show-upstream brd
 - **In Review**: Pending stakeholder approval
 - **Superseded**: Replaced by newer version
 - **Archived**: Historical reference only
+
+**New Column Legend**:
+- **Bidir** (Bidirectional Validation): ✓ = All cross-references validated bidirectionally, ✗ = Validation pending/failed
+- **EARS** (EARS-Ready Score): 0-100 score based on timing profiles (25%), boundary values (25%), state machines (25%), fallback paths (15%), threshold registry (10%)
+- **Variant** (Template Variant): S = Standard (20 sections), A = Agent-Based (12-15 sections), W = Automation/Workflow-Focused (9-12 sections)
+- **Migration** (Migration Status): Current = Compliant with v2.0 template, Legacy = Pre-v2.0 format, Migrated = Updated from legacy to current
 
 ---
 
@@ -331,12 +337,12 @@ graph TD
 
 ### 10.2 PRD Implementation Status
 
-| PRD ID | EARS Status | BDD Status | ADR Status | REQ Status | Overall Status | Completion % |
-|--------|-------------|------------|------------|------------|----------------|--------------|
-| PRD-001 | ✅ Complete | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
-| PRD-002 | ✅ Complete | 🟡 In Progress | N/A | 🟡 In Progress | In Progress | 60% |
-| PRD-003 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | ⏳ Pending | Started | 25% |
-| PRD-NNN | ... | ... | ... | ... | ... | ... |
+| PRD ID | EARS Status | BDD Status | ADR Status | REQ Status | Overall Status | Completion % | Bidir | EARS Score | Variant | Migration |
+|--------|-------------|------------|------------|------------|----------------|--------------|-------|------------|---------|-----------|
+| PRD-001 | ✅ Complete | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% | ✓ | 95 | S | Current |
+| PRD-002 | ✅ Complete | 🟡 In Progress | N/A | 🟡 In Progress | In Progress | 60% | ✓ | 88 | S | Current |
+| PRD-003 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | ⏳ Pending | Started | 25% | ✗ | 45 | A | Legacy |
+| PRD-NNN | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
 
 **Status Legend**:
 - ✅ Complete: Artifact created and validated
@@ -344,6 +350,12 @@ graph TD
 - ⏳ Pending: Artifact not yet started
 - N/A: Not applicable for this PRD
 - ❌ Blocked: Artifact creation blocked by dependencies
+
+**Quality Metrics Legend**:
+- **Bidir**: ✓ = Bidirectional validation complete, ✗ = Validation needed
+- **EARS Score**: 0-100 (target ≥90 for EARS progression)
+- **Variant**: S (Standard), A (Agent-Based), W (Workflow/Automation)
+- **Migration**: Current, Legacy, Migrated
 
 ### 10.3 Gap Analysis
 
@@ -376,13 +388,41 @@ graph TD
 | [Release 1.1: Feature Pack] | YYYY-MM-DD | PRD-006 through PRD-010 | Planning | 30% |
 | [Release 2.0: Major Update] | YYYY-MM-DD | All PRDs | Not Started | 0% |
 
-### 11.3 Quality Improvement Recommendations
+### 11.3 Quality Metrics Summary
+
+| Metric | Target | Current | Status |
+|--------|--------|---------|--------|
+| EARS-Ready Score (Average) | ≥90 | [XX] | 🟡 |
+| Bidirectional Validation | 100% | [XX]% | 🟡 |
+| Template Variant Compliance | 100% | [XX]% | 🟡 |
+| Migration Status (Current) | 100% | [XX]% | 🟡 |
+| Legacy PRDs Pending Migration | 0 | [X] | 🟡 |
+
+**EARS-Ready Score Distribution**:
+| Score Range | PRD Count | Percentage |
+|-------------|-----------|------------|
+| 90-100 (Excellent) | [X] | XX% |
+| 75-89 (Good) | [X] | XX% |
+| 50-74 (Needs Work) | [X] | XX% |
+| 0-49 (Critical) | [X] | XX% |
+
+**Template Variant Distribution**:
+| Variant | PRD Count | Percentage |
+|---------|-----------|------------|
+| Standard (S) | [X] | XX% |
+| Agent-Based (A) | [X] | XX% |
+| Workflow (W) | [X] | XX% |
+
+### 11.4 Quality Improvement Recommendations
 
 - **Traceability Coverage**: Achieve 100% PRD → EARS → BDD coverage
 - **User Story Validation**: Ensure all user stories have BDD scenarios
 - **Architecture Review**: Document ADRs for all technical decisions
 - **Acceptance Criteria**: Complete BDD scenario coverage for all PRDs
 - **Stakeholder Review**: Schedule feature validation with product owners
+- **EARS-Ready Score**: Improve all PRDs to ≥90 before EARS progression
+- **Bidirectional Validation**: Complete validation for all cross-references
+- **Legacy Migration**: Migrate all Legacy PRDs to Current template version
 
 ---
 
@@ -459,3 +499,7 @@ python ../scripts/update_traceability_matrix.py \
 - [ ] Mermaid diagrams render without errors
 - [ ] Coverage metrics mathematically correct
 - [ ] Revision history updated
+- [ ] **Bidirectional validation column populated** (✓/✗ for each PRD)
+- [ ] **EARS-Ready scores calculated** (0-100, target ≥90)
+- [ ] **Template variant identified** (S/A/W for each PRD)
+- [ ] **Migration status tracked** (Current/Legacy/Migrated)

@@ -249,6 +249,10 @@ The following architectural topics require decision-making:
 - **BDD** (Layer 4) - Test scenarios validating BRD objectives
 - **ADR** (Layer 5) - Architecture decisions for topics identified in BRD Section "Architecture Decision Requirements"
 
+**Same-Type Document Relationships** (conditional):
+- `@related-brd: BRD-NNN` - BRDs sharing business domain context
+- `@depends-brd: BRD-NNN` - BRD that must be implemented first (e.g., platform BRD before feature BRD)
+
 ## Creation Process
 
 ### Step 1: Determine BRD Type

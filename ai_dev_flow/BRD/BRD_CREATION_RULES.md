@@ -1238,11 +1238,19 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 - Specify validation method for each category (testing, audit, monitoring)
 - Use NFR-specific SPEC naming convention (SPEC-XXX-NFR-[Category])
 
-### 8.2 Cross-BRD Dependencies (Template section 17.2)
+### 8.2 Same-Type References / Cross-BRD Dependencies (Template section 17.2)
 
 **Purpose**: Document dependencies on other BRDs to prevent integration issues and support parallel development.
 
-**Required Table Format**:
+**Conditional Section**: Include ONLY if same-type relationships exist between BRDs.
+
+**Standard Table Format**:
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | BRD-NNN | [Related BRD title] | Shared domain context |
+| Depends | BRD-NNN | [Prerequisite BRD title] | Must complete before this |
+
+**Detailed Dependency Table**:
 | This BRD | Depends On | Dependency Type | Impact if Missing | Status |
 |----------|------------|-----------------|-------------------|--------|
 | BRD-XXX | BRD-001 (Platform) | Hard | Cannot proceed with implementation | Required |
@@ -1254,10 +1262,17 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 - **Medium**: Important dependency - workarounds possible but not ideal
 - **Soft**: Nice-to-have dependency - enhances functionality but not required
 
+**Required Tags**:
+```markdown
+@related-brd: BRD-NNN
+@depends-brd: BRD-NNN
+```
+
 **Requirements**:
 - List ALL BRD dependencies (platform, shared services, partner integrations)
 - Document impact if dependency missing (risk assessment)
 - Status: "Required" (blocking), "Optional" (nice-to-have)
+- Include standard same-type tags for automated traceability validation
 
 ### 8.3 Test Coverage Traceability (Template section 17.3)
 

@@ -221,6 +221,10 @@ sequenceDiagram
 - **REQ** (Layer 7) - Atomic requirements decomposed from SYS
 - **Code** (Layer 13) - Implementation of system requirements
 
+**Same-Type Document Relationships** (conditional):
+- `@related-sys: SYS-NNN` - SYS documents sharing system context
+- `@depends-sys: SYS-NNN` - SYS that must be implemented first
+
 ## Creation Process
 
 ### Step 1: Read Upstream Artifacts

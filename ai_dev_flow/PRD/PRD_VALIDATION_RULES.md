@@ -665,6 +665,197 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 ---
 
+## 6. Additional Validation Checks
+
+### CHECK 11: EARS Enhancement Appendix Validation (Section 19)
+
+**Purpose**: Verify Section 19 (EARS Enhancement Appendix) is complete and EARS-Ready
+**Type**: Error (blocking for EARS progression)
+
+**Requirements**:
+- Section 19 must exist with all 5 subsections (19.1-19.5)
+- Timing Profile Matrix (19.1) must have at least 3 operations with p50/p95/p99
+- Boundary Value Matrix (19.2) must have at least 3 thresholds with explicit operators
+- State Transition Diagram (19.3) must include error state transitions
+- Fallback Path Documentation (19.4) must cover all external dependencies
+- EARS-Ready Checklist (19.5) must be completed
+
+**Validation Rules**:
+
+| Subsection | Minimum Content | Validation |
+|------------|-----------------|------------|
+| 19.1 Timing Profiles | 3+ operations | Each row has p50, p95, p99 values |
+| 19.2 Boundary Values | 3+ thresholds | Each row has ≥/>/≤/< operator |
+| 19.3 State Diagram | Mermaid diagram | Contains error states (Failed, Timeout) |
+| 19.4 Fallback Paths | All dependencies | Each row has Fallback Behavior column |
+| 19.5 Checklist | Complete | All checkboxes addressed |
+
+**Error Messages**:
+```
+❌ MISSING SECTION: ## 19. EARS Enhancement Appendix
+❌ INCOMPLETE: Section 19.1 requires at least 3 operations with timing profiles
+❌ INCOMPLETE: Section 19.2 requires explicit boundary operators (≥, >, ≤, <)
+❌ INCOMPLETE: Section 19.3 state diagram missing error transitions
+❌ INCOMPLETE: Section 19.4 missing fallback documentation for external dependencies
+```
+
+**Resolution Steps**:
+1. Add Section 19 from PRD-TEMPLATE.md
+2. Complete timing profile matrix with p50/p95/p99 for all operations
+3. Specify boundary operators for all threshold values
+4. Add error state transitions to state diagram
+5. Document fallback behavior for each external dependency
+
+---
+
+### CHECK 12: Bidirectional Reference Validation
+
+**Purpose**: Verify all cross-PRD references are bidirectional (A→B implies B→A)
+**Type**: Warning (recommended fix before commit)
+
+**Requirements**:
+- Every `@prd: PRD-XXX` reference must have reciprocal reference in target document
+- No placeholder IDs (PRD-XXX, TBD, undefined)
+- Referenced documents must exist
+- Tag format required (not prose references like "see PRD-022")
+
+**Validation Algorithm**:
+```
+1. Extract all @prd: tags from this document → Set A
+2. For each referenced PRD in Set A:
+   a. Verify target file exists
+   b. Extract @prd: tags from target → Set B
+   c. Verify this PRD is in Set B (reciprocal)
+3. Report missing reciprocal references
+```
+
+**Error Messages**:
+```
+⚠️ WARNING: @prd: PRD-022 reference found, but PRD-022 does not reference this document
+⚠️ WARNING: Found placeholder ID "PRD-XXX" - replace with actual ID or null
+⚠️ WARNING: @prd: PRD-099 references non-existent document
+⚠️ WARNING: Prose reference "see PRD-016" should use tag format @prd: PRD-016
+```
+
+**Resolution Steps**:
+1. For missing reciprocal: Add `@prd: [this-PRD]` to referenced document
+2. For placeholder: Replace with actual PRD ID or use `null`
+3. For non-existent: Remove reference or create target document
+4. For prose: Convert to `@prd: PRD-NNN` format
+
+**Reciprocal Reference Table** (add to document if missing):
+```markdown
+| This PRD | References | Relationship | Reciprocal Status |
+|----------|------------|--------------|-------------------|
+| PRD-NNN | @prd: PRD-XXX | Primary/Fallback | ✅/❌ |
+```
+
+---
+
+### CHECK 13: Feature ID Format Validation
+
+**Purpose**: Verify all Feature IDs follow the standard format `FR-{PRD#}-{sequence}`
+**Type**: Warning (recommended fix)
+
+**Valid Format**: `FR-NNN-NNN` (e.g., FR-001-001, FR-022-015)
+
+**Validation Regex**: `^FR-\d{3}-\d{3}$`
+
+**Invalid Patterns to Detect**:
+
+| Pattern | Issue | Fix |
+|---------|-------|-----|
+| `FR-001` | Missing sequence | `FR-001-001` |
+| `FR-AGENT-001` | Non-standard prefix | `FR-022-001` |
+| `Feature 3.1` | Text format | `FR-025-003` |
+| `F-001-001` | Wrong prefix | `FR-001-001` |
+| `FR-1-1` | Not zero-padded | `FR-001-001` |
+
+**Error Messages**:
+```
+⚠️ WARNING: Invalid Feature ID "FR-001" found - missing sequence number
+⚠️ WARNING: Non-standard Feature ID "FR-AGENT-001" - use FR-022-001 format
+⚠️ WARNING: Text format "Feature 3.1" detected - convert to FR-NNN-NNN
+```
+
+**Resolution Steps**:
+1. Identify PRD number (e.g., PRD-022 → 022)
+2. Convert to standard format: `FR-{PRD#}-{sequence}`
+3. Update all references to the Feature ID
+4. Run validation again to confirm
+
+---
+
+### CHECK 14: Threshold Registry Compliance
+
+**Purpose**: Verify numeric thresholds reference centralized registry where applicable
+**Type**: Warning (recommended for new PRDs, required for high-risk PRDs)
+
+**Requirements**:
+- Numeric thresholds shared across 2+ PRDs must reference Threshold Registry
+- Use format: `@prd: PRD-XXX:{category}.{key}`
+- No "magic numbers" for common thresholds (KYC limits, risk scores, timeouts)
+
+**Threshold Categories Requiring Registry Reference**:
+
+| Category | Example Thresholds | Registry Key Pattern |
+|----------|-------------------|---------------------|
+| KYC/KYB Limits | Daily limits, monthly limits | `kyc.l1.daily`, `kyb.l2.monthly` |
+| Risk Scores | Low/Medium/High boundaries | `risk.low.max`, `risk.high.min` |
+| Performance | p50/p95/p99 targets | `perf.api.standard.p95` |
+| Timeouts | API, session, job timeouts | `timeout.partner.bridge` |
+| Rate Limits | API, transaction frequency | `rate.api.user.standard` |
+
+**Validation Rules**:
+1. Scan document for numeric threshold patterns
+2. Check if pattern matches known threshold category
+3. Verify registry reference exists if category requires it
+
+**Error Messages**:
+```
+⚠️ WARNING: Hardcoded KYC limit "$1,000" found - reference @prd: PRD-035:kyc.l1.daily
+⚠️ WARNING: Risk score threshold "75" found - reference @prd: PRD-035:risk.high.min
+⚠️ WARNING: Timeout value "30s" found - reference @prd: PRD-035:timeout.partner.bridge
+```
+
+**Resolution Steps**:
+1. Identify threshold category (KYC, risk, performance, timeout, rate)
+2. Look up key in Threshold Registry (PRD-035 or project-specific)
+3. Add reference: `(per @prd: PRD-035:{category}.{key})`
+4. If threshold doesn't exist in registry: Add to registry first
+
+**Example Fix**:
+```markdown
+# Before (non-compliant)
+Transaction limit: $1,000 USD
+
+# After (compliant)
+Transaction limit: $1,000 USD (per @prd: PRD-035:kyc.l1.daily)
+```
+
+---
+
+## 7. Validation Summary Table
+
+| Check | Type | Purpose | Blocking |
+|-------|------|---------|----------|
+| CHECK 1 | Required Fields | Document Control completeness | Yes |
+| CHECK 2 | Dual Scoring Format | SYS-Ready + EARS-Ready format | Yes |
+| CHECK 3 | Threshold Enforcement | ≥90% scores required | Yes |
+| CHECK 4 | Section Numbering | Explicit 0-19 numbering | Yes |
+| CHECK 5 | Mandatory Sections | All 20 sections present | Yes |
+| CHECK 6 | Section Title Consistency | Match template titles | No |
+| CHECK 7 | User Stories Scope | PRD-level only (no EARS/BDD) | Yes |
+| CHECK 8 | Customer-Facing Content | Section 9 mandatory | Yes |
+| CHECK 9 | No ADR Forward References | Topics only, no ADR-XXX | Yes |
+| CHECK 10 | Traceability Tags | @brd upstream tag | No |
+| CHECK 11 | EARS Enhancement Appendix | Section 19 complete | Yes (for EARS) |
+| CHECK 12 | Bidirectional References | A→B implies B→A | No |
+| CHECK 13 | Feature ID Format | FR-NNN-NNN format | No |
+| CHECK 14 | Threshold Registry | Registry references | No |
+
+---
+
 **Framework Compliance**: 100% doc_flow SDD framework aligned (Layer 2 - Product Requirements)
 **Maintained By**: Product Management Team, SDD Framework Team
 **Review Frequency**: Updated with template and validation rule enhancements

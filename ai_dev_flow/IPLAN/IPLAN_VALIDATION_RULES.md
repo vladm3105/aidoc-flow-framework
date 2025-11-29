@@ -25,9 +25,9 @@ Rules for validating Implementation Plans (IPLAN) documents in the SDD framework
 
 | Field | Value |
 |-------|-------|
-| **Version** | 1.0.0 |
+| **Version** | 1.1.0 |
 | **Created** | 2025-11-27 |
-| **Last Updated** | 2025-11-27 |
+| **Last Updated** | 2025-11-29 |
 | **Status** | Active |
 
 ---
@@ -523,7 +523,163 @@ Result: PASSED WITH WARNINGS
 
 ---
 
-## 14. Common Validation Errors
+## 14. Code Quality Validation Rules
+
+### 15. Import Verification
+
+**Severity**: ERROR
+
+**Rule**: All implementation phases must include import verification step.
+
+**Required Command**:
+```bash
+python -m py_compile src/module/__init__.py
+python -c "from module import *; print('Imports OK')"
+```
+
+**Validation**:
+- [ ] `py_compile` check present in verification steps
+- [ ] Import test command present after file creation
+
+### 16. Input Validation Gate
+
+**Severity**: ERROR
+
+**Rule**: Functions accepting external input must validate:
+
+**Checklist**:
+- [ ] String parameters: empty check, length limit
+- [ ] Numeric parameters: range validation with Pydantic `Field(ge=, le=)`
+- [ ] Identifier parameters: format validation (no empty strings)
+- [ ] File paths: existence check, path traversal prevention
+
+**Prohibited**:
+```python
+# No validation
+def process(data: str):
+    return data.upper()
+
+# With validation
+def process(data: str):
+    if not data or not data.strip():
+        raise ValueError("Data cannot be empty")
+    return data.upper()
+```
+
+### 17. Exception Handling Gate
+
+**Severity**: ERROR
+
+**Rule**: Exception handlers must not silently swallow errors.
+
+**Prohibited Patterns** (will fail validation):
+- `except Exception: pass`
+- `except: return None`
+- `except ValueError: return default` (without logging)
+
+**Required Pattern**:
+```python
+except SpecificError as e:
+    logger.warning("Handled error: %s", e)
+    return fallback_value
+```
+
+**Validation Command**:
+```bash
+# Search for silent exception handlers
+grep -nE "except.*:\s*(pass|return)" src/**/*.py
+# Each match must have logging before return
+```
+
+### 18. Async Lock Verification
+
+**Severity**: WARNING
+
+**Rule**: Async code must use `asyncio.Lock`, not `threading.Lock`.
+
+**Check Command**:
+```bash
+grep -n "threading.Lock" src/**/*.py
+# Should return empty for async modules
+```
+
+**Exception**: Sync-only modules may use threading locks (document reason).
+
+**Validation**:
+- [ ] No `threading.Lock` in files with `async def`
+- [ ] Lock type documented in code comments
+
+### 19. Resource Cleanup Verification
+
+**Severity**: WARNING
+
+**Rule**: Classes managing resources must implement cleanup.
+
+**Required for**:
+- Classes with `_cache` attributes
+- Classes with `_connection` attributes
+- Classes with background tasks
+- Classes implementing `__aenter__`
+
+**Verification Command**:
+```bash
+# Classes with cache should have clear_cache or cleanup method
+grep -l "_cache" src/**/*.py | xargs grep -L "clear\|cleanup"
+# Should return empty
+```
+
+**Validation**:
+- [ ] Classes with `_cache` have `clear()` or `cleanup()` method
+- [ ] Classes with `__aenter__` have `__aexit__` with cleanup
+- [ ] Background task classes have task cancellation in cleanup
+
+### 20. Type Hint Quality Gate
+
+**Severity**: WARNING
+
+**Rule**: Minimize use of `Any` type.
+
+**Check Command**:
+```bash
+grep -n "Optional\[Any\]" src/**/*.py
+grep -n ": Any" src/**/*.py
+# Each occurrence must have documented justification
+```
+
+**Acceptable Uses**:
+- Third-party library objects without stubs
+- Dynamic plugin systems
+- Must add comment: `# Any: reason`
+
+**Validation**:
+- [ ] `Any` type usage documented with comment
+- [ ] No `Optional[Any]` without justification
+- [ ] Prefer `Protocol` for duck typing
+
+### 21. Code Duplication Check
+
+**Severity**: INFO
+
+**Rule**: Before implementing utility functions, search for existing implementations.
+
+**Required Step**:
+```bash
+# Search for similar function names
+grep -r "function_name" src/
+
+# Search for similar patterns
+grep -r "pattern" src/
+```
+
+**Document**: If similar code exists, document why new implementation needed.
+
+**Validation**:
+- [ ] Pre-implementation search documented in IPLAN
+- [ ] Duplication justification provided if applicable
+
+---
+
+## 15. Common Validation Errors
 
 ### Error: Invalid Filename Format
 
@@ -578,5 +734,5 @@ Result: PASSED WITH WARNINGS
 
 ---
 
-**Document Version**: 1.0.0
-**Last Updated**: 2025-11-27
+**Document Version**: 1.1.0
+**Last Updated**: 2025-11-29

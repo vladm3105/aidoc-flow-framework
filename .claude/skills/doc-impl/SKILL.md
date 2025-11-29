@@ -237,6 +237,10 @@ Use `doc-impl` when:
 - **TASKS** (Layer 11) - Task breakdown
 - **Code** (Layer 13) - Implementation
 
+**Same-Type Document Relationships** (conditional):
+- `@related-impl: IMPL-NNN` - IMPLs sharing implementation context
+- `@depends-impl: IMPL-NNN` - IMPL that must complete first
+
 ## Creation Process
 
 ### Step 1: Read Upstream Artifacts

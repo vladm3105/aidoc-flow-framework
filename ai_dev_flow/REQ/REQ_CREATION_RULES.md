@@ -222,3 +222,18 @@ ls -la docs/REQ/    # Layer 7
 - **NEVER** reference documents that don't exist
 - **ALWAYS** verify document exists before adding reference
 - **USE** `null` only when artifact type is genuinely not applicable
+
+### Same-Type References (Conditional)
+
+Include ONLY if relationships exist between REQ documents sharing domain context or implementation dependencies.
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | REQ-NNN | [Related REQ title] | Shared domain context |
+| Depends | REQ-NNN | [Prerequisite REQ title] | Must complete before this |
+
+**Tags**:
+```markdown
+@related-req: REQ-NNN
+@depends-req: REQ-NNN
+```

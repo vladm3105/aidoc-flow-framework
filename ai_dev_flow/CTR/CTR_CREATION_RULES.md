@@ -292,6 +292,21 @@ ls -la docs/REQ/    # Layer 7
 - **ALWAYS** verify document exists before adding reference
 - **USE** `null` only when artifact type is genuinely not applicable
 
+### Same-Type References (Conditional)
+
+Include ONLY if relationships exist between CTR documents sharing API context or dependencies.
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | CTR-NNN | [Related CTR title] | Shared API context |
+| Depends | CTR-NNN | [Prerequisite CTR title] | Must complete before this |
+
+**Tags**:
+```markdown
+@related-ctr: CTR-NNN
+@depends-ctr: CTR-NNN
+```
+
 
 ## References
 

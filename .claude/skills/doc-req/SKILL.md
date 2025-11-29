@@ -287,6 +287,10 @@ TradeOrderRequest:
 - **SPEC** (Layer 10) - Technical specifications
 - **Code** (Layer 13) - Implementation
 
+**Same-Type Document Relationships** (conditional):
+- `@related-req: REQ-NNN` - REQs sharing domain context
+- `@depends-req: REQ-NNN` - REQ that must be implemented first
+
 ## Creation Process
 
 ### Step 1: Read Upstream Artifacts

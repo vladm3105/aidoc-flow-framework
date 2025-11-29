@@ -188,6 +188,10 @@ WHEN trade order received THE order management system SHALL validate and route o
 - **ADR** (Layer 5) - Architecture decisions implementing EARS requirements
 - **SYS** (Layer 6) - System requirements derived from EARS
 
+**Same-Type Document Relationships** (conditional):
+- `@related-ears: EARS-NNN` - EARS sharing domain context
+- `@depends-ears: EARS-NNN` - EARS that must be implemented first
+
 ## Creation Process
 
 ### Step 1: Read Upstream Artifacts

@@ -685,7 +685,22 @@ Common types across endpoints:
   - Provider: `src/services/risk_validation_service.py`
   - Consumers: `src/agents/*/risk_validator_client.py`
 
-### 19.4 Traceability Tags
+### 19.4 Same-Type References (Conditional)
+
+**Include this section only if same-type relationships exist between CTR documents.**
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | [CTR-NNN](./CTR-NNN_...md) | [Related CTR title] | Shared API context |
+| Depends | [CTR-NNN](./CTR-NNN_...md) | [Prerequisite CTR title] | Must complete before this |
+
+**Tags:**
+```markdown
+@related-ctr: CTR-NNN
+@depends-ctr: CTR-NNN
+```
+
+### 19.5 Traceability Tags
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
 ```markdown

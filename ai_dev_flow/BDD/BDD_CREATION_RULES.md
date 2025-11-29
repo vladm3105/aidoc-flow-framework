@@ -296,3 +296,13 @@ ls -la docs/REQ/    # Layer 7
 - **NEVER** reference documents that don't exist
 - **ALWAYS** verify document exists before adding reference
 - **USE** `null` only when artifact type is genuinely not applicable
+
+### Same-Type References (Conditional)
+
+Include ONLY if relationships exist between BDD features sharing domain context or implementation dependencies.
+
+**Tags**:
+```markdown
+@related-bdd: BDD-NNN
+@depends-bdd: BDD-NNN
+```

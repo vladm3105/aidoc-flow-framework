@@ -24,9 +24,9 @@ Rules for creating Implementation Plans (IPLAN) documents in the SDD framework.
 
 | Field | Value |
 |-------|-------|
-| **Version** | 1.0.0 |
+| **Version** | 1.1.0 |
 | **Created** | 2025-11-27 |
-| **Last Updated** | 2025-11-27 |
+| **Last Updated** | 2025-11-29 |
 | **Status** | Active |
 
 ---
@@ -545,6 +545,148 @@ ls -la docs/REQ/    # Layer 7
 - **ALWAYS** verify document exists before adding reference
 - **USE** `null` only when artifact type is genuinely not applicable
 
+### Same-Type References (Conditional)
+
+Include ONLY if relationships exist between IPLAN documents sharing session context or execution dependencies.
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | IPLAN-NNN | [Related IPLAN title] | Shared session context |
+| Depends | IPLAN-NNN | [Prerequisite IPLAN title] | Must complete before this |
+
+**Tags**:
+```markdown
+@related-iplan: IPLAN-NNN
+@depends-iplan: IPLAN-NNN
+```
+
+
+## 15. Required Implementation Patterns
+
+### Error Handling Pattern
+
+All error handling must follow this pattern:
+
+```python
+try:
+    result = await operation()
+except SpecificError as e:
+    logger.error("Context: %s", e, exc_info=True)
+    raise DomainError("User-friendly message") from e
+except Exception as e:
+    logger.exception("Unexpected error in operation")
+    raise
+```
+
+**Rules**:
+- NEVER use bare `except:` or `except Exception:` without re-raise
+- Always use exception chaining: `raise NewError() from original`
+- Log before handling: `logger.error("msg", exc_info=True)`
+
+### Resource Management Pattern
+
+Classes managing external resources must implement:
+
+```python
+class Service:
+    async def __aenter__(self) -> "Service":
+        return self
+
+    async def __aexit__(self, *args) -> None:
+        await self.cleanup()
+
+    async def cleanup(self) -> None:
+        """Release resources. Safe to call multiple times."""
+        if self._cache:
+            self._cache.clear()
+        if self._tasks:
+            for task in self._tasks:
+                task.cancel()
+```
+
+**Rules**:
+- Implement `__aenter__` and `__aexit__` for async resources
+- Add explicit `cleanup()` method callable outside context manager
+- Make cleanup idempotent (safe to call multiple times)
+
+### Validation Pattern
+
+Input validation must use Pydantic or explicit checks:
+
+```python
+# Pydantic approach (preferred)
+class Config(BaseModel):
+    timeout: float = Field(ge=1.0, le=300.0)
+    name: str = Field(min_length=1, max_length=100)
+
+# Manual approach (when Pydantic not suitable)
+def validate_input(value: str) -> str:
+    if not value or not value.strip():
+        raise ValueError("Value cannot be empty")
+    if len(value) > MAX_LENGTH:
+        raise ValueError(f"Value exceeds {MAX_LENGTH} characters")
+    return value.strip()
+```
+
+**Rules**:
+- Validate at system boundaries (user input, external APIs)
+- Use Pydantic `Field()` constraints for model validation
+- Return cleaned/normalized values from validation functions
+
+### Async Cache Pattern
+
+Caches in async code must use async locks:
+
+```python
+class CachedService:
+    def __init__(self):
+        self._cache: Dict[str, Any] = {}
+        self._lock = asyncio.Lock()  # NOT threading.Lock
+
+    async def get(self, key: str) -> Optional[Any]:
+        async with self._lock:
+            return self._cache.get(key)
+
+    async def set(self, key: str, value: Any) -> None:
+        async with self._lock:
+            self._cache[key] = value
+
+    def clear(self) -> int:
+        """Clear cache. Returns count of items cleared."""
+        count = len(self._cache)
+        self._cache.clear()
+        return count
+```
+
+**Rules**:
+- Use `asyncio.Lock()` for async code, NOT `threading.Lock`
+- Always provide cache clearing method
+- Document TTL and eviction strategy if applicable
+
+### Type Hint Quality Pattern
+
+Minimize `Any` type usage:
+
+```python
+# AVOID: Overly permissive
+def process(data: Optional[Any]) -> Any:
+    pass
+
+# PREFERRED: Specific types
+def process(data: Optional[ContractData]) -> ProcessedResult:
+    pass
+
+# If Any required, document why
+def handle_external(data: Any) -> None:  # Any: third-party API response
+    pass
+```
+
+**Rules**:
+- Use specific types: `Optional[SpecificType]` not `Optional[Any]`
+- Use `Protocol` for duck typing instead of `Any`
+- Document justification when `Any` is unavoidable
+
+---
 
 ## References
 
@@ -558,5 +700,5 @@ ls -la docs/REQ/    # Layer 7
 
 ---
 
-**Document Version**: 1.0.0
-**Last Updated**: 2025-11-27
+**Document Version**: 1.1.0
+**Last Updated**: 2025-11-29

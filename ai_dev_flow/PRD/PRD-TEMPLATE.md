@@ -13,12 +13,18 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: product-requirements-document
+  template_variant: standard | agent-based | automation-focused
 ---
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for PRD structure.
-> - All PRDs must conform to this template (19 sections: 0-18)
+> - All PRDs must conform to this template (20 sections: 0-19)
 > - `PRD_CREATION_RULES.md` - Helper guidance for template usage
 > - `PRD_VALIDATION_RULES.md` - Post-creation validation checks
+>
+> **Template Variants**:
+> - **Standard PRD** (20 sections): Default for business features - use this template
+> - **Agent-Based PRD** (12-15 sections): Extended ML/AI sections, state machine focus
+> - **Automation-Focused PRD** (9-12 sections): n8n workflow-centric, webhook-focused
 
 # PRD-NNN: [Descriptive Product Name/Feature Name]
 
@@ -43,6 +49,22 @@ custom_fields:
 | **Estimated Effort** | [Story Points or Person-Months] |
 | **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
 | **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **Template Variant** | Standard / Agent-Based / Automation-Focused |
+
+### Template Variant Selection
+
+Select the appropriate template variant based on domain:
+
+| Variant | Sections | Use Case | Selection Criteria |
+|---------|----------|----------|-------------------|
+| **Standard** | 0-19 (20) | Business features, core platform | Default choice for most PRDs |
+| **Agent-Based** | 0-14 (15) | ML/AI agents, intelligent systems | Contains agent-specific sections (state machine, ML metrics) |
+| **Automation-Focused** | 0-11 (12) | n8n workflows, event processing | Webhook-focused, workflow states |
+
+**Selection Flowchart**:
+1. Does this PRD describe an ML/AI agent? → **Agent-Based**
+2. Does this PRD describe n8n workflows or automation? → **Automation-Focused**
+3. Otherwise → **Standard**
 
 ### Document Revision History
 
@@ -360,6 +382,31 @@ User stories follow the standard format:
 - **Compliance Officer**: Internal staff who can review flagged transactions, approve/reject sanctions screening, access audit logs
 - **Operations Manager**: Internal staff who can view dashboards, generate reports, modify system configuration
 - **System Administrator**: Technical staff with full system access for maintenance, monitoring, troubleshooting
+
+### Threshold Registry References
+
+**⚠️ IMPORTANT**: When this PRD references numeric thresholds, limits, or timing parameters, use the Threshold Registry pattern to ensure consistency across PRDs.
+
+**Reference Format**: `@prd: PRD-XXX:threshold-key`
+
+**When to Create Threshold Registry References**:
+- Transaction velocity limits (KYC/KYB limits)
+- Risk score thresholds (Low/Medium/High boundaries)
+- Performance timing targets (p50/p95/p99 latencies)
+- Timeout configurations (API, session, job timeouts)
+- Rate limits (API, transaction frequency)
+- Financial amount boundaries (min/max transaction amounts)
+
+**Example Usage**:
+```markdown
+Transaction limit: $1,000 USD (per @prd: PRD-035:kyc.l1.daily)
+Risk threshold: Score ≥75 triggers escalation (per @prd: PRD-035:risk.high.min)
+```
+
+**Benefits**:
+- Single source of truth for threshold values
+- Eliminates conflicts between PRDs (e.g., CRIT-001 in blocal_n8n remediation)
+- Enables centralized threshold management
 
 ---
 
@@ -766,6 +813,21 @@ The following architectural topics require formal Architecture Decision Records 
 | [BDD-NNN.feature](../BDD/BDD-NNN.feature) | Maps to PRD User Journey [name] | [Scenario list] | Acceptance test coverage |
 | [BDD-NNN.feature](../BDD/BDD-NNN.feature) | Maps to PRD Feature [name] | [Scenario list] | Functional validation |
 
+### Same-Type References (Conditional)
+
+**Include this section only if same-type relationships exist between PRDs.**
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | [PRD-NNN](./PRD-NNN_...md) | [Related PRD title] | Shared domain context |
+| Depends | [PRD-NNN](./PRD-NNN_...md) | [Prerequisite PRD title] | Must complete before this |
+
+**Tags:**
+```markdown
+@related-prd: PRD-NNN
+@depends-prd: PRD-NNN
+```
+
 ### Traceability Tags
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 2):
@@ -787,6 +849,37 @@ The following architectural topics require formal Architecture Decision Records 
 **Validation**: Tags must reference existing BRD documents and requirement IDs within those documents.
 
 **Purpose**: Cumulative tagging enables complete traceability chains from business requirements through implementation. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
+
+### Bidirectional Reference Validation
+
+**⚠️ IMPORTANT**: All cross-PRD references must be bidirectional. If PRD-A references PRD-B, then PRD-B must also reference PRD-A.
+
+**Validation Requirements**:
+
+| Rule | Description | Example |
+|------|-------------|---------|
+| **A→B implies B→A** | If this PRD references another PRD, that PRD must reference this one | PRD-016 → PRD-022 requires PRD-022 → PRD-016 |
+| **No placeholder IDs** | Never use PRD-XXX, TBD, or undefined references | Use `null` if artifact doesn't exist |
+| **Tag format required** | Use `@prd: PRD-NNN` format in body, not just metadata | `@prd: PRD-022` not `see PRD-022` |
+| **Referenced doc must exist** | Verify target document exists before adding reference | Check `docs/PRD/PRD-NNN_*.md` exists |
+
+**Cross-PRD Reference Table** (for PRDs with bidirectional dependencies):
+
+| This PRD | References PRD | Relationship Type | Reciprocal Reference Status |
+|----------|---------------|-------------------|----------------------------|
+| PRD-NNN | @prd: PRD-XXX | [Primary/Fallback/Related/Orchestrates] | ✅ Verified / ❌ Missing |
+
+**Common Relationship Types**:
+- **Primary/Fallback**: AI-agent vs traditional approach (e.g., PRD-022/PRD-016)
+- **Related**: Shared functionality or data (e.g., PRD-018/PRD-031 notifications)
+- **Orchestrates**: One PRD coordinates another (e.g., PRD-025 orchestrates PRD-009)
+- **Consumes**: One PRD uses thresholds/services from another (e.g., @prd: PRD-035:threshold-key)
+
+**Validation Process**:
+1. Before creating reference: Verify target document exists
+2. After adding reference: Add reciprocal reference in target document
+3. During review: Run bidirectional reference validation script
+4. Before commit: Confirm all A→B relationships have B→A counterparts
 
 ### Document Links and Cross-References
 
@@ -870,8 +963,146 @@ Document evidence that PRD requirements have been translated to technical specif
 
 ---
 
+## 19. EARS Enhancement Appendix
+
+**Purpose**: This appendix provides structured technical specifications required for EARS (Engineering Requirements Specification) creation. Complete this section to achieve EARS-Ready scores ≥90%.
+
+### 19.1 Timing Profile Matrix
+
+Define performance timing targets for all operations. Replace vague terms like "real-time" or "immediately" with precise percentile-based specifications.
+
+| Operation | p50 (Median) | p95 | p99 | Unit | Trigger Event | Notes |
+|-----------|--------------|-----|-----|------|---------------|-------|
+| [operation_name] | [value] | [value] | [value] | ms/s | [event] | [constraints] |
+
+**Example Entries**:
+| Operation | p50 | p95 | p99 | Unit | Trigger Event | Notes |
+|-----------|-----|-----|-----|------|---------------|-------|
+| API Response | 100 | 300 | 500 | ms | HTTP request received | Standard endpoints |
+| ML Fraud Score | 50 | 150 | 300 | ms | Transaction submitted | GPU inference |
+| Transaction Confirmation | 500 | 1000 | 2000 | ms | Payment initiated | Includes partner API |
+
+**Timing Precision Requirements**:
+- p50: 50th percentile (median) - typical user experience
+- p95: 95th percentile - performance SLA target
+- p99: 99th percentile - alert threshold for degradation
+
+### 19.2 Boundary Value Matrix
+
+Specify boundary conditions for all thresholds with explicit inclusive/exclusive notation.
+
+| Threshold Name | Operator | Value | At Boundary Behavior | Above Boundary | Below Boundary |
+|----------------|----------|-------|---------------------|----------------|----------------|
+| [threshold_name] | ≥ or > or ≤ or < | [value] | [behavior] | [behavior] | [behavior] |
+
+**Boundary Notation Convention**:
+- `≥` (greater than or equal): Inclusive lower bound (value IS in range)
+- `>` (greater than): Exclusive lower bound (value NOT in range)
+- `≤` (less than or equal): Inclusive upper bound (value IS in range)
+- `<` (less than): Exclusive upper bound (value NOT in range)
+- `[a, b]`: Closed interval - both a and b included
+- `(a, b)`: Open interval - neither a nor b included
+- `[a, b)`: Half-open - a included, b excluded
+
+**Example Entries**:
+| Threshold Name | Operator | Value | At Boundary | Above | Below |
+|----------------|----------|-------|-------------|-------|-------|
+| L1 Daily Limit | ≤ | $1,000 | ALLOW (exactly $1,000) | BLOCK | ALLOW |
+| Risk Score High | ≥ | 75 | ESCALATE (score=75) | ESCALATE | REVIEW or APPROVE |
+| Session Timeout | > | 900s | ACTIVE (at 900s) | EXPIRE | ACTIVE |
+
+**Threshold Registry Cross-Reference**:
+For centralized threshold values, reference: `@prd: PRD-035:{category}.{key}`
+
+### 19.3 State Transition Diagram
+
+Document complete state machine including error states and recovery transitions.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Initial
+    Initial --> Processing: start_event
+    Processing --> Success: completion_event
+    Processing --> Failed: error_event
+    Processing --> Timeout: timeout_event
+
+    Failed --> Retry: retry_available
+    Retry --> Processing: retry_attempt
+    Failed --> ManualReview: max_retries_exceeded
+
+    Timeout --> Retry: retry_available
+    Timeout --> Cancelled: user_cancelled
+
+    Success --> [*]
+    ManualReview --> [*]
+    Cancelled --> [*]
+```
+
+**State Definitions**:
+
+| State | Description | Entry Condition | Exit Conditions | Max Duration |
+|-------|-------------|-----------------|-----------------|--------------|
+| Initial | Starting state | [trigger] | Processing | Immediate |
+| Processing | Active work | [action] | Success, Failed, Timeout | [timeout] |
+| Success | Completed successfully | [completion criteria] | Terminal | N/A |
+| Failed | Error occurred | [error condition] | Retry, ManualReview | N/A |
+| Timeout | Exceeded time limit | [timeout threshold] | Retry, Cancelled | N/A |
+| Retry | Attempting recovery | [retry criteria] | Processing | [retry_timeout] |
+| ManualReview | Human intervention | [escalation criteria] | Terminal | [SLA] |
+
+**Required Error Transitions** (must include):
+- Happy path → Error state
+- Error state → Recovery attempt
+- Recovery exhausted → Final disposition (manual review, cancellation, etc.)
+
+### 19.4 Fallback Path Documentation
+
+Define behavior when external dependencies are unavailable.
+
+| External Dependency | Failure Mode | Detection Method | Fallback Behavior | Timeout | Recovery |
+|---------------------|--------------|------------------|-------------------|---------|----------|
+| [dependency_name] | [failure_type] | [how_detected] | [alternative_action] | [seconds] | [recovery_steps] |
+
+**Example Entries**:
+| External Dependency | Failure Mode | Detection | Fallback Behavior | Timeout | Recovery |
+|---------------------|--------------|-----------|-------------------|---------|----------|
+| Partner API (Bridge) | Connection timeout | HTTP timeout | Queue for retry, notify user | 30s | Exponential backoff, max 3 retries |
+| ML Fraud Model | Model unavailable | Health check failure | Use rule-based scoring | 5s | Automatic failover to rules |
+| Database | Connection pool exhausted | Connection error | Return cached data, queue writes | 10s | Connection pool refresh |
+| Cache (Redis) | Cache miss | Key not found | Fall through to database | N/A | Automatic on next request |
+
+**Fallback Requirements**:
+1. **Detection**: How is the failure detected? (timeout, error code, health check)
+2. **Degradation**: What functionality is reduced? (partial service, read-only, etc.)
+3. **User Impact**: What does the user experience? (delay, error message, retry prompt)
+4. **Recovery**: How does the system return to normal? (automatic, manual intervention)
+5. **Alerting**: What alerts are triggered? (PagerDuty, Slack, logging)
+
+### 19.5 EARS-Ready Checklist
+
+Before progressing to EARS creation, verify:
+
+- [ ] **Timing Profiles**: All operations have p50/p95/p99 specifications
+- [ ] **Boundary Values**: All thresholds have explicit ≥/>/</<= operators
+- [ ] **State Machine**: All states have entry/exit conditions and error transitions
+- [ ] **Fallback Paths**: All external dependencies have failure mode documentation
+- [ ] **Threshold Registry**: Numeric values reference centralized registry where applicable
+- [ ] **No Vague Terms**: Eliminated "real-time", "immediately", "quickly", "fast"
+- [ ] **Boundary Precision**: No ambiguous ranges like "30-70" (use [30,70] or (30,70))
+
+**EARS-Ready Score Calculation**:
+| Component | Weight | Criteria |
+|-----------|--------|----------|
+| Timing Profiles | 25% | All operations covered with p50/p95/p99 |
+| Boundary Values | 25% | All thresholds with explicit operators |
+| State Machine | 25% | Complete with error transitions |
+| Fallback Paths | 15% | All external dependencies covered |
+| Threshold Registry | 10% | Centralized values referenced |
+
+---
+
 **Document Version**: 1.0.0
-**Template Version**: 2.0
+**Template Version**: 3.0
 **Last Business Review**: YYYY-MM-DD
 **Next Business Review**: YYYY-MM-DD (recommend quarterly review for active PRDs)
 **Approval Status**: [Draft/Under Review/Approved/Rejected]

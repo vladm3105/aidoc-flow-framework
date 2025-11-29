@@ -7,7 +7,7 @@
 # - Session-based execution requirements
 # Usage: ./scripts/validate_iplan.sh <IPLAN_FILE>
 
-set -e
+# Note: NOT using 'set -e' because ((ERRORS++)) returns false when ERRORS=0
 
 IPLAN_FILE=$1
 ERRORS=0
@@ -23,7 +23,7 @@ NC='\033[0m' # No Color
 
 if [ -z "$IPLAN_FILE" ]; then
   echo "Usage: $0 <IPLAN_FILE>"
-  echo "Example: $0 /opt/data/project/docs/IPLAN/IPLAN-001_gateway_connection_20251127_092843.md"
+  echo "Example: $0 /opt/data/project/docs/IPLAN/IPLAN-001_gateway_connection.md"
   exit 1
 fi
 
@@ -40,29 +40,27 @@ echo "Artifact Type: IPLAN (Implementation Work Plan) - Layer 12"
 echo ""
 
 # ============================================
-# CHECK 1: Filename Format (with timestamp)
+# CHECK 1: Filename Format
 # ============================================
-echo "CHECK 1: Filename Format (with timestamp)"
+echo "CHECK 1: Filename Format"
 echo "-----------------------------------------"
 
 filename=$(basename "$IPLAN_FILE")
 
-# Pattern: IPLAN-NNN_descriptive_slug_YYYYMMDD_HHMMSS.md
-if [[ $filename =~ ^IPLAN-[0-9]{3,4}_[a-z0-9_]+_[0-9]{8}_[0-9]{6}\.md$ ]]; then
+# Pattern: IPLAN-NNN_descriptive_slug.md (mandatory format, no timestamps)
+# Per IPLAN_VALIDATION_RULES.md: ^IPLAN-[0-9]{3,4}_[a-z0-9_]+\.md$
+if [[ $filename =~ ^IPLAN-[0-9]{3,4}_[a-z0-9_]+\.md$ ]]; then
   echo -e "  ${GREEN}✅ Filename format valid: $filename${NC}"
 
   # Extract IPLAN ID
   IPLAN_ID=$(echo "$filename" | grep -oE "IPLAN-[0-9]+" | head -1)
   echo "  IPLAN ID: $IPLAN_ID"
-
-  # Extract timestamp
-  timestamp=$(echo "$filename" | grep -oE "[0-9]{8}_[0-9]{6}")
-  echo "  Timestamp: $timestamp"
 else
   echo -e "  ${RED}❌ ERROR: Invalid filename format: $filename${NC}"
-  echo "           Expected: IPLAN-NNN_descriptive_slug_YYYYMMDD_HHMMSS.md"
-  echo "           Pattern: ^IPLAN-[0-9]{3,4}_[a-z0-9_]+_[0-9]{8}_[0-9]{6}\\.md$"
-  ((ERRORS++))
+  echo "           Expected: IPLAN-NNN_descriptive_slug.md"
+  echo "           Pattern: ^IPLAN-[0-9]{3,4}_[a-z0-9_]+\\.md$"
+  echo "           Rules: lowercase, underscores only, no hyphens in slug, NO timestamps"
+  ERRORS=$((ERRORS + 1))
 fi
 
 echo ""
@@ -82,21 +80,21 @@ if grep -q "^---" "$IPLAN_FILE"; then
     echo -e "  ${GREEN}✅ artifact_type: IPLAN${NC}"
   else
     echo -e "  ${RED}❌ ERROR: Missing or invalid artifact_type (must be IPLAN)${NC}"
-    ((ERRORS++))
+    ERRORS=$((ERRORS + 1))
   fi
 
   if grep -q "layer: 12" "$IPLAN_FILE"; then
     echo -e "  ${GREEN}✅ layer: 12${NC}"
   else
     echo -e "  ${RED}❌ ERROR: Missing or invalid layer (must be 12)${NC}"
-    ((ERRORS++))
+    ERRORS=$((ERRORS + 1))
   fi
 
   if grep -q "layer-12-artifact" "$IPLAN_FILE"; then
     echo -e "  ${GREEN}✅ layer-12-artifact tag present${NC}"
   else
     echo -e "  ${YELLOW}⚠️  WARNING: Missing layer-12-artifact tag${NC}"
-    ((WARNINGS++))
+    WARNINGS=$((WARNINGS + 1))
   fi
 
   # Check parent_tasks
@@ -105,7 +103,7 @@ if grep -q "^---" "$IPLAN_FILE"; then
     echo -e "  ${GREEN}✅ parent_tasks: $parent_tasks${NC}"
   else
     echo -e "  ${RED}❌ ERROR: Missing parent_tasks field${NC}"
-    ((ERRORS++))
+    ERRORS=$((ERRORS + 1))
   fi
 
   # Check complexity
@@ -114,11 +112,11 @@ if grep -q "^---" "$IPLAN_FILE"; then
     echo -e "  ${GREEN}✅ complexity: $complexity${NC}"
   else
     echo -e "  ${YELLOW}⚠️  WARNING: Missing or invalid complexity (1-5)${NC}"
-    ((WARNINGS++))
+    WARNINGS=$((WARNINGS + 1))
   fi
 else
   echo -e "  ${RED}❌ ERROR: Missing YAML frontmatter (--- delimiters)${NC}"
-  ((ERRORS++))
+  ERRORS=$((ERRORS + 1))
 fi
 
 echo ""
@@ -146,7 +144,7 @@ for field in "${required_dc_fields[@]}"; do
     echo -e "  ${GREEN}✅ Found: $field${NC}"
   else
     echo -e "  ${RED}❌ MISSING: $field${NC}"
-    ((ERRORS++))
+    ERRORS=$((ERRORS + 1))
   fi
 done
 
@@ -155,7 +153,7 @@ if grep -qE "Status.*\|.*(Draft|Ready|In Progress|Completed|Blocked)" "$IPLAN_FI
   echo -e "  ${GREEN}✅ Status has valid enum value${NC}"
 else
   echo -e "  ${YELLOW}⚠️  WARNING: Status should be Draft, Ready, In Progress, Completed, or Blocked${NC}"
-  ((WARNINGS++))
+  WARNINGS=$((WARNINGS + 1))
 fi
 
 echo ""
@@ -183,7 +181,7 @@ for section in "${required_sections[@]}"; do
     echo -e "  ${GREEN}✅ Found: $section${NC}"
   else
     echo -e "  ${RED}❌ MISSING: $section${NC}"
-    ((ERRORS++))
+    ERRORS=$((ERRORS + 1))
   fi
 done
 
@@ -196,23 +194,23 @@ echo "CHECK 5: Task List Validation"
 echo "-----------------------------------------"
 
 # Count phases
-phase_count=$(grep -cE "^### Phase [0-9]+" "$IPLAN_FILE" 2>/dev/null || echo "0")
+phase_count=$(grep -cE "^### Phase [0-9]+" "$IPLAN_FILE" 2>/dev/null) || phase_count=0
 
 if [ "$phase_count" -ge 1 ]; then
   echo -e "  ${GREEN}✅ Found $phase_count phase(s)${NC}"
 else
   echo -e "  ${RED}❌ ERROR: No phases defined in Task List${NC}"
-  ((ERRORS++))
+  ERRORS=$((ERRORS + 1))
 fi
 
 # Check for checkboxes
-checkbox_count=$(grep -c "\[[ x]\]" "$IPLAN_FILE" 2>/dev/null || echo "0")
+checkbox_count=$(grep -c "\[[ x]\]" "$IPLAN_FILE" 2>/dev/null) || checkbox_count=0
 
 if [ "$checkbox_count" -ge 1 ]; then
   echo -e "  ${GREEN}✅ Found $checkbox_count task checkbox(es)${NC}"
 else
   echo -e "  ${RED}❌ ERROR: No task checkboxes found${NC}"
-  ((ERRORS++))
+  ERRORS=$((ERRORS + 1))
 fi
 
 # Check for time estimates
@@ -220,7 +218,7 @@ if grep -qE "[0-9]+ hours?" "$IPLAN_FILE"; then
   echo -e "  ${GREEN}✅ Time estimates present${NC}"
 else
   echo -e "  ${YELLOW}⚠️  WARNING: No time estimates found${NC}"
-  ((WARNINGS++))
+  WARNINGS=$((WARNINGS + 1))
 fi
 
 # Check for status markers
@@ -228,7 +226,7 @@ if grep -qE "(COMPLETED|PENDING|IN PROGRESS)" "$IPLAN_FILE"; then
   echo -e "  ${GREEN}✅ Phase status markers present${NC}"
 else
   echo -e "  ${YELLOW}⚠️  WARNING: No phase status markers found${NC}"
-  ((WARNINGS++))
+  WARNINGS=$((WARNINGS + 1))
 fi
 
 echo ""
@@ -240,18 +238,18 @@ echo "CHECK 6: Implementation Guide (Bash Commands)"
 echo "-----------------------------------------"
 
 # Count bash code blocks
-bash_count=$(grep -c '```bash' "$IPLAN_FILE" 2>/dev/null || echo "0")
+bash_count=$(grep -c '```bash' "$IPLAN_FILE" 2>/dev/null) || bash_count=0
 
 if [ "$bash_count" -ge 1 ]; then
   echo -e "  ${GREEN}✅ Found $bash_count bash code block(s)${NC}"
 
   if [ "$bash_count" -lt 3 ]; then
     echo -e "  ${YELLOW}⚠️  WARNING: Only $bash_count bash blocks (recommend 3+)${NC}"
-    ((WARNINGS++))
+    WARNINGS=$((WARNINGS + 1))
   fi
 else
   echo -e "  ${RED}❌ ERROR: No bash code blocks found${NC}"
-  ((ERRORS++))
+  ERRORS=$((ERRORS + 1))
 fi
 
 # Check for verification sections
@@ -259,13 +257,13 @@ if grep -qi "verification\|verify\|expected" "$IPLAN_FILE"; then
   echo -e "  ${GREEN}✅ Verification steps present${NC}"
 else
   echo -e "  ${RED}❌ ERROR: No verification steps found${NC}"
-  ((ERRORS++))
+  ERRORS=$((ERRORS + 1))
 fi
 
 # Check for relative paths (should be absolute)
 if grep -qE '(cd|touch|mkdir) \.\.' "$IPLAN_FILE"; then
   echo -e "  ${RED}❌ ERROR: Relative paths found - use absolute paths${NC}"
-  ((ERRORS++))
+  ERRORS=$((ERRORS + 1))
 else
   echo -e "  ${GREEN}✅ No relative paths detected${NC}"
 fi
@@ -274,7 +272,7 @@ fi
 potential_relative=$(grep -E '(cd|touch|mkdir) [^/~$]' "$IPLAN_FILE" 2>/dev/null | grep -v "cd \$" | head -3 || echo "")
 if [ -n "$potential_relative" ]; then
   echo -e "  ${YELLOW}⚠️  WARNING: Potential relative paths - prefer absolute paths${NC}"
-  ((WARNINGS++))
+  WARNINGS=$((WARNINGS + 1))
 fi
 
 echo ""
@@ -291,10 +289,10 @@ tag_count=0
 for tag in "${required_tags[@]}"; do
   if grep -qE "^${tag}:|^\- \`${tag}:" "$IPLAN_FILE"; then
     echo -e "  ${GREEN}✅ Found: $tag${NC}"
-    ((tag_count++))
+    tag_count=$((tag_count + 1))
   else
     echo -e "  ${RED}❌ MISSING: $tag${NC}"
-    ((ERRORS++))
+    ERRORS=$((ERRORS + 1))
   fi
 done
 
@@ -303,7 +301,7 @@ optional_tags=("@impl" "@ctr")
 for tag in "${optional_tags[@]}"; do
   if grep -qE "^${tag}:|^\- \`${tag}:" "$IPLAN_FILE"; then
     echo -e "  ${GREEN}✅ Optional tag present: $tag${NC}"
-    ((tag_count++))
+    tag_count=$((tag_count + 1))
   fi
 done
 
@@ -315,7 +313,7 @@ fi
 # Check for empty tags
 if grep -qE "@[a-z]+:\s*$" "$IPLAN_FILE"; then
   echo -e "  ${RED}❌ ERROR: Empty tag value found${NC}"
-  ((ERRORS++))
+  ERRORS=$((ERRORS + 1))
 fi
 
 echo ""
@@ -331,7 +329,7 @@ if grep -qi "prerequisites" "$IPLAN_FILE"; then
   echo -e "  ${GREEN}✅ Prerequisites section present${NC}"
 else
   echo -e "  ${YELLOW}⚠️  WARNING: No Prerequisites section found${NC}"
-  ((WARNINGS++))
+  WARNINGS=$((WARNINGS + 1))
 fi
 
 # Check for tools documentation
@@ -339,7 +337,7 @@ if grep -qi "required tools\|tools:" "$IPLAN_FILE"; then
   echo -e "  ${GREEN}✅ Required tools documented${NC}"
 else
   echo -e "  ${YELLOW}⚠️  WARNING: Required tools not documented${NC}"
-  ((WARNINGS++))
+  WARNINGS=$((WARNINGS + 1))
 fi
 
 # Check for file access documentation
@@ -347,7 +345,7 @@ if grep -qi "file.* access\|required files" "$IPLAN_FILE"; then
   echo -e "  ${GREEN}✅ Required file access documented${NC}"
 else
   echo -e "  ${YELLOW}⚠️  WARNING: Required file access not documented${NC}"
-  ((WARNINGS++))
+  WARNINGS=$((WARNINGS + 1))
 fi
 
 echo ""
@@ -371,11 +369,11 @@ if [ -n "$parent_tasks" ]; then
     echo -e "  ${GREEN}✅ Parent TASKS file exists${NC}"
   else
     echo -e "  ${RED}❌ ERROR: Parent TASKS file not found: $parent_tasks${NC}"
-    ((ERRORS++))
+    ERRORS=$((ERRORS + 1))
   fi
 else
   echo -e "  ${RED}❌ ERROR: No parent TASKS reference found${NC}"
-  ((ERRORS++))
+  ERRORS=$((ERRORS + 1))
 fi
 
 # Validate SPEC references
@@ -417,10 +415,10 @@ echo "  File size: ${file_kb}KB"
 
 if [ "$file_kb" -gt 400 ]; then
   echo -e "  ${RED}❌ ERROR: File size ${file_kb}KB exceeds 400KB maximum${NC}"
-  ((ERRORS++))
+  ERRORS=$((ERRORS + 1))
 elif [ "$file_kb" -gt 200 ]; then
   echo -e "  ${YELLOW}⚠️  WARNING: File size ${file_kb}KB exceeds 200KB optimal${NC}"
-  ((WARNINGS++))
+  WARNINGS=$((WARNINGS + 1))
 elif [ "$file_kb" -gt 100 ]; then
   echo -e "  ${BLUE}ℹ️  INFO: File size ${file_kb}KB - consider optimization${NC}"
 else
@@ -444,7 +442,7 @@ if grep -qi "verification checklist" "$IPLAN_FILE"; then
   echo -e "  ${GREEN}✅ Verification Checklist section found${NC}"
 else
   echo -e "  ${YELLOW}⚠️  WARNING: No Verification Checklist section found${NC}"
-  ((WARNINGS++))
+  WARNINGS=$((WARNINGS + 1))
 fi
 
 # Check for coverage metrics
@@ -452,7 +450,7 @@ if grep -qE "[0-9]+%" "$IPLAN_FILE"; then
   echo -e "  ${GREEN}✅ Coverage percentages present${NC}"
 else
   echo -e "  ${YELLOW}⚠️  WARNING: No coverage percentages found${NC}"
-  ((WARNINGS++))
+  WARNINGS=$((WARNINGS + 1))
 fi
 
 # Check for phase verification
@@ -460,7 +458,7 @@ if grep -qi "after phase" "$IPLAN_FILE"; then
   echo -e "  ${GREEN}✅ Phase-based verification present${NC}"
 else
   echo -e "  ${YELLOW}⚠️  WARNING: No phase-based verification found${NC}"
-  ((WARNINGS++))
+  WARNINGS=$((WARNINGS + 1))
 fi
 
 echo ""

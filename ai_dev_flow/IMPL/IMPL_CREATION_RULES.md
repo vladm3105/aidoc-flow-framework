@@ -451,6 +451,21 @@ ls -la docs/REQ/    # Layer 7
 - **ALWAYS** verify document exists before adding reference
 - **USE** `null` only when artifact type is genuinely not applicable
 
+### Same-Type References (Conditional)
+
+Include ONLY if relationships exist between IMPL documents sharing implementation context or dependencies.
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | IMPL-NNN | [Related IMPL title] | Shared implementation context |
+| Depends | IMPL-NNN | [Prerequisite IMPL title] | Must complete before this |
+
+**Tags**:
+```markdown
+@related-impl: IMPL-NNN
+@depends-impl: IMPL-NNN
+```
+
 
 ## References
 

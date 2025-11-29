@@ -89,6 +89,115 @@ When creating a new PRD:
 - **Cross-Links**: Each PRD should reference upstream BRD and downstream EARS/BDD/SYS/REQ
 - **Index Updates**: Add a line for every new PRD; do not remove past entries
 
+## Template Variants
+
+PRDs support three template variants based on feature complexity and implementation approach:
+
+| Variant | Code | Sections | Use Case | Selection Criteria |
+|---------|------|----------|----------|-------------------|
+| **Standard** | S | 20 sections (0-19) | Business features, platform capabilities | Default for most PRDs |
+| **Agent-Based** | A | 12-15 sections | AI/ML agents with inference pipelines | ML models, autonomous decision-making |
+| **Automation** | W | 9-12 sections | Workflow-focused, n8n-centric | Event-driven automation, minimal UI |
+
+### Template Variant Selection Guide
+
+```mermaid
+flowchart TD
+    Start[New PRD] --> Q1{ML/AI agent<br/>with inference?}
+    Q1 -->|Yes| Agent[Agent-Based Template<br/>12-15 sections]
+    Q1 -->|No| Q2{Workflow/automation<br/>focused?}
+    Q2 -->|Yes| Workflow[Automation Template<br/>9-12 sections]
+    Q2 -->|No| Standard[Standard Template<br/>20 sections]
+```
+
+### Variant-Specific Required Sections
+
+| Section | Standard (S) | Agent-Based (A) | Automation (W) |
+|---------|:------------:|:---------------:|:--------------:|
+| YAML Metadata | ✓ | ✓ | ✓ |
+| Document Control | ✓ | ✓ | ✓ |
+| Product Overview | ✓ | ✓ | ✓ |
+| User Stories | ✓ | ○ (condensed) | ○ (optional) |
+| Functional Requirements | ✓ | ✓ | ✓ |
+| ML Pipeline Specification | ○ | ✓ | ○ |
+| Workflow Specification | ○ | ○ | ✓ |
+| EARS Enhancement Appendix | ✓ | ✓ | ✓ |
+
+**Legend**: ✓ = Required, ○ = Optional/Condensed
+
+## Threshold Registry Integration
+
+### Purpose
+The Threshold Registry (PRD-035 pattern) centralizes magic numbers, limits, and configuration values that span multiple PRDs. This prevents conflicts and enables consistent updates.
+
+### Reference Pattern
+```markdown
+@prd: PRD-035:threshold-key
+```
+
+### Common Threshold Categories
+| Category | Example Key | Description |
+|----------|-------------|-------------|
+| KYC Limits | `kyc_velocity_daily` | Daily transaction limits by verification tier |
+| Transaction Limits | `tx_max_single` | Maximum single transaction amount |
+| Timeout Values | `api_timeout_p99` | API response time SLAs |
+| Risk Thresholds | `risk_score_high` | Risk scoring breakpoints |
+| Rate Limits | `api_rate_per_minute` | API rate limiting values |
+
+### When to Create Threshold Registry Entries
+1. Value appears in 2+ PRDs
+2. Value affects cross-system behavior
+3. Value requires coordinated updates
+4. Value has compliance/regulatory implications
+
+See [PRD-TEMPLATE.md Section 7](./PRD-TEMPLATE.md#7-technical-requirements-specifications) for threshold registry reference format.
+
+## Migration Guide
+
+### PRD Migration Status Categories
+
+| Status | Definition | Action Required |
+|--------|------------|-----------------|
+| **Current** | Compliant with v2.0 template (20 sections + EARS Appendix) | None |
+| **Legacy** | Pre-v2.0 format (missing EARS Appendix, inconsistent Feature IDs) | Migration required |
+| **Migrated** | Updated from legacy to current format | Validation only |
+
+### Migration Checklist for Legacy PRDs
+
+When migrating a Legacy PRD to Current status:
+
+1. **Template Variant Selection**
+   - [ ] Identify appropriate variant (S/A/W)
+   - [ ] Add `template_variant` to YAML metadata
+
+2. **Feature ID Standardization**
+   - [ ] Convert all Feature IDs to `FR-{PRD#}-{sequence}` format
+   - [ ] Validate with regex: `^FR-\d{3}-\d{3}$`
+   - [ ] Update cross-references in downstream artifacts
+
+3. **EARS Enhancement Appendix**
+   - [ ] Add Section 19 with all 5 subsections
+   - [ ] Populate timing profile matrix (p50/p95/p99)
+   - [ ] Define boundary value matrix with explicit operators
+   - [ ] Create state transition diagram
+   - [ ] Document fallback paths
+   - [ ] Complete EARS-Ready checklist
+
+4. **Threshold Registry Integration**
+   - [ ] Identify all magic numbers/thresholds
+   - [ ] Create PRD-035 entries for shared values
+   - [ ] Replace inline values with registry references
+
+5. **Bidirectional Reference Validation**
+   - [ ] Verify all upstream references exist and reciprocate
+   - [ ] Verify all downstream references exist and reciprocate
+   - [ ] Update cross-reference section
+
+6. **Final Validation**
+   - [ ] Calculate EARS-Ready score (target ≥90)
+   - [ ] Update migration status to "Migrated"
+   - [ ] Update traceability matrix entry
+
 ## Index by Status
 
 ### Draft
@@ -141,6 +250,7 @@ When creating a new PRD:
 
 ## Metrics
 
+### Document Metrics
 | Metric | Value | Description |
 |--------|-------|-------------|
 | Total PRDs | 0 | Total product requirement documents |
@@ -148,6 +258,29 @@ When creating a new PRD:
 | Total User Stories | 0 | Total user stories documented |
 | Approved PRDs | 0 | PRDs ready for implementation |
 | In Progress | 0 | PRDs with active development |
+
+### Quality Metrics
+| Metric | Target | Current | Status |
+|--------|--------|---------|--------|
+| Average EARS-Ready Score | ≥90 | - | - |
+| Bidirectional Validation Rate | 100% | - | - |
+| Template Variant Compliance | 100% | - | - |
+| Feature ID Standard Compliance | 100% | - | - |
+| Threshold Registry Coverage | 100% | - | - |
+
+### Migration Metrics
+| Migration Status | Count | Percentage |
+|------------------|-------|------------|
+| Current | 0 | 0% |
+| Legacy | 0 | 0% |
+| Migrated | 0 | 0% |
+
+### Template Variant Distribution
+| Variant | Count | Percentage |
+|---------|-------|------------|
+| Standard (S) | 0 | 0% |
+| Agent-Based (A) | 0 | 0% |
+| Automation (W) | 0 | 0% |
 
 ## Related Documents
 
@@ -172,9 +305,20 @@ Before marking PRD as "Approved":
 - ✅ Non-functional requirements have measurable criteria
 - ✅ Cross-references to BRD are complete
 - ✅ Acceptance criteria defined for each feature
+- ✅ **EARS-Ready score ≥90** (required for EARS progression)
+- ✅ **Bidirectional references validated** (all A→B have B→A)
+- ✅ **Template variant declared** in YAML metadata
+- ✅ **Feature IDs follow standard format** (`FR-NNN-NNN`)
+- ✅ **Threshold registry references** for shared values
 
 ---
 
-**Index Version**: 2.0
-**Last Updated**: 2025-11-13
+**Index Version**: 3.0
+**Last Updated**: 2025-11-29
 **Maintainer**: [Project Team]
+
+### Version History
+| Version | Date | Changes |
+|---------|------|---------|
+| 3.0 | 2025-11-29 | Added Template Variants, Threshold Registry Integration, Migration Guide, enhanced Quality Metrics |
+| 2.0 | 2025-11-13 | Initial structured index |

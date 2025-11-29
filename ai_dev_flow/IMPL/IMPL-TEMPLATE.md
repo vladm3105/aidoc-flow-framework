@@ -349,11 +349,25 @@ flowchart LR
 | SPEC | [SPEC-YY](../SPEC/.../SPEC-YY.yaml) | [Technical Spec] | Pending | Implementation blueprint |
 | TASKS | [TASKS-YY](../TASKS/TASKS-YY.md) | [Code Generation Plan] | Pending | Code generation guide |
 
-### 6.3 Related IMPL Plans
+### 6.3 Same-Type References (Conditional)
 
-**Depends On**: [IMPL-NNN previous implementation plans this depends on]
-**Related**: [IMPL-YY complementary implementation plans]
-**Supersedes**: [IMPL-ZZZ older plans replaced by this one]
+**Include this section only if same-type relationships exist between IMPL documents.**
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | [IMPL-NNN](./IMPL-NNN_...md) | [Related IMPL title] | Shared implementation context |
+| Depends | [IMPL-NNN](./IMPL-NNN_...md) | [Prerequisite IMPL title] | Must complete before this |
+
+**Legacy Format** (for backward compatibility):
+- **Depends On**: [IMPL-NNN previous implementation plans this depends on]
+- **Related**: [IMPL-YY complementary implementation plans]
+- **Supersedes**: [IMPL-ZZZ older plans replaced by this one]
+
+**Tags:**
+```markdown
+@related-impl: IMPL-NNN
+@depends-impl: IMPL-NNN
+```
 
 ### 6.4 Traceability Tags
 

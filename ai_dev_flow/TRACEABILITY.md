@@ -286,6 +286,21 @@ Document the technical specifications and designs derived from this document.
 | TASKS | [TASKS-NNN](../TASKS/TASKS-NNN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code |
 | IPLAN | [IPLAN-NNN](../IPLAN/IPLAN-NNN_...md) | [Implementation work plan] | Session context with bash commands to execute TASKS |
 
+### Same-Type References (Conditional)
+
+**Include this section only if same-type relationships exist.**
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | [REQ-001](../REQ/.../REQ-001_...md) | [Related requirement] | Shared domain context |
+| Depends | [REQ-002](../REQ/.../REQ-002_...md) | [Prerequisite requirement] | Must complete before this |
+
+**Tags**:
+```markdown
+@related-req: REQ-001
+@depends-req: REQ-002
+```
+
 ### Document Links
 - **Anchors/IDs**: `#PRIMARY-ID` (e.g., `#REQ-003`, `#ADR-033`, `#IMPL-001`)
 - **Code Path(s)**: `path/to/implementation.py` (if applicable)
@@ -528,6 +543,25 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @icon-role: consumer
 ```
 
+**Same-Type Relationship Tags** (Forward-Only):
+
+| Tag Type | Format | Purpose |
+|----------|--------|---------|
+| Related | `@related-{type}:` | Supporting context, shared domain knowledge |
+| Depends | `@depends-{type}:` | Implementation prerequisite (must complete first) |
+
+**Supported Types**: req, spec, tasks, adr, bdd, sys, ears, prd, ctr, impl, iplan
+
+**Examples**:
+```markdown
+@related-req: REQ-001, REQ-005
+@depends-req: REQ-001
+@related-spec: SPEC-002, SPEC-004
+@depends-spec: SPEC-001
+@related-tasks: TASKS-002
+@depends-tasks: TASKS-001
+```
+
 **Code Docstring Example**:
 ```python
 """
@@ -595,6 +629,79 @@ python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
 - Code clearly shows business requirements it implements
 - Test files explicitly reference requirements under test
 - Specifications document complete upstream context
+
+## Same-Type Document Relationships
+
+### Overview
+
+In addition to upstream/downstream layer traceability, documents may have relationships with other documents of the **same artifact type**. These relationships are **conditional** - required only when they exist.
+
+### Relationship Types
+
+| Relationship | Tag Format | Purpose | When Required |
+|--------------|------------|---------|---------------|
+| **Related** | `@related-{type}:` | Supporting context, shared domain knowledge | When documents share concepts |
+| **Depends** | `@depends-{type}:` | Implementation prerequisite, must complete first | When implementation order matters |
+
+### Tag Formats
+
+**Related Documents** (informational, no ordering):
+```
+@related-req: REQ-001, REQ-005
+@related-spec: SPEC-002
+@related-tasks: TASKS-003
+```
+
+**Dependency Documents** (implementation order):
+```
+@depends-req: REQ-001  # Must implement REQ-001 before this
+@depends-spec: SPEC-001, SPEC-002  # Prerequisites
+@depends-tasks: TASKS-001  # Depends on TASKS-001 completion
+```
+
+### Decision Rules
+
+| Situation | Action |
+|-----------|--------|
+| No same-type relationships exist | Omit section entirely |
+| Related documents exist | Add `@related-{type}:` tags |
+| Implementation dependencies exist | Add `@depends-{type}:` tags |
+| Both exist | Include both tag types |
+
+### Examples
+
+**REQ-003 with same-type relationships**:
+```markdown
+## Traceability Tags
+
+### Upstream (Cross-Layer)
+@brd: BRD-001:FR-030
+@prd: PRD-003:FEATURE-002
+@sys: SYS-008:PERF-001
+
+### Same-Type References
+@related-req: REQ-001, REQ-002  # Shared risk management domain
+@depends-req: REQ-001  # Connection must exist before validation
+```
+
+### Validation Rules
+
+1. **Format Check**: Same-type tags use `@related-{type}:` or `@depends-{type}:` format
+2. **Document Exists**: Referenced document must exist in docs/{TYPE}/
+3. **No Circular Dependencies**: `@depends-` cannot create cycles
+4. **Conditional Presence**: Section optional if no relationships exist
+
+### Impact Analysis (Script-Based)
+
+**Forward-only approach**: Reverse relationships derived via scripts, not stored in documents.
+
+```bash
+# Find all documents that depend on REQ-001
+grep -r "@depends-req:.*REQ-001" docs/REQ/
+
+# Find all documents related to SPEC-003
+grep -r "@related-spec:.*SPEC-003" docs/SPEC/
+```
 
 ## TASKS ↔ ICON Bidirectional Traceability
 

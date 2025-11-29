@@ -358,6 +358,10 @@ cumulative_tags:
 - **IPLAN** (Layer 12) - Implementation plans
 - **Code** (Layer 13) - Implementation
 
+**Same-Type Document Relationships** (conditional):
+- `@related-spec: SPEC-NNN` - SPECs sharing implementation context
+- `@depends-spec: SPEC-NNN` - SPEC that must be implemented first
+
 ## Creation Process
 
 ### Step 1: Read Upstream Artifacts

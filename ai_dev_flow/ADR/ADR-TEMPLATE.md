@@ -476,7 +476,22 @@ flowchart TD
 - **Performance Benchmarks**: [Before/after performance comparisons]
 - **Security Assessments**: [Security audit and penetration test results]
 
-### 16.5 Traceability Tags
+### 16.5 Same-Type References (Conditional)
+
+**Include this section only if same-type relationships exist between ADRs.**
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | [ADR-NNN](./ADR-NNN_...md) | [Related ADR title] | Shared architectural context |
+| Depends | [ADR-NNN](./ADR-NNN_...md) | [Prerequisite ADR title] | Must complete before this |
+
+**Tags:**
+```markdown
+@related-adr: ADR-NNN
+@depends-adr: ADR-NNN
+```
+
+### 16.6 Traceability Tags
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
 ```markdown

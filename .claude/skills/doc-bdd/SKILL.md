@@ -219,6 +219,10 @@ Scenario Outline: Validate price precision
 - **REQ** (Layer 7) - Atomic requirements
 - **Code** (Layer 13) - Implementation that passes these tests
 
+**Same-Type Document Relationships** (conditional):
+- `@related-bdd: BDD-NNN` - BDD features sharing test context
+- `@depends-bdd: BDD-NNN` - BDD that must pass before this one
+
 ## Creation Process
 
 ### Step 1: Read Upstream Artifacts

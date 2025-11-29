@@ -1216,7 +1216,22 @@ Document the business strategy, product requirements, system specifications, and
 - `.env.example`: Environment variable examples
 - `docker-compose.yml`: Local development stack
 
-### 11.4 Traceability Tags
+### 11.4 Same-Type References (Conditional)
+
+**Include this section only if same-type relationships exist between REQ documents.**
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | [REQ-NNN](./REQ-NNN_...md) | [Related REQ title] | Shared domain context |
+| Depends | [REQ-NNN](./REQ-NNN_...md) | [Prerequisite REQ title] | Must complete before this |
+
+**Tags:**
+```markdown
+@related-req: REQ-NNN
+@depends-req: REQ-NNN
+```
+
+### 11.5 Traceability Tags
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
 ```markdown

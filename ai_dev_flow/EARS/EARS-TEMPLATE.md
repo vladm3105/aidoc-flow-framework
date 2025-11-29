@@ -966,7 +966,24 @@ Document evidence that EARS requirements have been implemented and validated cor
 
 ---
 
-### 7.7 Traceability Tags
+### 7.7 Same-Type References (Conditional)
+
+**Include this section only if same-type relationships exist between EARS documents.**
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | [EARS-NNN](./EARS-NNN_...md) | [Related EARS title] | Shared domain context |
+| Depends | [EARS-NNN](./EARS-NNN_...md) | [Prerequisite EARS title] | Must complete before this |
+
+**Tags:**
+```markdown
+@related-ears: EARS-NNN
+@depends-ears: EARS-NNN
+```
+
+---
+
+### 7.8 Traceability Tags
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 3):
 ```markdown

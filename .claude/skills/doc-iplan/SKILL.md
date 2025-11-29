@@ -360,6 +360,10 @@ git reset --hard HEAD~1
 **Downstream Artifacts**:
 - **Code** (Layer 13) - Implementation
 
+**Same-Type Document Relationships** (conditional):
+- `@related-iplan: IPLAN-NNN` - IPLANs sharing session context
+- `@depends-iplan: IPLAN-NNN` - IPLAN that must be completed first
+
 ## Creation Process
 
 ### Step 1: Read Upstream TASKS

@@ -193,6 +193,10 @@ Based on the product features defined above, the following architectural topics 
 - **BDD** (Layer 4) - Test scenarios validating PRD functionality
 - **ADR** (Layer 5) - Architecture decisions for topics identified in PRD
 
+**Same-Type Document Relationships** (conditional):
+- `@related-prd: PRD-NNN` - PRDs sharing product domain context
+- `@depends-prd: PRD-NNN` - PRD that must be implemented first
+
 ## Creation Process
 
 ### Step 1: Read Parent BRD

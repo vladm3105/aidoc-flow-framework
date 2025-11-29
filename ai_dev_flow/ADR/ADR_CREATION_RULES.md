@@ -266,3 +266,18 @@ ls -la docs/REQ/    # Layer 7
 - **NEVER** reference documents that don't exist
 - **ALWAYS** verify document exists before adding reference
 - **USE** `null` only when artifact type is genuinely not applicable
+
+### Same-Type References (Conditional)
+
+Include ONLY if relationships exist between ADRs sharing architectural context or implementation dependencies.
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | ADR-NNN | [Related ADR title] | Shared architectural context |
+| Depends | ADR-NNN | [Prerequisite ADR title] | Must complete before this |
+
+**Tags**:
+```markdown
+@related-adr: ADR-NNN
+@depends-adr: ADR-NNN
+```

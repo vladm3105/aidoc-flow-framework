@@ -316,6 +316,10 @@ If this TASKS provides no contracts and consumes no contracts, state explicitly:
 - **IPLAN** (Layer 12) - Implementation plans (created in `docs/IPLAN/`)
 - **Code** (Layer 13) - Implementation
 
+**Same-Type Document Relationships** (conditional):
+- `@related-tasks: TASKS-NNN` - TASKS sharing implementation context
+- `@depends-tasks: TASKS-NNN` - TASKS that must be completed first
+
 ## Creation Process
 
 ### Step 1: Read Upstream SPEC

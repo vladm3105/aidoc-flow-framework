@@ -49,6 +49,11 @@ custom_fields:
 13. [Business Objectives and Success Criteria](#13-business-objectives-and-success-criteria)
 14. [Quality Gates](#14-quality-gates)
 15. [Additional Requirements](#15-additional-requirements)
+16. [Upstream Artifact Verification Process](#16-upstream-artifact-verification-process)
+17. [Template Variant Selection](#17-template-variant-selection)
+18. [EARS-Ready Requirements](#18-ears-ready-requirements)
+19. [Threshold Registry Integration](#19-threshold-registry-integration)
+20. [Feature ID Naming Standard](#20-feature-id-naming-standard)
 
 ---
 
@@ -419,6 +424,21 @@ EARS-ready scoring measures PRD maturity and readiness for progression to Engine
 @brd: BRD-NNN:REQUIREMENT-ID
 ```
 
+**Same-Type References (Conditional)**:
+
+Include ONLY if relationships exist between PRD documents sharing domain context or implementation dependencies.
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Related | PRD-NNN | [Related PRD title] | Shared domain context |
+| Depends | PRD-NNN | [Prerequisite PRD title] | Must complete before this |
+
+**Tags**:
+```markdown
+@related-prd: PRD-NNN
+@depends-prd: PRD-NNN
+```
+
 ---
 
 ## 13. Business Objectives and Success Criteria
@@ -523,3 +543,305 @@ ls -la docs/REQ/    # Layer 7
 - **NEVER** reference documents that don't exist
 - **ALWAYS** verify document exists before adding reference
 - **USE** `null` only when artifact type is genuinely not applicable
+
+---
+
+## 17. Template Variant Selection
+
+**Purpose**: Guide PRD authors to select the appropriate template variant based on the domain and complexity of the product requirements.
+
+### Template Variants
+
+PRDs vary in structure based on domain. Select the appropriate variant at PRD creation time.
+
+| Variant | Section Count | Primary Use Case | Key Differences |
+|---------|---------------|------------------|-----------------|
+| **Standard** | 20 sections (0-19) | Business features, core platform, user-facing products | Full template with comprehensive business analysis |
+| **Agent-Based** | 12-15 sections | ML/AI agents, intelligent systems, autonomous processes | Extended ML metrics, state machine focus, A2A protocol |
+| **Automation-Focused** | 9-12 sections | n8n workflows, event processing, integrations | Webhook-focused, workflow states, trigger/action pairs |
+
+### Selection Criteria Flowchart
+
+```
+START: What is the primary domain of this PRD?
+│
+├─► ML/AI Agent or Intelligent System?
+│   └─► YES → Use **Agent-Based** template
+│
+├─► n8n Workflow or Event-Driven Automation?
+│   └─► YES → Use **Automation-Focused** template
+│
+└─► Business Feature, Core Platform, or User-Facing Product?
+    └─► YES → Use **Standard** template (default)
+```
+
+### Template Variant Field
+
+Add template variant to Document Control:
+
+```markdown
+| **Template Variant** | Standard / Agent-Based / Automation-Focused |
+```
+
+### Variant-Specific Sections
+
+**Standard Template (20 sections)**:
+- Sections 0-19 as defined in PRD-TEMPLATE.md
+- Full EARS Enhancement Appendix (Section 19)
+
+**Agent-Based Template (15 sections)**:
+- Sections 0-14: Core PRD structure
+- Agent-specific additions:
+  - Agent State Machine (extended beyond standard)
+  - ML Model Requirements (training data, inference, drift)
+  - A2A Protocol Requirements (agent communication)
+  - Confidence/Threshold Metrics (ML-specific scoring)
+- May omit: Budget & Resources (Section 16) if agent is part of larger system
+
+**Automation-Focused Template (12 sections)**:
+- Sections 0-11: Core PRD structure focused on workflows
+- Automation-specific additions:
+  - Trigger/Event Documentation (webhook schemas)
+  - Workflow State Machine (n8n node flow)
+  - Integration Mapping (connected services)
+- May omit: User Stories (Section 7) if no direct user interaction
+- May omit: Customer-Facing Content (Section 9) if internal automation
+
+### Migration Notes
+
+**Converting between variants**:
+- To expand: Add missing sections from Standard template
+- To simplify: Archive (not delete) sections not applicable to variant
+- Always maintain: Document Control, Traceability, References
+
+---
+
+## 18. EARS-Ready Requirements
+
+**Purpose**: Define the requirements for achieving EARS-Ready status (≥90% score), ensuring PRDs contain sufficient detail for EARS (Engineering Requirements Specification) creation.
+
+### EARS Readiness Criteria
+
+For a PRD to be EARS-Ready, it must contain:
+
+| Criterion | Requirement | Weight |
+|-----------|-------------|--------|
+| **Timing Profiles** | All operations have p50/p95/p99 specifications | 25% |
+| **Boundary Values** | All thresholds have explicit ≥/>/</<= operators | 25% |
+| **State Machine** | Complete state diagram with error transitions | 25% |
+| **Fallback Paths** | All external dependencies have failure modes | 15% |
+| **Threshold Registry** | Numeric values reference centralized registry | 10% |
+
+### Timing Profile Requirements (25%)
+
+**Mandatory for EARS-Ready**:
+- Every operation that has a timing expectation must specify p50, p95, p99
+- Replace vague terms with precise specifications:
+
+| Vague Term | EARS-Compliant Alternative |
+|------------|---------------------------|
+| "real-time" | p50 <100ms, p95 <300ms, p99 <1000ms |
+| "immediately" | <500ms from trigger event |
+| "quickly" | <2 seconds response time |
+| "fast" | Specify latency percentiles |
+
+**Template**:
+```markdown
+| Operation | p50 | p95 | p99 | Unit | Notes |
+|-----------|-----|-----|-----|------|-------|
+| [name] | [value] | [value] | [value] | ms | [constraints] |
+```
+
+### Boundary Value Requirements (25%)
+
+**Mandatory for EARS-Ready**:
+- Every threshold must specify inclusive/exclusive boundary
+- No ambiguous range notation
+
+| Ambiguous | EARS-Compliant |
+|-----------|---------------|
+| ">$500" (what about ==$500?) | "≥$500" or ">$500 (exclusive)" |
+| "between 30-70" | "[30, 70]" (inclusive) or "(30, 70)" (exclusive) |
+| "up to 5 attempts" | "≤5 attempts" (inclusive) |
+
+**Boundary Notation**:
+- `≥`: greater than or equal (inclusive)
+- `>`: greater than (exclusive)
+- `[a, b]`: closed interval (a and b included)
+- `(a, b)`: open interval (neither included)
+
+### State Machine Requirements (25%)
+
+**Mandatory for EARS-Ready**:
+- Complete state diagram covering all possible states
+- Error state transitions documented
+- Recovery paths defined
+
+**Required Transitions**:
+1. Happy path → Success state
+2. Happy path → Error state (failure scenarios)
+3. Error state → Recovery/Retry
+4. Recovery exhausted → Terminal state (manual review, cancellation)
+
+**Anti-pattern** (causes EARS-Ready failure):
+- Only documenting happy path states
+- Missing timeout transitions
+- No error recovery paths
+
+### Fallback Path Requirements (15%)
+
+**Mandatory for EARS-Ready**:
+- Every external dependency has failure mode documentation
+- Degraded operation behavior defined
+
+**Required Documentation per Dependency**:
+1. Failure mode (how it fails)
+2. Detection method (how failure is detected)
+3. Fallback behavior (what system does instead)
+4. Recovery procedure (how to return to normal)
+
+### Threshold Registry Requirements (10%)
+
+**Mandatory for EARS-Ready**:
+- Numeric thresholds reference centralized registry where applicable
+- Use format: `@prd: PRD-XXX:threshold-key`
+
+**When to Reference Registry**:
+- KYC/KYB velocity limits
+- Risk score thresholds
+- Performance timing targets
+- Timeout configurations
+- Rate limits
+
+---
+
+## 19. Threshold Registry Integration
+
+**Purpose**: Define rules for creating and referencing centralized threshold registries to prevent threshold conflicts across PRDs.
+
+### When to Create a Threshold Registry
+
+Create a dedicated Threshold Registry PRD when:
+- 3+ PRDs reference the same threshold type (e.g., risk scores)
+- Threshold conflicts have been identified during review
+- Thresholds require multi-stakeholder approval (Product, Risk, Compliance)
+- Centralized configuration management is required
+
+### Threshold Registry Structure
+
+**Registry PRD Structure** (see PRD-035 as example):
+```markdown
+## N. [Threshold Category]
+
+### N.1 [Subcategory]
+
+| Key | Value | Unit | Notes |
+|-----|-------|------|-------|
+| `category.subcategory.key` | [value] | [unit] | [description] |
+```
+
+### Reference Format
+
+**In consuming PRDs**, reference registry thresholds using:
+
+```markdown
+@prd: PRD-XXX:{category}.{key}
+
+Example: @prd: PRD-035:kyc.l1.daily
+```
+
+### Key Naming Convention
+
+| Level | Format | Example |
+|-------|--------|---------|
+| Category | lowercase, no spaces | `kyc`, `risk`, `perf`, `timeout` |
+| Subcategory | lowercase, dot-separated | `kyc.l1`, `risk.high`, `perf.api` |
+| Key | lowercase, dot-separated | `kyc.l1.daily`, `risk.high.min` |
+
+### Benefits of Registry Pattern
+
+1. **Single Source of Truth**: One location for all threshold values
+2. **Conflict Prevention**: Eliminates discrepancies between PRDs
+3. **Change Management**: Centralized updates propagate to all consumers
+4. **Audit Trail**: Version-controlled threshold changes
+5. **Cross-Team Visibility**: Risk, Compliance, Product see same values
+
+### Registry Maintenance Rules
+
+| Rule | Description |
+|------|-------------|
+| **Authority** | Registry PRD is authoritative for all threshold values |
+| **Updates** | Changes require Product + Risk + Compliance approval |
+| **Versioning** | Semantic versioning (MAJOR.MINOR.PATCH) |
+| **No Duplicates** | Never define same threshold in multiple PRDs |
+| **Reference Only** | Consumer PRDs reference, not duplicate |
+
+---
+
+## 20. Feature ID Naming Standard
+
+**Purpose**: Establish consistent Feature ID naming convention across all PRDs to enable accurate traceability and cross-PRD references.
+
+### Standard Format
+
+**Format**: `FR-{PRD#}-{sequence}`
+
+| Component | Format | Example |
+|-----------|--------|---------|
+| Prefix | `FR-` (Feature Requirement) | FR- |
+| PRD Number | 3-digit zero-padded | 001, 022, 035 |
+| Sequence | 3-digit zero-padded | 001, 002, 003 |
+
+**Examples**:
+- `FR-001-001`: First feature in PRD-001
+- `FR-022-015`: 15th feature in PRD-022
+- `FR-035-003`: 3rd feature in PRD-035
+
+### Validation Regex
+
+```regex
+^FR-\d{3}-\d{3}$
+```
+
+### Invalid Formats (Do NOT Use)
+
+| Invalid Format | Issue | Correct Format |
+|----------------|-------|----------------|
+| `FR-001` | Missing sequence number | `FR-001-001` |
+| `FR-AGENT-001` | Non-standard prefix | `FR-022-001` |
+| `Feature 3.1` | Text format | `FR-025-003` |
+| `F-001-001` | Wrong prefix | `FR-001-001` |
+| `FR-1-1` | Not zero-padded | `FR-001-001` |
+
+### Cross-PRD Reference Format
+
+When referencing features from other PRDs:
+
+```markdown
+See FR-009-005 in @prd: PRD-009 for remittance transaction flow.
+```
+
+### Migration Guide
+
+For PRDs with non-standard Feature IDs:
+
+1. **Inventory**: List all current Feature IDs
+2. **Map**: Create mapping table (old → new)
+3. **Update**: Replace old IDs with standard format
+4. **Cross-Reference**: Update all documents referencing old IDs
+5. **Validate**: Run Feature ID validation script
+
+**Mapping Example**:
+| Old ID | New ID | Notes |
+|--------|--------|-------|
+| FR-AGENT-001 | FR-022-001 | PRD-022 fraud agent |
+| Feature 3.1 | FR-025-003 | PRD-025 transaction orchestrator |
+| FR-001 | FR-016-001 | PRD-016 fraud detection |
+
+### Benefits
+
+1. **Unambiguous References**: Each Feature ID globally unique
+2. **PRD Context**: PRD number embedded in ID
+3. **Sequential Ordering**: Easy to track feature additions
+4. **Validation**: Regex enables automated checking
+5. **Traceability**: Clear path from PRD → Feature → EARS → SPEC

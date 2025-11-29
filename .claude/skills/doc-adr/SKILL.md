@@ -234,6 +234,10 @@ ADR-045: User data schema design (Feature ADR - references ADR-033)
 - **REQ** (Layer 7) - Atomic requirements following decision
 - **Code** (Layer 13) - Implementation per decision
 
+**Same-Type Document Relationships** (conditional):
+- `@related-adr: ADR-NNN` - ADRs sharing architectural context
+- `@depends-adr: ADR-NNN` - ADR that must be decided first
+
 ## Creation Process
 
 ### Step 1: Identify Decision Topic
