@@ -1,5 +1,5 @@
 ---
-title: "ADR-001: AI-Powered Documentation Assistant Architecture"
+title: "ADR-000: AI-Powered Documentation Assistant Architecture"
 tags:
   - architecture-adr
   - ai-agent-primary
@@ -15,9 +15,9 @@ custom_fields:
   downstream_artifacts: [SYS, REQ, SPEC]
 ---
 
-# ADR-001: AI-Powered Documentation Assistant Architecture
+# ADR-000: AI-Powered Documentation Assistant Architecture
 
-<a id="ADR-001"></a>
+<a id="ADR-000"></a>
 
 ## Document Control
 
@@ -56,10 +56,10 @@ Current skill-based workflow requires users to:
 
 | Requirement | Source | Description |
 |-------------|--------|-------------|
-| Automated skill selection | PRD-002:G-001 | System recommends skills based on user intent |
-| Context awareness | PRD-002:G-002 | System analyzes project structure before doc creation |
-| Quality guidance | PRD-002:G-003 | Proactive quality checks during artifact creation |
-| Workflow navigation | PRD-002:G-004 | Next-step recommendations after artifact completion |
+| Automated skill selection | PRD-000:G-001 | System recommends skills based on user intent |
+| Context awareness | PRD-000:G-002 | System analyzes project structure before doc creation |
+| Quality guidance | PRD-000:G-003 | Proactive quality checks during artifact creation |
+| Workflow navigation | PRD-000:G-004 | Next-step recommendations after artifact completion |
 
 ---
 
@@ -325,7 +325,7 @@ Layer 12: IPLAN (requires TASKS)
 ```yaml
 workflow_recommendations:
   current_position:
-    completed_artifact: PRD-002
+    completed_artifact: PRD-000
     layer: 2
   next_steps:
     - priority: P0
@@ -409,7 +409,7 @@ workflow_recommendations:
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
 ```
 @brd: null (framework-level ADR)
-@prd: PRD-002:G-001, PRD-002:G-002, PRD-002:G-003, PRD-002:G-004
+@prd: PRD-000:G-001, PRD-000:G-002, PRD-000:G-003, PRD-000:G-004
 @ears: null (to be created)
 @bdd: null (to be created)
 ```
@@ -418,7 +418,7 @@ workflow_recommendations:
 
 | Source | Type | Reference |
 |--------|------|-----------|
-| PRD-002 | Product Requirements | [PRD-002](../PRD/PRD-002_ai_assisted_documentation_features.md#PRD-002) |
+| PRD-000 | Product Requirements | [PRD-000](../PRD/PRD-000_ai_assisted_documentation_features.md#PRD-000) |
 | SPEC_DRIVEN_DEVELOPMENT_GUIDE | Methodology Guide | [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) |
 
 ### Downstream Artifacts
@@ -432,7 +432,7 @@ workflow_recommendations:
 
 ### Primary Anchor/ID
 
-- **ADR-001**: AI-Powered Documentation Assistant Architecture
+- **ADR-000**: AI-Powered Documentation Assistant Architecture
 
 ---
 
@@ -442,7 +442,7 @@ workflow_recommendations:
 
 | Document | Purpose |
 |----------|---------|
-| [PRD-002](../PRD/PRD-002_ai_assisted_documentation_features.md) | Product requirements driving this decision |
+| [PRD-000](../PRD/PRD-000_ai_assisted_documentation_features.md) | Product requirements driving this decision |
 | [SKILL README](../../.claude/skills/README.md) | Existing skill catalog and structure |
 | [doc-flow SKILL](../../.claude/skills/doc-flow/SKILL.md) | Reference skill architecture |
 | [trace-check SKILL](../../.claude/skills/trace-check/SKILL.md) | Quality validation patterns |

@@ -11,7 +11,7 @@ custom_fields:
   priority: primary
   development_status: active
   skill_category: utility
-  upstream_artifacts: [PRD-002, ADR-001]
+  upstream_artifacts: [PRD-000, ADR-000]
   downstream_artifacts: []
 ---
 
@@ -171,7 +171,7 @@ Parse Section 7 Traceability from each artifact:
 traceability_graph:
   BRD-001:
     upstream: []
-    downstream: [PRD-001, PRD-002]
+    downstream: [PRD-001, PRD-000]
   PRD-001:
     upstream: [BRD-001]
     downstream: [EARS-001, SPEC-001]
@@ -270,7 +270,7 @@ key_terms:
       documents: [ADR-003, SPEC-001]
     - term: PostgreSQL
       frequency: 12
-      documents: [BRD-001, ADR-001]
+      documents: [BRD-001, ADR-000]
 ```
 
 ### Step 7: Build Context Model
@@ -431,16 +431,16 @@ project_structure:
 
 **Required Tags**:
 ```
-@prd: PRD-002:G-002
-@adr: ADR-001
+@prd: PRD-000:G-002
+@adr: ADR-000
 ```
 
 ### Upstream Sources
 
 | Source | Type | Reference |
 |--------|------|-----------|
-| PRD-002 | Product Requirements | [PRD-002](../../../ai_dev_flow/PRD/PRD-002_ai_assisted_documentation_features.md#PRD-002) |
-| ADR-001 | Architecture Decision | [ADR-001](../../../ai_dev_flow/ADR/ADR-001_ai_powered_documentation_assistant_architecture.md#ADR-001) |
+| PRD-000 | Product Requirements | [PRD-000](../../../ai_dev_flow/PRD/PRD-000_ai_assisted_documentation_features.md#PRD-000) |
+| ADR-000 | Architecture Decision | [ADR-000](../../../ai_dev_flow/ADR/ADR-000_ai_powered_documentation_assistant_architecture.md#ADR-000) |
 
 ### Downstream Artifacts
 

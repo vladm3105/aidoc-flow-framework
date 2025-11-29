@@ -1,5 +1,5 @@
 ---
-title: "PRD-002: AI-Assisted Documentation Features"
+title: "PRD-000: AI-Assisted Documentation Features"
 tags:
   - feature-prd
   - ai-agent-primary
@@ -15,9 +15,9 @@ custom_fields:
   downstream_artifacts: [EARS, BDD, ADR]
 ---
 
-# PRD-002: AI-Assisted Documentation Features
+# PRD-000: AI-Assisted Documentation Features
 
-<a id="PRD-002"></a>
+<a id="PRD-000"></a>
 
 ## Document Control
 
@@ -283,7 +283,7 @@ This PRD defines features that operate within the existing Claude Code skill fra
 
 ### Primary Anchor/ID
 
-- **PRD-002**: AI-Assisted Documentation Features product requirements
+- **PRD-000**: AI-Assisted Documentation Features product requirements
 
 ---
 
