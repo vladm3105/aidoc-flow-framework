@@ -357,9 +357,9 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 **Example**:
 ```
-| TASKS-002 | Market data streaming needs connection | IBGatewayConnector | Unblocked when contract published |
-| TASKS-003 | Order management needs connection | IBGatewayConnector | Unblocked when contract published |
-| TASKS-006 | Position tracking needs connection | IBGatewayConnector | Unblocked when contract published |
+| TASKS-002 | Market data streaming needs connection | ServiceConnector | Unblocked when contract published |
+| TASKS-003 | Order management needs connection | ServiceConnector | Unblocked when contract published |
+| TASKS-006 | Position tracking needs connection | ServiceConnector | Unblocked when contract published |
 ```
 
 **Parallel Development Impact**:
@@ -393,7 +393,7 @@ class ConnectionState(str, Enum):
     CONNECTED = "connected"
     FAILED = "failed"
 
-class IBGatewayConnector(Protocol):
+class ServiceConnector(Protocol):
     """Async interface for IB Gateway connections."""
 
     async def connect(
@@ -431,7 +431,7 @@ class IBGatewayConnector(Protocol):
 **Usage Example**:
 ```python
 # Consumer code example
-async def use_gateway_connector(connector: IBGatewayConnector):
+async def use_gateway_connector(connector: ServiceConnector):
     """Example of using the connector protocol."""
     await connector.connect("localhost", 4002, client_id=1)
 
@@ -965,7 +965,7 @@ For each contract provided:
 #### ICON-XXX: Contract Name
 
 - **Purpose**: [Brief description of what the contract defines]
-- **Location**: `/opt/data/ibmcp/docs/ICON/ICON-XXX_contract_name.md`
+- **Location**: `[project_root]/docs/ICON/ICON-XXX_contract_name.md`
 - **Contract Type**: [Protocol Interface | State Machine | Exception Hierarchy | Data Model | DI Interface]
 - **Consumers**: [List consumer TASKS IDs]
   - TASKS-YYY: [Purpose of consumption]
@@ -989,7 +989,7 @@ For each contract consumed:
 #### ICON-XXX: Contract Name
 
 - **Provider**: TASKS-YYY
-- **Location**: `/opt/data/ibmcp/docs/ICON/ICON-XXX_contract_name.md`
+- **Location**: `[project_root]/docs/ICON/ICON-XXX_contract_name.md`
 - **Purpose**: [Why this TASKS needs this contract]
 - **Used Interfaces**: [List specific interfaces/types used]
   - `InterfaceName.method()`: [How it's used]
@@ -1000,7 +1000,7 @@ For each contract consumed:
 ### 8.3 Contract Integration Checklist
 
 **For Provider TASKS**:
-- [ ] Created ICON file in `/opt/data/ibmcp/docs/ICON/`
+- [ ] Created ICON file in `[project_root]/docs/ICON/`
 - [ ] Documented all provided contracts in section 8.1
 - [ ] Added @icon: traceability tags
 - [ ] Added @icon-role: provider
@@ -1272,7 +1272,7 @@ Document evidence that this task has been implemented correctly and meets all ac
 @impl: IMPL-001:phase1
 @ctr: CTR-001
 @spec: SPEC-003
-@icon: TASKS-001:IBGatewayConnector
+@icon: TASKS-001:ServiceConnector
 @icon-role: consumer
 ```
 

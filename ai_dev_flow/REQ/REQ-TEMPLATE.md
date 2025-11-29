@@ -1344,7 +1344,7 @@ SPEC-Ready Score = (
 
 ---
 
-**Document Location**: `/opt/data/ibmcp/docs/REQ/REQ-TEMPLATE-V3.md`
+**Document Location**: `[project_root]/docs/REQ/REQ-TEMPLATE-V3.md`
 **Framework Alignment**: 100% doc_flow framework compliant
 **Maintained By**: System Architect, Quality Assurance Team
 **Review Frequency**: Quarterly or after major template updates

@@ -98,8 +98,8 @@ Quality gates provide quantitative measures of framework effectiveness:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/vladm3105/aidoc-flow-framework.git
-cd aidoc-flow-framework
+git clone https://github.com/[YOUR_ORG]/ai-dev-flow-framework.git
+cd ai-dev-flow-framework
 ```
 
 ### 2. Multi-Project Setup (Recommended)
@@ -831,7 +831,7 @@ MIT License - See LICENSE file for details
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/vladm3105/aidoc-flow-framework/issues)
+- **Issues**: [GitHub Issues](https://github.com/[YOUR_ORG]/ai-dev-flow-framework/issues)
 - **Documentation**: [ai_dev_flow/](./ai_dev_flow/)
 - **Examples**: See `ai_dev_flow/*/examples/` directories
 

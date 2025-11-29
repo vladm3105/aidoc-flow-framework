@@ -171,7 +171,7 @@ TAG_PATTERN = r'@(\w+(?:-\w+)?):\s*([\w\-]+(?::[\w\-]+)?(?:\s*,\s*[\w\-]+(?::[\w
 **Output**:
 ```json
 {
-  "src/ibmcp/gateway/connection_service.py": {
+  "src/[project_module]/gateway/connection_service.py": {
     "tags": {
       "brd": [["BRD-001", "FR-001"], ["BRD-001", "FR-002"], ["BRD-001", "NFR-010"]],
       "sys": [["SYS-001", null], ["SYS-002", null]],
@@ -419,17 +419,17 @@ def validate_ctr_dual_files(contracts_dir):
 ```markdown
 | Requirement | Implementing Files | Status |
 |-------------|-------------------|--------|
-| BRD-001:FR-001 | src/ibmcp/gateway/connection_service.py:15 | ✓ Complete |
-| BRD-001:FR-002 | src/ibmcp/gateway/connection_service.py:15 | ✓ Complete |
-| BRD-001:FR-030 | src/ibmcp/services/account_service.py:12 | ⚠️ In Progress |
+| BRD-001:FR-001 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
+| BRD-001:FR-002 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
+| BRD-001:FR-030 | src/[project_module]/services/account_service.py:12 | ⚠️ In Progress |
 ```
 
 **Reverse Matrix (Code → BRD)**:
 ```markdown
 | Source File | BRD Requirements | Implementation Status |
 |-------------|------------------|---------------------|
-| src/ibmcp/gateway/connection_service.py | FR-001, FR-002, NFR-010 | Complete |
-| src/ibmcp/services/account_service.py | FR-030, FR-031, NFR-006 | In Progress |
+| src/[project_module]/gateway/connection_service.py | FR-001, FR-002, NFR-010 | Complete |
+| src/[project_module]/services/account_service.py | FR-030, FR-031, NFR-006 | In Progress |
 ```
 
 **Traditional Section 7 Validation** (Optional):

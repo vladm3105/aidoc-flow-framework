@@ -76,52 +76,42 @@ Implement four specialized Claude Code skills that work independently or in comb
 
 ### Architecture Overview
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    User Request / Intent                         │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     skill-recommender                            │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │ Intent Parser → Skill Matcher → Confidence Scorer        │   │
-│  └──────────────────────────────────────────────────────────┘   │
-│  Output: Ranked skill recommendations with rationale             │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     context-analyzer                             │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │ Project Scanner → Artifact Parser → Context Builder      │   │
-│  └──────────────────────────────────────────────────────────┘   │
-│  Output: Project context model with upstream artifacts           │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     Selected doc-* Skill                         │
-│                 (e.g., doc-prd, doc-spec, doc-adr)              │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     quality-advisor                              │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │ Section Monitor → Anti-pattern Detector → Tag Validator  │   │
-│  └──────────────────────────────────────────────────────────┘   │
-│  Output: Quality issues, suggestions, validation status          │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     workflow-optimizer                           │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │ Position Detector → Dependency Analyzer → Next Suggester │   │
-│  └──────────────────────────────────────────────────────────┘   │
-│  Output: Next-step recommendations, progress summary             │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph Input
+        A[User Request / Intent]
+    end
+
+    subgraph skill-recommender
+        B1[Intent Parser] --> B2[Skill Matcher] --> B3[Confidence Scorer]
+    end
+    B_OUT[/"Ranked skill recommendations with rationale"/]
+
+    subgraph context-analyzer
+        C1[Project Scanner] --> C2[Artifact Parser] --> C3[Context Builder]
+    end
+    C_OUT[/"Project context model with upstream artifacts"/]
+
+    subgraph doc-skill["Selected doc-* Skill"]
+        D1["doc-prd | doc-spec | doc-adr | etc."]
+    end
+
+    subgraph quality-advisor
+        E1[Section Monitor] --> E2[Anti-pattern Detector] --> E3[Tag Validator]
+    end
+    E_OUT[/"Quality issues, suggestions, validation status"/]
+
+    subgraph workflow-optimizer
+        F1[Position Detector] --> F2[Dependency Analyzer] --> F3[Next Suggester]
+    end
+    F_OUT[/"Next-step recommendations, progress summary"/]
+
+    A --> B1
+    B3 --> B_OUT --> C1
+    C3 --> C_OUT --> D1
+    D1 --> E1
+    E3 --> E_OUT --> F1
+    F3 --> F_OUT
 ```
 
 ---
@@ -295,33 +285,32 @@ quality_report:
 | Next Suggester | Recommend next actions with rationale | Priority-weighted suggestions |
 
 **Workflow Graph**:
-```
-Layer 1: BRD (0 upstream)
-    ↓
-Layer 2: PRD (requires BRD)
-    ↓
-Layer 3: EARS (requires PRD)
-    ↓
-Layer 4: BDD (requires EARS)
-    ↓
-Layer 5: ADR (requires BDD)
-    ↓
-Layer 6: SYS (requires ADR)
-    ↓
-Layer 7: REQ (requires SYS)
-    ↓
-Layer 8: IMPL (optional, requires REQ)
-    ↓
-Layer 9: CTR (optional, requires IMPL or REQ)
-    ↓
-Layer 10: SPEC (requires REQ, optional IMPL/CTR)
-    ↓
-Layer 11: TASKS (requires SPEC)
-    ↓
-Layer 12: IPLAN (requires TASKS)
+
+```mermaid
+flowchart TB
+    L1["Layer 1: BRD<br/>(0 upstream)"]
+    L2["Layer 2: PRD<br/>(requires BRD)"]
+    L3["Layer 3: EARS<br/>(requires PRD)"]
+    L4["Layer 4: BDD<br/>(requires EARS)"]
+    L5["Layer 5: ADR<br/>(requires BDD)"]
+    L6["Layer 6: SYS<br/>(requires ADR)"]
+    L7["Layer 7: REQ<br/>(requires SYS)"]
+    L8["Layer 8: IMPL<br/>(optional, requires REQ)"]:::optional
+    L9["Layer 9: CTR<br/>(optional, requires IMPL or REQ)"]:::optional
+    L10["Layer 10: SPEC<br/>(requires REQ, optional IMPL/CTR)"]
+    L11["Layer 11: TASKS<br/>(requires SPEC)"]
+    L12["Layer 12: IPLAN<br/>(requires TASKS)"]
+
+    L1 --> L2 --> L3 --> L4 --> L5 --> L6 --> L7
+    L7 --> L8 --> L9 --> L10
+    L7 --> L10
+    L10 --> L11 --> L12
+
+    classDef optional fill:#f9f9f9,stroke:#999,stroke-dasharray: 5 5
 ```
 
 **Recommendation Format**:
+
 ```yaml
 workflow_recommendations:
   current_position:
@@ -407,7 +396,8 @@ workflow_recommendations:
 ## 7. Traceability
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
-```
+
+```text
 @brd: null (framework-level ADR)
 @prd: PRD-000:G-001, PRD-000:G-002, PRD-000:G-003, PRD-000:G-004
 @ears: null (to be created)

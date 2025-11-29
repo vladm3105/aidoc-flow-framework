@@ -63,8 +63,8 @@ class ConnectionState(str, Enum):
     CONNECTED = "connected"
     FAILED = "failed"
 
-class IBGatewayConnector(Protocol):
-    """Protocol for IB Gateway connection services."""
+class ServiceConnector(Protocol):
+    """Protocol for External Service connection services."""
 
     async def connect(
         self,
@@ -74,17 +74,17 @@ class IBGatewayConnector(Protocol):
         timeout: float = 30.0
     ) -> None:
         """
-        Establish connection to IB Gateway.
+        Establish connection to External Service.
 
         Raises:
-            GatewayConnectionError: Connection failed
+            ServiceConnectionError: Connection failed
             ClientIDInUseError: Client ID already connected
             TimeoutError: Connection timeout exceeded
         """
         ...
 
     async def disconnect(self) -> None:
-        """Graceful disconnection from IB Gateway."""
+        """Graceful disconnection from External Service."""
         ...
 
     @property
@@ -126,8 +126,8 @@ class ErrorCode(str, Enum):
     TIMEOUT = "E004"
     INVALID_HOST = "E005"
 
-class GatewayConnectionError(Exception):
-    """Base exception for IB Gateway connection failures."""
+class ServiceConnectionError(Exception):
+    """Base exception for External Service connection failures."""
 
     def __init__(
         self,
@@ -141,8 +141,8 @@ class GatewayConnectionError(Exception):
         self.retryable = retryable
         self.original_error = original_error
 
-class ClientIDInUseError(GatewayConnectionError):
-    """Client ID already connected to gateway."""
+class ClientIDInUseError(ServiceConnectionError):
+    """Client ID already connected to service."""
 
     def __init__(self, client_id: int):
         super().__init__(
@@ -152,7 +152,7 @@ class ClientIDInUseError(GatewayConnectionError):
         )
         self.client_id = client_id
 
-class ConnectionTimeoutError(GatewayConnectionError):
+class ConnectionTimeoutError(ServiceConnectionError):
     """Connection attempt exceeded timeout."""
 
     def __init__(self, timeout: float):
@@ -250,7 +250,7 @@ from typing import Optional
 from datetime import datetime
 
 class ConnectionConfig(BaseModel):
-    """IB Gateway connection configuration."""
+    """External Service connection configuration."""
 
     host: str = Field(..., min_length=1, max_length=255)
     port: int = Field(..., ge=1, le=65535)
@@ -285,7 +285,7 @@ from typing import TypedDict, Optional
 from datetime import datetime
 
 class ConnectionConfigDict(TypedDict):
-    """IB Gateway connection configuration (TypedDict)."""
+    """External Service connection configuration (TypedDict)."""
     host: str
     port: int
     client_id: int
@@ -419,21 +419,21 @@ validator = container.resolve(ClientIDValidator)
 
 **Example Analysis**:
 ```
-TASKS-001: IB Gateway Connection Service
+TASKS-001: Service Connector
 
 Upstream Dependencies:
 - TASKS-005: ClientIDValidator interface (for ID management)
 - TASKS-008: ConfigLoader interface (for connection config)
 
 Downstream Dependencies (8 TASKS):
-- TASKS-002: Market Data Streaming (needs IBGatewayConnector)
-- TASKS-003: Order Management (needs IBGatewayConnector)
-- TASKS-004: Account Management (needs IBGatewayConnector)
-- TASKS-006: Position Tracking (needs IBGatewayConnector)
-- TASKS-007: Historical Data (needs IBGatewayConnector)
-- TASKS-009: Real-time PnL (needs IBGatewayConnector)
-- TASKS-010: operation execution (needs IBGatewayConnector)
-- TASKS-011: Risk Management (needs IBGatewayConnector)
+- TASKS-002: Data Streaming (needs ServiceConnector)
+- TASKS-003: Request Management (needs ServiceConnector)
+- TASKS-004: Account Management (needs ServiceConnector)
+- TASKS-006: Resource Tracking (needs ServiceConnector)
+- TASKS-007: Historical Data (needs ServiceConnector)
+- TASKS-009: Real-time Metrics (needs ServiceConnector)
+- TASKS-010: Operation execution (needs ServiceConnector)
+- TASKS-011: Risk Management (needs ServiceConnector)
 
 Decision: Create contracts (8 downstream dependencies)
 ```
@@ -541,7 +541,7 @@ strict_equality = True
 **Run Validation**:
 ```bash
 # Validate contract file
-mypy --strict contracts/ib_gateway_contracts.py
+mypy --strict contracts/service_contracts.py
 
 # Validate implementation against contract
 mypy --strict src/connection_service.py
@@ -559,15 +559,15 @@ Success: no issues found in 2 source files
 from typing import runtime_checkable, Protocol
 
 @runtime_checkable
-class IBGatewayConnector(Protocol):
+class ServiceConnector(Protocol):
     """Runtime-checkable protocol."""
     ...
 
 # Runtime validation
-from src.connection_service import GatewayConnectionService
+from src.connection_service import ConnectionService
 
-service = GatewayConnectionService()
-assert isinstance(service, IBGatewayConnector)
+service = ConnectionService()
+assert isinstance(service, ServiceConnector)
 ```
 
 **Pydantic Validation**:
@@ -633,13 +633,13 @@ jobs:
 ```python
 import pytest
 from typing import AsyncIterator
-from contracts.ib_gateway_contracts import (
-    IBGatewayConnector,
+from contracts.service_contracts import (
+    ServiceConnector,
     ConnectionState
 )
 
-class MockGatewayConnector:
-    """Mock implementation of IBGatewayConnector."""
+class MockServiceConnector:
+    """Mock implementation of ServiceConnector."""
 
     def __init__(self):
         self._state = ConnectionState.DISCONNECTED
@@ -665,31 +665,31 @@ class MockGatewayConnector:
         return self._state == ConnectionState.CONNECTED
 
 @pytest.fixture
-def mock_connector() -> IBGatewayConnector:
+def mock_connector() -> ServiceConnector:
     """Fixture providing mock connector."""
-    return MockGatewayConnector()
+    return MockServiceConnector()
 
-async def test_order_submission(mock_connector):
-    """Test order submission with mock connector."""
-    from src.order_service import OrderService
+async def test_request_submission(mock_connector):
+    """Test request submission with mock connector."""
+    from src.request_service import RequestService
 
-    service = OrderService(connector=mock_connector)
-    await service.submit_order(...)
+    service = RequestService(connector=mock_connector)
+    await service.submit_request(...)
 ```
 
 ### 6.2 Dependency Injection
 
 **Constructor Injection**:
 ```python
-class OrderService:
-    """Order management service."""
+class RequestService:
+    """Request management service."""
 
-    def __init__(self, connector: IBGatewayConnector):
+    def __init__(self, connector: ServiceConnector):
         self._connector = connector
 
-    async def submit_order(self, order: Order) -> str:
+    async def submit_request(self, request: Request) -> str:
         if not self._connector.is_connected:
-            raise RuntimeError("Not connected to gateway")
+            raise RuntimeError("Not connected to service")
         ...
 ```
 
@@ -697,23 +697,23 @@ class OrderService:
 ```python
 # Registration
 container.register(
-    IBGatewayConnector,
-    GatewayConnectionService,
+    ServiceConnector,
+    ConnectionService,
     singleton=True
 )
 
 # Resolution
-order_service = container.resolve(OrderService)
+request_service = container.resolve(RequestService)
 ```
 
 ### 6.3 Adapter Pattern
 
 **Legacy System Adapter**:
 ```python
-class LegacyGatewayAdapter:
-    """Adapter for legacy IB API."""
+class LegacyServiceAdapter:
+    """Adapter for legacy External API."""
 
-    def __init__(self, legacy_client: EClient):
+    def __init__(self, legacy_client: LegacyClient):
         self._client = legacy_client
         self._state = ConnectionState.DISCONNECTED
 
@@ -742,10 +742,10 @@ class LegacyGatewayAdapter:
 ```python
 import pytest
 from typing import Type
-from contracts.ib_gateway_contracts import IBGatewayConnector
+from contracts.service_contracts import ServiceConnector
 
 def test_protocol_conformance(
-    implementation: Type[IBGatewayConnector]
+    implementation: Type[ServiceConnector]
 ):
     """Test implementation conforms to protocol."""
     assert hasattr(implementation, "connect")
@@ -754,8 +754,8 @@ def test_protocol_conformance(
     assert hasattr(implementation, "is_connected")
 
 @pytest.mark.parametrize("implementation", [
-    GatewayConnectionService,
-    LegacyGatewayAdapter
+    ConnectionService,
+    LegacyServiceAdapter
 ])
 def test_all_implementations(implementation):
     """Test all implementations conform."""
@@ -767,8 +767,8 @@ def test_all_implementations(implementation):
 **Exception Hierarchy**:
 ```python
 import pytest
-from contracts.ib_gateway_contracts import (
-    GatewayConnectionError,
+from contracts.service_contracts import (
+    ServiceConnectionError,
     ClientIDInUseError,
     ConnectionTimeoutError,
     ErrorCode
@@ -776,8 +776,8 @@ from contracts.ib_gateway_contracts import (
 
 def test_exception_hierarchy():
     """Test exception inheritance."""
-    assert issubclass(ClientIDInUseError, GatewayConnectionError)
-    assert issubclass(ConnectionTimeoutError, GatewayConnectionError)
+    assert issubclass(ClientIDInUseError, ServiceConnectionError)
+    assert issubclass(ConnectionTimeoutError, ServiceConnectionError)
 
 def test_error_codes():
     """Test error code assignments."""
@@ -797,7 +797,7 @@ def test_exception_attributes():
 **Transition Validation**:
 ```python
 import pytest
-from contracts.ib_gateway_contracts import (
+from contracts.service_contracts import (
     ConnectionState,
     is_valid_transition
 )
@@ -919,7 +919,7 @@ def test_immutability():
 
 **Example** (incorrect):
 ```python
-class IBGatewayConnector(Protocol):
+class ServiceConnector(Protocol):
     def connect(self, host: str, port: int) -> None: ...
     def _validate_host(self, host: str) -> bool: ...  # Internal detail
     def _retry_connection(self) -> None: ...  # Implementation detail
@@ -927,7 +927,7 @@ class IBGatewayConnector(Protocol):
 
 **Solution**: Contracts define interface only, not implementation.
 ```python
-class IBGatewayConnector(Protocol):
+class ServiceConnector(Protocol):
     def connect(self, host: str, port: int) -> None: ...
     # Only public interface methods
 ```
@@ -938,14 +938,14 @@ class IBGatewayConnector(Protocol):
 
 **Example** (incorrect):
 ```python
-class IBGatewayConnector(Protocol):
+class ServiceConnector(Protocol):
     def connect(self, host, port):  # No type hints
         ...
 ```
 
 **Solution**: Add complete type hints to all methods.
 ```python
-class IBGatewayConnector(Protocol):
+class ServiceConnector(Protocol):
     def connect(self, host: str, port: int) -> None:
         ...
 ```
@@ -962,12 +962,12 @@ class IBGatewayConnector(Protocol):
 **Example**:
 ```python
 # contracts/v1/ib_gateway.py
-class IBGatewayConnector(Protocol):
+class ServiceConnector(Protocol):
     """Version 1 - Deprecated 2025-01-15."""
     ...
 
 # contracts/v2/ib_gateway.py
-class IBGatewayConnector(Protocol):
+class ServiceConnector(Protocol):
     """Version 2 - Current."""
     ...
 ```
@@ -997,16 +997,16 @@ class IBGatewayConnector(Protocol):
 
 ### 10.1 Context
 
-**TASKS-001**: IB Gateway Connection Service
+**TASKS-001**: Service Connector
 
 **Downstream Dependencies**: 8 TASKS files
-- TASKS-002: Market Data Streaming
-- TASKS-003: Order Management
+- TASKS-002: Data Streaming
+- TASKS-003: Request Management
 - TASKS-004: Account Management
-- TASKS-006: Position Tracking
+- TASKS-006: Resource Tracking
 - TASKS-007: Historical Data
-- TASKS-009: Real-time PnL
-- TASKS-010: operation execution
+- TASKS-009: Real-time Metrics
+- TASKS-010: Operation Execution
 - TASKS-011: Risk Management
 
 **Problem**: All 8 TASKS blocked until TASKS-001 complete.
@@ -1015,10 +1015,10 @@ class IBGatewayConnector(Protocol):
 
 ### 10.2 Contracts Created
 
-**Contract 1: IBGatewayConnector Protocol**
+**Contract 1: ServiceConnector Protocol**
 ```python
-class IBGatewayConnector(Protocol):
-    """Async interface for IB Gateway connections."""
+class ServiceConnector(Protocol):
+    """Async interface for External Service connections."""
 
     async def connect(
         self, host: str, port: int, client_id: int, timeout: float = 30.0
@@ -1033,17 +1033,17 @@ class IBGatewayConnector(Protocol):
     def is_connected(self) -> bool: ...
 ```
 
-**Contract 2: GatewayConnectionError Hierarchy**
+**Contract 2: ServiceConnectionError Hierarchy**
 ```python
-class GatewayConnectionError(Exception):
+class ServiceConnectionError(Exception):
     def __init__(
         self, message: str, error_code: ErrorCode,
         retryable: bool = False
     ): ...
 
-class ClientIDInUseError(GatewayConnectionError): ...
-class ConnectionTimeoutError(GatewayConnectionError): ...
-class AuthenticationFailedError(GatewayConnectionError): ...
+class ClientIDInUseError(ServiceConnectionError): ...
+class ConnectionTimeoutError(ServiceConnectionError): ...
+class AuthenticationFailedError(ServiceConnectionError): ...
 ```
 
 **Contract 3: ConnectionState State Machine**
@@ -1108,17 +1108,17 @@ class ClientIDValidator(ABC):
 
 **Example**:
 ```python
-# contracts/v1.0.0/ib_gateway.py
-class IBGatewayConnector(Protocol):
+# contracts/v1.0.0/service.py
+class ServiceConnector(Protocol):
     def connect(self, host: str, port: int) -> None: ...
 
-# contracts/v1.1.0/ib_gateway.py (backward-compatible)
-class IBGatewayConnector(Protocol):
+# contracts/v1.1.0/service.py (backward-compatible)
+class ServiceConnector(Protocol):
     def connect(self, host: str, port: int) -> None: ...
     def get_connection_info(self) -> ConnectionInfo: ...  # Added
 
-# contracts/v2.0.0/ib_gateway.py (breaking change)
-class IBGatewayConnector(Protocol):
+# contracts/v2.0.0/service.py (breaking change)
+class ServiceConnector(Protocol):
     async def connect(self, host: str, port: int) -> None: ...  # Now async
 ```
 
@@ -1126,12 +1126,12 @@ class IBGatewayConnector(Protocol):
 
 **Step 1: Announce deprecation** (add to docstring)
 ```python
-class IBGatewayConnector(Protocol):
+class ServiceConnector(Protocol):
     """
-    IB Gateway connector interface.
+    External Service connector interface.
 
     .. deprecated:: 2.0.0
-       Use contracts.v2.IBGatewayConnector instead.
+       Use contracts.v2.ServiceConnector instead.
        This version will be removed in 3.0.0.
     """
 ```
@@ -1144,7 +1144,7 @@ class IBGatewayConnector(Protocol):
 
 **Format**:
 ```markdown
-# Changelog: IBGatewayConnector
+# Changelog: ServiceConnector
 
 ## [2.0.0] - 2025-02-01
 ### Breaking Changes
@@ -1167,8 +1167,8 @@ await connector.connect("localhost", 4002)
 
 ## [1.0.0] - 2025-01-01
 ### Initial Release
-- IBGatewayConnector protocol
-- GatewayConnectionError hierarchy
+- ServiceConnector protocol
+- ServiceConnectionError hierarchy
 - ConnectionState state machine
 ```
 
@@ -1193,8 +1193,8 @@ await connector.connect("localhost", 4002)
 
 ### 12.3 Example Projects
 
-- TASKS-001: IB Gateway Connection Service (8 dependent TASKS)
-- TASKS-002: Market Data Streaming (protocol consumer)
+- TASKS-001: Service Connector (8 dependent TASKS)
+- TASKS-002: Data Streaming (protocol consumer)
 - TASKS-005: Client ID Management (DI interface provider)
 
 ---
@@ -1217,17 +1217,17 @@ The `@icon` tag provides concise traceability for implementation contracts withi
 
 **Primary Format**:
 ```yaml
-@icon: TASKS-001:IBGatewayConnector
+@icon: TASKS-001:ServiceConnector
 ```
 
 **With Role Specification** (optional):
 ```yaml
-@icon: TASKS-001:IBGatewayConnector
+@icon: TASKS-001:ServiceConnector
 @icon-role: provider
 ```
 
 ```yaml
-@icon: TASKS-002:IBGatewayConnector
+@icon: TASKS-002:ServiceConnector
 @icon-role: consumer
 ```
 
@@ -1242,9 +1242,9 @@ The `@icon` tag provides concise traceability for implementation contracts withi
 ```markdown
 ## 8. Implementation Contracts
 
-### 8.1 IBGatewayConnector Protocol
+### 8.1 ServiceConnector Protocol
 
-@icon: TASKS-001:IBGatewayConnector
+@icon: TASKS-001:ServiceConnector
 @icon-role: provider
 
 [Contract definition...]
@@ -1256,22 +1256,22 @@ The `@icon` tag provides concise traceability for implementation contracts withi
 
 ### 3.1 Connection Service
 
-@icon: TASKS-001:IBGatewayConnector
+@icon: TASKS-001:ServiceConnector
 @icon-role: consumer
 
-Requires IBGatewayConnector protocol for gateway connections.
+Requires ServiceConnector protocol for service connections.
 ```
 
 **In Python Implementation**:
 ```python
-# src/services/gateway_connector.py
-# @icon: TASKS-001:IBGatewayConnector
+# src/services/connector.py
+# @icon: TASKS-001:ServiceConnector
 # @icon-role: provider
 
 from typing import Protocol
 
-class IBGatewayConnector(Protocol):
-    """Protocol for IB Gateway connection services."""
+class ServiceConnector(Protocol):
+    """Protocol for External Service connections."""
     ...
 ```
 
@@ -1287,12 +1287,12 @@ class IBGatewayConnector(Protocol):
 
 **Layer 9 (@ctr)**: External API contracts
 ```yaml
-@ctr: CTR-001:IBGatewayAPI
+@ctr: CTR-001:ExternalServiceAPI
 ```
 
 **Layer 11 (@icon)**: Internal implementation contracts
 ```yaml
-@icon: TASKS-001:IBGatewayConnector
+@icon: TASKS-001:ServiceConnector
 ```
 
 **Layer 12 (@iplan)**: Implementation plans
@@ -1310,7 +1310,7 @@ Check for `@icon` tag consistency:
 grep -r "@icon:" docs/TASKS/
 
 # Verify provider/consumer pairs
-grep -A1 "@icon: TASKS-001:IBGatewayConnector" docs/TASKS/
+grep -A1 "@icon: TASKS-001:ServiceConnector" docs/TASKS/
 ```
 
 ---
@@ -1347,9 +1347,9 @@ grep -A1 "@icon: TASKS-001:IBGatewayConnector" docs/TASKS/
 **Naming Convention**: `ICON-NNN_descriptive_name.md`
 
 **Examples**:
-- `ICON-001_gateway_connector_protocol.md`
-- `ICON-002_external_data_event_bus.md`
-- `ICON-003_order_execution_exceptions.md`
+- `ICON-001_service_connector_protocol.md`
+- `ICON-002_data_event_bus.md`
+- `ICON-003_request_execution_exceptions.md`
 
 ### 14.3 ICON File Contents
 
@@ -1402,23 +1402,23 @@ grep -A1 "@icon: TASKS-001:IBGatewayConnector" docs/TASKS/
 
 **Contract Definition**:
 ```markdown
-@icon: ICON-001:GatewayConnector
+@icon: ICON-001:ServiceConnector
 ```
 
 **Provider TASKS**:
 ```markdown
-@icon: ICON-001:GatewayConnector
+@icon: ICON-001:ServiceConnector
 @icon-role: provider
 
-See [ICON-001_gateway_connector.md](../../ai_dev_flow/ICON/ICON-001_gateway_connector.md)
+See [ICON-001_service_connector.md](../../ai_dev_flow/ICON/ICON-001_service_connector.md)
 ```
 
 **Consumer TASKS**:
 ```markdown
-@icon: ICON-001:GatewayConnector
+@icon: ICON-001:ServiceConnector
 @icon-role: consumer
 
-Requires GatewayConnector protocol for gateway connections.
+Requires ServiceConnector protocol for service connections.
 ```
 
 ### 14.7 Decision Examples

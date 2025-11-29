@@ -355,8 +355,8 @@ python scripts/generate_tag_coverage_report.py --artifact-type iplan
 
 | iplan ID | iplan Title | Code Files | Modules/Classes | LOC | Relationship |
 |---------------|------------------|------------|-----------------|-----|--------------|
-| IPLAN-001 | [Implementation plan] | src/ibmcp/gateway/service.py | IBGatewayConnectionService | 450 | Direct implementation from plan |
-| IPLAN-002 | [Implementation plan] | src/ibmcp/gateway/retry.py, src/ibmcp/gateway/circuit_breaker.py | RetryHandler, CircuitBreaker | 320 | Multi-module implementation |
+| IPLAN-001 | [Implementation plan] | src/[project_module]/gateway/service.py | ServiceConnectionService | 450 | Direct implementation from plan |
+| IPLAN-002 | [Implementation plan] | src/[project_module]/gateway/retry.py, src/[project_module]/gateway/circuit_breaker.py | RetryHandler, CircuitBreaker | 320 | Multi-module implementation |
 | IPLAN-NNN | ... | ... | ... | ... | ... |
 
 ### 6.2 iplan → Tests Traceability

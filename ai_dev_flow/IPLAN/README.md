@@ -75,7 +75,7 @@ TASKS defines WHAT → IPLAN defines HOW → Code implements it
 **TASKS-001** (excerpt):
 ```markdown
 ### Phase 2.1: Implement Connection Service (12 hours)
-- Create IBGatewayConnectionService class
+- Create ServiceConnector class
 - Implement async connect() method with retry logic
 - Add connection state machine (5 states)
 - Include circuit breaker pattern
@@ -88,20 +88,20 @@ TASKS defines WHAT → IPLAN defines HOW → Code implements it
 cd ${PROJECT_ROOT}
 
 # Create module file
-touch src/ibmcp/gateway/connection_service.py
+touch src/[project]/services/connector.py
 
 # Implement class (paste from TASKS-001 specification)
 # ... implementation details ...
 
 # Run unit tests
-pytest tests/unit/gateway/test_connection_service.py -v
+pytest tests/unit/services/test_connector.py -v
 
 # Verify coverage
-pytest --cov=src/ibmcp/gateway/connection_service --cov-report=term
+pytest --cov=src/[project]/services/connector --cov-report=term
 # Expected: ≥85% coverage
 
 # Verify type checking
-mypy src/ibmcp/gateway/connection_service.py
+mypy src/[project]/services/connector.py
 # Expected: 0 errors
 ```
 
@@ -169,7 +169,7 @@ Include these tags if present in your project:
 @sys: SYS-002:REQ-001
 @req: REQ-001, REQ-002, REQ-003, REQ-010
 @impl: IMPL-001 (optional - if project uses IMPL)
-@ctr: CTR-001:IBGatewayConnector (optional - if contracts defined)
+@ctr: CTR-001:ExternalConnector (optional - if contracts defined)
 @spec: SPEC-001:connection_service
 @tasks: TASKS-001:PHASE-2.1, TASKS-001:PHASE-2.4
 ```
@@ -241,7 +241,7 @@ python /opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_d
 @sys: SYS-002:REQ-001
 @req: REQ-001, REQ-002
 @impl: IMPL-001 (present in this project)
-@ctr: CTR-001:IBGatewayConnector (present in this project)
+@ctr: CTR-001:ExternalConnector (present in this project)
 @spec: SPEC-001:connection_service
 @tasks: TASKS-001:PHASE-2.1
 ```
@@ -412,14 +412,14 @@ ls -R src/module/
 **Step 2: Install Dependencies**
 
 ```bash
-poetry add ib_async pydantic tenacity
+poetry add async_client pydantic tenacity
 poetry install
 ```
 
 Verification:
 ```bash
-poetry show | grep ib_async
-# Expected: ib_async version X.Y.Z
+poetry show | grep async_client
+# Expected: async_client version X.Y.Z
 ```
 
 ### Verification Checklist
@@ -472,7 +472,7 @@ poetry show | grep ib_async
 ### Optional Tags (If Present in Project)
 
 - `@impl: IMPL-001` - Implementation Plan (Layer 8)
-- `@ctr: CTR-001:IBGatewayConnector` - Interface Contract (Layer 9)
+- `@ctr: CTR-001:ExternalConnector` - Interface Contract (Layer 9)
 ```
 
 **Critical**: This section is MANDATORY and must include ALL required tags.
@@ -550,11 +550,15 @@ poetry show | grep ib_async
 - IPLAN adds session context to TASKS instructions
 
 **Example**:
-```
-TASKS-001: IB Gateway Connection Service (1,992 lines)
-  ↓
-  ├─ IPLAN-001: Implement TASKS-001 (Session 1)
-  └─ IPLAN-002: Continue TASKS-001 Phase 3 (Session 2)
+
+```mermaid
+flowchart TB
+    TASKS["TASKS-001: Service Connection Feature<br/>(1,992 lines)"]
+    IPLAN1["IPLAN-001: Implement TASKS-001<br/>(Session 1)"]
+    IPLAN2["IPLAN-002: Continue TASKS-001 Phase 3<br/>(Session 2)"]
+
+    TASKS --> IPLAN1
+    TASKS --> IPLAN2
 ```
 
 ### Upstream References: SPEC, REQ, ADR
@@ -600,9 +604,9 @@ pytest tests/bdd/ --gherkin-terminal-reporter
 
 **Example**:
 ```python
-# src/ibmcp/gateway/connection_service.py
+# src/[project]/services/connector.py
 """
-Connection service for IB Gateway.
+Connection service for External Service.
 
 Implementation follows:
 - IPLAN: IPLAN-001
@@ -613,7 +617,7 @@ Implementation follows:
 
 **Git Commit**:
 ```bash
-git commit -m "feat: implement gateway connection service
+git commit -m "feat: implement service connector
 
 Implements: IPLAN-001
 Parent: TASKS-001
@@ -645,7 +649,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 **DO**:
 ✅ Include absolute file paths: `/opt/data/project/src/module.py`
-✅ Specify exact commands: `poetry add ib_async>=0.9.86`
+✅ Specify exact commands: `poetry add async_client>=0.9.86`
 ✅ Document environment: Python 3.11+, PostgreSQL 14
 ✅ Include verification steps after each command
 ✅ Capture current state: "Code Status: 35% complete, models done"
@@ -668,15 +672,15 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 **Example**:
 ```bash
 # Install dependencies with specific versions
-poetry add ib_async>=0.9.86 pydantic>=2.0
+poetry add async_client>=0.9.86 pydantic>=2.0
 
 # Verify installation
-poetry show | grep -E "(ib_async|pydantic)"
+poetry show | grep -E "(async_client|pydantic)"
 # Expected output:
-# ib_async    0.9.86  ...
+# async_client    0.9.86  ...
 # pydantic    2.5.0   ...
 
-# If ib_async not found:
+# If async_client not found:
 # Error: Check poetry.lock for conflicts
 # Solution: poetry update
 ```
@@ -733,7 +737,7 @@ ls -ld src/module && touch src/module/test.tmp && rm src/module/test.tmp
 
 **Deviation from TASKS-001**:
 - Changed retry delay from fixed 5s to exponential backoff (1s, 2s, 4s...)
-- Rationale: Better performance under load, recommended by ib_async docs
+- Rationale: Better performance under load, recommended by async_client docs
 - Impact: Improves connection recovery time
 - Approval: Self-approved (optimization, no functional change)
 
@@ -781,12 +785,12 @@ ls -ld src/module && touch src/module/test.tmp && rm src/module/test.tmp
 ### Implementation of TASKS-001 Phase 2.1
 
 Per [TASKS-001:PHASE-2.1](../TASKS/path/TASKS-001.md#phase-21-implement-connection-service):
-> "Create IBGatewayConnectionService class with async connect() method..."
+> "Create ServiceConnector class with async connect() method..."
 
 Implementation:
 ```bash
 # Create service module
-touch src/ibmcp/gateway/connection_service.py
+touch src/[project]/services/connector.py
 # ... (implement per TASKS-001 specification)
 ```
 ```
@@ -807,9 +811,9 @@ touch src/ibmcp/gateway/connection_service.py
 
 | Module | File | Purpose | Key Classes |
 |--------|------|---------|-------------|
-| Models | models.py | Data structures | ConnectionConfig, IbConnection |
-| Errors | errors.py | Exceptions | GatewayError, ConnectionError |
-| Service | service.py | Core logic | IBGatewayConnectionService |
+| Models | models.py | Data structures | ConnectionConfig, ServiceConnection |
+| Errors | errors.py | Exceptions | ServiceError, ConnectionError |
+| Service | service.py | Core logic | ServiceConnector |
 ```
 
 **Example - Inefficient (Avoid)**:
@@ -817,11 +821,11 @@ touch src/ibmcp/gateway/connection_service.py
 ### Module Specifications
 
 **Module: Models**
-File: src/ibmcp/gateway/models.py
-Purpose: Defines data structures for gateway connections
+File: src/[project]/services/models.py
+Purpose: Defines data structures for service connections
 Key Classes:
 - ConnectionConfig: Configuration for connection parameters
-- IbConnection: Represents active connection state
+- ServiceConnection: Represents active connection state
 ... (repeating format for each module - wastes tokens)
 ```
 
@@ -844,14 +848,14 @@ Key Classes:
 
 ### Example 1: Starting New Implementation from Scratch
 
-**Scenario**: Implementing TASKS-001 Gateway Connection Service, no code exists
+**Scenario**: Implementing TASKS-001 Service Connection Feature, no code exists
 
 **IPLAN Structure**:
 ```markdown
-# IPLAN-001: Implement TASKS-001 Gateway Connection from Scratch
+# IPLAN-001: Implement TASKS-001 Service Connection from Scratch
 
 ## Objective
-Implement complete gateway connection service with retry logic, circuit breaker,
+Implement complete service connection feature with retry logic, circuit breaker,
 and 100% BDD coverage starting from empty repository.
 
 ## Context
@@ -871,8 +875,8 @@ and 100% BDD coverage starting from empty repository.
 ## Implementation Guide
 **Step 1: Create Project Structure**
 ```bash
-mkdir -p ${PROJECT_ROOT}/src/ibmcp/gateway
-touch ${PROJECT_ROOT}/src/ibmcp/__init__.py
+mkdir -p ${PROJECT_ROOT}/src/[project]/services
+touch ${PROJECT_ROOT}/src/[project]/__init__.py
 ...
 ```
 ```
@@ -892,7 +896,7 @@ touch ${PROJECT_ROOT}/src/ibmcp/__init__.py
 # IPLAN-002: Continue TASKS-001 Phase 2 Implementation
 
 ## Objective
-Complete Phase 2.3 through 2.6 of TASKS-001 gateway connection service.
+Complete Phase 2.3 through 2.6 of TASKS-001 service connection feature.
 
 ## Context
 **Code Status**: 🟡 50% Phase 2 Complete
@@ -922,8 +926,8 @@ Complete Phase 2.3 through 2.6 of TASKS-001 gateway connection service.
 
 Current state:
 ```bash
-cat src/ibmcp/gateway/connector.py
-# Shows: IBGatewayConnector protocol with stub methods
+cat src/[project]/services/connector.py
+# Shows: ExternalConnector protocol with stub methods
 ```
 
 Next actions:
@@ -953,7 +957,7 @@ Add configurable timeout parameter to circuit breaker per REQ-042 enhancement.
 
 ## Context
 **Code Status**: ✅ Existing implementation functional
-- Circuit breaker implemented in src/ibmcp/gateway/circuit_breaker.py
+- Circuit breaker implemented in src/[project]/services/circuit_breaker.py
 - Current timeout: hardcoded 60 seconds
 - New requirement: Make timeout configurable via environment variable
 
@@ -978,14 +982,14 @@ Add configurable timeout parameter to circuit breaker per REQ-042 enhancement.
 - [ ] Update existing tests to use default timeout
 
 ### Phase 4: Documentation (1 hour)
-- [ ] Update README.md with IB_CIRCUIT_BREAKER_TIMEOUT env var
+- [ ] Update README.md with SERVICE_TIMEOUT env var
 - [ ] Update SPEC-001 with new configuration parameter
 - [ ] Update TASKS-001 traceability matrix
 
 ## Implementation Guide
 **Step 1: Update ConnectionConfig**
 
-File: src/ibmcp/gateway/models.py
+File: src/[project]/services/models.py
 
 ```python
 class ConnectionConfig(BaseModel):
@@ -1076,7 +1080,7 @@ IPLAN-001_gateway_connection_part2.md (Phase 3-4)
 ## Error Handling
 
 Per [SPEC-001:error_handling](../SPEC/SPEC-001.yaml):
-- 6 typed exceptions with error codes (IB_CONN_001 through IB_CONN_006)
+- 6 typed exceptions with error codes (SVC_ERR_001 through SVC_ERR_006)
 - Retry strategy: Exponential backoff, max 6 attempts
 - See SPEC-001 for complete specification
 ```
@@ -1106,10 +1110,10 @@ tests/unit/test_models.py::test_ib_connection ✓
 ```markdown
 | Error Code | Exception | Retryable | HTTP |
 |------------|-----------|-----------|------|
-| IB_CONN_001 | ConnectionError | ✓ | 503 |
-| IB_CONN_002 | ClientIDInUseError | ✓ | 409 |
-| IB_CONN_003 | TimeoutError | ✓ | 504 |
-| IB_CONN_004 | AuthenticationError | ✗ | 401 |
+| SVC_ERR_001 | ConnectionError | ✓ | 503 |
+| SVC_ERR_002 | ClientIDInUseError | ✓ | 409 |
+| SVC_ERR_003 | TimeoutError | ✓ | 504 |
+| SVC_ERR_004 | AuthenticationError | ✗ | 401 |
 ```
 
 **5. Collapse Nested Details**
@@ -1204,7 +1208,7 @@ poetry run pytest tests/
 - [ ] TASK-2.3: Protocol interface ⏳ **RESUME HERE** 👈
   - Current state: File created, stub methods added
   - Next: Implement abstract methods per SPEC-001
-  - File: src/ibmcp/gateway/connector.py
+  - File: src/[project_module]/gateway/connector.py
 - [ ] TASK-2.4: Connection service
 ```
 
@@ -1363,25 +1367,39 @@ git push origin branch-name
 
 ### File Path Patterns
 
-```
-/opt/data/PROJECT/
-├── src/
-│   └── MODULE/
-│       └── COMPONENT/
-│           ├── __init__.py
-│           ├── models.py
-│           ├── errors.py
-│           └── service.py
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── bdd/
-├── docs/
-│   ├── BRD/
-│   ├── SPEC/
-│   ├── TASKS/
-│   └── IPLAN/
-└── pyproject.toml
+```mermaid
+graph TB
+    subgraph project["/opt/data/PROJECT/"]
+        subgraph src["src/"]
+            module["MODULE/"]
+            component["COMPONENT/"]
+            init["__init__.py"]
+            models["models.py"]
+            errors["errors.py"]
+            service["service.py"]
+        end
+
+        subgraph tests["tests/"]
+            unit["unit/"]
+            integration["integration/"]
+            bdd_tests["bdd/"]
+        end
+
+        subgraph docs["docs/"]
+            BRD["BRD/"]
+            SPEC["SPEC/"]
+            TASKS["TASKS/"]
+            IPLAN["IPLAN/"]
+        end
+
+        pyproject["pyproject.toml"]
+    end
+
+    module --> component
+    component --> init
+    component --> models
+    component --> errors
+    component --> service
 ```
 
 ## Appendix B: Validation Scripts

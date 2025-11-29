@@ -456,22 +456,22 @@ All guidance files located in: `{project_root}/ai_dev_flow/`
 
 ## Example Usage
 
-### Example 1: Financial Services Trading Platform
+### Example 1: Software Application Project
 
 ```
-User: "Initialize new algorithmic trading platform project"
+User: "Initialize new software application project"
 
 AI Assistant (using project-init skill):
 
 Step 1: Domain Selection
 "What is the purpose and focus of this new project?"
 
-User: [Enter] (Financial Services - default)
+User: "2" (Software/SaaS)
 
 AI Assistant:
-✓ Domain selected: Financial Services
-✓ Loading configuration: FINANCIAL_DOMAIN_CONFIG.md
-✓ Domain-specific subdirectories: risk, trading, portfolio, compliance, ml
+✓ Domain selected: Software/SaaS
+✓ Loading configuration: SOFTWARE_DOMAIN_CONFIG.md
+✓ Domain-specific subdirectories: tenant, subscription, billing, workspace
 
 Step 2: Folder Creation
 Creating 16-layer architecture (12 artifact directories)...
@@ -487,20 +487,19 @@ Creating 16-layer architecture (12 artifact directories)...
 ✓ Created: docs/SPEC/
 ✓ Created: docs/TASKS/
 ✓ Created: docs/IPLAN/
-✓ Created: docs/REQ/risk/
-✓ Created: docs/REQ/trading/
-✓ Created: docs/REQ/portfolio/
-✓ Created: docs/REQ/compliance/
-✓ Created: docs/REQ/ml/
+✓ Created: docs/REQ/tenant/
+✓ Created: docs/REQ/subscription/
+✓ Created: docs/REQ/billing/
+✓ Created: docs/REQ/workspace/
 ✓ Created: scripts/
 ✓ Created: work_plans/
 
 Step 3: Domain Configuration
-Applying Financial Services terminology:
-✓ [RESOURCE_COLLECTION] → Portfolio
-✓ [RESOURCE_ITEM] → Position
-✓ [USER_ROLE] → Trader
-✓ [REGULATORY_REQUIREMENT] → SEC Rule 15c3-5
+Applying Software/SaaS terminology:
+✓ [RESOURCE_COLLECTION] → Workspace
+✓ [RESOURCE_ITEM] → Resource
+✓ [USER_ROLE] → Account Admin
+✓ [REGULATORY_REQUIREMENT] → SOC2 Control
 
 Step 5: Contract Decision
 "Does this project require API contracts?"
@@ -523,8 +522,8 @@ Step 7: Validation
               PROJECT INITIALIZATION COMPLETE
 ═══════════════════════════════════════════════════════════
 
-✓ Domain: Financial Services
-✓ Folders: Created (12 artifact directories + 5 financial subdirectories)
+✓ Domain: Software/SaaS
+✓ Folders: Created (12 artifact directories + 4 SaaS subdirectories)
 ✓ Contracts: Included (CTR layer active)
 ✓ Workflow: REQ → IMPL → CTR → SPEC → TASKS
 

@@ -366,7 +366,7 @@ If you choose Option 3, here's a template:
 ```python
 mcp >= 1.0.0
 pydantic >= 2.0
-ib_async == 2.0.1
+async_client == 1.0.0
 aeventkit >= 2.1.0
 nest_asyncio
 httpx >= 0.24.0

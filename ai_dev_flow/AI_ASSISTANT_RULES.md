@@ -401,7 +401,7 @@ REQ → IMPL → SPEC → TASKS → Code
 - BDD feature files (`.feature`) in `tests/bdd/` or similar directories
 
 #### ❌ Do NOT Apply ID Standards To:
-- **Python source code** (`src/`, `ibmcp/`): Follow PEP 8 conventions
+- **Python source code** (`src/`, `[project_module]/`): Follow PEP 8 conventions
   - Modules: `snake_case.py`
   - Classes: `PascalCase`
   - Functions: `snake_case()`

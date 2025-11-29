@@ -563,7 +563,7 @@ brd: BRD-009:FR-015 ❌ (missing @ prefix)
 ```
 ❌ ERROR: Broken link - file not found
          Link: ../../ADR/ADR-999_architecture.md
-         Resolved: /opt/data/ibmcp/docs/ADR/ADR-999_architecture.md
+         Resolved: [project_root]/docs/ADR/ADR-999_architecture.md
 ```
 
 **Warning Message** (missing anchor):
@@ -820,7 +820,7 @@ Warnings: 1
 ```
 ❌ ERROR: Broken link - file not found
          Link: ../../ADR/ADR-999_architecture.md
-         Resolved: /opt/data/ibmcp/docs/ADR/ADR-999_architecture.md
+         Resolved: [project_root]/docs/ADR/ADR-999_architecture.md
 ```
 
 **Cause**: Referenced file doesn't exist

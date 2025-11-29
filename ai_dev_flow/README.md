@@ -829,43 +829,69 @@ Templates are optimized for AI code generation:
 
 ## Directory Organization
 
+```mermaid
+graph LR
+    subgraph ai_dev_flow["ai_dev_flow/"]
+        direction TB
+
+        subgraph docs["Documentation Artifacts"]
+            BRD["BRD/ - Business Requirements"]
+            PRD["PRD/ - Product Requirements"]
+            EARS["EARS/ - EARS Requirements"]
+            BDD["BDD/ - BDD Feature Files"]
+            ADR["ADR/ - Architecture Decisions"]
+            SYS["SYS/ - System Requirements"]
+            REQ["REQ/ - Atomic Requirements"]
+            IMPL["IMPL/ - Implementation Plans"]
+            CTR["CTR/ - API Contracts"]
+            SPEC["SPEC/ - Technical Specs"]
+            TASKS["TASKS/ - Code Gen Plans"]
+            IPLAN["IPLAN/ - Session Plans"]
+        end
+
+        subgraph tools["Tooling"]
+            scripts["scripts/ - Validation tools"]
+            work_plans["work_plans/ - Plan outputs"]
+        end
+
+        subgraph guides["Framework Guides"]
+            index["index.md"]
+            readme["README.md"]
+            sdd["SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"]
+            trace["TRACEABILITY.md"]
+        end
+    end
+
+    REQ --> REQ_sub["api/ auth/ data/ risk/"]
+    IMPL --> IMPL_sub["examples/"]
 ```
-ai_dev_flow/
-├── BRD/              # Business Requirements Documents
-├── PRD/               # Product Requirements Documents
-├── EARS/              # EARS Requirements (Event-driven)
-├── BDD/              # BDD Feature Files (Gherkin)
-├── ADR/              # Architecture Decision Records
-├── SYS/               # System Requirements Specifications
-├── REQ/              # Atomic Requirements
-│   ├── api/          # API integration requirements
-│   ├── auth/         # Authentication/authorization requirements
-│   ├── data/         # Data architecture requirements
-│   └── risk/         # Risk management requirements (legacy examples)
-├── IMPL/        # Implementation Plans (project management)
-│   └── examples/     # Reference implementation plan examples
-├── CTR/               # API Contracts (CTR) - dual-file format (.md + .yaml)
-├── SPEC/             # Technical Specifications (YAML)
-├── TASKS/          # Code Generation Plans (TASKS)
-├── IPLAN/       # Session-specific implementation plans (Layer 12)
-├── scripts/           # Validation and tooling scripts
-│   ├── extract_tags.py                    # Tag extraction from codebase
-│   ├── validate_tags_against_docs.py      # Cumulative tagging validation
-│   ├── generate_traceability_matrices.py  # Matrix generation
-│   ├── add_cumulative_tagging_to_matrices.py  # Matrix template updater
-│   └── make_framework_generic.py          # Placeholder maintenance tool
-├── work_plans/        # Implementation plans (/save-plan command output)
-├── index.md           # Detailed directory reference with Mermaid workflow
-├── README.md          # This file (framework overview)
-├── DOMAIN_ADAPTATION_GUIDE.md  # Domain-specific customization guide
-├── SPEC_DRIVEN_DEVELOPMENT_GUIDE.md  # Complete SDD methodology
-├── ID_NAMING_STANDARDS.md      # Document identification standards
-├── TRACEABILITY.md             # Traceability requirements and conventions
-├── TRACEABILITY_SETUP.md       # Cumulative tagging setup and CI/CD integration
-├── COMPLETE_TAGGING_EXAMPLE.md # End-to-end cumulative tagging example
-├── WHEN_TO_CREATE_IMPL.md      # Guidance on IMPL document usage
-└── [other standards documents]
-```
+
+**Artifact Directories**:
+
+| Directory | Purpose |
+|-----------|---------|
+| `BRD/` | Business Requirements Documents |
+| `PRD/` | Product Requirements Documents |
+| `EARS/` | EARS Requirements (Event-driven) |
+| `BDD/` | BDD Feature Files (Gherkin) |
+| `ADR/` | Architecture Decision Records |
+| `SYS/` | System Requirements Specifications |
+| `REQ/` | Atomic Requirements (subdirs: api/, auth/, data/, risk/) |
+| `IMPL/` | Implementation Plans (subdirs: examples/) |
+| `CTR/` | API Contracts - dual-file format (.md + .yaml) |
+| `SPEC/` | Technical Specifications (YAML) |
+| `TASKS/` | Code Generation Plans |
+| `IPLAN/` | Session-specific implementation plans (Layer 12) |
+
+**Tooling & Guides**:
+
+| Path | Purpose |
+|------|---------|
+| `scripts/` | Validation and tooling scripts |
+| `work_plans/` | Implementation plans (/save-plan output) |
+| `index.md` | Detailed directory reference with Mermaid workflow |
+| `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` | Complete SDD methodology |
+| `TRACEABILITY.md` | Traceability requirements and conventions |
 
 <!-- Directory Structure Migration History -->
 <!-- 2025-01-13: CONTRACTS/ → CTR/ (contracts now use dual-file format) -->

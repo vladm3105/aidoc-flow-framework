@@ -220,32 +220,56 @@
 ## Timeline
 
 ### Gantt Chart (8-Week Plan)
+
+```mermaid
+gantt
+    title Implementation Timeline (8 Weeks)
+    dateFormat YYYY-MM-DD
+
+    section Phase 1: Foundation
+    OAuth setup           :p1a, 2025-01-01, 2w
+    Database schema       :p1b, 2025-01-01, 2w
+    Session service       :p1c, after p1a, 2w
+    API endpoints         :p1d, after p1b, 2w
+
+    section Phase 2: Security
+    MFA implementation    :p2a, 2025-01-15, 2w
+    Password reset        :p2b, 2025-01-15, 2w
+    Rate limiting         :p2c, after p2a, 2w
+    Security logging      :p2d, after p2b, 1w
+
+    section Phase 3: Access Control
+    RBAC implementation   :p3a, 2025-01-29, 2w
+    Permission API        :p3b, 2025-01-29, 2w
+    Admin dashboard       :p3c, after p3a, 2w
+    Audit logging         :p3d, after p3b, 1w
+
+    section Phase 4: Migration
+    Migration scripts     :p4a, 2025-02-12, 1w
+    Deployment runbook    :p4b, 2025-02-12, 1w
+    Monitoring setup      :p4c, after p4a, 1w
+    User documentation    :p4d, after p4c, 1w
+    Production deploy     :milestone, p4e, after p4d, 1w
 ```
-Week 1-2: Phase 1 (Foundation)
-  ├── OAuth setup          [Engineer 1] ████████░░
-  ├── Database schema      [Engineer 2] ████████░░
-  ├── Session service      [Engineer 1] ░░████████
-  └── API endpoints        [Engineer 3] ░░████████
 
-Week 3-4: Phase 2 (security)
-  ├── MFA implementation   [Engineer 2] ████████░░
-  ├── Password reset       [Engineer 3] ████████░░
-  ├── Rate limiting        [Engineer 1] ░░████████
-  └── security logging     [Engineer 1] ░░░░██████
+**Task Assignments**:
 
-Week 5-6: Phase 3 (Access Control)
-  ├── RBAC implementation  [Engineer 3] ████████░░
-  ├── Permission API       [Engineer 2] ████████░░
-  ├── Admin dashboard      [FE Engineer] ░░████████
-  └── Audit logging        [Engineer 1] ░░░░██████
-
-Week 7-8: Phase 4 (Migration)
-  ├── Migration scripts    [Engineer 2] ████░░░░░░
-  ├── Deployment runbook   [DevOps]      ████░░░░░░
-  ├── Monitoring setup     [DevOps]      ░░████░░░░
-  ├── User documentation   [Tech Writer] ░░░░████░░
-  └── Production deploy    [All]         ░░░░░░████
-```
+| Phase | Task | Owner |
+|-------|------|-------|
+| Phase 1 | OAuth setup, Session service | Engineer 1 |
+| Phase 1 | Database schema | Engineer 2 |
+| Phase 1 | API endpoints | Engineer 3 |
+| Phase 2 | MFA implementation | Engineer 2 |
+| Phase 2 | Password reset | Engineer 3 |
+| Phase 2 | Rate limiting, Security logging | Engineer 1 |
+| Phase 3 | RBAC implementation | Engineer 3 |
+| Phase 3 | Permission API | Engineer 2 |
+| Phase 3 | Admin dashboard | FE Engineer |
+| Phase 3 | Audit logging | Engineer 1 |
+| Phase 4 | Migration scripts | Engineer 2 |
+| Phase 4 | Deployment runbook, Monitoring | DevOps |
+| Phase 4 | User documentation | Tech Writer |
+| Phase 4 | Production deploy | All |
 
 ### Milestones
 | Milestone | Date | Deliverable | Owner |

@@ -1219,7 +1219,7 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
 from typing import Protocol, runtime_checkable
 
 @runtime_checkable
-class IBGatewayConnector(Protocol):
+class ServiceConnector(Protocol):
     async def connect(self, host: str, port: int, client_id: int) -> ConnectionResult: ...
     async def disconnect(self) -> None: ...
     async def is_connected(self) -> bool: ...
@@ -1294,13 +1294,13 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 
 ### 8.1 Contracts Provided by This TASKS
 
-#### ICON-001: IBGatewayConnector Protocol
+#### ICON-001: ServiceConnector Protocol
 
 - **Purpose**: Protocol interface defining async IB Gateway connection operations
-- **Location**: `/opt/data/ibmcp/docs/ICON/ICON-001_gateway_connector_protocol.md`
+- **Location**: `[project_root]/docs/ICON/ICON-001_gateway_connector_protocol.md`
 - **Contract Type**: Protocol Interface (typing.Protocol)
 - **Consumers**: TASKS-002, 003, 004, 005, 007, 008, 009, 010
-- **Traceability**: @icon: ICON-001:IBGatewayConnector
+- **Traceability**: @icon: ICON-001:ServiceConnector
 - **Role**: @icon-role: provider
 
 **Key Interface Methods**:
@@ -1322,7 +1322,7 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 
 @spec: SPEC-001
 @tasks: TASKS-001
-@icon: ICON-001:IBGatewayConnector
+@icon: ICON-001:ServiceConnector
 @icon: ICON-003:GatewayExceptions
 @icon-role: provider
 ```
@@ -1336,23 +1336,23 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 
 ### 8.2 Contracts Consumed by This TASKS
 
-#### ICON-001: IBGatewayConnector Protocol
+#### ICON-001: ServiceConnector Protocol
 
 - **Provider**: TASKS-001 (IB Gateway Connection Implementation)
 - **Purpose**: Connection operations for heartbeat monitoring
-- **Location**: `/opt/data/ibmcp/docs/ICON/ICON-001_gateway_connector_protocol.md`
+- **Location**: `[project_root]/docs/ICON/ICON-001_gateway_connector_protocol.md`
 - **Usage in This TASKS**:
   - Use `is_connected()` to verify connection before heartbeat
   - Use `register_callback()` to monitor connection events
   - Use `get_connection_state()` for state validation
-- **Traceability**: @icon: ICON-001:IBGatewayConnector
+- **Traceability**: @icon: ICON-001:ServiceConnector
 - **Role**: @icon-role: consumer
 
 #### ICON-002: ConnectionState State Machine
 
 - **Provider**: TASKS-005 (Connection State Machine)
 - **Purpose**: Connection lifecycle state definitions
-- **Location**: `/opt/data/ibmcp/docs/ICON/ICON-002_connection_state_machine.md`
+- **Location**: `[project_root]/docs/ICON/ICON-002_connection_state_machine.md`
 - **Usage in This TASKS**:
   - Validate connection is in CONNECTED state before heartbeat
   - Handle DISCONNECTED and RECONNECTING states
@@ -1367,7 +1367,7 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 
 @spec: SPEC-002
 @tasks: TASKS-002
-@icon: ICON-001:IBGatewayConnector
+@icon: ICON-001:ServiceConnector
 @icon: ICON-002:ConnectionState
 @icon: ICON-003:GatewayExceptions
 @icon-role: consumer
@@ -1403,8 +1403,8 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 - **Purpose**: Enable parallel development within codebase
 - **Audience**: Internal implementation teams (provider and consumer TASKS)
 - **Format**: Embedded in TASKS section 8 OR standalone ICON files
-- **Examples**: `IBGatewayConnector` Protocol, `ConnectionState` State Machine
-- **Tag**: `@icon: TASKS-001:IBGatewayConnector` or `@icon: ICON-001:IBGatewayConnector`
+- **Examples**: `ServiceConnector` Protocol, `ConnectionState` State Machine
+- **Tag**: `@icon: TASKS-001:ServiceConnector` or `@icon: ICON-001:ServiceConnector`
 - **Location**: `docs/ICON/` or embedded in `docs/TASKS/`
 - **Versioning**: Tied to TASKS implementation cycles
 
@@ -1463,7 +1463,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 **Anti-Pattern 2: Missing Provider section 8.1**
 
 ❌ **Problem**: Provider TASKS doesn't document contracts it provides
-- TASKS-001 implements IBGatewayConnector interface
+- TASKS-001 implements ServiceConnector interface
 - No section 8.1 documenting ICON-001
 - Consumers don't know contract exists
 
@@ -1472,7 +1472,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 **Anti-Pattern 3: Missing Consumer section 8.2**
 
 ❌ **Problem**: Consumer TASKS doesn't document contracts it uses
-- TASKS-002 uses IBGatewayConnector methods
+- TASKS-002 uses ServiceConnector methods
 - No section 8.2 documenting dependency on ICON-001
 - Unclear which contracts are required
 
@@ -1482,7 +1482,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 
 ❌ **Problem**: section 8 exists but no traceability tags
 - TASKS-001 has section 8.1
-- No @icon: ICON-001:IBGatewayConnector tag
+- No @icon: ICON-001:ServiceConnector tag
 - Automated validation fails
 
 ✅ **Solution**: Add @icon: and @icon-role: tags to all TASKS files with section 8

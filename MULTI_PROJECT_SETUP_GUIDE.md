@@ -216,7 +216,7 @@ chmod +x /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh
 
 ```bash
 # Setup all projects at once
-for PROJECT in ibmcp b_local trading techtrend cara_framework; do
+for PROJECT in [PROJECT_A] [PROJECT_B] [PROJECT_C]; do
     if [ -d "/opt/data/$PROJECT" ]; then
         echo "Setting up: $PROJECT"
         /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh "/opt/data/$PROJECT"
@@ -311,51 +311,51 @@ Priority 2: .claude/agents/            # Shared framework
 
 ### Custom Skill Example
 
-**Location**: `${PROJECT_PATH}/.claude/custom_skills/ib-api-helper/SKILL.md`
+**Location**: `${PROJECT_PATH}/.claude/custom_skills/project-helper/SKILL.md`
 
 ```markdown
-# IB API Helper Skill
+# Custom Project Skill
 
-**Purpose**: Interactive Brokers API connection and data validation utilities
+**Purpose**: Project-specific data connection and validation utilities
 
-**Scope**: Project-specific skill for IB API MCP Server
+**Scope**: Project-specific skill for [PROJECT_NAME]
 
 ## Prompt
 
-You are an IB API specialist...
+You are a project specialist...
 
 [Skill content]
 ```
 
 **Access:**
 ```bash
-# Available only in ibmcp project
-/skill ib-api-helper
+# Available only in this project
+/skill project-helper
 ```
 
 ### Custom Command Example
 
-**Location**: `${PROJECT_PATH}/.claude/custom_commands/ib-connect.md`
+**Location**: `${PROJECT_PATH}/.claude/custom_commands/service-connect.md`
 
 ```markdown
-Test IB TWS connection and report status with diagnostics
+Test service connection and report status with diagnostics
 ```
 
 **Access:**
 ```bash
-# Available only in ibmcp project
-/ib-connect
+# Available only in this project
+/service-connect
 ```
 
 ### Custom Agent Example
 
-**Location**: `${PROJECT_PATH}/.claude/custom_agents/ib_tester.json`
+**Location**: `${PROJECT_PATH}/.claude/custom_agents/service_tester.json`
 
 ```json
 {
-  "name": "ib_tester",
-  "description": "Test IB API connections",
-  "systemPrompt": "You are an IB API testing specialist..."
+  "name": "service_tester",
+  "description": "Test service connections",
+  "systemPrompt": "You are a service testing specialist..."
 }
 ```
 
@@ -383,7 +383,7 @@ Test IB TWS connection and report status with diagnostics
 **Location**: `/opt/data/project_name/.claude/CLAUDE.md` (optional)
 
 ```markdown
-# Project: IB API MCP Server
+# Project: [PROJECT_NAME]
 
 **Active Framework**: /opt/data/docs_flow_framework
 **Templates**: .templates/ai_dev_flow/
@@ -391,16 +391,15 @@ Test IB TWS connection and report status with diagnostics
 
 ## Project-Specific Rules
 
-- Use Interactive Brokers terminology
-- Follow TWS API naming conventions
+- Follow project-specific terminology
 - Document all API method signatures
 - Include error codes in documentation
 
 ## Active Documents
 
-- BRD-001: Core MCP server functionality
-- BRD-002: Market data streaming
-- ADR-001: Python implementation decision
+- BRD-001: Core project functionality
+- BRD-002: Data processing features
+- ADR-001: Implementation technology decision
 ```
 
 ---
@@ -687,13 +686,13 @@ cd ${PROJECT_PATH}
 
 ```bash
 # 1. Create in project custom directory
-mkdir ${PROJECT_PATH}/.claude/custom_skills/ib-validator
-vim ${PROJECT_PATH}/.claude/custom_skills/ib-validator/SKILL.md
+mkdir ${PROJECT_PATH}/.claude/custom_skills/project-validator
+vim ${PROJECT_PATH}/.claude/custom_skills/project-validator/SKILL.md
 
 # 2. Commit to project repository
 cd ${PROJECT_PATH}
-git add .claude/custom_skills/ib-validator/
-git commit -m "Add IB-specific validation skill"
+git add .claude/custom_skills/project-validator/
+git commit -m "Add project-specific validation skill"
 
 # 3. Not available in other projects (intentionally isolated)
 ```

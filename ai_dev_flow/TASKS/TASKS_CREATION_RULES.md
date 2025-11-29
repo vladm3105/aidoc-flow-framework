@@ -67,9 +67,9 @@ TASKS-NNN_{descriptive_component}_tasks.md
 
 ### Examples
 
-- `TASKS-001_gateway_connection_service_tasks.md`
-- `TASKS-002_market_data_integration_tasks.md`
-- `TASKS-003_order_execution_service_tasks.md`
+- `TASKS-001_service_connector_tasks.md`
+- `TASKS-002_data_integration_tasks.md`
+- `TASKS-003_request_execution_service_tasks.md`
 
 ---
 
@@ -134,15 +134,15 @@ custom_fields:
 ```markdown
 ## 1. Scope
 
-Implement a minimal `gateway_connection_service` that:
-- Establishes async TCP connections to IB Gateway
+Implement a minimal `service_connector` that:
+- Establishes async TCP connections to External Service
 - Manages connection state with 5-state machine
 - Provides retry logic with exponential backoff
 - Includes circuit breaker pattern
 
 **Exclusions**:
-- Market data subscription (TASKS-002)
-- Order execution (TASKS-003)
+- Data subscription (TASKS-002)
+- Request execution (TASKS-003)
 ```
 
 ### Bad Example
@@ -171,17 +171,17 @@ Build the whole gateway system.
 ## 2. Plan
 
 1. **Create module structure** (2 hours)
-   - Create `src/gateway/__init__.py`
-   - Create `src/gateway/models.py` (SPEC-001:15-45)
-   - Create `src/gateway/errors.py` (SPEC-001:47-82)
+   - Create `src/services/__init__.py`
+   - Create `src/services/models.py` (SPEC-001:15-45)
+   - Create `src/services/errors.py` (SPEC-001:47-82)
 
 2. **Implement connection protocol** (4 hours)
-   - Create `src/gateway/connector.py`
-   - Implement `GatewayConnector` protocol (SPEC-001:84-120)
+   - Create `src/services/connector.py`
+   - Implement `ServiceConnector` protocol (SPEC-001:84-120)
    - Add type hints per SPEC-001:122-135
 
 3. **Add retry handler** (3 hours)
-   - Create `src/gateway/retry.py`
+   - Create `src/services/retry.py`
    - Implement exponential backoff (SPEC-001:137-165)
    - Verify: Unit tests pass with 85% coverage
 ```
@@ -215,7 +215,7 @@ Build the whole gateway system.
 ```markdown
 ## 3. Constraints
 
-- **Technical**: Python 3.11+, asyncio, ib_async library
+- **Technical**: Python 3.11+, asyncio, async_client library
 - **Coding Standards**: PEP 8, snake_case naming
 - **Interface**: Match SPEC-001 exactly, no additions
 - **Performance**: p95 latency < 50ms for validations

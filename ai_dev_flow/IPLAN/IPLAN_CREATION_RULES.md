@@ -163,7 +163,7 @@ grep -q "^tags:" docs/IPLAN/IPLAN-NNN_*.md || echo "ERROR: Missing tags: section
 ```markdown
 ## Objective
 
-Implement TASKS-001 Gateway Connection Service from scratch, creating async TCP
+Implement TASKS-001 Service Connector from scratch, creating async TCP
 connection management with retry logic, circuit breaker, and 100% BDD coverage.
 
 **Deliverables**:
@@ -206,7 +206,7 @@ Build the gateway connection stuff.
 ### Current State Analysis
 
 **Documentation Status**: ✅ 100% Complete
-- SPEC-001: Gateway Connection Service specification
+- SPEC-001: Service Connector specification
 - REQ-001 through REQ-010: All requirements documented
 - BDD-001: 18 scenarios defined
 
@@ -217,7 +217,7 @@ Build the gateway connection stuff.
 ### Key Technical Decisions
 
 **Architecture** (from ADR-002):
-- Async TCP with ib_async library
+- Async TCP with async_client library
 - Protocol-based interfaces for testability
 
 **Error Handling** (from SPEC-001):
@@ -251,8 +251,8 @@ Build the gateway connection stuff.
   - Verify: `ls -R src/`
 
 - [ ] **TASK-1.2**: Install dependencies
-  - Run `poetry add ib_async pydantic`
-  - Verify: `poetry show | grep ib_async`
+  - Run `poetry add async_client pydantic`
+  - Verify: `poetry show | grep async_client`
 ```
 
 ### Phase Guidelines
@@ -315,15 +315,15 @@ ls -R src/module/
 **Step 2: Install Dependencies**
 
 ```bash
-poetry add ib_async>=0.9.86 pydantic>=2.0
+poetry add async_client>=1.0.0 pydantic>=2.0
 ```
 
 Verification:
 ```bash
-poetry show | grep -E "(ib_async|pydantic)"
+poetry show | grep -E "(async_client|pydantic)"
 # Expected:
-# ib_async    0.9.86  ...
-# pydantic    2.5.0   ...
+# async_client    1.0.0  ...
+# pydantic        2.5.0  ...
 ```
 ```
 
@@ -384,7 +384,7 @@ poetry show | grep -E "(ib_async|pydantic)"
 ### Optional Tags
 
 - `@impl: IMPL-001` - Implementation Plan (Layer 8)
-- `@ctr: CTR-001:IBGatewayConnector` - Interface Contract (Layer 9)
+- `@ctr: CTR-001:ServiceConnector` - Interface Contract (Layer 9)
 ```
 
 ---
@@ -422,7 +422,7 @@ poetry show | grep -E "(ib_async|pydantic)"
 ### DO Include
 
 - ✅ Absolute file paths: `/opt/data/project/src/module.py`
-- ✅ Exact commands: `poetry add ib_async>=0.9.86`
+- ✅ Exact commands: `poetry add async_client>=1.0.0`
 - ✅ Environment details: Python 3.11+, PostgreSQL 14
 - ✅ Verification steps after each command
 - ✅ Current state: "Code Status: 35% complete"
@@ -465,7 +465,7 @@ IPLAN-001_feature_part2.md (Phase 3-4)
 1. **Use tables** for repetitive data
 2. **Reference** external docs instead of duplicating
 3. **Summarize** long bash output
-4. **Abbreviate** with codes (IB_CONN_001)
+4. **Abbreviate** with codes (SVC_ERR_001)
 
 ---
 

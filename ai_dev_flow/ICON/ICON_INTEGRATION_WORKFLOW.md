@@ -226,7 +226,7 @@ This TASKS consumes the following implementation contracts:
 
 **Usage Example**:
 ```python
-def __init__(self, connector: IBGatewayConnector):
+def __init__(self, connector: ServiceConnector):
     self.connector = connector
 ```
 \`\`\`

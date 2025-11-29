@@ -33,7 +33,7 @@ custom_fields:
 
 ```bash
 # Navigate to project root
-cd /opt/data/ibmcp/
+cd [project_root]/
 
 # Check total references (must equal 1 provider + N consumers)
 grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l
@@ -155,20 +155,20 @@ done
 ```markdown
 ## 8. Implementation Contracts
 
-@icon: ICON-001:GatewayConnector
+@icon: ICON-001:ServiceConnector
 @icon-role: provider
 
-See [ICON-001_gateway_connector.md](../../ai_dev_flow/ICON/ICON-001_gateway_connector.md)
+See [ICON-001_service_connector.md](../../ai_dev_flow/ICON/ICON-001_service_connector.md)
 ```
 
 **Consumer TASKS** (depends on contract):
 ```markdown
 ## 3. Dependencies
 
-@icon: ICON-001:GatewayConnector
+@icon: ICON-001:ServiceConnector
 @icon-role: consumer
 
-Requires GatewayConnector protocol for gateway connections.
+Requires ServiceConnector protocol for service connections.
 ```
 
 ---
@@ -234,9 +234,9 @@ Requires GatewayConnector protocol for gateway connections.
 - **Extension**: Always `.md`
 
 **Examples**:
-- `ICON-001_gateway_connector_protocol.md`
-- `ICON-002_external_data_event_bus.md`
-- `ICON-003_order_execution_exceptions.md`
+- `ICON-001_service_connector_protocol.md`
+- `ICON-002_data_event_bus.md`
+- `ICON-003_request_execution_exceptions.md`
 - `ICON-004_resource_state_machine.md`
 
 ---
@@ -286,7 +286,7 @@ Think of ICON contracts like a **power outlet standard**:
 
 ```mermaid
 flowchart TB
-    subgraph ICON["ICON-001: GatewayConnector Protocol"]
+    subgraph ICON["ICON-001: ServiceConnector Protocol"]
         direction TB
         I1["async def connect(host, port, client_id)"]
         I2["async def disconnect()"]
@@ -297,22 +297,22 @@ flowchart TB
         direction TB
         P1["@icon-role: provider"]
         P2["Writes actual implementation"]
-        P3["RealGatewayConnector class"]
+        P3["RealServiceConnector class"]
     end
 
     subgraph Consumers["Consumers"]
         direction TB
         subgraph C1["TASKS-003"]
             C1a["@icon-role: consumer"]
-            C1b["MarketDataService"]
+            C1b["DataStreamService"]
         end
         subgraph C2["TASKS-004"]
             C2a["@icon-role: consumer"]
-            C2b["OrderExecutionService"]
+            C2b["RequestExecutionService"]
         end
         subgraph C3["TASKS-005"]
             C3a["@icon-role: consumer"]
-            C3b["PortfolioService"]
+            C3b["ResourceService"]
         end
     end
 
@@ -333,20 +333,20 @@ flowchart TB
 
 **TASKS Reference Example**:
 ```markdown
-# TASKS-001: Gateway Connection Service
+# TASKS-001: Service Connector
 
 ## 8.1 Contracts Provided
 
-@icon: ICON-001:GatewayConnector
+@icon: ICON-001:ServiceConnector
 @icon-role: provider
 
-This TASKS implements the GatewayConnector protocol.
+This TASKS implements the ServiceConnector protocol.
 ```
 
 **Implementation Example**:
 ```python
-class RealGatewayConnector:
-    """Actual implementation of GatewayConnector protocol."""
+class RealServiceConnector:
+    """Actual implementation of ServiceConnector protocol."""
 
     async def connect(self, host: str, port: int, client_id: int) -> None:
         # Real connection logic here
@@ -369,25 +369,25 @@ class RealGatewayConnector:
 
 **TASKS Reference Example**:
 ```markdown
-# TASKS-003: Market Data Service
+# TASKS-003: Data Stream Service
 
 ## 8.2 Contracts Consumed
 
-@icon: ICON-001:GatewayConnector
+@icon: ICON-001:ServiceConnector
 @icon-role: consumer
 
-Requires GatewayConnector for market data subscriptions.
+Requires ServiceConnector for data subscriptions.
 ```
 
 **Usage Example**:
 ```python
-class MarketDataService:
-    """Consumes GatewayConnector - doesn't implement it."""
+class DataStreamService:
+    """Consumes ServiceConnector - doesn't implement it."""
 
-    def __init__(self, connector: GatewayConnector):  # Type hint only
+    def __init__(self, connector: ServiceConnector):  # Type hint only
         self._connector = connector  # Injected dependency
 
-    async def subscribe(self, symbol: str) -> None:
+    async def subscribe(self, identifier: str) -> None:
         if not self._connector.is_connected:
             await self._connector.connect("localhost", 7497, 1)
         # Use connector without knowing implementation details
@@ -487,25 +487,25 @@ done
 
 **Purpose**: Type-safe service interfaces
 **Use Case**: Async/sync services, plugin architectures, adapter patterns
-**Example**: GatewayConnector, MarketDataProvider
+**Example**: ServiceConnector, DataProvider
 
 ### 2. Exception Hierarchies
 
 **Purpose**: Typed exception handling
 **Use Case**: Error classification, retry logic, circuit breakers
-**Example**: GatewayException, OrderException
+**Example**: ServiceException, RequestException
 
 ### 3. State Machine Contracts
 
 **Purpose**: Valid state transitions
 **Use Case**: Connection states, order lifecycle, session management
-**Example**: ConnectionState, OrderState
+**Example**: ConnectionState, RequestState
 
 ### 4. Data Models
 
 **Purpose**: Validated data structures
 **Use Case**: API requests/responses, events, configuration
-**Example**: MarketDataEvent, OrderRequest
+**Example**: DataEvent, ServiceRequest
 
 ### 5. Dependency Injection Interfaces
 

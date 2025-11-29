@@ -623,7 +623,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 @spec: SPEC-001:connection_service
 @tasks: TASKS-001:PHASE-2.1
 @impl: IMPL-001 (optional)
-@ctr: CTR-001:IBGatewayConnector (optional)
+@ctr: CTR-001:ServiceConnector (optional)
 ```
 
 ### 8.4 Tag Validation Requirements

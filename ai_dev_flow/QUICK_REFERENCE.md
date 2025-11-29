@@ -70,37 +70,44 @@ Examples:
 
 ## Folder Structure
 
+```mermaid
+graph TB
+    subgraph docs["docs/"]
+        BRD["BRD/ - Business Requirements"]
+        PRD["PRD/ - Product Requirements"]
+        EARS["EARS/ - EARS Syntax"]
+        BDD["BDD/ - BDD Gherkin"]
+        ADR["ADR/ - Architecture Decisions"]
+        SYS["SYS/ - System Specs"]
+        REQ["REQ/ - Atomic Requirements"]
+        IMPL["IMPL/ - Implementation Plans"]
+        CTR["CTR/ - API Contracts"]
+        SPEC["SPEC/ - Technical Specs"]
+        TASKS["TASKS/ - Implementation Tasks"]
+        IPLAN["IPLAN/ - Session Plans"]
+    end
+
+    subgraph req_sub["REQ/ subdirectories"]
+        api["api/"]
+        auth["auth/"]
+        data["data/"]
+        risk["risk/"]
+        ops["operations/"]
+        tenant["tenant/"]
+    end
+
+    subgraph scripts["scripts/"]
+        validate["validate_requirement_ids.py"]
+        check["check_broken_references.py"]
+        generate["generate_traceability_matrix.py"]
+    end
+
+    REQ --> req_sub
 ```
-docs/
-├── BRD/          # Business Requirements Documents
-├── PRD/           # Product Requirements Documents
-├── EARS/          # Easy Approach to Requirements Syntax
-├── BDD/          # Behavior-Driven Development (Gherkin)
-├── ADR/          # Architecture Decision Records
-├── SYS/           # System Specifications
-├── REQ/          # Atomic Requirements
-│   ├── api/       # API requirements
-│   ├── auth/      # Authentication
-│   ├── data/      # Data management
-│   ├── risk/      # Risk management (Financial)
-│   ├── operations/   # Operations (Domain)
-│   ├── tenant/    # Multi-tenancy (Software/SaaS)
-│   └── ...
-├── IMPL/    # Implementation Plans (WHO/WHEN)
-├── CTR/           # API Contracts (dual .md + .yaml)
-├── SPEC/         # Technical Specifications (YAML)
-├── TASKS/      # Implementation Tasks
-└── IPLAN/       # Implementation Plans (session-based, timestamp-based naming)
 
 <!-- Migration History -->
 <!-- CONTRACTS/ migrated to CTR/ (2025-01-13) -->
 <!-- tasks_plans/ migrated to IPLAN/ (2025-01-13) -->
-
-scripts/
-├── validate_requirement_ids.py
-├── check_broken_references.py
-└── generate_traceability_matrix.py
-```
 
 ---
 

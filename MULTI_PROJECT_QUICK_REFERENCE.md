@@ -31,7 +31,7 @@
 
 ```bash
 # Batch setup
-for PROJECT in ibmcp b_local trading techtrend; do
+for PROJECT in [PROJECT_A] [PROJECT_B] [PROJECT_C]; do
     /opt/data/docs_flow_framework/scripts/setup_project_hybrid.sh /opt/data/$PROJECT
 done
 ```
@@ -341,12 +341,12 @@ cd /opt/data/any_project
 
 ```bash
 # 1. Create in project custom
-mkdir ${PROJECT_B_PATH}/.claude/custom_skills/ib-specific
-vim ${PROJECT_B_PATH}/.claude/custom_skills/ib-specific/SKILL.md
+mkdir ${PROJECT_B_PATH}/.claude/custom_skills/project-specific
+vim ${PROJECT_B_PATH}/.claude/custom_skills/project-specific/SKILL.md
 
 # 2. Commit to project repo
-git add .claude/custom_skills/ib-specific/
-git commit -m "Add IB-specific skill"
+git add .claude/custom_skills/project-specific/
+git commit -m "Add project-specific skill"
 
 # 3. Only available in this project
 ```

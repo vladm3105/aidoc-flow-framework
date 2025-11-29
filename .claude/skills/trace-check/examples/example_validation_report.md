@@ -1,6 +1,6 @@
 # Traceability Validation Report - Example
 
-**Project**: IB API MCP Server
+**Project**: [PROJECT_NAME]
 **Validation Date**: 2025-11-11 17:40:01 EST
 **Scope**: All artifacts (8 SPEC files)
 **Execution Time**: 4.2 seconds
@@ -24,7 +24,7 @@ No broken links detected.
 | SPEC-003 | No BDD reference in Section 7.2 | Info | Add BDD-XXX when tests created |
 
 **Details**:
-- **File**: `{project_root}/docs/SPEC/SPEC-003_market_data_service.yaml`
+- **File**: `{project_root}/docs/SPEC/SPEC-003_data_service.yaml`
 - **Line**: 45-52 (Section 7: Traceability)
 - **Issue**: Downstream section lists "To Be Created" but no specific BDD reference
 - **Impact**: Low (common for new specifications before test creation)
@@ -52,7 +52,7 @@ No broken links detected.
 ## 7.2 Downstream Artifacts
 
 **In Progress:**
-- [SPEC-001](../SPEC/SPEC-001_ib_gateway_connection_service.yaml#ib_gateway_connection_service) - IB Gateway Connection Service (Status: Draft, Created: 2025-11-11)
+- [SPEC-001](../SPEC/SPEC-001_connection_service.yaml#connection_service) - Connection Service (Status: Draft, Created: 2025-11-11)
 
 **To Be Created:**
 - SPEC-002+: Additional technical specifications (TBD)
@@ -85,7 +85,7 @@ All markdown links resolve to valid files with correct anchors:
 | Source | Target | Type | Anchor | Status |
 |--------|--------|------|--------|--------|
 | SPEC-001 | BRD-001 | .md | #BRD-001 | ✅ |
-| SPEC-001 | SYS-002 | .yaml | #ib_gateway_connection | ✅ |
+| SPEC-001 | SYS-002 | .yaml | #service_connection | ✅ |
 | SPEC-001 | REQ-001 | .md | #REQ-001 | ✅ |
 | SPEC-001 | ADR-002 | .md | #ADR-002 | ✅ |
 | SPEC-002 | BRD-001 | .md | #BRD-001 | ✅ |

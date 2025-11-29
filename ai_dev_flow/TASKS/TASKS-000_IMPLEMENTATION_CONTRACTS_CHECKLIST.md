@@ -74,7 +74,7 @@ Select contract type(s) based on what you're sharing:
 - [ ] Implementing adapter patterns
 - [ ] Sharing service boundaries between TASKS
 
-**Example**: `IBGatewayConnector` protocol with `connect()`, `disconnect()` methods
+**Example**: `ServiceConnector` protocol with `connect()`, `disconnect()` methods
 
 #### Exception Hierarchies ✓ Use When:
 - [ ] Defining service failure modes
@@ -551,7 +551,7 @@ except ValidationError as e:
 
 **With Role**:
 ```yaml
-@icon: TASKS-001:IBGatewayConnector
+@icon: TASKS-001:ServiceConnector
 @icon-role: provider
 ```
 
@@ -565,22 +565,22 @@ except ValidationError as e:
 **Provider** (in TASKS-001):
 ```markdown
 ## 8. Implementation Contracts
-@icon: TASKS-001:IBGatewayConnector
+@icon: TASKS-001:ServiceConnector
 @icon-role: provider
 ```
 
 **Consumer** (in TASKS-002):
 ```markdown
 ## 3. Dependencies
-@icon: TASKS-001:IBGatewayConnector
+@icon: TASKS-001:ServiceConnector
 @icon-role: consumer
 ```
 
 **Code Comment**:
 ```python
-# @icon: TASKS-001:IBGatewayConnector
+# @icon: TASKS-001:ServiceConnector
 # @icon-role: provider
-class IBGatewayConnector(Protocol):
+class ServiceConnector(Protocol):
     ...
 ```
 
