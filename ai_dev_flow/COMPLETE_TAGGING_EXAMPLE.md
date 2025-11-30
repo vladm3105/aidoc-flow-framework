@@ -286,10 +286,10 @@ Implement asynchronous routing layer between API and provider integrations.
 
 ## 2. Functional Requirements
 
-### SYS-012:FUNC-001
+### SYS-012:001
 System shall provide REST API endpoint for notification submission.
 
-### SYS-012:PERF-001
+### SYS-012:002
 Notification validation latency shall not exceed 100ms at 95th percentile.
 
 ## 7. Traceability
@@ -570,7 +570,7 @@ implementation:
 **File**: `src/services/notification_service.py`
 **Function**: `send_notification()`
 **Dependencies**: SPEC-018, CTR-005
-**Acceptance**: BDD-015:scenario-send-notification passes
+**Acceptance**: BDD-015:001 passes
 
 ### Task 2: Validation Logic
 **File**: `src/services/notification_validator.py`

@@ -182,8 +182,8 @@ def validate_all_tags(tags_data: Dict, doc_index: Dict) -> List[Dict]:
             {
                 'file': 'src/module.py',
                 'line': 15,
-                'tag': '@brd: BRD-001:FR-999',
-                'error': 'Requirement FR-999 not found in BRD-001'
+                'tag': '@brd: BRD-001:999',
+                'error': 'Requirement 999 not found in BRD-001'
             }
         ]
     """

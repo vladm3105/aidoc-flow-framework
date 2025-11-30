@@ -37,10 +37,10 @@ def parse_tag_value(tag_value: str) -> List[Tuple[str, Optional[str]]]:
     """Parse tag value into (DOCUMENT-ID, REQUIREMENT-ID) tuples.
 
     Args:
-        tag_value: "BRD-001:FR-030, BRD-001:FR-031, SPEC-003"
+        tag_value: "BRD-001:030, BRD-001:031, SPEC-003"
 
     Returns:
-        [('BRD-001', 'FR-030'), ('BRD-001', 'FR-031'), ('SPEC-003', None)]
+        [('BRD-001', '030'), ('BRD-001', '031'), ('SPEC-003', None)]
     """
     refs = []
     for item in tag_value.split(','):
@@ -66,15 +66,15 @@ def extract_tags_from_file(file_path: Path) -> Dict:
     Returns:
         {
             'tags': {
-                'brd': [('BRD-001', 'FR-001'), ('BRD-001', 'FR-002')],
+                'brd': [('BRD-001', '001'), ('BRD-001', '002')],
                 'sys': [('SYS-001', None)],
                 'spec': [('SPEC-001', None)],
-                'test': [('BDD-001', 'scenario-auth')],
+                'test': [('BDD-001', '001')],
                 'impl-status': ['complete']
             },
             'line_numbers': {
-                'BRD-001:FR-001': 15,
-                'BRD-001:FR-002': 15
+                'BRD-001:001': 15,
+                'BRD-001:002': 15
             },
             'errors': []
         }

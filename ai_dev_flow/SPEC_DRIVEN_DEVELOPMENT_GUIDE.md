@@ -781,7 +781,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @impl: IMPL-001:001
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS-001:task-3
+@tasks: TASKS-001:003
 ```
 
 **Code Docstring Example**:
@@ -803,7 +803,7 @@ Implements real-time resource limit validation and enforcement.
 @impl: IMPL-001:001
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS-001:task-3
+@tasks: TASKS-001:003
 @iplan: IPLAN-001
 """
 ```
@@ -941,7 +941,7 @@ excessive collection concentration risk through automated validation.
 @impl: IMPL-001:001
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS-001:task-3, TASKS-001:task-5
+@tasks: TASKS-001:003, TASKS-001:005
 @iplan: IPLAN-001
 
 @impl-status: complete
@@ -986,7 +986,7 @@ Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
 @sys: SYS-008:001
 @req: REQ-003:001
 @spec: SPEC-003
-@tasks: TASKS-001:task-3
+@tasks: TASKS-001:003
 @code: src/services/resource_limit_service.py
 
 @test-type: integration

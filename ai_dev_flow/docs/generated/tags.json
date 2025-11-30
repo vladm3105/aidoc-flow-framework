@@ -4,21 +4,21 @@
       "brd": [
         [
           "BRD-001",
-          "FR-001"
+          "001"
         ],
         [
           "BRD-001",
-          "FR-002"
+          "002"
         ],
         [
           "BRD-001",
-          "FR-003"
+          "003"
         ]
       ],
       "req": [
         [
           "REQ-001",
-          "api-interface"
+          "001"
         ]
       ],
       "spec": [
@@ -30,7 +30,7 @@
       "test": [
         [
           "BDD-001",
-          "scenario-auth"
+          "001"
         ]
       ],
       "impl-status": [
@@ -39,12 +39,12 @@
       ]
     },
     "line_numbers": {
-      "BRD-001:FR-001": 5,
-      "BRD-001:FR-002": 5,
-      "REQ-001:api-interface": 6,
+      "BRD-001:001": 5,
+      "BRD-001:002": 5,
+      "REQ-001:001": 6,
       "SPEC-001": 7,
-      "BDD-001:scenario-auth": 8,
-      "BRD-001:FR-003": 16
+      "BDD-001:001": 8,
+      "BRD-001:003": 16
     },
     "errors": []
   }
