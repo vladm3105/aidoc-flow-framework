@@ -5,7 +5,12 @@
 schema_version: "1.0"
 artifact_type: CTR
 layer: 9
-last_updated: "2025-11-29"
+last_updated: "2025-11-30"
+
+references:
+  template: "CTR-TEMPLATE.md"
+  creation_rules: "CTR_CREATION_RULES.md"
+  validation_rules: "CTR_VALIDATION_RULES.md"
 
 # =============================================================================
 # YAML Frontmatter Requirements
@@ -407,43 +412,43 @@ traceability:
   cumulative_tags:
     layer: 9
     required:
-      - "@brd: BRD-NNN:REQUIREMENT-ID"
-      - "@prd: PRD-NNN:REQUIREMENT-ID"
-      - "@ears: EARS-NNN:STATEMENT-ID"
-      - "@bdd: BDD-NNN:SCENARIO-ID"
+      - "@brd: BRD-NNN:NNN"
+      - "@prd: PRD-NNN:NNN"
+      - "@ears: EARS-NNN:NNN"
+      - "@bdd: BDD-NNN:NNN"
       - "@adr: ADR-NNN"
-      - "@sys: SYS-NNN:SECTION-ID"
-      - "@req: REQ-NNN:REQUIREMENT-ID"
+      - "@sys: SYS-NNN:NNN"
+      - "@req: REQ-NNN:NNN"
     optional:
-      - "@impl: IMPL-NNN:PHASE-ID"
+      - "@impl: IMPL-NNN:NNN"
     description: "Layer 9 requires 7 upstream artifact tags (8 including optional IMPL)"
 
   upstream:
     required:
       - type: BRD
-        format: "@brd: BRD-NNN:REQUIREMENT-ID"
+        format: "@brd: BRD-NNN:NNN"
         location: "Section 19 or Traceability Tags section"
       - type: PRD
-        format: "@prd: PRD-NNN:REQUIREMENT-ID"
+        format: "@prd: PRD-NNN:NNN"
         location: "Section 19 or Traceability Tags section"
       - type: EARS
-        format: "@ears: EARS-NNN:STATEMENT-ID"
+        format: "@ears: EARS-NNN:NNN"
         location: "Section 19 or Traceability Tags section"
       - type: BDD
-        format: "@bdd: BDD-NNN:SCENARIO-ID"
+        format: "@bdd: BDD-NNN:NNN"
         location: "Section 19 or Traceability Tags section"
       - type: ADR
         format: "@adr: ADR-NNN"
         location: "Section 19 or Traceability Tags section"
       - type: SYS
-        format: "@sys: SYS-NNN:SECTION-ID"
+        format: "@sys: SYS-NNN:NNN"
         location: "Section 19 or Traceability Tags section"
       - type: REQ
-        format: "@req: REQ-NNN:REQUIREMENT-ID"
+        format: "@req: REQ-NNN:NNN"
         location: "Section 19 or Traceability Tags section"
     optional:
       - type: IMPL
-        format: "@impl: IMPL-NNN:PHASE-ID"
+        format: "@impl: IMPL-NNN:NNN"
         location: "Section 19 or Traceability Tags section"
 
   downstream:

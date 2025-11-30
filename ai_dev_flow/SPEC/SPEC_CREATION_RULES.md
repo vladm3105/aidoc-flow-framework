@@ -18,12 +18,12 @@ custom_fields:
 
 # SPEC Creation Rules
 
-**Version**: 1.0
+**Version**: 1.2
 **Date**: 2025-11-19
-**Last Updated**: 2025-11-19
+**Last Updated**: 2025-11-30
 **Source**: Derived from SPEC-TEMPLATE.yaml and technical specification patterns
 **Purpose**: Complete reference for creating SPEC YAML files according to doc_flow SDD framework
-**Changes**: Added TASKS-ready scoring system for SPEC documents
+**Changes**: Added Threshold Registry Integration section (v1.2). Previous: Status/Score mapping, common mistakes section (v1.1)
 
 ---
 
@@ -40,6 +40,9 @@ custom_fields:
 9. [Quality Attributes](#9-quality-attributes)
 10. [Quality Gates](#10-quality-gates)
 11. [Additional Requirements](#11-additional-requirements)
+12. [Common Mistakes to Avoid](#12-common-mistakes-to-avoid)
+13. [Upstream Artifact Verification Process](#13-upstream-artifact-verification-process)
+14. [Threshold Registry Integration](#14-threshold-registry-integration)
 
 ---
 
@@ -108,6 +111,14 @@ operations: [...]
 **Required Metadata Fields**:
 - version, status, created_date, authors, reviewers
 - TASKS-ready score (⭐ NEW) format: `✅ NN% (Target: ≥90%)`
+
+### Status and TASKS-Ready Score Mapping
+
+| TASKS-Ready Score | Required Status |
+|-------------------|-----------------|
+| >= 90% | approved |
+| 70-89% | in_review |
+| < 70% | draft |
 
 **Authors and Reviewers**:
 - authors: Technical implementers
@@ -198,7 +209,7 @@ TASKS-ready scoring measures SPEC maturity and readiness for progression to TASK
 cumulative_tags:
   brd: "BRD-NNN:REQUIREMENT-ID"
   prd: "PRD-NNN:REQUIREMENT-ID"
-  ears: "EARS-NNN:STATEMENT-ID"
+  ears: "EARS-NNN:NNN"
   bdd: "BDD-NNN:SCENARIO-ID"
   adr: "ADR-NNN"
   sys: "SYS-NNN:regulatoryTION-ID"
@@ -242,8 +253,25 @@ cumulative_tags:
 **Framework Compliance**: 100% doc_flow SDD framework (Layer 10)
 **Integration**: Enforces SPEC → TASKS progression quality gates
 
+---
 
-## 12. Upstream Artifact Verification Process
+## 12. Common Mistakes to Avoid
+
+| Mistake | Correct |
+|---------|---------|
+| `status: approved` (with <90% TASKS-Ready score) | Match status to score threshold |
+| Invalid YAML syntax | Validate with YAML linter before commit |
+| Missing traceability.cumulative_tags | Include all upstream artifact tags |
+| Hardcoded values in behavior | Use configuration references |
+| Missing interface CTR references | Create CTR for external API specifications |
+| Incomplete performance specifications | Include latency/throughput/error rate targets |
+| `latency_ms: 200` (hardcoded) | `latency_ms: "@threshold: PRD-NNN:perf.api.p95_latency"` |
+| `timeout: 5000` (magic number) | `timeout: "@threshold: PRD-NNN:timeout.default"` |
+| `rate_limit: 100` (hardcoded) | `rate_limit: "@threshold: PRD-NNN:limit.api.requests_per_second"` |
+
+---
+
+## 13. Upstream Artifact Verification Process
 
 ### Before Creating This Document
 
@@ -299,3 +327,101 @@ Include ONLY if relationships exist between SPEC documents sharing implementatio
 @related-spec: SPEC-NNN
 @depends-spec: SPEC-NNN
 ```
+
+---
+
+## 14. Threshold Registry Integration
+
+**Purpose**: Prevent magic numbers by referencing centralized threshold registry.
+
+### When @threshold Tag is Required
+
+Use `@threshold` for ALL quantitative values in SPEC YAML that are:
+- Performance configurations (latencies, throughput, IOPS)
+- Timeout configurations (connection, read, write timeouts)
+- Rate limiting values (requests per second, burst limits)
+- Resource limits (memory, CPU, storage)
+- Circuit breaker configurations
+
+### @threshold Tag Format in YAML
+
+```yaml
+# String value format
+performance:
+  p95_latency_ms: "@threshold: PRD-NNN:perf.api.p95_latency"
+
+# Comment format for documentation
+timeout:
+  request_ms: 5000  # @threshold: PRD-NNN:timeout.request.sync
+```
+
+**Examples**:
+- `"@threshold: PRD-035:perf.api.p95_latency"`
+- `"@threshold: PRD-035:timeout.circuit_breaker.threshold"`
+- `"@threshold: PRD-035:limit.api.requests_per_second"`
+
+### SPEC-Specific Threshold Categories
+
+| Category | SPEC Usage | Example Key |
+|----------|-----------|-------------|
+| `perf.*` | Performance specifications | `perf.api.p95_latency` |
+| `timeout.*` | Connection, request timeouts | `timeout.request.sync` |
+| `limit.*` | Rate limits, connection pools | `limit.api.requests_per_second` |
+| `resource.*` | Memory, CPU, storage limits | `resource.memory.max_heap` |
+| `retry.*` | Retry configurations | `retry.max_attempts` |
+
+### Magic Number Detection
+
+**Invalid (hardcoded values)**:
+```yaml
+performance:
+  p95_latency_ms: 200
+timeout:
+  request_ms: 5000
+rate_limit:
+  requests_per_second: 100
+```
+
+**Valid (registry references)**:
+```yaml
+performance:
+  p95_latency_ms: "@threshold: PRD-NNN:perf.api.p95_latency"
+timeout:
+  request_ms: "@threshold: PRD-NNN:timeout.request.sync"
+rate_limit:
+  requests_per_second: "@threshold: PRD-NNN:limit.api.requests_per_second"
+```
+
+### Traceability Integration
+
+Add `threshold` to cumulative_tags section:
+
+```yaml
+traceability:
+  cumulative_tags:
+    brd: "BRD-NNN:REQUIREMENT-ID"
+    prd: "PRD-NNN:REQUIREMENT-ID"
+    threshold: "PRD-NNN"  # Registry document reference
+```
+
+### threshold_references Section
+
+Add dedicated section for threshold dependencies:
+
+```yaml
+threshold_references:
+  registry_document: "PRD-NNN"
+  keys_used:
+    - perf.api.p95_latency
+    - timeout.request.sync
+    - limit.api.requests_per_second
+    - retry.max_attempts
+```
+
+### Validation
+
+Run `detect_magic_numbers.py` to verify:
+1. No hardcoded quantitative values in performance sections
+2. No hardcoded values in timeout configurations
+3. All `@threshold` references resolve to valid registry keys
+4. All rate limits and resource constraints use threshold references

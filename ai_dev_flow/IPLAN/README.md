@@ -132,7 +132,7 @@ All IPLAN documents MUST include these 9 mandatory tags:
 
 1. `@brd: BRD-NNN:REQ-NNN` - Business Requirements Document (Layer 1)
 2. `@prd: PRD-NNN:REQ-NNN` - Product Requirements Document (Layer 2)
-3. `@ears: EARS-NNN:REQ-NNN` - Event-Action-Response-State Requirements (Layer 3)
+3. `@ears: EARS-NNN:NNN` - Event-Action-Response-State Requirements (Layer 3)
 4. `@bdd: BDD-NNN:SCENARIO-NNN` - Behavior-Driven Development Scenarios (Layer 4)
 5. `@adr: ADR-NNN` - Architecture Decision Records (Layer 5)
 6. `@sys: SYS-NNN:REQ-NNN` - System Requirements (Layer 6)
@@ -161,17 +161,17 @@ Include these tags if present in your project:
 ```markdown
 ## Traceability Tags
 
-@brd: BRD-001:REQ-042
-@prd: PRD-001:REQ-015
-@ears: EARS-001:REQ-003
-@bdd: BDD-001:SCENARIO-005, BDD-007:SCENARIO-012
+@brd: BRD-001:042
+@prd: PRD-001:015
+@ears: EARS-001:003
+@bdd: BDD-001:005, BDD-007:012
 @adr: ADR-002, ADR-005
-@sys: SYS-002:REQ-001
-@req: REQ-001, REQ-002, REQ-003, REQ-010
-@impl: IMPL-001 (optional - if project uses IMPL)
-@ctr: CTR-001:ExternalConnector (optional - if contracts defined)
-@spec: SPEC-001:connection_service
-@tasks: TASKS-001:PHASE-2.1, TASKS-001:PHASE-2.4
+@sys: SYS-002:001
+@req: REQ-001:001, REQ-002:001, REQ-003:001, REQ-010:001
+@impl: IMPL-001:001 (optional - if project uses IMPL)
+@ctr: CTR-001 (optional - if contracts defined)
+@spec: SPEC-001
+@tasks: TASKS-001:001, TASKS-001:004
 ```
 
 ### Tag Inheritance Rules
@@ -233,31 +233,31 @@ python /opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_d
 
 **Example 1: Project with IMPL and CTR**:
 ```markdown
-@brd: BRD-001:REQ-042
-@prd: PRD-001:REQ-015
-@ears: EARS-001:REQ-003
-@bdd: BDD-001:SCENARIO-005
+@brd: BRD-001:042
+@prd: PRD-001:015
+@ears: EARS-001:003
+@bdd: BDD-001:005
 @adr: ADR-002
-@sys: SYS-002:REQ-001
-@req: REQ-001, REQ-002
-@impl: IMPL-001 (present in this project)
-@ctr: CTR-001:ExternalConnector (present in this project)
-@spec: SPEC-001:connection_service
-@tasks: TASKS-001:PHASE-2.1
+@sys: SYS-002:001
+@req: REQ-001:001, REQ-002:001
+@impl: IMPL-001:001 (present in this project)
+@ctr: CTR-001 (present in this project)
+@spec: SPEC-001
+@tasks: TASKS-001:001
 ```
 Total: 11 tags (9 mandatory + 2 optional)
 
 **Example 2: Project without IMPL and CTR**:
 ```markdown
-@brd: BRD-001:REQ-042
-@prd: PRD-001:REQ-015
-@ears: EARS-001:REQ-003
-@bdd: BDD-001:SCENARIO-005
+@brd: BRD-001:042
+@prd: PRD-001:015
+@ears: EARS-001:003
+@bdd: BDD-001:005
 @adr: ADR-002
-@sys: SYS-002:REQ-001
-@req: REQ-001, REQ-002
-@spec: SPEC-001:connection_service
-@tasks: TASKS-001:PHASE-2.1
+@sys: SYS-002:001
+@req: REQ-001:001, REQ-002:001
+@spec: SPEC-001
+@tasks: TASKS-001:001
 ```
 Total: 9 tags (all mandatory, no optional)
 
@@ -459,20 +459,20 @@ poetry show | grep async_client
 
 ### Required Tags (Mandatory)
 
-- `@brd: BRD-001:REQ-042` - Business Requirements Document (Layer 1)
-- `@prd: PRD-001:REQ-015` - Product Requirements Document (Layer 2)
-- `@ears: EARS-001:REQ-003` - Event-Action-Response-State (Layer 3)
-- `@bdd: BDD-001:SCENARIO-005` - Behavior-Driven Development (Layer 4)
+- `@brd: BRD-001:042` - Business Requirements Document (Layer 1)
+- `@prd: PRD-001:015` - Product Requirements Document (Layer 2)
+- `@ears: EARS-001:003` - Event-Action-Response-State (Layer 3)
+- `@bdd: BDD-001:005` - Behavior-Driven Development (Layer 4)
 - `@adr: ADR-002` - Architecture Decision Record (Layer 5)
-- `@sys: SYS-002:REQ-001` - System Requirements (Layer 6)
-- `@req: REQ-001` - Atomic Requirements (Layer 7)
-- `@spec: SPEC-001:connection_service` - Technical Specification (Layer 10)
-- `@tasks: TASKS-001:PHASE-2.1` - Code Generation Plan (Layer 11)
+- `@sys: SYS-002:001` - System Requirements (Layer 6)
+- `@req: REQ-001:001` - Atomic Requirements (Layer 7)
+- `@spec: SPEC-001` - Technical Specification (Layer 10)
+- `@tasks: TASKS-001:001` - Code Generation Plan (Layer 11)
 
 ### Optional Tags (If Present in Project)
 
-- `@impl: IMPL-001` - Implementation Plan (Layer 8)
-- `@ctr: CTR-001:ExternalConnector` - Interface Contract (Layer 9)
+- `@impl: IMPL-001:001` - Implementation Plan (Layer 8)
+- `@ctr: CTR-001` - Interface Contract (Layer 9)
 ```
 
 **Critical**: This section is MANDATORY and must include ALL required tags.
@@ -622,7 +622,7 @@ git commit -m "feat: implement service connector
 Implements: IPLAN-001
 Parent: TASKS-001
 Satisfies: REQ-001, REQ-002
-Tests: BDD-001:SCENARIO-005
+Tests: BDD-001:005
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -784,7 +784,7 @@ ls -ld src/module && touch src/module/test.tmp && rm src/module/test.tmp
 ```markdown
 ### Implementation of TASKS-001 Phase 2.1
 
-Per [TASKS-001:PHASE-2.1](../TASKS/path/TASKS-001.md#phase-21-implement-connection-service):
+Per [TASKS-001:001](../TASKS/path/TASKS-001.md#phase-21-implement-connection-service):
 > "Create ServiceConnector class with async connect() method..."
 
 Implementation:
@@ -1154,7 +1154,7 @@ Error: Missing required tag @bdd
 **Solution**:
 1. Review cumulative tagging requirements section above
 2. Identify missing layer (Layer 4: BDD in this case)
-3. Add tag with correct format: `@bdd: BDD-001:SCENARIO-005`
+3. Add tag with correct format: `@bdd: BDD-001:005`
 4. Verify upstream BDD document exists
 5. Rerun validation script
 

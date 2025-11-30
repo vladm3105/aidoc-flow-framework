@@ -297,13 +297,13 @@ fi
 
 | Tag | Required | Format |
 |-----|----------|--------|
-| @brd | Yes | BRD-NNN:REQ-NNN |
-| @prd | Yes | PRD-NNN:REQ-NNN |
-| @ears | Yes | EARS-NNN:REQ-NNN |
-| @bdd | Yes | BDD-NNN:SCENARIO-NNN |
+| @brd | Yes | BRD-NNN:NNN |
+| @prd | Yes | PRD-NNN:NNN |
+| @ears | Yes | EARS-NNN:NNN |
+| @bdd | Yes | BDD-NNN:NNN |
 | @adr | Yes | ADR-NNN |
-| @sys | Yes | SYS-NNN:REQ-NNN |
-| @req | Yes | REQ-NNN |
+| @sys | Yes | SYS-NNN:NNN |
+| @req | Yes | REQ-NNN:NNN |
 
 ### Validation Commands
 

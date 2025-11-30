@@ -5,7 +5,12 @@
 schema_version: "1.0"
 artifact_type: EARS
 layer: 3
-last_updated: "2025-11-29"
+last_updated: "2025-11-30"
+
+references:
+  template: "EARS-TEMPLATE.md"
+  creation_rules: "EARS_CREATION_RULES.md"
+  validation_rules: "EARS_VALIDATION_RULES.md"
 
 # =============================================================================
 # YAML Frontmatter Requirements
@@ -156,7 +161,7 @@ ears_patterns:
 
   # Each EARS statement must include
   required_statement_components:
-    - traceability_tag: "@prd: PRD-NNN:FR-NNN.N"
+    - traceability_tag: "@prd: PRD-NNN:NNN"
     - timing_specification: "WITHIN X seconds/minutes/hours at pNN latency"
 
 # =============================================================================

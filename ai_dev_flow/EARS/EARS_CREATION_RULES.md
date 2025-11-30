@@ -19,12 +19,12 @@ custom_fields:
 
 # EARS Creation Rules
 
-**Version**: 1.0
+**Version**: 1.1
 **Date**: 2025-11-19
-**Last Updated**: 2025-11-19
+**Last Updated**: 2025-11-30
 **Source**: Extracted from EARS-TEMPLATE.md, PRD requirements, and behavioral specification patterns
 **Purpose**: Complete reference for creating EARS files according to doc-flow SDD framework
-**Changes**: Added BDD-ready scoring system for EARS documents
+**Changes**: Merged EARS_STYLE_GUIDE.md content - added Status/BDD-Score mapping, code block formatting, traceability format details, and extended common mistakes table
 
 ---
 
@@ -79,6 +79,14 @@ EARS documents require specific structural elements for behavioral specification
 - Author and Priority
 - BDD-Ready Score: Format `✅ NN% (Target: ≥90%)`
 
+### Status and BDD-Ready Score Mapping
+
+| BDD-Ready Score | Required Status |
+|-----------------|-----------------|
+| >= 90% | Approved |
+| 70-89% | In Review |
+| < 70% | Draft |
+
 **Template**:
 ```markdown
 | Item | Details |
@@ -105,14 +113,53 @@ EARS documents require specific structural elements for behavioral specification
 ### Event-Driven Requirements
 **WHEN** [triggering condition] **THE** [system] **SHALL** [response] **WITHIN** [constraint]
 
+```
+WHEN [trigger condition],
+THE [system component] SHALL [action 1],
+[action 2],
+and [action 3]
+WITHIN [timing constraint].
+```
+
 ### State-Driven Requirements
 **WHILE** [system state] **THE** [system] **SHALL** [behavior] **WITHIN** [constraint]
+
+```
+WHILE [state condition],
+THE [system component] SHALL [continuous behavior]
+WITHIN [operational context].
+```
 
 ### Unwanted Behavior Requirements
 **IF** [error/problem] **THE** [system] **SHALL** [prevention/workaround] **WITHIN** [constraint]
 
+```
+IF [error condition],
+THE [system component] SHALL [prevention/recovery action]
+WITHIN [timing constraint].
+```
+
 ### Ubiquitous Requirements
 **THE** [system] **SHALL** [system-wide requirement] **WITHIN** [architectural boundary]
+
+```
+THE [system component] SHALL [universal behavior]
+for [scope/context].
+```
+
+### Code Block Formatting
+
+Always use triple backticks for EARS statements:
+
+````markdown
+**EARS-001-001: Requirement Name**
+```
+WHEN [condition],
+THE [component] SHALL [action]
+WITHIN [constraint].
+```
+**Traceability**: @brd: BRD-001:001 | @prd: PRD-001:001
+````
 
 ---
 
@@ -176,11 +223,27 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 
 ## 9. Traceability Requirements (MANDATORY - Layer 3)
 
-**Upstream Tags Required**:
+### Standard Format
+
 ```markdown
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
+**Traceability**: @brd: BRD-NNN:NNN | @prd: PRD-NNN:NNN | @threshold: PRD-035:category.key
 ```
+
+### Required Tags
+
+| Tag | Format | When Required |
+|-----|--------|---------------|
+| @brd | BRD-NNN:NNN | Always |
+| @prd | PRD-NNN:NNN | Always |
+| @threshold | PRD-035:category.key | When referencing timing/limits |
+| @entity | PRD-004:EntityName | When referencing data entities |
+| @ctr | CTR-NNN:section | When referencing API contracts |
+
+### Do NOT Use
+
+- Block quote format: `> **Tags**:`
+- Comma separators: `@prd: ..., @threshold: ...`
+- Trailing commas: `@prd: PRD-019:002, |`
 
 **Downstream Linkages**:
 - REQ and SPEC artifacts
@@ -320,6 +383,9 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 | `document_type: engineering-requirements` | `document_type: ears` |
 | `architecture_approach: value` | `architecture_approaches: [value]` |
 | `Source Document: PRD-NNN` | `Source Document: @prd: PRD-NNN` |
+| `> **Tags**: @prd: ...` | `**Traceability**: @prd: ...` |
+| `@prd: PRD-001, @threshold: ...` | `@prd: PRD-001 \| @threshold: ...` |
+| `Status: Approved` (with 50% BDD score) | `Status: Draft` |
 
 ### Session Summary Template
 

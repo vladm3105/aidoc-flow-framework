@@ -5,7 +5,12 @@
 schema_version: "1.0"
 artifact_type: PRD
 layer: 2
-last_updated: "2025-11-29"
+last_updated: "2025-11-30"
+
+references:
+  template: "PRD-TEMPLATE.md"
+  creation_rules: "PRD_CREATION_RULES.md"
+  validation_rules: "PRD_VALIDATION_RULES.md"
 
 # =============================================================================
 # YAML Frontmatter Requirements

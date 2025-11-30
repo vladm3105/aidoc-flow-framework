@@ -141,6 +141,7 @@ The AI Dev Flow transforms business requirements into production code through a 
 | **9** | CTR | API contracts (optional) | @brd→@impl (8) | INTERFACE definitions |
 | **10** | SPEC | YAML technical specifications | @brd→@req (+optional) (7-9) | HOW to build |
 | **11** | TASKS | Implementation task breakdown | @brd→@spec (8-10) | EXACT TODOs |
+| **11** | ICON | Implementation contracts (optional) | @brd→@spec (8-10) | Interface definitions |
 | **12** | IPLAN | Session-specific plans | @brd→@tasks (9-11) | Session work scope |
 | **13** | Code | Source code implementation | @brd→@tasks (9-11) | RUNNABLE artifacts |
 | **14** | Tests | Test suite implementation | @brd→@code (10-12) | Quality validation |
@@ -290,7 +291,7 @@ Diagrams use simplified labels for visual clarity:
 - **Focus**: WHO does WHAT, WHEN - NOT technical specifications (HOW)
 - Identifies which CTR, SPEC, TASKS to create
 - **Files**: [IMPL-000_index.md](./IMPL/IMPL-000_index.md) | [Template](./IMPL/IMPL-TEMPLATE.md)
-- **Examples**: [IMPL-001_risk_management_system.md](./IMPL/examples/IMPL-001_risk_management_system.md) | [IMPL-001_feature_implementation_example.md](./IMPL/IMPL-001_feature_implementation_example.md)
+- **Examples**: [IMPL-001_risk_management_system.md](./IMPL/examples/IMPL-001_risk_management_system.md) | [IMPL-001_feature_implementation_example.md](./IMPL/examples/IMPL-001_feature_implementation_example.md)
 
 ### 6. Interface Layer
 
@@ -321,6 +322,16 @@ Diagrams use simplified labels for visual clarity:
 - **1:1 mapping**: Each TASKS document corresponds to one SPEC
 - **Files**: [TASKS-000_index.md](./TASKS/TASKS-000_index.md) | [Template](./TASKS/TASKS-TEMPLATE.md)
 
+### 8b. Implementation Contracts Layer (Optional)
+
+**ICON/** - Implementation Contracts (Layer 11)
+- Type-safe interface definitions for parallel development coordination
+- Protocol interfaces, exception hierarchies, state machines, data models
+- **When to use**: 5+ consumer TASKS, >500 lines, platform-level, cross-project
+- **Default**: Embed contracts in TASKS section 5 unless criteria met
+- **Files**: [ICON-000_index.md](./ICON/ICON-000_index.md) | [Template](./ICON/ICON-TEMPLATE.md)
+- **Guide**: [IMPLEMENTATION_CONTRACTS_GUIDE.md](./TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
+
 ### 9. Session Planning Layer
 
 **IPLAN/** - Implementation Work Plans (Layer 12)
@@ -336,7 +347,7 @@ Diagrams use simplified labels for visual clarity:
 **IMPORTANT**: These ID naming standards apply ONLY to **documentation artifacts** in the SDD workflow, NOT to source code files.
 
 #### ✅ Apply To (Documentation):
-- Documents in `docs/` directories: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
+- Documents in `docs/` directories: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, ICON
 - BDD feature files (`.feature` format) in `tests/bdd/` directories
 
 #### ❌ Do NOT Apply To (Source Code):
@@ -363,6 +374,26 @@ Examples:
 
 See [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) for complete rules.
 
+## Schema File Reference
+
+| Artifact | Schema File | Layer | Notes |
+|----------|-------------|-------|-------|
+| BRD | N/A¹ | 1 | No schema by design |
+| PRD | PRD_SCHEMA.yaml | 2 | |
+| EARS | EARS_SCHEMA.yaml | 3 | |
+| BDD | BDD_SCHEMA.yaml | 4 | |
+| ADR | ADR_SCHEMA.yaml | 5 | |
+| SYS | SYS_SCHEMA.yaml | 6 | |
+| REQ | REQ_SCHEMA.yaml | 7 | |
+| IMPL | IMPL_SCHEMA.yaml | 8 | |
+| CTR | CTR_SCHEMA.yaml | 9 | |
+| SPEC | SPEC_SCHEMA.yaml | 10 | |
+| TASKS | TASKS_SCHEMA.yaml | 11 | |
+| ICON | ICON_SCHEMA.yaml | 11 | Optional artifact |
+| IPLAN | IPLAN_SCHEMA.yaml | 12 | |
+
+¹ BRD has no schema by design - business requirements are inherently flexible and domain-specific.
+
 ## Traceability
 
 Every document maintains bidirectional traceability through **Cumulative Tagging Hierarchy** - each artifact includes tags from ALL upstream layers, creating complete audit trails.
@@ -371,28 +402,28 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 
 **Core Principle**: Each layer N includes tags from layers 1 through N-1 plus its own identifier.
 
-**Tag Format**: `@artifact-type: DOC-ID:REQ-ID`
+**Tag Format**: `@artifact-type: DOC-ID:NNN`
 
 **Example Progression**:
 ```markdown
 # Layer 2 (PRD)
-@brd: BRD-009:FR-015
+@brd: BRD-009:015
 
 # Layer 4 (BDD)
-@brd: BRD-009:FR-015
-@prd: PRD-016:FEATURE-003
-@ears: EARS-012:EVENT-002
+@brd: BRD-009:015
+@prd: PRD-016:003
+@ears: EARS-012:002
 
 # Layer 7 (REQ)
-@brd: BRD-009:FR-015
-@prd: PRD-016:FEATURE-003
-@ears: EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order
+@brd: BRD-009:015
+@prd: PRD-016:003
+@ears: EARS-012:002
+@bdd: BDD-015:001
 @adr: ADR-033
-@sys: SYS-012:FUNC-001
+@sys: SYS-012:001
 
 # Layer 13 (Code)
-@brd: BRD-009:FR-015
+@brd: BRD-009:015
 ... [all upstream tags through @tasks]
 @impl-status: complete
 ```
@@ -509,12 +540,12 @@ python scripts/extract_tags.py --type REQ --show-all-upstream
 ```json
 {
   "REQ-045": {
-    "brd": ["BRD-009:FR-015", "BRD-009:NFR-006"],
-    "prd": ["PRD-016:FEATURE-003"],
-    "ears": ["EARS-012:EVENT-002"],
-    "bdd": ["BDD-015:scenario-place-order"],
+    "brd": ["BRD-009:015", "BRD-009:006"],
+    "prd": ["PRD-016:003"],
+    "ears": ["EARS-012:002"],
+    "bdd": ["BDD-015:001"],
     "adr": ["ADR-033"],
-    "sys": ["SYS-012:FUNC-001"]
+    "sys": ["SYS-012:001"]
   }
 }
 ```
@@ -671,12 +702,12 @@ python scripts/generate_traceability_matrices.py --auto
 ## 7. Traceability
 
 **Required Tags**:
-@brd: BRD-009:FR-015
-@prd: PRD-016:FEATURE-003
-@ears: EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order  # ← Add this
+@brd: BRD-009:015
+@prd: PRD-016:003
+@ears: EARS-012:002
+@bdd: BDD-015:001  # ← Add this
 @adr: ADR-033
-@sys: SYS-012:FUNC-001
+@sys: SYS-012:001
 ```
 
 **Issue**: "Gap in cumulative tag chain"

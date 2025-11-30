@@ -613,10 +613,10 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 - `@impl-status:` - Implementation status (pending|in-progress|complete|deprecated)
 
 **Format Rules:**
-- **Multi-requirement documents:** Use namespace format: `BRD-001:FR-030`
+- **Multi-requirement documents:** Use namespace format: `BRD-001:030`
 - **Single-document references:** Namespace optional: `SPEC-003` or `SPEC-003:main`
-- **Multiple references:** Comma-separated: `BRD-001:FR-030, BRD-001:NFR-006`
-- **Multiple documents:** `BRD-001:FR-020, BRD-002:FR-105`
+- **Multiple references:** Comma-separated: `BRD-001:030, BRD-001:006`
+- **Multiple documents:** `BRD-001:020, BRD-002:105`
 
 **Examples:**
 
@@ -624,40 +624,40 @@ Python docstring:
 ```python
 """Market data service implementation.
 
-@brd: BRD-001:FR-010, BRD-001:FR-011, BRD-001:NFR-005
+@brd: BRD-001:010, BRD-001:011, BRD-001:005
 @prd: PRD-003
-@req: REQ-003:interface-spec
+@req: REQ-003:001
 @adr: ADR-033
 @contract: CTR-001
 @spec: SPEC-002
-@test: BDD-002:scenario-realtime, BDD-008:scenario-cache
+@test: BDD-002:001, BDD-008:001
 @impl-status: complete
 """
 ```
 
 Markdown document:
 ```markdown
-@brd: BRD-001:FR-030, BRD-001:NFR-006
+@brd: BRD-001:030, BRD-001:006
 @prd: PRD-003
 @req: REQ-003
 @adr: ADR-033
 @contract: CTR-001
 @spec: SPEC-002
-@test: BDD-001:scenario-enforcement
+@test: BDD-001:001
 @impl-status: complete
 ```
 
 YAML comment header:
 ```yaml
-# @brd: BRD-001:FR-010, BRD-001:NFR-005
-# @req: REQ-003:data-schema
+# @brd: BRD-001:010, BRD-001:005
+# @req: REQ-003:002
 # @spec: SPEC-002
 # @impl-status: complete
 ```
 
 Gherkin feature file:
 ```gherkin
-# @brd: BRD-001:FR-030
+# @brd: BRD-001:030
 # @req: REQ-003
 # @spec: SPEC-002
 
@@ -697,7 +697,7 @@ pre-commit run validate-traceability-tags
 - ✅ No drift: Tags embedded in code cannot become stale
 - ✅ Bidirectional: Forward/reverse matrices auto-generated
 - ✅ CI/CD enforceable: Pre-commit hooks validate tags
-- ✅ Namespace clarity: Explicit document identification (BRD-001:FR-030)
+- ✅ Namespace clarity: Explicit document identification (BRD-001:030)
 
 **Tag Validation Rules:**
 1. **Format Check:** All @brd/@prd/@req tags must use DOCUMENT-ID:REQUIREMENT-ID format
@@ -771,14 +771,14 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 ```markdown
 ## Traceability Tags
 
-@brd: BRD-001:FR-030, BRD-001:NFR-006
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003
-@bdd: BDD-003:scenario-realtime-quote
+@brd: BRD-001:030, BRD-001:006
+@prd: PRD-003:002
+@ears: EARS-001:003
+@bdd: BDD-003:001
 @adr: ADR-033
-@sys: SYS-008:PERF-001
-@req: REQ-003:interface-spec, REQ-004:validation-logic
-@impl: IMPL-001:phase1
+@sys: SYS-008:001
+@req: REQ-003:001, REQ-004:001
+@impl: IMPL-001:001
 @ctr: CTR-001
 @spec: SPEC-003
 @tasks: TASKS-001:task-3
@@ -793,14 +793,14 @@ Implements real-time resource limit validation and enforcement.
 
 ## Traceability Tags
 
-@brd: BRD-001:FR-030
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003
-@bdd: BDD-003:scenario-realtime-quote
+@brd: BRD-001:030
+@prd: PRD-003:002
+@ears: EARS-001:003
+@bdd: BDD-003:001
 @adr: ADR-033
-@sys: SYS-008:PERF-001
-@req: REQ-003:interface-spec
-@impl: IMPL-001:phase1
+@sys: SYS-008:001
+@req: REQ-003:001
+@impl: IMPL-001:001
 @ctr: CTR-001
 @spec: SPEC-003
 @tasks: TASKS-001:task-3
@@ -931,14 +931,14 @@ excessive collection concentration risk through automated validation.
 
 ## Traceability Tags
 
-@brd: BRD-001:FR-030, BRD-001:NFR-006
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003, EARS-001:STATE-002
-@bdd: BDD-003:scenario-realtime-quote, BDD-003:scenario-reject-trade
+@brd: BRD-001:030, BRD-001:006
+@prd: PRD-003:002
+@ears: EARS-001:003, EARS-001:002
+@bdd: BDD-003:001, BDD-003:002
 @adr: ADR-033
-@sys: SYS-008:PERF-001, SYS-008:RELIABILITY-002
-@req: REQ-003:interface-spec, REQ-004:validation-logic
-@impl: IMPL-001:phase1
+@sys: SYS-008:001, SYS-008:002
+@req: REQ-003:001, REQ-004:001
+@impl: IMPL-001:001
 @ctr: CTR-001
 @spec: SPEC-003
 @tasks: TASKS-001:task-3, TASKS-001:task-5
@@ -960,9 +960,9 @@ class PositionLimitService:
         """
         Validate position against configured limits.
 
-        Implements: REQ-003:interface-spec, EARS-001:EVENT-003
-        Tests: BDD-003:scenario-realtime-quote
-        Performance: p95 < 50ms (SYS-008:PERF-001)
+        Implements: REQ-003:001, EARS-001:003
+        Tests: BDD-003:001
+        Performance: p95 < 50ms (SYS-008:001)
         """
         # Implementation
         pass
@@ -978,13 +978,13 @@ Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
 
 ## Traceability Tags
 
-@brd: BRD-001:FR-030
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003
-@bdd: BDD-003:scenario-realtime-quote
+@brd: BRD-001:030
+@prd: PRD-003:002
+@ears: EARS-001:003
+@bdd: BDD-003:001
 @adr: ADR-033
-@sys: SYS-008:PERF-001
-@req: REQ-003:interface-spec
+@sys: SYS-008:001
+@req: REQ-003:001
 @spec: SPEC-003
 @tasks: TASKS-001:task-3
 @code: src/services/resource_limit_service.py
@@ -997,8 +997,8 @@ def test_validate_resource_limit_within_threshold():
     """
     Test: Position within limit is approved
 
-    BDD Scenario: BDD-003:scenario-realtime-quote
-    Requirement: REQ-003:interface-spec, EARS-001:EVENT-003
+    BDD Scenario: BDD-003:001
+    Requirement: REQ-003:001, EARS-001:003
     """
     # Test implementation
     pass

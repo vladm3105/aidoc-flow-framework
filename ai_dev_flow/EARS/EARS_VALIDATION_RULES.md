@@ -23,7 +23,7 @@ custom_fields:
 **Date**: 2025-11-29
 **Last Updated**: 2025-11-29
 **Purpose**: Complete validation rules for EARS documents
-**Script**: `scripts/validate_ears.py`
+**Script**: `ai_dev_flow/scripts/validate_ears.py`
 **Primary Template**: `EARS-TEMPLATE.md`
 **Framework**: doc_flow SDD (100% compliant)
 **Changes**: v2.0 - Added requirement ID, table syntax, custom_fields, traceability format checks
@@ -291,19 +291,19 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Invalid** (inline without pipes):
 ```markdown
-**Traceability**: @brd: BRD-002:FR-010 @prd: PRD-002:FR-002-001
+**Traceability**: @brd: BRD-002:010 @prd: PRD-002:001
 ```
 
 **Valid** (inline with pipes):
 ```markdown
-**Traceability**: @brd: BRD-002:FR-010 | @prd: PRD-002:FR-002-001
+**Traceability**: @brd: BRD-002:010 | @prd: PRD-002:001
 ```
 
 **Valid** (list format):
 ```markdown
 **Traceability**:
 - @brd: BRD-002
-- @prd: PRD-002:FR-002-001
+- @prd: PRD-002:001
 - @threshold: PRD-035:timeout.partner.bridge
 ```
 
@@ -344,7 +344,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 **Valid formats**:
 ```markdown
 @brd: BRD-002
-@brd: BRD-002:FR-010
+@brd: BRD-002:010
 ```
 
 **Fix**: Add @brd tag to traceability section referencing source BRD
@@ -426,21 +426,21 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 ```bash
 # Validate all EARS files
-python scripts/validate_ears.py
+python ai_dev_flow/scripts/validate_ears.py
 
 # Validate single file
-python scripts/validate_ears.py --path docs/EARS/EARS-006.md
+python ai_dev_flow/scripts/validate_ears.py --path docs/EARS/EARS-006.md
 
 # Show fix suggestions
-python scripts/validate_ears.py --fix-suggestions
+python ai_dev_flow/scripts/validate_ears.py --fix-suggestions
 
 # Summary only (counts by rule)
-python scripts/validate_ears.py --summary-only
+python ai_dev_flow/scripts/validate_ears.py --summary-only
 ```
 
 ### Pre-Commit Checklist
 
-- [ ] Run `python scripts/validate_ears.py` - 0 errors
+- [ ] Run `python ai_dev_flow/scripts/validate_ears.py` - 0 errors
 - [ ] All files have `tags: ears, layer-3-artifact`
 - [ ] All files have `custom_fields` with document_type, artifact_type, layer
 - [ ] All requirement IDs use `EARS-{DocID}-{Num}:` format
@@ -497,4 +497,4 @@ python scripts/validate_ears.py --summary-only
 
 **Maintained By**: Engineering Team
 **Review Frequency**: Updated with EARS template enhancements
-**Script Location**: `/opt/data/blocal_n8n/scripts/validate_ears.py`
+**Script Location**: `ai_dev_flow/scripts/validate_ears.py`

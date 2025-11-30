@@ -13,12 +13,14 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: contract-specification
+  schema_reference: "CTR_SCHEMA.yaml"
+  schema_version: "1.0"
 ---
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for CTR structure.
-> - All CTR documents must conform to this template
-> - `CTR_CREATION_RULES.md` - Helper guidance for template usage
-> - `CTR_VALIDATION_RULES.md` - Post-creation validation checks
+> - **Schema**: `CTR_SCHEMA.yaml v1.0` - Validation rules
+> - **Creation Rules**: `CTR_CREATION_RULES.md` - Usage guidance
+> - **Validation Rules**: `CTR_VALIDATION_RULES.md` - Post-creation checks
 
 # CTR-NNN: [Contract Title]
 
@@ -704,17 +706,17 @@ Common types across endpoints:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
 ```markdown
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
-@ears: EARS-NNN:STATEMENT-ID
-@bdd: BDD-NNN:SCENARIO-ID
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
+@bdd: BDD-NNN:NNN
 @adr: ADR-NNN
-@sys: SYS-NNN:regulatoryTION-ID
-@req: REQ-NNN:REQUIREMENT-ID
-@impl: IMPL-NNN:PHASE-ID
+@sys: SYS-NNN:NNN
+@req: REQ-NNN:NNN
+@impl: IMPL-NNN:NNN
 ```
 
-**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+**Format**: `@artifact-type: DOCUMENT-ID:NNN`
 
 **Layer 9 Requirements**: CTR must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -730,14 +732,14 @@ Common types across endpoints:
 
 **Example**:
 ```markdown
-@brd: BRD-001:FR-030
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003
-@bdd: BDD-003:scenario-realtime-quote
+@brd: BRD-001:030
+@prd: PRD-003:002
+@ears: EARS-001:003
+@bdd: BDD-003:001
 @adr: ADR-033
-@sys: SYS-008:PERF-001
-@req: REQ-003:interface-spec
-@impl: IMPL-001:phase1
+@sys: SYS-008:001
+@req: REQ-003:001
+@impl: IMPL-001:001
 ```
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through IMPL) are properly linked.

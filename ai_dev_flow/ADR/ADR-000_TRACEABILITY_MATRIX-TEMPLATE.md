@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type ADR --output docs/ADR/AD
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@adr: ADR-001:REQ-ID` (for multi-requirement docs) or `@adr: ADR-001` (for single-doc refs)
+**Tag Format:** `@adr: ADR-001:NNN` (for multi-requirement docs) or `@adr: ADR-001` (for single-doc refs)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -93,10 +93,10 @@ This matrix tracks all ADRs, mapping upstream business/product requirements to d
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD-009:FR-015, BRD-009:NFR-006
-@prd: PRD-016:FEATURE-003
-@ears: EARS-012:EVENT-002, EARS-012:STATE-001
-@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@brd: BRD-009:015, BRD-009:006
+@prd: PRD-016:003
+@ears: EARS-012:002, EARS-012:001
+@bdd: BDD-015:001, BDD-015:002
 ```
 
 **Format Rules**:
@@ -118,10 +118,10 @@ This matrix tracks all ADRs, mapping upstream business/product requirements to d
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
 ```markdown
-@brd: BRD-009:FR-015, BRD-009:NFR-006
-@prd: PRD-016:FEATURE-003
-@ears: EARS-012:EVENT-002, EARS-012:STATE-001
-@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@brd: BRD-009:015, BRD-009:006
+@prd: PRD-016:003
+@ears: EARS-012:002, EARS-012:001
+@bdd: BDD-015:001, BDD-015:002
 ```
 
 ### 7.2 Downstream Artifacts
@@ -131,7 +131,7 @@ This matrix tracks all ADRs, mapping upstream business/product requirements to d
 ### 2.4 Validation Rules
 
 1. **Required**: Each ADR artifact MUST include at least one tag for each required layer
-2. **Format Compliance**: All tags must follow `@artifact-type:DOC-ID:REQ-ID` format
+2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NNN` format
 3. **Valid References**: All referenced documents and requirements must exist
 4. **No Gaps**: Cannot skip any required upstream layer in the chain
 5. **Tag Count**: Must have exactly 4 tags for Layer 5

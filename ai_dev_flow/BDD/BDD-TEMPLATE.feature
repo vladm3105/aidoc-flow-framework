@@ -2,6 +2,9 @@
 #              for workflow steps, artifact definitions, and quality gates.
 #              Location: ../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
 #
+# SCHEMA_REFERENCE: BDD_SCHEMA.yaml
+# SCHEMA_VERSION: 1.0
+#
 # QUICK SELF-CHECK BEFORE WRITING BDD SCENARIOS:
 # Use these questions to verify your requirements are at the appropriate abstraction level:
 #
@@ -25,9 +28,9 @@
 #   - ../BRD/BRD-TEMPLATE.md#appendix-b (PRD-Level Content Exclusions)
 #
 # 📋 Document Authority: This is the PRIMARY STANDARD for BDD structure.
-# - All BDD feature files must conform to this template
-# - BDD_CREATION_RULES.md - Helper guidance for template usage
-# - BDD_VALIDATION_RULES.md - Post-creation validation checks
+# - Schema: BDD_SCHEMA.yaml v1.0 - Validation rules
+# - Creation Rules: BDD_CREATION_RULES.md - Usage guidance
+# - Validation Rules: BDD_VALIDATION_RULES.md - Post-creation checks
 
 ## Document Control
 
@@ -77,15 +80,25 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 # Required Tags: @brd, @prd, @ears (plus standard @requirement, @adr, @bdd tags)
 # Format: @artifact-type: DOCUMENT-ID:REQUIREMENT-ID
 # Example:
-#   @brd: BRD-001:FR-030
-#   @prd: PRD-003:FEATURE-002
-#   @ears: EARS-001:EVENT-003
+#   @brd: BRD-001:030
+#   @prd: PRD-003:002
+#   @ears: EARS-001:003
 # Purpose: Complete traceability chain from business requirements through tests
 # See: ../TRACEABILITY.md#cumulative-tagging-hierarchy
+#
+# THRESHOLD REGISTRY INTEGRATION:
+# Use @threshold tags for ALL quantitative values (performance, SLA, limits)
+# Format: @threshold: PRD-NNN:category.subcategory.key
+# Examples:
+#   @threshold: PRD-035:perf.api.p95_latency
+#   @threshold: PRD-035:sla.uptime.target
+#   @threshold: PRD-035:limit.api.requests_per_second
+# Purpose: Prevent magic numbers by referencing centralized threshold registry
+# See: ../PRD/PRD-000_threshold_registry_template.md
 
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
-@ears: EARS-NNN:STATEMENT-ID
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
 @requirement:[REQ-NNN](../reqs/.../REQ-NNN_...md#REQ-NNN)
 @adr:[ADR-NNN](../adrs/ADR-NNN_...md#ADR-NNN)
 @bdd:[BDD-NNN:scenarios](BDD-NNN_descriptive_requirements.feature#scenarios)
@@ -104,7 +117,7 @@ Feature: [Feature Title]
   # SUCCESS PATH SCENARIOS
   # ===================
 
-  @positive @functional @acceptance
+  @primary @functional @acceptance
   Scenario: [Descriptive scenario name for primary success case]
     Given [initial state: verified precondition for the scenario]
     And [additional context: any other required setup]
@@ -114,7 +127,7 @@ Feature: [Feature Title]
     And [verification steps: additional success validations]
     And [business impact: measurable business outcome]
 
-  @positive @functional
+  @primary @functional
   Scenario: [Another success scenario with different valid conditions]
     Given [different valid initial state]
     When [valid action with different parameters]
@@ -215,18 +228,22 @@ Feature: [Feature Title]
       | quantity  | 0     | invalid        | quantity must be > 0   |
       | quantity  | -1    | invalid        | quantity must be > 0   |
 
+  # NOTE: Performance thresholds should use @threshold registry references
+  # @threshold: PRD-NNN:perf.api.p50_latency
+  # @threshold: PRD-NNN:perf.api.p95_latency
+  # @threshold: PRD-NNN:perf.api.p99_latency
   @data_driven @performance
   Scenario Outline: [Validate performance under different load conditions]
     Given system load is at <load_percentage> capacity
     When <concurrent_requests> simultaneous requests are processed
-    Then average response time is less than <max_response_time> milliregulatoryonds
-    And success rate is greater than <min_success_rate> percent
+    Then average response time is less than @threshold: PRD-NNN:perf.api.<percentile>_latency
+    And success rate is greater than @threshold: PRD-NNN:sla.success_rate.<load_level>
 
-    Examples: Performance Benchmarks
-      | load_percentage | concurrent_requests | max_response_time | min_success_rate |
-      | 25%             | 10                  | 50               | 99.9            |
-      | 50%             | 50                  | 100              | 99.5            |
-      | 75%             | 100                 | 200              | 99.0            |
+    Examples: Performance Benchmarks (replace with actual threshold keys)
+      | load_percentage | concurrent_requests | percentile | load_level |
+      | 25%             | 10                  | p50        | low        |
+      | 50%             | 50                  | p95        | medium     |
+      | 75%             | 100                 | p99        | high       |
 
   # ===================
   # INTEGRATION SCENARIOS
@@ -260,20 +277,23 @@ Feature: [Feature Title]
     And [access controls are enforced]
     And [audit logs capture data access appropriately]
 
+  # @threshold: PRD-NNN:sla.uptime.target
   @non_functional @reliability
   Scenario: [Maintain availability during peak load]
     Given [system under peak usage conditions]
     When [high-volume requests arrive]
-    Then [service remains available above 99.9% uptime]
+    Then [service remains available above @threshold: PRD-NNN:sla.uptime.target uptime]
     And [degradation occurs gracefully if needed]
     And [monitoring alerts are triggered appropriately]
 
+  # @threshold: PRD-NNN:perf.api.p95_latency
+  # @threshold: PRD-NNN:perf.api.p99_latency
   @non_functional @performance @latency
   Scenario: [Response time meets user expectations]
     Given [normal system operating conditions]
     When [typical user requests are made]
-    Then [response time is under 500ms for 95% of requests]
-    And [response time is under 2000ms for 99% of requests]
+    Then [response time is under @threshold: PRD-NNN:perf.api.p95_latency for 95% of requests]
+    And [response time is under @threshold: PRD-NNN:perf.api.p99_latency for 99% of requests]
     And [latency is consistent across similar operations]
 
   # ===================

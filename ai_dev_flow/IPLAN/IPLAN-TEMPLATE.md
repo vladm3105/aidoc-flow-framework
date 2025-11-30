@@ -13,12 +13,14 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: implementation-plan
+  schema_reference: "IPLAN_SCHEMA.yaml"
+  schema_version: "1.0"
 ---
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for IPLAN structure.
-> - All IPLAN documents must conform to this template
-> - `IPLAN_CREATION_RULES.md` - Helper guidance for template usage
-> - `IPLAN_VALIDATION_RULES.md` - Post-creation validation checks
+> - **Schema**: `IPLAN_SCHEMA.yaml v1.0` - Validation rules
+> - **Creation Rules**: `IPLAN_CREATION_RULES.md` - Usage guidance
+> - **Validation Rules**: `IPLAN_VALIDATION_RULES.md` - Post-creation checks
 
 # Implementation Plan - IPLAN-NNN: [Descriptive Task/Feature Name]
 
@@ -594,7 +596,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 - `@brd: BRD-NNN:REQ-NNN` - Business Requirements Document (Layer 1)
 - `@prd: PRD-NNN:REQ-NNN` - Product Requirements Document (Layer 2)
-- `@ears: EARS-NNN:REQ-NNN` - Event-Action-Response-State (Layer 3)
+- `@ears: EARS-NNN:NNN` - Event-Action-Response-State (Layer 3)
 - `@bdd: BDD-NNN:SCENARIO-NNN` - Behavior-Driven Development (Layer 4)
 - `@adr: ADR-NNN` - Architecture Decision Record (Layer 5)
 - `@sys: SYS-NNN:REQ-NNN` - System Requirements (Layer 6)
@@ -613,17 +615,17 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 **Examples**:
 ```
-@brd: BRD-001:REQ-042
-@prd: PRD-001:REQ-015
-@ears: EARS-001:REQ-003
-@bdd: BDD-001:SCENARIO-005
+@brd: BRD-001:042
+@prd: PRD-001:015
+@ears: EARS-001:003
+@bdd: BDD-001:005
 @adr: ADR-002
-@sys: SYS-002:REQ-001
-@req: REQ-001
-@spec: SPEC-001:connection_service
-@tasks: TASKS-001:PHASE-2.1
-@impl: IMPL-001 (optional)
-@ctr: CTR-001:ServiceConnector (optional)
+@sys: SYS-002:001
+@req: REQ-001:001
+@spec: SPEC-001
+@tasks: TASKS-001:001
+@impl: IMPL-001:001 (optional)
+@ctr: CTR-001 (optional)
 ```
 
 ### 8.4 Tag Validation Requirements
@@ -631,7 +633,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 1. **Completeness**: All 9 mandatory tags MUST be present (11 if @impl/@ctr exist in project)
 2. **Chain Integrity**: Each tag MUST reference a valid upstream document
 3. **Bidirectional Links**: Tagged documents MUST reference this IPLAN document in their downstream traceability
-4. **Format Compliance**: Tags MUST follow `@type: DOC-ID:REQ-ID` pattern
+4. **Format Compliance**: Tags MUST follow `@type: DOC-ID:NNN` pattern
 5. **Layer Hierarchy**: Tags MUST respect the 16-layer cumulative tagging hierarchy (Layer 0-15)
 
 ### 8.5 Validation Methods
@@ -724,20 +726,20 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 12):
 ```markdown
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
-@ears: EARS-NNN:STATEMENT-ID
-@bdd: BDD-NNN:SCENARIO-ID
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
+@bdd: BDD-NNN:NNN
 @adr: ADR-NNN
-@sys: SYS-NNN:regulatoryTION-ID
-@req: REQ-NNN:REQUIREMENT-ID
-@impl: IMPL-NNN:PHASE-ID
+@sys: SYS-NNN:NNN
+@req: REQ-NNN:NNN
+@impl: IMPL-NNN:NNN
 @ctr: CTR-NNN
 @spec: SPEC-NNN
 @tasks: TASKS-NNN
 ```
 
-**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+**Format**: `@artifact-type: DOCUMENT-ID:NNN`
 
 **Layer 12 Requirements**: IPLAN must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -756,17 +758,17 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 **Example**:
 ```markdown
-@brd: BRD-001:FR-030
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003
-@bdd: BDD-003:scenario-realtime-quote
+@brd: BRD-001:030
+@prd: PRD-003:002
+@ears: EARS-001:003
+@bdd: BDD-003:001
 @adr: ADR-033
-@sys: SYS-008:PERF-001
-@req: REQ-003:interface-spec
-@impl: IMPL-001:phase1
+@sys: SYS-008:001
+@req: REQ-003:001
+@impl: IMPL-001:001
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS-001
+@tasks: TASKS-001:001
 ```
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through TASKS) are properly linked.

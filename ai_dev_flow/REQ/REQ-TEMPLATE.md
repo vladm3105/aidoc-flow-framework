@@ -13,12 +13,14 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: atomic-requirements-document
+  schema_reference: "REQ_SCHEMA.yaml"
+  schema_version: "1.0"
 ---
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for REQ structure.
-> - All REQ documents must conform to this template
-> - `REQ_CREATION_RULES.md` - Helper guidance for template usage
-> - `REQ_VALIDATION_RULES.md` - Post-creation validation checks
+> - **Schema**: `REQ_SCHEMA.yaml v1.0` - Validation rules
+> - **Creation Rules**: `REQ_CREATION_RULES.md` - Usage guidance
+> - **Validation Rules**: `REQ_VALIDATION_RULES.md` - Post-creation checks
 
 # REQ-NNN: [Descriptive Requirement Title]
 
@@ -719,21 +721,23 @@ class APIClientConfig(BaseModel):
 
 ## 7. Non-Functional Requirements (NFRs)
 
+> **Note**: All NFR targets MUST use @threshold registry references. See PRD-000_threshold_registry_template.md for registry format.
+
 ### 7.1 Performance
 
 | Metric | Target (p50) | Target (p95) | Target (p99) | Measurement Method | SLI/SLO |
 |--------|--------------|--------------|--------------|-------------------|---------|
-| Response Time | <200ms | <500ms | <1000ms | APM traces (Datadog/New Relic) | SLI: p95 latency, SLO: 99.9% |
-| Throughput | 100 req/s | 75 req/s | 50 req/s | Load testing (k6/Locust) | SLI: requests/s, SLO: 99% |
-| Connection Time | <2s | <5s | <10s | Metrics (Prometheus) | SLI: connection duration, SLO: 99.5% |
+| Response Time | <@threshold: PRD-NNN:perf.api.p50_latency | <@threshold: PRD-NNN:perf.api.p95_latency | <@threshold: PRD-NNN:perf.api.p99_latency | APM traces (Datadog/New Relic) | SLI: p95 latency, SLO: @threshold: PRD-NNN:sla.success_rate.target% |
+| Throughput | @threshold: PRD-NNN:perf.throughput.target_rps | @threshold: PRD-NNN:perf.throughput.sustained_rps | @threshold: PRD-NNN:perf.throughput.min_rps | Load testing (k6/Locust) | SLI: requests/s, SLO: @threshold: PRD-NNN:sla.success_rate.target% |
+| Connection Time | <@threshold: PRD-NNN:timeout.connection.p50 | <@threshold: PRD-NNN:timeout.connection.p95 | <@threshold: PRD-NNN:timeout.connection.p99 | Metrics (Prometheus) | SLI: connection duration, SLO: @threshold: PRD-NNN:sla.connection_success% |
 
 ### 7.2 Reliability
 
-- **Availability**: 99.9% uptime (SLA: max 43 minutes downtime/month)
-- **Error Rate**: <0.1% of requests (SLO: 99.9% success rate)
+- **Availability**: @threshold: PRD-NNN:sla.uptime.target% uptime
+- **Error Rate**: <@threshold: PRD-NNN:sla.error_rate.max% of requests
 - **Data Integrity**: 100% (checksums, validation)
-- **Recovery Time Objective (RTO)**: <5 minutes for service recovery
-- **Recovery Point Objective (RPO)**: <1 minute for data loss
+- **Recovery Time Objective (RTO)**: <@threshold: PRD-NNN:sla.rto minutes for service recovery
+- **Recovery Point Objective (RPO)**: <@threshold: PRD-NNN:sla.rpo minutes for data loss
 
 ### security
 
@@ -1235,12 +1239,17 @@ Document the business strategy, product requirements, system specifications, and
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
 ```markdown
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
-@ears: EARS-NNN:STATEMENT-ID
-@bdd: BDD-NNN:SCENARIO-ID
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
+@bdd: BDD-NNN:NNN
 @adr: ADR-NNN
-@sys: SYS-NNN:regulatoryTION-ID
+@sys: SYS-NNN:NNN
+```
+
+**Threshold Registry Tag** (Required when NFRs reference quantitative values):
+```markdown
+@threshold: PRD-NNN:category.subcategory.key
 ```
 
 **Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
@@ -1252,22 +1261,25 @@ Document the business strategy, product requirements, system specifications, and
 - `@bdd`: BDD Scenarios
 - `@adr`: Architecture Decision Records
 - `@sys`: System Requirements
+- `@threshold`: Threshold Registry (when NFRs contain performance, SLA, or limit values)
 
 **Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
 
 **Example**:
 ```markdown
-@brd: BRD-001:FR-030
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003
-@bdd: BDD-003:scenario-realtime-quote
+@brd: BRD-001:030
+@prd: PRD-003:002
+@ears: EARS-001:003
+@bdd: BDD-003:015
 @adr: ADR-033
-@sys: SYS-008:PERF-001
+@sys: SYS-008:001
+@threshold: PRD-035:perf.api.p95_latency
+@threshold: PRD-035:sla.uptime.target
 ```
 
-**Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through SYS) are properly linked.
+**Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through SYS) are properly linked. Threshold references must resolve to valid keys in the threshold registry.
 
-**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through atomic requirements. See [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
+**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through atomic requirements. Threshold tags prevent magic numbers and ensure quantitative values are centrally managed. See [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
 
 ---
 

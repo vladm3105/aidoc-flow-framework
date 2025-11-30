@@ -28,6 +28,25 @@ This document defines the standard traceability practices for the AI-Driven Spec
 - **Anchors/IDs**: Primary identifiers within this document
 - **Code Path(s)**: Implementation locations (where applicable)
 
+### Schema Authority Principle
+
+**Critical Rule**: `*_SCHEMA.yaml` files are the single source of truth for their respective artifact types. When conflicts exist between style guides and schemas, **the schema is authoritative**.
+
+| Artifact | Schema File | Layer |
+|----------|-------------|-------|
+| PRD | `ai_dev_flow/PRD/PRD_SCHEMA.yaml` | 2 |
+| EARS | `ai_dev_flow/EARS/EARS_SCHEMA.yaml` | 3 |
+| BDD | `ai_dev_flow/BDD/BDD_SCHEMA.yaml` | 4 |
+| ADR | `ai_dev_flow/ADR/ADR_SCHEMA.yaml` | 5 |
+| SYS | `ai_dev_flow/SYS/SYS_SCHEMA.yaml` | 6 |
+| REQ | `ai_dev_flow/REQ/REQ_SCHEMA.yaml` | 7 |
+| IMPL | `ai_dev_flow/IMPL/IMPL_SCHEMA.yaml` | 8 |
+| CTR | `ai_dev_flow/CTR/CTR_SCHEMA.yaml` | 9 |
+| SPEC | `ai_dev_flow/SPEC/SPEC_SCHEMA.yaml` | 10 |
+| TASKS | `ai_dev_flow/TASKS/TASKS_SCHEMA.yaml` | 11 |
+| ICON | `ai_dev_flow/ICON/ICON_SCHEMA.yaml` | 11 |
+| IPLAN | `ai_dev_flow/IPLAN/IPLAN_SCHEMA.yaml` | 12 |
+
 ## ⚠️ Upstream Artifact Verification (CRITICAL)
 
 **Before completing traceability tags in ANY document, you MUST:**
@@ -87,9 +106,9 @@ ls -la docs/IPLAN/  # Layer 12 - Implementation Plans
 
 **✅ CORRECT** (verified references):
 ```markdown
-@brd: BRD-001:FR-030  # Verified: docs/BRD/BRD-001_project.md exists
-@prd: null            # No PRD exists for this feature (legitimate)
-@adr: ADR-005         # Verified: docs/ADR/ADR-005_architecture.md exists
+@brd: BRD-001:030  # Verified: docs/BRD/BRD-001_project.md exists
+@prd: null         # No PRD exists for this feature (legitimate)
+@adr: ADR-005      # Verified: docs/ADR/ADR-005_architecture.md exists
 ```
 
 **16-Layer Workflow**: This traceability system implements the 16-layer SDD workflow (Layer 0: Strategy through Layer 15: Validation):
@@ -257,6 +276,39 @@ Diagrams use simplified labels for visual clarity:
 - **Layer 14 - Tests** (Green): Test execution and verification
 - **Layer 15 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
 
+## Quick Reference Card
+
+### Tag Counts by Layer
+
+| Layer | Artifact | Min Tags | Max Tags |
+|-------|----------|----------|----------|
+| 1 | BRD | 0 | 0 |
+| 2 | PRD | 1 | 1 |
+| 3 | EARS | 1 | 2 |
+| 4 | BDD | 3 | 3 |
+| 5 | ADR | 4 | 4 |
+| 6 | SYS | 5 | 5 |
+| 7 | REQ | 6 | 6 |
+| 8 | IMPL | 7 | 7 |
+| 9 | CTR | 7 | 8 |
+| 10 | SPEC | 7 | 9 |
+| 11 | TASKS | 8 | 10 |
+| 12 | IPLAN | 9 | 11 |
+
+### Tag Separator Rules
+
+| Format | Status |
+|--------|--------|
+| Space + Pipe + Space (` \| `) | **CORRECT** |
+| Comma (`,`) | **INCORRECT** |
+| Trailing comma (`, \|`) | **INCORRECT** |
+
+**Correct Example**: `@prd: PRD-001:001 | @ears: EARS-001:001`
+
+**Incorrect Examples**:
+- `@prd: PRD-001:001, @ears: EARS-001:001` (comma separator)
+- `@prd: PRD-001:001, | @ears: EARS-001:001` (trailing comma before pipe)
+
 ### For Markdown Documents (PRD, SYS, EARS, REQ, ADR, CTR, IMPL, TASKS)
 
 ```markdown
@@ -318,14 +370,14 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 ```python
 """Module description.
 
-@brd: BRD-001:FR-030, BRD-001:NFR-006, BRD-002:FR-015
+@brd: BRD-001:030, BRD-001:006, BRD-002:015
 @prd: PRD-003
-@sys: SYS-008:PERF-001
-@req: REQ-003:interface-spec
+@sys: SYS-008:001
+@req: REQ-003:001
 @adr: ADR-033
 @spec: SPEC-003
 @contract: CTR-001
-@test: BDD-003:scenario-1, BDD-003:scenario-5
+@test: BDD-003:001, BDD-003:005
 @impl-status: complete
 """
 ```
@@ -337,25 +389,25 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 **Components:**
 - **Tag Type:** @brd, @prd, @ears, @sys, @adr, @req, @spec, @contract, @test, @impl-status
 - **Document ID:** BRD-001, SYS-008, SPEC-003, CTR-001
-- **Requirement ID:** FR-030, NFR-006, PERF-001
+- **Requirement ID:** Numeric sub-IDs (030, 006, 001)
 - **Separator:** Colon (:) separates document from requirement
 - **Multiple:** Comma-separated list
 
 **Examples:**
 ```python
 # Multi-requirement document reference
-@brd: BRD-001:FR-030, BRD-001:NFR-006
+@brd: BRD-001:030, BRD-001:006
 
 # Multiple documents
-@brd: BRD-001:FR-020, BRD-002:FR-105
+@brd: BRD-001:020, BRD-002:105
 
 # System requirement with sub-ID
-@sys: SYS-008:PERF-001
+@sys: SYS-008:001
 
 # Single document reference (no sub-ID needed)
 @spec: SPEC-003
 @contract: CTR-001
-@test: BDD-003:scenario-realtime-quote
+@test: BDD-003:001
 @iplan: IPLAN-001
 ```
 
@@ -377,7 +429,7 @@ python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
 ```
 
 **Validation Rules:**
-1. **Format Check:** All @brd/@prd/@req tags must use DOCUMENT-ID:REQUIREMENT-ID format
+1. **Format Check:** All @brd/@prd/@req tags must use DOCUMENT-ID:NNN format (numeric sub-IDs)
 2. **Document Exists:** DOCUMENT-ID must reference existing file in docs/{TYPE}/
 3. **Requirement Exists:** REQUIREMENT-ID must exist within the document
 4. **No Orphans:** All tags must resolve to actual requirements
@@ -390,7 +442,7 @@ python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
 - ✅ Automated validation prevents drift
 - ✅ Bidirectional matrices auto-generated
 - ✅ CI/CD can enforce tag presence
-- ✅ Explicit document namespacing prevents ambiguity (BRD-001:FR-030 vs BRD-002:FR-030)
+- ✅ Explicit document namespacing prevents ambiguity (BRD-001:030 vs BRD-002:030)
 
 ### Example: Complete Traceability section
 
@@ -501,7 +553,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 **Components**:
 - **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`, `@icon`, `@iplan`)
 - **Document ID**: Standard ID format (e.g., `BRD-001`, `REQ-003`, `SPEC-005`, `ICON-001`)
-- **Requirement ID**: Specific requirement within document (e.g., `FR-030`, `NFR-006`, `PERF-001`, `ContractName`)
+- **Requirement ID**: Numeric sub-ID within document (e.g., `030`, `006`, `001`) or contract names for ICON tags
 - **Separator**: Colon (`:`) between document and requirement
 - **Multiple Values**: Comma-separated
 - **Special**: `@icon` includes optional `@icon-role: provider|consumer`
@@ -510,17 +562,17 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 ```markdown
 ## Traceability Tags
 
-@brd: BRD-001:FR-030, BRD-001:NFR-006
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003
-@bdd: BDD-003:scenario-realtime-quote
+@brd: BRD-001:030, BRD-001:006
+@prd: PRD-003:002
+@ears: EARS-001:003
+@bdd: BDD-003:007
 @adr: ADR-033
-@sys: SYS-008:PERF-001
-@req: REQ-003:interface-spec, REQ-004:validation-logic
-@impl: IMPL-001:phase1
+@sys: SYS-008:001
+@req: REQ-003:001, REQ-004:002
+@impl: IMPL-001:001
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS-001:task-3
+@tasks: TASKS-001:003
 @icon: TASKS-001:ServiceConnector
 @icon-role: consumer
 ```
@@ -562,6 +614,44 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @depends-tasks: TASKS-001
 ```
 
+**Optional Extension Tags**:
+
+Projects may define optional tags for cross-referencing specialized documents:
+
+| Tag | Format | Use Case |
+|-----|--------|----------|
+| @threshold | `PRD-NNN:category.key` | Reference timing/limits from Platform Threshold Registry |
+| @entity | `PRD-NNN:EntityName` | Reference data entities from Data Model document |
+
+**@threshold Tag Usage**:
+
+References centralized timing, limits, and configuration values from a Platform Threshold Registry document.
+
+**Format**: `@threshold: PRD-NNN:category.key`
+
+**Example Categories**:
+- `kyc.*` - KYC timing and limits
+- `transaction.*` - Transaction processing
+- `compliance.*` - Compliance thresholds
+- `security.*` - Security parameters
+- `system.*` - System performance
+
+**Example**:
+```markdown
+**Traceability**: @prd: PRD-006:001 | @threshold: PRD-035:kyc.tier1_timeout
+```
+
+**@entity Tag Usage**:
+
+References data entities defined in a Data Model document.
+
+**Format**: `@entity: PRD-NNN:EntityName`
+
+**Example**:
+```markdown
+**Traceability**: @prd: PRD-006:001 | @entity: PRD-004:UserProfile
+```
+
 **Code Docstring Example**:
 ```python
 """
@@ -571,17 +661,17 @@ Implements real-time resource limit validation and enforcement.
 
 ## Traceability Tags
 
-@brd: BRD-001:FR-030
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003
-@bdd: BDD-003:scenario-realtime-quote
+@brd: BRD-001:030
+@prd: PRD-003:002
+@ears: EARS-001:003
+@bdd: BDD-003:007
 @adr: ADR-033
-@sys: SYS-008:PERF-001
-@req: REQ-003:interface-spec
-@impl: IMPL-001:phase1
+@sys: SYS-008:001
+@req: REQ-003:001
+@impl: IMPL-001:001
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS-001:task-3
+@tasks: TASKS-001:003
 @iplan: IPLAN-001
 """
 ```
@@ -590,7 +680,7 @@ Implements real-time resource limit validation and enforcement.
 
 **Mandatory Checks**:
 1. **Complete Chain**: Each artifact must include ALL upstream tags
-2. **Format Compliance**: All tags follow `@type: ID:REQ-ID` format
+2. **Format Compliance**: All tags follow `@type: DOC-NNN:NNN` format (numeric sub-IDs)
 3. **Document Exists**: Referenced DOCUMENT-ID must exist in repository
 4. **Requirement Exists**: REQUIREMENT-ID must exist within referenced document
 5. **No Orphans**: All tags resolve to actual artifacts
@@ -675,9 +765,9 @@ In addition to upstream/downstream layer traceability, documents may have relati
 ## Traceability Tags
 
 ### Upstream (Cross-Layer)
-@brd: BRD-001:FR-030
-@prd: PRD-003:FEATURE-002
-@sys: SYS-008:PERF-001
+@brd: BRD-001:030
+@prd: PRD-003:002
+@sys: SYS-008:001
 
 ### Same-Type References
 @related-req: REQ-001, REQ-002  # Shared risk management domain
@@ -1092,17 +1182,17 @@ excessive collection concentration risk through automated validation.
 
 ## Traceability Tags
 
-@brd: BRD-001:FR-030, BRD-001:NFR-006
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003, EARS-001:STATE-002
-@bdd: BDD-003:scenario-realtime-quote, BDD-003:scenario-reject-trade
+@brd: BRD-001:030, BRD-001:006
+@prd: PRD-003:002
+@ears: EARS-001:003, EARS-001:002
+@bdd: BDD-003:001, BDD-003:002
 @adr: ADR-033
-@sys: SYS-008:PERF-001, SYS-008:RELIABILITY-002
-@req: REQ-003:interface-spec, REQ-004:validation-logic
-@impl: IMPL-001:phase1
+@sys: SYS-008:001, SYS-008:002
+@req: REQ-003:001, REQ-004:001
+@impl: IMPL-001:001
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS-001:task-3, TASKS-001:task-5
+@tasks: TASKS-001:003, TASKS-001:005
 @iplan: IPLAN-001
 
 @impl-status: complete
@@ -1121,9 +1211,9 @@ class PositionLimitService:
         """
         Validate position against configured limits.
 
-        Implements: REQ-003:interface-spec, EARS-001:EVENT-003
-        Tests: BDD-003:scenario-realtime-quote
-        Performance: p95 < 50ms (SYS-008:PERF-001)
+        Implements: REQ-003:001, EARS-001:003
+        Tests: BDD-003:001
+        Performance: p95 < 50ms (SYS-008:001)
         """
         # Implementation
         pass
@@ -1139,15 +1229,15 @@ Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
 
 ## Traceability Tags
 
-@brd: BRD-001:FR-030
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003
-@bdd: BDD-003:scenario-realtime-quote
+@brd: BRD-001:030
+@prd: PRD-003:002
+@ears: EARS-001:003
+@bdd: BDD-003:001
 @adr: ADR-033
-@sys: SYS-008:PERF-001
-@req: REQ-003:interface-spec
+@sys: SYS-008:001
+@req: REQ-003:001
 @spec: SPEC-003
-@tasks: TASKS-001:task-3
+@tasks: TASKS-001:003
 @code: src/services/resource_limit_service.py
 
 @test-type: integration
@@ -1158,8 +1248,8 @@ def test_validate_resource_limit_within_threshold():
     """
     Test: Position within limit is approved
 
-    BDD Scenario: BDD-003:scenario-realtime-quote
-    Requirement: REQ-003:interface-spec, EARS-001:EVENT-003
+    BDD Scenario: BDD-003:001
+    Requirement: REQ-003:001, EARS-001:003
     """
     # Test implementation
     pass
@@ -1530,7 +1620,12 @@ Risk Validator Service - Contract Provider
 
 ---
 
-**Document Version**: 2.0
+**Document Version**: 2.1
 **Replaces**: Previous TRACEABILITY.md and TRACEABILITY_STYLE.md (legacy)
-**Last Updated**: 2025-10-31
+**Last Updated**: 2025-11-30
 **Maintained By**: AI Dev Flow Standards Team
+
+**Version 2.1 Changes**:
+- Added Schema Authority Principle section
+- Added Quick Reference Card (tag counts by layer, separator rules)
+- Added Optional Extension Tags (@threshold, @entity)

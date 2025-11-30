@@ -142,9 +142,11 @@ Enter selection (1-6) or press Enter for default (1):
 
 ```bash
 # Create project root directory if it doesn't exist
-mkdir -p /opt/data/project_name
-cd /opt/data/project_name
+mkdir -p {project_root}
+cd {project_root}
 ```
+
+> Replace `{project_root}` with your actual project path (e.g., `/opt/data/my_project`)
 
 **Commands to Execute**:
 

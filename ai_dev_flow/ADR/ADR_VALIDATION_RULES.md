@@ -85,10 +85,10 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 **Required Tags**:
 ```markdown
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
-@ears: EARS-NNN:STATEMENT-ID
-@bdd: BDD-NNN:SCENARIO-ID
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
+@bdd: BDD-NNN:NNN
 ```
 
 ### CHECK 5: Decision Quality Assessment
@@ -204,7 +204,7 @@ find docs/ADR -name "ADR-*.md" -exec ./scripts/validate_adr_template.sh {} \;
 ### Mistake #4: Missing Traceability Tags
 ```
 ❌ @brd: BRD-001
-✅ @brd: BRD-001:FR-030, BRD-001:NFR-006
+✅ @brd: BRD-001:030, BRD-001:006
 ```
 
 ---

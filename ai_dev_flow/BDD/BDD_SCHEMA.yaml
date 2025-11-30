@@ -5,7 +5,12 @@
 schema_version: "1.0"
 artifact_type: BDD
 layer: 4
-last_updated: "2025-11-29"
+last_updated: "2025-11-30"
+
+references:
+  template: "BDD-TEMPLATE.feature"
+  creation_rules: "BDD_CREATION_RULES.md"
+  validation_rules: "BDD_VALIDATION_RULES.md"
 
 # =============================================================================
 # YAML Frontmatter Requirements (Comment-based in .feature files)
@@ -121,9 +126,13 @@ structure:
       - Document Owner
       - Prepared By
       - Status
-
-    optional_fields:
       - ADR-Ready Score
+
+    adr_ready_score_format:
+      pattern: "✅ \\d{1,3}% \\(Target: ≥90%\\)"
+      description: "Format: ✅ NN% (Target: ≥90%)"
+      example: "✅ 85% (Target: ≥90%)"
+      required: true
 
   # File naming convention
   file_naming:
@@ -203,7 +212,7 @@ gherkin_patterns:
   # Tag patterns
   tag_patterns:
     valid_prefixes:
-      - "@positive"
+      - "@primary"
       - "@negative"
       - "@functional"
       - "@non_functional"
@@ -228,16 +237,20 @@ gherkin_patterns:
       - "@recovery"
 
     traceability_tags:
-      - pattern: "@brd:\\s*BRD-\\d{3}:[A-Z]+-\\d{3}"
+      - pattern: "@brd:\\s*BRD-\\d{3}:\\d{3}"
         description: "BRD traceability tag"
-      - pattern: "@prd:\\s*PRD-\\d{3}:[A-Z]+-\\d{3}"
+      - pattern: "@prd:\\s*PRD-\\d{3}:\\d{3}"
         description: "PRD traceability tag"
-      - pattern: "@ears:\\s*EARS-\\d{3}:[A-Z]+-\\d{3}"
+      - pattern: "@ears:\\s*EARS-\\d{3}:\\d{3}"
         description: "EARS traceability tag"
       - pattern: "@requirement:\\[REQ-\\d{3}\\]"
         description: "REQ traceability tag"
       - pattern: "@adr:\\[ADR-\\d{3}\\]"
         description: "ADR traceability tag"
+      - pattern: "@threshold:\\s*PRD-\\d{3}:[a-z_]+\\.[a-z_]+(?:\\.[a-z_]+)?"
+        description: "Threshold registry reference for quantitative values"
+        example: "@threshold: PRD-035:perf.api.p95_latency"
+        required: false
 
 # =============================================================================
 # Scenario Categories
@@ -245,7 +258,7 @@ gherkin_patterns:
 
 scenario_categories:
   success_path:
-    tags: ["@positive", "@functional", "@acceptance"]
+    tags: ["@primary", "@functional", "@acceptance"]
     description: "Primary success case scenarios"
     min_count: 1
 
@@ -353,6 +366,19 @@ validation_rules:
     - rule: "Traceability tags should reference existing artifacts"
       severity: warning
 
+  # Score-status consistency validation
+  score_status_consistency:
+    rule: "ADR-Ready Score must match document Status"
+    mappings:
+      - score_range: ">=90"
+        required_status: "Approved"
+      - score_range: "70-89"
+        required_status: "In Review"
+      - score_range: "<70"
+        required_status: "Draft"
+    severity: error
+    error_code: "E015"
+
 # =============================================================================
 # Cross-Reference Requirements (Cumulative Tagging - Layer 4)
 # =============================================================================
@@ -362,10 +388,21 @@ traceability:
   cumulative_tags:
     layer: 4
     required:
-      - "@brd: BRD-NNN:REQUIREMENT-ID"
-      - "@prd: PRD-NNN:REQUIREMENT-ID"
-      - "@ears: EARS-NNN:STATEMENT-ID"
+      - "@brd: BRD-NNN:NNN"
+      - "@prd: PRD-NNN:NNN"
+      - "@ears: EARS-NNN:NNN"
     description: "Layer 4 requires @brd, @prd, @ears tags for full traceability"
+
+  # Cumulative tagging enforcement
+  cumulative_tagging:
+    enabled: true
+    required_upstream_tags:
+      - "@brd"
+      - "@prd"
+      - "@ears"
+    enforcement: mandatory
+    error_code: "E014"
+    error_message: "BDD artifacts require @brd, @prd, and @ears traceability tags"
 
   upstream:
     required:
@@ -416,9 +453,11 @@ error_messages:
   E011: "Scenario Outline missing Examples section"
   E012: "Examples table headers do not match placeholders"
   E013: "File name does not match BDD-NNN_name.feature format"
+  E014: "BDD artifacts require @brd, @prd, and @ears traceability tags"
+  E015: "ADR-Ready Score does not match document Status (>=90% requires Approved, 70-89% requires In Review, <70% requires Draft)"
   W001: "Feature missing user story (As a/I want/So that)"
   W002: "Scenario missing Given step (context unclear)"
-  W003: "No success path scenarios (@positive) detected"
+  W003: "No success path scenarios (@primary) detected"
   W004: "No error path scenarios (@negative) detected"
   W005: "Missing upstream traceability tags (@prd, @ears)"
   W006: "Scenario name should start with capital letter"

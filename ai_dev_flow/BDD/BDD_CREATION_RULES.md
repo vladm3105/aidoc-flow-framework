@@ -18,12 +18,12 @@ custom_fields:
 
 # BDD Creation Rules
 
-**Version**: 1.0
+**Version**: 1.2
 **Date**: 2025-11-19
-**Last Updated**: 2025-11-19
+**Last Updated**: 2025-11-30
 **Source**: Derived from BDD-TEMPLATE.feature, EARS requirements, and Gherkin best practices
 **Purpose**: Complete reference for creating BDD feature files according to doc_flow SDD framework
-**Changes**: Added ADR-ready scoring system for BDD documents
+**Changes**: Added Threshold Registry Integration section (v1.2). Previous: Status/Score mapping, common mistakes section (v1.1)
 
 ---
 
@@ -40,6 +40,9 @@ custom_fields:
 9. [Quality Attributes](#9-quality-attributes)
 10. [Quality Gates](#10-quality-gates)
 11. [Additional Requirements](#11-additional-requirements)
+12. [Common Mistakes to Avoid](#12-common-mistakes-to-avoid)
+13. [Upstream Artifact Verification Process](#13-upstream-artifact-verification-process)
+14. [Threshold Registry Integration](#14-threshold-registry-integration)
 
 ---
 
@@ -58,9 +61,9 @@ custom_fields:
 ```gherkin
 # Header with traceability and control metadata
 ## Document Control | metadata table |
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
-@ears: EARS-NNN:STATEMENT-ID
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
 
 Feature: [Business Capability Title]
   As a [stakeholder role]
@@ -69,7 +72,7 @@ Feature: [Business Capability Title]
 
   Background: [Common context for all scenarios]
 
-  @positive @functional @acceptance
+  @primary @functional @acceptance
   Scenario: [Primary success path]
     Given [initial context]
     When [primary action]
@@ -88,14 +91,14 @@ Feature: [Business Capability Title]
 
 **Location**: Header comment section at top of .feature file
 
-**Required Fields** (6 mandatory):
-- Project Name
-- Document Version
-- Date
-- Document Owner
-- Prepared By
-- Status
-- ADR-Ready Score (⭐ NEW)
+**Required Document Control Fields (7 mandatory)**:
+1. Project Name
+2. Document Version
+3. Date
+4. Document Owner
+5. Prepared By
+6. Status
+7. ADR-Ready Score (format: `✅ NN% (Target: ≥90%)`)
 
 **Format**:
 ```gherkin
@@ -106,6 +109,14 @@ Feature: [Business Capability Title]
 | **Project Name** | [Service Platform v2.0] |
 | **ADR-Ready Score** | ✅ 95% (Target: ≥90%) |
 ```
+
+### Status and ADR-Ready Score Mapping
+
+| ADR-Ready Score | Required Status |
+|-----------------|-----------------|
+| >= 90% | Approved |
+| 70-89% | In Review |
+| < 70% | Draft |
 
 ---
 
@@ -128,7 +139,27 @@ Feature: [Business Capability Title]
 
 ## 5. Scenario Types and Structure
 
-**5.1 Success Path Scenarios** (@positive):
+### Step Ordering Rule
+
+**Step Ordering Rule**: Steps MUST follow this sequence:
+1. **Given** (preconditions) - FIRST
+2. **When** (actions) - SECOND
+3. **Then** (outcomes) - THIRD
+4. **And/But** (continuations) - After any step type
+
+**Invalid Sequences**:
+- `When` before `Given` ❌
+- `Then` before `When` ❌
+- `Then` before `Given` ❌
+
+**Valid Sequences**:
+- `Given → When → Then` ✅
+- `Given → And → When → Then → And` ✅
+- `Given → When → And → Then → And → But` ✅
+
+---
+
+**5.1 Success Path Scenarios** (@primary):
 - Primary business functionality
 - Expected successful outcomes
 - Measurable business value
@@ -171,8 +202,17 @@ Feature: [Business Capability Title]
 ### Overview
 ADR-ready scoring measures BDD maturity and readiness for progression to Architecture Decision Records (ADR) phase.
 
+### ADR-Ready Score Format Specification
+
 **Format**: `✅ NN% (Target: ≥90%)`
-**Location**: Document Control table
+
+**Format Rules**:
+- Must include checkmark emoji (✅) at start
+- Percentage as integer (1-100)
+- Target threshold in parentheses
+- Example: `✅ 85% (Target: ≥90%)`
+
+**Location**: Document Control table (mandatory field)
 **Validation**: Enforced before ADR creation
 
 ### Scoring Criteria
@@ -206,9 +246,9 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 
 **Upstream Tag Chain Required**:
 ```gherkin
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
-@ears: EARS-NNN:STATEMENT-ID
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
 ```
 
 **Layer 4 Requirements**: BDD must reference ALL upstream artifacts (BRD + PRD + EARS)
@@ -254,8 +294,25 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 
 **Framework Compliance**: 100% doc_flow SDD framework (Layer 4)
 
+---
 
-## 12. Upstream Artifact Verification Process
+## 12. Common Mistakes to Avoid
+
+| Mistake | Correct |
+|---------|---------|
+| `Status: Approved` (with <90% ADR-Ready score) | `Status: In Review` or `Status: Draft` |
+| Missing @ears traceability tag | `@ears: EARS-NNN:NNN` |
+| Scenario without tags | Add `@primary`, `@negative`, `@boundary` tags |
+| `Given-When-Then` without concrete values | Use specific data in steps |
+| Vague outcomes like "should work" | Observable verification: "response status code is 200" |
+| Missing Background section | Add common preconditions to Background |
+| `response time is less than 200ms` (hardcoded) | `response time is less than @threshold: PRD-NNN:perf.api.p95_latency` |
+| `timeout after 5000ms` (magic number) | `timeout after @threshold: PRD-NNN:timeout.default` |
+| `rate limit of 100 requests` (hardcoded) | `rate limit of @threshold: PRD-NNN:limit.api.requests_per_second` |
+
+---
+
+## 13. Upstream Artifact Verification Process
 
 ### Before Creating This Document
 
@@ -306,3 +363,96 @@ Include ONLY if relationships exist between BDD features sharing domain context 
 @related-bdd: BDD-NNN
 @depends-bdd: BDD-NNN
 ```
+
+---
+
+## 14. Threshold Registry Integration
+
+**Purpose**: Prevent magic numbers by referencing centralized threshold registry in BDD scenarios.
+
+### When @threshold Tag is Required
+
+Use `@threshold` for ALL quantitative values in BDD scenarios that are:
+- Performance targets (response times, SLA validations)
+- Timeout expectations (operation timeouts, circuit breaker tests)
+- Rate limit validations (requests per second, concurrent users)
+- Business-critical values (compliance thresholds, transaction limits)
+
+### @threshold Tag Format in Gherkin
+
+**Scenario Tag Format**:
+```gherkin
+@threshold: PRD-NNN:perf.api.p95_latency
+Scenario: API responds within performance threshold
+```
+
+**Step Definition Format**:
+```gherkin
+Then the response time SHOULD be less than @threshold: PRD-NNN:perf.api.p95_latency
+```
+
+**Examples**:
+- `@threshold: PRD-035:perf.api.p95_latency`
+- `@threshold: PRD-035:sla.uptime.target`
+- `@threshold: PRD-035:compliance.travel_rule.amount`
+
+### BDD-Specific Threshold Categories
+
+| Category | BDD Usage | Example Key |
+|----------|-----------|-------------|
+| `perf.*` | Performance scenario validation | `perf.api.p95_latency` |
+| `sla.*` | SLA scenario validation | `sla.uptime.target` |
+| `limit.*` | Rate limit scenario testing | `limit.api.requests_per_second` |
+| `compliance.*` | Compliance boundary testing | `compliance.travel_rule.amount` |
+| `timeout.*` | Timeout scenario validation | `timeout.request.sync` |
+
+### Magic Number Detection
+
+**Invalid (hardcoded values)**:
+```gherkin
+Scenario: API performance validation
+  Given the system is under normal load
+  When a client sends a request
+  Then the response time SHOULD be less than 200ms
+```
+
+**Valid (registry references)**:
+```gherkin
+@threshold: PRD-NNN:perf.api.p95_latency
+Scenario: API performance validation
+  Given the system is under normal load
+  When a client sends a request
+  Then the response time SHOULD be less than @threshold: PRD-NNN:perf.api.p95_latency
+```
+
+### Examples Table Integration
+
+Use threshold references in Examples tables for data-driven scenarios:
+
+```gherkin
+Scenario Outline: Transaction limit validation
+  Given a user with role "<role>"
+  When they attempt a transaction of <amount>
+  Then the transaction SHOULD be <result>
+
+  Examples:
+    | role   | amount                                         | result   |
+    | user   | @threshold: PRD-NNN:limit.transaction.max     | rejected |
+    | admin  | @threshold: PRD-NNN:limit.transaction.max     | approved |
+```
+
+### Traceability Requirements Update
+
+Add `@threshold` to Required Tags:
+
+| Tag | Format | When Required |
+|-----|--------|---------------|
+| @threshold | PRD-NNN:category.key | When scenarios validate performance, SLA, limits, or compliance values |
+
+### Validation
+
+Run `detect_magic_numbers.py` to verify:
+1. No hardcoded quantitative values in Then steps
+2. No hardcoded values in performance scenarios
+3. All `@threshold` references resolve to valid registry keys
+4. All Examples tables use threshold references for numeric limits

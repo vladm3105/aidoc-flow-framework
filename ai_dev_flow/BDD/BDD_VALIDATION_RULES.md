@@ -89,9 +89,9 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 
 **Required Tags**:
 ```gherkin
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
-@ears: EARS-NNN:STATEMENT-ID
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
 ```
 
 ### CHECK 5: Scenario Coverage Completeness
@@ -189,7 +189,7 @@ find docs/BDD -name "BDD-*.feature" -exec ./scripts/validate_bdd_template.sh {} 
 ### Mistake #1: Incomplete Traceability Tags
 ```
 ❌ @brd: BRD-001
-✅ @brd: BRD-001:FR-030
+✅ @brd: BRD-001:030
 ```
 
 ### Mistake #2: Subjective Language

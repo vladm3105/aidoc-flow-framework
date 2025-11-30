@@ -13,12 +13,14 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: task-breakdown-document
+  schema_reference: "TASKS_SCHEMA.yaml"
+  schema_version: "1.0"
 ---
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for TASKS structure.
-> - All TASKS documents must conform to this template
-> - `TASKS_CREATION_RULES.md` - Helper guidance for template usage
-> - `TASKS_VALIDATION_RULES.md` - Post-creation validation checks
+> - **Schema**: `TASKS_SCHEMA.yaml v1.0` - Validation rules
+> - **Creation Rules**: `TASKS_CREATION_RULES.md` - Usage guidance
+> - **Validation Rules**: `TASKS_VALIDATION_RULES.md` - Post-creation checks
 
 # TASKS-NNN: [Descriptive Component/Feature Name]
 
@@ -1230,14 +1232,14 @@ Document evidence that this task has been implemented correctly and meets all ac
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
 ```markdown
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
-@ears: EARS-NNN:STATEMENT-ID
-@bdd: BDD-NNN:SCENARIO-ID
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
+@bdd: BDD-NNN:NNN
 @adr: ADR-NNN
-@sys: SYS-NNN:regulatoryTION-ID
-@req: REQ-NNN:REQUIREMENT-ID
-@impl: IMPL-NNN:PHASE-ID
+@sys: SYS-NNN:NNN
+@req: REQ-NNN:NNN
+@impl: IMPL-NNN:NNN
 @ctr: CTR-NNN
 @spec: SPEC-NNN
 @icon: TASKS-XXX:ContractName (if providing/consuming implementation contracts)
@@ -1262,14 +1264,14 @@ Document evidence that this task has been implemented correctly and meets all ac
 
 **Example**:
 ```markdown
-@brd: BRD-001:FR-030
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003
-@bdd: BDD-003:scenario-realtime-quote
+@brd: BRD-001:030
+@prd: PRD-003:002
+@ears: EARS-001:003
+@bdd: BDD-003:001
 @adr: ADR-033
-@sys: SYS-008:PERF-001
-@req: REQ-003:interface-spec
-@impl: IMPL-001:phase1
+@sys: SYS-008:001
+@req: REQ-003:001
+@impl: IMPL-001:001
 @ctr: CTR-001
 @spec: SPEC-003
 @icon: TASKS-001:ServiceConnector

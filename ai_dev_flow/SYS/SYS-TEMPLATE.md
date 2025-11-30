@@ -13,12 +13,14 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: system-requirements-document
+  schema_reference: "SYS_SCHEMA.yaml"
+  schema_version: "1.0"
 ---
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for SYS structure.
-> - All SYS documents must conform to this template
-> - `SYS_CREATION_RULES.md` - Helper guidance for template usage
-> - `SYS_VALIDATION_RULES.md` - Post-creation validation checks
+> - **Schema**: `SYS_SCHEMA.yaml v1.0` - Validation rules
+> - **Creation Rules**: `SYS_CREATION_RULES.md` - Usage guidance
+> - **Validation Rules**: `SYS_VALIDATION_RULES.md` - Post-creation checks
 
 # SYS-NNN: [System Name/Component Name]
 
@@ -194,38 +196,42 @@ custom_fields:
 ### 5.1 Performance Requirements
 [Quantitative performance expectations for the system]
 
+> **Note**: All performance thresholds MUST use @threshold registry references. See PRD-000_threshold_registry_template.md for registry format.
+
 #### Response Time Requirements
-- **Interactive Operations**: p95 response time < 200ms for user-facing operations
-- **Background Operations**: p95 processing time < 5 seconds for batch/asynchronous operations
-- **SLA Compliance**: 99.9% of operations complete within agreed timeframes
+- **Interactive Operations**: p95 response time < @threshold: PRD-NNN:perf.api.p95_latency for user-facing operations
+- **Background Operations**: p95 processing time < @threshold: PRD-NNN:perf.batch.p95_latency for batch/asynchronous operations
+- **SLA Compliance**: @threshold: PRD-NNN:sla.success_rate.target% of operations complete within agreed timeframes
 
 #### Throughput Requirements
-- **Peak Load**: Sustain [X] operations per second during peak usage periods
-- **Normal Load**: Handle [Y] concurrent users/[Y] operations per minute continuously
+- **Peak Load**: Sustain @threshold: PRD-NNN:perf.throughput.peak_rps operations per second during peak usage periods
+- **Normal Load**: Handle @threshold: PRD-NNN:perf.throughput.sustained_rps concurrent users/operations per minute continuously
 - **Scaling Requirements**: Support linear throughput increases with horizontal scaling
 
 #### Resource Utilization
-- **CPU Usage**: Maintain < 70% CPU utilization under normal load, < 90% under peak load
-- **Memory Usage**: Stay within [X] GB memory allocation limits under all conditions
-- **Storage Performance**: Process [X] IOPS for read operations, [Y] IOPS for write operations
+- **CPU Usage**: Maintain < @threshold: PRD-NNN:resource.cpu.max_utilization% CPU utilization under normal load
+- **Memory Usage**: Stay within @threshold: PRD-NNN:resource.memory.max_heap GB memory allocation limits under all conditions
+- **Storage Performance**: Process @threshold: PRD-NNN:perf.storage.read_iops IOPS for read operations
 
 ### 5.2 Reliability Requirements
 [Up time, fault tolerance, and availability expectations]
 
+> **Note**: All SLA and reliability thresholds MUST use @threshold registry references.
+
 #### Availability Requirements
-- **Service Uptime**: Maintain 99.9% uptime excluding planned maintenance windows
-- **Maintenance Windows**: Scheduled maintenance limited to 4 hours per month (99.93% uptime)
-- **Disaster Recovery**: Restore service within 4 hours following regional failures
+- **Service Uptime**: Maintain @threshold: PRD-NNN:sla.uptime.target% uptime excluding planned maintenance windows
+- **Maintenance Windows**: Scheduled maintenance limited to @threshold: PRD-NNN:sla.maintenance.max_hours hours per month
+- **Disaster Recovery**: Restore service within @threshold: PRD-NNN:sla.rto minutes following regional failures
 
 #### Fault Tolerance Requirements
 - **Single Point of Failure**: No single component failure can bring down the entire system
 - **Graceful Degradation**: Continue with reduced functionality when non-critical components fail
-- **Self-Healing**: Automatic recovery from transient failures within 5 minutes
+- **Self-Healing**: Automatic recovery from transient failures within @threshold: PRD-NNN:timeout.recovery.self_healing ms
 
 #### Data Durability Requirements
 - **Data Loss Prevention**: Zero data loss for committed transactions
-- **Backup Frequency**: Automated backups every 4 hours with 30 days retention
-- **Recovery Time**: Restore data from backups within 1 hour with < 1% data loss
+- **Backup Frequency**: Automated backups every @threshold: PRD-NNN:batch.backup.interval_hours hours with @threshold: PRD-NNN:batch.backup.retention_days days retention
+- **Recovery Time**: Restore data from backups within @threshold: PRD-NNN:sla.rpo minutes
 
 ### 5.3 Scalability Requirements
 [How the system must grow to meet increasing demands]
@@ -277,8 +283,8 @@ custom_fields:
 - **Correlation Tracking**: Request IDs and trace IDs propagated through all operations
 
 #### Alerting Requirements
-- **Error Rate Alerts**: Alert when error rate exceeds 1% for 5 conregulatoryutive minutes
-- **Performance Alerts**: Alert when p95 latency exceeds 100% of target for 10 minutes
+- **Error Rate Alerts**: Alert when error rate exceeds @threshold: PRD-NNN:sla.error_rate.max% for @threshold: PRD-NNN:limit.alert.duration_minutes consecutive minutes
+- **Performance Alerts**: Alert when p95 latency exceeds @threshold: PRD-NNN:perf.api.p95_latency for @threshold: PRD-NNN:limit.alert.latency_minutes minutes
 - **Availability Alerts**: Alert immediately when service becomes unavailable
 
 #### Tracing Requirements
@@ -741,11 +747,12 @@ API contracts and interface agreements for external integration.
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
 ```markdown
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
-@ears: EARS-NNN:STATEMENT-ID
-@bdd: BDD-NNN:SCENARIO-ID
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
+@bdd: BDD-NNN:NNN
 @adr: ADR-NNN
+@threshold: PRD-NNN  # Threshold registry reference (when quantitative values used)
 ```
 
 **Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
@@ -756,17 +763,25 @@ API contracts and interface agreements for external integration.
 - `@ears`: EARS Requirements
 - `@bdd`: BDD Scenarios
 - `@adr`: Architecture Decision Records
+- `@threshold`: Threshold Registry (when NFRs, SLAs, or performance targets are specified)
 
 **Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
 
 **Example**:
 ```markdown
-@brd: BRD-001:FR-030
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003
-@bdd: BDD-003:scenario-realtime-quote
+@brd: BRD-001:030
+@prd: PRD-003:002
+@ears: EARS-001:003
+@bdd: BDD-003:001
 @adr: ADR-033
+@threshold: PRD-003  # References threshold registry for performance/SLA values
 ```
+
+**Threshold Tag Usage**:
+- Use `@threshold: PRD-NNN:category.key` format for inline quantitative values
+- Reference the PRD threshold registry document for centralized value management
+- Prevents magic numbers in NFR and SLA specifications
+- See [PRD-000_threshold_registry_template.md](../PRD/PRD-000_threshold_registry_template.md) for registry format
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through ADR) are properly linked.
 

@@ -5,7 +5,12 @@
 schema_version: "1.0"
 artifact_type: SPEC
 layer: 10
-last_updated: "2025-11-29"
+last_updated: "2025-11-30"
+
+references:
+  template: "SPEC-TEMPLATE.yaml"
+  creation_rules: "SPEC_CREATION_RULES.md"
+  validation_rules: "SPEC_VALIDATION_RULES.md"
 
 # =============================================================================
 # File Format Requirements
@@ -215,7 +220,7 @@ traceability_schema:
           pattern: "^PRD-\\d{3}:[A-Z]+-\\d{3}$"
         ears:
           type: string
-          pattern: "^EARS-\\d{3}:[A-Z]+-\\d{3}$"
+          pattern: "^EARS-\\d{3}:\\d{3}$"
         bdd:
           type: string
           pattern: "^BDD-\\d{3}:[a-z\\-]+"
@@ -688,44 +693,44 @@ traceability:
   cumulative_tags:
     layer: 10
     required:
-      - "brd: BRD-NNN:REQUIREMENT-ID"
-      - "prd: PRD-NNN:REQUIREMENT-ID"
-      - "ears: EARS-NNN:STATEMENT-ID"
-      - "bdd: BDD-NNN:SCENARIO-ID"
+      - "brd: BRD-NNN:NNN"
+      - "prd: PRD-NNN:NNN"
+      - "ears: EARS-NNN:NNN"
+      - "bdd: BDD-NNN:NNN"
       - "adr: ADR-NNN"
-      - "sys: SYS-NNN:SECTION-ID"
-      - "req: REQ-NNN:REQUIREMENT-ID"
+      - "sys: SYS-NNN:NNN"
+      - "req: REQ-NNN:NNN"
     optional:
-      - "impl: IMPL-NNN:PHASE-ID"
+      - "impl: IMPL-NNN:NNN"
       - "ctr: CTR-NNN"
     description: "Layer 10 requires 7 upstream artifact tags (9 including optional IMPL and CTR)"
 
   upstream:
     required:
       - type: BRD
-        format: "brd: BRD-NNN:REQUIREMENT-ID"
+        format: "brd: BRD-NNN:NNN"
         location: "traceability.cumulative_tags"
       - type: PRD
-        format: "prd: PRD-NNN:REQUIREMENT-ID"
+        format: "prd: PRD-NNN:NNN"
         location: "traceability.cumulative_tags"
       - type: EARS
-        format: "ears: EARS-NNN:STATEMENT-ID"
+        format: "ears: EARS-NNN:NNN"
         location: "traceability.cumulative_tags"
       - type: BDD
-        format: "bdd: BDD-NNN:SCENARIO-ID"
+        format: "bdd: BDD-NNN:NNN"
         location: "traceability.cumulative_tags"
       - type: ADR
         format: "adr: ADR-NNN"
         location: "traceability.cumulative_tags"
       - type: SYS
-        format: "sys: SYS-NNN:SECTION-ID"
+        format: "sys: SYS-NNN:NNN"
         location: "traceability.cumulative_tags"
       - type: REQ
-        format: "req: REQ-NNN:REQUIREMENT-ID"
+        format: "req: REQ-NNN:NNN"
         location: "traceability.cumulative_tags"
     optional:
       - type: IMPL
-        format: "impl: IMPL-NNN:PHASE-ID"
+        format: "impl: IMPL-NNN:NNN"
         location: "traceability.cumulative_tags"
       - type: CTR
         format: "ctr: CTR-NNN"

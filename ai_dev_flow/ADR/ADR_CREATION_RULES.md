@@ -18,12 +18,12 @@ custom_fields:
 
 # ADR Creation Rules
 
-**Version**: 1.0
+**Version**: 1.1
 **Date**: 2025-11-19
-**Last Updated**: 2025-11-19
+**Last Updated**: 2025-11-30
 **Source**: Derived from ADR-TEMPLATE.md and SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
 **Purpose**: Complete reference for creating ADR documents according to doc_flow SDD framework
-**Changes**: Added SYS-ready scoring system for ADR documents
+**Changes**: Added Status/Score mapping table, new common mistakes section. Previous: SYS-ready scoring system
 
 ---
 
@@ -40,6 +40,8 @@ custom_fields:
 9. [Quality Attributes](#9-quality-attributes)
 10. [Quality Gates](#10-quality-gates)
 11. [Additional Requirements](#11-additional-requirements)
+12. [Common Mistakes to Avoid](#12-common-mistakes-to-avoid)
+13. [Upstream Artifact Verification Process](#13-upstream-artifact-verification-process)
 
 ---
 
@@ -86,6 +88,14 @@ ADR documents follow a comprehensive 4-part structure:
 |------|---------|
 | **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
 ```
+
+### Status and SYS-Ready Score Mapping
+
+| SYS-Ready Score | Required Status |
+|-----------------|-----------------|
+| >= 90% | Accepted |
+| 70-89% | Proposed |
+| < 70% | Draft |
 
 ---
 
@@ -172,10 +182,10 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 **Complete Upstream Tag Chain**:
 ```markdown
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
-@ears: EARS-NNN:STATEMENT-ID
-@bdd: BDD-NNN:SCENARIO-ID
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
+@bdd: BDD-NNN:NNN
 ```
 
 **Layer 5 Requirements**: ADR must reference ALL upstream artifacts
@@ -224,8 +234,22 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 **Framework Compliance**: 100% doc_flow SDD framework (Layer 5)
 **Integration**: Enforces ADR → SYS progression quality gates
 
+---
 
-## 12. Upstream Artifact Verification Process
+## 12. Common Mistakes to Avoid
+
+| Mistake | Correct |
+|---------|---------|
+| `Status: Accepted` (with <90% SYS-Ready score) | Match status to score threshold |
+| Missing Consequences section | Document positive AND negative consequences |
+| Alternatives without evaluation | Include trade-off analysis for each option |
+| `@sys: SYS-NNN` (referencing downstream) | ADR should not reference downstream SYS |
+| Decision without context | Provide problem statement and constraints |
+| Missing architecture diagrams | Include Mermaid diagrams for architecture flow |
+
+---
+
+## 13. Upstream Artifact Verification Process
 
 ### Before Creating This Document
 

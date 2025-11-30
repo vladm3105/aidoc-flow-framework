@@ -60,7 +60,7 @@ Analyze Architecture Decision Records (ADRs) and generate phased implementation 
 
 | Input | Description | Example |
 |-------|-------------|---------|
-| **adr_directory** | Absolute path to ADR markdown files | `/opt/data/project/docs/ADR/` |
+| **adr_directory** | Absolute path to ADR markdown files | `{project_root}/docs/ADR/` |
 | **project_context** | Project type, team size, timeline constraints | "Trading platform, 5 FTE, 6-month timeline" |
 
 ### Optional Inputs

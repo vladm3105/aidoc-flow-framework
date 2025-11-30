@@ -93,7 +93,7 @@ The SPEC validation script ensures YAML specification files meet quality standar
 cumulative_tags:
   brd: "BRD-NNN:REQUIREMENT-ID"
   prd: "PRD-NNN:REQUIREMENT-ID"
-  ears: "EARS-NNN:STATEMENT-ID"
+  ears: "EARS-NNN:NNN"
   bdd: "BDD-NNN:SCENARIO-ID"
   adr: "ADR-NNN"
   sys: "SYS-NNN:regulatoryTION-ID"
@@ -213,13 +213,13 @@ find docs/SPEC -name "SPEC-*.yaml" -exec ./scripts/validate_spec_template.sh {} 
 ❌ cumulative_tags:
     brd: "BRD-001"
 ✅ cumulative_tags:
-    brd: "BRD-001:FR-030"
-    prd: "PRD-003:FEATURE-002"
-    ears: "EARS-001:EVENT-003"
-    bdd: "BDD-003:scenario-realtime-quote"
+    brd: "BRD-001:030"
+    prd: "PRD-003:002"
+    ears: "EARS-001:003"
+    bdd: "BDD-003:001"
     adr: "ADR-033"
-    sys: "SYS-001:PERFORMANCE-001"
-    req: "REQ-002:IMPLEMENTATION-005"
+    sys: "SYS-001:001"
+    req: "REQ-002:005"
 ```
 
 ### Mistake #4: CTR Contract Mismatch

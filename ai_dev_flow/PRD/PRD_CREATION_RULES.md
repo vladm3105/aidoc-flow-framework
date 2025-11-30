@@ -22,12 +22,12 @@ custom_fields:
 
 # PRD Creation Rules
 
-**Version**: 2.0
+**Version**: 2.1
 **Date**: 2025-11-26
-**Last Updated**: 2025-11-26
+**Last Updated**: 2025-11-30
 **Source**: Extracted from PRD-TEMPLATE.md, PRD-VALIDATION_RULES.md, README.md, and PRD-000_index.md
 **Purpose**: Complete reference for creating PRD files according to doc-flow SDD framework
-**Changes**: Implemented 19-section structure (0-18), added section 6 (User Stories), section 8 (Customer-Facing Content MANDATORY), dual scoring requirements
+**Changes**: Added Status/Score mapping table, extended common mistakes section. Previous: 19-section structure (0-18), section 6 (User Stories), section 8 (Customer-Facing Content MANDATORY), dual scoring requirements
 
 ---
 
@@ -107,6 +107,16 @@ custom_fields:
 | **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
 | **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
 ```
+
+### Status and Ready Score Mapping
+
+| Ready Score | Required Status |
+|-------------|-----------------|
+| >= 90% | Approved |
+| 70-89% | In Review |
+| < 70% | Draft |
+
+**Note**: For PRD documents with dual scores (SYS-Ready + EARS-Ready), use the lower score to determine status.
 
 ---
 
@@ -421,7 +431,7 @@ EARS-ready scoring measures PRD maturity and readiness for progression to Engine
 
 **Traceability Tags (Cumulative Tagging Hierarchy - Layer 2)**:
 ```markdown
-@brd: BRD-NNN:REQUIREMENT-ID
+@brd: BRD-NNN:NNN
 ```
 
 **Same-Type References (Conditional)**:
@@ -812,6 +822,16 @@ Example: @prd: PRD-035:kyc.l1.daily
 | `Feature 3.1` | Text format | `FR-025-003` |
 | `F-001-001` | Wrong prefix | `FR-001-001` |
 | `FR-1-1` | Not zero-padded | `FR-001-001` |
+
+### Common Mistakes to Avoid
+
+| Mistake | Correct |
+|---------|---------|
+| `Status: Approved` (with 70% score) | `Status: In Review` (match status to score) |
+| `@adr: ADR-012` (referencing ADR before it exists) | Omit ADR references in PRD (ADRs created after PRD) |
+| Missing section numbering | Use explicit `## N. Section Title` format |
+| Placeholder scores `✅ TBD%` | Calculate actual score before committing |
+| Section 9 with only "TBD" | Substantive customer-facing content required |
 
 ### Cross-PRD Reference Format
 

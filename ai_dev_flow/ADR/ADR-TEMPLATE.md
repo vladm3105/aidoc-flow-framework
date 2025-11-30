@@ -13,12 +13,14 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: architecture-decision-record
+  schema_reference: "ADR_SCHEMA.yaml"
+  schema_version: "1.0"
 ---
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for ADR structure.
-> - All ADRs must conform to this template
-> - `ADR_CREATION_RULES.md` - Helper guidance for template usage
-> - `ADR_VALIDATION_RULES.md` - Post-creation validation checks
+> - **Schema**: `ADR_SCHEMA.yaml v1.0` - Validation rules
+> - **Creation Rules**: `ADR_CREATION_RULES.md` - Usage guidance
+> - **Validation Rules**: `ADR_VALIDATION_RULES.md` - Post-creation checks
 
 # ADR-NNN: [Architecture Decision Title]
 
@@ -495,13 +497,13 @@ flowchart TD
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
 ```markdown
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
-@ears: EARS-NNN:STATEMENT-ID
-@bdd: BDD-NNN:SCENARIO-ID
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
+@bdd: BDD-NNN:NNN
 ```
 
-**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+**Format**: `@artifact-type: DOCUMENT-ID:NNN`
 
 **Layer 5 Requirements**: ADR must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -513,10 +515,10 @@ flowchart TD
 
 **Example**:
 ```markdown
-@brd: BRD-001:FR-030
-@prd: PRD-003:FEATURE-002
-@ears: EARS-001:EVENT-003
-@bdd: BDD-003:scenario-realtime-quote
+@brd: BRD-001:030
+@prd: PRD-003:002
+@ears: EARS-001:003
+@bdd: BDD-003:001
 ```
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through BDD) are properly linked.

@@ -453,29 +453,29 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 
 **Required Tags** (all 6 mandatory):
 ```markdown
-@brd: BRD-NNN:REQ-ID
-@prd: PRD-NNN:REQ-ID
-@ears: EARS-NNN:REQ-ID
-@bdd: BDD-NNN:scenario-name
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
+@bdd: BDD-NNN:NNN
 @adr: ADR-NNN
-@sys: SYS-NNN:REQ-ID
+@sys: SYS-NNN:NNN
 ```
 
 **Valid Examples**:
 ```markdown
-@brd: BRD-009:FR-015, BRD-009:NFR-006 ✅
-@prd: PRD-016:FEATURE-003 ✅
-@ears: EARS-012:EVENT-002 ✅
-@bdd: BDD-015:scenario-place-order ✅
+@brd: BRD-009:015, BRD-009:006 ✅
+@prd: PRD-016:003 ✅
+@ears: EARS-012:002 ✅
+@bdd: BDD-015:007 ✅
 @adr: ADR-033 ✅
-@sys: SYS-012:PERF-001 ✅
+@sys: SYS-012:001 ✅
 ```
 
 **Invalid Examples**:
 ```markdown
-@brd BRD-009:FR-015 ❌ (missing colon after tag type)
-@brd: BRD-009 ❌ (missing REQ-ID)
-brd: BRD-009:FR-015 ❌ (missing @ prefix)
+@brd BRD-009:015 ❌ (missing colon after tag type)
+@brd: BRD-009 ❌ (missing sub-ID)
+brd: BRD-009:015 ❌ (missing @ prefix)
 ```
 
 **Error Messages**:
@@ -485,9 +485,9 @@ brd: BRD-009:FR-015 ❌ (missing @ prefix)
          Required: @brd, @prd, @ears, @bdd, @adr, @sys
          Reference: doc-flow TRACEABILITY.md section 2.5
 
-❌ ERROR: Invalid tag format: @brd BRD-009:FR-015
-         Expected: @type: DOC-ID:REQ-ID
-         Example: @brd: BRD-009:FR-015
+❌ ERROR: Invalid tag format: @brd BRD-009:015
+         Expected: @type: DOC-ID:NNN (numeric sub-ID)
+         Example: @brd: BRD-009:015
 ```
 
 **Fix**:
@@ -604,8 +604,8 @@ brd: BRD-009:FR-015 ❌ (missing @ prefix)
 
 | Component ID | Upstream Sources | Downstream Artifacts | Status |
 |--------------|------------------|---------------------|--------|
-| REQ-045:interface | SYS-012:PERF-001, ADR-033 | SPEC-018, CTR-005 | Complete |
-| REQ-045:validation | SYS-012:REL-002, ADR-033 | SPEC-018 | Complete |
+| REQ-045:001 | SYS-012:001, ADR-033 | SPEC-018, CTR-005 | Complete |
+| REQ-045:002 | SYS-012:002, ADR-033 | SPEC-018 | Complete |
 ```
 
 **Option 2 - Separate File** (10+ components):
@@ -758,12 +758,12 @@ Warnings: 1
 ```markdown
 ## 11. Traceability
 
-@brd: BRD-009:FR-015
-@prd: PRD-016:FEATURE-003
-@ears: EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order
+@brd: BRD-009:015
+@prd: PRD-016:003
+@ears: EARS-012:002
+@bdd: BDD-015:007
 @adr: ADR-033
-@sys: SYS-012:PERF-001
+@sys: SYS-012:001
 ```
 
 ---

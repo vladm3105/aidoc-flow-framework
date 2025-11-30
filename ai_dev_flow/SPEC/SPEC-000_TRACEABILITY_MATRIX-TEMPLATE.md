@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type SPEC --output docs/SPEC/
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@spec: SPEC-001:REQ-ID` (for multi-requirement docs) or `@spec: SPEC-001` (for single-doc refs)
+**Tag Format:** `@spec: SPEC-001:NNN` (for multi-requirement docs) or `@spec: SPEC-001` (for single-doc refs)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -93,21 +93,21 @@ SPEC documents use YAML format with a dedicated `cumulative_tags` section:
 
 ```yaml
 cumulative_tags:
-  brd: "BRD-009:FR-015"
-  prd: "PRD-016:FEATURE-003"
-  ears: "EARS-012:EVENT-002"
-  bdd: "BDD-015:scenario-place-order"
+  brd: "BRD-009:015"
+  prd: "PRD-016:003"
+  ears: "EARS-012:002"
+  bdd: "BDD-015:001"
   adr: "ADR-033"
-  sys: "SYS-012:PERF-001"
-  req: "REQ-045:interface-spec"
-  impl: "IMPL-003:phase2"  # Optional - include if exists
+  sys: "SYS-012:001"
+  req: "REQ-045:001"
+  impl: "IMPL-003:002"  # Optional - include if exists
   ctr: "CTR-005"  # Optional - include if exists
 ```
 
 **Format Rules**:
 - YAML mapping format (key: value pairs)
 - Keys: lowercase artifact types
-- Values: quoted strings in `DOC-ID:REQ-ID` format
+- Values: quoted strings in `DOC-ID:NNN` format
 - Optional tags: IMPL and CTR - include only if they exist in traceability chain
 - Multiple references: comma-separated within quoted string
 
@@ -125,14 +125,14 @@ status: active
 # Required: 7 upstream tags (BRD through REQ)
 # Optional: IMPL, CTR (include if they exist in chain)
 cumulative_tags:
-  brd: "BRD-009:FR-015, BRD-009:NFR-006"
-  prd: "PRD-016:FEATURE-003"
-  ears: "EARS-012:EVENT-002, EARS-012:STATE-001"
-  bdd: "BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid"
+  brd: "BRD-009:015, BRD-009:006"
+  prd: "PRD-016:003"
+  ears: "EARS-012:002, EARS-012:001"
+  bdd: "BDD-015:001, BDD-015:002"
   adr: "ADR-033"
-  sys: "SYS-012:PERF-001, SYS-012:RELIABILITY-002"
-  req: "REQ-045:interface-spec, REQ-045:validation-logic"
-  impl: "IMPL-003:phase2"  # Optional
+  sys: "SYS-012:001, SYS-012:002"
+  req: "REQ-045:001, REQ-045:002"
+  impl: "IMPL-003:002"  # Optional
   ctr: "CTR-005"  # Optional
 
 component:
@@ -151,13 +151,13 @@ When IMPL and CTR don't exist in the traceability chain:
 # SPEC-040: Simple Data Processor Specification
 
 cumulative_tags:
-  brd: "BRD-001:FR-020"
-  prd: "PRD-003:FEATURE-005"
-  ears: "EARS-005:EVENT-001"
-  bdd: "BDD-008:scenario-process-data"
+  brd: "BRD-001:020"
+  prd: "PRD-003:005"
+  ears: "EARS-005:001"
+  bdd: "BDD-008:001"
   adr: "ADR-015"
-  sys: "SYS-020:PERF-003"
-  req: "REQ-030:processing-logic"
+  sys: "SYS-020:003"
+  req: "REQ-030:001"
   # No IMPL or CTR - not needed for this component
 
 component:

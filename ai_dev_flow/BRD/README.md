@@ -206,6 +206,10 @@ Standard metadata including version, date, owner, status, revision history
 
 This directory provides the **BRD-TEMPLATE.md** for business requirements documentation:
 
+> **Note**: BRD does not have a schema file (`BRD_SCHEMA.yaml`) by design. Business requirements
+> are inherently flexible and domain-specific; rigid schema validation would be counterproductive
+> for capturing diverse business needs across different project types.
+
 **BRD-TEMPLATE.md** - Comprehensive business requirements template
 - Full-featured template with all sections
 - Suitable for all project types

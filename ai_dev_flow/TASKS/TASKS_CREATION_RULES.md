@@ -297,14 +297,14 @@ grep -q "## 8. Implementation Contracts" TASKS-NNN.md
 ```markdown
 ## Traceability Tags
 
-@brd: BRD-001:REQ-NNN
-@prd: PRD-001:REQ-NNN
-@ears: EARS-001:REQ-NNN
-@bdd: BDD-001:SCENARIO-NNN
+@brd: BRD-001:NNN
+@prd: PRD-001:NNN
+@ears: EARS-001:NNN
+@bdd: BDD-001:NNN
 @adr: ADR-NNN
-@sys: SYS-001:REQ-NNN
-@req: REQ-NNN
-@spec: SPEC-NNN:section
+@sys: SYS-001:NNN
+@req: REQ-NNN:NNN
+@spec: SPEC-NNN
 ```
 
 ### Optional Tags

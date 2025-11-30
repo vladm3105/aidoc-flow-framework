@@ -388,7 +388,7 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 
 **Upstream Tags** (MANDATORY):
 ```markdown
-@brd: BRD-XXX:REQUIREMENT-ID
+@brd: BRD-NNN:NNN
 ```
 
 **Downstream Tags** (Optional but recommended):

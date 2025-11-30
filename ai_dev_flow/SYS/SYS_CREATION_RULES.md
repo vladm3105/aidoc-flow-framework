@@ -18,12 +18,12 @@ custom_fields:
 
 # SYS Creation Rules
 
-**Version**: 1.0
+**Version**: 1.2
 **Date**: 2025-11-19
-**Last Updated**: 2025-11-19
+**Last Updated**: 2025-11-30
 **Source**: Derived from SYS-TEMPLATE.md and ADR decisions
 **Purpose**: Complete reference for creating SYS documents according to doc_flow SDD framework
-**Changes**: Added REQ-ready scoring system for SYS documents
+**Changes**: Added Threshold Registry Integration section (v1.2). Previous: Status/Score mapping, common mistakes section (v1.1)
 
 ---
 
@@ -40,6 +40,9 @@ custom_fields:
 9. [Quality Attributes](#9-quality-attributes)
 10. [Quality Gates](#10-quality-gates)
 11. [Additional Requirements](#11-additional-requirements)
+12. [Common Mistakes to Avoid](#12-common-mistakes-to-avoid)
+13. [Upstream Artifact Verification Process](#13-upstream-artifact-verification-process)
+14. [Threshold Registry Integration](#14-threshold-registry-integration)
 
 ---
 
@@ -86,6 +89,14 @@ SYS documents follow a comprehensive structure translating ADR decisions into sy
 | **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
 | **REQ-Ready Score** | ✅ 95% (Target: ≥90%) |
 ```
+
+### Status and REQ-Ready Score Mapping
+
+| REQ-Ready Score | Required Status |
+|-----------------|-----------------|
+| >= 90% | Approved |
+| 70-89% | In Review |
+| < 70% | Draft |
 
 ---
 
@@ -171,10 +182,10 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 
 **Complete Upstream Tag Chain**:
 ```markdown
-@brd: BRD-NNN:REQUIREMENT-ID
-@prd: PRD-NNN:REQUIREMENT-ID
-@ears: EARS-NNN:STATEMENT-ID
-@bdd: BDD-NNN:SCENARIO-ID
+@brd: BRD-NNN:NNN
+@prd: PRD-NNN:NNN
+@ears: EARS-NNN:NNN
+@bdd: BDD-NNN:NNN
 @adr: ADR-NNN
 ```
 
@@ -245,8 +256,25 @@ SYS documents establish system requirements that must be decomposed into atomic 
 **Framework Compliance**: 100% doc_flow SDD framework (Layer 6)
 **Integration**: Enforces SYS → Requirements Layer (REQ) progression quality gates
 
+---
 
-## 12. Upstream Artifact Verification Process
+## 12. Common Mistakes to Avoid
+
+| Mistake | Correct |
+|---------|---------|
+| `Status: Approved` (with <90% REQ-Ready score) | Match status to score threshold |
+| NFRs without percentiles | Use p50/p95/p99 for performance targets |
+| Missing criticality level | Specify Mission-Critical/Business-Critical/Operational |
+| Interface specs without CTR reference | Create CTR for external APIs |
+| Requirements without acceptance criteria | Include measurable acceptance criteria for all requirements |
+| Missing ADR alignment verification | Verify all requirements fit within ADR architectural boundaries |
+| `response time < 200ms` (hardcoded) | `response time < @threshold: PRD-NNN:perf.api.p95_latency` |
+| `timeout: 5000` (magic number) | `timeout: @threshold: PRD-NNN:timeout.default` |
+| `uptime: 99.9%` (hardcoded SLA) | `uptime: @threshold: PRD-NNN:sla.uptime.target` |
+
+---
+
+## 13. Upstream Artifact Verification Process
 
 ### Before Creating This Document
 
@@ -302,3 +330,68 @@ Include ONLY if relationships exist between SYS documents sharing system context
 @related-sys: SYS-NNN
 @depends-sys: SYS-NNN
 ```
+
+---
+
+## 14. Threshold Registry Integration
+
+**Purpose**: Prevent magic numbers by referencing centralized threshold registry.
+
+### When @threshold Tag is Required
+
+Use `@threshold` for ALL quantitative values that are:
+- Business-critical (compliance limits, SLAs)
+- Configurable (timeout values, rate limits)
+- Shared across documents (performance targets)
+- NFR-related (p50/p95/p99 latencies, uptime percentages)
+
+### @threshold Tag Format
+
+```markdown
+@threshold: PRD-NNN:category.subcategory.key
+```
+
+**Examples**:
+- `@threshold: PRD-035:perf.api.p95_latency`
+- `@threshold: PRD-035:timeout.circuit_breaker.threshold`
+- `@threshold: PRD-035:sla.uptime.target`
+- `@threshold: PRD-035:resource.memory.max_heap`
+
+### SYS-Specific Threshold Categories
+
+| Category | SYS Usage | Example Key |
+|----------|-----------|-------------|
+| `perf.*` | NFR performance requirements | `perf.api.p95_latency` |
+| `sla.*` | Uptime and availability targets | `sla.uptime.target` |
+| `timeout.*` | Circuit breaker, connection timeouts | `timeout.circuit_breaker.threshold` |
+| `resource.*` | Memory, CPU, storage limits | `resource.memory.max_heap` |
+| `limit.*` | Rate limits, connection limits | `limit.connection.max_total` |
+
+### Magic Number Detection
+
+**Invalid (hardcoded values)**:
+- `p95 latency: 200ms`
+- `uptime: 99.9%`
+- `memory limit: 4GB`
+- `circuit breaker threshold: 5 failures`
+
+**Valid (registry references)**:
+- `p95 latency: @threshold: PRD-NNN:perf.api.p95_latency`
+- `uptime: @threshold: PRD-NNN:sla.uptime.target`
+- `memory limit: @threshold: PRD-NNN:resource.memory.max_heap`
+- `circuit breaker threshold: @threshold: PRD-NNN:timeout.circuit_breaker.threshold`
+
+### Traceability Requirements Update
+
+Add `@threshold` to Required Tags table in Traceability section:
+
+| Tag | Format | When Required |
+|-----|--------|---------------|
+| @threshold | PRD-NNN:category.key | When referencing NFRs, SLAs, timing, limits, or configurable values |
+
+### Validation
+
+Run `detect_magic_numbers.py` to verify:
+1. No hardcoded quantitative values in NFR sections
+2. All `@threshold` references resolve to valid registry keys
+3. All SLA targets use threshold references

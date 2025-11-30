@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type CTR --output docs/CTR/CT
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@ctr: CTR-001:REQ-ID` (for multi-requirement docs) or `@ctr: CTR-001` (for single-doc refs)
+**Tag Format:** `@ctr: CTR-001:NNN` (for multi-requirement docs) or `@ctr: CTR-001` (for single-doc refs)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -92,14 +92,14 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD-009:FR-015
-@prd: PRD-016:FEATURE-003
-@ears: EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order
+@brd: BRD-009:015
+@prd: PRD-016:003
+@ears: EARS-012:002
+@bdd: BDD-015:001
 @adr: ADR-033
-@sys: SYS-012:FUNC-001
-@req: REQ-045:interface-spec
-@impl: IMPL-003:phase2
+@sys: SYS-012:001
+@req: REQ-045:001
+@impl: IMPL-003:002
 ```
 
 **Format Rules**:
@@ -121,14 +121,14 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
 ```markdown
-@brd: BRD-009:FR-015
-@prd: PRD-016:FEATURE-003
-@ears: EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order
+@brd: BRD-009:015
+@prd: PRD-016:003
+@ears: EARS-012:002
+@bdd: BDD-015:001
 @adr: ADR-033
-@sys: SYS-012:FUNC-001
-@req: REQ-045:interface-spec
-@impl: IMPL-003:phase2
+@sys: SYS-012:001
+@req: REQ-045:001
+@impl: IMPL-003:002
 ```
 
 ### 7.2 Downstream Artifacts
@@ -138,7 +138,7 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 ### 2.4 Validation Rules
 
 1. **Required**: Each CTR artifact MUST include at least one tag for each required layer
-2. **Format Compliance**: All tags must follow `@artifact-type:DOC-ID:REQ-ID` format
+2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NNN` format
 3. **Valid References**: All referenced documents and requirements must exist
 4. **No Gaps**: Cannot skip any required upstream layer in the chain
 5. **Tag Count**: Must have exactly 8 tags for Layer 9

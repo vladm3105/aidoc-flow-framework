@@ -58,17 +58,17 @@ python scripts/generate_traceability_matrices.py --type iplan --output ai_dev_fl
 - ✅ Coverage metrics: Automatically calculated
 
 **Tag Format**:
-- `@brd: BRD-NNN:REQ-NNN` (Business Requirements)
-- `@prd: PRD-NNN:REQ-NNN` (Product Requirements)
-- `@ears: EARS-NNN:REQ-NNN` (Event-Action-Response)
-- `@bdd: BDD-NNN:SCENARIO-NNN` (Behavioral Scenarios)
+- `@brd: BRD-NNN:NNN` (Business Requirements)
+- `@prd: PRD-NNN:NNN` (Product Requirements)
+- `@ears: EARS-NNN:NNN` (Event-Action-Response)
+- `@bdd: BDD-NNN:NNN` (Behavioral Scenarios)
 - `@adr: ADR-NNN` (Architecture Decisions)
-- `@sys: SYS-NNN:REQ-NNN` (System Requirements)
-- `@req: REQ-NNN` (Atomic Requirements)
-- `@impl: IMPL-NNN` (Implementation Plans - optional)
-- `@ctr: CTR-NNN:regulatoryTION` (Contracts - optional)
-- `@spec: SPEC-NNN:regulatoryTION` (Technical Specifications)
-- `@tasks: TASKS-NNN:PHASE-X.Y` (Code Generation Plans)
+- `@sys: SYS-NNN:NNN` (System Requirements)
+- `@req: REQ-NNN:NNN` (Atomic Requirements)
+- `@impl: IMPL-NNN:NNN` (Implementation Plans - optional)
+- `@ctr: CTR-NNN` (Contracts - optional)
+- `@spec: SPEC-NNN` (Technical Specifications)
+- `@tasks: TASKS-NNN:NNN` (Code Generation Plans)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete tag-based workflow.
 
@@ -118,17 +118,17 @@ This matrix tracks all iplan documents, mapping:
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD-009:FR-015
-@prd: PRD-016:FEATURE-003
-@ears: EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order
+@brd: BRD-009:015
+@prd: PRD-016:003
+@ears: EARS-012:002
+@bdd: BDD-015:001
 @adr: ADR-033
-@sys: SYS-012:FUNC-001
-@req: REQ-045:interface-spec
-@impl: IMPL-003:phase2
+@sys: SYS-012:001
+@req: REQ-045:001
+@impl: IMPL-003:002
 @ctr: CTR-005
 @spec: SPEC-018
-@tasks: TASKS-015
+@tasks: TASKS-015:001
 ```
 
 **Format Rules**:
@@ -150,17 +150,17 @@ This matrix tracks all iplan documents, mapping:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 12):
 ```markdown
-@brd: BRD-009:FR-015
-@prd: PRD-016:FEATURE-003
-@ears: EARS-012:EVENT-002
-@bdd: BDD-015:scenario-place-order
+@brd: BRD-009:015
+@prd: PRD-016:003
+@ears: EARS-012:002
+@bdd: BDD-015:001
 @adr: ADR-033
-@sys: SYS-012:FUNC-001
-@req: REQ-045:interface-spec
-@impl: IMPL-003:phase2
+@sys: SYS-012:001
+@req: REQ-045:001
+@impl: IMPL-003:002
 @ctr: CTR-005
 @spec: SPEC-018
-@tasks: TASKS-015
+@tasks: TASKS-015:001
 ```
 
 ### 7.2 Downstream Artifacts
@@ -170,7 +170,7 @@ This matrix tracks all iplan documents, mapping:
 ### 2.4 Validation Rules
 
 1. **Required**: Each IPLAN artifact MUST include at least one tag for each required layer
-2. **Format Compliance**: All tags must follow `@artifact-type:DOC-ID:REQ-ID` format
+2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NNN` format
 3. **Valid References**: All referenced documents and requirements must exist
 4. **No Gaps**: Cannot skip any required upstream layer in the chain
 5. **Tag Count**: Must have exactly 9-11 (includes all layers through @tasks) tags for Layer 12
@@ -210,22 +210,22 @@ All iplan documents MUST include these tags to maintain traceability chain:
 
 | Tag | Layer | Artifact Type | Format | Validation Status |
 |-----|-------|---------------|--------|-------------------|
-| @brd | 1 | Business Requirements | `@brd: BRD-NNN:REQ-NNN` | [✅/❌] |
-| @prd | 2 | Product Requirements | `@prd: PRD-NNN:REQ-NNN` | [✅/❌] |
-| @ears | 3 | Event-Action-Response | `@ears: EARS-NNN:REQ-NNN` | [✅/❌] |
-| @bdd | 4 | Behavioral Scenarios | `@bdd: BDD-NNN:SCENARIO-NNN` | [✅/❌] |
+| @brd | 1 | Business Requirements | `@brd: BRD-NNN:NNN` | [✅/❌] |
+| @prd | 2 | Product Requirements | `@prd: PRD-NNN:NNN` | [✅/❌] |
+| @ears | 3 | Event-Action-Response | `@ears: EARS-NNN:NNN` | [✅/❌] |
+| @bdd | 4 | Behavioral Scenarios | `@bdd: BDD-NNN:NNN` | [✅/❌] |
 | @adr | 5 | Architecture Decisions | `@adr: ADR-NNN` | [✅/❌] |
-| @sys | 6 | System Requirements | `@sys: SYS-NNN:REQ-NNN` | [✅/❌] |
-| @req | 7 | Atomic Requirements | `@req: REQ-NNN` | [✅/❌] |
-| @spec | 10 | Technical Specifications | `@spec: SPEC-NNN:regulatoryTION` | [✅/❌] |
-| @tasks | 11 | Code Generation Plans | `@tasks: TASKS-NNN:PHASE-X.Y` | [✅/❌] |
+| @sys | 6 | System Requirements | `@sys: SYS-NNN:NNN` | [✅/❌] |
+| @req | 7 | Atomic Requirements | `@req: REQ-NNN:NNN` | [✅/❌] |
+| @spec | 10 | Technical Specifications | `@spec: SPEC-NNN` | [✅/❌] |
+| @tasks | 11 | Code Generation Plans | `@tasks: TASKS-NNN:NNN` | [✅/❌] |
 
 ### 3.2 Optional Tags (Conditional)
 
 | Tag | Layer | Artifact Type | Format | Required If... |
 |-----|-------|---------------|--------|----------------|
-| @impl | 8 | Implementation Plans | `@impl: IMPL-NNN` | Project uses IMPL artifacts |
-| @ctr | 9 | Interface Contracts | `@ctr: CTR-NNN:regulatoryTION` | Contracts defined in project |
+| @impl | 8 | Implementation Plans | `@impl: IMPL-NNN:NNN` | Project uses IMPL artifacts |
+| @ctr | 9 | Interface Contracts | `@ctr: CTR-NNN` | Contracts defined in project |
 
 ### 3.3 Tag Format Validation
 
@@ -239,14 +239,14 @@ All iplan documents MUST include these tags to maintain traceability chain:
 
 **Examples**:
 ```markdown
-✅ Correct: @brd: BRD-001:REQ-042
+✅ Correct: @brd: BRD-001:042
 ✅ Correct: @adr: ADR-002
-✅ Correct: @spec: SPEC-001:connection_service
-✅ Correct: @tasks: TASKS-001:PHASE-2.1
+✅ Correct: @spec: SPEC-001
+✅ Correct: @tasks: TASKS-001:001
 
-❌ Wrong: @BRD: brd-001:req-042 (case incorrect)
-❌ Wrong: @brd:BRD-001:REQ-042 (missing space)
-❌ Wrong: @brd BRD-001 REQ-042 (wrong separators)
+❌ Wrong: @BRD: brd-001:042 (case incorrect)
+❌ Wrong: @brd:BRD-001:042 (missing space)
+❌ Wrong: @brd BRD-001 042 (wrong separators)
 ```
 
 ### 3.4 Validation Requirements for Complete Chain

@@ -1,7 +1,10 @@
 # 📋 Document Authority: This is the PRIMARY STANDARD for SPEC YAML structure.
-# - All SPEC YAML files must conform to this template
-# - SPEC_CREATION_RULES.md - Helper guidance for template usage
-# - SPEC_VALIDATION_RULES.md - Post-creation validation checks
+# - Schema: SPEC_SCHEMA.yaml v1.0 - Validation rules
+# - Creation Rules: SPEC_CREATION_RULES.md - Usage guidance
+# - Validation Rules: SPEC_VALIDATION_RULES.md - Post-creation checks
+#
+# SCHEMA_REFERENCE: SPEC_SCHEMA.yaml
+# SCHEMA_VERSION: 1.0
 
 # ===================
 # SPEC-NNN: [Component Name]
@@ -330,21 +333,44 @@ traceability:
 
   # Cumulative Tagging Hierarchy (Layer 10)
   # Required tags from ALL upstream artifacts for complete traceability
-  # Format: artifact-type: DOCUMENT-ID:REQUIREMENT-ID
+  # Format: artifact-type: DOCUMENT-ID:NNN
   cumulative_tags:
-    brd: "BRD-NNN:REQUIREMENT-ID"  # Business Requirements
-    prd: "PRD-NNN:REQUIREMENT-ID"  # Product Requirements
-    ears: "EARS-NNN:STATEMENT-ID"  # Engineering Requirements
-    bdd: "BDD-NNN:SCENARIO-ID"  # BDD Test Scenarios
+    brd: "BRD-NNN:NNN"  # Business Requirements
+    prd: "PRD-NNN:NNN"  # Product Requirements
+    ears: "EARS-NNN:NNN"  # Engineering Requirements
+    bdd: "BDD-NNN:NNN"  # BDD Test Scenarios
     adr: "ADR-NNN"  # Architecture Decisions
-    sys: "SYS-NNN:regulatoryTION-ID"  # System Requirements
-    req: "REQ-NNN:REQUIREMENT-ID"  # Atomic Requirements
-    impl: "IMPL-NNN:PHASE-ID"  # Implementation Plans (optional)
+    sys: "SYS-NNN:NNN"  # System Requirements
+    req: "REQ-NNN:NNN"  # Atomic Requirements
+    impl: "IMPL-NNN:NNN"  # Implementation Plans (optional)
     ctr: "CTR-NNN"  # API Contracts (optional)
+    threshold: "PRD-NNN"  # Threshold Registry (when performance/SLA values used)
     # Layer 10: SPEC must include all upstream tags (BRD through REQ)
-    # Optional: IMPL and CTR if they exist in the traceability chain
+    # Optional: IMPL, CTR, and threshold if they exist in the traceability chain
     # Purpose: Complete traceability from business requirements to implementation
     # See: ../TRACEABILITY.md#cumulative-tagging-hierarchy
+
+  # Threshold Registry References (Required when performance/SLA values specified)
+  # Prevents magic numbers by referencing centralized threshold registry
+  # Format: @threshold: PRD-NNN:category.subcategory.key
+  threshold_references:
+    registry_document: "PRD-NNN"  # Threshold registry document ID
+    keys_used:
+      # Performance thresholds used in this SPEC
+      - "perf.api.p50_latency"
+      - "perf.api.p95_latency"
+      - "perf.api.p99_latency"
+      # Timeout configurations
+      - "timeout.request.sync"
+      - "timeout.connection.default"
+      # Rate limits
+      - "limit.api.requests_per_second"
+      - "limit.api.burst"
+      # Resource limits
+      - "resource.memory.max_heap"
+      - "resource.connections.pool_size"
+    # Validation: All keys must exist in PRD-NNN threshold registry
+    # See: ../PRD/PRD-000_threshold_registry_template.md
 
   # Same-Type References (Conditional)
   # Include only if same-type relationships exist between SPEC documents
@@ -692,23 +718,25 @@ caching:
 # ===================
 # RATE LIMITING
 # ===================
+# NOTE: Use @threshold registry references for rate limit values
+# Format: "@threshold: PRD-NNN:limit.category.key"
 
 rate_limiting:
   enabled: true
   strategy: "token_bucket"  # token_bucket, sliding_window, fixed_window, leaky_bucket
 
   global_limits:
-    requests_per_minute: 1000
-    requests_per_hour: 50000
-    burst_limit: 2000
+    requests_per_minute: "@threshold: PRD-NNN:limit.api.requests_per_minute"
+    requests_per_hour: "@threshold: PRD-NNN:limit.api.requests_per_hour"
+    burst_limit: "@threshold: PRD-NNN:limit.api.burst"
 
   per_client_limits:
     identified_users:
-      requests_per_minute: 100
-      requests_per_hour: 5000
+      requests_per_minute: "@threshold: PRD-NNN:limit.user.requests_per_minute"
+      requests_per_hour: "@threshold: PRD-NNN:limit.user.requests_per_hour"
     anonymous_users:
-      requests_per_minute: 10
-      requests_per_hour: 500
+      requests_per_minute: "@threshold: PRD-NNN:limit.anonymous.requests_per_minute"
+      requests_per_hour: "@threshold: PRD-NNN:limit.anonymous.requests_per_hour"
 
   per_endpoint_limits:
     "/api/expensive-operation":
@@ -790,24 +818,27 @@ circuit_breaker:
 # ===================
 # PERFORMANCE SPECIFICATIONS
 # ===================
+# NOTE: Use @threshold registry references for all quantitative values
+# Format: "@threshold: PRD-NNN:category.subcategory.key"
+# See: ../PRD/PRD-000_threshold_registry_template.md
 
 performance:
   latency_targets:
-    p50_milliseconds: 50
-    p95_milliseconds: 200
-    p99_milliseconds: 1000
-    max_milliseconds: 5000
+    p50_milliseconds: "@threshold: PRD-NNN:perf.api.p50_latency"
+    p95_milliseconds: "@threshold: PRD-NNN:perf.api.p95_latency"
+    p99_milliseconds: "@threshold: PRD-NNN:perf.api.p99_latency"
+    max_milliseconds: "@threshold: PRD-NNN:perf.api.max_latency"
 
   throughput_targets:
-    sustained_requests_per_second: 100
-    burst_requests_per_second: 200
-    cooldown_period_minutes: 5
+    sustained_requests_per_second: "@threshold: PRD-NNN:limit.api.requests_per_second"
+    burst_requests_per_second: "@threshold: PRD-NNN:limit.api.burst"
+    cooldown_period_minutes: 5  # Non-critical operational value
 
   resource_limits:
-    cpu_cores_allocated: 2
-    memory_mb_allocated: 1024
-    network_bandwidth_mbps: 100
-    disk_iops: 1000
+    cpu_cores_allocated: "@threshold: PRD-NNN:resource.compute.cpu_cores"
+    memory_mb_allocated: "@threshold: PRD-NNN:resource.memory.max_heap"
+    network_bandwidth_mbps: "@threshold: PRD-NNN:resource.network.bandwidth_mbps"
+    disk_iops: "@threshold: PRD-NNN:resource.storage.iops"
 
   scaling_characteristics:
     vertical_scaling_supported: true
@@ -998,9 +1029,9 @@ verification:
     - "[BDD-NNN.feature](../bbds/BDD-NNN.feature#scenario-performance-under-load)"
 
   performance_tests:
-    - target_p95_latency_ms: 200
+    - target_p95_latency_ms: "@threshold: PRD-NNN:perf.api.p95_latency"
       test_scenario: "mixed_workload_100_rps"
-      success_criteria: "p95_latency < 200ms AND error_rate < 0.01"
+      success_criteria: "p95_latency < @threshold: PRD-NNN:perf.api.p95_latency AND error_rate < @threshold: PRD-NNN:sla.error_rate.target"
 
   security_tests:
     - vulnerability_scanning: true
@@ -1008,10 +1039,10 @@ verification:
     - compliance_audit: ["owasp_top_10", "pci_dss_if_applicable"]
 
   load_tests:
-    - sustained_load_rps: 100
+    - sustained_load_rps: "@threshold: PRD-NNN:limit.api.requests_per_second"
       duration_minutes: 60
       success_criteria: "no_degradation_in_latency OR graceful_degradation"
-    - burst_load_rps: 500
+    - burst_load_rps: "@threshold: PRD-NNN:limit.api.burst"
       duration_minutes: 5
       success_criteria: "no_service_disruption"
 
@@ -1143,10 +1174,11 @@ operations:
       - cache_hit_ratio
       - circuit_breaker_state
     alerting_rules:
-      - condition: "error_rate > 5%"
+      # Use @threshold references for alert thresholds
+      - condition: "error_rate > @threshold: PRD-NNN:sla.error_rate.warning"
         severity: "warning"
         notification_channels: ["slack", "email"]
-      - condition: "p95_latency > 500ms for 5 minutes"
+      - condition: "p95_latency > @threshold: PRD-NNN:perf.api.p95_latency for 5 minutes"
         severity: "warning"
         notification_channels: ["slack", "pagerduty"]
       - condition: "circuit_breaker_open for 5 minutes"

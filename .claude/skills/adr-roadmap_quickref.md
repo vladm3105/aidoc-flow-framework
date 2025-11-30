@@ -18,10 +18,10 @@
 Use adr-roadmap skill to create implementation roadmap.
 
 Inputs:
-- ADR directory: /opt/data/project/docs/ADR/
+- ADR directory: {project_root}/docs/ADR/
 - Project context: Web application, 3 developers, 6-month timeline
 
-Generate roadmap in /opt/data/project/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md
+Generate roadmap in {project_root}/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md
 ```
 
 ---
@@ -255,7 +255,7 @@ Prioritize ADR: ADR-002 (force first)
 **Minimal**:
 ```
 Use adr-roadmap skill.
-ADR directory: /opt/data/project/docs/ADR/
+ADR directory: {project_root}/docs/ADR/
 Project context: Trading system, 3 developers
 ```
 

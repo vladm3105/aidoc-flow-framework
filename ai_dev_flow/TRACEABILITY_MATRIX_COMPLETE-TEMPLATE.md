@@ -38,7 +38,7 @@ python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@brd: BRD-001:FR-030, BRD-001:NFR-006`
+**Tag Format:** `@brd: BRD-001:030, BRD-001:006`
 
 See: [TRACEABILITY.md](./TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -90,6 +90,7 @@ python scripts/generate_traceability_matrices.py --auto --report
 | **Implementation Layer** | | | |
 | SPEC | [X]/[Y] | XX% | [Status] |
 | TASKS | [X]/[Y] | XX% | [Status] |
+| ICON | [X]/[Y] | XX% | [Status] |
 | **Implementation Plans Layer** | | | |
 | IPLAN | [X]/[Y] | XX% | [Status] |
 | **Execution Layer** | | | |
@@ -132,7 +133,7 @@ The Docs Flow Framework implements **cumulative tagging** where each artifact ty
 - Separator: colon `:` after artifact type
 - Document ID: `TYPE-NNN` format
 - Requirement ID: specific requirement/section identifier
-- Multiple Values: comma-separated `@brd: BRD-001:FR-030, BRD-001:NFR-006`
+- Multiple Values: comma-separated `@brd: BRD-001:030, BRD-001:006`
 
 ### 2.3 Cumulative Tagging Table
 
@@ -150,6 +151,7 @@ The Docs Flow Framework implements **cumulative tagging** where each artifact ty
 | 9 | **CTR** | `@brd` through `@impl` | 8 | Formal Template (Markdown + YAML) | Optional layer - include if exists |
 | 10 | **SPEC** | `@brd` through `@req` + optional `@impl`, `@ctr` | 7-9 | Formal Template (YAML) | YAML cumulative_tags section |
 | 11 | **TASKS** | `@brd` through `@spec` | 8-10 | Formal Template (Markdown) | Cumulative: BRD through SPEC |
+| 11 | **ICON** | All upstream through `@spec` + `@tasks` | 9-11 | Formal Template (Markdown) | Optional - standalone when 5+ consumers |
 | 12 | **IPLAN** | `@brd` through `@tasks` | 9-11 | Project Files (Markdown) | Implementation session plans |
 | 13 | **Code** | `@brd` through `@tasks` + optional `@iplan` | 9-12 | Code Docstrings (Python/JS/etc.) | Tags in module/class/function docstrings |
 | 14 | **Tests** | `@brd` through code tags + `@code` | 10-13 | BDD + Docstrings | Test files reference code + all upstream |
@@ -165,14 +167,14 @@ The Docs Flow Framework implements **cumulative tagging** where each artifact ty
 # ... spec content ...
 
 cumulative_tags:
-  brd: "BRD-009:FR-015"
-  prd: "PRD-016:FEATURE-003"
-  ears: "EARS-012:EVENT-002"
-  bdd: "BDD-015:scenario-place-order"
+  brd: "BRD-009:015"
+  prd: "PRD-016:003"
+  ears: "EARS-012:002"
+  bdd: "BDD-015:001"
   adr: "ADR-033"
-  sys: "SYS-012:PERF-001"
-  req: "REQ-045:interface-spec"
-  impl: "IMPL-003:phase2"  # Optional - included if exists
+  sys: "SYS-012:001"
+  req: "REQ-045:001"
+  impl: "IMPL-003:002"  # Optional - included if exists
   ctr: "CTR-005"  # Optional - included if exists
 ```
 
@@ -188,17 +190,17 @@ Handles trade request submission with validation and execution.
 
 ## 3. Traceability Tags
 
-@brd: BRD-009:FR-015, BRD-009:NFR-006
-@prd: PRD-016:FEATURE-003
-@ears: EARS-012:EVENT-002, EARS-012:STATE-001
-@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@brd: BRD-009:015, BRD-009:006
+@prd: PRD-016:003
+@ears: EARS-012:002, EARS-012:001
+@bdd: BDD-015:001, BDD-015:002
 @adr: ADR-033
-@sys: SYS-012:PERF-001, SYS-012:RELIABILITY-002
-@req: REQ-045:interface-spec, REQ-045:validation-logic
-@impl: IMPL-003:phase2
+@sys: SYS-012:001, SYS-012:002
+@req: REQ-045:001, REQ-045:002
+@impl: IMPL-003:002
 @ctr: CTR-005
 @spec: SPEC-018
-@tasks: TASKS-018:task-3, TASKS-018:task-7
+@tasks: TASKS-018:003, TASKS-018:007
 @iplan: IPLAN-003
 
 @impl-status: complete
@@ -216,17 +218,17 @@ Test suite for request submission Service
 
 ## 4. Traceability Tags
 
-@brd: BRD-009:FR-015, BRD-009:NFR-006
-@prd: PRD-016:FEATURE-003
-@ears: EARS-012:EVENT-002, EARS-012:STATE-001
-@bdd: BDD-015:scenario-place-order, BDD-015:scenario-reject-invalid
+@brd: BRD-009:015, BRD-009:006
+@prd: PRD-016:003
+@ears: EARS-012:002, EARS-012:001
+@bdd: BDD-015:001, BDD-015:002
 @adr: ADR-033
-@sys: SYS-012:PERF-001, SYS-012:RELIABILITY-002
-@req: REQ-045:interface-spec, REQ-045:validation-logic
-@impl: IMPL-003:phase2
+@sys: SYS-012:001, SYS-012:002
+@req: REQ-045:001, REQ-045:002
+@impl: IMPL-003:002
 @ctr: CTR-005
 @spec: SPEC-018
-@tasks: TASKS-018:task-3, TASKS-018:task-7
+@tasks: TASKS-018:003, TASKS-018:007
 @iplan: IPLAN-003
 @code: src/execution/order_service.py:OrderService
 

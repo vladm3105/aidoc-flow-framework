@@ -14,6 +14,8 @@ custom_fields:
   development_status: active
   template_for: product-requirements-document
   template_variant: standard | agent-based | automation-focused
+  schema_reference: "PRD_SCHEMA.yaml"
+  schema_version: "1.0"
 ---
 
 <!-- ======================================================================
@@ -48,9 +50,9 @@ Schema: See `ai_dev_flow/PRD/PRD_SCHEMA.yaml` for complete rules
 ====================================================================== -->
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for PRD structure.
-> - All PRDs must conform to this template (20 sections: 0-19)
-> - `PRD_CREATION_RULES.md` - Helper guidance for template usage
-> - `PRD_VALIDATION_RULES.md` - Post-creation validation checks
+> - **Schema**: `PRD_SCHEMA.yaml v1.0` - Validation rules (20 sections: 0-19)
+> - **Creation Rules**: `PRD_CREATION_RULES.md` - Usage guidance
+> - **Validation Rules**: `PRD_VALIDATION_RULES.md` - Post-creation checks
 >
 > **Template Variants**:
 > - **Standard PRD** (20 sections): Default for business features - use this template
@@ -863,10 +865,10 @@ The following architectural topics require formal Architecture Decision Records 
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 2):
 ```markdown
-@brd: BRD-NNN:REQUIREMENT-ID
+@brd: BRD-NNN:NNN
 ```
 
-**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+**Format**: `@artifact-type: DOCUMENT-ID:NNN` (numeric sub-ID)
 
 **Layer 2 Requirements**: PRD must reference upstream BRD document(s) using `@brd` tags.
 
@@ -874,7 +876,7 @@ The following architectural topics require formal Architecture Decision Records 
 
 **Example**:
 ```markdown
-@brd: BRD-NNN:FR-XXX, BRD-NNN:NFR-YYY
+@brd: BRD-001:030, BRD-001:006
 ```
 
 **Validation**: Tags must reference existing BRD documents and requirement IDs within those documents.

@@ -13,12 +13,14 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: business-requirements-document
+  schema_reference: "none"
+  schema_version: "n/a"
 ---
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for BRD structure.
-> - All BRDs must conform to this template
-> - `BRD_CREATION_RULES.md` - Helper guidance for template usage
-> - `BRD_VALIDATION_RULES.md` - Post-creation validation checks
+> - **Schema**: None (Layer 1 entry point, human-authored)
+> - **Creation Rules**: `BRD_CREATION_RULES.md` - Usage guidance
+> - **Validation Rules**: `BRD_VALIDATION_RULES.md` - Post-creation checks
 
 # Business Requirements Document (BRD)
 

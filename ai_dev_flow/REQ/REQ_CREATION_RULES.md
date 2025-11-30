@@ -18,10 +18,12 @@ custom_fields:
 
 # REQ Creation Rules
 
-**Version**: 3.0
+**Version**: 3.2
 **Date**: 2025-11-19
+**Last Updated**: 2025-11-30
 **Source**: Extracted from REQ-TEMPLATE.md, REQ-VALIDATION-RULES.md, README.md, and REQ-000_index.md
 **Purpose**: Complete reference for creating REQ files according to doc-flow SDD framework
+**Changes**: Added Threshold Registry Integration section (v3.2). Previous: Status/Score mapping, common mistakes section (v3.1)
 
 ---
 
@@ -38,6 +40,9 @@ custom_fields:
 9. [Quality Gates](#9-quality-gates)
 10. [Business Rules and Validation](#10-business-rules-and-validation)
 11. [Additional Requirements](#11-additional-requirements)
+12. [Common Mistakes to Avoid](#12-common-mistakes-to-avoid)
+13. [Upstream Artifact Verification Process](#13-upstream-artifact-verification-process)
+14. [Threshold Registry Integration](#14-threshold-registry-integration)
 
 ---
 
@@ -76,6 +81,16 @@ Every REQ must contain these exact sections in order:
 - Source Document (format: "DOC-ID section X.Y.Z"), Verification Method, Assigned Team
 - SPEC-Ready Score (format: "✅ XX% (Target: ≥90%)"), IMPL-Ready Score (format: "✅ XX% (Target: ≥90%)"), Template Version (must be "3.0")
 
+### Status and Ready Score Mapping
+
+| Ready Score | Required Status |
+|-------------|-----------------|
+| >= 90% | Approved |
+| 70-89% | In Review |
+| < 70% | Draft |
+
+**Note**: For REQ documents with dual scores (SPEC-Ready + IMPL-Ready), use the lower score to determine status.
+
 ---
 
 ## 4. ID and Naming Standards
@@ -100,7 +115,7 @@ Every REQ must contain these exact sections in order:
 ## 6. Traceability Requirements (MANDATORY - Layer 7)
 
 - **Upstream Chain**: Must reference ALL 6 artifact types: BRD, PRD, EARS, BDD, ADR, SYS
-- **Cumulative Tagging**: All 6 tags required with format `@type: DOC-ID:REQ-ID`
+- **Cumulative Tagging**: All 6 tags required with format `@type: DOC-ID:NNN` (numeric sub-IDs)
 - **Downstream Links**: SPEC, TASKS, CTR (if applicable), BDD scenarios
 - **Code Paths**: Actual file paths for implementation
 
@@ -180,8 +195,23 @@ find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template_v3.sh {} \;
 
 ---
 
+## 12. Common Mistakes to Avoid
 
-## 12. Upstream Artifact Verification Process
+| Mistake | Correct |
+|---------|---------|
+| `Status: Approved` (with <90% SPEC-Ready score) | Match status to score threshold |
+| Missing upstream tags (need all 6) | Include @brd, @prd, @ears, @bdd, @adr, @sys |
+| <15 acceptance criteria | Minimum 15 covering functional/error/quality |
+| Template Version != 3.0 | Update to current template version |
+| Missing resource classification tag | Add [RESOURCE_INSTANCE] to H1 header |
+| Incomplete traceability chain | All 6 upstream artifact types required |
+| `response time < 200ms` (hardcoded) | `response time < @threshold: PRD-NNN:perf.api.p95_latency` |
+| `timeout: 5000` (magic number) | `timeout: @threshold: PRD-NNN:timeout.default` |
+| `retry_max: 3` (hardcoded config) | `retry_max: @threshold: PRD-NNN:retry.max_attempts` |
+
+---
+
+## 13. Upstream Artifact Verification Process
 
 ### Before Creating This Document
 
@@ -237,3 +267,84 @@ Include ONLY if relationships exist between REQ documents sharing domain context
 @related-req: REQ-NNN
 @depends-req: REQ-NNN
 ```
+
+---
+
+## 14. Threshold Registry Integration
+
+**Purpose**: Prevent magic numbers by referencing centralized threshold registry.
+
+### When @threshold Tag is Required
+
+Use `@threshold` for ALL quantitative values that are:
+- Business-critical (compliance limits, SLAs)
+- Configurable (timeout values, rate limits, retry policies)
+- Shared across documents (performance targets)
+- NFR-related (p50/p95/p99 latencies, throughput limits)
+- Error handling configurations (circuit breaker, retry counts)
+
+### @threshold Tag Format
+
+```markdown
+@threshold: PRD-NNN:category.subcategory.key
+```
+
+**Examples**:
+- `@threshold: PRD-035:perf.api.p95_latency`
+- `@threshold: PRD-035:timeout.circuit_breaker.threshold`
+- `@threshold: PRD-035:retry.max_attempts`
+- `@threshold: PRD-035:limit.api.requests_per_second`
+
+### REQ-Specific Threshold Categories
+
+| Category | REQ Usage | Example Key |
+|----------|-----------|-------------|
+| `perf.*` | Performance acceptance criteria | `perf.api.p95_latency` |
+| `timeout.*` | Circuit breaker, connection configs | `timeout.circuit_breaker.reset` |
+| `retry.*` | Retry policy configurations | `retry.max_attempts` |
+| `limit.*` | Rate limits, resource limits | `limit.api.requests_per_second` |
+| `resource.*` | Memory, CPU constraints | `resource.memory.max_heap` |
+
+### Magic Number Detection
+
+**Invalid (hardcoded values)**:
+- `p95 response time: 200ms`
+- `max_retries: 3`
+- `rate_limit: 100 req/s`
+- `circuit_breaker_threshold: 5`
+
+**Valid (registry references)**:
+- `p95 response time: @threshold: PRD-NNN:perf.api.p95_latency`
+- `max_retries: @threshold: PRD-NNN:retry.max_attempts`
+- `rate_limit: @threshold: PRD-NNN:limit.api.requests_per_second`
+- `circuit_breaker_threshold: @threshold: PRD-NNN:timeout.circuit_breaker.threshold`
+
+### Traceability Requirements Update
+
+Add `@threshold` to Required Tags table in Traceability section:
+
+| Tag | Format | When Required |
+|-----|--------|---------------|
+| @threshold | PRD-NNN:category.key | When referencing NFRs, timing, limits, retry configs, or configurable values |
+
+### Acceptance Criteria Integration
+
+Acceptance criteria containing quantitative values MUST use threshold references:
+
+**Invalid**:
+```markdown
+AC-001: Response time SHALL be < 200ms for 95th percentile
+```
+
+**Valid**:
+```markdown
+AC-001: Response time SHALL be < @threshold: PRD-NNN:perf.api.p95_latency for 95th percentile
+```
+
+### Validation
+
+Run `detect_magic_numbers.py` to verify:
+1. No hardcoded quantitative values in NFR sections
+2. No hardcoded values in acceptance criteria
+3. All `@threshold` references resolve to valid registry keys
+4. All configuration values use threshold references
