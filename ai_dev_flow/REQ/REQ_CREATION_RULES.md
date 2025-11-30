@@ -1,3 +1,9 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of REQ-TEMPLATE.md
+# - Authority: REQ-TEMPLATE.md is the single source of truth for REQ structure
+# - Purpose: AI guidance for document creation (derived from template)
+# - On conflict: Defer to REQ-TEMPLATE.md
+# =============================================================================
 ---
 title: "REQ Creation Rules"
 tags:

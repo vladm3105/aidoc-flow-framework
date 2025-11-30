@@ -1,3 +1,9 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of TASKS-TEMPLATE.md
+# - Authority: TASKS-TEMPLATE.md is the single source of truth for TASKS structure
+# - Purpose: AI guidance for document creation (derived from template)
+# - On conflict: Defer to TASKS-TEMPLATE.md
+# =============================================================================
 ---
 title: "TASKS Creation Rules"
 tags:

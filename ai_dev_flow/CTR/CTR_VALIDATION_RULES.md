@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of CTR-TEMPLATE.md / CTR-TEMPLATE.yaml
+# - Authority: CTR-TEMPLATE files are the single source of truth for CTR structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from CTR_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to CTR-TEMPLATE.md / CTR-TEMPLATE.yaml
+# =============================================================================
 ---
 title: "CTR Validation Rules"
 tags:

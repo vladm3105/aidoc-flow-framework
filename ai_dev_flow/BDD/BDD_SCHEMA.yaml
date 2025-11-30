@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of BDD-TEMPLATE.feature
+# - Authority: BDD-TEMPLATE.feature is the single source of truth for BDD structure
+# - Purpose: Machine-readable validation rules derived from the template
+# - On conflict: Defer to BDD-TEMPLATE.feature
+# =============================================================================
+#
 # BDD Schema Definition v1.0
 # Purpose: Define valid metadata structure and validation rules for BDD feature files
 # Usage: Reference by validate_bdd.py for automated validation
@@ -11,6 +18,20 @@ references:
   template: "BDD-TEMPLATE.feature"
   creation_rules: "BDD_CREATION_RULES.md"
   validation_rules: "BDD_VALIDATION_RULES.md"
+
+# =============================================================================
+# DOCUMENT AUTHORITY
+# =============================================================================
+# BDD-TEMPLATE.feature is the PRIMARY AUTHORITY (single source of truth).
+# This schema DERIVES validation rules from the template.
+#
+# Document Hierarchy:
+#   1. BDD-TEMPLATE.feature (PRIMARY - defines structure and format)
+#   2. BDD_SCHEMA.yaml (DERIVATIVE - machine-readable validation)
+#   3. BDD_CREATION_RULES.md (DERIVATIVE - human guidance)
+#   4. BDD_VALIDATION_RULES.md (DERIVATIVE - validation checklist)
+#
+# CONFLICT RESOLUTION: If this schema conflicts with Template, update schema.
 
 # =============================================================================
 # YAML Frontmatter Requirements (Comment-based in .feature files)
@@ -239,10 +260,13 @@ gherkin_patterns:
     traceability_tags:
       - pattern: "@brd:\\s*BRD-\\d{3}:\\d{3}"
         description: "BRD traceability tag"
+        required: true   # MANDATORY per BDD-TEMPLATE.feature
       - pattern: "@prd:\\s*PRD-\\d{3}:\\d{3}"
         description: "PRD traceability tag"
+        required: true   # MANDATORY per BDD-TEMPLATE.feature
       - pattern: "@ears:\\s*EARS-\\d{3}:\\d{3}"
         description: "EARS traceability tag"
+        required: true   # MANDATORY per BDD-TEMPLATE.feature
       - pattern: "@requirement:\\[REQ-\\d{3}\\]"
         description: "REQ traceability tag"
       - pattern: "@adr:\\[ADR-\\d{3}\\]"
@@ -406,16 +430,16 @@ traceability:
 
   upstream:
     required:
+      - type: BRD
+        format: "@brd: BRD-NNN:NNN"
+        location: "Header comments or scenario tags"
       - type: PRD
-        format: "@prd: PRD-NNN"
+        format: "@prd: PRD-NNN:NNN"
         location: "Header comments or scenario tags"
       - type: EARS
-        format: "@ears: EARS-NNN"
+        format: "@ears: EARS-NNN:NNN"
         location: "Header comments or scenario tags"
-    optional:
-      - type: BRD
-        format: "@brd: BRD-NNN"
-        location: "Header comments"
+    # NOTE: No optional upstream tags - all three (@brd, @prd, @ears) are MANDATORY
 
   downstream:
     expected:
@@ -459,7 +483,7 @@ error_messages:
   W002: "Scenario missing Given step (context unclear)"
   W003: "No success path scenarios (@primary) detected"
   W004: "No error path scenarios (@negative) detected"
-  W005: "Missing upstream traceability tags (@prd, @ears)"
+  W005: "Missing upstream traceability tags (@brd, @prd, @ears)"
   W006: "Scenario name should start with capital letter"
   W007: "Consider adding Background for shared setup"
   I001: "Steps should be written in present tense"

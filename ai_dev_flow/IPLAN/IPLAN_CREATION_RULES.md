@@ -1,3 +1,9 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of IPLAN-TEMPLATE.md
+# - Authority: IPLAN-TEMPLATE.md is the single source of truth for IPLAN structure
+# - Purpose: AI guidance for document creation (derived from template)
+# - On conflict: Defer to IPLAN-TEMPLATE.md
+# =============================================================================
 ---
 title: "IPLAN Creation Rules"
 tags:

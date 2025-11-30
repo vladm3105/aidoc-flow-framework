@@ -1,3 +1,11 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of REQ-TEMPLATE.md
+# - Authority: REQ-TEMPLATE.md is the single source of truth for REQ structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from REQ_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to REQ-TEMPLATE.md
+# =============================================================================
+
 > **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for REQ documents.
 > - Apply these rules after REQ creation or modification
 > - **Authority**: Validates compliance with `REQ-TEMPLATE.md` (the primary standard)

@@ -1,3 +1,9 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of BRD-TEMPLATE.md
+# - Authority: BRD-TEMPLATE.md is the single source of truth for BRD structure
+# - Purpose: AI guidance for document creation (derived from template)
+# - On conflict: Defer to BRD-TEMPLATE.md
+# =============================================================================
 ---
 title: "BRD Creation Rules"
 tags:

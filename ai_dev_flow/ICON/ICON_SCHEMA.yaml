@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of ICON-TEMPLATE.md
+# - Authority: ICON-TEMPLATE.md is the single source of truth for ICON structure
+# - Purpose: Machine-readable validation rules derived from the template
+# - On conflict: Defer to ICON-TEMPLATE.md
+# =============================================================================
+#
 # ICON Schema Definition v1.0
 # Purpose: Define valid metadata structure and validation rules for ICON documents
 # Usage: Reference by validate_icon.py for automated validation

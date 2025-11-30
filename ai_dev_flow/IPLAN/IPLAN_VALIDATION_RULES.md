@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of IPLAN-TEMPLATE.md
+# - Authority: IPLAN-TEMPLATE.md is the single source of truth for IPLAN structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from IPLAN_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to IPLAN-TEMPLATE.md
+# =============================================================================
 ---
 title: "IPLAN Validation Rules"
 tags:

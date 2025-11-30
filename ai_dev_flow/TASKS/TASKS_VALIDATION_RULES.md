@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of TASKS-TEMPLATE.md
+# - Authority: TASKS-TEMPLATE.md is the single source of truth for TASKS structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from TASKS_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to TASKS-TEMPLATE.md
+# =============================================================================
 ---
 title: "TASKS Validation Rules"
 tags:

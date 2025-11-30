@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of ADR-TEMPLATE.md
+# - Authority: ADR-TEMPLATE.md is the single source of truth for ADR structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from ADR_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to ADR-TEMPLATE.md
+# =============================================================================
 ---
 title: "ADR Validation Rules Reference"
 tags:

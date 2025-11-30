@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of EARS-TEMPLATE.md
+# - Authority: EARS-TEMPLATE.md is the single source of truth for EARS structure
+# - Purpose: Machine-readable validation rules derived from the template
+# - On conflict: Defer to EARS-TEMPLATE.md
+# =============================================================================
+#
 # EARS Schema Definition v1.0
 # Purpose: Define valid metadata structure and validation rules for EARS documents
 # Usage: Reference by validate_ears.py for automated validation

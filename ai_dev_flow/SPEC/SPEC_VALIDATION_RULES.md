@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of SPEC-TEMPLATE.md / SPEC-TEMPLATE.yaml
+# - Authority: SPEC-TEMPLATE files are the single source of truth for SPEC structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from SPEC_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to SPEC-TEMPLATE.md / SPEC-TEMPLATE.yaml
+# =============================================================================
 ---
 title: "SPEC Validation Rules Reference"
 tags:

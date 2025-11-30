@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of REQ-TEMPLATE.md
+# - Authority: REQ-TEMPLATE.md is the single source of truth for REQ structure
+# - Purpose: Machine-readable validation rules derived from the template
+# - On conflict: Defer to REQ-TEMPLATE.md
+# =============================================================================
+#
 # REQ Schema Definition v1.0
 # Purpose: Define valid metadata structure and validation rules for REQ documents
 # Usage: Reference by validate_req.py for automated validation

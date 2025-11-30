@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of IMPL-TEMPLATE.md
+# - Authority: IMPL-TEMPLATE.md is the single source of truth for IMPL structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from IMPL_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to IMPL-TEMPLATE.md
+# =============================================================================
 ---
 title: "IMPL Validation Rules"
 tags:

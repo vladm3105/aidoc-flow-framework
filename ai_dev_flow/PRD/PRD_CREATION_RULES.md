@@ -1,3 +1,9 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of PRD-TEMPLATE.md
+# - Authority: PRD-TEMPLATE.md is the single source of truth for PRD structure
+# - Purpose: AI guidance for document creation (derived from template)
+# - On conflict: Defer to PRD-TEMPLATE.md
+# =============================================================================
 ---
 title: "PRD Creation Rules"
 tags:

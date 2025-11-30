@@ -1,3 +1,9 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of ICON-TEMPLATE.md
+# - Authority: ICON-TEMPLATE.md is the single source of truth for ICON structure
+# - Purpose: AI guidance for document creation (derived from template)
+# - On conflict: Defer to ICON-TEMPLATE.md
+# =============================================================================
 ---
 title: ICON Creation Rules
 tags:

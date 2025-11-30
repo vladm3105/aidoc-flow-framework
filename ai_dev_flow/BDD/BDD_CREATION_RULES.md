@@ -1,3 +1,9 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of BDD-TEMPLATE.feature
+# - Authority: BDD-TEMPLATE.feature is the single source of truth for BDD structure
+# - Purpose: AI guidance for document creation (derived from template)
+# - On conflict: Defer to BDD-TEMPLATE.feature
+# =============================================================================
 ---
 title: "BDD Creation Rules"
 tags:
@@ -12,8 +18,11 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is a **CREATION HELPER** for BDD-TEMPLATE.feature.
-> - **Authority**: `BDD-TEMPLATE.feature` is the single source of truth for BDD structure
+> **📋 Document Role**: CREATION GUIDANCE for BDD documents (DERIVATIVE).
+> - **Authority**: `BDD-TEMPLATE.feature` is the PRIMARY STANDARD (single source of truth)
+> - **Purpose**: Human-readable explanation of Template structure
+> - **Scope**: Does NOT define new rules - only explains Template
+> - **Conflict Resolution**: If this conflicts with Template, update this document
 > - **Validation**: Use `BDD_VALIDATION_RULES.md` after BDD creation/changes
 
 # BDD Creation Rules
@@ -244,12 +253,14 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 
 ## 8. Traceability Requirements (MANDATORY - Layer 4)
 
-**Upstream Tag Chain Required**:
+**Required Tags** (ALL are MANDATORY per BDD-TEMPLATE.feature):
 ```gherkin
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
+@brd: BRD-NNN:NNN    # MANDATORY - business requirements
+@prd: PRD-NNN:NNN    # MANDATORY - product requirements
+@ears: EARS-NNN:NNN  # MANDATORY - engineering requirements
 ```
+
+**Format**: Extended format with requirement ID suffix (`:NNN`) is REQUIRED.
 
 **Layer 4 Requirements**: BDD must reference ALL upstream artifacts (BRD + PRD + EARS)
 

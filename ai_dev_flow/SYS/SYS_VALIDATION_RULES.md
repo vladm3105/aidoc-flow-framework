@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of SYS-TEMPLATE.md
+# - Authority: SYS-TEMPLATE.md is the single source of truth for SYS structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from SYS_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to SYS-TEMPLATE.md
+# =============================================================================
 ---
 title: "SYS Validation Rules Reference"
 tags:

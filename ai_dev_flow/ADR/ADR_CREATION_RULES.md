@@ -1,3 +1,9 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of ADR-TEMPLATE.md
+# - Authority: ADR-TEMPLATE.md is the single source of truth for ADR structure
+# - Purpose: AI guidance for document creation (derived from template)
+# - On conflict: Defer to ADR-TEMPLATE.md
+# =============================================================================
 ---
 title: "ADR Creation Rules"
 tags:

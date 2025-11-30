@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of EARS-TEMPLATE.md
+# - Authority: EARS-TEMPLATE.md is the single source of truth for EARS structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from EARS_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to EARS-TEMPLATE.md
+# =============================================================================
 ---
 title: "EARS Validation Rules Reference"
 tags:

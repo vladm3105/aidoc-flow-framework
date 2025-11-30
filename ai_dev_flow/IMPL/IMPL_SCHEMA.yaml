@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of IMPL-TEMPLATE.md
+# - Authority: IMPL-TEMPLATE.md is the single source of truth for IMPL structure
+# - Purpose: Machine-readable validation rules derived from the template
+# - On conflict: Defer to IMPL-TEMPLATE.md
+# =============================================================================
+#
 # IMPL Schema Definition v1.0
 # Purpose: Define valid metadata structure and validation rules for IMPL documents
 # Usage: Reference by validate_impl.py for automated validation

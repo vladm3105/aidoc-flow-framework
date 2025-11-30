@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of BRD-TEMPLATE.md
+# - Authority: BRD-TEMPLATE.md is the single source of truth for BRD structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from BRD_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to BRD-TEMPLATE.md
+# =============================================================================
 ---
 title: "BRD Validation Rules Reference"
 tags:

@@ -1,3 +1,9 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of EARS-TEMPLATE.md
+# - Authority: EARS-TEMPLATE.md is the single source of truth for EARS structure
+# - Purpose: AI guidance for document creation (derived from template)
+# - On conflict: Defer to EARS-TEMPLATE.md
+# =============================================================================
 ---
 title: "EARS Creation Rules"
 tags:

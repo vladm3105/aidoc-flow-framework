@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of CTR-TEMPLATE.md
+# - Authority: CTR-TEMPLATE.md is the single source of truth for CTR structure
+# - Purpose: Machine-readable validation rules derived from the template
+# - On conflict: Defer to CTR-TEMPLATE.md
+# =============================================================================
+#
 # CTR Schema Definition v1.0
 # Purpose: Define valid metadata structure and validation rules for CTR contract documents
 # Usage: Reference by validate_ctr.py for automated validation

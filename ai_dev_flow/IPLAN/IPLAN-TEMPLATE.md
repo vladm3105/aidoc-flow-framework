@@ -1,3 +1,12 @@
+# =============================================================================
+# 📋 Document Authority: This is the PRIMARY STANDARD for IPLAN structure.
+# All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
+# - In case of conflict, this template is the single source of truth
+# - Schema: IPLAN_SCHEMA.yaml - Machine-readable validation (derivative)
+# - Creation Rules: IPLAN_CREATION_RULES.md - AI guidance for document creation (derivative)
+# - Validation Rules: IPLAN_VALIDATION_RULES.md - AI checklist after document creation (derivative)
+#   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
+# =============================================================================
 ---
 title: "IPLAN-TEMPLATE: implementation-plan"
 tags:

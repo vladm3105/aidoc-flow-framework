@@ -1,3 +1,9 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of IMPL-TEMPLATE.md
+# - Authority: IMPL-TEMPLATE.md is the single source of truth for IMPL structure
+# - Purpose: AI guidance for document creation (derived from template)
+# - On conflict: Defer to IMPL-TEMPLATE.md
+# =============================================================================
 ---
 title: "IMPL Creation Rules"
 tags:

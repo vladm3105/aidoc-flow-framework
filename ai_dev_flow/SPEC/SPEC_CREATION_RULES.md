@@ -1,3 +1,9 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of SPEC-TEMPLATE.md / SPEC-TEMPLATE.yaml
+# - Authority: SPEC-TEMPLATE files are the single source of truth for SPEC structure
+# - Purpose: AI guidance for document creation (derived from template)
+# - On conflict: Defer to SPEC-TEMPLATE.md / SPEC-TEMPLATE.yaml
+# =============================================================================
 ---
 title: "SPEC Creation Rules"
 tags:

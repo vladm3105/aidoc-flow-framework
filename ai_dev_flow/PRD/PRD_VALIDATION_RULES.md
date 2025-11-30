@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of PRD-TEMPLATE.md
+# - Authority: PRD-TEMPLATE.md is the single source of truth for PRD structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from PRD_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to PRD-TEMPLATE.md
+# =============================================================================
 ---
 title: "PRD Validation Rules Reference"
 tags:

@@ -1,3 +1,13 @@
+# =============================================================================
+# 📋 Document Authority: This is the PRIMARY STANDARD for BDD structure.
+# All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
+# - In case of conflict, this template is the single source of truth
+# - Schema: BDD_SCHEMA.yaml - Machine-readable validation (derivative)
+# - Creation Rules: BDD_CREATION_RULES.md - AI guidance for document creation (derivative)
+# - Validation Rules: BDD_VALIDATION_RULES.md - AI checklist after document creation (derivative)
+#   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
+# =============================================================================
+#
 # ⚠️ CRITICAL: Always reference SPEC_DRIVEN_DEVELOPMENT_GUIDE.md as the single source of truth
 #              for workflow steps, artifact definitions, and quality gates.
 #              Location: ../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
@@ -27,10 +37,18 @@
 #   - ../EARS/EARS-TEMPLATE.md#5.6 (Business vs Technical Requirements Boundary)
 #   - ../BRD/BRD-TEMPLATE.md#appendix-b (PRD-Level Content Exclusions)
 #
-# 📋 Document Authority: This is the PRIMARY STANDARD for BDD structure.
-# - Schema: BDD_SCHEMA.yaml v1.0 - Validation rules
-# - Creation Rules: BDD_CREATION_RULES.md - Usage guidance
-# - Validation Rules: BDD_VALIDATION_RULES.md - Post-creation checks
+# =============================================================================
+# 📋 DOCUMENT AUTHORITY: PRIMARY STANDARD for BDD structure
+# =============================================================================
+# This template is the SINGLE SOURCE OF TRUTH for BDD artifact structure.
+# All other documents DERIVE from this template:
+#   - BDD_SCHEMA.yaml (DERIVATIVE - machine-readable validation rules)
+#   - BDD_CREATION_RULES.md (DERIVATIVE - human-readable creation guidance)
+#   - BDD_VALIDATION_RULES.md (DERIVATIVE - post-creation validation checklist)
+#
+# CONFLICT RESOLUTION: When any document conflicts with this template,
+# this template wins. Update the conflicting document to match.
+# =============================================================================
 
 ## Document Control
 
@@ -77,12 +95,12 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 #   @depends-bdd: BDD-NNN  # Prerequisite BDD feature that must be implemented first
 #
 # CUMULATIVE TAGGING REQUIREMENTS (Layer 4):
-# Required Tags: @brd, @prd, @ears (plus standard @requirement, @adr, @bdd tags)
-# Format: @artifact-type: DOCUMENT-ID:REQUIREMENT-ID
-# Example:
-#   @brd: BRD-001:030
-#   @prd: PRD-003:002
-#   @ears: EARS-001:003
+# MANDATORY Tags: @brd, @prd, @ears (plus standard @requirement, @adr, @bdd tags)
+# Format: @artifact-type: DOCUMENT-ID:REQUIREMENT-ID (e.g., BRD-NNN:NNN)
+# Examples:
+#   @brd: BRD-001:030   (REQUIRED - business requirements)
+#   @prd: PRD-003:002   (REQUIRED - product requirements)
+#   @ears: EARS-001:003 (REQUIRED - engineering requirements)
 # Purpose: Complete traceability chain from business requirements through tests
 # See: ../TRACEABILITY.md#cumulative-tagging-hierarchy
 #
@@ -96,9 +114,9 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 # Purpose: Prevent magic numbers by referencing centralized threshold registry
 # See: ../PRD/PRD-000_threshold_registry_template.md
 
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
+@brd: BRD-NNN:NNN      # REQUIRED - business requirements traceability
+@prd: PRD-NNN:NNN      # REQUIRED - product requirements traceability
+@ears: EARS-NNN:NNN    # REQUIRED - engineering requirements traceability
 @requirement:[REQ-NNN](../reqs/.../REQ-NNN_...md#REQ-NNN)
 @adr:[ADR-NNN](../adrs/ADR-NNN_...md#ADR-NNN)
 @bdd:[BDD-NNN:scenarios](BDD-NNN_descriptive_requirements.feature#scenarios)

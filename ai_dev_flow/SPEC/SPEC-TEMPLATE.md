@@ -1,3 +1,12 @@
+# =============================================================================
+# 📋 Document Authority: This is the PRIMARY STANDARD for SPEC Markdown structure.
+# All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
+# - In case of conflict, this template is the single source of truth
+# - Schema: SPEC_SCHEMA.yaml - Machine-readable validation (derivative)
+# - Creation Rules: SPEC_CREATION_RULES.md - AI guidance for document creation (derivative)
+# - Validation Rules: SPEC_VALIDATION_RULES.md - AI checklist after document creation (derivative)
+#   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
+# =============================================================================
 ---
 title: "SPEC-TEMPLATE: technical-specification"
 tags:

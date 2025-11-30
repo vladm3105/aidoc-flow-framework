@@ -1,3 +1,9 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of SYS-TEMPLATE.md
+# - Authority: SYS-TEMPLATE.md is the single source of truth for SYS structure
+# - Purpose: AI guidance for document creation (derived from template)
+# - On conflict: Defer to SYS-TEMPLATE.md
+# =============================================================================
 ---
 title: "SYS Creation Rules"
 tags:

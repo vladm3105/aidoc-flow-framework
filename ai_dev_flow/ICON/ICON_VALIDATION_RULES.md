@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of ICON-TEMPLATE.md
+# - Authority: ICON-TEMPLATE.md is the single source of truth for ICON structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from ICON_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to ICON-TEMPLATE.md
+# =============================================================================
 ---
 title: "ICON Validation Rules"
 tags:

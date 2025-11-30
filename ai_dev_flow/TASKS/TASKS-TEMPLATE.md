@@ -1,3 +1,12 @@
+# =============================================================================
+# 📋 Document Authority: This is the PRIMARY STANDARD for TASKS structure.
+# All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
+# - In case of conflict, this template is the single source of truth
+# - Schema: TASKS_SCHEMA.yaml - Machine-readable validation (derivative)
+# - Creation Rules: TASKS_CREATION_RULES.md - AI guidance for document creation (derivative)
+# - Validation Rules: TASKS_VALIDATION_RULES.md - AI checklist after document creation (derivative)
+#   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
+# =============================================================================
 ---
 title: "TASKS-TEMPLATE: task-breakdown-document"
 tags:

@@ -1,3 +1,12 @@
+# =============================================================================
+# 📋 Document Authority: This is the PRIMARY STANDARD for EARS structure.
+# All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
+# - In case of conflict, this template is the single source of truth
+# - Schema: EARS_SCHEMA.yaml - Machine-readable validation (derivative)
+# - Creation Rules: EARS_CREATION_RULES.md - AI guidance for document creation (derivative)
+# - Validation Rules: EARS_VALIDATION_RULES.md - AI checklist after document creation (derivative)
+#   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
+# =============================================================================
 ---
 title: "EARS-NNN: [Descriptive Title]"
 tags:

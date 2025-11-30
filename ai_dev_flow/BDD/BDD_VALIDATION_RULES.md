@@ -1,3 +1,10 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of BDD-TEMPLATE.feature
+# - Authority: BDD-TEMPLATE.feature is the single source of truth for BDD structure
+# - Purpose: AI checklist after document creation (derived from template)
+# - Scope: Includes all rules from BDD_CREATION_RULES.md plus validation extensions
+# - On conflict: Defer to BDD-TEMPLATE.feature
+# =============================================================================
 ---
 title: "BDD Validation Rules Reference"
 tags:
@@ -12,10 +19,11 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for BDD documents.
-> - Apply these rules after BDD creation or modification
-> - **Authority**: Validates compliance with `BDD-TEMPLATE.feature` (the primary standard)
+> **📋 Document Role**: VALIDATION CHECKLIST for BDD documents (DERIVATIVE).
+> - **Authority**: Validates compliance with `BDD-TEMPLATE.feature` (PRIMARY STANDARD)
+> - **Purpose**: Post-creation quality gate checks
 > - **Scope**: Use for quality gates before committing BDD changes
+> - **Conflict Resolution**: If this conflicts with Template, update this document
 
 # BDD Validation Rules Reference
 
@@ -84,15 +92,17 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 
 ### CHECK 4: Upstream Traceability Tags
 
-**Purpose**: Verify complete tag chain
+**Purpose**: Verify complete tag chain per BDD-TEMPLATE.feature
 **Type**: Error (blocking)
 
-**Required Tags**:
+**Required Tags** (ALL MANDATORY):
 ```gherkin
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
+@brd: BRD-NNN:NNN    # REQUIRED - business requirements
+@prd: PRD-NNN:NNN    # REQUIRED - product requirements
+@ears: EARS-NNN:NNN  # REQUIRED - engineering requirements
 ```
+
+**Format**: Extended format with requirement ID suffix (`:NNN`) is REQUIRED.
 
 ### CHECK 5: Scenario Coverage Completeness
 
@@ -186,10 +196,14 @@ find docs/BDD -name "BDD-*.feature" -exec ./scripts/validate_bdd_template.sh {} 
 
 ## Common Mistakes
 
-### Mistake #1: Incomplete Traceability Tags
+### Mistake #1: Incomplete Traceability Tags (ALL THREE ARE REQUIRED)
 ```
-❌ @brd: BRD-001
+❌ @brd: BRD-001           (missing :NNN suffix)
+✅ @brd: BRD-001:030       (correct format with requirement ID)
+❌ Missing @brd tag        (ALL three tags are MANDATORY)
 ✅ @brd: BRD-001:030
+   @prd: PRD-001:002
+   @ears: EARS-001:003
 ```
 
 ### Mistake #2: Subjective Language

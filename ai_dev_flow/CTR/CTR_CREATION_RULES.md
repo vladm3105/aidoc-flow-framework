@@ -1,3 +1,9 @@
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of CTR-TEMPLATE.md / CTR-TEMPLATE.yaml
+# - Authority: CTR-TEMPLATE files are the single source of truth for CTR structure
+# - Purpose: AI guidance for document creation (derived from template)
+# - On conflict: Defer to CTR-TEMPLATE.md / CTR-TEMPLATE.yaml
+# =============================================================================
 ---
 title: "CTR Creation Rules"
 tags:
