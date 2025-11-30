@@ -1,11 +1,11 @@
 ---
+title: "doc-ears: Create EARS formal requirements (Layer 3)"
 name: doc-ears
 description: Create EARS (Easy Approach to Requirements Syntax) formal requirements - Layer 3 artifact using WHEN-THE-SHALL-WITHIN format
 tags:
   - sdd-workflow
   - layer-3-artifact
   - shared-architecture
-  - documentation-skill
 custom_fields:
   layer: 3
   artifact_type: EARS
@@ -50,9 +50,39 @@ Before creating EARS, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream BRD and PRD**: Read the BRD and PRD that drive this EARS
-3. **Template**: `ai_dev_flow/EARS/EARS-TEMPLATE.md`
-4. **Creation Rules**: `ai_dev_flow/EARS/EARS_CREATION_RULES.md`
-5. **Validation Rules**: `ai_dev_flow/EARS/EARS_VALIDATION_RULES.md`
+3. **Template**: `ai_dev_flow/EARS/EARS-TEMPLATE.md` (includes METADATA CLARIFICATION block)
+4. **Schema**: `ai_dev_flow/EARS/EARS_SCHEMA.yaml` (machine-readable validation rules)
+5. **Creation Rules**: `ai_dev_flow/EARS/EARS_CREATION_RULES.md`
+6. **Validation Rules**: `ai_dev_flow/EARS/EARS_VALIDATION_RULES.md`
+
+### Template Binding (CRITICAL)
+
+**Always use these exact metadata values:**
+
+```yaml
+tags:
+  - ears                 # NOT 'ears-requirements' or 'ears-formal-requirements'
+  - layer-3-artifact
+  - shared-architecture  # OR 'ai-agent-primary' for agent docs
+
+custom_fields:
+  document_type: ears    # NOT 'engineering-requirements'
+  artifact_type: EARS
+  layer: 3
+  architecture_approaches: [ai-agent-based, traditional-8layer]  # ARRAY format
+  priority: shared
+  development_status: active
+```
+
+**Source Document Format:**
+```
+| **Source Document** | @prd: PRD-NNN |
+```
+
+**Post-Creation Validation:**
+```bash
+python scripts/validate_ears.py --path docs/EARS/EARS-NNN.md
+```
 
 ## When to Use This Skill
 

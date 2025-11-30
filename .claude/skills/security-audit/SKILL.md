@@ -1,4 +1,5 @@
 ---
+title: "security-audit: Security analysis, vulnerability assessment, and security code reviews"
 name: security-audit
 description: Security analysis, vulnerability assessment, and security code reviews
 tags:
@@ -6,10 +7,14 @@ tags:
   - shared-architecture
   - quality-assurance
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: quality-assurance
+  upstream_artifacts: [SPEC, CTR]
+  downstream_artifacts: []
 ---
 
 # security-audit

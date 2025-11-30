@@ -1,0 +1,248 @@
+# EARS Schema Definition v1.0
+# Purpose: Define valid metadata structure and validation rules for EARS documents
+# Usage: Reference by validate_ears.py for automated validation
+
+schema_version: "1.0"
+artifact_type: EARS
+layer: 3
+last_updated: "2025-11-29"
+
+# =============================================================================
+# YAML Frontmatter Requirements
+# =============================================================================
+
+metadata:
+  # Required fields in custom_fields
+  required_custom_fields:
+    document_type:
+      type: string
+      required: true
+      allowed_values: ["ears"]
+      description: "Must be 'ears' - no variations allowed"
+
+    artifact_type:
+      type: string
+      required: true
+      allowed_values: ["EARS"]
+      description: "Must be uppercase 'EARS'"
+
+    layer:
+      type: integer
+      required: true
+      allowed_values: [3]
+      description: "EARS is always Layer 3 artifact"
+
+    architecture_approaches:
+      type: array
+      required: true
+      allowed_values:
+        - ["ai-agent-based"]
+        - ["traditional-8layer"]
+        - ["ai-agent-based", "traditional-8layer"]
+      description: "Must be array format, not 'architecture_approach' string"
+
+    priority:
+      type: string
+      required: true
+      allowed_values: ["primary", "shared", "fallback"]
+      description: "Classification tier based on architecture"
+
+    development_status:
+      type: string
+      required: true
+      allowed_values: ["active", "draft", "deprecated", "reference"]
+      description: "Current development status"
+
+  # Optional custom_fields
+  optional_custom_fields:
+    agent_id:
+      type: string
+      pattern: "^AGENT-\\d{3}$"
+      description: "Required for ai-agent-primary documents"
+
+    source_prd:
+      type: string
+      pattern: "^PRD-\\d{3}$"
+      description: "Alternative to Source Document in table"
+
+  # Required tags
+  required_tags:
+    - ears                # Primary identifier - REQUIRED
+    - layer-3-artifact    # Layer identifier - REQUIRED
+
+  # Forbidden tag patterns (will fail validation)
+  forbidden_tag_patterns:
+    - "^ears-requirements$"        # Use 'ears' instead
+    - "^ears-formal-requirements$" # Use 'ears' instead
+    - "^ears-document$"            # Use 'ears' instead
+    - "^ears-\\d{3}$"              # Don't include document number in tags
+    - "^engineering-requirements$" # Use 'ears' for document_type
+
+# =============================================================================
+# Document Structure Requirements
+# =============================================================================
+
+structure:
+  # Required sections (in order)
+  required_sections:
+    - pattern: "^# EARS-\\d{3}:"
+      name: "Title (H1)"
+      description: "Single H1 with format EARS-NNN: Title"
+
+    - pattern: "^## Document Control$"
+      name: "Document Control"
+      description: "Contains metadata table with Source Document"
+
+    - pattern: "^## 1\\. Purpose and Context$"
+      name: "Purpose and Context"
+      description: "Section 1 with Purpose, Scope, Audience subsections"
+
+    - pattern: "^## 2\\. EARS in Development Workflow$"
+      name: "Development Workflow"
+      description: "Section 2 with workflow diagram"
+
+    - pattern: "^## 3\\. Requirements$"
+      name: "Requirements"
+      description: "Section 3 with EARS statements (Event-Driven, State-Driven, etc.)"
+
+  # Document Control table requirements
+  document_control:
+    required_fields:
+      - Status
+      - Version
+      - Date Created
+      - Last Updated
+      - Author
+      - Priority
+      - Source Document
+
+    source_document_format:
+      pattern: "^@prd: PRD-\\d{3}$"
+      description: "Must use @prd: prefix for traceability"
+
+  # Section numbering rules
+  section_numbering:
+    start: 1
+    format: "## N. Section Title"
+    subsection_format: "### N.N Subsection Title"
+    no_duplicate_numbers: true
+
+# =============================================================================
+# EARS Statement Patterns
+# =============================================================================
+
+ears_patterns:
+  # Valid EARS pattern types
+  pattern_types:
+    event_driven:
+      prefix: "WHEN"
+      format: "WHEN {trigger}, THE Platform SHALL {action} WITHIN {timing}."
+      required_components: ["trigger", "action", "timing"]
+
+    state_driven:
+      prefix: "WHILE"
+      format: "WHILE {condition}, THE Platform SHALL {behavior} WITHIN {constraint}."
+      required_components: ["condition", "behavior", "constraint"]
+
+    unwanted_behavior:
+      prefix: "IF"
+      format: "IF {unwanted_condition}, THE Platform SHALL {prevention} WITHIN {timing}."
+      required_components: ["unwanted_condition", "prevention", "timing"]
+
+    ubiquitous:
+      prefix: "THE Platform SHALL"
+      format: "THE Platform SHALL {always_behavior} WITHIN {scope}."
+      required_components: ["always_behavior", "scope"]
+
+  # Each EARS statement must include
+  required_statement_components:
+    - traceability_tag: "@prd: PRD-NNN:FR-NNN.N"
+    - timing_specification: "WITHIN X seconds/minutes/hours at pNN latency"
+
+# =============================================================================
+# Validation Rules
+# =============================================================================
+
+validation_rules:
+  # Metadata validation
+  metadata:
+    - rule: "document_type must be 'ears'"
+      severity: error
+
+    - rule: "architecture_approaches must be array"
+      severity: error
+      fix: "Change 'architecture_approach: value' to 'architecture_approaches: [value]'"
+
+    - rule: "tags must include 'ears' and 'layer-3-artifact'"
+      severity: error
+
+    - rule: "forbidden tag patterns must not appear"
+      severity: error
+
+  # Structure validation
+  structure:
+    - rule: "Single H1 heading only"
+      severity: warning
+
+    - rule: "Source Document must use @prd: prefix"
+      severity: error
+
+    - rule: "No duplicate section numbers"
+      severity: error
+
+    - rule: "Sections must be numbered sequentially"
+      severity: warning
+
+  # Content validation
+  content:
+    - rule: "EARS statements must use WHEN-THE-SHALL-WITHIN format"
+      severity: warning
+
+    - rule: "Each EARS statement must have traceability tag"
+      severity: warning
+
+    - rule: "Timing specifications must include percentile (p95, p99)"
+      severity: warning
+
+# =============================================================================
+# Cross-Reference Requirements
+# =============================================================================
+
+traceability:
+  upstream:
+    required:
+      - type: PRD
+        format: "@prd: PRD-NNN"
+        location: "Document Control table"
+    optional:
+      - type: BRD
+        format: "@brd: BRD-NNN"
+        location: "Within EARS statements"
+
+  downstream:
+    expected:
+      - type: BDD
+        format: "BDD-NNN"
+      - type: SPEC
+        format: "SPEC-NNN"
+
+  threshold_references:
+    format: "@threshold: PRD-035:category.subcategory"
+    description: "Reference to Platform Threshold Registry"
+
+# =============================================================================
+# Error Messages
+# =============================================================================
+
+error_messages:
+  E001: "Missing required tag 'ears'"
+  E002: "Missing required tag 'layer-3-artifact'"
+  E003: "Invalid document_type: must be 'ears'"
+  E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
+  E005: "Forbidden tag pattern detected"
+  E006: "Source Document missing @prd: prefix"
+  E007: "Duplicate section number detected"
+  E008: "Multiple H1 headings detected"
+  W001: "EARS statement missing WITHIN timing specification"
+  W002: "EARS statement missing traceability tag"
+  W003: "Section numbering not sequential"

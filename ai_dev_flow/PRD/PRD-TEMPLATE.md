@@ -16,6 +16,37 @@ custom_fields:
   template_variant: standard | agent-based | automation-focused
 ---
 
+<!-- ======================================================================
+METADATA CLARIFICATION (DO NOT INCLUDE IN OUTPUT)
+
+When creating PRD documents, use EXACTLY these values in YAML frontmatter:
+
+```yaml
+tags:
+  - prd                 # REQUIRED - Use 'prd' NOT 'product-prd', 'feature-prd'
+  - layer-2-artifact    # REQUIRED - Layer identifier
+
+custom_fields:
+  document_type: prd    # REQUIRED - Use 'prd' NOT 'product-requirements'
+  artifact_type: PRD    # REQUIRED - Uppercase
+  layer: 2              # REQUIRED - PRD is Layer 2
+  architecture_approaches: [ai-agent-based]  # REQUIRED - Array format, NOT singular
+
+# Valid architecture_approaches values:
+# - [ai-agent-based]                         # AI agent primary documents
+# - [traditional-8layer]                     # Traditional fallback documents
+# - [ai-agent-based, traditional-8layer]     # Shared platform documents
+```
+
+FORBIDDEN values (will fail validation):
+- tags: product-prd, feature-prd, product-requirements
+- document_type: product-requirements, product_requirements
+- architecture_approach: value (singular form - use plural with array)
+
+Validation: Run `python scripts/validate_prd.py docs/PRD/PRD-NNN*.md`
+Schema: See `ai_dev_flow/PRD/PRD_SCHEMA.yaml` for complete rules
+====================================================================== -->
+
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for PRD structure.
 > - All PRDs must conform to this template (20 sections: 0-19)
 > - `PRD_CREATION_RULES.md` - Helper guidance for template usage

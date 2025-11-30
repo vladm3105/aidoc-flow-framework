@@ -459,6 +459,12 @@ This document provides objective comparison between:
 | `shared-architecture` | Required by all approaches |
 | `recommended-approach` | Recommended implementation path |
 | `reference-implementation` | Reference/fallback only |
+| `ai-assistant` | Meta-skill that guides AI assistant behavior and skill selection |
+
+**Note**: The `ai-assistant` tag is used for meta-skills that provide guidance to AI assistants on skill selection, workflow optimization, quality monitoring, or context analysis. Skills with this tag typically:
+- Operate at `architecture_approaches: [ai-agent-based]` only
+- Have `priority: primary` (essential for AI-agent workflow)
+- Are used by: `context-analyzer`, `quality-advisor`, `skill-recommender`, `workflow-optimizer`
 
 ### 6.3 Feature Category Tags
 

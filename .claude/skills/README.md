@@ -230,12 +230,12 @@ pip install google-adk
 
 ---
 
-### 5. charts_flow
+### 5. charts-flow
 
-**Skill ID**: `charts_flow`
-**Directory**: [charts_flow/](./charts_flow/)
-**File**: [charts_flow/SKILL.md](./charts_flow/SKILL.md)
-**Quick Reference**: [charts_flow_quickref.md](./charts_flow_quickref.md)
+**Skill ID**: `charts-flow`
+**Directory**: [charts-flow/](./charts-flow/)
+**File**: [charts-flow/SKILL.md](./charts-flow/SKILL.md)
+**Quick Reference**: [charts-flow_quickref.md](./charts-flow_quickref.md)
 
 **Purpose**: Create and manage Mermaid architecture diagrams with automatic SVG generation for documentation
 
@@ -252,7 +252,7 @@ pip install google-adk
 
 **Quick Start**:
 ```bash
-/skill charts_flow
+/skill charts-flow
 ```
 
 **Supported Diagram Types**:
@@ -787,6 +787,394 @@ pip install google-adk
 
 ---
 
+### 13. project-init
+
+**Skill ID**: `project-init`
+**Directory**: [project-init/](./project-init/)
+**File**: [project-init/SKILL.md](./project-init/SKILL.md)
+
+**Purpose**: Initialize projects with AI Dev Flow framework using domain-aware setup
+
+**Use Cases**:
+- Starting a brand new project from scratch (greenfield)
+- Setting up project folder structure and domain selection
+- Initializing documentation directories before workflow execution
+
+**Complexity**: Low (one-time setup)
+**Version**: 1.0.0
+
+**Quick Start**:
+```bash
+/skill project-init
+```
+
+**Key Features**:
+- Domain-aware project initialization
+- Directory structure creation for SDD artifacts
+- Framework configuration setup
+- Hand-off guidance to doc-flow skill
+
+**When to Use**:
+- Starting brand new project from scratch
+- No project folders exist yet
+- Domain has not been selected
+
+**When NOT to Use**:
+- Project already has docs/ folder structure
+- Working on existing project (use `doc-flow` instead)
+
+---
+
+### 14. analytics-flow
+
+**Skill ID**: `analytics-flow`
+**Directory**: [analytics-flow/](./analytics-flow/)
+**File**: [analytics-flow/SKILL.md](./analytics-flow/SKILL.md)
+
+**Purpose**: Project metrics, documentation analytics, progress tracking, and trend analysis
+
+**Use Cases**:
+- Generate documentation coverage metrics
+- Track requirement status and coverage
+- Identify documentation debt and outdated documents
+- Calculate velocity metrics and trends
+- Identify orphaned requirements and bottlenecks
+
+**Complexity**: Medium (data aggregation + visualization)
+**Category**: Data Analysis & Reporting
+
+**Quick Start**:
+```bash
+/skill analytics-flow
+```
+
+**Key Features**:
+- **Documentation Coverage**: Total documents, token counts, completeness percentage
+- **Requirement Tracking**: Status tracking, coverage mapping, orphan detection
+- **Velocity Metrics**: Artifacts per week, average completion time, trends
+- **Quality Metrics**: Traceability scores, validation pass rates
+
+---
+
+### 15. code-review
+
+**Skill ID**: `code-review`
+**Directory**: [code-review/](./code-review/)
+**File**: [code-review/SKILL.md](./code-review/SKILL.md)
+
+**Purpose**: Automated code quality analysis, static analysis, security scanning, and best practices enforcement
+
+**Use Cases**:
+- Perform comprehensive code review before merge
+- Validate code against architectural decisions (ADR) and specifications (SPEC)
+- Detect security vulnerabilities and code smells
+- Ensure compliance with coding standards
+
+**Complexity**: High (multi-tool integration + analysis)
+**Category**: Code Quality Assurance
+
+**Quick Start**:
+```bash
+/skill code-review
+```
+
+**Key Features**:
+- **Static Analysis**: pylint, ruff, flake8, mypy/pyright integration
+- **Security Scanning**: bandit, safety, secret detection
+- **Code Smells**: Duplicate code, long methods, god classes detection
+- **ADR Compliance**: Validates implementations against architecture decisions
+- **SPEC Compliance**: Compares code against specifications
+
+---
+
+### 16. contract-tester
+
+**Skill ID**: `contract-tester`
+**Directory**: [contract-tester/](./contract-tester/)
+**File**: [contract-tester/SKILL.md](./contract-tester/SKILL.md)
+
+**Purpose**: API contract validation, breaking change detection, and consumer-driven contract testing
+
+**Use Cases**:
+- Validate API implementations against CTR documents
+- Detect breaking changes before deployment
+- Ensure provider-consumer compatibility
+- Generate contract tests
+
+**Complexity**: Medium-High (schema validation + contract compatibility)
+**Category**: API Quality Assurance
+
+**Quick Start**:
+```bash
+/skill contract-tester
+```
+
+**Key Features**:
+- **CTR YAML Validation**: Schema validation, required fields, data types
+- **OpenAPI/AsyncAPI Compliance**: Convert and validate against standards
+- **Breaking Change Detection**: Identify incompatible changes
+- **Consumer-Driven Testing**: Generate tests from consumer expectations
+- **Mock Server Generation**: Create mock servers from contracts
+
+---
+
+### 17. devops-flow
+
+**Skill ID**: `devops-flow`
+**Directory**: [devops-flow/](./devops-flow/)
+**File**: [devops-flow/SKILL.md](./devops-flow/SKILL.md)
+
+**Purpose**: DevOps, MLOps, DevSecOps practices for cloud environments (GCP, Azure, AWS)
+
+**Use Cases**:
+- Automate infrastructure provisioning from SPEC
+- Generate CI/CD pipeline configurations
+- Create deployment manifests for Kubernetes
+- Implement security scanning pipelines
+
+**Complexity**: High (multi-cloud + orchestration + automation)
+**Category**: DevOps & Deployment
+
+**Quick Start**:
+```bash
+/skill devops-flow
+```
+
+**Key Features**:
+- **Infrastructure as Code**: Terraform, CloudFormation, Ansible, Pulumi
+- **CI/CD Pipelines**: GitHub Actions, GitLab CI, Jenkins, CircleCI
+- **Container Orchestration**: Kubernetes manifests, Helm charts
+- **Security Integration**: DevSecOps scanning, vulnerability management
+- **Multi-Cloud Support**: GCP, AWS, Azure deployment patterns
+
+---
+
+### 18. doc-validator
+
+**Skill ID**: `doc-validator`
+**Directory**: [doc-validator/](./doc-validator/)
+**File**: [doc-validator/SKILL.md](./doc-validator/SKILL.md)
+
+**Purpose**: Automated validation of documentation standards for SDD framework compliance
+
+**Use Cases**:
+- Validate token counts against tool-specific limits
+- Enforce language standards (objective, factual language)
+- Check document structure against templates
+- Validate traceability completeness
+- Batch validate entire documentation sets
+
+**Complexity**: Medium (validation rules + cross-reference analysis)
+**Category**: Documentation Quality Assurance
+
+**Quick Start**:
+```bash
+/skill doc-validator
+```
+
+**Key Features**:
+- **Token Count Validation**: Claude Code (50K/100K), Gemini (10K flag), Copilot (30KB)
+- **Language Standards**: Objective language enforcement, no promotional content
+- **Template Compliance**: Required sections, metadata validation
+- **Traceability Validation**: Forward/reverse reference checking
+- **Batch Processing**: Validate multiple documents simultaneously
+
+---
+
+### 19. mermaid-gen
+
+**Skill ID**: `mermaid-gen`
+**Directory**: [mermaid-gen/](./mermaid-gen/)
+**File**: [mermaid-gen/SKILL.md](./mermaid-gen/SKILL.md)
+
+**Purpose**: Generate syntactically correct Mermaid diagrams for technical documentation
+
+**Use Cases**:
+- Create new Mermaid diagrams (flowcharts, sequence, state diagrams)
+- Fix parse errors or rendering issues in existing diagrams
+- Convert written descriptions into Mermaid syntax
+- Validate diagram syntax before committing
+
+**Complexity**: Medium (syntax validation + diagram generation)
+**Category**: Diagram Generation
+
+**Quick Start**:
+```bash
+/skill mermaid-gen
+```
+
+**Key Features**:
+- **Error Prevention**: Avoid nested quotes, special character issues
+- **Syntax Mastery**: Correct patterns for all diagram types
+- **Troubleshooting**: Diagnose and fix parse errors systematically
+- **Best Practices**: Standardized naming, styling, structure conventions
+
+**Relationship to charts-flow**:
+- `mermaid-gen`: Focus on syntax correctness and diagram generation
+- `charts-flow`: Focus on file management and SVG generation
+
+---
+
+### 20. refactor-flow
+
+**Skill ID**: `refactor-flow`
+**Directory**: [refactor-flow/](./refactor-flow/)
+**File**: [refactor-flow/SKILL.md](./refactor-flow/SKILL.md)
+
+**Purpose**: Code refactoring assistance, technical debt management, and documentation synchronization
+
+**Use Cases**:
+- Detect code smells and refactoring opportunities
+- Guide safe code transformations
+- Maintain traceability during refactoring
+- Synchronize documentation with code changes
+
+**Complexity**: Medium-High (code transformation + traceability maintenance)
+**Category**: Code Quality & Maintenance
+
+**Quick Start**:
+```bash
+/skill refactor-flow
+```
+
+**Key Features**:
+- **Code Smell Detection**: Long methods, god classes, duplicate code, dead code
+- **Refactoring Recommendations**: Extract method/class, rename, move
+- **Safe Transformations**: Preserve behavior, maintain tests
+- **Documentation Sync**: Update SPEC/REQ when code changes
+
+---
+
+### 21. security-audit
+
+**Skill ID**: `security-audit`
+**Directory**: [security-audit/](./security-audit/)
+**File**: [security-audit/SKILL.md](./security-audit/SKILL.md)
+
+**Purpose**: Security requirements validation, vulnerability assessment, and compliance checking
+
+**Use Cases**:
+- Validate security requirements from REQ documents
+- Scan code for security vulnerabilities
+- Check dependency vulnerabilities
+- Verify compliance with security standards
+- Generate security audit reports
+
+**Complexity**: High (multi-layer security analysis)
+**Category**: Security & Compliance
+
+**Quick Start**:
+```bash
+/skill security-audit
+```
+
+**Key Features**:
+- **Security Requirements**: Validate auth, encryption, data protection specs
+- **Code Security**: SAST (bandit, semgrep), secret detection
+- **Dependency Scanning**: safety, pip-audit, vulnerability detection
+- **OWASP Compliance**: Top 10 vulnerability checking
+- **CWE Mapping**: Common Weakness Enumeration references
+
+---
+
+### 22. test-automation
+
+**Skill ID**: `test-automation`
+**Directory**: [test-automation/](./test-automation/)
+**File**: [test-automation/SKILL.md](./test-automation/SKILL.md)
+
+**Purpose**: Automated test generation, BDD execution, coverage analysis, and contract testing
+
+**Use Cases**:
+- Generate tests from BDD scenarios (Given-When-Then)
+- Create unit tests from REQ documents
+- Generate contract tests from CTR documents
+- Analyze test coverage and gaps
+- Execute test suites and report results
+
+**Complexity**: High (multi-framework integration + coverage analysis)
+**Category**: Quality Assurance & Testing
+
+**Quick Start**:
+```bash
+/skill test-automation
+```
+
+**Key Features**:
+- **BDD Scenario Generation**: Parse and generate pytest-bdd tests
+- **Unit Test Generation**: Create tests from REQ/SPEC documents
+- **Contract Testing**: Provider/consumer tests from CTR
+- **Coverage Analysis**: Track and report test coverage
+- **Gap Identification**: Identify untested requirements
+
+---
+
+### SDD Core Workflow Skills (doc-*)
+
+The following skills implement the 12-layer SDD workflow. Each creates specific artifact types:
+
+#### 23. doc-brd (Layer 1)
+**Purpose**: Create Business Requirements Documents (BRD) - Layer 1 artifact
+**Quick Reference**: [doc-brd_quickref.md](./doc-brd_quickref.md)
+**Use**: Starting point for new features/projects with business context
+
+#### 24. doc-prd (Layer 2)
+**Purpose**: Create Product Requirements Documents (PRD) - Layer 2 artifact
+**Quick Reference**: [doc-prd_quickref.md](./doc-prd_quickref.md)
+**Use**: Transform BRD into product features, user stories, and acceptance criteria
+
+#### 25. doc-ears (Layer 3)
+**Purpose**: Create EARS formal requirements using WHEN-THE-SHALL-WITHIN syntax
+**Quick Reference**: [doc-ears_quickref.md](./doc-ears_quickref.md)
+**Use**: Formalize requirements with precise behavioral statements
+
+#### 26. doc-bdd (Layer 4)
+**Purpose**: Create BDD test scenarios using Gherkin Given-When-Then format
+**Quick Reference**: [doc-bdd_quickref.md](./doc-bdd_quickref.md)
+**Use**: Define executable test scenarios from EARS requirements
+
+#### 27. doc-adr (Layer 5)
+**Purpose**: Create Architecture Decision Records with Context-Decision-Consequences format
+**Quick Reference**: [doc-adr_quickref.md](./doc-adr_quickref.md)
+**Use**: Document architectural decisions with rationale and alternatives
+
+#### 28. doc-sys (Layer 6)
+**Purpose**: Create System Requirements (SYS) with FR/NFR definitions
+**Quick Reference**: [doc-sys_quickref.md](./doc-sys_quickref.md)
+**Use**: Define functional and non-functional system requirements
+
+#### 29. doc-req (Layer 7)
+**Purpose**: Create Atomic Requirements using REQ v3.0 format (12 sections)
+**Quick Reference**: [doc-req_quickref.md](./doc-req_quickref.md)
+**Use**: Decompose SYS into implementation-ready atomic requirements
+
+#### 30. doc-impl (Layer 8 - Optional)
+**Purpose**: Create Implementation Approach with WHO-WHEN-WHAT format
+**Quick Reference**: [doc-impl_quickref.md](./doc-impl_quickref.md)
+**Use**: Document implementation strategy, team assignments, timelines
+
+#### 31. doc-ctr (Layer 9 - Optional)
+**Purpose**: Create Data Contracts using dual-file format (.md + .yaml)
+**Quick Reference**: [doc-ctr_quickref.md](./doc-ctr_quickref.md)
+**Use**: Define API contracts and data schemas (OpenAPI/JSON Schema)
+
+#### 32. doc-spec (Layer 10)
+**Purpose**: Create Technical Specifications in YAML format
+**Quick Reference**: [doc-spec_quickref.md](./doc-spec_quickref.md)
+**Use**: Define 100% implementation-ready specifications
+
+#### 33. doc-tasks (Layer 11)
+**Purpose**: Create Task Breakdown decomposing SPEC into AI-structured TODOs
+**Quick Reference**: [doc-tasks_quickref.md](./doc-tasks_quickref.md)
+**Use**: Break SPEC into actionable tasks with dependencies and effort estimates
+
+#### 34. doc-iplan (Layer 12)
+**Purpose**: Create Implementation Plans with session-based bash commands
+**Quick Reference**: [doc-iplan_quickref.md](./doc-iplan_quickref.md)
+**Use**: Convert TASKS into executable bash command sequences
+
+---
+
 ## Skill Development
 
 ### Creating New Skills
@@ -913,7 +1301,7 @@ pip install google-adk
 
 ### Document Generation Skills
 - `generate_implementation_plan` - Generate IMPL documents from BRD analysis
-- `charts_flow` - Create and manage Mermaid architecture diagrams with SVG generation
+- `charts-flow` - Create and manage Mermaid architecture diagrams with SVG generation
 - `adr-roadmap` - Generate phased implementation roadmaps from ADRs
 
 ### Project Management Skills
@@ -978,6 +1366,6 @@ This functional grouping simplifies understanding the workflow while maintaining
 
 ---
 
-**Index Version**: 1.7
+**Index Version**: 1.8
 **Last Updated**: 2025-11-29
 **Next Review**: 2026-02-29 (quarterly)

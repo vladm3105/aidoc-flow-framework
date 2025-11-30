@@ -1,11 +1,11 @@
 ---
+title: "doc-iplan: Create Implementation Plans (Layer 12)"
 name: doc-iplan
 description: Create Implementation Plans (IPLAN) - Layer 12 artifact converting TASKS into session-based bash command execution plans
 tags:
   - sdd-workflow
   - layer-12-artifact
   - shared-architecture
-  - documentation-skill
 custom_fields:
   layer: 12
   artifact_type: IPLAN

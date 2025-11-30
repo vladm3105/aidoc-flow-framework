@@ -1,11 +1,11 @@
 ---
+title: "doc-spec: Create Technical Specifications (Layer 10)"
 name: doc-spec
 description: Create Technical Specifications (SPEC) - Layer 10 artifact using YAML format for implementation-ready specifications
 tags:
   - sdd-workflow
   - layer-10-artifact
   - shared-architecture
-  - documentation-skill
 custom_fields:
   layer: 10
   artifact_type: SPEC

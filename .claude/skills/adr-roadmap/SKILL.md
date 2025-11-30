@@ -1,19 +1,19 @@
 ---
+title: "adr-roadmap: Generate phased implementation roadmaps from Architecture Decision Records"
 name: adr-roadmap
 description: Generate phased implementation roadmaps from Architecture Decision Records
 tags:
   - sdd-workflow
   - shared-architecture
-  - utility-skill
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: utility
----
-
-name: adr-roadmap
-description: Generate comprehensive phased implementation roadmaps from Architecture Decision Records for any project
+  upstream_artifacts: [ADR]
+  downstream_artifacts: [TASKS, IPLAN]
 ---
 
 # adr-roadmap
@@ -50,7 +50,7 @@ Analyze Architecture Decision Records (ADRs) and generate phased implementation 
 - ADRs are informational only with no implementation needed
 - Planning from requirements (BRD/PRD) not ADRs → use `project-mngt` skill instead
 - Need to generate documentation artifacts (SYS/REQ/SPEC) → use `doc-flow` skill instead
-- Only need architecture diagrams → use `charts_flow` skill instead
+- Only need architecture diagrams → use `charts-flow` skill instead
 
 ---
 
@@ -859,7 +859,7 @@ Roadmap document must satisfy:
 ### Related Skills
 - [project-mngt](../project-mngt/) - Use for requirement-based planning (BRD/PRD → MVP)
 - [doc-flow](../doc-flow/) - Use for generating SYS/REQ/SPEC documents from ADRs
-- [charts_flow](../charts_flow/) - Use for enhanced Mermaid diagram generation
+- [charts-flow](../charts-flow/) - Use for enhanced Mermaid diagram generation
 
 ### ADR Documentation
 - [ADR-TEMPLATE.md]({project_root}/ai_dev_flow/ADR-TEMPLATE.md) - ADR template structure
@@ -881,7 +881,7 @@ Roadmap document must satisfy:
 - Not focused on implementation phasing or timeline
 - Need traceability matrix generation
 
-### Combine `adr-roadmap` + `charts_flow` When:
+### Combine `adr-roadmap` + `charts-flow` When:
 - Need enhanced visualizations beyond standard Mermaid
 - Want architecture diagrams alongside roadmap
 - Require multiple diagram types (sequence, C4, state machines)

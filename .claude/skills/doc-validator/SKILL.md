@@ -1,4 +1,5 @@
 ---
+title: "doc-validator: Automated validation of SDD documentation standards"
 name: doc-validator
 description: Automated validation of documentation standards for SDD framework compliance
 tags:
@@ -6,14 +7,14 @@ tags:
   - shared-architecture
   - quality-assurance
 custom_fields:
-  architecture_approaches:
-    - ai-agent-based
-    - traditional-8layer
+  layer: null
+  artifact_type: null
+  architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: quality-assurance
-  applies_to: all-artifacts
-  layer: N/A
+  upstream_artifacts: []
+  downstream_artifacts: []
 ---
 
 # doc-validator
@@ -241,32 +242,71 @@ Required tools for validation:
 
 ---
 
+## Schema Definitions
+
+Each artifact type has a YAML schema file (`{TYPE}_SCHEMA.yaml`) that defines validation rules. These schemas are the authoritative source for:
+- **Metadata Requirements**: YAML frontmatter fields, allowed values
+- **Document Structure**: Required/optional sections, numbering patterns
+- **Artifact-Specific Patterns**: Type-specific formats (Gherkin, FR-NNN, TASK-NNN, etc.)
+- **Validation Rules**: Error/warning severities with fix instructions
+- **Traceability Requirements**: Cumulative tagging hierarchy per layer
+- **Error Messages**: Standardized codes (E001-E0XX, W001-W0XX, I001-I0XX)
+
+### Schema File Reference
+
+| Layer | Artifact | Schema File | Key Patterns |
+|-------|----------|-------------|--------------|
+| 1 | BRD | `ai_dev_flow/BRD/BRD_SCHEMA.yaml` | Business objectives format |
+| 2 | PRD | `ai_dev_flow/PRD/PRD_SCHEMA.yaml` | FR/NFR format, template variants |
+| 3 | EARS | `ai_dev_flow/EARS/EARS_SCHEMA.yaml` | WHEN-THE-SHALL-WITHIN format |
+| 4 | BDD | `ai_dev_flow/BDD/BDD_SCHEMA.yaml` | Gherkin syntax, step patterns |
+| 5 | ADR | `ai_dev_flow/ADR/ADR_SCHEMA.yaml` | Context-Decision-Consequences |
+| 6 | SYS | `ai_dev_flow/SYS/SYS_SCHEMA.yaml` | FR-NNN, NFR-NNN formats |
+| 7 | REQ | `ai_dev_flow/REQ/REQ_SCHEMA.yaml` | 12 sections, interface schemas |
+| 8 | IMPL | `ai_dev_flow/IMPL/IMPL_SCHEMA.yaml` | Phase organization, deliverables |
+| 9 | CTR | `ai_dev_flow/CTR/CTR_SCHEMA.yaml` | Dual-file, OpenAPI/AsyncAPI |
+| 10 | SPEC | `ai_dev_flow/SPEC/SPEC_SCHEMA.yaml` | YAML structure, code gen ready |
+| 11 | TASKS | `ai_dev_flow/TASKS/TASKS_SCHEMA.yaml` | TASK-NNN, implementation contracts |
+| 12 | IPLAN | `ai_dev_flow/IPLAN/IPLAN_SCHEMA.yaml` | Session format, bash commands |
+
+### Schema Validation Usage
+
+```bash
+# Validate document against schema (planned implementation)
+python scripts/validate_artifact.py --schema ai_dev_flow/REQ/REQ_SCHEMA.yaml --document docs/REQ/REQ-001_example.md
+
+# Validate all documents of a type
+python scripts/validate_artifact.py --type REQ --strict
+```
+
+---
+
 ## Validation Scripts
 
 The following artifact-specific validation scripts are available in `ai_dev_flow/scripts/`:
 
 ### Available Scripts (Ready to Use)
 
-| Artifact | Script | Description |
-|----------|--------|-------------|
-| BRD | `validate_brd_template.sh` | Validates BRD document structure and content |
-| REQ | `validate_req_template.sh` | Validates REQ v3.0 12-section format |
-| CTR | `validate_ctr.sh` | Validates dual-file contract format (.md + .yaml) |
-| IMPL | `validate_impl.sh` | Validates 4-PART IMPL structure |
-| TASKS | `validate_tasks.sh` | Validates TASKS format including Section 8 |
-| IPLAN | `validate_iplan.sh` | Validates session-based execution plans |
-| ICON | `validate_icon.sh` | Validates Implementation Contracts |
+| Artifact | Script | Schema Reference |
+|----------|--------|------------------|
+| BRD | `validate_brd_template.sh` | `BRD_SCHEMA.yaml` |
+| REQ | `validate_req_template.sh` | `REQ_SCHEMA.yaml` |
+| CTR | `validate_ctr.sh` | `CTR_SCHEMA.yaml` |
+| IMPL | `validate_impl.sh` | `IMPL_SCHEMA.yaml` |
+| TASKS | `validate_tasks.sh` | `TASKS_SCHEMA.yaml` |
+| IPLAN | `validate_iplan.sh` | `IPLAN_SCHEMA.yaml` |
+| ICON | `validate_icon.sh` | Implementation Contracts Guide |
 
-### Under Development
+### Under Development (Schema-Driven)
 
-| Artifact | Script | Status |
-|----------|--------|--------|
-| PRD | `validate_prd.sh` | Planned |
-| EARS | `validate_ears.sh` | Planned |
-| BDD | `validate_bdd.sh` | Planned |
-| ADR | `validate_adr.sh` | Planned |
-| SYS | `validate_sys.sh` | Planned |
-| SPEC | `validate_spec.sh` | Planned |
+| Artifact | Script | Schema Available |
+|----------|--------|------------------|
+| PRD | `validate_prd.sh` | ✅ `PRD_SCHEMA.yaml` |
+| EARS | `validate_ears.sh` | ✅ `EARS_SCHEMA.yaml` |
+| BDD | `validate_bdd.sh` | ✅ `BDD_SCHEMA.yaml` |
+| ADR | `validate_adr.sh` | ✅ `ADR_SCHEMA.yaml` |
+| SYS | `validate_sys.sh` | ✅ `SYS_SCHEMA.yaml` |
+| SPEC | `validate_spec.sh` | ✅ `SPEC_SCHEMA.yaml` |
 
 ### Usage Examples
 
@@ -295,7 +335,7 @@ The following artifact-specific validation scripts are available in `ai_dev_flow
 - Blocks workflow progression on critical errors
 - Provides inline fix suggestions
 
-### With charts_flow
+### With charts-flow
 - Validates diagram references
 - Ensures bidirectional links between diagrams and docs
 

@@ -1,11 +1,11 @@
 ---
+title: "doc-brd: Create Business Requirements Documents (Layer 1)"
 name: doc-brd
 description: Create Business Requirements Documents (BRD) following SDD methodology - Layer 1 artifact defining business needs and objectives
 tags:
   - sdd-workflow
   - layer-1-artifact
   - shared-architecture
-  - documentation-skill
 custom_fields:
   layer: 1
   artifact_type: BRD

@@ -1,4 +1,5 @@
 ---
+title: "skill-recommender: Intelligent skill suggestion engine for documentation tasks"
 name: skill-recommender
 description: Intelligent skill suggestion engine that analyzes user intent and project context to recommend appropriate documentation skills
 tags:
@@ -7,6 +8,8 @@ tags:
   - utility
   - shared-architecture
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based]
   priority: primary
   development_status: active
@@ -78,7 +81,7 @@ Extract action verbs and targets from the user request:
 | execution plans | iplan, execution, session | doc-iplan |
 | traceability | trace, traceability, links | trace-check |
 | validation | validate, quality, compliance | doc-validator |
-| diagrams | diagram, mermaid, chart, flow | charts_flow, mermaid-gen |
+| diagrams | diagram, mermaid, chart, flow | charts-flow, mermaid-gen |
 | roadmap | roadmap, adr implementation | adr-roadmap |
 | project management | mvp, mmp, release, planning | project-mngt |
 
@@ -116,7 +119,7 @@ Match parsed intent against skill catalog:
 
 | Skill ID | Category | Description |
 |----------|----------|-------------|
-| charts_flow | utility | Mermaid architecture diagrams |
+| charts-flow | utility | Mermaid architecture diagrams |
 | mermaid-gen | utility | Generate Mermaid diagrams |
 | analytics-flow | utility | Analytics and data analysis |
 | project-init | utility | Initialize project structure |
@@ -219,7 +222,7 @@ recommendations:
     confidence: 55%
     rationale: "System requirements capture technical architecture"
 
-  - skill: charts_flow
+  - skill: charts-flow
     confidence: 50%
     rationale: "Architecture diagrams visualize system structure"
 

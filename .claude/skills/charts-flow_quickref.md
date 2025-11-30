@@ -1,6 +1,6 @@
-# charts_flow - Quick Reference
+# charts-flow - Quick Reference
 
-**Skill ID**: `charts_flow`
+**Skill ID**: `charts-flow`
 **Version**: 1.0.0
 **Purpose**: Create and manage Mermaid architecture diagrams with automatic SVG generation
 
@@ -9,7 +9,7 @@
 ```mermaid
 graph TD
     Start[Need a diagram?] --> Type{What type?}
-    Type -->|Architecture| Flow[Use charts_flow]
+    Type -->|Architecture| Flow[Use charts-flow]
     Type -->|Data/Gantt/Pie| Other[Use other tools]
 
     Flow --> Mode{New or existing?}
@@ -35,7 +35,7 @@ graph TD
 ## Invocation
 
 ```bash
-/skill charts_flow
+/skill charts-flow
 ```
 
 ## Common Use Cases
@@ -231,7 +231,7 @@ graph LR
 ### Create New Diagram
 ```
 User: "Create a flowchart showing the 3-tier agent hierarchy for PRD-001"
-AI: [Invokes charts_flow skill]
+AI: [Invokes charts-flow skill]
     → Parses PRD-001_multi_agent_system_architecture.md
     → Creates PRD-001-diag_3_tier_agent_hierarchy.md
     → Generates SVG
@@ -241,7 +241,7 @@ AI: [Invokes charts_flow skill]
 ### Migrate Existing
 ```
 User: "Extract the state machine diagram from strategy_state_machine.md"
-AI: [Invokes charts_flow skill in migration mode]
+AI: [Invokes charts-flow skill in migration mode]
     → Scans for Mermaid blocks
     → Creates SSM-V5-diag_state_transitions.md
     → Replaces inline diagram with SVG + link
@@ -279,7 +279,7 @@ docs/
 
 ## Getting Help
 
-- **Full documentation**: `.claude/skills/charts_flow/SKILL.md`
+- **Full documentation**: `.claude/skills/charts-flow/SKILL.md`
 - **Mermaid syntax**: https://mermaid.js.org/
 - **Live editor**: https://mermaid.live
 - **Mermaid CLI**: https://github.com/mermaid-js/mermaid-cli

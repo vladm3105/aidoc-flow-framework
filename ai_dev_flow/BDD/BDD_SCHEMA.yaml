@@ -1,0 +1,427 @@
+# BDD Schema Definition v1.0
+# Purpose: Define valid metadata structure and validation rules for BDD feature files
+# Usage: Reference by validate_bdd.py for automated validation
+
+schema_version: "1.0"
+artifact_type: BDD
+layer: 4
+last_updated: "2025-11-29"
+
+# =============================================================================
+# YAML Frontmatter Requirements (Comment-based in .feature files)
+# =============================================================================
+
+metadata:
+  # Required fields in feature file header comments
+  required_custom_fields:
+    document_type:
+      type: string
+      required: true
+      allowed_values: ["bdd"]
+      description: "Must be 'bdd' - no variations allowed"
+
+    artifact_type:
+      type: string
+      required: true
+      allowed_values: ["BDD"]
+      description: "Must be uppercase 'BDD'"
+
+    layer:
+      type: integer
+      required: true
+      allowed_values: [4]
+      description: "BDD is always Layer 4 artifact"
+
+    architecture_approaches:
+      type: array
+      required: true
+      allowed_values:
+        - ["ai-agent-based"]
+        - ["traditional-8layer"]
+        - ["ai-agent-based", "traditional-8layer"]
+      description: "Must be array format, not 'architecture_approach' string"
+
+    priority:
+      type: string
+      required: true
+      allowed_values: ["primary", "shared", "fallback"]
+      description: "Classification tier based on architecture"
+
+    development_status:
+      type: string
+      required: true
+      allowed_values: ["active", "draft", "deprecated", "reference"]
+      description: "Current development status"
+
+  # Optional custom_fields
+  optional_custom_fields:
+    agent_id:
+      type: string
+      pattern: "^AGENT-\\d{3}$"
+      description: "Required for ai-agent-primary documents"
+
+    source_prd:
+      type: string
+      pattern: "^PRD-\\d{3}$"
+      description: "Alternative to Source Document in table"
+
+    source_ears:
+      type: string
+      pattern: "^EARS-\\d{3}$"
+      description: "Reference to source EARS document"
+
+  # Required tags
+  required_tags:
+    - bdd                 # Primary identifier - REQUIRED
+    - layer-4-artifact    # Layer identifier - REQUIRED
+
+  # Forbidden tag patterns (will fail validation)
+  forbidden_tag_patterns:
+    - "^bdd-feature$"           # Use 'bdd' instead
+    - "^bdd-scenarios$"         # Use 'bdd' instead
+    - "^bdd-document$"          # Use 'bdd' instead
+    - "^bdd-\\d{3}$"            # Don't include document number in tags
+    - "^behavior-driven$"       # Use 'bdd' for document_type
+
+# =============================================================================
+# Document Structure Requirements
+# =============================================================================
+
+structure:
+  # Required sections (in order)
+  required_sections:
+    - pattern: "^Feature:"
+      name: "Feature Declaration"
+      description: "Feature keyword with descriptive title"
+
+    - pattern: "^\\s+As a"
+      name: "User Story - Role"
+      description: "As a [role] statement"
+
+    - pattern: "^\\s+I want"
+      name: "User Story - Action"
+      description: "I want [capability] statement"
+
+    - pattern: "^\\s+So that"
+      name: "User Story - Benefit"
+      description: "So that [business benefit] statement"
+
+  # Optional but recommended sections
+  recommended_sections:
+    - pattern: "^\\s+Background:"
+      name: "Background"
+      description: "Shared setup steps for all scenarios"
+
+  # Document Control (in header comments)
+  document_control:
+    required_fields:
+      - Project Name
+      - Document Version
+      - Date
+      - Document Owner
+      - Prepared By
+      - Status
+
+    optional_fields:
+      - ADR-Ready Score
+
+  # File naming convention
+  file_naming:
+    pattern: "^BDD-\\d{3}_[a-z0-9_]+\\.feature$"
+    description: "Format: BDD-NNN_descriptive_name.feature"
+
+# =============================================================================
+# Gherkin Syntax Patterns
+# =============================================================================
+
+gherkin_patterns:
+  # Valid Gherkin keywords
+  keywords:
+    feature:
+      keyword: "Feature:"
+      required: true
+      description: "Single Feature declaration per file"
+
+    background:
+      keyword: "Background:"
+      required: false
+      description: "Optional shared context for all scenarios"
+
+    scenario:
+      keyword: "Scenario:"
+      required: true
+      min_count: 1
+      description: "At least one Scenario required"
+
+    scenario_outline:
+      keyword: "Scenario Outline:"
+      required: false
+      description: "Data-driven scenario with Examples"
+
+    examples:
+      keyword: "Examples:"
+      required_with: "Scenario Outline"
+      description: "Required when using Scenario Outline"
+
+  # Step keywords
+  step_keywords:
+    given:
+      keyword: "Given"
+      description: "Precondition or initial context"
+      position: "first_step"
+
+    when:
+      keyword: "When"
+      description: "Action or trigger"
+      position: "after_given"
+
+    then:
+      keyword: "Then"
+      description: "Expected outcome or verification"
+      position: "after_when"
+
+    and:
+      keyword: "And"
+      description: "Continuation of previous step type"
+      position: "any"
+
+    but:
+      keyword: "But"
+      description: "Negative continuation"
+      position: "any"
+
+  # Step order validation
+  step_order:
+    valid_sequences:
+      - ["Given", "When", "Then"]
+      - ["Given", "And", "When", "Then"]
+      - ["Given", "When", "And", "Then"]
+      - ["Given", "When", "Then", "And"]
+      - ["Given", "And", "When", "And", "Then", "And"]
+    description: "Given must precede When, When must precede Then"
+
+  # Tag patterns
+  tag_patterns:
+    valid_prefixes:
+      - "@positive"
+      - "@negative"
+      - "@functional"
+      - "@non_functional"
+      - "@acceptance"
+      - "@integration"
+      - "@edge_case"
+      - "@boundary"
+      - "@performance"
+      - "@security"
+      - "@robustness"
+      - "@error_handling"
+      - "@data_driven"
+      - "@failure_recovery"
+      - "@reliability"
+      - "@alternative"
+      - "@end_to_end"
+      - "@data_flow"
+      - "@latency"
+      - "@resilience"
+      - "@data_integrity"
+      - "@monitoring"
+      - "@recovery"
+
+    traceability_tags:
+      - pattern: "@brd:\\s*BRD-\\d{3}:[A-Z]+-\\d{3}"
+        description: "BRD traceability tag"
+      - pattern: "@prd:\\s*PRD-\\d{3}:[A-Z]+-\\d{3}"
+        description: "PRD traceability tag"
+      - pattern: "@ears:\\s*EARS-\\d{3}:[A-Z]+-\\d{3}"
+        description: "EARS traceability tag"
+      - pattern: "@requirement:\\[REQ-\\d{3}\\]"
+        description: "REQ traceability tag"
+      - pattern: "@adr:\\[ADR-\\d{3}\\]"
+        description: "ADR traceability tag"
+
+# =============================================================================
+# Scenario Categories
+# =============================================================================
+
+scenario_categories:
+  success_path:
+    tags: ["@positive", "@functional", "@acceptance"]
+    description: "Primary success case scenarios"
+    min_count: 1
+
+  alternative_path:
+    tags: ["@alternative", "@functional"]
+    description: "Valid but non-primary flows"
+    min_count: 0
+
+  error_path:
+    tags: ["@negative", "@error_handling", "@robustness"]
+    description: "Invalid input and error handling"
+    recommended_count: 2
+
+  edge_case:
+    tags: ["@edge_case", "@boundary"]
+    description: "Boundary conditions and limits"
+    recommended_count: 1
+
+  data_driven:
+    tags: ["@data_driven"]
+    description: "Parameterized scenarios with Examples"
+    uses: "Scenario Outline"
+
+  integration:
+    tags: ["@integration", "@end_to_end"]
+    description: "Cross-component integration tests"
+    min_count: 0
+
+  non_functional:
+    tags: ["@non_functional", "@performance", "@security", "@reliability"]
+    description: "Performance, security, reliability scenarios"
+    recommended_count: 1
+
+  failure_recovery:
+    tags: ["@failure_recovery", "@resilience"]
+    description: "Failure handling and recovery"
+    recommended_count: 1
+
+# =============================================================================
+# Validation Rules
+# =============================================================================
+
+validation_rules:
+  # Metadata validation
+  metadata:
+    - rule: "document_type must be 'bdd'"
+      severity: error
+
+    - rule: "architecture_approaches must be array"
+      severity: error
+      fix: "Change 'architecture_approach: value' to 'architecture_approaches: [value]'"
+
+    - rule: "tags must include 'bdd' and 'layer-4-artifact'"
+      severity: error
+
+    - rule: "forbidden tag patterns must not appear"
+      severity: error
+
+  # Structure validation
+  structure:
+    - rule: "Single Feature declaration per file"
+      severity: error
+
+    - rule: "Feature must have user story (As a/I want/So that)"
+      severity: warning
+
+    - rule: "At least one Scenario or Scenario Outline required"
+      severity: error
+
+    - rule: "File name must match BDD-NNN_name.feature format"
+      severity: warning
+
+  # Gherkin syntax validation
+  gherkin:
+    - rule: "Each Scenario must have at least one Given step"
+      severity: warning
+
+    - rule: "Each Scenario must have at least one When step"
+      severity: error
+
+    - rule: "Each Scenario must have at least one Then step"
+      severity: error
+
+    - rule: "Step order must follow Given-When-Then sequence"
+      severity: error
+
+    - rule: "Scenario Outline must have Examples section"
+      severity: error
+
+    - rule: "Examples table must have headers matching placeholders"
+      severity: error
+
+  # Content validation
+  content:
+    - rule: "At least one success path scenario required"
+      severity: warning
+
+    - rule: "Scenarios should have descriptive names"
+      severity: warning
+      pattern: "^[A-Z][a-z].*"
+
+    - rule: "Steps should be written in present tense"
+      severity: info
+
+    - rule: "Traceability tags should reference existing artifacts"
+      severity: warning
+
+# =============================================================================
+# Cross-Reference Requirements (Cumulative Tagging - Layer 4)
+# =============================================================================
+
+traceability:
+  # Cumulative tagging requirements for Layer 4
+  cumulative_tags:
+    layer: 4
+    required:
+      - "@brd: BRD-NNN:REQUIREMENT-ID"
+      - "@prd: PRD-NNN:REQUIREMENT-ID"
+      - "@ears: EARS-NNN:STATEMENT-ID"
+    description: "Layer 4 requires @brd, @prd, @ears tags for full traceability"
+
+  upstream:
+    required:
+      - type: PRD
+        format: "@prd: PRD-NNN"
+        location: "Header comments or scenario tags"
+      - type: EARS
+        format: "@ears: EARS-NNN"
+        location: "Header comments or scenario tags"
+    optional:
+      - type: BRD
+        format: "@brd: BRD-NNN"
+        location: "Header comments"
+
+  downstream:
+    expected:
+      - type: SYS
+        format: "SYS-NNN"
+      - type: REQ
+        format: "REQ-NNN"
+      - type: SPEC
+        format: "SPEC-NNN"
+
+  same_type:
+    optional:
+      - type: BDD
+        format: "@related-bdd: BDD-NNN"
+        description: "Related BDD feature sharing domain context"
+      - type: BDD
+        format: "@depends-bdd: BDD-NNN"
+        description: "Prerequisite BDD feature"
+
+# =============================================================================
+# Error Messages
+# =============================================================================
+
+error_messages:
+  E001: "Missing required tag 'bdd'"
+  E002: "Missing required tag 'layer-4-artifact'"
+  E003: "Invalid document_type: must be 'bdd'"
+  E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
+  E005: "Forbidden tag pattern detected"
+  E006: "Missing Feature declaration"
+  E007: "Multiple Feature declarations detected"
+  E008: "Scenario missing required When step"
+  E009: "Scenario missing required Then step"
+  E010: "Invalid step order: Given must precede When, When must precede Then"
+  E011: "Scenario Outline missing Examples section"
+  E012: "Examples table headers do not match placeholders"
+  E013: "File name does not match BDD-NNN_name.feature format"
+  W001: "Feature missing user story (As a/I want/So that)"
+  W002: "Scenario missing Given step (context unclear)"
+  W003: "No success path scenarios (@positive) detected"
+  W004: "No error path scenarios (@negative) detected"
+  W005: "Missing upstream traceability tags (@prd, @ears)"
+  W006: "Scenario name should start with capital letter"
+  W007: "Consider adding Background for shared setup"
+  I001: "Steps should be written in present tense"
+  I002: "Consider adding data-driven scenarios for boundary testing"

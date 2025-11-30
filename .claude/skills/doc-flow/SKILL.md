@@ -1,4 +1,5 @@
 ---
+title: "doc-flow: SDD workflow orchestrator (Layer 0)"
 name: doc-flow
 description: AI-Driven Specification-Driven Development (SDD) workflow orchestrator - guides skill selection and general SDD methodology
 tags:

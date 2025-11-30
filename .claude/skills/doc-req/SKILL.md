@@ -1,11 +1,11 @@
 ---
+title: "doc-req: Create Atomic Requirements (Layer 7)"
 name: doc-req
 description: Create Atomic Requirements (REQ) - Layer 7 artifact using REQ v3.0 format with 12 sections and SPEC-readiness scoring
 tags:
   - sdd-workflow
   - layer-7-artifact
   - shared-architecture
-  - documentation-skill
 custom_fields:
   layer: 7
   artifact_type: REQ

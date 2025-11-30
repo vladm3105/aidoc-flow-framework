@@ -1,0 +1,256 @@
+# PRD Schema Definition v1.0
+# Purpose: Define valid metadata structure and validation rules for PRD documents
+# Usage: Reference by validate_prd.py for automated validation
+
+schema_version: "1.0"
+artifact_type: PRD
+layer: 2
+last_updated: "2025-11-29"
+
+# =============================================================================
+# YAML Frontmatter Requirements
+# =============================================================================
+
+metadata:
+  # Required fields in custom_fields
+  required_custom_fields:
+    document_type:
+      type: string
+      required: true
+      allowed_values: ["prd"]
+      description: "Must be 'prd' - no variations allowed"
+
+    artifact_type:
+      type: string
+      required: true
+      allowed_values: ["PRD"]
+      description: "Must be uppercase 'PRD'"
+
+    layer:
+      type: integer
+      required: true
+      allowed_values: [2]
+      description: "PRD is always Layer 2 artifact"
+
+    architecture_approaches:
+      type: array
+      required: true
+      allowed_values:
+        - ["ai-agent-based"]
+        - ["traditional-8layer"]
+        - ["ai-agent-based", "traditional-8layer"]
+      description: "Must be array format, not 'architecture_approach' string"
+
+    priority:
+      type: string
+      required: true
+      allowed_values: ["primary", "shared", "fallback"]
+      description: "Classification tier based on architecture"
+
+    development_status:
+      type: string
+      required: true
+      allowed_values: ["active", "draft", "deprecated", "reference"]
+      description: "Current development status"
+
+  # Optional custom_fields
+  optional_custom_fields:
+    agent_id:
+      type: string
+      pattern: "^AGENT-\\d{3}$"
+      description: "Required for ai-agent-primary documents"
+
+    fallback_reference:
+      type: string
+      pattern: "^PRD-\\d{3}$|^traditional-8layer$"
+      description: "Reference to fallback document"
+
+    primary_alternative:
+      type: string
+      pattern: "^PRD-\\d{3}$"
+      description: "Reference to primary alternative document"
+
+  # Required tags
+  required_tags:
+    - prd                 # Primary identifier - REQUIRED
+    - layer-2-artifact    # Layer identifier - REQUIRED
+
+  # Forbidden tag patterns (will fail validation)
+  forbidden_tag_patterns:
+    - "^product-prd$"           # Use 'prd' instead
+    - "^feature-prd$"           # Use 'prd' instead
+    - "^product-requirements$"  # Use 'prd' for document_type
+    - "^product_requirements$"  # Use 'prd' for document_type
+    - "^prd-\\d{3}$"            # Don't include document number in tags
+
+# =============================================================================
+# Document Structure Requirements
+# =============================================================================
+
+structure:
+  # Required sections (in order)
+  required_sections:
+    - pattern: "^# PRD-\\d{3}:"
+      name: "Title (H1)"
+      description: "Single H1 with format PRD-NNN: Title"
+
+    - pattern: "^## 0\\. Document Control$"
+      name: "Document Control"
+      description: "Section 0 with metadata table"
+
+    - pattern: "^## 1\\. Executive Summary$"
+      name: "Executive Summary"
+      description: "Section 1 with business overview"
+
+    - pattern: "^## 2\\. Product Vision$"
+      name: "Product Vision"
+      description: "Section 2 with vision and goals"
+
+    - pattern: "^## 3\\. Functional Requirements$"
+      name: "Functional Requirements"
+      description: "Section 3 with detailed feature requirements"
+
+  # Document Control table requirements
+  document_control:
+    required_fields:
+      - PRD ID
+      - PRD Name
+      - Version
+      - Date
+      - Author
+      - Status
+      - Related BRD
+
+    related_brd_format:
+      pattern: "^@brd: BRD-\\d{3}$"
+      description: "Must use @brd: prefix for traceability"
+
+  # Section numbering rules
+  section_numbering:
+    start: 0
+    format: "## N. Section Title"
+    subsection_format: "### N.N Subsection Title"
+    no_duplicate_numbers: true
+
+# =============================================================================
+# Feature Requirement Patterns
+# =============================================================================
+
+feature_patterns:
+  # Feature ID format
+  feature_id:
+    pattern: "^FR-\\d{3}-\\d{2,3}$"
+    format: "FR-{prd_number}-{sequence}"
+    description: "Standardized feature requirement ID"
+    examples:
+      - "FR-005-01"
+      - "FR-022-001"
+
+  # Feature table structure
+  feature_table:
+    required_columns:
+      - "Feature ID"
+      - "Feature Name"
+      - "Description"
+      - "Priority"
+      - "Complexity"
+
+    priority_values: ["P0-Critical", "P1-High", "P2-Medium", "P3-Low"]
+    complexity_values: ["Low", "Medium", "High"]
+
+# =============================================================================
+# Validation Rules
+# =============================================================================
+
+validation_rules:
+  # Metadata validation
+  metadata:
+    - rule: "document_type must be 'prd'"
+      severity: error
+
+    - rule: "architecture_approaches must be array"
+      severity: error
+      fix: "Change 'architecture_approach: value' to 'architecture_approaches: [value]'"
+
+    - rule: "tags must include 'prd' and 'layer-2-artifact'"
+      severity: error
+
+    - rule: "forbidden tag patterns must not appear"
+      severity: error
+
+  # Structure validation
+  structure:
+    - rule: "Single H1 heading only"
+      severity: warning
+
+    - rule: "Related BRD must use @brd: prefix"
+      severity: error
+
+    - rule: "No duplicate section numbers"
+      severity: error
+
+    - rule: "Sections must be numbered sequentially"
+      severity: warning
+
+  # Content validation
+  content:
+    - rule: "Feature IDs must use FR-NNN-NN format"
+      severity: warning
+
+    - rule: "Priority must use P0-P3 format"
+      severity: warning
+
+    - rule: "Complexity ratings must be Low/Medium/High"
+      severity: warning
+
+# =============================================================================
+# Cross-Reference Requirements
+# =============================================================================
+
+traceability:
+  upstream:
+    required:
+      - type: BRD
+        format: "@brd: BRD-NNN"
+        location: "Document Control table"
+    optional: []
+
+  downstream:
+    expected:
+      - type: SYS
+        format: "@sys: SYS-NNN"
+      - type: EARS
+        format: "@ears: EARS-NNN"
+      - type: REQ
+        format: "@req: REQ-NNN"
+      - type: SPEC
+        format: "@spec: SPEC-NNN"
+
+  lateral:
+    format: "@prd: PRD-NNN"
+    description: "Cross-reference to related PRDs"
+
+  threshold_references:
+    format: "@threshold: PRD-035:category.subcategory"
+    description: "Reference to Platform Threshold Registry"
+
+  contract_references:
+    format: "@ctr: CTR-NNN"
+    description: "Reference to data contracts"
+
+# =============================================================================
+# Error Messages
+# =============================================================================
+
+error_messages:
+  E001: "Missing required tag 'prd'"
+  E002: "Missing required tag 'layer-2-artifact'"
+  E003: "Invalid document_type: must be 'prd'"
+  E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
+  E005: "Forbidden tag pattern detected"
+  E006: "Related BRD missing @brd: prefix"
+  E007: "Duplicate section number detected"
+  E008: "Multiple H1 headings detected"
+  W001: "Feature ID not using FR-NNN-NN format"
+  W002: "Priority not using P0-P3 format"
+  W003: "Section numbering not sequential"

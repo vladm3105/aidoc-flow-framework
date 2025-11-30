@@ -1,19 +1,19 @@
 ---
+title: "mermaid-gen: Generate syntactically correct Mermaid diagrams for technical documentation"
 name: mermaid-gen
 description: Generate syntactically correct Mermaid diagrams for technical documentation
 tags:
   - sdd-workflow
   - shared-architecture
-  - utility-skill
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: utility
----
-
-name: mermaid-gen
-description: Generate syntactically correct Mermaid diagrams for technical documentation with error prevention
+  upstream_artifacts: []
+  downstream_artifacts: []
 ---
 
 # mermaid-gen
@@ -42,15 +42,15 @@ The `mermaid-gen` skill provides AI assistants with expert guidance for creating
 
 **Do NOT use mermaid-gen when**:
 - Creating simple tables or text-based lists (use markdown tables)
-- Need diagram file management or SVG generation (use `charts_flow` skill instead)
+- Need diagram file management or SVG generation (use `charts-flow` skill instead)
 - Creating data visualization charts (bar, pie, line - use charting libraries)
 - Need Gantt charts or Git graphs (outside core focus)
 - Diagram is already working perfectly (no changes needed)
 
-**Relationship to charts_flow skill**:
-- `charts_flow`: Manages diagram files, generates SVG, embeds in documents
+**Relationship to charts-flow skill**:
+- `charts-flow`: Manages diagram files, generates SVG, embeds in documents
 - `mermaid-gen`: Ensures diagram syntax is correct before file creation
-- **Use together**: `charts_flow` skill calls `mermaid-gen` for diagram generation
+- **Use together**: `charts-flow` skill calls `mermaid-gen` for diagram generation
 
 ## Skill Inputs
 
@@ -564,18 +564,18 @@ flowchart TD
 ```
 ````
 
-### Integration with charts_flow Skill
+### Integration with charts-flow Skill
 
 **Skill Relationship**:
 - **mermaid-gen**: Creates syntactically correct diagram code
-- **charts_flow**: Takes diagram code and manages file creation, SVG generation, document embedding
+- **charts-flow**: Takes diagram code and manages file creation, SVG generation, document embedding
 
 **Typical Workflow**:
 1. User requests diagram for documentation
-2. `charts_flow` skill invoked for file management
-3. `charts_flow` internally calls `mermaid-gen` for diagram generation
+2. `charts-flow` skill invoked for file management
+3. `charts-flow` internally calls `mermaid-gen` for diagram generation
 4. `mermaid-gen` returns validated Mermaid code
-5. `charts_flow` creates diagram file, generates SVG, embeds in parent document
+5. `charts-flow` creates diagram file, generates SVG, embeds in parent document
 
 **Standalone Usage**:
 When user only needs diagram code (not file management):
@@ -585,7 +585,7 @@ When user only needs diagram code (not file management):
 
 **Combined Usage**:
 When user needs complete diagram file workflow:
-- Invoke `charts_flow` skill (which uses `mermaid-gen` internally)
+- Invoke `charts-flow` skill (which uses `mermaid-gen` internally)
 - Returns diagram file + SVG + parent document updates
 
 ### Output Validation Checklist
@@ -602,7 +602,7 @@ Every output from `mermaid-gen` must meet these criteria:
 
 ### Relationship to Other Skills
 
-**charts_flow Skill**:
+**charts-flow Skill**:
 - **Purpose**: Diagram file management, SVG generation, document embedding
 - **Integration**: Calls `mermaid-gen` to generate diagram content
 - **Use Case**: Creating separate diagram files in `diagrams/` subdirectories
@@ -627,7 +627,7 @@ Every output from `mermaid-gen` must meet these criteria:
 
 **Best Practice Integration**:
 - Use `mermaid-gen` for syntax correctness
-- Use `charts_flow` for file management and performance optimization
+- Use `charts-flow` for file management and performance optimization
 - Follow project naming conventions for node IDs
 - Validate all diagrams before committing to version control
 

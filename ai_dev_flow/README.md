@@ -725,6 +725,60 @@ pip install pyyaml  # For YAML parsing (SPEC documents)
 - [Traceability Format Standards](./TRACEABILITY.md#traceability-format-standards) - Link formatting conventions
 - [index.md](./index.md) - Detailed directory structure reference
 
+## Schema Definitions
+
+Each artifact type has a corresponding YAML schema file (`{TYPE}_SCHEMA.yaml`) that defines:
+- **Metadata Requirements**: YAML frontmatter fields and validation rules
+- **Document Structure**: Required/optional sections and numbering patterns
+- **Artifact-Specific Patterns**: Type-specific formats (Gherkin, FR-NNN, TASK-NNN, etc.)
+- **Validation Rules**: Error/warning severities and fix instructions
+- **Traceability Requirements**: Cumulative tagging hierarchy per layer
+- **Error Messages**: Standardized error codes (E001-E0XX, W001-W0XX, I001-I0XX)
+
+### Schema File Reference
+
+| Layer | Artifact | Schema File | Key Patterns |
+|-------|----------|-------------|--------------|
+| 1 | BRD | [BRD_SCHEMA.yaml](./BRD/BRD_SCHEMA.yaml) | Business objectives format |
+| 2 | PRD | [PRD_SCHEMA.yaml](./PRD/PRD_SCHEMA.yaml) | FR/NFR format, template variants |
+| 3 | EARS | [EARS_SCHEMA.yaml](./EARS/EARS_SCHEMA.yaml) | WHEN-THE-SHALL-WITHIN format |
+| 4 | BDD | [BDD_SCHEMA.yaml](./BDD/BDD_SCHEMA.yaml) | Gherkin syntax, step patterns |
+| 5 | ADR | [ADR_SCHEMA.yaml](./ADR/ADR_SCHEMA.yaml) | Context-Decision-Consequences |
+| 6 | SYS | [SYS_SCHEMA.yaml](./SYS/SYS_SCHEMA.yaml) | FR-NNN, NFR-NNN formats |
+| 7 | REQ | [REQ_SCHEMA.yaml](./REQ/REQ_SCHEMA.yaml) | 12 sections, interface schemas |
+| 8 | IMPL | [IMPL_SCHEMA.yaml](./IMPL/IMPL_SCHEMA.yaml) | Phase organization, deliverables |
+| 9 | CTR | [CTR_SCHEMA.yaml](./CTR/CTR_SCHEMA.yaml) | Dual-file, OpenAPI/AsyncAPI |
+| 10 | SPEC | [SPEC_SCHEMA.yaml](./SPEC/SPEC_SCHEMA.yaml) | YAML structure, code gen ready |
+| 11 | TASKS | [TASKS_SCHEMA.yaml](./TASKS/TASKS_SCHEMA.yaml) | TASK-NNN, implementation contracts |
+| 12 | IPLAN | [IPLAN_SCHEMA.yaml](./IPLAN/IPLAN_SCHEMA.yaml) | Session format, bash commands |
+
+### Schema Validation Usage
+
+```bash
+# Validate document against schema (planned)
+python scripts/validate_artifact.py --schema ai_dev_flow/REQ/REQ_SCHEMA.yaml --document docs/REQ/REQ-001_example.md
+
+# Validate all documents of a type
+python scripts/validate_artifact.py --type REQ --strict
+```
+
+### Cumulative Tagging by Layer (from Schemas)
+
+| Layer | Artifact | Required Upstream Tags |
+|-------|----------|------------------------|
+| 1 | BRD | None (top level) |
+| 2 | PRD | @brd |
+| 3 | EARS | @brd, @prd |
+| 4 | BDD | @brd, @prd, @ears |
+| 5 | ADR | @brd, @prd, @ears, @bdd |
+| 6 | SYS | @brd, @prd, @ears, @bdd, @adr |
+| 7 | REQ | @brd, @prd, @ears, @bdd, @adr, @sys |
+| 8 | IMPL | @brd through @req (optional layer) |
+| 9 | CTR | @brd through @impl (optional layer) |
+| 10 | SPEC | @brd through @req + optional @impl, @ctr |
+| 11 | TASKS | @brd through @spec |
+| 12 | IPLAN | @brd through @tasks |
+
 ## Workflow Guides
 
 ### Business Requirements → Production Code

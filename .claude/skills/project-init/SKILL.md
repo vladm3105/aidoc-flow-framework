@@ -1,15 +1,19 @@
 ---
+title: "project-init: Initialize projects with AI Dev Flow framework"
 name: project-init
 description: Initialize projects with AI Dev Flow framework using domain-aware setup
 tags:
   - sdd-workflow
   - shared-architecture
-  - utility-skill
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: utility
+  upstream_artifacts: []
+  downstream_artifacts: [BRD]
 ---
 
 # project-init
@@ -640,7 +644,7 @@ Run follow-up questions from DOMAIN_SELECTION_QUESTIONNAIRE.md:
 
 **Other complementary skills:**
 - **mermaid-gen** - Generate Mermaid diagrams
-- **charts_flow** - Create architecture diagrams
+- **charts-flow** - Create architecture diagrams
 - **test-automation** - Test suite creation
 - **code-review** - Code quality review
 - **security-audit** - Security analysis

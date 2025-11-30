@@ -1,4 +1,5 @@
 ---
+title: "devops-flow: DevOps, MLOps, DevSecOps practices for cloud environments"
 name: devops-flow
 description: DevOps, MLOps, DevSecOps practices for cloud environments (GCP, Azure, AWS)
 tags:
@@ -6,10 +7,14 @@ tags:
   - shared-architecture
   - domain-specific
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: domain-specific
+  upstream_artifacts: [SPEC, TASKS]
+  downstream_artifacts: []
 ---
 
 # devops-flow

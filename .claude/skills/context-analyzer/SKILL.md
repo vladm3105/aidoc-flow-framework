@@ -1,4 +1,5 @@
 ---
+title: "context-analyzer: Project context analysis engine for documentation creation"
 name: context-analyzer
 description: Project context analysis engine that scans project structure and surfaces relevant information for documentation creation
 tags:
@@ -7,6 +8,8 @@ tags:
   - utility
   - shared-architecture
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based]
   priority: primary
   development_status: active

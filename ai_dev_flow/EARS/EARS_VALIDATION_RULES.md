@@ -12,21 +12,21 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for EARS documents.
+> **Document Role**: This is the **POST-CREATION VALIDATOR** for EARS documents.
 > - Apply these rules after EARS creation or modification
 > - **Authority**: Validates compliance with `EARS-TEMPLATE.md` (the primary standard)
 > - **Scope**: Use for quality gates before committing EARS changes
 
 # EARS Validation Rules Reference
 
-**Version**: 1.0
-**Date**: 2025-11-19
-**Last Updated**: 2025-11-19
+**Version**: 2.0
+**Date**: 2025-11-29
+**Last Updated**: 2025-11-29
 **Purpose**: Complete validation rules for EARS documents
-**Script**: `scripts/validate_ears_template.sh`
+**Script**: `scripts/validate_ears.py`
 **Primary Template**: `EARS-TEMPLATE.md`
 **Framework**: doc_flow SDD (100% compliant)
-**Changes**: Added BDD-ready scoring validation system
+**Changes**: v2.0 - Added requirement ID, table syntax, custom_fields, traceability format checks
 
 ---
 
@@ -42,74 +42,362 @@ custom_fields:
 
 ## Overview
 
-The EARS validation script performs checks ensuring EARS documents enable direct BDD translation and meet SDD quality standards.
+The EARS validation script performs comprehensive checks ensuring EARS documents enable direct BDD translation and meet SDD quality standards.
 
 ### Validation Tiers
 
 | Tier | Type | Exit Code | Description |
 |------|------|-----------|-------------|
-| **Tier 1** | Errors | 1 | Blocking issues - must fix before commit |
-| **Tier 2** | Warnings | 0 | Quality issues - recommended to fix |
-| **Tier 3** | Info | 0 | Informational - no action required |
+| **Tier 1** | Errors (E###) | 1 | Blocking issues - must fix before commit |
+| **Tier 2** | Warnings (W###) | 0 | Quality issues - recommended to fix |
+
+### Rule Categories
+
+| Category | Rule Range | Description |
+|----------|------------|-------------|
+| Frontmatter | E001 | YAML parsing |
+| Metadata/Tags | E002-E008 | Required tags, custom_fields |
+| Structure | E010-E013 | Sections, numbering, Document Control |
+| Table Syntax | E020 | Markdown table formatting |
+| Requirement IDs | E030 | EARS-XXX-NNN format |
+| Traceability | E040-E041 | @prd: prefix, pipe separators |
+| EARS Syntax | W010-W012 | SHALL patterns, atomicity |
+| BDD-Ready | W020-W021 | Score format |
+| Misc | W001 | Multiple H1 |
 
 ---
 
 ## Validation Checks
 
-### CHECK 1: Required sections
+### E001: YAML Frontmatter
 
 **Type**: Error (blocking)
 
-**Required sections**:
-- Document Control, Purpose and Context, Requirements (all 4 types), Non-Functional Requirements, Guidelines, Quality Checklist, Traceability, References
+**Check**: Valid YAML frontmatter exists between `---` delimiters
 
-### CHECK 2: Document Control Fields
+**Fix**: Ensure file starts with valid YAML block
+
+---
+
+### E002: Required Tags
 
 **Type**: Error (blocking)
 
-**Required Fields**:
-- Status, Version, BDD-Ready Score (format: `✅ NN% (Target: ≥90%)`)
+**Required Tags**:
+- `ears`
+- `layer-3-artifact`
 
-### CHECK 3: EARS Syntax Compliance
+**Fix**: Add missing tags to frontmatter
 
-**Purpose**: Verify all statements follow WHEN-THE-SHALL-WITHIN patterns
+---
+
+### E003: Forbidden Tag Patterns
+
 **Type**: Error (blocking)
 
-**Requirements**:
-- Event-Driven: WHEN [condition] THE [system] SHALL [response] WITHIN [constraint]
-- State-Driven: WHILE [state] THE [system] SHALL [behavior] WITHIN [constraint]
-- Unwanted: IF [condition] THE [system] SHALL [prevention] WITHIN [constraint]
-- Ubiquitous: THE [system] SHALL [requirement] WITHIN [constraint]
+**Forbidden Patterns**:
+- `ears-requirements`
+- `ears-formal-requirements`
+- `ears-document`
+- `ears-NNN` (e.g., `ears-030`)
 
-### CHECK 4: BDD-Ready Score Validation ⭐ NEW
+**Fix**: Replace with `ears`
 
-**Purpose**: Validate BDD-ready score format and threshold
+---
+
+### E004: Missing custom_fields
+
 **Type**: Error (blocking)
 
-**Valid Examples**: `✅ 95% (Target: ≥90%)`
+**Check**: `custom_fields` section exists in frontmatter
 
-**Error Message**: `❌ MISSING: BDD-Ready Score with ✅ emoji and percentage`
+**Fix**: Add complete custom_fields section
 
-### CHECK 5: Atomic Requirements
+---
 
-**Purpose**: Ensure one concept per statement
+### E005: document_type Value
+
+**Type**: Error (blocking)
+
+**Required**: `document_type: ears`
+
+**Fix**: Set correct value in custom_fields
+
+---
+
+### E006: artifact_type Value
+
+**Type**: Error (blocking)
+
+**Required**: `artifact_type: EARS`
+
+**Fix**: Add or correct artifact_type in custom_fields
+
+---
+
+### E007: layer Value
+
+**Type**: Error (blocking)
+
+**Required**: `layer: 3`
+
+**Fix**: Add or correct layer in custom_fields
+
+---
+
+### E008: architecture_approaches Format
+
+**Type**: Error (blocking)
+
+**Check**: Must use `architecture_approaches` (plural) with array format
+
+**Invalid**:
+```yaml
+architecture_approach: ai-agent-based  # WRONG - singular, string
+```
+
+**Valid**:
+```yaml
+architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
+```
+
+---
+
+### E010: Required Sections
+
+**Type**: Error (blocking)
+
+**Required Sections**:
+- Document Control
+- Purpose
+- Traceability
+
+**Fix**: Add missing sections
+
+---
+
+### E011: Section Numbering Start
+
+**Type**: Error (blocking)
+
+**Check**: Section numbering does NOT start with 0
+
+**Invalid**: `## 0. Document Control`
+
+**Valid**: `## Document Control` or `## 1. Purpose`
+
+---
+
+### E012: Duplicate Section Numbers
+
+**Type**: Error (blocking)
+
+**Check**: No duplicate section numbers
+
+**Fix**: Renumber sections sequentially
+
+---
+
+### E013: Document Control Format
+
+**Type**: Error (blocking)
+
+**Check**: Document Control uses table format, not list format
+
+**Invalid**:
+```markdown
+## 0. Document Control
+
+**Document Metadata**
+- **Document ID**: EARS-024
+- **Version**: 1.0
+```
+
+**Valid**:
+```markdown
+## Document Control
+
+| Item | Details |
+|------|---------|
+| **Status** | Active |
+| **Version** | 1.0.0 |
+```
+
+---
+
+### E020: Table Syntax
+
+**Type**: Error (blocking)
+
+**Check**: No malformed table separators (trailing `| |`)
+
+**Invalid**:
+```markdown
+|------|---------| |
+```
+
+**Valid**:
+```markdown
+|------|---------|
+```
+
+---
+
+### E030: Requirement ID Format
+
+**Type**: Error (blocking)
+
+**Check**: Requirement headings use `#### EARS-{DocID}-{Num}: Title` format
+
+**Invalid**:
+```markdown
+#### Event-001: L1 KYC Submission
+#### State-001: Pending Status
+```
+
+**Valid**:
+```markdown
+#### EARS-006-001: L1 KYC Submission
+#### EARS-006-002: Pending Status
+```
+
+---
+
+### E040: Source Document @prd: Prefix
+
+**Type**: Error (blocking)
+
+**Check**: Source Document field uses `@prd:` prefix
+
+**Invalid**:
+```markdown
+| **Source Document** | PRD-001 |
+```
+
+**Valid**:
+```markdown
+| **Source Document** | @prd: PRD-001 |
+```
+
+---
+
+### E041: Traceability Tag Separators
+
+**Type**: Error (blocking)
+
+**Check**: Multiple traceability tags separated by pipes (for inline format)
+
+**Note**: Both inline pipe format and list format are valid traceability formats.
+
+**Invalid** (inline without pipes):
+```markdown
+**Traceability**: @brd: BRD-002:FR-010 @prd: PRD-002:FR-002-001
+```
+
+**Valid** (inline with pipes):
+```markdown
+**Traceability**: @brd: BRD-002:FR-010 | @prd: PRD-002:FR-002-001
+```
+
+**Valid** (list format):
+```markdown
+**Traceability**:
+- @brd: BRD-002
+- @prd: PRD-002:FR-002-001
+- @threshold: PRD-035:timeout.partner.bridge
+```
+
+---
+
+### E042: Requirement ID Uniqueness
+
+**Type**: Error (blocking)
+
+**Check**: Each requirement ID must be unique within the document
+
+**Invalid**:
+```markdown
+#### EARS-002-001: First Requirement
+...
+#### EARS-002-001: Different Requirement  ← DUPLICATE ID
+```
+
+**Valid**:
+```markdown
+#### EARS-002-001: First Requirement
+...
+#### EARS-002-002: Second Requirement  ← UNIQUE ID
+```
+
+**Fix**: Renumber duplicate IDs sequentially
+
+---
+
+### E043: @brd Tag in Traceability
+
 **Type**: Warning
 
-**Errors**: Statements with multiple "and" clauses
+**Check**: Traceability section includes `@brd: BRD-NNN` reference
 
-### CHECK 6: Measurable Constraints
+**Rationale**: EARS (Layer 3) should trace back to BRD (Layer 1) via PRD (Layer 2)
 
-**Purpose**: Verify all WITHIN clauses are quantifiable
+**Valid formats**:
+```markdown
+@brd: BRD-002
+@brd: BRD-002:FR-010
+```
+
+**Fix**: Add @brd tag to traceability section referencing source BRD
+
+---
+
+### W001: Multiple H1 Headings
+
 **Type**: Warning
 
-**Requirements**: No subjective terms, specific time/measurement values
+**Check**: Only one H1 (`#`) heading per document
 
-### CHECK 7: BDD Translation Readiness
+---
 
-**Purpose**: Verify statements can be converted to BDD scenarios
+### W010: EARS SHALL Statements
+
 **Type**: Warning
 
-**Requirements**: Clear Given-When-Then equivalency
+**Check**: Document contains EARS `SHALL` statements
+
+---
+
+### W011: Atomic Requirements
+
+**Type**: Warning
+
+**Check**: Requirements don't have multiple `and` clauses
+
+**Recommend**: Split compound requirements
+
+---
+
+### W012: Measurable Constraints
+
+**Type**: Warning
+
+**Check**: `WITHIN` clauses have numeric/measurable values
+
+---
+
+### W020: BDD-Ready Score Missing
+
+**Type**: Warning
+
+**Check**: Document Control contains BDD-Ready Score
+
+---
+
+### W021: BDD-Ready Score Format
+
+**Type**: Warning
+
+**Required Format**: `✅ NN% (Target: ≥90%)`
 
 ---
 
@@ -117,79 +405,96 @@ The EARS validation script performs checks ensuring EARS documents enable direct
 
 ### Quick Fix Matrix
 
-| Error Check | Quick Fix |
-|-------------|-----------|
-| **CHECK 1** | Add missing section headers |
-| **CHECK 3** | Reformat statements to follow EARS syntax |
-| **CHECK 4** | Add properly formatted BDD-Ready Score |
-| **CHECK 5** | Split compound statements |
+| Rule | Quick Fix |
+|------|-----------|
+| E002 | Add `- ears` and `- layer-3-artifact` to tags |
+| E003 | Replace forbidden tag with `ears` |
+| E006 | Add `artifact_type: EARS` to custom_fields |
+| E007 | Add `layer: 3` to custom_fields |
+| E008 | Change `architecture_approach:` to `architecture_approaches: [value]` |
+| E011/E013 | Change `## 0. Document Control` to `## Document Control`, use table format |
+| E020 | Remove trailing `\| \|` from table separator |
+| E030 | Change `#### Event-N:` to `#### EARS-{DocID}-N:` |
+| E040 | Change `PRD-NNN` to `@prd: PRD-NNN` |
+| E041 | Add `\|` between traceability tags |
 
 ---
 
 ## Quick Reference
 
-### Pre-Commit Validation
+### Run Validation
 
 ```bash
-# Validate single EARS file
-./scripts/validate_ears_template.sh docs/EARS/EARS-001_system_requirements.md
-
 # Validate all EARS files
-find docs/EARS -name "EARS-*.md" -exec ./scripts/validate_ears_template.sh {} \;
+python scripts/validate_ears.py
+
+# Validate single file
+python scripts/validate_ears.py --path docs/EARS/EARS-006.md
+
+# Show fix suggestions
+python scripts/validate_ears.py --fix-suggestions
+
+# Summary only (counts by rule)
+python scripts/validate_ears.py --summary-only
 ```
 
-### BDD-Ready Scoring Criteria ⭐ NEW
+### Pre-Commit Checklist
 
-**Requirements Clarity (40%)**:
-- EARS syntax compliance: 20%
-- Atomic statement structure: 15%
-- Quantifiable constraints: 5%
-
-**Testability (35%)**:
-- BDD translation possible: 15%
-- Observable verification: 10%
-- Edge case coverage: 10%
-
-**NFR Completeness (15%)**:
-- Performance with percentiles: 5%
-- security/compliance: 5%
-- Reliability/scalability: 5%
-
-**Strategic Alignment (10%)**:
-- Business objective linkage: 5%
-- Implementation paths: 5%
-
-### Validation Tiers Summary
-
-| Tier | Type | Checks | Action |
-|------|------|--------|--------|
-| **Tier 1** | Error | 1-4 | Must fix before commit |
-| **Tier 2** | Warning | 5-7 | Recommended to fix |
-| **Tier 3** | Info | - | No action required |
+- [ ] Run `python scripts/validate_ears.py` - 0 errors
+- [ ] All files have `tags: ears, layer-3-artifact`
+- [ ] All files have `custom_fields` with document_type, artifact_type, layer
+- [ ] All requirement IDs use `EARS-{DocID}-{Num}:` format
+- [ ] No malformed table syntax
+- [ ] Document Control uses table format (not list)
 
 ---
 
 ## Common Mistakes
 
-### Mistake #1: Subject Syntax
+### Mistake #1: Wrong Tag Format
 ```
-❌ The system shall respond quickly.
-✅ THE System SHALL respond WITHIN 50ms at p95 latency.
-```
-
-### Mistake #2: Compound Requirements
-```
-❌ WHEN data arrives THE system SHALL validate and process data.
-✅ [Split into separate Event-001 and Event-002 statements]
+❌ tags: ears-030, ears-requirements
+✅ tags: ears, layer-3-artifact
 ```
 
-### Mistake #3: BDD-Ready Score Format
+### Mistake #2: Singular architecture_approach
 ```
-❌ BDD-Ready Score: 95%
-✅ BDD-Ready Score: ✅ 95% (Target: ≥90%)
+❌ architecture_approach: ai-agent-based
+✅ architecture_approaches: [ai-agent-based]
+```
+
+### Mistake #3: Non-Standard Requirement IDs
+```
+❌ #### Event-001: L1 KYC Submission
+✅ #### EARS-006-001: L1 KYC Submission
+```
+
+### Mistake #4: List-Style Document Control
+```
+❌ ## 0. Document Control
+   **Document Metadata**
+   - **Version**: 1.0
+
+✅ ## Document Control
+   | Item | Details |
+   |------|---------|
+   | **Version** | 1.0.0 |
+```
+
+### Mistake #5: Missing Traceability Separators
+```
+❌ **Traceability**: @brd: X @prd: Y @threshold: Z
+✅ **Traceability**: @brd: X | @prd: Y | @threshold: Z
+```
+
+### Mistake #6: Table Separator Typo
+```
+❌ |------|---------| |
+✅ |------|---------|
 ```
 
 ---
 
-**Maintained By**: Engineering Team, QA Team
+**Maintained By**: Engineering Team
 **Review Frequency**: Updated with EARS template enhancements
+**Script Location**: `/opt/data/blocal_n8n/scripts/validate_ears.py`

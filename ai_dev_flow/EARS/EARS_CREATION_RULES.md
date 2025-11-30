@@ -14,7 +14,8 @@ custom_fields:
 
 > **📋 Document Role**: This is a **CREATION HELPER** for EARS-TEMPLATE.md.
 > - **Authority**: `EARS-TEMPLATE.md` is the single source of truth for EARS structure
-> - **Validation**: Use `EARS_VALIDATION_RULES.md` after EARS creation/changes
+> - **Schema**: `EARS_SCHEMA.yaml` defines machine-readable validation rules
+> - **Validation**: Use `EARS_VALIDATION_RULES.md` or `scripts/validate_ears.py`
 
 # EARS Creation Rules
 
@@ -93,7 +94,9 @@ EARS documents require specific structural elements for behavioral specification
 
 - **Filename**: `EARS-NNN_descriptive_title.md`
 - **H1**: `# EARS-NNN: [Short Descriptive Title]`
-- **Statement IDs**: Event-NNN, State-NNN, Unwanted-NNN, Ubiquitous-NNN
+- **Statement IDs**: `EARS-{DocID}-{Num}` format (e.g., `EARS-006-001`, `EARS-006-002`)
+  - Sequential numbering within document (001, 002, 003...)
+  - ❌ **DEPRECATED**: Do NOT use category prefixes (E, S, U, UB, EVENT, STATE, UNWANTED, UBIQ)
 
 ---
 
@@ -272,4 +275,60 @@ Include ONLY if relationships exist between EARS documents sharing domain contex
 ```markdown
 @related-ears: EARS-NNN
 @depends-ears: EARS-NNN
+```
+
+---
+
+## 14. Batch Creation Checkpoint Rules
+
+When creating multiple EARS documents in a session, follow these checkpoint rules to prevent inconsistencies:
+
+### Pre-Batch Verification
+
+**Before starting batch creation:**
+1. Read `EARS_SCHEMA.yaml` to understand current metadata requirements
+2. Verify tag standards: `ears` (not `ears-requirements`, `ears-formal-requirements`, etc.)
+3. Verify document_type: `ears` (not `engineering-requirements`)
+4. Verify architecture format: `architecture_approaches: [value]` (array, not singular)
+
+### Every 5-Document Checkpoint
+
+**After creating every 5 EARS documents:**
+1. Run validation: `python scripts/validate_ears.py --path docs/EARS`
+2. Check for:
+   - Tag consistency (all use `ears`)
+   - document_type consistency (all use `ears`)
+   - Source Document format (`@prd: PRD-NNN`)
+   - Section numbering (sequential)
+3. Fix any errors before continuing
+
+### End-of-Session Validation
+
+**Before ending session:**
+1. Run full validation: `python scripts/validate_ears.py`
+2. Verify 0 errors (warnings acceptable)
+3. Update EARS-000_index.md if document counts changed
+4. Document any issues in session notes
+
+### Common Batch Errors to Avoid
+
+| Error Pattern | Correct Format |
+|---------------|----------------|
+| `ears-requirements` | `ears` |
+| `ears-formal-requirements` | `ears` |
+| `ears-NNN` | `ears` |
+| `document_type: engineering-requirements` | `document_type: ears` |
+| `architecture_approach: value` | `architecture_approaches: [value]` |
+| `Source Document: PRD-NNN` | `Source Document: @prd: PRD-NNN` |
+
+### Session Summary Template
+
+```markdown
+## EARS Batch Session Summary
+
+- **Documents Created**: N
+- **Validation Status**: ✅ Pass / ❌ Fail
+- **Errors Found**: N
+- **Errors Fixed**: N
+- **Index Updated**: Yes/No
 ```

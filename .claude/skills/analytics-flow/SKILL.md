@@ -1,4 +1,5 @@
 ---
+title: "analytics-flow: Analytics and data analysis workflow skill"
 name: analytics-flow
 description: Analytics and data analysis workflow skill
 tags:
@@ -6,10 +7,14 @@ tags:
   - shared-architecture
   - domain-specific
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: domain-specific
+  upstream_artifacts: []
+  downstream_artifacts: []
 ---
 
 # analytics-flow

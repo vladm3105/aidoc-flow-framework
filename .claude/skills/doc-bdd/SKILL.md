@@ -1,11 +1,11 @@
 ---
+title: "doc-bdd: Create BDD test scenarios (Layer 4)"
 name: doc-bdd
 description: Create BDD (Behavior-Driven Development) test scenarios - Layer 4 artifact using Gherkin Given-When-Then format
 tags:
   - sdd-workflow
   - layer-4-artifact
   - shared-architecture
-  - documentation-skill
 custom_fields:
   layer: 4
   artifact_type: BDD

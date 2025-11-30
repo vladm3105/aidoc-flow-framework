@@ -1,4 +1,5 @@
 ---
+title: "workflow-optimizer: Workflow navigation assistant for SDD documentation"
 name: workflow-optimizer
 description: Workflow navigation assistant that recommends next steps and optimizes documentation sequence through the SDD workflow
 tags:
@@ -7,6 +8,8 @@ tags:
   - utility
   - shared-architecture
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based]
   priority: primary
   development_status: active

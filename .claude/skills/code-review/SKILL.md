@@ -1,4 +1,5 @@
 ---
+title: "code-review: Code review skill for quality, standards compliance, and best practices"
 name: code-review
 description: Code review skill for quality, standards compliance, and best practices
 tags:
@@ -6,10 +7,14 @@ tags:
   - shared-architecture
   - quality-assurance
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: quality-assurance
+  upstream_artifacts: [SPEC, TASKS]
+  downstream_artifacts: []
 ---
 
 # code-review

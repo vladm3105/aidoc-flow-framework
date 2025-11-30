@@ -1,26 +1,26 @@
 ---
-name: charts_flow
+title: "charts-flow: Create and manage Mermaid architecture diagrams with automatic SVG generation"
+name: charts-flow
 description: Create and manage Mermaid architecture diagrams with automatic SVG generation
 tags:
   - sdd-workflow
   - shared-architecture
-  - utility-skill
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: utility
+  upstream_artifacts: [BRD, PRD, ADR, SYS, SPEC]
+  downstream_artifacts: []
 ---
 
-name: charts_flow
-description: Create and manage Mermaid architecture diagrams with automatic SVG generation for documentation
----
-
-# charts_flow
+# charts-flow
 
 ## Purpose
 
-The `charts_flow` skill automates creation and management of Mermaid diagrams for technical documentation. It separates diagram source files from main documents to improve rendering performance, provides automatic SVG conversion for human viewing, and maintains traceability between parent documents and diagram files.
+The `charts-flow` skill automates creation and management of Mermaid diagrams for technical documentation. It separates diagram source files from main documents to improve rendering performance, provides automatic SVG conversion for human viewing, and maintains traceability between parent documents and diagram files.
 
 **Key Benefits**:
 - **Performance**: Separate diagram files load faster in documentation viewers
@@ -31,14 +31,14 @@ The `charts_flow` skill automates creation and management of Mermaid diagrams fo
 
 ## When to Use This Skill
 
-**Use charts_flow when**:
+**Use charts-flow when**:
 - Creating architecture diagrams for PRD, BRD, ADR, SYS, or other technical documents
 - Migrating existing inline Mermaid diagrams to separate files
 - Main document becomes slow to render due to complex diagrams
 - Diagram needs to be reused across multiple documents
 - Creating flowcharts, component diagrams, deployment diagrams, sequence diagrams, state machines, or class diagrams
 
-**Do NOT use charts_flow when**:
+**Do NOT use charts-flow when**:
 - Creating simple tables or text-based lists (use markdown)
 - Diagram is < 20 lines and main document renders fast
 - Creating data visualization charts (use appropriate charting libraries)
@@ -514,9 +514,9 @@ Code Implementation
 
 ### Relationship to Other Skills
 
-- **doc-flow**: Creates specification documents; charts_flow adds diagrams to those documents
-- **google-adk**: Defines agent framework; charts_flow visualizes agent hierarchies
-- **project-mngt**: Creates implementation plans; charts_flow shows dependency graphs
+- **doc-flow**: Creates specification documents; charts-flow adds diagrams to those documents
+- **google-adk**: Defines agent framework; charts-flow visualizes agent hierarchies
+- **project-mngt**: Creates implementation plans; charts-flow shows dependency graphs
 
 ## References
 

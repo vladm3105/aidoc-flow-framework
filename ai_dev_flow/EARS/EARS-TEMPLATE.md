@@ -19,6 +19,38 @@ custom_fields:
 > - All EARS documents must conform to this template
 > - `EARS_CREATION_RULES.md` - Helper guidance for template usage
 > - `EARS_VALIDATION_RULES.md` - Post-creation validation checks
+> - `EARS_SCHEMA.yaml` - Machine-readable validation schema
+
+---
+
+## METADATA CLARIFICATION (DO NOT INCLUDE IN OUTPUT)
+
+**When creating EARS documents, use EXACTLY these values:**
+
+```yaml
+tags:
+  - ears                 # REQUIRED - Use 'ears' NOT 'ears-requirements', 'ears-formal-requirements', etc.
+  - layer-3-artifact     # REQUIRED - Layer identifier
+  - shared-architecture  # OR 'ai-agent-primary' for agent docs
+
+custom_fields:
+  document_type: ears    # REQUIRED - Use 'ears' NOT 'engineering-requirements'
+  artifact_type: EARS    # REQUIRED - Uppercase
+  layer: 3               # REQUIRED - Always 3 for EARS
+  architecture_approaches: [ai-agent-based, traditional-8layer]  # REQUIRED - Array format
+  priority: shared       # OR 'primary' for agent docs
+  development_status: active
+```
+
+**Source Document Format:**
+```
+| **Source Document** | @prd: PRD-NNN |
+```
+Note: Use `@prd:` prefix for traceability links.
+
+**Validation:** Run `python scripts/validate_ears.py` to check compliance.
+
+---
 
 # EARS-NNN: [Short Descriptive Title]
 

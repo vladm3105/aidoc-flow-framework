@@ -1,15 +1,19 @@
 ---
+title: "refactor-flow: Improve code quality, reduce technical debt, restructure for maintainability"
 name: refactor-flow
 description: Improve code quality, reduce technical debt, restructure for maintainability
 tags:
   - sdd-workflow
   - shared-architecture
-  - utility-skill
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: utility
+  upstream_artifacts: [SPEC, TASKS]
+  downstream_artifacts: []
 ---
 
 # refactor-flow

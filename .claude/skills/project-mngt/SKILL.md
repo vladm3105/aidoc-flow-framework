@@ -1,22 +1,22 @@
 ---
+title: "project-mngt: Product Owner / Project Manager skill for MVP/MMP/MMR implementation planning"
 name: project-mngt
 description: Product Owner / Project Manager skill for MVP/MMP/MMR implementation planning
 tags:
   - sdd-workflow
   - shared-architecture
-  - utility-skill
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: utility
+  upstream_artifacts: [BRD, PRD, REQ]
+  downstream_artifacts: [TASKS, IPLAN]
 ---
 
-name: project-mgnt
-description: Product Owner / Project Manager skill for MVP/MMP/MMR implementation planning
----
-
-# project-mgnt
+# project-mngt
 
 **Project Implementation Planning with MVP/MMP/MMR Methodology**
 

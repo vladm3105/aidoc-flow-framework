@@ -1,4 +1,5 @@
 ---
+title: "trace-check: Validate bidirectional traceability across SDD artifacts"
 name: trace-check
 description: Validate and update bidirectional traceability across SDD artifacts
 tags:
@@ -6,10 +7,14 @@ tags:
   - shared-architecture
   - quality-assurance
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: quality-assurance
+  upstream_artifacts: []
+  downstream_artifacts: []
 ---
 
 # trace-check

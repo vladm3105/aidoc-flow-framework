@@ -1,11 +1,11 @@
 ---
+title: "doc-prd: Create Product Requirements Documents (Layer 2)"
 name: doc-prd
 description: Create Product Requirements Documents (PRD) following SDD methodology - Layer 2 artifact defining product features and user needs
 tags:
   - sdd-workflow
   - layer-2-artifact
   - shared-architecture
-  - documentation-skill
 custom_fields:
   layer: 2
   artifact_type: PRD
@@ -321,9 +321,44 @@ The EARS will:
 - Use WHEN-THE-SHALL-WITHIN format
 - Formalize PRD features into requirements
 
+## Template Binding (MANDATORY)
+
+**When creating PRD documents, use EXACTLY these metadata values:**
+
+```yaml
+tags:
+  - prd                 # REQUIRED - Use 'prd' NOT 'product-prd', 'feature-prd'
+  - layer-2-artifact    # REQUIRED - Layer identifier
+
+custom_fields:
+  document_type: prd    # REQUIRED - Use 'prd' NOT 'product-requirements'
+  artifact_type: PRD    # REQUIRED - Uppercase
+  layer: 2              # REQUIRED - PRD is Layer 2
+  architecture_approaches: [ai-agent-based]  # REQUIRED - Array format, NOT singular
+```
+
+**FORBIDDEN Values (will fail validation)**:
+- Tags: `product-prd`, `feature-prd`, `product-requirements`
+- document_type: `product-requirements`, `product_requirements`
+- `architecture_approach: value` (singular form)
+
+**Valid architecture_approaches**:
+- `[ai-agent-based]` - AI agent primary documents
+- `[traditional-8layer]` - Traditional fallback documents
+- `[ai-agent-based, traditional-8layer]` - Shared platform documents
+
+**Post-Creation Validation**:
+```bash
+python scripts/validate_prd.py docs/PRD/PRD-NNN*.md
+```
+
+**Schema Reference**: `ai_dev_flow/PRD/PRD_SCHEMA.yaml`
+
 ## Related Resources
 
 - **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- **PRD Schema**: `ai_dev_flow/PRD/PRD_SCHEMA.yaml`
+- **PRD Template**: `ai_dev_flow/PRD/PRD-TEMPLATE.md`
 - **PRD Creation Rules**: `ai_dev_flow/PRD/PRD_CREATION_RULES.md`
 - **PRD Validation Rules**: `ai_dev_flow/PRD/PRD_VALIDATION_RULES.md`
 - **PRD README**: `ai_dev_flow/PRD/README.md`

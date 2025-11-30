@@ -1,11 +1,11 @@
 ---
+title: "doc-impl: Create Implementation Approach (Layer 8)"
 name: doc-impl
 description: Create Implementation Approach (IMPL) - Optional Layer 8 artifact documenting WHO-WHEN-WHAT implementation strategy
 tags:
   - sdd-workflow
   - layer-8-artifact
   - shared-architecture
-  - documentation-skill
 custom_fields:
   layer: 8
   artifact_type: IMPL

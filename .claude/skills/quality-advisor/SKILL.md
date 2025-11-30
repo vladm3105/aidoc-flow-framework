@@ -1,4 +1,5 @@
 ---
+title: "quality-advisor: Proactive quality guidance for artifact creation"
 name: quality-advisor
 description: Proactive quality guidance system that monitors artifact creation and provides real-time feedback on documentation quality
 tags:
@@ -7,6 +8,8 @@ tags:
   - quality-assurance
   - shared-architecture
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based]
   priority: primary
   development_status: active

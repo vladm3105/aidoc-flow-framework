@@ -1,4 +1,5 @@
 ---
+title: "contract-tester: Test and validate API contracts against specifications"
 name: contract-tester
 description: Test and validate API contracts against specifications
 tags:
@@ -6,10 +7,14 @@ tags:
   - shared-architecture
   - quality-assurance
 custom_fields:
+  layer: null
+  artifact_type: null
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: quality-assurance
+  upstream_artifacts: [CTR, SPEC]
+  downstream_artifacts: []
 ---
 
 # contract-tester

@@ -203,7 +203,7 @@ Output: ADR-000_IMPLEMENTATION-ROADMAP.md
 
 ❌ **Documentation generation**: Use `doc-flow` skill for SYS/REQ/SPEC creation
 
-❌ **Architecture diagrams only**: Use `charts_flow` skill for Mermaid diagrams
+❌ **Architecture diagrams only**: Use `charts-flow` skill for Mermaid diagrams
 
 ❌ **Informational ADRs**: No implementation required, roadmap not applicable
 
@@ -302,7 +302,7 @@ Output: {project_root}/docs/ROADMAP.md
 
 **project-mngt**: Use for requirement-based planning (BRD/PRD → MVP)
 **doc-flow**: Use for generating SYS/REQ/SPEC from ADRs
-**charts_flow**: Combine for enhanced Mermaid visualizations
+**charts-flow**: Combine for enhanced Mermaid visualizations
 
 ---
 

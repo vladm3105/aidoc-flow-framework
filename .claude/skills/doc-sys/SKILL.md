@@ -1,11 +1,11 @@
 ---
+title: "doc-sys: Create System Requirements (Layer 6)"
 name: doc-sys
 description: Create System Requirements (SYS) - Layer 6 artifact defining functional and non-functional system requirements
 tags:
   - sdd-workflow
   - layer-6-artifact
   - shared-architecture
-  - documentation-skill
 custom_fields:
   layer: 6
   artifact_type: SYS
