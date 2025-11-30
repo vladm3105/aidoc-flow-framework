@@ -499,16 +499,16 @@ Every document **MUST** include section 7 with:
 ### Upstream Sources
 | Source | Type | Reference |
 |--------|------|-----------|
-| [BRD-001](../BRD/BRD-001_trading_platform.md#BRD-001) | Business Requirements | Risk management objectives |
-| [PRD-002](../PRD/PRD-002_risk_controls.md#PRD-002) | Product Requirements | resource limit feature |
-| [ADR-008](../ADR/ADR-008_risk_architecture.md#ADR-008) | Architecture Decision | Real-time limit enforcement |
+| `@brd: BRD-001` | Business Requirements | Risk management objectives |
+| `@prd: PRD-002` | Product Requirements | resource limit feature |
+| `@adr: ADR-008` | Architecture Decision | Real-time limit enforcement |
 
 ### Downstream Artifacts
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml) | Technical Specification | Implementation spec |
-| [TASKS-023](../TASKS/TASKS-023_risk_calculator.md#TASKS-023) | Implementation Tasks | AI generation tasks |
-| [BDD-015](../BDD/BDD-015_resource_limits.feature#BDD-015) | BDD Scenarios | Acceptance tests |
+| `@spec: SPEC-023` | Technical Specification | Implementation spec |
+| `@tasks: TASKS-023` | Implementation Tasks | AI generation tasks |
+| `@bdd: BDD-015` | BDD Scenarios | Acceptance tests |
 
 ### Primary Anchor/ID
 - **REQ-003**: resource limit enforcement requirement

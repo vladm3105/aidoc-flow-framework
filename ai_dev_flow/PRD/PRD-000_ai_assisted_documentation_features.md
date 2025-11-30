@@ -5,6 +5,7 @@ tags:
   - ai-agent-primary
   - recommended-approach
   - active
+  - layer-2-artifact
 custom_fields:
   layer: 2
   artifact_type: PRD

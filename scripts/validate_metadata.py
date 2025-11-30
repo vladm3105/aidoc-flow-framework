@@ -68,6 +68,57 @@ VALID_TAGS = {
     # Feature types
     'feature-doc',
     'platform-doc',
+
+    # Template tags - artifact-specific
+    'adr-template',
+    'bdd-template',
+    'brd-template',
+    'ctr-template',
+    'ears-template',
+    'impl-template',
+    'iplan-template',
+    'prd-template',
+    'req-template',
+    'spec-template',
+    'sys-template',
+    'tasks-template',
+
+    # Template tags - generic
+    'document-template',
+    'traceability-matrix-template',
+
+    # Reference/guide tags
+    'reference-document',
+    'quick-reference',
+    'traceability-guide',
+    'metadata-guide',
+    'supporting-document',
+
+    # ICON/contract tags
+    'implementation-contract',
+    'contract-index',
+    'contract-template',
+    'decision-criteria',
+    'troubleshooting',
+
+    # Index/directory tags
+    'directory-overview',
+    'brd-glossary',
+
+    # Feature variant tags
+    'feature-prd',
+    'architecture-adr',
+
+    # Checklist/misc tags
+    'tasks-checklist',
+    'ears',
+    'utility',
+
+    # Agent/AI tags
+    'agent',
+    'ai-assistant',
+    'requirements-engineering',
+    'traceability',
 }
 
 # Required fields by document type

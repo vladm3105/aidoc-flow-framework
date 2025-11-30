@@ -1,5 +1,14 @@
 ---
+title: "Save Plan Command"
 description: Save current plan and tasks to implementation file
+tags:
+  - utility
+  - automation-skill
+  - active
+custom_fields:
+  document_type: command
+  priority: shared
+  development_status: active
 ---
 
 # Save Plan Command

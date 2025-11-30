@@ -565,13 +565,13 @@ Trading desks require real-time enforcement of resource limits to prevent excess
 ## 5. Dependencies
 
 ### Upstream Dependencies
-- [REQ-001](./REQ-001_real_time_position_aggregation.md#REQ-001): Real-time position aggregation
-- [REQ-002](./REQ-002_market_data_integration.md#REQ-002): Market data integration for notional calculations
-- [ADR-005](../ADR/ADR-005_risk_architecture.md#ADR-005): Real-time risk architecture decision
+- `@req: REQ-001`: Real-time position aggregation
+- `@req: REQ-002`: Market data integration for notional calculations
+- `@adr: ADR-005`: Real-time risk architecture decision
 
 ### Downstream Dependencies
-- [SPEC-003](../SPEC/SPEC-003_resource_limiter.yaml): resource limiter technical specification
-- [BDD-003](../BDD/BDD-003_resource_limits.feature#BDD-003): resource limit acceptance tests
+- `@spec: SPEC-003`: resource limiter technical specification
+- `@bdd: BDD-003`: resource limit acceptance tests
 
 ---
 
@@ -599,17 +599,17 @@ Trading desks require real-time enforcement of resource limits to prevent excess
 ### Upstream Sources
 | Source | Type | Reference |
 |--------|------|-----------|
-| [BRD-001](../BRD/BRD-001_trading_platform.md#BRD-001) | Business Requirements | Risk management objectives |
-| [PRD-002](../PRD/PRD-002_risk_controls.md#PRD-002) | Product Requirements | resource limit feature |
-| [ADR-005](../ADR/ADR-005_risk_architecture.md#ADR-005) | Architecture Decision | Real-time limit enforcement |
+| `@brd: BRD-001` | Business Requirements | Risk management objectives |
+| `@prd: PRD-002` | Product Requirements | resource limit feature |
+| `@adr: ADR-005` | Architecture Decision | Real-time limit enforcement |
 | **regulatory Rule 15c3-5** | Regulatory | Market Access Risk Management |
 
 ### Downstream Artifacts
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| [SPEC-003](../SPEC/SPEC-003_resource_limiter.yaml) | Technical Specification | Implementation spec |
-| [TASKS-003](../TASKS/TASKS-003_resource_limiter.md#TASKS-003) | Implementation Tasks | AI generation tasks |
-| [BDD-003](../BDD/BDD-003_resource_limits.feature#BDD-003) | BDD Scenarios | Acceptance tests |
+| `@spec: SPEC-003` | Technical Specification | Implementation spec |
+| `@tasks: TASKS-003` | Implementation Tasks | AI generation tasks |
+| `@bdd: BDD-003` | BDD Scenarios | Acceptance tests |
 | `src/risk/resource_limiter.py` | Code | Implementation |
 | `tests/risk/test_resource_limits.py` | Tests | Unit tests |
 
@@ -652,7 +652,7 @@ Trading desks require real-time enforcement of resource limits to prevent excess
 ## 9. Verification Methods
 
 ### BDD Scenarios
-- [BDD-003](../BDD/BDD-003_resource_limits.feature#BDD-003): Comprehensive limit enforcement scenarios
+- `@bdd: BDD-003`: Comprehensive limit enforcement scenarios
 
 ### Unit Tests
 - `test_hard_limit_blocks_order()`

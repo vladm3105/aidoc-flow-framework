@@ -419,8 +419,8 @@ status: "Ready for downstream artifacts"
 
 | Source | Type | Reference |
 |--------|------|-----------|
-| PRD-000 | Product Requirements | [PRD-000](../../../ai_dev_flow/PRD/PRD-000_ai_assisted_documentation_features.md#PRD-000) |
-| ADR-000 | Architecture Decision | [ADR-000](../../../ai_dev_flow/ADR/ADR-000_ai_powered_documentation_assistant_architecture.md#ADR-000) |
+| PRD-000 | Product Requirements | [PRD-000]({project_root}/ai_dev_flow/PRD/PRD-000_ai_assisted_documentation_features.md#PRD-000) |
+| ADR-000 | Architecture Decision | [ADR-000]({project_root}/ai_dev_flow/ADR/ADR-000_ai_powered_documentation_assistant_architecture.md#ADR-000) |
 
 ### Downstream Artifacts
 

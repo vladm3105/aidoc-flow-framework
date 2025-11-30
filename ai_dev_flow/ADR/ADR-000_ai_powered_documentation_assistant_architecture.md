@@ -5,6 +5,7 @@ tags:
   - ai-agent-primary
   - recommended-approach
   - active
+  - layer-5-artifact
 custom_fields:
   layer: 5
   artifact_type: ADR
