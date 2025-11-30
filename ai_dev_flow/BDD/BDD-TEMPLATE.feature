@@ -38,17 +38,6 @@
 #   - ../BRD/BRD-TEMPLATE.md#appendix-b (PRD-Level Content Exclusions)
 #
 # =============================================================================
-# 📋 DOCUMENT AUTHORITY: PRIMARY STANDARD for BDD structure
-# =============================================================================
-# This template is the SINGLE SOURCE OF TRUTH for BDD artifact structure.
-# All other documents DERIVE from this template:
-#   - BDD_SCHEMA.yaml (DERIVATIVE - machine-readable validation rules)
-#   - BDD_CREATION_RULES.md (DERIVATIVE - human-readable creation guidance)
-#   - BDD_VALIDATION_RULES.md (DERIVATIVE - post-creation validation checklist)
-#
-# CONFLICT RESOLUTION: When any document conflicts with this template,
-# this template wins. Update the conflicting document to match.
-# =============================================================================
 
 ## Document Control
 

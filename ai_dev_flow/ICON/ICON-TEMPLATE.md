@@ -61,6 +61,20 @@ Before creating this ICON, verify:
 
 **If any item fails, STOP. Fix TASKS files first.**
 
+## 1.1 ICON Workflow Position
+
+**ICON (Layer 11)** ← Creates integration contracts **parallel after TASKS**
+- **Input**: TASKS (code generation specifications)
+- **Output**: Type-safe contracts for IPLAN source code implementation
+- **Purpose**: Enable parallel development by defining stable interfaces
+
+```
+TASKS (Layer 11) ──┬──> ICON (Layer 11, parallel)
+                   │         │
+                   │         ▼
+                   └──> IPLAN (Layer 12) uses ICON contracts
+```
+
 **⚠️ NOTE**: Most implementation contracts should be embedded in TASKS files. Use standalone ICON files only when:
 - 5+ consumer TASKS files
 - Contract definition >500 lines

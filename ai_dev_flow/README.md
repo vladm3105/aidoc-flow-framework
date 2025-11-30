@@ -14,7 +14,7 @@ custom_fields:
 
 **Status**: Production-ready framework with generic templates, domain adaptation guidance, cumulative tagging hierarchy, and automated validation tooling.
 
-**Version**: 2.0 | **Last Updated**: 2025-11-13
+**Version**: 2.2 | **Last Updated**: 2025-11-30
 
 ## Overview
 
@@ -984,8 +984,8 @@ graph LR
 
 ## Framework Versions and Updates
 
-**Current Version**: 2.0
-**Last Updated**: 2025-11-13
+**Current Version**: 2.2
+**Last Updated**: 2025-11-30
 
 **Version 2.0 - Cumulative Tagging Hierarchy** (November 2025):
 - ✅ **16-Layer Architecture**: Expanded from 10 to 16 layers (added Strategy, IPLAN, Code, Tests, Validation)

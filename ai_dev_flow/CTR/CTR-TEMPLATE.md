@@ -66,7 +66,7 @@ custom_fields:
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
-**CTR (API Contracts)** ← YOU ARE HERE (Layer 6 - Interface Layer)
+**CTR (API Contracts)** ← YOU ARE HERE (Layer 9 - Interface Layer)
 
 For the complete traceability workflow with visual diagram, see: [index.md - Traceability Flow](../index.md#traceability-flow)
 
