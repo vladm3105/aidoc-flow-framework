@@ -809,9 +809,9 @@ Example: @prd: PRD-035:kyc.l1.daily
 | Sequence | 3-digit zero-padded | 001, 002, 003 |
 
 **Examples**:
-- `FR-001-001`: First feature in PRD-001
-- `FR-022-015`: 15th feature in PRD-022
-- `FR-035-003`: 3rd feature in PRD-035
+- `001`: First feature in PRD-001
+- `015`: 15th feature in PRD-022
+- `003`: 3rd feature in PRD-035
 
 ### Validation Regex
 
@@ -823,11 +823,11 @@ Example: @prd: PRD-035:kyc.l1.daily
 
 | Invalid Format | Issue | Correct Format |
 |----------------|-------|----------------|
-| `FR-001` | Missing sequence number | `FR-001-001` |
-| `FR-AGENT-001` | Non-standard prefix | `FR-022-001` |
-| `Feature 3.1` | Text format | `FR-025-003` |
-| `F-001-001` | Wrong prefix | `FR-001-001` |
-| `FR-1-1` | Not zero-padded | `FR-001-001` |
+| `FR-001` | Missing sequence number | `001` |
+| `FR-AGENT-001` | Non-standard prefix | `001` |
+| `Feature 3.1` | Text format | `003` |
+| `F-001-001` | Wrong prefix | `001` |
+| `FR-1-1` | Not zero-padded | `001` |
 
 ### Common Mistakes to Avoid
 
@@ -844,7 +844,7 @@ Example: @prd: PRD-035:kyc.l1.daily
 When referencing features from other PRDs:
 
 ```markdown
-See FR-009-005 in @prd: PRD-009 for remittance transaction flow.
+See 005 in @prd: PRD-009 for remittance transaction flow.
 ```
 
 ### Migration Guide
@@ -860,9 +860,9 @@ For PRDs with non-standard Feature IDs:
 **Mapping Example**:
 | Old ID | New ID | Notes |
 |--------|--------|-------|
-| FR-AGENT-001 | FR-022-001 | PRD-022 fraud agent |
-| Feature 3.1 | FR-025-003 | PRD-025 transaction orchestrator |
-| FR-001 | FR-016-001 | PRD-016 fraud detection |
+| FR-AGENT-001 | 001 | PRD-022 fraud agent |
+| Feature 3.1 | 003 | PRD-025 transaction orchestrator |
+| FR-001 | 001 | PRD-016 fraud detection |
 
 ### Benefits
 

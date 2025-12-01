@@ -155,8 +155,8 @@ feature_patterns:
     format: "FR-{prd_number}-{sequence}"
     description: "Standardized feature requirement ID"
     examples:
-      - "FR-005-01"
-      - "FR-022-001"
+      - "01"
+      - "001"
 
   # Feature table structure
   feature_table:

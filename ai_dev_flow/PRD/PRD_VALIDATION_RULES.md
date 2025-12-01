@@ -764,7 +764,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 **Purpose**: Verify all Feature IDs follow the standard format `FR-{PRD#}-{sequence}`
 **Type**: Warning (recommended fix)
 
-**Valid Format**: `FR-NNN-NNN` (e.g., FR-001-001, FR-022-015)
+**Valid Format**: `FR-NNN-NNN` (e.g., 001, 015)
 
 **Validation Regex**: `^FR-\d{3}-\d{3}$`
 
@@ -772,16 +772,16 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 | Pattern | Issue | Fix |
 |---------|-------|-----|
-| `FR-001` | Missing sequence | `FR-001-001` |
-| `FR-AGENT-001` | Non-standard prefix | `FR-022-001` |
-| `Feature 3.1` | Text format | `FR-025-003` |
-| `F-001-001` | Wrong prefix | `FR-001-001` |
-| `FR-1-1` | Not zero-padded | `FR-001-001` |
+| `FR-001` | Missing sequence | `001` |
+| `FR-AGENT-001` | Non-standard prefix | `001` |
+| `Feature 3.1` | Text format | `003` |
+| `F-001-001` | Wrong prefix | `001` |
+| `FR-1-1` | Not zero-padded | `001` |
 
 **Error Messages**:
 ```
 ⚠️ WARNING: Invalid Feature ID "FR-001" found - missing sequence number
-⚠️ WARNING: Non-standard Feature ID "FR-AGENT-001" - use FR-022-001 format
+⚠️ WARNING: Non-standard Feature ID "FR-AGENT-001" - use 001 format
 ⚠️ WARNING: Text format "Feature 3.1" detected - convert to FR-NNN-NNN
 ```
 

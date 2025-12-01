@@ -357,10 +357,34 @@ Local Clarifications (ai_dev_flow)
 - Use sub-numbering (-YY) sparingly - only when single logical document truly requires multiple related files with sequential reading order.
 - **ID Collision Prevention**: Each NNN number must be unique across atomic and multi-document patterns. Once allocated to a multi-document group (e.g., REQ-009-01, REQ-009-02), that NNN number (009) cannot be used for an atomic document (REQ-009).
 
+Internal Feature/Requirement IDs
+
+Within a document, use simple sequential numbering for feature headings:
+
+| Document Type | Feature ID Format | Example Heading |
+|---------------|-------------------|-----------------|
+| BRD-017 | `001`, `002`, `003` | `### 001: Feature Name` |
+| PRD-022 | `001`, `002`, `003` | `### 001: Feature Name` |
+| EARS-006 | `001`, `002`, `003` | `#### 001: Requirement Name` |
+
+**Rationale**: The document context (BRD-017, PRD-022, EARS-006) already provides the namespace.
+Prefixing feature IDs with the document number (e.g., `017-001`) is redundant.
+
+**Cross-Reference Format**: When referencing features from other documents, use:
+- `@brd: BRD-017:001` (BRD-017, feature 001)
+- `@prd: PRD-022:005` (PRD-022, feature 005)
+- `@ears: EARS-006:003` (EARS-006, requirement 003)
+
+**Uniqueness Guarantee**: Full ID = `DOCUMENT-TYPE-NNN:FEATURE-NNN`
+- `BRD-017:001` = BRD-017, Feature 001 (globally unique)
+- `PRD-022:015` = PRD-022, Feature 015 (globally unique)
+- `EARS-006:003` = EARS-006, Requirement 003 (globally unique)
+
 Checklist
 - H1 titles contain IDs for PRD/SYS/EARS/REQ/ADR/CTR/IMPL/TASKS/BRD where applicable (use `TYPE-NNN` or `TYPE-NNN-YY` format).
 - BDD tags are markdown links with valid relative paths and anchors (supports both NNN and NNN-YY patterns).
 - Spec files named `SPEC-NNN_{slug}.yaml` or `SPEC-NNN-YY_{slug}.yaml`; inside, `id:` is snake_case and used by `@spec` tags; `requirements_source`/`architecture`/`verification` links resolve.
 - All document types follow universal numbering pattern: NNN = 3-4 digits (001-999, 1000+), YY = 2-3 digits [OPTIONAL] (01-99, 100+).
 - No ID collisions: each NNN number used only once (either atomic TYPE-NNN OR multi-doc TYPE-NNN-YY group, never both).
+- Internal feature IDs use simple sequential numbering (001, 002, 003) within each document.
 - Run `python scripts/validate_requirement_ids.py` and fix any violations before committing.

@@ -114,14 +114,14 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 **❌ INVALID** (comment-based tags - frameworks cannot parse):
 ```gherkin
 # @brd: BRD-001:FR-001
-# @prd: PRD-001:FR-001-001
+# @prd: PRD-001:001
 Feature: My Feature
 ```
 
 **✅ VALID** (Gherkin-native tags):
 ```gherkin
 @brd:BRD-001:FR-001
-@prd:PRD-001:FR-001-001
+@prd:PRD-001:001
 @ears:EARS-001:001
 Feature: My Feature
 ```

@@ -328,7 +328,7 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 **❌ WRONG** (Gherkin frameworks cannot parse comment-based tags):
 ```gherkin
 # @brd: BRD-001:FR-001
-# @prd: PRD-001:FR-001-001
+# @prd: PRD-001:001
 # @ears: EARS-001:001
 Feature: My Feature
 ```
@@ -336,7 +336,7 @@ Feature: My Feature
 **✅ CORRECT** (Gherkin-native tags before Feature):
 ```gherkin
 @brd:BRD-001:FR-001
-@prd:PRD-001:FR-001-001
+@prd:PRD-001:001
 @ears:EARS-001:001
 Feature: My Feature
 ```

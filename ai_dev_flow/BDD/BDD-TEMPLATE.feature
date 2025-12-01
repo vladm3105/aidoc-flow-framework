@@ -21,13 +21,13 @@
 #
 # ❌ WRONG: Tags in comments (Gherkin frameworks cannot parse these)
 #    # @brd: BRD-001:FR-001
-#    # @prd: PRD-001:FR-001-001
+#    # @prd: PRD-001:001
 #    Feature: My Feature
 #
 # ✅ CORRECT: Tags as Gherkin-native on separate lines before Feature
 #    @brd:BRD-001:001
 #    @brd:BRD-001:FR-001
-#    @prd:PRD-001:FR-001-001
+#    @prd:PRD-001:001
 #    @ears:EARS-001:001
 #    Feature: My Feature
 #
