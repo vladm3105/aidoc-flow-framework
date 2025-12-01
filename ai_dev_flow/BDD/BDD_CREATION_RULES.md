@@ -39,6 +39,7 @@ custom_fields:
 ## Table of Contents
 
 1. [File Organization and Directory Structure](#1-file-organization-and-directory-structure)
+   1.1. [YAML Frontmatter Metadata](#11-yaml-frontmatter-metadata-required-for-md-files)
 2. [Document Structure (Gherkin Syntax)](#2-document-structure-gherkin-syntax)
 3. [Document Control Requirements](#3-document-control-requirements)
 4. [Feature File Standards](#4-feature-file-standards)
@@ -58,8 +59,102 @@ custom_fields:
 ## 1. File Organization and Directory Structure
 
 - **Location**: `docs/BDD/` within project docs directory
-- **Naming**: `BDD-NNN_descriptive_scenarios.feature` (NNN = 3-digit sequential)
+- **Naming**: `BDD-NNN_descriptive_slug.md` or `BDD-NNN_descriptive_slug.feature` (NNN = 3-digit sequential)
 - **Structure**: One primary feature file per EARS requirement set
+
+---
+
+## 1.1 YAML Frontmatter Metadata (Required for .md files)
+
+All BDD markdown files MUST include YAML frontmatter metadata consistent with other SDD artifacts (BRD, PRD, EARS).
+
+**Required YAML Frontmatter Structure**:
+
+```yaml
+---
+title: "BDD-NNN: Feature Title"
+tags:
+  - bdd
+  - layer-4-artifact
+  - shared-architecture  # or ai-agent-primary for agent-based features
+  - feature-specific-tag
+custom_fields:
+  document_type: bdd
+  artifact_type: BDD
+  layer: 4
+  architecture_approaches: [ai-agent-based, traditional-8layer]  # or single approach
+  priority: shared  # or primary/fallback
+  development_status: active
+  agent_id: AGENT-NNN  # Only for ai-agent-primary documents
+  requirements_verified:
+    - EARS-NNN
+    - BRD-NNN
+  traceability:
+    upstream: [BRD-NNN, PRD-NNN, EARS-NNN]
+    downstream: [ADR, SYS, REQ, SPEC, Code, Tests]
+---
+```
+
+**Shared Architecture Example** (most BDD files):
+```yaml
+---
+title: "BDD-008: Wallet Funding via ACH, Card, and PayPal"
+tags:
+  - bdd
+  - layer-4-artifact
+  - shared-architecture
+  - wallet
+  - funding
+  - payments
+custom_fields:
+  document_type: bdd
+  artifact_type: BDD
+  layer: 4
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  requirements_verified:
+    - EARS-008
+    - BRD-008
+  traceability:
+    upstream: [BRD-008, PRD-008, EARS-008]
+    downstream: [ADR, SYS, REQ, SPEC, Code, Tests]
+---
+```
+
+**AI-Agent Primary Example** (agent-based features):
+```yaml
+---
+title: "BDD-022: Fraud Detection Agent (ML-based Risk)"
+tags:
+  - bdd
+  - layer-4-artifact
+  - ai-agent-primary
+  - recommended-approach
+  - fraud-detection
+  - ml-risk
+custom_fields:
+  document_type: bdd
+  artifact_type: BDD
+  layer: 4
+  architecture_approach: ai-agent-based
+  priority: primary
+  development_status: active
+  agent_id: AGENT-001
+  requirements_verified:
+    - EARS-022
+    - BRD-022
+  traceability:
+    upstream: [BRD-022, PRD-022, EARS-022]
+    downstream: [ADR, SYS, REQ, SPEC, Code, Tests]
+---
+```
+
+**Key Differences from .feature files**:
+- YAML frontmatter replaces comment-based header (`# ===...`)
+- Traceability information moves to `custom_fields.traceability`
+- Architecture classification uses standard tags (`shared-architecture`, `ai-agent-primary`)
+- Agent ID included for AI-agent documents
 
 ---
 
