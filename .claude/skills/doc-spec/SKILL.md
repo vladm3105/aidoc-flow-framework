@@ -77,12 +77,12 @@ Use `doc-spec` when:
 
 metadata:
   spec_id: SPEC-001
-  title: "Trade Validation Service Specification"
+  title: "Order Validation Service Specification"
   version: "1.0.0"
   created_date: "2025-01-15"
   updated_date: "2025-01-15"
   status: "approved"
-  owner: "team-trading"
+  owner: "team-backend"
 
 cumulative_tags:
   brd: ["BRD-001:section-3"]

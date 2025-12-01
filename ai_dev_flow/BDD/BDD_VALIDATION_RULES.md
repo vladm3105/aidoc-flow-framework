@@ -104,6 +104,38 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 
 **Format**: Extended format with requirement ID suffix (`:NNN`) is REQUIRED.
 
+### CHECK 4.1: Tag Placement Validation ⭐ NEW
+
+**Purpose**: Verify tags are Gherkin-native, not in comments
+**Type**: Error (blocking)
+
+**Validation Rule**: Tags MUST appear as Gherkin-native tags on separate lines before `Feature:` keyword, NOT inside comment blocks.
+
+**❌ INVALID** (comment-based tags - frameworks cannot parse):
+```gherkin
+# @brd: BRD-001:FR-001
+# @prd: PRD-001:FR-001-001
+Feature: My Feature
+```
+
+**✅ VALID** (Gherkin-native tags):
+```gherkin
+@brd:BRD-001:FR-001
+@prd:PRD-001:FR-001-001
+@ears:EARS-001:001
+Feature: My Feature
+```
+
+**Detection Pattern**:
+```bash
+# Detect comment-based tags (invalid)
+grep -n "^#.*@brd:" docs/BDD/*.feature
+grep -n "^#.*@prd:" docs/BDD/*.feature
+grep -n "^#.*@ears:" docs/BDD/*.feature
+```
+
+**Error Message**: `❌ INVALID: Tags found in comments. Move to Gherkin-native format before Feature: keyword`
+
 ### CHECK 5: Scenario Coverage Completeness
 
 **Purpose**: Ensure comprehensive test coverage

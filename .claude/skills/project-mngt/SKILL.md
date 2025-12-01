@@ -551,14 +551,14 @@ Create PLAN-XXX_[project_name].md following MVP/MMP/MMR methodology."
 
 **Example**:
 ```
-"Use the project-mgnt skill to create an implementation plan for trading system.
+"Use the project-mgnt skill to create an implementation plan for inventory system.
 
 Inputs:
 - Requirements: {project_root}/docs/BRD/BRD-*.md (11 files)
-- Context: Options trading, 5 FTE team, paper trading first
+- Context: E-commerce domain, 5 FTE team, staging deployment first
 - Constraint: MVP in <3 months
 
-Create PLAN-001_trading_system.md in docs/IMPL/"
+Create PLAN-001_inventory_system.md in docs/IMPL/"
 ```
 
 ---
@@ -580,11 +580,11 @@ IMPORTANT: Preserve completed work, only modify planned work."
 
 **Example**:
 ```
-"Use the project-mgnt skill to update PLAN-001_trading_system.md.
+"Use the project-mgnt skill to update PLAN-001_inventory_system.md.
 
 Inputs:
-- Modified: BRD-004 added 5 new risk requirements
-- Plan: docs/IMPL/PLAN-001_trading_system.md v1.0
+- Modified: BRD-004 added 5 new security requirements
+- Plan: docs/IMPL/PLAN-001_inventory_system.md v1.0
 - Progress: MVP complete (Groups 1-4), Group 5 in progress (week 2/4)
 - Date: 2024-02-01
 

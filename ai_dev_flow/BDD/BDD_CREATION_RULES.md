@@ -321,6 +321,79 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 | `timeout after 5000ms` (magic number) | `timeout after @threshold: PRD-NNN:timeout.default` |
 | `rate limit of 100 requests` (hardcoded) | `rate limit of @threshold: PRD-NNN:limit.api.requests_per_second` |
 
+### 12.1 Critical Anti-Patterns (Visual Examples)
+
+#### Anti-Pattern 1: Tags in Comments (BLOCKING)
+
+**❌ WRONG** (Gherkin frameworks cannot parse comment-based tags):
+```gherkin
+# @brd: BRD-001:FR-001
+# @prd: PRD-001:FR-001-001
+# @ears: EARS-001:001
+Feature: My Feature
+```
+
+**✅ CORRECT** (Gherkin-native tags before Feature):
+```gherkin
+@brd:BRD-001:FR-001
+@prd:PRD-001:FR-001-001
+@ears:EARS-001:001
+Feature: My Feature
+```
+
+**Why this matters**: BDD test frameworks (Cucumber, Behave, pytest-bdd) use tags for filtering, reporting, and execution control. Comment-based tags are invisible to these tools.
+
+#### Anti-Pattern 2: ADR-Ready Score Format (BLOCKING)
+
+**❌ WRONG** (missing checkmark and ≥ symbol):
+```markdown
+| **ADR-Ready Score** | 75% (Target: 90%) |
+```
+
+**✅ CORRECT** (with checkmark and ≥ symbol):
+```markdown
+| **ADR-Ready Score** | ✅ 75% (Target: ≥90%) |
+```
+
+**Why this matters**: Automated validation scripts parse this exact format. Inconsistent formatting breaks dashboard reporting and quality gates.
+
+#### Anti-Pattern 3: Hardcoded Magic Numbers (HIGH)
+
+**❌ WRONG** (hardcoded values):
+```gherkin
+Then response time is less than 200ms
+And timeout occurs after 5000ms
+And rate limit is 100 requests per second
+```
+
+**✅ CORRECT** (threshold registry references):
+```gherkin
+Then response time is less than @threshold: PRD-035:perf.api.p95_latency
+And timeout occurs after @threshold: PRD-035:timeout.default
+And rate limit is @threshold: PRD-035:limit.api.requests_per_second
+```
+
+**Why this matters**: Hardcoded values become stale, are difficult to update consistently, and break traceability to requirements.
+
+#### Anti-Pattern 4: Missing Scenario Categories (MEDIUM)
+
+**❌ WRONG** (only success scenarios):
+```gherkin
+@primary @functional
+Scenario: User logs in successfully
+  Given valid credentials
+  When user submits login
+  Then user is authenticated
+```
+
+**✅ CORRECT** (all 8 categories represented):
+```gherkin
+# Include scenarios for: @primary, @alternative, @negative,
+# @edge_case, @data_driven, @integration, @non_functional, @failure_recovery
+```
+
+**Why this matters**: Incomplete scenario coverage leads to untested edge cases and potential production failures.
+
 ---
 
 ## 13. Upstream Artifact Verification Process

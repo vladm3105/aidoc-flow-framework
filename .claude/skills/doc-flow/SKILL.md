@@ -128,7 +128,7 @@ Validation (Layer 15)
 
 | Layer | Artifact | Purpose | Skill |
 |-------|----------|---------|-------|
-| 0 | **Strategy** | Business owner documents | External (option_strategy/) |
+| 0 | **Strategy** | Business owner documents | External ({project_root}/strategy/) |
 | 1 | **BRD** | Business requirements | `doc-brd` |
 | 2 | **PRD** | Product requirements | `doc-prd` |
 | 3 | **EARS** | Formal requirements (WHEN-THE-SHALL) | `doc-ears` |
@@ -181,7 +181,7 @@ Validation (Layer 15)
 **Changes flow DOWN (never UP)**:
 
 ```
-📁 option_strategy/ (WHAT - Product Owner Voice)
+📁 {project_root}/strategy/ (WHAT - Product Owner Voice)
     ├── Strategy business logic
     └── Performance targets
               ↓
@@ -203,23 +203,23 @@ Validation (Layer 15)
 - Strategy → Documentation → Code (one-way flow)
 - Code cannot change strategy
 - Always use templates from `ai_dev_flow/` when creating docs in `docs/`
-- All trading logic must reference `option_strategy/` sections
+- All business logic must reference `{project_root}/strategy/` sections
 
 ### 3. Directory Structure and Roles
 
 **Critical Context**: This project has three key directories with distinct roles:
 
-#### 📁 `option_strategy/` - WHAT (Product Owner Voice)
-**Primary Authority**: Authoritative trading strategy and business logic
+#### 📁 `{project_root}/strategy/` - WHAT (Product Owner Voice)
+**Primary Authority**: Authoritative business strategy and domain logic
 
-- `integrated_strategy_algo_v5.md` - Bot-executable algorithm specifications
-- `Integrated_strategy_desc.md` - Strategic framework and market regimes
-- `delta_hedging.md` - Portfolio-level risk management
-- `greeks_adjustment.md` - Position-level Greeks management
-- `stock_selection/` - Entry criteria and scoring algorithms
-- Performance targets, state machines, risk budgets
+- `core_algorithm.md` - Primary algorithm specifications
+- `strategy_overview.md` - Strategic framework and operating modes
+- `risk_management.md` - Risk management policies
+- `business_rules.md` - Domain-specific business rules
+- `selection_criteria/` - Entry criteria and scoring algorithms
+- Performance targets, state machines, resource budgets
 
-**Golden Rule**: All trading logic must trace back to these strategy documents.
+**Golden Rule**: All business logic must trace back to these strategy documents.
 
 #### 📚 `docs/` - PROJECT DOCUMENTATION
 **Implementation Documentation**: Requirements, architecture, specifications
@@ -260,7 +260,7 @@ Validation (Layer 15)
 - ❌ Do not use archived documents even if they appear in search results
 
 **Active Documentation Only:**
-- ✅ `option_strategy/` (current V5 strategy - excludes archived subdirs)
+- ✅ `{project_root}/strategy/` (current strategy - excludes archived subdirs)
 - ✅ `docs/` (active project documentation)
 - ✅ `ai_dev_flow/` (authoritative templates and standards)
 
@@ -275,7 +275,7 @@ Validation (Layer 15)
 
 **Benefits**:
 - **Impact Analysis**: Know what breaks when requirements change
-- **Regulatory Compliance**: SEC, FINRA, FDA, ISO audit requirements
+- **Regulatory Compliance**: Industry-specific audit requirements (ISO, SOC2, etc.)
 - **Change Management**: Track all changes through artifact chain
 - **Coverage Metrics**: Measure implementation completeness
 - **Quality Assurance**: Automated validation prevents gaps
@@ -435,7 +435,7 @@ python ai_dev_flow/scripts/generate_traceability_matrices.py --output docs/gener
 
 **All templates located in `ai_dev_flow/{artifact_type}/`:**
 
-- **BRD** (`BRD/`): 3 templates available (comprehensive, simplified, trading-specific)
+- **BRD** (`BRD/`): 3 templates available (comprehensive, simplified, domain-specific)
 - **PRD** (`PRD/`): `PRD-TEMPLATE.md`
 - **EARS** (`EARS/`): `EARS-TEMPLATE.md`
 - **BDD** (`BDD/`): `BDD-TEMPLATE.feature`

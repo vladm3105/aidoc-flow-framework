@@ -72,7 +72,7 @@ graph TD
 - ADR: `docs/ADR/diagrams/ADR-005-diag_cloud_deployment.md`
 - SYS: `docs/SYS/diagrams/SYS-002-diag_data_flow.md`
 - IMPL: `docs/IMPL/diagrams/IMPL-010-diag_phases.md`
-- Strategy: `option_strategy/diagrams/SSM-V5-diag_state_transitions.md`
+- Strategy: `{project_root}/strategy/diagrams/SSM-001-diag_state_transitions.md`
 
 ## Supported Diagram Types
 
@@ -81,7 +81,7 @@ graph TD
 | **flowchart** | Process flows, architecture, component relationships | Agent hierarchies, deployment diagrams |
 | **sequence** | Time-based interactions, message flows | API calls, agent communication patterns |
 | **class** | Object relationships, data models | System components, data structures |
-| **state** | State machines, lifecycle | Trading states, agent states |
+| **state** | State machines, lifecycle | System states, agent states |
 | **component** | System architecture (using flowchart + subgraphs) | Multi-tier systems, microservices |
 | **deployment** | Infrastructure topology (using flowchart + subgraphs) | Cloud architecture, server layout |
 
@@ -254,7 +254,7 @@ AI: [Invokes charts-flow skill in migration mode]
 ```
 docs/
 ├── BRD/                              ← Business Requirements Documents
-│   ├── BRD-001_trading_reqs.md      ← Parent document (with SVG)
+│   ├── BRD-001_project_reqs.md      ← Parent document (with SVG)
 │   └── diagrams/
 │       ├── BRD-001-diag_workflow.md ← BRD diagrams
 │       └── BRD-001-diag_rules.md

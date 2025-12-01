@@ -242,12 +242,12 @@ stateDiagram-v2
 ```mermaid
 graph LR
     subgraph "Level 1"
-        PO[Portfolio Orchestrator]
+        SO[System Orchestrator]
     end
     subgraph "Level 2"
-        SS[Stock Selection]
+        IS[Item Selection]
     end
-    PO --> SS
+    SO --> IS
 ```
 **Use for**: System architecture, component relationships
 
@@ -393,7 +393,7 @@ npm install -g @mermaid-js/mermaid-cli
 > "Create a flowchart diagram showing the user workflow for BRD-001"
 
 **Skill Actions**:
-1. Parse parent: `{project_root}/docs/BRD/BRD-001_trading_requirements.md`
+1. Parse parent: `{project_root}/docs/BRD/BRD-001_project_requirements.md`
 2. Extract ID: `BRD-001`
 3. Create file: `docs/BRD/diagrams/BRD-001-diag_user_workflow.md` (in BRD subfolder)
 4. Generate Mermaid flowchart with user journey steps
@@ -412,10 +412,10 @@ npm install -g @mermaid-js/mermaid-cli
 > "Migrate the state machine diagram from strategy_state_machine.md to a separate file"
 
 **Skill Actions**:
-1. Scan `option_strategy/strategy_state_machine.md`
+1. Scan `{project_root}/strategy/strategy_state_machine.md`
 2. Find ```mermaid block (state diagram)
 3. Extract diagram code
-4. Create `option_strategy/diagrams/SSM-V5-diag_state_transitions.md`
+4. Create `{project_root}/strategy/diagrams/SSM-001-diag_state_transitions.md`
 5. Generate SVG
 6. Replace original block with SVG + reference
 7. Validate migration
@@ -433,7 +433,7 @@ npm install -g @mermaid-js/mermaid-cli
 **Skill Actions**:
 1. Parent: `docs/ADR/ADR-003_agent_communication.md`
 2. Create: `docs/ADR/diagrams/ADR-003-diag_agent_communication_sequence.md` (in ADR subfolder)
-3. Generate sequence diagram: Portfolio Orchestrator → Stock Selection → Strategy Agent → Risk Service
+3. Generate sequence diagram: System Orchestrator → Selection Service → Strategy Agent → Risk Service
 4. Add swimlanes for timing (A2A Protocol patterns)
 5. Convert to SVG
 6. Embed in ADR-003
@@ -469,7 +469,7 @@ npm install -g @mermaid-js/mermaid-cli
 ```
 docs/
 ├── BRD/
-│   ├── BRD-001_trading_requirements.md         ← Updated with SVG + link
+│   ├── BRD-001_project_requirements.md         ← Updated with SVG + link
 │   └── diagrams/
 │       ├── BRD-001-diag_user_workflow.md       ← BRD diagrams
 │       └── BRD-001-diag_business_rules.md
@@ -497,7 +497,7 @@ docs/
 ### Traceability Chain
 
 ```
-Product Strategy (option_strategy/*.md)
+Product Strategy ({project_root}/strategy/*.md)
   ↓
 Requirements (docs/reqs/*.md)
   ↓

@@ -85,7 +85,7 @@ IMPL-001: Options Trading System Implementation Plan
 - Creates sub-phases with independent exit criteria
 
 **"Use meaningful phase names, not Phase 1, 2, 3"**:
-- Skill generates descriptive names: "Market Data Foundation", "Greeks & Pricing Engine"
+- Skill generates descriptive names: "Data Integration Foundation", "Core Calculation Engine"
 - Format: Primary Function + Implementation Scope
 
 ## IMPL Scope (What's Included)

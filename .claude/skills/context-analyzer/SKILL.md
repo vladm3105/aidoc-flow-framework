@@ -261,10 +261,10 @@ Build project vocabulary from existing documentation:
 ```yaml
 key_terms:
   domain_terms:
-    - term: trading
+    - term: workflow
       frequency: 45
       documents: [BRD-001, PRD-001, REQ-001]
-    - term: position
+    - term: resource
       frequency: 32
       documents: [BRD-001, REQ-002, SPEC-001]
   technical_terms:
@@ -320,7 +320,7 @@ context_model:
         relevance: 75%
 
   key_terms:
-    domain: [trading, position, risk, portfolio]
+    domain: [workflow, resource, validation, processing]
     technical: [WebSocket, PostgreSQL, Redis, REST API]
 
   coverage_gaps:

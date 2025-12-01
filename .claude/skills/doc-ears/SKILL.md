@@ -118,12 +118,12 @@ WITHIN 100 milliseconds
 **1. Event-Driven Requirements**
 - Triggered by specific events
 - Format: `WHEN [event occurs] THE [system] SHALL [response] WITHIN [time]`
-- Example: `WHEN market data update received THE pricing engine SHALL recalculate Greeks WITHIN 50ms`
+- Example: `WHEN data update received THE calculation engine SHALL recalculate metrics WITHIN 50ms`
 
 **2. State-Driven Requirements**
 - Triggered by system state
 - Format: `WHEN [system is in state] THE [system] SHALL [maintain/enforce] WITHIN [constraint]`
-- Example: `WHEN portfolio delta exceeds ±0.5 THE hedging system SHALL initiate rebalance WITHIN 2 minutes`
+- Example: `WHEN resource utilization exceeds 80% THE scaling system SHALL initiate rebalance WITHIN 2 minutes`
 
 **3. Unwanted Behavior Requirements**
 - Prevents undesired outcomes

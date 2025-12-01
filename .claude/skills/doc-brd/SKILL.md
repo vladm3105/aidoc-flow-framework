@@ -143,10 +143,10 @@ Use `doc-brd` when:
    - Sections: Streamlined structure
    - Best for: Internal tools, MVP features
 
-3. **BRD-trading-template.md** - Trading-specific requirements
-   - Use for: Options trading, financial applications
-   - Sections: Trading-focused with market context
-   - Best for: Trading strategies, risk management features
+3. **BRD-domain-template.md** - Domain-specific requirements
+   - Use for: Specialized domains (finance, healthcare, IoT, etc.)
+   - Sections: Domain-focused with specialized context
+   - Best for: Industry-specific applications, domain-driven features
 
 ### 2. Required Sections (17 Total)
 
@@ -176,14 +176,14 @@ Use `doc-brd` when:
 
 ### 3. Strategy References (MANDATORY)
 
-**ALWAYS START WITH STRATEGY**: Read relevant `option_strategy/` documents FIRST
+**ALWAYS START WITH STRATEGY**: Read relevant `{project_root}/strategy/` documents FIRST
 
 **Reading Order**:
-1. `option_strategy/README.md` - Performance targets, strategy goals
-2. `option_strategy/Integrated_strategy_desc.md` - Strategic framework
-3. `option_strategy/integrated_strategy_algo_v5.md` - Bot-executable algorithm
-4. `option_strategy/delta_hedging.md` + `greeks_adjustment.md` - Risk management
-5. `option_strategy/stock_selection/` - Entry criteria
+1. `{project_root}/strategy/README.md` - Performance targets, strategy goals
+2. `{project_root}/strategy/strategy_overview.md` - Strategic framework
+3. `{project_root}/strategy/core_algorithm.md` - Primary algorithm specifications
+4. `{project_root}/strategy/risk_management.md` - Risk management policies
+5. `{project_root}/strategy/selection_criteria/` - Entry criteria
 
 **Every BRD MUST cite specific strategy document sections in Traceability section.**
 
@@ -238,7 +238,7 @@ The following architectural topics require decision-making:
 ## Upstream/Downstream Artifacts
 
 **Upstream Sources** (what drives BRD creation):
-- Strategy documents (`option_strategy/`)
+- Strategy documents (`{project_root}/strategy/`)
 - Business owner requirements
 - Market analysis
 - Stakeholder inputs
@@ -261,11 +261,11 @@ Use questionnaire above to determine Platform vs Feature BRD.
 
 ### Step 2: Read Strategy Documents
 
-Read relevant `option_strategy/` sections to understand business logic.
+Read relevant `{project_root}/strategy/` sections to understand business logic.
 
 ### Step 3: Select Template
 
-Choose appropriate template (comprehensive, simplified, or trading-specific).
+Choose appropriate template (comprehensive, simplified, or domain-specific).
 
 ### Step 4: Reserve ID Number
 
@@ -294,7 +294,7 @@ List topics needing architectural decisions (do NOT reference specific ADR numbe
 
 ### Step 9: Add Strategy References
 
-In Traceability section, link to specific `option_strategy/` sections.
+In Traceability section, link to specific `{project_root}/strategy/` sections.
 
 ### Step 10: Create/Update Traceability Matrix
 
@@ -350,7 +350,7 @@ Commit BRD file and traceability matrix together.
 
 1. **Referencing ADR numbers**: Don't write "See ADR-033" in Architecture Decision Requirements section (ADRs don't exist yet)
 2. **Wrong sections 3.6/3.7 treatment**: Platform BRD must populate, Feature BRD must reference Platform BRD
-3. **Missing strategy references**: Every BRD must cite `option_strategy/` sections
+3. **Missing strategy references**: Every BRD must cite `{project_root}/strategy/` sections
 4. **Document Control not first**: Must be at very top before all numbered sections
 5. **Skipping traceability matrix**: MANDATORY to create/update matrix
 

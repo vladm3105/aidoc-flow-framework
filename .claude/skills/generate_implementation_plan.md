@@ -71,8 +71,8 @@ For each BRD:
    - Monitoring setup → Alerting configuration
 
 3. **Infrastructure-Before-Application**: Calculation engines before consumers
-   - Greeks calculation library → Strategy agents using Greeks
-   - ML model serving → Trading strategies using ML predictions
+   - Core calculation library → Application logic using calculations
+   - ML model serving → Business logic using ML predictions
 
 4. **Component Decomposition**: Split large BRDs by logical boundaries
    - State machine + Execution pipeline (separate concerns)
@@ -83,9 +83,9 @@ For each BRD:
 
 | BRD | Blocks BRD | Reason | Type |
 |-----|------------|--------|------|
-| BRD-009 (Broker) | BRD-003, BRD-004, BRD-005 | No market data = no trading logic | Critical Path |
-| BRD-007 (Calculations) | BRD-003, BRD-005 | Greeks needed for strategies | Technical Dependency |
-| BRD-002 (State Machine) | BRD-005 (Position Mgmt) | State tracking required | Logical Dependency |
+| BRD-009 (API Client) | BRD-003, BRD-004, BRD-005 | No external data = no business logic | Critical Path |
+| BRD-007 (Calculations) | BRD-003, BRD-005 | Core calculations needed for strategies | Technical Dependency |
+| BRD-002 (State Machine) | BRD-005 (Resource Mgmt) | State tracking required | Logical Dependency |
 
 ### Step 3: Create Atomic Phases
 
@@ -112,7 +112,7 @@ ELSE:
 **Phase Naming Convention**:
 - Use descriptive names, not "Phase 1, 2, 3"
 - Format: `[Primary Function] [Implementation Scope]`
-- Examples: "Market Data Foundation", "Greeks & Pricing Engine", "Risk Validation Framework"
+- Examples: "Data Integration Foundation", "Core Calculation Engine", "Risk Validation Framework"
 
 ### Step 4: Sequence Phases by Dependencies
 
@@ -327,17 +327,17 @@ max_phase_duration_weeks: 4
 ```
 
 **Output**: IMPL document with 12 atomic phases:
-- Phase 1: Market Data Foundation (BRD-009: 4 weeks)
+- Phase 1: Data Integration Foundation (BRD-009: 4 weeks)
 - Phase 2: Observability Foundation (BRD-010: 1 week)
-- Phase 3: Greeks & Pricing Engine (BRD-007: 2 weeks)
+- Phase 3: Core Calculation Engine (BRD-007: 2 weeks)
 - Phase 4: System Architecture Documentation (BRD-001: 1 week)
 - Phase 5: Core State Machine (BRD-002 State: 2 weeks)
-- Phase 6: Trade Execution Pipeline (BRD-002 Pipeline: 2 weeks)
-- Phase 7: ML Regime Classification (BRD-003 Regime: 3 weeks)
-- Phase 8: Dynamic Strike Selection (BRD-003 Strikes: 2 weeks)
+- Phase 6: Request Processing Pipeline (BRD-002 Pipeline: 2 weeks)
+- Phase 7: ML Classification Engine (BRD-003 Classification: 3 weeks)
+- Phase 8: Dynamic Selection Logic (BRD-003 Selection: 2 weeks)
 - Phase 9: Risk Validation Framework (BRD-004 Validation: 3 weeks)
 - Phase 10: Risk Enforcement Engine (BRD-004 Enforcement: 2 weeks)
-- Phase 11: Position Management & Playbooks (BRD-005 + BRD-008: 3 weeks)
+- Phase 11: Resource Management & Playbooks (BRD-005 + BRD-008: 3 weeks)
 - Phase 12: Comprehensive Observability (BRD-011: 2 weeks)
 
 **Total Timeline**: 27 weeks (48% reduction from sequential 52 weeks via parallelization)

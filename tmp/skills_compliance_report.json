@@ -1,5 +1,5 @@
 {
-  "generated": "2025-11-30T16:49:55.951091",
+  "generated": "2025-11-30T19:00:45.339810",
   "total_skills": 33,
   "average_score": 99.7,
   "status": "PASS",
@@ -8,8 +8,8 @@
     "path_issues": 0,
     "terminology_issues": 0,
     "over_token_limit": 0,
-    "total_tokens": 281840,
-    "average_tokens": 8541.0
+    "total_tokens": 281836,
+    "average_tokens": 8540.0
   },
   "skills": [
     {
@@ -46,7 +46,7 @@
       "has_version": true,
       "has_document_control": true,
       "relative_paths": 0,
-      "project_root_refs": 8,
+      "project_root_refs": 11,
       "deprecated_terms": 0,
       "line_count": 545,
       "compliance_score": 100
@@ -132,12 +132,12 @@
     {
       "file": ".claude/skills/doc-brd/SKILL.md",
       "name": "doc-brd",
-      "word_count": 1722,
-      "token_estimate": 6888,
+      "word_count": 1723,
+      "token_estimate": 6892,
       "has_version": true,
       "has_document_control": true,
       "relative_paths": 0,
-      "project_root_refs": 0,
+      "project_root_refs": 10,
       "deprecated_terms": 0,
       "line_count": 394,
       "compliance_score": 100
@@ -158,8 +158,8 @@
     {
       "file": ".claude/skills/doc-ears/SKILL.md",
       "name": "doc-ears",
-      "word_count": 1522,
-      "token_estimate": 6088,
+      "word_count": 1521,
+      "token_estimate": 6084,
       "has_version": true,
       "has_document_control": false,
       "relative_paths": 0,
@@ -171,12 +171,12 @@
     {
       "file": ".claude/skills/doc-flow/SKILL.md",
       "name": "doc-flow",
-      "word_count": 2672,
-      "token_estimate": 10688,
+      "word_count": 2671,
+      "token_estimate": 10684,
       "has_version": true,
       "has_document_control": false,
       "relative_paths": 0,
-      "project_root_refs": 8,
+      "project_root_refs": 13,
       "deprecated_terms": 0,
       "line_count": 515,
       "compliance_score": 100
