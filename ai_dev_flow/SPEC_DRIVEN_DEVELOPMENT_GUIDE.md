@@ -55,55 +55,49 @@ The quality gates ensure smooth 16-layer transitions and prevent immature artifa
 
 ```mermaid
 graph LR
-    subgraph L1["Layer 1: Business"]
+    subgraph L1["Business Layer"]
         BRD["BRD<br/><small>(0 tags)</small>"] --> PRD["PRD<br/><small>(@brd)</small>"] --> EARS["EARS<br/><small>(@brd, @prd)</small>"]
     end
 
-    subgraph L2["Layer 2: Testing"]
+    subgraph L2["Testing Layer"]
         BDD["BDD<br/>Behavior Tests<br/><small>(@brd, @prd, @ears)</small>"]
     end
 
-    subgraph L3["Layer 3: Architecture"]
+    subgraph L3["Architecture Layer"]
         ADR["ADR<br/><small>(@brd through @bdd)</small>"] --> SYS["SYS<br/><small>(@brd through @adr)</small>"]
     end
 
-    subgraph L4["Layer 4: Requirements"]
+    subgraph L4["Requirements Layer"]
         REQ["REQ<br/>Atomic Requirements<br/><small>(@brd through @sys)</small>"]
     end
 
-    subgraph L5["Layer 5: Project Management"]
+    subgraph L5["Project Management Layer"]
         IMPL["IMPL<br/><i>WHO/WHEN</i><br/><small>(@brd through @req)</small>"]
     end
 
-    subgraph L6["Layer 6: Interface Contracts"]
+    subgraph L6["Interface Layer"]
         CTR["CTR<br/><i>optional</i><br/><small>(@brd through @impl)</small>"]
     end
 
-    subgraph L7["Layer 7: Implementation"]
+    subgraph L7["Implementation Layer"]
         SPEC["SPEC<br/><i>YAML</i><br/><small>(@brd through @req + opt)</small>"]
     end
 
-    subgraph L8["Layer 8: Code Generation"]
+    subgraph L8["Code Generation Layer"]
         TASKS["TASKS<br/>Generation Plans<br/><small>(@brd through @spec)</small>"]
     end
 
-    subgraph L9["Layer 9: Implementation Plans"]
+    subgraph L9["Implementation Plans Layer"]
         TP["IPLAN<br/>Session Context<br/><small>(@brd through @tasks)</small>"]
     end
 
-    subgraph L13["Layer 13: Code"]
-        CODE["Code<br/><small>(@brd through @tasks)</small>"]
+    subgraph L10["Execution Layer"]
+        CODE["Code<br/><small>(@brd through @tasks)</small>"] --> TESTS["Tests<br/><small>(@brd through @code)</small>"]
     end
 
-    subgraph L14["Layer 14: Tests"]
-        TESTS["Tests<br/><small>(@brd through @code)</small>"]
-    end
-
-    subgraph L15["Layer 15: Validation"]
+    subgraph L11["Validation Layer"]
         VAL["Validation<br/><small>(all upstream)</small>"] --> REV[Review] --> PROD[Production]
     end
-
-    CODE --> TESTS
 
     EARS --> BDD
     BDD --> ADR
