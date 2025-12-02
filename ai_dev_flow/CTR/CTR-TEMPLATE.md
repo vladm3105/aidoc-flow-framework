@@ -62,7 +62,7 @@ custom_fields:
 
 
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## resource in Development Workflow
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
@@ -99,7 +99,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ### 3.1 Interface Problem Statement
 [What interface contract is needed? What components need to communicate?
-Example: "[ORCHESTRATION_COMPONENT] needs to validate [RESOURCE_INSTANCE - e.g., database connection, workflow instance] risk before executing trades. Risk Validation Service must provide a synchronous validation endpoint with deterministic responses."]
+Example: "[ORCHESTRATION_COMPONENT] needs to validate resource risk before executing trades. Risk Validation Service must provide a synchronous validation endpoint with deterministic responses."]
 
 ### 3.2 Background
 [Current state of component integration, existing APIs, pain points.
@@ -119,7 +119,7 @@ Example: "Currently, each strategy agent implements its own risk validation logi
 - **Business**: SLA requirements, throughput targets, latency budgets
   - 99.9% uptime required for operating hours
   - <100ms p99 latency to avoid trade delays
-  - 1000+ req/s throughput for [RESOURCE_COLLECTION - e.g., user accounts, active sessions] rebalancing
+  - 1000+ req/s throughput for resource collection rebalancing
 - **Operational**: Monitoring, versioning, backward compatibility needs
   - Must support gradual rollout via feature flags
   - Contract changes require 30-day migration period
@@ -133,7 +133,7 @@ Example: "Currently, each strategy agent implements its own risk validation logi
 
 ### 4.1 Interface Overview
 [Concise description of what this contract defines - request/response, message schema, event format.
-Example: "Synchronous REST-style request/response contract for [RESOURCE_INSTANCE - e.g., database connection, workflow instance] risk validation. Provider accepts [RESOURCE_INSTANCE - e.g., database connection, workflow instance] parameters and risk limits, returns validation result with specific violation details if applicable."]
+Example: "Synchronous REST-style request/response contract for resource risk validation. Provider accepts resource parameters and risk limits, returns validation result with specific violation details if applicable."]
 
 ### 4.2 Parties
 - **Provider**: [Service/component that implements this contract]
@@ -142,7 +142,7 @@ Example: "Synchronous REST-style request/response contract for [RESOURCE_INSTANC
 - **Consumer(s)**: [Services/components that use this contract]
   - [ORCHESTRATION_COMPONENT] (Level 1)
   - All Strategy Execution Agents (Level 3): [STRATEGY_NAME - e.g., multi-step workflow, approval process], CSP, [STRATEGY_NAME], [STRATEGY_NAME]
-  - [RESOURCE_COLLECTION - e.g., user accounts, active sessions] balancing Agent
+  - resource collection balancing Agent
 
 ### 4.3 Communication Pattern
 - **Type**: Synchronous
@@ -183,12 +183,12 @@ Example: "Synchronous REST-style request/response contract for [RESOURCE_INSTANC
 
 ### 6.2 Schema Overview
 Contract defines two primary operations:
-- `validatePositionRisk`: Validate single [RESOURCE_INSTANCE - e.g., database connection, workflow instance] against [RESOURCE_COLLECTION - e.g., user accounts, active sessions] limits
-- `validatecollectionRisk`: Validate entire [RESOURCE_COLLECTION - e.g., user accounts, active sessions] state (future extension)
+- `validatePositionRisk`: Validate single resource against resource collection limits
+- `validatecollectionRisk`: Validate entire resource collection state (future extension)
 
 ### 6.3 Data Types
 Common types across endpoints:
-- `[RESOURCE_INSTANCE - e.g., database connection, workflow instance]`: Symbol, [METRIC_1 - e.g., error rate, response time], [METRIC_2 - e.g., throughput, success rate], [METRIC_4], [METRIC_3], [VALUE - e.g., subscription fee, processing cost], [DEADLINE - e.g., session timeout, cache expiry]
+- `resource`: Symbol, [METRIC_1 - e.g., error rate, response time], [METRIC_2 - e.g., throughput, success rate], [METRIC_4], [METRIC_3], [VALUE - e.g., subscription fee, processing cost], [DEADLINE - e.g., session timeout, cache expiry]
 - `collectionState`: Open positions, available capital, current [METRICS - e.g., performance indicators, quality scores]
 - `RiskLimits`: Max positions, max heat, max [METRIC_1 - e.g., error rate, response time], [VOLATILITY_INDICATOR - e.g., system load, error frequency] thresholds
 - `ValidationResult`: Boolean decision + violation details
@@ -198,21 +198,21 @@ Common types across endpoints:
 ### 7.1 Endpoints / Functions / Messages
 
 #### Endpoint 1: validatePositionRisk
-- **Description**: Validates a single proposed [RESOURCE_INSTANCE - e.g., database connection, workflow instance] against current [RESOURCE_COLLECTION - e.g., user accounts, active sessions] state and risk limits
+- **Description**: Validates a single proposed resource against current resource collection state and risk limits
 - **Request Schema**: See YAML `request_schema` for `validatePositionRisk`
-  - `[RESOURCE_INSTANCE - e.g., database connection, workflow instance]`: Proposed [RESOURCE_INSTANCE - e.g., database connection, workflow instance] parameters (symbol, [METRIC_1 - e.g., error rate, response time], [VALUE - e.g., subscription fee, processing cost], etc.)
-  - `collection_state`: Current [RESOURCE_COLLECTION - e.g., user accounts, active sessions] [METRICS - e.g., performance indicators, quality scores] and capital
+  - `resource`: Proposed resource parameters (symbol, [METRIC_1 - e.g., error rate, response time], [VALUE - e.g., subscription fee, processing cost], etc.)
+  - `collection_state`: Current resource collection [METRICS - e.g., performance indicators, quality scores] and capital
   - `risk_limits`: Risk parameters from ADR-008 configuration
 - **Response Schema**: See YAML `response_schema` for `validatePositionRisk`
-  - `is_valid`: Boolean - true if [RESOURCE_INSTANCE - e.g., database connection, workflow instance] passes all checks
+  - `is_valid`: Boolean - true if resource passes all checks
   - `decision_id`: UUID for audit trail
   - `violations`: Array of specific rule violations (if any)
-  - `risk_impact`: Projected [RESOURCE_COLLECTION - e.g., user accounts, active sessions] [METRICS - e.g., performance indicators, quality scores] after [RESOURCE_INSTANCE - e.g., database connection, workflow instance]
-- **Idempotent**: Yes (same request always yields same result for given [RESOURCE_COLLECTION - e.g., user accounts, active sessions] state)
+  - `risk_impact`: Projected resource collection [METRICS - e.g., performance indicators, quality scores] after resource
+- **Idempotent**: Yes (same request always yields same result for given resource collection state)
 - **Retry Safe**: Yes (no side effects, read-only operation)
 
 #### Endpoint 2: validatecollectionRisk (Future)
-- **Description**: Validates entire [RESOURCE_COLLECTION - e.g., user accounts, active sessions] against risk limits (for batch rebalancing)
+- **Description**: Validates entire resource collection against risk limits (for batch rebalancing)
 - **Request Schema**: See YAML `request_schema` for `validatecollectionRisk`
 - **Response Schema**: See YAML `response_schema` for `validatecollectionRisk`
 - **Idempotent**: Yes
@@ -225,8 +225,8 @@ Common types across endpoints:
 | Error Code | HTTP Status | Description | Retry Strategy |
 |------------|-------------|-------------|----------------|
 | INVALID_INPUT | 400 | Request validation failed (missing required fields, invalid types) | Do not retry |
-| INSUFFICIENT_DATA | 400 | Missing required [RESOURCE_COLLECTION - e.g., user accounts, active sessions] state or risk limits | Do not retry |
-| LIMIT_EXCEEDED | 200 | [RESOURCE_INSTANCE - e.g., database connection, workflow instance] violates risk limits (valid response, not error) | Do not retry |
+| INSUFFICIENT_DATA | 400 | Missing required resource collection state or risk limits | Do not retry |
+| LIMIT_EXCEEDED | 200 | resource violates risk limits (valid response, not error) | Do not retry |
 | RATE_LIMITED | 429 | Too many requests from consumer | Exponential backoff, max 3 retries |
 | SERVICE_UNAVAILABLE | 503 | Risk validation service temporarily unavailable | Exponential backoff, max 5 retries |
 | INTERNAL_ERROR | 500 | Unexpected server processing error | Exponential backoff, max 3 retries |
@@ -289,11 +289,11 @@ Common types across endpoints:
 
 ### 10.1 Performance Targets
 - **Max Latency**: <100ms p99 (critical for [OPERATION_EXECUTION - e.g., order processing, task execution])
-- **Min Throughput**: >1000 req/s sustained ([RESOURCE_COLLECTION - e.g., user accounts, active sessions] rebalancing peak)
+- **Min Throughput**: >1000 req/s sustained (resource collection rebalancing peak)
 - **Payload Size Limit**: <1MB per request (typical: 10KB)
 
 ### 10.2 Reliability Requirements
-- **Idempotency**: Yes - same input always produces same output for given [RESOURCE_COLLECTION - e.g., user accounts, active sessions] state
+- **Idempotency**: Yes - same input always produces same output for given resource collection state
 - **Retry Strategy**: Exponential backoff (100ms, 200ms, 400ms), max 3 retries for 500/503 errors
 - **Timeout**: 5000ms request timeout (fails fast to avoid blocking agents)
 - **[SAFETY_MECHANISM - e.g., rate limiter, error threshold]**:
@@ -336,7 +336,7 @@ Common types across endpoints:
 **Request**:
 ```json
 {
-  "[RESOURCE_INSTANCE - e.g., database connection, workflow instance]": {
+  "resource": {
     "symbol": "ITEM-001",
     "[METRIC_1 - e.g., error rate, response time]": 25.3,
     "[METRIC_2 - e.g., throughput, success rate]": 0.05,
@@ -380,7 +380,7 @@ Common types across endpoints:
 **Request**:
 ```json
 {
-  "[RESOURCE_INSTANCE - e.g., database connection, workflow instance]": {
+  "resource": {
     "symbol": "TSLA",
     "[METRIC_1 - e.g., error rate, response time]": 30.0,
     "premium_collected": 500.00
@@ -407,7 +407,7 @@ Common types across endpoints:
       "current": 12,
       "projected": 13,
       "severity": "critical",
-      "message": "Adding [RESOURCE_INSTANCE - e.g., database connection, workflow instance] would exceed maximum [RESOURCE_LIMIT - e.g., request quota, concurrent sessions]"
+      "message": "Adding resource would exceed maximum [RESOURCE_LIMIT - e.g., request quota, concurrent sessions]"
     }
   ],
   "risk_impact": null,
@@ -419,7 +419,7 @@ Common types across endpoints:
 **Request**:
 ```json
 {
-  "[RESOURCE_INSTANCE - e.g., database connection, workflow instance]": {
+  "resource": {
     "symbol": "",
     "[METRIC_1 - e.g., error rate, response time]": -999
   }
@@ -530,7 +530,7 @@ Common types across endpoints:
 
 ### 15.2 BDD Scenarios
 [BDD scenarios that validate this contract:
-- Scenario: Agent validates [RESOURCE_INSTANCE - e.g., database connection, workflow instance] before execution - File: BDD-012_risk_validation.feature#L15
+- Scenario: Agent validates resource before execution - File: BDD-012_risk_validation.feature#L15
 - Scenario: Multiple agents validate concurrently - File: BDD-012_risk_validation.feature#L45
 - Scenario: Risk service returns validation failure for limit breach - File: BDD-012_risk_validation.feature#L60]
 
@@ -550,7 +550,7 @@ Common types across endpoints:
 **Integration Validation**:
 - Provider implements contract correctly (all contract tests pass)
 - All 11 consumer agents migrate successfully (contract tests pass)
-- End-to-end test: [RESOURCE_COLLECTION - e.g., user accounts, active sessions] rebalancing with 100 positions completes successfully
+- End-to-end test: resource collection rebalancing with 100 positions completes successfully
 
 ## 16. Impact Analysis
 
@@ -559,7 +559,7 @@ Common types across endpoints:
 - **Consumers**:
   - [ORCHESTRATION_COMPONENT] (critical path)
   - 11 Strategy Execution Agents ([STRATEGY_NAME - e.g., multi-step workflow, approval process], CSP, [STRATEGY_NAME], [STRATEGY_NAME], etc.)
-  - [RESOURCE_COLLECTION - e.g., user accounts, active sessions] balancing Agent
+  - resource collection balancing Agent
 - **Data Flow**:
   - Agent → Risk Validation Service (synchronous request)
   - Risk Validation Service → Configuration Service (load ADR-008 parameters)
@@ -620,7 +620,7 @@ Common types across endpoints:
 ## 17. Related Contracts
 
 **Depends On**:
-- CTR-100 (Common Data Types): Shared [RESOURCE_INSTANCE - e.g., database connection, workflow instance]/[RESOURCE_COLLECTION - e.g., user accounts, active sessions] types
+- CTR-100 (Common Data Types): Shared resource/resource collection types
 - ADR-008 (Risk Parameters): Configuration contract for risk limits
 
 **Supersedes**:
@@ -628,7 +628,7 @@ Common types across endpoints:
 
 **Related**:
 - CTR-002 ([METRICS - e.g., performance indicators, quality scores] Calculation): Provides [METRICS - e.g., performance indicators, quality scores] values used in validation
-- CTR-006 ([RESOURCE_COLLECTION - e.g., user accounts, active sessions] State): Provides current [RESOURCE_COLLECTION - e.g., user accounts, active sessions] state
+- CTR-006 (resource collection State): Provides current resource collection state
 
 **Impacts**:
 - CTR-010+ (Future strategy contracts): Will reference this validation contract

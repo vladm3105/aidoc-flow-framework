@@ -149,14 +149,20 @@ structure:
 # =============================================================================
 
 feature_patterns:
-  # Feature ID format
+  # Feature ID format (Simple Numeric - per ID_NAMING_STANDARDS.md)
+  # Document context (PRD-NNN) provides namespace; no need to embed in feature ID
   feature_id:
-    pattern: "^FR-\\d{3}-\\d{2,3}$"
-    format: "FR-{prd_number}-{sequence}"
-    description: "Standardized feature requirement ID"
+    pattern: "^\\d{3}$"
+    format: "NNN"
+    description: "Simple 3-digit sequential feature ID within document"
     examples:
-      - "01"
       - "001"
+      - "015"
+      - "042"
+    cross_reference_format:
+      pattern: "@prd: PRD-NNN:NNN"
+      example: "@prd: PRD-022:015"
+      description: "Cross-reference format includes document ID for global uniqueness"
 
   # Feature table structure
   feature_table:
@@ -206,7 +212,7 @@ validation_rules:
 
   # Content validation
   content:
-    - rule: "Feature IDs must use FR-NNN-NN format"
+    - rule: "Feature IDs must use simple 3-digit format (001, 015, 042)"
       severity: warning
 
     - rule: "Priority must use P0-P3 format"
@@ -263,6 +269,6 @@ error_messages:
   E006: "Related BRD missing @brd: prefix"
   E007: "Duplicate section number detected"
   E008: "Multiple H1 headings detected"
-  W001: "Feature ID not using FR-NNN-NN format"
+  W001: "Feature ID not using simple 3-digit format (001, 015, 042)"
   W002: "Priority not using P0-P3 format"
   W003: "Section numbering not sequential"

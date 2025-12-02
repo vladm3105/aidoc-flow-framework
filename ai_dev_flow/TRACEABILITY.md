@@ -376,7 +376,7 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 @req: REQ-003:001
 @adr: ADR-033
 @spec: SPEC-003
-@contract: CTR-001
+@ctr: CTR-001
 @test: BDD-003:001, BDD-003:005
 @impl-status: complete
 """
@@ -387,11 +387,73 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 **Format:** `@tag-type: DOCUMENT-ID:REQUIREMENT-ID`
 
 **Components:**
-- **Tag Type:** @brd, @prd, @ears, @sys, @adr, @req, @spec, @contract, @test, @impl-status
+- **Tag Type:** Document type tags or valid non-document tags (see tables below)
 - **Document ID:** BRD-001, SYS-008, SPEC-003, CTR-001
 - **Requirement ID:** Numeric sub-IDs (030, 006, 001)
 - **Separator:** Colon (:) separates document from requirement
 - **Multiple:** Comma-separated list
+
+### Complete Tag Reference
+
+#### Document Type Tags (Cross-Layer Traceability)
+
+These tags reference documents in the SDD workflow hierarchy. Use the document type abbreviation (lowercase) as the tag name.
+
+| Tag | Layer | Document Type | Format | Example |
+|-----|-------|---------------|--------|---------|
+| `@brd` | 1 | Business Requirements | `@brd: BRD-NNN:ID` | `@brd: BRD-001:030` |
+| `@prd` | 2 | Product Requirements | `@prd: PRD-NNN:ID` | `@prd: PRD-003:002` |
+| `@ears` | 3 | EARS Statements | `@ears: EARS-NNN:ID` | `@ears: EARS-001:003` |
+| `@bdd` | 4 | BDD Scenarios | `@bdd: BDD-NNN:ID` | `@bdd: BDD-003:007` |
+| `@adr` | 5 | Architecture Decisions | `@adr: ADR-NNN` | `@adr: ADR-033` |
+| `@sys` | 6 | System Requirements | `@sys: SYS-NNN:ID` | `@sys: SYS-008:001` |
+| `@req` | 7 | Atomic Requirements | `@req: REQ-NNN:ID` | `@req: REQ-003:001` |
+| `@impl` | 8 | Implementation Plans | `@impl: IMPL-NNN:ID` | `@impl: IMPL-001:001` |
+| `@ctr` | 9 | Data Contracts | `@ctr: CTR-NNN` | `@ctr: CTR-001` |
+| `@spec` | 10 | Technical Specs | `@spec: SPEC-NNN` | `@spec: SPEC-003` |
+| `@tasks` | 11 | Task Breakdowns | `@tasks: TASKS-NNN:ID` | `@tasks: TASKS-001:003` |
+| `@iplan` | 12 | Implementation Plans | `@iplan: IPLAN-NNN` | `@iplan: IPLAN-001` |
+
+**Note**: NFRs use standard document type tags with categorical prefixes (e.g., `@sys: SYS-008:NFR-PERF-001`, NOT `@nfr:`).
+
+#### Valid Non-Document Tags (Special Purpose)
+
+These tags serve specific purposes beyond cross-layer document traceability.
+
+| Tag | Purpose | Format | Example | Notes |
+|-----|---------|--------|---------|-------|
+| `@test` | Test file reference | `@test: path` or `@test: BDD-NNN:ID` | `@test: tests/test_service.py` | Links to test implementations |
+| `@code` | Source code reference | `@code: path` | `@code: src/services/limit.py` | Links to implementation files |
+| `@impl-status` | Implementation status | `@impl-status: status` | `@impl-status: complete` | Values: pending, in-progress, complete, deprecated |
+| `@icon` | Implementation contract | `@icon: TASKS-NNN:Name` | `@icon: TASKS-001:ServiceConnector` | Internal contracts for parallel dev |
+| `@icon-role` | Contract role | `@icon-role: role` | `@icon-role: provider` | Values: provider, consumer |
+| `@threshold` | Threshold registry ref | `@threshold: PRD-NNN:key` | `@threshold: PRD-035:kyc.tier1_timeout` | References Platform Threshold Registry |
+| `@entity` | Data entity reference | `@entity: PRD-NNN:Name` | `@entity: PRD-004:UserProfile` | References Data Model document |
+| `@priority` | Requirement priority | `@priority: level` | `@priority: critical` | Values: critical, high, medium, low |
+| `@component` | Component reference | `@component: name` | `@component: risk-engine` | Links to system component |
+| `@supersedes` | Superseded document | `@supersedes: DOC-NNN` | `@supersedes: REQ-001` | Indicates document replacement |
+
+#### Same-Type Relationship Tags
+
+These tags define relationships between documents of the same artifact type.
+
+| Tag Pattern | Purpose | Format | Example |
+|-------------|---------|--------|---------|
+| `@related-{type}` | Related context | `@related-req: REQ-NNN` | `@related-req: REQ-001, REQ-005` |
+| `@depends-{type}` | Implementation prerequisite | `@depends-req: REQ-NNN` | `@depends-req: REQ-001` |
+
+**Supported Types**: req, spec, tasks, adr, bdd, sys, ears, prd, ctr, impl, iplan
+
+#### Invalid Tag Patterns (Deprecated/Incorrect)
+
+Do NOT use these tag patterns:
+
+| Invalid Tag | Correct Alternative | Reason |
+|-------------|---------------------|--------|
+| `@nfr:` | `@sys:`, `@brd:`, `@ears:` with NFR ID | Use document type tag with NFR categorical prefix |
+| `@fr:` | `@sys:` with FR ID | Use document type tag |
+| `@contract:` | `@ctr:` | Use standard abbreviation |
+| `@tests:` | `@test:` | Singular form |
 
 **Examples:**
 ```python
@@ -406,7 +468,7 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 
 # Single document reference (no sub-ID needed)
 @spec: SPEC-003
-@contract: CTR-001
+@ctr: CTR-001
 @test: BDD-003:001
 @iplan: IPLAN-001
 ```
@@ -456,11 +518,11 @@ From EARS-TEMPLATE.md:
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
 | BRD | [BRD-001](../BRD/BRD-001_service_platform.md) | [APPLICATION_TYPE - e.g., e-commerce platform, SaaS application] Requirements | sections 2.4, 4.x | Business objectives driving these requirements |
-| PRD | [PRD-001](../PRD/PRD-001_risk_management.md) | [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] Product Requirements | Functional Requirements 4.x | Product features and user needs |
+| PRD | [PRD-001](../PRD/PRD-001_risk_management.md) | resource management Product Requirements | Functional Requirements 4.x | Product features and user needs |
 | SYS | [SYS-001](../SYS/SYS-001_resource_limits.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] System Requirements | System architecture section 3 | Technical system constraints |
 
 **Key Business Objectives Satisfied**:
-- BO-001: Prevent excessive [RESOURCE_COLLECTION - e.g., user accounts, active sessions] heat → Satisfied by EARS statements EVENT-001, EVENT-002
+- BO-001: Prevent excessive resource collection heat → Satisfied by EARS statements EVENT-001, EVENT-002
 - BO-002: Ensure regulatory compliance → Satisfied by EARS statements STATE-001, UB-001
 
 **Product Features Enabled**:
@@ -481,14 +543,14 @@ From EARS-TEMPLATE.md:
 | REQ ID | Requirement Title | Source EARS Statements | Relationship |
 |--------|------------------|----------------------|--------------|
 | [REQ-003](../REQ/risk/lim/REQ-003_resource_limit.md#REQ-003) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Validation | Derived from EARS EVENT-001, EVENT-002 | Detailed implementation requirement |
-| [REQ-004](../REQ/risk/lim/REQ-004_resource_usage.md#REQ-004) | [RESOURCE_COLLECTION - e.g., user accounts, active sessions] Heat Calculation | Derived from EARS STATE-001 | Detailed implementation requirement |
+| [REQ-004](../REQ/risk/lim/REQ-004_resource_usage.md#REQ-004) | resource collection Heat Calculation | Derived from EARS STATE-001 | Detailed implementation requirement |
 
 #### 7.2.3 BDD Scenarios
 
 | BDD Feature | Scenario | Source EARS Statements | Relationship |
 |-------------|----------|----------------------|--------------|
 | [BDD-003](../BDD/BDD-003_risk_limits.feature#scenario-1) | Validate [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] rejection | Tests EARS EVENT-001 | Acceptance test for requirement |
-| [BDD-003](../BDD/BDD-003_risk_limits.feature#scenario-2) | Validate [RESOURCE_COLLECTION - e.g., user accounts, active sessions] heat threshold | Tests EARS STATE-001 | Acceptance test for requirement |
+| [BDD-003](../BDD/BDD-003_risk_limits.feature#scenario-2) | Validate resource collection heat threshold | Tests EARS STATE-001 | Acceptance test for requirement |
 
 ### Document Links
 - **Anchors/IDs**: `#EARS-001`
@@ -612,6 +674,69 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @depends-spec: SPEC-001
 @related-tasks: TASKS-002
 @depends-tasks: TASKS-001
+```
+
+### NFR Categorical Prefix Standard
+
+Non-Functional Requirements (NFRs) use categorical prefixes for automated categorization and cross-layer traceability.
+
+| Category | Prefix | Full Format | Keywords for AI Detection |
+|----------|--------|-------------|---------------------------|
+| Performance | `NFR-PERF-` | `NFR-PERF-NNN` | latency, response time, throughput, p95, TPS |
+| Reliability | `NFR-REL-` | `NFR-REL-NNN` | uptime, availability, MTBF, MTTR, failover |
+| Scalability | `NFR-SCAL-` | `NFR-SCAL-NNN` | concurrent users, horizontal scaling, capacity |
+| Security | `NFR-SEC-` | `NFR-SEC-NNN` | authentication, authorization, encryption, RBAC |
+| Observability | `NFR-OBS-` | `NFR-OBS-NNN` | logging, monitoring, alerting, metrics, tracing |
+| Maintainability | `NFR-MAINT-` | `NFR-MAINT-NNN` | code coverage, deployment, CI/CD, documentation |
+
+**NFR Cross-Reference Format**: Use document type tag with NFR ID (e.g., `@brd: BRD-017:NFR-PERF-001`, `@sys: SYS-008:NFR-SEC-003`)
+
+**NFR Cross-Layer Consistency**:
+
+NFR IDs remain consistent across all layers for complete traceability:
+```
+BRD-017 defines: NFR-PERF-001 (API response time <200ms)
+    ↓
+PRD-022 inherits: NFR-PERF-001
+    ↓
+EARS-006 formalizes: NFR-PERF-001 (EARS syntax)
+    ↓
+SYS-008 implements: NFR-PERF-001 (technical specification)
+```
+
+**Examples**:
+```markdown
+@brd: BRD-017:NFR-PERF-001
+@sys: SYS-008:NFR-SEC-003
+@ears: EARS-006:NFR-REL-001
+```
+
+### Feature-Level Traceability Tags
+
+Internal feature IDs within documents use simple sequential numbering for fine-grained traceability.
+
+| Context | Format | Example | Cross-Reference |
+|---------|--------|---------|-----------------|
+| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD-022:015` |
+| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD-001:030` |
+| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS-006:003` |
+| SYS Functional Reqs | `FR-NNN` | `FR-001`, `FR-015` | `@sys: SYS-008:FR-001` |
+| SYS Non-Functional | `NFR-{CAT}-NNN` | `NFR-PERF-001` | `@sys: SYS-008:NFR-PERF-001` |
+
+**Global Uniqueness**: Document ID + Feature ID creates globally unique references.
+- `PRD-022:015` = PRD-022, Feature 015 (globally unique)
+- `EARS-006:003` = EARS-006, Statement 003 (globally unique)
+- `SYS-008:NFR-PERF-001` = SYS-008, Performance NFR 001 (globally unique)
+
+**Feature-Level Tag Examples**:
+```markdown
+## Traceability Tags
+
+@brd: BRD-001:030, BRD-001:006
+@prd: PRD-022:015, PRD-022:018
+@ears: EARS-006:003
+@sys: SYS-008:FR-001, SYS-008:NFR-SEC-003
+@brd: BRD-017:NFR-PERF-001
 ```
 
 **Optional Extension Tags**:
@@ -1317,7 +1442,7 @@ def test_validate_resource_limit_within_threshold():
 - **Downstream**: CTR (interface contracts), SPEC (technical specifications), TASKS (implementation tasks)
 - **Purpose**: Project management artifacts defining WHO implements and WHEN (schedule/phases)
 - **section**: Scope, stakeholders, milestones, dependencies, traceability to requirements
-- **[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: Project management layer between requirements (WHAT) and implementation (HOW)
+- **resource**: Project management layer between requirements (WHAT) and implementation (HOW)
 
 ### CTR (API Contracts)
 - **Upstream**: REQ (interface requirements), ADR (architecture decisions), IMPL (implementation schedules)
@@ -1363,7 +1488,7 @@ All traceability references MUST use markdown links with anchors:
 
 1. **ID Anchors** (Preferred): `#REQ-003`, `#ADR-033`, `#CTR-001`
    - Stable across document changes
-   - Used in H1 headers: `# REQ-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`, `# CTR-001: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Validation Contract`
+   - Used in H1 headers: `# REQ-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`, `# CTR-001: resource Risk Validation Contract`
 
 2. **Named Anchors**: `#scenarios`, `#acceptance-criteria`
    - For specific sections within documents
@@ -1506,7 +1631,7 @@ Use tables for multiple relationships:
 
 | Source | Target | Relationship Type | Notes |
 |--------|--------|------------------|-------|
-| BRD-001 section 2.4 | PRD-001 Feature-003 | Business objective → Product feature | [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] capability |
+| BRD-001 section 2.4 | PRD-001 Feature-003 | Business objective → Product feature | resource management capability |
 | PRD-001 Feature-003 | EARS-001 EVENT-001 | Product feature → Formal requirement | Real-time validation |
 
 ### Code Traceability

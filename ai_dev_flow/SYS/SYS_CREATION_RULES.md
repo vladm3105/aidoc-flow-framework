@@ -401,3 +401,60 @@ Run `detect_magic_numbers.py` to verify:
 1. No hardcoded quantitative values in NFR sections
 2. All `@threshold` references resolve to valid registry keys
 3. All SLA targets use threshold references
+
+---
+
+## 14. Cross-Document Validation (MANDATORY)
+
+**CRITICAL**: Execute cross-document validation IMMEDIATELY after creating any SYS document. Do NOT proceed to downstream artifacts until validation passes.
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed to next layer
+```
+
+### Validation Command
+
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/SYS/SYS-NNN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all SYS documents complete
+python scripts/validate_cross_document.py --layer SYS --auto-fix
+```
+
+### Layer-Specific Upstream Requirements
+
+| This Layer | Required Upstream Tags | Tag Count |
+|------------|------------------------|-----------|
+| SYS (Layer 6) | @brd, @prd, @ears, @bdd, @adr | 5 |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Missing @brd/@prd/@ears/@bdd/@adr tag | Add with upstream document reference |
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken link | Recalculate path from current location |
+| Missing traceability section | Insert from template |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-002 | Missing cumulative tag | ERROR |
+| XDOC-003 | Upstream document not found | ERROR |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-007 | Gap in cumulative tag chain | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to REQ creation until Phase 1 validation passes with 0 errors.

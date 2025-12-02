@@ -35,7 +35,7 @@ custom_fields:
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
-**[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: SYS is in Layer 6 (System Requirements Layer) - translates ADR decisions into system requirements.
+**resource**: SYS is in Layer 6 (System Requirements Layer) - translates ADR decisions into system requirements.
 
 ## 1. Document Control
 

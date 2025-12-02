@@ -114,8 +114,8 @@ REQ/
 │   ├── av/        # [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] API
 │   └── ib/        # [EXTERNAL_SERVICE_GATEWAY] API
 ├── data/          # Data Management Requirements
-├── risk/          # [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] Requirements
-│   ├── lim/       # [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Limits
+├── risk/          # resource management Requirements
+│   ├── lim/       # resource Limits
 │   ├── mon/       # Risk Monitoring
 │   └── hed/       # balancing Requirements
 └── perf/          # Performance Requirements

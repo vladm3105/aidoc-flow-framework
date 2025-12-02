@@ -78,8 +78,8 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 **Feature**: [RESOURCE_VALIDATION - e.g., input sanitization, schema validation]
 **File**: `BDD-002_risk_validation.feature`
-**Requirements**: REQ-003 ([RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement), REQ-005 ([RESOURCE_COLLECTION - e.g., user accounts, active sessions] Risk Aggregation)
-**ADRs**: ADR-015 ([RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] Framework)
+**Requirements**: REQ-003 ([RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement), REQ-005 (resource collection Risk Aggregation)
+**ADRs**: ADR-015 (resource management Framework)
 
 | Scenario | Description | Test File | Test Method | Status | Priority |
 |----------|-------------|-----------|-------------|--------|----------|
@@ -87,7 +87,7 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 | 2.2 | Order size validation | test_limits.py | test_order_size() | Automated | High |
 | 2.3 | Account balance check | test_balance.py | test_balance_check() | Automated | High |
 | 2.4 | Margin requirement validation | test_margin.py | test_margin_req() | Automated | High |
-| 2.5 | [RESOURCE_COLLECTION - e.g., user accounts, active sessions] risk aggregation | test_collection_risk.py | test_aggregate() | Automated | High |
+| 2.5 | resource collection risk aggregation | test_collection_risk.py | test_aggregate() | Automated | High |
 | 2.6 | Risk threshold alerts | test_alerts.py | test_threshold() | Automated | Medium |
 | 2.7 | Circuit breaker activation | test_circuit_breaker.py | test_trigger() | Automated | High |
 | 2.8 | Risk override authorization | test_overrides.py | test_authorize() | Automated | Medium |
@@ -136,7 +136,7 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 | Category | Total Scenarios | Automated | Manual | Coverage % |
 |----------|----------------|-----------|--------|------------|
 | API Integration | 12 | 12 | 0 | 100% |
-| [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] | 8 | 8 | 0 | 100% |
+| resource management | 8 | 8 | 0 | 100% |
 | ML Models | 48 | 43 | 5 | 90% |
 | Service Strategies | 22 | 22 | 0 | 100% |
 | Data Architecture | 15 | 13 | 2 | 87% |
@@ -165,7 +165,7 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 | BDD ID | Linked Requirements | Requirement Type | Coverage Status |
 |--------|---------------------|------------------|-----------------|
 | BDD-001 | REQ-026, REQ-027, REQ-028 | API, Integration | Complete |
-| BDD-002 | REQ-003, REQ-005, REQ-008 | [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management], [SAFETY_MECHANISM - e.g., rate limiter, error threshold] | Complete |
+| BDD-002 | REQ-003, REQ-005, REQ-008 | resource management, [SAFETY_MECHANISM - e.g., rate limiter, error threshold] | Complete |
 | BDD-003 | REQ-070, REQ-071, REQ-072 | ML, Analytics | Complete |
 | BDD-004 | REQ-073, REQ-074 | ML, NLP | Complete |
 | BDD-005 | REQ-075, REQ-076, REQ-077 | ML, Signals | Complete |

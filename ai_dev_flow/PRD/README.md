@@ -24,7 +24,7 @@ PRDs transform high-level business objectives into concrete, measurable product 
 - Provide traceability to downstream technical artifacts
 - Create the authoritative source for all implementation decisions
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## resource in Development Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 

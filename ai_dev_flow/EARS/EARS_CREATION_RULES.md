@@ -171,12 +171,34 @@ WITHIN [constraint].
 
 ## 6. Quality Attributes (NFRs)
 
-**Performance**: Quantified latency, throughput, response time constraints
-**security**: Authentication, authorization, encryption standards
-**Reliability**: Availability SLAs, fault tolerance, recovery objectives
-**Scalability**: Concurrent users, data volumes, growth projections
-**Observability**: Logging, monitoring, tracing, alerting requirements
-**Compliance**: Regulatory, audit, privacy requirements
+### NFR Categorical Format
+
+EARS documents inherit NFR IDs from upstream BRD/PRD documents using categorical prefixes:
+
+| Category | Prefix | Keywords for Detection |
+|----------|--------|------------------------|
+| Performance | `NFR-PERF-` | latency, throughput, response time, p95, p99 |
+| Security | `NFR-SEC-` | authentication, authorization, encryption, RBAC |
+| Reliability | `NFR-REL-` | availability, MTBF, MTTR, fault tolerance, recovery |
+| Scalability | `NFR-SCAL-` | concurrent users, data volumes, horizontal scaling |
+| Observability | `NFR-OBS-` | logging, monitoring, tracing, alerting, metrics |
+| Maintainability | `NFR-MAINT-` | code coverage, deployment, CI/CD, documentation |
+
+### NFR Inheritance
+
+When formalizing NFRs from BRD/PRD:
+- **Inherit the same NFR ID**: If BRD defines `NFR-PERF-001`, EARS uses `NFR-PERF-001`
+- **Add EARS formalization**: Apply WHEN-THE-SHALL-WITHIN syntax
+- **Maintain traceability**: `@brd: BRD-017:NFR-PERF-001`
+
+### NFR Quality Attributes
+
+**Performance** (`NFR-PERF-`): Quantified latency, throughput, response time constraints
+**Security** (`NFR-SEC-`): Authentication, authorization, encryption standards
+**Reliability** (`NFR-REL-`): Availability SLAs, fault tolerance, recovery objectives
+**Scalability** (`NFR-SCAL-`): Concurrent users, data volumes, growth projections
+**Observability** (`NFR-OBS-`): Logging, monitoring, tracing, alerting requirements
+**Maintainability** (`NFR-MAINT-`): Code coverage, deployment, documentation standards
 
 ---
 
@@ -404,3 +426,60 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 - **Errors Fixed**: N
 - **Index Updated**: Yes/No
 ```
+
+---
+
+## 13. Cross-Document Validation (MANDATORY)
+
+**CRITICAL**: Execute cross-document validation IMMEDIATELY after creating any EARS document. Do NOT proceed to downstream artifacts until validation passes.
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed to next layer
+```
+
+### Validation Command
+
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/EARS/EARS-NNN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all EARS documents complete
+python scripts/validate_cross_document.py --layer EARS --auto-fix
+```
+
+### Layer-Specific Upstream Requirements
+
+| This Layer | Required Upstream Tags | Tag Count |
+|------------|------------------------|-----------|
+| EARS (Layer 3) | @brd, @prd | 2 |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Missing @brd/@prd tag | Add with upstream document reference |
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken link | Recalculate path from current location |
+| Missing traceability section | Insert from template |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-002 | Missing cumulative tag | ERROR |
+| XDOC-003 | Upstream document not found | ERROR |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-007 | Gap in cumulative tag chain | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to BDD creation until Phase 1 validation passes with 0 errors.

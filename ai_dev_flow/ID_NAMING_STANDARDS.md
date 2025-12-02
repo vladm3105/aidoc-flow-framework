@@ -124,14 +124,14 @@ Document ID Standards (ai_dev_flow)
   - Include traceability fields with markdown links: `requirements_source`, `architecture`, `verification`.
   - Notes: Use sub-numbering (-YY) when single component specification requires multiple related YAML files.
 - API Contracts (CTR)
-  - H1 ID: `CTR-NNN` or `CTR-NNN-YY` (e.g., `# CTR-001: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Validation Contract`).
+  - H1 ID: `CTR-NNN` or `CTR-NNN-YY` (e.g., `# CTR-001: resource Risk Validation Contract`).
   - Filename (Dual Format): `CTR-NNN_{slug}.md` + `CTR-NNN_{slug}.yaml` or `CTR-NNN-YY_{slug}.md` + `CTR-NNN-YY_{slug}.yaml` (both required)
   - Organization: Optional subdirectories by service type: `CTR/{agents,mcp,infra}/CTR-NNN_{slug}.{md,yaml}`
   - Variable Length: NNN = 3-4 digits (001-999, 1000+), YY = 2-3 digits [OPTIONAL] (01-99, 100+)
   - YAML `contract_id:` uses lowercase_snake_case (e.g., `contract_id: position_risk_validation`)
   - Notes: Both .md and .yaml must exist for each CTR-NNN; slugs must match exactly. Use sub-numbering (-YY) when single contract spans multiple related interface definitions.
 - Implementation Plans (IMPL)
-  - H1 ID: `IMPL-NNN` or `IMPL-NNN-YY` (e.g., `# IMPL-001: [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] System Implementation`)
+  - H1 ID: `IMPL-NNN` or `IMPL-NNN-YY` (e.g., `# IMPL-001: resource management System Implementation`)
   - Filename: `IMPL/IMPL-NNN_{slug}.md` or `IMPL/IMPL-NNN-YY_{slug}.md` (e.g., `IMPL/IMPL-001_risk_management_system.md`)
   - Variable Length: NNN = 3-4 digits (001-999, 1000+), YY = 2-3 digits [OPTIONAL] (01-99, 100+)
   - Notes: Project management documents (WHO/WHEN), not technical specifications (HOW). Lists deliverables: CTR, SPEC, TASKS to be created. Use sub-numbering (-YY) when single implementation plan requires multiple related planning documents.
@@ -205,12 +205,12 @@ Document ID Standards (ai_dev_flow)
 
 PRD, SYS, and EARS Document Types
 - Product Requirements Documents (PRD)
-  - H1 ID: `PRD-NNN` or `PRD-NNN-YY` (e.g., `# PRD-003: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Limits`)
+  - H1 ID: `PRD-NNN` or `PRD-NNN-YY` (e.g., `# PRD-003: resource Risk Limits`)
   - Filename: `PRD/PRD-NNN_{slug}.md` or `PRD/PRD-NNN-YY_{slug}.md`
   - Variable Length: NNN = 3-4 digits (001-999, 1000+), YY = 2-3 digits [OPTIONAL] (01-99, 100+)
   - Notes: Use sub-numbering (-YY) when single product requirement spans multiple related documents.
 - System Architecture Documents (SYS)
-  - H1 ID: `SYS-NNN` or `SYS-NNN-YY` (e.g., `# SYS-003: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Limits`)
+  - H1 ID: `SYS-NNN` or `SYS-NNN-YY` (e.g., `# SYS-003: resource Risk Limits`)
   - Filename: `SYS/SYS-NNN_{slug}.md` or `SYS/SYS-NNN-YY_{slug}.md`
   - Variable Length: NNN = 3-4 digits (001-999, 1000+), YY = 2-3 digits [OPTIONAL] (01-99, 100+)
   - Notes: Use sub-numbering (-YY) when single system design spans multiple related documents.
@@ -310,15 +310,15 @@ Validation Rules & Aids
   - EARS filename: `EARS-\d{3,4}(-\d{2,3})?_.+\.md$`
 
 Examples (ai_dev_flow) - Atomic Documents (XXX)
-- PRD: `PRD/PRD-003_position_risk_limits.md` (H1: `# PRD-003: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Limits`)
-- SYS: `SYS/SYS-003_position_risk_limits.md` (H1: `# SYS-003: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Limits`)
+- PRD: `PRD/PRD-003_position_risk_limits.md` (H1: `# PRD-003: resource Risk Limits`)
+- SYS: `SYS/SYS-003_position_risk_limits.md` (H1: `# SYS-003: resource Risk Limits`)
 - EARS: `EARS/EARS-003_resource_limit_enforcement.md` (H1: `# EARS-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
 - REQ: `REQ/risk/lim/REQ-003_resource_limit_enforcement.md` (H1: `# REQ-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
 - ADR: `ADR/ADR-033_risk_limit_enforcement_architecture.md` (H1: `# ADR-033: Risk Limit Enforcement Architecture`)
-- CTR: `CTR/CTR-001_position_risk_validation.md` + `CTR-001_position_risk_validation.yaml` (H1: `# CTR-001: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Validation Contract`, YAML: `contract_id: position_risk_validation`)
+- CTR: `CTR/CTR-001_position_risk_validation.md` + `CTR-001_position_risk_validation.yaml` (H1: `# CTR-001: resource Risk Validation Contract`, YAML: `contract_id: position_risk_validation`)
 - BDD: `BDD/BDD-003_risk_limits_requirements.feature`
 - SPEC: `SPEC/services/SPEC-003_resource_limit_service.yaml` (id: `resource_limit_service`)
-- IMPL: `IMPL/IMPL-001_risk_management_system.md` (H1: `# IMPL-001: [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] System Implementation`)
+- IMPL: `IMPL/IMPL-001_risk_management_system.md` (H1: `# IMPL-001: resource management System Implementation`)
 - TASKS: `TASKS/TASKS-003_resource_limit_service.md` (H1: `# TASKS-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
 - IPLAN: `IPLAN/IPLAN-001_database_migration_20251113_143022.md` (H1: `# IPLAN-001: Database Migration Plan`)
 - BRD: `docs/BRD/BRD-001_foundation_overview.md` (H1: `# BRD-001: Foundation & Overview`)
@@ -333,7 +333,7 @@ Examples (ai_dev_flow) - Sub-Documents (XXX-YY)
 
 Component Abbreviations (examples)
 - SVC (Service), CL (Client), SRV (Server), GW (Gateway), AGG (Aggregator), MGR (Manager), CTRL (Controller), ADPT (Adapter), REPO (Repository), PROC (Processor), VAL (Validator), ORCH (Orchestrator), PROV (Provider)
-- IB ([EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System]), AV ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API]), MKT (Market), ORD (Order), EXEC (Execution), POS ([RESOURCE_INSTANCE - e.g., database connection, workflow instance]), LIM (Limit), RISK (Risk), ACCT (Account), PFOL ([RESOURCE_COLLECTION - e.g., user accounts, active sessions]), CFG (Configuration), AUTH (Authentication), AUTHZ (Authorization), REDIS, PUBSUB, BQ (BigQuery), CSQL (Cloud SQL), GCR (Cloud Run), GSM (regulatoryrets Manager)
+- IB ([EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System]), AV ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API]), MKT (Market), ORD (Order), EXEC (Execution), POS (resource), LIM (Limit), RISK (Risk), ACCT (Account), PFOL (resource collection), CFG (Configuration), AUTH (Authentication), AUTHZ (Authorization), REDIS, PUBSUB, BQ (BigQuery), CSQL (Cloud SQL), GCR (Cloud Run), GSM (regulatoryrets Manager)
 
 BDD Tag Examples
 ```gherkin
@@ -379,6 +379,102 @@ Prefixing feature IDs with the document number (e.g., `017-001`) is redundant.
 - `BRD-017:001` = BRD-017, Feature 001 (globally unique)
 - `PRD-022:015` = PRD-022, Feature 015 (globally unique)
 - `EARS-006:003` = EARS-006, Requirement 003 (globally unique)
+
+---
+
+## Non-Functional Requirement (NFR) Categorical Prefixes
+
+NFRs use categorical prefixes to enable automated categorization and cross-layer traceability.
+
+### NFR Format Standard
+
+| Category | Prefix | Full Format | Example |
+|----------|--------|-------------|---------|
+| Performance | `NFR-PERF-` | `NFR-PERF-NNN` | `NFR-PERF-001` |
+| Reliability | `NFR-REL-` | `NFR-REL-NNN` | `NFR-REL-001` |
+| Scalability | `NFR-SCAL-` | `NFR-SCAL-NNN` | `NFR-SCAL-001` |
+| Security | `NFR-SEC-` | `NFR-SEC-NNN` | `NFR-SEC-001` |
+| Observability | `NFR-OBS-` | `NFR-OBS-NNN` | `NFR-OBS-001` |
+| Maintainability | `NFR-MAINT-` | `NFR-MAINT-NNN` | `NFR-MAINT-001` |
+
+**Numbering**: NNN = 3-digit sequential number per category (001-999)
+
+### NFR Cross-Layer Consistency
+
+Use identical NFR IDs across all layers for traceability:
+
+```
+BRD-017 defines: NFR-PERF-001 (API response time <200ms)
+    ↓
+PRD-022 inherits: NFR-PERF-001
+    ↓
+EARS-006 formalizes: NFR-PERF-001 (EARS syntax)
+    ↓
+SYS-008 implements: NFR-PERF-001 (technical specification)
+```
+
+### NFR Cross-Reference Format
+
+When referencing NFRs, use the standard document type tag with NFR ID:
+- `@brd: BRD-017:NFR-PERF-001` (BRD-017, Performance NFR 001)
+- `@sys: SYS-008:NFR-SEC-003` (SYS-008, Security NFR 003)
+
+---
+
+## NFR Category Auto-Assignment (AI Guidance)
+
+AI assistants should automatically assign NFR categories based on keyword matching and context analysis.
+
+### 1. Keyword Matching (Primary Method)
+
+| Category | Trigger Keywords |
+|----------|-----------------|
+| `PERF` | latency, response time, throughput, p50, p95, p99, milliseconds, TPS, RPS, performance, speed |
+| `REL` | uptime, availability, MTBF, MTTR, error rate, failover, recovery, redundancy, fault tolerance, reliability |
+| `SCAL` | concurrent, horizontal, vertical, scaling, load, capacity, volume, elasticity, users, connections |
+| `SEC` | auth, encrypt, RBAC, compliance, audit, token, certificate, vulnerability, security, access control |
+| `OBS` | log, monitor, alert, trace, metric, dashboard, APM, health check, observability, telemetry |
+| `MAINT` | coverage, deploy, CI/CD, documentation, refactor, technical debt, maintainability, testing |
+
+### 2. Context Analysis (Secondary Method)
+
+When keywords are ambiguous, analyze:
+- **Section header context**: `## Performance Requirements` → `PERF`
+- **Related requirements**: Group similar NFRs together
+- **Upstream categorization**: Inherit category from BRD/PRD if already defined
+- **Metric type**: Response time metrics → `PERF`, uptime metrics → `REL`
+
+### 3. Assignment Priority
+
+1. Explicit category in requirement text (highest priority)
+2. Section header category
+3. Keyword matching
+4. Upstream document category (lowest priority)
+
+### 4. Ambiguous Cases
+
+| Requirement Text | Category | Rationale |
+|------------------|----------|-----------|
+| "System must handle 1000 concurrent users" | `SCAL` | Concurrent users = scalability |
+| "API latency p99 < 100ms" | `PERF` | Latency metric = performance |
+| "99.9% uptime SLA" | `REL` | Uptime = reliability |
+| "All API calls must be authenticated" | `SEC` | Authentication = security |
+| "Log all failed transactions" | `OBS` | Logging = observability |
+| "Maintain 80% test coverage" | `MAINT` | Test coverage = maintainability |
+
+---
+
+## Complete Tag Reference
+
+For the complete list of valid traceability tags, see [TRACEABILITY.md - Complete Tag Reference](./TRACEABILITY.md#complete-tag-reference).
+
+**Quick Reference:**
+- **Document Type Tags**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`, `@iplan`
+- **Non-Document Tags**: `@test`, `@code`, `@impl-status`, `@icon`, `@icon-role`, `@threshold`, `@entity`, `@priority`, `@component`, `@supersedes`
+- **Same-Type Tags**: `@related-{type}`, `@depends-{type}`
+- **Invalid Tags**: `@nfr:`, `@fr:`, `@contract:`, `@tests:` (do NOT use)
+
+---
 
 Checklist
 - H1 titles contain IDs for PRD/SYS/EARS/REQ/ADR/CTR/IMPL/TASKS/BRD where applicable (use `TYPE-NNN` or `TYPE-NNN-YY` format).

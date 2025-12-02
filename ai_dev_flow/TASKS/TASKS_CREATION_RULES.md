@@ -11,7 +11,7 @@ tags:
   - layer-11-artifact
   - shared-architecture
 custom_fields:
-  document_type: creation_rules
+  document_type: creation-rules
   artifact_type: TASKS
   layer: 11
   priority: shared
@@ -34,6 +34,25 @@ Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 | **Created** | 2025-11-27 |
 | **Last Updated** | 2025-11-27 |
 | **Status** | Active |
+
+---
+
+## Table of Contents
+
+1. [When to Create a TASKS Document](#1-when-to-create-a-tasks-document)
+2. [File Naming Convention](#2-file-naming-convention)
+3. [Required Sections](#3-required-sections)
+4. [Scope Section Rules](#4-scope-section-rules)
+5. [Plan Section Rules](#5-plan-section-rules)
+6. [Constraints Section Rules](#6-constraints-section-rules)
+7. [Acceptance Section Rules](#7-acceptance-section-rules)
+8. [Implementation Contracts Section](#8-implementation-contracts-section-mandatory)
+9. [Traceability Tag Requirements](#9-traceability-tag-requirements)
+10. [Quality Checklist](#10-quality-checklist)
+11. [Common Anti-Patterns](#11-common-anti-patterns)
+12. [Validation](#12-validation)
+13. [Upstream Artifact Verification Process](#13-upstream-artifact-verification-process)
+14. [Cross-Document Validation](#14-cross-document-validation-mandatory)
 
 ---
 
@@ -452,3 +471,60 @@ Include ONLY if relationships exist between TASKS documents sharing implementati
 
 **Document Version**: 1.0.0
 **Last Updated**: 2025-11-27
+
+---
+
+## 14. Cross-Document Validation (MANDATORY)
+
+**CRITICAL**: Execute cross-document validation IMMEDIATELY after creating any TASKS document. Do NOT proceed to downstream artifacts until validation passes.
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed to next layer
+```
+
+### Validation Command
+
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/TASKS/TASKS-NNN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all TASKS documents complete
+python scripts/validate_cross_document.py --layer TASKS --auto-fix
+```
+
+### Layer-Specific Upstream Requirements
+
+| This Layer | Required Upstream Tags | Tag Count |
+|------------|------------------------|-----------|
+| TASKS (Layer 11) | @brd through @spec (+ optional @impl, @ctr) | 8-10 |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Missing @brd through @spec tag | Add with upstream document reference |
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken link | Recalculate path from current location |
+| Missing traceability section | Insert from template |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-002 | Missing cumulative tag | ERROR |
+| XDOC-003 | Upstream document not found | ERROR |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-007 | Gap in cumulative tag chain | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to IPLAN creation until Phase 1 validation passes with 0 errors.

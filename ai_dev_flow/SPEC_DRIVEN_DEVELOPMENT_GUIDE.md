@@ -487,7 +487,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 - **Purpose**: Capture business requirements and product strategy before technical implementation
 - **File Format**: `PRD-NNN_descriptive_title.md`
 - **Contents**: Problem statement, goals, non-goals, KPIs, acceptance criteria
-- **[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: Starting point of development workflow - defines "what" needs to be built
+- **resource**: Starting point of development workflow - defines "what" needs to be built
 - **Key sections**:
   - Problem: Current state issues and business impact
   - Goals: Measurable outcomes and success criteria
@@ -499,7 +499,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 - **Purpose**: Technical interpretation of business requirements
 - **File Format**: `SYS-NNN_descriptive_title.md`
 - **Contents**: Functional and non-functional requirements, system flows
-- **[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: Bridge between business PRDs and technical EARS requirements
+- **resource**: Bridge between business PRDs and technical EARS requirements
 
 ### EARS Requirements (EARS)
 - **Purpose**: Precise, testable requirements using structured WHEN-THE-SHALL-WITHIN syntax
@@ -509,7 +509,7 @@ This AI Agent BRD depends on the following Platform BRDs:
   - State-driven: `WHILE [condition] THE [system] SHALL [behavior] WITHIN [constraint]`
   - Unwanted Behavior: `IF [condition] THE [system] SHALL [prevention] WITHIN [timeframe]`
   - Ubiquitous: `THE [system] SHALL [requirement] WITHIN [constraint]`
-- **[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: Transforms PRDs/SYS into formal, measurable requirements
+- **resource**: Transforms PRDs/SYS into formal, measurable requirements
 
 ### Atomic Requirements (REQ)
 - **Purpose**: Break complex requirements into single, testable statements
@@ -537,7 +537,7 @@ This AI Agent BRD depends on the following Platform BRDs:
   - Non-Functional Requirements: Latency, idempotency, rate limiting, [SAFETY_MECHANISM - e.g., rate limiter, error threshold] settings
   - Versioning Strategy: Semantic versioning rules, deprecation policy
 - **Organization**: Optional subdirectories by service type (`agents/`, `mcp/`, `infra/`, `shared/`)
-- **[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: After REQ, before SPEC - enables parallel development with contract-first approach
+- **resource**: After REQ, before SPEC - enables parallel development with contract-first approach
 - **Benefits**: Parallel development, early validation, prevents implementation drift, testable interfaces
 
 ### Architecture Decision Records (ADR)
@@ -551,7 +551,7 @@ This AI Agent BRD depends on the following Platform BRDs:
   - Alternatives: Rejected options with specific reasons
   - Relations: Dependencies, supersedes, impacts on other decisions
 - **Lifecycle**: Proposed → Accepted → Superseded/Deprecated
-- **[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: Decision artifacts bridge requirements with implementation
+- **resource**: Decision artifacts bridge requirements with implementation
 
 ### Behavior-Driven Development (BDD)
 - **Purpose**: Executable specifications written in natural language
@@ -563,7 +563,7 @@ This AI Agent BRD depends on the following Platform BRDs:
   - Tagged scenarios for traceability (`@requirement`, `@adr`)
   - Background setup shared across scenarios
   - Example tables for data-driven scenarios
-- **[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: Operational requirements validating technical implementation
+- **resource**: Operational requirements validating technical implementation
 
 ### Technical Specifications (SPEC)
 - **Purpose**: Machine-readable technical blueprints for implementation
@@ -574,7 +574,7 @@ This AI Agent BRD depends on the following Platform BRDs:
   - Operational requirements (caching, rate limiting, observability)
   - Performance specifications (latency, throughput, resource limits)
   - Verification mapping (BDD scenarios, load tests, integration tests)
-- **[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: YAML implementation specifications translated into executable code
+- **resource**: YAML implementation specifications translated into executable code
 
 ### AI Tasks (TASKS)
 - **Purpose**: Structured implementation guidance for AI-assisted development
@@ -584,7 +584,7 @@ This AI Agent BRD depends on the following Platform BRDs:
   - Plan: Numbered sequence of development activities
   - Constraints: Technical boundaries and limitations
   - Acceptance: Verification requirements for completion
-- **[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: Implementation roadmap connecting specifications to code
+- **resource**: Implementation roadmap connecting specifications to code
 
 ### Code Implementation
 - **Purpose**: Executable realization of specifications
@@ -600,17 +600,43 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 
 **Structure:** `@tag-type: DOCUMENT-ID:REQUIREMENT-ID`
 
-**Tag Types:**
-- `@brd:` - Business Requirements Document references
-- `@prd:` - Product Requirements Document references
-- `@ears:` - EARS requirements references
-- `@sys:` - System Requirements references
-- `@adr:` - Architecture Decision Record references
-- `@req:` - Requirements Document references (V2)
-- `@spec:` - Specification references
-- `@contract:` - Contract references (CTR)
-- `@test:` - Test scenario references (BDD)
-- `@impl-status:` - Implementation status (pending|in-progress|complete|deprecated)
+**Document Type Tags (Cross-Layer Traceability):**
+
+| Tag | Layer | Document Type | Example |
+|-----|-------|---------------|---------|
+| `@brd:` | 1 | Business Requirements | `@brd: BRD-001:030` |
+| `@prd:` | 2 | Product Requirements | `@prd: PRD-003:002` |
+| `@ears:` | 3 | EARS Statements | `@ears: EARS-001:003` |
+| `@bdd:` | 4 | BDD Scenarios | `@bdd: BDD-003:007` |
+| `@adr:` | 5 | Architecture Decisions | `@adr: ADR-033` |
+| `@sys:` | 6 | System Requirements | `@sys: SYS-008:001` |
+| `@req:` | 7 | Atomic Requirements | `@req: REQ-003:001` |
+| `@impl:` | 8 | Implementation Plans | `@impl: IMPL-001:001` |
+| `@ctr:` | 9 | Data Contracts | `@ctr: CTR-001` |
+| `@spec:` | 10 | Technical Specs | `@spec: SPEC-003` |
+| `@tasks:` | 11 | Task Breakdowns | `@tasks: TASKS-001:003` |
+| `@iplan:` | 12 | Implementation Plans | `@iplan: IPLAN-001` |
+
+**Note**: NFRs use standard document type tags with categorical prefixes (e.g., `@sys: SYS-008:NFR-PERF-001`).
+
+**Valid Non-Document Tags (Special Purpose):**
+
+| Tag | Purpose | Example |
+|-----|---------|---------|
+| `@test:` | Test file reference | `@test: tests/test_service.py` |
+| `@code:` | Source code reference | `@code: src/services/limit.py` |
+| `@impl-status:` | Implementation status | `@impl-status: complete` (pending\|in-progress\|complete\|deprecated) |
+| `@icon:` | Implementation contract | `@icon: TASKS-001:ServiceConnector` |
+| `@icon-role:` | Contract role | `@icon-role: provider` (provider\|consumer) |
+| `@threshold:` | Threshold registry ref | `@threshold: PRD-035:kyc.tier1_timeout` |
+| `@entity:` | Data entity reference | `@entity: PRD-004:UserProfile` |
+| `@priority:` | Requirement priority | `@priority: critical` |
+| `@component:` | Component reference | `@component: risk-engine` |
+| `@supersedes:` | Superseded document | `@supersedes: REQ-001` |
+| `@related-{type}:` | Related same-type doc | `@related-req: REQ-001` |
+| `@depends-{type}:` | Prerequisite same-type | `@depends-req: REQ-002` |
+
+**Invalid Tags** (do NOT use): `@nfr:`, `@fr:`, `@contract:`, `@tests:`
 
 **Format Rules:**
 - **Multi-requirement documents:** Use namespace format: `BRD-001:030`
@@ -628,7 +654,7 @@ Python docstring:
 @prd: PRD-003
 @req: REQ-003:001
 @adr: ADR-033
-@contract: CTR-001
+@ctr: CTR-001
 @spec: SPEC-002
 @test: BDD-002:001, BDD-008:001
 @impl-status: complete
@@ -641,7 +667,7 @@ Markdown document:
 @prd: PRD-003
 @req: REQ-003
 @adr: ADR-033
-@contract: CTR-001
+@ctr: CTR-001
 @spec: SPEC-002
 @test: BDD-001:001
 @impl-status: complete

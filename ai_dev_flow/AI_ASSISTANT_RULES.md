@@ -1074,6 +1074,219 @@ See [METADATA_TAGGING_GUIDE.md](./METADATA_TAGGING_GUIDE.md) for:
 
 ---
 
+## Rule 16: Cross-Document Consistency Validation (MANDATORY)
+
+### Purpose
+
+Ensure all documents maintain semantic consistency with their upstream sources through automated validation and auto-fix after every document creation or modification.
+
+### Trigger
+
+**Execute IMMEDIATELY after ANY document creation or modification** - no exceptions.
+
+### Mandatory Actions
+
+1. **Run cross-document validation**:
+   ```bash
+   python scripts/validate_cross_document.py --document {created_doc} --auto-fix
+   ```
+
+2. **Verify tag references**: All @tags must reference existing documents with valid requirement IDs
+
+3. **Verify cumulative tag chain**: Tag count must match layer requirements per TRACEABILITY.md
+
+4. **Auto-fix all issues**: ERROR and WARNING level issues fixed without user confirmation
+
+5. **Re-validate until clean**: Loop until 0 errors and 0 warnings
+
+6. **Mark as complete**: Only after validation passes
+
+### Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, update traceability matrix
+```
+
+### Zero Tolerance Policy
+
+**DO NOT proceed to next document until validation passes.** This is a blocking quality gate.
+
+### Validation Codes
+
+| Code | Description | Severity | Auto-Fix Action |
+|------|-------------|----------|-----------------|
+| XDOC-001 | Referenced requirement ID not found in upstream | ERROR | Remove reference + dependent content |
+| XDOC-002 | Missing cumulative tag for layer | ERROR | Add tag with valid upstream ref |
+| XDOC-003 | Upstream document file not found | ERROR | **REMOVE functionality requiring it** |
+| XDOC-004 | Title mismatch with upstream | WARNING | Update title to match upstream |
+| XDOC-005 | Referencing deprecated requirement | WARNING | Remove or suggest replacement |
+| XDOC-006 | Tag format invalid | ERROR | Correct to TYPE-NNN:section format |
+| XDOC-007 | Gap in cumulative tag chain | ERROR | Add missing tags from chain |
+| XDOC-008 | Broken internal link/anchor | ERROR | Fix path or remove link |
+| XDOC-009 | Missing traceability section | ERROR | Add template section |
+| XDOC-010 | Orphan requirement (no downstream) | WARNING | Annotate for review |
+
+---
+
+## Rule 17: Auto-Fix Policy (NO CONFIRMATION REQUIRED)
+
+### Purpose
+
+Define which issues are auto-fixed without user confirmation and which require manual review.
+
+### Auto-Fix WITHOUT Confirmation
+
+The following issues are fixed automatically by the validation script:
+
+| Issue Type | Fix Action | Example |
+|------------|------------|---------|
+| Tag format errors | Correct to TYPE-NNN:section | `@brd: brd001` → `@brd: BRD-001` |
+| Missing cumulative tags | Add with upstream reference | Add `@prd: PRD-001` for EARS layer |
+| Broken relative paths | Recalculate correct path | `../REQ/file.md` → `../../REQ/file.md` |
+| Missing traceability section | Insert from template | Add Section 7 template |
+| Title/reference mismatches | Update to match upstream | Sync title with BRD source |
+| Deprecated references | Replace with null + comment | `@adr: ADR-003` → `@adr: null <!-- deprecated -->` |
+
+### Backup Strategy
+
+Before ANY auto-fix:
+1. Create `.bak` backup file: `{filename}.md.bak`
+2. Apply fixes to original file
+3. If validation passes: Delete backup
+4. If errors remain: Keep backup for recovery
+
+### Requires Manual Review (NOT Auto-Fixed)
+
+| Issue Type | Reason | Action |
+|------------|--------|--------|
+| Missing upstream document | Cannot create document automatically | Log: "Create BRD-XXX before proceeding" |
+| Semantic content issues | Requires human judgment | Log: "Review content alignment" |
+| Ambiguous requirement matches | <90% confidence | Log: "Multiple possible matches" |
+| Orphan requirements | May be intentional | Log: "No downstream references found" |
+
+### Strict Hierarchy Enforcement
+
+**CRITICAL**: If upstream document is missing (XDOC-003), the fix action is:
+1. **REMOVE** the @tag reference to missing document
+2. **REMOVE** any dependent content that requires that upstream
+3. **LOG** removal for audit trail
+4. **DO NOT** create placeholder or phantom references
+
+This enforces strict hierarchy - no orphan forward references allowed.
+
+---
+
+## Rule 18: Validation Phases
+
+### Purpose
+
+Define three validation phases that execute at different workflow stages.
+
+### Phase 1: Per-Document Validation (Immediate)
+
+**Trigger**: Immediately after creating or modifying any document
+
+**Checks**:
+- Format validation (YAML frontmatter, sections)
+- Upstream reference existence (all @tags resolve)
+- Cumulative tag completeness (layer requirements met)
+- Internal link resolution (all paths valid)
+
+**Command**:
+```bash
+python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+```
+
+**Blocking**: YES - Cannot proceed until Phase 1 passes
+
+### Phase 2: Per-Layer Validation (Layer Completion)
+
+**Trigger**: When ALL documents of a layer type are created
+
+**Checks**:
+- Cross-document consistency within layer
+- Orphan detection (documents with no downstream)
+- Layer-wide coverage metrics
+- Traceability matrix update
+
+**Command**:
+```bash
+python scripts/validate_cross_document.py --layer {TYPE} --auto-fix
+```
+
+**Automatic Trigger Detection**:
+- Track expected document count from project plan
+- When count reached, automatically run Phase 2
+- Block proceeding to next layer until Phase 2 passes
+
+### Phase 3: Final Validation (Before Layer Transition)
+
+**Trigger**: Before proceeding from one layer to the next in the workflow
+
+**Checks**:
+- Full traceability chain validation (all layers complete)
+- Complete orphan detection across all documents
+- Quality gate approval (all metrics ≥90%)
+- Cumulative tag chain integrity
+
+**Command**:
+```bash
+python scripts/validate_cross_document.py --all --auto-fix --strict
+```
+
+**Quality Gate Thresholds**:
+- 100% upstream references resolved
+- 0 broken links
+- 0 missing cumulative tags
+- 0 format errors
+- ≤5% orphan requirements (warnings only)
+
+### Phase Execution Summary
+
+| Phase | Trigger | Scope | Blocking | Auto-Fix |
+|-------|---------|-------|----------|----------|
+| 1 | After each document | Single document | YES | YES |
+| 2 | Layer completion | All docs in layer | YES | YES |
+| 3 | Layer transition | All layers | YES | YES |
+
+### Validation Report Output
+
+After each validation phase, generate report:
+
+```markdown
+# Cross-Document Validation Report
+
+**Document**: {doc_path}
+**Timestamp**: {ISO timestamp}
+**Phase**: {1|2|3}
+
+## Fixes Applied
+
+### ERRORS Fixed ({count})
+| Code | Issue | Fix Applied |
+|------|-------|-------------|
+
+### WARNINGS Fixed ({count})
+| Code | Issue | Fix Applied |
+|------|-------|-------------|
+
+## Remaining Issues ({count})
+| Code | Severity | Issue | Action |
+|------|----------|-------|--------|
+
+## Summary
+- Status: {PASSED|PASSED_WITH_WARNINGS|FAILED}
+- Errors: {found} found, {fixed} fixed, {remaining} manual
+- Warnings: {found} found, {fixed} fixed
+```
+
+---
+
 ## References
 
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete SDD methodology

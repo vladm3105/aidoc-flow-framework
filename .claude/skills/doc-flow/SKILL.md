@@ -416,6 +416,76 @@ python ai_dev_flow/scripts/generate_traceability_matrices.py --output docs/gener
 
 ---
 
+## Cross-Document Validation (MANDATORY)
+
+**CRITICAL**: After creating each artifact, execute cross-document validation before proceeding to the next layer.
+
+### Validation Phases
+
+| Phase | Trigger | Command |
+|-------|---------|---------|
+| Phase 1 | Per-document | `python scripts/validate_cross_document.py --document {doc_path} --auto-fix` |
+| Phase 2 | Per-layer complete | `python scripts/validate_cross_document.py --layer {LAYER} --auto-fix` |
+| Phase 3 | Final (all layers) | `python scripts/validate_cross_document.py --full --auto-fix` |
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed to next layer
+```
+
+### Layer-Specific Upstream Requirements
+
+| Layer | Artifact | Required Upstream Tags | Tag Count |
+|-------|----------|------------------------|-----------|
+| 1 | BRD | (none - root) | 0 |
+| 2 | PRD | @brd | 1 |
+| 3 | EARS | @brd, @prd | 2 |
+| 4 | BDD | @brd, @prd, @ears | 3 |
+| 5 | ADR | @brd, @prd, @ears, @bdd | 4 |
+| 6 | SYS | @brd, @prd, @ears, @bdd, @adr | 5 |
+| 7 | REQ | @brd, @prd, @ears, @bdd, @adr, @sys | 6 |
+| 8 | IMPL | @brd, @prd, @ears, @bdd, @adr, @sys, @req | 7 |
+| 9 | CTR | @brd through @req (+ optional @impl) | 7-8 |
+| 10 | SPEC | @brd through @req (+ optional @impl, @ctr) | 7-9 |
+| 11 | TASKS | @brd through @spec (+ optional @impl, @ctr) | 8-10 |
+| 12 | IPLAN | @brd through @tasks (+ optional @impl, @ctr) | 9-11 |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Missing cumulative tag | Add with upstream document reference |
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken link | Recalculate path from current location |
+| Missing traceability section | Insert from template |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-002 | Missing cumulative tag | ERROR |
+| XDOC-003 | Upstream document not found | ERROR |
+| XDOC-004 | Link target file missing | WARNING |
+| XDOC-005 | Anchor in link not found | WARNING |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-007 | Gap in cumulative tag chain | ERROR |
+| XDOC-008 | Circular reference detected | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+| XDOC-010 | Orphaned document (no upstream refs) | WARNING |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to next layer until Phase 1 validation passes with 0 errors for the current artifact.
+
+---
+
 ## Related Resources
 
 ### Core Standards (ai_dev_flow/)

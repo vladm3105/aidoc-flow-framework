@@ -2,7 +2,7 @@
 
 **⚠️ CRITICAL**: This document tracks the implementation of the IMPL artifact system itself within the AI Dev Flow Framework.
 
-**[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: Meta-level implementation plan for creating the IMPL documentation system.
+**resource**: Meta-level implementation plan for creating the IMPL documentation system.
 
 ## Document Control
 
@@ -19,7 +19,7 @@
 | **Related REQs** | Framework Requirements |
 | **Deliverables** | IMPL/ folder structure, IMPL-TEMPLATE.md, IMPL-000_index.md, examples |
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## resource in Development Workflow
 
 **IMPL (Implementation Plans)** ← YOU ARE HERE (META-LEVEL)
 

@@ -219,22 +219,39 @@ TradeOrderRequest:
 ```
 
 **Section 7: Non-Functional Requirements**
+
+**NFR Categorical Prefix Standard** (MANDATORY):
+
+| Category | Prefix | Full Format | Keywords for AI Detection |
+|----------|--------|-------------|---------------------------|
+| Performance | `NFR-PERF-` | `NFR-PERF-NNN` | latency, response time, throughput, p95, TPS |
+| Reliability | `NFR-REL-` | `NFR-REL-NNN` | uptime, availability, MTBF, MTTR, failover |
+| Scalability | `NFR-SCAL-` | `NFR-SCAL-NNN` | concurrent users, horizontal scaling, capacity |
+| Security | `NFR-SEC-` | `NFR-SEC-NNN` | authentication, authorization, encryption, RBAC |
+| Observability | `NFR-OBS-` | `NFR-OBS-NNN` | logging, monitoring, alerting, metrics, tracing |
+| Maintainability | `NFR-MAINT-` | `NFR-MAINT-NNN` | code coverage, deployment, CI/CD, documentation |
+
+**Cross-Layer Consistency**: Use identical NFR IDs across all layers (BRD → SYS → REQ).
+
 ```markdown
 ## Non-Functional Requirements
 
-### Performance
+### NFR-PERF-001: Validation Latency
 - P95 latency <50ms for validation
 - Throughput: 1000 validations/second
 - Memory usage <100MB per instance
+- **Traceability**: @sys: SYS-001:NFR-PERF-001
 
-### Security
+### NFR-SEC-001: Input Validation Security
 - Validate all inputs against schema
 - Sanitize error messages (no sensitive data)
 - Audit log all validation attempts
+- **Traceability**: @sys: SYS-001:NFR-SEC-001
 
-### Scalability
+### NFR-SCAL-001: Horizontal Scaling
 - Horizontal scaling support
 - Stateless validation (no session required)
+- **Traceability**: @sys: SYS-001:NFR-SCAL-001
 ```
 
 ## Cumulative Tagging Requirements
@@ -401,6 +418,63 @@ python ai_dev_flow/scripts/check_spec_readiness.py ai_dev_flow/REQ/REQ-risk-limi
 4. **Non-atomic requirements**: Each REQ must be single, testable unit
 5. **Missing cumulative tags**: Layer 7 must include all 6 upstream tags
 6. **Vague acceptance criteria**: Must be measurable and testable
+
+## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
+
+**CRITICAL**: Execute this validation loop IMMEDIATELY after document creation. Do NOT proceed to next document until validation passes.
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed
+```
+
+### Validation Command
+
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/REQ/REQ-NNN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all REQ documents complete
+python scripts/validate_cross_document.py --layer REQ --auto-fix
+```
+
+### Layer-Specific Upstream Requirements
+
+| This Layer | Required Upstream Tags | Count |
+|------------|------------------------|-------|
+| REQ (Layer 7) | @brd, @prd, @ears, @bdd, @adr, @sys | 6 tags |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Missing @brd/@prd/@ears/@bdd/@adr/@sys tag | Add with upstream document reference |
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken link | Recalculate path from current location |
+| Missing traceability section | Insert from template |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-002 | Missing cumulative tag | ERROR |
+| XDOC-003 | Upstream document not found | ERROR |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-007 | Gap in cumulative tag chain | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to next document until Phase 1 validation passes with 0 errors.
+
+---
 
 ## Next Skill
 

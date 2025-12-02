@@ -216,49 +216,71 @@ sys_patterns:
       - "Could Have"
       - "Won't Have"
 
-  # Non-functional requirement format
+  # Non-functional requirement format (Categorical Prefixes - per ID_NAMING_STANDARDS.md)
+  # Uses full categorical prefixes for automated categorization and cross-layer traceability
   non_functional_requirements:
-    format: "NFR-NNN"
-    pattern: "^NFR-\\d{3}$"
-    description: "Non-functional requirement identifier"
+    format: "NFR-{CATEGORY}-NNN"
+    pattern: "^NFR-(PERF|REL|SCAL|SEC|OBS|MAINT)-\\d{3}$"
+    description: "Categorical NFR identifier with embedded category prefix"
+    cross_reference_format:
+      pattern: "@sys: SYS-NNN:NFR-{CATEGORY}-NNN"
+      example: "@sys: SYS-008:NFR-PERF-001"
     categories:
       performance:
-        prefix: "NFR-P"
+        prefix: "NFR-PERF-"
+        pattern: "^NFR-PERF-\\d{3}$"
+        example: "NFR-PERF-001"
+        keywords: ["latency", "response time", "throughput", "p50", "p95", "p99", "milliseconds", "TPS", "RPS"]
         metrics:
           - "Response Time"
           - "Throughput"
           - "Latency (p50/p95/p99)"
           - "Resource Utilization"
       reliability:
-        prefix: "NFR-R"
+        prefix: "NFR-REL-"
+        pattern: "^NFR-REL-\\d{3}$"
+        example: "NFR-REL-001"
+        keywords: ["uptime", "availability", "MTBF", "MTTR", "error rate", "failover", "recovery", "redundancy"]
         metrics:
           - "Availability"
           - "MTBF"
           - "MTTR"
           - "Error Rate"
       scalability:
-        prefix: "NFR-S"
+        prefix: "NFR-SCAL-"
+        pattern: "^NFR-SCAL-\\d{3}$"
+        example: "NFR-SCAL-001"
+        keywords: ["concurrent", "horizontal", "vertical", "scaling", "load", "capacity", "volume", "elasticity"]
         metrics:
           - "Concurrent Users"
           - "Data Volume"
           - "Transaction Rate"
           - "Horizontal Scaling"
       security:
-        prefix: "NFR-SEC"
+        prefix: "NFR-SEC-"
+        pattern: "^NFR-SEC-\\d{3}$"
+        example: "NFR-SEC-001"
+        keywords: ["auth", "encrypt", "RBAC", "compliance", "audit", "token", "certificate", "vulnerability"]
         metrics:
           - "Authentication"
           - "Authorization"
           - "Encryption"
           - "Audit Logging"
       observability:
-        prefix: "NFR-O"
+        prefix: "NFR-OBS-"
+        pattern: "^NFR-OBS-\\d{3}$"
+        example: "NFR-OBS-001"
+        keywords: ["log", "monitor", "alert", "trace", "metric", "dashboard", "APM", "health check"]
         metrics:
           - "Logging"
           - "Monitoring"
           - "Alerting"
           - "Tracing"
       maintainability:
-        prefix: "NFR-M"
+        prefix: "NFR-MAINT-"
+        pattern: "^NFR-MAINT-\\d{3}$"
+        example: "NFR-MAINT-001"
+        keywords: ["coverage", "deploy", "CI/CD", "documentation", "refactor", "technical debt"]
         metrics:
           - "Code Coverage"
           - "Documentation"
@@ -332,7 +354,7 @@ validation_rules:
     - rule: "Functional Requirements must use FR-NNN format"
       severity: warning
 
-    - rule: "Non-Functional Requirements must use NFR-NNN format"
+    - rule: "Non-Functional Requirements must use NFR-{CATEGORY}-NNN format (e.g., NFR-PERF-001)"
       severity: warning
 
     - rule: "NFR section must cover Performance, Reliability, Security"
@@ -418,7 +440,7 @@ error_messages:
   E012: "Missing Traceability section (Section 13)"
   E013: "File name does not match SYS-NNN_name.md format"
   W001: "Functional requirements not using FR-NNN format"
-  W002: "Non-Functional requirements not using NFR-NNN format"
+  W002: "Non-Functional requirements not using NFR-{CATEGORY}-NNN format (e.g., NFR-PERF-001)"
   W003: "NFR section missing Performance category"
   W004: "NFR section missing Security category"
   W005: "Missing upstream traceability tags (require 5: @brd, @prd, @ears, @bdd, @adr)"

@@ -23,7 +23,7 @@ EARS serves as the crucial translation layer between:
 - **Upstream**: Product Requirements Documents (PRDs) 
 - **Downstream**: Atomic Requirements (REQs), Architecture Decisions (ADRs), and Technical Specifications
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## resource in Development Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 

@@ -66,7 +66,7 @@ Options:
 
 ---
 
-### Step 2: Folder Structure Creation (REQUIRED regulatoryOND)
+### Step 2: Folder Structure Creation (REQUIRED SECOND)
 
 **AI Assistant Action**: Create complete directory structure BEFORE creating any documents
 

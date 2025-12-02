@@ -337,6 +337,63 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 4. **Missing cumulative tags**: Layer 4 must include Layers 1-3 tags
 5. **No traceability**: Each scenario must link to upstream requirement
 
+## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
+
+**CRITICAL**: Execute this validation loop IMMEDIATELY after document creation. Do NOT proceed to next document until validation passes.
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed
+```
+
+### Validation Command
+
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/BDD/BDD-NNN_slug.feature --auto-fix
+
+# Layer validation (Phase 2) - run when all BDD documents complete
+python scripts/validate_cross_document.py --layer BDD --auto-fix
+```
+
+### Layer-Specific Upstream Requirements
+
+| This Layer | Required Upstream Tags | Count |
+|------------|------------------------|-------|
+| BDD (Layer 4) | @brd, @prd, @ears | 3 tags |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Missing @brd/@prd/@ears tag | Add with upstream document reference |
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken link | Recalculate path from current location |
+| Missing traceability section | Insert from template |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-002 | Missing cumulative tag | ERROR |
+| XDOC-003 | Upstream document not found | ERROR |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-007 | Gap in cumulative tag chain | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to next document until Phase 1 validation passes with 0 errors.
+
+---
+
 ## Next Skill
 
 After creating BDD, use:

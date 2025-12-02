@@ -374,6 +374,49 @@ Examples:
 
 See [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) for complete rules.
 
+### NFR Categorical Prefix Standard
+
+Non-Functional Requirements (NFRs) use categorical prefixes for automated categorization and cross-layer traceability.
+
+| Category | Prefix | Full Format | Keywords for AI Detection |
+|----------|--------|-------------|---------------------------|
+| Performance | `NFR-PERF-` | `NFR-PERF-NNN` | latency, response time, throughput, p95, TPS |
+| Reliability | `NFR-REL-` | `NFR-REL-NNN` | uptime, availability, MTBF, MTTR, failover |
+| Scalability | `NFR-SCAL-` | `NFR-SCAL-NNN` | concurrent users, horizontal scaling, capacity |
+| Security | `NFR-SEC-` | `NFR-SEC-NNN` | authentication, authorization, encryption, RBAC |
+| Observability | `NFR-OBS-` | `NFR-OBS-NNN` | logging, monitoring, alerting, metrics, tracing |
+| Maintainability | `NFR-MAINT-` | `NFR-MAINT-NNN` | code coverage, deployment, CI/CD, documentation |
+
+**Cross-Layer Consistency**: Use identical NFR IDs across all layers (BRD → PRD → EARS → SYS).
+
+**Cross-Reference Format**: Use document type tag with NFR ID (e.g., `@brd: BRD-017:NFR-PERF-001`, `@sys: SYS-008:NFR-PERF-001`)
+
+See [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md#non-functional-requirement-nfr-categorical-prefixes) for complete NFR naming rules.
+
+### Feature-Level Traceability Tags
+
+Internal feature IDs within documents use simple 3-digit sequential numbering for traceability.
+
+| Context | Format | Example | Cross-Reference Format |
+|---------|--------|---------|------------------------|
+| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD-022:015` |
+| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD-001:030` |
+| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS-006:003` |
+| SYS Requirements | `FR-NNN` | `FR-001`, `FR-015` | `@sys: SYS-008:FR-001` |
+
+**Format**: `@type: DOC-NNN:FEATURE-NNN`
+
+**Examples**:
+```markdown
+@brd: BRD-001:030, BRD-001:006
+@prd: PRD-022:015
+@ears: EARS-006:003
+@sys: SYS-008:FR-001
+@brd: BRD-017:NFR-PERF-001  # NFRs use standard document type tags
+```
+
+**Global Uniqueness**: Document ID + Feature ID creates globally unique references (e.g., `PRD-022:015` is unique across all documents).
+
 ## Schema File Reference
 
 | Artifact | Schema File | Layer | Notes |
@@ -775,7 +818,7 @@ Each artifact type has a corresponding YAML schema file (`{TYPE}_SCHEMA.yaml`) t
 | 3 | EARS | [EARS_SCHEMA.yaml](./EARS/EARS_SCHEMA.yaml) | WHEN-THE-SHALL-WITHIN format |
 | 4 | BDD | [BDD_SCHEMA.yaml](./BDD/BDD_SCHEMA.yaml) | Gherkin syntax, step patterns |
 | 5 | ADR | [ADR_SCHEMA.yaml](./ADR/ADR_SCHEMA.yaml) | Context-Decision-Consequences |
-| 6 | SYS | [SYS_SCHEMA.yaml](./SYS/SYS_SCHEMA.yaml) | FR-NNN, NFR-NNN formats |
+| 6 | SYS | [SYS_SCHEMA.yaml](./SYS/SYS_SCHEMA.yaml) | FR-NNN, NFR-{CATEGORY}-NNN formats |
 | 7 | REQ | [REQ_SCHEMA.yaml](./REQ/REQ_SCHEMA.yaml) | 12 sections, interface schemas |
 | 8 | IMPL | [IMPL_SCHEMA.yaml](./IMPL/IMPL_SCHEMA.yaml) | Phase organization, deliverables |
 | 9 | CTR | [CTR_SCHEMA.yaml](./CTR/CTR_SCHEMA.yaml) | Dual-file, OpenAPI/AsyncAPI |

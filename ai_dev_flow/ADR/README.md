@@ -64,7 +64,7 @@ Every ADR proposing new technologies must include a "Technology Stack Compliance
 
 See [ADR-TEMPLATE.md](ADR-TEMPLATE.md) for the complete compliance section template.
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## resource in Development Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 

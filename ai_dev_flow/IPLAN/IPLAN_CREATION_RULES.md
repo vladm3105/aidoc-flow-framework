@@ -11,7 +11,7 @@ tags:
   - layer-12-artifact
   - shared-architecture
 custom_fields:
-  document_type: creation_rules
+  document_type: creation-rules
   artifact_type: IPLAN
   layer: 12
   priority: shared
@@ -34,6 +34,27 @@ Rules for creating Implementation Plans (IPLAN) documents in the SDD framework.
 | **Created** | 2025-11-27 |
 | **Last Updated** | 2025-11-29 |
 | **Status** | Active |
+
+---
+
+## Table of Contents
+
+1. [When to Create an IPLAN Document](#1-when-to-create-an-iplan-document)
+2. [File Naming Convention](#2-file-naming-convention)
+3. [Required Sections](#3-required-sections)
+4. [Objective Section Rules](#4-objective-section-rules)
+5. [Context Section Rules](#5-context-section-rules)
+6. [Task List Section Rules](#6-task-list-section-rules)
+7. [Implementation Guide Section Rules](#7-implementation-guide-section-rules)
+8. [Traceability Tags Section](#8-traceability-tags-section-mandatory)
+9. [Quality Checklist](#9-quality-checklist)
+10. [Session Context Rules](#10-session-context-rules)
+11. [Token Efficiency Guidelines](#11-token-efficiency-guidelines)
+12. [Common Anti-Patterns](#12-common-anti-patterns)
+13. [Validation](#13-validation)
+14. [Upstream Artifact Verification Process](#14-upstream-artifact-verification-process)
+15. [Required Implementation Patterns](#15-required-implementation-patterns)
+16. [Cross-Document Validation](#16-cross-document-validation-mandatory)
 
 ---
 
@@ -708,3 +729,60 @@ def handle_external(data: Any) -> None:  # Any: third-party API response
 
 **Document Version**: 1.1.0
 **Last Updated**: 2025-11-29
+
+---
+
+## 16. Cross-Document Validation (MANDATORY)
+
+**CRITICAL**: Execute cross-document validation IMMEDIATELY after creating any IPLAN document. Do NOT proceed to implementation until validation passes.
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed to implementation
+```
+
+### Validation Command
+
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/IPLAN/IPLAN-NNN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all IPLAN documents complete
+python scripts/validate_cross_document.py --layer IPLAN --auto-fix
+```
+
+### Layer-Specific Upstream Requirements
+
+| This Layer | Required Upstream Tags | Tag Count |
+|------------|------------------------|-----------|
+| IPLAN (Layer 12) | @brd through @tasks (+ optional @impl, @ctr) | 9-11 |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Missing @brd through @tasks tag | Add with upstream document reference |
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken link | Recalculate path from current location |
+| Missing traceability section | Insert from template |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-002 | Missing cumulative tag | ERROR |
+| XDOC-003 | Upstream document not found | ERROR |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-007 | Gap in cumulative tag chain | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to implementation until Phase 1 validation passes with 0 errors.

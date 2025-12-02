@@ -25,7 +25,7 @@ BRDs transform strategic business goals into concrete, actionable requirements t
 - Provide traceability to downstream product and technical artifacts
 - Create the authoritative source for business validation
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## Position in Development Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
@@ -190,7 +190,7 @@ Standard metadata including version, date, owner, status, revision history
 - **Functional Acceptance**: Functional requirement validation
 - **Success Metrics and KPIs**: Measurable performance indicators
 
-### [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management]
+### resource management
 - **Identified Risks**: Risk ID, description, probability, impact, mitigation
 - **Risk Register**: Comprehensive risk tracking
 

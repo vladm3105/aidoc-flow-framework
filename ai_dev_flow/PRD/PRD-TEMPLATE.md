@@ -72,7 +72,7 @@ Schema: See `ai_dev_flow/PRD/PRD_SCHEMA.yaml` for complete rules
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
-**[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: PRD is in Layer 2 (Product Requirements Layer) - defines product requirements from BRD business needs.
+**resource**: PRD is in Layer 2 (Product Requirements Layer) - defines product requirements from BRD business needs.
 
 ## 0. Document Control
 
@@ -929,7 +929,7 @@ The following architectural topics require formal Architecture Decision Records 
 
 - **Anchors/IDs**: `#PRD-NNN` (for referencing this document)
 - **section References**: Use `#problem-statement` for Problem Statement section
-- **Feature References**: Use unique IDs within document (e.g., `Feature-001`, `Journey-001`)
+- **Feature References**: Use simple 3-digit IDs within document (e.g., `001`, `002`, `003`). Cross-reference format: `@prd: PRD-NNN:001`
 
 #### External References
 
@@ -960,9 +960,9 @@ Document evidence that PRD requirements have been translated to technical specif
 
 | PRD Feature ID | Validation Method | Evidence Location | Result | Date Validated |
 |----------------|------------------|-------------------|--------|----------------|
-| Feature-001 | User acceptance testing | UAT report [location] | PASS | YYYY-MM-DD |
-| Feature-002 | Integration test | Test results [location] | PASS | YYYY-MM-DD |
-| Feature-003 | Performance benchmark | Load test results [location] | PASS (meets targets) | YYYY-MM-DD |
+| 001 | User acceptance testing | UAT report [location] | PASS | YYYY-MM-DD |
+| 002 | Integration test | Test results [location] | PASS | YYYY-MM-DD |
+| 003 | Performance benchmark | Load test results [location] | PASS (meets targets) | YYYY-MM-DD |
 
 **Validation Status Summary**:
 - Validated features: [count] / [total]
@@ -993,7 +993,7 @@ Document evidence that PRD requirements have been translated to technical specif
 
 - **[Domain_Standard_1: e.g., Healthcare, Finance, E-commerce]**: [Industry standards, regulatory frameworks]
 - **[Domain_Standard_2: e.g., Compliance, security]**: [Regulatory body, compliance framework]
-- **[Domain_Best_Practice: e.g., [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management], Quality Assurance]**: [Industry guidelines, best practices]
+- **[Domain_Best_Practice: e.g., resource management, Quality Assurance]**: [Industry guidelines, best practices]
 
 ### Technology References
 

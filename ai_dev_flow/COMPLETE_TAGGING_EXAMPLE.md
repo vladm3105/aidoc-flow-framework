@@ -113,7 +113,12 @@ Need UI and API for sending notifications through multiple channels.
 
 **Tag Explanation**:
 - BRD-009:015 - Functional requirement for provider integration
-- BRD-009:006 - Non-functional requirement for delivery performance
+- BRD-009:006 - Non-functional requirement for delivery performance (NFR-PERF-001)
+
+**NFR References** (using document type tag):
+```markdown
+@brd: BRD-009:NFR-PERF-001
+```
 
 **Upstream Sources**:
 - BRD-009 (Notification System Business Requirements)
@@ -876,7 +881,7 @@ def test_reject_missing_recipient():
 @tasks: TASKS-015
 @iplan: IPLAN-015
 @code: src/services/notification_service.py
-@tests: tests/services/test_notification_service.py
+@test: tests/services/test_notification_service.py
 ```
 
 **Validation Summary**:
@@ -892,6 +897,31 @@ def test_reject_missing_recipient():
 - Includes ALL upstream tags from Layers 1-14
 - Complete end-to-end traceability validation
 - Ready for production deployment
+
+---
+
+## NFR Categorical Tagging Reference
+
+Non-Functional Requirements use categorical prefixes for automated categorization:
+
+| Category | Prefix | Example in This Chain |
+|----------|--------|----------------------|
+| Performance | `NFR-PERF-` | `NFR-PERF-001` (100ms latency, 95th percentile) |
+| Reliability | `NFR-REL-` | N/A in this example |
+| Scalability | `NFR-SCAL-` | N/A in this example |
+| Security | `NFR-SEC-` | N/A in this example |
+| Observability | `NFR-OBS-` | N/A in this example |
+| Maintainability | `NFR-MAINT-` | N/A in this example |
+
+**NFR Cross-Reference Format**: Use document type tag with NFR ID (e.g., `@brd: BRD-009:NFR-PERF-001`, `@sys: SYS-012:NFR-PERF-001`)
+
+**Example from this chain**:
+```markdown
+@brd: BRD-009:NFR-PERF-001   # Performance: 100ms validation latency
+@sys: SYS-012:NFR-PERF-001   # Same NFR inherited to SYS layer
+```
+
+**Cross-Layer Consistency**: NFR IDs remain consistent across all layers for complete traceability (BRD → PRD → EARS → SYS).
 
 ---
 

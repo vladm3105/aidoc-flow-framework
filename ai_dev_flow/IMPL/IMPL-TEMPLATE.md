@@ -35,7 +35,7 @@ custom_fields:
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
-**[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: IMPL is in Layer 8 (Project Management Layer) - organizes WHO does WHAT, WHEN.
+**resource**: IMPL is in Layer 8 (Project Management Layer) - organizes WHO does WHAT, WHEN.
 
 ## 1. Document Control
 
@@ -52,7 +52,7 @@ custom_fields:
 | **Related REQs** | [REQ-NNN](../REQ/.../REQ-NNN.md), [REQ-MMM](../REQ/.../REQ-MMM.md) |
 | **Deliverables** | CTR-NNN, SPEC-NNN, TASKS-NNN, CTR-YY, SPEC-YY, TASKS-YY |
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## resource in Development Workflow
 
 **IMPL (Implementation Plans)** ← YOU ARE HERE
 

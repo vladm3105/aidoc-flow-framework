@@ -19,7 +19,7 @@ Implementation Plans (IMPL) are **project management documents** that organize a
 
 **Key Role**: IMPL Plans bridge the gap between business requirements (REQ) and technical implementation by organizing work into phases, assigning teams, and scheduling deliverables.
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## Position in Development Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
@@ -77,14 +77,14 @@ This is the most critical distinction:
 | **Scope** | Entire system or feature | One YAML specification |
 | **Audience** | Project managers, architects | AI code generators, developers |
 | **Content** | Phases, teams, deliverables | Exact code generation steps |
-| **Granularity** | "Phase 1: Build [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] (Week 1-2)" | "Step 3: Generate ResourceLimitService class from SPEC-003.yaml" |
+| **Granularity** | "Phase 1: Build Resource Management (Week 1-2)" | "Step 3: Generate ResourceLimitService class from SPEC-003.yaml" |
 | **Timeline** | Weeks or months | Hours or days |
 | **Deliverables** | List of CTR/SPEC/TASKS to create | Source code files |
 | **Traceability** | IMPL → CTR, SPEC, TASKS | TASKS → Code |
 
 **Example Flow**:
-1. **REQ-003**: "System must enforce [RESOURCE_INSTANCE - e.g., database connection, workflow instance] limits"
-2. **IMPL-001**: "[RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] System" - Phase 1: Build [RESOURCE_INSTANCE - e.g., database connection, workflow instance] limits (Week 1-2, Agent Team) → Deliverables: CTR-003, SPEC-003, TASKS-003
+1. **REQ-003**: "System must enforce resource limits"
+2. **IMPL-001**: "Resource Management System" - Phase 1: Build resource limits (Week 1-2, Agent Team) → Deliverables: CTR-003, SPEC-003, TASKS-003
 3. **SPEC-003.yaml**: Technical spec with ResourceLimitService class, methods, algorithms
 4. **TASKS-003**: Step-by-step TODOs to generate code from SPEC-003.yaml
 5. **Code**: `resource_limit_service.py` generated following TASKS-003
@@ -110,7 +110,7 @@ IMPL Plans follow a **4-part structure** (adapted from ADR-TEMPLATE.md):
 - **Overview**: What system/feature is being built (from REQ)
 - **Business Objectives**: References to REQ-IDs
 - **Scope**: Work packages included/excluded
-- **Document Flow**: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in development workflow
+- **Document Flow**: Position in development workflow
 
 ### PART 2: Phased Implementation
 - **Phase 1, 2, ... N**: Work breakdown
@@ -195,13 +195,13 @@ Before completing an IMPL Plan, verify:
 
 **Good** (Project Management):
 ```markdown
-## Phase 1: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service (Week 1-2)
+## Phase 1: Resource Limit Service (Week 1-2)
 
 **Team**: Agent Development Team (3 developers)
 
 **Deliverables**:
-- CTR-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] API Contract
-- SPEC-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Specification
+- CTR-003: Resource Limit API Contract
+- SPEC-003: Resource Limit Service Specification
 - TASKS-003: Code Generation Plan for SPEC-003
 
 **Dependencies**:
@@ -213,7 +213,7 @@ Before completing an IMPL Plan, verify:
 
 **Bad** (Technical Implementation - belongs in SPEC):
 ```markdown
-## Phase 1: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service
+## Phase 1: Resource Limit Service
 
 The ResourceLimitService class will implement a Redis-backed cache with
 TTL of 60 seconds. The calculate_resource_limit() method uses the formula:
@@ -224,9 +224,9 @@ limit = base_limit * (1 - risk_factor * 0.1)
 
 **Good** (Business Value):
 ```markdown
-## Phase 1: Core [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] (Sprint 1-2)
-- [RESOURCE_INSTANCE - e.g., database connection, workflow instance] limits (CTR-003, SPEC-003)
-- [RESOURCE_COLLECTION - e.g., user accounts, active sessions] risk calculator (CTR-005, SPEC-005)
+## Phase 1: Core Resource Management (Sprint 1-2)
+- Resource limits (CTR-003, SPEC-003)
+- Risk calculator (CTR-005, SPEC-005)
 
 ## Phase 2: Advanced Features (Sprint 3)
 - Circuit breakers (CTR-008, SPEC-008)
@@ -272,7 +272,7 @@ When teams can work independently:
 ```markdown
 ## Phase 1 (Parallel): Core Services (Week 1-2)
 
-**Team A**: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Limits
+**Team A**: Resource Limits
 - CTR-003, SPEC-003, TASKS-003
 
 **Team B**: Risk Calculator
@@ -290,7 +290,7 @@ When delivering incremental value:
 
 ```markdown
 ## Phase 1: MVP (Sprint 1)
-- Basic [RESOURCE_INSTANCE - e.g., database connection, workflow instance] limits (SPEC-003)
+- Basic resource limits (SPEC-003)
 - Manual override capability (SPEC-004)
 - **Release**: V1.0 to production
 
@@ -363,7 +363,7 @@ Throughout implementation:
 
 **Problem**: IMPL Plan includes data structures, algorithms, class hierarchies
 
-**Solution**: Move technical details to SPEC. IMPL only says "create SPEC-003 for [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] service"
+**Solution**: Move technical details to SPEC. IMPL only says "create SPEC-003 for Resource Limit service"
 
 ### Pitfall 2: IMPL Duplicates TASKS
 
@@ -379,7 +379,7 @@ Throughout implementation:
 
 ### Pitfall 4: IMPL Missing Deliverables
 
-**Problem**: Phase says "Build [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management]" but doesn't list which CTR/SPEC/TASKS
+**Problem**: Phase says "Build resource management" but doesn't list which CTR/SPEC/TASKS
 
 **Solution**: Always enumerate deliverables: "CTR-003, SPEC-003, TASKS-003"
 

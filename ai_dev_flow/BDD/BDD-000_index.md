@@ -13,7 +13,7 @@ custom_fields:
 
 # BDD Index
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## resource in Development Workflow
 
 **BDD (Behavior-Driven Development)** ← YOU ARE HERE
 
@@ -69,9 +69,9 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 **Functional Areas**:
 - **API Integrations**: External service integrations ([EXTERNAL_SERVICE_GATEWAY], [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API])
-- **[RESOURCE_MANAGEMENT - e.g., capacity planning, quota management]**: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] limits, risk validation, circuit breakers
+- **resource management**: resource limits, risk validation, circuit breakers
 - **ML Models**: [SYSTEM_STATE - e.g., operating mode, environment condition] classifier, sentiment analysis, ensemble signals
-- **Service Strategies**: Standard operations, batch processing, [RESOURCE_COLLECTION - e.g., user accounts, active sessions] balancing
+- **Service Strategies**: Standard operations, batch processing, resource collection balancing
 - **Data Architecture**: Data ingestion, storage, analytics, correlation
 - **System Services**: Authentication, monitoring, logging, configuration
 
@@ -107,12 +107,12 @@ Example format:
   - **ADRs**: ADR-030 ([EXTERNAL_SERVICE_GATEWAY] Architecture)
   - **Status**: Pending
 
-### [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management]
+### resource management
 
 *[BDD scenarios for risk validation and controls will be listed here]*
 
 Example format:
-- **BDD-002**: [[RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Limits Validation](./BDD-002_position_risk_limits.feature)
+- **BDD-002**: [resource Risk Limits Validation](./BDD-002_position_risk_limits.feature)
   - **Requirements**: REQ-XXX (Risk Limits)
   - **ADRs**: ADR-008 (Centralized Risk Parameters)
   - **Status**: Pending

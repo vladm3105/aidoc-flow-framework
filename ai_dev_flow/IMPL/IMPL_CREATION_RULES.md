@@ -11,7 +11,7 @@ tags:
   - layer-8-artifact
   - shared-architecture
 custom_fields:
-  document_type: creation_rules
+  document_type: creation-rules
   artifact_type: IMPL
   layer: 8
   priority: shared
@@ -34,6 +34,25 @@ Rules for creating Implementation Plans (IMPL) documents in the SDD framework.
 | **Created** | 2025-11-27 |
 | **Last Updated** | 2025-11-27 |
 | **Status** | Active |
+
+---
+
+## Table of Contents
+
+1. [When to Create an IMPL Document](#1-when-to-create-an-impl-document)
+2. [File Naming Convention](#2-file-naming-convention)
+3. [Required Sections](#3-required-sections)
+4. [PART 1: Project Context Rules](#4-part-1-project-context-rules)
+5. [PART 2: Phased Implementation Rules](#5-part-2-phased-implementation-rules)
+6. [PART 3: Project Management Rules](#6-part-3-project-management-rules)
+7. [PART 4: Tracking Rules](#7-part-4-tracking-rules)
+8. [Traceability Requirements](#8-traceability-requirements)
+9. [Scope Boundaries](#9-scope-boundaries)
+10. [Quality Checklist](#10-quality-checklist)
+11. [Common Anti-Patterns](#11-common-anti-patterns)
+12. [Validation](#12-validation)
+13. [Upstream Artifact Verification Process](#13-upstream-artifact-verification-process)
+14. [Cross-Document Validation](#14-cross-document-validation-mandatory)
 
 ---
 
@@ -485,3 +504,60 @@ Include ONLY if relationships exist between IMPL documents sharing implementatio
 
 **Document Version**: 1.0.0
 **Last Updated**: 2025-11-27
+
+---
+
+## 14. Cross-Document Validation (MANDATORY)
+
+**CRITICAL**: Execute cross-document validation IMMEDIATELY after creating any IMPL document. Do NOT proceed to downstream artifacts until validation passes.
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed to next layer
+```
+
+### Validation Command
+
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/IMPL/IMPL-NNN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all IMPL documents complete
+python scripts/validate_cross_document.py --layer IMPL --auto-fix
+```
+
+### Layer-Specific Upstream Requirements
+
+| This Layer | Required Upstream Tags | Tag Count |
+|------------|------------------------|-----------|
+| IMPL (Layer 8) | @brd, @prd, @ears, @bdd, @adr, @sys, @req | 7 |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Missing @brd through @req tag | Add with upstream document reference |
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken link | Recalculate path from current location |
+| Missing traceability section | Insert from template |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-002 | Missing cumulative tag | ERROR |
+| XDOC-003 | Upstream document not found | ERROR |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-007 | Gap in cumulative tag chain | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to CTR/SPEC creation until Phase 1 validation passes with 0 errors.

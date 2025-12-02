@@ -798,36 +798,51 @@ Example: @prd: PRD-035:kyc.l1.daily
 
 **Purpose**: Establish consistent Feature ID naming convention across all PRDs to enable accurate traceability and cross-PRD references.
 
-### Standard Format
+### Standard Format (Simple Numeric)
 
-**Format**: `FR-{PRD#}-{sequence}`
+**Format**: `NNN` (3-digit zero-padded sequential number)
 
-| Component | Format | Example |
-|-----------|--------|---------|
-| Prefix | `FR-` (Feature Requirement) | FR- |
-| PRD Number | 3-digit zero-padded | 001, 022, 035 |
-| Sequence | 3-digit zero-padded | 001, 002, 003 |
+| Component | Format | Description |
+|-----------|--------|-------------|
+| Feature ID | `NNN` | 3-digit sequential (001-999) |
+| Document Context | `PRD-NNN` | PRD number provides namespace |
+
+**Rationale**: The document context (PRD-022) already provides the namespace. Embedding the PRD number in the feature ID is redundant.
 
 **Examples**:
-- `001`: First feature in PRD-001
-- `015`: 15th feature in PRD-022
-- `003`: 3rd feature in PRD-035
+- `001`: First feature (in any PRD)
+- `015`: 15th feature
+- `042`: 42nd feature
 
 ### Validation Regex
 
 ```regex
-^FR-\d{3}-\d{3}$
+^\d{3}$
 ```
+
+### Cross-PRD Reference Format
+
+When referencing features from other PRDs, use the cross-reference format:
+
+```markdown
+@prd: PRD-022:015
+```
+
+**Components**:
+- `@prd:` - Tag prefix
+- `PRD-022` - Document ID
+- `:015` - Feature ID within document
+
+**Uniqueness**: `PRD-022:015` is globally unique (PRD-022, Feature 015)
 
 ### Invalid Formats (Do NOT Use)
 
 | Invalid Format | Issue | Correct Format |
 |----------------|-------|----------------|
-| `FR-001` | Missing sequence number | `001` |
+| `FR-022-001` | Redundant PRD number | `001` |
 | `FR-AGENT-001` | Non-standard prefix | `001` |
 | `Feature 3.1` | Text format | `003` |
-| `F-001-001` | Wrong prefix | `001` |
-| `FR-1-1` | Not zero-padded | `001` |
+| `FR-1` | Not zero-padded | `001` |
 
 ### Common Mistakes to Avoid
 
@@ -839,35 +854,84 @@ Example: @prd: PRD-035:kyc.l1.daily
 | Placeholder scores `✅ TBD%` | Calculate actual score before committing |
 | Section 9 with only "TBD" | Substantive customer-facing content required |
 
-### Cross-PRD Reference Format
-
-When referencing features from other PRDs:
-
-```markdown
-See 005 in @prd: PRD-009 for remittance transaction flow.
-```
-
 ### Migration Guide
 
 For PRDs with non-standard Feature IDs:
 
 1. **Inventory**: List all current Feature IDs
 2. **Map**: Create mapping table (old → new)
-3. **Update**: Replace old IDs with standard format
-4. **Cross-Reference**: Update all documents referencing old IDs
+3. **Update**: Replace old IDs with simple format
+4. **Cross-Reference**: Update all documents using `@prd: PRD-NNN:NNN` format
 5. **Validate**: Run Feature ID validation script
 
 **Mapping Example**:
-| Old ID | New ID | Notes |
-|--------|--------|-------|
-| FR-AGENT-001 | 001 | PRD-022 fraud agent |
-| Feature 3.1 | 003 | PRD-025 transaction orchestrator |
-| FR-001 | 001 | PRD-016 fraud detection |
+| Old ID | New ID | Cross-Reference |
+|--------|--------|-----------------|
+| FR-022-001 | 001 | @prd: PRD-022:001 |
+| FR-AGENT-001 | 001 | @prd: PRD-022:001 |
+| Feature 3.1 | 003 | @prd: PRD-025:003 |
 
 ### Benefits
 
-1. **Unambiguous References**: Each Feature ID globally unique
-2. **PRD Context**: PRD number embedded in ID
-3. **Sequential Ordering**: Easy to track feature additions
-4. **Validation**: Regex enables automated checking
-5. **Traceability**: Clear path from PRD → Feature → EARS → SPEC
+1. **Simpler IDs**: Cleaner, shorter feature identifiers
+2. **Namespace Separation**: Document context provides uniqueness
+3. **Cross-Reference Clarity**: `@prd: PRD-022:015` format is explicit
+4. **Validation**: Simple regex enables automated checking
+5. **Consistency**: Aligns with ID_NAMING_STANDARDS.md
+
+---
+
+## 21. Cross-Document Validation (MANDATORY)
+
+**CRITICAL**: Execute cross-document validation IMMEDIATELY after creating any PRD document. Do NOT proceed to downstream artifacts until validation passes.
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed to next layer
+```
+
+### Validation Command
+
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/PRD/PRD-NNN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all PRD documents complete
+python scripts/validate_cross_document.py --layer PRD --auto-fix
+```
+
+### Layer-Specific Upstream Requirements
+
+| This Layer | Required Upstream Tags | Tag Count |
+|------------|------------------------|-----------|
+| PRD (Layer 2) | @brd | 1 |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Missing @brd tag | Add with upstream BRD document reference |
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken link | Recalculate path from current location |
+| Missing traceability section | Insert from template |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-002 | Missing cumulative tag (@brd) | ERROR |
+| XDOC-003 | Upstream document not found | ERROR |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-007 | Gap in cumulative tag chain | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to EARS creation until Phase 1 validation passes with 0 errors.

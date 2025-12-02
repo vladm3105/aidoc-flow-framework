@@ -23,7 +23,7 @@ API Contracts (CTR) define precise interface specifications between components u
 
 Contracts enable parallel development by allowing providers and consumers to implement independently against the same specification, reducing integration time and defects.
 
-## 2. [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## 2. resource in Development Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
@@ -249,7 +249,7 @@ field_name:
 
 **Non-Idempotent Operations** (not safe to retry):
 - [OPERATION_EXECUTION - e.g., order processing, task execution] (creates side effects)
-- State mutations ([RESOURCE_INSTANCE - e.g., database connection, workflow instance] updates)
+- State mutations (resource updates)
 - Resource creation (may duplicate)
 
 **Contract Specification**:
@@ -290,7 +290,7 @@ events:
 
 ### 8.1 Synchronous Request/Response
 **Use Case**: Immediate validation, calculations, queries
-**Example**: Risk validation, [METRICS - e.g., performance indicators, quality scores] calculation, [RESOURCE_COLLECTION - e.g., user accounts, active sessions] state query
+**Example**: Risk validation, [METRICS - e.g., performance indicators, quality scores] calculation, resource collection state query
 
 **Schema Pattern**:
 ```yaml
@@ -312,7 +312,7 @@ endpoints:
 
 ### 8.2 Asynchronous Message Contracts
 **Use Case**: Event notification, fire-and-forget, pub/sub
-**Example**: [OPERATION_EXECUTION - e.g., order processing, task execution] events, [RESOURCE_COLLECTION - e.g., user accounts, active sessions] rebalancing triggers
+**Example**: [OPERATION_EXECUTION - e.g., order processing, task execution] events, resource collection rebalancing triggers
 
 **Schema Pattern**:
 ```yaml
@@ -356,7 +356,7 @@ response_schema:
 ```
 
 ### 8.4 Bulk Operations
-**Use Case**: Batch validation, bulk updates, [RESOURCE_COLLECTION - e.g., user accounts, active sessions] rebalancing
+**Use Case**: Batch validation, bulk updates, resource collection rebalancing
 **Example**: Validate 100 positions, update 50 stop-losses
 
 **Schema Pattern**:
@@ -461,7 +461,7 @@ interface:
 ```markdown
 ## Interface Contract
 
-This service implements **[CTR-001: [RESOURCE_INSTANCE - e.g., database connection, workflow instance] Risk Validation](../CTR/CTR-001_data_validation.md)** as the provider.
+This service implements **[CTR-001: resource Risk Validation](../CTR/CTR-001_data_validation.md)** as the provider.
 
 **Contract Compliance**:
 - Request validation: JSON Schema validation against CTR-001.yaml
@@ -498,14 +498,14 @@ def test_consumer_expects_ctr001_schema(pact_consumer):
     pact_consumer.expect_request(
         method="POST",
         path="/validate",
-        body={"[RESOURCE_INSTANCE - e.g., database connection, workflow instance]": {...}}
+        body={"resource": {...}}
     ).will_respond_with(
         status=200,
         body=matches_schema("CTR-001", "response_schema")
     )
 
     client = RiskValidatorClient()
-    result = client.validate_position([RESOURCE_INSTANCE - e.g., database connection, workflow instance])
+    result = client.validate_position(resource)
     assert result.is_valid is not None
 ```
 
@@ -623,12 +623,12 @@ except ValidationError as e:
 ### 14.2 Example Scenarios
 
 **Scenario 1: Synchronous Validation Endpoint**
-- Use Case: Validate [RESOURCE_INSTANCE - e.g., database connection, workflow instance] before [OPERATION_EXECUTION - e.g., order processing, task execution]
+- Use Case: Validate resource before [OPERATION_EXECUTION - e.g., order processing, task execution]
 - Pattern: Request/response, <100ms latency
 - Template section: Synchronous Request/Response
 
 **Scenario 2: Asynchronous Event Schema**
-- Use Case: Notify agents when [RESOURCE_COLLECTION - e.g., user accounts, active sessions] rebalances
+- Use Case: Notify agents when resource collection rebalances
 - Pattern: Pub/Sub, fire-and-forget
 - Template section: Asynchronous Message Contracts
 

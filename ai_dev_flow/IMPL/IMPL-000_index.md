@@ -22,7 +22,7 @@ This document serves as the master index for all Implementation Plans (IMPL) in 
 - **Coordinate** work between teams
 - **Reference** deliverables and their status
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## resource in Development Workflow
 
 ```mermaid
 flowchart LR
@@ -43,7 +43,7 @@ flowchart LR
 | IMPL ID | Title | Status | Related REQs | Deliverables | Timeline | Owner | Last Updated |
 |---------|-------|--------|--------------|--------------|----------|-------|--------------|
 | [IMPL_IMPLEMENTATION_PLAN](./IMPL_IMPLEMENTATION_PLAN.md) | Create IMPL/ System | In Progress | N/A | IMPL/ folder, templates | 4-5 hours | Documentation Team | 2025-11-02 |
-| [IMPL-001](./examples/IMPL-001_risk_management_system.md) | [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] System | Planned | REQ-003, REQ-005, REQ-008 | CTR-003, SPEC-003, TASKS-003, CTR-005, SPEC-005, TASKS-005, CTR-008, SPEC-008, TASKS-008 | 3 sprints (6 weeks) | Agent Team | 2025-11-02 |
+| [IMPL-001](./examples/IMPL-001_risk_management_system.md) | resource management System | Planned | REQ-003, REQ-005, REQ-008 | CTR-003, SPEC-003, TASKS-003, CTR-005, SPEC-005, TASKS-005, CTR-008, SPEC-008, TASKS-008 | 3 sprints (6 weeks) | Agent Team | 2025-11-02 |
 
 ## Status Definitions
 
@@ -82,7 +82,7 @@ When creating a new IMPL Plan:
 ## Index by Status
 
 ### Planned
-- IMPL-001: [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] System
+- IMPL-001: resource management System
 
 ### In Progress
 - IMPL_IMPLEMENTATION_PLAN: Create IMPL/ System
@@ -179,7 +179,7 @@ This index should be reviewed:
 
 **Question**: "Which IMPL Plans address REQ-003?"
 
-**Answer**: Check "Related REQs" column → IMPL-001 ([RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] System)
+**Answer**: Check "Related REQs" column → IMPL-001 (resource management System)
 
 ### Checking What's Currently Being Worked On
 

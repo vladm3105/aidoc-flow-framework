@@ -9,18 +9,36 @@ title: ICON Creation Rules
 tags:
   - framework-guide
   - implementation-contract
-  - layer-11-artifact
+  - layer-11.5-artifact
   - decision-criteria
 custom_fields:
-  document_type: guide
+  document_type: creation-rules
   artifact_type: ICON
-  layer: 11
+  layer: 11.5
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
 ---
 
 # ICON Creation Rules
+
+## Table of Contents
+
+1. [Purpose](#purpose)
+2. [Decision Matrix](#decision-matrix)
+3. [Detailed Decision Rules](#detailed-decision-rules)
+4. [Decision Examples](#decision-examples)
+5. [Migration Strategy](#migration-strategy)
+6. [Anti-Patterns](#anti-patterns)
+7. [Governance](#governance)
+8. [Enforcement Mechanisms](#enforcement-mechanisms)
+9. [Common Violations and Fixes](#common-violations-and-fixes)
+10. [Upstream Artifact Verification Process](#10-upstream-artifact-verification-process)
+11. [References](#references)
+12. [Document Metadata](#document-metadata)
+13. [Cross-Document Validation](#13-cross-document-validation-mandatory)
+
+---
 
 ## Purpose
 
@@ -366,7 +384,7 @@ done
 
 ---
 
-## N. Upstream Artifact Verification Process
+## 10. Upstream Artifact Verification Process
 
 ### Before Creating This Document
 
@@ -435,3 +453,60 @@ ls -la docs/REQ/    # Layer 7
 **Document Type**: Decision Framework
 **Complexity**: 2/5
 **Token Count**: ~2,000 tokens
+
+---
+
+## 13. Cross-Document Validation (MANDATORY)
+
+**CRITICAL**: Execute cross-document validation IMMEDIATELY after creating any ICON (Implementation Contract) document. Do NOT proceed until validation passes.
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed
+```
+
+### Validation Command
+
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/ICON/ICON-NNN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all ICON documents complete
+python scripts/validate_cross_document.py --layer ICON --auto-fix
+```
+
+### Layer-Specific Upstream Requirements
+
+| This Layer | Required Upstream Tags | Tag Count |
+|------------|------------------------|-----------|
+| ICON (Layer 11+) | @brd through @tasks | 8-10 |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Missing @brd through @tasks tag | Add with upstream document reference |
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken link | Recalculate path from current location |
+| Missing traceability section | Insert from template |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-002 | Missing cumulative tag | ERROR |
+| XDOC-003 | Upstream document not found | ERROR |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-007 | Gap in cumulative tag chain | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to implementation until Phase 1 validation passes with 0 errors.

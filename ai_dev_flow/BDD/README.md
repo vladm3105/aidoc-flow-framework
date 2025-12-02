@@ -24,7 +24,7 @@ BDD files serve as the **living specification** that:
 - **Ensure Verification**: Validate that implementations meet behavioral expectations
 - **Maintain Traceability**: Link behavior specifications to upstream requirements and downstream code
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## Position in Development Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 

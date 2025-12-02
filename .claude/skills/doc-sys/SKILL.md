@@ -99,33 +99,44 @@ Use `doc-sys` when:
 
 ### 3. Non-Functional Requirements
 
-**Categories**:
-- **Performance**: Latency, throughput, resource usage
-- **Reliability**: Uptime, error rates, failover
-- **Security**: Authentication, authorization, encryption
-- **Scalability**: Load handling, horizontal scaling
-- **Maintainability**: Code quality, testability
-- **Observability**: Logging, metrics, tracing
+**NFR Categorical Prefix Standard** (MANDATORY):
+
+NFRs use categorical prefixes for automated categorization and cross-layer traceability:
+
+| Category | Prefix | Full Format | Keywords for AI Detection |
+|----------|--------|-------------|---------------------------|
+| Performance | `NFR-PERF-` | `NFR-PERF-NNN` | latency, response time, throughput, p95, TPS |
+| Reliability | `NFR-REL-` | `NFR-REL-NNN` | uptime, availability, MTBF, MTTR, failover |
+| Scalability | `NFR-SCAL-` | `NFR-SCAL-NNN` | concurrent users, horizontal scaling, capacity |
+| Security | `NFR-SEC-` | `NFR-SEC-NNN` | authentication, authorization, encryption, RBAC |
+| Observability | `NFR-OBS-` | `NFR-OBS-NNN` | logging, monitoring, alerting, metrics, tracing |
+| Maintainability | `NFR-MAINT-` | `NFR-MAINT-NNN` | code coverage, deployment, CI/CD, documentation |
+
+**Cross-Layer Consistency**: Use identical NFR IDs across all layers (BRD → PRD → EARS → SYS).
+
+**Cross-Reference Format**: `@sys: SYS-001:NFR-PERF-001`
 
 **Format**:
 ```markdown
 ## Non-Functional Requirements
 
-### NFR-001: Order Validation Performance
+### NFR-PERF-001: Order Validation Performance
 **Category**: Performance
 **Requirement**: Order validation SHALL complete within 50ms at P95
 **Measurement**: P50 <25ms, P95 <50ms, P99 <100ms
 **Rationale**: User experience requires sub-second feedback per PRD-001
 **Source**: PRD-001:KPI-performance, EARS-001:WITHIN-constraint
 **Verification**: Performance benchmarks, load testing
+**Traceability**: @brd: BRD-001:NFR-PERF-001 | @prd: PRD-001:NFR-PERF-001
 
-### NFR-002: System Availability
+### NFR-REL-001: System Availability
 **Category**: Reliability
 **Requirement**: System SHALL maintain 99.9% uptime during market hours
 **Measurement**: Monthly uptime >99.9% (43.2 minutes downtime max)
 **Rationale**: Trading system criticality requires high availability
 **Source**: BRD-001:success-criteria
 **Verification**: Uptime monitoring, incident tracking
+**Traceability**: @brd: BRD-001:NFR-REL-001
 ```
 
 ### 4. System Flows
@@ -330,6 +341,63 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 3. **Python code in diagrams**: Use Mermaid, not code blocks
 4. **Missing cumulative tags**: Layer 6 must include all 5 upstream tags
 5. **No verification method**: Each requirement needs test approach
+
+## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
+
+**CRITICAL**: Execute this validation loop IMMEDIATELY after document creation. Do NOT proceed to next document until validation passes.
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed
+```
+
+### Validation Command
+
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/SYS/SYS-NNN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all SYS documents complete
+python scripts/validate_cross_document.py --layer SYS --auto-fix
+```
+
+### Layer-Specific Upstream Requirements
+
+| This Layer | Required Upstream Tags | Count |
+|------------|------------------------|-------|
+| SYS (Layer 6) | @brd, @prd, @ears, @bdd, @adr | 5 tags |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Missing @brd/@prd/@ears/@bdd/@adr tag | Add with upstream document reference |
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken link | Recalculate path from current location |
+| Missing traceability section | Insert from template |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-002 | Missing cumulative tag | ERROR |
+| XDOC-003 | Upstream document not found | ERROR |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-007 | Gap in cumulative tag chain | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to next document until Phase 1 validation passes with 0 errors.
+
+---
 
 ## Next Skill
 

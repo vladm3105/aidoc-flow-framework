@@ -11,7 +11,7 @@ tags:
   - layer-9-artifact
   - shared-architecture
 custom_fields:
-  document_type: creation_rules
+  document_type: creation-rules
   artifact_type: CTR
   layer: 9
   priority: shared
@@ -34,6 +34,21 @@ Rules for creating Data Contracts (CTR) documents in the SDD framework.
 | **Created** | 2025-11-27 |
 | **Last Updated** | 2025-11-27 |
 | **Status** | Active |
+
+---
+
+## Table of Contents
+
+1. [When to Create a CTR Document](#1-when-to-create-a-ctr-document)
+2. [File Naming Convention](#2-file-naming-convention)
+3. [Required Sections (Markdown)](#3-required-sections-markdown)
+4. [Required Sections (YAML)](#4-required-sections-yaml)
+5. [Traceability Requirements](#5-traceability-requirements)
+6. [Quality Checklist](#6-quality-checklist)
+7. [Common Anti-Patterns](#7-common-anti-patterns)
+8. [Validation](#8-validation)
+9. [Upstream Artifact Verification Process](#9-upstream-artifact-verification-process)
+10. [Cross-Document Validation](#10-cross-document-validation-mandatory)
 
 ---
 
@@ -326,3 +341,60 @@ Include ONLY if relationships exist between CTR documents sharing API context or
 
 **Document Version**: 1.0.0
 **Last Updated**: 2025-11-27
+
+---
+
+## 10. Cross-Document Validation (MANDATORY)
+
+**CRITICAL**: Execute cross-document validation IMMEDIATELY after creating any CTR document. Do NOT proceed to downstream artifacts until validation passes.
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed to next layer
+```
+
+### Validation Command
+
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/CTR/CTR-NNN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all CTR documents complete
+python scripts/validate_cross_document.py --layer CTR --auto-fix
+```
+
+### Layer-Specific Upstream Requirements
+
+| This Layer | Required Upstream Tags | Tag Count |
+|------------|------------------------|-----------|
+| CTR (Layer 9) | @brd through @req (+ optional @impl) | 7-8 |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Missing @brd through @req tag | Add with upstream document reference |
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken link | Recalculate path from current location |
+| Missing traceability section | Insert from template |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-002 | Missing cumulative tag | ERROR |
+| XDOC-003 | Upstream document not found | ERROR |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-007 | Gap in cumulative tag chain | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to SPEC creation until Phase 1 validation passes with 0 errors.

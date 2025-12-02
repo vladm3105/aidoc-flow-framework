@@ -24,7 +24,7 @@ SYS documents establish the **system behavior contracts** that:
 - **Create Acceptance Criteria**: Provide quantifiable success measures for implementation validation
 - **Enable Architecture Selection**: Inform technology choices through requirement-driven constraints
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## resource in Development Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 

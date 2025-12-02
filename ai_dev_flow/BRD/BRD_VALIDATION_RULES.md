@@ -1471,7 +1471,7 @@ Warnings: 1
 
 | Topic Area | Decision Needed | Business Driver | Key Considerations |
 |------------|-----------------|---------------|-------------------|
-| Database Technology | Select data storage solution | NFR-001: High availability requirements | PostgreSQL, Cloud SQL, DynamoDB |
+| Database Technology | Select data storage solution | NFR-REL-001: High availability requirements | PostgreSQL, Cloud SQL, DynamoDB |
 | Authentication | Choose identity management | FR-003: regulatoryure user access | OAuth2, SAML, Firebase Auth |
 | API Architecture | Define service communication | FR-015: System integration | REST APIs, gRPC, GraphQL |
 ```

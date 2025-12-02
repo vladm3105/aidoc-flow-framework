@@ -289,6 +289,149 @@ ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md:966
 
 ---
 
+### 13. validate_cross_document.py
+
+Cross-document validation for the SDD framework. Validates semantic consistency between documents across all layers, ensuring proper traceability and reference integrity.
+
+**Usage:**
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/ADR/ADR-001_*.md --auto-fix
+
+# Layer validation (Phase 2)
+python scripts/validate_cross_document.py --layer ADR --auto-fix
+
+# Full validation (Phase 3)
+python scripts/validate_cross_document.py --full --auto-fix
+```
+
+**Features:**
+- Validates cumulative tagging hierarchy (Layer N must have all tags from Layers 1 to N-1)
+- Verifies referenced upstream documents exist
+- Checks cross-document links resolve correctly
+- Auto-fixes missing tags, broken links, and formatting issues
+- Creates .bak backup files before applying fixes
+- Enforces strict hierarchy (missing upstream removes dependent functionality)
+- Three validation phases: per-document, per-layer, full project
+
+**Parameters:**
+- `--document`: Path to specific document to validate
+- `--layer`: Validate all documents in a specific layer (BRD, PRD, EARS, etc.)
+- `--full`: Run full project validation across all layers
+- `--auto-fix`: Automatically fix detected issues without confirmation
+- `--strict`: Treat warnings as errors
+- `--output`: Output file for validation report (optional)
+
+**Examples:**
+```bash
+# Validate single REQ document with auto-fix
+python scripts/validate_cross_document.py --document docs/REQ/REQ-001_api_validation.md --auto-fix
+
+# Validate all SPEC documents
+python scripts/validate_cross_document.py --layer SPEC --auto-fix
+
+# Full validation before release
+python scripts/validate_cross_document.py --full --auto-fix --strict
+
+# Generate validation report
+python scripts/validate_cross_document.py --full --output validation_report.md
+```
+
+**Validation Codes:**
+
+| Code | Description | Severity | Auto-Fix |
+|------|-------------|----------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR | No |
+| XDOC-002 | Missing cumulative tag | ERROR | Yes |
+| XDOC-003 | Upstream document not found | ERROR | No |
+| XDOC-004 | Link target file missing | WARNING | No |
+| XDOC-005 | Anchor in link not found | WARNING | No |
+| XDOC-006 | Tag format invalid | ERROR | Yes |
+| XDOC-007 | Gap in cumulative tag chain | ERROR | Yes |
+| XDOC-008 | Circular reference detected | ERROR | No |
+| XDOC-009 | Missing traceability section | ERROR | Yes |
+| XDOC-010 | Orphaned document (no upstream refs) | WARNING | No |
+
+**Layer-Specific Tag Requirements:**
+
+| Layer | Artifact | Required Tags | Count |
+|-------|----------|---------------|-------|
+| 1 | BRD | (none - root) | 0 |
+| 2 | PRD | @brd | 1 |
+| 3 | EARS | @brd, @prd | 2 |
+| 4 | BDD | @brd, @prd, @ears | 3 |
+| 5 | ADR | @brd, @prd, @ears, @bdd | 4 |
+| 6 | SYS | @brd, @prd, @ears, @bdd, @adr | 5 |
+| 7 | REQ | @brd, @prd, @ears, @bdd, @adr, @sys | 6 |
+| 8 | IMPL | @brd through @req | 7 |
+| 9 | CTR | @brd through @req (+ optional @impl) | 7-8 |
+| 10 | SPEC | @brd through @req (+ optional @impl, @ctr) | 7-9 |
+| 11 | TASKS | @brd through @spec (+ optional @impl, @ctr) | 8-10 |
+| 12 | IPLAN | @brd through @tasks (+ optional @impl, @ctr) | 9-11 |
+
+**Auto-Fix Actions:**
+
+| Issue | Fix Action |
+|-------|------------|
+| Missing cumulative tag | Add tag with placeholder reference to upstream document |
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken relative link | Recalculate path from current document location |
+| Missing traceability section | Insert standard traceability section from template |
+| Incorrect Document Control format | Apply standardized format |
+
+**Validation Phases:**
+
+1. **Phase 1 (Per-Document)**: Run immediately after creating each artifact
+   - Validates single document
+   - Must pass with 0 errors before proceeding
+
+2. **Phase 2 (Per-Layer)**: Run when all documents in a layer are complete
+   - Validates all documents in specified layer
+   - Cross-validates internal references within layer
+
+3. **Phase 3 (Full Validation)**: Run before major milestones
+   - Validates entire project
+   - Checks cross-layer consistency
+   - Generates comprehensive report
+
+**Exit Codes:**
+- `0`: Validation passed
+- `1`: Validation failed (errors found)
+
+**Example Output:**
+```
+Cross-Document Validation Report
+================================================================================
+Phase: Per-Document
+Document: docs/REQ/REQ-001_api_validation.md
+Layer: 7 (REQ)
+
+Checking cumulative tags...
+  ✅ @brd: BRD-001:section-3
+  ✅ @prd: PRD-001:feature-2
+  ✅ @ears: EARS-001:E01
+  ✅ @bdd: BDD-001:scenario-validation
+  ✅ @adr: ADR-033, ADR-045
+  ✅ @sys: SYS-001:FR-001
+
+Checking upstream references...
+  ✅ BRD-001 exists: docs/BRD/BRD-001_platform.md
+  ✅ PRD-001 exists: docs/PRD/PRD-001_integration.md
+  ✅ EARS-001 exists: docs/EARS/EARS-001_risk.md
+  ✅ BDD-001 exists: docs/BDD/BDD-001_limits.feature
+  ✅ ADR-033 exists: docs/ADR/ADR-033_database.md
+  ✅ SYS-001 exists: docs/SYS/SYS-001_order.md
+
+Checking internal links...
+  ✅ 12 links validated
+
+================================================================================
+✅ VALIDATION PASSED - 0 errors, 0 warnings
+================================================================================
+```
+
+---
+
 ## Bash Validation Scripts
 
 The following bash scripts validate artifact-specific document structure and compliance:
@@ -618,6 +761,6 @@ Matrix templates for each document type:
 
 ---
 
-**Version**: 1.0.0
+**Version**: 1.1.0
 **Author**: AI-Driven SDD Framework
-**Last Updated**: 2025-01-15
+**Last Updated**: 2025-12-01

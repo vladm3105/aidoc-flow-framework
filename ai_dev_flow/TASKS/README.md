@@ -34,11 +34,11 @@ Tasks create the **code generation roadmap** that:
 | **Scope** | Multi-component systems | Single YAML SPEC implementation |
 | **Audience** | Project managers, architects | AI code generators, developers |
 | **Content** | Phases, teams, deliverables (CTR/SPEC/TASKS) | Exact steps to implement SPEC in code |
-| **Example** | "Phase 1: Build [RESOURCE_MANAGEMENT - e.g., capacity planning, quota management] (Week 1-2)" | "Step 3: Generate PositionLimitService class from SPEC-003.yaml line 45-78" |
+| **Example** | "Phase 1: Build resource management (Week 1-2)" | "Step 3: Generate PositionLimitService class from SPEC-003.yaml line 45-78" |
 
 **Flow**: IMPL Plans organize work → Create SPEC → TASKS plans code generation from SPEC → Code generated
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## resource in Development Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
@@ -172,7 +172,7 @@ Create clear, actionable steps:
 ## Plan
 1. Parse config and limits cache module.
 2. Implement HTTP handler `POST /v1/risk/limits/validate`.
-3. Compute effective [RESOURCE_INSTANCE - e.g., database connection, workflow instance] including pending orders.
+3. Compute effective resource including pending orders.
 4. Return structured responses and errors per contract.
 5. Add logging with `correlation_id` and key fields.
 6. Validate against BDD scenarios and examples.
@@ -285,7 +285,7 @@ Implement the [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] servic
 ## Plan
 1. Create service skeleton with dependency injection framework.
 2. Implement configuration management for risk limits.
-3. Build [RESOURCE_INSTANCE - e.g., database connection, workflow instance] calculation logic with pending order aggregation.
+3. Build resource calculation logic with pending order aggregation.
 4. Create validation API endpoints per OpenAPI contract.
 5. Integrate [SAFETY_MECHANISM - e.g., rate limiter, error threshold] protection and error handling.
 6. Add comprehensive logging and request correlation.
@@ -336,12 +336,12 @@ Build [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] API client wit
 ### User Interface Tasks
 ```markdown
 ## Scope
-Implement service dashboard with real-time [RESOURCE_INSTANCE - e.g., database connection, workflow instance] monitoring.
+Implement service dashboard with real-time resource monitoring.
 
 ## Plan
 1. Create React component skeleton with TypeScript definitions.
 2. Implement WebSocket connection for real-time data feeds.
-3. Build [RESOURCE_INSTANCE - e.g., database connection, workflow instance] display components with sorting and filtering.
+3. Build resource display components with sorting and filtering.
 4. Add [EXTERNAL_DATA - e.g., customer data, sensor readings] visualization with charting library.
 5. Implement order entry forms with validation.
 6. Create notification system for alerts and updates.

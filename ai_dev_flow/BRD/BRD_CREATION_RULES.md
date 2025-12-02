@@ -1235,12 +1235,15 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 **Required Table Format**:
 | NFR Category | Related NFR IDs | Downstream SPEC (Planned) | Validation Method |
 |--------------|----------------|---------------------------|-------------------|
-| Performance SLAs | NFR-001 through NFR-005 | SPEC-XXX-NFR-P: Performance Testing | Load testing |
-| security & Compliance | NFR-006 through NFR-012 | SPEC-XXX-NFR-S: security Controls | security audit |
-| Availability | NFR-013 through NFR-019 | SPEC-XXX-NFR-A: Deployment Architecture | Uptime monitoring |
+| Performance | NFR-PERF-001 through NFR-PERF-NNN | SPEC-XXX-NFR-P: Performance Testing | Load testing |
+| Security & Compliance | NFR-SEC-001 through NFR-SEC-NNN | SPEC-XXX-NFR-S: Security Controls | Security audit |
+| Reliability | NFR-REL-001 through NFR-REL-NNN | SPEC-XXX-NFR-A: Deployment Architecture | Uptime monitoring |
+| Scalability | NFR-SCAL-001 through NFR-SCAL-NNN | SPEC-XXX-NFR-SC: Scaling Infrastructure | Capacity testing |
+| Observability | NFR-OBS-001 through NFR-OBS-NNN | SPEC-XXX-NFR-O: Monitoring Stack | Dashboard review |
+| Maintainability | NFR-MAINT-001 through NFR-MAINT-NNN | SPEC-XXX-NFR-M: DevOps Pipeline | CI/CD metrics |
 
 **Requirements**:
-- Group NFRs by category (Performance, security, Availability, Scalability, etc.)
+- Group NFRs by category using categorical prefixes (NFR-PERF-, NFR-SEC-, NFR-REL-, NFR-SCAL-, NFR-OBS-, NFR-MAINT-)
 - Specify validation method for each category (testing, audit, monitoring)
 - Use NFR-specific SPEC naming convention (SPEC-XXX-NFR-[Category])
 
@@ -1335,8 +1338,50 @@ For projects with existing strategy documents:
 - **Strategy References**: Specific sections from strategy documents
 - **Business Rationale**: Business justification for each requirement
 - **Acceptance Criteria**: Verifiable by business stakeholders
-- **Anchors/IDs**: `BO-XXX`, `FR-XXX`, `NFR-XXX` for each requirement
+- **Anchors/IDs**: `BO-XXX`, `FR-XXX`, `NFR-{CATEGORY}-XXX` for each requirement
 - **Code Path(s)**: Strategic impact area
+
+---
+
+## 8.6 NFR Categorical Prefix Standard
+
+Non-Functional Requirements (NFRs) use categorical prefixes for automated categorization and cross-layer traceability.
+
+### NFR Format
+
+**Pattern**: `NFR-{CATEGORY}-NNN`
+
+| Category | Prefix | Example | Keywords |
+|----------|--------|---------|----------|
+| Performance | `NFR-PERF-` | `NFR-PERF-001` | latency, response time, throughput, p95, TPS |
+| Reliability | `NFR-REL-` | `NFR-REL-001` | uptime, availability, MTBF, MTTR, failover |
+| Scalability | `NFR-SCAL-` | `NFR-SCAL-001` | concurrent users, horizontal scaling, capacity |
+| Security | `NFR-SEC-` | `NFR-SEC-001` | authentication, authorization, encryption, RBAC |
+| Observability | `NFR-OBS-` | `NFR-OBS-001` | logging, monitoring, alerting, metrics |
+| Maintainability | `NFR-MAINT-` | `NFR-MAINT-001` | code coverage, deployment, CI/CD, documentation |
+
+### AI Auto-Assignment
+
+AI assistants should automatically assign NFR categories based on:
+
+1. **Keyword Matching** (Primary): Match requirement text against category keywords
+2. **Section Context**: Use section header (e.g., "Performance Requirements" → PERF)
+3. **Metric Type**: Response time → PERF, uptime → REL, concurrent users → SCAL
+
+### Cross-Reference Format
+
+Use standard document type tag with NFR ID:
+```markdown
+@brd: BRD-017:NFR-PERF-001
+```
+
+### Downstream Inheritance
+
+NFR IDs should remain consistent across all downstream artifacts:
+- BRD defines: `NFR-PERF-001`
+- PRD inherits: `NFR-PERF-001`
+- EARS formalizes: `NFR-PERF-001`
+- SYS implements: `NFR-PERF-001`
 
 ---
 
@@ -1581,3 +1626,60 @@ ls -la docs/REQ/    # Layer 7
 - **NEVER** reference documents that don't exist
 - **ALWAYS** verify document exists before adding reference
 - **USE** `null` only when artifact type is genuinely not applicable
+
+---
+
+## 14. Cross-Document Validation (MANDATORY)
+
+**CRITICAL**: Execute cross-document validation IMMEDIATELY after creating any BRD document. Do NOT proceed to downstream artifacts until validation passes.
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed to next layer
+```
+
+### Validation Command
+
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/BRD/BRD-NNN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all BRD documents complete
+python scripts/validate_cross_document.py --layer BRD --auto-fix
+```
+
+### Layer-Specific Upstream Requirements
+
+| This Layer | Required Upstream Tags | Tag Count |
+|------------|------------------------|-----------|
+| BRD (Layer 1) | (none - root layer) | 0 |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Broken link | Recalculate path from current location |
+| Invalid ID format | Correct to BRD-NNN format |
+| Missing traceability section | Insert from template |
+| Malformed Document Control | Apply standard format |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-004 | Link target file missing | WARNING |
+| XDOC-005 | Anchor in link not found | WARNING |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+| XDOC-010 | Orphaned document (no downstream refs) | WARNING |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to PRD creation until Phase 1 validation passes with 0 errors.

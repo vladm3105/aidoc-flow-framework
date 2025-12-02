@@ -164,12 +164,12 @@ Each artifact layer must include traceability tags from ALL upstream artifact la
 ### Tag Format
 
 ```markdown
-@brd: BRD-009:FR-015, BRD-009:NFR-006
-@prd: PRD-016:FEATURE-003
-@ears: EARS-012:EVENT-002, EARS-012:STATE-001
+@brd: BRD-009:015, BRD-009:NFR-PERF-001
+@prd: PRD-016:003
+@ears: EARS-012:002, EARS-012:001
 @bdd: BDD-015:scenario-place-order
 @adr: ADR-033
-@sys: SYS-012:PERF-001, SYS-012:RELIABILITY-002
+@sys: SYS-012:FR-001, SYS-012:NFR-PERF-001
 @req: REQ-045:interface-spec
 @impl: IMPL-003:phase2  # Optional - include only if exists
 @ctr: CTR-005  # Optional - include only if exists
@@ -177,7 +177,39 @@ Each artifact layer must include traceability tags from ALL upstream artifact la
 @tasks: TASKS-015
 @iplan: IPLAN-001  # Use ID only (IPLAN-NNN), NOT full filename with timestamp
 @icon: TASKS-001:ContractName  # Implementation Contract (optional, Layer 11)
+@sys: SYS-001:NFR-PERF-001  # NFR cross-reference with categorical prefix
 ```
+
+### Feature-Level Traceability Tags
+
+Internal feature IDs within documents use simple sequential numbering:
+
+| Context | Format | Example | Cross-Reference |
+|---------|--------|---------|-----------------|
+| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD-022:015` |
+| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD-001:030` |
+| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS-006:003` |
+| SYS Functional Reqs | `FR-NNN` | `FR-001`, `FR-015` | `@sys: SYS-008:FR-001` |
+| SYS Non-Functional | `NFR-{CAT}-NNN` | `NFR-PERF-001` | `@sys: SYS-008:NFR-PERF-001` |
+
+**Global Uniqueness**: Document ID + Feature ID creates globally unique references.
+
+### NFR Categorical Prefix Standard
+
+Non-Functional Requirements (NFRs) use categorical prefixes for automated categorization:
+
+| Category | Prefix | Full Format | Keywords for AI Detection |
+|----------|--------|-------------|---------------------------|
+| Performance | `NFR-PERF-` | `NFR-PERF-NNN` | latency, response time, throughput, p95, TPS |
+| Reliability | `NFR-REL-` | `NFR-REL-NNN` | uptime, availability, MTBF, MTTR, failover |
+| Scalability | `NFR-SCAL-` | `NFR-SCAL-NNN` | concurrent users, horizontal scaling, capacity |
+| Security | `NFR-SEC-` | `NFR-SEC-NNN` | authentication, authorization, encryption, RBAC |
+| Observability | `NFR-OBS-` | `NFR-OBS-NNN` | logging, monitoring, alerting, metrics, tracing |
+| Maintainability | `NFR-MAINT-` | `NFR-MAINT-NNN` | code coverage, deployment, CI/CD, documentation |
+
+**Cross-Layer Consistency**: Use identical NFR IDs across all layers (BRD → PRD → EARS → SYS → REQ).
+
+**Cross-Reference Format**: Use document type tag with NFR ID (e.g., `@sys: SYS-001:NFR-PERF-001`, `@brd: BRD-017:NFR-SEC-001`)
 
 ### Format Rules
 

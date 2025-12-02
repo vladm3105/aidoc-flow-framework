@@ -35,7 +35,7 @@ custom_fields:
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
-**[RESOURCE_INSTANCE - e.g., database connection, workflow instance]**: TASKS is in Layer 11 (Code Generation Layer) - creates detailed implementation plans from SPEC files.
+**resource**: TASKS is in Layer 11 (Code Generation Layer) - creates detailed implementation plans from SPEC files.
 
 ## Document Control
 
@@ -75,7 +75,7 @@ custom_fields:
 - Risk reduction or compliance satisfaction
 - Performance or reliability enhancement]
 
-## [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Development Workflow
+## resource in Development Workflow
 
 **TASKS (Code Generation Plans)** ← YOU ARE HERE
 
@@ -1575,7 +1575,7 @@ Document evidence that this task has been implemented correctly and meets all ac
 ### 12.5 Domain References
 
 - [[DOMAIN_ACTIVITY - e.g., payment processing, content moderation] Concepts](https://www.theocc.com/Company-Information/What-We-Do) - Options Clearing Corporation
-- [[RESOURCE_MANAGEMENT - e.g., capacity planning, quota management]](https://www.cmegroup.com/education/risk-management.html) - CME Group resources
+- [resource management](https://www.cmegroup.com/education/risk-management.html) - CME Group resources
 - [[EXTERNAL_DATA - e.g., customer data, sensor readings] Protocols](https://www.standards-org.example/standards/) - Industry standards
 
 ### 12.6 Technology Standards

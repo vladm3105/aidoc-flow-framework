@@ -354,6 +354,59 @@ Commit BRD file and traceability matrix together.
 4. **Document Control not first**: Must be at very top before all numbered sections
 5. **Skipping traceability matrix**: MANDATORY to create/update matrix
 
+## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
+
+**CRITICAL**: Execute this validation loop IMMEDIATELY after document creation. Do NOT proceed to next document until validation passes.
+
+### Automatic Validation Loop
+
+```
+LOOP:
+  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  2. IF errors fixed: GOTO LOOP (re-validate)
+  3. IF warnings fixed: GOTO LOOP (re-validate)
+  4. IF unfixable issues: Log for manual review, continue
+  5. IF clean: Mark VALIDATED, proceed
+```
+
+### Validation Command
+
+```bash
+# Per-document validation (Phase 1)
+python scripts/validate_cross_document.py --document docs/BRD/BRD-NNN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all BRD documents complete
+python scripts/validate_cross_document.py --layer BRD --auto-fix
+```
+
+### Layer-Specific Upstream Requirements
+
+| This Layer | Required Upstream Tags | Count |
+|------------|------------------------|-------|
+| BRD (Layer 1) | None (entry point) | 0 tags |
+
+### Auto-Fix Actions (No Confirmation Required)
+
+| Issue | Fix Action |
+|-------|------------|
+| Invalid tag format | Correct to TYPE-NNN:section format |
+| Broken link | Recalculate path from current location |
+| Missing traceability section | Insert from template |
+
+### Validation Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-008 | Broken internal link | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+
+### Quality Gate
+
+**Blocking**: YES - Cannot proceed to next document until Phase 1 validation passes with 0 errors.
+
+---
+
 ## Next Skill
 
 After creating BRD, use:
