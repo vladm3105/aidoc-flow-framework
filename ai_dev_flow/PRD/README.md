@@ -269,6 +269,10 @@ Where:
 - Reference existing systems, contracts, and dependencies
 - Update traceability sections when related artifacts are created
 
+**PRD Traceability Rules**:
+- **Upstream Traceability**: REQUIRED - All PRDs MUST reference at least one existing BRD business requirement
+- **Downstream Traceability**: OPTIONAL - Only add links to downstream documents (SYS, EARS, SPEC, etc.) that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN)
+
 ### 5. Enable Testability
 - Write acceptance criteria that can be verified by business stakeholders
 - Avoid vague terms like "user-friendly" or "reliable"

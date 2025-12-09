@@ -223,7 +223,9 @@ ADR (Layer 5) → Architecture decisions (@brd through @bdd)
 
 ---
 
-## 6. Upstream Traceability
+## 6. Upstream Traceability (REQUIRED)
+
+> **Traceability Rule**: Upstream traceability is REQUIRED for EARS documents. All EARS MUST reference existing BRD and PRD documents.
 
 ### 11.1 BRD → EARS Traceability
 
@@ -251,7 +253,9 @@ ADR (Layer 5) → Architecture decisions (@brd through @bdd)
 
 ---
 
-## 7. Downstream Traceability
+## 7. Downstream Traceability (OPTIONAL)
+
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
 
 ### 11.1 EARS → BDD Traceability
 

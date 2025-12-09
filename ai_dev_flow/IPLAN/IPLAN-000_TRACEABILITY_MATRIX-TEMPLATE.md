@@ -300,7 +300,9 @@ python scripts/generate_tag_coverage_report.py --artifact-type iplan
 
 ---
 
-## 6. Upstream Traceability
+## 6. Upstream Traceability (REQUIRED)
+
+> **Traceability Rule**: Upstream traceability is REQUIRED for IPLAN documents. All IPLAN documents MUST reference existing BRD through TASKS documents.
 
 ### 5.1 Complete Cumulative Tag Chain
 
@@ -349,7 +351,9 @@ python scripts/generate_tag_coverage_report.py --artifact-type iplan
 
 ---
 
-## 7. Downstream Traceability
+## 7. Downstream Traceability (OPTIONAL)
+
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
 
 ### 6.1 iplan → Code Traceability
 

@@ -245,7 +245,9 @@ Code (Layer 13) → Source code
 
 ---
 
-## 4. Upstream Traceability
+## 4. Upstream Traceability (REQUIRED)
+
+> **Traceability Rule**: Upstream traceability is REQUIRED for SPEC documents. All SPEC specifications MUST reference existing BRD through REQ documents (with optional IMPL and CTR if they exist).
 
 ### 9.1 REQ → SPEC Traceability
 
@@ -271,7 +273,9 @@ Code (Layer 13) → Source code
 
 ---
 
-## 6. Downstream Traceability
+## 6. Downstream Traceability (OPTIONAL)
+
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
 
 ### 9.1 SPEC → TASKS Traceability
 

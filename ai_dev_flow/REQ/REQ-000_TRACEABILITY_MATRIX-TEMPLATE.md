@@ -263,7 +263,9 @@ Code (Layer 13) → Source code (@brd through @tasks)
 
 ---
 
-## 10. Upstream Traceability
+## 10. Upstream Traceability (REQUIRED)
+
+> **Traceability Rule**: Upstream traceability is REQUIRED for REQ documents. All REQ requirements MUST reference existing BRD through SYS documents.
 
 ### 15.1 EARS → REQ Traceability
 
@@ -288,7 +290,9 @@ Code (Layer 13) → Source code (@brd through @tasks)
 
 ---
 
-## 11. Downstream Traceability
+## 11. Downstream Traceability (OPTIONAL)
+
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
 
 ### 15.1 REQ → IMPL Traceability
 

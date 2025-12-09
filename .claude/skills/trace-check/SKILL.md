@@ -570,8 +570,8 @@ tar -czf ../backups/docs_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
 
 **Requirements**:
 - Section 7 "Traceability" present
-- At least one upstream source listed (except BRD/PRD as root artifacts)
-- Downstream artifacts identified or "To Be Created" noted
+- At least one upstream source listed (except BRD - BRD is the only artifact type with OPTIONAL upstream)
+- Downstream artifacts: OPTIONAL - only link to documents that already exist (no placeholders)
 
 **Calculation**: (complete / total) × 100%
 
@@ -585,13 +585,28 @@ tar -czf ../backups/docs_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
 - No upstream: Artifact has no source documents
 - No downstream: Artifact generates no other artifacts
 
+**Traceability Rules**:
+| Document Type | Upstream Traceability | Downstream Traceability |
+|---------------|----------------------|------------------------|
+| **BRD** | OPTIONAL (to other BRDs) | OPTIONAL |
+| **All Other Documents** | REQUIRED | OPTIONAL |
+
+**Key Rules**:
+- **Upstream REQUIRED** (except BRD): Document MUST reference its upstream sources
+- **Downstream OPTIONAL**: Only link to documents that already exist
+- **No-TBD Rule**: NEVER use placeholder IDs (TBD, XXX, NNN) - leave empty or omit section
+
 **Expected Behavior**:
-- Root artifacts: BRD/PRD can have no upstream (business-driven)
-- Leaf artifacts: IMPL can have no downstream (code is endpoint)
+- Root artifact: BRD can have no upstream (top-level business document)
+- All other artifacts: MUST have upstream references
+- Leaf artifacts: IMPL/Code can have no downstream (endpoint of chain)
+- Downstream: OPTIONAL for all artifacts - only add when downstream docs exist
 
 **Failure Examples**:
-- REQ-005 with no BRD/PRD/EARS upstream (orphan warning)
-- SPEC-003 with no downstream IMPL (orphan warning)
+- REQ-005 with no BRD/PRD/EARS upstream (ERROR - upstream REQUIRED)
+- PRD-002 with no BRD upstream (ERROR - upstream REQUIRED)
+- SPEC-003 with no downstream IMPL (OK - downstream is OPTIONAL)
+- Any document using "TBD", "XXX", or "NNN" placeholders (ERROR - No-TBD rule)
 
 ## Example Usage Scenarios
 

@@ -238,7 +238,9 @@ Test Implementation & Code (Layers 13-14)
 
 ---
 
-## 5. Upstream Traceability
+## 5. Upstream Traceability (REQUIRED)
+
+> **Traceability Rule**: Upstream traceability is REQUIRED for BDD documents. All BDD test scenarios MUST reference existing BRD, PRD, and EARS documents.
 
 ### 5.1 EARS → BDD Traceability
 
@@ -273,7 +275,9 @@ Test Implementation & Code (Layers 13-14)
 
 ---
 
-## 6. Downstream Traceability
+## 6. Downstream Traceability (OPTIONAL)
+
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
 
 ### 6.1 BDD → Test Implementation Traceability
 

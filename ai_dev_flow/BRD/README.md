@@ -267,6 +267,10 @@ Where:
 - Update traceability sections when downstream artifacts are created
 - Note: ADR links added AFTER ADRs are created
 
+**BRD Traceability Rules**:
+- **Upstream Traceability**: OPTIONAL - BRDs are top-level business documents; they may reference other BRDs or external business strategy documents, but this is not required
+- **Downstream Traceability**: OPTIONAL - Only add links to downstream documents (PRD, ADR, etc.) that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN)
+
 ### 6. Enable Stakeholder Validation
 - Write acceptance criteria verifiable by business stakeholders
 - Avoid vague terms like "user-friendly" or "efficient"

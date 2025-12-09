@@ -20,6 +20,25 @@ custom_fields:
 
 This document defines the standard traceability practices for the AI-Driven Specification-Driven Development (SDD) workflow. Traceability ensures complete linkage from business requirements through to production code, enabling impact analysis, change management, and validation.
 
+## Traceability Rules
+
+The following rules govern traceability in the SDD workflow:
+
+| Rule | Description | Enforcement |
+|------|-------------|-------------|
+| **Upstream Required** | All documents MUST reference existing upstream documents (except BRD) | MANDATORY |
+| **Downstream Optional** | Documents MAY reference existing downstream documents | OPTIONAL |
+| **No-TBD Strict** | NEVER use placeholder IDs (TBD, XXX, NNN) in actual documents | MANDATORY |
+| **Existing Only** | Both upstream and downstream links MUST reference existing documents | MANDATORY |
+| **BRD Exception** | BRD is the root - upstream is OPTIONAL (only to other BRDs or business documents) | SPECIAL |
+
+**Key Distinctions:**
+- **Upstream Traceability**: REQUIRED for all artifacts except BRD. Every document must trace back to its source.
+- **Downstream Traceability**: OPTIONAL. Only add downstream links when those documents actually exist. Do not create placeholder links.
+- **BRD Special Case**: BRD documents may optionally reference other BRDs or business description documents as upstream sources. They may have downstream references.
+
+---
+
 ## Core Principle
 
 **Every document must include a `## Traceability` section** (typically section 7) that documents:

@@ -388,7 +388,10 @@ response_schema:
 
 ## 9. Traceability Requirements
 
-### 9.1 Upstream Traceability
+### 9.1 Upstream Traceability (REQUIRED)
+
+> **Traceability Rule**: Upstream traceability is REQUIRED for CTR documents. All CTR contracts MUST reference existing BRD through IMPL documents.
+
 Contracts MUST reference:
 - **REQ**: Atomic requirements defining interface needs
 - **ADR**: Architecture decisions justifying interface design
@@ -411,8 +414,11 @@ upstream_adrs:
   - ADR-008
 ```
 
-### 9.2 Downstream Traceability
-Contracts MUST link to:
+### 9.2 Downstream Traceability (OPTIONAL)
+
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
+
+Contracts MAY link to:
 - **SPEC**: Technical specifications implementing the contract
 - **TASKS**: Implementation plans referencing the contract
 - **Code**: Provider and consumer implementation files

@@ -74,18 +74,30 @@ class TraceabilityValidator:
 
         print(f"✅ PASS: All {len(artifact_files)} artifacts tracked in matrix")
 
-        # Check 4: Upstream/Downstream sections exist
-        if "## 3. Upstream Traceability" not in matrix_content:
-            self.warnings.append(f"⚠️  Matrix missing upstream traceability section")
+        # Check 4: Upstream section exists (REQUIRED for all except BRD)
+        # Note: Upstream is REQUIRED, Downstream is OPTIONAL per traceability rules
+        if "## 3. Upstream Traceability" not in matrix_content and "## 5. Upstream Traceability" not in matrix_content and "## 6. Upstream Traceability" not in matrix_content:
+            if artifact_type == "BRD":
+                # BRD upstream is OPTIONAL (only to other BRDs or business docs)
+                self.warnings.append(f"⚠️  BRD matrix missing upstream traceability section (OPTIONAL for BRD)")
+                print(f"⚠️  INFO: Upstream traceability section missing (OPTIONAL for BRD)")
+            else:
+                # All other artifact types require upstream traceability
+                self.errors.append(f"❌ Matrix missing upstream traceability section (REQUIRED)")
+                print(f"❌ FAIL: Upstream traceability section missing (REQUIRED)")
+                return False
         else:
-            print(f"✅ PASS: Upstream traceability section exists")
+            print(f"✅ PASS: Upstream traceability section exists (REQUIRED)")
 
-        if "## 4. Downstream Traceability" not in matrix_content:
-            self.warnings.append(f"⚠️  Matrix missing downstream traceability section")
+        # Check 5: Downstream section exists (OPTIONAL for all artifact types)
+        if "## 4. Downstream Traceability" not in matrix_content and "## 6. Downstream Traceability" not in matrix_content and "## 7. Downstream Traceability" not in matrix_content:
+            # Downstream is OPTIONAL - only a warning, not an error
+            self.warnings.append(f"⚠️  Matrix missing downstream traceability section (OPTIONAL)")
+            print(f"⚠️  INFO: Downstream traceability section missing (OPTIONAL - only add when downstream docs exist)")
         else:
-            print(f"✅ PASS: Downstream traceability section exists")
+            print(f"✅ PASS: Downstream traceability section exists (OPTIONAL)")
 
-        # Check 5: Validate references resolve (strict mode)
+        # Check 6: Validate references resolve (strict mode)
         if strict:
             unresolved = self._check_references(matrix_content)
             if unresolved:

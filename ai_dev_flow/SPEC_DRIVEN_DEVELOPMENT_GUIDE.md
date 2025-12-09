@@ -1810,7 +1810,22 @@ When updating a traceability matrix, you MUST update these sections:
   - BRD → PRD, EARS
   - PRD → EARS, BDD
   - SPEC → Code, Tests
-  - Even if artifacts don't exist yet, document as "To Be Created"
+  - Only link to documents that already exist (no placeholders)
+
+### Traceability Rules (REQUIRED vs OPTIONAL)
+
+**Upstream Traceability**:
+- **BRD**: OPTIONAL - BRDs are top-level documents; may reference other BRDs or external documents
+- **All Other Documents**: REQUIRED - MUST reference upstream sources that drove creation
+
+**Downstream Traceability**:
+- **All Documents**: OPTIONAL - Only add links to documents that already exist
+- **No-TBD Rule**: NEVER use placeholder IDs (TBD, XXX, NNN) - leave empty or omit section
+
+| Document Type | Upstream Traceability | Downstream Traceability |
+|---------------|----------------------|------------------------|
+| BRD | OPTIONAL | OPTIONAL |
+| PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN | REQUIRED | OPTIONAL |
 
 - **section 8 (Implementation Status)**: Update completion percentage and validation status
 

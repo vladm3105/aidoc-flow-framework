@@ -184,7 +184,9 @@ Strategy (External) → BRD (Layer 1)
 
 ---
 
-## 6. Upstream Traceability
+## 6. Upstream Traceability (OPTIONAL for BRD)
+
+> **Note**: BRD is the root artifact in the SDD workflow. Upstream traceability is OPTIONAL and may only reference other BRDs or business description documents.
 
 ### 6.1 Strategic Sources → BRD Traceability
 
@@ -208,9 +210,11 @@ Strategy (External) → BRD (Layer 1)
 
 ---
 
-## 7. Downstream Traceability
+## 7. Downstream Traceability (OPTIONAL)
 
-### 12.1 BRD → PRD Traceability
+> **Note**: Downstream traceability is OPTIONAL. Only add links to documents that actually exist.
+
+### 7.1 BRD → PRD Traceability
 
 | BRD ID | BRD Title | PRD IDs | PRD Titles | Relationship |
 |--------|-----------|---------|------------|--------------|

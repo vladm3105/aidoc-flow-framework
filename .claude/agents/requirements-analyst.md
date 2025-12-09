@@ -203,9 +203,20 @@ docs/REQ/
 
 ### 4. Traceability Validation
 
+**Traceability Rules (REQUIRED vs OPTIONAL)**:
+| Document Type | Upstream Traceability | Downstream Traceability |
+|---------------|----------------------|------------------------|
+| **BRD** | OPTIONAL (to other BRDs) | OPTIONAL |
+| **All Other Documents** | REQUIRED | OPTIONAL |
+
+**Key Rules**:
+- **Upstream REQUIRED** (except BRD): Document MUST reference its upstream sources
+- **Downstream OPTIONAL**: Only link to documents that already exist
+- **No-TBD Rule**: NEVER use placeholder IDs (TBD, XXX, NNN) - leave empty or omit section
+
 **Tag Verification**:
 ```bash
-# Required cumulative tags for REQ (Layer 7)
+# Required cumulative tags for REQ (Layer 7) - Upstream is REQUIRED
 @brd: BRD-NNN:REQ-NNN      # Layer 1
 @prd: PRD-NNN:FEAT-NNN     # Layer 2
 @ears: EARS-NNN:REQ-NNN    # Layer 3
@@ -214,9 +225,9 @@ docs/REQ/
 @sys: SYS-NNN:REQ-NNN      # Layer 6
 ```
 
-**Bidirectional Link Check**:
-1. Verify upstream document references this REQ
-2. Verify downstream SPEC includes @req tag
+**Link Check**:
+1. Verify upstream document references exist (REQUIRED - except BRD)
+2. Downstream links to SPEC are OPTIONAL - only add if SPEC already exists
 3. Check matrix consistency
 
 ## Output Formats

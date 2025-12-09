@@ -177,7 +177,9 @@ python scripts/generate_traceability_matrices.py \
 
 ---
 
-## 5. Upstream Traceability
+## 5. Upstream Traceability (REQUIRED)
+
+> **Traceability Rule**: Upstream traceability is REQUIRED for IMPL documents. All IMPL documents MUST reference existing BRD through REQ documents.
 
 ### 4.1 REQ → IMPL Traceability
 
@@ -196,7 +198,9 @@ python scripts/generate_traceability_matrices.py \
 
 ---
 
-## 6. Downstream Traceability
+## 6. Downstream Traceability (OPTIONAL)
+
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
 
 ### 5.1 IMPL → CTR Traceability
 

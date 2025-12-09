@@ -159,7 +159,9 @@ python scripts/extract_tags.py --type PRD --show-upstream brd
 
 ---
 
-## 5. Upstream Traceability
+## 5. Upstream Traceability (REQUIRED)
+
+> **Traceability Rule**: Upstream traceability is REQUIRED for PRD documents. All PRDs MUST reference at least one existing BRD business requirement.
 
 ### 5.1 BRD → PRD Traceability
 
@@ -188,7 +190,9 @@ python scripts/extract_tags.py --type PRD --show-upstream brd
 
 ---
 
-## 6. Downstream Traceability
+## 6. Downstream Traceability (OPTIONAL)
+
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
 
 ### 6.1 PRD → EARS Traceability
 

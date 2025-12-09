@@ -203,7 +203,9 @@ python scripts/generate_traceability_matrices.py \
 
 ---
 
-## 5. Upstream Traceability
+## 5. Upstream Traceability (REQUIRED)
+
+> **Traceability Rule**: Upstream traceability is REQUIRED for ICON documents. All ICON contracts MUST reference existing SPEC and REQ documents.
 
 ### 5.1 SPEC → ICON Traceability
 
@@ -258,7 +260,9 @@ python scripts/generate_traceability_matrices.py \
 
 ---
 
-## 7. Downstream Traceability
+## 7. Downstream Traceability (OPTIONAL)
+
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
 
 ### 7.1 ICON → Code Traceability
 

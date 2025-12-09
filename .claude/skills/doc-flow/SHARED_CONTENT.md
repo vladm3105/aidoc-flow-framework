@@ -75,13 +75,25 @@ This document contains standards and guidelines shared across all document artif
 
 **Authoritative Reference**: `ai_dev_flow/TRACEABILITY.md`
 
+### Traceability Rules (REQUIRED vs OPTIONAL)
+
+| Document Type | Upstream Traceability | Downstream Traceability |
+|---------------|----------------------|------------------------|
+| **BRD** | OPTIONAL (to other BRDs) | OPTIONAL |
+| **All Other Documents** | REQUIRED | OPTIONAL |
+
+**Key Rules**:
+- **Upstream REQUIRED** (except BRD): Document MUST reference its upstream sources
+- **Downstream OPTIONAL**: Only link to documents that already exist
+- **No-TBD Rule**: NEVER use placeholder IDs (TBD, XXX, NNN) - leave empty or omit section
+
 ### Required Traceability Section
 
 Every document must include a `## Traceability` section (typically Section 7):
 
 **Standard fields:**
-- **Upstream Sources**: Prior artifacts this document derives from
-- **Downstream Artifacts**: Artifacts that depend on this document
+- **Upstream Sources (REQUIRED except BRD)**: Prior artifacts this document derives from
+- **Downstream Artifacts (OPTIONAL)**: Artifacts that depend on this document - only add if they already exist
 - **Anchors/IDs**: Primary anchor(s) in this file (e.g., `# REQ-003`)
 - **Code Path(s)**: Where related implementation resides
 

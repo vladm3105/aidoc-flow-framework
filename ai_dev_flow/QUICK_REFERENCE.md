@@ -145,18 +145,32 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 
 ---
 
+## Traceability Rules Quick Reference
+
+| Document Type | Upstream Traceability | Downstream Traceability |
+|---------------|----------------------|------------------------|
+| **BRD** | OPTIONAL (to other BRDs) | OPTIONAL |
+| **All Others** | REQUIRED | OPTIONAL |
+
+**Key Rules**:
+- **Upstream REQUIRED** (except BRD): Document MUST reference its upstream sources
+- **Downstream OPTIONAL**: Only link to documents that already exist
+- **No-TBD Rule**: NEVER use placeholder IDs (TBD, XXX, NNN) - leave empty or omit section
+
+---
+
 ## section 7: Traceability Template
 
 ```markdown
 ## 7. Traceability
 
-### Upstream Sources
+### Upstream Sources (REQUIRED - except BRD)
 | Source | Type | Reference |
 |--------|------|-----------|
 | [BRD-001](../BRD/BRD-001_business.md#BRD-001) | Business Requirements | Context |
 | [PRD-002](../PRD/PRD-002_product.md#PRD-002) | Product Requirements | Feature spec |
 
-### Downstream Artifacts
+### Downstream Artifacts (OPTIONAL - only existing docs)
 | Artifact | Type | Reference |
 |----------|------|-----------|
 | [SPEC-023](../SPEC/SPEC-023_impl.yaml) | Technical Specification | Implementation |
