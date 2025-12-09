@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type SPEC --output docs/SPEC/
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@spec: SPEC-001:NNN` (for multi-requirement docs) or `@spec: SPEC-001` (for single-doc refs)
+**Tag Format:** `@spec: SPEC.001.NNN` (for specific requirements) or `@spec: SPEC-001` (for single-doc refs)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
