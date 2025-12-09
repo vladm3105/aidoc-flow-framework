@@ -24,6 +24,20 @@ This guide enables AI Assistants to set up automated traceability checking, vali
 
 ---
 
+## Traceability Rules (REQUIRED vs OPTIONAL)
+
+| Document Type | Upstream Traceability | Downstream Traceability |
+|---------------|----------------------|------------------------|
+| **BRD** | OPTIONAL (to other BRDs) | OPTIONAL |
+| **All Other Documents** | REQUIRED | OPTIONAL |
+
+**Key Rules**:
+- **Upstream REQUIRED** (except BRD): Document MUST reference its upstream sources
+- **Downstream OPTIONAL**: Only link to documents that already exist
+- **No-TBD Rule**: NEVER use placeholder IDs (TBD, XXX, NNN) - leave empty or omit section
+
+---
+
 ## Validation Scripts
 
 ### Available Scripts

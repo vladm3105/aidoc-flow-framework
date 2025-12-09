@@ -121,6 +121,18 @@ The Docs Flow Framework implements **cumulative tagging** where each artifact ty
 
 **Key Principle**: Each layer inherits ALL tags from upstream layers and adds its own.
 
+### Traceability Rules (REQUIRED vs OPTIONAL)
+
+| Document Type | Upstream Traceability | Downstream Traceability |
+|---------------|----------------------|------------------------|
+| **BRD** | OPTIONAL (to other BRDs) | OPTIONAL |
+| **All Other Documents** | REQUIRED | OPTIONAL |
+
+**Key Rules**:
+- **Upstream REQUIRED** (except BRD): Document MUST reference its upstream sources
+- **Downstream OPTIONAL**: Only link to documents that already exist
+- **No-TBD Rule**: NEVER use placeholder IDs (TBD, XXX, NNN) - leave empty or omit section
+
 ### 2.2 Tag Format
 
 ```markdown
