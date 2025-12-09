@@ -441,8 +441,8 @@ User stories follow the standard format:
 
 **Example Usage**:
 ```markdown
-Transaction limit: $1,000 USD (per @threshold: PRD-035:kyc.l1.daily)
-Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD-035:risk.high.min)
+Transaction limit: $1,000 USD (per @threshold: PRD.035.kyc.l1.daily)
+Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.high.min)
 ```
 
 **Benefits**:
@@ -915,7 +915,7 @@ The following architectural topics require formal Architecture Decision Records 
 - **Primary/Fallback**: AI-agent vs traditional approach (e.g., PRD-022/PRD-016)
 - **Related**: Shared functionality or data (e.g., PRD-018/PRD-031 notifications)
 - **Orchestrates**: One PRD coordinates another (e.g., PRD-025 orchestrates PRD-009)
-- **Consumes**: One PRD uses thresholds/services from another (e.g., @threshold: PRD-035:threshold-key)
+- **Consumes**: One PRD uses thresholds/services from another (e.g., @threshold: PRD.035.threshold-key)
 
 **Validation Process**:
 1. Before creating reference: Verify target document exists
@@ -1054,7 +1054,7 @@ Specify boundary conditions for all thresholds with explicit inclusive/exclusive
 | Session Timeout | > | 900s | ACTIVE (at 900s) | EXPIRE | ACTIVE |
 
 **Threshold Registry Cross-Reference**:
-For centralized threshold values, reference: `@threshold: PRD-035:{category}.{key}`
+For centralized threshold values, reference: `@threshold: PRD.035.{category}.{key}`
 
 ### 19.3 State Transition Diagram
 

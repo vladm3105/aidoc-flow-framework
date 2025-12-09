@@ -119,7 +119,7 @@ THE [system component] SHALL [prevention/recovery action 1],
 and [prevention/recovery action 3]
 WITHIN [timing constraint].
 \`\`\`
-**Traceability**: @brd: BRD.NNN.NNN | @prd: PRD.NNN.NNN | @threshold: PRD-035:error.key
+**Traceability**: @brd: BRD.NNN.NNN | @prd: PRD.NNN.NNN | @threshold: PRD.035.error.key
 
 ### 3.4 Ubiquitous Requirements
 

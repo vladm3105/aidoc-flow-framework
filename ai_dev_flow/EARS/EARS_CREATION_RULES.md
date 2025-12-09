@@ -254,7 +254,7 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 ### Standard Format
 
 ```markdown
-**Traceability**: @brd: BRD.NNN.NNN | @prd: PRD.NNN.NNN | @threshold: PRD-035:category.key
+**Traceability**: @brd: BRD.NNN.NNN | @prd: PRD.NNN.NNN | @threshold: PRD.035.category.key
 ```
 
 ### Required Tags

@@ -358,10 +358,10 @@ Use `@threshold` for ALL quantitative values that are:
 ```
 
 **Examples**:
-- `@threshold: PRD-035:perf.api.p95_latency`
-- `@threshold: PRD-035:timeout.circuit_breaker.threshold`
-- `@threshold: PRD-035:sla.uptime.target`
-- `@threshold: PRD-035:resource.memory.max_heap`
+- `@threshold: PRD.035.perf.api.p95_latency`
+- `@threshold: PRD.035.timeout.circuit_breaker.threshold`
+- `@threshold: PRD.035.sla.uptime.target`
+- `@threshold: PRD.035.resource.memory.max_heap`
 
 ### SYS-Specific Threshold Categories
 

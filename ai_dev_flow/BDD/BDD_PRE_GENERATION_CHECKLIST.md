@@ -211,7 +211,7 @@ Then response time is less than 200ms
 
 ```gherkin
 # CORRECT - threshold registry reference
-Then response time is less than @threshold:PRD-035:perf.api.p95_latency
+Then response time is less than @threshold:PRD.035.perf.api.p95_latency
 ```
 
 ### ❌ Anti-Pattern 4: Wrong Step Order

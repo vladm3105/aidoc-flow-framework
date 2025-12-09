@@ -362,9 +362,9 @@ timeout:
 ```
 
 **Examples**:
-- `"@threshold: PRD-035:perf.api.p95_latency"`
-- `"@threshold: PRD-035:timeout.circuit_breaker.threshold"`
-- `"@threshold: PRD-035:limit.api.requests_per_second"`
+- `"@threshold: PRD.035.perf.api.p95_latency"`
+- `"@threshold: PRD.035.timeout.circuit_breaker.threshold"`
+- `"@threshold: PRD.035.limit.api.requests_per_second"`
 
 ### SPEC-Specific Threshold Categories
 

@@ -1282,8 +1282,8 @@ Document the business strategy, product requirements, system specifications, and
 @bdd: BDD.003.015
 @adr: ADR-033
 @sys: SYS.008.001
-@threshold: PRD-035:perf.api.p95_latency
-@threshold: PRD-035:sla.uptime.target
+@threshold: PRD.035.perf.api.p95_latency
+@threshold: PRD.035.sla.uptime.target
 ```
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through SYS) are properly linked. Threshold references must resolve to valid keys in the threshold registry.

@@ -463,9 +463,9 @@ And rate limit is 100 requests per second
 
 **✅ CORRECT** (threshold registry references):
 ```gherkin
-Then response time is less than @threshold: PRD-035:perf.api.p95_latency
-And timeout occurs after @threshold: PRD-035:timeout.default
-And rate limit is @threshold: PRD-035:limit.api.requests_per_second
+Then response time is less than @threshold: PRD.035.perf.api.p95_latency
+And timeout occurs after @threshold: PRD.035.timeout.default
+And rate limit is @threshold: PRD.035.limit.api.requests_per_second
 ```
 
 **Why this matters**: Hardcoded values become stale, are difficult to update consistently, and break traceability to requirements.
@@ -571,9 +571,9 @@ Then the response time SHOULD be less than @threshold: PRD-NNN:perf.api.p95_late
 ```
 
 **Examples**:
-- `@threshold: PRD-035:perf.api.p95_latency`
-- `@threshold: PRD-035:sla.uptime.target`
-- `@threshold: PRD-035:compliance.travel_rule.amount`
+- `@threshold: PRD.035.perf.api.p95_latency`
+- `@threshold: PRD.035.sla.uptime.target`
+- `@threshold: PRD.035.compliance.travel_rule.amount`
 
 ### BDD-Specific Threshold Categories
 

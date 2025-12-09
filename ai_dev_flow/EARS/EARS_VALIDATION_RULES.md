@@ -311,7 +311,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 **Traceability**:
 - @brd: BRD-002
 - @prd: PRD.002.001
-- @threshold: PRD-035:timeout.partner.bridge
+- @threshold: PRD.035.timeout.partner.bridge
 ```
 
 ---

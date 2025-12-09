@@ -223,7 +223,7 @@ tag_validation:
   fix_suggestion: |
     Add to Traceability section:
     ```
-    @brd: BRD-001:section-3
+    @brd: BRD.001.003
     ```
 ```
 

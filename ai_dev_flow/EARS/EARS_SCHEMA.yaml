@@ -239,7 +239,7 @@ traceability:
         format: "SPEC-NNN"
 
   threshold_references:
-    format: "@threshold: PRD-035:category.subcategory"
+    format: "@threshold: PRD.035.category.subcategory"
     description: "Reference to Platform Threshold Registry"
 
 # =============================================================================

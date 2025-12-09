@@ -768,14 +768,14 @@ Projects may define optional tags for cross-referencing specialized documents:
 
 | Tag | Format | Use Case |
 |-----|--------|----------|
-| @threshold | `PRD-NNN:category.key` | Reference timing/limits from Platform Threshold Registry |
-| @entity | `PRD-NNN:EntityName` | Reference data entities from Data Model document |
+| @threshold | `PRD.NNN.category.key` | Reference timing/limits from Platform Threshold Registry |
+| @entity | `PRD.NNN.EntityName` | Reference data entities from Data Model document |
 
 **@threshold Tag Usage**:
 
 References centralized timing, limits, and configuration values from a Platform Threshold Registry document.
 
-**Format**: `@threshold: PRD-NNN:category.key`
+**Format**: `@threshold: PRD.NNN.category.key`
 
 **Example Categories**:
 - `kyc.*` - KYC timing and limits

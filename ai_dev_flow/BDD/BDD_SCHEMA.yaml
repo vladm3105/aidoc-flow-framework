@@ -273,7 +273,7 @@ gherkin_patterns:
         description: "ADR traceability tag"
       - pattern: "@threshold:\\s*PRD-\\d{3}:[a-z_]+\\.[a-z_]+(?:\\.[a-z_]+)?"
         description: "Threshold registry reference for quantitative values"
-        example: "@threshold: PRD-035:perf.api.p95_latency"
+        example: "@threshold: PRD.035.perf.api.p95_latency"
         required: false
 
 # =============================================================================

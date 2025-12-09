@@ -820,15 +820,15 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 **Error Messages**:
 ```
-⚠️ WARNING: Hardcoded KYC limit "$1,000" found - reference @prd: PRD-035:kyc.l1.daily
-⚠️ WARNING: Risk score threshold "75" found - reference @prd: PRD-035:risk.high.min
-⚠️ WARNING: Timeout value "30s" found - reference @prd: PRD-035:timeout.partner.bridge
+⚠️ WARNING: Hardcoded KYC limit "$1,000" found - reference @threshold: PRD.035.kyc.l1.daily
+⚠️ WARNING: Risk score threshold "75" found - reference @threshold: PRD.035.risk.high.min
+⚠️ WARNING: Timeout value "30s" found - reference @threshold: PRD.035.timeout.partner.bridge
 ```
 
 **Resolution Steps**:
 1. Identify threshold category (KYC, risk, performance, timeout, rate)
 2. Look up key in Threshold Registry (PRD-035 or project-specific)
-3. Add reference: `(per @prd: PRD-035:{category}.{key})`
+3. Add reference: `(per @threshold: PRD.035.{category}.{key})`
 4. If threshold doesn't exist in registry: Add to registry first
 
 **Example Fix**:
@@ -837,7 +837,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 Transaction limit: $1,000 USD
 
 # After (compliant)
-Transaction limit: $1,000 USD (per @prd: PRD-035:kyc.l1.daily)
+Transaction limit: $1,000 USD (per @threshold: PRD.035.kyc.l1.daily)
 ```
 
 ---

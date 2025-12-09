@@ -157,13 +157,13 @@ Code & Validation Layer: Code → Tests → Validation → Review → Production
 ```python
 import re
 
-TAG_PATTERN = r'@(\w+(?:-\w+)?):\s*([\w\-]+(?::[\w\-]+)?(?:\s*,\s*[\w\-]+(?::[\w\-]+)?)*)'
+TAG_PATTERN = r'@(\w+(?:-\w+)?):\s*([\w\.\-]+(?:[\.:]\w[\w\.\-]*)?(?:\s*,\s*[\w\.\-]+(?:[\.:]\w[\w\.\-]*)?)*)'
 
-# Example matches:
-# @brd: BRD-001:FR-030, BRD-001:NFR-006
-# @sys: SYS-008:PERF-001
+# Example matches (unified TYPE.NNN.NNN format):
+# @brd: BRD.001.030, BRD.001.901
+# @sys: SYS.008.901
 # @spec: SPEC-003
-# @test: BDD-003:scenario-1
+# @test: BDD.003.001
 ```
 
 **Validation Rules**:
@@ -178,25 +178,25 @@ TAG_PATTERN = r'@(\w+(?:-\w+)?):\s*([\w\-]+(?::[\w\-]+)?(?:\s*,\s*[\w\-]+(?::[\w
 {
   "src/[project_module]/gateway/connection_service.py": {
     "tags": {
-      "brd": [["BRD-001", "FR-001"], ["BRD-001", "FR-002"], ["BRD-001", "NFR-010"]],
-      "sys": [["SYS-001", null], ["SYS-002", null]],
-      "spec": [["SPEC-001", null]],
-      "test": [["BDD-001", "scenario-auth"], ["BDD-007", "scenario-reconnect"]],
+      "brd": ["BRD.001.001", "BRD.001.002", "BRD.001.901"],
+      "sys": ["SYS.001", "SYS.002"],
+      "spec": ["SPEC-001"],
+      "test": ["BDD.001.001", "BDD.007.001"],
       "impl-status": ["complete"]
     },
     "line_numbers": {
-      "BRD-001:FR-001": 15,
-      "BRD-001:FR-002": 15
+      "BRD.001.001": 15,
+      "BRD.001.002": 15
     }
   }
 }
 ```
 
 **Error Detection**:
-- ❌ `@brd: FR-030` - Missing DOCUMENT-ID
-- ❌ `@brd: BRD-999:FR-001` - Document BRD-999 doesn't exist
-- ❌ `@brd: BRD-001:FR-999` - Requirement FR-999 not in BRD-001
-- ✅ `@brd: BRD-001:FR-030` - Valid format and exists
+- ❌ `@brd: 030` - Missing document and requirement ID
+- ❌ `@brd: BRD.999.001` - Document BRD-999 doesn't exist
+- ❌ `@brd: BRD.001.999` - Requirement 999 not in BRD-001
+- ✅ `@brd: BRD.001.030` - Valid format and exists
 
 **Scripts**:
 ```bash

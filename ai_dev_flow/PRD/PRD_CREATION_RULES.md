@@ -761,9 +761,9 @@ Create a dedicated Threshold Registry PRD when:
 **In consuming PRDs**, reference registry thresholds using:
 
 ```markdown
-@prd: PRD-XXX:{category}.{key}
+@threshold: PRD.NNN.{category}.{key}
 
-Example: @prd: PRD-035:kyc.l1.daily
+Example: @threshold: PRD.035.kyc.l1.daily
 ```
 
 ### Key Naming Convention

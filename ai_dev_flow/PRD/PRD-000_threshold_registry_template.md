@@ -48,9 +48,9 @@ This document serves as the **single source of truth** for all configurable, bus
 ```
 
 **Examples**:
-- `@threshold: PRD-035:perf.api.p95_latency`
-- `@threshold: PRD-035:timeout.circuit_breaker.threshold`
-- `@threshold: PRD-035:compliance.travel_rule.amount`
+- `@threshold: PRD.035.perf.api.p95_latency`
+- `@threshold: PRD.035.timeout.circuit_breaker.threshold`
+- `@threshold: PRD.035.compliance.travel_rule.amount`
 
 ---
 

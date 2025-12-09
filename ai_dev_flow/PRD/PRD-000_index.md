@@ -132,7 +132,7 @@ The Threshold Registry (PRD-035 pattern) centralizes magic numbers, limits, and 
 
 ### Reference Pattern
 ```markdown
-@prd: PRD-035:threshold-key
+@threshold: PRD.035.category.key
 ```
 
 ### Common Threshold Categories
