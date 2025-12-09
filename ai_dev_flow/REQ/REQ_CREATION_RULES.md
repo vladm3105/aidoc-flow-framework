@@ -393,7 +393,7 @@ python scripts/validate_cross_document.py --layer REQ --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd/@adr/@sys tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE-NNN:section format |
+| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

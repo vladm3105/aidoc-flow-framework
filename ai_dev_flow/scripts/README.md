@@ -390,7 +390,7 @@ python scripts/validate_cross_document.py --full --output validation_report.md
 | Issue | Fix Action |
 |-------|------------|
 | Missing cumulative tag | Add tag with placeholder reference to upstream document |
-| Invalid tag format | Correct to TYPE-NNN:section format |
+| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
 | Broken relative link | Recalculate path from current document location |
 | Missing traceability section | Insert standard traceability section from template |
 | Incorrect Document Control format | Apply standardized format |

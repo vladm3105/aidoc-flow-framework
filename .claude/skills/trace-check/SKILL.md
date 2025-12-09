@@ -424,17 +424,17 @@ def validate_ctr_dual_files(contracts_dir):
 ```markdown
 | Requirement | Implementing Files | Status |
 |-------------|-------------------|--------|
-| BRD-001:FR-001 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
-| BRD-001:FR-002 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
-| BRD-001:FR-030 | src/[project_module]/services/account_service.py:12 | ⚠️ In Progress |
+| BRD.001.001 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
+| BRD.001.002 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
+| BRD.001.030 | src/[project_module]/services/account_service.py:12 | ⚠️ In Progress |
 ```
 
 **Reverse Matrix (Code → BRD)**:
 ```markdown
 | Source File | BRD Requirements | Implementation Status |
 |-------------|------------------|---------------------|
-| src/[project_module]/gateway/connection_service.py | FR-001, FR-002, NFR-010 | Complete |
-| src/[project_module]/services/account_service.py | FR-030, FR-031, NFR-006 | In Progress |
+| src/[project_module]/gateway/connection_service.py | BRD.001.001, BRD.001.002, BRD.001.910 | Complete |
+| src/[project_module]/services/account_service.py | BRD.001.030, BRD.001.031, BRD.001.906 | In Progress |
 ```
 
 **Traditional Section 7 Validation** (Optional):

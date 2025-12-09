@@ -1125,7 +1125,7 @@ LOOP:
 | XDOC-003 | Upstream document file not found | ERROR | **REMOVE functionality requiring it** |
 | XDOC-004 | Title mismatch with upstream | WARNING | Update title to match upstream |
 | XDOC-005 | Referencing deprecated requirement | WARNING | Remove or suggest replacement |
-| XDOC-006 | Tag format invalid | ERROR | Correct to TYPE-NNN:section format |
+| XDOC-006 | Tag format invalid | ERROR | Correct to TYPE.NNN.NNN or TYPE-NNN format |
 | XDOC-007 | Gap in cumulative tag chain | ERROR | Add missing tags from chain |
 | XDOC-008 | Broken internal link/anchor | ERROR | Fix path or remove link |
 | XDOC-009 | Missing traceability section | ERROR | Add template section |
@@ -1145,7 +1145,7 @@ The following issues are fixed automatically by the validation script:
 
 | Issue Type | Fix Action | Example |
 |------------|------------|---------|
-| Tag format errors | Correct to TYPE-NNN:section | `@brd: brd001` → `@brd: BRD-001` |
+| Tag format errors | Correct to TYPE.NNN.NNN or TYPE-NNN | `@brd: brd001` → `@brd: BRD-001` |
 | Missing cumulative tags | Add with upstream reference | Add `@prd: PRD-001` for EARS layer |
 | Broken relative paths | Recalculate correct path | `../REQ/file.md` → `../../REQ/file.md` |
 | Missing traceability section | Insert from template | Add Section 7 template |
