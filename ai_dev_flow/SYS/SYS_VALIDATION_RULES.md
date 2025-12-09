@@ -127,10 +127,10 @@ The SYS validation script ensures system requirements meet quality standards for
 
 **Required Tags**:
 ```markdown
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
-@bdd: BDD-NNN:NNN
+@brd: BRD.NNN.NNN
+@prd: PRD.NNN.NNN
+@ears: EARS.NNN.NNN
+@bdd: BDD.NNN.NNN
 @adr: ADR-NNN
 ```
 
@@ -218,7 +218,7 @@ find docs/SYS -name "SYS-*.md" -exec ./scripts/validate_sys_template.sh {} \;
 ### Mistake #4: Incomplete Traceability
 ```
 ❌ @brd: BRD-001
-✅ @brd: BRD-001:030, @prd: PRD-003:002
+✅ @brd: BRD.001.030, @prd: PRD.003.002
 ```
 
 ---

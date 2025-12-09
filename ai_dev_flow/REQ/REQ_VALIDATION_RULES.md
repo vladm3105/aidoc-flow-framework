@@ -461,29 +461,29 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 
 **Required Tags** (all 6 mandatory):
 ```markdown
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
-@bdd: BDD-NNN:NNN
+@brd: BRD.NNN.NNN
+@prd: PRD.NNN.NNN
+@ears: EARS.NNN.NNN
+@bdd: BDD.NNN.NNN
 @adr: ADR-NNN
-@sys: SYS-NNN:NNN
+@sys: SYS.NNN.NNN
 ```
 
 **Valid Examples**:
 ```markdown
-@brd: BRD-009:015, BRD-009:006 ✅
-@prd: PRD-016:003 ✅
-@ears: EARS-012:002 ✅
-@bdd: BDD-015:007 ✅
+@brd: BRD.009.015, BRD.009.006 ✅
+@prd: PRD.016.003 ✅
+@ears: EARS.012.002 ✅
+@bdd: BDD.015.007 ✅
 @adr: ADR-033 ✅
-@sys: SYS-012:001 ✅
+@sys: SYS.012.001 ✅
 ```
 
 **Invalid Examples**:
 ```markdown
-@brd BRD-009:015 ❌ (missing colon after tag type)
+@brd BRD.009.015 ❌ (missing colon after tag type)
 @brd: BRD-009 ❌ (missing sub-ID)
-brd: BRD-009:015 ❌ (missing @ prefix)
+brd: BRD.009.015 ❌ (missing @ prefix)
 ```
 
 **Error Messages**:
@@ -493,14 +493,14 @@ brd: BRD-009:015 ❌ (missing @ prefix)
          Required: @brd, @prd, @ears, @bdd, @adr, @sys
          Reference: doc-flow TRACEABILITY.md section 2.5
 
-❌ ERROR: Invalid tag format: @brd BRD-009:015
+❌ ERROR: Invalid tag format: @brd BRD.009.015
          Expected: @type: DOC-ID:NNN (numeric sub-ID)
-         Example: @brd: BRD-009:015
+         Example: @brd: BRD.009.015
 ```
 
 **Fix**:
 1. Add all 6 missing tags to section 11 (Traceability)
-2. Use format: `@type: DOCUMENT-ID:REQUIREMENT-ID`
+2. Use format: `@type: TYPE.NNN.NNN (Unified Feature ID)`
 3. Verify all referenced documents exist
 
 **Reference**: `TRACEABILITY.md` section 2.5 (Cumulative Tagging Hierarchy)
@@ -612,8 +612,8 @@ brd: BRD-009:015 ❌ (missing @ prefix)
 
 | Component ID | Upstream Sources | Downstream Artifacts | Status |
 |--------------|------------------|---------------------|--------|
-| REQ-045:001 | SYS-012:001, ADR-033 | SPEC-018, CTR-005 | Complete |
-| REQ-045:002 | SYS-012:002, ADR-033 | SPEC-018 | Complete |
+| REQ.045.001 | SYS.012.001, ADR-033 | SPEC-018, CTR-005 | Complete |
+| REQ.045.002 | SYS.012.002, ADR-033 | SPEC-018 | Complete |
 ```
 
 **Option 2 - Separate File** (10+ components):
@@ -766,12 +766,12 @@ Warnings: 1
 ```markdown
 ## 11. Traceability
 
-@brd: BRD-009:015
-@prd: PRD-016:003
-@ears: EARS-012:002
-@bdd: BDD-015:007
+@brd: BRD.009.015
+@prd: PRD.016.003
+@ears: EARS.012.002
+@bdd: BDD.015.007
 @adr: ADR-033
-@sys: SYS-012:001
+@sys: SYS.012.001
 ```
 
 ---

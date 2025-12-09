@@ -318,6 +318,17 @@ info:
     - Changed: account_id now requires UUID format (was string)
 ```
 
+## Unified Feature ID Format (MANDATORY)
+
+**Always use**: `TYPE.NNN.NNN` (dot separator)
+**Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+
+Examples:
+- `@brd: BRD.017.001` ✅
+- `@brd: BRD-017:001` ❌
+
+NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
+
 ## Cumulative Tagging Requirements
 
 **Layer 9 (CTR)**: Must include tags from Layers 1-8 (BRD through IMPL)
@@ -330,25 +341,25 @@ info:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
 ```markdown
-@brd: BRD-001:section-3
-@prd: PRD-001:feature-2
-@ears: EARS-001:E01
-@bdd: BDD-001:scenario-validation
-@adr: ADR-033, ADR-045
-@sys: SYS-001:FR-001
-@req: REQ-data-validation-001:section-3
-@impl: IMPL-001:technical-approach
+@brd: BRD.001.003
+@prd: PRD.001.002
+@ears: EARS.001.001
+@bdd: BDD.001.001
+@adr: ADR.033, ADR.045
+@sys: SYS.001.001
+@req: REQ.001.003
+@impl: IMPL.001.001
 ```
 
 **Format** (if IMPL skipped):
 ```markdown
-@brd: BRD-001:section-3
-@prd: PRD-001:feature-2
-@ears: EARS-001:E01
-@bdd: BDD-001:scenario-validation
-@adr: ADR-033, ADR-045
-@sys: SYS-001:FR-001
-@req: REQ-data-validation-001:section-3
+@brd: BRD.001.003
+@prd: PRD.001.002
+@ears: EARS.001.001
+@bdd: BDD.001.001
+@adr: ADR.033, ADR.045
+@sys: SYS.001.001
+@req: REQ.001.003
 ```
 
 ## Upstream/Downstream Artifacts
@@ -526,7 +537,7 @@ python scripts/validate_cross_document.py --layer CTR --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing upstream tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE-NNN:section format |
+| Invalid tag format | Correct to TYPE.NNN.NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

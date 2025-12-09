@@ -652,11 +652,11 @@ The following architectural topics require formal Architecture Decision Records 
 | [Topic 2] | [What architectural decision is needed] | [Which business objectives/requirements drive this] | [Technologies, patterns, or approaches to evaluate] |
 
 **Example Topics**:
-- **Authentication/Authorization**: Select authentication mechanism (driven by NFR-SEC-001: security requirements)
-- **Data Storage**: Choose database technology for operational data (driven by FR-XXX: Data persistence requirements)
-- **Integration Architecture**: Define API integration pattern (driven by FR-XXX: System integration)
-- **Caching Strategy**: Choose caching approach (driven by NFR-PERF-001: Performance requirements)
-- **Deployment Model**: Select deployment architecture (driven by NFR-SCAL-001: Scalability requirements)
+- **Authentication/Authorization**: Select authentication mechanism (driven by BRD.XXX.961: security requirements)
+- **Data Storage**: Choose database technology for operational data (driven by BRD.XXX.NNN: Data persistence requirements)
+- **Integration Architecture**: Define API integration pattern (driven by BRD.XXX.NNN: System integration)
+- **Caching Strategy**: Choose caching approach (driven by BRD.XXX.901: Performance requirements)
+- **Deployment Model**: Select deployment architecture (driven by BRD.XXX.941: Scalability requirements)
 - **Messaging/Communication**: Choose inter-system communication pattern (driven by FR-XXX: Integration requirements)
 
 **Purpose**: This section identifies architectural topics requiring decisions. Specific ADRs will be created AFTER this BRD during the ADR phase of the SDD workflow.
@@ -665,82 +665,78 @@ The following architectural topics require formal Architecture Decision Records 
 
 ---
 
-### 7.3 Performance Requirements (NFR-PERF-)
+### 7.3 Performance Requirements (901-920)
 
 | Req ID | Requirement Description | Metric | Target | Priority | Rationale |
 |--------|------------------------|--------|--------|----------|-----------|
-| NFR-PERF-001 | System response time for [action] | Response time | [X] seconds | P1 | [Business reason] |
-| NFR-PERF-002 | System throughput capacity | Transactions/second | [X] TPS | P1 | [Business reason] |
-| NFR-PERF-003 | Concurrent user support | Number of users | [X] users | P1 | [Business reason] |
-| NFR-PERF-004 | Page load time | Load time | [X] seconds | P2 | [Business reason] |
-| NFR-PERF-005 | Report generation time | Processing time | [X] minutes | P2 | [Business reason] |
+| BRD.XXX.901 | System response time for [action] | Response time | [X] seconds | P1 | [Business reason] |
+| BRD.XXX.902 | System throughput capacity | Transactions/second | [X] TPS | P1 | [Business reason] |
+| BRD.XXX.903 | Concurrent user support | Number of users | [X] users | P1 | [Business reason] |
+| BRD.XXX.904 | Page load time | Load time | [X] seconds | P2 | [Business reason] |
+| BRD.XXX.905 | Report generation time | Processing time | [X] minutes | P2 | [Business reason] |
 
-### 7.4 Security Requirements (NFR-SEC-)
+### 7.4 Security Requirements (961-980)
 
 | Req ID | Requirement Description | Standard/Framework | Priority | Validation Method |
 |--------|------------------------|-------------------|----------|-------------------|
-| NFR-SEC-001 | Authentication mechanism | [e.g., Multi-factor authentication] | P1 | [How to verify] |
-| NFR-SEC-002 | Data encryption at rest | [e.g., AES-256] | P1 | [How to verify] |
-| NFR-SEC-003 | Data encryption in transit | [e.g., TLS 1.3] | P1 | [How to verify] |
-| NFR-SEC-004 | Access control | [e.g., Role-based access control] | P1 | [How to verify] |
-| NFR-SEC-005 | Audit logging | [Requirements for audit trails] | P1 | [How to verify] |
-| NFR-SEC-006 | Password complexity | [Password policy requirements] | P2 | [How to verify] |
-| NFR-SEC-007 | Session timeout | [e.g., 15 minutes of inactivity] | P2 | [How to verify] |
-| NFR-SEC-008 | Compliance: GDPR | [Specific compliance requirement] | P1 | [Audit method] |
-| NFR-SEC-009 | Compliance: HIPAA | [Specific compliance requirement] | P1 | [Audit method] |
-| NFR-SEC-010 | Compliance: PCI-DSS | [Specific compliance requirement] | P1 | [Audit method] |
+| BRD.XXX.961 | Authentication mechanism | [e.g., Multi-factor authentication] | P1 | [How to verify] |
+| BRD.XXX.962 | Data encryption at rest | [e.g., AES-256] | P1 | [How to verify] |
+| BRD.XXX.963 | Data encryption in transit | [e.g., TLS 1.3] | P1 | [How to verify] |
+| BRD.XXX.964 | Access control | [e.g., Role-based access control] | P1 | [How to verify] |
+| BRD.XXX.965 | Audit logging | [Requirements for audit trails] | P1 | [How to verify] |
+| BRD.XXX.966 | Password complexity | [Password policy requirements] | P2 | [How to verify] |
+| BRD.XXX.967 | Session timeout | [e.g., 15 minutes of inactivity] | P2 | [How to verify] |
+| BRD.XXX.968 | Compliance: GDPR | [Specific compliance requirement] | P1 | [Audit method] |
+| BRD.XXX.969 | Compliance: HIPAA | [Specific compliance requirement] | P1 | [Audit method] |
+| BRD.XXX.970 | Compliance: PCI-DSS | [Specific compliance requirement] | P1 | [Audit method] |
 
-### 7.5 Reliability Requirements (NFR-REL-)
+### 7.5 Reliability Requirements (921-940)
 
 | Req ID | Requirement Description | Target | Priority | Measurement Period |
 |--------|------------------------|--------|----------|-------------------|
-| NFR-REL-001 | System uptime | [e.g., 99.9%] | P1 | [Monthly/Annually] |
-| NFR-REL-002 | Planned maintenance window | [e.g., 4 hours/month] | P1 | [Monthly] |
-| NFR-REL-003 | Mean Time Between Failures (MTBF) | [X hours/days] | P2 | [Annually] |
-| NFR-REL-004 | Mean Time To Repair (MTTR) | [X hours] | P1 | [Per incident] |
-| NFR-REL-005 | Backup frequency | [Daily/Weekly] | P1 | [Per policy] |
-| NFR-REL-006 | Recovery Time Objective (RTO) | [X hours] | P1 | [Per incident] |
-| NFR-REL-007 | Recovery Point Objective (RPO) | [X hours] | P1 | [Per incident] |
-| NFR-REL-008 | Disaster recovery plan | [Plan requirements] | P1 | [Annual/Biannual] |
-| NFR-REL-009 | Backup and restore procedures | [Specific procedures] | P1 | [Quarterly] |
-| NFR-REL-010 | Failover capability | [Automatic/Manual, timeframe] | P1 | [Biannual] |
-| NFR-REL-011 | Geographic redundancy | [Requirements] | P2 | [Annual] |
+| BRD.XXX.921 | System uptime | [e.g., 99.9%] | P1 | [Monthly/Annually] |
+| BRD.XXX.922 | Planned maintenance window | [e.g., 4 hours/month] | P1 | [Monthly] |
+| BRD.XXX.923 | Mean Time Between Failures (MTBF) | [X hours/days] | P2 | [Annually] |
+| BRD.XXX.924 | Mean Time To Repair (MTTR) | [X hours] | P1 | [Per incident] |
+| BRD.XXX.925 | Backup frequency | [Daily/Weekly] | P1 | [Per policy] |
+| BRD.XXX.926 | Recovery Time Objective (RTO) | [X hours] | P1 | [Per incident] |
+| BRD.XXX.927 | Recovery Point Objective (RPO) | [X hours] | P1 | [Per incident] |
+| BRD.XXX.928 | Disaster recovery plan | [Plan requirements] | P1 | [Annual/Biannual] |
+| BRD.XXX.929 | Backup and restore procedures | [Specific procedures] | P1 | [Quarterly] |
+| BRD.XXX.930 | Failover capability | [Automatic/Manual, timeframe] | P1 | [Biannual] |
+| BRD.XXX.931 | Geographic redundancy | [Requirements] | P2 | [Annual] |
 
-### 7.6 Scalability Requirements (NFR-SCAL-)
+### 7.6 Scalability Requirements (941-960)
 
 | Req ID | Requirement Description | Current | Year 1 | Year 3 | Priority |
 |--------|------------------------|---------|--------|--------|----------|
-| NFR-SCAL-001 | User growth capacity | [X users] | [X users] | [X users] | P1 |
-| NFR-SCAL-002 | Data volume growth | [X GB/TB] | [X GB/TB] | [X GB/TB] | P1 |
-| NFR-SCAL-003 | Transaction volume growth | [X per day] | [X per day] | [X per day] | P2 |
-| NFR-SCAL-004 | Storage expansion capability | [Description] | [Target] | [Target] | P2 |
+| BRD.XXX.941 | User growth capacity | [X users] | [X users] | [X users] | P1 |
+| BRD.XXX.942 | Data volume growth | [X GB/TB] | [X GB/TB] | [X GB/TB] | P1 |
+| BRD.XXX.943 | Transaction volume growth | [X per day] | [X per day] | [X per day] | P2 |
+| BRD.XXX.944 | Storage expansion capability | [Description] | [Target] | [Target] | P2 |
 
-### 7.7 Observability Requirements (NFR-OBS-)
-
-| Req ID | Requirement Description | Target | Priority | Measurement |
-|--------|------------------------|--------|----------|-------------|
-| NFR-OBS-001 | System monitoring capabilities | [Required monitoring] | P1 | [Monitoring dashboard] |
-| NFR-OBS-002 | Error logging and reporting | [Logging requirements] | P1 | [Log analysis] |
-| NFR-OBS-003 | Alerting thresholds | [Alert conditions] | P1 | [Alert review] |
-| NFR-OBS-004 | Distributed tracing | [Tracing requirements] | P2 | [Trace analysis] |
-
-### 7.8 Maintainability Requirements (NFR-MAINT-)
+### 7.7 Observability Requirements (981-990)
 
 | Req ID | Requirement Description | Target | Priority | Measurement |
 |--------|------------------------|--------|----------|-------------|
-| NFR-MAINT-001 | Code documentation standards | [Standard to follow] | P2 | [Review process] |
-| NFR-MAINT-002 | Version control | [Version control system] | P1 | [Repository review] |
-| NFR-MAINT-003 | User interface design standards | [e.g., WCAG 2.1 AA] | P1 | [Usability testing] |
-| NFR-MAINT-004 | Accessibility compliance | [e.g., section 508, ADA] | P1 | [Accessibility audit] |
-| NFR-MAINT-005 | Browser compatibility | [List supported browsers/versions] | P1 | [Cross-browser testing] |
-| NFR-MAINT-006 | Mobile device support | [iOS/Android versions] | P2 | [Device testing] |
-| NFR-MAINT-007 | User training requirements | [Maximum training time: X hours] | P2 | [User feedback] |
-| NFR-MAINT-008 | Online help availability | [Context-sensitive help] | P2 | [Documentation review] |
-| NFR-MAINT-009 | Multilingual support | [Languages required] | P3 | [Translation verification] |
-| NFR-MAINT-010 | Operating system compatibility | [e.g., Windows 10+, macOS 12+] | P1 | [Additional details] |
-| NFR-MAINT-011 | Database compatibility | [e.g., PostgreSQL 13+] | P1 | [Additional details] |
-| NFR-MAINT-012 | Integration standards | [e.g., REST API, SOAP] | P1 | [Additional details] |
-| NFR-MAINT-013 | Legacy system integration | [Systems to integrate with] | P2 | [Additional details] |
+| BRD.XXX.981 | System monitoring capabilities | [Required monitoring] | P1 | [Monitoring dashboard] |
+| BRD.XXX.982 | Error logging and reporting | [Logging requirements] | P1 | [Log analysis] |
+| BRD.XXX.983 | Alerting thresholds | [Alert conditions] | P1 | [Alert review] |
+| BRD.XXX.984 | Distributed tracing | [Tracing requirements] | P2 | [Trace analysis] |
+
+### 7.8 Maintainability Requirements (991-999)
+
+| Req ID | Requirement Description | Target | Priority | Measurement |
+|--------|------------------------|--------|----------|-------------|
+| BRD.XXX.991 | Code documentation standards | [Standard to follow] | P2 | [Review process] |
+| BRD.XXX.992 | Version control | [Version control system] | P1 | [Repository review] |
+| BRD.XXX.993 | User interface design standards | [e.g., WCAG 2.1 AA] | P1 | [Usability testing] |
+| BRD.XXX.994 | Accessibility compliance | [e.g., section 508, ADA] | P1 | [Accessibility audit] |
+| BRD.XXX.995 | Browser compatibility | [List supported browsers/versions] | P1 | [Cross-browser testing] |
+| BRD.XXX.996 | Mobile device support | [iOS/Android versions] | P2 | [Device testing] |
+| BRD.XXX.997 | User training requirements | [Maximum training time: X hours] | P2 | [User feedback] |
+| BRD.XXX.998 | Online help availability | [Context-sensitive help] | P2 | [Documentation review] |
+| BRD.XXX.999 | Multilingual support | [Languages required] | P3 | [Translation verification] |
 
 ---
 
@@ -988,9 +984,9 @@ Acceptance criteria define the conditions that must be satisfied for the project
 
 | Requirement ID | Acceptance Criterion | Measurement Method | Target | Test Approach | Pass Threshold |
 |----------------|---------------------|-------------------|--------|---------------|----------------|
-| NFR-PERF-001 | [Performance criterion] | [Load testing] | [X seconds] | [Test scenario] | [95% within target] |
-| NFR-SEC-001 | [Security criterion] | [Security audit] | [Standard compliance] | [Audit process] | [100% compliance] |
-| NFR-REL-001 | [Availability criterion] | [Monitoring logs] | [99.9% uptime] | [30-day monitoring] | [Meets or exceeds target] |
+| BRD.XXX.901 | [Performance criterion] | [Load testing] | [X seconds] | [Test scenario] | [95% within target] |
+| BRD.XXX.961 | [Security criterion] | [Security audit] | [Standard compliance] | [Audit process] | [100% compliance] |
+| BRD.XXX.921 | [Availability criterion] | [Monitoring logs] | [99.9% uptime] | [30-day monitoring] | [Meets or exceeds target] |
 
 ### 9.5 User Acceptance Testing (UAT) Criteria
 
@@ -1689,14 +1685,14 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 #### 17.1.3 Non-Functional Requirements → Technical Specifications
 
-| NFR Category | Related NFR IDs | Downstream SPEC (Planned) | Validation Method |
-|--------------|----------------|---------------------------|-------------------|
-| Performance | NFR-PERF-001 through NFR-PERF-005 | SPEC-XXX-NFR-P: Performance Testing | Load testing |
-| Security & Compliance | NFR-SEC-001 through NFR-SEC-010 | SPEC-XXX-NFR-S: Security Controls | Security audit |
-| Reliability | NFR-REL-001 through NFR-REL-011 | SPEC-XXX-NFR-A: Deployment Architecture | Uptime monitoring |
-| Scalability | NFR-SCAL-001 through NFR-SCAL-004 | SPEC-XXX-NFR-SC: Scaling Infrastructure | Capacity testing |
-| Observability | NFR-OBS-001 through NFR-OBS-004 | SPEC-XXX-NFR-O: Monitoring Stack | Dashboard review |
-| Maintainability | NFR-MAINT-001 through NFR-MAINT-013 | SPEC-XXX-NFR-M: DevOps Pipeline | CI/CD metrics |
+| NFR Category | ID Range | Downstream SPEC (Planned) | Validation Method |
+|--------------|----------|---------------------------|-------------------|
+| Performance | 901-920 | SPEC-XXX-NFR-P: Performance Testing | Load testing |
+| Reliability | 921-940 | SPEC-XXX-NFR-A: Deployment Architecture | Uptime monitoring |
+| Scalability | 941-960 | SPEC-XXX-NFR-SC: Scaling Infrastructure | Capacity testing |
+| Security & Compliance | 961-980 | SPEC-XXX-NFR-S: Security Controls | Security audit |
+| Observability | 981-990 | SPEC-XXX-NFR-O: Monitoring Stack | Dashboard review |
+| Maintainability | 991-999 | SPEC-XXX-NFR-M: DevOps Pipeline | CI/CD metrics |
 
 ### 17.2 Same-Type References (Conditional)
 

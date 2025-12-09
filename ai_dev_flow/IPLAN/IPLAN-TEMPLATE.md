@@ -605,7 +605,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 - `@brd: BRD-NNN:REQ-NNN` - Business Requirements Document (Layer 1)
 - `@prd: PRD-NNN:REQ-NNN` - Product Requirements Document (Layer 2)
-- `@ears: EARS-NNN:NNN` - Event-Action-Response-State (Layer 3)
+- `@ears: EARS.NNN.NNN` - Event-Action-Response-State (Layer 3)
 - `@bdd: BDD-NNN:SCENARIO-NNN` - Behavior-Driven Development (Layer 4)
 - `@adr: ADR-NNN` - Architecture Decision Record (Layer 5)
 - `@sys: SYS-NNN:REQ-NNN` - System Requirements (Layer 6)
@@ -620,20 +620,20 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 ### 8.3 Tag Format
 
-**Standard Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+**Standard Format**: `@artifact-type: TYPE.NNN.NNN (Unified Feature ID)`
 
 **Examples**:
 ```
-@brd: BRD-001:042
-@prd: PRD-001:015
-@ears: EARS-001:003
-@bdd: BDD-001:005
+@brd: BRD.001.042
+@prd: PRD.001.015
+@ears: EARS.001.003
+@bdd: BDD.001.005
 @adr: ADR-002
-@sys: SYS-002:001
-@req: REQ-001:001
+@sys: SYS.002.001
+@req: REQ.001.001
 @spec: SPEC-001
-@tasks: TASKS-001:001
-@impl: IMPL-001:001 (optional)
+@tasks: TASKS.001.001
+@impl: IMPL.001.001 (optional)
 @ctr: CTR-001 (optional)
 ```
 
@@ -735,20 +735,20 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 12):
 ```markdown
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
-@bdd: BDD-NNN:NNN
+@brd: BRD.NNN.NNN
+@prd: PRD.NNN.NNN
+@ears: EARS.NNN.NNN
+@bdd: BDD.NNN.NNN
 @adr: ADR-NNN
-@sys: SYS-NNN:NNN
-@req: REQ-NNN:NNN
-@impl: IMPL-NNN:NNN
+@sys: SYS.NNN.NNN
+@req: REQ.NNN.NNN
+@impl: IMPL.NNN.NNN
 @ctr: CTR-NNN
 @spec: SPEC-NNN
 @tasks: TASKS-NNN
 ```
 
-**Format**: `@artifact-type: DOCUMENT-ID:NNN`
+**Format**: `@artifact-type: TYPE.NNN.NNN`
 
 **Layer 12 Requirements**: IPLAN must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -767,17 +767,17 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 **Example**:
 ```markdown
-@brd: BRD-001:030
-@prd: PRD-003:002
-@ears: EARS-001:003
-@bdd: BDD-003:001
+@brd: BRD.001.030
+@prd: PRD.003.002
+@ears: EARS.001.003
+@bdd: BDD.003.001
 @adr: ADR-033
-@sys: SYS-008:001
-@req: REQ-003:001
-@impl: IMPL-001:001
+@sys: SYS.008.001
+@req: REQ.003.001
+@impl: IMPL.001.001
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS-001:001
+@tasks: TASKS.001.001
 ```
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through TASKS) are properly linked.

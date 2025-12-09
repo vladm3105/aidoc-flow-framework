@@ -1233,17 +1233,17 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 #### 17.1.3 Non-Functional Requirements → Technical Specifications
 
 **Required Table Format**:
-| NFR Category | Related NFR IDs | Downstream SPEC (Planned) | Validation Method |
-|--------------|----------------|---------------------------|-------------------|
-| Performance | NFR-PERF-001 through NFR-PERF-NNN | SPEC-XXX-NFR-P: Performance Testing | Load testing |
-| Security & Compliance | NFR-SEC-001 through NFR-SEC-NNN | SPEC-XXX-NFR-S: Security Controls | Security audit |
-| Reliability | NFR-REL-001 through NFR-REL-NNN | SPEC-XXX-NFR-A: Deployment Architecture | Uptime monitoring |
-| Scalability | NFR-SCAL-001 through NFR-SCAL-NNN | SPEC-XXX-NFR-SC: Scaling Infrastructure | Capacity testing |
-| Observability | NFR-OBS-001 through NFR-OBS-NNN | SPEC-XXX-NFR-O: Monitoring Stack | Dashboard review |
-| Maintainability | NFR-MAINT-001 through NFR-MAINT-NNN | SPEC-XXX-NFR-M: DevOps Pipeline | CI/CD metrics |
+| NFR Category | ID Range | Downstream SPEC (Planned) | Validation Method |
+|--------------|----------|---------------------------|-------------------|
+| Performance | 901-920 | SPEC-XXX-NFR-P: Performance Testing | Load testing |
+| Reliability | 921-940 | SPEC-XXX-NFR-A: Deployment Architecture | Uptime monitoring |
+| Scalability | 941-960 | SPEC-XXX-NFR-SC: Scaling Infrastructure | Capacity testing |
+| Security & Compliance | 961-980 | SPEC-XXX-NFR-S: Security Controls | Security audit |
+| Observability | 981-990 | SPEC-XXX-NFR-O: Monitoring Stack | Dashboard review |
+| Maintainability | 991-999 | SPEC-XXX-NFR-M: DevOps Pipeline | CI/CD metrics |
 
 **Requirements**:
-- Group NFRs by category using categorical prefixes (NFR-PERF-, NFR-SEC-, NFR-REL-, NFR-SCAL-, NFR-OBS-, NFR-MAINT-)
+- Group NFRs by category using 900-series numbering (901-920 PERF, 921-940 REL, 941-960 SCAL, 961-980 SEC, 981-990 OBS, 991-999 MAINT)
 - Specify validation method for each category (testing, audit, monitoring)
 - Use NFR-specific SPEC naming convention (SPEC-XXX-NFR-[Category])
 
@@ -1349,16 +1349,16 @@ Non-Functional Requirements (NFRs) use categorical prefixes for automated catego
 
 ### NFR Format
 
-**Pattern**: `NFR-{CATEGORY}-NNN`
+**Pattern**: `TYPE.NNN.9XX` (900-series for NFRs)
 
-| Category | Prefix | Example | Keywords |
+| Category | ID Range | Example | Keywords |
 |----------|--------|---------|----------|
-| Performance | `NFR-PERF-` | `NFR-PERF-001` | latency, response time, throughput, p95, TPS |
-| Reliability | `NFR-REL-` | `NFR-REL-001` | uptime, availability, MTBF, MTTR, failover |
-| Scalability | `NFR-SCAL-` | `NFR-SCAL-001` | concurrent users, horizontal scaling, capacity |
-| Security | `NFR-SEC-` | `NFR-SEC-001` | authentication, authorization, encryption, RBAC |
-| Observability | `NFR-OBS-` | `NFR-OBS-001` | logging, monitoring, alerting, metrics |
-| Maintainability | `NFR-MAINT-` | `NFR-MAINT-001` | code coverage, deployment, CI/CD, documentation |
+| Performance | 901-920 | `BRD.017.901` | latency, response time, throughput, p95, TPS |
+| Reliability | 921-940 | `BRD.017.921` | uptime, availability, MTBF, MTTR, failover |
+| Scalability | 941-960 | `BRD.017.941` | concurrent users, horizontal scaling, capacity |
+| Security | 961-980 | `BRD.017.961` | authentication, authorization, encryption, RBAC |
+| Observability | 981-990 | `BRD.017.981` | logging, monitoring, alerting, metrics |
+| Maintainability | 991-999 | `BRD.017.991` | code coverage, deployment, CI/CD, documentation |
 
 ### AI Auto-Assignment
 
@@ -1370,18 +1370,18 @@ AI assistants should automatically assign NFR categories based on:
 
 ### Cross-Reference Format
 
-Use standard document type tag with NFR ID:
+Use unified format for NFR cross-references:
 ```markdown
-@brd: BRD-017:NFR-PERF-001
+@brd: BRD.017.901
 ```
 
 ### Downstream Inheritance
 
-NFR IDs should remain consistent across all downstream artifacts:
-- BRD defines: `NFR-PERF-001`
-- PRD inherits: `NFR-PERF-001`
-- EARS formalizes: `NFR-PERF-001`
-- SYS implements: `NFR-PERF-001`
+NFR IDs use 900-series numbering consistently across all downstream artifacts:
+- BRD defines: `BRD.017.901` (Performance)
+- PRD inherits: `PRD.017.901`
+- EARS formalizes: `EARS.017.901`
+- SYS implements: `SYS.017.901`
 
 ---
 

@@ -97,7 +97,7 @@ This matrix tracks all ICON contracts, mapping upstream specifications to provid
 @spec: SPEC-018:interface-spec
 @req: REQ-045:interface-requirement
 @adr: ADR-033
-@impl: IMPL-003:002
+@impl: IMPL.003.002
 @ctr: CTR-005
 @icon: ICON-001:ContractName
 @icon-role: provider|consumer

@@ -343,48 +343,48 @@ traceability:
   cumulative_tags:
     layer: 11
     required:
-      - "@brd: BRD-NNN:NNN"
-      - "@prd: PRD-NNN:NNN"
-      - "@ears: EARS-NNN:NNN"
-      - "@bdd: BDD-NNN:NNN"
+      - "@brd: BRD.NNN.NNN"
+      - "@prd: PRD.NNN.NNN"
+      - "@ears: EARS.NNN.NNN"
+      - "@bdd: BDD.NNN.NNN"
       - "@adr: ADR-NNN"
-      - "@sys: SYS-NNN:NNN"
-      - "@req: REQ-NNN:NNN"
+      - "@sys: SYS.NNN.NNN"
+      - "@req: REQ.NNN.NNN"
       - "@spec: SPEC-NNN"
     optional:
-      - "@impl: IMPL-NNN:NNN"
+      - "@impl: IMPL.NNN.NNN"
       - "@ctr: CTR-NNN"
     description: "Layer 11 requires 8 upstream artifact tags (10 including optional IMPL and CTR)"
 
   upstream:
     required:
       - type: BRD
-        format: "@brd: BRD-NNN:NNN"
+        format: "@brd: BRD.NNN.NNN"
         location: "Section 10 Traceability or Traceability Tags section"
       - type: PRD
-        format: "@prd: PRD-NNN:NNN"
+        format: "@prd: PRD.NNN.NNN"
         location: "Section 10 Traceability or Traceability Tags section"
       - type: EARS
-        format: "@ears: EARS-NNN:NNN"
+        format: "@ears: EARS.NNN.NNN"
         location: "Section 10 Traceability or Traceability Tags section"
       - type: BDD
-        format: "@bdd: BDD-NNN:NNN"
+        format: "@bdd: BDD.NNN.NNN"
         location: "Section 10 Traceability or Traceability Tags section"
       - type: ADR
         format: "@adr: ADR-NNN"
         location: "Section 10 Traceability or Traceability Tags section"
       - type: SYS
-        format: "@sys: SYS-NNN:NNN"
+        format: "@sys: SYS.NNN.NNN"
         location: "Section 10 Traceability or Traceability Tags section"
       - type: REQ
-        format: "@req: REQ-NNN:NNN"
+        format: "@req: REQ.NNN.NNN"
         location: "Section 10 Traceability or Traceability Tags section"
       - type: SPEC
         format: "@spec: SPEC-NNN"
         location: "Document Control table or Section 10"
     optional:
       - type: IMPL
-        format: "@impl: IMPL-NNN:NNN"
+        format: "@impl: IMPL.NNN.NNN"
         location: "Section 10 Traceability or Traceability Tags section"
       - type: CTR
         format: "@ctr: CTR-NNN"

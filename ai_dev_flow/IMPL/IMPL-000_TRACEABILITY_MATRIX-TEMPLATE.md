@@ -93,13 +93,13 @@ This matrix tracks all IMPL documents, mapping upstream requirements to downstre
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:002
-@bdd: BDD-015:001
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.002
+@bdd: BDD.015.001
 @adr: ADR-033
-@sys: SYS-012:001
-@req: REQ-045:001
+@sys: SYS.012.001
+@req: REQ.045.001
 ```
 
 **Format Rules**:
@@ -121,13 +121,13 @@ This matrix tracks all IMPL documents, mapping upstream requirements to downstre
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 8):
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:002
-@bdd: BDD-015:001
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.002
+@bdd: BDD.015.001
 @adr: ADR-033
-@sys: SYS-012:001
-@req: REQ-045:001
+@sys: SYS.012.001
+@req: REQ.045.001
 ```
 
 ### 7.2 Downstream Artifacts

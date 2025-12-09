@@ -42,7 +42,7 @@ custom_fields:
 | **Last Updated** | YYYY-MM-DD |
 | **Author** | BeeLocal Engineering Team |
 | **Priority** | High |
-| **Source Document** | @prd: PRD-NNN |
+| **Source Document** | @prd: PRD.NNN.NNN |
 | **BDD-Ready Score** | XX% (Target: ≥90%) |
 
 ## 1. Purpose and Context
@@ -93,9 +93,9 @@ WHEN [trigger condition],
 THE [system component] SHALL [action 1],
 [action 2],
 and [action 3]
-WITHIN [timing constraint] (@threshold: PRD-035:category.key).
+WITHIN [timing constraint] (@threshold: PRD.035.category.key).
 \`\`\`
-**Traceability**: @brd: BRD-NNN:NNN | @prd: PRD-NNN:NNN | @threshold: PRD-035:timing.key | @entity: PRD-004:EntityName
+**Traceability**: @brd: BRD.NNN.NNN | @prd: PRD.NNN.NNN | @threshold: PRD.035.timing.key | @entity: PRD.004.EntityName
 
 ### 3.2 State-Driven Requirements
 
@@ -107,7 +107,7 @@ THE [system component] SHALL [continuous behavior 1],
 and [continuous behavior 3]
 WITHIN [operational context].
 \`\`\`
-**Traceability**: @brd: BRD-NNN:NNN | @prd: PRD-NNN:NNN | @entity: PRD-004:EntityName
+**Traceability**: @brd: BRD.NNN.NNN | @prd: PRD.NNN.NNN | @entity: PRD.004.EntityName
 
 ### 3.3 Unwanted Behavior Requirements
 
@@ -119,7 +119,7 @@ THE [system component] SHALL [prevention/recovery action 1],
 and [prevention/recovery action 3]
 WITHIN [timing constraint].
 \`\`\`
-**Traceability**: @brd: BRD-NNN:NNN | @prd: PRD-NNN:NNN | @threshold: PRD-035:error.key
+**Traceability**: @brd: BRD.NNN.NNN | @prd: PRD.NNN.NNN | @threshold: PRD-035:error.key
 
 ### 3.4 Ubiquitous Requirements
 
@@ -129,30 +129,30 @@ THE [system component] SHALL [universal behavior]
 for [scope/context]
 WITHIN [operational boundary].
 \`\`\`
-**Traceability**: @brd: BRD-NNN:NNN | @prd: PRD-NNN:NNN
+**Traceability**: @brd: BRD.NNN.NNN | @prd: PRD.NNN.NNN
 
 ---
 
 ## 4. Non-Functional Requirements (NFRs)
 
-### 4.1 Performance Requirements
+### 4.1 Performance Requirements (901-920)
 
 | NFR ID | Requirement Statement | Metric | Target | Priority | Measurement Method |
 |--------|----------------------|--------|--------|----------|-------------------|
-| NFR-PERF-001 | THE [component] SHALL complete [operation] | Latency | p95 < XXXms | High | [method] |
-| NFR-PERF-002 | THE [component] SHALL process [workload] | Throughput | XXX/s | Medium | [method] |
+| EARS.XXX.901 | THE [component] SHALL complete [operation] | Latency | p95 < XXXms | High | [method] |
+| EARS.XXX.902 | THE [component] SHALL process [workload] | Throughput | XXX/s | Medium | [method] |
 
-### 4.2 Security Requirements
+### 4.2 Security Requirements (961-980)
 
 | NFR ID | Requirement Statement | Standard/Framework | Priority | Validation Method |
 |--------|----------------------|-------------------|----------|-------------------|
-| NFR-SEC-001 | THE [component] SHALL [security requirement] | [standard] | High | [method] |
+| EARS.XXX.961 | THE [component] SHALL [security requirement] | [standard] | High | [method] |
 
-### 4.3 Reliability Requirements
+### 4.3 Reliability Requirements (921-940)
 
 | NFR ID | Requirement Statement | Target | Priority | Measurement Period |
 |--------|----------------------|--------|----------|-------------------|
-| NFR-REL-001 | THE [component] SHALL maintain uptime | 99.9% | High | Monthly |
+| EARS.XXX.921 | THE [component] SHALL maintain uptime | 99.9% | High | Monthly |
 
 ---
 
@@ -179,10 +179,10 @@ WITHIN [operational boundary].
 
 **Required Tags**:
 \`\`\`markdown
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@threshold: PRD-035:category.key
-@entity: PRD-004:EntityName
+@brd: BRD.NNN.NNN
+@prd: PRD.NNN.NNN
+@threshold: PRD.035.category.key
+@entity: PRD.004.EntityName
 @ctr: CTR-NNN (if applicable)
 \`\`\`
 

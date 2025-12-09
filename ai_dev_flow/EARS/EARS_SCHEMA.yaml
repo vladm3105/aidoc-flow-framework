@@ -168,7 +168,7 @@ ears_patterns:
 
   # Each EARS statement must include
   required_statement_components:
-    - traceability_tag: "@prd: PRD-NNN:NNN"
+    - traceability_tag: "@prd: PRD.NNN.NNN"
     - timing_specification: "WITHIN X seconds/minutes/hours at pNN latency"
 
 # =============================================================================

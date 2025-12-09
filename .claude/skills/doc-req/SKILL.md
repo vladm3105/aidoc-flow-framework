@@ -220,39 +220,50 @@ TradeOrderRequest:
 
 **Section 7: Non-Functional Requirements**
 
-**NFR Categorical Prefix Standard** (MANDATORY):
+**NFR 900-Series Standard** (MANDATORY):
 
-| Category | Prefix | Full Format | Keywords for AI Detection |
-|----------|--------|-------------|---------------------------|
-| Performance | `NFR-PERF-` | `NFR-PERF-NNN` | latency, response time, throughput, p95, TPS |
-| Reliability | `NFR-REL-` | `NFR-REL-NNN` | uptime, availability, MTBF, MTTR, failover |
-| Scalability | `NFR-SCAL-` | `NFR-SCAL-NNN` | concurrent users, horizontal scaling, capacity |
-| Security | `NFR-SEC-` | `NFR-SEC-NNN` | authentication, authorization, encryption, RBAC |
-| Observability | `NFR-OBS-` | `NFR-OBS-NNN` | logging, monitoring, alerting, metrics, tracing |
-| Maintainability | `NFR-MAINT-` | `NFR-MAINT-NNN` | code coverage, deployment, CI/CD, documentation |
+| Category | Series Range | Example | Keywords for AI Detection |
+|----------|-------------|---------|---------------------------|
+| Performance | 901-920 | `REQ.001.901` | latency, response time, throughput, p95, TPS |
+| Reliability | 921-940 | `REQ.001.921` | uptime, availability, MTBF, MTTR, failover |
+| Scalability | 941-960 | `REQ.001.941` | concurrent users, horizontal scaling, capacity |
+| Security | 961-980 | `REQ.001.961` | authentication, authorization, encryption, RBAC |
+| Observability | 981-990 | `REQ.001.981` | logging, monitoring, alerting, metrics, tracing |
+| Maintainability | 991-999 | `REQ.001.991` | code coverage, deployment, CI/CD, documentation |
 
-**Cross-Layer Consistency**: Use identical NFR IDs across all layers (BRD → SYS → REQ).
+**Cross-Layer Consistency**: Use unified `TYPE.NNN.9XX` format across all layers.
 
 ```markdown
 ## Non-Functional Requirements
 
-### NFR-PERF-001: Validation Latency
+### REQ.001.901: Validation Latency
 - P95 latency <50ms for validation
 - Throughput: 1000 validations/second
 - Memory usage <100MB per instance
-- **Traceability**: @sys: SYS-001:NFR-PERF-001
+- **Traceability**: @sys: SYS.001.901
 
-### NFR-SEC-001: Input Validation Security
+### REQ.001.961: Input Validation Security
 - Validate all inputs against schema
 - Sanitize error messages (no sensitive data)
 - Audit log all validation attempts
-- **Traceability**: @sys: SYS-001:NFR-SEC-001
+- **Traceability**: @sys: SYS.001.961
 
-### NFR-SCAL-001: Horizontal Scaling
+### REQ.001.941: Horizontal Scaling
 - Horizontal scaling support
 - Stateless validation (no session required)
-- **Traceability**: @sys: SYS-001:NFR-SCAL-001
+- **Traceability**: @sys: SYS.001.941
 ```
+
+## Unified Feature ID Format (MANDATORY)
+
+**Always use**: `TYPE.NNN.NNN` (dot separator)
+**Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+
+Examples:
+- `@brd: BRD.017.001` ✅
+- `@brd: BRD-017:001` ❌
+
+NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
 
 ## Cumulative Tagging Requirements
 
@@ -266,12 +277,12 @@ TradeOrderRequest:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
 ```markdown
-@brd: BRD-001:section-3
-@prd: PRD-001:feature-2
-@ears: EARS-001:E01
-@bdd: BDD-001:scenario-validation
-@adr: ADR-033, ADR-045
-@sys: SYS-001:FR-001, SYS-001:NFR-001
+@brd: BRD.001.003
+@prd: PRD.001.002
+@ears: EARS.001.001
+@bdd: BDD.001.001
+@adr: ADR.033, ADR.045
+@sys: SYS.001.001, SYS.001.901
 ```
 
 **Upstream Sources**:
@@ -455,7 +466,7 @@ python scripts/validate_cross_document.py --layer REQ --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd/@adr/@sys tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE-NNN:section format |
+| Invalid tag format | Correct to TYPE.NNN.NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

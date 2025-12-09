@@ -147,9 +147,9 @@ Scenario: Activate fallback on agent failure
 AI-Agent BDD files SHOULD use `@entity` tags to reference PRD-004 entities:
 
 ```gherkin
-And RiskEvaluationUnit entity is constructed per @entity:PRD-004:RiskEvaluationUnit
-And ComplianceCase entity is created per @entity:PRD-004:ComplianceCase
-And BusinessTransaction entity is updated per @entity:PRD-004:BusinessTransaction
+And RiskEvaluationUnit entity is constructed per @entity:PRD.004.RiskEvaluationUnit
+And ComplianceCase entity is created per @entity:PRD.004.ComplianceCase
+And BusinessTransaction entity is updated per @entity:PRD.004.BusinessTransaction
 ```
 
 ---

@@ -176,6 +176,17 @@ WHEN trade is placed THE system SHALL process it quickly
 WHEN trade order received THE order management system SHALL validate and route order WITHIN 50 milliseconds
 ```
 
+## Unified Feature ID Format (MANDATORY)
+
+**Always use**: `TYPE.NNN.NNN` (dot separator)
+**Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+
+Examples:
+- `@brd: BRD.017.001` ✅
+- `@brd: BRD-017:001` ❌
+
+NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
+
 ## Cumulative Tagging Requirements
 
 **Layer 3 (EARS)**: Must include tags from Layers 1-2 (BRD, PRD)
@@ -188,14 +199,14 @@ WHEN trade order received THE order management system SHALL validate and route o
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 3):
 ```markdown
-@brd: BRD-001:section-3, BRD-001:success-criteria
-@prd: PRD-001:feature-2, PRD-001:kpi-performance
+@brd: BRD.001.003, BRD.001.010
+@prd: PRD.001.002, PRD.001.015
 ```
 
-- BRD-001:section-3 - Business requirements driving these formal requirements
-- BRD-001:success-criteria - Success criteria from business case
-- PRD-001:feature-2 - Product feature being formalized
-- PRD-001:kpi-performance - Performance KPI targets
+- BRD.001.003 - Business requirements driving these formal requirements
+- BRD.001.010 - Success criteria from business case
+- PRD.001.002 - Product feature being formalized
+- PRD.001.015 - Performance KPI targets
 
 **Upstream Sources**:
 - [BRD-001](../BRD/BRD-001_platform.md#BRD-001) - Business requirements

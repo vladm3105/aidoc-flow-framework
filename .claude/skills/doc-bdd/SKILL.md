@@ -185,6 +185,17 @@ Scenario Outline: Validate price precision
     | AMZN   | 3250.5 | 1        |
 ```
 
+## Unified Feature ID Format (MANDATORY)
+
+**Always use**: `TYPE.NNN.NNN` (dot separator)
+**Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+
+Examples:
+- `@brd: BRD.017.001` ✅
+- `@brd: BRD-017:001` ❌
+
+NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
+
 ## Cumulative Tagging Requirements
 
 **Layer 4 (BDD)**: Must include tags from Layers 1-3 (BRD, PRD, EARS)
@@ -193,16 +204,16 @@ Scenario Outline: Validate price precision
 
 **Format** (in companion .md file or feature file header):
 ```markdown
-@brd: BRD-001:section-3
-@prd: PRD-001:feature-2
-@ears: EARS-001:E01, EARS-001:S02
+@brd: BRD.001.003
+@prd: PRD.001.002
+@ears: EARS.001.001, EARS.001.002
 ```
 
 **Gherkin Tag Format** (in .feature file):
 ```gherkin
 # Tags linking to requirements and architecture decisions
-@requirement:REQ-003:interface-spec
-@requirement:EARS-001:E01
+@requirement:REQ.003.001
+@requirement:EARS.001.001
 @adr:ADR-033
 ```
 
@@ -264,7 +275,7 @@ For each requirement from EARS/PRD:
 
 Add @requirement and @adr tags to each scenario:
 ```gherkin
-@requirement:EARS-001:E01
+@requirement:EARS.001.001
 @adr:ADR-033
 @priority:P0
 Scenario: Reject trade exceeding limit

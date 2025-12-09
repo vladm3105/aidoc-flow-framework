@@ -333,16 +333,16 @@ traceability:
   cumulative_tags:
     layer: 11
     required:
-      - "@brd: BRD-NNN:NNN"
-      - "@prd: PRD-NNN:NNN"
-      - "@ears: EARS-NNN:NNN"
-      - "@bdd: BDD-NNN:NNN"
+      - "@brd: BRD.NNN.NNN"
+      - "@prd: PRD.NNN.NNN"
+      - "@ears: EARS.NNN.NNN"
+      - "@bdd: BDD.NNN.NNN"
       - "@adr: ADR-NNN"
-      - "@sys: SYS-NNN:NNN"
-      - "@req: REQ-NNN:NNN"
+      - "@sys: SYS.NNN.NNN"
+      - "@req: REQ.NNN.NNN"
       - "@spec: SPEC-NNN"
     optional:
-      - "@impl: IMPL-NNN:NNN"
+      - "@impl: IMPL.NNN.NNN"
       - "@ctr: CTR-NNN"
     description: "Layer 11 requires 8 upstream artifact tags (10 including optional IMPL and CTR)"
 

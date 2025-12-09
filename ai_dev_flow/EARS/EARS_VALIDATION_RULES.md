@@ -298,19 +298,19 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Invalid** (inline without pipes):
 ```markdown
-**Traceability**: @brd: BRD-002:010 @prd: PRD-002:001
+**Traceability**: @brd: BRD.002.010 @prd: PRD.002.001
 ```
 
 **Valid** (inline with pipes):
 ```markdown
-**Traceability**: @brd: BRD-002:010 | @prd: PRD-002:001
+**Traceability**: @brd: BRD.002.010 | @prd: PRD.002.001
 ```
 
 **Valid** (list format):
 ```markdown
 **Traceability**:
 - @brd: BRD-002
-- @prd: PRD-002:001
+- @prd: PRD.002.001
 - @threshold: PRD-035:timeout.partner.bridge
 ```
 
@@ -351,7 +351,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 **Valid formats**:
 ```markdown
 @brd: BRD-002
-@brd: BRD-002:010
+@brd: BRD.002.010
 ```
 
 **Fix**: Add @brd tag to traceability section referencing source BRD

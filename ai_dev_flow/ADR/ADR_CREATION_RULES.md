@@ -188,10 +188,10 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 **Complete Upstream Tag Chain**:
 ```markdown
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
-@bdd: BDD-NNN:NNN
+@brd: BRD.NNN.NNN
+@prd: PRD.NNN.NNN
+@ears: EARS.NNN.NNN
+@bdd: BDD.NNN.NNN
 ```
 
 **Layer 5 Requirements**: ADR must reference ALL upstream artifacts

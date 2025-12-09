@@ -423,12 +423,12 @@ Document: docs/REQ/REQ-001_api_validation.md
 Layer: 7 (REQ)
 
 Checking cumulative tags...
-  ✅ @brd: BRD-001:section-3
-  ✅ @prd: PRD-001:feature-2
-  ✅ @ears: EARS-001:E01
-  ✅ @bdd: BDD-001:scenario-validation
+  ✅ @brd: BRD.001.003
+  ✅ @prd: PRD.001.002
+  ✅ @ears: EARS.001.001
+  ✅ @bdd: BDD.001.001
   ✅ @adr: ADR-033, ADR-045
-  ✅ @sys: SYS-001:FR-001
+  ✅ @sys: SYS.001.001
 
 Checking upstream references...
   ✅ BRD-001 exists: docs/BRD/BRD-001_platform.md

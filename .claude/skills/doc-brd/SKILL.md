@@ -230,10 +230,21 @@ The following architectural topics require decision-making:
 
 **Format**: BRD has no `@` tags since it's Layer 1 (top of hierarchy)
 
-**Downstream artifacts will tag BRD**:
-- PRD will include: `@brd: BRD-001:section-name`
-- EARS will include: `@brd: BRD-001:section-name`
+**Downstream artifacts will tag BRD** (using unified format):
+- PRD will include: `@brd: BRD.001.030` (TYPE.DOC.FEATURE format)
+- EARS will include: `@brd: BRD.001.030`
 - All downstream artifacts inherit BRD tags
+
+## Unified Feature ID Format (MANDATORY)
+
+**Always use**: `TYPE.NNN.NNN` (dot separator)
+**Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+
+Examples:
+- `@brd: BRD.017.001` ✅
+- `@brd: BRD-017:001` ❌
+
+NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
 
 ## Upstream/Downstream Artifacts
 
@@ -415,7 +426,7 @@ After creating BRD, use:
 
 The PRD will:
 - Reference this BRD as upstream source
-- Include `@brd: BRD-NNN:section` tags
+- Include `@brd: BRD.NNN.NNN` tags (unified format)
 - Define product features and KPIs
 - Inherit Architecture Decision Requirements topics
 

@@ -279,7 +279,7 @@ recommendations:
 
 **Required Tags**:
 ```
-@prd: PRD-000:G-001
+@prd: PRD.000.001
 @adr: ADR-000
 ```
 

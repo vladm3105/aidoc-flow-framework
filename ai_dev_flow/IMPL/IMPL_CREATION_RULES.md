@@ -323,13 +323,13 @@ Every deliverable must be listed with checkbox:
 ### 8.1 Upstream References (Layer 8 position)
 
 IMPL must reference:
-- `@brd: BRD-NNN:NNN` - Business requirements
-- `@prd: PRD-NNN:NNN` - Product requirements
-- `@ears: EARS-NNN:NNN` - EARS statements
-- `@bdd: BDD-NNN:NNN` - BDD scenarios
+- `@brd: BRD.NNN.NNN` - Business requirements
+- `@prd: PRD.NNN.NNN` - Product requirements
+- `@ears: EARS.NNN.NNN` - EARS statements
+- `@bdd: BDD.NNN.NNN` - BDD scenarios
 - `@adr: ADR-NNN` - Architecture decisions
-- `@sys: SYS-NNN:NNN` - System requirements
-- `@req: REQ-NNN:NNN` - Atomic requirements
+- `@sys: SYS.NNN.NNN` - System requirements
+- `@req: REQ.NNN.NNN` - Atomic requirements
 
 ### 8.2 Downstream Artifacts
 
@@ -343,13 +343,13 @@ IMPL produces (as deliverables):
 ```markdown
 ## Traceability Tags
 
-@brd: BRD-001:042
-@prd: PRD-001:015
-@ears: EARS-001:003
-@bdd: BDD-001:005
+@brd: BRD.001.042
+@prd: PRD.001.015
+@ears: EARS.001.003
+@bdd: BDD.001.005
 @adr: ADR-002
-@sys: SYS-002:001
-@req: REQ-001:001, REQ-002:001
+@sys: SYS.002.001
+@req: REQ.001.001, REQ.002.001
 ```
 
 ---

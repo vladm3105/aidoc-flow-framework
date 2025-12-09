@@ -97,9 +97,9 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 
 **Required Tags** (ALL MANDATORY):
 ```gherkin
-@brd: BRD-NNN:NNN    # REQUIRED - business requirements
-@prd: PRD-NNN:NNN    # REQUIRED - product requirements
-@ears: EARS-NNN:NNN  # REQUIRED - engineering requirements
+@brd: BRD.NNN.NNN    # REQUIRED - business requirements
+@prd: PRD.NNN.NNN    # REQUIRED - product requirements
+@ears: EARS.NNN.NNN  # REQUIRED - engineering requirements
 ```
 
 **Format**: Extended format with requirement ID suffix (`:NNN`) is REQUIRED.
@@ -113,16 +113,16 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 
 **❌ INVALID** (comment-based tags - frameworks cannot parse):
 ```gherkin
-# @brd: BRD-001:FR-001
-# @prd: PRD-001:001
+# @brd: BRD.001.001
+# @prd: PRD.001.001
 Feature: My Feature
 ```
 
 **✅ VALID** (Gherkin-native tags):
 ```gherkin
-@brd:BRD-001:FR-001
-@prd:PRD-001:001
-@ears:EARS-001:001
+@brd:BRD.001.001
+@prd:PRD.001.001
+@ears:EARS.001.001
 Feature: My Feature
 ```
 
@@ -231,11 +231,11 @@ find docs/BDD -name "BDD-*.feature" -exec ./scripts/validate_bdd_template.sh {} 
 ### Mistake #1: Incomplete Traceability Tags (ALL THREE ARE REQUIRED)
 ```
 ❌ @brd: BRD-001           (missing :NNN suffix)
-✅ @brd: BRD-001:030       (correct format with requirement ID)
+✅ @brd: BRD.001.030       (correct format with requirement ID)
 ❌ Missing @brd tag        (ALL three tags are MANDATORY)
-✅ @brd: BRD-001:030
-   @prd: PRD-001:002
-   @ears: EARS-001:003
+✅ @brd: BRD.001.030
+   @prd: PRD.001.002
+   @ears: EARS.001.003
 ```
 
 ### Mistake #2: Subjective Language

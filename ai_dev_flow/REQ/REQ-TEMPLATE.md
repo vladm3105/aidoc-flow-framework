@@ -1248,12 +1248,12 @@ Document the business strategy, product requirements, system specifications, and
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
 ```markdown
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
-@bdd: BDD-NNN:NNN
+@brd: BRD.NNN.NNN
+@prd: PRD.NNN.NNN
+@ears: EARS.NNN.NNN
+@bdd: BDD.NNN.NNN
 @adr: ADR-NNN
-@sys: SYS-NNN:NNN
+@sys: SYS.NNN.NNN
 ```
 
 **Threshold Registry Tag** (Required when NFRs reference quantitative values):
@@ -1261,7 +1261,7 @@ Document the business strategy, product requirements, system specifications, and
 @threshold: PRD-NNN:category.subcategory.key
 ```
 
-**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+**Format**: `@artifact-type: TYPE.NNN.NNN` (Unified Feature ID format)
 
 **Layer 7 Requirements**: REQ must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -1276,12 +1276,12 @@ Document the business strategy, product requirements, system specifications, and
 
 **Example**:
 ```markdown
-@brd: BRD-001:030
-@prd: PRD-003:002
-@ears: EARS-001:003
-@bdd: BDD-003:015
+@brd: BRD.001.030
+@prd: PRD.003.002
+@ears: EARS.001.003
+@bdd: BDD.003.015
 @adr: ADR-033
-@sys: SYS-008:001
+@sys: SYS.008.001
 @threshold: PRD-035:perf.api.p95_latency
 @threshold: PRD-035:sla.uptime.target
 ```

@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type BRD --output docs/BRD/BR
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@brd: BRD-001:NNN` (for multi-requirement docs) or `@brd: BRD-001` (for single-doc refs)
+**Tag Format:** `@brd: BRD.001.NNN` (for specific requirements) or `@brd: BRD-001` (for document-level refs)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -124,9 +124,9 @@ However, BRD documents should reference their strategic sources in the "Upstream
 ### 12.2 Downstream Artifacts
 
 **Direct Dependencies**:
-- PRD-016: operation execution Product Requirements (`@brd: BRD-009:015`)
-- PRD-017: Order Management Features (`@brd: BRD-009:020`)
-- EARS-012: Formal operation execution requirements (`@brd: BRD-009:015`)
+- PRD-016: operation execution Product Requirements (`@brd: BRD.009.015`)
+- PRD-017: Order Management Features (`@brd: BRD.009.020`)
+- EARS-012: Formal operation execution requirements (`@brd: BRD.009.015`)
 ```
 
 ### 2.4 Validation Rules
@@ -134,7 +134,7 @@ However, BRD documents should reference their strategic sources in the "Upstream
 1. **No Upstream Tags Required**: BRD documents do not use `@artifact-type` tags for upstream traceability
 2. **Strategic Documentation**: BRDs MUST document strategic sources in natural language (Market Research, Strategic Plans, Stakeholder Input)
 3. **Downstream Awareness**: BRDs SHOULD list downstream artifacts that reference them (PRDs, EARS, etc.)
-4. **Tag Discovery**: All downstream artifacts MUST include `@brd: BRD-NNN:NNN` tags referencing this BRD
+4. **Tag Discovery**: All downstream artifacts MUST include `@brd: BRD.NNN.NNN` tags referencing this BRD
 
 ### 2.5 Tag Discovery
 
@@ -157,14 +157,14 @@ Strategy (External) → BRD (Layer 1)
                         ↓
                   Downstream Artifacts Tag with @brd:
                         ↓
-            PRD (Layer 2): @brd: BRD-009:015
+            PRD (Layer 2): @brd: BRD.009.015
                         ↓
-         EARS (Layer 3): @brd: BRD-009:015, @prd: PRD-016...
+         EARS (Layer 3): @brd: BRD.009.015, @prd: PRD-016...
                         ↓
          [Complete chain through Code and Tests]
 ```
 
-**Key Principle**: While BRD has no upstream tags, **every downstream artifact** from PRD through Tests MUST include `@brd: BRD-NNN:NNN` tags, creating complete end-to-end traceability from business requirements to production code.
+**Key Principle**: While BRD has no upstream tags, **every downstream artifact** from PRD through Tests MUST include `@brd: BRD.NNN.NNN` tags, creating complete end-to-end traceability from business requirements to production code.
 
 ---
 

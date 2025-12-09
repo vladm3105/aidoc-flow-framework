@@ -93,50 +93,50 @@ Use `doc-sys` when:
 - Validate price within reasonable range
 - Validate account has sufficient buying power
 **Output**: Validation result (pass/fail) with error details
-**Source**: EARS-001:E01, ADR-033
-**Verification**: BDD-001:scenario-order-validation
+**Source**: EARS.001.001, ADR-033
+**Verification**: BDD.001.001
 ```
 
 ### 3. Non-Functional Requirements
 
-**NFR Categorical Prefix Standard** (MANDATORY):
+**NFR 900-Series Standard** (MANDATORY):
 
-NFRs use categorical prefixes for automated categorization and cross-layer traceability:
+NFRs use unified 900-series numbering within SYS documents for automated categorization:
 
-| Category | Prefix | Full Format | Keywords for AI Detection |
-|----------|--------|-------------|---------------------------|
-| Performance | `NFR-PERF-` | `NFR-PERF-NNN` | latency, response time, throughput, p95, TPS |
-| Reliability | `NFR-REL-` | `NFR-REL-NNN` | uptime, availability, MTBF, MTTR, failover |
-| Scalability | `NFR-SCAL-` | `NFR-SCAL-NNN` | concurrent users, horizontal scaling, capacity |
-| Security | `NFR-SEC-` | `NFR-SEC-NNN` | authentication, authorization, encryption, RBAC |
-| Observability | `NFR-OBS-` | `NFR-OBS-NNN` | logging, monitoring, alerting, metrics, tracing |
-| Maintainability | `NFR-MAINT-` | `NFR-MAINT-NNN` | code coverage, deployment, CI/CD, documentation |
+| Category | Series Range | Example | Keywords for AI Detection |
+|----------|-------------|---------|---------------------------|
+| Performance | 901-920 | `SYS.001.901` | latency, response time, throughput, p95, TPS |
+| Reliability | 921-940 | `SYS.001.921` | uptime, availability, MTBF, MTTR, failover |
+| Scalability | 941-960 | `SYS.001.941` | concurrent users, horizontal scaling, capacity |
+| Security | 961-980 | `SYS.001.961` | authentication, authorization, encryption, RBAC |
+| Observability | 981-990 | `SYS.001.981` | logging, monitoring, alerting, metrics, tracing |
+| Maintainability | 991-999 | `SYS.001.991` | code coverage, deployment, CI/CD, documentation |
 
-**Cross-Layer Consistency**: Use identical NFR IDs across all layers (BRD → PRD → EARS → SYS).
+**Cross-Layer Consistency**: Use unified `TYPE.NNN.9XX` format across all layers.
 
-**Cross-Reference Format**: `@sys: SYS-001:NFR-PERF-001`
+**Cross-Reference Format**: `@sys: SYS.001.901` (not `SYS-001:NFR-PERF-001`)
 
 **Format**:
 ```markdown
 ## Non-Functional Requirements
 
-### NFR-PERF-001: Order Validation Performance
-**Category**: Performance
+### SYS.001.901: Order Validation Performance
+**Category**: Performance (901-920)
 **Requirement**: Order validation SHALL complete within 50ms at P95
 **Measurement**: P50 <25ms, P95 <50ms, P99 <100ms
 **Rationale**: User experience requires sub-second feedback per PRD-001
-**Source**: PRD-001:KPI-performance, EARS-001:WITHIN-constraint
+**Source**: PRD.001.901, EARS.001.901
 **Verification**: Performance benchmarks, load testing
-**Traceability**: @brd: BRD-001:NFR-PERF-001 | @prd: PRD-001:NFR-PERF-001
+**Traceability**: @brd: BRD.001.901 | @prd: PRD.001.901
 
-### NFR-REL-001: System Availability
-**Category**: Reliability
+### SYS.001.921: System Availability
+**Category**: Reliability (921-940)
 **Requirement**: System SHALL maintain 99.9% uptime during market hours
 **Measurement**: Monthly uptime >99.9% (43.2 minutes downtime max)
 **Rationale**: Trading system criticality requires high availability
-**Source**: BRD-001:success-criteria
+**Source**: BRD.001.921
 **Verification**: Uptime monitoring, incident tracking
-**Traceability**: @brd: BRD-001:NFR-REL-001
+**Traceability**: @brd: BRD.001.921
 ```
 
 ### 4. System Flows
@@ -189,6 +189,17 @@ sequenceDiagram
 **Verification**: API design review, contract validation
 ```
 
+## Unified Feature ID Format (MANDATORY)
+
+**Always use**: `TYPE.NNN.NNN` (dot separator)
+**Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+
+Examples:
+- `@brd: BRD.017.001` ✅
+- `@brd: BRD-017:001` ❌
+
+NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
+
 ## Cumulative Tagging Requirements
 
 **Layer 6 (SYS)**: Must include tags from Layers 1-5 (BRD, PRD, EARS, BDD, ADR)
@@ -201,11 +212,11 @@ sequenceDiagram
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
 ```markdown
-@brd: BRD-001:section-3
-@prd: PRD-001:feature-2, PRD-001:kpi-performance
-@ears: EARS-001:E01, EARS-001:S02
-@bdd: BDD-001:scenario-order-validation
-@adr: ADR-033, ADR-045
+@brd: BRD.001.003
+@prd: PRD.001.002, PRD.001.015
+@ears: EARS.001.001, EARS.001.002
+@bdd: BDD.001.001
+@adr: ADR.033, ADR.045
 ```
 
 **Upstream Sources**:
@@ -378,7 +389,7 @@ python scripts/validate_cross_document.py --layer SYS --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd/@adr tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE-NNN:section format |
+| Invalid tag format | Correct to TYPE.NNN.NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

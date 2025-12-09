@@ -374,7 +374,7 @@ poetry show | grep -E "(async_client|pydantic)"
 |-----|--------|-------------|
 | @brd | BRD-NNN:REQ-NNN | Business Requirements (Layer 1) |
 | @prd | PRD-NNN:REQ-NNN | Product Requirements (Layer 2) |
-| @ears | EARS-NNN:NNN | EARS Requirements (Layer 3) |
+| @ears | EARS.NNN.NNN | EARS Requirements (Layer 3) |
 | @bdd | BDD-NNN:SCENARIO-NNN | BDD Scenarios (Layer 4) |
 | @adr | ADR-NNN | Architecture Decisions (Layer 5) |
 | @sys | SYS-NNN:REQ-NNN | System Requirements (Layer 6) |
@@ -398,19 +398,19 @@ poetry show | grep -E "(async_client|pydantic)"
 
 ### Required Tags (Mandatory)
 
-- `@brd: BRD-001:042` - Business Requirements (Layer 1)
-- `@prd: PRD-001:015` - Product Requirements (Layer 2)
-- `@ears: EARS-001:003` - EARS Requirements (Layer 3)
-- `@bdd: BDD-001:005` - BDD Scenarios (Layer 4)
+- `@brd: BRD.001.042` - Business Requirements (Layer 1)
+- `@prd: PRD.001.015` - Product Requirements (Layer 2)
+- `@ears: EARS.001.003` - EARS Requirements (Layer 3)
+- `@bdd: BDD.001.005` - BDD Scenarios (Layer 4)
 - `@adr: ADR-002` - Architecture Decisions (Layer 5)
-- `@sys: SYS-002:001` - System Requirements (Layer 6)
-- `@req: REQ-001:001` - Atomic Requirements (Layer 7)
+- `@sys: SYS.002.001` - System Requirements (Layer 6)
+- `@req: REQ.001.001` - Atomic Requirements (Layer 7)
 - `@spec: SPEC-001` - Technical Specifications (Layer 10)
-- `@tasks: TASKS-001:001` - Code Generation Plan (Layer 11)
+- `@tasks: TASKS.001.001` - Code Generation Plan (Layer 11)
 
 ### Optional Tags
 
-- `@impl: IMPL-001:001` - Implementation Plan (Layer 8)
+- `@impl: IMPL.001.001` - Implementation Plan (Layer 8)
 - `@ctr: CTR-001` - Interface Contract (Layer 9)
 ```
 

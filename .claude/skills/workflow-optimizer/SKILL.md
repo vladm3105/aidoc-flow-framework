@@ -478,7 +478,7 @@ sequential_requirements:
 
 **Required Tags**:
 ```
-@prd: PRD-000:G-004
+@prd: PRD.000.004
 @adr: ADR-000
 ```
 

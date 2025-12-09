@@ -357,42 +357,42 @@ traceability:
   cumulative_tags:
     layer: 12
     required:
-      - "@brd: BRD-NNN:NNN"
-      - "@prd: PRD-NNN:NNN"
-      - "@ears: EARS-NNN:NNN"
-      - "@bdd: BDD-NNN:NNN"
+      - "@brd: BRD.NNN.NNN"
+      - "@prd: PRD.NNN.NNN"
+      - "@ears: EARS.NNN.NNN"
+      - "@bdd: BDD.NNN.NNN"
       - "@adr: ADR-NNN"
-      - "@sys: SYS-NNN:NNN"
-      - "@req: REQ-NNN:NNN"
+      - "@sys: SYS.NNN.NNN"
+      - "@req: REQ.NNN.NNN"
       - "@spec: SPEC-NNN"
       - "@tasks: TASKS-NNN"
     optional:
-      - "@impl: IMPL-NNN:NNN"
+      - "@impl: IMPL.NNN.NNN"
       - "@ctr: CTR-NNN"
     description: "Layer 12 requires 9 upstream artifact tags (11 including optional IMPL and CTR)"
 
   upstream:
     required:
       - type: BRD
-        format: "@brd: BRD-NNN:NNN"
+        format: "@brd: BRD.NNN.NNN"
         location: "Section 8 Traceability Tags"
       - type: PRD
-        format: "@prd: PRD-NNN:NNN"
+        format: "@prd: PRD.NNN.NNN"
         location: "Section 8 Traceability Tags"
       - type: EARS
-        format: "@ears: EARS-NNN:NNN"
+        format: "@ears: EARS.NNN.NNN"
         location: "Section 8 Traceability Tags"
       - type: BDD
-        format: "@bdd: BDD-NNN:NNN"
+        format: "@bdd: BDD.NNN.NNN"
         location: "Section 8 Traceability Tags"
       - type: ADR
         format: "@adr: ADR-NNN"
         location: "Section 8 Traceability Tags"
       - type: SYS
-        format: "@sys: SYS-NNN:NNN"
+        format: "@sys: SYS.NNN.NNN"
         location: "Section 8 Traceability Tags"
       - type: REQ
-        format: "@req: REQ-NNN:NNN"
+        format: "@req: REQ.NNN.NNN"
         location: "Section 8 Traceability Tags"
       - type: SPEC
         format: "@spec: SPEC-NNN"
@@ -402,7 +402,7 @@ traceability:
         location: "Document Control table or Section 8"
     optional:
       - type: IMPL
-        format: "@impl: IMPL-NNN:NNN"
+        format: "@impl: IMPL.NNN.NNN"
         location: "Section 8 Traceability Tags"
       - type: CTR
         format: "@ctr: CTR-NNN"

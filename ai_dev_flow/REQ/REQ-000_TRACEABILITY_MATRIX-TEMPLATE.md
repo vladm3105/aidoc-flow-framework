@@ -93,12 +93,12 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 ### 5.2 Tag Format
 
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:002, EARS-012:001
-@bdd: BDD-015:001
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.002, EARS.012.001
+@bdd: BDD.015.001
 @adr: ADR-033
-@sys: SYS-012:001, SYS-012:002
+@sys: SYS.012.001, SYS.012.002
 ```
 
 **Format Rules**:
@@ -120,33 +120,33 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:002, EARS-012:001
-@bdd: BDD-015:001, BDD-015:002
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.002, EARS.012.001
+@bdd: BDD.015.001, BDD.015.002
 @adr: ADR-033
-@sys: SYS-012:001, SYS-012:002
+@sys: SYS.012.001, SYS.012.002
 ```
 
 **Traceability Chain**:
-- **BRD-009:015**: Business requirement for request submission capability
-- **BRD-009:006**: Performance requirement (2-second execution)
-- **PRD-016:003**: Product feature for operation execution
-- **EARS-012:002**: Formal requirement "WHEN order validation succeeds..."
-- **EARS-012:001**: State-driven requirement for order lifecycle
-- **BDD-015:001**: Acceptance test scenario
-- **BDD-015:002**: Negative test scenario
+- **BRD.009.015**: Business requirement for request submission capability
+- **BRD.009.006**: Performance requirement (2-second execution)
+- **PRD.016.003**: Product feature for operation execution
+- **EARS.012.002**: Formal requirement "WHEN order validation succeeds..."
+- **EARS.012.001**: State-driven requirement for order lifecycle
+- **BDD.015.001**: Acceptance test scenario
+- **BDD.015.002**: Negative test scenario
 - **ADR-033**: Architecture decision for event-driven trade processing
-- **SYS-012:001**: System performance requirement (2-second SLA)
-- **SYS-012:002**: System reliability requirement (99.9% uptime)
+- **SYS.012.001**: System performance requirement (2-second SLA)
+- **SYS.012.002**: System reliability requirement (99.9% uptime)
 
 ### 15.2 Downstream Artifacts
 
 **Direct Dependencies**:
-- SPEC-018: request submission service specification (`@req: REQ-045:001`)
-- CTR-005: operation execution API contract (`@req: REQ-045:002`)
-- Code: `src/execution/order_service.py` (`@req: REQ-045:001`)
-- Tests: `tests/test_order_service.py` (`@req: REQ-045:001`)
+- SPEC-018: request submission service specification (`@req: REQ.045.001`)
+- CTR-005: operation execution API contract (`@req: REQ.045.002`)
+- Code: `src/execution/order_service.py` (`@req: REQ.045.001`)
+- Tests: `tests/test_order_service.py` (`@req: REQ.045.001`)
 ```
 
 ### 5.4 Example: Atomic Requirement Structure

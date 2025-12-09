@@ -39,7 +39,7 @@ docs/SYS/SYS-NNN_{descriptive_name}.md
 **Input**: Trade order (symbol, quantity, price, account)
 **Processing**: Validation steps
 **Output**: Validation result
-**Source**: EARS-001:E01, ADR-033
+**Source**: EARS.001.001, ADR-033
 ```
 
 **Non-Functional Requirement (NFR)**:

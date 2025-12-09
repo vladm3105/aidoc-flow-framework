@@ -411,7 +411,7 @@ status: "Ready for downstream artifacts"
 
 **Required Tags**:
 ```
-@prd: PRD-000:G-003
+@prd: PRD.000.003
 @adr: ADR-000
 ```
 

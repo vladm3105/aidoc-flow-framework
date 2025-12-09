@@ -125,7 +125,7 @@ ls -la docs/IPLAN/  # Layer 12 - Implementation Plans
 
 **✅ CORRECT** (verified references):
 ```markdown
-@brd: BRD-001:030  # Verified: docs/BRD/BRD-001_project.md exists
+@brd: BRD.001.030  # Verified: docs/BRD/BRD-001_project.md exists
 @prd: null         # No PRD exists for this feature (legitimate)
 @adr: ADR-005      # Verified: docs/ADR/ADR-005_architecture.md exists
 ```
@@ -322,11 +322,11 @@ Diagrams use simplified labels for visual clarity:
 | Comma (`,`) | **INCORRECT** |
 | Trailing comma (`, \|`) | **INCORRECT** |
 
-**Correct Example**: `@prd: PRD-001:001 | @ears: EARS-001:001`
+**Correct Example**: `@prd: PRD.001.001 | @ears: EARS.001.001`
 
 **Incorrect Examples**:
-- `@prd: PRD-001:001, @ears: EARS-001:001` (comma separator)
-- `@prd: PRD-001:001, | @ears: EARS-001:001` (trailing comma before pipe)
+- `@prd: PRD.001.001, @ears: EARS.001.001` (comma separator)
+- `@prd: PRD.001.001, | @ears: EARS.001.001` (trailing comma before pipe)
 
 ### For Markdown Documents (PRD, SYS, EARS, REQ, ADR, CTR, IMPL, TASKS)
 
@@ -389,27 +389,28 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 ```python
 """Module description.
 
-@brd: BRD-001:030, BRD-001:006, BRD-002:015
+@brd: BRD.001.030, BRD.001.006, BRD.002.015
 @prd: PRD-003
-@sys: SYS-008:001
-@req: REQ-003:001
+@sys: SYS.008.001
+@req: REQ.003.001
 @adr: ADR-033
 @spec: SPEC-003
 @ctr: CTR-001
-@test: BDD-003:001, BDD-003:005
+@test: BDD.003.001, BDD.003.005
 @impl-status: complete
 """
 ```
 
 ### Tag Structure
 
-**Format:** `@tag-type: DOCUMENT-ID:REQUIREMENT-ID`
+**Format:** `@tag-type: TYPE.NNN.NNN` (Unified Feature ID format)
 
 **Components:**
 - **Tag Type:** Document type tags or valid non-document tags (see tables below)
-- **Document ID:** BRD-001, SYS-008, SPEC-003, CTR-001
-- **Requirement ID:** Numeric sub-IDs (030, 006, 001)
-- **Separator:** Colon (:) separates document from requirement
+- **TYPE:** Document type (BRD, PRD, SYS, etc.)
+- **DOC_NUM:** 3-digit document number, zero-padded (001, 008, 017)
+- **FEATURE_NUM:** 3-digit feature/requirement number, zero-padded (030, 006, 001)
+- **Separator:** Dot (.) separates all components
 - **Multiple:** Comma-separated list
 
 ### Complete Tag Reference
@@ -420,20 +421,20 @@ These tags reference documents in the SDD workflow hierarchy. Use the document t
 
 | Tag | Layer | Document Type | Format | Example |
 |-----|-------|---------------|--------|---------|
-| `@brd` | 1 | Business Requirements | `@brd: BRD-NNN:ID` | `@brd: BRD-001:030` |
-| `@prd` | 2 | Product Requirements | `@prd: PRD-NNN:ID` | `@prd: PRD-003:002` |
-| `@ears` | 3 | EARS Statements | `@ears: EARS-NNN:ID` | `@ears: EARS-001:003` |
-| `@bdd` | 4 | BDD Scenarios | `@bdd: BDD-NNN:ID` | `@bdd: BDD-003:007` |
+| `@brd` | 1 | Business Requirements | `@brd: BRD.NNN.NNN` | `@brd: BRD.001.030` |
+| `@prd` | 2 | Product Requirements | `@prd: PRD.NNN.NNN` | `@prd: PRD.003.002` |
+| `@ears` | 3 | EARS Statements | `@ears: EARS.NNN.NNN` | `@ears: EARS.001.003` |
+| `@bdd` | 4 | BDD Scenarios | `@bdd: BDD.NNN.NNN` | `@bdd: BDD.003.007` |
 | `@adr` | 5 | Architecture Decisions | `@adr: ADR-NNN` | `@adr: ADR-033` |
-| `@sys` | 6 | System Requirements | `@sys: SYS-NNN:ID` | `@sys: SYS-008:001` |
-| `@req` | 7 | Atomic Requirements | `@req: REQ-NNN:ID` | `@req: REQ-003:001` |
-| `@impl` | 8 | Implementation Plans | `@impl: IMPL-NNN:ID` | `@impl: IMPL-001:001` |
+| `@sys` | 6 | System Requirements | `@sys: SYS.NNN.NNN` | `@sys: SYS.008.001` |
+| `@req` | 7 | Atomic Requirements | `@req: REQ.NNN.NNN` | `@req: REQ.003.001` |
+| `@impl` | 8 | Implementation Plans | `@impl: IMPL.NNN.NNN` | `@impl: IMPL.001.001` |
 | `@ctr` | 9 | Data Contracts | `@ctr: CTR-NNN` | `@ctr: CTR-001` |
 | `@spec` | 10 | Technical Specs | `@spec: SPEC-NNN` | `@spec: SPEC-003` |
-| `@tasks` | 11 | Task Breakdowns | `@tasks: TASKS-NNN:ID` | `@tasks: TASKS-001:003` |
+| `@tasks` | 11 | Task Breakdowns | `@tasks: TASKS.NNN.NNN` | `@tasks: TASKS.001.003` |
 | `@iplan` | 12 | Implementation Plans | `@iplan: IPLAN-NNN` | `@iplan: IPLAN-001` |
 
-**Note**: NFRs use standard document type tags with categorical prefixes (e.g., `@sys: SYS-008:NFR-PERF-001`, NOT `@nfr:`).
+**Note**: NFRs use 900-series numbering within documents (e.g., `@sys: SYS.008.901`). The 900-999 range is reserved for NFRs.
 
 #### Valid Non-Document Tags (Special Purpose)
 
@@ -446,8 +447,8 @@ These tags serve specific purposes beyond cross-layer document traceability.
 | `@impl-status` | Implementation status | `@impl-status: status` | `@impl-status: complete` | Values: pending, in-progress, complete, deprecated |
 | `@icon` | Implementation contract | `@icon: TASKS-NNN:Name` | `@icon: TASKS-001:ServiceConnector` | Internal contracts for parallel dev |
 | `@icon-role` | Contract role | `@icon-role: role` | `@icon-role: provider` | Values: provider, consumer |
-| `@threshold` | Threshold registry ref | `@threshold: PRD-NNN:key` | `@threshold: PRD-035:kyc.tier1_timeout` | References Platform Threshold Registry |
-| `@entity` | Data entity reference | `@entity: PRD-NNN:Name` | `@entity: PRD-004:UserProfile` | References Data Model document |
+| `@threshold` | Threshold registry ref | `@threshold: PRD.NNN.key` | `@threshold: PRD.035.kyc.tier1_timeout` | References Platform Threshold Registry |
+| `@entity` | Data entity reference | `@entity: PRD.NNN.Name` | `@entity: PRD.004.UserProfile` | References Data Model document |
 | `@priority` | Requirement priority | `@priority: level` | `@priority: critical` | Values: critical, high, medium, low |
 | `@component` | Component reference | `@component: name` | `@component: risk-engine` | Links to system component |
 | `@supersedes` | Superseded document | `@supersedes: DOC-NNN` | `@supersedes: REQ-001` | Indicates document replacement |
@@ -477,18 +478,18 @@ Do NOT use these tag patterns:
 **Examples:**
 ```python
 # Multi-requirement document reference
-@brd: BRD-001:030, BRD-001:006
+@brd: BRD.001.030, BRD.001.006
 
 # Multiple documents
-@brd: BRD-001:020, BRD-002:105
+@brd: BRD.001.020, BRD.002.105
 
 # System requirement with sub-ID
-@sys: SYS-008:001
+@sys: SYS.008.001
 
 # Single document reference (no sub-ID needed)
 @spec: SPEC-003
 @ctr: CTR-001
-@test: BDD-003:001
+@test: BDD.003.001
 @iplan: IPLAN-001
 ```
 
@@ -523,7 +524,7 @@ python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
 - ✅ Automated validation prevents drift
 - ✅ Bidirectional matrices auto-generated
 - ✅ CI/CD can enforce tag presence
-- ✅ Explicit document namespacing prevents ambiguity (BRD-001:030 vs BRD-002:030)
+- ✅ Explicit document namespacing prevents ambiguity (BRD.001.030 vs BRD.002.030)
 
 ### Example: Complete Traceability section
 
@@ -555,7 +556,7 @@ From EARS-TEMPLATE.md:
 | ADR ID | ADR Title | Decisions Driven by EARS | Relationship |
 |--------|-----------|-------------------------|--------------|
 | [ADR-033](../ADR/ADR-033_risk_limit_enforcement.md#ADR-033) | Risk Limit Enforcement Architecture | EARS statements EVENT-001, STATE-001 | This EARS requirement necessitates the architectural approach |
-| [ADR-034](../ADR/ADR-034_circuit_breaker.md#ADR-034) | [SAFETY_MECHANISM - e.g., rate limiter, error threshold] Pattern | EARS NFR-PERF-001 | Performance requirement drives architectural pattern |
+| [ADR-034](../ADR/ADR-034_circuit_breaker.md#ADR-034) | [SAFETY_MECHANISM - e.g., rate limiter, error threshold] Pattern | EARS.001.901 | Performance requirement drives architectural pattern |
 
 #### 7.2.2 Atomic Requirements
 
@@ -595,7 +596,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 **Example**: A SPEC file includes tags from: BRD, PRD, EARS, BDD, ADR, SYS, REQ, and optionally IMPL/CTR if they exist in the chain.
 
-**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+**Format**: `@artifact-type: TYPE.NNN.NNN` (e.g., `@brd: BRD.001.030`)
 
 **Usage**:
 - Embed tags in document metadata sections (markdown documents)
@@ -626,34 +627,37 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 ### Tag Format Specification
 
-**Basic Format**:
+**Basic Format** (Unified Feature ID):
 ```
-@artifact-type: DOCUMENT-ID:REQUIREMENT-ID
+@artifact-type: TYPE.NNN.NNN
 ```
 
 **Components**:
 - **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`, `@icon`, `@iplan`)
-- **Document ID**: Standard ID format (e.g., `BRD-001`, `REQ-003`, `SPEC-005`, `ICON-001`)
-- **Requirement ID**: Numeric sub-ID within document (e.g., `030`, `006`, `001`) or contract names for ICON tags
-- **Separator**: Colon (`:`) between document and requirement
+- **TYPE**: Document type (BRD, PRD, SYS, REQ, etc.)
+- **DOC_NUM**: 3-digit document number, zero-padded (e.g., `001`, `003`, `008`)
+- **FEATURE_NUM**: 3-digit feature number, zero-padded (e.g., `030`, `006`, `001`), or contract names for ICON tags
+- **Separator**: Dot (`.`) between all components
 - **Multiple Values**: Comma-separated
 - **Special**: `@icon` includes optional `@icon-role: provider|consumer`
+
+**NFR 900-Series Convention**: NFRs use feature numbers 900-999 (e.g., `SYS.008.901` for first performance NFR)
 
 **Examples**:
 ```markdown
 ## Traceability Tags
 
-@brd: BRD-001:030, BRD-001:006
-@prd: PRD-003:002
-@ears: EARS-001:003
-@bdd: BDD-003:007
+@brd: BRD.001.030, BRD.001.006
+@prd: PRD.003.002
+@ears: EARS.001.003
+@bdd: BDD.003.007
 @adr: ADR-033
-@sys: SYS-008:001
-@req: REQ-003:001, REQ-004:002
-@impl: IMPL-001:001
+@sys: SYS.008.001
+@req: REQ.003.001, REQ.004.002
+@impl: IMPL.001.001
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS-001:003
+@tasks: TASKS.001.003
 @icon: TASKS-001:ServiceConnector
 @icon-role: consumer
 ```
@@ -695,67 +699,67 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @depends-tasks: TASKS-001
 ```
 
-### NFR Categorical Prefix Standard
+### NFR 900-Series Numbering Standard
 
-Non-Functional Requirements (NFRs) use categorical prefixes for automated categorization and cross-layer traceability.
+Non-Functional Requirements (NFRs) use 900-series feature numbering within documents for automated categorization and cross-layer traceability.
 
-| Category | Prefix | Full Format | Keywords for AI Detection |
-|----------|--------|-------------|---------------------------|
-| Performance | `NFR-PERF-` | `NFR-PERF-NNN` | latency, response time, throughput, p95, TPS |
-| Reliability | `NFR-REL-` | `NFR-REL-NNN` | uptime, availability, MTBF, MTTR, failover |
-| Scalability | `NFR-SCAL-` | `NFR-SCAL-NNN` | concurrent users, horizontal scaling, capacity |
-| Security | `NFR-SEC-` | `NFR-SEC-NNN` | authentication, authorization, encryption, RBAC |
-| Observability | `NFR-OBS-` | `NFR-OBS-NNN` | logging, monitoring, alerting, metrics, tracing |
-| Maintainability | `NFR-MAINT-` | `NFR-MAINT-NNN` | code coverage, deployment, CI/CD, documentation |
+| Category | Range | Example | Keywords for AI Detection |
+|----------|-------|---------|---------------------------|
+| Performance | `901-920` | `SYS.008.901` | latency, response time, throughput, p95, TPS |
+| Reliability | `921-940` | `SYS.008.921` | uptime, availability, MTBF, MTTR, failover |
+| Scalability | `941-960` | `SYS.008.941` | concurrent users, horizontal scaling, capacity |
+| Security | `961-980` | `SYS.008.961` | authentication, authorization, encryption, RBAC |
+| Observability | `981-990` | `SYS.008.981` | logging, monitoring, alerting, metrics, tracing |
+| Maintainability | `991-999` | `SYS.008.991` | code coverage, deployment, CI/CD, documentation |
 
-**NFR Cross-Reference Format**: Use document type tag with NFR ID (e.g., `@brd: BRD-017:NFR-PERF-001`, `@sys: SYS-008:NFR-SEC-003`)
+**NFR Cross-Reference Format**: Use unified feature ID format with 900-series (e.g., `@brd: BRD.017.901`, `@sys: SYS.008.961`)
 
 **NFR Cross-Layer Consistency**:
 
-NFR IDs remain consistent across all layers for complete traceability:
+NFR IDs remain consistent across all layers using unified format:
 ```
-BRD-017 defines: NFR-PERF-001 (API response time <200ms)
+BRD.017.901 defines: API response time <200ms (Performance NFR #1)
     ↓
-PRD-022 inherits: NFR-PERF-001
+PRD.022.901 inherits: Same performance requirement
     ↓
-EARS-006 formalizes: NFR-PERF-001 (EARS syntax)
+EARS.006.901 formalizes: EARS syntax version
     ↓
-SYS-008 implements: NFR-PERF-001 (technical specification)
+SYS.008.901 implements: Technical specification
 ```
 
 **Examples**:
 ```markdown
-@brd: BRD-017:NFR-PERF-001
-@sys: SYS-008:NFR-SEC-003
-@ears: EARS-006:NFR-REL-001
+@brd: BRD.017.901
+@sys: SYS.008.961
+@ears: EARS.006.921
 ```
 
-### Feature-Level Traceability Tags
+### Feature-Level Traceability Tags (Unified Feature ID Format)
 
-Internal feature IDs within documents use simple sequential numbering for fine-grained traceability.
+Internal feature IDs within documents use the unified format `TYPE.NNN.NNN` for fine-grained traceability.
 
-| Context | Format | Example | Cross-Reference |
-|---------|--------|---------|-----------------|
-| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD-022:015` |
-| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD-001:030` |
-| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS-006:003` |
-| SYS Functional Reqs | `FR-NNN` | `FR-001`, `FR-015` | `@sys: SYS-008:FR-001` |
-| SYS Non-Functional | `NFR-{CAT}-NNN` | `NFR-PERF-001` | `@sys: SYS-008:NFR-PERF-001` |
+| Context | Internal ID | Example | Cross-Reference (Unified) |
+|---------|-------------|---------|---------------------------|
+| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD.022.015` |
+| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD.001.030` |
+| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS.006.003` |
+| SYS Functional Reqs | `NNN` | `001`, `015` | `@sys: SYS.008.001` |
+| SYS Non-Functional | `9NN` | `901`, `961` | `@sys: SYS.008.901` |
 
-**Global Uniqueness**: Document ID + Feature ID creates globally unique references.
-- `PRD-022:015` = PRD-022, Feature 015 (globally unique)
-- `EARS-006:003` = EARS-006, Statement 003 (globally unique)
-- `SYS-008:NFR-PERF-001` = SYS-008, Performance NFR 001 (globally unique)
+**Global Uniqueness**: Unified Feature ID (`TYPE.NNN.NNN`) creates globally unique references.
+- `PRD.022.015` = PRD-022, Feature 015 (globally unique)
+- `EARS.006.003` = EARS-006, Statement 003 (globally unique)
+- `SYS.008.901` = SYS-008, Performance NFR #1 (globally unique)
 
 **Feature-Level Tag Examples**:
 ```markdown
 ## Traceability Tags
 
-@brd: BRD-001:030, BRD-001:006
-@prd: PRD-022:015, PRD-022:018
-@ears: EARS-006:003
-@sys: SYS-008:FR-001, SYS-008:NFR-SEC-003
-@brd: BRD-017:NFR-PERF-001
+@brd: BRD.001.030, BRD.001.006
+@prd: PRD.022.015, PRD.022.018
+@ears: EARS.006.003
+@sys: SYS.008.001, SYS.008.961
+@brd: BRD.017.901
 ```
 
 **Optional Extension Tags**:
@@ -782,18 +786,18 @@ References centralized timing, limits, and configuration values from a Platform 
 
 **Example**:
 ```markdown
-**Traceability**: @prd: PRD-006:001 | @threshold: PRD-035:kyc.tier1_timeout
+**Traceability**: @prd: PRD.006.001 | @threshold: PRD.035.kyc.tier1_timeout
 ```
 
 **@entity Tag Usage**:
 
 References data entities defined in a Data Model document.
 
-**Format**: `@entity: PRD-NNN:EntityName`
+**Format**: `@entity: PRD.NNN.EntityName`
 
 **Example**:
 ```markdown
-**Traceability**: @prd: PRD-006:001 | @entity: PRD-004:UserProfile
+**Traceability**: @prd: PRD.006.001 | @entity: PRD.004.UserProfile
 ```
 
 **Code Docstring Example**:
@@ -805,17 +809,17 @@ Implements real-time resource limit validation and enforcement.
 
 ## Traceability Tags
 
-@brd: BRD-001:030
-@prd: PRD-003:002
-@ears: EARS-001:003
-@bdd: BDD-003:007
+@brd: BRD.001.030
+@prd: PRD.003.002
+@ears: EARS.001.003
+@bdd: BDD.003.007
 @adr: ADR-033
-@sys: SYS-008:001
-@req: REQ-003:001
-@impl: IMPL-001:001
+@sys: SYS.008.001
+@req: REQ.003.001
+@impl: IMPL.001.001
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS-001:003
+@tasks: TASKS.001.003
 @iplan: IPLAN-001
 """
 ```
@@ -824,9 +828,9 @@ Implements real-time resource limit validation and enforcement.
 
 **Mandatory Checks**:
 1. **Complete Chain**: Each artifact must include ALL upstream tags
-2. **Format Compliance**: All tags follow `@type: DOC-NNN:NNN` format (numeric sub-IDs)
-3. **Document Exists**: Referenced DOCUMENT-ID must exist in repository
-4. **Requirement Exists**: REQUIREMENT-ID must exist within referenced document
+2. **Format Compliance**: All tags follow unified format `@type: TYPE.NNN.NNN` (dot separator)
+3. **Document Exists**: Referenced document must exist in repository
+4. **Requirement Exists**: Feature ID must exist within referenced document
 5. **No Orphans**: All tags resolve to actual artifacts
 6. **Layer Validation**: Artifact at layer N must have tags from layers 1 through N-1
 
@@ -909,9 +913,9 @@ In addition to upstream/downstream layer traceability, documents may have relati
 ## Traceability Tags
 
 ### Upstream (Cross-Layer)
-@brd: BRD-001:030
-@prd: PRD-003:002
-@sys: SYS-008:001
+@brd: BRD.001.030
+@prd: PRD.003.002
+@sys: SYS.008.001
 
 ### Same-Type References
 @related-req: REQ-001, REQ-002  # Shared risk management domain
@@ -1326,17 +1330,17 @@ excessive collection concentration risk through automated validation.
 
 ## Traceability Tags
 
-@brd: BRD-001:030, BRD-001:006
-@prd: PRD-003:002
-@ears: EARS-001:003, EARS-001:002
-@bdd: BDD-003:001, BDD-003:002
+@brd: BRD.001.030, BRD.001.006
+@prd: PRD.003.002
+@ears: EARS.001.003, EARS.001.002
+@bdd: BDD.003.001, BDD.003.002
 @adr: ADR-033
-@sys: SYS-008:001, SYS-008:002
-@req: REQ-003:001, REQ-004:001
-@impl: IMPL-001:001
+@sys: SYS.008.001, SYS.008.002
+@req: REQ.003.001, REQ.004.001
+@impl: IMPL.001.001
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS-001:003, TASKS-001:005
+@tasks: TASKS.001.003, TASKS.001.005
 @iplan: IPLAN-001
 
 @impl-status: complete
@@ -1355,9 +1359,9 @@ class PositionLimitService:
         """
         Validate position against configured limits.
 
-        Implements: REQ-003:001, EARS-001:003
-        Tests: BDD-003:001
-        Performance: p95 < 50ms (SYS-008:001)
+        Implements: REQ.003.001, EARS.001.003
+        Tests: BDD.003.001
+        Performance: p95 < 50ms (SYS.008.001)
         """
         # Implementation
         pass
@@ -1373,15 +1377,15 @@ Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
 
 ## Traceability Tags
 
-@brd: BRD-001:030
-@prd: PRD-003:002
-@ears: EARS-001:003
-@bdd: BDD-003:001
+@brd: BRD.001.030
+@prd: PRD.003.002
+@ears: EARS.001.003
+@bdd: BDD.003.001
 @adr: ADR-033
-@sys: SYS-008:001
-@req: REQ-003:001
+@sys: SYS.008.001
+@req: REQ.003.001
 @spec: SPEC-003
-@tasks: TASKS-001:003
+@tasks: TASKS.001.003
 @code: src/services/resource_limit_service.py
 
 @test-type: integration
@@ -1392,8 +1396,8 @@ def test_validate_resource_limit_within_threshold():
     """
     Test: Position within limit is approved
 
-    BDD Scenario: BDD-003:001
-    Requirement: REQ-003:001, EARS-001:003
+    BDD Scenario: BDD.003.001
+    Requirement: REQ.003.001, EARS.001.003
     """
     # Test implementation
     pass

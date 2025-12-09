@@ -85,7 +85,7 @@ Schema: See `ai_dev_flow/PRD/PRD_SCHEMA.yaml` for complete rules
 | **Author** | [Product Manager/Owner Name] |
 | **Reviewer** | [Technical Reviewer Name] |
 | **Approver** | [Stakeholder Name] |
-| **BRD Reference** | @brd: BRD-NNN |
+| **BRD Reference** | @brd: BRD.NNN.NNN |
 | **Priority** | High / Medium / Low |
 | **Target Release** | [Release version/Quarter] |
 | **Estimated Effort** | [Story Points or Person-Months] |
@@ -429,7 +429,7 @@ User stories follow the standard format:
 
 **⚠️ IMPORTANT**: When this PRD references numeric thresholds, limits, or timing parameters, use the Threshold Registry pattern to ensure consistency across PRDs.
 
-**Reference Format**: `@prd: PRD-XXX:threshold-key`
+**Reference Format**: `@threshold: PRD-NNN:threshold-key`
 
 **When to Create Threshold Registry References**:
 - Transaction velocity limits (KYC/KYB limits)
@@ -441,8 +441,8 @@ User stories follow the standard format:
 
 **Example Usage**:
 ```markdown
-Transaction limit: $1,000 USD (per @prd: PRD-035:kyc.l1.daily)
-Risk threshold: Score ≥75 triggers escalation (per @prd: PRD-035:risk.high.min)
+Transaction limit: $1,000 USD (per @threshold: PRD-035:kyc.l1.daily)
+Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD-035:risk.high.min)
 ```
 
 **Benefits**:
@@ -874,10 +874,10 @@ The following architectural topics require formal Architecture Decision Records 
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 2):
 ```markdown
-@brd: BRD-NNN:NNN
+@brd: BRD.NNN.NNN
 ```
 
-**Format**: `@artifact-type: DOCUMENT-ID:NNN` (numeric sub-ID)
+**Format**: `@artifact-type: TYPE.NNN.NNN` (Unified Feature ID format)
 
 **Layer 2 Requirements**: PRD must reference upstream BRD document(s) using `@brd` tags.
 
@@ -885,7 +885,7 @@ The following architectural topics require formal Architecture Decision Records 
 
 **Example**:
 ```markdown
-@brd: BRD-001:030, BRD-001:006
+@brd: BRD.001.030, BRD.001.006
 ```
 
 **Validation**: Tags must reference existing BRD documents and requirement IDs within those documents.
@@ -902,20 +902,20 @@ The following architectural topics require formal Architecture Decision Records 
 |------|-------------|---------|
 | **A→B implies B→A** | If this PRD references another PRD, that PRD must reference this one | PRD-016 → PRD-022 requires PRD-022 → PRD-016 |
 | **No placeholder IDs** | Never use PRD-XXX, TBD, or undefined references | Use `null` if artifact doesn't exist |
-| **Tag format required** | Use `@prd: PRD-NNN` format in body, not just metadata | `@prd: PRD-022` not `see PRD-022` |
+| **Tag format required** | Use `@prd: PRD.NNN.NNN` format in body, not just metadata | `@prd: PRD.022.001` not `see PRD-022` |
 | **Referenced doc must exist** | Verify target document exists before adding reference | Check `docs/PRD/PRD-NNN_*.md` exists |
 
 **Cross-PRD Reference Table** (for PRDs with bidirectional dependencies):
 
 | This PRD | References PRD | Relationship Type | Reciprocal Reference Status |
 |----------|---------------|-------------------|----------------------------|
-| PRD-NNN | @prd: PRD-XXX | [Primary/Fallback/Related/Orchestrates] | ✅ Verified / ❌ Missing |
+| PRD-NNN | @prd: PRD.NNN.NNN | [Primary/Fallback/Related/Orchestrates] | ✅ Verified / ❌ Missing |
 
 **Common Relationship Types**:
 - **Primary/Fallback**: AI-agent vs traditional approach (e.g., PRD-022/PRD-016)
 - **Related**: Shared functionality or data (e.g., PRD-018/PRD-031 notifications)
 - **Orchestrates**: One PRD coordinates another (e.g., PRD-025 orchestrates PRD-009)
-- **Consumes**: One PRD uses thresholds/services from another (e.g., @prd: PRD-035:threshold-key)
+- **Consumes**: One PRD uses thresholds/services from another (e.g., @threshold: PRD-035:threshold-key)
 
 **Validation Process**:
 1. Before creating reference: Verify target document exists
@@ -929,7 +929,7 @@ The following architectural topics require formal Architecture Decision Records 
 
 - **Anchors/IDs**: `#PRD-NNN` (for referencing this document)
 - **section References**: Use `#problem-statement` for Problem Statement section
-- **Feature References**: Use simple 3-digit IDs within document (e.g., `001`, `002`, `003`). Cross-reference format: `@prd: PRD-NNN:001`
+- **Feature References**: Use Unified Feature ID format (e.g., `PRD.001.001`, `PRD.001.002`). Cross-reference format: `@prd: PRD.NNN.NNN`
 
 #### External References
 
@@ -1054,7 +1054,7 @@ Specify boundary conditions for all thresholds with explicit inclusive/exclusive
 | Session Timeout | > | 900s | ACTIVE (at 900s) | EXPIRE | ACTIVE |
 
 **Threshold Registry Cross-Reference**:
-For centralized threshold values, reference: `@prd: PRD-035:{category}.{key}`
+For centralized threshold values, reference: `@threshold: PRD-035:{category}.{key}`
 
 ### 19.3 State Transition Diagram
 

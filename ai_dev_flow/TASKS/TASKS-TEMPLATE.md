@@ -1241,20 +1241,20 @@ Document evidence that this task has been implemented correctly and meets all ac
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
 ```markdown
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
-@bdd: BDD-NNN:NNN
+@brd: BRD.NNN.NNN
+@prd: PRD.NNN.NNN
+@ears: EARS.NNN.NNN
+@bdd: BDD.NNN.NNN
 @adr: ADR-NNN
-@sys: SYS-NNN:NNN
-@req: REQ-NNN:NNN
-@impl: IMPL-NNN:NNN
+@sys: SYS.NNN.NNN
+@req: REQ.NNN.NNN
+@impl: IMPL.NNN.NNN
 @ctr: CTR-NNN
 @spec: SPEC-NNN
 @icon: TASKS-XXX:ContractName (if providing/consuming implementation contracts)
 ```
 
-**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+**Format**: `@artifact-type: TYPE.NNN.NNN (Unified Feature ID)`
 
 **Layer 11 Requirements**: TASKS must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -1273,14 +1273,14 @@ Document evidence that this task has been implemented correctly and meets all ac
 
 **Example**:
 ```markdown
-@brd: BRD-001:030
-@prd: PRD-003:002
-@ears: EARS-001:003
-@bdd: BDD-003:001
+@brd: BRD.001.030
+@prd: PRD.003.002
+@ears: EARS.001.003
+@bdd: BDD.003.001
 @adr: ADR-033
-@sys: SYS-008:001
-@req: REQ-003:001
-@impl: IMPL-001:001
+@sys: SYS.008.001
+@req: REQ.003.001
+@impl: IMPL.001.001
 @ctr: CTR-001
 @spec: SPEC-003
 @icon: TASKS-001:ServiceConnector

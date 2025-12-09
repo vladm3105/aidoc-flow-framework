@@ -356,10 +356,10 @@ traceability:
   cumulative_tags:
     layer: 5
     required:
-      - "@brd: BRD-NNN:NNN"
-      - "@prd: PRD-NNN:NNN"
-      - "@ears: EARS-NNN:NNN"
-      - "@bdd: BDD-NNN:NNN"
+      - "@brd: BRD.NNN.NNN"
+      - "@prd: PRD.NNN.NNN"
+      - "@ears: EARS.NNN.NNN"
+      - "@bdd: BDD.NNN.NNN"
     description: "Layer 5 requires @brd, @prd, @ears, @bdd tags for complete traceability"
 
   upstream:

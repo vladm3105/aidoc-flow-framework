@@ -81,7 +81,7 @@ Source: [Upstream artifact reference]
 **Upstream Traceability**:
 | REQ ID | BRD Source | PRD Feature | EARS Reference |
 |--------|------------|-------------|----------------|
-| REQ-001 | BRD-001:FR-010 | PRD-001:FEAT-003 | EARS-001:REQ-002 |
+| REQ-001 | BRD.001.010 | PRD.001.003 | EARS.001.002 |
 
 **Downstream Traceability**:
 | REQ ID | SPEC Implementation | Test Coverage | Code References |
@@ -181,7 +181,7 @@ docs/REQ/
 - Implementation: 18/25 (72%)
 
 ### Gaps Identified
-1. PRD-001:FEAT-012 - No REQ specification
+1. PRD.001.012 - No REQ specification
 2. REQ-045 - No test coverage
 3. REQ-023 - No implementation reference
 ```
@@ -255,9 +255,9 @@ docs/REQ/
    **Then** [expected result]
 
 ## Traceability
-@brd: BRD-001:FR-015
-@prd: PRD-001:FEAT-003
-@ears: EARS-001:REQ-002
+@brd: BRD.001.015
+@prd: PRD.001.003
+@ears: EARS.001.002
 
 ## Implementation Notes
 [Technical considerations for SPEC development]

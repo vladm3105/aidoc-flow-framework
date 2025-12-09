@@ -304,13 +304,13 @@ fi
 
 | Tag | Required | Format |
 |-----|----------|--------|
-| @brd | Yes | BRD-NNN:NNN |
-| @prd | Yes | PRD-NNN:NNN |
-| @ears | Yes | EARS-NNN:NNN |
-| @bdd | Yes | BDD-NNN:NNN |
+| @brd | Yes | BRD.NNN.NNN |
+| @prd | Yes | PRD.NNN.NNN |
+| @ears | Yes | EARS.NNN.NNN |
+| @bdd | Yes | BDD.NNN.NNN |
 | @adr | Yes | ADR-NNN |
-| @sys | Yes | SYS-NNN:NNN |
-| @req | Yes | REQ-NNN:NNN |
+| @sys | Yes | SYS.NNN.NNN |
+| @req | Yes | REQ.NNN.NNN |
 
 ### Validation Commands
 

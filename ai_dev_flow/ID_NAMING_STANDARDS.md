@@ -370,54 +370,94 @@ Within a document, use simple sequential numbering for feature headings:
 **Rationale**: The document context (BRD-017, PRD-022, EARS-006) already provides the namespace.
 Prefixing feature IDs with the document number (e.g., `017-001`) is redundant.
 
-**Cross-Reference Format**: When referencing features from other documents, use:
-- `@brd: BRD-017:001` (BRD-017, feature 001)
-- `@prd: PRD-022:005` (PRD-022, feature 005)
-- `@ears: EARS-006:003` (EARS-006, requirement 003)
+**Unified Feature ID Format (MANDATORY)**: Use dot separator for globally unique feature references:
 
-**Uniqueness Guarantee**: Full ID = `DOCUMENT-TYPE-NNN:FEATURE-NNN`
-- `BRD-017:001` = BRD-017, Feature 001 (globally unique)
-- `PRD-022:015` = PRD-022, Feature 015 (globally unique)
-- `EARS-006:003` = EARS-006, Requirement 003 (globally unique)
+| Format | Pattern | Example |
+|--------|---------|---------|
+| **Unified Feature ID** | `TYPE.NNN.NNN` | `BRD.017.001` |
+| **Cross-Reference Tag** | `@type: TYPE.NNN.NNN` | `@brd: BRD.017.001` |
+
+**Cross-Reference Examples**:
+- `@brd: BRD.017.001` (BRD-017, feature 001)
+- `@prd: PRD.022.005` (PRD-022, feature 005)
+- `@ears: EARS.006.003` (EARS-006, requirement 003)
+- `@sys: SYS.008.001` (SYS-008, requirement 001)
+
+**Uniqueness Guarantee**: Unified Feature ID = `TYPE.DOC.FEATURE`
+- `BRD.017.001` = BRD-017, Feature 001 (globally unique)
+- `PRD.022.015` = PRD-022, Feature 015 (globally unique)
+- `EARS.006.003` = EARS-006, Requirement 003 (globally unique)
+
+**Validation Regex**:
+```python
+UNIFIED_FEATURE_ID_PATTERN = r'^[A-Z]{2,5}\.\d{3,4}\.\d{3}$'
+# Matches: BRD.017.001, PRD.022.015, SYS.008.901, TASKS.003.001
+```
+
+**DEPRECATED Format** (do NOT use):
+- ❌ `@brd: BRD-017:001` (colon separator - old format)
+- ✅ `@brd: BRD.017.001` (dot separator - unified format)
 
 ---
 
-## Non-Functional Requirement (NFR) Categorical Prefixes
+## Non-Functional Requirement (NFR) Numbering
 
-NFRs use categorical prefixes to enable automated categorization and cross-layer traceability.
+NFRs use the **900-series numbering** within each document to distinguish from functional requirements while maintaining uniform ID format.
 
-### NFR Format Standard
+### NFR Format Standard (Unified)
 
-| Category | Prefix | Full Format | Example |
-|----------|--------|-------------|---------|
-| Performance | `NFR-PERF-` | `NFR-PERF-NNN` | `NFR-PERF-001` |
-| Reliability | `NFR-REL-` | `NFR-REL-NNN` | `NFR-REL-001` |
-| Scalability | `NFR-SCAL-` | `NFR-SCAL-NNN` | `NFR-SCAL-001` |
-| Security | `NFR-SEC-` | `NFR-SEC-NNN` | `NFR-SEC-001` |
-| Observability | `NFR-OBS-` | `NFR-OBS-NNN` | `NFR-OBS-001` |
-| Maintainability | `NFR-MAINT-` | `NFR-MAINT-NNN` | `NFR-MAINT-001` |
+| NFR Type | Reserved Range | Unified Feature ID Example |
+|----------|----------------|---------------------------|
+| Performance | 901-920 | `SYS.008.901` |
+| Reliability | 921-940 | `SYS.008.921` |
+| Scalability | 941-960 | `SYS.008.941` |
+| Security | 961-980 | `SYS.008.961` |
+| Observability | 981-990 | `SYS.008.981` |
+| Maintainability | 991-999 | `SYS.008.991` |
 
-**Numbering**: NNN = 3-digit sequential number per category (001-999)
+**Numbering Rules**:
+- Functional requirements: `001-899`
+- Non-functional requirements: `900-999`
+- Format follows unified pattern: `TYPE.NNN.NNN`
 
 ### NFR Cross-Layer Consistency
 
-Use identical NFR IDs across all layers for traceability:
+Use unified feature IDs across all layers for traceability:
 
 ```
-BRD-017 defines: NFR-PERF-001 (API response time <200ms)
+BRD-017 defines: BRD.017.901 (API response time <200ms - Performance)
     ↓
-PRD-022 inherits: NFR-PERF-001
+PRD-022 inherits: PRD.022.901
     ↓
-EARS-006 formalizes: NFR-PERF-001 (EARS syntax)
+EARS-006 formalizes: EARS.006.901 (EARS syntax)
     ↓
-SYS-008 implements: NFR-PERF-001 (technical specification)
+SYS-008 implements: SYS.008.901 (technical specification)
 ```
 
-### NFR Cross-Reference Format
+### NFR Cross-Reference Format (Unified)
 
-When referencing NFRs, use the standard document type tag with NFR ID:
-- `@brd: BRD-017:NFR-PERF-001` (BRD-017, Performance NFR 001)
-- `@sys: SYS-008:NFR-SEC-003` (SYS-008, Security NFR 003)
+When referencing NFRs, use the unified feature ID format:
+- `@brd: BRD.017.901` (BRD-017, Performance NFR)
+- `@sys: SYS.008.961` (SYS-008, Security NFR)
+- `@prd: PRD.022.941` (PRD-022, Scalability NFR)
+
+### Category Tracking
+
+Use document metadata or inline comments to preserve NFR category information:
+
+```markdown
+### 901: API Response Time Requirement
+<!-- NFR Category: PERF (Performance) -->
+```
+
+### Migration from Old Format
+
+| Old Format (DEPRECATED) | New Unified Format |
+|------------------------|-------------------|
+| `NFR-PERF-001` | `SYS.008.901` |
+| `NFR-SEC-002` | `SYS.008.962` |
+| `NFR-REL-003` | `SYS.008.923` |
+| `@sys: SYS-008:NFR-PERF-001` | `@sys: SYS.008.901` |
 
 ---
 

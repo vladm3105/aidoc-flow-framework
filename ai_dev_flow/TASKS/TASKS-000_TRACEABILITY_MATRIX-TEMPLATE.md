@@ -92,14 +92,14 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD-009:015
-@prd: PRD-016:003
-@ears: EARS-012:002
-@bdd: BDD-015:001
+@brd: BRD.009.015
+@prd: PRD.016.003
+@ears: EARS.012.002
+@bdd: BDD.015.001
 @adr: ADR-033
-@sys: SYS-012:001
-@req: REQ-045:001
-@impl: IMPL-003:002
+@sys: SYS.012.001
+@req: REQ.045.001
+@impl: IMPL.003.002
 @ctr: CTR-005
 @spec: SPEC-018
 ```
@@ -123,14 +123,14 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
 ```markdown
-@brd: BRD-009:015
-@prd: PRD-016:003
-@ears: EARS-012:002
-@bdd: BDD-015:001
+@brd: BRD.009.015
+@prd: PRD.016.003
+@ears: EARS.012.002
+@bdd: BDD.015.001
 @adr: ADR-033
-@sys: SYS-012:001
-@req: REQ-045:001
-@impl: IMPL-003:002
+@sys: SYS.012.001
+@req: REQ.045.001
+@impl: IMPL.003.002
 @ctr: CTR-005
 @spec: SPEC-018
 ```

@@ -338,16 +338,16 @@ traceability:
 
   # Cumulative Tagging Hierarchy (Layer 10)
   # Required tags from ALL upstream artifacts for complete traceability
-  # Format: artifact-type: DOCUMENT-ID:NNN
+  # Format: artifact-type: TYPE.NNN.NNN
   cumulative_tags:
-    brd: "BRD-NNN:NNN"  # Business Requirements
-    prd: "PRD-NNN:NNN"  # Product Requirements
-    ears: "EARS-NNN:NNN"  # Engineering Requirements
-    bdd: "BDD-NNN:NNN"  # BDD Test Scenarios
+    brd: "BRD.NNN.NNN"  # Business Requirements
+    prd: "PRD.NNN.NNN"  # Product Requirements
+    ears: "EARS.NNN.NNN"  # Engineering Requirements
+    bdd: "BDD.NNN.NNN"  # BDD Test Scenarios
     adr: "ADR-NNN"  # Architecture Decisions
-    sys: "SYS-NNN:NNN"  # System Requirements
-    req: "REQ-NNN:NNN"  # Atomic Requirements
-    impl: "IMPL-NNN:NNN"  # Implementation Plans (optional)
+    sys: "SYS.NNN.NNN"  # System Requirements
+    req: "REQ.NNN.NNN"  # Atomic Requirements
+    impl: "IMPL.NNN.NNN"  # Implementation Plans (optional)
     ctr: "CTR-NNN"  # API Contracts (optional)
     threshold: "PRD-NNN"  # Threshold Registry (when performance/SLA values used)
     # Layer 10: SPEC must include all upstream tags (BRD through REQ)

@@ -165,9 +165,9 @@ custom_fields:
 ```gherkin
 # Header with traceability and control metadata
 ## Document Control | metadata table |
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
+@brd: BRD.NNN.NNN
+@prd: PRD.NNN.NNN
+@ears: EARS.NNN.NNN
 
 Feature: [Business Capability Title]
   As a [stakeholder role]
@@ -350,9 +350,9 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 
 **Required Tags** (ALL are MANDATORY per BDD-TEMPLATE.feature):
 ```gherkin
-@brd: BRD-NNN:NNN    # MANDATORY - business requirements
-@prd: PRD-NNN:NNN    # MANDATORY - product requirements
-@ears: EARS-NNN:NNN  # MANDATORY - engineering requirements
+@brd: BRD.NNN.NNN    # MANDATORY - business requirements
+@prd: PRD.NNN.NNN    # MANDATORY - product requirements
+@ears: EARS.NNN.NNN  # MANDATORY - engineering requirements
 ```
 
 **Format**: Extended format with requirement ID suffix (`:NNN`) is REQUIRED.
@@ -407,7 +407,7 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 | Mistake | Correct |
 |---------|---------|
 | `Status: Approved` (with <90% ADR-Ready score) | `Status: In Review` or `Status: Draft` |
-| Missing @ears traceability tag | `@ears: EARS-NNN:NNN` |
+| Missing @ears traceability tag | `@ears: EARS.NNN.NNN` |
 | Scenario without tags | Add `@primary`, `@negative`, `@boundary` tags |
 | `Given-When-Then` without concrete values | Use specific data in steps |
 | Vague outcomes like "should work" | Observable verification: "response status code is 200" |
@@ -422,17 +422,17 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 
 **❌ WRONG** (Gherkin frameworks cannot parse comment-based tags):
 ```gherkin
-# @brd: BRD-001:FR-001
-# @prd: PRD-001:001
-# @ears: EARS-001:001
+# @brd: BRD.001.001
+# @prd: PRD.001.001
+# @ears: EARS.001.001
 Feature: My Feature
 ```
 
 **✅ CORRECT** (Gherkin-native tags before Feature):
 ```gherkin
-@brd:BRD-001:FR-001
-@prd:PRD-001:001
-@ears:EARS-001:001
+@brd:BRD.001.001
+@prd:PRD.001.001
+@ears:EARS.001.001
 Feature: My Feature
 ```
 

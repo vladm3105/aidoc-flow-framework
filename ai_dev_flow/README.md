@@ -378,44 +378,45 @@ See [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) for complete rules.
 
 Non-Functional Requirements (NFRs) use categorical prefixes for automated categorization and cross-layer traceability.
 
-| Category | Prefix | Full Format | Keywords for AI Detection |
-|----------|--------|-------------|---------------------------|
-| Performance | `NFR-PERF-` | `NFR-PERF-NNN` | latency, response time, throughput, p95, TPS |
-| Reliability | `NFR-REL-` | `NFR-REL-NNN` | uptime, availability, MTBF, MTTR, failover |
-| Scalability | `NFR-SCAL-` | `NFR-SCAL-NNN` | concurrent users, horizontal scaling, capacity |
-| Security | `NFR-SEC-` | `NFR-SEC-NNN` | authentication, authorization, encryption, RBAC |
-| Observability | `NFR-OBS-` | `NFR-OBS-NNN` | logging, monitoring, alerting, metrics, tracing |
-| Maintainability | `NFR-MAINT-` | `NFR-MAINT-NNN` | code coverage, deployment, CI/CD, documentation |
+| Category | Range | Example | Keywords for AI Detection |
+|----------|-------|---------|---------------------------|
+| Performance | `901-920` | `SYS.008.901` | latency, response time, throughput, p95, TPS |
+| Reliability | `921-940` | `SYS.008.921` | uptime, availability, MTBF, MTTR, failover |
+| Scalability | `941-960` | `SYS.008.941` | concurrent users, horizontal scaling, capacity |
+| Security | `961-980` | `SYS.008.961` | authentication, authorization, encryption, RBAC |
+| Observability | `981-990` | `SYS.008.981` | logging, monitoring, alerting, metrics, tracing |
+| Maintainability | `991-999` | `SYS.008.991` | code coverage, deployment, CI/CD, documentation |
 
-**Cross-Layer Consistency**: Use identical NFR IDs across all layers (BRD → PRD → EARS → SYS).
+**Unified Format**: NFRs use 900-series numbering within documents (`TYPE.DOC.9NN`).
 
-**Cross-Reference Format**: Use document type tag with NFR ID (e.g., `@brd: BRD-017:NFR-PERF-001`, `@sys: SYS-008:NFR-PERF-001`)
+**Cross-Reference Format**: Use unified format (e.g., `@brd: BRD.017.901`, `@sys: SYS.008.901`)
 
-See [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md#non-functional-requirement-nfr-categorical-prefixes) for complete NFR naming rules.
+See [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md#unified-feature-id-format) for complete NFR naming rules.
 
 ### Feature-Level Traceability Tags
 
-Internal feature IDs within documents use simple 3-digit sequential numbering for traceability.
+Internal feature IDs within documents use 3-digit sequential numbering with unified format for globally unique traceability.
 
-| Context | Format | Example | Cross-Reference Format |
-|---------|--------|---------|------------------------|
-| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD-022:015` |
-| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD-001:030` |
-| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS-006:003` |
-| SYS Requirements | `FR-NNN` | `FR-001`, `FR-015` | `@sys: SYS-008:FR-001` |
+| Context | Internal ID | Unified Format | Cross-Reference |
+|---------|-------------|----------------|-----------------|
+| PRD Features | `001`, `015`, `042` | `PRD.022.015` | `@prd: PRD.022.015` |
+| BRD Objectives | `030`, `006` | `BRD.001.030` | `@brd: BRD.001.030` |
+| EARS Statements | `003`, `007` | `EARS.006.003` | `@ears: EARS.006.003` |
+| SYS Requirements | `001`, `015` | `SYS.008.001` | `@sys: SYS.008.001` |
+| NFRs (900-series) | `901`, `902` | `SYS.008.901` | `@sys: SYS.008.901` |
 
-**Format**: `@type: DOC-NNN:FEATURE-NNN`
+**Format**: `@type: TYPE.DOC.FEATURE` (dot separator for all references)
 
 **Examples**:
 ```markdown
-@brd: BRD-001:030, BRD-001:006
-@prd: PRD-022:015
-@ears: EARS-006:003
-@sys: SYS-008:FR-001
-@brd: BRD-017:NFR-PERF-001  # NFRs use standard document type tags
+@brd: BRD.001.030, BRD.001.006
+@prd: PRD.022.015
+@ears: EARS.006.003
+@sys: SYS.008.001
+@sys: SYS.008.901  # NFRs use 900-series numbering
 ```
 
-**Global Uniqueness**: Document ID + Feature ID creates globally unique references (e.g., `PRD-022:015` is unique across all documents).
+**Global Uniqueness**: `TYPE.DOC.FEATURE` format creates globally unique references (e.g., `PRD.022.015` is unique across all documents).
 
 ## Schema File Reference
 
@@ -445,28 +446,28 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 
 **Core Principle**: Each layer N includes tags from layers 1 through N-1 plus its own identifier.
 
-**Tag Format**: `@artifact-type: DOC-ID:NNN`
+**Tag Format**: `@artifact-type: TYPE.DOC.FEATURE` (unified dot separator)
 
 **Example Progression**:
 ```markdown
 # Layer 2 (PRD)
-@brd: BRD-009:015
+@brd: BRD.009.015
 
 # Layer 4 (BDD)
-@brd: BRD-009:015
-@prd: PRD-016:003
-@ears: EARS-012:002
+@brd: BRD.009.015
+@prd: PRD.016.003
+@ears: EARS.012.002
 
 # Layer 7 (REQ)
-@brd: BRD-009:015
-@prd: PRD-016:003
-@ears: EARS-012:002
-@bdd: BDD-015:001
+@brd: BRD.009.015
+@prd: PRD.016.003
+@ears: EARS.012.002
+@bdd: BDD.015.001
 @adr: ADR-033
-@sys: SYS-012:001
+@sys: SYS.012.001
 
 # Layer 13 (Code)
-@brd: BRD-009:015
+@brd: BRD.009.015
 ... [all upstream tags through @tasks]
 @impl-status: complete
 ```
@@ -583,12 +584,12 @@ python scripts/extract_tags.py --type REQ --show-all-upstream
 ```json
 {
   "REQ-045": {
-    "brd": ["BRD-009:015", "BRD-009:006"],
-    "prd": ["PRD-016:003"],
-    "ears": ["EARS-012:002"],
-    "bdd": ["BDD-015:001"],
+    "brd": ["BRD.009.015", "BRD.009.006"],
+    "prd": ["PRD.016.003"],
+    "ears": ["EARS.012.002"],
+    "bdd": ["BDD.015.001"],
     "adr": ["ADR-033"],
-    "sys": ["SYS-012:001"]
+    "sys": ["SYS.012.001"]
   }
 }
 ```
@@ -745,12 +746,12 @@ python scripts/generate_traceability_matrices.py --auto
 ## 7. Traceability
 
 **Required Tags**:
-@brd: BRD-009:015
-@prd: PRD-016:003
-@ears: EARS-012:002
-@bdd: BDD-015:001  # ← Add this
+@brd: BRD.009.015
+@prd: PRD.016.003
+@ears: EARS.012.002
+@bdd: BDD.015.001  # ← Add this
 @adr: ADR-033
-@sys: SYS-012:001
+@sys: SYS.012.001
 ```
 
 **Issue**: "Gap in cumulative tag chain"

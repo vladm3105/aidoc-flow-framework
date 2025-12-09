@@ -160,8 +160,8 @@ feature_patterns:
       - "015"
       - "042"
     cross_reference_format:
-      pattern: "@prd: PRD-NNN:NNN"
-      example: "@prd: PRD-022:015"
+      pattern: "@prd: PRD.NNN.NNN"
+      example: "@prd: PRD.022.015"
       description: "Cross-reference format includes document ID for global uniqueness"
 
   # Feature table structure

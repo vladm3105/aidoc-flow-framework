@@ -38,7 +38,7 @@ python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@brd: BRD-001:030, BRD-001:006`
+**Tag Format:** `@brd: BRD.001.030, BRD.001.006`
 
 See: [TRACEABILITY.md](./TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -136,7 +136,7 @@ The Docs Flow Framework implements **cumulative tagging** where each artifact ty
 ### 2.2 Tag Format
 
 ```markdown
-@artifact-type: DOCUMENT-ID:REQUIREMENT-ID
+@artifact-type: TYPE.NNN.NNN (Unified Feature ID)
 ```
 
 **Format Rules**:
@@ -145,7 +145,7 @@ The Docs Flow Framework implements **cumulative tagging** where each artifact ty
 - Separator: colon `:` after artifact type
 - Document ID: `TYPE-NNN` format
 - Requirement ID: specific requirement/section identifier
-- Multiple Values: comma-separated `@brd: BRD-001:030, BRD-001:006`
+- Multiple Values: comma-separated `@brd: BRD.001.030, BRD.001.006`
 
 ### 2.3 Cumulative Tagging Table
 
@@ -179,14 +179,14 @@ The Docs Flow Framework implements **cumulative tagging** where each artifact ty
 # ... spec content ...
 
 cumulative_tags:
-  brd: "BRD-009:015"
-  prd: "PRD-016:003"
-  ears: "EARS-012:002"
-  bdd: "BDD-015:001"
+  brd: "BRD.009.015"
+  prd: "PRD.016.003"
+  ears: "EARS.012.002"
+  bdd: "BDD.015.001"
   adr: "ADR-033"
-  sys: "SYS-012:001"
-  req: "REQ-045:001"
-  impl: "IMPL-003:002"  # Optional - included if exists
+  sys: "SYS.012.001"
+  req: "REQ.045.001"
+  impl: "IMPL.003.002"  # Optional - included if exists
   ctr: "CTR-005"  # Optional - included if exists
 ```
 
@@ -202,17 +202,17 @@ Handles trade request submission with validation and execution.
 
 ## 3. Traceability Tags
 
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:002, EARS-012:001
-@bdd: BDD-015:001, BDD-015:002
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.002, EARS.012.001
+@bdd: BDD.015.001, BDD.015.002
 @adr: ADR-033
-@sys: SYS-012:001, SYS-012:002
-@req: REQ-045:001, REQ-045:002
-@impl: IMPL-003:002
+@sys: SYS.012.001, SYS.012.002
+@req: REQ.045.001, REQ.045.002
+@impl: IMPL.003.002
 @ctr: CTR-005
 @spec: SPEC-018
-@tasks: TASKS-018:003, TASKS-018:007
+@tasks: TASKS.018.003, TASKS.018.007
 @iplan: IPLAN-003
 
 @impl-status: complete
@@ -230,17 +230,17 @@ Test suite for request submission Service
 
 ## 4. Traceability Tags
 
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:002, EARS-012:001
-@bdd: BDD-015:001, BDD-015:002
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.002, EARS.012.001
+@bdd: BDD.015.001, BDD.015.002
 @adr: ADR-033
-@sys: SYS-012:001, SYS-012:002
-@req: REQ-045:001, REQ-045:002
-@impl: IMPL-003:002
+@sys: SYS.012.001, SYS.012.002
+@req: REQ.045.001, REQ.045.002
+@impl: IMPL.003.002
 @ctr: CTR-005
 @spec: SPEC-018
-@tasks: TASKS-018:003, TASKS-018:007
+@tasks: TASKS.018.003, TASKS.018.007
 @iplan: IPLAN-003
 @code: src/execution/order_service.py:OrderService
 
@@ -375,7 +375,7 @@ Code (tags: @brd through @tasks = 9 tags)
 
 | REQ ID | IMPL ID | CTR ID | SPEC ID | TASKS ID | IPLAN ID | Code Files | Tag Discovery | Tests | Status |
 |--------|---------|--------|---------|----------|---------------|------------|---------------|-------|--------|
-| REQ-001 | IMPL-001 | CTR-001 | SPEC-001 | TASKS-001 | IPLAN-001 | src/module.py | @req: REQ-001:15 | test_module.py | ✅ Complete |
+| REQ-001 | IMPL-001 | CTR-001 | SPEC-001 | TASKS-001 | IPLAN-001 | src/module.py | @req: REQ.001.15 | test_module.py | ✅ Complete |
 | REQ-002 | IMPL-001 | N/A | SPEC-002 | TASKS-002 | IPLAN-002 | src/service.py | test_service.py | ✅ Complete |
 | REQ-003 | IMPL-002 | CTR-002 | SPEC-003 | TASKS-003 | IPLAN-003 | src/api.py | test_api.py | 🟡 In Progress |
 | REQ-004 | IMPL-002 | N/A | SPEC-004 | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Not Started |

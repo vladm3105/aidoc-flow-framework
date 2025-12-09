@@ -15,7 +15,7 @@ The AI Dev Flow Framework is a comprehensive template system for implementing AI
 - **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
 - **REQ v3.0 Support**: Enhanced REQ templates with sections 3-7 (interfaces/schemas/errors/config/NFRs) for ≥90% SPEC-readiness
 - **Tag-Based Auto-Discovery**: Lightweight @tags in code auto-generate bidirectional traceability matrices
-- **Namespaced Traceability**: Explicit DOCUMENT-ID:REQUIREMENT-ID format prevents ambiguity
+- **Namespaced Traceability**: Unified `TYPE.NNN.NNN` format (e.g., `BRD.001.030`) prevents ambiguity
 - **Complete Traceability**: Bidirectional links between all artifacts (business → architecture → code)
 - **AI-Optimized Templates**: Ready for Claude Code, Gemini, GitHub Copilot, and other AI coding assistants
 - **Domain-Agnostic**: Adaptable to any software domain (finance, healthcare, e-commerce, SaaS, IoT)
@@ -170,12 +170,12 @@ Embed cumulative tags in your code docstrings (each layer includes ALL upstream 
 ```python
 """Order service implementation.
 
-@brd: BRD-001:FR-030, BRD-001:NFR-006
-@prd: PRD-002:FEATURE-005
-@ears: EARS-003:EVENT-001
-@bdd: BDD-004:scenario-place-order
+@brd: BRD.001.030, BRD.001.906
+@prd: PRD.002.005
+@ears: EARS.003.001
+@bdd: BDD.004.001
 @adr: ADR-010
-@sys: SYS-008:FUNC-002
+@sys: SYS.008.002
 @req: REQ-045
 @spec: SPEC-003
 @tasks: TASKS-015
@@ -292,12 +292,12 @@ Embed cumulative tags in code docstrings using namespaced format:
 ```python
 """Order placement service implementation.
 
-@brd: BRD-001:FR-030, BRD-001:NFR-006
-@prd: PRD-002:FEATURE-005
-@ears: EARS-003:EVENT-001
-@bdd: BDD-004:scenario-place-order
+@brd: BRD.001.030, BRD.001.906
+@prd: PRD.002.005
+@ears: EARS.003.001
+@bdd: BDD.004.001
 @adr: ADR-010
-@sys: SYS-008:FUNC-002
+@sys: SYS.008.002
 @req: REQ-045
 @spec: SPEC-003
 @tasks: TASKS-015
@@ -305,7 +305,7 @@ Embed cumulative tags in code docstrings using namespaced format:
 """
 ```
 
-**Format:** `@tag-type: DOCUMENT-ID:REQUIREMENT-ID`
+**Format:** `@tag-type: TYPE.NNN.NNN` (e.g., `@brd: BRD.001.030`)
 
 **Tag Types (Cumulative Hierarchy):**
 - `@brd:` - Business Requirements Document references (Layer 1)
@@ -335,9 +335,10 @@ Embed cumulative tags in code docstrings using namespaced format:
 - Complete traceability chain from business requirements to implementation
 - Instant impact analysis when upstream requirements change
 
-**Why Namespaced?**
+**Why Unified Format?**
 - `@brd: FR-030` ❌ Ambiguous (which BRD document?)
-- `@brd: BRD-001:FR-030` ✅ Explicit (FR-030 in BRD-001)
+- `@brd: BRD-001:FR-030` ❌ Old format (deprecated)
+- `@brd: BRD.001.030` ✅ Unified format (current standard)
 
 #### Traditional Section 7 (Legacy)
 
@@ -391,7 +392,7 @@ All documentation follows standardized ID formats:
 ```markdown
 | Requirement | Implementing Files | Status |
 |-------------|-------------------|--------|
-| BRD-001:FR-030 | src/services/account.py:12 | ✓ Complete |
+| BRD.001.030 | src/services/account.py:12 | ✓ Complete |
 ```
 
 **Reverse Matrix Example:**
@@ -408,7 +409,7 @@ All documentation follows standardized ID formats:
 # Start with new implementations
 """New feature implementation.
 
-@brd: BRD-001:FR-045
+@brd: BRD.001.045
 @spec: SPEC-005
 @impl-status: in-progress
 """
@@ -583,7 +584,7 @@ Pre-commit checklist:
 
 **Cumulative Tagging Projects (v2.0):**
 - [ ] All artifacts include cumulative tags from ALL upstream layers
-- [ ] Tags use namespaced format (DOCUMENT-ID:REQUIREMENT-ID)
+- [ ] Tags use unified format (TYPE.NNN.NNN)
 - [ ] Tag extraction successful: `python ai_dev_flow/scripts/extract_tags.py --source src/ docs/ tests/`
 - [ ] Cumulative validation passes: `python ai_dev_flow/scripts/validate_tags_against_docs.py --validate-cumulative --strict`
 - [ ] No gaps in cumulative tag chains (e.g., if @adr exists, @brd through @bdd must exist)
@@ -894,7 +895,7 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ### Version 1.1.0 (2025-11-12)
 - Added tag-based auto-discovery traceability system
-- Introduced namespaced tag format (DOCUMENT-ID:REQUIREMENT-ID)
+- Introduced unified tag format (TYPE.NNN.NNN)
 - Added automated validation scripts
 - Updated quality gates for tag-based and traditional projects
 - Added CI/CD integration examples for traceability validation

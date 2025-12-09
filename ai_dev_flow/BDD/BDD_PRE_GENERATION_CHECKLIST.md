@@ -57,7 +57,7 @@ Feature: [Feature Title]
 - [ ] Tags appear on separate lines BEFORE `Feature:` keyword
 - [ ] All three tags present: @brd, @prd, @ears
 - [ ] Extended format with requirement ID suffix (`:NNN` or `:FR-NNN`)
-- [ ] NO spaces after colon in tag (use `@brd:BRD-001:001` not `@brd: BRD-001:001`)
+- [ ] NO spaces after colon in tag (use `@brd:BRD.001.001` not `@brd: BRD.001.001`)
 
 ### AI-Agent Files Additional Requirements
 
@@ -180,13 +180,13 @@ Feature: [Agent Feature Title]
 
 ```gherkin
 # WRONG - frameworks cannot parse
-# @brd: BRD-001:FR-001
+# @brd: BRD.001.001
 Feature: My Feature
 ```
 
 ```gherkin
 # CORRECT - Gherkin-native tags
-@brd:BRD-001:FR-001
+@brd:BRD.001.001
 Feature: My Feature
 ```
 

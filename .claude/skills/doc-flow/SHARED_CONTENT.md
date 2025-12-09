@@ -176,20 +176,20 @@ Each artifact layer must include traceability tags from ALL upstream artifact la
 ### Tag Format
 
 ```markdown
-@brd: BRD-009:015, BRD-009:NFR-PERF-001
-@prd: PRD-016:003
-@ears: EARS-012:002, EARS-012:001
-@bdd: BDD-015:scenario-place-order
+@brd: BRD.009.015, BRD.009.901
+@prd: PRD.016.003
+@ears: EARS.012.002, EARS.012.001
+@bdd: BDD.015.001
 @adr: ADR-033
-@sys: SYS-012:FR-001, SYS-012:NFR-PERF-001
-@req: REQ-045:interface-spec
-@impl: IMPL-003:phase2  # Optional - include only if exists
+@sys: SYS.012.001, SYS.012.901
+@req: REQ.045.001
+@impl: IMPL.003.002  # Optional - include only if exists
 @ctr: CTR-005  # Optional - include only if exists
 @spec: SPEC-018
 @tasks: TASKS-015
 @iplan: IPLAN-001  # Use ID only (IPLAN-NNN), NOT full filename with timestamp
 @icon: TASKS-001:ContractName  # Implementation Contract (optional, Layer 11)
-@sys: SYS-001:NFR-PERF-001  # NFR cross-reference with categorical prefix
+@sys: SYS.001.901  # NFR cross-reference (900-series for NFRs)
 ```
 
 ### Feature-Level Traceability Tags
@@ -198,34 +198,34 @@ Internal feature IDs within documents use simple sequential numbering:
 
 | Context | Format | Example | Cross-Reference |
 |---------|--------|---------|-----------------|
-| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD-022:015` |
-| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD-001:030` |
-| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS-006:003` |
-| SYS Functional Reqs | `FR-NNN` | `FR-001`, `FR-015` | `@sys: SYS-008:FR-001` |
-| SYS Non-Functional | `NFR-{CAT}-NNN` | `NFR-PERF-001` | `@sys: SYS-008:NFR-PERF-001` |
+| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD.022.015` |
+| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD.001.030` |
+| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS.006.003` |
+| SYS Functional Reqs | `NNN` | `001`, `015` | `@sys: SYS.008.001` |
+| SYS Non-Functional | `9XX` | `901`, `961` | `@sys: SYS.008.901` |
 
 **Global Uniqueness**: Document ID + Feature ID creates globally unique references.
 
-### NFR Categorical Prefix Standard
+### NFR 900-Series Numbering Standard
 
-Non-Functional Requirements (NFRs) use categorical prefixes for automated categorization:
+Non-Functional Requirements (NFRs) use 900-series numbering for automated categorization:
 
-| Category | Prefix | Full Format | Keywords for AI Detection |
-|----------|--------|-------------|---------------------------|
-| Performance | `NFR-PERF-` | `NFR-PERF-NNN` | latency, response time, throughput, p95, TPS |
-| Reliability | `NFR-REL-` | `NFR-REL-NNN` | uptime, availability, MTBF, MTTR, failover |
-| Scalability | `NFR-SCAL-` | `NFR-SCAL-NNN` | concurrent users, horizontal scaling, capacity |
-| Security | `NFR-SEC-` | `NFR-SEC-NNN` | authentication, authorization, encryption, RBAC |
-| Observability | `NFR-OBS-` | `NFR-OBS-NNN` | logging, monitoring, alerting, metrics, tracing |
-| Maintainability | `NFR-MAINT-` | `NFR-MAINT-NNN` | code coverage, deployment, CI/CD, documentation |
+| Category | ID Range | Example | Keywords for AI Detection |
+|----------|----------|---------|---------------------------|
+| Performance | 901-920 | `SYS.001.901` | latency, response time, throughput, p95, TPS |
+| Reliability | 921-940 | `SYS.001.921` | uptime, availability, MTBF, MTTR, failover |
+| Scalability | 941-960 | `SYS.001.941` | concurrent users, horizontal scaling, capacity |
+| Security | 961-980 | `SYS.001.961` | authentication, authorization, encryption, RBAC |
+| Observability | 981-990 | `SYS.001.981` | logging, monitoring, alerting, metrics, tracing |
+| Maintainability | 991-999 | `SYS.001.991` | code coverage, deployment, CI/CD, documentation |
 
-**Cross-Layer Consistency**: Use identical NFR IDs across all layers (BRD → PRD → EARS → SYS → REQ).
+**Cross-Layer Consistency**: Use identical 900-series IDs across all layers (BRD → PRD → EARS → SYS → REQ).
 
-**Cross-Reference Format**: Use document type tag with NFR ID (e.g., `@sys: SYS-001:NFR-PERF-001`, `@brd: BRD-017:NFR-SEC-001`)
+**Cross-Reference Format**: Use document type tag with 900-series NFR ID (e.g., `@sys: SYS.001.901`, `@brd: BRD.017.961`)
 
 ### Format Rules
 
-- Separator: Use colon (`:`) to separate DOCUMENT-ID from REQUIREMENT-ID
+- Format: Use unified `TYPE.NNN.NNN` format (e.g., `BRD.001.030`)
 - Multiple refs: Comma-separated list within same tag line
 - Optional layers: Include `@impl` and `@ctr` tags only if those artifacts exist in chain
 - SPEC format: Use YAML `cumulative_tags:` mapping instead of markdown comments
@@ -234,7 +234,7 @@ Non-Functional Requirements (NFRs) use categorical prefixes for automated catego
 ### Validation Rules
 
 1. **No gaps**: Each layer must include ALL upstream tags from previous layers
-2. **Format compliance**: Tags must follow `@artifact-type: DOC-ID:REQ-ID` pattern
+2. **Format compliance**: Tags must follow `@artifact-type: TYPE.NNN.NNN` pattern
 3. **Valid references**: All tagged document IDs must exist and be reachable
 4. **Optional layers**: `@impl` and `@ctr` included only if they exist in chain
 5. **SPEC exception**: SPEC uses YAML format, not markdown tags
@@ -250,14 +250,14 @@ version: "1.0.0"
 
 # Cumulative Tagging Hierarchy (Layer 10)
 cumulative_tags:
-  brd: "BRD-009:FR-015, BRD-009:NFR-006"
-  prd: "PRD-016:FEATURE-003"
-  ears: "EARS-012:EVENT-002, EARS-012:STATE-001"
-  bdd: "BDD-015:scenario-place-order"
+  brd: "BRD.009.015, BRD.009.906"
+  prd: "PRD.016.003"
+  ears: "EARS.012.002, EARS.012.001"
+  bdd: "BDD.015.001"
   adr: "ADR-033"
-  sys: "SYS-012:PERF-001, SYS-012:RELIABILITY-002"
-  req: "REQ-045:interface-spec, REQ-045:validation-logic"
-  impl: "IMPL-003:phase2"  # Optional
+  sys: "SYS.012.901, SYS.012.921"
+  req: "REQ.045.001, REQ.045.002"
+  impl: "IMPL.003.002"  # Optional
   ctr: "CTR-005"  # Optional
 ```
 

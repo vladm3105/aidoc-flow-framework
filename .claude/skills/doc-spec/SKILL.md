@@ -85,15 +85,15 @@ metadata:
   owner: "team-backend"
 
 cumulative_tags:
-  brd: ["BRD-001:section-3"]
-  prd: ["PRD-001:feature-2"]
-  ears: ["EARS-001:E01"]
-  bdd: ["BDD-001:scenario-validation"]
-  adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS-001:FR-001"]
-  req: ["REQ-risk-limits-001"]
-  impl: ["IMPL-001:technical-approach"]  # optional
-  contracts: ["CTR-001"]  # optional
+  brd: ["BRD.001.003"]
+  prd: ["PRD.001.002"]
+  ears: ["EARS.001.001"]
+  bdd: ["BDD.001.001"]
+  adr: ["ADR.033", "ADR.045"]
+  sys: ["SYS.001.001"]
+  req: ["REQ.001.001"]
+  impl: ["IMPL.001.001"]  # optional
+  contracts: ["CTR.001"]  # optional
 
 overview:
   purpose: "Define trade order validation service implementation"
@@ -263,15 +263,15 @@ traceability:
 **Format**:
 ```yaml
 cumulative_tags:
-  brd: ["BRD-001:section-3", "BRD-001:success-criteria"]
-  prd: ["PRD-001:feature-2", "PRD-001:kpi-performance"]
-  ears: ["EARS-001:E01", "EARS-001:S02"]
-  bdd: ["BDD-001:scenario-validation"]
-  adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS-001:FR-001", "SYS-001:NFR-001"]
-  req: ["REQ-risk-limits-001"]
-  impl: ["IMPL-001:technical-approach"]  # optional - omit if Layer 8 skipped
-  contracts: ["CTR-001"]  # optional - omit if Layer 9 skipped
+  brd: ["BRD.001.003", "BRD.001.005"]
+  prd: ["PRD.001.002", "PRD.001.015"]
+  ears: ["EARS.001.001", "EARS.001.002"]
+  bdd: ["BDD.001.001"]
+  adr: ["ADR.033", "ADR.045"]
+  sys: ["SYS.001.001", "SYS.001.901"]
+  req: ["REQ.001.001"]
+  impl: ["IMPL.001.001"]  # optional - omit if Layer 8 skipped
+  contracts: ["CTR.001"]  # optional - omit if Layer 9 skipped
 ```
 
 **Tag Count**: 7-9 tags (minimum 7 if IMPL/CTR skipped, 9 if both included)
@@ -308,6 +308,17 @@ interfaces:
 - [ ] All tests specified
 - [ ] Deployment requirements complete
 
+## Unified Feature ID Format (MANDATORY)
+
+**Always use**: `TYPE.NNN.NNN` (dot separator)
+**Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+
+Examples:
+- `@brd: BRD.017.001` ✅
+- `@brd: BRD-017:001` ❌
+
+NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
+
 ## Cumulative Tagging Requirements
 
 **Layer 10 (SPEC)**: Must include tags from Layers 1-9
@@ -317,27 +328,27 @@ interfaces:
 **Minimum (IMPL and CTR skipped)**:
 ```yaml
 cumulative_tags:
-  brd: ["BRD-001:section-3"]
-  prd: ["PRD-001:feature-2"]
-  ears: ["EARS-001:E01"]
-  bdd: ["BDD-001:scenario-validation"]
-  adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS-001:FR-001"]
-  req: ["REQ-risk-limits-001"]
+  brd: ["BRD.001.003"]
+  prd: ["PRD.001.002"]
+  ears: ["EARS.001.001"]
+  bdd: ["BDD.001.001"]
+  adr: ["ADR.033", "ADR.045"]
+  sys: ["SYS.001.001"]
+  req: ["REQ.001.001"]
 ```
 
 **Maximum (IMPL and CTR included)**:
 ```yaml
 cumulative_tags:
-  brd: ["BRD-001:section-3"]
-  prd: ["PRD-001:feature-2"]
-  ears: ["EARS-001:E01"]
-  bdd: ["BDD-001:scenario-validation"]
-  adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS-001:FR-001"]
-  req: ["REQ-risk-limits-001"]
-  impl: ["IMPL-001:technical-approach"]
-  contracts: ["CTR-001"]
+  brd: ["BRD.001.003"]
+  prd: ["PRD.001.002"]
+  ears: ["EARS.001.001"]
+  bdd: ["BDD.001.001"]
+  adr: ["ADR.033", "ADR.045"]
+  sys: ["SYS.001.001"]
+  req: ["REQ.001.001"]
+  impl: ["IMPL.001.001"]
+  contracts: ["CTR.001"]
 ```
 
 ## Upstream/Downstream Artifacts
@@ -536,7 +547,7 @@ python scripts/validate_cross_document.py --layer SPEC --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing upstream tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE-NNN:section format |
+| Invalid tag format | Correct to TYPE.NNN.NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

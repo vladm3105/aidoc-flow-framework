@@ -384,16 +384,16 @@ flowchart LR
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 8):
 ```markdown
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
-@bdd: BDD-NNN:NNN
+@brd: BRD.NNN.NNN
+@prd: PRD.NNN.NNN
+@ears: EARS.NNN.NNN
+@bdd: BDD.NNN.NNN
 @adr: ADR-NNN
-@sys: SYS-NNN:NNN
-@req: REQ-NNN:NNN
+@sys: SYS.NNN.NNN
+@req: REQ.NNN.NNN
 ```
 
-**Format**: `@artifact-type: DOCUMENT-ID:REQUIREMENT-ID`
+**Format**: `@artifact-type: TYPE.NNN.NNN (Unified Feature ID)`
 
 **Layer 8 Requirements**: IMPL must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -408,13 +408,13 @@ flowchart LR
 
 **Example**:
 ```markdown
-@brd: BRD-001:030
-@prd: PRD-003:002
-@ears: EARS-001:003
-@bdd: BDD-003:001
+@brd: BRD.001.030
+@prd: PRD.003.002
+@ears: EARS.001.003
+@bdd: BDD.003.001
 @adr: ADR-033
-@sys: SYS-008:001
-@req: REQ-003:001
+@sys: SYS.008.001
+@req: REQ.003.001
 ```
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through REQ) are properly linked.

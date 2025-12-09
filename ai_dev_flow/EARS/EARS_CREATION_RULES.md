@@ -164,7 +164,7 @@ WHEN [condition],
 THE [component] SHALL [action]
 WITHIN [constraint].
 ```
-**Traceability**: @brd: BRD-001:001 | @prd: PRD-001:001
+**Traceability**: @brd: BRD.001.001 | @prd: PRD.001.001
 ````
 
 ---
@@ -173,32 +173,32 @@ WITHIN [constraint].
 
 ### NFR Categorical Format
 
-EARS documents inherit NFR IDs from upstream BRD/PRD documents using categorical prefixes:
+EARS documents inherit NFR IDs from upstream BRD/PRD documents using 900-series numbering:
 
-| Category | Prefix | Keywords for Detection |
-|----------|--------|------------------------|
-| Performance | `NFR-PERF-` | latency, throughput, response time, p95, p99 |
-| Security | `NFR-SEC-` | authentication, authorization, encryption, RBAC |
-| Reliability | `NFR-REL-` | availability, MTBF, MTTR, fault tolerance, recovery |
-| Scalability | `NFR-SCAL-` | concurrent users, data volumes, horizontal scaling |
-| Observability | `NFR-OBS-` | logging, monitoring, tracing, alerting, metrics |
-| Maintainability | `NFR-MAINT-` | code coverage, deployment, CI/CD, documentation |
+| Category | ID Range | Keywords for Detection |
+|----------|----------|------------------------|
+| Performance | 901-920 | latency, throughput, response time, p95, p99 |
+| Reliability | 921-940 | availability, MTBF, MTTR, fault tolerance, recovery |
+| Scalability | 941-960 | concurrent users, data volumes, horizontal scaling |
+| Security | 961-980 | authentication, authorization, encryption, RBAC |
+| Observability | 981-990 | logging, monitoring, tracing, alerting, metrics |
+| Maintainability | 991-999 | code coverage, deployment, CI/CD, documentation |
 
 ### NFR Inheritance
 
 When formalizing NFRs from BRD/PRD:
-- **Inherit the same NFR ID**: If BRD defines `NFR-PERF-001`, EARS uses `NFR-PERF-001`
+- **Inherit the same NFR ID**: If BRD defines `BRD.017.901`, EARS uses `EARS.017.901`
 - **Add EARS formalization**: Apply WHEN-THE-SHALL-WITHIN syntax
-- **Maintain traceability**: `@brd: BRD-017:NFR-PERF-001`
+- **Maintain traceability**: `@brd: BRD.017.901`
 
 ### NFR Quality Attributes
 
-**Performance** (`NFR-PERF-`): Quantified latency, throughput, response time constraints
-**Security** (`NFR-SEC-`): Authentication, authorization, encryption standards
-**Reliability** (`NFR-REL-`): Availability SLAs, fault tolerance, recovery objectives
-**Scalability** (`NFR-SCAL-`): Concurrent users, data volumes, growth projections
-**Observability** (`NFR-OBS-`): Logging, monitoring, tracing, alerting requirements
-**Maintainability** (`NFR-MAINT-`): Code coverage, deployment, documentation standards
+**Performance** (901-920): Quantified latency, throughput, response time constraints
+**Security** (961-980): Authentication, authorization, encryption standards
+**Reliability** (921-940): Availability SLAs, fault tolerance, recovery objectives
+**Scalability** (941-960): Concurrent users, data volumes, growth projections
+**Observability** (981-990): Logging, monitoring, tracing, alerting requirements
+**Maintainability** (991-999): Code coverage, deployment, documentation standards
 
 ---
 
@@ -254,24 +254,24 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 ### Standard Format
 
 ```markdown
-**Traceability**: @brd: BRD-NNN:NNN | @prd: PRD-NNN:NNN | @threshold: PRD-035:category.key
+**Traceability**: @brd: BRD.NNN.NNN | @prd: PRD.NNN.NNN | @threshold: PRD-035:category.key
 ```
 
 ### Required Tags
 
 | Tag | Format | When Required |
 |-----|--------|---------------|
-| @brd | BRD-NNN:NNN | Always |
-| @prd | PRD-NNN:NNN | Always |
-| @threshold | PRD-035:category.key | When referencing timing/limits |
-| @entity | PRD-004:EntityName | When referencing data entities |
+| @brd | BRD.NNN.NNN | Always |
+| @prd | PRD.NNN.NNN | Always |
+| @threshold | PRD.035.category.key | When referencing timing/limits |
+| @entity | PRD.004.EntityName | When referencing data entities |
 | @ctr | CTR-NNN:section | When referencing API contracts |
 
 ### Do NOT Use
 
 - Block quote format: `> **Tags**:`
 - Comma separators: `@prd: ..., @threshold: ...`
-- Trailing commas: `@prd: PRD-019:002, |`
+- Trailing commas: `@prd: PRD.019.002, |`
 
 **Downstream Linkages**:
 - REQ and SPEC artifacts

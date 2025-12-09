@@ -108,16 +108,16 @@ Need UI and API for sending notifications through multiple channels.
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 2):
 ```markdown
-@brd: BRD-009:015, BRD-009:006
+@brd: BRD.009.015, BRD.009.006
 ```
 
 **Tag Explanation**:
-- BRD-009:015 - Functional requirement for provider integration
-- BRD-009:006 - Non-functional requirement for delivery performance (NFR-PERF-001)
+- BRD.009.015 - Functional requirement for provider integration
+- BRD.009.006 - Non-functional requirement for delivery performance (mapped to BRD.009.901)
 
-**NFR References** (using document type tag):
+**NFR References** (using unified format):
 ```markdown
-@brd: BRD-009:NFR-PERF-001
+@brd: BRD.009.901
 ```
 
 **Upstream Sources**:
@@ -146,12 +146,12 @@ Need UI and API for sending notifications through multiple channels.
 
 ## 3.1 Event-Driven Requirements
 
-### EARS-012:001
+### EARS.012.001
 **WHEN** user selects "Send Notification" button
 **THE** system **SHALL** validate notification parameters
 **WITHIN** 100 milliseconds
 
-### EARS-012:002
+### EARS.012.002
 **WHEN** notification validation succeeds
 **THE** system **SHALL** submit notification to provider API
 **WITHIN** 200 milliseconds
@@ -160,14 +160,14 @@ Need UI and API for sending notifications through multiple channels.
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 3):
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
 ```
 
 **Tag Explanation**:
-- BRD-009:015 - Provider integration capability
-- BRD-009:006 - Performance requirements
-- PRD-016:003 - Notification UI feature
+- BRD.009.015 - Provider integration capability
+- BRD.009.006 - Performance requirements
+- PRD.016.003 - Notification UI feature
 
 **Upstream Sources**:
 - BRD-009 (Business requirements)
@@ -194,11 +194,11 @@ Need UI and API for sending notifications through multiple channels.
 ```gherkin
 # BDD-015: Notification Service Test Scenarios
 
-@brd:BRD-009:015
-@brd:BRD-009:006
-@prd:PRD-016:003
-@ears:EARS-012:001
-@ears:EARS-012:002
+@brd:BRD.009.015
+@brd:BRD.009.006
+@prd:PRD.016.003
+@ears:EARS.012.001
+@ears:EARS.012.002
 Feature: Notification Service
 
   Scenario: Send valid email notification
@@ -252,17 +252,17 @@ Implement asynchronous routing layer between API and provider integrations.
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:001, EARS-012:002
-@bdd: BDD-015:001, BDD-015:002
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.001, EARS.012.002
+@bdd: BDD.015.001, BDD.015.002
 ```
 
 **Tag Explanation**:
-- BRD-009:015, 006 - Business and performance requirements
-- PRD-016:003 - Product feature specification
-- EARS-012:001, 002 - Formal behavioral requirements
-- BDD-015:001, 002 - Test coverage
+- BRD.009.015, 006 - Business and performance requirements
+- PRD.016.003 - Product feature specification
+- EARS.012.001, 002 - Formal behavioral requirements
+- BDD.015.001, 002 - Test coverage
 
 **Upstream Sources**:
 - BRD-009, PRD-016, EARS-012, BDD-015
@@ -291,20 +291,20 @@ Implement asynchronous routing layer between API and provider integrations.
 
 ## 2. Functional Requirements
 
-### SYS-012:001
+### SYS.012.001
 System shall provide REST API endpoint for notification submission.
 
-### SYS-012:002
+### SYS.012.002
 Notification validation latency shall not exceed 100ms at 95th percentile.
 
 ## 7. Traceability
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:001, EARS-012:002
-@bdd: BDD-015:001, BDD-015:002
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.001, EARS.012.002
+@bdd: BDD.015.001, BDD.015.002
 @adr: ADR-033
 ```
 
@@ -349,18 +349,18 @@ The system SHALL provide an API endpoint to send notifications with the followin
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:001, EARS-012:002
-@bdd: BDD-015:001
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.001, EARS.012.002
+@bdd: BDD.015.001
 @adr: ADR-033
-@sys: SYS-012:001, SYS-012:002
+@sys: SYS.012.001, SYS.012.002
 ```
 
 **Tag Explanation**:
 - All upstream tags from Layers 1-6
-- SYS-012:001 - API endpoint requirement
-- SYS-012:002 - Performance constraint
+- SYS.012.001 - API endpoint requirement
+- SYS.012.002 - Performance constraint
 
 **Upstream Sources**:
 - BRD-009, PRD-016, EARS-012, BDD-015, ADR-033, SYS-012
@@ -398,18 +398,18 @@ The system SHALL provide an API endpoint to send notifications with the followin
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 8):
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:001, EARS-012:002
-@bdd: BDD-015:001
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.001, EARS.012.002
+@bdd: BDD.015.001
 @adr: ADR-033
-@sys: SYS-012:001, SYS-012:002
-@req: REQ-045:001, REQ-045:002
+@sys: SYS.012.001, SYS.012.002
+@req: REQ.045.001, REQ.045.002
 ```
 
 **Tag Explanation**:
 - All upstream tags from Layers 1-7
-- REQ-045:001, 002 - Atomic requirements being implemented
+- REQ.045.001, 002 - Atomic requirements being implemented
 
 **Note**: IMPL is optional layer. Include @impl tags in downstream only if IMPL exists.
 ```
@@ -439,19 +439,19 @@ REST API contract for notification service.
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:001, EARS-012:002
-@bdd: BDD-015:001
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.001, EARS.012.002
+@bdd: BDD.015.001
 @adr: ADR-033
-@sys: SYS-012:001, SYS-012:002
-@req: REQ-045:001
-@impl: IMPL-003:002
+@sys: SYS.012.001, SYS.012.002
+@req: REQ.045.001
+@impl: IMPL.003.002
 ```
 
 **Tag Explanation**:
 - All upstream tags from Layers 1-8
-- IMPL-003:002 - Implementation phase containing this contract
+- IMPL.003.002 - Implementation phase containing this contract
 
 **Note**: CTR is optional layer. Include @ctr tags in downstream only if CTR exists.
 ```
@@ -468,14 +468,14 @@ description: |
   Notification API for external provider integration.
 
   Traceability:
-  - @brd: BRD-009:015, BRD-009:006
-  - @prd: PRD-016:003
-  - @ears: EARS-012:001, EARS-012:002
-  - @bdd: BDD-015:001
+  - @brd: BRD.009.015, BRD.009.006
+  - @prd: PRD.016.003
+  - @ears: EARS.012.001, EARS.012.002
+  - @bdd: BDD.015.001
   - @adr: ADR-033
-  - @sys: SYS-012:001, SYS-012:002
-  - @req: REQ-045:001
-  - @impl: IMPL-003:002
+  - @sys: SYS.012.001, SYS.012.002
+  - @req: REQ.045.001
+  - @impl: IMPL.003.002
 
 paths:
   /api/v1/notifications:
@@ -516,14 +516,14 @@ status: active
 # Required: 7 upstream tags (BRD through REQ)
 # Optional: IMPL, CTR (include if they exist in chain)
 cumulative_tags:
-  brd: "BRD-009:015, BRD-009:006"
-  prd: "PRD-016:003"
-  ears: "EARS-012:001, EARS-012:002"
-  bdd: "BDD-015:001, BDD-015:002"
+  brd: "BRD.009.015, BRD.009.006"
+  prd: "PRD.016.003"
+  ears: "EARS.012.001, EARS.012.002"
+  bdd: "BDD.015.001, BDD.015.002"
   adr: "ADR-033"
-  sys: "SYS-012:001, SYS-012:002"
-  req: "REQ-045:001, REQ-045:002"
-  impl: "IMPL-003:002"  # Optional - included because IMPL-003 exists
+  sys: "SYS.012.001, SYS.012.002"
+  req: "REQ.045.001, REQ.045.002"
+  impl: "IMPL.003.002"  # Optional - included because IMPL-003 exists
   ctr: "CTR-005"  # Optional - included because CTR-005 exists
 
 implementation:
@@ -575,7 +575,7 @@ implementation:
 **File**: `src/services/notification_service.py`
 **Function**: `send_notification()`
 **Dependencies**: SPEC-018, CTR-005
-**Acceptance**: BDD-015:001 passes
+**Acceptance**: BDD.015.001 passes
 
 ### Task 2: Validation Logic
 **File**: `src/services/notification_validator.py`
@@ -587,14 +587,14 @@ implementation:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:001, EARS-012:002
-@bdd: BDD-015:001, BDD-015:002
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.001, EARS.012.002
+@bdd: BDD.015.001, BDD.015.002
 @adr: ADR-033
-@sys: SYS-012:001, SYS-012:002
-@req: REQ-045:001, REQ-045:002
-@impl: IMPL-003:002
+@sys: SYS.012.001, SYS.012.002
+@req: REQ.045.001, REQ.045.002
+@impl: IMPL.003.002
 @ctr: CTR-005
 @spec: SPEC-018
 ```
@@ -640,14 +640,14 @@ touch notification_service.py notification_validator.py
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 12):
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:001, EARS-012:002
-@bdd: BDD-015:001, BDD-015:002
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.001, EARS.012.002
+@bdd: BDD.015.001, BDD.015.002
 @adr: ADR-033
-@sys: SYS-012:001, SYS-012:002
-@req: REQ-045:001, REQ-045:002
-@impl: IMPL-003:002
+@sys: SYS.012.001, SYS.012.002
+@req: REQ.045.001, REQ.045.002
+@impl: IMPL.003.002
 @ctr: CTR-005
 @spec: SPEC-018
 @tasks: TASKS-015
@@ -675,14 +675,14 @@ touch notification_service.py notification_validator.py
 ```python
 """Notification service implementation.
 
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:001, EARS-012:002
-@bdd: BDD-015:001, BDD-015:002
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.001, EARS.012.002
+@bdd: BDD.015.001, BDD.015.002
 @adr: ADR-033
-@sys: SYS-012:001, SYS-012:002
-@req: REQ-045:001, REQ-045:002
-@impl: IMPL-003:002
+@sys: SYS.012.001, SYS.012.002
+@req: REQ.045.001, REQ.045.002
+@impl: IMPL.003.002
 @ctr: CTR-005
 @spec: SPEC-018
 @tasks: TASKS-015
@@ -714,8 +714,8 @@ async def send_notification(notification: NotificationRequest):
     """Send notification endpoint.
 
     Implements SPEC-018 notification service specification.
-    Satisfies BDD-015:001 acceptance criteria.
-    Enforces SYS-012:001 latency requirement (100ms).
+    Satisfies BDD.015.001 acceptance criteria.
+    Enforces SYS.012.001 latency requirement (100ms).
 
     Args:
         notification: Notification parameters per CTR-005
@@ -749,14 +749,14 @@ async def send_notification(notification: NotificationRequest):
 ```python
 """Test suite for notification service.
 
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:001, EARS-012:002
-@bdd: BDD-015:001, BDD-015:002
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.001, EARS.012.002
+@bdd: BDD.015.001, BDD.015.002
 @adr: ADR-033
-@sys: SYS-012:001, SYS-012:002
-@req: REQ-045:001, REQ-045:002
-@impl: IMPL-003:002
+@sys: SYS.012.001, SYS.012.002
+@req: REQ.045.001, REQ.045.002
+@impl: IMPL.003.002
 @ctr: CTR-005
 @spec: SPEC-018
 @tasks: TASKS-015
@@ -774,9 +774,9 @@ client = TestClient(router)
 def test_send_valid_notification():
     """Test sending valid notification.
 
-    Validates: BDD-015:001
+    Validates: BDD.015.001
     Contract: CTR-005 request/response format
-    Performance: SYS-012:001 (< 100ms)
+    Performance: SYS.012.001 (< 100ms)
     """
     notification = {
         "recipient": "user@example.com",
@@ -796,9 +796,9 @@ def test_send_valid_notification():
 def test_reject_missing_recipient():
     """Test rejection of missing recipient.
 
-    Validates: BDD-015:002
+    Validates: BDD.015.002
     Contract: CTR-005 error response format
-    Requirement: REQ-045:002
+    Requirement: REQ.045.002
     """
     notification = {
         "recipient": "",
@@ -839,13 +839,13 @@ def test_reject_missing_recipient():
 
 ## 1. BDD Scenario Execution
 
-### BDD-015:001
+### BDD.015.001
 - **Status**: PASSED
-- **Execution Time**: 87ms (< 100ms requirement per SYS-012:001)
+- **Execution Time**: 87ms (< 100ms requirement per SYS.012.001)
 - **Contract Compliance**: CTR-005 validated
-- **Requirement Coverage**: REQ-045:001 satisfied
+- **Requirement Coverage**: REQ.045.001 satisfied
 
-### BDD-015:002
+### BDD.015.002
 - **Status**: PASSED
 - **Error Handling**: SPEC-018 error codes validated
 - **Contract Compliance**: CTR-005 error schema validated
@@ -868,14 +868,14 @@ def test_reject_missing_recipient():
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 15):
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:001, EARS-012:002
-@bdd: BDD-015:001, BDD-015:002
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.001, EARS.012.002
+@bdd: BDD.015.001, BDD.015.002
 @adr: ADR-033
-@sys: SYS-012:001, SYS-012:002
-@req: REQ-045:001, REQ-045:002
-@impl: IMPL-003:002
+@sys: SYS.012.001, SYS.012.002
+@req: REQ.045.001, REQ.045.002
+@impl: IMPL.003.002
 @ctr: CTR-005
 @spec: SPEC-018
 @tasks: TASKS-015
@@ -902,23 +902,23 @@ def test_reject_missing_recipient():
 
 ## NFR Categorical Tagging Reference
 
-Non-Functional Requirements use categorical prefixes for automated categorization:
+Non-Functional Requirements use 900-series numbering for automated categorization:
 
-| Category | Prefix | Example in This Chain |
-|----------|--------|----------------------|
-| Performance | `NFR-PERF-` | `NFR-PERF-001` (100ms latency, 95th percentile) |
-| Reliability | `NFR-REL-` | N/A in this example |
-| Scalability | `NFR-SCAL-` | N/A in this example |
-| Security | `NFR-SEC-` | N/A in this example |
-| Observability | `NFR-OBS-` | N/A in this example |
-| Maintainability | `NFR-MAINT-` | N/A in this example |
+| Category | ID Range | Example in This Chain |
+|----------|----------|----------------------|
+| Performance | 901-920 | `BRD.009.901` (100ms latency, 95th percentile) |
+| Reliability | 921-940 | N/A in this example |
+| Scalability | 941-960 | N/A in this example |
+| Security | 961-980 | N/A in this example |
+| Observability | 981-990 | N/A in this example |
+| Maintainability | 991-999 | N/A in this example |
 
-**NFR Cross-Reference Format**: Use document type tag with NFR ID (e.g., `@brd: BRD-009:NFR-PERF-001`, `@sys: SYS-012:NFR-PERF-001`)
+**NFR Cross-Reference Format**: Use unified format with 900-series NFR IDs (e.g., `@brd: BRD.009.901`, `@sys: SYS.012.901`)
 
 **Example from this chain**:
 ```markdown
-@brd: BRD-009:NFR-PERF-001   # Performance: 100ms validation latency
-@sys: SYS-012:NFR-PERF-001   # Same NFR inherited to SYS layer
+@brd: BRD.009.901   # Performance: 100ms validation latency
+@sys: SYS.012.901   # Same NFR inherited to SYS layer
 ```
 
 **Cross-Layer Consistency**: NFR IDs remain consistent across all layers for complete traceability (BRD → PRD → EARS → SYS).
@@ -955,7 +955,7 @@ Layer 15 (Validation)    ->  10-15 tags [all upstream]
    - Full justification chain from business need to production code
 
 2. **Impact Analysis**
-   - If BRD-009:015 changes, immediately identify affected:
+   - If BRD.009.015 changes, immediately identify affected:
      * PRD-016 (product requirements)
      * EARS-012 (formal requirements)
      * BDD-015 (test scenarios)

@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type SYS --output docs/SYS/SY
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@sys: SYS-001:NNN` (for multi-requirement docs) or `@sys: SYS-001` (for single-doc refs)
+**Tag Format:** `@sys: SYS.001.NNN` (for specific requirements) or `@sys: SYS-001` (for document-level refs)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -92,10 +92,10 @@ This matrix tracks all SYS documents, mapping upstream architecture decisions to
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:002, EARS-012:001
-@bdd: BDD-015:001
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.002, EARS.012.001
+@bdd: BDD.015.001
 @adr: ADR-033
 ```
 
@@ -118,10 +118,10 @@ This matrix tracks all SYS documents, mapping upstream architecture decisions to
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
 ```markdown
-@brd: BRD-009:015, BRD-009:006
-@prd: PRD-016:003
-@ears: EARS-012:002, EARS-012:001
-@bdd: BDD-015:001
+@brd: BRD.009.015, BRD.009.006
+@prd: PRD.016.003
+@ears: EARS.012.002, EARS.012.001
+@bdd: BDD.015.001
 @adr: ADR-033
 ```
 

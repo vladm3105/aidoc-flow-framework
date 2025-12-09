@@ -434,7 +434,7 @@ project_structure:
 
 **Required Tags**:
 ```
-@prd: PRD-000:G-002
+@prd: PRD.000.002
 @adr: ADR-000
 ```
 

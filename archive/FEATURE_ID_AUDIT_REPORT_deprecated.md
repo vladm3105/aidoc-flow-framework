@@ -1,3 +1,7 @@
+> **⚠️ DEPRECATED**: This report used old `TYPE-NNN:NNN` format.
+> Current standard: Unified `TYPE.NNN.NNN` format.
+> See: `ai_dev_flow/ID_NAMING_STANDARDS.md`
+
 # Comprehensive Feature-Level Traceability Tag Format Audit
 
 **Date**: 2025-12-01

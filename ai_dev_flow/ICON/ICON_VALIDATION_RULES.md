@@ -285,7 +285,7 @@ echo "INFO: Found $consumer_count consumer(s)"
 |-----|----------|--------|
 | @brd | Yes | BRD-NNN:REQ-NNN |
 | @prd | Yes | PRD-NNN:REQ-NNN |
-| @ears | Yes | EARS-NNN:NNN |
+| @ears | Yes | EARS.NNN.NNN |
 | @bdd | Yes | BDD-NNN:SCENARIO-NNN |
 | @adr | Yes | ADR-NNN |
 | @sys | Yes | SYS-NNN:REQ-NNN |

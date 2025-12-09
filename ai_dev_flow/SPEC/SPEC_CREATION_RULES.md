@@ -215,7 +215,7 @@ TASKS-ready scoring measures SPEC maturity and readiness for progression to TASK
 cumulative_tags:
   brd: "BRD-NNN:REQUIREMENT-ID"
   prd: "PRD-NNN:REQUIREMENT-ID"
-  ears: "EARS-NNN:NNN"
+  ears: "EARS.NNN.NNN"
   bdd: "BDD-NNN:SCENARIO-ID"
   adr: "ADR-NNN"
   sys: "SYS-NNN:regulatoryTION-ID"

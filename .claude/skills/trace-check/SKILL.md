@@ -149,7 +149,7 @@ Code & Validation Layer: Code → Tests → Validation → Review → Production
 **Actions**:
 1. Scan all source files (.py, .md, .yaml, .feature) for tag patterns
 2. Parse @brd:, @sys:, @spec:, @test:, @impl-status: tags
-3. Validate format: DOCUMENT-ID:REQUIREMENT-ID
+3. Validate format: TYPE.NNN.NNN (unified format)
 4. Build tag-to-document mapping
 5. Cross-reference with actual document existence
 
@@ -167,7 +167,7 @@ TAG_PATTERN = r'@(\w+(?:-\w+)?):\s*([\w\-]+(?::[\w\-]+)?(?:\s*,\s*[\w\-]+(?::[\w
 ```
 
 **Validation Rules**:
-1. **Format Check:** All @brd/@prd tags must use DOCUMENT-ID:REQUIREMENT-ID format
+1. **Format Check:** All @brd/@prd tags must use unified TYPE.NNN.NNN format
 2. **Document Exists:** DOCUMENT-ID must reference existing file in docs/{TYPE}/
 3. **Requirement Exists:** REQUIREMENT-ID must exist within the document
 4. **No Orphans:** All tags must resolve to actual requirements

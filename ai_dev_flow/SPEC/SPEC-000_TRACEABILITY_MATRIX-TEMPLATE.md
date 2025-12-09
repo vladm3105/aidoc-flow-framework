@@ -93,14 +93,14 @@ SPEC documents use YAML format with a dedicated `cumulative_tags` section:
 
 ```yaml
 cumulative_tags:
-  brd: "BRD-009:015"
-  prd: "PRD-016:003"
-  ears: "EARS-012:002"
-  bdd: "BDD-015:001"
+  brd: "BRD.009.015"
+  prd: "PRD.016.003"
+  ears: "EARS.012.002"
+  bdd: "BDD.015.001"
   adr: "ADR-033"
-  sys: "SYS-012:001"
-  req: "REQ-045:001"
-  impl: "IMPL-003:002"  # Optional - include if exists
+  sys: "SYS.012.001"
+  req: "REQ.045.001"
+  impl: "IMPL.003.002"  # Optional - include if exists
   ctr: "CTR-005"  # Optional - include if exists
 ```
 
@@ -125,14 +125,14 @@ status: active
 # Required: 7 upstream tags (BRD through REQ)
 # Optional: IMPL, CTR (include if they exist in chain)
 cumulative_tags:
-  brd: "BRD-009:015, BRD-009:006"
-  prd: "PRD-016:003"
-  ears: "EARS-012:002, EARS-012:001"
-  bdd: "BDD-015:001, BDD-015:002"
+  brd: "BRD.009.015, BRD.009.006"
+  prd: "PRD.016.003"
+  ears: "EARS.012.002, EARS.012.001"
+  bdd: "BDD.015.001, BDD.015.002"
   adr: "ADR-033"
-  sys: "SYS-012:001, SYS-012:002"
-  req: "REQ-045:001, REQ-045:002"
-  impl: "IMPL-003:002"  # Optional
+  sys: "SYS.012.001, SYS.012.002"
+  req: "REQ.045.001, REQ.045.002"
+  impl: "IMPL.003.002"  # Optional
   ctr: "CTR-005"  # Optional
 
 component:
@@ -151,13 +151,13 @@ When IMPL and CTR don't exist in the traceability chain:
 # SPEC-040: Simple Data Processor Specification
 
 cumulative_tags:
-  brd: "BRD-001:020"
-  prd: "PRD-003:005"
-  ears: "EARS-005:001"
-  bdd: "BDD-008:001"
+  brd: "BRD.001.020"
+  prd: "PRD.003.005"
+  ears: "EARS.005.001"
+  bdd: "BDD.008.001"
   adr: "ADR-015"
-  sys: "SYS-020:003"
-  req: "REQ-030:001"
+  sys: "SYS.020.003"
+  req: "REQ.030.001"
   # No IMPL or CTR - not needed for this component
 
 component:

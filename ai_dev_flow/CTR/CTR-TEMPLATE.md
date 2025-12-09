@@ -715,17 +715,17 @@ Common types across endpoints:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
 ```markdown
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
-@bdd: BDD-NNN:NNN
+@brd: BRD.NNN.NNN
+@prd: PRD.NNN.NNN
+@ears: EARS.NNN.NNN
+@bdd: BDD.NNN.NNN
 @adr: ADR-NNN
-@sys: SYS-NNN:NNN
-@req: REQ-NNN:NNN
-@impl: IMPL-NNN:NNN
+@sys: SYS.NNN.NNN
+@req: REQ.NNN.NNN
+@impl: IMPL.NNN.NNN
 ```
 
-**Format**: `@artifact-type: DOCUMENT-ID:NNN`
+**Format**: `@artifact-type: TYPE.NNN.NNN`
 
 **Layer 9 Requirements**: CTR must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -741,14 +741,14 @@ Common types across endpoints:
 
 **Example**:
 ```markdown
-@brd: BRD-001:030
-@prd: PRD-003:002
-@ears: EARS-001:003
-@bdd: BDD-003:001
+@brd: BRD.001.030
+@prd: PRD.003.002
+@ears: EARS.001.003
+@bdd: BDD.003.001
 @adr: ADR-033
-@sys: SYS-008:001
-@req: REQ-003:001
-@impl: IMPL-001:001
+@sys: SYS.008.001
+@req: REQ.003.001
+@impl: IMPL.001.001
 ```
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through IMPL) are properly linked.

@@ -260,6 +260,17 @@ If this TASKS provides no contracts and consumes no contracts, state explicitly:
 
 **Reference**: See `ai_dev_flow/TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md` for detailed guidance.
 
+## Unified Feature ID Format (MANDATORY)
+
+**Always use**: `TYPE.NNN.NNN` (dot separator)
+**Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+
+Examples:
+- `@brd: BRD.017.001` ✅
+- `@brd: BRD-017:001` ❌
+
+NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
+
 ## Cumulative Tagging Requirements
 
 **Layer 11 (TASKS)**: Must include tags from Layers 1-10
@@ -272,29 +283,29 @@ If this TASKS provides no contracts and consumes no contracts, state explicitly:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
 ```markdown
-@brd: BRD-001:section-3
-@prd: PRD-001:feature-2
-@ears: EARS-001:E01
-@bdd: BDD-001:scenario-validation
-@adr: ADR-033, ADR-045
-@sys: SYS-001:FR-001
-@req: REQ-data-validation-001
-@spec: SPEC-001
+@brd: BRD.001.003
+@prd: PRD.001.002
+@ears: EARS.001.001
+@bdd: BDD.001.001
+@adr: ADR.033, ADR.045
+@sys: SYS.001.001
+@req: REQ.001.001
+@spec: SPEC.001
 ```
 
 **Maximum (IMPL, CTR, and ICON included)**:
 ```markdown
-@brd: BRD-001:section-3
-@prd: PRD-001:feature-2
-@ears: EARS-001:E01
-@bdd: BDD-001:scenario-validation
-@adr: ADR-033, ADR-045
-@sys: SYS-001:FR-001
-@req: REQ-data-validation-001
-@impl: IMPL-001:technical-approach
-@ctr: CTR-001
-@spec: SPEC-001
-@icon: TASKS-001:DataValidator  # if providing or consuming implementation contracts
+@brd: BRD.001.003
+@prd: PRD.001.002
+@ears: EARS.001.001
+@bdd: BDD.001.001
+@adr: ADR.033, ADR.045
+@sys: SYS.001.001
+@req: REQ.001.001
+@impl: IMPL.001.001
+@ctr: CTR.001
+@spec: SPEC.001
+@icon: TASKS.001:DataValidator  # if providing or consuming implementation contracts
 @icon-role: provider  # or consumer
 ```
 
@@ -476,7 +487,7 @@ python scripts/validate_cross_document.py --layer TASKS --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing upstream tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE-NNN:section format |
+| Invalid tag format | Correct to TYPE.NNN.NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

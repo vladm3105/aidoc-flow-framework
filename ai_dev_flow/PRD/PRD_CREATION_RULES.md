@@ -437,7 +437,7 @@ EARS-ready scoring measures PRD maturity and readiness for progression to Engine
 
 **Traceability Tags (Cumulative Tagging Hierarchy - Layer 2)**:
 ```markdown
-@brd: BRD-NNN:NNN
+@brd: BRD.NNN.NNN
 ```
 
 **Same-Type References (Conditional)**:
@@ -825,7 +825,7 @@ Example: @prd: PRD-035:kyc.l1.daily
 When referencing features from other PRDs, use the cross-reference format:
 
 ```markdown
-@prd: PRD-022:015
+@prd: PRD.022.015
 ```
 
 **Components**:
@@ -833,7 +833,7 @@ When referencing features from other PRDs, use the cross-reference format:
 - `PRD-022` - Document ID
 - `:015` - Feature ID within document
 
-**Uniqueness**: `PRD-022:015` is globally unique (PRD-022, Feature 015)
+**Uniqueness**: `PRD.022.015` is globally unique (PRD-022, Feature 015)
 
 ### Invalid Formats (Do NOT Use)
 
@@ -861,21 +861,21 @@ For PRDs with non-standard Feature IDs:
 1. **Inventory**: List all current Feature IDs
 2. **Map**: Create mapping table (old → new)
 3. **Update**: Replace old IDs with simple format
-4. **Cross-Reference**: Update all documents using `@prd: PRD-NNN:NNN` format
+4. **Cross-Reference**: Update all documents using `@prd: PRD.NNN.NNN` format
 5. **Validate**: Run Feature ID validation script
 
 **Mapping Example**:
 | Old ID | New ID | Cross-Reference |
 |--------|--------|-----------------|
-| FR-022-001 | 001 | @prd: PRD-022:001 |
-| FR-AGENT-001 | 001 | @prd: PRD-022:001 |
-| Feature 3.1 | 003 | @prd: PRD-025:003 |
+| FR-022-001 | 001 | @prd: PRD.022.001 |
+| FR-AGENT-001 | 001 | @prd: PRD.022.001 |
+| Feature 3.1 | 003 | @prd: PRD.025.003 |
 
 ### Benefits
 
 1. **Simpler IDs**: Cleaner, shorter feature identifiers
 2. **Namespace Separation**: Document context provides uniqueness
-3. **Cross-Reference Clarity**: `@prd: PRD-022:015` format is explicit
+3. **Cross-Reference Clarity**: `@prd: PRD.022.015` format is explicit
 4. **Validation**: Simple regex enables automated checking
 5. **Consistency**: Aligns with ID_NAMING_STANDARDS.md
 

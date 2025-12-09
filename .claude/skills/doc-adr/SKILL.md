@@ -192,6 +192,17 @@ BRD-002 (Feature) references: "Use database per ADR-033"
 ADR-045: User data schema design (Feature ADR - references ADR-033)
 ```
 
+## Unified Feature ID Format (MANDATORY)
+
+**Always use**: `TYPE.NNN.NNN` (dot separator)
+**Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+
+Examples:
+- `@brd: BRD.017.001` ✅
+- `@brd: BRD-017:001` ❌
+
+NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
+
 ## Cumulative Tagging Requirements
 
 **Layer 5 (ADR)**: Must include tags from Layers 1-4 (BRD, PRD, EARS, BDD)
@@ -204,10 +215,10 @@ ADR-045: User data schema design (Feature ADR - references ADR-033)
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
 ```markdown
-@brd: BRD-001:arch-decision-requirements
-@prd: PRD-001:feature-2
-@ears: EARS-001:E01
-@bdd: BDD-001:scenario-validation
+@brd: BRD.001.030
+@prd: PRD.001.002
+@ears: EARS.001.001
+@bdd: BDD.001.001
 ```
 
 **Upstream Sources**:
@@ -391,7 +402,7 @@ python scripts/validate_cross_document.py --layer ADR --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE-NNN:section format |
+| Invalid tag format | Correct to TYPE.NNN.NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

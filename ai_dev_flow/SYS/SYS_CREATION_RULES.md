@@ -188,10 +188,10 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 
 **Complete Upstream Tag Chain**:
 ```markdown
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
-@bdd: BDD-NNN:NNN
+@brd: BRD.NNN.NNN
+@prd: PRD.NNN.NNN
+@ears: EARS.NNN.NNN
+@bdd: BDD.NNN.NNN
 @adr: ADR-NNN
 ```
 

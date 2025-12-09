@@ -389,7 +389,7 @@ else
     if ! [[ $tag_line =~ ^@(brd|prd|ears|bdd|adr|sys):[[:space:]][A-Z]+-[0-9]{3,4}(-[0-9]{2,3})?(:[A-Z0-9_-]+)? ]]; then
       echo "  ❌ ERROR: Invalid tag format: $tag_line"
       echo "           Expected: @type: DOC-ID:REQ-ID"
-      echo "           Example: @brd: BRD-009:015"
+      echo "           Example: @brd: BRD.009.015"
       ((tag_format_errors++))
     fi
   done < <(grep -E '^@(brd|prd|ears|bdd|adr|sys):' "$REQ_FILE")

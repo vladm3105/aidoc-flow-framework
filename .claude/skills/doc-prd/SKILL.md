@@ -157,6 +157,17 @@ Based on the product features defined above, the following architectural topics 
 - Decrease error rate from 5% to <1%
 ```
 
+## Unified Feature ID Format (MANDATORY)
+
+**Always use**: `TYPE.NNN.NNN` (dot separator)
+**Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+
+Examples:
+- `@brd: BRD.017.001` ✅
+- `@brd: BRD-017:001` ❌
+
+NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
+
 ## Cumulative Tagging Requirements
 
 **Layer 2 (PRD)**: Must include tags from Layer 1 (BRD)
@@ -169,11 +180,11 @@ Based on the product features defined above, the following architectural topics 
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 2):
 ```markdown
-@brd: BRD-001:section-3, BRD-001:success-criteria
+@brd: BRD.001.003, BRD.001.010
 ```
 
-- BRD-001:section-3 - Business requirements driving this product
-- BRD-001:success-criteria - Success criteria from business case
+- BRD.001.003 - Business requirements driving this product
+- BRD.001.010 - Success criteria from business case
 
 **Upstream Sources**:
 - [BRD-001](../BRD/BRD-001_platform.md#BRD-001) - Parent business requirements
