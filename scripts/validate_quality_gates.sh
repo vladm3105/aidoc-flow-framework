@@ -2,6 +2,19 @@
 
 # doc_flow Quality Gates Validation Script
 # Ensures 16-layer SDD workflow progression with TRACEABILITY.md alignment
+#
+# TRACEABILITY RULES (REQUIRED vs OPTIONAL):
+# +-----------------------+-----------------------+------------------------+
+# | Document Type         | Upstream Traceability | Downstream Traceability|
+# +-----------------------+-----------------------+------------------------+
+# | BRD                   | OPTIONAL (to BRDs)    | OPTIONAL               |
+# | All Other Documents   | REQUIRED              | OPTIONAL               |
+# +-----------------------+-----------------------+------------------------+
+#
+# Key Rules:
+# - Upstream REQUIRED (except BRD): Document MUST reference upstream sources
+# - Downstream OPTIONAL: Only link to documents that already exist
+# - No-TBD Rule: NEVER use placeholder IDs (TBD, XXX, NNN)
 
 set -e
 
