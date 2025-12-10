@@ -218,7 +218,7 @@ cumulative_tags:
   ears: "EARS.NNN.NNN"
   bdd: "BDD-NNN:SCENARIO-ID"
   adr: "ADR-NNN"
-  sys: "SYS-NNN:regulatoryTION-ID"
+  sys: "SYS-NNN"
   req: "REQ-NNN:REQUIREMENT-ID"
 ```
 
@@ -271,9 +271,9 @@ cumulative_tags:
 | Hardcoded values in behavior | Use configuration references |
 | Missing interface CTR references | Create CTR for external API specifications |
 | Incomplete performance specifications | Include latency/throughput/error rate targets |
-| `latency_ms: 200` (hardcoded) | `latency_ms: "@threshold: PRD-NNN:perf.api.p95_latency"` |
-| `timeout: 5000` (magic number) | `timeout: "@threshold: PRD-NNN:timeout.default"` |
-| `rate_limit: 100` (hardcoded) | `rate_limit: "@threshold: PRD-NNN:limit.api.requests_per_second"` |
+| `latency_ms: 200` (hardcoded) | `latency_ms: "@threshold: PRD.NNN.perf.api.p95_latency"` |
+| `timeout: 5000` (magic number) | `timeout: "@threshold: PRD.NNN.timeout.default"` |
+| `rate_limit: 100` (hardcoded) | `rate_limit: "@threshold: PRD.NNN.limit.api.requests_per_second"` |
 
 ---
 
@@ -354,11 +354,11 @@ Use `@threshold` for ALL quantitative values in SPEC YAML that are:
 ```yaml
 # String value format
 performance:
-  p95_latency_ms: "@threshold: PRD-NNN:perf.api.p95_latency"
+  p95_latency_ms: "@threshold: PRD.NNN.perf.api.p95_latency"
 
 # Comment format for documentation
 timeout:
-  request_ms: 5000  # @threshold: PRD-NNN:timeout.request.sync
+  request_ms: 5000  # @threshold: PRD.NNN.timeout.request.sync
 ```
 
 **Examples**:
@@ -391,11 +391,11 @@ rate_limit:
 **Valid (registry references)**:
 ```yaml
 performance:
-  p95_latency_ms: "@threshold: PRD-NNN:perf.api.p95_latency"
+  p95_latency_ms: "@threshold: PRD.NNN.perf.api.p95_latency"
 timeout:
-  request_ms: "@threshold: PRD-NNN:timeout.request.sync"
+  request_ms: "@threshold: PRD.NNN.timeout.request.sync"
 rate_limit:
-  requests_per_second: "@threshold: PRD-NNN:limit.api.requests_per_second"
+  requests_per_second: "@threshold: PRD.NNN.limit.api.requests_per_second"
 ```
 
 ### Traceability Integration

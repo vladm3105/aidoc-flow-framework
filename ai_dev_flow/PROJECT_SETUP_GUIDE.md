@@ -740,10 +740,10 @@ Status: Created
 
 Validation Results:
 ✓ YAML frontmatter valid
-✓ REQ-ID unique (REQ-MLR-032)
+✓ REQ-ID unique (REQ-032)
 ✓ Priority specified (MUST)
 ✓ Acceptance criteria complete (5-part format)
-✓ Traceability tags present (@prd: PRD-001, @ears: EARS-MLR-001)
+✓ Traceability tags present (@prd: PRD.001.001, @ears: EARS.001.001)
 ✓ Verification methods defined
 ✓ Metadata compliant
 
@@ -760,7 +760,7 @@ Document: REQ-002_example.md
 Status: Created
 
 Validation Results:
-✗ ERROR: Duplicate REQ-ID (REQ-MLR-032 already exists)
+✗ ERROR: Duplicate REQ-ID (REQ-032 already exists)
 ✗ ERROR: Missing acceptance criteria section
 ⚠ WARNING: Incomplete traceability (@prd tag missing)
 
@@ -770,7 +770,7 @@ Automated Checks:
 Status: Requires fixes before proceeding
 
 Fixes Required:
-1. Assign unique REQ-ID (next available: REQ-MLR-046)
+1. Assign unique REQ-ID (next available: REQ-046)
 2. Add acceptance criteria section with 5-part format
 3. Add @prd traceability tag
 

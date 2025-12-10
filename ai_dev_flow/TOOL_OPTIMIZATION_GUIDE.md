@@ -278,7 +278,7 @@ python -c "import tiktoken; enc = tiktoken.get_encoding('cl100k_base'); print(le
 
 ### Example 1: Standard Requirement Document (20KB)
 
-**File**: REQ-AUTH-001.md (20KB, ~5,000 tokens)
+**File**: REQ-001_authentication.md (20KB, ~5,000 tokens)
 
 **Tool Usage:**
 - **Claude Code**: ✅ Optimal (uses 2.5% of context)
@@ -326,7 +326,7 @@ gemini
 SPEC-SYSTEM-001_overview.md      (20KB) - Architecture, interfaces
 SPEC-SYSTEM-002_core.md          (40KB) - Core business logic
 SPEC-SYSTEM-003_integration.md   (30KB) - External integrations
-SPEC-SYSTEM-004_nfr.md           (30KB) - Performance, observability
+SPEC-SYSTEM-004_quality.md       (30KB) - Performance, observability
 SPEC-SYSTEM-000_index.md         (5KB)  - Complete index with cross-refs
 ```
 

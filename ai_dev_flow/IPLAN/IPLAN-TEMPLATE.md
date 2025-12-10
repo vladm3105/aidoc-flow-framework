@@ -610,13 +610,13 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - `@adr: ADR-NNN` - Architecture Decision Record (Layer 5)
 - `@sys: SYS-NNN:REQ-NNN` - System Requirements (Layer 6)
 - `@req: REQ-NNN` - Atomic Requirements (Layer 7)
-- `@spec: SPEC-NNN:regulatoryTION` - Technical Specification (Layer 10)
-- `@tasks: TASKS-NNN:PHASE-X.Y` - Code Generation Plan (Layer 11)
+- `@spec: SPEC-NNN` - Technical Specification (Layer 10)
+- `@tasks: TASKS-NNN` - Code Generation Plan (Layer 11)
 
 ### 8.2 Optional Tags (If Present in Project)
 
 - `@impl: IMPL-NNN` - Implementation Plan (Layer 8) - include if project uses IMPL
-- `@ctr: CTR-NNN:regulatoryTION` - Interface Contract (Layer 9) - include if contracts defined
+- `@ctr: CTR-NNN` - Interface Contract (Layer 9) - include if contracts defined
 
 ### 8.3 Tag Format
 
@@ -857,7 +857,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - [ ] All error cases handled
 - [ ] All edge cases covered
 
-**Non-Functional Validation**:
+**Quality Attribute Validation**:
 - [ ] Performance targets met (p50/p95/p99)
 - [ ] Resource constraints satisfied
 - [ ] Scalability verified

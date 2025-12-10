@@ -91,7 +91,7 @@ custom_fields:
 
 #### Success Boundaries
 - All [functional requirement category] scenarios process correctly
-- System maintains [non-functional criteria] under [load conditions]
+- System maintains [quality attribute criteria] under [load conditions]
 - [Integration points] work with [contract compliance level] compatibility
 
 #### Failure Boundaries
@@ -200,7 +200,7 @@ custom_fields:
   - Rate limiting and quota management for API consumption
   - Error handling and retry logic for external service failures
 
-## 5. Non-Functional Requirements
+## 5. Quality Attributes
 
 ### 5.1 Performance Requirements
 [Quantitative performance expectations for the system]
@@ -208,19 +208,19 @@ custom_fields:
 > **Note**: All performance thresholds MUST use @threshold registry references. See PRD-000_threshold_registry_template.md for registry format.
 
 #### Response Time Requirements
-- **Interactive Operations**: p95 response time < @threshold: PRD-NNN:perf.api.p95_latency for user-facing operations
-- **Background Operations**: p95 processing time < @threshold: PRD-NNN:perf.batch.p95_latency for batch/asynchronous operations
-- **SLA Compliance**: @threshold: PRD-NNN:sla.success_rate.target% of operations complete within agreed timeframes
+- **Interactive Operations**: p95 response time < @threshold: PRD.NNN.perf.api.p95_latency for user-facing operations
+- **Background Operations**: p95 processing time < @threshold: PRD.NNN.perf.batch.p95_latency for batch/asynchronous operations
+- **SLA Compliance**: @threshold: PRD.NNN.sla.success_rate.target% of operations complete within agreed timeframes
 
 #### Throughput Requirements
-- **Peak Load**: Sustain @threshold: PRD-NNN:perf.throughput.peak_rps operations per second during peak usage periods
-- **Normal Load**: Handle @threshold: PRD-NNN:perf.throughput.sustained_rps concurrent users/operations per minute continuously
+- **Peak Load**: Sustain @threshold: PRD.NNN.perf.throughput.peak_rps operations per second during peak usage periods
+- **Normal Load**: Handle @threshold: PRD.NNN.perf.throughput.sustained_rps concurrent users/operations per minute continuously
 - **Scaling Requirements**: Support linear throughput increases with horizontal scaling
 
 #### Resource Utilization
-- **CPU Usage**: Maintain < @threshold: PRD-NNN:resource.cpu.max_utilization% CPU utilization under normal load
-- **Memory Usage**: Stay within @threshold: PRD-NNN:resource.memory.max_heap GB memory allocation limits under all conditions
-- **Storage Performance**: Process @threshold: PRD-NNN:perf.storage.read_iops IOPS for read operations
+- **CPU Usage**: Maintain < @threshold: PRD.NNN.resource.cpu.max_utilization% CPU utilization under normal load
+- **Memory Usage**: Stay within @threshold: PRD.NNN.resource.memory.max_heap GB memory allocation limits under all conditions
+- **Storage Performance**: Process @threshold: PRD.NNN.perf.storage.read_iops IOPS for read operations
 
 ### 5.2 Reliability Requirements
 [Up time, fault tolerance, and availability expectations]
@@ -228,19 +228,19 @@ custom_fields:
 > **Note**: All SLA and reliability thresholds MUST use @threshold registry references.
 
 #### Availability Requirements
-- **Service Uptime**: Maintain @threshold: PRD-NNN:sla.uptime.target% uptime excluding planned maintenance windows
-- **Maintenance Windows**: Scheduled maintenance limited to @threshold: PRD-NNN:sla.maintenance.max_hours hours per month
-- **Disaster Recovery**: Restore service within @threshold: PRD-NNN:sla.rto minutes following regional failures
+- **Service Uptime**: Maintain @threshold: PRD.NNN.sla.uptime.target% uptime excluding planned maintenance windows
+- **Maintenance Windows**: Scheduled maintenance limited to @threshold: PRD.NNN.sla.maintenance.max_hours hours per month
+- **Disaster Recovery**: Restore service within @threshold: PRD.NNN.sla.rto minutes following regional failures
 
 #### Fault Tolerance Requirements
 - **Single Point of Failure**: No single component failure can bring down the entire system
 - **Graceful Degradation**: Continue with reduced functionality when non-critical components fail
-- **Self-Healing**: Automatic recovery from transient failures within @threshold: PRD-NNN:timeout.recovery.self_healing ms
+- **Self-Healing**: Automatic recovery from transient failures within @threshold: PRD.NNN.timeout.recovery.self_healing ms
 
 #### Data Durability Requirements
 - **Data Loss Prevention**: Zero data loss for committed transactions
-- **Backup Frequency**: Automated backups every @threshold: PRD-NNN:batch.backup.interval_hours hours with @threshold: PRD-NNN:batch.backup.retention_days days retention
-- **Recovery Time**: Restore data from backups within @threshold: PRD-NNN:sla.rpo minutes
+- **Backup Frequency**: Automated backups every @threshold: PRD.NNN.batch.backup.interval_hours hours with @threshold: PRD.NNN.batch.backup.retention_days days retention
+- **Recovery Time**: Restore data from backups within @threshold: PRD.NNN.sla.rpo minutes
 
 ### 5.3 Scalability Requirements
 [How the system must grow to meet increasing demands]
@@ -292,8 +292,8 @@ custom_fields:
 - **Correlation Tracking**: Request IDs and trace IDs propagated through all operations
 
 #### Alerting Requirements
-- **Error Rate Alerts**: Alert when error rate exceeds @threshold: PRD-NNN:sla.error_rate.max% for @threshold: PRD-NNN:limit.alert.duration_minutes consecutive minutes
-- **Performance Alerts**: Alert when p95 latency exceeds @threshold: PRD-NNN:perf.api.p95_latency for @threshold: PRD-NNN:limit.alert.latency_minutes minutes
+- **Error Rate Alerts**: Alert when error rate exceeds @threshold: PRD.NNN.sla.error_rate.max% for @threshold: PRD.NNN.limit.alert.duration_minutes consecutive minutes
+- **Performance Alerts**: Alert when p95 latency exceeds @threshold: PRD.NNN.perf.api.p95_latency for @threshold: PRD.NNN.limit.alert.latency_minutes minutes
 - **Availability Alerts**: Alert immediately when service becomes unavailable
 
 #### Tracing Requirements
@@ -402,7 +402,7 @@ custom_fields:
 - **User Interface Testing**: Validation of user-facing functionality and workflows
 - **Performance Under Load**: Realistic load testing with user-like interaction patterns
 
-### 8.2 Non-Functional Testing Requirements
+### 8.2 Quality Attribute Testing Requirements
 [Requirements for validating quality attributes]
 
 #### Performance Testing Requirements
@@ -492,7 +492,7 @@ custom_fields:
 - [Data processing correctness and consistency checks]
 - [Integration points operating correctly with partner systems]
 
-#### Non-Functional Validation Points
+#### Quality Attribute Validation Points
 - [Performance benchmarks that must be achieved and maintained]
 - [Reliability metrics that must be demonstrated in testing]
 - [security controls that must pass penetration testing]
@@ -566,7 +566,7 @@ Document the business strategy, product requirements, and architectural decision
 **Requirements Context**:
 - [EARS requirements this system implements]
 - [Behavioral specifications this system satisfies]
-- [Non-functional requirements this system achieves]
+- [Quality attributes this system achieves]
 
 **Architecture Context**:
 - [ADR decisions that define system architecture]
@@ -601,7 +601,7 @@ Implementation blueprints and interface definitions for this system.
 **Specification Coverage**:
 - [All functional requirements mapped to specifications]
 - [All interface requirements mapped to API SPEC]
-- [All NFRs mapped to implementation guidance]
+- [All quality attributes mapped to implementation guidance]
 
 #### Architecture Decisions
 
@@ -609,7 +609,7 @@ Architecture decisions that implement or reference this system.
 
 | ADR ID | ADR Title | SYS Requirements Addressed | Decision Impact | Relationship |
 |--------|-----------|---------------------------|-----------------|--------------|
-| [ADR-MMM](../ADR/ADR-MMM_...md) | [Architecture decision] | NFRs sections 4.x, 5.x | Technology selection, patterns | Architectural implementation |
+| [ADR-MMM](../ADR/ADR-MMM_...md) | [Architecture decision] | Quality attributes sections 4.x, 5.x | Technology selection, patterns | Architectural implementation |
 | [ADR-PPP](../ADR/ADR-PPP_...md) | [Another decision] | Integration requirements 3.4 | Integration patterns | System integration approach |
 
 #### Behavioral Specifications
@@ -620,7 +620,7 @@ BDD scenarios and acceptance tests validating this system.
 |--------|----------------|---------------------------|---------------|--------------|
 | [BDD-NNN](../BDD/BDD-NNN_....feature) | Feature: [Feature name] | Functional requirements 3.x | Scenarios 1-5 | Acceptance test |
 | [BDD-NNN](../BDD/BDD-NNN_....feature#scenario-1) | Scenario: [Specific scenario] | Specific capability 3.2.1 | Lines 15-45 | Functional validation |
-| [BDD-MMM](../BDD/BDD-MMM_....feature) | Feature: [NFR validation] | Performance requirements 4.1 | Performance scenarios | NFR validation |
+| [BDD-MMM](../BDD/BDD-MMM_....feature) | Feature: [Quality attribute validation] | Performance requirements 4.1 | Performance scenarios | Quality validation |
 
 **BDD Coverage**:
 - [All functional capabilities have BDD scenarios]
@@ -648,7 +648,7 @@ API contracts and interface agreements for external integration.
 | Acceptance Criterion (section 11) | BDD Validation | Status |
 |-----------------------------------|----------------|--------|
 | Functional Validation Points | [BDD-NNN.feature](../BDD/BDD-NNN_....feature) Lines 100-250 | ✅ Validated |
-| Non-Functional Validation Points | [BDD-MMM.feature](../BDD/BDD-MMM_....feature) Lines 50-120 | ✅ Validated |
+| Quality Attribute Validation Points | [BDD-MMM.feature](../BDD/BDD-MMM_....feature) Lines 50-120 | ✅ Validated |
 | Operational Validation Points | [BDD-PPP.feature](../BDD/BDD-PPP_....feature) Lines 200-300 | 🔄 Pending |
 
 ### 13.4 Code Implementation Paths
@@ -695,7 +695,7 @@ API contracts and interface agreements for external integration.
 
 **Requirements Coverage**:
 - ✅ All functional requirements mapped to REQ-IDs: [X/X requirements]
-- ✅ All NFRs mapped to specifications: [Y/Y requirements]
+- ✅ All quality attributes mapped to specifications: [Y/Y requirements]
 - ✅ All interfaces mapped to contracts: [Z/Z interfaces]
 - ✅ All acceptance criteria mapped to BDD scenarios: [W/W criteria]
 
@@ -703,7 +703,7 @@ API contracts and interface agreements for external integration.
 - Unit test coverage: [X]% (target: ≥85%)
 - Integration test coverage: [Y]% (target: ≥75%)
 - BDD scenario coverage: [Z]% functional requirements (target: 100%)
-- Performance test coverage: [W]% NFRs (target: 100%)
+- Performance test coverage: [W]% quality attributes (target: 100%)
 
 **Traceability Metrics**:
 - Upstream traceability: [X]% requirements traced to source (target: 100%)
@@ -761,7 +761,7 @@ API contracts and interface agreements for external integration.
 @ears: EARS.NNN.NNN
 @bdd: BDD.NNN.NNN
 @adr: ADR-NNN
-@threshold: PRD-NNN  # Threshold registry reference (when quantitative values used)
+@threshold: PRD.NNN  # Threshold registry reference (when quantitative values used)
 ```
 
 **Format**: `@artifact-type: TYPE.NNN.NNN` (Unified Feature ID format)
@@ -772,7 +772,7 @@ API contracts and interface agreements for external integration.
 - `@ears`: EARS Requirements
 - `@bdd`: BDD Scenarios
 - `@adr`: Architecture Decision Records
-- `@threshold`: Threshold Registry (when NFRs, SLAs, or performance targets are specified)
+- `@threshold`: Threshold Registry (when SLAs or performance targets are specified)
 
 **Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
 
@@ -783,13 +783,13 @@ API contracts and interface agreements for external integration.
 @ears: EARS.001.003
 @bdd: BDD.003.001
 @adr: ADR-033
-@threshold: PRD-003  # References threshold registry for performance/SLA values
+@threshold: PRD.003  # References threshold registry for performance/SLA values
 ```
 
 **Threshold Tag Usage**:
-- Use `@threshold: PRD-NNN:category.key` format for inline quantitative values
+- Use `@threshold: PRD.NNN.category.key` format for inline quantitative values
 - Reference the PRD threshold registry document for centralized value management
-- Prevents magic numbers in NFR and SLA specifications
+- Prevents magic numbers in quality attribute and SLA specifications
 - See [PRD-000_threshold_registry_template.md](../PRD/PRD-000_threshold_registry_template.md) for registry format
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through ADR) are properly linked.

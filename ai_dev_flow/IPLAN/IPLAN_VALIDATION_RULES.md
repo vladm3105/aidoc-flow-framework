@@ -266,8 +266,8 @@ fi
 | @adr | Yes | ADR-NNN |
 | @sys | Yes | SYS-NNN:REQ-NNN |
 | @req | Yes | REQ-NNN |
-| @spec | Yes | SPEC-NNN:section |
-| @tasks | Yes | TASKS-NNN:PHASE-X.Y |
+| @spec | Yes | SPEC-NNN |
+| @tasks | Yes | TASKS-NNN |
 
 ### Optional Tags (If present in project)
 

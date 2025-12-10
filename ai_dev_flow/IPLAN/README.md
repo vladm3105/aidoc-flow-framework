@@ -136,16 +136,16 @@ All IPLAN documents MUST include these 9 mandatory tags:
 4. `@bdd: BDD-NNN:SCENARIO-NNN` - Behavior-Driven Development Scenarios (Layer 4)
 5. `@adr: ADR-NNN` - Architecture Decision Records (Layer 5)
 6. `@sys: SYS-NNN:REQ-NNN` - System Requirements (Layer 6)
-7. `@req: REQ-NNN` - Atomic Requirements (Layer 7)
-8. `@spec: SPEC-NNN:regulatoryTION` - Technical Specifications (Layer 10)
-9. `@tasks: TASKS-NNN:PHASE-X.Y` - Code Generation Plan (Layer 11)
+7. `@req: REQ.NNN.NNN` - Atomic Requirements (Layer 7)
+8. `@spec: SPEC-NNN` - Technical Specifications (Layer 10)
+9. `@tasks: TASKS-NNN` - Code Generation Plan (Layer 11)
 
 ### Optional Tags (Conditional)
 
 Include these tags if present in your project:
 
 10. `@impl: IMPL-NNN` - Implementation Plan (Layer 8) - **if project uses IMPL artifacts**
-11. `@ctr: CTR-NNN:regulatoryTION` - Interface Contracts (Layer 9) - **if contracts are defined**
+11. `@ctr: CTR-NNN` - Interface Contracts (Layer 9) - **if contracts are defined**
 
 ### Tag Format Specification
 
@@ -503,7 +503,7 @@ poetry show | grep async_client
 **Subsections**:
 - Coverage metrics (requirements, tests, code quality)
 - Functional validation
-- Non-functional validation
+- Quality attribute validation
 - Documentation quality
 - Integration validation
 
@@ -572,8 +572,8 @@ flowchart TB
 
 **Tagging**:
 ```markdown
-@spec: SPEC-001:connection_service
-@req: REQ-001, REQ-002
+@spec: SPEC-001
+@req: REQ.001.001, REQ.002.001
 @adr: ADR-002
 ```
 
@@ -1329,10 +1329,10 @@ pytest --cov=src/module --cov-report=term
 - [ ] @adr: ADR-___
 - [ ] @sys: SYS-___:REQ-___
 - [ ] @req: REQ-___
-- [ ] @spec: SPEC-___:regulatoryTION
-- [ ] @tasks: TASKS-___:PHASE-_._
+- [ ] @spec: SPEC-___
+- [ ] @tasks: TASKS-___
 - [ ] @impl: IMPL-___ (optional)
-- [ ] @ctr: CTR-___:regulatoryTION (optional)
+- [ ] @ctr: CTR-___ (optional)
 ```
 
 ### Common Bash Commands

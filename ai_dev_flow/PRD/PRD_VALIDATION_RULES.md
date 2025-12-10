@@ -70,7 +70,7 @@ The PRD validation framework ensures Product Requirements Documents comply with 
 |--------|---------------|---------------|----------------|
 | Focus | Product requirements | System requirements | Engineering requirements |
 | Level | User capabilities | System capabilities | Technical specifications |
-| Format | User stories, features | Functional/non-functional | WHEN-THE-SHALL-WITHIN |
+| Format | User stories, features | Functional/quality attributes | WHEN-THE-SHALL-WITHIN |
 | Detail | What product does | How system delivers | Precise technical behavior |
 
 ### Measurable Outcomes Emphasis
@@ -248,8 +248,8 @@ All PRD requirements must include:
 
 **Error Messages**:
 ```
-❌ MISSING regulatoryTION: ## 6. User Stories & User Roles
-❌ MISSING regulatoryTION: ## 8. Customer-Facing Content & Messaging (MANDATORY)
+❌ MISSING SECTION: ## 6. User Stories & User Roles
+❌ MISSING SECTION: ## 8. Customer-Facing Content & Messaging (MANDATORY)
 ```
 
 **Resolution Steps**:
@@ -458,7 +458,7 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 
 **section 8 - Functional Requirements**:
 - User Journey Mapping, Capability Requirements subsections
-- Requirements numbered (FR-001, FR-002, etc.)
+- Requirements use unified format (PRD.NNN.NNN)
 - Each requirement testable
 
 **section 9 - Customer-Facing Content & Messaging**:
@@ -761,33 +761,33 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 ### CHECK 13: Feature ID Format Validation
 
-**Purpose**: Verify all Feature IDs follow the standard format `FR-{PRD#}-{sequence}`
+**Purpose**: Verify all Feature IDs follow the unified format `PRD.NNN.NNN`
 **Type**: Warning (recommended fix)
 
-**Valid Format**: `FR-NNN-NNN` (e.g., 001, 015)
+**Valid Format**: `PRD.NNN.NNN` (e.g., PRD.022.001, PRD.022.015)
 
-**Validation Regex**: `^FR-\d{3}-\d{3}$`
+**Validation Regex**: `^PRD\.\d{3}\.\d{3}$`
 
 **Invalid Patterns to Detect**:
 
 | Pattern | Issue | Fix |
 |---------|-------|-----|
-| `FR-001` | Missing sequence | `001` |
-| `FR-AGENT-001` | Non-standard prefix | `001` |
-| `Feature 3.1` | Text format | `003` |
-| `F-001-001` | Wrong prefix | `001` |
-| `FR-1-1` | Not zero-padded | `001` |
+| `FR-001` | Deprecated FR format | `PRD.NNN.001` |
+| `FR-AGENT-001` | Non-standard prefix | `PRD.NNN.001` |
+| `Feature 3.1` | Text format | `PRD.NNN.003` |
+| `F-001` | Deprecated F- format | `PRD.NNN.001` |
+| `FR-1-1` | Not zero-padded | `PRD.001.001` |
 
 **Error Messages**:
 ```
-⚠️ WARNING: Invalid Feature ID "FR-001" found - missing sequence number
-⚠️ WARNING: Non-standard Feature ID "FR-AGENT-001" - use 001 format
-⚠️ WARNING: Text format "Feature 3.1" detected - convert to FR-NNN-NNN
+⚠️ WARNING: Deprecated Feature ID "FR-001" found - use PRD.NNN.NNN format
+⚠️ WARNING: Non-standard Feature ID "FR-AGENT-001" - use PRD.NNN.NNN format
+⚠️ WARNING: Text format "Feature 3.1" detected - convert to PRD.NNN.NNN
 ```
 
 **Resolution Steps**:
 1. Identify PRD number (e.g., PRD-022 → 022)
-2. Convert to standard format: `FR-{PRD#}-{sequence}`
+2. Convert to unified format: `PRD.{PRD#}.{sequence}`
 3. Update all references to the Feature ID
 4. Run validation again to confirm
 
@@ -858,7 +858,7 @@ Transaction limit: $1,000 USD (per @threshold: PRD.035.kyc.l1.daily)
 | CHECK 10 | Traceability Tags | @brd upstream tag | No |
 | CHECK 11 | EARS Enhancement Appendix | Section 19 complete | Yes (for EARS) |
 | CHECK 12 | Bidirectional References | A→B implies B→A | No |
-| CHECK 13 | Feature ID Format | FR-NNN-NNN format | No |
+| CHECK 13 | Feature ID Format | PRD.NNN.NNN format | No |
 | CHECK 14 | Threshold Registry | Registry references | No |
 
 ---

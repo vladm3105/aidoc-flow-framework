@@ -379,15 +379,15 @@ poetry show | grep -E "(async_client|pydantic)"
 | @adr | ADR-NNN | Architecture Decisions (Layer 5) |
 | @sys | SYS-NNN:REQ-NNN | System Requirements (Layer 6) |
 | @req | REQ-NNN | Atomic Requirements (Layer 7) |
-| @spec | SPEC-NNN:section | Technical Specifications (Layer 10) |
-| @tasks | TASKS-NNN:PHASE-X.Y | Code Generation Plan (Layer 11) |
+| @spec | SPEC-NNN | Technical Specifications (Layer 10) |
+| @tasks | TASKS-NNN | Code Generation Plan (Layer 11) |
 
 ### Optional Tags (If present in project)
 
 | Tag | Format | Description |
 |-----|--------|-------------|
 | @impl | IMPL-NNN | Implementation Plan (Layer 8) |
-| @ctr | CTR-NNN:section | Interface Contracts (Layer 9) |
+| @ctr | CTR-NNN | Interface Contracts (Layer 9) |
 
 ### Example
 
