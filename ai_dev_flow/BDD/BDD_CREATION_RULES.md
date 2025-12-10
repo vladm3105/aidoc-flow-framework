@@ -235,9 +235,9 @@ Feature: [Business Capability Title]
 - Business benefit (So that...)
 
 **Required Tags**:
-- `@brd: BRD-NNN:ID` - Business requirements upstream
-- `@prd: PRD-NNN:ID` - Product requirements upstream
-- `@ears: EARS-NNN:ID` - Engineering requirements upstream
+- `@brd: BRD.NNN.NNN` - Business requirements upstream (sub-ID dot notation)
+- `@prd: PRD.NNN.NNN` - Product requirements upstream (sub-ID dot notation)
+- `@ears: EARS.NNN.NNN` - Engineering requirements upstream (sub-ID dot notation)
 
 ---
 

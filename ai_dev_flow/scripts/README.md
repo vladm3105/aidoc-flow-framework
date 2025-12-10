@@ -181,7 +181,7 @@ python validate_iplan_naming.py || exit 1
 **Validation Checks:**
 1. **Filename Pattern**: `IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md`
 2. **ID Format**: 3 digits (001-999) or 4 digits (1000+) with proper zero-padding
-3. **Slug Format**: Lowercase alphanumeric with hyphens only, no conregulatoryutive/leading/trailing hyphens
+3. **Slug Format**: Lowercase alphanumeric with hyphens only, no consecutive/leading/trailing hyphens
 4. **Timestamp Validity**: Valid date and time (year: 1900-2100)
 5. **H1 ID Match**: Header ID in file matches filename ID
 6. **Sequential Order**: Warns if ID gaps exist (non-blocking)

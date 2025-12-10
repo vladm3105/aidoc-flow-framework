@@ -372,13 +372,13 @@ poetry show | grep -E "(async_client|pydantic)"
 
 | Tag | Format | Description |
 |-----|--------|-------------|
-| @brd | BRD-NNN:REQ-NNN | Business Requirements (Layer 1) |
-| @prd | PRD-NNN:REQ-NNN | Product Requirements (Layer 2) |
+| @brd | BRD.NNN.NNN or BRD-NNN | Business Requirements (Layer 1) |
+| @prd | PRD.NNN.NNN or PRD-NNN | Product Requirements (Layer 2) |
 | @ears | EARS.NNN.NNN | EARS Requirements (Layer 3) |
-| @bdd | BDD-NNN:SCENARIO-NNN | BDD Scenarios (Layer 4) |
+| @bdd | BDD.NNN.NNN or BDD-NNN | BDD Scenarios (Layer 4) |
 | @adr | ADR-NNN | Architecture Decisions (Layer 5) |
-| @sys | SYS-NNN:REQ-NNN | System Requirements (Layer 6) |
-| @req | REQ-NNN | Atomic Requirements (Layer 7) |
+| @sys | SYS.NNN.NNN or SYS-NNN | System Requirements (Layer 6) |
+| @req | REQ.NNN.NNN or REQ-NNN | Atomic Requirements (Layer 7) |
 | @spec | SPEC-NNN | Technical Specifications (Layer 10) |
 | @tasks | TASKS-NNN | Code Generation Plan (Layer 11) |
 

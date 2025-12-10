@@ -237,7 +237,7 @@ Common types across endpoints:
   - Configuration service unavailable (ADR-008 parameters unreachable)
   - Network partition between consumer and provider
 - **Recovery Strategies**:
-  - [SAFETY_MECHANISM - e.g., rate limiter, error threshold]: Open after 5 conregulatoryutive failures, half-open after 60s
+  - [SAFETY_MECHANISM - e.g., rate limiter, error threshold]: Open after 5 consecutive failures, half-open after 60s
   - Fallback: Return validation failure (conservative approach)
   - Monitoring: Alert on >1% error rate or >200ms p99 latency
 - **[SAFETY_MECHANISM - e.g., rate limiter, error threshold]**: Open after 5 failures within 60s, enter half-open state after 60s cooldown
@@ -297,7 +297,7 @@ Common types across endpoints:
 - **Retry Strategy**: Exponential backoff (100ms, 200ms, 400ms), max 3 retries for 500/503 errors
 - **Timeout**: 5000ms request timeout (fails fast to avoid blocking agents)
 - **[SAFETY_MECHANISM - e.g., rate limiter, error threshold]**:
-  - Open after 5 conregulatoryutive failures within 60s
+  - Open after 5 consecutive failures within 60s
   - Half-open after 60s cooldown
   - Close after 3 successful calls in half-open state
 
@@ -445,7 +445,7 @@ Common types across endpoints:
 ### 13.2 Error Tracking
 - **Error Rate**: Alert if >1% for 5 minutes
 - **Error Categories**: Track by error code (400, 429, 500, 503)
-- **Alert Thresholds**: Page on-call if >5% error rate or >3 conregulatoryutive service failures
+- **Alert Thresholds**: Page on-call if >5% error rate or >3 consecutive service failures
 
 ### 13.3 Performance Metrics
 - **Latency Breakdown**: Network (5ms), validation logic (10ms), database lookup (5ms)

@@ -98,7 +98,10 @@ LAYER_CONFIG = {
 
 # Tag format patterns
 TAG_PATTERN = re.compile(r'^@(\w+):\s*(.+)$', re.MULTILINE)
-DOC_ID_PATTERN = re.compile(r'([A-Z]+)-(\d{3,4})(?:-(\d{2,3}))?(?::(\w+))?')
+# Supports both formats:
+#   - Document-level: TYPE-NNN (e.g., ADR-001, SPEC-001)
+#   - Sub-ID dot notation: TYPE.NNN.NNN (e.g., BRD.001.001, PRD.017.015)
+DOC_ID_PATTERN = re.compile(r'([A-Z]+)(?:-(\d{3,4})(?:-(\d{2,3}))?|\.(\d{3,4})\.(\d{3,4}))')
 TRACEABILITY_SECTION_PATTERN = re.compile(r'^##\s+(?:\d+\.\s+)?Traceability', re.MULTILINE | re.IGNORECASE)
 
 
@@ -382,14 +385,14 @@ class CrossDocumentValidator:
             if tag_value.lower() == "null":
                 continue
 
-            # Check format: TYPE-NNN or TYPE-NNN:section
+            # Check format: TYPE-NNN (doc-level) or TYPE.NNN.NNN (sub-ID)
             if not DOC_ID_PATTERN.match(tag_value):
                 self.issues.append(ValidationIssue(
                     code=IssueCode.XDOC_006,
                     severity=Severity.ERROR,
-                    message=f"Invalid tag format: @{tag_name}: {tag_value} (expected TYPE-NNN or TYPE-NNN:section)",
+                    message=f"Invalid tag format: @{tag_name}: {tag_value} (expected TYPE-NNN or TYPE.NNN.NNN)",
                     location=str(doc_path),
-                    fix_action="Correct to TYPE-NNN:section format"
+                    fix_action="Correct to TYPE-NNN (doc-level) or TYPE.NNN.NNN (sub-ID) format"
                 ))
 
     def _validate_upstream_references(self, content: str, doc_path: Path) -> None:
@@ -402,15 +405,24 @@ class CrossDocumentValidator:
             if tag_value.lower() == "null":
                 continue
 
-            # Extract document ID
+            # Extract document ID - handle both formats:
+            # TYPE-NNN (doc-level): groups (1=TYPE, 2=NNN, 3=optional-sub)
+            # TYPE.NNN.NNN (sub-ID): groups (1=TYPE, 4=doc-NNN, 5=sub-NNN)
             doc_id_match = DOC_ID_PATTERN.match(tag_value)
             if not doc_id_match:
                 continue
 
-            doc_id = f"{doc_id_match.group(1)}-{doc_id_match.group(2)}"
-            if doc_id_match.group(3):
-                doc_id += f"-{doc_id_match.group(3)}"
-            section_ref = doc_id_match.group(4)
+            doc_type = doc_id_match.group(1)
+            if doc_id_match.group(2):  # Hyphen format: TYPE-NNN
+                doc_id = f"{doc_type}-{doc_id_match.group(2)}"
+                if doc_id_match.group(3):
+                    doc_id += f"-{doc_id_match.group(3)}"
+                section_ref = None  # Hyphen format doesn't support section ref in new pattern
+            else:  # Dot notation format: TYPE.NNN.NNN
+                doc_num = doc_id_match.group(4)
+                sub_num = doc_id_match.group(5)
+                doc_id = f"{doc_type}-{doc_num}"  # Convert to hyphen for index lookup
+                section_ref = sub_num  # Sub-ID can be treated as section reference
 
             # Check document exists
             if not self.index.exists(doc_id):
@@ -511,9 +523,13 @@ class CrossDocumentValidator:
                             tag_value = match.group(2).strip()
                             ref_match = DOC_ID_PATTERN.match(tag_value)
                             if ref_match:
-                                ref_id = f"{ref_match.group(1)}-{ref_match.group(2)}"
-                                if ref_match.group(3):
-                                    ref_id += f"-{ref_match.group(3)}"
+                                ref_type = ref_match.group(1)
+                                if ref_match.group(2):  # Hyphen format: TYPE-NNN
+                                    ref_id = f"{ref_type}-{ref_match.group(2)}"
+                                    if ref_match.group(3):
+                                        ref_id += f"-{ref_match.group(3)}"
+                                else:  # Dot notation format: TYPE.NNN.NNN
+                                    ref_id = f"{ref_type}-{ref_match.group(4)}"
                                 referenced.add(ref_id)
                     except Exception:
                         pass

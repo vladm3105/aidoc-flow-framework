@@ -297,7 +297,7 @@ custom_fields:
 **Primary Architecture ADR:**
 ```yaml
 ---
-title: "ADR-REF-XXX: Architecture Name"
+title: "ADR-XXX: Architecture Name"
 tags:
   - architecture-adr
   - ai-agent-primary
@@ -313,7 +313,7 @@ custom_fields:
 **Fallback Architecture ADR:**
 ```yaml
 ---
-title: "ADR-REF-XXX: Architecture Name"
+title: "ADR-XXX: Architecture Name"
 tags:
   - architecture-adr
   - traditional-fallback
@@ -323,14 +323,14 @@ custom_fields:
   priority: fallback
   development_status: reference
   decision_status: fallback
-  primary_alternative: ADR-REF-YYY
+  primary_alternative: ADR-YYY
 ---
 ```
 
 **Comparison ADR:**
 ```yaml
 ---
-title: "ADR-REF-XXX: Cost & Performance Analysis"
+title: "ADR-XXX: Cost & Performance Analysis"
 tags:
   - architecture-adr
   - comparison
@@ -446,7 +446,7 @@ This document provides objective comparison between:
 |-----|---------|----------------|
 | `feature-brd` | Feature-specific BRD | BRD-006 through BRD-029 |
 | `platform-brd` | Platform/foundation BRD | BRD-001 through BRD-005 |
-| `architecture-adr` | Architecture decision | ADR-REF-XXX |
+| `architecture-adr` | Architecture decision | ADR-XXX |
 | `product-requirements` | Product specs | PRD-XXX |
 | `technical-spec` | Implementation specs | SPEC-XXX |
 

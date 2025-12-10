@@ -130,12 +130,12 @@ Create IPLAN documents when:
 
 All IPLAN documents MUST include these 9 mandatory tags:
 
-1. `@brd: BRD-NNN:REQ-NNN` - Business Requirements Document (Layer 1)
-2. `@prd: PRD-NNN:REQ-NNN` - Product Requirements Document (Layer 2)
+1. `@brd: BRD.NNN.NNN` - Business Requirements Document (Layer 1)
+2. `@prd: PRD.NNN.NNN` - Product Requirements Document (Layer 2)
 3. `@ears: EARS.NNN.NNN` - Event-Action-Response-State Requirements (Layer 3)
-4. `@bdd: BDD-NNN:SCENARIO-NNN` - Behavior-Driven Development Scenarios (Layer 4)
+4. `@bdd: BDD.NNN.NNN` - Behavior-Driven Development Scenarios (Layer 4)
 5. `@adr: ADR-NNN` - Architecture Decision Records (Layer 5)
-6. `@sys: SYS-NNN:REQ-NNN` - System Requirements (Layer 6)
+6. `@sys: SYS.NNN.NNN` - System Requirements (Layer 6)
 7. `@req: REQ.NNN.NNN` - Atomic Requirements (Layer 7)
 8. `@spec: SPEC-NNN` - Technical Specifications (Layer 10)
 9. `@tasks: TASKS-NNN` - Code Generation Plan (Layer 11)

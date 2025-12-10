@@ -18,7 +18,7 @@
 **Last Updated**: 2025-11-19
 **Purpose**: Complete validation rules for REQ documents
 **Script**: `scripts/validate_req_template_v3.sh`
-**Primary Template**: `REQ-TEMPLATE-V3.md` (v3.0)
+**Primary Template**: `REQ-TEMPLATE.md` (v3.0)
 **Baseline Template**: `REQ-TEMPLATE.md` (v2.0)
 **Framework**: doc_flow SDD (100% compliant)
 
@@ -38,7 +38,7 @@
 
 The REQ validation script (`validate_req_template_v3.sh`) performs **18 validation checks** to ensure compliance with:
 
-- **REQ-TEMPLATE-V3.md**: Current template (v3.0 - 100% doc_flow compliant)
+- **REQ-TEMPLATE.md**: Current template (v3.0 - 100% doc_flow compliant)
 - **doc_flow SDD Framework**: Traceability and ID naming standards
 - **Cumulative Tagging Hierarchy**: Layer 7 requirements (6 upstream tags)
 - **Document Control**: 12 required fields (v3.0 enhancement)
@@ -450,7 +450,7 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 # REQ-002: [HEALTH_CHECK_SERVICE] Connection Heartbeat Monitoring
 ```
 
-**Reference**: `REQ-TEMPLATE-V3.md` (H1 Header Format - includes resource instance tags)
+**Reference**: `REQ-TEMPLATE.md` (H1 Header Format - includes resource instance tags)
 
 ---
 
@@ -538,7 +538,7 @@ brd: BRD.009.015 ❌ (missing @ prefix)
 ```
 ❌ ERROR: Incomplete upstream chain - missing: EARS BDD ADR
          Complete chain required: BRD → PRD → EARS → BDD → ADR → SYS
-         Reference: REQ-TEMPLATE-V3.md section 11 (Traceability)
+         Reference: REQ-TEMPLATE.md section 11 (Traceability)
 ```
 
 **Fix**:
@@ -546,7 +546,7 @@ brd: BRD.009.015 ❌ (missing @ prefix)
 2. Ensure markdown links include relative paths
 3. Add specific relationship descriptions (not generic)
 
-**Reference**: `REQ-TEMPLATE-V3.md` section 11 (Traceability - Complete Upstream Chain)
+**Reference**: `REQ-TEMPLATE.md` section 11 (Traceability - Complete Upstream Chain)
 
 ---
 
@@ -593,7 +593,7 @@ brd: BRD.009.015 ❌ (missing @ prefix)
 
 **Complexity Indicators**:
 - Upstream sources ≥ 5
-- Sub-components present (REQ-NNN:COMP-ID format)
+- Sub-components present (REQ.NNN.NNN format)
 
 **Warning Message**:
 ```
@@ -601,7 +601,7 @@ brd: BRD.009.015 ❌ (missing @ prefix)
          Upstream sources: 7 (≥5 suggests complexity)
          Sub-components: yes
          Recommendation: Add section 11.4 or create separate REQ-NNN_TRACEABILITY_MATRIX.md
-         Reference: REQ-TEMPLATE-V3.md section 11 (Traceability)
+         Reference: REQ-TEMPLATE.md section 11 (Traceability)
 ```
 
 **Fix Options**:
@@ -621,7 +621,7 @@ brd: BRD.009.015 ❌ (missing @ prefix)
 - Template: Available in doc_flow framework
 - Link from section 11
 
-**Reference**: `REQ-TEMPLATE-V3.md` section 11 (Traceability - includes matrix guidance)
+**Reference**: `REQ-TEMPLATE.md` section 11 (Traceability - includes matrix guidance)
 
 ---
 
@@ -884,8 +884,8 @@ Warnings: 1
 
 **Maintained By**: System Architect, Quality Assurance Team
 **Review Frequency**: Updated with script and template enhancements
-**Support**: See [REQ-TEMPLATE-V3.md](REQ-TEMPLATE-V3.md) for comprehensive template guidance
+**Support**: See [REQ-TEMPLATE.md](REQ-TEMPLATE.md) for comprehensive template guidance
 **Related Documents**:
-- [REQ-TEMPLATE-V3.md](REQ-TEMPLATE-V3.md) - Current template (v3.0)
+- [REQ-TEMPLATE.md](REQ-TEMPLATE.md) - Current template (v3.0)
 - [README.md](README.md) - REQ directory guide with creation steps
 - [archived/REQ-TEMPLATE-UNIFIED-ARCHIVED.md](archived/REQ-TEMPLATE-UNIFIED-ARCHIVED.md) - Archived template (v3.0.2)

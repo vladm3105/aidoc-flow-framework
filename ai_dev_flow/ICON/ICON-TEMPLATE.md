@@ -364,9 +364,9 @@ def test_external_data_service_with_mock(mock_connector):
 
 **Source Requirements**:
 ```markdown
-@spec: SPEC-NNN:interface-spec
-@req: REQ-NNN:interface-requirement
-@adr: ADR-NNN
+@spec: SPEC-NNN         # Document-level reference
+@req: REQ.NNN.NNN       # Sub-ID reference using unified dot notation
+@adr: ADR-NNN           # Document-level reference
 ```
 
 ### 7.2 Provider/Consumer Tags

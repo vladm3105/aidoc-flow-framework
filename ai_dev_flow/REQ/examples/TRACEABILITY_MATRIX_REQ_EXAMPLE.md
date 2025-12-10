@@ -36,7 +36,7 @@
 | REQ-001 | Service registry MUST support automatic service discovery | service-discovery | Approved | 2024-11-16 | EARS-005, SYS-001, ADR-001 | IMPL-001, CTR-003, SPEC-008 |
 | REQ-002 | API gateway MUST route requests based on service path | api-gateway | Approved | 2024-11-16 | EARS-006, SYS-002, ADR-001 | IMPL-001, CTR-004, SPEC-009 |
 | REQ-003 | Load balancer MUST distribute traffic using round-robin algorithm | load-balancing | Approved | 2024-11-17 | EARS-007, SYS-001, ADR-001 | IMPL-002, SPEC-010 |
-| REQ-004 | Circuit breaker MUST open after 5 conregulatoryutive failures | resilience | Approved | 2024-11-17 | EARS-008, SYS-002, ADR-001 | IMPL-002, SPEC-011 |
+| REQ-004 | Circuit breaker MUST open after 5 consecutive failures | resilience | Approved | 2024-11-17 | EARS-008, SYS-002, ADR-001 | IMPL-002, SPEC-011 |
 | REQ-005 | Database connection pool MUST maintain minimum 10 connections | database | Approved | 2024-11-19 | EARS-010, SYS-003, ADR-002 | IMPL-003, CTR-005, SPEC-012 |
 | REQ-006 | Transaction isolation MUST use Read Committed level | database | Approved | 2024-11-19 | EARS-011, SYS-003, ADR-002 | IMPL-003, SPEC-013 |
 | REQ-007 | Database backup MUST run daily at 2 AM UTC | database | Approved | 2024-11-19 | EARS-012, SYS-003, ADR-002 | IMPL-003 |

@@ -265,7 +265,7 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 | @prd | PRD.NNN.NNN | Always |
 | @threshold | PRD.035.category.key | When referencing timing/limits |
 | @entity | PRD.004.EntityName | When referencing data entities |
-| @ctr | CTR-NNN:section | When referencing API contracts |
+| @ctr | CTR-NNN | When referencing API contracts |
 
 ### Do NOT Use
 

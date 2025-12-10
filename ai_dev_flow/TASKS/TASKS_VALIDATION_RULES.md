@@ -459,7 +459,7 @@ Result: PASSED WITH WARNINGS
 ### Warning: Missing BDD Reference
 
 **Symptom**: "WARNING: No BDD scenario reference"
-**Fix**: Add BDD-NNN:SCENARIO-NNN to acceptance criteria
+**Fix**: Add BDD.NNN.NNN to acceptance criteria
 
 ---
 

@@ -166,7 +166,7 @@ Where:
 - Reference the same system component consistently
 
 ### 4. Include Performance and Quality Attributes
-- Specify response times, throughput, availability, and other NFRs
+- Specify response times, throughput, availability, and other quality attributes
 - Define error conditions and failure modes explicitly
 - Include security and audit requirements where applicable
 

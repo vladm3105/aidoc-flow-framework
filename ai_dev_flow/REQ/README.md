@@ -190,7 +190,7 @@ Requirements should be understandable without external context.
 **Good (self-contained):**
 ```markdown
 ### Description
-The authentication service SHALL reject login attempts after three conregulatoryutive failures for the same user account within a five-minute window.
+The authentication service SHALL reject login attempts after three consecutive failures for the same user account within a five-minute window.
 ```
 
 **Poor (context-dependent):**
@@ -362,7 +362,7 @@ The system SHALL authenticate users using [method] before granting access to pro
 ### Acceptance Criteria
 - Valid credentials result in successful authentication and session creation
 - Invalid credentials fail with UNAUTHORIZED response
-- Account lockout occurs after 5 conregulatoryutive failures within 15 minutes
+- Account lockout occurs after 5 consecutive failures within 15 minutes
 - Sessions expire after 30 minutes of inactivity
 ```
 

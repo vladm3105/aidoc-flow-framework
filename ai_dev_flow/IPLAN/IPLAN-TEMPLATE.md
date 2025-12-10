@@ -603,13 +603,13 @@ class ResourceManager:
 
 All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
-- `@brd: BRD-NNN:REQ-NNN` - Business Requirements Document (Layer 1)
-- `@prd: PRD-NNN:REQ-NNN` - Product Requirements Document (Layer 2)
+- `@brd: BRD.NNN.NNN` - Business Requirements Document (Layer 1)
+- `@prd: PRD.NNN.NNN` - Product Requirements Document (Layer 2)
 - `@ears: EARS.NNN.NNN` - Event-Action-Response-State (Layer 3)
-- `@bdd: BDD-NNN:SCENARIO-NNN` - Behavior-Driven Development (Layer 4)
+- `@bdd: BDD.NNN.NNN` - Behavior-Driven Development (Layer 4)
 - `@adr: ADR-NNN` - Architecture Decision Record (Layer 5)
-- `@sys: SYS-NNN:REQ-NNN` - System Requirements (Layer 6)
-- `@req: REQ-NNN` - Atomic Requirements (Layer 7)
+- `@sys: SYS.NNN.NNN` - System Requirements (Layer 6)
+- `@req: REQ.NNN.NNN` - Atomic Requirements (Layer 7)
 - `@spec: SPEC-NNN` - Technical Specification (Layer 10)
 - `@tasks: TASKS-NNN` - Code Generation Plan (Layer 11)
 
@@ -677,7 +677,6 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 **Technical Specifications**:
 - [SPEC-NNN](../SPEC/[path]/SPEC-NNN.yaml) - Technical blueprint for implementation
-- [SPEC-NNN:section] - Specific sections referenced
 
 **Requirements**:
 - [REQ-NNN](../REQ/[path]/REQ-NNN.md) - Atomic requirements satisfied
@@ -692,7 +691,6 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 **BDD Scenarios**:
 - [BDD-NNN](../BDD/[path]/BDD-NNN.feature) - Behavioral tests to satisfy
-- [BDD-NNN:SCENARIO-NNN] - Specific scenarios validated
 
 **EARS Requirements**:
 - [EARS-NNN](../EARS/[path]/EARS-NNN.md) - Event-action-response specifications

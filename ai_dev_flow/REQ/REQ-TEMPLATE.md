@@ -1009,8 +1009,8 @@ async def get_quote(
   - **Pass Criteria**: Retries at 1s, 2s, 4s, 8s, 16s intervals (±10% jitter)
   - **Test Method**: Integration test with network fault injection
 
-- ✅ **AC-007**: Circuit breaker opens after 5 conregulatoryutive failures
-  - **Verification**: Inject 5 conregulatoryutive errors
+- ✅ **AC-007**: Circuit breaker opens after 5 consecutive failures
+  - **Verification**: Inject 5 consecutive errors
   - **Pass Criteria**: 6th request fails fast with CircuitOpenError (<1ms)
   - **Test Method**: Unit test with mocked failures
 
@@ -1365,7 +1365,7 @@ SPEC-Ready Score = (
 
 ---
 
-**Document Location**: `[project_root]/docs/REQ/REQ-TEMPLATE-V3.md`
+**Document Location**: `[project_root]/docs/REQ/REQ-TEMPLATE.md`
 **Framework Alignment**: 100% doc_flow framework compliant
 **Maintained By**: System Architect, Quality Assurance Team
 **Review Frequency**: Quarterly or after major template updates

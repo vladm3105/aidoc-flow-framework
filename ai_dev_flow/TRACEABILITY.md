@@ -1673,7 +1673,7 @@ Risk Validator Service - Contract Provider
 5. Complete markdown file:
    - Status, Context, Contract Definition
    - Interface specification with request/response schemas
-   - Error handling, NFRs, versioning strategy
+   - Error handling, quality attributes, versioning strategy
    - section 7 Traceability with upstream REQ/ADR links
 6. Complete YAML file:
    - contract_id (lowercase_snake_case)

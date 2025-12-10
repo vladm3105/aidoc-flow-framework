@@ -67,7 +67,7 @@ External APIs provide critical data required for application functionality. The 
 **Alternative Flows**:
 - **Rate Limit Hit**: When 429 received, client queues request and waits for rate limit reset
 - **Connection Timeout**: When request exceeds 30s, client retries with exponential backoff (1s, 2s, 4s, 8s, 16s)
-- **Circuit Open**: When 5 conregulatoryutive failures detected, circuit opens for 30s, subsequent requests fail fast
+- **Circuit Open**: When 5 consecutive failures detected, circuit opens for 30s, subsequent requests fail fast
 - **Invalid Response**: When response fails schema validation, client logs error and raises ValidationError
 
 ---
@@ -98,10 +98,10 @@ The API client provides asynchronous methods for fetching data with built-in res
 3. **Retry Schedule**: Exponential backoff with jitter: 1s, 2s, 4s, 8s, 16s (max 5 attempts)
 
 **Circuit Breaker Rules**:
-1. **Open Trigger**: 5 conregulatoryutive failures within 1-minute window
+1. **Open Trigger**: 5 consecutive failures within 1-minute window
 2. **Cooldown Period**: Circuit stays open for 30 seconds
 3. **Half-Open Test**: Allow 1 request to test recovery
-4. **Close Trigger**: 2 conregulatoryutive successes in half-open state
+4. **Close Trigger**: 2 consecutive successes in half-open state
 
 ---
 
@@ -568,7 +568,7 @@ stateDiagram-v2
 
     Active --> Retrying: retryable_error
     Retrying --> Active: retry_success
-    Retrying --> CircuitOpen: 5_conregulatoryutive_failures
+    Retrying --> CircuitOpen: 5_consecutive_failures
 
     CircuitOpen --> HalfOpen: 30s_timeout
     HalfOpen --> Active: test_request_success
@@ -610,11 +610,11 @@ class CircuitBreakerConfig:
     """Circuit breaker thresholds and behavior."""
 
     # Threshold to open circuit
-    failure_threshold: int = 5  # Open after 5 conregulatoryutive failures
+    failure_threshold: int = 5  # Open after 5 consecutive failures
     failure_window_seconds: int = 60  # Within 60-second window
 
     # Threshold to close circuit
-    success_threshold: int = 2  # Close after 2 conregulatoryutive successes
+    success_threshold: int = 2  # Close after 2 consecutive successes
 
     # Timing
     open_timeout_seconds: float = 30.0  # Circuit stays open for 30s
@@ -922,7 +922,7 @@ class TokenBucketRateLimiter:
 ### Error and Edge Case Criteria
 
 - **AC-005**: Connection failures trigger exponential backoff retry
-- **AC-006**: Circuit breaker opens after 5 conregulatoryutive failures
+- **AC-006**: Circuit breaker opens after 5 consecutive failures
 - **AC-007**: Circuit breaker closes after 2 successes in half-open state
 - **AC-008**: Invalid identifier format raises ValidationError immediately
 - **AC-009**: API errors (5xx) retry up to 5 times before failing

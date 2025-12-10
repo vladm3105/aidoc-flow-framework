@@ -98,13 +98,13 @@ The SPEC validation script ensures YAML specification files meet quality standar
 **Required Tag Chain**:
 ```yaml
 cumulative_tags:
-  brd: "BRD-NNN:REQUIREMENT-ID"
-  prd: "PRD-NNN:REQUIREMENT-ID"
-  ears: "EARS.NNN.NNN"
-  bdd: "BDD-NNN:SCENARIO-ID"
-  adr: "ADR-NNN"
-  sys: "SYS-NNN"
-  req: "REQ-NNN:REQUIREMENT-ID"
+  brd: "BRD.NNN.NNN"         # Unified dot notation for sub-ID references
+  prd: "PRD.NNN.NNN"         # Unified dot notation for sub-ID references
+  ears: "EARS.NNN.NNN"       # Unified dot notation
+  bdd: "BDD.NNN.NNN"         # Unified dot notation for sub-ID references
+  adr: "ADR-NNN"             # Document-level reference (no sub-ID)
+  sys: "SYS.NNN.NNN"         # Unified dot notation for sub-ID references
+  req: "REQ.NNN.NNN"         # Unified dot notation for sub-ID references
 ```
 
 ### CHECK 5: Interface Specifications
