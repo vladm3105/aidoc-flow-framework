@@ -188,7 +188,7 @@ Before marking SPEC as "Approved":
 - ✅ All required sections complete (ID, Summary, Interfaces, Traceability)
 - ✅ Technical details implementation-ready
 - ✅ API/interface definitions complete and unambiguous
-- ✅ Non-functional requirements specified (performance, caching, security)
+- ✅ Quality attributes specified (performance, caching, security)
 - ✅ Cross-references to upstream REQ/CTR complete
 - ✅ Test strategy defined
 - ✅ Deployment configuration specified

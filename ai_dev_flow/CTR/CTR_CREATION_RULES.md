@@ -188,7 +188,7 @@ components:
 ### 5.1 Upstream References
 
 CTR must reference:
-- `@req: REQ-NNN` - Atomic requirements
+- `@req: REQ.NNN.NNN` - Atomic requirements (unified format)
 - `@spec: SPEC-NNN` - Technical specifications
 - `@adr: ADR-NNN` - Architecture decisions
 
@@ -204,9 +204,9 @@ CTR is referenced by:
 ```markdown
 ## Traceability Tags
 
-@req: REQ-001, REQ-002
+@req: REQ.001.001, REQ.002.001
 @adr: ADR-003
-@spec: SPEC-001:api_client
+@spec: SPEC-001
 ```
 
 ---

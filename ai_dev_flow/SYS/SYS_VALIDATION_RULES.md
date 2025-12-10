@@ -90,15 +90,15 @@ The SYS validation script ensures system requirements meet quality standards for
 
 **Error Message**: `❌ MISSING: REQ-Ready Score with ✅ emoji and percentage`
 
-### CHECK 4: NFR Quantification
+### CHECK 4: Quality Attribute Quantification
 
-**Purpose**: Verify all non-functional requirements are measurable
+**Purpose**: Verify all quality attributes are measurable
 **Type**: Error (blocking)
 
 **Requirements**:
-- Performance NFRs include percentiles and thresholds
-- Reliability NFRs specify uptime/SLA targets
-- security/compliance NFRs reference specific standards
+- Performance quality attributes include percentiles and thresholds
+- Reliability quality attributes specify uptime/SLA targets
+- Security/compliance quality attributes reference specific standards
 
 ### CHECK 5: System Boundaries
 
@@ -145,7 +145,7 @@ The SYS validation script ensures system requirements meet quality standards for
 | **CHECK 1** | Add missing Document Control fields |
 | **CHECK 2** | Align SYS requirements with ADR decisions |
 | **CHECK 3** | Add properly formatted REQ-Ready Score |
-| **CHECK 4** | Quantify all NFRs with measurable thresholds |
+| **CHECK 4** | Quantify all quality attributes with measurable thresholds |
 
 ---
 
@@ -169,7 +169,7 @@ find docs/SYS -name "SYS-*.md" -exec ./scripts/validate_sys_template.sh {} \;
 - Dependencies and prerequisites identified: 5%
 - ADR architectural alignment: 5%
 
-**NFR Quantification (30%)**:
+**Quality Attribute Quantification (30%)**:
 - Performance with percentiles and thresholds: 15%
 - Reliability with uptime/SLA targets: 5%
 - security with compliance framework references: 5%
@@ -203,7 +203,7 @@ find docs/SYS -name "SYS-*.md" -exec ./scripts/validate_sys_template.sh {} \;
 ✅ Align SYS technology selections with ADR decisions
 ```
 
-### Mistake #2: Unquantified NFRs
+### Mistake #2: Unquantified Quality Attributes
 ```
 ❌ System shall be highly available
 ✅ System shall maintain 99.9% uptime during business hours

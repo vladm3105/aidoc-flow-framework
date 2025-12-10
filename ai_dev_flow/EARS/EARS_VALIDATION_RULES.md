@@ -264,8 +264,8 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Valid**:
 ```markdown
-#### EARS-006-001: L1 KYC Submission
-#### EARS-006-002: Pending Status
+#### EARS.006.001: L1 KYC Submission
+#### EARS.006.002: Pending Status
 ```
 
 ---
@@ -283,7 +283,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Valid**:
 ```markdown
-| **Source Document** | @prd: PRD-001 |
+| **Source Document** | @prd: PRD.001.001 |
 ```
 
 ---
@@ -324,16 +324,16 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Invalid**:
 ```markdown
-#### EARS-002-001: First Requirement
+#### EARS.002.001: First Requirement
 ...
-#### EARS-002-001: Different Requirement  ← DUPLICATE ID
+#### EARS.002.001: Different Requirement  ← DUPLICATE ID
 ```
 
 **Valid**:
 ```markdown
-#### EARS-002-001: First Requirement
+#### EARS.002.001: First Requirement
 ...
-#### EARS-002-002: Second Requirement  ← UNIQUE ID
+#### EARS.002.002: Second Requirement  ← UNIQUE ID
 ```
 
 **Fix**: Renumber duplicate IDs sequentially
@@ -473,7 +473,7 @@ python ai_dev_flow/scripts/validate_ears.py --summary-only
 ### Mistake #3: Non-Standard Requirement IDs
 ```
 ❌ #### Event-001: L1 KYC Submission
-✅ #### EARS-006-001: L1 KYC Submission
+✅ #### EARS.006.001: L1 KYC Submission
 ```
 
 ### Mistake #4: List-Style Document Control

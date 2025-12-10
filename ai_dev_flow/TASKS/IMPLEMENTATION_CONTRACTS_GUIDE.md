@@ -1287,7 +1287,7 @@ class ServiceConnector(Protocol):
 
 **Layer 9 (@ctr)**: External API contracts
 ```yaml
-@ctr: CTR-001:ExternalServiceAPI
+@ctr: CTR-001
 ```
 
 **Layer 11 (@icon)**: Internal implementation contracts

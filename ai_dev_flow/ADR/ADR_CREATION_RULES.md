@@ -141,7 +141,7 @@ ADR documents follow a comprehensive 4-part structure:
 
 **SYS Impact Analysis**:
 - ADR decisions may necessitate SYS requirement modifications
-- Performance targets from ADRs drive SYS NFRs
+- Performance targets from ADRs drive SYS quality attribute requirements
 - Integration patterns in ADRs define SYS interfaces
 
 ---

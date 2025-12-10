@@ -84,7 +84,7 @@ MAGIC_NUMBER_PATTERNS = [
 ]
 
 # Patterns that indicate @threshold is already used (exclude from violations)
-THRESHOLD_REF_PATTERN = re.compile(r'@threshold:\s*PRD-\d{3}:[a-z._]+')
+THRESHOLD_REF_PATTERN = re.compile(r'@threshold:\s*PRD\.\d{3}(?:\.[a-z._]+)?')
 
 # File extensions to scan
 SCANNABLE_EXTENSIONS = {'.md', '.feature', '.yaml', '.yml'}
@@ -174,7 +174,7 @@ def scan_directory(path: Path, extensions: set[str] = None) -> Generator[Path, N
 
 def format_violation(v: MagicNumberViolation, verbose: bool = False) -> str:
     """Format a violation for output."""
-    suggestion = f"@threshold: PRD-NNN:{v.suggested_category}.<key>"
+    suggestion = f"@threshold: PRD.NNN.{v.suggested_category}.<key>"
 
     output = f"{v.file_path}:{v.line_number}: Magic number '{v.detected_value}' ({v.context})"
 

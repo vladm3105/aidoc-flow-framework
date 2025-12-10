@@ -269,7 +269,7 @@ Diagrams use simplified labels for visual clarity:
 - **Files**: [ADR-000_index.md](./ADR/ADR-000_index.md) | [Template](./ADR/ADR-TEMPLATE.md)
 
 **SYS/** - System Requirements Specifications
-- System-level functional and non-functional requirements
+- System-level functional requirements and quality attributes
 - Performance, security, and operational characteristics
 - **Files**: [SYS-000_index.md](./SYS/SYS-000_index.md) | [Template](./SYS/SYS-TEMPLATE.md)
 
@@ -374,25 +374,6 @@ Examples:
 
 See [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) for complete rules.
 
-### NFR Categorical Prefix Standard
-
-Non-Functional Requirements (NFRs) use categorical prefixes for automated categorization and cross-layer traceability.
-
-| Category | Range | Example | Keywords for AI Detection |
-|----------|-------|---------|---------------------------|
-| Performance | `901-920` | `SYS.008.901` | latency, response time, throughput, p95, TPS |
-| Reliability | `921-940` | `SYS.008.921` | uptime, availability, MTBF, MTTR, failover |
-| Scalability | `941-960` | `SYS.008.941` | concurrent users, horizontal scaling, capacity |
-| Security | `961-980` | `SYS.008.961` | authentication, authorization, encryption, RBAC |
-| Observability | `981-990` | `SYS.008.981` | logging, monitoring, alerting, metrics, tracing |
-| Maintainability | `991-999` | `SYS.008.991` | code coverage, deployment, CI/CD, documentation |
-
-**Unified Format**: NFRs use 900-series numbering within documents (`TYPE.DOC.9NN`).
-
-**Cross-Reference Format**: Use unified format (e.g., `@brd: BRD.017.901`, `@sys: SYS.008.901`)
-
-See [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md#unified-feature-id-format) for complete NFR naming rules.
-
 ### Feature-Level Traceability Tags
 
 Internal feature IDs within documents use 3-digit sequential numbering with unified format for globally unique traceability.
@@ -403,7 +384,7 @@ Internal feature IDs within documents use 3-digit sequential numbering with unif
 | BRD Objectives | `030`, `006` | `BRD.001.030` | `@brd: BRD.001.030` |
 | EARS Statements | `003`, `007` | `EARS.006.003` | `@ears: EARS.006.003` |
 | SYS Requirements | `001`, `015` | `SYS.008.001` | `@sys: SYS.008.001` |
-| NFRs (900-series) | `901`, `902` | `SYS.008.901` | `@sys: SYS.008.901` |
+| Quality Attributes | `016`, `017` | `SYS.008.016` | `@sys: SYS.008.016` |
 
 **Format**: `@type: TYPE.DOC.FEATURE` (dot separator for all references)
 
@@ -413,7 +394,7 @@ Internal feature IDs within documents use 3-digit sequential numbering with unif
 @prd: PRD.022.015
 @ears: EARS.006.003
 @sys: SYS.008.001
-@sys: SYS.008.901  # NFRs use 900-series numbering
+@sys: SYS.008.016  # Quality attributes use unified sequential numbering
 ```
 
 **Global Uniqueness**: `TYPE.DOC.FEATURE` format creates globally unique references (e.g., `PRD.022.015` is unique across all documents).
@@ -815,11 +796,11 @@ Each artifact type has a corresponding YAML schema file (`{TYPE}_SCHEMA.yaml`) t
 | Layer | Artifact | Schema File | Key Patterns |
 |-------|----------|-------------|--------------|
 | 1 | BRD | [BRD_SCHEMA.yaml](./BRD/BRD_SCHEMA.yaml) | Business objectives format |
-| 2 | PRD | [PRD_SCHEMA.yaml](./PRD/PRD_SCHEMA.yaml) | FR/NFR format, template variants |
+| 2 | PRD | [PRD_SCHEMA.yaml](./PRD/PRD_SCHEMA.yaml) | FR/QA format, template variants |
 | 3 | EARS | [EARS_SCHEMA.yaml](./EARS/EARS_SCHEMA.yaml) | WHEN-THE-SHALL-WITHIN format |
 | 4 | BDD | [BDD_SCHEMA.yaml](./BDD/BDD_SCHEMA.yaml) | Gherkin syntax, step patterns |
 | 5 | ADR | [ADR_SCHEMA.yaml](./ADR/ADR_SCHEMA.yaml) | Context-Decision-Consequences |
-| 6 | SYS | [SYS_SCHEMA.yaml](./SYS/SYS_SCHEMA.yaml) | FR-NNN, NFR-{CATEGORY}-NNN formats |
+| 6 | SYS | [SYS_SCHEMA.yaml](./SYS/SYS_SCHEMA.yaml) | FR-NNN, unified sequential formats |
 | 7 | REQ | [REQ_SCHEMA.yaml](./REQ/REQ_SCHEMA.yaml) | 12 sections, interface schemas |
 | 8 | IMPL | [IMPL_SCHEMA.yaml](./IMPL/IMPL_SCHEMA.yaml) | Phase organization, deliverables |
 | 9 | CTR | [CTR_SCHEMA.yaml](./CTR/CTR_SCHEMA.yaml) | Dual-file, OpenAPI/AsyncAPI |

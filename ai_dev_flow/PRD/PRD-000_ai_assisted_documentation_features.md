@@ -151,7 +151,7 @@ The following are explicitly out of scope for this product iteration:
 
 ## 5. Product Features
 
-### Feature F-001: Skill Recommender
+### PRD.000.001: Skill Recommender
 
 **Description**: Intelligent skill suggestion engine that analyzes user intent and project context to recommend appropriate documentation skills.
 
@@ -165,7 +165,7 @@ The following are explicitly out of scope for this product iteration:
 **Input**: User request text, project structure, recent activity
 **Output**: Ranked skill recommendations with confidence and rationale
 
-### Feature F-002: Context Analyzer
+### PRD.000.002: Context Analyzer
 
 **Description**: Project context analysis engine that surfaces relevant information for documentation creation.
 
@@ -179,7 +179,7 @@ The following are explicitly out of scope for this product iteration:
 **Input**: Project root path, target artifact type
 **Output**: Context model with upstream artifacts, key terms, and dependencies
 
-### Feature F-003: Quality Advisor
+### PRD.000.003: Quality Advisor
 
 **Description**: Proactive quality guidance system that monitors artifact creation and provides real-time feedback.
 
@@ -193,7 +193,7 @@ The following are explicitly out of scope for this product iteration:
 **Input**: Artifact content in progress, artifact type
 **Output**: Quality issues, suggestions, and validation status
 
-### Feature F-004: Workflow Optimizer
+### PRD.000.004: Workflow Optimizer
 
 **Description**: Workflow navigation assistant that recommends next steps and optimizes documentation sequence.
 

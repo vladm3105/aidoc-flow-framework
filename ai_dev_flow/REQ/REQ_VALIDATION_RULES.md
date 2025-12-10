@@ -68,7 +68,7 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 ## 4. Data Schemas
 ## 5. Error Handling Specifications
 ## 6. Configuration Specifications
-## 7. Non-Functional Requirements
+## 7. Quality Attributes
 ## 8. Implementation Guidance
 ## 9. Acceptance Criteria
 ## 10. Verification Methods

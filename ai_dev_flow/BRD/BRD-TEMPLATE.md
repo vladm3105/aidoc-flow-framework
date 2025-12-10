@@ -69,7 +69,7 @@ custom_fields:
 This Business Requirements Document (BRD) defines the business requirements for [Project Name]. The document serves as the foundation for project planning, design, development, and validation activities. It provides a clear understanding of business needs, objectives, scope, and success criteria for all stakeholders.
 
 ### 1.2 Document Scope
-This document covers the business perspective of the project requirements. It includes business objectives, functional and non-functional requirements, stakeholder information, constraints, assumptions, dependencies, acceptance criteria, and Architecture Decision Requirements (section 6.2). Technical specifications and detailed design documents are maintained separately and referenced where applicable. Architecture Decision Records (ADRs) are created AFTER this BRD based on the Architecture Decision Requirements section.
+This document covers the business perspective of the project requirements. It includes business objectives, functional requirements, quality attributes, stakeholder information, constraints, assumptions, dependencies, acceptance criteria, and Architecture Decision Requirements (section 6.2). Technical specifications and detailed design documents are maintained separately and referenced where applicable. Architecture Decision Records (ADRs) are created AFTER this BRD based on the Architecture Decision Requirements section.
 
 ### 1.3 Intended Audience
 This document is intended for the following stakeholders:
@@ -528,11 +528,12 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 **NOTE**: Functional requirements must be written at business level, NOT technical/implementation level. See Appendix B for PRD-level content exclusions and Appendix C for reference examples.
 
-#### FR-XXX: [Requirement Title - Business Capability Name]
+### BRD.NNN.001: [Requirement Title - Business Capability Name]
 
 **Business Capability**: [One-sentence high-level description of what business capability this requirement enables]
 
 **Business Requirements**:
+
 - [Business need 1 - what must be accomplished from business perspective]
 - [Business need 2 - include partner dependencies at business level]
 - [Business need 3 - regulatory or compliance requirements]
@@ -540,18 +541,21 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 - [Business need 5 - integration with platform BRDs if applicable]
 
 **Business Rules**:
+
 - [Policy constraint 1 - business rules that govern behavior]
 - [Policy constraint 2 - regulatory limits or thresholds]
 - [Policy constraint 3 - business logic that must be enforced]
 - [Policy constraint 4 - partner SLA requirements at business level]
 
 **Business Acceptance Criteria**:
+
 - [Measurable success criterion 1 with target: e.g., "Process completion time <X seconds for Y% of transactions"]
 - [Measurable success criterion 2 with business impact: e.g., "Fee transparency displayed before authorization (100% of transactions)"]
 - [Measurable success criterion 3 with quantifiable target: e.g., "Regulatory compliance rate ≥99.9%"]
 - [Measurable success criterion 4 with business outcome: e.g., "Customer satisfaction score ≥4.5/5"]
 
 **Related Requirements**:
+
 - Platform BRDs: [e.g., BRD-NNN (Platform Architecture), BRD-NNN (Partner Ecosystem)]
 - Partner Integration BRDs: [e.g., BRD-XXX (Partner Name)]
 - Related Feature BRDs: [e.g., BRD-YYY (Related Feature)]
@@ -561,23 +565,27 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 ---
 
-#### FR-YYY: [Next Requirement Title]
+### BRD.NNN.002: [Next Requirement Title]
 
 **Business Capability**: [One-sentence description]
 
 **Business Requirements**:
+
 - [Requirement 1]
 - [Requirement 2]
 
 **Business Rules**:
+
 - [Rule 1]
 - [Rule 2]
 
 **Business Acceptance Criteria**:
+
 - [Criterion 1]
 - [Criterion 2]
 
 **Related Requirements**:
+
 - [Cross-references to related BRDs]
 
 **Complexity**: X/5 ([Rationale])
@@ -637,10 +645,10 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 ---
 
-## 7. Non-Functional Requirements
+## 7. Quality Attributes
 
-### 7.1 Non-Functional Requirements Overview
-[Explain that non-functional requirements define system qualities and characteristics rather than specific behaviors. These quality attributes are critical success factors for the system.]
+### 7.1 Quality Attributes Overview
+[Explain that quality attributes define system qualities and characteristics rather than specific behaviors. These quality attributes are critical success factors for the system.]
 
 ### 7.2 Architecture Decision Requirements
 
@@ -652,12 +660,12 @@ The following architectural topics require formal Architecture Decision Records 
 | [Topic 2] | [What architectural decision is needed] | [Which business objectives/requirements drive this] | [Technologies, patterns, or approaches to evaluate] |
 
 **Example Topics**:
-- **Authentication/Authorization**: Select authentication mechanism (driven by BRD.XXX.961: security requirements)
-- **Data Storage**: Choose database technology for operational data (driven by BRD.XXX.NNN: Data persistence requirements)
-- **Integration Architecture**: Define API integration pattern (driven by BRD.XXX.NNN: System integration)
-- **Caching Strategy**: Choose caching approach (driven by BRD.XXX.901: Performance requirements)
-- **Deployment Model**: Select deployment architecture (driven by BRD.XXX.941: Scalability requirements)
-- **Messaging/Communication**: Choose inter-system communication pattern (driven by FR-XXX: Integration requirements)
+- **Authentication/Authorization**: Select authentication mechanism (driven by BRD.NNN.961: security requirements)
+- **Data Storage**: Choose database technology for operational data (driven by BRD.NNN.NNN: Data persistence requirements)
+- **Integration Architecture**: Define API integration pattern (driven by BRD.NNN.NNN: System integration)
+- **Caching Strategy**: Choose caching approach (driven by BRD.NNN.901: Performance requirements)
+- **Deployment Model**: Select deployment architecture (driven by BRD.NNN.941: Scalability requirements)
+- **Messaging/Communication**: Choose inter-system communication pattern (driven by BRD.NNN.NNN: Integration requirements)
 
 **Purpose**: This section identifies architectural topics requiring decisions. Specific ADRs will be created AFTER this BRD during the ADR phase of the SDD workflow.
 
@@ -669,74 +677,74 @@ The following architectural topics require formal Architecture Decision Records 
 
 | Req ID | Requirement Description | Metric | Target | Priority | Rationale |
 |--------|------------------------|--------|--------|----------|-----------|
-| BRD.XXX.901 | System response time for [action] | Response time | [X] seconds | P1 | [Business reason] |
-| BRD.XXX.902 | System throughput capacity | Transactions/second | [X] TPS | P1 | [Business reason] |
-| BRD.XXX.903 | Concurrent user support | Number of users | [X] users | P1 | [Business reason] |
-| BRD.XXX.904 | Page load time | Load time | [X] seconds | P2 | [Business reason] |
-| BRD.XXX.905 | Report generation time | Processing time | [X] minutes | P2 | [Business reason] |
+| BRD.NNN.901 | System response time for [action] | Response time | [X] seconds | P1 | [Business reason] |
+| BRD.NNN.902 | System throughput capacity | Transactions/second | [X] TPS | P1 | [Business reason] |
+| BRD.NNN.903 | Concurrent user support | Number of users | [X] users | P1 | [Business reason] |
+| BRD.NNN.904 | Page load time | Load time | [X] seconds | P2 | [Business reason] |
+| BRD.NNN.905 | Report generation time | Processing time | [X] minutes | P2 | [Business reason] |
 
 ### 7.4 Security Requirements (961-980)
 
 | Req ID | Requirement Description | Standard/Framework | Priority | Validation Method |
 |--------|------------------------|-------------------|----------|-------------------|
-| BRD.XXX.961 | Authentication mechanism | [e.g., Multi-factor authentication] | P1 | [How to verify] |
-| BRD.XXX.962 | Data encryption at rest | [e.g., AES-256] | P1 | [How to verify] |
-| BRD.XXX.963 | Data encryption in transit | [e.g., TLS 1.3] | P1 | [How to verify] |
-| BRD.XXX.964 | Access control | [e.g., Role-based access control] | P1 | [How to verify] |
-| BRD.XXX.965 | Audit logging | [Requirements for audit trails] | P1 | [How to verify] |
-| BRD.XXX.966 | Password complexity | [Password policy requirements] | P2 | [How to verify] |
-| BRD.XXX.967 | Session timeout | [e.g., 15 minutes of inactivity] | P2 | [How to verify] |
-| BRD.XXX.968 | Compliance: GDPR | [Specific compliance requirement] | P1 | [Audit method] |
-| BRD.XXX.969 | Compliance: HIPAA | [Specific compliance requirement] | P1 | [Audit method] |
-| BRD.XXX.970 | Compliance: PCI-DSS | [Specific compliance requirement] | P1 | [Audit method] |
+| BRD.NNN.961 | Authentication mechanism | [e.g., Multi-factor authentication] | P1 | [How to verify] |
+| BRD.NNN.962 | Data encryption at rest | [e.g., AES-256] | P1 | [How to verify] |
+| BRD.NNN.963 | Data encryption in transit | [e.g., TLS 1.3] | P1 | [How to verify] |
+| BRD.NNN.964 | Access control | [e.g., Role-based access control] | P1 | [How to verify] |
+| BRD.NNN.965 | Audit logging | [Requirements for audit trails] | P1 | [How to verify] |
+| BRD.NNN.966 | Password complexity | [Password policy requirements] | P2 | [How to verify] |
+| BRD.NNN.967 | Session timeout | [e.g., 15 minutes of inactivity] | P2 | [How to verify] |
+| BRD.NNN.968 | Compliance: GDPR | [Specific compliance requirement] | P1 | [Audit method] |
+| BRD.NNN.969 | Compliance: HIPAA | [Specific compliance requirement] | P1 | [Audit method] |
+| BRD.NNN.970 | Compliance: PCI-DSS | [Specific compliance requirement] | P1 | [Audit method] |
 
 ### 7.5 Reliability Requirements (921-940)
 
 | Req ID | Requirement Description | Target | Priority | Measurement Period |
 |--------|------------------------|--------|----------|-------------------|
-| BRD.XXX.921 | System uptime | [e.g., 99.9%] | P1 | [Monthly/Annually] |
-| BRD.XXX.922 | Planned maintenance window | [e.g., 4 hours/month] | P1 | [Monthly] |
-| BRD.XXX.923 | Mean Time Between Failures (MTBF) | [X hours/days] | P2 | [Annually] |
-| BRD.XXX.924 | Mean Time To Repair (MTTR) | [X hours] | P1 | [Per incident] |
-| BRD.XXX.925 | Backup frequency | [Daily/Weekly] | P1 | [Per policy] |
-| BRD.XXX.926 | Recovery Time Objective (RTO) | [X hours] | P1 | [Per incident] |
-| BRD.XXX.927 | Recovery Point Objective (RPO) | [X hours] | P1 | [Per incident] |
-| BRD.XXX.928 | Disaster recovery plan | [Plan requirements] | P1 | [Annual/Biannual] |
-| BRD.XXX.929 | Backup and restore procedures | [Specific procedures] | P1 | [Quarterly] |
-| BRD.XXX.930 | Failover capability | [Automatic/Manual, timeframe] | P1 | [Biannual] |
-| BRD.XXX.931 | Geographic redundancy | [Requirements] | P2 | [Annual] |
+| BRD.NNN.921 | System uptime | [e.g., 99.9%] | P1 | [Monthly/Annually] |
+| BRD.NNN.922 | Planned maintenance window | [e.g., 4 hours/month] | P1 | [Monthly] |
+| BRD.NNN.923 | Mean Time Between Failures (MTBF) | [X hours/days] | P2 | [Annually] |
+| BRD.NNN.924 | Mean Time To Repair (MTTR) | [X hours] | P1 | [Per incident] |
+| BRD.NNN.925 | Backup frequency | [Daily/Weekly] | P1 | [Per policy] |
+| BRD.NNN.926 | Recovery Time Objective (RTO) | [X hours] | P1 | [Per incident] |
+| BRD.NNN.927 | Recovery Point Objective (RPO) | [X hours] | P1 | [Per incident] |
+| BRD.NNN.928 | Disaster recovery plan | [Plan requirements] | P1 | [Annual/Biannual] |
+| BRD.NNN.929 | Backup and restore procedures | [Specific procedures] | P1 | [Quarterly] |
+| BRD.NNN.930 | Failover capability | [Automatic/Manual, timeframe] | P1 | [Biannual] |
+| BRD.NNN.931 | Geographic redundancy | [Requirements] | P2 | [Annual] |
 
 ### 7.6 Scalability Requirements (941-960)
 
 | Req ID | Requirement Description | Current | Year 1 | Year 3 | Priority |
 |--------|------------------------|---------|--------|--------|----------|
-| BRD.XXX.941 | User growth capacity | [X users] | [X users] | [X users] | P1 |
-| BRD.XXX.942 | Data volume growth | [X GB/TB] | [X GB/TB] | [X GB/TB] | P1 |
-| BRD.XXX.943 | Transaction volume growth | [X per day] | [X per day] | [X per day] | P2 |
-| BRD.XXX.944 | Storage expansion capability | [Description] | [Target] | [Target] | P2 |
+| BRD.NNN.941 | User growth capacity | [X users] | [X users] | [X users] | P1 |
+| BRD.NNN.942 | Data volume growth | [X GB/TB] | [X GB/TB] | [X GB/TB] | P1 |
+| BRD.NNN.943 | Transaction volume growth | [X per day] | [X per day] | [X per day] | P2 |
+| BRD.NNN.944 | Storage expansion capability | [Description] | [Target] | [Target] | P2 |
 
 ### 7.7 Observability Requirements (981-990)
 
 | Req ID | Requirement Description | Target | Priority | Measurement |
 |--------|------------------------|--------|----------|-------------|
-| BRD.XXX.981 | System monitoring capabilities | [Required monitoring] | P1 | [Monitoring dashboard] |
-| BRD.XXX.982 | Error logging and reporting | [Logging requirements] | P1 | [Log analysis] |
-| BRD.XXX.983 | Alerting thresholds | [Alert conditions] | P1 | [Alert review] |
-| BRD.XXX.984 | Distributed tracing | [Tracing requirements] | P2 | [Trace analysis] |
+| BRD.NNN.981 | System monitoring capabilities | [Required monitoring] | P1 | [Monitoring dashboard] |
+| BRD.NNN.982 | Error logging and reporting | [Logging requirements] | P1 | [Log analysis] |
+| BRD.NNN.983 | Alerting thresholds | [Alert conditions] | P1 | [Alert review] |
+| BRD.NNN.984 | Distributed tracing | [Tracing requirements] | P2 | [Trace analysis] |
 
 ### 7.8 Maintainability Requirements (991-999)
 
 | Req ID | Requirement Description | Target | Priority | Measurement |
 |--------|------------------------|--------|----------|-------------|
-| BRD.XXX.991 | Code documentation standards | [Standard to follow] | P2 | [Review process] |
-| BRD.XXX.992 | Version control | [Version control system] | P1 | [Repository review] |
-| BRD.XXX.993 | User interface design standards | [e.g., WCAG 2.1 AA] | P1 | [Usability testing] |
-| BRD.XXX.994 | Accessibility compliance | [e.g., section 508, ADA] | P1 | [Accessibility audit] |
-| BRD.XXX.995 | Browser compatibility | [List supported browsers/versions] | P1 | [Cross-browser testing] |
-| BRD.XXX.996 | Mobile device support | [iOS/Android versions] | P2 | [Device testing] |
-| BRD.XXX.997 | User training requirements | [Maximum training time: X hours] | P2 | [User feedback] |
-| BRD.XXX.998 | Online help availability | [Context-sensitive help] | P2 | [Documentation review] |
-| BRD.XXX.999 | Multilingual support | [Languages required] | P3 | [Translation verification] |
+| BRD.NNN.991 | Code documentation standards | [Standard to follow] | P2 | [Review process] |
+| BRD.NNN.992 | Version control | [Version control system] | P1 | [Repository review] |
+| BRD.NNN.993 | User interface design standards | [e.g., WCAG 2.1 AA] | P1 | [Usability testing] |
+| BRD.NNN.994 | Accessibility compliance | [e.g., section 508, ADA] | P1 | [Accessibility audit] |
+| BRD.NNN.995 | Browser compatibility | [List supported browsers/versions] | P1 | [Cross-browser testing] |
+| BRD.NNN.996 | Mobile device support | [iOS/Android versions] | P2 | [Device testing] |
+| BRD.NNN.997 | User training requirements | [Maximum training time: X hours] | P2 | [User feedback] |
+| BRD.NNN.998 | Online help availability | [Context-sensitive help] | P2 | [Documentation review] |
+| BRD.NNN.999 | Multilingual support | [Languages required] | P3 | [Translation verification] |
 
 ---
 
@@ -974,19 +982,19 @@ Acceptance criteria define the conditions that must be satisfied for the project
 
 | Requirement ID | Acceptance Criterion | Test Scenario | Expected Result | Pass/Fail Criteria |
 |----------------|---------------------|---------------|-----------------|-------------------|
-| FR-XXX | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
-| FR-YYY | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
-| FR-ZZZ | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
+| BRD.NNN.001 | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
+| BRD.NNN.002 | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
+| BRD.NNN.003 | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
 
-### 9.4 Non-Functional Acceptance Criteria
+### 9.4 Quality Attribute Acceptance Criteria
 
-[Define acceptance criteria for non-functional requirements]
+[Define acceptance criteria for quality attributes]
 
 | Requirement ID | Acceptance Criterion | Measurement Method | Target | Test Approach | Pass Threshold |
 |----------------|---------------------|-------------------|--------|---------------|----------------|
-| BRD.XXX.901 | [Performance criterion] | [Load testing] | [X seconds] | [Test scenario] | [95% within target] |
-| BRD.XXX.961 | [Security criterion] | [Security audit] | [Standard compliance] | [Audit process] | [100% compliance] |
-| BRD.XXX.921 | [Availability criterion] | [Monitoring logs] | [99.9% uptime] | [30-day monitoring] | [Meets or exceeds target] |
+| BRD.NNN.015 | [Performance criterion] | [Load testing] | [X seconds] | [Test scenario] | [95% within target] |
+| BRD.NNN.016 | [Security criterion] | [Security audit] | [Standard compliance] | [Audit process] | [100% compliance] |
+| BRD.NNN.017 | [Availability criterion] | [Monitoring logs] | [99.9% uptime] | [30-day monitoring] | [Meets or exceeds target] |
 
 ### 9.5 User Acceptance Testing (UAT) Criteria
 
@@ -1669,9 +1677,9 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 | Business Objective | Related Functional Requirements | Related User Stories | Coverage Status |
 |--------------------|--------------------------------|----------------------|-----------------|
-| [BO-N: Objective description] | FR-XXX, FR-YYY, FR-XXX | US-001, US-003, US-008 | Complete/Partial/Gap |
-| [BO-N: Objective description] | FR-ZZZ, FR-XXX, FR-XXX | US-002, US-005, US-012 | Complete/Partial/Gap |
-| [BO-N: Objective description] | FR-XXX, FR-XXX, FR-XXX | US-004, US-009, US-015 | Complete/Partial/Gap |
+| [BO-N: Objective description] | BRD.NNN.001, BRD.NNN.002, BRD.NNN.003 | US-001, US-003, US-008 | Complete/Partial/Gap |
+| [BO-N: Objective description] | BRD.NNN.004, BRD.NNN.005, BRD.NNN.006 | US-002, US-005, US-012 | Complete/Partial/Gap |
+| [BO-N: Objective description] | BRD.NNN.007, BRD.NNN.008, BRD.NNN.009 | US-004, US-009, US-015 | Complete/Partial/Gap |
 
 #### 17.1.2 Functional Requirements → Technical Specifications
 
@@ -1679,20 +1687,20 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 | Functional Requirement | Downstream SPEC (Planned) | Downstream IMPL (Planned) | Status |
 |------------------------|---------------------------|---------------------------|--------|
-| FR-XXX: [Requirement title] | SPEC-XXX-001: [Specification name] | IMPL-XXX-001: [Implementation name] | Planned |
-| FR-YYY: [Requirement title] | SPEC-XXX-002: [Specification name] | IMPL-XXX-002: [Implementation name] | Planned |
-| FR-ZZZ: [Requirement title] | SPEC-XXX-003: [Specification name] | IMPL-XXX-003: [Implementation name] | Planned |
+| BRD.NNN.001: [Requirement title] | SPEC-XXX-001: [Specification name] | IMPL-XXX-001: [Implementation name] | Planned |
+| BRD.NNN.002: [Requirement title] | SPEC-XXX-002: [Specification name] | IMPL-XXX-002: [Implementation name] | Planned |
+| BRD.NNN.003: [Requirement title] | SPEC-XXX-003: [Specification name] | IMPL-XXX-003: [Implementation name] | Planned |
 
-#### 17.1.3 Non-Functional Requirements → Technical Specifications
+#### 17.1.3 Quality Attributes → Technical Specifications
 
-| NFR Category | ID Range | Downstream SPEC (Planned) | Validation Method |
-|--------------|----------|---------------------------|-------------------|
-| Performance | 901-920 | SPEC-XXX-NFR-P: Performance Testing | Load testing |
-| Reliability | 921-940 | SPEC-XXX-NFR-A: Deployment Architecture | Uptime monitoring |
-| Scalability | 941-960 | SPEC-XXX-NFR-SC: Scaling Infrastructure | Capacity testing |
-| Security & Compliance | 961-980 | SPEC-XXX-NFR-S: Security Controls | Security audit |
-| Observability | 981-990 | SPEC-XXX-NFR-O: Monitoring Stack | Dashboard review |
-| Maintainability | 991-999 | SPEC-XXX-NFR-M: DevOps Pipeline | CI/CD metrics |
+| Quality Attribute Category | Downstream SPEC (Planned) | Validation Method |
+|---------------------------|---------------------------|-------------------|
+| Performance | SPEC-XXX-QA-P: Performance Testing | Load testing |
+| Reliability | SPEC-XXX-QA-R: Deployment Architecture | Uptime monitoring |
+| Scalability | SPEC-XXX-QA-SC: Scaling Infrastructure | Capacity testing |
+| Security & Compliance | SPEC-XXX-QA-S: Security Controls | Security audit |
+| Observability | SPEC-XXX-QA-O: Monitoring Stack | Dashboard review |
+| Maintainability | SPEC-XXX-QA-M: DevOps Pipeline | CI/CD metrics |
 
 ### 17.2 Same-Type References (Conditional)
 
@@ -1732,11 +1740,11 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 | Requirement Category | Test Type Required | Planned Test Specification | Coverage Target |
 |----------------------|-------------------|---------------------------|-----------------|
-| FR-XXX through FR-XXX | Unit Tests | TEST-XXX-UNIT: FR Unit Test Suite | 95% |
-| FR-XXX through FR-XXX | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
+| BRD.NNN.001 through BRD.NNN.NNN | Unit Tests | TEST-XXX-UNIT: FR Unit Test Suite | 95% |
+| BRD.NNN.001 through BRD.NNN.NNN | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
 | User Stories (US-001 through US-XXX) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
-| NFR Performance | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
-| NFR security | security Tests | TEST-XXX-regulatory: security Audit | All controls |
+| Performance Quality Attributes | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
+| Security Quality Attributes | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
 
 ### 17.4 Traceability Summary
 
@@ -1744,7 +1752,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 |----------|-------------|----------------|-----------------|------------|
 | Business Objectives | [Count] | [Count with FR links] | N/A | [%] |
 | Functional Requirements | [Count] | [Count with SPEC links] | [Count with BO links] | [%] |
-| Non-Functional Requirements | [Count] | [Count with SPEC links] | [Count with BO links] | [%] |
+| Quality Attributes | [Count] | [Count with SPEC links] | [Count with BO links] | [%] |
 | User Stories | [Count] | [Count with FR links] | [Count with BO links] | [%] |
 
 **Traceability Health Score:** [X]% (Target: ≥90%)
@@ -1827,7 +1835,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [Project_Acronym_1] | [Full term] | [Business/Technical/Domain] |
 | [Project_Acronym_2] | [Full term] | [Business/Technical/Domain] |
 
-**Note**: For standard BRD framework acronyms (FR, NFR, BO, AC, etc.), see [BRD-000_GLOSSARY.md section 4](BRD-000_GLOSSARY.md#4-acronyms)
+**Note**: For standard BRD framework acronyms (FR, QA, BO, AC, etc.), see [BRD-000_GLOSSARY.md section 4](BRD-000_GLOSSARY.md#4-acronyms)
 
 ---
 
@@ -2027,7 +2035,7 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 
 | SLA Metric | Business Requirement Impact | Mitigation if SLA Missed |
 |------------|----------------------------|-------------------------|
-| [SLA] | [Impact on FR/NFR] | [Fallback/contingency] |
+| [SLA] | [Impact on FR/QA] | [Fallback/contingency] |
 
 ---
 
@@ -2037,16 +2045,17 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 
 #### M.1 Regulatory Requirements Mapping
 
-| Regulation | section/Rule | Requirement Summary | BRD section | FR Reference | Compliance Approach |
-|------------|--------------|---------------------|-------------|--------------|---------------------|
-| [Regulation] | [section] | [Summary] | [section #] | [FR-XXX] | [How complied] |
+| Regulation | section/Rule | Requirement Summary | BRD section | BRD Reference | Compliance Approach |
+|------------|--------------|---------------------|-------------|---------------|---------------------|
+| [Regulation] | [section] | [Summary] | [section #] | [BRD.NNN.NNN] | [How complied] |
 
 **Example:**
-| Regulation | section/Rule | Requirement Summary | BRD section | FR Reference | Compliance Approach |
-|------------|--------------|---------------------|-------------|--------------|---------------------|
-| FinCEN MSB | 31 CFR 1010.410 | Recordkeeping for 5 years | section 6 | FR-012 | Transaction audit trail with 5-year retention |
-| OFAC SDN | 31 CFR 501.603 | Sanctions screening | section 5 | FR-XXX | Real-time OFAC screening before authorization |
-| Travel Rule | 31 CFR 1010.410(f) | Identity for ≥$3,000 | section 5 | FR-XXX | Sender/recipient identity capture above threshold |
+
+| Regulation | section/Rule | Requirement Summary | BRD section | BRD Reference | Compliance Approach |
+|------------|--------------|---------------------|-------------|---------------|---------------------|
+| FinCEN MSB | 31 CFR 1010.410 | Recordkeeping for 5 years | section 6 | BRD.NNN.012 | Transaction audit trail with 5-year retention |
+| OFAC SDN | 31 CFR 501.603 | Sanctions screening | section 5 | BRD.NNN.NNN | Real-time OFAC screening before authorization |
+| Travel Rule | 31 CFR 1010.410(f) | Identity for ≥$3,000 | section 5 | BRD.NNN.NNN | Sender/recipient identity capture above threshold |
 
 #### M.2 Regulatory Calendar
 

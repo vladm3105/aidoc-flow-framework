@@ -388,7 +388,7 @@ Use for primary/recommended implementations:
 
 ```markdown
 :::recommended Primary Implementation (AI Agent-Based)
-**Architecture**: AI Agent-Based Platform (@adr: ADR-REF-002)
+**Architecture**: AI Agent-Based Platform (@adr: ADR-002)
 **Priority**: ✅ Recommended approach
 **Status**: Active development
 **Agent ID**: AGENT-XXX
@@ -408,7 +408,7 @@ Use for fallback/reference implementations:
 
 ```markdown
 :::fallback Fallback Implementation (Traditional 8-Layer)
-**Architecture**: Traditional 8-Layer Platform (@adr: ADR-REF-001)
+**Architecture**: Traditional 8-Layer Platform (@adr: ADR-001)
 **Priority**: ⚠️ Fallback option (use only if AI approach not viable)
 **Status**: Reference implementation
 
@@ -429,8 +429,8 @@ Use for comparative analysis documents:
 ```markdown
 :::comparison Architecture Comparison
 This document provides objective comparison between:
-- **Primary**: AI Agent-Based Architecture (@adr: ADR-REF-002)
-- **Fallback**: Traditional 8-Layer Architecture (@adr: ADR-REF-001)
+- **Primary**: AI Agent-Based Architecture (@adr: ADR-002)
+- **Fallback**: Traditional 8-Layer Architecture (@adr: ADR-001)
 
 **Decision Criteria**: [List key factors]
 :::
@@ -526,7 +526,7 @@ custom_fields:
 - Use full markdown link: `[@brd: BRD-022](./BRD-022_fraud_detection_agent_ml_based_risk.md)`
 
 **In Document Body:**
-- Use tag notation: `@brd: BRD-022`, `@adr: ADR-REF-002`
+- Use tag notation: `@brd: BRD.022.001`, `@adr: ADR-002`
 
 ---
 
@@ -848,7 +848,7 @@ custom_fields:
 # BRD-022: Fraud Detection Agent (ML-based Risk)
 
 :::recommended Primary Implementation (AI Agent-Based)
-**Architecture**: AI Agent-Based Platform (@adr: ADR-REF-002)
+**Architecture**: AI Agent-Based Platform (@adr: ADR-002)
 **Priority**: ✅ Recommended approach
 **Status**: Active development
 **Agent ID**: AGENT-001
@@ -886,7 +886,7 @@ custom_fields:
 # BRD-016: Fraud Detection & Risk Screening
 
 :::fallback Fallback Implementation (Traditional 8-Layer)
-**Architecture**: Traditional 8-Layer Platform (@adr: ADR-REF-001)
+**Architecture**: Traditional 8-Layer Platform (@adr: ADR-001)
 **Priority**: ⚠️ Fallback option (use only if AI approach not viable)
 **Status**: Reference implementation
 

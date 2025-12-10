@@ -81,7 +81,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 ## 4. Stakeholders
 ## 5. User Stories
 ## 6. Functional Requirements
-## 7. Non-Functional Requirements
+## 7. Quality Attributes
 ## 8. Business Constraints and Assumptions
 ## 9. Acceptance Criteria
 ## 10. Business Risk Management
@@ -266,8 +266,8 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 | Topic Area | Decision Needed | Business Driver | Key Considerations |
 |------------|-----------------|---------------|-------------------|
 | Multi-Agent Framework | Select orchestration approach | BO-003: Autonomous execution | Google ADK, n8n, custom |
-| Data Storage | Choose persistence technology | NFR: High availability | PostgreSQL, Cloud SQL, Firestore |
-| Communication Protocol | Select inter-system messaging | FR-015: Real-time updates | Pub/Sub, gRPC, REST WebSocket |
+| Data Storage | Choose persistence technology | QA: High availability | PostgreSQL, Cloud SQL, Firestore |
+| Communication Protocol | Select inter-system messaging | BRD.NNN.015: Real-time updates | Pub/Sub, gRPC, REST WebSocket |
 ```
 
 **Reference**: `BRD_CREATION_RULES.md` section 9 (Architecture Decision Requirements)
@@ -311,13 +311,13 @@ BO-003: Reduce transaction processing time from 10 seconds to 5 seconds (50% imp
 
 **Requirements**:
 1. Business Acceptance Criteria (8.1) includes quantifiable success measures
-2. Functional Acceptance Criteria (8.2) maps to specific FR-XXX requirements
+2. Functional Acceptance Criteria (8.2) maps to specific BRD.NNN.NNN requirements
 3. Success Metrics and KPIs (8.7) include baseline, target, measurement frequency, owner
 
 **Warning Messages**:
 ```
 ⚠️  WARNING: Business acceptance criteria missing quantifiable measures
-⚠️  WARNING: Functional acceptance criteria not mapped to specific FR-XXX IDs
+⚠️  WARNING: Functional acceptance criteria not mapped to specific BRD.NNN.NNN IDs
 ⚠️  WARNING: Success metrics table missing owners or measurement frequency
 ```
 
@@ -798,7 +798,7 @@ UI implementation details should be deferred to PRD.
 
 **Valid FR Structure**:
 ```markdown
-#### FR-001: [Requirement Title - Business Capability Name]
+### BRD.NNN.001: [Requirement Title - Business Capability Name]
 
 **Business Capability**: [One sentence]
 
@@ -823,7 +823,7 @@ UI implementation details should be deferred to PRD.
 
 **Error Message**:
 ```
-❌ ERROR: Functional Requirement FR-005 missing required subsections
+❌ ERROR: Functional Requirement BRD.NNN.005 missing required subsections
 Missing:
 - Business Capability
 - Complexity
@@ -868,7 +868,7 @@ Fix: Add missing subsections per BRD-TEMPLATE.md section 5.2 format
 
 **Warning Message**:
 ```
-⚠️  WARNING: Invalid BRD cross-references in FR-005 Related Requirements
+⚠️  WARNING: Invalid BRD cross-references in BRD.NNN.005 Related Requirements
 - BRD-099: File not found (docs/BRD/BRD-099_*.md does not exist)
 - BRD-2: Invalid ID format (should be BRD-002)
 - BRD-001 referenced but file path broken
@@ -1100,7 +1100,7 @@ Reference: BRD-TEMPLATE.md lines 173-254
 - [ ] 17.1 Requirements Traceability Matrix
   - [ ] 17.1.1 Business Objectives → Functional Requirements
   - [ ] 17.1.2 Functional Requirements → Technical Specifications
-  - [ ] 17.1.3 Non-Functional Requirements → Technical Specifications
+  - [ ] 17.1.3 Quality Attributes → Technical Specifications
 - [ ] 17.2 Cross-BRD Dependencies
 - [ ] 17.3 Test Coverage Traceability
 - [ ] 17.4 Traceability Summary (with Health Score)
@@ -1123,7 +1123,7 @@ Add section with structure:
 - 17.1 Requirements Traceability Matrix
   - 17.1.1 Business Objectives → FRs
   - 17.1.2 FRs → Technical Specs
-  - 17.1.3 NFRs → Technical Specs
+  - 17.1.3 QAs → Technical Specs
 - 17.2 Cross-BRD Dependencies
 - 17.3 Test Coverage Traceability
 - 17.4 Traceability Summary (Health Score)
@@ -1135,20 +1135,20 @@ Reference: BRD-TEMPLATE.md lines 1673-1745
 ```
 ⚠️  WARNING: Traceability orphans detected
 Orphaned Requirements:
-- BO-003: No related FRs (Coverage Status = "Gap")
-- FR-012: Not linked to any Business Objective
+- BO-003: No related BRD.NNN.NNN requirements (Coverage Status = "Gap")
+- BRD.NNN.012: Not linked to any Business Objective
 - US-007: Not linked to any Functional Requirement
 
 Traceability Health Score: 78% (Target: ≥90%)
 
-Fix: Ensure bidirectional links for all objectives, FRs, and user stories
+Fix: Ensure bidirectional links for all objectives, BRD requirements, and user stories
 ```
 
 **Orphan Prevention Checks**:
 - [ ] Zero orphaned Business Objectives (all have Coverage Status = "Complete" or "Partial")
-- [ ] Zero orphaned Functional Requirements (all appear in BO→FR table)
-- [ ] Zero orphaned User Stories (all have Related FR links)
-- [ ] All FRs have planned downstream SPEC references
+- [ ] Zero orphaned Functional Requirements (all appear in BO→BRD.NNN table)
+- [ ] Zero orphaned User Stories (all have Related BRD.NNN.NNN links)
+- [ ] All BRD.NNN.NNN requirements have planned downstream SPEC references
 
 **Fix**:
 1. Add section 17 with all 4 subsections
@@ -1471,9 +1471,9 @@ Warnings: 1
 
 | Topic Area | Decision Needed | Business Driver | Key Considerations |
 |------------|-----------------|---------------|-------------------|
-| Database Technology | Select data storage solution | BRD.XXX.921: High availability requirements | PostgreSQL, Cloud SQL, DynamoDB |
-| Authentication | Choose identity management | FR-003: regulatoryure user access | OAuth2, SAML, Firebase Auth |
-| API Architecture | Define service communication | FR-015: System integration | REST APIs, gRPC, GraphQL |
+| Database Technology | Select data storage solution | BRD.NNN.921: High availability requirements | PostgreSQL, Cloud SQL, DynamoDB |
+| Authentication | Choose identity management | BRD.NNN.003: Secure user access | OAuth2, SAML, Firebase Auth |
+| API Architecture | Define service communication | BRD.NNN.015: System integration | REST APIs, gRPC, GraphQL |
 ```
 
 ---

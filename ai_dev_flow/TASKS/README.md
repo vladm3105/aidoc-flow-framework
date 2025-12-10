@@ -238,7 +238,7 @@ Document all limitations and requirements:
 ```markdown
 Constraint Categories:
 - Technical: Language, framework, platform requirements
-- Functional: Must/non-functional requirements from specifications
+- Functional: Functional requirements and quality attributes from specifications
 - Quality: Code style, testing, documentation standards
 - Integration: Interface compliance, data format requirements
 - Operational: Performance, scalability, monitoring needs
@@ -410,7 +410,7 @@ Tasks drive comprehensive verification:
 - Unit Tests: Validate individual function correctness
 - Integration Tests: Verify component interactions
 - Contract Tests: Ensure API compliance
-- Performance Tests: Validate non-functional requirements
+- Performance Tests: Validate quality attributes
 - BDD Tests: Confirm end-to-end behavioral compliance
 ```
 

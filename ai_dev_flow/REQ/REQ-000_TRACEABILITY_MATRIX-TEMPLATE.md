@@ -59,7 +59,7 @@ python scripts/generate_traceability_matrices.py --type REQ --output docs/REQ/RE
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@req: REQ.001.NNN` (for specific requirements) or `@req: REQ-001` (for document-level refs)
+**Tag Format:** `@req: REQ.NNN.NNN` (unified feature-level format, e.g., `REQ.003.001`)
 
 See: [TRACEABILITY.md](../../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 

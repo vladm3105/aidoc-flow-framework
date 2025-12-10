@@ -107,22 +107,22 @@ custom_fields:
 ### Upstream References
 
 #### Business Requirements (@brd)
-- @brd: BRD-001 (Platform Architecture & Technology Stack)
+- @brd: BRD.001.001 (Platform Architecture & Technology Stack)
   - section 5.2.3: Real-time data streaming requirements
   - Establishes need for persistent connections
 
 #### Product Requirements (@prd)
-- @prd: PRD-003 (Unified Quoteboard Product Definition)
+- @prd: PRD.003.001 (Unified Quoteboard Product Definition)
   - section 4.1: Live quote updates with <500ms latency
   - Drives WebSocket choice over polling
 
 #### Engineering Requirements (@ears)
-- @ears: EARS-002 (Exchange Integration Requirements)
-  - EARS-002-003: WHEN connection lost THEN system SHALL reconnect WITHIN 5 seconds
+- @ears: EARS.002.001 (Exchange Integration Requirements)
+  - EARS.002.003: WHEN connection lost THEN system SHALL reconnect WITHIN 5 seconds
   - Direct source for this requirement
 
 #### Acceptance Criteria (@bdd)
-- @bdd: BDD-001 (Quote Display Acceptance Criteria)
+- @bdd: BDD.001.001 (Quote Display Acceptance Criteria)
   - Scenario: Reconnection after network interruption
   - Defines expected user experience
 
@@ -132,8 +132,8 @@ custom_fields:
   - Provides architectural context
 
 #### System Requirements (@sys)
-- @sys: SYS-001 (Quoteboard System Requirements)
-  - SYS-FR-012: Connection resilience requirements
+- @sys: SYS.001.001 (Quoteboard System Requirements)
+  - SYS.001.012: Connection resilience requirements
   - System-level performance constraints
 
 ### Downstream References
@@ -250,9 +250,9 @@ custom_fields:
 ## 7. Traceability
 
 ### Upstream References
-- @brd: BRD-001 (Platform Architecture)
+- @brd: BRD.001.001 (Platform Architecture)
   - section 3.5: Technology stack requirements
-- @prd: PRD-003 (Quoteboard Product)
+- @prd: PRD.003.001 (Quoteboard Product)
   - section 4: Real-time data requirements
 ```
 

@@ -39,12 +39,12 @@ This document serves as the **single source of truth** for all configurable, bus
 1. **No Magic Numbers**: All quantitative business-critical values in requirements documents MUST use `@threshold` references
 2. **Single Source**: This registry is the authoritative source - conflicting values elsewhere are invalid
 3. **Change Control**: All threshold changes require version update and change log entry
-4. **Traceability**: All `@threshold` references must use format `@threshold: PRD-NNN:category.key`
+4. **Traceability**: All `@threshold` references must use format `@threshold: PRD.NNN.category.key`
 
 ### @threshold Tag Format
 
 ```markdown
-@threshold: PRD-NNN:category.subcategory.key
+@threshold: PRD.NNN.category.subcategory.key
 ```
 
 **Examples**:
@@ -283,41 +283,41 @@ This document serves as the **single source of truth** for all configurable, bus
 ```markdown
 WHEN the API receives a request,
 THE system SHALL respond
-WITHIN @threshold: PRD-NNN:perf.api.p95_latency.
+WITHIN @threshold: PRD.NNN.perf.api.p95_latency.
 ```
 
 ### 11.2 BDD Scenario
 
 ```gherkin
-@threshold: PRD-NNN:perf.api.p95_latency
+@threshold: PRD.NNN.perf.api.p95_latency
 Scenario: API responds within performance threshold
   Given the system is under normal load
   When a client sends a request
-  Then the response time SHOULD be less than @threshold: PRD-NNN:perf.api.p95_latency
+  Then the response time SHOULD be less than @threshold: PRD.NNN.perf.api.p95_latency
 ```
 
 ### 11.3 SYS Requirement
 
 ```markdown
-**NFR-001**: API Response Time
-- p95 latency: @threshold: PRD-NNN:perf.api.p95_latency
-- p99 latency: @threshold: PRD-NNN:perf.api.p99_latency
+**SYS.NNN.001**: API Response Time
+- p95 latency: @threshold: PRD.NNN.perf.api.p95_latency
+- p99 latency: @threshold: PRD.NNN.perf.api.p99_latency
 ```
 
 ### 11.4 REQ Requirement
 
 ```markdown
-**Performance Target**: Response time < @threshold: PRD-NNN:perf.api.p95_latency
-**Timeout**: @threshold: PRD-NNN:timeout.request.sync
+**Performance Target**: Response time < @threshold: PRD.NNN.perf.api.p95_latency
+**Timeout**: @threshold: PRD.NNN.timeout.request.sync
 ```
 
 ### 11.5 SPEC Configuration
 
 ```yaml
 performance:
-  p95_latency_ms: "@threshold: PRD-NNN:perf.api.p95_latency"
+  p95_latency_ms: "@threshold: PRD.NNN.perf.api.p95_latency"
 timeout:
-  request_ms: "@threshold: PRD-NNN:timeout.request.sync"
+  request_ms: "@threshold: PRD.NNN.timeout.request.sync"
 ```
 
 ---
@@ -338,7 +338,7 @@ This threshold registry is consumed by:
 |--------------|-------|------------------------|
 | EARS | 3 | WITHIN clauses, boundary conditions |
 | BDD | 4 | Performance scenarios, SLA validation |
-| SYS | 6 | NFRs, SLAs, resource limits |
+| SYS | 6 | Quality Attributes, SLAs, resource limits |
 | REQ | 7 | Performance targets, configurations |
 | SPEC | 10 | Implementation configurations |
 

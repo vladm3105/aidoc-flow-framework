@@ -41,7 +41,7 @@
 #    Then response time is less than 200ms
 #
 # ✅ CORRECT: Threshold registry reference
-#    Then response time is less than @threshold: PRD-035:perf.api.p95_latency
+#    Then response time is less than @threshold: PRD.035.perf.api.p95_latency
 #
 # =============================================================================
 #
@@ -125,11 +125,11 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 #
 # THRESHOLD REGISTRY INTEGRATION:
 # Use @threshold tags for ALL quantitative values (performance, SLA, limits)
-# Format: @threshold: PRD-NNN:category.subcategory.key
+# Format: @threshold: PRD.NNN.category.subcategory.key
 # Examples:
-#   @threshold: PRD-035:perf.api.p95_latency
-#   @threshold: PRD-035:sla.uptime.target
-#   @threshold: PRD-035:limit.api.requests_per_second
+#   @threshold: PRD.035.perf.api.p95_latency
+#   @threshold: PRD.035.sla.uptime.target
+#   @threshold: PRD.035.limit.api.requests_per_second
 # Purpose: Prevent magic numbers by referencing centralized threshold registry
 # See: ../PRD/PRD-000_threshold_registry_template.md
 
@@ -266,15 +266,15 @@ Feature: [Feature Title]
       | quantity  | -1    | invalid        | quantity must be > 0   |
 
   # NOTE: Performance thresholds should use @threshold registry references
-  # @threshold: PRD-NNN:perf.api.p50_latency
-  # @threshold: PRD-NNN:perf.api.p95_latency
-  # @threshold: PRD-NNN:perf.api.p99_latency
+  # @threshold: PRD.NNN.perf.api.p50_latency
+  # @threshold: PRD.NNN.perf.api.p95_latency
+  # @threshold: PRD.NNN.perf.api.p99_latency
   @data_driven @performance
   Scenario Outline: [Validate performance under different load conditions]
     Given system load is at <load_percentage> capacity
     When <concurrent_requests> simultaneous requests are processed
-    Then average response time is less than @threshold: PRD-NNN:perf.api.<percentile>_latency
-    And success rate is greater than @threshold: PRD-NNN:sla.success_rate.<load_level>
+    Then average response time is less than @threshold: PRD.NNN.perf.api.<percentile>_latency
+    And success rate is greater than @threshold: PRD.NNN.sla.success_rate.<load_level>
 
     Examples: Performance Benchmarks (replace with actual threshold keys)
       | load_percentage | concurrent_requests | percentile | load_level |
@@ -303,10 +303,10 @@ Feature: [Feature Title]
     And [business rules are applied correctly]
 
   # ===================
-  # NON-FUNCTIONAL SCENARIOS
+  # QUALITY ATTRIBUTE SCENARIOS
   # ===================
 
-  @non_functional @regulatoryurity
+  @quality_attribute @regulatoryurity
   Scenario: [Data protection and privacy compliance]
     Given [sensitive data is processed]
     When [operations involve personal information]
@@ -314,23 +314,23 @@ Feature: [Feature Title]
     And [access controls are enforced]
     And [audit logs capture data access appropriately]
 
-  # @threshold: PRD-NNN:sla.uptime.target
-  @non_functional @reliability
+  # @threshold: PRD.NNN.sla.uptime.target
+  @quality_attribute @reliability
   Scenario: [Maintain availability during peak load]
     Given [system under peak usage conditions]
     When [high-volume requests arrive]
-    Then [service remains available above @threshold: PRD-NNN:sla.uptime.target uptime]
+    Then [service remains available above @threshold: PRD.NNN.sla.uptime.target uptime]
     And [degradation occurs gracefully if needed]
     And [monitoring alerts are triggered appropriately]
 
-  # @threshold: PRD-NNN:perf.api.p95_latency
-  # @threshold: PRD-NNN:perf.api.p99_latency
-  @non_functional @performance @latency
+  # @threshold: PRD.NNN.perf.api.p95_latency
+  # @threshold: PRD.NNN.perf.api.p99_latency
+  @quality_attribute @performance @latency
   Scenario: [Response time meets user expectations]
     Given [normal system operating conditions]
     When [typical user requests are made]
-    Then [response time is under @threshold: PRD-NNN:perf.api.p95_latency for 95% of requests]
-    And [response time is under @threshold: PRD-NNN:perf.api.p99_latency for 99% of requests]
+    Then [response time is under @threshold: PRD.NNN.perf.api.p95_latency for 95% of requests]
+    And [response time is under @threshold: PRD.NNN.perf.api.p99_latency for 99% of requests]
     And [latency is consistent across similar operations]
 
   # ===================
@@ -408,12 +408,12 @@ Feature: [Feature Title]
 #
 # --- ENTITY REFERENCE FORMAT ---
 #
-# @entity:PRD-NNN:EntityName
+# @entity: PRD.NNN.EntityName
 #
 # Examples:
-#   @entity:PRD-NNN:BusinessTransaction
-#   @entity:PRD-NNN:RiskEvaluationUnit
-#   @entity:PRD-NNN:ComplianceCase
+#   @entity: PRD.NNN.BusinessTransaction
+#   @entity: PRD.NNN.RiskEvaluationUnit
+#   @entity: PRD.NNN.ComplianceCase
 #
 # =============================================================================
 # END OF TEMPLATE

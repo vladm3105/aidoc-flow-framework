@@ -20,7 +20,7 @@ This document serves as the master index for all System Requirements Specificati
 - **Discover** existing system-level requirements
 - **Track** system specification status
 - **Coordinate** system design across components
-- **Reference** functional and non-functional requirements
+- **Reference** functional requirements and quality attributes
 
 ## Position in Development Workflow
 
@@ -141,9 +141,9 @@ When creating a new SYS document:
 ### Functional Requirements by System
 - None
 
-### Non-Functional Requirements Summary
+### Quality Attributes Summary
 
-| NFR Category | SYS Documents | Total Requirements | Status |
+| QA Category | SYS Documents | Total Requirements | Status |
 |--------------|---------------|--------------------|--------|
 | Performance | - | 0 | - |
 | Scalability | - | 0 | - |
@@ -164,7 +164,7 @@ When creating a new SYS document:
 | Total SYS Documents | 0 | Total system requirement documents |
 | Total Requirements | 0 | Total system-level requirements |
 | Functional Requirements | 0 | Functional system requirements |
-| Non-Functional Requirements | 0 | NFRs (performance, security, etc.) |
+| Quality Attributes | 0 | QAs (performance, security, etc.) |
 | Decomposed to REQ | 0% | Percentage decomposed into atomic REQ |
 | Implemented | 0% | Percentage with SPEC and code |
 
@@ -181,13 +181,13 @@ When creating a new SYS document:
 - Update whenever new SYS document is created
 - Track status changes through system requirements lifecycle
 - Maintain decomposition status (SYS → REQ → SPEC)
-- Monitor non-functional requirements coverage
+- Monitor quality attributes coverage
 
 ### Quality Checks
 
 Before marking SYS as "Approved":
 - ✅ Functional requirements clearly defined
-- ✅ Non-functional requirements with measurable criteria
+- ✅ Quality attributes with measurable criteria
 - ✅ System constraints documented
 - ✅ Cross-references to upstream ADR/EARS complete
 - ✅ Decomposition plan for atomic REQ created

@@ -390,7 +390,7 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 """Module description.
 
 @brd: BRD.001.030, BRD.001.006, BRD.002.015
-@prd: PRD-003
+@prd: PRD.003.001
 @sys: SYS.008.001
 @req: REQ.003.001
 @adr: ADR-033
@@ -434,7 +434,7 @@ These tags reference documents in the SDD workflow hierarchy. Use the document t
 | `@tasks` | 11 | Task Breakdowns | `@tasks: TASKS.NNN.NNN` | `@tasks: TASKS.001.003` |
 | `@iplan` | 12 | Implementation Plans | `@iplan: IPLAN-NNN` | `@iplan: IPLAN-001` |
 
-**Note**: NFRs use 900-series numbering within documents (e.g., `@sys: SYS.008.901`). The 900-999 range is reserved for NFRs.
+**Note**: All requirements use sequential numbering (001, 002, 003...) within documents.
 
 #### Valid Non-Document Tags (Special Purpose)
 
@@ -470,7 +470,7 @@ Do NOT use these tag patterns:
 
 | Invalid Tag | Correct Alternative | Reason |
 |-------------|---------------------|--------|
-| `@nfr:` | `@sys:`, `@brd:`, `@ears:` with NFR ID | Use document type tag with NFR categorical prefix |
+| `@nfr:` | `@sys:`, `@brd:`, `@ears:` | NFR tag deprecated - use document type tag for quality attributes |
 | `@fr:` | `@sys:` with FR ID | Use document type tag |
 | `@contract:` | `@ctr:` | Use standard abbreviation |
 | `@tests:` | `@test:` | Singular form |
@@ -641,7 +641,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 - **Multiple Values**: Comma-separated
 - **Special**: `@icon` includes optional `@icon-role: provider|consumer`
 
-**NFR 900-Series Convention**: NFRs use feature numbers 900-999 (e.g., `SYS.008.901` for first performance NFR)
+**Unified Numbering**: All requirements (functional and quality attributes) use sequential numbering (001, 002, 003...)
 
 **Examples**:
 ```markdown
@@ -699,41 +699,6 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @depends-tasks: TASKS-001
 ```
 
-### NFR 900-Series Numbering Standard
-
-Non-Functional Requirements (NFRs) use 900-series feature numbering within documents for automated categorization and cross-layer traceability.
-
-| Category | Range | Example | Keywords for AI Detection |
-|----------|-------|---------|---------------------------|
-| Performance | `901-920` | `SYS.008.901` | latency, response time, throughput, p95, TPS |
-| Reliability | `921-940` | `SYS.008.921` | uptime, availability, MTBF, MTTR, failover |
-| Scalability | `941-960` | `SYS.008.941` | concurrent users, horizontal scaling, capacity |
-| Security | `961-980` | `SYS.008.961` | authentication, authorization, encryption, RBAC |
-| Observability | `981-990` | `SYS.008.981` | logging, monitoring, alerting, metrics, tracing |
-| Maintainability | `991-999` | `SYS.008.991` | code coverage, deployment, CI/CD, documentation |
-
-**NFR Cross-Reference Format**: Use unified feature ID format with 900-series (e.g., `@brd: BRD.017.901`, `@sys: SYS.008.961`)
-
-**NFR Cross-Layer Consistency**:
-
-NFR IDs remain consistent across all layers using unified format:
-```
-BRD.017.901 defines: API response time <200ms (Performance NFR #1)
-    ↓
-PRD.022.901 inherits: Same performance requirement
-    ↓
-EARS.006.901 formalizes: EARS syntax version
-    ↓
-SYS.008.901 implements: Technical specification
-```
-
-**Examples**:
-```markdown
-@brd: BRD.017.901
-@sys: SYS.008.961
-@ears: EARS.006.921
-```
-
 ### Feature-Level Traceability Tags (Unified Feature ID Format)
 
 Internal feature IDs within documents use the unified format `TYPE.NNN.NNN` for fine-grained traceability.
@@ -743,13 +708,12 @@ Internal feature IDs within documents use the unified format `TYPE.NNN.NNN` for 
 | PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD.022.015` |
 | BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD.001.030` |
 | EARS Statements | `NNN` | `003`, `007` | `@ears: EARS.006.003` |
-| SYS Functional Reqs | `NNN` | `001`, `015` | `@sys: SYS.008.001` |
-| SYS Non-Functional | `9NN` | `901`, `961` | `@sys: SYS.008.901` |
+| SYS Requirements | `NNN` | `001`, `015` | `@sys: SYS.008.001` |
 
 **Global Uniqueness**: Unified Feature ID (`TYPE.NNN.NNN`) creates globally unique references.
 - `PRD.022.015` = PRD-022, Feature 015 (globally unique)
 - `EARS.006.003` = EARS-006, Statement 003 (globally unique)
-- `SYS.008.901` = SYS-008, Performance NFR #1 (globally unique)
+- `SYS.008.015` = SYS-008, Requirement 015 (globally unique)
 
 **Feature-Level Tag Examples**:
 ```markdown
@@ -758,8 +722,7 @@ Internal feature IDs within documents use the unified format `TYPE.NNN.NNN` for 
 @brd: BRD.001.030, BRD.001.006
 @prd: PRD.022.015, PRD.022.018
 @ears: EARS.006.003
-@sys: SYS.008.001, SYS.008.961
-@brd: BRD.017.901
+@sys: SYS.008.001, SYS.008.015
 ```
 
 **Optional Extension Tags**:
@@ -1453,7 +1416,7 @@ def test_validate_resource_limit_within_threshold():
 ### SYS (System Requirements Specification)
 - **Upstream**: ADR (architecture decisions), PRD (product features)
 - **Downstream**: REQ (atomic requirements)
-- **section**: System-level functional/non-functional requirements within architectural framework
+- **section**: System-level functional requirements and quality attributes within architectural framework
 
 ### REQ (Atomic Requirements)
 - **Upstream**: EARS (formal requirements), SYS (system requirements), ADR (architectural constraints)

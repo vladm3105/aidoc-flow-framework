@@ -364,11 +364,11 @@ User stories follow the standard format:
 
 #### Primary Persona 1: [Name - e.g., End User, Customer, Admin]
 
-| Story ID | User Story | Priority | Acceptance Criteria | Related FR |
-|----------|------------|----------|---------------------|------------|
-| US-001 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | FR-XXX |
-| US-002 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | FR-XXX |
-| US-003 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | FR-XXX |
+| Story ID | User Story | Priority | Acceptance Criteria | Related BRD Requirement |
+|----------|------------|----------|---------------------|-------------------------|
+| US-001 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NNN.NNN |
+| US-002 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NNN.NNN |
+| US-003 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NNN.NNN |
 
 **Example User Stories**:
 - US-001: As a **sender**, I want to **view transparent fee breakdown before confirming transaction**, so that **I understand total cost with no surprises**.
@@ -377,19 +377,19 @@ User stories follow the standard format:
 
 #### Primary Persona 2: [Name - e.g., Support Agent, Compliance Officer]
 
-| Story ID | User Story | Priority | Acceptance Criteria | Related FR |
-|----------|------------|----------|---------------------|------------|
-| US-0XX | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | FR-XXX |
+| Story ID | User Story | Priority | Acceptance Criteria | Related BRD Requirement |
+|----------|------------|----------|---------------------|-------------------------|
+| US-0XX | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NNN.NNN |
 
 ### Operational User Stories
 
 [Document user stories for internal operations, support, and administrative personas]
 
-| Story ID | User Story | Priority | Acceptance Criteria | Related FR |
-|----------|------------|----------|---------------------|------------|
-| US-0XX | As a **compliance officer**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | FR-XXX |
-| US-0XX | As a **support agent**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | FR-XXX |
-| US-0XX | As an **operations manager**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | FR-XXX |
+| Story ID | User Story | Priority | Acceptance Criteria | Related BRD Requirement |
+|----------|------------|----------|---------------------|-------------------------|
+| US-0XX | As a **compliance officer**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NNN.NNN |
+| US-0XX | As a **support agent**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NNN.NNN |
+| US-0XX | As an **operations manager**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NNN.NNN |
 
 ### User Story Summary
 
@@ -429,7 +429,7 @@ User stories follow the standard format:
 
 **⚠️ IMPORTANT**: When this PRD references numeric thresholds, limits, or timing parameters, use the Threshold Registry pattern to ensure consistency across PRDs.
 
-**Reference Format**: `@threshold: PRD-NNN:threshold-key`
+**Reference Format**: `@threshold: PRD.NNN.threshold-key`
 
 **When to Create Threshold Registry References**:
 - Transaction velocity limits (KYC/KYB limits)
@@ -833,9 +833,9 @@ The following architectural topics require formal Architecture Decision Records 
 
 | Topic Area | Decision Needed | Business Driver (PRD Reference) | Key Considerations |
 |------------|-----------------|--------------------------------|-------------------|
-| [Topic 1] | [What decision is needed] | [Which PRD requirements/NFRs drive this] | [Technologies, patterns, or approaches to evaluate] |
-| [Topic 2] | [What decision is needed] | [Which PRD requirements/NFRs drive this] | [Technologies, patterns, or approaches to evaluate] |
-| [Topic 3] | [What decision is needed] | [Which PRD requirements/NFRs drive this] | [Technologies, patterns, or approaches to evaluate] |
+| [Topic 1] | [What decision is needed] | [Which PRD requirements/QAs drive this] | [Technologies, patterns, or approaches to evaluate] |
+| [Topic 2] | [What decision is needed] | [Which PRD requirements/QAs drive this] | [Technologies, patterns, or approaches to evaluate] |
+| [Topic 3] | [What decision is needed] | [Which PRD requirements/QAs drive this] | [Technologies, patterns, or approaches to evaluate] |
 
 **Example Topics**:
 - **[Component_Type: e.g., Framework, Library, Service]**: [What architectural choice is needed] (driven by [requirement references])

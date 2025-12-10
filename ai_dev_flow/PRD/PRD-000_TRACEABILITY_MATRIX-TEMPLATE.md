@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type PRD --output docs/PRD/PR
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@prd: PRD.001.NNN` (for specific requirements) or `@prd: PRD-001` (for document-level refs)
+**Tag Format:** `@prd: PRD.NNN.NNN` (unified feature-level format, e.g., `PRD.003.001`)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -116,7 +116,7 @@ This matrix tracks all PRD documents, mapping upstream business requirements (BR
 ```
 
 - **BRD.009.015**: Functional requirement for service integration
-- **BRD.009.006**: Non-functional requirement for operation execution performance
+- **BRD.009.006**: Quality attribute for operation execution performance
 ```
 
 ### 2.4 Validation Rules

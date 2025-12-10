@@ -217,7 +217,7 @@
 
 ## 7. Performance Targets Tracking
 
-### 7.1 Non-Functional Requirements from SPEC
+### 7.1 Quality Attributes from SPEC
 
 | SPEC ID | Performance Target | Measured Value | Status | Notes |
 |---------|-------------------|----------------|--------|-------|

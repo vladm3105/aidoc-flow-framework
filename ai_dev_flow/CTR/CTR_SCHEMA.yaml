@@ -127,7 +127,7 @@ structure:
 
     - pattern: "^## 5\\. Requirements Satisfied$"
       name: "Requirements Satisfied"
-      description: "Section 5 with Primary Requirements, Source Business Logic, NFRs"
+      description: "Section 5 with Primary Requirements, Source Business Logic, Quality Attributes"
 
     # Part 2: Interface Specification and Schema
     - pattern: "^## 6\\. Schema Reference$"
@@ -146,9 +146,9 @@ structure:
       name: "Consequences"
       description: "Section 9 with Positive and Negative Outcomes"
 
-    # Part 3: Non-Functional Requirements and Operations
-    - pattern: "^## 10\\. Non-Functional Requirements$"
-      name: "Non-Functional Requirements"
+    # Part 3: Quality Attributes and Operations
+    - pattern: "^## 10\\. Quality Attributes$"
+      name: "Quality Attributes"
       description: "Section 10 with Performance, Reliability, Security"
 
     - pattern: "^## 11\\. Versioning Strategy$"
@@ -503,6 +503,6 @@ error_messages:
   W004: "Missing Versioning Strategy Version Policy"
   W005: "Error responses not defined in YAML schema"
   W006: "Missing contract testing requirements in Verification section"
-  I001: "Consider adding performance metrics in NFR section"
+  I001: "Consider adding performance metrics in Quality Attributes section"
   I002: "Consider documenting migration strategy in Impact Analysis"
   I003: "Consider adding alternative approaches in Alternatives Considered"

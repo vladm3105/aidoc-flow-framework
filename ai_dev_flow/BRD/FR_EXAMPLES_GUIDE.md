@@ -1,20 +1,22 @@
-# Functional Requirements (FR) Examples Guide
+# Functional Requirements Examples Guide
 
 **Purpose**: Concrete examples of properly structured business-level Functional Requirements, demonstrating what achieves PRD-Ready Score ≥90/100.
 
-**Last Updated**: 2025-11-26
+**Last Updated**: 2025-12-10
 **Status**: Reference Guide
 **Audience**: BRD Authors, Business Analysts, Product Managers
+
+> **Format Update (v2.0)**: Functional requirement headings now use the unified `BRD.NNN.NNN` format instead of the deprecated `FR-XXX` format. See [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) for details.
 
 ---
 
 ## Table of Contents
 
-1. [Example 1: Simple FR (Complexity 2/5)](#example-1-simple-fr-complexity-25)
-2. [Example 2: Complex FR (Complexity 4/5)](#example-2-complex-fr-complexity-45)
-3. [Example 3: AI/ML FR (Complexity 3/5)](#example-3-aiml-fr-complexity-35)
+1. [Example 1: Simple Functional Requirement (Complexity 2/5)](#example-1-simple-functional-requirement-complexity-25)
+2. [Example 2: Complex Functional Requirement (Complexity 4/5)](#example-2-complex-functional-requirement-complexity-45)
+3. [Example 3: AI/ML Functional Requirement (Complexity 3/5)](#example-3-aiml-functional-requirement-complexity-35)
 4. [Example 4: Before/After Refactoring](#example-4-beforeafter-refactoring)
-5. [FR 4-Subsection Detailed Guidance](#fr-4-subsection-detailed-guidance)
+5. [Functional Requirement 4-Subsection Detailed Guidance](#functional-requirement-4-subsection-detailed-guidance)
    - [Subsection 1: Business Capability](#subsection-1-business-capability-required)
    - [Subsection 2: Business Requirements](#subsection-2-business-requirements-required)
    - [Subsection 3: Business Rules](#subsection-3-business-rules-required)
@@ -25,9 +27,9 @@
 
 ---
 
-## Example 1: Simple FR (Complexity 2/5)
+## Example 1: Simple Functional Requirement (Complexity 2/5)
 
-**FR-001: Recipient Selection and Management**
+### BRD.NNN.001: Recipient Selection and Management
 
 **Business Capability**: System must enable customers to select existing recipients or add new recipients for remittance transactions.
 
@@ -58,9 +60,9 @@
 
 ---
 
-## Example 2: Complex FR (Complexity 4/5)
+## Example 2: Complex Functional Requirement (Complexity 4/5)
 
-**FR-002A: Multi-Region Wallet Funding Support**
+### BRD.NNN.002: Multi-Region Wallet Funding Support
 
 **Business Capability**: System must support remittances funded from multiple wallet funding sources across US and EU markets.
 
@@ -81,8 +83,8 @@
 **Fee Structure - EU Customer Example**:
 For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 - EUR→USD conversion: Included in Bridge custody fee (waived initially per BRD-008)
-- BeeLocal service fee: $3.00 flat (per FR-002)
-- FX spread (USDC→UZS): 1.5-2.0% (per FR-003)
+- BeeLocal service fee: $3.00 flat (per BRD.NNN.002)
+- FX spread (USDC→UZS): 1.5-2.0% (per BRD.NNN.003)
 - Total effective cost: ~$6.50 on $200 send (~3.25% all-in cost)
 
 **Business Rules**:
@@ -107,9 +109,9 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 
 ---
 
-## Example 3: AI/ML FR (Complexity 3/5)
+## Example 3: AI/ML Functional Requirement (Complexity 3/5)
 
-**FR-004: Pre-Transaction Risk and Compliance Screening**
+### BRD.NNN.004: Pre-Transaction Risk and Compliance Screening
 
 **Business Capability**: System must perform comprehensive fraud detection and regulatory compliance screening before authorizing remittance transactions.
 
@@ -152,10 +154,10 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 
 ## Example 4: Before/After Refactoring
 
-### BEFORE (PRD-Level - Score 65/100)
+### BEFORE (PRD-Level - Score 65/100, DEPRECATED FORMAT)
 
 ```markdown
-**FR-004: Risk Screening API Integration**
+**FR-004: Risk Screening API Integration** (DEPRECATED FORMAT - DO NOT USE)
 
 - Call POST /screening/ofac with sender/recipient data
 - Receive JSON response with match_score (0-100)
@@ -166,16 +168,18 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 ```
 
 **Problems**:
+
 - ❌ API endpoint specification (POST /screening/ofac)
 - ❌ JSON response format details
 - ❌ UI interaction (display warning modal)
 - ❌ Database table name (PostgreSQL screening_results)
 - ❌ Webhook implementation details
 - ❌ Code-level retry logic (exponential backoff values)
+- ❌ Uses deprecated `FR-XXX` heading format
 
 ### AFTER (Business-Level - Score 100/100)
 
-**FR-004: Pre-Transaction Sanctions Screening**
+### BRD.NNN.004: Pre-Transaction Sanctions Screening
 
 **Business Capability**: System must screen all transactions against OFAC/PEP sanctions lists before authorization.
 
@@ -205,6 +209,7 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 **Complexity**: 2/5 (Standard sanctions screening integration; requires compliance workflow for manual review queue)
 
 **What Changed**:
+
 - ✅ Removed API specifications → Kept business capability ("screen all transactions")
 - ✅ Removed JSON format → Kept business rules (auto-decline, queue for review)
 - ✅ Removed UI details → Kept business acceptance criteria (completion time ≤3 seconds)
@@ -212,10 +217,11 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 - ✅ Removed retry logic → Kept business SLA (completion time target)
 - ✅ Added complexity rating with business rationale
 - ✅ Added cross-references to related Platform and Compliance BRDs
+- ✅ Updated heading format from `FR-XXX` to `BRD.NNN.NNN`
 
 ---
 
-## FR 4-Subsection Detailed Guidance
+## Functional Requirement 4-Subsection Detailed Guidance
 
 This section provides detailed patterns for each FR subsection to achieve PRD-Ready Score ≥90/100.
 
@@ -259,13 +265,14 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 **Pattern**: Each bullet follows `[Action verb] [business object] [business context/constraint]`
 
 **Format Rules**:
-- 6-8 bullets per FR (minimum 4, maximum 10)
+- 6-8 bullets per functional requirement (minimum 4, maximum 10)
 - Each bullet is 1-2 sentences maximum
 - Uses business action verbs: Accept, Support, Validate, Enable, Enforce, Maintain, Provide
 - Includes cross-references to related BRDs using format: `(per BRD-XXX)` or `(managed per BRD-XXX)`
 - Excludes implementation details: field names, data types, API parameters
 
 **Example Structure**:
+
 ```markdown
 **Business Requirements**:
 - [Primary capability requirement with BRD cross-reference]
@@ -278,11 +285,12 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 - [Audit/reporting business need]
 ```
 
-**Example (FR-002: Fee Calculation)**:
+**Example (BRD.NNN.002: Fee Calculation)**:
+
 ```markdown
 **Business Requirements**:
 - Calculate flat service fee based on transaction amount tiers (per Fee Schedule in section 10)
-- Apply corridor-specific FX spread for USD→UZS conversion (per FR-003)
+- Apply corridor-specific FX spread for USD→UZS conversion (per BRD.NNN.003)
 - Present total cost breakdown before customer confirmation (fee transparency requirement)
 - Support fee waiver promotions during initial launch period (per Marketing campaign requirements)
 - Maintain fee audit trail for regulatory examination and customer dispute resolution
@@ -290,12 +298,13 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 ```
 
 **Cross-Reference Pattern**:
+
 | Reference Type | Format | Example |
 |---------------|--------|---------|
 | Platform BRD | `(per BRD-XXX)` | `(per BRD-008)` |
 | Feature BRD | `(managed per BRD-XXX)` | `(managed per BRD-011)` |
 | Internal section | `(per section X)` | `(per Fee Schedule in section 10)` |
-| Related FR | `(per FR-XXX)` | `(per FR-003)` |
+| Related Functional Requirement | `(per BRD.NNN.NNN)` | `(per BRD.NNN.003)` |
 
 ---
 
@@ -379,7 +388,8 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 | Throughput | `[count] [unit] per [time period]` | `10,000 transactions per day capacity` |
 | Quality | `≥[percentage]% [quality metric]` | `≥95% true positive rate for fraud detection` |
 
-**Example (FR-004: Risk Screening)**:
+**Example (BRD.NNN.004: Risk Screening)**:
+
 ```markdown
 **Business Acceptance Criteria**:
 - Screening completion time: ≤3 seconds for 95% of transactions (customer experience requirement)
@@ -467,7 +477,7 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 - Terms and conditions language
 - Customer support scripts or FAQs
 
-**Cross-Reference**: Full communication templates are documented in **Appendix N: Customer Communication Templates**. This subsection provides FR-specific excerpts.
+**Cross-Reference**: Full communication templates are documented in **Appendix N: Customer Communication Templates**. This subsection provides functional requirement-specific excerpts.
 
 **Content Categories**:
 
@@ -500,7 +510,8 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 - Transfer Rights disclosure: "For questions or complaints about this transfer, contact us at [support] or visit [URL]"
 ```
 
-**Example (FR-001: Transaction Initiation)**:
+**Example (BRD.NNN.001: Transaction Initiation)**:
+
 ```markdown
 **Customer-Facing Language**:
 
@@ -562,7 +573,9 @@ See the following BRDs for examples of business-level FRs that achieved perfect 
 ---
 
 **Document Control**:
-- **Version**: 1.0
+
+- **Version**: 2.0
 - **Created**: 2025-11-26
+- **Updated**: 2025-12-10 (migrated to unified `BRD.NNN.NNN` heading format)
 - **Source**: Extracted from BRD-TEMPLATE.md Appendix C
-- **Maintenance**: Update when BRD template FR structure changes
+- **Maintenance**: Update when BRD template functional requirement structure changes

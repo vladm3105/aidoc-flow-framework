@@ -499,16 +499,16 @@ Every document **MUST** include section 7 with:
 ### Upstream Sources
 | Source | Type | Reference |
 |--------|------|-----------|
-| `@brd: BRD-001` | Business Requirements | Risk management objectives |
-| `@prd: PRD-002` | Product Requirements | resource limit feature |
+| `@brd: BRD.001.001` | Business Requirements | Risk management objectives |
+| `@prd: PRD.002.001` | Product Requirements | resource limit feature |
 | `@adr: ADR-008` | Architecture Decision | Real-time limit enforcement |
 
 ### Downstream Artifacts
 | Artifact | Type | Reference |
 |----------|------|-----------|
 | `@spec: SPEC-023` | Technical Specification | Implementation spec |
-| `@tasks: TASKS-023` | Implementation Tasks | AI generation tasks |
-| `@bdd: BDD-015` | BDD Scenarios | Acceptance tests |
+| `@tasks: TASKS.023.001` | Implementation Tasks | AI generation tasks |
+| `@bdd: BDD.015.001` | BDD Scenarios | Acceptance tests |
 
 ### Primary Anchor/ID
 - **REQ-003**: resource limit enforcement requirement
@@ -1033,7 +1033,7 @@ Add visual indicators for primary/fallback documents:
 **Recommended Approach:**
 ```markdown
 :::recommended Primary Implementation (AI Agent-Based)
-**Architecture**: AI Agent-Based Platform (@adr: ADR-REF-002)
+**Architecture**: AI Agent-Based Platform (@adr: ADR-002)
 **Priority**: ✅ Recommended approach
 **Status**: Active development
 
@@ -1044,7 +1044,7 @@ Add visual indicators for primary/fallback documents:
 **Fallback Approach:**
 ```markdown
 :::fallback Fallback Implementation (Traditional)
-**Architecture**: Traditional Platform (@adr: ADR-REF-001)
+**Architecture**: Traditional Platform (@adr: ADR-001)
 **Priority**: ⚠️ Fallback option (use only if primary not viable)
 **Status**: Reference implementation
 
@@ -1145,8 +1145,8 @@ The following issues are fixed automatically by the validation script:
 
 | Issue Type | Fix Action | Example |
 |------------|------------|---------|
-| Tag format errors | Correct to TYPE.NNN.NNN or TYPE-NNN | `@brd: brd001` → `@brd: BRD-001` |
-| Missing cumulative tags | Add with upstream reference | Add `@prd: PRD-001` for EARS layer |
+| Tag format errors | Correct to TYPE.NNN.NNN or TYPE-NNN | `@brd: brd001` → `@brd: BRD.001.001` |
+| Missing cumulative tags | Add with upstream reference | Add `@prd: PRD.001.001` for EARS layer |
 | Broken relative paths | Recalculate correct path | `../REQ/file.md` → `../../REQ/file.md` |
 | Missing traceability section | Insert from template | Add Section 7 template |
 | Title/reference mismatches | Update to match upstream | Sync title with BRD source |

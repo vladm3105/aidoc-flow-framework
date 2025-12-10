@@ -133,7 +133,7 @@ graph LR
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 
 **Layer Descriptions** (Formal Layer Numbers 0-15):
-- **Layer 1 - Business Requirements** (Blue): BRD - Business objectives, stakeholder groups (business-level), high-level functional/non-functional requirements, business constraints
+- **Layer 1 - Business Requirements** (Blue): BRD - Business objectives, stakeholder groups (business-level), high-level functional requirements and quality attributes, business constraints
 - **Layer 2 - Product Requirements** (Blue): PRD - User personas, user stories, user roles, product features, detailed functional requirements derived from business objectives
 - **Layer 3 - Formal Requirements** (Blue): EARS - Formal requirements syntax with business/product boundary guidance
 - **Layer 4 - Testing** (Yellow): BDD - Acceptance criteria and test scenarios
@@ -189,7 +189,7 @@ Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructi
 - Specification-First: Technical specifications precede implementation.
 - Complete Traceability: All cross-references use markdown link format with anchors. User story derivation flows: Business Objectives (BRD) → User Stories (PRD) → Functional Requirements (PRD) with full bidirectional traceability.
 - Executable Examples: Provide concrete I/O examples in SPEC for deterministic codegen.
-- Non-Functional First-Class: Performance, reliability, observability, and security are explicit in SPEC.
+- Quality Attributes First-Class: Performance, reliability, observability, and security are explicit in SPEC.
 - Minimal, Reviewable Diffs: Small steps; verify at each gate.
 - Change via ADR: Architectural changes recorded and linked.
 - **Document Structure Simplicity**: Keep documents as single comprehensive files with clear section headings. Only split into multiple files when file exceeds 1,000 lines AND has multiple distinct audience needs OR complex dependency chains requiring separate documentation. Use table of contents for navigation within single documents.
@@ -276,12 +276,12 @@ custom_fields:
 ## 7. Traceability
 
 ### Upstream References
-- @brd: BRD-001 (Platform Architecture & Technology Stack)
-- @prd: PRD-003 (Unified Quoteboard Product Definition)
-- @ears: EARS-002 (Exchange Integration Requirements)
-- @bdd: BDD-001 (Quote Display Acceptance Criteria)
+- @brd: BRD.001.001 (Platform Architecture & Technology Stack)
+- @prd: PRD.003.001 (Unified Quoteboard Product Definition)
+- @ears: EARS.002.001 (Exchange Integration Requirements)
+- @bdd: BDD.001.001 (Quote Display Acceptance Criteria)
 - @adr: ADR-005 (WebSocket Connection Architecture)
-- @sys: SYS-001 (Quoteboard System Requirements)
+- @sys: SYS.001.001 (Quoteboard System Requirements)
 
 ### Downstream References
 - @impl: IMPL-001 (Quoteboard Implementation Approach)
@@ -346,7 +346,7 @@ Each layer in the SDD workflow inherits ALL upstream traceability tags:
     - **3.6**: Technology Stack Prerequisites (references Platform BRDs 001-005)
     - **3.7**: Mandatory Technology Conditions (4 platform + 6-12 feature-specific)
   - section 4: Functional Requirements
-  - section 5: Non-Functional Requirements
+  - section 5: Quality Attributes
   - section 6: Data Models & Schema
   - section 7: API Specifications (if applicable)
   - section 8: Success Metrics & KPIs
@@ -492,7 +492,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 ### System Requirements (SYS)
 - **Purpose**: Technical interpretation of business requirements
 - **File Format**: `SYS-NNN_descriptive_title.md`
-- **Contents**: Functional and non-functional requirements, system flows
+- **Contents**: Functional requirements, quality attributes, system flows
 - **resource**: Bridge between business PRDs and technical EARS requirements
 
 ### EARS Requirements (EARS)
@@ -522,13 +522,13 @@ This AI Agent BRD depends on the following Platform BRDs:
 - **File Format (Dual)**: `CTR/CTR-NNN_descriptive_slug.md` + `CTR-NNN_descriptive_slug.yaml`
 - **When to Create**: When REQ specifies interface requirements between components/services
 - **Structure**:
-  - Markdown (.md): Human-readable context, requirements satisfied, NFRs, versioning, traceability
+  - Markdown (.md): Human-readable context, requirements satisfied, quality attributes, versioning, traceability
   - YAML (.yaml): Machine-readable request/response schemas, error codes, performance targets
 - **Key sections**:
   - Contract Definition: Interface overview, parties (provider/consumer), communication pattern
   - Interface Specification: Request/response schemas using JSON Schema
   - Error Handling: Complete error taxonomy with codes and retry policies
-  - Non-Functional Requirements: Latency, idempotency, rate limiting, [SAFETY_MECHANISM - e.g., rate limiter, error threshold] settings
+  - Quality Attributes: Latency, idempotency, rate limiting, [SAFETY_MECHANISM - e.g., rate limiter, error threshold] settings
   - Versioning Strategy: Semantic versioning rules, deprecation policy
 - **Organization**: Optional subdirectories by service type (`agents/`, `mcp/`, `infra/`, `shared/`)
 - **resource**: After REQ, before SPEC - enables parallel development with contract-first approach
@@ -611,7 +611,7 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 | `@tasks:` | 11 | Task Breakdowns | `@tasks: TASKS.001.003` |
 | `@iplan:` | 12 | Implementation Plans | `@iplan: IPLAN-001` |
 
-**Note**: NFRs use 900-series numbering (e.g., `@sys: SYS.008.901` for performance NFR).
+**Note**: Quality attributes use unified sequential numbering (e.g., `@sys: SYS.008.015` for a performance quality attribute).
 
 **Valid Non-Document Tags (Special Purpose):**
 
@@ -630,7 +630,7 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 | `@related-{type}:` | Related same-type doc | `@related-req: REQ-001` |
 | `@depends-{type}:` | Prerequisite same-type | `@depends-req: REQ-002` |
 
-**Invalid Tags** (do NOT use): `@nfr:`, `@fr:`, `@contract:`, `@tests:`
+**Invalid Tags** (do NOT use): `@fr:`, `@contract:`, `@tests:`
 
 **Format Rules:**
 - **Unified format:** Use dot separator: `BRD.001.030`
@@ -645,7 +645,7 @@ Python docstring:
 """Market data service implementation.
 
 @brd: BRD.001.010, BRD.001.011, BRD.001.005
-@prd: PRD-003
+@prd: PRD.003.001
 @req: REQ.003.001
 @adr: ADR-033
 @ctr: CTR-001
@@ -658,8 +658,8 @@ Python docstring:
 Markdown document:
 ```markdown
 @brd: BRD.001.030, BRD.001.006
-@prd: PRD-003
-@req: REQ-003
+@prd: PRD.003.001
+@req: REQ.003.001
 @adr: ADR-033
 @ctr: CTR-001
 @spec: SPEC-002
@@ -678,7 +678,7 @@ YAML comment header:
 Gherkin feature file:
 ```gherkin
 # @brd: BRD.001.030
-# @req: REQ-003
+# @req: REQ.003.001
 # @spec: SPEC-002
 
 Feature: resource limit Enforcement
@@ -785,7 +785,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 - **Unified Format**: `TYPE.DOC.FEATURE` (e.g., `BRD.001.030`, `REQ.003.001`)
 - **Separator**: Dot (`.`) between all components
 - **Multiple Values**: Comma-separated
-- **NFRs**: Use 900-series numbering (e.g., `SYS.008.901`)
+- **Quality Attributes**: Use unified sequential numbering (same as functional requirements)
 
 **Examples**:
 ```markdown
@@ -1071,7 +1071,7 @@ def test_validate_resource_limit_within_threshold():
   - **Data Schemas**: JSON Schema + Pydantic models + Database schemas
   - **Error Handling**: Exception catalog with recovery strategies
   - **Configuration Specifications**: YAML configurations with validation
-  - Non-Functional Requirements: Performance, reliability, security targets
+  - Quality Attributes: Performance, reliability, security targets
   - Implementation Guidance: Algorithms, patterns, architectural patterns
   - Acceptance Criteria: Measurable validation conditions with verification methods
   - Verification Methods: BDD scenarios, unit tests, integration tests, security tests
@@ -1095,7 +1095,7 @@ A SPEC-ready REQ contains ≥90% of the technical information required to genera
 - ✅ **Data Schemas**: JSON Schema + Pydantic models with validators + SQLAlchemy database models
 - ✅ **Error Handling**: Exception catalog with HTTP codes, error codes, recovery strategies, and state machines
 - ✅ **Configuration Specifications**: YAML examples with realistic values, environment variables, validation schemas
-- ✅ **Non-Functional Requirements**: Quantified performance targets (p50/p95/p99), reliability requirements, security constraints
+- ✅ **Quality Attributes**: Quantified performance targets (p50/p95/p99), reliability requirements, security constraints
 - ✅ **No Placeholders**: All examples use concrete values, realistic data, domain-specific patterns
 
 **REQ → SPEC Data Flow**:
@@ -1113,7 +1113,7 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
 │                                          └─ Add circuit breaker config
 ├─ Configuration Specifications      →    configuration: (copy YAML)
 │  └─ YAML + validation                    └─ Add deployment overrides
-└─ NFRs                              →    performance: (copy targets)
+└─ QAs                               →    performance: (copy targets)
    └─ Performance targets                  └─ Add monitoring config
 ```
 
@@ -1157,7 +1157,7 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
   - Copy data schemas from REQ section 4 (JSON Schema, Pydantic, SQLAlchemy)
   - Copy error catalog from REQ section 5 (exception types, HTTP codes, recovery strategies)
   - Copy configuration templates from REQ section 6 (YAML structures with validation)
-  - Reference NFRs from REQ section 7 (performance targets, security requirements)
+  - Reference quality attributes from REQ section 7 (performance targets, security requirements)
   - Add implementation-specific details (retry policies, circuit breaker thresholds, caching strategies)
 - **Guidelines**:
   - Machine-readable; complete specifications; feasibility of automated code generation
@@ -1177,7 +1177,7 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
      - Contract Definition: Interface overview, provider/consumer parties, communication pattern
      - Interface Specification: Detailed request/response structure
      - Error Handling: Complete error taxonomy with retry policies
-     - Non-Functional Requirements: Latency, idempotency, rate limiting
+     - Quality Attributes: Latency, idempotency, rate limiting
      - Versioning Strategy: Semantic versioning rules, deprecation policy
      - section 7 Traceability: Upstream REQ/ADR links, downstream SPEC placeholders
   5. Complete YAML file:
@@ -1604,7 +1604,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
   - [ ] No placeholders (all examples use concrete values)
   - [ ] SPEC-Ready Score ≥90% (run `validate_req_spec_readiness.py`)
   - [ ] Mermaid state machines for complex workflows
-  - [ ] NFRs quantified (performance targets with p50/p95/p99)
+  - [ ] Quality attributes quantified (performance targets with p50/p95/p99)
 - CTR (if applicable):
   - Both .md and .yaml files exist with matching slugs
   - YAML contract_id uses lowercase_snake_case matching slug
@@ -1613,7 +1613,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
   - Contract version follows semantic versioning
 - SPEC: Interface definitions and data schemas are complete and unambiguous.
 - BDD: Scenarios tagged with valid `@requirement`, `@adr`, and `@contract` (if applicable) links.
-- Non-Functional: Latency/timeouts, error taxonomy, logging/metrics defined in spec/contract.
+- Quality Attributes: Latency/timeouts, error taxonomy, logging/metrics defined in spec/contract.
 - Observability: Key logs/metrics/traces named and fields enumerated.
 - Code: Docstring lists PRD/EARS/REQ/ADR/CTR(if applicable)/BDD/SPEC links; symbol names match spec; contract compliance validated.
 
@@ -1659,7 +1659,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 - section 4: Provide JSON Schema + Pydantic models (QuoteRequest, QuoteResponse, OptionChainRequest) with validators
 - section 5: Document 8 exception types (ConnectionError, AuthenticationError, RateLimitError, etc.) with HTTP codes
 - section 6: Provide complete YAML configuration (endpoints, authentication, retry_policy, rate_limits, circuit_breaker)
-- section 7: Specify NFRs (p95 latency <100ms, 99.9% uptime, rate limit 60 req/min)
+- section 7: Specify quality attributes (p95 latency <100ms, 99.9% uptime, rate limit 60 req/min)
 
 **Step 2: Generate SPEC** (SPEC-001_external_data_client.yaml)
 ```yaml
@@ -1704,7 +1704,7 @@ configuration:
       alert_threshold: 0.05
 
 performance:
-  # Reference REQ-001 section 7 NFRs
+  # Reference REQ-001 section 7 Quality Attributes
   max_latency_p95_ms: 100
   target_availability: 0.999
 ```
@@ -1884,14 +1884,14 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 - Use flowcharts for logic with decision points and error paths; keep diagrams concise.
 - Reference code with explicit paths and optional symbol hints: `[See Code Example: src/domain/risk/resource_limit_service.py - validate_resource_limit()]`.
 
-## Non-Functional Requirements Templates
+## Quality Attribute Templates
 - **Performance**: Add to SPEC performance section, e.g., latency_p95_ms: 50, throughput: 1000 rps; to ADR impact analysis, e.g., "p95 latency < 50 ms, trade-off: reduced batch size".
 - **Reliability**: SYS/REQ: "System availability > 99.9%"; ADR: [SAFETY_MECHANISM - e.g., rate limiter, error threshold] on >5 failures/1min; SPEC: retry_policy with exponential backoff.
-- **security**: ADR: "Input validation per OWASP; no regulatoryrets in logs"; SPEC: errors for auth failures, observability: log correlation_id only (avoid PII).
+- **security**: ADR: "Input validation per OWASP; no Secrets in logs"; SPEC: errors for auth failures, observability: log correlation_id only (avoid PII).
 - **Observability**: SPEC: logs with fields [correlation_id, error_code, timestamp]; ADR: "Alert on >10% reject rate, monitor via Cloud Monitoring".
 - **Compliance Checklist**: 
-  - [ ] NFRs quantified in SYS/REQ (e.g., uptime, latency bounds).
-  - [ ] security in ADR/SPEC (validation, regulatoryrets policy).
+  - [ ] Quality attributes quantified in SYS/REQ (e.g., uptime, latency bounds).
+  - [ ] security in ADR/SPEC (validation, Secrets policy).
   - [ ] Observability in SPEC (log fields, metrics).
   - [ ] Trace to PROJECT_CORE_RULES: numeric IDs, absolute link validation.
 
@@ -1941,7 +1941,7 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 - Tech Spec updated: `id` equals filename; includes upstream/downstream links, interfaces, data model, states, errors, performance, observability.
 - BDD scenarios tagged with markdown-link format `@requirement:[REQ-...](...)` and `@adr:[ADR-...](...)`.
 - AI tasks file includes scope, plan, constraints, acceptance criteria, and traceability links.
-- security implications documented (input validation, regulatoryrets policy references, correlation id handling).
+- security implications documented (input validation, Secrets policy references, correlation id handling).
 - Run validators:
   - `python scripts/validate_req_spec_readiness.py --req-file REQ/{domain}/REQ-NNN.md`
   - `python scripts/validate_requirement_ids.py`
@@ -1979,10 +1979,10 @@ Use flowcharts for complex logic visualization.
 - No idealistic or oversimplified implementation scenarios
 - No Python code blocks within documentation files
 
-NFR clarification (allowed)
-- It is acceptable to specify non-functional requirement targets (e.g., latency, availability, resource limits) as engineering constraints.
+Quality attribute clarification (allowed)
+- It is acceptable to specify quality attribute targets (e.g., latency, availability, resource limits) as engineering constraints.
 - State targets quantitatively and contextually (e.g., "p95 latency < 50 ms during operating hours").
-- Avoid promotional phrasing; present NFRs as measurable constraints, not benefits.
+- Avoid promotional phrasing; present quality attributes as measurable constraints, not benefits.
 
 ### Code Separation Requirements
 
@@ -2171,7 +2171,7 @@ CONSTRAINTS:
 [Code Reference: authentication_example_001.py]
 Function: validate_token()
 Purpose: JWT token validation with [DEADLINE - e.g., session timeout, cache expiry] check
-Input: token_string, regulatoryret_key
+Input: token_string, Secret_key
 Output: validation_result, user_payload
 Flowchart: See section 3.2.1
 ```

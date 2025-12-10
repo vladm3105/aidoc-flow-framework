@@ -45,10 +45,9 @@ custom_fields:
 ### Feature-Level Tags Format (MANDATORY)
 
 ```gherkin
-@brd:BRD-NNN:FR-001
-@brd:BRD-NNN:001
-@prd:PRD-NNN:FR-NNN-001
-@ears:EARS-NNN:001
+@brd:BRD.NNN.001
+@prd:PRD.NNN.001
+@ears:EARS.NNN.001
 Feature: [Feature Title]
 ```
 
@@ -56,15 +55,15 @@ Feature: [Feature Title]
 - [ ] Tags are Gherkin-native (NOT in comments)
 - [ ] Tags appear on separate lines BEFORE `Feature:` keyword
 - [ ] All three tags present: @brd, @prd, @ears
-- [ ] Extended format with requirement ID suffix (`:NNN` or `:FR-NNN`)
+- [ ] Extended format with unified TYPE.NNN.NNN suffix
 - [ ] NO spaces after colon in tag (use `@brd:BRD.001.001` not `@brd: BRD.001.001`)
 
 ### AI-Agent Files Additional Requirements
 
 ```gherkin
-@brd:BRD-NNN:FR-001
-@prd:PRD-NNN:FR-NNN-001
-@ears:EARS-NNN:001
+@brd:BRD.NNN.001
+@prd:PRD.NNN.001
+@ears:EARS.NNN.001
 @ctr:CTR-005
 Feature: [Agent Feature Title]
   Architecture: AI-Agent Primary (AGENT-NNN)
@@ -131,7 +130,7 @@ Ensure all 8 categories are planned:
 | Edge Case | `@edge_case @boundary` | 2 |
 | Data-Driven | `@data_driven` | 1 |
 | Integration | `@integration @end_to_end` | 1 |
-| Non-Functional | `@non_functional` | 2 |
+| Quality Attribute | `@quality_attribute` | 2 |
 | Failure Recovery | `@failure_recovery @resilience` | 2 |
 
 **Total minimum**: 14 scenarios per BDD file
@@ -146,9 +145,9 @@ Use `BDD-TEMPLATE.feature` directly.
 
 **Copy-paste the following tags**:
 ```gherkin
-@brd:BRD-NNN:FR-001
-@prd:PRD-NNN:FR-NNN-001
-@ears:EARS-NNN:001
+@brd:BRD.NNN.001
+@prd:PRD.NNN.001
+@ears:EARS.NNN.001
 Feature: [Feature Title]
 ```
 
@@ -158,9 +157,9 @@ Use `BDD-TEMPLATE.feature` + `BDD_AI_AGENT_EXTENSION.md`.
 
 **Copy-paste the following tags**:
 ```gherkin
-@brd:BRD-NNN:FR-001
-@prd:PRD-NNN:FR-NNN-001
-@ears:EARS-NNN:001
+@brd:BRD.NNN.001
+@prd:PRD.NNN.001
+@ears:EARS.NNN.001
 @ctr:CTR-005
 Feature: [Agent Feature Title]
   Architecture: AI-Agent Primary (AGENT-NNN)

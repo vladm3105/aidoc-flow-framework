@@ -101,7 +101,7 @@ Production-Ready Code
 | **Last Updated** | YYYY-MM-DD |
 | **Author** | [Author name and role] |
 | **Priority** | Critical (P1) / High (P2) / Medium (P3) / Low (P4) |
-| **Category** | Functional/Non-Functional/security/Performance/Reliability |
+| **Category** | Functional/Security/Performance/Reliability/Scalability |
 | **Source Document** | [PRD-NNN, SYS-NNN, or EARS-NNN reference with section] |
 | **Verification Method** | BDD/Spec/Unit Test/Integration Test/Contract Test |
 | **Assigned Team** | [Team/Person responsible] |
@@ -244,7 +244,7 @@ from enum import Enum
 class APICredentials:
     """Credentials for API authentication."""
     api_key: str
-    regulatoryret_key: str | None = None
+    secret_key: str | None = None
     auth_type: str = "api_key"  # api_key, oauth2, certificate
 
 @dataclass
@@ -629,8 +629,8 @@ api_client:
   # Authentication
   authentication:
     type: "api_key"  # api_key | oauth2 | certificate
-    credentials_source: "google_regulatoryret_manager"  # google_regulatoryret_manager | env_vars | file
-    regulatoryret_name: "api_credentials_prod"
+    credentials_source: "google_secret_manager"  # google_secret_manager | env_vars | file
+    secret_name: "api_credentials_prod"
     refresh_interval_hours: 24
 
   # Rate limiting
@@ -685,7 +685,7 @@ api_client:
 | `API_RATE_LIMIT` | int | No | 75 | Requests per minute | 1 <= value <= 10000 |
 | `API_RETRY_ENABLED` | bool | No | true | Enable retry logic | true or false |
 | `API_CACHE_TTL` | int | No | 3600 | Cache TTL in seconds | value >= 0 |
-| `API_regulatoryRET_NAME` | string | Yes | - | regulatoryret Manager regulatoryret name | Non-empty string |
+| `API_SECRET_NAME` | string | Yes | - | Secret Manager Secret name | Non-empty string |
 
 ### 6.3 Configuration Validation
 
@@ -728,31 +728,31 @@ class APIClientConfig(BaseModel):
 
 ---
 
-## 7. Non-Functional Requirements (NFRs)
+## 7. Quality Attributes
 
-> **Note**: All NFR targets MUST use @threshold registry references. See PRD-000_threshold_registry_template.md for registry format.
+> **Note**: All quality attribute targets MUST use @threshold registry references. See PRD-000_threshold_registry_template.md for registry format.
 
 ### 7.1 Performance
 
 | Metric | Target (p50) | Target (p95) | Target (p99) | Measurement Method | SLI/SLO |
 |--------|--------------|--------------|--------------|-------------------|---------|
-| Response Time | <@threshold: PRD-NNN:perf.api.p50_latency | <@threshold: PRD-NNN:perf.api.p95_latency | <@threshold: PRD-NNN:perf.api.p99_latency | APM traces (Datadog/New Relic) | SLI: p95 latency, SLO: @threshold: PRD-NNN:sla.success_rate.target% |
-| Throughput | @threshold: PRD-NNN:perf.throughput.target_rps | @threshold: PRD-NNN:perf.throughput.sustained_rps | @threshold: PRD-NNN:perf.throughput.min_rps | Load testing (k6/Locust) | SLI: requests/s, SLO: @threshold: PRD-NNN:sla.success_rate.target% |
-| Connection Time | <@threshold: PRD-NNN:timeout.connection.p50 | <@threshold: PRD-NNN:timeout.connection.p95 | <@threshold: PRD-NNN:timeout.connection.p99 | Metrics (Prometheus) | SLI: connection duration, SLO: @threshold: PRD-NNN:sla.connection_success% |
+| Response Time | <@threshold: PRD.NNN.perf.api.p50_latency | <@threshold: PRD.NNN.perf.api.p95_latency | <@threshold: PRD.NNN.perf.api.p99_latency | APM traces (Datadog/New Relic) | SLI: p95 latency, SLO: @threshold: PRD.NNN.sla.success_rate.target% |
+| Throughput | @threshold: PRD.NNN.perf.throughput.target_rps | @threshold: PRD.NNN.perf.throughput.sustained_rps | @threshold: PRD.NNN.perf.throughput.min_rps | Load testing (k6/Locust) | SLI: requests/s, SLO: @threshold: PRD.NNN.sla.success_rate.target% |
+| Connection Time | <@threshold: PRD.NNN.timeout.connection.p50 | <@threshold: PRD.NNN.timeout.connection.p95 | <@threshold: PRD.NNN.timeout.connection.p99 | Metrics (Prometheus) | SLI: connection duration, SLO: @threshold: PRD.NNN.sla.connection_success% |
 
 ### 7.2 Reliability
 
-- **Availability**: @threshold: PRD-NNN:sla.uptime.target% uptime
-- **Error Rate**: <@threshold: PRD-NNN:sla.error_rate.max% of requests
+- **Availability**: @threshold: PRD.NNN.sla.uptime.target% uptime
+- **Error Rate**: <@threshold: PRD.NNN.sla.error_rate.max% of requests
 - **Data Integrity**: 100% (checksums, validation)
-- **Recovery Time Objective (RTO)**: <@threshold: PRD-NNN:sla.rto minutes for service recovery
-- **Recovery Point Objective (RPO)**: <@threshold: PRD-NNN:sla.rpo minutes for data loss
+- **Recovery Time Objective (RTO)**: <@threshold: PRD.NNN.sla.rto minutes for service recovery
+- **Recovery Point Objective (RPO)**: <@threshold: PRD.NNN.sla.rpo minutes for data loss
 
 ### security
 
 - **Authentication**: API key + TLS 1.3 minimum
 - **Data Encryption**: AES-256 at rest, TLS 1.3 in transit
-- **regulatoryrets Management**: Google regulatoryret Manager (no plaintext credentials)
+- **Secrets Management**: Google Secret Manager (no plaintext credentials)
 - **Audit Logging**: All API calls logged with request_id and user context
 - **Input Validation**: All inputs validated against schemas before processing
 - **Rate Limiting**: Per-user and per-IP rate limits to prevent abuse
@@ -1036,9 +1036,9 @@ async def get_quote(
   - **Pass Criteria**: p95 <500ms across 10,000 requests
   - **Test Method**: Performance test with production-like load
 
-- ✅ **AC-012**: regulatoryrets never logged or exposed in errors
+- ✅ **AC-012**: Secrets never logged or exposed in errors
   - **Verification**: Log audit + error inspection
-  - **Pass Criteria**: Zero plaintext API keys/regulatoryrets in logs/errors/traces
+  - **Pass Criteria**: Zero plaintext API keys/Secrets in logs/errors/traces
   - **Test Method**: security audit with log analysis
 
 - ✅ **AC-013**: Resource usage within limits (CPU <20%, Memory <512MB)
@@ -1142,14 +1142,14 @@ async def get_quote(
   - [ ] All interfaces implement Protocol/ABC correctly
   - [ ] Error handling covers all exception types from catalog
   - [ ] Configuration validated with Pydantic models
-  - [ ] regulatoryrets never logged or hardcoded
+  - [ ] Secrets never logged or hardcoded
   - [ ] Metrics and logging instrumented for observability
   - [ ] Docstrings complete with Args/Returns/Raises
   - [ ] Type hints present for all public methods
 
 - **security Assessment**:
   - [ ] TLS 1.3 enforced for all connections
-  - [ ] API keys stored in regulatoryret Manager (not environment variables)
+  - [ ] API keys stored in Secret Manager (not environment variables)
   - [ ] Input validation prevents SQL injection and XSS
   - [ ] Rate limiting prevents abuse and DoS
   - [ ] Audit logging captures all security-relevant events
@@ -1256,9 +1256,9 @@ Document the business strategy, product requirements, system specifications, and
 @sys: SYS.NNN.NNN
 ```
 
-**Threshold Registry Tag** (Required when NFRs reference quantitative values):
+**Threshold Registry Tag** (Required when quality attributes reference quantitative values):
 ```markdown
-@threshold: PRD-NNN:category.subcategory.key
+@threshold: PRD.NNN.category.subcategory.key
 ```
 
 **Format**: `@artifact-type: TYPE.NNN.NNN` (Unified Feature ID format)
@@ -1270,7 +1270,7 @@ Document the business strategy, product requirements, system specifications, and
 - `@bdd`: BDD Scenarios
 - `@adr`: Architecture Decision Records
 - `@sys`: System Requirements
-- `@threshold`: Threshold Registry (when NFRs contain performance, SLA, or limit values)
+- `@threshold`: Threshold Registry (when quality attributes contain performance, SLA, or limit values)
 
 **Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
 
@@ -1302,7 +1302,7 @@ Document the business strategy, product requirements, system specifications, and
 **Next Review**: 2025-12-18 (quarterly review recommended)
 **Technical Contact**: [Name/Email for technical clarification]
 **Framework Compliance**: 100% doc_flow framework aligned
-**SPEC-Ready Checklist**: ✅ Interfaces ✅ Schemas ✅ Errors ✅ Config ✅ NFRs ✅ Implementation ✅ Acceptance Criteria ✅ Traceability
+**SPEC-Ready Checklist**: ✅ Interfaces ✅ Schemas ✅ Errors ✅ Config ✅ QAs ✅ Implementation ✅ Acceptance Criteria ✅ Traceability
 
 ---
 
@@ -1315,7 +1315,7 @@ SPEC-Ready Score = (
   Data Schema Completeness × 15% +
   Error Handling Completeness × 15% +
   Configuration Completeness × 15% +
-  NFR Completeness × 10% +
+  QA Completeness × 10% +
   Implementation Guidance × 10% +
   Acceptance Criteria × 10% +
   Traceability Completeness × 10%
@@ -1332,7 +1332,7 @@ SPEC-Ready Score = (
 | **4. Data Schemas** | JSON Schema + Pydantic models + DB schema (if applicable) |
 | **5. Error Handling** | Exception catalog + error response schema + recovery strategies + state diagram + circuit breaker config |
 | **6. Configuration** | YAML schema + environment variables + validation rules |
-| **7. NFRs** | Performance targets (p50/p95/p99) + reliability metrics + security requirements + scalability limits |
+| **7. Quality Attributes** | Performance targets (p50/p95/p99) + reliability metrics + security requirements + scalability limits |
 | **8. Implementation** | Architecture patterns + concurrency + DI + code examples |
 | **9. Acceptance Criteria** | ≥15 criteria covering functional + error + quality + data + integration |
 | **11. Traceability** | Complete upstream chain (BRD + PRD + EARS + BDD + ADR + SYS) + downstream artifacts + code paths |
@@ -1353,7 +1353,7 @@ SPEC-Ready Score = (
 □ Data Schemas: JSON Schema + Pydantic + Database (if applicable)
 □ Error Handling: Catalog + response schema + state diagram + circuit breaker
 □ Configuration: YAML + env vars + validation
-□ NFRs: Performance (p50/p95/p99) + reliability + security + scalability
+□ QAs: Performance (p50/p95/p99) + reliability + security + scalability
 □ Implementation: Architecture patterns + concurrency + DI
 □ Acceptance Criteria: ≥15 criteria across 5 categories
 □ Code Paths: Actual paths (not placeholders)

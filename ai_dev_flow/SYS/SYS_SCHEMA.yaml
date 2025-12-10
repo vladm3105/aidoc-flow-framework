@@ -114,9 +114,9 @@ structure:
       name: "Functional Requirements"
       description: "Section 4 with FR-NNN requirements"
 
-    - pattern: "^## 5\\. Non-Functional Requirements$"
-      name: "Non-Functional Requirements"
-      description: "Section 5 with NFR-NNN requirements (Performance, Reliability, etc.)"
+    - pattern: "^## 5\\. Quality Attributes$"
+      name: "Quality Attributes"
+      description: "Section 5 with quality attribute requirements (Performance, Reliability, etc.)"
 
     - pattern: "^## 6\\. Interface Specifications$"
       name: "Interface Specifications"
@@ -216,22 +216,17 @@ sys_patterns:
       - "Could Have"
       - "Won't Have"
 
-  # Non-functional requirement format (Categorical Prefixes - per ID_NAMING_STANDARDS.md)
-  # Uses 900-series numbering for automated categorization and cross-layer traceability
-  # NFR 900-Series Standard: Performance 901-920, Reliability 921-940, Scalability 941-960,
-  # Security 961-980, Observability 981-990, Maintainability 991-999
-  non_functional_requirements:
-    format: "SYS.NNN.9XX"
-    pattern: "^SYS\\.\\d{3}\\.9\\d{2}$"
-    description: "Unified NFR identifier using 900-series within SYS document"
+  # Quality attribute requirement format (Unified numbering - per ID_NAMING_STANDARDS.md)
+  # Uses sequential numbering for all requirements (unified approach)
+  quality_attributes:
+    format: "SYS.NNN.NNN"
+    pattern: "^SYS\\.\\d{3}\\.\\d{3}$"
+    description: "Unified quality attribute identifier using sequential numbering"
     cross_reference_format:
-      pattern: "@sys: SYS.NNN.9XX"
-      example: "@sys: SYS.008.901"
+      pattern: "@sys: SYS.NNN.NNN"
+      example: "@sys: SYS.008.015"
     categories:
       performance:
-        series_range: "901-920"
-        pattern: "^SYS\\.\\d{3}\\.9(0[1-9]|1\\d|20)$"
-        example: "SYS.008.901"
         keywords: ["latency", "response time", "throughput", "p50", "p95", "p99", "milliseconds", "TPS", "RPS"]
         metrics:
           - "Response Time"
@@ -239,9 +234,6 @@ sys_patterns:
           - "Latency (p50/p95/p99)"
           - "Resource Utilization"
       reliability:
-        series_range: "921-940"
-        pattern: "^SYS\\.\\d{3}\\.9(2[1-9]|3\\d|40)$"
-        example: "SYS.008.921"
         keywords: ["uptime", "availability", "MTBF", "MTTR", "error rate", "failover", "recovery", "redundancy"]
         metrics:
           - "Availability"
@@ -249,9 +241,6 @@ sys_patterns:
           - "MTTR"
           - "Error Rate"
       scalability:
-        series_range: "941-960"
-        pattern: "^SYS\\.\\d{3}\\.9(4[1-9]|5\\d|60)$"
-        example: "SYS.008.941"
         keywords: ["concurrent", "horizontal", "vertical", "scaling", "load", "capacity", "volume", "elasticity"]
         metrics:
           - "Concurrent Users"
@@ -259,9 +248,6 @@ sys_patterns:
           - "Transaction Rate"
           - "Horizontal Scaling"
       security:
-        series_range: "961-980"
-        pattern: "^SYS\\.\\d{3}\\.9(6[1-9]|7\\d|80)$"
-        example: "SYS.008.961"
         keywords: ["auth", "encrypt", "RBAC", "compliance", "audit", "token", "certificate", "vulnerability"]
         metrics:
           - "Authentication"
@@ -269,9 +255,6 @@ sys_patterns:
           - "Encryption"
           - "Audit Logging"
       observability:
-        series_range: "981-990"
-        pattern: "^SYS\\.\\d{3}\\.98[1-9]|990$"
-        example: "SYS.008.981"
         keywords: ["log", "monitor", "alert", "trace", "metric", "dashboard", "APM", "health check"]
         metrics:
           - "Logging"
@@ -279,9 +262,6 @@ sys_patterns:
           - "Alerting"
           - "Tracing"
       maintainability:
-        series_range: "991-999"
-        pattern: "^SYS\\.\\d{3}\\.99[1-9]$"
-        example: "SYS.008.991"
         keywords: ["coverage", "deploy", "CI/CD", "documentation", "refactor", "technical debt"]
         metrics:
           - "Code Coverage"
@@ -295,9 +275,9 @@ sys_patterns:
       functional_completeness:
         weight: 20
         criteria: "All functional requirements defined with FR-NNN format"
-      nfr_completeness:
+      quality_attribute_completeness:
         weight: 20
-        criteria: "All NFR categories addressed with measurable targets"
+        criteria: "All quality attribute categories addressed with measurable targets"
       interface_specification:
         weight: 15
         criteria: "External and internal interfaces documented"
@@ -356,10 +336,10 @@ validation_rules:
     - rule: "Functional Requirements must use FR-NNN format"
       severity: warning
 
-    - rule: "Non-Functional Requirements must use 900-series format (e.g., SYS.008.901)"
+    - rule: "Quality Attributes must use sequential numbering (e.g., SYS.008.015)"
       severity: warning
 
-    - rule: "NFR section must cover Performance, Reliability, Security"
+    - rule: "Quality attributes section must cover Performance, Reliability, Security"
       severity: warning
 
     - rule: "Interface Specifications must define External Interfaces"
@@ -438,15 +418,15 @@ error_messages:
   E008: "Section numbering not sequential (1-15)"
   E009: "Document Control missing required fields"
   E010: "Missing Functional Requirements section (Section 4)"
-  E011: "Missing Non-Functional Requirements section (Section 5)"
+  E011: "Missing Quality Attributes section (Section 5)"
   E012: "Missing Traceability section (Section 13)"
   E013: "File name does not match SYS-NNN_name.md format"
   W001: "Functional requirements not using FR-NNN format"
-  W002: "Non-Functional requirements not using 900-series format (e.g., SYS.008.901)"
-  W003: "NFR section missing Performance category"
-  W004: "NFR section missing Security category"
+  W002: "Quality attributes not using sequential numbering (e.g., SYS.008.015)"
+  W003: "Quality attributes section missing Performance category"
+  W004: "Quality attributes section missing Security category"
   W005: "Missing upstream traceability tags (require 5: @brd, @prd, @ears, @bdd, @adr)"
   W006: "REQ-Ready Score below 90% threshold"
   W007: "Testing Requirements missing coverage targets"
-  I001: "Consider adding latency percentiles (p50/p95/p99) in Performance NFRs"
-  I002: "Consider adding MTBF/MTTR metrics in Reliability NFRs"
+  I001: "Consider adding latency percentiles (p50/p95/p99) in Performance requirements"
+  I002: "Consider adding MTBF/MTTR metrics in Reliability requirements"

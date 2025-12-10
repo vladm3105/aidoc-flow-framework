@@ -366,7 +366,7 @@ SYS-ready scoring measures PRD maturity and readiness for progression to System 
 
 **Technical Readiness (30%)**:
 - System boundaries and integration points defined: 10%
-- Non-functional requirements quantified (performance, security, etc.): 10%
+- Quality attributes quantified (performance, security, etc.): 10%
 - Architecture Decision Requirements table populated: 10%
 
 **Business Alignment (20%)**:
@@ -409,7 +409,7 @@ EARS-ready scoring measures PRD maturity and readiness for progression to Engine
 
 **EARS Translation Readiness (20%)**:
 - User journeys and workflows documented for behavioral requirements: 10%
-- Non-functional requirements quantified (performance, reliability): 10%
+- Quality attributes quantified (performance, reliability): 10%
 
 **Strategic Alignment (5%)**:
 - References to domain-specific business logic documents: 5%
@@ -839,10 +839,11 @@ When referencing features from other PRDs, use the cross-reference format:
 
 | Invalid Format | Issue | Correct Format |
 |----------------|-------|----------------|
-| `FR-022-001` | Redundant PRD number | `001` |
-| `FR-AGENT-001` | Non-standard prefix | `001` |
-| `Feature 3.1` | Text format | `003` |
-| `FR-1` | Not zero-padded | `001` |
+| `FR-022-001` | Deprecated FR format | `PRD.022.001` |
+| `FR-AGENT-001` | Non-standard prefix | `PRD.022.001` |
+| `Feature 3.1` | Text format | `PRD.025.003` |
+| `FR-1` | Not zero-padded | `PRD.001.001` |
+| `F-001` | Deprecated F- format | `PRD.NNN.001` |
 
 ### Common Mistakes to Avoid
 
@@ -865,11 +866,12 @@ For PRDs with non-standard Feature IDs:
 5. **Validate**: Run Feature ID validation script
 
 **Mapping Example**:
-| Old ID | New ID | Cross-Reference |
-|--------|--------|-----------------|
-| FR-022-001 | 001 | @prd: PRD.022.001 |
-| FR-AGENT-001 | 001 | @prd: PRD.022.001 |
-| Feature 3.1 | 003 | @prd: PRD.025.003 |
+| Old ID | New Unified ID | Cross-Reference |
+|--------|----------------|-----------------|
+| FR-022-001 | PRD.022.001 | @prd: PRD.022.001 |
+| FR-AGENT-001 | PRD.022.001 | @prd: PRD.022.001 |
+| Feature 3.1 | PRD.025.003 | @prd: PRD.025.003 |
+| F-001 | PRD.NNN.001 | @prd: PRD.NNN.001 |
 
 ### Benefits
 

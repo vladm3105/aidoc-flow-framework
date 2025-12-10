@@ -70,9 +70,9 @@ configuration:
       description: "Base URL for [EXTERNAL_API]"
 
     - name: "[API_KEY_REF - e.g., PAYMENT_API_KEY]"
-      type: "regulatoryret"
+      type: "Secret"
       required: true
-      regulatoryret_path: "[PATH - e.g., ${vault:api/credentials#api_key}]"
+      Secret_path: "[PATH - e.g., ${vault:api/credentials#api_key}]"
       description: "Authentication credential"
 
     - name: "[TIMEOUT_MS - e.g., API_TIMEOUT_MS]"
@@ -382,7 +382,7 @@ testing:
 # === regulatoryURITY ===
 security:
   authentication:
-    credential_storage: "[MECHANISM - e.g., HashiCorp Vault, AWS regulatoryrets Manager]"
+    credential_storage: "[MECHANISM - e.g., HashiCorp Vault, AWS Secrets Manager]"
     rotation_policy: "[POLICY - e.g., Every 90 days]"
     encryption: "TLS 1.3+ for all communication"
 

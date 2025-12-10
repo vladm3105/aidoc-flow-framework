@@ -75,8 +75,8 @@ endpoints:
         description: "Internal processing error"
         retry_safe: true
 
-# Non-Functional Requirements
-non_functional:
+# Quality Attributes
+quality_attributes:
   max_latency_ms: 100
   min_throughput_rps: 1000
   idempotent: true

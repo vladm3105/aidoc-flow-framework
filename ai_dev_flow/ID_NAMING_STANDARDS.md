@@ -179,7 +179,7 @@ Document ID Standards (ai_dev_flow)
       - `ICON-001_gateway_connector_protocol.md`
       - `ICON-002_external_data_event_bus.md`
       - `ICON-003_order_execution_exceptions.md`
-    - Traceability Tag Format: `@icon: TASKS-XXX:ContractName` or `@icon: ICON-XXX:ContractName`
+    - Traceability Tag Format: `@icon: TASKS-NNN:ContractName` or `@icon: ICON-NNN:ContractName`
     - Tag Rules:
       - Tag format: `@icon:` with contract reference and optional `@icon-role: provider|consumer`
       - Used in: TASKS files (provider/consumer), Code files (implementation)
@@ -333,7 +333,7 @@ Examples (ai_dev_flow) - Sub-Documents (XXX-YY)
 
 Component Abbreviations (examples)
 - SVC (Service), CL (Client), SRV (Server), GW (Gateway), AGG (Aggregator), MGR (Manager), CTRL (Controller), ADPT (Adapter), REPO (Repository), PROC (Processor), VAL (Validator), ORCH (Orchestrator), PROV (Provider)
-- IB ([EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System]), AV ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API]), MKT (Market), ORD (Order), EXEC (Execution), POS (resource), LIM (Limit), RISK (Risk), ACCT (Account), PFOL (resource collection), CFG (Configuration), AUTH (Authentication), AUTHZ (Authorization), REDIS, PUBSUB, BQ (BigQuery), CSQL (Cloud SQL), GCR (Cloud Run), GSM (regulatoryrets Manager)
+- IB ([EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System]), AV ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API]), MKT (Market), ORD (Order), EXEC (Execution), POS (resource), LIM (Limit), RISK (Risk), ACCT (Account), PFOL (resource collection), CFG (Configuration), AUTH (Authentication), AUTHZ (Authorization), REDIS, PUBSUB, BQ (BigQuery), CSQL (Cloud SQL), GCR (Cloud Run), GSM (Secrets Manager)
 
 BDD Tag Examples
 ```gherkin
@@ -357,19 +357,6 @@ Local Clarifications (ai_dev_flow)
 - Use sub-numbering (-YY) sparingly - only when single logical document truly requires multiple related files with sequential reading order.
 - **ID Collision Prevention**: Each NNN number must be unique across atomic and multi-document patterns. Once allocated to a multi-document group (e.g., REQ-009-01, REQ-009-02), that NNN number (009) cannot be used for an atomic document (REQ-009).
 
-Internal Feature/Requirement IDs
-
-Within a document, use simple sequential numbering for feature headings:
-
-| Document Type | Feature ID Format | Example Heading |
-|---------------|-------------------|-----------------|
-| BRD-017 | `001`, `002`, `003` | `### 001: Feature Name` |
-| PRD-022 | `001`, `002`, `003` | `### 001: Feature Name` |
-| EARS-006 | `001`, `002`, `003` | `#### 001: Requirement Name` |
-
-**Rationale**: The document context (BRD-017, PRD-022, EARS-006) already provides the namespace.
-Prefixing feature IDs with the document number (e.g., `017-001`) is redundant.
-
 **Unified Feature ID Format (MANDATORY)**: Use dot separator for globally unique feature references:
 
 | Format | Pattern | Example |
@@ -378,129 +365,85 @@ Prefixing feature IDs with the document number (e.g., `017-001`) is redundant.
 | **Cross-Reference Tag** | `@type: TYPE.NNN.NNN` | `@brd: BRD.017.001` |
 
 **Cross-Reference Examples**:
+
 - `@brd: BRD.017.001` (BRD-017, feature 001)
 - `@prd: PRD.022.005` (PRD-022, feature 005)
 - `@ears: EARS.006.003` (EARS-006, requirement 003)
 - `@sys: SYS.008.001` (SYS-008, requirement 001)
 
 **Uniqueness Guarantee**: Unified Feature ID = `TYPE.DOC.FEATURE`
+
 - `BRD.017.001` = BRD-017, Feature 001 (globally unique)
 - `PRD.022.015` = PRD-022, Feature 015 (globally unique)
 - `EARS.006.003` = EARS-006, Requirement 003 (globally unique)
 
 **Validation Regex**:
+
 ```python
 UNIFIED_FEATURE_ID_PATTERN = r'^[A-Z]{2,5}\.\d{3,4}\.\d{3}$'
-# Matches: BRD.017.001, PRD.022.015, SYS.008.901, TASKS.003.001
+# Matches: BRD.017.001, PRD.022.015, SYS.008.003, TASKS.003.001
 ```
 
 **DEPRECATED Format** (do NOT use):
+
 - ❌ `@brd: BRD-017:001` (colon separator - old format)
 - ✅ `@brd: BRD.017.001` (dot separator - unified format)
 
 ---
 
-## Non-Functional Requirement (NFR) Numbering
+## Internal Feature Heading Format (MANDATORY)
 
-NFRs use the **900-series numbering** within each document to distinguish from functional requirements while maintaining uniform ID format.
+**Purpose**: All internal feature/requirement headings within documents MUST use the unified `TYPE.NNN.NNN` format for:
 
-### NFR Format Standard (Unified)
+1. Direct searchability across all documents
+2. Consistency between internal headings and external cross-references
+3. Elimination of ambiguity
 
-| NFR Type | Reserved Range | Unified Feature ID Example |
-|----------|----------------|---------------------------|
-| Performance | 901-920 | `SYS.008.901` |
-| Reliability | 921-940 | `SYS.008.921` |
-| Scalability | 941-960 | `SYS.008.941` |
-| Security | 961-980 | `SYS.008.961` |
-| Observability | 981-990 | `SYS.008.981` |
-| Maintainability | 991-999 | `SYS.008.991` |
+**Internal Heading Pattern**:
 
-**Numbering Rules**:
-- Functional requirements: `001-899`
-- Non-functional requirements: `900-999`
-- Format follows unified pattern: `TYPE.NNN.NNN`
+| Document Type | Heading Format | Example |
+|---------------|----------------|---------|
+| BRD | `### BRD.NNN.NNN: Feature Name` | `### BRD.017.001: Market Data Feed` |
+| PRD | `### PRD.NNN.NNN: Feature Name` | `### PRD.022.001: User Dashboard` |
+| EARS | `### EARS.NNN.NNN: Requirement Name` | `### EARS.006.001: Data Validation` |
+| BDD | `### BDD.NNN.NNN: Scenario Name` | `### BDD.015.001: Login Scenario` |
+| SYS | `### SYS.NNN.NNN: System Requirement` | `### SYS.008.001: API Gateway` |
 
-### NFR Cross-Layer Consistency
+**Format Breakdown**:
 
-Use unified feature IDs across all layers for traceability:
+| Component | Description | Example |
+|-----------|-------------|---------|
+| `TYPE` | Document type in SDD framework | `BRD`, `PRD`, `EARS`, `SYS`, `BDD` |
+| First `.NNN` | Document ID (the document number) | `.017` = BRD-017 |
+| Second `.NNN` | Sequential feature numbering inside the document | `.001` = first feature |
 
-```
-BRD-017 defines: BRD.017.901 (API response time <200ms - Performance)
-    ↓
-PRD-022 inherits: PRD.022.901
-    ↓
-EARS-006 formalizes: EARS.006.901 (EARS syntax)
-    ↓
-SYS-008 implements: SYS.008.901 (technical specification)
-```
+**Example**: `BRD.017.003` = BRD document 017, feature 003
 
-### NFR Cross-Reference Format (Unified)
+**Validation Regex**:
 
-When referencing NFRs, use the unified feature ID format:
-- `@brd: BRD.017.901` (BRD-017, Performance NFR)
-- `@sys: SYS.008.961` (SYS-008, Security NFR)
-- `@prd: PRD.022.941` (PRD-022, Scalability NFR)
-
-### Category Tracking
-
-Use document metadata or inline comments to preserve NFR category information:
-
-```markdown
-### 901: API Response Time Requirement
-<!-- NFR Category: PERF (Performance) -->
+```python
+INTERNAL_HEADING_PATTERN = r'^###\s+[A-Z]{2,5}\.\d{3,4}\.\d{3}:\s+.+$'
+# Matches: ### BRD.017.001: Feature Name
 ```
 
-### Migration from Old Format
+**REMOVED Patterns (v2.0 - No Backward Compatibility)**:
 
-| Old Format (DEPRECATED) | New Unified Format |
-|------------------------|-------------------|
-| `NFR-PERF-001` | `SYS.008.901` |
-| `NFR-SEC-002` | `SYS.008.962` |
-| `NFR-REL-003` | `SYS.008.923` |
-| `@sys: SYS-008:NFR-PERF-001` | `@sys: SYS.008.901` |
+The following patterns are **REMOVED** and MUST NOT be used:
 
----
+| Removed Pattern | Previous Usage | Migration Path |
+|-----------------|----------------|----------------|
+| `FR-XXX` | BRD feature headings (`#### FR-001: Feature`) | Use `### BRD.NNN.NNN: Feature` |
+| `FR-XXXA` | BRD feature sub-items | Use `### BRD.NNN.NNN: Feature` |
+| `Feature F-XXX` | PRD feature headings | Use `### PRD.NNN.NNN: Feature` |
+| `### 001:` | Simple sequential headings | Use `### TYPE.NNN.NNN: Feature` |
 
-## NFR Category Auto-Assignment (AI Guidance)
+**Migration Examples**:
 
-AI assistants should automatically assign NFR categories based on keyword matching and context analysis.
-
-### 1. Keyword Matching (Primary Method)
-
-| Category | Trigger Keywords |
-|----------|-----------------|
-| `PERF` | latency, response time, throughput, p50, p95, p99, milliseconds, TPS, RPS, performance, speed |
-| `REL` | uptime, availability, MTBF, MTTR, error rate, failover, recovery, redundancy, fault tolerance, reliability |
-| `SCAL` | concurrent, horizontal, vertical, scaling, load, capacity, volume, elasticity, users, connections |
-| `SEC` | auth, encrypt, RBAC, compliance, audit, token, certificate, vulnerability, security, access control |
-| `OBS` | log, monitor, alert, trace, metric, dashboard, APM, health check, observability, telemetry |
-| `MAINT` | coverage, deploy, CI/CD, documentation, refactor, technical debt, maintainability, testing |
-
-### 2. Context Analysis (Secondary Method)
-
-When keywords are ambiguous, analyze:
-- **Section header context**: `## Performance Requirements` → `PERF`
-- **Related requirements**: Group similar NFRs together
-- **Upstream categorization**: Inherit category from BRD/PRD if already defined
-- **Metric type**: Response time metrics → `PERF`, uptime metrics → `REL`
-
-### 3. Assignment Priority
-
-1. Explicit category in requirement text (highest priority)
-2. Section header category
-3. Keyword matching
-4. Upstream document category (lowest priority)
-
-### 4. Ambiguous Cases
-
-| Requirement Text | Category | Rationale |
-|------------------|----------|-----------|
-| "System must handle 1000 concurrent users" | `SCAL` | Concurrent users = scalability |
-| "API latency p99 < 100ms" | `PERF` | Latency metric = performance |
-| "99.9% uptime SLA" | `REL` | Uptime = reliability |
-| "All API calls must be authenticated" | `SEC` | Authentication = security |
-| "Log all failed transactions" | `OBS` | Logging = observability |
-| "Maintain 80% test coverage" | `MAINT` | Test coverage = maintainability |
+| Before (REMOVED) | After (MANDATORY) |
+|------------------|-------------------|
+| `#### FR-001: Recipient Selection` | `### BRD.017.001: Recipient Selection` |
+| `### Feature F-001: User Dashboard` | `### PRD.022.001: User Dashboard` |
+| `### 001: Data Validation Rule` | `### EARS.006.001: Data Validation Rule` |
 
 ---
 
@@ -509,14 +452,16 @@ When keywords are ambiguous, analyze:
 For the complete list of valid traceability tags, see [TRACEABILITY.md - Complete Tag Reference](./TRACEABILITY.md#complete-tag-reference).
 
 **Quick Reference:**
+
 - **Document Type Tags**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`, `@iplan`
 - **Non-Document Tags**: `@test`, `@code`, `@impl-status`, `@icon`, `@icon-role`, `@threshold`, `@entity`, `@priority`, `@component`, `@supersedes`
 - **Same-Type Tags**: `@related-{type}`, `@depends-{type}`
-- **Invalid Tags**: `@nfr:`, `@fr:`, `@contract:`, `@tests:` (do NOT use)
+- **Invalid Tags**: `@nfr:`, `@fr:`, `@contract:`, `@tests:` (deprecated, do NOT use)
 
 ---
 
-Checklist
+## Checklist
+
 - H1 titles contain IDs for PRD/SYS/EARS/REQ/ADR/CTR/IMPL/TASKS/BRD where applicable (use `TYPE-NNN` or `TYPE-NNN-YY` format).
 - BDD tags are markdown links with valid relative paths and anchors (supports both NNN and NNN-YY patterns).
 - Spec files named `SPEC-NNN_{slug}.yaml` or `SPEC-NNN-YY_{slug}.yaml`; inside, `id:` is snake_case and used by `@spec` tags; `requirements_source`/`architecture`/`verification` links resolve.

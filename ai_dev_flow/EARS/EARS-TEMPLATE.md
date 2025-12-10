@@ -12,7 +12,7 @@ title: "EARS-NNN: [Descriptive Title]"
 tags:
   - ears
   - layer-3-artifact
-  - shared-architecture  # OR ai-agent-primary for EARS-022-029
+  - shared-architecture  # OR ai-agent-primary for EARS.022-029
 custom_fields:
   document_type: ears
   artifact_type: EARS
@@ -20,7 +20,7 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]  # ARRAY format required
   priority: shared  # OR primary for AI agents
   development_status: active  # active | draft | in-review | reserved | deprecated
-  agent_id: AGENT-NNN  # ONLY for AI agent documents (EARS-022 to EARS-029)
+  agent_id: AGENT-NNN  # ONLY for AI agent documents (EARS.022 to EARS.029)
   schema_reference: "EARS_SCHEMA.yaml"
   schema_version: "1.0"
 ---
@@ -133,26 +133,26 @@ WITHIN [operational boundary].
 
 ---
 
-## 4. Non-Functional Requirements (NFRs)
+## 4. Quality Attributes
 
-### 4.1 Performance Requirements (901-920)
+### 4.1 Performance Requirements
 
-| NFR ID | Requirement Statement | Metric | Target | Priority | Measurement Method |
-|--------|----------------------|--------|--------|----------|-------------------|
-| EARS.XXX.901 | THE [component] SHALL complete [operation] | Latency | p95 < XXXms | High | [method] |
-| EARS.XXX.902 | THE [component] SHALL process [workload] | Throughput | XXX/s | Medium | [method] |
+| QA ID | Requirement Statement | Metric | Target | Priority | Measurement Method |
+|-------|----------------------|--------|--------|----------|-------------------|
+| EARS.NNN.015 | THE [component] SHALL complete [operation] | Latency | p95 < NNNms | High | [method] |
+| EARS.NNN.016 | THE [component] SHALL process [workload] | Throughput | NNN/s | Medium | [method] |
 
-### 4.2 Security Requirements (961-980)
+### 4.2 Security Requirements
 
-| NFR ID | Requirement Statement | Standard/Framework | Priority | Validation Method |
-|--------|----------------------|-------------------|----------|-------------------|
-| EARS.XXX.961 | THE [component] SHALL [security requirement] | [standard] | High | [method] |
+| QA ID | Requirement Statement | Standard/Framework | Priority | Validation Method |
+|-------|----------------------|-------------------|----------|-------------------|
+| EARS.NNN.017 | THE [component] SHALL [security requirement] | [standard] | High | [method] |
 
-### 4.3 Reliability Requirements (921-940)
+### 4.3 Reliability Requirements
 
-| NFR ID | Requirement Statement | Target | Priority | Measurement Period |
-|--------|----------------------|--------|----------|-------------------|
-| EARS.XXX.921 | THE [component] SHALL maintain uptime | 99.9% | High | Monthly |
+| QA ID | Requirement Statement | Target | Priority | Measurement Period |
+|-------|----------------------|--------|----------|-------------------|
+| EARS.NNN.018 | THE [component] SHALL maintain uptime | 99.9% | High | Monthly |
 
 ---
 
@@ -209,10 +209,10 @@ WITHIN [operational boundary].
 
 | Category | ID Range | Pattern | Example |
 |----------|----------|---------|---------|
-| Event-Driven | 001-099 | EARS-NNN-0XX | EARS-001-001 |
-| State-Driven | 101-199 | EARS-NNN-1XX | EARS-001-101 |
-| Unwanted Behavior | 201-299 | EARS-NNN-2XX | EARS-001-201 |
-| Ubiquitous | 401-499 | EARS-NNN-4XX | EARS-001-401 |
+| Event-Driven | 001-099 | EARS.NNN.0XX | EARS.001.001 |
+| State-Driven | 101-199 | EARS.NNN.1XX | EARS.001.101 |
+| Unwanted Behavior | 201-299 | EARS.NNN.2XX | EARS.001.201 |
+| Ubiquitous | 401-499 | EARS.NNN.4XX | EARS.001.401 |
 
 ---
 

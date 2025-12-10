@@ -72,9 +72,9 @@ AI-Agent BDD files MUST include the following additional field in Document Contr
 AI-Agent BDD files MUST include the `@ctr:CTR-005` tag for A2A Protocol compliance:
 
 ```gherkin
-@brd:BRD-NNN:FR-001
-@prd:PRD-NNN:FR-NNN-001
-@ears:EARS-NNN:001
+@brd:BRD.NNN.001
+@prd:PRD.NNN.001
+@ears:EARS.NNN.001
 @ctr:CTR-005
 Feature: [Agent Feature Title]
   Architecture: AI-Agent Primary (AGENT-NNN)
@@ -147,9 +147,9 @@ Scenario: Activate fallback on agent failure
 AI-Agent BDD files SHOULD use `@entity` tags to reference PRD-004 entities:
 
 ```gherkin
-And RiskEvaluationUnit entity is constructed per @entity:PRD.004.RiskEvaluationUnit
-And ComplianceCase entity is created per @entity:PRD.004.ComplianceCase
-And BusinessTransaction entity is updated per @entity:PRD.004.BusinessTransaction
+And RiskEvaluationUnit entity is constructed per @entity: PRD.004.RiskEvaluationUnit
+And ComplianceCase entity is created per @entity: PRD.004.ComplianceCase
+And BusinessTransaction entity is updated per @entity: PRD.004.BusinessTransaction
 ```
 
 ---
@@ -204,7 +204,7 @@ For AI-Agent BDD files, verify:
 - [ ] ML Inference scenarios present (for ML-based agents)
 - [ ] Model Drift scenarios present (for ML-based agents)
 - [ ] Agent Fallback scenarios present
-- [ ] Entity references use `@entity:PRD-NNN:EntityName` format
+- [ ] Entity references use `@entity: PRD.NNN.EntityName` format
 - [ ] Threshold references use agent-specific categories
 - [ ] Header includes ARCHITECTURE line
 

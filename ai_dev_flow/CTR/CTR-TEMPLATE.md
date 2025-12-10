@@ -166,7 +166,7 @@ Example: "Synchronous REST-style request/response contract for resource risk val
 - `{domain_strategy}/business_logic.md` section 4.2: Dynamic Risk Budgeting requires pre-trade validation
 - `{domain_strategy}/risk_management.md` section 2.2: Resource limits must be checked before new positions]
 
-### 5.3 Non-Functional Requirements
+### 5.3 Quality Attributes
 - **Performance**: p99 latency < 100ms, throughput > 1000 req/s
 - **security**: mTLS authentication, RBAC authorization, audit logging
 - **Scalability**: Horizontal scaling to handle 10,000 req/s during rebalancing
@@ -283,9 +283,9 @@ Common types across endpoints:
 
 ---
 
-# PART 3: Non-Functional Requirements and Operations
+# PART 3: Quality Attributes and Operations
 
-## 10. Non-Functional Requirements
+## 10. Quality Attributes
 
 ### 10.1 Performance Targets
 - **Max Latency**: <100ms p99 (critical for [OPERATION_EXECUTION - e.g., order processing, task execution])
@@ -612,7 +612,7 @@ Common types across endpoints:
 - **Anomaly Detection**: Alert if consumer request pattern changes significantly
 - **Audit Logging**: Log all validation requests with decision_id, consumer, timestamp
 
-### regulatoryrets Management
+### Secrets Management
 - **Service Certificates**: Managed by GCP Certificate Authority Service
 - **Certificate Rotation**: Automatic 90-day rotation via Workload Identity
 - **API Keys**: Not applicable (mTLS authentication)

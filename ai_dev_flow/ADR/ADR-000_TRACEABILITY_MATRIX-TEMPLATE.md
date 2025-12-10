@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type ADR --output docs/ADR/AD
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@adr: ADR-NNN` (for specific requirements) or `@adr: ADR-001` (for document-level refs)
+**Tag Format:** `@adr: ADR-NNN` (document-level format, e.g., `ADR-033`)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 

@@ -58,8 +58,8 @@ Every BRD should include a section (typically section 5.2) that lists architectu
 | Topic Area | Decision Needed | Business Driver (BRD Reference) | Key Considerations |
 |------------|-----------------|--------------------------------|-------------------|
 | Multi-Agent Framework | Select orchestration framework | BO-XXX (automated operations) | Google ADK, LangGraph, custom |
-| State Management | Define persistence strategy | NFR-XXX (99.99% reliability) | Cloud SQL, Firestore, Redis |
-| Communication Protocol | Choose messaging pattern | NFR-XXX (<50ms latency) | Pub/Sub, gRPC, REST |
+| State Management | Define persistence strategy | QA-XXX (99.99% reliability) | Cloud SQL, Firestore, Redis |
+| Communication Protocol | Choose messaging pattern | QA-XXX (<50ms latency) | Pub/Sub, gRPC, REST |
 
 **Example Topics**:
 - Multi-Agent Framework, State Management, Communication Protocol
@@ -172,9 +172,9 @@ Standard metadata including version, date, owner, status, revision history
 - **Business Rules**: Operational rules and constraints
 - **User Roles and Permissions**: Stakeholder roles and access levels
 
-### Non-Functional Requirements
+### Quality Attributes
 - **Overview**: Quality attributes (performance, security, availability)
-- **Detailed Requirements**: NFR-XXX IDs with metrics, targets, priorities
+- **Detailed Requirements**: QA-XXX IDs with metrics, targets, priorities
 - **Architecture Decision Requirements**: Architectural topics needing decisions (section 5.2)
 
 ### Assumptions and Constraints
@@ -213,7 +213,7 @@ This directory provides the **BRD-TEMPLATE.md** for business requirements docume
 **BRD-TEMPLATE.md** - Comprehensive business requirements template
 - Full-featured template with all sections
 - Suitable for all project types
-- Includes business objectives, functional/non-functional requirements, architecture decision requirements, and acceptance criteria
+- Includes business objectives, functional requirements, quality attributes, architecture decision requirements, and acceptance criteria
 
 **Usage**: Use BRD-TEMPLATE.md as the foundation for all Business Requirements Documents.
 
@@ -354,7 +354,7 @@ BRD (with PRD-Ready Score ≥90%) → PRD Creation → SYS → EARS → REQ → 
 - Links resolve to existing documents or include placeholders
 - Assumptions and constraints explicitly documented
 - Stakeholder roles and responsibilities defined
-- All requirements have unique IDs (BO-XXX, FR-XXX, NFR-XXX)
+- All requirements have unique IDs (BO-XXX, FR-XXX, QA-XXX)
 
 ## Common Patterns
 

@@ -71,9 +71,9 @@ class EarsValidator:
     }
 
     # === REQUIREMENT ID PATTERN ===
-    # Correct: #### EARS-030-001: Title
+    # Correct: #### EARS.030.001: Title
     # Incorrect: #### Event-001: Title, #### State-001: Title
-    CORRECT_REQ_ID_PATTERN = r"^####\s+EARS-(\d{3})-(\d{3}):\s+.+"
+    CORRECT_REQ_ID_PATTERN = r"^####\s+EARS[.-](\d{3})[.-](\d{3}):\s+.+"
     INCORRECT_REQ_ID_PATTERNS = [
         r"^####\s+Event-\d+:\s+",
         r"^####\s+State-\d+:\s+",
@@ -473,7 +473,7 @@ class EarsValidator:
         within_count = len(re.findall(r"\bWITHIN\b", content, re.IGNORECASE))
         # Count WITHIN clauses with measurable values:
         # 1. Explicit numeric values anywhere in the WITHIN clause (e.g., "WITHIN processing time <5 seconds")
-        # 2. Threshold references (e.g., "WITHIN @threshold:PRD-035:timeout.api")
+        # 2. Threshold references (e.g., "WITHIN @threshold:PRD.035.timeout.api")
         # 3. Percentage values (e.g., "WITHIN 99.9% SLA boundaries")
         # Match WITHIN followed by content containing numbers, <, >, or @threshold before the next period
         measurable_with_numbers = len(re.findall(r"WITHIN[^.]*?(\d+|@threshold:)", content, re.IGNORECASE))

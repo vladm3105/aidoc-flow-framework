@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type IMPL --output docs/IMPL/
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@impl: IMPL.001.NNN` (for specific requirements) or `@impl: IMPL-001` (for document-level refs)
+**Tag Format:** `@impl: IMPL.NNN.NNN` (unified feature-level format, e.g., `IMPL.003.002`)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 

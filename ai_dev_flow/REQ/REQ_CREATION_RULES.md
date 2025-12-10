@@ -72,7 +72,7 @@ Every REQ must contain these exact sections in order:
 5. **Data Schemas** - JSON Schema + Pydantic models + Database schema (if applicable)
 6. **Error Handling Specifications** - Exception catalog + error response schema + state machine + circuit breaker config
 7. **Configuration Specifications** - YAML schema + environment variables + validation
-8. **Non-Functional Requirements (NFRs)** - Performance targets (p50/p95/p99) + reliability/security/scalability/observability
+8. **Quality Attributes** - Performance targets (p50/p95/p99) + reliability/security/scalability/observability
 9. **Implementation Guidance** - Algorithms/patterns + concurrency/async + dependency injection
 10. **Acceptance Criteria** - ≥15 measurable criteria covering functional/error/quality/data/integration
 11. **Verification Methods** - BDD scenarios + unit/integration/contract/performance tests
@@ -83,7 +83,7 @@ Every REQ must contain these exact sections in order:
 ## 3. Document Control Requirements (11 Mandatory Fields)
 
 - Status, Version (semantic X.Y.Z), Date Created (ISO 8601), Last Updated
-- Author, Priority (with P-level: P1/P2/P3/P4), Category (Functional/Non-Functional/etc.)
+- Author, Priority (with P-level: P1/P2/P3/P4), Category (Functional/Security/Performance/etc.)
 - Source Document (format: "DOC-ID section X.Y.Z"), Verification Method, Assigned Team
 - SPEC-Ready Score (format: "✅ XX% (Target: ≥90%)"), IMPL-Ready Score (format: "✅ XX% (Target: ≥90%)"), Template Version (must be "3.0")
 
@@ -135,7 +135,7 @@ Every REQ must contain these exact sections in order:
 - **Error Handling**: Catalog with retry strategies, state diagrams, circuit breaker
 - **Schemas**: JSON Schema + Pydantic validators + Database constraints
 - **Configuration**: YAML examples + environment variables + validation
-- **NFR Metrics**: Performance (p50/p95/p99), reliability, security, scalability targets
+- **Quality Attribute Metrics**: Performance (p50/p95/p99), reliability, security, scalability targets
 
 ---
 
@@ -211,9 +211,9 @@ find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template_v3.sh {} \;
 | Template Version != 3.0 | Update to current template version |
 | Missing resource classification tag | Add [RESOURCE_INSTANCE] to H1 header |
 | Incomplete traceability chain | All 6 upstream artifact types required |
-| `response time < 200ms` (hardcoded) | `response time < @threshold: PRD-NNN:perf.api.p95_latency` |
-| `timeout: 5000` (magic number) | `timeout: @threshold: PRD-NNN:timeout.default` |
-| `retry_max: 3` (hardcoded config) | `retry_max: @threshold: PRD-NNN:retry.max_attempts` |
+| `response time < 200ms` (hardcoded) | `response time < @threshold: PRD.NNN.perf.api.p95_latency` |
+| `timeout: 5000` (magic number) | `timeout: @threshold: PRD.NNN.timeout.default` |
+| `retry_max: 3` (hardcoded config) | `retry_max: @threshold: PRD.NNN.retry.max_attempts` |
 
 ---
 
@@ -286,13 +286,13 @@ Use `@threshold` for ALL quantitative values that are:
 - Business-critical (compliance limits, SLAs)
 - Configurable (timeout values, rate limits, retry policies)
 - Shared across documents (performance targets)
-- NFR-related (p50/p95/p99 latencies, throughput limits)
+- Quality attribute-related (p50/p95/p99 latencies, throughput limits)
 - Error handling configurations (circuit breaker, retry counts)
 
 ### @threshold Tag Format
 
 ```markdown
-@threshold: PRD-NNN:category.subcategory.key
+@threshold: PRD.NNN.category.subcategory.key
 ```
 
 **Examples**:
@@ -320,10 +320,10 @@ Use `@threshold` for ALL quantitative values that are:
 - `circuit_breaker_threshold: 5`
 
 **Valid (registry references)**:
-- `p95 response time: @threshold: PRD-NNN:perf.api.p95_latency`
-- `max_retries: @threshold: PRD-NNN:retry.max_attempts`
-- `rate_limit: @threshold: PRD-NNN:limit.api.requests_per_second`
-- `circuit_breaker_threshold: @threshold: PRD-NNN:timeout.circuit_breaker.threshold`
+- `p95 response time: @threshold: PRD.NNN.perf.api.p95_latency`
+- `max_retries: @threshold: PRD.NNN.retry.max_attempts`
+- `rate_limit: @threshold: PRD.NNN.limit.api.requests_per_second`
+- `circuit_breaker_threshold: @threshold: PRD.NNN.timeout.circuit_breaker.threshold`
 
 ### Traceability Requirements Update
 
@@ -331,7 +331,7 @@ Add `@threshold` to Required Tags table in Traceability section:
 
 | Tag | Format | When Required |
 |-----|--------|---------------|
-| @threshold | PRD-NNN:category.key | When referencing NFRs, timing, limits, retry configs, or configurable values |
+| @threshold | PRD-NNN:category.key | When referencing quality attributes, timing, limits, retry configs, or configurable values |
 
 ### Acceptance Criteria Integration
 
@@ -344,13 +344,13 @@ AC-001: Response time SHALL be < 200ms for 95th percentile
 
 **Valid**:
 ```markdown
-AC-001: Response time SHALL be < @threshold: PRD-NNN:perf.api.p95_latency for 95th percentile
+AC-001: Response time SHALL be < @threshold: PRD.NNN.perf.api.p95_latency for 95th percentile
 ```
 
 ### Validation
 
 Run `detect_magic_numbers.py` to verify:
-1. No hardcoded quantitative values in NFR sections
+1. No hardcoded quantitative values in quality attribute sections
 2. No hardcoded values in acceptance criteria
 3. All `@threshold` references resolve to valid registry keys
 4. All configuration values use threshold references

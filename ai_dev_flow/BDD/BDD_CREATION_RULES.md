@@ -282,7 +282,7 @@ Feature: [Business Capability Title]
 - Optional parameters and configurations
 - Alternative workflows and outcomes
 
-**5.5 Non-Functional Scenarios** (@non_functional):
+**5.5 Quality Attribute Scenarios** (@quality_attribute):
 - Performance, security, reliability testing
 
 ---
@@ -332,7 +332,7 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 - Performance benchmarks quantifiable: 5%
 
 **Architecture Requirements Clarity (25%)**:
-- Performance, security, scalability NFRs specified: 15%
+- Performance, security, scalability quality attributes specified: 15%
 - Integration points and external dependencies defined: 10%
 
 **Business Validation (10%)**:
@@ -412,9 +412,9 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 | `Given-When-Then` without concrete values | Use specific data in steps |
 | Vague outcomes like "should work" | Observable verification: "response status code is 200" |
 | Missing Background section | Add common preconditions to Background |
-| `response time is less than 200ms` (hardcoded) | `response time is less than @threshold: PRD-NNN:perf.api.p95_latency` |
-| `timeout after 5000ms` (magic number) | `timeout after @threshold: PRD-NNN:timeout.default` |
-| `rate limit of 100 requests` (hardcoded) | `rate limit of @threshold: PRD-NNN:limit.api.requests_per_second` |
+| `response time is less than 200ms` (hardcoded) | `response time is less than @threshold: PRD.NNN.perf.api.p95_latency` |
+| `timeout after 5000ms` (magic number) | `timeout after @threshold: PRD.NNN.timeout.default` |
+| `rate limit of 100 requests` (hardcoded) | `rate limit of @threshold: PRD.NNN.limit.api.requests_per_second` |
 
 ### 12.1 Critical Anti-Patterns (Visual Examples)
 
@@ -484,7 +484,7 @@ Scenario: User logs in successfully
 **✅ CORRECT** (all 8 categories represented):
 ```gherkin
 # Include scenarios for: @primary, @alternative, @negative,
-# @edge_case, @data_driven, @integration, @non_functional, @failure_recovery
+# @edge_case, @data_driven, @integration, @quality_attribute, @failure_recovery
 ```
 
 **Why this matters**: Incomplete scenario coverage leads to untested edge cases and potential production failures.
@@ -561,13 +561,13 @@ Use `@threshold` for ALL quantitative values in BDD scenarios that are:
 
 **Scenario Tag Format**:
 ```gherkin
-@threshold: PRD-NNN:perf.api.p95_latency
+@threshold: PRD.NNN.perf.api.p95_latency
 Scenario: API responds within performance threshold
 ```
 
 **Step Definition Format**:
 ```gherkin
-Then the response time SHOULD be less than @threshold: PRD-NNN:perf.api.p95_latency
+Then the response time SHOULD be less than @threshold: PRD.NNN.perf.api.p95_latency
 ```
 
 **Examples**:
@@ -597,11 +597,11 @@ Scenario: API performance validation
 
 **Valid (registry references)**:
 ```gherkin
-@threshold: PRD-NNN:perf.api.p95_latency
+@threshold: PRD.NNN.perf.api.p95_latency
 Scenario: API performance validation
   Given the system is under normal load
   When a client sends a request
-  Then the response time SHOULD be less than @threshold: PRD-NNN:perf.api.p95_latency
+  Then the response time SHOULD be less than @threshold: PRD.NNN.perf.api.p95_latency
 ```
 
 ### Examples Table Integration
@@ -616,8 +616,8 @@ Scenario Outline: Transaction limit validation
 
   Examples:
     | role   | amount                                         | result   |
-    | user   | @threshold: PRD-NNN:limit.transaction.max     | rejected |
-    | admin  | @threshold: PRD-NNN:limit.transaction.max     | approved |
+    | user   | @threshold: PRD.NNN.limit.transaction.max     | rejected |
+    | admin  | @threshold: PRD.NNN.limit.transaction.max     | approved |
 ```
 
 ### Traceability Requirements Update

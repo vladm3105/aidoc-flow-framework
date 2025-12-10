@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type CTR --output docs/CTR/CT
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@ctr: CTR.001.NNN` (for specific requirements) or `@ctr: CTR-001` (for document-level refs)
+**Tag Format:** `@ctr: CTR-NNN` (document-level format, e.g., `CTR-001`)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 

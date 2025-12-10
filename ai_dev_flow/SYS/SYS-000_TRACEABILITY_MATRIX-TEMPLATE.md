@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type SYS --output docs/SYS/SY
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@sys: SYS.001.NNN` (for specific requirements) or `@sys: SYS-001` (for document-level refs)
+**Tag Format:** `@sys: SYS.NNN.NNN` (unified feature-level format, e.g., `SYS.008.001`)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -65,7 +65,7 @@ See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) 
 ## 1. Overview
 
 ### 1.1 Document Type Description
-System Requirements Documents (SYS) define system-level functional and non-functional requirements derived from architecture decisions. SYS documents bridge architectural decisions (ADR) and atomic implementation requirements (REQ).
+System Requirements Documents (SYS) define system-level functional requirements and quality attributes derived from architecture decisions. SYS documents bridge architectural decisions (ADR) and atomic implementation requirements (REQ).
 
 ### 1.2 Coverage Scope
 This matrix tracks all SYS documents, mapping upstream architecture decisions to downstream atomic requirements and technical specifications.
@@ -216,16 +216,16 @@ python scripts/generate_traceability_matrices.py \
 
 ### 7.1 SYS by Category
 
-| Category | SYS IDs | Total | Functional | Non-Functional |
-|----------|---------|-------|------------|----------------|
+| Category | SYS IDs | Total | Functional | Quality Attributes |
+|----------|---------|-------|------------|-------------------|
 | [Infrastructure] | SYS-001, SYS-002 | 2 | 1 | 1 |
 | [security] | SYS-003, SYS-004 | 2 | 2 | 0 |
 | [Performance] | SYS-005 | 1 | 0 | 1 |
 | [Integration] | SYS-006, SYS-007 | 2 | 2 | 0 |
 
-### 7.2 Non-Functional Requirements Summary
+### 7.2 Quality Attributes Summary
 
-| NFR Category | SYS IDs | Requirements | Status |
+| QA Category | SYS IDs | Requirements | Status |
 |--------------|---------|--------------|--------|
 | Performance | SYS-005 | [X] | [Status] |
 | Scalability | SYS-002 | [X] | [Status] |
@@ -277,7 +277,7 @@ graph TD
 ### 10.1 Priority Actions
 1. **Complete Missing REQ Decomposition**: [X] SYS documents need atomic requirements
 2. **Create SPEC Documents**: [Y] SYS documents need technical specifications
-3. **Validate NFR Coverage**: [Z] non-functional requirements need verification
+3. **Validate QA Coverage**: [Z] quality attributes need verification
 
 ---
 

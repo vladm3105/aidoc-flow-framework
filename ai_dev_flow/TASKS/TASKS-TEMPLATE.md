@@ -164,7 +164,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 - **Tasks**:
   - Clone repository and checkout feature branch
   - Install dependencies from requirements.txt/package.json
-  - Configure local environment variables and regulatoryrets
+  - Configure local environment variables and Secrets
   - Verify database connections and external service access
   - Set up IDE/editor with linting and formatting tools
 - **Success Criteria**: Development environment passes verification script
@@ -266,14 +266,14 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 - **Estimated Duration**: [X hours]
 
 #### 3.4 Performance Testing
-- **Action**: Verify non-functional requirements under load
+- **Action**: Verify quality attributes under load
 - **Test Types**:
   - Latency testing (p50, p95, p99 percentiles)
   - Throughput testing (requests per second capacity)
   - Load testing (sustained load handling)
   - Stress testing (failure point identification)
   - Resource utilization profiling
-- **Success Criteria**: All performance targets met per NFRs
+- **Success Criteria**: All performance targets met per quality attributes
 - **Estimated Duration**: [X hours]
 
 #### 3.5 security Testing
@@ -282,7 +282,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
   - Authentication and authorization checks
   - Input sanitization and SQL injection prevention
   - XSS and CSRF protection validation
-  - regulatoryret management and encryption verification
+  - Secret management and encryption verification
   - Dependency vulnerability scanning
 - **Success Criteria**: security scan passes with no high/critical issues
 - **Estimated Duration**: [X hours]
@@ -675,7 +675,7 @@ class ThisComponent:
 - [ ] Data consistency maintained across all operations
 - [ ] Schema migrations tested and reversible
 
-### 6.2 Non-Functional Acceptance
+### 6.2 Quality Attribute Acceptance
 
 #### Performance Acceptance
 - [ ] p95 latency < XXXms for all API operations
@@ -703,7 +703,7 @@ class ThisComponent:
 - [ ] Sensitive data encrypted at rest (AES-256)
 - [ ] All communications use TLS 1.3
 - [ ] security scanning passes with no high/critical vulnerabilities
-- [ ] regulatoryrets stored in regulatoryret Manager, not in code/config
+- [ ] Secrets stored in Secret Manager, not in code/config
 
 ### 6.3 Operational Acceptance
 
@@ -732,7 +732,7 @@ class ThisComponent:
 - [ ] Unit test coverage ≥ 85% with no decrease from baseline
 - [ ] Integration tests validate all external dependencies
 - [ ] BDD scenarios from upstream requirements all pass
-- [ ] Performance tests validate NFRs under realistic load
+- [ ] Performance tests validate quality attributes under realistic load
 - [ ] security tests pass vulnerability scans
 
 ### 6.4 Validation Methods
@@ -741,7 +741,7 @@ class ThisComponent:
 |---------------------|-------------------|-------------------|--------|
 | Functional correctness | BDD scenario execution | tests/acceptance/ | 100% pass |
 | API contract compliance | Contract testing | tests/contract/ | 100% pass |
-| Performance targets | Load testing | tests/performance/ | All NFRs met |
+| Performance targets | Load testing | tests/performance/ | All QAs met |
 | security compliance | Vulnerability scanning | security reports | 0 high/critical |
 | Code coverage | Unit testing | Coverage reports | ≥85% |
 | Integration correctness | Integration testing | tests/integration/ | 100% pass |
@@ -768,13 +768,13 @@ class ThisComponent:
 **Risk 2: Performance Requirements Not Achievable**
 - **Description**: Component cannot meet p95 latency targets under load
 - **Likelihood**: Low
-- **Impact**: High (violates NFRs)
+- **Impact**: High (violates quality attributes)
 - **Mitigation**:
   - Profile code early to identify bottlenecks
   - Implement caching strategy for frequently accessed data
   - Optimize database queries with proper indexing
   - Consider async processing for non-critical operations
-- **Contingency**: Revise NFRs with stakeholder approval
+- **Contingency**: Revise quality attribute targets with stakeholder approval
 
 **Risk 3: Complex Business Logic Implementation**
 - **Description**: Algorithm from specifications is ambiguous or difficult to implement correctly
@@ -830,7 +830,7 @@ class ThisComponent:
 - [ ] GCP project provisioned with required APIs enabled
 - [ ] Cloud Run service configured with appropriate resource limits
 - [ ] Database instance created with connection pooling
-- [ ] regulatoryret Manager populated with credentials and API keys
+- [ ] Secret Manager populated with credentials and API keys
 - [ ] VPC and firewall rules configured for service communication
 
 **Service Dependencies**:
@@ -871,7 +871,7 @@ class ThisComponent:
 - **Trigger**: Load tests show p95 latency > target
 - **Action**: Conduct performance profiling, identify top 3 bottlenecks
 - **Optimization**: Implement caching, async processing, or algorithm optimization
-- **Escalation**: If unresolvable, request NFR revision from stakeholders
+- **Escalation**: If unresolvable, request quality attribute revision from stakeholders
 
 **Contingency 3: Scope Creep Detected**
 - **Trigger**: Requested features not in SPEC/REQ documents
@@ -912,7 +912,7 @@ class ThisComponent:
 #### security Metrics
 - **Vulnerability Scan**: Zero high/critical vulnerabilities
 - **Dependency Health**: Zero known CVEs in production dependencies
-- **regulatoryret Management**: 100% regulatoryrets in regulatoryret Manager (0 in code/config)
+- **Secret Management**: 100% Secrets in Secret Manager (0 in code/config)
 - **Compliance**: 100% audit log coverage for privileged operations
 
 ### 8.2 Business Metrics
@@ -1056,7 +1056,7 @@ Document the business strategy, product requirements, system specifications, and
 **Engineering Context**:
 - EARS Requirements: [Event-driven/state-driven requirements] → Implemented in this task
 - System Capabilities: [System-level functionality] → Delivered by this component
-- Quality Attributes: [Performance, security, reliability NFRs] → Achieved through implementation
+- Quality Attributes: [Performance, security, reliability requirements] → Achieved through implementation
 
 **Architecture Context**:
 - Architecture Decision: [ADR title and key decision] → Applied in this implementation
@@ -1077,7 +1077,7 @@ Document the technical specifications, contracts, and tests that guide and valid
 **Specification Coverage**:
 - All SPEC sections mapped to implementation plan steps
 - All interface definitions implemented and validated
-- All NFRs from specifications met and verified
+- All quality attributes from specifications met and verified
 
 |  |  | Task Contract Implementation | Relationship |
 |-------------|---------------|----------------------------|--------------|
@@ -1165,7 +1165,7 @@ Document evidence that this task has been implemented correctly and meets all ac
 | Unit Testing | Automated unit tests | tests/unit/test_[component].py | PASS (85% coverage) | YYYY-MM-DD |
 | Integration Testing | Automated integration tests | tests/integration/test_[workflow].py | PASS | YYYY-MM-DD |
 | BDD Scenarios | Automated acceptance tests | tests/acceptance/test_scenarios.py | PASS (10/10 scenarios) | YYYY-MM-DD |
-| Performance Testing | Load testing | tests/performance/load_test_results.html | PASS (all NFRs met) | YYYY-MM-DD |
+| Performance Testing | Load testing | tests/performance/load_test_results.html | PASS (all QAs met) | YYYY-MM-DD |
 | security Testing | Vulnerability scan | security_reports/scan_YYYY-MM-DD.pdf | PASS (0 high/critical) | YYYY-MM-DD |
 | Contract Testing | API contract validation | tests/contract/contract_test_results.json | PASS | YYYY-MM-DD |
 | Code Review | Manual peer review | GitHub PR #XXXX reviews | APPROVED | YYYY-MM-DD |
@@ -1184,7 +1184,7 @@ Document evidence that this task has been implemented correctly and meets all ac
 - ✅ Code coverage meets threshold (≥85%)
 - ✅ Static analysis passes (0 high-severity issues)
 - ✅ security scan passes (0 high/critical vulnerabilities)
-- ✅ Performance tests meet NFRs
+- ✅ Performance tests meet quality attributes
 - ✅ Code review approved
 
 ### 10.6 Cross-Reference Validation
@@ -1495,9 +1495,9 @@ Document evidence that this task has been implemented correctly and meets all ac
 #### Configuration Management
 
 **Environment Variables**:
-- Loaded from `.env` files (local) or regulatoryret Manager (cloud)
+- Loaded from `.env` files (local) or Secret Manager (cloud)
 - Separate configuration per environment (dev/staging/prod)
-- Never commit regulatoryrets to version control
+- Never commit Secrets to version control
 - Use Pydantic Settings for type-safe configuration
 
 **Feature Flags**:
@@ -1507,11 +1507,11 @@ Document evidence that this task has been implemented correctly and meets all ac
 - User/organization-targeted flags
 - Kill switch for problematic features
 
-**regulatoryrets Management**:
-- Google regulatoryret Manager for all regulatoryrets
-- regulatoryrets mounted as environment variables or files
+**Secrets Management**:
+- Google Secret Manager for all Secrets
+- Secrets mounted as environment variables or files
 - Automatic rotation for credentials
-- Audit logging for regulatoryret access
+- Audit logging for Secret access
 
 ---
 

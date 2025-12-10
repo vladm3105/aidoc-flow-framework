@@ -68,7 +68,7 @@ SYS documents follow a comprehensive structure translating ADR decisions into sy
 - Document Control, Executive Summary, Scope
 
 #### **Part 2: System Requirements**
-- Functional Requirements, Non-Functional Requirements
+- Functional Requirements, Quality Attributes
 
 #### **Part 3: System Specification**
 - Interface Specifications, Data Management Requirements, Testing and Validation Requirements
@@ -161,11 +161,11 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 - Requirement dependencies and prerequisites identified: 5%
 - System responsibilities aligned with ADR architectural decisions: 5%
 
-**NFR Quantification (30%)**:
-- Performance NFRs quantified with percentiles and thresholds: 15%
-- Reliability NFRs specified with uptime/SLA targets: 5%
-- security NFRs defined with compliance framework references: 5%
-- Scalability NFRs quantified for resource and capacity growth: 5%
+**Quality Attributes Quantification (30%)**:
+- Performance requirements quantified with percentiles and thresholds: 15%
+- Reliability requirements specified with uptime/SLA targets: 5%
+- Security requirements defined with compliance framework references: 5%
+- Scalability requirements quantified for resource and capacity growth: 5%
 
 **Interface Specifications (20%)**:
 - External API contracts defined (reference CTR creation guidelines): 10%
@@ -173,7 +173,7 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 - Data exchange protocols and schemas documented: 5%
 
 **Implementation Readiness (15%)**:
-- Testing requirements specified for all functional and NFR categories: 5%
+- Testing requirements specified for all functional and quality attribute categories: 5%
 - Deployment and operational requirements documented: 5%
 - Monitoring and observability requirements quantified: 5%
 
@@ -198,7 +198,7 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 **Layer 6 Requirements**: SYS must reference ALL upstream artifacts
 
 **Downstream Linkages**:
-- REQ artifacts must respect SYS system boundaries and NFR constraints
+- REQ artifacts must respect SYS system boundaries and quality attribute constraints
 - SPEC implementations must satisfy SYS interface specifications
 - CTR contracts must exactly match SYS API requirements
 
@@ -214,7 +214,7 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 
 **Operational Viability**: Deployment, monitoring, and operational requirements must be production-ready
 
-**Testability**: All functional and NFR requirements must have measurable acceptance criteria
+**Testability**: All functional and quality attribute requirements must have measurable acceptance criteria
 
 ---
 
@@ -222,7 +222,7 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 
 - SYS completeness and ADR alignment validation
 - REQ-ready score verification ≥90%
-- NFR quantification and measurability checks
+- Quality attribute quantification and measurability checks
 - Interface specification completeness
 
 ---
@@ -230,8 +230,8 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 ## 11. Additional Requirements
 
 - System boundaries must prevent requirement bleed between components
-- NFRs must be prioritized and quantified with measurable thresholds
-- security and compliance requirements must reference specific standards
+- Quality attributes must be prioritized and quantified with measurable thresholds
+- Security and compliance requirements must reference specific standards
 - Performance and scalability targets must be justified with business needs
 
 ---
@@ -244,13 +244,13 @@ SYS documents establish system requirements that must be decomposed into atomic 
 
 **REQ Decomposition Rules**:
 1. Each SYS functional requirement → 3-7 atomic REQ files
-2. Each SYS NFR category → 2-4 atomic REQ files per category
+2. Each SYS quality attribute category → 2-4 atomic REQ files per category
 3. Each SYS interface → 1-3 atomic REQ files per interface
 
 **REQ Validation Against SYS**:
 - All REQ capabilities must fit within SYS system boundaries
 - All REQ acceptance criteria must satisfy SYS exit criteria
-- All REQ NFR targets must meet or exceed SYS NFR thresholds
+- All REQ quality attribute targets must meet or exceed SYS quality thresholds
 
 **Interface CTR Creation**:
 - When SYS specifies external API contracts, create CTR documents
@@ -269,14 +269,14 @@ SYS documents establish system requirements that must be decomposed into atomic 
 | Mistake | Correct |
 |---------|---------|
 | `Status: Approved` (with <90% REQ-Ready score) | Match status to score threshold |
-| NFRs without percentiles | Use p50/p95/p99 for performance targets |
+| Quality attributes without percentiles | Use p50/p95/p99 for performance targets |
 | Missing criticality level | Specify Mission-Critical/Business-Critical/Operational |
 | Interface specs without CTR reference | Create CTR for external APIs |
 | Requirements without acceptance criteria | Include measurable acceptance criteria for all requirements |
 | Missing ADR alignment verification | Verify all requirements fit within ADR architectural boundaries |
-| `response time < 200ms` (hardcoded) | `response time < @threshold: PRD-NNN:perf.api.p95_latency` |
-| `timeout: 5000` (magic number) | `timeout: @threshold: PRD-NNN:timeout.default` |
-| `uptime: 99.9%` (hardcoded SLA) | `uptime: @threshold: PRD-NNN:sla.uptime.target` |
+| `response time < 200ms` (hardcoded) | `response time < @threshold: PRD.NNN.perf.api.p95_latency` |
+| `timeout: 5000` (magic number) | `timeout: @threshold: PRD.NNN.timeout.default` |
+| `uptime: 99.9%` (hardcoded SLA) | `uptime: @threshold: PRD.NNN.sla.uptime.target` |
 
 ---
 
@@ -349,12 +349,12 @@ Use `@threshold` for ALL quantitative values that are:
 - Business-critical (compliance limits, SLAs)
 - Configurable (timeout values, rate limits)
 - Shared across documents (performance targets)
-- NFR-related (p50/p95/p99 latencies, uptime percentages)
+- Quality attribute-related (p50/p95/p99 latencies, uptime percentages)
 
 ### @threshold Tag Format
 
 ```markdown
-@threshold: PRD-NNN:category.subcategory.key
+@threshold: PRD.NNN.category.subcategory.key
 ```
 
 **Examples**:
@@ -367,7 +367,7 @@ Use `@threshold` for ALL quantitative values that are:
 
 | Category | SYS Usage | Example Key |
 |----------|-----------|-------------|
-| `perf.*` | NFR performance requirements | `perf.api.p95_latency` |
+| `perf.*` | Performance requirements | `perf.api.p95_latency` |
 | `sla.*` | Uptime and availability targets | `sla.uptime.target` |
 | `timeout.*` | Circuit breaker, connection timeouts | `timeout.circuit_breaker.threshold` |
 | `resource.*` | Memory, CPU, storage limits | `resource.memory.max_heap` |
@@ -382,10 +382,10 @@ Use `@threshold` for ALL quantitative values that are:
 - `circuit breaker threshold: 5 failures`
 
 **Valid (registry references)**:
-- `p95 latency: @threshold: PRD-NNN:perf.api.p95_latency`
-- `uptime: @threshold: PRD-NNN:sla.uptime.target`
-- `memory limit: @threshold: PRD-NNN:resource.memory.max_heap`
-- `circuit breaker threshold: @threshold: PRD-NNN:timeout.circuit_breaker.threshold`
+- `p95 latency: @threshold: PRD.NNN.perf.api.p95_latency`
+- `uptime: @threshold: PRD.NNN.sla.uptime.target`
+- `memory limit: @threshold: PRD.NNN.resource.memory.max_heap`
+- `circuit breaker threshold: @threshold: PRD.NNN.timeout.circuit_breaker.threshold`
 
 ### Traceability Requirements Update
 
@@ -393,12 +393,12 @@ Add `@threshold` to Required Tags table in Traceability section:
 
 | Tag | Format | When Required |
 |-----|--------|---------------|
-| @threshold | PRD-NNN:category.key | When referencing NFRs, SLAs, timing, limits, or configurable values |
+| @threshold | PRD-NNN:category.key | When referencing SLAs, timing, limits, or configurable values |
 
 ### Validation
 
 Run `detect_magic_numbers.py` to verify:
-1. No hardcoded quantitative values in NFR sections
+1. No hardcoded quantitative values in quality attribute sections
 2. All `@threshold` references resolve to valid registry keys
 3. All SLA targets use threshold references
 

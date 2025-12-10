@@ -83,7 +83,7 @@ The API client provides asynchronous methods for fetching data with built-in res
 - **Batch Retrieval**: Fetch data for multiple identifiers concurrently (max 10 concurrent) with result streaming
 - **Historical Data**: Retrieve historical records for date ranges with pagination support
 - **Connection Management**: Establish/maintain HTTP/2 connection pool with 100 max connections and 60s keepalive
-- **Authentication**: Support API key authentication with automatic refresh from regulatoryret Manager
+- **Authentication**: Support API key authentication with automatic refresh from Secret Manager
 
 ### Business Rules
 
@@ -246,7 +246,7 @@ class RateLimitTier(str, Enum):
 class APICredentials:
     """Credentials for API authentication."""
     api_key: str
-    regulatoryret_key: str | None = None
+    secret_key: str | None = None
     tier: RateLimitTier = RateLimitTier.FREE
 
 @dataclass
@@ -507,7 +507,7 @@ class CachedData(Base):
 | Exception Type | HTTP Code | Error Code | Retry? | Recovery Strategy |
 |----------------|-----------|------------|--------|-------------------|
 | `ConnectionError` | 503 | `CONN_001` | Yes (5x) | Exponential backoff: 1s, 2s, 4s, 8s, 16s |
-| `AuthenticationError` | 401 | `AUTH_001` | No | Refresh credentials from regulatoryret Manager, alert admin |
+| `AuthenticationError` | 401 | `AUTH_001` | No | Refresh credentials from Secret Manager, alert admin |
 | `RateLimitExceeded` | 429 | `RATE_001` | Yes | Queue request, wait for rate_limit_reset |
 | `ValidationError` | 400 | `VALID_001` | No | Log detailed error, return to caller with field details |
 | `APIError` | 5xx | `API_001` | Yes (5x) | Retry with backoff, fallback to cache if available |
@@ -658,9 +658,9 @@ external_api:
   # Authentication
   authentication:
     type: "api_key"  # api_key | oauth2
-    credentials_source: "regulatoryret_manager"
-    regulatoryret_name: "external_api_key_prod"
-    regulatoryret_project: "my-project-prod"
+    credentials_source: "secret_manager"
+    secret_name: "external_api_key_prod"
+    secret_project: "my-project-prod"
     refresh_interval_hours: 24
 
   # Rate limiting
@@ -733,12 +733,12 @@ external_api:
 | `EXTERNAL_API_RETRY_ENABLED` | bool | No | `true` | Enable retry logic | `true`, `false` |
 | `EXTERNAL_API_CACHE_TTL` | int | No | 30 | Cache TTL (seconds) | `30` |
 | `EXTERNAL_API_CIRCUIT_ENABLED` | bool | No | `true` | Enable circuit breaker | `true`, `false` |
-| `regulatoryRET_PROJECT` | string | Yes | - | Project for regulatoryrets | `my-project-prod` |
-| `regulatoryRET_NAME` | string | Yes | - | regulatoryret name | `external_api_key_prod` |
+| `SECRET_PROJECT` | string | Yes | - | Project for Secrets | `my-project-prod` |
+| `SECRET_NAME` | string | Yes | - | Secret name | `external_api_key_prod` |
 
 ---
 
-## 7. Non-Functional Requirements (NFRs)
+## 7. Quality Attributes
 
 ### Performance
 
@@ -760,9 +760,9 @@ external_api:
 
 ### security
 
-- **Authentication**: API key stored in regulatoryret Manager, never logged
+- **Authentication**: API key stored in Secret Manager, never logged
 - **Transport security**: TLS 1.3 minimum
-- **regulatoryrets Rotation**: Automatic credential refresh every 24 hours
+- **Secrets Rotation**: Automatic credential refresh every 24 hours
 - **Input Validation**: All requests validated against Pydantic models
 - **Audit Logging**: All API calls logged with request_id (no credentials)
 
@@ -990,4 +990,4 @@ class TokenBucketRateLimiter:
 | 2025-11-26 | 2.1.0 | Generalized to domain-agnostic example | Platform Team |
 
 **Template Version**: 2.0 (SPEC-Ready)
-**SPEC-Ready Checklist Passed**: Interfaces / Schemas / Errors / Config / NFRs / Implementation Guidance
+**SPEC-Ready Checklist Passed**: Interfaces / Schemas / Errors / Config / QAs / Implementation Guidance

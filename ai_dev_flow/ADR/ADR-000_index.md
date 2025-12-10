@@ -71,7 +71,7 @@ flowchart LR
 | **Integration** | System-to-system communication | API contracts, message queues, webhooks |
 | **Technology Selection** | Framework, language, platform choices | Python vs Go, FastAPI vs Flask |
 | **Data Architecture** | Database, storage, consistency | PostgreSQL, BigQuery, caching strategy |
-| **security** | Authentication, authorization, encryption | OAuth2, RBAC, regulatoryrets management |
+| **security** | Authentication, authorization, encryption | OAuth2, RBAC, Secrets management |
 | **Observability** | Monitoring, logging, alerting | Cloud Monitoring, OpenTelemetry |
 | **AI/ML** | Model serving, training, MLOps | Vertex AI, model deployment patterns |
 

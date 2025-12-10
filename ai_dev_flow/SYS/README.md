@@ -55,7 +55,7 @@ Clearly bounded system responsibility:
 ## Scope
 [Concise description of system boundaries and included/excluded functionality]
 
-Defines functional and non-functional requirements for [system/component name] in the [architecture layer].
+Defines functional requirements and quality attributes for [system/component name] in the [architecture layer].
 ```
 
 ### Functional Requirements
@@ -71,11 +71,11 @@ Behavioral capabilities the system must provide:
 - [State transitions and lifecycle requirements]
 ```
 
-### Non-Functional Requirements
+### Quality Attributes
 Quality attributes and operational characteristics:
 
 ```markdown
-## Non-Functional Requirements
+## Quality Attributes
 - **Performance**: [Latency/threshold] < [quantitative value] for [operation type] under [conditions]
 - **Reliability**: [Availability/uptime] ≥ [percentage] with [MTTR] < [timeframe]
 - **Scalability**: Support [concurrent users/throughput] ≥ [value] maintaining [SLA]
@@ -116,11 +116,11 @@ Quality attributes and operational characteristics:
 - Report integration status and error conditions for monitoring
 ```
 
-## Non-Functional Requirements Patterns
+## Quality Attribute Patterns
 
 ### Performance Requirements
 ```markdown
-## Non-Functional Requirements
+## Quality Attributes
 - **Latency**: p95 response time < 200ms for read operations, < 500ms for write operations
 - **Throughput**: Process ≥ 1000 requests per second under normal load
 - **Scalability**: Support linear throughput increase with horizontal scaling to 10 instances
@@ -129,7 +129,7 @@ Quality attributes and operational characteristics:
 
 ### Reliability Requirements
 ```markdown
-## Non-Functional Requirements
+## Quality Attributes
 - **Availability**: Service uptime ≥ 99.9% measured monthly excluding planned maintenance
 - **Fault Tolerance**: Continue operation with degraded functionality when non-critical components fail
 - **Data Consistency**: Maintain ACID properties for transactional operations
@@ -138,7 +138,7 @@ Quality attributes and operational characteristics:
 
 ### security Requirements
 ```markdown
-## Non-Functional Requirements
+## Quality Attributes
 - **Authentication**: Require valid JWT tokens issued by configured identity provider
 - **Authorization**: Enforce role-based access control with explicit permission checks
 - **Data Protection**: Encrypt sensitive data at rest using AES-256 and in transit using TLS 1.3
@@ -147,7 +147,7 @@ Quality attributes and operational characteristics:
 
 ### Observability Requirements
 ```markdown
-## Non-Functional Requirements
+## Quality Attributes
 - **Metrics**: Emit counter/gauge/histogram metrics for all major operations
 - **Logging**: Structured JSON logs with configurable verbosity levels
 - **Tracing**: Distributed tracing for cross-service request correlation
@@ -226,11 +226,11 @@ Break down business capabilities into specific functional requirements:
 4. Transform API errors into user-friendly messages
 ```
 
-### 3. Non-Functional Specification
+### 3. Quality Attribute Specification
 Define quality attributes based on system criticality:
 
 ```markdown
-## Non-Functional Requirements Specification
+## Quality Attributes Specification
 
 ### Performance Tier Assessment
 - **Business Impact**: High (service decisions depend on timely data)
@@ -292,7 +292,7 @@ Define how system correctness will be measured:
 
 **Every SYS must:**
 - Link to downstream REQ and ADR documents for requirement breakdown
-- Define both functional capabilities and non-functional quality attributes
+- Define both functional capabilities and quality attributes
 - Include comprehensive error conditions and exception handling
 - Specify measurable performance and reliability targets
 - Document integration points and external system dependencies
@@ -302,7 +302,7 @@ Define how system correctness will be measured:
 **SYS validation checklist:**
 - ✅ Scope clearly defines what's included and excluded from system
 - ✅ Functional requirements specify objective, testable behaviors
-- ✅ Non-functional requirements include quantifiable thresholds
+- ✅ Quality attributes include quantifiable thresholds
 - ✅ Integration requirements define external system interactions
 - ✅ Error handling covers all documented failure scenarios
 - ✅ Acceptance criteria provide binary validation conditions
@@ -332,7 +332,7 @@ Consider failure modes, boundary conditions, and error scenarios:
 Include observability requirements for operations and troubleshooting:
 
 ```markdown
-## Non-Functional Requirements
+## Quality Attributes
 - **Metrics**: Emit counters for request rates, error rates, and processing latency histograms
 - **Logging**: Structured JSON logs for error scenarios, security events, and state changes
 - **Tracing**: Request correlation IDs propagated through all downstream calls
@@ -400,7 +400,7 @@ Use SYS as constraints for architectural decision-making:
 Translate SYS into development tasks and acceptance criteria:
 
 - Break functional requirements into user stories for agile development
-- Convert non-functional requirements into technical user stories with SLAs
+- Convert quality attributes into technical user stories with SLAs
 - Use acceptance criteria to write BDD scenarios and unit tests
 - Establish performance benchmarks for continuous monitoring
 
@@ -478,17 +478,17 @@ See `SYS/SYS-001_external_api_integration.md` for a complete example of a well-s
 ### Level 1 - Basic Requirements
 - Basic functional capabilities documented
 - Informal acceptance criteria
-- Minimal non-functional considerations
+- Minimal quality attribute considerations
 
 ### Level 2 - Structured Requirements
 - Complete functional definition with clear boundaries
 - Formal acceptance criteria with test conditions
-- Basic non-functional requirements (performance, reliability)
+- Basic quality attributes (performance, reliability)
 
 ### Level 3 - Comprehensive Specifications
 - Complete system behavior documentation
 - Detailed interface and integration specifications
-- Comprehensive non-functional requirements with quantitative targets
+- Comprehensive quality attributes with quantitative targets
 - Clear traceability to business requirements and implementation
 
 ### Level 4 - Executable Specifications
@@ -510,7 +510,7 @@ See `SYS/SYS-001_external_api_integration.md` for a complete example of a well-s
 **Scoring Criteria**:
 
 **System Requirements Completeness (40%)**:
-- Functional/non-functional requirements complete: 10%
+- Functional requirements and quality attributes complete: 10%
 - Interface specifications defined: 10%
 - Error handling and recovery documented: 10%
 - Performance/security targets quantified: 10%

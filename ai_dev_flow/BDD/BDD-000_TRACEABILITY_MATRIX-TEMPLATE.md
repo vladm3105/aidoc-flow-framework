@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type BDD --output docs/BDD/BD
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@bdd: BDD.001.NNN` (for specific requirements) or `@bdd: BDD-001` (for document-level refs)
+**Tag Format:** `@bdd: BDD.NNN.NNN` (unified feature-level format, e.g., `BDD.003.001`)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -145,7 +145,7 @@ Feature: Place Limit Order
 
 **Tag Analysis**:
 - `@brd: BRD.009.015` - Business requirement for request submission
-- `@brd: BRD.009.006` - Non-functional requirement (performance)
+- `@brd: BRD.009.006` - Quality attribute (performance)
 - `@prd: PRD.016.003` - Product feature specification
 - `@ears: EARS.012.002` - EARS "WHEN trader submits order" event
 - `@ears: EARS.012.001` - EARS "THE system SHALL validate order" state
@@ -338,7 +338,7 @@ Test Implementation & Code (Layers 13-14)
 | Requirement Type | Total Requirements | BDD Coverage | Coverage % | Status |
 |------------------|-------------------|--------------|------------|--------|
 | Functional | [X] | [Y] | XX% | [Status] |
-| Non-Functional | [X] | [Y] | XX% | [Status] |
+| Quality Attribute | [X] | [Y] | XX% | [Status] |
 | security | [X] | [Y] | XX% | [Status] |
 | Performance | [X] | [Y] | XX% | [Status] |
 

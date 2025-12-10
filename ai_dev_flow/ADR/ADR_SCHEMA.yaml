@@ -131,7 +131,7 @@ structure:
 
     - pattern: "^## 6\\. Requirements Satisfied$"
       name: "Requirements Satisfied"
-      description: "Section 6 with Primary Requirements, Source Business Logic, NFRs"
+      description: "Section 6 with Primary Requirements, Source Business Logic, Quality Attributes"
 
     - pattern: "^## 7\\. Consequences$"
       name: "Consequences"

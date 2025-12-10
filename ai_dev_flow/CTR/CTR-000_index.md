@@ -14,7 +14,7 @@ custom_fields:
 # CTR-000: API Contracts Master Index
 
 ## Purpose
-This index catalogs all API contract documents (CTR) that define interfaces between components in the SDD workflow. Contracts specify request/response schemas, error handling, non-functional requirements, and versioning policies for component communication.
+This index catalogs all API contract documents (CTR) that define interfaces between components in the SDD workflow. Contracts specify request/response schemas, error handling, quality attributes, and versioning policies for component communication.
 
 ## Organization
 Contracts can be organized in subdirectories by service type for better document management and SPEC alignment:

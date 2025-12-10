@@ -41,7 +41,7 @@ custom_fields:
 3. [Document Control Requirements](#3-document-control-requirements)
 4. [ID and Naming Standards](#4-id-and-naming-standards)
 5. [EARS Syntax Patterns](#5-ears-syntax-patterns)
-6. [Quality Attributes (NFRs)](#6-quality-attributes-nfrs)
+6. [Quality Attributes](#6-quality-attributes)
 7. [BDD Relationship Guidelines](#7-bdd-relationship-guidelines)
 8. [BDD-Ready Scoring System](#8-bdd-ready-scoring-system)
 9. [Traceability Requirements](#9-traceability-requirements)
@@ -67,7 +67,7 @@ EARS documents require specific structural elements for behavioral specification
 1. **Document Control** - Metadata with BDD-Ready Score
 2. **Purpose and Context** - Business and technical objectives
 3. **Requirements** - Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous
-4. **Non-Functional Requirements** - Performance, security, Reliability, etc.
+4. **Quality Attributes** - Performance, security, Reliability, etc.
 5. **Guidelines for Writing EARS Statements** - Precision and measurability rules
 6. **Quality Checklist** - Completeness validation
 7. **Traceability** - Upstream/downstream artifacts
@@ -108,7 +108,7 @@ EARS documents require specific structural elements for behavioral specification
 
 - **Filename**: `EARS-NNN_descriptive_title.md`
 - **H1**: `# EARS-NNN: [Short Descriptive Title]`
-- **Statement IDs**: `EARS-{DocID}-{Num}` format (e.g., `EARS-006-001`, `EARS-006-002`)
+- **Statement IDs**: `EARS.{DocID}.{Num}` format (e.g., `EARS.006.001`, `EARS.006.002`)
   - Sequential numbering within document (001, 002, 003...)
   - ❌ **DEPRECATED**: Do NOT use category prefixes (E, S, U, UB, EVENT, STATE, UNWANTED, UBIQ)
 
@@ -158,7 +158,7 @@ for [scope/context].
 Always use triple backticks for EARS statements:
 
 ````markdown
-**EARS-001-001: Requirement Name**
+**EARS.001.001: Requirement Name**
 ```
 WHEN [condition],
 THE [component] SHALL [action]
@@ -169,36 +169,36 @@ WITHIN [constraint].
 
 ---
 
-## 6. Quality Attributes (NFRs)
+## 6. Quality Attributes
 
-### NFR Categorical Format
+### Quality Attribute Format
 
-EARS documents inherit NFR IDs from upstream BRD/PRD documents using 900-series numbering:
+EARS documents use unified sequential numbering for all requirements including quality attributes:
 
-| Category | ID Range | Keywords for Detection |
-|----------|----------|------------------------|
-| Performance | 901-920 | latency, throughput, response time, p95, p99 |
-| Reliability | 921-940 | availability, MTBF, MTTR, fault tolerance, recovery |
-| Scalability | 941-960 | concurrent users, data volumes, horizontal scaling |
-| Security | 961-980 | authentication, authorization, encryption, RBAC |
-| Observability | 981-990 | logging, monitoring, tracing, alerting, metrics |
-| Maintainability | 991-999 | code coverage, deployment, CI/CD, documentation |
+| Category | Keywords for Detection |
+|----------|------------------------|
+| Performance | latency, throughput, response time, p95, p99 |
+| Reliability | availability, MTBF, MTTR, fault tolerance, recovery |
+| Scalability | concurrent users, data volumes, horizontal scaling |
+| Security | authentication, authorization, encryption, RBAC |
+| Observability | logging, monitoring, tracing, alerting, metrics |
+| Maintainability | code coverage, deployment, CI/CD, documentation |
 
-### NFR Inheritance
+### Quality Attribute Inheritance
 
-When formalizing NFRs from BRD/PRD:
-- **Inherit the same NFR ID**: If BRD defines `BRD.017.901`, EARS uses `EARS.017.901`
+When formalizing quality attributes from BRD/PRD:
+- **Use sequential numbering**: All requirements numbered sequentially (001, 002, 003...)
 - **Add EARS formalization**: Apply WHEN-THE-SHALL-WITHIN syntax
-- **Maintain traceability**: `@brd: BRD.017.901`
+- **Maintain traceability**: `@brd: BRD.017.015`
 
-### NFR Quality Attributes
+### Quality Attribute Categories
 
-**Performance** (901-920): Quantified latency, throughput, response time constraints
-**Security** (961-980): Authentication, authorization, encryption standards
-**Reliability** (921-940): Availability SLAs, fault tolerance, recovery objectives
-**Scalability** (941-960): Concurrent users, data volumes, growth projections
-**Observability** (981-990): Logging, monitoring, tracing, alerting requirements
-**Maintainability** (991-999): Code coverage, deployment, documentation standards
+**Performance**: Quantified latency, throughput, response time constraints
+**Security**: Authentication, authorization, encryption standards
+**Reliability**: Availability SLAs, fault tolerance, recovery objectives
+**Scalability**: Concurrent users, data volumes, growth projections
+**Observability**: Logging, monitoring, tracing, alerting requirements
+**Maintainability**: Code coverage, deployment, documentation standards
 
 ---
 
@@ -233,9 +233,9 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 - Observable verification methods defined: 10%
 - Edge cases and error conditions specified: 10%
 
-**NFR Completeness (15%)**:
+**Quality Attribute Completeness (15%)**:
 - Performance targets quantifiable with percentiles: 5%
-- security/compliance requirements complete: 5%
+- Security/compliance requirements complete: 5%
 - Reliability/scalability targets measurable: 5%
 
 **Strategic Alignment (10%)**:
@@ -389,7 +389,7 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 2. Check for:
    - Tag consistency (all use `ears`)
    - document_type consistency (all use `ears`)
-   - Source Document format (`@prd: PRD-NNN`)
+   - Source Document format (`@prd: PRD.NNN.NNN`)
    - Section numbering (sequential)
 3. Fix any errors before continuing
 
@@ -410,9 +410,9 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 | `ears-NNN` | `ears` |
 | `document_type: engineering-requirements` | `document_type: ears` |
 | `architecture_approach: value` | `architecture_approaches: [value]` |
-| `Source Document: PRD-NNN` | `Source Document: @prd: PRD-NNN` |
+| `Source Document: PRD-NNN` | `Source Document: @prd: PRD.NNN.NNN` |
 | `> **Tags**: @prd: ...` | `**Traceability**: @prd: ...` |
-| `@prd: PRD-001, @threshold: ...` | `@prd: PRD-001 \| @threshold: ...` |
+| `@prd: PRD.001.001, @threshold: ...` | `@prd: PRD.001.001 \| @threshold: ...` |
 | `Status: Approved` (with 50% BDD score) | `Status: Draft` |
 
 ### Session Summary Template

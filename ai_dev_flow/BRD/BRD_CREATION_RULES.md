@@ -72,7 +72,7 @@ Every BRD must contain these exact 19 numbered sections in order:
 4. **Stakeholders** - Stakeholder analysis, roles and responsibilities, communication matrix
 5. **User Stories** - Primary user stories, secondary user stories, edge cases and exceptions
 6. **Functional Requirements** - Overview, requirements by category, business rules, user roles/permissions
-7. **Non-Functional Requirements** - Overview, performance, security, availability, scalability, usability, compatibility, compliance
+7. **Quality Attributes** - Overview, performance, security, availability, scalability, usability, compatibility, compliance
 8. **Business Constraints and Assumptions** - Assumptions with validation methods, budget/schedule/resource/technical constraints, dependencies
 9. **Acceptance Criteria** - Business acceptance, functional acceptance, success metrics/KPIs, UAT criteria, go-live readiness
 10. **Business Risk Management** - Risk register with assessment, risk categories, monitoring/review
@@ -321,7 +321,7 @@ When performing major refactoring (version X.0), document the transformation:
 
    **BEFORE (v1.0 - PRD-Level, Score 65/100)**:
    ```markdown
-   ### FR-005: Transaction Initiation API
+   ### FR-005: Transaction Initiation API (DEPRECATED FORMAT)
 
    | Field | Requirement |
    |-------|-------------|
@@ -333,7 +333,7 @@ When performing major refactoring (version X.0), document the transformation:
 
    **AFTER (v2.0 - Business-Level, Score 95/100)**:
    ```markdown
-   #### FR-005: Customer-Initiated Cross-Border Transaction
+   ### BRD.NNN.005: Customer-Initiated Cross-Border Transaction
 
    **Business Capability**: Enable customers to initiate remittance transactions to Uzbekistan recipients with selected funding source
 
@@ -1182,7 +1182,7 @@ if (amount >= 501 && amount <= 2000) {
 ```markdown
 | Topic Area | Decision Needed | Business Driver | Key Considerations |
 |------------|-----------------|---------------|-------------------|
-| Database Selection | Choose data storage technology | NFR: Data persistence requirements | SAS 70 Type II compliance, horizontal scaling |
+| Database Selection | Choose data storage technology | Quality Attribute: Data persistence requirements | SAS 70 Type II compliance, horizontal scaling |
 ```
 
 ---
@@ -1200,29 +1200,34 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 #### 17.1.1 Business Objectives → Functional Requirements
 
 **Required Table Format**:
+
 | Business Objective | Related Functional Requirements | Related User Stories | Coverage Status |
 |--------------------|--------------------------------|----------------------|-----------------|
-| [BO-1: Objective description] | FR-001, FR-002, FR-005 | US-001, US-003, US-008 | Complete/Partial/Gap |
+| [BO-1: Objective description] | BRD.NNN.001, BRD.NNN.002, BRD.NNN.005 | US-001, US-003, US-008 | Complete/Partial/Gap |
 
 **Requirements**:
+
 - Every Business Objective (section 2.4) MUST appear in this table
 - Coverage Status: "Complete" (all requirements documented), "Partial" (known gaps exist), "Gap" (no requirements yet)
-- Related FRs: Reference all Functional Requirement IDs that contribute to the objective
+- Related Functional Requirements: Reference all BRD.NNN.NNN IDs that contribute to the objective
 - Related User Stories: Reference all User Story IDs demonstrating the objective
 
 **Orphan Detection**:
-- **Orphaned Objective**: Business objective with Coverage Status = "Gap" (no FRs linked)
-- **Unlinked FR**: Functional requirement not appearing in any Business Objective row
+
+- **Orphaned Objective**: Business objective with Coverage Status = "Gap" (no functional requirements linked)
+- **Unlinked Functional Requirement**: Functional requirement not appearing in any Business Objective row
 - Zero orphans required for BRD approval
 
 #### 17.1.2 Functional Requirements → Technical Specifications
 
 **Required Table Format**:
+
 | Functional Requirement | Downstream SPEC (Planned) | Downstream IMPL (Planned) | Status |
 |------------------------|---------------------------|---------------------------|--------|
-| FR-001: [Requirement title] | SPEC-XXX-001: [Specification name] | IMPL-XXX-001: [Implementation name] | Planned |
+| BRD.NNN.001: [Requirement title] | SPEC-XXX-001: [Specification name] | IMPL-XXX-001: [Implementation name] | Planned |
 
 **Requirements**:
+
 - Every Functional Requirement (section 4) MUST appear in this table
 - Downstream artifacts initially marked "Planned" (created during PRD/SPEC phases)
 - SPEC-XXX format: Use BRD ID as XXX (e.g., BRD-005 → SPEC-005-001)
@@ -1230,22 +1235,22 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 
 **Forward Traceability**: Enables impact analysis when changing functional requirements
 
-#### 17.1.3 Non-Functional Requirements → Technical Specifications
+#### 17.1.3 Quality Attributes → Technical Specifications
 
 **Required Table Format**:
-| NFR Category | ID Range | Downstream SPEC (Planned) | Validation Method |
-|--------------|----------|---------------------------|-------------------|
-| Performance | 901-920 | SPEC-XXX-NFR-P: Performance Testing | Load testing |
-| Reliability | 921-940 | SPEC-XXX-NFR-A: Deployment Architecture | Uptime monitoring |
-| Scalability | 941-960 | SPEC-XXX-NFR-SC: Scaling Infrastructure | Capacity testing |
-| Security & Compliance | 961-980 | SPEC-XXX-NFR-S: Security Controls | Security audit |
-| Observability | 981-990 | SPEC-XXX-NFR-O: Monitoring Stack | Dashboard review |
-| Maintainability | 991-999 | SPEC-XXX-NFR-M: DevOps Pipeline | CI/CD metrics |
+| Quality Attribute Category | Downstream SPEC (Planned) | Validation Method |
+|---------------------------|---------------------------|-------------------|
+| Performance | SPEC-XXX-QA-P: Performance Testing | Load testing |
+| Reliability | SPEC-XXX-QA-R: Deployment Architecture | Uptime monitoring |
+| Scalability | SPEC-XXX-QA-SC: Scaling Infrastructure | Capacity testing |
+| Security & Compliance | SPEC-XXX-QA-S: Security Controls | Security audit |
+| Observability | SPEC-XXX-QA-O: Monitoring Stack | Dashboard review |
+| Maintainability | SPEC-XXX-QA-M: DevOps Pipeline | CI/CD metrics |
 
 **Requirements**:
-- Group NFRs by category using 900-series numbering (901-920 PERF, 921-940 REL, 941-960 SCAL, 961-980 SEC, 981-990 OBS, 991-999 MAINT)
+- Group quality attributes by category using unified sequential numbering
 - Specify validation method for each category (testing, audit, monitoring)
-- Use NFR-specific SPEC naming convention (SPEC-XXX-NFR-[Category])
+- Use quality attribute SPEC naming convention (SPEC-XXX-QA-[Category])
 
 ### 8.2 Same-Type References / Cross-BRD Dependencies (Template section 17.2)
 
@@ -1288,19 +1293,20 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 **Purpose**: Map requirements to planned test artifacts to ensure comprehensive test coverage.
 
 **Required Table Format**:
+
 | Requirement Category | Test Type Required | Planned Test Specification | Coverage Target |
 |----------------------|-------------------|---------------------------|-----------------|
-| FR-001 through FR-XXX | Unit Tests | TEST-XXX-UNIT: FR Unit Test Suite | 95% |
-| FR-001 through FR-XXX | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
+| BRD.NNN.001 through BRD.NNN.NNN | Unit Tests | TEST-XXX-UNIT: Functional Requirement Unit Test Suite | 95% |
+| BRD.NNN.001 through BRD.NNN.NNN | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
 | User Stories (US-001 through US-XXX) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
-| NFR Performance | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
-| NFR security | security Tests | TEST-XXX-regulatory: security Audit | All controls |
+| Performance Quality Attributes | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
+| Security Quality Attributes | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
 
 **Coverage Targets**:
 - **Unit Tests**: 95% code coverage for functional requirements
 - **Integration Tests**: 85% coverage for inter-component interactions
 - **Acceptance Tests**: 100% coverage for user stories (BDD scenarios)
-- **NFR Tests**: 100% coverage for all SLA thresholds and security controls
+- **Quality Attribute Tests**: 100% coverage for all SLA thresholds and security controls
 
 ### 8.4 Traceability Summary (Template section 17.4)
 
@@ -1311,7 +1317,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 |----------|-------------|----------------|-----------------|------------|
 | Business Objectives | [Count] | [Count with FR links] | N/A | [%] |
 | Functional Requirements | [Count] | [Count with SPEC links] | [Count with BO links] | [%] |
-| Non-Functional Requirements | [Count] | [Count with SPEC links] | [Count with BO links] | [%] |
+| Quality Attributes | [Count] | [Count with SPEC links] | [Count with BO links] | [%] |
 | User Stories | [Count] | [Count with FR links] | [Count with BO links] | [%] |
 
 **Traceability Health Score**: [X]% (Target: ≥90%)
@@ -1326,62 +1332,63 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 - **Zero Orphaned Objectives**: Every BO must link to at least one FR
 - **Zero Orphaned FRs**: Every FR must link to at least one BO
 - **Zero Orphaned User Stories**: Every US must link to at least one FR
-- **Complete Forward Links**: Every FR/NFR must have planned downstream SPEC
+- **Complete Forward Links**: Every FR/QA must have planned downstream SPEC
 
 ### 8.5 Legacy Traceability Fields (Project-Specific)
 
 For projects with existing strategy documents:
 
 **Required Traceability Fields**:
+
 - **Upstream Sources**: Business strategy documents (domain-specific business logic sections)
 - **Downstream Artifacts**: PRD, SYS, EARS, BDD, REQ sequences
 - **Strategy References**: Specific sections from strategy documents
 - **Business Rationale**: Business justification for each requirement
 - **Acceptance Criteria**: Verifiable by business stakeholders
-- **Anchors/IDs**: `BO-XXX`, `FR-XXX`, `NFR-{CATEGORY}-XXX` for each requirement
+- **Anchors/IDs**: `BO-XXX`, `BRD.NNN.NNN` (functional requirements), quality attributes use unified sequential numbering
 - **Code Path(s)**: Strategic impact area
 
 ---
 
-## 8.6 NFR Categorical Prefix Standard
+## 8.6 Quality Attribute Categories
 
-Non-Functional Requirements (NFRs) use categorical prefixes for automated categorization and cross-layer traceability.
+Quality Attributes use unified sequential numbering (same as all other requirements) with category identification via keywords and section context.
 
-### NFR Format
+### Quality Attribute Format
 
-**Pattern**: `TYPE.NNN.9XX` (900-series for NFRs)
+**Pattern**: `TYPE.NNN.NNN` (unified sequential numbering)
 
-| Category | ID Range | Example | Keywords |
-|----------|--------|---------|----------|
-| Performance | 901-920 | `BRD.017.901` | latency, response time, throughput, p95, TPS |
-| Reliability | 921-940 | `BRD.017.921` | uptime, availability, MTBF, MTTR, failover |
-| Scalability | 941-960 | `BRD.017.941` | concurrent users, horizontal scaling, capacity |
-| Security | 961-980 | `BRD.017.961` | authentication, authorization, encryption, RBAC |
-| Observability | 981-990 | `BRD.017.981` | logging, monitoring, alerting, metrics |
-| Maintainability | 991-999 | `BRD.017.991` | code coverage, deployment, CI/CD, documentation |
+| Category | Keywords for Detection | Example |
+|----------|------------------------|---------|
+| Performance | latency, response time, throughput, p95, TPS | `BRD.017.015` |
+| Reliability | uptime, availability, MTBF, MTTR, failover | `BRD.017.016` |
+| Scalability | concurrent users, horizontal scaling, capacity | `BRD.017.017` |
+| Security | authentication, authorization, encryption, RBAC | `BRD.017.018` |
+| Observability | logging, monitoring, alerting, metrics | `BRD.017.019` |
+| Maintainability | code coverage, deployment, CI/CD, documentation | `BRD.017.020` |
 
 ### AI Auto-Assignment
 
-AI assistants should automatically assign NFR categories based on:
+AI assistants should identify quality attribute categories based on:
 
 1. **Keyword Matching** (Primary): Match requirement text against category keywords
-2. **Section Context**: Use section header (e.g., "Performance Requirements" → PERF)
-3. **Metric Type**: Response time → PERF, uptime → REL, concurrent users → SCAL
+2. **Section Context**: Use section header (e.g., "Performance Requirements" → Performance)
+3. **Metric Type**: Response time → Performance, uptime → Reliability, concurrent users → Scalability
 
 ### Cross-Reference Format
 
-Use unified format for NFR cross-references:
+Use unified format for quality attribute cross-references:
 ```markdown
-@brd: BRD.017.901
+@brd: BRD.017.015
 ```
 
 ### Downstream Inheritance
 
-NFR IDs use 900-series numbering consistently across all downstream artifacts:
-- BRD defines: `BRD.017.901` (Performance)
-- PRD inherits: `PRD.017.901`
-- EARS formalizes: `EARS.017.901`
-- SYS implements: `SYS.017.901`
+Quality attribute IDs use unified sequential numbering consistently across all downstream artifacts:
+- BRD defines: `BRD.017.015` (Performance)
+- PRD inherits: `PRD.017.015`
+- EARS formalizes: `EARS.017.015`
+- SYS implements: `SYS.017.015`
 
 ---
 

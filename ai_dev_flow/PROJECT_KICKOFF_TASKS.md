@@ -50,7 +50,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-001_business_objectives.md
 **Tasks**:
 1. Create PRD-001 (Product Requirements Document)
    - User-facing features
-   - Non-functional requirements
+   - Quality attributes
    - Constraints
 2. Create EARS-001 (Easy Approach to Requirements Syntax)
    - Measurable requirements using WHEN-THE-SHALL format

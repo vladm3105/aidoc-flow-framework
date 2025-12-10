@@ -18,7 +18,7 @@ custom_fields:
 API Contracts (CTR) define precise interface specifications between components using a **Design by Contract** approach. Contracts establish formal agreements on:
 - Request/response schemas (structure, types, constraints)
 - Error codes and failure modes
-- Non-functional requirements (latency, throughput, idempotency)
+- Quality attributes (latency, throughput, idempotency)
 - Versioning policies and compatibility rules
 
 Contracts enable parallel development by allowing providers and consumers to implement independently against the same specification, reducing integration time and defects.
@@ -49,7 +49,7 @@ Each contract consists of TWO synchronized files:
 - Contract definition: Parties, communication patterns
 - Requirements satisfied: Traceability to REQ/ADR
 - Error handling: Error codes, failure modes, recovery strategies
-- Non-functional requirements: Performance, security, reliability targets
+- Quality attributes: Performance, security, reliability targets
 - Versioning strategy: Compatibility rules, deprecation policy
 - Examples: Request/response samples, edge cases
 - Traceability: Upstream sources, downstream artifacts
@@ -63,7 +63,7 @@ Each contract consists of TWO synchronized files:
 - Traceability references: Upstream REQ/ADR IDs
 - Request/response schemas: JSON Schema format
 - Error codes: Code, HTTP status, description, retry safety
-- Non-functional requirements: Latency, throughput, timeouts
+- Quality attributes: Latency, throughput, timeouts
 - Versioning metadata: Breaking changes, compatibility flags
 - security requirements: Authentication, authorization, encryption
 
@@ -189,7 +189,7 @@ Before marking a contract as "Active", ensure:
 - [ ] **Traceability Complete**: All upstream REQ/ADR referenced, downstream SPEC linked
 - [ ] **Error Handling Defined**: All error codes documented with retry strategies
 - [ ] **Examples Present**: At least 3 examples (success, error, edge case)
-- [ ] **Non-Functional Requirements**: Performance, security, reliability targets specified
+- [ ] **Quality Attributes**: Performance, security, reliability targets specified
 - [ ] **Versioning Policy**: Semantic versioning rules and deprecation policy documented
 - [ ] **Stakeholder Approval**: Provider and consumer teams reviewed and approved
 - [ ] **Contract Tests Planned**: Test strategy for validating implementation compliance

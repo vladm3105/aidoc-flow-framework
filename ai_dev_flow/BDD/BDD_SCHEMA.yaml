@@ -236,7 +236,7 @@ gherkin_patterns:
       - "@primary"
       - "@negative"
       - "@functional"
-      - "@non_functional"
+      - "@quality_attribute"
       - "@acceptance"
       - "@integration"
       - "@edge_case"
@@ -311,8 +311,8 @@ scenario_categories:
     description: "Cross-component integration tests"
     min_count: 0
 
-  non_functional:
-    tags: ["@non_functional", "@performance", "@security", "@reliability"]
+  quality_attribute:
+    tags: ["@quality_attribute", "@performance", "@security", "@reliability"]
     description: "Performance, security, reliability scenarios"
     recommended_count: 1
 

@@ -64,7 +64,7 @@ def build_document_index(docs_dir: Path) -> Dict:
         {
             'BRD-001': {
                 'path': Path('docs/BRD/BRD-001_...md'),
-                'requirements': {'FR-001', 'FR-002', 'NFR-010', ...}
+                'requirements': {'BRD.001.001', 'BRD.001.002', ...}
             },
             'SPEC-003': {
                 'path': Path('docs/SPEC/SPEC-003_...yaml'),

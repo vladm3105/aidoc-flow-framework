@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type BRD --output docs/BRD/BR
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@brd: BRD.001.NNN` (for specific requirements) or `@brd: BRD-001` (for document-level refs)
+**Tag Format:** `@brd: BRD.NNN.NNN` (unified feature-level format, e.g., `BRD.001.030`)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -124,9 +124,9 @@ However, BRD documents should reference their strategic sources in the "Upstream
 ### 12.2 Downstream Artifacts
 
 **Direct Dependencies**:
-- PRD-016: operation execution Product Requirements (`@brd: BRD.009.015`)
-- PRD-017: Order Management Features (`@brd: BRD.009.020`)
-- EARS-012: Formal operation execution requirements (`@brd: BRD.009.015`)
+- PRD.016.001: operation execution Product Requirements (`@brd: BRD.009.015`)
+- PRD.017.001: Order Management Features (`@brd: BRD.009.020`)
+- EARS.012.001: Formal operation execution requirements (`@brd: BRD.009.015`)
 ```
 
 ### 2.4 Validation Rules
@@ -159,7 +159,7 @@ Strategy (External) → BRD (Layer 1)
                         ↓
             PRD (Layer 2): @brd: BRD.009.015
                         ↓
-         EARS (Layer 3): @brd: BRD.009.015, @prd: PRD-016...
+         EARS (Layer 3): @brd: BRD.009.015, @prd: PRD.016.001...
                         ↓
          [Complete chain through Code and Tests]
 ```

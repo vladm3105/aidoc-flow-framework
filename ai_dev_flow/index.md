@@ -47,7 +47,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 - **SYS** (`SYS/`) - Layer 6: System Requirements Specifications consolidating requirements into system designs
   - Index: [SYS-000_index.md](./SYS/SYS-000_index.md)
   - Template: [SYS-TEMPLATE.md](./SYS/SYS-TEMPLATE.md)
-  - Purpose: System-level functional and non-functional requirements
+  - Purpose: System-level functional requirements and quality attributes
 
 ### Requirements Layer (Layer 7)
 

@@ -919,7 +919,7 @@ Document your ADR's relationship to other project artifacts:
 
 **Related ADRs:**
 - [ADR-NNN: Networking Architecture](./ADR-NNN_networking_architecture.md): VPC and Load Balancer prerequisite
-- [ADR-YY: regulatoryrets Management](./ADR-YYY_regulatoryrets_management_strategy.md): API key management for Cloud Run
+- [ADR-YY: Secrets Management](./ADR-YYY_Secrets_management_strategy.md): API key management for Cloud Run
 - [ADR-ZZZ: Database Layer Design](./ADR-ZZZ_cloud_sql_instance_sizing.md): Risk validator database sizing
 
 **Downstream Implementation:**

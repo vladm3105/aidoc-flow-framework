@@ -245,7 +245,7 @@ When migrating a Legacy PRD to Current status:
 ### Functional Requirements
 - None yet
 
-### Non-Functional Requirements
+### Quality Attributes
 - None yet
 
 ## Metrics
@@ -302,7 +302,7 @@ When migrating a Legacy PRD to Current status:
 Before marking PRD as "Approved":
 - ✅ All user stories follow standard format (As a... I want... So that...)
 - ✅ Functional requirements are testable and specific
-- ✅ Non-functional requirements have measurable criteria
+- ✅ Quality attributes have measurable criteria
 - ✅ Cross-references to BRD are complete
 - ✅ Acceptance criteria defined for each feature
 - ✅ **EARS-Ready score ≥90** (required for EARS progression)

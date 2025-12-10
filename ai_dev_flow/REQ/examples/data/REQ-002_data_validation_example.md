@@ -263,7 +263,7 @@ request_validation:
     max_errors_reported: 10
 ```
 
-## 7. Non-Functional Requirements
+## 7. Quality Attributes
 
 | Metric | Target (p95) | Measurement |
 |--------|--------------|-------------|

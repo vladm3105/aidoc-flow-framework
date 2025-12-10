@@ -193,7 +193,7 @@ yaml_version=$(grep "version:" "$CTR_YAML_FILE" | head -1)
 
 | Tag | Required | Format |
 |-----|----------|--------|
-| @req | Yes | REQ-NNN |
+| @req | Yes | REQ.NNN.NNN (unified format) |
 | @adr | Conditional | ADR-NNN (if architecture decisions exist) |
 | @spec | Conditional | SPEC-NNN (if specifications exist) |
 
@@ -201,13 +201,14 @@ yaml_version=$(grep "version:" "$CTR_YAML_FILE" | head -1)
 
 ```markdown
 # Correct formats
-@req: REQ-001, REQ-002
+@req: REQ.001.001, REQ.002.001
 @adr: ADR-003
-@spec: SPEC-001:api_client
+@spec: SPEC-001
 
 # Incorrect formats
-@req: REQ001          # Missing hyphen
-@req REQ-001          # Missing colon
+@req: REQ-001         # Old format (use unified REQ.NNN.NNN)
+@req: REQ001          # Missing separators
+@req REQ.001.001      # Missing colon
 @requirement: REQ-001 # Wrong tag name
 ```
 
@@ -385,7 +386,7 @@ Result: PASSED WITH WARNINGS
 ### Error: Missing @req Tag
 
 **Symptom**: Validation fails on traceability check
-**Fix**: Add `@req: REQ-NNN` tag with valid requirement references
+**Fix**: Add `@req: REQ.NNN.NNN` tag with valid requirement references (unified format)
 
 ### Error: Version Mismatch
 

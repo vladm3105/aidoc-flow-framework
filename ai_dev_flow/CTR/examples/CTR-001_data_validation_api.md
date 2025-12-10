@@ -186,7 +186,7 @@ Synchronous REST-style request/response contract for data validation. Provider a
 
 ---
 
-# PART 3: Non-Functional Requirements
+# PART 3: Quality Attributes
 
 ## Performance
 - **Latency**: p50 < 50ms, p99 < 100ms

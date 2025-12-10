@@ -187,8 +187,8 @@ Before proposing new technologies, verify compliance with project-wide technolog
 ### 6.2 Source Business Logic
 [References to product strategy, business rules, or domain logic justifying this architectural approach]
 
-### 6.3 Non-Functional Requirements
-[Links to NFRs (performance, security, scalability, reliability) addressed by this decision:
+### 6.3 Quality Attributes
+[Links to quality attributes (performance, security, scalability, reliability) addressed by this decision:
 - Performance: [specific metrics/constraints satisfied]
 - security: [security requirements addressed]
 - Scalability: [capacity/throughput requirements met]
@@ -270,7 +270,7 @@ flowchart TD
 ### 9.2 Dependencies
 - **Required Components**: [List with interfaces/contracts needed]
 - **External Services**: [APIs, databases, third-party services]
-- **Configuration**: [Required settings, regulatoryrets, certificates]
+- **Configuration**: [Required settings, Secrets, certificates]
 - **Infrastructure**: [Compute, network, storage requirements]
 
 ### 9.3 Resources
@@ -410,7 +410,7 @@ flowchart TD
 - [Audit logging requirements and security event tracking]
 
 ### 13.5 Secrets Management
-- [Credential handling following ADR-### for regulatoryrets management]
+- [Credential handling following ADR-### for Secrets management]
 - [Key rotation, access control, and compromise response]
 
 ### 13.6 Compliance
@@ -440,7 +440,7 @@ flowchart TD
 
 ### 15.3 Configuration Management
 - [Required configuration parameters and validation]
-- [Environment-specific overrides and regulatoryrets handling]
+- [Environment-specific overrides and Secrets handling]
 - [Configuration deployment and rollback procedures]
 
 ### 15.4 Rollback Procedures

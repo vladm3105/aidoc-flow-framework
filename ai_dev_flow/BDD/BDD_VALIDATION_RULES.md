@@ -145,7 +145,7 @@ grep -n "^#.*@ears:" docs/BDD/*.feature
 - Primary success scenarios present
 - Error conditions covered
 - Edge cases included
-- Non-functional scenarios specified
+- Quality attribute scenarios specified
 
 ### CHECK 6: BDD Syntax Validation
 
@@ -209,7 +209,7 @@ find docs/BDD -name "BDD-*.feature" -exec ./scripts/validate_bdd_template.sh {} 
 - Performance benchmarks quantifiable: 5%
 
 **Architecture Requirements (25%)**:
-- Performance/security/scalability NFRs: 15%
+- Performance/security/scalability quality attributes: 15%
 - Integration points defined: 10%
 
 **Business Validation (10%)**:
@@ -253,7 +253,7 @@ find docs/BDD -name "BDD-*.feature" -exec ./scripts/validate_bdd_template.sh {} 
 ### Mistake #4: Missing Scenario Types
 ```
 ❌ Only success scenarios included
-✅ Include @negative @edge_case @non_functional scenarios
+✅ Include @negative @edge_case @quality_attribute scenarios
 ```
 
 ---

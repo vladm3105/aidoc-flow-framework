@@ -144,7 +144,7 @@ traceability:
         link: "../reqs/.../REQ-MMM_...md#REQ-MMM"
         title: "[Another requirement title]"
         spec_sections: ["performance", "security"]
-        relationship: "Non-functional requirement this SPEC satisfies"
+        relationship: "Quality attribute this SPEC satisfies"
         verification_method: "Performance test, security scan"
 
     behavioral_tests:
@@ -357,7 +357,7 @@ traceability:
 
   # Threshold Registry References (Required when performance/SLA values specified)
   # Prevents magic numbers by referencing centralized threshold registry
-  # Format: @threshold: PRD-NNN:category.subcategory.key
+  # Format: @threshold: PRD.NNN.category.subcategory.key
   threshold_references:
     registry_document: "PRD-NNN"  # Threshold registry document ID
     keys_used:
@@ -693,7 +693,7 @@ caching:
       configuration:
         host: "redis-cluster"
         port: 6379
-        password_regulatoryret: "redis-password"
+        password_Secret: "redis-password"
         ssl_enabled: true
         connection_pool_size: 20
         max_idle_connections: 5
@@ -724,24 +724,24 @@ caching:
 # RATE LIMITING
 # ===================
 # NOTE: Use @threshold registry references for rate limit values
-# Format: "@threshold: PRD-NNN:limit.category.key"
+# Format: "@threshold: PRD.NNN.limit.category.key"
 
 rate_limiting:
   enabled: true
   strategy: "token_bucket"  # token_bucket, sliding_window, fixed_window, leaky_bucket
 
   global_limits:
-    requests_per_minute: "@threshold: PRD-NNN:limit.api.requests_per_minute"
-    requests_per_hour: "@threshold: PRD-NNN:limit.api.requests_per_hour"
-    burst_limit: "@threshold: PRD-NNN:limit.api.burst"
+    requests_per_minute: "@threshold: PRD.NNN.limit.api.requests_per_minute"
+    requests_per_hour: "@threshold: PRD.NNN.limit.api.requests_per_hour"
+    burst_limit: "@threshold: PRD.NNN.limit.api.burst"
 
   per_client_limits:
     identified_users:
-      requests_per_minute: "@threshold: PRD-NNN:limit.user.requests_per_minute"
-      requests_per_hour: "@threshold: PRD-NNN:limit.user.requests_per_hour"
+      requests_per_minute: "@threshold: PRD.NNN.limit.user.requests_per_minute"
+      requests_per_hour: "@threshold: PRD.NNN.limit.user.requests_per_hour"
     anonymous_users:
-      requests_per_minute: "@threshold: PRD-NNN:limit.anonymous.requests_per_minute"
-      requests_per_hour: "@threshold: PRD-NNN:limit.anonymous.requests_per_hour"
+      requests_per_minute: "@threshold: PRD.NNN.limit.anonymous.requests_per_minute"
+      requests_per_hour: "@threshold: PRD.NNN.limit.anonymous.requests_per_hour"
 
   per_endpoint_limits:
     "/api/expensive-operation":
@@ -824,26 +824,26 @@ circuit_breaker:
 # PERFORMANCE SPECIFICATIONS
 # ===================
 # NOTE: Use @threshold registry references for all quantitative values
-# Format: "@threshold: PRD-NNN:category.subcategory.key"
+# Format: "@threshold: PRD.NNN.category.subcategory.key"
 # See: ../PRD/PRD-000_threshold_registry_template.md
 
 performance:
   latency_targets:
-    p50_milliseconds: "@threshold: PRD-NNN:perf.api.p50_latency"
-    p95_milliseconds: "@threshold: PRD-NNN:perf.api.p95_latency"
-    p99_milliseconds: "@threshold: PRD-NNN:perf.api.p99_latency"
-    max_milliseconds: "@threshold: PRD-NNN:perf.api.max_latency"
+    p50_milliseconds: "@threshold: PRD.NNN.perf.api.p50_latency"
+    p95_milliseconds: "@threshold: PRD.NNN.perf.api.p95_latency"
+    p99_milliseconds: "@threshold: PRD.NNN.perf.api.p99_latency"
+    max_milliseconds: "@threshold: PRD.NNN.perf.api.max_latency"
 
   throughput_targets:
-    sustained_requests_per_second: "@threshold: PRD-NNN:limit.api.requests_per_second"
-    burst_requests_per_second: "@threshold: PRD-NNN:limit.api.burst"
+    sustained_requests_per_second: "@threshold: PRD.NNN.limit.api.requests_per_second"
+    burst_requests_per_second: "@threshold: PRD.NNN.limit.api.burst"
     cooldown_period_minutes: 5  # Non-critical operational value
 
   resource_limits:
-    cpu_cores_allocated: "@threshold: PRD-NNN:resource.compute.cpu_cores"
-    memory_mb_allocated: "@threshold: PRD-NNN:resource.memory.max_heap"
-    network_bandwidth_mbps: "@threshold: PRD-NNN:resource.network.bandwidth_mbps"
-    disk_iops: "@threshold: PRD-NNN:resource.storage.iops"
+    cpu_cores_allocated: "@threshold: PRD.NNN.resource.compute.cpu_cores"
+    memory_mb_allocated: "@threshold: PRD.NNN.resource.memory.max_heap"
+    network_bandwidth_mbps: "@threshold: PRD.NNN.resource.network.bandwidth_mbps"
+    disk_iops: "@threshold: PRD.NNN.resource.storage.iops"
 
   scaling_characteristics:
     vertical_scaling_supported: true
@@ -1034,9 +1034,9 @@ verification:
     - "[BDD-NNN.feature](../bbds/BDD-NNN.feature#scenario-performance-under-load)"
 
   performance_tests:
-    - target_p95_latency_ms: "@threshold: PRD-NNN:perf.api.p95_latency"
+    - target_p95_latency_ms: "@threshold: PRD.NNN.perf.api.p95_latency"
       test_scenario: "mixed_workload_100_rps"
-      success_criteria: "p95_latency < @threshold: PRD-NNN:perf.api.p95_latency AND error_rate < @threshold: PRD-NNN:sla.error_rate.target"
+      success_criteria: "p95_latency < @threshold: PRD.NNN.perf.api.p95_latency AND error_rate < @threshold: PRD.NNN.sla.error_rate.target"
 
   security_tests:
     - vulnerability_scanning: true
@@ -1044,10 +1044,10 @@ verification:
     - compliance_audit: ["owasp_top_10", "pci_dss_if_applicable"]
 
   load_tests:
-    - sustained_load_rps: "@threshold: PRD-NNN:limit.api.requests_per_second"
+    - sustained_load_rps: "@threshold: PRD.NNN.limit.api.requests_per_second"
       duration_minutes: 60
       success_criteria: "no_degradation_in_latency OR graceful_degradation"
-    - burst_load_rps: "@threshold: PRD-NNN:limit.api.burst"
+    - burst_load_rps: "@threshold: PRD.NNN.limit.api.burst"
       duration_minutes: 5
       success_criteria: "no_service_disruption"
 
@@ -1091,10 +1091,10 @@ implementation:
       required: true
       sensitive: false
       description: "Redis cluster connection URL"
-    - name: "API_KEY_regulatoryRET_NAME"
+    - name: "API_KEY_SECRET_NAME"
       required: true
       sensitive: true
-      description: "regulatoryret manager reference for API keys"
+      description: "Secret manager reference for API keys"
     - name: "LOG_LEVEL"
       required: false
       default: "INFO"
@@ -1180,10 +1180,10 @@ operations:
       - circuit_breaker_state
     alerting_rules:
       # Use @threshold references for alert thresholds
-      - condition: "error_rate > @threshold: PRD-NNN:sla.error_rate.warning"
+      - condition: "error_rate > @threshold: PRD.NNN.sla.error_rate.warning"
         severity: "warning"
         notification_channels: ["slack", "email"]
-      - condition: "p95_latency > @threshold: PRD-NNN:perf.api.p95_latency for 5 minutes"
+      - condition: "p95_latency > @threshold: PRD.NNN.perf.api.p95_latency for 5 minutes"
         severity: "warning"
         notification_channels: ["slack", "pagerduty"]
       - condition: "circuit_breaker_open for 5 minutes"

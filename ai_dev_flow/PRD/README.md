@@ -57,8 +57,8 @@ Every PRD should include a section that lists architectural topics requiring dec
 | Topic Area | Decision Needed | Business Driver (PRD Reference) | Key Considerations |
 |------------|-----------------|--------------------------------|-------------------|
 | Agent Framework | Select orchestration framework | FR-XXX (multi-agent coordination) | Google ADK, LangGraph, custom |
-| Database Technology | Choose operational database | FR-XXX (data persistence) + NFR-XXX (performance) | Cloud SQL, Firestore, BigQuery |
-| Caching Strategy | Define cache architecture | NFR-XXX (<100ms latency) | Redis, in-memory, CDN |
+| Database Technology | Choose operational database | FR-XXX (data persistence) + QA-XXX (performance) | Cloud SQL, Firestore, BigQuery |
+| Caching Strategy | Define cache architecture | QA-XXX (<100ms latency) | Redis, in-memory, CDN |
 
 **Purpose**: Identify architectural topics requiring decisions. Specific ADRs created AFTER this PRD.
 **Timing**: ADRs created after BRD → PRD → SYS → EARS → REQ in SDD workflow.
@@ -191,7 +191,7 @@ PRDs inherit categorization context from their source BRDs:
 
 **Technical Readiness (30%)**:
 - System boundaries and integration points defined: 10%
-- Non-functional requirements quantified (performance, security, etc.): 10%
+- Quality attributes quantified (performance, security, etc.): 10%
 - Architecture Decision Requirements table populated: 10%
 
 **Business Alignment (20%)**:

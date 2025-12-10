@@ -127,8 +127,8 @@ structure:
       name: "Configuration"
       description: "Section 6 with YAML schema, Environment Variables"
 
-    - pattern: "^## 7\\. Non-Functional Requirements"
-      name: "Non-Functional Requirements"
+    - pattern: "^## 7\\. Quality Attributes"
+      name: "Quality Attributes"
       description: "Section 7 with Performance, Reliability, Security, Scalability"
 
     - pattern: "^## 8\\. Implementation Guidance$"
@@ -196,10 +196,10 @@ structure:
 
     category_values:
       - Functional
-      - Non-Functional
       - Security
       - Performance
       - Reliability
+      - Scalability
 
   # Section numbering rules
   section_numbering:
@@ -264,7 +264,7 @@ req_patterns:
       configuration_completeness:
         weight: 15
         criteria: "YAML schema + env vars + validation"
-      nfr_completeness:
+      quality_attribute_completeness:
         weight: 10
         criteria: "Performance (p50/p95/p99) + reliability + security + scalability"
       implementation_guidance:
@@ -490,7 +490,7 @@ error_messages:
   W002: "Acceptance Criteria count below 15"
   W003: "Missing upstream traceability tags (require all 6: @brd, @prd, @ears, @bdd, @adr, @sys) - use format DOC.NNN.NNN"
   W004: "Missing Description Context or Use Case subsections"
-  W005: "Missing NFR Performance targets (p50/p95/p99)"
+  W005: "Missing Performance targets (p50/p95/p99)"
   W006: "Missing Implementation Guidance patterns"
   W007: "Code implementation paths appear to be placeholders"
   I001: "Consider adding database schema if data persistence required"

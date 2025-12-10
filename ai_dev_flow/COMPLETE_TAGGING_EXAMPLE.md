@@ -113,11 +113,11 @@ Need UI and API for sending notifications through multiple channels.
 
 **Tag Explanation**:
 - BRD.009.015 - Functional requirement for provider integration
-- BRD.009.006 - Non-functional requirement for delivery performance (mapped to BRD.009.901)
+- BRD.009.006 - Quality attribute for delivery performance
 
-**NFR References** (using unified format):
+**Quality Attribute References** (using unified sequential format):
 ```markdown
-@brd: BRD.009.901
+@brd: BRD.009.006
 ```
 
 **Upstream Sources**:
@@ -130,7 +130,7 @@ Need UI and API for sending notifications through multiple channels.
 **Tag Analysis**:
 - Tag count: 1 (cumulative: @brd)
 - Includes ALL upstream tags from Layer 1
-- References specific BRD functional and non-functional requirements
+- References specific BRD functional requirements and quality attributes
 
 ---
 
@@ -900,28 +900,28 @@ def test_reject_missing_recipient():
 
 ---
 
-## NFR Categorical Tagging Reference
+## Quality Attribute Tagging Reference
 
-Non-Functional Requirements use 900-series numbering for automated categorization:
+Quality Attributes use unified sequential numbering (same as functional requirements):
 
-| Category | ID Range | Example in This Chain |
-|----------|----------|----------------------|
-| Performance | 901-920 | `BRD.009.901` (100ms latency, 95th percentile) |
-| Reliability | 921-940 | N/A in this example |
-| Scalability | 941-960 | N/A in this example |
-| Security | 961-980 | N/A in this example |
-| Observability | 981-990 | N/A in this example |
-| Maintainability | 991-999 | N/A in this example |
+| Category | Example in This Chain |
+|----------|----------------------|
+| Performance | `BRD.009.006` (100ms latency, 95th percentile) |
+| Reliability | N/A in this example |
+| Scalability | N/A in this example |
+| Security | N/A in this example |
+| Observability | N/A in this example |
+| Maintainability | N/A in this example |
 
-**NFR Cross-Reference Format**: Use unified format with 900-series NFR IDs (e.g., `@brd: BRD.009.901`, `@sys: SYS.012.901`)
+**Quality Attribute Cross-Reference Format**: Use unified format with sequential IDs (e.g., `@brd: BRD.009.006`, `@sys: SYS.012.016`)
 
 **Example from this chain**:
 ```markdown
-@brd: BRD.009.901   # Performance: 100ms validation latency
-@sys: SYS.012.901   # Same NFR inherited to SYS layer
+@brd: BRD.009.006   # Performance: 100ms validation latency
+@sys: SYS.012.016   # Quality attribute inherited to SYS layer
 ```
 
-**Cross-Layer Consistency**: NFR IDs remain consistent across all layers for complete traceability (BRD → PRD → EARS → SYS).
+**Cross-Layer Consistency**: Quality attribute IDs use unified sequential numbering across all layers for complete traceability (BRD → PRD → EARS → SYS).
 
 ---
 

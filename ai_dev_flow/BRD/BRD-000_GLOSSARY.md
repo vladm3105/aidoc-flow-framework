@@ -36,7 +36,7 @@ This document provides centralized definitions for common business, technical, r
 | Define in BRD-000_GLOSSARY.md | Define in Individual BRD section 18 |
 |-------------------------------|-------------------------------------|
 | ✅ Terms used across 3+ BRDs | ✅ Project-specific terminology |
-| ✅ Standard BRD framework terms (FR, NFR, BO) | ✅ Unique partner names |
+| ✅ Standard BRD framework terms (FR, QA, BO) | ✅ Unique partner names |
 | ✅ Common business terms (KPI, ROI, stakeholder) | ✅ Project-specific acronyms |
 | ✅ Standard abbreviations | ✅ Domain concepts unique to ONE project |
 | ✅ Industry-standard regulatory terms | ✅ Custom workflow terminology |
@@ -78,7 +78,7 @@ Common technical terminology explained for business stakeholders.
 |------|------------|---------------------|
 | API | Application Programming Interface - method for systems to communicate and exchange data | Partner integrations, section 6 FRs |
 | Integration | Connection between two or more systems to share data and functionality | Partner ecosystems, external systems |
-| SLA | Service Level Agreement - commitment between service provider and client defining service expectations | NFRs section 7.5, performance requirements |
+| SLA | Service Level Agreement - commitment between service provider and client defining service expectations | Quality Attributes section 7.5, performance requirements |
 | Webhook | Automated notification sent from one system to another when specific events occur | Status updates, real-time integrations |
 
 ---
@@ -114,7 +114,7 @@ Standard abbreviations used across BRD framework.
 | IPLAN | Implementation Plan | SDD Framework |
 | KPI | Key Performance Indicator | Business |
 | KYC | Know Your Customer | Compliance |
-| NFR | Non-Functional Requirement | BRD Framework |
+| QA | Quality Attribute | BRD Framework |
 | PRD | Product Requirements Document | SDD Framework |
 | REQ | Atomic Requirement | SDD Framework |
 | ROI | Return on Investment | Business |
@@ -146,12 +146,12 @@ Regulatory, industry, and technical standards referenced in BRDs.
 
 | Standard | Organization | Relevance | Common Application |
 |----------|--------------|-----------|-------------------|
-| PCI-DSS | Payment Card Industry security Standards Council | Payment security compliance | Payment processing BRDs, NFRs section 7.3 |
-| GDPR | European Union | Data privacy regulation | Data handling, NFR section 7.3 |
-| CCPA | State of California | Consumer privacy rights | Data handling, NFR section 7.3 |
-| SOC 2 | AICPA | security and availability controls | security NFRs, audit requirements |
-| ISO 27001 | International Organization for Standardization | Information security management | security NFRs, section 7.3 |
-| WCAG 2.1 | W3C | Web accessibility standards | Accessibility NFRs, section 7.8 |
+| PCI-DSS | Payment Card Industry security Standards Council | Payment security compliance | Payment processing BRDs, Quality Attributes section 7.3 |
+| GDPR | European Union | Data privacy regulation | Data handling, QA section 7.3 |
+| CCPA | State of California | Consumer privacy rights | Data handling, QA section 7.3 |
+| SOC 2 | AICPA | security and availability controls | security QAs, audit requirements |
+| ISO 27001 | International Organization for Standardization | Information security management | security QAs, section 7.3 |
+| WCAG 2.1 | W3C | Web accessibility standards | Accessibility QAs, section 7.8 |
 | FinCEN | US Department of Treasury | AML/CFT compliance | Financial services BRDs, regulatory requirements |
 | OFAC | US Department of Treasury Office of Foreign Assets Control | Sanctions screening | Cross-border transactions, compliance FRs |
 

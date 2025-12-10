@@ -663,7 +663,7 @@ API contracts and interface agreements for external integration.
 **Configuration Paths**:
 - `config/[system_name].yaml`: System configuration
 - `config/environments/[env]/[system_name].yaml`: Environment-specific config
-- `regulatoryrets/[system_name]/`: regulatoryrets and credentials (not in version control)
+- `secrets/[system_name]/`: secrets and credentials (not in version control)
 
 **Test Paths**:
 - `tests/unit/[module_name]/`: Unit tests for system components
@@ -876,7 +876,7 @@ API contracts and interface agreements for external integration.
 
 #### Configuration Management
 - **[Configuration Sources]**: [Where configuration comes from and how it's validated]
-- **[regulatoryret Management]**: [How sensitive configuration is stored and accessed]
+- **[Secret Management]**: [How sensitive configuration is stored and accessed]
 - **[Configuration Updates]**: [How configuration changes are applied and rolled back]
 
 ---

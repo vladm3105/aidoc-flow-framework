@@ -324,7 +324,7 @@ authorization:
     preload_permissions: true
 ```
 
-## 7. Non-Functional Requirements
+## 7. Quality Attributes
 
 | Metric | Target (p95) | Measurement |
 |--------|--------------|-------------|

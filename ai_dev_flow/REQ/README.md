@@ -547,7 +547,7 @@ A SPEC-ready REQ contains complete technical specifications that enable automate
 2. ✅ **Schemas**: JSON Schema + Pydantic models + database models
 3. ✅ **Error Handling**: Exception catalog + state machines + recovery strategies
 4. ✅ **Configuration**: YAML examples + validation + environment variables
-5. ✅ **NFRs**: Performance targets (p50/p95/p99) + security + scalability
+5. ✅ **QAs**: Performance targets (p50/p95/p99) + security + scalability
 6. ✅ **Implementation Guidance**: Algorithms + concurrency patterns + dependency injection
 
 ### V2 Template Structure
@@ -723,7 +723,7 @@ Before marking a REQ as complete, verify:
 - [ ] **Errors**: Exception catalog with recovery strategies defined
 - [ ] **Config**: YAML examples with realistic values (no placeholders)
 - [ ] **State Machines**: Mermaid diagrams for complex workflows
-- [ ] **NFRs**: Performance targets specified (p50/p95/p99)
+- [ ] **QAs**: Performance targets specified (p50/p95/p99)
 - [ ] **Implementation**: Algorithms and patterns documented
 - [ ] **Acceptance Criteria**: Mapped to verification methods
 - [ ] **No Placeholders**: All examples use concrete values
@@ -785,7 +785,7 @@ find REQ -name "REQ-*.md" ! -path "*/archived/*" -exec ./scripts/validate_req_te
 **18 Validation Checks**:
 - CHECK 1-3: Required sections, Document Control fields, Traceability structure
 - CHECK 4-6: Version format, Date validation, Priority validation
-- CHECK 7-11: V2 sections (interfaces, schemas, errors, config, NFRs)
+- CHECK 7-11: V2 sections (interfaces, schemas, errors, config, quality attributes)
 - CHECK 12-18: V3 enhancements (filename, resource tags, cumulative tagging, link resolution, traceability matrix, SPEC-Ready content)
 
 **Validation Reference**: See [REQ-VALIDATION-RULES.md](REQ-VALIDATION-RULES.md) for detailed fix instructions for each check.
@@ -804,7 +804,7 @@ python scripts/validate_req_spec_readiness.py --req-file REQ/api/REQ-001.md
 # ✅ Schemas: JSON Schema + Pydantic + Database
 # ✅ Errors: Exception catalog + state machines
 # ✅ Config: YAML with validation
-# ✅ NFRs: Performance targets specified
+# ✅ QAs: Performance targets specified
 # ✅ Implementation: Algorithms documented
 ```
 
