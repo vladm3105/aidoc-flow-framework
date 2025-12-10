@@ -181,7 +181,7 @@ Each artifact layer must include traceability tags from ALL upstream artifact la
 @ears: EARS.012.002, EARS.012.001
 @bdd: BDD.015.001
 @adr: ADR-033
-@sys: SYS.012.001, SYS.012.901
+@sys: SYS.012.001, SYS.012.002
 @req: REQ.045.001
 @impl: IMPL.003.002  # Optional - include only if exists
 @ctr: CTR-005  # Optional - include only if exists
@@ -189,7 +189,6 @@ Each artifact layer must include traceability tags from ALL upstream artifact la
 @tasks: TASKS-015
 @iplan: IPLAN-001  # Use ID only (IPLAN-NNN), NOT full filename with timestamp
 @icon: TASKS-001:ContractName  # Implementation Contract (optional, Layer 11)
-@sys: SYS.001.901  # NFR cross-reference (900-series for NFRs)
 ```
 
 ### Feature-Level Traceability Tags
@@ -201,27 +200,9 @@ Internal feature IDs within documents use simple sequential numbering:
 | PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD.022.015` |
 | BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD.001.030` |
 | EARS Statements | `NNN` | `003`, `007` | `@ears: EARS.006.003` |
-| SYS Functional Reqs | `NNN` | `001`, `015` | `@sys: SYS.008.001` |
-| SYS Non-Functional | `9XX` | `901`, `961` | `@sys: SYS.008.901` |
+| SYS Requirements | `NNN` | `001`, `015` | `@sys: SYS.008.001` |
 
 **Global Uniqueness**: Document ID + Feature ID creates globally unique references.
-
-### NFR 900-Series Numbering Standard
-
-Non-Functional Requirements (NFRs) use 900-series numbering for automated categorization:
-
-| Category | ID Range | Example | Keywords for AI Detection |
-|----------|----------|---------|---------------------------|
-| Performance | 901-920 | `SYS.001.901` | latency, response time, throughput, p95, TPS |
-| Reliability | 921-940 | `SYS.001.921` | uptime, availability, MTBF, MTTR, failover |
-| Scalability | 941-960 | `SYS.001.941` | concurrent users, horizontal scaling, capacity |
-| Security | 961-980 | `SYS.001.961` | authentication, authorization, encryption, RBAC |
-| Observability | 981-990 | `SYS.001.981` | logging, monitoring, alerting, metrics, tracing |
-| Maintainability | 991-999 | `SYS.001.991` | code coverage, deployment, CI/CD, documentation |
-
-**Cross-Layer Consistency**: Use identical 900-series IDs across all layers (BRD → PRD → EARS → SYS → REQ).
-
-**Cross-Reference Format**: Use document type tag with 900-series NFR ID (e.g., `@sys: SYS.001.901`, `@brd: BRD.017.961`)
 
 ### Format Rules
 
@@ -322,7 +303,7 @@ Before creating ANY artifact, consult:
 - [ ] All cross-references use markdown links with valid paths and anchors
 - [ ] Cumulative tagging complete for artifact layer (no missing upstream tags)
 - [ ] Traceability section includes upstream sources and downstream artifacts
-- [ ] Non-functional requirements defined (where applicable)
+- [ ] Quality attributes defined (where applicable)
 - [ ] Validation scripts pass
 - [ ] No broken links or missing anchors
 - [ ] File size under 50,000 tokens (Claude Code standard) or 100,000 tokens (absolute maximum)

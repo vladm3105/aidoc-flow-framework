@@ -38,7 +38,7 @@ docs/PRD/PRD-NNN_{descriptive_name}.md
 | User Personas | Who uses the product |
 | User Stories | As a... I want... So that... |
 | Functional Requirements | What the system does |
-| Non-Functional Requirements | Quality attributes |
+| Quality Attributes | Performance, security, reliability |
 | Success Metrics | KPIs and measurements |
 | Traceability | Links to BRD and downstream |
 

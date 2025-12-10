@@ -11,16 +11,16 @@ The software platform example demonstrates the complete MVP/MMP/MMR planning met
 **Project**: Multi-service data processing platform
 **Requirements**: 11 BRD documents with 317 total requirements
 - BRD-000: Implementation Plan (metadata)
-- BRD-001: Foundation & Overview (15 FR, 8 NFR)
-- BRD-002: Core Processing Logic (18 FR, 12 NFR)
-- BRD-003: Data Analysis & Ingestion (20 FR, 10 NFR)
-- BRD-004: Validation & Controls (26 FR, 15 NFR)
-- BRD-005: Resource Management (23 FR, 12 NFR)
-- BRD-007: Technical Infrastructure (26 FR, 10 NFR)
-- BRD-008: Processing Pipelines (27 FR, 9 NFR)
-- BRD-009: External Service Integration (26 FR, 25 NFR) - **CRITICAL PREREQUISITE**
-- BRD-010: Foundational Monitoring (8 FR, 4 NFR)
-- BRD-011: Comprehensive Observability (18 FR, 9 NFR)
+- BRD-001: Foundation & Overview (15 FR, 8 QA)
+- BRD-002: Core Processing Logic (18 FR, 12 QA)
+- BRD-003: Data Analysis & Ingestion (20 FR, 10 QA)
+- BRD-004: Validation & Controls (26 FR, 15 QA)
+- BRD-005: Resource Management (23 FR, 12 QA)
+- BRD-007: Technical Infrastructure (26 FR, 10 QA)
+- BRD-008: Processing Pipelines (27 FR, 9 QA)
+- BRD-009: External Service Integration (26 FR, 25 QA) - **CRITICAL PREREQUISITE**
+- BRD-010: Foundational Monitoring (8 FR, 4 QA)
+- BRD-011: Comprehensive Observability (18 FR, 9 QA)
 
 **Team**: 5-6 FTE (2 backend, 1 frontend, 1 QA, 1 DevOps, 1 PM)
 **Constraints**: Must validate in staging before production deployment

@@ -38,7 +38,7 @@ docs/REQ/REQ-{domain}-{subdomain}-NNN_{slug}.md
 4. **Data Schemas** (NEW)
 5. **Error Handling Specifications** (NEW)
 6. **Configuration Specifications** (NEW)
-7. **Non-Functional Requirements** (NEW)
+7. **Quality Attributes** (NEW)
 8. Dependencies
 9. Implementation Guidance
 10. Testing Strategy

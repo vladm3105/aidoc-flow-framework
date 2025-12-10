@@ -122,8 +122,8 @@ Use `doc-brd` when:
 - **MUST populate** Section 3.7 (Mandatory Technology Conditions) with non-negotiable constraints
 
 **Feature BRD**:
-- **MUST mark** Section 3.6 as "N/A - See Platform BRD-XXX Section 3.6" and reference specific items
-- **MUST mark** Section 3.7 as "N/A - See Platform BRD-XXX Section 3.7" and reference specific conditions
+- **MUST mark** Section 3.6 as "N/A - See Platform BRD-NNN Section 3.6" and reference specific items
+- **MUST mark** Section 3.7 as "N/A - See Platform BRD-NNN Section 3.7" and reference specific conditions
 
 **Reference**: `ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md` for detailed guidance
 
@@ -244,7 +244,6 @@ Examples:
 - `@brd: BRD.017.001` ✅
 - `@brd: BRD-017:001` ❌
 
-NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
 
 ## Upstream/Downstream Artifacts
 
@@ -297,7 +296,7 @@ Complete all required metadata fields and initialize Document Revision History t
 Fill all 17 required sections following template structure.
 
 **Platform BRD**: Populate sections 3.6 and 3.7 with technology details
-**Feature BRD**: Mark sections 3.6 and 3.7 as "N/A - See Platform BRD-XXX"
+**Feature BRD**: Mark sections 3.6 and 3.7 as "N/A - See Platform BRD-NNN"
 
 ### Step 8: Document Architecture Decision Requirements
 

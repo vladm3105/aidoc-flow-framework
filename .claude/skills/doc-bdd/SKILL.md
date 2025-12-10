@@ -194,7 +194,6 @@ Examples:
 - `@brd: BRD.017.001` ✅
 - `@brd: BRD-017:001` ❌
 
-NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
 
 ## Cumulative Tagging Requirements
 

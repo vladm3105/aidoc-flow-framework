@@ -13,7 +13,7 @@ The AI Dev Flow Framework is a comprehensive template system for implementing AI
 
 - **16-Layer Architecture**: Structured progression from strategy to validation (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation)
 - **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
-- **REQ v3.0 Support**: Enhanced REQ templates with sections 3-7 (interfaces/schemas/errors/config/NFRs) for ≥90% SPEC-readiness
+- **REQ v3.0 Support**: Enhanced REQ templates with sections 3-7 (interfaces/schemas/errors/config/quality attributes) for ≥90% SPEC-readiness
 - **Tag-Based Auto-Discovery**: Lightweight @tags in code auto-generate bidirectional traceability matrices
 - **Namespaced Traceability**: Unified `TYPE.NNN.NNN` format (e.g., `BRD.001.030`) prevents ambiguity
 - **Complete Traceability**: Bidirectional links between all artifacts (business → architecture → code)
@@ -266,7 +266,7 @@ Layer 15: Validation
 
 #### Architecture Layer Templates
 - **ADR-TEMPLATE.md**: Architecture decisions with context and consequences
-- **SYS-TEMPLATE.md**: System requirements with functional/non-functional specs
+- **SYS-TEMPLATE.md**: System requirements with functional requirements and quality attributes
 
 #### Requirements Layer Templates
 - **REQ-TEMPLATE.md**: Atomic requirements with acceptance criteria
@@ -336,8 +336,8 @@ Embed cumulative tags in code docstrings using namespaced format:
 - Instant impact analysis when upstream requirements change
 
 **Why Unified Format?**
-- `@brd: FR-030` ❌ Ambiguous (which BRD document?)
-- `@brd: BRD-001:FR-030` ❌ Old format (deprecated)
+- `@brd: BRD.030` ❌ Ambiguous (which BRD document?)
+- `@brd: BRD-001:030` ❌ Old format (deprecated)
 - `@brd: BRD.001.030` ✅ Unified format (current standard)
 
 #### Traditional Section 7 (Legacy)
@@ -348,7 +348,7 @@ Manual traceability sections in documents remain supported during migration:
 ## 7. Traceability
 
 **Upstream:**
-- [BRD-001](../BRD/BRD-001_requirements.md#FR-030)
+- [BRD-001](../BRD/BRD-001_requirements.md#BRD.001.030)
 
 **Downstream:**
 - [SPEC-003](../SPEC/SPEC-003_implementation.yaml)
@@ -399,7 +399,7 @@ All documentation follows standardized ID formats:
 ```markdown
 | Source File | Requirements | Status |
 |-------------|-------------|--------|
-| src/services/account.py | FR-030, NFR-006 | Complete |
+| src/services/account.py | BRD.001.030, SYS.001.006 | Complete |
 ```
 
 ### Migration Guide: Section 7 → Tags
@@ -477,7 +477,7 @@ Reference: `ai_dev_flow/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr`
 
 API contracts require BOTH files:
 
-- `CTR-001_api_contract.md` - Human-readable context, error handling, NFRs
+- `CTR-001_api_contract.md` - Human-readable context, error handling, quality attributes
 - `CTR-001_api_contract.yaml` - Machine-readable JSON Schema, OpenAPI/AsyncAPI
 
 Policy: `ai_dev_flow/ADR/ADR-CTR_SEPARATE_FILES_POLICY.md`

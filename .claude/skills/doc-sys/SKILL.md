@@ -1,7 +1,7 @@
 ---
 title: "doc-sys: Create System Requirements (Layer 6)"
 name: doc-sys
-description: Create System Requirements (SYS) - Layer 6 artifact defining functional and non-functional system requirements
+description: Create System Requirements (SYS) - Layer 6 artifact defining functional requirements and quality attributes
 tags:
   - sdd-workflow
   - layer-6-artifact
@@ -21,7 +21,7 @@ custom_fields:
 
 ## Purpose
 
-Create **System Requirements (SYS)** documents - Layer 6 artifact in the SDD workflow that defines technical system requirements including functional capabilities and non-functional qualities.
+Create **System Requirements (SYS)** documents - Layer 6 artifact in the SDD workflow that defines technical system requirements including functional capabilities and quality attributes.
 
 **Layer**: 6
 
@@ -60,7 +60,7 @@ Use `doc-sys` when:
 - Have completed BRD through ADR (Layers 1-5)
 - Need to define system-level technical requirements
 - Translating architecture decisions into requirements
-- Specifying functional and non-functional system behavior
+- Specifying functional system behavior and quality attributes
 - You are at Layer 6 of the SDD workflow
 
 ## SYS-Specific Guidance
@@ -71,20 +71,19 @@ Use `doc-sys` when:
 
 **Core Sections**:
 1. **Introduction**: System overview and scope
-2. **Functional Requirements**: What system must do
-3. **Non-Functional Requirements**: Quality attributes
-4. **System Flows**: Interaction diagrams and workflows
-5. **Technical Constraints**: ADR-imposed limitations
-6. **Traceability**: Section 7 format
+2. **System Requirements**: All requirements (functional and quality attributes)
+3. **System Flows**: Interaction diagrams and workflows
+4. **Technical Constraints**: ADR-imposed limitations
+5. **Traceability**: Section 7 format
 
-### 2. Functional Requirements
+### 2. System Requirements
 
-**Format**: Numbered functional requirements
+**Format**: Sequential numbering for all requirements (unified approach)
 
 ```markdown
-## Functional Requirements
+## System Requirements
 
-### FR-001: Trade Order Validation
+### 001: Trade Order Validation
 **Description**: System SHALL validate all trade orders before submission
 **Input**: Trade order (symbol, quantity, price, account)
 **Processing**:
@@ -95,51 +94,27 @@ Use `doc-sys` when:
 **Output**: Validation result (pass/fail) with error details
 **Source**: EARS.001.001, ADR-033
 **Verification**: BDD.001.001
-```
 
-### 3. Non-Functional Requirements
-
-**NFR 900-Series Standard** (MANDATORY):
-
-NFRs use unified 900-series numbering within SYS documents for automated categorization:
-
-| Category | Series Range | Example | Keywords for AI Detection |
-|----------|-------------|---------|---------------------------|
-| Performance | 901-920 | `SYS.001.901` | latency, response time, throughput, p95, TPS |
-| Reliability | 921-940 | `SYS.001.921` | uptime, availability, MTBF, MTTR, failover |
-| Scalability | 941-960 | `SYS.001.941` | concurrent users, horizontal scaling, capacity |
-| Security | 961-980 | `SYS.001.961` | authentication, authorization, encryption, RBAC |
-| Observability | 981-990 | `SYS.001.981` | logging, monitoring, alerting, metrics, tracing |
-| Maintainability | 991-999 | `SYS.001.991` | code coverage, deployment, CI/CD, documentation |
-
-**Cross-Layer Consistency**: Use unified `TYPE.NNN.9XX` format across all layers.
-
-**Cross-Reference Format**: `@sys: SYS.001.901` (not `SYS-001:NFR-PERF-001`)
-
-**Format**:
-```markdown
-## Non-Functional Requirements
-
-### SYS.001.901: Order Validation Performance
-**Category**: Performance (901-920)
-**Requirement**: Order validation SHALL complete within 50ms at P95
+### 002: Order Validation Performance
+**Description**: Order validation SHALL complete within 50ms at P95
 **Measurement**: P50 <25ms, P95 <50ms, P99 <100ms
 **Rationale**: User experience requires sub-second feedback per PRD-001
-**Source**: PRD.001.901, EARS.001.901
+**Source**: PRD.001.002, EARS.001.002
 **Verification**: Performance benchmarks, load testing
-**Traceability**: @brd: BRD.001.901 | @prd: PRD.001.901
+**Traceability**: @brd: BRD.001.002 | @prd: PRD.001.002
 
-### SYS.001.921: System Availability
-**Category**: Reliability (921-940)
-**Requirement**: System SHALL maintain 99.9% uptime during market hours
+### 003: System Availability
+**Description**: System SHALL maintain 99.9% uptime during market hours
 **Measurement**: Monthly uptime >99.9% (43.2 minutes downtime max)
 **Rationale**: Trading system criticality requires high availability
-**Source**: BRD.001.921
+**Source**: BRD.001.003
 **Verification**: Uptime monitoring, incident tracking
-**Traceability**: @brd: BRD.001.921
+**Traceability**: @brd: BRD.001.003
 ```
 
-### 4. System Flows
+**Note**: All requirements use sequential numbering (`001`, `002`, `003`...). Use folder structure, tags, or document sections for categorization if needed.
+
+### 3. System Flows
 
 **Use Mermaid diagrams** (per documentation standards - no Python code):
 
@@ -198,7 +173,6 @@ Examples:
 - `@brd: BRD.017.001` ✅
 - `@brd: BRD-017:001` ❌
 
-NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
 
 ## Cumulative Tagging Requirements
 
@@ -267,45 +241,38 @@ Check `ai_dev_flow/SYS/` for next available ID number.
 
 Complete metadata and Document Revision History table.
 
-### Step 5: Define Functional Requirements
+### Step 5: Define System Requirements
 
-For each capability:
-- Number as FR-NNN
-- Specify inputs, processing, outputs
+For each requirement (functional or quality attribute):
+- Number sequentially as `NNN` (001, 002, 003...)
+- Specify inputs, processing, outputs (for functional)
+- Specify measurable criteria (for quality attributes)
 - Reference upstream EARS/PRD
-- Link to BDD verification
+- Link to BDD verification or define verification method
 
-### Step 6: Define Non-Functional Requirements
-
-For each quality attribute:
-- Number as NFR-NNN
-- Specify measurable criteria
-- Define verification method
-- Reference upstream KPIs
-
-### Step 7: Create System Flows
+### Step 6: Create System Flows
 
 Use Mermaid diagrams (not Python code) to visualize:
 - Sequence diagrams for interactions
 - Flowcharts for logic
 - State diagrams for workflows
 
-### Step 8: Document Technical Constraints
+### Step 7: Document Technical Constraints
 
 From ADR decisions:
 - List each constraint
 - Explain impact
 - Define verification
 
-### Step 9: Add Cumulative Tags
+### Step 8: Add Cumulative Tags
 
 Include all 5 upstream tags (@brd, @prd, @ears, @bdd, @adr).
 
-### Step 10: Create/Update Traceability Matrix
+### Step 9: Create/Update Traceability Matrix
 
 **MANDATORY**: Update `ai_dev_flow/SYS/SYS-000_TRACEABILITY_MATRIX.md`
 
-### Step 11: Validate SYS
+### Step 10: Validate SYS
 
 ```bash
 ./ai_dev_flow/scripts/validate_sys_template.sh ai_dev_flow/SYS/SYS-001_*.md
@@ -313,7 +280,7 @@ Include all 5 upstream tags (@brd, @prd, @ears, @bdd, @adr).
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact SYS-001 --expected-layers brd,prd,ears,bdd,adr --strict
 ```
 
-### Step 12: Commit Changes
+### Step 11: Commit Changes
 
 Commit SYS file and traceability matrix.
 
@@ -335,8 +302,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 ### Manual Checklist
 
 - [ ] Document Control section at top
-- [ ] Functional requirements numbered (FR-NNN)
-- [ ] Non-functional requirements categorized (NFR-NNN)
+- [ ] Requirements numbered sequentially (001, 002, 003...)
 - [ ] Each requirement has measurable criteria
 - [ ] System flows use Mermaid diagrams
 - [ ] Technical constraints from ADR documented
@@ -347,7 +313,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ## Common Pitfalls
 
-1. **Vague NFRs**: Must be measurable (not "fast" but "P95 <50ms")
+1. **Vague requirements**: Must be measurable (not "fast" but "P95 <50ms")
 2. **Missing ADR constraints**: System requirements must respect ADR decisions
 3. **Python code in diagrams**: Use Mermaid, not code blocks
 4. **Missing cumulative tags**: Layer 6 must include all 5 upstream tags
@@ -438,8 +404,7 @@ The REQ will:
 **Tags Required**: @brd, @prd, @ears, @bdd, @adr (5 tags)
 
 **Key Sections**:
-- Functional Requirements (FR-NNN)
-- Non-Functional Requirements (NFR-NNN with categories)
+- System Requirements (sequential numbering: 001, 002, 003...)
 - System Flows (Mermaid diagrams)
 - Technical Constraints (from ADR)
 

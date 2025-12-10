@@ -54,7 +54,7 @@ ls -1 ${brd_directory}/BRD-*.md | grep -v "BRD-000" | sort
 For each BRD:
 - Read complete file content
 - Extract functional requirements (FR) count
-- Extract non-functional requirements (NFR) count
+- Extract quality attribute (QA) count
 - Identify complexity rating (Low/Medium/High)
 - Note external dependencies mentioned
 
@@ -186,7 +186,7 @@ Phase 7 (ML Regime: 3 weeks) runs in parallel with Phases 5-6 (saves 3 weeks)
 
 **Duration Estimation**:
 - FR count: 0.5 days per functional requirement (average)
-- NFR count: 0.3 days per non-functional requirement (average)
+- QA count: 0.3 days per quality attribute (average)
 - Complexity multiplier: Low=1.0, Medium=1.3, High=1.7
 - Integration overhead: +20% for phases with ≥3 dependencies
 - Testing overhead: +15% for phases with BDD scenarios
@@ -194,7 +194,7 @@ Phase 7 (ML Regime: 3 weeks) runs in parallel with Phases 5-6 (saves 3 weeks)
 **Formula**:
 ```
 Phase Duration (days) =
-    (FR_count × 0.5 + NFR_count × 0.3) × Complexity_Multiplier ×
+    (FR_count × 0.5 + QA_count × 0.3) × Complexity_Multiplier ×
     (1 + Integration_Overhead) × (1 + Testing_Overhead)
 
 Phase Duration (weeks) = Ceiling(Phase Duration (days) ÷ 5)
@@ -278,7 +278,7 @@ graph TD
 
 **Requirements Mapping Table**:
 ```markdown
-| Phase | BRD | BRD Sub-Component | FR Count | NFR Count | Complexity |
+| Phase | BRD | BRD Sub-Component | FR Count | QA Count | Complexity |
 |-------|-----|-------------------|----------|-----------|------------|
 | 1 | BRD-009 | Broker Integration Pilot | 26 | 25 | High |
 | 2 | BRD-010 | Foundational Monitoring | 8 | 4 | Low-Medium |
@@ -433,7 +433,7 @@ max_phase_duration_weeks: 4
    - Resolution: Identify data foundation (broker, database) as Phase 1, or request user input via `force_phase_1_brd`
 
 4. **Missing BRD Information**:
-   - Error: BRD file lacks FR/NFR counts or complexity rating
+   - Error: BRD file lacks FR/QA counts or complexity rating
    - Resolution: Estimate based on document size (token count) and keyword analysis
 
 5. **Timeline Exceeds Stakeholder Deadline**:

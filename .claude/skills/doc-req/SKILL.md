@@ -80,7 +80,7 @@ Use `doc-req` when:
 4. **Data Schemas**: Data models, validation rules, constraints
 5. **Error Handling Specifications**: Error conditions, recovery procedures
 6. **Configuration Specifications**: Settings, parameters, environment variables
-7. **Non-Functional Requirements**: Performance, security, scalability
+7. **Quality Attributes**: Performance, security, scalability constraints
 8. **Dependencies**: Upstream/downstream requirements, external systems
 9. **Implementation Guidance**: Technical approach, patterns, libraries
 10. **Testing Strategy**: Unit, integration, e2e test requirements
@@ -111,7 +111,7 @@ SPEC-Ready Score = (Completed Sections / 12) × 100%
 - [✓] 4. Data Schemas
 - [✓] 5. Error Handling Specifications
 - [✓] 6. Configuration Specifications
-- [✓] 7. Non-Functional Requirements
+- [✓] 7. Quality Attributes
 - [✓] 8. Dependencies
 - [✓] 9. Implementation Guidance
 - [✓] 10. Testing Strategy
@@ -218,41 +218,32 @@ TradeOrderRequest:
 - `log_rejected_trades`: Log all rejected trades for audit
 ```
 
-**Section 7: Non-Functional Requirements**
+**Section 7: Quality Attributes**
 
-**NFR 900-Series Standard** (MANDATORY):
-
-| Category | Series Range | Example | Keywords for AI Detection |
-|----------|-------------|---------|---------------------------|
-| Performance | 901-920 | `REQ.001.901` | latency, response time, throughput, p95, TPS |
-| Reliability | 921-940 | `REQ.001.921` | uptime, availability, MTBF, MTTR, failover |
-| Scalability | 941-960 | `REQ.001.941` | concurrent users, horizontal scaling, capacity |
-| Security | 961-980 | `REQ.001.961` | authentication, authorization, encryption, RBAC |
-| Observability | 981-990 | `REQ.001.981` | logging, monitoring, alerting, metrics, tracing |
-| Maintainability | 991-999 | `REQ.001.991` | code coverage, deployment, CI/CD, documentation |
-
-**Cross-Layer Consistency**: Use unified `TYPE.NNN.9XX` format across all layers.
+Document quality constraints (performance, security, scalability, etc.) using sequential numbering.
 
 ```markdown
-## Non-Functional Requirements
+## Quality Attributes
 
-### REQ.001.901: Validation Latency
+### 007: Validation Latency
 - P95 latency <50ms for validation
 - Throughput: 1000 validations/second
 - Memory usage <100MB per instance
-- **Traceability**: @sys: SYS.001.901
+- **Traceability**: @sys: SYS.001.007
 
-### REQ.001.961: Input Validation Security
+### 008: Input Validation Security
 - Validate all inputs against schema
 - Sanitize error messages (no sensitive data)
 - Audit log all validation attempts
-- **Traceability**: @sys: SYS.001.961
+- **Traceability**: @sys: SYS.001.008
 
-### REQ.001.941: Horizontal Scaling
+### 009: Horizontal Scaling
 - Horizontal scaling support
 - Stateless validation (no session required)
-- **Traceability**: @sys: SYS.001.941
+- **Traceability**: @sys: SYS.001.009
 ```
+
+**Note**: All requirements use sequential numbering. Use folder structure, tags, or document sections for categorization if needed.
 
 ## Unified Feature ID Format (MANDATORY)
 
@@ -263,7 +254,6 @@ Examples:
 - `@brd: BRD.017.001` ✅
 - `@brd: BRD-017:001` ❌
 
-NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
 
 ## Cumulative Tagging Requirements
 
@@ -351,7 +341,7 @@ Complete metadata and Document Revision History table.
 4. **Data Schemas**: Models, validation, constraints
 5. **Error Handling Specifications**: Error codes, recovery
 6. **Configuration Specifications**: Settings, feature flags
-7. **Non-Functional Requirements**: Performance, security
+7. **Quality Attributes**: Performance, security, scalability
 8. **Dependencies**: Other requirements, systems
 9. **Implementation Guidance**: Technical approach
 10. **Testing Strategy**: Test requirements
@@ -414,7 +404,7 @@ python ai_dev_flow/scripts/check_spec_readiness.py ai_dev_flow/REQ/REQ-risk-limi
 - [ ] Section 4: Data Schemas with validation rules
 - [ ] Section 5: Error Handling Specifications complete
 - [ ] Section 6: Configuration Specifications documented
-- [ ] Section 7: Non-Functional Requirements quantified
+- [ ] Section 7: Quality Attributes quantified
 - [ ] Domain/subdomain organization used in ID
 - [ ] Cumulative tags: @brd through @sys (6 tags) included
 - [ ] Each requirement atomic (single responsibility)
@@ -525,7 +515,7 @@ The SPEC will:
 - Section 4: Data Schemas (NEW)
 - Section 5: Error Handling Specifications (NEW)
 - Section 6: Configuration Specifications (NEW)
-- Section 7: Non-Functional Requirements (NEW)
+- Section 7: Quality Attributes (NEW)
 - SPEC-Ready Score calculation (NEW)
 - Domain/subdomain organization (NEW)
 

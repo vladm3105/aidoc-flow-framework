@@ -247,7 +247,7 @@ Required tools for validation:
 Each artifact type has a YAML schema file (`{TYPE}_SCHEMA.yaml`) that defines validation rules. These schemas are the authoritative source for:
 - **Metadata Requirements**: YAML frontmatter fields, allowed values
 - **Document Structure**: Required/optional sections, numbering patterns
-- **Artifact-Specific Patterns**: Type-specific formats (Gherkin, FR-NNN, TASK-NNN, etc.)
+- **Artifact-Specific Patterns**: Type-specific formats (Gherkin, sequential NNN, TASK-NNN, etc.)
 - **Validation Rules**: Error/warning severities with fix instructions
 - **Traceability Requirements**: Cumulative tagging hierarchy per layer
 - **Error Messages**: Standardized codes (E001-E0XX, W001-W0XX, I001-I0XX)
@@ -257,11 +257,11 @@ Each artifact type has a YAML schema file (`{TYPE}_SCHEMA.yaml`) that defines va
 | Layer | Artifact | Schema File | Key Patterns |
 |-------|----------|-------------|--------------|
 | 1 | BRD | `ai_dev_flow/BRD/BRD_SCHEMA.yaml` | Business objectives format |
-| 2 | PRD | `ai_dev_flow/PRD/PRD_SCHEMA.yaml` | FR/NFR format, template variants |
+| 2 | PRD | `ai_dev_flow/PRD/PRD_SCHEMA.yaml` | Requirements format, template variants |
 | 3 | EARS | `ai_dev_flow/EARS/EARS_SCHEMA.yaml` | WHEN-THE-SHALL-WITHIN format |
 | 4 | BDD | `ai_dev_flow/BDD/BDD_SCHEMA.yaml` | Gherkin syntax, step patterns |
 | 5 | ADR | `ai_dev_flow/ADR/ADR_SCHEMA.yaml` | Context-Decision-Consequences |
-| 6 | SYS | `ai_dev_flow/SYS/SYS_SCHEMA.yaml` | FR-NNN, NFR-NNN formats |
+| 6 | SYS | `ai_dev_flow/SYS/SYS_SCHEMA.yaml` | Sequential NNN requirements format |
 | 7 | REQ | `ai_dev_flow/REQ/REQ_SCHEMA.yaml` | 12 sections, interface schemas |
 | 8 | IMPL | `ai_dev_flow/IMPL/IMPL_SCHEMA.yaml` | Phase organization, deliverables |
 | 9 | CTR | `ai_dev_flow/CTR/CTR_SCHEMA.yaml` | Dual-file, OpenAPI/AsyncAPI |

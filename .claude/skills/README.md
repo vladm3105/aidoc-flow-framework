@@ -1139,9 +1139,9 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 **Use**: Document architectural decisions with rationale and alternatives
 
 #### 28. doc-sys (Layer 6)
-**Purpose**: Create System Requirements (SYS) with FR/NFR definitions
+**Purpose**: Create System Requirements (SYS) with FR/QA definitions
 **Quick Reference**: [doc-sys_quickref.md](./doc-sys_quickref.md)
-**Use**: Define functional and non-functional system requirements
+**Use**: Define functional requirements and quality attributes
 
 #### 29. doc-req (Layer 7)
 **Purpose**: Create Atomic Requirements using REQ v3.0 format (12 sections)

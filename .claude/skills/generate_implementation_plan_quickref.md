@@ -20,7 +20,7 @@ max_phase_duration_weeks: 4
 
 ## What This Skill Does
 
-1. **Reads BRD Documents** → Extracts FR/NFR counts, complexity, dependencies
+1. **Reads BRD Documents** → Extracts FR/QA counts, complexity, dependencies
 2. **Analyzes Dependencies** → Builds dependency matrix using Data-First, Read-Before-Write principles
 3. **Creates Atomic Phases** → Splits BRDs into ≤4-week phases with clear boundaries
 4. **Sequences Phases** → Orders by dependencies, identifies critical path and parallel opportunities

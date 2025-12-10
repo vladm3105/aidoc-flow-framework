@@ -838,7 +838,7 @@ Roadmap document must satisfy:
 
 10. **Acceptance Criteria**:
     - Functional requirements per phase
-    - Non-functional requirements per phase
+    - Quality attributes per phase
     - Technical validation
 
 11. **Traceability**:

@@ -201,7 +201,6 @@ Examples:
 - `@brd: BRD.017.001` ✅
 - `@brd: BRD-017:001` ❌
 
-NFRs use 900-series: `SYS.008.901` (not `NFR-PERF-001`)
 
 ## Cumulative Tagging Requirements
 
@@ -432,7 +431,7 @@ After creating ADR, use:
 The SYS will:
 - Implement ADR architectural decisions
 - Include `@brd`, `@prd`, `@ears`, `@bdd`, `@adr` tags (cumulative)
-- Define functional and non-functional requirements
+- Define functional requirements and quality attributes
 - Translate ADR decisions into technical requirements
 
 ## Related Resources

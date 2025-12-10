@@ -45,7 +45,7 @@ Use this agent for:
 - Data processing and transformations
 - Integration behaviors
 
-**Non-Functional Requirements (NFR)**:
+**Quality Attributes (QA)**:
 - Performance (response time, throughput, scalability)
 - Security (authentication, authorization, data protection)
 - Reliability (availability, fault tolerance, recovery)
@@ -61,7 +61,7 @@ Use this agent for:
 **Standard Format**:
 ```
 REQ-NNN: [Descriptive Title]
-Category: [FR/NFR/IR]
+Category: [FR/QA/IR]
 Priority: [Must/Should/Could]
 Source: [Upstream artifact reference]
 ```
@@ -142,7 +142,7 @@ docs/REQ/
 **Input Review**:
 - Read upstream BRD/PRD artifacts
 - Identify all functional requirements
-- Extract non-functional constraints
+- Extract quality attribute constraints
 - Note interface dependencies
 
 **Decomposition Strategy**:
