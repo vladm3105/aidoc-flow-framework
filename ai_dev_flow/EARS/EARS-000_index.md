@@ -22,7 +22,7 @@ This document serves as the master index for all EARS (Event-Action-Response-Sta
 - **Coordinate** requirements engineering across teams
 - **Reference** atomic, testable requirements
 
-## Position in Development Workflow
+## Position in Document Workflow
 
 ```mermaid
 flowchart LR

@@ -1,6 +1,6 @@
 # CTR-001: Data Validation API
 
-## Position in Development Workflow
+## Position in Document Workflow
 
 ```
 REQ (Atomic Requirements): Granular, testable requirements

@@ -19,7 +19,7 @@
 | **Related REQs** | Framework Requirements |
 | **Deliverables** | IMPL/ folder structure, IMPL-TEMPLATE.md, IMPL-000_index.md, examples |
 
-## resource in Development Workflow
+## Position in Document Workflow
 
 **IMPL (Implementation Plans)** ← YOU ARE HERE (META-LEVEL)
 

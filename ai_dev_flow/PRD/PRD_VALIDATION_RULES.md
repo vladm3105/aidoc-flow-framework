@@ -109,7 +109,7 @@ All PRD requirements must include:
 | Approver | Final approver name | MANDATORY |
 | Created Date | YYYY-MM-DD | MANDATORY |
 | Last Updated | YYYY-MM-DD | MANDATORY |
-| BRD Reference | @brd: BRD-XXX tag | MANDATORY |
+| BRD Reference | @brd: BRD.NNN.NNN tag | MANDATORY |
 | SYS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
 | EARS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
 | Priority | High / Medium / Low | OPTIONAL |
@@ -400,10 +400,10 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 
 **Downstream Tags** (Optional but recommended):
 ```markdown
-@sys: SYS-XXX (planned)
-@ears: EARS-XXX (planned)
-@bdd: BDD-XXX (planned)
-@req: REQ-XXX (planned)
+@sys: SYS.NNN.NNN (planned)
+@ears: EARS.NNN.NNN (planned)
+@bdd: BDD.NNN.NNN (planned)
+@req: REQ.NNN.NNN (planned)
 ```
 
 **Error Messages**:
@@ -721,8 +721,8 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 **Type**: Warning (recommended fix before commit)
 
 **Requirements**:
-- Every `@prd: PRD-XXX` reference must have reciprocal reference in target document
-- No placeholder IDs (PRD-XXX, TBD, undefined)
+- Every `@prd: PRD.NNN.NNN` reference must have reciprocal reference in target document
+- No placeholder IDs (PRD.XXX.XXX, TBD, undefined)
 - Referenced documents must exist
 - Tag format required (not prose references like "see PRD-022")
 
@@ -738,23 +738,23 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 **Error Messages**:
 ```
-⚠️ WARNING: @prd: PRD-022 reference found, but PRD-022 does not reference this document
-⚠️ WARNING: Found placeholder ID "PRD-XXX" - replace with actual ID or null
-⚠️ WARNING: @prd: PRD-099 references non-existent document
-⚠️ WARNING: Prose reference "see PRD-016" should use tag format @prd: PRD-016
+⚠️ WARNING: @prd: PRD.022.001 reference found, but PRD-022 does not reference this document
+⚠️ WARNING: Found placeholder ID "PRD.NNN.NNN" - replace with actual ID or null
+⚠️ WARNING: @prd: PRD.099.001 references non-existent document
+⚠️ WARNING: Prose reference "see PRD-016" should use tag format @prd: PRD.016.001
 ```
 
 **Resolution Steps**:
 1. For missing reciprocal: Add `@prd: [this-PRD]` to referenced document
 2. For placeholder: Replace with actual PRD ID or use `null`
 3. For non-existent: Remove reference or create target document
-4. For prose: Convert to `@prd: PRD-NNN` format
+4. For prose: Convert to `@prd: PRD.NNN.NNN` format
 
 **Reciprocal Reference Table** (add to document if missing):
 ```markdown
 | This PRD | References | Relationship | Reciprocal Status |
 |----------|------------|--------------|-------------------|
-| PRD-NNN | @prd: PRD-XXX | Primary/Fallback | ✅/❌ |
+| PRD.NNN | @prd: PRD.NNN.NNN | Primary/Fallback | ✅/❌ |
 ```
 
 ---
@@ -800,7 +800,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 **Requirements**:
 - Numeric thresholds shared across 2+ PRDs must reference Threshold Registry
-- Use format: `@prd: PRD-XXX:{category}.{key}`
+- Use format: `@prd: PRD.NNN.NNN` with `@threshold: PRD.NNN.{category}.{key}`
 - No "magic numbers" for common thresholds (KYC limits, risk scores, timeouts)
 
 **Threshold Categories Requiring Registry Reference**:

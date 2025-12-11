@@ -19,7 +19,7 @@ Specifications (SPEC) are machine-readable technical blueprints that define how 
 
 The workflow transforms business requirements into production-ready code through traceable artifacts:
 
-**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
+**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ## Purpose
 

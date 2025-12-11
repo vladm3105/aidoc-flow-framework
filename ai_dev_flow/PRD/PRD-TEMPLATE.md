@@ -59,7 +59,7 @@ Schema: See `ai_dev_flow/PRD/PRD_SCHEMA.yaml` for complete rules
 ====================================================================== -->
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for PRD structure.
-> - **Schema**: `PRD_SCHEMA.yaml v1.0` - Validation rules (20 sections: 0-19)
+> - **Schema**: `PRD_SCHEMA.yaml v1.0` - Validation rules (20 sections: 1-20)
 > - **Creation Rules**: `PRD_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `PRD_VALIDATION_RULES.md` - Post-creation checks
 >
@@ -74,7 +74,7 @@ Schema: See `ai_dev_flow/PRD/PRD_SCHEMA.yaml` for complete rules
 
 **resource**: PRD is in Layer 2 (Product Requirements Layer) - defines product requirements from BRD business needs.
 
-## 0. Document Control
+## 1. Document Control
 
 | Item | Details |
 |------|---------|
@@ -99,9 +99,9 @@ Select the appropriate template variant based on domain:
 
 | Variant | Sections | Use Case | Selection Criteria |
 |---------|----------|----------|-------------------|
-| **Standard** | 0-19 (20) | Business features, core platform | Default choice for most PRDs |
-| **Agent-Based** | 0-14 (15) | ML/AI agents, intelligent systems | Contains agent-specific sections (state machine, ML metrics) |
-| **Automation-Focused** | 0-11 (12) | n8n workflows, event processing | Webhook-focused, workflow states |
+| **Standard** | 1-20 (20) | Business features, core platform | Default choice for most PRDs |
+| **Agent-Based** | 1-15 (15) | ML/AI agents, intelligent systems | Contains agent-specific sections (state machine, ML metrics) |
+| **Automation-Focused** | 1-12 (12) | n8n workflows, event processing | Webhook-focused, workflow states |
 
 **Selection Flowchart**:
 1. Does this PRD describe an ML/AI agent? → **Agent-Based**
@@ -114,7 +114,7 @@ Select the appropriate template variant based on domain:
 |---------|------|--------|--------------|----------|
 | 1.0.0 | YYYY-MM-DD | [Author Name] | Initial draft | [Approver] |
 
-## 1. Executive Summary
+## 2. Executive Summary
 
 [2-3 sentence high-level overview of what this product/feature accomplishes, who benefits, and the expected business impact]
 
@@ -141,7 +141,7 @@ Select the appropriate template variant based on domain:
 
 
 
-## 2. Problem Statement
+## 3. Problem Statement
 
 ### Current State
 
@@ -178,7 +178,7 @@ Select the appropriate template variant based on domain:
 
 ---
 
-## 3. Target Audience & User Personas
+## 4. Target Audience & User Personas
 
 ### Primary Users
 
@@ -188,7 +188,7 @@ Select the appropriate template variant based on domain:
 - Pain points this solves
 - Usage patterns and frequency]
 
-### secondary Users
+### Secondary Users
 
 [Other stakeholders who benefit:
 - Roles affected by or affecting this feature
@@ -204,7 +204,7 @@ Select the appropriate template variant based on domain:
 
 ---
 
-## 4. Success Metrics (KPIs)
+## 5. Success Metrics (KPIs)
 
 ### Primary KPIs
 
@@ -213,7 +213,7 @@ Select the appropriate template variant based on domain:
 - **Customer Satisfaction Score**: ≥ 4.5/5 within 90 days post-launch
 - **Adoption Rate**: ≥ 80% of eligible users actively using within 60 days]
 
-### secondary KPIs
+### Secondary KPIs
 
 [Supporting metrics that indicate progress toward goals:
 - **Feature Usage**: [Measure] across [user segment]
@@ -239,7 +239,7 @@ Select the appropriate template variant based on domain:
 
 ---
 
-## 5. Goals & Objectives
+## 6. Goals & Objectives
 
 ### Primary Business Goals
 
@@ -248,7 +248,7 @@ Select the appropriate template variant based on domain:
 2. **Goal 2**: [Specific, measurable outcome] by [deadline], measured by [KPIs]
 3. **Goal 3**: [Specific, measurable outcome] by [deadline], measured by [KPIs]]
 
-### secondary Objectives
+### Secondary Objectives
 
 [Important but not blocking objectives:
 - **Objective A**: [Supporting goal] enabling [larger outcome]
@@ -263,7 +263,7 @@ Select the appropriate template variant based on domain:
 
 ---
 
-## 6. Scope & Requirements
+## 7. Scope & Requirements
 
 ### In Scope (Included Features/Capabilities)
 
@@ -329,7 +329,7 @@ Select the appropriate template variant based on domain:
 
 ---
 
-## 7. User Stories & User Roles
+## 8. User Stories & User Roles
 
 This section documents user stories that capture who benefits from the system, what they need to accomplish, and why it matters to them. User stories provide a user-centric view of requirements and help ensure the solution meets actual user needs.
 
@@ -452,7 +452,7 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 
 ---
 
-## 8. Functional Requirements
+## 9. Functional Requirements
 
 ### User Journey Mapping
 
@@ -486,9 +486,9 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 
 ---
 
-## 9. Customer-Facing Content & Messaging (MANDATORY)
+## 10. Customer-Facing Content & Messaging (MANDATORY)
 
-**Purpose**: Define product-approved messaging for customer communications at key touchpoints. This ensures consistency, compliance, and optimal user experience across all customer interactions.
+**Purpose**: Define product-approved messaging for customer communications at key touchpoints. This ensures consistency, compliance, and consistent user experience across all customer interactions.
 
 **📚 Complete Business Context**: For business-level messaging requirements and approval workflows, see:
 - **[BRD Template - Appendix N: Customer Communication Templates](../BRD/BRD-TEMPLATE.md#appendix-n-customer-communication-templates-required-for-customer-facing-brds)** - Business approval and messaging strategy
@@ -556,7 +556,7 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 
 ---
 
-## 10. Acceptance Criteria
+## 11. Acceptance Criteria
 
 ### Business Acceptance Criteria
 
@@ -611,7 +611,7 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 
 ---
 
-## 11. Constraints & Assumptions
+## 12. Constraints & Assumptions
 
 ### Business Constraints
 
@@ -649,7 +649,7 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 
 ---
 
-## 12. Risk Assessment
+## 13. Risk Assessment
 
 ### High-Risk Items
 
@@ -675,7 +675,7 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 
 ---
 
-## 13. Success Definition
+## 14. Success Definition
 
 ### Go-Live Success Criteria
 
@@ -704,7 +704,7 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 
 ---
 
-## 14. Stakeholders & Communication
+## 15. Stakeholders & Communication
 
 ### Core Team
 
@@ -729,7 +729,7 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 
 ---
 
-## 15. Implementation Approach
+## 16. Implementation Approach
 
 ### Development Phases
 
@@ -763,7 +763,7 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 
 ---
 
-## 16. Budget & Resources
+## 17. Budget & Resources
 
 ### Development Budget
 
@@ -782,7 +782,7 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 
 ---
 
-## 17. Traceability
+## 18. Traceability
 
 ### Upstream Sources
 
@@ -972,7 +972,7 @@ Document evidence that PRD requirements have been translated to technical specif
 
 ---
 
-## 18. References
+## 19. References
 
 ### Internal Documentation
 
@@ -1005,11 +1005,11 @@ Document evidence that PRD requirements have been translated to technical specif
 
 ---
 
-## 19. EARS Enhancement Appendix
+## 20. EARS Enhancement Appendix
 
 **Purpose**: This appendix provides structured technical specifications required for EARS (Engineering Requirements Specification) creation. Complete this section to achieve EARS-Ready scores ≥90%.
 
-### 19.1 Timing Profile Matrix
+### 20.1 Timing Profile Matrix
 
 Define performance timing targets for all operations. Replace vague terms like "real-time" or "immediately" with precise percentile-based specifications.
 
@@ -1029,7 +1029,7 @@ Define performance timing targets for all operations. Replace vague terms like "
 - p95: 95th percentile - performance SLA target
 - p99: 99th percentile - alert threshold for degradation
 
-### 19.2 Boundary Value Matrix
+### 20.2 Boundary Value Matrix
 
 Specify boundary conditions for all thresholds with explicit inclusive/exclusive notation.
 
@@ -1056,7 +1056,7 @@ Specify boundary conditions for all thresholds with explicit inclusive/exclusive
 **Threshold Registry Cross-Reference**:
 For centralized threshold values, reference: `@threshold: PRD.035.{category}.{key}`
 
-### 19.3 State Transition Diagram
+### 20.3 State Transition Diagram
 
 Document complete state machine including error states and recovery transitions.
 
@@ -1097,7 +1097,7 @@ stateDiagram-v2
 - Error state → Recovery attempt
 - Recovery exhausted → Final disposition (manual review, cancellation, etc.)
 
-### 19.4 Fallback Path Documentation
+### 20.4 Fallback Path Documentation
 
 Define behavior when external dependencies are unavailable.
 
@@ -1120,7 +1120,7 @@ Define behavior when external dependencies are unavailable.
 4. **Recovery**: How does the system return to normal? (automatic, manual intervention)
 5. **Alerting**: What alerts are triggered? (PagerDuty, Slack, logging)
 
-### 19.5 EARS-Ready Checklist
+### 20.5 EARS-Ready Checklist
 
 Before progressing to EARS creation, verify:
 

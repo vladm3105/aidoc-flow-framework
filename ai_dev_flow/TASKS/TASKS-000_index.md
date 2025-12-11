@@ -22,7 +22,7 @@ This document serves as the master index for all Code Generation Plans (TASKS) i
 - **Coordinate** code generation across components
 - **Reference** implementation tasks and their completion status
 
-## resource in Development Workflow
+## Position in Document Workflow
 
 ```mermaid
 flowchart LR

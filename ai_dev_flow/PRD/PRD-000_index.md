@@ -22,7 +22,7 @@ This document serves as the master index for all Product Requirements Documents 
 - **Coordinate** product planning across teams
 - **Reference** business requirements and downstream artifacts
 
-## Position in Development Workflow
+## Position in Document Workflow
 
 ```mermaid
 flowchart LR

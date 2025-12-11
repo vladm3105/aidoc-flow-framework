@@ -357,6 +357,30 @@ Local Clarifications (ai_dev_flow)
 - Use sub-numbering (-YY) sparingly - only when single logical document truly requires multiple related files with sequential reading order.
 - **ID Collision Prevention**: Each NNN number must be unique across atomic and multi-document patterns. Once allocated to a multi-document group (e.g., REQ-009-01, REQ-009-02), that NNN number (009) cannot be used for an atomic document (REQ-009).
 
+---
+
+## Tag Format Convention (By Design)
+
+The SDD framework uses two distinct notation systems for cross-references, each serving a specific purpose:
+
+| Notation | Format       | Artifacts                               | Purpose                                                             |
+|----------|--------------|----------------------------------------|---------------------------------------------------------------------|
+| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NNN.NNN | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to features inside documents |
+
+**Key Distinction**:
+
+- `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
+- `@brd: BRD.017.001` → Points to feature 001 inside document `BRD-017.md`
+
+**Why Two Systems?**
+
+1. **Dash notation** (`TYPE-NNN`): Used for technical artifacts that are referenced as complete documents. Each ADR, SPEC, or CTR file is a self-contained unit.
+
+2. **Dot notation** (`TYPE.NNN.NNN`): Used for requirement artifacts that contain multiple numbered features/requirements within a single document. The second number identifies the specific feature inside the document.
+
+---
+
 **Unified Feature ID Format (MANDATORY)**: Use dot separator for globally unique feature references:
 
 | Format | Pattern | Example |

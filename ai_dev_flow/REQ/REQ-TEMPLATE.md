@@ -8,7 +8,7 @@
 #   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
 # =============================================================================
 ---
-title: "REQ-TEMPLATE: atomic-requirements-document"
+title: "REQ-TEMPLATE: Atomic Requirements Document"
 tags:
   - req-template
   - layer-7-artifact
@@ -33,7 +33,7 @@ custom_fields:
 
 # REQ-NNN: [Descriptive Requirement Title]
 
-## resource in Development Workflow
+## Position in Document Workflow
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
@@ -43,25 +43,22 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 **Quick Reference**:
 
-
-```
-
 ```
 BRD (Business Requirements Document): High-level business needs
         ↓
 PRD (Product Requirements Document): User needs and features
         ↓
-EARS (Easy Approach to Requirements Syntax): Atomic, measurable requirements using WHEN/THEN format, Requirements Expressions). All work traces back to formal technical requirements (WHEN-THE-SHALL-WITHIN format), AI generated structured requirement formatAI transforms interfaces as code specification
+EARS (Easy Approach to Requirements Syntax): Atomic, measurable requirements
         ↓
-BDD (Behavior-Driven Development). Business + Dev + Test AI generates acceptance scenarios
+BDD (Behavior-Driven Development): Acceptance scenarios
         ↓
-ADR (Architecture Decisions Requirements)
+ADR (Architecture Decisions): Technical architecture choices
         ↓
-SYS (System Requirements). Technical interpretation of business requirements
+SYS (System Requirements): Technical interpretation of business requirements
         ↓
 REQ (Atomic Requirements)
         ↓
-SPEC (Technical Implementation) 
+SPEC (Technical Implementation)
         ↓
 TASKS (Implementation Plans)
         ↓
@@ -964,7 +961,7 @@ async def get_quote(
 ```
 
 **Dependency Injection Benefits**:
-- **Testability**: Easy to mock dependencies for unit tests
+- **Testability**: Enables mocking dependencies for unit tests
 - **Flexibility**: Swap implementations without changing code
 - **Configuration**: Centralized configuration management
 - **Lifecycle Management**: Automatic singleton/factory handling

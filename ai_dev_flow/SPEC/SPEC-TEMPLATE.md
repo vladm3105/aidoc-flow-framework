@@ -8,7 +8,7 @@
 #   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
 # =============================================================================
 ---
-title: "SPEC-TEMPLATE: technical-specification"
+title: "SPEC-TEMPLATE: Technical Specification"
 tags:
   - spec-template
   - layer-10-artifact
@@ -22,6 +22,8 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: technical-specification
+  schema_reference: "SPEC_SCHEMA.yaml"
+  schema_version: "1.0"
 ---
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for SPEC Markdown structure.

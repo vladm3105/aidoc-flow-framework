@@ -22,7 +22,7 @@ This document serves as the master index for all Implementation Plans (IMPL) in 
 - **Coordinate** work between teams
 - **Reference** deliverables and their status
 
-## resource in Development Workflow
+## Position in Document Workflow
 
 ```mermaid
 flowchart LR

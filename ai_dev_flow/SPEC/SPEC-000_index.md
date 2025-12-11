@@ -22,7 +22,7 @@ This document serves as the master index for all Technical Specification (SPEC) 
 - **Coordinate** development across components
 - **Reference** implementation-ready technical details
 
-## Position in Development Workflow
+## Position in Document Workflow
 
 ```mermaid
 flowchart LR

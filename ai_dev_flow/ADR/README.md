@@ -30,7 +30,7 @@ ADRs serve as the **architectural foundation** that:
 Foundation ADRs establish project-wide standards that all other ADRs must reference:
 
 ### ADR-000: Technology Stack
-**Location**: [docs/ADR/ADR-000_technology_stack.md](../../../docs/ADR/ADR-000_technology_stack.md)
+**Location**: [ADR-000_technology_stack.md](ADR-000_technology_stack.md)
 
 **Purpose**: Single source of truth for all technology decisions across the entire options [SYSTEM_TYPE - e.g., inventory system, booking system].
 
@@ -64,7 +64,7 @@ Every ADR proposing new technologies must include a "Technology Stack Compliance
 
 See [ADR-TEMPLATE.md](ADR-TEMPLATE.md) for the complete compliance section template.
 
-## resource in Development Workflow
+## Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
@@ -87,7 +87,7 @@ ADRs should be created **after** business and technical requirements are gathere
 
 ADRs should be created **immediately after** initial requirements and BDD scenarios are established but **before** system specifications and implementation plans:
 
-**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
+**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ```text
 Requirements (PRD/EARS) → BDD Scenarios ← ADR Decision → SYS/SPEC/Implementation
@@ -391,7 +391,7 @@ Decision has been completely replaced by another:
 ### 5. Maintainability Focus
 
 - **History preserved**: Document describes decision rationale for future reference
-- **Easy to scan**: Structure, headings, and tables enable quick navigation
+- **Structure enables navigation**: Headings and tables support quick scanning
 - **Diagram-supported**: Architecture flows shown visually with mermaid diagrams
 - **Traceability complete**: Links to upstream and downstream artifacts maintained
 
@@ -880,7 +880,7 @@ When upstream documents change:
 
 #### 5. Enable AI Agents to Follow Chains
 
-Structure traceability to make it easy for LLMs/AI agents to understand context:
+Structure traceability for LLMs/AI agents to understand context:
 
 ```markdown
 # ✅ AI-Friendly: Clear context and relationships

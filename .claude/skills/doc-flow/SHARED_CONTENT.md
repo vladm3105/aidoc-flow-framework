@@ -186,7 +186,7 @@ Each artifact layer must include traceability tags from ALL upstream artifact la
 @impl: IMPL.003.002  # Optional - include only if exists
 @ctr: CTR-005  # Optional - include only if exists
 @spec: SPEC-018
-@tasks: TASKS-015
+@tasks: TASKS.015.001
 @iplan: IPLAN-001  # Use ID only (IPLAN-NNN), NOT full filename with timestamp
 @icon: TASKS-001:ContractName  # Implementation Contract (optional, Layer 11)
 ```

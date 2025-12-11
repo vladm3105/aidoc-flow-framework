@@ -44,7 +44,7 @@ required_sections=(
   "## 4. Stakeholders (High-Level)"
   "## 5. User Stories (High-Level Summary)"
   "## 6. Functional Requirements"
-  "## 7. Non-Functional Requirements"
+  "## 7. Quality Attributes"
   "## 8. Business Constraints and Assumptions"
   "## 9. Acceptance Criteria"
   "## 10. Business Risk Management"

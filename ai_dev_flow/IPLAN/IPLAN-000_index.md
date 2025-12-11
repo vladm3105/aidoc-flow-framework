@@ -23,7 +23,7 @@ This document serves as the master index for all Implementation Plans (IPLAN) in
 - **Reference** completed and in-progress implementation work
 - **Resume** work from checkpoints in new sessions
 
-## Position in Development Workflow
+## Position in Document Workflow
 
 **Layer 12: Implementation Work Plans**
 

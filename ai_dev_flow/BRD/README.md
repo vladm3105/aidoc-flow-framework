@@ -25,14 +25,14 @@ BRDs transform strategic business goals into concrete, actionable requirements t
 - Provide traceability to downstream product and technical artifacts
 - Create the authoritative source for business validation
 
-## Position in Development Workflow
+## Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 
 BRDs are the **first step** in specification-driven development within the complete SDD workflow:
 
-**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
+**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ## ADR References in BRD
 
@@ -206,9 +206,17 @@ Standard metadata including version, date, owner, status, revision history
 
 This directory provides the **BRD-TEMPLATE.md** for business requirements documentation:
 
-> **Note**: BRD does not have a schema file (`BRD_SCHEMA.yaml`) by design. Business requirements
-> are inherently flexible and domain-specific; rigid schema validation would be counterproductive
-> for capturing diverse business needs across different project types.
+> **Design Decision: No BRD_SCHEMA.yaml**
+>
+> BRD intentionally does not have a schema file (`BRD_SCHEMA.yaml`). This is a deliberate design choice:
+>
+> **Rationale**:
+> - **Business Flexibility**: Layer 1 artifacts capture diverse business needs across domains (financial, healthcare, SaaS, IoT) - rigid schema validation would constrain legitimate business expression
+> - **Domain Variability**: Business requirements vary significantly by industry, organization size, and project type - a fixed schema cannot accommodate this diversity
+> - **Human-Centric Validation**: Business requirements require human judgment for quality assessment rather than automated schema validation
+> - **Sufficient Guidance**: `BRD_CREATION_RULES.md` and `BRD_VALIDATION_RULES.md` provide comprehensive guidance without rigid constraints
+>
+> **Validation Approach**: Use `scripts/validate_brd_template.sh` for structural validation while allowing content flexibility.
 
 **BRD-TEMPLATE.md** - Comprehensive business requirements template
 - Full-featured template with all sections

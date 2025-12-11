@@ -195,7 +195,7 @@ CTR must reference:
 ### 5.2 Downstream References
 
 CTR is referenced by:
-- `@tasks: TASKS-NNN` - Implementation tasks
+- `@tasks: TASKS.NNN.NNN` - Implementation tasks
 - `@iplan: IPLAN-NNN` - Implementation plans
 - Code implementations
 

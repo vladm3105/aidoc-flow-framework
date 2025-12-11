@@ -163,7 +163,7 @@ find docs/SPEC/ -type f -name "*.yaml" -exec sed -i \
 |---------|-------------|--------------|
 | **A.9 Access Control** | Identity Management | User authentication, authorization |
 | **A.12 Operations security** | security Operations | Vulnerability management, malware protection |
-| **A.14 System Acquisition** | regulatoryure SDLC | security requirements in development |
+| **A.14 System Acquisition** | Secure SDLC | security requirements in development |
 | **A.17 Business Continuity** | DR/BCP | Backup, disaster recovery, failover |
 
 ---

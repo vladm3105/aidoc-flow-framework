@@ -182,7 +182,7 @@ structure:
       - Status
 
     optional_fields:
-      - SYS-Ready Score
+      - ADR-Ready Score
 
     status_values:
       - Draft
@@ -264,8 +264,8 @@ adr_patterns:
       - "sequenceDiagram"
       - "stateDiagram-v2"
 
-  # SYS-Ready Score components
-  sys_ready_score:
+  # ADR-Ready Score components
+  adr_ready_score:
     min_threshold: 90
     components:
       problem_statement:
@@ -365,16 +365,16 @@ traceability:
   upstream:
     required:
       - type: BRD
-        format: "@brd: BRD-NNN"
+        format: "@brd: BRD.NNN.NNN"
         location: "Traceability section or Requirements Satisfied"
       - type: PRD
-        format: "@prd: PRD-NNN"
+        format: "@prd: PRD.NNN.NNN"
         location: "Traceability section or Requirements Satisfied"
       - type: EARS
-        format: "@ears: EARS-NNN"
+        format: "@ears: EARS.NNN.NNN"
         location: "Traceability section or Requirements Satisfied"
       - type: BDD
-        format: "@bdd: BDD-NNN"
+        format: "@bdd: BDD.NNN.NNN"
         location: "Traceability section or Requirements Satisfied"
 
   downstream:
@@ -403,26 +403,26 @@ traceability:
 # =============================================================================
 
 error_messages:
-  E001: "Missing required tag 'adr'"
-  E002: "Missing required tag 'layer-5-artifact'"
-  E003: "Invalid document_type: must be 'adr' or 'template'"
-  E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
-  E005: "Forbidden tag pattern detected"
-  E006: "Missing required section"
-  E007: "Multiple H1 headings detected"
-  E008: "Missing Context section (Section 4)"
-  E009: "Missing Decision section (Section 5)"
-  E010: "Missing Consequences section (Section 7)"
-  E011: "Context missing Problem Statement subsection"
-  E012: "Decision missing Chosen Solution subsection"
-  E013: "Consequences missing Positive or Negative Outcomes"
-  E014: "File name does not match ADR-NNN_name.md format"
-  W001: "Missing Architecture Flow Mermaid diagram"
-  W002: "Context missing Constraints subsection"
-  W003: "Missing upstream traceability tags (@prd, @ears, @bdd)"
-  W004: "Implementation Assessment missing Complexity Evaluation"
-  W005: "SYS-Ready Score below 90% threshold"
-  W006: "Requirements Satisfied table missing"
-  I001: "Consider adding Alternatives Considered section"
-  I002: "Consider adding Security Considerations section"
-  I003: "Consider adding Rollback Plan in Implementation Assessment"
+  ADR-E001: "Missing required tag 'adr'"
+  ADR-E002: "Missing required tag 'layer-5-artifact'"
+  ADR-E003: "Invalid document_type: must be 'adr' or 'template'"
+  ADR-E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
+  ADR-E005: "Forbidden tag pattern detected"
+  ADR-E006: "Missing required section"
+  ADR-E007: "Multiple H1 headings detected"
+  ADR-E008: "Missing Context section (Section 4)"
+  ADR-E009: "Missing Decision section (Section 5)"
+  ADR-E010: "Missing Consequences section (Section 7)"
+  ADR-E011: "Context missing Problem Statement subsection"
+  ADR-E012: "Decision missing Chosen Solution subsection"
+  ADR-E013: "Consequences missing Positive or Negative Outcomes"
+  ADR-E014: "File name does not match ADR-NNN_name.md format"
+  ADR-W001: "Missing Architecture Flow Mermaid diagram"
+  ADR-W002: "Context missing Constraints subsection"
+  ADR-W003: "Missing upstream traceability tags (@prd, @ears, @bdd)"
+  ADR-W004: "Implementation Assessment missing Complexity Evaluation"
+  ADR-W005: "SYS-Ready Score below 90% threshold"
+  ADR-W006: "Requirements Satisfied table missing"
+  ADR-I001: "Consider adding Alternatives Considered section"
+  ADR-I002: "Consider adding Security Considerations section"
+  ADR-I003: "Consider adding Rollback Plan in Implementation Assessment"

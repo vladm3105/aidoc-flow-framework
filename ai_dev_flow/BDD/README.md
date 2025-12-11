@@ -24,7 +24,7 @@ BDD files serve as the **living specification** that:
 - **Ensure Verification**: Validate that implementations meet behavioral expectations
 - **Maintain Traceability**: Link behavior specifications to upstream requirements and downstream code
 
-## Position in Development Workflow
+## Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
@@ -47,7 +47,7 @@ BDD files should be created **after** business requirements are defined but **be
 
 BDD files should be created **immediately after** initial requirements are gathered but **before** any code implementation begins:
 
-**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
+**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ```
 Business Requirements (PRD) → BDD Scenarios ← Technical Design → Implementation

@@ -284,7 +284,7 @@ custom_fields:
 - @sys: SYS.001.001 (Quoteboard System Requirements)
 
 ### Downstream References
-- @impl: IMPL-001 (Quoteboard Implementation Approach)
+- @impl: IMPL.001.001 (Quoteboard Implementation Approach)
 - @spec: SPEC-001 (WebSocket Quote Ingestion Technical Spec)
 ```
 
@@ -1341,7 +1341,7 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 ## Traceability Tags
 
 @spec: SPEC-001
-@tasks: TASKS-001
+@tasks: TASKS.001.001
 @icon: ICON-001:ServiceConnector
 @icon: ICON-003:GatewayExceptions
 @icon-role: provider
@@ -1386,7 +1386,7 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 ## Traceability Tags
 
 @spec: SPEC-002
-@tasks: TASKS-002
+@tasks: TASKS.002.001
 @icon: ICON-001:ServiceConnector
 @icon: ICON-002:ConnectionState
 @icon: ICON-003:GatewayExceptions

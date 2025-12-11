@@ -217,12 +217,12 @@ docs/REQ/
 **Tag Verification**:
 ```bash
 # Required cumulative tags for REQ (Layer 7) - Upstream is REQUIRED
-@brd: BRD-NNN:REQ-NNN      # Layer 1
-@prd: PRD-NNN:FEAT-NNN     # Layer 2
-@ears: EARS-NNN:REQ-NNN    # Layer 3
-@bdd: BDD-NNN:scenario-X   # Layer 4
-@adr: ADR-NNN              # Layer 5
-@sys: SYS-NNN:REQ-NNN      # Layer 6
+@brd: BRD.NNN.NNN          # Layer 1 (dot notation)
+@prd: PRD.NNN.NNN          # Layer 2 (dot notation)
+@ears: EARS.NNN.NNN        # Layer 3 (dot notation)
+@bdd: BDD.NNN.NNN          # Layer 4 (dot notation)
+@adr: ADR-NNN              # Layer 5 (dash notation)
+@sys: SYS.NNN.NNN          # Layer 6 (dot notation)
 ```
 
 **Link Check**:

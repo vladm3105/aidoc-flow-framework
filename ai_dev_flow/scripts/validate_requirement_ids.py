@@ -50,7 +50,7 @@ class RequirementIDValidator:
         4: r"##\s*4\.\s*Data\s+Schemas?",
         5: r"##\s*5\.\s*Error\s+Handling\s+Specifications?",
         6: r"##\s*6\.\s*Configuration\s+Specifications?",
-        7: r"##\s*7\.\s*Non-Functional\s+Requirements",
+        7: r"##\s*7\.\s*Quality\s+Attributes",
         8: r"##\s*8\.\s*Implementation\s+Guidance",
         9: r"##\s*9\.\s*Acceptance\s+Criteria",
         10: r"##\s*10\.\s*Verification\s+Methods",

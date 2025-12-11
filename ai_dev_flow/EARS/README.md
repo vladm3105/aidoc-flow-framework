@@ -23,11 +23,11 @@ EARS serves as the crucial translation layer between:
 - **Upstream**: Product Requirements Documents (PRDs) 
 - **Downstream**: Atomic Requirements (REQs), Architecture Decisions (ADRs), and Technical Specifications
 
-## resource in Development Workflow
+## Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
-**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
+**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ## Statement Types
 
@@ -229,7 +229,7 @@ See `EARS-001_external_api_integration.md` for a complete example of a well-stru
 
 ## Common Pitfalls
 
-1. **Vague Language**: Avoid terms like "fast," "reliable," "regulatoryure" without quantification
+1. **Vague Language**: Avoid terms like "fast," "reliable," "secure" without quantification
 2. **Overloading**: Don't combine multiple behaviors into single statements
 3. **Missing Context**: Always specify the subject system and triggering conditions
 4. **Orphaned Statements**: Ensure each statement can be traced to a PRD source

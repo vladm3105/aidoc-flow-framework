@@ -24,14 +24,14 @@ PRDs transform high-level business objectives into concrete, measurable product 
 - Provide traceability to downstream technical artifacts
 - Create the authoritative source for all implementation decisions
 
-## resource in Development Workflow
+## Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 
 PRDs are the **starting point** of specification-driven development within the complete SDD workflow:
 
-**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
+**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ## ADR References in PRD
 

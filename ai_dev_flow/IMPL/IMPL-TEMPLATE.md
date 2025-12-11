@@ -8,7 +8,7 @@
 #   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
 # =============================================================================
 ---
-title: "IMPL-TEMPLATE: implementation-approach-document"
+title: "IMPL-TEMPLATE: Implementation Approach Document"
 tags:
   - impl-template
   - layer-8-artifact
@@ -52,7 +52,7 @@ custom_fields:
 | **Related REQs** | [REQ-NNN](../REQ/.../REQ-NNN.md), [REQ-MMM](../REQ/.../REQ-MMM.md) |
 | **Deliverables** | CTR-NNN, SPEC-NNN, TASKS-NNN, CTR-YY, SPEC-YY, TASKS-YY |
 
-## resource in Development Workflow
+## Position in Document Workflow
 
 **IMPL (Implementation Plans)** ← YOU ARE HERE
 

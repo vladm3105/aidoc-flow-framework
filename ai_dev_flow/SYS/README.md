@@ -24,14 +24,14 @@ SYS documents establish the **system behavior contracts** that:
 - **Create Acceptance Criteria**: Provide quantifiable success measures for implementation validation
 - **Enable Architecture Selection**: Inform technology choices through requirement-driven constraints
 
-## resource in Development Workflow
+## Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 
 SYS are the **system-level specifications** that operationalize product requirements into technical boundaries within the complete SDD workflow:
 
-**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
+**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ## SYS Document Structure
 
@@ -79,7 +79,7 @@ Quality attributes and operational characteristics:
 - **Performance**: [Latency/threshold] < [quantitative value] for [operation type] under [conditions]
 - **Reliability**: [Availability/uptime] ≥ [percentage] with [MTTR] < [timeframe]
 - **Scalability**: Support [concurrent users/throughput] ≥ [value] maintaining [SLA]
-- **security**: [Authentication/authorization/confidentiality] requirements with [specifications]
+- **Security**: [Authentication/authorization/confidentiality] requirements with [specifications]
 - **Observability**: Logs/metrics/traces for [critical operations] with [retention/SLA]
 - **Maintainability**: [Deployment/rollback/updates] within [timeframes] with [downtime]
 ```
@@ -136,7 +136,7 @@ Quality attributes and operational characteristics:
 - **Disaster Recovery**: Restore service within 1 hour following region failure
 ```
 
-### security Requirements
+### Security Requirements
 ```markdown
 ## Quality Attributes
 - **Authentication**: Require valid JWT tokens issued by configured identity provider

@@ -24,12 +24,33 @@ custom_fields:
 
 # BRD Creation Rules
 
-**Version**: 1.1
+**Version**: 1.2
 **Date**: 2025-11-19
-**Last Updated**: 2025-11-19
+**Last Updated**: 2025-12-10
 **Source**: Extracted from BRD-TEMPLATE.md, BRD-VALIDATION_RULES.md, README.md, and BRD-000_index.md
 **Purpose**: Complete reference for creating BRD files according to doc-flow SDD framework
-**Changes**: Clarified Platform vs Feature BRD section requirements, standardized Document Control positioning
+**Changes**: Added schema flexibility design decision documentation; clarified Platform vs Feature BRD section requirements
+
+---
+
+## Design Decision: No BRD_SCHEMA.yaml
+
+> **Intentional Design Choice**: BRD artifacts do NOT have a schema file (`BRD_SCHEMA.yaml`).
+>
+> **Rationale**:
+> - **Business Flexibility**: Layer 1 artifacts capture diverse business needs across domains (financial, healthcare, SaaS, IoT) - rigid schema validation would constrain legitimate business expression
+> - **Domain Variability**: Business requirements vary significantly by industry, organization size, and project type - a fixed schema cannot accommodate this diversity
+> - **Human-Centric Validation**: Business requirements require human judgment for quality assessment rather than automated schema validation
+> - **Sufficient Guidance**: This document (`BRD_CREATION_RULES.md`) and `BRD_VALIDATION_RULES.md` provide comprehensive guidance without rigid constraints
+>
+> **Validation Approach**: Use `scripts/validate_brd_template.sh` for structural validation while allowing content flexibility.
+>
+> **Comparison with Other Layers**:
+> | Layer | Artifact | Schema File | Rationale |
+> |-------|----------|-------------|-----------|
+> | Layer 1 | BRD | None | Business flexibility, human-centric validation |
+> | Layer 2 | PRD | PRD_SCHEMA.yaml | Product specifications benefit from consistent structure |
+> | Layer 3+ | EARS, REQ, etc. | *_SCHEMA.yaml | Technical artifacts require strict validation |
 
 ---
 

@@ -294,24 +294,37 @@ validation_rules:
 # =============================================================================
 
 traceability:
+  # Cumulative tagging requirements for Layer 8
+  cumulative_tags:
+    layer: 8
+    required:
+      - "@brd: BRD.NNN.NNN"
+      - "@prd: PRD.NNN.NNN"
+      - "@ears: EARS.NNN.NNN"
+      - "@bdd: BDD.NNN.NNN"
+      - "@adr: ADR-NNN"
+      - "@sys: SYS.NNN.NNN"
+      - "@req: REQ.NNN.NNN"
+    description: "Layer 8 requires @brd, @prd, @ears, @bdd, @adr, @sys, @req tags for complete traceability"
+
   upstream:
     required:
       - type: REQ
-        format: "@req: REQ-NNN"
+        format: "@req: REQ.NNN.NNN"
         location: "Document Control table and Traceability section"
     optional:
       - type: BRD
-        format: "@brd: BRD-NNN"
+        format: "@brd: BRD.NNN.NNN"
       - type: PRD
-        format: "@prd: PRD-NNN"
+        format: "@prd: PRD.NNN.NNN"
       - type: EARS
-        format: "@ears: EARS-NNN"
+        format: "@ears: EARS.NNN.NNN"
       - type: BDD
-        format: "@bdd: BDD-NNN"
+        format: "@bdd: BDD.NNN.NNN"
       - type: ADR
         format: "@adr: ADR-NNN"
       - type: SYS
-        format: "@sys: SYS-NNN"
+        format: "@sys: SYS.NNN.NNN"
 
   downstream:
     expected:
@@ -322,45 +335,34 @@ traceability:
         format: "@spec: SPEC-NNN"
         description: "Technical Specifications"
       - type: TASKS
-        format: "@tasks: TASKS-NNN"
+        format: "@tasks: TASKS.NNN.NNN"
         description: "Code Generation Plans"
 
   lateral:
-    format: "@impl: IMPL-NNN"
+    format: "@impl: IMPL.NNN.NNN"
     description: "Cross-reference to related IMPL documents"
     relationships:
-      - "@related-impl: IMPL-NNN"
-      - "@depends-impl: IMPL-NNN"
-
-  cumulative_tags:
-    description: "Layer 8 requires cumulative tags from all upstream layers"
-    required_prefixes:
-      - "@brd:"
-      - "@prd:"
-      - "@ears:"
-      - "@bdd:"
-      - "@adr:"
-      - "@sys:"
-      - "@req:"
+      - "@related-impl: IMPL.NNN.NNN"
+      - "@depends-impl: IMPL.NNN.NNN"
 
 # =============================================================================
 # Error Messages
 # =============================================================================
 
 error_messages:
-  E001: "Missing required tag 'impl'"
-  E002: "Missing required tag 'layer-8-artifact'"
-  E003: "Invalid document_type: must be 'impl' or 'template'"
-  E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
-  E005: "Forbidden tag pattern detected"
-  E006: "Missing required Document Control field"
-  E007: "Invalid IMPL ID format: must be IMPL-NNN"
-  E008: "Multiple H1 headings detected"
-  E009: "Missing required PART section"
-  E010: "No Related REQs specified"
-  E011: "No Deliverables specified"
-  W001: "Risk ID not using R-NNN format"
-  W002: "Phase missing required fields"
-  W003: "Section numbering not sequential"
-  W004: "Technical implementation details found (belongs in SPEC)"
-  W005: "Missing cumulative traceability tags"
+  IMPL-E001: "Missing required tag 'impl'"
+  IMPL-E002: "Missing required tag 'layer-8-artifact'"
+  IMPL-E003: "Invalid document_type: must be 'impl' or 'template'"
+  IMPL-E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
+  IMPL-E005: "Forbidden tag pattern detected"
+  IMPL-E006: "Missing required Document Control field"
+  IMPL-E007: "Invalid IMPL ID format: must be IMPL-NNN"
+  IMPL-E008: "Multiple H1 headings detected"
+  IMPL-E009: "Missing required PART section"
+  IMPL-E010: "No Related REQs specified"
+  IMPL-E011: "No Deliverables specified"
+  IMPL-W001: "Risk ID not using R-NNN format"
+  IMPL-W002: "Phase missing required fields"
+  IMPL-W003: "Section numbering not sequential"
+  IMPL-W004: "Technical implementation details found (belongs in SPEC)"
+  IMPL-W005: "Missing cumulative traceability tags"

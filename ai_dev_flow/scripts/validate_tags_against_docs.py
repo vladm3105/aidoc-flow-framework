@@ -85,7 +85,7 @@ def build_document_index(docs_dir: Path) -> Dict:
     # Patterns for extracting requirement IDs from documents
     req_patterns = [
         re.compile(r'\b(FR-\d+)\b'),          # Functional Requirements
-        re.compile(r'\b(NFR-\d+)\b'),         # Non-Functional Requirements
+        re.compile(r'\b(QA-\d+)\b'),          # Quality Attributes (replaces NFR)
         re.compile(r'\b(BO-\d+)\b'),          # Business Objectives
         re.compile(r'\b(PERF-\d+)\b'),        # Performance Requirements
         re.compile(r'\b(SEC-\d+)\b'),         # Security Requirements

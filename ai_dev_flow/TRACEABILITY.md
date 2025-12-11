@@ -118,9 +118,9 @@ ls -la docs/IPLAN/  # Layer 12 - Implementation Plans
 
 **❌ INCORRECT** (phantom references):
 ```markdown
-@brd: BRD-001  # Document doesn't exist yet
-@prd: PRD-NNN  # Placeholder ID
-@adr: TBD      # Invalid reference
+@brd: BRD.001.001  # Document doesn't exist yet
+@prd: PRD.NNN.NNN  # Placeholder ID
+@adr: TBD          # Invalid reference
 ```
 
 **✅ CORRECT** (verified references):
@@ -412,6 +412,26 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 - **FEATURE_NUM:** 3-digit feature/requirement number, zero-padded (030, 006, 001)
 - **Separator:** Dot (.) separates all components
 - **Multiple:** Comma-separated list
+
+### Tag Format Convention (By Design)
+
+The SDD framework uses two distinct notation systems for cross-references, each serving a specific purpose:
+
+| Notation | Format       | Artifacts                               | Purpose                                                             |
+|----------|--------------|----------------------------------------|---------------------------------------------------------------------|
+| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NNN.NNN | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to features inside documents |
+
+**Key Distinction**:
+
+- `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
+- `@brd: BRD.017.001` → Points to feature 001 inside document `BRD-017.md`
+
+**Why Two Systems?**
+
+1. **Dash notation** (`TYPE-NNN`): Used for technical artifacts that are referenced as complete documents. Each ADR, SPEC, or CTR file is a self-contained unit.
+
+2. **Dot notation** (`TYPE.NNN.NNN`): Used for requirement artifacts that contain multiple numbered features/requirements within a single document. The second number identifies the specific feature inside the document.
 
 ### Complete Tag Reference
 
@@ -1055,7 +1075,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 ## Traceability Tags
 
 @spec: SPEC-001
-@tasks: TASKS-001
+@tasks: TASKS.001.001
 @icon: ICON-001:ServiceConnector
 @icon: ICON-003:GatewayExceptions
 @icon-role: provider
@@ -1067,7 +1087,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 ## Traceability Tags
 
 @spec: SPEC-002
-@tasks: TASKS-002
+@tasks: TASKS.002.001
 @icon: ICON-001:ServiceConnector
 @icon: ICON-002:ConnectionState
 @icon: ICON-003:GatewayExceptions
@@ -1080,17 +1100,17 @@ grep -r "@icon-role: consumer" docs/TASKS/
 ## Traceability Tags
 
 @spec: SPEC-001
-@tasks: TASKS-001  # Provider TASKS
+@tasks: TASKS.001.001  # Provider TASKS
 @icon: ICON-001:ServiceConnector
 @icon-role: provider
 
 ## Consumers
-- TASKS-002 (Heartbeat Monitoring)
-- TASKS-003 (Automatic Reconnection)
-- TASKS-004 (Circuit Breaker)
-- TASKS-007 (Event Callbacks)
-- TASKS-008 (Timeout Configuration)
-- TASKS-009 (Protocol Negotiation)
+- TASKS.002.001 (Heartbeat Monitoring)
+- TASKS.003.001 (Automatic Reconnection)
+- TASKS.004.001 (Circuit Breaker)
+- TASKS.007.001 (Event Callbacks)
+- TASKS.008.001 (Timeout Configuration)
+- TASKS.009.001 (Protocol Negotiation)
 ```
 
 ### Common Anti-Patterns and Solutions

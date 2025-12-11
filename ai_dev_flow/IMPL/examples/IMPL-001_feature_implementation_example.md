@@ -20,7 +20,7 @@
 ## Executive Summary
 
 ### Problem Statement
-[PROBLEM - e.g., Current system lacks regulatoryure user authentication, causing security vulnerabilities and poor user experience]
+[PROBLEM - e.g., Current system lacks secure user authentication, causing security vulnerabilities and poor user experience]
 
 ### Proposed Solution
 [SOLUTION - e.g., Implement OAuth 2.0 / OIDC authentication with multi-factor authentication (MFA) support, session management, and role-based access control]

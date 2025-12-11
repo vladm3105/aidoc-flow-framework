@@ -2,7 +2,7 @@
 # 📋 Document Authority: This is the PRIMARY STANDARD for BRD structure.
 # All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
 # - In case of conflict, this template is the single source of truth
-# - Schema: None (Layer 1 entry point, human-authored)
+# - Schema: BRD_SCHEMA.yaml (OPTIONAL - Layer 1 entry point, human-authored)
 # - Creation Rules: BRD_CREATION_RULES.md - AI guidance for document creation (derivative)
 # - Validation Rules: BRD_VALIDATION_RULES.md - AI checklist after document creation (derivative)
 #   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
@@ -22,12 +22,13 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: business-requirements-document
-  schema_reference: "none"
-  schema_version: "n/a"
+  schema_reference: "BRD_SCHEMA.yaml"
+  schema_version: "1.0"
+  schema_status: optional
 ---
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for BRD structure.
-> - **Schema**: None (Layer 1 entry point, human-authored)
+> - **Schema**: `BRD_SCHEMA.yaml` (OPTIONAL - Layer 1 entry point, human-authored)
 > - **Creation Rules**: `BRD_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `BRD_VALIDATION_RULES.md` - Post-creation checks
 

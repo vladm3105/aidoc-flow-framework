@@ -7,6 +7,9 @@
 # - Validation Rules: CTR_VALIDATION_RULES.md - AI checklist after document creation (derivative)
 #   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
 # =============================================================================
+#
+# SCHEMA_REFERENCE: CTR_SCHEMA.yaml
+# SCHEMA_VERSION: 1.0
 
 # Contract ID: Must match filename (CTR-XXX_name)
 contract_id: template_contract

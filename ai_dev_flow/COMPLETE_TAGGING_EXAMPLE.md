@@ -650,12 +650,12 @@ touch notification_service.py notification_validator.py
 @impl: IMPL.003.002
 @ctr: CTR-005
 @spec: SPEC-018
-@tasks: TASKS-015
+@tasks: TASKS.015.001
 ```
 
 **Tag Explanation**:
 - All upstream tags from Layers 1-11
-- TASKS-015 - Implementation tasks for this session
+- TASKS.015.001 - Implementation tasks for this session
 ```
 
 **Tag Analysis**:
@@ -685,7 +685,7 @@ touch notification_service.py notification_validator.py
 @impl: IMPL.003.002
 @ctr: CTR-005
 @spec: SPEC-018
-@tasks: TASKS-015
+@tasks: TASKS.015.001
 @impl-status: complete
 """
 
@@ -759,7 +759,7 @@ async def send_notification(notification: NotificationRequest):
 @impl: IMPL.003.002
 @ctr: CTR-005
 @spec: SPEC-018
-@tasks: TASKS-015
+@tasks: TASKS.015.001
 @code: src/services/notification_service.py
 @impl-status: complete
 """
@@ -878,7 +878,7 @@ def test_reject_missing_recipient():
 @impl: IMPL.003.002
 @ctr: CTR-005
 @spec: SPEC-018
-@tasks: TASKS-015
+@tasks: TASKS.015.001
 @iplan: IPLAN-015
 @code: src/services/notification_service.py
 @test: tests/services/test_notification_service.py

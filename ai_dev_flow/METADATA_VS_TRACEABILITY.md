@@ -139,7 +139,7 @@ custom_fields:
 ### Downstream References
 
 #### Implementation Approach (@impl)
-- @impl: IMPL-001 (Quoteboard Implementation Approach)
+- @impl: IMPL.001.001 (Quoteboard Implementation Approach)
   - section 3.2: Connection management strategy
 
 #### Technical Specifications (@spec)

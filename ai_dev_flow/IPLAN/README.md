@@ -25,7 +25,7 @@ IPLAN create the **implementation execution roadmap** that:
 - **Enables Context Resumption**: Allows new sessions to continue work from checkpoints
 - **Ensures Traceability**: Links implementation work to TASKS plans and upstream requirements
 
-## Position in Development Workflow
+## Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
@@ -34,9 +34,7 @@ IPLAN create the **implementation execution roadmap** that:
 
 IPLAN sit between TASKS (code generation plans) and Code (implementation) in the 16-layer architecture (Layer 0-15):
 
-**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
-
-Use for document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
+**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 
@@ -138,13 +136,13 @@ All IPLAN documents MUST include these 9 mandatory tags:
 6. `@sys: SYS.NNN.NNN` - System Requirements (Layer 6)
 7. `@req: REQ.NNN.NNN` - Atomic Requirements (Layer 7)
 8. `@spec: SPEC-NNN` - Technical Specifications (Layer 10)
-9. `@tasks: TASKS-NNN` - Code Generation Plan (Layer 11)
+9. `@tasks: TASKS.NNN.NNN` - Code Generation Plan (Layer 11)
 
 ### Optional Tags (Conditional)
 
 Include these tags if present in your project:
 
-10. `@impl: IMPL-NNN` - Implementation Plan (Layer 8) - **if project uses IMPL artifacts**
+10. `@impl: IMPL.NNN.NNN` - Implementation Plan (Layer 8) - **if project uses IMPL artifacts**
 11. `@ctr: CTR-NNN` - Interface Contracts (Layer 9) - **if contracts are defined**
 
 ### Tag Format Specification
@@ -1258,10 +1256,10 @@ ls /opt/data/docs_flow_framework/ai_dev_flow/REQ/REQ-001.md
 **Solution 1**: Correct document path
 ```markdown
 # ❌ Wrong path
-@req: REQ-001
+@req: REQ.001.001
 
 # ✅ Correct with full path verification
-@req: REQ-001 (verified: /opt/data/project/docs/REQ/REQ-001.md exists)
+@req: REQ.001.001 (verified: /opt/data/project/docs/REQ/REQ-001.md exists)
 ```
 
 **Solution 2**: Create missing document
@@ -1322,17 +1320,17 @@ pytest --cov=src/module --cov-report=term
 ### Cumulative Tags Checklist
 
 ```markdown
-- [ ] @brd: BRD-___:REQ-___
-- [ ] @prd: PRD-___:REQ-___
-- [ ] @ears: EARS-___:REQ-___
-- [ ] @bdd: BDD-___:SCENARIO-___
-- [ ] @adr: ADR-___
-- [ ] @sys: SYS-___:REQ-___
-- [ ] @req: REQ-___
-- [ ] @spec: SPEC-___
-- [ ] @tasks: TASKS-___
-- [ ] @impl: IMPL-___ (optional)
-- [ ] @ctr: CTR-___ (optional)
+- [ ] @brd: BRD.NNN.NNN
+- [ ] @prd: PRD.NNN.NNN
+- [ ] @ears: EARS.NNN.NNN
+- [ ] @bdd: BDD.NNN.NNN
+- [ ] @adr: ADR-NNN
+- [ ] @sys: SYS.NNN.NNN
+- [ ] @req: REQ.NNN.NNN
+- [ ] @spec: SPEC-NNN
+- [ ] @tasks: TASKS.NNN.NNN
+- [ ] @impl: IMPL.NNN.NNN (optional)
+- [ ] @ctr: CTR-NNN (optional)
 ```
 
 ### Common Bash Commands

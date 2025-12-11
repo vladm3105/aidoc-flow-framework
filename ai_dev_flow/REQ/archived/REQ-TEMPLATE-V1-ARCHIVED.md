@@ -1,6 +1,6 @@
 # REQ-NNN: [Descriptive Requirement Title]
 
-## resource in Development Workflow
+## Position in Document Workflow
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 

@@ -349,14 +349,14 @@ traceability:
   upstream:
     required:
       - type: TASKS
-        format: "@tasks: TASKS-NNN"
+        format: "@tasks: TASKS.NNN.NNN"
         location: "Document Control table (Provider TASKS) or Section 10"
         description: "Source TASKS that defines this contract"
 
   downstream:
     expected:
       - type: TASKS
-        format: "TASKS-NNN"
+        format: "TASKS.NNN.NNN"
         description: "Consumer TASKS files implementing this contract"
       - type: Code
         format: "src/..."
@@ -379,26 +379,26 @@ traceability:
 # =============================================================================
 
 error_messages:
-  E001: "Missing required tag 'implementation-contract'"
-  E002: "Missing required tag 'layer-11-artifact'"
-  E003: "Invalid document_type: must be 'implementation_contract' or 'template'"
-  E004: "Invalid contract_type: must be protocol, exception, state-machine, data-model, or di-interface"
-  E005: "Forbidden tag pattern detected"
-  E006: "Missing required section"
-  E007: "Multiple H1 headings detected"
-  E008: "Section numbering not sequential (1-10)"
-  E009: "Document Control missing required fields"
-  E010: "Missing Contract Definition section (Section 4)"
-  E011: "Missing Traceability section (Section 10)"
-  E012: "Contract Definition has no typed interface code"
-  E013: "File name does not match ICON-NNN_name.md format"
-  E014: "Provider TASKS not in valid TASKS-NNN format"
-  W001: "Consumer count below standalone threshold (5+)"
-  W002: "Contract size below standalone threshold (500 lines)"
-  W003: "Missing upstream traceability tags (require 8: @brd through @spec)"
-  W004: "Provider Requirements section empty"
-  W005: "Consumer Requirements section empty"
-  W006: "Testing Requirements section empty"
-  I001: "Consider embedding this contract in TASKS if criteria not met"
-  I002: "Consider adding @icon-role tags for clarity"
-  I003: "Consider documenting version compatibility requirements"
+  ICON-E001: "Missing required tag 'implementation-contract'"
+  ICON-E002: "Missing required tag 'layer-11-artifact'"
+  ICON-E003: "Invalid document_type: must be 'implementation_contract' or 'template'"
+  ICON-E004: "Invalid contract_type: must be protocol, exception, state-machine, data-model, or di-interface"
+  ICON-E005: "Forbidden tag pattern detected"
+  ICON-E006: "Missing required section"
+  ICON-E007: "Multiple H1 headings detected"
+  ICON-E008: "Section numbering not sequential (1-10)"
+  ICON-E009: "Document Control missing required fields"
+  ICON-E010: "Missing Contract Definition section (Section 4)"
+  ICON-E011: "Missing Traceability section (Section 10)"
+  ICON-E012: "Contract Definition has no typed interface code"
+  ICON-E013: "File name does not match ICON-NNN_name.md format"
+  ICON-E014: "Provider TASKS not in valid TASKS-NNN format"
+  ICON-W001: "Consumer count below standalone threshold (5+)"
+  ICON-W002: "Contract size below standalone threshold (500 lines)"
+  ICON-W003: "Missing upstream traceability tags (require 8: @brd through @spec)"
+  ICON-W004: "Provider Requirements section empty"
+  ICON-W005: "Consumer Requirements section empty"
+  ICON-W006: "Testing Requirements section empty"
+  ICON-I001: "Consider embedding this contract in TASKS if criteria not met"
+  ICON-I002: "Consider adding @icon-role tags for clarity"
+  ICON-I003: "Consider documenting version compatibility requirements"

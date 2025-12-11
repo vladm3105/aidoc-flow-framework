@@ -22,7 +22,7 @@ This document serves as the master index for all System Requirements Specificati
 - **Coordinate** system design across components
 - **Reference** functional requirements and quality attributes
 
-## Position in Development Workflow
+## Position in Document Workflow
 
 ```mermaid
 flowchart LR
@@ -62,7 +62,7 @@ flowchart LR
 | Category | Description | Examples |
 |----------|-------------|----------|
 | **Infrastructure** | System infrastructure and deployment | Compute, storage, networking |
-| **security** | Authentication, authorization, compliance | Identity management, encryption |
+| **Security** | Authentication, authorization, compliance | Identity management, encryption |
 | **Performance** | Throughput, latency, scalability | Response times, concurrent users |
 | **Integration** | External system connections | APIs, message queues, webhooks |
 | **Data Management** | Data storage, processing, analytics | Databases, caching, ETL |
@@ -98,7 +98,7 @@ When creating a new SYS document:
 ### Infrastructure
 - None
 
-### security
+### Security
 - None
 
 ### Performance
@@ -147,7 +147,7 @@ When creating a new SYS document:
 |--------------|---------------|--------------------|--------|
 | Performance | - | 0 | - |
 | Scalability | - | 0 | - |
-| security | - | 0 | - |
+| Security | - | 0 | - |
 | Reliability | - | 0 | - |
 | Maintainability | - | 0 | - |
 

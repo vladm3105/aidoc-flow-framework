@@ -85,7 +85,7 @@ class EarsValidator:
     MALFORMED_TABLE_SEPARATOR = r"\|-+\|\s*\|$"
 
     # === TRACEABILITY ===
-    SOURCE_DOC_PATTERN = r"@prd:\s*PRD-\d{3}"
+    SOURCE_DOC_PATTERN = r"@prd:\s*PRD\.\d{3}\.\d{3}"
     TRACEABILITY_TAG_PATTERN = r"@(prd|brd|ears|threshold|entity):\s*\S+"
 
     def __init__(self, verbose: bool = False):
@@ -499,14 +499,14 @@ class EarsValidator:
         if source_doc_match:
             value = source_doc_match.group(1).strip()
             if not re.search(self.SOURCE_DOC_PATTERN, value):
-                # Check if it's just PRD-NNN without @prd:
-                if re.search(r"PRD-\d{3}", value) and "@prd:" not in value:
+                # Check if it's using old dash format or missing @prd:
+                if re.search(r"PRD[-\.]\d{3}", value) and "@prd:" not in value:
                     self.results.append(ValidationResult(
                         file=str(file_path),
                         rule="E040",
                         severity="error",
                         message=f"Source Document missing @prd: prefix: '{value}'",
-                        fix_suggestion="Change to: @prd: PRD-NNN"
+                        fix_suggestion="Change to: @prd: PRD.NNN.NNN"
                     ))
 
     def _validate_traceability_format(self, file_path: Path, content: str) -> None:
@@ -544,8 +544,8 @@ class EarsValidator:
         if "Traceability" not in content and "References" not in content:
             return  # Skip if no traceability section at all
 
-        # Check for @brd: anywhere in traceability or references sections
-        has_brd_tag = bool(re.search(r"@brd:\s*BRD-\d{3}", content))
+        # Check for @brd: anywhere in traceability or references sections (dot notation: BRD.NNN.NNN)
+        has_brd_tag = bool(re.search(r"@brd:\s*BRD\.\d{3}\.\d{3}", content))
 
         if not has_brd_tag:
             self.results.append(ValidationResult(
@@ -553,7 +553,7 @@ class EarsValidator:
                 rule="E043",
                 severity="warning",
                 message="Missing @brd: tag in traceability/references section",
-                fix_suggestion="Add @brd: BRD-NNN reference to trace back to source BRD"
+                fix_suggestion="Add @brd: BRD.NNN.NNN reference to trace back to source BRD"
             ))
 
     # === BDD-READY SCORE VALIDATOR ===

@@ -8,7 +8,7 @@ Scores REQ files on completeness (0-100%) based on presence of:
 - Data schemas (JSON Schema/Pydantic/SQLAlchemy)
 - Error catalog with recovery strategies
 - Configuration examples with validation
-- Non-functional requirements
+- Quality attributes
 - No placeholders
 
 Usage:
@@ -44,7 +44,7 @@ class REQSpecReadinessValidator:
     SECTION_4_PATTERN = r"##\s*4\.\s*Data\s+Schemas?"
     SECTION_5_PATTERN = r"##\s*5\.\s*Error\s+Handling\s+Specifications?"
     SECTION_6_PATTERN = r"##\s*6\.\s*Configuration\s+Specifications?"
-    SECTION_7_PATTERN = r"##\s*7\.\s*Non-Functional\s+Requirements"
+    SECTION_7_PATTERN = r"##\s*7\.\s*Quality\s+Attributes"
 
     # Content patterns
     PROTOCOL_PATTERN = r"class\s+\w+\(Protocol\):"
@@ -177,9 +177,9 @@ class REQSpecReadinessValidator:
         return True
 
     def _check_section_7(self, content: str, result: ValidationResult) -> bool:
-        """Check Section 7: Non-Functional Requirements."""
+        """Check Section 7: Quality Attributes."""
         if not re.search(self.SECTION_7_PATTERN, content, re.IGNORECASE):
-            result.errors.append("Missing Section 7: Non-Functional Requirements")
+            result.errors.append("Missing Section 7: Quality Attributes")
             return False
 
         has_performance_targets = bool(re.search(self.PERFORMANCE_PATTERN, content))

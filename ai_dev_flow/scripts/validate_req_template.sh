@@ -44,7 +44,7 @@ required_sections=(
   "## 4. Data Schemas"
   "## 5. Error Handling Specifications"
   "## 6. Configuration Specifications"
-  "## 7. Non-Functional Requirements"
+  "## 7. Quality Attributes"
   "## 8. Implementation Guidance"
   "## 9. Acceptance Criteria"
   "## 10. Verification Methods"
@@ -108,21 +108,21 @@ echo ""
 echo "CHECK 3: Traceability Structure"
 echo "-----------------------------------------"
 
-if grep -q "### Upstream Sources" "$REQ_FILE"; then
+if grep -q "### .*Upstream Sources" "$REQ_FILE"; then
   echo "  ✅ Found: Upstream Sources subsection"
 else
   echo "  ❌ MISSING: Upstream Sources subsection in Section 11"
   ((ERRORS++))
 fi
 
-if grep -q "### Downstream Artifacts" "$REQ_FILE"; then
+if grep -q "### .*Downstream Artifacts" "$REQ_FILE"; then
   echo "  ✅ Found: Downstream Artifacts subsection"
 else
   echo "  ⚠️  WARNING: Downstream Artifacts subsection recommended"
   ((WARNINGS++))
 fi
 
-if grep -q "### Code Implementation Paths" "$REQ_FILE"; then
+if grep -q "### .*Code Implementation Paths" "$REQ_FILE"; then
   echo "  ✅ Found: Code Implementation Paths subsection"
 else
   echo "  ⚠️  WARNING: Code Implementation Paths subsection recommended"

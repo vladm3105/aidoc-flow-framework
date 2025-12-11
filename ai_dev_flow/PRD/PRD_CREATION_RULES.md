@@ -81,7 +81,7 @@ custom_fields:
 | Approver | Final approver name | MANDATORY |
 | Created Date | YYYY-MM-DD | MANDATORY |
 | Last Updated | YYYY-MM-DD | MANDATORY |
-| BRD Reference | @brd: BRD-XXX tag | MANDATORY |
+| BRD Reference | @brd: BRD.NNN.NNN tag | MANDATORY |
 | SYS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
 | EARS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
 | Priority | High / Medium / Low | OPTIONAL |
@@ -109,7 +109,7 @@ custom_fields:
 | **Author** | [Product Manager/Owner Name] |
 | **Reviewer** | [Technical Reviewer Name] |
 | **Approver** | [Stakeholder Name] |
-| **BRD Reference** | @brd: BRD-NNN |
+| **BRD Reference** | @brd: BRD.NNN.NNN |
 | **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
 | **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
 ```
@@ -180,7 +180,7 @@ Every PRD must contain these exact 19 sections (0-18) in order. section numberin
 - Author: [Product Manager/Owner Name]
 - Reviewer: [Technical Reviewer Name]
 - Approver: [Stakeholder Name]
-- BRD Reference: @brd: BRD-XXX tag
+- BRD Reference: @brd: BRD.NNN.NNN tag
 - SYS-Ready Score: Format `✅ NN% (Target: ≥90%)`
 - EARS-Ready Score: Format `✅ NN% (Target: ≥90%)`
 
@@ -197,7 +197,7 @@ Every PRD must contain these exact 19 sections (0-18) in order. section numberin
 | **Author** | [Product Manager/Owner Name] |
 | **Reviewer** | [Technical Reviewer Name] |
 | **Approver** | [Stakeholder Name] |
-| **BRD Reference** | @brd: BRD-NNN |
+| **BRD Reference** | @brd: BRD.NNN.NNN |
 | **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
 | **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
 
@@ -720,7 +720,7 @@ For a PRD to be EARS-Ready, it must contain:
 
 **Mandatory for EARS-Ready**:
 - Numeric thresholds reference centralized registry where applicable
-- Use format: `@prd: PRD-XXX:threshold-key`
+- Use format: `@threshold: PRD.NNN.{category}.{key}`
 
 **When to Reference Registry**:
 - KYC/KYB velocity limits

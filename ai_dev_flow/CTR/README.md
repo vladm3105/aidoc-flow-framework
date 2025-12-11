@@ -23,11 +23,11 @@ API Contracts (CTR) define precise interface specifications between components u
 
 Contracts enable parallel development by allowing providers and consumers to implement independently against the same specification, reducing integration time and defects.
 
-## 2. resource in Development Workflow
+## 2. Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
-**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
+**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 
@@ -153,7 +153,7 @@ CTR/
 ### 5.4 Benefits of Organization
 
 #### Better Document Management
-- **Scalability**: Easy to manage 50+ contracts across multiple teams
+- **Scalability**: Supports management of 50+ contracts across multiple teams
 - **Discovery**: Find contracts by service type (e.g., "show me all MCP contracts")
 - **Ownership**: Clear responsibility (agent team owns `agents/`, infra team owns `infra/`)
 
@@ -161,7 +161,7 @@ CTR/
 - **Alignment**: Directory structure mirrors SPEC organization
   - `CTR/agents/CTR-001` → `SPEC/agents/SPEC-001`
   - `CTR/mcp/CTR-010` → `SPEC/mcp/SPEC-010`
-- **Traceability**: Easy to trace CTR → SPEC relationships
+- **Traceability**: Enables tracing CTR → SPEC relationships
 - **Navigation**: Consistent paths across contract and implementation docs
 
 #### Team Collaboration

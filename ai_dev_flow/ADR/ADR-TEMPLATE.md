@@ -63,7 +63,7 @@ custom_fields:
 
 
 
-## 2. Position in Development Workflow
+## 2. Position in Document Workflow
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 

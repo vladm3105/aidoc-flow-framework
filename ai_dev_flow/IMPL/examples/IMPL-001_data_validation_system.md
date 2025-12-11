@@ -17,7 +17,7 @@
 | **Related REQs** | [REQ-003](../../REQ/examples/api/REQ-003_data_quality_validation.md) |
 | **Deliverables** | CTR-003, SPEC-003, TASKS-003, CTR-005, SPEC-005, TASKS-005, CTR-008, SPEC-008, TASKS-008 |
 
-## Position in Development Workflow
+## Position in Document Workflow
 
 ```mermaid
 flowchart LR

@@ -245,10 +245,24 @@ Document quality constraints (performance, security, scalability, etc.) using se
 
 **Note**: All requirements use sequential numbering. Use folder structure, tags, or document sections for categorization if needed.
 
+## Tag Format Convention (By Design)
+
+The SDD framework uses two distinct notation systems for cross-references:
+
+| Notation | Format       | Artifacts                               | Purpose                                                             |
+|----------|--------------|----------------------------------------|---------------------------------------------------------------------|
+| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NNN.NNN | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to features inside documents |
+
+**Key Distinction**:
+- `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
+- `@brd: BRD.017.001` → Points to feature 001 inside document `BRD-017.md`
+
 ## Unified Feature ID Format (MANDATORY)
 
-**Always use**: `TYPE.NNN.NNN` (dot separator)
-**Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
+- **Always use**: `TYPE.NNN.NNN` (dot separator)
+- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
 
 Examples:
 - `@brd: BRD.017.001` ✅
@@ -271,7 +285,7 @@ Examples:
 @prd: PRD.001.002
 @ears: EARS.001.001
 @bdd: BDD.001.001
-@adr: ADR.033, ADR.045
+@adr: ADR-033, ADR-045
 @sys: SYS.001.001, SYS.001.901
 ```
 

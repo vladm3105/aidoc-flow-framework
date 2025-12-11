@@ -8,7 +8,7 @@
 #   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
 # =============================================================================
 ---
-title: "IPLAN-TEMPLATE: implementation-plan"
+title: "IPLAN-TEMPLATE: Implementation Plan"
 tags:
   - iplan-template
   - layer-12-artifact
@@ -65,7 +65,7 @@ custom_fields:
 
 
 
-## 2. Position in Development Workflow
+## 2. Position in Document Workflow
 
 **IPLAN (Implementation Work Plans)** ← YOU ARE HERE
 
@@ -611,11 +611,11 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - `@sys: SYS.NNN.NNN` - System Requirements (Layer 6)
 - `@req: REQ.NNN.NNN` - Atomic Requirements (Layer 7)
 - `@spec: SPEC-NNN` - Technical Specification (Layer 10)
-- `@tasks: TASKS-NNN` - Code Generation Plan (Layer 11)
+- `@tasks: TASKS.NNN.NNN` - Code Generation Plan (Layer 11)
 
 ### 8.2 Optional Tags (If Present in Project)
 
-- `@impl: IMPL-NNN` - Implementation Plan (Layer 8) - include if project uses IMPL
+- `@impl: IMPL.NNN.NNN` - Implementation Plan (Layer 8) - include if project uses IMPL
 - `@ctr: CTR-NNN` - Interface Contract (Layer 9) - include if contracts defined
 
 ### 8.3 Tag Format
@@ -743,7 +743,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 @impl: IMPL.NNN.NNN
 @ctr: CTR-NNN
 @spec: SPEC-NNN
-@tasks: TASKS-NNN
+@tasks: TASKS.NNN.NNN
 ```
 
 **Format**: `@artifact-type: TYPE.NNN.NNN`

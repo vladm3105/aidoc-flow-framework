@@ -13,7 +13,7 @@ custom_fields:
 
 # BDD Index
 
-## resource in Development Workflow
+## Position in Document Workflow
 
 **BDD (Behavior-Driven Development)** ← YOU ARE HERE
 
@@ -101,61 +101,73 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 *[BDD scenarios for external service integrations will be listed here as they are created]*
 
-Example format:
-- **BDD-001**: [[EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System] Gateway Integration](./BDD-001_ib_gateway_integration.feature)
-  - **Requirements**: REQ-026 ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] Integration), REQ-XXX ([EXTERNAL_SERVICE_GATEWAY])
-  - **ADRs**: ADR-030 ([EXTERNAL_SERVICE_GATEWAY] Architecture)
-  - **Status**: Pending
+<!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
+<!--
+- **BDD-001**: [External Service Gateway Integration](./BDD-001_external_gateway_integration.feature)
+  - **Requirements**: REQ.NNN.NNN (Integration), REQ.NNN.NNN (Gateway)
+  - **ADRs**: ADR-NNN (Architecture)
+  - **Status**: Draft | Review | Approved
+-->
 
-### resource management
+### Resource Management
 
 *[BDD scenarios for risk validation and controls will be listed here]*
 
-Example format:
-- **BDD-002**: [resource Risk Limits Validation](./BDD-002_position_risk_limits.feature)
-  - **Requirements**: REQ-XXX (Risk Limits)
-  - **ADRs**: ADR-008 (Centralized Risk Parameters)
-  - **Status**: Pending
+<!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
+<!--
+- **BDD-002**: [Resource Risk Limits Validation](./BDD-002_resource_risk_limits.feature)
+  - **Requirements**: REQ.NNN.NNN (Risk Limits)
+  - **ADRs**: ADR-NNN (Risk Parameters)
+  - **Status**: Draft | Review | Approved
+-->
 
 ### ML Models
 
 *[BDD scenarios for machine learning model validation will be listed here]*
 
-Example format:
-- **BDD-003**: [[SYSTEM_STATE - e.g., operating mode, environment condition] Classifier Behavior](./BDD-003_system_state_classifier.feature)
-  - **Requirements**: REQ-XXX (ML Models)
-  - **ADRs**: ADR-XXX (ML Architecture)
-  - **Status**: Pending
+<!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
+<!--
+- **BDD-003**: [System State Classifier Behavior](./BDD-003_system_state_classifier.feature)
+  - **Requirements**: REQ.NNN.NNN (ML Models)
+  - **ADRs**: ADR-NNN (ML Architecture)
+  - **Status**: Draft | Review | Approved
+-->
 
 ### Service Strategies
 
-*[BDD scenarios for [DOMAIN_ACTIVITY - e.g., payment processing, content moderation] strategies will be listed here]*
+*[BDD scenarios for service strategies will be listed here]*
 
-Example format:
+<!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
+<!--
 - **BDD-004**: [Service Strategy Execution](./BDD-004_service_strategy.feature)
-  - **Requirements**: REQ-001 through REQ-007 (Covered Calls)
-  - **ADRs**: ADR-015 (Covered Calls Strategy Agent)
-  - **Status**: Pending
+  - **Requirements**: REQ.NNN.NNN (Strategy)
+  - **ADRs**: ADR-NNN (Strategy Architecture)
+  - **Status**: Draft | Review | Approved
+-->
 
 ### Data Architecture
 
 *[BDD scenarios for data management and analytics will be listed here]*
 
-Example format:
-- **BDD-005**: [BigQuery Analytics Pipeline](./BDD-005_bigquery_analytics.feature)
-  - **Requirements**: REQ-XXX (Analytics)
-  - **ADRs**: ADR-004 (BigQuery Architecture)
-  - **Status**: Pending
+<!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
+<!--
+- **BDD-005**: [Analytics Pipeline](./BDD-005_analytics_pipeline.feature)
+  - **Requirements**: REQ.NNN.NNN (Analytics)
+  - **ADRs**: ADR-NNN (Data Architecture)
+  - **Status**: Draft | Review | Approved
+-->
 
 ### System Services
 
 *[BDD scenarios for system-level services will be listed here]*
 
-Example format:
+<!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
+<!--
 - **BDD-006**: [Monitoring and Alerting Service](./BDD-006_monitoring_alerting.feature)
-  - **Requirements**: REQ-XXX (Monitoring)
-  - **ADRs**: ADR-010 (Monitoring Architecture), ADR-022 (Monitoring Agent)
-  - **Status**: Pending
+  - **Requirements**: REQ.NNN.NNN (Monitoring)
+  - **ADRs**: ADR-NNN (Monitoring Architecture)
+  - **Status**: Draft | Review | Approved
+-->
 
 ## Usage Guidelines
 
@@ -246,10 +258,10 @@ Track acceptance test coverage for requirements:
 
 | Metric | Target | Current |
 |--------|--------|---------|
-| Requirements with BDD scenarios | 100% | [TBD] |
-| BDD scenarios passing | 100% | [TBD] |
-| Error conditions with negative tests | 100% | [TBD] |
-| Integration points with scenarios | 100% | [TBD] |
+| Requirements with BDD scenarios | 100% | [Pending] |
+| BDD scenarios passing | 100% | [Pending] |
+| Error conditions with negative tests | 100% | [Pending] |
+| Integration points with scenarios | 100% | [Pending] |
 
 ### Validation Checklist
 

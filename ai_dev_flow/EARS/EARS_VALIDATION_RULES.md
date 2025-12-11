@@ -309,7 +309,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 **Valid** (list format):
 ```markdown
 **Traceability**:
-- @brd: BRD-002
+- @brd: BRD.002.010
 - @prd: PRD.002.001
 - @threshold: PRD.035.timeout.partner.bridge
 ```
@@ -344,13 +344,12 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Type**: Warning
 
-**Check**: Traceability section includes `@brd: BRD-NNN` reference
+**Check**: Traceability section includes `@brd: BRD.NNN.NNN` reference
 
 **Rationale**: EARS (Layer 3) should trace back to BRD (Layer 1) via PRD (Layer 2)
 
-**Valid formats**:
+**Valid format**:
 ```markdown
-@brd: BRD-002
 @brd: BRD.002.010
 ```
 
@@ -422,7 +421,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 | E011/E013 | Change `## 0. Document Control` to `## Document Control`, use table format |
 | E020 | Remove trailing `\| \|` from table separator |
 | E030 | Change `#### Event-N:` to `#### EARS-{DocID}-N:` |
-| E040 | Change `PRD-NNN` to `@prd: PRD-NNN` |
+| E040 | Change `PRD-NNN` to `@prd: PRD.NNN.NNN` |
 | E041 | Add `\|` between traceability tags |
 
 ---

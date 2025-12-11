@@ -260,10 +260,24 @@ If this TASKS provides no contracts and consumes no contracts, state explicitly:
 
 **Reference**: See `ai_dev_flow/TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md` for detailed guidance.
 
+## Tag Format Convention (By Design)
+
+The SDD framework uses two distinct notation systems for cross-references:
+
+| Notation | Format       | Artifacts                               | Purpose                                                             |
+|----------|--------------|----------------------------------------|---------------------------------------------------------------------|
+| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NNN.NNN | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to features inside documents |
+
+**Key Distinction**:
+- `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
+- `@brd: BRD.017.001` → Points to feature 001 inside document `BRD-017.md`
+
 ## Unified Feature ID Format (MANDATORY)
 
-**Always use**: `TYPE.NNN.NNN` (dot separator)
-**Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
+- **Always use**: `TYPE.NNN.NNN` (dot separator)
+- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
 
 Examples:
 - `@brd: BRD.017.001` ✅
@@ -286,10 +300,10 @@ Examples:
 @prd: PRD.001.002
 @ears: EARS.001.001
 @bdd: BDD.001.001
-@adr: ADR.033, ADR.045
+@adr: ADR-033, ADR-045
 @sys: SYS.001.001
 @req: REQ.001.001
-@spec: SPEC.001
+@spec: SPEC-001
 ```
 
 **Maximum (IMPL, CTR, and ICON included)**:
@@ -298,13 +312,13 @@ Examples:
 @prd: PRD.001.002
 @ears: EARS.001.001
 @bdd: BDD.001.001
-@adr: ADR.033, ADR.045
+@adr: ADR-033, ADR-045
 @sys: SYS.001.001
 @req: REQ.001.001
 @impl: IMPL.001.001
-@ctr: CTR.001
-@spec: SPEC.001
-@icon: TASKS.001:DataValidator  # if providing or consuming implementation contracts
+@ctr: CTR-001
+@spec: SPEC-001
+@icon: TASKS-001:DataValidator  # if providing or consuming implementation contracts
 @icon-role: provider  # or consumer
 ```
 

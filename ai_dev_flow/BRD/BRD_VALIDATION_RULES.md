@@ -26,14 +26,38 @@ custom_fields:
 
 # BRD Validation Rules Reference
 
-**Version**: 1.1.0
+**Version**: 1.2.0
 **Date**: 2025-11-19
-**Last Updated**: 2025-11-19
+**Last Updated**: 2025-12-10
 **Purpose**: Complete validation rules for BRD documents
 **Script**: `scripts/validate_brd_template.sh`
 **Primary Template**: `BRD-TEMPLATE.md`
 **Framework**: doc_flow SDD (100% compliant)
-**Changes**: Updated Platform vs Feature validation logic, clarified section requirements
+**Changes**: Added schema flexibility design decision; updated Platform vs Feature validation logic
+
+---
+
+## Design Decision: Human-Centric Validation (No Schema File)
+
+> **Intentional Design Choice**: BRD validation uses script-based structural checks rather than YAML schema validation.
+>
+> **Why No BRD_SCHEMA.yaml**:
+> - **Business Content Diversity**: Business requirements span multiple domains with varying terminology, structure, and emphasis
+> - **Judgment-Based Quality**: BRD quality depends on business stakeholder comprehension, not technical schema compliance
+> - **Flexibility Over Rigidity**: A fixed schema would reject legitimate business expressions that don't fit a predefined mold
+>
+> **Validation Philosophy**:
+> - **Structural Checks**: Verify required sections exist (CHECK 1-6)
+> - **Content Quality**: Warn on potential issues without blocking (CHECK 7-12, warnings)
+> - **PRD-Ready Scoring**: Quantify business-level content quality (CHECK 13-18)
+> - **Human Review**: Final validation by business stakeholders, not automated tools
+>
+> **Script vs Schema Validation**:
+> | Validation Type | BRD Approach | Other Layers |
+> |-----------------|--------------|--------------|
+> | Structure | `validate_brd_template.sh` | `*_SCHEMA.yaml` |
+> | Content | Human review + PRD-Ready Score | Schema field validation |
+> | Quality Gate | ≥90% PRD-Ready Score | Schema compliance + tests |
 
 ---
 

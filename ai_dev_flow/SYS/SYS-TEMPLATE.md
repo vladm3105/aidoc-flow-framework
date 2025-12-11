@@ -8,7 +8,7 @@
 #   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
 # =============================================================================
 ---
-title: "SYS-TEMPLATE: system-requirements-document"
+title: "SYS-TEMPLATE: System Requirements Document"
 tags:
   - sys-template
   - layer-6-artifact
@@ -124,7 +124,7 @@ custom_fields:
   - **Outputs**: [Results produced by successful execution]
   - **Success Criteria**: [Measurable success conditions for the capability]
 
-#### secondary Capability: [Capability Category]
+#### Secondary Capability: [Capability Category]
 - **[System Action]**: [Detailed description of functional behavior]
   - **Inputs**: [Data/parameters required to trigger functionality]
   - **Processing**: [Business logic and data transformation steps]
@@ -261,7 +261,7 @@ custom_fields:
 #### Authentication Requirements
 - **User Identification**: Require authenticated identities for all system interactions
 - **Multi-Factor Support**: Support time-based one-time passwords and hardware tokens
-- **Session Management**: Enforce session timeouts and regulatoryure session invalidation
+- **Session Management**: Enforce session timeouts and secure session invalidation
 
 #### Authorization Requirements
 - **Access Control**: Implement role-based access control with granular permissions
@@ -273,7 +273,7 @@ custom_fields:
 - **Encryption in Transit**: All network communications protected with TLS 1.3
 - **Sensitive Data Handling**: Automatic masking and sanitization of PII in logs and interfaces
 
-#### security Monitoring Requirements
+#### Security Monitoring Requirements
 - **Audit Logging**: Comprehensive logging of all security-relevant operations
 - **Intrusion Detection**: Real-time monitoring for anomalous access patterns
 - **Incident Response**: Automated alerts for potential security breaches
@@ -415,7 +415,7 @@ custom_fields:
 - **Failover Testing**: Validation of automatic and manual failover mechanisms
 - **Recovery Testing**: Verification of backup restoration and disaster recovery procedures
 
-#### security Testing Requirements
+#### Security Testing Requirements
 - **Vulnerability Scanning**: Automated scanning for known security vulnerabilities
 - **Penetration Testing**: Simulated attacks to identify security weaknesses
 - **Compliance Testing**: Validation against security standards and regulatory requirements
@@ -472,7 +472,7 @@ custom_fields:
 [Requirements for security standards and audits]
 
 #### Industry Standards
-- **security Frameworks**: Compliance with industry security frameworks (NIST, ISO 27001)
+- **Security Frameworks**: Compliance with industry security frameworks (NIST, ISO 27001)
 - **Encryption Standards**: Use of approved encryption algorithms and key management
 - **Access Controls**: Implementation of least privilege and segregation of duties
 
@@ -858,7 +858,7 @@ API contracts and interface agreements for external integration.
 
 #### Authentication Implementation
 - **[Authentication Methods]**: [Recommended authentication mechanisms and protocols]
-- **[Session Management]**: [regulatoryure session handling and timeout strategies]
+- **[Session Management]**: [Secure session handling and timeout strategies]
 - **[Multi-Factor Support]**: [Implementation approach for MFA requirements]
 
 #### Authorization Implementation

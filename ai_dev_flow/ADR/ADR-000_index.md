@@ -22,7 +22,7 @@ This document serves as the master index for all Architecture Decision Records (
 - **Coordinate** architecture changes across teams
 - **Reference** decision history and alternatives considered
 
-## Position in Development Workflow
+## Position in Document Workflow
 
 ```mermaid
 flowchart LR

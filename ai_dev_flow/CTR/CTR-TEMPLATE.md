@@ -8,7 +8,7 @@
 #   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
 # =============================================================================
 ---
-title: "CTR-TEMPLATE: contract-specification"
+title: "CTR-TEMPLATE: Contract Specification"
 tags:
   - ctr-template
   - layer-9-artifact
@@ -62,7 +62,7 @@ custom_fields:
 
 
 
-## resource in Development Workflow
+## Position in Document Workflow
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
@@ -137,12 +137,12 @@ Example: "Synchronous REST-style request/response contract for resource risk val
 
 ### 4.2 Parties
 - **Provider**: [Service/component that implements this contract]
-  - Risk Validation Service (service layer)
-  - Implements validation logic against ADR-008 risk parameters
+  - [SERVICE_NAME - e.g., Validation Service, Data Service] (service layer)
+  - Implements [FUNCTIONALITY] logic against [ADR-NNN] parameters
 - **Consumer(s)**: [Services/components that use this contract]
-  - [ORCHESTRATION_COMPONENT] (Level 1)
-  - All Strategy Execution Agents (Level 3): [STRATEGY_NAME - e.g., multi-step workflow, approval process], CSP, [STRATEGY_NAME], [STRATEGY_NAME]
-  - resource collection balancing Agent
+  - [PRIMARY_CONSUMER - e.g., Orchestrator] (Level 1)
+  - [ADDITIONAL_CONSUMERS - e.g., Service Agents, Worker Agents]
+  - [BATCH_CONSUMER - e.g., Batch Processing Agent]
 
 ### 4.3 Communication Pattern
 - **Type**: Synchronous
@@ -156,10 +156,10 @@ Example: "Synchronous REST-style request/response contract for resource risk val
 
 | Requirement ID | Description | How This Contract Satisfies It |
 |----------------|-------------|-------------------------------|
-| REQ-003 | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] enforcement | Provides `validatePositionRisk` endpoint with limit checking |
-| REQ-008 | Centralized risk parameters | References ADR-008 configuration in validation logic |
-| SYS-004 | Audit trail for risk decisions | Response includes `decision_id` for audit logging |
-| ADR-008 | Centralized risk control | Implements single validation interface for all agents |
+| [REQ-NNN] | [Requirement description] | [How contract satisfies this requirement] |
+| [REQ-NNN] | [Requirement description] | [How contract satisfies this requirement] |
+| [SYS-NNN] | [System requirement description] | [How contract satisfies this requirement] |
+| [ADR-NNN] | [Architecture decision description] | [How contract satisfies this requirement] |
 
 ### 5.2 Source Business Logic
 [References to product strategy or business rules requiring this interface.

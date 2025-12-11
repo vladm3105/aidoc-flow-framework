@@ -8,7 +8,7 @@
 #   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
 # =============================================================================
 ---
-title: "TASKS-TEMPLATE: task-breakdown-document"
+title: "TASKS-TEMPLATE: Task Breakdown Document"
 tags:
   - tasks-template
   - layer-11-artifact
@@ -75,7 +75,7 @@ custom_fields:
 - Risk reduction or compliance satisfaction
 - Performance or reliability enhancement]
 
-## resource in Development Workflow
+## Position in Document Workflow
 
 **TASKS (Code Generation Plans)** ← YOU ARE HERE
 
@@ -796,7 +796,7 @@ class ThisComponent:
   - Run Snyk/OWASP security scans in CI/CD
   - Maintain approved dependencies list
   - Have alternative libraries vetted as fallbacks
-- **Contingency**: Replace vulnerable dependency with regulatoryure alternative
+- **Contingency**: Replace vulnerable dependency with secure alternative
 
 #### Integration Risks
 

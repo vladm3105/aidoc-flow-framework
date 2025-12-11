@@ -168,8 +168,8 @@
 | API | SPEC-005, SPEC-012 | 2 | 50% | 710 |
 | Authentication | SPEC-006 | 1 | 100% | 340 |
 | Infrastructure | SPEC-007 | 1 | 100% | 850 |
-| Performance | SPEC-009 | 1 | 40% | TBD |
-| Observability | SPEC-010, SPEC-011 | 2 | 18% | TBD |
+| Performance | SPEC-009 | 1 | 40% | Pending performance baseline |
+| Observability | SPEC-010, SPEC-011 | 2 | 18% | Metrics dashboard review |
 
 ### 5.2 Technology Stack Specifications
 

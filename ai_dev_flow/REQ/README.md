@@ -42,7 +42,7 @@ REQs create the **formal contract** for system behavior by:
 
 REQs are the **testable specification layer** that operationalizes business requirements within the complete SDD workflow:
 
-**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
+**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ## REQ Document Structure
 
@@ -426,7 +426,7 @@ No longer relevant, archived for historical reference.
 
 1. **Clarity**: Single focus eliminates requirement interpretation disputes
 2. **Testability**: Clear criteria enable precise verification planning
-3. **Traceability**: Easy to track from requirement through implementation and testing
+3. **Traceability**: Enables tracking from requirement through implementation and testing
 4. **Modularity**: Changes to one REQ minimally impact others
 5. **Progress Tracking**: Binary completion status for each requirement
 

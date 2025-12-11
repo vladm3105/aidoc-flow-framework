@@ -335,7 +335,7 @@ grep -q "## 8. Implementation Contracts" TASKS-NNN.md
 ### Optional Tags
 
 ```markdown
-@impl: IMPL-NNN (if project uses IMPL)
+@impl: IMPL.NNN.NNN (if project uses IMPL)
 @ctr: CTR-NNN (if contracts defined)
 @icon: ICON-NNN:ContractName (if implementation contracts)
 ```

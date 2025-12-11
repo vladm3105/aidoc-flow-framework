@@ -19,12 +19,12 @@ Implementation Plans (IMPL) are **project management documents** that organize a
 
 **Key Role**: IMPL Plans bridge the gap between business requirements (REQ) and technical implementation by organizing work into phases, assigning teams, and scheduling deliverables.
 
-## Position in Development Workflow
+## Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 
-**⚠️ See for the full document flow: /opt/data/docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**
+**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
@@ -420,7 +420,7 @@ Check IMPL Plan quality:
 ## PART 1: Project Context
 **Overview**: Implement OAuth2 authentication for API access
 
-**Business Objectives**: REQ-042 (regulatoryure API access)
+**Business Objectives**: REQ-042 (Secure API access)
 
 **Scope**:
 - OAuth2 provider integration

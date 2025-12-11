@@ -25,10 +25,10 @@
 #    Feature: My Feature
 #
 # ✅ CORRECT: Tags as Gherkin-native on separate lines before Feature
-#    @brd:BRD.001.001
-#    @brd:BRD.001.FR001
-#    @prd:PRD.001.001
-#    @ears:EARS.001.001
+#    @brd: BRD.001.001
+#    @brd: BRD.001.FR001
+#    @prd: PRD.001.001
+#    @ears: EARS.001.001
 #    Feature: My Feature
 #
 # ❌ WRONG: ADR-Ready Score without checkmark or ≥ symbol
@@ -382,29 +382,29 @@ Feature: [Feature Title]
 #
 # --- FEATURE-LEVEL TAGS (copy and replace NNN with actual IDs) ---
 #
-# @brd:BRD.NNN.FR001
-# @prd:PRD.NNN.NNN
-# @ears:EARS.NNN.001
+# @brd: BRD.NNN.FR001
+# @prd: PRD.NNN.NNN
+# @ears: EARS.NNN.001
 # Feature: [Feature Title]
 #
 # --- AI-AGENT FEATURE TAGS (for AI-agent primary architecture files) ---
 #
-# @brd:BRD.NNN.FR001
-# @prd:PRD.NNN.NNN
-# @ears:EARS.NNN.001
-# @ctr:CTR-005
+# @brd: BRD.NNN.FR001
+# @prd: PRD.NNN.NNN
+# @ears: EARS.NNN.001
+# @ctr: CTR-005
 # Feature: [Agent Feature Title]
 #   Architecture: AI-Agent Primary (AGENT-NNN)
 #
 # --- THRESHOLD REFERENCE FORMAT ---
 #
-# @threshold:PRD-NNN:category.subcategory.key
+# @threshold: PRD-NNN:category.subcategory.key
 #
 # Examples:
-#   @threshold:PRD-NNN:perf.api.p95_latency
-#   @threshold:PRD-NNN:timeout.partner.name
-#   @threshold:PRD-NNN:risk.high.min
-#   @threshold:PRD-NNN:float.utilization.critical
+#   @threshold: PRD-NNN:perf.api.p95_latency
+#   @threshold: PRD-NNN:timeout.partner.name
+#   @threshold: PRD-NNN:risk.high.min
+#   @threshold: PRD-NNN:float.utilization.critical
 #
 # --- ENTITY REFERENCE FORMAT ---
 #

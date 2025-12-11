@@ -129,8 +129,8 @@ structure:
       - Source Document
 
     source_document_format:
-      pattern: "^@prd: PRD-\\d{3}$"
-      description: "Must use @prd: prefix for traceability"
+      pattern: "^@prd: PRD\\.\\d{3}\\.\\d{3}$"
+      description: "Must use @prd: prefix with dot notation (PRD.NNN.NNN) for traceability"
 
   # Section numbering rules
   section_numbering:
@@ -221,15 +221,22 @@ validation_rules:
 # =============================================================================
 
 traceability:
+  # Cumulative tagging requirements for Layer 3
+  cumulative_tags:
+    layer: 3
+    required:
+      - "@brd: BRD.NNN.NNN"
+      - "@prd: PRD.NNN.NNN"
+    description: "Layer 3 requires @brd and @prd tags for complete traceability"
+
   upstream:
     required:
-      - type: PRD
-        format: "@prd: PRD-NNN"
-        location: "Document Control table"
-    optional:
       - type: BRD
-        format: "@brd: BRD-NNN"
-        location: "Within EARS statements"
+        format: "@brd: BRD.NNN.NNN"
+        location: "Document Control table or Traceability section"
+      - type: PRD
+        format: "@prd: PRD.NNN.NNN"
+        location: "Document Control table or Traceability section"
 
   downstream:
     expected:
@@ -247,14 +254,15 @@ traceability:
 # =============================================================================
 
 error_messages:
-  E001: "Missing required tag 'ears'"
-  E002: "Missing required tag 'layer-3-artifact'"
-  E003: "Invalid document_type: must be 'ears'"
-  E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
-  E005: "Forbidden tag pattern detected"
-  E006: "Source Document missing @prd: prefix"
-  E007: "Duplicate section number detected"
-  E008: "Multiple H1 headings detected"
-  W001: "EARS statement missing WITHIN timing specification"
-  W002: "EARS statement missing traceability tag"
-  W003: "Section numbering not sequential"
+  EARS-E001: "Missing required tag 'ears'"
+  EARS-E002: "Missing required tag 'layer-3-artifact'"
+  EARS-E003: "Invalid document_type: must be 'ears'"
+  EARS-E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
+  EARS-E005: "Forbidden tag pattern detected"
+  EARS-E006: "Source Document missing @prd: prefix"
+  EARS-E007: "Duplicate section number detected"
+  EARS-E008: "Multiple H1 headings detected"
+  EARS-W001: "EARS statement missing WITHIN timing specification"
+  EARS-W002: "EARS statement missing traceability tag"
+  EARS-W003: "Section numbering not sequential"
+  EARS-W004: "Missing upstream traceability tags (require 2: @brd, @prd)"
