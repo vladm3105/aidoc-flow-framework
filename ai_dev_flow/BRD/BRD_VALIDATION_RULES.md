@@ -26,14 +26,14 @@ custom_fields:
 
 # BRD Validation Rules Reference
 
-**Version**: 1.2.0
+**Version**: 1.3.0
 **Date**: 2025-11-19
-**Last Updated**: 2025-12-10
+**Last Updated**: 2025-12-12
 **Purpose**: Complete validation rules for BRD documents
 **Script**: `scripts/validate_brd_template.sh`
 **Primary Template**: `BRD-TEMPLATE.md`
 **Framework**: doc_flow SDD (100% compliant)
-**Changes**: Added schema flexibility design decision; updated Platform vs Feature validation logic
+**Changes**: Added BRD-REF as third document category with reduced validation; updated CHECK 4 and CHECK 5
 
 ---
 
@@ -79,6 +79,35 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 - **doc_flow SDD Framework**: Business-driven SDD methodology
 - **Platform vs Feature BRD**: Different validation requirements by type
 - **Business Requirements Quality**: Measurable objectives, acceptance criteria, strategic alignment
+
+### BRD Document Categories
+
+| Category | Filename Pattern | Validation Level | Description |
+|----------|------------------|------------------|-------------|
+| **Platform BRD** | `BRD-NNN_platform_*` or `BRD-NNN_infrastructure_*` | Full (24 checks) | Foundational technology stacks and prerequisites |
+| **Feature BRD** | `BRD-NNN_{feature_name}` | Full (24 checks) | Business capability requirements |
+| **BRD-REF** | `BRD-REF-NNN_{slug}.md` | Reduced (4 checks) | Supplementary reference documents |
+
+### BRD-REF Reduced Validation
+
+**Purpose**: BRD-REF documents are supplementary reference materials that support BRD artifacts but do not define formal business requirements.
+
+**Applicable Checks** (4 total):
+- CHECK 2: Document Control Fields (required)
+- CHECK 3: Document Revision History (required)
+- CHECK 1 (partial): Introduction section only (required)
+- CHECK 4 (partial): H1 ID match with filename (required)
+
+**Exempted Checks** (20 total):
+- CHECK 1 (full): 19 required sections (exempt - only Introduction required)
+- CHECK 5-6: Platform/Feature type validation (exempt)
+- CHECK 7-12: Content quality warnings (exempt)
+- CHECK 13-18: PRD-Ready Score and FR validation (exempt)
+- CHECK 19-21: Executive Summary, User Stories, Workflows (exempt)
+- CHECK 22: Traceability Matrix (exempt)
+- CHECK 23-24: Approval and Glossary (exempt)
+
+**Reference**: See `REF-TEMPLATE.md` for BRD-REF document structure and requirements.
 
 ### Validation Tiers
 
@@ -205,40 +234,49 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 **Type**: Error (blocking)
 
 **Valid Examples**:
-- `BRD-001_platform_architecture_technology_stack.md` ✅
-- `BRD-006_b2c_progressive_kyc_onboarding.md` ✅
-- `BRD-009-01_provider_integration_prerequisites.md` ✅
+- `BRD-001_platform_architecture_technology_stack.md` ✅ (Platform BRD)
+- `BRD-006_b2c_progressive_kyc_onboarding.md` ✅ (Feature BRD)
+- `BRD-009-01_provider_integration_prerequisites.md` ✅ (Feature BRD with sub-ID)
+- `BRD-REF-001_glossary_financial_terms.md` ✅ (Reference document)
+- `BRD-REF-002_regulatory_standards_matrix.md` ✅ (Reference document)
 
 **Invalid Examples**:
 - `BRD-001.md` ❌ (missing description)
 - `brd-001_platform.md` ❌ (wrong case)
 - `BRD001_platform.md` ❌ (missing hyphen)
 - `BRD-001_Platform_Architecture.md` ❌ (uppercase in slug)
+- `BRD-REF001_glossary.md` ❌ (missing hyphen after REF)
 
-**Pattern**: `BRD-[0-9]{3,4}(-[0-9]{2,3})?_[a-z0-9_]+\.md`
+**Patterns**:
+- Platform/Feature BRD: `BRD-[0-9]{3,4}(-[0-9]{2,3})?_[a-z0-9_]+\.md`
+- Reference Document: `BRD-REF-[0-9]{3}_[a-z0-9_]+\.md`
 
 **Error Messages**:
 ```
 ❌ ERROR: Invalid filename format: brd-001_platform.md
          Expected: BRD-NNN_descriptive_title.md or BRD-NNN-YY_descriptive_title.md
 
-❌ ERROR: Filename doesn't match Platform or Feature BRD pattern
+❌ ERROR: Filename doesn't match Platform, Feature, or Reference BRD pattern
          Platform: BRD-NNN_platform_* or BRD-NNN_infrastructure_*
          Feature: BRD-NNN_{feature_name}
+         Reference: BRD-REF-NNN_{descriptive_slug}
 ```
 
 **Fix**:
-1. Rename file to match Platform (`BRD-NNN_platform_*`) or Feature (`BRD-NNN_{feature_name}`) pattern
+1. Rename file to match appropriate pattern:
+   - Platform: `BRD-NNN_platform_*` or `BRD-NNN_infrastructure_*`
+   - Feature: `BRD-NNN_{feature_name}`
+   - Reference: `BRD-REF-NNN_{descriptive_slug}`
 2. Use lowercase with underscores for descriptive title
 
-**Reference**: `BRD_CREATION_RULES.md` section 4 (ID and Naming Standards)
+**Reference**: `BRD_CREATION_RULES.md` section 4 (ID and Naming Standards), `REF-TEMPLATE.md` for reference documents
 
 ---
 
-### CHECK 5: Platform vs Feature BRD Type Validation
+### CHECK 5: Platform vs Feature vs Reference BRD Type Validation
 
 **Purpose**: Validate BRD follows correct template for its type
-**Type**: Error (blocking)
+**Type**: Error (blocking for Platform/Feature), Reduced (for Reference)
 
 **Platform BRD Requirements**:
 - Filename contains "platform" or "infrastructure"
@@ -246,11 +284,17 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 - section 3.7: MUST exist and define mandatory technical constraints
 
 **Feature BRD Requirements**:
-- Filename does NOT contain "platform" or "infrastructure"
+- Filename does NOT contain "platform", "infrastructure", or "REF"
 - section 3.6: MUST exist and reference Platform BRD dependencies
 - section 3.7: MUST exist and include platform-inherited conditions plus feature-specific requirements
 
-**General Requirements** (Both types):
+**Reference Document (BRD-REF) Requirements**:
+- Filename matches pattern: `BRD-REF-NNN_{slug}.md`
+- Validation mode: REDUCED (only 4 checks apply)
+- Required: Document Control, Revision History, Introduction, H1 ID match
+- Exempt: All other checks (sections 3.6, 3.7, PRD-Ready Score, Traceability, etc.)
+
+**General Requirements** (Platform and Feature types only):
 - section 3.6: MUST be present and populated with appropriate content
 - section 3.7: MUST be present and populated with appropriate content
 
@@ -262,8 +306,16 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 ❌ ERROR: Feature BRD missing required section 3.7 (Mandatory Technology Conditions)
 ```
 
+**Info Message** (for BRD-REF):
+```
+ℹ️  INFO: BRD-REF document detected - applying reduced validation
+         Checks 5-24 exempt for reference documents
+         Validating: Document Control, Revision History, Introduction, H1 ID match
+```
+
 **Fix**:
-1. Ensure both sections 3.6 and 3.7 exist for all BRD types
+1. For Platform/Feature BRD: Ensure both sections 3.6 and 3.7 exist
+2. For BRD-REF: Ensure Document Control, Revision History, and Introduction exist
 ---
 
 ### CHECK 6: Architecture Decision Requirements section
@@ -1368,8 +1420,8 @@ Reference: BRD-TEMPLATE.md lines 1747-1831
 | **CHECK 1** | Add missing section: `## N. section Title` |
 | **CHECK 2** | Add all 6 required fields to Document Control table |
 | **CHECK 3** | Add initial entry to Document Revision History table |
-| **CHECK 4** | Rename file to Platform (`BRD-NNN_platform_*`) or Feature (`BRD-NNN_{feature_name_name}`) pattern |
-| **CHECK 5** | Ensure section 3.6 & 3.7 exist with appropriate content by BRD type |
+| **CHECK 4** | Rename file to Platform (`BRD-NNN_platform_*`), Feature (`BRD-NNN_{feature_name}`), or Reference (`BRD-REF-NNN_{slug}`) pattern |
+| **CHECK 5** | For Platform/Feature: Ensure section 3.6 & 3.7 exist; For BRD-REF: Only Document Control, Revision History, Introduction required |
 | **CHECK 6** | Add section 5.2 with table structure and at least 3 architectural topics |
 | **CHECK 9** | Remove ADR-NNN references; ensure ADRs only identified as topics in section 5.2 |
 | **CHECK 11** | Fix broken links, use relative paths, verify target files exist |
@@ -1558,6 +1610,7 @@ BO-003: Reduce average order processing time from current 10 seconds to 5 second
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
 | 1.0.0 | 2025-11-19 | Initial validation rules for BRD documents | System Architect |
+| 1.3.0 | 2025-12-12 | Added BRD-REF as third document category with reduced validation; Updated CHECK 4 and CHECK 5 for reference documents | Claude Code |
 
 ---
 
