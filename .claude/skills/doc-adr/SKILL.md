@@ -453,8 +453,23 @@ The SYS will:
 For supplementary documentation related to ADR artifacts:
 - **Format**: `ADR-REF-NNN_{slug}.md`
 - **Skill**: Use `doc-ref` skill
-- **Validation**: Minimal (non-blocking)
+- **Validation**: Reduced (4 checks only)
 - **Examples**: Technology stack summaries, architecture overviews
+
+### ADR-REF Ready-Score Exemption
+
+**ADR-REF documents are EXEMPT from ready-scores and quality gates:**
+
+| Standard ADR | ADR-REF |
+|--------------|---------|
+| SYS-Ready Score: ✅ Required (≥90%) | SYS-Ready Score: **NOT APPLICABLE** |
+| Cumulative tags: @brd, @prd, @ears, @bdd required | Cumulative tags: **NOT REQUIRED** |
+| Quality gates: Full validation (7 checks) | Quality gates: **EXEMPT** (4 checks only) |
+| Format: Context-Decision-Consequences | Format: **Free format, business-oriented** |
+
+**Purpose**: ADR-REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal architecture decisions.
+
+**Reference**: See `ai_dev_flow/ADR/ADR_VALIDATION_RULES.md` for validation details.
 
 ## Related Resources
 

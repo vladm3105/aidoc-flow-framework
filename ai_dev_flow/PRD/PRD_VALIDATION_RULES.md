@@ -88,6 +88,22 @@ All PRD requirements must include:
 **Parallel**: May reference ADR topics (Layer 5) but NOT specific ADR numbers
 **Quality Gates**: ≥90% SYS-Ready and EARS-Ready scores required for progression
 
+### Reserved ID Exemption (PRD-000_*)
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Pattern**: `PRD-000_*.md`
+
+**Document Types**:
+- Index documents (`PRD-000_index.md`)
+- Traceability matrix templates (`PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Threshold registries (`PRD-000_threshold_registry_template.md`)
+- Glossaries, checklists
+
+**Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+
+**Validation Behavior**: Skip all checks when filename matches `PRD-000_*` pattern.
+
 ---
 
 ## 2. Document Control Validation

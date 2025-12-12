@@ -26,14 +26,14 @@ custom_fields:
 
 # ADR Validation Rules Reference
 
-**Version**: 1.0
+**Version**: 1.1.0
 **Date**: 2025-11-19
-**Last Updated**: 2025-11-19
+**Last Updated**: 2025-12-12
 **Purpose**: Complete validation rules for ADR documents
 **Script**: `scripts/validate_adr_template.sh`
 **Primary Template**: `ADR-TEMPLATE.md`
 **Framework**: doc_flow SDD (100% compliant)
-**Changes**: Added SYS-ready scoring validation system
+**Changes**: Added ADR-REF as second document category with reduced validation; Updated CHECK 3 and CHECK 4 for reference documents
 
 ---
 
@@ -51,6 +51,31 @@ custom_fields:
 
 The ADR validation script ensures architecture decisions follow quality standards for SYS progression and meet SDD quality gates.
 
+### ADR Document Categories
+
+| Category | Filename Pattern | Validation Level | Description |
+|----------|------------------|------------------|-------------|
+| **Standard ADR** | `ADR-NNN_{decision_topic}.md` | Full (7 checks) | Architecture decision records |
+| **ADR-REF** | `ADR-REF-NNN_{slug}.md` | Reduced (4 checks) | Supplementary reference documents |
+
+### ADR-REF Reduced Validation
+
+**Purpose**: ADR-REF documents are reference targets that other documents link to. They provide supporting information, context, or external references in free format with business-oriented descriptions. They do not define formal architecture decisions.
+
+**Applicable Checks** (4 total):
+- CHECK 1 (partial): Document Control Fields (required)
+- Document Revision History (required)
+- Status/Context sections only (required)
+- H1 ID match with filename (required)
+
+**Exempted Checks** (NO SCORES):
+- SYS-Ready Score: NOT APPLICABLE (REF documents use free format, no scores)
+- CHECK 4: Cumulative traceability tags NOT REQUIRED (@brd, @prd, @ears, @bdd)
+- CHECK 5-7: Decision quality, architecture documentation, implementation readiness (exempt)
+- All quality gates and downstream readiness metrics: EXEMPT
+
+**Reference**: See `REF-TEMPLATE.md` for ADR-REF document structure and requirements.
+
 ### Validation Tiers
 
 | Tier | Type | Exit Code | Description |
@@ -58,6 +83,21 @@ The ADR validation script ensures architecture decisions follow quality standard
 | **Tier 1** | Errors | 1 | Blocking issues - must fix before commit |
 | **Tier 2** | Warnings | 0 | Quality issues - recommended to fix |
 | **Tier 3** | Info | 0 | Informational - no action required |
+
+### Reserved ID Exemption (ADR-000_*)
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Pattern**: `ADR-000_*.md`
+
+**Document Types**:
+- Index documents (`ADR-000_index.md`)
+- Traceability matrix templates (`ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Glossaries, registries, checklists
+
+**Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+
+**Validation Behavior**: Skip all checks when filename matches `ADR-000_*` pattern.
 
 ---
 
@@ -79,23 +119,40 @@ The ADR validation script ensures architecture decisions follow quality standard
 ### CHECK 3: SYS-Ready Score Validation ⭐ NEW
 
 **Purpose**: Validate SYS-ready score format and threshold
-**Type**: Error (blocking)
+**Type**: Error (blocking) - Standard ADR only
 
 **Valid Examples**: `✅ 95% (Target: ≥90%)`
 
 **Error Message**: `❌ MISSING: SYS-Ready Score with ✅ emoji and percentage`
 
+**ADR-REF Exemption**: ADR-REF documents are EXEMPT from SYS-Ready Score requirements. Reference documents use free format with no scores.
+
+**Info Message** (for ADR-REF):
+```
+ℹ️  INFO: ADR-REF document detected - SYS-Ready Score NOT REQUIRED
+         REF documents use free format with no downstream quality gates
+```
+
 ### CHECK 4: Upstream Traceability Tags
 
 **Purpose**: Verify complete tag chain through BDD layer
-**Type**: Error (blocking)
+**Type**: Error (blocking) - Standard ADR only
 
-**Required Tags**:
+**Required Tags** (Standard ADR):
 ```markdown
 @brd: BRD.NNN.NNN
 @prd: PRD.NNN.NNN
 @ears: EARS.NNN.NNN
 @bdd: BDD.NNN.NNN
+```
+
+**ADR-REF Exemption**: ADR-REF documents are EXEMPT from cumulative traceability tag requirements. Reference documents serve as citation targets for other documents.
+
+**Info Message** (for ADR-REF):
+```
+ℹ️  INFO: ADR-REF document detected - applying reduced validation
+         Checks 3-7 exempt for reference documents
+         Validating: Document Control, Revision History, Status/Context, H1 ID match
 ```
 
 ### CHECK 5: Decision Quality Assessment
@@ -138,9 +195,16 @@ The ADR validation script ensures architecture decisions follow quality standard
 | Error Check | Quick Fix |
 |-------------|-----------|
 | **CHECK 1** | Add missing Document Control fields |
-| **CHECK 2** | Add required ADR structure sections |
-| **CHECK 3** | Add properly formatted SYS-Ready Score |
-| **CHECK 4** | Complete traceability tag chain |
+| **CHECK 2** | Add required ADR structure sections (Standard ADR only) |
+| **CHECK 3** | Add properly formatted SYS-Ready Score (Standard ADR only; ADR-REF exempt) |
+| **CHECK 4** | Complete traceability tag chain (Standard ADR only; ADR-REF exempt) |
+
+**ADR-REF Quick Fix**:
+- Ensure filename matches `ADR-REF-NNN_{slug}.md` pattern
+- Add Document Control fields (Project Name, Version, Date, Owner, Prepared By, Status)
+- Add Document Revision History table
+- Add Status and Context sections
+- Verify H1 ID matches filename
 
 ---
 

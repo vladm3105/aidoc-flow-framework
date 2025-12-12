@@ -37,6 +37,21 @@ Rules for validating Implementation Plans (IMPL) documents in the SDD framework.
 | **Last Updated** | 2025-11-27 |
 | **Status** | Active |
 
+### Reserved ID Exemption (IMPL-000_*)
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Pattern**: `IMPL-000_*.md`
+
+**Document Types**:
+- Index documents (`IMPL-000_index.md`)
+- Traceability matrix templates (`IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Glossaries, registries, checklists
+
+**Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+
+**Validation Behavior**: Skip all checks when filename matches `IMPL-000_*` pattern.
+
 ---
 
 ## 1. Filename Validation

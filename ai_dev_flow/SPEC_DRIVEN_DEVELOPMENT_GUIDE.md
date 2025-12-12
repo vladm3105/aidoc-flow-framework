@@ -590,9 +590,12 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 Reference documents provide supplementary context that supports workflow artifacts without participating in the formal traceability chain.
 
-- **Purpose**: Capture supporting documentation (project overviews, glossaries, infrastructure guides, strategic vision documents, dictionaries) that doesn't fit the formal SDD workflow
-- **File Format**: `{TYPE}-REF-NNN_{slug}.md` where `{TYPE}` is the parent artifact type (e.g., `BRD-REF-001_project_overview.md`)
-- **Numbering**: Independent sequence per parent TYPE (each artifact type has its own REF-001, REF-002, etc.)
+- **Purpose**: Capture supporting documentation (project overviews, glossaries, infrastructure guides, strategic vision documents) that doesn't fit the formal SDD workflow
+- **Scope**: REF documents are LIMITED to **BRD and ADR artifact types only**
+  - `BRD-REF-NNN_{slug}.md` - Business context reference documents
+  - `ADR-REF-NNN_{slug}.md` - Architecture reference documents
+- **File Format**: `{TYPE}-REF-NNN_{slug}.md` where `{TYPE}` is BRD or ADR
+- **Numbering**: Independent sequence per parent TYPE (BRD-REF-001, ADR-REF-001, etc.)
 - **Template**: [`ai_dev_flow/REF-TEMPLATE.md`](./REF-TEMPLATE.md)
 - **Skill**: Use `doc-ref` skill for creation
 - **Required Sections**:
@@ -600,19 +603,68 @@ Reference documents provide supplementary context that supports workflow artifac
   - Document Revision History table
   - Introduction section
   - Optional: Related Documents section (encouraged but not required)
-- **Validation**: Minimal, non-blocking - REF documents are exempt from:
-  - Cumulative tagging requirements
-  - Full traceability validation
-  - Quality gates
-  - SPEC-Ready scoring
+
+#### REF Document Ready-Score Exemptions
+
+**REF documents use free format and are EXEMPT from ALL ready-scores and quality gates:**
+
+| Exemption | Standard Document | REF Document |
+|-----------|-------------------|--------------|
+| Ready-Score | Required (≥90%) | **NOT APPLICABLE** |
+| Cumulative Tags | Required per layer | **NOT REQUIRED** |
+| Quality Gates | Full validation | **EXEMPT** |
+| Format | Structured sections | **Free format** |
+
+**Specific Exemptions by Type:**
+- **BRD-REF**: No PRD-Ready Score required (reference: `BRD_VALIDATION_RULES.md`)
+- **ADR-REF**: No SYS-Ready Score required (reference: `ADR_VALIDATION_RULES.md`)
+
+**Validation**: Reduced (4 checks only):
+1. Document Control fields (required)
+2. Document Revision History (required)
+3. Status/Context sections (required)
+4. H1 ID match with filename (required)
+
 - **Use Cases**:
   - Project overview documents (`BRD-REF-001_project_overview.md`)
-  - Domain glossaries (`REQ-REF-001_domain_glossary.md`)
+  - Executive summaries (`BRD-REF-002_strategic_vision.md`)
   - Infrastructure guides (`ADR-REF-001_infrastructure_setup.md`)
-  - Strategic vision documents (`BRD-REF-002_strategic_vision.md`)
-  - External research summaries (`PRD-REF-001_market_research.md`)
+  - Technology stack summaries (`ADR-REF-002_tech_overview.md`)
 
-**Relationship to Workflow Artifacts**: REF documents support but do not replace workflow artifacts. Use REF documents for context that enriches understanding but doesn't require formal traceability. The parent TYPE prefix indicates which workflow artifact the REF document supports.
+**Relationship to Workflow Artifacts**: REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal business requirements or architecture decisions. The parent TYPE prefix (BRD or ADR) indicates which workflow artifact the REF document supports.
+
+### Reserved ID Convention (ID 000) - Framework Infrastructure
+
+Documents with reserved ID `000` are framework infrastructure, not project artifacts.
+
+- **Purpose**: Framework infrastructure (indexes, templates, glossaries, registries, checklists)
+- **Pattern**: `{TYPE}-000_*.md` where `{TYPE}` is any artifact type
+- **Validation**: **FULLY EXEMPT** from all validation checks
+
+#### Document Types
+
+| Pattern | Description | Examples |
+|---------|-------------|----------|
+| `{TYPE}-000_index.md` | Directory indexes | `BRD-000_index.md`, `ADR-000_index.md` |
+| `{TYPE}-000_TRACEABILITY_MATRIX-TEMPLATE.md` | Matrix templates | All 12 artifact types |
+| `{TYPE}-000_GLOSSARY.md` | Term definitions | `BRD-000_GLOSSARY.md` |
+| `{TYPE}-000_*_template.md` | Registry templates | `PRD-000_threshold_registry_template.md` |
+| `{TYPE}-000_*_CHECKLIST.md` | Checklists | `TASKS-000_IMPLEMENTATION_CONTRACTS_CHECKLIST.md` |
+
+#### Validation Exemption
+
+**All `{TYPE}-000_*` documents are FULLY EXEMPT from validation:**
+
+| Aspect | Standard Documents | Reserved ID 000 Documents |
+|--------|-------------------|---------------------------|
+| Validation | Full checks | **FULLY EXEMPT** |
+| Ready-Scores | Required (≥90%) | **NOT APPLICABLE** |
+| Traceability Tags | Cumulative per layer | **NOT REQUIRED** |
+| Quality Gates | Full compliance | **EXEMPT** |
+
+**Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+
+**Reference**: See `{TYPE}_VALIDATION_RULES.md` for type-specific exemption details.
 
 ## Universal Tag Header (Required)
 

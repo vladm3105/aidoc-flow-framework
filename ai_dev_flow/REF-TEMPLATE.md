@@ -2,6 +2,10 @@
 # Reference Document Template
 # For supplementary documentation that doesn't participate in formal traceability
 # =============================================================================
+# SCOPE: REF documents are LIMITED to BRD and ADR artifact types ONLY
+# - BRD-REF: Business context reference documents
+# - ADR-REF: Architecture reference documents
+# =============================================================================
 ---
 title: "REF-TEMPLATE: Reference Document"
 tags:
@@ -18,15 +22,19 @@ custom_fields:
   development_status: active
   template_for: reference-document
   schema_reference: "none"
+  valid_parent_types: [BRD, ADR]
 ---
 
 # {TYPE}-REF-NNN: [Document Title]
+
+> **Scope**: REF documents are limited to **BRD and ADR** types only.
+> **Ready-Scores**: NOT APPLICABLE - REF documents use free format with no scores.
 
 ## Document Control
 
 | Item | Details |
 |------|---------|
-| **Parent Type** | [BRD/PRD/REQ/ADR/etc.] |
+| **Parent Type** | [BRD or ADR only] |
 | **Document Version** | [e.g., 1.0] |
 | **Date** | [Current date] |
 | **Author** | [Name] |
@@ -71,26 +79,44 @@ custom_fields:
 
 ## Template Usage Notes
 
+**Scope**: REF documents are LIMITED to **BRD and ADR artifact types ONLY**.
+
 **Naming Convention**: `{TYPE}-REF-NNN_{slug}.md`
-- `{TYPE}`: Parent artifact type (BRD, PRD, REQ, ADR, SPEC, etc.)
+- `{TYPE}`: Parent artifact type (**BRD or ADR only**)
 - `REF`: Reference document indicator
 - `NNN`: 3-digit sequence number (independent per TYPE)
 - `{slug}`: Descriptive slug in snake_case
 
 **Examples**:
-- `BRD-REF-001_project_overview.md`
-- `PRD-REF-001_market_research.md`
-- `REQ-REF-001_glossary.md`
-- `ADR-REF-001_technology_stack_summary.md`
+- `BRD-REF-001_project_overview.md` - Business context
+- `BRD-REF-002_strategic_vision.md` - Strategic vision
+- `ADR-REF-001_technology_stack_summary.md` - Tech overview
+- `ADR-REF-002_infrastructure_guide.md` - Infrastructure reference
 
 **Use Cases**:
-- General project descriptions from business perspective
-- Infrastructure requirements documentation
-- Strategic vision descriptions
-- Dictionaries and glossaries
-- Reference material and guides
+- BRD-REF: Project overviews, executive summaries, strategic vision, stakeholder guides
+- ADR-REF: Technology stack summaries, architecture overviews, infrastructure guides
 
-**Validation**:
-- Minimal validation (non-blocking)
-- Required: Document Control, Revision History, Introduction, H1 ID match
-- Exempted: Cumulative tags, full traceability chain, quality gates
+### Ready-Score Exemptions (NO SCORES)
+
+**REF documents are EXEMPT from ALL ready-scores and quality gates:**
+
+| Aspect | Standard Document | REF Document |
+|--------|-------------------|--------------|
+| **PRD-Ready Score** (BRD-REF) | Required ≥90% | **NOT APPLICABLE** |
+| **SYS-Ready Score** (ADR-REF) | Required ≥90% | **NOT APPLICABLE** |
+| **Cumulative Tags** | Required per layer | **NOT REQUIRED** |
+| **Quality Gates** | Full validation | **EXEMPT** |
+| **Format** | Structured sections | **Free format** |
+
+**Purpose**: REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal business requirements or architecture decisions.
+
+**Validation** (Reduced - 4 checks only):
+1. Document Control fields (required)
+2. Document Revision History (required)
+3. Status/Context sections (required)
+4. H1 ID match with filename (required)
+
+**References**:
+- BRD-REF validation: `ai_dev_flow/BRD/BRD_VALIDATION_RULES.md`
+- ADR-REF validation: `ai_dev_flow/ADR/ADR_VALIDATION_RULES.md`

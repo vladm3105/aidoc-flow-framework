@@ -448,8 +448,23 @@ The PRD will:
 For supplementary documentation related to BRD artifacts:
 - **Format**: `BRD-REF-NNN_{slug}.md`
 - **Skill**: Use `doc-ref` skill
-- **Validation**: Minimal (non-blocking)
+- **Validation**: Reduced (4 checks only)
 - **Examples**: Project overviews, executive summaries, stakeholder guides
+
+### BRD-REF Ready-Score Exemption
+
+**BRD-REF documents are EXEMPT from ready-scores and quality gates:**
+
+| Standard BRD | BRD-REF |
+|--------------|---------|
+| PRD-Ready Score: ✅ Required (≥90%) | PRD-Ready Score: **NOT APPLICABLE** |
+| Cumulative tags: Required | Cumulative tags: **NOT REQUIRED** |
+| Quality gates: Full validation | Quality gates: **EXEMPT** |
+| Format: Structured 17 sections | Format: **Free format, business-oriented** |
+
+**Purpose**: BRD-REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal business requirements.
+
+**Reference**: See `ai_dev_flow/BRD/BRD_VALIDATION_RULES.md` for validation details.
 
 ## Related Resources
 

@@ -37,6 +37,21 @@ Rules for validating Implementation Plans (IPLAN) documents in the SDD framework
 | **Last Updated** | 2025-11-29 |
 | **Status** | Active |
 
+### Reserved ID Exemption (IPLAN-000_*)
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Pattern**: `IPLAN-000_*.md`
+
+**Document Types**:
+- Index documents (`IPLAN-000_index.md`)
+- Traceability matrix templates (`IPLAN-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Glossaries, registries, checklists
+
+**Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+
+**Validation Behavior**: Skip all checks when filename matches `IPLAN-000_*` pattern.
+
 ---
 
 ## 1. Filename Validation
