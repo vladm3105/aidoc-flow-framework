@@ -243,6 +243,10 @@ class RequirementIDValidator:
             if "REQ-000" in req_file.name or "index" in req_file.name.lower():
                 continue
 
+            # Skip REF documents (minimal validation only)
+            if "-REF-" in req_file.name:
+                continue
+
             result = self.validate_file(req_file)
             results.append(result)
 

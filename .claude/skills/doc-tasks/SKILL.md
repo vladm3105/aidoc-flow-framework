@@ -533,6 +533,14 @@ The IPLAN will:
 - Convert tasks to bash command sequences
 - Provide session-based execution plan
 
+## Reference Documents
+
+For supplementary documentation related to TASKS artifacts:
+- **Format**: `TASKS-REF-NNN_{slug}.md`
+- **Skill**: Use `doc-ref` skill
+- **Validation**: Minimal (non-blocking)
+- **Examples**: Task estimation guides, dependency analysis reports
+
 ## Related Resources
 
 - **TASKS Creation Rules**: `ai_dev_flow/TASKS/TASKS_CREATION_RULES.md`

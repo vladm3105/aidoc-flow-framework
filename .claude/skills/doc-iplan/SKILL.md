@@ -571,6 +571,14 @@ After creating IPLAN, proceed to:
 
 Execute the IPLAN session-by-session to implement the code.
 
+## Reference Documents
+
+For supplementary documentation related to IPLAN artifacts:
+- **Format**: `IPLAN-REF-NNN_{slug}.md`
+- **Skill**: Use `doc-ref` skill
+- **Validation**: Minimal (non-blocking)
+- **Examples**: Session execution guides, environment setup guides
+
 ## Related Resources
 
 - **IPLAN Creation Rules**: `ai_dev_flow/IPLAN/IPLAN_CREATION_RULES.md`

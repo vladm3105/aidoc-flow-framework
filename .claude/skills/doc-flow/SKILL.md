@@ -14,7 +14,7 @@ custom_fields:
   development_status: active
   skill_category: core-workflow
   upstream_artifacts: []
-  downstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, ICON]
+  downstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, ICON, REF]
 ---
 
 # doc-flow (Orchestrator)
@@ -28,7 +28,7 @@ This skill serves as the **orchestrator** for the AI-Driven Specification-Driven
 3. **General SDD Principles**: Specification-driven methodology fundamentals
 4. **Integration Guidance**: How skills work together
 
-**For Artifact Creation**: Use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-iplan).
+**For Artifact Creation**: Use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-iplan, doc-ref).
 
 **Authoritative Reference**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 
@@ -80,6 +80,7 @@ Answer these questions to find the right skill:
 - **Break down into AI tasks** → `doc-tasks`
 - **Define implementation contracts for parallel dev** → Add Section 8 to TASKS (see `doc-tasks` skill)
 - **Create session execution plan** → `doc-iplan`
+- **Create supplementary documentation (project overview, glossary, guides)** → `doc-ref`
 - **General guidance or unsure** → Stay with `doc-flow` (this skill)
 
 ---

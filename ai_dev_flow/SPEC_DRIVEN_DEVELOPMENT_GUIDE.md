@@ -586,6 +586,34 @@ This AI Agent BRD depends on the following Platform BRDs:
 - **Requirements**: Exact match to SPEC interfaces, contract compliance (if implementing CTR), BDD scenario validation
 - **Traceability**: Docstring links to all artifacts (PRD, EARS, REQ, ADR, CTR if applicable, BDD, SPEC)
 
+### Reference Documents (REF) - Supplementary
+
+Reference documents provide supplementary context that supports workflow artifacts without participating in the formal traceability chain.
+
+- **Purpose**: Capture supporting documentation (project overviews, glossaries, infrastructure guides, strategic vision documents, dictionaries) that doesn't fit the formal SDD workflow
+- **File Format**: `{TYPE}-REF-NNN_{slug}.md` where `{TYPE}` is the parent artifact type (e.g., `BRD-REF-001_project_overview.md`)
+- **Numbering**: Independent sequence per parent TYPE (each artifact type has its own REF-001, REF-002, etc.)
+- **Template**: [`ai_dev_flow/REF-TEMPLATE.md`](./REF-TEMPLATE.md)
+- **Skill**: Use `doc-ref` skill for creation
+- **Required Sections**:
+  - Document Control table
+  - Document Revision History table
+  - Introduction section
+  - Optional: Related Documents section (encouraged but not required)
+- **Validation**: Minimal, non-blocking - REF documents are exempt from:
+  - Cumulative tagging requirements
+  - Full traceability validation
+  - Quality gates
+  - SPEC-Ready scoring
+- **Use Cases**:
+  - Project overview documents (`BRD-REF-001_project_overview.md`)
+  - Domain glossaries (`REQ-REF-001_domain_glossary.md`)
+  - Infrastructure guides (`ADR-REF-001_infrastructure_setup.md`)
+  - Strategic vision documents (`BRD-REF-002_strategic_vision.md`)
+  - External research summaries (`PRD-REF-001_market_research.md`)
+
+**Relationship to Workflow Artifacts**: REF documents support but do not replace workflow artifacts. Use REF documents for context that enriches understanding but doesn't require formal traceability. The parent TYPE prefix indicates which workflow artifact the REF document supports.
+
 ## Universal Tag Header (Required)
 
 All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability tags to declare upstream dependencies.

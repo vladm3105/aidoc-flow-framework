@@ -402,6 +402,14 @@ The REQ will:
 - Use REQ v3.0 format (12 sections)
 - Achieve ≥90% SPEC-readiness
 
+## Reference Documents
+
+For supplementary documentation related to SYS artifacts:
+- **Format**: `SYS-REF-NNN_{slug}.md`
+- **Skill**: Use `doc-ref` skill
+- **Validation**: Minimal (non-blocking)
+- **Examples**: System architecture guides, QA attribute catalogs
+
 ## Related Resources
 
 - **SYS Creation Rules**: `ai_dev_flow/SYS/SYS_CREATION_RULES.md`

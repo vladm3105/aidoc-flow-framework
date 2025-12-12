@@ -434,6 +434,14 @@ python scripts/validate_prd.py docs/PRD/PRD-NNN*.md
 
 **Schema Reference**: `ai_dev_flow/PRD/PRD_SCHEMA.yaml`
 
+## Reference Documents
+
+For supplementary documentation related to PRD artifacts:
+- **Format**: `PRD-REF-NNN_{slug}.md`
+- **Skill**: Use `doc-ref` skill
+- **Validation**: Minimal (non-blocking)
+- **Examples**: Market research, competitive analysis, user personas
+
 ## Related Resources
 
 - **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`

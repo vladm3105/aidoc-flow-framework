@@ -75,6 +75,7 @@ ARTIFACT_PATTERNS = {
     "IMPL": r"^IMPL-\d{3}",
     "IPLAN": r"^IPLAN-\d{3}",
     "PRD": r"^PRD-\d{3}",
+    "REF": r"^[A-Z]{2,5}-REF-\d{3}",
     "REQ": r"^REQ-\d{3}",
     "SPEC": r"^SPEC-\d{3}",
     "SYS": r"^SYS-\d{3}",

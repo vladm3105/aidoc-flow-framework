@@ -504,6 +504,14 @@ The SPEC will:
 - Define implementation contracts
 - Achieve 100% implementation-readiness
 
+## Reference Documents
+
+For supplementary documentation related to REQ artifacts:
+- **Format**: `REQ-REF-NNN_{slug}.md`
+- **Skill**: Use `doc-ref` skill
+- **Validation**: Minimal (non-blocking)
+- **Examples**: Domain glossaries, requirements pattern guides
+
 ## Related Resources
 
 - **REQ Creation Rules**: `ai_dev_flow/REQ/REQ_CREATION_RULES.md`

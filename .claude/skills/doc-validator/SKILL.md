@@ -229,6 +229,33 @@ Info (2):
 - **WARNING**: Near-duplicate content (>80% similarity)
 - **INFO**: Similar descriptions (may be intentional)
 
+### REF Document Rules (Minimal Validation)
+
+Reference documents (`{TYPE}-REF-NNN`) use minimal, non-blocking validation:
+
+**Required (Blocking)**:
+| Check | Pattern | Severity |
+|-------|---------|----------|
+| H1 ID Match | `^#\s[A-Z]{2,5}-REF-\d{3}:.+` | ERROR |
+| Document Control | Section present | ERROR |
+| Revision History | Section present | ERROR |
+| Introduction | Section present | ERROR |
+
+**Exempted (Not Checked)**:
+| Check | Reason |
+|-------|--------|
+| Cumulative Tags | REF docs don't participate in traceability chain |
+| Full Traceability | Traceability is optional for REF docs |
+| Quality Gates | Non-blocking validation only |
+| SPEC-Ready Score | Not applicable |
+| Layer Requirements | REF has no layer assignment |
+
+**Validation Behavior**:
+- REF documents flagged with warnings, not errors
+- Validation continues even if REF checks fail
+- REF documents excluded from traceability matrix validation
+- Optional `Related Documents` section encouraged but not required
+
 ---
 
 ## Tool Access

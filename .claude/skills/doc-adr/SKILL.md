@@ -448,6 +448,14 @@ The SYS will:
 - Define functional requirements and quality attributes
 - Translate ADR decisions into technical requirements
 
+## Reference Documents
+
+For supplementary documentation related to ADR artifacts:
+- **Format**: `ADR-REF-NNN_{slug}.md`
+- **Skill**: Use `doc-ref` skill
+- **Validation**: Minimal (non-blocking)
+- **Examples**: Technology stack summaries, architecture overviews
+
 ## Related Resources
 
 - **Technology Stack**: `docs/ADR/ADR-000_technology_stack.md`

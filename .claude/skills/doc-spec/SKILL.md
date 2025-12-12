@@ -593,6 +593,14 @@ The TASKS will:
 - Break SPEC into actionable tasks
 - Provide AI-structured TODO format
 
+## Reference Documents
+
+For supplementary documentation related to SPEC artifacts:
+- **Format**: `SPEC-REF-NNN_{slug}.md`
+- **Skill**: Use `doc-ref` skill
+- **Validation**: Minimal (non-blocking)
+- **Examples**: API quick references, implementation guides
+
 ## Related Resources
 
 - **SPEC Creation Rules**: `ai_dev_flow/SPEC/SPEC_CREATION_RULES.md`

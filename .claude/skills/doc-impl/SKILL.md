@@ -443,6 +443,14 @@ The SPEC will:
 - Define implementation contracts
 - Achieve 100% implementation-readiness
 
+## Reference Documents
+
+For supplementary documentation related to IMPL artifacts:
+- **Format**: `IMPL-REF-NNN_{slug}.md`
+- **Skill**: Use `doc-ref` skill
+- **Validation**: Minimal (non-blocking)
+- **Examples**: Resource planning guides, team capability matrices
+
 ## Related Resources
 
 - **IMPL Creation Rules**: `ai_dev_flow/IMPL/IMPL_CREATION_RULES.md`

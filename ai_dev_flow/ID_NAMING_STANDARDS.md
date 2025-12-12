@@ -39,6 +39,7 @@ Purpose
   - `BDD/` - Feature files (`.feature` format only)
   - `EARS/` - EARS Requirements
   - `SYS/` - System Requirements
+  - `REF/` - Reference Documents (supplementary, non-workflow documentation)
 
 ### ❌ Do NOT Apply ID_NAMING_STANDARDS To:
 - **Python source code**: Follow PEP 8 naming conventions
@@ -191,6 +192,22 @@ Document ID Standards (ai_dev_flow)
       - Cross-project usage
     - Registry: `ICON-000_index.md` tracks all standalone contracts
     - Notes: Most implementation contracts should be embedded in TASKS files. Use standalone ICON only when criteria met. See [ICON_CREATION_RULES.md](ICON/ICON_CREATION_RULES.md).
+- Reference Documents (REF)
+  - H1 ID: `{TYPE}-REF-NNN` (e.g., `# BRD-REF-001: Project Overview`)
+  - Filename: `{TYPE}-REF-NNN_{slug}.md` (e.g., `BRD-REF-001_project_overview.md`)
+  - Location: Within parent TYPE directory (e.g., `docs/BRD/BRD-REF-001_project_overview.md`)
+  - Variable Length: NNN = 3-4 digits (001-999, 1000+)
+  - Numbering: Independent sequence per parent TYPE (BRD-REF-001, PRD-REF-001 are separate sequences)
+  - Traceability: Optional (encouraged but not required)
+  - Validation: Minimal (non-blocking)
+  - Required Sections: Document Control, Revision History, Introduction
+  - Use Cases:
+    - General project descriptions from business perspective
+    - Infrastructure requirements documentation
+    - Strategic vision descriptions
+    - Dictionaries and glossaries
+    - Reference material and guides
+  - Notes: REF documents are supplementary and do not participate in formal traceability chain. Similar exemption treatment as `{TYPE}-000` index documents.
 - Business Requirements Documents (BRD)
   - H1 ID: `BRD-NNN` or `BRD-NNN-YY` (e.g., `# BRD-009-01: [EXTERNAL_INTEGRATION - e.g., third-party API, service provider] Integration Prerequisites`)
   - Filename: `BRD-NNN_{slug}.md` or `BRD-NNN-YY_{slug}.md`
@@ -308,6 +325,8 @@ Validation Rules & Aids
   - SYS filename: `SYS-\d{3,4}(-\d{2,3})?_.+\.md$`
   - EARS H1 ID: `^#\sEARS-\d{3,4}(-\d{2,3})?:.+$`
   - EARS filename: `EARS-\d{3,4}(-\d{2,3})?_.+\.md$`
+  - REF H1 ID: `^#\s[A-Z]{2,5}-REF-\d{3,4}:.+$`
+  - REF filename: `[A-Z]{2,5}-REF-\d{3,4}_.+\.md$`
 
 Examples (ai_dev_flow) - Atomic Documents (XXX)
 - PRD: `PRD/PRD-003_position_risk_limits.md` (H1: `# PRD-003: resource Risk Limits`)

@@ -436,6 +436,14 @@ The BDD will:
 - Use Gherkin Given-When-Then format
 - Validate EARS formal requirements with executable tests
 
+## Reference Documents
+
+For supplementary documentation related to EARS artifacts:
+- **Format**: `EARS-REF-NNN_{slug}.md`
+- **Skill**: Use `doc-ref` skill
+- **Validation**: Minimal (non-blocking)
+- **Examples**: Requirements syntax guides, EARS pattern catalogs
+
 ## Related Resources
 
 - **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`

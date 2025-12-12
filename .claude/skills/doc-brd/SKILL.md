@@ -443,6 +443,14 @@ The PRD will:
 - Define product features and KPIs
 - Inherit Architecture Decision Requirements topics
 
+## Reference Documents
+
+For supplementary documentation related to BRD artifacts:
+- **Format**: `BRD-REF-NNN_{slug}.md`
+- **Skill**: Use `doc-ref` skill
+- **Validation**: Minimal (non-blocking)
+- **Examples**: Project overviews, executive summaries, stakeholder guides
+
 ## Related Resources
 
 - **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`

@@ -430,6 +430,14 @@ The ADR will:
 - Use Context-Decision-Consequences format
 - Reference BDD scenarios that validate the architecture
 
+## Reference Documents
+
+For supplementary documentation related to BDD artifacts:
+- **Format**: `BDD-REF-NNN_{slug}.md`
+- **Skill**: Use `doc-ref` skill
+- **Validation**: Minimal (non-blocking)
+- **Examples**: Test strategy guides, Gherkin style guides
+
 ## Related Resources
 
 - **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`

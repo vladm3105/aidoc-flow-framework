@@ -584,6 +584,14 @@ The SPEC will:
 - Define implementation details
 - Achieve 100% implementation-readiness
 
+## Reference Documents
+
+For supplementary documentation related to CTR artifacts:
+- **Format**: `CTR-REF-NNN_{slug}.md`
+- **Skill**: Use `doc-ref` skill
+- **Validation**: Minimal (non-blocking)
+- **Examples**: API style guides, contract versioning policies
+
 ## Related Resources
 
 - **CTR Creation Rules**: `ai_dev_flow/CTR/CTR_CREATION_RULES.md`
