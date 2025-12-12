@@ -862,7 +862,7 @@ Roadmap document must satisfy:
 - [charts-flow](../charts-flow/) - Use for enhanced Mermaid diagram generation
 
 ### ADR Documentation
-- [ADR-TEMPLATE.md]({project_root}/ai_dev_flow/ADR-TEMPLATE.md) - ADR template structure
+- [ADR-TEMPLATE.md]({project_root}/ai_dev_flow/ADR/ADR-TEMPLATE.md) - ADR template structure
 - [README.md]({project_root}/ai_dev_flow/ADR/README.md) - ADR documentation guide
 
 ---

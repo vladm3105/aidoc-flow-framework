@@ -93,6 +93,7 @@ VALID_TAGS = {
     'traceability-guide',
     'metadata-guide',
     'supporting-document',
+    'supplementary-documentation',
 
     # ICON/contract tags
     'implementation-contract',

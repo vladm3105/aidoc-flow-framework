@@ -37,7 +37,7 @@ class SyncResult:
 ARTIFACT_TYPES = {
     "ADR": {"template": "ADR-TEMPLATE.md", "schema": "ADR_SCHEMA.yaml", "layer": 5},
     "BDD": {"template": "BDD-TEMPLATE.feature", "schema": "BDD_SCHEMA.yaml", "layer": 4},
-    "BRD": {"template": "BRD-TEMPLATE.md", "schema": None, "layer": 1},  # No schema for BRD
+    "BRD": {"template": "BRD-TEMPLATE.md", "schema": "BRD_SCHEMA.yaml", "layer": 1},
     "CTR": {"template": "CTR-TEMPLATE.md", "schema": "CTR_SCHEMA.yaml", "layer": 9},
     "EARS": {"template": "EARS-TEMPLATE.md", "schema": "EARS_SCHEMA.yaml", "layer": 3},
     "IMPL": {"template": "IMPL-TEMPLATE.md", "schema": "IMPL_SCHEMA.yaml", "layer": 8},
@@ -68,7 +68,8 @@ def find_ai_dev_flow_dir() -> Path:
 
 def extract_yaml_frontmatter(content: str) -> Optional[Dict]:
     """Extract YAML frontmatter from markdown file."""
-    match = re.match(r'^---\s*\n(.*?)\n---', content, re.DOTALL)
+    # Use search instead of match to handle files with comment headers before frontmatter
+    match = re.search(r'^---\s*\n(.*?)\n---', content, re.DOTALL | re.MULTILINE)
     if match:
         try:
             return yaml.safe_load(match.group(1))

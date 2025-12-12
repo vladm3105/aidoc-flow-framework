@@ -5,11 +5,11 @@
 # - On conflict: Defer to BDD-TEMPLATE.feature
 # =============================================================================
 #
-# BDD Schema Definition v1.0
+# BDD Schema Definition v1.1
 # Purpose: Define valid metadata structure and validation rules for BDD feature files
 # Usage: Reference by validate_bdd.py for automated validation
 
-schema_version: "1.0"
+schema_version: "1.1"
 artifact_type: BDD
 layer: 4
 last_updated: "2025-11-30"
