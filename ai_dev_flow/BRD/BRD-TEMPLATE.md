@@ -743,9 +743,8 @@ The following architectural topics require formal Architecture Decision Records 
 | BRD.NNN.994 | Accessibility compliance | [e.g., section 508, ADA] | P1 | [Accessibility audit] |
 | BRD.NNN.995 | Browser compatibility | [List supported browsers/versions] | P1 | [Cross-browser testing] |
 | BRD.NNN.996 | Mobile device support | [iOS/Android versions] | P2 | [Device testing] |
-| BRD.NNN.997 | User training requirements | [Maximum training time: X hours] | P2 | [User feedback] |
-| BRD.NNN.998 | Online help availability | [Context-sensitive help] | P2 | [Documentation review] |
-| BRD.NNN.999 | Multilingual support | [Languages required] | P3 | [Translation verification] |
+| BRD.NNN.997 | Online help availability | [Context-sensitive help] | P2 | [Documentation review] |
+| BRD.NNN.998 | Multilingual support | [Languages required] | P3 | [Translation verification] |
 
 ---
 
@@ -1047,13 +1046,11 @@ Acceptance criteria define the conditions that must be satisfied for the project
 |-------------------|-------------------|-----------------|---------------------|-------------------|
 | Testing | All UAT test scenarios completed | 100% pass rate | UAT report | [QA Manager] |
 | Testing | All critical defects resolved | Zero open | Defect tracking system | [QA Manager] |
-| Training | User training completed | 100% of users | Training attendance records | [Training Manager] |
 | Documentation | User documentation delivered | Complete and approved | Documentation review | [Business Analyst] |
 | Documentation | Technical documentation delivered | Complete and approved | Documentation review | [Technical Lead] |
 | Infrastructure | Production environment ready | Fully configured | Environment checklist | [IT Operations] |
 | security | security assessment completed | Approved | security report | [security Team] |
 | Data | Data migration validated | 100% accuracy | Data validation report | [Data Team] |
-| Support | Support team trained | 100% of team | Training records | [Support Manager] |
 | Approvals | Business sponsor sign-off | Approved | Sign-off document | [Project Sponsor] |
 
 ### 9.7 Success Metrics and KPIs
@@ -1294,62 +1291,9 @@ Risks to business strategy, market positioning, and long-term viability.
 
 ---
 
-## 12. Training and Change Management
+## 12. Support and Maintenance
 
-### 12.1 Training Strategy
-
-[Describe the overall approach to training users]
-
-**Training Objectives:**
-- [Objective 1]
-- [Objective 2]
-- [Objective 3]
-
-### 12.2 Training Plan
-
-| User Group | Number of Users | Training Type | Duration | Delivery Method | Schedule | Materials Needed | Trainer |
-|------------|-----------------|---------------|----------|-----------------|----------|------------------|---------|
-| [Group] | [#] | [Type] | [Hours] | [In-person/Online/Hybrid] | [Dates] | [List] | [Name] |
-
-### 12.3 Training Materials
-
-[List all training materials that will be developed]
-
-- User manuals
-- Quick reference guides
-- Video tutorials
-- Hands-on exercises
-- FAQs
-- Job aids
-
-### 12.4 Change Management Strategy
-
-[Describe how organizational change will be managed]
-
-#### 12.4.1 Change Impact Assessment
-
-| Stakeholder Group | Current State | Future State | Impact Level | Change Type | Resistance Level |
-|-------------------|---------------|--------------|--------------|-------------|------------------|
-| [Group] | [How they work now] | [How they will work] | [High/Med/Low] | [Process/System/Role] | [High/Med/Low] |
-
-#### 12.4.2 Communication Plan
-
-| Audience | Message | Communication Method | Frequency | Sender | Timing |
-|----------|---------|---------------------|-----------|--------|--------|
-| [Group] | [Key messages] | [Email/Meeting/Newsletter] | [When] | [Who sends] | [When] |
-
-#### 12.4.3 Change Readiness Activities
-
-- [Activity 1: e.g., Town hall meetings]
-- [Activity 2: e.g., Champions program]
-- [Activity 3: e.g., Feedback sessions]
-- [Activity 4: e.g., Early adopter program]
-
----
-
-## 13. Support and Maintenance
-
-### 13.1 Support Model
+### 12.1 Support Model
 
 [Define how users will be supported after implementation]
 
@@ -1358,7 +1302,7 @@ Risks to business strategy, market positioning, and long-term viability.
 - **Tier 2 Support:** [Who provides, what they handle]
 - **Tier 3 Support:** [Who provides, what they handle]
 
-### 13.2 Support Services
+### 12.2 Support Services
 
 | Support Element | Description | Availability | Contact Method | Response Time SLA |
 |-----------------|-------------|--------------|----------------|-------------------|
@@ -1366,7 +1310,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Self-Service | [Description] | [24/7] | [Knowledge base/Portal] | [Immediate] |
 | On-Site Support | [Description] | [By appointment] | [Request process] | [Timeframe] |
 
-### 13.3 Service Level Agreements (SLAs)
+### 12.3 Service Level Agreements (SLAs)
 
 | Priority Level | Definition | Response Time | Resolution Time | Escalation |
 |----------------|------------|---------------|-----------------|------------|
@@ -1375,7 +1319,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Medium (P3) | [Moderate impact] | [X hours] | [X days] | [After X days] |
 | Low (P4) | [Minor issue, cosmetic] | [X days] | [X days] | [As needed] |
 
-### 13.4 Maintenance Plan
+### 12.4 Maintenance Plan
 
 **Planned Maintenance:**
 - **Frequency:** [Weekly/Monthly/Quarterly]
@@ -1390,11 +1334,11 @@ Risks to business strategy, market positioning, and long-term viability.
 
 ---
 
-## 14. Cost-Benefit Analysis
+## 13. Cost-Benefit Analysis
 
-### 14.1 Cost Summary
+### 13.1 Cost Summary
 
-#### 14.1.1 One-Time Costs
+#### 13.1.1 One-Time Costs
 
 | Cost Category | Description | Estimated Cost | Actual Cost | Variance |
 |---------------|-------------|----------------|-------------|----------|
@@ -1402,7 +1346,6 @@ Risks to business strategy, market positioning, and long-term viability.
 | Hardware/Infrastructure | [Details] | $[Amount] | $[Amount] | $[Amount] |
 | Development/Implementation | [Details] | $[Amount] | $[Amount] | $[Amount] |
 | Consulting Services | [Details] | $[Amount] | $[Amount] | $[Amount] |
-| Training | [Details] | $[Amount] | $[Amount] | $[Amount] |
 | Change Management | [Details] | $[Amount] | $[Amount] | $[Amount] |
 | Data Migration | [Details] | $[Amount] | $[Amount] | $[Amount] |
 | Testing | [Details] | $[Amount] | $[Amount] | $[Amount] |
@@ -1410,7 +1353,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Contingency (10-15%) | [Buffer for unknowns] | $[Amount] | $[Amount] | $[Amount] |
 | **Total One-Time Costs** | | **$[Amount]** | **$[Amount]** | **$[Amount]** |
 
-#### 14.1.2 Recurring Annual Costs
+#### 13.1.2 Recurring Annual Costs
 
 | Cost Category | Description | Year 1 | Year 2 | Year 3 |
 |---------------|-------------|--------|--------|--------|
@@ -1418,11 +1361,10 @@ Risks to business strategy, market positioning, and long-term viability.
 | Support Services | [Ongoing support] | $[Amount] | $[Amount] | $[Amount] |
 | Hosting/Infrastructure | [Cloud/hosting costs] | $[Amount] | $[Amount] | $[Amount] |
 | Staff/Personnel | [FTEs required] | $[Amount] | $[Amount] | $[Amount] |
-| Training (ongoing) | [Refresher training] | $[Amount] | $[Amount] | $[Amount] |
 | Upgrades/Enhancements | [Planned improvements] | $[Amount] | $[Amount] | $[Amount] |
 | **Total Annual Costs** | | **$[Amount]** | **$[Amount]** | **$[Amount]** |
 
-#### 14.1.3 Total Cost of Ownership (3 Years)
+#### 13.1.3 Total Cost of Ownership (3 Years)
 
 | Cost Type | Amount |
 |-----------|--------|
@@ -1432,9 +1374,9 @@ Risks to business strategy, market positioning, and long-term viability.
 | Year 3 Recurring | $[Amount] |
 | **Total 3-Year TCO** | **$[Amount]** |
 
-### 14.2 Benefit Summary
+### 13.2 Benefit Summary
 
-#### 14.2.1 Quantifiable Benefits
+#### 13.2.1 Quantifiable Benefits
 
 | Benefit Category | Description | Year 1 | Year 2 | Year 3 | 3-Year Total | Calculation Method |
 |------------------|-------------|--------|--------|--------|--------------|-------------------|
@@ -1445,7 +1387,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Efficiency Gains | [Productivity improvements] | $[Amount] | $[Amount] | $[Amount] | $[Amount] | [How calculated] |
 | **Total Quantifiable Benefits** | | **$[Amount]** | **$[Amount]** | **$[Amount]** | **$[Amount]** | |
 
-#### 14.2.2 Qualitative Benefits
+#### 13.2.2 Qualitative Benefits
 
 [List benefits that cannot be easily quantified but provide significant value]
 
@@ -1458,9 +1400,9 @@ Risks to business strategy, market positioning, and long-term viability.
 - **Innovation:** [Description of innovation enablement]
 - **Scalability:** [Description of growth support]
 
-### 14.3 Financial Analysis
+### 13.3 Financial Analysis
 
-#### 14.3.1 Return on Investment (ROI)
+#### 13.3.1 Return on Investment (ROI)
 
 | Metric | Formula | Year 1 | Year 2 | Year 3 | 3-Year |
 |--------|---------|--------|--------|--------|--------|
@@ -1468,20 +1410,20 @@ Risks to business strategy, market positioning, and long-term viability.
 | ROI % | (Net Benefit / Total Cost) × 100 | [%] | [%] | [%] | [%] |
 | Cumulative ROI | | [%] | [%] | [%] | [%] |
 
-#### 14.3.2 Payback Period
+#### 13.3.2 Payback Period
 
 **Payback Period:** [Number of months/years until investment is recovered]
 
 **Breakeven Point:** [Date when cumulative benefits equal cumulative costs]
 
-#### 14.3.3 Net Present Value (NPV)
+#### 13.3.3 Net Present Value (NPV)
 
 [If applicable, calculate NPV using appropriate discount rate]
 
 - **Discount Rate:** [%]
 - **NPV:** $[Amount]
 
-### 14.4 Sensitivity Analysis
+### 13.4 Sensitivity Analysis
 
 [Analyze how changes in key assumptions affect ROI]
 
@@ -1493,13 +1435,13 @@ Risks to business strategy, market positioning, and long-term viability.
 
 ---
 
-## 15. Project Governance
+## 14. Project Governance
 
-### 15.1 Governance Structure
+### 14.1 Governance Structure
 
 [Define the decision-making and oversight structure]
 
-#### 15.1.1 Steering Committee
+#### 14.1.1 Steering Committee
 
 **Purpose:** Provide strategic oversight and make major decisions
 
@@ -1517,7 +1459,7 @@ Risks to business strategy, market positioning, and long-term viability.
 - Approve phase gate transitions
 - Ensure resource availability
 
-#### 15.1.2 Project Team
+#### 14.1.2 Project Team
 
 **Core Team Members:**
 
@@ -1528,7 +1470,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | [Name] | Technical Lead | [Dept] | [%] | [Responsibilities] |
 | [Name] | Subject Matter Expert | [Dept] | [%] | [Responsibilities] |
 
-### 15.2 Decision-Making Authority
+### 14.2 Decision-Making Authority
 
 | Decision Type | Authority Level | Approver(s) | Delegation Allowed |
 |---------------|----------------|-------------|-------------------|
@@ -1540,7 +1482,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Schedule changes > [X] days | Steering Committee | [Committee] | No |
 | Resource allocation | Functional Manager | [Name] | Yes |
 
-### 15.3 Status Reporting
+### 14.3 Status Reporting
 
 | Report Type | Audience | Frequency | Content | Owner |
 |-------------|----------|-----------|---------|-------|
@@ -1549,7 +1491,7 @@ Risks to business strategy, market positioning, and long-term viability.
 | Team Status | Project Team | [Weekly] | [Detailed progress, blockers] | Project Manager |
 | Stakeholder Update | All Stakeholders | [Biweekly] | [Progress, upcoming activities] | Project Manager |
 
-### 15.4 Change Control Process
+### 14.4 Change Control Process
 
 [Define how changes to scope, schedule, or budget are managed]
 
@@ -1570,11 +1512,11 @@ Risks to business strategy, market positioning, and long-term viability.
 - Recommendation
 - Approval signatures
 
-### 15.5 Approval and Sign-off
+### 14.5 Approval and Sign-off
 
 This section documents the formal approval process for the BRD and criteria for acceptance.
 
-#### 15.5.1 Document Approval
+#### 14.5.1 Document Approval
 
 | Role | Name | Title | Approval Date | Signature |
 |------|------|-------|---------------|-----------|
@@ -1585,7 +1527,7 @@ This section documents the formal approval process for the BRD and criteria for 
 | Compliance Lead | [TBD] | [Title] | [Pending] | |
 | Finance Lead | [TBD] | [Title] | [Pending] | |
 
-#### 15.5.2 Approval Criteria
+#### 14.5.2 Approval Criteria
 
 This BRD is considered approved when:
 
@@ -1595,7 +1537,7 @@ This BRD is considered approved when:
 4. Required dependencies (section 17.2) are confirmed available or have mitigation plans
 5. Budget allocation has been approved by appropriate financial authority
 
-#### 15.5.3 Change Control Process for Approved BRD
+#### 14.5.3 Change Control Process for Approved BRD
 
 Changes to this approved BRD must follow this process:
 
@@ -1605,7 +1547,7 @@ Changes to this approved BRD must follow this process:
 | Moderate (new requirements, scope changes) | Product Owner + Tech Lead | Impact assessment + stakeholder review | Increment minor (e.g., 1.3) |
 | Major (business model changes, new partners) | All stakeholders | Full BRD review cycle | Increment major (e.g., 2.0) |
 
-#### 15.5.4 Approval Status Tracking
+#### 14.5.4 Approval Status Tracking
 
 | Approver | Review Status | Review Date | Comments | Approval Status |
 |----------|--------------|-------------|----------|-----------------|
@@ -1620,9 +1562,9 @@ Changes to this approved BRD must follow this process:
 
 ---
 
-## 16. Quality Assurance
+## 15. Quality Assurance
 
-### 16.1 Quality Standards
+### 15.1 Quality Standards
 
 [Define quality standards and criteria for deliverables]
 
@@ -1634,9 +1576,9 @@ Changes to this approved BRD must follow this process:
 | Test Cases | [Standard] | [Review method] | [Who approves] |
 | User Documentation | [Standard] | [Review method] | [Who approves] |
 
-### 16.2 Testing Strategy
+### 15.2 Testing Strategy
 
-#### 16.2.1 Testing Types
+#### 15.2.1 Testing Types
 
 | Test Type | Purpose | Responsibility | Schedule | Exit Criteria |
 |-----------|---------|----------------|----------|---------------|
@@ -1647,7 +1589,7 @@ Changes to this approved BRD must follow this process:
 | security Testing | [Purpose] | [security Team] | [Phase] | [Criteria] |
 | User Acceptance Testing | [Purpose] | [Business Users] | [Phase] | [Criteria] |
 
-#### 16.2.2 Defect Management
+#### 15.2.2 Defect Management
 
 **Defect Severity Definitions:**
 - **Critical:** System unavailable or data loss
@@ -1666,15 +1608,15 @@ Changes to this approved BRD must follow this process:
 
 ---
 
-## 17. Traceability
+## 16. Traceability
 
 This section maps BRD requirements to upstream business objectives and downstream technical artifacts, ensuring complete requirements coverage and enabling impact analysis.
 
-### 17.1 Requirements Traceability Matrix
+### 16.1 Requirements Traceability Matrix
 
 [Map functional requirements to business objectives and downstream deliverables]
 
-#### 17.1.1 Business Objectives → Functional Requirements
+#### 16.1.1 Business Objectives → Functional Requirements
 
 | Business Objective | Related Functional Requirements | Related User Stories | Coverage Status |
 |--------------------|--------------------------------|----------------------|-----------------|
@@ -1682,7 +1624,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [BO-N: Objective description] | BRD.NNN.004, BRD.NNN.005, BRD.NNN.006 | US-002, US-005, US-012 | Complete/Partial/Gap |
 | [BO-N: Objective description] | BRD.NNN.007, BRD.NNN.008, BRD.NNN.009 | US-004, US-009, US-015 | Complete/Partial/Gap |
 
-#### 17.1.2 Functional Requirements → Technical Specifications
+#### 16.1.2 Functional Requirements → Technical Specifications
 
 [Map functional requirements to downstream technical artifacts (planned)]
 
@@ -1692,7 +1634,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | BRD.NNN.002: [Requirement title] | SPEC-XXX-002: [Specification name] | IMPL-XXX-002: [Implementation name] | Planned |
 | BRD.NNN.003: [Requirement title] | SPEC-XXX-003: [Specification name] | IMPL-XXX-003: [Implementation name] | Planned |
 
-#### 17.1.3 Quality Attributes → Technical Specifications
+#### 16.1.3 Quality Attributes → Technical Specifications
 
 | Quality Attribute Category | Downstream SPEC (Planned) | Validation Method |
 |---------------------------|---------------------------|-------------------|
@@ -1703,7 +1645,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | Observability | SPEC-XXX-QA-O: Monitoring Stack | Dashboard review |
 | Maintainability | SPEC-XXX-QA-M: DevOps Pipeline | CI/CD metrics |
 
-### 17.2 Same-Type References (Conditional)
+### 16.2 Same-Type References (Conditional)
 
 **Include this section only if same-type relationships exist between BRDs.**
 
@@ -1735,7 +1677,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 @depends-brd: BRD-NNN
 ```
 
-### 17.3 Test Coverage Traceability
+### 16.3 Test Coverage Traceability
 
 [Map requirements to test artifacts]
 
@@ -1747,7 +1689,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | Performance Quality Attributes | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
 | Security Quality Attributes | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
 
-### 17.4 Traceability Summary
+### 16.4 Traceability Summary
 
 | Category | Total Items | Traced Forward | Traced Backward | Coverage % |
 |----------|-------------|----------------|-----------------|------------|
@@ -1760,7 +1702,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-## 18. Glossary
+## 17. Glossary
 
 📚 **Master Glossary Reference**: For common terminology used across all BRDs, see [BRD-000_GLOSSARY.md](BRD-000_GLOSSARY.md). This section defines **project-specific terms** not covered in the master glossary.
 
@@ -1788,7 +1730,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-### 18.1 Business Terms
+### 17.1 Business Terms
 
 [Define project-specific business terminology NOT in master glossary]
 
@@ -1801,7 +1743,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-### 18.2 Technical Terms
+### 17.2 Technical Terms
 
 [Define project-specific technical terminology NOT in master glossary]
 
@@ -1814,7 +1756,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-### 18.3 Domain-Specific Terms
+### 17.3 Domain-Specific Terms
 
 [Define industry/domain terminology unique to this project NOT in master glossary]
 
@@ -1827,7 +1769,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-### 18.4 Acronyms
+### 17.4 Acronyms
 
 [Define project-specific acronyms NOT in master glossary]
 
@@ -1840,7 +1782,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-### 18.5 Cross-References
+### 17.5 Cross-References
 
 [Link to related BRDs, external documents, and dependencies for this project]
 
@@ -1858,7 +1800,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-### 18.6 External Standards
+### 17.6 External Standards
 
 [Define regulatory, industry, or technical standards specific to this project NOT in master glossary]
 
@@ -1871,7 +1813,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-## 19. Appendices
+## 18. Appendices
 
 ### Appendix A: Supporting Documentation
 

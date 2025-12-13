@@ -1,5 +1,5 @@
 ---
-title: "doc-ctr: Create Data Contracts (Layer 9)"
+name: "doc-ctr: Create Data Contracts (Layer 9)"
 name: doc-ctr
 description: Create Data Contracts (CTR) - Optional Layer 9 artifact using dual-file format (.md + .yaml) for API/data contracts
 tags:
@@ -13,8 +13,8 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: core-workflow
-  upstream_artifacts: [IMPL]
-  downstream_artifacts: [SPEC]
+  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL]
+  downstream_artifacts: [SPEC,TASKS,IPLAN,Code]
 ---
 
 # doc-ctr
@@ -27,7 +27,7 @@ Create **Data Contracts (CTR)** - Optional Layer 9 artifact in the SDD workflow 
 
 **Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), IMPL (Layer 8)
 
-**Downstream Artifacts**: SPEC (Layer 10), TASKS (Layer 11), Code (Layer 13)
+**Downstream Artifacts**: SPEC (Layer 10), TASKS (Layer 11), IPLAN (Layer 12), Code (Layer 13)
 
 ## Prerequisites
 
@@ -203,7 +203,7 @@ components:
 **JSON Schema Format** (for data models):
 ```yaml
 $schema: "http://json-schema.org/draft-07/schema#"
-title: DataProcessingConfig
+name: DataProcessingConfig
 description: Configuration schema for data processing
 
 type: object
@@ -318,6 +318,52 @@ info:
     - Changed: account_id now requires UUID format (was string)
 ```
 
+### 6. SPEC-Ready Scoring System
+
+**Purpose**: Measures CTR maturity and readiness for progression to Technical Specifications (SPEC) phase.
+
+**Format in Document Control**:
+```markdown
+| **SPEC-Ready Score** | ✅ 95% (Target: ≥90%) |
+```
+
+**Status and SPEC-Ready Score Mapping**:
+
+| SPEC-Ready Score | Required Status |
+|------------------|-----------------|
+| ≥90% | Active |
+| 70-89% | In Review |
+| <70% | Draft |
+
+**Scoring Criteria**:
+- **Schema Completeness (35%)**: All endpoints/models defined, JSON Schema/OpenAPI validation passes, examples provided
+- **Error Handling (25%)**: All error codes documented, retry strategies specified, failure modes covered
+- **Quality Attributes (20%)**: Performance targets, SLA requirements, idempotency specified
+- **Traceability (10%)**: Upstream REQ/ADR linked, consumer/provider identified
+- **Documentation (10%)**: Usage examples, versioning policy, deprecation strategy
+
+**Quality Gate**: Score <90% blocks SPEC artifact creation.
+
+### 7. Directory Organization by Service Type
+
+**Purpose**: Organize contracts by service type for large projects (30+ contracts).
+
+**Structure**:
+```
+CTR/
+├── agents/              # Agent-to-agent communication
+├── mcp/                 # MCP server contracts
+├── infra/               # Infrastructure services
+└── shared/              # Cross-cutting contracts
+```
+
+**When to Use**:
+- **<10 contracts**: Flat directory
+- **10-30 contracts**: Optional subdirectories
+- **30+ contracts**: **Mandatory** subdirectories
+
+**Recommendation**: Start flat, migrate to subdirectories when 3+ contracts per service type.
+
 ## Tag Format Convention (By Design)
 
 The SDD framework uses two distinct notation systems for cross-references:
@@ -390,6 +436,7 @@ Examples:
 **Downstream Artifacts**:
 - **SPEC** (Layer 10) - Technical specifications
 - **TASKS** (Layer 11) - Task breakdown
+- **IPLAN** (Layer 12) - Implementation plans
 - **Code** (Layer 13) - Implementation
 
 **Same-Type Document Relationships** (conditional):
@@ -448,7 +495,7 @@ Include all 7-8 upstream tags (@brd through @req/impl).
 
 ### Step 11: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_flow/CTR/CTR-000_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Update `ai_dev_flow/CTR/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ### Step 12: Validate CTR
 
@@ -473,7 +520,7 @@ Commit both files (.md and .yaml) and traceability matrix.
 
 ```bash
 # Quality gates
-./scripts/validate_quality_gates.sh ai_dev_flow/CTR/CTR-001_*.md
+scripts/validate_quality_gates.sh ai_dev_flow/CTR/CTR-001_*.md
 
 # YAML validation
 yamllint ai_dev_flow/CTR/CTR-001_*.yaml
@@ -481,8 +528,8 @@ yamllint ai_dev_flow/CTR/CTR-001_*.yaml
 # OpenAPI validation (if using OpenAPI)
 openapi-spec-validator ai_dev_flow/CTR/CTR-001_*.yaml
 
-# Dual-file check
-python ai_dev_flow/scripts/check_dual_files.py CTR-001
+# CTR-specific validation (includes dual-file check)
+./ai_dev_flow/scripts/validate_ctr.sh CTR-001
 
 # Cumulative tagging
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
@@ -522,7 +569,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ```
 LOOP:
-  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -533,10 +580,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/CTR/CTR-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/CTR/CTR-NNN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all CTR documents complete
-python scripts/validate_cross_document.py --layer CTR --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --layer CTR --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -594,6 +641,8 @@ For supplementary documentation related to CTR artifacts:
 
 ## Related Resources
 
+- **Template**: `ai_dev_flow/CTR/CTR-TEMPLATE.md` (primary authority)
+- **Schema Template**: `ai_dev_flow/CTR/CTR-TEMPLATE.yaml` (machine-readable)
 - **CTR Creation Rules**: `ai_dev_flow/CTR/CTR_CREATION_RULES.md`
 - **CTR Validation Rules**: `ai_dev_flow/CTR/CTR_VALIDATION_RULES.md`
 - **CTR README**: `ai_dev_flow/CTR/README.md`
@@ -611,6 +660,8 @@ For supplementary documentation related to CTR artifacts:
 
 **Format**: Dual-file (.md + .yaml)
 
+**SPEC-Ready Score**: ≥90% required for "Active" status
+
 **YAML Standards**:
 - OpenAPI 3.0 for REST APIs
 - JSON Schema for data models
@@ -623,6 +674,8 @@ For supplementary documentation related to CTR artifacts:
 - Usage Examples
 - Validation Rules
 - Error Handling
+
+**Directory Organization**: Subdirectories recommended for 30+ contracts
 
 **Optional**: Skip this layer if contracts are simple or embedded in REQ
 

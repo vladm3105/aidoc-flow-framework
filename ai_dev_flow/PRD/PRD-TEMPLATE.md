@@ -305,7 +305,6 @@ Select the appropriate template variant based on domain:
 #### Business Process Limitations
 
 - [Organizational changes not addressed]
-- [Training and change management out of scope]
 - [Metrics and reporting not included]]
 
 ### Dependencies & Prerequisites
@@ -682,7 +681,7 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 [Conditions that must be met to launch:
 - All [critical] features functional and tested
 - Performance requirements met in staging environment
-- Training materials and documentation complete
+- Documentation complete
 - Support team familiar with the new system
 - Business stakeholders approve based on acceptance criteria]
 
@@ -697,7 +696,7 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 
 ### Success Measurement Timeline
 
-- **Day 1-7**: System stability and user training completion
+- **Day 1-7**: System stability and initial user adoption
 - **Month 1**: Feature adoption and process efficiency gains
 - **Month 2**: Business impact measurement and KPI validation
 - **Month 3+**: Ongoing optimization and expansion planning
@@ -724,7 +723,7 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 
 - **Weekly Status Updates**: [Distribution list], Content: [Progress, risks, next steps]
 - **Monthly Steering Committee**: [Attendees], Focus: [Business alignment, key decisions]
-- **Release Planning**: [2 weeks before launch], Content: [Feature demo, training schedule]
+- **Release Planning**: [2 weeks before launch], Content: [Feature demo, documentation updates]
 - **Post-Launch Feedback**: [30/60/90 day check-ins], Purpose: [Value validation, improvement planning]
 
 ---
@@ -777,7 +776,7 @@ Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.hi
 
 - **Post-Launch Support**: [Production monitoring and incident response]
 - **Maintenance**: [Ongoing code maintenance and updates]
-- **Training**: [User training and documentation updates]
+- **Documentation**: [User documentation updates]
 - **Marketing**: [Internal communications and change management]
 
 ---

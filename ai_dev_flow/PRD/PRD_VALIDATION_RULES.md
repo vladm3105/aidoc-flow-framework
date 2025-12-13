@@ -216,56 +216,57 @@ All PRD requirements must include:
 
 ### CHECK 4: section Numbering Validation
 
-**Purpose**: Verify all 19 sections (0-18) are numbered explicitly
+**Purpose**: Verify all 20 sections (1-20) are numbered explicitly
 **Type**: Error (blocking)
 
 **Required section Numbers**:
 ```markdown
-## 0. Document Control
-## 1. Executive Summary
-## 2. Problem Statement
-## 3. Target Audience & User Personas
-## 4. Success Metrics (KPIs)
-## 5. Goals & Objectives
-## 6. Scope & Requirements
-## 7. User Stories & User Roles
-## 8. Functional Requirements
-## 9. Customer-Facing Content & Messaging (MANDATORY)
-## 10. Acceptance Criteria
-## 11. Constraints & Assumptions
-## 12. Risk Assessment
-## 13. Success Definition
-## 14. Stakeholders & Communication
-## 15. Implementation Approach
-## 16. Budget & Resources
-## 17. Traceability
-## 18. References
+## 1. Document Control
+## 2. Executive Summary
+## 3. Problem Statement
+## 4. Target Audience & User Personas
+## 5. Success Metrics (KPIs)
+## 6. Goals & Objectives
+## 7. Scope & Requirements
+## 8. User Stories & User Roles
+## 9. Functional Requirements
+## 10. Customer-Facing Content & Messaging (MANDATORY)
+## 11. Acceptance Criteria
+## 12. Constraints & Assumptions
+## 13. Risk Assessment
+## 14. Success Definition
+## 15. Stakeholders & Communication
+## 16. Implementation Approach
+## 17. Budget & Resources
+## 18. Traceability
+## 19. References
+## 20. EARS Enhancement Appendix
 ```
 
 **Error Messages**:
 ```
-❌ MISSING NUMBER: section header must be "## 0. Document Control"
-❌ INCORRECT NUMBER: Found "## Document Control", expected "## 0. Document Control"
+❌ MISSING NUMBER: section header must be "## 1. Document Control"
+❌ INCORRECT NUMBER: Found "## Document Control", expected "## 1. Document Control"
 ❌ DUPLICATE NUMBER: section number 6 appears twice
 ```
 
 **Resolution Steps**:
 1. Add explicit section number to each header
 2. Use format: `## N. section Title`
-3. Verify sequential numbering (0-18)
+3. Verify sequential numbering (1-20)
 4. Check for duplicates or skipped numbers
 
 ### CHECK 5: Mandatory sections Presence
 
-**Purpose**: Verify all 19 sections exist in document
+**Purpose**: Verify all 20 sections exist in document
 **Type**: Error (blocking)
 
-**All sections MANDATORY**: Every PRD must contain all 19 sections (0-18) with substantive content, not placeholders.
+**All sections MANDATORY**: Every PRD must contain all 20 sections (1-20) with substantive content, not placeholders.
 
 **Error Messages**:
 ```
-❌ MISSING SECTION: ## 6. User Stories & User Roles
-❌ MISSING SECTION: ## 8. Customer-Facing Content & Messaging (MANDATORY)
+❌ MISSING SECTION: ## 8. User Stories & User Roles
+❌ MISSING SECTION: ## 10. Customer-Facing Content & Messaging (MANDATORY)
 ```
 
 **Resolution Steps**:
@@ -332,15 +333,15 @@ All PRD requirements must include:
 3. Move BDD-level content to placeholder for future BDD tests
 4. Keep only PRD-level role definitions and story summaries
 
-### CHECK 8: Customer-Facing Content Mandatory (section 9)
+### CHECK 8: Customer-Facing Content Mandatory (section 10)
 
 > **Note**: CHECK numbers are sequential validation steps; they do not correspond to PRD section numbers.
 
-**Purpose**: Enforce section 9 as blocking requirement
+**Purpose**: Enforce section 10 as blocking requirement
 **Type**: Error (blocking)
 
 **Requirements**:
-- section 9 header must include (MANDATORY) designation
+- section 10 header must include (MANDATORY) designation
 - section must contain substantive content (not placeholders)
 - Content must address customer-visible materials
 
@@ -357,13 +358,13 @@ All PRD requirements must include:
 
 **Error Messages**:
 ```
-❌ BLOCKING ERROR: section 9 (Customer-Facing Content) is missing
-❌ BLOCKING ERROR: section 9 header missing (MANDATORY) designation
-❌ BLOCKING ERROR: section 9 contains only placeholder text
+❌ BLOCKING ERROR: section 10 (Customer-Facing Content) is missing
+❌ BLOCKING ERROR: section 10 header missing (MANDATORY) designation
+❌ BLOCKING ERROR: section 10 contains only placeholder text
 ```
 
 **Resolution Steps**:
-1. Add section 9 if missing
+1. Add section 10 if missing
 2. Include (MANDATORY) in header
 3. Populate with substantive customer-facing content
 4. Address at least 3 content categories from required list
@@ -435,88 +436,95 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 
 ### Per-section Validation Criteria
 
-**section 0 - Document Control**:
+**section 1 - Document Control**:
 - 11 required fields present (See CHECK 1)
 - Dual scoring with ≥90% thresholds (See CHECK 2-3)
 - Document Revision History table with at least one entry
 
-**section 1 - Executive Summary**:
+**section 2 - Executive Summary**:
 - 2-3 sentence overview
 - Business Value Proposition subsection
 - Timeline subsection with 5 phases
 
-**section 2 - Problem Statement**:
+**section 3 - Problem Statement**:
 - Current State, Business Impact, Root Cause Analysis, Opportunity Assessment subsections
 - Quantified business impact metrics
 - Clear problem articulation
 
-**section 3 - Target Audience & User Personas**:
+**section 4 - Target Audience & User Personas**:
 - Primary Users, secondary Users, Business Stakeholders subsections
 - At least 2 user personas with demographics, goals, pain points
 
-**section 4 - Success Metrics (KPIs)**:
+**section 5 - Success Metrics (KPIs)**:
 - Primary KPIs, secondary KPIs, Success Criteria by Phase subsections
 - At least 3 measurable KPIs
 - Baseline and target values specified
 
-**section 5 - Goals & Objectives**:
+**section 6 - Goals & Objectives**:
 - Primary Business Goals, secondary Objectives, Stretch Goals subsections
 - SMART criteria applied (Specific, Measurable, Achievable, Relevant, Time-bound)
 
-**section 6 - Scope & Requirements**:
+**section 7 - Scope & Requirements**:
 - In Scope, Out of Scope, Dependencies, Assumptions subsections
 - Clear boundary definitions
 
-**section 7 - User Stories & User Roles**:
+**section 8 - User Stories & User Roles**:
 - Layer Separation scope note present (See CHECK 7)
 - User role definitions
 - Story summaries (not EARS/BDD-level detail)
 
-**section 8 - Functional Requirements**:
+**section 9 - Functional Requirements**:
 - User Journey Mapping, Capability Requirements subsections
 - Requirements use unified format (PRD.NNN.NNN)
 - Each requirement testable
 
-**section 9 - Customer-Facing Content & Messaging**:
+**section 10 - Customer-Facing Content & Messaging**:
 - (MANDATORY) designation in header (See CHECK 8)
 - Substantive content addressing customer-visible materials
 - At least 3 content categories covered
 
-**section 10 - Acceptance Criteria**:
+**section 11 - Acceptance Criteria**:
 - Business Acceptance, Technical Acceptance, Quality Assurance subsections
 - Criteria verifiable by business stakeholders
 
-**section 11 - Constraints & Assumptions**:
+**section 12 - Constraints & Assumptions**:
 - Business Constraints, Technical Constraints, External Constraints, Key Assumptions subsections
 - Each assumption identified with validation plan
 
-**section 12 - Risk Assessment**:
+**section 13 - Risk Assessment**:
 - High-Risk Items, Risk Mitigation Plan subsections
 - Risks categorized by severity and likelihood
 
-**section 13 - Success Definition**:
+**section 14 - Success Definition**:
 - Go-Live Criteria, Post-Launch Validation, Measurement Timeline subsections
 - Specific success thresholds
 
-**section 14 - Stakeholders & Communication**:
+**section 15 - Stakeholders & Communication**:
 - Core Team, Stakeholders, Communication Plan subsections
 - RACI matrix or equivalent
 
-**section 15 - Implementation Approach**:
+**section 16 - Implementation Approach**:
 - Development Phases, Testing Strategy subsections
 - High-level timeline
 
-**section 16 - Budget & Resources**:
+**section 17 - Budget & Resources**:
 - Development Budget, Operational Budget, Resource Requirements subsections
 - Cost estimates with justification
 
-**section 17 - Traceability**:
+**section 18 - Traceability**:
 - Upstream Sources, Downstream Artifacts, Traceability Tags, Validation Evidence subsections
 - @brd tag present (See CHECK 10)
 
-**section 18 - References**:
+**section 19 - References**:
 - Internal Documentation, External Standards, Domain References, Technology References subsections
 - All references valid and accessible
+
+**section 20 - EARS Enhancement Appendix**:
+- Timing Profile Matrix (20.1) with p50/p95/p99 values
+- Boundary Value Matrix (20.2) with explicit operators
+- State Transition Diagram (20.3) with error states
+- Fallback Path Documentation (20.4) for external dependencies
+- EARS-Ready Checklist (20.5) completed
 
 ---
 
@@ -526,10 +534,10 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 
 **Before committing PRD to repository, verify**:
 
-- [ ] **All 19 sections present** (0-18) with substantive content
+- [ ] **All 20 sections present** (1-20) with substantive content
 - [ ] **section numbering explicit** (## N. Title format)
 - [ ] **Dual scoring ≥90%** (SYS-Ready and EARS-Ready)
-- [ ] **Customer-Facing Content (section 9)** populated with (MANDATORY) designation
+- [ ] **Customer-Facing Content (section 10)** populated with (MANDATORY) designation
 - [ ] **User Stories (section 7)** include scope note, stay within PRD layer
 - [ ] **No ADR-XXX forward references** (use topics only)
 - [ ] **@brd upstream tag** present in Traceability section
@@ -565,8 +573,8 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 **When to Advance to EARS/SYS**:
 - ✅ Both SYS-Ready and EARS-Ready scores ≥90%
-- ✅ All 19 sections complete with substantive content
-- ✅ section 9 (Customer-Facing Content) populated
+- ✅ All 20 sections complete with substantive content
+- ✅ section 10 (Customer-Facing Content) populated
 - ✅ section 7 (User Stories) within PRD scope
 - ✅ @brd upstream reference valid
 - ✅ No blocking validation errors
@@ -574,7 +582,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 **Blocking Conditions**:
 - ❌ Either score <90%
 - ❌ Missing mandatory sections
-- ❌ section 9 missing or placeholder-only
+- ❌ section 10 missing or placeholder-only
 - ❌ section 7 contains EARS/BDD-level detail
 - ❌ ADR-XXX forward references present
 - ❌ Missing Document Control fields
@@ -606,7 +614,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 **Symptoms**:
 ```
-❌ MISSING NUMBER: Found "## Document Control", expected "## 0. Document Control"
+❌ MISSING NUMBER: Found "## Document Control", expected "## 1. Document Control"
 ❌ DUPLICATE NUMBER: section number 6 appears twice
 ```
 
@@ -615,10 +623,10 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 **Fix**:
 1. Use find/replace to add numbers to all headers:
    ```
-   ## Document Control → ## 0. Document Control
-   ## Executive Summary → ## 1. Executive Summary
+   ## Document Control → ## 1. Document Control
+   ## Executive Summary → ## 2. Executive Summary
    ```
-2. Verify sequential numbering 0-18 with no gaps
+2. Verify sequential numbering 1-20 with no gaps
 3. Check for duplicate section numbers
 4. Compare with PRD-TEMPLATE.md for correct sequence
 
@@ -646,16 +654,16 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 **Symptoms**:
 ```
-❌ BLOCKING ERROR: section 9 (Customer-Facing Content) is missing
-❌ BLOCKING ERROR: section 9 contains only placeholder text
+❌ BLOCKING ERROR: section 10 (Customer-Facing Content) is missing
+❌ BLOCKING ERROR: section 10 contains only placeholder text
 ```
 
-**Root Cause**: section 9 treated as optional or overlooked as new mandatory requirement
+**Root Cause**: section 10 treated as optional or overlooked as new mandatory requirement
 
 **Fix**:
-1. Add section 9 header with (MANDATORY) designation:
+1. Add section 10 header with (MANDATORY) designation:
    ```markdown
-   ## 9. Customer-Facing Content & Messaging (MANDATORY)
+   ## 10. Customer-Facing Content & Messaging (MANDATORY)
    ```
 2. Populate with substantive content (minimum 3 categories):
    - Product positioning statements
@@ -677,53 +685,53 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 **Fix**:
 1. Remove all ADR-XXX specific references
-2. Add topics to "Architecture Decision Requirements" table in section 17:
+2. Add topics to "Architecture Decision Requirements" table in section 15:
    ```markdown
    | Topic Area | Decision Needed | Business Driver |
    |------------|-----------------|-----------------|
    | [Topic] | [Description] | [PRD reference] |
    ```
 3. Describe architectural decision topics without assuming ADR already exists
-4. Reference workflow: BRD → PRD → ADR → SYS/EARS
+4. Reference workflow: BRD → PRD → EARS → BDD → ADR → SYS → REQ
 
 ---
 
 ## 6. Additional Validation Checks
 
-### CHECK 11: EARS Enhancement Appendix Validation (Section 19)
+### CHECK 11: EARS Enhancement Appendix Validation (Section 20)
 
-**Purpose**: Verify Section 19 (EARS Enhancement Appendix) is complete and EARS-Ready
+**Purpose**: Verify Section 20 (EARS Enhancement Appendix) is complete and EARS-Ready
 **Type**: Error (blocking for EARS progression)
 
 **Requirements**:
-- Section 19 must exist with all 5 subsections (19.1-19.5)
-- Timing Profile Matrix (19.1) must have at least 3 operations with p50/p95/p99
-- Boundary Value Matrix (19.2) must have at least 3 thresholds with explicit operators
-- State Transition Diagram (19.3) must include error state transitions
-- Fallback Path Documentation (19.4) must cover all external dependencies
-- EARS-Ready Checklist (19.5) must be completed
+- Section 20 must exist with all 5 subsections (20.1-20.5)
+- Timing Profile Matrix (20.1) must have at least 3 operations with p50/p95/p99
+- Boundary Value Matrix (20.2) must have at least 3 thresholds with explicit operators
+- State Transition Diagram (20.3) must include error state transitions
+- Fallback Path Documentation (20.4) must cover all external dependencies
+- EARS-Ready Checklist (20.5) must be completed
 
 **Validation Rules**:
 
 | Subsection | Minimum Content | Validation |
 |------------|-----------------|------------|
-| 19.1 Timing Profiles | 3+ operations | Each row has p50, p95, p99 values |
-| 19.2 Boundary Values | 3+ thresholds | Each row has ≥/>/≤/< operator |
-| 19.3 State Diagram | Mermaid diagram | Contains error states (Failed, Timeout) |
-| 19.4 Fallback Paths | All dependencies | Each row has Fallback Behavior column |
-| 19.5 Checklist | Complete | All checkboxes addressed |
+| 20.1 Timing Profiles | 3+ operations | Each row has p50, p95, p99 values |
+| 20.2 Boundary Values | 3+ thresholds | Each row has ≥/>/≤/< operator |
+| 20.3 State Diagram | Mermaid diagram | Contains error states (Failed, Timeout) |
+| 20.4 Fallback Paths | All dependencies | Each row has Fallback Behavior column |
+| 20.5 Checklist | Complete | All checkboxes addressed |
 
 **Error Messages**:
 ```
-❌ MISSING SECTION: ## 19. EARS Enhancement Appendix
-❌ INCOMPLETE: Section 19.1 requires at least 3 operations with timing profiles
-❌ INCOMPLETE: Section 19.2 requires explicit boundary operators (≥, >, ≤, <)
-❌ INCOMPLETE: Section 19.3 state diagram missing error transitions
-❌ INCOMPLETE: Section 19.4 missing fallback documentation for external dependencies
+❌ MISSING SECTION: ## 20. EARS Enhancement Appendix
+❌ INCOMPLETE: Section 20.1 requires at least 3 operations with timing profiles
+❌ INCOMPLETE: Section 20.2 requires explicit boundary operators (≥, >, ≤, <)
+❌ INCOMPLETE: Section 20.3 state diagram missing error transitions
+❌ INCOMPLETE: Section 20.4 missing fallback documentation for external dependencies
 ```
 
 **Resolution Steps**:
-1. Add Section 19 from PRD-TEMPLATE.md
+1. Add Section 20 from PRD-TEMPLATE.md
 2. Complete timing profile matrix with p50/p95/p99 for all operations
 3. Specify boundary operators for all threshold values
 4. Add error state transitions to state diagram
@@ -865,14 +873,14 @@ Transaction limit: $1,000 USD (per @threshold: PRD.035.kyc.l1.daily)
 | CHECK 1 | Required Fields | Document Control completeness | Yes |
 | CHECK 2 | Dual Scoring Format | SYS-Ready + EARS-Ready format | Yes |
 | CHECK 3 | Threshold Enforcement | ≥90% scores required | Yes |
-| CHECK 4 | Section Numbering | Explicit 0-19 numbering | Yes |
+| CHECK 4 | Section Numbering | Explicit 1-20 numbering | Yes |
 | CHECK 5 | Mandatory Sections | All 20 sections present | Yes |
 | CHECK 6 | Section Title Consistency | Match template titles | No |
 | CHECK 7 | User Stories Scope | PRD-level only (no EARS/BDD) | Yes |
-| CHECK 8 | Customer-Facing Content | Section 9 mandatory | Yes |
+| CHECK 8 | Customer-Facing Content | Section 10 mandatory | Yes |
 | CHECK 9 | No ADR Forward References | Topics only, no ADR-XXX | Yes |
 | CHECK 10 | Traceability Tags | @brd upstream tag | No |
-| CHECK 11 | EARS Enhancement Appendix | Section 19 complete | Yes (for EARS) |
+| CHECK 11 | EARS Enhancement Appendix | Section 20 complete | Yes (for EARS) |
 | CHECK 12 | Bidirectional References | A→B implies B→A | No |
 | CHECK 13 | Feature ID Format | PRD.NNN.NNN format | No |
 | CHECK 14 | Threshold Registry | Registry references | No |

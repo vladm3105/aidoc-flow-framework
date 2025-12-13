@@ -523,7 +523,7 @@ custom_fields:
 [Risks that could affect business outcomes]
 
 #### Adoption Risks
-- **User Training Requirements**: Risk of insufficient training leading to low user adoption
+- **User Onboarding**: Risk of insufficient documentation leading to low user adoption
 - **Change Resistance**: Risk of organizational resistance to new processes and tools
 - **Process Disruptions**: Risk of short-term productivity impacts during transition period
 
@@ -541,7 +541,7 @@ custom_fields:
 - **Monitoring Implementation**: Proactive monitoring with alerting for risk indicators
 
 #### Business Mitigation
-- **Change Management**: Stakeholder communication plans and user training programs
+- **Change Management**: Stakeholder communication plans and documentation
 - **Pilot Programs**: Phased rollout with pilot users to validate approach
 - **Fallback Procedures**: Backup processes and manual procedures for high-risk scenarios
 

@@ -1,5 +1,5 @@
 ---
-title: "doc-impl: Create Implementation Approach (Layer 8)"
+name: "doc-impl: Create Implementation Approach (Layer 8)"
 name: doc-impl
 description: Create Implementation Approach (IMPL) - Optional Layer 8 artifact documenting WHO-WHEN-WHAT implementation strategy
 tags:
@@ -13,8 +13,8 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: core-workflow
-  upstream_artifacts: [REQ]
-  downstream_artifacts: [CTR,SPEC]
+  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ]
+  downstream_artifacts: [CTR,SPEC,TASKS]
 ---
 
 # doc-impl
@@ -273,13 +273,13 @@ Focus on REQ (Layer 7) - atomic requirements to implement.
 
 ### Step 2: Reserve ID Number
 
-Check `ai_dev_flow/IMPL/` for next available ID number.
+Check `docs/IMPL/` for next available ID number (templates are in `ai_dev_flow/IMPL/`).
 
 ### Step 3: Create IMPL File
 
-**File naming**: `ai_dev_flow/IMPL/IMPL-NNN_{slug}.md`
+**File naming**: `docs/IMPL/IMPL-NNN_{slug}.md`
 
-**Example**: `ai_dev_flow/IMPL/IMPL-001_position_validation.md`
+**Example**: `docs/IMPL/IMPL-001_position_validation.md`
 
 ### Step 4: Fill Document Control Section
 
@@ -317,12 +317,12 @@ Include all 7 upstream tags (@brd through @req).
 
 ### Step 11: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_flow/IMPL/IMPL-000_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Update `docs/IMPL/IMPL-000_TRACEABILITY_MATRIX.md` (create from `ai_dev_flow/IMPL/IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md` if not exists)
 
 ### Step 12: Validate IMPL
 
 ```bash
-./ai_dev_flow/scripts/validate_impl.sh ai_dev_flow/IMPL/IMPL-001_*.md
+./ai_dev_flow/scripts/validate_impl.sh docs/IMPL/IMPL-001_*.md
 
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact IMPL-001 --expected-layers brd,prd,ears,bdd,adr,sys,req --strict
 ```
@@ -337,7 +337,7 @@ Commit IMPL file and traceability matrix.
 
 ```bash
 # Quality gates
-./scripts/validate_quality_gates.sh ai_dev_flow/IMPL/IMPL-001_*.md
+./scripts/validate_quality_gates.sh docs/IMPL/IMPL-001_*.md
 
 # Cumulative tagging
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
@@ -377,7 +377,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ```
 LOOP:
-  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -388,10 +388,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/IMPL/IMPL-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/IMPL/IMPL-NNN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all IMPL documents complete
-python scripts/validate_cross_document.py --layer IMPL --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --layer IMPL --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -453,6 +453,7 @@ For supplementary documentation related to IMPL artifacts:
 
 ## Related Resources
 
+- **Template**: `ai_dev_flow/IMPL/IMPL-TEMPLATE.md` (primary authority)
 - **IMPL Creation Rules**: `ai_dev_flow/IMPL/IMPL_CREATION_RULES.md`
 - **IMPL Validation Rules**: `ai_dev_flow/IMPL/IMPL_VALIDATION_RULES.md`
 - **IMPL README**: `ai_dev_flow/IMPL/README.md`

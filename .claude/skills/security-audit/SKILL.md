@@ -1,5 +1,5 @@
 ---
-title: "security-audit: Security analysis, vulnerability assessment, and security code reviews"
+name: "security-audit: Security analysis, vulnerability assessment, and security code reviews"
 name: security-audit
 description: Security analysis, vulnerability assessment, and security code reviews
 tags:
@@ -675,4 +675,4 @@ Required software:
 - Vulnerability reports saved to `reports/security/`
 - Monthly comprehensive security review recommended
 - Penetration testing recommended quarterly
-- Security training for development team required
+- Security guidelines documentation for development team required

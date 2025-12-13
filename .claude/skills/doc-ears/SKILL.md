@@ -1,5 +1,5 @@
 ---
-title: "doc-ears: Create EARS formal requirements (Layer 3)"
+name: "doc-ears: Create EARS formal requirements (Layer 3)"
 name: doc-ears
 description: Create EARS (Easy Approach to Requirements Syntax) formal requirements - Layer 3 artifact using WHEN-THE-SHALL-WITHIN format
 tags:
@@ -13,8 +13,8 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: core-workflow
-  upstream_artifacts: [BRD,PRD]
-  downstream_artifacts: [BDD,ADR]
+  upstream_artifacts: [BRD, PRD]
+  downstream_artifacts: [BDD, ADR, SYS]
 ---
 
 # doc-ears
@@ -81,7 +81,8 @@ custom_fields:
 
 **Post-Creation Validation:**
 ```bash
-python scripts/validate_ears.py --path docs/EARS/EARS-NNN.md
+# EARS validation (under development - use template for manual validation)
+# python scripts/validate_ears.py --path docs/EARS/EARS-NNN.md
 ```
 
 ## When to Use This Skill
@@ -154,7 +155,32 @@ WITHIN 100 milliseconds
 5. **Ubiquitous Requirements**: THE SHALL WITHIN (always active)
 6. **Traceability**: Section 7 format from SHARED_CONTENT.md
 
-### 4. Formal Language Rules
+### 4. BDD-Ready Scoring System
+
+**Purpose**: Measures EARS maturity and readiness for progression to Behavior-Driven Development (BDD) phase.
+
+**Format in Document Control**:
+```markdown
+| **BDD-Ready Score** | ✅ 95% (Target: ≥90%) |
+```
+
+**Status and BDD-Ready Score Mapping**:
+
+| BDD-Ready Score | Required Status |
+|-----------------|-----------------|
+| ≥90% | Approved |
+| 70-89% | In Review |
+| <70% | Draft |
+
+**Scoring Criteria**:
+- **Requirements Clarity (40%)**: EARS statements follow WHEN-THE-SHALL-WITHIN syntax, atomicity, quantifiable constraints
+- **Testability (35%)**: BDD translation possible, observable verification methods, edge cases specified
+- **Quality Attribute Completeness (15%)**: Performance targets with percentiles, security/compliance complete, reliability measurable
+- **Strategic Alignment (10%)**: Links to business objectives, implementation paths documented
+
+**Quality Gate**: Score <90% blocks BDD artifact creation.
+
+### 5. Formal Language Rules
 
 **Mandatory Keywords**:
 - **SHALL**: Mandatory requirement (do this)
@@ -243,8 +269,8 @@ Examples:
 - **SYS** (Layer 6) - System requirements derived from EARS
 
 **Same-Type Document Relationships** (conditional):
-- `@related-ears: EARS-NNN` - EARS sharing domain context
-- `@depends-ears: EARS-NNN` - EARS that must be implemented first
+- `@related-ears: EARS.NNN` - EARS sharing domain context (references EARS document)
+- `@depends-ears: EARS.NNN` - EARS that must be implemented first
 
 ## Creation Process
 
@@ -286,14 +312,13 @@ For each requirement:
 ```markdown
 ## Event-Driven Requirements
 
-### EARS-001-E01: Trade Order Validation
-WHEN trade order received
-THE order management system
-SHALL validate order parameters (symbol, quantity, price, account)
-WITHIN 50 milliseconds
-
-**Source**: PRD-001:feature-order-placement
-**Rationale**: Sub-second validation required for user experience per PRD KPI
+### EARS.001.001: Trade Order Validation
+```
+WHEN trade order received,
+THE order management system SHALL validate order parameters (symbol, quantity, price, account)
+WITHIN 50 milliseconds.
+```
+**Traceability**: @brd: BRD.001.005 | @prd: PRD.001.003
 ```
 
 ### Step 7: Add Cumulative Tags
@@ -375,7 +400,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ```
 LOOP:
-  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: Validation script (when available) --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -385,11 +410,15 @@ LOOP:
 ### Validation Command
 
 ```bash
-# Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/EARS/EARS-NNN_slug.md --auto-fix
+# Per-document validation (Phase 1) - scripts under development
+# python scripts/validate_cross_document.py --document docs/EARS/EARS-NNN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all EARS documents complete
-python scripts/validate_cross_document.py --layer EARS --auto-fix
+# python scripts/validate_cross_document.py --layer EARS --auto-fix
+
+# Currently available validations:
+./scripts/validate_quality_gates.sh docs/EARS/EARS-NNN_slug.md
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact EARS-NNN --expected-layers brd,prd --strict
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -446,6 +475,8 @@ For supplementary documentation related to EARS artifacts:
 
 ## Related Resources
 
+- **Template**: `ai_dev_flow/EARS/EARS-TEMPLATE.md` (primary authority)
+- **Schema**: `ai_dev_flow/EARS/EARS_SCHEMA.yaml` (machine-readable validation)
 - **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 - **EARS Creation Rules**: `ai_dev_flow/EARS/EARS_CREATION_RULES.md`
 - **EARS Validation Rules**: `ai_dev_flow/EARS/EARS_VALIDATION_RULES.md`
@@ -461,6 +492,10 @@ For supplementary documentation related to EARS artifacts:
 **Tags Required**: @brd, @prd (2 tags)
 
 **Syntax**: WHEN [trigger] THE [system] SHALL [response] WITHIN [constraint]
+
+**BDD-Ready Score**: ≥90% required for "Approved" status
+
+**Requirement IDs**: `EARS.NNN.NNN` format (sequential numbering, no category prefixes)
 
 **4 Types**:
 1. Event-Driven (WHEN event)

@@ -1,27 +1,29 @@
 ---
-title: "doc-ref: Create Reference Documents (Supplementary)"
+name: "doc-ref: Create Reference Documents (Supplementary)"
 name: doc-ref
 description: Create Reference Documents (REF) - supplementary documentation that doesn't participate in formal traceability chain
 tags:
   - sdd-workflow
   - supplementary-documentation
   - shared-architecture
+  - required-both-approaches
 custom_fields:
-  layer: null
+  layer: "N/A"
   artifact_type: REF
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: utility
-  upstream_artifacts: []
+  upstream_artifacts: [BRD, ADR]
   downstream_artifacts: []
+  valid_parent_types: [BRD, ADR]
 ---
 
 # doc-ref
 
 ## Purpose
 
-Create **Reference Documents (REF)** - supplementary documentation for any artifact type in the SDD framework. REF documents provide supporting information without participating in the formal traceability chain.
+Create **Reference Documents (REF)** - supplementary documentation for BRD and ADR artifact types in the SDD framework. REF documents provide supporting information without participating in the formal traceability chain.
 
 **Layer**: Not applicable (supplementary to any layer)
 
@@ -35,41 +37,39 @@ Create **Reference Documents (REF)** - supplementary documentation for any artif
 
 | Component | Description | Example |
 |-----------|-------------|---------|
-| `{TYPE}` | Parent artifact type | BRD, PRD, REQ, ADR, SPEC, etc. |
+| `{TYPE}` | Parent artifact type | **BRD or ADR only** |
 | `REF` | Reference document indicator | REF |
 | `NNN` | 3-digit sequence number | 001, 002, 003 |
 | `{slug}` | Descriptive slug (snake_case) | project_overview |
 
+**Scope**: REF documents are LIMITED to **BRD and ADR artifact types ONLY**.
+
 **Examples**:
-- `BRD-REF-001_project_overview.md`
-- `PRD-REF-001_market_research.md`
-- `REQ-REF-001_glossary.md`
-- `ADR-REF-001_technology_stack_summary.md`
-- `SPEC-REF-001_api_reference_guide.md`
+- `BRD-REF-001_project_overview.md` - Business context
+- `BRD-REF-002_strategic_vision.md` - Strategic vision
+- `ADR-REF-001_technology_stack_summary.md` - Tech overview
+- `ADR-REF-002_infrastructure_guide.md` - Infrastructure reference
 
 **Numbering**: Independent sequence per parent TYPE
 - BRD-REF-001, BRD-REF-002 (BRD sequence)
-- PRD-REF-001, PRD-REF-002 (PRD sequence - separate from BRD)
+- ADR-REF-001, ADR-REF-002 (ADR sequence - separate from BRD)
 
 **Location**: Within parent TYPE directory
 - `docs/BRD/BRD-REF-001_project_overview.md`
-- `docs/PRD/PRD-REF-001_market_research.md`
+- `docs/ADR/ADR-REF-001_technology_stack_summary.md`
 
 ## When to Use This Skill
 
 Use `doc-ref` when creating supplementary documentation that:
 
-- Provides general project descriptions from business perspective
-- Documents infrastructure requirements outside formal workflow
-- Describes strategic vision or roadmap information
-- Contains dictionaries, glossaries, or reference material
-- Offers guides, tutorials, or educational content
-- Summarizes information from multiple artifacts
+- **BRD-REF**: Project overviews, executive summaries, strategic vision, stakeholder guides
+- **ADR-REF**: Technology stack summaries, architecture overviews, infrastructure guides
 
 **Do NOT use `doc-ref` for**:
 - Documents that should participate in traceability chain
 - Core artifacts (BRD, PRD, REQ, ADR, SPEC, etc.)
 - Documents requiring validation gates
+- **Any parent type other than BRD or ADR** (REF is limited to these two types)
 
 ## Template Reference
 
@@ -91,20 +91,16 @@ Use `doc-ref` when creating supplementary documentation that:
 
 ### Step 1: Determine Parent Type
 
-Identify which artifact type this reference document supports:
+Identify which artifact type this reference document supports (**BRD or ADR only**):
 - Business context → BRD-REF-NNN
-- Product context → PRD-REF-NNN
-- Requirements context → REQ-REF-NNN
 - Architecture context → ADR-REF-NNN
-- Technical context → SPEC-REF-NNN
 
 ### Step 2: Check Existing REF Documents
 
 ```bash
 # List existing REF documents for the parent type
 ls docs/BRD/*-REF-*.md 2>/dev/null    # For BRD references
-ls docs/PRD/*-REF-*.md 2>/dev/null    # For PRD references
-# ... etc.
+ls docs/ADR/*-REF-*.md 2>/dev/null    # For ADR references
 ```
 
 ### Step 3: Allocate Next Number
@@ -167,18 +163,18 @@ General project description for stakeholders:
 This document provides a high-level overview of the project for stakeholder reference...
 ```
 
-### 2. Glossary (REQ-REF)
+### 2. Strategic Vision (BRD-REF)
 
-Domain terminology reference:
+Strategic roadmap and vision:
 ```markdown
-# REQ-REF-001: Domain Glossary
+# BRD-REF-002: Strategic Vision
 
 ## Document Control
 ...
 
 ## 1. Introduction
 
-This glossary defines key terms used across requirements documentation...
+This document outlines the strategic vision and roadmap for the project...
 ```
 
 ### 3. Technology Summary (ADR-REF)
@@ -195,29 +191,42 @@ Consolidated architecture reference:
 This document summarizes the technology decisions documented across ADRs...
 ```
 
-### 4. API Quick Reference (SPEC-REF)
+### 4. Infrastructure Guide (ADR-REF)
 
-Simplified API guide:
+Infrastructure reference documentation:
 ```markdown
-# SPEC-REF-001: API Quick Reference
+# ADR-REF-002: Infrastructure Guide
 
 ## Document Control
 ...
 
 ## 1. Introduction
 
-Quick reference guide for the most commonly used API endpoints...
+Reference guide for infrastructure components and deployment architecture...
 ```
+
+## Ready-Score Exemptions
+
+**REF documents are EXEMPT from ALL ready-scores and quality gates:**
+
+| Aspect | Standard Document | REF Document |
+|--------|-------------------|--------------|
+| **PRD-Ready Score** (BRD-REF) | Required ≥90% | **NOT APPLICABLE** |
+| **SYS-Ready Score** (ADR-REF) | Required ≥90% | **NOT APPLICABLE** |
+| **Cumulative Tags** | Required per layer | **NOT REQUIRED** |
+| **Quality Gates** | Full validation | **EXEMPT** |
+| **Format** | Structured sections | **Free format** |
 
 ## Comparison: REF vs Regular Artifacts
 
 | Aspect | Regular Artifacts | REF Documents |
 |--------|-------------------|---------------|
 | Traceability | Required (cumulative tags) | Optional |
-| Validation | Full (blocking) | Minimal (non-blocking) |
+| Validation | Full (blocking) | Minimal (4 checks only) |
 | Quality Gates | Must pass | Exempt |
 | Workflow Position | Defined layer | No layer |
 | Numbering | TYPE-NNN | {TYPE}-REF-NNN |
+| Valid Parent Types | All artifact types | **BRD and ADR only** |
 
 ## Related Resources
 
@@ -228,6 +237,8 @@ Quick reference guide for the most commonly used API endpoints...
 ## Quick Reference
 
 - **Format**: `{TYPE}-REF-NNN_{slug}.md`
+- **Valid Parent Types**: **BRD and ADR only**
 - **Required Sections**: Document Control, Revision History, Introduction
-- **Traceability**: Optional
-- **Validation**: Minimal (non-blocking)
+- **Traceability**: Optional (encouraged but not required)
+- **Validation**: Minimal (non-blocking, 4 checks only)
+- **Ready-Scores**: NOT APPLICABLE - REF documents use free format with no scores

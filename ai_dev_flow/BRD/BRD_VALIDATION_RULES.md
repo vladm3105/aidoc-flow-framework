@@ -139,7 +139,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 
 ### CHECK 1: Required sections
 
-**Purpose**: Verify all 19 mandatory sections exist
+**Purpose**: Verify all 18 mandatory sections exist
 **Type**: Error (blocking)
 
 **Required sections**:
@@ -155,21 +155,20 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 ## 9. Acceptance Criteria
 ## 10. Business Risk Management
 ## 11. Implementation Approach
-## 12. Training and Change Management
-## 13. Support and Maintenance
-## 14. Cost-Benefit Analysis
-## 15. Project Governance
-## 16. Quality Assurance
-## 17. Traceability
-## 18. Glossary
-## 19. Appendices
+## 12. Support and Maintenance
+## 13. Cost-Benefit Analysis
+## 14. Project Governance
+## 15. Quality Assurance
+## 16. Traceability
+## 17. Glossary
+## 18. Appendices
 ## Document Control (must be at top)
 ```
 
-**Note**: All 19 sections are mandatory. Template version 1.1 expanded from 17 to 19 sections by adding:
+**Note**: All 18 sections are mandatory. Template version 1.1 expanded from 17 to 18 sections by adding:
 - section 4: Stakeholders
 - section 5: User Stories
-- section 17: Traceability
+- section 16: Traceability
 
 **Error Message**:
 ```
@@ -179,7 +178,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 **Fix**:
 1. Add missing section header
 2. Ensure exact spelling and numbering
-3. sections 1-19 must be in order (Document Control at top)
+3. sections 1-18 must be in order (Document Control at top)
 
 ---
 
@@ -665,7 +664,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 
 **Required sections** (CHECK 1):
 - **Deduction**: -1 point per missing section (max -10 points)
-- **Required**: All 17 sections from BRD-TEMPLATE.md
+- **Required**: All 18 sections from BRD-TEMPLATE.md
 
 **Revision History** (CHECK 3):
 - **Deduction**: -3 points if Document Revision History table missing or empty
@@ -1466,7 +1465,7 @@ Reference: BRD-TEMPLATE.md lines 1747-1831
 
 # Validate all BRD files
 **Business Requirements Completeness (40%)**:
-- All 17 sections present and populated: 10%
+- All 18 sections present and populated: 10%
 - Business objectives follow SMART criteria: 10%
 - Acceptance criteria quantifiable and verifiable: 10%
 - Stakeholder analysis complete: 10%

@@ -1,5 +1,5 @@
 ---
-title: "doc-req: Create Atomic Requirements (Layer 7)"
+name: "doc-req: Create Atomic Requirements (Layer 7)"
 name: doc-req
 description: Create Atomic Requirements (REQ) - Layer 7 artifact using REQ v3.0 format with 12 sections and SPEC-readiness scoring
 tags:
@@ -13,8 +13,8 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: core-workflow
-  upstream_artifacts: [SYS,ADR]
-  downstream_artifacts: [IMPL,SPEC]
+  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS]
+  downstream_artifacts: [IMPL,CTR,SPEC]
 ---
 
 # doc-req
@@ -53,8 +53,7 @@ Before creating REQ, read:
 3. **Template**: `ai_dev_flow/REQ/REQ-TEMPLATE.md`
 4. **Creation Rules**: `ai_dev_flow/REQ/REQ_CREATION_RULES.md`
 5. **Validation Rules**: `ai_dev_flow/REQ/REQ_VALIDATION_RULES.md`
-6. **REQ v3.0 Guide**: `ai_dev_flow/REQ/REQ_V3_ENHANCEMENT_GUIDE.md`
-7. **Validation Script**: `./ai_dev_flow/scripts/validate_req_template_v3.sh` ✓ Available
+6. **Validation Script**: `./ai_dev_flow/scripts/validate_req_template.sh`
 
 ## When to Use This Skill
 
@@ -374,12 +373,12 @@ Include all 6 upstream tags (@brd through @sys).
 
 ### Step 8: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_flow/REQ/REQ-000_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Update `ai_dev_flow/REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ### Step 9: Validate REQ
 
 ```bash
-./ai_dev_flow/scripts/validate_req_template_v3.sh ai_dev_flow/REQ/REQ-risk-limits-001_*.md
+./ai_dev_flow/scripts/validate_req_template.sh ai_dev_flow/REQ/REQ-risk-limits-001_*.md
 
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact REQ-risk-limits-001 --expected-layers brd,prd,ears,bdd,adr,sys --strict
 ```
@@ -396,8 +395,8 @@ Commit REQ file and traceability matrix.
 # Quality gates
 ./scripts/validate_quality_gates.sh ai_dev_flow/REQ/REQ-risk-limits-001_*.md
 
-# REQ v3.0 validation (12 sections)
-./ai_dev_flow/scripts/validate_req_template_v3.sh ai_dev_flow/REQ/REQ-risk-limits-001_*.md
+# REQ template validation (12 sections)
+./ai_dev_flow/scripts/validate_req_template.sh ai_dev_flow/REQ/REQ-risk-limits-001_*.md
 
 # Cumulative tagging
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
@@ -406,7 +405,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
   --strict
 
 # SPEC-readiness score check
-python ai_dev_flow/scripts/check_spec_readiness.py ai_dev_flow/REQ/REQ-risk-limits-001_*.md
+python ai_dev_flow/scripts/validate_req_spec_readiness.py ai_dev_flow/REQ/REQ-risk-limits-001_*.md
 ```
 
 ### Manual Checklist
@@ -453,10 +452,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/REQ/REQ-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/REQ/REQ-NNN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all REQ documents complete
-python scripts/validate_cross_document.py --layer REQ --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --layer REQ --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -506,17 +505,17 @@ The SPEC will:
 
 ## Reference Documents
 
-For supplementary documentation related to REQ artifacts:
-- **Format**: `REQ-REF-NNN_{slug}.md`
-- **Skill**: Use `doc-ref` skill
-- **Validation**: Minimal (non-blocking)
-- **Examples**: Domain glossaries, requirements pattern guides
+REQ artifacts do not support REF documents. Reference documents are limited to **BRD and ADR types only** per the SDD framework.
+
+For supplementary documentation needs, create:
+- **BRD-REF**: Business context and domain glossaries
+- **ADR-REF**: Technical reference guides and architecture summaries
 
 ## Related Resources
 
+- **Template**: `ai_dev_flow/REQ/REQ-TEMPLATE.md` (primary authority)
 - **REQ Creation Rules**: `ai_dev_flow/REQ/REQ_CREATION_RULES.md`
 - **REQ Validation Rules**: `ai_dev_flow/REQ/REQ_VALIDATION_RULES.md`
-- **REQ v3.0 Guide**: `ai_dev_flow/REQ/REQ_V3_ENHANCEMENT_GUIDE.md`
 - **REQ README**: `ai_dev_flow/REQ/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 

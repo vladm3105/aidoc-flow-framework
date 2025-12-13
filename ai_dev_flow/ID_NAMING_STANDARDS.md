@@ -197,7 +197,7 @@ Document ID Standards (ai_dev_flow)
   - Filename: `{TYPE}-REF-NNN_{slug}.md` (e.g., `BRD-REF-001_project_overview.md`)
   - Location: Within parent TYPE directory (e.g., `docs/BRD/BRD-REF-001_project_overview.md`)
   - Variable Length: NNN = 3-4 digits (001-999, 1000+)
-  - Numbering: Independent sequence per parent TYPE (BRD-REF-001, PRD-REF-001 are separate sequences)
+  - Numbering: Independent sequence per parent TYPE (BRD-REF-001, ADR-REF-001 are separate sequences)
   - Traceability: Optional (encouraged but not required)
   - Validation: Minimal (non-blocking)
   - Required Sections: Document Control, Revision History, Introduction

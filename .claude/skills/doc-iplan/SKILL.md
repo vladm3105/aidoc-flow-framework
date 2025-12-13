@@ -1,5 +1,5 @@
 ---
-title: "doc-iplan: Create Implementation Plans (Layer 12)"
+name: "doc-iplan: Create Implementation Plans (Layer 12)"
 name: doc-iplan
 description: Create Implementation Plans (IPLAN) - Layer 12 artifact converting TASKS into session-based bash command execution plans
 tags:
@@ -13,7 +13,7 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: core-workflow
-  upstream_artifacts: [TASKS]
+  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS]
   downstream_artifacts: [Code]
 ---
 
@@ -53,7 +53,7 @@ Before creating IPLAN, read:
 3. **Template**: `ai_dev_flow/IPLAN/IPLAN-TEMPLATE.md`
 4. **Creation Rules**: `ai_dev_flow/IPLAN/IPLAN_CREATION_RULES.md`
 5. **Validation Rules**: `ai_dev_flow/IPLAN/IPLAN_VALIDATION_RULES.md`
-6. **Validation Script**: `./ai_dev_flow/scripts/validate_iplan.sh`
+6. **Validation Script**: `ai_dev_flow/scripts/validate_iplan.sh`
 7. **IPLAN Conventions**: ID_NAMING_STANDARDS.md (as of 2025-11-26)
 
 ## When to Use This Skill
@@ -102,7 +102,7 @@ tags:
   - implementation-plan
   - layer-12-artifact
   - active
-title: "IPLAN-NNN: [Descriptive Task/Feature Name]"
+name: "IPLAN-NNN: [Descriptive Task/Feature Name]"
 layer: 12
 artifact_type: IPLAN
 parent_tasks: TASKS-NNN
@@ -447,7 +447,7 @@ Include all 9-11 upstream tags (@brd through @tasks).
 ### Step 13: Validate IPLAN
 
 ```bash
-./ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md
+ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md
 
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact IPLAN-001 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,ctr,spec,tasks --strict
 
@@ -465,10 +465,10 @@ Commit IPLAN file and traceability matrix.
 
 ```bash
 # Quality gates
-./scripts/validate_quality_gates.sh docs/IPLAN/IPLAN-001_*.md
+scripts/validate_quality_gates.sh docs/IPLAN/IPLAN-001_*.md
 
 # IPLAN format validation
-./ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md
+ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md
 
 # Cumulative tagging
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
@@ -514,7 +514,7 @@ bash -n docs/IPLAN/IPLAN-001_*.md
 
 ```
 LOOP:
-  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -525,10 +525,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/IPLAN/IPLAN-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/IPLAN/IPLAN-NNN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all IPLAN documents complete
-python scripts/validate_cross_document.py --layer IPLAN --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --layer IPLAN --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -581,6 +581,7 @@ For supplementary documentation related to IPLAN artifacts:
 
 ## Related Resources
 
+- **Template**: `ai_dev_flow/IPLAN/IPLAN-TEMPLATE.md` (primary authority)
 - **IPLAN Creation Rules**: `ai_dev_flow/IPLAN/IPLAN_CREATION_RULES.md`
 - **IPLAN Validation Rules**: `ai_dev_flow/IPLAN/IPLAN_VALIDATION_RULES.md`
 - **IPLAN README**: `ai_dev_flow/IPLAN/README.md`
@@ -596,6 +597,8 @@ For supplementary documentation related to IPLAN artifacts:
 **Tags Required**: @brd through @tasks (9-11 tags)
 
 **Format**: Session-based execution plan with bash commands
+
+**IPLAN-Ready Score**: ≥90% target for implementation readiness
 
 **File Naming**: `IPLAN-NNN_{slug}.md`
 

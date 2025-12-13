@@ -227,7 +227,7 @@ fi
 
 - ⚠️ **More Files**: Accepted as necessary for clarity and tooling
 - ⚠️ **Sync Effort**: Mitigated by validation scripts and pre-commit hooks
-- ⚠️ **Learning Curve**: Mitigated by templates, examples (CTR-001), training
+- ⚠️ **Learning Curve**: Mitigated by templates, examples (CTR-001), documentation
 
 ### [NORMAL_CONDITION - e.g., steady state, balanced load]
 

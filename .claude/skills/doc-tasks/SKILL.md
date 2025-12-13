@@ -1,5 +1,5 @@
 ---
-title: "doc-tasks: Create Task Breakdown (Layer 11)"
+name: "doc-tasks: Create Task Breakdown (Layer 11)"
 name: doc-tasks
 description: Create Task Breakdown (TASKS) - Layer 11 artifact decomposing SPEC into AI-structured TODO tasks
 tags:
@@ -13,7 +13,7 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: core-workflow
-  upstream_artifacts: [SPEC]
+  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC]
   downstream_artifacts: [IPLAN]
 ---
 
@@ -399,7 +399,7 @@ Include all 8-10 upstream tags (@brd through @spec).
 
 ### Step 11: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_flow/TASKS/TASKS-000_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Update `ai_dev_flow/TASKS/TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ### Step 12: Validate TASKS
 
@@ -407,8 +407,6 @@ Include all 8-10 upstream tags (@brd through @spec).
 ./ai_dev_flow/scripts/validate_tasks.sh ai_dev_flow/TASKS/TASKS-001_*.md
 
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact TASKS-001 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts,spec --strict
-
-python ai_dev_flow/scripts/validate_task_dependencies.py ai_dev_flow/TASKS/TASKS-001_*.md
 ```
 
 ### Step 13: Commit Changes
@@ -431,9 +429,6 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
   --artifact TASKS-001 \
   --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts,spec \
   --strict
-
-# Dependency validation
-python ai_dev_flow/scripts/validate_task_dependencies.py ai_dev_flow/TASKS/TASKS-001_*.md
 ```
 
 ### Manual Checklist
@@ -472,7 +467,7 @@ python ai_dev_flow/scripts/validate_task_dependencies.py ai_dev_flow/TASKS/TASKS
 
 ```
 LOOP:
-  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -483,10 +478,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/TASKS/TASKS-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/TASKS/TASKS-NNN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all TASKS documents complete
-python scripts/validate_cross_document.py --layer TASKS --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --layer TASKS --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -535,14 +530,15 @@ The IPLAN will:
 
 ## Reference Documents
 
-For supplementary documentation related to TASKS artifacts:
-- **Format**: `TASKS-REF-NNN_{slug}.md`
-- **Skill**: Use `doc-ref` skill
-- **Validation**: Minimal (non-blocking)
-- **Examples**: Task estimation guides, dependency analysis reports
+TASKS artifacts do not support REF documents. Reference documents are limited to **BRD and ADR types only** per the SDD framework.
+
+For supplementary documentation needs, create:
+- **BRD-REF**: Business context documentation
+- **ADR-REF**: Task estimation guides, dependency analysis reports
 
 ## Related Resources
 
+- **Template**: `ai_dev_flow/TASKS/TASKS-TEMPLATE.md` (primary authority)
 - **TASKS Creation Rules**: `ai_dev_flow/TASKS/TASKS_CREATION_RULES.md`
 - **TASKS Validation Rules**: `ai_dev_flow/TASKS/TASKS_VALIDATION_RULES.md`
 - **TASKS README**: `ai_dev_flow/TASKS/README.md`

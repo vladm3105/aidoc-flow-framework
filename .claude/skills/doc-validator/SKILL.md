@@ -1,11 +1,12 @@
 ---
-title: "doc-validator: Automated validation of SDD documentation standards"
+name: "doc-validator: Automated validation of SDD documentation standards"
 name: doc-validator
 description: Automated validation of documentation standards for SDD framework compliance
 tags:
   - sdd-workflow
   - shared-architecture
   - quality-assurance
+  - required-both-approaches
 custom_fields:
   layer: null
   artifact_type: null
@@ -13,7 +14,7 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: quality-assurance
-  upstream_artifacts: []
+  upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN]
   downstream_artifacts: []
 ---
 
@@ -59,18 +60,19 @@ Enforce documentation quality standards across all SDD artifacts to ensure consi
 - Validates bidirectional traceability
 
 ### 4. ID Format Compliance
-- REQ-{CATEGORY}-{NUMBER} (e.g., REQ-AUTH-001)
-- BDD-{FEATURE}-{NUMBER} (e.g., BDD-LOGIN-001)
-- ADR-{NUMBER} (e.g., ADR-001)
-- IMPL-{PHASE}-{NUMBER} (e.g., IMPL-P1-001)
-- CTR-{SERVICE}-{VERSION} (e.g., CTR-USER-V1)
-- SPEC-{COMPONENT}-{VERSION} (e.g., SPEC-API-V1)
-- TASK-{COMPONENT}-{NUMBER} (e.g., TASK-AUTH-001)
+- REQ-NNN or REQ-NNN-YY (e.g., REQ-001, REQ-001-01)
+- BDD-NNN or BDD-NNN-YY (e.g., BDD-001, BDD-001-01)
+- ADR-NNN or ADR-NNN-YY (e.g., ADR-001, ADR-001-01)
+- IMPL-NNN or IMPL-NNN-YY (e.g., IMPL-001, IMPL-001-01)
+- CTR-NNN or CTR-NNN-YY (e.g., CTR-001, CTR-001-01)
+- SPEC-NNN or SPEC-NNN-YY (e.g., SPEC-001, SPEC-001-01)
+- TASKS-NNN or TASKS-NNN-YY (e.g., TASKS-001, TASKS-001-01)
+- IPLAN-NNN (e.g., IPLAN-001)
 
 ### 5. Traceability Matrix Validation
 - Ensures all requirements have source references
-- Validates forward traceability (REQ → BDD → TASK)
-- Validates backward traceability (TASK → BDD → REQ)
+- Validates forward traceability (REQ → BDD → TASKS)
+- Validates backward traceability (TASKS → BDD → REQ)
 - Identifies orphaned requirements or tasks
 
 ### 6. Template Compliance
@@ -96,8 +98,8 @@ Enforce documentation quality standards across all SDD artifacts to ensure consi
 ```mermaid
 graph TD
     A[Input: Documentation File] --> B{Token Count Check}
-    B -->|> 10,000| C[Flag: Split Required]
-    B -->|≤ 10,000| D{Language Standards}
+    B -->|> 100,000| C[Flag: Split Required]
+    B -->|≤ 100,000| D{Language Standards}
     D -->|Violations| E[Flag: Language Issues]
     D -->|Pass| F{ID Format Check}
     F -->|Invalid| G[Flag: ID Format Errors]
@@ -151,18 +153,18 @@ When doc-flow generates or updates documentation:
 ```
 === Documentation Validation Report ===
 
-File: reqs/requirements.md
+File: docs/REQ/REQ-001_requirements.md
 Status: FAILED
 
 Errors (3):
-- [Token Count] 12,450 tokens exceeds 10,000 limit
+- [Token Count] 120,000 tokens exceeds 100,000 limit (Claude Code maximum)
   → Suggestion: Split at section "Data Architecture Requirements"
 
-- [Cross-Reference] Broken link [REQ-AUTH-015] at line 234
+- [Cross-Reference] Broken link [REQ-015] at line 234
   → Target not found in any REQ documents
 
 - [ID Format] Invalid ID "REQ-USER-LOGIN-1" at line 156
-  → Expected format: REQ-{CATEGORY}-{NUMBER} (e.g., REQ-USER-001)
+  → Expected format: REQ-NNN or REQ-NNN-YY (e.g., REQ-001, REQ-001-01)
 
 Warnings (1):
 - [Language] Subjective qualifier "easy to use" at line 89
@@ -274,7 +276,7 @@ Required tools for validation:
 Each artifact type has a YAML schema file (`{TYPE}_SCHEMA.yaml`) that defines validation rules. These schemas are the authoritative source for:
 - **Metadata Requirements**: YAML frontmatter fields, allowed values
 - **Document Structure**: Required/optional sections, numbering patterns
-- **Artifact-Specific Patterns**: Type-specific formats (Gherkin, sequential NNN, TASK-NNN, etc.)
+- **Artifact-Specific Patterns**: Type-specific formats (Gherkin, sequential NNN, TASKS-NNN, etc.)
 - **Validation Rules**: Error/warning severities with fix instructions
 - **Traceability Requirements**: Cumulative tagging hierarchy per layer
 - **Error Messages**: Standardized codes (E001-E0XX, W001-W0XX, I001-I0XX)
@@ -293,7 +295,7 @@ Each artifact type has a YAML schema file (`{TYPE}_SCHEMA.yaml`) that defines va
 | 8 | IMPL | `ai_dev_flow/IMPL/IMPL_SCHEMA.yaml` | Phase organization, deliverables |
 | 9 | CTR | `ai_dev_flow/CTR/CTR_SCHEMA.yaml` | Dual-file, OpenAPI/AsyncAPI |
 | 10 | SPEC | `ai_dev_flow/SPEC/SPEC_SCHEMA.yaml` | YAML structure, code gen ready |
-| 11 | TASKS | `ai_dev_flow/TASKS/TASKS_SCHEMA.yaml` | TASK-NNN, implementation contracts |
+| 11 | TASKS | `ai_dev_flow/TASKS/TASKS_SCHEMA.yaml` | TASKS-NNN, implementation contracts |
 | 12 | IPLAN | `ai_dev_flow/IPLAN/IPLAN_SCHEMA.yaml` | Session format, bash commands |
 
 ### Schema Validation Usage
@@ -441,7 +443,7 @@ Track and report:
 ### Validate Requirements Document
 
 ```markdown
-Input: reqs/ml_model_requirements.md
+Input: docs/REQ/REQ-001_ml_model_requirements.md
 
 Validation Results:
 ✓ Token count: 8,234 tokens (within limit)
@@ -449,9 +451,9 @@ Validation Results:
 ✓ ID format: All 146 requirements properly formatted
 ✓ Cross-references: All links valid
 ✗ Traceability: 3 requirements missing BDD references
-  - REQ-MRC-015: No forward link to BDD scenarios
-  - REQ-SA-008: No forward link to BDD scenarios
-  - REQ-ENSEMBLE-004: No forward link to BDD scenarios
+  - REQ-015: No forward link to BDD scenarios
+  - REQ-008: No forward link to BDD scenarios
+  - REQ-004: No forward link to BDD scenarios
 ✓ Template compliance: Proper structure
 ✓ No duplicates detected
 
@@ -462,16 +464,16 @@ Priority: MEDIUM
 ### Validate BDD Scenarios
 
 ```markdown
-Input: BDD/authentication_scenarios.md
+Input: docs/BDD/BDD-001_authentication_scenarios.feature
 
 Validation Results:
 ✓ Token count: 3,456 tokens (within limit)
 ✓ Language standards: Compliant
 ✗ ID format: 2 scenarios with incorrect format
-  - Line 45: "BDD-LOGIN-1" should be "BDD-LOGIN-001"
-  - Line 89: "BDD-LOGOUT" should be "BDD-LOGOUT-001"
+  - Line 45: "BDD-LOGIN-1" should be "BDD-001"
+  - Line 89: "BDD-LOGOUT" should be "BDD-002"
 ✓ Cross-references: All requirement links valid
-✗ Traceability: 5 scenarios not linked to TASK documents
+✗ Traceability: 5 scenarios not linked to TASKS documents
 ✓ Template compliance: Proper Given-When-Then structure
 ✓ No duplicates detected
 

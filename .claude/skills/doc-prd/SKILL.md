@@ -1,5 +1,5 @@
 ---
-title: "doc-prd: Create Product Requirements Documents (Layer 2)"
+name: "doc-prd: Create Product Requirements Documents (Layer 2)"
 name: doc-prd
 description: Create Product Requirements Documents (PRD) following SDD methodology - Layer 2 artifact defining product features and user needs
 tags:
@@ -14,7 +14,7 @@ custom_fields:
   development_status: active
   skill_category: core-workflow
   upstream_artifacts: [BRD]
-  downstream_artifacts: [EARS,BDD]
+  downstream_artifacts: [EARS,BDD,ADR]
 ---
 
 # doc-prd
@@ -65,27 +65,42 @@ Use `doc-prd` when:
 
 ## PRD-Specific Guidance
 
-### 1. Required Sections
+### 1. Required Sections (20 Total)
 
-**Document Control** (MANDATORY - First section before all numbered sections):
+PRD documents require exactly **20 numbered sections** (1-20). See `ai_dev_flow/PRD/PRD-TEMPLATE.md` for complete structure.
+
+**Section 1. Document Control** (MANDATORY - First section):
 - Project Name
 - Document Version
 - Date (YYYY-MM-DD)
 - Document Owner
 - Prepared By
 - Status (Draft, In Review, Approved, Superseded)
+- **SYS-Ready Score**: ≥90% required (format: `✅ NN% (Target: ≥90%)`)
+- **EARS-Ready Score**: ≥90% required (format: `✅ NN% (Target: ≥90%)`)
 - Document Revision History table
 
-**Core Sections**:
-1. **Problem Statement**: What problem are we solving?
-2. **Goals**: What do we want to achieve?
-3. **Non-Goals**: What are we explicitly NOT doing?
-4. **User Needs**: Who are the users and what do they need?
-5. **Product Features**: Specific features and capabilities
-6. **KPIs**: Measurable success criteria (quantitative metrics)
-7. **Architecture Decision Requirements**: Topics needing ADRs (NOT specific ADR numbers)
-8. **Technology Stack Reference**: Reference Platform BRD sections 3.6/3.7
-9. **Traceability**: Section 7 format from SHARED_CONTENT.md
+**All 20 Sections**:
+1. **Document Control**: Metadata, version, scores, revision history
+2. **Executive Summary**: 3-5 sentence overview
+3. **Problem Statement**: What problem are we solving?
+4. **Goals**: What do we want to achieve? (Prioritized: P0, P1, P2)
+5. **Non-Goals**: What are we explicitly NOT doing?
+6. **Target Audience and User Personas**: Who are the users?
+7. **User Stories and Use Cases**: User narratives (As a... I want... So that...)
+8. **Product Features and Capabilities**: Specific features and functionality
+9. **Quality Attributes and Non-Functional Requirements**: Performance, reliability, scalability
+10. **Customer-Facing Content**: User-visible text, messaging, UI copy
+11. **Data Requirements**: Data models, storage, retention policies
+12. **Integration Requirements**: External systems, APIs, dependencies
+13. **Security Requirements**: Authentication, authorization, compliance
+14. **Analytics and Success Metrics (KPIs)**: Measurable success criteria
+15. **Architecture Decision Requirements**: Topics needing ADRs (NOT specific ADR numbers)
+16. **Technology Stack Reference**: Reference Platform BRD sections 3.6/3.7
+17. **Risk Assessment**: Technical and business risks with mitigation
+18. **Acceptance Criteria**: Business-verifiable outcomes
+19. **Traceability**: Cumulative tags and upstream/downstream links
+20. **EARS Enhancement Appendix**: Structured requirements for EARS transformation
 
 ### 2. Technology Stack Reference
 
@@ -156,6 +171,40 @@ Based on the product features defined above, the following architectural topics 
 - Reduce manual processing time by 60%
 - Decrease error rate from 5% to <1%
 ```
+
+### 6. EARS Enhancement Appendix (Section 20)
+
+**Purpose**: Section 20 provides structured requirements ready for EARS transformation in Layer 3.
+
+**Why Required**: The appendix bridges PRD (business language) to EARS (formal requirements), ensuring smooth workflow progression.
+
+**Structure**:
+```markdown
+## 20. EARS Enhancement Appendix
+
+### 20.1 EARS-Ready Requirements Summary
+
+| PRD Section | Requirement Category | EARS Pattern | Count |
+|-------------|---------------------|--------------|-------|
+| 8. Features | Functional | WHEN-THE-SHALL | 15 |
+| 9. Quality Attributes | Non-Functional | THE-SHALL-WITHIN | 8 |
+| 12. Integration | Interface | WHEN-THE-SHALL | 5 |
+
+### 20.2 Pre-Structured Requirements
+
+#### Category: [Feature Name]
+**Source**: Section 8.1
+**EARS Pattern**: WHEN-THE-SHALL
+**Pre-formatted**:
+- WHEN [trigger condition] THE [system] SHALL [action]
+- WHEN [condition] THE [component] SHALL [response] WITHIN [time constraint]
+```
+
+**Key Points**:
+- Groups PRD requirements by EARS pattern type
+- Provides count of requirements per category
+- Pre-formats requirements using EARS syntax
+- Enables direct extraction for EARS document creation
 
 ## Tag Format Convention (By Design)
 
@@ -276,11 +325,11 @@ Include @brd tags (Layer 1) in Traceability section.
 
 Run validation scripts:
 ```bash
-# PRD validation (under development - use template for manual validation)
-# ./ai_dev_flow/scripts/validate_prd_template.sh docs/PRD/PRD-001_*.md
+# PRD validation (manual validation using template - automated script planned)
+# Use PRD-TEMPLATE.md and PRD_VALIDATION_RULES.md for manual validation checklist
 
 # Link integrity
-./ai_dev_flow/scripts/validate_links.py --path docs/PRD/
+python ai_dev_flow/scripts/validate_links.py --path docs/PRD/
 
 # Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact PRD-001 --expected-layers brd --strict
@@ -296,7 +345,7 @@ Commit PRD file and traceability matrix together.
 
 **Quality Gates Validation**:
 ```bash
-./scripts/validate_quality_gates.sh docs/PRD/PRD-001_integration.md
+./scripts/validate_quality_gates.sh docs/PRD/PRD-NNN_slug.md
 ```
 
 **Tag Validation**:
@@ -310,19 +359,35 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ### Manual Checklist
 
-- [ ] Document Control section at top (before all numbered sections)
-- [ ] All required metadata fields completed
+**Structure (20 Sections)**:
+- [ ] All 20 numbered sections present (1-20)
+- [ ] Document Control (Section 1) at top with all required fields
+- [ ] EARS Enhancement Appendix (Section 20) completed
+
+**Document Control Required Fields**:
+- [ ] Project Name, Version, Date, Owner, Prepared By, Status
+- [ ] SYS-Ready Score ≥90% (format: `✅ NN% (Target: ≥90%)`)
+- [ ] EARS-Ready Score ≥90% (format: `✅ NN% (Target: ≥90%)`)
 - [ ] Document Revision History table initialized
+
+**Content Quality**:
 - [ ] Parent BRD identified and referenced
 - [ ] Problem-Goals-Non-Goals framework completed
-- [ ] User needs clearly defined
-- [ ] Product features specified
-- [ ] KPIs quantified (measurable metrics)
-- [ ] Architecture Decision Requirements listed (no ADR numbers)
+- [ ] User personas and user stories defined
+- [ ] Product features specified with priority levels
+- [ ] Quality attributes quantified (performance, reliability)
+- [ ] KPIs quantified (measurable metrics with targets)
+- [ ] Security requirements documented
+- [ ] Risk assessment with mitigation strategies
+- [ ] Architecture Decision Requirements listed (NO ADR numbers)
 - [ ] Technology Stack reference (Platform BRD sections 3.6/3.7)
+
+**Traceability**:
 - [ ] Cumulative tags: @brd included
 - [ ] Traceability matrix created/updated
 - [ ] No broken links
+
+**Size Limits**:
 - [ ] File size <50,000 tokens (standard) or <100,000 tokens (maximum)
 
 ## Common Pitfalls
@@ -341,7 +406,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ```
 LOOP:
-  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -352,10 +417,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/PRD/PRD-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/PRD/PRD-NNN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all PRD documents complete
-python scripts/validate_cross_document.py --layer PRD --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -429,7 +494,14 @@ custom_fields:
 
 **Post-Creation Validation**:
 ```bash
-python scripts/validate_prd.py docs/PRD/PRD-NNN*.md
+# Automated PRD validation script (planned - not yet available)
+# Use manual validation with PRD_VALIDATION_RULES.md checklist for now
+
+# Link validation
+python ai_dev_flow/scripts/validate_links.py --path docs/PRD/
+
+# Cumulative tag validation
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact PRD-NNN --expected-layers brd --strict
 ```
 
 **Schema Reference**: `ai_dev_flow/PRD/PRD_SCHEMA.yaml`

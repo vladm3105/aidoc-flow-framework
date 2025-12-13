@@ -1,5 +1,5 @@
 ---
-title: "doc-sys: Create System Requirements (Layer 6)"
+name: "doc-sys: Create System Requirements (Layer 6)"
 name: doc-sys
 description: Create System Requirements (SYS) - Layer 6 artifact defining functional requirements and quality attributes
 tags:
@@ -13,7 +13,7 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: core-workflow
-  upstream_artifacts: [ADR,BDD]
+  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR]
   downstream_artifacts: [REQ]
 ---
 
@@ -146,7 +146,7 @@ sequenceDiagram
 ```
 ```
 
-### 5. Technical Constraints
+### 4. Technical Constraints
 
 **From ADR decisions**:
 
@@ -284,14 +284,16 @@ Include all 5 upstream tags (@brd, @prd, @ears, @bdd, @adr).
 
 ### Step 9: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_flow/SYS/SYS-000_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Update traceability matrix (template: `ai_dev_flow/SYS/SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
 
 ### Step 10: Validate SYS
 
 ```bash
-./ai_dev_flow/scripts/validate_sys_template.sh ai_dev_flow/SYS/SYS-001_*.md
-
+# Validate cumulative tagging (script available)
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact SYS-001 --expected-layers brd,prd,ears,bdd,adr --strict
+
+# Note: SYS-specific template validation script is planned but not yet available.
+# Use manual checklist below and cross-document validation instead.
 ```
 
 ### Step 11: Commit Changes
@@ -303,14 +305,17 @@ Commit SYS file and traceability matrix.
 ### Automated Validation
 
 ```bash
-# Quality gates
-./scripts/validate_quality_gates.sh ai_dev_flow/SYS/SYS-001_order.md
+# Quality gates (from repository root)
+./scripts/validate_quality_gates.sh docs/SYS/SYS-001_order.md
 
-# Cumulative tagging
+# Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
   --artifact SYS-001 \
   --expected-layers brd,prd,ears,bdd,adr \
   --strict
+
+# Cross-document validation with auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/SYS/SYS-001_order.md --auto-fix
 ```
 
 ### Manual Checklist
@@ -341,7 +346,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ```
 LOOP:
-  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -352,10 +357,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/SYS/SYS-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/SYS/SYS-NNN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all SYS documents complete
-python scripts/validate_cross_document.py --layer SYS --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --layer SYS --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -404,14 +409,15 @@ The REQ will:
 
 ## Reference Documents
 
-For supplementary documentation related to SYS artifacts:
-- **Format**: `SYS-REF-NNN_{slug}.md`
-- **Skill**: Use `doc-ref` skill
-- **Validation**: Minimal (non-blocking)
-- **Examples**: System architecture guides, QA attribute catalogs
+SYS artifacts do not support REF documents. Reference documents are limited to **BRD and ADR types only** per the SDD framework.
+
+For supplementary documentation needs, create:
+- **BRD-REF**: Business context documentation
+- **ADR-REF**: System architecture guides, QA attribute catalogs
 
 ## Related Resources
 
+- **Template**: `ai_dev_flow/SYS/SYS-TEMPLATE.md` (primary authority)
 - **SYS Creation Rules**: `ai_dev_flow/SYS/SYS_CREATION_RULES.md`
 - **SYS Validation Rules**: `ai_dev_flow/SYS/SYS_VALIDATION_RULES.md`
 - **SYS README**: `ai_dev_flow/SYS/README.md`

@@ -41,7 +41,7 @@ PRDs are the **starting point** of specification-driven development within the c
 
 ✅ **DO** include "Architecture Decision Requirements" section describing what decisions are needed
 
-**Correct Workflow Order**: BRD → PRD → SYS → EARS → REQ → **ADR** → BDD → IMPL → CTR → SPEC → TASKS
+**Correct Workflow Order**: BRD → PRD → EARS → BDD → **ADR** → SYS → REQ → IMPL → CTR → SPEC → TASKS
 
 **Rationale**:
 - BRD/PRD identify **WHAT** architectural decisions are needed

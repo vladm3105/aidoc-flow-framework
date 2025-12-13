@@ -211,7 +211,7 @@
 | Frontend Engineer | [FE_ENGINEER] | Login UI, MFA flows | 75% |
 | Designer | [DESIGNER] | UX design for auth flows | 25% |
 | Technical Writer | [TW] | Documentation | 25% |
-| Support Lead | [SUPPORT] | Runbook, training | 15% |
+| Support Lead | [SUPPORT] | Runbook, documentation | 15% |
 
 **Total Team Capacity**: [TOTAL_PERSON_WEEKS - e.g., 28 person-weeks]
 
@@ -367,7 +367,7 @@ gantt
 | Services | Twilio SMS | [VOLUME] msgs | $[RATE] | $[TOTAL] |
 | Services | OAuth provider fees | - | - | $[TOTAL] |
 | security | Penetration testing | 1 | $[COST] | $[TOTAL] |
-| Training | Team training on OAuth/OIDC | 1 | $[COST] | $[TOTAL] |
+| Documentation | Team onboarding documentation for OAuth/OIDC | 1 | $[COST] | $[TOTAL] |
 | **Total** | | | | **$[GRAND_TOTAL]** |
 
 **Budget Holder**: [BUDGET_OWNER]
@@ -385,7 +385,7 @@ gantt
 | QA Team | Twice/week | Sync meeting | QA Engineer |
 | Product Team | Weekly | Demo | PM |
 | End Users | Launch week | Email, in-app notification | Marketing |
-| Support Team | Before launch | Training session, runbook | Support Lead |
+| Support Team | Before launch | Documentation review, runbook | Support Lead |
 
 ### Status Reporting
 - **Weekly Status Report**: [TEMPLATE - e.g., Accomplishments, Blockers, Next Steps]

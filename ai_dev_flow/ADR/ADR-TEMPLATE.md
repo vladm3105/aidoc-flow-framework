@@ -327,7 +327,7 @@ flowchart TD
 - **Runbook Updates**: [Operational procedure changes]
 - **Monitoring Setup**: [New dashboards, alerts, metrics]
 - **Support Documentation**: [Knowledge base, troubleshooting guides]
-- **Training Requirements**: [Team enablement for new architecture]
+- **Documentation Requirements**: [Team onboarding documentation for new architecture]
 
 ## 11. Verification
 

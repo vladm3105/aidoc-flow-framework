@@ -52,6 +52,12 @@ validate_quality_gates() {
         docs/TASKS/*.md)
             validate_iplan_ready "$file"
             ;;
+        docs/IMPL/*.md)
+            validate_ctr_ready "$file"
+            ;;
+        docs/IPLAN/*.md)
+            echo "ℹ️ IPLAN is terminal layer - no downstream validation"
+            ;;
         docs/CTR/*.md)
             validate_ctr_files "$file"
             ;;
@@ -102,6 +108,14 @@ validate_tasks_ready() {
 
 validate_iplan_ready() {
     validate_ready_score "$1" "IPLAN-Ready Score" 90
+}
+
+validate_ctr_ready() {
+    validate_ready_score "$1" "CTR-Ready Score" 90
+}
+
+validate_code_ready() {
+    validate_ready_score "$1" "Code-Ready Score" 90
 }
 
 validate_ctr_files() {
@@ -183,10 +197,10 @@ validate_cumulative_tags() {
         docs/SYS/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr") ;;
         docs/REQ/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys") ;;
         docs/IMPL/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req") ;;
-        docs/CTR/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req") ;;
-        docs/SPEC/*.yaml) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req") ;;
-        docs/TASKS/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "spec") ;;
-        docs/IPLAN/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "spec" "tasks") ;;
+        docs/CTR/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "impl") ;;
+        docs/SPEC/*.yaml) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "impl" "ctr") ;;
+        docs/TASKS/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "impl" "ctr" "spec") ;;
+        docs/IPLAN/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "impl" "ctr" "spec" "tasks") ;;
     esac
 
     validate_tags_presence "$file" "${required_tags[@]}"
@@ -224,8 +238,11 @@ show_usage() {
     echo "  docs/ADR/*.md        → REQ-ready score ≥90%"
     echo "  docs/SYS/*.md        → SPEC-ready score ≥90%"
     echo "  docs/REQ/*.md        → IMPL-ready score ≥90%"
+    echo "  docs/IMPL/*.md       → CTR-ready score ≥90%"
+    echo "  docs/CTR/*.md        → Dual-file validation (md+yaml)"
     echo "  docs/SPEC/*.yaml     → TASKS-ready score ≥90%"
     echo "  docs/TASKS/*.md      → IPLAN-ready score ≥90%"
+    echo "  docs/IPLAN/*.md      → Terminal layer (no downstream)"
     echo ""
     echo "Also validates cumulative tagging alignment with TRACEABILITY.md"
     echo ""

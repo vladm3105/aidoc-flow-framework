@@ -1,5 +1,5 @@
 ---
-title: "doc-spec: Create Technical Specifications (Layer 10)"
+name: "doc-spec: Create Technical Specifications (Layer 10)"
 name: doc-spec
 description: Create Technical Specifications (SPEC) - Layer 10 artifact using YAML format for implementation-ready specifications
 tags:
@@ -13,8 +13,8 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: core-workflow
-  upstream_artifacts: [REQ,IMPL,CTR]
-  downstream_artifacts: [TASKS]
+  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR]
+  downstream_artifacts: [TASKS, IPLAN, Code]
 ---
 
 # doc-spec
@@ -394,15 +394,17 @@ Focus on REQ (Layer 7) and optionally CTR (Layer 9).
 
 ### Step 2: Reserve ID Number
 
-Check `ai_dev_flow/SPEC/` for next available ID number.
+Check `docs/SPEC/` for next available ID number (or create `docs/SPEC/` directory if first SPEC).
 
 ### Step 3: Create SPEC File
 
-**File naming**: `ai_dev_flow/SPEC/SPEC-NNN_{slug}.yaml`
+**File naming**: `docs/SPEC/SPEC-NNN_{slug}.yaml`
 
-**Example**: `ai_dev_flow/SPEC/SPEC-001_trade_validation.yaml`
+**Example**: `docs/SPEC/SPEC-001_trade_validation.yaml`
 
 **IMPORTANT**: Pure YAML format (NOT markdown)
+
+**Note**: Templates and examples are in `ai_dev_flow/SPEC/` while project-specific SPECs go in `docs/SPEC/`.
 
 ### Step 4: Fill Metadata Section
 
@@ -454,22 +456,22 @@ Upstream sources and downstream artifacts.
 
 ### Step 16: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_flow/SPEC/SPEC-000_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Create or update `docs/SPEC/SPEC-000_TRACEABILITY_MATRIX.md` (use template from `ai_dev_flow/SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
 
 ### Step 17: Validate SPEC
 
 ```bash
 # YAML validation
-yamllint ai_dev_flow/SPEC/SPEC-001_*.yaml
+yamllint docs/SPEC/SPEC-001_*.yaml
 
-# Schema validation
-python ai_dev_flow/scripts/validate_spec_schema.py ai_dev_flow/SPEC/SPEC-001_*.yaml
+# Schema validation (use SPEC_SCHEMA.yaml as reference)
+# Manual: Compare against ai_dev_flow/SPEC/SPEC_SCHEMA.yaml structure
 
-# Cumulative tagging
+# Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact SPEC-001 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts --strict
 
-# Implementation readiness check
-python ai_dev_flow/scripts/check_implementation_readiness.py ai_dev_flow/SPEC/SPEC-001_*.yaml
+# Cross-document validation
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-001_*.yaml
 ```
 
 ### Step 18: Commit Changes
@@ -482,19 +484,19 @@ Commit SPEC file and traceability matrix.
 
 ```bash
 # YAML validation
-yamllint ai_dev_flow/SPEC/SPEC-001_*.yaml
+yamllint docs/SPEC/SPEC-001_*.yaml
 
-# Schema validation
-python ai_dev_flow/scripts/validate_spec_schema.py ai_dev_flow/SPEC/SPEC-001_*.yaml
+# Schema validation (use SPEC_SCHEMA.yaml as reference)
+# Manual: Compare against ai_dev_flow/SPEC/SPEC_SCHEMA.yaml structure
 
-# Cumulative tagging
+# Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
   --artifact SPEC-001 \
   --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts \
   --strict
 
-# Implementation readiness
-python ai_dev_flow/scripts/check_implementation_readiness.py ai_dev_flow/SPEC/SPEC-001_*.yaml
+# Cross-document validation
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-001_*.yaml
 ```
 
 ### Manual Checklist
@@ -532,7 +534,7 @@ python ai_dev_flow/scripts/check_implementation_readiness.py ai_dev_flow/SPEC/SP
 
 ```
 LOOP:
-  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -543,10 +545,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/SPEC/SPEC-NNN_slug.yaml --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-NNN_slug.yaml --auto-fix
 
 # Layer validation (Phase 2) - run when all SPEC documents complete
-python scripts/validate_cross_document.py --layer SPEC --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --layer SPEC --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -595,14 +597,16 @@ The TASKS will:
 
 ## Reference Documents
 
-For supplementary documentation related to SPEC artifacts:
-- **Format**: `SPEC-REF-NNN_{slug}.md`
-- **Skill**: Use `doc-ref` skill
-- **Validation**: Minimal (non-blocking)
-- **Examples**: API quick references, implementation guides
+SPEC artifacts do not support REF documents. Reference documents are limited to **BRD and ADR types only** per the SDD framework.
+
+For supplementary documentation needs, create:
+- **BRD-REF**: Business context documentation
+- **ADR-REF**: Technical reference guides (API quick references, implementation guides)
 
 ## Related Resources
 
+- **Template (YAML)**: `ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml` (primary authority for YAML format)
+- **Template (Markdown)**: `ai_dev_flow/SPEC/SPEC-TEMPLATE.md` (primary authority for Markdown format)
 - **SPEC Creation Rules**: `ai_dev_flow/SPEC/SPEC_CREATION_RULES.md`
 - **SPEC Validation Rules**: `ai_dev_flow/SPEC/SPEC_VALIDATION_RULES.md`
 - **SPEC README**: `ai_dev_flow/SPEC/README.md`

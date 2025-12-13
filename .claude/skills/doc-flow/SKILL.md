@@ -1,11 +1,13 @@
 ---
-title: "doc-flow: SDD workflow orchestrator (Layer 0)"
+name: "doc-flow: SDD Workflow Orchestrator (Layer 0)"
 name: doc-flow
 description: AI-Driven Specification-Driven Development (SDD) workflow orchestrator - guides skill selection and general SDD methodology
 tags:
   - sdd-workflow
   - layer-0-artifact
   - shared-architecture
+  - required-both-approaches
+  - ai-assistant
 custom_fields:
   layer: 0
   artifact_type: META
@@ -30,7 +32,7 @@ This skill serves as the **orchestrator** for the AI-Driven Specification-Driven
 
 **For Artifact Creation**: Use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-iplan, doc-ref).
 
-**Authoritative Reference**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+**Authoritative Reference**: [ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
 ---
 
@@ -64,6 +66,7 @@ Answer these questions to find the right skill:
 - **Have TASKS, need implementation contracts** → Add Section 8 to TASKS (see `doc-tasks` skill)
 - **Have TASKS, need execution plan** → Use `doc-iplan` skill
 - **Have IPLAN, ready to code** → Implement code per IPLAN
+- **Need supplementary documentation (overview, glossary, guides)** → Use `doc-ref` skill
 
 **Q2: What are you trying to do?**
 
@@ -87,7 +90,7 @@ Answer these questions to find the right skill:
 
 ## Complete SDD Workflow (16 Layers)
 
-**Authoritative Reference**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+**Authoritative Reference**: [ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
 ### Workflow Sequence
 
@@ -129,7 +132,7 @@ Validation (Layer 15)
 
 | Layer | Artifact | Purpose | Skill |
 |-------|----------|---------|-------|
-| 0 | **Strategy** | Business owner documents | External ({project_root}/strategy/) |
+| 0 | **Strategy** | Business owner documents | External (strategy/) |
 | 1 | **BRD** | Business requirements | `doc-brd` |
 | 2 | **PRD** | Product requirements | `doc-prd` |
 | 3 | **EARS** | Formal requirements (WHEN-THE-SHALL) | `doc-ears` |
@@ -152,12 +155,12 @@ Validation (Layer 15)
 **When to Create IMPL (Layer 8)**:
 - **Create IMPL When**: Duration ≥2 weeks, teams ≥3, components ≥5, critical budget/timeline, external dependencies
 - **Skip IMPL When**: Single component, duration <2 weeks, single developer, low risk
-- **Reference**: `ai_dev_flow/WHEN_TO_CREATE_IMPL.md`
+- **Reference**: [ai_dev_flow/WHEN_TO_CREATE_IMPL.md](../../../ai_dev_flow/WHEN_TO_CREATE_IMPL.md)
 
 **When to Create CTR (Layer 9)**:
 - **Create CTR When**: Public APIs, event schemas, data models, version compatibility requirements, interface between components
 - **Skip CTR When**: Internal logic only, no external interface, no serialization
-- **Reference**: `ai_dev_flow/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr-after-impl`
+- **Reference**: [ai_dev_flow/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr-after-impl](../../../ai_dev_flow/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr-after-impl)
 
 ---
 
@@ -182,7 +185,7 @@ Validation (Layer 15)
 **Changes flow DOWN (never UP)**:
 
 ```
-📁 {project_root}/strategy/ (WHAT - Product Owner Voice)
+strategy/ (WHAT - Product Owner Voice)
     ├── Strategy business logic
     └── Performance targets
               ↓
@@ -204,13 +207,13 @@ Validation (Layer 15)
 - Strategy → Documentation → Code (one-way flow)
 - Code cannot change strategy
 - Always use templates from `ai_dev_flow/` when creating docs in `docs/`
-- All business logic must reference `{project_root}/strategy/` sections
+- All business logic must reference `strategy/` sections
 
 ### 3. Directory Structure and Roles
 
 **Critical Context**: This project has three key directories with distinct roles:
 
-#### 📁 `{project_root}/strategy/` - WHAT (Product Owner Voice)
+#### `strategy/` - WHAT (Product Owner Voice)
 **Primary Authority**: Authoritative business strategy and domain logic
 
 - `core_algorithm.md` - Primary algorithm specifications
@@ -261,9 +264,9 @@ Validation (Layer 15)
 - ❌ Do not use archived documents even if they appear in search results
 
 **Active Documentation Only:**
-- ✅ `{project_root}/strategy/` (current strategy - excludes archived subdirs)
-- ✅ `docs/` (active project documentation)
-- ✅ `ai_dev_flow/` (authoritative templates and standards)
+- `strategy/` (current strategy - excludes archived subdirs)
+- `docs/` (active project documentation)
+- `ai_dev_flow/` (authoritative templates and standards)
 
 **If archived content is needed:**
 - Stop immediately
@@ -315,7 +318,7 @@ If a required upstream artifact is missing, the downstream functionality **MUST 
 3. **Advise** - Recommend creating upstream artifacts first through proper channels
 4. **Skip** - Move on to functionality that has complete upstream chain
 
-**Reference**: `ai_dev_flow/TRACEABILITY.md` - Section "Step 3: Decision Rules"
+**Reference**: [ai_dev_flow/TRACEABILITY.md](../../../ai_dev_flow/TRACEABILITY.md) - Section "Step 3: Decision Rules"
 
 ---
 
@@ -491,16 +494,16 @@ LOOP:
 
 ### Core Standards (ai_dev_flow/)
 
-**⭐ Primary References - Authoritative Development Standard:**
+**Primary References - Authoritative Development Standard:**
 
-- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 13-step workflow
-- **Workflow Diagram**: [index.md]({project_root}/ai_dev_flow/index.md#traceability-flow) - Complete Mermaid diagram
-- **ID Standards**: [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md) - File naming, ID format rules
-- **Traceability**: [TRACEABILITY.md]({project_root}/ai_dev_flow/TRACEABILITY.md) - Cross-reference format, link standards
-- **Quality Gates**: [TRACEABILITY_VALIDATION.md]({project_root}/ai_dev_flow/TRACEABILITY_VALIDATION.md) - Automated quality gates system
-- **Platform BRD Guide**: [PLATFORM_VS_FEATURE_BRD.md]({project_root}/ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md) - Platform vs Feature BRD decision guide
-- **When to Create IMPL**: [WHEN_TO_CREATE_IMPL.md]({project_root}/ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC decision guide
-- **README**: [README.md]({project_root}/ai_dev_flow/README.md) - Getting started guide
+- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 13-step workflow
+- **Workflow Diagram**: [index.md](../../../ai_dev_flow/index.md#traceability-flow) - Complete Mermaid diagram
+- **ID Standards**: [ID_NAMING_STANDARDS.md](../../../ai_dev_flow/ID_NAMING_STANDARDS.md) - File naming, ID format rules
+- **Traceability**: [TRACEABILITY.md](../../../ai_dev_flow/TRACEABILITY.md) - Cross-reference format, link standards
+- **Quality Gates**: [TRACEABILITY_VALIDATION.md](../../../ai_dev_flow/TRACEABILITY_VALIDATION.md) - Automated quality gates system
+- **Platform BRD Guide**: [PLATFORM_VS_FEATURE_BRD.md](../../../ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md) - Platform vs Feature BRD decision guide
+- **When to Create IMPL**: [WHEN_TO_CREATE_IMPL.md](../../../ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC decision guide
+- **README**: [README.md](../../../ai_dev_flow/README.md) - Getting started guide
 
 ### Templates Location
 
@@ -515,10 +518,11 @@ LOOP:
 - **REQ** (`REQ/`): `REQ-TEMPLATE.md` (v3.0 with 12 sections)
 - **IMPL** (`IMPL/`): `IMPL-TEMPLATE.md`
 - **CTR** (`CTR/`): `CTR-TEMPLATE.md` + `CTR-TEMPLATE.yaml` (dual-file)
-- **SPEC** (`SPEC/`): `SPEC-TEMPLATE.yaml`
+- **SPEC** (`SPEC/`): `SPEC-TEMPLATE.yaml` + `SPEC-TEMPLATE.md`
 - **TASKS** (`TASKS/`): `TASKS-TEMPLATE.md` (includes Section 8 for ICON)
 - **ICON** (`ICON/`): `ICON-TEMPLATE.md` (Implementation Contracts)
 - **IPLAN** (`IPLAN/`): `IPLAN-TEMPLATE.md`
+- **REF** (root): `REF-TEMPLATE.md` (Reference Documents)
 
 **Each artifact type directory also contains:**
 - Index file: `{TYPE}-000_index.{ext}`
@@ -548,6 +552,7 @@ LOOP:
 | SPEC | Task breakdown | `doc-tasks` |
 | TASKS | Execution plan | `doc-iplan` |
 | IPLAN | Code | Implement! |
+| Any stage | Supplementary documentation | `doc-ref` |
 
 ### Development ROI
 

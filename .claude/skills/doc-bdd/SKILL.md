@@ -1,7 +1,7 @@
 ---
-title: "doc-bdd: Create BDD test scenarios (Layer 4)"
+name: "doc-bdd: BDD Test Scenarios (Layer 4)"
 name: doc-bdd
-description: Create BDD (Behavior-Driven Development) test scenarios - Layer 4 artifact using Gherkin Given-When-Then format
+description: Layer 4 artifact for Behavior-Driven Development test scenarios using Gherkin Given-When-Then format
 tags:
   - sdd-workflow
   - layer-4-artifact
@@ -13,8 +13,8 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: core-workflow
-  upstream_artifacts: [BRD,PRD,EARS]
-  downstream_artifacts: [ADR,SYS]
+  upstream_artifacts: [BRD, PRD, EARS]
+  downstream_artifacts: [ADR, SYS, REQ]
 ---
 
 # doc-bdd
@@ -27,7 +27,7 @@ Create **BDD (Behavior-Driven Development)** test scenarios - Layer 4 artifact i
 
 **Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3)
 
-**Downstream Artifacts**: ADR (Layer 5), SYS (Layer 6), REQ (Layer 7)
+**Downstream**: ADR (Layer 5), SYS (Layer 6), REQ (Layer 7)
 
 ## Prerequisites
 
@@ -185,6 +185,56 @@ Scenario Outline: Validate price precision
     | AMZN   | 3250.5 | 1        |
 ```
 
+### 5. ADR-Ready Scoring System
+
+**Purpose**: Measures BDD maturity and readiness for progression to Architecture Decision Records (ADR) phase.
+
+**Format in Document Control**:
+```markdown
+| **ADR-Ready Score** | ✅ 95% (Target: ≥90%) |
+```
+
+**Status and ADR-Ready Score Mapping**:
+
+| ADR-Ready Score | Required Status |
+|-----------------|-----------------|
+| ≥90% | Approved |
+| 70-89% | In Review |
+| <70% | Draft |
+
+**Scoring Criteria**:
+- **Scenario Completeness (35%)**: EARS translation, coverage (success/error/edge), verifications
+- **Testability (30%)**: Automatable scenarios, Examples tables, quantifiable benchmarks
+- **Architecture Requirements Clarity (25%)**: Quality attributes, integration points
+- **Business Validation (10%)**: Acceptance criteria, measurable outcomes
+
+**Quality Gate**: Score <90% blocks ADR artifact creation.
+
+### 6. Threshold Registry Integration
+
+**Purpose**: Prevent magic numbers by referencing centralized threshold registry.
+
+**Format**:
+```gherkin
+@threshold: PRD.NNN.perf.api.p95_latency
+Then response time is less than @threshold: PRD.NNN.perf.api.p95_latency
+```
+
+**When Required**:
+- Performance targets (response times, SLA validations)
+- Timeout expectations
+- Rate limit validations
+- Business-critical values (compliance thresholds)
+
+**Example**:
+```gherkin
+# ❌ WRONG (hardcoded):
+Then response time is less than 200ms
+
+# ✅ CORRECT (threshold reference):
+Then response time is less than @threshold: PRD.035.perf.api.p95_latency
+```
+
 ## Tag Format Convention (By Design)
 
 The SDD framework uses two distinct notation systems for cross-references:
@@ -309,8 +359,8 @@ Create `docs/BDD/BDD-NNN_{slug}.md` with:
 ### Step 9: Validate BDD
 
 ```bash
-# BDD validation
-./ai_dev_flow/scripts/validate_bdd_template.sh docs/BDD/BDD-001_*.feature
+# BDD validation (using cross-document validator)
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/BDD/BDD-001_*.feature --auto-fix
 
 # Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact BDD-001 --expected-layers brd,prd,ears --strict
@@ -369,7 +419,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ```
 LOOP:
-  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -380,10 +430,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/BDD/BDD-NNN_slug.feature --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/BDD/BDD-NNN_slug.feature --auto-fix
 
 # Layer validation (Phase 2) - run when all BDD documents complete
-python scripts/validate_cross_document.py --layer BDD --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --layer BDD --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -440,10 +490,12 @@ For supplementary documentation related to BDD artifacts:
 
 ## Related Resources
 
-- **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- **Template**: `ai_dev_flow/BDD/BDD-TEMPLATE.feature` (primary authority)
+- **Schema**: `ai_dev_flow/BDD/BDD_SCHEMA.yaml` (machine-readable validation)
 - **BDD Creation Rules**: `ai_dev_flow/BDD/BDD_CREATION_RULES.md`
 - **BDD Validation Rules**: `ai_dev_flow/BDD/BDD_VALIDATION_RULES.md`
 - **BDD README**: `ai_dev_flow/BDD/README.md`
+- **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 ## Quick Reference
@@ -456,10 +508,18 @@ For supplementary documentation related to BDD artifacts:
 
 **Format**: Gherkin Given-When-Then
 
+**ADR-Ready Score**: ≥90% required for "Approved" status
+
 **Scenario Types**:
-- Success path
-- Error conditions
-- Edge cases
-- Scenario outlines (parameterized)
+- Success path (@primary)
+- Error conditions (@negative)
+- Edge cases (@edge_case)
+- Alternative paths (@alternative)
+- Data-driven (@data_driven)
+- Integration (@integration)
+- Quality attributes (@quality_attribute)
+- Failure recovery (@failure_recovery)
+
+**Critical**: Use @threshold tags for all quantitative values
 
 **Next**: doc-adr

@@ -1,6 +1,5 @@
 ---
-title: "doc-adr: Create Architecture Decision Records (Layer 5)"
-name: doc-adr
+name: "doc-adr: Create Architecture Decision Records (Layer 5)"
 description: Create Architecture Decision Records (ADR) - Layer 5 artifact documenting architectural decisions with Context-Decision-Consequences format
 tags:
   - sdd-workflow
@@ -13,8 +12,8 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: core-workflow
-  upstream_artifacts: [BDD,EARS]
-  downstream_artifacts: [SYS,REQ]
+  upstream_artifacts: [BRD, PRD, EARS, BDD]
+  downstream_artifacts: [SYS, REQ, Code]
 ---
 
 # doc-adr
@@ -27,7 +26,7 @@ Create **Architecture Decision Records (ADR)** - Layer 5 artifact in the SDD wor
 
 **Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4)
 
-**Downstream Artifacts**: SYS (Layer 6), REQ (Layer 7), Code (Layer 13)
+**Downstream Artifacts**: SYS (Layer 6), REQ (Layer 7), Code (Execution Layer)
 
 ## Prerequisites
 
@@ -66,49 +65,59 @@ Use `doc-adr` when:
 
 ## ADR-Specific Guidance
 
-### 1. Context-Decision-Consequences Format
+### 1. Four-Part ADR Structure
 
-**Template Structure**:
+**Full Template**: See `ai_dev_flow/ADR/ADR-TEMPLATE.md` for complete 17-section structure.
+
+**Part 1 - Decision Context and Requirements** (Sections 1-6):
+- Document Control, Workflow Position, Status, Context, Decision, Requirements Satisfied
+
+**Part 2 - Impact Analysis and Architecture** (Sections 7-12):
+- Consequences, Architecture Flow, Implementation Assessment, Impact Analysis, Verification, Alternatives Considered
+
+**Part 3 - Implementation and Operations** (Sections 13-15):
+- Security, Related Decisions, Implementation Notes
+
+**Part 4 - Traceability and Documentation** (Sections 16-17):
+- Traceability, References
+
+**Quick Template (Essential Sections)**:
 
 ```markdown
 # ADR-NNN: [Decision Title]
 
-## Status
-[Proposed | Accepted | Deprecated | Superseded by ADR-XXX]
+## 1. Document Control
+| Item | Details |
+|------|---------|
+| **Project Name** | [Project] |
+| **Document Version** | 1.0 |
+| **Date** | YYYY-MM-DD |
+| **Document Owner** | [Name] |
+| **Prepared By** | [Name] |
+| **Status** | Proposed |
+| **SYS-Ready Score** | ✅ 85% (Target: ≥90%) |
 
-## Context
-[What is the issue we're addressing? What factors are in play?]
+## 3. Status
+**Status**: Proposed | Accepted | Deprecated | Superseded by ADR-XXX
 
-## Decision
-[What is the change we're proposing or have agreed to implement?]
+## 4. Context
+[What issue are we addressing? What constraints exist?]
 
-## Consequences
-[What becomes easier or more difficult because of this decision?]
+## 5. Decision
+[What solution are we choosing? How will it be implemented?]
 
-### Positive Consequences
-- [Benefit 1]
-- [Benefit 2]
+## 7. Consequences
+### Positive Outcomes / Negative Outcomes / Risks
 
-### Negative Consequences
-- [Drawback 1]
-- [Drawback 2]
+## 12. Alternatives Considered
+### Alternative A: [Name] - Pros, Cons, Rejection Reason
 
-### Risks
-- [Risk 1 and mitigation]
-
-## Alternatives Considered
-### Alternative 1: [Name]
-- **Pros**: [...]
-- **Cons**: [...]
-- **Why Rejected**: [...]
-
-## Verification
-[How will we verify this decision was correct?]
-
-## Relations
-- Supersedes: [ADR-XXX]
-- Related to: [ADR-YYY]
-- Influences: [SYS-NNN, REQ-MMM]
+## 16. Traceability
+### 16.6 Traceability Tags (Layer 5 - 4 tags required)
+@brd: BRD.NNN.NNN
+@prd: PRD.NNN.NNN
+@ears: EARS.NNN.NNN
+@bdd: BDD.NNN.NNN
 ```
 
 ### 2. ADR Lifecycle States
@@ -133,7 +142,32 @@ Use `doc-adr` when:
 - Explains why replaced
 - Maintains audit trail
 
-### 3. Technology Stack Reference (ADR-000)
+### 3. SYS-Ready Scoring System
+
+**Purpose**: Measures ADR maturity and readiness for progression to System Requirements (SYS) phase.
+
+**Format in Document Control**:
+```markdown
+| **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
+```
+
+**Status and SYS-Ready Score Mapping**:
+
+| SYS-Ready Score | Required Status |
+|-----------------|-----------------|
+| ≥90% | Accepted |
+| 70-89% | Proposed |
+| <70% | Draft |
+
+**Scoring Criteria**:
+- **Decision Completeness (30%)**: Context/Decision/Consequences/Alternatives process
+- **Architecture Clarity (35%)**: Mermaid diagrams, component responsibilities, cross-cutting concerns
+- **Implementation Readiness (20%)**: Complexity assessment, dependencies, rollback strategies
+- **Verification Approach (15%)**: Testing strategy, success metrics, operational readiness
+
+**Quality Gate**: Score <90% blocks SYS artifact creation.
+
+### 4. Technology Stack Reference (ADR-000)
 
 **CRITICAL**: Before proposing new technology:
 
@@ -166,7 +200,7 @@ Add Socket.IO to technology stack for real-time communication.
 **Action**: Update ADR-000 Technology Stack if this ADR is accepted.
 ```
 
-### 4. Platform BRD Critical Decisions First
+### 5. Platform BRD Critical Decisions First
 
 **Priority Order**:
 
@@ -223,11 +257,12 @@ Examples:
 **Tag Count**: 4 tags (@brd, @prd, @ears, @bdd)
 
 **Format**:
+
 ```markdown
 ## Traceability
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
-```markdown
+
 @brd: BRD.001.030
 @prd: PRD.001.002
 @ears: EARS.001.001
@@ -256,7 +291,7 @@ Examples:
 **Downstream Artifacts**:
 - **SYS** (Layer 6) - System requirements implementing decision
 - **REQ** (Layer 7) - Atomic requirements following decision
-- **Code** (Layer 13) - Implementation per decision
+- **Code** (Execution Layer) - Implementation per decision
 
 **Same-Type Document Relationships** (conditional):
 - `@related-adr: ADR-NNN` - ADRs sharing architectural context
@@ -350,12 +385,17 @@ Commit ADR and traceability matrix.
 ### Automated Validation
 
 ```bash
-# ADR validation
-./ai_dev_flow/scripts/validate_adr_template.sh docs/ADR/ADR-033_*.md
+# ADR validation (planned - use manual checklist below for now)
+# ./ai_dev_flow/scripts/validate_adr_template.sh docs/ADR/ADR-033_*.md
 
 # Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact ADR-033 --expected-layers brd,prd,ears,bdd --strict
+
+# Cross-document validation
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/ADR/ADR-NNN_slug.md --auto-fix
 ```
+
+**Note**: ADR-specific validation script is under development. Use manual checklist and cross-document validation.
 
 ### Manual Checklist
 
@@ -387,7 +427,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact ADR-033 --ex
 
 ```
 LOOP:
-  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run: python ai_dev_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -398,10 +438,10 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/ADR/ADR-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/ADR/ADR-NNN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all ADR documents complete
-python scripts/validate_cross_document.py --layer ADR --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --layer ADR --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -473,6 +513,8 @@ For supplementary documentation related to ADR artifacts:
 
 ## Related Resources
 
+- **Template**: `ai_dev_flow/ADR/ADR-TEMPLATE.md` (primary authority)
+- **Schema**: `ai_dev_flow/ADR/ADR_SCHEMA.yaml` (machine-readable validation)
 - **Technology Stack**: `docs/ADR/ADR-000_technology_stack.md`
 - **ADR Creation Rules**: `ai_dev_flow/ADR/ADR_CREATION_RULES.md`
 - **ADR Validation Rules**: `ai_dev_flow/ADR/ADR_VALIDATION_RULES.md`
@@ -487,7 +529,9 @@ For supplementary documentation related to ADR artifacts:
 
 **Tags Required**: @brd, @prd, @ears, @bdd (4 tags)
 
-**Format**: Context-Decision-Consequences
+**Format**: Four-Part Structure (17 sections)
+
+**SYS-Ready Score**: ≥90% required for "Accepted" status
 
 **Lifecycle States**: Proposed → Accepted → Deprecated/Superseded
 
