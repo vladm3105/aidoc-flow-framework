@@ -1414,16 +1414,81 @@ Quality attribute IDs use unified sequential numbering consistently across all d
 
 ## 9. Architecture Decision Requirements
 
-Every BRD must include section 6.1: "Architecture Decision Requirements"
+Every BRD must include **Section 7.2: "Architecture Decision Requirements"** with numbered subsections using format `BRD.NNN.NN`.
+
+### 9.1 Subsection ID Format
+
+| Component | Format | Example |
+|-----------|--------|---------|
+| Document ID | `BRD.NNN` | `BRD.001` (BRD-001) |
+| Topic Number | `.NN` (2-digit) | `.03` (third topic) |
+| Full ID | `BRD.NNN.NN` | `BRD.001.03` |
+
+**Reference**: See `ai_dev_flow/ID_NAMING_STANDARDS.md` - "Architecture Decision Topic Subsection Format"
+
+### 9.2 Required Fields (Business-Only)
+
+Each subsection **MUST** contain:
 
 | Field | Description | Example |
 |-------|-------------|---------|
-| **Topic Area** | Technology or architecture domain | "Multi-Agent Framework", "Data Storage", "Authentication Protocol" |
-| **Decision Needed** | What architectural choice is required | "Select orchestration mechanism for agent coordination" |
-| **Business Driver** | Which BRD requirement necessitates this | "BO-003: Automated service execution" |
-| **Key Considerations** | Technologies/patterns to evaluate | "Google ADK, n8n workflow engine, custom orchestration" |
+| **Business Driver** | WHY this decision matters to business - reference upstream requirements | "Real-time position visibility required for treasury management (BRD.001.004)" |
+| **Business Constraints** | Non-negotiable business rules (bullet list) | "Must support multi-currency per Section 3.2", "5-year audit retention per BSA" |
+| **ADR Reference** | Placeholder for future ADR | "ADR-NNN (pending)" |
+| **PRD Elaboration** | Reference to PRD Section 18 subsection | "PRD-001 §18.3" |
 
-**Purpose**: Identifies architectural topics requiring formal evaluation BEFORE PRD creation (for critical decisions) or standard workflow timing (for feature decisions)
+### 9.3 Content Guidelines (Layer Separation)
+
+**Include in BRD Section 7.2** (Business Content):
+
+| Content Type | Description | Example |
+|--------------|-------------|---------|
+| Business objectives | What business goal drives this | "Treasury visibility for cash management" |
+| Regulatory constraints | Compliance requirements | "BSA 5-year audit trail", "GDPR data residency" |
+| Non-negotiable rules | Business rules that cannot change | "Multi-currency support mandatory" |
+| Business impact | Consequences of the decision | "Enables $50M annual transaction volume" |
+| Budget constraints | Financial limitations | "Max $50K annual licensing" |
+
+**Exclude from BRD Section 7.2** (Goes to PRD Section 18):
+
+| Content Type | Why Excluded | Where It Belongs |
+|--------------|--------------|------------------|
+| Technology options | Technical exploration | PRD §18 "Technical Options" |
+| Performance specs | Technical criteria | PRD §18 "Evaluation Criteria" |
+| Evaluation criteria | Technical comparison | PRD §18 "Evaluation Criteria" |
+| Implementation patterns | Technical approach | ADR "Decision" |
+| Technical timelines | Implementation details | PRD §18 "Decision Timeline" |
+
+### 9.4 Layer Separation Principle
+
+```
+BRD Section 7.2          →    PRD Section 18         →    ADR
+(WHAT & WHY)                  (HOW to evaluate)          (Final decision)
+─────────────────────────────────────────────────────────────────────────
+Business drivers              Technical options          Selected option
+Business constraints          Evaluation criteria        Trade-off analysis
+Business impact               Product constraints        Consequences
+ADR placeholder               ADR placeholder            ADR document
+```
+
+### 9.5 Example (Business-Focused)
+
+```markdown
+#### BRD.001.03: Ledger System Selection
+
+**Business Driver**: Real-time financial position visibility required for
+treasury management (BRD.001.004) and regulatory reporting (Section 8.4.2 BSA compliance).
+
+**Business Constraints**:
+- Must support multi-currency operations (USD, UZS, USDC) per Section 3.2 market requirements
+- Audit trail retention per BSA requirements (5 years) per Section 8.4.2
+- Maximum budget allocation: $50K annual licensing per Section 8.2
+
+**ADR Reference**: ADR-003 (pending)
+**PRD Elaboration**: PRD-001 §18.3
+```
+
+**Purpose**: Identifies architectural topics requiring formal evaluation. Technical details are elaborated in PRD Section 18
 
 ---
 

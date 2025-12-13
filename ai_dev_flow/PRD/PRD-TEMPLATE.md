@@ -828,24 +828,99 @@ Document the technical specifications and designs derived from this PRD.
 
 #### Architecture Decision Requirements
 
-The following architectural topics require formal Architecture Decision Records (ADRs) to be created in the ADR phase of the SDD workflow:
+PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by adding **technical content** (options, criteria, constraints). Each subsection corresponds to a BRD Section 7.2 topic.
 
-| Topic Area | Decision Needed | Business Driver (PRD Reference) | Key Considerations |
-|------------|-----------------|--------------------------------|-------------------|
-| [Topic 1] | [What decision is needed] | [Which PRD requirements/QAs drive this] | [Technologies, patterns, or approaches to evaluate] |
-| [Topic 2] | [What decision is needed] | [Which PRD requirements/QAs drive this] | [Technologies, patterns, or approaches to evaluate] |
-| [Topic 3] | [What decision is needed] | [Which PRD requirements/QAs drive this] | [Technologies, patterns, or approaches to evaluate] |
+**Layer Separation**: BRD contains business drivers/constraints. PRD adds technical evaluation details. ADR documents final decision.
 
-**Example Topics**:
-- **[Component_Type: e.g., Framework, Library, Service]**: [What architectural choice is needed] (driven by [requirement references])
-- **[Integration_Pattern: e.g., Messaging, API, Protocol]**: [What integration decision is needed] (driven by [requirement references])
-- **[Data_Strategy: e.g., Storage, Caching, Persistence]**: [What data architecture decision is needed] (driven by [requirement references])
-- **[security_Mechanism: e.g., Authentication, Authorization, Encryption]**: [What security approach is needed] (driven by [requirement references])
-- **[Technology_Selection: e.g., Database, Cache, Queue]**: [What technology decision is needed] (driven by [requirement references])
+---
 
-**Purpose**: This section identifies architectural topics requiring decisions. Specific ADRs will be created AFTER this PRD during the ADR phase of the SDD workflow. Do NOT reference specific ADR numbers here.
+##### BRD.NNN.01: [Topic Name]
 
-**ADR Creation Timing**: ADRs are created after BRD → PRD → SYS → EARS → REQ in the SDD workflow. Reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) for complete workflow order.
+**Upstream**: BRD-NNN §7.2.1
+
+**Technical Options**:
+1. **[Option A]**: [Brief description - e.g., "Managed SaaS ledger with API integration"]
+2. **[Option B]**: [Brief description - e.g., "Custom PostgreSQL with double-entry schema"]
+3. **[Option C]**: [Brief description - e.g., "Specialized financial database (TigerBeetle)"]
+
+**Evaluation Criteria**:
+- **[Criterion 1]**: [Measurable target - e.g., "Throughput ≥10,000 TPS sustained"]
+- **[Criterion 2]**: [Measurable target - e.g., "Latency <100ms P99 for balance queries"]
+- **[Criterion 3]**: [Measurable target - e.g., "Setup time <2 weeks"]
+
+**Product Constraints**:
+- [Integration constraint - e.g., "Must integrate with existing payment gateway"]
+- [Technical constraint - e.g., "Must support existing Python codebase"]
+
+**Decision Timeline**: [Milestone reference - e.g., "Before Phase 2 development start (Q1 2026)"]
+
+**ADR Reference**: ADR-NNN (pending)
+
+---
+
+##### BRD.NNN.02: [Topic Name]
+
+**Upstream**: BRD-NNN §7.2.2
+
+**Technical Options**:
+1. **[Option A]**: [Description]
+2. **[Option B]**: [Description]
+
+**Evaluation Criteria**:
+- **[Criterion 1]**: [Measurable target]
+- **[Criterion 2]**: [Measurable target]
+
+**Product Constraints**:
+- [Constraint 1]
+- [Constraint 2]
+
+**Decision Timeline**: [Milestone reference]
+
+**ADR Reference**: ADR-NNN (pending)
+
+---
+
+**Content Guidelines**:
+
+| PRD Section 18 Includes | PRD Section 18 Excludes (in BRD) |
+|------------------------|--------------------------------|
+| Technical options/alternatives | Business drivers (from BRD §7.2) |
+| Measurable evaluation criteria | Non-negotiable business rules (from BRD §7.2) |
+| Product integration constraints | Regulatory constraints (from BRD §7.2) |
+| Technical decision timelines | Budget constraints (from BRD §7.2) |
+| ADR placeholder | - |
+
+**Example** (Technical Elaboration):
+
+```markdown
+##### BRD.001.03: Ledger System Selection
+
+**Upstream**: BRD-001 §7.2.3
+
+**Technical Options**:
+1. **Modern Treasury**: Managed SaaS with REST API, SOC 2 certified
+2. **Custom PostgreSQL**: Double-entry schema with pgaudit, self-managed
+3. **TigerBeetle**: High-performance financial DB, ACID guarantees
+
+**Evaluation Criteria**:
+- **Throughput**: ≥10,000 TPS sustained under load testing
+- **Latency**: <100ms P99 for balance queries
+- **Compliance**: SOC 2 Type II or equivalent audit capability
+- **Setup Time**: <2 weeks to production-ready state
+
+**Product Constraints**:
+- Must integrate with existing FastAPI payment service
+- Must support Python SDK or REST API
+- Must allow data export for regulatory audits
+
+**Decision Timeline**: Before Phase 2 development start (Q1 2026)
+
+**ADR Reference**: ADR-003 (pending)
+```
+
+**Purpose**: This section adds technical evaluation context to BRD architecture topics. Specific ADRs will be created AFTER this PRD during the ADR phase of the SDD workflow.
+
+**ADR Creation Timing**: ADRs are created after BRD → PRD → EARS → BDD in the SDD workflow. Reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) for complete workflow order.
 
 #### BDD Scenarios
 

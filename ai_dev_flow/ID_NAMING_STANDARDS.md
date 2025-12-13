@@ -490,6 +490,79 @@ The following patterns are **REMOVED** and MUST NOT be used:
 
 ---
 
+## Architecture Decision Topic Subsection Format
+
+**Purpose**: BRD Section 7.2 "Architecture Decision Requirements" contains numbered subsections identifying architectural topics requiring formal ADR decisions. These subsections use a specialized format distinct from feature headings.
+
+**Subsection ID Pattern**: `BRD.NNN.NN`
+
+| Component | Description | Example |
+|-----------|-------------|---------|
+| `BRD` | Document type (always BRD for architecture topics) | `BRD` |
+| `.NNN` | BRD document number (3-4 digits) | `.001` = BRD-001 |
+| `.NN` | Sequential topic number within Section 7.2 (2 digits, 01-99) | `.03` = third topic |
+
+**Note**: Topic subsection IDs use `.NN` (2-digit) to distinguish from feature IDs which use `.NNN` (3-digit).
+
+**Heading Format**:
+
+```markdown
+#### BRD.NNN.NN: [Topic Name]
+
+**Business Driver**: [Why this decision matters to business - reference upstream requirements]
+**Business Constraints**:
+- [Non-negotiable business rule 1]
+- [Non-negotiable business rule 2]
+**ADR Reference**: ADR-NNN (pending)
+**PRD Elaboration**: PRD-NNN §18.X
+```
+
+**Note**: Heading level varies by context (H3-H5) depending on document structure. The pattern uses H4 (`####`) in BRD Section 7.2 as subsections.
+
+**Examples**:
+
+| BRD | Topic # | Full ID | Meaning |
+|-----|---------|---------|---------|
+| BRD-001 | 3 | `BRD.001.03` | Third architecture topic in BRD-001 Section 7.2 |
+| BRD-017 | 1 | `BRD.017.01` | First architecture topic in BRD-017 Section 7.2 |
+| BRD-003 | 12 | `BRD.003.12` | Twelfth architecture topic in BRD-003 Section 7.2 |
+
+**Content Rules (Business-Only)**:
+
+| Include in BRD Section 7.2 | Exclude from BRD Section 7.2 |
+|---------------------------|------------------------------|
+| Business objectives | Technology options |
+| Regulatory constraints | Performance specifications |
+| Non-negotiable business rules | Evaluation criteria |
+| Business impact statements | Implementation patterns |
+
+**Cross-Reference Flow**:
+
+```
+BRD Section 7.2 (BRD.NNN.NN)  →  PRD Section 18           →  ADR
+Business drivers/constraints      Technical options/criteria    Final decision
+```
+
+**PRD Reference**: PRD Section 18 elaborates each BRD Section 7.2 topic with:
+- `**Upstream**: BRD-NNN §7.2.X` - Reference to originating BRD topic
+- Technical options and evaluation criteria
+- `**ADR Reference**: ADR-NNN (pending)` - Placeholder for future ADR
+
+**ADR Reference**: ADR Section 4.1 includes:
+- `**Originating Topic**: BRD.NNN.NN - [Topic Name]`
+- Business driver and constraints from BRD
+- Technical options evaluated from PRD
+
+**Validation Regex**:
+
+```python
+BRD_ARCHITECTURE_TOPIC_PATTERN = r'^#{3,5}\s+BRD\.\d{3,4}\.\d{2}:\s+.+$'
+# Matches: ### BRD.001.03: ... OR #### BRD.001.03: ... OR ##### BRD.001.03: ...
+# Heading level (H3-H5) varies by document section context
+```
+
+---
+
 ## Complete Tag Reference
 
 For the complete list of valid traceability tags, see [TRACEABILITY.md - Complete Tag Reference](./TRACEABILITY.md#complete-tag-reference).

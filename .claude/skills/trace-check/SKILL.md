@@ -388,6 +388,105 @@ def validate_ctr_dual_files(contracts_dir):
 - ✅ All YAML files parse successfully
 - ✅ All YAML files contain valid schema structure (OpenAPI, AsyncAPI, or JSON Schema)
 
+### Step 3.6: Validate Architecture Decision Topics (NEW)
+
+**Purpose**: Validate architecture topic subsections across BRD Section 7.2, PRD Section 18, and ADR Section 4.1 for layer separation compliance.
+
+**Layer Separation Principle**:
+```
+BRD Section 7.2          →    PRD Section 18         →    ADR Section 4.1
+(WHAT & WHY)                  (HOW to evaluate)          (Final decision)
+─────────────────────────────────────────────────────────────────────────
+Business drivers              Technical options          Selected option
+Business constraints          Evaluation criteria        Trade-off analysis
+```
+
+**Subsection ID Format**: `BRD.NNN.NN` (2-digit topic number)
+
+| Component | Description | Example |
+|-----------|-------------|---------|
+| `BRD` | Document type | `BRD` |
+| `.NNN` | BRD document number (3-4 digits) | `.001` = BRD-001 |
+| `.NN` | Sequential topic number (2 digits, 01-99) | `.03` = third topic |
+
+**Validation Logic**:
+```python
+def validate_architecture_topics(docs_dir):
+    """Validate architecture decision topic traceability."""
+    errors = []
+
+    # 1. Extract BRD Section 7.2 topics
+    brd_topics = extract_brd_section_72_topics(docs_dir)
+
+    # 2. Validate topic ID format
+    for topic_id, content in brd_topics.items():
+        if not re.match(r'^BRD\.\d{3,4}\.\d{2}$', topic_id):
+            errors.append(f"{topic_id}: Invalid format (expected BRD.NNN.NN)")
+
+        # 3. Check business-only content (no technical options)
+        if has_technical_content(content):
+            errors.append(f"{topic_id}: Contains technical content (should be business-only)")
+
+    # 4. Validate PRD Section 18 elaborations
+    prd_topics = extract_prd_section_18_topics(docs_dir)
+    for topic_id, content in prd_topics.items():
+        # Check upstream reference exists
+        if content.get('upstream') not in brd_topics:
+            errors.append(f"PRD {topic_id}: Upstream BRD topic not found")
+
+        # Check has technical content
+        if not has_technical_options(content):
+            errors.append(f"PRD {topic_id}: Missing technical options")
+
+    # 5. Validate ADR Section 4.1 originating topics
+    adr_topics = extract_adr_originating_topics(docs_dir)
+    for adr_id, content in adr_topics.items():
+        topic_ref = content.get('originating_topic')
+        if topic_ref and topic_ref not in brd_topics:
+            errors.append(f"{adr_id}: Originating topic {topic_ref} not found in BRD")
+
+    return errors
+```
+
+**Content Validation Rules**:
+
+| Layer | Section | Required Content | Forbidden Content |
+|-------|---------|------------------|-------------------|
+| BRD (Layer 1) | 7.2 | Business Driver, Business Constraints | Technical options, Evaluation criteria |
+| PRD (Layer 2) | 18 | Technical Options, Evaluation Criteria, Upstream reference | Business constraints (duplicated from BRD) |
+| ADR (Layer 5) | 4.1 | Originating Topic, Decision, References | Missing upstream references |
+
+**Validation Regex Patterns**:
+```python
+# BRD Section 7.2 subsection header (H3-H5 depending on document context)
+BRD_TOPIC_PATTERN = r'^#{3,5}\s+(BRD\.\d{3,4}\.\d{2}):\s+.+'
+
+# PRD Section 18 upstream reference (2-digit topic number)
+PRD_UPSTREAM_PATTERN = r'\*\*Upstream\*\*:\s*BRD-\d{3,4}\s+§7\.2\.\d{2}'
+
+# ADR Section 4.1 originating topic
+ADR_ORIGINATING_PATTERN = r'\*\*Originating Topic\*\*:\s*(BRD\.\d{3,4}\.\d{2})\s*-\s*.+'
+```
+
+**Cross-Reference Validation**:
+1. Each BRD Section 7.2 topic should have corresponding PRD Section 18 elaboration
+2. Each PRD Section 18 topic should reference ADR (pending or actual)
+3. Each ADR Section 4.1 should reference originating BRD topic
+
+**Error Examples**:
+- `BRD.001.01: Invalid format` → Should be `BRD.001.01` (correct already)
+- `BRD.001.1: Invalid format` → Should be `BRD.001.01` (2-digit topic)
+- `BRD.001.01: Contains technical content` → "WebSocket" in BRD (move to PRD)
+- `PRD 18.1: Upstream BRD topic not found` → References non-existent BRD topic
+- `ADR-001: Originating topic BRD.999.01 not found` → Invalid topic reference
+
+**Success Criteria**:
+- ✅ All BRD Section 7.2 topics use `BRD.NNN.NN` format
+- ✅ All BRD Section 7.2 topics contain business-only content
+- ✅ All PRD Section 18 topics reference valid BRD topics
+- ✅ All PRD Section 18 topics contain technical elaboration
+- ✅ All ADR Section 4.1 topics reference valid originating topics
+
 ### Step 4: Check Link Resolution
 
 **Tests**:
@@ -976,13 +1075,21 @@ tar -xzf ../backups/docs_backup_20251111_174001.tar.gz
 
 ## Version Information
 
-**Version**: 2.0.1
-**Last Updated**: 2025-11-13
+**Version**: 2.1.0
+**Last Updated**: 2025-12-13
 **Created**: 2025-11-11
 **Status**: Active
 **Author**: SDD Framework Team
 
 **Change Log**:
+- 2.1.0 (2025-12-13): Architecture decision layer separation validation
+  - **NEW FEATURE**: Added Step 3.6 - Architecture Decision Topic validation
+    - Validates `BRD.NNN.NN` subsection ID format (2-digit topic number)
+    - Cross-reference validation: BRD Section 7.2 → PRD Section 18 → ADR Section 4.1
+    - Content validation: Business-only in BRD, technical in PRD
+    - Layer separation principle enforcement
+  - **VALIDATION RULES**: Added content validation rules table
+  - **REGEX PATTERNS**: Added validation patterns for topic extraction
 - 2.0.1 (2025-11-13): Clarity improvements and CTR validation enhancement
   - **NEW FEATURE**: Added Step 3.5 - CTR dual-file format validation (MANDATORY)
     - Validates both .md and .yaml files exist for each CTR

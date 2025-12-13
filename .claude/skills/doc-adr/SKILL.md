@@ -226,6 +226,62 @@ BRD-002 (Feature) references: "Use database per ADR-033"
 ADR-045: User data schema design (Feature ADR - references ADR-033)
 ```
 
+### 6. Originating Topic Reference (Section 4.1)
+
+**Purpose**: Link ADR to its originating architecture topic from BRD Section 7.2 and PRD Section 18.
+
+**Layer Separation Principle**:
+```
+BRD Section 7.2          →    PRD Section 18         →    ADR Section 4.1
+(WHAT & WHY)                  (HOW to evaluate)          (Final decision)
+─────────────────────────────────────────────────────────────────────────
+Business drivers              Technical options          Selected option
+Business constraints          Evaluation criteria        Trade-off analysis
+```
+
+**Format** (Section 4.1 Problem Statement):
+```markdown
+### 4.1 Problem Statement
+
+**Originating Topic**: BRD.001.01 - API Communication Protocol
+
+**Business Driver** (from BRD §7.2):
+Real-time market data integration requires low-latency, bidirectional communication for competitive trading execution.
+
+**Business Constraints** (from BRD §7.2):
+- Must maintain <100ms latency for order execution
+- Must support reconnection without data loss during market hours
+- Must comply with broker API terms of service
+
+**Technical Options Evaluated** (from PRD §18):
+1. WebSocket - Full-duplex, low overhead
+2. REST + Polling - Stateless, cacheable
+3. gRPC Streaming - Efficient binary protocol
+
+**Evaluation Criteria** (from PRD §18):
+- **Latency**: Target <100ms
+- **Reconnection**: Auto-reconnect <5s
+- **Complexity**: Development effort
+- **Compatibility**: Broker API support
+
+**References**:
+- BRD: [BRD-001](../BRD/BRD-001_platform.md) §7.2.1
+- PRD: [PRD-001](../PRD/PRD-001_integration.md) §18.1
+- EARS: [EARS-001](../EARS/EARS-001_api.md) §3.1 (if applicable)
+- BDD: [BDD-001](../BDD/BDD-001_api.feature) (if applicable)
+```
+
+**Cross-Reference Flow**:
+1. BRD Section 7.2 → Defines business need (`BRD.NNN.NN`)
+2. PRD Section 18 → Elaborates with technical options (references `BRD.NNN.NN`)
+3. ADR Section 4.1 → Records final decision (references both)
+
+**Inherited Content**:
+- **Business Driver**: Copy from BRD Section 7.2
+- **Business Constraints**: Copy from BRD Section 7.2
+- **Technical Options**: Copy from PRD Section 18
+- **Evaluation Criteria**: Copy from PRD Section 18
+
 ## Tag Format Convention (By Design)
 
 The SDD framework uses two distinct notation systems for cross-references:

@@ -112,23 +112,65 @@ PRD documents require exactly **20 numbered sections** (1-20). See `ai_dev_flow/
 - May elaborate on technology choices from Platform BRD
 - Still references Platform BRD as source of truth
 
-### 3. Architecture Decision Requirements Section
+### 3. Architecture Decision Requirements Section (18)
 
-**Purpose**: Document what architectural decisions are needed and why; do NOT reference specific ADR numbers (ADRs created in Layer 5)
+**Purpose**: Elaborate on BRD Section 7.2 architecture topics with **technical content** (options, evaluation criteria).
 
-**Format**:
-```markdown
-## Architecture Decision Requirements
-
-Based on the product features defined above, the following architectural topics require decision-making:
-
-1. **API Design Pattern**: Feature requires external API; need to decide REST vs GraphQL
-2. **State Management**: Complex UI state; need to decide on state management approach
-3. **Caching Strategy**: Performance requirements; need to decide on caching implementation
-
-**Note**: Specific ADRs will be created to document these decisions in Layer 5 (ADR phase).
-**Inherited from BRD-XXX**: [List any architectural topics from parent BRD]
+**Layer Separation Principle**:
 ```
+BRD Section 7.2          →    PRD Section 18         →    ADR
+(WHAT & WHY)                  (HOW to evaluate)          (Final decision)
+─────────────────────────────────────────────────────────────────────────
+Business drivers              Technical options          Selected option
+Business constraints          Evaluation criteria        Trade-off analysis
+```
+
+**PRD Elaboration Workflow**:
+1. Read BRD Section 7.2 topic (`BRD.NNN.NN`)
+2. Create corresponding PRD Section 18 subsection
+3. Add technical options NOT present in BRD
+4. Add evaluation criteria NOT present in BRD
+5. Reference upstream BRD topic
+
+**Format** (technical elaboration):
+```markdown
+## 18. Architecture Decision Requirements
+
+### 18.1 BRD.001.01: API Communication Protocol
+
+**Upstream**: BRD-001 §7.2.1
+
+**Technical Options**:
+1. **WebSocket**: Full-duplex, low overhead, native reconnection
+2. **REST + Polling**: Stateless, cacheable, higher latency
+3. **gRPC Streaming**: Efficient binary, requires HTTP/2
+
+**Evaluation Criteria**:
+- **Latency**: Target <100ms (business constraint from BRD)
+- **Reconnection**: Auto-reconnect <5s (business constraint from BRD)
+- **Complexity**: Development effort for implementation
+- **Compatibility**: Broker API support and restrictions
+
+**Product Constraints**:
+- Must work through corporate firewalls (port 443)
+- Must support mobile app integration (future roadmap)
+
+**Decision Timeline**: Before SPEC-001 creation (blocks implementation)
+**ADR Reference**: ADR-001 (pending)
+```
+
+**Technical Content Rules**:
+- **Technical Options**: Implementation approaches with trade-offs
+- **Evaluation Criteria**: Measurable factors for comparing options
+- **Product Constraints**: Product-level restrictions (not business constraints - those are in BRD)
+- **Decision Timeline**: When decision is needed relative to project milestones
+
+**Cross-Reference Flow**:
+1. BRD Section 7.2 → Defines business need (`BRD.NNN.NN`)
+2. PRD Section 18 → Elaborates with technical options (references `BRD.NNN.NN`)
+3. ADR Section 4.1 → Records final decision (references both)
+
+**Do NOT write**: "See ADR-033" or "Reference ADR-045" (ADRs don't exist yet)
 
 ### 4. Problem-Goals-Non-Goals Framework
 

@@ -116,9 +116,34 @@ Production-Ready Code
 ## 4. Context
 
 ### 4.1 Problem Statement
-[Specific issue requiring architectural resolution - what problem are we solving? 
-List of PRD, EARS, BDD files as technical base implementing requirements.
-Short description of PRD, EARS, BDD files.]
+
+**Originating Topic**: BRD.NNN.NN - [Topic Name from BRD Section 7.2]
+
+#### Inherited Content
+
+The following fields are copied from upstream documents to maintain traceability:
+
+**Business Driver** (from BRD §7.2):
+[Copy the business driver text from BRD Section 7.2 - WHY this decision matters to business]
+
+**Business Constraints** (from BRD §7.2):
+- [Constraint 1 from BRD Section 7.2 - e.g., regulatory requirement]
+- [Constraint 2 from BRD Section 7.2 - e.g., budget limit]
+
+**Technical Options Evaluated** (from PRD §18):
+1. [Option A from PRD Section 18 - brief description]
+2. [Option B from PRD Section 18 - brief description]
+3. [Option C from PRD Section 18 - brief description]
+
+**Evaluation Criteria** (from PRD §18):
+- [Criterion 1]: [Measurable target]
+- [Criterion 2]: [Measurable target]
+
+**References**:
+- BRD: [BRD-NNN](../BRD/BRD-NNN_slug.md) §7.2.X
+- PRD: [PRD-NNN](../PRD/PRD-NNN_slug.md) §18.X
+- EARS: [EARS-NNN](../EARS/EARS-NNN_slug.md)
+- BDD: [BDD-NNN](../BDD/BDD-NNN_slug.feature)
 
 ### 4.2 Background
 [Historical context and existing system state - how did we get here? What current system state drove this need?]

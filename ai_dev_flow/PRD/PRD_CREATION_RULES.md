@@ -273,24 +273,120 @@ Define who the users are (personas):
 
 ## 7. Architecture Decision Requirements
 
-Every PRD must include section 17 (Traceability) with "Architecture Decision Requirements" subsection
+Every PRD must include Section 18 (Traceability) with "Architecture Decision Requirements" subsection that **elaborates** BRD Section 7.2 topics with technical content.
 
-**Purpose**: Identifies architectural topics requiring formal evaluation BEFORE progression to SYS phase
+**Purpose**: PRD adds **technical evaluation details** to business-only topics defined in BRD Section 7.2
 
-**Requirements**:
-1. section exists and has table with columns: Topic Area, Decision Needed, Business Driver, Key Considerations
-2. Table includes decision topics that will become formal ADRs in later workflow phase
-3. Topics must have clear business rationale linked to PRD requirements
+### 7.1 Layer Separation Principle
 
-**Example**:
-```markdown
-#### Architecture Decision Requirements
-
-| Topic Area | Decision Needed | Business Driver (PRD Reference) | Key Considerations |
-|------------|-----------------|--------------------------------|-------------------|
-| [Topic 1] | [What decision is needed] | [Which PRD requirements drive this] | [Technologies, patterns, approaches] |
-| [Topic 2] | [What decision is needed] | [Which PRD requirements drive this] | [Technologies, patterns, approaches] |
 ```
+BRD Section 7.2          →    PRD Section 18         →    ADR
+(WHAT & WHY)                  (HOW to evaluate)          (Final decision)
+─────────────────────────────────────────────────────────────────────────
+Business drivers              Technical options          Selected option
+Business constraints          Evaluation criteria        Trade-off analysis
+                              Product constraints        Consequences
+```
+
+### 7.2 PRD Elaboration Workflow
+
+**Step 1**: Read BRD Section 7.2 topics (format: `BRD.NNN.NN`)
+
+**Step 2**: For each BRD topic, create corresponding PRD subsection:
+
+| PRD Section 18 Field | Content Source | Example |
+|---------------------|----------------|---------|
+| **Upstream** | BRD reference | "BRD-001 §7.2.3" |
+| **Technical Options** | Product team research | "1. Modern Treasury (SaaS), 2. Custom PostgreSQL, 3. TigerBeetle" |
+| **Evaluation Criteria** | Measurable targets | "Throughput ≥10K TPS, Latency <100ms P99" |
+| **Product Constraints** | Integration/technical limits | "Must support Python SDK" |
+| **Decision Timeline** | Milestone reference | "Before Phase 2 start" |
+| **ADR Reference** | Placeholder | "ADR-NNN (pending)" |
+
+### 7.3 Required Subsection Structure
+
+```markdown
+##### BRD.NNN.NN: [Topic Name]
+
+**Upstream**: BRD-NNN §7.2.X
+
+**Technical Options**:
+1. **[Option A]**: [Description]
+2. **[Option B]**: [Description]
+3. **[Option C]**: [Description]
+
+**Evaluation Criteria**:
+- **[Criterion 1]**: [Measurable target]
+- **[Criterion 2]**: [Measurable target]
+
+**Product Constraints**:
+- [Constraint 1]
+- [Constraint 2]
+
+**Decision Timeline**: [Milestone reference]
+
+**ADR Reference**: ADR-NNN (pending)
+```
+
+### 7.4 Content Guidelines
+
+**Include in PRD Section 18** (Technical Content):
+
+| Content Type | Description | Example |
+|--------------|-------------|---------|
+| Technical options | Technology alternatives | "Modern Treasury, Custom PostgreSQL, TigerBeetle" |
+| Evaluation criteria | Measurable targets | "≥10,000 TPS sustained" |
+| Product constraints | Integration requirements | "Must support existing Python codebase" |
+| Technical timelines | Decision milestones | "Before Phase 2 development" |
+
+**Exclude from PRD Section 18** (Keep in BRD §7.2):
+
+| Content Type | Why | Where It Is |
+|--------------|-----|-------------|
+| Business drivers | Business justification | BRD §7.2 "Business Driver" |
+| Business constraints | Non-negotiable rules | BRD §7.2 "Business Constraints" |
+| Regulatory constraints | Compliance requirements | BRD §7.2 "Business Constraints" |
+| Budget constraints | Financial limits | BRD §7.2 "Business Constraints" |
+
+### 7.5 Example (Full Elaboration)
+
+**BRD Section 7.2 (Business-Only)**:
+```markdown
+#### BRD.001.03: Ledger System Selection
+
+**Business Driver**: Real-time position visibility for treasury management (BRD.001.004)
+**Business Constraints**:
+- Multi-currency support (USD, UZS, USDC) per Section 3.2
+- 5-year audit retention per BSA requirements
+- Max $50K annual licensing
+```
+
+**PRD Section 18 (Technical Elaboration)**:
+```markdown
+##### BRD.001.03: Ledger System Selection
+
+**Upstream**: BRD-001 §7.2.3
+
+**Technical Options**:
+1. **Modern Treasury**: Managed SaaS, REST API, SOC 2 certified
+2. **Custom PostgreSQL**: Double-entry schema, pgaudit, self-managed
+3. **TigerBeetle**: High-performance financial DB, ACID guarantees
+
+**Evaluation Criteria**:
+- **Throughput**: ≥10,000 TPS sustained
+- **Latency**: <100ms P99 for balance queries
+- **Compliance**: SOC 2 Type II or equivalent
+
+**Product Constraints**:
+- Must integrate with existing FastAPI payment service
+- Must support Python SDK or REST API
+
+**Decision Timeline**: Before Phase 2 development start (Q1 2026)
+
+**ADR Reference**: ADR-003 (pending)
+```
+
+**Reference**: See `ai_dev_flow/PRD/PRD-TEMPLATE.md` Section 18 for template
 
 ---
 

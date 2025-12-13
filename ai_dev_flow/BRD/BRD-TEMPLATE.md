@@ -653,24 +653,68 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 ### 7.2 Architecture Decision Requirements
 
-The following architectural topics require formal Architecture Decision Records (ADRs) to be created in the ADR phase of the SDD workflow:
+The following architectural topics require formal Architecture Decision Records (ADRs). Each topic uses subsection format `BRD.NNN.NN` (2-digit topic number) containing **business content only**. Technical options and evaluation criteria belong in PRD Section 18.
 
-| Topic Area | Decision Needed | Business Driver (BRD Reference) | Key Considerations |
-|------------|-----------------|--------------------------------|-------------------|
-| [Topic 1] | [What architectural decision is needed] | [Which business objectives/requirements drive this] | [Technologies, patterns, or approaches to evaluate] |
-| [Topic 2] | [What architectural decision is needed] | [Which business objectives/requirements drive this] | [Technologies, patterns, or approaches to evaluate] |
+**Format Reference**: See `ai_dev_flow/ID_NAMING_STANDARDS.md` - "Architecture Decision Topic Subsection Format"
 
-**Example Topics**:
-- **Authentication/Authorization**: Select authentication mechanism (driven by BRD.NNN.961: security requirements)
-- **Data Storage**: Choose database technology for operational data (driven by BRD.NNN.NNN: Data persistence requirements)
-- **Integration Architecture**: Define API integration pattern (driven by BRD.NNN.NNN: System integration)
-- **Caching Strategy**: Choose caching approach (driven by BRD.NNN.901: Performance requirements)
-- **Deployment Model**: Select deployment architecture (driven by BRD.NNN.941: Scalability requirements)
-- **Messaging/Communication**: Choose inter-system communication pattern (driven by BRD.NNN.NNN: Integration requirements)
+---
 
-**Purpose**: This section identifies architectural topics requiring decisions. Specific ADRs will be created AFTER this BRD during the ADR phase of the SDD workflow.
+#### BRD.NNN.01: [Topic Name]
 
-**ADR Creation Timing**: ADRs are created after BRD → PRD → SYS → EARS → REQ in the SDD workflow. Do NOT reference specific ADR numbers in this document.
+**Business Driver**: [Why this decision matters to business - reference upstream business objectives from sections 3-5]
+
+**Business Constraints**:
+- [Non-negotiable business rule 1 - e.g., regulatory requirement, budget limit]
+- [Non-negotiable business rule 2 - e.g., timeline constraint, partner SLA]
+
+**ADR Reference**: ADR-NNN (pending)
+**PRD Elaboration**: PRD-NNN §18.1
+
+---
+
+#### BRD.NNN.02: [Topic Name]
+
+**Business Driver**: [Why this decision matters to business]
+
+**Business Constraints**:
+- [Business constraint 1]
+- [Business constraint 2]
+
+**ADR Reference**: ADR-NNN (pending)
+**PRD Elaboration**: PRD-NNN §18.2
+
+---
+
+**Content Guidelines**:
+
+| Include (Business Content) | Exclude (Technical Content - goes to PRD §18) |
+|---------------------------|---------------------------------------------|
+| Business objectives | Technology options/alternatives |
+| Regulatory constraints | Performance specifications |
+| Non-negotiable business rules | Evaluation criteria |
+| Business impact statements | Implementation patterns |
+| Budget/timeline constraints | Technical timelines |
+
+**Example** (Business-Focused):
+
+```markdown
+#### BRD.001.03: Ledger System Selection
+
+**Business Driver**: Real-time financial position visibility required for treasury
+management (BRD.001.004) and regulatory reporting (Section 8.4.2 BSA compliance).
+
+**Business Constraints**:
+- Must support multi-currency operations (USD, UZS, USDC) per Section 3.2 market requirements
+- Audit trail retention per BSA requirements (5 years) per Section 8.4.2
+- Maximum budget allocation: $50K annual licensing per Section 8.2
+
+**ADR Reference**: ADR-003 (pending)
+**PRD Elaboration**: PRD-001 §18.3
+```
+
+**Layer Separation Principle**: BRD identifies WHAT decisions are needed and WHY (business justification). PRD Section 18 elaborates HOW to evaluate options (technical criteria). ADR documents the final decision.
+
+**ADR Creation Timing**: ADRs are created in Layer 5 of SDD workflow (after BRD → PRD → EARS → BDD). Do NOT reference specific ADR numbers until they exist.
 
 ---
 

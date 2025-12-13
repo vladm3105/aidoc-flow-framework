@@ -179,25 +179,55 @@ Use `doc-brd` when:
 
 **Every BRD MUST cite specific strategy document sections in Traceability section.**
 
-### 4. Architecture Decision Requirements Section
+### 4. Architecture Decision Requirements Section (7.2)
 
-**Purpose**: Identify architectural topics requiring decisions; do NOT reference specific ADR numbers (ADRs created in later phase)
+**Purpose**: Identify architectural topics requiring decisions using **business-only content**.
 
-**Format**:
-```markdown
-## Architecture Decision Requirements
-
-The following architectural topics require decision-making:
-
-1. **Technology Stack Selection**: Need to decide on programming language, frameworks, and core libraries
-2. **Data Storage Architecture**: Need to decide on database technology and data modeling approach
-3. **API Design Patterns**: Need to decide on REST vs GraphQL vs gRPC
-4. **Authentication & Authorization**: Need to decide on security implementation approach
-
-**Note**: Specific ADRs will be created to document these decisions in Layer 5 (ADR phase).
+**Layer Separation Principle**:
+```
+BRD Section 7.2          →    PRD Section 18         →    ADR
+(WHAT & WHY)                  (HOW to evaluate)          (Final decision)
+─────────────────────────────────────────────────────────────────────────
+Business drivers              Technical options          Selected option
+Business constraints          Evaluation criteria        Trade-off analysis
 ```
 
+**Subsection ID Format**: `BRD.NNN.NN` (2-digit topic number)
+
+| Component | Description | Example |
+|-----------|-------------|---------|
+| `BRD` | Document type | `BRD` |
+| `.NNN` | BRD document number (3-4 digits) | `.001` = BRD-001 |
+| `.NN` | Sequential topic number (2 digits, 01-99) | `.03` = third topic |
+
+**Format** (business-only content):
+```markdown
+## 7.2 Architecture Decision Requirements
+
+### BRD.001.01: API Communication Protocol
+
+**Business Driver**: Real-time market data integration requires low-latency, bidirectional communication for competitive trading execution.
+
+**Business Constraints**:
+- Must maintain <100ms latency for order execution
+- Must support reconnection without data loss during market hours
+- Must comply with broker API terms of service
+
+**ADR Reference**: ADR-001 (pending)
+**PRD Elaboration**: PRD-001 §18.1
+```
+
+**Business-Only Content Rules**:
+- **Business Driver**: WHY this decision matters to business outcomes
+- **Business Constraints**: Non-negotiable business rules (not technical constraints)
+- **Do NOT include**: Technical options, implementation approaches, or evaluation criteria (those belong in PRD Section 18)
+
 **Do NOT write**: "See ADR-033" or "Reference ADR-045" (ADRs don't exist yet)
+
+**Cross-Reference Flow**:
+1. BRD Section 7.2 → Defines business need (`BRD.NNN.NN`)
+2. PRD Section 18 → Elaborates with technical options (references `BRD.NNN.NN`)
+3. ADR Section 4.1 → Records final decision (references both)
 
 ### 5. Document Control Section Positioning
 
