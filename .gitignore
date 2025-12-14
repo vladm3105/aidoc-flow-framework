@@ -1,0 +1,5 @@
+# Temporary files
+tmp/
+
+# Work plans (local planning documents)
+work_plans/
