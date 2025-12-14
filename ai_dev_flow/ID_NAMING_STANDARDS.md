@@ -513,8 +513,7 @@ The following patterns are **REMOVED** and MUST NOT be used:
 **Business Constraints**:
 - [Non-negotiable business rule 1]
 - [Non-negotiable business rule 2]
-**ADR Reference**: ADR-NNN (pending)
-**PRD Elaboration**: PRD-NNN §18.X
+**PRD Requirements**: [What PRD must elaborate for THIS topic - technical options, evaluation criteria, performance benchmarks]
 ```
 
 **Note**: Heading level varies by context (H3-H5) depending on document structure. The pattern uses H4 (`####`) in BRD Section 7.2 as subsections.
@@ -546,7 +545,7 @@ Business drivers/constraints      Technical options/criteria    Final decision
 **PRD Reference**: PRD Section 18 elaborates each BRD Section 7.2 topic with:
 - `**Upstream**: BRD-NNN §7.2.X` - Reference to originating BRD topic
 - Technical options and evaluation criteria
-- `**ADR Reference**: ADR-NNN (pending)` - Placeholder for future ADR
+- `**ADR Requirements**: [guidance]` - What ADR must decide for this topic
 
 **ADR Reference**: ADR Section 4.1 includes:
 - `**Originating Topic**: BRD.NNN.NN - [Topic Name]`

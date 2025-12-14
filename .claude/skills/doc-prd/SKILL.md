@@ -156,7 +156,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 - Must support mobile app integration (future roadmap)
 
 **Decision Timeline**: Before SPEC-001 creation (blocks implementation)
-**ADR Reference**: ADR-001 (pending)
+**ADR Requirements**: [What ADR must decide for THIS topic]
 ```
 
 **Technical Content Rules**:

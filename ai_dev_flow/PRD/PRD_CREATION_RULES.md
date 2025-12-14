@@ -301,7 +301,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 | **Evaluation Criteria** | Measurable targets | "Throughput ≥10K TPS, Latency <100ms P99" |
 | **Product Constraints** | Integration/technical limits | "Must support Python SDK" |
 | **Decision Timeline** | Milestone reference | "Before Phase 2 start" |
-| **ADR Reference** | Placeholder | "ADR-NNN (pending)" |
+| **ADR Requirements** | Guidance for ADR | "Select option based on evaluation. Document trade-offs." |
 
 ### 7.3 Required Subsection Structure
 
@@ -325,7 +325,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 
 **Decision Timeline**: [Milestone reference]
 
-**ADR Reference**: ADR-NNN (pending)
+**ADR Requirements**: [What ADR must decide for THIS topic]
 ```
 
 ### 7.4 Content Guidelines
@@ -383,7 +383,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 
 **Decision Timeline**: Before Phase 2 development start (Q1 2026)
 
-**ADR Reference**: ADR-003 (pending)
+**ADR Requirements**: [What ADR must decide for THIS topic - e.g., "Select one option based on evaluation. Document trade-offs and rollback strategy."]
 ```
 
 **Reference**: See `ai_dev_flow/PRD/PRD-TEMPLATE.md` Section 18 for template

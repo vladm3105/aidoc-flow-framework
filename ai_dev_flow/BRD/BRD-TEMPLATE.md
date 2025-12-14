@@ -667,8 +667,7 @@ The following architectural topics require formal Architecture Decision Records 
 - [Non-negotiable business rule 1 - e.g., regulatory requirement, budget limit]
 - [Non-negotiable business rule 2 - e.g., timeline constraint, partner SLA]
 
-**ADR Reference**: ADR-NNN (pending)
-**PRD Elaboration**: PRD-NNN §18.1
+**PRD Requirements**: [What PRD must elaborate - technical options, evaluation criteria]
 
 ---
 
@@ -680,8 +679,7 @@ The following architectural topics require formal Architecture Decision Records 
 - [Business constraint 1]
 - [Business constraint 2]
 
-**ADR Reference**: ADR-NNN (pending)
-**PRD Elaboration**: PRD-NNN §18.2
+**PRD Requirements**: [What PRD must elaborate - technical options, evaluation criteria]
 
 ---
 
@@ -708,8 +706,7 @@ management (BRD.001.004) and regulatory reporting (Section 8.4.2 BSA compliance)
 - Audit trail retention per BSA requirements (5 years) per Section 8.4.2
 - Maximum budget allocation: $50K annual licensing per Section 8.2
 
-**ADR Reference**: ADR-003 (pending)
-**PRD Elaboration**: PRD-001 §18.3
+**PRD Requirements**: [What PRD must elaborate for THIS topic - e.g., "Evaluate technical options for data persistence. Include scalability analysis."]
 ```
 
 **Layer Separation Principle**: BRD identifies WHAT decisions are needed and WHY (business justification). PRD Section 18 elaborates HOW to evaluate options (technical criteria). ADR documents the final decision.

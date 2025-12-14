@@ -854,7 +854,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 **Decision Timeline**: [Milestone reference - e.g., "Before Phase 2 development start (Q1 2026)"]
 
-**ADR Reference**: ADR-NNN (pending)
+**ADR Requirements**: [What ADR must decide for THIS topic - e.g., "Select one option based on evaluation. Document trade-offs and rollback strategy."]
 
 ---
 
@@ -876,7 +876,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 **Decision Timeline**: [Milestone reference]
 
-**ADR Reference**: ADR-NNN (pending)
+**ADR Requirements**: [What ADR must decide for THIS topic - e.g., "Select one option based on evaluation. Document trade-offs and rollback strategy."]
 
 ---
 
@@ -915,7 +915,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 **Decision Timeline**: Before Phase 2 development start (Q1 2026)
 
-**ADR Reference**: ADR-003 (pending)
+**ADR Requirements**: [What ADR must decide for THIS topic - e.g., "Select one option based on evaluation. Document trade-offs and rollback strategy."]
 ```
 
 **Purpose**: This section adds technical evaluation context to BRD architecture topics. Specific ADRs will be created AFTER this PRD during the ADR phase of the SDD workflow.

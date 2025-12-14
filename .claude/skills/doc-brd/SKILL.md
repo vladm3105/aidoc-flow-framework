@@ -213,8 +213,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 - Must support reconnection without data loss during market hours
 - Must comply with broker API terms of service
 
-**ADR Reference**: ADR-001 (pending)
-**PRD Elaboration**: PRD-001 §18.1
+**PRD Requirements**: [What PRD must elaborate for THIS topic]
 ```
 
 **Business-Only Content Rules**:

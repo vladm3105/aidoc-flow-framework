@@ -1434,8 +1434,7 @@ Each subsection **MUST** contain:
 |-------|-------------|---------|
 | **Business Driver** | WHY this decision matters to business - reference upstream requirements | "Real-time position visibility required for treasury management (BRD.001.004)" |
 | **Business Constraints** | Non-negotiable business rules (bullet list) | "Must support multi-currency per Section 3.2", "5-year audit retention per BSA" |
-| **ADR Reference** | Placeholder for future ADR | "ADR-NNN (pending)" |
-| **PRD Elaboration** | Reference to PRD Section 18 subsection | "PRD-001 §18.3" |
+| **PRD Requirements** | Guidance for PRD Section 18 elaboration | "Evaluate technical options for data persistence. Include scalability analysis." |
 
 ### 9.3 Content Guidelines (Layer Separation)
 
@@ -1484,8 +1483,7 @@ treasury management (BRD.001.004) and regulatory reporting (Section 8.4.2 BSA co
 - Audit trail retention per BSA requirements (5 years) per Section 8.4.2
 - Maximum budget allocation: $50K annual licensing per Section 8.2
 
-**ADR Reference**: ADR-003 (pending)
-**PRD Elaboration**: PRD-001 §18.3
+**PRD Requirements**: [What PRD must elaborate for THIS topic - e.g., "Evaluate technical options for data persistence. Include scalability analysis."]
 ```
 
 **Purpose**: Identifies architectural topics requiring formal evaluation. Technical details are elaborated in PRD Section 18
