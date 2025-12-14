@@ -32,7 +32,7 @@ This skill serves as the **orchestrator** for the AI-Driven Specification-Driven
 
 **For Artifact Creation**: Use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-iplan, doc-ref).
 
-**Authoritative Reference**: [ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
+**Authoritative Reference**: [ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
 ---
 
@@ -90,7 +90,7 @@ Answer these questions to find the right skill:
 
 ## Complete SDD Workflow (16 Layers)
 
-**Authoritative Reference**: [ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
+**Authoritative Reference**: [ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
 ### Workflow Sequence
 
@@ -155,12 +155,12 @@ Validation (Layer 15)
 **When to Create IMPL (Layer 8)**:
 - **Create IMPL When**: Duration ≥2 weeks, teams ≥3, components ≥5, critical budget/timeline, external dependencies
 - **Skip IMPL When**: Single component, duration <2 weeks, single developer, low risk
-- **Reference**: [ai_dev_flow/WHEN_TO_CREATE_IMPL.md](../../../ai_dev_flow/WHEN_TO_CREATE_IMPL.md)
+- **Reference**: [ai_dev_flow/WHEN_TO_CREATE_IMPL.md]({project_root}/ai_dev_flow/WHEN_TO_CREATE_IMPL.md)
 
 **When to Create CTR (Layer 9)**:
 - **Create CTR When**: Public APIs, event schemas, data models, version compatibility requirements, interface between components
 - **Skip CTR When**: Internal logic only, no external interface, no serialization
-- **Reference**: [ai_dev_flow/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr-after-impl](../../../ai_dev_flow/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr-after-impl)
+- **Reference**: [ai_dev_flow/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr-after-impl]({project_root}/ai_dev_flow/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr-after-impl)
 
 ---
 
@@ -318,7 +318,7 @@ If a required upstream artifact is missing, the downstream functionality **MUST 
 3. **Advise** - Recommend creating upstream artifacts first through proper channels
 4. **Skip** - Move on to functionality that has complete upstream chain
 
-**Reference**: [ai_dev_flow/TRACEABILITY.md](../../../ai_dev_flow/TRACEABILITY.md) - Section "Step 3: Decision Rules"
+**Reference**: [ai_dev_flow/TRACEABILITY.md]({project_root}/ai_dev_flow/TRACEABILITY.md) - Section "Step 3: Decision Rules"
 
 ---
 
@@ -496,14 +496,14 @@ LOOP:
 
 **Primary References - Authoritative Development Standard:**
 
-- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 13-step workflow
-- **Workflow Diagram**: [index.md](../../../ai_dev_flow/index.md#traceability-flow) - Complete Mermaid diagram
-- **ID Standards**: [ID_NAMING_STANDARDS.md](../../../ai_dev_flow/ID_NAMING_STANDARDS.md) - File naming, ID format rules
-- **Traceability**: [TRACEABILITY.md](../../../ai_dev_flow/TRACEABILITY.md) - Cross-reference format, link standards
-- **Quality Gates**: [TRACEABILITY_VALIDATION.md](../../../ai_dev_flow/TRACEABILITY_VALIDATION.md) - Automated quality gates system
-- **Platform BRD Guide**: [PLATFORM_VS_FEATURE_BRD.md](../../../ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md) - Platform vs Feature BRD decision guide
-- **When to Create IMPL**: [WHEN_TO_CREATE_IMPL.md](../../../ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC decision guide
-- **README**: [README.md](../../../ai_dev_flow/README.md) - Getting started guide
+- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 13-step workflow
+- **Workflow Diagram**: [index.md]({project_root}/ai_dev_flow/index.md#traceability-flow) - Complete Mermaid diagram
+- **ID Standards**: [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md) - File naming, ID format rules
+- **Traceability**: [TRACEABILITY.md]({project_root}/ai_dev_flow/TRACEABILITY.md) - Cross-reference format, link standards
+- **Quality Gates**: [TRACEABILITY_VALIDATION.md]({project_root}/ai_dev_flow/TRACEABILITY_VALIDATION.md) - Automated quality gates system
+- **Platform BRD Guide**: [PLATFORM_VS_FEATURE_BRD.md]({project_root}/ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md) - Platform vs Feature BRD decision guide
+- **When to Create IMPL**: [WHEN_TO_CREATE_IMPL.md]({project_root}/ai_dev_flow/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC decision guide
+- **README**: [README.md]({project_root}/ai_dev_flow/README.md) - Getting started guide
 
 ### Templates Location
 

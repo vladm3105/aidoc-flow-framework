@@ -15,6 +15,10 @@ custom_fields:
   skill_category: domain-specific
   upstream_artifacts: []
   downstream_artifacts: []
+version: "1.0.0"
+document_control:
+  created: "2025-12-13"
+  last_updated: "2025-12-13"
 ---
 
 # analytics-flow
