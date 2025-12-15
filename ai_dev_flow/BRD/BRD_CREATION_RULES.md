@@ -1414,15 +1414,15 @@ Quality attribute IDs use unified sequential numbering consistently across all d
 
 ## 9. Architecture Decision Requirements
 
-Every BRD must include **Section 7.2: "Architecture Decision Requirements"** with numbered subsections using format `BRD.NNN.NN`.
+Every BRD must include **Section 7.2: "Architecture Decision Requirements"** with numbered subsections using format `{DOC_TYPE}.NNN.NNN`.
 
 ### 9.1 Subsection ID Format
 
 | Component | Format | Example |
 |-----------|--------|---------|
-| Document ID | `BRD.NNN` | `BRD.001` (BRD-001) |
-| Topic Number | `.NN` (2-digit) | `.03` (third topic) |
-| Full ID | `BRD.NNN.NN` | `BRD.001.03` |
+| Document ID | `{DOC_TYPE}.NNN` | `BRD.001` (BRD-001) |
+| Topic Number | `.NNN` (3-digit) | `.003` (third topic) |
+| Full ID | `{DOC_TYPE}.NNN.NNN` | `BRD.001.003` |
 
 **Reference**: See `ai_dev_flow/ID_NAMING_STANDARDS.md` - "Architecture Decision Topic Subsection Format"
 
@@ -1473,7 +1473,7 @@ ADR placeholder               ADR placeholder            ADR document
 ### 9.5 Example (Business-Focused)
 
 ```markdown
-#### BRD.001.03: Ledger System Selection
+#### BRD.001.003: Ledger System Selection
 
 **Business Driver**: Real-time financial position visibility required for
 treasury management (BRD.001.004) and regulatory reporting (Section 8.4.2 BSA compliance).

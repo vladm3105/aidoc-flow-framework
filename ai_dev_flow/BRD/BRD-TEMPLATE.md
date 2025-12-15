@@ -653,13 +653,13 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 ### 7.2 Architecture Decision Requirements
 
-The following architectural topics require formal Architecture Decision Records (ADRs). Each topic uses subsection format `BRD.NNN.NN` (2-digit topic number) containing **business content only**. Technical options and evaluation criteria belong in PRD Section 18.
+The following architectural topics require formal Architecture Decision Records (ADRs). Each topic uses subsection format `{DOC_TYPE}.NNN.NNN` (3-digit topic number) containing **business content only**. Technical options and evaluation criteria belong in PRD Section 18.
 
 **Format Reference**: See `ai_dev_flow/ID_NAMING_STANDARDS.md` - "Architecture Decision Topic Subsection Format"
 
 ---
 
-#### BRD.NNN.01: [Topic Name]
+#### BRD.NNN.001: [Topic Name]
 
 **Business Driver**: [Why this decision matters to business - reference upstream business objectives from sections 3-5]
 
@@ -671,7 +671,7 @@ The following architectural topics require formal Architecture Decision Records 
 
 ---
 
-#### BRD.NNN.02: [Topic Name]
+#### BRD.NNN.002: [Topic Name]
 
 **Business Driver**: [Why this decision matters to business]
 
@@ -696,7 +696,7 @@ The following architectural topics require formal Architecture Decision Records 
 **Example** (Business-Focused):
 
 ```markdown
-#### BRD.001.03: Ledger System Selection
+#### BRD.001.003: Ledger System Selection
 
 **Business Driver**: Real-time financial position visibility required for treasury
 management (BRD.001.004) and regulatory reporting (Section 8.4.2 BSA compliance).

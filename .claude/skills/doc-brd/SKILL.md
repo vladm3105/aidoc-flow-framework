@@ -192,19 +192,19 @@ Business drivers              Technical options          Selected option
 Business constraints          Evaluation criteria        Trade-off analysis
 ```
 
-**Subsection ID Format**: `BRD.NNN.NN` (2-digit topic number)
+**Subsection ID Format**: `{DOC_TYPE}.NNN.NNN` (3-digit topic number)
 
 | Component | Description | Example |
 |-----------|-------------|---------|
-| `BRD` | Document type | `BRD` |
-| `.NNN` | BRD document number (3-4 digits) | `.001` = BRD-001 |
-| `.NN` | Sequential topic number (2 digits, 01-99) | `.03` = third topic |
+| `{DOC_TYPE}` | Document type | `BRD` |
+| `.NNN` | Document number (3-4 digits) | `.001` = BRD-001 |
+| `.NNN` | Sequential topic number (3 digits, 001-999) | `.003` = third topic |
 
 **Format** (business-only content):
 ```markdown
 ## 7.2 Architecture Decision Requirements
 
-### BRD.001.01: API Communication Protocol
+### BRD.001.001: API Communication Protocol
 
 **Business Driver**: Real-time market data integration requires low-latency, bidirectional communication for competitive trading execution.
 
@@ -224,8 +224,8 @@ Business constraints          Evaluation criteria        Trade-off analysis
 **Do NOT write**: "See ADR-033" or "Reference ADR-045" (ADRs don't exist yet)
 
 **Cross-Reference Flow**:
-1. BRD Section 7.2 → Defines business need (`BRD.NNN.NN`)
-2. PRD Section 18 → Elaborates with technical options (references `BRD.NNN.NN`)
+1. BRD Section 7.2 → Defines business need (`{DOC_TYPE}.NNN.NNN`)
+2. PRD Section 18 → Elaborates with technical options (references `{DOC_TYPE}.NNN.NNN`)
 3. ADR Section 4.1 → Records final decision (references both)
 
 ### 5. Document Control Section Positioning

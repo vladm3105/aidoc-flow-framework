@@ -834,7 +834,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 ---
 
-##### BRD.NNN.01: [Topic Name]
+##### BRD.NNN.001: [Topic Name]
 
 **Upstream**: BRD-NNN §7.2.1
 
@@ -858,7 +858,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 ---
 
-##### BRD.NNN.02: [Topic Name]
+##### BRD.NNN.002: [Topic Name]
 
 **Upstream**: BRD-NNN §7.2.2
 
@@ -893,7 +893,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 **Example** (Technical Elaboration):
 
 ```markdown
-##### BRD.001.03: Ledger System Selection
+##### BRD.001.003: Ledger System Selection
 
 **Upstream**: BRD-001 §7.2.3
 

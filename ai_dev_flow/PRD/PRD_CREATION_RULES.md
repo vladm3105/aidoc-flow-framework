@@ -290,7 +290,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 
 ### 7.2 PRD Elaboration Workflow
 
-**Step 1**: Read BRD Section 7.2 topics (format: `BRD.NNN.NN`)
+**Step 1**: Read BRD Section 7.2 topics (format: `{DOC_TYPE}.NNN.NNN`)
 
 **Step 2**: For each BRD topic, create corresponding PRD subsection:
 
@@ -306,7 +306,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 ### 7.3 Required Subsection Structure
 
 ```markdown
-##### BRD.NNN.NN: [Topic Name]
+##### {DOC_TYPE}.NNN.NNN: [Topic Name]
 
 **Upstream**: BRD-NNN §7.2.X
 
@@ -352,7 +352,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 
 **BRD Section 7.2 (Business-Only)**:
 ```markdown
-#### BRD.001.03: Ledger System Selection
+#### BRD.001.003: Ledger System Selection
 
 **Business Driver**: Real-time position visibility for treasury management (BRD.001.004)
 **Business Constraints**:
@@ -363,7 +363,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 
 **PRD Section 18 (Technical Elaboration)**:
 ```markdown
-##### BRD.001.03: Ledger System Selection
+##### BRD.001.003: Ledger System Selection
 
 **Upstream**: BRD-001 §7.2.3
 

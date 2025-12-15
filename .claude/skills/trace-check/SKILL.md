@@ -401,13 +401,13 @@ Business drivers              Technical options          Selected option
 Business constraints          Evaluation criteria        Trade-off analysis
 ```
 
-**Subsection ID Format**: `BRD.NNN.NN` (2-digit topic number)
+**Subsection ID Format**: `{DOC_TYPE}.NNN.NNN` (3-digit topic number)
 
 | Component | Description | Example |
 |-----------|-------------|---------|
-| `BRD` | Document type | `BRD` |
-| `.NNN` | BRD document number (3-4 digits) | `.001` = BRD-001 |
-| `.NN` | Sequential topic number (2 digits, 01-99) | `.03` = third topic |
+| `{DOC_TYPE}` | Document type | `BRD` |
+| `.NNN` | Document number (3-4 digits) | `.001` = BRD-001 |
+| `.NNN` | Sequential topic number (3 digits, 001-999) | `.003` = third topic |
 
 **Validation Logic**:
 ```python
@@ -420,8 +420,8 @@ def validate_architecture_topics(docs_dir):
 
     # 2. Validate topic ID format
     for topic_id, content in brd_topics.items():
-        if not re.match(r'^BRD\.\d{3,4}\.\d{2}$', topic_id):
-            errors.append(f"{topic_id}: Invalid format (expected BRD.NNN.NN)")
+        if not re.match(r'^[A-Z]+\.\d{3,4}\.\d{3}$', topic_id):
+            errors.append(f"{topic_id}: Invalid format (expected {{DOC_TYPE}}.NNN.NNN)")
 
         # 3. Check business-only content (no technical options)
         if has_technical_content(content):
@@ -459,13 +459,13 @@ def validate_architecture_topics(docs_dir):
 **Validation Regex Patterns**:
 ```python
 # BRD Section 7.2 subsection header (H3-H5 depending on document context)
-BRD_TOPIC_PATTERN = r'^#{3,5}\s+(BRD\.\d{3,4}\.\d{2}):\s+.+'
+ARCHITECTURE_TOPIC_PATTERN = r'^#{3,5}\s+([A-Z]+\.\d{3,4}\.\d{3}):\s+.+'
 
-# PRD Section 18 upstream reference (2-digit topic number)
-PRD_UPSTREAM_PATTERN = r'\*\*Upstream\*\*:\s*BRD-\d{3,4}\s+§7\.2\.\d{2}'
+# PRD Section 18 upstream reference (3-digit topic number)
+PRD_UPSTREAM_PATTERN = r'\*\*Upstream\*\*:\s*BRD-\d{3,4}\s+§7\.2\.\d{3}'
 
 # ADR Section 4.1 originating topic
-ADR_ORIGINATING_PATTERN = r'\*\*Originating Topic\*\*:\s*(BRD\.\d{3,4}\.\d{2})\s*-\s*.+'
+ADR_ORIGINATING_PATTERN = r'\*\*Originating Topic\*\*:\s*([A-Z]+\.\d{3,4}\.\d{3})\s*-\s*.+'
 ```
 
 **Cross-Reference Validation**:
@@ -474,14 +474,14 @@ ADR_ORIGINATING_PATTERN = r'\*\*Originating Topic\*\*:\s*(BRD\.\d{3,4}\.\d{2})\s
 3. Each ADR Section 4.1 should reference originating BRD topic
 
 **Error Examples**:
-- `BRD.001.01: Invalid format` → Should be `BRD.001.01` (correct already)
-- `BRD.001.1: Invalid format` → Should be `BRD.001.01` (2-digit topic)
-- `BRD.001.01: Contains technical content` → "WebSocket" in BRD (move to PRD)
+- `BRD.001.01: Invalid format` → Should be `BRD.001.001` (3-digit topic)
+- `BRD.001.1: Invalid format` → Should be `BRD.001.001` (3-digit topic)
+- `BRD.001.001: Contains technical content` → "WebSocket" in BRD (move to PRD)
 - `PRD 18.1: Upstream BRD topic not found` → References non-existent BRD topic
-- `ADR-001: Originating topic BRD.999.01 not found` → Invalid topic reference
+- `ADR-001: Originating topic BRD.999.001 not found` → Invalid topic reference
 
 **Success Criteria**:
-- ✅ All BRD Section 7.2 topics use `BRD.NNN.NN` format
+- ✅ All BRD Section 7.2 topics use `{DOC_TYPE}.NNN.NNN` format
 - ✅ All BRD Section 7.2 topics contain business-only content
 - ✅ All PRD Section 18 topics reference valid BRD topics
 - ✅ All PRD Section 18 topics contain technical elaboration
@@ -1082,9 +1082,13 @@ tar -xzf ../backups/docs_backup_20251111_174001.tar.gz
 **Author**: SDD Framework Team
 
 **Change Log**:
+- 2.1.1 (2025-12-15): Architecture Decision Topic format update
+  - **FORMAT CHANGE**: Updated ADT format from `BRD.NNN.NN` to `{DOC_TYPE}.NNN.NNN`
+    - 3-digit topic number (001-999) for consistency with other IDs
+    - Generic doc type support (not BRD-specific)
 - 2.1.0 (2025-12-13): Architecture decision layer separation validation
   - **NEW FEATURE**: Added Step 3.6 - Architecture Decision Topic validation
-    - Validates `BRD.NNN.NN` subsection ID format (2-digit topic number)
+    - Validates `{DOC_TYPE}.NNN.NNN` subsection ID format (3-digit topic number)
     - Cross-reference validation: BRD Section 7.2 → PRD Section 18 → ADR Section 4.1
     - Content validation: Business-only in BRD, technical in PRD
     - Layer separation principle enforcement

@@ -126,7 +126,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 ```
 
 **PRD Elaboration Workflow**:
-1. Read BRD Section 7.2 topic (`BRD.NNN.NN`)
+1. Read BRD Section 7.2 topic (`{DOC_TYPE}.NNN.NNN`)
 2. Create corresponding PRD Section 18 subsection
 3. Add technical options NOT present in BRD
 4. Add evaluation criteria NOT present in BRD
@@ -136,7 +136,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 ```markdown
 ## 18. Architecture Decision Requirements
 
-### 18.1 BRD.001.01: API Communication Protocol
+### 18.1 BRD.001.001: API Communication Protocol
 
 **Upstream**: BRD-001 §7.2.1
 
@@ -166,8 +166,8 @@ Business constraints          Evaluation criteria        Trade-off analysis
 - **Decision Timeline**: When decision is needed relative to project milestones
 
 **Cross-Reference Flow**:
-1. BRD Section 7.2 → Defines business need (`BRD.NNN.NN`)
-2. PRD Section 18 → Elaborates with technical options (references `BRD.NNN.NN`)
+1. BRD Section 7.2 → Defines business need (`{DOC_TYPE}.NNN.NNN`)
+2. PRD Section 18 → Elaborates with technical options (references `{DOC_TYPE}.NNN.NNN`)
 3. ADR Section 4.1 → Records final decision (references both)
 
 **Do NOT write**: "See ADR-033" or "Reference ADR-045" (ADRs don't exist yet)

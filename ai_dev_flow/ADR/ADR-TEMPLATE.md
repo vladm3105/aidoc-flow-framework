@@ -117,7 +117,7 @@ Production-Ready Code
 
 ### 4.1 Problem Statement
 
-**Originating Topic**: BRD.NNN.NN - [Topic Name from BRD Section 7.2]
+**Originating Topic**: {DOC_TYPE}.NNN.NNN - [Topic Name from BRD Section 7.2]
 
 #### Inherited Content
 

@@ -492,22 +492,20 @@ The following patterns are **REMOVED** and MUST NOT be used:
 
 ## Architecture Decision Topic Subsection Format
 
-**Purpose**: BRD Section 7.2 "Architecture Decision Requirements" contains numbered subsections identifying architectural topics requiring formal ADR decisions. These subsections use a specialized format distinct from feature headings.
+**Purpose**: Document Section 7.2 "Architecture Decision Requirements" contains numbered subsections identifying architectural topics requiring formal ADR decisions. These subsections use a specialized format distinct from feature headings.
 
-**Subsection ID Pattern**: `BRD.NNN.NN`
+**Subsection ID Pattern**: `{DOC_TYPE}.NNN.NNN`
 
 | Component | Description | Example |
 |-----------|-------------|---------|
-| `BRD` | Document type (always BRD for architecture topics) | `BRD` |
-| `.NNN` | BRD document number (3-4 digits) | `.001` = BRD-001 |
-| `.NN` | Sequential topic number within Section 7.2 (2 digits, 01-99) | `.03` = third topic |
-
-**Note**: Topic subsection IDs use `.NN` (2-digit) to distinguish from feature IDs which use `.NNN` (3-digit).
+| `{DOC_TYPE}` | Document type (BRD, PRD, etc.) | `BRD` |
+| `.NNN` | Document number (3-4 digits) | `.001` = BRD-001 |
+| `.NNN` | Sequential topic number (3 digits, 001-999) | `.003` = third topic |
 
 **Heading Format**:
 
 ```markdown
-#### BRD.NNN.NN: [Topic Name]
+#### {DOC_TYPE}.NNN.NNN: [Topic Name]
 
 **Business Driver**: [Why this decision matters to business - reference upstream requirements]
 **Business Constraints**:
@@ -520,16 +518,16 @@ The following patterns are **REMOVED** and MUST NOT be used:
 
 **Examples**:
 
-| BRD | Topic # | Full ID | Meaning |
-|-----|---------|---------|---------|
-| BRD-001 | 3 | `BRD.001.03` | Third architecture topic in BRD-001 Section 7.2 |
-| BRD-017 | 1 | `BRD.017.01` | First architecture topic in BRD-017 Section 7.2 |
-| BRD-003 | 12 | `BRD.003.12` | Twelfth architecture topic in BRD-003 Section 7.2 |
+| Document | Topic # | Full ID | Meaning |
+|----------|---------|---------|---------|
+| BRD-001 | 3 | `BRD.001.003` | Third architecture topic in BRD-001 Section 7.2 |
+| BRD-017 | 1 | `BRD.017.001` | First architecture topic in BRD-017 Section 7.2 |
+| BRD-003 | 12 | `BRD.003.012` | Twelfth architecture topic in BRD-003 Section 7.2 |
 
 **Content Rules (Business-Only)**:
 
-| Include in BRD Section 7.2 | Exclude from BRD Section 7.2 |
-|---------------------------|------------------------------|
+| Include in Section 7.2 | Exclude from Section 7.2 |
+|------------------------|--------------------------|
 | Business objectives | Technology options |
 | Regulatory constraints | Performance specifications |
 | Non-negotiable business rules | Evaluation criteria |
@@ -538,8 +536,8 @@ The following patterns are **REMOVED** and MUST NOT be used:
 **Cross-Reference Flow**:
 
 ```
-BRD Section 7.2 (BRD.NNN.NN)  →  PRD Section 18           →  ADR
-Business drivers/constraints      Technical options/criteria    Final decision
+BRD Section 7.2 ({DOC_TYPE}.NNN.NNN)  →  PRD Section 18           →  ADR
+Business drivers/constraints              Technical options/criteria    Final decision
 ```
 
 **PRD Reference**: PRD Section 18 elaborates each BRD Section 7.2 topic with:
@@ -548,15 +546,15 @@ Business drivers/constraints      Technical options/criteria    Final decision
 - `**ADR Requirements**: [guidance]` - What ADR must decide for this topic
 
 **ADR Reference**: ADR Section 4.1 includes:
-- `**Originating Topic**: BRD.NNN.NN - [Topic Name]`
+- `**Originating Topic**: {DOC_TYPE}.NNN.NNN - [Topic Name]`
 - Business driver and constraints from BRD
 - Technical options evaluated from PRD
 
 **Validation Regex**:
 
 ```python
-BRD_ARCHITECTURE_TOPIC_PATTERN = r'^#{3,5}\s+BRD\.\d{3,4}\.\d{2}:\s+.+$'
-# Matches: ### BRD.001.03: ... OR #### BRD.001.03: ... OR ##### BRD.001.03: ...
+ARCHITECTURE_TOPIC_PATTERN = r'^#{3,5}\s+[A-Z]+\.\d{3,4}\.\d{3}:\s+.+$'
+# Matches: ### BRD.001.003: ... OR #### PRD.017.001: ... OR ##### BRD.003.012: ...
 # Heading level (H3-H5) varies by document section context
 ```
 

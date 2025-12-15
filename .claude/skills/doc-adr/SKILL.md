@@ -272,8 +272,8 @@ Real-time market data integration requires low-latency, bidirectional communicat
 ```
 
 **Cross-Reference Flow**:
-1. BRD Section 7.2 → Defines business need (`BRD.NNN.NN`)
-2. PRD Section 18 → Elaborates with technical options (references `BRD.NNN.NN`)
+1. BRD Section 7.2 → Defines business need (`{DOC_TYPE}.NNN.NNN`)
+2. PRD Section 18 → Elaborates with technical options (references `{DOC_TYPE}.NNN.NNN`)
 3. ADR Section 4.1 → Records final decision (references both)
 
 **Inherited Content**:
