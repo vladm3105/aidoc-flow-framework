@@ -24,6 +24,17 @@ The AI Dev Flow Framework is a comprehensive template system for implementing AI
 - **Automated Validation**: Scripts for tag extraction, cumulative tagging validation, and matrix generation with CI/CD integration
 - **Regulatory Compliance**: Complete audit trails meet SEC, FINRA, FDA, ISO requirements
 
+## 🤖 Agent Swarm Integration (.aidev)
+
+The framework now includes a native **Agent Orchestration System** located in `.aidev/`. This system implements the **BMAD Methodology**, deploying a swarm of 16 specialized AI agents (using Claude Code, Gemini, and Codex) to autonomously generate and validate the documentation artifacts.
+
+### Key Capabilities
+*   **16-Layer Swarm**: A dedicated agent role for every layer (e.g., `product-manager` for PRDs, `architect` for ADRs).
+*   **Adversarial Pair Architecture**: Every step is executed by one model (e.g., Gemini) and reviewed by another (e.g., Claude) to minimize hallucinations.
+*   **CLI-First**: Designed to work with standard CLI tools (`claude`, `gemini`, `codex`).
+
+👉 **[Get Started with the Agent Swarm](.aidev/README.md)**
+
 ## Quality Gates and Traceability Validation
 
 The framework includes automated quality gates that ensure each layer in the 16-layer SDD workflow meets maturity thresholds before progressing to downstream artifacts. Quality gates prevent immature artifacts from affecting subsequent development stages.
