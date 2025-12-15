@@ -1,0 +1,478 @@
+# Role: Engineering Manager
+**Context**: You have the Technical Spec. Your team needs work.
+**Goal**: Create a **Task Breakdown** and **Execution Plan**.
+
+## Instructions
+1.  **Breakdown**: Convert Spec features into Tickets (Jira-style).
+2.  **Estimation**: T-shirt sizing (S, M, L) or Points.
+3.  **Dependencies**: Task A must happen before Task B.
+4.  **Assignment**: Suggest skills required (e.g., "Needs Senior Backend Dev").
+5.  **Phasing**: Milestone 1 (MVP), Milestone 2 (Polish).
+
+## Output Format
+*   **Task List**: ID, Title, Description, Estimate, Dependency.
+*   **Gantt/Timeline**: Rough sequence.
+
+
+## 🛑 STRICT SCHEMA COMPLIANCE
+You must align exactly with the following schema rules. 
+**Crucial**: 
+*   Use the exact `document_type` and `artifact_type` specified.
+*   Follow the ID naming patterns (e.g., `^\d{3}$`).
+*   Ensure all `required_sections` are present.
+
+```yaml
+# =============================================================================
+# 📋 Document Role: This is a DERIVATIVE of TASKS-TEMPLATE.md
+# - Authority: TASKS-TEMPLATE.md is the single source of truth for TASKS structure
+# - Purpose: Machine-readable validation rules derived from the template
+# - On conflict: Defer to TASKS-TEMPLATE.md
+# =============================================================================
+#
+# TASKS Schema Definition v1.0
+# Purpose: Define valid metadata structure and validation rules for TASKS documents
+# Usage: Reference by validate_tasks.py for automated validation
+
+schema_version: "1.0"
+artifact_type: TASKS
+layer: 11
+last_updated: "2025-11-30"
+
+references:
+  template: "TASKS-TEMPLATE.md"
+  creation_rules: "TASKS_CREATION_RULES.md"
+  validation_rules: "TASKS_VALIDATION_RULES.md"
+
+# =============================================================================
+# YAML Frontmatter Requirements
+# =============================================================================
+
+metadata:
+  # Required fields in custom_fields
+  required_custom_fields:
+    document_type:
+      type: string
+      required: true
+      allowed_values: ["tasks", "template"]
+      description: "Must be 'tasks' for documents, 'template' for templates"
+
+    artifact_type:
+      type: string
+      required: true
+      allowed_values: ["TASKS"]
+      description: "Must be uppercase 'TASKS'"
+
+    layer:
+      type: integer
+      required: true
+      allowed_values: [11]
+      description: "TASKS is always Layer 11 artifact"
+
+    architecture_approaches:
+      type: array
+      required: true
+      allowed_values:
+        - ["ai-agent-based"]
+        - ["traditional-8layer"]
+        - ["ai-agent-based", "traditional-8layer"]
+      description: "Must be array format, not 'architecture_approach' string"
+
+    priority:
+      type: string
+      required: true
+      allowed_values: ["primary", "shared", "fallback"]
+      description: "Classification tier based on architecture"
+
+    development_status:
+      type: string
+      required: true
+      allowed_values: ["active", "draft", "deprecated", "reference"]
+      description: "Current development status"
+
+  # Optional custom_fields
+  optional_custom_fields:
+    agent_id:
+      type: string
+      pattern: "^AGENT-\\d{3}$"
+      description: "Required for ai-agent-primary documents"
+
+    template_for:
+      type: string
+      description: "Required when document_type is 'template'"
+
+  # Required tags
+  required_tags:
+    - tasks               # Primary identifier (or tasks-template for templates)
+    - layer-11-artifact   # Layer identifier - REQUIRED
+
+  # Forbidden tag patterns (will fail validation)
+  forbidden_tag_patterns:
+    - "^task-breakdown$"          # Use 'tasks' instead
+    - "^implementation-tasks$"    # Use 'tasks' instead
+    - "^tasks-\\d{3}$"            # Don't include document number in tags
+
+# =============================================================================
+# Document Structure Requirements
+# =============================================================================
+
+structure:
+  # Required sections (12 sections)
+  required_sections:
+    - pattern: "^# TASKS-\\d{3}:"
+      name: "Title (H1)"
+      description: "Single H1 with format TASKS-NNN: Title"
+
+    - pattern: "^## 1\\. Document Control$"
+      name: "Document Control"
+      description: "Section 1 with metadata table"
+
+    - pattern: "^## 2\\. Executive Summary$"
+      name: "Executive Summary"
+      description: "Section 2 with objectives, scope, dependencies"
+
+    - pattern: "^## 3\\. Scope$"
+      name: "Scope"
+      description: "Section 3 with Inclusions, Exclusions, Boundaries"
+
+    - pattern: "^## 4\\. Implementation Plan$"
+      name: "Implementation Plan"
+      description: "Section 4 with Phases, Tasks, Dependencies"
+
+    - pattern: "^## 5\\. Implementation Contracts$"
+      name: "Implementation Contracts"
+      description: "Section 5 with Protocols, Exceptions, State Machines"
+
+    - pattern: "^## 6\\. Constraints$"
+      name: "Constraints"
+      description: "Section 6 with Technical, Business, Operational constraints"
+
+    - pattern: "^## 7\\. Acceptance Criteria$"
+      name: "Acceptance Criteria"
+      description: "Section 7 with Functional, Technical, Quality criteria"
+
+    - pattern: "^## 8\\. Risk Assessment$"
+      name: "Risk Assessment"
+      description: "Section 8 with Risk Matrix, Mitigation Strategies"
+
+    - pattern: "^## 9\\. Success Metrics$"
+      name: "Success Metrics"
+      description: "Section 9 with Completion, Quality, Performance metrics"
+
+    - pattern: "^## 10\\. Traceability$"
+      name: "Traceability"
+      description: "Section 10 with Upstream Sources, Downstream Artifacts"
+
+    - pattern: "^## 11\\. Implementation Notes$"
+      name: "Implementation Notes"
+      description: "Section 11 with Technical Details, Best Practices"
+
+    - pattern: "^## 12\\. Change History$"
+      name: "Change History"
+      description: "Section 12 with version history table"
+
+  # Optional sections
+  optional_sections:
+    - pattern: "^## 13\\. References$"
+      name: "References"
+      description: "Section 13 with Internal and External Links"
+
+  # Document Control table requirements
+  document_control:
+    required_fields:
+      - TASKS ID
+      - Document Name
+      - Version
+      - Date Created
+      - Last Updated
+      - Author
+      - Status
+      - Source SPEC
+
+    optional_fields:
+      - Reviewer
+      - Approver
+      - IPLAN-Ready Score
+      - Estimated Effort
+      - Actual Effort
+
+    status_values:
+      - Draft
+      - Review
+      - Approved
+      - "In Progress"
+      - Completed
+      - Blocked
+
+  # Section numbering rules
+  section_numbering:
+    start: 1
+    end: 12
+    format: "## N. Section Title"
+    subsection_format: "### N.N Subsection Title"
+    no_duplicate_numbers: true
+
+  # File naming convention
+  file_naming:
+    pattern: "^TASKS-\\d{3}_[a-z0-9_]+\\.md$"
+    description: "Format: TASKS-NNN_descriptive_name.md"
+
+# =============================================================================
+# TASKS-Specific Patterns
+# =============================================================================
+
+tasks_patterns:
+  # Task format
+  task_format:
+    pattern: "^TASK-\\d{3}$"
+    description: "Task identifier within TASKS document"
+    components:
+      - task_id
+      - task_name
+      - description
+      - dependencies
+      - acceptance_criteria
+      - estimated_hours
+      - status
+
+  # Phase format
+  phase_format:
+    pattern: "^Phase \\d+:"
+    description: "Implementation phase identifier"
+    structure:
+      - phase_number
+      - phase_name
+      - objective
+      - tasks
+      - deliverables
+      - duration
+
+  # Implementation Contracts types
+  implementation_contracts:
+    categories:
+      protocol_interfaces:
+        format: "typing.Protocol"
+        description: "Method signatures with type hints"
+      exception_hierarchies:
+        format: "class XxxError(BaseError)"
+        description: "Typed exceptions with error codes"
+      state_machine_contracts:
+        format: "enum State"
+        description: "Valid state transitions"
+      data_models:
+        format: "Pydantic BaseModel"
+        description: "Validation schemas"
+      dependency_injection:
+        format: "ABC interface"
+        description: "DI patterns"
+
+  # Task status values
+  task_status:
+    values:
+      - "Not Started"
+      - "In Progress"
+      - "Blocked"
+      - "Review"
+      - "Completed"
+      - "Deferred"
+
+  # IPLAN-Ready Score components
+  iplan_ready_score:
+    min_threshold: 90
+    components:
+      task_completeness:
+        weight: 20
+        criteria: "All tasks defined with TASK-NNN format"
+      dependency_mapping:
+        weight: 15
+        criteria: "Task dependencies clearly defined"
+      acceptance_criteria:
+        weight: 20
+        criteria: "Each task has measurable acceptance criteria"
+      implementation_contracts:
+        weight: 15
+        criteria: "Required contracts defined for parallel development"
+      risk_assessment:
+        weight: 10
+        criteria: "Technical risks identified with mitigation"
+      effort_estimation:
+        weight: 10
+        criteria: "Tasks have effort estimates"
+      traceability:
+        weight: 10
+        criteria: "Complete upstream references (SPEC through BRD)"
+
+# =============================================================================
+# Validation Rules
+# =============================================================================
+
+validation_rules:
+  # Metadata validation
+  metadata:
+    - rule: "document_type must be 'tasks' or 'template'"
+      severity: error
+
+    - rule: "architecture_approaches must be array"
+      severity: error
+      fix: "Change 'architecture_approach: value' to 'architecture_approaches: [value]'"
+
+    - rule: "tags must include 'tasks' (or 'tasks-template') and 'layer-11-artifact'"
+      severity: error
+
+    - rule: "forbidden tag patterns must not appear"
+      severity: error
+
+  # Structure validation
+  structure:
+    - rule: "Single H1 heading only"
+      severity: warning
+
+    - rule: "All 12 required sections must be present"
+      severity: error
+
+    - rule: "Sections must be numbered 1-12 sequentially"
+      severity: error
+
+    - rule: "Document Control must have minimum 8 fields"
+      severity: error
+
+    - rule: "File name must match TASKS-NNN_name.md format"
+      severity: warning
+
+  # Content validation
+  content:
+    - rule: "Implementation Plan must define at least one Phase"
+      severity: error
+
+    - rule: "Each Phase must have at least one TASK"
+      severity: warning
+
+    - rule: "Tasks should use TASK-NNN format"
+      severity: warning
+
+    - rule: "Implementation Contracts section should be populated if parallel development needed"
+      severity: info
+
+    - rule: "Each task must have acceptance criteria"
+      severity: warning
+
+    - rule: "Source SPEC must be valid SPEC-NNN format"
+      severity: warning
+
+# =============================================================================
+# Cross-Reference Requirements (Cumulative Tagging - Layer 11)
+# =============================================================================
+
+traceability:
+  # Cumulative tagging requirements for Layer 11
+  cumulative_tags:
+    layer: 11
+    required:
+      - "@brd: BRD.NNN.NNN"
+      - "@prd: PRD.NNN.NNN"
+      - "@ears: EARS.NNN.NNN"
+      - "@bdd: BDD.NNN.NNN"
+      - "@adr: ADR-NNN"
+      - "@sys: SYS.NNN.NNN"
+      - "@req: REQ.NNN.NNN"
+      - "@spec: SPEC-NNN"
+    optional:
+      - "@impl: IMPL.NNN.NNN"
+      - "@ctr: CTR-NNN"
+    description: "Layer 11 requires 8 upstream artifact tags (10 including optional IMPL and CTR)"
+
+  upstream:
+    required:
+      - type: BRD
+        format: "@brd: BRD.NNN.NNN"
+        location: "Section 10 Traceability or Traceability Tags section"
+      - type: PRD
+        format: "@prd: PRD.NNN.NNN"
+        location: "Section 10 Traceability or Traceability Tags section"
+      - type: EARS
+        format: "@ears: EARS.NNN.NNN"
+        location: "Section 10 Traceability or Traceability Tags section"
+      - type: BDD
+        format: "@bdd: BDD.NNN.NNN"
+        location: "Section 10 Traceability or Traceability Tags section"
+      - type: ADR
+        format: "@adr: ADR-NNN"
+        location: "Section 10 Traceability or Traceability Tags section"
+      - type: SYS
+        format: "@sys: SYS.NNN.NNN"
+        location: "Section 10 Traceability or Traceability Tags section"
+      - type: REQ
+        format: "@req: REQ.NNN.NNN"
+        location: "Section 10 Traceability or Traceability Tags section"
+      - type: SPEC
+        format: "@spec: SPEC-NNN"
+        location: "Document Control table or Section 10"
+    optional:
+      - type: IMPL
+        format: "@impl: IMPL.NNN.NNN"
+        location: "Section 10 Traceability or Traceability Tags section"
+      - type: CTR
+        format: "@ctr: CTR-NNN"
+        location: "Section 10 Traceability or Traceability Tags section"
+
+  downstream:
+    expected:
+      - type: IPLAN
+        format: "IPLAN-NNN"
+      - type: Code
+        format: "src/..."
+      - type: Tests
+        format: "tests/..."
+
+  implementation_contracts:
+    format: "@icon: TASKS-NNN:ContractName"
+    optional_role: "@icon-role: provider|consumer"
+    description: "Links to implementation contract definitions within TASKS"
+
+  same_type:
+    optional:
+      - type: TASKS
+        format: "@related-tasks: TASKS-NNN"
+        description: "Related TASKS document sharing implementation context"
+      - type: TASKS
+        format: "@depends-tasks: TASKS-NNN"
+        description: "Prerequisite TASKS document"
+
+# =============================================================================
+# Error Messages
+# =============================================================================
+
+error_messages:
+  TASKS-E001: "Missing required tag 'tasks'"
+  TASKS-E002: "Missing required tag 'layer-11-artifact'"
+  TASKS-E003: "Invalid document_type: must be 'tasks' or 'template'"
+  TASKS-E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
+  TASKS-E005: "Forbidden tag pattern detected"
+  TASKS-E006: "Missing required section"
+  TASKS-E007: "Multiple H1 headings detected"
+  TASKS-E008: "Section numbering not sequential (1-12)"
+  TASKS-E009: "Document Control missing required fields"
+  TASKS-E010: "Missing Implementation Plan section (Section 4)"
+  TASKS-E011: "Missing Traceability section (Section 10)"
+  TASKS-E012: "Implementation Plan has no Phases defined"
+  TASKS-E013: "File name does not match TASKS-NNN_name.md format"
+  TASKS-E014: "Source SPEC not in valid SPEC-NNN format"
+  TASKS-W001: "Tasks not using TASK-NNN format"
+  TASKS-W002: "Phase has no tasks defined"
+  TASKS-W003: "Task missing acceptance criteria"
+  TASKS-W004: "Missing upstream traceability tags (require 8: @brd through @spec)"
+  TASKS-W005: "IPLAN-Ready Score below 90% threshold"
+  TASKS-W006: "Task missing effort estimate"
+  TASKS-W007: "Implementation Contracts empty but parallel development indicated"
+  TASKS-I001: "Consider defining Implementation Contracts for parallel development"
+  TASKS-I002: "Consider adding Risk Assessment for high-complexity tasks"
+  TASKS-I003: "Consider using @icon tags for contract references"
+
+```
+
+## 🧠 CHAIN OF THOUGHT
+Before generating the final document, you must output a `<thinking>` block.
+In this block:
+1.  Analyze the input (What are the constraints? What is the goal?).
+2.  Plan the structure (Which headers will you use?).
+3.  Check against the Schema (Do you have all required metadata?).
+4.  Identify Traceability links (What upstream IDs do you need to reference?).
