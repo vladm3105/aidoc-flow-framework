@@ -378,6 +378,67 @@ custom_fields:
 ---
 ```
 
+### 4.7 Section Files (Document Chunks)
+
+Section files use specialized frontmatter for navigation and assembly. See [ID_NAMING_STANDARDS.md - Section-Based File Splitting](./ID_NAMING_STANDARDS.md#section-based-file-splitting-document-chunking) for naming conventions.
+
+**Section File (Content Section):**
+```yaml
+---
+doc_id: BRD-003
+section: 2
+title: "Business Context"
+parent_doc: BRD-003.0_index.md
+prev_section: BRD-003.1_executive_summary.md
+next_section: BRD-003.3_functional_requirements.md
+tags:
+  - section-file
+  - [document-type-tag]
+custom_fields:
+  total_sections: 7
+  section_type: content
+  architecture_approach: [approach-name]
+  priority: [primary|fallback|shared]
+---
+```
+
+**Section 0 (Index/Overview) - Required:**
+```yaml
+---
+doc_id: BRD-003
+section: 0
+title: "Trading Platform - Index"
+total_sections: 7
+original_size_kb: 150
+split_date: 2025-12-17
+tags:
+  - section-index
+  - [document-type-tag]
+custom_fields:
+  section_type: index
+  architecture_approach: [approach-name]
+  priority: [primary|fallback|shared]
+  development_status: [active|reference]
+---
+```
+
+**Required Fields for Section Files:**
+
+| Field | Required In | Purpose |
+|-------|-------------|---------|
+| `doc_id` | All sections | Parent document identifier (e.g., `BRD-003`) |
+| `section` | All sections | Section number (0 = index, 1+ = content) |
+| `title` | All sections | Section-specific title |
+| `total_sections` | Section 0 | Total number of sections in split document |
+| `parent_doc` | Content sections | Link to Section 0 index file |
+| `prev_section` | Content sections | Link to previous section (if exists) |
+| `next_section` | Content sections | Link to next section (if exists) |
+
+**Section File Naming Pattern:**
+- Pattern: `{TYPE}-{NNN}.{SECTION}_{slug}.md`
+- Example: `BRD-003.2_business_context.md`
+- Distinct from element IDs which use all dots: `BRD.03.01.05`
+
 ---
 
 ## 5. Custom Admonitions

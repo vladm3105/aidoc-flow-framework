@@ -254,6 +254,249 @@ File Organization Rules
   - `SYS/SYS-NNN_{slug}.md` or `SYS-NNN-YY_{slug}.md`
   - `EARS/EARS-NNN_{slug}.md` or `EARS-NNN-YY_{slug}.md`
 
+## Section-Based File Splitting (Document Chunking)
+
+**Purpose**: When documents exceed 50KB standard limit (or 100KB maximum), split into section-based files using dot notation. This maintains document cohesion while enabling AI tool processing.
+
+### Three Coexisting ID Patterns
+
+The framework uses three distinct ID patterns for different purposes:
+
+| Pattern | Format | Example | Purpose |
+|---------|--------|---------|---------|
+| **Document ID** | `TYPE-NNN` | `BRD-03` | Complete document reference |
+| **Section File** | `TYPE-NNN.S` | `BRD-03.1` | Section S of document TYPE-NNN |
+| **Element ID** | `TYPE.NN.TT.SS` | `BRD.03.01.05` | Internal element (all dots, 4-segment) |
+
+**Key Distinction**:
+- `BRD-03.1` → Section file (dash before doc number, single dot for section)
+- `BRD.03.01.05` → Element ID (all dots, 4-segment format for internal references)
+- `@ref: BRD-03.1` → References a **document/section file**, not an element
+
+### Section File Naming Pattern
+
+**Pattern**: `{TYPE}-{NNN}.{SECTION}[.{SUBSECTION}]_{slug}.md`
+
+| Component | Format | Description |
+|-----------|--------|-------------|
+| `TYPE` | 2-5 uppercase letters | Document type (BRD, PRD, REQ, etc.) |
+| `-` | Dash separator | Separates type from document number |
+| `NNN` | 2-4 digits | Document number (01, 001, 0001) |
+| `.` | Dot separator | Separates document number from section |
+| `SECTION` | 1-2 digits | Section number (0-99) |
+| `.SUBSECTION` | Optional 1-2 digits | Subsection (e.g., 1.1, 2.3) |
+| `_` | Underscore separator | Separates ID from descriptive slug |
+| `slug` | lowercase_snake_case | Human-readable description |
+
+**Validation Regex**: `^[A-Z]{2,5}(-REF)?-[0-9]{2,4}\.[0-9]+(\.[0-9]+)?_[a-z0-9_]+\.md$`
+
+### When to Split Documents
+
+| File Size | Action | Rationale |
+|-----------|--------|-----------|
+| <50KB | Keep as single file | Optimal for all AI tools |
+| 50-100KB | Consider splitting | May cause issues with some tools |
+| >100KB | **MUST split** | Exceeds Claude Code practical limit |
+
+**Split Triggers**:
+1. File exceeds 50KB standard limit
+2. Document has clear logical sections (chapters, modules)
+3. Sections can stand alone with minimal cross-references
+4. Team needs independent section maintenance
+
+### Section Numbering Rules
+
+| Section | Purpose | Content |
+|---------|---------|---------|
+| **Section 0** | Index/Overview | Document control, section map, navigation |
+| **Section 1+** | Content sections | Actual document content, numbered sequentially |
+
+**Section 0 Requirements** (MANDATORY for all split documents):
+- Document control metadata
+- Complete section map with links
+- Version history
+- Cross-reference summary
+- Reading order guidance
+
+### Mandatory Metadata Header (YAML Frontmatter)
+
+**ALL section files MUST include YAML frontmatter**:
+
+```yaml
+---
+doc_id: TYPE-NNN
+section: S
+title: "Section Title"
+parent_doc: TYPE-NNN.0_index.md      # null for section 0
+prev_section: TYPE-NNN.{S-1}_slug.md  # null for section 0 or 1
+next_section: TYPE-NNN.{S+1}_slug.md  # null for last section
+tags:
+  - section-file
+  - document-type-tag
+custom_fields:
+  total_sections: N
+  section_type: content  # or "index" for section 0
+  architecture_approach: approach-name
+  priority: primary|fallback|shared
+  split_date: YYYY-MM-DD
+---
+```
+
+**Required Metadata Fields**:
+
+| Field | Required In | Description |
+|-------|-------------|-------------|
+| `doc_id` | All sections | Parent document ID (TYPE-NNN) |
+| `section` | All sections | Section number (0 = index, 1+ = content) |
+| `title` | All sections | Section-specific title |
+| `total_sections` | Section 0 | Total number of sections in split document |
+| `parent_doc` | Content sections | Link to Section 0 index file |
+| `prev_section` | Content sections | Link to previous section (if exists) |
+| `next_section` | Content sections | Link to next section (if exists) |
+| `tags` | All sections | Must include `section-file` or `section-index` |
+
+### Section File Examples
+
+**Source Document**: `BRD-003_trading_platform_requirements.md` (150KB)
+
+**Split into Section Files**:
+
+```
+docs/BRD/
+├── BRD-003.0_index.md              # Section 0: Index/Overview
+├── BRD-003.1_executive_summary.md   # Section 1: Executive Summary
+├── BRD-003.2_business_context.md    # Section 2: Business Context
+├── BRD-003.3_functional_requirements.md  # Section 3: Functional Requirements
+├── BRD-003.4_non_functional_requirements.md  # Section 4: Non-Functional Requirements
+├── BRD-003.5_architecture_decisions.md  # Section 5: Architecture Decisions
+└── BRD-003.6_appendices.md          # Section 6: Appendices
+```
+
+**Section 0 Header Example** (`BRD-003.0_index.md`):
+```markdown
+---
+doc_id: BRD-003
+section: 0
+title: "Trading Platform Requirements - Index"
+total_sections: 7
+original_size_kb: 146
+split_date: 2025-12-17
+tags:
+  - section-index
+  - platform-brd
+custom_fields:
+  section_type: index
+  architecture_approach: ai-agent-primary
+  priority: primary
+  development_status: active
+---
+
+# BRD-003.0: Trading Platform Requirements - Index
+
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| **Document ID** | BRD-003 |
+| **Status** | Active |
+| **Total Sections** | 7 |
+
+## Section Map
+
+| Section | Title | Size | Link |
+|---------|-------|------|------|
+| 0 | Index (this file) | 3KB | [BRD-003.0](BRD-003.0_index.md) |
+| 1 | Executive Summary | 8KB | [BRD-003.1](BRD-003.1_executive_summary.md) |
+| 2 | Business Context | 25KB | [BRD-003.2](BRD-003.2_business_context.md) |
+| 3 | Functional Requirements | 45KB | [BRD-003.3](BRD-003.3_functional_requirements.md) |
+| 4 | Non-Functional Requirements | 30KB | [BRD-003.4](BRD-003.4_non_functional_requirements.md) |
+| 5 | Architecture Decisions | 20KB | [BRD-003.5](BRD-003.5_architecture_decisions.md) |
+| 6 | Appendices | 15KB | [BRD-003.6](BRD-003.6_appendices.md) |
+
+## Reading Order
+
+1. Start with Section 0 (this index) for overview
+2. Proceed through sections 1-6 sequentially
+3. Reference Section 6 for detailed appendices
+```
+
+**Content Section Example** (`BRD-003.1_executive_summary.md`):
+```markdown
+---
+doc_id: BRD-003
+section: 1
+title: "Executive Summary"
+parent_doc: "BRD-003.0_index.md"
+prev_section: null
+next_section: "BRD-003.2_business_context.md"
+tags:
+  - section-file
+  - platform-brd
+custom_fields:
+  total_sections: 7
+  section_type: content
+  architecture_approach: ai-agent-primary
+  priority: primary
+---
+
+# BRD-003.1: Executive Summary
+
+> **Navigation**: [Index](BRD-003.0_index.md) | Previous: None | [Next](BRD-003.2_business_context.md)
+>
+> **Parent Document**: BRD-003
+> **Section**: 1 of 7
+
+---
+
+## Section Content
+
+[Section content here...]
+```
+
+### Cross-Reference Format for Section Files
+
+**Tagging Section References**:
+- `@ref: BRD-003.1` → References section 1 of BRD-003
+- `@ref: BRD-003.2.3` → References subsection 2.3 of BRD-003
+
+**Markdown Links to Sections**:
+- Same directory: `[BRD-003.1](BRD-003.1_executive_summary.md)`
+- Cross-directory: `[BRD-003.1](../BRD/BRD-003.1_executive_summary.md)`
+
+### Section File vs Sub-Document Comparison
+
+| Aspect | Section Files | Sub-Documents |
+|--------|---------------|---------------|
+| **Use Case** | Split large documents | Related but distinct documents |
+| **Pattern** | `TYPE-NNN.S_{slug}.md` | `TYPE-NNN-YY_{slug}.md` |
+| **Example** | `BRD-003.1_summary.md` | `BRD-009-01_prerequisites.md` |
+| **Separator** | Single dot (.) | Dash (-) |
+| **Metadata** | Requires parent_document | Independent document |
+| **Navigation** | Must have prev/next links | Optional relationships |
+| **Section 0** | Required index | No index required |
+| **Traceability** | Inherits parent's tags | Has own traceability |
+
+### Type-Specific Section Templates
+
+Each document type has dedicated section templates providing type-specific metadata, tags, and traceability fields. Use these instead of generic templates for better compliance.
+
+**Template Locations**:
+
+| Type | Layer | Index Template | Content Template |
+|------|-------|----------------|------------------|
+| BRD | 1 | `BRD/BRD-SECTION-0-TEMPLATE.md` | `BRD/BRD-SECTION-TEMPLATE.md` |
+| PRD | 2 | `PRD/PRD-SECTION-0-TEMPLATE.md` | `PRD/PRD-SECTION-TEMPLATE.md` |
+| EARS | 3 | `EARS/EARS-SECTION-0-TEMPLATE.md` | `EARS/EARS-SECTION-TEMPLATE.md` |
+| BDD | 4 | `BDD/BDD-SECTION-0-TEMPLATE.md` | `BDD/BDD-SECTION-TEMPLATE.md` |
+| ADR | 5 | `ADR/ADR-SECTION-0-TEMPLATE.md` | `ADR/ADR-SECTION-TEMPLATE.md` |
+| SYS | 6 | `SYS/SYS-SECTION-0-TEMPLATE.md` | `SYS/SYS-SECTION-TEMPLATE.md` |
+| REQ | 7 | `REQ/REQ-SECTION-0-TEMPLATE.md` | `REQ/REQ-SECTION-TEMPLATE.md` |
+| IMPL | 8 | `IMPL/IMPL-SECTION-0-TEMPLATE.md` | `IMPL/IMPL-SECTION-TEMPLATE.md` |
+| CTR | 9 | `CTR/CTR-SECTION-0-TEMPLATE.md` | `CTR/CTR-SECTION-TEMPLATE.md` |
+| SPEC | 10 | `SPEC/SPEC-SECTION-0-TEMPLATE.md` | `SPEC/SPEC-SECTION-TEMPLATE.md` |
+
+**Types NOT requiring section templates**: TASKS, IPLAN, ICON (typically remain under 25KB)
+
 Cross-Reference Link Format (MANDATORY)
 - Universal rule: use markdown links for all references.
 - Supports both atomic (NNN) and sub-document (NNN-YY) patterns for all types.
@@ -331,6 +574,11 @@ Validation Rules & Aids
   - EARS filename: `EARS-\d{3,4}(-\d{2,3})?_.+\.md$`
   - REF H1 ID: `^#\s[A-Z]{2,5}-REF-\d{3,4}:.+$`
   - REF filename: `[A-Z]{2,5}-REF-\d{3,4}_.+\.md$`
+- Section file regexes (dot notation for document chunks):
+  - Section filename: `[A-Z]{2,5}(-REF)?-[0-9]{2,4}\.[0-9]+(\.[0-9]+)?_.+\.md$`
+  - Section H1 ID: `^#\s[A-Z]{2,5}(-REF)?-[0-9]{2,4}\.[0-9]+(\.[0-9]+)?:.+$`
+  - Section reference tag: `@ref:\s+[A-Z]{2,5}(-REF)?-[0-9]{2,4}\.[0-9]+(\.[0-9]+)?`
+  - Section 0 (index) filename: `[A-Z]{2,5}(-REF)?-[0-9]{2,4}\.0_[a-z_]+\.md$`
 
 Examples (ai_dev_flow) - Atomic Documents (XXX)
 - PRD: `PRD/PRD-003_position_risk_limits.md` (H1: `# PRD-003: resource Risk Limits`)
@@ -353,6 +601,17 @@ Examples (ai_dev_flow) - Sub-Documents (XXX-YY)
   - Quick reference: `docs/BRD/BRD-009-03_phase_gates_quick_reference.md` (H1: `# BRD-009-03: Phase Gates Quick Reference`)
 - Extended atomic (when >999 documents): `BRD-1000_advanced_feature.md`
 - Extended sub-doc (when >99 sub-docs): `BRD-009-100_detailed_appendix.md`
+
+Examples (ai_dev_flow) - Section Files (XXX.S)
+- Split BRD document (150KB original → 7 sections):
+  - Index: `docs/BRD/BRD-003.0_index.md` (H1: `# BRD-003.0: Trading Platform - Index`)
+  - Section 1: `docs/BRD/BRD-003.1_executive_summary.md` (H1: `# BRD-003.1: Executive Summary`)
+  - Section 2: `docs/BRD/BRD-003.2_business_context.md` (H1: `# BRD-003.2: Business Context`)
+  - Section 3: `docs/BRD/BRD-003.3_functional_requirements.md` (H1: `# BRD-003.3: Functional Requirements`)
+- Split PRD document with subsections:
+  - Index: `docs/PRD/PRD-015.0_index.md`
+  - Section 2.1: `docs/PRD/PRD-015.2.1_api_features.md` (H1: `# PRD-015.2.1: API Features`)
+  - Section 2.2: `docs/PRD/PRD-015.2.2_ui_features.md` (H1: `# PRD-015.2.2: UI Features`)
 
 Component Abbreviations (examples)
 - SVC (Service), CL (Client), SRV (Server), GW (Gateway), AGG (Aggregator), MGR (Manager), CTRL (Controller), ADPT (Adapter), REPO (Repository), PROC (Processor), VAL (Validator), ORCH (Orchestrator), PROV (Provider)

@@ -180,25 +180,42 @@ gemini @SMALL_FILE.md "Analyze this document"
    - Major sections (overview, requirements, technical SPEC)
    - Independent concerns that can stand alone
 
-2. **Create Sequential Files:**
+2. **Create Section Files (RECOMMENDED):**
+
+   Use section-based dot notation per [ID_NAMING_STANDARDS.md - Section-Based File Splitting](./ID_NAMING_STANDARDS.md#section-based-file-splitting-document-chunking):
    ```
-   SPEC-003_part1.md  (interfaces, data models)
-   SPEC-003_part2.md  (business logic, state management)
-   SPEC-003_part3.md  (performance, observability)
+   SPEC-003.0_index.md           (required index/overview)
+   SPEC-003.1_interfaces.md      (interfaces, data models)
+   SPEC-003.2_business_logic.md  (business logic, state management)
+   SPEC-003.3_quality.md         (performance, observability)
    ```
 
-3. **Create Index File:**
+   **Pattern**: `{TYPE}-{NNN}.{SECTION}_{slug}.md`
+   - Dash before document number, dot before section number
+   - Section 0 is always required (index)
+   - Distinct from element IDs which use all dots (`SPEC.03.01.05`)
+
+3. **Create Index File (Section 0):**
    ```markdown
-   # SPEC-003: Complete Specification Index
+   ---
+   doc_id: SPEC-003
+   section: 0
+   title: "Complete Specification Index"
+   total_sections: 4
+   ---
+   # SPEC-003.0: Complete Specification - Index
 
-   ## File Structure
-   - [Part 1: Interfaces & Data Models](SPEC-003_part1.md)
-   - [Part 2: Business Logic](SPEC-003_part2.md)
-   - [Part 3: Performance & Observability](SPEC-003_part3.md)
+   ## Section Map
+   | Section | File | Description |
+   |---------|------|-------------|
+   | 0 | [Index](SPEC-003.0_index.md) | This file |
+   | 1 | [Interfaces](SPEC-003.1_interfaces.md) | Interfaces & Data Models |
+   | 2 | [Business Logic](SPEC-003.2_business_logic.md) | Core Logic |
+   | 3 | [Quality](SPEC-003.3_quality.md) | Performance & Observability |
 
    ## Dependencies
-   - Part 2 depends on Part 1 (data models)
-   - Part 3 references all parts
+   - Section 2 depends on Section 1 (data models)
+   - Section 3 references all sections
    ```
 
 4. **Maintain Cross-References:**
