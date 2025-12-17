@@ -521,6 +521,11 @@ For supplementary documentation needs, create:
 - **REQ README**: `ai_dev_flow/REQ/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
+**Section Templates** (for documents >25K tokens):
+- Index template: `ai_dev_flow/REQ/REQ-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/REQ/REQ-SECTION-TEMPLATE.md`
+- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+
 ## Quick Reference
 
 **REQ Purpose**: Atomic, implementation-ready requirements

@@ -500,6 +500,11 @@ For supplementary documentation related to BDD artifacts:
 - **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
+**Section Templates** (for documents >25K tokens):
+- Index template: `ai_dev_flow/BDD/BDD-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/BDD/BDD-SECTION-TEMPLATE.md`
+- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+
 ## Quick Reference
 
 **BDD Purpose**: Define executable test scenarios

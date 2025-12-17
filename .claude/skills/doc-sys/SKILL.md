@@ -425,6 +425,11 @@ For supplementary documentation needs, create:
 - **SYS README**: `ai_dev_flow/SYS/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
+**Section Templates** (for documents >25K tokens):
+- Index template: `ai_dev_flow/SYS/SYS-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/SYS/SYS-SECTION-TEMPLATE.md`
+- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+
 ## Quick Reference
 
 **SYS Purpose**: Define system-level technical requirements

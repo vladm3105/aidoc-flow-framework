@@ -461,6 +461,11 @@ For supplementary documentation related to IMPL artifacts:
 - **IMPL README**: `ai_dev_flow/IMPL/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
+**Section Templates** (for documents >25K tokens):
+- Index template: `ai_dev_flow/IMPL/IMPL-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/IMPL/IMPL-SECTION-TEMPLATE.md`
+- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+
 ## Quick Reference
 
 **IMPL Purpose**: Document WHO-WHEN-WHAT implementation approach

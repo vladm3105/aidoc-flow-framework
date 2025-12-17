@@ -142,6 +142,11 @@ Use `doc-brd` when:
 
 > **Note**: Technical QA standards, testing strategy, and defect management are documented in PRD-TEMPLATE.md Section 21 (product level).
 
+**Section Templates** (for documents >25K tokens):
+- Index template: `ai_dev_flow/BRD/BRD-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/BRD/BRD-SECTION-TEMPLATE.md`
+- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+
 ### 2. Required Sections (17 Total)
 
 **Document Control** (MANDATORY - First section before all numbered sections):

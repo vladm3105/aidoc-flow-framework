@@ -614,6 +614,11 @@ For supplementary documentation needs, create:
 - **SPEC README**: `ai_dev_flow/SPEC/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
+**Section Templates** (for documents >25K tokens):
+- Index template: `ai_dev_flow/SPEC/SPEC-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/SPEC/SPEC-SECTION-TEMPLATE.md`
+- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+
 ## Quick Reference
 
 **SPEC Purpose**: Implementation-ready technical specifications

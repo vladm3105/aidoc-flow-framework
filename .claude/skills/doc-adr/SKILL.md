@@ -579,6 +579,11 @@ For supplementary documentation related to ADR artifacts:
 - **ADR README**: `ai_dev_flow/ADR/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
+**Section Templates** (for documents >25K tokens):
+- Index template: `ai_dev_flow/ADR/ADR-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/ADR/ADR-SECTION-TEMPLATE.md`
+- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+
 ## Quick Reference
 
 **ADR Purpose**: Document architectural decisions with rationale

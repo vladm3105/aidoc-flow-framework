@@ -570,6 +570,11 @@ For supplementary documentation related to PRD artifacts:
 - **PRD README**: `ai_dev_flow/PRD/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
+**Section Templates** (for documents >25K tokens):
+- Index template: `ai_dev_flow/PRD/PRD-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/PRD/PRD-SECTION-TEMPLATE.md`
+- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+
 ## Quick Reference
 
 **PRD Purpose**: Define product features and user needs

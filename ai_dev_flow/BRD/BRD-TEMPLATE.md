@@ -1619,15 +1619,54 @@ Changes to this approved BRD must follow this process:
 
 ---
 
-## 15. Traceability
+## 15. Quality Assurance (Optional)
+
+> **Note**: This section is optional but recommended for production-critical BRDs. When included, subsequent sections are renumbered (Traceability becomes Section 16, etc.).
+
+### 15.1 Quality Standards
+
+[Define quality targets and measurement methods]
+
+| Standard | Target | Measurement |
+|----------|--------|-------------|
+| Code coverage | >=80% | CI/CD reports |
+| [Domain-specific metric] | [Target value] | [Measurement method] |
+| [Domain-specific metric] | [Target value] | [Measurement method] |
+
+### 15.2 Testing Strategy
+
+[Define testing approach by test type]
+
+| Test Type | Scope | Automation | Frequency |
+|-----------|-------|------------|-----------|
+| Unit Tests | [Scope description] | [%] automated | Every commit |
+| Integration Tests | [Scope description] | [%] automated | Daily |
+| E2E Tests | [Scope description] | Key scenarios | Pre-release |
+| Performance Tests | [Scope description] | Automated benchmarks | Weekly |
+| Security Tests | [Scope description] | Automated scans | Weekly |
+
+### 15.3 Quality Gates
+
+[Define release quality gates]
+
+| Gate | Criteria | Owner |
+|------|----------|-------|
+| Code Review | Peer approval + security review | Engineering |
+| Test Coverage | >=80% coverage | QA |
+| Security Scan | No critical vulnerabilities | Security |
+| Compliance Review | [Domain-specific criteria] | Compliance |
+
+---
+
+## 16. Traceability
 
 This section maps BRD requirements to upstream business objectives and downstream technical artifacts, ensuring complete requirements coverage and enabling impact analysis.
 
-### 15.1 Requirements Traceability Matrix
+### 16.1 Requirements Traceability Matrix
 
 [Map functional requirements to business objectives and downstream deliverables]
 
-#### 15.1.1 Business Objectives → Functional Requirements
+#### 16.1.1 Business Objectives → Functional Requirements
 
 | Business Objective | Related Functional Requirements | Related User Stories | Coverage Status |
 |--------------------|--------------------------------|----------------------|-----------------|
@@ -1635,7 +1674,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [BO-N: Objective description] | BRD.NN.01.04, BRD.NN.01.05, BRD.NN.01.06 | PRD.NN.07.02, PRD.NN.07.05, PRD.NN.07.12 | Complete/Partial/Gap |
 | [BO-N: Objective description] | BRD.NN.01.07, BRD.NN.01.08, BRD.NN.01.09 | PRD.NN.07.04, PRD.NN.07.09, PRD.NN.07.15 | Complete/Partial/Gap |
 
-#### 15.1.2 Functional Requirements → Technical Specifications
+#### 16.1.2 Functional Requirements → Technical Specifications
 
 [Map functional requirements to downstream technical artifacts (planned)]
 
@@ -1645,7 +1684,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | BRD.NN.01.02: [Requirement title] | SPEC.NN.15.02: [Specification name] | IMPL.NN.17.02: [Implementation name] | Planned |
 | BRD.NN.01.03: [Requirement title] | SPEC.NN.15.03: [Specification name] | IMPL.NN.17.03: [Implementation name] | Planned |
 
-#### 15.1.3 Quality Attributes → Technical Specifications
+#### 16.1.3 Quality Attributes → Technical Specifications
 
 | Quality Attribute Category | Downstream SPEC (Planned) | Validation Method |
 |---------------------------|---------------------------|-------------------|
@@ -1656,7 +1695,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | Observability | SPEC-XXX-QA-O: Monitoring Stack | Dashboard review |
 | Maintainability | SPEC-XXX-QA-M: DevOps Pipeline | CI/CD metrics |
 
-### 15.2 Same-Type References (Conditional)
+### 16.2 Same-Type References (Conditional)
 
 **Include this section only if same-type relationships exist between BRDs.**
 
@@ -1688,7 +1727,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 @depends-brd: BRD-NN
 ```
 
-### 15.3 Test Coverage Traceability
+### 16.3 Test Coverage Traceability
 
 [Map requirements to test artifacts]
 
@@ -1700,7 +1739,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | Performance Quality Attributes | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
 | Security Quality Attributes | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
 
-### 15.4 Traceability Summary
+### 16.4 Traceability Summary
 
 | Category | Total Items | Traced Forward | Traced Backward | Coverage % |
 |----------|-------------|----------------|-----------------|------------|
@@ -1713,7 +1752,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-## 16. Glossary
+## 17. Glossary
 
 📚 **Master Glossary Reference**: For common terminology used across all BRDs, see [BRD-000_GLOSSARY.md](BRD-000_GLOSSARY.md). This section defines **project-specific terms** not covered in the master glossary.
 
@@ -1741,7 +1780,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-### 16.1 Business Terms
+### 17.1 Business Terms
 
 [Define project-specific business terminology NOT in master glossary]
 
@@ -1752,7 +1791,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-### 16.2 Technical Terms
+### 17.2 Technical Terms
 
 [Define project-specific technical terminology NOT in master glossary]
 
@@ -1763,7 +1802,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-### 16.3 Domain-Specific Terms
+### 17.3 Domain-Specific Terms
 
 [Define industry/domain terminology unique to this project NOT in master glossary]
 
@@ -1774,7 +1813,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-### 16.4 Acronyms
+### 17.4 Acronyms
 
 [Define project-specific acronyms NOT in master glossary]
 
@@ -1785,7 +1824,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-### 16.5 Cross-References
+### 17.5 Cross-References
 
 [Link to related BRDs, external documents, and dependencies for this project]
 

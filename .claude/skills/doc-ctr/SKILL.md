@@ -652,6 +652,11 @@ For supplementary documentation related to CTR artifacts:
 - **JSON Schema**: https://json-schema.org/
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
+**Section Templates** (for documents >25K tokens):
+- Index template: `ai_dev_flow/CTR/CTR-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/CTR/CTR-SECTION-TEMPLATE.md`
+- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+
 ## Quick Reference
 
 **CTR Purpose**: Define API contracts and data schemas
