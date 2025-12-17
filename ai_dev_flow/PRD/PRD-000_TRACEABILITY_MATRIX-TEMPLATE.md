@@ -154,7 +154,7 @@ python scripts/extract_tags.py --type PRD --show-upstream brd
 **New Column Legend**:
 - **Bidir** (Bidirectional Validation): ✓ = All cross-references validated bidirectionally, ✗ = Validation pending/failed
 - **EARS** (EARS-Ready Score): 0-100 score based on timing profiles (25%), boundary values (25%), state machines (25%), fallback paths (15%), threshold registry (10%)
-- **Variant** (Template Variant): S = Standard (20 sections), A = Agent-Based (12-15 sections), W = Automation/Workflow-Focused (9-12 sections)
+- **Variant** (Template Variant): S = Standard (21 sections), A = Agent-Based (12-15 sections), W = Automation/Workflow-Focused (9-12 sections)
 - **Migration** (Migration Status): Current = Compliant with v2.0 template, Legacy = Pre-v2.0 format, Migrated = Updated from legacy to current
 
 ---

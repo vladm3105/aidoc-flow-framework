@@ -666,6 +666,57 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 @depends-iplan: IPLAN-NNN
 ```
 
+### 8.7 Thresholds Referenced
+
+**Purpose**: IPLAN documents REFERENCE thresholds defined in the PRD threshold registry. All quantitative values in verification steps, success criteria, and performance targets must use `@threshold:` tags to ensure single source of truth.
+
+**Threshold Naming Convention**: `@threshold: PRD.NNN.category.subcategory.key`
+
+**Format Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for complete naming standards.
+
+**Thresholds Used in This Document**:
+```yaml
+# Thresholds referenced from PRD threshold registry
+# Format: @threshold: PRD.NNN.category.subcategory.key
+
+performance:
+  # Verification targets (Section 4.2, 11.1)
+  - "@threshold: PRD.NNN.perf.api.p50_latency"        # p50 latency verification
+  - "@threshold: PRD.NNN.perf.api.p95_latency"        # p95 latency verification
+  - "@threshold: PRD.NNN.perf.api.p99_latency"        # p99 latency verification
+  - "@threshold: PRD.NNN.perf.throughput.rps"         # Throughput verification
+
+coverage:
+  # Test coverage targets (Section 11.1)
+  - "@threshold: PRD.NNN.quality.test.unit_coverage"        # Unit test coverage target
+  - "@threshold: PRD.NNN.quality.test.integration_coverage" # Integration test coverage target
+  - "@threshold: PRD.NNN.quality.test.bdd_coverage"         # BDD scenario coverage target
+
+timeout:
+  # Operation timeouts for verification (Section 6.2)
+  - "@threshold: PRD.NNN.timeout.request.sync"        # Synchronous request timeout
+  - "@threshold: PRD.NNN.timeout.connection.default"  # Connection timeout
+
+resource:
+  # Resource constraints for validation (Section 11.2)
+  - "@threshold: PRD.NNN.resource.cpu.max_utilization"   # CPU utilization limit
+  - "@threshold: PRD.NNN.resource.memory.max_mb"         # Memory limit
+```
+
+**Example Usage in Verification Steps**:
+```bash
+# Performance verification
+pytest tests/performance/ -v \
+  --benchmark-min-rounds=100 \
+  --benchmark-autosave \
+  # Verify p95 latency < @threshold: PRD.NNN.perf.api.p95_latency
+
+# Coverage verification
+pytest --cov --cov-fail-under=@threshold: PRD.NNN.quality.test.unit_coverage
+```
+
+**Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
+
 ---
 
 ## 9. Traceability

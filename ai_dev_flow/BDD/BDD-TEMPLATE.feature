@@ -132,6 +132,44 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 #   @threshold: PRD.035.limit.api.requests_per_second
 # Purpose: Prevent magic numbers by referencing centralized threshold registry
 # See: ../PRD/PRD-000_threshold_registry_template.md
+#
+# THRESHOLDS REFERENCED IN THIS BDD FILE:
+# BDD scenarios REFERENCE thresholds defined in the PRD threshold registry.
+# All quantitative assertions must use @threshold: tags for traceability.
+#
+# Threshold Naming Convention: @threshold: PRD.NNN.category.subcategory.key
+# See: ../THRESHOLD_NAMING_RULES.md for complete naming standards.
+#
+# Thresholds typically used in BDD scenarios:
+#
+#   performance:
+#     - "@threshold: PRD.NNN.perf.api.p50_latency"     # 50th percentile response time
+#     - "@threshold: PRD.NNN.perf.api.p95_latency"     # 95th percentile response time
+#     - "@threshold: PRD.NNN.perf.api.p99_latency"     # 99th percentile response time
+#
+#   sla:
+#     - "@threshold: PRD.NNN.sla.uptime.target"        # Uptime availability target
+#     - "@threshold: PRD.NNN.sla.success_rate.target"  # Success rate target
+#     - "@threshold: PRD.NNN.sla.error_rate.max"       # Maximum acceptable error rate
+#
+#   timeout:
+#     - "@threshold: PRD.NNN.timeout.request.sync"     # Synchronous request timeout
+#     - "@threshold: PRD.NNN.timeout.request.async"    # Asynchronous request timeout
+#
+#   limit:
+#     - "@threshold: PRD.NNN.limit.api.requests_per_second"  # Rate limiting
+#     - "@threshold: PRD.NNN.limit.batch.max_size"           # Batch size limits
+#     - "@threshold: PRD.NNN.limit.payload.max_bytes"        # Payload size limits
+#
+#   capacity:
+#     - "@threshold: PRD.NNN.capacity.concurrent.max"  # Max concurrent connections
+#     - "@threshold: PRD.NNN.capacity.queue.max_depth" # Queue depth limits
+#
+# Example Usage in Scenarios:
+#   Then response time is less than @threshold: PRD.NNN.perf.api.p95_latency
+#   And success rate is above @threshold: PRD.NNN.sla.success_rate.target
+#   And service maintains @threshold: PRD.NNN.sla.uptime.target uptime
+#
 
 @brd: BRD.NNN.NNN      # REQUIRED - business requirements traceability
 @prd: PRD.NNN.NNN      # REQUIRED - product requirements traceability

@@ -855,7 +855,7 @@ Business constraints are external limitations that restrict how business require
 
 **ID Format**: `BC-XXX` (Business Constraint)
 
-#### 8.1.1 Regulatory Constraints
+#### 7.1.1 Regulatory Constraints
 
 Constraints imposed by laws, regulations, and compliance requirements.
 
@@ -869,7 +869,7 @@ Constraints imposed by laws, regulations, and compliance requirements.
 - BC-002: OFAC compliance requires real-time sanctions screening for all transactions
 - BC-003: State MTL licensing restricts operations to approved jurisdictions
 
-#### 8.1.2 Partner SLA Constraints
+#### 7.1.2 Partner SLA Constraints
 
 Constraints imposed by partner agreements and service level commitments.
 
@@ -882,7 +882,7 @@ Constraints imposed by partner agreements and service level commitments.
 - BC-011: Paynet delivery confirmation SLA is 24-48 hours for bank transfers
 - BC-012: Partner API rate limits cap at 1,000 requests per minute
 
-#### 8.1.3 Technical Platform Constraints
+#### 7.1.3 Technical Platform Constraints
 
 Constraints from existing technical infrastructure and platform capabilities.
 
@@ -895,7 +895,7 @@ Constraints from existing technical infrastructure and platform capabilities.
 - BC-021: Mobile app deployment requires App Store/Play Store approval cycles
 - BC-022: API gateway timeout limits maximum transaction processing to 30 seconds
 
-#### 8.1.4 Operational Constraints
+#### 7.1.4 Operational Constraints
 
 Constraints from business operations, support capacity, and organizational policies.
 
@@ -908,7 +908,7 @@ Constraints from business operations, support capacity, and organizational polic
 - BC-031: Customer support hours (9 AM - 9 PM EST) limit real-time escalation availability
 - BC-032: Quarterly compliance audits require feature freeze periods
 
-#### 8.1.5 Budget Constraints
+#### 7.1.5 Budget Constraints
 
 Constraints from approved budget allocations and cost limitations.
 
@@ -921,7 +921,7 @@ Constraints from approved budget allocations and cost limitations.
 - BC-041: Marketing budget caps launch promotions at 90-day fee waiver period
 - BC-042: Infrastructure budget requires shared hosting for non-production environments
 
-#### 8.1.6 Timeline Constraints
+#### 7.1.6 Timeline Constraints
 
 Constraints from business deadlines, market windows, and regulatory dates.
 
@@ -1050,8 +1050,6 @@ This section clarifies dependency types and their impact on requirement prioriti
 
 ## 9. Acceptance Criteria
 
-> **Note**: For technical QA standards, testing strategy, and defect management, see PRD-TEMPLATE.md Section 21.
-
 ### 9.1 Acceptance Criteria Overview
 
 [Explain the purpose of acceptance criteria and how they will be used to validate project success]
@@ -1164,8 +1162,6 @@ Acceptance criteria define the conditions that must be satisfied for the project
 
 ### 9.8 Acceptance Sign-Off Process
 
-> **Note**: This section covers solution/deliverable acceptance (UAT, technical testing). For BRD document approval, see Section 14.5.
-
 #### 9.8.1 Sign-Off Requirements
 
 [Define who must sign off and what they are approving]
@@ -1226,37 +1222,100 @@ This section documents business-level risks that could impact requirement delive
 
 ---
 
-### 10.2 Risk Register
+### 10.2 Risk Register by Category
 
 **ID Format**: `RISK-XXX` (Business Risk)
 
-**Risk Categories**:
-- **Market**: Market conditions, competitive pressure, demand uncertainty
-- **Regulatory**: Regulatory changes, licensing, compliance obligations
-- **Partner**: Partner dependencies, SLA failures, operational disruptions
-- **Financial**: Pricing, costs, profitability, economic conditions
-- **CX**: Customer satisfaction, brand perception, trust
-- **Technology**: Technical failures, scalability, system dependencies
-- **Strategic**: Business strategy, market positioning, long-term viability
+#### 10.2.1 Market & Competitive Risks
 
-| ID | Category | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
-|----|----------|------|-----------|--------|-------|------------|-------------|-------|
-| RISK-001 | Market | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
-| RISK-010 | Regulatory | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
-| RISK-020 | Partner | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
-| RISK-030 | Financial | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
-| RISK-040 | CX | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
-| RISK-050 | Technology | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
-| RISK-060 | Strategic | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+Risks from market conditions, competitive pressure, and demand uncertainty.
 
-**Examples by Category**:
-- **Market**: Competitor launches similar corridor with lower fees (L:2 × I:8 = 16)
-- **Regulatory**: MTL license renewal delayed or denied (L:1 × I:15 = 15)
-- **Partner**: Delivery partner fails to meet SLA commitments (L:2 × I:8 = 16)
-- **Financial**: Partner fee increases erode transaction margins (L:2 × I:8 = 16)
-- **CX**: High false positive rate blocks legitimate customers (L:2 × I:8 = 16)
-- **Technology**: Security breach compromises customer data (L:1 × I:15 = 15)
-- **Strategic**: Single-corridor dependency limits growth options (L:2 × I:8 = 16)
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-001 | [Market/competitive risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-001: Competitor launches similar corridor with lower fees (L:2 × I:8 = 16)
+- RISK-002: Target market demand lower than projected (L:2 × I:10 = 20)
+- RISK-003: Exchange rate volatility reduces margin competitiveness (L:3 × I:5 = 15)
+
+#### 10.2.2 Regulatory & Compliance Risks
+
+Risks from regulatory changes, licensing requirements, and compliance obligations.
+
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-0XX | [Regulatory risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-010: MTL license renewal delayed or denied (L:1 × I:15 = 15)
+- RISK-011: New AML regulations require system modifications (L:2 × I:8 = 16)
+- RISK-012: Destination country restricts inbound remittances (L:1 × I:15 = 15)
+
+#### 10.2.3 Partner & Operational Risks
+
+Risks from partner dependencies, SLA failures, and operational disruptions.
+
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-0XX | [Partner/operational risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-020: Custody provider experiences extended outage (L:1 × I:10 = 10)
+- RISK-021: Delivery partner fails to meet SLA commitments (L:2 × I:8 = 16)
+- RISK-022: Partner API changes require emergency integration updates (L:2 × I:5 = 10)
+
+#### 10.2.4 Financial & Economic Risks
+
+Risks from pricing, costs, profitability, and economic conditions.
+
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-0XX | [Financial risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-030: Partner fee increases erode transaction margins (L:2 × I:8 = 16)
+- RISK-031: Customer acquisition costs exceed projections (L:2 × I:5 = 10)
+- RISK-032: Economic downturn reduces remittance volumes (L:2 × I:10 = 20)
+
+#### 10.2.5 Customer Experience & Reputation Risks
+
+Risks affecting customer satisfaction, brand perception, and trust.
+
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-0XX | [CX/reputation risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-040: High false positive rate blocks legitimate customers (L:2 × I:8 = 16)
+- RISK-041: Transaction delivery delays exceed customer expectations (L:2 × I:8 = 16)
+- RISK-042: Negative reviews impact App Store rating below 4.0 (L:2 × I:5 = 10)
+
+#### 10.2.6 Technology & Platform Risks
+
+Risks from technical failures, scalability, and system dependencies.
+
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-0XX | [Technology risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-050: Platform cannot scale to handle transaction volume (L:1 × I:10 = 10)
+- RISK-051: security breach compromises customer data (L:1 × I:15 = 15)
+- RISK-052: Third-party dependency vulnerability requires emergency patching (L:2 × I:5 = 10)
+
+#### 10.2.7 Strategic & Business Model Risks
+
+Risks to business strategy, market positioning, and long-term viability.
+
+| ID | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
+|----|------|-----------|--------|-------|------------|-------------|-------|
+| RISK-0XX | [Strategic risk] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+
+**Examples**:
+- RISK-060: Single-corridor dependency limits growth options (L:2 × I:8 = 16)
+- RISK-061: Business model disrupted by new payment rail technology (L:1 × I:10 = 10)
+- RISK-062: Key partnership exclusivity limits competitive positioning (L:2 × I:5 = 10)
 
 ---
 
@@ -1569,7 +1628,7 @@ This section documents the formal approval process for the BRD and criteria for 
 
 This BRD is considered approved when:
 
-1. All stakeholders listed in section 14.5.1 have provided written approval
+1. All stakeholders listed in section 15.5.1 have provided written approval
 2. All critical business risks (section 10) with risk score ≥12 have documented mitigation strategies
 3. Regulatory compliance requirements have been validated by legal counsel (if applicable)
 4. Required dependencies (section 17.2) are confirmed available or have mitigation plans
@@ -1600,15 +1659,61 @@ Changes to this approved BRD must follow this process:
 
 ---
 
-## 15. Traceability
+## 15. Quality Assurance
+
+### 15.1 Quality Standards
+
+[Define quality standards and criteria for deliverables]
+
+| Deliverable Type | Quality Standard | Review Process | Approval Required |
+|------------------|------------------|----------------|-------------------|
+| Requirements Document | [Standard] | [Review method] | [Who approves] |
+| Design Documents | [Standard] | [Review method] | [Who approves] |
+| Code | [Standard] | [Review method] | [Who approves] |
+| Test Cases | [Standard] | [Review method] | [Who approves] |
+| User Documentation | [Standard] | [Review method] | [Who approves] |
+
+### 15.2 Testing Strategy
+
+#### 15.2.1 Testing Types
+
+| Test Type | Purpose | Responsibility | Schedule | Exit Criteria |
+|-----------|---------|----------------|----------|---------------|
+| Unit Testing | [Purpose] | [Developer] | [Phase] | [Criteria] |
+| Integration Testing | [Purpose] | [QA Team] | [Phase] | [Criteria] |
+| System Testing | [Purpose] | [QA Team] | [Phase] | [Criteria] |
+| Performance Testing | [Purpose] | [QA Team] | [Phase] | [Criteria] |
+| security Testing | [Purpose] | [security Team] | [Phase] | [Criteria] |
+| User Acceptance Testing | [Purpose] | [Business Users] | [Phase] | [Criteria] |
+
+#### 15.2.2 Defect Management
+
+**Defect Severity Definitions:**
+- **Critical:** System unavailable or data loss
+- **High:** Major functionality broken, no workaround
+- **Medium:** Functionality broken, workaround exists
+- **Low:** Minor issue, cosmetic
+
+**Defect Resolution Targets:**
+
+| Severity | Response Time | Resolution Target | Escalation |
+|----------|---------------|-------------------|------------|
+| Critical | [X hours] | [X hours] | [Immediate] |
+| High | [X hours] | [X days] | [After X hours] |
+| Medium | [X days] | [X days] | [After X days] |
+| Low | [X days] | [X weeks] | [As needed] |
+
+---
+
+## 16. Traceability
 
 This section maps BRD requirements to upstream business objectives and downstream technical artifacts, ensuring complete requirements coverage and enabling impact analysis.
 
-### 15.1 Requirements Traceability Matrix
+### 16.1 Requirements Traceability Matrix
 
 [Map functional requirements to business objectives and downstream deliverables]
 
-#### 15.1.1 Business Objectives → Functional Requirements
+#### 16.1.1 Business Objectives → Functional Requirements
 
 | Business Objective | Related Functional Requirements | Related User Stories | Coverage Status |
 |--------------------|--------------------------------|----------------------|-----------------|
@@ -1616,7 +1721,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [BO-N: Objective description] | BRD.NNN.004, BRD.NNN.005, BRD.NNN.006 | US-002, US-005, US-012 | Complete/Partial/Gap |
 | [BO-N: Objective description] | BRD.NNN.007, BRD.NNN.008, BRD.NNN.009 | US-004, US-009, US-015 | Complete/Partial/Gap |
 
-#### 15.1.2 Functional Requirements → Technical Specifications
+#### 16.1.2 Functional Requirements → Technical Specifications
 
 [Map functional requirements to downstream technical artifacts (planned)]
 
@@ -1626,7 +1731,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | BRD.NNN.002: [Requirement title] | SPEC-XXX-002: [Specification name] | IMPL-XXX-002: [Implementation name] | Planned |
 | BRD.NNN.003: [Requirement title] | SPEC-XXX-003: [Specification name] | IMPL-XXX-003: [Implementation name] | Planned |
 
-#### 15.1.3 Quality Attributes → Technical Specifications
+#### 16.1.3 Quality Attributes → Technical Specifications
 
 | Quality Attribute Category | Downstream SPEC (Planned) | Validation Method |
 |---------------------------|---------------------------|-------------------|
@@ -1637,7 +1742,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | Observability | SPEC-XXX-QA-O: Monitoring Stack | Dashboard review |
 | Maintainability | SPEC-XXX-QA-M: DevOps Pipeline | CI/CD metrics |
 
-### 15.2 Same-Type References (Conditional)
+### 16.2 Same-Type References (Conditional)
 
 **Include this section only if same-type relationships exist between BRDs.**
 
@@ -1669,7 +1774,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 @depends-brd: BRD-NNN
 ```
 
-### 15.3 Test Coverage Traceability
+### 16.3 Test Coverage Traceability
 
 [Map requirements to test artifacts]
 
@@ -1681,7 +1786,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | Performance Quality Attributes | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
 | Security Quality Attributes | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
 
-### 15.4 Traceability Summary
+### 16.4 Traceability Summary
 
 | Category | Total Items | Traced Forward | Traced Backward | Coverage % |
 |----------|-------------|----------------|-----------------|------------|
@@ -1694,7 +1799,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-## 16. Glossary
+## 17. Glossary
 
 📚 **Master Glossary Reference**: For common terminology used across all BRDs, see [BRD-000_GLOSSARY.md](BRD-000_GLOSSARY.md). This section defines **project-specific terms** not covered in the master glossary.
 
@@ -1711,7 +1816,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 - Use same table format as master glossary for consistency
 
 **Step 3: Validation Requirements**
-- Ensure all 6 subsections present (16.1-16.6)
+- Ensure all 6 subsections present (18.1-18.6)
 - Minimum 1 entry per subsection OR note "See BRD-000_GLOSSARY.md"
 - All acronyms used in document must be defined (here or in master glossary)
 - All cross-references must link to existing documents
@@ -1722,7 +1827,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-### 16.1 Business Terms
+### 17.1 Business Terms
 
 [Define project-specific business terminology NOT in master glossary]
 
@@ -1731,9 +1836,11 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [Project_Business_Term_1] | [Clear, concise definition accessible to all stakeholders] | [Where/how used in this BRD] |
 | [Project_Business_Term_2] | [Clear, concise definition accessible to all stakeholders] | [Where/how used in this BRD] |
 
+**Note**: For standard business terms (KPI, ROI, stakeholder, etc.), see [BRD-000_GLOSSARY.md section 1](BRD-000_GLOSSARY.md#1-business-terms)
+
 ---
 
-### 16.2 Technical Terms
+### 17.2 Technical Terms
 
 [Define project-specific technical terminology NOT in master glossary]
 
@@ -1742,9 +1849,11 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [Project_Technical_Term_1] | [Business-accessible explanation of technical concept] | [Where/how used in this BRD] |
 | [Project_Technical_Term_2] | [Business-accessible explanation of technical concept] | [Where/how used in this BRD] |
 
+**Note**: For standard technical terms (API, webhook, SLA, etc.), see [BRD-000_GLOSSARY.md section 2](BRD-000_GLOSSARY.md#2-technical-terms)
+
 ---
 
-### 16.3 Domain-Specific Terms
+### 17.3 Domain-Specific Terms
 
 [Define industry/domain terminology unique to this project NOT in master glossary]
 
@@ -1753,9 +1862,11 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [Project_Domain_Term_1] | [Clear definition with domain context] | [Industry/Domain] | [Where/how used in this BRD] |
 | [Project_Domain_Term_2] | [Clear definition with domain context] | [Industry/Domain] | [Where/how used in this BRD] |
 
+**Note**: For standard regulatory/compliance terms (KYC, AML, etc.), see [BRD-000_GLOSSARY.md section 3](BRD-000_GLOSSARY.md#3-domain-specific-terms)
+
 ---
 
-### 16.4 Acronyms
+### 17.4 Acronyms
 
 [Define project-specific acronyms NOT in master glossary]
 
@@ -1764,9 +1875,11 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [Project_Acronym_1] | [Full term] | [Business/Technical/Domain] |
 | [Project_Acronym_2] | [Full term] | [Business/Technical/Domain] |
 
+**Note**: For standard BRD framework acronyms (FR, QA, BO, AC, etc.), see [BRD-000_GLOSSARY.md section 4](BRD-000_GLOSSARY.md#4-acronyms)
+
 ---
 
-### 16.5 Cross-References
+### 17.5 Cross-References
 
 [Link to related BRDs, external documents, and dependencies for this project]
 
@@ -1780,9 +1893,11 @@ This section maps BRD requirements to upstream business objectives and downstrea
 - Partner Integration | BRD-002_partner_ecosystem.md | section 6 | Related requirements
 - Authentication System | REQ-005_user_authentication.md | All | Upstream dependency
 
+**Note**: For framework-level cross-references, see [BRD-000_GLOSSARY.md section 5](BRD-000_GLOSSARY.md#5-cross-references)
+
 ---
 
-### 16.6 External Standards
+### 17.6 External Standards
 
 [Define regulatory, industry, or technical standards specific to this project NOT in master glossary]
 
@@ -1791,9 +1906,11 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [Project_Standard_1] | [Standards body/org] | [Why relevant to this project] | [Where used in BRD] |
 | [Project_Standard_2] | [Standards body/org] | [Why relevant to this project] | [Where used in BRD] |
 
+**Note**: For common standards (PCI-DSS, GDPR, ISO 27001, etc.), see [BRD-000_GLOSSARY.md section 6](BRD-000_GLOSSARY.md#6-external-standards)
+
 ---
 
-## 17. Appendices
+## 18. Appendices
 
 ### Appendix A: Supporting Documentation
 
@@ -1878,7 +1995,7 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 |-------------|--------|--------|----------|-------------|-----------|----------------|
 | [Name] | [System] | [System] | [API/File] | [Format] | [Timing] | [Approach] |
 
-### Appendix E: Stakeholder Interview Notes
+### Appendix H: Stakeholder Interview Notes
 
 [Summary of key findings from stakeholder interviews]
 
@@ -1886,7 +2003,7 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 |------|-------------|------------|------------------------|-----------------|
 | [Date] | [Name] | [Summary] | [Requirements] | [Issues] |
 
-### Appendix F: References
+### Appendix I: References
 
 [List all reference materials, standards, regulations, and best practices cited in this document]
 
@@ -1896,17 +2013,17 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 2. [Reference 2 - Full citation]
 3. [Reference 3 - Full citation]
 
-### Appendix G: Compliance Documentation
+### Appendix J: Compliance Documentation
 
 [Include relevant compliance certifications, audit reports, or regulatory documentation]
 
 ---
 
-### Appendix H: Fee Schedule Template [Required for Financial BRDs]
+### Appendix K: Fee Schedule Template [Required for Financial BRDs]
 
 **Purpose**: Document all customer-facing fees and internal cost structures for financial transactions.
 
-#### H.1 Customer-Facing Fee Structure
+#### K.1 Customer-Facing Fee Structure
 
 | Fee Type | Amount | Trigger | Calculation Basis | Customer Communication |
 |----------|--------|---------|-------------------|----------------------|
@@ -1921,13 +2038,13 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 | FX Spread | 1.5-2.0% | USD→UZS conversion | Mid-market rate + 1.5-2% | "Rate includes ~1.5% exchange margin" |
 | Delivery Fee | $0.00 | Standard delivery | Absorbed in FX spread | "No additional delivery fee" |
 
-#### H.2 Partner Cost Structure (Internal Reference)
+#### K.2 Partner Cost Structure (Internal Reference)
 
 | Partner | Cost Type | Rate | Settlement Terms | Volume Tiers |
 |---------|-----------|------|------------------|--------------|
 | [Partner] | [Fee type] | [Rate/amount] | [Payment terms] | [Volume discounts] |
 
-#### H.3 Margin Analysis
+#### K.3 Margin Analysis
 
 | Transaction Size | Total Customer Cost | Partner Costs | Gross Margin | Target Margin |
 |-----------------|--------------------| --------------|--------------|---------------|
@@ -1937,11 +2054,11 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 
 ---
 
-### Appendix I: Partner SLA Summary [Required for Partner Integration BRDs]
+### Appendix L: Partner SLA Summary [Required for Partner Integration BRDs]
 
 **Purpose**: Consolidate partner service level agreements relevant to business requirements.
 
-#### I.1 Partner SLA Matrix
+#### L.1 Partner SLA Matrix
 
 | Partner | Service | Availability SLA | Response Time SLA | Error Rate SLA | Escalation Contact |
 |---------|---------|-----------------|-------------------|----------------|-------------------|
@@ -1954,7 +2071,7 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 | Paynet | Delivery API | 99.5% | <5 seconds (95th) | <0.5% | paynet-ops@example.com |
 | Sardine | Risk Screening | 99.9% | <3 seconds (95th) | <0.01% | sardine-sla@example.com |
 
-#### I.2 SLA Impact on Business Requirements
+#### L.2 SLA Impact on Business Requirements
 
 | SLA Metric | Business Requirement Impact | Mitigation if SLA Missed |
 |------------|----------------------------|-------------------------|
@@ -1962,11 +2079,11 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 
 ---
 
-### Appendix J: Regulatory Reference Matrix [Required for Compliance BRDs]
+### Appendix M: Regulatory Reference Matrix [Required for Compliance BRDs]
 
 **Purpose**: Map regulatory requirements to business requirements for compliance traceability.
 
-#### J.1 Regulatory Requirements Mapping
+#### M.1 Regulatory Requirements Mapping
 
 | Regulation | section/Rule | Requirement Summary | BRD section | BRD Reference | Compliance Approach |
 |------------|--------------|---------------------|-------------|---------------|---------------------|
@@ -1980,7 +2097,7 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 | OFAC SDN | 31 CFR 501.603 | Sanctions screening | section 5 | BRD.NNN.NNN | Real-time OFAC screening before authorization |
 | Travel Rule | 31 CFR 1010.410(f) | Identity for ≥$3,000 | section 5 | BRD.NNN.NNN | Sender/recipient identity capture above threshold |
 
-#### J.2 Regulatory Calendar
+#### M.2 Regulatory Calendar
 
 | Regulation | Reporting Requirement | Frequency | Due Date | Owner | Source System |
 |------------|----------------------|-----------|----------|-------|---------------|
@@ -1988,7 +2105,7 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 
 ---
 
-### Appendix K: Customer Communication Templates [Required for Customer-Facing BRDs]
+### Appendix N: Customer Communication Templates [Required for Customer-Facing BRDs]
 
 **📚 Complete Customer-Facing Content Guidance**: For detailed messaging templates, error messages, promotional content, tooltips, and compliance disclosures, see:
 
@@ -2006,11 +2123,11 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 
 ---
 
-### Appendix L: Business Metrics Dashboard [Required for All BRDs]
+### Appendix O: Business Metrics Dashboard [Required for All BRDs]
 
 **Purpose**: Define key business metrics for monitoring requirement success and ongoing performance.
 
-#### L.1 Success Metrics
+#### O.1 Success Metrics
 
 | Metric | Definition | Target | Baseline | Data Source | Review Frequency |
 |--------|-----------|--------|----------|-------------|-----------------|
@@ -2025,13 +2142,13 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 | Customer Satisfaction | Post-transaction NPS score | ≥50 | N/A (new) | Survey responses | Monthly |
 | False Positive Rate | Legitimate transactions blocked / Total transactions | ≤3% | N/A (new) | Screening logs | Weekly |
 
-#### L.2 Operational Metrics
+#### O.2 Operational Metrics
 
 | Metric | Definition | Alert Threshold | Escalation |
 |--------|-----------|----------------|------------|
 | [Metric] | [Definition] | [When to alert] | [Who to notify] |
 
-#### L.3 Business Health Indicators
+#### O.3 Business Health Indicators
 
 | Indicator | Formula | Green | Yellow | Red |
 |-----------|---------|-------|--------|-----|

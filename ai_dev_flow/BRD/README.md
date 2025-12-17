@@ -190,7 +190,7 @@ Standard metadata including version, date, owner, status, revision history
 - **Functional Acceptance**: Functional requirement validation
 - **Success Metrics and KPIs**: Measurable performance indicators
 
-### resource management
+### Business Risk Management
 - **Identified Risks**: Risk ID, description, probability, impact, mitigation
 - **Risk Register**: Comprehensive risk tracking
 
@@ -198,9 +198,12 @@ Standard metadata including version, date, owner, status, revision history
 - **Implementation Phases**: Phased delivery plan with milestones
 - **Rollout Plan**: Deployment strategy and user adoption plan
 
-### Glossary and Appendices
-- **Glossary**: Business term definitions
+### Traceability, Glossary and Appendices
+- **Traceability**: Requirements traceability matrix and cross-BRD dependencies
+- **Glossary**: Business term definitions (6 subsections)
 - **Appendices**: Detailed supporting information
+
+> **Note**: Technical QA standards, testing strategy, and defect management are documented in PRD-TEMPLATE.md Section 21 (product level).
 
 ## Available Templates
 

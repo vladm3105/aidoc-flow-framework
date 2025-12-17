@@ -216,7 +216,7 @@ All PRD requirements must include:
 
 ### CHECK 4: section Numbering Validation
 
-**Purpose**: Verify all 20 sections (1-20) are numbered explicitly
+**Purpose**: Verify all 21 sections (1-21) are numbered explicitly
 **Type**: Error (blocking)
 
 **Required section Numbers**:
@@ -241,6 +241,7 @@ All PRD requirements must include:
 ## 18. Traceability
 ## 19. References
 ## 20. EARS Enhancement Appendix
+## 21. Quality Assurance & Testing Strategy
 ```
 
 **Error Messages**:
@@ -253,15 +254,15 @@ All PRD requirements must include:
 **Resolution Steps**:
 1. Add explicit section number to each header
 2. Use format: `## N. section Title`
-3. Verify sequential numbering (1-20)
+3. Verify sequential numbering (1-21)
 4. Check for duplicates or skipped numbers
 
 ### CHECK 5: Mandatory sections Presence
 
-**Purpose**: Verify all 20 sections exist in document
+**Purpose**: Verify all 21 sections exist in document
 **Type**: Error (blocking)
 
-**All sections MANDATORY**: Every PRD must contain all 20 sections (1-20) with substantive content, not placeholders.
+**All sections MANDATORY**: Every PRD must contain all 21 sections (1-21) with substantive content, not placeholders.
 
 **Error Messages**:
 ```
@@ -534,7 +535,7 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 
 **Before committing PRD to repository, verify**:
 
-- [ ] **All 20 sections present** (1-20) with substantive content
+- [ ] **All 21 sections present** (1-21) with substantive content
 - [ ] **section numbering explicit** (## N. Title format)
 - [ ] **Dual scoring ≥90%** (SYS-Ready and EARS-Ready)
 - [ ] **Customer-Facing Content (section 10)** populated with (MANDATORY) designation
@@ -573,7 +574,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 **When to Advance to EARS/SYS**:
 - ✅ Both SYS-Ready and EARS-Ready scores ≥90%
-- ✅ All 20 sections complete with substantive content
+- ✅ All 21 sections complete with substantive content
 - ✅ section 10 (Customer-Facing Content) populated
 - ✅ section 7 (User Stories) within PRD scope
 - ✅ @brd upstream reference valid
@@ -626,7 +627,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
    ## Document Control → ## 1. Document Control
    ## Executive Summary → ## 2. Executive Summary
    ```
-2. Verify sequential numbering 1-20 with no gaps
+2. Verify sequential numbering 1-21 with no gaps
 3. Check for duplicate section numbers
 4. Compare with PRD-TEMPLATE.md for correct sequence
 
@@ -873,8 +874,8 @@ Transaction limit: $1,000 USD (per @threshold: PRD.035.kyc.l1.daily)
 | CHECK 1 | Required Fields | Document Control completeness | Yes |
 | CHECK 2 | Dual Scoring Format | SYS-Ready + EARS-Ready format | Yes |
 | CHECK 3 | Threshold Enforcement | ≥90% scores required | Yes |
-| CHECK 4 | Section Numbering | Explicit 1-20 numbering | Yes |
-| CHECK 5 | Mandatory Sections | All 20 sections present | Yes |
+| CHECK 4 | Section Numbering | Explicit 1-21 numbering | Yes |
+| CHECK 5 | Mandatory Sections | All 21 sections present | Yes |
 | CHECK 6 | Section Title Consistency | Match template titles | No |
 | CHECK 7 | User Stories Scope | PRD-level only (no EARS/BDD) | Yes |
 | CHECK 8 | Customer-Facing Content | Section 10 mandatory | Yes |

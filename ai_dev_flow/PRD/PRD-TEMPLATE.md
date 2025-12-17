@@ -59,12 +59,12 @@ Schema: See `ai_dev_flow/PRD/PRD_SCHEMA.yaml` for complete rules
 ====================================================================== -->
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for PRD structure.
-> - **Schema**: `PRD_SCHEMA.yaml v1.0` - Validation rules (20 sections: 1-20)
+> - **Schema**: `PRD_SCHEMA.yaml v1.0` - Validation rules (21 sections: 1-21)
 > - **Creation Rules**: `PRD_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `PRD_VALIDATION_RULES.md` - Post-creation checks
 >
 > **Template Variants**:
-> - **Standard PRD** (20 sections): Default for business features - use this template
+> - **Standard PRD** (21 sections): Default for business features - use this template
 > - **Agent-Based PRD** (12-15 sections): Extended ML/AI sections, state machine focus
 > - **Automation-Focused PRD** (9-12 sections): n8n workflow-centric, webhook-focused
 
@@ -99,7 +99,7 @@ Select the appropriate template variant based on domain:
 
 | Variant | Sections | Use Case | Selection Criteria |
 |---------|----------|----------|-------------------|
-| **Standard** | 1-20 (20) | Business features, core platform | Default choice for most PRDs |
+| **Standard** | 1-21 (21) | Business features, core platform | Default choice for most PRDs |
 | **Agent-Based** | 1-15 (15) | ML/AI agents, intelligent systems | Contains agent-specific sections (state machine, ML metrics) |
 | **Automation-Focused** | 1-12 (12) | n8n workflows, event processing | Webhook-focused, workflow states |
 
@@ -426,28 +426,106 @@ User stories follow the standard format:
 
 ### Threshold Registry References
 
-**⚠️ IMPORTANT**: When this PRD references numeric thresholds, limits, or timing parameters, use the Threshold Registry pattern to ensure consistency across PRDs.
+**⚠️ IMPORTANT**: PRD documents serve as the **PRIMARY DEFINITION SOURCE** for technical thresholds. All downstream artifacts (EARS, BDD, SYS, SPEC, CTR) REFERENCE thresholds defined here.
 
-**Reference Format**: `@threshold: PRD.NNN.threshold-key`
+**Threshold Naming Convention**: `@threshold: PRD.NNN.category.subcategory.key`
 
-**When to Create Threshold Registry References**:
+**Format Reference**: See `THRESHOLD_NAMING_RULES.md` for complete naming standards.
+
+**When to Define Threshold Registry References**:
 - Transaction velocity limits (KYC/KYB limits)
 - Risk score thresholds (Low/Medium/High boundaries)
 - Performance timing targets (p50/p95/p99 latencies)
 - Timeout configurations (API, session, job timeouts)
 - Rate limits (API, transaction frequency)
 - Financial amount boundaries (min/max transaction amounts)
+- SLA targets and uptime requirements
+- Batch processing limits and intervals
 
-**Example Usage**:
+```yaml
+# Threshold Definitions for PRD-NNN
+# Format: @threshold: PRD.NNN.category.subcategory.key
+
+performance:
+  api:
+    - "@threshold: PRD.NNN.perf.api.p50_latency"        # e.g., 50ms
+    - "@threshold: PRD.NNN.perf.api.p95_latency"        # e.g., 200ms
+    - "@threshold: PRD.NNN.perf.api.p99_latency"        # e.g., 500ms
+  batch:
+    - "@threshold: PRD.NNN.perf.batch.max_duration"     # e.g., 3600s
+    - "@threshold: PRD.NNN.perf.batch.throughput"       # e.g., 10000/hour
+
+sla:
+  uptime:
+    - "@threshold: PRD.NNN.sla.uptime.target"           # e.g., 99.9%
+    - "@threshold: PRD.NNN.sla.uptime.critical"         # e.g., 99.99%
+  error_rate:
+    - "@threshold: PRD.NNN.sla.error_rate.target"       # e.g., < 0.1%
+
+timeout:
+  request:
+    - "@threshold: PRD.NNN.timeout.request.sync"        # e.g., 30s
+    - "@threshold: PRD.NNN.timeout.request.async"       # e.g., 300s
+  connection:
+    - "@threshold: PRD.NNN.timeout.connection.default"  # e.g., 5s
+  session:
+    - "@threshold: PRD.NNN.timeout.session.idle"        # e.g., 1800s
+
+limit:
+  api:
+    - "@threshold: PRD.NNN.limit.api.requests_per_second"  # e.g., 1000
+    - "@threshold: PRD.NNN.limit.api.burst"               # e.g., 5000
+  transaction:
+    - "@threshold: PRD.NNN.limit.transaction.daily"       # e.g., $10000
+    - "@threshold: PRD.NNN.limit.transaction.single"      # e.g., $5000
+  batch:
+    - "@threshold: PRD.NNN.limit.batch.size"              # e.g., 10000 records
+    - "@threshold: PRD.NNN.limit.batch.concurrent"        # e.g., 5 jobs
+
+risk:
+  thresholds:
+    - "@threshold: PRD.NNN.risk.low.max"                  # e.g., 30
+    - "@threshold: PRD.NNN.risk.medium.min"               # e.g., 31
+    - "@threshold: PRD.NNN.risk.medium.max"               # e.g., 74
+    - "@threshold: PRD.NNN.risk.high.min"                 # e.g., 75
+
+resource:
+  compute:
+    - "@threshold: PRD.NNN.resource.cpu.max"              # e.g., 80%
+    - "@threshold: PRD.NNN.resource.memory.max"           # e.g., 85%
+  storage:
+    - "@threshold: PRD.NNN.resource.disk.warning"         # e.g., 70%
+    - "@threshold: PRD.NNN.resource.disk.critical"        # e.g., 90%
+```
+
+**Threshold Definition Table**:
+
+| Threshold ID | Description | Value | Unit | Priority | Rationale |
+|--------------|-------------|-------|------|----------|-----------|
+| PRD.NNN.perf.api.p95_latency | API response time (95th percentile) | 200 | ms | P1 | User experience |
+| PRD.NNN.sla.uptime.target | Service availability target | 99.9 | % | P1 | SLA commitment |
+| PRD.NNN.limit.api.requests_per_second | API rate limit | 1000 | req/s | P1 | Infrastructure |
+| PRD.NNN.risk.high.min | High risk score threshold | 75 | score | P1 | Compliance |
+
+**Example Usage in Requirements**:
 ```markdown
 Transaction limit: $1,000 USD (per @threshold: PRD.035.kyc.l1.daily)
 Risk threshold: Score ≥75 triggers escalation (per @threshold: PRD.035.risk.high.min)
+API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 ```
 
 **Benefits**:
 - Single source of truth for threshold values
 - Eliminates conflicts between PRDs (e.g., CRIT-001 in blocal_n8n remediation)
 - Enables centralized threshold management
+- Downstream artifacts reference, not redefine
+
+**Upstream/Downstream Flow**:
+- **BRD**: Defines business-level thresholds (customer SLAs, compliance requirements)
+- **PRD**: Refines into technical thresholds (THIS DOCUMENT - primary definition source)
+- **EARS/BDD/SYS/SPEC/CTR**: Reference PRD thresholds using `@threshold:` tags
+
+**Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
 
 ---
 
@@ -1214,6 +1292,54 @@ Before progressing to EARS creation, verify:
 | State Machine | 25% | Complete with error transitions |
 | Fallback Paths | 15% | All external dependencies covered |
 | Threshold Registry | 10% | Centralized values referenced |
+
+---
+
+## 21. Quality Assurance & Testing Strategy
+
+> **Note**: This section was moved from BRD-TEMPLATE.md as technical QA belongs at product level.
+
+### 21.1 Quality Standards
+
+[Define quality standards and criteria for deliverables]
+
+| Deliverable Type | Quality Standard | Review Process | Approval Required |
+|------------------|------------------|----------------|-------------------|
+| Requirements Document | [Standard] | [Review method] | [Who approves] |
+| Design Documents | [Standard] | [Review method] | [Who approves] |
+| Code | [Standard] | [Review method] | [Who approves] |
+| Test Cases | [Standard] | [Review method] | [Who approves] |
+| User Documentation | [Standard] | [Review method] | [Who approves] |
+
+### 21.2 Testing Strategy
+
+#### 21.2.1 Testing Types
+
+| Test Type | Purpose | Responsibility | Schedule | Exit Criteria |
+|-----------|---------|----------------|----------|---------------|
+| Unit Testing | [Purpose] | [Developer] | [Phase] | [Criteria] |
+| Integration Testing | [Purpose] | [QA Team] | [Phase] | [Criteria] |
+| System Testing | [Purpose] | [QA Team] | [Phase] | [Criteria] |
+| Performance Testing | [Purpose] | [QA Team] | [Phase] | [Criteria] |
+| Security Testing | [Purpose] | [Security Team] | [Phase] | [Criteria] |
+| User Acceptance Testing | [Purpose] | [Business Users] | [Phase] | [Criteria] |
+
+#### 21.2.2 Defect Management
+
+**Defect Severity Definitions:**
+- **Critical:** System unavailable or data loss
+- **High:** Major functionality broken, no workaround
+- **Medium:** Functionality broken, workaround exists
+- **Low:** Minor issue, cosmetic
+
+**Defect Resolution Targets:**
+
+| Severity | Response Time | Resolution Target | Escalation |
+|----------|---------------|-------------------|------------|
+| Critical | [X hours] | [X hours] | [Immediate] |
+| High | [X hours] | [X days] | [After X hours] |
+| Medium | [X days] | [X days] | [After X days] |
+| Low | [X days] | [X weeks] | [As needed] |
 
 ---
 

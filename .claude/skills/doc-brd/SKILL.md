@@ -134,13 +134,15 @@ Use `doc-brd` when:
 
 **BRD-TEMPLATE.md** - Comprehensive business requirements (general purpose)
 - Use for: All business requirements documents
-- Sections: Complete 18-section structure
+- Sections: Complete 17-section structure
 - Best for: Complex projects, regulatory compliance needs
 - Location: `ai_dev_flow/BRD/BRD-TEMPLATE.md`
 
 **Note**: Use the comprehensive template for all BRD documents. For simpler requirements, complete only the essential sections and mark others as "N/A - Not applicable for this scope".
 
-### 2. Required Sections (18 Total)
+> **Note**: Technical QA standards, testing strategy, and defect management are documented in PRD-TEMPLATE.md Section 21 (product level).
+
+### 2. Required Sections (17 Total)
 
 **Document Control** (MANDATORY - First section before all numbered sections):
 - Project Name
@@ -328,7 +330,7 @@ Complete all required metadata fields and initialize Document Revision History t
 
 ### Step 7: Complete Core Sections
 
-Fill all 18 required sections following template structure.
+Fill all 17 required sections following template structure.
 
 **Platform BRD**: Populate sections 3.6 and 3.7 with technology details
 **Feature BRD**: Mark sections 3.6 and 3.7 as "N/A - See Platform BRD-NNN"
@@ -386,7 +388,7 @@ Commit BRD file and traceability matrix together.
 - [ ] Sections 3.6 & 3.7 handled correctly for BRD type
 - [ ] Architecture Decision Requirements listed (no ADR numbers referenced)
 - [ ] Strategy references in Traceability section
-- [ ] All 18 sections completed
+- [ ] All 17 sections completed
 - [ ] Traceability matrix created/updated
 - [ ] No broken links
 - [ ] File size <50,000 tokens (standard) or <100,000 tokens (maximum)
@@ -484,7 +486,7 @@ For supplementary documentation related to BRD artifacts:
 | PRD-Ready Score: ✅ Required (≥90%) | PRD-Ready Score: **NOT APPLICABLE** |
 | Cumulative tags: Required | Cumulative tags: **NOT REQUIRED** |
 | Quality gates: Full validation | Quality gates: **EXEMPT** |
-| Format: Structured 18 sections | Format: **Free format, business-oriented** |
+| Format: Structured 17 sections | Format: **Free format, business-oriented** |
 
 **Purpose**: BRD-REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal business requirements.
 

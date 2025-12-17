@@ -648,7 +648,7 @@ Documents with reserved ID `000` are framework infrastructure, not project artif
 | `{TYPE}-000_index.md` | Directory indexes | `BRD-000_index.md`, `ADR-000_index.md` |
 | `{TYPE}-000_TRACEABILITY_MATRIX-TEMPLATE.md` | Matrix templates | All 12 artifact types |
 | `{TYPE}-000_GLOSSARY.md` | Term definitions | `BRD-000_GLOSSARY.md` |
-| `{TYPE}-000_*_template.md` | Registry templates | `PRD-000_threshold_registry_template.md` |
+| `{TYPE}-000_*_template.md` | Document templates | `BRD-000_TEMPLATE.md`, `PRD-000_TEMPLATE.md` |
 | `{TYPE}-000_*_CHECKLIST.md` | Checklists | `TASKS-000_IMPLEMENTATION_CONTRACTS_CHECKLIST.md` |
 
 #### Validation Exemption
@@ -702,13 +702,15 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 | `@impl-status:` | Implementation status | `@impl-status: complete` (pending\|in-progress\|complete\|deprecated) |
 | `@icon:` | Implementation contract | `@icon: TASKS-001:ServiceConnector` |
 | `@icon-role:` | Contract role | `@icon-role: provider` (provider\|consumer) |
-| `@threshold:` | Threshold registry ref | `@threshold: PRD.035.kyc.tier1_timeout` |
+| `@threshold:` | Threshold reference | `@threshold: PRD.001.kyc.l1.daily` |
 | `@entity:` | Data entity reference | `@entity: PRD.004.UserProfile` |
 | `@priority:` | Requirement priority | `@priority: critical` |
 | `@component:` | Component reference | `@component: risk-engine` |
 | `@supersedes:` | Superseded document | `@supersedes: REQ-001` |
 | `@related-{type}:` | Related same-type doc | `@related-req: REQ-001` |
 | `@depends-{type}:` | Prerequisite same-type | `@depends-req: REQ-002` |
+
+> **Threshold Naming Standards**: For `@threshold:` tag format (`@threshold: DOC_TYPE.DOC_NUM.key`) and threshold key naming conventions, see [THRESHOLD_NAMING_RULES.md](./THRESHOLD_NAMING_RULES.md). Thresholds are defined in BRD/PRD/ADR YAML blocks (BRD: business, PRD: product, ADR: technical) and referenced via `@threshold:` tags in downstream documents.
 
 **Invalid Tags** (do NOT use): `@fr:`, `@contract:`, `@tests:`
 

@@ -167,10 +167,48 @@ Example: "Synchronous REST-style request/response contract for resource risk val
 - `{domain_strategy}/risk_management.md` section 2.2: Resource limits must be checked before new positions]
 
 ### 5.3 Quality Attributes
-- **Performance**: p99 latency < 100ms, throughput > 1000 req/s
+- **Performance**: p99 latency < @threshold: PRD.NNN.perf.api.p99_latency, throughput > @threshold: PRD.NNN.limit.api.requests_per_second
 - **security**: mTLS authentication, RBAC authorization, audit logging
-- **Scalability**: Horizontal scaling to handle 10,000 req/s during rebalancing
-- **Reliability**: Idempotent validation, retry-safe, 99.9% uptime SLA
+- **Scalability**: Horizontal scaling to handle @threshold: PRD.NNN.limit.api.burst during rebalancing
+- **Reliability**: Idempotent validation, retry-safe, @threshold: PRD.NNN.sla.uptime.target uptime SLA
+
+### 5.4 Thresholds Referenced
+
+**⚠️ IMPORTANT**: CTR documents have a **dual role** for thresholds:
+1. **Reference** platform-wide thresholds from PRD threshold registry
+2. **Define** API-specific thresholds unique to this contract
+
+**Platform Thresholds Referenced** (from PRD-NNN Threshold Registry):
+```yaml
+performance:
+  - "@threshold: PRD.NNN.perf.api.p95_latency"
+  - "@threshold: PRD.NNN.perf.api.p99_latency"
+sla:
+  - "@threshold: PRD.NNN.sla.uptime.target"
+  - "@threshold: PRD.NNN.sla.error_rate.target"
+limits:
+  - "@threshold: PRD.NNN.limit.api.requests_per_second"
+  - "@threshold: PRD.NNN.limit.api.burst"
+timeouts:
+  - "@threshold: PRD.NNN.timeout.request.sync"
+  - "@threshold: PRD.NNN.timeout.connection.default"
+```
+
+**API-Specific Thresholds Defined** (unique to this CTR):
+```yaml
+# Define thresholds specific to this API contract
+# Format: @threshold: CTR.NNN.category.key
+rate_limits:
+  - "@threshold: CTR.NNN.limit.consumer.requests_per_minute"
+  - "@threshold: CTR.NNN.limit.consumer.burst"
+payload:
+  - "@threshold: CTR.NNN.limit.payload.max_size_bytes"
+retry:
+  - "@threshold: CTR.NNN.retry.max_attempts"
+  - "@threshold: CTR.NNN.retry.backoff_base_ms"
+```
+
+**Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
 
 ---
 

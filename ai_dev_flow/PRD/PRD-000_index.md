@@ -95,7 +95,7 @@ PRDs support three template variants based on feature complexity and implementat
 
 | Variant | Code | Sections | Use Case | Selection Criteria |
 |---------|------|----------|----------|-------------------|
-| **Standard** | S | 20 sections (0-19) | Business features, platform capabilities | Default for most PRDs |
+| **Standard** | S | 21 sections (1-21) | Business features, platform capabilities | Default for most PRDs |
 | **Agent-Based** | A | 12-15 sections | AI/ML agents with inference pipelines | ML models, autonomous decision-making |
 | **Automation** | W | 9-12 sections | Workflow-focused, n8n-centric | Event-driven automation, minimal UI |
 
@@ -107,7 +107,7 @@ flowchart TD
     Q1 -->|Yes| Agent[Agent-Based Template<br/>12-15 sections]
     Q1 -->|No| Q2{Workflow/automation<br/>focused?}
     Q2 -->|Yes| Workflow[Automation Template<br/>9-12 sections]
-    Q2 -->|No| Standard[Standard Template<br/>20 sections]
+    Q2 -->|No| Standard[Standard Template<br/>21 sections]
 ```
 
 ### Variant-Specific Required Sections
@@ -158,7 +158,7 @@ See [PRD-TEMPLATE.md Section 7](./PRD-TEMPLATE.md#7-technical-requirements-speci
 
 | Status | Definition | Action Required |
 |--------|------------|-----------------|
-| **Current** | Compliant with v2.0 template (20 sections + EARS Appendix) | None |
+| **Current** | Compliant with v2.0 template (21 sections: 1-21 including EARS Appendix and QA) | None |
 | **Legacy** | Pre-v2.0 format (missing EARS Appendix, inconsistent Feature IDs) | Migration required |
 | **Migrated** | Updated from legacy to current format | Validation only |
 

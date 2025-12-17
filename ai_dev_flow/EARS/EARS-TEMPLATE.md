@@ -186,6 +186,50 @@ WITHIN [operational boundary].
 @ctr: CTR-NNN (if applicable)
 \`\`\`
 
+### 5.4 Thresholds Referenced
+
+**Purpose**: EARS documents REFERENCE thresholds defined in PRD threshold registry. All quantitative values in EARS requirements must use `@threshold:` tags to ensure single source of truth.
+
+**Threshold Naming Convention**: `@threshold: PRD.NNN.category.subcategory.key`
+
+**Format Reference**: See `THRESHOLD_NAMING_RULES.md` for complete naming standards.
+
+**Thresholds Used in This Document**:
+\`\`\`yaml
+# Thresholds referenced from PRD threshold registry
+# Format: @threshold: PRD.NNN.category.subcategory.key
+
+timing:
+  # Timing constraints for WITHIN clauses
+  - "@threshold: PRD.NNN.timeout.request.sync"        # Synchronous operation timeout
+  - "@threshold: PRD.NNN.timeout.request.async"       # Asynchronous operation timeout
+  - "@threshold: PRD.NNN.timeout.connection.default"  # Connection establishment timeout
+
+performance:
+  # Performance targets for quality attributes
+  - "@threshold: PRD.NNN.perf.api.p95_latency"        # API response time target
+  - "@threshold: PRD.NNN.perf.batch.max_duration"    # Batch processing limit
+
+limits:
+  # Capacity and rate limits
+  - "@threshold: PRD.NNN.limit.api.requests_per_second"  # Rate limiting
+  - "@threshold: PRD.NNN.limit.batch.size"              # Batch size limits
+
+error:
+  # Error handling thresholds
+  - "@threshold: PRD.NNN.sla.error_rate.target"      # Acceptable error rate
+  - "@threshold: PRD.NNN.retry.max_attempts"         # Retry policy
+\`\`\`
+
+**Example Usage in Requirements**:
+\`\`\`
+WHEN [trigger condition],
+THE [system component] SHALL [action]
+WITHIN @threshold: PRD.NNN.timeout.request.sync.
+\`\`\`
+
+**Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
+
 ---
 
 ## 6. References

@@ -65,9 +65,9 @@ Use `doc-prd` when:
 
 ## PRD-Specific Guidance
 
-### 1. Required Sections (20 Total)
+### 1. Required Sections (21 Total)
 
-PRD documents require exactly **20 numbered sections** (1-20). See `ai_dev_flow/PRD/PRD-TEMPLATE.md` for complete structure.
+PRD documents require exactly **21 numbered sections** (1-21). See `ai_dev_flow/PRD/PRD-TEMPLATE.md` for complete structure.
 
 **Section 1. Document Control** (MANDATORY - First section):
 - Project Name
@@ -80,7 +80,7 @@ PRD documents require exactly **20 numbered sections** (1-20). See `ai_dev_flow/
 - **EARS-Ready Score**: ≥90% required (format: `✅ NN% (Target: ≥90%)`)
 - Document Revision History table
 
-**All 20 Sections**:
+**All 21 Sections**:
 1. **Document Control**: Metadata, version, scores, revision history
 2. **Executive Summary**: 3-5 sentence overview
 3. **Problem Statement**: What problem are we solving?
@@ -101,6 +101,7 @@ PRD documents require exactly **20 numbered sections** (1-20). See `ai_dev_flow/
 18. **Acceptance Criteria**: Business-verifiable outcomes
 19. **Traceability**: Cumulative tags and upstream/downstream links
 20. **EARS Enhancement Appendix**: Structured requirements for EARS transformation
+21. **Quality Assurance & Testing Strategy**: QA standards, testing scope, acceptance procedures (moved from BRD)
 
 ### 2. Technology Stack Reference
 
@@ -401,10 +402,11 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ### Manual Checklist
 
-**Structure (20 Sections)**:
-- [ ] All 20 numbered sections present (1-20)
+**Structure (21 Sections)**:
+- [ ] All 21 numbered sections present (1-21)
 - [ ] Document Control (Section 1) at top with all required fields
 - [ ] EARS Enhancement Appendix (Section 20) completed
+- [ ] Quality Assurance & Testing Strategy (Section 21) completed
 
 **Document Control Required Fields**:
 - [ ] Project Name, Version, Date, Owner, Prepared By, Status

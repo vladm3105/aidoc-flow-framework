@@ -1291,6 +1291,65 @@ Document evidence that this task has been implemented correctly and meets all ac
 
 **Purpose**: Cumulative tagging enables complete traceability chains from business requirements through code generation plans. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
 
+### 10.9 Thresholds Referenced
+
+**Purpose**: TASKS documents REFERENCE thresholds defined in the PRD threshold registry. All quantitative values in acceptance criteria, quality constraints, and performance metrics must use `@threshold:` tags to ensure single source of truth.
+
+**Threshold Naming Convention**: `@threshold: PRD.NNN.category.subcategory.key`
+
+**Format Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for complete naming standards.
+
+**Thresholds Used in This Document**:
+```yaml
+# Thresholds referenced from PRD threshold registry
+# Format: @threshold: PRD.NNN.category.subcategory.key
+
+performance:
+  # Acceptance criteria performance targets (Section 6.2)
+  - "@threshold: PRD.NNN.perf.api.p50_latency"        # p50 latency target
+  - "@threshold: PRD.NNN.perf.api.p95_latency"        # p95 latency target
+  - "@threshold: PRD.NNN.perf.api.p99_latency"        # p99 latency target
+  - "@threshold: PRD.NNN.perf.throughput.rps"         # Throughput target
+
+sla:
+  # Reliability and error rate constraints (Section 5.3)
+  - "@threshold: PRD.NNN.sla.error_rate.max"          # Maximum error rate
+  - "@threshold: PRD.NNN.sla.uptime.target"           # Uptime target
+
+resource:
+  # Resource utilization limits (Section 5.3)
+  - "@threshold: PRD.NNN.resource.cpu.max_utilization"   # CPU limit
+  - "@threshold: PRD.NNN.resource.memory.max_mb"         # Memory limit
+
+coverage:
+  # Test coverage targets (Section 6.3)
+  - "@threshold: PRD.NNN.quality.test.unit_coverage"        # Unit test coverage
+  - "@threshold: PRD.NNN.quality.test.integration_coverage" # Integration test coverage
+  - "@threshold: PRD.NNN.quality.test.bdd_coverage"         # BDD scenario coverage
+
+timeout:
+  # Operation timeouts (Section 5.1)
+  - "@threshold: PRD.NNN.timeout.request.sync"        # Synchronous request timeout
+  - "@threshold: PRD.NNN.timeout.connection.default"  # Connection timeout
+  - "@threshold: PRD.NNN.timeout.recovery.max"        # Recovery timeout
+```
+
+**Example Usage in Acceptance Criteria**:
+```markdown
+#### Performance Acceptance
+- [ ] p95 latency < @threshold: PRD.NNN.perf.api.p95_latency for all API operations
+- [ ] p99 latency < @threshold: PRD.NNN.perf.api.p99_latency for critical path operations
+- [ ] Throughput ≥ @threshold: PRD.NNN.perf.throughput.rps under sustained load
+- [ ] Resource utilization within @threshold: PRD.NNN.resource.cpu.max_utilization
+
+#### Testing Acceptance
+- [ ] Unit test coverage ≥ @threshold: PRD.NNN.quality.test.unit_coverage
+- [ ] Integration test coverage ≥ @threshold: PRD.NNN.quality.test.integration_coverage
+- [ ] BDD scenario coverage = @threshold: PRD.NNN.quality.test.bdd_coverage
+```
+
+**Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
+
 ---
 
 ## 11. Implementation Notes

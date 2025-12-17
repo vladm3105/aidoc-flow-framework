@@ -796,6 +796,65 @@ API contracts and interface agreements for external integration.
 
 **Purpose**: Cumulative tagging enables complete traceability chains from business requirements through system specifications. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
 
+### 13.10 Thresholds Referenced
+
+**Purpose**: SYS documents REFERENCE thresholds defined in the PRD threshold registry. All quantitative values in quality attributes, SLAs, and performance specifications must use `@threshold:` tags to ensure single source of truth.
+
+**Threshold Naming Convention**: `@threshold: PRD.NNN.category.subcategory.key`
+
+**Format Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for complete naming standards.
+
+**Thresholds Used in This Document**:
+```yaml
+# Thresholds referenced from PRD threshold registry
+# Format: @threshold: PRD.NNN.category.subcategory.key
+
+performance:
+  # Response time and latency requirements (Section 5.1)
+  - "@threshold: PRD.NNN.perf.api.p95_latency"         # API response time target
+  - "@threshold: PRD.NNN.perf.batch.p95_latency"       # Batch processing latency
+  - "@threshold: PRD.NNN.perf.throughput.peak_rps"    # Peak requests per second
+  - "@threshold: PRD.NNN.perf.throughput.sustained_rps" # Sustained throughput
+  - "@threshold: PRD.NNN.perf.storage.read_iops"      # Storage read IOPS
+
+sla:
+  # Service level agreements (Sections 5.1, 5.2)
+  - "@threshold: PRD.NNN.sla.success_rate.target"     # Operation success rate
+  - "@threshold: PRD.NNN.sla.uptime.target"           # Service availability
+  - "@threshold: PRD.NNN.sla.maintenance.max_hours"   # Maintenance window limit
+  - "@threshold: PRD.NNN.sla.rto"                     # Recovery time objective
+  - "@threshold: PRD.NNN.sla.rpo"                     # Recovery point objective
+  - "@threshold: PRD.NNN.sla.error_rate.max"          # Maximum error rate
+
+timeout:
+  # Timeout constraints (Section 5.2)
+  - "@threshold: PRD.NNN.timeout.recovery.self_healing" # Self-healing timeout
+
+resource:
+  # Resource utilization limits (Section 5.1)
+  - "@threshold: PRD.NNN.resource.cpu.max_utilization"  # CPU utilization cap
+  - "@threshold: PRD.NNN.resource.memory.max_heap"      # Memory allocation limit
+
+batch:
+  # Batch processing configuration (Section 5.2)
+  - "@threshold: PRD.NNN.batch.backup.interval_hours"   # Backup frequency
+  - "@threshold: PRD.NNN.batch.backup.retention_days"   # Backup retention
+
+limit:
+  # Alerting thresholds (Section 5.5)
+  - "@threshold: PRD.NNN.limit.alert.duration_minutes"  # Alert duration trigger
+  - "@threshold: PRD.NNN.limit.alert.latency_minutes"   # Latency alert duration
+```
+
+**Example Usage in SYS Requirements**:
+```markdown
+- **Interactive Operations**: p95 response time < @threshold: PRD.NNN.perf.api.p95_latency
+- **Service Uptime**: Maintain @threshold: PRD.NNN.sla.uptime.target% uptime
+- **Error Rate Alerts**: Alert when error rate exceeds @threshold: PRD.NNN.sla.error_rate.max%
+```
+
+**Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
+
 ---
 
 > **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:

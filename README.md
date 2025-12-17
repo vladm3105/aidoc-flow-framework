@@ -653,6 +653,7 @@ aidoc-flow-framework/
 │   ├── README.md                      # Framework documentation
 │   ├── SPEC_DRIVEN_DEVELOPMENT_GUIDE.md  # Authoritative SDD methodology
 │   ├── ID_NAMING_STANDARDS.md         # Document ID format rules
+│   ├── THRESHOLD_NAMING_RULES.md      # Threshold and limit naming standards
 │   ├── TRACEABILITY.md                # Cumulative tagging hierarchy
 │   ├── TRACEABILITY_SETUP.md          # Validation setup and CI/CD integration
 │   ├── TRACEABILITY_VALIDATION.md     # Validation procedures
@@ -790,6 +791,7 @@ MIT License - See LICENSE file for details
 - [Index](./ai_dev_flow/index.md) - Template overview with workflow diagram
 - [Quick Reference](./ai_dev_flow/QUICK_REFERENCE.md) - Quick reference for common tasks
 - [ID Standards](./ai_dev_flow/ID_NAMING_STANDARDS.md) - Naming conventions
+- [Threshold Naming Rules](./ai_dev_flow/THRESHOLD_NAMING_RULES.md) - Threshold and limit naming standards
 - [Traceability](./ai_dev_flow/TRACEABILITY.md) - Cumulative tagging hierarchy
 - [Traceability Setup](./ai_dev_flow/TRACEABILITY_SETUP.md) - Validation automation and CI/CD integration
 - [Traceability Validation](./ai_dev_flow/TRACEABILITY_VALIDATION.md) - Validation procedures

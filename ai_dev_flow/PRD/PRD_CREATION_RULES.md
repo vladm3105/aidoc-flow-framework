@@ -23,7 +23,7 @@ custom_fields:
 > - **Validation**: Use `PRD_VALIDATION_RULES.md` after PRD creation/changes
 >
 > **⚠️ Numbering Note**: This document's Table of Contents uses rule category numbers (0-15),
-> which are different from PRD section numbers (0-18). Always refer to PRD-TEMPLATE.md for
+> which are different from PRD section numbers (1-21). Always refer to PRD-TEMPLATE.md for
 > actual PRD section structure.
 
 # PRD Creation Rules
@@ -33,7 +33,7 @@ custom_fields:
 **Last Updated**: 2025-11-30
 **Source**: Extracted from PRD-TEMPLATE.md, PRD-VALIDATION_RULES.md, README.md, and PRD-000_index.md
 **Purpose**: Complete reference for creating PRD files according to doc-flow SDD framework
-**Changes**: Added Status/Score mapping table, extended common mistakes section. Previous: 19-section structure (0-18), section 6 (User Stories), section 8 (Customer-Facing Content MANDATORY), dual scoring requirements
+**Changes**: Updated to 21-section structure (1-21) with Section 20 (EARS Enhancement Appendix) and Section 21 (Quality Assurance & Testing Strategy). Previous: 19-section structure (0-18)
 
 ---
 
@@ -136,34 +136,37 @@ custom_fields:
 
 ## 2. Document Structure (Required sections)
 
-Every PRD must contain these exact 19 sections (0-18) in order. section numbering must be explicit in all headers.
+Every PRD must contain these exact 21 sections (1-21) in order. Section numbering must be explicit in all headers.
 
-#### Required sections in Order (19 total):
+#### Required Sections in Order (21 total):
 
-0. **Document Control** - Metadata, versioning, dual scoring (SYS-Ready + EARS-Ready ≥90%)
-1. **Executive Summary** - Business value and timeline overview
-2. **Problem Statement** - Current state, business impact, opportunity assessment
-3. **Target Audience & User Personas** - Primary users, secondary users, business stakeholders
-4. **Success Metrics (KPIs)** - Primary KPIs, secondary KPIs, success criteria by phase
-5. **Goals & Objectives** - Primary business goals, secondary objectives, stretch goals
-6. **Scope & Requirements** - In scope features, out of scope items, dependencies, assumptions
-7. **User Stories & User Roles** - Role definitions, story summaries (PRD-level only, no EARS/BDD detail)
-8. **Functional Requirements** - User journey mapping, capability requirements
-9. **Customer-Facing Content & Messaging (MANDATORY)** - Product positioning, messaging, user-facing content
-10. **Acceptance Criteria** - Business acceptance, technical acceptance, quality assurance
-11. **Constraints & Assumptions** - Business/technical/external constraints, key assumptions
-12. **Risk Assessment** - High-risk items, risk mitigation plan
-13. **Success Definition** - Go-live criteria, post-launch validation, measurement timeline
-14. **Stakeholders & Communication** - Core team, stakeholders, communication plan
-15. **Implementation Approach** - Development phases, testing strategy
-16. **Budget & Resources** - Development/operational budget, resource requirements
-17. **Traceability** - Upstream sources, downstream artifacts, traceability tags, validation evidence
-18. **References** - Internal documentation, external standards, domain references, technology references
+1. **Document Control** - Metadata, versioning, dual scoring (SYS-Ready + EARS-Ready ≥90%)
+2. **Executive Summary** - Business value and timeline overview
+3. **Problem Statement** - Current state, business impact, opportunity assessment
+4. **Target Audience & User Personas** - Primary users, secondary users, business stakeholders
+5. **Success Metrics (KPIs)** - Primary KPIs, secondary KPIs, success criteria by phase
+6. **Goals & Objectives** - Primary business goals, secondary objectives, stretch goals
+7. **Scope & Requirements** - In scope features, out of scope items, dependencies, assumptions
+8. **User Stories & User Roles** - Role definitions, story summaries (PRD-level only, no EARS/BDD detail)
+9. **Functional Requirements** - User journey mapping, capability requirements
+10. **Customer-Facing Content & Messaging (MANDATORY)** - Product positioning, messaging, user-facing content
+11. **Acceptance Criteria** - Business acceptance, technical acceptance, quality assurance
+12. **Constraints & Assumptions** - Business/technical/external constraints, key assumptions
+13. **Risk Assessment** - High-risk items, risk mitigation plan
+14. **Success Definition** - Go-live criteria, post-launch validation, measurement timeline
+15. **Stakeholders & Communication** - Core team, stakeholders, communication plan
+16. **Implementation Approach** - Development phases, testing strategy
+17. **Budget & Resources** - Development/operational budget, resource requirements
+18. **Traceability** - Upstream sources, downstream artifacts, traceability tags, validation evidence
+19. **References** - Internal documentation, external standards, domain references, technology references
+20. **EARS Enhancement Appendix** - EARS pattern templates and requirement syntax guidance
+21. **Quality Assurance & Testing Strategy** - QA standards, testing strategy (moved from BRD)
 
 **Critical Notes**:
-- All 19 sections are MANDATORY with explicit numbering (## 0. Title, ## 1. Title, etc.)
-- section 9 (Customer-Facing Content) is blocking requirement - must contain substantive content
-- section 7 (User Stories) must include layer separation scope note
+- All 21 sections are MANDATORY with explicit numbering (## 1. Title, ## 2. Title, etc.)
+- Section 10 (Customer-Facing Content) is blocking requirement - must contain substantive content
+- Section 8 (User Stories) must include layer separation scope note
+- Section 21 (QA & Testing Strategy) moved from BRD-TEMPLATE.md as technical QA belongs at product level
 
 ---
 
@@ -455,7 +458,7 @@ SYS-ready scoring measures PRD maturity and readiness for progression to System 
 ### Scoring Criteria
 
 **Product Requirements Completeness (40%)**:
-- All 19 sections present and populated: 10%
+- All 21 sections present and populated: 10%
 - Business goals include measurable KPIs: 10%
 - Acceptance criteria with business stakeholder validation: 10%
 - Stakeholder analysis and communication plan complete: 10%
@@ -668,7 +671,7 @@ PRDs vary in structure based on domain. Select the appropriate variant at PRD cr
 
 | Variant | Section Count | Primary Use Case | Key Differences |
 |---------|---------------|------------------|-----------------|
-| **Standard** | 20 sections (0-19) | Business features, core platform, user-facing products | Full template with comprehensive business analysis |
+| **Standard** | 21 sections (1-21) | Business features, core platform, user-facing products | Full template with comprehensive business analysis |
 | **Agent-Based** | 12-15 sections | ML/AI agents, intelligent systems, autonomous processes | Extended ML metrics, state machine focus, A2A protocol |
 | **Automation-Focused** | 9-12 sections | n8n workflows, event processing, integrations | Webhook-focused, workflow states, trigger/action pairs |
 
@@ -697,9 +700,10 @@ Add template variant to Document Control:
 
 ### Variant-Specific Sections
 
-**Standard Template (20 sections)**:
-- Sections 0-19 as defined in PRD-TEMPLATE.md
-- Full EARS Enhancement Appendix (Section 19)
+**Standard Template (21 sections)**:
+- Sections 1-21 as defined in PRD-TEMPLATE.md
+- Full EARS Enhancement Appendix (Section 20)
+- Quality Assurance & Testing Strategy (Section 21)
 
 **Agent-Based Template (15 sections)**:
 - Sections 0-14: Core PRD structure

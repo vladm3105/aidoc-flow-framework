@@ -184,7 +184,7 @@ PRDs inherit categorization context from their source BRDs:
 **Scoring Criteria**:
 
 **Product Requirements Completeness (40%)**:
-- All 16 sections present and populated: 10%
+- All 21 sections present and populated: 10%
 - Business goals include measurable KPIs: 10%
 - Acceptance criteria with business stakeholder validation: 10%
 - Stakeholder analysis and communication plan complete: 10%

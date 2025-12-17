@@ -14,7 +14,7 @@
 schema_version: "1.0"
 artifact_type: BRD
 layer: 1
-last_updated: "2025-12-11"
+last_updated: "2025-12-16"
 schema_status: optional  # BRD is human-authored, schema validation not required
 
 references:

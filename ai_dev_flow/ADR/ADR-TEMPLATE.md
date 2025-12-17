@@ -182,6 +182,62 @@ Before proposing new technologies, verify compliance with project-wide technolog
 - Integration impact and migration plan
 - Recommendation to update stack if adopted]
 
+### 4.6 Threshold Management
+
+**⚠️ IMPORTANT**: ADR documents have a **dual role** for thresholds:
+1. **Reference** platform-wide thresholds from PRD threshold registry
+2. **Define** architecture-specific thresholds unique to this decision
+
+**Threshold Naming Convention**: `@threshold: ADR.NNN.category.subcategory.key`
+
+**Format Reference**: See `THRESHOLD_NAMING_RULES.md` for complete naming standards.
+
+**Platform Thresholds Referenced** (from PRD Threshold Registry):
+```yaml
+# Reference thresholds from PRD that constrain this architectural decision
+performance:
+  - "@threshold: PRD.NNN.perf.api.p95_latency"      # Architecture must meet this target
+  - "@threshold: PRD.NNN.perf.api.p99_latency"      # Architecture must meet this target
+sla:
+  - "@threshold: PRD.NNN.sla.uptime.target"         # Architecture availability requirement
+  - "@threshold: PRD.NNN.sla.error_rate.target"     # Architecture error budget
+resource:
+  - "@threshold: PRD.NNN.resource.cpu.max"          # Infrastructure constraint
+  - "@threshold: PRD.NNN.resource.memory.max"       # Infrastructure constraint
+```
+
+**Architecture-Specific Thresholds Defined** (unique to this ADR):
+```yaml
+# Define thresholds specific to this architectural decision
+# Format: @threshold: ADR.NNN.category.key
+circuit_breaker:
+  - "@threshold: ADR.NNN.circuit.failure_threshold"    # e.g., 5 failures
+  - "@threshold: ADR.NNN.circuit.recovery_timeout"     # e.g., 30s
+  - "@threshold: ADR.NNN.circuit.half_open_requests"   # e.g., 3 requests
+retry:
+  - "@threshold: ADR.NNN.retry.max_attempts"           # e.g., 3 attempts
+  - "@threshold: ADR.NNN.retry.backoff_base_ms"        # e.g., 100ms
+  - "@threshold: ADR.NNN.retry.backoff_max_ms"         # e.g., 10000ms
+caching:
+  - "@threshold: ADR.NNN.cache.ttl_seconds"            # e.g., 300s
+  - "@threshold: ADR.NNN.cache.max_entries"            # e.g., 10000
+  - "@threshold: ADR.NNN.cache.eviction_percent"       # e.g., 20%
+pool:
+  - "@threshold: ADR.NNN.pool.min_connections"         # e.g., 5
+  - "@threshold: ADR.NNN.pool.max_connections"         # e.g., 50
+  - "@threshold: ADR.NNN.pool.idle_timeout"            # e.g., 300s
+```
+
+**Threshold Impact Analysis**:
+
+| Threshold ID | Type | Value | Architecture Impact | Justification |
+|--------------|------|-------|-------------------|---------------|
+| PRD.NNN.perf.api.p95_latency | Referenced | 200ms | Constrains component selection | SLA requirement |
+| ADR.NNN.circuit.failure_threshold | Defined | 5 | Resilience pattern tuning | Prevent cascade failures |
+| ADR.NNN.retry.max_attempts | Defined | 3 | Error handling strategy | Balance reliability vs latency |
+
+**Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
+
 ## 5. Decision
 
 ### 5.1 Chosen Solution

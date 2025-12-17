@@ -57,7 +57,7 @@ custom_fields:
 ## Table of Contents
 
 1. [File Organization and Directory Structure](#1-file-organization-and-directory-structure)
-2. [Document Structure (18 Required sections)](#2-document-structure-18-required-sections)
+2. [Document Structure (17 Required sections)](#2-document-structure-17-required-sections)
 3. [Document Control Requirements](#3-document-control-requirements)
 4. [ID and Naming Standards](#4-id-and-naming-standards)
 5. [Business Requirements Principles](#5-business-requirements-principles)
@@ -81,11 +81,11 @@ custom_fields:
 
 ---
 
-## 2. Document Structure (18 Required Numbered sections)
+## 2. Document Structure (17 Required Numbered sections)
 
 **Document Control section**: Located at the very beginning (before all numbered sections)
 
-Every BRD must contain these exact 18 numbered sections in order:
+Every BRD must contain these exact 17 numbered sections in order:
 
 1. **Introduction** - Purpose, scope, audience, conventions, references
 2. **Business Objectives** - Background/context, business problem, goals, objectives, strategic alignment, expected benefits
@@ -101,10 +101,11 @@ Every BRD must contain these exact 18 numbered sections in order:
 12. **Support and Maintenance** - Support model/services/SLAs, maintenance plan
 13. **Cost-Benefit Analysis** - One-time/recurring costs, quantifiable/qualitative benefits, ROI, payback NPV
 14. **Project Governance** - Governance structure, decision-making authority, status reporting, change control
-15. **Quality Assurance** - Quality standards, testing strategy, defect management
-16. **Traceability** - Requirements traceability matrix, cross-BRD dependencies, test coverage traceability, traceability summary
-17. **Glossary** - Business terms, technical terms, domain-specific terms, acronyms, cross-references, external standards
-18. **Appendices** - References, supporting documentation, process flow diagrams, data requirements, UI mockups, integration specifications, stakeholder interview notes
+15. **Traceability** - Requirements traceability matrix, cross-BRD dependencies, test coverage traceability, traceability summary
+16. **Glossary** - Business terms, technical terms, domain-specific terms, acronyms, cross-references, external standards
+17. **Appendices** - References, supporting documentation, process flow diagrams, data requirements, UI mockups, integration specifications, stakeholder interview notes
+
+> **Note**: Technical QA (quality standards, testing strategy, defect management) moved to PRD-TEMPLATE.md Section 21.
 
 **Important Updates (2025-11-26)**: Several sections have been simplified for better BRD/PRD layer separation:
 - **section 4 (Stakeholders)**: Now high-level identification only. Detailed stakeholder analysis, communication plans, and team structure moved to PRD.

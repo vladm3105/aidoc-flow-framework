@@ -38,3 +38,58 @@ custom_fields:
 > 4. **Do NOT create phantom references**: Never reference documents that don't exist
 > 5. **Do NOT create missing upstream artifacts**: If upstream artifacts are missing, skip that functionality. Only create functionality for existing upstream artifacts.
 
+---
+
+## Thresholds Referenced
+
+**Purpose**: SPEC documents REFERENCE thresholds defined in the PRD threshold registry. All quantitative values in performance requirements, SLA targets, and configuration parameters must use `@threshold:` tags to ensure single source of truth.
+
+**Threshold Naming Convention**: `@threshold: PRD.NNN.category.subcategory.key`
+
+**Format Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for complete naming standards.
+
+**Thresholds Used in This Document**:
+```yaml
+performance:
+  - "@threshold: PRD.NNN.perf.api.p50_latency"        # p50 latency requirement
+  - "@threshold: PRD.NNN.perf.api.p95_latency"        # p95 latency requirement
+  - "@threshold: PRD.NNN.perf.api.p99_latency"        # p99 latency requirement
+  - "@threshold: PRD.NNN.perf.throughput.rps"         # Throughput requirement
+
+sla:
+  - "@threshold: PRD.NNN.sla.uptime.target"           # Uptime SLA target
+  - "@threshold: PRD.NNN.sla.error_rate.max"          # Maximum error rate
+
+timeout:
+  - "@threshold: PRD.NNN.timeout.request.sync"        # Synchronous request timeout
+  - "@threshold: PRD.NNN.timeout.request.async"       # Asynchronous request timeout
+  - "@threshold: PRD.NNN.timeout.connection.default"  # Connection timeout
+
+limits:
+  - "@threshold: PRD.NNN.limit.api.requests_per_second"  # Rate limit
+  - "@threshold: PRD.NNN.limit.batch.size"               # Maximum batch size
+  - "@threshold: PRD.NNN.limit.batch.concurrent"         # Concurrent batch limit
+
+resource:
+  - "@threshold: PRD.NNN.resource.cpu.max_utilization"   # CPU utilization limit
+  - "@threshold: PRD.NNN.resource.memory.max_mb"         # Memory limit
+```
+
+**Example Usage in Specification**:
+```yaml
+# Performance Requirements
+performance_requirements:
+  api_latency:
+    p95_target: "@threshold: PRD.NNN.perf.api.p95_latency"
+    p99_target: "@threshold: PRD.NNN.perf.api.p99_latency"
+  throughput:
+    target_rps: "@threshold: PRD.NNN.perf.throughput.rps"
+
+# Configuration Parameters
+configuration:
+  timeouts:
+    request_timeout: "@threshold: PRD.NNN.timeout.request.sync"
+    connection_timeout: "@threshold: PRD.NNN.timeout.connection.default"
+```
+
+**Note**: For the full SPEC structure with all traceability fields, see `SPEC-TEMPLATE.yaml`.
