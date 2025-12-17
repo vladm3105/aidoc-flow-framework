@@ -1840,7 +1840,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-### 16.6 External Standards
+### 17.6 External Standards
 
 [Define regulatory, industry, or technical standards specific to this project NOT in master glossary]
 
@@ -1851,7 +1851,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ---
 
-## 17. Appendices
+## 18. Appendices
 
 ### Appendix A: Supporting Documentation
 
