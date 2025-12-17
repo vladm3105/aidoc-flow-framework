@@ -384,16 +384,16 @@ flowchart LR
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 8):
 ```markdown
-@brd: BRD.NNN.NNN
-@prd: PRD.NNN.NNN
-@ears: EARS.NNN.NNN
-@bdd: BDD.NNN.NNN
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.EE.SS
+@bdd: BDD.NN.EE.SS
 @adr: ADR-NNN
-@sys: SYS.NNN.NNN
-@req: REQ.NNN.NNN
+@sys: SYS.NN.EE.SS
+@req: REQ.NN.EE.SS
 ```
 
-**Format**: `@artifact-type: TYPE.NNN.NNN (Unified Feature ID)`
+**Format**: `@artifact-type: TYPE.NN.EE.SS (Unified Feature ID)`
 
 **Layer 8 Requirements**: IMPL must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)

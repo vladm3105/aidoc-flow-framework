@@ -436,9 +436,9 @@ traceability:
   cumulative_tags:
     layer: 4
     required:
-      - "@brd: BRD.NNN.NNN"
-      - "@prd: PRD.NNN.NNN"
-      - "@ears: EARS.NNN.NNN"
+      - "@brd: BRD.NN.EE.SS"
+      - "@prd: PRD.NN.EE.SS"
+      - "@ears: EARS.NN.EE.SS"
     description: "Layer 4 requires @brd, @prd, @ears tags for full traceability"
 
   # Cumulative tagging enforcement
@@ -455,13 +455,13 @@ traceability:
   upstream:
     required:
       - type: BRD
-        format: "@brd: BRD.NNN.NNN"
+        format: "@brd: BRD.NN.EE.SS"
         location: "Header comments or scenario tags"
       - type: PRD
-        format: "@prd: PRD.NNN.NNN"
+        format: "@prd: PRD.NN.EE.SS"
         location: "Header comments or scenario tags"
       - type: EARS
-        format: "@ears: EARS.NNN.NNN"
+        format: "@ears: EARS.NN.EE.SS"
         location: "Header comments or scenario tags"
     # NOTE: No optional upstream tags - all three (@brd, @prd, @ears) are MANDATORY
 

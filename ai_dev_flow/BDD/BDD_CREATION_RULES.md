@@ -235,9 +235,9 @@ Feature: [Business Capability Title]
 - Business benefit (So that...)
 
 **Required Tags**:
-- `@brd: BRD.NNN.NNN` - Business requirements upstream (sub-ID dot notation)
-- `@prd: PRD.NNN.NNN` - Product requirements upstream (sub-ID dot notation)
-- `@ears: EARS.NNN.NNN` - Engineering requirements upstream (sub-ID dot notation)
+- `@brd: BRD.NN.EE.SS` - Business requirements upstream (sub-ID dot notation)
+- `@prd: PRD.NN.EE.SS` - Product requirements upstream (sub-ID dot notation)
+- `@ears: EARS.NN.EE.SS` - Engineering requirements upstream (sub-ID dot notation)
 
 ---
 
@@ -407,7 +407,7 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 | Mistake | Correct |
 |---------|---------|
 | `Status: Approved` (with <90% ADR-Ready score) | `Status: In Review` or `Status: Draft` |
-| Missing @ears traceability tag | `@ears: EARS.NNN.NNN` |
+| Missing @ears traceability tag | `@ears: EARS.NN.EE.SS` |
 | Scenario without tags | Add `@primary`, `@negative`, `@boundary` tags |
 | `Given-When-Then` without concrete values | Use specific data in steps |
 | Vague outcomes like "should work" | Observable verification: "response status code is 200" |

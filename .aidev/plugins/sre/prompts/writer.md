@@ -244,12 +244,12 @@ sys_patterns:
   # Quality attribute requirement format (Unified numbering - per ID_NAMING_STANDARDS.md)
   # Uses sequential numbering for all requirements (unified approach)
   quality_attributes:
-    format: "SYS.NNN.NNN"
-    pattern: "^SYS\\.\\d{3}\\.\\d{3}$"
-    description: "Unified quality attribute identifier using sequential numbering"
+    format: "SYS.NN.EE.SS"
+    pattern: "^SYS\\.\\d{2}\\.\\d{2}\\.\\d{2}$"
+    description: "Unified quality attribute identifier using 4-segment format"
     cross_reference_format:
-      pattern: "@sys: SYS.NNN.NNN"
-      example: "@sys: SYS.008.015"
+      pattern: "@sys: SYS.NN.EE.SS"
+      example: "@sys: SYS.08.25.15"
     categories:
       performance:
         keywords: ["latency", "response time", "throughput", "p50", "p95", "p99", "milliseconds", "TPS", "RPS"]
@@ -361,7 +361,7 @@ validation_rules:
     - rule: "Functional Requirements must use FR-NNN format"
       severity: warning
 
-    - rule: "Quality Attributes must use sequential numbering (e.g., SYS.008.015)"
+    - rule: "Quality Attributes must use sequential numbering (e.g., SYS.08.25.15)"
       severity: warning
 
     - rule: "Quality attributes section must cover Performance, Reliability, Security"
@@ -385,26 +385,26 @@ traceability:
   cumulative_tags:
     layer: 6
     required:
-      - "@brd: BRD.NNN.NNN"
-      - "@prd: PRD.NNN.NNN"
-      - "@ears: EARS.NNN.NNN"
-      - "@bdd: BDD.NNN.NNN"
+      - "@brd: BRD.NN.EE.SS"
+      - "@prd: PRD.NN.EE.SS"
+      - "@ears: EARS.NN.EE.SS"
+      - "@bdd: BDD.NN.EE.SS"
       - "@adr: ADR-NNN"
     description: "Layer 6 requires @brd, @prd, @ears, @bdd, @adr tags for complete traceability"
 
   upstream:
     required:
       - type: BRD
-        format: "@brd: BRD.NNN.NNN"
+        format: "@brd: BRD.NN.EE.SS"
         location: "Section 13 Traceability or Traceability Tags section"
       - type: PRD
-        format: "@prd: PRD.NNN.NNN"
+        format: "@prd: PRD.NN.EE.SS"
         location: "Section 13 Traceability or Traceability Tags section"
       - type: EARS
-        format: "@ears: EARS.NNN.NNN"
+        format: "@ears: EARS.NN.EE.SS"
         location: "Section 13 Traceability or Traceability Tags section"
       - type: BDD
-        format: "@bdd: BDD.NNN.NNN"
+        format: "@bdd: BDD.NN.EE.SS"
         location: "Section 13 Traceability or Traceability Tags section"
       - type: ADR
         format: "@adr: ADR-NNN"
@@ -447,7 +447,7 @@ error_messages:
   SYS-E012: "Missing Traceability section (Section 13)"
   SYS-E013: "File name does not match SYS-NNN_name.md format"
   SYS-W001: "Functional requirements not using FR-NNN format"
-  SYS-W002: "Quality attributes not using sequential numbering (e.g., SYS.008.015)"
+  SYS-W002: "Quality attributes not using sequential numbering (e.g., SYS.08.25.15)"
   SYS-W003: "Quality attributes section missing Performance category"
   SYS-W004: "Quality attributes section missing Security category"
   SYS-W005: "Missing upstream traceability tags (require 5: @brd, @prd, @ears, @bdd, @adr)"

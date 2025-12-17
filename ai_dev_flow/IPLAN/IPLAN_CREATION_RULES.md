@@ -372,13 +372,13 @@ poetry show | grep -E "(async_client|pydantic)"
 
 | Tag | Format | Description |
 |-----|--------|-------------|
-| @brd | BRD.NNN.NNN or BRD-NNN | Business Requirements (Layer 1) |
-| @prd | PRD.NNN.NNN or PRD-NNN | Product Requirements (Layer 2) |
-| @ears | EARS.NNN.NNN | EARS Requirements (Layer 3) |
-| @bdd | BDD.NNN.NNN or BDD-NNN | BDD Scenarios (Layer 4) |
+| @brd | BRD.NN.EE.SS or BRD-NNN | Business Requirements (Layer 1) |
+| @prd | PRD.NN.EE.SS or PRD-NNN | Product Requirements (Layer 2) |
+| @ears | EARS.NN.EE.SS | EARS Requirements (Layer 3) |
+| @bdd | BDD.NN.EE.SS or BDD-NNN | BDD Scenarios (Layer 4) |
 | @adr | ADR-NNN | Architecture Decisions (Layer 5) |
-| @sys | SYS.NNN.NNN or SYS-NNN | System Requirements (Layer 6) |
-| @req | REQ.NNN.NNN or REQ-NNN | Atomic Requirements (Layer 7) |
+| @sys | SYS.NN.EE.SS or SYS-NNN | System Requirements (Layer 6) |
+| @req | REQ.NN.EE.SS or REQ-NNN | Atomic Requirements (Layer 7) |
 | @spec | SPEC-NNN | Technical Specifications (Layer 10) |
 | @tasks | TASKS-NNN | Code Generation Plan (Layer 11) |
 
@@ -768,7 +768,7 @@ python scripts/validate_cross_document.py --layer IPLAN --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd through @tasks tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

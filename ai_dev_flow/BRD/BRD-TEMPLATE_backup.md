@@ -653,7 +653,7 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 ### 7.2 Architecture Decision Requirements
 
-The following architectural topics require formal Architecture Decision Records (ADRs). Each topic uses subsection format `{DOC_TYPE}.NNN.NNN` (3-digit topic number) containing **business content only**. Technical options and evaluation criteria belong in PRD Section 18.
+The following architectural topics require formal Architecture Decision Records (ADRs). Each topic uses subsection format `{DOC_TYPE}.NN.EE.SS` (3-digit topic number) containing **business content only**. Technical options and evaluation criteria belong in PRD Section 18.
 
 **Format Reference**: See `ai_dev_flow/ID_NAMING_STANDARDS.md` - "Architecture Decision Topic Subsection Format"
 
@@ -1780,8 +1780,8 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 | Requirement Category | Test Type Required | Planned Test Specification | Coverage Target |
 |----------------------|-------------------|---------------------------|-----------------|
-| BRD.NNN.001 through BRD.NNN.NNN | Unit Tests | TEST-XXX-UNIT: FR Unit Test Suite | 95% |
-| BRD.NNN.001 through BRD.NNN.NNN | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
+| BRD.NNN.001 through BRD.NN.EE.SS | Unit Tests | TEST-XXX-UNIT: FR Unit Test Suite | 95% |
+| BRD.NNN.001 through BRD.NN.EE.SS | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
 | User Stories (US-001 through US-XXX) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
 | Performance Quality Attributes | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
 | Security Quality Attributes | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
@@ -2087,15 +2087,15 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 
 | Regulation | section/Rule | Requirement Summary | BRD section | BRD Reference | Compliance Approach |
 |------------|--------------|---------------------|-------------|---------------|---------------------|
-| [Regulation] | [section] | [Summary] | [section #] | [BRD.NNN.NNN] | [How complied] |
+| [Regulation] | [section] | [Summary] | [section #] | [BRD.NN.EE.SS] | [How complied] |
 
 **Example:**
 
 | Regulation | section/Rule | Requirement Summary | BRD section | BRD Reference | Compliance Approach |
 |------------|--------------|---------------------|-------------|---------------|---------------------|
 | FinCEN MSB | 31 CFR 1010.410 | Recordkeeping for 5 years | section 6 | BRD.NNN.012 | Transaction audit trail with 5-year retention |
-| OFAC SDN | 31 CFR 501.603 | Sanctions screening | section 5 | BRD.NNN.NNN | Real-time OFAC screening before authorization |
-| Travel Rule | 31 CFR 1010.410(f) | Identity for ≥$3,000 | section 5 | BRD.NNN.NNN | Sender/recipient identity capture above threshold |
+| OFAC SDN | 31 CFR 501.603 | Sanctions screening | section 5 | BRD.NN.EE.SS | Real-time OFAC screening before authorization |
+| Travel Rule | 31 CFR 1010.410(f) | Identity for ≥$3,000 | section 5 | BRD.NN.EE.SS | Sender/recipient identity capture above threshold |
 
 #### M.2 Regulatory Calendar
 

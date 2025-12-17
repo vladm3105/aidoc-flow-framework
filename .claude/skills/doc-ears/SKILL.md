@@ -76,7 +76,7 @@ custom_fields:
 
 **Source Document Format:**
 ```
-| **Source Document** | @prd: PRD.NNN.NNN |
+| **Source Document** | @prd: PRD.NN.07.SS |
 ```
 
 **Post-Creation Validation:**
@@ -206,24 +206,26 @@ WHEN trade order received THE order management system SHALL validate and route o
 
 The SDD framework uses two distinct notation systems for cross-references:
 
-| Notation | Format       | Artifacts                               | Purpose                                                             |
-|----------|--------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NNN.NNN | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to features inside documents |
+| Notation | Format        | Artifacts                               | Purpose                                                             |
+|----------|---------------|----------------------------------------|---------------------------------------------------------------------|
+| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.017.001` → Points to feature 001 inside document `BRD-017.md`
+- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
 
-## Unified Feature ID Format (MANDATORY)
+## Unified Element ID Format (MANDATORY)
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NNN.NNN` (dot separator)
+- **Always use**: `TYPE.NN.EE.SS` (dot separator, 4-segment format)
 - **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE.NN.EE.SS` (3-segment format - DEPRECATED)
 
 Examples:
-- `@brd: BRD.017.001` ✅
+- `@brd: BRD.17.01.01` ✅
 - `@brd: BRD-017:001` ❌
+- `@brd: BRD.017.001` ❌ (old 3-segment format)
 
 
 ## Cumulative Tagging Requirements
@@ -238,14 +240,14 @@ Examples:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 3):
 ```markdown
-@brd: BRD.001.003, BRD.001.010
-@prd: PRD.001.002, PRD.001.015
+@brd: BRD.01.01.03, BRD.01.01.10
+@prd: PRD.01.07.02, PRD.01.07.15
 ```
 
-- BRD.001.003 - Business requirements driving these formal requirements
-- BRD.001.010 - Success criteria from business case
-- PRD.001.002 - Product feature being formalized
-- PRD.001.015 - Performance KPI targets
+- BRD.01.01.03 - Business requirements driving these formal requirements
+- BRD.01.01.10 - Success criteria from business case
+- PRD.01.07.02 - Product feature being formalized
+- PRD.01.07.15 - Performance KPI targets
 
 **Upstream Sources**:
 - [BRD-001](../BRD/BRD-001_platform.md#BRD-001) - Business requirements
@@ -269,8 +271,8 @@ Examples:
 - **SYS** (Layer 6) - System requirements derived from EARS
 
 **Same-Type Document Relationships** (conditional):
-- `@related-ears: EARS.NNN` - EARS sharing domain context (references EARS document)
-- `@depends-ears: EARS.NNN` - EARS that must be implemented first
+- `@related-ears: EARS-NNN` - EARS sharing domain context (references EARS document)
+- `@depends-ears: EARS-NNN` - EARS that must be implemented first
 
 ## Creation Process
 
@@ -312,13 +314,13 @@ For each requirement:
 ```markdown
 ## Event-Driven Requirements
 
-### EARS.001.001: Trade Order Validation
+### EARS.01.24.01: Trade Order Validation
 ```
 WHEN trade order received,
 THE order management system SHALL validate order parameters (symbol, quantity, price, account)
 WITHIN 50 milliseconds.
 ```
-**Traceability**: @brd: BRD.001.005 | @prd: PRD.001.003
+**Traceability**: @brd: BRD.01.01.05 | @prd: PRD.01.07.03
 ```
 
 ### Step 7: Add Cumulative Tags
@@ -432,7 +434,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact EARS-NNN --e
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -495,7 +497,7 @@ For supplementary documentation related to EARS artifacts:
 
 **BDD-Ready Score**: ≥90% required for "Approved" status
 
-**Requirement IDs**: `EARS.NNN.NNN` format (sequential numbering, no category prefixes)
+**Requirement IDs**: `EARS.NN.24.SS` format (unified 4-segment format)
 
 **4 Types**:
 1. Event-Driven (WHEN event)

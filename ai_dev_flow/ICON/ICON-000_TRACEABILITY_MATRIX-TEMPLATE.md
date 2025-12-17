@@ -95,9 +95,9 @@ This matrix tracks all ICON contracts, mapping upstream specifications to provid
 
 ```markdown
 @spec: SPEC-018
-@req: REQ.045.001
+@req: REQ.45.26.01
 @adr: ADR-033
-@impl: IMPL.003.002
+@impl: IMPL.03.28.02
 @ctr: CTR-005
 @icon: ICON-001:ContractName
 @icon-role: provider|consumer
@@ -109,7 +109,7 @@ This matrix tracks all ICON contracts, mapping upstream specifications to provid
 - Separator: colon `:` after artifact type
 - Tag Formats:
   - Document-level: `TYPE-NNN` (ADR, SPEC, CTR, ICON, TASKS, IPLAN)
-  - Feature-level: `TYPE.NNN.NNN` (REQ, PRD, BRD, SYS, EARS, BDD, IMPL)
+  - Feature-level: `TYPE.NN.EE.SS` (REQ, PRD, BRD, SYS, EARS, BDD, IMPL)
 - Contract Name: PascalCase identifier (for @icon tags)
 - Role Tag: `provider` or `consumer` (required in TASKS files)
 
@@ -125,7 +125,7 @@ This matrix tracks all ICON contracts, mapping upstream specifications to provid
 **Required Tags** (Layer 11):
 ```markdown
 @spec: SPEC-018
-@req: REQ.045.001
+@req: REQ.45.26.01
 @adr: ADR-033
 ```
 

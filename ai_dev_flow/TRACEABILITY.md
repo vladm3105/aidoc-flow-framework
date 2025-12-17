@@ -649,7 +649,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 **Basic Format** (Unified Feature ID):
 ```
-@artifact-type: TYPE.NNN.NNN
+@artifact-type: TYPE.NN.EE.SS
 ```
 
 **Components**:

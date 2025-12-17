@@ -130,7 +130,7 @@ structure:
 
     source_document_format:
       pattern: "^@prd: PRD\\.\\d{3}\\.\\d{3}$"
-      description: "Must use @prd: prefix with dot notation (PRD.NNN.NNN) for traceability"
+      description: "Must use @prd: prefix with dot notation (PRD.NN.EE.SS) for traceability"
 
   # Section numbering rules
   section_numbering:
@@ -168,7 +168,7 @@ ears_patterns:
 
   # Each EARS statement must include
   required_statement_components:
-    - traceability_tag: "@prd: PRD.NNN.NNN"
+    - traceability_tag: "@prd: PRD.NN.EE.SS"
     - timing_specification: "WITHIN X seconds/minutes/hours at pNN latency"
 
 # =============================================================================
@@ -225,17 +225,17 @@ traceability:
   cumulative_tags:
     layer: 3
     required:
-      - "@brd: BRD.NNN.NNN"
-      - "@prd: PRD.NNN.NNN"
+      - "@brd: BRD.NN.EE.SS"
+      - "@prd: PRD.NN.EE.SS"
     description: "Layer 3 requires @brd and @prd tags for complete traceability"
 
   upstream:
     required:
       - type: BRD
-        format: "@brd: BRD.NNN.NNN"
+        format: "@brd: BRD.NN.EE.SS"
         location: "Document Control table or Traceability section"
       - type: PRD
-        format: "@prd: PRD.NNN.NNN"
+        format: "@prd: PRD.NN.EE.SS"
         location: "Document Control table or Traceability section"
 
   downstream:

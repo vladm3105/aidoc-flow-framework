@@ -186,8 +186,8 @@ feature_patterns:
       - "015"
       - "042"
     cross_reference_format:
-      pattern: "@prd: PRD.NNN.NNN"
-      example: "@prd: PRD.022.015"
+      pattern: "@prd: PRD.NN.EE.SS"
+      example: "@prd: PRD.02.07.15"
       description: "Cross-reference format includes document ID for global uniqueness"
 
   # Feature table structure
@@ -255,23 +255,23 @@ traceability:
   upstream:
     required:
       - type: BRD
-        format: "@brd: BRD.NNN.NNN"
+        format: "@brd: BRD.NN.EE.SS"
         location: "Document Control table"
     optional: []
 
   downstream:
     expected:
       - type: SYS
-        format: "@sys: SYS.NNN.NNN"
+        format: "@sys: SYS.NN.EE.SS"
       - type: EARS
-        format: "@ears: EARS.NNN.NNN"
+        format: "@ears: EARS.NN.EE.SS"
       - type: REQ
-        format: "@req: REQ.NNN.NNN"
+        format: "@req: REQ.NN.EE.SS"
       - type: SPEC
-        format: "@spec: SPEC.NNN.NNN"
+        format: "@spec: SPEC.NN.EE.SS"
 
   lateral:
-    format: "@prd: PRD.NNN.NNN"
+    format: "@prd: PRD.NN.EE.SS"
     description: "Cross-reference to related PRDs"
 
   threshold_references:

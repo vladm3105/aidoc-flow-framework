@@ -113,7 +113,7 @@ EARS documents require specific structural elements for behavioral specification
   - Element type 24 = EARS Statement
   - Sequential numbering within document (01, 02, 03...)
   - ❌ **DEPRECATED**: Do NOT use category prefixes (E, S, U, UB, EVENT, STATE, UNWANTED, UBIQ)
-  - ❌ **DEPRECATED**: Do NOT use 3-segment format (EARS.NNN.NNN)
+  - ❌ **DEPRECATED**: Do NOT use 3-segment format (EARS.NN.EE.SS)
 
 ---
 
@@ -274,7 +274,7 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 
 - Block quote format: `> **Tags**:`
 - Comma separators: `@prd: ..., @threshold: ...`
-- Trailing commas: `@prd: PRD.019.002, |`
+- Trailing commas: `@prd: PRD.19.07.02, |`
 
 **Downstream Linkages**:
 - REQ and SPEC artifacts

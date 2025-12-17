@@ -465,7 +465,7 @@ LOOP:
 | Issue | Fix Action |
 |-------|------------|
 | Missing cumulative tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

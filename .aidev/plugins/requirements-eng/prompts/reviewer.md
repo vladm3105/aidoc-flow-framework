@@ -429,33 +429,33 @@ traceability:
   cumulative_tags:
     layer: 7
     required:
-      - "@brd: BRD.NNN.NNN"
-      - "@prd: PRD.NNN.NNN"
-      - "@ears: EARS.NNN.NNN"
-      - "@bdd: BDD.NNN.NNN"
+      - "@brd: BRD.NN.EE.SS"
+      - "@prd: PRD.NN.EE.SS"
+      - "@ears: EARS.NN.EE.SS"
+      - "@bdd: BDD.NN.EE.SS"
       - "@adr: ADR-NNN"
-      - "@sys: SYS.NNN.NNN"
+      - "@sys: SYS.NN.EE.SS"
     description: "Layer 7 requires all 6 upstream artifact tags for complete traceability"
 
   upstream:
     required:
       - type: BRD
-        format: "@brd: BRD.NNN.NNN"
+        format: "@brd: BRD.NN.EE.SS"
         location: "Section 11.1 or Traceability Tags section"
       - type: PRD
-        format: "@prd: PRD.NNN.NNN"
+        format: "@prd: PRD.NN.EE.SS"
         location: "Section 11.1 or Traceability Tags section"
       - type: EARS
-        format: "@ears: EARS.NNN.NNN"
+        format: "@ears: EARS.NN.EE.SS"
         location: "Section 11.1 or Traceability Tags section"
       - type: BDD
-        format: "@bdd: BDD.NNN.NNN"
+        format: "@bdd: BDD.NN.EE.SS"
         location: "Section 11.1 or Traceability Tags section"
       - type: ADR
         format: "@adr: ADR-NNN"
         location: "Section 11.1 or Traceability Tags section"
       - type: SYS
-        format: "@sys: SYS.NNN.NNN"
+        format: "@sys: SYS.NN.EE.SS"
         location: "Section 11.1 or Traceability Tags section"
 
   downstream:
@@ -502,7 +502,7 @@ error_messages:
   REQ-E017: "Missing Exception Catalog in Error Handling"
   REQ-W001: "SPEC-Ready Score below 90% threshold"
   REQ-W002: "Acceptance Criteria count below 15"
-  REQ-W003: "Missing upstream traceability tags (require all 6: @brd, @prd, @ears, @bdd, @adr, @sys) - use format DOC.NNN.NNN"
+  REQ-W003: "Missing upstream traceability tags (require all 6: @brd, @prd, @ears, @bdd, @adr, @sys) - use format DOC.NN.EE.SS"
   REQ-W004: "Missing Description Context or Use Case subsections"
   REQ-W005: "Missing Performance targets (p50/p95/p99)"
   REQ-W006: "Missing Implementation Guidance patterns"

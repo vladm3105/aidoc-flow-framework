@@ -104,7 +104,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
 - **BDD-001**: [External Service Gateway Integration](./BDD-001_external_gateway_integration.feature)
-  - **Requirements**: REQ.NNN.NNN (Integration), REQ.NNN.NNN (Gateway)
+  - **Requirements**: REQ.NN.EE.SS (Integration), REQ.NN.EE.SS (Gateway)
   - **ADRs**: ADR-NNN (Architecture)
   - **Status**: Draft | Review | Approved
 -->
@@ -116,7 +116,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
 - **BDD-002**: [Resource Risk Limits Validation](./BDD-002_resource_risk_limits.feature)
-  - **Requirements**: REQ.NNN.NNN (Risk Limits)
+  - **Requirements**: REQ.NN.EE.SS (Risk Limits)
   - **ADRs**: ADR-NNN (Risk Parameters)
   - **Status**: Draft | Review | Approved
 -->
@@ -128,7 +128,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
 - **BDD-003**: [System State Classifier Behavior](./BDD-003_system_state_classifier.feature)
-  - **Requirements**: REQ.NNN.NNN (ML Models)
+  - **Requirements**: REQ.NN.EE.SS (ML Models)
   - **ADRs**: ADR-NNN (ML Architecture)
   - **Status**: Draft | Review | Approved
 -->
@@ -140,7 +140,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
 - **BDD-004**: [Service Strategy Execution](./BDD-004_service_strategy.feature)
-  - **Requirements**: REQ.NNN.NNN (Strategy)
+  - **Requirements**: REQ.NN.EE.SS (Strategy)
   - **ADRs**: ADR-NNN (Strategy Architecture)
   - **Status**: Draft | Review | Approved
 -->
@@ -152,7 +152,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
 - **BDD-005**: [Analytics Pipeline](./BDD-005_analytics_pipeline.feature)
-  - **Requirements**: REQ.NNN.NNN (Analytics)
+  - **Requirements**: REQ.NN.EE.SS (Analytics)
   - **ADRs**: ADR-NNN (Data Architecture)
   - **Status**: Draft | Review | Approved
 -->
@@ -164,7 +164,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
 - **BDD-006**: [Monitoring and Alerting Service](./BDD-006_monitoring_alerting.feature)
-  - **Requirements**: REQ.NNN.NNN (Monitoring)
+  - **Requirements**: REQ.NN.EE.SS (Monitoring)
   - **ADRs**: ADR-NNN (Monitoring Architecture)
   - **Status**: Draft | Review | Approved
 -->

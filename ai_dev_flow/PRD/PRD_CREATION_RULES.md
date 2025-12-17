@@ -81,7 +81,7 @@ custom_fields:
 | Approver | Final approver name | MANDATORY |
 | Created Date | YYYY-MM-DD | MANDATORY |
 | Last Updated | YYYY-MM-DD | MANDATORY |
-| BRD Reference | @brd: BRD.NNN.NNN tag | MANDATORY |
+| BRD Reference | @brd: BRD.NN.EE.SS tag | MANDATORY |
 | SYS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
 | EARS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
 | Priority | High / Medium / Low | OPTIONAL |
@@ -109,7 +109,7 @@ custom_fields:
 | **Author** | [Product Manager/Owner Name] |
 | **Reviewer** | [Technical Reviewer Name] |
 | **Approver** | [Stakeholder Name] |
-| **BRD Reference** | @brd: BRD.NNN.NNN |
+| **BRD Reference** | @brd: BRD.NN.EE.SS |
 | **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
 | **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
 ```
@@ -183,7 +183,7 @@ Every PRD must contain these exact 21 sections (1-21) in order. Section numberin
 - Author: [Product Manager/Owner Name]
 - Reviewer: [Technical Reviewer Name]
 - Approver: [Stakeholder Name]
-- BRD Reference: @brd: BRD.NNN.NNN tag
+- BRD Reference: @brd: BRD.NN.EE.SS tag
 - SYS-Ready Score: Format `✅ NN% (Target: ≥90%)`
 - EARS-Ready Score: Format `✅ NN% (Target: ≥90%)`
 
@@ -200,7 +200,7 @@ Every PRD must contain these exact 21 sections (1-21) in order. Section numberin
 | **Author** | [Product Manager/Owner Name] |
 | **Reviewer** | [Technical Reviewer Name] |
 | **Approver** | [Stakeholder Name] |
-| **BRD Reference** | @brd: BRD.NNN.NNN |
+| **BRD Reference** | @brd: BRD.NN.EE.SS |
 | **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
 | **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
 
@@ -293,7 +293,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 
 ### 7.2 PRD Elaboration Workflow
 
-**Step 1**: Read BRD Section 7.2 topics (format: `{DOC_TYPE}.NNN.NNN`)
+**Step 1**: Read BRD Section 7.2 topics (format: `{DOC_TYPE}.NN.EE.SS`)
 
 **Step 2**: For each BRD topic, create corresponding PRD subsection:
 
@@ -309,7 +309,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 ### 7.3 Required Subsection Structure
 
 ```markdown
-##### {DOC_TYPE}.NNN.NNN: [Topic Name]
+##### {DOC_TYPE}.NN.EE.SS: [Topic Name]
 
 **Upstream**: BRD-NNN §7.2.X
 
@@ -536,7 +536,7 @@ EARS-ready scoring measures PRD maturity and readiness for progression to Engine
 
 **Traceability Tags (Cumulative Tagging Hierarchy - Layer 2)**:
 ```markdown
-@brd: BRD.NNN.NNN
+@brd: BRD.NN.EE.SS
 ```
 
 **Same-Type References (Conditional)**:
@@ -1020,7 +1020,7 @@ python scripts/validate_cross_document.py --layer PRD --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd tag | Add with upstream BRD document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

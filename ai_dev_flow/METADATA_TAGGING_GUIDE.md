@@ -526,7 +526,7 @@ custom_fields:
 - Use full markdown link: `[@brd: BRD-022](./BRD-022_fraud_detection_agent_ml_based_risk.md)`
 
 **In Document Body:**
-- Use tag notation: `@brd: BRD.022.001`, `@adr: ADR-002`
+- Use tag notation: `@brd: BRD.22.01.01`, `@adr: ADR-002`
 
 ### 7.3 Tag Format Convention (By Design)
 
@@ -535,18 +535,18 @@ The SDD framework uses two distinct notation systems for cross-references, each 
 | Notation | Format       | Artifacts                               | Purpose                                                             |
 |----------|--------------|----------------------------------------|---------------------------------------------------------------------|
 | Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NNN.NNN | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to features inside documents |
+| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - DOC_NUM.ELEM_TYPE.SEQ format |
 
 **Key Distinction**:
 
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.017.001` → Points to feature 001 inside document `BRD-017.md`
+- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
 
 **Why Two Systems?**
 
 1. **Dash notation** (`TYPE-NNN`): Used for technical artifacts that are referenced as complete documents. Each ADR, SPEC, or CTR file is a self-contained unit.
 
-2. **Dot notation** (`TYPE.NNN.NNN`): Used for requirement artifacts that contain multiple numbered features/requirements within a single document. The second number identifies the specific feature inside the document.
+2. **Dot notation** (`TYPE.NN.EE.SS`): Used for requirement artifacts that contain multiple numbered elements within a single document. Format: DOC_NUM.ELEM_TYPE.SEQ where EE is element type code (BRD=01, PRD=07, EARS=24, BDD=13, SYS=25, REQ=26).
 
 ---
 

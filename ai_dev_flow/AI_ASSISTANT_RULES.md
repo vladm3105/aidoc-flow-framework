@@ -1125,7 +1125,7 @@ LOOP:
 | XDOC-003 | Upstream document file not found | ERROR | **REMOVE functionality requiring it** |
 | XDOC-004 | Title mismatch with upstream | WARNING | Update title to match upstream |
 | XDOC-005 | Referencing deprecated requirement | WARNING | Remove or suggest replacement |
-| XDOC-006 | Tag format invalid | ERROR | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| XDOC-006 | Tag format invalid | ERROR | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
 | XDOC-007 | Gap in cumulative tag chain | ERROR | Add missing tags from chain |
 | XDOC-008 | Broken internal link/anchor | ERROR | Fix path or remove link |
 | XDOC-009 | Missing traceability section | ERROR | Add template section |

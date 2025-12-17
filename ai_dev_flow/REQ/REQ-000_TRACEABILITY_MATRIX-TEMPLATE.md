@@ -59,7 +59,7 @@ python scripts/generate_traceability_matrices.py --type REQ --output docs/REQ/RE
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@req: REQ.NNN.NNN` (unified feature-level format, e.g., `REQ.003.001`)
+**Tag Format:** `@req: REQ.NN.26.SS` (unified 4-segment format, e.g., `REQ.03.26.01`)
 
 See: [TRACEABILITY.md](../../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -93,12 +93,12 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 ### 5.2 Tag Format
 
 ```markdown
-@brd: BRD.009.015, BRD.009.006
-@prd: PRD.016.003
-@ears: EARS.012.002, EARS.012.001
-@bdd: BDD.015.001
+@brd: BRD.09.01.15, BRD.09.01.06
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02, EARS.12.24.01
+@bdd: BDD.15.13.01
 @adr: ADR-033
-@sys: SYS.012.001, SYS.012.002
+@sys: SYS.12.25.01, SYS.12.25.02
 ```
 
 **Format Rules**:
@@ -120,33 +120,33 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
 ```markdown
-@brd: BRD.009.015, BRD.009.006
-@prd: PRD.016.003
-@ears: EARS.012.002, EARS.012.001
-@bdd: BDD.015.001, BDD.015.002
+@brd: BRD.09.01.15, BRD.09.01.06
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02, EARS.12.24.01
+@bdd: BDD.15.13.01, BDD.15.13.02
 @adr: ADR-033
-@sys: SYS.012.001, SYS.012.002
+@sys: SYS.12.25.01, SYS.12.25.02
 ```
 
 **Traceability Chain**:
-- **BRD.009.015**: Business requirement for request submission capability
-- **BRD.009.006**: Performance requirement (2-second execution)
-- **PRD.016.003**: Product feature for operation execution
-- **EARS.012.002**: Formal requirement "WHEN order validation succeeds..."
-- **EARS.012.001**: State-driven requirement for order lifecycle
-- **BDD.015.001**: Acceptance test scenario
-- **BDD.015.002**: Negative test scenario
+- **BRD.09.01.15**: Business requirement for request submission capability
+- **BRD.09.01.06**: Performance requirement (2-second execution)
+- **PRD.16.01.03**: Product feature for operation execution
+- **EARS.12.24.02**: Formal requirement "WHEN order validation succeeds..."
+- **EARS.12.24.01**: State-driven requirement for order lifecycle
+- **BDD.15.13.01**: Acceptance test scenario
+- **BDD.15.13.02**: Negative test scenario
 - **ADR-033**: Architecture decision for event-driven trade processing
-- **SYS.012.001**: System performance requirement (2-second SLA)
-- **SYS.012.002**: System reliability requirement (99.9% uptime)
+- **SYS.12.25.01**: System performance requirement (2-second SLA)
+- **SYS.12.25.02**: System reliability requirement (99.9% uptime)
 
 ### 15.2 Downstream Artifacts
 
 **Direct Dependencies**:
-- SPEC-018: request submission service specification (`@req: REQ.045.001`)
-- CTR-005: operation execution API contract (`@req: REQ.045.002`)
-- Code: `src/execution/order_service.py` (`@req: REQ.045.001`)
-- Tests: `tests/test_order_service.py` (`@req: REQ.045.001`)
+- SPEC-018: request submission service specification (`@req: REQ.45.26.01`)
+- CTR-005: operation execution API contract (`@req: REQ.45.26.02`)
+- Code: `src/execution/order_service.py` (`@req: REQ.45.26.01`)
+- Tests: `tests/test_order_service.py` (`@req: REQ.45.26.01`)
 ```
 
 ### 5.4 Example: Atomic Requirement Structure

@@ -6,7 +6,7 @@
 **Status**: Reference Guide
 **Audience**: BRD Authors, Business Analysts, Product Managers
 
-> **Format Update (v2.0)**: Functional requirement headings now use the unified `BRD.NNN.NNN` format instead of the deprecated `FR-XXX` format. See [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) for details.
+> **Format Update (v2.0)**: Functional requirement headings now use the unified `BRD.NN.EE.SS` format instead of the deprecated `FR-XXX` format. See [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) for details.
 
 ---
 
@@ -217,7 +217,7 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 - ✅ Removed retry logic → Kept business SLA (completion time target)
 - ✅ Added complexity rating with business rationale
 - ✅ Added cross-references to related Platform and Compliance BRDs
-- ✅ Updated heading format from `FR-XXX` to `BRD.NNN.NNN`
+- ✅ Updated heading format from `FR-XXX` to `BRD.NN.EE.SS`
 
 ---
 
@@ -304,7 +304,7 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 | Platform BRD | `(per BRD-XXX)` | `(per BRD-008)` |
 | Feature BRD | `(managed per BRD-XXX)` | `(managed per BRD-011)` |
 | Internal section | `(per section X)` | `(per Fee Schedule in section 10)` |
-| Related Functional Requirement | `(per BRD.NNN.NNN)` | `(per BRD.NNN.003)` |
+| Related Functional Requirement | `(per BRD.NN.EE.SS)` | `(per BRD.NNN.003)` |
 
 ---
 
@@ -576,6 +576,6 @@ See the following BRDs for examples of business-level FRs that achieved perfect 
 
 - **Version**: 2.0
 - **Created**: 2025-11-26
-- **Updated**: 2025-12-10 (migrated to unified `BRD.NNN.NNN` heading format)
+- **Updated**: 2025-12-10 (migrated to unified `BRD.NN.EE.SS` heading format)
 - **Source**: Extracted from BRD-TEMPLATE.md Appendix C
 - **Maintenance**: Update when BRD template functional requirement structure changes

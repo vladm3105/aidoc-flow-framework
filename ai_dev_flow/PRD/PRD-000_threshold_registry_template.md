@@ -328,7 +328,7 @@ timeout:
 
 | Tag | Reference | Description |
 |-----|-----------|-------------|
-| @brd | BRD.NNN.NNN or BRD-NNN | Business requirements driving thresholds |
+| @brd | BRD.NN.EE.SS or BRD-NNN | Business requirements driving thresholds |
 
 ### 12.2 Downstream Consumers
 
@@ -379,6 +379,6 @@ tags:
   - magic-number-prevention
   - sdd-workflow
 cumulative_tags:
-  brd: "BRD.NNN.NNN"  # Unified dot notation
+  brd: "BRD.NN.EE.SS"  # Unified dot notation
 ---
 ```

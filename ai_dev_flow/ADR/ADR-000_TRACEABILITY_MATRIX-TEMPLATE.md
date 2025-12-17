@@ -93,10 +93,10 @@ This matrix tracks all ADRs, mapping upstream business/product requirements to d
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD.009.015, BRD.009.006
-@prd: PRD.016.003
-@ears: EARS.012.002, EARS.012.001
-@bdd: BDD.015.001, BDD.015.002
+@brd: BRD.09.01.15, BRD.09.01.06
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02, EARS.12.24.01
+@bdd: BDD.15.13.01, BDD.15.13.02
 ```
 
 **Format Rules**:
@@ -118,10 +118,10 @@ This matrix tracks all ADRs, mapping upstream business/product requirements to d
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
 ```markdown
-@brd: BRD.009.015, BRD.009.006
-@prd: PRD.016.003
-@ears: EARS.012.002, EARS.012.001
-@bdd: BDD.015.001, BDD.015.002
+@brd: BRD.09.01.15, BRD.09.01.06
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02, EARS.12.24.01
+@bdd: BDD.15.13.01, BDD.15.13.02
 ```
 
 ### 7.2 Downstream Artifacts

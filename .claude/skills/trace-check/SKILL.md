@@ -149,7 +149,7 @@ Code & Validation Layer: Code → Tests → Validation → Review → Production
 **Actions**:
 1. Scan all source files (.py, .md, .yaml, .feature) for tag patterns
 2. Parse @brd:, @sys:, @spec:, @test:, @impl-status: tags
-3. Validate format: TYPE.NNN.NNN (unified format)
+3. Validate format: TYPE.NN.EE.SS (4-segment unified format)
 4. Build tag-to-document mapping
 5. Cross-reference with actual document existence
 
@@ -159,15 +159,15 @@ import re
 
 TAG_PATTERN = r'@(\w+(?:-\w+)?):\s*([\w\.\-]+(?:[\.:]\w[\w\.\-]*)?(?:\s*,\s*[\w\.\-]+(?:[\.:]\w[\w\.\-]*)?)*)'
 
-# Example matches (unified TYPE.NNN.NNN format):
-# @brd: BRD.001.030, BRD.001.901
-# @sys: SYS.008.901
+# Example matches (unified TYPE.NN.EE.SS format):
+# @brd: BRD.01.01.30, BRD.01.01.03
+# @sys: SYS.01.25.08
 # @spec: SPEC-003
-# @test: BDD.003.001
+# @test: BDD.01.13.01
 ```
 
 **Validation Rules**:
-1. **Format Check:** All @brd/@prd tags must use unified TYPE.NNN.NNN format
+1. **Format Check:** All @brd/@prd tags must use unified TYPE.NN.EE.SS format (4-segment)
 2. **Document Exists:** DOCUMENT-ID must reference existing file in docs/{TYPE}/
 3. **Requirement Exists:** REQUIREMENT-ID must exist within the document
 4. **No Orphans:** All tags must resolve to actual requirements
@@ -178,25 +178,25 @@ TAG_PATTERN = r'@(\w+(?:-\w+)?):\s*([\w\.\-]+(?:[\.:]\w[\w\.\-]*)?(?:\s*,\s*[\w\
 {
   "src/[project_module]/gateway/connection_service.py": {
     "tags": {
-      "brd": ["BRD.001.001", "BRD.001.002", "BRD.001.901"],
-      "sys": ["SYS.001", "SYS.002"],
+      "brd": ["BRD.01.01.01", "BRD.01.01.02", "BRD.01.01.03"],
+      "sys": ["SYS.01.25.01", "SYS.01.25.02"],
       "spec": ["SPEC-001"],
-      "test": ["BDD.001.001", "BDD.007.001"],
+      "test": ["BDD.01.13.01", "BDD.07.13.01"],
       "impl-status": ["complete"]
     },
     "line_numbers": {
-      "BRD.001.001": 15,
-      "BRD.001.002": 15
+      "BRD.01.01.01": 15,
+      "BRD.01.01.02": 15
     }
   }
 }
 ```
 
 **Error Detection**:
-- ❌ `@brd: 030` - Missing document and requirement ID
-- ❌ `@brd: BRD.999.001` - Document BRD-999 doesn't exist
-- ❌ `@brd: BRD.001.999` - Requirement 999 not in BRD-001
-- ✅ `@brd: BRD.001.030` - Valid format and exists
+- ❌ `@brd: 030` - Missing document and element ID
+- ❌ `@brd: BRD.99.01.01` - Document BRD-99 doesn't exist
+- ❌ `@brd: BRD.01.01.99` - Element 99 not in BRD-01
+- ✅ `@brd: BRD.01.01.30` - Valid format and exists
 
 **Scripts**:
 ```bash
@@ -401,7 +401,7 @@ Business drivers              Technical options          Selected option
 Business constraints          Evaluation criteria        Trade-off analysis
 ```
 
-**Subsection ID Format**: `{DOC_TYPE}.NNN.NNN` (3-digit topic number)
+**Subsection ID Format**: `{DOC_TYPE}.NN.EE.SS` (3-digit topic number)
 
 | Component | Description | Example |
 |-----------|-------------|---------|
@@ -420,8 +420,8 @@ def validate_architecture_topics(docs_dir):
 
     # 2. Validate topic ID format
     for topic_id, content in brd_topics.items():
-        if not re.match(r'^[A-Z]+\.\d{3,4}\.\d{3}$', topic_id):
-            errors.append(f"{topic_id}: Invalid format (expected {{DOC_TYPE}}.NNN.NNN)")
+        if not re.match(r'^[A-Z]+\.\d{2,9}\.\d{2,9}\.\d{2,9}$', topic_id):
+            errors.append(f"{topic_id}: Invalid format (expected {{DOC_TYPE}}.NN.EE.SS)")
 
         # 3. Check business-only content (no technical options)
         if has_technical_content(content):
@@ -481,7 +481,7 @@ ADR_ORIGINATING_PATTERN = r'\*\*Originating Topic\*\*:\s*([A-Z]+\.\d{3,4}\.\d{3}
 - `ADR-001: Originating topic BRD.999.001 not found` → Invalid topic reference
 
 **Success Criteria**:
-- ✅ All BRD Section 7.2 topics use `{DOC_TYPE}.NNN.NNN` format
+- ✅ All BRD Section 7.2 topics use `{DOC_TYPE}.NN.EE.SS` format
 - ✅ All BRD Section 7.2 topics contain business-only content
 - ✅ All PRD Section 18 topics reference valid BRD topics
 - ✅ All PRD Section 18 topics contain technical elaboration
@@ -523,17 +523,17 @@ ADR_ORIGINATING_PATTERN = r'\*\*Originating Topic\*\*:\s*([A-Z]+\.\d{3,4}\.\d{3}
 ```markdown
 | Requirement | Implementing Files | Status |
 |-------------|-------------------|--------|
-| BRD.001.001 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
-| BRD.001.002 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
-| BRD.001.030 | src/[project_module]/services/account_service.py:12 | ⚠️ In Progress |
+| BRD.01.01.01 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
+| BRD.01.01.02 | src/[project_module]/gateway/connection_service.py:15 | ✓ Complete |
+| BRD.01.01.30 | src/[project_module]/services/account_service.py:12 | ⚠️ In Progress |
 ```
 
 **Reverse Matrix (Code → BRD)**:
 ```markdown
 | Source File | BRD Requirements | Implementation Status |
 |-------------|------------------|---------------------|
-| src/[project_module]/gateway/connection_service.py | BRD.001.001, BRD.001.002, BRD.001.910 | Complete |
-| src/[project_module]/services/account_service.py | BRD.001.030, BRD.001.031, BRD.001.906 | In Progress |
+| src/[project_module]/gateway/connection_service.py | BRD.01.01.01, BRD.01.01.02, BRD.01.01.03 | Complete |
+| src/[project_module]/services/account_service.py | BRD.01.01.30, BRD.01.01.31, BRD.01.01.32 | In Progress |
 ```
 
 **Traditional Section 7 Validation** (Optional):
@@ -1083,12 +1083,12 @@ tar -xzf ../backups/docs_backup_20251111_174001.tar.gz
 
 **Change Log**:
 - 2.1.1 (2025-12-15): Architecture Decision Topic format update
-  - **FORMAT CHANGE**: Updated ADT format from `BRD.NNN.NN` to `{DOC_TYPE}.NNN.NNN`
+  - **FORMAT CHANGE**: Updated ADT format from `BRD.NNN.NN` to `{DOC_TYPE}.NN.EE.SS`
     - 3-digit topic number (001-999) for consistency with other IDs
     - Generic doc type support (not BRD-specific)
 - 2.1.0 (2025-12-13): Architecture decision layer separation validation
   - **NEW FEATURE**: Added Step 3.6 - Architecture Decision Topic validation
-    - Validates `{DOC_TYPE}.NNN.NNN` subsection ID format (3-digit topic number)
+    - Validates `{DOC_TYPE}.NN.EE.SS` subsection ID format (3-digit topic number)
     - Cross-reference validation: BRD Section 7.2 → PRD Section 18 → ADR Section 4.1
     - Content validation: Business-only in BRD, technical in PRD
     - Layer separation principle enforcement

@@ -743,7 +743,7 @@ Validation Results:
 ✓ REQ-ID unique (REQ-032)
 ✓ Priority specified (MUST)
 ✓ Acceptance criteria complete (5-part format)
-✓ Traceability tags present (@prd: PRD.001.001, @ears: EARS.001.001)
+✓ Traceability tags present (@prd: PRD.01.07.01, @ears: EARS.01.24.01)
 ✓ Verification methods defined
 ✓ Metadata compliant
 

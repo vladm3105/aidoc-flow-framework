@@ -274,13 +274,13 @@ fi
 
 | Tag | Required | Format |
 |-----|----------|--------|
-| @brd | Yes | BRD.NNN.NNN (sub-ID) or BRD-NNN (doc-level) |
-| @prd | Yes | PRD.NNN.NNN (sub-ID) or PRD-NNN (doc-level) |
-| @ears | Yes | EARS.NNN.NNN |
-| @bdd | Yes | BDD.NNN.NNN (sub-ID) or BDD-NNN (doc-level) |
+| @brd | Yes | BRD.NN.EE.SS (sub-ID) or BRD-NNN (doc-level) |
+| @prd | Yes | PRD.NN.EE.SS (sub-ID) or PRD-NNN (doc-level) |
+| @ears | Yes | EARS.NN.EE.SS |
+| @bdd | Yes | BDD.NN.EE.SS (sub-ID) or BDD-NNN (doc-level) |
 | @adr | Yes | ADR-NNN |
-| @sys | Yes | SYS.NNN.NNN (sub-ID) or SYS-NNN (doc-level) |
-| @req | Yes | REQ.NNN.NNN (sub-ID) or REQ-NNN (doc-level) |
+| @sys | Yes | SYS.NN.EE.SS (sub-ID) or SYS-NNN (doc-level) |
+| @req | Yes | REQ.NN.EE.SS (sub-ID) or REQ-NNN (doc-level) |
 | @spec | Yes | SPEC-NNN |
 | @tasks | Yes | TASKS-NNN |
 

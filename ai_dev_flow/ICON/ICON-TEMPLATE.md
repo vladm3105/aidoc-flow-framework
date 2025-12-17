@@ -365,7 +365,7 @@ def test_external_data_service_with_mock(mock_connector):
 **Source Requirements**:
 ```markdown
 @spec: SPEC-NNN         # Document-level reference
-@req: REQ.NNN.NNN       # Sub-ID reference using unified dot notation
+@req: REQ.NN.EE.SS       # Sub-ID reference using unified dot notation
 @adr: ADR-NNN           # Document-level reference
 ```
 

@@ -188,14 +188,14 @@ components:
 ### 5.1 Upstream References
 
 CTR must reference:
-- `@req: REQ.NNN.NNN` - Atomic requirements (unified format)
+- `@req: REQ.NN.EE.SS` - Atomic requirements (unified format)
 - `@spec: SPEC-NNN` - Technical specifications
 - `@adr: ADR-NNN` - Architecture decisions
 
 ### 5.2 Downstream References
 
 CTR is referenced by:
-- `@tasks: TASKS.NNN.NNN` - Implementation tasks
+- `@tasks: TASKS.NN.EE.SS` - Implementation tasks
 - `@iplan: IPLAN-NNN` - Implementation plans
 - Code implementations
 
@@ -380,7 +380,7 @@ python scripts/validate_cross_document.py --layer CTR --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd through @req tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

@@ -753,17 +753,17 @@ Common types across endpoints:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
 ```markdown
-@brd: BRD.NNN.NNN
-@prd: PRD.NNN.NNN
-@ears: EARS.NNN.NNN
-@bdd: BDD.NNN.NNN
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.EE.SS
+@bdd: BDD.NN.EE.SS
 @adr: ADR-NNN
-@sys: SYS.NNN.NNN
-@req: REQ.NNN.NNN
-@impl: IMPL.NNN.NNN
+@sys: SYS.NN.EE.SS
+@req: REQ.NN.EE.SS
+@impl: IMPL.NN.EE.SS
 ```
 
-**Format**: `@artifact-type: TYPE.NNN.NNN`
+**Format**: `@artifact-type: TYPE.NN.EE.SS`
 
 **Layer 9 Requirements**: CTR must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)

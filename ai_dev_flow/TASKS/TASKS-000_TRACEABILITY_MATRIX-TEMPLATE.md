@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type TASKS --output docs/TASK
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@tasks: TASKS.NNN.NNN` (document.task format per Tag Format Convention)
+**Tag Format:** `@tasks: TASKS.NN.EE.SS` (document.task format per Tag Format Convention)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 

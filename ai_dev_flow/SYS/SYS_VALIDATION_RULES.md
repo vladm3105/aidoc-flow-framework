@@ -142,10 +142,10 @@ The SYS validation script ensures system requirements meet quality standards for
 
 **Required Tags**:
 ```markdown
-@brd: BRD.NNN.NNN
-@prd: PRD.NNN.NNN
-@ears: EARS.NNN.NNN
-@bdd: BDD.NNN.NNN
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.EE.SS
+@bdd: BDD.NN.EE.SS
 @adr: ADR-NNN
 ```
 

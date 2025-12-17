@@ -71,9 +71,9 @@ class EarsValidator:
     }
 
     # === REQUIREMENT ID PATTERN ===
-    # Correct: #### EARS.030.001: Title
+    # Correct: #### EARS.30.24.01: Title (4-segment element ID format)
     # Incorrect: #### Event-001: Title, #### State-001: Title
-    CORRECT_REQ_ID_PATTERN = r"^####\s+EARS[.-](\d{3})[.-](\d{3}):\s+.+"
+    CORRECT_REQ_ID_PATTERN = r"^####\s+EARS[.-](\d{2})[.-](\d{2})[.-](\d{2}):\s+.+"
     INCORRECT_REQ_ID_PATTERNS = [
         r"^####\s+Event-\d+:\s+",
         r"^####\s+State-\d+:\s+",
@@ -85,7 +85,7 @@ class EarsValidator:
     MALFORMED_TABLE_SEPARATOR = r"\|-+\|\s*\|$"
 
     # === TRACEABILITY ===
-    SOURCE_DOC_PATTERN = r"@prd:\s*PRD\.\d{3}\.\d{3}"
+    SOURCE_DOC_PATTERN = r"@prd:\s*PRD\.\d{2}\.\d{2}\.\d{2}"
     TRACEABILITY_TAG_PATTERN = r"@(prd|brd|ears|threshold|entity):\s*\S+"
 
     def __init__(self, verbose: bool = False):
@@ -506,7 +506,7 @@ class EarsValidator:
                         rule="E040",
                         severity="error",
                         message=f"Source Document missing @prd: prefix: '{value}'",
-                        fix_suggestion="Change to: @prd: PRD.NNN.NNN"
+                        fix_suggestion="Change to: @prd: PRD.NN.EE.SS"
                     ))
 
     def _validate_traceability_format(self, file_path: Path, content: str) -> None:
@@ -544,7 +544,7 @@ class EarsValidator:
         if "Traceability" not in content and "References" not in content:
             return  # Skip if no traceability section at all
 
-        # Check for @brd: anywhere in traceability or references sections (dot notation: BRD.NNN.NNN)
+        # Check for @brd: anywhere in traceability or references sections (dot notation: BRD.NN.EE.SS)
         has_brd_tag = bool(re.search(r"@brd:\s*BRD\.\d{3}\.\d{3}", content))
 
         if not has_brd_tag:
@@ -553,7 +553,7 @@ class EarsValidator:
                 rule="E043",
                 severity="warning",
                 message="Missing @brd: tag in traceability/references section",
-                fix_suggestion="Add @brd: BRD.NNN.NNN reference to trace back to source BRD"
+                fix_suggestion="Add @brd: BRD.NN.EE.SS reference to trace back to source BRD"
             ))
 
     # === BDD-READY SCORE VALIDATOR ===

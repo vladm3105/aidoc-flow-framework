@@ -379,25 +379,25 @@ traceability:
   cumulative_tags:
     layer: 5
     required:
-      - "@brd: BRD.NNN.NNN"
-      - "@prd: PRD.NNN.NNN"
-      - "@ears: EARS.NNN.NNN"
-      - "@bdd: BDD.NNN.NNN"
+      - "@brd: BRD.NN.EE.SS"
+      - "@prd: PRD.NN.EE.SS"
+      - "@ears: EARS.NN.EE.SS"
+      - "@bdd: BDD.NN.EE.SS"
     description: "Layer 5 requires @brd, @prd, @ears, @bdd tags for complete traceability"
 
   upstream:
     required:
       - type: BRD
-        format: "@brd: BRD.NNN.NNN"
+        format: "@brd: BRD.NN.EE.SS"
         location: "Traceability section or Requirements Satisfied"
       - type: PRD
-        format: "@prd: PRD.NNN.NNN"
+        format: "@prd: PRD.NN.EE.SS"
         location: "Traceability section or Requirements Satisfied"
       - type: EARS
-        format: "@ears: EARS.NNN.NNN"
+        format: "@ears: EARS.NN.EE.SS"
         location: "Traceability section or Requirements Satisfied"
       - type: BDD
-        format: "@bdd: BDD.NNN.NNN"
+        format: "@bdd: BDD.NN.EE.SS"
         location: "Traceability section or Requirements Satisfied"
 
   downstream:

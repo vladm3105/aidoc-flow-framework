@@ -136,7 +136,7 @@ The Docs Flow Framework implements **cumulative tagging** where each artifact ty
 ### 2.2 Tag Format
 
 ```markdown
-@artifact-type: TYPE.NNN.NNN (Unified Feature ID)
+@artifact-type: TYPE.NN.EE.SS (Unified Feature ID)
 ```
 
 **Format Rules**:

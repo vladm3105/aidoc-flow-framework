@@ -1230,7 +1230,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 
 - Every Business Objective (section 2.4) MUST appear in this table
 - Coverage Status: "Complete" (all requirements documented), "Partial" (known gaps exist), "Gap" (no requirements yet)
-- Related Functional Requirements: Reference all BRD.NNN.NNN IDs that contribute to the objective
+- Related Functional Requirements: Reference all BRD.NN.EE.SS IDs that contribute to the objective
 - Related User Stories: Reference all User Story IDs demonstrating the objective
 
 **Orphan Detection**:
@@ -1317,8 +1317,8 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 
 | Requirement Category | Test Type Required | Planned Test Specification | Coverage Target |
 |----------------------|-------------------|---------------------------|-----------------|
-| BRD.NNN.001 through BRD.NNN.NNN | Unit Tests | TEST-XXX-UNIT: Functional Requirement Unit Test Suite | 95% |
-| BRD.NNN.001 through BRD.NNN.NNN | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
+| BRD.NNN.001 through BRD.NN.EE.SS | Unit Tests | TEST-XXX-UNIT: Functional Requirement Unit Test Suite | 95% |
+| BRD.NNN.001 through BRD.NN.EE.SS | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
 | User Stories (US-001 through US-XXX) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
 | Performance Quality Attributes | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
 | Security Quality Attributes | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
@@ -1366,7 +1366,7 @@ For projects with existing strategy documents:
 - **Strategy References**: Specific sections from strategy documents
 - **Business Rationale**: Business justification for each requirement
 - **Acceptance Criteria**: Verifiable by business stakeholders
-- **Anchors/IDs**: `BO-XXX`, `BRD.NNN.NNN` (functional requirements), quality attributes use unified sequential numbering
+- **Anchors/IDs**: `BO-XXX`, `BRD.NN.EE.SS` (functional requirements), quality attributes use unified sequential numbering
 - **Code Path(s)**: Strategic impact area
 
 ---

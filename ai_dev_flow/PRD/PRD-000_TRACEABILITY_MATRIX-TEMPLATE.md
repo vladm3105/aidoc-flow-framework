@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type PRD --output docs/PRD/PR
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@prd: PRD.NNN.NNN` (unified feature-level format, e.g., `PRD.003.001`)
+**Tag Format:** `@prd: PRD.NN.01.SS` (unified 4-segment format, e.g., `PRD.03.01.01`)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -90,7 +90,7 @@ This matrix tracks all PRD documents, mapping upstream business requirements (BR
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD.NNN.NNN
+@brd: BRD.NN.01.SS
 ```
 
 **Format Rules**:
@@ -99,7 +99,7 @@ This matrix tracks all PRD documents, mapping upstream business requirements (BR
 - Separator: colon `:` after artifact type
 - Document ID: `BRD-NNN` format
 - Requirement ID: specific requirement/section identifier
-- Multiple Values: comma-separated `@brd: BRD.001.030, BRD.001.006`
+- Multiple Values: comma-separated `@brd: BRD.01.01.30, BRD.01.01.06`
 
 ### 2.3 Example: PRD with Required Tags
 
@@ -112,17 +112,17 @@ This matrix tracks all PRD documents, mapping upstream business requirements (BR
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 2):
 ```markdown
-@brd: BRD.009.015, BRD.009.006
+@brd: BRD.09.01.15, BRD.09.01.06
 ```
 
-- **BRD.009.015**: Functional requirement for service integration
-- **BRD.009.006**: Quality attribute for operation execution performance
+- **BRD.09.01.15**: Functional requirement for service integration
+- **BRD.09.01.06**: Quality attribute for operation execution performance
 ```
 
 ### 2.4 Validation Rules
 
 1. **Required**: Each PRD MUST include at least one `@brd` tag referencing upstream business requirements
-2. **Format Compliance**: All tags must follow `@brd: BRD.NNN.NNN` format
+2. **Format Compliance**: All tags must follow `@brd: BRD.NN.EE.SS` format
 3. **Valid References**: All referenced BRD documents and requirements must exist
 4. **No Gaps**: Cannot create PRD without upstream BRD justification
 

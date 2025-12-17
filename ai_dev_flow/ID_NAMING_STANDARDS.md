@@ -546,7 +546,7 @@ The following patterns are **REMOVED** and MUST NOT be used:
 | `BC-XXX` | Business Constraints | Use `### BRD.NN.03.SS: Constraint` |
 | `BA-XXX` | Business Assumptions | Use `### BRD.NN.04.SS: Assumption` |
 | `QA-XXX` | Quality Attributes | Use `### BRD.NN.02.SS: Quality` |
-| `TYPE.NNN.NNN` | 3-segment format | Use `TYPE.NN.TT.SS` (4-segment) |
+| `TYPE.NN.EE.SS` | 3-segment format | Use `TYPE.NN.TT.SS` (4-segment) |
 | `Feature F-XXX` | PRD feature headings | Use `### PRD.NN.07.SS: User Story` |
 
 **Migration Examples**:

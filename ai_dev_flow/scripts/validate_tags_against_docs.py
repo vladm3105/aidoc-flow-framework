@@ -64,7 +64,7 @@ def build_document_index(docs_dir: Path) -> Dict:
         {
             'BRD-001': {
                 'path': Path('docs/BRD/BRD-001_...md'),
-                'requirements': {'BRD.001.001', 'BRD.001.002', ...}
+                'elements': {'BRD.01.01.01', 'BRD.01.01.02', ...}
             },
             'SPEC-003': {
                 'path': Path('docs/SPEC/SPEC-003_...yaml'),
@@ -182,8 +182,8 @@ def validate_all_tags(tags_data: Dict, doc_index: Dict) -> List[Dict]:
             {
                 'file': 'src/module.py',
                 'line': 15,
-                'tag': '@brd: BRD.001.999',
-                'error': 'Requirement 999 not found in BRD-001'
+                'tag': '@brd: BRD.01.01.99',
+                'error': 'Element 99 not found in BRD-01'
             }
         ]
     """

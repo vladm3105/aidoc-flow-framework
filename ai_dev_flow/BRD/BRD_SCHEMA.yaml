@@ -157,9 +157,9 @@ requirement_patterns:
       - "015"
       - "042"
     cross_reference_format:
-      pattern: "@brd: BRD.NNN.NNN"
-      example: "@brd: BRD.001.015"
-      description: "Cross-reference format includes document ID for global uniqueness"
+      pattern: "@brd: BRD.NN.01.SS"
+      example: "@brd: BRD.01.01.15"
+      description: "Cross-reference format: DOC_NUM.ELEM_TYPE.SEQ (unified 4-segment format)"
 
 # =============================================================================
 # Validation Rules (OPTIONAL - BRD is human-authored)
@@ -214,15 +214,15 @@ traceability:
   downstream:
     expected:
       - type: PRD
-        format: "@prd: PRD.NNN.NNN"
+        format: "@prd: PRD.NN.01.SS"
       - type: EARS
-        format: "@ears: EARS.NNN.NNN"
+        format: "@ears: EARS.NN.24.SS"
       - type: ADR
-        format: "@adr: ADR.NNN.NNN"
+        format: "@adr: ADR-NNN"
 
   lateral:
-    format: "@brd: BRD.NNN.NNN"
-    description: "Cross-reference to related BRDs"
+    format: "@brd: BRD.NN.01.SS"
+    description: "Cross-reference to related BRDs (unified 4-segment format)"
 
 # =============================================================================
 # Error Messages (OPTIONAL VALIDATION)

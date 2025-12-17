@@ -19,8 +19,8 @@ skill: "doc-sys"
 ## What This Skill Does
 
 1. Translate ADR decisions into technical requirements
-2. Define functional requirements (SYS.NNN.NNN)
-3. Specify quality attributes (SYS.NNN.NNN with QA category)
+2. Define functional requirements (SYS.NN.EE.SS)
+3. Specify quality attributes (SYS.NN.EE.SS with QA category)
 4. Create system flows with Mermaid diagrams
 5. Document technical constraints from ADR
 
@@ -39,7 +39,7 @@ docs/SYS/SYS-NNN_{descriptive_name}.md
 **Input**: Trade order (symbol, quantity, price, account)
 **Processing**: Validation steps
 **Output**: Validation result
-**Source**: EARS.001.001, ADR-033
+**Source**: EARS.01.24.01, ADR-033
 ```
 
 **Quality Attribute (QA)**:
@@ -63,8 +63,8 @@ BRD, PRD, EARS, BDD, ADR → SYS → REQ
 
 ## Quick Validation
 
-- [ ] Functional requirements use unified format (SYS.NNN.NNN)
-- [ ] Quality attributes use unified format (SYS.NNN.NNN with QA category)
+- [ ] Functional requirements use unified format (SYS.NN.EE.SS)
+- [ ] Quality attributes use unified format (SYS.NN.EE.SS with QA category)
 - [ ] Each requirement has measurable criteria
 - [ ] System flows use Mermaid diagrams (not Python code)
 - [ ] Technical constraints from ADR documented

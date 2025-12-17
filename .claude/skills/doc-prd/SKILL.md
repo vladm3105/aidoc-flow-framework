@@ -127,7 +127,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 ```
 
 **PRD Elaboration Workflow**:
-1. Read BRD Section 7.2 topic (`{DOC_TYPE}.NNN.NNN`)
+1. Read BRD Section 7.2 topic (`{DOC_TYPE}.NN.EE.SS`)
 2. Create corresponding PRD Section 18 subsection
 3. Add technical options NOT present in BRD
 4. Add evaluation criteria NOT present in BRD
@@ -167,8 +167,8 @@ Business constraints          Evaluation criteria        Trade-off analysis
 - **Decision Timeline**: When decision is needed relative to project milestones
 
 **Cross-Reference Flow**:
-1. BRD Section 7.2 → Defines business need (`{DOC_TYPE}.NNN.NNN`)
-2. PRD Section 18 → Elaborates with technical options (references `{DOC_TYPE}.NNN.NNN`)
+1. BRD Section 7.2 → Defines business need (`{DOC_TYPE}.NN.EE.SS`)
+2. PRD Section 18 → Elaborates with technical options (references `{DOC_TYPE}.NN.EE.SS`)
 3. ADR Section 4.1 → Records final decision (references both)
 
 **Do NOT write**: "See ADR-033" or "Reference ADR-045" (ADRs don't exist yet)
@@ -256,21 +256,23 @@ The SDD framework uses two distinct notation systems for cross-references:
 | Notation | Format       | Artifacts                               | Purpose                                                             |
 |----------|--------------|----------------------------------------|---------------------------------------------------------------------|
 | Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NNN.NNN | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to features inside documents |
+| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - DOC_NUM.ELEM_TYPE.SEQ format |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.017.001` → Points to feature 001 inside document `BRD-017.md`
+- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
 
-## Unified Feature ID Format (MANDATORY)
+## Unified Element ID Format (MANDATORY)
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NNN.NNN` (dot separator)
+- **Always use**: `TYPE.NN.EE.SS` (dot separator, 4-segment format)
 - **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE.NN.EE.SS` (3-segment format - DEPRECATED)
 
 Examples:
-- `@brd: BRD.017.001` ✅
+- `@brd: BRD.17.01.01` ✅
 - `@brd: BRD-017:001` ❌
+- `@brd: BRD.017.001` ❌ (old 3-segment format)
 
 
 ## Cumulative Tagging Requirements
@@ -285,11 +287,11 @@ Examples:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 2):
 ```markdown
-@brd: BRD.001.003, BRD.001.010
+@brd: BRD.01.01.03, BRD.01.01.10
 ```
 
-- BRD.001.003 - Business requirements driving this product
-- BRD.001.010 - Success criteria from business case
+- BRD.01.01.03 - Business requirements driving this product
+- BRD.01.01.10 - Success criteria from business case
 
 **Upstream Sources**:
 - [BRD-001](../BRD/BRD-001_platform.md#BRD-001) - Parent business requirements
@@ -478,7 +480,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd tag | Add with upstream BRD reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

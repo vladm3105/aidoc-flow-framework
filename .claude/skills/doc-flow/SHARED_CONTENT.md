@@ -176,17 +176,17 @@ Each artifact layer must include traceability tags from ALL upstream artifact la
 ### Tag Format
 
 ```markdown
-@brd: BRD.009.015, BRD.009.901
-@prd: PRD.016.003
-@ears: EARS.012.002, EARS.012.001
-@bdd: BDD.015.001
+@brd: BRD.09.01.15, BRD.09.01.901
+@prd: PRD.16.07.03
+@ears: EARS.12.24.02, EARS.12.24.01
+@bdd: BDD.15.13.01
 @adr: ADR-033
-@sys: SYS.012.001, SYS.012.002
-@req: REQ.045.001
-@impl: IMPL.003.002  # Optional - include only if exists
+@sys: SYS.12.25.01, SYS.12.25.02
+@req: REQ.45.26.01
+@impl: IMPL.03.28.02  # Optional - include only if exists
 @ctr: CTR-005  # Optional - include only if exists
 @spec: SPEC-018
-@tasks: TASKS.015.001
+@tasks: TASKS.15.29.01
 @iplan: IPLAN-001  # Use ID only (IPLAN-NNN), NOT full filename with timestamp
 @icon: TASKS-001:ContractName  # Implementation Contract (optional, Layer 11)
 ```
@@ -197,16 +197,16 @@ Internal feature IDs within documents use simple sequential numbering:
 
 | Context | Format | Example | Cross-Reference |
 |---------|--------|---------|-----------------|
-| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD.022.015` |
-| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD.001.030` |
-| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS.006.003` |
-| SYS Requirements | `NNN` | `001`, `015` | `@sys: SYS.008.001` |
+| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD.22.07.15` |
+| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD.01.01.30` |
+| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS.06.24.03` |
+| SYS Requirements | `NNN` | `001`, `015` | `@sys: SYS.08.25.01` |
 
 **Global Uniqueness**: Document ID + Feature ID creates globally unique references.
 
 ### Format Rules
 
-- Format: Use unified `TYPE.NNN.NNN` format (e.g., `BRD.001.030`)
+- Format: Use unified 4-segment `TYPE.NN.EE.SS` format (e.g., `BRD.01.01.30`)
 - Multiple refs: Comma-separated list within same tag line
 - Optional layers: Include `@impl` and `@ctr` tags only if those artifacts exist in chain
 - SPEC format: Use YAML `cumulative_tags:` mapping instead of markdown comments
@@ -215,7 +215,7 @@ Internal feature IDs within documents use simple sequential numbering:
 ### Validation Rules
 
 1. **No gaps**: Each layer must include ALL upstream tags from previous layers
-2. **Format compliance**: Tags must follow `@artifact-type: TYPE.NNN.NNN` pattern
+2. **Format compliance**: Tags must follow `@artifact-type: TYPE.NN.EE.SS` pattern (4-segment format)
 3. **Valid references**: All tagged document IDs must exist and be reachable
 4. **Optional layers**: `@impl` and `@ctr` included only if they exist in chain
 5. **SPEC exception**: SPEC uses YAML format, not markdown tags
@@ -231,14 +231,14 @@ version: "1.0.0"
 
 # Cumulative Tagging Hierarchy (Layer 10)
 cumulative_tags:
-  brd: "BRD.009.015, BRD.009.906"
-  prd: "PRD.016.003"
-  ears: "EARS.012.002, EARS.012.001"
-  bdd: "BDD.015.001"
+  brd: "BRD.09.01.15, BRD.09.01.906"
+  prd: "PRD.16.07.03"
+  ears: "EARS.12.24.02, EARS.12.24.01"
+  bdd: "BDD.15.13.01"
   adr: "ADR-033"
-  sys: "SYS.012.901, SYS.012.921"
-  req: "REQ.045.001, REQ.045.002"
-  impl: "IMPL.003.002"  # Optional
+  sys: "SYS.12.25.901, SYS.12.25.921"
+  req: "REQ.45.26.01, REQ.45.26.02"
+  impl: "IMPL.03.28.02"  # Optional
   ctr: "CTR-005"  # Optional
 ```
 

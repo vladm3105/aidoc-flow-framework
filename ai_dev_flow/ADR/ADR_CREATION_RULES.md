@@ -188,10 +188,10 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 **Complete Upstream Tag Chain**:
 ```markdown
-@brd: BRD.NNN.NNN
-@prd: PRD.NNN.NNN
-@ears: EARS.NNN.NNN
-@bdd: BDD.NNN.NNN
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.EE.SS
+@bdd: BDD.NN.EE.SS
 ```
 
 **Layer 5 Requirements**: ADR must reference ALL upstream artifacts
@@ -350,7 +350,7 @@ python scripts/validate_cross_document.py --layer ADR --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

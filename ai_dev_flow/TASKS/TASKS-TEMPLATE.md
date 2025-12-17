@@ -1241,20 +1241,20 @@ Document evidence that this task has been implemented correctly and meets all ac
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
 ```markdown
-@brd: BRD.NNN.NNN
-@prd: PRD.NNN.NNN
-@ears: EARS.NNN.NNN
-@bdd: BDD.NNN.NNN
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.EE.SS
+@bdd: BDD.NN.EE.SS
 @adr: ADR-NNN
-@sys: SYS.NNN.NNN
-@req: REQ.NNN.NNN
-@impl: IMPL.NNN.NNN
+@sys: SYS.NN.EE.SS
+@req: REQ.NN.EE.SS
+@impl: IMPL.NN.EE.SS
 @ctr: CTR-NNN
 @spec: SPEC-NNN
 @icon: TASKS-XXX:ContractName (if providing/consuming implementation contracts)
 ```
 
-**Format**: `@artifact-type: TYPE.NNN.NNN (Unified Feature ID)`
+**Format**: `@artifact-type: TYPE.NN.EE.SS (Unified Feature ID)`
 
 **Layer 11 Requirements**: TASKS must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)

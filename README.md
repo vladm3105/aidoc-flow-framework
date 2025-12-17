@@ -15,7 +15,7 @@ The AI Dev Flow Framework is a comprehensive template system for implementing AI
 - **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
 - **REQ v3.0 Support**: Enhanced REQ templates with sections 3-7 (interfaces/schemas/errors/config/quality attributes) for ≥90% SPEC-readiness
 - **Tag-Based Auto-Discovery**: Lightweight @tags in code auto-generate bidirectional traceability matrices
-- **Namespaced Traceability**: Unified `TYPE.NNN.NNN` format (e.g., `BRD.001.030`) prevents ambiguity
+- **Namespaced Traceability**: Unified `TYPE.NN.EE.SS` format (e.g., `BRD.01.01.30`) prevents ambiguity
 - **Complete Traceability**: Bidirectional links between all artifacts (business → architecture → code)
 - **AI-Optimized Templates**: Ready for Claude Code, Gemini, GitHub Copilot, and other AI coding assistants
 - **Domain-Agnostic**: Adaptable to any software domain (finance, healthcare, e-commerce, SaaS, IoT)
@@ -181,12 +181,12 @@ Embed cumulative tags in your code docstrings (each layer includes ALL upstream 
 ```python
 """Order service implementation.
 
-@brd: BRD.001.030, BRD.001.906
-@prd: PRD.002.005
-@ears: EARS.003.001
-@bdd: BDD.004.001
+@brd: BRD.01.01.30, BRD.01.01.06
+@prd: PRD.02.07.05
+@ears: EARS.03.24.01
+@bdd: BDD.04.13.01
 @adr: ADR-010
-@sys: SYS.008.002
+@sys: SYS.08.25.02
 @req: REQ-045
 @spec: SPEC-003
 @tasks: TASKS-015
@@ -303,12 +303,12 @@ Embed cumulative tags in code docstrings using namespaced format:
 ```python
 """Order placement service implementation.
 
-@brd: BRD.001.030, BRD.001.906
-@prd: PRD.002.005
-@ears: EARS.003.001
-@bdd: BDD.004.001
+@brd: BRD.01.01.30, BRD.01.01.06
+@prd: PRD.02.07.05
+@ears: EARS.03.24.01
+@bdd: BDD.04.13.01
 @adr: ADR-010
-@sys: SYS.008.002
+@sys: SYS.08.25.02
 @req: REQ-045
 @spec: SPEC-003
 @tasks: TASKS-015
@@ -316,7 +316,7 @@ Embed cumulative tags in code docstrings using namespaced format:
 """
 ```
 
-**Format:** `@tag-type: TYPE.NNN.NNN` (e.g., `@brd: BRD.001.030`)
+**Format:** `@tag-type: TYPE.NN.EE.SS` (e.g., `@brd: BRD.01.01.30`)
 
 **Tag Types (Cumulative Hierarchy):**
 - `@brd:` - Business Requirements Document references (Layer 1)
@@ -347,9 +347,9 @@ Embed cumulative tags in code docstrings using namespaced format:
 - Instant impact analysis when upstream requirements change
 
 **Why Unified Format?**
-- `@brd: BRD.030` ❌ Ambiguous (which BRD document?)
-- `@brd: BRD-001:030` ❌ Old format (deprecated)
-- `@brd: BRD.001.030` ✅ Unified format (current standard)
+- `@brd: BRD.30` ❌ Ambiguous (which BRD document?)
+- `@brd: BRD-001:30` ❌ Old format (deprecated)
+- `@brd: BRD.01.01.30` ✅ Unified format (current standard)
 
 #### Traditional Section 7 (Legacy)
 
@@ -359,7 +359,7 @@ Manual traceability sections in documents remain supported during migration:
 ## 7. Traceability
 
 **Upstream:**
-- [BRD-001](../BRD/BRD-001_requirements.md#BRD.001.030)
+- [BRD-001](../BRD/BRD-001_requirements.md#BRD.01.01.30)
 
 **Downstream:**
 - [SPEC-003](../SPEC/SPEC-003_implementation.yaml)
@@ -403,14 +403,14 @@ All documentation follows standardized ID formats:
 ```markdown
 | Requirement | Implementing Files | Status |
 |-------------|-------------------|--------|
-| BRD.001.030 | src/services/account.py:12 | ✓ Complete |
+| BRD.01.01.30 | src/services/account.py:12 | ✓ Complete |
 ```
 
 **Reverse Matrix Example:**
 ```markdown
 | Source File | Requirements | Status |
 |-------------|-------------|--------|
-| src/services/account.py | BRD.001.030, SYS.001.006 | Complete |
+| src/services/account.py | BRD.01.01.30, SYS.01.25.06 | Complete |
 ```
 
 ### Migration Guide: Section 7 → Tags
@@ -595,7 +595,7 @@ Pre-commit checklist:
 
 **Cumulative Tagging Projects (v2.0):**
 - [ ] All artifacts include cumulative tags from ALL upstream layers
-- [ ] Tags use unified format (TYPE.NNN.NNN)
+- [ ] Tags use unified format (TYPE.NN.EE.SS)
 - [ ] Tag extraction successful: `python ai_dev_flow/scripts/extract_tags.py --source src/ docs/ tests/`
 - [ ] Cumulative validation passes: `python ai_dev_flow/scripts/validate_tags_against_docs.py --validate-cumulative --strict`
 - [ ] No gaps in cumulative tag chains (e.g., if @adr exists, @brd through @bdd must exist)
@@ -908,7 +908,7 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ### Version 1.1.0 (2025-11-12)
 - Added tag-based auto-discovery traceability system
-- Introduced unified tag format (TYPE.NNN.NNN)
+- Introduced unified tag format (TYPE.NN.EE.SS)
 - Added automated validation scripts
 - Updated quality gates for tag-based and traditional projects
 - Added CI/CD integration examples for traceability validation

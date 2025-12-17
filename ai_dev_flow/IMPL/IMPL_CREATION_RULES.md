@@ -323,13 +323,13 @@ Every deliverable must be listed with checkbox:
 ### 8.1 Upstream References (Layer 8 position)
 
 IMPL must reference:
-- `@brd: BRD.NNN.NNN` - Business requirements
-- `@prd: PRD.NNN.NNN` - Product requirements
-- `@ears: EARS.NNN.NNN` - EARS statements
-- `@bdd: BDD.NNN.NNN` - BDD scenarios
+- `@brd: BRD.NN.EE.SS` - Business requirements
+- `@prd: PRD.NN.EE.SS` - Product requirements
+- `@ears: EARS.NN.EE.SS` - EARS statements
+- `@bdd: BDD.NN.EE.SS` - BDD scenarios
 - `@adr: ADR-NNN` - Architecture decisions
-- `@sys: SYS.NNN.NNN` - System requirements
-- `@req: REQ.NNN.NNN` - Atomic requirements
+- `@sys: SYS.NN.EE.SS` - System requirements
+- `@req: REQ.NN.EE.SS` - Atomic requirements
 
 ### 8.2 Downstream Artifacts
 
@@ -543,7 +543,7 @@ python scripts/validate_cross_document.py --layer IMPL --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd through @req tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

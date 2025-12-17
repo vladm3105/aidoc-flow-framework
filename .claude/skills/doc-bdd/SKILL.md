@@ -239,24 +239,26 @@ Then response time is less than @threshold: PRD.035.perf.api.p95_latency
 
 The SDD framework uses two distinct notation systems for cross-references:
 
-| Notation | Format       | Artifacts                               | Purpose                                                             |
-|----------|--------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NNN.NNN | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to features inside documents |
+| Notation | Format        | Artifacts                               | Purpose                                                             |
+|----------|---------------|----------------------------------------|---------------------------------------------------------------------|
+| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.017.001` → Points to feature 001 inside document `BRD-017.md`
+- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
 
-## Unified Feature ID Format (MANDATORY)
+## Unified Element ID Format (MANDATORY)
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NNN.NNN` (dot separator)
+- **Always use**: `TYPE.NN.EE.SS` (dot separator, 4-segment format)
 - **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE.NN.EE.SS` (3-segment format - DEPRECATED)
 
 Examples:
-- `@brd: BRD.017.001` ✅
+- `@brd: BRD.17.01.01` ✅
 - `@brd: BRD-017:001` ❌
+- `@brd: BRD.017.001` ❌ (old 3-segment format)
 
 
 ## Cumulative Tagging Requirements
@@ -267,16 +269,16 @@ Examples:
 
 **Format** (in companion .md file or feature file header):
 ```markdown
-@brd: BRD.001.003
-@prd: PRD.001.002
-@ears: EARS.001.001, EARS.001.002
+@brd: BRD.01.01.03
+@prd: PRD.01.07.02
+@ears: EARS.01.24.01, EARS.01.24.02
 ```
 
 **Gherkin Tag Format** (in .feature file):
 ```gherkin
 # Tags linking to requirements and architecture decisions
-@requirement:REQ.003.001
-@requirement:EARS.001.001
+@requirement:REQ.03.26.01
+@requirement:EARS.01.24.01
 @adr:ADR-033
 ```
 
@@ -338,7 +340,7 @@ For each requirement from EARS/PRD:
 
 Add @requirement and @adr tags to each scenario:
 ```gherkin
-@requirement:EARS.001.001
+@requirement:EARS.01.24.01
 @adr:ADR-033
 @priority:P0
 Scenario: Reject trade exceeding limit
@@ -447,7 +449,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer BDD --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

@@ -34,13 +34,13 @@ FILE_EXTENSIONS = {'.py', '.md', '.yaml', '.yml', '.feature'}
 
 
 def parse_tag_value(tag_value: str) -> List[Tuple[str, Optional[str]]]:
-    """Parse tag value into (DOCUMENT-ID, REQUIREMENT-ID) tuples.
+    """Parse tag value into (DOCUMENT-ID, ELEMENT-ID) tuples.
 
     Args:
-        tag_value: "BRD.001.030, BRD.001.031, SPEC-003"
+        tag_value: "BRD.01.01.30, BRD.01.01.31, SPEC-003"
 
     Returns:
-        [('BRD-001', '030'), ('BRD-001', '031'), ('SPEC-003', None)]
+        [('BRD-01', '01.30'), ('BRD-01', '01.31'), ('SPEC-003', None)]
     """
     refs = []
     for item in tag_value.split(','):
@@ -73,8 +73,8 @@ def extract_tags_from_file(file_path: Path) -> Dict:
                 'impl-status': ['complete']
             },
             'line_numbers': {
-                'BRD.001.001': 15,
-                'BRD.001.002': 15
+                'BRD.01.01.01': 15,
+                'BRD.01.01.02': 15
             },
             'errors': []
         }

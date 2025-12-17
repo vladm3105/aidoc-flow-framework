@@ -140,10 +140,10 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 **Required Tags** (Standard ADR):
 ```markdown
-@brd: BRD.NNN.NNN
-@prd: PRD.NNN.NNN
-@ears: EARS.NNN.NNN
-@bdd: BDD.NNN.NNN
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.EE.SS
+@bdd: BDD.NN.EE.SS
 ```
 
 **ADR-REF Exemption**: ADR-REF documents are EXEMPT from cumulative traceability tag requirements. Reference documents serve as citation targets for other documents.

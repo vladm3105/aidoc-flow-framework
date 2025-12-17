@@ -400,13 +400,13 @@ BO-003: Reduce transaction processing time from 10 seconds to 5 seconds (50% imp
 
 **Requirements**:
 1. Business Acceptance Criteria (8.1) includes quantifiable success measures
-2. Functional Acceptance Criteria (8.2) maps to specific BRD.NNN.NNN requirements
+2. Functional Acceptance Criteria (8.2) maps to specific BRD.NN.EE.SS requirements
 3. Success Metrics and KPIs (8.7) include baseline, target, measurement frequency, owner
 
 **Warning Messages**:
 ```
 ⚠️  WARNING: Business acceptance criteria missing quantifiable measures
-⚠️  WARNING: Functional acceptance criteria not mapped to specific BRD.NNN.NNN IDs
+⚠️  WARNING: Functional acceptance criteria not mapped to specific BRD.NN.EE.SS IDs
 ⚠️  WARNING: Success metrics table missing owners or measurement frequency
 ```
 
@@ -1224,7 +1224,7 @@ Reference: BRD-TEMPLATE.md section 15
 ```
 ⚠️  WARNING: Traceability orphans detected
 Orphaned Requirements:
-- BO-003: No related BRD.NNN.NNN requirements (Coverage Status = "Gap")
+- BO-003: No related BRD.NN.EE.SS requirements (Coverage Status = "Gap")
 - BRD.NNN.012: Not linked to any Business Objective
 - US-007: Not linked to any Functional Requirement
 
@@ -1236,8 +1236,8 @@ Fix: Ensure bidirectional links for all objectives, BRD requirements, and user s
 **Orphan Prevention Checks**:
 - [ ] Zero orphaned Business Objectives (all have Coverage Status = "Complete" or "Partial")
 - [ ] Zero orphaned Functional Requirements (all appear in BO→BRD.NNN table)
-- [ ] Zero orphaned User Stories (all have Related BRD.NNN.NNN links)
-- [ ] All BRD.NNN.NNN requirements have planned downstream SPEC references
+- [ ] Zero orphaned User Stories (all have Related BRD.NN.EE.SS links)
+- [ ] All BRD.NN.EE.SS requirements have planned downstream SPEC references
 
 **Fix**:
 1. Add section 15 with all 4 subsections

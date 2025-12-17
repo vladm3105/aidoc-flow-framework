@@ -151,7 +151,7 @@ anti_patterns_detected:
     severity: error
     location: "Section 7: Traceability"
     details: "PRD requires @brd tag (Layer 2 cumulative requirement)"
-    suggestion: "Add '@brd: BRD.NNN.NNN' to Traceability section"
+    suggestion: "Add '@brd: BRD.NN.EE.SS' to Traceability section"
 
   - id: AP-003
     name: Vague Acceptance Criteria
@@ -367,12 +367,12 @@ artifact_type: REQ
 layer: 7
 tag_compliance: pass
 required_tags:
-  - "@brd: BRD.001.001 ✓"
-  - "@prd: PRD.000.001 ✓"
-  - "@ears: EARS.001.001 ✓"
-  - "@bdd: BDD.003.001 ✓"
+  - "@brd: BRD.01.01.01 ✓"
+  - "@prd: PRD.01.07.01 ✓"
+  - "@ears: EARS.01.24.01 ✓"
+  - "@bdd: BDD.01.13.01 ✓"
   - "@adr: ADR-002 ✓"
-  - "@sys: SYS.001.001 ✓"
+  - "@sys: SYS.01.25.01 ✓"
 tag_count: "6/6 required tags present"
 status: "Ready for downstream artifacts"
 ```

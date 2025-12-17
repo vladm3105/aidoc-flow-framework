@@ -278,13 +278,13 @@ fi
 
 | Tag | Required | Format |
 |-----|----------|--------|
-| @brd | Yes | BRD.NNN.NNN |
-| @prd | Yes | PRD.NNN.NNN |
-| @ears | Yes | EARS.NNN.NNN |
-| @bdd | Yes | BDD.NNN.NNN |
+| @brd | Yes | BRD.NN.EE.SS |
+| @prd | Yes | PRD.NN.EE.SS |
+| @ears | Yes | EARS.NN.EE.SS |
+| @bdd | Yes | BDD.NN.EE.SS |
 | @adr | Yes | ADR-NNN |
-| @sys | Yes | SYS.NNN.NNN |
-| @req | Yes | REQ.NNN.NNN |
+| @sys | Yes | SYS.NN.EE.SS |
+| @req | Yes | REQ.NN.EE.SS |
 | @spec | Yes | SPEC-NNN |
 
 ### Optional Tags
@@ -475,7 +475,7 @@ Result: PASSED WITH WARNINGS
 ### Warning: Missing BDD Reference
 
 **Symptom**: "WARNING: No BDD scenario reference"
-**Fix**: Add BDD.NNN.NNN to acceptance criteria
+**Fix**: Add BDD.NN.EE.SS to acceptance criteria
 
 ---
 

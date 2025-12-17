@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type EARS --output docs/EARS/
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@ears: EARS.NNN.NNN` (unified feature-level format, e.g., `EARS.002.003`)
+**Tag Format:** `@ears: EARS.NN.24.SS` (unified 4-segment format, e.g., `EARS.02.24.03`)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -90,8 +90,8 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD.009.015, BRD.009.006
-@prd: PRD.016.003
+@brd: BRD.09.01.15, BRD.09.01.06
+@prd: PRD.16.01.03
 ```
 
 **Format Rules**:
@@ -113,20 +113,20 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 3):
 ```markdown
-@brd: BRD.009.015, BRD.009.006
-@prd: PRD.016.003
+@brd: BRD.09.01.15, BRD.09.01.06
+@prd: PRD.16.01.03
 ```
 
-- **BRD.009.015**: Functional requirement for service integration
-- **BRD.009.006**: Quality attribute for operation execution performance
-- **PRD.016.003**: Product feature for operation execution user interface
+- **BRD.09.01.15**: Functional requirement for service integration
+- **BRD.09.01.06**: Quality attribute for operation execution performance
+- **PRD.16.01.03**: Product feature for operation execution user interface
 
 ### 11.2 Downstream Artifacts
 
 **Direct Dependencies**:
-- BDD-015: operation execution test scenarios (`@ears: EARS.012.002`)
-- REQ-045: Place limit order atomic requirement (`@ears: EARS.012.002`)
-- ADR-033: operation execution architecture (`@ears: EARS.012.002`)
+- BDD-015: operation execution test scenarios (`@ears: EARS.12.24.02`)
+- REQ-045: Place limit order atomic requirement (`@ears: EARS.12.24.02`)
+- ADR-033: operation execution architecture (`@ears: EARS.12.24.02`)
 ```
 
 ### 2.4 Example: EARS Statements with Traceability
@@ -134,26 +134,26 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 ```markdown
 ## 5.1 Event-Driven Requirements
 
-### 5.1 EARS.012.001
+### 5.1 EARS.12.24.01
 **WHEN** user selects "Place Order" button
 **THE** system **SHALL** validate order parameters
 **WITHIN** 100 milliseconds
 
 **Traceability**:
-- Upstream: BRD.009.015 (request submission capability)
-- Upstream: PRD.016.003 (request submission UI)
-- Downstream: BDD.015.001 (Test scenario)
+- Upstream: BRD.09.01.15 (request submission capability)
+- Upstream: PRD.16.01.03 (request submission UI)
+- Downstream: BDD.15.13.01 (Test scenario)
 - Downstream: REQ-045 (Validation logic requirement)
 
-### 5.2 EARS.012.002
+### 5.2 EARS.12.24.02
 **WHEN** order validation succeeds
 **THE** system **SHALL** execute the trade
 **WITHIN** 2 seconds
 
 **Traceability**:
-- Upstream: BRD.009.006 (Performance requirement)
-- Upstream: PRD.016.003 (operation execution feature)
-- Downstream: BDD.015.002 (Test scenario)
+- Upstream: BRD.09.01.06 (Performance requirement)
+- Upstream: PRD.16.01.03 (operation execution feature)
+- Downstream: BDD.15.13.02 (Test scenario)
 - Downstream: REQ-046 (operation execution logic)
 ```
 

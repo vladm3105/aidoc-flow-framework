@@ -85,15 +85,15 @@ metadata:
   owner: "team-backend"
 
 cumulative_tags:
-  brd: ["BRD.001.003"]
-  prd: ["PRD.001.002"]
-  ears: ["EARS.001.001"]
-  bdd: ["BDD.001.001"]
-  adr: ["ADR.033", "ADR.045"]
-  sys: ["SYS.001.001"]
-  req: ["REQ.001.001"]
-  impl: ["IMPL.001.001"]  # optional
-  contracts: ["CTR.001"]  # optional
+  brd: ["BRD.01.01.03"]
+  prd: ["PRD.01.07.02"]
+  ears: ["EARS.01.24.01"]
+  bdd: ["BDD.01.13.01"]
+  adr: ["ADR-033", "ADR-045"]
+  sys: ["SYS.01.25.01"]
+  req: ["REQ.01.26.01"]
+  impl: ["IMPL.01.28.01"]  # optional
+  contracts: ["CTR-001"]  # optional
 
 overview:
   purpose: "Define trade order validation service implementation"
@@ -263,15 +263,15 @@ traceability:
 **Format**:
 ```yaml
 cumulative_tags:
-  brd: ["BRD.001.003", "BRD.001.005"]
-  prd: ["PRD.001.002", "PRD.001.015"]
-  ears: ["EARS.001.001", "EARS.001.002"]
-  bdd: ["BDD.001.001"]
-  adr: ["ADR.033", "ADR.045"]
-  sys: ["SYS.001.001", "SYS.001.901"]
-  req: ["REQ.001.001"]
-  impl: ["IMPL.001.001"]  # optional - omit if Layer 8 skipped
-  contracts: ["CTR.001"]  # optional - omit if Layer 9 skipped
+  brd: ["BRD.01.01.03", "BRD.01.01.05"]
+  prd: ["PRD.01.07.02", "PRD.01.07.15"]
+  ears: ["EARS.01.24.01", "EARS.01.24.02"]
+  bdd: ["BDD.01.13.01"]
+  adr: ["ADR-033", "ADR-045"]
+  sys: ["SYS.01.25.01", "SYS.01.25.07"]
+  req: ["REQ.01.26.01"]
+  impl: ["IMPL.01.28.01"]  # optional - omit if Layer 8 skipped
+  contracts: ["CTR-001"]  # optional - omit if Layer 9 skipped
 ```
 
 **Tag Count**: 7-9 tags (minimum 7 if IMPL/CTR skipped, 9 if both included)
@@ -312,24 +312,26 @@ interfaces:
 
 The SDD framework uses two distinct notation systems for cross-references:
 
-| Notation | Format       | Artifacts                               | Purpose                                                             |
-|----------|--------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NNN.NNN | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to features inside documents |
+| Notation | Format        | Artifacts                               | Purpose                                                             |
+|----------|---------------|----------------------------------------|---------------------------------------------------------------------|
+| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.017.001` → Points to feature 001 inside document `BRD-017.md`
+- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
 
-## Unified Feature ID Format (MANDATORY)
+## Unified Element ID Format (MANDATORY)
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NNN.NNN` (dot separator)
+- **Always use**: `TYPE.NN.EE.SS` (dot separator, 4-segment format)
 - **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE.NN.EE.SS` (3-segment format - DEPRECATED)
 
 Examples:
-- `@brd: BRD.017.001` ✅
+- `@brd: BRD.17.01.01` ✅
 - `@brd: BRD-017:001` ❌
+- `@brd: BRD.017.001` ❌ (old 3-segment format)
 
 
 ## Cumulative Tagging Requirements
@@ -341,27 +343,27 @@ Examples:
 **Minimum (IMPL and CTR skipped)**:
 ```yaml
 cumulative_tags:
-  brd: ["BRD.001.003"]
-  prd: ["PRD.001.002"]
-  ears: ["EARS.001.001"]
-  bdd: ["BDD.001.001"]
-  adr: ["ADR.033", "ADR.045"]
-  sys: ["SYS.001.001"]
-  req: ["REQ.001.001"]
+  brd: ["BRD.01.01.03"]
+  prd: ["PRD.01.07.02"]
+  ears: ["EARS.01.24.01"]
+  bdd: ["BDD.01.13.01"]
+  adr: ["ADR-033", "ADR-045"]
+  sys: ["SYS.01.25.01"]
+  req: ["REQ.01.26.01"]
 ```
 
 **Maximum (IMPL and CTR included)**:
 ```yaml
 cumulative_tags:
-  brd: ["BRD.001.003"]
-  prd: ["PRD.001.002"]
-  ears: ["EARS.001.001"]
-  bdd: ["BDD.001.001"]
-  adr: ["ADR.033", "ADR.045"]
-  sys: ["SYS.001.001"]
-  req: ["REQ.001.001"]
-  impl: ["IMPL.001.001"]
-  contracts: ["CTR.001"]
+  brd: ["BRD.01.01.03"]
+  prd: ["PRD.01.07.02"]
+  ears: ["EARS.01.24.01"]
+  bdd: ["BDD.01.13.01"]
+  adr: ["ADR-033", "ADR-045"]
+  sys: ["SYS.01.25.01"]
+  req: ["REQ.01.26.01"]
+  impl: ["IMPL.01.28.01"]
+  contracts: ["CTR-001"]
 ```
 
 ## Upstream/Downstream Artifacts
@@ -562,7 +564,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer SPEC --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing upstream tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

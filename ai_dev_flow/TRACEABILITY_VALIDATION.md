@@ -389,7 +389,7 @@ This quality gate system is **100% aligned** with TRACEABILITY.md requirements:
 - **Layer Numbers**: Uses 16-layer formal numbering (0-15)
 - **Cumulative Tagging**: Enforces cumulative inheritance rules (§4.3)
 - **Diagram Conventions**: Follows L1-L11 visual groupings with formal layer references
-- **Tag Format**: Uses `@artifact-type: TYPE.NNN.NNN (Unified Feature ID)` format (§4.1)
+- **Tag Format**: Uses `@artifact-type: TYPE.NN.EE.SS (Unified Feature ID)` format (§4.1)
 
 ### Success Metrics
 

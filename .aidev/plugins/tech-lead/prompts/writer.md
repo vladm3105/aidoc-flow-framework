@@ -725,44 +725,44 @@ traceability:
   cumulative_tags:
     layer: 10
     required:
-      - "@brd: BRD.NNN.NNN"
-      - "@prd: PRD.NNN.NNN"
-      - "@ears: EARS.NNN.NNN"
-      - "@bdd: BDD.NNN.NNN"
+      - "@brd: BRD.NN.EE.SS"
+      - "@prd: PRD.NN.EE.SS"
+      - "@ears: EARS.NN.EE.SS"
+      - "@bdd: BDD.NN.EE.SS"
       - "@adr: ADR-NNN"
-      - "@sys: SYS.NNN.NNN"
-      - "@req: REQ.NNN.NNN"
+      - "@sys: SYS.NN.EE.SS"
+      - "@req: REQ.NN.EE.SS"
     optional:
-      - "@impl: IMPL.NNN.NNN"
+      - "@impl: IMPL.NN.EE.SS"
       - "@ctr: CTR-NNN"
     description: "Layer 10 requires 7 upstream artifact tags (9 including optional IMPL and CTR)"
 
   upstream:
     required:
       - type: BRD
-        format: "@brd: BRD.NNN.NNN"
+        format: "@brd: BRD.NN.EE.SS"
         location: "traceability.cumulative_tags"
       - type: PRD
-        format: "@prd: PRD.NNN.NNN"
+        format: "@prd: PRD.NN.EE.SS"
         location: "traceability.cumulative_tags"
       - type: EARS
-        format: "@ears: EARS.NNN.NNN"
+        format: "@ears: EARS.NN.EE.SS"
         location: "traceability.cumulative_tags"
       - type: BDD
-        format: "@bdd: BDD.NNN.NNN"
+        format: "@bdd: BDD.NN.EE.SS"
         location: "traceability.cumulative_tags"
       - type: ADR
         format: "@adr: ADR-NNN"
         location: "traceability.cumulative_tags"
       - type: SYS
-        format: "@sys: SYS.NNN.NNN"
+        format: "@sys: SYS.NN.EE.SS"
         location: "traceability.cumulative_tags"
       - type: REQ
-        format: "@req: REQ.NNN.NNN"
+        format: "@req: REQ.NN.EE.SS"
         location: "traceability.cumulative_tags"
     optional:
       - type: IMPL
-        format: "@impl: IMPL.NNN.NNN"
+        format: "@impl: IMPL.NN.EE.SS"
         location: "traceability.cumulative_tags"
       - type: CTR
         format: "@ctr: CTR-NNN"

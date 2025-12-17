@@ -213,13 +213,13 @@ TASKS-ready scoring measures SPEC maturity and readiness for progression to TASK
 **Complete Upstream Tag Chain**:
 ```yaml
 cumulative_tags:
-  brd: "BRD.NNN.NNN"         # Unified dot notation for sub-ID references
-  prd: "PRD.NNN.NNN"         # Unified dot notation for sub-ID references
-  ears: "EARS.NNN.NNN"       # Unified dot notation
-  bdd: "BDD.NNN.NNN"         # Unified dot notation for sub-ID references
+  brd: "BRD.NN.EE.SS"         # Unified dot notation for sub-ID references
+  prd: "PRD.NN.EE.SS"         # Unified dot notation for sub-ID references
+  ears: "EARS.NN.EE.SS"       # Unified dot notation
+  bdd: "BDD.NN.EE.SS"         # Unified dot notation for sub-ID references
   adr: "ADR-NNN"             # Document-level reference (no sub-ID)
-  sys: "SYS.NNN.NNN"         # Unified dot notation for sub-ID references
-  req: "REQ.NNN.NNN"         # Unified dot notation for sub-ID references
+  sys: "SYS.NN.EE.SS"         # Unified dot notation for sub-ID references
+  req: "REQ.NN.EE.SS"         # Unified dot notation for sub-ID references
 ```
 
 **Layer 10 Requirements**: SPEC must reference ALL previous artifacts
@@ -405,8 +405,8 @@ Add `threshold` to cumulative_tags section:
 ```yaml
 traceability:
   cumulative_tags:
-    brd: "BRD.NNN.NNN"
-    prd: "PRD.NNN.NNN"
+    brd: "BRD.NN.EE.SS"
+    prd: "PRD.NN.EE.SS"
     threshold: "PRD-NNN"  # Registry document reference
 ```
 
@@ -470,7 +470,7 @@ python scripts/validate_cross_document.py --layer SPEC --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd through @req tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

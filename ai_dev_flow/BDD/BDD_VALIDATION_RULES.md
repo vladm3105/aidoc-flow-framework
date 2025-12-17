@@ -112,9 +112,9 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 
 **Required Tags** (ALL MANDATORY):
 ```gherkin
-@brd: BRD.NNN.NNN    # REQUIRED - business requirements
-@prd: PRD.NNN.NNN    # REQUIRED - product requirements
-@ears: EARS.NNN.NNN  # REQUIRED - engineering requirements
+@brd: BRD.NN.EE.SS    # REQUIRED - business requirements
+@prd: PRD.NN.EE.SS    # REQUIRED - product requirements
+@ears: EARS.NN.EE.SS  # REQUIRED - engineering requirements
 ```
 
 **Format**: Extended format with requirement ID suffix (`:NNN`) is REQUIRED.

@@ -134,8 +134,8 @@ structure:
       - Related BRD
 
     related_brd_format:
-      pattern: "^@brd: BRD\\.\\d{3}\\.\\d{3}$"
-      description: "Must use @brd: prefix with dot-separated format for traceability"
+      pattern: "^@brd: BRD\\.[0-9]{2,9}\\.[0-9]{2,9}\\.[0-9]{2,9}$"
+      description: "Must use @brd: prefix with 4-segment format for traceability (DOC_NUM.ELEM_TYPE.SEQ)"
 
   # Section numbering rules
   section_numbering:
@@ -160,9 +160,9 @@ feature_patterns:
       - "015"
       - "042"
     cross_reference_format:
-      pattern: "@prd: PRD.NNN.NNN"
-      example: "@prd: PRD.022.015"
-      description: "Cross-reference format includes document ID for global uniqueness"
+      pattern: "@prd: PRD.NN.07.SS"
+      example: "@prd: PRD.22.07.15"
+      description: "Cross-reference format: DOC_NUM.ELEM_TYPE.SEQ (unified 4-segment format)"
 
   # Feature table structure
   feature_table:
@@ -229,24 +229,24 @@ traceability:
   upstream:
     required:
       - type: BRD
-        format: "@brd: BRD.NNN.NNN"
+        format: "@brd: BRD.NN.01.SS"
         location: "Document Control table"
     optional: []
 
   downstream:
     expected:
       - type: SYS
-        format: "@sys: SYS.NNN.NNN"
+        format: "@sys: SYS.NN.25.SS"
       - type: EARS
-        format: "@ears: EARS.NNN.NNN"
+        format: "@ears: EARS.NN.24.SS"
       - type: REQ
-        format: "@req: REQ.NNN.NNN"
+        format: "@req: REQ.NN.26.SS"
       - type: SPEC
-        format: "@spec: SPEC.NNN.NNN"
+        format: "@spec: SPEC-NNN"
 
   lateral:
-    format: "@prd: PRD.NNN.NNN"
-    description: "Cross-reference to related PRDs"
+    format: "@prd: PRD.NN.07.SS"
+    description: "Cross-reference to related PRDs (unified 4-segment format)"
 
   threshold_references:
     format: "@threshold: PRD.035.category.subcategory"

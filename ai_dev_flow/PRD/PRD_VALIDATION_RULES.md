@@ -125,7 +125,7 @@ All PRD requirements must include:
 | Approver | Final approver name | MANDATORY |
 | Created Date | YYYY-MM-DD | MANDATORY |
 | Last Updated | YYYY-MM-DD | MANDATORY |
-| BRD Reference | @brd: BRD.NNN.NNN tag | MANDATORY |
+| BRD Reference | @brd: BRD.NN.EE.SS tag | MANDATORY |
 | SYS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
 | EARS-Ready Score | ✅ XX% (Target: ≥90%) | MANDATORY |
 | Priority | High / Medium / Low | OPTIONAL |
@@ -413,15 +413,15 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 
 **Upstream Tags** (MANDATORY):
 ```markdown
-@brd: BRD.NNN.NNN
+@brd: BRD.NN.EE.SS
 ```
 
 **Downstream Tags** (Optional but recommended):
 ```markdown
-@sys: SYS.NNN.NNN (planned)
-@ears: EARS.NNN.NNN (planned)
-@bdd: BDD.NNN.NNN (planned)
-@req: REQ.NNN.NNN (planned)
+@sys: SYS.NN.EE.SS (planned)
+@ears: EARS.NN.EE.SS (planned)
+@bdd: BDD.NN.EE.SS (planned)
+@req: REQ.NN.EE.SS (planned)
 ```
 
 **Error Messages**:
@@ -476,7 +476,7 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 
 **section 9 - Functional Requirements**:
 - User Journey Mapping, Capability Requirements subsections
-- Requirements use unified format (PRD.NNN.NNN)
+- Requirements use unified format (PRD.NN.EE.SS)
 - Each requirement testable
 
 **section 10 - Customer-Facing Content & Messaging**:
@@ -746,7 +746,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 **Type**: Warning (recommended fix before commit)
 
 **Requirements**:
-- Every `@prd: PRD.NNN.NNN` reference must have reciprocal reference in target document
+- Every `@prd: PRD.NN.EE.SS` reference must have reciprocal reference in target document
 - No placeholder IDs (PRD.XXX.XXX, TBD, undefined)
 - Referenced documents must exist
 - Tag format required (not prose references like "see PRD-022")
@@ -825,7 +825,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 **Requirements**:
 - Numeric thresholds shared across 2+ PRDs must reference Threshold Registry
-- Use format: `@prd: PRD.NNN.NNN` with `@threshold: PRD.NNN.{category}.{key}`
+- Use format: `@prd: PRD.NN.EE.SS` with `@threshold: PRD.NNN.{category}.{key}`
 - No "magic numbers" for common thresholds (KYC limits, risk scores, timeouts)
 
 **Threshold Categories Requiring Registry Reference**:
@@ -883,7 +883,7 @@ Transaction limit: $1,000 USD (per @threshold: PRD.035.kyc.l1.daily)
 | CHECK 10 | Traceability Tags | @brd upstream tag | No |
 | CHECK 11 | EARS Enhancement Appendix | Section 20 complete | Yes (for EARS) |
 | CHECK 12 | Bidirectional References | A→B implies B→A | No |
-| CHECK 13 | Feature ID Format | PRD.NNN.NNN format | No |
+| CHECK 13 | Feature ID Format | PRD.NN.EE.SS format | No |
 | CHECK 14 | Threshold Registry | Registry references | No |
 
 ---

@@ -390,7 +390,7 @@ python scripts/validate_cross_document.py --full --output validation_report.md
 | Issue | Fix Action |
 |-------|------------|
 | Missing cumulative tag | Add tag with placeholder reference to upstream document |
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
 | Broken relative link | Recalculate path from current document location |
 | Missing traceability section | Insert standard traceability section from template |
 | Incorrect Document Control format | Apply standardized format |
@@ -423,12 +423,12 @@ Document: docs/REQ/REQ-001_api_validation.md
 Layer: 7 (REQ)
 
 Checking cumulative tags...
-  ✅ @brd: BRD.001.003
-  ✅ @prd: PRD.001.002
-  ✅ @ears: EARS.001.001
-  ✅ @bdd: BDD.001.001
+  ✅ @brd: BRD.01.01.03
+  ✅ @prd: PRD.01.07.02
+  ✅ @ears: EARS.01.24.01
+  ✅ @bdd: BDD.01.13.01
   ✅ @adr: ADR-033, ADR-045
-  ✅ @sys: SYS.001.001
+  ✅ @sys: SYS.01.25.01
 
 Checking upstream references...
   ✅ BRD-001 exists: docs/BRD/BRD-001_platform.md

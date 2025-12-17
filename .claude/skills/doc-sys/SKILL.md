@@ -92,24 +92,24 @@ Use `doc-sys` when:
 - Validate price within reasonable range
 - Validate account has sufficient buying power
 **Output**: Validation result (pass/fail) with error details
-**Source**: EARS.001.001, ADR-033
-**Verification**: BDD.001.001
+**Source**: EARS.01.24.01, ADR-033
+**Verification**: BDD.01.13.01
 
 ### 002: Order Validation Performance
 **Description**: Order validation SHALL complete within 50ms at P95
 **Measurement**: P50 <25ms, P95 <50ms, P99 <100ms
 **Rationale**: User experience requires sub-second feedback per PRD-001
-**Source**: PRD.001.002, EARS.001.002
+**Source**: PRD.01.07.02, EARS.01.24.02
 **Verification**: Performance benchmarks, load testing
-**Traceability**: @brd: BRD.001.002 | @prd: PRD.001.002
+**Traceability**: @brd: BRD.01.01.02 | @prd: PRD.01.07.02
 
 ### 003: System Availability
 **Description**: System SHALL maintain 99.9% uptime during market hours
 **Measurement**: Monthly uptime >99.9% (43.2 minutes downtime max)
 **Rationale**: Trading system criticality requires high availability
-**Source**: BRD.001.003
+**Source**: BRD.01.01.03
 **Verification**: Uptime monitoring, incident tracking
-**Traceability**: @brd: BRD.001.003
+**Traceability**: @brd: BRD.01.01.03
 ```
 
 **Note**: All requirements use sequential numbering (`001`, `002`, `003`...). Use folder structure, tags, or document sections for categorization if needed.
@@ -168,24 +168,26 @@ sequenceDiagram
 
 The SDD framework uses two distinct notation systems for cross-references:
 
-| Notation | Format       | Artifacts                               | Purpose                                                             |
-|----------|--------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NNN.NNN | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to features inside documents |
+| Notation | Format        | Artifacts                               | Purpose                                                             |
+|----------|---------------|----------------------------------------|---------------------------------------------------------------------|
+| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.017.001` → Points to feature 001 inside document `BRD-017.md`
+- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
 
-## Unified Feature ID Format (MANDATORY)
+## Unified Element ID Format (MANDATORY)
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NNN.NNN` (dot separator)
+- **Always use**: `TYPE.NN.EE.SS` (dot separator, 4-segment format)
 - **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE.NN.EE.SS` (3-segment format - DEPRECATED)
 
 Examples:
-- `@brd: BRD.017.001` ✅
+- `@brd: BRD.17.01.01` ✅
 - `@brd: BRD-017:001` ❌
+- `@brd: BRD.017.001` ❌ (old 3-segment format)
 
 
 ## Cumulative Tagging Requirements
@@ -200,10 +202,10 @@ Examples:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
 ```markdown
-@brd: BRD.001.003
-@prd: PRD.001.002, PRD.001.015
-@ears: EARS.001.001, EARS.001.002
-@bdd: BDD.001.001
+@brd: BRD.01.01.03
+@prd: PRD.01.07.02, PRD.01.07.15
+@ears: EARS.01.24.01, EARS.01.24.02
+@bdd: BDD.01.13.01
 @adr: ADR-033, ADR-045
 ```
 
@@ -374,7 +376,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer SYS --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd/@adr tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

@@ -194,19 +194,20 @@ Business drivers              Technical options          Selected option
 Business constraints          Evaluation criteria        Trade-off analysis
 ```
 
-**Subsection ID Format**: `{DOC_TYPE}.NNN.NNN` (3-digit topic number)
+**Subsection ID Format**: `{DOC_TYPE}.NN.EE.SS` (unified 4-segment format)
 
 | Component | Description | Example |
 |-----------|-------------|---------|
 | `{DOC_TYPE}` | Document type | `BRD` |
-| `.NNN` | Document number (3-4 digits) | `.001` = BRD-001 |
-| `.NNN` | Sequential topic number (3 digits, 001-999) | `.003` = third topic |
+| `.NN` | Document number (2-9 digits) | `.01` = BRD-001 |
+| `.EE` | Element type code (01=Functional Req) | `.01` = functional requirement |
+| `.SS` | Sequential number (2-9 digits) | `.03` = third item |
 
 **Format** (business-only content):
 ```markdown
 ## 7.2 Architecture Decision Requirements
 
-### BRD.001.001: API Communication Protocol
+### BRD.01.01.01: API Communication Protocol
 
 **Business Driver**: Real-time market data integration requires low-latency, bidirectional communication for competitive trading execution.
 
@@ -226,8 +227,8 @@ Business constraints          Evaluation criteria        Trade-off analysis
 **Do NOT write**: "See ADR-033" or "Reference ADR-045" (ADRs don't exist yet)
 
 **Cross-Reference Flow**:
-1. BRD Section 7.2 → Defines business need (`{DOC_TYPE}.NNN.NNN`)
-2. PRD Section 18 → Elaborates with technical options (references `{DOC_TYPE}.NNN.NNN`)
+1. BRD Section 7.2 → Defines business need (`{DOC_TYPE}.NN.EE.SS`)
+2. PRD Section 18 → Elaborates with technical options (references `{DOC_TYPE}.NN.EE.SS`)
 3. ADR Section 4.1 → Records final decision (references both)
 
 ### 5. Document Control Section Positioning
@@ -254,32 +255,34 @@ Business constraints          Evaluation criteria        Trade-off analysis
 **Format**: BRD has no `@` tags since it's Layer 1 (top of hierarchy)
 
 **Downstream artifacts will tag BRD** (using unified format):
-- PRD will include: `@brd: BRD.001.030` (TYPE.DOC.FEATURE format)
-- EARS will include: `@brd: BRD.001.030`
+- PRD will include: `@brd: BRD.01.01.30` (TYPE.NN.EE.SS format)
+- EARS will include: `@brd: BRD.01.01.30`
 - All downstream artifacts inherit BRD tags
 
 ## Tag Format Convention (By Design)
 
 The SDD framework uses two distinct notation systems for cross-references:
 
-| Notation | Format       | Artifacts                               | Purpose                                                             |
-|----------|--------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NNN.NNN | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to features inside documents |
+| Notation | Format        | Artifacts                               | Purpose                                                             |
+|----------|---------------|----------------------------------------|---------------------------------------------------------------------|
+| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.017.001` → Points to feature 001 inside document `BRD-017.md`
+- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
 
-## Unified Feature ID Format (MANDATORY)
+## Unified Element ID Format (MANDATORY)
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NNN.NNN` (dot separator)
+- **Always use**: `TYPE.NN.EE.SS` (dot separator, 4-segment format)
 - **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE.NN.EE.SS` (3-segment format - DEPRECATED)
 
 Examples:
-- `@brd: BRD.017.001` ✅
+- `@brd: BRD.17.01.01` ✅
 - `@brd: BRD-017:001` ❌
+- `@brd: BRD.017.001` ❌ (old 3-segment format)
 
 
 ## Upstream/Downstream Artifacts
@@ -439,7 +442,7 @@ LOOP:
 
 | Issue | Fix Action |
 |-------|------------|
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -465,7 +468,7 @@ After creating BRD, use:
 
 The PRD will:
 - Reference this BRD as upstream source
-- Include `@brd: BRD.NNN.NNN` tags (unified format)
+- Include `@brd: BRD.NN.01.SS` tags (unified 4-segment format)
 - Define product features and KPIs
 - Inherit Architecture Decision Requirements topics
 

@@ -376,52 +376,52 @@ traceability:
   cumulative_tags:
     layer: 12
     required:
-      - "@brd: BRD.NNN.NNN"
-      - "@prd: PRD.NNN.NNN"
-      - "@ears: EARS.NNN.NNN"
-      - "@bdd: BDD.NNN.NNN"
+      - "@brd: BRD.NN.EE.SS"
+      - "@prd: PRD.NN.EE.SS"
+      - "@ears: EARS.NN.EE.SS"
+      - "@bdd: BDD.NN.EE.SS"
       - "@adr: ADR-NNN"
-      - "@sys: SYS.NNN.NNN"
-      - "@req: REQ.NNN.NNN"
+      - "@sys: SYS.NN.EE.SS"
+      - "@req: REQ.NN.EE.SS"
       - "@spec: SPEC-NNN"
-      - "@tasks: TASKS.NNN.NNN"
+      - "@tasks: TASKS.NN.EE.SS"
     optional:
-      - "@impl: IMPL.NNN.NNN"
+      - "@impl: IMPL.NN.EE.SS"
       - "@ctr: CTR-NNN"
     description: "Layer 12 requires 9 upstream artifact tags (11 including optional IMPL and CTR)"
 
   upstream:
     required:
       - type: BRD
-        format: "@brd: BRD.NNN.NNN"
+        format: "@brd: BRD.NN.EE.SS"
         location: "Section 8 Traceability Tags"
       - type: PRD
-        format: "@prd: PRD.NNN.NNN"
+        format: "@prd: PRD.NN.EE.SS"
         location: "Section 8 Traceability Tags"
       - type: EARS
-        format: "@ears: EARS.NNN.NNN"
+        format: "@ears: EARS.NN.EE.SS"
         location: "Section 8 Traceability Tags"
       - type: BDD
-        format: "@bdd: BDD.NNN.NNN"
+        format: "@bdd: BDD.NN.EE.SS"
         location: "Section 8 Traceability Tags"
       - type: ADR
         format: "@adr: ADR-NNN"
         location: "Section 8 Traceability Tags"
       - type: SYS
-        format: "@sys: SYS.NNN.NNN"
+        format: "@sys: SYS.NN.EE.SS"
         location: "Section 8 Traceability Tags"
       - type: REQ
-        format: "@req: REQ.NNN.NNN"
+        format: "@req: REQ.NN.EE.SS"
         location: "Section 8 Traceability Tags"
       - type: SPEC
         format: "@spec: SPEC-NNN"
         location: "Section 8 Traceability Tags"
       - type: TASKS
-        format: "@tasks: TASKS.NNN.NNN"
+        format: "@tasks: TASKS.NN.EE.SS"
         location: "Document Control table or Section 8"
     optional:
       - type: IMPL
-        format: "@impl: IMPL.NNN.NNN"
+        format: "@impl: IMPL.NN.EE.SS"
         location: "Section 8 Traceability Tags"
       - type: CTR
         format: "@ctr: CTR-NNN"

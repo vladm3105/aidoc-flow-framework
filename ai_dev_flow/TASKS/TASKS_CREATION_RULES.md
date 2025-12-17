@@ -328,14 +328,14 @@ grep -q "## 8. Implementation Contracts" TASKS-NNN.md
 @bdd: BDD.001.NNN
 @adr: ADR-NNN
 @sys: SYS.001.NNN
-@req: REQ.NNN.NNN
+@req: REQ.NN.EE.SS
 @spec: SPEC-NNN
 ```
 
 ### Optional Tags
 
 ```markdown
-@impl: IMPL.NNN.NNN (if project uses IMPL)
+@impl: IMPL.NN.EE.SS (if project uses IMPL)
 @ctr: CTR-NNN (if contracts defined)
 @icon: ICON-NNN:ContractName (if implementation contracts)
 ```
@@ -510,7 +510,7 @@ python scripts/validate_cross_document.py --layer TASKS --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd through @spec tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

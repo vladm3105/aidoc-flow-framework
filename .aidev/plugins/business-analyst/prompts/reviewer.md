@@ -176,8 +176,8 @@ requirement_patterns:
       - "015"
       - "042"
     cross_reference_format:
-      pattern: "@brd: BRD.NNN.NNN"
-      example: "@brd: BRD.001.015"
+      pattern: "@brd: BRD.NN.EE.SS"
+      example: "@brd: BRD.01.01.15"
       description: "Cross-reference format includes document ID for global uniqueness"
 
 # =============================================================================
@@ -233,14 +233,14 @@ traceability:
   downstream:
     expected:
       - type: PRD
-        format: "@prd: PRD.NNN.NNN"
+        format: "@prd: PRD.NN.EE.SS"
       - type: EARS
-        format: "@ears: EARS.NNN.NNN"
+        format: "@ears: EARS.NN.EE.SS"
       - type: ADR
-        format: "@adr: ADR.NNN.NNN"
+        format: "@adr: ADR.NN.EE.SS"
 
   lateral:
-    format: "@brd: BRD.NNN.NNN"
+    format: "@brd: BRD.NN.EE.SS"
     description: "Cross-reference to related BRDs"
 
 # =============================================================================

@@ -322,33 +322,33 @@ traceability:
   cumulative_tags:
     layer: 8
     required:
-      - "@brd: BRD.NNN.NNN"
-      - "@prd: PRD.NNN.NNN"
-      - "@ears: EARS.NNN.NNN"
-      - "@bdd: BDD.NNN.NNN"
+      - "@brd: BRD.NN.EE.SS"
+      - "@prd: PRD.NN.EE.SS"
+      - "@ears: EARS.NN.EE.SS"
+      - "@bdd: BDD.NN.EE.SS"
       - "@adr: ADR-NNN"
-      - "@sys: SYS.NNN.NNN"
-      - "@req: REQ.NNN.NNN"
+      - "@sys: SYS.NN.EE.SS"
+      - "@req: REQ.NN.EE.SS"
     description: "Layer 8 requires @brd, @prd, @ears, @bdd, @adr, @sys, @req tags for complete traceability"
 
   upstream:
     required:
       - type: REQ
-        format: "@req: REQ.NNN.NNN"
+        format: "@req: REQ.NN.EE.SS"
         location: "Document Control table and Traceability section"
     optional:
       - type: BRD
-        format: "@brd: BRD.NNN.NNN"
+        format: "@brd: BRD.NN.EE.SS"
       - type: PRD
-        format: "@prd: PRD.NNN.NNN"
+        format: "@prd: PRD.NN.EE.SS"
       - type: EARS
-        format: "@ears: EARS.NNN.NNN"
+        format: "@ears: EARS.NN.EE.SS"
       - type: BDD
-        format: "@bdd: BDD.NNN.NNN"
+        format: "@bdd: BDD.NN.EE.SS"
       - type: ADR
         format: "@adr: ADR-NNN"
       - type: SYS
-        format: "@sys: SYS.NNN.NNN"
+        format: "@sys: SYS.NN.EE.SS"
 
   downstream:
     expected:
@@ -359,15 +359,15 @@ traceability:
         format: "@spec: SPEC-NNN"
         description: "Technical Specifications"
       - type: TASKS
-        format: "@tasks: TASKS.NNN.NNN"
+        format: "@tasks: TASKS.NN.EE.SS"
         description: "Code Generation Plans"
 
   lateral:
-    format: "@impl: IMPL.NNN.NNN"
+    format: "@impl: IMPL.NN.EE.SS"
     description: "Cross-reference to related IMPL documents"
     relationships:
-      - "@related-impl: IMPL.NNN.NNN"
-      - "@depends-impl: IMPL.NNN.NNN"
+      - "@related-impl: IMPL.NN.EE.SS"
+      - "@depends-impl: IMPL.NN.EE.SS"
 
 # =============================================================================
 # Error Messages

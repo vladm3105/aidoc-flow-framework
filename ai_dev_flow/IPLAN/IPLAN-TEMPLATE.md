@@ -603,19 +603,19 @@ class ResourceManager:
 
 All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
-- `@brd: BRD.NNN.NNN` - Business Requirements Document (Layer 1)
-- `@prd: PRD.NNN.NNN` - Product Requirements Document (Layer 2)
-- `@ears: EARS.NNN.NNN` - Event-Action-Response-State (Layer 3)
-- `@bdd: BDD.NNN.NNN` - Behavior-Driven Development (Layer 4)
+- `@brd: BRD.NN.EE.SS` - Business Requirements Document (Layer 1)
+- `@prd: PRD.NN.EE.SS` - Product Requirements Document (Layer 2)
+- `@ears: EARS.NN.EE.SS` - Event-Action-Response-State (Layer 3)
+- `@bdd: BDD.NN.EE.SS` - Behavior-Driven Development (Layer 4)
 - `@adr: ADR-NNN` - Architecture Decision Record (Layer 5)
-- `@sys: SYS.NNN.NNN` - System Requirements (Layer 6)
-- `@req: REQ.NNN.NNN` - Atomic Requirements (Layer 7)
+- `@sys: SYS.NN.EE.SS` - System Requirements (Layer 6)
+- `@req: REQ.NN.EE.SS` - Atomic Requirements (Layer 7)
 - `@spec: SPEC-NNN` - Technical Specification (Layer 10)
-- `@tasks: TASKS.NNN.NNN` - Code Generation Plan (Layer 11)
+- `@tasks: TASKS.NN.EE.SS` - Code Generation Plan (Layer 11)
 
 ### 8.2 Optional Tags (If Present in Project)
 
-- `@impl: IMPL.NNN.NNN` - Implementation Plan (Layer 8) - include if project uses IMPL
+- `@impl: IMPL.NN.EE.SS` - Implementation Plan (Layer 8) - include if project uses IMPL
 - `@ctr: CTR-NNN` - Interface Contract (Layer 9) - include if contracts defined
 
 ### 8.3 Tag Format
@@ -784,20 +784,20 @@ pytest --cov --cov-fail-under=@threshold: PRD.NNN.quality.test.unit_coverage
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 12):
 ```markdown
-@brd: BRD.NNN.NNN
-@prd: PRD.NNN.NNN
-@ears: EARS.NNN.NNN
-@bdd: BDD.NNN.NNN
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.EE.SS
+@bdd: BDD.NN.EE.SS
 @adr: ADR-NNN
-@sys: SYS.NNN.NNN
-@req: REQ.NNN.NNN
-@impl: IMPL.NNN.NNN
+@sys: SYS.NN.EE.SS
+@req: REQ.NN.EE.SS
+@impl: IMPL.NN.EE.SS
 @ctr: CTR-NNN
 @spec: SPEC-NNN
-@tasks: TASKS.NNN.NNN
+@tasks: TASKS.NN.EE.SS
 ```
 
-**Format**: `@artifact-type: TYPE.NNN.NNN`
+**Format**: `@artifact-type: TYPE.NN.EE.SS`
 
 **Layer 12 Requirements**: IPLAN must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)

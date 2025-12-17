@@ -128,26 +128,26 @@ Create IPLAN documents when:
 
 All IPLAN documents MUST include these 9 mandatory tags:
 
-1. `@brd: BRD.NNN.NNN` - Business Requirements Document (Layer 1)
-2. `@prd: PRD.NNN.NNN` - Product Requirements Document (Layer 2)
-3. `@ears: EARS.NNN.NNN` - Event-Action-Response-State Requirements (Layer 3)
-4. `@bdd: BDD.NNN.NNN` - Behavior-Driven Development Scenarios (Layer 4)
+1. `@brd: BRD.NN.EE.SS` - Business Requirements Document (Layer 1)
+2. `@prd: PRD.NN.EE.SS` - Product Requirements Document (Layer 2)
+3. `@ears: EARS.NN.EE.SS` - Event-Action-Response-State Requirements (Layer 3)
+4. `@bdd: BDD.NN.EE.SS` - Behavior-Driven Development Scenarios (Layer 4)
 5. `@adr: ADR-NNN` - Architecture Decision Records (Layer 5)
-6. `@sys: SYS.NNN.NNN` - System Requirements (Layer 6)
-7. `@req: REQ.NNN.NNN` - Atomic Requirements (Layer 7)
+6. `@sys: SYS.NN.EE.SS` - System Requirements (Layer 6)
+7. `@req: REQ.NN.EE.SS` - Atomic Requirements (Layer 7)
 8. `@spec: SPEC-NNN` - Technical Specifications (Layer 10)
-9. `@tasks: TASKS.NNN.NNN` - Code Generation Plan (Layer 11)
+9. `@tasks: TASKS.NN.EE.SS` - Code Generation Plan (Layer 11)
 
 ### Optional Tags (Conditional)
 
 Include these tags if present in your project:
 
-10. `@impl: IMPL.NNN.NNN` - Implementation Plan (Layer 8) - **if project uses IMPL artifacts**
+10. `@impl: IMPL.NN.EE.SS` - Implementation Plan (Layer 8) - **if project uses IMPL artifacts**
 11. `@ctr: CTR-NNN` - Interface Contracts (Layer 9) - **if contracts are defined**
 
 ### Tag Format Specification
 
-**Standard Format**: `@artifact-type: TYPE.NNN.NNN (Unified Feature ID)`
+**Standard Format**: `@artifact-type: TYPE.NN.EE.SS (Unified Feature ID)`
 
 **Component Breakdown**:
 - `@artifact-type` - lowercase artifact type (brd, prd, ears, bdd, adr, sys, req, impl, ctr, spec, tasks)
@@ -1320,16 +1320,16 @@ pytest --cov=src/module --cov-report=term
 ### Cumulative Tags Checklist
 
 ```markdown
-- [ ] @brd: BRD.NNN.NNN
-- [ ] @prd: PRD.NNN.NNN
-- [ ] @ears: EARS.NNN.NNN
-- [ ] @bdd: BDD.NNN.NNN
+- [ ] @brd: BRD.NN.EE.SS
+- [ ] @prd: PRD.NN.EE.SS
+- [ ] @ears: EARS.NN.EE.SS
+- [ ] @bdd: BDD.NN.EE.SS
 - [ ] @adr: ADR-NNN
-- [ ] @sys: SYS.NNN.NNN
-- [ ] @req: REQ.NNN.NNN
+- [ ] @sys: SYS.NN.EE.SS
+- [ ] @req: REQ.NN.EE.SS
 - [ ] @spec: SPEC-NNN
-- [ ] @tasks: TASKS.NNN.NNN
-- [ ] @impl: IMPL.NNN.NNN (optional)
+- [ ] @tasks: TASKS.NN.EE.SS
+- [ ] @impl: IMPL.NN.EE.SS (optional)
 - [ ] @ctr: CTR-NNN (optional)
 ```
 

@@ -228,18 +228,18 @@ Document quality constraints (performance, security, scalability, etc.) using se
 - P95 latency <50ms for validation
 - Throughput: 1000 validations/second
 - Memory usage <100MB per instance
-- **Traceability**: @sys: SYS.001.007
+- **Traceability**: @sys: SYS.01.25.07
 
 ### 008: Input Validation Security
 - Validate all inputs against schema
 - Sanitize error messages (no sensitive data)
 - Audit log all validation attempts
-- **Traceability**: @sys: SYS.001.008
+- **Traceability**: @sys: SYS.01.25.08
 
 ### 009: Horizontal Scaling
 - Horizontal scaling support
 - Stateless validation (no session required)
-- **Traceability**: @sys: SYS.001.009
+- **Traceability**: @sys: SYS.01.25.09
 ```
 
 **Note**: All requirements use sequential numbering. Use folder structure, tags, or document sections for categorization if needed.
@@ -248,24 +248,26 @@ Document quality constraints (performance, security, scalability, etc.) using se
 
 The SDD framework uses two distinct notation systems for cross-references:
 
-| Notation | Format       | Artifacts                               | Purpose                                                             |
-|----------|--------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NNN.NNN | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to features inside documents |
+| Notation | Format        | Artifacts                               | Purpose                                                             |
+|----------|---------------|----------------------------------------|---------------------------------------------------------------------|
+| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.017.001` → Points to feature 001 inside document `BRD-017.md`
+- `@brd: BRD.17.01.03` → Points to element 01.03 inside document `BRD-017.md`
 
-## Unified Feature ID Format (MANDATORY)
+## Unified Element ID Format (MANDATORY)
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NNN.NNN` (dot separator)
+- **Always use**: `TYPE.NN.EE.SS` (dot separator, 4-segment format)
 - **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE.NN.EE.SS` (3-segment format - DEPRECATED)
 
 Examples:
-- `@brd: BRD.017.001` ✅
+- `@brd: BRD.17.01.03` ✅
 - `@brd: BRD-017:001` ❌
+- `@brd: BRD.017.001` ❌ (old 3-segment format)
 
 
 ## Cumulative Tagging Requirements
@@ -280,12 +282,12 @@ Examples:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
 ```markdown
-@brd: BRD.001.003
-@prd: PRD.001.002
-@ears: EARS.001.001
-@bdd: BDD.001.001
+@brd: BRD.01.01.03
+@prd: PRD.01.07.02
+@ears: EARS.01.24.01
+@bdd: BDD.01.13.01
 @adr: ADR-033, ADR-045
-@sys: SYS.001.001, SYS.001.901
+@sys: SYS.01.25.01, SYS.01.25.07
 ```
 
 **Upstream Sources**:
@@ -469,7 +471,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer REQ --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd/@adr/@sys tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

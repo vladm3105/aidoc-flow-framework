@@ -436,7 +436,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 | E011/E013 | Change `## 0. Document Control` to `## Document Control`, use table format |
 | E020 | Remove trailing `\| \|` from table separator |
 | E030 | Change `#### Event-N:` to `#### EARS-{DocID}-N:` |
-| E040 | Change `PRD-NNN` to `@prd: PRD.NNN.NNN` |
+| E040 | Change `PRD-NNN` to `@prd: PRD.NN.EE.SS` |
 | E041 | Add `\|` between traceability tags |
 
 ---

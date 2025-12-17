@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type BDD --output docs/BDD/BD
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@bdd: BDD.NNN.NNN` (unified feature-level format, e.g., `BDD.003.001`)
+**Tag Format:** `@bdd: BDD.NN.EE.SS` (unified 4-segment format, e.g., `BDD.03.13.01`)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -92,17 +92,17 @@ This matrix tracks all BDD feature files, mapping upstream requirements (EARS, P
 
 **Gherkin Feature File Format**:
 ```gherkin
-@brd: BRD.NNN.NNN
-@prd: PRD.NNN.NNN
-@ears: EARS.NNN.NNN
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.EE.SS
 Feature: Feature Name
 ```
 
 **Markdown Documentation Format**:
 ```markdown
-@brd: BRD.NNN.NNN
-@prd: PRD.NNN.NNN
-@ears: EARS.NNN.NNN
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.EE.SS
 ```
 
 **Format Rules**:
@@ -111,7 +111,7 @@ Feature: Feature Name
 - Separator: colon `:` after artifact type, `:` between document ID and requirement ID
 - Document ID: Standard format (e.g., `BRD-009`, `PRD-016`, `EARS-012`)
 - Requirement ID: Specific requirement/section identifier
-- Multiple Values: comma-separated `@brd: BRD.001.030, BRD.001.006`
+- Multiple Values: comma-separated `@brd: BRD.01.01.30, BRD.01.01.06`
 - Gherkin: Use tag-per-line format before Feature declaration
 
 ### 2.3 Example: BDD Feature File with Required Tags
@@ -120,11 +120,11 @@ Feature: Feature Name
 # BDD-015: Place Limit Order Acceptance Tests
 # File: features/order_placement/place_limit_order.feature
 
-@brd: BRD.009.015
-@brd: BRD.009.006
-@prd: PRD.016.003
-@ears: EARS.012.002
-@ears: EARS.012.001
+@brd: BRD.09.01.15
+@brd: BRD.09.01.06
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02
+@ears: EARS.12.24.01
 Feature: Place Limit Order
   As a trader
   I want to place limit orders with specified price and quantity
@@ -144,11 +144,11 @@ Feature: Place Limit Order
 ```
 
 **Tag Analysis**:
-- `@brd: BRD.009.015` - Business requirement for request submission
-- `@brd: BRD.009.006` - Quality attribute (performance)
-- `@prd: PRD.016.003` - Product feature specification
-- `@ears: EARS.012.002` - EARS "WHEN trader submits order" event
-- `@ears: EARS.012.001` - EARS "THE system SHALL validate order" state
+- `@brd: BRD.09.01.15` - Business requirement for request submission
+- `@brd: BRD.09.01.06` - Quality attribute (performance)
+- `@prd: PRD.16.01.03` - Product feature specification
+- `@ears: EARS.12.24.02` - EARS "WHEN trader submits order" event
+- `@ears: EARS.12.24.01` - EARS "THE system SHALL validate order" state
 
 ### 2.4 Example: BDD Documentation with Upstream Tags
 
@@ -161,9 +161,9 @@ Feature: Place Limit Order
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 4):
 ```markdown
-@brd: BRD.009.015, BRD.009.006
-@prd: PRD.016.003
-@ears: EARS.012.002, EARS.012.001
+@brd: BRD.09.01.15, BRD.09.01.06
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02, EARS.12.24.01
 ```
 
 ### 8.2 Downstream Artifacts

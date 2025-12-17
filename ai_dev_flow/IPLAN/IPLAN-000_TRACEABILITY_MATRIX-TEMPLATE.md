@@ -58,17 +58,17 @@ python scripts/generate_traceability_matrices.py --type iplan --output ai_dev_fl
 - ✅ Coverage metrics: Automatically calculated
 
 **Tag Format**:
-- `@brd: BRD.NNN.NNN` (Business Requirements)
-- `@prd: PRD.NNN.NNN` (Product Requirements)
-- `@ears: EARS.NNN.NNN` (Event-Action-Response)
-- `@bdd: BDD.NNN.NNN` (Behavioral Scenarios)
+- `@brd: BRD.NN.EE.SS` (Business Requirements)
+- `@prd: PRD.NN.EE.SS` (Product Requirements)
+- `@ears: EARS.NN.EE.SS` (Event-Action-Response)
+- `@bdd: BDD.NN.EE.SS` (Behavioral Scenarios)
 - `@adr: ADR-NNN` (Architecture Decisions)
-- `@sys: SYS.NNN.NNN` (System Requirements)
-- `@req: REQ.NNN.NNN` (Atomic Requirements)
-- `@impl: IMPL.NNN.NNN` (Implementation Plans - optional)
+- `@sys: SYS.NN.EE.SS` (System Requirements)
+- `@req: REQ.NN.EE.SS` (Atomic Requirements)
+- `@impl: IMPL.NN.EE.SS` (Implementation Plans - optional)
 - `@ctr: CTR-NNN` (Contracts - optional)
 - `@spec: SPEC-NNN` (Technical Specifications)
-- `@tasks: TASKS.NNN.NNN` (Code Generation Plans)
+- `@tasks: TASKS.NN.EE.SS` (Code Generation Plans)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete tag-based workflow.
 
@@ -210,26 +210,26 @@ All iplan documents MUST include these tags to maintain traceability chain:
 
 | Tag | Layer | Artifact Type | Format | Validation Status |
 |-----|-------|---------------|--------|-------------------|
-| @brd | 1 | Business Requirements | `@brd: BRD.NNN.NNN` | [✅/❌] |
-| @prd | 2 | Product Requirements | `@prd: PRD.NNN.NNN` | [✅/❌] |
-| @ears | 3 | Event-Action-Response | `@ears: EARS.NNN.NNN` | [✅/❌] |
-| @bdd | 4 | Behavioral Scenarios | `@bdd: BDD.NNN.NNN` | [✅/❌] |
+| @brd | 1 | Business Requirements | `@brd: BRD.NN.EE.SS` | [✅/❌] |
+| @prd | 2 | Product Requirements | `@prd: PRD.NN.EE.SS` | [✅/❌] |
+| @ears | 3 | Event-Action-Response | `@ears: EARS.NN.EE.SS` | [✅/❌] |
+| @bdd | 4 | Behavioral Scenarios | `@bdd: BDD.NN.EE.SS` | [✅/❌] |
 | @adr | 5 | Architecture Decisions | `@adr: ADR-NNN` | [✅/❌] |
-| @sys | 6 | System Requirements | `@sys: SYS.NNN.NNN` | [✅/❌] |
-| @req | 7 | Atomic Requirements | `@req: REQ.NNN.NNN` | [✅/❌] |
+| @sys | 6 | System Requirements | `@sys: SYS.NN.EE.SS` | [✅/❌] |
+| @req | 7 | Atomic Requirements | `@req: REQ.NN.EE.SS` | [✅/❌] |
 | @spec | 10 | Technical Specifications | `@spec: SPEC-NNN` | [✅/❌] |
-| @tasks | 11 | Code Generation Plans | `@tasks: TASKS.NNN.NNN` | [✅/❌] |
+| @tasks | 11 | Code Generation Plans | `@tasks: TASKS.NN.EE.SS` | [✅/❌] |
 
 ### 3.2 Optional Tags (Conditional)
 
 | Tag | Layer | Artifact Type | Format | Required If... |
 |-----|-------|---------------|--------|----------------|
-| @impl | 8 | Implementation Plans | `@impl: IMPL.NNN.NNN` | Project uses IMPL artifacts |
+| @impl | 8 | Implementation Plans | `@impl: IMPL.NN.EE.SS` | Project uses IMPL artifacts |
 | @ctr | 9 | Interface Contracts | `@ctr: CTR-NNN` | Contracts defined in project |
 
 ### 3.3 Tag Format Validation
 
-**Standard Format**: `@artifact-type: TYPE.NNN.NNN (Unified Feature ID)`
+**Standard Format**: `@artifact-type: TYPE.NN.EE.SS (Unified Feature ID)`
 
 **Format Rules**:
 1. Lowercase artifact type (e.g., `@brd`, not `@BRD`)
