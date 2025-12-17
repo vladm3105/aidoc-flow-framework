@@ -25,10 +25,10 @@
 #    Feature: My Feature
 #
 # ✅ CORRECT: Tags as Gherkin-native on separate lines before Feature
-#    @brd: BRD.001.001
-#    @brd: BRD.001.FR001
-#    @prd: PRD.001.001
-#    @ears: EARS.001.001
+#    @brd: BRD.01.01.01
+#    @brd: BRD.01.01.02
+#    @prd: PRD.01.07.01
+#    @ears: EARS.01.24.01
 #    Feature: My Feature
 #
 # ❌ WRONG: ADR-Ready Score without checkmark or ≥ symbol
@@ -115,11 +115,11 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 #
 # CUMULATIVE TAGGING REQUIREMENTS (Layer 4):
 # MANDATORY Tags: @brd, @prd, @ears (plus standard @requirement, @adr, @bdd tags)
-# Format: @artifact-type: TYPE.NNN.NNN (Unified Feature ID format)
+# Format: @artifact-type: TYPE.NN.EE.SS (Unified Element ID format: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
 # Examples:
-#   @brd: BRD.001.030   (REQUIRED - business requirements)
-#   @prd: PRD.003.002   (REQUIRED - product requirements)
-#   @ears: EARS.001.003 (REQUIRED - engineering requirements)
+#   @brd: BRD.01.01.30   (REQUIRED - business requirements)
+#   @prd: PRD.03.07.02   (REQUIRED - product requirements)
+#   @ears: EARS.01.24.03 (REQUIRED - engineering requirements)
 # Purpose: Complete traceability chain from business requirements through tests
 # See: ../TRACEABILITY.md#cumulative-tagging-hierarchy
 #
@@ -171,9 +171,9 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 #   And service maintains @threshold: PRD.NNN.sla.uptime.target uptime
 #
 
-@brd: BRD.NNN.NNN      # REQUIRED - business requirements traceability
-@prd: PRD.NNN.NNN      # REQUIRED - product requirements traceability
-@ears: EARS.NNN.NNN    # REQUIRED - engineering requirements traceability
+@brd: BRD.NN.EE.SS      # REQUIRED - business requirements traceability
+@prd: PRD.NN.EE.SS      # REQUIRED - product requirements traceability
+@ears: EARS.NN.24.SS    # REQUIRED - engineering requirements traceability
 @requirement:[REQ-NNN](../reqs/.../REQ-NNN_...md#REQ-NNN)
 @adr:[ADR-NNN](../adrs/ADR-NNN_...md#ADR-NNN)
 @bdd:[BDD-NNN:scenarios](BDD-NNN_descriptive_requirements.feature#scenarios)
@@ -418,18 +418,20 @@ Feature: [Feature Title]
 # | **Status** | Draft |
 # | **ADR-Ready Score** | ✅ 75% (Target: ≥90%) |
 #
-# --- FEATURE-LEVEL TAGS (copy and replace NNN with actual IDs) ---
+# --- FEATURE-LEVEL TAGS (copy and replace NN/SS with actual IDs) ---
+# Format: TYPE.NN.EE.SS (DOC_NUM.ELEM_TYPE.SEQ)
 #
-# @brd: BRD.NNN.FR001
-# @prd: PRD.NNN.NNN
-# @ears: EARS.NNN.001
+# @brd: BRD.NN.01.SS     # Element type 01 = Functional Requirement
+# @prd: PRD.NN.07.SS     # Element type 07 = Product Feature
+# @ears: EARS.NN.24.SS   # Element type 24 = EARS Statement
 # Feature: [Feature Title]
 #
 # --- AI-AGENT FEATURE TAGS (for AI-agent primary architecture files) ---
+# Format: TYPE.NN.EE.SS (DOC_NUM.ELEM_TYPE.SEQ)
 #
-# @brd: BRD.NNN.FR001
-# @prd: PRD.NNN.NNN
-# @ears: EARS.NNN.001
+# @brd: BRD.NN.01.SS     # Element type 01 = Functional Requirement
+# @prd: PRD.NN.07.SS     # Element type 07 = Product Feature
+# @ears: EARS.NN.24.SS   # Element type 24 = EARS Statement
 # @ctr: CTR-005
 # Feature: [Agent Feature Title]
 #   Architecture: AI-Agent Primary (AGENT-NNN)

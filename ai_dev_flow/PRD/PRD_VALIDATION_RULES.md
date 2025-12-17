@@ -763,51 +763,51 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md')
 
 **Error Messages**:
 ```
-⚠️ WARNING: @prd: PRD.022.001 reference found, but PRD-022 does not reference this document
-⚠️ WARNING: Found placeholder ID "PRD.NNN.NNN" - replace with actual ID or null
-⚠️ WARNING: @prd: PRD.099.001 references non-existent document
-⚠️ WARNING: Prose reference "see PRD-016" should use tag format @prd: PRD.016.001
+⚠️ WARNING: @prd: PRD.22.01.01 reference found, but PRD-022 does not reference this document
+⚠️ WARNING: Found placeholder ID "PRD.NN.EE.SS" - replace with actual ID or null
+⚠️ WARNING: @prd: PRD.99.01.01 references non-existent document
+⚠️ WARNING: Prose reference "see PRD-016" should use tag format @prd: PRD.16.01.01
 ```
 
 **Resolution Steps**:
 1. For missing reciprocal: Add `@prd: [this-PRD]` to referenced document
 2. For placeholder: Replace with actual PRD ID or use `null`
 3. For non-existent: Remove reference or create target document
-4. For prose: Convert to `@prd: PRD.NNN.NNN` format
+4. For prose: Convert to `@prd: PRD.NN.EE.SS` format
 
 **Reciprocal Reference Table** (add to document if missing):
 ```markdown
 | This PRD | References | Relationship | Reciprocal Status |
 |----------|------------|--------------|-------------------|
-| PRD.NNN | @prd: PRD.NNN.NNN | Primary/Fallback | ✅/❌ |
+| PRD-NNN | @prd: PRD.NN.EE.SS | Primary/Fallback | ✅/❌ |
 ```
 
 ---
 
 ### CHECK 13: Feature ID Format Validation
 
-**Purpose**: Verify all Feature IDs follow the unified format `PRD.NNN.NNN`
+**Purpose**: Verify all Feature IDs follow the unified format `PRD.NN.EE.SS`
 **Type**: Warning (recommended fix)
 
-**Valid Format**: `PRD.NNN.NNN` (e.g., PRD.022.001, PRD.022.015)
+**Valid Format**: `PRD.NN.EE.SS` (e.g., PRD.22.01.01, PRD.22.01.15)
 
-**Validation Regex**: `^PRD\.\d{3}\.\d{3}$`
+**Validation Regex**: `^PRD\.\d{2,9}\.\d{2,9}\.\d{2,9}$`
 
 **Invalid Patterns to Detect**:
 
 | Pattern | Issue | Fix |
 |---------|-------|-----|
-| `FR-001` | Deprecated FR format | `PRD.NNN.001` |
-| `FR-AGENT-001` | Non-standard prefix | `PRD.NNN.001` |
-| `Feature 3.1` | Text format | `PRD.NNN.003` |
-| `F-001` | Deprecated F- format | `PRD.NNN.001` |
-| `FR-1-1` | Not zero-padded | `PRD.001.001` |
+| `FR-001` | Deprecated FR format | `PRD.NN.01.01` |
+| `FR-AGENT-001` | Non-standard prefix | `PRD.NN.01.01` |
+| `Feature 3.1` | Text format | `PRD.NN.01.03` |
+| `F-001` | Deprecated F- format | `PRD.NN.01.01` |
+| `FR-1-1` | Not zero-padded | `PRD.01.01.01` |
 
 **Error Messages**:
 ```
-⚠️ WARNING: Deprecated Feature ID "FR-001" found - use PRD.NNN.NNN format
-⚠️ WARNING: Non-standard Feature ID "FR-AGENT-001" - use PRD.NNN.NNN format
-⚠️ WARNING: Text format "Feature 3.1" detected - convert to PRD.NNN.NNN
+⚠️ WARNING: Deprecated Feature ID "FR-001" found - use PRD.NN.EE.SS format
+⚠️ WARNING: Non-standard Feature ID "FR-AGENT-001" - use PRD.NN.EE.SS format
+⚠️ WARNING: Text format "Feature 3.1" detected - convert to PRD.NN.EE.SS
 ```
 
 **Resolution Steps**:

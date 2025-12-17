@@ -276,15 +276,15 @@ custom_fields:
 ## 7. Traceability
 
 ### Upstream References
-- @brd: BRD.001.001 (Platform Architecture & Technology Stack)
-- @prd: PRD.003.001 (Unified Quoteboard Product Definition)
-- @ears: EARS.002.001 (Exchange Integration Requirements)
-- @bdd: BDD.001.001 (Quote Display Acceptance Criteria)
+- @brd: BRD.01.01.01 (Platform Architecture & Technology Stack)
+- @prd: PRD.03.01.01 (Unified Quoteboard Product Definition)
+- @ears: EARS.02.24.01 (Exchange Integration Requirements)
+- @bdd: BDD.01.13.01 (Quote Display Acceptance Criteria)
 - @adr: ADR-005 (WebSocket Connection Architecture)
-- @sys: SYS.001.001 (Quoteboard System Requirements)
+- @sys: SYS.01.25.01 (Quoteboard System Requirements)
 
 ### Downstream References
-- @impl: IMPL.001.001 (Quoteboard Implementation Approach)
+- @impl: IMPL.01.28.01 (Quoteboard Implementation Approach)
 - @spec: SPEC-001 (WebSocket Quote Ingestion Technical Spec)
 ```
 
@@ -678,20 +678,20 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 
 | Tag | Layer | Document Type | Example |
 |-----|-------|---------------|---------|
-| `@brd:` | 1 | Business Requirements | `@brd: BRD.001.030` |
-| `@prd:` | 2 | Product Requirements | `@prd: PRD.003.002` |
-| `@ears:` | 3 | EARS Statements | `@ears: EARS.001.003` |
-| `@bdd:` | 4 | BDD Scenarios | `@bdd: BDD.003.007` |
+| `@brd:` | 1 | Business Requirements | `@brd: BRD.01.01.30` |
+| `@prd:` | 2 | Product Requirements | `@prd: PRD.03.01.02` |
+| `@ears:` | 3 | EARS Statements | `@ears: EARS.01.24.03` |
+| `@bdd:` | 4 | BDD Scenarios | `@bdd: BDD.03.13.07` |
 | `@adr:` | 5 | Architecture Decisions | `@adr: ADR-033` |
-| `@sys:` | 6 | System Requirements | `@sys: SYS.008.001` |
-| `@req:` | 7 | Atomic Requirements | `@req: REQ.003.001` |
-| `@impl:` | 8 | Implementation Plans | `@impl: IMPL.001.001` |
+| `@sys:` | 6 | System Requirements | `@sys: SYS.08.25.01` |
+| `@req:` | 7 | Atomic Requirements | `@req: REQ.03.26.01` |
+| `@impl:` | 8 | Implementation Plans | `@impl: IMPL.01.28.01` |
 | `@ctr:` | 9 | Data Contracts | `@ctr: CTR-001` |
 | `@spec:` | 10 | Technical Specs | `@spec: SPEC-003` |
-| `@tasks:` | 11 | Task Breakdowns | `@tasks: TASKS.001.003` |
+| `@tasks:` | 11 | Task Breakdowns | `@tasks: TASKS.01.29.03` |
 | `@iplan:` | 12 | Implementation Plans | `@iplan: IPLAN-001` |
 
-**Note**: Quality attributes use unified sequential numbering (e.g., `@sys: SYS.008.015` for a performance quality attribute).
+**Note**: Quality attributes use unified sequential numbering (e.g., `@sys: SYS.08.25.15` for a performance quality attribute).
 
 **Valid Non-Document Tags (Special Purpose):**
 
@@ -715,10 +715,10 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 **Invalid Tags** (do NOT use): `@fr:`, `@contract:`, `@tests:`
 
 **Format Rules:**
-- **Unified format:** Use dot separator: `BRD.001.030`
-- **Single-document references:** `SPEC-003` or `SPEC.003.001` for feature-level
-- **Multiple references:** Comma-separated: `BRD.001.030, BRD.001.006`
-- **Multiple documents:** `BRD.001.020, BRD.002.105`
+- **Unified format:** Use dot separator: `BRD.01.01.30` (TYPE.DOC.ELEM.SEQ)
+- **Single-document references:** `SPEC-003` or `SPEC.03.10.01` for element-level
+- **Multiple references:** Comma-separated: `BRD.01.01.30, BRD.01.01.06`
+- **Multiple documents:** `BRD.01.01.20, BRD.02.01.05`
 
 **Examples:**
 
@@ -726,41 +726,41 @@ Python docstring:
 ```python
 """Market data service implementation.
 
-@brd: BRD.001.010, BRD.001.011, BRD.001.005
-@prd: PRD.003.001
-@req: REQ.003.001
+@brd: BRD.01.01.10, BRD.01.01.11, BRD.01.01.05
+@prd: PRD.03.01.01
+@req: REQ.03.26.01
 @adr: ADR-033
 @ctr: CTR-001
 @spec: SPEC-002
-@test: BDD.002.001, BDD.008.001
+@test: BDD.02.13.01, BDD.08.13.01
 @impl-status: complete
 """
 ```
 
 Markdown document:
 ```markdown
-@brd: BRD.001.030, BRD.001.006
-@prd: PRD.003.001
-@req: REQ.003.001
+@brd: BRD.01.01.30, BRD.01.01.06
+@prd: PRD.03.01.01
+@req: REQ.03.26.01
 @adr: ADR-033
 @ctr: CTR-001
 @spec: SPEC-002
-@test: BDD.001.001
+@test: BDD.01.13.01
 @impl-status: complete
 ```
 
 YAML comment header:
 ```yaml
-# @brd: BRD.001.010, BRD.001.005
-# @req: REQ.003.002
+# @brd: BRD.01.01.10, BRD.01.01.05
+# @req: REQ.03.26.02
 # @spec: SPEC-002
 # @impl-status: complete
 ```
 
 Gherkin feature file:
 ```gherkin
-# @brd: BRD.001.030
-# @req: REQ.003.001
+# @brd: BRD.01.01.30
+# @req: REQ.03.26.01
 # @spec: SPEC-002
 
 Feature: resource limit Enforcement
@@ -799,7 +799,7 @@ pre-commit run validate-traceability-tags
 - ✅ No drift: Tags embedded in code cannot become stale
 - ✅ Bidirectional: Forward/reverse matrices auto-generated
 - ✅ CI/CD enforceable: Pre-commit hooks validate tags
-- ✅ Namespace clarity: Explicit document identification (BRD.001.030)
+- ✅ Namespace clarity: Explicit document identification (BRD.01.01.30)
 
 **Tag Validation Rules:**
 1. **Format Check:** All @brd/@prd/@req tags must use TYPE.DOC.FEATURE unified format
@@ -826,7 +826,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 **Example**: A SPEC file includes tags from: BRD, PRD, EARS, BDD, ADR, SYS, REQ, and optionally IMPL/CTR if they exist in the chain.
 
-**Format**: `@artifact-type: TYPE.NNN.NNN` (e.g., `@brd: BRD.001.030`)
+**Format**: `@artifact-type: TYPE.NN.EE.SS` (e.g., `@brd: BRD.01.01.30`)
 
 **Usage**:
 - Embed tags in document metadata sections (markdown documents)
@@ -859,12 +859,12 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 **Basic Format**:
 ```
-@artifact-type: TYPE.NNN.NNN
+@artifact-type: TYPE.NN.EE.SS
 ```
 
 **Components**:
 - **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`, `@iplan`)
-- **Unified Format**: `TYPE.DOC.FEATURE` (e.g., `BRD.001.030`, `REQ.003.001`)
+- **Unified Format**: `TYPE.DOC.ELEM.SEQ` (e.g., `BRD.01.01.30`, `REQ.03.26.01`)
 - **Separator**: Dot (`.`) between all components
 - **Multiple Values**: Comma-separated
 - **Quality Attributes**: Use unified sequential numbering (same as functional requirements)
@@ -873,17 +873,17 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 ```markdown
 ## Traceability Tags
 
-@brd: BRD.001.030, BRD.001.006
-@prd: PRD.003.002
-@ears: EARS.001.003
-@bdd: BDD.003.001
+@brd: BRD.01.01.30, BRD.01.01.06
+@prd: PRD.03.01.02
+@ears: EARS.01.24.03
+@bdd: BDD.03.13.01
 @adr: ADR-033
-@sys: SYS.008.001
-@req: REQ.003.001, REQ.004.001
-@impl: IMPL.001.001
+@sys: SYS.08.25.01
+@req: REQ.03.26.01, REQ.04.26.01
+@impl: IMPL.01.28.01
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS.001.003
+@tasks: TASKS.01.29.03
 ```
 
 **Code Docstring Example**:
@@ -895,17 +895,17 @@ Implements real-time resource limit validation and enforcement.
 
 ## Traceability Tags
 
-@brd: BRD.001.030
-@prd: PRD.003.002
-@ears: EARS.001.003
-@bdd: BDD.003.001
+@brd: BRD.01.01.30
+@prd: PRD.03.01.02
+@ears: EARS.01.24.03
+@bdd: BDD.03.13.01
 @adr: ADR-033
-@sys: SYS.008.001
-@req: REQ.003.001
-@impl: IMPL.001.001
+@sys: SYS.08.25.01
+@req: REQ.03.26.01
+@impl: IMPL.01.28.01
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS.001.003
+@tasks: TASKS.01.29.03
 @iplan: IPLAN-001
 """
 ```
@@ -1033,17 +1033,17 @@ excessive collection concentration risk through automated validation.
 
 ## Traceability Tags
 
-@brd: BRD.001.030, BRD.001.006
-@prd: PRD.003.002
-@ears: EARS.001.003, EARS.001.002
-@bdd: BDD.003.001, BDD.003.002
+@brd: BRD.01.01.30, BRD.01.01.06
+@prd: PRD.03.01.02
+@ears: EARS.01.24.03, EARS.01.24.02
+@bdd: BDD.03.13.01, BDD.03.13.02
 @adr: ADR-033
-@sys: SYS.008.001, SYS.008.002
-@req: REQ.003.001, REQ.004.001
-@impl: IMPL.001.001
+@sys: SYS.08.25.01, SYS.08.25.02
+@req: REQ.03.26.01, REQ.04.26.01
+@impl: IMPL.01.28.01
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS.001.003, TASKS.001.005
+@tasks: TASKS.01.29.03, TASKS.01.29.05
 @iplan: IPLAN-001
 
 @impl-status: complete
@@ -1062,9 +1062,9 @@ class PositionLimitService:
         """
         Validate position against configured limits.
 
-        Implements: REQ.003.001, EARS.001.003
-        Tests: BDD.003.001
-        Performance: p95 < 50ms (SYS.008.001)
+        Implements: REQ.03.26.01, EARS.01.24.03
+        Tests: BDD.03.13.01
+        Performance: p95 < 50ms (SYS.08.25.01)
         """
         # Implementation
         pass
@@ -1080,15 +1080,15 @@ Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
 
 ## Traceability Tags
 
-@brd: BRD.001.030
-@prd: PRD.003.002
-@ears: EARS.001.003
-@bdd: BDD.003.001
+@brd: BRD.01.01.30
+@prd: PRD.03.01.02
+@ears: EARS.01.24.03
+@bdd: BDD.03.13.01
 @adr: ADR-033
-@sys: SYS.008.001
-@req: REQ.003.001
+@sys: SYS.08.25.01
+@req: REQ.03.26.01
 @spec: SPEC-003
-@tasks: TASKS.001.003
+@tasks: TASKS.01.29.03
 @code: src/services/resource_limit_service.py
 
 @test-type: integration
@@ -1099,8 +1099,8 @@ def test_validate_resource_limit_within_threshold():
     """
     Test: Position within limit is approved
 
-    BDD Scenario: BDD.003.001
-    Requirement: REQ.003.001, EARS.001.003
+    BDD Scenario: BDD.03.13.01
+    Requirement: REQ.03.26.01, EARS.01.24.03
     """
     # Test implementation
     pass
@@ -1423,7 +1423,7 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 ## Traceability Tags
 
 @spec: SPEC-001
-@tasks: TASKS.001.001
+@tasks: TASKS.01.29.01
 @icon: ICON-001:ServiceConnector
 @icon: ICON-003:GatewayExceptions
 @icon-role: provider
@@ -1468,7 +1468,7 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 ## Traceability Tags
 
 @spec: SPEC-002
-@tasks: TASKS.002.001
+@tasks: TASKS.02.29.01
 @icon: ICON-001:ServiceConnector
 @icon: ICON-002:ConnectionState
 @icon: ICON-003:GatewayExceptions

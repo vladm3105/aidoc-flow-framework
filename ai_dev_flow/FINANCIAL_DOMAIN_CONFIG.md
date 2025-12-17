@@ -565,13 +565,13 @@ Trading desks require real-time enforcement of resource limits to prevent excess
 ## 5. Dependencies
 
 ### Upstream Dependencies
-- `@req: REQ.001.001`: Real-time position aggregation
-- `@req: REQ.002.001`: Market data integration for notional calculations
+- `@req: REQ.01.26.01`: Real-time position aggregation
+- `@req: REQ.02.26.01`: Market data integration for notional calculations
 - `@adr: ADR-005`: Real-time risk architecture decision
 
 ### Downstream Dependencies
 - `@spec: SPEC-003`: resource limiter technical specification
-- `@bdd: BDD.003.001`: resource limit acceptance tests
+- `@bdd: BDD.03.13.01`: resource limit acceptance tests
 
 ---
 
@@ -599,8 +599,8 @@ Trading desks require real-time enforcement of resource limits to prevent excess
 ### Upstream Sources
 | Source | Type | Reference |
 |--------|------|-----------|
-| `@brd: BRD.001.001` | Business Requirements | Risk management objectives |
-| `@prd: PRD.002.001` | Product Requirements | resource limit feature |
+| `@brd: BRD.01.01.01` | Business Requirements | Risk management objectives |
+| `@prd: PRD.02.01.01` | Product Requirements | resource limit feature |
 | `@adr: ADR-005` | Architecture Decision | Real-time limit enforcement |
 | **regulatory Rule 15c3-5** | Regulatory | Market Access Risk Management |
 
@@ -608,8 +608,8 @@ Trading desks require real-time enforcement of resource limits to prevent excess
 | Artifact | Type | Reference |
 |----------|------|-----------|
 | `@spec: SPEC-003` | Technical Specification | Implementation spec |
-| `@tasks: TASKS.003.001` | Implementation Tasks | AI generation tasks |
-| `@bdd: BDD.003.001` | BDD Scenarios | Acceptance tests |
+| `@tasks: TASKS.03.29.01` | Implementation Tasks | AI generation tasks |
+| `@bdd: BDD.03.13.01` | BDD Scenarios | Acceptance tests |
 | `src/risk/resource_limiter.py` | Code | Implementation |
 | `tests/risk/test_resource_limits.py` | Tests | Unit tests |
 
@@ -652,7 +652,7 @@ Trading desks require real-time enforcement of resource limits to prevent excess
 ## 9. Verification Methods
 
 ### BDD Scenarios
-- `@bdd: BDD.003.001`: Comprehensive limit enforcement scenarios
+- `@bdd: BDD.03.13.01`: Comprehensive limit enforcement scenarios
 
 ### Unit Tests
 - `test_hard_limit_blocks_order()`

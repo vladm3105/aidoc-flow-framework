@@ -300,7 +300,11 @@ Validation Rules & Aids
   - `python scripts/validate_requirement_ids.py`
   - Optional: `python scripts/check_broken_references.py`
   - Optional: `python scripts/complete_traceability_matrix.py`
-- Quick regexes (conceptual) - supports variable-length XXX-YY pattern:
+- Quick regexes (conceptual):
+  - **Unified Element ID** (all document types): `^[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}$`
+  - **Internal Heading**: `^###\s+[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}:\s+.+$`
+  - **Cross-Reference Tag**: `^@[a-z]+:\s+[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}$`
+- Document filename regexes (unchanged - dash format for files):
   - REQ H1 ID: `^#\sREQ-\d{3,4}(-\d{2,3})?:.+$`
   - REQ filename: `REQ-\d{3,4}(-\d{2,3})?_.+\.md$`
   - ADR H1 ID: `^#\sADR-\d{3,4}(-\d{2,3})?:.+$`
@@ -356,13 +360,16 @@ Component Abbreviations (examples)
 
 BDD Tag Examples
 ```gherkin
-# Atomic document references (XXX)
+# Document-level references (dash format for file links)
 @requirement:[REQ-003](../REQ/risk/lim/REQ-003_resource_limit_enforcement.md#REQ-003)
 @adr:[ADR-033](../ADR/ADR-033_risk_limit_enforcement_architecture.md#ADR-033)
 
-# Sub-document references (XXX-YY)
-@requirement:[REQ-009-01](../REQ/[EXTERNAL_INTEGRATION - e.g., third-party API, service provider]/ib/REQ-009-01_prerequisites.md#REQ-009-01)
-@adr:[ADR-030-02](../ADR/ADR-030-02_connection_management.md#ADR-030-02)
+# Internal element references (dot format for element IDs)
+# Format: TYPE.DOC_NUM.ELEM_TYPE.SEQ
+@brd: BRD.01.01.05    # BRD doc 1, Functional Requirement #5
+@brd: BRD.01.03.02    # BRD doc 1, Constraint #2
+@prd: PRD.02.07.15    # PRD doc 2, User Story #15
+@adr: ADR.03.10.01    # ADR doc 3, Decision #1
 ```
 
 Anchors & Linking
@@ -378,134 +385,198 @@ Local Clarifications (ai_dev_flow)
 
 ---
 
-## Tag Format Convention (By Design)
+## Unified Element ID Format (MANDATORY)
 
-The SDD framework uses two distinct notation systems for cross-references, each serving a specific purpose:
+The SDD framework uses a **single unified format** for all internal element references across all document types. This format is optimized for AI-first workflows where AI assistants write documentation and humans query AI about specific elements.
 
-| Notation | Format       | Artifacts                               | Purpose                                                             |
-|----------|--------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NNN.NNN | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to features inside documents |
+### Format Specification
 
-**Key Distinction**:
-
-- `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.017.001` → Points to feature 001 inside document `BRD-017.md`
-
-**Why Two Systems?**
-
-1. **Dash notation** (`TYPE-NNN`): Used for technical artifacts that are referenced as complete documents. Each ADR, SPEC, or CTR file is a self-contained unit.
-
-2. **Dot notation** (`TYPE.NNN.NNN`): Used for requirement artifacts that contain multiple numbered features/requirements within a single document. The second number identifies the specific feature inside the document.
-
----
-
-**Unified Feature ID Format (MANDATORY)**: Use dot separator for globally unique feature references:
-
-| Format | Pattern | Example |
-|--------|---------|---------|
-| **Unified Feature ID** | `TYPE.NNN.NNN` | `BRD.017.001` |
-| **Cross-Reference Tag** | `@type: TYPE.NNN.NNN` | `@brd: BRD.017.001` |
-
-**Cross-Reference Examples**:
-
-- `@brd: BRD.017.001` (BRD-017, feature 001)
-- `@prd: PRD.022.005` (PRD-022, feature 005)
-- `@ears: EARS.006.003` (EARS-006, requirement 003)
-- `@sys: SYS.008.001` (SYS-008, requirement 001)
-
-**Uniqueness Guarantee**: Unified Feature ID = `TYPE.DOC.FEATURE`
-
-- `BRD.017.001` = BRD-017, Feature 001 (globally unique)
-- `PRD.022.015` = PRD-022, Feature 015 (globally unique)
-- `EARS.006.003` = EARS-006, Requirement 003 (globally unique)
-
-**Validation Regex**:
-
-```python
-UNIFIED_FEATURE_ID_PATTERN = r'^[A-Z]{2,5}\.\d{3,4}\.\d{3}$'
-# Matches: BRD.017.001, PRD.022.015, SYS.008.003, TASKS.003.001
+```
+{DOC_TYPE}.{DOC_NUM}.{ELEM_TYPE}.{SEQ}
 ```
 
-**DEPRECATED Format** (do NOT use):
+**Validation Regex**: `^[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}$`
 
-- ❌ `@brd: BRD-017:001` (colon separator - old format)
-- ✅ `@brd: BRD.017.001` (dot separator - unified format)
+| Segment | Min Digits | Max Digits | Start Value | Purpose |
+|---------|------------|------------|-------------|---------|
+| DOC_TYPE | 2 chars | 5 chars | - | Document type (BRD, PRD, REQ, SPEC, etc.) |
+| DOC_NUM | 2 | 9 | 01 | Document instance number |
+| ELEM_TYPE | 2 | 9 | 01 | Element category code (see table below) |
+| SEQ | 2 | 9 | 01 | Sequential within element type |
+
+### Standardized Element Type Codes
+
+Consistent across ALL document types:
+
+| Code | Element Type | Common In |
+|------|--------------|-----------|
+| 01 | Functional Requirement | BRD, PRD, SYS, REQ |
+| 02 | Quality Attribute | BRD, PRD, SYS |
+| 03 | Constraint | BRD, PRD |
+| 04 | Assumption | BRD, PRD |
+| 05 | Dependency | BRD, PRD, REQ |
+| 06 | Acceptance Criteria | BRD, PRD, REQ |
+| 07 | User Story | PRD |
+| 08 | Use Case | PRD, SYS |
+| 09 | Risk | BRD, PRD |
+| 10 | Decision | ADR |
+| 11 | Alternative | ADR |
+| 12 | Consequence | ADR |
+| 13 | Test Scenario | BDD |
+| 14 | Step | BDD, SPEC |
+| 15 | Interface | SPEC, CTR |
+| 16 | Data Model | SPEC, CTR |
+| 17 | Task | TASKS |
+| 18 | Command | IPLAN |
+| 19 | Contract Clause | CTR |
+| 20 | Validation Rule | SPEC |
+| 21 | Feature Item | BRD, PRD |
+| 22 | Business Objective | BRD |
+| 23 | Stakeholder Need | BRD, PRD |
+| 24 | EARS Statement | EARS |
+| 25 | System Requirement | SYS |
+| 26 | Atomic Requirement | REQ |
+| 27 | Specification Element | SPEC |
+| 28 | Implementation Phase | IMPL |
+| 29 | Task Item | TASKS |
+| 30 | Plan Step | IPLAN |
+| 31-99 | Reserved for future use | - |
+
+### Examples
+
+| ID | Length | Meaning |
+|----|--------|---------|
+| `BRD.01.01.01` | 12 | BRD #1, Functional Requirement #1 |
+| `BRD.01.03.05` | 12 | BRD #1, Constraint #5 |
+| `PRD.02.07.42` | 12 | PRD #2, User Story #42 |
+| `ADR.01.10.01` | 12 | ADR #1, Decision #1 |
+| `TASKS.01.17.128` | 15 | TASKS #1, Task #128 |
+| `BRD.99.01.9999` | 15 | BRD #99, Functional Requirement #9999 |
+| `SPEC.01.15.03` | 13 | SPEC #1, Interface #3 |
+
+### Growth Pattern
+
+IDs automatically expand as needed without schema changes:
+
+```text
+BRD.01.01.01      → Start (minimum)
+BRD.01.01.99      → Approaching 2-digit limit
+BRD.01.01.100     → Auto-expand to 3 digits
+BRD.01.01.9999    → Still valid (4 digits)
+BRD.99.99.999999  → Maximum practical scale
+```
+
+### Cross-Reference Tag Format
+
+| Tag Format | Example | Meaning |
+|------------|---------|---------|
+| `@brd: BRD.01.01.01` | BRD doc 1, FR #1 | Functional requirement reference |
+| `@prd: PRD.02.07.05` | PRD doc 2, User Story #5 | User story reference |
+| `@adr: ADR.03.10.01` | ADR doc 3, Decision #1 | Architecture decision reference |
+| `@spec: SPEC.01.15.02` | SPEC doc 1, Interface #2 | Interface specification reference |
+
+### AI-First Design Rationale
+
+This format is optimized for AI-assisted documentation workflows:
+
+1. **Token efficiency**: 12 chars minimum vs 15+ for human-readable formats
+2. **AI translation**: Human asks "what is BRD.01.03.05?", AI responds "Constraint #5: Budget limit $50K"
+3. **Single regex pattern**: `[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}` validates all types
+4. **Zero capacity planning**: Grows automatically without range management
+5. **Consistent parsing**: Same pattern across all 12+ document types
+
+### DEPRECATED Formats (do NOT use)
+
+| Deprecated | Replacement | Notes |
+|------------|-------------|-------|
+| `BRD-017:001` | `BRD.17.01.01` | Colon separator removed |
+| `FR-001` | `BRD.01.01.01` | Type-specific prefixes removed |
+| `BC-001` | `BRD.01.03.01` | Use element type code 03 |
+| `BA-001` | `BRD.01.04.01` | Use element type code 04 |
+| `AC-001` | `BRD.01.06.01` | Use element type code 06 |
+| `DEP-001` | `BRD.01.05.01` | Use element type code 05 |
+| `QA-001` | `BRD.01.02.01` | Use element type code 02 |
 
 ---
 
 ## Internal Feature Heading Format (MANDATORY)
 
-**Purpose**: All internal feature/requirement headings within documents MUST use the unified `TYPE.NNN.NNN` format for:
+**Purpose**: All internal feature/requirement headings within documents MUST use the unified 4-segment format for:
 
 1. Direct searchability across all documents
 2. Consistency between internal headings and external cross-references
-3. Elimination of ambiguity
+3. Element type identification without lookup
 
 **Internal Heading Pattern**:
 
 | Document Type | Heading Format | Example |
 |---------------|----------------|---------|
-| BRD | `### BRD.NNN.NNN: Feature Name` | `### BRD.017.001: Market Data Feed` |
-| PRD | `### PRD.NNN.NNN: Feature Name` | `### PRD.022.001: User Dashboard` |
-| EARS | `### EARS.NNN.NNN: Requirement Name` | `### EARS.006.001: Data Validation` |
-| BDD | `### BDD.NNN.NNN: Scenario Name` | `### BDD.015.001: Login Scenario` |
-| SYS | `### SYS.NNN.NNN: System Requirement` | `### SYS.008.001: API Gateway` |
+| BRD | `### BRD.NN.TT.SS: Name` | `### BRD.01.01.01: Market Data Feed` |
+| PRD | `### PRD.NN.TT.SS: Name` | `### PRD.02.07.01: User Dashboard` |
+| EARS | `### EARS.NN.TT.SS: Name` | `### EARS.01.01.01: Data Validation` |
+| BDD | `### BDD.NN.TT.SS: Name` | `### BDD.01.13.01: Login Scenario` |
+| SYS | `### SYS.NN.TT.SS: Name` | `### SYS.01.01.01: API Gateway` |
+| ADR | `### ADR.NN.TT.SS: Name` | `### ADR.01.10.01: Database Selection` |
 
 **Format Breakdown**:
 
 | Component | Description | Example |
 |-----------|-------------|---------|
-| `TYPE` | Document type in SDD framework | `BRD`, `PRD`, `EARS`, `SYS`, `BDD` |
-| First `.NNN` | Document ID (the document number) | `.017` = BRD-017 |
-| Second `.NNN` | Sequential feature numbering inside the document | `.001` = first feature |
+| `TYPE` | Document type in SDD framework | `BRD`, `PRD`, `ADR`, `SPEC` |
+| `.NN` | Document number (2+ digits) | `.01` = document 1 |
+| `.TT` | Element type code (see table above) | `.01` = Functional Requirement |
+| `.SS` | Sequential within element type | `.01` = first item of this type |
 
-**Example**: `BRD.017.003` = BRD document 017, feature 003
+**Example**: `BRD.01.03.05` = BRD document 01, Constraint (type 03), item #5
 
 **Validation Regex**:
 
 ```python
-INTERNAL_HEADING_PATTERN = r'^###\s+[A-Z]{2,5}\.\d{3,4}\.\d{3}:\s+.+$'
-# Matches: ### BRD.017.001: Feature Name
+INTERNAL_HEADING_PATTERN = r'^###\s+[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}:\s+.+$'
+# Matches: ### BRD.01.01.01: Feature Name
 ```
 
-**REMOVED Patterns (v2.0 - No Backward Compatibility)**:
+**REMOVED Patterns (v3.0 - No Backward Compatibility)**:
 
 The following patterns are **REMOVED** and MUST NOT be used:
 
 | Removed Pattern | Previous Usage | Migration Path |
 |-----------------|----------------|----------------|
-| `FR-XXX` | BRD feature headings (`#### FR-001: Feature`) | Use `### BRD.NNN.NNN: Feature` |
-| `FR-XXXA` | BRD feature sub-items | Use `### BRD.NNN.NNN: Feature` |
-| `Feature F-XXX` | PRD feature headings | Use `### PRD.NNN.NNN: Feature` |
-| `### 001:` | Simple sequential headings | Use `### TYPE.NNN.NNN: Feature` |
+| `FR-XXX` | BRD feature headings | Use `### BRD.NN.01.SS: Feature` |
+| `BC-XXX` | Business Constraints | Use `### BRD.NN.03.SS: Constraint` |
+| `BA-XXX` | Business Assumptions | Use `### BRD.NN.04.SS: Assumption` |
+| `QA-XXX` | Quality Attributes | Use `### BRD.NN.02.SS: Quality` |
+| `TYPE.NNN.NNN` | 3-segment format | Use `TYPE.NN.TT.SS` (4-segment) |
+| `Feature F-XXX` | PRD feature headings | Use `### PRD.NN.07.SS: User Story` |
 
 **Migration Examples**:
 
 | Before (REMOVED) | After (MANDATORY) |
 |------------------|-------------------|
-| `#### FR-001: Recipient Selection` | `### BRD.017.001: Recipient Selection` |
-| `### Feature F-001: User Dashboard` | `### PRD.022.001: User Dashboard` |
-| `### 001: Data Validation Rule` | `### EARS.006.001: Data Validation Rule` |
+| `#### FR-001: Recipient Selection` | `### BRD.01.01.01: Recipient Selection` |
+| `#### BC-003: Budget Limit` | `### BRD.01.03.03: Budget Limit` |
+| `### BRD.017.001: Feature` | `### BRD.17.01.01: Feature` |
+| `### Feature F-001: User Dashboard` | `### PRD.01.07.01: User Dashboard` |
 
 ---
 
 ## Architecture Decision Topic Subsection Format
 
-**Purpose**: Document Section 7.2 "Architecture Decision Requirements" contains numbered subsections identifying architectural topics requiring formal ADR decisions. These subsections use a specialized format distinct from feature headings.
+**Purpose**: Document Section 7.2 "Architecture Decision Requirements" contains numbered subsections identifying architectural topics requiring formal ADR decisions. These use the standard 4-segment format with element type code `10` (Decision).
 
-**Subsection ID Pattern**: `{DOC_TYPE}.NNN.NNN`
+**Subsection ID Pattern**: `{DOC_TYPE}.NN.10.SS` (using Decision element type)
 
 | Component | Description | Example |
 |-----------|-------------|---------|
 | `{DOC_TYPE}` | Document type (BRD, PRD, etc.) | `BRD` |
-| `.NNN` | Document number (3-4 digits) | `.001` = BRD-001 |
-| `.NNN` | Sequential topic number (3 digits, 001-999) | `.003` = third topic |
+| `.NN` | Document number (2+ digits) | `.01` = BRD-01 |
+| `.10` | Element type code for Decision | `.10` = Decision type |
+| `.SS` | Sequential topic number | `.03` = third topic |
 
 **Heading Format**:
 
 ```markdown
-#### {DOC_TYPE}.NNN.NNN: [Topic Name]
+#### BRD.01.10.03: [Topic Name]
 
 **Business Driver**: [Why this decision matters to business - reference upstream requirements]
 **Business Constraints**:
@@ -520,9 +591,9 @@ The following patterns are **REMOVED** and MUST NOT be used:
 
 | Document | Topic # | Full ID | Meaning |
 |----------|---------|---------|---------|
-| BRD-001 | 3 | `BRD.001.003` | Third architecture topic in BRD-001 Section 7.2 |
-| BRD-017 | 1 | `BRD.017.001` | First architecture topic in BRD-017 Section 7.2 |
-| BRD-003 | 12 | `BRD.003.012` | Twelfth architecture topic in BRD-003 Section 7.2 |
+| BRD-01 | 3 | `BRD.01.10.03` | Third architecture decision topic in BRD-01 |
+| BRD-17 | 1 | `BRD.17.10.01` | First architecture decision topic in BRD-17 |
+| BRD-03 | 12 | `BRD.03.10.12` | Twelfth architecture decision topic in BRD-03 |
 
 **Content Rules (Business-Only)**:
 
@@ -535,26 +606,28 @@ The following patterns are **REMOVED** and MUST NOT be used:
 
 **Cross-Reference Flow**:
 
-```
-BRD Section 7.2 ({DOC_TYPE}.NNN.NNN)  →  PRD Section 18           →  ADR
-Business drivers/constraints              Technical options/criteria    Final decision
+```text
+BRD Section 7.2 (BRD.NN.10.SS)  →  PRD Section 18           →  ADR
+Business drivers/constraints        Technical options/criteria    Final decision
 ```
 
 **PRD Reference**: PRD Section 18 elaborates each BRD Section 7.2 topic with:
-- `**Upstream**: BRD-NNN §7.2.X` - Reference to originating BRD topic
+
+- `**Upstream**: BRD.NN.10.SS` - Reference to originating BRD topic
 - Technical options and evaluation criteria
 - `**ADR Requirements**: [guidance]` - What ADR must decide for this topic
 
 **ADR Reference**: ADR Section 4.1 includes:
-- `**Originating Topic**: {DOC_TYPE}.NNN.NNN - [Topic Name]`
+
+- `**Originating Topic**: BRD.NN.10.SS - [Topic Name]`
 - Business driver and constraints from BRD
 - Technical options evaluated from PRD
 
 **Validation Regex**:
 
 ```python
-ARCHITECTURE_TOPIC_PATTERN = r'^#{3,5}\s+[A-Z]+\.\d{3,4}\.\d{3}:\s+.+$'
-# Matches: ### BRD.001.003: ... OR #### PRD.017.001: ... OR ##### BRD.003.012: ...
+ARCHITECTURE_TOPIC_PATTERN = r'^#{3,5}\s+[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}:\s+.+$'
+# Matches: ### BRD.01.10.03: ... OR #### PRD.17.10.01: ...
 # Heading level (H3-H5) varies by document section context
 ```
 

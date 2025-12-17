@@ -85,7 +85,7 @@ Schema: See `ai_dev_flow/PRD/PRD_SCHEMA.yaml` for complete rules
 | **Author** | [Product Manager/Owner Name] |
 | **Reviewer** | [Technical Reviewer Name] |
 | **Approver** | [Stakeholder Name] |
-| **BRD Reference** | @brd: BRD.NNN.NNN |
+| **BRD Reference** | @brd: BRD.NN.01.SS |
 | **Priority** | High / Medium / Low |
 | **Target Release** | [Release version/Quarter] |
 | **Estimated Effort** | [Story Points or Person-Months] |
@@ -363,22 +363,24 @@ User stories follow the standard format:
 
 #### Primary Persona 1: [Name - e.g., End User, Customer, Admin]
 
+**ID Format**: `PRD.NN.07.SS` (User Story - Element Type 07)
+
 | Story ID | User Story | Priority | Acceptance Criteria | Related BRD Requirement |
 |----------|------------|----------|---------------------|-------------------------|
-| US-001 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NNN.NNN |
-| US-002 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NNN.NNN |
-| US-003 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NNN.NNN |
+| PRD.NN.07.01 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NN.01.SS |
+| PRD.NN.07.02 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NN.01.SS |
+| PRD.NN.07.03 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NN.01.SS |
 
 **Example User Stories**:
-- US-001: As a **sender**, I want to **view transparent fee breakdown before confirming transaction**, so that **I understand total cost with no surprises**.
-- US-002: As a **sender**, I want to **save recipient details for future transactions**, so that **repeat sends are faster and more convenient**.
-- US-003: As a **recipient**, I want to **receive SMS notification when money arrives**, so that **I know funds are available immediately**.
+- PRD.01.07.01: As a **sender**, I want to **view transparent fee breakdown before confirming transaction**, so that **I understand total cost with no surprises**.
+- PRD.01.07.02: As a **sender**, I want to **save recipient details for future transactions**, so that **repeat sends are faster and more convenient**.
+- PRD.01.07.03: As a **recipient**, I want to **receive SMS notification when money arrives**, so that **I know funds are available immediately**.
 
 #### Primary Persona 2: [Name - e.g., Support Agent, Compliance Officer]
 
 | Story ID | User Story | Priority | Acceptance Criteria | Related BRD Requirement |
 |----------|------------|----------|---------------------|-------------------------|
-| US-0XX | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NNN.NNN |
+| PRD.NN.07.SS | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NN.01.SS |
 
 ### Operational User Stories
 
@@ -386,9 +388,9 @@ User stories follow the standard format:
 
 | Story ID | User Story | Priority | Acceptance Criteria | Related BRD Requirement |
 |----------|------------|----------|---------------------|-------------------------|
-| US-0XX | As a **compliance officer**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NNN.NNN |
-| US-0XX | As a **support agent**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NNN.NNN |
-| US-0XX | As an **operations manager**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NNN.NNN |
+| PRD.NN.07.SS | As a **compliance officer**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NN.01.SS |
+| PRD.NN.07.SS | As a **support agent**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NN.01.SS |
+| PRD.NN.07.SS | As an **operations manager**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NN.01.SS |
 
 ### User Story Summary
 
@@ -405,9 +407,9 @@ User stories follow the standard format:
 
 | Business Objective | Related User Stories | Coverage Notes |
 |--------------------|---------------------|----------------|
-| [BO-1: Objective description] | US-001, US-003, US-008 | [How stories address objective] |
-| [BO-2: Objective description] | US-002, US-005, US-012 | [How stories address objective] |
-| [BO-3: Objective description] | US-004, US-009, US-015 | [How stories address objective] |
+| [BO-1: Objective description] | PRD.NN.07.01, PRD.NN.07.03, PRD.NN.07.08 | [How stories address objective] |
+| [BO-2: Objective description] | PRD.NN.07.02, PRD.NN.07.05, PRD.NN.07.12 | [How stories address objective] |
+| [BO-3: Objective description] | PRD.NN.07.04, PRD.NN.07.09, PRD.NN.07.15 | [How stories address objective] |
 
 ### User Roles and Permissions
 
@@ -415,7 +417,7 @@ User stories follow the standard format:
 
 | Role | Description | Key Responsibilities | Permissions | Related User Stories |
 |------|-------------|---------------------|-------------|---------------------|
-| [Role Name] | [Who this role represents] | [What they do] | [What access they have] | US-XXX, US-YYY |
+| [Role Name] | [Who this role represents] | [What they do] | [What access they have] | PRD.NN.07.SS |
 
 **Example Roles**:
 - **Primary User**: End customers who initiate transactions, save recipients, view transaction history
@@ -912,9 +914,9 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 ---
 
-##### BRD.NNN.001: [Topic Name]
+##### BRD.NN.21.01: [Topic Name]
 
-**Upstream**: BRD-NNN §7.2.1
+**Upstream**: BRD-NN §7.2.1
 
 **Technical Options**:
 1. **[Option A]**: [Brief description - e.g., "Managed SaaS ledger with API integration"]
@@ -936,9 +938,9 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 ---
 
-##### BRD.NNN.002: [Topic Name]
+##### BRD.NN.21.02: [Topic Name]
 
-**Upstream**: BRD-NNN §7.2.2
+**Upstream**: BRD-NN §7.2.2
 
 **Technical Options**:
 1. **[Option A]**: [Description]
@@ -971,9 +973,9 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 **Example** (Technical Elaboration):
 
 ```markdown
-##### BRD.001.003: Ledger System Selection
+##### BRD.01.21.03: Ledger System Selection
 
-**Upstream**: BRD-001 §7.2.3
+**Upstream**: BRD-01 §7.2.3
 
 **Technical Options**:
 1. **Modern Treasury**: Managed SaaS with REST API, SOC 2 certified
@@ -1026,10 +1028,10 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 2):
 ```markdown
-@brd: BRD.NNN.NNN
+@brd: BRD.NN.01.SS
 ```
 
-**Format**: `@artifact-type: TYPE.NNN.NNN` (Unified Feature ID format)
+**Format**: `@artifact-type: TYPE.NN.EE.SS` (Unified Element ID format)
 
 **Layer 2 Requirements**: PRD must reference upstream BRD document(s) using `@brd` tags.
 
@@ -1037,7 +1039,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 **Example**:
 ```markdown
-@brd: BRD.001.030, BRD.001.006
+@brd: BRD.01.01.30, BRD.01.01.06
 ```
 
 **Validation**: Tags must reference existing BRD documents and requirement IDs within those documents.
@@ -1054,14 +1056,14 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 |------|-------------|---------|
 | **A→B implies B→A** | If this PRD references another PRD, that PRD must reference this one | PRD-016 → PRD-022 requires PRD-022 → PRD-016 |
 | **No placeholder IDs** | Never use PRD-XXX, TBD, or undefined references | Use `null` if artifact doesn't exist |
-| **Tag format required** | Use `@prd: PRD.NNN.NNN` format in body, not just metadata | `@prd: PRD.022.001` not `see PRD-022` |
+| **Tag format required** | Use `@prd: PRD.NN.EE.SS` format in body, not just metadata | `@prd: PRD.22.07.01` not `see PRD-022` |
 | **Referenced doc must exist** | Verify target document exists before adding reference | Check `docs/PRD/PRD-NNN_*.md` exists |
 
 **Cross-PRD Reference Table** (for PRDs with bidirectional dependencies):
 
 | This PRD | References PRD | Relationship Type | Reciprocal Reference Status |
 |----------|---------------|-------------------|----------------------------|
-| PRD-NNN | @prd: PRD.NNN.NNN | [Primary/Fallback/Related/Orchestrates] | ✅ Verified / ❌ Missing |
+| PRD-NN | @prd: PRD.NN.07.SS | [Primary/Fallback/Related/Orchestrates] | ✅ Verified / ❌ Missing |
 
 **Common Relationship Types**:
 - **Primary/Fallback**: AI-agent vs traditional approach (e.g., PRD-022/PRD-016)
@@ -1081,7 +1083,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 - **Anchors/IDs**: `#PRD-NNN` (for referencing this document)
 - **section References**: Use `#problem-statement` for Problem Statement section
-- **Feature References**: Use Unified Feature ID format (e.g., `PRD.001.001`, `PRD.001.002`). Cross-reference format: `@prd: PRD.NNN.NNN`
+- **Feature References**: Use Unified Element ID format (e.g., `PRD.01.07.01`, `PRD.01.07.02`). Cross-reference format: `@prd: PRD.NN.EE.SS`
 
 #### External References
 

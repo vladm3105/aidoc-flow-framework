@@ -92,14 +92,14 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD.009.015
-@prd: PRD.016.003
-@ears: EARS.012.002
-@bdd: BDD.015.001
+@brd: BRD.09.01.15
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02
+@bdd: BDD.15.13.01
 @adr: ADR-033
-@sys: SYS.012.001
-@req: REQ.045.001
-@impl: IMPL.003.002
+@sys: SYS.12.25.01
+@req: REQ.45.26.01
+@impl: IMPL.03.28.02
 ```
 
 **Format Rules**:
@@ -121,14 +121,14 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
 ```markdown
-@brd: BRD.009.015
-@prd: PRD.016.003
-@ears: EARS.012.002
-@bdd: BDD.015.001
+@brd: BRD.09.01.15
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02
+@bdd: BDD.15.13.01
 @adr: ADR-033
-@sys: SYS.012.001
-@req: REQ.045.001
-@impl: IMPL.003.002
+@sys: SYS.12.25.01
+@req: REQ.45.26.01
+@impl: IMPL.03.28.02
 ```
 
 ### 7.2 Downstream Artifacts

@@ -279,8 +279,8 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Valid**:
 ```markdown
-#### EARS.006.001: L1 KYC Submission
-#### EARS.006.002: Pending Status
+#### EARS.06.24.01: L1 KYC Submission
+#### EARS.06.24.02: Pending Status
 ```
 
 ---
@@ -298,7 +298,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Valid**:
 ```markdown
-| **Source Document** | @prd: PRD.001.001 |
+| **Source Document** | @prd: PRD.01.01.01 |
 ```
 
 ---
@@ -313,19 +313,19 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Invalid** (inline without pipes):
 ```markdown
-**Traceability**: @brd: BRD.002.010 @prd: PRD.002.001
+**Traceability**: @brd: BRD.02.01.10 @prd: PRD.02.01.01
 ```
 
 **Valid** (inline with pipes):
 ```markdown
-**Traceability**: @brd: BRD.002.010 | @prd: PRD.002.001
+**Traceability**: @brd: BRD.02.01.10 | @prd: PRD.02.01.01
 ```
 
 **Valid** (list format):
 ```markdown
 **Traceability**:
-- @brd: BRD.002.010
-- @prd: PRD.002.001
+- @brd: BRD.02.01.10
+- @prd: PRD.02.01.01
 - @threshold: PRD.035.timeout.partner.bridge
 ```
 
@@ -339,16 +339,16 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Invalid**:
 ```markdown
-#### EARS.002.001: First Requirement
+#### EARS.02.24.01: First Requirement
 ...
-#### EARS.002.001: Different Requirement  ← DUPLICATE ID
+#### EARS.02.24.01: Different Requirement  ← DUPLICATE ID
 ```
 
 **Valid**:
 ```markdown
-#### EARS.002.001: First Requirement
+#### EARS.02.24.01: First Requirement
 ...
-#### EARS.002.002: Second Requirement  ← UNIQUE ID
+#### EARS.02.24.02: Second Requirement  ← UNIQUE ID
 ```
 
 **Fix**: Renumber duplicate IDs sequentially
@@ -359,13 +359,13 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Type**: Warning
 
-**Check**: Traceability section includes `@brd: BRD.NNN.NNN` reference
+**Check**: Traceability section includes `@brd: BRD.NN.EE.SS` reference
 
 **Rationale**: EARS (Layer 3) should trace back to BRD (Layer 1) via PRD (Layer 2)
 
 **Valid format**:
 ```markdown
-@brd: BRD.002.010
+@brd: BRD.02.01.10
 ```
 
 **Fix**: Add @brd tag to traceability section referencing source BRD
@@ -487,7 +487,7 @@ python ai_dev_flow/scripts/validate_ears.py --summary-only
 ### Mistake #3: Non-Standard Requirement IDs
 ```
 ❌ #### Event-001: L1 KYC Submission
-✅ #### EARS.006.001: L1 KYC Submission
+✅ #### EARS.06.24.01: L1 KYC Submission
 ```
 
 ### Mistake #4: List-Style Document Control

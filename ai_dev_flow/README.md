@@ -380,24 +380,24 @@ Internal feature IDs within documents use 3-digit sequential numbering with unif
 
 | Context | Internal ID | Unified Format | Cross-Reference |
 |---------|-------------|----------------|-----------------|
-| PRD Features | `001`, `015`, `042` | `PRD.022.015` | `@prd: PRD.022.015` |
-| BRD Objectives | `030`, `006` | `BRD.001.030` | `@brd: BRD.001.030` |
-| EARS Statements | `003`, `007` | `EARS.006.003` | `@ears: EARS.006.003` |
-| SYS Requirements | `001`, `015` | `SYS.008.001` | `@sys: SYS.008.001` |
-| Quality Attributes | `016`, `017` | `SYS.008.016` | `@sys: SYS.008.016` |
+| PRD Features | `001`, `015`, `042` | `PRD.22.01.15` | `@prd: PRD.22.01.15` |
+| BRD Objectives | `030`, `006` | `BRD.01.01.30` | `@brd: BRD.01.01.30` |
+| EARS Statements | `003`, `007` | `EARS.06.24.03` | `@ears: EARS.06.24.03` |
+| SYS Requirements | `001`, `015` | `SYS.08.25.01` | `@sys: SYS.08.25.01` |
+| Quality Attributes | `016`, `017` | `SYS.08.25.16` | `@sys: SYS.08.25.16` |
 
-**Format**: `@type: TYPE.DOC.FEATURE` (dot separator for all references)
+**Format**: `@type: TYPE.NN.EE.SS` (dot separator for all references)
 
 **Examples**:
 ```markdown
-@brd: BRD.001.030, BRD.001.006
-@prd: PRD.022.015
-@ears: EARS.006.003
-@sys: SYS.008.001
-@sys: SYS.008.016  # Quality attributes use unified sequential numbering
+@brd: BRD.01.01.30, BRD.01.01.06
+@prd: PRD.22.01.15
+@ears: EARS.06.24.03
+@sys: SYS.08.25.01
+@sys: SYS.08.25.16  # Quality attributes use unified sequential numbering
 ```
 
-**Global Uniqueness**: `TYPE.DOC.FEATURE` format creates globally unique references (e.g., `PRD.022.015` is unique across all documents).
+**Global Uniqueness**: `TYPE.NN.EE.SS` format creates globally unique references (e.g., `PRD.22.01.15` is unique across all documents).
 
 ## Schema File Reference
 
@@ -427,28 +427,28 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 
 **Core Principle**: Each layer N includes tags from layers 1 through N-1 plus its own identifier.
 
-**Tag Format**: `@artifact-type: TYPE.DOC.FEATURE` (unified dot separator)
+**Tag Format**: `@artifact-type: TYPE.NN.EE.SS` (unified dot separator)
 
 **Example Progression**:
 ```markdown
 # Layer 2 (PRD)
-@brd: BRD.009.015
+@brd: BRD.09.01.15
 
 # Layer 4 (BDD)
-@brd: BRD.009.015
-@prd: PRD.016.003
-@ears: EARS.012.002
+@brd: BRD.09.01.15
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02
 
 # Layer 7 (REQ)
-@brd: BRD.009.015
-@prd: PRD.016.003
-@ears: EARS.012.002
-@bdd: BDD.015.001
+@brd: BRD.09.01.15
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02
+@bdd: BDD.15.13.01
 @adr: ADR-033
-@sys: SYS.012.001
+@sys: SYS.12.25.01
 
 # Layer 13 (Code)
-@brd: BRD.009.015
+@brd: BRD.09.01.15
 ... [all upstream tags through @tasks]
 @impl-status: complete
 ```
@@ -565,12 +565,12 @@ python scripts/extract_tags.py --type REQ --show-all-upstream
 ```json
 {
   "REQ-045": {
-    "brd": ["BRD.009.015", "BRD.009.006"],
-    "prd": ["PRD.016.003"],
-    "ears": ["EARS.012.002"],
-    "bdd": ["BDD.015.001"],
+    "brd": ["BRD.09.01.15", "BRD.09.01.06"],
+    "prd": ["PRD.16.01.03"],
+    "ears": ["EARS.12.24.02"],
+    "bdd": ["BDD.15.13.01"],
     "adr": ["ADR-033"],
-    "sys": ["SYS.012.001"]
+    "sys": ["SYS.12.25.01"]
   }
 }
 ```
@@ -727,12 +727,12 @@ python scripts/generate_traceability_matrices.py --auto
 ## 7. Traceability
 
 **Required Tags**:
-@brd: BRD.009.015
-@prd: PRD.016.003
-@ears: EARS.012.002
-@bdd: BDD.015.001  # ← Add this
+@brd: BRD.09.01.15
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02
+@bdd: BDD.15.13.01  # ← Add this
 @adr: ADR-033
-@sys: SYS.012.001
+@sys: SYS.12.25.01
 ```
 
 **Issue**: "Gap in cumulative tag chain"

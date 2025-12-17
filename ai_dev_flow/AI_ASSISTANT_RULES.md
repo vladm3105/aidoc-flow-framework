@@ -499,16 +499,16 @@ Every document **MUST** include section 7 with:
 ### Upstream Sources
 | Source | Type | Reference |
 |--------|------|-----------|
-| `@brd: BRD.001.001` | Business Requirements | Risk management objectives |
-| `@prd: PRD.002.001` | Product Requirements | resource limit feature |
+| `@brd: BRD.01.01.01` | Business Requirements | Risk management objectives |
+| `@prd: PRD.02.01.01` | Product Requirements | resource limit feature |
 | `@adr: ADR-008` | Architecture Decision | Real-time limit enforcement |
 
 ### Downstream Artifacts
 | Artifact | Type | Reference |
 |----------|------|-----------|
 | `@spec: SPEC-023` | Technical Specification | Implementation spec |
-| `@tasks: TASKS.023.001` | Implementation Tasks | AI generation tasks |
-| `@bdd: BDD.015.001` | BDD Scenarios | Acceptance tests |
+| `@tasks: TASKS.23.29.01` | Implementation Tasks | AI generation tasks |
+| `@bdd: BDD.15.13.01` | BDD Scenarios | Acceptance tests |
 
 ### Primary Anchor/ID
 - **REQ-003**: resource limit enforcement requirement
@@ -1145,8 +1145,8 @@ The following issues are fixed automatically by the validation script:
 
 | Issue Type | Fix Action | Example |
 |------------|------------|---------|
-| Tag format errors | Correct to TYPE.NNN.NNN or TYPE-NNN | `@brd: brd001` → `@brd: BRD.001.001` |
-| Missing cumulative tags | Add with upstream reference | Add `@prd: PRD.001.001` for EARS layer |
+| Tag format errors | Correct to TYPE.NN.EE.SS or TYPE-NNN | `@brd: brd001` → `@brd: BRD.01.01.01` |
+| Missing cumulative tags | Add with upstream reference | Add `@prd: PRD.01.01.01` for EARS layer |
 | Broken relative paths | Recalculate correct path | `../REQ/file.md` → `../../REQ/file.md` |
 | Missing traceability section | Insert from template | Add Section 7 template |
 | Title/reference mismatches | Update to match upstream | Sync title with BRD source |

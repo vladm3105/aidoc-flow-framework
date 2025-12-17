@@ -355,9 +355,9 @@ Business constraints          Evaluation criteria        Trade-off analysis
 
 **BRD Section 7.2 (Business-Only)**:
 ```markdown
-#### BRD.001.003: Ledger System Selection
+#### BRD.01.01.03: Ledger System Selection
 
-**Business Driver**: Real-time position visibility for treasury management (BRD.001.004)
+**Business Driver**: Real-time position visibility for treasury management (BRD.01.01.04)
 **Business Constraints**:
 - Multi-currency support (USD, UZS, USDC) per Section 3.2
 - 5-year audit retention per BSA requirements
@@ -366,7 +366,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 
 **PRD Section 18 (Technical Elaboration)**:
 ```markdown
-##### BRD.001.003: Ledger System Selection
+##### BRD.01.01.03: Ledger System Selection
 
 **Upstream**: BRD-001 §7.2.3
 
@@ -925,25 +925,26 @@ Example: @threshold: PRD.035.kyc.l1.daily
 When referencing features from other PRDs, use the cross-reference format:
 
 ```markdown
-@prd: PRD.022.015
+@prd: PRD.22.01.15
 ```
 
 **Components**:
 - `@prd:` - Tag prefix
-- `PRD-022` - Document ID
-- `:015` - Feature ID within document
+- `PRD-022` - Document ID (22 in element ID)
+- `.01` - Element type (01 = Functional Requirement)
+- `.15` - Sequence ID within document
 
-**Uniqueness**: `PRD.022.015` is globally unique (PRD-022, Feature 015)
+**Uniqueness**: `PRD.22.01.15` is globally unique (PRD-022, Feature 015)
 
 ### Invalid Formats (Do NOT Use)
 
 | Invalid Format | Issue | Correct Format |
 |----------------|-------|----------------|
-| `FR-022-001` | Deprecated FR format | `PRD.022.001` |
-| `FR-AGENT-001` | Non-standard prefix | `PRD.022.001` |
-| `Feature 3.1` | Text format | `PRD.025.003` |
-| `FR-1` | Not zero-padded | `PRD.001.001` |
-| `F-001` | Deprecated F- format | `PRD.NNN.001` |
+| `FR-022-001` | Deprecated FR format | `PRD.22.01.01` |
+| `FR-AGENT-001` | Non-standard prefix | `PRD.22.01.01` |
+| `Feature 3.1` | Text format | `PRD.25.01.03` |
+| `FR-1` | Not zero-padded | `PRD.01.01.01` |
+| `F-001` | Deprecated F- format | `PRD.NN.01.01` |
 
 ### Common Mistakes to Avoid
 
@@ -962,22 +963,22 @@ For PRDs with non-standard Feature IDs:
 1. **Inventory**: List all current Feature IDs
 2. **Map**: Create mapping table (old → new)
 3. **Update**: Replace old IDs with simple format
-4. **Cross-Reference**: Update all documents using `@prd: PRD.NNN.NNN` format
+4. **Cross-Reference**: Update all documents using `@prd: PRD.NN.EE.SS` format
 5. **Validate**: Run Feature ID validation script
 
 **Mapping Example**:
 | Old ID | New Unified ID | Cross-Reference |
 |--------|----------------|-----------------|
-| FR-022-001 | PRD.022.001 | @prd: PRD.022.001 |
-| FR-AGENT-001 | PRD.022.001 | @prd: PRD.022.001 |
-| Feature 3.1 | PRD.025.003 | @prd: PRD.025.003 |
-| F-001 | PRD.NNN.001 | @prd: PRD.NNN.001 |
+| FR-022-001 | PRD.22.01.01 | @prd: PRD.22.01.01 |
+| FR-AGENT-001 | PRD.22.01.01 | @prd: PRD.22.01.01 |
+| Feature 3.1 | PRD.25.01.03 | @prd: PRD.25.01.03 |
+| F-001 | PRD.NN.01.01 | @prd: PRD.NN.01.01 |
 
 ### Benefits
 
 1. **Simpler IDs**: Cleaner, shorter feature identifiers
 2. **Namespace Separation**: Document context provides uniqueness
-3. **Cross-Reference Clarity**: `@prd: PRD.022.015` format is explicit
+3. **Cross-Reference Clarity**: `@prd: PRD.22.01.15` format is explicit
 4. **Validation**: Simple regex enables automated checking
 5. **Consistency**: Aligns with ID_NAMING_STANDARDS.md
 

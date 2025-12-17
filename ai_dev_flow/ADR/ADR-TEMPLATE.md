@@ -117,7 +117,7 @@ Production-Ready Code
 
 ### 4.1 Problem Statement
 
-**Originating Topic**: {DOC_TYPE}.NNN.NNN - [Topic Name from BRD Section 7.2]
+**Originating Topic**: {DOC_TYPE}.NN.21.SS - [Topic Name from BRD Section 7.2]
 
 #### Inherited Content
 
@@ -587,13 +587,13 @@ flowchart TD
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
 ```markdown
-@brd: BRD.NNN.NNN
-@prd: PRD.NNN.NNN
-@ears: EARS.NNN.NNN
-@bdd: BDD.NNN.NNN
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.24.SS
+@bdd: BDD.NN.13.SS
 ```
 
-**Format**: `@artifact-type: TYPE.NNN.NNN` (Unified Feature ID format)
+**Format**: `@artifact-type: TYPE.NN.EE.SS` (Unified Element ID format: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
 
 **Layer 5 Requirements**: ADR must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -605,10 +605,10 @@ flowchart TD
 
 **Example**:
 ```markdown
-@brd: BRD.001.030
-@prd: PRD.003.002
-@ears: EARS.001.003
-@bdd: BDD.003.001
+@brd: BRD.01.01.30
+@prd: PRD.03.07.02
+@ears: EARS.01.24.03
+@bdd: BDD.03.13.01
 ```
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through BDD) are properly linked.

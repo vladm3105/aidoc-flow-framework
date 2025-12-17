@@ -398,19 +398,19 @@ poetry show | grep -E "(async_client|pydantic)"
 
 ### Required Tags (Mandatory)
 
-- `@brd: BRD.001.042` - Business Requirements (Layer 1)
-- `@prd: PRD.001.015` - Product Requirements (Layer 2)
-- `@ears: EARS.001.003` - EARS Requirements (Layer 3)
-- `@bdd: BDD.001.005` - BDD Scenarios (Layer 4)
+- `@brd: BRD.01.01.42` - Business Requirements (Layer 1)
+- `@prd: PRD.01.01.15` - Product Requirements (Layer 2)
+- `@ears: EARS.01.24.03` - EARS Requirements (Layer 3)
+- `@bdd: BDD.01.13.05` - BDD Scenarios (Layer 4)
 - `@adr: ADR-002` - Architecture Decisions (Layer 5)
-- `@sys: SYS.002.001` - System Requirements (Layer 6)
-- `@req: REQ.001.001` - Atomic Requirements (Layer 7)
+- `@sys: SYS.02.25.01` - System Requirements (Layer 6)
+- `@req: REQ.01.26.01` - Atomic Requirements (Layer 7)
 - `@spec: SPEC-001` - Technical Specifications (Layer 10)
-- `@tasks: TASKS.001.001` - Code Generation Plan (Layer 11)
+- `@tasks: TASKS.01.29.01` - Code Generation Plan (Layer 11)
 
 ### Optional Tags
 
-- `@impl: IMPL.001.001` - Implementation Plan (Layer 8)
+- `@impl: IMPL.01.28.01` - Implementation Plan (Layer 8)
 - `@ctr: CTR-001` - Interface Contract (Layer 9)
 ```
 

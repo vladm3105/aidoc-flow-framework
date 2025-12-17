@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type SPEC --output docs/SPEC/
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@spec: SPEC.001.NNN` (for specific requirements) or `@spec: SPEC-001` (for single-doc refs)
+**Tag Format:** `@spec: SPEC.01.27.NN` (for specific requirements) or `@spec: SPEC-001` (for single-doc refs)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -93,14 +93,14 @@ SPEC documents use YAML format with a dedicated `cumulative_tags` section:
 
 ```yaml
 cumulative_tags:
-  brd: "BRD.009.015"
-  prd: "PRD.016.003"
-  ears: "EARS.012.002"
-  bdd: "BDD.015.001"
+  brd: "BRD.09.01.15"
+  prd: "PRD.16.01.03"
+  ears: "EARS.12.24.02"
+  bdd: "BDD.15.13.01"
   adr: "ADR-033"
-  sys: "SYS.012.001"
-  req: "REQ.045.001"
-  impl: "IMPL.003.002"  # Optional - include if exists
+  sys: "SYS.12.25.01"
+  req: "REQ.45.26.01"
+  impl: "IMPL.03.28.02"  # Optional - include if exists
   ctr: "CTR-005"  # Optional - include if exists
 ```
 
@@ -125,14 +125,14 @@ status: active
 # Required: 7 upstream tags (BRD through REQ)
 # Optional: IMPL, CTR (include if they exist in chain)
 cumulative_tags:
-  brd: "BRD.009.015, BRD.009.006"
-  prd: "PRD.016.003"
-  ears: "EARS.012.002, EARS.012.001"
-  bdd: "BDD.015.001, BDD.015.002"
+  brd: "BRD.09.01.15, BRD.09.01.06"
+  prd: "PRD.16.01.03"
+  ears: "EARS.12.24.02, EARS.12.24.01"
+  bdd: "BDD.15.13.01, BDD.15.13.02"
   adr: "ADR-033"
-  sys: "SYS.012.001, SYS.012.002"
-  req: "REQ.045.001, REQ.045.002"
-  impl: "IMPL.003.002"  # Optional
+  sys: "SYS.12.25.01, SYS.12.25.02"
+  req: "REQ.45.26.01, REQ.45.26.02"
+  impl: "IMPL.03.28.02"  # Optional
   ctr: "CTR-005"  # Optional
 
 component:
@@ -151,13 +151,13 @@ When IMPL and CTR don't exist in the traceability chain:
 # SPEC-040: Simple Data Processor Specification
 
 cumulative_tags:
-  brd: "BRD.001.020"
-  prd: "PRD.003.005"
-  ears: "EARS.005.001"
-  bdd: "BDD.008.001"
+  brd: "BRD.01.01.20"
+  prd: "PRD.03.01.05"
+  ears: "EARS.05.24.01"
+  bdd: "BDD.08.13.01"
   adr: "ADR-015"
-  sys: "SYS.020.003"
-  req: "REQ.030.001"
+  sys: "SYS.20.25.03"
+  req: "REQ.30.26.01"
   # No IMPL or CTR - not needed for this component
 
 component:

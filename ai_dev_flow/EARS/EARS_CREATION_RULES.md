@@ -108,9 +108,12 @@ EARS documents require specific structural elements for behavioral specification
 
 - **Filename**: `EARS-NNN_descriptive_title.md`
 - **H1**: `# EARS-NNN: [Short Descriptive Title]`
-- **Statement IDs**: `EARS.{DocID}.{Num}` format (e.g., `EARS.006.001`, `EARS.006.002`)
-  - Sequential numbering within document (001, 002, 003...)
+- **Statement IDs**: `EARS.{DocNum}.24.{Seq}` format (e.g., `EARS.06.24.01`, `EARS.06.24.02`)
+  - Unified Element ID format: TYPE.NN.EE.SS (DOC_NUM.ELEM_TYPE.SEQ)
+  - Element type 24 = EARS Statement
+  - Sequential numbering within document (01, 02, 03...)
   - ❌ **DEPRECATED**: Do NOT use category prefixes (E, S, U, UB, EVENT, STATE, UNWANTED, UBIQ)
+  - ❌ **DEPRECATED**: Do NOT use 3-segment format (EARS.NNN.NNN)
 
 ---
 
@@ -158,13 +161,13 @@ for [scope/context].
 Always use triple backticks for EARS statements:
 
 ````markdown
-**EARS.001.001: Requirement Name**
+**EARS.01.24.01: Requirement Name**
 ```
 WHEN [condition],
 THE [component] SHALL [action]
 WITHIN [constraint].
 ```
-**Traceability**: @brd: BRD.001.001 | @prd: PRD.001.001
+**Traceability**: @brd: BRD.01.01.01 | @prd: PRD.01.07.01
 ````
 
 ---
@@ -187,9 +190,9 @@ EARS documents use unified sequential numbering for all requirements including q
 ### Quality Attribute Inheritance
 
 When formalizing quality attributes from BRD/PRD:
-- **Use sequential numbering**: All requirements numbered sequentially (001, 002, 003...)
+- **Use sequential numbering**: All requirements numbered sequentially (01, 02, 03...)
 - **Add EARS formalization**: Apply WHEN-THE-SHALL-WITHIN syntax
-- **Maintain traceability**: `@brd: BRD.017.015`
+- **Maintain traceability**: `@brd: BRD.17.01.15`
 
 ### Quality Attribute Categories
 
@@ -254,15 +257,15 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 ### Standard Format
 
 ```markdown
-**Traceability**: @brd: BRD.NNN.NNN | @prd: PRD.NNN.NNN | @threshold: PRD.035.category.key
+**Traceability**: @brd: BRD.NN.01.SS | @prd: PRD.NN.07.SS | @threshold: PRD.035.category.key
 ```
 
 ### Required Tags
 
 | Tag | Format | When Required |
 |-----|--------|---------------|
-| @brd | BRD.NNN.NNN | Always |
-| @prd | PRD.NNN.NNN | Always |
+| @brd | BRD.NN.01.SS | Always |
+| @prd | PRD.NN.07.SS | Always |
 | @threshold | PRD.035.category.key | When referencing timing/limits |
 | @entity | PRD.004.EntityName | When referencing data entities |
 | @ctr | CTR-NNN | When referencing API contracts |
@@ -389,7 +392,7 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 2. Check for:
    - Tag consistency (all use `ears`)
    - document_type consistency (all use `ears`)
-   - Source Document format (`@prd: PRD.NNN.NNN`)
+   - Source Document format (`@prd: PRD.NN.07.SS`)
    - Section numbering (sequential)
 3. Fix any errors before continuing
 
@@ -410,9 +413,9 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 | `ears-NNN` | `ears` |
 | `document_type: engineering-requirements` | `document_type: ears` |
 | `architecture_approach: value` | `architecture_approaches: [value]` |
-| `Source Document: PRD-NNN` | `Source Document: @prd: PRD.NNN.NNN` |
+| `Source Document: PRD-NNN` | `Source Document: @prd: PRD.NN.07.SS` |
 | `> **Tags**: @prd: ...` | `**Traceability**: @prd: ...` |
-| `@prd: PRD.001.001, @threshold: ...` | `@prd: PRD.001.001 \| @threshold: ...` |
+| `@prd: PRD.01.07.01, @threshold: ...` | `@prd: PRD.01.07.01 \| @threshold: ...` |
 | `Status: Approved` (with 50% BDD score) | `Status: Draft` |
 
 ### Session Summary Template
@@ -465,7 +468,7 @@ python scripts/validate_cross_document.py --layer EARS --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

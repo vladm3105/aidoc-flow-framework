@@ -204,7 +204,7 @@ CTR is referenced by:
 ```markdown
 ## Traceability Tags
 
-@req: REQ.001.001, REQ.002.001
+@req: REQ.01.26.01, REQ.02.26.01
 @adr: ADR-003
 @spec: SPEC-001
 ```

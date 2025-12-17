@@ -233,7 +233,7 @@ find docs/SYS -name "SYS-*.md" -exec ./scripts/validate_sys_template.sh {} \;
 ### Mistake #4: Incomplete Traceability
 ```
 ❌ @brd: BRD-001
-✅ @brd: BRD.001.030, @prd: PRD.003.002
+✅ @brd: BRD.01.01.30, @prd: PRD.03.01.02
 ```
 
 ---

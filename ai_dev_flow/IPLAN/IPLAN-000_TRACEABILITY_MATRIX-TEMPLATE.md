@@ -118,25 +118,25 @@ This matrix tracks all iplan documents, mapping:
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD.009.015
-@prd: PRD.016.003
-@ears: EARS.012.002
-@bdd: BDD.015.001
+@brd: BRD.09.01.15
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02
+@bdd: BDD.15.13.01
 @adr: ADR-033
-@sys: SYS.012.001
-@req: REQ.045.001
-@impl: IMPL.003.002
+@sys: SYS.12.25.01
+@req: REQ.45.26.01
+@impl: IMPL.03.28.02
 @ctr: CTR-005
 @spec: SPEC-018
-@tasks: TASKS.015.001
+@tasks: TASKS.15.29.01
 ```
 
 **Format Rules**:
 - Prefix: `@` symbol
 - Artifact Type: lowercase (`brd`, `prd`, `ears`, `bdd`, `adr`, `sys`, `req`, `spec`, `tasks`)
-- Separator: colon `:` after artifact type, dot `.` between document ID and requirement ID
+- Separator: colon `:` after artifact type, dot `.` between document ID and element ID
 - Document ID: Standard format (e.g., `IPLAN-NNN`)
-- Unified Feature ID: `TYPE.NNN.NNN` format (e.g., `BRD.009.015`)
+- Unified Element ID: `TYPE.NN.EE.SS` format (e.g., `BRD.09.01.15`)
 - Multiple Values: comma-separated for same artifact type
 
 ### 2.3 Example: IPLAN with Required Tags
@@ -150,17 +150,17 @@ This matrix tracks all iplan documents, mapping:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 12):
 ```markdown
-@brd: BRD.009.015
-@prd: PRD.016.003
-@ears: EARS.012.002
-@bdd: BDD.015.001
+@brd: BRD.09.01.15
+@prd: PRD.16.01.03
+@ears: EARS.12.24.02
+@bdd: BDD.15.13.01
 @adr: ADR-033
-@sys: SYS.012.001
-@req: REQ.045.001
-@impl: IMPL.003.002
+@sys: SYS.12.25.01
+@req: REQ.45.26.01
+@impl: IMPL.03.28.02
 @ctr: CTR-005
 @spec: SPEC-018
-@tasks: TASKS.015.001
+@tasks: TASKS.15.29.01
 ```
 
 ### 7.2 Downstream Artifacts
@@ -239,14 +239,14 @@ All iplan documents MUST include these tags to maintain traceability chain:
 
 **Examples**:
 ```markdown
-✅ Correct: @brd: BRD.001.042
+✅ Correct: @brd: BRD.01.01.42
 ✅ Correct: @adr: ADR-002
 ✅ Correct: @spec: SPEC-001
-✅ Correct: @tasks: TASKS.001.001
+✅ Correct: @tasks: TASKS.01.29.01
 
-❌ Wrong: @BRD: brd.001.042 (case incorrect)
-❌ Wrong: @brd:BRD.001.042 (missing space)
-❌ Wrong: @brd BRD.001.042 (wrong separators)
+❌ Wrong: @BRD: brd.01.01.42 (case incorrect)
+❌ Wrong: @brd:BRD.01.01.42 (missing space)
+❌ Wrong: @brd BRD.01.01.42 (wrong separators)
 ```
 
 ### 3.4 Validation Requirements for Complete Chain

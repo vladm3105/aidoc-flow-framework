@@ -216,14 +216,14 @@ yaml_version=$(grep "version:" "$CTR_YAML_FILE" | head -1)
 
 ```markdown
 # Correct formats
-@req: REQ.001.001, REQ.002.001
+@req: REQ.01.26.01, REQ.02.26.01
 @adr: ADR-003
 @spec: SPEC-001
 
 # Incorrect formats
-@req: REQ-001         # Old format (use unified REQ.NNN.NNN)
+@req: REQ-001         # Old format (use unified REQ.NN.EE.SS)
 @req: REQ001          # Missing separators
-@req REQ.001.001      # Missing colon
+@req REQ.01.26.01     # Missing colon
 @requirement: REQ-001 # Wrong tag name
 ```
 

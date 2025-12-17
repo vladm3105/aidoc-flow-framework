@@ -159,17 +159,17 @@ Include these tags if present in your project:
 ```markdown
 ## Traceability Tags
 
-@brd: BRD.001.042
-@prd: PRD.001.015
-@ears: EARS.001.003
-@bdd: BDD.001.005, BDD.007.012
+@brd: BRD.01.01.42
+@prd: PRD.01.01.15
+@ears: EARS.01.24.03
+@bdd: BDD.01.13.05, BDD.07.13.12
 @adr: ADR-002, ADR-005
-@sys: SYS.002.001
-@req: REQ.001.001, REQ.002.001, REQ.003.001, REQ.010.001
-@impl: IMPL.001.001 (optional - if project uses IMPL)
+@sys: SYS.02.25.01
+@req: REQ.01.26.01, REQ.02.26.01, REQ.03.26.01, REQ.10.26.01
+@impl: IMPL.01.28.01 (optional - if project uses IMPL)
 @ctr: CTR-001 (optional - if contracts defined)
 @spec: SPEC-001
-@tasks: TASKS.001.001, TASKS.001.004
+@tasks: TASKS.01.29.01, TASKS.01.29.04
 ```
 
 ### Tag Inheritance Rules
@@ -231,31 +231,31 @@ python /opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_d
 
 **Example 1: Project with IMPL and CTR**:
 ```markdown
-@brd: BRD.001.042
-@prd: PRD.001.015
-@ears: EARS.001.003
-@bdd: BDD.001.005
+@brd: BRD.01.01.42
+@prd: PRD.01.01.15
+@ears: EARS.01.24.03
+@bdd: BDD.01.13.05
 @adr: ADR-002
-@sys: SYS.002.001
-@req: REQ.001.001, REQ.002.001
-@impl: IMPL.001.001 (present in this project)
+@sys: SYS.02.25.01
+@req: REQ.01.26.01, REQ.02.26.01
+@impl: IMPL.01.28.01 (present in this project)
 @ctr: CTR-001 (present in this project)
 @spec: SPEC-001
-@tasks: TASKS.001.001
+@tasks: TASKS.01.29.01
 ```
 Total: 11 tags (9 mandatory + 2 optional)
 
 **Example 2: Project without IMPL and CTR**:
 ```markdown
-@brd: BRD.001.042
-@prd: PRD.001.015
-@ears: EARS.001.003
-@bdd: BDD.001.005
+@brd: BRD.01.01.42
+@prd: PRD.01.01.15
+@ears: EARS.01.24.03
+@bdd: BDD.01.13.05
 @adr: ADR-002
-@sys: SYS.002.001
-@req: REQ.001.001, REQ.002.001
+@sys: SYS.02.25.01
+@req: REQ.01.26.01, REQ.02.26.01
 @spec: SPEC-001
-@tasks: TASKS.001.001
+@tasks: TASKS.01.29.01
 ```
 Total: 9 tags (all mandatory, no optional)
 
@@ -457,19 +457,19 @@ poetry show | grep async_client
 
 ### Required Tags (Mandatory)
 
-- `@brd: BRD.001.042` - Business Requirements Document (Layer 1)
-- `@prd: PRD.001.015` - Product Requirements Document (Layer 2)
-- `@ears: EARS.001.003` - Event-Action-Response-State (Layer 3)
-- `@bdd: BDD.001.005` - Behavior-Driven Development (Layer 4)
+- `@brd: BRD.01.01.42` - Business Requirements Document (Layer 1)
+- `@prd: PRD.01.01.15` - Product Requirements Document (Layer 2)
+- `@ears: EARS.01.24.03` - Event-Action-Response-State (Layer 3)
+- `@bdd: BDD.01.13.05` - Behavior-Driven Development (Layer 4)
 - `@adr: ADR-002` - Architecture Decision Record (Layer 5)
-- `@sys: SYS.002.001` - System Requirements (Layer 6)
-- `@req: REQ.001.001` - Atomic Requirements (Layer 7)
+- `@sys: SYS.02.25.01` - System Requirements (Layer 6)
+- `@req: REQ.01.26.01` - Atomic Requirements (Layer 7)
 - `@spec: SPEC-001` - Technical Specification (Layer 10)
-- `@tasks: TASKS.001.001` - Code Generation Plan (Layer 11)
+- `@tasks: TASKS.01.29.01` - Code Generation Plan (Layer 11)
 
 ### Optional Tags (If Present in Project)
 
-- `@impl: IMPL.001.001` - Implementation Plan (Layer 8)
+- `@impl: IMPL.01.28.01` - Implementation Plan (Layer 8)
 - `@ctr: CTR-001` - Interface Contract (Layer 9)
 ```
 
@@ -571,7 +571,7 @@ flowchart TB
 **Tagging**:
 ```markdown
 @spec: SPEC-001
-@req: REQ.001.001, REQ.002.001
+@req: REQ.01.26.01, REQ.02.26.01
 @adr: ADR-002
 ```
 
@@ -620,7 +620,7 @@ git commit -m "feat: implement service connector
 Implements: IPLAN-001
 Parent: TASKS-001
 Satisfies: REQ-001, REQ-002
-Tests: BDD.001.005
+Tests: BDD.01.13.05
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -782,7 +782,7 @@ ls -ld src/module && touch src/module/test.tmp && rm src/module/test.tmp
 ```markdown
 ### Implementation of TASKS-001 Phase 2.1
 
-Per [TASKS.001.001](../TASKS/path/TASKS-001.md#phase-21-implement-connection-service):
+Per [TASKS.01.29.01](../TASKS/path/TASKS-001.md#phase-21-implement-connection-service):
 > "Create ServiceConnector class with async connect() method..."
 
 Implementation:
@@ -1152,7 +1152,7 @@ Error: Missing required tag @bdd
 **Solution**:
 1. Review cumulative tagging requirements section above
 2. Identify missing layer (Layer 4: BDD in this case)
-3. Add tag with correct format: `@bdd: BDD.001.005`
+3. Add tag with correct format: `@bdd: BDD.01.13.05`
 4. Verify upstream BDD document exists
 5. Rerun validation script
 
@@ -1256,10 +1256,10 @@ ls /opt/data/docs_flow_framework/ai_dev_flow/REQ/REQ-001.md
 **Solution 1**: Correct document path
 ```markdown
 # ❌ Wrong path
-@req: REQ.001.001
+@req: REQ.01.26.01
 
 # ✅ Correct with full path verification
-@req: REQ.001.001 (verified: /opt/data/project/docs/REQ/REQ-001.md exists)
+@req: REQ.01.26.01 (verified: /opt/data/project/docs/REQ/REQ-001.md exists)
 ```
 
 **Solution 2**: Create missing document

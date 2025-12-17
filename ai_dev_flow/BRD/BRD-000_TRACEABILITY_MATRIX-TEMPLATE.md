@@ -56,7 +56,9 @@ python scripts/generate_traceability_matrices.py --type BRD --output docs/BRD/BR
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@brd: BRD.NNN.NNN` (unified feature-level format, e.g., `BRD.001.030`)
+**Tag Format:** `@brd: BRD.NN.01.SS` (unified element ID format, e.g., `BRD.01.01.30`)
+
+**Format**: TYPE.NN.EE.SS (DOC_NUM.ELEM_TYPE.SEQ) - Element type 01 = Functional Requirement
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -124,9 +126,9 @@ However, BRD documents should reference their strategic sources in the "Upstream
 ### 12.2 Downstream Artifacts
 
 **Direct Dependencies**:
-- PRD.016.001: operation execution Product Requirements (`@brd: BRD.009.015`)
-- PRD.017.001: Order Management Features (`@brd: BRD.009.020`)
-- EARS.012.001: Formal operation execution requirements (`@brd: BRD.009.015`)
+- PRD.16.07.01: operation execution Product Requirements (`@brd: BRD.09.01.15`)
+- PRD.17.07.01: Order Management Features (`@brd: BRD.09.01.20`)
+- EARS.12.24.01: Formal operation execution requirements (`@brd: BRD.09.01.15`)
 ```
 
 ### 2.4 Validation Rules

@@ -756,15 +756,15 @@ API contracts and interface agreements for external integration.
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
 ```markdown
-@brd: BRD.NNN.NNN
-@prd: PRD.NNN.NNN
-@ears: EARS.NNN.NNN
-@bdd: BDD.NNN.NNN
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.24.SS
+@bdd: BDD.NN.13.SS
 @adr: ADR-NNN
 @threshold: PRD.NNN  # Threshold registry reference (when quantitative values used)
 ```
 
-**Format**: `@artifact-type: TYPE.NNN.NNN` (Unified Feature ID format)
+**Format**: `@artifact-type: TYPE.NN.EE.SS` (Unified Element ID format: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
 
 **Layer 6 Requirements**: SYS must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -778,10 +778,10 @@ API contracts and interface agreements for external integration.
 
 **Example**:
 ```markdown
-@brd: BRD.001.030
-@prd: PRD.003.002
-@ears: EARS.001.003
-@bdd: BDD.003.001
+@brd: BRD.01.01.30
+@prd: PRD.03.07.02
+@ears: EARS.01.24.03
+@bdd: BDD.03.13.01
 @adr: ADR-033
 @threshold: PRD.003  # References threshold registry for performance/SLA values
 ```

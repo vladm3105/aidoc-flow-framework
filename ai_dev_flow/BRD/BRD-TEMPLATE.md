@@ -529,7 +529,9 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 **NOTE**: Functional requirements must be written at business level, NOT technical/implementation level. See Appendix B for PRD-level content exclusions and Appendix C for reference examples.
 
-### BRD.NNN.001: [Requirement Title - Business Capability Name]
+### BRD.NN.01.01: [Requirement Title - Business Capability Name]
+
+**ID Format**: `BRD.NN.01.SS` (Feature Requirement - Element Type 01)
 
 **Business Capability**: [One-sentence high-level description of what business capability this requirement enables]
 
@@ -557,16 +559,16 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 **Related Requirements**:
 
-- Platform BRDs: [e.g., BRD-NNN (Platform Architecture), BRD-NNN (Partner Ecosystem)]
-- Partner Integration BRDs: [e.g., BRD-XXX (Partner Name)]
-- Related Feature BRDs: [e.g., BRD-YYY (Related Feature)]
-- Compliance BRDs: [e.g., BRD-NNN (security & Compliance)]
+- Platform BRDs: [e.g., BRD.01.01.XX (Platform Architecture), BRD.02.01.XX (Partner Ecosystem)]
+- Partner Integration BRDs: [e.g., BRD.03.01.XX (Partner Name)]
+- Related Feature BRDs: [e.g., BRD.04.01.XX (Related Feature)]
+- Compliance BRDs: [e.g., BRD.05.01.XX (Security & Compliance)]
 
 **Complexity**: X/5 ([Business-level rationale: number of partners involved, regulatory scope, business constraints, cross-BRD dependencies])
 
 ---
 
-### BRD.NNN.002: [Next Requirement Title]
+### BRD.NN.01.02: [Next Requirement Title]
 
 **Business Capability**: [One-sentence description]
 
@@ -653,13 +655,15 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 ### 7.2 Architecture Decision Requirements
 
-The following architectural topics require formal Architecture Decision Records (ADRs). Each topic uses subsection format `{DOC_TYPE}.NNN.NNN` (3-digit topic number) containing **business content only**. Technical options and evaluation criteria belong in PRD Section 18.
+The following architectural topics require formal Architecture Decision Records (ADRs). Each topic uses subsection format `{DOC_TYPE}.NN.21.SS` (Architecture Topic - Element Type 21) containing **business content only**. Technical options and evaluation criteria belong in PRD Section 18.
 
 **Format Reference**: See `ai_dev_flow/ID_NAMING_STANDARDS.md` - "Architecture Decision Topic Subsection Format"
 
 ---
 
-#### BRD.NNN.001: [Topic Name]
+#### BRD.NN.21.01: [Topic Name]
+
+**ID Format**: `BRD.NN.21.SS` (Architecture Topic - Element Type 21)
 
 **Business Driver**: [Why this decision matters to business - reference upstream business objectives from sections 3-5]
 
@@ -671,7 +675,7 @@ The following architectural topics require formal Architecture Decision Records 
 
 ---
 
-#### BRD.NNN.002: [Topic Name]
+#### BRD.NN.21.02: [Topic Name]
 
 **Business Driver**: [Why this decision matters to business]
 
@@ -696,10 +700,10 @@ The following architectural topics require formal Architecture Decision Records 
 **Example** (Business-Focused):
 
 ```markdown
-#### BRD.001.003: Ledger System Selection
+#### BRD.01.21.03: Ledger System Selection
 
 **Business Driver**: Real-time financial position visibility required for treasury
-management (BRD.001.004) and regulatory reporting (Section 8.4.2 BSA compliance).
+management (BRD.01.21.04) and regulatory reporting (Section 8.4.2 BSA compliance).
 
 **Business Constraints**:
 - Must support multi-currency operations (USD, UZS, USDC) per Section 3.2 market requirements
@@ -715,77 +719,89 @@ management (BRD.001.004) and regulatory reporting (Section 8.4.2 BSA compliance)
 
 ---
 
-### 7.3 Performance Requirements (901-920)
+### 7.3 Performance Requirements
+
+**ID Format**: `BRD.NN.02.SS` (Quality Attribute - Element Type 02)
 
 | Req ID | Requirement Description | Metric | Target | Priority | Rationale |
 |--------|------------------------|--------|--------|----------|-----------|
-| BRD.NNN.901 | System response time for [action] | Response time | [X] seconds | P1 | [Business reason] |
-| BRD.NNN.902 | System throughput capacity | Transactions/second | [X] TPS | P1 | [Business reason] |
-| BRD.NNN.903 | Concurrent user support | Number of users | [X] users | P1 | [Business reason] |
-| BRD.NNN.904 | Page load time | Load time | [X] seconds | P2 | [Business reason] |
-| BRD.NNN.905 | Report generation time | Processing time | [X] minutes | P2 | [Business reason] |
+| BRD.NN.02.01 | System response time for [action] | Response time | [X] seconds | P1 | [Business reason] |
+| BRD.NN.02.02 | System throughput capacity | Transactions/second | [X] TPS | P1 | [Business reason] |
+| BRD.NN.02.03 | Concurrent user support | Number of users | [X] users | P1 | [Business reason] |
+| BRD.NN.02.04 | Page load time | Load time | [X] seconds | P2 | [Business reason] |
+| BRD.NN.02.05 | Report generation time | Processing time | [X] minutes | P2 | [Business reason] |
 
-### 7.4 Security Requirements (961-980)
+### 7.4 Security Requirements
+
+**ID Format**: `BRD.NN.02.SS` (Quality Attribute - Element Type 02)
 
 | Req ID | Requirement Description | Standard/Framework | Priority | Validation Method |
 |--------|------------------------|-------------------|----------|-------------------|
-| BRD.NNN.961 | Authentication mechanism | [e.g., Multi-factor authentication] | P1 | [How to verify] |
-| BRD.NNN.962 | Data encryption at rest | [e.g., AES-256] | P1 | [How to verify] |
-| BRD.NNN.963 | Data encryption in transit | [e.g., TLS 1.3] | P1 | [How to verify] |
-| BRD.NNN.964 | Access control | [e.g., Role-based access control] | P1 | [How to verify] |
-| BRD.NNN.965 | Audit logging | [Requirements for audit trails] | P1 | [How to verify] |
-| BRD.NNN.966 | Password complexity | [Password policy requirements] | P2 | [How to verify] |
-| BRD.NNN.967 | Session timeout | [e.g., 15 minutes of inactivity] | P2 | [How to verify] |
-| BRD.NNN.968 | Compliance: GDPR | [Specific compliance requirement] | P1 | [Audit method] |
-| BRD.NNN.969 | Compliance: HIPAA | [Specific compliance requirement] | P1 | [Audit method] |
-| BRD.NNN.970 | Compliance: PCI-DSS | [Specific compliance requirement] | P1 | [Audit method] |
+| BRD.NN.02.10 | Authentication mechanism | [e.g., Multi-factor authentication] | P1 | [How to verify] |
+| BRD.NN.02.11 | Data encryption at rest | [e.g., AES-256] | P1 | [How to verify] |
+| BRD.NN.02.12 | Data encryption in transit | [e.g., TLS 1.3] | P1 | [How to verify] |
+| BRD.NN.02.13 | Access control | [e.g., Role-based access control] | P1 | [How to verify] |
+| BRD.NN.02.14 | Audit logging | [Requirements for audit trails] | P1 | [How to verify] |
+| BRD.NN.02.15 | Password complexity | [Password policy requirements] | P2 | [How to verify] |
+| BRD.NN.02.16 | Session timeout | [e.g., 15 minutes of inactivity] | P2 | [How to verify] |
+| BRD.NN.02.17 | Compliance: GDPR | [Specific compliance requirement] | P1 | [Audit method] |
+| BRD.NN.02.18 | Compliance: HIPAA | [Specific compliance requirement] | P1 | [Audit method] |
+| BRD.NN.02.19 | Compliance: PCI-DSS | [Specific compliance requirement] | P1 | [Audit method] |
 
-### 7.5 Reliability Requirements (921-940)
+### 7.5 Reliability Requirements
+
+**ID Format**: `BRD.NN.02.SS` (Quality Attribute - Element Type 02)
 
 | Req ID | Requirement Description | Target | Priority | Measurement Period |
 |--------|------------------------|--------|----------|-------------------|
-| BRD.NNN.921 | System uptime | [e.g., 99.9%] | P1 | [Monthly/Annually] |
-| BRD.NNN.922 | Planned maintenance window | [e.g., 4 hours/month] | P1 | [Monthly] |
-| BRD.NNN.923 | Mean Time Between Failures (MTBF) | [X hours/days] | P2 | [Annually] |
-| BRD.NNN.924 | Mean Time To Repair (MTTR) | [X hours] | P1 | [Per incident] |
-| BRD.NNN.925 | Backup frequency | [Daily/Weekly] | P1 | [Per policy] |
-| BRD.NNN.926 | Recovery Time Objective (RTO) | [X hours] | P1 | [Per incident] |
-| BRD.NNN.927 | Recovery Point Objective (RPO) | [X hours] | P1 | [Per incident] |
-| BRD.NNN.928 | Disaster recovery plan | [Plan requirements] | P1 | [Annual/Biannual] |
-| BRD.NNN.929 | Backup and restore procedures | [Specific procedures] | P1 | [Quarterly] |
-| BRD.NNN.930 | Failover capability | [Automatic/Manual, timeframe] | P1 | [Biannual] |
-| BRD.NNN.931 | Geographic redundancy | [Requirements] | P2 | [Annual] |
+| BRD.NN.02.20 | System uptime | [e.g., 99.9%] | P1 | [Monthly/Annually] |
+| BRD.NN.02.21 | Planned maintenance window | [e.g., 4 hours/month] | P1 | [Monthly] |
+| BRD.NN.02.22 | Mean Time Between Failures (MTBF) | [X hours/days] | P2 | [Annually] |
+| BRD.NN.02.23 | Mean Time To Repair (MTTR) | [X hours] | P1 | [Per incident] |
+| BRD.NN.02.24 | Backup frequency | [Daily/Weekly] | P1 | [Per policy] |
+| BRD.NN.02.25 | Recovery Time Objective (RTO) | [X hours] | P1 | [Per incident] |
+| BRD.NN.02.26 | Recovery Point Objective (RPO) | [X hours] | P1 | [Per incident] |
+| BRD.NN.02.27 | Disaster recovery plan | [Plan requirements] | P1 | [Annual/Biannual] |
+| BRD.NN.02.28 | Backup and restore procedures | [Specific procedures] | P1 | [Quarterly] |
+| BRD.NN.02.29 | Failover capability | [Automatic/Manual, timeframe] | P1 | [Biannual] |
+| BRD.NN.02.30 | Geographic redundancy | [Requirements] | P2 | [Annual] |
 
-### 7.6 Scalability Requirements (941-960)
+### 7.6 Scalability Requirements
+
+**ID Format**: `BRD.NN.02.SS` (Quality Attribute - Element Type 02)
 
 | Req ID | Requirement Description | Current | Year 1 | Year 3 | Priority |
 |--------|------------------------|---------|--------|--------|----------|
-| BRD.NNN.941 | User growth capacity | [X users] | [X users] | [X users] | P1 |
-| BRD.NNN.942 | Data volume growth | [X GB/TB] | [X GB/TB] | [X GB/TB] | P1 |
-| BRD.NNN.943 | Transaction volume growth | [X per day] | [X per day] | [X per day] | P2 |
-| BRD.NNN.944 | Storage expansion capability | [Description] | [Target] | [Target] | P2 |
+| BRD.NN.02.40 | User growth capacity | [X users] | [X users] | [X users] | P1 |
+| BRD.NN.02.41 | Data volume growth | [X GB/TB] | [X GB/TB] | [X GB/TB] | P1 |
+| BRD.NN.02.42 | Transaction volume growth | [X per day] | [X per day] | [X per day] | P2 |
+| BRD.NN.02.43 | Storage expansion capability | [Description] | [Target] | [Target] | P2 |
 
-### 7.7 Observability Requirements (981-990)
+### 7.7 Observability Requirements
 
-| Req ID | Requirement Description | Target | Priority | Measurement |
-|--------|------------------------|--------|----------|-------------|
-| BRD.NNN.981 | System monitoring capabilities | [Required monitoring] | P1 | [Monitoring dashboard] |
-| BRD.NNN.982 | Error logging and reporting | [Logging requirements] | P1 | [Log analysis] |
-| BRD.NNN.983 | Alerting thresholds | [Alert conditions] | P1 | [Alert review] |
-| BRD.NNN.984 | Distributed tracing | [Tracing requirements] | P2 | [Trace analysis] |
-
-### 7.8 Maintainability Requirements (991-999)
+**ID Format**: `BRD.NN.02.SS` (Quality Attribute - Element Type 02)
 
 | Req ID | Requirement Description | Target | Priority | Measurement |
 |--------|------------------------|--------|----------|-------------|
-| BRD.NNN.991 | Code documentation standards | [Standard to follow] | P2 | [Review process] |
-| BRD.NNN.992 | Version control | [Version control system] | P1 | [Repository review] |
-| BRD.NNN.993 | User interface design standards | [e.g., WCAG 2.1 AA] | P1 | [Usability testing] |
-| BRD.NNN.994 | Accessibility compliance | [e.g., section 508, ADA] | P1 | [Accessibility audit] |
-| BRD.NNN.995 | Browser compatibility | [List supported browsers/versions] | P1 | [Cross-browser testing] |
-| BRD.NNN.996 | Mobile device support | [iOS/Android versions] | P2 | [Device testing] |
-| BRD.NNN.997 | Online help availability | [Context-sensitive help] | P2 | [Documentation review] |
-| BRD.NNN.998 | Multilingual support | [Languages required] | P3 | [Translation verification] |
+| BRD.NN.02.50 | System monitoring capabilities | [Required monitoring] | P1 | [Monitoring dashboard] |
+| BRD.NN.02.51 | Error logging and reporting | [Logging requirements] | P1 | [Log analysis] |
+| BRD.NN.02.52 | Alerting thresholds | [Alert conditions] | P1 | [Alert review] |
+| BRD.NN.02.53 | Distributed tracing | [Tracing requirements] | P2 | [Trace analysis] |
+
+### 7.8 Maintainability Requirements
+
+**ID Format**: `BRD.NN.02.SS` (Quality Attribute - Element Type 02)
+
+| Req ID | Requirement Description | Target | Priority | Measurement |
+|--------|------------------------|--------|----------|-------------|
+| BRD.NN.02.60 | Code documentation standards | [Standard to follow] | P2 | [Review process] |
+| BRD.NN.02.61 | Version control | [Version control system] | P1 | [Repository review] |
+| BRD.NN.02.62 | User interface design standards | [e.g., WCAG 2.1 AA] | P1 | [Usability testing] |
+| BRD.NN.02.63 | Accessibility compliance | [e.g., section 508, ADA] | P1 | [Accessibility audit] |
+| BRD.NN.02.64 | Browser compatibility | [List supported browsers/versions] | P1 | [Cross-browser testing] |
+| BRD.NN.02.65 | Mobile device support | [iOS/Android versions] | P2 | [Device testing] |
+| BRD.NN.02.66 | Online help availability | [Context-sensitive help] | P2 | [Documentation review] |
+| BRD.NN.02.67 | Multilingual support | [Languages required] | P3 | [Translation verification] |
 
 ### 7.9 Business Threshold Definitions
 
@@ -853,7 +869,7 @@ This section documents business-level constraints that limit solution design and
 
 Business constraints are external limitations that restrict how business requirements can be fulfilled. These are non-negotiable factors that the solution must accommodate.
 
-**ID Format**: `BC-XXX` (Business Constraint)
+**ID Format**: `BRD.NN.03.SS` (Business Constraint - Element Type 03)
 
 #### 8.1.1 Regulatory Constraints
 
@@ -861,13 +877,13 @@ Constraints imposed by laws, regulations, and compliance requirements.
 
 | ID | Constraint | Impact on Requirements | Source |
 |----|-----------|----------------------|--------|
-| BC-001 | [Regulatory constraint statement] | [How this affects business requirements] | [Regulation/Law reference] |
-| BC-002 | [Regulatory constraint statement] | [How this affects business requirements] | [Regulation/Law reference] |
+| BRD.01.03.01 | [Regulatory constraint statement] | [How this affects business requirements] | [Regulation/Law reference] |
+| BRD.01.03.02 | [Regulatory constraint statement] | [How this affects business requirements] | [Regulation/Law reference] |
 
 **Examples**:
-- BC-001: FinCEN recordkeeping requires 5-year transaction audit trail retention
-- BC-002: OFAC compliance requires real-time sanctions screening for all transactions
-- BC-003: State MTL licensing restricts operations to approved jurisdictions
+- BRD.01.03.01: FinCEN recordkeeping requires 5-year transaction audit trail retention
+- BRD.01.03.02: OFAC compliance requires real-time sanctions screening for all transactions
+- BRD.01.03.03: State MTL licensing restricts operations to approved jurisdictions
 
 #### 8.1.2 Partner SLA Constraints
 
@@ -875,12 +891,12 @@ Constraints imposed by partner agreements and service level commitments.
 
 | ID | Constraint | Partner | Impact on Requirements |
 |----|-----------|---------|----------------------|
-| BC-0XX | [Partner SLA constraint] | [Partner name] | [How this affects business requirements] |
+| BRD.01.03.XX | [Partner SLA constraint] | [Partner name] | [How this affects business requirements] |
 
 **Examples**:
-- BC-010: Bridge custody settlement requires T+1 for ACH deposits
-- BC-011: Paynet delivery confirmation SLA is 24-48 hours for bank transfers
-- BC-012: Partner API rate limits cap at 1,000 requests per minute
+- BRD.01.03.10: Bridge custody settlement requires T+1 for ACH deposits
+- BRD.01.03.11: Paynet delivery confirmation SLA is 24-48 hours for bank transfers
+- BRD.01.03.12: Partner API rate limits cap at 1,000 requests per minute
 
 #### 8.1.3 Technical Platform Constraints
 
@@ -888,12 +904,12 @@ Constraints from existing technical infrastructure and platform capabilities.
 
 | ID | Constraint | Platform Component | Impact on Requirements |
 |----|-----------|-------------------|----------------------|
-| BC-0XX | [Technical constraint] | [Component] | [How this affects business requirements] |
+| BRD.NN.03.SS | [Technical constraint] | [Component] | [How this affects business requirements] |
 
 **Examples**:
-- BC-020: Platform wallet architecture requires single-currency (USD) balance
-- BC-021: Mobile app deployment requires App Store/Play Store approval cycles
-- BC-022: API gateway timeout limits maximum transaction processing to 30 seconds
+- BRD.01.03.20: Platform wallet architecture requires single-currency (USD) balance
+- BRD.01.03.21: Mobile app deployment requires App Store/Play Store approval cycles
+- BRD.01.03.22: API gateway timeout limits maximum transaction processing to 30 seconds
 
 #### 8.1.4 Operational Constraints
 
@@ -901,12 +917,12 @@ Constraints from business operations, support capacity, and organizational polic
 
 | ID | Constraint | Operational Area | Impact on Requirements |
 |----|-----------|-----------------|----------------------|
-| BC-0XX | [Operational constraint] | [Area] | [How this affects business requirements] |
+| BRD.NN.03.SS | [Operational constraint] | [Area] | [How this affects business requirements] |
 
 **Examples**:
-- BC-030: Compliance team capacity limits manual review queue to 500 cases/day
-- BC-031: Customer support hours (9 AM - 9 PM EST) limit real-time escalation availability
-- BC-032: Quarterly compliance audits require feature freeze periods
+- BRD.01.03.30: Compliance team capacity limits manual review queue to 500 cases/day
+- BRD.01.03.31: Customer support hours (9 AM - 9 PM EST) limit real-time escalation availability
+- BRD.01.03.32: Quarterly compliance audits require feature freeze periods
 
 #### 8.1.5 Budget Constraints
 
@@ -914,12 +930,12 @@ Constraints from approved budget allocations and cost limitations.
 
 | ID | Constraint | Budget Category | Impact on Requirements |
 |----|-----------|----------------|----------------------|
-| BC-0XX | [Budget constraint] | [Category] | [How this affects business requirements] |
+| BRD.NN.03.SS | [Budget constraint] | [Category] | [How this affects business requirements] |
 
 **Examples**:
-- BC-040: Partner integration budget limits initial corridors to 3 countries
-- BC-041: Marketing budget caps launch promotions at 90-day fee waiver period
-- BC-042: Infrastructure budget requires shared hosting for non-production environments
+- BRD.01.03.40: Partner integration budget limits initial corridors to 3 countries
+- BRD.01.03.41: Marketing budget caps launch promotions at 90-day fee waiver period
+- BRD.01.03.42: Infrastructure budget requires shared hosting for non-production environments
 
 #### 8.1.6 Timeline Constraints
 
@@ -927,12 +943,12 @@ Constraints from business deadlines, market windows, and regulatory dates.
 
 | ID | Constraint | Timeline Driver | Impact on Requirements |
 |----|-----------|----------------|----------------------|
-| BC-0XX | [Timeline constraint] | [Driver] | [How this affects business requirements] |
+| BRD.NN.03.SS | [Timeline constraint] | [Driver] | [How this affects business requirements] |
 
 **Examples**:
-- BC-050: Ramadan corridor launch requires completion before religious calendar dates
-- BC-051: Regulatory filing deadline requires compliance features by Q4
-- BC-052: Partner contract renewal requires integration completion within 6 months
+- BRD.01.03.50: Ramadan corridor launch requires completion before religious calendar dates
+- BRD.01.03.51: Regulatory filing deadline requires compliance features by Q4
+- BRD.01.03.52: Partner contract renewal requires integration completion within 6 months
 
 ---
 
@@ -940,7 +956,7 @@ Constraints from business deadlines, market windows, and regulatory dates.
 
 Business assumptions are conditions believed to be true for planning purposes. Each assumption must be validated and has defined impact if proven false.
 
-**ID Format**: `BA-XXX` (Business Assumption)
+**ID Format**: `BRD.NN.04.SS` (Business Assumption - Element Type 04)
 
 #### 8.2.1 Market Assumptions
 
@@ -948,12 +964,12 @@ Assumptions about market conditions, customer demand, and competitive landscape.
 
 | ID | Assumption | Validation Method | Impact if Invalid |
 |----|-----------|------------------|-------------------|
-| BA-001 | [Market assumption] | [How to validate] | [Business impact] |
+| BRD.NN.04.SS | [Market assumption] | [How to validate] | [Business impact] |
 
 **Examples**:
-- BA-001: US-Uzbekistan remittance corridor has sufficient demand (>10,000 monthly transactions)
-- BA-002: Target customers prefer mobile-first remittance experience
-- BA-003: Competitive pricing at 3% all-in cost will drive customer acquisition
+- BRD.01.04.01: US-Uzbekistan remittance corridor has sufficient demand (>10,000 monthly transactions)
+- BRD.01.04.02: Target customers prefer mobile-first remittance experience
+- BRD.01.04.03: Competitive pricing at 3% all-in cost will drive customer acquisition
 
 #### 8.2.2 Partner Assumptions
 
@@ -961,12 +977,12 @@ Assumptions about partner capabilities, availability, and performance.
 
 | ID | Assumption | Partner | Validation Method | Impact if Invalid |
 |----|-----------|---------|------------------|-------------------|
-| BA-0XX | [Partner assumption] | [Partner] | [How to validate] | [Business impact] |
+| BRD.NN.04.SS | [Partner assumption] | [Partner] | [How to validate] | [Business impact] |
 
 **Examples**:
-- BA-010: Bridge custody provider will maintain 99.9% API availability
-- BA-011: Paynet delivery network covers 95% of Uzbekistan banking infrastructure
-- BA-012: Partner onboarding will complete within 30 days of contract signing
+- BRD.01.04.10: Bridge custody provider will maintain 99.9% API availability
+- BRD.01.04.11: Paynet delivery network covers 95% of Uzbekistan banking infrastructure
+- BRD.01.04.12: Partner onboarding will complete within 30 days of contract signing
 
 #### 8.2.3 User Behavior Assumptions
 
@@ -974,12 +990,12 @@ Assumptions about how customers will interact with the solution.
 
 | ID | Assumption | User Segment | Validation Method | Impact if Invalid |
 |----|-----------|-------------|------------------|-------------------|
-| BA-0XX | [User behavior assumption] | [Segment] | [How to validate] | [Business impact] |
+| BRD.NN.04.SS | [User behavior assumption] | [Segment] | [How to validate] | [Business impact] |
 
 **Examples**:
-- BA-020: Users will complete KYC within single session (no drop-off mid-process)
-- BA-021: Repeat senders will use saved recipient feature (80% reuse rate)
-- BA-022: Users accept mobile-only experience (no desktop requirement)
+- BRD.01.04.20: Users will complete KYC within single session (no drop-off mid-process)
+- BRD.01.04.21: Repeat senders will use saved recipient feature (80% reuse rate)
+- BRD.01.04.22: Users accept mobile-only experience (no desktop requirement)
 
 #### 8.2.4 Technical Assumptions
 
@@ -987,12 +1003,12 @@ Assumptions about technical capabilities, integrations, and system behavior.
 
 | ID | Assumption | Technical Area | Validation Method | Impact if Invalid |
 |----|-----------|---------------|------------------|-------------------|
-| BA-0XX | [Technical assumption] | [Area] | [How to validate] | [Business impact] |
+| BRD.NN.04.SS | [Technical assumption] | [Area] | [How to validate] | [Business impact] |
 
 **Examples**:
-- BA-030: Partner APIs will support required transaction volumes (10,000 TPS peak)
-- BA-031: Existing fraud detection model will achieve ≤3% false positive rate
-- BA-032: Mobile app can achieve <3 second transaction initiation time
+- BRD.01.04.30: Partner APIs will support required transaction volumes (10,000 TPS peak)
+- BRD.01.04.31: Existing fraud detection model will achieve ≤3% false positive rate
+- BRD.01.04.32: Mobile app can achieve <3 second transaction initiation time
 
 #### 8.2.5 Financial Assumptions
 
@@ -1000,12 +1016,12 @@ Assumptions about pricing, costs, and financial viability.
 
 | ID | Assumption | Financial Area | Validation Method | Impact if Invalid |
 |----|-----------|---------------|------------------|-------------------|
-| BA-0XX | [Financial assumption] | [Area] | [How to validate] | [Business impact] |
+| BRD.NN.04.SS | [Financial assumption] | [Area] | [How to validate] | [Business impact] |
 
 **Examples**:
-- BA-040: FX spread of 1.5-2% will be competitive in target market
-- BA-041: Customer acquisition cost will be <$50 per active customer
-- BA-042: Break-even achievable at 5,000 monthly active users
+- BRD.01.04.40: FX spread of 1.5-2% will be competitive in target market
+- BRD.01.04.41: Customer acquisition cost will be <$50 per active customer
+- BRD.01.04.42: Break-even achievable at 5,000 monthly active users
 
 #### 8.2.6 Regulatory Assumptions
 
@@ -1013,12 +1029,12 @@ Assumptions about regulatory environment, licensing, and compliance requirements
 
 | ID | Assumption | Regulatory Area | Validation Method | Impact if Invalid |
 |----|-----------|----------------|------------------|-------------------|
-| BA-0XX | [Regulatory assumption] | [Area] | [How to validate] | [Business impact] |
+| BRD.NN.04.SS | [Regulatory assumption] | [Area] | [How to validate] | [Business impact] |
 
 **Examples**:
-- BA-050: MTL licensing will be maintained in all operating states
-- BA-051: Uzbekistan regulatory environment will remain stable for remittance services
-- BA-052: KYC requirements will not significantly change during development period
+- BRD.01.04.50: MTL licensing will be maintained in all operating states
+- BRD.01.04.51: Uzbekistan regulatory environment will remain stable for remittance services
+- BRD.01.04.52: KYC requirements will not significantly change during development period
 
 ---
 
@@ -1026,10 +1042,11 @@ Assumptions about regulatory environment, licensing, and compliance requirements
 
 This section clarifies dependency types and their impact on requirement prioritization.
 
+**ID Format**: `BRD.NN.05.SS` (Business Dependency - Element Type 05)
+
 | Dependency ID | Description | Dependency Type | Upstream BRD | Impact if Delayed | Mitigation |
 |---------------|-------------|-----------------|--------------|-------------------|------------|
-| DEP-001 | [Dependency description] | Hard/Medium/Soft | BRD-XXX | [Business impact] | [Alternative approach] |
-| DEP-002 | [Dependency description] | Hard/Medium/Soft | BRD-XXX | [Business impact] | [Alternative approach] |
+| BRD.NN.05.SS | [Dependency description] | Hard/Medium/Soft | BRD.NN.XX.SS | [Business impact] | [Alternative approach] |
 
 **Dependency Type Definitions**:
 | Type | Definition | Example |
@@ -1041,10 +1058,10 @@ This section clarifies dependency types and their impact on requirement prioriti
 **Example Dependency Clarifications**:
 | Dependency ID | Description | Dependency Type | Upstream BRD | Impact if Delayed | Mitigation |
 |---------------|-------------|-----------------|--------------|-------------------|------------|
-| DEP-001 | Wallet funding via custody provider | Hard | BRD-NNN | Cannot process transactions | No alternative - hard blocker |
-| DEP-002 | ML-based fraud detection scoring | Medium | BRD-022 | Higher false positive rate | Rule-based screening as fallback |
-| DEP-003 | Push notification delivery | Soft | BRD-015 | Reduced user engagement | Email/SMS notification fallback |
-| DEP-004 | Real-time FX rate display | Medium | BRD-010 | Slightly stale rates (1-min cache) | Cached rates with staleness indicator |
+| BRD.01.05.01 | Wallet funding via custody provider | Hard | BRD.01.01.01 | Cannot process transactions | No alternative - hard blocker |
+| BRD.01.05.02 | ML-based fraud detection scoring | Medium | BRD.01.01.22 | Higher false positive rate | Rule-based screening as fallback |
+| BRD.01.05.03 | Push notification delivery | Soft | BRD.01.01.15 | Reduced user engagement | Email/SMS notification fallback |
+| BRD.01.05.04 | Real-time FX rate display | Medium | BRD.01.01.10 | Slightly stale rates (1-min cache) | Cached rates with staleness indicator |
 
 ---
 
@@ -1062,11 +1079,13 @@ Acceptance criteria define the conditions that must be satisfied for the project
 
 [Define high-level business criteria that must be met for business stakeholders to accept the solution]
 
+**ID Format**: `BRD.NN.06.SS` (Acceptance Criteria - Element Type 06)
+
 | Criteria ID | Acceptance Criterion | Measurement Method | Target | Verification Approach | Responsible Party |
 |-------------|---------------------|-------------------|--------|----------------------|------------------|
-| AC-001 | [Specific measurable criterion] | [How it will be measured] | [Target value] | [How verified] | [Name/Role] |
-| AC-002 | [Specific measurable criterion] | [How it will be measured] | [Target value] | [How verified] | [Name/Role] |
-| AC-003 | [Specific measurable criterion] | [How it will be measured] | [Target value] | [How verified] | [Name/Role] |
+| BRD.NN.06.01 | [Specific measurable criterion] | [How it will be measured] | [Target value] | [How verified] | [Name/Role] |
+| BRD.NN.06.02 | [Specific measurable criterion] | [How it will be measured] | [Target value] | [How verified] | [Name/Role] |
+| BRD.NN.06.03 | [Specific measurable criterion] | [How it will be measured] | [Target value] | [How verified] | [Name/Role] |
 
 **Examples:**
 - System processes X transactions per minute without errors
@@ -1081,9 +1100,9 @@ Acceptance criteria define the conditions that must be satisfied for the project
 
 | Requirement ID | Acceptance Criterion | Test Scenario | Expected Result | Pass/Fail Criteria |
 |----------------|---------------------|---------------|-----------------|-------------------|
-| BRD.NNN.001 | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
-| BRD.NNN.002 | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
-| BRD.NNN.003 | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
+| BRD.NN.01.01 | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
+| BRD.NN.01.02 | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
+| BRD.NN.01.03 | [Criterion for this requirement] | [How to test] | [What should happen] | [How to determine pass/fail] |
 
 ### 9.4 Quality Attribute Acceptance Criteria
 
@@ -1091,9 +1110,9 @@ Acceptance criteria define the conditions that must be satisfied for the project
 
 | Requirement ID | Acceptance Criterion | Measurement Method | Target | Test Approach | Pass Threshold |
 |----------------|---------------------|-------------------|--------|---------------|----------------|
-| BRD.NNN.015 | [Performance criterion] | [Load testing] | [X seconds] | [Test scenario] | [95% within target] |
-| BRD.NNN.016 | [Security criterion] | [Security audit] | [Standard compliance] | [Audit process] | [100% compliance] |
-| BRD.NNN.017 | [Availability criterion] | [Monitoring logs] | [99.9% uptime] | [30-day monitoring] | [Meets or exceeds target] |
+| BRD.NN.02.01 | [Performance criterion] | [Load testing] | [X seconds] | [Test scenario] | [95% within target] |
+| BRD.NN.02.10 | [Security criterion] | [Security audit] | [Standard compliance] | [Audit process] | [100% compliance] |
+| BRD.NN.02.20 | [Availability criterion] | [Monitoring logs] | [99.9% uptime] | [30-day monitoring] | [Meets or exceeds target] |
 
 ### 9.5 User Acceptance Testing (UAT) Criteria
 
@@ -1228,7 +1247,7 @@ This section documents business-level risks that could impact requirement delive
 
 ### 10.2 Risk Register
 
-**ID Format**: `RISK-XXX` (Business Risk)
+**ID Format**: `BRD.NN.09.SS` (Business Risk - Element Type 09)
 
 **Risk Categories**:
 - **Market**: Market conditions, competitive pressure, demand uncertainty
@@ -1241,13 +1260,13 @@ This section documents business-level risks that could impact requirement delive
 
 | ID | Category | Risk | Likelihood | Impact | Score | Mitigation | Contingency | Owner |
 |----|----------|------|-----------|--------|-------|------------|-------------|-------|
-| RISK-001 | Market | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
-| RISK-010 | Regulatory | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
-| RISK-020 | Partner | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
-| RISK-030 | Financial | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
-| RISK-040 | CX | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
-| RISK-050 | Technology | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
-| RISK-060 | Strategic | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+| BRD.01.09.01 | Market | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+| BRD.01.09.10 | Regulatory | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+| BRD.01.09.20 | Partner | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+| BRD.01.09.30 | Financial | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+| BRD.01.09.40 | CX | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+| BRD.01.09.50 | Technology | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
+| BRD.01.09.60 | Strategic | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
 
 **Examples by Category**:
 - **Market**: Competitor launches similar corridor with lower fees (L:2 × I:8 = 16)
@@ -1612,9 +1631,9 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 | Business Objective | Related Functional Requirements | Related User Stories | Coverage Status |
 |--------------------|--------------------------------|----------------------|-----------------|
-| [BO-N: Objective description] | BRD.NNN.001, BRD.NNN.002, BRD.NNN.003 | US-001, US-003, US-008 | Complete/Partial/Gap |
-| [BO-N: Objective description] | BRD.NNN.004, BRD.NNN.005, BRD.NNN.006 | US-002, US-005, US-012 | Complete/Partial/Gap |
-| [BO-N: Objective description] | BRD.NNN.007, BRD.NNN.008, BRD.NNN.009 | US-004, US-009, US-015 | Complete/Partial/Gap |
+| [BO-N: Objective description] | BRD.NN.01.01, BRD.NN.01.02, BRD.NN.01.03 | PRD.NN.07.01, PRD.NN.07.03, PRD.NN.07.08 | Complete/Partial/Gap |
+| [BO-N: Objective description] | BRD.NN.01.04, BRD.NN.01.05, BRD.NN.01.06 | PRD.NN.07.02, PRD.NN.07.05, PRD.NN.07.12 | Complete/Partial/Gap |
+| [BO-N: Objective description] | BRD.NN.01.07, BRD.NN.01.08, BRD.NN.01.09 | PRD.NN.07.04, PRD.NN.07.09, PRD.NN.07.15 | Complete/Partial/Gap |
 
 #### 15.1.2 Functional Requirements → Technical Specifications
 
@@ -1622,9 +1641,9 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 | Functional Requirement | Downstream SPEC (Planned) | Downstream IMPL (Planned) | Status |
 |------------------------|---------------------------|---------------------------|--------|
-| BRD.NNN.001: [Requirement title] | SPEC-XXX-001: [Specification name] | IMPL-XXX-001: [Implementation name] | Planned |
-| BRD.NNN.002: [Requirement title] | SPEC-XXX-002: [Specification name] | IMPL-XXX-002: [Implementation name] | Planned |
-| BRD.NNN.003: [Requirement title] | SPEC-XXX-003: [Specification name] | IMPL-XXX-003: [Implementation name] | Planned |
+| BRD.NN.01.01: [Requirement title] | SPEC.NN.15.01: [Specification name] | IMPL.NN.17.01: [Implementation name] | Planned |
+| BRD.NN.01.02: [Requirement title] | SPEC.NN.15.02: [Specification name] | IMPL.NN.17.02: [Implementation name] | Planned |
+| BRD.NN.01.03: [Requirement title] | SPEC.NN.15.03: [Specification name] | IMPL.NN.17.03: [Implementation name] | Planned |
 
 #### 15.1.3 Quality Attributes → Technical Specifications
 
@@ -1647,16 +1666,16 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | [BRD-NNN](./BRD-NNN_...md) | [Related BRD title] | Shared domain context |
-| Depends | [BRD-NNN](./BRD-NNN_...md) | [Prerequisite BRD title] | Must complete before this |
+| Related | [BRD-NN](./BRD-NN_...md) | [Related BRD title] | Shared domain context |
+| Depends | [BRD-NN](./BRD-NN_...md) | [Prerequisite BRD title] | Must complete before this |
 
 **Detailed Dependency Table:**
 
 | This BRD | Depends On | Dependency Type | Impact if Missing | Status |
 |----------|------------|-----------------|-------------------|--------|
-| BRD-XXX | BRD-NNN (Platform) | Hard | [Impact description] | Required |
-| BRD-XXX | BRD-NNN (Partners) | Hard | [Impact description] | Required |
-| BRD-XXX | BRD-YYY (Feature) | Medium | [Impact description] | Optional |
+| BRD-NN | BRD-01 (Platform) | Hard | [Impact description] | Required |
+| BRD-NN | BRD-02 (Partners) | Hard | [Impact description] | Required |
+| BRD-NN | BRD-03 (Feature) | Medium | [Impact description] | Optional |
 
 **Dependency Types:**
 - **Hard**: Blocking dependency - this BRD cannot proceed without the dependency
@@ -1665,8 +1684,8 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 **Tags:**
 ```markdown
-@related-brd: BRD-NNN
-@depends-brd: BRD-NNN
+@related-brd: BRD-NN
+@depends-brd: BRD-NN
 ```
 
 ### 15.3 Test Coverage Traceability
@@ -1675,9 +1694,9 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 | Requirement Category | Test Type Required | Planned Test Specification | Coverage Target |
 |----------------------|-------------------|---------------------------|-----------------|
-| BRD.NNN.001 through BRD.NNN.NNN | Unit Tests | TEST-XXX-UNIT: FR Unit Test Suite | 95% |
-| BRD.NNN.001 through BRD.NNN.NNN | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
-| User Stories (US-001 through US-XXX) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
+| BRD.NN.01.SS (Feature Requirements) | Unit Tests | TEST-XXX-UNIT: FR Unit Test Suite | 95% |
+| BRD.NN.01.SS (Feature Requirements) | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
+| PRD.NN.07.SS (User Stories) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
 | Performance Quality Attributes | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
 | Security Quality Attributes | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
 
@@ -1970,15 +1989,15 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekist
 
 | Regulation | section/Rule | Requirement Summary | BRD section | BRD Reference | Compliance Approach |
 |------------|--------------|---------------------|-------------|---------------|---------------------|
-| [Regulation] | [section] | [Summary] | [section #] | [BRD.NNN.NNN] | [How complied] |
+| [Regulation] | [section] | [Summary] | [section #] | [BRD.NN.01.SS] | [How complied] |
 
 **Example:**
 
 | Regulation | section/Rule | Requirement Summary | BRD section | BRD Reference | Compliance Approach |
 |------------|--------------|---------------------|-------------|---------------|---------------------|
-| FinCEN MSB | 31 CFR 1010.410 | Recordkeeping for 5 years | section 6 | BRD.NNN.012 | Transaction audit trail with 5-year retention |
-| OFAC SDN | 31 CFR 501.603 | Sanctions screening | section 5 | BRD.NNN.NNN | Real-time OFAC screening before authorization |
-| Travel Rule | 31 CFR 1010.410(f) | Identity for ≥$3,000 | section 5 | BRD.NNN.NNN | Sender/recipient identity capture above threshold |
+| FinCEN MSB | 31 CFR 1010.410 | Recordkeeping for 5 years | section 6 | BRD.01.01.12 | Transaction audit trail with 5-year retention |
+| OFAC SDN | 31 CFR 501.603 | Sanctions screening | section 5 | BRD.01.01.13 | Real-time OFAC screening before authorization |
+| Travel Rule | 31 CFR 1010.410(f) | Identity for ≥$3,000 | section 5 | BRD.01.01.14 | Sender/recipient identity capture above threshold |
 
 #### J.2 Regulatory Calendar
 

@@ -128,16 +128,16 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 
 **❌ INVALID** (comment-based tags - frameworks cannot parse):
 ```gherkin
-# @brd: BRD.001.001
-# @prd: PRD.001.001
+# @brd: BRD.01.01.01
+# @prd: PRD.01.01.01
 Feature: My Feature
 ```
 
 **✅ VALID** (Gherkin-native tags):
 ```gherkin
-@brd:BRD.001.001
-@prd:PRD.001.001
-@ears:EARS.001.001
+@brd:BRD.01.01.01
+@prd:PRD.01.01.01
+@ears:EARS.01.24.01
 Feature: My Feature
 ```
 
@@ -245,12 +245,12 @@ find docs/BDD -name "BDD-*.feature" -exec ./scripts/validate_bdd_template.sh {} 
 
 ### Mistake #1: Incomplete Traceability Tags (ALL THREE ARE REQUIRED)
 ```
-❌ @brd: BRD-001           (missing :NNN suffix)
-✅ @brd: BRD.001.030       (correct format with requirement ID)
+❌ @brd: BRD-001           (missing element ID suffix)
+✅ @brd: BRD.01.01.30       (correct 4-segment element ID format)
 ❌ Missing @brd tag        (ALL three tags are MANDATORY)
-✅ @brd: BRD.001.030
-   @prd: PRD.001.002
-   @ears: EARS.001.003
+✅ @brd: BRD.01.01.30
+   @prd: PRD.01.01.02
+   @ears: EARS.01.24.03
 ```
 
 ### Mistake #2: Subjective Language

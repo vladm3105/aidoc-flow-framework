@@ -203,8 +203,8 @@ we implement circuit breakers with @threshold: ADR.015.circuit.failure.count = 5
 ```python
 """Transaction validation service.
 
-@brd: BRD.001.030
-@prd: PRD.001.005
+@brd: BRD.01.01.30
+@prd: PRD.01.07.05
 @adr: ADR-015
 @threshold: PRD.001.kyc.l1.daily
 @threshold: ADR.015.circuit.failure.count

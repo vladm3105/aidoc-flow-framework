@@ -974,100 +974,100 @@ async def get_quote(
 
 ### 9.1 Primary Functional Criteria
 
-- ✅ **AC-001**: API connection established within 5 seconds using valid credentials
+- ✅ **REQ.NN.06.01**: API connection established within 5 seconds using valid credentials
   - **Verification**: Integration test with test credentials
   - **Pass Criteria**: Connection succeeds in <5s for 100% of attempts (n=100)
   - **Test Method**: Integration test with real API endpoint
 
-- ✅ **AC-002**: Data retrieval completes within SLA (p95 <500ms)
+- ✅ **REQ.NN.06.02**: Data retrieval completes within SLA (p95 <500ms)
   - **Verification**: Load test with 1000 requests
   - **Pass Criteria**: p50 <200ms, p95 <500ms, p99 <1000ms
   - **Test Method**: Performance test with k6 or Locust
 
-- ✅ **AC-003**: Rate limiting enforced at 75 requests/minute (premium tier)
+- ✅ **REQ.NN.06.03**: Rate limiting enforced at 75 requests/minute (premium tier)
   - **Verification**: Send 100 requests in 1 minute
   - **Pass Criteria**: 76th request returns 429, queues, or waits appropriately
   - **Test Method**: Integration test with rate limit simulation
 
-- ✅ **AC-004**: Response data validates against JSON Schema
+- ✅ **REQ.NN.06.04**: Response data validates against JSON Schema
   - **Verification**: Schema validation tests with 1000 responses
   - **Pass Criteria**: 100% of responses pass schema validation
   - **Test Method**: Unit test with jsonschema library
 
-- ✅ **AC-005**: Pydantic models reject invalid data with clear errors
+- ✅ **REQ.NN.06.05**: Pydantic models reject invalid data with clear errors
   - **Verification**: Unit tests with invalid inputs (edge cases)
   - **Pass Criteria**: ValidationError raised for all invalid inputs with descriptive messages
   - **Test Method**: Unit test with parametrized test cases
 
 ### 9.2 Error and Edge Case Criteria
 
-- ✅ **AC-006**: Connection failures trigger exponential backoff retry
+- ✅ **REQ.NN.06.06**: Connection failures trigger exponential backoff retry
   - **Verification**: Chaos test with network failures
   - **Pass Criteria**: Retries at 1s, 2s, 4s, 8s, 16s intervals (±10% jitter)
   - **Test Method**: Integration test with network fault injection
 
-- ✅ **AC-007**: Circuit breaker opens after 5 consecutive failures
+- ✅ **REQ.NN.06.07**: Circuit breaker opens after 5 consecutive failures
   - **Verification**: Inject 5 consecutive errors
   - **Pass Criteria**: 6th request fails fast with CircuitOpenError (<1ms)
   - **Test Method**: Unit test with mocked failures
 
-- ✅ **AC-008**: Circuit breaker transitions to half-open after timeout
+- ✅ **REQ.NN.06.08**: Circuit breaker transitions to half-open after timeout
   - **Verification**: Wait for timeout period (30s) after circuit opens
   - **Pass Criteria**: Next request allowed in half-open state
   - **Test Method**: Integration test with time acceleration
 
-- ✅ **AC-009**: Invalid responses return ValidationError (not crash)
+- ✅ **REQ.NN.06.09**: Invalid responses return ValidationError (not crash)
   - **Verification**: Send malformed JSON responses
   - **Pass Criteria**: ValidationError raised with error details, no uncaught exceptions
   - **Test Method**: Unit test with invalid response payloads
 
-- ✅ **AC-010**: Timeout errors trigger retry with increased timeout
+- ✅ **REQ.NN.06.10**: Timeout errors trigger retry with increased timeout
   - **Verification**: Simulate slow API responses (>30s)
   - **Pass Criteria**: Retry with timeout increased by 50% each attempt
   - **Test Method**: Integration test with delayed responses
 
 ### 9.3 Quality and Constraint Criteria
 
-- ✅ **AC-011**: Response time <500ms at p95 under normal load
+- ✅ **REQ.NN.06.11**: Response time <500ms at p95 under normal load
   - **Verification**: Performance test with APM (Datadog/New Relic)
   - **Pass Criteria**: p95 <500ms across 10,000 requests
   - **Test Method**: Performance test with production-like load
 
-- ✅ **AC-012**: Secrets never logged or exposed in errors
+- ✅ **REQ.NN.06.12**: Secrets never logged or exposed in errors
   - **Verification**: Log audit + error inspection
   - **Pass Criteria**: Zero plaintext API keys/Secrets in logs/errors/traces
   - **Test Method**: security audit with log analysis
 
-- ✅ **AC-013**: Resource usage within limits (CPU <20%, Memory <512MB)
+- ✅ **REQ.NN.06.13**: Resource usage within limits (CPU <20%, Memory <512MB)
   - **Verification**: Resource monitoring during load test
   - **Pass Criteria**: CPU <20%, Memory <512MB for 100 req/s load
   - **Test Method**: Performance test with resource monitoring
 
 ### 9.4 Data Validation Criteria
 
-- ✅ **AC-014**: Database constraints enforced for all inserts
+- ✅ **REQ.NN.06.14**: Database constraints enforced for all inserts
   - **Verification**: Insert invalid data (negative prices, invalid symbols)
   - **Pass Criteria**: Database rejects invalid data with constraint violation errors
   - **Test Method**: Integration test with database
 
-- ✅ **AC-015**: Data integrity maintained across API-DB pipeline
+- ✅ **REQ.NN.06.15**: Data integrity maintained across API-DB pipeline
   - **Verification**: Compare API response with database records
   - **Pass Criteria**: 100% data match (no corruption/loss)
   - **Test Method**: Integration test with data verification
 
 ### 9.5 Integration Criteria
 
-- ✅ **AC-016**: Contract tests pass with API provider
+- ✅ **REQ.NN.06.16**: Contract tests pass with API provider
   - **Verification**: Pact/Spring Cloud Contract tests
   - **Pass Criteria**: 100% contract compatibility with API version
   - **Test Method**: Contract test with Pact framework
 
-- ✅ **AC-017**: Observability metrics published (latency, errors, rate)
+- ✅ **REQ.NN.06.17**: Observability metrics published (latency, errors, rate)
   - **Verification**: Metrics dashboard inspection (Prometheus/Grafana)
   - **Pass Criteria**: All metrics present with <1min lag
   - **Test Method**: Integration test with metrics validation
 
-- ✅ **AC-018**: Distributed tracing captures full request flow
+- ✅ **REQ.NN.06.18**: Distributed tracing captures full request flow
   - **Verification**: Inspect traces in APM (Jaeger/Zipkin)
   - **Pass Criteria**: All spans present (API client → cache → database)
   - **Test Method**: Integration test with trace inspection
@@ -1192,7 +1192,7 @@ Document the business strategy, product requirements, system specifications, and
 
 | BDD ID | Scenario Title | Acceptance Criteria Validated | Test Coverage |
 |--------|----------------|-------------------------------|---------------|
-| [BDD-NNN](../../BDD/BDD-NNN_....feature) | Feature: [Feature name] | AC-001 through AC-018 | Scenarios 1-8 |
+| [BDD-NNN](../../BDD/BDD-NNN_....feature) | Feature: [Feature name] | REQ.NN.06.01 through REQ.NN.06.18 | Scenarios 1-8 |
 
 #### API Contracts
 
@@ -1245,12 +1245,12 @@ Document the business strategy, product requirements, system specifications, and
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
 ```markdown
-@brd: BRD.NNN.NNN
-@prd: PRD.NNN.NNN
-@ears: EARS.NNN.NNN
-@bdd: BDD.NNN.NNN
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.24.SS
+@bdd: BDD.NN.13.SS
 @adr: ADR-NNN
-@sys: SYS.NNN.NNN
+@sys: SYS.NN.25.SS
 ```
 
 **Threshold Registry Tag** (Required when quality attributes reference quantitative values):
@@ -1258,7 +1258,7 @@ Document the business strategy, product requirements, system specifications, and
 @threshold: PRD.NNN.category.subcategory.key
 ```
 
-**Format**: `@artifact-type: TYPE.NNN.NNN` (Unified Feature ID format)
+**Format**: `@artifact-type: TYPE.NN.EE.SS` (Unified Element ID format: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
 
 **Layer 7 Requirements**: REQ must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -1273,12 +1273,12 @@ Document the business strategy, product requirements, system specifications, and
 
 **Example**:
 ```markdown
-@brd: BRD.001.030
-@prd: PRD.003.002
-@ears: EARS.001.003
-@bdd: BDD.003.015
+@brd: BRD.01.01.30
+@prd: PRD.03.07.02
+@ears: EARS.01.24.03
+@bdd: BDD.03.13.15
 @adr: ADR-033
-@sys: SYS.008.001
+@sys: SYS.08.25.01
 @threshold: PRD.035.perf.api.p95_latency
 @threshold: PRD.035.sla.uptime.target
 ```

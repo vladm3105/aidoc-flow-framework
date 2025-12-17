@@ -45,9 +45,9 @@ custom_fields:
 ### Feature-Level Tags Format (MANDATORY)
 
 ```gherkin
-@brd:BRD.NNN.001
-@prd:PRD.NNN.001
-@ears:EARS.NNN.001
+@brd:BRD.NN.01.SS
+@prd:PRD.NN.07.SS
+@ears:EARS.NN.24.SS
 Feature: [Feature Title]
 ```
 
@@ -55,15 +55,15 @@ Feature: [Feature Title]
 - [ ] Tags are Gherkin-native (NOT in comments)
 - [ ] Tags appear on separate lines BEFORE `Feature:` keyword
 - [ ] All three tags present: @brd, @prd, @ears
-- [ ] Extended format with unified TYPE.NNN.NNN suffix
-- [ ] NO spaces after colon in tag (use `@brd:BRD.001.001` not `@brd: BRD.001.001`)
+- [ ] Extended format with unified TYPE.NN.EE.SS suffix (4-segment Unified Element ID)
+- [ ] NO spaces after colon in tag (use `@brd:BRD.01.01.01` not `@brd: BRD.01.01.01`)
 
 ### AI-Agent Files Additional Requirements
 
 ```gherkin
-@brd:BRD.NNN.001
-@prd:PRD.NNN.001
-@ears:EARS.NNN.001
+@brd:BRD.NN.01.SS
+@prd:PRD.NN.07.SS
+@ears:EARS.NN.24.SS
 @ctr:CTR-005
 Feature: [Agent Feature Title]
   Architecture: AI-Agent Primary (AGENT-NNN)
@@ -145,9 +145,9 @@ Use `BDD-TEMPLATE.feature` directly.
 
 **Copy-paste the following tags**:
 ```gherkin
-@brd:BRD.NNN.001
-@prd:PRD.NNN.001
-@ears:EARS.NNN.001
+@brd:BRD.NN.01.SS
+@prd:PRD.NN.07.SS
+@ears:EARS.NN.24.SS
 Feature: [Feature Title]
 ```
 
@@ -157,9 +157,9 @@ Use `BDD-TEMPLATE.feature` + `BDD_AI_AGENT_EXTENSION.md`.
 
 **Copy-paste the following tags**:
 ```gherkin
-@brd:BRD.NNN.001
-@prd:PRD.NNN.001
-@ears:EARS.NNN.001
+@brd:BRD.NN.01.SS
+@prd:PRD.NN.07.SS
+@ears:EARS.NN.24.SS
 @ctr:CTR-005
 Feature: [Agent Feature Title]
   Architecture: AI-Agent Primary (AGENT-NNN)
@@ -179,13 +179,13 @@ Feature: [Agent Feature Title]
 
 ```gherkin
 # WRONG - frameworks cannot parse
-# @brd: BRD.001.001
+# @brd: BRD.01.01.01
 Feature: My Feature
 ```
 
 ```gherkin
 # CORRECT - Gherkin-native tags
-@brd:BRD.001.001
+@brd:BRD.01.01.01
 Feature: My Feature
 ```
 

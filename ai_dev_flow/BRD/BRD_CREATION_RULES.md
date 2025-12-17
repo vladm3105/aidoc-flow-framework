@@ -1377,16 +1377,16 @@ Quality Attributes use unified sequential numbering (same as all other requireme
 
 ### Quality Attribute Format
 
-**Pattern**: `TYPE.NNN.NNN` (unified sequential numbering)
+**Pattern**: `TYPE.NN.EE.SS` (unified 4-segment element ID format)
 
 | Category | Keywords for Detection | Example |
 |----------|------------------------|---------|
-| Performance | latency, response time, throughput, p95, TPS | `BRD.017.015` |
-| Reliability | uptime, availability, MTBF, MTTR, failover | `BRD.017.016` |
-| Scalability | concurrent users, horizontal scaling, capacity | `BRD.017.017` |
-| Security | authentication, authorization, encryption, RBAC | `BRD.017.018` |
-| Observability | logging, monitoring, alerting, metrics | `BRD.017.019` |
-| Maintainability | code coverage, deployment, CI/CD, documentation | `BRD.017.020` |
+| Performance | latency, response time, throughput, p95, TPS | `BRD.17.01.15` |
+| Reliability | uptime, availability, MTBF, MTTR, failover | `BRD.17.01.16` |
+| Scalability | concurrent users, horizontal scaling, capacity | `BRD.17.01.17` |
+| Security | authentication, authorization, encryption, RBAC | `BRD.17.01.18` |
+| Observability | logging, monitoring, alerting, metrics | `BRD.17.01.19` |
+| Maintainability | code coverage, deployment, CI/CD, documentation | `BRD.17.01.20` |
 
 ### AI Auto-Assignment
 
@@ -1400,30 +1400,31 @@ AI assistants should identify quality attribute categories based on:
 
 Use unified format for quality attribute cross-references:
 ```markdown
-@brd: BRD.017.015
+@brd: BRD.17.01.15
 ```
 
 ### Downstream Inheritance
 
-Quality attribute IDs use unified sequential numbering consistently across all downstream artifacts:
-- BRD defines: `BRD.017.015` (Performance)
-- PRD inherits: `PRD.017.015`
-- EARS formalizes: `EARS.017.015`
-- SYS implements: `SYS.017.015`
+Quality attribute IDs use unified element ID format consistently across all downstream artifacts:
+- BRD defines: `BRD.17.01.15` (Performance)
+- PRD inherits: `PRD.17.01.15`
+- EARS formalizes: `EARS.17.24.15`
+- SYS implements: `SYS.17.25.15`
 
 ---
 
 ## 9. Architecture Decision Requirements
 
-Every BRD must include **Section 7.2: "Architecture Decision Requirements"** with numbered subsections using format `{DOC_TYPE}.NNN.NNN`.
+Every BRD must include **Section 7.2: "Architecture Decision Requirements"** with numbered subsections using format `{DOC_TYPE}.NN.EE.SS`.
 
 ### 9.1 Subsection ID Format
 
 | Component | Format | Example |
 |-----------|--------|---------|
-| Document ID | `{DOC_TYPE}.NNN` | `BRD.001` (BRD-001) |
-| Topic Number | `.NNN` (3-digit) | `.003` (third topic) |
-| Full ID | `{DOC_TYPE}.NNN.NNN` | `BRD.001.003` |
+| Document ID | `NN` (2+ digit) | `01` (BRD-001) |
+| Element Type | `EE` (2+ digit) | `01` (Functional Requirement) |
+| Sequence | `SS` (2+ digit) | `03` (third item) |
+| Full ID | `{DOC_TYPE}.NN.EE.SS` | `BRD.01.01.03` |
 
 **Reference**: See `ai_dev_flow/ID_NAMING_STANDARDS.md` - "Architecture Decision Topic Subsection Format"
 
@@ -1433,7 +1434,7 @@ Each subsection **MUST** contain:
 
 | Field | Description | Example |
 |-------|-------------|---------|
-| **Business Driver** | WHY this decision matters to business - reference upstream requirements | "Real-time position visibility required for treasury management (BRD.001.004)" |
+| **Business Driver** | WHY this decision matters to business - reference upstream requirements | "Real-time position visibility required for treasury management (BRD.01.01.04)" |
 | **Business Constraints** | Non-negotiable business rules (bullet list) | "Must support multi-currency per Section 3.2", "5-year audit retention per BSA" |
 | **PRD Requirements** | Guidance for PRD Section 18 elaboration | "Evaluate technical options for data persistence. Include scalability analysis." |
 
@@ -1474,10 +1475,10 @@ ADR placeholder               ADR placeholder            ADR document
 ### 9.5 Example (Business-Focused)
 
 ```markdown
-#### BRD.001.003: Ledger System Selection
+#### BRD.01.01.03: Ledger System Selection
 
 **Business Driver**: Real-time financial position visibility required for
-treasury management (BRD.001.004) and regulatory reporting (Section 8.4.2 BSA compliance).
+treasury management (BRD.01.01.04) and regulatory reporting (Section 8.4.2 BSA compliance).
 
 **Business Constraints**:
 - Must support multi-currency operations (USD, UZS, USDC) per Section 3.2 market requirements

@@ -275,7 +275,7 @@ find docs/ADR -name "ADR-*.md" -exec ./scripts/validate_adr_template.sh {} \;
 ### Mistake #4: Missing Traceability Tags
 ```
 ❌ @brd: BRD-001
-✅ @brd: BRD.001.030, BRD.001.006
+✅ @brd: BRD.01.01.30, BRD.01.01.06
 ```
 
 ---

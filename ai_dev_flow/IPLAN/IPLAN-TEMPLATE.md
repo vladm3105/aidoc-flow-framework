@@ -620,20 +620,20 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 ### 8.3 Tag Format
 
-**Standard Format**: `@artifact-type: TYPE.NNN.NNN (Unified Feature ID)`
+**Standard Format**: `@artifact-type: TYPE.NN.EE.SS (Unified Element ID: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)`
 
 **Examples**:
 ```
-@brd: BRD.001.042
-@prd: PRD.001.015
-@ears: EARS.001.003
-@bdd: BDD.001.005
+@brd: BRD.01.01.42
+@prd: PRD.01.01.15
+@ears: EARS.01.24.03
+@bdd: BDD.01.13.05
 @adr: ADR-002
-@sys: SYS.002.001
-@req: REQ.001.001
+@sys: SYS.02.25.01
+@req: REQ.01.26.01
 @spec: SPEC-001
-@tasks: TASKS.001.001
-@impl: IMPL.001.001 (optional)
+@tasks: TASKS.01.29.01
+@impl: IMPL.01.28.01 (optional)
 @ctr: CTR-001 (optional)
 ```
 
@@ -816,17 +816,17 @@ pytest --cov --cov-fail-under=@threshold: PRD.NNN.quality.test.unit_coverage
 
 **Example**:
 ```markdown
-@brd: BRD.001.030
-@prd: PRD.003.002
-@ears: EARS.001.003
-@bdd: BDD.003.001
+@brd: BRD.01.01.30
+@prd: PRD.03.01.02
+@ears: EARS.01.24.03
+@bdd: BDD.03.13.01
 @adr: ADR-033
-@sys: SYS.008.001
-@req: REQ.003.001
-@impl: IMPL.001.001
+@sys: SYS.08.25.01
+@req: REQ.03.26.01
+@impl: IMPL.01.28.01
 @ctr: CTR-001
 @spec: SPEC-003
-@tasks: TASKS.001.001
+@tasks: TASKS.01.29.01
 ```
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through TASKS) are properly linked.

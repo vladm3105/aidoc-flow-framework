@@ -343,13 +343,13 @@ IMPL produces (as deliverables):
 ```markdown
 ## Traceability Tags
 
-@brd: BRD.001.042
-@prd: PRD.001.015
-@ears: EARS.001.003
-@bdd: BDD.001.005
+@brd: BRD.01.01.42
+@prd: PRD.01.01.15
+@ears: EARS.01.24.03
+@bdd: BDD.01.13.05
 @adr: ADR-002
-@sys: SYS.002.001
-@req: REQ.001.001, REQ.002.001
+@sys: SYS.02.25.01
+@req: REQ.01.26.01, REQ.02.26.01
 ```
 
 ---

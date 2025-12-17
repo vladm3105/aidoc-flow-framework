@@ -165,9 +165,9 @@ custom_fields:
 ```gherkin
 # Header with traceability and control metadata
 ## Document Control | metadata table |
-@brd: BRD.NNN.NNN
-@prd: PRD.NNN.NNN
-@ears: EARS.NNN.NNN
+@brd: BRD.NN.EE.SS
+@prd: PRD.NN.EE.SS
+@ears: EARS.NN.EE.SS
 
 Feature: [Business Capability Title]
   As a [stakeholder role]
@@ -350,9 +350,9 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 
 **Required Tags** (ALL are MANDATORY per BDD-TEMPLATE.feature):
 ```gherkin
-@brd: BRD.NNN.NNN    # MANDATORY - business requirements
-@prd: PRD.NNN.NNN    # MANDATORY - product requirements
-@ears: EARS.NNN.NNN  # MANDATORY - engineering requirements
+@brd: BRD.NN.EE.SS    # MANDATORY - business requirements
+@prd: PRD.NN.EE.SS    # MANDATORY - product requirements
+@ears: EARS.NN.EE.SS  # MANDATORY - engineering requirements
 ```
 
 **Format**: Extended format with requirement ID suffix (`:NNN`) is REQUIRED.
@@ -422,17 +422,17 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 
 **❌ WRONG** (Gherkin frameworks cannot parse comment-based tags):
 ```gherkin
-# @brd: BRD.001.001
-# @prd: PRD.001.001
-# @ears: EARS.001.001
+# @brd: BRD.01.01.01
+# @prd: PRD.01.01.01
+# @ears: EARS.01.24.01
 Feature: My Feature
 ```
 
 **✅ CORRECT** (Gherkin-native tags before Feature):
 ```gherkin
-@brd:BRD.001.001
-@prd:PRD.001.001
-@ears:EARS.001.001
+@brd:BRD.01.01.01
+@prd:PRD.01.01.01
+@ears:EARS.01.24.01
 Feature: My Feature
 ```
 
@@ -674,7 +674,7 @@ python scripts/validate_cross_document.py --layer BDD --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NNN.NNN or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

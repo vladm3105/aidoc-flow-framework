@@ -1273,14 +1273,14 @@ Document evidence that this task has been implemented correctly and meets all ac
 
 **Example**:
 ```markdown
-@brd: BRD.001.030
-@prd: PRD.003.002
-@ears: EARS.001.003
-@bdd: BDD.003.001
+@brd: BRD.01.01.30
+@prd: PRD.03.01.02
+@ears: EARS.01.24.03
+@bdd: BDD.03.13.01
 @adr: ADR-033
-@sys: SYS.008.001
-@req: REQ.003.001
-@impl: IMPL.001.001
+@sys: SYS.08.25.01
+@req: REQ.03.26.01
+@impl: IMPL.01.28.01
 @ctr: CTR-001
 @spec: SPEC-003
 @icon: TASKS-001:ServiceConnector
