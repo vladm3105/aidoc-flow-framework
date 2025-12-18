@@ -249,7 +249,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 **Valid Examples**:
 - `BRD-001_platform_architecture_technology_stack.md` ✅ (Platform BRD)
 - `BRD-006_b2c_progressive_kyc_onboarding.md` ✅ (Feature BRD)
-- `BRD-009-01_provider_integration_prerequisites.md` ✅ (Feature BRD with sub-ID)
+- `BRD-009.1_provider_integration_prerequisites.md` ✅ (Feature BRD section file)
 - `BRD-REF-001_glossary_financial_terms.md` ✅ (Reference document)
 - `BRD-REF-002_regulatory_standards_matrix.md` ✅ (Reference document)
 
@@ -354,7 +354,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 
 | Topic Area | Decision Needed | Business Driver | Key Considerations |
 |------------|-----------------|---------------|-------------------|
-| Multi-Agent Framework | Select orchestration approach | BO-003: Autonomous execution | Google ADK, n8n, custom |
+| Multi-Agent Framework | Select orchestration approach | BRD.NN.23.03: Autonomous execution | Google ADK, n8n, custom |
 | Data Storage | Choose persistence technology | QA: High availability | PostgreSQL, Cloud SQL, Firestore |
 | Communication Protocol | Select inter-system messaging | BRD.NNN.015: Real-time updates | Pub/Sub, gRPC, REST WebSocket |
 ```
@@ -386,7 +386,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 
 **Fix**:
 ```markdown
-BO-003: Reduce transaction processing time from 10 seconds to 5 seconds (50% improvement) within 6 months of implementation, enabling <2-second competitive response times as specified in integrated_strategy_algo_v5.md section 4.2.
+BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (50% improvement) within 6 months of implementation, enabling <2-second competitive response times as specified in integrated_strategy_algo_v5.md section 4.2.
 ```
 
 **Reference**: `BRD_CREATION_RULES.md` section 10 (Business Objectives and Success Criteria)
@@ -412,7 +412,7 @@ BO-003: Reduce transaction processing time from 10 seconds to 5 seconds (50% imp
 
 **Fix**:
 ```markdown
-**AC-001:** System must process 1,000 transactions per minute with <5% error rate, measured over 30-day production period.
+**BRD.NN.06.01:** System must process 1,000 transactions per minute with <5% error rate, measured over 30-day production period.
 
 | KPI | Baseline | Target | Measurement Frequency | Method | Owner |
 |-----|----------|--------|----------------------|---------|-------|
@@ -508,7 +508,7 @@ BO-003: Reduce transaction processing time from 10 seconds to 5 seconds (50% imp
 
 **Warning Message**:
 ```
-⚠️  WARNING: Link exists but anchor missing: #BO-001 not found in target document
+⚠️  WARNING: Link exists but anchor missing: #BRD.NN.23.01 not found in target document
 ```
 
 **Fix**:
@@ -1224,7 +1224,7 @@ Reference: BRD-TEMPLATE.md section 15
 ```
 ⚠️  WARNING: Traceability orphans detected
 Orphaned Requirements:
-- BO-003: No related BRD.NN.EE.SS requirements (Coverage Status = "Gap")
+- BRD.NN.23.03: No related BRD.NN.EE.SS requirements (Coverage Status = "Gap")
 - BRD.NNN.012: Not linked to any Business Objective
 - US-007: Not linked to any Functional Requirement
 
@@ -1458,10 +1458,16 @@ Reference: BRD-TEMPLATE.md section 16
 ### Pre-Commit Validation
 
 ```bash
-# Validate single file
+# Validate single BRD (nested folder structure - DEFAULT)
+./scripts/validate_brd_template.sh docs/BRD/BRD-001/BRD-001.0_index.md
+
+# Validate all BRD files (section-based structure)
+find docs/BRD -type f -name "BRD-*.md" -exec ./scripts/validate_brd_template.sh {} \;
+
+# Validate monolithic BRD (optional for <25KB)
 ./scripts/validate_brd_template.sh docs/BRD/BRD-001_platform_architecture.md
 
-# Validate all BRD files
+# Validate all BRD files (legacy pattern)
 **Business Requirements Completeness (40%)**:
 - All 17 sections present and populated: 10%
 - Business objectives follow SMART criteria: 10%
@@ -1613,7 +1619,7 @@ Warnings: 1
 
 **Fix**:
 ```markdown
-BO-003: Reduce average order processing time from current 10 seconds to 5 seconds (50% improvement), measured by 95th percentile response time, within 6 months of implementation to match competitive service platforms.
+BRD.NN.23.03: Reduce average order processing time from current 10 seconds to 5 seconds (50% improvement), measured by 95th percentile response time, within 6 months of implementation to match competitive service platforms.
 ```
 
 ---

@@ -439,7 +439,7 @@ CTR-012_data_service_api.md
 CTR-012_data_service_api.yaml  (dual-file contract)
 SPEC-023_risk_calculator.yaml
 TASKS-023_implement_risk_calculator.md
-REQ-042-01_authentication_methods.md  (sub-document)
+REQ-042.1_authentication_methods.md  (section file)
 ```
 
 ### ID Assignment Process
@@ -476,8 +476,13 @@ AI Assistant **MUST** use this format for all document references:
 
 #### Examples
 ```markdown
+# Nested folder structure (BRD/PRD/ADR - DEFAULT)
+[BRD-001](../BRD/BRD-001/BRD-001.0_index.md#BRD-001)
+[PRD-002](../PRD/PRD-002/PRD-002.0_index.md#PRD-002)
+[ADR-005](../ADR/ADR-005/ADR-005.0_index.md#ADR-005)
+
+# Flat structure (REQ, SPEC, CTR, etc.)
 [REQ-003](../REQ/risk/REQ-003_resource_limit.md#REQ-003)
-[ADR-005](../ADR/ADR-005_database_selection.md#ADR-005)
 [CTR-012](../CTR/CTR-012_data_service_api.md#CTR-012)
 [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
 ```
@@ -786,10 +791,10 @@ Use sub-document numbering:
 Original: REQ-042_authentication.md (too large, multiple concepts)
 
 Split into:
-REQ-042-01_authentication_methods.md
-REQ-042-02_password_policies.md
-REQ-042-03_mfa_requirements.md
-REQ-042-04_session_management.md
+REQ-042.1_authentication_methods.md
+REQ-042.2_password_policies.md
+REQ-042.3_mfa_requirements.md
+REQ-042.4_session_management.md
 ```
 
 ---
@@ -831,7 +836,7 @@ class PositionLimiter:
     """
     resource limit enforcement per [REQ-023](../docs/REQ/risk/REQ-023_resource_limit.md).
 
-    Architecture: [ADR-008](../docs/ADR/ADR-008_risk_architecture.md) - Real-time enforcement
+    Architecture: [ADR-008](../docs/ADR/ADR-008/ADR-008.0_index.md) - Real-time enforcement
     Acceptance Tests: [BDD-015](../docs/BDD/BDD-015_resource_limits.feature)
     """
 

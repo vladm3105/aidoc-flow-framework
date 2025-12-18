@@ -549,14 +549,17 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 ### Validation Script Commands
 
 ```bash
-# Validate single PRD
+# Validate single PRD (nested folder structure - DEFAULT)
+./scripts/validate_prd_template.sh docs/PRD/PRD-001/PRD-001.0_index.md
+
+# Validate all PRDs (section-based structure)
+find docs/PRD -type f -name "PRD-*.md" -exec ./scripts/validate_prd_template.sh {} \;
+
+# Validate monolithic PRD (optional for <25KB)
 ./scripts/validate_prd_template.sh docs/PRD/PRD-001_product_name.md
 
-# Validate all PRDs
-find docs/PRD -name "PRD-*.md" -exec ./scripts/validate_prd_template.sh {} \;
-
-# Check YAML frontmatter
-python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001_product_name.md').read().split('---')[1])"
+# Check YAML frontmatter (nested structure)
+python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001/PRD-001.0_index.md').read().split('---')[1])"
 ```
 
 ### Quality Thresholds Table

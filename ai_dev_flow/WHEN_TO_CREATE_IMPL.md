@@ -213,7 +213,7 @@ REQ-075 → IMPL-075 → CTR-075 (Trade Event Schema) → SPEC-075 → TASKS-075
 
 **Documents**:
 ```
-REQ-001 → IMPL-001 → CTR-001, CTR-002 → SPEC-001-01, SPEC-001-02 → TASKS-001
+REQ-001 → IMPL-001 → CTR-001, CTR-002 → SPEC-001.1, SPEC-001.2 → TASKS-001
 ```
 
 ### Example 2: Bug Fix - [METRICS - e.g., performance indicators, quality scores] Calculation ⏭️ Skip IMPL
@@ -228,7 +228,7 @@ REQ-001 → IMPL-001 → CTR-001, CTR-002 → SPEC-001-01, SPEC-001-02 → TASKS
 
 **Documents**:
 ```
-REQ-042 → SPEC-042-01 → TASKS-042
+REQ-042 → SPEC-042.1 → TASKS-042
 (No IMPL, no CTR needed - internal calculation fix)
 ```
 
@@ -244,7 +244,7 @@ REQ-042 → SPEC-042-01 → TASKS-042
 
 **Documents**:
 ```
-REQ-099 → SPEC-099-01 → TASKS-099
+REQ-099 → SPEC-099.1 → TASKS-099
 (No IMPL - standard config deployment)
 ```
 
@@ -260,7 +260,7 @@ REQ-099 → SPEC-099-01 → TASKS-099
 
 **Documents**:
 ```
-REQ-075 → IMPL-075 → CTR-075, CTR-076 → SPEC-075-01, SPEC-075-02, SPEC-075-03 → TASKS-075
+REQ-075 → IMPL-075 → CTR-075, CTR-076 → SPEC-075.1, SPEC-075.2, SPEC-075.3 → TASKS-075
 ```
 
 ## Traceability Impact

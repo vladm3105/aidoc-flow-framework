@@ -53,9 +53,13 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- **Location**: `docs/ADR/` within project docs directory
-- **Naming**: `ADR-NNN_descriptive_architecture_decision.md` (NNN = 3-digit sequential)
-- **Structure**: One primary ADR file per architecture decision
+- **Location**: `docs/ADR/ADR-NNN/` within project docs directory (nested folder per document)
+- **Folder Structure** (DEFAULT): `docs/ADR/ADR-NNN/ADR-NNN.S_slug.md`
+  - Index file: `docs/ADR/ADR-NNN/ADR-NNN.0_index.md`
+  - Section files: `docs/ADR/ADR-NNN/ADR-NNN.1_context.md`, etc.
+- **Section Files**: Section-based structure is DEFAULT for all ADR documents. Use format: `ADR-NNN.S_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
+- **Monolithic** (OPTIONAL for <25KB): `docs/ADR/ADR-NNN_descriptive_architecture_decision.md` (flat structure)
+- **Structure**: One primary ADR document folder per architecture decision
 
 ---
 

@@ -373,11 +373,23 @@ Check `docs/ADR/` for next available ID number (e.g., ADR-001, ADR-033).
 - **ADR-000**: Reserved for Technology Stack reference
 - **ADR-001 onwards**: Regular decision records
 
-### Step 4: Create ADR File
+### Step 4: Create ADR Folder and Files
 
-**File naming**: `docs/ADR/ADR-NNN_{slug}.md`
+**Folder structure** (DEFAULT - nested folder per document):
+1. Create folder: `docs/ADR/ADR-NNN/`
+2. Create index file: `docs/ADR/ADR-NNN/ADR-NNN.0_index.md`
+3. Create section files: `docs/ADR/ADR-NNN/ADR-NNN.S_{slug}.md`
 
-**Example**: `docs/ADR/ADR-033_risk_limit_architecture.md`
+**Example**:
+```
+docs/ADR/ADR-033/
+├── ADR-033.0_index.md
+├── ADR-033.1_context.md
+├── ADR-033.2_decision.md
+└── ADR-033.3_consequences.md
+```
+
+**OPTIONAL** (for small documents <25KB): `docs/ADR/ADR-NNN_{slug}.md` (monolithic)
 
 ### Step 5: Fill Document Control Section
 
@@ -579,10 +591,12 @@ For supplementary documentation related to ADR artifacts:
 - **ADR README**: `ai_dev_flow/ADR/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
-**Section Templates** (for documents >25K tokens):
+**Section Templates** (DEFAULT for all ADR documents):
+- **Structure**: `docs/ADR/ADR-NNN/ADR-NNN.S_slug.md` (nested folder per document)
 - Index template: `ai_dev_flow/ADR/ADR-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_flow/ADR/ADR-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- **Note**: Monolithic template is OPTIONAL for small documents (<25KB)
 
 ## Quick Reference
 

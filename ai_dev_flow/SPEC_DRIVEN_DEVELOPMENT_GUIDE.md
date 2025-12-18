@@ -37,7 +37,7 @@ Quality gates prevent progression to downstream layers until artifacts meet spec
 - **Automated Recovery**: Validation scripts provide specific guidance for reaching quality thresholds
 
 **Validation Commands:**
-- `./scripts/validate_quality_gates.sh docs/PRD/PRD-001.md` - Validates individual artifact readiness
+- `./scripts/validate_quality_gates.sh docs/PRD/PRD-001/PRD-001.0_index.md` - Validates individual artifact readiness
 - Pre-commit automation: Quality gates run on every commit to docs/ directory
 - Refer to [TRACEABILITY_VALIDATION.md](./TRACEABILITY_VALIDATION.md) for complete quality gate specifications
 
@@ -1810,7 +1810,7 @@ performance:
 ### Artifact-Specific Validation Scripts
 ```bash
 # Document structure validation (available scripts)
-bash scripts/validate_brd_template.sh docs/BRD/BRD-001.md    # BRD template compliance
+bash scripts/validate_brd_template.sh docs/BRD/BRD-001/BRD-001.0_index.md    # BRD template compliance (nested folder)
 bash scripts/validate_req_template.sh docs/REQ/REQ-001.md    # REQ 12-section format
 bash scripts/validate_ctr.sh docs/CTR/CTR-001_*.md           # CTR dual-file format (.md + .yaml)
 bash scripts/validate_impl.sh docs/IMPL/IMPL-001_*.md        # IMPL 4-PART structure
@@ -2124,10 +2124,10 @@ Quality attribute clarification (allowed)
 - Include file dependency mapping for multi-file documentation sets
 - Use consistent naming convention: [component]_[sequence]_[type].md
 
-**Example: BRD-009 Multi-Document Structure (Justified Case):**
-- BRD-009-01_prerequisites.md (20K) - Audience: Architects, PMs - Focus: Critical path dependencies
-- BRD-009-02_provider_integration_pilot.md (51K) - Audience: Developers - Focus: Full technical requirements
-- BRD-009-03_phase_gates_quick_reference.md (12K) - Audience: PMs, QA - Focus: Go/no-go checklists
+**Example: BRD-009 Section File Structure (Justified Case):**
+- BRD-009.1_prerequisites.md (20K) - Audience: Architects, PMs - Focus: Critical path dependencies
+- BRD-009.2_provider_integration_pilot.md (51K) - Audience: Developers - Focus: Full technical requirements
+- BRD-009.3_phase_gates_quick_reference.md (12K) - Audience: PMs, QA - Focus: Go/no-go checklists
 - **Justification**: BRD-009 is Phase 1 critical prerequisite blocking 6 downstream BRDs, requires separate phase gate documentation, serves 3 distinct audiences with different information needs
 
 **AI Assistant Compatibility:**

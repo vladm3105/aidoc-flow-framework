@@ -46,11 +46,21 @@ SPEC-023_risk_calculator.yaml
 TASKS-023_implement_risk_calculator.md
 ```
 
-### Sub-Documents
+### Section Files (DEFAULT for BRD/PRD/ADR)
 ```
-{TYPE}-{NNN}-{YY}_{descriptive_slug}.{ext}
+docs/{TYPE}/{TYPE}-{NNN}/{TYPE}-{NNN}.{S}_{section_slug}.{ext}
 
-Example: REQ-042-01_authentication_methods.md
+Index File:   docs/BRD/BRD-001/BRD-001.0_index.md
+Section File: docs/BRD/BRD-001/BRD-001.1_executive_summary.md
+Section File: docs/PRD/PRD-002/PRD-002.3_problem_statement.md
+Section File: docs/ADR/ADR-005/ADR-005.2_alternatives.md
+```
+
+### Monolithic (Optional for <25KB)
+```
+docs/{TYPE}/{TYPE}-{NNN}_{descriptive_slug}.md
+
+Example: docs/REQ/REQ-042_authentication_methods.md
 ```
 
 ---
@@ -60,9 +70,13 @@ Example: REQ-042-01_authentication_methods.md
 ```markdown
 [{TYPE}-{ID}](../path/to/document.md#{TYPE}-{ID})
 
-Examples:
+Examples (nested folder structure - BRD/PRD/ADR):
+[BRD-001](../BRD/BRD-001/BRD-001.0_index.md#BRD-001)
+[PRD-002](../PRD/PRD-002/PRD-002.0_index.md#PRD-002)
+[ADR-005](../ADR/ADR-005/ADR-005.0_index.md#ADR-005)
+
+Examples (flat structure - other types):
 [REQ-003](../REQ/risk/REQ-003_resource_limit.md#REQ-003)
-[ADR-005](../ADR/ADR-005_database_selection.md#ADR-005)
 [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
 ```
 
@@ -73,18 +87,28 @@ Examples:
 ```mermaid
 graph TB
     subgraph docs["docs/"]
-        BRD["BRD/ - Business Requirements"]
-        PRD["PRD/ - Product Requirements"]
-        EARS["EARS/ - EARS Syntax"]
-        BDD["BDD/ - BDD Gherkin"]
-        ADR["ADR/ - Architecture Decisions"]
-        SYS["SYS/ - System Specs"]
-        REQ["REQ/ - Atomic Requirements"]
-        IMPL["IMPL/ - Implementation Plans"]
-        CTR["CTR/ - API Contracts"]
-        SPEC["SPEC/ - Technical Specs"]
-        TASKS["TASKS/ - Implementation Tasks"]
-        IPLAN["IPLAN/ - Session Plans"]
+        subgraph nested["Nested Folders (BRD/PRD/ADR)"]
+            BRD["BRD/BRD-NNN/ - Business Requirements"]
+            PRD["PRD/PRD-NNN/ - Product Requirements"]
+            ADR["ADR/ADR-NNN/ - Architecture Decisions"]
+        end
+        subgraph flat["Flat Structure (Other Types)"]
+            EARS["EARS/ - EARS Syntax"]
+            BDD["BDD/ - BDD Gherkin"]
+            SYS["SYS/ - System Specs"]
+            REQ["REQ/ - Atomic Requirements"]
+            IMPL["IMPL/ - Implementation Plans"]
+            CTR["CTR/ - API Contracts"]
+            SPEC["SPEC/ - Technical Specs"]
+            TASKS["TASKS/ - Implementation Tasks"]
+            IPLAN["IPLAN/ - Session Plans"]
+        end
+    end
+
+    subgraph nested_example["Nested Example: docs/BRD/BRD-001/"]
+        idx["BRD-001.0_index.md"]
+        sec1["BRD-001.1_executive_summary.md"]
+        sec2["BRD-001.2_business_objectives.md"]
     end
 
     subgraph req_sub["REQ/ subdirectories"]
@@ -96,18 +120,14 @@ graph TB
         tenant["tenant/"]
     end
 
-    subgraph scripts["scripts/"]
-        validate["validate_requirement_ids.py"]
-        check["check_broken_references.py"]
-        generate["generate_traceability_matrix.py"]
-    end
-
+    BRD --> nested_example
     REQ --> req_sub
 ```
 
 <!-- Migration History -->
 <!-- CONTRACTS/ migrated to CTR/ (2025-01-13) -->
 <!-- tasks_plans/ migrated to IPLAN/ (2025-01-13) -->
+<!-- BRD/PRD/ADR migrated to nested folder structure (2025-12-18) -->
 
 ---
 
@@ -116,9 +136,15 @@ graph TB
 ### Project Initialization
 
 ```bash
-# Create folders
-mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
+# Create top-level folders (nested structure for BRD/PRD/ADR)
+mkdir -p docs/{BRD,PRD,ADR}
+mkdir -p docs/{EARS,BDD,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
 mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
+
+# Create nested document folders (BRD/PRD/ADR - DEFAULT)
+mkdir -p docs/BRD/BRD-001  # Creates docs/BRD/BRD-001/
+mkdir -p docs/PRD/PRD-001  # Creates docs/PRD/PRD-001/
+mkdir -p docs/ADR/ADR-001  # Creates docs/ADR/ADR-001/
 
 # Domain-specific (Financial)
 mkdir -p docs/REQ/{core,operations,data,compliance,ml}
@@ -315,20 +341,22 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 
 ## Document Types Quick Reference
 
-| Type | Purpose | Format | Example |
-|------|---------|--------|---------|
-| **BRD** | Business objectives | .md | BRD-001_service_platform.md |
-| **PRD** | Product features | .md | PRD-002_risk_controls.md |
-| **EARS** | Measurable requirements | .md | EARS-003_performance.md |
-| **BDD** | Acceptance tests | .feature | BDD-004_resource_limits.feature |
-| **ADR** | Architecture decisions | .md | ADR-005_database_selection.md |
-| **SYS** | System specifications | .md | SYS-006_api_gateway.md |
-| **REQ** | Atomic requirements | .md | REQ-007_limit_enforcement.md |
-| **IMPL** | Implementation plan | .md | IMPL-008_phase1_plan.md |
-| **CTR** | API contracts | .md + .yaml | CTR-009_market_api.md + .yaml |
-| **SPEC** | Technical SPEC | .yaml | SPEC-010_limiter.yaml |
-| **TASKS** | Implementation TODOs | .md | TASKS-010_implement_limiter.md |
-| **IPLAN** | Session execution plans | .md | IPLAN-001_db_migration_20251113_143022.md |
+| Type | Purpose | Format | Structure | Example |
+|------|---------|--------|-----------|---------|
+| **BRD** | Business objectives | .md | **Nested** | `BRD/BRD-001/BRD-001.0_index.md` |
+| **PRD** | Product features | .md | **Nested** | `PRD/PRD-002/PRD-002.0_index.md` |
+| **ADR** | Architecture decisions | .md | **Nested** | `ADR/ADR-005/ADR-005.0_index.md` |
+| **EARS** | Measurable requirements | .md | Flat | EARS-003_performance.md |
+| **BDD** | Acceptance tests | .feature | Flat | BDD-004_resource_limits.feature |
+| **SYS** | System specifications | .md | Flat | SYS-006_api_gateway.md |
+| **REQ** | Atomic requirements | .md | Flat | REQ-007_limit_enforcement.md |
+| **IMPL** | Implementation plan | .md | Flat | IMPL-008_phase1_plan.md |
+| **CTR** | API contracts | .md + .yaml | Flat | CTR-009_market_api.md + .yaml |
+| **SPEC** | Technical SPEC | .yaml | Flat | SPEC-010_limiter.yaml |
+| **TASKS** | Implementation TODOs | .md | Flat | TASKS-010_implement_limiter.md |
+| **IPLAN** | Session execution plans | .md | Flat | IPLAN-001_db_migration.md |
+
+**Note**: BRD/PRD/ADR use nested folder structure (`{TYPE}/{TYPE}-NNN/{TYPE}-NNN.S_slug.md`) by DEFAULT. Other types use flat structure.
 
 ---
 

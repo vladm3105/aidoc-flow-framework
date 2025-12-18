@@ -32,6 +32,10 @@ custom_fields:
 > - **Creation Rules**: `BRD_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `BRD_VALIDATION_RULES.md` - Post-creation checks
 
+> **Note**: Section-based templates are the DEFAULT for BRD/PRD/ADR.
+> This monolithic template is for small documents only (<25KB).
+> Use nested folder structure: `docs/BRD/BRD-NNN/BRD-NNN.S_slug.md`
+
 # Business Requirements Document (BRD)
 
 ## Document Control
@@ -123,9 +127,9 @@ This document is intended for the following stakeholders:
 
 | Objective ID | Objective Statement | Success Metric | Target Value | Target Date |
 |--------------|---------------------|----------------|--------------|-------------|
-| BO-001 | [Specific objective] | [How measured] | [Quantifiable target] | [Completion date] |
-| BO-002 | [Specific objective] | [How measured] | [Quantifiable target] | [Completion date] |
-| BO-003 | [Specific objective] | [How measured] | [Quantifiable target] | [Completion date] |
+| BRD.NN.23.01 | [Specific objective] | [How measured] | [Quantifiable target] | [Completion date] |
+| BRD.NN.23.02 | [Specific objective] | [How measured] | [Quantifiable target] | [Completion date] |
+| BRD.NN.23.03 | [Specific objective] | [How measured] | [Quantifiable target] | [Completion date] |
 
 ### 2.5 Strategic Alignment
 [Explain how this project aligns with the organization's mission, vision, strategic plan, and long-term objectives.]

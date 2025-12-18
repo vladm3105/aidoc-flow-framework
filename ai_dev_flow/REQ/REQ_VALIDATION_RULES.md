@@ -388,7 +388,7 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 **Valid Examples**:
 - `REQ-002_connection_heartbeat.md` ✅
 - `REQ-023_quote_retrieval.md` ✅
-- `REQ-009-01_prerequisite.md` ✅
+- `REQ-009.1_prerequisite.md` ✅ (section file)
 
 **Invalid Examples**:
 - `REQ-002.md` ❌ (missing description)

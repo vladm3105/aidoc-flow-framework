@@ -57,7 +57,7 @@ custom_fields:
 - **Location**: `REQ/{domain}/{subdomain}/` within project docs directory
 - **Domains**: `api/` (external integrations), `risk/` (risk management), `data/` (data requirements), `ml/` (ML requirements), `auth/` (security), etc.
 - **Naming**: `REQ-NNN_descriptive_slug.md` (NNN = 3-digit sequential number, lowercase snake_case slug)
-- **Subdocuments**: For complex requirements: `REQ-NNN-YY_additional_detail.md` (YY = 2-digit sub-number)
+- **Section Files**: For large requirements (>50KB), use Section Files format: `REQ-NNN.S_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
 
 ---
 
@@ -104,7 +104,7 @@ Every REQ must contain these exact sections in order:
 - **Filename**: `REQ-NNN_slug.md` (e.g., `REQ-003_resource_limit_enforcement.md`)
 - **H1 Header**: `# REQ-NNN: [RESOURCE_INSTANCE] Title` (Template V2+) - includes resource classification tag
 - **Template Version**: Must use 3.0 (current) - not legacy V1 or V2
-- **Uniqueness**: Each NNN number used once (either single REQ-NNN or REQ-NNN-YY group)
+- **Uniqueness**: Each NNN number used once (either single REQ-NNN or REQ-NNN.S section group)
 
 ---
 

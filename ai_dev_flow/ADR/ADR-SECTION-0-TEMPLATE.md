@@ -13,9 +13,14 @@ custom_fields:
   section_type: index
   artifact_type: ADR
   layer: 5
+  folder_structure: nested
   architecture_approach: {approach-name}
   priority: {primary|fallback|shared}
   development_status: {active|reference|planned}
+  split_type: section
+  reading_order: sequential
+  traceability_scope: inherited
+  index_role: true
 ---
 
 # ADR-{NNN}.0: {Document Title} - Index

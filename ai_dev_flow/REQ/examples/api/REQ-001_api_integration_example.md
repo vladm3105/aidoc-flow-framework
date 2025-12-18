@@ -914,24 +914,24 @@ class TokenBucketRateLimiter:
 
 ### Primary Functional Criteria
 
-- **AC-001**: API connection established within 5 seconds using valid API key
-- **AC-002**: Single data retrieval completes within SLA (p95 <500ms)
-- **AC-003**: Batch data retrieval (10 items) completes within 2s at p95
-- **AC-004**: Rate limiting enforced at tier-specific limits
+- **REQ.01.06.01**: API connection established within 5 seconds using valid API key
+- **REQ.01.06.02**: Single data retrieval completes within SLA (p95 <500ms)
+- **REQ.01.06.03**: Batch data retrieval (10 items) completes within 2s at p95
+- **REQ.01.06.04**: Rate limiting enforced at tier-specific limits
 
 ### Error and Edge Case Criteria
 
-- **AC-005**: Connection failures trigger exponential backoff retry
-- **AC-006**: Circuit breaker opens after 5 consecutive failures
-- **AC-007**: Circuit breaker closes after 2 successes in half-open state
-- **AC-008**: Invalid identifier format raises ValidationError immediately
-- **AC-009**: API errors (5xx) retry up to 5 times before failing
+- **REQ.01.06.05**: Connection failures trigger exponential backoff retry
+- **REQ.01.06.06**: Circuit breaker opens after 5 consecutive failures
+- **REQ.01.06.07**: Circuit breaker closes after 2 successes in half-open state
+- **REQ.01.06.08**: Invalid identifier format raises ValidationError immediately
+- **REQ.01.06.09**: API errors (5xx) retry up to 5 times before failing
 
 ### Quality and Constraint Criteria
 
-- **AC-010**: Response time <500ms at p95 under sustained load
-- **AC-011**: API keys never logged or exposed in error messages
-- **AC-012**: Memory usage <512MB per instance under load
+- **REQ.01.06.10**: Response time <500ms at p95 under sustained load
+- **REQ.01.06.11**: API keys never logged or exposed in error messages
+- **REQ.01.06.12**: Memory usage <512MB per instance under load
 
 ---
 

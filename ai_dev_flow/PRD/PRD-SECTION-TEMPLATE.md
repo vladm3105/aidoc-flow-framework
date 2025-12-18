@@ -14,8 +14,13 @@ custom_fields:
   section_type: content
   artifact_type: PRD
   layer: 2
+  folder_structure: nested
   architecture_approach: {approach-name}
   priority: {primary|fallback|shared}
+  split_type: section
+  reading_order: sequential
+  traceability_scope: inherited
+  index_role: false
 ---
 
 # PRD-{NNN}.{S}: {Section Title}

@@ -213,11 +213,14 @@ The ADR validation script ensures architecture decisions follow quality standard
 ### Pre-Commit Validation
 
 ```bash
-# Validate single ADR document
-./scripts/validate_adr_template.sh docs/ADR/ADR-001_architecture_decision.md
+# Validate single ADR document (nested folder structure)
+./scripts/validate_adr_template.sh docs/ADR/ADR-001/ADR-001.0_index.md
 
-# Validate all ADR files
-find docs/ADR -name "ADR-*.md" -exec ./scripts/validate_adr_template.sh {} \;
+# Validate all ADR files (section-based structure)
+find docs/ADR -type f -name "ADR-*.md" -exec ./scripts/validate_adr_template.sh {} \;
+
+# Validate monolithic ADR (optional for <25KB)
+./scripts/validate_adr_template.sh docs/ADR/ADR-001_architecture_decision.md
 ```
 
 ### SYS-Ready Scoring Criteria ⭐ NEW

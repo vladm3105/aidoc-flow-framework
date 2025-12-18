@@ -278,9 +278,48 @@ fi
 echo ""
 
 # ============================================
-# CHECK 7: Traceability Tags (Layer 12 - All 9)
+# CHECK 7: Element ID Format Validation
 # ============================================
-echo "CHECK 7: Traceability Tags (Layer 12 - All 9 Mandatory)"
+echo "CHECK 7: Element ID Format Validation"
+echo "-----------------------------------------"
+
+# Check for deprecated element ID formats
+# Old formats: TYPE-NNN-YY, FR-001, AC-001, QA-001, BC-001, BO-001
+deprecated_patterns=(
+  "^### (FR|QA|AC|BC|BO)-[0-9]{3}:"
+  "IPLAN-[0-9]{3}-[0-9]{2}"
+)
+
+deprecated_found=0
+for pattern in "${deprecated_patterns[@]}"; do
+  matches=$(grep -cE "$pattern" "$IPLAN_FILE" 2>/dev/null || echo "0")
+  if [ "$matches" -gt 0 ]; then
+    echo -e "  ${RED}❌ ERROR: Deprecated element ID format found ($matches occurrences)${NC}"
+    echo "           Pattern: $pattern"
+    echo "           Use unified format: IPLAN.NN.TT.SS"
+    deprecated_found=$((deprecated_found + matches))
+  fi
+done
+
+if [ "$deprecated_found" -eq 0 ]; then
+  echo -e "  ${GREEN}✅ No deprecated element ID formats found${NC}"
+fi
+
+# Validate unified format element IDs (TYPE.NN.TT.SS)
+unified_pattern="IPLAN\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}"
+unified_count=$(grep -cE "$unified_pattern" "$IPLAN_FILE" 2>/dev/null || echo "0")
+echo "  Unified format element IDs found: $unified_count"
+
+if [ "$deprecated_found" -gt 0 ]; then
+  ERRORS=$((ERRORS + 1))
+fi
+
+echo ""
+
+# ============================================
+# CHECK 8: Traceability Tags (Layer 12 - All 9)
+# ============================================
+echo "CHECK 8: Traceability Tags (Layer 12 - All 9 Mandatory)"
 echo "-----------------------------------------"
 
 required_tags=("@brd" "@prd" "@ears" "@bdd" "@adr" "@sys" "@req" "@spec" "@tasks")

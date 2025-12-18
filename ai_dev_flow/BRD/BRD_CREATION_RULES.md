@@ -73,11 +73,14 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- **Location**: `docs/BRD/` within project docs directory
-- **Platform BRDs**: `BRD-NNN_platform_*` or `BRD-NNN_infrastructure_*` (e.g., `BRD-001_platform_architecture_technology_stack.md`)
-- **Feature BRDs**: `BRD-NNN_{feature_name}` (e.g., `BRD-006_b2c_progressive_kyc_onboarding.md`)
-- **Naming**: `BRD-NNN_descriptive_title.md` (NNN = 3-digit sequential number, snake_case slug)
-- **Subdocuments**: For complex business requirements: `BRD-NNN-YY_additional_detail.md` (YY = 2-digit sub-number)
+- **Location**: `docs/BRD/BRD-NNN/` within project docs directory (nested folder per document)
+- **Folder Structure** (DEFAULT): `docs/BRD/BRD-NNN/BRD-NNN.S_slug.md`
+  - Index file: `docs/BRD/BRD-NNN/BRD-NNN.0_index.md`
+  - Section files: `docs/BRD/BRD-NNN/BRD-NNN.1_executive_summary.md`, etc.
+- **Platform BRDs**: `BRD-NNN_platform_*` or `BRD-NNN_infrastructure_*` (e.g., `docs/BRD/BRD-001/BRD-001.0_index.md`)
+- **Feature BRDs**: `BRD-NNN_{feature_name}` (e.g., `docs/BRD/BRD-006/BRD-006.0_index.md`)
+- **Section Files**: Section-based structure is DEFAULT for all BRD documents. Use format: `BRD-NNN.S_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
+- **Monolithic** (OPTIONAL for <25KB): `docs/BRD/BRD-NNN_descriptive_title.md` (flat structure)
 
 ---
 
@@ -402,7 +405,7 @@ When performing major refactoring (version X.0), document the transformation:
 - **Filename**: `BRD-NNN_descriptive_title.md` (e.g., `BRD-001_platform_architecture_technology_stack.md`)
 - **H1 Header**: `# Business Requirements Document (BRD)` (static for all BRDs)
 - **Document Title**: Include in H1 as subtitle (e.g., "Business Requirements Document (BRD)" with project name in Introduction)
-- **ID Format**: BRD-NNN (3-digit sequential), BRD-NNN-YY for multi-part documents
+- **ID Format**: BRD-NNN (3-digit sequential), BRD-NNN.S for section files (large documents)
 - **Uniqueness Rule**: Each NNN number unique across Platform and Feature BRDs
 
 ### 4.2 Business Objectives Baseline Pattern
@@ -1251,8 +1254,8 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 
 - Every Functional Requirement (section 4) MUST appear in this table
 - Downstream artifacts initially marked "Planned" (created during PRD/SPEC phases)
-- SPEC-XXX format: Use BRD ID as XXX (e.g., BRD-005 → SPEC-005-001)
-- IMPL-XXX format: Use BRD ID as XXX (e.g., BRD-005 → IMPL-005-001)
+- SPEC-XXX format: Use BRD ID as XXX (e.g., BRD-005 → SPEC-005.1)
+- IMPL-XXX format: Use BRD ID as XXX (e.g., BRD-005 → IMPL-005.1)
 
 **Forward Traceability**: Enables impact analysis when changing functional requirements
 

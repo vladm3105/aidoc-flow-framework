@@ -239,21 +239,21 @@ This directory provides the **BRD-TEMPLATE.md** for business requirements docume
 
 ```
 BRD-NNN_descriptive_title.md        # Atomic document
-BRD-NNN-YY_descriptive_title.md     # Multi-part document group
+BRD-NNN.S_section_title.md          # Section file (for large documents)
 ```
 
 Where:
 - `BRD` is the constant prefix
 - `NNN` is the three-digit sequence number (001, 002, 003, etc.)
-- `YY` is the optional two-digit sub-document number (01, 02, 03, etc.)
+- `S` is the section number for split documents (0=index, 1, 2, 3, etc.)
 - `descriptive_title` uses snake_case for clarity
 
 **Examples:**
 - `BRD-001_foundation_overview.md` (atomic document)
-- `BRD-009-01_provider_integration_prerequisites.md` (multi-part document)
-- `BRD-009-02_provider_integration_pilot.md` (multi-part document)
+- `BRD-009.1_provider_integration_prerequisites.md` (section file)
+- `BRD-009.2_provider_integration_pilot.md` (section file)
 
-**Important**: Each XXX number must be unique. Cannot have both `BRD-009.md` AND `BRD-009-01.md` (collision).
+**Important**: Each NNN number must be unique. Section files use `.S` suffix (e.g., `BRD-009.0` for index, `BRD-009.1` for first section). See `ID_NAMING_STANDARDS.md` for metadata tags.
 
 ## Writing Guidelines
 
@@ -443,7 +443,7 @@ BRDs serve as:
 ## Example BRDs
 
 See existing BRD documents in `docs/BRD/` for complete examples:
-- `BRD-001-01_foundation_overview.md` - Multi-agent system strategic overview
-- `BRD-009-02_provider_integration_pilot.md` - [EXTERNAL_SERVICE_GATEWAY] integration pilot
+- `BRD-001.1_foundation_overview.md` - Multi-agent system strategic overview (section file)
+- `BRD-009.2_provider_integration_pilot.md` - [EXTERNAL_SERVICE_GATEWAY] integration pilot (section file)
 
 These demonstrate well-structured BRDs following these conventions with proper Architecture Decision Requirements sections.

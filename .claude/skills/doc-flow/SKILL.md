@@ -229,14 +229,19 @@ strategy/ (WHAT - Product Owner Voice)
 **Implementation Documentation**: Requirements, architecture, specifications
 
 - `docs/BRD/` - Business Requirements Documents
+  - **Nested folder structure**: `docs/BRD/BRD-NNN/BRD-NNN.S_slug.md`
 - `docs/PRD/` - Product Requirements Documents
+  - **Nested folder structure**: `docs/PRD/PRD-NNN/PRD-NNN.S_slug.md`
 - `docs/ADR/` - Architecture Decision Records (HOW)
+  - **Nested folder structure**: `docs/ADR/ADR-NNN/ADR-NNN.S_slug.md`
 - `docs/BDD/` - BDD acceptance tests (Behavior-Driven Development)
 - `docs/CTR/` - API Contracts (dual-file format: .md + .yaml)
 - `docs/IMPL/` - Implementation Plans (Project Management: WHO/WHEN)
 - `docs/SPEC/` - YAML technical specifications
 - `docs/TASKS/` - Code Generation Plans (AI-structured implementation tasks)
 - `docs/IPLAN/` - Implementation Plans (session-based execution with bash commands)
+
+**Note**: BRD, PRD, ADR use section-based nested folders by default. Other types use flat structure.
 
 **Purpose**: Document how strategy is implemented through architecture and code.
 

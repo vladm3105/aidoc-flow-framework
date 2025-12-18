@@ -68,6 +68,10 @@ Schema: See `ai_dev_flow/PRD/PRD_SCHEMA.yaml` for complete rules
 > - **Agent-Based PRD** (12-15 sections): Extended ML/AI sections, state machine focus
 > - **Automation-Focused PRD** (9-12 sections): n8n workflow-centric, webhook-focused
 
+> **Note**: Section-based templates are the DEFAULT for BRD/PRD/ADR.
+> This monolithic template is for small documents only (<25KB).
+> Use nested folder structure: `docs/PRD/PRD-NNN/PRD-NNN.S_slug.md`
+
 # PRD-NNN: [Descriptive Product Name/Feature Name]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
@@ -874,8 +878,8 @@ Document the business strategy and research that drive this PRD.
 | Market Research | [Research Report] | [Customer insights, competitive analysis] | [Key findings] | User needs and market opportunity |
 
 **Key Business Objectives Satisfied**:
-- BO-001: [Business objective description] → Enabled by PRD features [list feature IDs]
-- BO-002: [Business objective description] → Enabled by PRD features [list feature IDs]
+- BRD.NN.23.01: [Business objective description] → Enabled by PRD features [list feature IDs]
+- BRD.NN.23.02: [Business objective description] → Enabled by PRD features [list feature IDs]
 
 **Customer Needs Addressed**:
 - Need: [Customer pain point] → Solved by [specific product capability]

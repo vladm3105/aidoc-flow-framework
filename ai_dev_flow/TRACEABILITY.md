@@ -562,12 +562,12 @@ From EARS-TEMPLATE.md:
 | SYS | [SYS-001](../SYS/SYS-001_resource_limits.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] System Requirements | System architecture section 3 | Technical system constraints |
 
 **Key Business Objectives Satisfied**:
-- BO-001: Prevent excessive resource collection heat → Satisfied by EARS statements EVENT-001, EVENT-002
-- BO-002: Ensure regulatory compliance → Satisfied by EARS statements STATE-001, UB-001
+- BRD.NN.23.01: Prevent excessive resource collection heat → Satisfied by EARS statements EARS.NN.21.01, EARS.NN.21.02
+- BRD.NN.23.02: Ensure regulatory compliance → Satisfied by EARS statements EARS.NN.22.01, EARS.NN.23.01
 
 **Product Features Enabled**:
-- Feature: Real-time risk limit validation → Specified by EARS statements EVENT-001 through EVENT-005
-- Capability: Automated trade rejection → Specified by EARS statements UB-001, UB-002
+- Feature: Real-time risk limit validation → Specified by EARS statements EARS.NN.21.01 through EARS.NN.21.05
+- Capability: Automated trade rejection → Specified by EARS statements EARS.NN.23.01, EARS.NN.23.02
 
 ### 7.2 Downstream Artifacts
 
@@ -575,22 +575,22 @@ From EARS-TEMPLATE.md:
 
 | ADR ID | ADR Title | Decisions Driven by EARS | Relationship |
 |--------|-----------|-------------------------|--------------|
-| [ADR-033](../ADR/ADR-033_risk_limit_enforcement.md#ADR-033) | Risk Limit Enforcement Architecture | EARS statements EVENT-001, STATE-001 | This EARS requirement necessitates the architectural approach |
+| [ADR-033](../ADR/ADR-033_risk_limit_enforcement.md#ADR-033) | Risk Limit Enforcement Architecture | EARS statements EARS.NN.21.01, EARS.NN.22.01 | This EARS requirement necessitates the architectural approach |
 | [ADR-034](../ADR/ADR-034_circuit_breaker.md#ADR-034) | [SAFETY_MECHANISM - e.g., rate limiter, error threshold] Pattern | EARS.01.24.901 | Performance requirement drives architectural pattern |
 
 #### 7.2.2 Atomic Requirements
 
 | REQ ID | Requirement Title | Source EARS Statements | Relationship |
 |--------|------------------|----------------------|--------------|
-| [REQ-003](../REQ/risk/lim/REQ-003_resource_limit.md#REQ-003) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Validation | Derived from EARS EVENT-001, EVENT-002 | Detailed implementation requirement |
-| [REQ-004](../REQ/risk/lim/REQ-004_resource_usage.md#REQ-004) | resource collection Heat Calculation | Derived from EARS STATE-001 | Detailed implementation requirement |
+| [REQ-003](../REQ/risk/lim/REQ-003_resource_limit.md#REQ-003) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Validation | Derived from EARS.NN.21.01, EARS.NN.21.02 | Detailed implementation requirement |
+| [REQ-004](../REQ/risk/lim/REQ-004_resource_usage.md#REQ-004) | resource collection Heat Calculation | Derived from EARS.NN.22.01 | Detailed implementation requirement |
 
 #### 7.2.3 BDD Scenarios
 
 | BDD Feature | Scenario | Source EARS Statements | Relationship |
 |-------------|----------|----------------------|--------------|
-| [BDD-003](../BDD/BDD-003_risk_limits.feature#scenario-1) | Validate [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] rejection | Tests EARS EVENT-001 | Acceptance test for requirement |
-| [BDD-003](../BDD/BDD-003_risk_limits.feature#scenario-2) | Validate resource collection heat threshold | Tests EARS STATE-001 | Acceptance test for requirement |
+| [BDD-003](../BDD/BDD-003_risk_limits.feature#scenario-1) | Validate [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] rejection | Tests EARS.NN.21.01 | Acceptance test for requirement |
+| [BDD-003](../BDD/BDD-003_risk_limits.feature#scenario-2) | Validate resource collection heat threshold | Tests EARS.NN.22.01 | Acceptance test for requirement |
 
 ### Document Links
 - **Anchors/IDs**: `#EARS-001`
@@ -1628,7 +1628,7 @@ BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC �
 ### Granular Relationships
 
 - Don't just link documents - specify sections
-- Example: "PRD-001 section 4.2 drives EARS-001 Statement EVENT-003"
+- Example: "PRD-001 section 4.2 drives EARS.01.21.03"
 - Enables precise change impact assessment
 
 ### Table Format for Complex Traceability
@@ -1638,7 +1638,7 @@ Use tables for multiple relationships:
 | Source | Target | Relationship Type | Notes |
 |--------|--------|------------------|-------|
 | BRD-001 section 2.4 | PRD-001 Feature-003 | Business objective → Product feature | resource management capability |
-| PRD-001 Feature-003 | EARS-001 EVENT-001 | Product feature → Formal requirement | Real-time validation |
+| PRD-001 Feature-003 | EARS.01.21.01 | Product feature → Formal requirement | Real-time validation |
 
 ### Code Traceability
 

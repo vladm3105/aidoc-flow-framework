@@ -298,12 +298,12 @@ class RequestValidatorImpl:
 
 ## 9. Acceptance Criteria
 
-- **AC-001**: Valid requests pass all layers (100% acceptance)
-- **AC-002**: Invalid schema rejected with field errors (400 response)
-- **AC-003**: Business rules enforced (422 with details)
-- **AC-004**: Conditional logic validated (cross-field check)
-- **AC-005**: Pydantic rejects invalid data (ValidationError)
-- **AC-006**: Database constraints enforced (ConstraintViolation)
+- **REQ.02.06.01**: Valid requests pass all layers (100% acceptance)
+- **REQ.02.06.02**: Invalid schema rejected with field errors (400 response)
+- **REQ.02.06.03**: Business rules enforced (422 with details)
+- **REQ.02.06.04**: Conditional logic validated (cross-field check)
+- **REQ.02.06.05**: Pydantic rejects invalid data (ValidationError)
+- **REQ.02.06.06**: Database constraints enforced (ConstraintViolation)
 
 ## 10. Verification Methods
 

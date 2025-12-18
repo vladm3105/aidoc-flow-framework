@@ -3,3 +3,6 @@ tmp/
 
 # Work plans (local planning documents)
 work_plans/
+
+# BMAD commands (external module)
+.claude/commands/bmad/

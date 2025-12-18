@@ -98,10 +98,20 @@ LAYER_CONFIG = {
 
 # Tag format patterns
 TAG_PATTERN = re.compile(r'^@(\w+):\s*(.+)$', re.MULTILINE)
-# Supports both formats:
-#   - Document-level: TYPE-NNN (e.g., ADR-001, SPEC-001)
-#   - Sub-ID dot notation: TYPE.NN.EE.SS (e.g., BRD.01.01.03, PRD.17.07.15)
-DOC_ID_PATTERN = re.compile(r'([A-Z]+)(?:-(\d{3,4})(?:-(\d{2,3}))?|\.(\d{2})\.(\d{2})\.(\d{2}))')
+
+# Document-level IDs (TYPE-NNN format for filenames)
+# Examples: ADR-001, SPEC-001, BRD-003.1 (section files)
+DOC_FILE_PATTERN = re.compile(r'^([A-Z]{2,5})-(\d{3,4})(?:\.(\d+))?$')
+
+# Element-level IDs (TYPE.NN.TT.SS format for content)
+# Format: {DOC_TYPE}.{DOC_NUM}.{ELEM_TYPE}.{SEQ}
+# Examples: BRD.01.01.03, PRD.17.07.15, REQ.01.01.01
+# NOTE: Old formats (TYPE-NNN-YY, TYPE-NNN.YY) are DEPRECATED
+ELEMENT_ID_PATTERN = re.compile(r'^([A-Z]{2,5})\.(\d{2,9})\.(\d{2,9})\.(\d{2,9})$')
+
+# Combined pattern for backward compatibility during transition
+# Accepts both document-level and element-level formats
+DOC_ID_PATTERN = re.compile(r'([A-Z]{2,5})(?:-(\d{3,4})(?:\.(\d+))?|\.(\d{2,9})\.(\d{2,9})\.(\d{2,9}))')
 TRACEABILITY_SECTION_PATTERN = re.compile(r'^##\s+(?:\d+\.\s+)?Traceability', re.MULTILINE | re.IGNORECASE)
 
 
@@ -152,7 +162,7 @@ class RequirementIndex:
 
         doc_id = f"{doc_id_match.group(1)}-{doc_id_match.group(2)}"
         if doc_id_match.group(3):
-            doc_id += f"-{doc_id_match.group(3)}"
+            doc_id += f".{doc_id_match.group(3)}"  # Section file format: TYPE-NNN.S
 
         # Extract title (first # heading)
         title_match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
@@ -413,11 +423,11 @@ class CrossDocumentValidator:
                 continue
 
             doc_type = doc_id_match.group(1)
-            if doc_id_match.group(2):  # Hyphen format: TYPE-NNN
+            if doc_id_match.group(2):  # Hyphen format: TYPE-NNN or TYPE-NNN.S (section file)
                 doc_id = f"{doc_type}-{doc_id_match.group(2)}"
                 if doc_id_match.group(3):
-                    doc_id += f"-{doc_id_match.group(3)}"
-                section_ref = None  # Hyphen format doesn't support section ref in new pattern
+                    doc_id += f".{doc_id_match.group(3)}"  # Section file format: TYPE-NNN.S
+                section_ref = None
             else:  # Dot notation format: TYPE.NN.EE.SS
                 doc_num = doc_id_match.group(4)
                 sub_num = doc_id_match.group(5)
@@ -524,10 +534,10 @@ class CrossDocumentValidator:
                             ref_match = DOC_ID_PATTERN.match(tag_value)
                             if ref_match:
                                 ref_type = ref_match.group(1)
-                                if ref_match.group(2):  # Hyphen format: TYPE-NNN
+                                if ref_match.group(2):  # Hyphen format: TYPE-NNN or TYPE-NNN.S
                                     ref_id = f"{ref_type}-{ref_match.group(2)}"
                                     if ref_match.group(3):
-                                        ref_id += f"-{ref_match.group(3)}"
+                                        ref_id += f".{ref_match.group(3)}"  # Section file format
                                 else:  # Dot notation format: TYPE.NN.EE.SS
                                     ref_id = f"{ref_type}-{ref_match.group(4)}"
                                 referenced.add(ref_id)
@@ -732,8 +742,8 @@ class AutoFixer:
 
     def _fix_missing_upstream(self, content: str, issue: ValidationIssue) -> str:
         """Remove functionality requiring missing upstream (strict hierarchy)"""
-        # Extract the missing document reference
-        match = re.search(r'([A-Z]+-\d{3,4}(?:-\d{2,3})?)', issue.message)
+        # Extract the missing document reference (supports TYPE-NNN and TYPE-NNN.S section files)
+        match = re.search(r'([A-Z]+-\d{3,4}(?:\.\d+)?)', issue.message)
         if not match:
             return content
 
@@ -759,7 +769,8 @@ class AutoFixer:
 
     def _fix_deprecated_reference(self, content: str, issue: ValidationIssue) -> str:
         """Remove or mark deprecated reference"""
-        match = re.search(r'([A-Z]+-\d{3,4}(?:-\d{2,3})?)', issue.message)
+        # Supports TYPE-NNN and TYPE-NNN.S section files
+        match = re.search(r'([A-Z]+-\d{3,4}(?:\.\d+)?)', issue.message)
         if not match:
             return content
 

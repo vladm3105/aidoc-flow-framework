@@ -327,11 +327,23 @@ Check `docs/PRD/` for next available ID number (e.g., PRD-001, PRD-002).
 
 **ID Matching**: PRD ID does NOT need to match BRD ID (PRD-009 may implement BRD-016).
 
-### Step 3: Create PRD File
+### Step 3: Create PRD Folder and Files
 
-**File naming**: `docs/PRD/PRD-NNN_{slug}.md`
+**Folder structure** (DEFAULT - nested folder per document):
+1. Create folder: `docs/PRD/PRD-NNN/`
+2. Create index file: `docs/PRD/PRD-NNN/PRD-NNN.0_index.md`
+3. Create section files: `docs/PRD/PRD-NNN/PRD-NNN.S_{slug}.md`
 
-**Example**: `docs/PRD/PRD-001_ib_api_integration.md`
+**Example**:
+```
+docs/PRD/PRD-001/
+├── PRD-001.0_index.md
+├── PRD-001.1_overview.md
+├── PRD-001.2_features.md
+└── PRD-001.3_requirements.md
+```
+
+**OPTIONAL** (for small documents <25KB): `docs/PRD/PRD-NNN_{slug}.md` (monolithic)
 
 ### Step 4: Fill Document Control Section
 
@@ -570,10 +582,12 @@ For supplementary documentation related to PRD artifacts:
 - **PRD README**: `ai_dev_flow/PRD/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
-**Section Templates** (for documents >25K tokens):
+**Section Templates** (DEFAULT for all PRD documents):
+- **Structure**: `docs/PRD/PRD-NNN/PRD-NNN.S_slug.md` (nested folder per document)
 - Index template: `ai_dev_flow/PRD/PRD-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_flow/PRD/PRD-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- **Note**: Monolithic template is OPTIONAL for small documents (<25KB)
 
 ## Quick Reference
 

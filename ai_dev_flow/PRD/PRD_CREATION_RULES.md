@@ -128,8 +128,12 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- **Location**: `docs/PRD/` within project docs directory
-- **Naming**: `PRD-NNN_descriptive_title.md` (NNN = 3-digit sequential number, snake_case slug)
+- **Location**: `docs/PRD/PRD-NNN/` within project docs directory (nested folder per document)
+- **Folder Structure** (DEFAULT): `docs/PRD/PRD-NNN/PRD-NNN.S_slug.md`
+  - Index file: `docs/PRD/PRD-NNN/PRD-NNN.0_index.md`
+  - Section files: `docs/PRD/PRD-NNN/PRD-NNN.1_executive_summary.md`, etc.
+- **Section Files**: Section-based structure is DEFAULT for all PRD documents. Use format: `PRD-NNN.S_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
+- **Monolithic** (OPTIONAL for <25KB): `docs/PRD/PRD-NNN_descriptive_title.md` (flat structure)
 - **Subdocuments**: For complex business features: `PRD-NNN-YY_additional_detail.md` (YY = 2-digit sub-number)
 
 ---

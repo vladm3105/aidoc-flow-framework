@@ -408,13 +408,13 @@ def get_all_permissions(role_id: str, visited: set = None) -> set[str]:
 
 ## 9. Acceptance Criteria
 
-- **AC-001**: Authorized requests succeed (user has required permission)
-- **AC-002**: Unauthorized requests denied (401 for missing token)
-- **AC-003**: Forbidden requests denied (403 for insufficient permission)
-- **AC-004**: Role hierarchy works (child inherits parent permissions)
-- **AC-005**: Superuser bypass (system:admin grants all permissions)
-- **AC-006**: Authorization checks cached (<1ms for repeated checks)
-- **AC-007**: All authorization decisions logged to audit trail
+- **REQ.03.06.01**: Authorized requests succeed (user has required permission)
+- **REQ.03.06.02**: Unauthorized requests denied (401 for missing token)
+- **REQ.03.06.03**: Forbidden requests denied (403 for insufficient permission)
+- **REQ.03.06.04**: Role hierarchy works (child inherits parent permissions)
+- **REQ.03.06.05**: Superuser bypass (system:admin grants all permissions)
+- **REQ.03.06.06**: Authorization checks cached (<1ms for repeated checks)
+- **REQ.03.06.07**: All authorization decisions logged to audit trail
 
 ## 10. Verification Methods
 

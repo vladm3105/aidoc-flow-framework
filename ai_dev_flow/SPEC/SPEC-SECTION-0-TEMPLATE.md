@@ -16,6 +16,10 @@ custom_fields:
   architecture_approach: {approach-name}
   priority: {primary|fallback|shared}
   development_status: {active|reference|planned}
+  split_type: section
+  reading_order: sequential
+  traceability_scope: inherited
+  index_role: true
 ---
 
 # SPEC-{NNN}.0: {Document Title} - Index

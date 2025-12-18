@@ -73,7 +73,7 @@ class EarsValidator:
     # === REQUIREMENT ID PATTERN ===
     # Correct: #### EARS.30.24.01: Title (4-segment element ID format)
     # Incorrect: #### Event-001: Title, #### State-001: Title
-    CORRECT_REQ_ID_PATTERN = r"^####\s+EARS[.-](\d{2})[.-](\d{2})[.-](\d{2}):\s+.+"
+    CORRECT_REQ_ID_PATTERN = r"^####\s+EARS\.(\d{2,9})\.(\d{2,9})\.(\d{2,9}):\s+.+"
     INCORRECT_REQ_ID_PATTERNS = [
         r"^####\s+Event-\d+:\s+",
         r"^####\s+State-\d+:\s+",
@@ -85,7 +85,7 @@ class EarsValidator:
     MALFORMED_TABLE_SEPARATOR = r"\|-+\|\s*\|$"
 
     # === TRACEABILITY ===
-    SOURCE_DOC_PATTERN = r"@prd:\s*PRD\.\d{2}\.\d{2}\.\d{2}"
+    SOURCE_DOC_PATTERN = r"@prd:\s*PRD\.\d{2,9}\.\d{2,9}\.\d{2,9}"
     TRACEABILITY_TAG_PATTERN = r"@(prd|brd|ears|threshold|entity):\s*\S+"
 
     def __init__(self, verbose: bool = False):

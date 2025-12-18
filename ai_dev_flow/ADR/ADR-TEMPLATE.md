@@ -31,6 +31,10 @@ custom_fields:
 > - **Creation Rules**: `ADR_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `ADR_VALIDATION_RULES.md` - Post-creation checks
 
+> **Note**: Section-based templates are the DEFAULT for BRD/PRD/ADR.
+> This monolithic template is for small documents only (<25KB).
+> Use nested folder structure: `docs/ADR/ADR-NNN/ADR-NNN.S_slug.md`
+
 # ADR-NNN: [Architecture Decision Title]
 
 ## 1. Document Control

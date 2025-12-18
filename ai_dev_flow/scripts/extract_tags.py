@@ -36,11 +36,14 @@ FILE_EXTENSIONS = {'.py', '.md', '.yaml', '.yml', '.feature'}
 def parse_tag_value(tag_value: str) -> List[Tuple[str, Optional[str]]]:
     """Parse tag value into (DOCUMENT-ID, ELEMENT-ID) tuples.
 
+    Supports unified 4-segment element IDs: TYPE.NN.TT.SS
+    Format: {DOC_TYPE}.{DOC_NUM}.{ELEM_TYPE}.{SEQ}
+
     Args:
         tag_value: "BRD.01.01.30, BRD.01.01.31, SPEC-003"
 
     Returns:
-        [('BRD-01', '01.30'), ('BRD-01', '01.31'), ('SPEC-003', None)]
+        [('BRD.01.01.30', None), ('BRD.01.01.31', None), ('SPEC-003', None)]
     """
     refs = []
     for item in tag_value.split(','):
@@ -66,10 +69,10 @@ def extract_tags_from_file(file_path: Path) -> Dict:
     Returns:
         {
             'tags': {
-                'brd': [('BRD-001', '001'), ('BRD-001', '002')],
-                'sys': [('SYS-001', None)],
+                'brd': [('BRD.01.01.01', None), ('BRD.01.01.02', None)],
+                'sys': [('SYS.01.01.01', None)],
                 'spec': [('SPEC-001', None)],
-                'test': [('BDD-001', '001')],
+                'test': [('BDD.01.01.01', None)],
                 'impl-status': ['complete']
             },
             'line_numbers': {

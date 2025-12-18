@@ -16,6 +16,10 @@ custom_fields:
   layer: 4
   architecture_approach: {approach-name}
   priority: {primary|fallback|shared}
+  split_type: section
+  reading_order: sequential
+  traceability_scope: inherited
+  index_role: false
 ---
 
 # BDD-{NNN}.{S}: {Section Title}

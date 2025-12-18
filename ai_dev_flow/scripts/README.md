@@ -665,7 +665,7 @@ All scripts support the following document types:
 
 Document IDs support both formats:
 - Simple: `TYPE-NNN` (e.g., `ADR-001`)
-- Hierarchical: `TYPE-NNN-YY` (e.g., `REQ-010-01`)
+- Section files: `TYPE-NNN.S` (e.g., `REQ-010.1`)
 
 ---
 

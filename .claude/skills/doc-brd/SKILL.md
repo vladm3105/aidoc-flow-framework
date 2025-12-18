@@ -142,10 +142,12 @@ Use `doc-brd` when:
 
 > **Note**: Technical QA standards, testing strategy, and defect management are documented in PRD-TEMPLATE.md Section 21 (product level).
 
-**Section Templates** (for documents >25K tokens):
+**Section Templates** (DEFAULT for all BRD documents):
+- **Structure**: `docs/BRD/BRD-NNN/BRD-NNN.S_slug.md` (nested folder per document)
 - Index template: `ai_dev_flow/BRD/BRD-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_flow/BRD/BRD-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- **Note**: Monolithic template is OPTIONAL for small documents (<25KB)
 
 ### 2. Required Sections (17 Total)
 
@@ -326,11 +328,23 @@ Choose appropriate template (comprehensive, simplified, or domain-specific).
 
 Check `docs/BRD/` for next available ID number (e.g., BRD-001, BRD-002).
 
-### Step 5: Create BRD File
+### Step 5: Create BRD Folder and Files
 
-**File naming**: `docs/BRD/BRD-NNN_{slug}.md`
+**Folder structure** (DEFAULT - nested folder per document):
+1. Create folder: `docs/BRD/BRD-NNN/`
+2. Create index file: `docs/BRD/BRD-NNN/BRD-NNN.0_index.md`
+3. Create section files: `docs/BRD/BRD-NNN/BRD-NNN.S_{slug}.md`
 
-**Example**: `docs/BRD/BRD-001_ib_mcp_server_platform.md`
+**Example**:
+```
+docs/BRD/BRD-001/
+├── BRD-001.0_index.md
+├── BRD-001.1_executive_summary.md
+├── BRD-001.2_business_context.md
+└── BRD-001.3_requirements.md
+```
+
+**OPTIONAL** (for small documents <25KB): `docs/BRD/BRD-NNN_{slug}.md` (monolithic)
 
 ### Step 6: Fill Document Control Section
 
