@@ -339,12 +339,12 @@ Acceptance criteria containing quantitative values MUST use threshold references
 
 **Invalid**:
 ```markdown
-AC-001: Response time SHALL be < 200ms for 95th percentile
+REQ.NN.06.01: Response time SHALL be < 200ms for 95th percentile
 ```
 
 **Valid**:
 ```markdown
-AC-001: Response time SHALL be < @threshold: PRD.NNN.perf.api.p95_latency for 95th percentile
+REQ.NN.06.01: Response time SHALL be < @threshold: PRD.NNN.perf.api.p95_latency for 95th percentile
 ```
 
 ### Validation

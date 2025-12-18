@@ -403,7 +403,7 @@ validation_rules:
     - rule: "Error Handling must include Exception Catalog"
       severity: error
 
-    - rule: "Acceptance Criteria must have minimum 15 items (AC-001 through AC-015)"
+    - rule: "Acceptance Criteria must have minimum 15 items (TYPE.NN.06.01 through TYPE.NN.06.15)"
       severity: warning
 
     - rule: "SPEC-Ready Score must be ≥90%"

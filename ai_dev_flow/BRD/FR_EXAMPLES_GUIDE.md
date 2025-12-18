@@ -157,7 +157,7 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 ### BEFORE (PRD-Level - Score 65/100, DEPRECATED FORMAT)
 
 ```markdown
-**FR-004: Risk Screening API Integration** (DEPRECATED FORMAT - DO NOT USE)
+**BRD.NN.01.04: Risk Screening API Integration** (DEPRECATED PRD-LEVEL STYLE - DO NOT USE)
 
 - Call POST /screening/ofac with sender/recipient data
 - Receive JSON response with match_score (0-100)

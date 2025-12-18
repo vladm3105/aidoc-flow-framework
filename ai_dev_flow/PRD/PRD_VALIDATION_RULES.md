@@ -800,15 +800,15 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001/PRD-001.0_index.m
 
 | Pattern | Issue | Fix |
 |---------|-------|-----|
-| `FR-001` | Deprecated FR format | `PRD.NN.01.01` |
+| `Feature-001` | Deprecated format | `PRD.NN.01.01` |
 | `FR-AGENT-001` | Non-standard prefix | `PRD.NN.01.01` |
 | `Feature 3.1` | Text format | `PRD.NN.01.03` |
 | `F-001` | Deprecated F- format | `PRD.NN.01.01` |
-| `FR-1-1` | Not zero-padded | `PRD.01.01.01` |
+| `PRD.1.1.1` | Not zero-padded | `PRD.01.01.01` |
 
 **Error Messages**:
 ```
-⚠️ WARNING: Deprecated Feature ID "FR-001" found - use PRD.NN.EE.SS format
+⚠️ WARNING: Deprecated Feature ID "Feature-001" found - use PRD.NN.TT.SS format
 ⚠️ WARNING: Non-standard Feature ID "FR-AGENT-001" - use PRD.NN.EE.SS format
 ⚠️ WARNING: Text format "Feature 3.1" detected - convert to PRD.NN.EE.SS
 ```

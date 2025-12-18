@@ -428,19 +428,19 @@ deployment:
 
 # === ACCEPTANCE CRITERIA (FROM BDD) ===
 acceptance_criteria:
-  - id: "AC-001"
+  - id: "SPEC.01.06.01"
     scenario: "Successful API call"
     given: "Valid authentication credentials"
     when: "Client makes request to [ENDPOINT]"
     then: "Response received within [TIMEOUT]ms with status 2xx"
 
-  - id: "AC-002"
+  - id: "SPEC.01.06.02"
     scenario: "Rate limit handling"
     given: "Rate limit is reached"
     when: "Client makes additional request"
     then: "Request is queued/rejected with appropriate error"
 
-  - id: "AC-003"
+  - id: "SPEC.01.06.03"
     scenario: "Circuit breaker activation"
     given: "[THRESHOLD] conregulatoryutive failures"
     when: "Circuit breaker opens"

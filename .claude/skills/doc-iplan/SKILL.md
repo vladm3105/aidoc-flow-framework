@@ -320,13 +320,12 @@ The SDD framework uses two distinct notation systems for cross-references:
 ## Unified Element ID Format (MANDATORY)
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NN.EE.SS` (dot separator, 4-segment format)
+- **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
 - **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
-- **Never use**: `TYPE.NN.EE.SS` (3-segment format - DEPRECATED)
+- **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
 - `@brd: BRD.17.01.01` ✅
-- `@brd: BRD-017:001` ❌
 - `@brd: BRD.017.001` ❌ (old 3-segment format)
 
 

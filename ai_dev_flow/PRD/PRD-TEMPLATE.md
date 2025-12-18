@@ -411,9 +411,9 @@ User stories follow the standard format:
 
 | Business Objective | Related User Stories | Coverage Notes |
 |--------------------|---------------------|----------------|
-| [BO-1: Objective description] | PRD.NN.07.01, PRD.NN.07.03, PRD.NN.07.08 | [How stories address objective] |
-| [BO-2: Objective description] | PRD.NN.07.02, PRD.NN.07.05, PRD.NN.07.12 | [How stories address objective] |
-| [BO-3: Objective description] | PRD.NN.07.04, PRD.NN.07.09, PRD.NN.07.15 | [How stories address objective] |
+| [BRD.NN.23.01: Objective description] | PRD.NN.07.01, PRD.NN.07.03, PRD.NN.07.08 | [How stories address objective] |
+| [BRD.NN.23.02: Objective description] | PRD.NN.07.02, PRD.NN.07.05, PRD.NN.07.12 | [How stories address objective] |
+| [BRD.NN.23.03: Objective description] | PRD.NN.07.04, PRD.NN.07.09, PRD.NN.07.15 | [How stories address objective] |
 
 ### User Roles and Permissions
 

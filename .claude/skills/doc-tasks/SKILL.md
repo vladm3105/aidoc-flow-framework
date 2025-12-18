@@ -276,13 +276,12 @@ The SDD framework uses two distinct notation systems for cross-references:
 ## Unified Element ID Format (MANDATORY)
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NN.EE.SS` (dot separator, 4-segment format)
+- **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
 - **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
-- **Never use**: `TYPE.NN.EE.SS` (3-segment format - DEPRECATED)
+- **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
 - `@brd: BRD.17.01.01` ✅
-- `@brd: BRD-017:001` ❌
 - `@brd: BRD.017.001` ❌ (old 3-segment format)
 
 
@@ -545,6 +544,11 @@ For supplementary documentation needs, create:
 - **TASKS Validation Rules**: `ai_dev_flow/TASKS/TASKS_VALIDATION_RULES.md`
 - **TASKS README**: `ai_dev_flow/TASKS/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+
+**Section Templates** (for documents >25K tokens):
+- Index template: `ai_dev_flow/TASKS/TASKS-SECTION-0-TEMPLATE.md`
+- Content template: `ai_dev_flow/TASKS/TASKS-SECTION-TEMPLATE.md`
+- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ## Quick Reference
 

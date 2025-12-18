@@ -1226,7 +1226,7 @@ Reference: BRD-TEMPLATE.md section 15
 Orphaned Requirements:
 - BRD.NN.23.03: No related BRD.NN.EE.SS requirements (Coverage Status = "Gap")
 - BRD.NNN.012: Not linked to any Business Objective
-- US-007: Not linked to any Functional Requirement
+- PRD.NN.09.07: Not linked to any Functional Requirement
 
 Traceability Health Score: 78% (Target: ≥90%)
 

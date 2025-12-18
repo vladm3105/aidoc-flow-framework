@@ -345,7 +345,7 @@ When performing major refactoring (version X.0), document the transformation:
 
    **BEFORE (v1.0 - PRD-Level, Score 65/100)**:
    ```markdown
-   ### FR-005: Transaction Initiation API (DEPRECATED FORMAT)
+   ### BRD.NN.01.05: Transaction Initiation API (DEPRECATED PRD-LEVEL STYLE)
 
    | Field | Requirement |
    |-------|-------------|
@@ -1227,7 +1227,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 
 | Business Objective | Related Functional Requirements | Related User Stories | Coverage Status |
 |--------------------|--------------------------------|----------------------|-----------------|
-| [BO-1: Objective description] | BRD.NNN.001, BRD.NNN.002, BRD.NNN.005 | US-001, US-003, US-008 | Complete/Partial/Gap |
+| [BRD.NN.23.01: Objective description] | BRD.NN.01.01, BRD.NN.01.02, BRD.NN.01.05 | PRD.NN.09.01, PRD.NN.09.03, PRD.NN.09.08 | Complete/Partial/Gap |
 
 **Requirements**:
 
@@ -1322,7 +1322,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 |----------------------|-------------------|---------------------------|-----------------|
 | BRD.NNN.001 through BRD.NN.EE.SS | Unit Tests | TEST-XXX-UNIT: Functional Requirement Unit Test Suite | 95% |
 | BRD.NNN.001 through BRD.NN.EE.SS | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
-| User Stories (US-001 through US-XXX) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
+| User Stories (PRD.NN.09.01 through PRD.NN.09.XX) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
 | Performance Quality Attributes | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
 | Security Quality Attributes | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
 

@@ -107,7 +107,7 @@ The following are explicitly out of scope for this product iteration:
 
 ### User Stories
 
-#### US-001: Skill Recommendation
+### PRD.00.09.01: Skill Recommendation
 **As a** Framework Beginner
 **I want** the system to recommend the appropriate skill for my documentation task
 **So that** I can create artifacts without memorizing the skill catalog
@@ -117,7 +117,7 @@ The following are explicitly out of scope for this product iteration:
 - Recommendations include confidence score and rationale
 - User can override suggestions with manual skill selection
 
-#### US-002: Context Analysis
+### PRD.00.09.02: Context Analysis
 **As an** Intermediate User
 **I want** the system to analyze my project context before creating documents
 **So that** new artifacts have accurate upstream references and relevant content
@@ -127,7 +127,7 @@ The following are explicitly out of scope for this product iteration:
 - Relevant upstream documents surfaced for reference
 - Context summary provided before artifact creation
 
-#### US-003: Quality Guidance
+### PRD.00.09.03: Quality Guidance
 **As a** Power User
 **I want** proactive quality checks during artifact creation
 **So that** I catch issues before validation rather than after
@@ -137,7 +137,7 @@ The following are explicitly out of scope for this product iteration:
 - Warning for common anti-patterns
 - Cumulative tagging compliance checks
 
-#### US-004: Workflow Optimization
+### PRD.00.09.04: Workflow Optimization
 **As any** User
 **I want** clear next-step recommendations after completing an artifact
 **So that** I maintain workflow momentum and traceability

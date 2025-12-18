@@ -294,6 +294,24 @@ The framework uses three distinct ID patterns for different purposes:
 - `BRD.03.01.05` → Element ID (all dots, 4-segment format for internal references)
 - `@ref: BRD-03.1` → References a **document/section file**, not an element
 
+### Common Confusion: When to Use Each Format
+
+**Question**: "Is the 4-segment format only for external traceability references?"
+
+**Answer**: NO. The 4-segment format is used for **ALL element references**, both:
+- Internal element headings: `### BRD.01.01.05: Feature Name`
+- External traceability tags: `@brd: BRD.01.01.05`
+
+**Rule Summary**:
+
+| What You're Referencing | Format | Example |
+|------------------------|--------|---------|
+| A **document file** | Dash format | `BRD-001`, `[BRD-001](../BRD/BRD-001.md)` |
+| A **section file** | Dash+dot format | `BRD-001.1`, `[BRD-001.1](../BRD/BRD-001.1_summary.md)` |
+| A **specific element** (requirement, feature, constraint) | 4-segment dot format | `BRD.01.01.05`, `@brd: BRD.01.01.05` |
+
+**Key Insight**: The 4-segment format unifies internal and external element references to avoid confusion. Use it consistently everywhere you reference a specific element.
+
 ### Section File Naming Pattern
 
 **Pattern**: `{TYPE}-{NNN}.{SECTION}[.{SUBSECTION}]_{slug}.md`
@@ -816,21 +834,6 @@ This format is optimized for AI-assisted documentation workflows:
 4. **Zero capacity planning**: Grows automatically without range management
 5. **Consistent parsing**: Same pattern across all 12+ document types
 
-### DEPRECATED Formats (do NOT use)
-
-| Deprecated | Replacement | Notes |
-|------------|-------------|-------|
-| `BRD-017:001` | `BRD.17.01.01` | Colon separator removed |
-| `FR-001` | `BRD.01.01.01` | Type-specific prefixes removed |
-| `BC-001` | `BRD.01.03.01` | Use element type code 03 |
-| `BA-001` | `BRD.01.04.01` | Use element type code 04 |
-| `AC-001` | `BRD.01.06.01` | Use element type code 06 |
-| `DEP-001` | `BRD.01.05.01` | Use element type code 05 |
-| `QA-001` | `BRD.01.02.01` | Use element type code 02 |
-| `BO-001` | `BRD.01.23.01` | Use element type code 23 |
-| `RISK-001` | `BRD.01.07.01` | Use element type code 07 |
-| `METRIC-001` | `BRD.01.08.01` | Use element type code 08 |
-
 ---
 
 ## Internal Feature Heading Format (MANDATORY)
@@ -884,15 +887,13 @@ The following patterns are **REMOVED** and MUST NOT be used:
 | `AC-XXX` | Acceptance Criteria | Use `### BRD.NN.06.SS: Criteria` |
 | `RISK-XXX` | Risk Items | Use `### BRD.NN.07.SS: Risk` |
 | `METRIC-XXX` | Success Metrics | Use `### BRD.NN.08.SS: Metric` |
-| `TYPE.NN.EE.SS` | 3-segment format | Use `TYPE.NN.TT.SS` (4-segment) |
+| `TYPE.NN.TT` | 3-segment format | Use `TYPE.NN.TT.SS` (4-segment) |
 | `Feature F-XXX` | PRD feature headings | Use `### PRD.NN.09.SS: User Story` |
 
 **Migration Examples**:
 
 | Before (REMOVED) | After (MANDATORY) |
 |------------------|-------------------|
-| `#### FR-001: Recipient Selection` | `### BRD.01.01.01: Recipient Selection` |
-| `#### BC-003: Budget Limit` | `### BRD.01.03.03: Budget Limit` |
 | `### BRD.017.001: Feature` | `### BRD.17.01.01: Feature` |
 | `### Feature F-001: User Dashboard` | `### PRD.01.07.01: User Dashboard` |
 

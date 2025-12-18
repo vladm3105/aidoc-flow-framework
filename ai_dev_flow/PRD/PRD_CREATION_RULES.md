@@ -944,10 +944,10 @@ When referencing features from other PRDs, use the cross-reference format:
 
 | Invalid Format | Issue | Correct Format |
 |----------------|-------|----------------|
-| `FR-022-001` | Deprecated FR format | `PRD.22.01.01` |
+| `Feature-022-001` | Deprecated format | `PRD.22.01.01` |
 | `FR-AGENT-001` | Non-standard prefix | `PRD.22.01.01` |
 | `Feature 3.1` | Text format | `PRD.25.01.03` |
-| `FR-1` | Not zero-padded | `PRD.01.01.01` |
+| `PRD.1.1` | Not zero-padded | `PRD.01.01.01` |
 | `F-001` | Deprecated F- format | `PRD.NN.01.01` |
 
 ### Common Mistakes to Avoid
@@ -973,7 +973,7 @@ For PRDs with non-standard Feature IDs:
 **Mapping Example**:
 | Old ID | New Unified ID | Cross-Reference |
 |--------|----------------|-----------------|
-| FR-022-001 | PRD.22.01.01 | @prd: PRD.22.01.01 |
+| Feature-022-001 | PRD.22.01.01 | @prd: PRD.22.01.01 |
 | FR-AGENT-001 | PRD.22.01.01 | @prd: PRD.22.01.01 |
 | Feature 3.1 | PRD.25.01.03 | @prd: PRD.25.01.03 |
 | F-001 | PRD.NN.01.01 | @prd: PRD.NN.01.01 |
