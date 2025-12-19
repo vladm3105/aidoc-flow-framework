@@ -6,3 +6,7 @@ work_plans/
 
 # BMAD commands (external module)
 .claude/commands/bmad/
+
+# Python bytecode
+*.pyc
+__pycache__/
