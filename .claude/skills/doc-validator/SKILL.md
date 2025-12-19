@@ -1,5 +1,5 @@
 ---
-name: "doc-validator: Automated validation of SDD documentation standards"
+title: "doc-validator: Automated validation of SDD documentation standards"
 name: doc-validator
 description: Automated validation of documentation standards for SDD framework compliance
 tags:
@@ -20,76 +20,116 @@ custom_fields:
 
 # doc-validator
 
-**Description**: Automated validation of documentation standards for SDD framework compliance
-
-**Category**: Documentation Quality Assurance
-
-**Complexity**: Medium (validation rules + cross-reference analysis)
-
----
-
 ## Purpose
 
-Enforce documentation quality standards across all SDD artifacts to ensure consistency, traceability, and compliance with project requirements. Prevents common documentation errors before commit.
+Automated validation of documentation standards for SDD framework compliance.
+
+**Core Functions**:
+- Validates document structure against artifact-specific schemas
+- Enforces ID format compliance (unified `TYPE.NN.TT.SS` element format)
+- Checks YAML frontmatter metadata requirements
+- Validates cumulative tagging hierarchy per layer
+- Detects language standard violations (objective, factual language)
+- Monitors token count limits (50K standard, 100K max)
+- Identifies broken cross-references and links
+- Detects duplicate IDs and content
+
+**SDD Layer Coverage** (12 layers):
+```
+Layer 1: BRD → Layer 2: PRD → Layer 3: EARS →
+Layer 4: BDD → Layer 5: ADR → Layer 6: SYS →
+Layer 7: REQ → Layer 8: IMPL → Layer 9: CTR →
+Layer 10: SPEC → Layer 11: TASKS → Layer 12: IPLAN
+```
+
+**Reference**: [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md)
+
+**Complexity**: Medium (schema validation + cross-reference analysis)
+
+**Resource Requirements**:
+- CPU: Moderate (file parsing, regex matching)
+- Memory: 100-500MB for 100-200 documents
+- Disk: Minimal (read-only validation)
+- Network: None (local file operations only)
+
+**Failure Modes**:
+- Invalid ID format: Reports non-compliant document/element IDs
+- Missing metadata: Reports required YAML frontmatter fields
+- Broken links: Reports file paths that do not resolve
+- Schema violations: Reports missing required sections
+- Token limit exceeded: Reports files requiring split
 
 ---
 
-## Capabilities
+## When to Use This Skill
 
-### 1. Token Count Validation
-- **Claude Code (Primary)**: Maximum 50,000 tokens (200KB) standard, 100,000 tokens (400KB) absolute maximum
-- **Gemini CLI (Secondary)**: Flags files >10,000 tokens for file read tool usage (not `@` reference)
-- **GitHub Copilot**: Flags files >30KB for companion summary creation
-- Automatic token counting using tiktoken (cl100k_base encoding)
-- Identifies files exceeding tool-specific limits
-- Suggests consolidation opportunities (removes unnecessary splits)
-- Recommends sequential file splitting only when exceeding 100,000 tokens or logical boundaries
-- Provides tool-specific recommendations based on file size
+**Use doc-validator when**:
+- Before committing changes to documentation
+- After creating new artifacts (BRD, PRD, SPEC, etc.)
+- After updating existing artifacts
+- During periodic audits (weekly/sprint/release)
+- Validating document structure against templates
+- Detecting ID format violations
+- Verifying metadata completeness
+- Checking language standards compliance
 
-### 2. Language Standards Enforcement
-- Objective, factual language only
-- Excludes promotional content
-- No subjective qualifiers (amazing, powerful, efficient, easy)
-- No time estimates or performance claims
-- No Python code blocks within documentation files
+**Do NOT use doc-validator when**:
+- Validating traceability (use trace-check skill instead)
+- Validating code implementation
+- For non-SDD documentation projects
+- During active editing sessions (wait until stable state)
 
-### 3. Cross-Reference Validation
-- Validates all internal links ([REQ-*], [BDD-*], [ADR-*], etc.)
-- Checks external file references
-- Identifies broken links or missing targets
-- Validates bidirectional traceability
+---
 
-### 4. ID Format Compliance
-- REQ-NN or REQ-NN-YY (e.g., REQ-01, REQ-01-01)
-- BDD-NN or BDD-NN-YY (e.g., BDD-01, BDD-01-01)
-- ADR-NN or ADR-NN-YY (e.g., ADR-01, ADR-01-01)
-- IMPL-NN or IMPL-NN-YY (e.g., IMPL-01, IMPL-01-01)
-- CTR-NN or CTR-NN-YY (e.g., CTR-01, CTR-01-01)
-- SPEC-NN or SPEC-NN-YY (e.g., SPEC-01, SPEC-01-01)
-- TASKS-NN or TASKS-NN-YY (e.g., TASKS-01, TASKS-01-01)
-- IPLAN-NN (e.g., IPLAN-01)
+## Skill Inputs
 
-### 5. Traceability Matrix Validation
-- Ensures all requirements have source references
-- Validates forward traceability (REQ → BDD → TASKS)
-- Validates backward traceability (TASKS → BDD → REQ)
-- Identifies orphaned requirements or tasks
+| Input | Type | Description | Example/Default |
+|-------|------|-------------|-----------------|
+| docs_path | Required | Path to documentation directory | `{project_root}/docs/` |
+| artifact_type | Optional | Specific artifact type to validate | `"REQ"`, `"SPEC"`, or `"all"` (default) |
+| strictness | Optional | Validation strictness level | `"strict"` (default), `"permissive"` |
+| report_format | Optional | Output report format | `"markdown"` (default), `"json"`, `"text"` |
+| auto_fix | Optional | Apply automatic fixes | `true` or `false` (default) |
 
-### 6. Template Compliance
-- Validates document structure against templates
-- Checks required sections
-- Verifies metadata completeness
-- Ensures proper header hierarchy
+**Strictness Levels**:
+- `permissive`: Warnings only, validation continues on errors
+- `strict`: Fails on errors, reports warnings
 
-### 7. Duplicate Content Detection
-- Identifies duplicate requirement IDs
-- Detects copy-paste errors
-- Flags redundant content across documents
+---
 
-### 8. Code Separation Validation
-- Ensures no Python code blocks in documentation
-- Validates flowchart usage instead of code
-- Checks for proper code file references
+## Implementation Status
+
+### [IMPLEMENTED] Validators Ready for Use
+
+| Layer | Artifact | Script | Schema | Status |
+|-------|----------|--------|--------|--------|
+| 1 | BRD | `validate_brd_template.sh` | `BRD_SCHEMA.yaml` | [IMPLEMENTED] |
+| 2 | PRD | `validate_prd.py` | `PRD_SCHEMA.yaml` | [IMPLEMENTED] |
+| 3 | EARS | `validate_ears.py` | `EARS_SCHEMA.yaml` | [IMPLEMENTED] |
+| 4 | BDD | `validate_bdd.py` | `BDD_SCHEMA.yaml` | [IMPLEMENTED] |
+| 5 | ADR | `validate_adr.py` | `ADR_SCHEMA.yaml` | [IMPLEMENTED] |
+| 6 | SYS | `validate_sys.py` | `SYS_SCHEMA.yaml` | [IMPLEMENTED] |
+| 7 | REQ | `validate_req_template.sh` | `REQ_SCHEMA.yaml` | [IMPLEMENTED] |
+| 8 | IMPL | `validate_impl.sh` | `IMPL_SCHEMA.yaml` | [IMPLEMENTED] |
+| 9 | CTR | `validate_ctr.sh` | `CTR_SCHEMA.yaml` | [IMPLEMENTED] |
+| 10 | SPEC | `validate_spec.py` | `SPEC_SCHEMA.yaml` | [IMPLEMENTED] |
+| 11 | TASKS | `validate_tasks.sh` | `TASKS_SCHEMA.yaml` | [IMPLEMENTED] |
+| 12 | IPLAN | `validate_iplan.sh` | `IPLAN_SCHEMA.yaml` | [IMPLEMENTED] |
+| N/A | ICON | `validate_icon.sh` | N/A | [IMPLEMENTED] |
+
+### [IMPLEMENTED] Support Scripts
+
+| Script | Purpose | Status |
+|--------|---------|--------|
+| `validate_all.py` | Unified orchestrator for all validators | [IMPLEMENTED] |
+| `validate_artifact.py` | Unified validator with auto-detection | [IMPLEMENTED] |
+| `validate_cross_document.py` | Cross-reference validation | [IMPLEMENTED] |
+| `validate_links.py` | Markdown link resolution | [IMPLEMENTED] |
+| `validate_requirement_ids.py` | REQ ID format validation | [IMPLEMENTED] |
+| `validate_tags_against_docs.py` | Tag taxonomy compliance | [IMPLEMENTED] |
+| `validate_traceability_matrix.py` | Matrix validation | [IMPLEMENTED] |
+| `validate_iplan_naming.py` | IPLAN naming convention | [IMPLEMENTED] |
+| `error_codes.py` | Standardized error code registry | [IMPLEMENTED] |
 
 ---
 
@@ -97,58 +137,294 @@ Enforce documentation quality standards across all SDD artifacts to ensure consi
 
 ```mermaid
 graph TD
-    A[Input: Documentation File] --> B{Token Count Check}
-    B -->|> 100,000| C[Flag: Split Required]
-    B -->|≤ 100,000| D{Language Standards}
-    D -->|Violations| E[Flag: Language Issues]
-    D -->|Pass| F{ID Format Check}
-    F -->|Invalid| G[Flag: ID Format Errors]
-    F -->|Valid| H{Cross-Reference Check}
-    H -->|Broken Links| I[Flag: Link Errors]
-    H -->|Valid| J{Traceability Check}
-    J -->|Gaps| K[Flag: Traceability Issues]
-    J -->|Complete| L{Template Compliance}
-    L -->|Non-compliant| M[Flag: Template Issues]
-    L -->|Compliant| N{Duplicate Check}
-    N -->|Duplicates| O[Flag: Duplicate IDs]
-    N -->|Unique| P[Validation PASS]
+    A[Input: Documentation File] --> B{Detect Artifact Type}
+    B --> C{Schema Exists?}
+    C -->|Yes| D[Load Schema]
+    C -->|No| E[Use Generic Validation]
+    D --> F{Metadata Check}
+    E --> F
+    F -->|Invalid| G[VAL-E001: Metadata Error]
+    F -->|Valid| H{ID Format Check}
+    H -->|Invalid| I[VAL-E002: ID Format Error]
+    H -->|Valid| J{Section Structure}
+    J -->|Missing| K[VAL-E003: Section Missing]
+    J -->|Valid| L{Token Count}
+    L -->|>100K| M[VAL-E004: Token Limit]
+    L -->|OK| N{Language Standards}
+    N -->|Violations| O[VAL-W001: Language Warning]
+    N -->|OK| P{Cross-References}
+    P -->|Broken| Q[VAL-E005: Broken Link]
+    P -->|Valid| R[Validation PASS]
 
-    C --> Q[Validation Report]
-    E --> Q
-    G --> Q
-    I --> Q
-    K --> Q
-    M --> Q
-    O --> Q
-    P --> Q
+    G --> S[Validation Report]
+    I --> S
+    K --> S
+    M --> S
+    O --> S
+    Q --> S
+    R --> S
 ```
 
 ---
 
-## Usage Instructions
+## Error Codes Reference
 
-### Pre-Commit Validation
+### Standardized Error Code Format
 
-```bash
-# Validate single file
-doc-validator validate /path/to/document.md
+**Pattern**: `{TYPE}-{SEVERITY}{NNN}`
 
-# Validate directory
-doc-validator validate-dir /path/to/docs
+| Component | Values | Description |
+|-----------|--------|-------------|
+| TYPE | VAL, BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, XDOC | Artifact or validation type |
+| SEVERITY | E (Error), W (Warning), I (Info) | Severity level |
+| NNN | 001-999 | Sequential number |
 
-# Validate all SDD artifacts
-doc-validator validate-all
+### General Validation Errors (VAL)
+
+| Code | Message | Severity | Fix |
+|------|---------|----------|-----|
+| VAL-E001 | Missing required metadata field | ERROR | Add field to YAML frontmatter |
+| VAL-E002 | Invalid ID format | ERROR | Use `TYPE.NN.TT.SS` format |
+| VAL-E003 | Missing required section | ERROR | Add section per template |
+| VAL-E004 | Token count exceeds 100K | ERROR | Split at logical boundaries |
+| VAL-E005 | Broken cross-reference link | ERROR | Fix file path or anchor |
+| VAL-E006 | Duplicate ID detected | ERROR | Use unique sequential IDs |
+| VAL-E007 | Invalid YAML syntax | ERROR | Fix YAML formatting |
+| VAL-W001 | Subjective language detected | WARNING | Use objective language |
+| VAL-W002 | Token count >50K | WARNING | Consider splitting |
+| VAL-W003 | Missing optional section | WARNING | Add section if applicable |
+| VAL-I001 | Token count >10K (Gemini) | INFO | Use file read tool |
+| VAL-I002 | Naming suggestion | INFO | Consider improvement |
+
+### Cross-Document Errors (XDOC)
+
+| Code | Message | Severity | Fix |
+|------|---------|----------|-----|
+| XDOC-E001 | Referenced ID not found | ERROR | Verify upstream document exists |
+| XDOC-E002 | Missing cumulative tag | ERROR | Add required upstream tag |
+| XDOC-E003 | Bidirectional link missing | ERROR | Add reverse reference |
+| XDOC-E004 | Anchor not found in target | ERROR | Fix anchor reference |
+| XDOC-E005 | Orphaned artifact | ERROR | Add upstream reference |
+| XDOC-W001 | Weak traceability | WARNING | Add direct links |
+
+---
+
+## Validation Capabilities
+
+### 1. Token Count Validation [IMPLEMENTED]
+
+**Tool-Specific Limits**:
+| Tool | Standard | Maximum | Action |
+|------|----------|---------|--------|
+| Claude Code | 50,000 tokens | 100,000 tokens | Split at 100K |
+| Gemini CLI | 10,000 tokens | No limit | Use file read tool |
+| GitHub Copilot | 30,000 bytes | 60,000 bytes | Create summary |
+
+**Validation Script**: `validate_artifact.py` (token counting via tiktoken)
+
+### 2. ID Format Validation [IMPLEMENTED]
+
+**Document ID Format**: `TYPE-NNN_{slug}.md`
+- Example: `REQ-01_authentication.md`, `SPEC-02_api_contract.yaml`
+
+**Element ID Format**: `TYPE.NN.TT.SS` (unified 4-segment)
+- TYPE: Document type (BRD, PRD, REQ, etc.)
+- NN: Document number (2+ digits)
+- TT: Element type code (01-31)
+- SS: Sequential within element type
+
+**Element Type Codes**:
+| Code | Type | Code | Type |
+|------|------|------|------|
+| 01 | Functional Requirement | 09 | User Story |
+| 02 | Quality Attribute | 10 | Decision |
+| 03 | Constraint | 11 | Implementation Note |
+| 04 | Assumption | 12 | Verification Method |
+| 05 | Dependency | 13 | Configuration |
+| 06 | Acceptance Criteria | 14 | Error Handling |
+| 07 | Risk | 15 | Feature |
+| 08 | Metric | 16 | Business Rule |
+
+**Reference**: [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md)
+
+### 3. Metadata Validation [IMPLEMENTED]
+
+**Required YAML Frontmatter**:
+```yaml
+---
+title: "TYPE-NNN: Document Title"
+tags:
+  - artifact-type-tag
+  - layer-N-artifact
+custom_fields:
+  artifact_type: TYPE
+  layer: N
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: primary|fallback|shared
+  development_status: active|draft|deprecated
+---
 ```
 
-### Integration with doc-flow
+**Validation Script**: `validate_artifact.py`
 
-When doc-flow generates or updates documentation:
-1. Automatically invoke doc-validator
-2. Report validation results
-3. Block commit if critical errors found
-4. Provide fix suggestions
+### 4. Section Structure Validation [IMPLEMENTED]
 
-### Validation Report Format
+Each artifact type has required sections defined in its schema:
+
+**Example (REQ - 12 sections)**:
+1. Document Control
+2. Functional Requirements
+3. Interface Specifications
+4. Data Schemas
+5. Error Handling
+6. Configuration Parameters
+7. Quality Attributes
+8. Implementation Guidance
+9. Acceptance Criteria
+10. Verification Methods
+11. Assumptions & Constraints
+12. Traceability Matrix
+
+**Validation Scripts**: `validate_brd_template.sh`, `validate_req_template.sh`, etc.
+
+### 5. Language Standards Validation [IMPLEMENTED]
+
+**Objective Language Required**:
+- No subjective qualifiers (amazing, powerful, efficient, easy)
+- No promotional content
+- No time estimates or performance claims
+- Factual, imperative language
+
+**Validation Script**: Pattern matching in `validate_artifact.py`
+
+### 6. Cross-Reference Validation [IMPLEMENTED]
+
+**Link Format**: `[ID](../TYPE/TYPE-NNN_file.md#anchor)`
+
+**Validation Checks**:
+- File path resolves
+- Anchor exists in target file
+- Bidirectional consistency
+
+**Validation Script**: `validate_links.py`, `validate_cross_document.py`
+
+### 7. Cumulative Tag Validation [IMPLEMENTED]
+
+Each layer must include ALL upstream tags:
+
+| Layer | Artifact | Required Tags |
+|-------|----------|---------------|
+| 1 | BRD | None (top level) |
+| 2 | PRD | @brd |
+| 3 | EARS | @brd, @prd |
+| 4 | BDD | @brd, @prd, @ears |
+| 5 | ADR | @brd, @prd, @ears, @bdd |
+| 6 | SYS | @brd through @adr |
+| 7 | REQ | @brd through @sys |
+| ... | ... | Cumulative |
+
+**Validation Script**: `validate_tags_against_docs.py`
+
+### 8. Duplicate Detection [IMPLEMENTED]
+
+**Checks**:
+- Duplicate element IDs within document
+- Duplicate document IDs across project
+- Near-duplicate content (>80% similarity)
+
+**Validation Script**: `validate_requirement_ids.py`
+
+---
+
+## Quality Gates
+
+### Severity Levels
+
+| Level | Code | Exit Code | Blocks Commit | Description |
+|-------|------|-----------|---------------|-------------|
+| ERROR | E | 2 | Yes | Critical issue, must fix |
+| WARNING | W | 1 | --strict only | Should fix |
+| INFO | I | 0 | No | Suggestion |
+
+### Per-Document Gates
+
+| Gate | Threshold | Measurement |
+|------|-----------|-------------|
+| Zero Errors | 0 | Count of E-level issues |
+| Warning Limit | ≤5 | Count of W-level issues |
+| Token Limit | ≤100K | Token count |
+
+### Project-Wide Gates
+
+| Gate | Threshold | Measurement |
+|------|-----------|-------------|
+| Coverage | ≥90% | Documents passing validation |
+| ID Compliance | 100% | Documents with valid IDs |
+| Metadata Compliance | 100% | Documents with valid frontmatter |
+
+---
+
+## Integration Points
+
+### With doc-flow
+- Invoked automatically after artifact generation
+- Blocks workflow on critical errors
+- Provides inline fix suggestions
+
+### With trace-check
+- Complementary validation (structure vs. traceability)
+- Shared cumulative tag validation logic
+- Combined quality reports
+
+### With code-review
+- Post-commit documentation validation
+- Quality gate enforcement
+
+### With test-automation
+- BDD feature file validation
+- Test traceability verification
+
+---
+
+## Usage Examples
+
+### Validate Single Document
+
+```bash
+# Using implemented validator
+./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-01_platform.md
+
+# Using unified validator
+python ai_dev_flow/scripts/validate_artifact.py docs/REQ/REQ-01_auth.md
+```
+
+### Validate All Documents of Type
+
+```bash
+# Validate all REQ documents
+for f in docs/REQ/REQ-*.md; do
+  ./ai_dev_flow/scripts/validate_req_template.sh "$f"
+done
+```
+
+### Validate Cross-References
+
+```bash
+python ai_dev_flow/scripts/validate_cross_document.py docs/ --strict
+```
+
+### Validate Cumulative Tags
+
+```bash
+python ai_dev_flow/scripts/validate_tags_against_docs.py \
+  --source docs/ \
+  --validate-cumulative \
+  --strict
+```
+
+---
+
+## Validation Report Format
 
 ```
 === Documentation Validation Report ===
@@ -156,82 +432,29 @@ When doc-flow generates or updates documentation:
 File: docs/REQ/REQ-01_requirements.md
 Status: FAILED
 
-Errors (3):
-- [Token Count] 120,000 tokens exceeds 100,000 limit (Claude Code maximum)
-  → Suggestion: Split at section "Data Architecture Requirements"
+Errors (2):
+- [VAL-E002] Invalid element ID "REQ-USER-LOGIN-1" at line 156
+  → Expected format: REQ.01.01.01 (TYPE.NN.TT.SS)
 
-- [Cross-Reference] Broken link [REQ-015] at line 234
-  → Target not found in any REQ documents
-
-- [ID Format] Invalid ID "REQ-USER-LOGIN-1" at line 156
-  → Expected format: REQ-NN or REQ-NN-YY (e.g., REQ-01, REQ-01-01)
+- [VAL-E003] Missing required section "Quality Attributes"
+  → Add section per REQ template
 
 Warnings (1):
-- [Language] Subjective qualifier "easy to use" at line 89
+- [VAL-W001] Subjective language "easy to use" at line 89
   → Replace with objective description
 
-Info (2):
-- Total requirements: 45
-- Traceability coverage: 98% (44/45 linked)
+Info (1):
+- [VAL-I001] Token count 12,450 (Gemini: use file read tool)
+
+Summary:
+- Total elements: 45
+- ID compliance: 98% (44/45)
+- Section compliance: 92% (11/12)
 ```
 
 ---
 
-## Validation Rules
-
-### Token Count Rules (Tool-Optimized)
-
-**Claude Code (Primary Tool):**
-- **CRITICAL**: File > 100,000 tokens → MUST split at logical boundaries
-- **WARNING**: File > 50,000 tokens → Consider splitting if logical boundaries exist
-- **INFO**: File > 30,000 tokens → Monitor growth, optimal range is 20-40KB
-
-**Gemini CLI (Secondary Tool):**
-- **INFO**: File > 10,000 tokens → Recommend using file read tool instead of `@` reference
-- Note: No splitting required - file read tool handles any size
-
-**GitHub Copilot:**
-- **WARNING**: File > 30,000 bytes → Consider creating companion summary
-- **INFO**: File > 20,000 bytes → May need chunked interaction strategy
-
-### Language Standards Rules
-- **WARNING**: Python code blocks >50 lines in .md files → Consider separate .py file
-- **INFO**: Python code blocks <50 lines → Acceptable inline
-- **ERROR**: Promotional language, subjective claims
-- **WARNING**: Vague terminology, imprecise descriptions
-- **INFO**: Passive voice, verbose phrasing
-
-### Cross-Reference Rules
-- **CRITICAL**: Broken internal links
-- **ERROR**: Missing bidirectional references
-- **WARNING**: Weak traceability (indirect links only)
-- **INFO**: Optional references missing
-
-### ID Format Rules
-- **CRITICAL**: Malformed ID (cannot parse)
-- **ERROR**: Incorrect category/component name
-- **WARNING**: Non-sequential numbering
-- **INFO**: Naming convention suggestions
-
-### Traceability Rules
-- **CRITICAL**: Orphaned requirements (no forward/backward links)
-- **ERROR**: Incomplete traceability chain
-- **WARNING**: Single-point traceability (only one direction)
-- **INFO**: Optional traceability missing
-
-### Template Compliance Rules
-- **CRITICAL**: Missing required sections
-- **ERROR**: Incorrect header hierarchy
-- **WARNING**: Missing optional metadata
-- **INFO**: Formatting suggestions
-
-### Duplicate Detection Rules
-- **CRITICAL**: Duplicate IDs in same document
-- **ERROR**: Duplicate IDs across documents
-- **WARNING**: Near-duplicate content (>80% similarity)
-- **INFO**: Similar descriptions (may be intentional)
-
-### REF Document Rules (Minimal Validation)
+## REF Document Rules (Minimal Validation)
 
 Reference documents (`{TYPE}-REF-NNN`) use minimal, non-blocking validation:
 
@@ -246,294 +469,61 @@ Reference documents (`{TYPE}-REF-NNN`) use minimal, non-blocking validation:
 **Exempted (Not Checked)**:
 | Check | Reason |
 |-------|--------|
-| Cumulative Tags | REF docs don't participate in traceability chain |
-| Full Traceability | Traceability is optional for REF docs |
+| Cumulative Tags | REF docs don't participate in traceability |
+| Full Traceability | Optional for REF docs |
 | Quality Gates | Non-blocking validation only |
-| SPEC-Ready Score | Not applicable |
 | Layer Requirements | REF has no layer assignment |
 
-**Validation Behavior**:
-- REF documents flagged with warnings, not errors
-- Validation continues even if REF checks fail
-- REF documents excluded from traceability matrix validation
-- Optional `Related Documents` section encouraged but not required
+---
+
+## Script Reference
+
+### Artifact Validators (Location: `ai_dev_flow/scripts/`)
+
+| Script | Artifact | Usage |
+|--------|----------|-------|
+| `validate_brd_template.sh` | BRD | `./validate_brd_template.sh <file>` |
+| `validate_prd.py` | PRD | `python validate_prd.py <file_or_dir>` |
+| `validate_ears.py` | EARS | `python validate_ears.py <file>` |
+| `validate_bdd.py` | BDD | `python validate_bdd.py <file_or_dir>` |
+| `validate_adr.py` | ADR | `python validate_adr.py <file_or_dir>` |
+| `validate_sys.py` | SYS | `python validate_sys.py <file_or_dir>` |
+| `validate_req_template.sh` | REQ | `./validate_req_template.sh <file>` |
+| `validate_impl.sh` | IMPL | `./validate_impl.sh <file>` |
+| `validate_ctr.sh` | CTR | `./validate_ctr.sh <file>` |
+| `validate_spec.py` | SPEC | `python validate_spec.py <file_or_dir>` |
+| `validate_tasks.sh` | TASKS | `./validate_tasks.sh <file>` |
+| `validate_iplan.sh` | IPLAN | `./validate_iplan.sh <file>` |
+| `validate_icon.sh` | ICON | `./validate_icon.sh <file>` |
+
+### Support Scripts (Location: `ai_dev_flow/scripts/`)
+
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `validate_all.py` | Unified orchestrator | `python validate_all.py <dir> [--layer TYPE] [--all]` |
+| `validate_artifact.py` | Unified validator | `python validate_artifact.py <file>` |
+| `validate_cross_document.py` | Cross-references | `python validate_cross_document.py <dir>` |
+| `validate_links.py` | Link resolution | `python validate_links.py <dir>` |
+| `validate_requirement_ids.py` | ID format | `python validate_requirement_ids.py <dir>` |
+| `validate_tags_against_docs.py` | Tag compliance | `python validate_tags_against_docs.py <dir>` |
+| `error_codes.py` | Error code registry | (library - import in validators) |
 
 ---
 
-## Tool Access
-
-Required tools for validation:
-- `Read`: Read documentation files
-- `Glob`: Find all documentation files
-- `Grep`: Search for patterns and IDs
-- `Bash`: Execute token counting scripts
-- `tiktoken` library: Token counting
-
----
-
-## Schema Definitions
-
-Each artifact type has a YAML schema file (`{TYPE}_SCHEMA.yaml`) that defines validation rules. These schemas are the authoritative source for:
-- **Metadata Requirements**: YAML frontmatter fields, allowed values
-- **Document Structure**: Required/optional sections, numbering patterns
-- **Artifact-Specific Patterns**: Type-specific formats (Gherkin, sequential NNN, TASKS-NN, etc.)
-- **Validation Rules**: Error/warning severities with fix instructions
-- **Traceability Requirements**: Cumulative tagging hierarchy per layer
-- **Error Messages**: Standardized codes (E001-E0XX, W001-W0XX, I001-I0XX)
-
-### Schema File Reference
-
-| Layer | Artifact | Schema File | Key Patterns |
-|-------|----------|-------------|--------------|
-| 1 | BRD | `ai_dev_flow/BRD/BRD_SCHEMA.yaml` | Business objectives format |
-| 2 | PRD | `ai_dev_flow/PRD/PRD_SCHEMA.yaml` | Requirements format, template variants |
-| 3 | EARS | `ai_dev_flow/EARS/EARS_SCHEMA.yaml` | WHEN-THE-SHALL-WITHIN format |
-| 4 | BDD | `ai_dev_flow/BDD/BDD_SCHEMA.yaml` | Gherkin syntax, step patterns |
-| 5 | ADR | `ai_dev_flow/ADR/ADR_SCHEMA.yaml` | Context-Decision-Consequences |
-| 6 | SYS | `ai_dev_flow/SYS/SYS_SCHEMA.yaml` | Sequential NNN requirements format |
-| 7 | REQ | `ai_dev_flow/REQ/REQ_SCHEMA.yaml` | 12 sections, interface schemas |
-| 8 | IMPL | `ai_dev_flow/IMPL/IMPL_SCHEMA.yaml` | Phase organization, deliverables |
-| 9 | CTR | `ai_dev_flow/CTR/CTR_SCHEMA.yaml` | Dual-file, OpenAPI/AsyncAPI |
-| 10 | SPEC | `ai_dev_flow/SPEC/SPEC_SCHEMA.yaml` | YAML structure, code gen ready |
-| 11 | TASKS | `ai_dev_flow/TASKS/TASKS_SCHEMA.yaml` | TASKS-NN, implementation contracts |
-| 12 | IPLAN | `ai_dev_flow/IPLAN/IPLAN_SCHEMA.yaml` | Session format, bash commands |
-
-### Schema Validation Usage
-
-```bash
-# Validate document against schema (planned implementation)
-python scripts/validate_artifact.py --schema ai_dev_flow/REQ/REQ_SCHEMA.yaml --document docs/REQ/REQ-01_example.md
-
-# Validate all documents of a type
-python scripts/validate_artifact.py --type REQ --strict
-```
-
----
-
-## Validation Scripts
-
-The following artifact-specific validation scripts are available in `ai_dev_flow/scripts/`:
-
-### Available Scripts (Ready to Use)
-
-| Artifact | Script | Schema Reference |
-|----------|--------|------------------|
-| BRD | `validate_brd_template.sh` | `BRD_SCHEMA.yaml` |
-| REQ | `validate_req_template.sh` | `REQ_SCHEMA.yaml` |
-| CTR | `validate_ctr.sh` | `CTR_SCHEMA.yaml` |
-| IMPL | `validate_impl.sh` | `IMPL_SCHEMA.yaml` |
-| TASKS | `validate_tasks.sh` | `TASKS_SCHEMA.yaml` |
-| IPLAN | `validate_iplan.sh` | `IPLAN_SCHEMA.yaml` |
-| ICON | `validate_icon.sh` | Implementation Contracts Guide |
-
-### Under Development (Schema-Driven)
-
-| Artifact | Script | Schema Available |
-|----------|--------|------------------|
-| PRD | `validate_prd.sh` | ✅ `PRD_SCHEMA.yaml` |
-| EARS | `validate_ears.sh` | ✅ `EARS_SCHEMA.yaml` |
-| BDD | `validate_bdd.sh` | ✅ `BDD_SCHEMA.yaml` |
-| ADR | `validate_adr.sh` | ✅ `ADR_SCHEMA.yaml` |
-| SYS | `validate_sys.sh` | ✅ `SYS_SCHEMA.yaml` |
-| SPEC | `validate_spec.sh` | ✅ `SPEC_SCHEMA.yaml` |
-
-### Usage Examples
-
-```bash
-# Validate BRD document
-./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-01_platform.md
-
-# Validate TASKS document
-./ai_dev_flow/scripts/validate_tasks.sh docs/TASKS/TASKS-01_*.md
-
-# Validate Implementation Contracts
-./ai_dev_flow/scripts/validate_icon.sh docs/ICON/ICON-01_*.md
-
-# Validate IPLAN document
-./ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-01_*.md
-```
-
-**Note**: For artifacts without validation scripts, use the template and SHARED_CONTENT.md for manual validation.
-
----
-
-## Integration Points
-
-### With doc-flow
-- Invoked automatically after document generation
-- Blocks workflow progression on critical errors
-- Provides inline fix suggestions
-
-### With charts-flow
-- Validates diagram references
-- Ensures bidirectional links between diagrams and docs
-
-### With project-mngt
-- Validates IMPL document structure
-- Checks timeline and dependency formats
-
-### With test-automation
-- Validates BDD scenario references
-- Ensures test traceability
-
----
-
-## Error Handling
-
-### Token Count Exceeded
-```
-CONTEXT: Evaluate file size against tool limits:
-  - Claude Code: >100,000 tokens requires split
-  - Gemini CLI: >10,000 tokens → recommend file read tool (no split needed)
-  - GitHub Copilot: >30KB → suggest companion summary
-
-ACTION (if >100,000 tokens):
-  - Identify logical split points (functional modules, major sections)
-  - Create sequential files with proper naming (doc_001.md, doc_002.md)
-  - VERIFY: Each split file ≤ 100,000 tokens (Claude Code limit)
-  - UPDATE: Cross-references in all related documents
-  - CREATE: Index file listing all parts
-
-ACTION (if 10,000-100,000 tokens):
-  - Claude Code: No action needed (optimal range)
-  - Gemini CLI: Note in docs to use file read tool instead of @ reference
-  - GitHub Copilot: Consider creating companion summary for quick reference
-```
-
-### Broken Cross-Reference
-```
-ACTION: Search for referenced ID across all documents
-SUGGEST: Correct ID if typo, or flag missing requirement
-VERIFY: Bidirectional link exists
-UPDATE: Traceability matrix
-```
-
-### Invalid ID Format
-```
-ACTION: Parse ID structure and identify error
-SUGGEST: Correct format based on document type
-VERIFY: No duplicate after correction
-UPDATE: All references to this ID
-```
-
-### Traceability Gap
-```
-ACTION: Identify missing links in chain
-SUGGEST: Add references to complete traceability
-VERIFY: Bidirectional links established
-UPDATE: Traceability matrix visualization
-```
-
----
-
-## Validation Metrics
-
-Track and report:
-- Files validated per run
-- Error distribution by type
-- Most common violations
-- Traceability coverage percentage
-- Average file token count
-- Validation success rate over time
-
----
-
-## Example Usage
-
-### Validate Requirements Document
-
-```markdown
-Input: docs/REQ/REQ-01_ml_model_requirements.md
-
-Validation Results:
-✓ Token count: 8,234 tokens (within limit)
-✓ Language standards: No violations
-✓ ID format: All 146 requirements properly formatted
-✓ Cross-references: All links valid
-✗ Traceability: 3 requirements missing BDD references
-  - REQ-015: No forward link to BDD scenarios
-  - REQ-008: No forward link to BDD scenarios
-  - REQ-04: No forward link to BDD scenarios
-✓ Template compliance: Proper structure
-✓ No duplicates detected
-
-Recommendation: Add BDD scenario references for 3 requirements
-Priority: MEDIUM
-```
-
-### Validate BDD Scenarios
-
-```markdown
-Input: docs/BDD/BDD-01_authentication_scenarios.feature
-
-Validation Results:
-✓ Token count: 3,456 tokens (within limit)
-✓ Language standards: Compliant
-✗ ID format: 2 scenarios with incorrect format
-  - Line 45: "BDD-LOGIN-1" should be "BDD-01"
-  - Line 89: "BDD-LOGOUT" should be "BDD-02"
-✓ Cross-references: All requirement links valid
-✗ Traceability: 5 scenarios not linked to TASKS documents
-✓ Template compliance: Proper Given-When-Then structure
-✓ No duplicates detected
-
-Recommendation: Fix ID formats and establish forward traceability
-Priority: HIGH
-```
-
----
-
-## Best Practices
-
-1. **Run validation before commit**: Catch errors early
-2. **Address critical errors first**: Block progression until resolved
-3. **Track validation metrics**: Identify systematic issues
-4. **Automate in CI/CD**: Prevent non-compliant docs from merging
-5. **Regular audits**: Monthly full-project validation
-6. **Update validation rules**: Evolve with project standards
-7. **Provide actionable feedback**: Specific fixes, not just error messages
-
----
-
-## Limitations
-
-1. Token counting requires tiktoken library installation
-2. Cannot validate semantic correctness (only structural)
-3. Cross-reference validation limited to explicit links
-4. Language analysis uses pattern matching (not AI understanding)
-5. Template compliance requires predefined templates
-6. Performance degrades with very large document sets (>1000 files)
-
----
-
-## Future Enhancements
-
-1. AI-powered language quality analysis
-2. Automated fix application (with user approval)
-3. Real-time validation in editors (LSP integration)
-4. Visual traceability matrix generation
-5. Integration with version control (git hooks)
-6. Customizable validation rule sets
-7. Machine learning for duplicate detection improvement
-8. Performance optimization for large codebases
-
----
-
-## Success Criteria
-
-- Zero critical errors in production documents
-- ≥95% traceability coverage
-- 100% ID format compliance
-- No files exceeding token limits
-- All cross-references valid
-- Language standards compliance ≥90%
-
----
-
-## Notes
-
-- Validation is non-destructive (read-only analysis)
-- Reports saved to `.validation/` directory
-- Integration with pre-commit hooks recommended
-- Can run in CI/CD pipelines for automated checks
-- Customizable severity levels per project needs
+## Version Information
+
+**Version**: 2.0.0
+**Last Updated**: 2025-12-19
+**Created**: 2025-11-01
+**Status**: Active
+
+**Change Log**:
+- 2.0.0 (2025-12-19): Complete overhaul
+  - Restructured following trace-check pattern
+  - Added [IMPLEMENTED]/[PLANNED] status markers
+  - Standardized error codes (`{TYPE}-{SEVERITY}{NNN}`)
+  - Updated ID format to unified `TYPE.NN.TT.SS`
+  - Added clear implementation status section
+  - Added script reference tables
+  - Removed aspirational features without status markers
+- 1.0.0 (2025-11-01): Initial release

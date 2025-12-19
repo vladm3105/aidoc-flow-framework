@@ -22,6 +22,7 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: architecture-decision-record
+  descriptive_slug: null  # Folder's descriptive name (e.g., database_selection)
   schema_reference: "ADR_SCHEMA.yaml"
   schema_version: "1.0"
 ---

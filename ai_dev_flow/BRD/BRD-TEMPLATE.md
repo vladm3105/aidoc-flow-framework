@@ -22,6 +22,7 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: business-requirements-document
+  descriptive_slug: null  # Folder's descriptive name (e.g., trading_platform)
   schema_reference: "BRD_SCHEMA.yaml"
   schema_version: "1.0"
   schema_status: optional

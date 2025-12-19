@@ -22,6 +22,7 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: product-requirements-document
+  descriptive_slug: null  # Folder's descriptive name (e.g., user_authentication)
   template_variant: standard | agent-based | automation-focused
   schema_reference: "PRD_SCHEMA.yaml"
   schema_version: "1.0"

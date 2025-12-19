@@ -376,17 +376,19 @@ Check `docs/ADR/` for next available ID number (e.g., ADR-01, ADR-033).
 
 **Folder structure** (DEFAULT - nested folder per document with descriptive slug):
 1. Create folder: `docs/ADR/ADR-NN_{slug}/` (folder slug MUST match index file slug)
-2. Create index file: `docs/ADR/ADR-NN_{slug}/ADR-NN.0_{slug}_index.md`
-3. Create section files: `docs/ADR/ADR-NN_{slug}/ADR-NN.S_{slug}_{section}.md`
+2. Create index file: `docs/ADR/ADR-NN_{slug}/ADR-NN.0_{section_type}.md` (shortened, PREFERRED)
+3. Create section files: `docs/ADR/ADR-NN_{slug}/ADR-NN.S_{section_type}.md` (shortened, PREFERRED)
 
-**Example**:
+**Example (Shortened Pattern - PREFERRED)**:
 ```
 docs/ADR/ADR-033_database_selection/
-├── ADR-033.0_database_selection_index.md
-├── ADR-033.1_database_selection_context.md
-├── ADR-033.2_database_selection_decision.md
-└── ADR-033.3_database_selection_consequences.md
+├── ADR-033.0_index.md
+├── ADR-033.1_context.md
+├── ADR-033.2_decision.md
+└── ADR-033.3_consequences.md
 ```
+
+**Note**: Folder contains descriptive slug, so filenames can omit it. Full pattern (`ADR-033.0_database_selection_index.md`) also accepted for backward compatibility.
 
 **OPTIONAL** (for small documents <25KB): `docs/ADR/ADR-NN_{slug}.md` (monolithic)
 

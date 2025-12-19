@@ -348,17 +348,19 @@ Check `docs/BRD/` for next available ID number (e.g., BRD-01, BRD-02).
 
 **Folder structure** (DEFAULT - nested folder per document with descriptive slug):
 1. Create folder: `docs/BRD/BRD-NN_{slug}/` (folder slug MUST match index file slug)
-2. Create index file: `docs/BRD/BRD-NN_{slug}/BRD-NN.0_{slug}_index.md`
-3. Create section files: `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{slug}_{section}.md`
+2. Create index file: `docs/BRD/BRD-NN_{slug}/BRD-NN.0_{section_type}.md` (shortened, PREFERRED)
+3. Create section files: `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{section_type}.md` (shortened, PREFERRED)
 
-**Example**:
+**Example (Shortened Pattern - PREFERRED)**:
 ```
 docs/BRD/BRD-01_platform_architecture/
-├── BRD-01.0_platform_architecture_index.md
-├── BRD-01.1_platform_architecture_executive_summary.md
-├── BRD-01.2_platform_architecture_business_context.md
-└── BRD-01.3_platform_architecture_requirements.md
+├── BRD-01.0_index.md
+├── BRD-01.1_executive_summary.md
+├── BRD-01.2_business_context.md
+└── BRD-01.3_requirements.md
 ```
+
+**Note**: Folder contains descriptive slug, so filenames can omit it. Full pattern (`BRD-01.0_platform_architecture_index.md`) also accepted for backward compatibility.
 
 **OPTIONAL** (for small documents <25KB): `docs/BRD/BRD-NN_{slug}.md` (monolithic)
 

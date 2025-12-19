@@ -83,8 +83,10 @@ Universal Numbering Pattern (All Document Types)
   - **Section 0**: Always the index file for split documents
 - **Format**:
   - **Nested Folder Types (BRD, PRD, ADR)** - section ALWAYS required:
-    - `TYPE-DOC_NUM.S_{slug}.md` (e.g., `BRD-01.0_index.md`, `PRD-15.2_features.md`)
+    - **Full pattern**: `TYPE-DOC_NUM.S_{folder_slug}_{section_type}.md` (e.g., `BRD-01.0_platform_architecture_index.md`)
+    - **Shortened pattern** (PREFERRED): `TYPE-DOC_NUM.S_{section_type}.md` (e.g., `BRD-01.0_index.md`)
     - Section is MANDATORY, minimum `.0` for single-file documents
+    - **Shortened Filename Rule**: For BRD, PRD, ADR section files inside nested folders, the descriptive slug MAY be omitted from the filename since the parent folder already contains it. The shortened pattern is PREFERRED for new documents.
   - **Flat Types (all others)** - section optional:
     - Atomic: `TYPE-DOC_NUM_{slug}.md` (e.g., `REQ-01_auth.md`, `TASKS-99_service.md`)
     - Split: `TYPE-DOC_NUM.S_{slug}.md` (e.g., `SPEC-100.1_split.yaml`)
@@ -118,11 +120,13 @@ Document ID Standards (ai_dev_flow)
   - Folder Naming: `ADR-DOC_NUM_{slug}/` where slug MUST match the index file slug
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - **REQUIRED**: Section-based structure with nested folders (`.0`, `.1`, etc.)
-  - Notes: All ADR documents use nested folder structure. Each ADR gets its own folder containing all section files. Folder slug MUST match index file slug. Section suffix is ALWAYS required. Use `split_type` metadata to distinguish sectional vs related documents.
-  - Examples:
-    - Section files: `docs/ADR/ADR-01_database_selection/ADR-01.0_database_selection_index.md`, `docs/ADR/ADR-01_database_selection/ADR-01.1_database_selection_context.md`
-    - Single section: `docs/ADR/ADR-02_api_versioning/ADR-02.0_api_versioning.md` (still requires `.0`)
-    - Extended: `docs/ADR/ADR-100_cloud_migration/ADR-100.0_cloud_migration_index.md` (when >99 ADRs)
+  - Notes: All ADR documents use nested folder structure. Each ADR gets its own folder containing all section files. Section suffix is ALWAYS required. Use `split_type` metadata to distinguish sectional vs related documents. Use `descriptive_slug` metadata to capture the folder's descriptive name.
+  - Examples (shortened pattern - PREFERRED):
+    - Section files: `docs/ADR/ADR-01_database_selection/ADR-01.0_index.md`, `docs/ADR/ADR-01_database_selection/ADR-01.1_context.md`
+    - Single section: `docs/ADR/ADR-02_api_versioning/ADR-02.0_overview.md` (still requires `.0`)
+    - Extended: `docs/ADR/ADR-100_cloud_migration/ADR-100.0_index.md` (when >99 ADRs)
+  - Examples (full pattern - backward compatible):
+    - Section files: `docs/ADR/ADR-01_database_selection/ADR-01.0_database_selection_index.md`
 - BDD Features and Tags
   - **File Format Clarification**:
     - **Test Scenarios**: `BDD-DOC_NUM_{slug}.feature` (Gherkin format - `.feature` extension)
@@ -235,25 +239,29 @@ Document ID Standards (ai_dev_flow)
   - Folder Naming: `BRD-DOC_NUM_{slug}/` where slug MUST match the index file slug
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - **REQUIRED**: Section-based structure with nested folders (`.0`, `.1`, etc.)
-  - Notes: All BRD documents use nested folder structure. Each BRD gets its own folder containing all section files. Folder slug MUST match index file slug. Section suffix is ALWAYS required. Use `split_type` metadata to distinguish sectional vs related documents.
-  - Examples:
-    - Section files: `docs/BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md`, `docs/BRD/BRD-01_platform_architecture/BRD-01.1_platform_architecture_executive_summary.md`
-    - Single section: `docs/BRD/BRD-02_user_authentication/BRD-02.0_user_authentication.md` (still requires `.0`)
-    - Extended: `docs/BRD/BRD-100_enterprise_integration/BRD-100.0_enterprise_integration_index.md` (when >99 BRDs)
+  - Notes: All BRD documents use nested folder structure. Each BRD gets its own folder containing all section files. Section suffix is ALWAYS required. Use `split_type` metadata to distinguish sectional vs related documents. Use `descriptive_slug` metadata to capture the folder's descriptive name.
+  - Examples (shortened pattern - PREFERRED):
+    - Section files: `docs/BRD/BRD-01_platform_architecture/BRD-01.0_index.md`, `docs/BRD/BRD-01_platform_architecture/BRD-01.1_executive_summary.md`
+    - Single section: `docs/BRD/BRD-02_user_authentication/BRD-02.0_overview.md` (still requires `.0`)
+    - Extended: `docs/BRD/BRD-100_enterprise_integration/BRD-100.0_index.md` (when >99 BRDs)
+  - Examples (full pattern - backward compatible):
+    - Section files: `docs/BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md`
 
 PRD, SYS, and EARS Document Types
 - Product Requirements Documents (PRD)
   - H1 ID: `PRD-DOC_NUM` (e.g., `# PRD-03: resource Risk Limits`)
-  - Filename: `PRD-DOC_NUM.S_{slug}.md` (section-based is REQUIRED)
+  - Filename: `PRD-DOC_NUM.S_{section_type}.md` (shortened) or `PRD-DOC_NUM.S_{folder_slug}_{section_type}.md` (full)
   - Location: `docs/PRD/PRD-DOC_NUM_{slug}/` (nested folder per document with descriptive slug)
-  - Folder Naming: `PRD-DOC_NUM_{slug}/` where slug MUST match the index file slug
+  - Folder Naming: `PRD-DOC_NUM_{slug}/` - descriptive slug in folder name
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - **REQUIRED**: Section-based structure with nested folders (`.0`, `.1`, etc.)
-  - Notes: All PRD documents use nested folder structure. Each PRD gets its own folder containing all section files. Folder slug MUST match index file slug. Section suffix is ALWAYS required. Use `split_type` metadata to distinguish sectional vs related documents.
-  - Examples:
-    - Section files: `docs/PRD/PRD-01_user_authentication/PRD-01.0_user_authentication_index.md`, `docs/PRD/PRD-01_user_authentication/PRD-01.1_user_authentication_overview.md`
-    - Single section: `docs/PRD/PRD-02_payment_processing/PRD-02.0_payment_processing.md` (still requires `.0`)
-    - Extended: `docs/PRD/PRD-100_enterprise_features/PRD-100.0_enterprise_features_index.md` (when >99 PRDs)
+  - Notes: All PRD documents use nested folder structure. Each PRD gets its own folder containing all section files. Section suffix is ALWAYS required. Use `split_type` metadata to distinguish sectional vs related documents. Use `descriptive_slug` metadata to capture the folder's descriptive name.
+  - Examples (shortened pattern - PREFERRED):
+    - Section files: `docs/PRD/PRD-01_user_authentication/PRD-01.0_index.md`, `docs/PRD/PRD-01_user_authentication/PRD-01.1_overview.md`
+    - Single section: `docs/PRD/PRD-02_payment_processing/PRD-02.0_overview.md` (still requires `.0`)
+    - Extended: `docs/PRD/PRD-100_enterprise_features/PRD-100.0_index.md` (when >99 PRDs)
+  - Examples (full pattern - backward compatible):
+    - Section files: `docs/PRD/PRD-01_user_authentication/PRD-01.0_user_authentication_index.md`
 - System Architecture Documents (SYS)
   - H1 ID: `SYS-DOC_NUM` (e.g., `# SYS-03: resource Risk Limits`)
   - Filename: `SYS/SYS-DOC_NUM_{slug}.md`
@@ -272,10 +280,13 @@ File Organization Rules
 - For large documents (>50KB), use Section Files: `TYPE-DOC_NUM.S_{slug}.md`
 - Structure (this example):
   - **Nested Folder Types (BRD, PRD, ADR)** - section ALWAYS required:
-    - `BRD/BRD-DOC_NUM_{slug}/BRD-DOC_NUM.S_{slug}.md` (e.g., `BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md`)
-    - `PRD/PRD-DOC_NUM_{slug}/PRD-DOC_NUM.S_{slug}.md` (e.g., `PRD/PRD-03_risk_limits/PRD-03.1_risk_limits_overview.md`)
-    - `ADR/ADR-DOC_NUM_{slug}/ADR-DOC_NUM.S_{slug}.md` (e.g., `ADR/ADR-33_enforcement/ADR-33.0_enforcement_index.md`)
-    - **Folder slug MUST match the index file slug** for consistency
+    - **Shortened pattern** (PREFERRED): `BRD/BRD-DOC_NUM_{slug}/BRD-DOC_NUM.S_{section_type}.md`
+      - Example: `BRD/BRD-01_platform_architecture/BRD-01.0_index.md`
+    - **Full pattern** (backward compatible): `BRD/BRD-DOC_NUM_{slug}/BRD-DOC_NUM.S_{slug}_{section_type}.md`
+      - Example: `BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md`
+    - Same patterns apply to PRD and ADR
+    - **Folder contains descriptive slug** - filenames can omit it since context is in path
+    - **Metadata field `descriptive_slug`** captures folder's descriptive name for tools
   - **Flat Types** - section optional:
     - `REQ/{category}/{subcategory}/REQ-DOC_NUM_{slug}.md`
     - `BDD/BDD-DOC_NUM_{slug}.feature`
@@ -328,9 +339,13 @@ The framework uses three distinct ID patterns for different purposes:
 ### Section File Naming Pattern
 
 **Nested Folder Types (BRD, PRD, ADR)** - section ALWAYS required:
-- **Pattern**: `{TYPE}-{DOC_NUM}.{SECTION}_{slug}.md`
-- **Regex**: `^(BRD|PRD|ADR)-[0-9]{2,}\.[0-9]+_[a-z0-9_]+\.md$`
-- **Examples**: `BRD-01.0_index.md`, `PRD-15.2_features.md`, `ADR-100.1_context.md`
+- **Shortened Pattern** (PREFERRED): `{TYPE}-{DOC_NUM}.{SECTION}_{section_type}.md`
+  - Regex: `^(BRD|PRD|ADR)-[0-9]{2,}\.[0-9]+_[a-z_]+\.md$`
+  - Examples: `BRD-01.0_index.md`, `PRD-15.2_features.md`, `ADR-100.1_context.md`
+- **Full Pattern** (backward compatible): `{TYPE}-{DOC_NUM}.{SECTION}_{folder_slug}_{section_type}.md`
+  - Regex: `^(BRD|PRD|ADR)-[0-9]{2,}\.[0-9]+_[a-z0-9_]+_[a-z_]+\.md$`
+  - Examples: `BRD-01.0_platform_architecture_index.md`, `PRD-15.2_product_features.md`
+- **Combined Regex** (validates both): `^(BRD|PRD|ADR)-[0-9]{2,}\.[0-9]+_([a-z0-9]+_)*[a-z_]+\.md$`
 
 **Flat Types (all others)** - section OPTIONAL:
 - **Atomic Pattern**: `{TYPE}-{DOC_NUM}_{slug}.md`
@@ -394,6 +409,7 @@ tags:
   - section-file
   - document-type-tag
 custom_fields:
+  descriptive_slug: folder_slug  # Folder's descriptive name (for shortened filenames)
   total_sections: N
   section_type: content  # or "index" for section 0
   architecture_approach: approach-name
@@ -410,6 +426,7 @@ custom_fields:
 | `section` | All sections | Section number (0 = index, 1+ = content) |
 | `title` | All sections | Section-specific title |
 | `total_sections` | Section 0 | Total number of sections in split document |
+| `descriptive_slug` | BRD, PRD, ADR | Folder's descriptive name (enables shortened filenames) |
 | `parent_doc` | Content sections | Link to Section 0 index file |
 | `prev_section` | Content sections | Link to previous section (if exists) |
 | `next_section` | Content sections | Link to next section (if exists) |
@@ -419,21 +436,35 @@ custom_fields:
 
 **Source Document**: `BRD-03.0_trading_platform_requirements.md` (150KB)
 
-**Split into Section Files (nested folder structure)**:
+**Split into Section Files (shortened pattern - PREFERRED)**:
 
 ```
 docs/BRD/
 └── BRD-03_trading_platform/             # Nested folder with descriptive slug
-    ├── BRD-03.0_trading_platform_index.md      # Section 0: Index/Overview
-    ├── BRD-03.1_trading_platform_executive_summary.md    # Section 1: Executive Summary
-    ├── BRD-03.2_trading_platform_business_context.md     # Section 2: Business Context
-    ├── BRD-03.3_trading_platform_functional_requirements.md  # Section 3: Functional Requirements
-    ├── BRD-03.4_trading_platform_non_functional_requirements.md  # Section 4: Non-Functional Requirements
-    ├── BRD-03.5_trading_platform_architecture_decisions.md  # Section 5: Architecture Decisions
-    └── BRD-03.6_trading_platform_appendices.md           # Section 6: Appendices
+    ├── BRD-03.0_index.md                        # Section 0: Index/Overview
+    ├── BRD-03.1_executive_summary.md            # Section 1: Executive Summary
+    ├── BRD-03.2_business_context.md             # Section 2: Business Context
+    ├── BRD-03.3_functional_requirements.md      # Section 3: Functional Requirements
+    ├── BRD-03.4_non_functional_requirements.md  # Section 4: Non-Functional Requirements
+    ├── BRD-03.5_architecture_decisions.md       # Section 5: Architecture Decisions
+    └── BRD-03.6_appendices.md                   # Section 6: Appendices
 ```
 
-**Key Rule**: Folder slug (`trading_platform`) MUST match the general slug used in section files.
+**Split into Section Files (full pattern - backward compatible)**:
+
+```
+docs/BRD/
+└── BRD-03_trading_platform/             # Nested folder with descriptive slug
+    ├── BRD-03.0_trading_platform_index.md              # Section 0
+    ├── BRD-03.1_trading_platform_executive_summary.md  # Section 1
+    └── ...
+```
+
+**Key Rules**:
+- Folder slug (`trading_platform`) provides the descriptive context
+- Shortened pattern omits redundant slug from filenames (PREFERRED for new documents)
+- Full pattern accepted for backward compatibility
+- Use `descriptive_slug` metadata field to capture the folder's descriptive name
 
 **Section 0 Header Example** (`BRD-03.0_index.md`):
 ```markdown
@@ -448,6 +479,7 @@ tags:
   - section-index
   - platform-brd
 custom_fields:
+  descriptive_slug: trading_platform  # Folder's descriptive name for tools
   section_type: index
   architecture_approach: ai-agent-primary
   priority: primary
@@ -468,13 +500,13 @@ custom_fields:
 
 | Section | Title | Size | Link |
 |---------|-------|------|------|
-| 0 | Index (this file) | 3KB | [BRD-03.0](BRD-03.0_trading_platform_index.md) |
-| 1 | Executive Summary | 8KB | [BRD-03.1](BRD-03.1_trading_platform_executive_summary.md) |
-| 2 | Business Context | 25KB | [BRD-03.2](BRD-03.2_trading_platform_business_context.md) |
-| 3 | Functional Requirements | 45KB | [BRD-03.3](BRD-03.3_trading_platform_functional_requirements.md) |
-| 4 | Non-Functional Requirements | 30KB | [BRD-03.4](BRD-03.4_trading_platform_non_functional_requirements.md) |
-| 5 | Architecture Decisions | 20KB | [BRD-03.5](BRD-03.5_trading_platform_architecture_decisions.md) |
-| 6 | Appendices | 15KB | [BRD-03.6](BRD-03.6_trading_platform_appendices.md) |
+| 0 | Index (this file) | 3KB | [BRD-03.0](BRD-03.0_index.md) |
+| 1 | Executive Summary | 8KB | [BRD-03.1](BRD-03.1_executive_summary.md) |
+| 2 | Business Context | 25KB | [BRD-03.2](BRD-03.2_business_context.md) |
+| 3 | Functional Requirements | 45KB | [BRD-03.3](BRD-03.3_functional_requirements.md) |
+| 4 | Non-Functional Requirements | 30KB | [BRD-03.4](BRD-03.4_non_functional_requirements.md) |
+| 5 | Architecture Decisions | 20KB | [BRD-03.5](BRD-03.5_architecture_decisions.md) |
+| 6 | Appendices | 15KB | [BRD-03.6](BRD-03.6_appendices.md) |
 
 ## Reading Order
 
@@ -483,19 +515,20 @@ custom_fields:
 3. Reference Section 6 for detailed appendices
 ```
 
-**Content Section Example** (`BRD-03.1_trading_platform_executive_summary.md`):
+**Content Section Example** (`BRD-03.1_executive_summary.md`):
 ```markdown
 ---
 doc_id: BRD-03
 section: 1
 title: "Executive Summary"
-parent_doc: "BRD-03.0_trading_platform_index.md"
+parent_doc: "BRD-03.0_index.md"
 prev_section: null
-next_section: "BRD-03.2_trading_platform_business_context.md"
+next_section: "BRD-03.2_business_context.md"
 tags:
   - section-file
   - platform-brd
 custom_fields:
+  descriptive_slug: trading_platform  # Folder's descriptive name for tools
   total_sections: 7
   section_type: content
   architecture_approach: ai-agent-primary
@@ -504,7 +537,7 @@ custom_fields:
 
 # BRD-03.1: Executive Summary
 
-> **Navigation**: [Index](BRD-03.0_trading_platform_index.md) | Previous: None | [Next](BRD-03.2_trading_platform_business_context.md)
+> **Navigation**: [Index](BRD-03.0_index.md) | Previous: None | [Next](BRD-03.2_business_context.md)
 >
 > **Parent Document**: BRD-03
 > **Section**: 1 of 7
@@ -691,10 +724,16 @@ Validation Rules & Aids
   - REF H1 ID: `^#\s[A-Z]{2,5}-REF-\d{2,}:.+$`
   - REF filename: `[A-Z]{2,5}-REF-\d{2,}_.+\.md$`
 - Section file regexes (dot notation for document chunks):
-  - Section filename: `[A-Z]{2,5}(-REF)?-[0-9]{2,}\.[0-9]+(\.[0-9]+)?_.+\.md$`
+  - Section filename (full or shortened): `[A-Z]{2,5}(-REF)?-[0-9]{2,}\.[0-9]+(\.[0-9]+)?_[a-z0-9_]+\.md$`
   - Section H1 ID: `^#\s[A-Z]{2,5}(-REF)?-[0-9]{2,}\.[0-9]+(\.[0-9]+)?:.+$`
   - Section reference tag: `@ref:\s+[A-Z]{2,5}(-REF)?-[0-9]{2,}\.[0-9]+(\.[0-9]+)?`
   - Section 0 (index) filename: `[A-Z]{2,5}(-REF)?-[0-9]{2,}\.0_[a-z_]+\.md$`
+- Nested folder type filename patterns (BRD, PRD, ADR):
+  - Shortened pattern (PREFERRED): `^(BRD|PRD|ADR)-[0-9]{2,}\.[0-9]+_[a-z_]+\.md$`
+    - Example: `BRD-03.0_index.md`, `PRD-01.1_overview.md`, `ADR-15.2_decision.md`
+  - Full pattern (backward compatible): `^(BRD|PRD|ADR)-[0-9]{2,}\.[0-9]+_[a-z0-9_]+_[a-z_]+\.md$`
+    - Example: `BRD-03.0_trading_platform_index.md`
+  - Combined regex (validates both): `^(BRD|PRD|ADR)-[0-9]{2,}\.[0-9]+_([a-z0-9]+_)*[a-z_]+\.md$`
 
 Examples (ai_dev_flow) - Atomic Documents (DOC_NUM)
 - **Nested Folder Types (monolithic option, still in nested folder)**:
@@ -804,8 +843,8 @@ Consistent across ALL document types:
 | 06 | Acceptance Criteria | BRD, PRD, REQ |
 | 07 | Risk | BRD, PRD |
 | 08 | Metric | BRD, PRD |
-| 09 | User Story | PRD |
-| 10 | Decision | ADR |
+| 09 | User Story | PRD, BRD |
+| 10 | Decision | ADR, BRD |
 | 11 | Use Case | PRD, SYS |
 | 12 | Alternative | ADR |
 | 13 | Consequence | ADR |

@@ -330,17 +330,19 @@ Check `docs/PRD/` for next available ID number (e.g., PRD-01, PRD-02).
 
 **Folder structure** (DEFAULT - nested folder per document with descriptive slug):
 1. Create folder: `docs/PRD/PRD-NN_{slug}/` (folder slug MUST match index file slug)
-2. Create index file: `docs/PRD/PRD-NN_{slug}/PRD-NN.0_{slug}_index.md`
-3. Create section files: `docs/PRD/PRD-NN_{slug}/PRD-NN.S_{slug}_{section}.md`
+2. Create index file: `docs/PRD/PRD-NN_{slug}/PRD-NN.0_{section_type}.md` (shortened, PREFERRED)
+3. Create section files: `docs/PRD/PRD-NN_{slug}/PRD-NN.S_{section_type}.md` (shortened, PREFERRED)
 
-**Example**:
+**Example (Shortened Pattern - PREFERRED)**:
 ```
 docs/PRD/PRD-01_user_authentication/
-├── PRD-01.0_user_authentication_index.md
-├── PRD-01.1_user_authentication_overview.md
-├── PRD-01.2_user_authentication_features.md
-└── PRD-01.3_user_authentication_requirements.md
+├── PRD-01.0_index.md
+├── PRD-01.1_overview.md
+├── PRD-01.2_features.md
+└── PRD-01.3_requirements.md
 ```
+
+**Note**: Folder contains descriptive slug, so filenames can omit it. Full pattern (`PRD-01.0_user_authentication_index.md`) also accepted for backward compatibility.
 
 **OPTIONAL** (for small documents <25KB): `docs/PRD/PRD-NN_{slug}.md` (monolithic)
 
