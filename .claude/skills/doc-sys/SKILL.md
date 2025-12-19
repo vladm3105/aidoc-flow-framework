@@ -98,7 +98,7 @@ Use `doc-sys` when:
 ### 002: Order Validation Performance
 **Description**: Order validation SHALL complete within 50ms at P95
 **Measurement**: P50 <25ms, P95 <50ms, P99 <100ms
-**Rationale**: User experience requires sub-second feedback per PRD-001
+**Rationale**: User experience requires sub-second feedback per PRD-01
 **Source**: PRD.01.07.02, EARS.01.24.02
 **Verification**: Performance benchmarks, load testing
 **Traceability**: @brd: BRD.01.01.02 | @prd: PRD.01.07.02
@@ -170,8 +170,8 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
@@ -181,7 +181,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
@@ -209,14 +209,14 @@ Examples:
 ```
 
 **Upstream Sources**:
-- [BRD-001](../BRD/BRD-001_platform.md#BRD-001)
-- [PRD-001](../PRD/PRD-001_integration.md#PRD-001)
-- [EARS-001](../EARS/EARS-001_risk.md#EARS-001)
-- [BDD-001](../BDD/BDD-001_limits.feature)
+- [BRD-01](../BRD/BRD-01_platform.md#BRD-01)
+- [PRD-01](../PRD/PRD-01_integration.md#PRD-01)
+- [EARS-01](../EARS/EARS-01_risk.md#EARS-01)
+- [BDD-01](../BDD/BDD-01_limits.feature)
 - [ADR-033](../ADR/ADR-033_database.md#ADR-033)
 
 **Downstream Artifacts**:
-- REQ-NNN (to be created) - Atomic requirements
+- REQ-NN (to be created) - Atomic requirements
 ```
 
 ## Upstream/Downstream Artifacts
@@ -233,8 +233,8 @@ Examples:
 - **Code** (Layer 13) - Implementation of system requirements
 
 **Same-Type Document Relationships** (conditional):
-- `@related-sys: SYS-NNN` - SYS documents sharing system context
-- `@depends-sys: SYS-NNN` - SYS that must be implemented first
+- `@related-sys: SYS-NN` - SYS documents sharing system context
+- `@depends-sys: SYS-NN` - SYS that must be implemented first
 
 ## Creation Process
 
@@ -248,9 +248,9 @@ Check `ai_dev_flow/SYS/` for next available ID number.
 
 ### Step 3: Create SYS File
 
-**Location**: `docs/SYS/SYS-NNN_{slug}.md` (template available at `ai_dev_flow/SYS/`)
+**Location**: `docs/SYS/SYS-NN_{slug}.md` (template available at `ai_dev_flow/SYS/`)
 
-**Example**: `docs/SYS/SYS-001_order_management.md`
+**Example**: `docs/SYS/SYS-01_order_management.md`
 
 ### Step 4: Fill Document Control Section
 
@@ -291,7 +291,7 @@ Include all 5 upstream tags (@brd, @prd, @ears, @bdd, @adr).
 
 ```bash
 # Validate cumulative tagging (script available)
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact SYS-001 --expected-layers brd,prd,ears,bdd,adr --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact SYS-01 --expected-layers brd,prd,ears,bdd,adr --strict
 
 # Note: SYS-specific template validation script is planned but not yet available.
 # Use manual checklist below and cross-document validation instead.
@@ -307,16 +307,16 @@ Commit SYS file and traceability matrix.
 
 ```bash
 # Quality gates (from repository root)
-./scripts/validate_quality_gates.sh docs/SYS/SYS-001_order.md
+./scripts/validate_quality_gates.sh docs/SYS/SYS-01_order.md
 
 # Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --artifact SYS-001 \
+  --artifact SYS-01 \
   --expected-layers brd,prd,ears,bdd,adr \
   --strict
 
 # Cross-document validation with auto-fix
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/SYS/SYS-001_order.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/SYS/SYS-01_order.md --auto-fix
 ```
 
 ### Manual Checklist
@@ -358,7 +358,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/SYS/SYS-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/SYS/SYS-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all SYS documents complete
 python ai_dev_flow/scripts/validate_cross_document.py --layer SYS --auto-fix
@@ -375,7 +375,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer SYS --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd/@adr tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

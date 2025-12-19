@@ -1,10 +1,10 @@
 ---
-doc_id: SPEC-{NNN}
+doc_id: SPEC-{NN}
 section: {S}
 title: "{Section Title}"
-parent_doc: "SPEC-{NNN}.0_index.md"
-prev_section: "SPEC-{NNN}.{S-1}_{prev_slug}.md"
-next_section: "SPEC-{NNN}.{S+1}_{next_slug}.md"
+parent_doc: "SPEC-{NN}.0_index.md"
+prev_section: "SPEC-{NN}.{S-1}_{prev_slug}.md"
+next_section: "SPEC-{NN}.{S+1}_{next_slug}.md"
 tags:
   - section-file
   - spec-section
@@ -22,11 +22,11 @@ custom_fields:
   index_role: false
 ---
 
-# SPEC-{NNN}.{S}: {Section Title}
+# SPEC-{NN}.{S}: {Section Title}
 
-> **Navigation**: [Index](SPEC-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](SPEC-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
 >
-> **Parent Document**: SPEC-{NNN}
+> **Parent Document**: SPEC-{NN}
 > **Section**: {S} of {N}
 > **Layer**: 10 - Technical Specifications
 
@@ -66,11 +66,11 @@ custom_fields:
 
 ## References
 
-- **Parent Document**: @ref: SPEC-{NNN}.0
-- **Related Sections**: @ref: SPEC-{NNN}.{related}
-- **Upstream**: @ref: CTR-{NNN} (Contracts), @ref: REQ-{NNN} (Requirements)
-- **Downstream**: @ref: TASKS-{NNN} (Task Breakdown)
+- **Parent Document**: @ref: SPEC-{NN}.0
+- **Related Sections**: @ref: SPEC-{NN}.{related}
+- **Upstream**: @ref: CTR-{NN} (Contracts), @ref: REQ-{NN} (Requirements)
+- **Downstream**: @ref: TASKS-{NN} (Task Breakdown)
 
 ---
 
-> **Navigation**: [Index](SPEC-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](SPEC-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})

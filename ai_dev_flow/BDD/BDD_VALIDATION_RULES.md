@@ -117,7 +117,7 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 @ears: EARS.NN.EE.SS  # REQUIRED - engineering requirements
 ```
 
-**Format**: Extended format with requirement ID suffix (`:NNN`) is REQUIRED.
+**Format**: Extended format with requirement ID suffix (`:NN`) is REQUIRED.
 
 ### CHECK 4.1: Tag Placement Validation ⭐ NEW
 
@@ -186,6 +186,32 @@ grep -n "^#.*@ears:" docs/BDD/*.feature
 
 ---
 
+### CHECK 8: Element ID Format Compliance ⭐ NEW
+
+**Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
+**Type**: Error
+
+| Check | Pattern | Result |
+|-------|---------|--------|
+| Valid format | `BDD.NN.TT.SS:` | ✅ Pass |
+| Removed pattern | `TS-XXX` | ❌ Fail - use BDD.NN.14.SS |
+| Removed pattern | `Scenario-XXX` | ❌ Fail - use BDD.NN.14.SS |
+| Removed pattern | `STEP-XXX` | ❌ Fail - use BDD.NN.15.SS |
+
+**Regex**: `^###?\s+BDD\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+**Common Element Types for BDD**:
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Test Scenario | 14 | BDD.02.14.01 |
+| Step | 15 | BDD.02.15.01 |
+
+**Fix**: Replace `Scenario: TS-01` with `Scenario: BDD.02.14.01`
+
+**Reference**: BDD_CREATION_RULES.md Section 4.1, ID_NAMING_STANDARDS.md lines 783-793
+
+---
+
 ## Error Fix Guide
 
 ### Quick Fix Matrix
@@ -196,6 +222,7 @@ grep -n "^#.*@ears:" docs/BDD/*.feature
 | **CHECK 2** | Fix Gherkin syntax (Given/When/Then structure) |
 | **CHECK 3** | Add properly formatted ADR-Ready Score |
 | **CHECK 4** | Complete traceability tag chain |
+| **CHECK 8** | Replace legacy element IDs (TS-XXX, Scenario-XXX) with unified format `BDD.NN.TT.SS` |
 
 ---
 
@@ -205,7 +232,7 @@ grep -n "^#.*@ears:" docs/BDD/*.feature
 
 ```bash
 # Validate single BDD feature file
-./scripts/validate_bdd_template.sh docs/BDD/BDD-001_feature_scenarios.feature
+./scripts/validate_bdd_template.sh docs/BDD/BDD-01_feature_scenarios.feature
 
 # Validate all BDD files
 find docs/BDD -name "BDD-*.feature" -exec ./scripts/validate_bdd_template.sh {} \;
@@ -245,7 +272,7 @@ find docs/BDD -name "BDD-*.feature" -exec ./scripts/validate_bdd_template.sh {} 
 
 ### Mistake #1: Incomplete Traceability Tags (ALL THREE ARE REQUIRED)
 ```
-❌ @brd: BRD-001           (missing element ID suffix)
+❌ @brd: BRD-01           (missing element ID suffix)
 ✅ @brd: BRD.01.01.30       (correct 4-segment element ID format)
 ❌ Missing @brd tag        (ALL three tags are MANDATORY)
 ✅ @brd: BRD.01.01.30

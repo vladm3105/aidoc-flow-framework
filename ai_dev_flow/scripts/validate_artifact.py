@@ -7,8 +7,8 @@ against the corresponding schema rules.
 
 Usage:
     python scripts/validate_artifact.py <document_path> [--verbose] [--strict]
-    python scripts/validate_artifact.py docs/PRD/PRD-001_example.md
-    python scripts/validate_artifact.py docs/SPEC/SPEC-001_component.yaml --verbose
+    python scripts/validate_artifact.py docs/PRD/PRD-01_example.md
+    python scripts/validate_artifact.py docs/SPEC/SPEC-01_component.yaml --verbose
 
 Options:
     --verbose    Show detailed validation results

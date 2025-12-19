@@ -14,7 +14,7 @@ custom_fields:
   priority: primary
   development_status: active
   skill_category: utility
-  upstream_artifacts: [PRD-000, ADR-000]
+  upstream_artifacts: [PRD-00, ADR-000]
   downstream_artifacts: []
 ---
 
@@ -87,19 +87,19 @@ artifact_inventory:
   BRD:
     count: 3
     files:
-      - id: BRD-001
-        path: docs/BRD/BRD-001_platform_foundation.md
+      - id: BRD-01
+        path: docs/BRD/BRD-01_platform_foundation.md
         title: Platform Foundation
         status: Approved
-      - id: BRD-002
-        path: docs/BRD/BRD-002_partner_integration.md
+      - id: BRD-02
+        path: docs/BRD/BRD-02_partner_integration.md
         title: Partner Integration
         status: Draft
   PRD:
     count: 2
     files:
-      - id: PRD-001
-        path: docs/PRD/PRD-001_core_features.md
+      - id: PRD-01
+        path: docs/PRD/PRD-01_core_features.md
         title: Core Features
         status: In Review
   SPEC:
@@ -115,7 +115,7 @@ Extract metadata and key information from discovered artifacts:
 ```yaml
 # From document header
 ---
-title: "BRD-001: Platform Foundation"
+title: "BRD-01: Platform Foundation"
 tags:
   - platform-brd
   - shared-architecture
@@ -140,7 +140,7 @@ custom_fields:
 **Parsed Metadata Model**:
 ```yaml
 artifact_metadata:
-  BRD-001:
+  BRD-01:
     title: Platform Foundation
     layer: 1
     status: Approved
@@ -158,7 +158,7 @@ Parse Section 7 Traceability from each artifact:
 ### Upstream Sources
 | Source | Type | Reference |
 |--------|------|-----------|
-| [BRD-001](../BRD/BRD-001_platform.md#BRD-001) | Business Requirements | Platform foundation |
+| [BRD-01](../BRD/BRD-01_platform.md#BRD-01) | Business Requirements | Platform foundation |
 ```
 
 **Downstream Artifacts Extraction**:
@@ -166,21 +166,21 @@ Parse Section 7 Traceability from each artifact:
 ### Downstream Artifacts
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| [SPEC-001](../SPEC/SPEC-001_api.yaml) | Technical Specification | API implementation |
+| [SPEC-01](../SPEC/SPEC-01_api.yaml) | Technical Specification | API implementation |
 ```
 
 **Traceability Graph**:
 ```yaml
 traceability_graph:
-  BRD-001:
+  BRD-01:
     upstream: []
-    downstream: [PRD-001, PRD-000]
-  PRD-001:
-    upstream: [BRD-001]
-    downstream: [EARS-001, SPEC-001]
-  SPEC-001:
-    upstream: [PRD-001, REQ-001]
-    downstream: [TASKS-001]
+    downstream: [PRD-01, PRD-00]
+  PRD-01:
+    upstream: [BRD-01]
+    downstream: [EARS-01, SPEC-01]
+  SPEC-01:
+    upstream: [PRD-01, REQ-01]
+    downstream: [TASKS-01]
 ```
 
 ### Step 4: Determine Workflow Position
@@ -233,11 +233,11 @@ For a target artifact type, identify relevant upstream documents:
 upstream_candidates:
   target_type: SPEC
   candidates:
-    - id: REQ-001
+    - id: REQ-01
       relevance: 95%
       title: API Requirements
       reason: "Direct upstream, topic match: API, approved status"
-    - id: REQ-002
+    - id: REQ-02
       relevance: 80%
       title: Data Model Requirements
       reason: "Direct upstream, related topic: data"
@@ -263,17 +263,17 @@ key_terms:
   domain_terms:
     - term: workflow
       frequency: 45
-      documents: [BRD-001, PRD-001, REQ-001]
+      documents: [BRD-01, PRD-01, REQ-01]
     - term: resource
       frequency: 32
-      documents: [BRD-001, REQ-002, SPEC-001]
+      documents: [BRD-01, REQ-02, SPEC-01]
   technical_terms:
     - term: WebSocket
       frequency: 18
-      documents: [ADR-003, SPEC-001]
+      documents: [ADR-003, SPEC-01]
     - term: PostgreSQL
       frequency: 12
-      documents: [BRD-001, ADR-000]
+      documents: [BRD-01, ADR-000]
 ```
 
 ### Step 7: Build Context Model
@@ -311,7 +311,7 @@ context_model:
   upstream_candidates:
     target_type: SPEC
     primary:
-      - id: REQ-001
+      - id: REQ-01
         title: Core API Requirements
         relevance: 95%
     secondary:
@@ -342,11 +342,11 @@ context_summary:
   target: SPEC creation
   readiness: ready
   upstream_available:
-    - REQ-001: Core API Requirements (Approved)
-    - REQ-002: Data Model Requirements (Approved)
+    - REQ-01: Core API Requirements (Approved)
+    - REQ-02: Data Model Requirements (Approved)
     - ADR-003: WebSocket Architecture (Approved)
   recommended_references:
-    - "Reference REQ-001 for API endpoint specifications"
+    - "Reference REQ-01 for API endpoint specifications"
     - "Include ADR-003 for WebSocket implementation decisions"
   warnings:
     - "No CTR (contract) documents exist - consider if API contracts needed"
@@ -442,7 +442,7 @@ project_structure:
 
 | Source | Type | Reference |
 |--------|------|-----------|
-| PRD-000 | Product Requirements | [PRD-000]({project_root}/ai_dev_flow/PRD/PRD-000_ai_assisted_documentation_features.md#PRD-000) |
+| PRD-00 | Product Requirements | [PRD-00]({project_root}/ai_dev_flow/PRD/PRD-00_ai_assisted_documentation_features.md#PRD-00) |
 | ADR-000 | Architecture Decision | [ADR-000]({project_root}/ai_dev_flow/ADR/ADR-000_ai_powered_documentation_assistant_architecture.md#ADR-000) |
 
 ### Downstream Artifacts

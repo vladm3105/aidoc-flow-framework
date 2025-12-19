@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: CTR-001 through CTR-NNN
+# Traceability Matrix: CTR-01 through CTR-NN
 
 ## Document Control
 
@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type CTR --output docs/CTR/CT
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@ctr: CTR-NNN` (document-level format, e.g., `CTR-001`)
+**Tag Format:** `@ctr: CTR-NN` (document-level format, e.g., `CTR-01`)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -106,7 +106,7 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 - Prefix: `@` symbol
 - Artifact Type: lowercase (`brd`, `prd`, `ears`, `bdd`, `adr`, `sys`, `req`, `impl`)
 - Separator: colon `:` after artifact type, `:` between document ID and requirement ID
-- Document ID: Standard format (e.g., `CTR-NNN`)
+- Document ID: Standard format (e.g., `CTR-NN`)
 - Requirement ID: Specific requirement/section identifier
 - Multiple Values: comma-separated for same artifact type
 
@@ -138,7 +138,7 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 ### 2.4 Validation Rules
 
 1. **Required**: Each CTR artifact MUST include at least one tag for each required layer
-2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NNN` format
+2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NN` format
 3. **Valid References**: All referenced documents and requirements must exist
 4. **No Gaps**: Cannot skip any required upstream layer in the chain
 5. **Tag Count**: Must have exactly 8 tags for Layer 9
@@ -172,9 +172,9 @@ python scripts/generate_traceability_matrices.py \
 
 | CTR ID | Title | Contract Type | Files | Status | Date | Upstream Sources | Downstream Artifacts |
 |--------|-------|---------------|-------|--------|------|------------------|---------------------|
-| CTR-001 | [API contract title] | OpenAPI 3.0 | .md + .yaml | Active | YYYY-MM-DD | REQ-001, IMPL-001 | SPEC-001 (provider), SPEC-002 (consumer), Code |
-| CTR-002 | [API contract title] | AsyncAPI 2.0 | .md + .yaml | Active | YYYY-MM-DD | REQ-002 | SPEC-003, Code |
-| CTR-NNN | ... | ... | ... | ... | ... | ... | ... |
+| CTR-01 | [API contract title] | OpenAPI 3.0 | .md + .yaml | Active | YYYY-MM-DD | REQ-01, IMPL-01 | SPEC-01 (provider), SPEC-02 (consumer), Code |
+| CTR-02 | [API contract title] | AsyncAPI 2.0 | .md + .yaml | Active | YYYY-MM-DD | REQ-02 | SPEC-03, Code |
+| CTR-NN | ... | ... | ... | ... | ... | ... | ... |
 
 **Status Legend**:
 - **Active**: Contract in use
@@ -192,42 +192,42 @@ python scripts/generate_traceability_matrices.py \
 
 | REQ ID | REQ Title | CTR IDs | CTR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| REQ-001 | [Atomic requirement for API] | CTR-001 | [API contract] | Requirement defines interface contract |
-| REQ-NNN | ... | ... | ... | ... |
+| REQ-01 | [Atomic requirement for API] | CTR-01 | [API contract] | Requirement defines interface contract |
+| REQ-NN | ... | ... | ... | ... |
 
 ### 4.2 IMPL → CTR Traceability
 
 | IMPL ID | IMPL Title | CTR IDs | CTR Titles | Relationship |
 |---------|------------|---------|------------|--------------|
-| IMPL-001 | [Implementation plan] | CTR-001, CTR-002 | [API contracts] | Implementation plan includes interface definitions |
-| IMPL-NNN | ... | ... | ... | ... |
+| IMPL-01 | [Implementation plan] | CTR-01, CTR-02 | [API contracts] | Implementation plan includes interface definitions |
+| IMPL-NN | ... | ... | ... | ... |
 
 ---
 
 ## 6. Downstream Traceability (OPTIONAL)
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
 
 ### 5.1 CTR → SPEC Traceability (Provider)
 
 | CTR ID | CTR Title | SPEC IDs (Provider) | SPEC Titles | Relationship |
 |--------|-----------|---------------------|-------------|--------------|
-| CTR-001 | [API contract] | SPEC-001 | [Provider specification] | Contract implemented by provider service |
-| CTR-NNN | ... | ... | ... | ... |
+| CTR-01 | [API contract] | SPEC-01 | [Provider specification] | Contract implemented by provider service |
+| CTR-NN | ... | ... | ... | ... |
 
 ### 5.2 CTR → SPEC Traceability (Consumer)
 
 | CTR ID | CTR Title | SPEC IDs (Consumer) | SPEC Titles | Relationship |
 |--------|-----------|---------------------|-------------|--------------|
-| CTR-001 | [API contract] | SPEC-002, SPEC-003 | [Consumer specifications] | Contract used by consumer services |
-| CTR-NNN | ... | ... | ... | ... |
+| CTR-01 | [API contract] | SPEC-02, SPEC-03 | [Consumer specifications] | Contract used by consumer services |
+| CTR-NN | ... | ... | ... | ... |
 
 ### 5.3 CTR → Code Traceability
 
 | CTR ID | CTR Title | Provider Code | Consumer Code | Contract Tests |
 |--------|-----------|---------------|---------------|----------------|
-| CTR-001 | [API contract] | src/api/endpoint.py | src/client/api_client.py | tests/contract/test_ctr_001.py |
-| CTR-NNN | ... | ... | ... | ... |
+| CTR-01 | [API contract] | src/api/endpoint.py | src/client/api_client.py | tests/contract/test_ctr_001.py |
+| CTR-NN | ... | ... | ... | ... |
 
 ---
 
@@ -237,7 +237,7 @@ python scripts/generate_traceability_matrices.py \
 
 | Contract Type | CTR IDs | Total | Description |
 |---------------|---------|-------|-------------|
-| OpenAPI 3.0 | CTR-001, CTR-002, CTR-003 | 3 | REST API contracts |
+| OpenAPI 3.0 | CTR-01, CTR-02, CTR-03 | 3 | REST API contracts |
 | AsyncAPI 2.0 | CTR-004, CTR-005 | 2 | Event-driven contracts |
 | gRPC | CTR-006 | 1 | RPC service contracts |
 
@@ -245,10 +245,10 @@ python scripts/generate_traceability_matrices.py \
 
 | CTR ID | .md File Exists | .yaml File Exists | Slugs Match | Schema Valid | Status |
 |--------|-----------------|-------------------|-------------|--------------|--------|
-| CTR-001 | ✅ | ✅ | ✅ | ✅ | Valid |
-| CTR-002 | ✅ | ✅ | ✅ | ❌ | Schema Error |
-| CTR-003 | ✅ | ❌ | N/A | N/A | Missing YAML |
-| CTR-NNN | ... | ... | ... | ... | ... |
+| CTR-01 | ✅ | ✅ | ✅ | ✅ | Valid |
+| CTR-02 | ✅ | ✅ | ✅ | ❌ | Schema Error |
+| CTR-03 | ✅ | ❌ | N/A | N/A | Missing YAML |
+| CTR-NN | ... | ... | ... | ... | ... |
 
 ---
 
@@ -256,21 +256,21 @@ python scripts/generate_traceability_matrices.py \
 
 ```mermaid
 graph TD
-    REQ001[REQ-001: API Requirement] --> CTR001[CTR-001: API Contract]
-    IMPL001[IMPL-001: Implementation Plan] --> CTR001
+    REQ01[REQ-01: API Requirement] --> CTR01[CTR-01: API Contract]
+    IMPL01[IMPL-01: Implementation Plan] --> CTR01
 
-    CTR001 --> SPEC001[SPEC-001: Provider Spec]
-    CTR001 --> SPEC002[SPEC-002: Consumer Spec 1]
-    CTR001 --> SPEC003[SPEC-003: Consumer Spec 2]
+    CTR01 --> SPEC01[SPEC-01: Provider Spec]
+    CTR01 --> SPEC002[SPEC-02: Consumer Spec 1]
+    CTR01 --> SPEC003[SPEC-03: Consumer Spec 2]
 
-    SPEC001 --> Provider[src/api/service.py]
+    SPEC01 --> Provider[src/api/service.py]
     SPEC002 --> Consumer1[src/client/client1.py]
     SPEC003 --> Consumer2[src/client/client2.py]
 
-    CTR001 --> ContractTests[tests/contract/test_ctr001.py]
+    CTR01 --> ContractTests[tests/contract/test_ctr001.py]
 
-    style CTR001 fill:#fff3e0
-    style SPEC001 fill:#e3f2fd
+    style CTR01 fill:#fff3e0
+    style SPEC01 fill:#e3f2fd
     style SPEC002 fill:#e8f5e9
     style SPEC003 fill:#e8f5e9
 ```
@@ -281,9 +281,9 @@ graph TD
 
 | Source CTR | Target CTR | Dependency Type | Description |
 |------------|------------|-----------------|-------------|
-| CTR-001 | CTR-003 | Prerequisite | Authentication contract required for data contract |
-| CTR-002 | CTR-004 | Related | Event contracts for related business processes |
-| CTR-NNN | ... | ... | ... |
+| CTR-01 | CTR-03 | Prerequisite | Authentication contract required for data contract |
+| CTR-02 | CTR-004 | Related | Event contracts for related business processes |
+| CTR-NN | ... | ... | ... |
 
 ---
 
@@ -293,19 +293,19 @@ graph TD
 
 | CTR ID | Provider Tests | Consumer Tests | Contract Tests | Coverage % | Status |
 |--------|----------------|----------------|----------------|------------|--------|
-| CTR-001 | ✅ | ✅ | ✅ | 100% | Validated |
-| CTR-002 | ✅ | ❌ | ✅ | 67% | Partial |
-| CTR-003 | ❌ | ❌ | ❌ | 0% | Not Tested |
-| CTR-NNN | ... | ... | ... | ... | ... |
+| CTR-01 | ✅ | ✅ | ✅ | 100% | Validated |
+| CTR-02 | ✅ | ❌ | ✅ | 67% | Partial |
+| CTR-03 | ❌ | ❌ | ❌ | 0% | Not Tested |
+| CTR-NN | ... | ... | ... | ... | ... |
 
 ### 8.2 Contract Validation Results
 
 | CTR ID | Schema Valid | Examples Valid | Breaking Changes | Last Validated |
 |--------|--------------|----------------|------------------|----------------|
-| CTR-001 | ✅ | ✅ | None | YYYY-MM-DD |
-| CTR-002 | ❌ | ✅ | None | YYYY-MM-DD |
-| CTR-003 | ✅ | ❌ | 2 Breaking | YYYY-MM-DD |
-| CTR-NNN | ... | ... | ... | ... |
+| CTR-01 | ✅ | ✅ | None | YYYY-MM-DD |
+| CTR-02 | ❌ | ✅ | None | YYYY-MM-DD |
+| CTR-03 | ✅ | ❌ | 2 Breaking | YYYY-MM-DD |
+| CTR-NN | ... | ... | ... | ... |
 
 ---
 
@@ -315,10 +315,10 @@ graph TD
 
 | CTR ID | Provider Status | Consumer Status | Tests Status | Overall | Completion % |
 |--------|-----------------|-----------------|--------------|---------|--------------|
-| CTR-001 | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
-| CTR-002 | ✅ Complete | 🟡 Partial (1/2) | 🟡 Partial | In Progress | 70% |
-| CTR-003 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | Started | 30% |
-| CTR-NNN | ... | ... | ... | ... | ... |
+| CTR-01 | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
+| CTR-02 | ✅ Complete | 🟡 Partial (1/2) | 🟡 Partial | In Progress | 70% |
+| CTR-03 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | Started | 30% |
+| CTR-NN | ... | ... | ... | ... | ... |
 
 ### 9.2 Gap Analysis
 
@@ -327,11 +327,11 @@ graph TD
 - CTR-YYY: Missing .md file (only .yaml exists)
 
 **Schema Validation Errors**:
-- CTR-002: Invalid schema syntax
+- CTR-02: Invalid schema syntax
 - CTR-005: Breaking changes detected
 
 **Missing Implementation**:
-- CTR-003: Provider not implemented
+- CTR-03: Provider not implemented
 - CTR-004: Consumers not implemented
 - CTR-006: No contract tests
 
@@ -349,9 +349,9 @@ graph TD
 
 | CTR ID | Current Version | Planned Changes | Breaking | Target Date |
 |--------|----------------|-----------------|----------|-------------|
-| CTR-001 | v1.0 | Add pagination | No | YYYY-MM-DD |
-| CTR-002 | v2.0 | Change auth method | Yes | YYYY-MM-DD |
-| CTR-003 | v1.0 | Add new endpoints | No | YYYY-MM-DD |
+| CTR-01 | v1.0 | Add pagination | No | YYYY-MM-DD |
+| CTR-02 | v2.0 | Change auth method | Yes | YYYY-MM-DD |
+| CTR-03 | v1.0 | Add new endpoints | No | YYYY-MM-DD |
 
 ---
 

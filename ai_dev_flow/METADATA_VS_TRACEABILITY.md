@@ -143,7 +143,7 @@ custom_fields:
   - section 3.2: Connection management strategy
 
 #### Technical Specifications (@spec)
-- @spec: SPEC-001 (WebSocket Quote Ingestion Technical Spec)
+- @spec: SPEC-01 (WebSocket Quote Ingestion Technical Spec)
   - section 4: Reconnection algorithm implementation
   - section 5: Error handling and logging
 ```
@@ -239,7 +239,7 @@ python3 scripts/validate_metadata.py --strict .
 ```yaml
 # DON'T DO THIS - Too generic, no audit trail
 custom_fields:
-  references: [BRD-001, PRD-003, ADR-005]
+  references: [BRD-01, PRD-03, ADR-005]
 ```
 
 **Problem**: No context, no descriptions, no compliance value
@@ -265,8 +265,8 @@ custom_fields:
 ```yaml
 custom_fields:
   upstream:
-    brd: "BRD-001"
-    prd: "PRD-003"
+    brd: "BRD-01"
+    prd: "PRD-03"
 ```
 
 **Problems**:

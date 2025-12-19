@@ -80,21 +80,36 @@ Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 ### Format
 
 ```
-TASKS-NNN_{descriptive_component}_tasks.md
+TASKS-NN_{descriptive_component}_tasks.md
 ```
 
 ### Rules
 
-1. **TASKS-NNN**: Sequential numbering starting from 001
+1. **TASKS-NN**: Sequential numbering starting from 001
 2. **descriptive_component**: Lowercase with underscores
 3. **_tasks**: Required suffix
 4. **Extension**: Always `.md`
 
 ### Examples
 
-- `TASKS-001_service_connector_tasks.md`
-- `TASKS-002_data_integration_tasks.md`
-- `TASKS-003_request_execution_service_tasks.md`
+- `TASKS-01_service_connector_tasks.md`
+- `TASKS-02_data_integration_tasks.md`
+- `TASKS-03_request_execution_service_tasks.md`
+
+### 2.1 Element ID Format (MANDATORY)
+
+**Pattern**: `TASKS.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Task | 18 | TASKS.02.18.01 |
+| Task Item | 30 | TASKS.02.30.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `TASK-XXX` → Use `TASKS.NN.18.SS`
+> - `T-XXX` → Use `TASKS.NN.18.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
 
 ---
 
@@ -104,7 +119,7 @@ TASKS-NNN_{descriptive_component}_tasks.md
 
 ```yaml
 ---
-title: "TASKS-NNN: [Component Name] Implementation Tasks"
+title: "TASKS-NN: [Component Name] Implementation Tasks"
 tags:
   - tasks-document
   - layer-11-artifact
@@ -113,7 +128,7 @@ custom_fields:
   document_type: tasks
   artifact_type: TASKS
   layer: 11
-  parent_spec: SPEC-NNN
+  parent_spec: SPEC-NN
 ---
 ```
 
@@ -121,13 +136,13 @@ custom_fields:
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| TASKS ID | Yes | TASKS-NNN format |
+| TASKS ID | Yes | TASKS-NN format |
 | Title | Yes | Descriptive task name |
 | Status | Yes | Draft/Ready/In Progress/Completed |
 | Version | Yes | Semantic version (X.Y.Z) |
 | Created | Yes | YYYY-MM-DD |
 | Author | Yes | Creator name |
-| Parent SPEC | Yes | SPEC-NNN reference |
+| Parent SPEC | Yes | SPEC-NN reference |
 | Complexity | Yes | 1-5 scale |
 
 ### 3.3 Mandatory Sections
@@ -166,8 +181,8 @@ Implement a minimal `service_connector` that:
 - Includes circuit breaker pattern
 
 **Exclusions**:
-- Data subscription (TASKS-002)
-- Request execution (TASKS-003)
+- Data subscription (TASKS-02)
+- Request execution (TASKS-03)
 ```
 
 ### Bad Example
@@ -197,17 +212,17 @@ Build the whole gateway system.
 
 1. **Create module structure** (2 hours)
    - Create `src/services/__init__.py`
-   - Create `src/services/models.py` (SPEC-001:15-45)
-   - Create `src/services/errors.py` (SPEC-001:47-82)
+   - Create `src/services/models.py` (SPEC-01:15-45)
+   - Create `src/services/errors.py` (SPEC-01:47-82)
 
 2. **Implement connection protocol** (4 hours)
    - Create `src/services/connector.py`
-   - Implement `ServiceConnector` protocol (SPEC-001:84-120)
-   - Add type hints per SPEC-001:122-135
+   - Implement `ServiceConnector` protocol (SPEC-01:84-120)
+   - Add type hints per SPEC-01:122-135
 
 3. **Add retry handler** (3 hours)
    - Create `src/services/retry.py`
-   - Implement exponential backoff (SPEC-001:137-165)
+   - Implement exponential backoff (SPEC-01:137-165)
    - Verify: Unit tests pass with 85% coverage
 ```
 
@@ -242,7 +257,7 @@ Build the whole gateway system.
 
 - **Technical**: Python 3.11+, asyncio, async_client library
 - **Coding Standards**: PEP 8, snake_case naming
-- **Interface**: Match SPEC-001 exactly, no additions
+- **Interface**: Match SPEC-01 exactly, no additions
 - **Performance**: p95 latency < 50ms for validations
 - **Quality**: 85% unit test coverage minimum
 - **Dependencies**: No new runtime dependencies without approval
@@ -265,7 +280,7 @@ Build the whole gateway system.
 ```markdown
 ## 4. Acceptance
 
-- [ ] All BDD scenarios in BDD-001 pass
+- [ ] All BDD scenarios in BDD-01 pass
 - [ ] Unit test coverage ≥85%
 - [ ] Integration test coverage ≥75%
 - [ ] mypy type checking passes (--strict)
@@ -287,19 +302,19 @@ Every TASKS document MUST include "## 8. Implementation Contracts":
 
 ### 8.1 Contracts Provided (if provider)
 
-@icon: ICON-001:ContractName
+@icon: ICON-01:ContractName
 @icon-role: provider
 
 This TASKS implements the following contract:
-- [ICON-001](../ICON/ICON-001.md): [Contract description]
+- [ICON-01](../ICON/ICON-01.md): [Contract description]
 
 ### 8.2 Contracts Consumed (if consumer)
 
-@icon: ICON-001:ContractName
+@icon: ICON-01:ContractName
 @icon-role: consumer
 
 This TASKS depends on:
-- [ICON-001](../ICON/ICON-001.md): [Usage description]
+- [ICON-01](../ICON/ICON-01.md): [Usage description]
 
 ### 8.3 No Contracts (if neither)
 
@@ -310,7 +325,7 @@ No implementation contracts for this TASKS.
 
 ```bash
 # Section 8 must exist
-grep -q "## 8. Implementation Contracts" TASKS-NNN.md
+grep -q "## 8. Implementation Contracts" TASKS-NN.md
 ```
 
 ---
@@ -322,22 +337,22 @@ grep -q "## 8. Implementation Contracts" TASKS-NNN.md
 ```markdown
 ## Traceability Tags
 
-@brd: BRD.001.NNN
-@prd: PRD.001.NNN
-@ears: EARS.001.NNN
-@bdd: BDD.001.NNN
-@adr: ADR-NNN
-@sys: SYS.001.NNN
+@brd: BRD.001.NN
+@prd: PRD.001.NN
+@ears: EARS.001.NN
+@bdd: BDD.001.NN
+@adr: ADR-NN
+@sys: SYS.001.NN
 @req: REQ.NN.EE.SS
-@spec: SPEC-NNN
+@spec: SPEC-NN
 ```
 
 ### Optional Tags
 
 ```markdown
 @impl: IMPL.NN.EE.SS (if project uses IMPL)
-@ctr: CTR-NNN (if contracts defined)
-@icon: ICON-NNN:ContractName (if implementation contracts)
+@ctr: CTR-NN (if contracts defined)
+@icon: ICON-NN:ContractName (if implementation contracts)
 ```
 
 ---
@@ -387,7 +402,7 @@ grep -q "## 8. Implementation Contracts" TASKS-NNN.md
 ### Automated Validation
 
 ```bash
-./scripts/validate_tasks.sh /path/to/TASKS-NNN_name.md
+./scripts/validate_tasks.sh /path/to/TASKS-NN_name.md
 ```
 
 ### Manual Checklist
@@ -423,8 +438,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -449,13 +464,13 @@ Include ONLY if relationships exist between TASKS documents sharing implementati
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | TASKS-NNN | [Related TASKS title] | Shared implementation context |
-| Depends | TASKS-NNN | [Prerequisite TASKS title] | Must complete before this |
+| Related | TASKS-NN | [Related TASKS title] | Shared implementation context |
+| Depends | TASKS-NN | [Prerequisite TASKS title] | Must complete before this |
 
 **Tags**:
 ```markdown
-@related-tasks: TASKS-NNN
-@depends-tasks: TASKS-NNN
+@related-tasks: TASKS-NN
+@depends-tasks: TASKS-NN
 ```
 
 
@@ -493,7 +508,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/TASKS/TASKS-NNN_slug.md --auto-fix
+python scripts/validate_cross_document.py --document docs/TASKS/TASKS-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all TASKS documents complete
 python scripts/validate_cross_document.py --layer TASKS --auto-fix
@@ -510,7 +525,7 @@ python scripts/validate_cross_document.py --layer TASKS --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd through @spec tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

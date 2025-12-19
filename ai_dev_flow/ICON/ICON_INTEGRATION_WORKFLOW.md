@@ -43,8 +43,8 @@ grep -A 10 "### 3.2 Downstream Dependencies" docs/TASKS/TASKS-XXX.md
 
 # Should show list of consuming TASKS
 # Example output:
-# - TASKS-002: Heartbeat Monitoring (health checks)
-# - TASKS-003: Reconnection Service (retry logic)
+# - TASKS-02: Heartbeat Monitoring (health checks)
+# - TASKS-03: Reconnection Service (retry logic)
 ```
 
 **Decision Gate**: If section 3.2 is empty, STOP. Complete dependency analysis first.
@@ -191,7 +191,7 @@ This TASKS provides the following implementation contracts for consumer TASKS:
 
 **ICON-XXX: ContractName** (`docs/ICON/ICON-XXX_descriptive_name.md`)
 - **Contract Type**: Protocol Interface
-- **Consumers**: N TASKS (TASKS-002, TASKS-003, ...)
+- **Consumers**: N TASKS (TASKS-02, TASKS-03, ...)
 - **Purpose**: [One sentence describing contract purpose]
 - **Key Interfaces**: `InterfaceName` protocol with X methods
 
@@ -261,8 +261,8 @@ def __init__(self, connector: ServiceConnector):
 **Output (success)**:
 ```
 ✓ Provider TASKS-XXX has @icon tag (section 8.1)
-✓ Consumer TASKS-002 has @icon tag (section 8.2)
-✓ Consumer TASKS-003 has @icon tag (section 8.2)
+✓ Consumer TASKS-02 has @icon tag (section 8.2)
+✓ Consumer TASKS-03 has @icon tag (section 8.2)
 ✓ ... (N consumers verified)
 ✓ README.md includes ICON-XXX in active contracts
 ✓ Bidirectional traceability complete
@@ -285,8 +285,8 @@ custom_fields:
 ```bash
 git add docs/ICON/ICON-XXX_descriptive_name.md
 git add docs/TASKS/TASKS-XXX.md  # Provider
-git add docs/TASKS/TASKS-002.md  # Consumer 1
-git add docs/TASKS/TASKS-003.md  # Consumer 2
+git add docs/TASKS/TASKS-02.md  # Consumer 1
+git add docs/TASKS/TASKS-03.md  # Consumer 2
 # ... (add all N consumers)
 git add docs/ICON/README.md
 
@@ -426,8 +426,8 @@ grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l
 ./scripts/validate_all_icons.sh
 
 # Output:
-# ICON-001: ✓ PASS (8 consumers, complete integration)
-# ICON-003: ✓ PASS (8 consumers, complete integration)
+# ICON-01: ✓ PASS (8 consumers, complete integration)
+# ICON-03: ✓ PASS (8 consumers, complete integration)
 # ICON-005: ✗ FAIL (consumer count mismatch: 6 declared, 2 actual)
 # ICON-007: ✗ FAIL (orphaned: 0 TASKS references)
 # ...

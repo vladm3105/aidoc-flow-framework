@@ -96,7 +96,7 @@ structure:
   required_sections:
     - pattern: "^# TASKS-\\d{3}:"
       name: "Title (H1)"
-      description: "Single H1 with format TASKS-NNN: Title"
+      description: "Single H1 with format TASKS-NN: Title"
 
     - pattern: "^## 1\\. Document Control$"
       name: "Document Control"
@@ -190,7 +190,7 @@ structure:
   # File naming convention
   file_naming:
     pattern: "^TASKS-\\d{3}_[a-z0-9_]+\\.md$"
-    description: "Format: TASKS-NNN_descriptive_name.md"
+    description: "Format: TASKS-NN_descriptive_name.md"
 
 # =============================================================================
 # TASKS-Specific Patterns
@@ -311,7 +311,7 @@ validation_rules:
     - rule: "Document Control must have minimum 8 fields"
       severity: error
 
-    - rule: "File name must match TASKS-NNN_name.md format"
+    - rule: "File name must match TASKS-NN_name.md format"
       severity: warning
 
   # Content validation
@@ -331,7 +331,7 @@ validation_rules:
     - rule: "Each task must have acceptance criteria"
       severity: warning
 
-    - rule: "Source SPEC must be valid SPEC-NNN format"
+    - rule: "Source SPEC must be valid SPEC-NN format"
       severity: warning
 
 # =============================================================================
@@ -347,13 +347,13 @@ traceability:
       - "@prd: PRD.NN.EE.SS"
       - "@ears: EARS.NN.EE.SS"
       - "@bdd: BDD.NN.EE.SS"
-      - "@adr: ADR-NNN"
+      - "@adr: ADR-NN"
       - "@sys: SYS.NN.EE.SS"
       - "@req: REQ.NN.EE.SS"
-      - "@spec: SPEC-NNN"
+      - "@spec: SPEC-NN"
     optional:
       - "@impl: IMPL.NN.EE.SS"
-      - "@ctr: CTR-NNN"
+      - "@ctr: CTR-NN"
     description: "Layer 11 requires 8 upstream artifact tags (10 including optional IMPL and CTR)"
 
   upstream:
@@ -371,7 +371,7 @@ traceability:
         format: "@bdd: BDD.NN.EE.SS"
         location: "Section 10 Traceability or Traceability Tags section"
       - type: ADR
-        format: "@adr: ADR-NNN"
+        format: "@adr: ADR-NN"
         location: "Section 10 Traceability or Traceability Tags section"
       - type: SYS
         format: "@sys: SYS.NN.EE.SS"
@@ -380,37 +380,37 @@ traceability:
         format: "@req: REQ.NN.EE.SS"
         location: "Section 10 Traceability or Traceability Tags section"
       - type: SPEC
-        format: "@spec: SPEC-NNN"
+        format: "@spec: SPEC-NN"
         location: "Document Control table or Section 10"
     optional:
       - type: IMPL
         format: "@impl: IMPL.NN.EE.SS"
         location: "Section 10 Traceability or Traceability Tags section"
       - type: CTR
-        format: "@ctr: CTR-NNN"
+        format: "@ctr: CTR-NN"
         location: "Section 10 Traceability or Traceability Tags section"
 
   downstream:
     expected:
       - type: IPLAN
-        format: "IPLAN-NNN"
+        format: "IPLAN-NN"
       - type: Code
         format: "src/..."
       - type: Tests
         format: "tests/..."
 
   implementation_contracts:
-    format: "@icon: TASKS-NNN:ContractName"
+    format: "@icon: TASKS-NN:ContractName"
     optional_role: "@icon-role: provider|consumer"
     description: "Links to implementation contract definitions within TASKS"
 
   same_type:
     optional:
       - type: TASKS
-        format: "@related-tasks: TASKS-NNN"
+        format: "@related-tasks: TASKS-NN"
         description: "Related TASKS document sharing implementation context"
       - type: TASKS
-        format: "@depends-tasks: TASKS-NNN"
+        format: "@depends-tasks: TASKS-NN"
         description: "Prerequisite TASKS document"
 
 # =============================================================================
@@ -430,8 +430,8 @@ error_messages:
   TASKS-E010: "Missing Implementation Plan section (Section 4)"
   TASKS-E011: "Missing Traceability section (Section 10)"
   TASKS-E012: "Implementation Plan has no Phases defined"
-  TASKS-E013: "File name does not match TASKS-NNN_name.md format"
-  TASKS-E014: "Source SPEC not in valid SPEC-NNN format"
+  TASKS-E013: "File name does not match TASKS-NN_name.md format"
+  TASKS-E014: "Source SPEC not in valid SPEC-NN format"
   TASKS-W001: "Tasks not using TASK-NNN format"
   TASKS-W002: "Phase has no tasks defined"
   TASKS-W003: "Task missing acceptance criteria"

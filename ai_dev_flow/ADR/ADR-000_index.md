@@ -82,10 +82,10 @@ When creating a new ADR:
 1. **Copy Template**:
    ```bash
    cp ai_dev_flow/ADR/ADR-TEMPLATE.md \
-      docs/ADR/ADR-NNN_decision_title.md
+      docs/ADR/ADR-NN_decision_title.md
    ```
 
-2. **Assign ADR ID**: Use next sequential number (ADR-001, ADR-002, ...)
+2. **Assign ADR ID**: Use next sequential number (ADR-001, ADR-02, ...)
 
 3. **Update This Index**: Add new row to table above
 
@@ -96,7 +96,7 @@ When creating a new ADR:
 ## Allocation Rules
 
 - **Numbering**: Allocate sequentially starting at `001`
-- **One Decision Per File**: Each `ADR-NNN` covers a single significant architectural decision
+- **One Decision Per File**: Each `ADR-NN` covers a single significant architectural decision
 - **Slugs**: Short, descriptive, lower_snake_case
 - **Alternatives Required**: Document at least 2-3 alternatives considered
 - **Consequences Analysis**: Include positive and negative outcomes

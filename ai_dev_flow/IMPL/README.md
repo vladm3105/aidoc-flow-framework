@@ -77,17 +77,17 @@ This is the most critical distinction:
 | **Scope** | Entire system or feature | One YAML specification |
 | **Audience** | Project managers, architects | AI code generators, developers |
 | **Content** | Phases, teams, deliverables | Exact code generation steps |
-| **Granularity** | "Phase 1: Build Resource Management (Week 1-2)" | "Step 3: Generate ResourceLimitService class from SPEC-003.yaml" |
+| **Granularity** | "Phase 1: Build Resource Management (Week 1-2)" | "Step 3: Generate ResourceLimitService class from SPEC-03.yaml" |
 | **Timeline** | Weeks or months | Hours or days |
 | **Deliverables** | List of CTR/SPEC/TASKS to create | Source code files |
 | **Traceability** | IMPL → CTR, SPEC, TASKS | TASKS → Code |
 
 **Example Flow**:
-1. **REQ-003**: "System must enforce resource limits"
-2. **IMPL-001**: "Resource Management System" - Phase 1: Build resource limits (Week 1-2, Agent Team) → Deliverables: CTR-003, SPEC-003, TASKS-003
-3. **SPEC-003.yaml**: Technical spec with ResourceLimitService class, methods, algorithms
-4. **TASKS-003**: Step-by-step TODOs to generate code from SPEC-003.yaml
-5. **Code**: `resource_limit_service.py` generated following TASKS-003
+1. **REQ-03**: "System must enforce resource limits"
+2. **IMPL-01**: "Resource Management System" - Phase 1: Build resource limits (Week 1-2, Agent Team) → Deliverables: CTR-03, SPEC-03, TASKS-03
+3. **SPEC-03.yaml**: Technical spec with ResourceLimitService class, methods, algorithms
+4. **TASKS-03**: Step-by-step TODOs to generate code from SPEC-03.yaml
+5. **Code**: `resource_limit_service.py` generated following TASKS-03
 
 ## When to Create IMPL Plans
 
@@ -114,7 +114,7 @@ IMPL Plans follow a **4-part structure** (adapted from ADR-TEMPLATE.md):
 
 ### PART 2: Phased Implementation
 - **Phase 1, 2, ... N**: Work breakdown
-  - Deliverables: CTR-NNN, SPEC-NNN, TASKS-NNN to create
+  - Deliverables: CTR-NN, SPEC-NN, TASKS-NN to create
   - Teams/agents responsible
   - Timeline estimates
   - Dependencies
@@ -133,30 +133,30 @@ IMPL Plans follow a **4-part structure** (adapted from ADR-TEMPLATE.md):
 
 ## File Naming Convention
 
-**Pattern**: `IMPL-NNN_{system_name}.md`
+**Pattern**: `IMPL-NN_{system_name}.md`
 
 **Examples**:
-- `IMPL-001_risk_management_system.md`
-- `IMPL-002_external_data_integration.md`
-- `IMPL-003_service_orchestrator_agent.md`
+- `IMPL-01_risk_management_system.md`
+- `IMPL-02_external_data_integration.md`
+- `IMPL-03_service_orchestrator_agent.md`
 
-**ID Format**: `IMPL-NNN` where NNN is zero-padded number (001, 002, ...)
+**ID Format**: `IMPL-NN` where NN is the sequence number (01, 02, ...)
 
 ## Traceability Requirements
 
 ### Upstream (What IMPL Plans Reference)
 
 IMPL Plans trace to:
-- **REQ-NNN**: Business requirements being implemented
-- **ADR-NNN**: Architecture decisions affecting work organization
-- **SYS-NNN**: System requirements driving implementation
+- **REQ-NN**: Business requirements being implemented
+- **ADR-NN**: Architecture decisions affecting work organization
+- **SYS-NN**: System requirements driving implementation
 
 ### Downstream (What IMPL Plans Produce)
 
 IMPL Plans identify deliverables:
-- **CTR-NNN**: API contracts to be created
-- **SPEC-NNN**: Technical specifications to be written
-- **TASKS-NNN**: Code generation plans to be developed
+- **CTR-NN**: API contracts to be created
+- **SPEC-NN**: Technical specifications to be written
+- **TASKS-NN**: Code generation plans to be developed
 
 **Note**: IMPL Plans do NOT directly produce code. They organize the creation of technical documents (CTR/SPEC/TASKS) which eventually lead to code.
 
@@ -169,7 +169,7 @@ ai_dev_flow/IMPL/
 ├── IMPL-TEMPLATE.md                   # Template for new IMPL plans
 ├── IMPL_IMPLEMENTATION_PLAN.md        # Example: Plan for creating IMPL/ system
 └── examples/                          # Reference examples
-    └── IMPL-001_risk_management_system.md
+    └── IMPL-01_risk_management_system.md
 ```
 
 ## Quality Gates
@@ -200,13 +200,13 @@ Before completing an IMPL Plan, verify:
 **Team**: Agent Development Team (3 developers)
 
 **Deliverables**:
-- CTR-003: Resource Limit API Contract
-- SPEC-003: Resource Limit Service Specification
-- TASKS-003: Code Generation Plan for SPEC-003
+- CTR-03: Resource Limit API Contract
+- SPEC-03: Resource Limit Service Specification
+- TASKS-03: Code Generation Plan for SPEC-03
 
 **Dependencies**:
 - Database schema approved (ADR-008)
-- Risk parameter configuration complete (REQ-003)
+- Risk parameter configuration complete (REQ-03)
 
 **Timeline**: Sprint 1 (2 weeks)
 ```
@@ -225,11 +225,11 @@ limit = base_limit * (1 - risk_factor * 0.1)
 **Good** (Business Value):
 ```markdown
 ## Phase 1: Core Resource Management (Sprint 1-2)
-- Resource limits (CTR-003, SPEC-003)
-- Risk calculator (CTR-005, SPEC-005)
+- Resource limits (CTR-03, SPEC-03)
+- Risk calculator (CTR-005, SPEC-05)
 
 ## Phase 2: Advanced Features (Sprint 3)
-- Circuit breakers (CTR-008, SPEC-008)
+- Circuit breakers (CTR-008, SPEC-08)
 - Correlation analysis (CTR-010, SPEC-010)
 ```
 
@@ -253,11 +253,11 @@ When components must be built in order:
 
 ```markdown
 ## Phase 1: Foundation (Week 1-2)
-- Core data models (SPEC-001, SPEC-002)
-- Database setup (SPEC-003)
+- Core data models (SPEC-01, SPEC-02)
+- Database setup (SPEC-03)
 
 ## Phase 2: Services (Week 3-4)
-- Business logic (SPEC-004, SPEC-005)
+- Business logic (SPEC-004, SPEC-05)
 - Depends on: Phase 1 complete
 
 ## Phase 3: Integration (Week 5)
@@ -273,13 +273,13 @@ When teams can work independently:
 ## Phase 1 (Parallel): Core Services (Week 1-2)
 
 **Team A**: Resource Limits
-- CTR-003, SPEC-003, TASKS-003
+- CTR-03, SPEC-03, TASKS-03
 
 **Team B**: Risk Calculator
-- CTR-005, SPEC-005, TASKS-005
+- CTR-005, SPEC-05, TASKS-05
 
 **Team C**: Circuit Breakers
-- CTR-008, SPEC-008, TASKS-008
+- CTR-008, SPEC-08, TASKS-008
 
 No dependencies between teams.
 ```
@@ -290,12 +290,12 @@ When delivering incremental value:
 
 ```markdown
 ## Phase 1: MVP (Sprint 1)
-- Basic resource limits (SPEC-003)
+- Basic resource limits (SPEC-03)
 - Manual override capability (SPEC-004)
 - **Release**: V1.0 to production
 
 ## Phase 2: Enhancements (Sprint 2)
-- Automated limit calculation (SPEC-005)
+- Automated limit calculation (SPEC-05)
 - Real-time monitoring (SPEC-006)
 - **Release**: V1.1 to production
 
@@ -350,7 +350,7 @@ Throughout implementation:
 ### For Developers
 - **Work Organization**: Understand where their work fits
 - **Dependency Clarity**: Know what they're waiting for
-- **Deliverable Focus**: Clear goals (create SPEC-NNN, TASKS-NNN)
+- **Deliverable Focus**: Clear goals (create SPEC-NN, TASKS-NN)
 
 ### For AI Assistants
 - **Structured Guidance**: Clear roadmap for feature implementation
@@ -363,7 +363,7 @@ Throughout implementation:
 
 **Problem**: IMPL Plan includes data structures, algorithms, class hierarchies
 
-**Solution**: Move technical details to SPEC. IMPL only says "create SPEC-003 for Resource Limit service"
+**Solution**: Move technical details to SPEC. IMPL only says "create SPEC-03 for Resource Limit service"
 
 ### Pitfall 2: IMPL Duplicates TASKS
 
@@ -381,7 +381,7 @@ Throughout implementation:
 
 **Problem**: Phase says "Build resource management" but doesn't list which CTR/SPEC/TASKS
 
-**Solution**: Always enumerate deliverables: "CTR-003, SPEC-003, TASKS-003"
+**Solution**: Always enumerate deliverables: "CTR-03, SPEC-03, TASKS-03"
 
 ### Pitfall 5: No Team [ALLOCATION - e.g., task assignment, resource allocation]
 
@@ -404,7 +404,7 @@ cp ai_dev_flow/IMPL/IMPL-TEMPLATE.md \
 
 Check IMPL Plan quality:
 
-- **Traceability**: All REQ-NNN references valid?
+- **Traceability**: All REQ-NN references valid?
 - **Deliverables**: All CTR/SPEC/TASKS enumerated?
 - **Timeline**: Realistic estimates?
 - **Dependencies**: Blockers identified?
@@ -456,7 +456,7 @@ Check IMPL Plan quality:
 
 ### Example 2: Complex IMPL (Multiple Teams)
 
-See: `examples/IMPL-001_risk_management_system.md`
+See: `examples/IMPL-01_risk_management_system.md`
 
 ## Related Documents
 

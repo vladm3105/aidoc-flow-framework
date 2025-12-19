@@ -18,9 +18,9 @@ service_type: [agent|mcp|infra|shared]
 
 # Traceability
 upstream_requirements:
-  - REQ-NNN
+  - REQ-NN
 upstream_adrs:
-  - ADR-NNN
+  - ADR-NN
 
 # Interface Definitions
 endpoints:

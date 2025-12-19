@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: BDD-001 through BDD-NNN
+# Traceability Matrix: BDD-01 through BDD-NN
 
 ## Document Control
 
@@ -175,7 +175,7 @@ Feature: Place Limit Order
 ### 2.5 Validation Rules
 
 1. **Required**: Each BDD artifact MUST include at least one tag for each required layer: `@brd`, `@prd`, `@ears`
-2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NNN` format
+2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NN` format
 3. **Valid References**: All referenced documents and requirements must exist
 4. **No Gaps**: Cannot skip any required upstream layer (BRD, PRD, EARS)
 5. **Gherkin Placement**: In feature files, tags must appear before Feature declaration
@@ -226,9 +226,9 @@ Test Implementation & Code (Layers 13-14)
 
 | BDD ID | Title | Feature Category | Scenarios | Steps | Status | Date | Upstream Sources | Downstream Artifacts |
 |--------|-------|------------------|-----------|-------|--------|------|------------------|---------------------|
-| BDD-001 | [Feature file title] | [Category] | 5 | 25 | Passing | YYYY-MM-DD | EARS-001, PRD-001, REQ-001 | tests/test_feature.py, src/module.py |
-| BDD-002 | [Feature file title] | [Category] | 3 | 15 | Failing | YYYY-MM-DD | EARS-002, REQ-002 | tests/test_api.py |
-| BDD-NNN | ... | ... | ... | ... | ... | ... | ... | ... |
+| BDD-01 | [Feature file title] | [Category] | 5 | 25 | Passing | YYYY-MM-DD | EARS-01, PRD-01, REQ-01 | tests/test_feature.py, src/module.py |
+| BDD-02 | [Feature file title] | [Category] | 3 | 15 | Failing | YYYY-MM-DD | EARS-02, REQ-02 | tests/test_api.py |
+| BDD-NN | ... | ... | ... | ... | ... | ... | ... | ... |
 
 **Status Legend**:
 - **Passing**: All scenarios pass
@@ -246,23 +246,23 @@ Test Implementation & Code (Layers 13-14)
 
 | EARS ID | EARS Title | BDD IDs | BDD Scenarios | Relationship |
 |---------|------------|---------|---------------|--------------|
-| EARS-001 | [Formal requirement] | BDD-001 | Scenarios 1-3 | EARS statements validated through BDD |
-| EARS-002 | [Formal requirement] | BDD-002, BDD-003 | Scenarios 1-2, 1 | Multiple BDD files test requirement |
-| EARS-NNN | ... | ... | ... | ... |
+| EARS-01 | [Formal requirement] | BDD-01 | Scenarios 1-3 | EARS statements validated through BDD |
+| EARS-02 | [Formal requirement] | BDD-02, BDD-03 | Scenarios 1-2, 1 | Multiple BDD files test requirement |
+| EARS-NN | ... | ... | ... | ... |
 
 ### 5.2 PRD → BDD Traceability
 
 | PRD ID | PRD User Story | BDD IDs | BDD Scenarios | Relationship |
 |--------|----------------|---------|---------------|--------------|
-| PRD-001 | [User story] | BDD-001 | Scenarios 1-5 | Acceptance criteria defined in BDD |
-| PRD-NNN | ... | ... | ... | ... |
+| PRD-01 | [User story] | BDD-01 | Scenarios 1-5 | Acceptance criteria defined in BDD |
+| PRD-NN | ... | ... | ... | ... |
 
 ### 5.3 REQ → BDD Traceability
 
 | REQ ID | REQ Title | BDD IDs | BDD Scenarios | Relationship |
 |--------|-----------|---------|---------------|--------------|
-| REQ-001 | [Atomic requirement] | BDD-001 | Scenario 3 | Requirement verified through test |
-| REQ-NNN | ... | ... | ... | ... |
+| REQ-01 | [Atomic requirement] | BDD-01 | Scenario 3 | Requirement verified through test |
+| REQ-NN | ... | ... | ... | ... |
 
 ### 5.4 Upstream Source Summary
 
@@ -277,30 +277,30 @@ Test Implementation & Code (Layers 13-14)
 
 ## 6. Downstream Traceability (OPTIONAL)
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
 
 ### 6.1 BDD → Test Implementation Traceability
 
 | BDD ID | BDD Scenarios | Test Files | Test Functions | Implementation Status |
 |--------|---------------|------------|----------------|----------------------|
-| BDD-001 | 5 scenarios | tests/test_feature.py | test_scenario_1(), test_scenario_2(), ... | ✅ Complete |
-| BDD-002 | 3 scenarios | tests/test_api.py | test_api_scenario_1(), ... | 🟡 Partial (2/3) |
-| BDD-NNN | ... | ... | ... | ... |
+| BDD-01 | 5 scenarios | tests/test_feature.py | test_scenario_1(), test_scenario_2(), ... | ✅ Complete |
+| BDD-02 | 3 scenarios | tests/test_api.py | test_api_scenario_1(), ... | 🟡 Partial (2/3) |
+| BDD-NN | ... | ... | ... | ... |
 
 ### 6.2 BDD → Code Implementation Traceability
 
 | BDD ID | BDD Scenarios | Source Files | Functions/Classes | Relationship |
 |--------|---------------|--------------|-------------------|--------------|
-| BDD-001 | Scenarios 1-3 | src/module.py | FeatureClass, method_1() | Tests validate implementation |
-| BDD-002 | Scenarios 1-2 | src/api.py | APIHandler.endpoint() | Tests verify API behavior |
-| BDD-NNN | ... | ... | ... | ... |
+| BDD-01 | Scenarios 1-3 | src/module.py | FeatureClass, method_1() | Tests validate implementation |
+| BDD-02 | Scenarios 1-2 | src/api.py | APIHandler.endpoint() | Tests verify API behavior |
+| BDD-NN | ... | ... | ... | ... |
 
 ### 6.3 BDD → ADR Traceability (Architecture Verification)
 
 | BDD ID | ADR IDs | ADR Titles | Relationship |
 |--------|---------|------------|--------------|
-| BDD-001 | ADR-005 | [Architecture decision] | Tests verify architectural decision |
-| BDD-NNN | ... | ... | ... |
+| BDD-01 | ADR-005 | [Architecture decision] | Tests verify architectural decision |
+| BDD-NN | ... | ... | ... |
 
 ### 6.4 Downstream Artifact Summary
 
@@ -318,10 +318,10 @@ Test Implementation & Code (Layers 13-14)
 
 | BDD ID | Total Scenarios | Passing | Failing | Pending | Skipped | Pass Rate |
 |--------|-----------------|---------|---------|---------|---------|-----------|
-| BDD-001 | 5 | 5 | 0 | 0 | 0 | 100% |
-| BDD-002 | 3 | 2 | 1 | 0 | 0 | 67% |
-| BDD-003 | 4 | 0 | 0 | 4 | 0 | 0% |
-| BDD-NNN | ... | ... | ... | ... | ... | ... |
+| BDD-01 | 5 | 5 | 0 | 0 | 0 | 100% |
+| BDD-02 | 3 | 2 | 1 | 0 | 0 | 67% |
+| BDD-03 | 4 | 0 | 0 | 4 | 0 | 0% |
+| BDD-NN | ... | ... | ... | ... | ... | ... |
 | **Total** | **[X]** | **[Y]** | **[Z]** | **[A]** | **[B]** | **XX%** |
 
 ### 7.2 Feature Category Coverage
@@ -350,10 +350,10 @@ Test Implementation & Code (Layers 13-14)
 
 ```mermaid
 graph TD
-    EARS001[EARS-001: Formal Req] --> BDD001[BDD-001: Acceptance Test]
-    EARS002[EARS-002: Formal Req] --> BDD002[BDD-002: Acceptance Test]
-    PRD001[PRD-001: User Story] --> BDD001
-    REQ001[REQ-001: Atomic Req] --> BDD001
+    EARS001[EARS-01: Formal Req] --> BDD001[BDD-01: Acceptance Test]
+    EARS002[EARS-02: Formal Req] --> BDD002[BDD-02: Acceptance Test]
+    PRD001[PRD-01: User Story] --> BDD001
+    REQ01[REQ-01: Atomic Req] --> BDD001
 
     BDD001 --> TestImpl1[tests/test_feature.py]
     BDD001 --> Code1[src/feature.py]
@@ -376,9 +376,9 @@ graph TD
 
 | Source BDD | Target BDD | Dependency Type | Description |
 |------------|------------|-----------------|-------------|
-| BDD-001 | BDD-005 | Prerequisite | Authentication tests must pass before authorization |
-| BDD-002 | BDD-003 | Setup | Data setup scenarios required |
-| BDD-NNN | ... | ... | ... |
+| BDD-01 | BDD-005 | Prerequisite | Authentication tests must pass before authorization |
+| BDD-02 | BDD-03 | Setup | Data setup scenarios required |
+| BDD-NN | ... | ... | ... |
 
 ---
 
@@ -388,19 +388,19 @@ graph TD
 
 | BDD ID | Scenarios | Avg Duration | Total Duration | Performance Status |
 |--------|-----------|--------------|----------------|-------------------|
-| BDD-001 | 5 | 2.3s | 11.5s | ✅ Good |
-| BDD-002 | 3 | 5.7s | 17.1s | 🟡 Slow |
-| BDD-003 | 4 | 1.2s | 4.8s | ✅ Good |
-| BDD-NNN | ... | ... | ... | ... |
+| BDD-01 | 5 | 2.3s | 11.5s | ✅ Good |
+| BDD-02 | 3 | 5.7s | 17.1s | 🟡 Slow |
+| BDD-03 | 4 | 1.2s | 4.8s | ✅ Good |
+| BDD-NN | ... | ... | ... | ... |
 
 ### 9.2 Flakiness Analysis
 
 | BDD ID | Executions | Flaky Runs | Flakiness % | Stability |
 |--------|------------|------------|-------------|-----------|
-| BDD-001 | 100 | 0 | 0% | ✅ Stable |
-| BDD-002 | 100 | 5 | 5% | 🟡 Unstable |
-| BDD-003 | 100 | 0 | 0% | ✅ Stable |
-| BDD-NNN | ... | ... | ... | ... |
+| BDD-01 | 100 | 0 | 0% | ✅ Stable |
+| BDD-02 | 100 | 5 | 5% | 🟡 Unstable |
+| BDD-03 | 100 | 0 | 0% | ✅ Stable |
+| BDD-NN | ... | ... | ... | ... |
 
 ---
 
@@ -410,10 +410,10 @@ graph TD
 
 | BDD ID | Scenarios Defined | Scenarios Implemented | Scenarios Passing | Completion % |
 |--------|-------------------|----------------------|-------------------|--------------|
-| BDD-001 | 5 | 5 | 5 | 100% |
-| BDD-002 | 3 | 3 | 2 | 67% |
-| BDD-003 | 4 | 0 | 0 | 0% |
-| BDD-NNN | ... | ... | ... | ... |
+| BDD-01 | 5 | 5 | 5 | 100% |
+| BDD-02 | 3 | 3 | 2 | 67% |
+| BDD-03 | 4 | 0 | 0 | 0% |
+| BDD-NN | ... | ... | ... | ... |
 
 ### 10.2 Gap Analysis
 
@@ -423,11 +423,11 @@ graph TD
 - PRD-ZZZ: User story without acceptance criteria
 
 **Failing Tests**:
-- BDD-002, Scenario 3: API timeout issue
+- BDD-02, Scenario 3: API timeout issue
 - BDD-005, Scenario 1: Data validation failure
 
 **Pending Implementation**:
-- BDD-003: All scenarios awaiting implementation
+- BDD-03: All scenarios awaiting implementation
 - BDD-007: Integration test scenarios defined but not coded
 
 ---
@@ -445,10 +445,10 @@ graph TD
 
 | Improvement Area | BDD Affected | Target Date | Owner |
 |------------------|--------------|-------------|-------|
-| Fix failing API tests | BDD-002 | YYYY-MM-DD | [Owner] |
-| Implement pending scenarios | BDD-003, BDD-007 | YYYY-MM-DD | [Owner] |
-| Reduce test execution time | BDD-002, BDD-008 | YYYY-MM-DD | [Owner] |
-| Stabilize flaky tests | BDD-002, BDD-009 | YYYY-MM-DD | [Owner] |
+| Fix failing API tests | BDD-02 | YYYY-MM-DD | [Owner] |
+| Implement pending scenarios | BDD-03, BDD-007 | YYYY-MM-DD | [Owner] |
+| Reduce test execution time | BDD-02, BDD-008 | YYYY-MM-DD | [Owner] |
+| Stabilize flaky tests | BDD-02, BDD-009 | YYYY-MM-DD | [Owner] |
 
 ---
 

@@ -1,10 +1,10 @@
 ---
-doc_id: CTR-{NNN}
+doc_id: CTR-{NN}
 section: {S}
 title: "{Section Title}"
-parent_doc: "CTR-{NNN}.0_index.md"
-prev_section: "CTR-{NNN}.{S-1}_{prev_slug}.md"
-next_section: "CTR-{NNN}.{S+1}_{next_slug}.md"
+parent_doc: "CTR-{NN}.0_index.md"
+prev_section: "CTR-{NN}.{S-1}_{prev_slug}.md"
+next_section: "CTR-{NN}.{S+1}_{next_slug}.md"
 tags:
   - section-file
   - ctr-section
@@ -22,11 +22,11 @@ custom_fields:
   index_role: false
 ---
 
-# CTR-{NNN}.{S}: {Section Title}
+# CTR-{NN}.{S}: {Section Title}
 
-> **Navigation**: [Index](CTR-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](CTR-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
 >
-> **Parent Document**: CTR-{NNN}
+> **Parent Document**: CTR-{NN}
 > **Section**: {S} of {N}
 > **Layer**: 9 - Contracts
 
@@ -79,11 +79,11 @@ custom_fields:
 
 ## References
 
-- **Parent Document**: @ref: CTR-{NNN}.0
-- **Related Sections**: @ref: CTR-{NNN}.{related}
-- **Upstream**: @ref: IMPL-{NNN} (Implementation), @ref: REQ-{NNN} (Requirements)
-- **Downstream**: @ref: SPEC-{NNN} (Specifications)
+- **Parent Document**: @ref: CTR-{NN}.0
+- **Related Sections**: @ref: CTR-{NN}.{related}
+- **Upstream**: @ref: IMPL-{NN} (Implementation), @ref: REQ-{NN} (Requirements)
+- **Downstream**: @ref: SPEC-{NN} (Specifications)
 
 ---
 
-> **Navigation**: [Index](CTR-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](CTR-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})

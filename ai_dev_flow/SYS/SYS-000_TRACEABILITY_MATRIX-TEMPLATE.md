@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: SYS-001 through SYS-NNN
+# Traceability Matrix: SYS-01 through SYS-NN
 
 ## Document Control
 
@@ -103,7 +103,7 @@ This matrix tracks all SYS documents, mapping upstream architecture decisions to
 - Prefix: `@` symbol
 - Artifact Type: lowercase (`brd`, `prd`, `ears`, `bdd`, `adr`)
 - Separator: colon `:` after artifact type, `:` between document ID and requirement ID
-- Document ID: Standard format (e.g., `SYS-NNN`)
+- Document ID: Standard format (e.g., `SYS-NN`)
 - Requirement ID: Specific requirement/section identifier
 - Multiple Values: comma-separated for same artifact type
 
@@ -132,7 +132,7 @@ This matrix tracks all SYS documents, mapping upstream architecture decisions to
 ### 2.4 Validation Rules
 
 1. **Required**: Each SYS artifact MUST include at least one tag for each required layer
-2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NNN` format
+2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NN` format
 3. **Valid References**: All referenced documents and requirements must exist
 4. **No Gaps**: Cannot skip any required upstream layer in the chain
 5. **Tag Count**: Must have exactly 5 tags for Layer 6
@@ -166,9 +166,9 @@ python scripts/generate_traceability_matrices.py \
 
 | SYS ID | Title | System Category | Total Requirements | Status | Date | Upstream Sources | Downstream Artifacts |
 |--------|-------|-----------------|-------------------|--------|------|------------------|---------------------|
-| SYS-001 | [System requirement title] | [Category] | [X] | Active | YYYY-MM-DD | ADR-001, EARS-001 | REQ-001, REQ-002, SPEC-001 |
-| SYS-002 | [System requirement title] | [Category] | [X] | Active | YYYY-MM-DD | ADR-002 | REQ-003, SPEC-002 |
-| SYS-NNN | ... | ... | ... | ... | ... | ... | ... |
+| SYS-01 | [System requirement title] | [Category] | [X] | Active | YYYY-MM-DD | ADR-01, EARS-01 | REQ-01, REQ-02, SPEC-01 |
+| SYS-02 | [System requirement title] | [Category] | [X] | Active | YYYY-MM-DD | ADR-02 | REQ-03, SPEC-02 |
+| SYS-NN | ... | ... | ... | ... | ... | ... | ... |
 
 ---
 
@@ -180,35 +180,35 @@ python scripts/generate_traceability_matrices.py \
 
 | ADR ID | ADR Title | SYS IDs | SYS Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| ADR-001 | [Architecture decision] | SYS-001, SYS-002 | [System requirements] | Architectural decisions translated to system requirements |
-| ADR-NNN | ... | ... | ... | ... |
+| ADR-01 | [Architecture decision] | SYS-01, SYS-02 | [System requirements] | Architectural decisions translated to system requirements |
+| ADR-NN | ... | ... | ... | ... |
 
 ### 5.2 EARS → SYS Traceability
 
 | EARS ID | EARS Title | SYS IDs | SYS Titles | Relationship |
 |---------|------------|---------|------------|--------------|
-| EARS-001 | [Formal requirement] | SYS-001 | [System requirement] | Formal requirements inform system-level SPEC |
-| EARS-NNN | ... | ... | ... | ... |
+| EARS-01 | [Formal requirement] | SYS-01 | [System requirement] | Formal requirements inform system-level SPEC |
+| EARS-NN | ... | ... | ... | ... |
 
 ---
 
 ## 6. Downstream Traceability (OPTIONAL)
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
 
 ### 6.1 SYS → REQ Traceability
 
 | SYS ID | SYS Title | REQ IDs | REQ Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| SYS-001 | [System requirement] | REQ-001, REQ-002, REQ-003 | [Atomic requirements] | System requirements decomposed into atomic requirements |
-| SYS-NNN | ... | ... | ... | ... |
+| SYS-01 | [System requirement] | REQ-01, REQ-02, REQ-03 | [Atomic requirements] | System requirements decomposed into atomic requirements |
+| SYS-NN | ... | ... | ... | ... |
 
 ### 6.2 SYS → SPEC Traceability
 
 | SYS ID | SYS Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| SYS-001 | [System requirement] | SPEC-001, SPEC-002 | [Technical specifications] | System requirements implemented in specifications |
-| SYS-NNN | ... | ... | ... | ... |
+| SYS-01 | [System requirement] | SPEC-01, SPEC-02 | [Technical specifications] | System requirements implemented in specifications |
+| SYS-NN | ... | ... | ... | ... |
 
 ---
 
@@ -218,8 +218,8 @@ python scripts/generate_traceability_matrices.py \
 
 | Category | SYS IDs | Total | Functional | Quality Attributes |
 |----------|---------|-------|------------|-------------------|
-| [Infrastructure] | SYS-001, SYS-002 | 2 | 1 | 1 |
-| [security] | SYS-003, SYS-004 | 2 | 2 | 0 |
+| [Infrastructure] | SYS-01, SYS-02 | 2 | 1 | 1 |
+| [security] | SYS-03, SYS-004 | 2 | 2 | 0 |
 | [Performance] | SYS-005 | 1 | 0 | 1 |
 | [Integration] | SYS-006, SYS-007 | 2 | 2 | 0 |
 
@@ -228,8 +228,8 @@ python scripts/generate_traceability_matrices.py \
 | QA Category | SYS IDs | Requirements | Status |
 |--------------|---------|--------------|--------|
 | Performance | SYS-005 | [X] | [Status] |
-| Scalability | SYS-002 | [X] | [Status] |
-| security | SYS-003, SYS-004 | [X] | [Status] |
+| Scalability | SYS-02 | [X] | [Status] |
+| security | SYS-03, SYS-004 | [X] | [Status] |
 | Reliability | SYS-008 | [X] | [Status] |
 | Maintainability | SYS-009 | [X] | [Status] |
 
@@ -239,20 +239,20 @@ python scripts/generate_traceability_matrices.py \
 
 ```mermaid
 graph TD
-    ADR001[ADR-001: Architecture] --> SYS001[SYS-001: System Req]
-    ADR002[ADR-002: Architecture] --> SYS002[SYS-002: System Req]
+    ADR001[ADR-01: Architecture] --> SYS001[SYS-01: System Req]
+    ADR002[ADR-02: Architecture] --> SYS002[SYS-02: System Req]
 
-    SYS001 --> REQ001[REQ-001: Atomic Req]
-    SYS001 --> REQ002[REQ-002: Atomic Req]
-    SYS001 --> SPEC001[SPEC-001: Tech Spec]
+    SYS001 --> REQ01[REQ-01: Atomic Req]
+    SYS001 --> REQ02[REQ-02: Atomic Req]
+    SYS001 --> SPEC01[SPEC-01: Tech Spec]
 
-    SYS002 --> REQ003[REQ-003: Atomic Req]
-    SYS002 --> SPEC002[SPEC-002: Tech Spec]
+    SYS002 --> REQ03[REQ-03: Atomic Req]
+    SYS002 --> SPEC002[SPEC-02: Tech Spec]
 
     style SYS001 fill:#fff3e0
     style SYS002 fill:#fff3e0
-    style REQ001 fill:#e8f5e9
-    style SPEC001 fill:#e3f2fd
+    style REQ01 fill:#e8f5e9
+    style SPEC01 fill:#e3f2fd
 ```
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
@@ -265,10 +265,10 @@ graph TD
 
 | SYS ID | Total Requirements | REQ Created | SPEC Created | Completion % |
 |--------|-------------------|-------------|--------------|--------------|
-| SYS-001 | 10 | 10 | 5 | 75% |
-| SYS-002 | 5 | 5 | 5 | 100% |
-| SYS-003 | 8 | 4 | 0 | 25% |
-| SYS-NNN | ... | ... | ... | ... |
+| SYS-01 | 10 | 10 | 5 | 75% |
+| SYS-02 | 5 | 5 | 5 | 100% |
+| SYS-03 | 8 | 4 | 0 | 25% |
+| SYS-NN | ... | ... | ... | ... |
 
 ---
 

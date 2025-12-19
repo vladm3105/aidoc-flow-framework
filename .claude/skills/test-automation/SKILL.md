@@ -160,7 +160,7 @@ def login_succeeds(context):
 ### Generate Unit Tests from Requirements
 
 ```python
-# Input: reqs/requirements.md (REQ-AUTH-001)
+# Input: reqs/requirements.md (REQ-AUTH-01)
 # Output: tests/unit/test_auth_requirements.py
 
 test-automation generate-unit \
@@ -175,7 +175,7 @@ import pytest
 from auth.service import AuthService
 
 class TestREQ_AUTH_001:
-    """Test REQ-AUTH-001: Password must be 8-20 characters"""
+    """Test REQ-AUTH-01: Password must be 8-20 characters"""
 
     def test_password_minimum_length(self):
         """Verify password < 8 characters is rejected"""
@@ -256,7 +256,7 @@ test-automation run --category unit
 test-automation run --category contract
 
 # Run tests for specific requirement
-test-automation run --requirement REQ-AUTH-001
+test-automation run --requirement REQ-AUTH-01
 ```
 
 ### Generate Coverage Report
@@ -448,7 +448,7 @@ class Test_{contract_id}:
 
 ```python
 # Map requirements to tests
-REQ-AUTH-001 → [
+REQ-AUTH-01 → [
     test_password_minimum_length,
     test_password_maximum_length,
     test_password_valid_length

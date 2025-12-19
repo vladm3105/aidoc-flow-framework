@@ -76,10 +76,10 @@ When creating a new SYS document:
 1. **Copy Template**:
    ```bash
    cp ai_dev_flow/SYS/SYS-TEMPLATE.md \
-      docs/SYS/SYS-NNN_system_area.md
+      docs/SYS/SYS-NN_system_area.md
    ```
 
-2. **Assign SYS ID**: Use next sequential number (SYS-001, SYS-002, ...)
+2. **Assign SYS ID**: Use next sequential number (SYS-01, SYS-02, ...)
 
 3. **Update This Index**: Add new row to table above
 
@@ -88,7 +88,7 @@ When creating a new SYS document:
 ## Allocation Rules
 
 - **Numbering**: Allocate sequentially starting at `001`
-- **One System Area Per File**: Each `SYS-NNN` covers a coherent system area
+- **One System Area Per File**: Each `SYS-NN` covers a coherent system area
 - **Slugs**: Short, descriptive, lower_snake_case
 - **Decomposition**: Each SYS should decompose into atomic REQ documents
 - **Index Updates**: Add entry for every new SYS document

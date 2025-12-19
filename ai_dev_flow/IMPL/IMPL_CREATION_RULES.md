@@ -86,21 +86,35 @@ If implementing a requirement requires creating **3+ SPEC files** or coordinatin
 ### Format
 
 ```
-IMPL-NNN_{system_name}.md
+IMPL-NN_{system_name}.md
 ```
 
 ### Rules
 
-1. **IMPL-NNN**: Sequential numbering starting from 001
+1. **IMPL-NN**: Sequential numbering starting from 001
 2. **system_name**: Lowercase with underscores
 3. **Extension**: Always `.md`
 
 ### Examples
 
-- `IMPL-001_risk_management_system.md`
-- `IMPL-002_external_data_integration.md`
-- `IMPL-003_order_execution_service.md`
+- `IMPL-01_risk_management_system.md`
+- `IMPL-02_external_data_integration.md`
+- `IMPL-03_order_execution_service.md`
 - `IMPL-004_authentication_system.md`
+
+### 2.1 Element ID Format (MANDATORY)
+
+**Pattern**: `IMPL.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Implementation Phase | 29 | IMPL.02.29.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `PHASE-XXX` → Use `IMPL.NN.29.SS`
+> - `IP-XXX` → Use `IMPL.NN.29.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
 
 ---
 
@@ -110,7 +124,7 @@ IMPL-NNN_{system_name}.md
 
 ```yaml
 ---
-title: "IMPL-NNN: [System/Feature Name] Implementation Plan"
+title: "IMPL-NN: [System/Feature Name] Implementation Plan"
 tags:
   - impl-plan
   - layer-8-artifact
@@ -119,7 +133,7 @@ custom_fields:
   document_type: impl
   artifact_type: IMPL
   layer: 8
-  related_reqs: [REQ-NNN, REQ-MMM]
+  related_reqs: [REQ-NN, REQ-MM]
 ---
 ```
 
@@ -127,7 +141,7 @@ custom_fields:
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| IMPL ID | Yes | IMPL-NNN format |
+| IMPL ID | Yes | IMPL-NN format |
 | Title | Yes | System/feature name |
 | Status | Yes | Draft/Planned/In Progress/On Hold/Completed/Cancelled |
 | Version | Yes | Semantic version (X.Y.Z) |
@@ -135,7 +149,7 @@ custom_fields:
 | Author | Yes | Creator name |
 | Owner | Yes | Team or person responsible |
 | Last Updated | Yes | YYYY-MM-DD |
-| Related REQs | Yes | List of REQ-NNN references |
+| Related REQs | Yes | List of REQ-NN references |
 | Deliverables | Yes | List of CTR/SPEC/TASKS to produce |
 
 ### 3.3 Mandatory Parts
@@ -205,7 +219,7 @@ Build the risk system with all the risk stuff.
   - Purpose statement
   - Owner/team assignment
   - Timeline (dates or duration)
-  - Deliverables (CTR-NNN, SPEC-NNN, TASKS-NNN)
+  - Deliverables (CTR-NN, SPEC-NN, TASKS-NN)
   - Dependencies
   - Success criteria
   - Key risks
@@ -220,7 +234,7 @@ Build the risk system with all the risk stuff.
 | **Purpose** | Build foundation risk calculation engine |
 | **Owner** | Risk Team (3 developers) |
 | **Timeline** | Sprint 1-2 (4 weeks) |
-| **Deliverables** | CTR-003, SPEC-003, TASKS-003 |
+| **Deliverables** | CTR-03, SPEC-03, TASKS-03 |
 | **Dependencies** | Requires: Database schema (ADR-008) |
 | **Success Criteria** | [ ] All deliverables created [ ] Tests passing |
 
@@ -238,7 +252,7 @@ Build the risk system with all the risk stuff.
 ### Phase Content Rules
 
 1. **Focus on WHO/WHAT/WHEN** - not technical details (HOW goes in SPEC)
-2. **List specific deliverables** - CTR-NNN, SPEC-NNN, TASKS-NNN
+2. **List specific deliverables** - CTR-NN, SPEC-NN, TASKS-NN
 3. **Assign ownership** - team or person responsible
 4. **Include timeline** - dates or sprint numbers
 5. **Identify dependencies** - what blocks this phase
@@ -289,9 +303,9 @@ Every deliverable must be listed with checkbox:
 ### 4.1 Deliverables Checklist
 
 **Phase 1 Deliverables**:
-- [ ] CTR-003: Risk API Contract created
-- [ ] SPEC-003: Risk Engine Specification created
-- [ ] TASKS-003: Risk Engine Tasks created
+- [ ] CTR-03: Risk API Contract created
+- [ ] SPEC-03: Risk Engine Specification created
+- [ ] TASKS-03: Risk Engine Tasks created
 
 **Phase 2 Deliverables**:
 - [ ] CTR-004: Limits API Contract created
@@ -327,16 +341,16 @@ IMPL must reference:
 - `@prd: PRD.NN.EE.SS` - Product requirements
 - `@ears: EARS.NN.EE.SS` - EARS statements
 - `@bdd: BDD.NN.EE.SS` - BDD scenarios
-- `@adr: ADR-NNN` - Architecture decisions
+- `@adr: ADR-NN` - Architecture decisions
 - `@sys: SYS.NN.EE.SS` - System requirements
 - `@req: REQ.NN.EE.SS` - Atomic requirements
 
 ### 8.2 Downstream Artifacts
 
 IMPL produces (as deliverables):
-- `CTR-NNN` - API contracts
-- `SPEC-NNN` - Technical specifications
-- `TASKS-NNN` - Code generation plans
+- `CTR-NN` - API contracts
+- `SPEC-NN` - Technical specifications
+- `TASKS-NN` - Code generation plans
 
 ### 8.3 Tag Format
 
@@ -347,7 +361,7 @@ IMPL produces (as deliverables):
 @prd: PRD.01.01.15
 @ears: EARS.01.24.03
 @bdd: BDD.01.13.05
-@adr: ADR-002
+@adr: ADR-02
 @sys: SYS.02.25.01
 @req: REQ.01.26.01, REQ.02.26.01
 ```
@@ -420,7 +434,7 @@ IMPL produces (as deliverables):
 ### Automated Validation
 
 ```bash
-./scripts/validate_impl.sh /path/to/IMPL-NNN_name.md
+./scripts/validate_impl.sh /path/to/IMPL-NN_name.md
 ```
 
 ### Manual Checklist
@@ -456,8 +470,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -482,13 +496,13 @@ Include ONLY if relationships exist between IMPL documents sharing implementatio
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | IMPL-NNN | [Related IMPL title] | Shared implementation context |
-| Depends | IMPL-NNN | [Prerequisite IMPL title] | Must complete before this |
+| Related | IMPL-NN | [Related IMPL title] | Shared implementation context |
+| Depends | IMPL-NN | [Prerequisite IMPL title] | Must complete before this |
 
 **Tags**:
 ```markdown
-@related-impl: IMPL-NNN
-@depends-impl: IMPL-NNN
+@related-impl: IMPL-NN
+@depends-impl: IMPL-NN
 ```
 
 
@@ -526,7 +540,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/IMPL/IMPL-NNN_slug.md --auto-fix
+python scripts/validate_cross_document.py --document docs/IMPL/IMPL-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all IMPL documents complete
 python scripts/validate_cross_document.py --layer IMPL --auto-fix
@@ -543,7 +557,7 @@ python scripts/validate_cross_document.py --layer IMPL --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd through @req tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

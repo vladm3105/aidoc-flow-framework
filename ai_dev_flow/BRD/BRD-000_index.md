@@ -16,7 +16,7 @@ custom_fields:
 Purpose
 
 - Central index for Business Requirements Documents (BRDs).
-- Tracks allocation and sequencing for `BRD-NNN_{descriptive}.md` descriptors.
+- Tracks allocation and sequencing for `BRD-NN_{descriptive}.md` descriptors.
 
 Allocation Rules
 

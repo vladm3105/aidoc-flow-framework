@@ -275,9 +275,9 @@ mkdir -p work_plans                 # Implementation plans (/save-plan output)
 ```
 
 **Key Requirements**:
-- REQ-001: Multi-tenant workspace isolation
-- REQ-002: Role-based access control (Admin, Member, Guest)
-- REQ-003: Real-time collaboration (WebSocket)
+- REQ-01: Multi-tenant workspace isolation
+- REQ-02: Role-based access control (Admin, Member, Guest)
+- REQ-03: Real-time collaboration (WebSocket)
 - REQ-004: Third-party integrations (Slack, Jira, GitHub)
 - REQ-005: Usage analytics and billing
 

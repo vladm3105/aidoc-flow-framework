@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: IMPL-001 through IMPL-NNN
+# Traceability Matrix: IMPL-01 through IMPL-NN
 
 ## Document Control
 
@@ -106,14 +106,14 @@ This matrix tracks all IMPL documents, mapping upstream requirements to downstre
 - Prefix: `@` symbol
 - Artifact Type: lowercase (`brd`, `prd`, `ears`, `bdd`, `adr`, `sys`, `req`)
 - Separator: colon `:` after artifact type, `:` between document ID and requirement ID
-- Document ID: Standard format (e.g., `IMPL-NNN`)
+- Document ID: Standard format (e.g., `IMPL-NN`)
 - Requirement ID: Specific requirement/section identifier
 - Multiple Values: comma-separated for same artifact type
 
 ### 2.3 Example: IMPL with Required Tags
 
 ```markdown
-# IMPL-003: Order Service Implementation Plan
+# IMPL-03: Order Service Implementation Plan
 
 ## 7. Traceability
 
@@ -137,7 +137,7 @@ This matrix tracks all IMPL documents, mapping upstream requirements to downstre
 ### 2.4 Validation Rules
 
 1. **Required**: Each IMPL artifact MUST include at least one tag for each required layer
-2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NNN` format
+2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NN` format
 3. **Valid References**: All referenced documents and requirements must exist
 4. **No Gaps**: Cannot skip any required upstream layer in the chain
 5. **Tag Count**: Must have exactly 7 tags for Layer 8
@@ -149,9 +149,9 @@ IMPL tags can be discovered automatically:
 # Find all IMPLs and their upstream tags
 python scripts/extract_tags.py --type IMPL --show-all-upstream
 
-# Validate IMPL-003 has required tags
+# Validate IMPL-03 has required tags
 python scripts/validate_tags_against_docs.py \
-  --artifact IMPL-003 \
+  --artifact IMPL-03 \
   --expected-layers brd,prd,ears,bdd,adr,sys,req \
   --strict
 
@@ -171,9 +171,9 @@ python scripts/generate_traceability_matrices.py \
 
 | IMPL ID | Title | Phase | Team | Status | Date | Upstream Sources | Downstream Artifacts |
 |---------|-------|-------|------|--------|------|------------------|---------------------|
-| IMPL-001 | [Implementation plan title] | Phase 1 | Team A | Active | YYYY-MM-DD | REQ-001, REQ-002, ADR-001 | CTR-001, SPEC-001, TASKS-001 |
-| IMPL-002 | [Implementation plan title] | Phase 2 | Team B | Planning | YYYY-MM-DD | REQ-003, REQ-004 | SPEC-002, TASKS-002 |
-| IMPL-NNN | ... | ... | ... | ... | ... | ... | ... |
+| IMPL-01 | [Implementation plan title] | Phase 1 | Team A | Active | YYYY-MM-DD | REQ-01, REQ-02, ADR-01 | CTR-01, SPEC-01, TASKS-01 |
+| IMPL-02 | [Implementation plan title] | Phase 2 | Team B | Planning | YYYY-MM-DD | REQ-03, REQ-04 | SPEC-02, TASKS-02 |
+| IMPL-NN | ... | ... | ... | ... | ... | ... | ... |
 
 ---
 
@@ -185,50 +185,50 @@ python scripts/generate_traceability_matrices.py \
 
 | REQ ID | REQ Title | IMPL IDs | IMPL Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| REQ-001 | [Atomic requirement] | IMPL-001 | [Implementation plan] | Requirement assigned to implementation plan |
-| REQ-002 | [Atomic requirement] | IMPL-001 | [Implementation plan] | Multiple requirements in same plan |
-| REQ-NNN | ... | ... | ... | ... |
+| REQ-01 | [Atomic requirement] | IMPL-01 | [Implementation plan] | Requirement assigned to implementation plan |
+| REQ-02 | [Atomic requirement] | IMPL-01 | [Implementation plan] | Multiple requirements in same plan |
+| REQ-NN | ... | ... | ... | ... |
 
 ### 4.2 ADR → IMPL Traceability
 
 | ADR ID | ADR Title | IMPL IDs | IMPL Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| ADR-001 | [Architecture decision] | IMPL-001 | [Implementation plan] | Architectural changes require implementation planning |
-| ADR-NNN | ... | ... | ... | ... |
+| ADR-01 | [Architecture decision] | IMPL-01 | [Implementation plan] | Architectural changes require implementation planning |
+| ADR-NN | ... | ... | ... | ... |
 
 ---
 
 ## 6. Downstream Traceability (OPTIONAL)
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
 
 ### 5.1 IMPL → CTR Traceability
 
 | IMPL ID | IMPL Title | CTR IDs | CTR Titles | Relationship |
 |---------|------------|---------|------------|--------------|
-| IMPL-001 | [Implementation plan] | CTR-001, CTR-002 | [API contracts] | Implementation plan includes interface contracts |
-| IMPL-NNN | ... | ... | ... | ... |
+| IMPL-01 | [Implementation plan] | CTR-01, CTR-02 | [API contracts] | Implementation plan includes interface contracts |
+| IMPL-NN | ... | ... | ... | ... |
 
 ### 5.2 IMPL → SPEC Traceability
 
 | IMPL ID | IMPL Title | SPEC IDs | SPEC Titles | Relationship |
 |---------|------------|----------|-------------|--------------|
-| IMPL-001 | [Implementation plan] | SPEC-001, SPEC-002 | [Technical specifications] | Implementation plan defines technical specifications |
-| IMPL-NNN | ... | ... | ... | ... |
+| IMPL-01 | [Implementation plan] | SPEC-01, SPEC-02 | [Technical specifications] | Implementation plan defines technical specifications |
+| IMPL-NN | ... | ... | ... | ... |
 
 ### 5.3 IMPL → TASKS Traceability
 
 | IMPL ID | IMPL Title | TASKS IDs | TASKS Titles | Relationship |
 |---------|------------|-----------|--------------|--------------|
-| IMPL-001 | [Implementation plan] | TASKS-001, TASKS-002 | [Code generation plans] | Implementation plan broken into code generation tasks |
-| IMPL-NNN | ... | ... | ... | ... |
+| IMPL-01 | [Implementation plan] | TASKS-01, TASKS-02 | [Code generation plans] | Implementation plan broken into code generation tasks |
+| IMPL-NN | ... | ... | ... | ... |
 
 ### 5.4 IMPL → Code Traceability
 
 | IMPL ID | IMPL Title | Code Deliverables | Relationship |
 |---------|------------|-------------------|--------------|
-| IMPL-001 | [Implementation plan] | src/module1.py, src/module2.py, tests/ | Implementation plan deliverables |
-| IMPL-NNN | ... | ... | ... |
+| IMPL-01 | [Implementation plan] | src/module1.py, src/module2.py, tests/ | Implementation plan deliverables |
+| IMPL-NN | ... | ... | ... |
 
 ---
 
@@ -238,26 +238,26 @@ python scripts/generate_traceability_matrices.py \
 
 | Phase | IMPL IDs | Total | Start Date | End Date | Status |
 |-------|---------|-------|------------|----------|--------|
-| Phase 1: MVP | IMPL-001, IMPL-002 | 2 | YYYY-MM-DD | YYYY-MM-DD | Complete |
-| Phase 2: Features | IMPL-003, IMPL-004 | 2 | YYYY-MM-DD | YYYY-MM-DD | In Progress |
+| Phase 1: MVP | IMPL-01, IMPL-02 | 2 | YYYY-MM-DD | YYYY-MM-DD | Complete |
+| Phase 2: Features | IMPL-03, IMPL-004 | 2 | YYYY-MM-DD | YYYY-MM-DD | In Progress |
 | Phase 3: Scale | IMPL-005 | 1 | YYYY-MM-DD | YYYY-MM-DD | Planning |
 
 ### 6.2 IMPL by Team
 
 | Team | IMPL IDs | Total | Requirements | Deliverables | Status |
 |------|---------|-------|--------------|--------------|--------|
-| Team A: Backend | IMPL-001, IMPL-003 | 2 | [X] REQ | [Y] SPEC | On Track |
-| Team B: Frontend | IMPL-002 | 1 | [X] REQ | [Y] SPEC | On Track |
+| Team A: Backend | IMPL-01, IMPL-03 | 2 | [X] REQ | [Y] SPEC | On Track |
+| Team B: Frontend | IMPL-02 | 1 | [X] REQ | [Y] SPEC | On Track |
 | Team C: Integration | IMPL-004, IMPL-005 | 2 | [X] REQ | [Y] SPEC | Planning |
 
 ### 6.3 Resource Allocation
 
 | IMPL ID | Team Size | Duration (days) | Dependencies | Status |
 |---------|-----------|----------------|--------------|--------|
-| IMPL-001 | 3 developers | 20 | None | Complete |
-| IMPL-002 | 2 developers | 15 | IMPL-001 | In Progress |
-| IMPL-003 | 4 developers | 30 | IMPL-001, IMPL-002 | Planning |
-| IMPL-NNN | ... | ... | ... | ... |
+| IMPL-01 | 3 developers | 20 | None | Complete |
+| IMPL-02 | 2 developers | 15 | IMPL-01 | In Progress |
+| IMPL-03 | 4 developers | 30 | IMPL-01, IMPL-02 | Planning |
+| IMPL-NN | ... | ... | ... | ... |
 
 ---
 
@@ -265,26 +265,26 @@ python scripts/generate_traceability_matrices.py \
 
 ```mermaid
 graph TD
-    REQ001[REQ-001] --> IMPL001[IMPL-001: Phase 1]
-    REQ002[REQ-002] --> IMPL001
-    REQ003[REQ-003] --> IMPL002[IMPL-002: Phase 2]
+    REQ01[REQ-01] --> IMPL01[IMPL-01: Phase 1]
+    REQ02[REQ-02] --> IMPL01
+    REQ03[REQ-03] --> IMPL02[IMPL-02: Phase 2]
 
-    IMPL001 --> CTR001[CTR-001: API Contract]
-    IMPL001 --> SPEC001[SPEC-001: Tech Spec]
-    IMPL001 --> TASKS001[TASKS-001: Code Plan]
+    IMPL01 --> CTR01[CTR-01: API Contract]
+    IMPL01 --> SPEC01[SPEC-01: Tech Spec]
+    IMPL01 --> TASKS001[TASKS-01: Code Plan]
 
-    IMPL002 --> SPEC002[SPEC-002: Tech Spec]
-    IMPL002 --> TASKS002[TASKS-002: Code Plan]
+    IMPL02 --> SPEC002[SPEC-02: Tech Spec]
+    IMPL02 --> TASKS002[TASKS-02: Code Plan]
 
-    IMPL001 -.prerequisite.-> IMPL002
-    IMPL001 -.prerequisite.-> IMPL003[IMPL-003: Phase 3]
-    IMPL002 -.prerequisite.-> IMPL003
+    IMPL01 -.prerequisite.-> IMPL02
+    IMPL01 -.prerequisite.-> IMPL003[IMPL-03: Phase 3]
+    IMPL02 -.prerequisite.-> IMPL003
 
-    style IMPL001 fill:#e1f5ff
-    style IMPL002 fill:#e1f5ff
+    style IMPL01 fill:#e1f5ff
+    style IMPL02 fill:#e1f5ff
     style IMPL003 fill:#e1f5ff
-    style SPEC001 fill:#e3f2fd
-    style CTR001 fill:#fff3e0
+    style SPEC01 fill:#e3f2fd
+    style CTR01 fill:#fff3e0
 ```
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
@@ -293,10 +293,10 @@ graph TD
 
 | Source IMPL | Target IMPL | Dependency Type | Description |
 |-------------|-------------|-----------------|-------------|
-| IMPL-001 | IMPL-002 | Prerequisite | Core platform required before features |
-| IMPL-001 | IMPL-003 | Prerequisite | Authentication required before advanced features |
-| IMPL-002 | IMPL-003 | Related | Features inform scaling requirements |
-| IMPL-NNN | ... | ... | ... |
+| IMPL-01 | IMPL-02 | Prerequisite | Core platform required before features |
+| IMPL-01 | IMPL-03 | Prerequisite | Authentication required before advanced features |
+| IMPL-02 | IMPL-03 | Related | Features inform scaling requirements |
+| IMPL-NN | ... | ... | ... |
 
 ---
 
@@ -306,18 +306,18 @@ graph TD
 
 | Milestone | Target Date | IMPL IDs | Deliverables | Status | Completion % |
 |-----------|-------------|----------|--------------|--------|--------------|
-| MVP Release | YYYY-MM-DD | IMPL-001, IMPL-002 | Core features | Complete | 100% |
-| Feature Release | YYYY-MM-DD | IMPL-003, IMPL-004 | Enhanced features | In Progress | 60% |
+| MVP Release | YYYY-MM-DD | IMPL-01, IMPL-02 | Core features | Complete | 100% |
+| Feature Release | YYYY-MM-DD | IMPL-03, IMPL-004 | Enhanced features | In Progress | 60% |
 | Scale Release | YYYY-MM-DD | IMPL-005, IMPL-006 | Performance optimization | Planning | 10% |
 
 ### 8.2 Deliverable Status
 
 | IMPL ID | Total Deliverables | Completed | In Progress | Pending | Completion % |
 |---------|-------------------|-----------|-------------|---------|--------------|
-| IMPL-001 | 10 | 10 | 0 | 0 | 100% |
-| IMPL-002 | 8 | 5 | 3 | 0 | 63% |
-| IMPL-003 | 12 | 0 | 2 | 10 | 17% |
-| IMPL-NNN | ... | ... | ... | ... | ... |
+| IMPL-01 | 10 | 10 | 0 | 0 | 100% |
+| IMPL-02 | 8 | 5 | 3 | 0 | 63% |
+| IMPL-03 | 12 | 0 | 2 | 10 | 17% |
+| IMPL-NN | ... | ... | ... | ... | ... |
 
 ---
 
@@ -327,10 +327,10 @@ graph TD
 
 | IMPL ID | REQ Coverage | CTR Status | SPEC Status | TASKS Status | Code Status | Overall | Completion % |
 |---------|--------------|------------|-------------|--------------|-------------|---------|--------------|
-| IMPL-001 | 100% | ✅ | ✅ | ✅ | ✅ | Complete | 100% |
-| IMPL-002 | 100% | N/A | 🟡 | 🟡 | 🟡 | In Progress | 60% |
-| IMPL-003 | 80% | ⏳ | ⏳ | ⏳ | ⏳ | Planning | 20% |
-| IMPL-NNN | ... | ... | ... | ... | ... | ... | ... |
+| IMPL-01 | 100% | ✅ | ✅ | ✅ | ✅ | Complete | 100% |
+| IMPL-02 | 100% | N/A | 🟡 | 🟡 | 🟡 | In Progress | 60% |
+| IMPL-03 | 80% | ⏳ | ⏳ | ⏳ | ⏳ | Planning | 20% |
+| IMPL-NN | ... | ... | ... | ... | ... | ... | ... |
 
 ### 9.2 Gap Analysis
 
@@ -340,7 +340,7 @@ graph TD
 - IMPL-ZZZ: Missing TASKS (code generation plans not created)
 
 **Blocked Implementation**:
-- IMPL-003: Blocked by IMPL-001 completion
+- IMPL-03: Blocked by IMPL-01 completion
 - IMPL-005: Blocked by resource availability
 
 ---
@@ -357,8 +357,8 @@ graph TD
 
 | Sprint | IMPL IDs | Focus Area | Target Date |
 |--------|----------|------------|-------------|
-| Sprint 5 | IMPL-002 | Complete Phase 1 features | YYYY-MM-DD |
-| Sprint 6 | IMPL-003 | Start Phase 2 implementation | YYYY-MM-DD |
+| Sprint 5 | IMPL-02 | Complete Phase 1 features | YYYY-MM-DD |
+| Sprint 6 | IMPL-03 | Start Phase 2 implementation | YYYY-MM-DD |
 | Sprint 7 | IMPL-004 | Phase 2 integration | YYYY-MM-DD |
 
 ---

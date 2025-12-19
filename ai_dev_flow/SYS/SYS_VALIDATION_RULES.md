@@ -146,8 +146,37 @@ The SYS validation script ensures system requirements meet quality standards for
 @prd: PRD.NN.EE.SS
 @ears: EARS.NN.EE.SS
 @bdd: BDD.NN.EE.SS
-@adr: ADR-NNN
+@adr: ADR-NN
 ```
+
+---
+
+### CHECK 8: Element ID Format Compliance ⭐ NEW
+
+**Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
+**Type**: Error
+
+| Check | Pattern | Result |
+|-------|---------|--------|
+| Valid format | `### SYS.NN.TT.SS:` | ✅ Pass |
+| Removed pattern | `### FR-XXX` | ❌ Fail - use SYS.NN.01.SS |
+| Removed pattern | `### QA-XXX` | ❌ Fail - use SYS.NN.02.SS |
+| Removed pattern | `### UC-XXX` | ❌ Fail - use SYS.NN.11.SS |
+| Removed pattern | `### SR-XXX` | ❌ Fail - use SYS.NN.26.SS |
+
+**Regex**: `^###\s+SYS\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+**Common Element Types for SYS**:
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Functional Requirement | 01 | SYS.02.01.01 |
+| Quality Attribute | 02 | SYS.02.02.01 |
+| Use Case | 11 | SYS.02.11.01 |
+| System Requirement | 26 | SYS.02.26.01 |
+
+**Fix**: Replace `### SR-01: System Requirement` with `### SYS.02.26.01: System Requirement`
+
+**Reference**: SYS_CREATION_RULES.md Section 4.1, ID_NAMING_STANDARDS.md lines 783-793
 
 ---
 
@@ -161,6 +190,7 @@ The SYS validation script ensures system requirements meet quality standards for
 | **CHECK 2** | Align SYS requirements with ADR decisions |
 | **CHECK 3** | Add properly formatted REQ-Ready Score |
 | **CHECK 4** | Quantify all quality attributes with measurable thresholds |
+| **CHECK 8** | Replace legacy element IDs (FR-XXX, QA-XXX, SR-XXX) with unified format `SYS.NN.TT.SS` |
 
 ---
 
@@ -170,7 +200,7 @@ The SYS validation script ensures system requirements meet quality standards for
 
 ```bash
 # Validate single SYS document
-./scripts/validate_sys_template.sh docs/SYS/SYS-001_system_requirements.md
+./scripts/validate_sys_template.sh docs/SYS/SYS-01_system_requirements.md
 
 # Validate all SYS files
 find docs/SYS -name "SYS-*.md" -exec ./scripts/validate_sys_template.sh {} \;
@@ -232,7 +262,7 @@ find docs/SYS -name "SYS-*.md" -exec ./scripts/validate_sys_template.sh {} \;
 
 ### Mistake #4: Incomplete Traceability
 ```
-❌ @brd: BRD-001
+❌ @brd: BRD-01
 ✅ @brd: BRD.01.01.30, @prd: PRD.03.01.02
 ```
 

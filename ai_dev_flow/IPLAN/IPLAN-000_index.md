@@ -49,7 +49,7 @@ flowchart LR
 
 ### Example Entry (for reference):
 ```markdown
-| IPLAN-001 | Implement Gateway Connection | In Progress | TASKS-001 | ✅ 9/9 tags | Gateway Service | 80 hours | 2025-11-12 | - | [Link](./IPLAN-001_implement_gateway_connection.md) |
+| IPLAN-01 | Implement Gateway Connection | In Progress | TASKS-01 | ✅ 9/9 tags | Gateway Service | 80 hours | 2025-11-12 | - | [Link](./IPLAN-01_implement_gateway_connection.md) |
 ```
 
 ## Status Definitions
@@ -97,7 +97,7 @@ Use this index to track tag completeness:
 **Validation Command**:
 ```bash
 python /opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --file IPLAN/IPLAN-NNN_*.md
+  --file IPLAN/IPLAN-NN_*.md
 ```
 
 ## Adding New Implementation Work Plans
@@ -107,10 +107,10 @@ When creating a new IPLAN document:
 1. **Copy Template**:
    ```bash
    cp /opt/data/docs_flow_framework/ai_dev_flow/IPLAN/IPLAN-TEMPLATE.md \
-      /opt/data/docs_flow_framework/ai_dev_flow/IPLAN/IPLAN-NNN_descriptive_name.md
+      /opt/data/docs_flow_framework/ai_dev_flow/IPLAN/IPLAN-NN_descriptive_name.md
    ```
 
-2. **Assign ID**: Use next sequential number (IPLAN-001, IPLAN-002, ...)
+2. **Assign ID**: Use next sequential number (IPLAN-01, IPLAN-02, ...)
 
 3. **Complete Document**:
    - Fill in all required sections
@@ -132,20 +132,20 @@ When creating a new IPLAN document:
 
 5. **Validate Tags**:
    ```bash
-   python scripts/validate_tags_against_docs.py --file IPLAN/IPLAN-NNN_*.md
+   python scripts/validate_tags_against_docs.py --file IPLAN/IPLAN-NN_*.md
    ```
 
 6. **Update Traceability Matrix**:
    ```bash
    python scripts/update_traceability_matrix.py \
-     --artifact IPLAN/IPLAN-NNN_*.md \
+     --artifact IPLAN/IPLAN-NN_*.md \
      --matrix IPLAN/IPLAN-000_TRACEABILITY_MATRIX.md
    ```
 
 ## Allocation Rules
 
 - **Numbering**: Allocate sequentially starting at `001`; keep numbers stable
-- **One Plan Per File**: Each `IPLAN-NNN` file covers one implementation session or phase
+- **One Plan Per File**: Each `IPLAN-NN` file covers one implementation session or phase
 - **Slugs**: Short, descriptive, lower_case_with_underscores
 - **Cross-Links**: Reference parent TASKS and all upstream artifacts via tags
 - **Index Updates**: Add entry for every new plan; do not remove past entries
@@ -180,7 +180,7 @@ When creating a new IPLAN document:
 
 ### Example:
 ```markdown
-| TASKS-001 | IPLAN-001, IPLAN-002 | 2 | 160 hours |
+| TASKS-01 | IPLAN-01, IPLAN-02 | 2 | 160 hours |
 ```
 
 ## Index by Component Type
@@ -231,7 +231,7 @@ Use this section to track which IPLAN are suitable for resumption:
 
 ### Example:
 ```markdown
-| IPLAN-001 | 2025-11-12 14:30 | Phase 2.3 (50%) | TASK-2.3: Protocol interface | None | ✅ Yes |
+| IPLAN-01 | 2025-11-12 14:30 | Phase 2.3 (50%) | TASK-2.3: Protocol interface | None | ✅ Yes |
 ```
 
 ## Related Documents
@@ -306,9 +306,9 @@ This index should be reviewed:
 
 ### Finding Implementation Plan for a TASKS Document
 
-**Question**: "Which IPLAN implements TASKS-001?"
+**Question**: "Which IPLAN implements TASKS-01?"
 
-**Answer**: Check "Parent TASKS" column in main index table → Look for TASKS-001
+**Answer**: Check "Parent TASKS" column in main index table → Look for TASKS-01
 
 ### Checking What's Currently In Progress
 
@@ -324,7 +324,7 @@ This index should be reviewed:
 
 ### Verifying Tag Compliance
 
-**Question**: "Are all tags present in IPLAN-001?"
+**Question**: "Are all tags present in IPLAN-01?"
 
 **Answer**: Check "Required Tags" column → Look for ✅ 9/9 or ✅ 11/11
 

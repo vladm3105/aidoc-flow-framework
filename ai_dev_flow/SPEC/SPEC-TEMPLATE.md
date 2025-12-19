@@ -44,35 +44,35 @@ custom_fields:
 
 **Purpose**: SPEC documents REFERENCE thresholds defined in the PRD threshold registry. All quantitative values in performance requirements, SLA targets, and configuration parameters must use `@threshold:` tags to ensure single source of truth.
 
-**Threshold Naming Convention**: `@threshold: PRD.NNN.category.subcategory.key`
+**Threshold Naming Convention**: `@threshold: PRD.NN.category.subcategory.key`
 
 **Format Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for complete naming standards.
 
 **Thresholds Used in This Document**:
 ```yaml
 performance:
-  - "@threshold: PRD.NNN.perf.api.p50_latency"        # p50 latency requirement
-  - "@threshold: PRD.NNN.perf.api.p95_latency"        # p95 latency requirement
-  - "@threshold: PRD.NNN.perf.api.p99_latency"        # p99 latency requirement
-  - "@threshold: PRD.NNN.perf.throughput.rps"         # Throughput requirement
+  - "@threshold: PRD.NN.perf.api.p50_latency"        # p50 latency requirement
+  - "@threshold: PRD.NN.perf.api.p95_latency"        # p95 latency requirement
+  - "@threshold: PRD.NN.perf.api.p99_latency"        # p99 latency requirement
+  - "@threshold: PRD.NN.perf.throughput.rps"         # Throughput requirement
 
 sla:
-  - "@threshold: PRD.NNN.sla.uptime.target"           # Uptime SLA target
-  - "@threshold: PRD.NNN.sla.error_rate.max"          # Maximum error rate
+  - "@threshold: PRD.NN.sla.uptime.target"           # Uptime SLA target
+  - "@threshold: PRD.NN.sla.error_rate.max"          # Maximum error rate
 
 timeout:
-  - "@threshold: PRD.NNN.timeout.request.sync"        # Synchronous request timeout
-  - "@threshold: PRD.NNN.timeout.request.async"       # Asynchronous request timeout
-  - "@threshold: PRD.NNN.timeout.connection.default"  # Connection timeout
+  - "@threshold: PRD.NN.timeout.request.sync"        # Synchronous request timeout
+  - "@threshold: PRD.NN.timeout.request.async"       # Asynchronous request timeout
+  - "@threshold: PRD.NN.timeout.connection.default"  # Connection timeout
 
 limits:
-  - "@threshold: PRD.NNN.limit.api.requests_per_second"  # Rate limit
-  - "@threshold: PRD.NNN.limit.batch.size"               # Maximum batch size
-  - "@threshold: PRD.NNN.limit.batch.concurrent"         # Concurrent batch limit
+  - "@threshold: PRD.NN.limit.api.requests_per_second"  # Rate limit
+  - "@threshold: PRD.NN.limit.batch.size"               # Maximum batch size
+  - "@threshold: PRD.NN.limit.batch.concurrent"         # Concurrent batch limit
 
 resource:
-  - "@threshold: PRD.NNN.resource.cpu.max_utilization"   # CPU utilization limit
-  - "@threshold: PRD.NNN.resource.memory.max_mb"         # Memory limit
+  - "@threshold: PRD.NN.resource.cpu.max_utilization"   # CPU utilization limit
+  - "@threshold: PRD.NN.resource.memory.max_mb"         # Memory limit
 ```
 
 **Example Usage in Specification**:
@@ -80,16 +80,16 @@ resource:
 # Performance Requirements
 performance_requirements:
   api_latency:
-    p95_target: "@threshold: PRD.NNN.perf.api.p95_latency"
-    p99_target: "@threshold: PRD.NNN.perf.api.p99_latency"
+    p95_target: "@threshold: PRD.NN.perf.api.p95_latency"
+    p99_target: "@threshold: PRD.NN.perf.api.p99_latency"
   throughput:
-    target_rps: "@threshold: PRD.NNN.perf.throughput.rps"
+    target_rps: "@threshold: PRD.NN.perf.throughput.rps"
 
 # Configuration Parameters
 configuration:
   timeouts:
-    request_timeout: "@threshold: PRD.NNN.timeout.request.sync"
-    connection_timeout: "@threshold: PRD.NNN.timeout.connection.default"
+    request_timeout: "@threshold: PRD.NN.timeout.request.sync"
+    connection_timeout: "@threshold: PRD.NN.timeout.connection.default"
 ```
 
 **Note**: For the full SPEC structure with all traceability fields, see `SPEC-TEMPLATE.yaml`.

@@ -102,7 +102,7 @@ structure:
   required_sections:
     - pattern: "^# IMPL-\\d{3}:"
       name: "Title (H1)"
-      description: "Single H1 with format IMPL-NNN: Title"
+      description: "Single H1 with format IMPL-NN: Title"
 
     - pattern: "^## 1\\. Document Control$"
       name: "Document Control"
@@ -156,7 +156,7 @@ structure:
 
     impl_id_format:
       pattern: "^IMPL-\\d{3}$"
-      description: "Format: IMPL-NNN"
+      description: "Format: IMPL-NN"
 
     related_reqs_format:
       pattern: "REQ-\\d{3}"
@@ -262,7 +262,7 @@ validation_rules:
 
   # Content validation
   content:
-    - rule: "IMPL ID must use IMPL-NNN format"
+    - rule: "IMPL ID must use IMPL-NN format"
       severity: error
 
     - rule: "Related REQs must reference existing REQ documents"
@@ -302,7 +302,7 @@ traceability:
       - "@prd: PRD.NN.EE.SS"
       - "@ears: EARS.NN.EE.SS"
       - "@bdd: BDD.NN.EE.SS"
-      - "@adr: ADR-NNN"
+      - "@adr: ADR-NN"
       - "@sys: SYS.NN.EE.SS"
       - "@req: REQ.NN.EE.SS"
     description: "Layer 8 requires @brd, @prd, @ears, @bdd, @adr, @sys, @req tags for complete traceability"
@@ -322,17 +322,17 @@ traceability:
       - type: BDD
         format: "@bdd: BDD.NN.EE.SS"
       - type: ADR
-        format: "@adr: ADR-NNN"
+        format: "@adr: ADR-NN"
       - type: SYS
         format: "@sys: SYS.NN.EE.SS"
 
   downstream:
     expected:
       - type: CTR
-        format: "@ctr: CTR-NNN"
+        format: "@ctr: CTR-NN"
         description: "API/Data Contracts"
       - type: SPEC
-        format: "@spec: SPEC-NNN"
+        format: "@spec: SPEC-NN"
         description: "Technical Specifications"
       - type: TASKS
         format: "@tasks: TASKS.NN.EE.SS"
@@ -356,7 +356,7 @@ error_messages:
   IMPL-E004: "Invalid architecture format: use 'architecture_approaches: [value]' array"
   IMPL-E005: "Forbidden tag pattern detected"
   IMPL-E006: "Missing required Document Control field"
-  IMPL-E007: "Invalid IMPL ID format: must be IMPL-NNN"
+  IMPL-E007: "Invalid IMPL ID format: must be IMPL-NN"
   IMPL-E008: "Multiple H1 headings detected"
   IMPL-E009: "Missing required PART section"
   IMPL-E010: "No Related REQs specified"

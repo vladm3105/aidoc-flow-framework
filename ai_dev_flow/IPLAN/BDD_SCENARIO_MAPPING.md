@@ -34,9 +34,9 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 | BDD ID | Feature File | Scenario Count | Test Location | Automation Status | Coverage % | Last Run |
 |--------|--------------|----------------|---------------|-------------------|------------|----------|
-| BDD-001 | [EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System]_gateway_integration.feature | 12 | tests/integration/gateway/ | Automated | 100% | Pending |
-| BDD-002 | [RESOURCE_VALIDATION - e.g., input sanitization, schema validation].feature | 8 | tests/unit/risk/ | Automated | 100% | Pending |
-| BDD-003 | [SYSTEM_STATE - e.g., operating mode, environment condition]_classifier.feature | 15 | tests/ml/classifier/ | Automated | 87% | Pending |
+| BDD-01 | [EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System]_gateway_integration.feature | 12 | tests/integration/gateway/ | Automated | 100% | Pending |
+| BDD-02 | [RESOURCE_VALIDATION - e.g., input sanitization, schema validation].feature | 8 | tests/unit/risk/ | Automated | 100% | Pending |
+| BDD-03 | [SYSTEM_STATE - e.g., operating mode, environment condition]_classifier.feature | 15 | tests/ml/classifier/ | Automated | 87% | Pending |
 | BDD-004 | sentiment_analysis.feature | 10 | tests/ml/sentiment/ | Automated | 90% | Pending |
 | BDD-005 | ensemble_signals.feature | 9 | tests/ml/ensemble/ | Automated | 100% | Pending |
 | BDD-006 | greeks_calculator.feature | 14 | tests/analytics/greeks/ | Automated | 93% | Pending |
@@ -46,10 +46,10 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 ## Scenario-Level Mapping
 
-### BDD-001: [EXTERNAL_SERVICE_GATEWAY] Integration
+### BDD-01: [EXTERNAL_SERVICE_GATEWAY] Integration
 
 **Feature**: [EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System] Gateway Integration
-**File**: `BDD-001_ib_gateway_integration.feature`
+**File**: `BDD-01_ib_gateway_integration.feature`
 **Requirements**: REQ-026 ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] Integration)
 **ADRs**: ADR-030 ([EXTERNAL_SERVICE_GATEWAY] Architecture)
 
@@ -74,11 +74,11 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 ---
 
-### BDD-002: [RESOURCE_VALIDATION - e.g., input sanitization, schema validation]
+### BDD-02: [RESOURCE_VALIDATION - e.g., input sanitization, schema validation]
 
 **Feature**: [RESOURCE_VALIDATION - e.g., input sanitization, schema validation]
-**File**: `BDD-002_risk_validation.feature`
-**Requirements**: REQ-003 ([RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement), REQ-005 (resource collection Risk Aggregation)
+**File**: `BDD-02_risk_validation.feature`
+**Requirements**: REQ-03 ([RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement), REQ-005 (resource collection Risk Aggregation)
 **ADRs**: ADR-015 (resource management Framework)
 
 | Scenario | Description | Test File | Test Method | Status | Priority |
@@ -98,10 +98,10 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 ---
 
-### BDD-003: [SYSTEM_STATE - e.g., operating mode, environment condition] Classifier
+### BDD-03: [SYSTEM_STATE - e.g., operating mode, environment condition] Classifier
 
 **Feature**: ML [SYSTEM_STATE - e.g., operating mode, environment condition] Classification
-**File**: `BDD-003_regime_classifier.feature`
+**File**: `BDD-03_regime_classifier.feature`
 **Requirements**: REQ-070 ([SYSTEM_STATE - e.g., operating mode, environment condition] Detection)
 **ADRs**: ADR-050 (ML Model Architecture)
 
@@ -146,8 +146,8 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 ### Automation Gaps
 
 **Pending Automation** (7 scenarios):
-1. BDD-003.13: Model drift detection (complexity: high)
-2. BDD-003.14: Ensemble model selection (complexity: medium)
+1. BDD-03.13: Model drift detection (complexity: high)
+2. BDD-03.14: Ensemble model selection (complexity: medium)
 3. BDD-008.7: Multi-asset correlation (complexity: high)
 4. BDD-008.9: Real-time data quality (complexity: high)
 5. BDD-010.4: Log aggregation scaling (complexity: medium)
@@ -164,9 +164,9 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 | BDD ID | Linked Requirements | Requirement Type | Coverage Status |
 |--------|---------------------|------------------|-----------------|
-| BDD-001 | REQ-026, REQ-027, REQ-028 | API, Integration | Complete |
-| BDD-002 | REQ-003, REQ-005, REQ-008 | resource management, [SAFETY_MECHANISM - e.g., rate limiter, error threshold] | Complete |
-| BDD-003 | REQ-070, REQ-071, REQ-072 | ML, Analytics | Complete |
+| BDD-01 | REQ-026, REQ-027, REQ-028 | API, Integration | Complete |
+| BDD-02 | REQ-03, REQ-005, REQ-008 | resource management, [SAFETY_MECHANISM - e.g., rate limiter, error threshold] | Complete |
+| BDD-03 | REQ-070, REQ-071, REQ-072 | ML, Analytics | Complete |
 | BDD-004 | REQ-073, REQ-074 | ML, NLP | Complete |
 | BDD-005 | REQ-075, REQ-076, REQ-077 | ML, Signals | Complete |
 | BDD-006 | REQ-080, REQ-081 | Analytics, Math | Complete |
@@ -176,9 +176,9 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 | BDD ID | Linked ADRs | Decision Category | Implementation Status |
 |--------|-------------|-------------------|----------------------|
-| BDD-001 | ADR-030 | Architecture | Implemented |
-| BDD-002 | ADR-015 | Framework | Implemented |
-| BDD-003 | ADR-050, ADR-051 | ML, Model | Implemented |
+| BDD-01 | ADR-030 | Architecture | Implemented |
+| BDD-02 | ADR-015 | Framework | Implemented |
+| BDD-03 | ADR-050, ADR-051 | ML, Model | Implemented |
 | BDD-004 | ADR-052 | NLP | Implemented |
 | BDD-005 | ADR-053 | ML Ensemble | Implemented |
 | BDD-006 | ADR-060 | Analytics | Implemented |
@@ -188,9 +188,9 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 | BDD ID | Implementation Files | Module | Code Coverage % |
 |--------|---------------------|--------|-----------------|
-| BDD-001 | src/gateway/*.py | gateway | 92% |
-| BDD-002 | src/risk/*.py | risk | 95% |
-| BDD-003 | src/ml/classifier/*.py | ml.classifier | 88% |
+| BDD-01 | src/gateway/*.py | gateway | 92% |
+| BDD-02 | src/risk/*.py | risk | 95% |
+| BDD-03 | src/ml/classifier/*.py | ml.classifier | 88% |
 | BDD-004 | src/ml/sentiment/*.py | ml.sentiment | 91% |
 | BDD-005 | src/ml/ensemble/*.py | ml.ensemble | 94% |
 | BDD-006 | src/analytics/greeks/*.py | analytics | 89% |
@@ -214,7 +214,7 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 | Scenario | Failure Reason | Assigned To | Target Fix Date |
 |----------|---------------|-------------|-----------------|
-| BDD-003.11 | Prediction latency exceeds threshold (>100ms) | ML Team | 2025-11-15 |
+| BDD-03.11 | Prediction latency exceeds threshold (>100ms) | ML Team | 2025-11-15 |
 | BDD-006.8 | Greeks calculation precision issue (delta) | Analytics Team | 2025-11-16 |
 
 ---
@@ -268,7 +268,7 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 - [BDD-000_index.md](../BDD/BDD-000_index.md) - BDD master index
 - [BDD-TEMPLATE.feature](../BDD/BDD-TEMPLATE.feature) - Scenario template
 - [IPLAN-TEMPLATE.md](./IPLAN-TEMPLATE.md) - Implementation plan template
-- [Testing Strategy](../SYS/SYS-001_testing_strategy.md) - Overall testing approach
+- [Testing Strategy](../SYS/SYS-01_testing_strategy.md) - Overall testing approach
 
 ---
 

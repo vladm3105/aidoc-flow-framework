@@ -59,7 +59,7 @@ Rules for validating Data Contracts (CTR) documents in the SDD framework.
 ### Pattern
 
 ```regex
-^CTR-[0-9]{3,4}(_[a-z0-9_]+)?\.(md|yaml)$
+^CTR-[0-9]{2,}(_[a-z0-9_]+)?\.(md|yaml)$
 ```
 
 ### Rules
@@ -67,7 +67,7 @@ Rules for validating Data Contracts (CTR) documents in the SDD framework.
 | Rule | Check | Error Level |
 |------|-------|-------------|
 | CTR prefix | Must start with "CTR-" | ERROR |
-| ID format | NNN or NNNN digits | ERROR |
+| ID format | NN or NNN digits | ERROR |
 | Slug format | lowercase, underscores only | ERROR |
 | Extension | .md or .yaml | ERROR |
 | Dual files | Both .md and .yaml should exist | WARNING |
@@ -76,11 +76,11 @@ Rules for validating Data Contracts (CTR) documents in the SDD framework.
 
 | Filename | Valid | Reason |
 |----------|-------|--------|
-| `CTR-001_user_api.md` | ✅ | Correct format |
-| `CTR-001_user_api.yaml` | ✅ | Correct format |
+| `CTR-01_user_api.md` | ✅ | Correct format |
+| `CTR-01_user_api.yaml` | ✅ | Correct format |
 | `ctr-001_user_api.md` | ❌ | Lowercase prefix |
 | `CTR-1_user_api.md` | ❌ | Single digit ID |
-| `CTR-001-user-api.md` | ❌ | Hyphens in slug |
+| `CTR-01-user-api.md` | ❌ | Hyphens in slug |
 
 ---
 
@@ -90,7 +90,7 @@ Rules for validating Data Contracts (CTR) documents in the SDD framework.
 
 | Field | Type | Required | Validation |
 |-------|------|----------|------------|
-| title | string | Yes | Must match "CTR-NNN: [Name]" |
+| title | string | Yes | Must match "CTR-NN: [Name]" |
 | tags | array | Yes | Must include layer-9-artifact |
 | custom_fields.artifact_type | string | Yes | Must equal "CTR" |
 | custom_fields.layer | integer | Yes | Must equal 9 |
@@ -118,7 +118,7 @@ fi
 
 | Field | Required | Format |
 |-------|----------|--------|
-| Contract ID | Yes | CTR-NNN |
+| Contract ID | Yes | CTR-NN |
 | Title | Yes | Non-empty string |
 | Version | Yes | X.Y.Z (semantic) |
 | Status | Yes | Draft/Active/Deprecated |
@@ -209,22 +209,22 @@ yaml_version=$(grep "version:" "$CTR_YAML_FILE" | head -1)
 | Tag | Required | Format |
 |-----|----------|--------|
 | @req | Yes | REQ.NN.EE.SS (unified format) |
-| @adr | Conditional | ADR-NNN (if architecture decisions exist) |
-| @spec | Conditional | SPEC-NNN (if specifications exist) |
+| @adr | Conditional | ADR-NN (if architecture decisions exist) |
+| @spec | Conditional | SPEC-NN (if specifications exist) |
 
 ### Tag Format Rules
 
 ```markdown
 # Correct formats
 @req: REQ.01.26.01, REQ.02.26.01
-@adr: ADR-003
-@spec: SPEC-001
+@adr: ADR-03
+@spec: SPEC-01
 
 # Incorrect formats
-@req: REQ-001         # Old format (use unified REQ.NN.EE.SS)
+@req: REQ-01         # Old format (use unified REQ.NN.EE.SS)
 @req: REQ001          # Missing separators
 @req REQ.01.26.01     # Missing colon
-@requirement: REQ-001 # Wrong tag name
+@requirement: REQ-01 # Wrong tag name
 ```
 
 ### Validation Commands
@@ -356,8 +356,8 @@ fi
 
 ```bash
 ./scripts/validate_ctr.sh --help
-./scripts/validate_ctr.sh --verbose CTR-001_api.md
-./scripts/validate_ctr.sh --strict CTR-001_api.md  # Treat warnings as errors
+./scripts/validate_ctr.sh --verbose CTR-01_api.md
+./scripts/validate_ctr.sh --strict CTR-01_api.md  # Treat warnings as errors
 ```
 
 ### Output Format
@@ -366,7 +366,7 @@ fi
 =========================================
 CTR Validation Report
 =========================================
-File: CTR-001_user_api.md
+File: CTR-01_user_api.md
 Version: 1.0.0
 
 CHECK 1: Filename Format
@@ -396,7 +396,39 @@ Result: PASSED WITH WARNINGS
 
 ---
 
-## 12. Common Validation Errors
+## 13. Element ID Format Compliance ⭐ NEW
+
+**Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
+**Type**: Error
+
+| Check | Pattern | Result |
+|-------|---------|--------|
+| Valid format | `CTR.NN.TT.SS:` | ✅ Pass |
+| Removed pattern | `IF-XXX` | ❌ Fail - use CTR.NN.16.SS |
+| Removed pattern | `DM-XXX` | ❌ Fail - use CTR.NN.17.SS |
+| Removed pattern | `CC-XXX` | ❌ Fail - use CTR.NN.20.SS |
+
+**Regex**: `^###?\s+CTR\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+**Common Element Types for CTR**:
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Interface | 16 | CTR.02.16.01 |
+| Data Model | 17 | CTR.02.17.01 |
+| Contract Clause | 20 | CTR.02.20.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `IF-XXX` → Use `CTR.NN.16.SS`
+> - `DM-XXX` → Use `CTR.NN.17.SS`
+> - `CC-XXX` → Use `CTR.NN.20.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+
+**Fix**: Replace `### IF-01: Interface` with `### CTR.02.16.01: Interface`
+
+---
+
+## 14. Common Validation Errors
 
 ### Error: Missing @req Tag
 

@@ -48,7 +48,7 @@ echo "-----------------------------------------"
 filename=$(basename "$TASKS_FILE")
 
 # Pattern: TASKS-NNN_descriptive_slug.md
-if [[ $filename =~ ^TASKS-[0-9]{3,4}_[a-z0-9_]+\.md$ ]]; then
+if [[ $filename =~ ^TASKS-[0-9]{2,}_[a-z0-9_]+\.md$ ]]; then
   echo -e "  ${GREEN}✅ Filename format valid: $filename${NC}"
 
   # Extract TASKS ID
@@ -57,7 +57,7 @@ if [[ $filename =~ ^TASKS-[0-9]{3,4}_[a-z0-9_]+\.md$ ]]; then
 else
   echo -e "  ${RED}❌ ERROR: Invalid filename format: $filename${NC}"
   echo "           Expected: TASKS-NNN_descriptive_slug.md"
-  echo "           Pattern: ^TASKS-[0-9]{3,4}_[a-z0-9_]+\\.md$"
+  echo "           Pattern: ^TASKS-[0-9]{2,}_[a-z0-9_]+\\.md$"
   ((ERRORS++))
 fi
 
@@ -345,7 +345,7 @@ echo "CHECK 10: Element ID Format Validation"
 echo "-----------------------------------------"
 
 # Check for deprecated element ID formats
-# Old formats: TYPE-NNN-YY, FR-001, AC-001, QA-001, BC-001, BO-001
+# Old formats: TYPE-NN-YY, FR-001, AC-001, QA-001, BC-001, BO-001
 deprecated_patterns=(
   "^### (FR|QA|AC|BC|BO)-[0-9]{3}:"
   "TASKS-[0-9]{3}-[0-9]{2}"

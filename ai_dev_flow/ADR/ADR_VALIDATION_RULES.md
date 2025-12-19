@@ -55,8 +55,8 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 | Category | Filename Pattern | Validation Level | Description |
 |----------|------------------|------------------|-------------|
-| **Standard ADR** | `ADR-NNN_{decision_topic}.md` | Full (7 checks) | Architecture decision records |
-| **ADR-REF** | `ADR-REF-NNN_{slug}.md` | Reduced (4 checks) | Supplementary reference documents |
+| **Standard ADR** | `ADR-NN_{decision_topic}.md` | Full (7 checks) | Architecture decision records |
+| **ADR-REF** | `ADR-REF-NN_{slug}.md` | Reduced (4 checks) | Supplementary reference documents |
 
 ### ADR-REF Reduced Validation
 
@@ -188,6 +188,33 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 ---
 
+### CHECK 8: Element ID Format Compliance ⭐ NEW
+
+**Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
+**Type**: Error
+
+| Check | Pattern | Result |
+|-------|---------|--------|
+| Valid format | `### ADR.NN.TT.SS:` | ✅ Pass |
+| Removed pattern | `### DEC-XXX` | ❌ Fail - use ADR.NN.10.SS |
+| Removed pattern | `### ALT-XXX` | ❌ Fail - use ADR.NN.12.SS |
+| Removed pattern | `### CON-XXX` | ❌ Fail - use ADR.NN.13.SS |
+
+**Regex**: `^###\s+ADR\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+**Common Element Types for ADR**:
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Decision | 10 | ADR.02.10.01 |
+| Alternative | 12 | ADR.02.12.01 |
+| Consequence | 13 | ADR.02.13.01 |
+
+**Fix**: Replace `### DEC-01: Decision` with `### ADR.02.10.01: Decision`
+
+**Reference**: ADR_CREATION_RULES.md Section 4.1, ID_NAMING_STANDARDS.md lines 783-793
+
+---
+
 ## Error Fix Guide
 
 ### Quick Fix Matrix
@@ -198,9 +225,10 @@ The ADR validation script ensures architecture decisions follow quality standard
 | **CHECK 2** | Add required ADR structure sections (Standard ADR only) |
 | **CHECK 3** | Add properly formatted SYS-Ready Score (Standard ADR only; ADR-REF exempt) |
 | **CHECK 4** | Complete traceability tag chain (Standard ADR only; ADR-REF exempt) |
+| **CHECK 8** | Replace legacy element IDs (DEC-XXX, ALT-XXX, CON-XXX) with unified format `ADR.NN.TT.SS` |
 
 **ADR-REF Quick Fix**:
-- Ensure filename matches `ADR-REF-NNN_{slug}.md` pattern
+- Ensure filename matches `ADR-REF-NN_{slug}.md` pattern
 - Add Document Control fields (Project Name, Version, Date, Owner, Prepared By, Status)
 - Add Document Revision History table
 - Add Status and Context sections
@@ -214,13 +242,13 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 ```bash
 # Validate single ADR document (nested folder structure)
-./scripts/validate_adr_template.sh docs/ADR/ADR-001/ADR-001.0_index.md
+./scripts/validate_adr_template.sh docs/ADR/ADR-01_architecture_decision/ADR-01.0_architecture_decision_index.md
 
 # Validate all ADR files (section-based structure)
 find docs/ADR -type f -name "ADR-*.md" -exec ./scripts/validate_adr_template.sh {} \;
 
 # Validate monolithic ADR (optional for <25KB)
-./scripts/validate_adr_template.sh docs/ADR/ADR-001_architecture_decision.md
+./scripts/validate_adr_template.sh docs/ADR/ADR-01_architecture_decision.md
 ```
 
 ### SYS-Ready Scoring Criteria ⭐ NEW
@@ -277,7 +305,7 @@ find docs/ADR -type f -name "ADR-*.md" -exec ./scripts/validate_adr_template.sh 
 
 ### Mistake #4: Missing Traceability Tags
 ```
-❌ @brd: BRD-001
+❌ @brd: BRD-01
 ✅ @brd: BRD.01.01.30, BRD.01.01.06
 ```
 

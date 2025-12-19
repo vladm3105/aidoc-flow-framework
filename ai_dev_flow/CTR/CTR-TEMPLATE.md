@@ -31,7 +31,7 @@ custom_fields:
 > - **Creation Rules**: `CTR_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `CTR_VALIDATION_RULES.md` - Post-creation checks
 
-# CTR-NNN: [Contract Title]
+# CTR-NN: [Contract Title]
 
 ## 1. Document Control
 
@@ -138,7 +138,7 @@ Example: "Synchronous REST-style request/response contract for resource risk val
 ### 4.2 Parties
 - **Provider**: [Service/component that implements this contract]
   - [SERVICE_NAME - e.g., Validation Service, Data Service] (service layer)
-  - Implements [FUNCTIONALITY] logic against [ADR-NNN] parameters
+  - Implements [FUNCTIONALITY] logic against [ADR-NN] parameters
 - **Consumer(s)**: [Services/components that use this contract]
   - [PRIMARY_CONSUMER - e.g., Orchestrator] (Level 1)
   - [ADDITIONAL_CONSUMERS - e.g., Service Agents, Worker Agents]
@@ -156,10 +156,10 @@ Example: "Synchronous REST-style request/response contract for resource risk val
 
 | Requirement ID | Description | How This Contract Satisfies It |
 |----------------|-------------|-------------------------------|
-| [REQ-NNN] | [Requirement description] | [How contract satisfies this requirement] |
-| [REQ-NNN] | [Requirement description] | [How contract satisfies this requirement] |
-| [SYS-NNN] | [System requirement description] | [How contract satisfies this requirement] |
-| [ADR-NNN] | [Architecture decision description] | [How contract satisfies this requirement] |
+| [REQ-NN] | [Requirement description] | [How contract satisfies this requirement] |
+| [REQ-NN] | [Requirement description] | [How contract satisfies this requirement] |
+| [SYS-NN] | [System requirement description] | [How contract satisfies this requirement] |
+| [ADR-NN] | [Architecture decision description] | [How contract satisfies this requirement] |
 
 ### 5.2 Source Business Logic
 [References to product strategy or business rules requiring this interface.
@@ -167,10 +167,10 @@ Example: "Synchronous REST-style request/response contract for resource risk val
 - `{domain_strategy}/risk_management.md` section 2.2: Resource limits must be checked before new positions]
 
 ### 5.3 Quality Attributes
-- **Performance**: p99 latency < @threshold: PRD.NNN.perf.api.p99_latency, throughput > @threshold: PRD.NNN.limit.api.requests_per_second
+- **Performance**: p99 latency < @threshold: PRD.NN.perf.api.p99_latency, throughput > @threshold: PRD.NN.limit.api.requests_per_second
 - **security**: mTLS authentication, RBAC authorization, audit logging
-- **Scalability**: Horizontal scaling to handle @threshold: PRD.NNN.limit.api.burst during rebalancing
-- **Reliability**: Idempotent validation, retry-safe, @threshold: PRD.NNN.sla.uptime.target uptime SLA
+- **Scalability**: Horizontal scaling to handle @threshold: PRD.NN.limit.api.burst during rebalancing
+- **Reliability**: Idempotent validation, retry-safe, @threshold: PRD.NN.sla.uptime.target uptime SLA
 
 ### 5.4 Thresholds Referenced
 
@@ -178,34 +178,34 @@ Example: "Synchronous REST-style request/response contract for resource risk val
 1. **Reference** platform-wide thresholds from PRD threshold registry
 2. **Define** API-specific thresholds unique to this contract
 
-**Platform Thresholds Referenced** (from PRD-NNN Threshold Registry):
+**Platform Thresholds Referenced** (from PRD-NN Threshold Registry):
 ```yaml
 performance:
-  - "@threshold: PRD.NNN.perf.api.p95_latency"
-  - "@threshold: PRD.NNN.perf.api.p99_latency"
+  - "@threshold: PRD.NN.perf.api.p95_latency"
+  - "@threshold: PRD.NN.perf.api.p99_latency"
 sla:
-  - "@threshold: PRD.NNN.sla.uptime.target"
-  - "@threshold: PRD.NNN.sla.error_rate.target"
+  - "@threshold: PRD.NN.sla.uptime.target"
+  - "@threshold: PRD.NN.sla.error_rate.target"
 limits:
-  - "@threshold: PRD.NNN.limit.api.requests_per_second"
-  - "@threshold: PRD.NNN.limit.api.burst"
+  - "@threshold: PRD.NN.limit.api.requests_per_second"
+  - "@threshold: PRD.NN.limit.api.burst"
 timeouts:
-  - "@threshold: PRD.NNN.timeout.request.sync"
-  - "@threshold: PRD.NNN.timeout.connection.default"
+  - "@threshold: PRD.NN.timeout.request.sync"
+  - "@threshold: PRD.NN.timeout.connection.default"
 ```
 
 **API-Specific Thresholds Defined** (unique to this CTR):
 ```yaml
 # Define thresholds specific to this API contract
-# Format: @threshold: CTR.NNN.category.key
+# Format: @threshold: CTR.NN.category.key
 rate_limits:
-  - "@threshold: CTR.NNN.limit.consumer.requests_per_minute"
-  - "@threshold: CTR.NNN.limit.consumer.burst"
+  - "@threshold: CTR.NN.limit.consumer.requests_per_minute"
+  - "@threshold: CTR.NN.limit.consumer.burst"
 payload:
-  - "@threshold: CTR.NNN.limit.payload.max_size_bytes"
+  - "@threshold: CTR.NN.limit.payload.max_size_bytes"
 retry:
-  - "@threshold: CTR.NNN.retry.max_attempts"
-  - "@threshold: CTR.NNN.retry.backoff_base_ms"
+  - "@threshold: CTR.NN.retry.max_attempts"
+  - "@threshold: CTR.NN.retry.backoff_base_ms"
 ```
 
 **Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
@@ -217,7 +217,7 @@ retry:
 ## 6. Schema Reference
 
 ### 6.1 YAML Schema File
-[Schema: CTR-NNN_descriptive_name.yaml](./CTR-NNN_descriptive_name.yaml)
+[Schema: CTR-NN_descriptive_name.yaml](./CTR-NN_descriptive_name.yaml)
 
 ### 6.2 Schema Overview
 Contract defines two primary operations:
@@ -285,7 +285,7 @@ Common types across endpoints:
 ### 9.1 Positive Outcomes
 
 **Requirements Satisfaction**:
-- Satisfies REQ-003 ([RESOURCE_LIMIT - e.g., request quota, concurrent sessions] enforcement) through structured validation endpoint
+- Satisfies REQ-03 ([RESOURCE_LIMIT - e.g., request quota, concurrent sessions] enforcement) through structured validation endpoint
 - Satisfies ADR-008 (centralized risk control) by providing single source of truth for validation
 - Enables REQ-008 audit trail through `decision_id` in every response
 
@@ -550,7 +550,7 @@ Common types across endpoints:
 
 ### 15.1 Contract Testing
 **Provider Tests** (Risk Validation Service):
-- Schema validation: All responses match CTR-NNN YAML schema
+- Schema validation: All responses match CTR-NN YAML schema
 - Error handling: Each error code tested with appropriate scenarios
 - Performance: Load test validates <100ms p99 latency at 1000 req/s
 - Idempotency: Same request produces same result (deterministic)
@@ -574,8 +574,8 @@ Common types across endpoints:
 
 ### 15.3 Specification Impact
 [SPEC files that will implement this contract:
-- SPEC-005_risk_validation_service.yaml: Provider implementation
-- SPEC-001_service_orchestrator.yaml: Primary consumer
+- SPEC-05_risk_validation_service.yaml: Provider implementation
+- SPEC-01_service_orchestrator.yaml: Primary consumer
 - SPEC-015_service_request_agent.yaml: Strategy agent consumer]
 
 ### 15.4 Validation Criteria
@@ -665,7 +665,7 @@ Common types across endpoints:
 - None (new contract, replaces informal in-process validation)
 
 **Related**:
-- CTR-002 ([METRICS - e.g., performance indicators, quality scores] Calculation): Provides [METRICS - e.g., performance indicators, quality scores] values used in validation
+- CTR-02 ([METRICS - e.g., performance indicators, quality scores] Calculation): Provides [METRICS - e.g., performance indicators, quality scores] values used in validation
 - CTR-006 (resource collection State): Provides current resource collection state
 
 **Impacts**:
@@ -713,7 +713,7 @@ Common types across endpoints:
 ### 19.1 Upstream Sources
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| REQ | [REQ-003](../REQ/risk/lim/REQ-003_resource_limit_enforcement.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement | section 3.1 | Defines validation requirements |
+| REQ | [REQ-03](../REQ/risk/lim/REQ-03_resource_limit_enforcement.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement | section 3.1 | Defines validation requirements |
 | REQ | [REQ-008](../REQ/risk/cfg/REQ-008_centralized_risk_parameters.md) | Centralized Risk Parameters | section 2.0 | Defines risk limits to validate against |
 | ADR | [ADR-008](../ADR/ADR-008_centralized_risk_parameters.md) | Centralized Risk Parameters | section 4.0 | Architecture decision for centralization |
 | SYS | [SYS-004](../SYS/SYS-004_centralized_risk_controls.md) | Centralized Risk Controls | section 5.2 | System requirement for validation service |
@@ -721,15 +721,15 @@ Common types across endpoints:
 ### 19.2 Downstream Artifacts
 | Artifact Type | Document ID | Document Title | Relationship |
 |---------------|-------------|----------------|--------------|
-| SPEC | [SPEC-005](../SPEC/services/SPEC-005_risk_validation_service.yaml) | Risk Validation Service | Provider implementation |
-| SPEC | [SPEC-001](../SPEC/agents/SPEC-001_service_orchestrator.yaml) | [ORCHESTRATION_COMPONENT] | Primary consumer |
-| TASKS | [TASKS-005](../TASKS/TASKS-005_risk_validation_implementation.md) | Risk Validation Implementation | Implementation plan |
+| SPEC | [SPEC-05](../SPEC/services/SPEC-05_risk_validation_service.yaml) | Risk Validation Service | Provider implementation |
+| SPEC | [SPEC-01](../SPEC/agents/SPEC-01_service_orchestrator.yaml) | [ORCHESTRATION_COMPONENT] | Primary consumer |
+| TASKS | [TASKS-05](../TASKS/TASKS-05_risk_validation_implementation.md) | Risk Validation Implementation | Implementation plan |
 | Code | src/services/risk_validation_service.py | Risk Validation Service | Provider implementation |
 | Code | src/agents/service_orchestrator/risk_validator_client.py | Risk Validator Client | Consumer implementation |
 
 ### 19.3 Document Links
-- **Anchors/IDs**: `#CTR-NNN` (internal document reference)
-- **YAML Schema**: [CTR-NNN_risk_validation.yaml](./CTR-NNN_risk_validation.yaml)
+- **Anchors/IDs**: `#CTR-NN` (internal document reference)
+- **YAML Schema**: [CTR-NN_risk_validation.yaml](./CTR-NN_risk_validation.yaml)
 - **Code Path(s)**:
   - Provider: `src/services/risk_validation_service.py`
   - Consumers: `src/agents/*/risk_validator_client.py`
@@ -740,13 +740,13 @@ Common types across endpoints:
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | [CTR-NNN](./CTR-NNN_...md) | [Related CTR title] | Shared API context |
-| Depends | [CTR-NNN](./CTR-NNN_...md) | [Prerequisite CTR title] | Must complete before this |
+| Related | [CTR-NN](./CTR-NN_...md) | [Related CTR title] | Shared API context |
+| Depends | [CTR-NN](./CTR-NN_...md) | [Prerequisite CTR title] | Must complete before this |
 
 **Tags:**
 ```markdown
-@related-ctr: CTR-NNN
-@depends-ctr: CTR-NNN
+@related-ctr: CTR-NN
+@depends-ctr: CTR-NN
 ```
 
 ### 19.5 Traceability Tags
@@ -757,13 +757,13 @@ Common types across endpoints:
 @prd: PRD.NN.EE.SS
 @ears: EARS.NN.EE.SS
 @bdd: BDD.NN.EE.SS
-@adr: ADR-NNN
+@adr: ADR-NN
 @sys: SYS.NN.EE.SS
 @req: REQ.NN.EE.SS
 @impl: IMPL.NN.EE.SS
 ```
 
-**Format**: `@artifact-type: TYPE.NN.EE.SS`
+**Format**: `@artifact-type: TYPE.NN.TT.SS`
 
 **Layer 9 Requirements**: CTR must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -796,11 +796,11 @@ Common types across endpoints:
 ## 20. References
 
 ### 20.1 Internal Links
-- [REQ-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement](../REQ/risk/lim/REQ-003_resource_limit_enforcement.md)
+- [REQ-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement](../REQ/risk/lim/REQ-03_resource_limit_enforcement.md)
 - [REQ-008: Centralized Risk Parameters](../REQ/risk/cfg/REQ-008_centralized_risk_parameters.md)
 - [ADR-008: Centralized Risk Parameters Architecture](../ADR/ADR-008_centralized_risk_parameters.md)
 - [SYS-004: Centralized Risk Controls](../SYS/SYS-004_centralized_risk_controls.md)
-- [SPEC-005: Risk Validation Service](../SPEC/services/SPEC-005_risk_validation_service.yaml)
+- [SPEC-05: Risk Validation Service](../SPEC/services/SPEC-05_risk_validation_service.yaml)
 - [BDD-012: Risk Validation Scenarios](../BDD/BDD-012_risk_validation.feature)
 
 ### 20.2 External Links

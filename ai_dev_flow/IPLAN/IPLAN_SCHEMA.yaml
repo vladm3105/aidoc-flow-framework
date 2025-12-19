@@ -100,7 +100,7 @@ structure:
   required_sections:
     - pattern: "^# IPLAN-\\d{3}:"
       name: "Title (H1)"
-      description: "Single H1 with format IPLAN-NNN: Title"
+      description: "Single H1 with format IPLAN-NN: Title"
 
     - pattern: "^## 1\\. Document Control$"
       name: "Document Control"
@@ -191,7 +191,7 @@ structure:
   # File naming convention
   file_naming:
     pattern: "^IPLAN-\\d{3}_[a-z0-9_]+\\.md$"
-    description: "Format: IPLAN-NNN_descriptive_name.md"
+    description: "Format: IPLAN-NN_descriptive_name.md"
 
 # =============================================================================
 # IPLAN-Specific Patterns
@@ -325,7 +325,7 @@ validation_rules:
     - rule: "Document Control must have minimum 8 fields"
       severity: error
 
-    - rule: "File name must match IPLAN-NNN_name.md format"
+    - rule: "File name must match IPLAN-NN_name.md format"
       severity: warning
 
   # Content validation
@@ -342,7 +342,7 @@ validation_rules:
     - rule: "Success Criteria must have verification checklist"
       severity: warning
 
-    - rule: "Source TASKS must be valid TASKS-NNN format"
+    - rule: "Source TASKS must be valid TASKS-NN format"
       severity: warning
 
     - rule: "Appendix should include Pre-Implementation Checklist"
@@ -361,14 +361,14 @@ traceability:
       - "@prd: PRD.NN.EE.SS"
       - "@ears: EARS.NN.EE.SS"
       - "@bdd: BDD.NN.EE.SS"
-      - "@adr: ADR-NNN"
+      - "@adr: ADR-NN"
       - "@sys: SYS.NN.EE.SS"
       - "@req: REQ.NN.EE.SS"
-      - "@spec: SPEC-NNN"
+      - "@spec: SPEC-NN"
       - "@tasks: TASKS.NN.EE.SS"
     optional:
       - "@impl: IMPL.NN.EE.SS"
-      - "@ctr: CTR-NNN"
+      - "@ctr: CTR-NN"
     description: "Layer 12 requires 9 upstream artifact tags (11 including optional IMPL and CTR)"
 
   upstream:
@@ -386,7 +386,7 @@ traceability:
         format: "@bdd: BDD.NN.EE.SS"
         location: "Section 8 Traceability Tags"
       - type: ADR
-        format: "@adr: ADR-NNN"
+        format: "@adr: ADR-NN"
         location: "Section 8 Traceability Tags"
       - type: SYS
         format: "@sys: SYS.NN.EE.SS"
@@ -395,7 +395,7 @@ traceability:
         format: "@req: REQ.NN.EE.SS"
         location: "Section 8 Traceability Tags"
       - type: SPEC
-        format: "@spec: SPEC-NNN"
+        format: "@spec: SPEC-NN"
         location: "Section 8 Traceability Tags"
       - type: TASKS
         format: "@tasks: TASKS.NN.EE.SS"
@@ -405,7 +405,7 @@ traceability:
         format: "@impl: IMPL.NN.EE.SS"
         location: "Section 8 Traceability Tags"
       - type: CTR
-        format: "@ctr: CTR-NNN"
+        format: "@ctr: CTR-NN"
         location: "Section 8 Traceability Tags"
 
   downstream:
@@ -420,13 +420,13 @@ traceability:
   same_type:
     optional:
       - type: IPLAN
-        format: "@related-iplan: IPLAN-NNN"
+        format: "@related-iplan: IPLAN-NN"
         description: "Related IPLAN document sharing session context"
       - type: IPLAN
-        format: "@depends-iplan: IPLAN-NNN"
+        format: "@depends-iplan: IPLAN-NN"
         description: "Prerequisite IPLAN session"
       - type: IPLAN
-        format: "@continues-iplan: IPLAN-NNN"
+        format: "@continues-iplan: IPLAN-NN"
         description: "Previous IPLAN session being continued"
 
 # =============================================================================
@@ -446,8 +446,8 @@ error_messages:
   IPLAN-E010: "Missing Task List section (Section 5)"
   IPLAN-E011: "Missing Implementation Guide section (Section 6)"
   IPLAN-E012: "Missing Traceability Tags section (Section 8)"
-  IPLAN-E013: "File name does not match IPLAN-NNN_name.md format"
-  IPLAN-E014: "Source TASKS not in valid TASKS-NNN format"
+  IPLAN-E013: "File name does not match IPLAN-NN_name.md format"
+  IPLAN-E014: "Source TASKS not in valid TASKS-NN format"
   IPLAN-W001: "Task List does not reference source TASKS document"
   IPLAN-W002: "Implementation Guide missing bash command blocks"
   IPLAN-W003: "Traceability Tags incomplete (require 9: @brd through @tasks)"

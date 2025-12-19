@@ -235,7 +235,7 @@ Workflow: 16-layer architecture: BRD → PRD → EARS → BDD → ADR → SYS �
 Next Steps:
 1. Use `doc-flow` skill to begin workflow execution (recommended)
 2. Or manually review [PROJECT_KICKOFF_TASKS.md](./PROJECT_KICKOFF_TASKS.md) for Day 1-7 tasks
-3. Start with BRD-001 (Business Requirements Document)
+3. Start with BRD-01 (Business Requirements Document)
 4. Follow 16-layer architecture sequentially
 
 ═══════════════════════════════════════════════════════════
@@ -292,8 +292,8 @@ After all documents of type created:
 # Use: doc-brd, doc-prd, doc-req, etc.
 
 # 2. Automated validation (framework scripts)
-python scripts/validate_req_template_v3.sh docs/REQ/REQ-001_example.md
-python scripts/validate_metadata.py docs/REQ/REQ-001_example.md
+python scripts/validate_req_template_v3.sh docs/REQ/REQ-01_example.md
+python scripts/validate_metadata.py docs/REQ/REQ-01_example.md
 
 # 3. Manual validation checklist
 # - Verify YAML frontmatter structure
@@ -386,22 +386,22 @@ python scripts/trace_check.py --type REQ
 
 **Layer 1: Business Requirements Documents (BRD)**
 - **Status**: ✅ COMPLETE (100% compliance, 70/70 checks passed)
-- **Documents Created**: 5 MVP BRDs (BRD-001 through BRD-005)
+- **Documents Created**: 5 MVP BRDs (BRD-01 through BRD-005)
 - **Creation Method**: doc-brd skill (AI-powered generation)
 - **Validation Method**: Dual-layer (automated script + manual review)
 - **Template Compliance**: 100%
 - **Pass Rate**: 100%
 
 **MVP BRD Documents**:
-1. ✅ BRD-001: Platform Overview (Platform BRD)
-2. ✅ BRD-002: Content Ingestion (Feature BRD)
-3. ✅ BRD-003: Analysis Engine (Feature BRD)
+1. ✅ BRD-01: Platform Overview (Platform BRD)
+2. ✅ BRD-02: Content Ingestion (Feature BRD)
+3. ✅ BRD-03: Analysis Engine (Feature BRD)
 4. ✅ BRD-004: Reporting System (Feature BRD)
 5. ✅ BRD-005: REST API (Feature BRD)
 
 ### ⚠️ Known Issues
 
-**BRD-001 Structural Inconsistencies** (P2 Priority - Not Blocking):
+**BRD-01 Structural Inconsistencies** (P2 Priority - Not Blocking):
 - Missing YAML frontmatter with `brd_type: platform` field
 - Different table format causing grep pattern failures
 - Content is complete and correct (manually validated)
@@ -411,11 +411,11 @@ python scripts/trace_check.py --type REQ
 
 **Immediate Actions** (Optional):
 1. Update BRD-000_index.md with all 5 created BRDs
-2. Fix BRD-001 structural issues (YAML frontmatter, table format)
+2. Fix BRD-01 structural issues (YAML frontmatter, table format)
 3. Create BRD-000_TRACEABILITY_MATRIX.md
 
 **Ready to Proceed**:
-- Layer 2: PRD creation (5 PRD documents: PRD-001 through PRD-005)
+- Layer 2: PRD creation (5 PRD documents: PRD-01 through PRD-005)
 - Stakeholder review and approval of BRD documents
 
 ---
@@ -453,7 +453,7 @@ Initialize the project with 12-layer SDD documentation structure using STRICT fr
 **Validation Commands**:
 ```bash
 # Automated validation
-python scripts/validate_metadata.py docs/BRD/BRD-001_*.md
+python scripts/validate_metadata.py docs/BRD/BRD-01_*.md
 
 # Manual checks
 # - Business language (not technical)
@@ -474,7 +474,7 @@ python scripts/validate_metadata.py docs/BRD/BRD-001_*.md
 **Validation Commands**:
 ```bash
 # Automated validation
-python scripts/validate_metadata.py docs/PRD/PRD-001_*.md
+python scripts/validate_metadata.py docs/PRD/PRD-01_*.md
 
 # Cross-reference check
 grep "@brd:" docs/PRD/*.md | cut -d: -f2 | sort | uniq
@@ -496,7 +496,7 @@ ls docs/BRD/BRD-*.md
 **Validation Commands**:
 ```bash
 # Primary validation
-python scripts/validate_req_template_v3.sh docs/REQ/REQ-001_*.md
+python scripts/validate_req_template_v3.sh docs/REQ/REQ-01_*.md
 
 # Duplicate detection
 grep -h "^## REQ-" docs/REQ/*.md | sort | uniq -d
@@ -519,10 +519,10 @@ python scripts/trace_check.py --type REQ --strict
 **Validation Commands**:
 ```bash
 # YAML syntax validation
-python -c "import yaml; yaml.safe_load(open('docs/SPEC/SPEC-001_*.yaml'))"
+python -c "import yaml; yaml.safe_load(open('docs/SPEC/SPEC-01_*.yaml'))"
 
 # Schema validation
-python scripts/validate_spec_schema.py docs/SPEC/SPEC-001_*.yaml
+python scripts/validate_spec_schema.py docs/SPEC/SPEC-01_*.yaml
 
 # REQ coverage check
 grep "@req:" docs/SPEC/*.yaml | cut -d: -f2 | sort | uniq
@@ -542,7 +542,7 @@ grep "@req:" docs/SPEC/*.yaml | cut -d: -f2 | sort | uniq
 **Validation Commands**:
 ```bash
 # Dependency validation
-python scripts/validate_task_dependencies.py docs/TASKS/TASKS-001_*.md
+python scripts/validate_task_dependencies.py docs/TASKS/TASKS-01_*.md
 
 # Contract verification (if present)
 grep "@icon:" docs/TASKS/*.md
@@ -694,30 +694,30 @@ python scripts/quality_metrics.py --phase REQ
 **Document Creation Sequence**:
 ```text
 BRD Phase:
-  Generate BRD-001 → Validate → Fix → Complete
-  Generate BRD-002 → Validate → Fix → Complete
+  Generate BRD-01 → Validate → Fix → Complete
+  Generate BRD-02 → Validate → Fix → Complete
   ...
   Phase Review → Quality Gate → Update work_plans/ → Proceed to PRD
 
 PRD Phase:
-  Generate PRD-001 → Validate → Fix → Complete
-  Generate PRD-002 → Validate → Fix → Complete
+  Generate PRD-01 → Validate → Fix → Complete
+  Generate PRD-02 → Validate → Fix → Complete
   ...
   Phase Review → Verify BRD traceability → Quality Gate → Update work_plans/ → Proceed to EARS
 
 REQ Phase:
-  Generate REQ-001 → Validate → Fix → Complete
-  Generate REQ-002 → Validate → Fix → Complete
+  Generate REQ-01 → Validate → Fix → Complete
+  Generate REQ-02 → Validate → Fix → Complete
   ...
   Phase Review → Verify PRD/EARS traceability → Quality Gate → Update work_plans/ → Proceed to SPEC
 
 SPEC Phase:
-  Generate SPEC-001 → Validate → Fix → Complete
+  Generate SPEC-01 → Validate → Fix → Complete
   ...
   Phase Review → Verify REQ coverage → Quality Gate → Update work_plans/ → Proceed to TASKS
 
 TASKS Phase:
-  Generate TASKS-001 → Validate → Fix → Complete
+  Generate TASKS-01 → Validate → Fix → Complete
   ...
   Phase Review → Quality Gate → Update work_plans/ → Ready for implementation
 ```
@@ -735,7 +735,7 @@ TASKS Phase:
 
 **Validation Reporting Format**:
 ```text
-Document: REQ-001_example.md
+Document: REQ-01_example.md
 Status: Created
 
 Validation Results:
@@ -756,7 +756,7 @@ Status: Ready for review ✓
 
 **Error Reporting Format**:
 ```text
-Document: REQ-002_example.md
+Document: REQ-02_example.md
 Status: Created
 
 Validation Results:

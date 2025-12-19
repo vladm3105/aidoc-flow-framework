@@ -37,9 +37,9 @@ SPECs serve as the **technical implementation contracts** that:
 YAML files include traceability links in comment headers:
 
 ```yaml
-# @requirement:[REQ-NNN](../../REQ/.../REQ-NNN_...md#REQ-NNN)
-# @adr:[ADR-NNN](../../ADR/ADR-NNN_...md#ADR-NNN)
-# @bdd:[BDD-NNN:scenarios](../../BDD/BDD-NNN.feature#scenarios)
+# @requirement:[REQ-NN](../../REQ/.../REQ-NN_...md#REQ-NN)
+# @adr:[ADR-NN](../../ADR/ADR-NN_...md#ADR-NN)
+# @bdd:[BDD-NN:scenarios](../../BDD/BDD-NN.feature#scenarios)
 id: component_name
 summary: Single-sentence description of component purpose and scope.
 ```
@@ -51,15 +51,15 @@ id: component_snake_case_name
 summary: Brief description of component purpose
 traceability:
   upstream:
-    - "[REQ-NNN](../../REQ/.../REQ-NNN_...md#REQ-NNN)"
-    - "[ADR-NNN](../../ADR/ADR-NNN_...md#ADR-NNN)"
+    - "[REQ-NN](../../REQ/.../REQ-NN_...md#REQ-NN)"
+    - "[ADR-NN](../../ADR/ADR-NN_...md#ADR-NN)"
   downstream:
     - code: path/to/implementation.py
     - contract: path/to/api.yaml
 
 requirements_source:
-  - "[PRD-NNN](../../../PRD/PRD-NNN_...md)"
-  - "[SYS-NNN](../../../SYS/SYS-NNN_...md)"
+  - "[PRD-NN](../../../PRD/PRD-NN_...md)"
+  - "[SYS-NN](../../../SYS/SYS-NN_...md)"
 ```
 
 ## Interface Specifications
@@ -269,8 +269,8 @@ Link specifications to behavioral tests:
 ```yaml
 verification:
   bdd_scenarios:
-    - "[BDD-NNN.feature:L23](../../BDD/BDD-NNN.feature#L23)"  # Specific scenario line
-    - "[BDD-NNN.feature:L45](../../BDD/BDD-NNN.feature#L45)"  # Additional scenarios
+    - "[BDD-NN.feature:L23](../../BDD/BDD-NN.feature#L23)"  # Specific scenario line
+    - "[BDD-NN.feature:L45](../../BDD/BDD-NN.feature#L45)"  # Additional scenarios
   contract_tests:
   load_tests:
     - target_rps: 1000
@@ -300,8 +300,8 @@ implementation:
 ```
 SPEC/
 ├── services/         # Service component specifications
-│   ├── SPEC-001_external_api_client.yaml
-│   └── SPEC-002_ib_gateway_service.yaml
+│   ├── SPEC-01_external_api_client.yaml
+│   └── SPEC-02_ib_gateway_service.yaml
 ├── data/            # Data processing and storage SPEC
 ├── api/             # API gateway and routing SPEC
 ├── integration/     # External system integration SPEC
@@ -311,19 +311,19 @@ SPEC/
 ## File Naming Convention
 
 ```
-SPEC/{domain}/SPEC-NNN_{component_name}.yaml
+SPEC/{domain}/SPEC-NN_{component_name}.yaml
 ```
 
 Where:
 - `SPEC/` is the base specifications directory
 - `{domain}` is architectural domain (`services`, `data`, `api`, etc.)
 - `SPEC` is the constant prefix
-- `NNN` is the three-digit sequence number (001, 002, 003, etc.)
+- `NNN` is the 2+ digit sequence number (01, 02, 003, etc.)
 - `{component_name}` uses snake_case describing the component
 - `.yaml` is the required file extension
 
 **Examples:**
-- `SPEC/services/SPEC-001_external_api_client.yaml`
+- `SPEC/services/SPEC-01_external_api_client.yaml`
 - `SPEC/data/SPEC-042_real_time_price_processor.yaml`
 - `SPEC/api/SPEC-102_service_api_gateway.yaml`
 
@@ -592,36 +592,36 @@ monitoring:
 ### Code Generation
 ```bash
 # Generate Python client from SPEC
-generate-client --spec SPEC/services/SPEC-001_external_api_client.yaml --output client_sdk/
+generate-client --spec SPEC/services/SPEC-01_external_api_client.yaml --output client_sdk/
 
 # Generate interface stubs
-generate-stubs --spec SPEC/services/SPEC-002_ib_gateway_service.yaml --language python --framework flask
+generate-stubs --spec SPEC/services/SPEC-02_ib_gateway_service.yaml --language python --framework flask
 
 # Generate tests from SPEC
-generate-tests --spec SPEC/services/SPEC-003_resource_limit_service.yaml --framework pytest
+generate-tests --spec SPEC/services/SPEC-03_resource_limit_service.yaml --framework pytest
 ```
 
 ### Validation and Compliance
 ```bash
 # Validate SPEC against schema
-validate-spec --spec SPEC/services/SPEC-001.yaml --schema spec_schema.json
+validate-spec --spec SPEC/services/SPEC-01.yaml --schema spec_schema.json
 
 # Check SPEC-test alignment
-verify-spec-coverage --spec SPEC/services/SPEC-001.yaml --tests test_external_api/
+verify-spec-coverage --spec SPEC/services/SPEC-01.yaml --tests test_external_api/
 
 # Generate API documentation
-generate-docs --spec SPEC/services/SPEC-001.yaml --format openapi --output docs/api/
+generate-docs --spec SPEC/services/SPEC-01.yaml --format openapi --output docs/api/
 ```
 
 ### Monitoring Configuration
 ```bash
 # Generate monitoring configuration
-generate-monitoring --spec SPEC/services/SPEC-001.yaml --output prometheus.yml
+generate-monitoring --spec SPEC/services/SPEC-01.yaml --output prometheus.yml
 
 # Validate metrics against SPEC
-validate-metrics --spec SPEC/services/SPEC-001.yaml --actual-metrics metrics.json
+validate-metrics --spec SPEC/services/SPEC-01.yaml --actual-metrics metrics.json
 ```
 
 ## Example SPEC Template
 
-See `SPEC/services/SPEC-001_external_api_client.yaml` for a complete example of a well-structured specification that includes interface definitions, operational characteristics, observability requirements, and comprehensive traceability.
+See `SPEC/services/SPEC-01_external_api_client.yaml` for a complete example of a well-structured specification that includes interface definitions, operational characteristics, observability requirements, and comprehensive traceability.

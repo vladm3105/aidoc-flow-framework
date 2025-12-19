@@ -69,28 +69,28 @@ Use `doc-iplan` when:
 
 ### 1. File Naming Convention
 
-**Format**: `IPLAN-NNN_{descriptive_slug}.md`
+**Format**: `IPLAN-NN_{descriptive_slug}.md`
 
 **Components**:
-- **IPLAN-NNN**: Sequential 3-digit ID (e.g., IPLAN-001, IPLAN-002)
+- **IPLAN-NN**: Sequential 3-digit ID (e.g., IPLAN-01, IPLAN-02)
 - **descriptive_slug**: Short lowercase description with underscores (e.g., gateway_connection, trade_validation)
 
 **Examples**:
-- `IPLAN-001_gateway_connection.md`
-- `IPLAN-002_trade_validation.md`
+- `IPLAN-01_gateway_connection.md`
+- `IPLAN-02_trade_validation.md`
 - `IPLAN-003_market_data_streaming.md`
 
 **Filename Validation**:
 ```bash
 # Validate filename format
-filename="IPLAN-001_gateway_connection.md"
-if [[ ! $filename =~ ^IPLAN-[0-9]{3,4}_[a-z0-9_]+\.md$ ]]; then
-  echo "ERROR: Invalid format. Must be IPLAN-NNN_{slug}.md"
+filename="IPLAN-01_gateway_connection.md"
+if [[ ! $filename =~ ^IPLAN-[0-9]{2,}_[a-z0-9_]+\.md$ ]]; then
+  echo "ERROR: Invalid format. Must be IPLAN-NN_{slug}.md"
   exit 1
 fi
 ```
 
-**Tag Format**: `@iplan: IPLAN-001` (use ID only, not full filename)
+**Tag Format**: `@iplan: IPLAN-01` (use ID only, not full filename)
 
 ### 1.1 Required Frontmatter Structure
 
@@ -102,25 +102,25 @@ tags:
   - implementation-plan
   - layer-12-artifact
   - active
-name: "IPLAN-NNN: [Descriptive Task/Feature Name]"
+name: "IPLAN-NN: [Descriptive Task/Feature Name]"
 layer: 12
 artifact_type: IPLAN
-parent_tasks: TASKS-NNN
+parent_tasks: TASKS-NN
 dependencies: []
 status: ready
 created: YYYY-MM-DD
 estimated_effort_hours: NN
 # Layer 12 Cumulative Traceability Tags
 traceability:
-  brd: "BRD-NNN" or null
-  prd: "PRD-NNN" or null
-  ears: "EARS-NNN" or null
-  bdd: "BDD-NNN" or null
-  adr: "ADR-NNN" or null
-  sys: "SYS-NNN"
-  req: "REQ-NNN"
-  spec: "SPEC-NNN"
-  tasks: "TASKS-NNN"
+  brd: "BRD-NN" or null
+  prd: "PRD-NN" or null
+  ears: "EARS-NN" or null
+  bdd: "BDD-NN" or null
+  adr: "ADR-NN" or null
+  sys: "SYS-NN"
+  req: "REQ-NN"
+  spec: "SPEC-NN"
+  tasks: "TASKS-NN"
 ---
 ```
 
@@ -141,11 +141,11 @@ traceability:
 
 ### Session 1: Project Setup (Estimated: 1.5 hours)
 
-**Tasks**: TASK-001-001, TASK-001-002
+**Tasks**: TASK-01-001, TASK-01-002
 
 **Commands**:
 ```bash
-# TASK-001-001: Initialize Project Structure
+# TASK-01-001: Initialize Project Structure
 mkdir -p src/controllers src/services src/repositories src/models
 mkdir -p tests/unit tests/integration
 touch src/controllers/data_validation_controller.py
@@ -157,7 +157,7 @@ touch src/__init__.py
 # Verify structure created
 ls -R src/
 
-# TASK-001-002: Set Up Development Environment
+# TASK-01-002: Set Up Development Environment
 cat > requirements.txt <<EOF
 fastapi==0.104.1
 pydantic==2.5.0
@@ -310,8 +310,8 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
@@ -321,7 +321,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
@@ -348,7 +348,7 @@ Examples:
 @adr: ADR-033, ADR-045
 @sys: SYS.01.25.01
 @req: REQ.01.26.01
-@spec: SPEC-001
+@spec: SPEC-01
 @tasks: TASKS.01.29.01
 ```
 
@@ -362,8 +362,8 @@ Examples:
 @sys: SYS.01.25.01
 @req: REQ.01.26.01
 @impl: IMPL.01.28.01
-@ctr: CTR-001
-@spec: SPEC-001
+@ctr: CTR-01
+@spec: SPEC-01
 @tasks: TASKS.01.29.01
 ```
 
@@ -386,8 +386,8 @@ Examples:
 - **Code** (Layer 13) - Implementation
 
 **Same-Type Document Relationships** (conditional):
-- `@related-iplan: IPLAN-NNN` - IPLANs sharing session context
-- `@depends-iplan: IPLAN-NNN` - IPLAN that must be completed first
+- `@related-iplan: IPLAN-NN` - IPLANs sharing session context
+- `@depends-iplan: IPLAN-NN` - IPLAN that must be completed first
 
 ## Creation Process
 
@@ -401,9 +401,9 @@ Check `docs/IPLAN/` for next available ID number.
 
 ### Step 3: Create IPLAN File
 
-**Location**: `docs/IPLAN/IPLAN-NNN_{slug}.md` (template available at `ai_dev_flow/IPLAN/`)
+**Location**: `docs/IPLAN/IPLAN-NN_{slug}.md` (template available at `ai_dev_flow/IPLAN/`)
 
-**Example**: `docs/IPLAN/IPLAN-001_data_validation.md`
+**Example**: `docs/IPLAN/IPLAN-01_data_validation.md`
 
 ### Step 4: Fill Document Control Section
 
@@ -448,12 +448,12 @@ Include all 9-11 upstream tags (@brd through @tasks).
 ### Step 13: Validate IPLAN
 
 ```bash
-ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md
+ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-01_*.md
 
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact IPLAN-001 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,ctr,spec,tasks --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact IPLAN-01 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,ctr,spec,tasks --strict
 
 # Test bash commands (dry-run)
-bash -n docs/IPLAN/IPLAN-001_*.md  # syntax check
+bash -n docs/IPLAN/IPLAN-01_*.md  # syntax check
 ```
 
 ### Step 14: Commit Changes
@@ -466,24 +466,24 @@ Commit IPLAN file and traceability matrix.
 
 ```bash
 # Quality gates
-scripts/validate_quality_gates.sh docs/IPLAN/IPLAN-001_*.md
+scripts/validate_quality_gates.sh docs/IPLAN/IPLAN-01_*.md
 
 # IPLAN format validation
-ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md
+ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-01_*.md
 
 # Cumulative tagging
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --artifact IPLAN-001 \
+  --artifact IPLAN-01 \
   --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,ctr,spec,tasks \
   --strict
 
 # Bash syntax check
-bash -n docs/IPLAN/IPLAN-001_*.md
+bash -n docs/IPLAN/IPLAN-01_*.md
 ```
 
 ### Manual Checklist
 
-- [ ] File naming follows IPLAN-NNN_{slug}.md format
+- [ ] File naming follows IPLAN-NN_{slug}.md format
 - [ ] Document Control section at top
 - [ ] Overview explains session-based approach
 - [ ] Prerequisites listed (database, credentials, etc.)
@@ -503,7 +503,7 @@ bash -n docs/IPLAN/IPLAN-001_*.md
 1. **Non-executable commands**: Commands must be copy-paste ready
 2. **Missing validation**: Each session needs validation commands
 3. **No rollback**: Must provide undo procedures
-4. **Wrong file naming**: Must use IPLAN-NNN_{slug}.md format
+4. **Wrong file naming**: Must use IPLAN-NN_{slug}.md format
 5. **Missing cumulative tags**: Layer 12 must include all 9-11 upstream tags
 6. **No error checking**: Commands should check for errors
 
@@ -526,7 +526,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/IPLAN/IPLAN-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/IPLAN/IPLAN-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all IPLAN documents complete
 python ai_dev_flow/scripts/validate_cross_document.py --layer IPLAN --auto-fix
@@ -543,7 +543,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer IPLAN --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing upstream tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -601,9 +601,9 @@ For supplementary documentation related to IPLAN artifacts:
 
 **IPLAN-Ready Score**: ≥90% target for implementation readiness
 
-**File Naming**: `IPLAN-NNN_{slug}.md`
+**File Naming**: `IPLAN-NN_{slug}.md`
 
-**Tag Format**: `@iplan: IPLAN-001` (use ID only, not full filename)
+**Tag Format**: `@iplan: IPLAN-01` (use ID only, not full filename)
 
 **Key Sections**:
 - Prerequisites

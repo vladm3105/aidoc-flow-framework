@@ -34,7 +34,7 @@ custom_fields:
 
 > **Note**: Section-based templates are the DEFAULT for BRD/PRD/ADR.
 > This monolithic template is for small documents only (<25KB).
-> Use nested folder structure: `docs/BRD/BRD-NNN/BRD-NNN.S_slug.md`
+> Use nested folder structure: `docs/BRD/BRD-NN/BRD-NN.S_slug.md`
 
 # Business Requirements Document (BRD)
 
@@ -298,7 +298,7 @@ List technology choices, infrastructure components, or platform capabilities tha
 - **Rationale**: Why this prerequisite is needed (link to ADR if decision documented)
 - **Business Impact**: Consequence if prerequisite not available
 
-<!-- WARNING: Do NOT reference specific ADR numbers (e.g., ADR-002, ADR-033) in BRD content.
+<!-- WARNING: Do NOT reference specific ADR numbers (e.g., ADR-02, ADR-033) in BRD content.
      Per traceability rules: BRDs identify architecture decision TOPICS in section 9, not specific ADR IDs.
      Use: "architecture decision required" or "see section 9 Architecture Decision Requirements" -->
 
@@ -326,15 +326,15 @@ Document which Platform BRDs provide required infrastructure for this Feature BR
 
 This Feature BRD depends on the following Platform BRDs:
 
-1. **Platform BRD (e.g., BRD-001): Platform Architecture & Technology Stack**
+1. **Platform BRD (e.g., BRD-01): Platform Architecture & Technology Stack**
    - **Required Foundation**: Node.js 18+, PostgreSQL 14+, Redis 7+, Python 3.11+
    - **Relevance to BRD-XXX**: [Explain why these technologies are needed for this feature]
-   - **Specific Prerequisites**: See BRD-NNN section 3.6 items 1-10
+   - **Specific Prerequisites**: See BRD-NN section 3.6 items 1-10
 
-2. **Platform BRD (e.g., BRD-001): Multi-Agent AI System Architecture**
+2. **Platform BRD (e.g., BRD-01): Multi-Agent AI System Architecture**
    - **Required AI Infrastructure**: Google ADK, A2A Protocol, shared context store
    - **Relevance to BRD-XXX**: [Explain why AI infrastructure is needed]
-   - **Specific Prerequisites**: See BRD-NNN section 3.6 items 1-8
+   - **Specific Prerequisites**: See BRD-NN section 3.6 items 1-8
 ```
 
 **Example Entry** (Feature BRD - Abbreviated):
@@ -345,18 +345,18 @@ This Feature BRD depends on the following Platform BRDs:
 
 This Feature BRD depends on the following Platform BRDs:
 
-1. **Platform BRD (e.g., BRD-001)**: Node.js 18+, PostgreSQL 14+, Redis 7+, Python 3.11+, n8n (See BRD-NNN section 3.6)
-2. **Platform BRD (e.g., BRD-001)**: Partner integrations (See BRD-NNN section 3.6, 3.7)
-3. **Platform BRD (e.g., BRD-001)**: security, compliance, audit retention (See BRD-NNN section 3.6, 3.7)
-4. **Platform BRD (e.g., BRD-001)**: PostgreSQL schema, data model (See BRD-NNN section 3.6)
-5. **Platform BRD (e.g., BRD-001)**: Google ADK, A2A Protocol, shared context store (See BRD-NNN section 3.6)
+1. **Platform BRD (e.g., BRD-01)**: Node.js 18+, PostgreSQL 14+, Redis 7+, Python 3.11+, n8n (See BRD-NN section 3.6)
+2. **Platform BRD (e.g., BRD-01)**: Partner integrations (See BRD-NN section 3.6, 3.7)
+3. **Platform BRD (e.g., BRD-01)**: security, compliance, audit retention (See BRD-NN section 3.6, 3.7)
+4. **Platform BRD (e.g., BRD-01)**: PostgreSQL schema, data model (See BRD-NN section 3.6)
+5. **Platform BRD (e.g., BRD-01)**: Google ADK, A2A Protocol, shared context store (See BRD-NN section 3.6)
 ```
 
 **Guidelines**:
 - Platform BRDs: Only include true prerequisites (not nice-to-haves)
-- Feature BRDs: MUST reference at least BRD-NNN; typically BRD-NNN through BRD-NNN
+- Feature BRDs: MUST reference at least BRD-NN; typically BRD-NN through BRD-NN
 - Specify version requirements and configuration needs
-- Link to relevant ADRs using format (ADR-NNN)
+- Link to relevant ADRs using format (ADR-NN)
 - Document business impact of missing prerequisite
 - Feature BRDs may also reference other Feature BRDs for workflow dependencies
 
@@ -403,22 +403,22 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 **Platform-Inherited Mandatory Conditions**:
 
-1. **PostgreSQL High Availability** (from BRD-NNN)
+1. **PostgreSQL High Availability** (from BRD-NN)
    - **Condition**: Multi-AZ deployment with ≤60s failover
    - **Relevance**: [Explain why this platform condition applies to this feature]
    - **Business Impact**: DB outage → feature blocked → business losses
 
-2. **Audit Trail Retention** (from BRD-NNN)
+2. **Audit Trail Retention** (from BRD-NN)
    - **Condition**: All actions logged with 7-year retention
    - **Relevance**: [Explain compliance requirements for this feature]
    - **Business Impact**: Missing audit trails → compliance violations
 
-3. **Google ADK Agent Framework OR n8n Workflow Engine** (from BRD-NNN or BRD-NNN)
+3. **Google ADK Agent Framework OR n8n Workflow Engine** (from BRD-NN or BRD-NN)
    - **Condition**: Workflow implemented using Platform-approved orchestration
    - **Relevance**: [Explain which orchestration approach applies]
    - **Business Impact**: Custom orchestration → platform inconsistency
 
-4. **Field-Level PII Encryption** (from BRD-NNN)
+4. **Field-Level PII Encryption** (from BRD-NN)
    - **Condition**: All PII encrypted at field level using Platform encryption service
    - **Relevance**: [Explain PII handling in this feature]
    - **Business Impact**: Unencrypted PII → data breach risk
@@ -444,10 +444,10 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 **Platform-Inherited Mandatory Conditions**:
 
-1. **PostgreSQL High Availability** (from BRD-NNN): Multi-AZ deployment with ≤60s failover
-2. **Audit Trail Retention** (from BRD-NNN): All actions logged with 7-year retention
-3. **Google ADK Agent Framework OR n8n Workflow Engine** (from BRD-NNN or BRD-NNN)
-4. **Field-Level PII Encryption** (from BRD-NNN): Platform encryption service required
+1. **PostgreSQL High Availability** (from BRD-NN): Multi-AZ deployment with ≤60s failover
+2. **Audit Trail Retention** (from BRD-NN): All actions logged with 7-year retention
+3. **Google ADK Agent Framework OR n8n Workflow Engine** (from BRD-NN or BRD-NN)
+4. **Field-Level PII Encryption** (from BRD-NN): Platform encryption service required
 
 **Feature-Specific Mandatory Conditions**: See section 5 (Functional Requirements) for workflow-specific SLAs, performance targets, and technical constraints.
 ```
@@ -554,12 +554,16 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 - [Policy constraint 3 - business logic that must be enforced]
 - [Policy constraint 4 - partner SLA requirements at business level]
 
-**Business Acceptance Criteria**:
+**Business Acceptance Criteria** (ID Format: `BRD.NN.06.SS`):
 
-- [Measurable success criterion 1 with target: e.g., "Process completion time <X seconds for Y% of transactions"]
-- [Measurable success criterion 2 with business impact: e.g., "Fee transparency displayed before authorization (100% of transactions)"]
-- [Measurable success criterion 3 with quantifiable target: e.g., "Regulatory compliance rate ≥99.9%"]
-- [Measurable success criterion 4 with business outcome: e.g., "Customer satisfaction score ≥4.5/5"]
+| Criteria ID | Criterion | Target |
+|-------------|-----------|--------|
+| BRD.NN.06.01 | Process completion time | <X seconds for Y% of transactions |
+| BRD.NN.06.02 | Fee transparency displayed before authorization | 100% of transactions |
+| BRD.NN.06.03 | Regulatory compliance rate | ≥99.9% |
+| BRD.NN.06.04 | Customer satisfaction score | ≥4.5/5 |
+
+> ⚠️ **Removed Pattern**: Do NOT use `AC-XXX` format. Use `BRD.NN.06.SS` instead.
 
 **Related Requirements**:
 
@@ -586,10 +590,12 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 - [Rule 1]
 - [Rule 2]
 
-**Business Acceptance Criteria**:
+**Business Acceptance Criteria** (ID Format: `BRD.NN.06.SS`):
 
-- [Criterion 1]
-- [Criterion 2]
+| Criteria ID | Criterion | Target |
+|-------------|-----------|--------|
+| BRD.NN.06.01 | [Criterion 1] | [Target] |
+| BRD.NN.06.02 | [Criterion 2] | [Target] |
 
 **Related Requirements**:
 
@@ -626,7 +632,7 @@ Document both platform-inherited mandatory conditions and feature-specific techn
    - 4/5: 4+ partners, multi-jurisdiction compliance, cross-border requirements, high integration complexity
    - 5/5: Extensive partner ecosystem, complex regulatory framework, multi-currency/multi-corridor, AI/ML business outcomes
 
-4. **Cross-References**: Always reference related Platform BRDs (BRD-NNN through BRD-NNN), Partner Integration BRDs, and Feature BRDs for traceability
+4. **Cross-References**: Always reference related Platform BRDs (BRD-NN through BRD-NN), Partner Integration BRDs, and Feature BRDs for traceability
 
 ### 6.3 Business Rules
 
@@ -811,53 +817,53 @@ management (BRD.01.21.04) and regulatory reporting (Section 8.4.2 BSA compliance
 
 **Purpose**: BRD documents DEFINE business-level thresholds that establish target values for downstream artifacts to reference. These thresholds originate from business requirements and are refined in PRD before being consumed by technical specifications.
 
-**Threshold Naming Convention**: `@threshold: BRD.NNN.category.subcategory.key`
+**Threshold Naming Convention**: `@threshold: BRD.NN.category.subcategory.key`
 
 **Format Reference**: See `THRESHOLD_NAMING_RULES.md` for complete naming standards.
 
 ```yaml
-# Business Threshold Definitions for BRD-NNN
-# Format: @threshold: BRD.NNN.category.subcategory.key
+# Business Threshold Definitions for BRD-NN
+# Format: @threshold: BRD.NN.category.subcategory.key
 
 business_sla:
   # Customer-facing SLA commitments
-  - "@threshold: BRD.NNN.sla.response.target"        # e.g., 95% requests < 3s
-  - "@threshold: BRD.NNN.sla.uptime.target"          # e.g., 99.9% availability
-  - "@threshold: BRD.NNN.sla.support.response"       # e.g., 4-hour response time
+  - "@threshold: BRD.NN.sla.response.target"        # e.g., 95% requests < 3s
+  - "@threshold: BRD.NN.sla.uptime.target"          # e.g., 99.9% availability
+  - "@threshold: BRD.NN.sla.support.response"       # e.g., 4-hour response time
 
 business_performance:
   # Business-level performance expectations
-  - "@threshold: BRD.NNN.perf.transaction.completion"  # e.g., < 30 seconds end-to-end
-  - "@threshold: BRD.NNN.perf.onboarding.duration"     # e.g., < 5 minutes KYC flow
+  - "@threshold: BRD.NN.perf.transaction.completion"  # e.g., < 30 seconds end-to-end
+  - "@threshold: BRD.NN.perf.onboarding.duration"     # e.g., < 5 minutes KYC flow
 
 business_limits:
   # Business policy limits and caps
-  - "@threshold: BRD.NNN.limit.transaction.daily"      # e.g., $10,000 daily limit
-  - "@threshold: BRD.NNN.limit.transaction.monthly"    # e.g., $50,000 monthly limit
-  - "@threshold: BRD.NNN.limit.user.concurrent"        # e.g., 10,000 concurrent users
+  - "@threshold: BRD.NN.limit.transaction.daily"      # e.g., $10,000 daily limit
+  - "@threshold: BRD.NN.limit.transaction.monthly"    # e.g., $50,000 monthly limit
+  - "@threshold: BRD.NN.limit.user.concurrent"        # e.g., 10,000 concurrent users
 
 compliance:
   # Regulatory and compliance thresholds
-  - "@threshold: BRD.NNN.compliance.retention.years"   # e.g., 7 years audit trail
-  - "@threshold: BRD.NNN.compliance.review.sla"        # e.g., 24-hour compliance review
+  - "@threshold: BRD.NN.compliance.retention.years"   # e.g., 7 years audit trail
+  - "@threshold: BRD.NN.compliance.review.sla"        # e.g., 24-hour compliance review
 
 growth_targets:
   # Business growth and capacity projections
-  - "@threshold: BRD.NNN.growth.users.year1"           # e.g., 10,000 active users
-  - "@threshold: BRD.NNN.growth.transactions.year1"   # e.g., 100,000 transactions/month
+  - "@threshold: BRD.NN.growth.users.year1"           # e.g., 10,000 active users
+  - "@threshold: BRD.NN.growth.transactions.year1"   # e.g., 100,000 transactions/month
 ```
 
 **Business Threshold Table**:
 
 | Threshold ID | Description | Target Value | Business Rationale | Priority |
 |--------------|-------------|--------------|-------------------|----------|
-| BRD.NNN.sla.uptime.target | System availability | 99.9% | Customer trust requirement | P1 |
-| BRD.NNN.limit.transaction.daily | Daily transaction cap | $10,000 | Regulatory compliance | P1 |
-| BRD.NNN.perf.transaction.completion | End-to-end time | < 30s | Competitive benchmark | P1 |
-| BRD.NNN.compliance.retention.years | Audit trail retention | 7 years | BSA/AML requirement | P1 |
+| BRD.NN.sla.uptime.target | System availability | 99.9% | Customer trust requirement | P1 |
+| BRD.NN.limit.transaction.daily | Daily transaction cap | $10,000 | Regulatory compliance | P1 |
+| BRD.NN.perf.transaction.completion | End-to-end time | < 30s | Competitive benchmark | P1 |
+| BRD.NN.compliance.retention.years | Audit trail retention | 7 years | BSA/AML requirement | P1 |
 
 **Downstream Consumption**:
-- **PRD**: Refines business thresholds into technical thresholds (`@threshold: PRD.NNN...`)
+- **PRD**: Refines business thresholds into technical thresholds (`@threshold: PRD.NN...`)
 - **EARS/BDD/SYS/SPEC**: Reference PRD threshold registry (not BRD directly)
 - **Threshold Registry**: PRD consolidates all thresholds for platform-wide consumption
 
@@ -1838,8 +1844,8 @@ This section maps BRD requirements to upstream business objectives and downstrea
 | [Concept_2] | [Document ID or path] | [section #] | [Dependency/Related/Prerequisite] |
 
 **Example entries:**
-- Platform Architecture | BRD-001_platform_architecture.md | N/A | Foundational dependency
-- Partner Integration | BRD-002_partner_ecosystem.md | section 6 | Related requirements
+- Platform Architecture | BRD-01_platform_architecture.md | N/A | Foundational dependency
+- Partner Integration | BRD-02_partner_ecosystem.md | section 6 | Related requirements
 - Authentication System | REQ-005_user_authentication.md | All | Upstream dependency
 
 ---
@@ -1921,16 +1927,16 @@ This section maps BRD requirements to upstream business objectives and downstrea
 4. **Example 4**: Before/After Refactoring - Converting technical FRs to business-level
 5. **Detailed 4-Subsection Guidance**: Pattern tables, anti-patterns, format rules for each subsection
 
-**Reference: BRD-NNN Gold Standard (100/100 Score)**
+**Reference: BRD-NN Gold Standard (100/100 Score)**
 
-See `/opt/data/blocal_n8n/docs/BRD/BRD-NNN_remittance_transaction_us_to_uzbekistan.md` for examples of business-level FRs that achieved perfect PRD-Ready Score.
+See `/opt/data/blocal_n8n/docs/BRD/BRD-NN_remittance_transaction_us_to_uzbekistan.md` for examples of business-level FRs that achieved perfect PRD-Ready Score.
 
-**Key Success Factors from BRD-NNN**:
+**Key Success Factors from BRD-NN**:
 - Zero code blocks in entire document
 - FRs structured with Business Capability → Business Requirements → Business Rules → Business Acceptance Criteria
 - All technical implementation details deferred to PRD references
 - Complexity ratings include business-level rationale (partner count, regulatory scope)
-- Cross-references to Platform BRDs (BRD-NNN through BRD-NNN) for traceability
+- Cross-references to Platform BRDs (BRD-NN through BRD-NN) for traceability
 
 ---
 

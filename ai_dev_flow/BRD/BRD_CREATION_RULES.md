@@ -73,14 +73,15 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- **Location**: `docs/BRD/BRD-NNN/` within project docs directory (nested folder per document)
-- **Folder Structure** (DEFAULT): `docs/BRD/BRD-NNN/BRD-NNN.S_slug.md`
-  - Index file: `docs/BRD/BRD-NNN/BRD-NNN.0_index.md`
-  - Section files: `docs/BRD/BRD-NNN/BRD-NNN.1_executive_summary.md`, etc.
-- **Platform BRDs**: `BRD-NNN_platform_*` or `BRD-NNN_infrastructure_*` (e.g., `docs/BRD/BRD-001/BRD-001.0_index.md`)
-- **Feature BRDs**: `BRD-NNN_{feature_name}` (e.g., `docs/BRD/BRD-006/BRD-006.0_index.md`)
-- **Section Files**: Section-based structure is DEFAULT for all BRD documents. Use format: `BRD-NNN.S_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
-- **Monolithic** (OPTIONAL for <25KB): `docs/BRD/BRD-NNN_descriptive_title.md` (flat structure)
+- **Location**: `docs/BRD/BRD-NN_{slug}/` within project docs directory (nested folder per document with descriptive slug)
+- **Folder Naming**: `BRD-NN_{slug}/` where slug MUST match the index file slug
+- **Folder Structure** (DEFAULT): `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{slug}.md`
+  - Index file: `docs/BRD/BRD-NN_{slug}/BRD-NN.0_{slug}_index.md`
+  - Section files: `docs/BRD/BRD-NN_{slug}/BRD-NN.1_{slug}_executive_summary.md`, etc.
+- **Platform BRDs**: `BRD-NN_platform_*` (e.g., `docs/BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md`)
+- **Feature BRDs**: `BRD-NN_{feature_name}` (e.g., `docs/BRD/BRD-06_user_authentication/BRD-06.0_user_authentication_index.md`)
+- **Section Files**: Section-based structure is DEFAULT for all BRD documents. Use format: `BRD-NN.S_{slug}_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
+- **Monolithic** (OPTIONAL for <25KB): `docs/BRD/BRD-NN_{slug}/BRD-NN.0_{slug}.md` (single file in folder)
 
 ---
 
@@ -331,7 +332,7 @@ When performing major refactoring (version X.0), document the transformation:
 
    **Content Additions**:
    - Added Complexity ratings (1/5 to 5/5) to all 12 FRs with business-level rationale
-   - Added Related Requirements cross-references to Platform BRDs (BRD-001 through BRD-005)
+   - Added Related Requirements cross-references to Platform BRDs (BRD-01 through BRD-005)
    - Added Business Rules subsections with regulatory constraints (OFAC, FinCEN)
 
    **Validation**:
@@ -357,7 +358,7 @@ When performing major refactoring (version X.0), document the transformation:
 
    **AFTER (v2.0 - Business-Level, Score 95/100)**:
    ```markdown
-   ### BRD.NNN.005: Customer-Initiated Cross-Border Transaction
+   ### BRD.NN.005: Customer-Initiated Cross-Border Transaction
 
    **Business Capability**: Enable customers to initiate remittance transactions to Uzbekistan recipients with selected funding source
 
@@ -378,10 +379,10 @@ When performing major refactoring (version X.0), document the transformation:
    - Invalid transactions rejected with clear business reason (insufficient balance, limits exceeded, recipient inactive)
 
    **Related Requirements**:
-   - Platform BRDs: BRD-001 (Architecture), BRD-002 (Partner Ecosystem), BRD-003 (Compliance)
+   - Platform BRDs: BRD-01 (Architecture), BRD-02 (Partner Ecosystem), BRD-03 (Compliance)
    - Feature BRDs: BRD-006 (KYC Onboarding), BRD-008 (Wallet Funding), BRD-011 (Recipient Management)
 
-   **Complexity**: 3/5 (Three partner integrations (Bridge custody, Plaid/Stripe funding, Sardine compliance); FinCEN transaction monitoring requirements; references BRD-001, BRD-002, BRD-003, BRD-006, BRD-008, BRD-011)
+   **Complexity**: 3/5 (Three partner integrations (Bridge custody, Plaid/Stripe funding, Sardine compliance); FinCEN transaction monitoring requirements; references BRD-01, BRD-02, BRD-03, BRD-006, BRD-008, BRD-011)
    ```
 
 **Refactoring Workflow Summary**:
@@ -402,11 +403,41 @@ When performing major refactoring (version X.0), document the transformation:
 
 ## 4. ID and Naming Standards
 
-- **Filename**: `BRD-NNN_descriptive_title.md` (e.g., `BRD-001_platform_architecture_technology_stack.md`)
+- **Filename**: `BRD-NN_descriptive_title.md` (e.g., `BRD-01_platform_architecture_technology_stack.md`)
 - **H1 Header**: `# Business Requirements Document (BRD)` (static for all BRDs)
 - **Document Title**: Include in H1 as subtitle (e.g., "Business Requirements Document (BRD)" with project name in Introduction)
-- **ID Format**: BRD-NNN (3-digit sequential), BRD-NNN.S for section files (large documents)
-- **Uniqueness Rule**: Each NNN number unique across Platform and Feature BRDs
+- **ID Format**: BRD-NN (3-digit sequential), BRD-NN.S for section files (large documents)
+- **Uniqueness Rule**: Each NN number unique across Platform and Feature BRDs
+
+### 4.1 Element ID Format (MANDATORY)
+
+**Pattern**: `BRD.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Functional Requirement | 01 | BRD.02.01.01 |
+| Quality Attribute | 02 | BRD.02.02.01 |
+| Constraint | 03 | BRD.02.03.01 |
+| Assumption | 04 | BRD.02.04.01 |
+| Dependency | 05 | BRD.02.05.01 |
+| **Acceptance Criteria** | **06** | **BRD.02.06.01** |
+| Risk | 07 | BRD.02.07.01 |
+| Metric | 08 | BRD.02.08.01 |
+| Feature Item | 22 | BRD.02.22.01 |
+| Business Objective | 23 | BRD.02.23.01 |
+| Stakeholder Need | 24 | BRD.02.24.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `AC-XXX` → Use `BRD.NN.06.SS`
+> - `FR-XXX` → Use `BRD.NN.01.SS`
+> - `BC-XXX` → Use `BRD.NN.03.SS`
+> - `BA-XXX` → Use `BRD.NN.04.SS`
+> - `BO-XXX` → Use `BRD.NN.23.SS`
+> - `QA-XXX` → Use `BRD.NN.02.SS`
+> - `RISK-XXX` → Use `BRD.NN.07.SS`
+> - `METRIC-XXX` → Use `BRD.NN.08.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
 
 ### 4.2 Business Objectives Baseline Pattern
 
@@ -512,14 +543,14 @@ When performing major refactoring (version X.0), document the transformation:
 
 **Example - Email Notification Delivery (BRD-018)**:
 ```markdown
-**Complexity**: 2/5 (Two notification partners (SendGrid, Twilio); basic template management; standard retry policies; references BRD-002 partner ecosystem)
+**Complexity**: 2/5 (Two notification partners (SendGrid, Twilio); basic template management; standard retry policies; references BRD-02 partner ecosystem)
 ```
 
 **Business Factors**:
 - Partners: 2 (SendGrid, Twilio)
 - Regulatory: None
 - Constraints: 95% delivery SLA within 60 seconds
-- Dependencies: BRD-002 (Partner Ecosystem)
+- Dependencies: BRD-02 (Partner Ecosystem)
 - Process: 2-state (Queued → Delivered)
 
 ---
@@ -535,14 +566,14 @@ When performing major refactoring (version X.0), document the transformation:
 
 **Example - AI-Powered Risk Scoring (BRD-022)**:
 ```markdown
-**Complexity**: 3/5 (ML-based fraud detection with Sardine + Unit21 integration; AML compliance requirements; multi-tier risk thresholds; references BRD-003, BRD-005, BRD-016)
+**Complexity**: 3/5 (ML-based fraud detection with Sardine + Unit21 integration; AML compliance requirements; multi-tier risk thresholds; references BRD-03, BRD-005, BRD-016)
 ```
 
 **Business Factors**:
 - Partners: 3 (Sardine risk API, Unit21 case management, internal ML model)
 - Regulatory: AML/CFT transaction monitoring requirements
 - Constraints: <3 second screening SLA for 95% of transactions
-- Dependencies: BRD-003 (Compliance), BRD-005 (AI/ML Architecture), BRD-016 (Fraud Detection)
+- Dependencies: BRD-03 (Compliance), BRD-005 (AI/ML Architecture), BRD-016 (Fraud Detection)
 - Process: 3-state with branching (Auto-Approve, Manual Review, Auto-Decline)
 
 ---
@@ -558,14 +589,14 @@ When performing major refactoring (version X.0), document the transformation:
 
 **Example - Multi-Region Wallet Funding (BRD-008)**:
 ```markdown
-**Complexity**: 4/5 (Five funding partners (Plaid, Stripe, Bridge, PayPal, Unit); FinCEN compliance; multi-currency settlement; references BRD-001, BRD-002, BRD-003, BRD-004, BRD-013)
+**Complexity**: 4/5 (Five funding partners (Plaid, Stripe, Bridge, PayPal, Unit); FinCEN compliance; multi-currency settlement; references BRD-01, BRD-02, BRD-03, BRD-004, BRD-013)
 ```
 
 **Business Factors**:
 - Partners: 5 (Plaid ACH, Stripe card processing, Bridge USDC custody, PayPal wallet, Unit banking)
 - Regulatory: FinCEN compliance, card network rules, ACH regulations, MSB licensing
 - Constraints: T+1 settlement SLA, 95% success rate, refund processing <1 hour
-- Dependencies: BRD-001 (Architecture), BRD-002 (Partners), BRD-003 (Compliance), BRD-004 (Ledger), BRD-013 (Settlement)
+- Dependencies: BRD-01 (Architecture), BRD-02 (Partners), BRD-03 (Compliance), BRD-004 (Ledger), BRD-013 (Settlement)
 - Process: Multi-state with error recovery (Initiated → Authorized → Captured → Settled → Reconciled)
 
 ---
@@ -581,14 +612,14 @@ When performing major refactoring (version X.0), document the transformation:
 
 **Example - US-to-Uzbekistan Remittance (BRD-009)**:
 ```markdown
-**Complexity**: 5/5 (Seven partners across two countries; OFAC/sanctions screening; cross-border FX; Uzbekistan bill payment integration; references BRD-001, BRD-002, BRD-003, BRD-004, BRD-005, BRD-008, BRD-010, BRD-013)
+**Complexity**: 5/5 (Seven partners across two countries; OFAC/sanctions screening; cross-border FX; Uzbekistan bill payment integration; references BRD-01, BRD-02, BRD-03, BRD-004, BRD-005, BRD-008, BRD-010, BRD-013)
 ```
 
 **Business Factors**:
 - Partners: 7+ (Bridge custody, Plaid/Stripe funding, Sardine/Unit21 compliance, Uzbekistan delivery partners, Paynet bill payment)
 - Regulatory: FinCEN MSB licensing, OFAC sanctions screening, Uzbekistan Central Bank compliance, cross-border reporting
 - Constraints: 95% delivery in <15 minutes, T+1 settlement, multi-currency reconciliation, refund SLAs
-- Dependencies: 8 BRDs (BRD-001 through BRD-005, BRD-008, BRD-010, BRD-013)
+- Dependencies: 8 BRDs (BRD-01 through BRD-005, BRD-008, BRD-010, BRD-013)
 - Process: 7-state transaction lifecycle with exception handling (Initiated → Screened → Funded → FX Converted → Delivered → Settled → Reconciled)
 
 ---
@@ -720,7 +751,7 @@ When performing major refactoring (version X.0), document the transformation:
 
 ## 6. Platform vs Feature BRD Distinctions
 
-### Platform BRDs (e.g., BRD-001, BRD-034)
+### Platform BRDs (e.g., BRD-01, BRD-034)
 - **Purpose**: Define foundational capabilities, technology stacks, prerequisites
 - **sections 3.6 & 3.7**: ALWAYS PRESENT - Define foundational technology stacks and mandatory constraints
 - **ADR Timing**: ADRs created BEFORE PRD to validate architectural decisions
@@ -835,17 +866,17 @@ Business Rules Count?
 
 ❌ **REMOVE (PRD-Level)**: "Platform MUST use Bridge custody provider for USDC wallet operations"
 
-✅ **KEEP (Business-Level)**: "Platform requires segregated USDC custody with MTL sponsorship (BRD-002 partner selection)"
+✅ **KEEP (Business-Level)**: "Platform requires segregated USDC custody with MTL sponsorship (BRD-02 partner selection)"
 
 **Additional Examples**:
-- ❌ "MUST use PostgreSQL" → ✅ "Platform requires scalable relational data storage with ACID compliance (BRD-001 technology stack)"
-- ❌ "MUST use Auth0" → ✅ "Platform requires OAuth 2.0/OIDC authentication with MFA support (BRD-003 authentication)"
-- ❌ "MUST use Kafka" → ✅ "Platform requires async event streaming for partner integrations (BRD-001 messaging)"
+- ❌ "MUST use PostgreSQL" → ✅ "Platform requires scalable relational data storage with ACID compliance (BRD-01 technology stack)"
+- ❌ "MUST use Auth0" → ✅ "Platform requires OAuth 2.0/OIDC authentication with MFA support (BRD-03 authentication)"
+- ❌ "MUST use Kafka" → ✅ "Platform requires async event streaming for partner integrations (BRD-01 messaging)"
 
 **When to Reference Platform BRDs**:
-- BRD-001: Platform architecture and technology stack
-- BRD-002: Partner ecosystem and integration requirements
-- BRD-003: security, compliance, and authentication requirements
+- BRD-01: Platform architecture and technology stack
+- BRD-02: Partner ecosystem and integration requirements
+- BRD-03: security, compliance, and authentication requirements
 - BRD-004: Data model and ledger architecture
 - BRD-005: AI/ML agent system architecture
 
@@ -1248,13 +1279,13 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 
 | Functional Requirement | Downstream SPEC (Planned) | Downstream IMPL (Planned) | Status |
 |------------------------|---------------------------|---------------------------|--------|
-| BRD.NNN.001: [Requirement title] | SPEC-XXX-001: [Specification name] | IMPL-XXX-001: [Implementation name] | Planned |
+| BRD.NN.001: [Requirement title] | SPEC-XXX-01: [Specification name] | IMPL-XXX-01: [Implementation name] | Planned |
 
 **Requirements**:
 
 - Every Functional Requirement (section 4) MUST appear in this table
 - Downstream artifacts initially marked "Planned" (created during PRD/SPEC phases)
-- SPEC-XXX format: Use BRD ID as XXX (e.g., BRD-005 → SPEC-005.1)
+- SPEC-XXX format: Use BRD ID as XXX (e.g., BRD-005 → SPEC-05.1)
 - IMPL-XXX format: Use BRD ID as XXX (e.g., BRD-005 → IMPL-005.1)
 
 **Forward Traceability**: Enables impact analysis when changing functional requirements
@@ -1285,14 +1316,14 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 **Standard Table Format**:
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | BRD-NNN | [Related BRD title] | Shared domain context |
-| Depends | BRD-NNN | [Prerequisite BRD title] | Must complete before this |
+| Related | BRD-NN | [Related BRD title] | Shared domain context |
+| Depends | BRD-NN | [Prerequisite BRD title] | Must complete before this |
 
 **Detailed Dependency Table**:
 | This BRD | Depends On | Dependency Type | Impact if Missing | Status |
 |----------|------------|-----------------|-------------------|--------|
-| BRD-XXX | BRD-001 (Platform) | Hard | Cannot proceed with implementation | Required |
-| BRD-XXX | BRD-002 (Partners) | Hard | Partner integration unavailable | Required |
+| BRD-XXX | BRD-01 (Platform) | Hard | Cannot proceed with implementation | Required |
+| BRD-XXX | BRD-02 (Partners) | Hard | Partner integration unavailable | Required |
 | BRD-XXX | BRD-YYY (Feature) | Medium | Workaround possible but suboptimal | Optional |
 
 **Dependency Types**:
@@ -1302,8 +1333,8 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 
 **Required Tags**:
 ```markdown
-@related-brd: BRD-NNN
-@depends-brd: BRD-NNN
+@related-brd: BRD-NN
+@depends-brd: BRD-NN
 ```
 
 **Requirements**:
@@ -1320,8 +1351,8 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 
 | Requirement Category | Test Type Required | Planned Test Specification | Coverage Target |
 |----------------------|-------------------|---------------------------|-----------------|
-| BRD.NNN.001 through BRD.NN.EE.SS | Unit Tests | TEST-XXX-UNIT: Functional Requirement Unit Test Suite | 95% |
-| BRD.NNN.001 through BRD.NN.EE.SS | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
+| BRD.NN.001 through BRD.NN.EE.SS | Unit Tests | TEST-XXX-UNIT: Functional Requirement Unit Test Suite | 95% |
+| BRD.NN.001 through BRD.NN.EE.SS | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
 | User Stories (PRD.NN.09.01 through PRD.NN.09.XX) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
 | Performance Quality Attributes | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
 | Security Quality Attributes | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
@@ -1380,7 +1411,7 @@ Quality Attributes use unified sequential numbering (same as all other requireme
 
 ### Quality Attribute Format
 
-**Pattern**: `TYPE.NN.EE.SS` (unified 4-segment element ID format)
+**Pattern**: `TYPE.NN.TT.SS` (unified 4-segment element ID format)
 
 | Category | Keywords for Detection | Example |
 |----------|------------------------|---------|
@@ -1424,7 +1455,7 @@ Every BRD must include **Section 7.2: "Architecture Decision Requirements"** wit
 
 | Component | Format | Example |
 |-----------|--------|---------|
-| Document ID | `NN` (2+ digit) | `01` (BRD-001) |
+| Document ID | `NN` (2+ digit) | `01` (BRD-01) |
 | Element Type | `EE` (2+ digit) | `01` (Functional Requirement) |
 | Sequence | `SS` (2+ digit) | `03` (third item) |
 | Full ID | `{DOC_TYPE}.NN.EE.SS` | `BRD.01.01.03` |
@@ -1642,7 +1673,7 @@ All business objectives in section 2.4 must follow SMART criteria:
 **Pre-Commit Validation**:
 ```bash
 # Validate single file
-./scripts/validate_brd_template.sh docs/BRD/BRD-001_platform_architecture.md
+./scripts/validate_brd_template.sh docs/BRD/BRD-01_platform_architecture.md
 
 # Validate all BRD files
 find docs/BRD -name "BRD-*.md" -exec ./scripts/validate_brd_template.sh {} \;
@@ -1702,8 +1733,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -1743,7 +1774,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/BRD/BRD-NNN_slug.md --auto-fix
+python scripts/validate_cross_document.py --document docs/BRD/BRD-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all BRD documents complete
 python scripts/validate_cross_document.py --layer BRD --auto-fix
@@ -1760,7 +1791,7 @@ python scripts/validate_cross_document.py --layer BRD --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Broken link | Recalculate path from current location |
-| Invalid ID format | Correct to BRD-NNN format |
+| Invalid ID format | Correct to BRD-NN format |
 | Missing traceability section | Insert from template |
 | Malformed Document Control | Apply standard format |
 

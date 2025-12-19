@@ -7,7 +7,7 @@ Auto-fixes issues without user confirmation following strict hierarchy rules.
 
 Usage:
     # Per-document validation
-    python validate_cross_document.py --document docs/REQ/REQ-001.md --auto-fix
+    python validate_cross_document.py --document docs/REQ/REQ-01.md --auto-fix
 
     # Per-layer validation
     python validate_cross_document.py --layer REQ --auto-fix
@@ -99,19 +99,19 @@ LAYER_CONFIG = {
 # Tag format patterns
 TAG_PATTERN = re.compile(r'^@(\w+):\s*(.+)$', re.MULTILINE)
 
-# Document-level IDs (TYPE-NNN format for filenames)
-# Examples: ADR-001, SPEC-001, BRD-003.1 (section files)
-DOC_FILE_PATTERN = re.compile(r'^([A-Z]{2,5})-(\d{3,4})(?:\.(\d+))?$')
+# Document-level IDs (TYPE-NN format for filenames)
+# Examples: ADR-001, SPEC-01, BRD-003.1 (section files)
+DOC_FILE_PATTERN = re.compile(r'^([A-Z]{2,5})-(\d{2,})(?:\.(\d+))?$')
 
 # Element-level IDs (TYPE.NN.TT.SS format for content)
 # Format: {DOC_TYPE}.{DOC_NUM}.{ELEM_TYPE}.{SEQ}
 # Examples: BRD.01.01.03, PRD.17.07.15, REQ.01.01.01
-# NOTE: Old formats (TYPE-NNN-YY, TYPE-NNN.YY) are DEPRECATED
+# NOTE: Old formats (TYPE-NN-YY, TYPE-NN.YY) are DEPRECATED
 ELEMENT_ID_PATTERN = re.compile(r'^([A-Z]{2,5})\.(\d{2,9})\.(\d{2,9})\.(\d{2,9})$')
 
 # Combined pattern for backward compatibility during transition
 # Accepts both document-level and element-level formats
-DOC_ID_PATTERN = re.compile(r'([A-Z]{2,5})(?:-(\d{3,4})(?:\.(\d+))?|\.(\d{2,9})\.(\d{2,9})\.(\d{2,9}))')
+DOC_ID_PATTERN = re.compile(r'([A-Z]{2,5})(?:-(\d{2,})(?:\.(\d+))?|\.(\d{2,9})\.(\d{2,9})\.(\d{2,9}))')
 TRACEABILITY_SECTION_PATTERN = re.compile(r'^##\s+(?:\d+\.\s+)?Traceability', re.MULTILINE | re.IGNORECASE)
 
 
@@ -162,7 +162,7 @@ class RequirementIndex:
 
         doc_id = f"{doc_id_match.group(1)}-{doc_id_match.group(2)}"
         if doc_id_match.group(3):
-            doc_id += f".{doc_id_match.group(3)}"  # Section file format: TYPE-NNN.S
+            doc_id += f".{doc_id_match.group(3)}"  # Section file format: TYPE-NN.S
 
         # Extract title (first # heading)
         title_match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
@@ -395,14 +395,14 @@ class CrossDocumentValidator:
             if tag_value.lower() == "null":
                 continue
 
-            # Check format: TYPE-NNN (doc-level) or TYPE.NN.EE.SS (sub-ID)
+            # Check format: TYPE-NN (doc-level) or TYPE.NN.TT.SS (sub-ID)
             if not DOC_ID_PATTERN.match(tag_value):
                 self.issues.append(ValidationIssue(
                     code=IssueCode.XDOC_006,
                     severity=Severity.ERROR,
-                    message=f"Invalid tag format: @{tag_name}: {tag_value} (expected TYPE-NNN or TYPE.NN.EE.SS)",
+                    message=f"Invalid tag format: @{tag_name}: {tag_value} (expected TYPE-NN or TYPE.NN.TT.SS)",
                     location=str(doc_path),
-                    fix_action="Correct to TYPE-NNN (doc-level) or TYPE.NN.EE.SS (sub-ID) format"
+                    fix_action="Correct to TYPE-NN (doc-level) or TYPE.NN.TT.SS (sub-ID) format"
                 ))
 
     def _validate_upstream_references(self, content: str, doc_path: Path) -> None:
@@ -416,19 +416,19 @@ class CrossDocumentValidator:
                 continue
 
             # Extract document ID - handle both formats:
-            # TYPE-NNN (doc-level): groups (1=TYPE, 2=NNN, 3=optional-sub)
-            # TYPE.NN.EE.SS (sub-ID): groups (1=TYPE, 4=doc-NNN, 5=sub-NNN)
+            # TYPE-NN (doc-level): groups (1=TYPE, 2=NNN, 3=optional-sub)
+            # TYPE.NN.TT.SS (sub-ID): groups (1=TYPE, 4=doc-NNN, 5=sub-NNN)
             doc_id_match = DOC_ID_PATTERN.match(tag_value)
             if not doc_id_match:
                 continue
 
             doc_type = doc_id_match.group(1)
-            if doc_id_match.group(2):  # Hyphen format: TYPE-NNN or TYPE-NNN.S (section file)
+            if doc_id_match.group(2):  # Hyphen format: TYPE-NN or TYPE-NN.S (section file)
                 doc_id = f"{doc_type}-{doc_id_match.group(2)}"
                 if doc_id_match.group(3):
-                    doc_id += f".{doc_id_match.group(3)}"  # Section file format: TYPE-NNN.S
+                    doc_id += f".{doc_id_match.group(3)}"  # Section file format: TYPE-NN.S
                 section_ref = None
-            else:  # Dot notation format: TYPE.NN.EE.SS
+            else:  # Dot notation format: TYPE.NN.TT.SS
                 doc_num = doc_id_match.group(4)
                 sub_num = doc_id_match.group(5)
                 doc_id = f"{doc_type}-{doc_num}"  # Convert to hyphen for index lookup
@@ -534,11 +534,11 @@ class CrossDocumentValidator:
                             ref_match = DOC_ID_PATTERN.match(tag_value)
                             if ref_match:
                                 ref_type = ref_match.group(1)
-                                if ref_match.group(2):  # Hyphen format: TYPE-NNN or TYPE-NNN.S
+                                if ref_match.group(2):  # Hyphen format: TYPE-NN or TYPE-NN.S
                                     ref_id = f"{ref_type}-{ref_match.group(2)}"
                                     if ref_match.group(3):
                                         ref_id += f".{ref_match.group(3)}"  # Section file format
-                                else:  # Dot notation format: TYPE.NN.EE.SS
+                                else:  # Dot notation format: TYPE.NN.TT.SS
                                     ref_id = f"{ref_type}-{ref_match.group(4)}"
                                 referenced.add(ref_id)
                     except Exception:
@@ -732,7 +732,7 @@ class AutoFixer:
         bad_value = match.group(2)
 
         # Try to extract valid ID components
-        id_parts = re.findall(r'([A-Z]+).*?(\d{3,4})', bad_value.upper())
+        id_parts = re.findall(r'([A-Z]+).*?(\d{2,})', bad_value.upper())
         if id_parts:
             corrected = f"{id_parts[0][0]}-{id_parts[0][1]}"
             pattern = re.compile(rf'@{tag_name}:\s*{re.escape(bad_value)}', re.IGNORECASE)
@@ -742,8 +742,8 @@ class AutoFixer:
 
     def _fix_missing_upstream(self, content: str, issue: ValidationIssue) -> str:
         """Remove functionality requiring missing upstream (strict hierarchy)"""
-        # Extract the missing document reference (supports TYPE-NNN and TYPE-NNN.S section files)
-        match = re.search(r'([A-Z]+-\d{3,4}(?:\.\d+)?)', issue.message)
+        # Extract the missing document reference (supports TYPE-NN and TYPE-NN.S section files)
+        match = re.search(r'([A-Z]+-\d{2,}(?:\.\d+)?)', issue.message)
         if not match:
             return content
 
@@ -769,8 +769,8 @@ class AutoFixer:
 
     def _fix_deprecated_reference(self, content: str, issue: ValidationIssue) -> str:
         """Remove or mark deprecated reference"""
-        # Supports TYPE-NNN and TYPE-NNN.S section files
-        match = re.search(r'([A-Z]+-\d{3,4}(?:\.\d+)?)', issue.message)
+        # Supports TYPE-NN and TYPE-NN.S section files
+        match = re.search(r'([A-Z]+-\d{2,}(?:\.\d+)?)', issue.message)
         if not match:
             return content
 
@@ -901,7 +901,7 @@ def main():
         epilog="""
 Examples:
   # Per-document validation
-  python validate_cross_document.py --document docs/REQ/REQ-001.md --auto-fix
+  python validate_cross_document.py --document docs/REQ/REQ-01.md --auto-fix
 
   # Per-layer validation
   python validate_cross_document.py --layer REQ --auto-fix

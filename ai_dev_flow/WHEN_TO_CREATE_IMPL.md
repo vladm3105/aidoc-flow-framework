@@ -71,7 +71,7 @@ Go directly from REQ → CTR/SPEC for **simple tasks**:
 ## Decision Tree
 
 ```
-Start: New Requirement (REQ-NNN)
+Start: New Requirement (REQ-NN)
   │
   ├─ Is duration ≥ 2 weeks? ──────────── YES ──→ Create IMPL
   │
@@ -171,7 +171,7 @@ graph TD
 
 **Documents**:
 ```
-REQ-003 → IMPL-001 → CTR-001 (Risk Validator API) → SPEC-003 → TASKS-003
+REQ-03 → IMPL-01 → CTR-001 (Risk Validator API) → SPEC-03 → TASKS-03
 ```
 
 **Example 2: [METRICS - e.g., performance indicators, quality scores] Calculation ⏭️ Skip CTR**
@@ -213,7 +213,7 @@ REQ-075 → IMPL-075 → CTR-075 (Trade Event Schema) → SPEC-075 → TASKS-075
 
 **Documents**:
 ```
-REQ-001 → IMPL-001 → CTR-001, CTR-002 → SPEC-001.1, SPEC-001.2 → TASKS-001
+REQ-01 → IMPL-01 → CTR-001, CTR-02 → SPEC-01.1, SPEC-01.2 → TASKS-01
 ```
 
 ### Example 2: Bug Fix - [METRICS - e.g., performance indicators, quality scores] Calculation ⏭️ Skip IMPL

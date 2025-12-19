@@ -419,15 +419,15 @@ validator = container.resolve(ClientIDValidator)
 
 **Example Analysis**:
 ```
-TASKS-001: Service Connector
+TASKS-01: Service Connector
 
 Upstream Dependencies:
-- TASKS-005: ClientIDValidator interface (for ID management)
+- TASKS-05: ClientIDValidator interface (for ID management)
 - TASKS-008: ConfigLoader interface (for connection config)
 
 Downstream Dependencies (8 TASKS):
-- TASKS-002: Data Streaming (needs ServiceConnector)
-- TASKS-003: Request Management (needs ServiceConnector)
+- TASKS-02: Data Streaming (needs ServiceConnector)
+- TASKS-03: Request Management (needs ServiceConnector)
 - TASKS-004: Account Management (needs ServiceConnector)
 - TASKS-006: Resource Tracking (needs ServiceConnector)
 - TASKS-007: Historical Data (needs ServiceConnector)
@@ -859,7 +859,7 @@ def test_immutability():
 
 ### 8.1 Quantified Benefits
 
-**Development Speed** (from TASKS-001 analysis):
+**Development Speed** (from TASKS-01 analysis):
 - Sequential development: 11.5 weeks
 - Parallel with contracts: 4 weeks
 - **Improvement**: 65% faster delivery
@@ -993,15 +993,15 @@ class ServiceConnector(Protocol):
 
 ---
 
-## 10. Real-World Example: TASKS-001
+## 10. Real-World Example: TASKS-01
 
 ### 10.1 Context
 
-**TASKS-001**: Service Connector
+**TASKS-01**: Service Connector
 
 **Downstream Dependencies**: 8 TASKS files
-- TASKS-002: Data Streaming
-- TASKS-003: Request Management
+- TASKS-02: Data Streaming
+- TASKS-03: Request Management
 - TASKS-004: Account Management
 - TASKS-006: Resource Tracking
 - TASKS-007: Historical Data
@@ -1009,7 +1009,7 @@ class ServiceConnector(Protocol):
 - TASKS-010: Operation Execution
 - TASKS-011: Risk Management
 
-**Problem**: All 8 TASKS blocked until TASKS-001 complete.
+**Problem**: All 8 TASKS blocked until TASKS-01 complete.
 
 **Solution**: Create 4 implementation contracts.
 
@@ -1089,8 +1089,8 @@ class ClientIDValidator(ABC):
 - **Reduction**: 87%
 
 **Developer Feedback**:
-- "Type safety caught issues immediately" (TASKS-002 developer)
-- "Mock implementations trivial with protocols" (TASKS-003 developer)
+- "Type safety caught issues immediately" (TASKS-02 developer)
+- "Mock implementations trivial with protocols" (TASKS-03 developer)
 - "State machine prevented invalid transitions" (TASKS-006 developer)
 
 ---
@@ -1193,9 +1193,9 @@ await connector.connect("localhost", 4002)
 
 ### 12.3 Example Projects
 
-- TASKS-001: Service Connector (8 dependent TASKS)
-- TASKS-002: Data Streaming (protocol consumer)
-- TASKS-005: Client ID Management (DI interface provider)
+- TASKS-01: Service Connector (8 dependent TASKS)
+- TASKS-02: Data Streaming (protocol consumer)
+- TASKS-05: Client ID Management (DI interface provider)
 
 ---
 
@@ -1217,46 +1217,46 @@ The `@icon` tag provides concise traceability for implementation contracts withi
 
 **Primary Format**:
 ```yaml
-@icon: TASKS-001:ServiceConnector
+@icon: TASKS-01:ServiceConnector
 ```
 
 **With Role Specification** (optional):
 ```yaml
-@icon: TASKS-001:ServiceConnector
+@icon: TASKS-01:ServiceConnector
 @icon-role: provider
 ```
 
 ```yaml
-@icon: TASKS-002:ServiceConnector
+@icon: TASKS-02:ServiceConnector
 @icon-role: consumer
 ```
 
 **For Standalone ICON Files** (optional, see section 14):
 ```yaml
-@icon: ICON-001:PlatformEventBus
+@icon: ICON-01:PlatformEventBus
 ```
 
 ### 13.3 Usage Examples
 
-**In TASKS Provider File** (TASKS-001):
+**In TASKS Provider File** (TASKS-01):
 ```markdown
 ## 8. Implementation Contracts
 
 ### 8.1 ServiceConnector Protocol
 
-@icon: TASKS-001:ServiceConnector
+@icon: TASKS-01:ServiceConnector
 @icon-role: provider
 
 [Contract definition...]
 ```
 
-**In TASKS Consumer File** (TASKS-002):
+**In TASKS Consumer File** (TASKS-02):
 ```markdown
 ## 3. Dependencies
 
 ### 3.1 Connection Service
 
-@icon: TASKS-001:ServiceConnector
+@icon: TASKS-01:ServiceConnector
 @icon-role: consumer
 
 Requires ServiceConnector protocol for service connections.
@@ -1265,7 +1265,7 @@ Requires ServiceConnector protocol for service connections.
 **In Python Implementation**:
 ```python
 # src/services/connector.py
-# @icon: TASKS-001:ServiceConnector
+# @icon: TASKS-01:ServiceConnector
 # @icon-role: provider
 
 from typing import Protocol
@@ -1292,12 +1292,12 @@ class ServiceConnector(Protocol):
 
 **Layer 11 (@icon)**: Internal implementation contracts
 ```yaml
-@icon: TASKS-001:ServiceConnector
+@icon: TASKS-01:ServiceConnector
 ```
 
 **Layer 12 (@iplan)**: Implementation plans
 ```yaml
-@iplan: IPLAN-001
+@iplan: IPLAN-01
 ```
 
 **Key Distinction**: `@ctr` tags reference external API contracts (Layer 9), while `@icon` tags reference internal implementation contracts (Layer 11 TASKS).
@@ -1310,7 +1310,7 @@ Check for `@icon` tag consistency:
 grep -r "@icon:" docs/TASKS/
 
 # Verify provider/consumer pairs
-grep -A1 "@icon: TASKS-001:ServiceConnector" docs/TASKS/
+grep -A1 "@icon: TASKS-01:ServiceConnector" docs/TASKS/
 ```
 
 ---
@@ -1347,9 +1347,9 @@ grep -A1 "@icon: TASKS-001:ServiceConnector" docs/TASKS/
 **Naming Convention**: `ICON-NNN_descriptive_name.md`
 
 **Examples**:
-- `ICON-001_service_connector_protocol.md`
-- `ICON-002_data_event_bus.md`
-- `ICON-003_request_execution_exceptions.md`
+- `ICON-01_service_connector_protocol.md`
+- `ICON-02_data_event_bus.md`
+- `ICON-03_request_execution_exceptions.md`
 
 ### 14.3 ICON File Contents
 
@@ -1402,20 +1402,20 @@ grep -A1 "@icon: TASKS-001:ServiceConnector" docs/TASKS/
 
 **Contract Definition**:
 ```markdown
-@icon: ICON-001:ServiceConnector
+@icon: ICON-01:ServiceConnector
 ```
 
 **Provider TASKS**:
 ```markdown
-@icon: ICON-001:ServiceConnector
+@icon: ICON-01:ServiceConnector
 @icon-role: provider
 
-See [ICON-001_service_connector.md](../../ai_dev_flow/ICON/ICON-001_service_connector.md)
+See [ICON-01_service_connector.md](../../ai_dev_flow/ICON/ICON-01_service_connector.md)
 ```
 
 **Consumer TASKS**:
 ```markdown
-@icon: ICON-001:ServiceConnector
+@icon: ICON-01:ServiceConnector
 @icon-role: consumer
 
 Requires ServiceConnector protocol for service connections.
@@ -1427,14 +1427,14 @@ Requires ServiceConnector protocol for service connections.
 - Consumer Count: 3 ❌ (<5)
 - Contract Size: 200 lines ❌ (<500)
 - Scope: Component-level ❌
-- **Decision**: Embed in TASKS-001
+- **Decision**: Embed in TASKS-01
 
 **Example 2: Create ICON** (8 consumers, 600 lines, 3 projects):
 - Consumer Count: 8 ✅ (>5)
 - Contract Size: 600 lines ✅ (>500)
 - Scope: Platform-level ✅
 - Projects: 3 ✅
-- **Decision**: Create ICON-002
+- **Decision**: Create ICON-02
 
 ### 14.8 ICON Resources
 
@@ -1453,7 +1453,7 @@ grep -r "@icon: ICON-" docs/
 ls -la docs/ICON/ICON-*.md
 
 # Verify provider/consumer pairs
-grep -A1 "@icon: ICON-001" docs/TASKS/
+grep -A1 "@icon: ICON-01" docs/TASKS/
 
 # Check for orphaned contracts
 for file in docs/ICON/ICON-*.md; do

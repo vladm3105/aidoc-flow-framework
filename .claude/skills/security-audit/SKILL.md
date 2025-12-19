@@ -264,7 +264,7 @@ Output:
   ],
   "incomplete_requirements": [
     {
-      "id": "REQ-AUTH-001",
+      "id": "REQ-AUTH-01",
       "issue": "No password complexity specification",
       "current": "Password must be secure",
       "recommended": "Password: 8-128 chars, uppercase, lowercase, digit, special"

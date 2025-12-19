@@ -279,8 +279,8 @@ This PRD defines features that operate within the existing Claude Code skill fra
 | Artifact | Type | Reference |
 |----------|------|-----------|
 | ADR-001 | Architecture Decision | To be created - AI-powered documentation assistant architecture |
-| EARS-NNN | Formal Requirements | To be created - formal requirements for features |
-| BDD-NNN | Test Scenarios | To be created - acceptance test scenarios |
+| EARS-NN | Formal Requirements | To be created - formal requirements for features |
+| BDD-NN | Test Scenarios | To be created - acceptance test scenarios |
 
 ### Primary Anchor/ID
 

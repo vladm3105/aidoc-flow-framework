@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: ICON-001 through ICON-NNN
+# Traceability Matrix: ICON-01 through ICON-NN
 
 ## Document Control
 
@@ -57,7 +57,7 @@ python scripts/generate_traceability_matrices.py --type ICON --output docs/ICON/
 - Provider/consumer tracking: @icon-role tags clarify relationships
 
 **Tag Format:**
-- `@icon: ICON-001:ContractName` (contract reference)
+- `@icon: ICON-01:ContractName` (contract reference)
 - `@icon-role: provider` or `@icon-role: consumer`
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
@@ -99,7 +99,7 @@ This matrix tracks all ICON contracts, mapping upstream specifications to provid
 @adr: ADR-033
 @impl: IMPL.03.28.02
 @ctr: CTR-005
-@icon: ICON-001:ContractName
+@icon: ICON-01:ContractName
 @icon-role: provider|consumer
 ```
 
@@ -108,15 +108,15 @@ This matrix tracks all ICON contracts, mapping upstream specifications to provid
 - Artifact Type: lowercase (`spec`, `req`, `adr`, `icon`)
 - Separator: colon `:` after artifact type
 - Tag Formats:
-  - Document-level: `TYPE-NNN` (ADR, SPEC, CTR, ICON, TASKS, IPLAN)
-  - Feature-level: `TYPE.NN.EE.SS` (REQ, PRD, BRD, SYS, EARS, BDD, IMPL)
+  - Document-level: `TYPE-NN` (ADR, SPEC, CTR, ICON, TASKS, IPLAN)
+  - Feature-level: `TYPE.NN.TT.SS` (REQ, PRD, BRD, SYS, EARS, BDD, IMPL)
 - Contract Name: PascalCase identifier (for @icon tags)
 - Role Tag: `provider` or `consumer` (required in TASKS files)
 
 ### 2.3 Example: ICON with Required Tags
 
 ```markdown
-# ICON-001: GatewayConnector
+# ICON-01: GatewayConnector
 
 ## 7. Traceability
 
@@ -133,13 +133,13 @@ This matrix tracks all ICON contracts, mapping upstream specifications to provid
 
 **Provider TASKS**:
 ```markdown
-@icon: ICON-001:GatewayConnector
+@icon: ICON-01:GatewayConnector
 @icon-role: provider
 ```
 
 **Consumer TASKS**:
 ```markdown
-@icon: ICON-001:GatewayConnector
+@icon: ICON-01:GatewayConnector
 @icon-role: consumer
 ```
 ```
@@ -147,7 +147,7 @@ This matrix tracks all ICON contracts, mapping upstream specifications to provid
 ### 2.4 Validation Rules
 
 1. **Required**: Each ICON artifact MUST include @spec, @req, @adr tags
-2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NNN` format
+2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NN` format
 3. **Valid References**: All referenced documents and requirements must exist
 4. **Bidirectional Tags**: Provider and consumer TASKS must have matching @icon tags
 5. **Consumer Count**: Frontmatter consumer_count must match grep results
@@ -159,9 +159,9 @@ ICON tags can be discovered automatically:
 # Find all ICONs and their provider/consumer TASKS
 python scripts/extract_tags.py --type ICON --show-relationships
 
-# Validate ICON-001 has bidirectional tags
+# Validate ICON-01 has bidirectional tags
 python scripts/validate_tags_against_docs.py \
-  --artifact ICON-001 \
+  --artifact ICON-01 \
   --verify-bidirectional \
   --strict
 
@@ -181,9 +181,9 @@ python scripts/generate_traceability_matrices.py \
 
 | Contract Type | Count | ICON IDs | Description |
 |---------------|-------|----------|-------------|
-| Protocol Interface | [X] | ICON-001, ICON-005 | typing.Protocol definitions |
-| Exception Hierarchy | [X] | ICON-002, ICON-006 | Typed exceptions with error codes |
-| State Machine | [X] | ICON-003 | Enum states with transitions |
+| Protocol Interface | [X] | ICON-01, ICON-005 | typing.Protocol definitions |
+| Exception Hierarchy | [X] | ICON-02, ICON-006 | Typed exceptions with error codes |
+| State Machine | [X] | ICON-03 | Enum states with transitions |
 | Data Model | [X] | ICON-004 | Pydantic/TypedDict schemas |
 | DI Interface | [X] | ICON-007 | ABC classes for dependency injection |
 
@@ -193,9 +193,9 @@ python scripts/generate_traceability_matrices.py \
 
 | ICON ID | Contract Name | Type | Providers | Consumers | Status | Date | Complexity |
 |---------|---------------|------|-----------|-----------|--------|------|------------|
-| ICON-001 | [ContractName] | Protocol | TASKS-001 | TASKS-002, TASKS-003 | Active | YYYY-MM-DD | 3/5 |
-| ICON-002 | [ContractName] | Exception | TASKS-004 | TASKS-005 | Draft | YYYY-MM-DD | 2/5 |
-| ICON-NNN | ... | ... | ... | ... | ... | ... | ... |
+| ICON-01 | [ContractName] | Protocol | TASKS-01 | TASKS-02, TASKS-03 | Active | YYYY-MM-DD | 3/5 |
+| ICON-02 | [ContractName] | Exception | TASKS-004 | TASKS-05 | Draft | YYYY-MM-DD | 2/5 |
+| ICON-NN | ... | ... | ... | ... | ... | ... | ... |
 
 **Status Legend**:
 - **Active**: Contract finalized, implementations in progress
@@ -213,16 +213,16 @@ python scripts/generate_traceability_matrices.py \
 
 | SPEC ID | SPEC Title | ICON IDs | Contract Names | Relationship |
 |---------|------------|----------|----------------|--------------|
-| SPEC-001 | [Technical specification] | ICON-001 | [ContractName] | Interface defined in SPEC |
-| SPEC-002 | [Technical specification] | ICON-002, ICON-003 | [ContractName], [ContractName] | Multiple contracts from single SPEC |
-| SPEC-NNN | ... | ... | ... | ... |
+| SPEC-01 | [Technical specification] | ICON-01 | [ContractName] | Interface defined in SPEC |
+| SPEC-02 | [Technical specification] | ICON-02, ICON-03 | [ContractName], [ContractName] | Multiple contracts from single SPEC |
+| SPEC-NN | ... | ... | ... | ... |
 
 ### 5.2 REQ → ICON Traceability
 
 | REQ ID | REQ Title | ICON IDs | Contract Names | Relationship |
 |--------|-----------|----------|----------------|--------------|
-| REQ-001 | [Atomic requirement] | ICON-001 | [ContractName] | Requirement drives interface design |
-| REQ-NNN | ... | ... | ... | ... |
+| REQ-01 | [Atomic requirement] | ICON-01 | [ContractName] | Requirement drives interface design |
+| REQ-NN | ... | ... | ... | ... |
 
 ### 5.3 Upstream Source Summary
 
@@ -240,47 +240,47 @@ python scripts/generate_traceability_matrices.py \
 
 | ICON ID | Contract Name | Provider TASKS | Implementation Status | Validation |
 |---------|---------------|----------------|----------------------|------------|
-| ICON-001 | [ContractName] | TASKS-001 | Complete | mypy pass |
-| ICON-002 | [ContractName] | TASKS-004 | In Progress | mypy pass |
-| ICON-NNN | ... | ... | ... | ... |
+| ICON-01 | [ContractName] | TASKS-01 | Complete | mypy pass |
+| ICON-02 | [ContractName] | TASKS-004 | In Progress | mypy pass |
+| ICON-NN | ... | ... | ... | ... |
 
 ### 6.2 Consumer TASKS → ICON
 
 | ICON ID | Contract Name | Consumer TASKS | Integration Status | Mock Available |
 |---------|---------------|----------------|-------------------|----------------|
-| ICON-001 | [ContractName] | TASKS-002, TASKS-003 | Testing | Yes |
-| ICON-002 | [ContractName] | TASKS-005 | Waiting | Yes |
-| ICON-NNN | ... | ... | ... | ... |
+| ICON-01 | [ContractName] | TASKS-02, TASKS-03 | Testing | Yes |
+| ICON-02 | [ContractName] | TASKS-05 | Waiting | Yes |
+| ICON-NN | ... | ... | ... | ... |
 
 ### 6.3 Provider/Consumer Summary
 
 | ICON ID | Contract Name | Provider Count | Consumer Count | Validation Status |
 |---------|---------------|----------------|----------------|-------------------|
-| ICON-001 | [ContractName] | 1 | 2 | Bidirectional tags verified |
-| ICON-002 | [ContractName] | 1 | 1 | Bidirectional tags verified |
-| ICON-NNN | ... | ... | ... | ... |
+| ICON-01 | [ContractName] | 1 | 2 | Bidirectional tags verified |
+| ICON-02 | [ContractName] | 1 | 1 | Bidirectional tags verified |
+| ICON-NN | ... | ... | ... | ... |
 
 ---
 
 ## 7. Downstream Traceability (OPTIONAL)
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
 
 ### 7.1 ICON → Code Traceability
 
 | ICON ID | Contract Name | Implementation Files | Classes/Functions | LOC | Type Check |
 |---------|---------------|---------------------|-------------------|-----|------------|
-| ICON-001 | [ContractName] | src/contracts/gateway.py | GatewayConnector | 150 | mypy pass |
-| ICON-002 | [ContractName] | src/contracts/exceptions.py | GatewayError, ... | 80 | mypy pass |
-| ICON-NNN | ... | ... | ... | ... | ... |
+| ICON-01 | [ContractName] | src/contracts/gateway.py | GatewayConnector | 150 | mypy pass |
+| ICON-02 | [ContractName] | src/contracts/exceptions.py | GatewayError, ... | 80 | mypy pass |
+| ICON-NN | ... | ... | ... | ... | ... |
 
 ### 7.2 ICON → Tests Traceability
 
 | ICON ID | Contract Name | Test Files | Test Functions | Coverage % | Relationship |
 |---------|---------------|------------|----------------|------------|--------------|
-| ICON-001 | [ContractName] | tests/test_gateway_contract.py | test_protocol_compliance, ... | 100% | Contract validation |
-| ICON-002 | [ContractName] | tests/test_exceptions.py | test_error_hierarchy, ... | 100% | Exception coverage |
-| ICON-NNN | ... | ... | ... | ... | ... |
+| ICON-01 | [ContractName] | tests/test_gateway_contract.py | test_protocol_compliance, ... | 100% | Contract validation |
+| ICON-02 | [ContractName] | tests/test_exceptions.py | test_error_hierarchy, ... | 100% | Exception coverage |
+| ICON-NN | ... | ... | ... | ... | ... |
 
 ---
 
@@ -289,29 +289,29 @@ python scripts/generate_traceability_matrices.py \
 ```mermaid
 graph TD
     subgraph Upstream
-        SPEC001[SPEC-001: Interface Spec]
-        REQ001[REQ-001: Interface Req]
-        ADR001[ADR-001: Architecture Decision]
+        SPEC01[SPEC-01: Interface Spec]
+        REQ01[REQ-01: Interface Req]
+        ADR001[ADR-01: Architecture Decision]
     end
 
     subgraph ICON Layer
-        ICON001[ICON-001: GatewayConnector]
-        ICON002[ICON-002: ErrorHierarchy]
+        ICON001[ICON-01: GatewayConnector]
+        ICON002[ICON-02: ErrorHierarchy]
     end
 
     subgraph Provider TASKS
-        TASKS001[TASKS-001: Gateway Implementation]
+        TASKS001[TASKS-01: Gateway Implementation]
         TASKS004[TASKS-004: Error Handling]
     end
 
     subgraph Consumer TASKS
-        TASKS002[TASKS-002: Market Data Service]
-        TASKS003[TASKS-003: Order Service]
-        TASKS005[TASKS-005: Notification Service]
+        TASKS002[TASKS-02: Market Data Service]
+        TASKS003[TASKS-03: Order Service]
+        TASKS005[TASKS-05: Notification Service]
     end
 
-    SPEC001 --> ICON001
-    REQ001 --> ICON001
+    SPEC01 --> ICON001
+    REQ01 --> ICON001
     ADR001 --> ICON001
 
     ICON001 --> TASKS001
@@ -334,8 +334,8 @@ graph TD
 
 | Source ICON | Target ICON | Dependency Type | Description |
 |-------------|-------------|-----------------|-------------|
-| ICON-002 | ICON-001 | Exception handling | Error hierarchy used by gateway contract |
-| ICON-NNN | ... | ... | ... |
+| ICON-02 | ICON-01 | Exception handling | Error hierarchy used by gateway contract |
+| ICON-NN | ... | ... | ... |
 
 ---
 
@@ -345,17 +345,17 @@ graph TD
 
 | ICON ID | Contract Name | Type Check | Runtime Check | Mock Coverage | Quality Score |
 |---------|---------------|------------|---------------|---------------|---------------|
-| ICON-001 | [ContractName] | mypy pass | isinstance pass | 100% | 10/10 |
-| ICON-002 | [ContractName] | mypy pass | N/A | 100% | 9/10 |
-| ICON-NNN | ... | ... | ... | ... | ... |
+| ICON-01 | [ContractName] | mypy pass | isinstance pass | 100% | 10/10 |
+| ICON-02 | [ContractName] | mypy pass | N/A | 100% | 9/10 |
+| ICON-NN | ... | ... | ... | ... | ... |
 
 ### 9.2 Bidirectional Tag Verification
 
 | ICON ID | Contract Name | Provider Tags | Consumer Tags | Tag Sync Status |
 |---------|---------------|---------------|---------------|-----------------|
-| ICON-001 | [ContractName] | 1 verified | 2 verified | In Sync |
-| ICON-002 | [ContractName] | 1 verified | 1 verified | In Sync |
-| ICON-NNN | ... | ... | ... | ... |
+| ICON-01 | [ContractName] | 1 verified | 2 verified | In Sync |
+| ICON-02 | [ContractName] | 1 verified | 1 verified | In Sync |
+| ICON-NN | ... | ... | ... | ... |
 
 ---
 
@@ -365,16 +365,16 @@ graph TD
 
 | ICON ID | Current Version | Breaking Changes | Deprecation Date | Sunset Date |
 |---------|-----------------|------------------|------------------|-------------|
-| ICON-001 | 1.0.0 | None | N/A | N/A |
-| ICON-002 | 1.1.0 | v1.0→v1.1: Added field | N/A | N/A |
-| ICON-NNN | ... | ... | ... | ... |
+| ICON-01 | 1.0.0 | None | N/A | N/A |
+| ICON-02 | 1.1.0 | v1.0→v1.1: Added field | N/A | N/A |
+| ICON-NN | ... | ... | ... | ... |
 
 ### 10.2 Pending Changes
 
 | ICON ID | Proposed Change | Impact | Consumer Notification | Target Date |
 |---------|-----------------|--------|----------------------|-------------|
-| ICON-001 | Add async method | Minor | Sent YYYY-MM-DD | YYYY-MM-DD |
-| ICON-NNN | ... | ... | ... | ... |
+| ICON-01 | Add async method | Minor | Sent YYYY-MM-DD | YYYY-MM-DD |
+| ICON-NN | ... | ... | ... | ... |
 
 ---
 
@@ -410,8 +410,8 @@ graph TD
 
 | Phase | ICON IDs | Focus Area | Target Date | Status |
 |-------|----------|------------|-------------|--------|
-| Phase 1 | ICON-001, ICON-002 | Provider validation | YYYY-MM-DD | Active |
-| Phase 2 | ICON-003, ICON-004 | Consumer integration | YYYY-MM-DD | Planning |
+| Phase 1 | ICON-01, ICON-02 | Provider validation | YYYY-MM-DD | Active |
+| Phase 2 | ICON-03, ICON-004 | Consumer integration | YYYY-MM-DD | Planning |
 | Phase 3 | All | Bidirectional tag audit | YYYY-MM-DD | Not Started |
 
 ---

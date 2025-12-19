@@ -8,7 +8,7 @@
 #   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
 # =============================================================================
 ---
-title: "EARS-NNN: [Descriptive Title]"
+title: "EARS-NN: [Descriptive Title]"
 tags:
   - ears
   - layer-3-artifact
@@ -20,7 +20,7 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]  # ARRAY format required
   priority: shared  # OR primary for AI agents
   development_status: active  # active | draft | in-review | reserved | deprecated
-  agent_id: AGENT-NNN  # ONLY for AI agent documents (EARS.022 to EARS.029)
+  agent_id: AGENT-NN  # ONLY for AI agent documents (EARS.022 to EARS.029)
   schema_reference: "EARS_SCHEMA.yaml"
   schema_version: "1.0"
 ---
@@ -30,7 +30,7 @@ custom_fields:
 > - **Creation Rules**: `EARS_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `EARS_VALIDATION_RULES.md` - Post-creation checks
 
-# EARS-NNN: [Descriptive Title]
+# EARS-NN: [Descriptive Title]
 
 ## Document Control
 
@@ -48,10 +48,10 @@ custom_fields:
 ## 1. Purpose and Context
 
 ### 1.1 Document Purpose
-This EARS document translates PRD-NNN ([Feature Name]) high-level business and product requirements into precise, atomic, testable engineering requirements using structured EARS syntax patterns.
+This EARS document translates PRD-NN ([Feature Name]) high-level business and product requirements into precise, atomic, testable engineering requirements using structured EARS syntax patterns.
 
 ### 1.2 Scope
-This document covers [list of features/capabilities] derived from PRD-NNN. It defines behavioral requirements using WHEN-THE-SHALL-WITHIN syntax.
+This document covers [list of features/capabilities] derived from PRD-NN. It defines behavioral requirements using WHEN-THE-SHALL-WITHIN syntax.
 
 ### 1.3 Intended Audience
 - Solution Architects designing [domain] architecture
@@ -64,19 +64,19 @@ This document covers [list of features/capabilities] derived from PRD-NNN. It de
 ## 2. EARS in Development Workflow
 
 \`\`\`
-BRD-NNN (Business Requirements)
+BRD-NN (Business Requirements)
         ↓
-PRD-NNN (Product Requirements)
+PRD-NN (Product Requirements)
         ↓
-EARS-NNN (Formal Requirements) ← You are here
+EARS-NN (Formal Requirements) ← You are here
         ↓
-BDD-NNN (Behavior-Driven Development)
+BDD-NN (Behavior-Driven Development)
         ↓
-ADR-NNN (Architecture Decisions)
+ADR-NN (Architecture Decisions)
         ↓
-REQ-NNN (Atomic Requirements)
+REQ-NN (Atomic Requirements)
         ↓
-SPEC-NNN (Technical Specifications)
+SPEC-NN (Technical Specifications)
         ↓
 Code Implementation
 \`\`\`
@@ -87,7 +87,7 @@ Code Implementation
 
 ### 3.1 Event-Driven Requirements
 
-**EARS-NNN-001: [Requirement Name]**
+**EARS-NN-01: [Requirement Name]**
 \`\`\`
 WHEN [trigger condition],
 THE [system component] SHALL [action 1],
@@ -99,7 +99,7 @@ WITHIN [timing constraint] (@threshold: PRD.035.category.key).
 
 ### 3.2 State-Driven Requirements
 
-**EARS-NNN-101: [Requirement Name]**
+**EARS-NN-101: [Requirement Name]**
 \`\`\`
 WHILE [state condition],
 THE [system component] SHALL [continuous behavior 1],
@@ -111,7 +111,7 @@ WITHIN [operational context].
 
 ### 3.3 Unwanted Behavior Requirements
 
-**EARS-NNN-201: [Requirement Name]**
+**EARS-NN-201: [Requirement Name]**
 \`\`\`
 IF [error condition],
 THE [system component] SHALL [prevention/recovery action 1],
@@ -123,7 +123,7 @@ WITHIN [timing constraint].
 
 ### 3.4 Ubiquitous Requirements
 
-**EARS-NNN-401: [Requirement Name]**
+**EARS-NN-401: [Requirement Name]**
 \`\`\`
 THE [system component] SHALL [universal behavior]
 for [scope/context]
@@ -139,8 +139,8 @@ WITHIN [operational boundary].
 
 | QA ID | Requirement Statement | Metric | Target | Priority | Measurement Method |
 |-------|----------------------|--------|--------|----------|-------------------|
-| EARS.NN.24.15 | THE [component] SHALL complete [operation] | Latency | p95 < NNNms | High | [method] |
-| EARS.NN.24.16 | THE [component] SHALL process [workload] | Throughput | NNN/s | Medium | [method] |
+| EARS.NN.24.15 | THE [component] SHALL complete [operation] | Latency | p95 < NNms | High | [method] |
+| EARS.NN.24.16 | THE [component] SHALL process [workload] | Throughput | NN/s | Medium | [method] |
 
 ### 4.2 Security Requirements
 
@@ -162,8 +162,8 @@ WITHIN [operational boundary].
 
 | Source Type | Document ID | Document Title | Relevant Sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | BRD-NNN | [Title] | Sections X.X | Business objectives |
-| PRD | PRD-NNN | [Title] | Section X.X | Product features |
+| BRD | BRD-NN | [Title] | Sections X.X | Business objectives |
+| PRD | PRD-NN | [Title] | Section X.X | Product features |
 | Threshold Registry | PRD-035 | Platform Threshold Registry | Sections X.X | Timing thresholds |
 | Entity Definitions | PRD-004 | Data Model & Ledger | Section 1.3 | Entity definitions |
 
@@ -171,9 +171,9 @@ WITHIN [operational boundary].
 
 | Target | Document ID | Status | Relationship |
 |--------|-------------|--------|--------------|
-| BDD | BDD-NNN | Planned | Test scenarios |
-| REQ | REQ-NNN | Planned | Atomic requirements |
-| SPEC | SPEC-NNN | Planned | Technical specifications |
+| BDD | BDD-NN | Planned | Test scenarios |
+| REQ | REQ-NN | Planned | Atomic requirements |
+| SPEC | SPEC-NN | Planned | Technical specifications |
 
 ### 5.3 Traceability Tags
 
@@ -183,49 +183,49 @@ WITHIN [operational boundary].
 @prd: PRD.NN.EE.SS
 @threshold: PRD.035.category.key
 @entity: PRD.004.EntityName
-@ctr: CTR-NNN (if applicable)
+@ctr: CTR-NN (if applicable)
 \`\`\`
 
 ### 5.4 Thresholds Referenced
 
 **Purpose**: EARS documents REFERENCE thresholds defined in PRD threshold registry. All quantitative values in EARS requirements must use `@threshold:` tags to ensure single source of truth.
 
-**Threshold Naming Convention**: `@threshold: PRD.NNN.category.subcategory.key`
+**Threshold Naming Convention**: `@threshold: PRD.NN.category.subcategory.key`
 
 **Format Reference**: See `THRESHOLD_NAMING_RULES.md` for complete naming standards.
 
 **Thresholds Used in This Document**:
 \`\`\`yaml
 # Thresholds referenced from PRD threshold registry
-# Format: @threshold: PRD.NNN.category.subcategory.key
+# Format: @threshold: PRD.NN.category.subcategory.key
 
 timing:
   # Timing constraints for WITHIN clauses
-  - "@threshold: PRD.NNN.timeout.request.sync"        # Synchronous operation timeout
-  - "@threshold: PRD.NNN.timeout.request.async"       # Asynchronous operation timeout
-  - "@threshold: PRD.NNN.timeout.connection.default"  # Connection establishment timeout
+  - "@threshold: PRD.NN.timeout.request.sync"        # Synchronous operation timeout
+  - "@threshold: PRD.NN.timeout.request.async"       # Asynchronous operation timeout
+  - "@threshold: PRD.NN.timeout.connection.default"  # Connection establishment timeout
 
 performance:
   # Performance targets for quality attributes
-  - "@threshold: PRD.NNN.perf.api.p95_latency"        # API response time target
-  - "@threshold: PRD.NNN.perf.batch.max_duration"    # Batch processing limit
+  - "@threshold: PRD.NN.perf.api.p95_latency"        # API response time target
+  - "@threshold: PRD.NN.perf.batch.max_duration"    # Batch processing limit
 
 limits:
   # Capacity and rate limits
-  - "@threshold: PRD.NNN.limit.api.requests_per_second"  # Rate limiting
-  - "@threshold: PRD.NNN.limit.batch.size"              # Batch size limits
+  - "@threshold: PRD.NN.limit.api.requests_per_second"  # Rate limiting
+  - "@threshold: PRD.NN.limit.batch.size"              # Batch size limits
 
 error:
   # Error handling thresholds
-  - "@threshold: PRD.NNN.sla.error_rate.target"      # Acceptable error rate
-  - "@threshold: PRD.NNN.retry.max_attempts"         # Retry policy
+  - "@threshold: PRD.NN.sla.error_rate.target"      # Acceptable error rate
+  - "@threshold: PRD.NN.retry.max_attempts"         # Retry policy
 \`\`\`
 
 **Example Usage in Requirements**:
 \`\`\`
 WHEN [trigger condition],
 THE [system component] SHALL [action]
-WITHIN @threshold: PRD.NNN.timeout.request.sync.
+WITHIN @threshold: PRD.NN.timeout.request.sync.
 \`\`\`
 
 **Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
@@ -237,7 +237,7 @@ WITHIN @threshold: PRD.NNN.timeout.request.sync.
 ### 6.1 Internal Documentation
 
 - [EARS Style Guide](EARS_STYLE_GUIDE.md)
-- [PRD-NNN](../PRD/PRD-NNN_name.md) - Source product requirements
+- [PRD-NN](../PRD/PRD-NN_name.md) - Source product requirements
 - [PRD-035](../PRD/PRD-035_platform_threshold_registry.md) - Platform threshold registry
 - [PRD-004](../PRD/PRD-004_data_model_ledger_double_entry_accounting.md) - Entity definitions
 

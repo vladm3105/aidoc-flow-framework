@@ -344,7 +344,7 @@ When creating documents from templates, users must complete the Document Control
 ```bash
 # Create index files
 touch docs/BRD/BRD-000_index.md
-touch docs/prd/PRD-000_index.md
+touch docs/prd/PRD-00_index.md
 touch docs/ears/EARS-000_index.md
 touch docs/BDD/BDD-000_index.md
 touch docs/adrs/ADR-000_index.md
@@ -534,7 +534,7 @@ Step 7: Validation
 ✓ Workflow: REQ → IMPL → CTR → SPEC → TASKS
 
 Next: Use `doc-flow` skill to begin workflow execution
-Start with: BRD-001 (Business Requirements Document)
+Start with: BRD-01 (Business Requirements Document)
 
 ═══════════════════════════════════════════════════════════
 ```
@@ -576,7 +576,7 @@ AI Assistant:
 ✓ Workflow: REQ → IMPL → CTR → SPEC → TASKS
 
 Project Ready!
-Next: Use `doc-flow` skill for BRD-001 creation
+Next: Use `doc-flow` skill for BRD-01 creation
 ```
 
 ---

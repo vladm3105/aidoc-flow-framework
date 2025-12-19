@@ -56,7 +56,7 @@ AI Dev Flow uses **dual metadata approaches** to serve both human and machine au
 **Example**:
 ```yaml
 ---
-title: "BRD-002: Partner Ecosystem Integration"
+title: "BRD-02: Partner Ecosystem Integration"
 tags:
   - platform-brd
   - shared-architecture
@@ -85,7 +85,7 @@ custom_fields:
 
 | Item | Details |
 |------|---------|
-| Document ID | BRD-002 |
+| Document ID | BRD-02 |
 | Version | 1.2.0 |
 | Status | Approved |
 | Author | Product Team |
@@ -278,10 +278,10 @@ Diagrams use simplified labels for visual clarity:
 **REQ/** - Atomic Requirements
 - Granular, testable requirements with acceptance criteria
 - **Organization**: Subdirectories by functional domain
-  - `api/` - API integration requirements (examples: REQ-001_api_integration_example.md)
-  - `auth/` - Authentication/authorization (examples: REQ-003_access_control_example.md)
-  - `data/` - Data architecture (examples: REQ-002_data_validation_example.md)
-  - `risk/` - Risk management (legacy: REQ-003_resource_limit_enforcement.md)
+  - `api/` - API integration requirements (examples: REQ-01_api_integration_example.md)
+  - `auth/` - Authentication/authorization (examples: REQ-03_access_control_example.md)
+  - `data/` - Data architecture (examples: REQ-02_data_validation_example.md)
+  - `risk/` - Risk management (legacy: REQ-03_resource_limit_enforcement.md)
 - **Files**: [REQ-000_index.md](./REQ/REQ-000_index.md) | [Template](./REQ/REQ-TEMPLATE.md)
 
 ### 5. Project Management Layer
@@ -291,7 +291,7 @@ Diagrams use simplified labels for visual clarity:
 - **Focus**: WHO does WHAT, WHEN - NOT technical specifications (HOW)
 - Identifies which CTR, SPEC, TASKS to create
 - **Files**: [IMPL-000_index.md](./IMPL/IMPL-000_index.md) | [Template](./IMPL/IMPL-TEMPLATE.md)
-- **Examples**: [IMPL-001_risk_management_system.md](./IMPL/examples/IMPL-001_risk_management_system.md) | [IMPL-001_feature_implementation_example.md](./IMPL/examples/IMPL-001_feature_implementation_example.md)
+- **Examples**: [IMPL-01_risk_management_system.md](./IMPL/examples/IMPL-01_risk_management_system.md) | [IMPL-01_feature_implementation_example.md](./IMPL/examples/IMPL-01_feature_implementation_example.md)
 
 ### 6. Interface Layer
 
@@ -303,7 +303,7 @@ Diagrams use simplified labels for visual clarity:
 - **When to use**: Created when REQ specifies interface requirements (APIs, events, data models)
 - **Benefits**: Enables parallel development and contract testing
 - **Files**: [CTR-000_index.md](./CTR/CTR-000_index.md) | [Template .md](./CTR/CTR-TEMPLATE.md) + [Template .yaml](./CTR/CTR-TEMPLATE.yaml)
-- **Examples**: [CTR-001_service_contract_example.md](./CTR/CTR-001_service_contract_example.md) + [CTR-001_service_contract_example.yaml](./CTR/CTR-001_service_contract_example.yaml)
+- **Examples**: [CTR-01_service_contract_example.md](./CTR/CTR-01_service_contract_example.md) + [CTR-01_service_contract_example.yaml](./CTR/CTR-01_service_contract_example.yaml)
 
 ### 7. Implementation Layer
 
@@ -312,7 +312,7 @@ Diagrams use simplified labels for visual clarity:
 - Behavioral specifications and operational characteristics
 - References CTR contracts when implementing interfaces
 - **Files**: [SPEC-000_index.md](./SPEC/SPEC-000_index.md) | [Template](./SPEC/SPEC-TEMPLATE.yaml)
-- **Examples**: [SPEC-001_api_client_example.yaml](./SPEC/SPEC-001_api_client_example.yaml)
+- **Examples**: [SPEC-01_api_client_example.yaml](./SPEC/SPEC-01_api_client_example.yaml)
 
 ### 8. Code Generation Layer
 
@@ -357,17 +357,17 @@ Diagrams use simplified labels for visual clarity:
 
 ### Documentation Naming Format
 
-Format: `{TYPE}-{NNN}_{descriptive_slug}.{ext}`
+Format: `{TYPE}-{NN}_{descriptive_slug}.{ext}`
 
 - **TYPE**: Document type prefix (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS)
-- **NNN**: Three-digit sequence number (001, 002, 003)
+- **NNN**: 2+ digit sequence number (01, 02, 003)
 - **descriptive_slug**: snake_case description
 - **ext**: File extension (md, feature, yaml)
 
 Examples:
-- `PRD-001_external_api_integration.md`
-- `BDD-003_risk_limits_requirements.feature`
-- `CTR-001_data_validation.md` + `CTR-001_data_validation.yaml` (dual-file format)
+- `PRD-01_external_api_integration.md`
+- `BDD-03_risk_limits_requirements.feature`
+- `CTR-01_data_validation.md` + `CTR-01_data_validation.yaml` (dual-file format)
 - `SPEC-042_real_time_processor.yaml`
 
 **Note**: CTR (API Contracts) requires both `.md` and `.yaml` files with matching slugs.
@@ -386,7 +386,7 @@ Internal feature IDs within documents use 3-digit sequential numbering with unif
 | SYS Requirements | `001`, `015` | `SYS.08.25.01` | `@sys: SYS.08.25.01` |
 | Quality Attributes | `016`, `017` | `SYS.08.25.16` | `@sys: SYS.08.25.16` |
 
-**Format**: `@type: TYPE.NN.EE.SS` (dot separator for all references)
+**Format**: `@type: TYPE.NN.TT.SS` (dot separator for all references)
 
 **Examples**:
 ```markdown
@@ -397,7 +397,7 @@ Internal feature IDs within documents use 3-digit sequential numbering with unif
 @sys: SYS.08.25.16  # Quality attributes use unified sequential numbering
 ```
 
-**Global Uniqueness**: `TYPE.NN.EE.SS` format creates globally unique references (e.g., `PRD.22.01.15` is unique across all documents).
+**Global Uniqueness**: `TYPE.NN.TT.SS` format creates globally unique references (e.g., `PRD.22.01.15` is unique across all documents).
 
 ## Schema File Reference
 
@@ -427,7 +427,7 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 
 **Core Principle**: Each layer N includes tags from layers 1 through N-1 plus its own identifier.
 
-**Tag Format**: `@artifact-type: TYPE.NN.EE.SS` (unified dot separator)
+**Tag Format**: `@artifact-type: TYPE.NN.TT.SS` (unified dot separator)
 
 **Example Progression**:
 ```markdown
@@ -678,7 +678,7 @@ python scripts/generate_traceability_matrices.py \
 
 **Output Example** (REQ Matrix):
 ```markdown
-# Traceability Matrix: REQ-001 through REQ-150
+# Traceability Matrix: REQ-01 through REQ-150
 
 ## Complete REQ Inventory
 | REQ ID | Title | Status | Upstream | Downstream |
@@ -786,7 +786,7 @@ pip install pyyaml  # For YAML parsing (SPEC documents)
 Each artifact type has a corresponding YAML schema file (`{TYPE}_SCHEMA.yaml`) that defines:
 - **Metadata Requirements**: YAML frontmatter fields and validation rules
 - **Document Structure**: Required/optional sections and numbering patterns
-- **Artifact-Specific Patterns**: Type-specific formats (Gherkin, FR-NNN, TASK-NNN, etc.)
+- **Artifact-Specific Patterns**: Type-specific formats (Gherkin, FR-NN, TASK-NN, etc.)
 - **Validation Rules**: Error/warning severities and fix instructions
 - **Traceability Requirements**: Cumulative tagging hierarchy per layer
 - **Error Messages**: Standardized error codes (E001-E0XX, W001-W0XX, I001-I0XX)
@@ -800,19 +800,19 @@ Each artifact type has a corresponding YAML schema file (`{TYPE}_SCHEMA.yaml`) t
 | 3 | EARS | [EARS_SCHEMA.yaml](./EARS/EARS_SCHEMA.yaml) | WHEN-THE-SHALL-WITHIN format |
 | 4 | BDD | [BDD_SCHEMA.yaml](./BDD/BDD_SCHEMA.yaml) | Gherkin syntax, step patterns |
 | 5 | ADR | [ADR_SCHEMA.yaml](./ADR/ADR_SCHEMA.yaml) | Context-Decision-Consequences |
-| 6 | SYS | [SYS_SCHEMA.yaml](./SYS/SYS_SCHEMA.yaml) | FR-NNN, unified sequential formats |
+| 6 | SYS | [SYS_SCHEMA.yaml](./SYS/SYS_SCHEMA.yaml) | FR-NN, unified sequential formats |
 | 7 | REQ | [REQ_SCHEMA.yaml](./REQ/REQ_SCHEMA.yaml) | 12 sections, interface schemas |
 | 8 | IMPL | [IMPL_SCHEMA.yaml](./IMPL/IMPL_SCHEMA.yaml) | Phase organization, deliverables |
 | 9 | CTR | [CTR_SCHEMA.yaml](./CTR/CTR_SCHEMA.yaml) | Dual-file, OpenAPI/AsyncAPI |
 | 10 | SPEC | [SPEC_SCHEMA.yaml](./SPEC/SPEC_SCHEMA.yaml) | YAML structure, code gen ready |
-| 11 | TASKS | [TASKS_SCHEMA.yaml](./TASKS/TASKS_SCHEMA.yaml) | TASK-NNN, implementation contracts |
+| 11 | TASKS | [TASKS_SCHEMA.yaml](./TASKS/TASKS_SCHEMA.yaml) | TASK-NN, implementation contracts |
 | 12 | IPLAN | [IPLAN_SCHEMA.yaml](./IPLAN/IPLAN_SCHEMA.yaml) | Session format, bash commands |
 
 ### Schema Validation Usage
 
 ```bash
 # Validate document against schema (planned)
-python scripts/validate_artifact.py --schema ai_dev_flow/REQ/REQ_SCHEMA.yaml --document docs/REQ/REQ-001_example.md
+python scripts/validate_artifact.py --schema ai_dev_flow/REQ/REQ_SCHEMA.yaml --document docs/REQ/REQ-01_example.md
 
 # Validate all documents of a type
 python scripts/validate_artifact.py --type REQ --strict

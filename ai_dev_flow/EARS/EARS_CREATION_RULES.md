@@ -54,8 +54,8 @@ custom_fields:
 ## 1. File Organization and Directory Structure
 
 - **Location**: `docs/EARS/` within project docs directory
-- **Naming**: `EARS-NNN_descriptive_title.md` (NNN = 3-digit sequential number)
-- **Subdocuments**: For complex systems: `EARS-NNN-YY_additional_detail.md`
+- **Naming**: `EARS-NN_descriptive_title.md` (NN = 3-digit sequential number)
+- **Subdocuments**: For complex systems: `EARS-NN-YY_additional_detail.md`
 
 ---
 
@@ -106,14 +106,26 @@ EARS documents require specific structural elements for behavioral specification
 
 ## 4. ID and Naming Standards
 
-- **Filename**: `EARS-NNN_descriptive_title.md`
-- **H1**: `# EARS-NNN: [Short Descriptive Title]`
-- **Statement IDs**: `EARS.{DocNum}.24.{Seq}` format (e.g., `EARS.06.24.01`, `EARS.06.24.02`)
-  - Unified Element ID format: TYPE.NN.EE.SS (DOC_NUM.ELEM_TYPE.SEQ)
-  - Element type 24 = EARS Statement
+- **Filename**: `EARS-NN_descriptive_title.md`
+- **H1**: `# EARS-NN: [Short Descriptive Title]`
+- **Statement IDs**: `EARS.{DocNum}.25.{Seq}` format (e.g., `EARS.06.25.01`, `EARS.06.25.02`)
+  - Unified Element ID format: TYPE.NN.TT.SS (DOC_NUM.ELEM_TYPE.SEQ)
+  - Element type 25 = EARS Statement
   - Sequential numbering within document (01, 02, 03...)
-  - ❌ **DEPRECATED**: Do NOT use category prefixes (E, S, U, UB, EVENT, STATE, UNWANTED, UBIQ)
-  - ❌ **DEPRECATED**: Do NOT use 3-segment format (EARS.NN.EE.SS)
+
+### 4.1 Element ID Format (MANDATORY)
+
+**Pattern**: `EARS.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| EARS Statement | 25 | EARS.02.25.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - Category prefixes: `E-XXX`, `S-XXX`, `U-XXX`, `UB-XXX`, `EVENT-XXX`, `STATE-XXX`, `UNWANTED-XXX`, `UBIQ-XXX`
+> - 3-segment format: `EARS.NN.EE`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
 
 ---
 
@@ -268,7 +280,7 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 | @prd | PRD.NN.07.SS | Always |
 | @threshold | PRD.035.category.key | When referencing timing/limits |
 | @entity | PRD.004.EntityName | When referencing data entities |
-| @ctr | CTR-NNN | When referencing API contracts |
+| @ctr | CTR-NN | When referencing API contracts |
 
 ### Do NOT Use
 
@@ -336,8 +348,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -362,13 +374,13 @@ Include ONLY if relationships exist between EARS documents sharing domain contex
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | EARS-NNN | [Related EARS title] | Shared domain context |
-| Depends | EARS-NNN | [Prerequisite EARS title] | Must complete before this |
+| Related | EARS-NN | [Related EARS title] | Shared domain context |
+| Depends | EARS-NN | [Prerequisite EARS title] | Must complete before this |
 
 **Tags**:
 ```markdown
-@related-ears: EARS-NNN
-@depends-ears: EARS-NNN
+@related-ears: EARS-NN
+@depends-ears: EARS-NN
 ```
 
 ---
@@ -410,10 +422,10 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 |---------------|----------------|
 | `ears-requirements` | `ears` |
 | `ears-formal-requirements` | `ears` |
-| `ears-NNN` | `ears` |
+| `ears-NN` | `ears` |
 | `document_type: engineering-requirements` | `document_type: ears` |
 | `architecture_approach: value` | `architecture_approaches: [value]` |
-| `Source Document: PRD-NNN` | `Source Document: @prd: PRD.NN.07.SS` |
+| `Source Document: PRD-NN` | `Source Document: @prd: PRD.NN.07.SS` |
 | `> **Tags**: @prd: ...` | `**Traceability**: @prd: ...` |
 | `@prd: PRD.01.07.01, @threshold: ...` | `@prd: PRD.01.07.01 \| @threshold: ...` |
 | `Status: Approved` (with 50% BDD score) | `Status: Draft` |
@@ -451,7 +463,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/EARS/EARS-NNN_slug.md --auto-fix
+python scripts/validate_cross_document.py --document docs/EARS/EARS-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all EARS documents complete
 python scripts/validate_cross_document.py --layer EARS --auto-fix
@@ -468,7 +480,7 @@ python scripts/validate_cross_document.py --layer EARS --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

@@ -50,7 +50,7 @@ The `charts-flow` skill automates creation and management of Mermaid diagrams fo
 
 | Input | Description | Example |
 |-------|-------------|---------|
-| **Parent File Path** | Absolute path to main document | `{project_root}/docs/PRD/PRD-001_multi_agent_system_architecture.md` |
+| **Parent File Path** | Absolute path to main document | `{project_root}/docs/PRD/PRD-01_multi_agent_system_architecture.md` |
 | **Diagram Description** | Short name for diagram | `3_tier_agent_hierarchy` |
 | **Diagram Type** | Architecture diagram type | `flowchart`, `sequence`, `class`, `state`, `component`, `deployment` |
 
@@ -67,7 +67,7 @@ The `charts-flow` skill automates creation and management of Mermaid diagrams fo
 ### Mode 1: Create New Diagram
 
 **Step 1: Parse Parent Document**
-- Extract parent document ID from filename (e.g., `PRD-001` from `PRD-001_multi_agent_system_architecture.md`)
+- Extract parent document ID from filename (e.g., `PRD-01` from `PRD-01_multi_agent_system_architecture.md`)
 - Identify parent document type (PRD, BRD, ADR, SYS, etc.)
 - Determine correct `diagrams/` subfolder location
 
@@ -75,8 +75,8 @@ The `charts-flow` skill automates creation and management of Mermaid diagrams fo
 - Format: `{parent_folder}/diagrams/{PARENT-ID}-diag_{description}.md`
 - The `diagrams/` subfolder is created in the same directory as the parent document
 - Examples by document type:
-  - BRD: `docs/BRD/diagrams/BRD-001-diag_workflow.md`
-  - PRD: `docs/PRD/diagrams/PRD-001-diag_3_tier_agent_hierarchy.md`
+  - BRD: `docs/BRD/diagrams/BRD-01-diag_workflow.md`
+  - PRD: `docs/PRD/diagrams/PRD-01-diag_3_tier_agent_hierarchy.md`
   - ADR: `docs/ADR/diagrams/ADR-005-diag_cloud_deployment.md`
   - SYS: `docs/SYS/diagrams/SYS-002-diag_data_flow.md`
   - IMPL: `docs/IMPL/diagrams/IMPL-010-diag_implementation_phases.md`
@@ -390,15 +390,15 @@ npm install -g @mermaid-js/mermaid-cli
 ### Example 1: Create New Flowchart Diagram for BRD
 
 **User Request**:
-> "Create a flowchart diagram showing the user workflow for BRD-001"
+> "Create a flowchart diagram showing the user workflow for BRD-01"
 
 **Skill Actions**:
-1. Parse parent: `{project_root}/docs/BRD/BRD-001_project_requirements.md`
-2. Extract ID: `BRD-001`
-3. Create file: `docs/BRD/diagrams/BRD-001-diag_user_workflow.md` (in BRD subfolder)
+1. Parse parent: `{project_root}/docs/BRD/BRD-01_project_requirements.md`
+2. Extract ID: `BRD-01`
+3. Create file: `docs/BRD/diagrams/BRD-01-diag_user_workflow.md` (in BRD subfolder)
 4. Generate Mermaid flowchart with user journey steps
 5. Convert to SVG using `mmdc`
-6. Embed Base64 SVG in BRD-001
+6. Embed Base64 SVG in BRD-01
 7. Add reference link
 
 **Result**:
@@ -469,15 +469,15 @@ npm install -g @mermaid-js/mermaid-cli
 ```
 docs/
 ├── BRD/
-│   ├── BRD-001_project_requirements.md         ← Updated with SVG + link
+│   ├── BRD-01_project_requirements.md         ← Updated with SVG + link
 │   └── diagrams/
-│       ├── BRD-001-diag_user_workflow.md       ← BRD diagrams
-│       └── BRD-001-diag_business_rules.md
+│       ├── BRD-01-diag_user_workflow.md       ← BRD diagrams
+│       └── BRD-01-diag_business_rules.md
 ├── PRD/
-│   ├── PRD-001_multi_agent_system.md           ← Updated with SVG + link
+│   ├── PRD-01_multi_agent_system.md           ← Updated with SVG + link
 │   └── diagrams/
-│       ├── PRD-001-diag_3_tier_hierarchy.md    ← PRD diagrams
-│       └── PRD-001-diag_cloud_architecture.md
+│       ├── PRD-01-diag_3_tier_hierarchy.md    ← PRD diagrams
+│       └── PRD-01-diag_cloud_architecture.md
 ├── ADR/
 │   ├── ADR-005_deployment_strategy.md          ← Updated with SVG + link
 │   └── diagrams/

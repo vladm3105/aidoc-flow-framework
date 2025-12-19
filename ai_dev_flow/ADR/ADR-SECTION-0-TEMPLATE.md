@@ -1,5 +1,5 @@
 ---
-doc_id: ADR-{NNN}
+doc_id: ADR-{NN}
 section: 0
 title: "{Document Title} - Index"
 total_sections: {N}
@@ -23,13 +23,13 @@ custom_fields:
   index_role: true
 ---
 
-# ADR-{NNN}.0: {Document Title} - Index
+# ADR-{NN}.0: {Document Title} - Index
 
 ## Document Overview
 
 | Field | Value |
 |-------|-------|
-| **Document ID** | ADR-{NNN} |
+| **Document ID** | ADR-{NN} |
 | **Document Type** | Architecture Decision Record |
 | **Layer** | 5 - Architecture Decisions |
 | **Title** | {Document Title} |
@@ -50,10 +50,10 @@ custom_fields:
 
 | Section | File | Title | Description |
 |---------|------|-------|-------------|
-| 0 | [ADR-{NNN}.0_index.md](ADR-{NNN}.0_index.md) | Index | This file - document overview and navigation |
-| 1 | [ADR-{NNN}.1_{slug1}.md](ADR-{NNN}.1_{slug1}.md) | {Title 1} | {Description 1} |
-| 2 | [ADR-{NNN}.2_{slug2}.md](ADR-{NNN}.2_{slug2}.md) | {Title 2} | {Description 2} |
-| 3 | [ADR-{NNN}.3_{slug3}.md](ADR-{NNN}.3_{slug3}.md) | {Title 3} | {Description 3} |
+| 0 | [ADR-{NN}.0_index.md](ADR-{NN}.0_index.md) | Index | This file - document overview and navigation |
+| 1 | [ADR-{NN}.1_{slug1}.md](ADR-{NN}.1_{slug1}.md) | {Title 1} | {Description 1} |
+| 2 | [ADR-{NN}.2_{slug2}.md](ADR-{NN}.2_{slug2}.md) | {Title 2} | {Description 2} |
+| 3 | [ADR-{NN}.3_{slug3}.md](ADR-{NN}.3_{slug3}.md) | {Title 3} | {Description 3} |
 
 ---
 
@@ -71,13 +71,13 @@ custom_fields:
 ## Dependencies
 
 ### Upstream References
-- @ref: BDD-{NNN} - Behavior scenarios informing architecture
-- @ref: EARS-{NNN} - Formal requirements driving decisions
+- @ref: BDD-{NN} - Behavior scenarios informing architecture
+- @ref: EARS-{NN} - Formal requirements driving decisions
 
 ### Downstream References
-- @ref: SYS-{NNN} - System requirements implementing this ADR
-- @ref: REQ-{NNN} - Atomic requirements derived from decisions
-- @ref: SPEC-{NNN} - Technical specifications guided by ADR
+- @ref: SYS-{NN} - System requirements implementing this ADR
+- @ref: REQ-{NN} - Atomic requirements derived from decisions
+- @ref: SPEC-{NN} - Technical specifications guided by ADR
 
 ### Cross-Section Dependencies
 - Section 2 depends on Section 1 (context)
@@ -109,8 +109,8 @@ custom_fields:
 
 ## Traceability
 
-- **Original Document**: ADR-{NNN} (before split)
+- **Original Document**: ADR-{NN} (before split)
 - **Element ID Range**: ADR.{NN}.{TT}.01 through ADR.{NN}.{TT}.{MAX}
-- **Tag Format**: @ref: ADR-{NNN}.{S} (section reference)
+- **Tag Format**: @ref: ADR-{NN}.{S} (section reference)
 - **Upstream Trace**: BRD -> PRD -> EARS -> BDD
 - **Downstream Trace**: SYS -> REQ -> IMPL -> CTR -> SPEC -> TASKS -> IPLAN

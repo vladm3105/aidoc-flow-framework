@@ -51,12 +51,12 @@ REQs are the **testable specification layer** that operationalizes business requ
 Comprehensive links establish the requirement's context and relationships:
 
 ```markdown
-@adr:[ADR-NNN](../../ADR/ADR-NNN_...md#ADR-NNN)
-@prd:[PRD-NNN](../../PRD/PRD-NNN_...md)
-@sys:[SYS-NNN](../../SYS/SYS-NNN_...md)
-@ears:[EARS-NNN](../../EARS/EARS-NNN_...md)
-@spec:[SPEC-NNN](../../SPEC/.../SPEC-NNN_...yaml)
-@bdd:[BDD-NNN:scenarios](../../BDD/BDD-NNN.feature#scenarios)
+@adr:[ADR-NN](../../ADR/ADR-NN_...md#ADR-NN)
+@prd:[PRD-NN](../../PRD/PRD-NN_...md)
+@sys:[SYS-NN](../../SYS/SYS-NN_...md)
+@ears:[EARS-NN](../../EARS/EARS-NN_...md)
+@spec:[SPEC-NN](../../SPEC/.../SPEC-NN_...yaml)
+@bdd:[BDD-NN:scenarios](../../BDD/BDD-NN.feature#scenarios)
 ```
 
 ### Description
@@ -82,8 +82,8 @@ Architecture decisions that implement or impact this requirement:
 
 ```markdown
 ### Related ADRs
-- [ADR-NNN](../../ADR/ADR-NNN_...md#ADR-NNN): [Architectural approach implemented]
-- [ADR-NNN](../../ADR/ADR-NNN_...md#ADR-NNN): [Alternative approaches considered]
+- [ADR-NN](../../ADR/ADR-NN_...md#ADR-NN): [Architectural approach implemented]
+- [ADR-NN](../../ADR/ADR-NN_...md#ADR-NN): [Alternative approaches considered]
 ```
 
 ### Source Requirements
@@ -99,8 +99,8 @@ How this requirement will be tested and validated:
 
 ```markdown
 ### Verification
-- BDD: [BDD-NNN.feature](../../BDD/BDD-NNN.feature#scenarios)
-- Spec: [SPEC-NNN.yaml](../../SPEC/.../SPEC-NNN.yaml)
+- BDD: [BDD-NN.feature](../../BDD/BDD-NN.feature#scenarios)
+- Spec: [SPEC-NN.yaml](../../SPEC/.../SPEC-NN.yaml)
 - [Additional verification methods: performance tests, security tests, etc.]
 ```
 
@@ -124,7 +124,7 @@ REQ/
 ## File Naming Convention
 
 ```
-REQ/{domain}/{subdomain}/REQ-NNN_descriptive_title.md
+REQ/{domain}/{subdomain}/REQ-NN_descriptive_title.md
 ```
 
 Where:
@@ -132,12 +132,12 @@ Where:
 - `{domain}` is functional area (`api`, `risk`, `data`, `ui`, etc.)
 - `{subdomain}` is specific sub-area (`av`, `ib`, `lim`, `mon`, etc.)
 - `REQ` is the constant prefix
-- `NNN` is the three-digit sequence number (001, 002, 003, etc.)
+- `NNN` is the 2+ digit sequence number (01, 02, 003, etc.)
 - `descriptive_title` uses snake_case describing the requirement
 
 **Examples:**
-- `REQ/api/av/REQ-001_external_api_integration.md`
-- `REQ/risk/lim/REQ-003_resource_limit_enforcement.md`
+- `REQ/api/av/REQ-01_external_api_integration.md`
+- `REQ/risk/lim/REQ-03_resource_limit_enforcement.md`
 - `REQ/data/proc/REQ-045_real_time_data_processing.md`
 
 ## Requirement Statement Quality
@@ -257,8 +257,8 @@ Requirements must link to their source business logic:
 
 ```markdown
 ### Source Requirements
-- PRD: [PRD-NNN](../../PRD/PRD-NNN_...md): [section reference]
-- SRS: [SYS-NNN](../../SYS/SYS-NNN_...md): [section reference]
+- PRD: [PRD-NN](../../PRD/PRD-NN_...md): [section reference]
+- SRS: [SYS-NN](../../SYS/SYS-NN_...md): [section reference]
 - Business Rules: [Document](../../path/document.md#section)
 ```
 
@@ -267,9 +267,9 @@ Track implementation artifacts that realize the requirement:
 
 ```markdown
 ### Verification
-- ADR: [ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN) - [Implementation approach]
-- BDD: [BDD-NNN.feature](../../BDD/BDD-NNN.feature#scenario-1)
-- Spec: [SPEC-NNN.yaml](../../SPEC/.../SPEC-NNN.yaml)
+- ADR: [ADR-NN](../ADR/ADR-NN_...md#ADR-NN) - [Implementation approach]
+- BDD: [BDD-NN.feature](../../BDD/BDD-NN.feature#scenario-1)
+- Spec: [SPEC-NN.yaml](../../SPEC/.../SPEC-NN.yaml)
 - Code Module: `component.module.function()`
 ```
 
@@ -339,7 +339,7 @@ Write acceptance criteria that can be tested without human interpretation:
 
 ### Data Validation Requirements
 ```markdown
-## REQ-NNN: Input Data Validation
+## REQ-NN: Input Data Validation
 
 ### Description
 The [component] SHALL validate all input data against the defined schema and reject invalid requests with appropriate error responses.
@@ -354,7 +354,7 @@ The [component] SHALL validate all input data against the defined schema and rej
 
 ### Authentication Requirements
 ```markdown
-## REQ-NNN: User Authentication
+## REQ-NN: User Authentication
 
 ### Description
 The system SHALL authenticate users using [method] before granting access to protected resources.
@@ -368,7 +368,7 @@ The system SHALL authenticate users using [method] before granting access to pro
 
 ### Error Handling Requirements
 ```markdown
-## REQ-NNN: Error Response Standardization
+## REQ-NN: Error Response Standardization
 
 ### Description
 The API SHALL return consistent error responses following the defined error schema for all failure conditions.
@@ -389,7 +389,7 @@ Initial creation with basic description while design is evolving.
 Stable requirement approved for implementation.
 
 ### Superseded Status
-Requirement replaced by new REQ-NNN (with reference link).
+Requirement replaced by new REQ-NN (with reference link).
 
 ### Retired Status
 No longer relevant, archived for historical reference.
@@ -455,7 +455,7 @@ No longer relevant, archived for historical reference.
 python validate_reqs.py --directory REQ/
 
 # Check acceptance criteria completeness
-python check_req_quality.py --req-file REQ/api/av/REQ-001_*.md
+python check_req_quality.py --req-file REQ/api/av/REQ-01_*.md
 
 # Generate traceability matrices
 python generate_req_matrix.py --domain api --format html
@@ -473,7 +473,7 @@ def test_req_coverage():
 
 ## Example REQ Template
 
-See `REQ/api/av/REQ-001_external_api_integration.md` for a complete example of a well-structured requirement document that follows these conventions and includes proper traceability and acceptance criteria.
+See `REQ/api/av/REQ-01_external_api_integration.md` for a complete example of a well-structured requirement document that follows these conventions and includes proper traceability and acceptance criteria.
 
 ---
 
@@ -523,8 +523,8 @@ See `REQ/api/av/REQ-001_external_api_integration.md` for a complete example of a
 3. Update all paths from relative (`../`) to absolute (`../../`)
 4. Update Priority format: add P-level (e.g., `High` → `High (P2)`)
 5. Update SPEC-Ready Score: add ✅ emoji (e.g., `95%` → `✅ 95% (Target: ≥90%)`)
-6. Add Source Document section reference (e.g., `SYS-002` → `SYS-002 section 3.1.1`)
-7. Add resource tag to H1 header (e.g., `# REQ-001: [EXTERNAL_SERVICE_GATEWAY] Title`)
+6. Add Source Document section reference (e.g., `SYS-02` → `SYS-02 section 3.1.1`)
+7. Add resource tag to H1 header (e.g., `# REQ-01: [EXTERNAL_SERVICE_GATEWAY] Title`)
 8. Add all 6 cumulative tags to section 11 (@brd, @prd, @ears, @bdd, @adr, @sys)
 9. Add new subsections (3.3, 4.3, 5.4, 8.3) as applicable
 10. Run `scripts/validate_req_template_v3.sh` for verification
@@ -730,19 +730,19 @@ Before marking a REQ as complete, verify:
 
 ### V2 Example Files
 
-**REQ-001: API Integration Example** (`REQ/api/REQ-001_api_integration_example.md`)
+**REQ-01: API Integration Example** (`REQ/api/REQ-01_api_integration_example.md`)
 - 1372 lines, 95% SPEC-ready
 - Complete REST API client with resilience patterns
 - Rate limiting, circuit breaker, retry logic
 - 18 acceptance criteria with verification methods
 
-**REQ-002: Data Validation Example** (`REQ/data/REQ-002_data_validation_example.md`)
+**REQ-02: Data Validation Example** (`REQ/data/REQ-02_data_validation_example.md`)
 - 345 lines, 95% SPEC-ready
 - Multi-layer validation pipeline
 - Schema + business rules + database constraints
 - Cross-field validation with Pydantic
 
-**REQ-003: Access Control Example** (`REQ/auth/REQ-003_access_control_example.md`)
+**REQ-03: Access Control Example** (`REQ/auth/REQ-03_access_control_example.md`)
 - 464 lines, 95% SPEC-ready
 - RBAC with role hierarchy
 - Permission inheritance algorithm
@@ -771,7 +771,7 @@ Before marking a REQ as complete, verify:
 
 ```bash
 # Validate single REQ file
-./scripts/validate_req_template_v3.sh REQ/api/REQ-001_api_integration.md
+./scripts/validate_req_template_v3.sh REQ/api/REQ-01_api_integration.md
 
 # Expected output (success):
 # ✅ PASSED: All validation checks passed with no warnings
@@ -795,10 +795,10 @@ find REQ -name "REQ-*.md" ! -path "*/archived/*" -exec ./scripts/validate_req_te
 **SPEC Readiness Checker** (`scripts/validate_req_spec_readiness.py`):
 ```bash
 # Score REQ files on SPEC-generation readiness
-python scripts/validate_req_spec_readiness.py --req-file REQ/api/REQ-001.md
+python scripts/validate_req_spec_readiness.py --req-file REQ/api/REQ-01.md
 
 # Output:
-# REQ-001: External data service API Integration
+# REQ-01: External data service API Integration
 # SPEC-Ready Score: 95%
 # ✅ Interfaces: Present with type annotations
 # ✅ Schemas: JSON Schema + Pydantic + Database
@@ -849,7 +849,7 @@ python scripts/validate_traceability_matrix.py --matrix-file REQ/REQ-000_TRACEAB
 **Requirement Anchor Generator** (`scripts/add_requirement_anchors.py`):
 ```bash
 # Auto-generate anchors for requirements
-python scripts/add_requirement_anchors.py --req-file REQ/api/REQ-001.md
+python scripts/add_requirement_anchors.py --req-file REQ/api/REQ-01.md
 
 # Adds HTML anchors for all requirement IDs
 ```
@@ -869,17 +869,17 @@ python scripts/add_requirement_anchors.py --req-file REQ/api/REQ-001.md
 
 ### Common V2 Patterns
 
-**REST API Client Pattern**: REQ-001
+**REST API Client Pattern**: REQ-01
 - Connection management, retry, circuit breaker
 - Rate limiting with token bucket algorithm
 - Caching with TTL strategies
 
-**Data Validation Pattern**: REQ-002
+**Data Validation Pattern**: REQ-02
 - Multi-layer validation pipeline
 - Schema → Business Rules → Database Constraints
 - Cross-field validation with Pydantic
 
-**RBAC Pattern**: REQ-003
+**RBAC Pattern**: REQ-03
 - Role-permission mappings
 - Hierarchical role inheritance
 - Authorization middleware with JWT

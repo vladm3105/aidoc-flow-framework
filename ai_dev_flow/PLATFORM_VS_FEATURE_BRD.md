@@ -26,7 +26,7 @@ BRDs fall into two categories based on their focus. Both use the same template (
 - Document **why** technology decisions are critical to business success
 
 **Examples**:
-- BRD-001: Platform Architecture & Technology Stack
+- BRD-01: Platform Architecture & Technology Stack
 - BRD-034: ML Infrastructure Technology Decisions
 - BRD-050: Mobile Architecture Technology Stack
 
@@ -88,7 +88,7 @@ Feature BRD → PRD → ADRs (if needed for implementation) → SPEC
 ## Naming Conventions
 
 **Platform BRDs**:
-- `BRD-001_platform_architecture_technology_stack.md`
+- `BRD-01_platform_architecture_technology_stack.md`
 - `BRD-034_ml_infrastructure_technology_decisions.md`
 - `BRD-050_mobile_platform_architecture.md`
 
@@ -104,7 +104,7 @@ Feature BRD → PRD → ADRs (if needed for implementation) → SPEC
 | **Focus** | Technology/architecture | Business/user features |
 | **Prerequisites** | Defines technology requirements | References Platform BRD |
 | **ADR Timing** | Before PRD (critical decisions) | After PRD (implementation details) |
-| **Example** | BRD-001 | BRD-006 |
+| **Example** | BRD-01 | BRD-006 |
 | **Next Step** | Create ADRs first | Create PRD first |
 
 ## section 3.6 & 3.7 Implementation Guide
@@ -122,12 +122,12 @@ Feature BRD → PRD → ADRs (if needed for implementation) → SPEC
 
 1. **PostgreSQL 14+ Database**
    - **Requirement**: PostgreSQL 14 or later with ACID compliance, replication configured
-   - **Rationale**: Required for transactional consistency in user profiles, transaction state, audit logs (ADR-002)
+   - **Rationale**: Required for transactional consistency in user profiles, transaction state, audit logs (ADR-02)
    - **Business Impact**: Without PostgreSQL, data integrity guarantees for financial transactions not possible
 
 2. **Node.js 18+ LTS Runtime**
    - **Requirement**: Node.js 18 LTS or later with TypeScript 5.x support
-   - **Rationale**: Required for backend payment orchestrator, funds router, quote service (ADR-001)
+   - **Rationale**: Required for backend payment orchestrator, funds router, quote service (ADR-01)
    - **Business Impact**: Without Node.js async I/O, <2s API response time targets unachievable
 
 **Partner Integration Prerequisites**:
@@ -171,12 +171,12 @@ Feature BRD → PRD → ADRs (if needed for implementation) → SPEC
 ```markdown
 ### 3.6 Technology Stack Prerequisites
 
-**N/A - See Platform BRD-001 section 3.6**
+**N/A - See Platform BRD-01 section 3.6**
 
-This feature BRD assumes all Platform BRD-001 technology prerequisites are satisfied. Specifically:
-- Node.js backend services (Platform BRD-001 section 3.6 Item 2)
-- PostgreSQL database (Platform BRD-001 section 3.6 Item 1)
-- Partner X API integration (Platform BRD-001 section 3.6 Item 3)
+This feature BRD assumes all Platform BRD-01 technology prerequisites are satisfied. Specifically:
+- Node.js backend services (Platform BRD-01 section 3.6 Item 2)
+- PostgreSQL database (Platform BRD-01 section 3.6 Item 1)
+- Partner X API integration (Platform BRD-01 section 3.6 Item 3)
 
 No additional technology prerequisites required for this feature.
 ```
@@ -188,11 +188,11 @@ No additional technology prerequisites required for this feature.
 ```markdown
 ### 3.7 Mandatory Technology Conditions
 
-**N/A - See Platform BRD-001 section 3.7**
+**N/A - See Platform BRD-01 section 3.7**
 
-This feature must comply with all Platform BRD-001 mandatory technology conditions. No feature-specific mandatory conditions beyond platform requirements.
+This feature must comply with all Platform BRD-01 mandatory technology conditions. No feature-specific mandatory conditions beyond platform requirements.
 
-**Note**: Feature design conflicts with Platform BRD-001 section 3.7 Item 2 (stablecoin payment rails) require Platform BRD amendment - consult architecture team before proceeding.
+**Note**: Feature design conflicts with Platform BRD-01 section 3.7 Item 2 (stablecoin payment rails) require Platform BRD amendment - consult architecture team before proceeding.
 ```
 
 ## Quick Reference
@@ -201,7 +201,7 @@ This feature must comply with all Platform BRD-001 mandatory technology conditio
 - [ ] Label sections 3.6 and 3.7 with "**Platform BRDs Only** - *Skip this section for Feature BRDs*"
 - [ ] Populate section 3.6 with detailed technology prerequisites organized by category
 - [ ] Include Requirement, Rationale, Business Impact for each prerequisite
-- [ ] Link prerequisites to ADRs using (ADR-NNN) format
+- [ ] Link prerequisites to ADRs using (ADR-NN) format
 - [ ] Populate section 3.7 with mandatory conditions organized by category
 - [ ] Include Condition, Rationale, Business Impact, Exception Path for each condition
 - [ ] Document business rationale for each technology requirement
@@ -238,4 +238,4 @@ This feature must comply with all Platform BRD-001 mandatory technology conditio
 - [BRD-TEMPLATE.md](./BRD/BRD-TEMPLATE.md) - Standard template for both types
 - [BRD/README.md](./BRD/README.md) - BRD documentation guidelines
 - [ADR/README.md](./ADR/README.md) - Architecture decision record creation
-- **Reference Implementation**: [BRD-001](../docs/BRD/BRD-001_platform_architecture_technology_stack.md) - Gold standard Platform BRD with sections 3.6 and 3.7 fully populated
+- **Reference Implementation**: [BRD-01](../docs/BRD/BRD-01_platform_architecture_technology_stack.md) - Gold standard Platform BRD with sections 3.6 and 3.7 fully populated

@@ -107,7 +107,7 @@ structure:
   required_sections:
     - pattern: "^# BRD-\\d{3}:|^# Business Requirements Document"
       name: "Title (H1)"
-      description: "Single H1 with format BRD-NNN: Title or generic title"
+      description: "Single H1 with format BRD-NN: Title or generic title"
 
     - pattern: "^## Document Control$"
       name: "Document Control"
@@ -218,7 +218,7 @@ traceability:
       - type: EARS
         format: "@ears: EARS.NN.24.SS"
       - type: ADR
-        format: "@adr: ADR-NNN"
+        format: "@adr: ADR-NN"
 
   lateral:
     format: "@brd: BRD.NN.01.SS"

@@ -380,13 +380,13 @@ The system SHALL provide an API endpoint to send notifications with the followin
 
 ## Layer 8: IMPL (Implementation Plan) [OPTIONAL]
 
-**Artifact**: `docs/IMPL/IMPL-003_notification_integration_phase2.md`
+**Artifact**: `docs/IMPL/IMPL-03_notification_integration_phase2.md`
 **Required Tags**: `@brd` through `@req` (7 tags)
 **Format**: Markdown
 
 **Content Example**:
 ```markdown
-# IMPL-003: Notification Integration Phase 2 Implementation Plan
+# IMPL-03: Notification Integration Phase 2 Implementation Plan
 
 ## 2. Implementation Phases
 
@@ -523,7 +523,7 @@ cumulative_tags:
   adr: "ADR-033"
   sys: "SYS.12.25.01, SYS.12.25.02"
   req: "REQ.45.26.01, REQ.45.26.02"
-  impl: "IMPL.03.28.02"  # Optional - included because IMPL-003 exists
+  impl: "IMPL.03.28.02"  # Optional - included because IMPL-03 exists
   ctr: "CTR-005"  # Optional - included because CTR-005 exists
 
 implementation:
@@ -602,7 +602,7 @@ implementation:
 **Tag Explanation**:
 - All upstream tags from Layers 1-10
 - SPEC-018 - Technical specification being implemented
-- CTR-005, IMPL-003 - Optional layers included because they exist
+- CTR-005, IMPL-03 - Optional layers included because they exist
 ```
 
 **Tag Analysis**:

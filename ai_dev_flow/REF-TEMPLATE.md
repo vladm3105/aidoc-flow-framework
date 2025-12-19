@@ -25,7 +25,7 @@ custom_fields:
   valid_parent_types: [BRD, ADR]
 ---
 
-# {TYPE}-REF-NNN: [Document Title]
+# {TYPE}-REF-NN: [Document Title]
 
 > **Scope**: REF documents are limited to **BRD and ADR** types only.
 > **Ready-Scores**: NOT APPLICABLE - REF documents use free format with no scores.
@@ -81,17 +81,17 @@ custom_fields:
 
 **Scope**: REF documents are LIMITED to **BRD and ADR artifact types ONLY**.
 
-**Naming Convention**: `{TYPE}-REF-NNN_{slug}.md`
+**Naming Convention**: `{TYPE}-REF-NN_{slug}.md`
 - `{TYPE}`: Parent artifact type (**BRD or ADR only**)
 - `REF`: Reference document indicator
-- `NNN`: 3-digit sequence number (independent per TYPE)
+- `NN`: 3-digit sequence number (independent per TYPE)
 - `{slug}`: Descriptive slug in snake_case
 
 **Examples**:
-- `BRD-REF-001_project_overview.md` - Business context
-- `BRD-REF-002_strategic_vision.md` - Strategic vision
-- `ADR-REF-001_technology_stack_summary.md` - Tech overview
-- `ADR-REF-002_infrastructure_guide.md` - Infrastructure reference
+- `BRD-REF-01_project_overview.md` - Business context
+- `BRD-REF-02_strategic_vision.md` - Strategic vision
+- `ADR-REF-01_technology_stack_summary.md` - Tech overview
+- `ADR-REF-02_infrastructure_guide.md` - Infrastructure reference
 
 **Use Cases**:
 - BRD-REF: Project overviews, executive summaries, strategic vision, stakeholder guides

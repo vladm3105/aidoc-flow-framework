@@ -9,7 +9,7 @@ Usage:
     python generate_traceability_matrix.py --type ADR --input ../ADR/ --output TRACEABILITY_MATRIX_ADR.md
 
 Features:
-- Scans document directory for all files matching TYPE-NNN pattern
+- Scans document directory for all files matching TYPE-NN pattern
 - Extracts document metadata (ID, title, status, date, links)
 - Populates matrix template with actual document data
 - Generates Mermaid dependency diagrams
@@ -77,15 +77,15 @@ class TraceabilityMatrixGenerator:
 
     def scan_documents(self) -> List[DocumentMetadata]:
         """
-        Scan input directory for documents matching TYPE-NNN pattern
+        Scan input directory for documents matching TYPE-NN pattern
 
         Returns:
             List of DocumentMetadata objects
         """
         print(f"Scanning directory: {self.input_dir}")
 
-        # Pattern: TYPE-NNN_slug.ext or TYPE-NNN-YY_slug.ext
-        pattern = re.compile(rf'{self.doc_type}-(\d{{3,4}}(?:-\d{{2,3}})?)[_-].*\.(md|feature|yaml)$')
+        # Pattern: TYPE-NN_slug.ext or TYPE-NN-YY_slug.ext
+        pattern = re.compile(rf'{self.doc_type}-(\d{{2,}}(?:-\d{{2,3}})?)[_-].*\.(md|feature|yaml)$')
 
         found_docs = []
 

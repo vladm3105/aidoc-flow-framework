@@ -82,7 +82,7 @@ custom_fields:
 **Post-Creation Validation:**
 ```bash
 # EARS validation (under development - use template for manual validation)
-# python scripts/validate_ears.py --path docs/EARS/EARS-NNN.md
+# python scripts/validate_ears.py --path docs/EARS/EARS-NN.md
 ```
 
 ## When to Use This Skill
@@ -208,8 +208,8 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
@@ -219,7 +219,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
@@ -249,13 +249,13 @@ Examples:
 - PRD.01.07.15 - Performance KPI targets
 
 **Upstream Sources**:
-- [BRD-001](../BRD/BRD-001_platform.md#BRD-001) - Business requirements
-- [PRD-001](../PRD/PRD-001_integration.md#PRD-001) - Product requirements
+- [BRD-01](../BRD/BRD-01_platform.md#BRD-01) - Business requirements
+- [PRD-01](../PRD/PRD-01_integration.md#PRD-01) - Product requirements
 
 **Downstream Artifacts**:
-- BDD-NNN (to be created) - Test scenarios
-- ADR-NNN (to be created) - Architecture decisions
-- SYS-NNN (to be created) - System requirements
+- BDD-NN (to be created) - Test scenarios
+- ADR-NN (to be created) - Architecture decisions
+- SYS-NN (to be created) - System requirements
 ```
 
 ## Upstream/Downstream Artifacts
@@ -270,8 +270,8 @@ Examples:
 - **SYS** (Layer 6) - System requirements derived from EARS
 
 **Same-Type Document Relationships** (conditional):
-- `@related-ears: EARS-NNN` - EARS sharing domain context (references EARS document)
-- `@depends-ears: EARS-NNN` - EARS that must be implemented first
+- `@related-ears: EARS-NN` - EARS sharing domain context (references EARS document)
+- `@depends-ears: EARS-NN` - EARS that must be implemented first
 
 ## Creation Process
 
@@ -281,13 +281,13 @@ Read and understand BRD and PRD that drive these formal requirements.
 
 ### Step 2: Reserve ID Number
 
-Check `ai_dev_flow/EARS/` for next available ID number (e.g., EARS-001, EARS-002).
+Check `ai_dev_flow/EARS/` for next available ID number (e.g., EARS-01, EARS-02).
 
 ### Step 3: Create EARS File
 
-**Location**: `docs/EARS/EARS-NNN_{slug}.md` (template available at `ai_dev_flow/EARS/`)
+**Location**: `docs/EARS/EARS-NN_{slug}.md` (template available at `ai_dev_flow/EARS/`)
 
-**Example**: `docs/EARS/EARS-001_risk_limits.md`
+**Example**: `docs/EARS/EARS-01_risk_limits.md`
 
 ### Step 4: Fill Document Control Section
 
@@ -338,13 +338,13 @@ Include @brd and @prd tags (Layers 1-2) in Traceability section.
 Run validation scripts:
 ```bash
 # EARS validation (under development - use template for manual validation)
-# ./ai_dev_flow/scripts/validate_ears_template.sh docs/EARS/EARS-001_*.md
+# ./ai_dev_flow/scripts/validate_ears_template.sh docs/EARS/EARS-01_*.md
 
 # Link integrity
 ./ai_dev_flow/scripts/validate_links.py --path ai_dev_flow/EARS/
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact EARS-001 --expected-layers brd,prd --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact EARS-01 --expected-layers brd,prd --strict
 ```
 
 ### Step 10: Commit Changes
@@ -357,14 +357,14 @@ Commit EARS file and traceability matrix together.
 
 **Quality Gates Validation**:
 ```bash
-./scripts/validate_quality_gates.sh ai_dev_flow/EARS/EARS-001_risk.md
+./scripts/validate_quality_gates.sh ai_dev_flow/EARS/EARS-01_risk.md
 ```
 
 **Tag Validation**:
 ```bash
 # Validate cumulative tags (must have @brd, @prd)
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --artifact EARS-001 \
+  --artifact EARS-01 \
   --expected-layers brd,prd \
   --strict
 ```
@@ -412,14 +412,14 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1) - scripts under development
-# python scripts/validate_cross_document.py --document docs/EARS/EARS-NNN_slug.md --auto-fix
+# python scripts/validate_cross_document.py --document docs/EARS/EARS-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all EARS documents complete
 # python scripts/validate_cross_document.py --layer EARS --auto-fix
 
 # Currently available validations:
-./scripts/validate_quality_gates.sh docs/EARS/EARS-NNN_slug.md
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact EARS-NNN --expected-layers brd,prd --strict
+./scripts/validate_quality_gates.sh docs/EARS/EARS-NN_slug.md
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact EARS-NN --expected-layers brd,prd --strict
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -433,7 +433,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact EARS-NNN --e
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

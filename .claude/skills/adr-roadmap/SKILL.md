@@ -69,7 +69,7 @@ Analyze Architecture Decision Records (ADRs) and generate phased implementation 
 |-------|-------------|---------|
 | **output_file** | Roadmap destination path | `{adr_directory}/ADR-000_IMPLEMENTATION-ROADMAP.md` |
 | **max_phase_duration** | Maximum weeks per phase | 8 weeks |
-| **prioritize_adr** | Force specific ADR ID first (e.g., "ADR-002") | None |
+| **prioritize_adr** | Force specific ADR ID first (e.g., "ADR-02") | None |
 | **phase_model** | Phasing approach: `poc-mvp-prod`, `iterative`, `waterfall` | `poc-mvp-prod` |
 | **team_size** | Number of FTE engineers | 3 |
 | **target_phases** | Desired number of phases | Auto-calculate |
@@ -574,7 +574,7 @@ Generate roadmap in {project_root}/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md
 
 **Skill Actions**:
 1. Read 27 ADRs from `{project_root}/docs/ADR/`
-2. Extract complexity: ADR-002 (4/5), ADR-003 (2/5), etc.
+2. Extract complexity: ADR-02 (4/5), ADR-003 (2/5), etc.
 3. Parse dependencies: ADR-006 depends on ADR-003
 4. Create 5 phases:
    - Phase 1: POC (ADR-000, 001, 002, 003 partial)
@@ -611,13 +611,13 @@ Generate roadmap in {example_project_a}/architecture/decisions/ADR-000_IMPLEMENT
 **Skill Actions**:
 1. Read 12 migration ADRs
 2. Identify migration ADRs:
-   - ADR-001: Service decomposition strategy
-   - ADR-002: API gateway selection
+   - ADR-01: Service decomposition strategy
+   - ADR-02: API gateway selection
    - ADR-003: Service mesh (Istio)
    - ADR-004: Database-per-service pattern
    - etc.
 3. Phase by service boundaries (iterative):
-   - Iteration 1: User service (ADR-001, 002, 004)
+   - Iteration 1: User service (ADR-01, 002, 004)
    - Iteration 2: Product service (ADR-005, 006)
    - Iteration 3: Order service (ADR-007, 008)
    - Iteration 4: Payment service (ADR-009, 010)

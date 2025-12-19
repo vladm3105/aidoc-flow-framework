@@ -43,7 +43,7 @@ Quality gates ensure that artifacts meet maturity thresholds before progressing 
 **Key Rules**:
 - **Upstream REQUIRED** (except BRD): Document MUST reference its upstream sources
 - **Downstream OPTIONAL**: Only link to documents that already exist
-- **No-TBD Rule**: NEVER use placeholder IDs (TBD, XXX, NNN) - leave empty or omit section
+- **No-TBD Rule**: NEVER use placeholder IDs (TBD, XXX, NN) - leave empty or omit section
 
 ### Quality Gate Definitions
 
@@ -318,11 +318,11 @@ chmod +x scripts/validate_quality_gates.sh
 **Single File Validation:**
 ```bash
 # Validate specific artifact
-./scripts/validate_quality_gates.sh docs/SYS/SYS-001.md
+./scripts/validate_quality_gates.sh docs/SYS/SYS-01.md
 
 # Output: ✅ SPEC-Ready Score: 95% ≥90%
 # Output: ✅ Cumulative tagging valid
-# Output: ✅ Quality gates passed for docs/SYS/SYS-001.md
+# Output: ✅ Quality gates passed for docs/SYS/SYS-01.md
 ```
 
 **Batch Validation:**
@@ -357,21 +357,21 @@ git diff --name-only | grep '^docs/' | xargs ./scripts/validate_quality_gates.sh
 **Fix Missing Ready Score:**
 ```bash
 # Add ready score to document
-./scripts/fix_quality_gate.sh docs/SYS/SYS-001.md "add-score"
+./scripts/fix_quality_gate.sh docs/SYS/SYS-01.md "add-score"
 # Output: Added SYS-Ready Score field to Document Control
 ```
 
 **Auto-generate Cumulative Tags:**
 ```bash
 # Generate missing tags
-./scripts/fix_quality_gate.sh docs/SYS/SYS-001.md "add-tags"
+./scripts/fix_quality_gate.sh docs/SYS/SYS-01.md "add-tags"
 # Output: Added @brd @prd @ears @bdd @adr tags to traceability section
 ```
 
 **Quality Improvement Suggestions:**
 ```bash
 # Get specific improvement recommendations
-./scripts/suggest_quality_improvements.sh docs/REQ/REQ-001.md
+./scripts/suggest_quality_improvements.sh docs/REQ/REQ-01.md
 # Output: 
 # 💡 IMPROVEMENT: Add interface schemas (section 3)
 # 💡 IMPROVEMENT: Add error handling examples (section 5)
@@ -389,7 +389,7 @@ This quality gate system is **100% aligned** with TRACEABILITY.md requirements:
 - **Layer Numbers**: Uses 16-layer formal numbering (0-15)
 - **Cumulative Tagging**: Enforces cumulative inheritance rules (§4.3)
 - **Diagram Conventions**: Follows L1-L11 visual groupings with formal layer references
-- **Tag Format**: Uses `@artifact-type: TYPE.NN.EE.SS (Unified Feature ID)` format (§4.1)
+- **Tag Format**: Uses `@artifact-type: TYPE.NN.TT.SS (Unified Feature ID)` format (§4.1)
 
 ### Success Metrics
 

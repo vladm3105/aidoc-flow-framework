@@ -40,12 +40,12 @@ SYS are the **system-level specifications** that operationalize product requirem
 Comprehensive bidirectional linking establishes system context:
 
 ```markdown
-@requirement:[REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN)
-@adr:[ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN)
-@PRD:[PRD-NNN](../PRD/PRD-NNN_...md)
-@EARS:[EARS-NNN](../EARS/EARS-NNN_...md)
-@spec:[SPEC-NNN](../SPEC/.../SPEC-NNN_...yaml)
-@bdd:[BDD-NNN:scenarios](../BDD/BDD-NNN.feature#scenarios)
+@requirement:[REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN)
+@adr:[ADR-NN](../ADR/ADR-NN_...md#ADR-NN)
+@PRD:[PRD-NN](../PRD/PRD-NN_...md)
+@EARS:[EARS-NN](../EARS/EARS-NN_...md)
+@spec:[SPEC-NN](../SPEC/.../SPEC-NN_...yaml)
+@bdd:[BDD-NN:scenarios](../BDD/BDD-NN.feature#scenarios)
 ```
 
 ### Scope Definition
@@ -158,27 +158,27 @@ Quality attributes and operational characteristics:
 
 ### Naming Convention
 ```
-SYS-NNN_descriptive_title.md
+SYS-NN_descriptive_title.md
 ```
 
 Where:
 - `SYS` is the constant prefix indicating System Requirements Specification
-- `NNN` is the three-digit sequence number (001, 002, 003, etc.)
+- `NNN` is the 2+ digit sequence number (01, 02, 003, etc.)
 - `descriptive_title` uses snake_case describing the system or component
 
 **Examples:**
-- `SYS-001_external_api_integration.md`
-- `SYS-002_ib_gateway_integration.md`
-- `SYS-003_position_risk_limits.md`
+- `SYS-01_external_api_integration.md`
+- `SYS-02_ib_gateway_integration.md`
+- `SYS-03_position_risk_limits.md`
 
 ### Organizational Hierarchy
 Systems organize by functional domains and subdomains:
 
 ```
 SYS/
-├── SYS-001_api_gateway.md           # API layer requirements
-├── SYS-002_authentication_service.md # Authentication requirements
-├── SYS-003_data_processing_core.md   # Core processing requirements
+├── SYS-01_api_gateway.md           # API layer requirements
+├── SYS-02_authentication_service.md # Authentication requirements
+├── SYS-03_data_processing_core.md   # Core processing requirements
 ├── SYS-004_external_integrations.md  # Third-party integrations
 └── SYS-005_monitoring_observability.md # System monitoring requirements
 ```
@@ -188,9 +188,9 @@ Multiple SYS documents for complex systems:
 
 ```markdown
 # Related SYS documents for User Management System:
-- SYS-001_user_registration.md - Account creation and setup
-- SYS-002_user_authentication.md - Login and session management
-- SYS-003_user_profiles.md - Profile data management
+- SYS-01_user_registration.md - Account creation and setup
+- SYS-02_user_authentication.md - Login and session management
+- SYS-03_user_profiles.md - Profile data management
 - SYS-004_role_permissions.md - Access control and authorization
 ```
 
@@ -445,7 +445,7 @@ Prepare for production deployment based on SYS requirements:
 python validate_SYS.py --directory SYS/
 
 # Check requirement completeness
-python check_SYS_coverage.py --SYS-file SYS/SYS-001_external_api_integration.md
+python check_SYS_coverage.py --SYS-file SYS/SYS-01_external_api_integration.md
 
 # Generate traceability reports
 python generate_SYS_traceability.py --system service_platform --format html
@@ -454,16 +454,16 @@ python generate_SYS_traceability.py --system service_platform --format html
 ### Requirements Testing Tools
 ```bash
 # Generate BDD scenarios from SYS
-python SYS_to_bdd.py --SYS SYS/SYS-001_external_api_integration.md --output features/
+python SYS_to_bdd.py --SYS SYS/SYS-01_external_api_integration.md --output features/
 
 # Validate implementation against SYS requirements
-python verify_SYS_compliance.py --SYS SYS/SYS-001.yaml --implementation ./SYS/
+python verify_SYS_compliance.py --SYS SYS/SYS-01.yaml --implementation ./SYS/
 ```
 
 ### Documentation Generation
 ```bash
 # Generate API documentation from SYS
-python SYS_to_docs.py --SYS SYS/SYS-001.md --format openapi --output docs/api/
+python SYS_to_docs.py --SYS SYS/SYS-01.md --format openapi --output docs/api/
 
 # Create requirements traceability matrix
 python generate_req_matrix.py --SYS SYS/SYS-*.md --format json --output reports/
@@ -471,7 +471,7 @@ python generate_req_matrix.py --SYS SYS/SYS-*.md --format json --output reports/
 
 ## Example SYS Template
 
-See `SYS/SYS-001_external_api_integration.md` for a complete example of a well-structured system requirements specification that includes functional requirements, performance criteria, integration details, and comprehensive traceability.
+See `SYS/SYS-01_external_api_integration.md` for a complete example of a well-structured system requirements specification that includes functional requirements, performance criteria, integration details, and comprehensive traceability.
 
 ## SYS Maturity Model
 
@@ -544,7 +544,7 @@ See `SYS/SYS-001_external_api_integration.md` for a complete example of a well-s
 
 **Workflow Integration**:
 1. **SYS Creation**: Include EARS-ready score in Document Control section
-2. **Quality Check**: Run `./scripts/validate_sys_template.sh docs/SYS/SYS-001_name.md`
+2. **Quality Check**: Run `./scripts/validate_sys_template.sh docs/SYS/SYS-01_name.md`
 3. **EARS Readiness**: Score ≥90% enables progression to EARS artifact creation
 4. **Improvement**: Rescore and revalidate if below threshold before EARS phase
 

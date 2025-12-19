@@ -83,20 +83,20 @@ Rules for creating Implementation Plans (IPLAN) documents in the SDD framework.
 ### Format
 
 ```
-IPLAN-NNN_{descriptive_slug}.md
+IPLAN-NN_{descriptive_slug}.md
 ```
 
 ### Rules
 
-1. **IPLAN-NNN**: Sequential numbering starting from 001
+1. **IPLAN-NN**: Sequential numbering starting from 01
 2. **descriptive_slug**: Lowercase with underscores
 3. **Extension**: Always `.md`
 
 ### Examples
 
-- `IPLAN-001_implement_gateway_connection.md`
-- `IPLAN-002_add_retry_logic.md`
-- `IPLAN-003_deploy_authentication_service.md`
+- `IPLAN-01_implement_gateway_connection.md`
+- `IPLAN-02_add_retry_logic.md`
+- `IPLAN-03_deploy_authentication_service.md`
 
 ### Naming Rules
 
@@ -104,6 +104,21 @@ IPLAN-NNN_{descriptive_slug}.md
 2. Sequence numbers must be zero-padded (001, not 1)
 3. Descriptive slug uses underscores, not hyphens or camelCase
 4. Do NOT include timestamps in filename (use Document Control for versioning)
+
+### 2.1 Element ID Format (MANDATORY)
+
+**Pattern**: `IPLAN.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Command | 19 | IPLAN.02.19.01 |
+| Plan Step | 31 | IPLAN.02.31.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `CMD-XXX` → Use `IPLAN.NN.19.SS`
+> - `STEP-XXX` → Use `IPLAN.NN.31.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
 
 ---
 
@@ -113,7 +128,7 @@ IPLAN-NNN_{descriptive_slug}.md
 
 ```yaml
 ---
-title: "IPLAN-NNN: [Descriptive Task/Feature Name]"
+title: "IPLAN-NN: [Descriptive Task/Feature Name]"
 tags:
   - iplan-document
   - layer-12-artifact
@@ -122,7 +137,7 @@ custom_fields:
   document_type: iplan
   artifact_type: IPLAN
   layer: 12
-  parent_tasks: TASKS-NNN
+  parent_tasks: TASKS-NN
   complexity: [1-5]
 ---
 ```
@@ -133,13 +148,13 @@ custom_fields:
 
 ```bash
 # Validate immediately after creation
-./ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-NNN_*.md
+./ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-NN_*.md
 
 # Quick check for required tag
-grep -q "layer-12-artifact" docs/IPLAN/IPLAN-NNN_*.md || echo "ERROR: Missing layer-12-artifact tag"
+grep -q "layer-12-artifact" docs/IPLAN/IPLAN-NN_*.md || echo "ERROR: Missing layer-12-artifact tag"
 
 # Quick check for tags section
-grep -q "^tags:" docs/IPLAN/IPLAN-NNN_*.md || echo "ERROR: Missing tags: section"
+grep -q "^tags:" docs/IPLAN/IPLAN-NN_*.md || echo "ERROR: Missing tags: section"
 ```
 
 **CRITICAL**: Do NOT proceed to next IPLAN until validation passes. Files missing `layer-12-artifact` tag will fail validation.
@@ -148,7 +163,7 @@ grep -q "^tags:" docs/IPLAN/IPLAN-NNN_*.md || echo "ERROR: Missing tags: section
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| ID | Yes | IPLAN-NNN format |
+| ID | Yes | IPLAN-NN format |
 | Status | Yes | Draft/Ready/In Progress/Completed/Blocked |
 | Version | Yes | Semantic version (X.Y.Z) |
 | Created | Yes | YYYY-MM-DD HH:MM:SS TZ |
@@ -156,7 +171,7 @@ grep -q "^tags:" docs/IPLAN/IPLAN-NNN_*.md || echo "ERROR: Missing tags: section
 | Author | Yes | AI Assistant/Developer Name |
 | Estimated Effort | Yes | Hours or hour range |
 | Complexity | Yes | 1-5 scale |
-| Parent TASKS | Yes | TASKS-NNN reference |
+| Parent TASKS | Yes | TASKS-NN reference |
 | IPLAN-Ready Score | Recommended | Percentage (target: ≥90%) |
 
 ### 3.3 Mandatory Sections
@@ -190,7 +205,7 @@ grep -q "^tags:" docs/IPLAN/IPLAN-NNN_*.md || echo "ERROR: Missing tags: section
 ```markdown
 ## Objective
 
-Implement TASKS-001 Service Connector from scratch, creating async TCP
+Implement TASKS-01 Service Connector from scratch, creating async TCP
 connection management with retry logic, circuit breaker, and 100% BDD coverage.
 
 **Deliverables**:
@@ -233,9 +248,9 @@ Build the gateway connection stuff.
 ### Current State Analysis
 
 **Documentation Status**: ✅ 100% Complete
-- SPEC-001: Service Connector specification
-- REQ-001 through REQ-010: All requirements documented
-- BDD-001: 18 scenarios defined
+- SPEC-01: Service Connector specification
+- REQ-01 through REQ-010: All requirements documented
+- BDD-01: 18 scenarios defined
 
 **Code Status**: ❌ 0% - Starting from Scratch
 - No /src directory exists
@@ -243,11 +258,11 @@ Build the gateway connection stuff.
 
 ### Key Technical Decisions
 
-**Architecture** (from ADR-002):
+**Architecture** (from ADR-02):
 - Async TCP with async_client library
 - Protocol-based interfaces for testability
 
-**Error Handling** (from SPEC-001):
+**Error Handling** (from SPEC-01):
 - 6 typed exceptions with error codes
 - Exponential backoff retry strategy
 ```
@@ -372,22 +387,22 @@ poetry show | grep -E "(async_client|pydantic)"
 
 | Tag | Format | Description |
 |-----|--------|-------------|
-| @brd | BRD.NN.EE.SS or BRD-NNN | Business Requirements (Layer 1) |
-| @prd | PRD.NN.EE.SS or PRD-NNN | Product Requirements (Layer 2) |
+| @brd | BRD.NN.EE.SS or BRD-NN | Business Requirements (Layer 1) |
+| @prd | PRD.NN.EE.SS or PRD-NN | Product Requirements (Layer 2) |
 | @ears | EARS.NN.EE.SS | EARS Requirements (Layer 3) |
-| @bdd | BDD.NN.EE.SS or BDD-NNN | BDD Scenarios (Layer 4) |
-| @adr | ADR-NNN | Architecture Decisions (Layer 5) |
-| @sys | SYS.NN.EE.SS or SYS-NNN | System Requirements (Layer 6) |
-| @req | REQ.NN.EE.SS or REQ-NNN | Atomic Requirements (Layer 7) |
-| @spec | SPEC-NNN | Technical Specifications (Layer 10) |
-| @tasks | TASKS-NNN | Code Generation Plan (Layer 11) |
+| @bdd | BDD.NN.EE.SS or BDD-NN | BDD Scenarios (Layer 4) |
+| @adr | ADR-NN | Architecture Decisions (Layer 5) |
+| @sys | SYS.NN.EE.SS or SYS-NN | System Requirements (Layer 6) |
+| @req | REQ.NN.EE.SS or REQ-NN | Atomic Requirements (Layer 7) |
+| @spec | SPEC-NN | Technical Specifications (Layer 10) |
+| @tasks | TASKS-NN | Code Generation Plan (Layer 11) |
 
 ### Optional Tags (If present in project)
 
 | Tag | Format | Description |
 |-----|--------|-------------|
-| @impl | IMPL-NNN | Implementation Plan (Layer 8) |
-| @ctr | CTR-NNN | Interface Contracts (Layer 9) |
+| @impl | IMPL-NN | Implementation Plan (Layer 8) |
+| @ctr | CTR-NN | Interface Contracts (Layer 9) |
 
 ### Example
 
@@ -402,16 +417,16 @@ poetry show | grep -E "(async_client|pydantic)"
 - `@prd: PRD.01.01.15` - Product Requirements (Layer 2)
 - `@ears: EARS.01.24.03` - EARS Requirements (Layer 3)
 - `@bdd: BDD.01.13.05` - BDD Scenarios (Layer 4)
-- `@adr: ADR-002` - Architecture Decisions (Layer 5)
+- `@adr: ADR-02` - Architecture Decisions (Layer 5)
 - `@sys: SYS.02.25.01` - System Requirements (Layer 6)
 - `@req: REQ.01.26.01` - Atomic Requirements (Layer 7)
-- `@spec: SPEC-001` - Technical Specifications (Layer 10)
+- `@spec: SPEC-01` - Technical Specifications (Layer 10)
 - `@tasks: TASKS.01.29.01` - Code Generation Plan (Layer 11)
 
 ### Optional Tags
 
 - `@impl: IMPL.01.28.01` - Implementation Plan (Layer 8)
-- `@ctr: CTR-001` - Interface Contract (Layer 9)
+- `@ctr: CTR-01` - Interface Contract (Layer 9)
 ```
 
 ---
@@ -483,8 +498,8 @@ poetry show | grep -E "(async_client|pydantic)"
 ### Splitting Pattern
 
 ```
-IPLAN-001_feature_part1.md (Phase 0-2)
-IPLAN-001_feature_part2.md (Phase 3-4)
+IPLAN-01_feature_part1.md (Phase 0-2)
+IPLAN-01_feature_part2.md (Phase 3-4)
 ```
 
 ### Efficiency Techniques
@@ -503,7 +518,7 @@ IPLAN-001_feature_part2.md (Phase 3-4)
 1. **No verification steps** - Every command needs verification
 2. **Relative paths** - Use absolute paths always
 3. **Vague commands** - Be specific with versions, flags
-4. **Wrong filename format** - Use IPLAN-NNN_{slug}.md (no timestamps)
+4. **Wrong filename format** - Use IPLAN-NN_{slug}.md (no timestamps)
 5. **Incomplete tags** - All 9 required tags mandatory
 6. **Technical design** - HOW belongs in SPEC, not IPLAN
 7. **No resume markers** - Mark where to continue
@@ -515,12 +530,12 @@ IPLAN-001_feature_part2.md (Phase 3-4)
 ### Automated Validation
 
 ```bash
-./scripts/validate_iplan.sh /path/to/IPLAN-NNN_{slug}.md
+./scripts/validate_iplan.sh /path/to/IPLAN-NN_{slug}.md
 ```
 
 ### Manual Checklist
 
-- [ ] Filename follows convention (IPLAN-NNN_{slug}.md)
+- [ ] Filename follows convention (IPLAN-NN_{slug}.md)
 - [ ] All required sections present
 - [ ] Bash commands are executable
 - [ ] Verification after each step
@@ -552,8 +567,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -578,13 +593,13 @@ Include ONLY if relationships exist between IPLAN documents sharing session cont
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | IPLAN-NNN | [Related IPLAN title] | Shared session context |
-| Depends | IPLAN-NNN | [Prerequisite IPLAN title] | Must complete before this |
+| Related | IPLAN-NN | [Related IPLAN title] | Shared session context |
+| Depends | IPLAN-NN | [Prerequisite IPLAN title] | Must complete before this |
 
 **Tags**:
 ```markdown
-@related-iplan: IPLAN-NNN
-@depends-iplan: IPLAN-NNN
+@related-iplan: IPLAN-NN
+@depends-iplan: IPLAN-NN
 ```
 
 
@@ -751,7 +766,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/IPLAN/IPLAN-NNN_slug.md --auto-fix
+python scripts/validate_cross_document.py --document docs/IPLAN/IPLAN-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all IPLAN documents complete
 python scripts/validate_cross_document.py --layer IPLAN --auto-fix
@@ -768,7 +783,7 @@ python scripts/validate_cross_document.py --layer IPLAN --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd through @tasks tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

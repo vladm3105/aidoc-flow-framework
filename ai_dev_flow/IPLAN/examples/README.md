@@ -49,13 +49,13 @@ This directory contains example Implementation Plans (IPLANs) demonstrating best
 Examples follow IPLAN naming with `_example` suffix:
 
 ```
-IPLAN-NNN_{feature_name}_example.md
+IPLAN-NN_{feature_name}_example.md
 ```
 
 Example filenames:
-- `IPLAN-001_api_integration_example.md`
-- `IPLAN-002_database_migration_example.md`
-- `IPLAN-003_service_deployment_example.md`
+- `IPLAN-01_api_integration_example.md`
+- `IPLAN-02_database_migration_example.md`
+- `IPLAN-03_service_deployment_example.md`
 
 ## Creating New Examples
 
@@ -84,7 +84,7 @@ To use an example as a template:
 
 ```bash
 # Copy example to your project docs
-cp ai_dev_flow/IPLAN/examples/IPLAN-NNN_feature_example_*.md \
+cp ai_dev_flow/IPLAN/examples/IPLAN-NN_feature_example_*.md \
    docs/IPLAN/IPLAN-YYY_your_feature_$(date +%Y%m%d_%H%M%S).md
 
 # Customize for your implementation

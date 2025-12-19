@@ -59,7 +59,7 @@ Rules for validating Implementation Plans (IMPL) documents in the SDD framework.
 ### Pattern
 
 ```regex
-^IMPL-[0-9]{3,4}_[a-z0-9_]+\.md$
+^IMPL-[0-9]{2,}_[a-z0-9_]+\.md$
 ```
 
 ### Rules
@@ -67,7 +67,7 @@ Rules for validating Implementation Plans (IMPL) documents in the SDD framework.
 | Rule | Check | Error Level |
 |------|-------|-------------|
 | IMPL prefix | Must start with "IMPL-" | ERROR |
-| ID format | NNN or NNNN digits | ERROR |
+| ID format | NN or NNN digits | ERROR |
 | Slug format | lowercase, underscores only | ERROR |
 | Extension | .md only | ERROR |
 
@@ -75,11 +75,11 @@ Rules for validating Implementation Plans (IMPL) documents in the SDD framework.
 
 | Filename | Valid | Reason |
 |----------|-------|--------|
-| `IMPL-001_risk_management_system.md` | ✅ | Correct format |
-| `impl-001_risk_management.md` | ❌ | Lowercase prefix |
+| `IMPL-01_risk_management_system.md` | ✅ | Correct format |
+| `impl-01_risk_management.md` | ❌ | Lowercase prefix |
 | `IMPL-1_risk_management.md` | ❌ | Single digit ID |
-| `IMPL-001-risk-management.md` | ❌ | Hyphens in slug |
-| `IMPL-001_risk_management.yaml` | ❌ | Wrong extension |
+| `IMPL-01-risk-management.md` | ❌ | Hyphens in slug |
+| `IMPL-01_risk_management.yaml` | ❌ | Wrong extension |
 
 ---
 
@@ -89,7 +89,7 @@ Rules for validating Implementation Plans (IMPL) documents in the SDD framework.
 
 | Field | Type | Required | Validation |
 |-------|------|----------|------------|
-| title | string | Yes | Must match "IMPL-NNN: [Name]" |
+| title | string | Yes | Must match "IMPL-NN: [Name]" |
 | tags | array | Yes | Must include layer-8-artifact |
 | custom_fields.artifact_type | string | Yes | Must equal "IMPL" |
 | custom_fields.layer | integer | Yes | Must equal 8 |
@@ -121,7 +121,7 @@ fi
 
 | Field | Required | Format |
 |-------|----------|--------|
-| IMPL ID | Yes | IMPL-NNN |
+| IMPL ID | Yes | IMPL-NN |
 | Title | Yes | Non-empty string |
 | Status | Yes | Draft/Planned/In Progress/On Hold/Completed/Cancelled |
 | Version | Yes | X.Y.Z (semantic) |
@@ -129,7 +129,7 @@ fi
 | Author | Yes | Non-empty string |
 | Owner | Yes | Non-empty string |
 | Last Updated | Yes | YYYY-MM-DD |
-| Related REQs | Yes | REQ-NNN references |
+| Related REQs | Yes | REQ-NN references |
 | Deliverables | Yes | CTR/SPEC/TASKS list |
 
 ### Validation Rules
@@ -323,7 +323,7 @@ fi
 | @prd | Yes | PRD.NN.EE.SS |
 | @ears | Yes | EARS.NN.EE.SS |
 | @bdd | Yes | BDD.NN.EE.SS |
-| @adr | Yes | ADR-NNN |
+| @adr | Yes | ADR-NN |
 | @sys | Yes | SYS.NN.EE.SS |
 | @req | Yes | REQ.NN.EE.SS |
 
@@ -460,8 +460,8 @@ done
 
 ```bash
 ./scripts/validate_impl.sh --help
-./scripts/validate_impl.sh --verbose IMPL-001.md
-./scripts/validate_impl.sh --strict IMPL-001.md  # Treat warnings as errors
+./scripts/validate_impl.sh --verbose IMPL-01.md
+./scripts/validate_impl.sh --strict IMPL-01.md  # Treat warnings as errors
 ```
 
 ### Output Format
@@ -470,7 +470,7 @@ done
 =========================================
 IMPL Validation Report
 =========================================
-File: IMPL-001_risk_management_system.md
+File: IMPL-01_risk_management_system.md
 Version: 1.0.0
 
 CHECK 1: Filename Format
@@ -512,7 +512,35 @@ Result: PASSED WITH WARNINGS
 
 ---
 
-## 15. Common Validation Errors
+## 16. Element ID Format Compliance ⭐ NEW
+
+**Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
+**Type**: Error
+
+| Check | Pattern | Result |
+|-------|---------|--------|
+| Valid format | `IMPL.NN.TT.SS:` | ✅ Pass |
+| Removed pattern | `Phase-XXX` | ❌ Fail - use IMPL.NN.29.SS |
+| Removed pattern | `IP-XXX` | ❌ Fail - use IMPL.NN.29.SS |
+
+**Regex**: `^###?\s+IMPL\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+**Common Element Types for IMPL**:
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Implementation Phase | 29 | IMPL.02.29.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `Phase-XXX` → Use `IMPL.NN.29.SS`
+> - `IP-XXX` → Use `IMPL.NN.29.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+
+**Fix**: Replace `### Phase-01: Setup` with `### IMPL.02.29.01: Setup`
+
+---
+
+## 17. Common Validation Errors
 
 ### Error: No Phases Defined
 
@@ -522,7 +550,7 @@ Result: PASSED WITH WARNINGS
 ### Error: No Deliverables Referenced
 
 **Symptom**: "ERROR: No deliverables (CTR/SPEC/TASKS) referenced"
-**Fix**: Each phase must list CTR-NNN, SPEC-NNN, TASKS-NNN deliverables
+**Fix**: Each phase must list CTR-NN, SPEC-NN, TASKS-NN deliverables
 
 ### Error: Missing Required Tag
 

@@ -55,14 +55,14 @@ See [README.md](./README.md) for detailed guidance on organizational structure.
 ## Adding New Contracts
 
 ### Naming Convention
-- **Format**: `CTR-NNN_descriptive_slug.md` + `CTR-NNN_descriptive_slug.yaml`
-- **NNN**: Three-digit zero-padded sequential number (001, 002, 015)
+- **Format**: `CTR-NN_descriptive_slug.md` + `CTR-NN_descriptive_slug.yaml`
+- **NNN**: 2+ digit sequence number (01, 02, 015)
 - **Slug**: snake_case descriptive title matching both files
 
 ### Process
-1. **Reserve ID**: Check this index for next available CTR-NNN number
+1. **Reserve ID**: Check this index for next available CTR-NN number
 2. **Copy Templates**: Copy both CTR-TEMPLATE.md and CTR-TEMPLATE.yaml
-3. **Create Dual Files**: Create both .md and .yaml with same CTR-NNN_slug
+3. **Create Dual Files**: Create both .md and .yaml with same CTR-NN_slug
 4. **Complete Documentation**: Fill all sections in markdown template
 5. **Define Schema**: Complete YAML schema with request/response structures
 6. **Update Index**: Add entry to this index with metadata
@@ -93,9 +93,9 @@ CTR/
 - Update SPEC references if implementations change
 
 ### Contract Changes
-- **Breaking Changes**: Require new major version (CTR-NNN v2.0.0)
-- **Non-Breaking Additions**: Increment minor version (CTR-NNN v1.1.0)
-- **Bug Fixes**: Increment patch version (CTR-NNN v1.0.1)
+- **Breaking Changes**: Require new major version (CTR-NN v2.0.0)
+- **Non-Breaking Additions**: Increment minor version (CTR-NN v1.1.0)
+- **Bug Fixes**: Increment patch version (CTR-NN v1.0.1)
 
 ### Deprecation Process
 1. Mark contract status as **Deprecated** in this index

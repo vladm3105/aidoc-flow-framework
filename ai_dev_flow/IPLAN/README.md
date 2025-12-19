@@ -70,7 +70,7 @@ TASKS defines WHAT → IPLAN defines HOW → Code implements it
 
 **Example Comparison**:
 
-**TASKS-001** (excerpt):
+**TASKS-01** (excerpt):
 ```markdown
 ### Phase 2.1: Implement Connection Service (12 hours)
 - Create ServiceConnector class
@@ -80,7 +80,7 @@ TASKS defines WHAT → IPLAN defines HOW → Code implements it
 - Verify: Unit tests pass with 85% coverage
 ```
 
-**IPLAN-001** (corresponding section):
+**IPLAN-01** (corresponding section):
 ```bash
 # Phase 2.1: Implement Connection Service
 cd ${PROJECT_ROOT}
@@ -88,7 +88,7 @@ cd ${PROJECT_ROOT}
 # Create module file
 touch src/[project]/services/connector.py
 
-# Implement class (paste from TASKS-001 specification)
+# Implement class (paste from TASKS-01 specification)
 # ... implementation details ...
 
 # Run unit tests
@@ -132,10 +132,10 @@ All IPLAN documents MUST include these 9 mandatory tags:
 2. `@prd: PRD.NN.EE.SS` - Product Requirements Document (Layer 2)
 3. `@ears: EARS.NN.EE.SS` - Event-Action-Response-State Requirements (Layer 3)
 4. `@bdd: BDD.NN.EE.SS` - Behavior-Driven Development Scenarios (Layer 4)
-5. `@adr: ADR-NNN` - Architecture Decision Records (Layer 5)
+5. `@adr: ADR-NN` - Architecture Decision Records (Layer 5)
 6. `@sys: SYS.NN.EE.SS` - System Requirements (Layer 6)
 7. `@req: REQ.NN.EE.SS` - Atomic Requirements (Layer 7)
-8. `@spec: SPEC-NNN` - Technical Specifications (Layer 10)
+8. `@spec: SPEC-NN` - Technical Specifications (Layer 10)
 9. `@tasks: TASKS.NN.EE.SS` - Code Generation Plan (Layer 11)
 
 ### Optional Tags (Conditional)
@@ -143,15 +143,15 @@ All IPLAN documents MUST include these 9 mandatory tags:
 Include these tags if present in your project:
 
 10. `@impl: IMPL.NN.EE.SS` - Implementation Plan (Layer 8) - **if project uses IMPL artifacts**
-11. `@ctr: CTR-NNN` - Interface Contracts (Layer 9) - **if contracts are defined**
+11. `@ctr: CTR-NN` - Interface Contracts (Layer 9) - **if contracts are defined**
 
 ### Tag Format Specification
 
-**Standard Format**: `@artifact-type: TYPE.NN.EE.SS (Unified Feature ID)`
+**Standard Format**: `@artifact-type: TYPE.NN.TT.SS (Unified Feature ID)`
 
 **Component Breakdown**:
 - `@artifact-type` - lowercase artifact type (brd, prd, ears, bdd, adr, sys, req, impl, ctr, spec, tasks)
-- `DOCUMENT-ID` - Uppercase with hyphens (e.g., BRD-001, SPEC-003, TASKS-001)
+- `DOCUMENT-ID` - Uppercase with hyphens (e.g., BRD-01, SPEC-03, TASKS-01)
 - `REQUIREMENT-ID` - Specific requirement, scenario, or section referenced
 
 **Examples by Layer**:
@@ -163,12 +163,12 @@ Include these tags if present in your project:
 @prd: PRD.01.01.15
 @ears: EARS.01.24.03
 @bdd: BDD.01.13.05, BDD.07.13.12
-@adr: ADR-002, ADR-005
+@adr: ADR-02, ADR-005
 @sys: SYS.02.25.01
 @req: REQ.01.26.01, REQ.02.26.01, REQ.03.26.01, REQ.10.26.01
 @impl: IMPL.01.28.01 (optional - if project uses IMPL)
-@ctr: CTR-001 (optional - if contracts defined)
-@spec: SPEC-001
+@ctr: CTR-01 (optional - if contracts defined)
+@spec: SPEC-01
 @tasks: TASKS.01.29.01, TASKS.01.29.04
 ```
 
@@ -211,7 +211,7 @@ Include these tags if present in your project:
 ```bash
 # Run tag validation script
 python /opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --file IPLAN/IPLAN-001_example.md
+  --file IPLAN/IPLAN-01_example.md
 
 # Expected output:
 # ✅ All 9 mandatory tags present
@@ -235,12 +235,12 @@ python /opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_d
 @prd: PRD.01.01.15
 @ears: EARS.01.24.03
 @bdd: BDD.01.13.05
-@adr: ADR-002
+@adr: ADR-02
 @sys: SYS.02.25.01
 @req: REQ.01.26.01, REQ.02.26.01
 @impl: IMPL.01.28.01 (present in this project)
-@ctr: CTR-001 (present in this project)
-@spec: SPEC-001
+@ctr: CTR-01 (present in this project)
+@spec: SPEC-01
 @tasks: TASKS.01.29.01
 ```
 Total: 11 tags (9 mandatory + 2 optional)
@@ -251,10 +251,10 @@ Total: 11 tags (9 mandatory + 2 optional)
 @prd: PRD.01.01.15
 @ears: EARS.01.24.03
 @bdd: BDD.01.13.05
-@adr: ADR-002
+@adr: ADR-02
 @sys: SYS.02.25.01
 @req: REQ.01.26.01, REQ.02.26.01
-@spec: SPEC-001
+@spec: SPEC-01
 @tasks: TASKS.01.29.01
 ```
 Total: 9 tags (all mandatory, no optional)
@@ -269,7 +269,7 @@ Total: 9 tags (all mandatory, no optional)
 ```markdown
 | Item | Details |
 |------|---------|
-| **ID** | IPLAN-NNN |
+| **ID** | IPLAN-NN |
 | **Status** | Draft/Ready/In Progress/Completed/Blocked |
 | **Version** | 1.0.0 |
 | **Created** | YYYY-MM-DD HH:MM:SS TZ |
@@ -277,7 +277,7 @@ Total: 9 tags (all mandatory, no optional)
 | **Author** | [AI Assistant/Developer Name] |
 | **Estimated Effort** | [X hours] |
 | **Complexity** | [1-5: 1=minimal, 5=architectural] |
-| **Parent TASKS** | TASKS-NNN |
+| **Parent TASKS** | TASKS-NN |
 ```
 
 ### 2. Position in Workflow
@@ -321,20 +321,20 @@ Total: 9 tags (all mandatory, no optional)
 ### Current State Analysis
 
 **Documentation Status**: ✅ 100% Complete
-- SPEC-001: [description]
-- REQ-001 through REQ-010: [coverage]
-- BDD-001: [scenarios]
+- SPEC-01: [description]
+- REQ-01 through REQ-010: [coverage]
+- BDD-01: [scenarios]
 
 **Code Status**: ❌ 0% - Starting from Scratch
 - [Current implementation state]
 
 ### Key Technical Decisions
 
-**Architecture** (from ADR-002):
+**Architecture** (from ADR-02):
 - [Decision #1]
 - [Decision #2]
 
-**Error Handling** (from SPEC-001):
+**Error Handling** (from SPEC-01):
 - [Strategy]
 ```
 
@@ -461,16 +461,16 @@ poetry show | grep async_client
 - `@prd: PRD.01.01.15` - Product Requirements Document (Layer 2)
 - `@ears: EARS.01.24.03` - Event-Action-Response-State (Layer 3)
 - `@bdd: BDD.01.13.05` - Behavior-Driven Development (Layer 4)
-- `@adr: ADR-002` - Architecture Decision Record (Layer 5)
+- `@adr: ADR-02` - Architecture Decision Record (Layer 5)
 - `@sys: SYS.02.25.01` - System Requirements (Layer 6)
 - `@req: REQ.01.26.01` - Atomic Requirements (Layer 7)
-- `@spec: SPEC-001` - Technical Specification (Layer 10)
+- `@spec: SPEC-01` - Technical Specification (Layer 10)
 - `@tasks: TASKS.01.29.01` - Code Generation Plan (Layer 11)
 
 ### Optional Tags (If Present in Project)
 
 - `@impl: IMPL.01.28.01` - Implementation Plan (Layer 8)
-- `@ctr: CTR-001` - Interface Contract (Layer 9)
+- `@ctr: CTR-01` - Interface Contract (Layer 9)
 ```
 
 **Critical**: This section is MANDATORY and must include ALL required tags.
@@ -519,18 +519,18 @@ poetry show | grep async_client
 
 **Template File**: `IPLAN-TEMPLATE.md`
 
-**Document Files**: `IPLAN-NNN_{descriptive_slug}.md`
+**Document Files**: `IPLAN-NN_{descriptive_slug}.md`
 
 **Components**:
 - `IPLAN` - constant prefix (uppercase)
-- `NNN` - three-digit sequence (001, 002, 003, ...)
+- `NNN` - 2+ digit sequence (01, 02, 003, ...)
 - `descriptive_slug` - lowercase with underscores (describes task/feature)
 - `.md` - markdown extension
 
 **Examples**:
-- `IPLAN-001_implement_gateway_connection.md`
-- `IPLAN-002_add_retry_logic.md`
-- `IPLAN-003_deploy_authentication_service.md`
+- `IPLAN-01_implement_gateway_connection.md`
+- `IPLAN-02_add_retry_logic.md`
+- `IPLAN-03_deploy_authentication_service.md`
 
 **Naming Rules**:
 1. Always use `IPLAN` (not `IPLAN_S`, `IMPLPLAN`, or `iplan`)
@@ -551,9 +551,9 @@ poetry show | grep async_client
 
 ```mermaid
 flowchart TB
-    TASKS["TASKS-001: Service Connection Feature<br/>(1,992 lines)"]
-    IPLAN1["IPLAN-001: Implement TASKS-001<br/>(Session 1)"]
-    IPLAN2["IPLAN-002: Continue TASKS-001 Phase 3<br/>(Session 2)"]
+    TASKS["TASKS-01: Service Connection Feature<br/>(1,992 lines)"]
+    IPLAN1["IPLAN-01: Implement TASKS-01<br/>(Session 1)"]
+    IPLAN2["IPLAN-02: Continue TASKS-01 Phase 3<br/>(Session 2)"]
 
     TASKS --> IPLAN1
     TASKS --> IPLAN2
@@ -570,9 +570,9 @@ flowchart TB
 
 **Tagging**:
 ```markdown
-@spec: SPEC-001
+@spec: SPEC-01
 @req: REQ.01.26.01, REQ.02.26.01
-@adr: ADR-002
+@adr: ADR-02
 ```
 
 ### Upstream References: BDD, EARS
@@ -607,9 +607,9 @@ pytest tests/bdd/ --gherkin-terminal-reporter
 Connection service for External Service.
 
 Implementation follows:
-- IPLAN: IPLAN-001
-- TASKS: TASKS-001
-- SPEC: SPEC-001
+- IPLAN: IPLAN-01
+- TASKS: TASKS-01
+- SPEC: SPEC-01
 """
 ```
 
@@ -617,9 +617,9 @@ Implementation follows:
 ```bash
 git commit -m "feat: implement service connector
 
-Implements: IPLAN-001
-Parent: TASKS-001
-Satisfies: REQ-001, REQ-002
+Implements: IPLAN-01
+Parent: TASKS-01
+Satisfies: REQ-01, REQ-02
 Tests: BDD.01.13.05
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
@@ -637,8 +637,8 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 **Example**:
 ```markdown
 ### Dependencies
-- IPLAN-001 must be completed before IPLAN-003
-- IPLAN-002 runs in parallel with IPLAN-004
+- IPLAN-01 must be completed before IPLAN-03
+- IPLAN-02 runs in parallel with IPLAN-004
 ```
 
 ## Best Practices
@@ -733,7 +733,7 @@ ls -ld src/module && touch src/module/test.tmp && rm src/module/test.tmp
 ```markdown
 ### Implementation Notes
 
-**Deviation from TASKS-001**:
+**Deviation from TASKS-01**:
 - Changed retry delay from fixed 5s to exponential backoff (1s, 2s, 4s...)
 - Rationale: Better performance under load, recommended by async_client docs
 - Impact: Improves connection recovery time
@@ -780,16 +780,16 @@ ls -ld src/module && touch src/module/test.tmp && rm src/module/test.tmp
 
 **Throughout Document**:
 ```markdown
-### Implementation of TASKS-001 Phase 2.1
+### Implementation of TASKS-01 Phase 2.1
 
-Per [TASKS.01.29.01](../TASKS/path/TASKS-001.md#phase-21-implement-connection-service):
+Per [TASKS.01.29.01](../TASKS/path/TASKS-01.md#phase-21-implement-connection-service):
 > "Create ServiceConnector class with async connect() method..."
 
 Implementation:
 ```bash
 # Create service module
 touch src/[project]/services/connector.py
-# ... (implement per TASKS-001 specification)
+# ... (implement per TASKS-01 specification)
 ```
 ```
 
@@ -846,11 +846,11 @@ Key Classes:
 
 ### Example 1: Starting New Implementation from Scratch
 
-**Scenario**: Implementing TASKS-001 Service Connection Feature, no code exists
+**Scenario**: Implementing TASKS-01 Service Connection Feature, no code exists
 
 **IPLAN Structure**:
 ```markdown
-# IPLAN-001: Implement TASKS-001 Service Connection from Scratch
+# IPLAN-01: Implement TASKS-01 Service Connection from Scratch
 
 ## Objective
 Implement complete service connection feature with retry logic, circuit breaker,
@@ -891,10 +891,10 @@ touch ${PROJECT_ROOT}/src/[project]/__init__.py
 
 **IPLAN Structure**:
 ```markdown
-# IPLAN-002: Continue TASKS-001 Phase 2 Implementation
+# IPLAN-02: Continue TASKS-01 Phase 2 Implementation
 
 ## Objective
-Complete Phase 2.3 through 2.6 of TASKS-001 service connection feature.
+Complete Phase 2.3 through 2.6 of TASKS-01 service connection feature.
 
 ## Context
 **Code Status**: 🟡 50% Phase 2 Complete
@@ -905,7 +905,7 @@ Complete Phase 2.3 through 2.6 of TASKS-001 service connection feature.
 - ⏸️ Phase 2.5: Retry handler (NOT STARTED)
 - ⏸️ Phase 2.6: Circuit breaker (NOT STARTED)
 
-**Previous Work** (from IPLAN-001):
+**Previous Work** (from IPLAN-01):
 - Created: models.py, errors.py (fully tested)
 - Partially created: connector.py (protocol interface stubbed)
 - Environment: Poetry venv active, pytest configured
@@ -930,7 +930,7 @@ cat src/[project]/services/connector.py
 
 Next actions:
 ```bash
-# Complete protocol interface per TASKS-001 specification
+# Complete protocol interface per TASKS-01 specification
 # Add abstract methods: connect(), disconnect(), verify_connection(), get_state()
 # ... (implementation continues)
 ```
@@ -981,8 +981,8 @@ Add configurable timeout parameter to circuit breaker per REQ-042 enhancement.
 
 ### Phase 4: Documentation (1 hour)
 - [ ] Update README.md with SERVICE_TIMEOUT env var
-- [ ] Update SPEC-001 with new configuration parameter
-- [ ] Update TASKS-001 traceability matrix
+- [ ] Update SPEC-01 with new configuration parameter
+- [ ] Update TASKS-01 traceability matrix
 
 ## Implementation Guide
 **Step 1: Update ConnectionConfig**
@@ -1033,8 +1033,8 @@ pytest tests/unit/test_models.py::test_connection_config_validation -v
 
 **Splitting Pattern**:
 ```
-IPLAN-001_gateway_connection_part1.md (Phase 0-2)
-IPLAN-001_gateway_connection_part2.md (Phase 3-4)
+IPLAN-01_gateway_connection_part1.md (Phase 0-2)
+IPLAN-01_gateway_connection_part2.md (Phase 3-4)
 ```
 
 ### Efficiency Techniques
@@ -1070,17 +1070,17 @@ IPLAN-001_gateway_connection_part2.md (Phase 3-4)
 ```markdown
 ## Error Handling
 
-(Copies entire error handling specification from SPEC-001)
+(Copies entire error handling specification from SPEC-01)
 ```
 
 ✅ Efficient:
 ```markdown
 ## Error Handling
 
-Per [SPEC-001:error_handling](../SPEC/SPEC-001.yaml):
+Per [SPEC-01:error_handling](../SPEC/SPEC-01.yaml):
 - 6 typed exceptions with error codes (SVC_ERR_001 through SVC_ERR_006)
 - Retry strategy: Exponential backoff, max 6 attempts
-- See SPEC-001 for complete specification
+- See SPEC-01 for complete specification
 ```
 
 **3. Summarize Long Bash Output**
@@ -1134,7 +1134,7 @@ Use:
 **TASK-2.1: Models** (6 hours)
 - File: models.py
 - Classes: ConnectionConfig (8 fields), IbConnection (5 fields), ConnectionState (enum)
-- See [SPEC-001:models](../SPEC/SPEC-001.yaml) for field specifications
+- See [SPEC-01:models](../SPEC/SPEC-01.yaml) for field specifications
 ```
 
 ## Troubleshooting
@@ -1205,7 +1205,7 @@ poetry run pytest tests/
 - [x] TASK-2.2: Errors ✅ (Completed 2025-11-12 12:15)
 - [ ] TASK-2.3: Protocol interface ⏳ **RESUME HERE** 👈
   - Current state: File created, stub methods added
-  - Next: Implement abstract methods per SPEC-001
+  - Next: Implement abstract methods per SPEC-01
   - File: src/[project_module]/gateway/connector.py
 - [ ] TASK-2.4: Connection service
 ```
@@ -1218,9 +1218,9 @@ poetry run pytest tests/
 
 **Option 1**: Split into multiple IPLAN
 ```
-IPLAN-001_part1_foundation_and_setup.md
-IPLAN-001_part2_core_implementation.md
-IPLAN-001_part3_testing_and_qa.md
+IPLAN-01_part1_foundation_and_setup.md
+IPLAN-01_part2_core_implementation.md
+IPLAN-01_part3_testing_and_qa.md
 ```
 
 **Option 2**: Use external references
@@ -1229,7 +1229,7 @@ IPLAN-001_part3_testing_and_qa.md
 
 See [BDD_SCENARIO_MAPPING.md](./BDD_SCENARIO_MAPPING.md) for complete scenario-to-test mapping.
 
-Summary: 18 scenarios across BDD-001 and BDD-007
+Summary: 18 scenarios across BDD-01 and BDD-007
 ```
 
 **Option 3**: Compress bash commands
@@ -1247,7 +1247,7 @@ Summary: 18 scenarios across BDD-001 and BDD-007
 **Diagnosis**:
 ```bash
 # Check if document exists
-ls /opt/data/docs_flow_framework/ai_dev_flow/REQ/REQ-001.md
+ls /opt/data/docs_flow_framework/ai_dev_flow/REQ/REQ-01.md
 # Error: No such file or directory
 ```
 
@@ -1259,21 +1259,21 @@ ls /opt/data/docs_flow_framework/ai_dev_flow/REQ/REQ-001.md
 @req: REQ.01.26.01
 
 # ✅ Correct with full path verification
-@req: REQ.01.26.01 (verified: /opt/data/project/docs/REQ/REQ-001.md exists)
+@req: REQ.01.26.01 (verified: /opt/data/project/docs/REQ/REQ-01.md exists)
 ```
 
 **Solution 2**: Create missing document
 ```bash
 # If document truly should exist, create it
 cd /opt/data/docs_flow_framework/ai_dev_flow/REQ
-cp REQ-TEMPLATE.md REQ-001_gateway_requirements.md
+cp REQ-TEMPLATE.md REQ-01_gateway_requirements.md
 # ... (populate with requirements)
 ```
 
 **Solution 3**: Use correct reference
 ```markdown
 # Check parent TASKS document for correct tag
-cat /opt/data/project/docs/TASKS/TASKS-001.md | grep "@req"
+cat /opt/data/project/docs/TASKS/TASKS-01.md | grep "@req"
 # Copy exact tag format used in TASKS
 ```
 
@@ -1324,13 +1324,13 @@ pytest --cov=src/module --cov-report=term
 - [ ] @prd: PRD.NN.EE.SS
 - [ ] @ears: EARS.NN.EE.SS
 - [ ] @bdd: BDD.NN.EE.SS
-- [ ] @adr: ADR-NNN
+- [ ] @adr: ADR-NN
 - [ ] @sys: SYS.NN.EE.SS
 - [ ] @req: REQ.NN.EE.SS
-- [ ] @spec: SPEC-NNN
+- [ ] @spec: SPEC-NN
 - [ ] @tasks: TASKS.NN.EE.SS
 - [ ] @impl: IMPL.NN.EE.SS (optional)
-- [ ] @ctr: CTR-NNN (optional)
+- [ ] @ctr: CTR-NN (optional)
 ```
 
 ### Common Bash Commands
@@ -1408,7 +1408,7 @@ graph TB
 
 **Usage**:
 ```bash
-python validate_tags_against_docs.py --file IPLAN/IPLAN-001.md
+python validate_tags_against_docs.py --file IPLAN/IPLAN-01.md
 
 # Output:
 # ✅ Tag validation passed
@@ -1433,11 +1433,11 @@ python validate_tags_against_docs.py --file IPLAN/IPLAN-001.md
 **Usage**:
 ```bash
 python update_traceability_matrix.py \
-  --artifact IPLAN/IPLAN-001.md \
+  --artifact IPLAN/IPLAN-01.md \
   --matrix IPLAN/IPLAN-000_TRACEABILITY_MATRIX.md
 
 # Output:
-# ✅ Matrix updated with IPLAN-001
+# ✅ Matrix updated with IPLAN-01
 # ✅ Upstream references: 11 documents
 # ✅ Downstream impacts: 6 code files
 # ✅ Coverage: 100% requirements traced

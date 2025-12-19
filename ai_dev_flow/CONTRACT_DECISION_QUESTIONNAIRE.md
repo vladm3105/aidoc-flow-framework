@@ -271,8 +271,8 @@ else:
 
 **Contracts to Create**:
 - CTR-001: request submission API (OpenAPI 3.0)
-- CTR-002: Order Execution Event (AsyncAPI 2.x)
-- CTR-003: Position Data Model (JSON Schema)
+- CTR-02: Order Execution Event (AsyncAPI 2.x)
+- CTR-03: Position Data Model (JSON Schema)
 
 ---
 

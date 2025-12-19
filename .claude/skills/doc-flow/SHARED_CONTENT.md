@@ -206,7 +206,7 @@ Internal feature IDs within documents use simple sequential numbering:
 
 ### Format Rules
 
-- Format: Use unified 4-segment `TYPE.NN.EE.SS` format (e.g., `BRD.01.01.30`)
+- Format: Use unified 4-segment `TYPE.NN.TT.SS` format (e.g., `BRD.01.01.30`)
 - Multiple refs: Comma-separated list within same tag line
 - Optional layers: Include `@impl` and `@ctr` tags only if those artifacts exist in chain
 - SPEC format: Use YAML `cumulative_tags:` mapping instead of markdown comments
@@ -215,7 +215,7 @@ Internal feature IDs within documents use simple sequential numbering:
 ### Validation Rules
 
 1. **No gaps**: Each layer must include ALL upstream tags from previous layers
-2. **Format compliance**: Tags must follow `@artifact-type: TYPE.NN.EE.SS` pattern (4-segment format)
+2. **Format compliance**: Tags must follow `@artifact-type: TYPE.NN.TT.SS` pattern (4-segment format)
 3. **Valid references**: All tagged document IDs must exist and be reachable
 4. **Optional layers**: `@impl` and `@ctr` included only if they exist in chain
 5. **SPEC exception**: SPEC uses YAML format, not markdown tags

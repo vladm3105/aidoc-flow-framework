@@ -56,8 +56,8 @@ custom_fields:
 
 - **Location**: `REQ/{domain}/{subdomain}/` within project docs directory
 - **Domains**: `api/` (external integrations), `risk/` (risk management), `data/` (data requirements), `ml/` (ML requirements), `auth/` (security), etc.
-- **Naming**: `REQ-NNN_descriptive_slug.md` (NNN = 3-digit sequential number, lowercase snake_case slug)
-- **Section Files**: For large requirements (>50KB), use Section Files format: `REQ-NNN.S_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
+- **Naming**: `REQ-NN_descriptive_slug.md` (NN = 3-digit sequential number, lowercase snake_case slug)
+- **Section Files**: For large requirements (>50KB), use Section Files format: `REQ-NN.S_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
 
 ---
 
@@ -101,10 +101,27 @@ Every REQ must contain these exact sections in order:
 
 ## 4. ID and Naming Standards
 
-- **Filename**: `REQ-NNN_slug.md` (e.g., `REQ-003_resource_limit_enforcement.md`)
-- **H1 Header**: `# REQ-NNN: [RESOURCE_INSTANCE] Title` (Template V2+) - includes resource classification tag
+- **Filename**: `REQ-NN_slug.md` (e.g., `REQ-03_resource_limit_enforcement.md`)
+- **H1 Header**: `# REQ-NN: [RESOURCE_INSTANCE] Title` (Template V2+) - includes resource classification tag
 - **Template Version**: Must use 3.0 (current) - not legacy V1 or V2
-- **Uniqueness**: Each NNN number used once (either single REQ-NNN or REQ-NNN.S section group)
+- **Uniqueness**: Each NN number used once (either single REQ-NN or REQ-NN.S section group)
+
+### 4.1 Element ID Format (MANDATORY)
+
+**Pattern**: `REQ.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Functional Requirement | 01 | REQ.02.01.01 |
+| Dependency | 05 | REQ.02.05.01 |
+| **Acceptance Criteria** | **06** | **REQ.02.06.01** |
+| Atomic Requirement | 27 | REQ.02.27.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `AC-XXX` → Use `REQ.NN.06.SS`
+> - `FR-XXX` → Use `REQ.NN.01.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
 
 ---
 
@@ -121,7 +138,7 @@ Every REQ must contain these exact sections in order:
 ## 6. Traceability Requirements (MANDATORY - Layer 7)
 
 - **Upstream Chain**: Must reference ALL 6 artifact types: BRD, PRD, EARS, BDD, ADR, SYS
-- **Cumulative Tagging**: All 6 tags required with format `@type: DOC-ID:NNN` (numeric sub-IDs)
+- **Cumulative Tagging**: All 6 tags required with format `@type: DOC-ID:NN` (numeric sub-IDs)
 - **Downstream Links**: SPEC, TASKS, CTR (if applicable), BDD scenarios
 - **Code Paths**: Actual file paths for implementation
 
@@ -211,9 +228,9 @@ find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template_v3.sh {} \;
 | Template Version != 3.0 | Update to current template version |
 | Missing resource classification tag | Add [RESOURCE_INSTANCE] to H1 header |
 | Incomplete traceability chain | All 6 upstream artifact types required |
-| `response time < 200ms` (hardcoded) | `response time < @threshold: PRD.NNN.perf.api.p95_latency` |
-| `timeout: 5000` (magic number) | `timeout: @threshold: PRD.NNN.timeout.default` |
-| `retry_max: 3` (hardcoded config) | `retry_max: @threshold: PRD.NNN.retry.max_attempts` |
+| `response time < 200ms` (hardcoded) | `response time < @threshold: PRD.NN.perf.api.p95_latency` |
+| `timeout: 5000` (magic number) | `timeout: @threshold: PRD.NN.timeout.default` |
+| `retry_max: 3` (hardcoded config) | `retry_max: @threshold: PRD.NN.retry.max_attempts` |
 
 ---
 
@@ -239,8 +256,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -265,13 +282,13 @@ Include ONLY if relationships exist between REQ documents sharing domain context
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | REQ-NNN | [Related REQ title] | Shared domain context |
-| Depends | REQ-NNN | [Prerequisite REQ title] | Must complete before this |
+| Related | REQ-NN | [Related REQ title] | Shared domain context |
+| Depends | REQ-NN | [Prerequisite REQ title] | Must complete before this |
 
 **Tags**:
 ```markdown
-@related-req: REQ-NNN
-@depends-req: REQ-NNN
+@related-req: REQ-NN
+@depends-req: REQ-NN
 ```
 
 ---
@@ -292,7 +309,7 @@ Use `@threshold` for ALL quantitative values that are:
 ### @threshold Tag Format
 
 ```markdown
-@threshold: PRD.NNN.category.subcategory.key
+@threshold: PRD.NN.category.subcategory.key
 ```
 
 **Examples**:
@@ -320,10 +337,10 @@ Use `@threshold` for ALL quantitative values that are:
 - `circuit_breaker_threshold: 5`
 
 **Valid (registry references)**:
-- `p95 response time: @threshold: PRD.NNN.perf.api.p95_latency`
-- `max_retries: @threshold: PRD.NNN.retry.max_attempts`
-- `rate_limit: @threshold: PRD.NNN.limit.api.requests_per_second`
-- `circuit_breaker_threshold: @threshold: PRD.NNN.timeout.circuit_breaker.threshold`
+- `p95 response time: @threshold: PRD.NN.perf.api.p95_latency`
+- `max_retries: @threshold: PRD.NN.retry.max_attempts`
+- `rate_limit: @threshold: PRD.NN.limit.api.requests_per_second`
+- `circuit_breaker_threshold: @threshold: PRD.NN.timeout.circuit_breaker.threshold`
 
 ### Traceability Requirements Update
 
@@ -331,7 +348,7 @@ Add `@threshold` to Required Tags table in Traceability section:
 
 | Tag | Format | When Required |
 |-----|--------|---------------|
-| @threshold | PRD-NNN:category.key | When referencing quality attributes, timing, limits, retry configs, or configurable values |
+| @threshold | PRD-NN:category.key | When referencing quality attributes, timing, limits, retry configs, or configurable values |
 
 ### Acceptance Criteria Integration
 
@@ -344,7 +361,7 @@ REQ.NN.06.01: Response time SHALL be < 200ms for 95th percentile
 
 **Valid**:
 ```markdown
-REQ.NN.06.01: Response time SHALL be < @threshold: PRD.NNN.perf.api.p95_latency for 95th percentile
+REQ.NN.06.01: Response time SHALL be < @threshold: PRD.NN.perf.api.p95_latency for 95th percentile
 ```
 
 ### Validation
@@ -376,7 +393,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/REQ/REQ-NNN_slug.md --auto-fix
+python scripts/validate_cross_document.py --document docs/REQ/REQ-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all REQ documents complete
 python scripts/validate_cross_document.py --layer REQ --auto-fix
@@ -393,7 +410,7 @@ python scripts/validate_cross_document.py --layer REQ --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd/@adr/@sys tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

@@ -1,5 +1,5 @@
 ---
-doc_id: CTR-{NNN}
+doc_id: CTR-{NN}
 section: 0
 title: "{Document Title} - Index"
 total_sections: {N}
@@ -22,13 +22,13 @@ custom_fields:
   index_role: true
 ---
 
-# CTR-{NNN}.0: {Document Title} - Index
+# CTR-{NN}.0: {Document Title} - Index
 
 ## Document Overview
 
 | Field | Value |
 |-------|-------|
-| **Document ID** | CTR-{NNN} |
+| **Document ID** | CTR-{NN} |
 | **Document Type** | Data Contracts |
 | **Layer** | 9 - Contracts |
 | **Title** | {Document Title} |
@@ -49,10 +49,10 @@ custom_fields:
 
 | Section | File | Title | Description |
 |---------|------|-------|-------------|
-| 0 | [CTR-{NNN}.0_index.md](CTR-{NNN}.0_index.md) | Index | This file - document overview and navigation |
-| 1 | [CTR-{NNN}.1_{slug1}.md](CTR-{NNN}.1_{slug1}.md) | {Title 1} | {Description 1} |
-| 2 | [CTR-{NNN}.2_{slug2}.md](CTR-{NNN}.2_{slug2}.md) | {Title 2} | {Description 2} |
-| 3 | [CTR-{NNN}.3_{slug3}.md](CTR-{NNN}.3_{slug3}.md) | {Title 3} | {Description 3} |
+| 0 | [CTR-{NN}.0_index.md](CTR-{NN}.0_index.md) | Index | This file - document overview and navigation |
+| 1 | [CTR-{NN}.1_{slug1}.md](CTR-{NN}.1_{slug1}.md) | {Title 1} | {Description 1} |
+| 2 | [CTR-{NN}.2_{slug2}.md](CTR-{NN}.2_{slug2}.md) | {Title 2} | {Description 2} |
+| 3 | [CTR-{NN}.3_{slug3}.md](CTR-{NN}.3_{slug3}.md) | {Title 3} | {Description 3} |
 
 ---
 
@@ -70,12 +70,12 @@ custom_fields:
 ## Dependencies
 
 ### Upstream References
-- @ref: IMPL-{NNN} - Implementation approach these contracts formalize
-- @ref: REQ-{NNN} - Requirements these contracts implement
+- @ref: IMPL-{NN} - Implementation approach these contracts formalize
+- @ref: REQ-{NN} - Requirements these contracts implement
 
 ### Downstream References
-- @ref: SPEC-{NNN} - Technical specifications implementing contracts
-- @ref: TASKS-{NNN} - Task breakdown for contract implementation
+- @ref: SPEC-{NN} - Technical specifications implementing contracts
+- @ref: TASKS-{NN} - Task breakdown for contract implementation
 
 ### Cross-Section Dependencies
 - Section 2 depends on Section 1 (data models)
@@ -107,8 +107,8 @@ custom_fields:
 
 ## Traceability
 
-- **Original Document**: CTR-{NNN} (before split)
+- **Original Document**: CTR-{NN} (before split)
 - **Element ID Range**: CTR.{NN}.{TT}.01 through CTR.{NN}.{TT}.{MAX}
-- **Tag Format**: @ref: CTR-{NNN}.{S} (section reference)
+- **Tag Format**: @ref: CTR-{NN}.{S} (section reference)
 - **Upstream Trace**: BRD -> PRD -> EARS -> BDD -> ADR -> SYS -> REQ -> IMPL
 - **Downstream Trace**: SPEC -> TASKS -> IPLAN

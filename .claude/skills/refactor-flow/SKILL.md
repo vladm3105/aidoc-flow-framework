@@ -612,7 +612,7 @@ def authenticate_user(username, password):
     Authenticate user with username and password.
     Validates credentials, checks user status, creates session.
 
-    Traceability: REQ-AUTH-001, BDD-LOGIN-001
+    Traceability: REQ-AUTH-01, BDD-LOGIN-001
     """
 
 # After refactoring - Update all affected docstrings
@@ -627,14 +627,14 @@ def authenticate_user(username: str, password: str) -> AuthResult:
     Returns:
         AuthResult containing success status and session
 
-    Traceability: REQ-AUTH-001, BDD-LOGIN-001
+    Traceability: REQ-AUTH-01, BDD-LOGIN-001
     """
 
 def _validate_credentials(self, username: str, password: str) -> ValidationResult:
     """
     Validate username and password format.
 
-    Traceability: REQ-AUTH-001
+    Traceability: REQ-AUTH-01
     """
 ```
 
@@ -659,7 +659,7 @@ def authenticate_user(username: str, password: str) -> AuthResult
 - Improved error messages
 - Added type hints
 
-**Traceability**: REQ-AUTH-001
+**Traceability**: REQ-AUTH-01
 ```
 
 ---

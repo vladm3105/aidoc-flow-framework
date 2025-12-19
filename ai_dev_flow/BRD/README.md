@@ -38,7 +38,7 @@ BRDs are the **first step** in specification-driven development within the compl
 
 **⚠️ CRITICAL - Workflow Order**: BRDs are created BEFORE ADRs in the SDD workflow. Therefore:
 
-❌ **Do NOT** reference specific ADR numbers (ADR-001, ADR-011, etc.) in BRD documents
+❌ **Do NOT** reference specific ADR numbers (ADR-01, ADR-011, etc.) in BRD documents
 
 ✅ **DO** include "Architecture Decision Requirements" section describing what decisions are needed
 
@@ -84,7 +84,7 @@ Every BRD should include a section (typically section 5.2) that lists architectu
 **Workflow**: Platform BRD → **ADRs (critical)** → PRD → ADRs (remaining) → SPEC
 
 **Examples**:
-- BRD-001: Platform Architecture & Technology Stack
+- BRD-01: Platform Architecture & Technology Stack
 - BRD-034: ML Infrastructure Technology Decisions
 - BRD-050: Mobile Platform Architecture
 
@@ -116,11 +116,11 @@ Every BRD should include a section (typically section 5.2) that lists architectu
 ### Naming Conventions
 
 **Platform BRDs**:
-- Pattern: `BRD-NNN_platform_*` or `BRD-NNN_infrastructure_*`
-- Examples: `BRD-001_platform_architecture_technology_stack.md`
+- Pattern: `BRD-NN_platform_*` or `BRD-NN_infrastructure_*`
+- Examples: `BRD-01_platform_architecture_technology_stack.md`
 
 **Feature BRDs**:
-- Pattern: `BRD-NNN_{feature_name}`
+- Pattern: `BRD-NN_{feature_name}`
 - Examples: `BRD-006_b2c_progressive_kyc_onboarding.md`
 
 ### Decision Guide
@@ -238,18 +238,18 @@ This directory provides the **BRD-TEMPLATE.md** for business requirements docume
 ## File Naming Convention
 
 ```
-BRD-NNN_descriptive_title.md        # Atomic document
-BRD-NNN.S_section_title.md          # Section file (for large documents)
+BRD-NN_descriptive_title.md        # Atomic document
+BRD-NN.S_section_title.md          # Section file (for large documents)
 ```
 
 Where:
 - `BRD` is the constant prefix
-- `NNN` is the three-digit sequence number (001, 002, 003, etc.)
+- `NNN` is the 2+ digit sequence number (01, 02, 003, etc.)
 - `S` is the section number for split documents (0=index, 1, 2, 3, etc.)
 - `descriptive_title` uses snake_case for clarity
 
 **Examples:**
-- `BRD-001_foundation_overview.md` (atomic document)
+- `BRD-01_foundation_overview.md` (atomic document)
 - `BRD-009.1_provider_integration_prerequisites.md` (section file)
 - `BRD-009.2_provider_integration_pilot.md` (section file)
 
@@ -443,7 +443,7 @@ BRDs serve as:
 ## Example BRDs
 
 See existing BRD documents in `docs/BRD/` for complete examples:
-- `BRD-001.1_foundation_overview.md` - Multi-agent system strategic overview (section file)
+- `BRD-01.1_foundation_overview.md` - Multi-agent system strategic overview (section file)
 - `BRD-009.2_provider_integration_pilot.md` - [EXTERNAL_SERVICE_GATEWAY] integration pilot (section file)
 
 These demonstrate well-structured BRDs following these conventions with proper Architecture Decision Requirements sections.

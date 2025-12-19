@@ -59,7 +59,7 @@ Rules for validating Implementation Plans (IPLAN) documents in the SDD framework
 ### Pattern
 
 ```regex
-^IPLAN-[0-9]{3,4}_[a-z0-9_]+\.md$
+^IPLAN-[0-9]{2,}_[a-z0-9_]+\.md$
 ```
 
 ### Rules
@@ -67,7 +67,7 @@ Rules for validating Implementation Plans (IPLAN) documents in the SDD framework
 | Rule | Check | Error Level |
 |------|-------|-------------|
 | IPLAN prefix | Must start with "IPLAN-" | ERROR |
-| ID format | NNN or NNNN digits | ERROR |
+| ID format | NN or NNN (2+ digits) digits | ERROR |
 | Slug format | lowercase, underscores only | ERROR |
 | Extension | .md only | ERROR |
 
@@ -75,12 +75,12 @@ Rules for validating Implementation Plans (IPLAN) documents in the SDD framework
 
 | Filename | Valid | Reason |
 |----------|-------|--------|
-| `IPLAN-001_gateway_connection.md` | ✅ | Correct format |
-| `IPLAN-001_trade_validation.md` | ✅ | Correct format |
+| `IPLAN-01_gateway_connection.md` | ✅ | Correct format |
+| `IPLAN-01_trade_validation.md` | ✅ | Correct format |
 | `iplan-001_gateway_connection.md` | ❌ | Lowercase prefix |
 | `IPLAN-1_gateway_connection.md` | ❌ | Single digit ID |
-| `IPLAN-001-gateway-connection.md` | ❌ | Hyphens in slug |
-| `IPLAN-001_Gateway_Connection.md` | ❌ | Uppercase in slug |
+| `IPLAN-01-gateway-connection.md` | ❌ | Hyphens in slug |
+| `IPLAN-01_Gateway_Connection.md` | ❌ | Uppercase in slug |
 
 ---
 
@@ -90,11 +90,11 @@ Rules for validating Implementation Plans (IPLAN) documents in the SDD framework
 
 | Field | Type | Required | Validation |
 |-------|------|----------|------------|
-| title | string | Yes | Must match "IPLAN-NNN: [Name]" |
+| title | string | Yes | Must match "IPLAN-NN: [Name]" |
 | tags | array | Yes | Must include layer-12-artifact |
 | custom_fields.artifact_type | string | Yes | Must equal "IPLAN" |
 | custom_fields.layer | integer | Yes | Must equal 12 |
-| custom_fields.parent_tasks | string | Yes | TASKS-NNN format |
+| custom_fields.parent_tasks | string | Yes | TASKS-NN format |
 
 ### Validation Script
 
@@ -128,7 +128,7 @@ fi
 
 | Field | Required | Format |
 |-------|----------|--------|
-| ID | Yes | IPLAN-NNN |
+| ID | Yes | IPLAN-NN |
 | Status | Yes | Draft/Ready/In Progress/Completed/Blocked |
 | Version | Yes | X.Y.Z (semantic) |
 | Created | Yes | YYYY-MM-DD HH:MM:SS TZ |
@@ -136,7 +136,7 @@ fi
 | Author | Yes | Non-empty string |
 | Estimated Effort | Yes | Hours format |
 | Complexity | Yes | 1-5 integer |
-| Parent TASKS | Yes | TASKS-NNN |
+| Parent TASKS | Yes | TASKS-NN |
 
 ### Validation Rules
 
@@ -274,22 +274,22 @@ fi
 
 | Tag | Required | Format |
 |-----|----------|--------|
-| @brd | Yes | BRD.NN.EE.SS (sub-ID) or BRD-NNN (doc-level) |
-| @prd | Yes | PRD.NN.EE.SS (sub-ID) or PRD-NNN (doc-level) |
+| @brd | Yes | BRD.NN.EE.SS (sub-ID) or BRD-NN (doc-level) |
+| @prd | Yes | PRD.NN.EE.SS (sub-ID) or PRD-NN (doc-level) |
 | @ears | Yes | EARS.NN.EE.SS |
-| @bdd | Yes | BDD.NN.EE.SS (sub-ID) or BDD-NNN (doc-level) |
-| @adr | Yes | ADR-NNN |
-| @sys | Yes | SYS.NN.EE.SS (sub-ID) or SYS-NNN (doc-level) |
-| @req | Yes | REQ.NN.EE.SS (sub-ID) or REQ-NNN (doc-level) |
-| @spec | Yes | SPEC-NNN |
-| @tasks | Yes | TASKS-NNN |
+| @bdd | Yes | BDD.NN.EE.SS (sub-ID) or BDD-NN (doc-level) |
+| @adr | Yes | ADR-NN |
+| @sys | Yes | SYS.NN.EE.SS (sub-ID) or SYS-NN (doc-level) |
+| @req | Yes | REQ.NN.EE.SS (sub-ID) or REQ-NN (doc-level) |
+| @spec | Yes | SPEC-NN |
+| @tasks | Yes | TASKS-NN |
 
 ### Optional Tags (If present in project)
 
 | Tag | Required | Format |
 |-----|----------|--------|
-| @impl | Conditional | IMPL-NNN (if project uses IMPL) |
-| @ctr | Conditional | CTR-NNN (if contracts defined) |
+| @impl | Conditional | IMPL-NN (if project uses IMPL) |
+| @ctr | Conditional | CTR-NN (if contracts defined) |
 
 ### Validation Commands
 
@@ -487,8 +487,8 @@ fi
 
 ```bash
 ./scripts/validate_iplan.sh --help
-./scripts/validate_iplan.sh --verbose IPLAN-001.md
-./scripts/validate_iplan.sh --strict IPLAN-001.md  # Treat warnings as errors
+./scripts/validate_iplan.sh --verbose IPLAN-01.md
+./scripts/validate_iplan.sh --strict IPLAN-01.md  # Treat warnings as errors
 ```
 
 ### Output Format
@@ -497,7 +497,7 @@ fi
 =========================================
 IPLAN Validation Report
 =========================================
-File: IPLAN-001_gateway_connection.md
+File: IPLAN-01_gateway_connection.md
 Version: 1.0.0
 
 CHECK 1: Filename Format
@@ -701,16 +701,45 @@ grep -r "pattern" src/
 
 ---
 
-## 15. Common Validation Errors
+## 16. Element ID Format Compliance ⭐ NEW
+
+**Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
+**Type**: Error
+
+| Check | Pattern | Result |
+|-------|---------|--------|
+| Valid format | `IPLAN.NN.TT.SS:` | ✅ Pass |
+| Removed pattern | `CMD-XXX` | ❌ Fail - use IPLAN.NN.19.SS |
+| Removed pattern | `STEP-XXX` | ❌ Fail - use IPLAN.NN.31.SS |
+
+**Regex**: `^###?\s+IPLAN\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+**Common Element Types for IPLAN**:
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Command | 19 | IPLAN.02.19.01 |
+| Plan Step | 31 | IPLAN.02.31.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `CMD-XXX` → Use `IPLAN.NN.19.SS`
+> - `STEP-XXX` → Use `IPLAN.NN.31.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+
+**Fix**: Replace `### CMD-01: Build Command` with `### IPLAN.02.19.01: Build Command`
+
+---
+
+## 17. Common Validation Errors
 
 ### Error: Invalid Filename Format
 
-**Symptom**: "ERROR: Filename does not match IPLAN-NNN_{slug}.md format"
-**Fix**: Ensure filename follows `IPLAN-NNN_{descriptive_slug}.md` pattern
+**Symptom**: "ERROR: Filename does not match IPLAN-NN_{slug}.md format"
+**Fix**: Ensure filename follows `IPLAN-NN_{descriptive_slug}.md` pattern
 
 **Examples**:
-- ✅ `IPLAN-001_gateway_connection.md`
-- ❌ `IPLAN-001-gateway-connection.md` (hyphens in slug)
+- ✅ `IPLAN-01_gateway_connection.md`
+- ❌ `IPLAN-01-gateway-connection.md` (hyphens in slug)
 - ❌ `IPLAN_001_gateway.md` (missing hyphen after IPLAN)
 
 ### Error: Missing Required Tags

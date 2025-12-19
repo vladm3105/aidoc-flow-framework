@@ -1,4 +1,4 @@
-# REQ-NNN: [Descriptive Requirement Title]
+# REQ-NN: [Descriptive Requirement Title]
 
 ---
 
@@ -48,7 +48,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 | **Author** | [Author name and role] |
 | **Priority** | Critical/High/Medium/Low |
 | **Category** | Functional/Non-Functional/security/Performance/Reliability |
-| **Source Document** | [PRD-NNN, SYS-NNN, or EARS-NNN reference] |
+| **Source Document** | [PRD-NN, SYS-NN, or EARS-NN reference] |
 | **Verification Method** | BDD/Spec/Unit Test/Integration Test/Contract Test |
 | **Assigned Team** | [Team/Person responsible] |
 | **SPEC-Ready Score** | [0-100%] (Target: ≥90%) |
@@ -783,7 +783,7 @@ class Container(containers.DeclarativeContainer):
 
 ### Automated Testing
 
-- **BDD Scenarios**: [BDD-NNN.feature](../../BDD/BDD-NNN.feature#scenarios)
+- **BDD Scenarios**: [BDD-NN.feature](../../BDD/BDD-NN.feature#scenarios)
   - Scenario: Successful API connection
   - Scenario: Rate limiting enforcement
   - Scenario: Retry on transient failure
@@ -811,7 +811,7 @@ class Container(containers.DeclarativeContainer):
 
 ### Technical Validation
 
-- **Specification Compliance**: [SPEC-NNN](../../SPEC/.../SPEC-NNN.yaml)
+- **Specification Compliance**: [SPEC-NN](../../SPEC/.../SPEC-NN.yaml)
   - Interface implementation matches protocol
   - All methods have type annotations
   - Error handling follows specification
@@ -846,10 +846,10 @@ Document the business strategy, product requirements, system specifications, and
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-NNN](../../BRD/BRD-NNN_...md) | [Business requirements title] | sections 2.4, 4.x | Business objectives justifying this requirement |
-| PRD | [PRD-NNN](../../PRD/PRD-NNN_...md) | [Product requirements title] | Functional Requirements 4.x | Product features this requirement enables |
-| SYS | [SYS-NNN](../../SYS/SYS-NNN_...md) | [System requirements title] | System Requirements 3.x | System-level specification this implements |
-| EARS | [EARS-NNN](../../EARS/EARS-NNN_...md) | [Engineering requirements] | Event-driven/State-driven statements | Formal engineering requirement this satisfies |
+| BRD | [BRD-NN](../../BRD/BRD-NN_...md) | [Business requirements title] | sections 2.4, 4.x | Business objectives justifying this requirement |
+| PRD | [PRD-NN](../../PRD/PRD-NN_...md) | [Product requirements title] | Functional Requirements 4.x | Product features this requirement enables |
+| SYS | [SYS-NN](../../SYS/SYS-NN_...md) | [System requirements title] | System Requirements 3.x | System-level specification this implements |
+| EARS | [EARS-NN](../../EARS/EARS-NN_...md) | [Engineering requirements] | Event-driven/State-driven statements | Formal engineering requirement this satisfies |
 
 ### Downstream Artifacts
 
@@ -857,25 +857,25 @@ Document the business strategy, product requirements, system specifications, and
 
 | ADR ID | ADR Title | Requirement Aspects Addressed | Decision Impact |
 |--------|-----------|------------------------------|-----------------|
-| [ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN) | [Architecture decision title] | Technology selection, patterns | Architectural implementation |
+| [ADR-NN](../ADR/ADR-NN_...md#ADR-NN) | [Architecture decision title] | Technology selection, patterns | Architectural implementation |
 
 #### Technical Specifications
 
 | SPEC ID | Specification Title | Requirement Aspects Implemented | Implementation Path |
 |---------|-------------------|--------------------------------|---------------------|
-| [SPEC-NNN](../../SPEC/.../SPEC-NNN.yaml) | [Technical spec title] | Interfaces, schemas, error handling, config | src/[module]/[component].py |
+| [SPEC-NN](../../SPEC/.../SPEC-NN.yaml) | [Technical spec title] | Interfaces, schemas, error handling, config | src/[module]/[component].py |
 
 #### Behavioral Specifications
 
 | BDD ID | Scenario Title | Acceptance Criteria Validated | Test Coverage |
 |--------|----------------|-------------------------------|---------------|
-| [BDD-NNN](../../BDD/BDD-NNN_....feature) | Feature: [Feature name] | AC-001, AC-002, AC-003 | Scenarios 1-5 |
+| [BDD-NN](../../BDD/BDD-NN_....feature) | Feature: [Feature name] | AC-001, AC-002, AC-003 | Scenarios 1-5 |
 
 #### API Contracts
 
 | CTR ID | Contract Title | Interface Defined | Relationship |
 |--------|----------------|-------------------|--------------|
-| [CTR-NNN](../../CTR/CTR-NNN.md) | [API Contract Title] | REST API / Event Schema | Interface specification |
+| [CTR-NN](../../CTR/CTR-NN.md) | [API Contract Title] | REST API / Event Schema | Interface specification |
 
 ### Code Implementation Paths
 
@@ -895,15 +895,15 @@ Document the business strategy, product requirements, system specifications, and
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
 ```markdown
-@brd: BRD-NNN:NNN
-@prd: PRD-NNN:NNN
-@ears: EARS-NNN:NNN
-@bdd: BDD-NNN:NNN
-@adr: ADR-NNN
-@sys: SYS-NNN:NNN
+@brd: BRD-NN:NN
+@prd: PRD-NN:NN
+@ears: EARS-NN:NN
+@bdd: BDD-NN:NN
+@adr: ADR-NN
+@sys: SYS-NN:NN
 ```
 
-**Format**: `@artifact-type: DOCUMENT-ID:NNN`
+**Format**: `@artifact-type: DOCUMENT-ID:NN`
 
 **Layer 7 Requirements**: REQ must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -917,10 +917,10 @@ Document the business strategy, product requirements, system specifications, and
 
 **Example**:
 ```markdown
-@brd: BRD-001:030
-@prd: PRD-003:002
-@ears: EARS-001:003
-@bdd: BDD-003:001
+@brd: BRD-01:030
+@prd: PRD-03:002
+@ears: EARS-01:003
+@bdd: BDD-03:001
 @adr: ADR-033
 @sys: SYS-008:001
 ```

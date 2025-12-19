@@ -31,7 +31,7 @@ custom_fields:
 > - **Creation Rules**: `IMPL_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `IMPL_VALIDATION_RULES.md` - Post-creation checks
 
-# IMPL-NNN: [Implementation Plan Title]
+# IMPL-NN: [Implementation Plan Title]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
@@ -41,7 +41,7 @@ custom_fields:
 
 | Field | Value |
 |-------|-------|
-| **IMPL ID** | IMPL-NNN |
+| **IMPL ID** | IMPL-NN |
 | **Title** | [Feature or System Name] Implementation Plan |
 | **Status** | Draft \| Planned \| In Progress \| On Hold \| Completed \| Cancelled |
 | **Created** | YYYY-MM-DD |
@@ -49,8 +49,8 @@ custom_fields:
 | **Owner** | [Team or Person Responsible] |
 | **Last Updated** | YYYY-MM-DD |
 | **Version** | 1.0 |
-| **Related REQs** | [REQ-NNN](../REQ/.../REQ-NNN.md), [REQ-MMM](../REQ/.../REQ-MMM.md) |
-| **Deliverables** | CTR-NNN, SPEC-NNN, TASKS-NNN, CTR-YY, SPEC-YY, TASKS-YY |
+| **Related REQs** | [REQ-NN](../REQ/.../REQ-NN.md), [REQ-MM](../REQ/.../REQ-MM.md) |
+| **Deliverables** | CTR-NN, SPEC-NN, TASKS-NN, CTR-YY, SPEC-YY, TASKS-YY |
 
 ## Position in Document Workflow
 
@@ -113,8 +113,8 @@ flowchart LR
 
 | Requirement ID | Description | Implementation Approach |
 |----------------|-------------|------------------------|
-| [REQ-NNN](../REQ/.../REQ-NNN.md) | [What business need] | [High-level approach in this IMPL] |
-| [REQ-MMM](../REQ/.../REQ-MMM.md) | [Another requirement] | [How we'll address it] |
+| [REQ-NN](../REQ/.../REQ-NN.md) | [What business need] | [High-level approach in this IMPL] |
+| [REQ-MM](../REQ/.../REQ-MM.md) | [Another requirement] | [How we'll address it] |
 
 **Source Business Logic**:
 [References to product strategy documents or business rules driving this implementation]
@@ -150,8 +150,8 @@ flowchart LR
 
 | Dependency | Type | Status | Impact if Delayed |
 |------------|------|--------|-------------------|
-| [REQ-NNN](../REQ/.../REQ-NNN.md) | Requirement | Approved | Cannot start Phase 1 |
-| [ADR-MMM](../ADR/ADR-MMM.md) | Architecture Decision | Draft | Risk: Design changes |
+| [REQ-NN](../REQ/.../REQ-NN.md) | Requirement | Approved | Cannot start Phase 1 |
+| [ADR-MM](../ADR/ADR-MM.md) | Architecture Decision | Draft | Risk: Design changes |
 
 **External Dependencies** (Outside this IMPL):
 - [Other systems, services, or teams we depend on]
@@ -169,7 +169,7 @@ flowchart LR
 | **Purpose** | [What this phase accomplishes] |
 | **Owner** | [Team/Person] |
 | **Timeline** | [Start Date] → [End Date] ([Duration]) |
-| **Deliverables** | CTR-NNN, SPEC-NNN, TASKS-NNN |
+| **Deliverables** | CTR-NN, SPEC-NN, TASKS-NN |
 | **Dependencies** | Requires: [Prerequisites] \| Blocks: [Downstream phases] |
 
 **Success Criteria**: [ ] Deliverables created [ ] [Key milestone] [ ] Stakeholder approval
@@ -226,7 +226,7 @@ flowchart LR
 
 | Milestone | Date | Status |
 |-----------|------|--------|
-| Phase 1 Complete (CTR-NNN, SPEC-NNN, TASKS-NNN) | [YYYY-MM-DD] | Pending |
+| Phase 1 Complete (CTR-NN, SPEC-NN, TASKS-NN) | [YYYY-MM-DD] | Pending |
 | Phase 2 Complete (CTR-YY, SPEC-YY, TASKS-YY) | [YYYY-MM-DD] | Pending |
 | Production Ready | [YYYY-MM-DD] | Pending |
 
@@ -267,9 +267,9 @@ flowchart LR
 ### 4.1 Deliverables Checklist
 
 **Phase 1 Deliverables**:
-- [ ] CTR-NNN: [API Contract Title] created
-- [ ] SPEC-NNN: [Technical Spec Title] created
-- [ ] TASKS-NNN: [Code Generation Plan] created
+- [ ] CTR-NN: [API Contract Title] created
+- [ ] SPEC-NN: [Technical Spec Title] created
+- [ ] TASKS-NN: [Code Generation Plan] created
 - [ ] [Additional deliverable if any]
 
 **Phase 2 Deliverables**:
@@ -302,7 +302,7 @@ flowchart LR
 - [ ] Budget tracking complete (if applicable)
 
 **Business Validation**:
-- [ ] Requirements satisfied (REQ-NNN validation complete)
+- [ ] Requirements satisfied (REQ-NN validation complete)
 - [ ] Success criteria met (from section 1.2)
 - [ ] Final stakeholder approval received
 - [ ] Handoff to operations complete (if applicable)
@@ -344,8 +344,8 @@ flowchart LR
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| REQ | [REQ-NNN](../REQ/.../REQ-NNN.md) | [Requirement Title] | section X.Y | Business requirement |
-| REQ | [REQ-MMM](../REQ/.../REQ-MMM.md) | [Another Requirement] | section Z | Functional requirement |
+| REQ | [REQ-NN](../REQ/.../REQ-NN.md) | [Requirement Title] | section X.Y | Business requirement |
+| REQ | [REQ-MM](../REQ/.../REQ-MM.md) | [Another Requirement] | section Z | Functional requirement |
 | ADR | [ADR-PPP](../ADR/ADR-PPP.md) | [Architecture Decision] | All | Architecture guidance |
 | SYS | [SYS-QQQ](../SYS/SYS-QQQ.md) | [System Requirement] | section A | System constraint |
 
@@ -353,9 +353,9 @@ flowchart LR
 
 | Artifact Type | Document ID | Document Title | Status | Relationship |
 |---------------|-------------|----------------|--------|--------------|
-| CTR | [CTR-NNN](../CTR/CTR-NNN.md) | [API Contract] | Pending | Interface definition |
-| SPEC | [SPEC-NNN](../SPEC/.../SPEC-NNN.yaml) | [Technical Spec] | Pending | Implementation blueprint |
-| TASKS | [TASKS-NNN](../TASKS/TASKS-NNN.md) | [Code Generation Plan] | Pending | Code generation guide |
+| CTR | [CTR-NN](../CTR/CTR-NN.md) | [API Contract] | Pending | Interface definition |
+| SPEC | [SPEC-NN](../SPEC/.../SPEC-NN.yaml) | [Technical Spec] | Pending | Implementation blueprint |
+| TASKS | [TASKS-NN](../TASKS/TASKS-NN.md) | [Code Generation Plan] | Pending | Code generation guide |
 | CTR | [CTR-YY](../CTR/CTR-YY.md) | [API Contract] | Pending | Interface definition |
 | SPEC | [SPEC-YY](../SPEC/.../SPEC-YY.yaml) | [Technical Spec] | Pending | Implementation blueprint |
 | TASKS | [TASKS-YY](../TASKS/TASKS-YY.md) | [Code Generation Plan] | Pending | Code generation guide |
@@ -366,18 +366,18 @@ flowchart LR
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | [IMPL-NNN](./IMPL-NNN_...md) | [Related IMPL title] | Shared implementation context |
-| Depends | [IMPL-NNN](./IMPL-NNN_...md) | [Prerequisite IMPL title] | Must complete before this |
+| Related | [IMPL-NN](./IMPL-NN_...md) | [Related IMPL title] | Shared implementation context |
+| Depends | [IMPL-NN](./IMPL-NN_...md) | [Prerequisite IMPL title] | Must complete before this |
 
 **Legacy Format** (for backward compatibility):
-- **Depends On**: [IMPL-NNN previous implementation plans this depends on]
+- **Depends On**: [IMPL-NN previous implementation plans this depends on]
 - **Related**: [IMPL-YY complementary implementation plans]
 - **Supersedes**: [IMPL-ZZZ older plans replaced by this one]
 
 **Tags:**
 ```markdown
-@related-impl: IMPL-NNN
-@depends-impl: IMPL-NNN
+@related-impl: IMPL-NN
+@depends-impl: IMPL-NN
 ```
 
 ### 6.4 Traceability Tags
@@ -388,12 +388,12 @@ flowchart LR
 @prd: PRD.NN.EE.SS
 @ears: EARS.NN.EE.SS
 @bdd: BDD.NN.EE.SS
-@adr: ADR-NNN
+@adr: ADR-NN
 @sys: SYS.NN.EE.SS
 @req: REQ.NN.EE.SS
 ```
 
-**Format**: `@artifact-type: TYPE.NN.EE.SS (Unified Feature ID)`
+**Format**: `@artifact-type: TYPE.NN.TT.SS (Unified Feature ID)`
 
 **Layer 8 Requirements**: IMPL must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -425,7 +425,7 @@ flowchart LR
 
 ## 7. References
 
-**Internal**: [REQ-NNN](../REQ/.../REQ-NNN.md) \| [ADR-PPP](../ADR/ADR-PPP.md) \| [IMPL-000 Index](./IMPL-000_index.md)
+**Internal**: [REQ-NN](../REQ/.../REQ-NN.md) \| [ADR-PPP](../ADR/ADR-PPP.md) \| [IMPL-000 Index](./IMPL-000_index.md)
 
 **Templates**: [CTR-TEMPLATE](../CTR/CTR-TEMPLATE.md) \| [SPEC-TEMPLATE](../SPEC/SPEC-TEMPLATE.yaml) \| [TASKS-TEMPLATE](../TASKS/TASKS-TEMPLATE.md)
 

@@ -131,19 +131,19 @@ The Docs Flow Framework implements **cumulative tagging** where each artifact ty
 **Key Rules**:
 - **Upstream REQUIRED** (except BRD): Document MUST reference its upstream sources
 - **Downstream OPTIONAL**: Only link to documents that already exist
-- **No-TBD Rule**: NEVER use placeholder IDs (TBD, XXX, NNN) - leave empty or omit section
+- **No-TBD Rule**: NEVER use placeholder IDs (TBD, XXX, NN) - leave empty or omit section
 
 ### 2.2 Tag Format
 
 ```markdown
-@artifact-type: TYPE.NN.EE.SS (Unified Feature ID)
+@artifact-type: TYPE.NN.TT.SS (Unified Feature ID)
 ```
 
 **Format Rules**:
 - Prefix: `@` symbol
 - Artifact Type: lowercase (brd, prd, ears, bdd, adr, sys, req, impl, ctr, spec, tasks, iplan)
 - Separator: colon `:` after artifact type
-- Document ID: `TYPE-NNN` format
+- Document ID: `TYPE-NN` format
 - Requirement ID: specific requirement/section identifier
 - Multiple Values: comma-separated `@brd: BRD.01.01.30, BRD.01.01.06`
 
@@ -213,7 +213,7 @@ Handles trade request submission with validation and execution.
 @ctr: CTR-005
 @spec: SPEC-018
 @tasks: TASKS.18.29.03, TASKS.18.29.07
-@iplan: IPLAN-003
+@iplan: IPLAN-03
 
 @impl-status: complete
 @test-coverage: 95%
@@ -241,7 +241,7 @@ Test suite for request submission Service
 @ctr: CTR-005
 @spec: SPEC-018
 @tasks: TASKS.18.29.03, TASKS.18.29.07
-@iplan: IPLAN-003
+@iplan: IPLAN-03
 @code: src/execution/order_service.py:OrderService
 
 @test-type: integration
@@ -318,7 +318,7 @@ SYS-012 (System Requirements)
   ↓ @brd through @sys, @req
 REQ-045 (Atomic Requirement)
   ↓ @brd through @req, @impl
-IMPL-003 (Implementation Plan)
+IMPL-03 (Implementation Plan)
   ↓ @brd through @impl, @ctr
 CTR-005 (API Contract)
   ↓ @brd through @ctr, @spec
@@ -338,7 +338,7 @@ Production Deployment
 When IMPL and CTR layers don't exist:
 
 ```
-BRD-001 → PRD-003 → EARS-005 → BDD-008 → ADR-015 → SYS-020 → REQ-030
+BRD-01 → PRD-03 → EARS-005 → BDD-008 → ADR-015 → SYS-020 → REQ-030
   ↓
 SPEC-040 (tags: @brd through @req = 7 tags)
   ↓
@@ -355,18 +355,18 @@ Code (tags: @brd through @tasks = 9 tags)
 
 | Strategy Source | BRD ID | PRD ID | EARS ID | BDD ID | Status |
 |-----------------|--------|--------|---------|--------|--------|
-| [Strategic Goal 1] | BRD-001 | PRD-001, PRD-002 | EARS-001, EARS-002, EARS-003 | BDD-001, BDD-002 | ✅ Complete |
-| [Strategic Goal 2] | BRD-002 | PRD-003 | EARS-004, EARS-005 | BDD-003 | ✅ Complete |
-| [Strategic Goal 3] | BRD-003 | PRD-004, PRD-005 | EARS-006 | BDD-004 | 🟡 Partial |
+| [Strategic Goal 1] | BRD-01 | PRD-01, PRD-02 | EARS-01, EARS-02, EARS-03 | BDD-01, BDD-02 | ✅ Complete |
+| [Strategic Goal 2] | BRD-02 | PRD-03 | EARS-004, EARS-005 | BDD-03 | ✅ Complete |
+| [Strategic Goal 3] | BRD-03 | PRD-004, PRD-005 | EARS-006 | BDD-004 | 🟡 Partial |
 | [Strategic Goal N] | ... | ... | ... | ... | ... |
 
 ### 3.2 Architecture Layer Traceability
 
 | BRD ID | PRD ID | EARS ID | ADR ID | SYS ID | REQ IDs | Status |
 |--------|--------|---------|--------|--------|---------|--------|
-| BRD-001 | PRD-001 | EARS-001 | ADR-001, ADR-005 | SYS-001 | REQ-001, REQ-002, REQ-003 | ✅ Complete |
-| BRD-002 | PRD-003 | EARS-004 | ADR-002 | SYS-002 | REQ-004, REQ-005 | ✅ Complete |
-| BRD-003 | PRD-004 | EARS-006 | ADR-003 | SYS-003 | REQ-006 | 🟡 Partial |
+| BRD-01 | PRD-01 | EARS-01 | ADR-01, ADR-005 | SYS-01 | REQ-01, REQ-02, REQ-03 | ✅ Complete |
+| BRD-02 | PRD-03 | EARS-004 | ADR-02 | SYS-02 | REQ-04, REQ-005 | ✅ Complete |
+| BRD-03 | PRD-004 | EARS-006 | ADR-03 | SYS-03 | REQ-006 | 🟡 Partial |
 | ... | ... | ... | ... | ... | ... | ... |
 
 ### 3.3 Implementation Layer Traceability
@@ -375,19 +375,19 @@ Code (tags: @brd through @tasks = 9 tags)
 
 | REQ ID | IMPL ID | CTR ID | SPEC ID | TASKS ID | IPLAN ID | Code Files | Tag Discovery | Tests | Status |
 |--------|---------|--------|---------|----------|---------------|------------|---------------|-------|--------|
-| REQ-001 | IMPL-001 | CTR-001 | SPEC-001 | TASKS-001 | IPLAN-001 | src/module.py | @req: REQ.001.15 | test_module.py | ✅ Complete |
-| REQ-002 | IMPL-001 | N/A | SPEC-002 | TASKS-002 | IPLAN-002 | src/service.py | test_service.py | ✅ Complete |
-| REQ-003 | IMPL-002 | CTR-002 | SPEC-003 | TASKS-003 | IPLAN-003 | src/api.py | test_api.py | 🟡 In Progress |
-| REQ-004 | IMPL-002 | N/A | SPEC-004 | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Not Started |
+| REQ-01 | IMPL-01 | CTR-01 | SPEC-01 | TASKS-01 | IPLAN-01 | src/module.py | @req: REQ.001.15 | test_module.py | ✅ Complete |
+| REQ-02 | IMPL-01 | N/A | SPEC-02 | TASKS-02 | IPLAN-02 | src/service.py | test_service.py | ✅ Complete |
+| REQ-03 | IMPL-02 | CTR-02 | SPEC-03 | TASKS-03 | IPLAN-03 | src/api.py | test_api.py | 🟡 In Progress |
+| REQ-04 | IMPL-02 | N/A | SPEC-004 | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Not Started |
 | ... | ... | ... | ... | ... | ... | ... | ... |
 
 ### 3.4 Validation Layer Traceability
 
 | BDD ID | EARS ID | Code Files | Test Files | Test Results | Production Status | Status |
 |--------|---------|------------|------------|--------------|-------------------|--------|
-| BDD-001 | EARS-001 | src/module.py | test_module.py | ✅ Passed (100%) | ✅ Deployed v1.0 | Complete |
-| BDD-002 | EARS-002 | src/service.py | test_service.py | ✅ Passed (95%) | ✅ Deployed v1.0 | Complete |
-| BDD-003 | EARS-004 | src/api.py | test_api.py | 🟡 Partial (80%) | 🟡 Staging | Testing |
+| BDD-01 | EARS-01 | src/module.py | test_module.py | ✅ Passed (100%) | ✅ Deployed v1.0 | Complete |
+| BDD-02 | EARS-02 | src/service.py | test_service.py | ✅ Passed (95%) | ✅ Deployed v1.0 | Complete |
+| BDD-03 | EARS-004 | src/api.py | test_api.py | 🟡 Partial (80%) | 🟡 Staging | Testing |
 | BDD-004 | EARS-006 | ⏳ Pending | ⏳ Pending | ⏳ Not Tested | ⏳ Not Deployed | Not Started |
 | ... | ... | ... | ... | ... | ... | ... |
 
@@ -414,7 +414,7 @@ SYS-012: operation execution system requirements (Event bus, order processing se
    ↓ decomposes
 REQ-045: Place limit order atomic requirement
    ↓ plans
-IMPL-003: operation execution implementation plan (Phase 2, Team B, 3 developers, 20 days)
+IMPL-03: operation execution implementation plan (Phase 2, Team B, 3 developers, 20 days)
    ↓ specifies
 CTR-005: operation execution API contract (.md + .yaml)
    ↓ implements
@@ -454,11 +454,11 @@ REQ-075: Calculate sentiment score from market data
    ↓
 IMPL-008: Phase 3 ML implementation plan
    ↓ [GAP: CTR missing]
-⚠️ CTR-NNN: No API contract defined for sentiment service
+⚠️ CTR-NN: No API contract defined for sentiment service
    ↓
 SPEC-032: Sentiment scoring service specification (YAML)
    ↓ [GAP: TASKS missing]
-⚠️ TASKS-NNN: No code generation plan created
+⚠️ TASKS-NN: No code generation plan created
    ↓ [GAP: Code missing]
 ⚠️ Code: Implementation not started
    ↓ [GAP: Tests missing]
@@ -488,7 +488,7 @@ REQ-062: Fetch real-time item quotes from Alpha Vantage
    ↓
 IMPL-005: Integration implementation plan (Phase 2, Team C)
    ↓
-CTR-003: Alpha Vantage API contract (.md + .yaml)
+CTR-03: Alpha Vantage API contract (.md + .yaml)
    ├─ SPEC-025: API client specification (consumer)
    └─ SPEC-026: Data transformation service (processor)
    ↓
@@ -496,7 +496,7 @@ TASKS-025: API client implementation tasks
 TASKS-026: Data transformation tasks
    ↓
 Code: src/integrations/external_api/
-   ├─ client.py (implements CTR-003 consumer)
+   ├─ client.py (implements CTR-03 consumer)
    ├─ transformer.py (data processing)
    └─ rate_limiter.py (API throttling)
    ↓
@@ -647,12 +647,12 @@ When making changes to any document, use this matrix to identify affected artifa
 
 **Step 1: Identify Changed Document**
 - Document Type: [BRD/PRD/EARS/etc.]
-- Document ID: [DOC-NNN]
+- Document ID: [DOC-NN]
 - Change Type: [New/Modified/Deprecated]
 
 **Step 2: Analyze Downstream Impact**
 ```
-Changed Document: [DOC-NNN]
+Changed Document: [DOC-NN]
    ↓
 Direct Downstream (Tier 1):
    - [List immediate downstream documents]
@@ -682,7 +682,7 @@ BRD-009: service integration Requirements
    ADR-033: Architecture decision (May need reconsideration)
    ↓ Cascading Impact (Tier 3)
    SYS-012, REQ-045: System/atomic requirements (Potential updates)
-   IMPL-003: Implementation plan (Timeline may change)
+   IMPL-03: Implementation plan (Timeline may change)
    CTR-005, SPEC-018, TASKS-018: Implementation artifacts (Code changes)
    ↓ Final Impact (Tier 4)
    Code: src/execution/order_service.py (Refactoring required)
@@ -717,7 +717,7 @@ Before making changes, verify:
 
 **Document Creation Validation**:
 - [ ] All new documents linked to upstream sources
-- [ ] Document follows naming conventions (TYPE-NNN_slug)
+- [ ] Document follows naming conventions (TYPE-NN_slug)
 - [ ] section 7 Traceability complete (upstream + downstream)
 - [ ] All referenced documents exist
 - [ ] All markdown links include anchors

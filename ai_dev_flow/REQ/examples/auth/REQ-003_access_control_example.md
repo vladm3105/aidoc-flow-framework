@@ -1,4 +1,4 @@
-# REQ-003: Role-Based Access Control (RBAC) for Platform Resources
+# REQ-03: Role-Based Access Control (RBAC) for Platform Resources
 
 ## Document Control
 
@@ -442,13 +442,13 @@ def get_all_permissions(role_id: str, visited: set = None) -> set[str]:
 ## 11. Traceability
 
 ### Upstream Sources
-- BRD-003: Platform Security Requirements
-- PRD-003: Authorization and Access Control
-- SYS-003: RBAC System Architecture
+- BRD-03: Platform Security Requirements
+- PRD-03: Authorization and Access Control
+- SYS-03: RBAC System Architecture
 
 ### Downstream Artifacts
-- SPEC-003: Authorization Service Specification
-- BDD-003: Authorization Scenarios
+- SPEC-03: Authorization Service Specification
+- BDD-03: Authorization Scenarios
 
 ### Code Paths
 - `src/auth/authorization_service.py`

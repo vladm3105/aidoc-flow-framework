@@ -27,7 +27,7 @@ custom_fields:
 2. ✅ Domain selection complete
 3. ✅ Folder structure created
 4. ✅ Contracts decision made
-5. Create BRD-001 (Business Requirements Document)
+5. Create BRD-01 (Business Requirements Document)
    - Strategic objectives
    - Market context
    - Success criteria
@@ -35,45 +35,45 @@ custom_fields:
 
 **AI Assistant Actions**:
 ```bash
-# Create BRD-001
-cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-001_business_objectives.md
-# Fill BRD-001 with project-specific content
+# Create BRD-01
+cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-01_business_objectives.md
+# Fill BRD-01 with project-specific content
 # Update index
 ```
 
-**Deliverable**: BRD-001 approved
+**Deliverable**: BRD-01 approved
 
 ---
 
 ### Day 2: Product Requirements & Acceptance Criteria
 
 **Tasks**:
-1. Create PRD-001 (Product Requirements Document)
+1. Create PRD-01 (Product Requirements Document)
    - User-facing features
    - Quality attributes
    - Constraints
-2. Create EARS-001 (Easy Approach to Requirements Syntax)
+2. Create EARS-01 (Easy Approach to Requirements Syntax)
    - Measurable requirements using WHEN-THE-SHALL format
 3. Update PRD-000_index.md and EARS-000_index.md
 
 **AI Assistant Actions**:
 ```bash
-# Create PRD-001 and EARS-001
-# Link BRD-001 in upstream traceability
+# Create PRD-01 and EARS-01
+# Link BRD-01 in upstream traceability
 # Update indexes
 ```
 
-**Deliverable**: PRD-001 and EARS-001 approved
+**Deliverable**: PRD-01 and EARS-01 approved
 
 ---
 
 ### Day 3: BDD Scenarios & Architecture Decisions
 
 **Tasks**:
-1. Create BDD-001 (Behavior-Driven Development scenarios)
+1. Create BDD-01 (Behavior-Driven Development scenarios)
    - Acceptance tests in Gherkin format
    - Reference EARS requirements
-2. Create ADR-001+ (Architecture Decision Records)
+2. Create ADR-01+ (Architecture Decision Records)
    - Key architectural choices
    - Technology stack decisions
    - Trade-offs documented
@@ -81,19 +81,19 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-001_business_objectives.md
 
 **AI Assistant Actions**:
 ```bash
-# Create BDD-001.feature
+# Create BDD-01.feature
 # Create ADR documents for major decisions
 # Link to PRD/EARS in traceability
 ```
 
-**Deliverable**: BDD-001 and initial ADRs approved
+**Deliverable**: BDD-01 and initial ADRs approved
 
 ---
 
 ### Day 4: System Specifications & Requirements
 
 **Tasks**:
-1. Create SYS-001 (System Specifications)
+1. Create SYS-01 (System Specifications)
    - System-level requirements
    - Cross-cutting concerns
    - Integration points
@@ -105,19 +105,19 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-001_business_objectives.md
 
 **AI Assistant Actions**:
 ```bash
-# Create SYS-001
+# Create SYS-01
 # Create first 5-10 REQ documents
 # Organize by subdirectory (risk/, service/, api/, etc.)
 ```
 
-**Deliverable**: SYS-001 and initial REQs approved
+**Deliverable**: SYS-01 and initial REQs approved
 
 ---
 
 ### Day 5: Implementation Planning & Contracts
 
 **Tasks**:
-1. Create IMPL-001 (Implementation Plan)
+1. Create IMPL-01 (Implementation Plan)
    - WHO does WHAT, WHEN
    - Phases and milestones
    - Identify CTR/SPEC/TASKS deliverables
@@ -129,12 +129,12 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-001_business_objectives.md
 
 **AI Assistant Actions**:
 ```bash
-# Create IMPL-001 (project management plan)
+# Create IMPL-01 (project management plan)
 # If CTR layer active: Create CTR documents
 # Link REQ → IMPL → CTR in traceability
 ```
 
-**Deliverable**: IMPL-001 and CTR documents (if applicable) approved
+**Deliverable**: IMPL-01 and CTR documents (if applicable) approved
 
 ---
 
@@ -208,9 +208,9 @@ AI Assistant: Starting Day 1 tasks - Project Setup & Business Requirements
 
 Task 1-4: ✓ Project initialization complete (from PROJECT_SETUP_GUIDE.md)
 
-Task 5: Creating BRD-001 (Business Requirements Document)
+Task 5: Creating BRD-01 (Business Requirements Document)
 
-Creating docs/BRD/BRD-001_service_platform.md...
+Creating docs/BRD/BRD-01_service_platform.md...
 
 Content:
 - Strategic Objectives: Build algorithmic service platform
@@ -223,14 +223,14 @@ Content:
 
 section 7 Traceability:
 - Upstream Sources: (Initial BRD, no upstream)
-- Downstream Artifacts: PRD-001 (to be created)
+- Downstream Artifacts: PRD-01 (to be created)
 
-✓ BRD-001 created
+✓ BRD-01 created
 
 Task 6: Updating BRD-000_index.md...
 
 Added entry:
-| BRD-001 | service Platform Business Requirements | Draft | High | 2025-01-15 | 2025-01-15 |
+| BRD-01 | service Platform Business Requirements | Draft | High | 2025-01-15 | 2025-01-15 |
 
 ✓ Index updated
 
@@ -241,7 +241,7 @@ Running: python scripts/validate_requirement_ids.py
 Day 1 Complete!
 
 Deliverables:
-- BRD-001: docs/BRD/BRD-001_service_platform.md ✓
+- BRD-01: docs/BRD/BRD-01_service_platform.md ✓
 
 Next: Day 2 - Product Requirements & Acceptance Criteria
 ```

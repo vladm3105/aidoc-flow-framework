@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: SPEC-001 through SPEC-NNN
+# Traceability Matrix: SPEC-01 through SPEC-NN
 
 ## Document Control
 
@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type SPEC --output docs/SPEC/
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@spec: SPEC.01.27.NN` (for specific requirements) or `@spec: SPEC-001` (for single-doc refs)
+**Tag Format:** `@spec: SPEC.01.27.NN` (for specific requirements) or `@spec: SPEC-01` (for single-doc refs)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -107,7 +107,7 @@ cumulative_tags:
 **Format Rules**:
 - YAML mapping format (key: value pairs)
 - Keys: lowercase artifact types
-- Values: quoted strings in `DOC-ID:NNN` format
+- Values: quoted strings in `DOC-ID:NN` format
 - Optional tags: IMPL and CTR - include only if they exist in traceability chain
 - Multiple references: comma-separated within quoted string
 
@@ -233,9 +233,9 @@ Code (Layer 13) → Source code
 
 | SPEC ID | Title | Spec Type | Status | Date | Upstream Sources | Downstream Artifacts |
 |---------|-------|-----------|--------|------|------------------|---------------------|
-| SPEC-001 | [Technical specification title] | Service | Active | YYYY-MM-DD | REQ-001, ADR-001, CTR-001 | TASKS-001, Code: src/service.py |
-| SPEC-002 | [Technical specification title] | Agent | Active | YYYY-MM-DD | REQ-002, ADR-002 | TASKS-002, Code: src/agent.py |
-| SPEC-NNN | ... | ... | ... | ... | ... | ... |
+| SPEC-01 | [Technical specification title] | Service | Active | YYYY-MM-DD | REQ-01, ADR-01, CTR-01 | TASKS-01, Code: src/service.py |
+| SPEC-02 | [Technical specification title] | Agent | Active | YYYY-MM-DD | REQ-02, ADR-02 | TASKS-02, Code: src/agent.py |
+| SPEC-NN | ... | ... | ... | ... | ... | ... |
 
 **Status Legend**:
 - **Active**: Current specification
@@ -253,50 +253,50 @@ Code (Layer 13) → Source code
 
 | REQ ID | REQ Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| REQ-001 | [Atomic requirement] | SPEC-001 | [Technical specification] | Requirement implemented in specification |
-| REQ-NNN | ... | ... | ... | ... |
+| REQ-01 | [Atomic requirement] | SPEC-01 | [Technical specification] | Requirement implemented in specification |
+| REQ-NN | ... | ... | ... | ... |
 
 ### 9.2 ADR → SPEC Traceability
 
 | ADR ID | ADR Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| ADR-001 | [Architecture decision] | SPEC-001, SPEC-002 | [Technical specifications] | Architectural patterns implemented in SPEC |
-| ADR-NNN | ... | ... | ... | ... |
+| ADR-01 | [Architecture decision] | SPEC-01, SPEC-02 | [Technical specifications] | Architectural patterns implemented in SPEC |
+| ADR-NN | ... | ... | ... | ... |
 
 ### 6.3 CTR → SPEC Traceability
 
 | CTR ID | CTR Title | SPEC IDs | SPEC Titles | Provider/Consumer |
 |--------|-----------|----------|-------------|-------------------|
-| CTR-001 | [API contract] | SPEC-001 | [Technical specification] | Provider |
-| CTR-001 | [API contract] | SPEC-002, SPEC-003 | [Technical specifications] | Consumers |
-| CTR-NNN | ... | ... | ... | ... |
+| CTR-01 | [API contract] | SPEC-01 | [Technical specification] | Provider |
+| CTR-01 | [API contract] | SPEC-02, SPEC-03 | [Technical specifications] | Consumers |
+| CTR-NN | ... | ... | ... | ... |
 
 ---
 
 ## 6. Downstream Traceability (OPTIONAL)
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
 
 ### 9.1 SPEC → TASKS Traceability
 
 | SPEC ID | SPEC Title | TASKS IDs | TASKS Titles | Relationship |
 |---------|------------|-----------|--------------|--------------|
-| SPEC-001 | [Technical specification] | TASKS-001 | [Code generation plan] | 1:1 mapping SPEC to TASKS |
-| SPEC-NNN | ... | ... | ... | ... |
+| SPEC-01 | [Technical specification] | TASKS-01 | [Code generation plan] | 1:1 mapping SPEC to TASKS |
+| SPEC-NN | ... | ... | ... | ... |
 
 ### 9.2 SPEC → Code Traceability
 
 | SPEC ID | SPEC Title | Code Files | Functions/Classes | Relationship |
 |---------|------------|------------|-------------------|--------------|
-| SPEC-001 | [Technical specification] | src/service.py | ServiceClass, method1(), method2() | Direct implementation |
-| SPEC-NNN | ... | ... | ... | ... |
+| SPEC-01 | [Technical specification] | src/service.py | ServiceClass, method1(), method2() | Direct implementation |
+| SPEC-NN | ... | ... | ... | ... |
 
 ### 6.3 SPEC → Tests Traceability
 
 | SPEC ID | SPEC Title | Test Files | Test Functions | Coverage % |
 |---------|------------|------------|----------------|------------|
-| SPEC-001 | [Technical specification] | tests/test_service.py | test_method1(), test_method2() | 95% |
-| SPEC-NNN | ... | ... | ... | ... |
+| SPEC-01 | [Technical specification] | tests/test_service.py | test_method1(), test_method2() | 95% |
+| SPEC-NN | ... | ... | ... | ... |
 
 ---
 
@@ -306,19 +306,19 @@ Code (Layer 13) → Source code
 
 | Spec Type | SPEC IDs | Total | Description |
 |-----------|---------|-------|-------------|
-| Service | SPEC-001, SPEC-002, SPEC-003 | 3 | Backend services |
-| Agent | SPEC-004, SPEC-005 | 2 | AI agents |
+| Service | SPEC-01, SPEC-02, SPEC-03 | 3 | Backend services |
+| Agent | SPEC-004, SPEC-05 | 2 | AI agents |
 | Infrastructure | SPEC-006, SPEC-007 | 2 | Infrastructure components |
-| Integration | SPEC-008 | 1 | External integrations |
+| Integration | SPEC-08 | 1 | External integrations |
 
 ### 9.2 SPEC Validation Evidence
 
 | SPEC ID | Requirements Coverage | Test Coverage | Upstream Traceability | Validation Status |
 |---------|----------------------|---------------|----------------------|-------------------|
-| SPEC-001 | 100% (5/5 REQ) | 95% | 100% | ✅ Validated |
-| SPEC-002 | 80% (4/5 REQ) | 85% | 100% | 🟡 Partial |
-| SPEC-003 | 0% (0/3 REQ) | 0% | 0% | ⏳ Pending |
-| SPEC-NNN | ... | ... | ... | ... |
+| SPEC-01 | 100% (5/5 REQ) | 95% | 100% | ✅ Validated |
+| SPEC-02 | 80% (4/5 REQ) | 85% | 100% | 🟡 Partial |
+| SPEC-03 | 0% (0/3 REQ) | 0% | 0% | ⏳ Pending |
+| SPEC-NN | ... | ... | ... | ... |
 
 ---
 
@@ -326,18 +326,18 @@ Code (Layer 13) → Source code
 
 ```mermaid
 graph TD
-    REQ001[REQ-001] --> SPEC001[SPEC-001: Service Spec]
-    ADR001[ADR-001] --> SPEC001
-    CTR001[CTR-001: API Contract] --> SPEC001
+    REQ01[REQ-01] --> SPEC01[SPEC-01: Service Spec]
+    ADR001[ADR-01] --> SPEC01
+    CTR01[CTR-01: API Contract] --> SPEC01
 
-    SPEC001 --> TASKS001[TASKS-001: Code Plan]
+    SPEC01 --> TASKS001[TASKS-01: Code Plan]
     TASKS001 --> Code1[src/service.py]
     TASKS001 --> Tests1[tests/test_service.py]
 
-    SPEC001 -.depends on.-> SPEC004[SPEC-004: Auth Service]
-    SPEC002[SPEC-002: Feature Spec] -.uses.-> SPEC001
+    SPEC01 -.depends on.-> SPEC004[SPEC-004: Auth Service]
+    SPEC002[SPEC-02: Feature Spec] -.uses.-> SPEC01
 
-    style SPEC001 fill:#e3f2fd
+    style SPEC01 fill:#e3f2fd
     style SPEC002 fill:#e3f2fd
     style SPEC004 fill:#e3f2fd
     style TASKS001 fill:#fff3e0
@@ -350,9 +350,9 @@ graph TD
 
 | Source SPEC | Target SPEC | Dependency Type | Description |
 |-------------|-------------|-----------------|-------------|
-| SPEC-001 | SPEC-004 | Prerequisite | Authentication service required |
-| SPEC-002 | SPEC-001 | Uses | Feature uses core service |
-| SPEC-NNN | ... | ... | ... |
+| SPEC-01 | SPEC-004 | Prerequisite | Authentication service required |
+| SPEC-02 | SPEC-01 | Uses | Feature uses core service |
+| SPEC-NN | ... | ... | ... |
 
 ---
 
@@ -362,19 +362,19 @@ graph TD
 
 | SPEC ID | YAML Valid | TASKS Status | Code Status | Tests Status | Overall | Completion % |
 |---------|------------|--------------|-------------|--------------|---------|--------------|
-| SPEC-001 | ✅ | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
-| SPEC-002 | ✅ | 🟡 In Progress | 🟡 Partial | 🟡 Partial | In Progress | 60% |
-| SPEC-003 | ❌ | ⏳ Pending | ⏳ Pending | ⏳ Pending | Not Started | 0% |
-| SPEC-NNN | ... | ... | ... | ... | ... | ... |
+| SPEC-01 | ✅ | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
+| SPEC-02 | ✅ | 🟡 In Progress | 🟡 Partial | 🟡 Partial | In Progress | 60% |
+| SPEC-03 | ❌ | ⏳ Pending | ⏳ Pending | ⏳ Pending | Not Started | 0% |
+| SPEC-NN | ... | ... | ... | ... | ... | ... |
 
 ### 9.2 Code Generation Metrics
 
 | SPEC ID | Spec Size (LOC in YAML) | Generated Code (LOC) | Generation Ratio | Quality Score |
 |---------|------------------------|---------------------|------------------|---------------|
-| SPEC-001 | 250 | 1200 | 4.8x | 9/10 |
-| SPEC-002 | 180 | 850 | 4.7x | 8/10 |
-| SPEC-003 | 200 | 0 | N/A | N/A |
-| SPEC-NNN | ... | ... | ... | ... |
+| SPEC-01 | 250 | 1200 | 4.8x | 9/10 |
+| SPEC-02 | 180 | 850 | 4.7x | 8/10 |
+| SPEC-03 | 200 | 0 | N/A | N/A |
+| SPEC-NN | ... | ... | ... | ... |
 
 ---
 
@@ -384,19 +384,19 @@ graph TD
 
 | SPEC ID | Response Time Target | Throughput Target | Resource Limit | Achieved | Status |
 |---------|---------------------|-------------------|----------------|----------|--------|
-| SPEC-001 | < 100ms | 1000 req/s | 512MB RAM | 95ms, 950 req/s | ✅ Met |
-| SPEC-002 | < 200ms | 500 req/s | 256MB RAM | 180ms, 480 req/s | ✅ Met |
-| SPEC-003 | < 50ms | 2000 req/s | 1GB RAM | Not Tested | ⏳ Pending |
-| SPEC-NNN | ... | ... | ... | ... | ... |
+| SPEC-01 | < 100ms | 1000 req/s | 512MB RAM | 95ms, 950 req/s | ✅ Met |
+| SPEC-02 | < 200ms | 500 req/s | 256MB RAM | 180ms, 480 req/s | ✅ Met |
+| SPEC-03 | < 50ms | 2000 req/s | 1GB RAM | Not Tested | ⏳ Pending |
+| SPEC-NN | ... | ... | ... | ... | ... |
 
 ### 9.2 Observability Coverage
 
 | SPEC ID | Metrics Defined | Logs Defined | Traces Defined | Alerts Defined | Coverage % |
 |---------|-----------------|--------------|----------------|----------------|------------|
-| SPEC-001 | ✅ (10) | ✅ (5) | ✅ (3) | ✅ (5) | 100% |
-| SPEC-002 | ✅ (8) | ✅ (3) | ❌ (0) | 🟡 (2) | 65% |
-| SPEC-003 | ❌ (0) | ❌ (0) | ❌ (0) | ❌ (0) | 0% |
-| SPEC-NNN | ... | ... | ... | ... | ... |
+| SPEC-01 | ✅ (10) | ✅ (5) | ✅ (3) | ✅ (5) | 100% |
+| SPEC-02 | ✅ (8) | ✅ (3) | ❌ (0) | 🟡 (2) | 65% |
+| SPEC-03 | ❌ (0) | ❌ (0) | ❌ (0) | ❌ (0) | 0% |
+| SPEC-NN | ... | ... | ... | ... | ... |
 
 ---
 
@@ -412,9 +412,9 @@ graph TD
 - TASKS-XXX: Code plan with no SPEC source
 
 ### 10.3 Quality Issues
-- SPEC-002: Invalid YAML syntax
-- SPEC-005: Missing performance targets
-- SPEC-008: Incomplete observability definition
+- SPEC-02: Invalid YAML syntax
+- SPEC-05: Missing performance targets
+- SPEC-08: Incomplete observability definition
 
 ---
 

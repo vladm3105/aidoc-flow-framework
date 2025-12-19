@@ -14,7 +14,7 @@ custom_fields:
   priority: primary
   development_status: active
   skill_category: quality-assurance
-  upstream_artifacts: [PRD-000, ADR-000]
+  upstream_artifacts: [PRD-00, ADR-000]
   downstream_artifacts: []
 ---
 
@@ -48,7 +48,7 @@ Provide proactive quality guidance during artifact creation by monitoring sectio
 |-------|------|----------|-------------|
 | artifact_content | string | Yes | Current content of artifact being created |
 | artifact_type | string | Yes | Type of artifact (BRD, PRD, SPEC, etc.) |
-| artifact_id | string | No | Document ID if assigned (e.g., PRD-000) |
+| artifact_id | string | No | Document ID if assigned (e.g., PRD-00) |
 | check_level | string | No | Level of checks: "quick", "standard" (default), "strict" |
 
 ## Skill Workflow
@@ -234,8 +234,8 @@ Validate document ID and filename conventions:
 **Naming Rules**:
 ```yaml
 naming_conventions:
-  id_format: "{TYPE}-{NNN}"  # e.g., PRD-000
-  filename_format: "{TYPE}-{NNN}_{slug}.md"  # e.g., PRD-000_authentication.md
+  id_format: "{TYPE}-{NNN}"  # e.g., PRD-00
+  filename_format: "{TYPE}-{NNN}_{slug}.md"  # e.g., PRD-00_authentication.md
   slug_rules:
     - lowercase
     - underscores for spaces
@@ -247,14 +247,14 @@ naming_conventions:
 **Naming Validation Output**:
 ```yaml
 naming_validation:
-  document_id: PRD-000
+  document_id: PRD-00
   id_format_valid: true
-  filename: "PRD-000_ai_features.md"
+  filename: "PRD-00_ai_features.md"
   filename_valid: true
-  h1_header: "# PRD-000: AI-Assisted Documentation Features"
+  h1_header: "# PRD-00: AI-Assisted Documentation Features"
   h1_valid: true
   anchor_present: true
-  anchor_id: "PRD-000"
+  anchor_id: "PRD-00"
   issues: []
 ```
 
@@ -265,7 +265,7 @@ Assemble comprehensive quality assessment:
 **Quality Report Format**:
 ```yaml
 quality_report:
-  artifact_id: PRD-000
+  artifact_id: PRD-00
   artifact_type: PRD
   check_timestamp: 2025-11-29T14:30:00Z
   check_level: standard
@@ -371,7 +371,7 @@ required_tags:
   - "@prd: PRD.01.07.01 ✓"
   - "@ears: EARS.01.24.01 ✓"
   - "@bdd: BDD.01.13.01 ✓"
-  - "@adr: ADR-002 ✓"
+  - "@adr: ADR-02 ✓"
   - "@sys: SYS.01.25.01 ✓"
 tag_count: "6/6 required tags present"
 status: "Ready for downstream artifacts"
@@ -419,7 +419,7 @@ status: "Ready for downstream artifacts"
 
 | Source | Type | Reference |
 |--------|------|-----------|
-| PRD-000 | Product Requirements | [PRD-000]({project_root}/ai_dev_flow/PRD/PRD-000_ai_assisted_documentation_features.md#PRD-000) |
+| PRD-00 | Product Requirements | [PRD-00]({project_root}/ai_dev_flow/PRD/PRD-00_ai_assisted_documentation_features.md#PRD-00) |
 | ADR-000 | Architecture Decision | [ADR-000]({project_root}/ai_dev_flow/ADR/ADR-000_ai_powered_documentation_assistant_architecture.md#ADR-000) |
 
 ### Downstream Artifacts

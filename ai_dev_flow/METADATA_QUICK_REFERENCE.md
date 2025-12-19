@@ -42,7 +42,7 @@ custom_fields:
 **Custom Admonition:**
 ```markdown
 :::recommended Primary Implementation (AI Agent-Based)
-**Architecture**: AI Agent-Based Platform (@adr: ADR-002)
+**Architecture**: AI Agent-Based Platform (@adr: ADR-02)
 **Priority**: ✅ Recommended approach
 **Status**: Active development
 
@@ -72,7 +72,7 @@ custom_fields:
 **Custom Admonition:**
 ```markdown
 :::fallback Fallback Implementation (Traditional)
-**Architecture**: Traditional Platform (@adr: ADR-001)
+**Architecture**: Traditional Platform (@adr: ADR-01)
 **Priority**: ⚠️ Fallback option (use only if primary not viable)
 **Status**: Reference implementation
 
@@ -414,7 +414,7 @@ grep -l "primary_alternative: BRD-022" docs/BRD/*.md  # Should find BRD-016
 - `architecture_approach: traditional-8layer`
 - `primary_alternative:` (link to AI Agent equivalent)
 
-**Shared BRDs (BRD-001 to BRD-005):**
+**Shared BRDs (BRD-01 to BRD-005):**
 - `priority: shared`
 - `architecture_approaches: [ai-agent-based, traditional-8layer]`
 
@@ -475,7 +475,7 @@ custom_fields:
 # BRD-022: Fraud Detection Agent (ML-based Risk)
 
 :::recommended Primary Implementation (AI Agent-Based)
-**Architecture**: AI Agent-Based Platform (@adr: ADR-002)
+**Architecture**: AI Agent-Based Platform (@adr: ADR-02)
 **Priority**: ✅ Recommended approach
 **Status**: Active development
 **Agent ID**: AGENT-001

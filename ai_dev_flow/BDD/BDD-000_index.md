@@ -37,7 +37,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 ## Purpose
 
 - Central index for Behavior-Driven Development (BDD) feature files
-- Tracks allocation and sequencing for `BDD-NNN_{slug}.feature` files
+- Tracks allocation and sequencing for `BDD-NN_{slug}.feature` files
 - Provides traceability from requirements to acceptance tests
 
 ## Allocation Rules
@@ -45,16 +45,16 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 **Numbering**:
 - Allocate sequentially starting at `001`
 - Keep numbers stable once assigned (never reuse or renumber)
-- Use three-digit format: BDD-001, BDD-002, etc.
+- Use three-digit format: BDD-01, BDD-02, etc.
 
 **File Naming**:
-- Format: `BDD-NNN_{descriptive_slug}.feature`
+- Format: `BDD-NN_{descriptive_slug}.feature`
 - Slugs: short, descriptive, lower_snake_case
 - Example: `BDD-042_risk_validation_service.feature`
 
 **Content Requirements**:
 - One primary feature/capability per file
-- Include traceability tags: `@requirement:[REQ-NNN]`, `@adr:[ADR-NNN]`
+- Include traceability tags: `@requirement:[REQ-NN]`, `@adr:[ADR-NN]`
 - Cross-link to upstream requirements (REQ, SYS, ADR)
 - Cross-link to downstream implementations (SPEC, Code, TASKS)
 - Each BDD file serves as acceptance criteria for requirements
@@ -77,9 +77,9 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 **Tagging Strategy**:
 ```gherkin
-@requirement:[REQ-NNN](../REQ/.../REQ-NNN.md)
-@adr:[ADR-NNN](../ADR/ADR-NNN.md)
-@spec:[SPEC-NNN](../SPEC/.../SPEC-NNN.yaml)
+@requirement:[REQ-NN](../REQ/.../REQ-NN.md)
+@adr:[ADR-NN](../ADR/ADR-NN.md)
+@spec:[SPEC-NN](../SPEC/.../SPEC-NN.yaml)
 @priority:high|medium|low
 @component:component_name
 ```
@@ -103,9 +103,9 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
-- **BDD-001**: [External Service Gateway Integration](./BDD-001_external_gateway_integration.feature)
+- **BDD-01**: [External Service Gateway Integration](./BDD-01_external_gateway_integration.feature)
   - **Requirements**: REQ.NN.EE.SS (Integration), REQ.NN.EE.SS (Gateway)
-  - **ADRs**: ADR-NNN (Architecture)
+  - **ADRs**: ADR-NN (Architecture)
   - **Status**: Draft | Review | Approved
 -->
 
@@ -115,9 +115,9 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
-- **BDD-002**: [Resource Risk Limits Validation](./BDD-002_resource_risk_limits.feature)
+- **BDD-02**: [Resource Risk Limits Validation](./BDD-02_resource_risk_limits.feature)
   - **Requirements**: REQ.NN.EE.SS (Risk Limits)
-  - **ADRs**: ADR-NNN (Risk Parameters)
+  - **ADRs**: ADR-NN (Risk Parameters)
   - **Status**: Draft | Review | Approved
 -->
 
@@ -127,9 +127,9 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
-- **BDD-003**: [System State Classifier Behavior](./BDD-003_system_state_classifier.feature)
+- **BDD-03**: [System State Classifier Behavior](./BDD-03_system_state_classifier.feature)
   - **Requirements**: REQ.NN.EE.SS (ML Models)
-  - **ADRs**: ADR-NNN (ML Architecture)
+  - **ADRs**: ADR-NN (ML Architecture)
   - **Status**: Draft | Review | Approved
 -->
 
@@ -141,7 +141,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 <!--
 - **BDD-004**: [Service Strategy Execution](./BDD-004_service_strategy.feature)
   - **Requirements**: REQ.NN.EE.SS (Strategy)
-  - **ADRs**: ADR-NNN (Strategy Architecture)
+  - **ADRs**: ADR-NN (Strategy Architecture)
   - **Status**: Draft | Review | Approved
 -->
 
@@ -153,7 +153,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 <!--
 - **BDD-005**: [Analytics Pipeline](./BDD-005_analytics_pipeline.feature)
   - **Requirements**: REQ.NN.EE.SS (Analytics)
-  - **ADRs**: ADR-NNN (Data Architecture)
+  - **ADRs**: ADR-NN (Data Architecture)
   - **Status**: Draft | Review | Approved
 -->
 
@@ -165,7 +165,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 <!--
 - **BDD-006**: [Monitoring and Alerting Service](./BDD-006_monitoring_alerting.feature)
   - **Requirements**: REQ.NN.EE.SS (Monitoring)
-  - **ADRs**: ADR-NNN (Monitoring Architecture)
+  - **ADRs**: ADR-NN (Monitoring Architecture)
   - **Status**: Draft | Review | Approved
 -->
 
@@ -173,9 +173,9 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ### Creating a New BDD Feature File
 
-1. **Identify Next Number**: Check this index for the next available BDD-NNN number
+1. **Identify Next Number**: Check this index for the next available BDD-NN number
 2. **Choose Descriptive Slug**: Use lower_snake_case matching the feature name
-3. **Copy Template**: `cp BDD-TEMPLATE.feature BDD-NNN_your_slug.feature`
+3. **Copy Template**: `cp BDD-TEMPLATE.feature BDD-NN_your_slug.feature`
 4. **Fill Out Header**: Add traceability tags (@requirement, @adr, @spec)
 5. **Write Feature Description**: Clear, concise feature title and context
 6. **Define Scenarios**: Use Given/When/Then format for acceptance criteria
@@ -186,13 +186,13 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ```gherkin
 # REQUIREMENTS VERIFIED:
-#   - REQ-NNN: [Primary requirement description]
+#   - REQ-NN: [Primary requirement description]
 # TRACEABILITY:
-#   Upstream: [REQ-NNN], [ADR-NNN]
-#   Downstream: [SPEC-NNN], Code(module.component), [TASKS-NNN]
+#   Upstream: [REQ-NN], [ADR-NN]
+#   Downstream: [SPEC-NN], Code(module.component), [TASKS-NN]
 
-@requirement:[REQ-NNN]
-@adr:[ADR-NNN]
+@requirement:[REQ-NN]
+@adr:[ADR-NN]
 @priority:high
 Feature: [Clear feature description]
   [Business value context]
@@ -230,8 +230,8 @@ In REQ documents, reference BDD scenarios:
 
 | BDD ID | Scenario Title | Acceptance Criteria Validated |
 |--------|----------------|-------------------------------|
-| [BDD-NNN](../../BDD/BDD-NNN_slug.feature) | Feature: Title | Primary functional criteria |
-| [BDD-NNN](../../BDD/BDD-NNN_slug.feature#scenario-1) | Scenario: Specific | Specific acceptance criterion |
+| [BDD-NN](../../BDD/BDD-NN_slug.feature) | Feature: Title | Primary functional criteria |
+| [BDD-NN](../../BDD/BDD-NN_slug.feature#scenario-1) | Scenario: Specific | Specific acceptance criterion |
 ```
 
 ### Running BDD Tests
@@ -265,7 +265,7 @@ Track acceptance test coverage for requirements:
 
 ### Validation Checklist
 
-- [ ] All BDD files follow naming convention: `BDD-NNN_{slug}.feature`
+- [ ] All BDD files follow naming convention: `BDD-NN_{slug}.feature`
 - [ ] All BDD files have traceability tags (@requirement, @adr)
 - [ ] All BDD files have upstream links (REQ, SYS, ADR)
 - [ ] All BDD files have downstream links (SPEC, Code, TASKS)
@@ -279,18 +279,18 @@ Track acceptance test coverage for requirements:
 
 | Source Type | Document ID | Relationship |
 |-------------|-------------|--------------|
-| BRD | [BRD-NNN](../BRD/BRD-NNN.md) | Business requirements driving acceptance criteria |
-| PRD | [PRD-NNN](../PRD/PRD-NNN.md) | Product requirements defining features |
-| EARS | [EARS-NNN](../EARS/EARS-NNN.md) | Event-driven specifications for behavior |
+| BRD | [BRD-NN](../BRD/BRD-NN.md) | Business requirements driving acceptance criteria |
+| PRD | [PRD-NN](../PRD/PRD-NN.md) | Product requirements defining features |
+| EARS | [EARS-NN](../EARS/EARS-NN.md) | Event-driven specifications for behavior |
 
 ### Downstream Consumers
 
 | Consumer Type | Document ID | Relationship |
 |---------------|-------------|--------------|
-| ADR | [ADR-NNN](../ADR/ADR-NNN.md) | Architecture decisions must satisfy BDD scenarios |
-| SYS | [SYS-NNN](../SYS/SYS-NNN.md) | System requirements traced from BDD scenarios |
-| REQ | [REQ-NNN](../REQ/.../REQ-NNN.md) | Atomic requirements validated by BDD scenarios |
-| SPEC | [SPEC-NNN](../SPEC/.../SPEC-NNN.yaml) | Technical SPEC implement BDD acceptance criteria |
+| ADR | [ADR-NN](../ADR/ADR-NN.md) | Architecture decisions must satisfy BDD scenarios |
+| SYS | [SYS-NN](../SYS/SYS-NN.md) | System requirements traced from BDD scenarios |
+| REQ | [REQ-NN](../REQ/.../REQ-NN.md) | Atomic requirements validated by BDD scenarios |
+| SPEC | [SPEC-NN](../SPEC/.../SPEC-NN.yaml) | Technical SPEC implement BDD acceptance criteria |
 | Code | `src/module/component.py` | Implementation satisfies BDD tests |
 
 ## References
@@ -324,7 +324,7 @@ Track acceptance test coverage for requirements:
 
 **Update Process**:
 1. When creating a new BDD file, add entry to appropriate functional area section
-2. Include BDD-NNN number, title, requirements, ADRs, and status
+2. Include BDD-NN number, title, requirements, ADRs, and status
 3. Update validation metrics as BDD tests are implemented
 4. Ensure all cross-references are valid and up-to-date
 

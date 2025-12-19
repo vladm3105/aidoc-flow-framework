@@ -77,10 +77,10 @@ When creating a new SPEC:
 1. **Copy Template**:
    ```bash
    cp ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml \
-      docs/SPEC/{domain}/SPEC-NNN_component_name.yaml
+      docs/SPEC/{domain}/SPEC-NN_component_name.yaml
    ```
 
-2. **Assign SPEC ID**: Use next sequential number (SPEC-001, SPEC-002, ...)
+2. **Assign SPEC ID**: Use next sequential number (SPEC-01, SPEC-02, ...)
 
 3. **Update This Index**: Add new row to table above
 
@@ -89,7 +89,7 @@ When creating a new SPEC:
 ## Allocation Rules
 
 - **Numbering**: Allocate sequentially starting at `001`
-- **One Component Per File**: Each `SPEC-NNN` covers a single component or service
+- **One Component Per File**: Each `SPEC-NN` covers a single component or service
 - **Format**: YAML format for machine readability
 - **Organization**: Store in appropriate domain subdirectory (services/, agents/, infrastructure/)
 - **Slugs**: Short, descriptive, lower_snake_case
@@ -171,7 +171,7 @@ When creating a new SPEC:
 - **Template**: [SPEC-TEMPLATE.yaml](./SPEC-TEMPLATE.yaml) - Use this to create new SPECs
 - **README**: [README.md](./README.md) - Learn about SPEC purpose, format, and structure
 - **Traceability Matrix**: [SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md](./SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-- **Example**: [SPEC-001_api_client_example.yaml](./SPEC-001_api_client_example.yaml) - Reference specification
+- **Example**: [SPEC-01_api_client_example.yaml](./SPEC-01_api_client_example.yaml) - Reference specification
 
 ## Maintenance Guidelines
 

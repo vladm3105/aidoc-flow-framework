@@ -385,12 +385,12 @@ Section files use specialized frontmatter for navigation and assembly. See [ID_N
 **Section File (Content Section):**
 ```yaml
 ---
-doc_id: BRD-003
+doc_id: BRD-03
 section: 2
 title: "Business Context"
-parent_doc: BRD-003.0_index.md
-prev_section: BRD-003.1_executive_summary.md
-next_section: BRD-003.3_functional_requirements.md
+parent_doc: BRD-03.0_index.md
+prev_section: BRD-03.1_executive_summary.md
+next_section: BRD-03.3_functional_requirements.md
 tags:
   - section-file
   - [document-type-tag]
@@ -405,7 +405,7 @@ custom_fields:
 **Section 0 (Index/Overview) - Required:**
 ```yaml
 ---
-doc_id: BRD-003
+doc_id: BRD-03
 section: 0
 title: "Trading Platform - Index"
 total_sections: 7
@@ -426,7 +426,7 @@ custom_fields:
 
 | Field | Required In | Purpose |
 |-------|-------------|---------|
-| `doc_id` | All sections | Parent document identifier (e.g., `BRD-003`) |
+| `doc_id` | All sections | Parent document identifier (e.g., `BRD-03`) |
 | `section` | All sections | Section number (0 = index, 1+ = content) |
 | `title` | All sections | Section-specific title |
 | `total_sections` | Section 0 | Total number of sections in split document |
@@ -435,8 +435,8 @@ custom_fields:
 | `next_section` | Content sections | Link to next section (if exists) |
 
 **Section File Naming Pattern:**
-- Pattern: `{TYPE}-{NNN}.{SECTION}_{slug}.md`
-- Example: `BRD-003.2_business_context.md`
+- Pattern: `{TYPE}-{NN}.{SECTION}_{slug}.md`
+- Example: `BRD-03.2_business_context.md`
 - Distinct from element IDs which use all dots: `BRD.03.01.05`
 
 ---
@@ -449,7 +449,7 @@ Use for primary/recommended implementations:
 
 ```markdown
 :::recommended Primary Implementation (AI Agent-Based)
-**Architecture**: AI Agent-Based Platform (@adr: ADR-002)
+**Architecture**: AI Agent-Based Platform (@adr: ADR-02)
 **Priority**: ✅ Recommended approach
 **Status**: Active development
 **Agent ID**: AGENT-XXX
@@ -469,7 +469,7 @@ Use for fallback/reference implementations:
 
 ```markdown
 :::fallback Fallback Implementation (Traditional 8-Layer)
-**Architecture**: Traditional 8-Layer Platform (@adr: ADR-001)
+**Architecture**: Traditional 8-Layer Platform (@adr: ADR-01)
 **Priority**: ⚠️ Fallback option (use only if AI approach not viable)
 **Status**: Reference implementation
 
@@ -490,8 +490,8 @@ Use for comparative analysis documents:
 ```markdown
 :::comparison Architecture Comparison
 This document provides objective comparison between:
-- **Primary**: AI Agent-Based Architecture (@adr: ADR-002)
-- **Fallback**: Traditional 8-Layer Architecture (@adr: ADR-001)
+- **Primary**: AI Agent-Based Architecture (@adr: ADR-02)
+- **Fallback**: Traditional 8-Layer Architecture (@adr: ADR-01)
 
 **Decision Criteria**: [List key factors]
 :::
@@ -506,7 +506,7 @@ This document provides objective comparison between:
 | Tag | Purpose | Document Types |
 |-----|---------|----------------|
 | `feature-brd` | Feature-specific BRD | BRD-006 through BRD-029 |
-| `platform-brd` | Platform/foundation BRD | BRD-001 through BRD-005 |
+| `platform-brd` | Platform/foundation BRD | BRD-01 through BRD-005 |
 | `architecture-adr` | Architecture decision | ADR-XXX |
 | `product-requirements` | Product specs | PRD-XXX |
 | `technical-spec` | Implementation specs | SPEC-XXX |
@@ -587,7 +587,7 @@ custom_fields:
 - Use full markdown link: `[@brd: BRD-022](./BRD-022_fraud_detection_agent_ml_based_risk.md)`
 
 **In Document Body:**
-- Use tag notation: `@brd: BRD.22.01.01`, `@adr: ADR-002`
+- Use tag notation: `@brd: BRD.22.01.01`, `@adr: ADR-02`
 
 ### 7.3 Tag Format Convention (By Design)
 
@@ -595,8 +595,8 @@ The SDD framework uses two distinct notation systems for cross-references, each 
 
 | Notation | Format       | Artifacts                               | Purpose                                                             |
 |----------|--------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - DOC_NUM.ELEM_TYPE.SEQ format |
+| Dash     | TYPE-NN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - DOC_NUM.ELEM_TYPE.SEQ format |
 
 **Key Distinction**:
 
@@ -605,9 +605,9 @@ The SDD framework uses two distinct notation systems for cross-references, each 
 
 **Why Two Systems?**
 
-1. **Dash notation** (`TYPE-NNN`): Used for technical artifacts that are referenced as complete documents. Each ADR, SPEC, or CTR file is a self-contained unit.
+1. **Dash notation** (`TYPE-NN`): Used for technical artifacts that are referenced as complete documents. Each ADR, SPEC, or CTR file is a self-contained unit.
 
-2. **Dot notation** (`TYPE.NN.EE.SS`): Used for requirement artifacts that contain multiple numbered elements within a single document. Format: DOC_NUM.ELEM_TYPE.SEQ where EE is element type code (BRD=01, PRD=07, EARS=24, BDD=13, SYS=25, REQ=26).
+2. **Dot notation** (`TYPE.NN.TT.SS`): Used for requirement artifacts that contain multiple numbered elements within a single document. Format: DOC_NUM.ELEM_TYPE.SEQ where EE is element type code (BRD=01, PRD=07, EARS=24, BDD=13, SYS=25, REQ=26).
 
 ---
 
@@ -929,7 +929,7 @@ custom_fields:
 # BRD-022: Fraud Detection Agent (ML-based Risk)
 
 :::recommended Primary Implementation (AI Agent-Based)
-**Architecture**: AI Agent-Based Platform (@adr: ADR-002)
+**Architecture**: AI Agent-Based Platform (@adr: ADR-02)
 **Priority**: ✅ Recommended approach
 **Status**: Active development
 **Agent ID**: AGENT-001
@@ -967,7 +967,7 @@ custom_fields:
 # BRD-016: Fraud Detection & Risk Screening
 
 :::fallback Fallback Implementation (Traditional 8-Layer)
-**Architecture**: Traditional 8-Layer Platform (@adr: ADR-001)
+**Architecture**: Traditional 8-Layer Platform (@adr: ADR-01)
 **Priority**: ⚠️ Fallback option (use only if AI approach not viable)
 **Status**: Reference implementation
 
@@ -988,7 +988,7 @@ custom_fields:
 
 ```markdown
 ---
-title: "BRD-001: Platform Architecture & Technology Stack"
+title: "BRD-01: Platform Architecture & Technology Stack"
 tags:
   - platform-brd
   - shared-architecture
@@ -1000,7 +1000,7 @@ custom_fields:
   primary_implementation: ai-agent-based
 ---
 
-# BRD-001: Platform Architecture & Technology Stack
+# BRD-01: Platform Architecture & Technology Stack
 
 ## Document Control
 [rest of document]

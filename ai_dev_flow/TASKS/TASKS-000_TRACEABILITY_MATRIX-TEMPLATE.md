@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: TASKS-001 through TASKS-NNN
+# Traceability Matrix: TASKS-01 through TASKS-NN
 
 ## Document Control
 
@@ -108,7 +108,7 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 - Prefix: `@` symbol
 - Artifact Type: lowercase (`brd`, `prd`, `ears`, `bdd`, `adr`, `sys`, `req`, `spec`)
 - Separator: colon `:` after artifact type, `:` between document ID and requirement ID
-- Document ID: Standard format (e.g., `TASKS-NNN`)
+- Document ID: Standard format (e.g., `TASKS-NN`)
 - Requirement ID: Specific requirement/section identifier
 - Multiple Values: comma-separated for same artifact type
 
@@ -142,7 +142,7 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 ### 2.4 Validation Rules
 
 1. **Required**: Each TASKS artifact MUST include at least one tag for each required layer
-2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NNN` format
+2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NN` format
 3. **Valid References**: All referenced documents and requirements must exist
 4. **No Gaps**: Cannot skip any required upstream layer in the chain
 5. **Tag Count**: Must have exactly 8-10 (includes @spec, optional @impl, @ctr) tags for Layer 11
@@ -176,9 +176,9 @@ python scripts/generate_traceability_matrices.py \
 
 | TASKS ID | Title | Related SPEC | Total Tasks | Status | Date | Upstream Sources | Downstream Artifacts |
 |----------|-------|--------------|-------------|--------|------|------------------|---------------------|
-| TASKS-001 | [Code generation plan title] | SPEC-001 | 15 | Complete | YYYY-MM-DD | SPEC-001 | Code: src/service.py, Tests: tests/test_service.py |
-| TASKS-002 | [Code generation plan title] | SPEC-002 | 10 | In Progress | YYYY-MM-DD | SPEC-002 | Code: src/feature.py |
-| TASKS-NNN | ... | ... | ... | ... | ... | ... | ... |
+| TASKS-01 | [Code generation plan title] | SPEC-01 | 15 | Complete | YYYY-MM-DD | SPEC-01 | Code: src/service.py, Tests: tests/test_service.py |
+| TASKS-02 | [Code generation plan title] | SPEC-02 | 10 | In Progress | YYYY-MM-DD | SPEC-02 | Code: src/feature.py |
+| TASKS-NN | ... | ... | ... | ... | ... | ... | ... |
 
 **Status Legend**:
 - **Complete**: All tasks implemented and tested
@@ -196,9 +196,9 @@ python scripts/generate_traceability_matrices.py \
 
 | SPEC ID | SPEC Title | TASKS IDs | TASKS Titles | Relationship |
 |---------|------------|-----------|--------------|--------------|
-| SPEC-001 | [Technical specification] | TASKS-001 | [Code generation plan] | 1:1 mapping: each SPEC has corresponding TASKS |
-| SPEC-002 | [Technical specification] | TASKS-002 | [Code generation plan] | SPEC provides HOW, TASKS provides step-by-step |
-| SPEC-NNN | ... | ... | ... | ... |
+| SPEC-01 | [Technical specification] | TASKS-01 | [Code generation plan] | 1:1 mapping: each SPEC has corresponding TASKS |
+| SPEC-02 | [Technical specification] | TASKS-02 | [Code generation plan] | SPEC provides HOW, TASKS provides step-by-step |
+| SPEC-NN | ... | ... | ... | ... |
 
 ### 4.2 Upstream Source Summary
 
@@ -211,23 +211,23 @@ python scripts/generate_traceability_matrices.py \
 
 ## 6. Downstream Traceability (OPTIONAL)
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
 
 ### 5.1 TASKS → Code Traceability
 
 | TASKS ID | TASKS Title | Code Files | Functions/Classes | LOC | Relationship |
 |----------|------------|------------|-------------------|-----|--------------|
-| TASKS-001 | [Code generation plan] | src/service.py | ServiceClass, init(), run() | 350 | Direct implementation from tasks |
-| TASKS-002 | [Code generation plan] | src/feature.py, src/utils.py | FeatureHandler, helper_func() | 280 | Partial implementation |
-| TASKS-NNN | ... | ... | ... | ... | ... |
+| TASKS-01 | [Code generation plan] | src/service.py | ServiceClass, init(), run() | 350 | Direct implementation from tasks |
+| TASKS-02 | [Code generation plan] | src/feature.py, src/utils.py | FeatureHandler, helper_func() | 280 | Partial implementation |
+| TASKS-NN | ... | ... | ... | ... | ... |
 
 ### 5.2 TASKS → Tests Traceability
 
 | TASKS ID | TASKS Title | Test Files | Test Functions | Coverage % | Relationship |
 |----------|------------|------------|----------------|------------|--------------|
-| TASKS-001 | [Code generation plan] | tests/test_service.py | test_init(), test_run(), ... | 95% | Tests generated from TASKS |
-| TASKS-002 | [Code generation plan] | tests/test_feature.py | test_handler(), ... | 80% | Tests in progress |
-| TASKS-NNN | ... | ... | ... | ... | ... |
+| TASKS-01 | [Code generation plan] | tests/test_service.py | test_init(), test_run(), ... | 95% | Tests generated from TASKS |
+| TASKS-02 | [Code generation plan] | tests/test_feature.py | test_handler(), ... | 80% | Tests in progress |
+| TASKS-NN | ... | ... | ... | ... | ... |
 
 ---
 
@@ -237,19 +237,19 @@ python scripts/generate_traceability_matrices.py \
 
 | Implementation Type | TASKS IDs | Total | Tasks Count | Status |
 |---------------------|-----------|-------|-------------|--------|
-| Service | TASKS-001, TASKS-002 | 2 | 25 tasks | On Track |
-| Agent | TASKS-003, TASKS-004 | 2 | 30 tasks | In Progress |
-| Infrastructure | TASKS-005 | 1 | 12 tasks | Pending |
+| Service | TASKS-01, TASKS-02 | 2 | 25 tasks | On Track |
+| Agent | TASKS-03, TASKS-004 | 2 | 30 tasks | In Progress |
+| Infrastructure | TASKS-05 | 1 | 12 tasks | Pending |
 | Integration | TASKS-006 | 1 | 18 tasks | Blocked |
 
 ### 6.2 Task Completion Distribution
 
 | TASKS ID | Total Tasks | Completed | In Progress | Pending | Completion % |
 |----------|-------------|-----------|-------------|---------|--------------|
-| TASKS-001 | 15 | 15 | 0 | 0 | 100% |
-| TASKS-002 | 10 | 6 | 3 | 1 | 60% |
-| TASKS-003 | 12 | 0 | 2 | 10 | 17% |
-| TASKS-NNN | ... | ... | ... | ... | ... |
+| TASKS-01 | 15 | 15 | 0 | 0 | 100% |
+| TASKS-02 | 10 | 6 | 3 | 1 | 60% |
+| TASKS-03 | 12 | 0 | 2 | 10 | 17% |
+| TASKS-NN | ... | ... | ... | ... | ... |
 
 ---
 
@@ -257,8 +257,8 @@ python scripts/generate_traceability_matrices.py \
 
 ```mermaid
 graph TD
-    SPEC001[SPEC-001: Service Spec] --> TASKS001[TASKS-001: Code Plan]
-    SPEC002[SPEC-002: Feature Spec] --> TASKS002[TASKS-002: Code Plan]
+    SPEC01[SPEC-01: Service Spec] --> TASKS001[TASKS-01: Code Plan]
+    SPEC002[SPEC-02: Feature Spec] --> TASKS002[TASKS-02: Code Plan]
 
     TASKS001 --> Code1[src/service.py]
     TASKS001 --> Tests1[tests/test_service.py]
@@ -284,9 +284,9 @@ graph TD
 
 | Source TASKS | Target TASKS | Dependency Type | Description |
 |--------------|--------------|-----------------|-------------|
-| TASKS-001 | TASKS-002 | Prerequisite | Core service must be implemented before features |
-| TASKS-003 | TASKS-001 | Uses | Agent uses core service components |
-| TASKS-NNN | ... | ... | ... |
+| TASKS-01 | TASKS-02 | Prerequisite | Core service must be implemented before features |
+| TASKS-03 | TASKS-01 | Uses | Agent uses core service components |
+| TASKS-NN | ... | ... | ... |
 
 ---
 
@@ -296,19 +296,19 @@ graph TD
 
 | TASKS ID | Tasks Count | Dev Time (hours) | LOC Generated | Time/Task (hours) | Quality Score |
 |----------|-------------|------------------|---------------|-------------------|---------------|
-| TASKS-001 | 15 | 40 | 350 | 2.7 | 9/10 |
-| TASKS-002 | 10 | 25 | 280 | 2.5 | 8/10 |
-| TASKS-003 | 12 | 8 (partial) | 120 | N/A | N/A |
-| TASKS-NNN | ... | ... | ... | ... | ... |
+| TASKS-01 | 15 | 40 | 350 | 2.7 | 9/10 |
+| TASKS-02 | 10 | 25 | 280 | 2.5 | 8/10 |
+| TASKS-03 | 12 | 8 (partial) | 120 | N/A | N/A |
+| TASKS-NN | ... | ... | ... | ... | ... |
 
 ### 8.2 Test Coverage from TASKS
 
 | TASKS ID | Unit Tests | Integration Tests | E2E Tests | Total Coverage % | Target % |
 |----------|------------|-------------------|-----------|------------------|----------|
-| TASKS-001 | 95% | 90% | 85% | 95% | 95% ✅ |
-| TASKS-002 | 80% | 70% | N/A | 80% | 85% 🟡 |
-| TASKS-003 | 0% | 0% | 0% | 0% | 85% ⏳ |
-| TASKS-NNN | ... | ... | ... | ... | ... |
+| TASKS-01 | 95% | 90% | 85% | 95% | 95% ✅ |
+| TASKS-02 | 80% | 70% | N/A | 80% | 85% 🟡 |
+| TASKS-03 | 0% | 0% | 0% | 0% | 85% ⏳ |
+| TASKS-NN | ... | ... | ... | ... | ... |
 
 ---
 
@@ -318,19 +318,19 @@ graph TD
 
 | TASKS ID | Code Status | Tests Status | Documentation Status | Overall | Completion % |
 |----------|-------------|--------------|---------------------|---------|--------------|
-| TASKS-001 | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
-| TASKS-002 | 🟡 In Progress | 🟡 Partial | 🟡 Partial | In Progress | 60% |
-| TASKS-003 | ⏳ Pending | ⏳ Pending | ⏳ Pending | Not Started | 0% |
-| TASKS-NNN | ... | ... | ... | ... | ... |
+| TASKS-01 | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
+| TASKS-02 | 🟡 In Progress | 🟡 Partial | 🟡 Partial | In Progress | 60% |
+| TASKS-03 | ⏳ Pending | ⏳ Pending | ⏳ Pending | Not Started | 0% |
+| TASKS-NN | ... | ... | ... | ... | ... |
 
 ### 9.2 AI Assistant Usage Tracking
 
 | TASKS ID | AI Sessions | Manual Edits | AI-Generated % | Manual % | Efficiency Rating |
 |----------|-------------|--------------|----------------|----------|-------------------|
-| TASKS-001 | 3 sessions | 10 edits | 90% | 10% | High |
-| TASKS-002 | 2 sessions | 25 edits | 75% | 25% | Medium |
-| TASKS-003 | 0 sessions | 0 edits | 0% | 0% | N/A |
-| TASKS-NNN | ... | ... | ... | ... | ... |
+| TASKS-01 | 3 sessions | 10 edits | 90% | 10% | High |
+| TASKS-02 | 2 sessions | 25 edits | 75% | 25% | Medium |
+| TASKS-03 | 0 sessions | 0 edits | 0% | 0% | N/A |
+| TASKS-NN | ... | ... | ... | ... | ... |
 
 ---
 
@@ -346,8 +346,8 @@ graph TD
 - Test File: tests/test_unknown.py (no TASKS linkage)
 
 ### 10.3 Quality Issues
-- TASKS-002: Test coverage below target (80% vs 85%)
-- TASKS-005: Blocked by missing dependency
+- TASKS-02: Test coverage below target (80% vs 85%)
+- TASKS-05: Blocked by missing dependency
 - TASKS-007: High manual edit percentage (poor task quality)
 
 ---
@@ -364,9 +364,9 @@ graph TD
 
 | Sprint | TASKS IDs | Focus Area | Target Date | Status |
 |--------|-----------|------------|-------------|--------|
-| Sprint 5 | TASKS-002 | Complete in-progress features | YYYY-MM-DD | Active |
-| Sprint 6 | TASKS-003, TASKS-004 | Start agent implementation | YYYY-MM-DD | Planning |
-| Sprint 7 | TASKS-005, TASKS-006 | Infrastructure & integration | YYYY-MM-DD | Not Started |
+| Sprint 5 | TASKS-02 | Complete in-progress features | YYYY-MM-DD | Active |
+| Sprint 6 | TASKS-03, TASKS-004 | Start agent implementation | YYYY-MM-DD | Planning |
+| Sprint 7 | TASKS-05, TASKS-006 | Infrastructure & integration | YYYY-MM-DD | Not Started |
 
 ---
 

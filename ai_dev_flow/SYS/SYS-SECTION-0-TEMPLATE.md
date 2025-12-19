@@ -1,5 +1,5 @@
 ---
-doc_id: SYS-{NNN}
+doc_id: SYS-{NN}
 section: 0
 title: "{Document Title} - Index"
 total_sections: {N}
@@ -22,13 +22,13 @@ custom_fields:
   index_role: true
 ---
 
-# SYS-{NNN}.0: {Document Title} - Index
+# SYS-{NN}.0: {Document Title} - Index
 
 ## Document Overview
 
 | Field | Value |
 |-------|-------|
-| **Document ID** | SYS-{NNN} |
+| **Document ID** | SYS-{NN} |
 | **Document Type** | System Requirements |
 | **Layer** | 6 - System Requirements |
 | **Title** | {Document Title} |
@@ -49,10 +49,10 @@ custom_fields:
 
 | Section | File | Title | Description |
 |---------|------|-------|-------------|
-| 0 | [SYS-{NNN}.0_index.md](SYS-{NNN}.0_index.md) | Index | This file - document overview and navigation |
-| 1 | [SYS-{NNN}.1_{slug1}.md](SYS-{NNN}.1_{slug1}.md) | {Title 1} | {Description 1} |
-| 2 | [SYS-{NNN}.2_{slug2}.md](SYS-{NNN}.2_{slug2}.md) | {Title 2} | {Description 2} |
-| 3 | [SYS-{NNN}.3_{slug3}.md](SYS-{NNN}.3_{slug3}.md) | {Title 3} | {Description 3} |
+| 0 | [SYS-{NN}.0_index.md](SYS-{NN}.0_index.md) | Index | This file - document overview and navigation |
+| 1 | [SYS-{NN}.1_{slug1}.md](SYS-{NN}.1_{slug1}.md) | {Title 1} | {Description 1} |
+| 2 | [SYS-{NN}.2_{slug2}.md](SYS-{NN}.2_{slug2}.md) | {Title 2} | {Description 2} |
+| 3 | [SYS-{NN}.3_{slug3}.md](SYS-{NN}.3_{slug3}.md) | {Title 3} | {Description 3} |
 
 ---
 
@@ -71,12 +71,12 @@ custom_fields:
 ## Dependencies
 
 ### Upstream References
-- @ref: ADR-{NNN} - Architecture decisions guiding system design
-- @ref: BDD-{NNN} - Behavior scenarios informing requirements
+- @ref: ADR-{NN} - Architecture decisions guiding system design
+- @ref: BDD-{NN} - Behavior scenarios informing requirements
 
 ### Downstream References
-- @ref: REQ-{NNN} - Atomic requirements derived from this SYS
-- @ref: SPEC-{NNN} - Technical specifications
+- @ref: REQ-{NN} - Atomic requirements derived from this SYS
+- @ref: SPEC-{NN} - Technical specifications
 
 ### Cross-Section Dependencies
 - Section 2 depends on Section 1 (functional requirements)
@@ -108,8 +108,8 @@ custom_fields:
 
 ## Traceability
 
-- **Original Document**: SYS-{NNN} (before split)
+- **Original Document**: SYS-{NN} (before split)
 - **Element ID Range**: SYS.{NN}.{TT}.01 through SYS.{NN}.{TT}.{MAX}
-- **Tag Format**: @ref: SYS-{NNN}.{S} (section reference)
+- **Tag Format**: @ref: SYS-{NN}.{S} (section reference)
 - **Upstream Trace**: BRD -> PRD -> EARS -> BDD -> ADR
 - **Downstream Trace**: REQ -> IMPL -> CTR -> SPEC -> TASKS -> IPLAN

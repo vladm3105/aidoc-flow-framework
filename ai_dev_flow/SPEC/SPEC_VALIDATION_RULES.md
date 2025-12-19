@@ -117,7 +117,7 @@ cumulative_tags:
   prd: "PRD.NN.EE.SS"         # Unified dot notation for sub-ID references
   ears: "EARS.NN.EE.SS"       # Unified dot notation
   bdd: "BDD.NN.EE.SS"         # Unified dot notation for sub-ID references
-  adr: "ADR-NNN"             # Document-level reference (no sub-ID)
+  adr: "ADR-NN"             # Document-level reference (no sub-ID)
   sys: "SYS.NN.EE.SS"         # Unified dot notation for sub-ID references
   req: "REQ.NN.EE.SS"         # Unified dot notation for sub-ID references
 ```
@@ -154,6 +154,36 @@ cumulative_tags:
 
 ---
 
+### CHECK 8: Element ID Format Compliance ⭐ NEW
+
+**Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
+**Type**: Error
+
+| Check | Pattern | Result |
+|-------|---------|--------|
+| Valid format | `SPEC.NN.TT.SS:` | ✅ Pass |
+| Removed pattern | `STEP-XXX` | ❌ Fail - use SPEC.NN.15.SS |
+| Removed pattern | `IF-XXX` | ❌ Fail - use SPEC.NN.16.SS |
+| Removed pattern | `DM-XXX` | ❌ Fail - use SPEC.NN.17.SS |
+| Removed pattern | `VR-XXX` | ❌ Fail - use SPEC.NN.21.SS |
+
+**Regex**: `^###?\s+SPEC\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+**Common Element Types for SPEC**:
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Step | 15 | SPEC.02.15.01 |
+| Interface | 16 | SPEC.02.16.01 |
+| Data Model | 17 | SPEC.02.17.01 |
+| Validation Rule | 21 | SPEC.02.21.01 |
+| Specification Element | 28 | SPEC.02.28.01 |
+
+**Fix**: Replace `IF-01: Interface` with `SPEC.02.16.01: Interface`
+
+**Reference**: SPEC_CREATION_RULES.md Section 4.1, ID_NAMING_STANDARDS.md lines 783-793
+
+---
+
 ## Error Fix Guide
 
 ### Quick Fix Matrix
@@ -164,6 +194,7 @@ cumulative_tags:
 | **CHECK 2** | Add missing metadata fields |
 | **CHECK 3** | Add properly formatted TASKS-ready score |
 | **CHECK 4** | Complete traceability tag chain |
+| **CHECK 8** | Replace legacy element IDs (STEP-XXX, IF-XXX, DM-XXX) with unified format `SPEC.NN.TT.SS` |
 
 ---
 
@@ -173,7 +204,7 @@ cumulative_tags:
 
 ```bash
 # Validate single SPEC YAML file
-./scripts/validate_spec_template.sh docs/SPEC/SPEC-001_component_spec.yaml
+./scripts/validate_spec_template.sh docs/SPEC/SPEC-01_component_spec.yaml
 
 # Validate all SPEC files
 find docs/SPEC -name "SPEC-*.yaml" -exec ./scripts/validate_spec_template.sh {} \;
@@ -233,7 +264,7 @@ find docs/SPEC -name "SPEC-*.yaml" -exec ./scripts/validate_spec_template.sh {} 
 ### Mistake #3: Incomplete Traceability
 ```
 ❌ cumulative_tags:
-    brd: "BRD-001"
+    brd: "BRD-01"
 ✅ cumulative_tags:
     brd: "BRD.01.01.30"
     prd: "PRD.03.01.02"
@@ -246,8 +277,8 @@ find docs/SPEC -name "SPEC-*.yaml" -exec ./scripts/validate_spec_template.sh {} 
 
 ### Mistake #4: CTR Contract Mismatch
 ```
-❌ # CTR-NNN references interface that doesn't exist
-✅ # Verified CTR-001_api_contract.md exists and matches API spec
+❌ # CTR-NN references interface that doesn't exist
+✅ # Verified CTR-01_api_contract.md exists and matches API spec
 ```
 
 ---

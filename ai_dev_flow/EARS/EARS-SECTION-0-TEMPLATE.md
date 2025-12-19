@@ -1,5 +1,5 @@
 ---
-doc_id: EARS-{NNN}
+doc_id: EARS-{NN}
 section: 0
 title: "{Document Title} - Index"
 total_sections: {N}
@@ -22,13 +22,13 @@ custom_fields:
   index_role: true
 ---
 
-# EARS-{NNN}.0: {Document Title} - Index
+# EARS-{NN}.0: {Document Title} - Index
 
 ## Document Overview
 
 | Field | Value |
 |-------|-------|
-| **Document ID** | EARS-{NNN} |
+| **Document ID** | EARS-{NN} |
 | **Document Type** | EARS Formal Requirements |
 | **Layer** | 3 - Formal Requirements |
 | **Title** | {Document Title} |
@@ -49,10 +49,10 @@ custom_fields:
 
 | Section | File | Title | Description |
 |---------|------|-------|-------------|
-| 0 | [EARS-{NNN}.0_index.md](EARS-{NNN}.0_index.md) | Index | This file - document overview and navigation |
-| 1 | [EARS-{NNN}.1_{slug1}.md](EARS-{NNN}.1_{slug1}.md) | {Title 1} | {Description 1} |
-| 2 | [EARS-{NNN}.2_{slug2}.md](EARS-{NNN}.2_{slug2}.md) | {Title 2} | {Description 2} |
-| 3 | [EARS-{NNN}.3_{slug3}.md](EARS-{NNN}.3_{slug3}.md) | {Title 3} | {Description 3} |
+| 0 | [EARS-{NN}.0_index.md](EARS-{NN}.0_index.md) | Index | This file - document overview and navigation |
+| 1 | [EARS-{NN}.1_{slug1}.md](EARS-{NN}.1_{slug1}.md) | {Title 1} | {Description 1} |
+| 2 | [EARS-{NN}.2_{slug2}.md](EARS-{NN}.2_{slug2}.md) | {Title 2} | {Description 2} |
+| 3 | [EARS-{NN}.3_{slug3}.md](EARS-{NN}.3_{slug3}.md) | {Title 3} | {Description 3} |
 
 ---
 
@@ -72,11 +72,11 @@ custom_fields:
 ## Dependencies
 
 ### Upstream References
-- @ref: PRD-{NNN} - Product requirements these EARS formalize
+- @ref: PRD-{NN} - Product requirements these EARS formalize
 
 ### Downstream References
-- @ref: BDD-{NNN} - Behavior scenarios validating EARS
-- @ref: ADR-{NNN} - Architecture decisions based on EARS
+- @ref: BDD-{NN} - Behavior scenarios validating EARS
+- @ref: ADR-{NN} - Architecture decisions based on EARS
 
 ### Cross-Section Dependencies
 - Section 2 depends on Section 1 (core requirements)
@@ -108,8 +108,8 @@ custom_fields:
 
 ## Traceability
 
-- **Original Document**: EARS-{NNN} (before split)
+- **Original Document**: EARS-{NN} (before split)
 - **Element ID Range**: EARS.{NN}.{TT}.01 through EARS.{NN}.{TT}.{MAX}
-- **Tag Format**: @ref: EARS-{NNN}.{S} (section reference)
+- **Tag Format**: @ref: EARS-{NN}.{S} (section reference)
 - **Upstream Trace**: BRD -> PRD
 - **Downstream Trace**: BDD -> ADR -> SYS -> REQ -> IMPL -> CTR -> SPEC

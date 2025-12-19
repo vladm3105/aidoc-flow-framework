@@ -31,7 +31,7 @@ custom_fields:
 > - **Creation Rules**: `IPLAN_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `IPLAN_VALIDATION_RULES.md` - Post-creation checks
 
-# Implementation Plan - IPLAN-NNN: [Descriptive Task/Feature Name]
+# Implementation Plan - IPLAN-NN: [Descriptive Task/Feature Name]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
@@ -41,7 +41,7 @@ custom_fields:
 
 | Item | Details |
 |------|---------|
-| **ID** | IPLAN-NNN |
+| **ID** | IPLAN-NN |
 | **Status** | Draft/Ready for Implementation/In Progress/Completed/Blocked |
 | **Version** | [Semantic version, e.g., 1.0.0] |
 | **Created** | YYYY-MM-DD HH:MM:SS TZ |
@@ -50,8 +50,8 @@ custom_fields:
 | **Estimated Effort** | [X hours or Y-Z hours range] |
 | **Actual Effort** | [Actual hours - update upon completion] |
 | **Complexity** | [1-5 scale: 1=minimal config, 5=architectural changes] |
-| **Parent TASKS** | [TASKS-NNN - code generation plan being implemented] |
-| **Related Artifacts** | [SPEC-NNN, REQ-NNN, ADR-NNN, BDD-NNN] |
+| **Parent TASKS** | [TASKS-NN - code generation plan being implemented] |
+| **Related Artifacts** | [SPEC-NN, REQ-NN, ADR-NN, BDD-NN] |
 | **IPLAN-Ready Score** | ✅ 95% (Target: ≥90%) |
 
 ---
@@ -92,7 +92,7 @@ For complete traceability workflow with visual diagram, see: [index.md - Traceab
 
 ## 3. Objective
 
-[1-2 sentence statement of what this implementation plan delivers, e.g., "Implement TASKS-001 Gateway Connection Service from scratch, creating async TCP connection management with retry logic, circuit breaker, comprehensive error handling, and 100% BDD test coverage."]
+[1-2 sentence statement of what this implementation plan delivers, e.g., "Implement TASKS-01 Gateway Connection Service from scratch, creating async TCP connection management with retry logic, circuit breaker, comprehensive error handling, and 100% BDD test coverage."]
 
 **Deliverables**:
 - [Specific deliverable #1: e.g., "6 Python modules (connector, service, models, errors, retry, circuit breaker)"]
@@ -108,12 +108,12 @@ For complete traceability workflow with visual diagram, see: [index.md - Traceab
 
 **Documentation Status**: [✅/⚠️/❌ percentage% Complete]
 - [List key documentation artifacts with status]
-- SPEC-NNN: [Description and status]
-- REQ-NNN through REQ-NNN: [Requirements coverage]
-- BDD-NNN: [Test scenarios defined]
-- ADR-NNN: [Architecture decisions documented]
-- SYS-NNN: [System requirements specified]
-- TASKS-NNN: [Implementation plan status]
+- SPEC-NN: [Description and status]
+- REQ-NN through REQ-NN: [Requirements coverage]
+- BDD-NN: [Test scenarios defined]
+- ADR-NN: [Architecture decisions documented]
+- SYS-NN: [System requirements specified]
+- TASKS-NN: [Implementation plan status]
 
 **Code Status**: [✅/⚠️/❌ percentage% Complete]
 - [Current implementation state]
@@ -129,33 +129,33 @@ For complete traceability workflow with visual diagram, see: [index.md - Traceab
 
 ### 4.2 Key Technical Decisions
 
-**Architecture** (from [ADR-NNN]):
+**Architecture** (from [ADR-NN]):
 - [Key architectural decision #1]
 - [Key architectural decision #2]
 - [Pattern/framework chosen and rationale]
 
-**Error Handling** (from [SPEC-NNN]):
+**Error Handling** (from [SPEC-NN]):
 - [Error handling strategy]
 - [Exception types and error codes]
 - [Retry/fallback approach]
 
-**Resilience Patterns** (from [SPEC-NNN]):
+**Resilience Patterns** (from [SPEC-NN]):
 - [Retry strategy with parameters]
 - [Circuit breaker configuration]
 - [Timeout values]
 
-**Observability** (from [SPEC-NNN]):
+**Observability** (from [SPEC-NN]):
 - [Logging approach]
 - [Metrics collection]
 - [Tracing implementation]
 - [Health check endpoints]
 
-**Performance Targets** (from [SPEC-NNN]):
+**Performance Targets** (from [SPEC-NN]):
 - [p50/p95/p99 latency targets]
 - [Throughput requirements]
 - [Resource constraints]
 
-**Test Coverage Targets** (from [TASKS-NNN]):
+**Test Coverage Targets** (from [TASKS-NN]):
 - Unit Tests: [≥X%]
 - Integration Tests: [≥Y%]
 - BDD Scenarios: [100% or specific count]
@@ -361,9 +361,9 @@ git commit -m "$(cat <<'EOF'
 - [Change #2]
 
 [Traceability]
-- Implements: TASKS-NNN
-- Satisfies: REQ-NNN, REQ-NNN
-- Tests: BDD-NNN scenarios
+- Implements: TASKS-NN
+- Satisfies: REQ-NN, REQ-NN
+- Tests: BDD-NN scenarios
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -583,15 +583,15 @@ class ResourceManager:
 
 | Parameter | Type | Default | Description | Source |
 |-----------|------|---------|-------------|--------|
-| [PARAM_1] | [type] | [value] | [Description] | [SPEC-NNN] |
-| [PARAM_2] | [type] | [value] | [Description] | [SPEC-NNN] |
+| [PARAM_1] | [type] | [value] | [Description] | [SPEC-NN] |
+| [PARAM_2] | [type] | [value] | [Description] | [SPEC-NN] |
 
 ### 7.4 BDD Scenario Mapping
 
 | BDD Document | Scenario | Implementation | Verification Method |
 |--------------|----------|----------------|---------------------|
-| [BDD-NNN] | [Scenario name] | [Module/function] | [Test file:line] |
-| [BDD-NNN] | [Scenario name] | [Module/function] | [Test file:line] |
+| [BDD-NN] | [Scenario name] | [Module/function] | [Test file:line] |
+| [BDD-NN] | [Scenario name] | [Module/function] | [Test file:line] |
 
 ---
 
@@ -607,20 +607,20 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - `@prd: PRD.NN.EE.SS` - Product Requirements Document (Layer 2)
 - `@ears: EARS.NN.EE.SS` - Event-Action-Response-State (Layer 3)
 - `@bdd: BDD.NN.EE.SS` - Behavior-Driven Development (Layer 4)
-- `@adr: ADR-NNN` - Architecture Decision Record (Layer 5)
+- `@adr: ADR-NN` - Architecture Decision Record (Layer 5)
 - `@sys: SYS.NN.EE.SS` - System Requirements (Layer 6)
 - `@req: REQ.NN.EE.SS` - Atomic Requirements (Layer 7)
-- `@spec: SPEC-NNN` - Technical Specification (Layer 10)
+- `@spec: SPEC-NN` - Technical Specification (Layer 10)
 - `@tasks: TASKS.NN.EE.SS` - Code Generation Plan (Layer 11)
 
 ### 8.2 Optional Tags (If Present in Project)
 
 - `@impl: IMPL.NN.EE.SS` - Implementation Plan (Layer 8) - include if project uses IMPL
-- `@ctr: CTR-NNN` - Interface Contract (Layer 9) - include if contracts defined
+- `@ctr: CTR-NN` - Interface Contract (Layer 9) - include if contracts defined
 
 ### 8.3 Tag Format
 
-**Standard Format**: `@artifact-type: TYPE.NN.EE.SS (Unified Element ID: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)`
+**Standard Format**: `@artifact-type: TYPE.NN.TT.SS (Unified Element ID: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)`
 
 **Examples**:
 ```
@@ -628,13 +628,13 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 @prd: PRD.01.01.15
 @ears: EARS.01.24.03
 @bdd: BDD.01.13.05
-@adr: ADR-002
+@adr: ADR-02
 @sys: SYS.02.25.01
 @req: REQ.01.26.01
-@spec: SPEC-001
+@spec: SPEC-01
 @tasks: TASKS.01.29.01
 @impl: IMPL.01.28.01 (optional)
-@ctr: CTR-001 (optional)
+@ctr: CTR-01 (optional)
 ```
 
 ### 8.4 Tag Validation Requirements
@@ -642,7 +642,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 1. **Completeness**: All 9 mandatory tags MUST be present (11 if @impl/@ctr exist in project)
 2. **Chain Integrity**: Each tag MUST reference a valid upstream document
 3. **Bidirectional Links**: Tagged documents MUST reference this IPLAN document in their downstream traceability
-4. **Format Compliance**: Tags MUST follow `@type: DOC-ID:NNN` pattern
+4. **Format Compliance**: Tags MUST follow `@type: DOC-ID:NN` pattern
 5. **Layer Hierarchy**: Tags MUST respect the 16-layer cumulative tagging hierarchy (Layer 0-15)
 
 ### 8.5 Validation Methods
@@ -657,50 +657,50 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | [IPLAN-NNN](./IPLAN-NNN_...md) | [Related IPLAN title] | Shared session context |
-| Depends | [IPLAN-NNN](./IPLAN-NNN_...md) | [Prerequisite IPLAN title] | Must complete before this |
+| Related | [IPLAN-NN](./IPLAN-NN_...md) | [Related IPLAN title] | Shared session context |
+| Depends | [IPLAN-NN](./IPLAN-NN_...md) | [Prerequisite IPLAN title] | Must complete before this |
 
 **Tags:**
 ```markdown
-@related-iplan: IPLAN-NNN
-@depends-iplan: IPLAN-NNN
+@related-iplan: IPLAN-NN
+@depends-iplan: IPLAN-NN
 ```
 
 ### 8.7 Thresholds Referenced
 
 **Purpose**: IPLAN documents REFERENCE thresholds defined in the PRD threshold registry. All quantitative values in verification steps, success criteria, and performance targets must use `@threshold:` tags to ensure single source of truth.
 
-**Threshold Naming Convention**: `@threshold: PRD.NNN.category.subcategory.key`
+**Threshold Naming Convention**: `@threshold: PRD.NN.category.subcategory.key`
 
 **Format Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for complete naming standards.
 
 **Thresholds Used in This Document**:
 ```yaml
 # Thresholds referenced from PRD threshold registry
-# Format: @threshold: PRD.NNN.category.subcategory.key
+# Format: @threshold: PRD.NN.category.subcategory.key
 
 performance:
   # Verification targets (Section 4.2, 11.1)
-  - "@threshold: PRD.NNN.perf.api.p50_latency"        # p50 latency verification
-  - "@threshold: PRD.NNN.perf.api.p95_latency"        # p95 latency verification
-  - "@threshold: PRD.NNN.perf.api.p99_latency"        # p99 latency verification
-  - "@threshold: PRD.NNN.perf.throughput.rps"         # Throughput verification
+  - "@threshold: PRD.NN.perf.api.p50_latency"        # p50 latency verification
+  - "@threshold: PRD.NN.perf.api.p95_latency"        # p95 latency verification
+  - "@threshold: PRD.NN.perf.api.p99_latency"        # p99 latency verification
+  - "@threshold: PRD.NN.perf.throughput.rps"         # Throughput verification
 
 coverage:
   # Test coverage targets (Section 11.1)
-  - "@threshold: PRD.NNN.quality.test.unit_coverage"        # Unit test coverage target
-  - "@threshold: PRD.NNN.quality.test.integration_coverage" # Integration test coverage target
-  - "@threshold: PRD.NNN.quality.test.bdd_coverage"         # BDD scenario coverage target
+  - "@threshold: PRD.NN.quality.test.unit_coverage"        # Unit test coverage target
+  - "@threshold: PRD.NN.quality.test.integration_coverage" # Integration test coverage target
+  - "@threshold: PRD.NN.quality.test.bdd_coverage"         # BDD scenario coverage target
 
 timeout:
   # Operation timeouts for verification (Section 6.2)
-  - "@threshold: PRD.NNN.timeout.request.sync"        # Synchronous request timeout
-  - "@threshold: PRD.NNN.timeout.connection.default"  # Connection timeout
+  - "@threshold: PRD.NN.timeout.request.sync"        # Synchronous request timeout
+  - "@threshold: PRD.NN.timeout.connection.default"  # Connection timeout
 
 resource:
   # Resource constraints for validation (Section 11.2)
-  - "@threshold: PRD.NNN.resource.cpu.max_utilization"   # CPU utilization limit
-  - "@threshold: PRD.NNN.resource.memory.max_mb"         # Memory limit
+  - "@threshold: PRD.NN.resource.cpu.max_utilization"   # CPU utilization limit
+  - "@threshold: PRD.NN.resource.memory.max_mb"         # Memory limit
 ```
 
 **Example Usage in Verification Steps**:
@@ -709,10 +709,10 @@ resource:
 pytest tests/performance/ -v \
   --benchmark-min-rounds=100 \
   --benchmark-autosave \
-  # Verify p95 latency < @threshold: PRD.NNN.perf.api.p95_latency
+  # Verify p95 latency < @threshold: PRD.NN.perf.api.p95_latency
 
 # Coverage verification
-pytest --cov --cov-fail-under=@threshold: PRD.NNN.quality.test.unit_coverage
+pytest --cov --cov-fail-under=@threshold: PRD.NN.quality.test.unit_coverage
 ```
 
 **Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
@@ -724,37 +724,37 @@ pytest --cov --cov-fail-under=@threshold: PRD.NNN.quality.test.unit_coverage
 ### 9.1 Upstream References (→ references TO)
 
 **Direct Parent**:
-- [TASKS-NNN](../TASKS/[path]/TASKS-NNN.md) - Code generation plan being implemented
+- [TASKS-NN](../TASKS/[path]/TASKS-NN.md) - Code generation plan being implemented
 
 **Technical Specifications**:
-- [SPEC-NNN](../SPEC/[path]/SPEC-NNN.yaml) - Technical blueprint for implementation
+- [SPEC-NN](../SPEC/[path]/SPEC-NN.yaml) - Technical blueprint for implementation
 
 **Requirements**:
-- [REQ-NNN](../REQ/[path]/REQ-NNN.md) - Atomic requirements satisfied
-- [REQ-NNN](../REQ/[path]/REQ-NNN.md) - Additional requirements
+- [REQ-NN](../REQ/[path]/REQ-NN.md) - Atomic requirements satisfied
+- [REQ-NN](../REQ/[path]/REQ-NN.md) - Additional requirements
 
 **Architecture Decisions**:
-- [ADR-NNN](../ADR/ADR-NNN.md) - Architecture decisions guiding implementation
-- [ADR-NNN](../ADR/ADR-NNN.md) - Technology/pattern choices
+- [ADR-NN](../ADR/ADR-NN.md) - Architecture decisions guiding implementation
+- [ADR-NN](../ADR/ADR-NN.md) - Technology/pattern choices
 
 **System Requirements**:
-- [SYS-NNN](../SYS/[path]/SYS-NNN.md) - System-level requirements
+- [SYS-NN](../SYS/[path]/SYS-NN.md) - System-level requirements
 
 **BDD Scenarios**:
-- [BDD-NNN](../BDD/[path]/BDD-NNN.feature) - Behavioral tests to satisfy
+- [BDD-NN](../BDD/[path]/BDD-NN.feature) - Behavioral tests to satisfy
 
 **EARS Requirements**:
-- [EARS-NNN](../EARS/[path]/EARS-NNN.md) - Event-action-response specifications
+- [EARS-NN](../EARS/[path]/EARS-NN.md) - Event-action-response specifications
 
 **Product Requirements**:
-- [PRD-NNN](../PRD/[path]/PRD-NNN.md) - Product requirements driving feature
+- [PRD-NN](../PRD/[path]/PRD-NN.md) - Product requirements driving feature
 
 **Business Requirements**:
-- [BRD-NNN](../BRD/[path]/BRD-NNN.md) - Business needs and objectives
+- [BRD-NN](../BRD/[path]/BRD-NN.md) - Business needs and objectives
 
 **Optional (if present)**:
-- [IMPL-NNN](../IMPL/[path]/IMPL-NNN.md) - Implementation strategies
-- [CTR-NNN](../CTR/[path]/CTR-NNN.md) - Interface contracts to implement
+- [IMPL-NN](../IMPL/[path]/IMPL-NN.md) - Implementation strategies
+- [CTR-NN](../CTR/[path]/CTR-NN.md) - Interface contracts to implement
 
 ### 9.2 Downstream Impact (← referenced BY)
 
@@ -774,7 +774,7 @@ pytest --cov --cov-fail-under=@threshold: PRD.NNN.quality.test.unit_coverage
 ### 9.3 Related Documents
 
 **Sibling Documents**:
-- [IPLAN-NNN](./IPLAN-NNN.md) - Related implementation plans
+- [IPLAN-NN](./IPLAN-NN.md) - Related implementation plans
 - [IPLAN-000_index.md](./IPLAN-000_index.md) - Index of all implementation plans
 
 **Traceability Matrix**:
@@ -788,16 +788,16 @@ pytest --cov --cov-fail-under=@threshold: PRD.NNN.quality.test.unit_coverage
 @prd: PRD.NN.EE.SS
 @ears: EARS.NN.EE.SS
 @bdd: BDD.NN.EE.SS
-@adr: ADR-NNN
+@adr: ADR-NN
 @sys: SYS.NN.EE.SS
 @req: REQ.NN.EE.SS
 @impl: IMPL.NN.EE.SS
-@ctr: CTR-NNN
-@spec: SPEC-NNN
+@ctr: CTR-NN
+@spec: SPEC-NN
 @tasks: TASKS.NN.EE.SS
 ```
 
-**Format**: `@artifact-type: TYPE.NN.EE.SS`
+**Format**: `@artifact-type: TYPE.NN.TT.SS`
 
 **Layer 12 Requirements**: IPLAN must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -824,8 +824,8 @@ pytest --cov --cov-fail-under=@threshold: PRD.NNN.quality.test.unit_coverage
 @sys: SYS.08.25.01
 @req: REQ.03.26.01
 @impl: IMPL.01.28.01
-@ctr: CTR-001
-@spec: SPEC-003
+@ctr: CTR-01
+@spec: SPEC-03
 @tasks: TASKS.01.29.01
 ```
 
@@ -944,9 +944,9 @@ pytest --cov --cov-fail-under=@threshold: PRD.NNN.quality.test.unit_coverage
 - [BDD-TEMPLATE.feature](../BDD/BDD-TEMPLATE.feature) - BDD scenario template
 
 ### 12.3 Related Artifacts
-- [TASKS-NNN](../TASKS/[path]/TASKS-NNN.md) - Parent code generation plan
-- [SPEC-NNN](../SPEC/[path]/SPEC-NNN.yaml) - Technical specification
-- [REQ-NNN](../REQ/[path]/REQ-NNN.md) - Requirements being implemented
+- [TASKS-NN](../TASKS/[path]/TASKS-NN.md) - Parent code generation plan
+- [SPEC-NN](../SPEC/[path]/SPEC-NN.yaml) - Technical specification
+- [REQ-NN](../REQ/[path]/REQ-NN.md) - Requirements being implemented
 
 ### 12.4 External References
 - [External documentation or API references]

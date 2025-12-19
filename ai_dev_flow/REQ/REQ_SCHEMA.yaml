@@ -97,7 +97,7 @@ structure:
   required_sections:
     - pattern: "^# REQ-\\d{3}:"
       name: "Title (H1)"
-      description: "Single H1 with format REQ-NNN: Title"
+      description: "Single H1 with format REQ-NN: Title"
 
     - pattern: "^## Document Control$"
       name: "Document Control"
@@ -212,7 +212,7 @@ structure:
   # File naming convention
   file_naming:
     pattern: "^REQ-\\d{3}_[a-z0-9_]+\\.md$"
-    description: "Format: REQ-NNN_descriptive_name.md"
+    description: "Format: REQ-NN_descriptive_name.md"
 
 # =============================================================================
 # REQ-Specific Patterns
@@ -372,7 +372,7 @@ validation_rules:
     - rule: "Document Control must have minimum 11 fields"
       severity: error
 
-    - rule: "File name must match REQ-NNN_name.md format"
+    - rule: "File name must match REQ-NN_name.md format"
       severity: warning
 
   # Content validation
@@ -419,7 +419,7 @@ traceability:
       - "@prd: PRD.NN.EE.SS"
       - "@ears: EARS.NN.EE.SS"
       - "@bdd: BDD.NN.EE.SS"
-      - "@adr: ADR-NNN"
+      - "@adr: ADR-NN"
       - "@sys: SYS.NN.EE.SS"
     description: "Layer 7 requires all 6 upstream artifact tags for complete traceability"
 
@@ -438,7 +438,7 @@ traceability:
         format: "@bdd: BDD.NN.EE.SS"
         location: "Section 11.1 or Traceability Tags section"
       - type: ADR
-        format: "@adr: ADR-NNN"
+        format: "@adr: ADR-NN"
         location: "Section 11.1 or Traceability Tags section"
       - type: SYS
         format: "@sys: SYS.NN.EE.SS"
@@ -447,21 +447,21 @@ traceability:
   downstream:
     expected:
       - type: IMPL
-        format: "IMPL-NNN"
+        format: "IMPL-NN"
       - type: CTR
-        format: "CTR-NNN"
+        format: "CTR-NN"
       - type: SPEC
-        format: "SPEC-NNN"
+        format: "SPEC-NN"
       - type: TASKS
-        format: "TASKS-NNN"
+        format: "TASKS-NN"
 
   same_type:
     optional:
       - type: REQ
-        format: "@related-req: REQ-NNN"
+        format: "@related-req: REQ-NN"
         description: "Related REQ document sharing domain context"
       - type: REQ
-        format: "@depends-req: REQ-NNN"
+        format: "@depends-req: REQ-NN"
         description: "Prerequisite REQ document"
 
 # =============================================================================
@@ -482,7 +482,7 @@ error_messages:
   REQ-E011: "Missing Data Schemas (Section 4)"
   REQ-E012: "Missing Error Handling (Section 5)"
   REQ-E013: "Missing Acceptance Criteria (Section 9)"
-  REQ-E014: "File name does not match REQ-NNN_name.md format"
+  REQ-E014: "File name does not match REQ-NN_name.md format"
   REQ-E015: "Missing Protocol/ABC definition in Interface Specifications"
   REQ-E016: "Missing JSON Schema or Pydantic models in Data Schemas"
   REQ-E017: "Missing Exception Catalog in Error Handling"

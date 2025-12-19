@@ -14,7 +14,7 @@ custom_fields:
   priority: primary
   development_status: active
   skill_category: utility
-  upstream_artifacts: [PRD-000, ADR-000]
+  upstream_artifacts: [PRD-00, ADR-000]
   downstream_artifacts: []
 ---
 
@@ -59,7 +59,7 @@ Extract action verbs and targets from the user request:
 | Category | Signal Keywords | Example Request |
 |----------|-----------------|-----------------|
 | `create` | create, write, draft, new, add | "Create a new PRD for user authentication" |
-| `update` | update, modify, edit, change, revise | "Update the traceability section of SPEC-001" |
+| `update` | update, modify, edit, change, revise | "Update the traceability section of SPEC-01" |
 | `validate` | validate, check, verify, audit, review | "Check if my artifacts have proper traceability" |
 | `analyze` | analyze, review, examine, inspect | "Analyze the project documentation structure" |
 | `plan` | plan, roadmap, schedule, organize | "Create an implementation roadmap from ADRs" |
@@ -287,7 +287,7 @@ recommendations:
 
 | Source | Type | Reference |
 |--------|------|-----------|
-| PRD-000 | Product Requirements | [PRD-000]({project_root}/ai_dev_flow/PRD/PRD-000_ai_assisted_documentation_features.md#PRD-000) |
+| PRD-00 | Product Requirements | [PRD-00]({project_root}/ai_dev_flow/PRD/PRD-00_ai_assisted_documentation_features.md#PRD-00) |
 | ADR-000 | Architecture Decision | [ADR-000]({project_root}/ai_dev_flow/ADR/ADR-000_ai_powered_documentation_assistant_architecture.md#ADR-000) |
 
 ### Downstream Artifacts

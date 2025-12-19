@@ -84,9 +84,9 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 
 | Category | Filename Pattern | Validation Level | Description |
 |----------|------------------|------------------|-------------|
-| **Platform BRD** | `BRD-NNN_platform_*` or `BRD-NNN_infrastructure_*` | Full (24 checks) | Foundational technology stacks and prerequisites |
-| **Feature BRD** | `BRD-NNN_{feature_name}` | Full (24 checks) | Business capability requirements |
-| **BRD-REF** | `BRD-REF-NNN_{slug}.md` | Reduced (4 checks) | Supplementary reference documents |
+| **Platform BRD** | `BRD-NN_platform_*` or `BRD-NN_infrastructure_*` | Full (24 checks) | Foundational technology stacks and prerequisites |
+| **Feature BRD** | `BRD-NN_{feature_name}` | Full (24 checks) | Business capability requirements |
+| **BRD-REF** | `BRD-REF-NN_{slug}.md` | Reduced (4 checks) | Supplementary reference documents |
 
 ### BRD-REF Reduced Validation
 
@@ -247,39 +247,39 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 **Type**: Error (blocking)
 
 **Valid Examples**:
-- `BRD-001_platform_architecture_technology_stack.md` ✅ (Platform BRD)
+- `BRD-01_platform_architecture_technology_stack.md` ✅ (Platform BRD)
 - `BRD-006_b2c_progressive_kyc_onboarding.md` ✅ (Feature BRD)
 - `BRD-009.1_provider_integration_prerequisites.md` ✅ (Feature BRD section file)
-- `BRD-REF-001_glossary_financial_terms.md` ✅ (Reference document)
-- `BRD-REF-002_regulatory_standards_matrix.md` ✅ (Reference document)
+- `BRD-REF-01_glossary_financial_terms.md` ✅ (Reference document)
+- `BRD-REF-02_regulatory_standards_matrix.md` ✅ (Reference document)
 
 **Invalid Examples**:
-- `BRD-001.md` ❌ (missing description)
+- `BRD-01.md` ❌ (missing description)
 - `brd-001_platform.md` ❌ (wrong case)
 - `BRD001_platform.md` ❌ (missing hyphen)
-- `BRD-001_Platform_Architecture.md` ❌ (uppercase in slug)
+- `BRD-01_Platform_Architecture.md` ❌ (uppercase in slug)
 - `BRD-REF001_glossary.md` ❌ (missing hyphen after REF)
 
 **Patterns**:
-- Platform/Feature BRD: `BRD-[0-9]{3,4}(-[0-9]{2,3})?_[a-z0-9_]+\.md`
+- Platform/Feature BRD: `BRD-[0-9]{2,}(-[0-9]{2,3})?_[a-z0-9_]+\.md`
 - Reference Document: `BRD-REF-[0-9]{3}_[a-z0-9_]+\.md`
 
 **Error Messages**:
 ```
 ❌ ERROR: Invalid filename format: brd-001_platform.md
-         Expected: BRD-NNN_descriptive_title.md or BRD-NNN-YY_descriptive_title.md
+         Expected: BRD-NN_descriptive_title.md or BRD-NN-YY_descriptive_title.md
 
 ❌ ERROR: Filename doesn't match Platform, Feature, or Reference BRD pattern
-         Platform: BRD-NNN_platform_* or BRD-NNN_infrastructure_*
-         Feature: BRD-NNN_{feature_name}
-         Reference: BRD-REF-NNN_{descriptive_slug}
+         Platform: BRD-NN_platform_* or BRD-NN_infrastructure_*
+         Feature: BRD-NN_{feature_name}
+         Reference: BRD-REF-NN_{descriptive_slug}
 ```
 
 **Fix**:
 1. Rename file to match appropriate pattern:
-   - Platform: `BRD-NNN_platform_*` or `BRD-NNN_infrastructure_*`
-   - Feature: `BRD-NNN_{feature_name}`
-   - Reference: `BRD-REF-NNN_{descriptive_slug}`
+   - Platform: `BRD-NN_platform_*` or `BRD-NN_infrastructure_*`
+   - Feature: `BRD-NN_{feature_name}`
+   - Reference: `BRD-REF-NN_{descriptive_slug}`
 2. Use lowercase with underscores for descriptive title
 
 **Reference**: `BRD_CREATION_RULES.md` section 4 (ID and Naming Standards), `REF-TEMPLATE.md` for reference documents
@@ -302,7 +302,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 - section 3.7: MUST exist and include platform-inherited conditions plus feature-specific requirements
 
 **Reference Document (BRD-REF) Requirements**:
-- Filename matches pattern: `BRD-REF-NNN_{slug}.md`
+- Filename matches pattern: `BRD-REF-NN_{slug}.md`
 - Validation mode: REDUCED (only 4 checks apply)
 - Required: Document Control, Revision History, Introduction, H1 ID match
 - Exempt: All other checks (sections 3.6, 3.7, PRD-Ready Score, Traceability, etc.)
@@ -356,7 +356,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 |------------|-----------------|---------------|-------------------|
 | Multi-Agent Framework | Select orchestration approach | BRD.NN.23.03: Autonomous execution | Google ADK, n8n, custom |
 | Data Storage | Choose persistence technology | QA: High availability | PostgreSQL, Cloud SQL, Firestore |
-| Communication Protocol | Select inter-system messaging | BRD.NNN.015: Real-time updates | Pub/Sub, gRPC, REST WebSocket |
+| Communication Protocol | Select inter-system messaging | BRD.NN.015: Real-time updates | Pub/Sub, gRPC, REST WebSocket |
 ```
 
 **Reference**: `BRD_CREATION_RULES.md` section 9 (Architecture Decision Requirements)
@@ -446,7 +446,7 @@ BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (5
 ```
 
 **Fix**:
-1. Remove any ADR-NNN references
+1. Remove any ADR-NN references
 2. Ensure ADR references are only in section 5.2 as topic identification
 3. Add ADR references AFTER BRD approval when ADRs are created
 
@@ -489,13 +489,13 @@ BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (5
 
 **Valid Link Format**:
 ```markdown
-[PRD-001 Product Requirements](../PRD/PRD-001_product_requirements.md)
-[BRD-001 Platform Architecture](./BRD-001_platform_architecture.md)
+[PRD-01 Product Requirements](../PRD/PRD-01_product_requirements.md)
+[BRD-01 Platform Architecture](./BRD-01_platform_architecture.md)
 ```
 
 **Invalid Examples**:
 ```markdown
-[PRD-001](../../PRD/PRD-001.md) ❌ (missing relative path)
+[PRD-01](../../PRD/PRD-01.md) ❌ (missing relative path)
 [BRD-999](../../BRD/BRD-999.md) ❌ (file doesn't exist)
 ```
 
@@ -642,7 +642,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 
 **Invalid Cross-References** (CHECK 18):
 - **Deduction**: -2 points per invalid BRD reference (max -10 points)
-- **Invalid Conditions**: Non-existent BRD file, incorrect ID format (BRD-2 instead of BRD-002)
+- **Invalid Conditions**: Non-existent BRD file, incorrect ID format (BRD-2 instead of BRD-02)
 - **Examples**:
   - 3 invalid references = -6 points
   - 5+ invalid references = -10 points (maximum)
@@ -887,7 +887,7 @@ UI implementation details should be deferred to PRD.
 
 **Valid FR Structure**:
 ```markdown
-### BRD.NNN.001: [Requirement Title - Business Capability Name]
+### BRD.NN.001: [Requirement Title - Business Capability Name]
 
 **Business Capability**: [One sentence]
 
@@ -904,7 +904,7 @@ UI implementation details should be deferred to PRD.
 - [Measurable criterion 2 with target]
 
 **Related Requirements**:
-- Platform BRDs: [BRD-001, BRD-002, etc.]
+- Platform BRDs: [BRD-01, BRD-02, etc.]
 - Feature BRDs: [BRD-XXX, BRD-YYY, etc.]
 
 **Complexity**: X/5 ([Business-level rationale with partner count, regulatory scope, dependencies])
@@ -912,7 +912,7 @@ UI implementation details should be deferred to PRD.
 
 **Error Message**:
 ```
-❌ ERROR: Functional Requirement BRD.NNN.005 missing required subsections
+❌ ERROR: Functional Requirement BRD.NN.005 missing required subsections
 Missing:
 - Business Capability
 - Complexity
@@ -943,36 +943,36 @@ Fix: Add missing subsections per BRD-TEMPLATE.md section 5.2 format
 **Type**: Warning (non-blocking) - Invalid cross-references reduce traceability
 
 **Validation Rules**:
-1. All BRD-NNN references must follow correct ID format (BRD-001, BRD-034, etc.)
+1. All BRD-NN references must follow correct ID format (BRD-01, BRD-034, etc.)
 2. Referenced BRD files must exist in `docs/BRD/` directory
-3. Platform BRDs should reference BRD-001 through BRD-005 (foundational)
+3. Platform BRDs should reference BRD-01 through BRD-005 (foundational)
 4. Feature BRDs should reference both Platform BRDs and related Feature BRDs
 
 **Valid Related Requirements Example**:
 ```markdown
 **Related Requirements**:
-- Platform BRDs: BRD-001 (Platform Architecture), BRD-002 (Partner Ecosystem), BRD-003 (Compliance)
+- Platform BRDs: BRD-01 (Platform Architecture), BRD-02 (Partner Ecosystem), BRD-03 (Compliance)
 - Feature BRDs: BRD-006 (KYC Onboarding), BRD-008 (Wallet Funding), BRD-011 (Recipient Management)
 ```
 
 **Warning Message**:
 ```
-⚠️  WARNING: Invalid BRD cross-references in BRD.NNN.005 Related Requirements
+⚠️  WARNING: Invalid BRD cross-references in BRD.NN.005 Related Requirements
 - BRD-099: File not found (docs/BRD/BRD-099_*.md does not exist)
-- BRD-2: Invalid ID format (should be BRD-002)
-- BRD-001 referenced but file path broken
+- BRD-2: Invalid ID format (should be BRD-02)
+- BRD-01 referenced but file path broken
 
 Valid cross-references:
-✅ BRD-001 (Platform Architecture) - exists
+✅ BRD-01 (Platform Architecture) - exists
 ✅ BRD-008 (Wallet Funding) - exists
 
-Fix: Verify all BRD references exist and use correct ID format (BRD-NNN)
+Fix: Verify all BRD references exist and use correct ID format (BRD-NN)
 ```
 
 **Fix**:
-1. Scan all Related Requirements subsections for BRD-NNN pattern
-2. Verify each referenced BRD file exists: `docs/BRD/BRD-NNN_*.md`
-3. Correct invalid ID formats (BRD-2 → BRD-002, BRD-99 → BRD-099)
+1. Scan all Related Requirements subsections for BRD-NN pattern
+2. Verify each referenced BRD file exists: `docs/BRD/BRD-NN_*.md`
+3. Correct invalid ID formats (BRD-2 → BRD-02, BRD-99 → BRD-099)
 4. Remove references to non-existent BRDs or create placeholder BRD if needed
 
 **Reference**: BRD-TEMPLATE.md Appendix C (FR Examples with cross-references)
@@ -1225,7 +1225,7 @@ Reference: BRD-TEMPLATE.md section 15
 ⚠️  WARNING: Traceability orphans detected
 Orphaned Requirements:
 - BRD.NN.23.03: No related BRD.NN.EE.SS requirements (Coverage Status = "Gap")
-- BRD.NNN.012: Not linked to any Business Objective
+- BRD.NN.012: Not linked to any Business Objective
 - PRD.NN.09.07: Not linked to any Functional Requirement
 
 Traceability Health Score: 78% (Target: ≥90%)
@@ -1235,14 +1235,14 @@ Fix: Ensure bidirectional links for all objectives, BRD requirements, and user s
 
 **Orphan Prevention Checks**:
 - [ ] Zero orphaned Business Objectives (all have Coverage Status = "Complete" or "Partial")
-- [ ] Zero orphaned Functional Requirements (all appear in BO→BRD.NNN table)
+- [ ] Zero orphaned Functional Requirements (all appear in BO→BRD.NN table)
 - [ ] Zero orphaned User Stories (all have Related BRD.NN.EE.SS links)
 - [ ] All BRD.NN.EE.SS requirements have planned downstream SPEC references
 
 **Fix**:
 1. Add section 15 with all 4 subsections
 2. Create Business Objectives → FRs table listing all BOs from section 2.4
-3. Create FRs → Technical Specs table with planned SPEC-XXX-NNN references
+3. Create FRs → Technical Specs table with planned SPEC-XXX-NN references
 4. Document Cross-BRD Dependencies if any exist
 5. Map requirements to planned test artifacts (TEST-XXX-UNIT, TEST-XXX-INT, etc.)
 6. Calculate Traceability Health Score: Average of all coverage percentages
@@ -1395,7 +1395,7 @@ Reference: BRD-TEMPLATE.md section 16
 ### 16.5 Cross-References
 | Term | Referenced Document | section |
 |------|---------------------|---------|
-| Platform Architecture | BRD-001_platform_architecture_technology_stack.md | section 15.2 |
+| Platform Architecture | BRD-01_platform_architecture_technology_stack.md | section 15.2 |
 
 ### 16.6 External Standards
 | Standard | Organization | Relevance | section |
@@ -1424,6 +1424,40 @@ Reference: BRD-TEMPLATE.md section 16
 
 ---
 
+### CHECK 25: Element ID Format Compliance ⭐ NEW
+
+**Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
+**Type**: Error
+
+| Check | Pattern | Result |
+|-------|---------|--------|
+| Valid format | `### BRD.NN.TT.SS:` | ✅ Pass |
+| Removed pattern | `### AC-XXX` | ❌ Fail - use BRD.NN.06.SS |
+| Removed pattern | `### FR-XXX` | ❌ Fail - use BRD.NN.01.SS |
+| Removed pattern | `### BC-XXX` | ❌ Fail - use BRD.NN.03.SS |
+| Removed pattern | `### BO-XXX` | ❌ Fail - use BRD.NN.23.SS |
+| Removed pattern | `### QA-XXX` | ❌ Fail - use BRD.NN.02.SS |
+
+**Regex**: `^###\s+BRD\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+**Common Element Types for BRD**:
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Functional Requirement | 01 | BRD.02.01.01 |
+| Quality Attribute | 02 | BRD.02.02.01 |
+| Constraint | 03 | BRD.02.03.01 |
+| Assumption | 04 | BRD.02.04.01 |
+| Dependency | 05 | BRD.02.05.01 |
+| Acceptance Criteria | 06 | BRD.02.06.01 |
+| Risk | 07 | BRD.02.07.01 |
+| Business Objective | 23 | BRD.02.23.01 |
+
+**Fix**: Replace `### AC-01: Criterion` with `### BRD.02.06.01: Criterion`
+
+**Reference**: BRD_CREATION_RULES.md Section 4.1, ID_NAMING_STANDARDS.md lines 783-793
+
+---
+
 ## Error Fix Guide
 
 ### Quick Fix Matrix
@@ -1433,10 +1467,10 @@ Reference: BRD-TEMPLATE.md section 16
 | **CHECK 1** | Add missing section: `## N. section Title` |
 | **CHECK 2** | Add all 6 required fields to Document Control table |
 | **CHECK 3** | Add initial entry to Document Revision History table |
-| **CHECK 4** | Rename file to Platform (`BRD-NNN_platform_*`), Feature (`BRD-NNN_{feature_name}`), or Reference (`BRD-REF-NNN_{slug}`) pattern |
+| **CHECK 4** | Rename file to Platform (`BRD-NN_platform_*`), Feature (`BRD-NN_{feature_name}`), or Reference (`BRD-REF-NN_{slug}`) pattern |
 | **CHECK 5** | For Platform/Feature: Ensure section 3.6 & 3.7 exist; For BRD-REF: Only Document Control, Revision History, Introduction required |
 | **CHECK 6** | Add section 5.2 with table structure and at least 3 architectural topics |
-| **CHECK 9** | Remove ADR-NNN references; ensure ADRs only identified as topics in section 5.2 |
+| **CHECK 9** | Remove ADR-NN references; ensure ADRs only identified as topics in section 5.2 |
 | **CHECK 11** | Fix broken links, use relative paths, verify target files exist |
 | **CHECK 13** | Add PRD-Ready Score to Document Control: `✅ [Score]/100 (Target: ≥90/100)` |
 | **CHECK 14** | Remove all code blocks (```) from section 4 FRs; replace with business-level descriptions |
@@ -1450,6 +1484,7 @@ Reference: BRD-TEMPLATE.md section 16
 | **CHECK 22** | Add section 15 (Traceability) with complete bidirectional mapping and Health Score ≥90% |
 | **CHECK 23** | Add section 14.5 (Approval and Sign-off) with approval table, criteria, and change control process |
 | **CHECK 24** | Add section 16 subsections 16.1-16.6 for complete Glossary (Business Terms, Technical Terms, Domain-Specific, Acronyms, Cross-References, External Standards) |
+| **CHECK 25** | Replace legacy element IDs (AC-XXX, FR-XXX, BC-XXX, BO-XXX, QA-XXX) with unified format `BRD.NN.TT.SS` |
 
 ---
 
@@ -1459,13 +1494,13 @@ Reference: BRD-TEMPLATE.md section 16
 
 ```bash
 # Validate single BRD (nested folder structure - DEFAULT)
-./scripts/validate_brd_template.sh docs/BRD/BRD-001/BRD-001.0_index.md
+./scripts/validate_brd_template.sh docs/BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md
 
 # Validate all BRD files (section-based structure)
 find docs/BRD -type f -name "BRD-*.md" -exec ./scripts/validate_brd_template.sh {} \;
 
 # Validate monolithic BRD (optional for <25KB)
-./scripts/validate_brd_template.sh docs/BRD/BRD-001_platform_architecture.md
+./scripts/validate_brd_template.sh docs/BRD/BRD-01_platform_architecture.md
 
 # Validate all BRD files (legacy pattern)
 **Business Requirements Completeness (40%)**:
@@ -1538,14 +1573,14 @@ Warnings: 1
 
 **Error**:
 ```
-❌ ERROR: Invalid filename format: BRD-001.md
-         Expected: BRD-NNN_descriptive_title.md
+❌ ERROR: Invalid filename format: BRD-01.md
+         Expected: BRD-NN_descriptive_title.md
 ```
 
 **Cause**: Missing descriptive title slug or Platform/Feature pattern
 
 **Fix**: Rename file to match appropriate pattern:
-- Platform: `BRD-001_platform_architecture_technology_stack.md`
+- Platform: `BRD-01_platform_architecture_technology_stack.md`
 - Feature: `BRD-006_b2c_progressive_kyc_onboarding.md`
 
 ---
@@ -1566,9 +1601,9 @@ Warnings: 1
 
 | Topic Area | Decision Needed | Business Driver | Key Considerations |
 |------------|-----------------|---------------|-------------------|
-| Database Technology | Select data storage solution | BRD.NNN.921: High availability requirements | PostgreSQL, Cloud SQL, DynamoDB |
-| Authentication | Choose identity management | BRD.NNN.003: Secure user access | OAuth2, SAML, Firebase Auth |
-| API Architecture | Define service communication | BRD.NNN.015: System integration | REST APIs, gRPC, GraphQL |
+| Database Technology | Select data storage solution | BRD.NN.921: High availability requirements | PostgreSQL, Cloud SQL, DynamoDB |
+| Authentication | Choose identity management | BRD.NN.003: Secure user access | OAuth2, SAML, Firebase Auth |
+| API Architecture | Define service communication | BRD.NN.015: System integration | REST APIs, gRPC, GraphQL |
 ```
 
 ---
@@ -1584,7 +1619,7 @@ Warnings: 1
 **Cause**: BRD referencing ADRs that don't exist yet
 
 **Fix**:
-1. Remove ADR-NNN references
+1. Remove ADR-NN references
 2. Convert to topic identification in section 5.2
 3. Add ADR links AFTER BRD approval when ADRs are created
 

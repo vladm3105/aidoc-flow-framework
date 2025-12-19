@@ -74,7 +74,7 @@ Decision framework for when to create standalone ICON files versus embedding imp
 | **Scope** | Component-level | Single component boundary |
 | **Projects** | Single project | No cross-project sharing |
 
-**Example**: Gateway connector used by 3 TASKS within single project with 200-line protocol → Embed in TASKS-001
+**Example**: Gateway connector used by 3 TASKS within single project with 200-line protocol → Embed in TASKS-01
 
 ---
 
@@ -148,7 +148,7 @@ Decision framework for when to create standalone ICON files versus embedding imp
 - Scope: Component-level ❌
 - Projects: Single project ❌
 
-**Decision**: Embed in TASKS-001
+**Decision**: Embed in TASKS-01
 **Rationale**: Small contract with few consumers, component-level scope
 
 ### Example 2: Platform Event Bus (Standalone ICON)
@@ -159,7 +159,7 @@ Decision framework for when to create standalone ICON files versus embedding imp
 - Scope: Platform-level ✅
 - Projects: 3 projects ✅
 
-**Decision**: Create ICON-002
+**Decision**: Create ICON-02
 **Rationale**: Large contract with many consumers across multiple projects
 
 ### Example 3: Order Execution Protocol (Standalone ICON)
@@ -183,7 +183,7 @@ Decision framework for when to create standalone ICON files versus embedding imp
 - Scope: Component-level ❌
 - Projects: Single project ❌
 
-**Decision**: Embed in TASKS-003
+**Decision**: Embed in TASKS-03
 **Rationale**: Small exception hierarchy with few consumers
 
 ---
@@ -200,7 +200,7 @@ Decision framework for when to create standalone ICON files versus embedding imp
 
 **Process**:
 1. Create ICON file from embedded contract
-2. Assign ICON-NNN ID
+2. Assign ICON-NN ID
 3. Update ICON-000_index.md registry
 4. Update all TASKS files to reference ICON
 5. Archive embedded versions
@@ -358,7 +358,7 @@ graph TD
 | **Missing YAML** | No frontmatter | Copy from ICON-TEMPLATE.md lines 1-15 | Use template |
 | **Incomplete Sections** | < 10 sections | See ICON_ERROR_RECOVERY.md §2.5 | Use template checklist |
 | **Wrong Contract Type** | Type doesn't match content | Update custom_fields.contract_type | Review before creation |
-| **No Mock Template** | Protocol without mock | Add section 6 from ICON-001 | Check template requirements |
+| **No Mock Template** | Protocol without mock | Add section 6 from ICON-01 | Check template requirements |
 | **Missing Performance** | State/Protocol without perf | Add section 4 from ICON-006 | Check contract type rules |
 
 ### Metrics Tracking
@@ -406,8 +406,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -475,7 +475,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/ICON/ICON-NNN_slug.md --auto-fix
+python scripts/validate_cross_document.py --document docs/ICON/ICON-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all ICON documents complete
 python scripts/validate_cross_document.py --layer ICON --auto-fix
@@ -492,7 +492,7 @@ python scripts/validate_cross_document.py --layer ICON --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd through @tasks tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

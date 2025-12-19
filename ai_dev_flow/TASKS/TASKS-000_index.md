@@ -43,7 +43,7 @@ flowchart LR
 
 | TASKS ID | Title | Status | Related SPEC | Related CTR | Components | Generated Code | Last Updated |
 |----------|-------|--------|--------------|-------------|------------|----------------|--------------|
-| [TASKS-001](./examples/TASKS-001_risk_validator_implementation.md) | Risk Validator Implementation | Planned | SPEC-003 | CTR-003 | RiskValidator class | `src/risk/validator.py` | 2025-11-02 |
+| [TASKS-01](./examples/TASKS-01_risk_validator_implementation.md) | Risk Validator Implementation | Planned | SPEC-03 | CTR-03 | RiskValidator class | `src/risk/validator.py` | 2025-11-02 |
 
 ## Status Definitions
 
@@ -63,10 +63,10 @@ When creating a new TASKS Plan:
 1. **Copy Template**:
    ```bash
    cp ai_dev_flow/TASKS/TASKS-TEMPLATE.md \
-      ai_dev_flow/TASKS/TASKS-NNN_component_name.md
+      ai_dev_flow/TASKS/TASKS-NN_component_name.md
    ```
 
-2. **Assign TASKS ID**: Use next sequential number (TASKS-002, TASKS-003, ...)
+2. **Assign TASKS ID**: Use next sequential number (TASKS-02, TASKS-03, ...)
 
 3. **Update This Index**: Add new row to table above with:
    - TASKS ID and link to file
@@ -83,7 +83,7 @@ When creating a new TASKS Plan:
 ## Allocation Rules
 
 - **Numbering**: Allocate sequentially starting at `001`; keep numbers stable
-- **One Task Per File**: Each `TASKS-NNN` file covers a coherent implementation task
+- **One Task Per File**: Each `TASKS-NN` file covers a coherent implementation task
 - **Slugs**: Short, descriptive, lower_snake_case
 - **Cross-Links**: Each task should reference upstream REQ/ADR/IMPL/SPEC/CTR and downstream code/tests
 - **Index Updates**: Add a line for every new task; do not remove past entries
@@ -91,7 +91,7 @@ When creating a new TASKS Plan:
 ## Index by Status
 
 ### Planned
-- TASKS-001: Risk Validator Implementation
+- TASKS-01: Risk Validator Implementation
 
 ### In Progress
 - None
@@ -113,7 +113,7 @@ When creating a new TASKS Plan:
 | Component Type | TASKS Plans | Count |
 |----------------|-------------|-------|
 | Agent | - | 0 |
-| Service | TASKS-001 | 1 |
+| Service | TASKS-01 | 1 |
 | MCP Server | - | 0 |
 | Infrastructure | - | 0 |
 | ML Model | - | 0 |
@@ -124,17 +124,17 @@ When creating a new TASKS Plan:
 | Priority | TASKS Plans |
 |----------|-------------|
 | P0 (Critical) | - |
-| P1 (High) | TASKS-001 |
+| P1 (High) | TASKS-01 |
 | P2 (Medium) | - |
 | P3 (Low) | - |
 
 ## Generated Code Summary
 
 ### Python Modules
-- `src/risk/validator.py` (TASKS-001) - Risk Validator class
+- `src/risk/validator.py` (TASKS-01) - Risk Validator class
 
 ### Test Files
-- `tests/risk/test_validator.py` (TASKS-001) - Unit tests for Risk Validator
+- `tests/risk/test_validator.py` (TASKS-01) - Unit tests for Risk Validator
 
 ### Configuration Files
 - None yet
@@ -157,7 +157,7 @@ When creating a new TASKS Plan:
 
 - **Template**: [TASKS-TEMPLATE.md](./TASKS-TEMPLATE.md) - Use this to create new TASKS Plans
 - **README**: [README.md](./README.md) - Learn about TASKS Plans purpose and structure
-- **Example**: [TASKS-001](./examples/TASKS-001_risk_validator_implementation.md) - Reference code generation plan
+- **Example**: [TASKS-01](./examples/TASKS-01_risk_validator_implementation.md) - Reference code generation plan
 
 ## Maintenance Guidelines
 
@@ -209,9 +209,9 @@ This index should be reviewed:
 
 ### Finding Code Generation Plan for a Specification
 
-**Question**: "Which TASKS Plan implements SPEC-003?"
+**Question**: "Which TASKS Plan implements SPEC-03?"
 
-**Answer**: Check "Related SPEC" column → TASKS-001 (Risk Validator Implementation)
+**Answer**: Check "Related SPEC" column → TASKS-01 (Risk Validator Implementation)
 
 ### Checking What's Currently Being Generated
 
@@ -233,7 +233,7 @@ This index should be reviewed:
 
 ## AI Generation Best Practices
 
-1. **Always Start with SPEC**: Ensure SPEC-NNN.yaml is complete before creating TASKS
+1. **Always Start with SPEC**: Ensure SPEC-NN.yaml is complete before creating TASKS
 2. **Reference CTR**: Link to API contracts for interface definitions
 3. **Include Traceability**: Every generated file should have REQ/ADR/BDD comments
 4. **Generate Tests First**: Create test files before implementation (TDD)
@@ -245,7 +245,7 @@ This index should be reviewed:
 
 | TASKS | SPEC | CTR | IMPL | REQ | BDD | ADR |
 |-------|------|-----|------|-----|-----|-----|
-| TASKS-001 | SPEC-003 | CTR-003 | IMPL-001 | REQ-003 | BDD-003 | ADR-008 |
+| TASKS-01 | SPEC-03 | CTR-03 | IMPL-01 | REQ-03 | BDD-03 | ADR-008 |
 
 ## Code Generation Workflow
 

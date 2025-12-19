@@ -196,7 +196,7 @@ Create complete IMPL artifact system including folder structure, templates, inde
 | **Purpose** | Create README, examples, and integration docs |
 | **Owner** | Documentation Team |
 | **Timeline** | 2025-11-03 → 2025-11-04 (3 hours) |
-| **Deliverables** | README.md, IMPL-001_example, IMPL-002_example |
+| **Deliverables** | README.md, IMPL-01_example, IMPL-02_example |
 | **Dependencies** | Phase 2 complete (template exists) |
 
 **Tasks**:
@@ -206,8 +206,8 @@ Create complete IMPL artifact system including folder structure, templates, inde
    - How to link to REQ/CTR/SPEC/TASKS
    - Example workflows
 2. Create example documents:
-   - IMPL-001: Simple feature implementation
-   - IMPL-002: Complex multi-phase project
+   - IMPL-01: Simple feature implementation
+   - IMPL-02: Complex multi-phase project
 3. Add parameterized references where appropriate
 
 **Success Criteria**:
@@ -240,7 +240,7 @@ Create complete IMPL artifact system including folder structure, templates, inde
    - Define IMPL position in workflow (Layer 5)
    - Add IMPL to traceability flow diagrams
 2. Update ID_NAMING_STANDARDS.md:
-   - Add IMPL-NNN naming convention
+   - Add IMPL-NN naming convention
    - Add IMPL_* special document conventions
 3. Update ai_dev_flow/index.md with IMPL references
 4. Update ai_dev_flow/README.md artifact table
@@ -362,8 +362,8 @@ Create complete IMPL artifact system including folder structure, templates, inde
 - [x] `README.md` - Usage documentation
 
 **Example Deliverables**:
-- [x] `examples/IMPL-001_risk_management_system.md` - Simple example
-- [x] `examples/IMPL-002_ml_model_deployment.md` - Complex example
+- [x] `examples/IMPL-01_risk_management_system.md` - Simple example
+- [x] `examples/IMPL-02_ml_model_deployment.md` - Complex example
 
 **Integration Deliverables**:
 - [x] Updated `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`

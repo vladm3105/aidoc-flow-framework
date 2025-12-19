@@ -55,7 +55,7 @@ custom_fields:
 ## 1. File Organization and Directory Structure
 
 - **Location**: `docs/SPEC/` within project docs directory
-- **Naming**: `SPEC-NNN_descriptive_component_name.yaml` (NNN = 3-digit sequential)
+- **Naming**: `SPEC-NN_descriptive_component_name.yaml` (NN = 3-digit sequential)
 - **Structure**: One primary SPEC file per architectural component
 
 ---
@@ -134,9 +134,25 @@ operations: [...]
 
 ## 4. ID and Naming Standards
 
-- **Filename**: `SPEC-NNN_descriptive_component_name.yaml`
+- **Filename**: `SPEC-NN_descriptive_component_name.yaml`
 - **id field**: `component_name` (snake_case, unique)
 - **Versioning**: Semantic versioning (1.0.0)
+
+### 4.1 Element ID Format (MANDATORY)
+
+**Pattern**: `SPEC.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Step | 15 | SPEC.02.15.01 |
+| Interface | 16 | SPEC.02.16.01 |
+| Data Model | 17 | SPEC.02.17.01 |
+| Validation Rule | 21 | SPEC.02.21.01 |
+| Specification Element | 28 | SPEC.02.28.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use legacy formats like `STEP-XXX`, `INT-XXX`.
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
 
 ---
 
@@ -217,7 +233,7 @@ cumulative_tags:
   prd: "PRD.NN.EE.SS"         # Unified dot notation for sub-ID references
   ears: "EARS.NN.EE.SS"       # Unified dot notation
   bdd: "BDD.NN.EE.SS"         # Unified dot notation for sub-ID references
-  adr: "ADR-NNN"             # Document-level reference (no sub-ID)
+  adr: "ADR-NN"             # Document-level reference (no sub-ID)
   sys: "SYS.NN.EE.SS"         # Unified dot notation for sub-ID references
   req: "REQ.NN.EE.SS"         # Unified dot notation for sub-ID references
 ```
@@ -271,9 +287,9 @@ cumulative_tags:
 | Hardcoded values in behavior | Use configuration references |
 | Missing interface CTR references | Create CTR for external API specifications |
 | Incomplete performance specifications | Include latency/throughput/error rate targets |
-| `latency_ms: 200` (hardcoded) | `latency_ms: "@threshold: PRD.NNN.perf.api.p95_latency"` |
-| `timeout: 5000` (magic number) | `timeout: "@threshold: PRD.NNN.timeout.default"` |
-| `rate_limit: 100` (hardcoded) | `rate_limit: "@threshold: PRD.NNN.limit.api.requests_per_second"` |
+| `latency_ms: 200` (hardcoded) | `latency_ms: "@threshold: PRD.NN.perf.api.p95_latency"` |
+| `timeout: 5000` (magic number) | `timeout: "@threshold: PRD.NN.timeout.default"` |
+| `rate_limit: 100` (hardcoded) | `rate_limit: "@threshold: PRD.NN.limit.api.requests_per_second"` |
 
 ---
 
@@ -299,8 +315,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -325,13 +341,13 @@ Include ONLY if relationships exist between SPEC documents sharing implementatio
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | SPEC-NNN | [Related SPEC title] | Shared implementation context |
-| Depends | SPEC-NNN | [Prerequisite SPEC title] | Must complete before this |
+| Related | SPEC-NN | [Related SPEC title] | Shared implementation context |
+| Depends | SPEC-NN | [Prerequisite SPEC title] | Must complete before this |
 
 **Tags**:
 ```markdown
-@related-spec: SPEC-NNN
-@depends-spec: SPEC-NNN
+@related-spec: SPEC-NN
+@depends-spec: SPEC-NN
 ```
 
 ---
@@ -354,11 +370,11 @@ Use `@threshold` for ALL quantitative values in SPEC YAML that are:
 ```yaml
 # String value format
 performance:
-  p95_latency_ms: "@threshold: PRD.NNN.perf.api.p95_latency"
+  p95_latency_ms: "@threshold: PRD.NN.perf.api.p95_latency"
 
 # Comment format for documentation
 timeout:
-  request_ms: 5000  # @threshold: PRD.NNN.timeout.request.sync
+  request_ms: 5000  # @threshold: PRD.NN.timeout.request.sync
 ```
 
 **Examples**:
@@ -391,11 +407,11 @@ rate_limit:
 **Valid (registry references)**:
 ```yaml
 performance:
-  p95_latency_ms: "@threshold: PRD.NNN.perf.api.p95_latency"
+  p95_latency_ms: "@threshold: PRD.NN.perf.api.p95_latency"
 timeout:
-  request_ms: "@threshold: PRD.NNN.timeout.request.sync"
+  request_ms: "@threshold: PRD.NN.timeout.request.sync"
 rate_limit:
-  requests_per_second: "@threshold: PRD.NNN.limit.api.requests_per_second"
+  requests_per_second: "@threshold: PRD.NN.limit.api.requests_per_second"
 ```
 
 ### Traceability Integration
@@ -407,7 +423,7 @@ traceability:
   cumulative_tags:
     brd: "BRD.NN.EE.SS"
     prd: "PRD.NN.EE.SS"
-    threshold: "PRD-NNN"  # Registry document reference
+    threshold: "PRD-NN"  # Registry document reference
 ```
 
 ### threshold_references Section
@@ -416,7 +432,7 @@ Add dedicated section for threshold dependencies:
 
 ```yaml
 threshold_references:
-  registry_document: "PRD-NNN"
+  registry_document: "PRD-NN"
   keys_used:
     - perf.api.p95_latency
     - timeout.request.sync
@@ -453,7 +469,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/SPEC/SPEC-NNN_slug.yaml --auto-fix
+python scripts/validate_cross_document.py --document docs/SPEC/SPEC-NN_slug.yaml --auto-fix
 
 # Layer validation (Phase 2) - run when all SPEC documents complete
 python scripts/validate_cross_document.py --layer SPEC --auto-fix
@@ -470,7 +486,7 @@ python scripts/validate_cross_document.py --layer SPEC --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd through @req tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

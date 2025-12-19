@@ -1,5 +1,5 @@
 ---
-doc_id: IMPL-{NNN}
+doc_id: IMPL-{NN}
 section: 0
 title: "{Document Title} - Index"
 total_sections: {N}
@@ -22,13 +22,13 @@ custom_fields:
   index_role: true
 ---
 
-# IMPL-{NNN}.0: {Document Title} - Index
+# IMPL-{NN}.0: {Document Title} - Index
 
 ## Document Overview
 
 | Field | Value |
 |-------|-------|
-| **Document ID** | IMPL-{NNN} |
+| **Document ID** | IMPL-{NN} |
 | **Document Type** | Implementation Approach |
 | **Layer** | 8 - Implementation |
 | **Title** | {Document Title} |
@@ -49,10 +49,10 @@ custom_fields:
 
 | Section | File | Title | Description |
 |---------|------|-------|-------------|
-| 0 | [IMPL-{NNN}.0_index.md](IMPL-{NNN}.0_index.md) | Index | This file - document overview and navigation |
-| 1 | [IMPL-{NNN}.1_{slug1}.md](IMPL-{NNN}.1_{slug1}.md) | {Title 1} | {Description 1} |
-| 2 | [IMPL-{NNN}.2_{slug2}.md](IMPL-{NNN}.2_{slug2}.md) | {Title 2} | {Description 2} |
-| 3 | [IMPL-{NNN}.3_{slug3}.md](IMPL-{NNN}.3_{slug3}.md) | {Title 3} | {Description 3} |
+| 0 | [IMPL-{NN}.0_index.md](IMPL-{NN}.0_index.md) | Index | This file - document overview and navigation |
+| 1 | [IMPL-{NN}.1_{slug1}.md](IMPL-{NN}.1_{slug1}.md) | {Title 1} | {Description 1} |
+| 2 | [IMPL-{NN}.2_{slug2}.md](IMPL-{NN}.2_{slug2}.md) | {Title 2} | {Description 2} |
+| 3 | [IMPL-{NN}.3_{slug3}.md](IMPL-{NN}.3_{slug3}.md) | {Title 3} | {Description 3} |
 
 ---
 
@@ -68,13 +68,13 @@ custom_fields:
 ## Dependencies
 
 ### Upstream References
-- @ref: REQ-{NNN} - Requirements this IMPL implements
-- @ref: ADR-{NNN} - Architecture decisions guiding implementation
+- @ref: REQ-{NN} - Requirements this IMPL implements
+- @ref: ADR-{NN} - Architecture decisions guiding implementation
 
 ### Downstream References
-- @ref: CTR-{NNN} - Contracts formalizing implementation
-- @ref: SPEC-{NNN} - Technical specifications
-- @ref: TASKS-{NNN} - Task breakdown
+- @ref: CTR-{NN} - Contracts formalizing implementation
+- @ref: SPEC-{NN} - Technical specifications
+- @ref: TASKS-{NN} - Task breakdown
 
 ### Cross-Section Dependencies
 - Section 2 depends on Section 1 (core implementation)
@@ -106,8 +106,8 @@ custom_fields:
 
 ## Traceability
 
-- **Original Document**: IMPL-{NNN} (before split)
+- **Original Document**: IMPL-{NN} (before split)
 - **Element ID Range**: IMPL.{NN}.{TT}.01 through IMPL.{NN}.{TT}.{MAX}
-- **Tag Format**: @ref: IMPL-{NNN}.{S} (section reference)
+- **Tag Format**: @ref: IMPL-{NN}.{S} (section reference)
 - **Upstream Trace**: BRD -> PRD -> EARS -> BDD -> ADR -> SYS -> REQ
 - **Downstream Trace**: CTR -> SPEC -> TASKS -> IPLAN

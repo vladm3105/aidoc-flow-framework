@@ -89,7 +89,7 @@ Use `doc-impl` when:
 - Day 11-14: Testing and validation
 
 ### WHAT: Implementation Scope
-**Requirements**: REQ-data-validation-001, REQ-data-validation-002
+**Requirements**: REQ-data-validation-01, REQ-data-validation-02
 **Deliverables**:
 - Data validation service
 - Data processing module
@@ -156,7 +156,7 @@ Use `doc-impl` when:
 ## Dependencies
 
 ### Upstream Dependencies
-- REQ-data-validation-001: Data validation requirements
+- REQ-data-validation-01: Data validation requirements
 - ADR-033: Database technology decision
 - ADR-045: API design pattern
 
@@ -190,8 +190,8 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
@@ -201,7 +201,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
@@ -231,18 +231,18 @@ Examples:
 ```
 
 **Upstream Sources**:
-- [BRD-001](../BRD/BRD-001_platform.md#BRD-001)
-- [PRD-001](../PRD/PRD-001_integration.md#PRD-001)
-- [EARS-001](../EARS/EARS-001_risk.md#EARS-001)
-- [BDD-001](../BDD/BDD-001_limits.feature)
+- [BRD-01](../BRD/BRD-01_platform.md#BRD-01)
+- [PRD-01](../PRD/PRD-01_integration.md#PRD-01)
+- [EARS-01](../EARS/EARS-01_risk.md#EARS-01)
+- [BDD-01](../BDD/BDD-01_limits.feature)
 - [ADR-033](../ADR/ADR-033_database.md#ADR-033)
-- [SYS-001](../SYS/SYS-001_order.md#SYS-001)
-- [REQ-data-validation-001](../REQ/REQ-data-validation-001_*.md)
+- [SYS-01](../SYS/SYS-01_order.md#SYS-01)
+- [REQ-data-validation-01](../REQ/REQ-data-validation-01_*.md)
 
 **Downstream Artifacts**:
-- CTR-NNN (to be created) - Data contracts
-- SPEC-NNN (to be created) - Technical specifications
-- TASKS-NNN (to be created) - Task breakdown
+- CTR-NN (to be created) - Data contracts
+- SPEC-NN (to be created) - Technical specifications
+- TASKS-NN (to be created) - Task breakdown
 ```
 
 ## Upstream/Downstream Artifacts
@@ -263,8 +263,8 @@ Examples:
 - **Code** (Layer 13) - Implementation
 
 **Same-Type Document Relationships** (conditional):
-- `@related-impl: IMPL-NNN` - IMPLs sharing implementation context
-- `@depends-impl: IMPL-NNN` - IMPL that must complete first
+- `@related-impl: IMPL-NN` - IMPLs sharing implementation context
+- `@depends-impl: IMPL-NN` - IMPL that must complete first
 
 ## Creation Process
 
@@ -278,9 +278,9 @@ Check `docs/IMPL/` for next available ID number (templates are in `ai_dev_flow/I
 
 ### Step 3: Create IMPL File
 
-**File naming**: `docs/IMPL/IMPL-NNN_{slug}.md`
+**File naming**: `docs/IMPL/IMPL-NN_{slug}.md`
 
-**Example**: `docs/IMPL/IMPL-001_position_validation.md`
+**Example**: `docs/IMPL/IMPL-01_position_validation.md`
 
 ### Step 4: Fill Document Control Section
 
@@ -323,9 +323,9 @@ Include all 7 upstream tags (@brd through @req).
 ### Step 12: Validate IMPL
 
 ```bash
-./ai_dev_flow/scripts/validate_impl.sh docs/IMPL/IMPL-001_*.md
+./ai_dev_flow/scripts/validate_impl.sh docs/IMPL/IMPL-01_*.md
 
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact IMPL-001 --expected-layers brd,prd,ears,bdd,adr,sys,req --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact IMPL-01 --expected-layers brd,prd,ears,bdd,adr,sys,req --strict
 ```
 
 ### Step 13: Commit Changes
@@ -338,11 +338,11 @@ Commit IMPL file and traceability matrix.
 
 ```bash
 # Quality gates
-./scripts/validate_quality_gates.sh docs/IMPL/IMPL-001_*.md
+./scripts/validate_quality_gates.sh docs/IMPL/IMPL-01_*.md
 
 # Cumulative tagging
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --artifact IMPL-001 \
+  --artifact IMPL-01 \
   --expected-layers brd,prd,ears,bdd,adr,sys,req \
   --strict
 ```
@@ -389,7 +389,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/IMPL/IMPL-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/IMPL/IMPL-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all IMPL documents complete
 python ai_dev_flow/scripts/validate_cross_document.py --layer IMPL --auto-fix
@@ -406,7 +406,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer IMPL --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd/@adr/@sys/@req tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

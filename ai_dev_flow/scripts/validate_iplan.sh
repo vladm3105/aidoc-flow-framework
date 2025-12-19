@@ -23,7 +23,7 @@ NC='\033[0m' # No Color
 
 if [ -z "$IPLAN_FILE" ]; then
   echo "Usage: $0 <IPLAN_FILE>"
-  echo "Example: $0 /opt/data/project/docs/IPLAN/IPLAN-001_gateway_connection.md"
+  echo "Example: $0 /opt/data/project/docs/IPLAN/IPLAN-01_gateway_connection.md"
   exit 1
 fi
 
@@ -47,9 +47,9 @@ echo "-----------------------------------------"
 
 filename=$(basename "$IPLAN_FILE")
 
-# Pattern: IPLAN-NNN_descriptive_slug.md (mandatory format, no timestamps)
-# Per IPLAN_VALIDATION_RULES.md: ^IPLAN-[0-9]{3,4}_[a-z0-9_]+\.md$
-if [[ $filename =~ ^IPLAN-[0-9]{3,4}_[a-z0-9_]+\.md$ ]]; then
+# Pattern: IPLAN-NN_descriptive_slug.md (mandatory format, no timestamps)
+# Per IPLAN_VALIDATION_RULES.md: ^IPLAN-[0-9]{2,}_[a-z0-9_]+\.md$
+if [[ $filename =~ ^IPLAN-[0-9]{2,}_[a-z0-9_]+\.md$ ]]; then
   echo -e "  ${GREEN}✅ Filename format valid: $filename${NC}"
 
   # Extract IPLAN ID
@@ -57,8 +57,8 @@ if [[ $filename =~ ^IPLAN-[0-9]{3,4}_[a-z0-9_]+\.md$ ]]; then
   echo "  IPLAN ID: $IPLAN_ID"
 else
   echo -e "  ${RED}❌ ERROR: Invalid filename format: $filename${NC}"
-  echo "           Expected: IPLAN-NNN_descriptive_slug.md"
-  echo "           Pattern: ^IPLAN-[0-9]{3,4}_[a-z0-9_]+\\.md$"
+  echo "           Expected: IPLAN-NN_descriptive_slug.md"
+  echo "           Pattern: ^IPLAN-[0-9]{2,}_[a-z0-9_]+\\.md$"
   echo "           Rules: lowercase, underscores only, no hyphens in slug, NO timestamps"
   ERRORS=$((ERRORS + 1))
 fi
@@ -284,7 +284,7 @@ echo "CHECK 7: Element ID Format Validation"
 echo "-----------------------------------------"
 
 # Check for deprecated element ID formats
-# Old formats: TYPE-NNN-YY, FR-001, AC-001, QA-001, BC-001, BO-001
+# Old formats: TYPE-NN-YY, FR-001, AC-001, QA-001, BC-001, BO-001
 deprecated_patterns=(
   "^### (FR|QA|AC|BC|BO)-[0-9]{3}:"
   "IPLAN-[0-9]{3}-[0-9]{2}"

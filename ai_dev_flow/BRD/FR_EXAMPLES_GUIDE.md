@@ -54,7 +54,7 @@
 
 **Related Requirements**:
 - Partner Integration: BRD-011 (Recipient Management)
-- Delivery Network: BRD-002 (Paynet Partner Integration)
+- Delivery Network: BRD-02 (Paynet Partner Integration)
 
 **Complexity**: 2/5 (Standard customer data management; requires recipient validation API integration from BRD-011)
 
@@ -101,9 +101,9 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 - Cross-border funding enables EU market expansion without separate infrastructure
 
 **Related Requirements**:
-- Platform: BRD-001 (Platform Architecture), BRD-002 (Partner Ecosystem)
+- Platform: BRD-01 (Platform Architecture), BRD-02 (Partner Ecosystem)
 - Partner Integration: BRD-008 (Wallet Funding via Bridge)
-- Compliance: BRD-003 (Multi-jurisdiction KYC/AML)
+- Compliance: BRD-03 (Multi-jurisdiction KYC/AML)
 
 **Complexity**: 4/5 (Dual-region funding architecture; requires custody provider integration with ACH and SEPA paths; unified wallet balance across currency sources; multi-jurisdiction compliance)
 
@@ -143,7 +143,7 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 - Sanctions list updates: Applied within 24 hours of OFAC publication (regulatory requirement)
 
 **Related Requirements**:
-- Platform: BRD-003 (security & Compliance Framework)
+- Platform: BRD-03 (security & Compliance Framework)
 - AI Agent: BRD-022 (Fraud Detection Agent - ML implementation details)
 - Compliance: BRD-017 (Compliance Monitoring & SAR Generation)
 - KYC: BRD-006 (B2C KYC Onboarding - tiering logic)
@@ -203,7 +203,7 @@ For €200 EUR deposit → $200 USD remittance to Uzbekistan:
 - Audit trail retention: 7 years per FinCEN recordkeeping requirements
 
 **Related Requirements**:
-- Platform: BRD-003 (security & Compliance Framework)
+- Platform: BRD-03 (security & Compliance Framework)
 - Compliance: BRD-017 (Compliance Monitoring & SAR Generation)
 
 **Complexity**: 2/5 (Standard sanctions screening integration; requires compliance workflow for manual review queue)
@@ -417,16 +417,16 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 **Format**:
 ```markdown
 **Related Requirements**:
-- Platform: BRD-001 (Platform Architecture), BRD-002 (Partner Ecosystem)
+- Platform: BRD-01 (Platform Architecture), BRD-02 (Partner Ecosystem)
 - Partner Integration: BRD-008 (Wallet Funding via Bridge), BRD-011 (Recipient Management)
-- Compliance: BRD-003 (security & Compliance Framework), BRD-017 (Compliance Monitoring)
+- Compliance: BRD-03 (security & Compliance Framework), BRD-017 (Compliance Monitoring)
 - AI Agent: BRD-022 (Fraud Detection Agent - ML implementation details)
 ```
 
 **Category Definitions**:
 | Category | BRD Range | Purpose |
 |----------|-----------|---------|
-| Platform | BRD-001 through BRD-005 | Core platform capabilities |
+| Platform | BRD-01 through BRD-005 | Core platform capabilities |
 | Partner Integration | BRD-006 through BRD-015 | External partner integrations |
 | Compliance | BRD-016 through BRD-020 | Regulatory and compliance |
 | AI Agent | BRD-021 through BRD-030 | AI/ML agent capabilities |
@@ -568,7 +568,7 @@ See the following BRDs for examples of business-level FRs that achieved perfect 
 - FRs structured with Business Capability → Business Requirements → Business Rules → Business Acceptance Criteria
 - All technical implementation details deferred to PRD references
 - Complexity ratings include business-level rationale (partner count, regulatory scope)
-- Cross-references to Platform BRDs (BRD-001 through BRD-005) for traceability
+- Cross-references to Platform BRDs (BRD-01 through BRD-005) for traceability
 
 ---
 

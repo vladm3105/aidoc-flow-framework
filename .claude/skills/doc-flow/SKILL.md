@@ -229,11 +229,11 @@ strategy/ (WHAT - Product Owner Voice)
 **Implementation Documentation**: Requirements, architecture, specifications
 
 - `docs/BRD/` - Business Requirements Documents
-  - **Nested folder structure**: `docs/BRD/BRD-NNN/BRD-NNN.S_slug.md`
+  - **Nested folder structure**: `docs/BRD/BRD-NN/BRD-NN.S_slug.md`
 - `docs/PRD/` - Product Requirements Documents
-  - **Nested folder structure**: `docs/PRD/PRD-NNN/PRD-NNN.S_slug.md`
+  - **Nested folder structure**: `docs/PRD/PRD-NN/PRD-NN.S_slug.md`
 - `docs/ADR/` - Architecture Decision Records (HOW)
-  - **Nested folder structure**: `docs/ADR/ADR-NNN/ADR-NNN.S_slug.md`
+  - **Nested folder structure**: `docs/ADR/ADR-NN/ADR-NN.S_slug.md`
 - `docs/BDD/` - BDD acceptance tests (Behavior-Driven Development)
 - `docs/CTR/` - API Contracts (dual-file format: .md + .yaml)
 - `docs/IMPL/` - Implementation Plans (Project Management: WHO/WHEN)
@@ -402,11 +402,11 @@ This document contains:
 **Quality Gates Validation:**
 ```bash
 # Validate artifact meets layer transition requirements (≥90%)
-./scripts/validate_quality_gates.sh docs/REQ/risk/lim/REQ-003.md
+./scripts/validate_quality_gates.sh docs/REQ/risk/lim/REQ-03.md
 
 # Artifact-specific validation
-./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-001.md
-./ai_dev_flow/scripts/validate_req_template.sh docs/REQ/api/ib/REQ-002.md
+./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-01.md
+./ai_dev_flow/scripts/validate_req_template.sh docs/REQ/api/ib/REQ-02.md
 
 # Link integrity validation
 ./ai_dev_flow/scripts/validate_links.py --path docs/ --check-anchors
@@ -470,7 +470,7 @@ LOOP:
 | Issue | Fix Action |
 |-------|------------|
 | Missing cumulative tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

@@ -225,7 +225,7 @@ Reference guide for infrastructure components and deployment architecture...
 | Validation | Full (blocking) | Minimal (4 checks only) |
 | Quality Gates | Must pass | Exempt |
 | Workflow Position | Defined layer | No layer |
-| Numbering | TYPE-NNN | {TYPE}-REF-NNN |
+| Numbering | TYPE-NN | {TYPE}-REF-NNN |
 | Valid Parent Types | All artifact types | **BRD and ADR only** |
 
 ## Related Resources

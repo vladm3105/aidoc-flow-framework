@@ -14,7 +14,7 @@ custom_fields:
   priority: primary
   development_status: active
   skill_category: utility
-  upstream_artifacts: [PRD-000, ADR-000]
+  upstream_artifacts: [PRD-00, ADR-000]
   downstream_artifacts: []
 ---
 
@@ -47,7 +47,7 @@ Guide users through the SDD workflow by determining current position, recommendi
 | Input | Type | Required | Description |
 |-------|------|----------|-------------|
 | project_root | string | Yes | Root path of project to analyze |
-| completed_artifact | string | No | ID of just-completed artifact (e.g., PRD-000) |
+| completed_artifact | string | No | ID of just-completed artifact (e.g., PRD-00) |
 | focus_area | string | No | Optional filter: "core-workflow", "quality", "planning" |
 
 ## Skill Workflow
@@ -79,12 +79,12 @@ project_state:
       total: 3
       approved: 2
       draft: 1
-      latest: BRD-003
+      latest: BRD-03
     PRD:
       total: 2
       approved: 1
       draft: 1
-      latest: PRD-000
+      latest: PRD-00
     EARS:
       total: 0
     # ... etc
@@ -199,7 +199,7 @@ Determine mandatory next artifacts:
 **Dependency Analysis**:
 ```yaml
 dependency_graph:
-  PRD-000:
+  PRD-00:
     completed: true
     downstream_required:
       - EARS (Layer 3) - formal requirements
@@ -209,7 +209,7 @@ dependency_graph:
 
   EARS (to be created):
     upstream_required:
-      - PRD-000 ✓ (completed)
+      - PRD-00 ✓ (completed)
     will_enable:
       - BDD (Layer 4)
       - ADR (Layer 5)
@@ -253,17 +253,17 @@ parallel_opportunities:
 parallel_opportunities:
   can_parallelize:
     - track: "Feature A"
-      current: EARS-001
-      parallel: "Start BDD-001 scenarios for EARS-001 requirements"
+      current: EARS-01
+      parallel: "Start BDD-01 scenarios for EARS-01 requirements"
 
     - track: "Feature B"
-      current: PRD-000 complete
-      parallel: "Start EARS-002 while Feature A progresses"
+      current: PRD-00 complete
+      parallel: "Start EARS-02 while Feature A progresses"
 
   blocked_parallelization:
     - item: "SPEC creation"
       blocker: "REQ layer incomplete"
-      unblock_by: "Complete REQ-001 through REQ-005"
+      unblock_by: "Complete REQ-01 through REQ-05"
 ```
 
 ### Step 5: Calculate Progress Metrics
@@ -317,7 +317,7 @@ Provide actionable next-step guidance:
 ```yaml
 recommendations:
   context:
-    completed_artifact: PRD-000
+    completed_artifact: PRD-00
     workflow_position: Layer 2 complete
     progress: 17%
 
@@ -326,7 +326,7 @@ recommendations:
       action: "Create EARS document"
       artifact_type: EARS
       skill: doc-ears
-      rationale: "Required downstream from PRD-000. EARS formalizes product features into WHEN-THE-SHALL requirements."
+      rationale: "Required downstream from PRD-00. EARS formalizes product features into WHEN-THE-SHALL requirements."
       estimated_effort: "Medium (2-4 hours)"
       blocks: [BDD, ADR]
 
@@ -347,7 +347,7 @@ recommendations:
       condition: "After BDD progress"
 
   parallel_opportunities:
-    - "Feature B: Start PRD-003 while Feature A progresses through EARS/BDD"
+    - "Feature B: Start PRD-03 while Feature A progresses through EARS/BDD"
     - "Technical: Draft ADRs for known architecture decisions"
 
   blocked_items:
@@ -356,12 +356,12 @@ recommendations:
       unblock_path: "Complete layers 3-7 first"
 
   workflow_guidance:
-    current_focus: "EARS creation for PRD-000 features"
+    current_focus: "EARS creation for PRD-00 features"
     short_term: "Complete EARS → BDD → ADR sequence"
     medium_term: "Progress through SYS → REQ → SPEC"
 
   progress_summary:
-    completed: "BRD-001, BRD-002, BRD-003, PRD-001, PRD-000"
+    completed: "BRD-01, BRD-02, BRD-03, PRD-01, PRD-00"
     in_progress: "None"
     next_milestone: "Complete Layer 3 (EARS)"
     overall: "17% complete (2/12 layers)"
@@ -371,16 +371,16 @@ recommendations:
 
 ### Example 1: Post-PRD Guidance
 
-**User Request**: "I just finished PRD-000, what should I do next?"
+**User Request**: "I just finished PRD-00, what should I do next?"
 
 **Workflow Recommendations**:
 ```yaml
-completed: PRD-000
+completed: PRD-00
 position: Layer 2 complete
 
 next_steps:
-  1. Create EARS-001 (P0)
-     - Formalize PRD-000 features into WHEN-THE-SHALL requirements
+  1. Create EARS-01 (P0)
+     - Formalize PRD-00 features into WHEN-THE-SHALL requirements
      - Run: /skill doc-ears
 
   2. Start BDD scenarios (P1)
@@ -486,7 +486,7 @@ sequential_requirements:
 
 | Source | Type | Reference |
 |--------|------|-----------|
-| PRD-000 | Product Requirements | [PRD-000]({project_root}/ai_dev_flow/PRD/PRD-000_ai_assisted_documentation_features.md#PRD-000) |
+| PRD-00 | Product Requirements | [PRD-00]({project_root}/ai_dev_flow/PRD/PRD-00_ai_assisted_documentation_features.md#PRD-00) |
 | ADR-000 | Architecture Decision | [ADR-000]({project_root}/ai_dev_flow/ADR/ADR-000_ai_powered_documentation_assistant_architecture.md#ADR-000) |
 
 ### Downstream Artifacts

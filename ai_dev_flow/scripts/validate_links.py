@@ -95,7 +95,7 @@ def validate_link(source_file, link_text, link_path):
                         anchor_found = True
 
                     # Format 6: Generated from header (convert header to anchor)
-                    # Headers like "## BRD-001" become #brd-001
+                    # Headers like "## BRD-01" become #brd-001
                     header_pattern = f'#+ {anchor_part.replace("-", "[- ]")}'
                     if re.search(header_pattern, target_content, re.IGNORECASE):
                         anchor_found = True

@@ -424,7 +424,7 @@ mypy --strict contracts/your_contracts.py
 
 ## 7. ROI Quick Reference
 
-### Quantified Benefits (from TASKS-001 analysis)
+### Quantified Benefits (from TASKS-01 analysis)
 
 **Development Speed**:
 - Sequential: 11.5 weeks
@@ -551,7 +551,7 @@ except ValidationError as e:
 
 **With Role**:
 ```yaml
-@icon: TASKS-001:ServiceConnector
+@icon: TASKS-01:ServiceConnector
 @icon-role: provider
 ```
 
@@ -562,23 +562,23 @@ except ValidationError as e:
 
 ### Usage Examples
 
-**Provider** (in TASKS-001):
+**Provider** (in TASKS-01):
 ```markdown
 ## 8. Implementation Contracts
-@icon: TASKS-001:ServiceConnector
+@icon: TASKS-01:ServiceConnector
 @icon-role: provider
 ```
 
-**Consumer** (in TASKS-002):
+**Consumer** (in TASKS-02):
 ```markdown
 ## 3. Dependencies
-@icon: TASKS-001:ServiceConnector
+@icon: TASKS-01:ServiceConnector
 @icon-role: consumer
 ```
 
 **Code Comment**:
 ```python
-# @icon: TASKS-001:ServiceConnector
+# @icon: TASKS-01:ServiceConnector
 # @icon-role: provider
 class ServiceConnector(Protocol):
     ...

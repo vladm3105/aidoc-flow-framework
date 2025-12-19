@@ -81,7 +81,7 @@ Use `doc-bdd` when:
 ```gherkin
 Feature: Position Risk Limit Validation
 
-  @requirement:REQ-003
+  @requirement:REQ-03
   @adr:ADR-033
   Scenario: Reject trade when position limit exceeded
     Given the current portfolio delta is 0.45
@@ -138,7 +138,7 @@ Feature: [Feature Name]
 
 **Example**:
 ```gherkin
-@requirement:REQ-003
+@requirement:REQ-03
 @adr:ADR-033
 @priority:P0
 @type:smoke
@@ -241,8 +241,8 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
@@ -252,7 +252,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
@@ -295,8 +295,8 @@ Examples:
 - **Code** (Layer 13) - Implementation that passes these tests
 
 **Same-Type Document Relationships** (conditional):
-- `@related-bdd: BDD-NNN` - BDD features sharing test context
-- `@depends-bdd: BDD-NNN` - BDD that must pass before this one
+- `@related-bdd: BDD-NN` - BDD features sharing test context
+- `@depends-bdd: BDD-NN` - BDD that must pass before this one
 
 ## Creation Process
 
@@ -306,13 +306,13 @@ Read BRD, PRD, and EARS to understand requirements to test.
 
 ### Step 2: Reserve ID Number
 
-Check `docs/BDD/` for next available ID number (e.g., BDD-001, BDD-002).
+Check `docs/BDD/` for next available ID number (e.g., BDD-01, BDD-02).
 
 ### Step 3: Create BDD Feature File
 
-**File naming**: `docs/BDD/BDD-NNN_{slug}.feature`
+**File naming**: `docs/BDD/BDD-NN_{slug}.feature`
 
-**Example**: `docs/BDD/BDD-001_position_limits.feature`
+**Example**: `docs/BDD/BDD-01_position_limits.feature`
 
 ### Step 4: Add Feature Description
 
@@ -347,7 +347,7 @@ Scenario: Reject trade exceeding limit
 
 ### Step 7: Create Companion Documentation (Optional)
 
-Create `docs/BDD/BDD-NNN_{slug}.md` with:
+Create `docs/BDD/BDD-NN_{slug}.md` with:
 - Document Control section
 - Feature overview
 - Test execution instructions
@@ -361,10 +361,10 @@ Create `docs/BDD/BDD-NNN_{slug}.md` with:
 
 ```bash
 # BDD validation (using cross-document validator)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/BDD/BDD-001_*.feature --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/BDD/BDD-01_*.feature --auto-fix
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact BDD-001 --expected-layers brd,prd,ears --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact BDD-01 --expected-layers brd,prd,ears --strict
 ```
 
 ### Step 10: Commit Changes
@@ -377,14 +377,14 @@ Commit BDD feature file and traceability matrix.
 
 ```bash
 # Quality gates
-./scripts/validate_quality_gates.sh docs/BDD/BDD-001_limits.feature
+./scripts/validate_quality_gates.sh docs/BDD/BDD-01_limits.feature
 
 # Gherkin syntax validation
-cucumber --dry-run docs/BDD/BDD-001_limits.feature
+cucumber --dry-run docs/BDD/BDD-01_limits.feature
 
 # Tag validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --artifact BDD-001 \
+  --artifact BDD-01 \
   --expected-layers brd,prd,ears \
   --strict
 ```
@@ -431,7 +431,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/BDD/BDD-NNN_slug.feature --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/BDD/BDD-NN_slug.feature --auto-fix
 
 # Layer validation (Phase 2) - run when all BDD documents complete
 python ai_dev_flow/scripts/validate_cross_document.py --layer BDD --auto-fix
@@ -448,7 +448,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer BDD --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

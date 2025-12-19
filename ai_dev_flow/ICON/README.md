@@ -45,7 +45,7 @@ grep -r "@icon-role: provider" docs/TASKS/ | grep "ICON-XXX"
 grep -r "@icon-role: consumer" docs/TASKS/ | grep "ICON-XXX" | wc -l
 
 # Check no orphaned ICON files
-for icon in ICON-001 ICON-002 ICON-003; do
+for icon in ICON-01 ICON-02 ICON-03; do
   count=$(grep -r "@icon: $icon" docs/TASKS/ | wc -l)
   if [ $count -eq 0 ]; then
     echo "ERROR: $icon is orphaned (0 TASKS references)"
@@ -76,7 +76,7 @@ done
 | **ICON_CREATION_RULES.md** | Decision framework for ICON vs embedded |
 | **README.md** | This file - directory overview |
 
-**Contract Files**: `ICON-NNN_descriptive_name.md` (created as needed)
+**Contract Files**: `ICON-NN_descriptive_name.md` (created as needed)
 
 ---
 
@@ -155,17 +155,17 @@ done
 ```markdown
 ## 8. Implementation Contracts
 
-@icon: ICON-001:ServiceConnector
+@icon: ICON-01:ServiceConnector
 @icon-role: provider
 
-See [ICON-001_service_connector.md](../../ai_dev_flow/ICON/ICON-001_service_connector.md)
+See [ICON-01_service_connector.md](../../ai_dev_flow/ICON/ICON-01_service_connector.md)
 ```
 
 **Consumer TASKS** (depends on contract):
 ```markdown
 ## 3. Dependencies
 
-@icon: ICON-001:ServiceConnector
+@icon: ICON-01:ServiceConnector
 @icon-role: consumer
 
 Requires ServiceConnector protocol for service connections.
@@ -185,7 +185,7 @@ Requires ServiceConnector protocol for service connections.
 | **Missing YAML** | No frontmatter in ICON file | Copy lines 1-15 from ICON-TEMPLATE.md | ICON_ERROR_RECOVERY.md §2.4 |
 | **Incomplete Sections** | < 10 sections in ICON | Use ICON-TEMPLATE.md checklist | ICON_ERROR_RECOVERY.md §2.5 |
 | **Pre-Flight Fail** | Script exits with error | Fix TASKS files before creating ICON | ICON_CREATION_RULES.md §4.1 |
-| **No Mock Template** | Protocol without section 6 | Add mock from ICON-001 example | ICON-TEMPLATE.md §6 |
+| **No Mock Template** | Protocol without section 6 | Add mock from ICON-01 example | ICON-TEMPLATE.md §6 |
 
 ### Validation Script Debugging
 
@@ -226,17 +226,17 @@ Requires ServiceConnector protocol for service connections.
 
 ## File Naming Convention
 
-**Format**: `ICON-NNN_descriptive_name.md`
+**Format**: `ICON-NN_descriptive_name.md`
 
 **Rules**:
-- **ICON-NNN**: Sequential numbering starting from 001
+- **ICON-NN**: Sequential numbering starting from 01
 - **descriptive_name**: Lowercase with underscores
 - **Extension**: Always `.md`
 
 **Examples**:
-- `ICON-001_service_connector_protocol.md`
-- `ICON-002_data_event_bus.md`
-- `ICON-003_request_execution_exceptions.md`
+- `ICON-01_service_connector_protocol.md`
+- `ICON-02_data_event_bus.md`
+- `ICON-03_request_execution_exceptions.md`
 - `ICON-004_resource_state_machine.md`
 
 ---
@@ -247,17 +247,17 @@ Requires ServiceConnector protocol for service connections.
 
 **Contract Definition**:
 ```yaml
-@icon: ICON-NNN:ContractName
+@icon: ICON-NN:ContractName
 ```
 
 **With Role** (in TASKS files):
 ```yaml
-@icon: ICON-001:GatewayConnector
+@icon: ICON-01:GatewayConnector
 @icon-role: provider
 ```
 
 ```yaml
-@icon: ICON-001:GatewayConnector
+@icon: ICON-01:GatewayConnector
 @icon-role: consumer
 ```
 
@@ -286,14 +286,14 @@ Think of ICON contracts like a **power outlet standard**:
 
 ```mermaid
 flowchart TB
-    subgraph ICON["ICON-001: ServiceConnector Protocol"]
+    subgraph ICON["ICON-01: ServiceConnector Protocol"]
         direction TB
         I1["async def connect(host, port, client_id)"]
         I2["async def disconnect()"]
         I3["property: state, is_connected"]
     end
 
-    subgraph Provider["TASKS-001 (Provider)"]
+    subgraph Provider["TASKS-01 (Provider)"]
         direction TB
         P1["@icon-role: provider"]
         P2["Writes actual implementation"]
@@ -302,7 +302,7 @@ flowchart TB
 
     subgraph Consumers["Consumers"]
         direction TB
-        subgraph C1["TASKS-003"]
+        subgraph C1["TASKS-03"]
             C1a["@icon-role: consumer"]
             C1b["DataStreamService"]
         end
@@ -310,7 +310,7 @@ flowchart TB
             C2a["@icon-role: consumer"]
             C2b["RequestExecutionService"]
         end
-        subgraph C3["TASKS-005"]
+        subgraph C3["TASKS-05"]
             C3a["@icon-role: consumer"]
             C3b["ResourceService"]
         end
@@ -333,11 +333,11 @@ flowchart TB
 
 **TASKS Reference Example**:
 ```markdown
-# TASKS-001: Service Connector
+# TASKS-01: Service Connector
 
 ## 8.1 Contracts Provided
 
-@icon: ICON-001:ServiceConnector
+@icon: ICON-01:ServiceConnector
 @icon-role: provider
 
 This TASKS implements the ServiceConnector protocol.
@@ -369,11 +369,11 @@ class RealServiceConnector:
 
 **TASKS Reference Example**:
 ```markdown
-# TASKS-003: Data Stream Service
+# TASKS-03: Data Stream Service
 
 ## 8.2 Contracts Consumed
 
-@icon: ICON-001:ServiceConnector
+@icon: ICON-01:ServiceConnector
 @icon-role: consumer
 
 Requires ServiceConnector for data subscriptions.
@@ -411,16 +411,16 @@ gantt
     title Development Timeline Comparison
     dateFormat  YYYY-MM-DD
     section Without Contracts
-    TASKS-001 Provider      :a1, 2025-01-01, 14d
-    TASKS-003 Consumer      :a2, after a1, 7d
+    TASKS-01 Provider      :a1, 2025-01-01, 14d
+    TASKS-03 Consumer      :a2, after a1, 7d
     TASKS-004 Consumer      :a3, after a2, 7d
-    TASKS-005 Consumer      :a4, after a3, 7d
+    TASKS-05 Consumer      :a4, after a3, 7d
     section With Contracts
-    Define ICON-001         :b1, 2025-01-01, 2d
-    TASKS-001 Provider      :b2, after b1, 14d
-    TASKS-003 Consumer      :b3, after b1, 14d
+    Define ICON-01         :b1, 2025-01-01, 2d
+    TASKS-01 Provider      :b2, after b1, 14d
+    TASKS-03 Consumer      :b3, after b1, 14d
     TASKS-004 Consumer      :b4, after b1, 14d
-    TASKS-005 Consumer      :b5, after b1, 14d
+    TASKS-05 Consumer      :b5, after b1, 14d
     Integration             :b6, after b2, 2d
 ```
 
@@ -431,9 +431,9 @@ gantt
 
 ```mermaid
 sequenceDiagram
-    participant ICON as ICON-001 Contract
-    participant Provider as TASKS-001 (Provider)
-    participant Consumer1 as TASKS-003 (Consumer)
+    participant ICON as ICON-01 Contract
+    participant Provider as TASKS-01 (Provider)
+    participant Consumer1 as TASKS-03 (Consumer)
     participant Consumer2 as TASKS-004 (Consumer)
 
     Note over ICON: Week 1: Define Contract
@@ -457,16 +457,16 @@ sequenceDiagram
 
 ```bash
 # Verify exactly 1 provider exists
-grep -r "@icon-role: provider" docs/TASKS/ | grep "ICON-001"
+grep -r "@icon-role: provider" docs/TASKS/ | grep "ICON-01"
 
 # Count consumers (should be N)
-grep -r "@icon-role: consumer" docs/TASKS/ | grep "ICON-001" | wc -l
+grep -r "@icon-role: consumer" docs/TASKS/ | grep "ICON-01" | wc -l
 
 # Total references should equal 1 provider + N consumers
-grep -r "@icon: ICON-001" docs/TASKS/ | wc -l
+grep -r "@icon: ICON-01" docs/TASKS/ | wc -l
 
 # Validate no orphaned ICON (must have provider + at least 1 consumer)
-for icon in ICON-001 ICON-002; do
+for icon in ICON-01 ICON-02; do
   provider=$(grep -r "@icon-role: provider" docs/TASKS/ | grep "$icon" | wc -l)
   consumers=$(grep -r "@icon-role: consumer" docs/TASKS/ | grep "$icon" | wc -l)
   echo "$icon: $provider provider(s), $consumers consumer(s)"

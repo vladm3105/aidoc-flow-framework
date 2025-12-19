@@ -86,8 +86,8 @@ Use `doc-ctr` when:
 
 **Example**:
 ```
-ai_dev_flow/CTR/CTR-001_data_validation.md
-ai_dev_flow/CTR/CTR-001_data_validation.yaml
+ai_dev_flow/CTR/CTR-01_data_validation.md
+ai_dev_flow/CTR/CTR-01_data_validation.yaml
 ```
 
 ### 2. Required Sections (Markdown File)
@@ -370,8 +370,8 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
@@ -381,7 +381,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
@@ -441,8 +441,8 @@ Examples:
 - **Code** (Layer 13) - Implementation
 
 **Same-Type Document Relationships** (conditional):
-- `@related-ctr: CTR-NNN` - CTRs sharing API context
-- `@depends-ctr: CTR-NNN` - CTR that must be completed first
+- `@related-ctr: CTR-NN` - CTRs sharing API context
+- `@depends-ctr: CTR-NN` - CTR that must be completed first
 
 ## Creation Process
 
@@ -456,12 +456,12 @@ Check `ai_dev_flow/CTR/` for next available ID number.
 
 ### Step 3: Create CTR Files (Dual Format)
 
-**Markdown file**: `ai_dev_flow/CTR/CTR-NNN_{slug}.md`
-**YAML file**: `ai_dev_flow/CTR/CTR-NNN_{slug}.yaml`
+**Markdown file**: `ai_dev_flow/CTR/CTR-NN_{slug}.md`
+**YAML file**: `ai_dev_flow/CTR/CTR-NN_{slug}.yaml`
 
 **Example**:
-- `ai_dev_flow/CTR/CTR-001_data_validation.md`
-- `ai_dev_flow/CTR/CTR-001_data_validation.yaml`
+- `ai_dev_flow/CTR/CTR-01_data_validation.md`
+- `ai_dev_flow/CTR/CTR-01_data_validation.yaml`
 
 ### Step 4: Fill Document Control Section (Markdown)
 
@@ -502,13 +502,13 @@ Include all 7-8 upstream tags (@brd through @req/impl).
 
 ```bash
 # YAML schema validation
-yamllint ai_dev_flow/CTR/CTR-001_*.yaml
+yamllint ai_dev_flow/CTR/CTR-01_*.yaml
 
 # OpenAPI validation
-openapi-spec-validator ai_dev_flow/CTR/CTR-001_*.yaml
+openapi-spec-validator ai_dev_flow/CTR/CTR-01_*.yaml
 
 # Cumulative tagging
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact CTR-001 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact CTR-01 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl --strict
 ```
 
 ### Step 13: Commit Changes
@@ -521,20 +521,20 @@ Commit both files (.md and .yaml) and traceability matrix.
 
 ```bash
 # Quality gates
-scripts/validate_quality_gates.sh ai_dev_flow/CTR/CTR-001_*.md
+scripts/validate_quality_gates.sh ai_dev_flow/CTR/CTR-01_*.md
 
 # YAML validation
-yamllint ai_dev_flow/CTR/CTR-001_*.yaml
+yamllint ai_dev_flow/CTR/CTR-01_*.yaml
 
 # OpenAPI validation (if using OpenAPI)
-openapi-spec-validator ai_dev_flow/CTR/CTR-001_*.yaml
+openapi-spec-validator ai_dev_flow/CTR/CTR-01_*.yaml
 
 # CTR-specific validation (includes dual-file check)
-./ai_dev_flow/scripts/validate_ctr.sh CTR-001
+./ai_dev_flow/scripts/validate_ctr.sh CTR-01
 
 # Cumulative tagging
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --artifact CTR-001 \
+  --artifact CTR-01 \
   --expected-layers brd,prd,ears,bdd,adr,sys,req,impl \
   --strict
 ```
@@ -581,7 +581,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/CTR/CTR-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/CTR/CTR-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all CTR documents complete
 python ai_dev_flow/scripts/validate_cross_document.py --layer CTR --auto-fix
@@ -598,7 +598,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer CTR --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing upstream tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

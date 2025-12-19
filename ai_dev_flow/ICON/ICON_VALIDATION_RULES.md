@@ -54,7 +54,7 @@ Rules for validating Implementation Contracts (ICON) documents in the SDD framew
 ### Pattern
 
 ```regex
-^ICON-[0-9]{3,4}_[a-z0-9_]+\.md$
+^ICON-[0-9]{2,}_[a-z0-9_]+\.md$
 ```
 
 ### Rules
@@ -62,7 +62,7 @@ Rules for validating Implementation Contracts (ICON) documents in the SDD framew
 | Rule | Check | Error Level |
 |------|-------|-------------|
 | ICON prefix | Must start with "ICON-" | ERROR |
-| ID format | NNN or NNNN digits | ERROR |
+| ID format | NN or NNN digits | ERROR |
 | Slug format | lowercase, underscores only | ERROR |
 | Extension | .md only | ERROR |
 
@@ -70,11 +70,11 @@ Rules for validating Implementation Contracts (ICON) documents in the SDD framew
 
 | Filename | Valid | Reason |
 |----------|-------|--------|
-| `ICON-001_gateway_connector_protocol.md` | ✅ | Correct format |
+| `ICON-01_gateway_connector_protocol.md` | ✅ | Correct format |
 | `icon-001_gateway_connector.md` | ❌ | Lowercase prefix |
 | `ICON-1_gateway_connector.md` | ❌ | Single digit ID |
-| `ICON-001-gateway-connector.md` | ❌ | Hyphens in slug |
-| `ICON-001_gateway_connector.yaml` | ❌ | Wrong extension |
+| `ICON-01-gateway-connector.md` | ❌ | Hyphens in slug |
+| `ICON-01_gateway_connector.yaml` | ❌ | Wrong extension |
 
 ---
 
@@ -84,12 +84,12 @@ Rules for validating Implementation Contracts (ICON) documents in the SDD framew
 
 | Field | Type | Required | Validation |
 |-------|------|----------|------------|
-| title | string | Yes | Must match "ICON-NNN: [Name]" |
+| title | string | Yes | Must match "ICON-NN: [Name]" |
 | tags | array | Yes | Must include layer-11-artifact |
 | custom_fields.artifact_type | string | Yes | Must equal "ICON" |
 | custom_fields.layer | integer | Yes | Must equal 11 |
 | custom_fields.contract_type | string | Yes | Valid enum value |
-| custom_fields.provider_tasks | string | Yes | TASKS-NNN format |
+| custom_fields.provider_tasks | string | Yes | TASKS-NN format |
 
 ### Contract Type Enum
 
@@ -132,15 +132,15 @@ fi
 
 | Field | Required | Format |
 |-------|----------|--------|
-| Contract ID | Yes | ICON-NNN |
+| Contract ID | Yes | ICON-NN |
 | Contract Name | Yes | Non-empty string |
 | Version | Yes | X.Y.Z (semantic) |
 | Status | Yes | Draft/Active/Deprecated |
 | Created | Yes | YYYY-MM-DD |
 | Last Updated | Yes | YYYY-MM-DD |
 | Author | Yes | Non-empty string |
-| Provider | Yes | TASKS-NNN reference |
-| Consumers | Yes | List of TASKS-NNN or "None" |
+| Provider | Yes | TASKS-NN reference |
+| Consumers | Yes | List of TASKS-NN or "None" |
 
 ### Validation Rules
 
@@ -270,7 +270,7 @@ fi
 
 | Tag Pattern | Description | Validation |
 |-------------|-------------|------------|
-| `@icon: ICON-NNN:ContractName` | Contract reference | Required in TASKS |
+| `@icon: ICON-NN:ContractName` | Contract reference | Required in TASKS |
 | `@icon-role: provider` | Implements contract | Exactly 1 per ICON |
 | `@icon-role: consumer` | Uses contract | 0 or more per ICON |
 
@@ -298,21 +298,21 @@ echo "INFO: Found $consumer_count consumer(s)"
 
 | Tag | Required | Format |
 |-----|----------|--------|
-| @brd | Yes | BRD.NN.EE.SS (sub-ID) or BRD-NNN (doc-level) |
-| @prd | Yes | PRD.NN.EE.SS (sub-ID) or PRD-NNN (doc-level) |
+| @brd | Yes | BRD.NN.EE.SS (sub-ID) or BRD-NN (doc-level) |
+| @prd | Yes | PRD.NN.EE.SS (sub-ID) or PRD-NN (doc-level) |
 | @ears | Yes | EARS.NN.EE.SS |
-| @bdd | Yes | BDD.NN.EE.SS (sub-ID) or BDD-NNN (doc-level) |
-| @adr | Yes | ADR-NNN |
-| @sys | Yes | SYS.NN.EE.SS (sub-ID) or SYS-NNN (doc-level) |
-| @req | Yes | REQ.NN.EE.SS (sub-ID) or REQ-NNN (doc-level) |
-| @spec | Yes | SPEC.NN.EE.SS (sub-ID) or SPEC-NNN (doc-level) |
+| @bdd | Yes | BDD.NN.EE.SS (sub-ID) or BDD-NN (doc-level) |
+| @adr | Yes | ADR-NN |
+| @sys | Yes | SYS.NN.EE.SS (sub-ID) or SYS-NN (doc-level) |
+| @req | Yes | REQ.NN.EE.SS (sub-ID) or REQ-NN (doc-level) |
+| @spec | Yes | SPEC.NN.EE.SS (sub-ID) or SPEC-NN (doc-level) |
 
 ### Optional Tags
 
 | Tag | Required | Format |
 |-----|----------|--------|
-| @impl | Conditional | IMPL-NNN (if project uses IMPL) |
-| @ctr | Conditional | CTR-NNN (if contracts defined) |
+| @impl | Conditional | IMPL-NN (if project uses IMPL) |
+| @ctr | Conditional | CTR-NN (if contracts defined) |
 
 ### Validation Commands
 
@@ -476,8 +476,8 @@ fi
 
 ```bash
 ./scripts/validate_icon.sh --help
-./scripts/validate_icon.sh --verbose ICON-001.md
-./scripts/validate_icon.sh --strict ICON-001.md  # Treat warnings as errors
+./scripts/validate_icon.sh --verbose ICON-01.md
+./scripts/validate_icon.sh --strict ICON-01.md  # Treat warnings as errors
 ```
 
 ### Output Format
@@ -486,7 +486,7 @@ fi
 =========================================
 ICON Validation Report
 =========================================
-File: ICON-001_gateway_connector_protocol.md
+File: ICON-01_gateway_connector_protocol.md
 Version: 1.0.0
 
 CHECK 1: Filename Format

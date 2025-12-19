@@ -141,18 +141,18 @@ Validate any document against its schema:
 
 ```bash
 # Validate a single document
-python ai_dev_flow/scripts/validate_artifact.py docs/PRD/PRD-001_example.md
+python ai_dev_flow/scripts/validate_artifact.py docs/PRD/PRD-01_example.md
 
 # Verbose output with details
-python ai_dev_flow/scripts/validate_artifact.py docs/PRD/PRD-001_example.md --verbose
+python ai_dev_flow/scripts/validate_artifact.py docs/PRD/PRD-01_example.md --verbose
 
 # Strict mode (treat warnings as errors)
-python ai_dev_flow/scripts/validate_artifact.py docs/PRD/PRD-001_example.md --strict
+python ai_dev_flow/scripts/validate_artifact.py docs/PRD/PRD-01_example.md --strict
 ```
 
 **Output Example**:
 ```
-  docs/PRD/PRD-001_example.md
+  docs/PRD/PRD-01_example.md
    Artifact Type: PRD
    Schema: PRD_SCHEMA.yaml
    Layer: 2

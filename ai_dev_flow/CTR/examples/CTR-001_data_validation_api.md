@@ -208,7 +208,7 @@ Synchronous REST-style request/response contract for data validation. Provider a
 # PART 4: Traceability
 
 ## Upstream Requirements
-- **REQ-003**: Data Quality Thresholds
+- **REQ-03**: Data Quality Thresholds
 - **REQ-005**: Validation Rule Configuration
 - **REQ-008**: Quality Score Calculation
 
@@ -217,7 +217,7 @@ Synchronous REST-style request/response contract for data validation. Provider a
 - **ADR-020**: Data Validation Service Architecture
 
 ## Downstream Specifications
-- **SPEC-003**: Data Validator Implementation
+- **SPEC-03**: Data Validator Implementation
 
 ---
 

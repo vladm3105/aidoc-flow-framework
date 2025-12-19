@@ -119,7 +119,7 @@ class TraceabilityMatrixUpdater:
         """Scan input directory for actual document files"""
         print(f"Scanning actual documents in: {self.input_dir}")
 
-        pattern = re.compile(rf'{self.doc_type}-(\d{{3,4}}(?:-\d{{2,3}})?)[_-].*\.(md|feature|yaml)$')
+        pattern = re.compile(rf'{self.doc_type}-(\d{{2,}}(?:-\d{{2,3}})?)[_-].*\.(md|feature|yaml)$')
 
         for filepath in self.input_dir.rglob('*'):
             if not filepath.is_file():
@@ -209,7 +209,7 @@ class TraceabilityMatrixUpdater:
 
             # Extract table rows
             table_rows = re.findall(
-                rf'\|\s*({self.doc_type}-\d{{3,4}}(?:-\d{{2,3}})?)\s*\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|',
+                rf'\|\s*({self.doc_type}-\d{{2,}}(?:-\d{{2,3}})?)\s*\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|([^\|]*)\|',
                 inventory_text
             )
 

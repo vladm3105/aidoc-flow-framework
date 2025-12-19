@@ -99,7 +99,7 @@ structure:
   required_sections:
     - pattern: "^# EARS-\\d{3}:"
       name: "Title (H1)"
-      description: "Single H1 with format EARS-NNN: Title"
+      description: "Single H1 with format EARS-NN: Title"
 
     - pattern: "^## Document Control$"
       name: "Document Control"
@@ -241,9 +241,9 @@ traceability:
   downstream:
     expected:
       - type: BDD
-        format: "BDD-NNN"
+        format: "BDD-NN"
       - type: SPEC
-        format: "SPEC-NNN"
+        format: "SPEC-NN"
 
   threshold_references:
     format: "@threshold: PRD.035.category.subcategory"

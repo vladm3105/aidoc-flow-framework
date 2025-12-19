@@ -1,4 +1,4 @@
-# REQ-002: Request Data Validation
+# REQ-02: Request Data Validation
 
 ## Document Control
 
@@ -324,13 +324,13 @@ class RequestValidatorImpl:
 ## 11. Traceability
 
 ### Upstream Sources
-- BRD-002: Platform Business Requirements
-- PRD-002: Request Management Product Requirements
-- SYS-002: Data Validation System Requirements
+- BRD-02: Platform Business Requirements
+- PRD-02: Request Management Product Requirements
+- SYS-02: Data Validation System Requirements
 
 ### Downstream Artifacts
-- SPEC-002: Request Validation Service
-- BDD-002: Request Validation Scenarios
+- SPEC-02: Request Validation Service
+- BDD-02: Request Validation Scenarios
 
 ### Code Paths
 - `src/validation/request_validator.py`

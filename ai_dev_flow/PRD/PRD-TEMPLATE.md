@@ -54,7 +54,7 @@ FORBIDDEN values (will fail validation):
 - document_type: product-requirements, product_requirements
 - architecture_approach: value (singular form - use plural with array)
 
-Validation: Run `python scripts/validate_prd.py docs/PRD/PRD-NNN*.md`
+Validation: Run `python scripts/validate_prd.py docs/PRD/PRD-NN*.md`
 Schema: See `ai_dev_flow/PRD/PRD_SCHEMA.yaml` for complete rules
 ====================================================================== -->
 
@@ -70,9 +70,9 @@ Schema: See `ai_dev_flow/PRD/PRD_SCHEMA.yaml` for complete rules
 
 > **Note**: Section-based templates are the DEFAULT for BRD/PRD/ADR.
 > This monolithic template is for small documents only (<25KB).
-> Use nested folder structure: `docs/PRD/PRD-NNN/PRD-NNN.S_slug.md`
+> Use nested folder structure: `docs/PRD/PRD-NN/PRD-NN.S_slug.md`
 
-# PRD-NNN: [Descriptive Product Name/Feature Name]
+# PRD-NN: [Descriptive Product Name/Feature Name]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
@@ -434,7 +434,7 @@ User stories follow the standard format:
 
 **⚠️ IMPORTANT**: PRD documents serve as the **PRIMARY DEFINITION SOURCE** for technical thresholds. All downstream artifacts (EARS, BDD, SYS, SPEC, CTR) REFERENCE thresholds defined here.
 
-**Threshold Naming Convention**: `@threshold: PRD.NNN.category.subcategory.key`
+**Threshold Naming Convention**: `@threshold: PRD.NN.category.subcategory.key`
 
 **Format Reference**: See `THRESHOLD_NAMING_RULES.md` for complete naming standards.
 
@@ -449,69 +449,69 @@ User stories follow the standard format:
 - Batch processing limits and intervals
 
 ```yaml
-# Threshold Definitions for PRD-NNN
-# Format: @threshold: PRD.NNN.category.subcategory.key
+# Threshold Definitions for PRD-NN
+# Format: @threshold: PRD.NN.category.subcategory.key
 
 performance:
   api:
-    - "@threshold: PRD.NNN.perf.api.p50_latency"        # e.g., 50ms
-    - "@threshold: PRD.NNN.perf.api.p95_latency"        # e.g., 200ms
-    - "@threshold: PRD.NNN.perf.api.p99_latency"        # e.g., 500ms
+    - "@threshold: PRD.NN.perf.api.p50_latency"        # e.g., 50ms
+    - "@threshold: PRD.NN.perf.api.p95_latency"        # e.g., 200ms
+    - "@threshold: PRD.NN.perf.api.p99_latency"        # e.g., 500ms
   batch:
-    - "@threshold: PRD.NNN.perf.batch.max_duration"     # e.g., 3600s
-    - "@threshold: PRD.NNN.perf.batch.throughput"       # e.g., 10000/hour
+    - "@threshold: PRD.NN.perf.batch.max_duration"     # e.g., 3600s
+    - "@threshold: PRD.NN.perf.batch.throughput"       # e.g., 10000/hour
 
 sla:
   uptime:
-    - "@threshold: PRD.NNN.sla.uptime.target"           # e.g., 99.9%
-    - "@threshold: PRD.NNN.sla.uptime.critical"         # e.g., 99.99%
+    - "@threshold: PRD.NN.sla.uptime.target"           # e.g., 99.9%
+    - "@threshold: PRD.NN.sla.uptime.critical"         # e.g., 99.99%
   error_rate:
-    - "@threshold: PRD.NNN.sla.error_rate.target"       # e.g., < 0.1%
+    - "@threshold: PRD.NN.sla.error_rate.target"       # e.g., < 0.1%
 
 timeout:
   request:
-    - "@threshold: PRD.NNN.timeout.request.sync"        # e.g., 30s
-    - "@threshold: PRD.NNN.timeout.request.async"       # e.g., 300s
+    - "@threshold: PRD.NN.timeout.request.sync"        # e.g., 30s
+    - "@threshold: PRD.NN.timeout.request.async"       # e.g., 300s
   connection:
-    - "@threshold: PRD.NNN.timeout.connection.default"  # e.g., 5s
+    - "@threshold: PRD.NN.timeout.connection.default"  # e.g., 5s
   session:
-    - "@threshold: PRD.NNN.timeout.session.idle"        # e.g., 1800s
+    - "@threshold: PRD.NN.timeout.session.idle"        # e.g., 1800s
 
 limit:
   api:
-    - "@threshold: PRD.NNN.limit.api.requests_per_second"  # e.g., 1000
-    - "@threshold: PRD.NNN.limit.api.burst"               # e.g., 5000
+    - "@threshold: PRD.NN.limit.api.requests_per_second"  # e.g., 1000
+    - "@threshold: PRD.NN.limit.api.burst"               # e.g., 5000
   transaction:
-    - "@threshold: PRD.NNN.limit.transaction.daily"       # e.g., $10000
-    - "@threshold: PRD.NNN.limit.transaction.single"      # e.g., $5000
+    - "@threshold: PRD.NN.limit.transaction.daily"       # e.g., $10000
+    - "@threshold: PRD.NN.limit.transaction.single"      # e.g., $5000
   batch:
-    - "@threshold: PRD.NNN.limit.batch.size"              # e.g., 10000 records
-    - "@threshold: PRD.NNN.limit.batch.concurrent"        # e.g., 5 jobs
+    - "@threshold: PRD.NN.limit.batch.size"              # e.g., 10000 records
+    - "@threshold: PRD.NN.limit.batch.concurrent"        # e.g., 5 jobs
 
 risk:
   thresholds:
-    - "@threshold: PRD.NNN.risk.low.max"                  # e.g., 30
-    - "@threshold: PRD.NNN.risk.medium.min"               # e.g., 31
-    - "@threshold: PRD.NNN.risk.medium.max"               # e.g., 74
-    - "@threshold: PRD.NNN.risk.high.min"                 # e.g., 75
+    - "@threshold: PRD.NN.risk.low.max"                  # e.g., 30
+    - "@threshold: PRD.NN.risk.medium.min"               # e.g., 31
+    - "@threshold: PRD.NN.risk.medium.max"               # e.g., 74
+    - "@threshold: PRD.NN.risk.high.min"                 # e.g., 75
 
 resource:
   compute:
-    - "@threshold: PRD.NNN.resource.cpu.max"              # e.g., 80%
-    - "@threshold: PRD.NNN.resource.memory.max"           # e.g., 85%
+    - "@threshold: PRD.NN.resource.cpu.max"              # e.g., 80%
+    - "@threshold: PRD.NN.resource.memory.max"           # e.g., 85%
   storage:
-    - "@threshold: PRD.NNN.resource.disk.warning"         # e.g., 70%
-    - "@threshold: PRD.NNN.resource.disk.critical"        # e.g., 90%
+    - "@threshold: PRD.NN.resource.disk.warning"         # e.g., 70%
+    - "@threshold: PRD.NN.resource.disk.critical"        # e.g., 90%
 ```
 
 **Threshold Definition Table**:
 
 | Threshold ID | Description | Value | Unit | Priority | Rationale |
 |--------------|-------------|-------|------|----------|-----------|
-| PRD.NNN.perf.api.p95_latency | API response time (95th percentile) | 200 | ms | P1 | User experience |
-| PRD.NNN.sla.uptime.target | Service availability target | 99.9 | % | P1 | SLA commitment |
-| PRD.NNN.limit.api.requests_per_second | API rate limit | 1000 | req/s | P1 | Infrastructure |
-| PRD.NNN.risk.high.min | High risk score threshold | 75 | score | P1 | Compliance |
+| PRD.NN.perf.api.p95_latency | API response time (95th percentile) | 200 | ms | P1 | User experience |
+| PRD.NN.sla.uptime.target | Service availability target | 99.9 | % | P1 | SLA commitment |
+| PRD.NN.limit.api.requests_per_second | API rate limit | 1000 | req/s | P1 | Infrastructure |
+| PRD.NN.risk.high.min | High risk score threshold | 75 | score | P1 | Compliance |
 
 **Example Usage in Requirements**:
 ```markdown
@@ -873,7 +873,7 @@ Document the business strategy and research that drive this PRD.
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-NNN](../BRD/BRD-NNN_...md) | [Business requirements title] | sections 2.4, 4.x | Business objectives driving product features |
+| BRD | [BRD-NN](../BRD/BRD-NN_...md) | [Business requirements title] | sections 2.4, 4.x | Business objectives driving product features |
 | Business Strategy | [Strategy Doc] | [Company OKRs/Strategic initiatives] | [section reference] | Strategic alignment and rationale |
 | Market Research | [Research Report] | [Customer insights, competitive analysis] | [Key findings] | User needs and market opportunity |
 
@@ -893,22 +893,22 @@ Document the technical specifications and designs derived from this PRD.
 
 | SYS ID | System Requirement Title | PRD Features Driving Requirement | Relationship |
 |--------|------------------------|--------------------------------|--------------|
-| [SYS-NNN](../SYS/SYS-NNN_...md) | [System requirement] | Derived from PRD features [IDs] | Technical system specification |
-| [SYS-NNN](../SYS/SYS-NNN_...md) | [System requirement] | Derived from PRD features [IDs] | Technical system specification |
+| [SYS-NN](../SYS/SYS-NN_...md) | [System requirement] | Derived from PRD features [IDs] | Technical system specification |
+| [SYS-NN](../SYS/SYS-NN_...md) | [System requirement] | Derived from PRD features [IDs] | Technical system specification |
 
 #### EARS Requirements
 
 | EARS ID | EARS Title | PRD Capabilities Specified | Relationship |
 |---------|-----------|---------------------------|--------------|
-| [EARS-NNN](../EARS/EARS-NNN_...md) | [Engineering requirement] | Specifies PRD capabilities [IDs] | Atomic engineering requirements |
-| [EARS-NNN](../EARS/EARS-NNN_...md) | [Engineering requirement] | Specifies PRD capabilities [IDs] | Atomic engineering requirements |
+| [EARS-NN](../EARS/EARS-NN_...md) | [Engineering requirement] | Specifies PRD capabilities [IDs] | Atomic engineering requirements |
+| [EARS-NN](../EARS/EARS-NN_...md) | [Engineering requirement] | Specifies PRD capabilities [IDs] | Atomic engineering requirements |
 
 #### Atomic Requirements
 
 | REQ ID | Requirement Title | PRD Source | Relationship |
 |--------|------------------|------------|--------------|
-| [REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN) | [Detailed requirement] | Implements PRD feature [ID] | Detailed implementation requirement |
-| [REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN) | [Detailed requirement] | Implements PRD feature [ID] | Detailed implementation requirement |
+| [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN) | [Detailed requirement] | Implements PRD feature [ID] | Detailed implementation requirement |
+| [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN) | [Detailed requirement] | Implements PRD feature [ID] | Detailed implementation requirement |
 
 #### Architecture Decision Requirements
 
@@ -1010,8 +1010,8 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 | BDD Feature | PRD Feature/Journey | Scenarios | Test Coverage |
 |-------------|---------------------|-----------|---------------|
-| [BDD-NNN.feature](../BDD/BDD-NNN.feature) | Maps to PRD User Journey [name] | [Scenario list] | Acceptance test coverage |
-| [BDD-NNN.feature](../BDD/BDD-NNN.feature) | Maps to PRD Feature [name] | [Scenario list] | Functional validation |
+| [BDD-NN.feature](../BDD/BDD-NN.feature) | Maps to PRD User Journey [name] | [Scenario list] | Acceptance test coverage |
+| [BDD-NN.feature](../BDD/BDD-NN.feature) | Maps to PRD Feature [name] | [Scenario list] | Functional validation |
 
 ### Same-Type References (Conditional)
 
@@ -1019,13 +1019,13 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | [PRD-NNN](./PRD-NNN_...md) | [Related PRD title] | Shared domain context |
-| Depends | [PRD-NNN](./PRD-NNN_...md) | [Prerequisite PRD title] | Must complete before this |
+| Related | [PRD-NN](./PRD-NN_...md) | [Related PRD title] | Shared domain context |
+| Depends | [PRD-NN](./PRD-NN_...md) | [Prerequisite PRD title] | Must complete before this |
 
 **Tags:**
 ```markdown
-@related-prd: PRD-NNN
-@depends-prd: PRD-NNN
+@related-prd: PRD-NN
+@depends-prd: PRD-NN
 ```
 
 ### Traceability Tags
@@ -1035,7 +1035,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 @brd: BRD.NN.01.SS
 ```
 
-**Format**: `@artifact-type: TYPE.NN.EE.SS` (Unified Element ID format)
+**Format**: `@artifact-type: TYPE.NN.TT.SS` (Unified Element ID format)
 
 **Layer 2 Requirements**: PRD must reference upstream BRD document(s) using `@brd` tags.
 
@@ -1061,7 +1061,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 | **A→B implies B→A** | If this PRD references another PRD, that PRD must reference this one | PRD-016 → PRD-022 requires PRD-022 → PRD-016 |
 | **No placeholder IDs** | Never use PRD-XXX, TBD, or undefined references | Use `null` if artifact doesn't exist |
 | **Tag format required** | Use `@prd: PRD.NN.EE.SS` format in body, not just metadata | `@prd: PRD.22.07.01` not `see PRD-022` |
-| **Referenced doc must exist** | Verify target document exists before adding reference | Check `docs/PRD/PRD-NNN_*.md` exists |
+| **Referenced doc must exist** | Verify target document exists before adding reference | Check `docs/PRD/PRD-NN_*.md` exists |
 
 **Cross-PRD Reference Table** (for PRDs with bidirectional dependencies):
 
@@ -1085,7 +1085,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 #### Internal Document Structure
 
-- **Anchors/IDs**: `#PRD-NNN` (for referencing this document)
+- **Anchors/IDs**: `#PRD-NN` (for referencing this document)
 - **section References**: Use `#problem-statement` for Problem Statement section
 - **Feature References**: Use Unified Element ID format (e.g., `PRD.01.07.01`, `PRD.01.07.02`). Cross-reference format: `@prd: PRD.NN.EE.SS`
 
@@ -1100,7 +1100,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 - [Data_Architecture: e.g., Data Model, Database Design](../../docs/[data_architecture].md) - Data architecture
 
 **Business Requirements**:
-- [Business Requirements Document](../BRD/BRD-NNN_[project_name].md) - Source business case
+- [Business Requirements Document](../BRD/BRD-NN_[project_name].md) - Source business case
 - [Market_Research: e.g., User Research, [DATA_ANALYSIS - e.g., user behavior analysis, trend detection]](../research/[market_analysis].md) - Customer insights
 
 #### Cross-Reference Validation

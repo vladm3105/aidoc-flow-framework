@@ -60,14 +60,14 @@ Enforce documentation quality standards across all SDD artifacts to ensure consi
 - Validates bidirectional traceability
 
 ### 4. ID Format Compliance
-- REQ-NNN or REQ-NNN-YY (e.g., REQ-001, REQ-001-01)
-- BDD-NNN or BDD-NNN-YY (e.g., BDD-001, BDD-001-01)
-- ADR-NNN or ADR-NNN-YY (e.g., ADR-001, ADR-001-01)
-- IMPL-NNN or IMPL-NNN-YY (e.g., IMPL-001, IMPL-001-01)
-- CTR-NNN or CTR-NNN-YY (e.g., CTR-001, CTR-001-01)
-- SPEC-NNN or SPEC-NNN-YY (e.g., SPEC-001, SPEC-001-01)
-- TASKS-NNN or TASKS-NNN-YY (e.g., TASKS-001, TASKS-001-01)
-- IPLAN-NNN (e.g., IPLAN-001)
+- REQ-NN or REQ-NN-YY (e.g., REQ-01, REQ-01-01)
+- BDD-NN or BDD-NN-YY (e.g., BDD-01, BDD-01-01)
+- ADR-NN or ADR-NN-YY (e.g., ADR-01, ADR-01-01)
+- IMPL-NN or IMPL-NN-YY (e.g., IMPL-01, IMPL-01-01)
+- CTR-NN or CTR-NN-YY (e.g., CTR-01, CTR-01-01)
+- SPEC-NN or SPEC-NN-YY (e.g., SPEC-01, SPEC-01-01)
+- TASKS-NN or TASKS-NN-YY (e.g., TASKS-01, TASKS-01-01)
+- IPLAN-NN (e.g., IPLAN-01)
 
 ### 5. Traceability Matrix Validation
 - Ensures all requirements have source references
@@ -153,7 +153,7 @@ When doc-flow generates or updates documentation:
 ```
 === Documentation Validation Report ===
 
-File: docs/REQ/REQ-001_requirements.md
+File: docs/REQ/REQ-01_requirements.md
 Status: FAILED
 
 Errors (3):
@@ -164,7 +164,7 @@ Errors (3):
   → Target not found in any REQ documents
 
 - [ID Format] Invalid ID "REQ-USER-LOGIN-1" at line 156
-  → Expected format: REQ-NNN or REQ-NNN-YY (e.g., REQ-001, REQ-001-01)
+  → Expected format: REQ-NN or REQ-NN-YY (e.g., REQ-01, REQ-01-01)
 
 Warnings (1):
 - [Language] Subjective qualifier "easy to use" at line 89
@@ -276,7 +276,7 @@ Required tools for validation:
 Each artifact type has a YAML schema file (`{TYPE}_SCHEMA.yaml`) that defines validation rules. These schemas are the authoritative source for:
 - **Metadata Requirements**: YAML frontmatter fields, allowed values
 - **Document Structure**: Required/optional sections, numbering patterns
-- **Artifact-Specific Patterns**: Type-specific formats (Gherkin, sequential NNN, TASKS-NNN, etc.)
+- **Artifact-Specific Patterns**: Type-specific formats (Gherkin, sequential NNN, TASKS-NN, etc.)
 - **Validation Rules**: Error/warning severities with fix instructions
 - **Traceability Requirements**: Cumulative tagging hierarchy per layer
 - **Error Messages**: Standardized codes (E001-E0XX, W001-W0XX, I001-I0XX)
@@ -295,14 +295,14 @@ Each artifact type has a YAML schema file (`{TYPE}_SCHEMA.yaml`) that defines va
 | 8 | IMPL | `ai_dev_flow/IMPL/IMPL_SCHEMA.yaml` | Phase organization, deliverables |
 | 9 | CTR | `ai_dev_flow/CTR/CTR_SCHEMA.yaml` | Dual-file, OpenAPI/AsyncAPI |
 | 10 | SPEC | `ai_dev_flow/SPEC/SPEC_SCHEMA.yaml` | YAML structure, code gen ready |
-| 11 | TASKS | `ai_dev_flow/TASKS/TASKS_SCHEMA.yaml` | TASKS-NNN, implementation contracts |
+| 11 | TASKS | `ai_dev_flow/TASKS/TASKS_SCHEMA.yaml` | TASKS-NN, implementation contracts |
 | 12 | IPLAN | `ai_dev_flow/IPLAN/IPLAN_SCHEMA.yaml` | Session format, bash commands |
 
 ### Schema Validation Usage
 
 ```bash
 # Validate document against schema (planned implementation)
-python scripts/validate_artifact.py --schema ai_dev_flow/REQ/REQ_SCHEMA.yaml --document docs/REQ/REQ-001_example.md
+python scripts/validate_artifact.py --schema ai_dev_flow/REQ/REQ_SCHEMA.yaml --document docs/REQ/REQ-01_example.md
 
 # Validate all documents of a type
 python scripts/validate_artifact.py --type REQ --strict
@@ -341,16 +341,16 @@ The following artifact-specific validation scripts are available in `ai_dev_flow
 
 ```bash
 # Validate BRD document
-./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-001_platform.md
+./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-01_platform.md
 
 # Validate TASKS document
-./ai_dev_flow/scripts/validate_tasks.sh docs/TASKS/TASKS-001_*.md
+./ai_dev_flow/scripts/validate_tasks.sh docs/TASKS/TASKS-01_*.md
 
 # Validate Implementation Contracts
-./ai_dev_flow/scripts/validate_icon.sh docs/ICON/ICON-001_*.md
+./ai_dev_flow/scripts/validate_icon.sh docs/ICON/ICON-01_*.md
 
 # Validate IPLAN document
-./ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md
+./ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-01_*.md
 ```
 
 **Note**: For artifacts without validation scripts, use the template and SHARED_CONTENT.md for manual validation.
@@ -443,7 +443,7 @@ Track and report:
 ### Validate Requirements Document
 
 ```markdown
-Input: docs/REQ/REQ-001_ml_model_requirements.md
+Input: docs/REQ/REQ-01_ml_model_requirements.md
 
 Validation Results:
 ✓ Token count: 8,234 tokens (within limit)
@@ -453,7 +453,7 @@ Validation Results:
 ✗ Traceability: 3 requirements missing BDD references
   - REQ-015: No forward link to BDD scenarios
   - REQ-008: No forward link to BDD scenarios
-  - REQ-004: No forward link to BDD scenarios
+  - REQ-04: No forward link to BDD scenarios
 ✓ Template compliance: Proper structure
 ✓ No duplicates detected
 
@@ -464,14 +464,14 @@ Priority: MEDIUM
 ### Validate BDD Scenarios
 
 ```markdown
-Input: docs/BDD/BDD-001_authentication_scenarios.feature
+Input: docs/BDD/BDD-01_authentication_scenarios.feature
 
 Validation Results:
 ✓ Token count: 3,456 tokens (within limit)
 ✓ Language standards: Compliant
 ✗ ID format: 2 scenarios with incorrect format
-  - Line 45: "BDD-LOGIN-1" should be "BDD-001"
-  - Line 89: "BDD-LOGOUT" should be "BDD-002"
+  - Line 45: "BDD-LOGIN-1" should be "BDD-01"
+  - Line 89: "BDD-LOGOUT" should be "BDD-02"
 ✓ Cross-references: All requirement links valid
 ✗ Traceability: 5 scenarios not linked to TASKS documents
 ✓ Template compliance: Proper Given-When-Then structure

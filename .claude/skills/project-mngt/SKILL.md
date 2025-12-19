@@ -46,14 +46,14 @@ Works with:
 **Reference**: `/opt/data/docs_flow_framework/ai_dev_flow/ID_NAMING_STANDARDS.md`
 
 **Common ID Formats**:
-- **Planning Documents**: `PLAN-NNN` (e.g., PLAN-001, PLAN-002)
-- **Requirements**: `REQ-NNN` or `REQ-NNN-YY` (e.g., REQ-001, REQ-001-01)
-- **Tasks**: `TASK-NNN` or `TASK-NNN-YY` (e.g., TASK-001, TASK-001-01)
-- **Implementation Plans**: `IPLAN-NNN` (e.g., IPLAN-001)
+- **Planning Documents**: `PLAN-NNN` (e.g., PLAN-01, PLAN-02)
+- **Requirements**: `REQ-NN` or `REQ-NN-YY` (e.g., REQ-01, REQ-01-01)
+- **Tasks**: `TASK-NNN` or `TASK-NNN-YY` (e.g., TASK-01, TASK-01-01)
+- **Implementation Plans**: `IPLAN-NN` (e.g., IPLAN-01)
 
 **Format Rules**:
-- Use TYPE-NNN for primary documents (three digits with leading zeros)
-- Use TYPE-NNN-YY for sub-items (two digits with leading zeros)
+- Use TYPE-NN for primary documents (three digits with leading zeros)
+- Use TYPE-NN-YY for sub-items (two digits with leading zeros)
 - IDs are unique within their artifact type
 - Sequential numbering starts at 001
 
@@ -390,7 +390,7 @@ Total Time = Σ(Group Duration) / Parallel Tracks + Stage Buffers
 | Item | Details |
 |------|---------|
 | **Project Name** | [Name] |
-| **Plan ID** | PLAN-001 |
+| **Plan ID** | PLAN-01 |
 | **Version** | X.0 |
 | **Date** | YYYY-MM-DD |
 | **Status** | [Active / Completed / On Hold] |
@@ -465,8 +465,8 @@ Total Time = Σ(Group Duration) / Parallel Tracks + Stage Buffers
 **Status**: [COMPLETED / IN_PROGRESS / BLOCKED / PLANNED / MODIFIED / CANCELLED]
 
 **Requirements**:
-- REQ-001: [Description]
-- REQ-002: [Description]
+- REQ-01: [Description]
+- REQ-02: [Description]
 
 **Dependencies**:
 - [Dependency 1] (Status: Satisfied / Pending)
@@ -524,7 +524,7 @@ gantt
 
 | Atomic Group | Requirements | ADRs | BDD Scenarios | Status |
 |--------------|--------------|------|---------------|--------|
-| MVP Group 1 | REQ-001, REQ-002 | ADR-006 | broker.feature | ✅ |
+| MVP Group 1 | REQ-01, REQ-02 | ADR-006 | broker.feature | ✅ |
 | MMP Group 5 | REQ-041, REQ-042 | ADR-008 | risk.feature | 🚧 |
 ```
 
@@ -558,7 +558,7 @@ Inputs:
 - Context: E-commerce domain, 5 FTE team, staging deployment first
 - Constraint: MVP in <3 months
 
-Create PLAN-001_inventory_system.md in docs/IMPL/"
+Create PLAN-01_inventory_system.md in docs/IMPL/"
 ```
 
 ---
@@ -580,11 +580,11 @@ IMPORTANT: Preserve completed work, only modify planned work."
 
 **Example**:
 ```
-"Use the project-mgnt skill to update PLAN-001_inventory_system.md.
+"Use the project-mgnt skill to update PLAN-01_inventory_system.md.
 
 Inputs:
 - Modified: BRD-004 added 5 new security requirements
-- Plan: docs/IMPL/PLAN-001_inventory_system.md v1.0
+- Plan: docs/IMPL/PLAN-01_inventory_system.md v1.0
 - Progress: MVP complete (Groups 1-4), Group 5 in progress (week 2/4)
 - Date: 2024-02-01
 

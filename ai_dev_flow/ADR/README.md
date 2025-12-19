@@ -49,9 +49,9 @@ Foundation ADRs establish project-wide standards that all other ADRs must refere
 - ✅ **If proposing technology not in ADR-000**: Document justification and recommend updating ADR-000
 
 **Future Foundation ADRs** (referenced but not yet created):
-- **ADR-001**: Google ADK Framework - Agent orchestration and lifecycle management
-- **ADR-002**: Model Context Protocol (MCP) - Tool integration standard for agent capabilities
-- **ADR-003**: Google A2A Protocol - Agent-to-agent communication patterns
+- **ADR-01**: Google ADK Framework - Agent orchestration and lifecycle management
+- **ADR-02**: Model Context Protocol (MCP) - Tool integration standard for agent capabilities
+- **ADR-03**: Google A2A Protocol - Agent-to-agent communication patterns
 - **ADR-004**: Multi-Cloud Architecture - GCP primary with Azure/AWS disaster recovery
 
 **Technology Stack Compliance**:
@@ -129,14 +129,14 @@ Requirements (PRD/EARS) → BDD Scenarios ← ADR Decision → SYS/SPEC/Implemen
 ### File Dependencies and Sequence
 
 ```text
-1. PRD-NNN.md (Product Requirements)     ← Foundation documents
-2. EARS-NNN.md (Technical Requirements)  ← Prerequisite - provides atomic requirements
-3. BDD-NNN.feature (Behavior Scenarios)  ← Prerequisite - defines expected behaviors
-4. ADR-NNN.md (Architecture Decision)    ← Created from steps 1-3
-5. SYS-NNN.md (System Requirements)      ← Uses ADR decisions as constraints
-6. REQ-NNN.md (Atomic Requirements)      ← Implements ADR at granular level
-7. SPEC-NNN.yaml (Technical Specs)       ← Detailed implementation of ADR
-8. TASKS-NNN.md (Implementation Plans)   ← Based on ADR and SPEC
+1. PRD-NN.md (Product Requirements)     ← Foundation documents
+2. EARS-NN.md (Technical Requirements)  ← Prerequisite - provides atomic requirements
+3. BDD-NN.feature (Behavior Scenarios)  ← Prerequisite - defines expected behaviors
+4. ADR-NN.md (Architecture Decision)    ← Created from steps 1-3
+5. SYS-NN.md (System Requirements)      ← Uses ADR decisions as constraints
+6. REQ-NN.md (Atomic Requirements)      ← Implements ADR at granular level
+7. SPEC-NN.yaml (Technical Specs)       ← Detailed implementation of ADR
+8. TASKS-NN.md (Implementation Plans)   ← Based on ADR and SPEC
 9. Code Implementation                   ← Validates against ADR constraints
 ```
 
@@ -167,7 +167,7 @@ Requirements (PRD/EARS) → BDD Scenarios ← ADR Decision → SYS/SPEC/Implemen
 ADRs have different relationships with Platform BRDs versus Feature BRDs:
 
 **Platform BRDs → Foundation ADRs**:
-- Platform BRDs (e.g., BRD-001 Platform Architecture) inform Foundation ADRs
+- Platform BRDs (e.g., BRD-01 Platform Architecture) inform Foundation ADRs
 - Foundation ADR-000 documents technology stack decisions that enable platform capabilities
 - Platform BRDs define "what" the platform must do; Foundation ADRs document "how" through technology choices
 - Typically created together at project inception
@@ -197,14 +197,14 @@ ADRs have different relationships with Platform BRDs versus Feature BRDs:
 All ADRs include mandatory traceability linking to upstream and downstream artifacts:
 
 ```markdown
-# ADR-NNN: Descriptive Title
+# ADR-NN: Descriptive Title
 
-@PRD:[PRD-NNN](../PRD/PRD-NNN_descriptive_title.md)
-@EARS:[EARS-NNN](../EARS/EARS-NNN_descriptive_title.md)
-@bdd:[BDD-NNN:scenarios](../bdd/BDD-NNN_descriptive_title.feature#scenarios)
+@PRD:[PRD-NN](../PRD/PRD-NN_descriptive_title.md)
+@EARS:[EARS-NN](../EARS/EARS-NN_descriptive_title.md)
+@bdd:[BDD-NN:scenarios](../bdd/BDD-NN_descriptive_title.feature#scenarios)
 
-@SYS:[SYS-NNN](../SYS/SYS-NNN_descriptive_title.md)
-@requirement:[REQ-NNN](../REQ/infrastructure/REQ-NNN_descriptive_title.md#REQ-NNN)
+@SYS:[SYS-NN](../SYS/SYS-NN_descriptive_title.md)
+@requirement:[REQ-NN](../REQ/infrastructure/REQ-NN_descriptive_title.md#REQ-NN)
 @spec:[spec-name.yaml](../SPEC/compute/spec-name.yaml)
 ```
 
@@ -255,21 +255,21 @@ Maintains comprehensive traceability:
 ## File Naming Convention
 
 ```markdown
-ADR-NNN_descriptive_slug.md
+ADR-NN_descriptive_slug.md
 ```
 
 Where:
 
 - `ADR` is the constant prefix
-- `NNN` is the three-digit sequence number (001, 002, 003, etc.)
+- `NNN` is the 2+ digit sequence number (01, 02, 003, etc.)
 - `descriptive_slug` uses snake_case describing the architectural decision
 - `.md` is the mandatory markdown file extension
 
 **Naming Examples:**
 
-- `ADR-001_gcp_cloud_run_deployment.md`: GCP Cloud Run serverless deployment architecture
-- `ADR-002_multi_agent_orchestration.md`: Multi-agent system orchestration patterns
-- `ADR-003_kubernetes_cluster_management.md`: Kubernetes cluster configuration and management
+- `ADR-01_gcp_cloud_run_deployment.md`: GCP Cloud Run serverless deployment architecture
+- `ADR-02_multi_agent_orchestration.md`: Multi-agent system orchestration patterns
+- `ADR-03_kubernetes_cluster_management.md`: Kubernetes cluster configuration and management
 - `ADR-004_database_layer_design.md`: Multi-database strategy (SQL + NoSQL)
 - `ADR-042_ml_model_serving_layer.md`: ML model inference and serving architecture
 
@@ -282,10 +282,10 @@ An `ADR-000_index.md` file maintains a central index of all ADRs:
 
 ## Purpose
 - Central index for ADR documents in this example set
-- Tracks allocation and sequencing for `ADR-NNN_{slug}.md` files
+- Tracks allocation and sequencing for `ADR-NN_{slug}.md` files
 
 ## Allocation Rules
-- Numbering: keep ADR-NNN aligned with decisions referenced by this example set
+- Numbering: keep ADR-NN aligned with decisions referenced by this example set
 - Include a brief description and cross-links to REQ/PRD/EARS/SPEC/BDD when applicable
 
 ## Documents (example set)
@@ -333,7 +333,7 @@ Decision is no longer recommended but still in use:
 ```markdown
 **Status**: Deprecated
 **Date**: YYYY-MM-DD
-**Deprecation Notice**: Deprecated in favor of ADR-NNN; sunset date: YYYY-MM-DD
+**Deprecation Notice**: Deprecated in favor of ADR-NN; sunset date: YYYY-MM-DD
 **Last Updated**: YYYY-MM-DD
 ```
 
@@ -348,7 +348,7 @@ Decision has been completely replaced by another:
 
 ```markdown
 **Status**: Superseded
-**Superseded By**: ADR-NNN: Descriptive Title
+**Superseded By**: ADR-NN: Descriptive Title
 **Date**: YYYY-MM-DD
 **Last Updated**: YYYY-MM-DD
 ```
@@ -602,7 +602,7 @@ Document successor and migration path:
 
 ```markdown
 **Status**: Deprecated
-**Superseded By**: ADR-NNN: [Title]
+**Superseded By**: ADR-NN: [Title]
 **Sunset Date**: YYYY-MM-DD
 **Migration Guide**: [How to migrate from this decision]
 ```
@@ -679,34 +679,34 @@ Upstream sources are the **business and technical requirements that justify the 
 
 Every ADR must trace back to at least one upstream source establishing business context:
 
-**Business Requirements (PRD-NNN):**
+**Business Requirements (PRD-NN):**
 
 - Product Requirements Documents define "what" the business needs
 - Example: "System must support concurrent execution of 11 agents with independent scaling"
-- ADR links back: This ADR (Cloud Run) specifically addresses the scaling requirement from PRD-001
+- ADR links back: This ADR (Cloud Run) specifically addresses the scaling requirement from PRD-01
 
-**Engineering Requirements (EARS-NNN):**
+**Engineering Requirements (EARS-NN):**
 
 - EARS documents specify atomic, measurable requirements in WHEN/THEN format
 - Example: "WHEN request queue depth exceeds 50 THEN system SHALL scale to additional instances WITHIN 30 seconds"
-- ADR links back: This ADR (Cloud Run) implements the auto-scaling specification from EARS-001
+- ADR links back: This ADR (Cloud Run) implements the auto-scaling specification from EARS-01
 
-**Behavior-Driven Tests (BDD-NNN):**
+**Behavior-Driven Tests (BDD-NN):**
 
 - BDD scenarios define concrete behaviors the system must exhibit
 - Example: "GIVEN strategy agent with min=0, max=5 instances WHEN request queue depth exceeds threshold THEN new instances scale up within 30 seconds"
-- ADR links back: This ADR (Cloud Run) satisfies the scaling behavior scenarios in BDD-001
+- ADR links back: This ADR (Cloud Run) satisfies the scaling behavior scenarios in BDD-01
 
 #### Traceability Header for Upstream Sources
 
 Every ADR should include traceability tags in the header:
 
 ```markdown
-# ADR-NNN: Cloud Run Deployment Architecture
+# ADR-NN: Cloud Run Deployment Architecture
 
-@PRD:[PRD-001](../PRD/PRD-001_serverless_deployment.md)
-@EARS:[EARS-001](../EARS/EARS-001_infrastructure_requirements.md)
-@bdd:[BDD-001:scenarios](../bdd/BDD-001_gcp_cloud_run_deployment.feature#scenarios)
+@PRD:[PRD-01](../PRD/PRD-01_serverless_deployment.md)
+@EARS:[EARS-01](../EARS/EARS-01_infrastructure_requirements.md)
+@bdd:[BDD-01:scenarios](../bdd/BDD-01_gcp_cloud_run_deployment.feature#scenarios)
 ```
 
 #### Documenting Upstream Sources in PART 4
@@ -717,17 +717,17 @@ The "Upstream Sources" section in PART 4 details what requirements drove the dec
 ### Upstream Sources
 
 **Business Logic**: 
-- [PRD-001 - Serverless Deployment Requirements](../PRD/PRD-001_serverless_deployment.md): 
+- [PRD-01 - Serverless Deployment Requirements](../PRD/PRD-01_serverless_deployment.md): 
   Defines serverless deployment requirements for multi-agent orchestration, auto-scaling policies 
   (0-5 instances), and regional failover
 
 **EARS Requirements**: 
-- [EARS-001 - Infrastructure Engineering Requirements](../EARS/EARS-001_infrastructure_requirements.md): 
+- [EARS-01 - Infrastructure Engineering Requirements](../EARS/EARS-01_infrastructure_requirements.md): 
   Specifies formal requirements for container management (health checks every 30s), 
   performance SLOs (p95 <100ms latency), cost optimization (<$110/month per agent group)
 
 **BDD Scenarios**: 
-- [BDD-001 - GCP Cloud Run Deployment](../bdd/BDD-001_gcp_cloud_run_deployment.feature): 
+- [BDD-01 - GCP Cloud Run Deployment](../bdd/BDD-01_gcp_cloud_run_deployment.feature): 
   Provides behavior scenarios for container deployment, auto-scaling events, 
   multi-zone failover procedures, and scheduled scaling
 ```
@@ -740,22 +740,22 @@ Downstream artifacts are the **technical specifications and implementation that 
 
 Downstream artifacts form the implementation chain flowing from ADR decisions:
 
-**System Requirements (SYS-NNN):**
+**System Requirements (SYS-NN):**
 
 - Translates architectural decisions into system-level requirements
-- Example: "SYS-001 specifies per-agent resource allocation (orchestrator: 2vCPU/4Gi RAM, strategy agents: 1vCPU/2Gi RAM)"
+- Example: "SYS-01 specifies per-agent resource allocation (orchestrator: 2vCPU/4Gi RAM, strategy agents: 1vCPU/2Gi RAM)"
 - Downstream from: This ADR (Cloud Run) decision to allocate resources per agent type
 
-**Atomic Requirements (REQ-NNN):**
+**Atomic Requirements (REQ-NN):**
 
 - Breaks down system requirements into granular, independently verifiable requirements
-- Example: "REQ-001: Deploy all agents as Cloud Run containers with auto-scaling (0-5 instances/agent)"
+- Example: "REQ-01: Deploy all agents as Cloud Run containers with auto-scaling (0-5 instances/agent)"
 - Downstream from: ADR (Cloud Run) architectural pattern
 
-**Technical Specifications (SPEC-NNN.yaml):**
+**Technical Specifications (SPEC-NN.yaml):**
 
 - Declarative specifications that code must implement
-- Example: "SPEC-001_cloud_run_configuration.yaml: Defines per-agent resource allocation, health check endpoints, scaling policies"
+- Example: "SPEC-01_cloud_run_configuration.yaml: Defines per-agent resource allocation, health check endpoints, scaling policies"
 - Downstream from: ADR (Cloud Run) component design and resource allocation decisions
 
 **Implementation Code (src/{module}/):**
@@ -778,17 +778,17 @@ Document downstream artifact relationships in PART 4:
 ### Downstream Artifacts
 
 **System Requirements**: 
-- [SYS-001 - Cloud Run Compute Sizing](../SYS/SYS-001_cloud_run_compute.md): 
+- [SYS-01 - Cloud Run Compute Sizing](../SYS/SYS-01_cloud_run_compute.md): 
   System-level requirements for per-agent resource allocation, health check specifications, 
   and auto-scaling policy definitions
 
 **Atomic Requirements**: 
-- [REQ-001 - Serverless Container Deployment](../REQ/infrastructure/REQ-001_serverless_deployment.md#REQ-001)
-- [REQ-002 - Auto-scaling Policy](../REQ/infrastructure/REQ-002_auto_scaling.md#REQ-002)
-- [REQ-003 - Regional High Availability](../REQ/infrastructure/REQ-003_regional_ha.md#REQ-003)
+- [REQ-01 - Serverless Container Deployment](../REQ/infrastructure/REQ-01_serverless_deployment.md#REQ-01)
+- [REQ-02 - Auto-scaling Policy](../REQ/infrastructure/REQ-02_auto_scaling.md#REQ-02)
+- [REQ-03 - Regional High Availability](../REQ/infrastructure/REQ-03_regional_ha.md#REQ-03)
 
 **Technical Specifications**: 
-- [SPEC-001 - Cloud Run Configuration](../SPEC/compute/cloud_run_service.yaml): 
+- [SPEC-01 - Cloud Run Configuration](../SPEC/compute/cloud_run_service.yaml): 
   Declarative specification for per-agent resource allocation, health check configuration
 
 **Implementation Code**: 
@@ -807,19 +807,19 @@ Document downstream artifact relationships in PART 4:
 Effective ADRs establish complete traceability chains from business requirements through implementation:
 
 ```text
-PRD-001 (Business need: scale to 11 agents)
+PRD-01 (Business need: scale to 11 agents)
     ↓
-EARS-001 (Technical spec: scale 0-5 instances, <100ms latency)
+EARS-01 (Technical spec: scale 0-5 instances, <100ms latency)
     ↓
-BDD-001 (Behavior: scale-up completes in <30 seconds)
+BDD-01 (Behavior: scale-up completes in <30 seconds)
     ↓
-ADR-001 (Decision: Use Cloud Run with request-based auto-scaling)
+ADR-01 (Decision: Use Cloud Run with request-based auto-scaling)
     ↓
-SYS-001 (System design: 2vCPU/4Gi RAM per agent, min/max instance config)
+SYS-01 (System design: 2vCPU/4Gi RAM per agent, min/max instance config)
     ↓
-REQ-001 to REQ-008 (Atomic requirements: deploy, scale, monitor, HA, etc.)
+REQ-01 to REQ-008 (Atomic requirements: deploy, scale, monitor, HA, etc.)
     ↓
-SPEC-001 (Terraform: Cloud Run service definition, scaling policies)
+SPEC-01 (Terraform: Cloud Run service definition, scaling policies)
     ↓
 agents/orchestrator/main.py (Implementation: health checks, request handling)
     ↓
@@ -842,8 +842,8 @@ Use specific file paths and line numbers for unambiguous linking:
 @PRD: Product requirements somewhere
 
 # ✅ Complete: Specific file and anchor
-@PRD:[PRD-001](../PRD/PRD-001_serverless_deployment.md#PRD-001)
-@EARS:[EARS-001](../EARS/EARS-001_infrastructure_requirements.md#EARS-001-scaling)
+@PRD:[PRD-01](../PRD/PRD-01_serverless_deployment.md#PRD-01)
+@EARS:[EARS-01](../EARS/EARS-01_infrastructure_requirements.md#EARS-01-scaling)
 ```
 
 #### 2. Map Each Requirement to Implementation
@@ -855,9 +855,9 @@ Create explicit traceability tables showing how each requirement is satisfied:
 
 | Requirement ID | Description | ADR Decision | Implementation |
 |---|---|---|---|
-| PRD-001 | Support 11 concurrent agents | Cloud Run with independent services | agents/{agent_type}/main.py |
-| EARS-001 | Scale 0-5 instances | Request-based auto-scaling | infrastructure/cloud_run_policies.yaml |
-| BDD-001 | Scale-up <30 seconds | Cloud Run native scaling | tests/integration/cloud_run_tests.py |
+| PRD-01 | Support 11 concurrent agents | Cloud Run with independent services | agents/{agent_type}/main.py |
+| EARS-01 | Scale 0-5 instances | Request-based auto-scaling | infrastructure/cloud_run_policies.yaml |
+| BDD-01 | Scale-up <30 seconds | Cloud Run native scaling | tests/integration/cloud_run_tests.py |
 ```
 
 #### 3. Validate Traceability in CI/CD
@@ -886,14 +886,14 @@ Structure traceability for LLMs/AI agents to understand context:
 # ✅ AI-Friendly: Clear context and relationships
 ## Requirements Satisfied
 
-**From PRD-001 (section 2.1)**: "System must support concurrent execution of 11 agents"
+**From PRD-01 (section 2.1)**: "System must support concurrent execution of 11 agents"
 - **How Satisfied**: Each agent deployed as separate Cloud Run service with isolated scaling
-- **SYS Reference**: SYS-001 specifies per-agent resource allocation
+- **SYS Reference**: SYS-01 specifies per-agent resource allocation
 - **Implementation**: agents/{agent_type}/*.py implements agent container
 
-**From EARS-001 (section 3.2)**: "Achieve p95 latency <100ms"
+**From EARS-01 (section 3.2)**: "Achieve p95 latency <100ms"
 - **How Satisfied**: Orchestrator always-on, optimized analysis agents, minimal strategy agent latency
-- **Spec Reference**: SPEC-001 specifies 2vCPU/4Gi RAM allocation
+- **Spec Reference**: SPEC-01 specifies 2vCPU/4Gi RAM allocation
 - **Test Reference**: tests/performance/latency_validation.py verifies p95 <100ms
 ```
 
@@ -913,18 +913,18 @@ Document your ADR's relationship to other project artifacts:
 ### Internal Links
 
 **Upstream Requirements Documentation:**
-- [PRD-001: Product Requirements - Serverless Deployment](../PRD/PRD-001_serverless_deployment.md): Business requirements for multi-agent deployment
-- [EARS-001: Engineering Requirements - Infrastructure](../EARS/EARS-001_infrastructure_requirements.md): Atomic technical requirements for container management
-- [BDD-001: Behavior-Driven Tests - GCP Cloud Run](../bdd/BDD-001_gcp_cloud_run_deployment.feature): Executable scenarios for deployment behavior
+- [PRD-01: Product Requirements - Serverless Deployment](../PRD/PRD-01_serverless_deployment.md): Business requirements for multi-agent deployment
+- [EARS-01: Engineering Requirements - Infrastructure](../EARS/EARS-01_infrastructure_requirements.md): Atomic technical requirements for container management
+- [BDD-01: Behavior-Driven Tests - GCP Cloud Run](../bdd/BDD-01_gcp_cloud_run_deployment.feature): Executable scenarios for deployment behavior
 
 **Related ADRs:**
-- [ADR-NNN: Networking Architecture](./ADR-NNN_networking_architecture.md): VPC and Load Balancer prerequisite
+- [ADR-NN: Networking Architecture](./ADR-NN_networking_architecture.md): VPC and Load Balancer prerequisite
 - [ADR-YY: Secrets Management](./ADR-YYY_Secrets_management_strategy.md): API key management for Cloud Run
 - [ADR-ZZZ: Database Layer Design](./ADR-ZZZ_cloud_sql_instance_sizing.md): Risk validator database sizing
 
 **Downstream Implementation:**
-- [SYS-001: System Requirements - Cloud Run](../SYS/SYS-001_cloud_run_compute.md): System-level compute specifications
-- [SPEC-001: Cloud Run Configuration](../SPEC/compute/cloud_run_service.yaml): Terraform/declarative configuration
+- [SYS-01: System Requirements - Cloud Run](../SYS/SYS-01_cloud_run_compute.md): System-level compute specifications
+- [SPEC-01: Cloud Run Configuration](../SPEC/compute/cloud_run_service.yaml): Terraform/declarative configuration
 - [Cloud Run Deployment Runbook](../../docs/deployment_runbook.md): Operational procedures
 ```
 
@@ -984,7 +984,7 @@ Document insights and trade-offs that informed this decision:
 ### Lessons Learned from Related Work
 
 **From Previous ADRs:**
-- [ADR-003: Kubernetes Migration Attempt](./ADR-003_kubernetes_attempt_archived.md): Why GKE was rejected in favor of serverless (30 hours/month operational burden)
+- [ADR-03: Kubernetes Migration Attempt](./ADR-03_kubernetes_attempt_archived.md): Why GKE was rejected in favor of serverless (30 hours/month operational burden)
 - [ADR-005: Database Selection](./ADR-005_database_architecture.md): Experiences with persistent storage and stateless services
 
 **From Production Incidents:**

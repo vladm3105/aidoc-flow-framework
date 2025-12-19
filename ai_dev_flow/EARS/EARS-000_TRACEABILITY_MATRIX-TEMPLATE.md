@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: EARS-001 through EARS-NNN
+# Traceability Matrix: EARS-01 through EARS-NN
 
 ## Document Control
 
@@ -98,7 +98,7 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 - Prefix: `@` symbol
 - Artifact Types: lowercase (`brd`, `prd`)
 - Separator: colon `:` after artifact type
-- Document ID: `TYPE-NNN` format
+- Document ID: `TYPE-NN` format
 - Requirement ID: specific requirement/section identifier
 - Multiple Values: comma-separated within each tag line
 
@@ -160,7 +160,7 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 ### 2.5 Validation Rules
 
 1. **Required Tags**: Each EARS MUST include both `@brd` and `@prd` tags
-2. **Format Compliance**: All tags must follow `@type: DOC-ID:NNN` format
+2. **Format Compliance**: All tags must follow `@type: DOC-ID:NN` format
 3. **Valid References**: All referenced BRD and PRD documents must exist
 4. **No Gaps**: Cannot skip BRD layer (must reference both BRD and PRD)
 5. **Statement-Level Traceability**: Individual EARS statements should document upstream sources in their descriptions
@@ -211,9 +211,9 @@ ADR (Layer 5) → Architecture decisions (@brd through @bdd)
 
 | EARS ID | Title | Requirement Category | Total Statements | Status | Date | Upstream Sources | Downstream Artifacts |
 |---------|-------|---------------------|------------------|--------|------|------------------|---------------------|
-| EARS-001 | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-001, BRD-001 | BDD-001, REQ-001, REQ-002 |
-| EARS-002 | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-002 | BDD-002, REQ-003 |
-| EARS-NNN | ... | ... | ... | ... | ... | ... | ... |
+| EARS-01 | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-01, BRD-01 | BDD-01, REQ-01, REQ-02 |
+| EARS-02 | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-02 | BDD-02, REQ-03 |
+| EARS-NN | ... | ... | ... | ... | ... | ... | ... |
 
 **Document Status Legend**:
 - **Active**: Current and actively referenced
@@ -231,16 +231,16 @@ ADR (Layer 5) → Architecture decisions (@brd through @bdd)
 
 | BRD ID | BRD Title | EARS IDs | EARS Titles | Relationship Description |
 |--------|-----------|----------|-------------|--------------------------|
-| BRD-001 | [Business requirement] | EARS-001, EARS-002 | [Formal requirements] | Business goals formalized as verifiable requirements |
-| BRD-NNN | ... | ... | ... | ... |
+| BRD-01 | [Business requirement] | EARS-01, EARS-02 | [Formal requirements] | Business goals formalized as verifiable requirements |
+| BRD-NN | ... | ... | ... | ... |
 
 ### 11.2 PRD → EARS Traceability
 
 | PRD ID | PRD Title | EARS IDs | EARS Titles | Relationship Description |
 |--------|-----------|----------|-------------|--------------------------|
-| PRD-001 | [Product feature] | EARS-001, EARS-002, EARS-003 | [Formal requirements] | Product features decomposed into formal EARS statements |
-| PRD-002 | [Product feature] | EARS-004 | [Formal requirement] | User stories converted to WHEN-THE-SHALL syntax |
-| PRD-NNN | ... | ... | ... | ... |
+| PRD-01 | [Product feature] | EARS-01, EARS-02, EARS-03 | [Formal requirements] | Product features decomposed into formal EARS statements |
+| PRD-02 | [Product feature] | EARS-004 | [Formal requirement] | User stories converted to WHEN-THE-SHALL syntax |
+| PRD-NN | ... | ... | ... | ... |
 
 ### 5.3 Upstream Source Summary
 
@@ -255,37 +255,37 @@ ADR (Layer 5) → Architecture decisions (@brd through @bdd)
 
 ## 7. Downstream Traceability (OPTIONAL)
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
 
 ### 11.1 EARS → BDD Traceability
 
 | EARS ID | EARS Title | BDD IDs | BDD Scenarios | Relationship |
 |---------|------------|---------|---------------|--------------|
-| EARS-001 | [Formal requirement] | BDD-001 | [Test scenarios] | EARS statements validated through BDD scenarios |
-| EARS-002 | [Formal requirement] | BDD-002, BDD-003 | [Test scenarios] | Multiple test scenarios verify requirement |
-| EARS-NNN | ... | ... | ... | ... |
+| EARS-01 | [Formal requirement] | BDD-01 | [Test scenarios] | EARS statements validated through BDD scenarios |
+| EARS-02 | [Formal requirement] | BDD-02, BDD-03 | [Test scenarios] | Multiple test scenarios verify requirement |
+| EARS-NN | ... | ... | ... | ... |
 
 ### 11.2 EARS → REQ Traceability
 
 | EARS ID | EARS Title | REQ IDs | REQ Titles | Relationship |
 |---------|------------|---------|------------|--------------|
-| EARS-001 | [Formal requirement] | REQ-001, REQ-002 | [Atomic requirements] | EARS decomposed into implementation requirements |
-| EARS-002 | [Formal requirement] | REQ-003 | [Atomic requirement] | Direct 1:1 implementation requirement |
-| EARS-NNN | ... | ... | ... | ... |
+| EARS-01 | [Formal requirement] | REQ-01, REQ-02 | [Atomic requirements] | EARS decomposed into implementation requirements |
+| EARS-02 | [Formal requirement] | REQ-03 | [Atomic requirement] | Direct 1:1 implementation requirement |
+| EARS-NN | ... | ... | ... | ... |
 
 ### 7.3 EARS → ADR Traceability
 
 | EARS ID | EARS Title | ADR IDs | ADR Titles | Relationship |
 |---------|------------|---------|------------|--------------|
-| EARS-001 | [Requirement driving architectural decision] | ADR-005 | [Architecture decision] | Requirement necessitates technical decision |
-| EARS-NNN | ... | ... | ... | ... |
+| EARS-01 | [Requirement driving architectural decision] | ADR-005 | [Architecture decision] | Requirement necessitates technical decision |
+| EARS-NN | ... | ... | ... | ... |
 
 ### 6.4 EARS → SYS Traceability
 
 | EARS ID | EARS Title | SYS IDs | SYS Titles | Relationship |
 |---------|------------|---------|------------|--------------|
-| EARS-001 | [Formal requirement] | SYS-001 | [System requirement] | EARS informs system-level requirements |
-| EARS-NNN | ... | ... | ... | ... |
+| EARS-01 | [Formal requirement] | SYS-01 | [System requirement] | EARS informs system-level requirements |
+| EARS-NN | ... | ... | ... | ... |
 
 ### 6.5 Downstream Artifact Summary
 
@@ -330,32 +330,32 @@ ADR (Layer 5) → Architecture decisions (@brd through @bdd)
 
 ```mermaid
 graph TD
-    PRD001[PRD-001: Product Feature] --> EARS001[EARS-001: Formal Req 1]
-    PRD001 --> EARS002[EARS-002: Formal Req 2]
-    PRD002[PRD-002: Product Feature] --> EARS003[EARS-003: Formal Req 3]
+    PRD001[PRD-01: Product Feature] --> EARS001[EARS-01: Formal Req 1]
+    PRD001 --> EARS002[EARS-02: Formal Req 2]
+    PRD002[PRD-02: Product Feature] --> EARS003[EARS-03: Formal Req 3]
 
-    EARS001 --> BDD001[BDD-001: Acceptance Test]
-    EARS001 --> REQ001[REQ-001: Atomic Req 1]
-    EARS001 --> REQ002[REQ-002: Atomic Req 2]
+    EARS001 --> BDD001[BDD-01: Acceptance Test]
+    EARS001 --> REQ01[REQ-01: Atomic Req 1]
+    EARS001 --> REQ02[REQ-02: Atomic Req 2]
 
-    EARS002 --> BDD002[BDD-002: Acceptance Test]
-    EARS002 --> REQ003[REQ-003: Atomic Req 3]
+    EARS002 --> BDD002[BDD-02: Acceptance Test]
+    EARS002 --> REQ03[REQ-03: Atomic Req 3]
     EARS002 --> ADR005[ADR-005: Architecture]
 
-    EARS003 --> BDD003[BDD-003: Acceptance Test]
-    EARS003 --> REQ004[REQ-004: Atomic Req 4]
+    EARS003 --> BDD003[BDD-03: Acceptance Test]
+    EARS003 --> REQ004[REQ-04: Atomic Req 4]
 
     BDD001 --> Tests1[Test Implementation]
     BDD002 --> Tests2[Test Implementation]
-    REQ001 --> SPEC001[SPEC-001: Technical Spec]
-    REQ002 --> SPEC002[SPEC-002: Technical Spec]
+    REQ01 --> SPEC01[SPEC-01: Technical Spec]
+    REQ02 --> SPEC002[SPEC-02: Technical Spec]
 
     style EARS001 fill:#e8f5e9
     style EARS002 fill:#e8f5e9
     style EARS003 fill:#e8f5e9
     style BDD001 fill:#e3f2fd
     style BDD002 fill:#e3f2fd
-    style REQ001 fill:#fff3e0
+    style REQ01 fill:#fff3e0
     style ADR005 fill:#f3e5f5
 ```
 
@@ -365,9 +365,9 @@ graph TD
 
 | Source EARS | Target EARS | Dependency Type | Description |
 |-------------|-------------|-----------------|-------------|
-| EARS-001 | EARS-005 | Prerequisite | Authentication required before authorization |
-| EARS-002 | EARS-003 | Related | Data validation supports data processing |
-| EARS-NNN | ... | ... | ... |
+| EARS-01 | EARS-005 | Prerequisite | Authentication required before authorization |
+| EARS-02 | EARS-03 | Related | Data validation supports data processing |
+| EARS-NN | ... | ... | ... |
 
 ---
 
@@ -377,19 +377,19 @@ graph TD
 
 | EARS ID | Total Statements | BDD Scenarios | REQ Mappings | Verification % | Status |
 |---------|------------------|---------------|--------------|----------------|--------|
-| EARS-001 | 5 | 5 | 5 | 100% | ✅ Verified |
-| EARS-002 | 3 | 3 | 3 | 100% | ✅ Verified |
-| EARS-003 | 4 | 2 | 4 | 50% | 🟡 Partial |
-| EARS-NNN | ... | ... | ... | ... | ... |
+| EARS-01 | 5 | 5 | 5 | 100% | ✅ Verified |
+| EARS-02 | 3 | 3 | 3 | 100% | ✅ Verified |
+| EARS-03 | 4 | 2 | 4 | 50% | 🟡 Partial |
+| EARS-NN | ... | ... | ... | ... | ... |
 
 ### 11.2 Testability Assessment
 
 | EARS ID | Testability Score | Ambiguity Level | Completeness | Issues |
 |---------|-------------------|-----------------|--------------|--------|
-| EARS-001 | High (9/10) | Low | Complete | None |
-| EARS-002 | Medium (6/10) | Medium | Partial | Missing performance criteria |
-| EARS-003 | High (8/10) | Low | Complete | None |
-| EARS-NNN | ... | ... | ... | ... |
+| EARS-01 | High (9/10) | Low | Complete | None |
+| EARS-02 | Medium (6/10) | Medium | Partial | Missing performance criteria |
+| EARS-03 | High (8/10) | Low | Complete | None |
+| EARS-NN | ... | ... | ... | ... |
 
 ### 11.3 Requirements Quality Metrics
 
@@ -420,10 +420,10 @@ graph TD
 
 | EARS ID | BDD Status | REQ Status | ADR Status | Overall Status | Completion % |
 |---------|------------|------------|------------|----------------|--------------|
-| EARS-001 | ✅ Complete | ✅ Complete | N/A | Complete | 100% |
-| EARS-002 | ✅ Complete | 🟡 In Progress | ✅ Complete | In Progress | 80% |
-| EARS-003 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | Started | 30% |
-| EARS-NNN | ... | ... | ... | ... | ... |
+| EARS-01 | ✅ Complete | ✅ Complete | N/A | Complete | 100% |
+| EARS-02 | ✅ Complete | 🟡 In Progress | ✅ Complete | In Progress | 80% |
+| EARS-03 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | Started | 30% |
+| EARS-NN | ... | ... | ... | ... | ... |
 
 **Status Legend**:
 - ✅ Complete: Artifact created and validated
@@ -464,8 +464,8 @@ graph TD
 
 | Improvement Area | EARS Affected | Target Date | Owner |
 |------------------|---------------|-------------|-------|
-| Add performance criteria (WITHIN) | EARS-002, EARS-005 | YYYY-MM-DD | [Owner] |
-| Create missing BDD scenarios | EARS-003, EARS-007 | YYYY-MM-DD | [Owner] |
+| Add performance criteria (WITHIN) | EARS-02, EARS-005 | YYYY-MM-DD | [Owner] |
+| Create missing BDD scenarios | EARS-03, EARS-007 | YYYY-MM-DD | [Owner] |
 | Refine ambiguous statements | EARS-010 | YYYY-MM-DD | [Owner] |
 | Complete REQ decomposition | EARS-008, EARS-009 | YYYY-MM-DD | [Owner] |
 
@@ -473,7 +473,7 @@ graph TD
 
 | Milestone | Target Date | EARS Scope | Status |
 |-----------|-------------|------------|--------|
-| [Milestone 1: MVP Validation] | YYYY-MM-DD | EARS-001 through EARS-010 | On Track |
+| [Milestone 1: MVP Validation] | YYYY-MM-DD | EARS-01 through EARS-010 | On Track |
 | [Milestone 2: Full Coverage] | YYYY-MM-DD | All EARS | Planning |
 
 ---

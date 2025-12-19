@@ -102,20 +102,20 @@
 POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from EARS requirements
 #
 # REQUIREMENTS VERIFIED:
-#   - REQ-NNN: [Brief description of primary requirement being verified]
-#   - REQ-NNN: [Additional requirements if multiple are covered]
+#   - REQ-NN: [Brief description of primary requirement being verified]
+#   - REQ-NN: [Additional requirements if multiple are covered]
 # TRACEABILITY:
-#   Upstream: [REQ-NNN](../reqs/.../REQ-NNN_...md#REQ-NNN), [ADR-NNN](../../../adrs/ADR-NNN_...md#ADR-NNN)
-#   Downstream: Spec(../specs/.../SPEC-NNN_...yaml), Code(`component.module`), Tasks([TASKS-NNN](../ai_tasks/TASKS-NNN_....md))
+#   Upstream: [REQ-NN](../reqs/.../REQ-NN_...md#REQ-NN), [ADR-NN](../../../adrs/ADR-NN_...md#ADR-NN)
+#   Downstream: Spec(../specs/.../SPEC-NN_...yaml), Code(`component.module`), Tasks([TASKS-NN](../ai_tasks/TASKS-NN_....md))
 #
 # SAME-TYPE REFERENCES (Conditional):
 #   Include only if same-type relationships exist between BDD features.
-#   @related-bdd: BDD-NNN  # Related BDD feature sharing domain context
-#   @depends-bdd: BDD-NNN  # Prerequisite BDD feature that must be implemented first
+#   @related-bdd: BDD-NN  # Related BDD feature sharing domain context
+#   @depends-bdd: BDD-NN  # Prerequisite BDD feature that must be implemented first
 #
 # CUMULATIVE TAGGING REQUIREMENTS (Layer 4):
 # MANDATORY Tags: @brd, @prd, @ears (plus standard @requirement, @adr, @bdd tags)
-# Format: @artifact-type: TYPE.NN.EE.SS (Unified Element ID format: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
+# Format: @artifact-type: TYPE.NN.TT.SS (Unified Element ID format: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
 # Examples:
 #   @brd: BRD.01.01.30   (REQUIRED - business requirements)
 #   @prd: PRD.03.07.02   (REQUIRED - product requirements)
@@ -125,7 +125,7 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 #
 # THRESHOLD REGISTRY INTEGRATION:
 # Use @threshold tags for ALL quantitative values (performance, SLA, limits)
-# Format: @threshold: PRD.NNN.category.subcategory.key
+# Format: @threshold: PRD.NN.category.subcategory.key
 # Examples:
 #   @threshold: PRD.035.perf.api.p95_latency
 #   @threshold: PRD.035.sla.uptime.target
@@ -137,46 +137,46 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 # BDD scenarios REFERENCE thresholds defined in the PRD threshold registry.
 # All quantitative assertions must use @threshold: tags for traceability.
 #
-# Threshold Naming Convention: @threshold: PRD.NNN.category.subcategory.key
+# Threshold Naming Convention: @threshold: PRD.NN.category.subcategory.key
 # See: ../THRESHOLD_NAMING_RULES.md for complete naming standards.
 #
 # Thresholds typically used in BDD scenarios:
 #
 #   performance:
-#     - "@threshold: PRD.NNN.perf.api.p50_latency"     # 50th percentile response time
-#     - "@threshold: PRD.NNN.perf.api.p95_latency"     # 95th percentile response time
-#     - "@threshold: PRD.NNN.perf.api.p99_latency"     # 99th percentile response time
+#     - "@threshold: PRD.NN.perf.api.p50_latency"     # 50th percentile response time
+#     - "@threshold: PRD.NN.perf.api.p95_latency"     # 95th percentile response time
+#     - "@threshold: PRD.NN.perf.api.p99_latency"     # 99th percentile response time
 #
 #   sla:
-#     - "@threshold: PRD.NNN.sla.uptime.target"        # Uptime availability target
-#     - "@threshold: PRD.NNN.sla.success_rate.target"  # Success rate target
-#     - "@threshold: PRD.NNN.sla.error_rate.max"       # Maximum acceptable error rate
+#     - "@threshold: PRD.NN.sla.uptime.target"        # Uptime availability target
+#     - "@threshold: PRD.NN.sla.success_rate.target"  # Success rate target
+#     - "@threshold: PRD.NN.sla.error_rate.max"       # Maximum acceptable error rate
 #
 #   timeout:
-#     - "@threshold: PRD.NNN.timeout.request.sync"     # Synchronous request timeout
-#     - "@threshold: PRD.NNN.timeout.request.async"    # Asynchronous request timeout
+#     - "@threshold: PRD.NN.timeout.request.sync"     # Synchronous request timeout
+#     - "@threshold: PRD.NN.timeout.request.async"    # Asynchronous request timeout
 #
 #   limit:
-#     - "@threshold: PRD.NNN.limit.api.requests_per_second"  # Rate limiting
-#     - "@threshold: PRD.NNN.limit.batch.max_size"           # Batch size limits
-#     - "@threshold: PRD.NNN.limit.payload.max_bytes"        # Payload size limits
+#     - "@threshold: PRD.NN.limit.api.requests_per_second"  # Rate limiting
+#     - "@threshold: PRD.NN.limit.batch.max_size"           # Batch size limits
+#     - "@threshold: PRD.NN.limit.payload.max_bytes"        # Payload size limits
 #
 #   capacity:
-#     - "@threshold: PRD.NNN.capacity.concurrent.max"  # Max concurrent connections
-#     - "@threshold: PRD.NNN.capacity.queue.max_depth" # Queue depth limits
+#     - "@threshold: PRD.NN.capacity.concurrent.max"  # Max concurrent connections
+#     - "@threshold: PRD.NN.capacity.queue.max_depth" # Queue depth limits
 #
 # Example Usage in Scenarios:
-#   Then response time is less than @threshold: PRD.NNN.perf.api.p95_latency
-#   And success rate is above @threshold: PRD.NNN.sla.success_rate.target
-#   And service maintains @threshold: PRD.NNN.sla.uptime.target uptime
+#   Then response time is less than @threshold: PRD.NN.perf.api.p95_latency
+#   And success rate is above @threshold: PRD.NN.sla.success_rate.target
+#   And service maintains @threshold: PRD.NN.sla.uptime.target uptime
 #
 
 @brd: BRD.NN.EE.SS      # REQUIRED - business requirements traceability
 @prd: PRD.NN.EE.SS      # REQUIRED - product requirements traceability
 @ears: EARS.NN.24.SS    # REQUIRED - engineering requirements traceability
-@requirement:[REQ-NNN](../reqs/.../REQ-NNN_...md#REQ-NNN)
-@adr:[ADR-NNN](../adrs/ADR-NNN_...md#ADR-NNN)
-@bdd:[BDD-NNN:scenarios](BDD-NNN_descriptive_requirements.feature#scenarios)
+@requirement:[REQ-NN](../reqs/.../REQ-NN_...md#REQ-NN)
+@adr:[ADR-NN](../adrs/ADR-NN_...md#ADR-NN)
+@bdd:[BDD-NN:scenarios](BDD-NN_descriptive_requirements.feature#scenarios)
 Feature: [Feature Title]
   [Additional context about business value and importance]
   As a [user/stakeholder role: e.g., trader, risk manager, system administrator]
@@ -304,15 +304,15 @@ Feature: [Feature Title]
       | quantity  | -1    | invalid        | quantity must be > 0   |
 
   # NOTE: Performance thresholds should use @threshold registry references
-  # @threshold: PRD.NNN.perf.api.p50_latency
-  # @threshold: PRD.NNN.perf.api.p95_latency
-  # @threshold: PRD.NNN.perf.api.p99_latency
+  # @threshold: PRD.NN.perf.api.p50_latency
+  # @threshold: PRD.NN.perf.api.p95_latency
+  # @threshold: PRD.NN.perf.api.p99_latency
   @data_driven @performance
   Scenario Outline: [Validate performance under different load conditions]
     Given system load is at <load_percentage> capacity
     When <concurrent_requests> simultaneous requests are processed
-    Then average response time is less than @threshold: PRD.NNN.perf.api.<percentile>_latency
-    And success rate is greater than @threshold: PRD.NNN.sla.success_rate.<load_level>
+    Then average response time is less than @threshold: PRD.NN.perf.api.<percentile>_latency
+    And success rate is greater than @threshold: PRD.NN.sla.success_rate.<load_level>
 
     Examples: Performance Benchmarks (replace with actual threshold keys)
       | load_percentage | concurrent_requests | percentile | load_level |
@@ -352,23 +352,23 @@ Feature: [Feature Title]
     And [access controls are enforced]
     And [audit logs capture data access appropriately]
 
-  # @threshold: PRD.NNN.sla.uptime.target
+  # @threshold: PRD.NN.sla.uptime.target
   @quality_attribute @reliability
   Scenario: [Maintain availability during peak load]
     Given [system under peak usage conditions]
     When [high-volume requests arrive]
-    Then [service remains available above @threshold: PRD.NNN.sla.uptime.target uptime]
+    Then [service remains available above @threshold: PRD.NN.sla.uptime.target uptime]
     And [degradation occurs gracefully if needed]
     And [monitoring alerts are triggered appropriately]
 
-  # @threshold: PRD.NNN.perf.api.p95_latency
-  # @threshold: PRD.NNN.perf.api.p99_latency
+  # @threshold: PRD.NN.perf.api.p95_latency
+  # @threshold: PRD.NN.perf.api.p99_latency
   @quality_attribute @performance @latency
   Scenario: [Response time meets user expectations]
     Given [normal system operating conditions]
     When [typical user requests are made]
-    Then [response time is under @threshold: PRD.NNN.perf.api.p95_latency for 95% of requests]
-    And [response time is under @threshold: PRD.NNN.perf.api.p99_latency for 99% of requests]
+    Then [response time is under @threshold: PRD.NN.perf.api.p95_latency for 95% of requests]
+    And [response time is under @threshold: PRD.NN.perf.api.p99_latency for 99% of requests]
     And [latency is consistent across similar operations]
 
   # ===================
@@ -419,7 +419,7 @@ Feature: [Feature Title]
 # | **ADR-Ready Score** | ✅ 75% (Target: ≥90%) |
 #
 # --- FEATURE-LEVEL TAGS (copy and replace NN/SS with actual IDs) ---
-# Format: TYPE.NN.EE.SS (DOC_NUM.ELEM_TYPE.SEQ)
+# Format: TYPE.NN.TT.SS (DOC_NUM.ELEM_TYPE.SEQ)
 #
 # @brd: BRD.NN.01.SS     # Element type 01 = Functional Requirement
 # @prd: PRD.NN.07.SS     # Element type 07 = Product Feature
@@ -427,33 +427,33 @@ Feature: [Feature Title]
 # Feature: [Feature Title]
 #
 # --- AI-AGENT FEATURE TAGS (for AI-agent primary architecture files) ---
-# Format: TYPE.NN.EE.SS (DOC_NUM.ELEM_TYPE.SEQ)
+# Format: TYPE.NN.TT.SS (DOC_NUM.ELEM_TYPE.SEQ)
 #
 # @brd: BRD.NN.01.SS     # Element type 01 = Functional Requirement
 # @prd: PRD.NN.07.SS     # Element type 07 = Product Feature
 # @ears: EARS.NN.24.SS   # Element type 24 = EARS Statement
 # @ctr: CTR-005
 # Feature: [Agent Feature Title]
-#   Architecture: AI-Agent Primary (AGENT-NNN)
+#   Architecture: AI-Agent Primary (AGENT-NN)
 #
 # --- THRESHOLD REFERENCE FORMAT ---
 #
-# @threshold: PRD-NNN:category.subcategory.key
+# @threshold: PRD-NN:category.subcategory.key
 #
 # Examples:
-#   @threshold: PRD-NNN:perf.api.p95_latency
-#   @threshold: PRD-NNN:timeout.partner.name
-#   @threshold: PRD-NNN:risk.high.min
-#   @threshold: PRD-NNN:float.utilization.critical
+#   @threshold: PRD-NN:perf.api.p95_latency
+#   @threshold: PRD-NN:timeout.partner.name
+#   @threshold: PRD-NN:risk.high.min
+#   @threshold: PRD-NN:float.utilization.critical
 #
 # --- ENTITY REFERENCE FORMAT ---
 #
-# @entity: PRD.NNN.EntityName
+# @entity: PRD.NN.EntityName
 #
 # Examples:
-#   @entity: PRD.NNN.BusinessTransaction
-#   @entity: PRD.NNN.RiskEvaluationUnit
-#   @entity: PRD.NNN.ComplianceCase
+#   @entity: PRD.NN.BusinessTransaction
+#   @entity: PRD.NN.RiskEvaluationUnit
+#   @entity: PRD.NN.ComplianceCase
 #
 # =============================================================================
 # END OF TEMPLATE

@@ -343,7 +343,7 @@ def send_metrics():
 1. Check if referenced document exists
 2. Verify file path is correct (relative from current document)
 3. Verify anchor ID matches document ID
-4. Example fix: `[REQ-003](../REQ/risk/REQ-003_resource_limit.md#REQ-003)`
+4. Example fix: `[REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)`
 
 **Issue**: Duplicate requirement IDs
 

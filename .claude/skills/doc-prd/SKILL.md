@@ -139,7 +139,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 
 ### 18.1 BRD.001.001: API Communication Protocol
 
-**Upstream**: BRD-001 §7.2.1
+**Upstream**: BRD-01 §7.2.1
 
 **Technical Options**:
 1. **WebSocket**: Full-duplex, low overhead, native reconnection
@@ -156,7 +156,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 - Must work through corporate firewalls (port 443)
 - Must support mobile app integration (future roadmap)
 
-**Decision Timeline**: Before SPEC-001 creation (blocks implementation)
+**Decision Timeline**: Before SPEC-01 creation (blocks implementation)
 **ADR Requirements**: [What ADR must decide for THIS topic]
 ```
 
@@ -255,8 +255,8 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format       | Artifacts                               | Purpose                                                             |
 |----------|--------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - DOC_NUM.ELEM_TYPE.SEQ format |
+| Dash     | TYPE-NN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - DOC_NUM.ELEM_TYPE.SEQ format |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
@@ -266,7 +266,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
@@ -293,11 +293,11 @@ Examples:
 - BRD.01.01.10 - Success criteria from business case
 
 **Upstream Sources**:
-- [BRD-001](../BRD/BRD-001_platform.md#BRD-001) - Parent business requirements
+- [BRD-01](../BRD/BRD-01_platform.md#BRD-01) - Parent business requirements
 
 **Downstream Artifacts**:
-- EARS-NNN (to be created) - Formal requirements
-- BDD-NNN (to be created) - Test scenarios
+- EARS-NN (to be created) - Formal requirements
+- BDD-NN (to be created) - Test scenarios
 ```
 
 ## Upstream/Downstream Artifacts
@@ -311,8 +311,8 @@ Examples:
 - **ADR** (Layer 5) - Architecture decisions for topics identified in PRD
 
 **Same-Type Document Relationships** (conditional):
-- `@related-prd: PRD-NNN` - PRDs sharing product domain context
-- `@depends-prd: PRD-NNN` - PRD that must be implemented first
+- `@related-prd: PRD-NN` - PRDs sharing product domain context
+- `@depends-prd: PRD-NN` - PRD that must be implemented first
 
 ## Creation Process
 
@@ -322,27 +322,27 @@ Read and understand the BRD that drives this PRD.
 
 ### Step 2: Reserve ID Number
 
-Check `docs/PRD/` for next available ID number (e.g., PRD-001, PRD-002).
+Check `docs/PRD/` for next available ID number (e.g., PRD-01, PRD-02).
 
 **ID Matching**: PRD ID does NOT need to match BRD ID (PRD-009 may implement BRD-016).
 
 ### Step 3: Create PRD Folder and Files
 
-**Folder structure** (DEFAULT - nested folder per document):
-1. Create folder: `docs/PRD/PRD-NNN/`
-2. Create index file: `docs/PRD/PRD-NNN/PRD-NNN.0_index.md`
-3. Create section files: `docs/PRD/PRD-NNN/PRD-NNN.S_{slug}.md`
+**Folder structure** (DEFAULT - nested folder per document with descriptive slug):
+1. Create folder: `docs/PRD/PRD-NN_{slug}/` (folder slug MUST match index file slug)
+2. Create index file: `docs/PRD/PRD-NN_{slug}/PRD-NN.0_{slug}_index.md`
+3. Create section files: `docs/PRD/PRD-NN_{slug}/PRD-NN.S_{slug}_{section}.md`
 
 **Example**:
 ```
-docs/PRD/PRD-001/
-├── PRD-001.0_index.md
-├── PRD-001.1_overview.md
-├── PRD-001.2_features.md
-└── PRD-001.3_requirements.md
+docs/PRD/PRD-01_user_authentication/
+├── PRD-01.0_user_authentication_index.md
+├── PRD-01.1_user_authentication_overview.md
+├── PRD-01.2_user_authentication_features.md
+└── PRD-01.3_user_authentication_requirements.md
 ```
 
-**OPTIONAL** (for small documents <25KB): `docs/PRD/PRD-NNN_{slug}.md` (monolithic)
+**OPTIONAL** (for small documents <25KB): `docs/PRD/PRD-NN_{slug}.md` (monolithic)
 
 ### Step 4: Fill Document Control Section
 
@@ -372,8 +372,8 @@ Include @brd tags (Layer 1) in Traceability section.
 
 ### Step 9: Create/Update Traceability Matrix
 
-**MANDATORY**: Create or update `docs/PRD/PRD-000_TRACEABILITY_MATRIX.md`
-- Use template: `ai_dev_flow/PRD/PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+**MANDATORY**: Create or update `docs/PRD/PRD-00_TRACEABILITY_MATRIX.md`
+- Use template: `ai_dev_flow/PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - Add PRD entry with upstream BRD and downstream artifacts
 - Update within same commit as PRD creation
 
@@ -388,7 +388,7 @@ Run validation scripts:
 python ai_dev_flow/scripts/validate_links.py --path docs/PRD/
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact PRD-001 --expected-layers brd --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact PRD-01 --expected-layers brd --strict
 ```
 
 ### Step 11: Commit Changes
@@ -401,14 +401,14 @@ Commit PRD file and traceability matrix together.
 
 **Quality Gates Validation**:
 ```bash
-./scripts/validate_quality_gates.sh docs/PRD/PRD-NNN_slug.md
+./scripts/validate_quality_gates.sh docs/PRD/PRD-NN_slug.md
 ```
 
 **Tag Validation**:
 ```bash
 # Validate cumulative tags (must have @brd)
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --artifact PRD-001 \
+  --artifact PRD-01 \
   --expected-layers brd \
   --strict
 ```
@@ -453,7 +453,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 2. **Vague goals**: Goals must be specific and measurable
 3. **Referencing ADR numbers**: Don't write "See ADR-033" (ADRs don't exist yet)
 4. **Missing @brd tags**: Layer 2 must include Layer 1 tags
-5. **ID number confusion**: PRD-NNN does NOT need to match BRD-NNN
+5. **ID number confusion**: PRD-NN does NOT need to match BRD-NN
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
 
@@ -474,7 +474,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/PRD/PRD-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/PRD/PRD-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all PRD documents complete
 python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
@@ -491,7 +491,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd tag | Add with upstream BRD reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -558,7 +558,7 @@ custom_fields:
 python ai_dev_flow/scripts/validate_links.py --path docs/PRD/
 
 # Cumulative tag validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact PRD-NNN --expected-layers brd --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact PRD-NN --expected-layers brd --strict
 ```
 
 **Schema Reference**: `ai_dev_flow/PRD/PRD_SCHEMA.yaml`
@@ -582,7 +582,8 @@ For supplementary documentation related to PRD artifacts:
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (DEFAULT for all PRD documents):
-- **Structure**: `docs/PRD/PRD-NNN/PRD-NNN.S_slug.md` (nested folder per document)
+- **Structure**: `docs/PRD/PRD-NN_{slug}/PRD-NN.S_{slug}.md` (nested folder per document with descriptive slug)
+- **Folder Naming**: `PRD-NN_{slug}/` where slug MUST match the index file slug
 - Index template: `ai_dev_flow/PRD/PRD-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_flow/PRD/PRD-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)

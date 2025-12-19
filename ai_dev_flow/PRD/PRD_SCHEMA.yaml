@@ -104,7 +104,7 @@ structure:
   required_sections:
     - pattern: "^# PRD-\\d{3}:"
       name: "Title (H1)"
-      description: "Single H1 with format PRD-NNN: Title"
+      description: "Single H1 with format PRD-NN: Title"
 
     - pattern: "^## 0\\. Document Control$"
       name: "Document Control"
@@ -150,7 +150,7 @@ structure:
 
 feature_patterns:
   # Feature ID format (Simple Numeric - per ID_NAMING_STANDARDS.md)
-  # Document context (PRD-NNN) provides namespace; no need to embed in feature ID
+  # Document context (PRD-NN) provides namespace; no need to embed in feature ID
   feature_id:
     pattern: "^\\d{3}$"
     format: "NNN"
@@ -242,7 +242,7 @@ traceability:
       - type: REQ
         format: "@req: REQ.NN.26.SS"
       - type: SPEC
-        format: "@spec: SPEC-NNN"
+        format: "@spec: SPEC-NN"
 
   lateral:
     format: "@prd: PRD.NN.07.SS"
@@ -253,7 +253,7 @@ traceability:
     description: "Reference to Platform Threshold Registry"
 
   contract_references:
-    format: "@ctr: CTR-NNN"
+    format: "@ctr: CTR-NN"
     description: "Reference to data contracts"
 
 # =============================================================================

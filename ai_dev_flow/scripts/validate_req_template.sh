@@ -15,7 +15,7 @@ SCRIPT_VERSION="3.0.0"
 
 if [ -z "$REQ_FILE" ]; then
   echo "Usage: $0 <REQ_FILE>"
-  echo "Example: $0 /opt/data/ibmcp/docs/REQ/api/ib/REQ-002_connection_heartbeat_monitoring.md"
+  echo "Example: $0 /opt/data/ibmcp/docs/REQ/api/ib/REQ-02_connection_heartbeat_monitoring.md"
   exit 1
 fi
 
@@ -209,7 +209,7 @@ source_doc=$(grep "| \*\*Source Document\*\* |" "$REQ_FILE" | sed 's/.*| \(.*\) 
 if echo "$source_doc" | grep -qE "[A-Z]+-[0-9]+ Section [0-9]"; then
   echo "  ✅ Source Document format valid: $source_doc"
 else
-  echo "  ⚠️  WARNING: Source Document should include section number (e.g., 'SYS-002 Section 3.1.1')"
+  echo "  ⚠️  WARNING: Source Document should include section number (e.g., 'SYS-02 Section 3.1.1')"
   ((WARNINGS++))
 fi
 
@@ -293,12 +293,12 @@ echo "-----------------------------------------"
 
 filename=$(basename "$REQ_FILE")
 
-# Pattern: REQ-NNN or REQ-NNN-YY_{slug}.md
-if [[ $filename =~ ^REQ-[0-9]{3,4}(-[0-9]{2,3})?_[a-z0-9_]+\.md$ ]]; then
+# Pattern: REQ-NN or REQ-NN-YY_{slug}.md
+if [[ $filename =~ ^REQ-[0-9]{2,}(-[0-9]{2,3})?_[a-z0-9_]+\.md$ ]]; then
   echo "  ✅ Filename format valid: $filename"
 
   # Extract ID from filename
-  file_id=$(echo "$filename" | sed -E 's/^(REQ-[0-9]{3,4}(-[0-9]{2,3})?)_.*/\1/')
+  file_id=$(echo "$filename" | sed -E 's/^(REQ-[0-9]{2,}(-[0-9]{2,3})?)_.*/\1/')
 
   # Check H1 header matches
   h1_header=$(grep -m1 "^# REQ-" "$REQ_FILE" || echo "")
@@ -312,8 +312,8 @@ if [[ $filename =~ ^REQ-[0-9]{3,4}(-[0-9]{2,3})?_[a-z0-9_]+\.md$ ]]; then
   fi
 else
   echo "  ❌ ERROR: Invalid filename format: $filename"
-  echo "           Expected: REQ-NNN_{slug}.md or REQ-NNN-YY_{slug}.md"
-  echo "           Example: REQ-002_connection_heartbeat.md"
+  echo "           Expected: REQ-NN_{slug}.md or REQ-NN-YY_{slug}.md"
+  echo "           Example: REQ-02_connection_heartbeat.md"
   ((ERRORS++))
 fi
 
@@ -342,7 +342,7 @@ if [ "$template_version" = "2.0" ]; then
   else
     echo "  ❌ ERROR: Template 2.0 requires [RESOURCE_INSTANCE] tag in H1"
     echo "           Current H1: $h1_line"
-    echo "           Expected: # REQ-NNN: [TAG] Title"
+    echo "           Expected: # REQ-NN: [TAG] Title"
     echo "           Valid tags: [EXTERNAL_SERVICE_GATEWAY], [HEALTH_CHECK_SERVICE], etc."
     ((ERRORS++))
   fi
@@ -386,7 +386,7 @@ else
 
   # Validate tag format: @artifact-type: DOCUMENT-ID:REQUIREMENT-ID
   while IFS= read -r tag_line; do
-    if ! [[ $tag_line =~ ^@(brd|prd|ears|bdd|adr|sys):[[:space:]][A-Z]+-[0-9]{3,4}(-[0-9]{2,3})?(:[A-Z0-9_-]+)? ]]; then
+    if ! [[ $tag_line =~ ^@(brd|prd|ears|bdd|adr|sys):[[:space:]][A-Z]+-[0-9]{2,}(-[0-9]{2,3})?(:[A-Z0-9_-]+)? ]]; then
       echo "  ❌ ERROR: Invalid tag format: $tag_line"
       echo "           Expected: @type: DOC-ID:REQ-ID"
       echo "           Example: @brd: BRD.09.01.15"
@@ -506,7 +506,7 @@ echo "-----------------------------------------"
 upstream_count=$(grep -E "^\| (BRD|PRD|EARS|BDD|ADR|SYS) \|" "$REQ_FILE" | wc -l)
 
 # Check for complex requirement indicators
-has_subcomponents=$(grep -qE "REQ-[0-9]{3,4}:[A-Z]+-[0-9]+" "$REQ_FILE" && echo "yes" || echo "no")
+has_subcomponents=$(grep -qE "REQ-[0-9]{2,}:[A-Z]+-[0-9]+" "$REQ_FILE" && echo "yes" || echo "no")
 
 if [ "$upstream_count" -ge 5 ] || [ "$has_subcomponents" = "yes" ]; then
   if grep -q "### Traceability Matrix\|### 11.4\|## 11.4" "$REQ_FILE"; then
@@ -516,7 +516,7 @@ if [ "$upstream_count" -ge 5 ] || [ "$has_subcomponents" = "yes" ]; then
     echo "  ⚠️  WARNING: Complex REQ detected but Section 11.4 (Traceability Matrix) missing"
     echo "           Upstream sources: $upstream_count (≥5 suggests complexity)"
     echo "           Sub-components: $has_subcomponents"
-    echo "           Recommendation: Add Section 11.4 or create separate REQ-NNN_TRACEABILITY_MATRIX.md"
+    echo "           Recommendation: Add Section 11.4 or create separate REQ-NN_TRACEABILITY_MATRIX.md"
     echo "           Reference: REQ-TEMPLATE-UNIFIED.md Section 11.4"
     ((WARNINGS++))
   fi

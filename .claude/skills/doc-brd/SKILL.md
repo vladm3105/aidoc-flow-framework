@@ -53,6 +53,22 @@ Before creating a BRD, read:
 
 **For New Projects**: Use `project-init` skill first to initialize project structure.
 
+## Pre-Flight Check (MANDATORY)
+
+Before creating ANY BRD section, confirm:
+
+1. ✅ Read `ai_dev_flow/ID_NAMING_STANDARDS.md` - Element Type Codes table
+2. ✅ Element ID format: `BRD.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dots)
+
+**Common Element Types**:
+| Code | Type | Example |
+|------|------|---------|
+| 01 | Functional Requirement | BRD.02.01.01 |
+| 06 | Acceptance Criteria | BRD.02.06.01 |
+| 23 | Business Objective | BRD.02.23.01 |
+
+> ⚠️ **Removed Patterns**: Do NOT use `AC-XXX`, `FR-XXX`, `BC-XXX`, `BO-XXX` formats.
+
 ## When to Use This Skill
 
 Use `doc-brd` when:
@@ -92,7 +108,7 @@ Use `doc-brd` when:
 
 - Title contains "Platform", "Architecture", "Infrastructure", "Integration" → Platform BRD
 - Title contains specific workflow names, user types (B2C, B2B), or feature names → Feature BRD
-- References/depends on BRD-001 or foundation ADRs → Feature BRD
+- References/depends on BRD-01 or foundation ADRs → Feature BRD
 - Establishes technology choices or system-wide patterns → Platform BRD
 
 ### Workflow Differences
@@ -121,8 +137,8 @@ Use `doc-brd` when:
 - **MUST populate** Section 3.7 (Mandatory Technology Conditions) with non-negotiable constraints
 
 **Feature BRD**:
-- **MUST mark** Section 3.6 as "N/A - See Platform BRD-NNN Section 3.6" and reference specific items
-- **MUST mark** Section 3.7 as "N/A - See Platform BRD-NNN Section 3.7" and reference specific conditions
+- **MUST mark** Section 3.6 as "N/A - See Platform BRD-NN Section 3.6" and reference specific items
+- **MUST mark** Section 3.7 as "N/A - See Platform BRD-NN Section 3.7" and reference specific conditions
 
 **Reference**: `ai_dev_flow/PLATFORM_VS_FEATURE_BRD.md` for detailed guidance
 
@@ -143,7 +159,8 @@ Use `doc-brd` when:
 > **Note**: Technical QA standards, testing strategy, and defect management are documented in PRD-TEMPLATE.md Section 21 (product level).
 
 **Section Templates** (DEFAULT for all BRD documents):
-- **Structure**: `docs/BRD/BRD-NNN/BRD-NNN.S_slug.md` (nested folder per document)
+- **Structure**: `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{slug}.md` (nested folder per document with descriptive slug)
+- **Folder Naming**: `BRD-NN_{slug}/` where slug MUST match the index file slug
 - Index template: `ai_dev_flow/BRD/BRD-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_flow/BRD/BRD-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
@@ -206,7 +223,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 | Component | Description | Example |
 |-----------|-------------|---------|
 | `{DOC_TYPE}` | Document type | `BRD` |
-| `.NN` | Document number (2-9 digits) | `.01` = BRD-001 |
+| `.NN` | Document number (2-9 digits) | `.01` = BRD-01 |
 | `.EE` | Element type code (01=Functional Req) | `.01` = functional requirement |
 | `.SS` | Sequential number (2-9 digits) | `.03` = third item |
 
@@ -244,7 +261,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 
 **Correct Structure**:
 ```markdown
-# BRD-001: Project Name
+# BRD-01: Project Name
 
 ## Document Control
 [All metadata fields here]
@@ -262,7 +279,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 **Format**: BRD has no `@` tags since it's Layer 1 (top of hierarchy)
 
 **Downstream artifacts will tag BRD** (using unified format):
-- PRD will include: `@brd: BRD.01.01.30` (TYPE.NN.EE.SS format)
+- PRD will include: `@brd: BRD.01.01.30` (TYPE.NN.TT.SS format)
 - EARS will include: `@brd: BRD.01.01.30`
 - All downstream artifacts inherit BRD tags
 
@@ -272,7 +289,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
 | Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
@@ -283,7 +300,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
@@ -306,8 +323,8 @@ Examples:
 - **ADR** (Layer 5) - Architecture decisions for topics identified in BRD Section "Architecture Decision Requirements"
 
 **Same-Type Document Relationships** (conditional):
-- `@related-brd: BRD-NNN` - BRDs sharing business domain context
-- `@depends-brd: BRD-NNN` - BRD that must be implemented first (e.g., platform BRD before feature BRD)
+- `@related-brd: BRD-NN` - BRDs sharing business domain context
+- `@depends-brd: BRD-NN` - BRD that must be implemented first (e.g., platform BRD before feature BRD)
 
 ## Creation Process
 
@@ -325,25 +342,25 @@ Choose appropriate template (comprehensive, simplified, or domain-specific).
 
 ### Step 4: Reserve ID Number
 
-Check `docs/BRD/` for next available ID number (e.g., BRD-001, BRD-002).
+Check `docs/BRD/` for next available ID number (e.g., BRD-01, BRD-02).
 
 ### Step 5: Create BRD Folder and Files
 
-**Folder structure** (DEFAULT - nested folder per document):
-1. Create folder: `docs/BRD/BRD-NNN/`
-2. Create index file: `docs/BRD/BRD-NNN/BRD-NNN.0_index.md`
-3. Create section files: `docs/BRD/BRD-NNN/BRD-NNN.S_{slug}.md`
+**Folder structure** (DEFAULT - nested folder per document with descriptive slug):
+1. Create folder: `docs/BRD/BRD-NN_{slug}/` (folder slug MUST match index file slug)
+2. Create index file: `docs/BRD/BRD-NN_{slug}/BRD-NN.0_{slug}_index.md`
+3. Create section files: `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{slug}_{section}.md`
 
 **Example**:
 ```
-docs/BRD/BRD-001/
-├── BRD-001.0_index.md
-├── BRD-001.1_executive_summary.md
-├── BRD-001.2_business_context.md
-└── BRD-001.3_requirements.md
+docs/BRD/BRD-01_platform_architecture/
+├── BRD-01.0_platform_architecture_index.md
+├── BRD-01.1_platform_architecture_executive_summary.md
+├── BRD-01.2_platform_architecture_business_context.md
+└── BRD-01.3_platform_architecture_requirements.md
 ```
 
-**OPTIONAL** (for small documents <25KB): `docs/BRD/BRD-NNN_{slug}.md` (monolithic)
+**OPTIONAL** (for small documents <25KB): `docs/BRD/BRD-NN_{slug}.md` (monolithic)
 
 ### Step 6: Fill Document Control Section
 
@@ -354,7 +371,7 @@ Complete all required metadata fields and initialize Document Revision History t
 Fill all 17 required sections following template structure.
 
 **Platform BRD**: Populate sections 3.6 and 3.7 with technology details
-**Feature BRD**: Mark sections 3.6 and 3.7 as "N/A - See Platform BRD-NNN"
+**Feature BRD**: Mark sections 3.6 and 3.7 as "N/A - See Platform BRD-NN"
 
 ### Step 8: Document Architecture Decision Requirements
 
@@ -376,7 +393,7 @@ In Traceability section, link to specific `{project_root}/strategy/` sections.
 Run validation scripts:
 ```bash
 # BRD structure validation
-./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-001_*.md
+./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-01_*.md
 
 # Link integrity
 ./ai_dev_flow/scripts/validate_links.py --path docs/BRD/
@@ -392,12 +409,12 @@ Commit BRD file and traceability matrix together.
 
 **BRD-Specific Validation**:
 ```bash
-./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-001_platform.md
+./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-01_platform.md
 ```
 
 **Quality Gates Validation**:
 ```bash
-./scripts/validate_quality_gates.sh docs/BRD/BRD-001_platform.md
+./scripts/validate_quality_gates.sh docs/BRD/BRD-01_platform.md
 ```
 
 ### Manual Checklist
@@ -441,13 +458,13 @@ LOOP:
 
 ```bash
 # BRD structure validation (primary)
-./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-NNN_slug.md
+./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-NN_slug.md
 
 # Link integrity validation
 ./ai_dev_flow/scripts/validate_links.py --path docs/BRD/
 
 # Quality gates validation
-./scripts/validate_quality_gates.sh docs/BRD/BRD-NNN_slug.md
+./scripts/validate_quality_gates.sh docs/BRD/BRD-NN_slug.md
 ```
 
 ### Layer-Specific Upstream Requirements
@@ -460,7 +477,7 @@ LOOP:
 
 | Issue | Fix Action |
 |-------|------------|
-| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

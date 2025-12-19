@@ -107,7 +107,7 @@ structure:
   required_sections:
     - pattern: "^# ADR-\\d{3}:"
       name: "Title (H1)"
-      description: "Single H1 with format ADR-NNN: Title"
+      description: "Single H1 with format ADR-NN: Title"
 
     - pattern: "^## 1\\. Document Control$"
       name: "Document Control"
@@ -202,7 +202,7 @@ structure:
   # File naming convention
   file_naming:
     pattern: "^ADR-\\d{3}_[a-z0-9_]+\\.md$"
-    description: "Format: ADR-NNN_descriptive_name.md"
+    description: "Format: ADR-NN_descriptive_name.md"
 
 # =============================================================================
 # ADR-Specific Patterns
@@ -321,7 +321,7 @@ validation_rules:
     - rule: "Document Control must have minimum 6 fields"
       severity: error
 
-    - rule: "File name must match ADR-NNN_name.md format"
+    - rule: "File name must match ADR-NN_name.md format"
       severity: warning
 
   # Content validation
@@ -380,22 +380,22 @@ traceability:
   downstream:
     expected:
       - type: SYS
-        format: "SYS-NNN"
+        format: "SYS-NN"
       - type: REQ
-        format: "REQ-NNN"
+        format: "REQ-NN"
       - type: SPEC
-        format: "SPEC-NNN"
+        format: "SPEC-NN"
 
   same_type:
     optional:
       - type: ADR
-        format: "@related-adr: ADR-NNN"
+        format: "@related-adr: ADR-NN"
         description: "Related ADR document sharing architectural context"
       - type: ADR
-        format: "@supersedes: ADR-NNN"
+        format: "@supersedes: ADR-NN"
         description: "ADR that this decision supersedes"
       - type: ADR
-        format: "@depends-adr: ADR-NNN"
+        format: "@depends-adr: ADR-NN"
         description: "Prerequisite ADR document"
 
 # =============================================================================
@@ -416,7 +416,7 @@ error_messages:
   ADR-E011: "Context missing Problem Statement subsection"
   ADR-E012: "Decision missing Chosen Solution subsection"
   ADR-E013: "Consequences missing Positive or Negative Outcomes"
-  ADR-E014: "File name does not match ADR-NNN_name.md format"
+  ADR-E014: "File name does not match ADR-NN_name.md format"
   ADR-W001: "Missing Architecture Flow Mermaid diagram"
   ADR-W002: "Context missing Constraints subsection"
   ADR-W003: "Missing upstream traceability tags (@prd, @ears, @bdd)"

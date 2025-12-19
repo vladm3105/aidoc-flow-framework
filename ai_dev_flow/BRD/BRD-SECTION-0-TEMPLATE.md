@@ -1,5 +1,5 @@
 ---
-doc_id: BRD-{NNN}
+doc_id: BRD-{NN}
 section: 0
 title: "{Document Title} - Index"
 total_sections: {N}
@@ -23,13 +23,13 @@ custom_fields:
   index_role: true
 ---
 
-# BRD-{NNN}.0: {Document Title} - Index
+# BRD-{NN}.0: {Document Title} - Index
 
 ## Document Overview
 
 | Field | Value |
 |-------|-------|
-| **Document ID** | BRD-{NNN} |
+| **Document ID** | BRD-{NN} |
 | **Document Type** | Business Requirements Document |
 | **Layer** | 1 - Business Requirements |
 | **Title** | {Document Title} |
@@ -50,10 +50,10 @@ custom_fields:
 
 | Section | File | Title | Description |
 |---------|------|-------|-------------|
-| 0 | [BRD-{NNN}.0_index.md](BRD-{NNN}.0_index.md) | Index | This file - document overview and navigation |
-| 1 | [BRD-{NNN}.1_{slug1}.md](BRD-{NNN}.1_{slug1}.md) | {Title 1} | {Description 1} |
-| 2 | [BRD-{NNN}.2_{slug2}.md](BRD-{NNN}.2_{slug2}.md) | {Title 2} | {Description 2} |
-| 3 | [BRD-{NNN}.3_{slug3}.md](BRD-{NNN}.3_{slug3}.md) | {Title 3} | {Description 3} |
+| 0 | [BRD-{NN}.0_index.md](BRD-{NN}.0_index.md) | Index | This file - document overview and navigation |
+| 1 | [BRD-{NN}.1_{slug1}.md](BRD-{NN}.1_{slug1}.md) | {Title 1} | {Description 1} |
+| 2 | [BRD-{NN}.2_{slug2}.md](BRD-{NN}.2_{slug2}.md) | {Title 2} | {Description 2} |
+| 3 | [BRD-{NN}.3_{slug3}.md](BRD-{NN}.3_{slug3}.md) | {Title 3} | {Description 3} |
 
 ---
 
@@ -63,8 +63,8 @@ custom_fields:
 - None (BRD is Layer 1 - origin layer)
 
 ### Downstream References
-- @ref: PRD-{NNN} - Product Requirements derived from this BRD
-- @ref: EARS-{NNN} - Formal requirements derived from PRD
+- @ref: PRD-{NN} - Product Requirements derived from this BRD
+- @ref: EARS-{NN} - Formal requirements derived from PRD
 
 ### Cross-Section Dependencies
 - Section 2 depends on Section 1 (business context)
@@ -96,7 +96,7 @@ custom_fields:
 
 ## Traceability
 
-- **Original Document**: BRD-{NNN} (before split)
+- **Original Document**: BRD-{NN} (before split)
 - **Element ID Range**: BRD.{NN}.{TT}.01 through BRD.{NN}.{TT}.{MAX}
-- **Tag Format**: @ref: BRD-{NNN}.{S} (section reference)
+- **Tag Format**: @ref: BRD-{NN}.{S} (section reference)
 - **Downstream Trace**: PRD -> EARS -> BDD -> ADR -> SYS -> REQ -> IMPL -> CTR -> SPEC

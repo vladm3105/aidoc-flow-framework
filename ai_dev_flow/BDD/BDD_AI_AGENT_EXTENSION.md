@@ -175,7 +175,7 @@ AI-Agent BDD files MUST include the architecture identifier in the header:
 
 ```gherkin
 # =============================================================================
-# BDD-NNN: [Agent Feature Title]
+# BDD-NN: [Agent Feature Title]
 # =============================================================================
 # POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria
 #
@@ -183,11 +183,11 @@ AI-Agent BDD files MUST include the architecture identifier in the header:
 # This document covers AI agent-based [description] via A2A Protocol.
 #
 # REQUIREMENTS VERIFIED:
-#   - EARS-NNN: [Requirement description]
+#   - EARS-NN: [Requirement description]
 #   - BRD-NNN: [Business requirement reference]
 #
 # TRACEABILITY:
-#   Upstream: BRD-NNN, PRD-NNN, EARS-NNN
+#   Upstream: BRD-NNN, PRD-NNN, EARS-NN
 #   Downstream: ADR, SYS, REQ, SPEC, Code, Tests
 # =============================================================================
 ```

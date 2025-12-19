@@ -1,4 +1,4 @@
-# Traceability Matrix: REQ-001 through REQ-NNN
+# Traceability Matrix: REQ-01 through REQ-NN
 
 ## Document Control
 
@@ -33,16 +33,16 @@
 
 | REQ ID | Title | Category | Status | Date | Upstream Sources | Downstream Artifacts |
 |---|---|---|---|---|---|---|
-| REQ-001 | Service registry MUST support automatic service discovery | service-discovery | Approved | 2024-11-16 | EARS-005, SYS-001, ADR-001 | IMPL-001, CTR-003, SPEC-008 |
-| REQ-002 | API gateway MUST route requests based on service path | api-gateway | Approved | 2024-11-16 | EARS-006, SYS-002, ADR-001 | IMPL-001, CTR-004, SPEC-009 |
-| REQ-003 | Load balancer MUST distribute traffic using round-robin algorithm | load-balancing | Approved | 2024-11-17 | EARS-007, SYS-001, ADR-001 | IMPL-002, SPEC-010 |
-| REQ-004 | Circuit breaker MUST open after 5 consecutive failures | resilience | Approved | 2024-11-17 | EARS-008, SYS-002, ADR-001 | IMPL-002, SPEC-011 |
-| REQ-005 | Database connection pool MUST maintain minimum 10 connections | database | Approved | 2024-11-19 | EARS-010, SYS-003, ADR-002 | IMPL-003, CTR-005, SPEC-012 |
-| REQ-006 | Transaction isolation MUST use Read Committed level | database | Approved | 2024-11-19 | EARS-011, SYS-003, ADR-002 | IMPL-003, SPEC-013 |
-| REQ-007 | Database backup MUST run daily at 2 AM UTC | database | Approved | 2024-11-19 | EARS-012, SYS-003, ADR-002 | IMPL-003 |
-| REQ-008 | Kafka producer MUST use idempotent writes | messaging | Approved | 2024-11-21 | EARS-015, SYS-004, ADR-003 | IMPL-004, CTR-006, SPEC-014 |
-| REQ-009 | Message consumer MUST handle duplicate messages | messaging | Approved | 2024-11-21 | EARS-016, SYS-004, ADR-003 | IMPL-004, SPEC-015 |
-| REQ-010 | Event schema MUST be versioned using Avro | messaging | Approved | 2024-11-21 | EARS-017, SYS-004, ADR-003 | IMPL-004, CTR-007, SPEC-016 |
+| REQ-01 | Service registry MUST support automatic service discovery | service-discovery | Approved | 2024-11-16 | EARS-005, SYS-01, ADR-001 | IMPL-01, CTR-03, SPEC-08 |
+| REQ-02 | API gateway MUST route requests based on service path | api-gateway | Approved | 2024-11-16 | EARS-006, SYS-02, ADR-001 | IMPL-01, CTR-004, SPEC-009 |
+| REQ-03 | Load balancer MUST distribute traffic using round-robin algorithm | load-balancing | Approved | 2024-11-17 | EARS-007, SYS-01, ADR-001 | IMPL-02, SPEC-010 |
+| REQ-004 | Circuit breaker MUST open after 5 consecutive failures | resilience | Approved | 2024-11-17 | EARS-008, SYS-02, ADR-001 | IMPL-02, SPEC-011 |
+| REQ-005 | Database connection pool MUST maintain minimum 10 connections | database | Approved | 2024-11-19 | EARS-010, SYS-03, ADR-02 | IMPL-03, CTR-005, SPEC-012 |
+| REQ-006 | Transaction isolation MUST use Read Committed level | database | Approved | 2024-11-19 | EARS-011, SYS-03, ADR-02 | IMPL-03, SPEC-013 |
+| REQ-007 | Database backup MUST run daily at 2 AM UTC | database | Approved | 2024-11-19 | EARS-012, SYS-03, ADR-02 | IMPL-03 |
+| REQ-008 | Kafka producer MUST use idempotent writes | messaging | Approved | 2024-11-21 | EARS-015, SYS-004, ADR-03 | IMPL-004, CTR-006, SPEC-014 |
+| REQ-009 | Message consumer MUST handle duplicate messages | messaging | Approved | 2024-11-21 | EARS-016, SYS-004, ADR-03 | IMPL-004, SPEC-015 |
+| REQ-010 | Event schema MUST be versioned using Avro | messaging | Approved | 2024-11-21 | EARS-017, SYS-004, ADR-03 | IMPL-004, CTR-007, SPEC-016 |
 | REQ-011 | Kubernetes pod MUST have resource limits defined | deployment | Approved | 2024-11-23 | EARS-020, SYS-005, ADR-004 | IMPL-005, SPEC-017 |
 | REQ-012 | Container health check MUST respond within 2 seconds | deployment | Approved | 2024-11-23 | EARS-021, SYS-005, ADR-004 | IMPL-005, SPEC-018 |
 | REQ-013 | Rolling update MUST maintain 80% minimum availability | deployment | Approved | 2024-11-23 | EARS-022, SYS-005, ADR-004 | IMPL-005, SPEC-019 |
@@ -64,9 +64,9 @@
 
 | EARS ID | EARS Pattern | REQ IDs | REQ Titles (Sample) | Relationship |
 |---------|--------------|---------|---------------------|--------------|
-| EARS-005 | Event-driven | REQ-001 | Service registry automatic discovery | Formal EARS requirement to atomic REQ |
-| EARS-006 | Event-driven | REQ-002 | API gateway request routing | EARS provides testable criteria |
-| EARS-007 | State-driven | REQ-003 | Load balancer traffic distribution | EARS defines the behavior state |
+| EARS-005 | Event-driven | REQ-01 | Service registry automatic discovery | Formal EARS requirement to atomic REQ |
+| EARS-006 | Event-driven | REQ-02 | API gateway request routing | EARS provides testable criteria |
+| EARS-007 | State-driven | REQ-03 | Load balancer traffic distribution | EARS defines the behavior state |
 | EARS-008 | Unwanted behavior | REQ-004 | Circuit breaker failure threshold | EARS specifies unwanted condition |
 | EARS-010 | State-driven | REQ-005 | Database connection pool minimum | EARS defines minimum state |
 | EARS-011 | State-driven | REQ-006 | Transaction isolation level | EARS specifies state requirement |
@@ -76,9 +76,9 @@
 
 | SYS ID | SYS Title | REQ IDs | Total REQs | Relationship |
 |--------|-----------|---------|------------|--------------|
-| SYS-001 | Service Decomposition | REQ-001, REQ-003 | 2 | System requirement decomposed into atomic requirements |
-| SYS-002 | API Communication | REQ-002, REQ-004 | 2 | System requirement broken into specific REQs |
-| SYS-003 | Data Persistence | REQ-005, REQ-006, REQ-007 | 3 | Database system requirements decomposed |
+| SYS-01 | Service Decomposition | REQ-01, REQ-03 | 2 | System requirement decomposed into atomic requirements |
+| SYS-02 | API Communication | REQ-02, REQ-004 | 2 | System requirement broken into specific REQs |
+| SYS-03 | Data Persistence | REQ-005, REQ-006, REQ-007 | 3 | Database system requirements decomposed |
 | SYS-004 | Asynchronous Messaging | REQ-008, REQ-009, REQ-010 | 3 | Messaging system split into atomic requirements |
 | SYS-005 | Container Orchestration | REQ-011, REQ-012, REQ-013 | 3 | Infrastructure requirements decomposed |
 | SYS-006 | Identity Management | REQ-014, REQ-015, REQ-016 | 3 | Auth system broken into specific requirements |
@@ -90,9 +90,9 @@
 
 | ADR ID | ADR Decision | REQ IDs | Relationship |
 |--------|--------------|---------|--------------|
-| ADR-001 | Microservices Architecture | REQ-001, REQ-002, REQ-003, REQ-004 | Architecture decision drives service requirements |
-| ADR-002 | PostgreSQL Database | REQ-005, REQ-006, REQ-007 | Database choice drives data requirements |
-| ADR-003 | Kafka Event-Driven | REQ-008, REQ-009, REQ-010 | Messaging technology drives message requirements |
+| ADR-001 | Microservices Architecture | REQ-01, REQ-02, REQ-03, REQ-004 | Architecture decision drives service requirements |
+| ADR-02 | PostgreSQL Database | REQ-005, REQ-006, REQ-007 | Database choice drives data requirements |
+| ADR-03 | Kafka Event-Driven | REQ-008, REQ-009, REQ-010 | Messaging technology drives message requirements |
 | ADR-004 | Kubernetes Deployment | REQ-011, REQ-012, REQ-013 | Deployment platform drives infrastructure requirements |
 | ADR-005 | OAuth 2.0 Authentication | REQ-014, REQ-015, REQ-016 | Auth mechanism drives security requirements |
 | ADR-006 | GraphQL API | REQ-017, REQ-018 | API technology drives API requirements |
@@ -112,9 +112,9 @@
 
 | REQ ID | REQ Title | IMPL IDs | IMPL Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| REQ-001, REQ-002 | Service discovery and routing | IMPL-001 | Microservices Core Infrastructure | Requirements drive implementation plan |
-| REQ-003, REQ-004 | Load balancing and resilience | IMPL-002 | Service Mesh Implementation | Requirements define implementation scope |
-| REQ-005, REQ-006, REQ-007 | Database requirements | IMPL-003 | PostgreSQL Setup and Configuration | Database requirements drive data implementation |
+| REQ-01, REQ-02 | Service discovery and routing | IMPL-01 | Microservices Core Infrastructure | Requirements drive implementation plan |
+| REQ-03, REQ-004 | Load balancing and resilience | IMPL-02 | Service Mesh Implementation | Requirements define implementation scope |
+| REQ-005, REQ-006, REQ-007 | Database requirements | IMPL-03 | PostgreSQL Setup and Configuration | Database requirements drive data implementation |
 | REQ-008, REQ-009, REQ-010 | Messaging requirements | IMPL-004 | Kafka Event Bus Implementation | Messaging requirements drive event implementation |
 | REQ-011, REQ-012, REQ-013 | Deployment requirements | IMPL-005 | Kubernetes Cluster Setup | Infrastructure requirements drive deployment plan |
 | REQ-014, REQ-015, REQ-016 | Auth requirements | IMPL-006 | OAuth 2.0 Identity Server | security requirements drive auth implementation |
@@ -124,8 +124,8 @@
 
 | REQ ID | REQ Title | CTR IDs | CTR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| REQ-001 | Service discovery | CTR-003 | Service Registry API Contract | Requirement defines contract specification |
-| REQ-002 | API routing | CTR-004 | API Gateway Routing Contract | Requirement drives contract definition |
+| REQ-01 | Service discovery | CTR-03 | Service Registry API Contract | Requirement defines contract specification |
+| REQ-02 | API routing | CTR-004 | API Gateway Routing Contract | Requirement drives contract definition |
 | REQ-005 | Connection pooling | CTR-005 | Database Connection Contract | Requirement specifies contract behavior |
 | REQ-008 | Idempotent writes | CTR-006 | Kafka Producer Contract | Requirement defines message contract |
 | REQ-010 | Schema versioning | CTR-007 | Event Schema Contract | Requirement drives schema contract |
@@ -136,9 +136,9 @@
 
 | REQ ID | REQ Title | SPEC IDs | SPEC Titles (Sample) | Relationship |
 |--------|-----------|----------|---------------------|--------------|
-| REQ-001 | Service discovery | SPEC-008 | Service Registry Technical Specification | Requirement drives technical specification |
-| REQ-002 | API routing | SPEC-009 | Gateway Routing Specification | Requirement defines implementation details |
-| REQ-003 | Load balancing | SPEC-010 | Load Balancer Configuration | Requirement specifies technical approach |
+| REQ-01 | Service discovery | SPEC-08 | Service Registry Technical Specification | Requirement drives technical specification |
+| REQ-02 | API routing | SPEC-009 | Gateway Routing Specification | Requirement defines implementation details |
+| REQ-03 | Load balancing | SPEC-010 | Load Balancer Configuration | Requirement specifies technical approach |
 | REQ-004 | Circuit breaker | SPEC-011 | Circuit Breaker Pattern Implementation | Requirement drives resilience specification |
 | REQ-005 | Connection pool | SPEC-012 | Connection Pool Management | Requirement defines pool configuration |
 | REQ-006 | Transaction isolation | SPEC-013 | Transaction Management Specification | Requirement specifies isolation implementation |
@@ -152,8 +152,8 @@
 
 | Domain | REQ IDs | Total | Priority Distribution |
 |--------|---------|-------|----------------------|
-| Service Discovery | REQ-001, REQ-002 | 2 | MUST: 2 |
-| Resilience | REQ-003, REQ-004 | 2 | MUST: 2 |
+| Service Discovery | REQ-01, REQ-02 | 2 | MUST: 2 |
+| Resilience | REQ-03, REQ-004 | 2 | MUST: 2 |
 | Database | REQ-005, REQ-006, REQ-007 | 3 | MUST: 3 |
 | Messaging | REQ-008, REQ-009, REQ-010 | 3 | MUST: 3 |
 | Deployment | REQ-011, REQ-012, REQ-013 | 3 | MUST: 3 |
@@ -166,7 +166,7 @@
 
 | Priority | Count | Percentage | REQ IDs (Sample) |
 |----------|-------|------------|------------------|
-| **MUST** | 18 | 75.0% | REQ-001 to REQ-018 |
+| **MUST** | 18 | 75.0% | REQ-01 to REQ-018 |
 | **SHOULD** | 4 | 16.7% | REQ-019, REQ-020, REQ-021, REQ-022 |
 | **COULD** | 0 | 0.0% | None |
 | **MAY** | 2 | 8.3% | REQ-023, REQ-024 |
@@ -177,9 +177,9 @@
 
 | REQ ID | Verification Method | Test Type | Verification Status |
 |--------|---------------------|-----------|---------------------|
-| REQ-001 | Integration test | Automated | ✅ Verified |
-| REQ-002 | Integration test | Automated | ✅ Verified |
-| REQ-003 | Performance test | Automated | ✅ Verified |
+| REQ-01 | Integration test | Automated | ✅ Verified |
+| REQ-02 | Integration test | Automated | ✅ Verified |
+| REQ-03 | Performance test | Automated | ✅ Verified |
 | REQ-004 | Chaos test | Automated | ✅ Verified |
 | REQ-005 | Unit test | Automated | ✅ Verified |
 | REQ-006 | Integration test | Automated | ✅ Verified |
@@ -216,16 +216,16 @@
 
 ```mermaid
 graph TD
-    EARS005[EARS-005] --> REQ001[REQ-001: Service Discovery]
-    EARS006[EARS-006] --> REQ002[REQ-002: API Routing]
+    EARS005[EARS-005] --> REQ001[REQ-01: Service Discovery]
+    EARS006[EARS-006] --> REQ002[REQ-02: API Routing]
     EARS010[EARS-010] --> REQ005[REQ-005: Connection Pool]
     EARS015[EARS-015] --> REQ008[REQ-008: Idempotent Writes]
 
-    SYS001[SYS-001: Services] --> REQ001
-    SYS001 --> REQ003[REQ-003: Load Balancer]
-    SYS002[SYS-002: API] --> REQ002
+    SYS001[SYS-01: Services] --> REQ001
+    SYS001 --> REQ003[REQ-03: Load Balancer]
+    SYS002[SYS-02: API] --> REQ002
     SYS002 --> REQ004[REQ-004: Circuit Breaker]
-    SYS003[SYS-003: Database] --> REQ005
+    SYS003[SYS-03: Database] --> REQ005
     SYS003 --> REQ006[REQ-006: Isolation]
     SYS003 --> REQ007[REQ-007: Backup]
     SYS004[SYS-004: Messaging] --> REQ008
@@ -234,15 +234,15 @@ graph TD
 
     ADR001[ADR-001: Microservices] --> REQ001
     ADR001 --> REQ002
-    ADR002[ADR-002: PostgreSQL] --> REQ005
-    ADR003[ADR-003: Kafka] --> REQ008
+    ADR002[ADR-02: PostgreSQL] --> REQ005
+    ADR003[ADR-03: Kafka] --> REQ008
 
-    REQ001 --> IMPL001[IMPL-001]
-    REQ001 --> CTR003[CTR-003]
-    REQ001 --> SPEC008[SPEC-008]
+    REQ001 --> IMPL001[IMPL-01]
+    REQ001 --> CTR003[CTR-03]
+    REQ001 --> SPEC008[SPEC-08]
 
     REQ002 --> IMPL001
-    REQ005 --> IMPL003[IMPL-003]
+    REQ005 --> IMPL003[IMPL-03]
     REQ008 --> IMPL004[IMPL-004]
 
     style REQ001 fill:#e8f5e9

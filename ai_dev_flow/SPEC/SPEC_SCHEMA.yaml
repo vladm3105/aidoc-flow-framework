@@ -26,7 +26,7 @@ references:
 file_format:
   extension: ".yaml"
   naming_pattern: "^SPEC-\\d{3}_[a-z0-9_]+\\.yaml$"
-  description: "Format: SPEC-NNN_descriptive_name.yaml"
+  description: "Format: SPEC-NN_descriptive_name.yaml"
   encoding: "UTF-8"
   yaml_version: "1.2"
 
@@ -606,7 +606,7 @@ validation_rules:
     - rule: "All required top-level fields must be present"
       severity: error
 
-    - rule: "File name must match SPEC-NNN_name.yaml format"
+    - rule: "File name must match SPEC-NN_name.yaml format"
       severity: warning
 
     - rule: "id field must match file name slug"
@@ -704,12 +704,12 @@ traceability:
       - "@prd: PRD.NN.EE.SS"
       - "@ears: EARS.NN.EE.SS"
       - "@bdd: BDD.NN.EE.SS"
-      - "@adr: ADR-NNN"
+      - "@adr: ADR-NN"
       - "@sys: SYS.NN.EE.SS"
       - "@req: REQ.NN.EE.SS"
     optional:
       - "@impl: IMPL.NN.EE.SS"
-      - "@ctr: CTR-NNN"
+      - "@ctr: CTR-NN"
     description: "Layer 10 requires 7 upstream artifact tags (9 including optional IMPL and CTR)"
 
   upstream:
@@ -727,7 +727,7 @@ traceability:
         format: "@bdd: BDD.NN.EE.SS"
         location: "traceability.cumulative_tags"
       - type: ADR
-        format: "@adr: ADR-NNN"
+        format: "@adr: ADR-NN"
         location: "traceability.cumulative_tags"
       - type: SYS
         format: "@sys: SYS.NN.EE.SS"
@@ -740,13 +740,13 @@ traceability:
         format: "@impl: IMPL.NN.EE.SS"
         location: "traceability.cumulative_tags"
       - type: CTR
-        format: "@ctr: CTR-NNN"
+        format: "@ctr: CTR-NN"
         location: "traceability.cumulative_tags"
 
   downstream:
     expected:
       - type: TASKS
-        format: "TASKS-NNN"
+        format: "TASKS-NN"
       - type: Code
         format: "src/..."
       - type: Tests
@@ -755,10 +755,10 @@ traceability:
   same_type:
     optional:
       - type: SPEC
-        format: "related_spec: [SPEC-NNN]"
+        format: "related_spec: [SPEC-NN]"
         description: "Related SPEC document sharing domain context"
       - type: SPEC
-        format: "depends_spec: [SPEC-NNN]"
+        format: "depends_spec: [SPEC-NN]"
         description: "Prerequisite SPEC document"
 
 # =============================================================================
@@ -778,7 +778,7 @@ error_messages:
   SPEC-E010: "Missing latency_targets in performance section"
   SPEC-E011: "Missing authentication specification in security section"
   SPEC-E012: "Missing metrics in observability section"
-  SPEC-E013: "File name does not match SPEC-NNN_name.yaml format"
+  SPEC-E013: "File name does not match SPEC-NN_name.yaml format"
   SPEC-E014: "Missing required traceability section"
   SPEC-E015: "Missing cumulative_tags in traceability"
   SPEC-W001: "Missing business_requirements in upstream_sources"

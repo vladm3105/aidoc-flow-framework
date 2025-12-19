@@ -15,7 +15,7 @@ The AI Dev Flow Framework is a comprehensive template system for implementing AI
 - **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
 - **REQ v3.0 Support**: Enhanced REQ templates with sections 3-7 (interfaces/schemas/errors/config/quality attributes) for ≥90% SPEC-readiness
 - **Tag-Based Auto-Discovery**: Lightweight @tags in code auto-generate bidirectional traceability matrices
-- **Namespaced Traceability**: Unified `TYPE.NN.EE.SS` format (e.g., `BRD.01.01.30`) prevents ambiguity
+- **Namespaced Traceability**: Unified `TYPE.NN.TT.SS` format (e.g., `BRD.01.01.30`) prevents ambiguity
 - **Complete Traceability**: Bidirectional links between all artifacts (business → architecture → code)
 - **AI-Optimized Templates**: Ready for Claude Code, Gemini, GitHub Copilot, and other AI coding assistants
 - **Domain-Agnostic**: Adaptable to any software domain (finance, healthcare, e-commerce, SaaS, IoT)
@@ -316,7 +316,7 @@ Embed cumulative tags in code docstrings using namespaced format:
 """
 ```
 
-**Format:** `@tag-type: TYPE.NN.EE.SS` (e.g., `@brd: BRD.01.01.30`)
+**Format:** `@tag-type: TYPE.NN.TT.SS` (e.g., `@brd: BRD.01.01.30`)
 
 **Tag Types (Cumulative Hierarchy):**
 - `@brd:` - Business Requirements Document references (Layer 1)
@@ -595,7 +595,7 @@ Pre-commit checklist:
 
 **Cumulative Tagging Projects (v2.0):**
 - [ ] All artifacts include cumulative tags from ALL upstream layers
-- [ ] Tags use unified format (TYPE.NN.EE.SS)
+- [ ] Tags use unified format (TYPE.NN.TT.SS)
 - [ ] Tag extraction successful: `python ai_dev_flow/scripts/extract_tags.py --source src/ docs/ tests/`
 - [ ] Cumulative validation passes: `python ai_dev_flow/scripts/validate_tags_against_docs.py --validate-cumulative --strict`
 - [ ] No gaps in cumulative tag chains (e.g., if @adr exists, @brd through @bdd must exist)
@@ -908,7 +908,7 @@ Developed for AI-assisted software engineering workflows optimized for:
 
 ### Version 1.1.0 (2025-11-12)
 - Added tag-based auto-discovery traceability system
-- Introduced unified tag format (TYPE.NN.EE.SS)
+- Introduced unified tag format (TYPE.NN.TT.SS)
 - Added automated validation scripts
 - Updated quality gates for tag-based and traditional projects
 - Added CI/CD integration examples for traceability validation

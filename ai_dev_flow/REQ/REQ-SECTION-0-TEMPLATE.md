@@ -1,5 +1,5 @@
 ---
-doc_id: REQ-{NNN}
+doc_id: REQ-{NN}
 section: 0
 title: "{Document Title} - Index"
 total_sections: {N}
@@ -22,13 +22,13 @@ custom_fields:
   index_role: true
 ---
 
-# REQ-{NNN}.0: {Document Title} - Index
+# REQ-{NN}.0: {Document Title} - Index
 
 ## Document Overview
 
 | Field | Value |
 |-------|-------|
-| **Document ID** | REQ-{NNN} |
+| **Document ID** | REQ-{NN} |
 | **Document Type** | Atomic Requirements |
 | **Layer** | 7 - Atomic Requirements |
 | **Title** | {Document Title} |
@@ -49,10 +49,10 @@ custom_fields:
 
 | Section | File | Title | Description |
 |---------|------|-------|-------------|
-| 0 | [REQ-{NNN}.0_index.md](REQ-{NNN}.0_index.md) | Index | This file - document overview and navigation |
-| 1 | [REQ-{NNN}.1_{slug1}.md](REQ-{NNN}.1_{slug1}.md) | {Title 1} | {Description 1} |
-| 2 | [REQ-{NNN}.2_{slug2}.md](REQ-{NNN}.2_{slug2}.md) | {Title 2} | {Description 2} |
-| 3 | [REQ-{NNN}.3_{slug3}.md](REQ-{NNN}.3_{slug3}.md) | {Title 3} | {Description 3} |
+| 0 | [REQ-{NN}.0_index.md](REQ-{NN}.0_index.md) | Index | This file - document overview and navigation |
+| 1 | [REQ-{NN}.1_{slug1}.md](REQ-{NN}.1_{slug1}.md) | {Title 1} | {Description 1} |
+| 2 | [REQ-{NN}.2_{slug2}.md](REQ-{NN}.2_{slug2}.md) | {Title 2} | {Description 2} |
+| 3 | [REQ-{NN}.3_{slug3}.md](REQ-{NN}.3_{slug3}.md) | {Title 3} | {Description 3} |
 
 ---
 
@@ -70,12 +70,12 @@ custom_fields:
 ## Dependencies
 
 ### Upstream References
-- @ref: SYS-{NNN} - System Requirements this REQ derives from
-- @ref: ADR-{NNN} - Architecture decisions guiding requirements
+- @ref: SYS-{NN} - System Requirements this REQ derives from
+- @ref: ADR-{NN} - Architecture decisions guiding requirements
 
 ### Downstream References
-- @ref: IMPL-{NNN} - Implementation approach for these requirements
-- @ref: SPEC-{NNN} - Technical specifications implementing requirements
+- @ref: IMPL-{NN} - Implementation approach for these requirements
+- @ref: SPEC-{NN} - Technical specifications implementing requirements
 
 ### Cross-Section Dependencies
 - Section 2 depends on Section 1 (core requirements)
@@ -107,8 +107,8 @@ custom_fields:
 
 ## Traceability
 
-- **Original Document**: REQ-{NNN} (before split)
+- **Original Document**: REQ-{NN} (before split)
 - **Element ID Range**: REQ.{NN}.{TT}.01 through REQ.{NN}.{TT}.{MAX}
-- **Tag Format**: @ref: REQ-{NNN}.{S} (section reference)
+- **Tag Format**: @ref: REQ-{NN}.{S} (section reference)
 - **Upstream Trace**: BRD -> PRD -> EARS -> BDD -> ADR -> SYS
 - **Downstream Trace**: IMPL -> CTR -> SPEC -> TASKS -> IPLAN

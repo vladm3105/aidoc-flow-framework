@@ -31,7 +31,7 @@ custom_fields:
 > - **Creation Rules**: `TASKS_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `TASKS_VALIDATION_RULES.md` - Post-creation checks
 
-# TASKS-NNN: [Descriptive Component/Feature Name]
+# TASKS-NN: [Descriptive Component/Feature Name]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
@@ -153,9 +153,9 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 #### 1.1 Review Prerequisites
 - **Action**: Analyze upstream specifications and requirements
 - **Artifacts to Review**:
-  - [REQ-NNN](../REQ/.../REQ-NNN.md) - Atomic requirements
-  - [SPEC-NNN](../SPEC/.../SPEC-NNN.yaml) - Technical specification
-  - [ADR-NNN](../ADR/ADR-NNN.md) - Architecture decisions
+  - [REQ-NN](../REQ/.../REQ-NN.md) - Atomic requirements
+  - [SPEC-NN](../SPEC/.../SPEC-NN.yaml) - Technical specification
+  - [ADR-NN](../ADR/ADR-NN.md) - Architecture decisions
 - **Success Criteria**: All requirements understood, ambiguities resolved
 - **Estimated Duration**: [X hours]
 
@@ -260,8 +260,8 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 #### 3.3 BDD Scenario Execution
 - **Action**: Execute automated behavior-driven tests
 - **Scenarios to Validate**:
-  - [BDD-NNN.feature](../BDD/BDD-NNN.feature) - [Scenario description]
-  - [BDD-MMM.feature](../BDD/BDD-MMM.feature) - [Scenario description]
+  - [BDD-NN.feature](../BDD/BDD-NN.feature) - [Scenario description]
+  - [BDD-MM.feature](../BDD/BDD-MM.feature) - [Scenario description]
 - **Success Criteria**: All BDD scenarios pass with expected outcomes
 - **Estimated Duration**: [X hours]
 
@@ -344,17 +344,17 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 | TASKS ID | Contract Name | Contract Type | Purpose | Status |
 |----------|---------------|---------------|---------|--------|
-| [TASKS-NNN](./TASKS-NNN.md) | [Interface Name] | Protocol/Exception/State/Data/DI | [What this TASKS needs from dependency] | Available/Pending |
+| [TASKS-NN](./TASKS-NN.md) | [Interface Name] | Protocol/Exception/State/Data/DI | [What this TASKS needs from dependency] | Available/Pending |
 
 **Example**:
 ```
-| TASKS-005 | ClientIDValidator | DI Interface | Validate and reserve client IDs | Available |
+| TASKS-05 | ClientIDValidator | DI Interface | Validate and reserve client IDs | Available |
 | TASKS-008 | ConfigLoader | Protocol | Load connection configuration | Available |
 ```
 
 **Integration Requirements**:
-- [Specific interface methods required from TASKS-NNN]
-- [Data models/types required from TASKS-MMM]
+- [Specific interface methods required from TASKS-NN]
+- [Data models/types required from TASKS-MM]
 - [Exception types handled from TASKS-PPP]
 
 #### Downstream Dependencies (Contracts Provided)
@@ -368,8 +368,8 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 **Example**:
 ```
-| TASKS-002 | Market data streaming needs connection | ServiceConnector | Unblocked when contract published |
-| TASKS-003 | Order management needs connection | ServiceConnector | Unblocked when contract published |
+| TASKS-02 | Market data streaming needs connection | ServiceConnector | Unblocked when contract published |
+| TASKS-03 | Order management needs connection | ServiceConnector | Unblocked when contract published |
 | TASKS-006 | Position tracking needs connection | ServiceConnector | Unblocked when contract published |
 ```
 
@@ -489,9 +489,9 @@ class MockGatewayConnector:
 
 ### 4.4 Contracts Consumed by This TASKS
 
-#### Consumed Contract 1: [Contract Name from TASKS-NNN]
+#### Consumed Contract 1: [Contract Name from TASKS-NN]
 
-**Source**: [TASKS-NNN](./TASKS-NNN.md) - [Contract Name]
+**Source**: [TASKS-NN](./TASKS-NN.md) - [Contract Name]
 
 **Type**: [Protocol/Exception/State/Data/DI]
 
@@ -592,8 +592,8 @@ class ThisComponent:
 - **Data Types**: [Strict type enforcement with Pydantic/marshmallow]
 
 #### Business Rules
-- **Domain Logic**: [Must implement business rules from REQ-NNN exactly]
-- **State Transitions**: [Finite state machine per SYS-NNN specification]
+- **Domain Logic**: [Must implement business rules from REQ-NN exactly]
+- **State Transitions**: [Finite state machine per SYS-NN specification]
 - **Calculations**: [Precise algorithms from domain-specific business logic documents]
 - **Thresholds**: [Risk parameters from ADR-008 centralized configuration]
 
@@ -650,8 +650,8 @@ class ThisComponent:
 ### 6.1 Functional Acceptance
 
 #### Core Functionality
-- [ ] Component implements all requirements from REQ-NNN specifications
-- [ ] Business logic correctly implements rules from SYS-NNN
+- [ ] Component implements all requirements from REQ-NN specifications
+- [ ] Business logic correctly implements rules from SYS-NN
 - [ ] State transitions follow finite state machine from specifications
 - [ ] Data transformations produce correct outputs for all test cases
 
@@ -848,7 +848,7 @@ class ThisComponent:
 #### Critical Path Dependencies
 
 **Blocking Tasks** (must complete before this task can start):
-- [TASKS-NNN]: [Description of blocking task], Status: [in progress/completed]
+- [TASKS-NN]: [Description of blocking task], Status: [in progress/completed]
 - [TASKS-YY]: [Description of blocking task], Status: [in progress/completed]
 
 **Dependent Tasks** (blocked by this task):
@@ -1041,12 +1041,12 @@ Document the business strategy, product requirements, system specifications, and
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-NNN](../BRD/BRD-NNN_...md) | [Business requirements title] | sections X.Y | Business objectives this task supports |
-| PRD | [PRD-NNN](../PRD/PRD-NNN_...md) | [Product requirements title] | Features A, B, C | Product features this task implements |
-| EARS | [EARS-NNN](../EARS/EARS-NNN_...md) | [Engineering requirements] | Event-001, State-002 | Formal requirements this task satisfies |
-| ADR | [ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN) | [Architecture decision title] | Decision, Consequences | Architectural approach this task follows |
-| SYS | [SYS-NNN](../SYS/SYS-NNN_...md) | [System requirements title] | sections 3.1, 4.2 | System specification this task implements |
-| REQ | [REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN) | [Atomic requirement title] | All acceptance criteria | Detailed requirements this task fulfills |
+| BRD | [BRD-NN](../BRD/BRD-NN_...md) | [Business requirements title] | sections X.Y | Business objectives this task supports |
+| PRD | [PRD-NN](../PRD/PRD-NN_...md) | [Product requirements title] | Features A, B, C | Product features this task implements |
+| EARS | [EARS-NN](../EARS/EARS-NN_...md) | [Engineering requirements] | Event-001, State-002 | Formal requirements this task satisfies |
+| ADR | [ADR-NN](../ADR/ADR-NN_...md#ADR-NN) | [Architecture decision title] | Decision, Consequences | Architectural approach this task follows |
+| SYS | [SYS-NN](../SYS/SYS-NN_...md) | [System requirements title] | sections 3.1, 4.2 | System specification this task implements |
+| REQ | [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN) | [Atomic requirement title] | All acceptance criteria | Detailed requirements this task fulfills |
 
 **Business Context**:
 - Business Objective: [Specific goal from BRD] → Enabled by completing this task
@@ -1071,8 +1071,8 @@ Document the technical specifications, contracts, and tests that guide and valid
 
 | SPEC ID | Specification Title | Task Implementation Scope | Relationship |
 |---------|-------------------|-------------------------|--------------|
-| [SPEC-NNN](../SPEC/.../SPEC-NNN.yaml) | [Technical spec title] | This task implements sections X, Y, Z | Implementation blueprint |
-| [SPEC-MMM](../SPEC/.../SPEC-MMM.yaml) | [Interface spec] | This task implements API contracts | Interface implementation |
+| [SPEC-NN](../SPEC/.../SPEC-NN.yaml) | [Technical spec title] | This task implements sections X, Y, Z | Implementation blueprint |
+| [SPEC-MM](../SPEC/.../SPEC-MM.yaml) | [Interface spec] | This task implements API contracts | Interface implementation |
 
 **Specification Coverage**:
 - All SPEC sections mapped to implementation plan steps
@@ -1092,9 +1092,9 @@ Document the technical specifications, contracts, and tests that guide and valid
 
 | BDD ID | BDD Feature/Scenario | Task BDD Coverage | Test Status | Relationship |
 |--------|---------------------|------------------|-------------|--------------|
-| [BDD-NNN](../BDD/BDD-NNN.feature) | Feature: [Feature name] | Scenarios 1-5 validated by this task | Pending/Pass/Fail | Acceptance test |
-| [BDD-NNN](../BDD/BDD-NNN.feature#scenario-1) | Scenario: [Specific scenario] | Specific acceptance criterion validated | Pending/Pass/Fail | Functional validation |
-| [BDD-MMM](../BDD/BDD-MMM.feature) | Feature: [Error handling] | Error scenarios validated | Pending/Pass/Fail | Negative testing |
+| [BDD-NN](../BDD/BDD-NN.feature) | Feature: [Feature name] | Scenarios 1-5 validated by this task | Pending/Pass/Fail | Acceptance test |
+| [BDD-NN](../BDD/BDD-NN.feature#scenario-1) | Scenario: [Specific scenario] | Specific acceptance criterion validated | Pending/Pass/Fail | Functional validation |
+| [BDD-MM](../BDD/BDD-MM.feature) | Feature: [Error handling] | Error scenarios validated | Pending/Pass/Fail | Negative testing |
 
 **BDD Coverage Summary**:
 - Total BDD scenarios: [count]
@@ -1109,16 +1109,16 @@ Document the technical specifications, contracts, and tests that guide and valid
 
 | BDD Scenario | Implementation Step | Code Location | Test File | Status |
 |--------------|-------------------|---------------|-----------|--------|
-| [BDD-NNN#scenario-1](../BDD/BDD-NNN.feature#scenario-1) | Phase 2.2: Core Logic | src/module/component.py:function_name() | tests/acceptance/test_scenario_1.py | ✅ Pass |
-| [BDD-NNN#scenario-2](../BDD/BDD-NNN.feature#scenario-2) | Phase 2.3: Integration | src/module/api_client.py:call_external() | tests/acceptance/test_scenario_2.py | 🔄 Pending |
-| [BDD-MMM#error-1](../BDD/BDD-MMM.feature#error-1) | Phase 2.4: Error Handling | src/module/error_handler.py:handle_error() | tests/acceptance/test_errors.py | ✅ Pass |
+| [BDD-NN#scenario-1](../BDD/BDD-NN.feature#scenario-1) | Phase 2.2: Core Logic | src/module/component.py:function_name() | tests/acceptance/test_scenario_1.py | ✅ Pass |
+| [BDD-NN#scenario-2](../BDD/BDD-NN.feature#scenario-2) | Phase 2.3: Integration | src/module/api_client.py:call_external() | tests/acceptance/test_scenario_2.py | 🔄 Pending |
+| [BDD-MM#error-1](../BDD/BDD-MM.feature#error-1) | Phase 2.4: Error Handling | src/module/error_handler.py:handle_error() | tests/acceptance/test_errors.py | ✅ Pass |
 
 **Acceptance Criteria Validation**:
 
-| Acceptance Criterion (from REQ-NNN) | BDD Validation | Implementation Evidence | Status |
+| Acceptance Criterion (from REQ-NN) | BDD Validation | Implementation Evidence | Status |
 |------------------------------------|----------------|------------------------|--------|
-| Primary Functional Criteria #1 | [BDD-NNN.feature](../BDD/BDD-NNN.feature) Lines 20-45 | src/module/component.py:120-145 | ✅ Validated |
-| Error and Edge Case #1 | [BDD-MMM.feature](../BDD/BDD-MMM.feature) Lines 100-120 | src/module/error_handler.py:50-75 | ✅ Validated |
+| Primary Functional Criteria #1 | [BDD-NN.feature](../BDD/BDD-NN.feature) Lines 20-45 | src/module/component.py:120-145 | ✅ Validated |
+| Error and Edge Case #1 | [BDD-MM.feature](../BDD/BDD-MM.feature) Lines 100-120 | src/module/error_handler.py:50-75 | ✅ Validated |
 | Quality and Constraint #1 | Performance test results | tests/performance/load_test.py | 🔄 Pending |
 
 ### 10.4 Code Implementation Paths
@@ -1228,13 +1228,13 @@ Document evidence that this task has been implemented correctly and meets all ac
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | [TASKS-NNN](./TASKS-NNN_...md) | [Related TASKS title] | Shared implementation context |
-| Depends | [TASKS-NNN](./TASKS-NNN_...md) | [Prerequisite TASKS title] | Must complete before this |
+| Related | [TASKS-NN](./TASKS-NN_...md) | [Related TASKS title] | Shared implementation context |
+| Depends | [TASKS-NN](./TASKS-NN_...md) | [Prerequisite TASKS title] | Must complete before this |
 
 **Tags:**
 ```markdown
-@related-tasks: TASKS-NNN
-@depends-tasks: TASKS-NNN
+@related-tasks: TASKS-NN
+@depends-tasks: TASKS-NN
 ```
 
 ### 10.8 Traceability Tags
@@ -1245,16 +1245,16 @@ Document evidence that this task has been implemented correctly and meets all ac
 @prd: PRD.NN.EE.SS
 @ears: EARS.NN.EE.SS
 @bdd: BDD.NN.EE.SS
-@adr: ADR-NNN
+@adr: ADR-NN
 @sys: SYS.NN.EE.SS
 @req: REQ.NN.EE.SS
 @impl: IMPL.NN.EE.SS
-@ctr: CTR-NNN
-@spec: SPEC-NNN
+@ctr: CTR-NN
+@spec: SPEC-NN
 @icon: TASKS-XXX:ContractName (if providing/consuming implementation contracts)
 ```
 
-**Format**: `@artifact-type: TYPE.NN.EE.SS (Unified Feature ID)`
+**Format**: `@artifact-type: TYPE.NN.TT.SS (Unified Feature ID)`
 
 **Layer 11 Requirements**: TASKS must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -1281,9 +1281,9 @@ Document evidence that this task has been implemented correctly and meets all ac
 @sys: SYS.08.25.01
 @req: REQ.03.26.01
 @impl: IMPL.01.28.01
-@ctr: CTR-001
-@spec: SPEC-003
-@icon: TASKS-001:ServiceConnector
+@ctr: CTR-01
+@spec: SPEC-03
+@icon: TASKS-01:ServiceConnector
 @icon-role: consumer
 ```
 
@@ -1295,57 +1295,57 @@ Document evidence that this task has been implemented correctly and meets all ac
 
 **Purpose**: TASKS documents REFERENCE thresholds defined in the PRD threshold registry. All quantitative values in acceptance criteria, quality constraints, and performance metrics must use `@threshold:` tags to ensure single source of truth.
 
-**Threshold Naming Convention**: `@threshold: PRD.NNN.category.subcategory.key`
+**Threshold Naming Convention**: `@threshold: PRD.NN.category.subcategory.key`
 
 **Format Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for complete naming standards.
 
 **Thresholds Used in This Document**:
 ```yaml
 # Thresholds referenced from PRD threshold registry
-# Format: @threshold: PRD.NNN.category.subcategory.key
+# Format: @threshold: PRD.NN.category.subcategory.key
 
 performance:
   # Acceptance criteria performance targets (Section 6.2)
-  - "@threshold: PRD.NNN.perf.api.p50_latency"        # p50 latency target
-  - "@threshold: PRD.NNN.perf.api.p95_latency"        # p95 latency target
-  - "@threshold: PRD.NNN.perf.api.p99_latency"        # p99 latency target
-  - "@threshold: PRD.NNN.perf.throughput.rps"         # Throughput target
+  - "@threshold: PRD.NN.perf.api.p50_latency"        # p50 latency target
+  - "@threshold: PRD.NN.perf.api.p95_latency"        # p95 latency target
+  - "@threshold: PRD.NN.perf.api.p99_latency"        # p99 latency target
+  - "@threshold: PRD.NN.perf.throughput.rps"         # Throughput target
 
 sla:
   # Reliability and error rate constraints (Section 5.3)
-  - "@threshold: PRD.NNN.sla.error_rate.max"          # Maximum error rate
-  - "@threshold: PRD.NNN.sla.uptime.target"           # Uptime target
+  - "@threshold: PRD.NN.sla.error_rate.max"          # Maximum error rate
+  - "@threshold: PRD.NN.sla.uptime.target"           # Uptime target
 
 resource:
   # Resource utilization limits (Section 5.3)
-  - "@threshold: PRD.NNN.resource.cpu.max_utilization"   # CPU limit
-  - "@threshold: PRD.NNN.resource.memory.max_mb"         # Memory limit
+  - "@threshold: PRD.NN.resource.cpu.max_utilization"   # CPU limit
+  - "@threshold: PRD.NN.resource.memory.max_mb"         # Memory limit
 
 coverage:
   # Test coverage targets (Section 6.3)
-  - "@threshold: PRD.NNN.quality.test.unit_coverage"        # Unit test coverage
-  - "@threshold: PRD.NNN.quality.test.integration_coverage" # Integration test coverage
-  - "@threshold: PRD.NNN.quality.test.bdd_coverage"         # BDD scenario coverage
+  - "@threshold: PRD.NN.quality.test.unit_coverage"        # Unit test coverage
+  - "@threshold: PRD.NN.quality.test.integration_coverage" # Integration test coverage
+  - "@threshold: PRD.NN.quality.test.bdd_coverage"         # BDD scenario coverage
 
 timeout:
   # Operation timeouts (Section 5.1)
-  - "@threshold: PRD.NNN.timeout.request.sync"        # Synchronous request timeout
-  - "@threshold: PRD.NNN.timeout.connection.default"  # Connection timeout
-  - "@threshold: PRD.NNN.timeout.recovery.max"        # Recovery timeout
+  - "@threshold: PRD.NN.timeout.request.sync"        # Synchronous request timeout
+  - "@threshold: PRD.NN.timeout.connection.default"  # Connection timeout
+  - "@threshold: PRD.NN.timeout.recovery.max"        # Recovery timeout
 ```
 
 **Example Usage in Acceptance Criteria**:
 ```markdown
 #### Performance Acceptance
-- [ ] p95 latency < @threshold: PRD.NNN.perf.api.p95_latency for all API operations
-- [ ] p99 latency < @threshold: PRD.NNN.perf.api.p99_latency for critical path operations
-- [ ] Throughput ≥ @threshold: PRD.NNN.perf.throughput.rps under sustained load
-- [ ] Resource utilization within @threshold: PRD.NNN.resource.cpu.max_utilization
+- [ ] p95 latency < @threshold: PRD.NN.perf.api.p95_latency for all API operations
+- [ ] p99 latency < @threshold: PRD.NN.perf.api.p99_latency for critical path operations
+- [ ] Throughput ≥ @threshold: PRD.NN.perf.throughput.rps under sustained load
+- [ ] Resource utilization within @threshold: PRD.NN.resource.cpu.max_utilization
 
 #### Testing Acceptance
-- [ ] Unit test coverage ≥ @threshold: PRD.NNN.quality.test.unit_coverage
-- [ ] Integration test coverage ≥ @threshold: PRD.NNN.quality.test.integration_coverage
-- [ ] BDD scenario coverage = @threshold: PRD.NNN.quality.test.bdd_coverage
+- [ ] Unit test coverage ≥ @threshold: PRD.NN.quality.test.unit_coverage
+- [ ] Integration test coverage ≥ @threshold: PRD.NN.quality.test.integration_coverage
+- [ ] BDD scenario coverage = @threshold: PRD.NN.quality.test.bdd_coverage
 ```
 
 **Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
@@ -1581,7 +1581,7 @@ timeout:
 | YYYY-MM-DD | 1.0 | Initial task document created | [Author Name] | [Approver Name] |
 | YYYY-MM-DD | 1.1 | Updated acceptance criteria based on code review feedback | [Author Name] | [Approver Name] |
 | YYYY-MM-DD | 1.2 | Added performance optimization notes after load testing | [Author Name] | [Approver Name] |
-| YYYY-MM-DD | 2.0 | Major revision to align with new SPEC-NNN specification | [Author Name] | [Approver Name] |
+| YYYY-MM-DD | 2.0 | Major revision to align with new SPEC-NN specification | [Author Name] | [Approver Name] |
 
 **Template Version**: 1.0
 **Template Compliance**: ✅ Validated against REQ/SYS/EARS/PRD templates
@@ -1657,7 +1657,7 @@ timeout:
 
 **Usage Instructions**:
 1. Copy this template to create new TASKS documents
-2. Replace all placeholders (NNN, [descriptions], YYYY-MM-DD) with actual values
+2. Replace all placeholders (NN, [descriptions], YYYY-MM-DD) with actual values
 3. Remove sections that are not applicable (mark as "N/A" instead of deleting)
 4. Ensure all traceability links resolve to valid documents
 5. Update Document Control table as task progresses

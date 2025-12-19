@@ -88,12 +88,12 @@ THE client SHALL complete requests within 2 seconds p95 for supported endpoints.
 All EARS files start with traceability tags linking to related artifacts:
 
 ```markdown
-@requirement:[REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN)
-@adr:[ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN)
-@PRD:[PRD-NNN](../PRD/PRD-NNN_...md)
-@SYS:[SYS-NNN](../SYS/SYS-NNN_...md)
-@spec:[SPEC-NNN](../SPEC/.../SPEC-NNN_...yaml)
-@bdd:[BDD-NNN:scenarios](../BDD/BDD-NNN_....feature#scenarios)
+@requirement:[REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN)
+@adr:[ADR-NN](../ADR/ADR-NN_...md#ADR-NN)
+@PRD:[PRD-NN](../PRD/PRD-NN_...md)
+@SYS:[SYS-NN](../SYS/SYS-NN_...md)
+@spec:[SPEC-NN](../SPEC/.../SPEC-NN_...yaml)
+@bdd:[BDD-NN:scenarios](../BDD/BDD-NN_....feature#scenarios)
 ```
 
 ### Requirements section
@@ -126,25 +126,25 @@ Document upstream sources and downstream artifacts:
 
 ```markdown
 ## Traceability
-- Upstream Sources: [PRD-NNN](../PRD/PRD-NNN_...md), [SYS-NNN](../SYS/SYS-NNN_...md)
-- Downstream Artifacts: [REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN), [SPEC-NNN](../SPEC/.../SPEC-NNN_...yaml)
-- Anchors/IDs: `# EARS-NNN`
+- Upstream Sources: [PRD-NN](../PRD/PRD-NN_...md), [SYS-NN](../SYS/SYS-NN_...md)
+- Downstream Artifacts: [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN), [SPEC-NN](../SPEC/.../SPEC-NN_...yaml)
+- Anchors/IDs: `# EARS-NN`
 - Code Path(s): `src/domain/component/module.py`
 ```
 
 ## File Naming Convention
 
 ```
-EARS-NNN_descriptive_title.md
+EARS-NN_descriptive_title.md
 ```
 
 Where:
 - `EARS` is the constant prefix
-- `NNN` is the three-digit sequence number (001, 002, 003, etc.)
+- `NNN` is the 2+ digit sequence number (01, 02, 003, etc.)
 - `descriptive_title` uses snake_case for clarity
 
 **Examples:**
-- `EARS-001_external_api_integration.md`
+- `EARS-01_external_api_integration.md`
 - `EARS-035_resource_limit_enforcement.md`
 - `EARS-042_ml_model_serving.md`
 
@@ -217,7 +217,7 @@ Where:
 
 ## Example Template
 
-See `EARS-001_external_api_integration.md` for a complete example of a well-structured EARS file.
+See `EARS-01_external_api_integration.md` for a complete example of a well-structured EARS file.
 
 ## Benefits
 

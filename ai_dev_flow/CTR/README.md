@@ -80,25 +80,25 @@ Each contract consists of TWO synchronized files:
 | **Traceability** | Detailed - links to all artifacts | Minimal - ID references only |
 | **Examples** | Rich - multiple scenarios | Basic - schema structure |
 
-**Best Practice**: Markdown provides context and rationale, YAML enables automation. Both must be synchronized (same CTR-NNN, same schema structure).
+**Best Practice**: Markdown provides context and rationale, YAML enables automation. Both must be synchronized (same CTR-NN, same schema structure).
 
 ## 4. File Naming Convention
 
 ### 4.1 Format
 ```
-CTR-NNN_descriptive_slug.md
-CTR-NNN_descriptive_slug.yaml
+CTR-NN_descriptive_slug.md
+CTR-NN_descriptive_slug.yaml
 ```
 
 - **CTR**: Constant prefix (API Contracts)
-- **NNN**: Three-digit zero-padded sequential number (001, 002, 015)
+- **NNN**: 2+ digit sequence number (01, 02, 015)
 - **Slug**: snake_case descriptive title (lowercase, underscores)
 - **Extension**: .md for documentation, .yaml for schema
 
 ### 4.2 Examples
 ```
-CTR-001_data_validation.md
-CTR-001_data_validation.yaml
+CTR-01_data_validation.md
+CTR-01_data_validation.yaml
 
 CTR-010_service_orchestrator_api.md
 CTR-010_service_orchestrator_api.yaml
@@ -109,8 +109,8 @@ CTR-025_pubsub_trade_event_schema.yaml
 
 ### 4.3 Rules
 - Both files MUST exist for each contract (paired creation)
-- Both files MUST use identical CTR-NNN and slug
-- H1 header in .md MUST match: `# CTR-NNN: [Title]`
+- Both files MUST use identical CTR-NN and slug
+- H1 header in .md MUST match: `# CTR-NN: [Title]`
 - `contract_id` in .yaml MUST be lowercase_snake_case version of slug
 
 ## 5. Organization by Service Type
@@ -122,10 +122,10 @@ Organize contracts in subdirectories by service type for better document managem
 ```
 CTR/
 ├── agents/              # Agent-to-agent communication contracts
-│   ├── CTR-001_service_orchestrator_api.md
-│   ├── CTR-001_service_orchestrator_api.yaml
-│   ├── CTR-002_item_selection_interface.md
-│   └── CTR-002_item_selection_interface.yaml
+│   ├── CTR-01_service_orchestrator_api.md
+│   ├── CTR-01_service_orchestrator_api.yaml
+│   ├── CTR-02_item_selection_interface.md
+│   └── CTR-02_item_selection_interface.yaml
 ├── mcp/                 # MCP server contracts
 │   ├── CTR-010_risk_validator_mcp.md
 │   ├── CTR-010_risk_validator_mcp.yaml
@@ -159,7 +159,7 @@ CTR/
 
 #### SPEC Compatibility
 - **Alignment**: Directory structure mirrors SPEC organization
-  - `CTR/agents/CTR-001` → `SPEC/agents/SPEC-001`
+  - `CTR/agents/CTR-01` → `SPEC/agents/SPEC-01`
   - `CTR/mcp/CTR-010` → `SPEC/mcp/SPEC-010`
 - **Traceability**: Enables tracing CTR → SPEC relationships
 - **Navigation**: Consistent paths across contract and implementation docs
@@ -184,7 +184,7 @@ CTR/
 
 Before marking a contract as "Active", ensure:
 
-- [ ] **Dual Files Exist**: Both .md and .yaml files created with matching CTR-NNN_slug
+- [ ] **Dual Files Exist**: Both .md and .yaml files created with matching CTR-NN_slug
 - [ ] **Schema Valid**: YAML passes schema validation (yamllint, JSON Schema validator)
 - [ ] **Traceability Complete**: All upstream REQ/ADR referenced, downstream SPEC linked
 - [ ] **Error Handling Defined**: All error codes documented with retry strategies
@@ -402,14 +402,14 @@ Contracts MUST reference:
 ### Upstream Sources
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| REQ | [REQ-003](../REQ/.../REQ-003.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement | section 3.1 | Interface requirement |
+| REQ | [REQ-03](../REQ/.../REQ-03.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement | section 3.1 | Interface requirement |
 | ADR | [ADR-008](../ADR/ADR-008.md) | Centralized Risk Parameters | Architecture pattern |
 ```
 
 **Format** (in .yaml metadata):
 ```yaml
 upstream_requirements:
-  - REQ-003
+  - REQ-03
 upstream_adrs:
   - ADR-008
 ```
@@ -428,18 +428,18 @@ Contracts MAY link to:
 ### Downstream Artifacts
 | Artifact Type | Document ID | Document Title | Relationship |
 |---------------|-------------|----------------|--------------|
-| SPEC | [SPEC-005](../SPEC/.../SPEC-005.yaml) | Risk Validation Service | Provider implementation |
+| SPEC | [SPEC-05](../SPEC/.../SPEC-05.yaml) | Risk Validation Service | Provider implementation |
 | Code | src/services/risk_validation_service.py | Risk Validation Service | Provider code |
 ```
 
 ### 9.3 Cross-Reference Format
 ```markdown
 # In markdown files
-[CTR-001](../CTR/CTR-001_data_validation.md#CTR-001)
-[CTR-001 Schema](../CTR/CTR-001_data_validation.yaml)
+[CTR-01](../CTR/CTR-01_data_validation.md#CTR-01)
+[CTR-01 Schema](../CTR/CTR-01_data_validation.yaml)
 
 # If using subdirectories
-[CTR-001](../CTR/agents/CTR-001_service_orchestrator_api.md)
+[CTR-01](../CTR/agents/CTR-01_service_orchestrator_api.md)
 ```
 
 ## 10. Integration with Workflow
@@ -453,7 +453,7 @@ component_type: service
 
 # Contract reference
 interface:
-  contract_ref: CTR-001_data_validation
+  contract_ref: CTR-01_data_validation
   contract_version: "1.0.0"
   role: provider  # or consumer
 
@@ -467,12 +467,12 @@ interface:
 ```markdown
 ## Interface Contract
 
-This service implements **[CTR-001: resource Risk Validation](../CTR/CTR-001_data_validation.md)** as the provider.
+This service implements **[CTR-01: resource Risk Validation](../CTR/CTR-01_data_validation.md)** as the provider.
 
 **Contract Compliance**:
-- Request validation: JSON Schema validation against CTR-001.yaml
-- Response formatting: Matches CTR-001 response_schema
-- Error codes: Implements all CTR-001 error codes (INVALID_INPUT, RATE_LIMITED, etc.)
+- Request validation: JSON Schema validation against CTR-01.yaml
+- Response formatting: Matches CTR-01 response_schema
+- Error codes: Implements all CTR-01 error codes (INVALID_INPUT, RATE_LIMITED, etc.)
 ```
 
 ### 10.2 How to Validate Implementation Against Contract
@@ -484,11 +484,11 @@ import pact
 from src.services.risk_validation_service import validate_position
 
 def test_validatePosition_success(pact_provider):
-    """Provider satisfies CTR-001 success scenario"""
-    request = load_contract_example("CTR-001", "example_1_request")
+    """Provider satisfies CTR-01 success scenario"""
+    request = load_contract_example("CTR-01", "example_1_request")
     response = validate_position(request)
 
-    assert_schema_valid(response, "CTR-001", "response_schema")
+    assert_schema_valid(response, "CTR-01", "response_schema")
     assert response["is_valid"] == True
     assert "decision_id" in response
 ```
@@ -500,14 +500,14 @@ import pact
 from src.agents.service_orchestrator.risk_validator_client import RiskValidatorClient
 
 def test_consumer_expects_ctr001_schema(pact_consumer):
-    """Consumer expects CTR-001 response schema"""
+    """Consumer expects CTR-01 response schema"""
     pact_consumer.expect_request(
         method="POST",
         path="/validate",
         body={"resource": {...}}
     ).will_respond_with(
         status=200,
-        body=matches_schema("CTR-001", "response_schema")
+        body=matches_schema("CTR-01", "response_schema")
     )
 
     client = RiskValidatorClient()
@@ -522,7 +522,7 @@ def test_consumer_expects_ctr001_schema(pact_consumer):
 - **Clear Interface**: Contract defines boundary, no ambiguity
 - **No Blocking**: Teams don't wait for each other to finish
 
-**Example**: Risk Validation Service team implements provider while 11 agent teams implement consumers, all referencing CTR-001.
+**Example**: Risk Validation Service team implements provider while 11 agent teams implement consumers, all referencing CTR-01.
 
 ### 11.2 Early Validation
 - **Schema Validation**: Catch type errors before coding (JSON Schema)
@@ -587,16 +587,16 @@ retry_library: tenacity
 ### 13.1 YAML Validators
 ```bash
 # yamllint - YAML syntax validation
-yamllint CTR/CTR-001_data_validation.yaml
+yamllint CTR/CTR-01_data_validation.yaml
 
 # JSON Schema validator - Schema structure validation
-check-jsonschema --schemafile CTR/CTR-001_data_validation.yaml
+check-jsonschema --schemafile CTR/CTR-01_data_validation.yaml
 ```
 
 ### 13.2 OpenAPI Linters
 ```bash
 # Spectral - OpenAPI/AsyncAPI linter
-spectral lint CTR/CTR-001_data_validation.yaml
+spectral lint CTR/CTR-01_data_validation.yaml
 ```
 
 ### 13.3 Contract Testing Tools
@@ -610,7 +610,7 @@ spectral lint CTR/CTR-001_data_validation.yaml
 from jsonschema import validate, ValidationError
 import yaml
 
-with open("CTR-001_data_validation.yaml") as f:
+with open("CTR-01_data_validation.yaml") as f:
     contract = yaml.safe_load(f)
     schema = contract["endpoints"][0]["request_schema"]
 
@@ -651,7 +651,7 @@ except ValidationError as e:
 |------|----------|
 | **Copy template** | CTR-TEMPLATE.md + CTR-TEMPLATE.yaml |
 | **Reserve ID** | CTR-000_index.md (check next available) |
-| **Naming format** | CTR-NNN_snake_case_slug.md + .yaml |
+| **Naming format** | CTR-NN_snake_case_slug.md + .yaml |
 | **Organize by type** | Optional: CTR/{agents,mcp,infra}/ |
 | **Validate schema** | yamllint, jsonschema, spectral |
 | **Link traceability** | REQ/ADR (upstream), SPEC/Code (downstream) |

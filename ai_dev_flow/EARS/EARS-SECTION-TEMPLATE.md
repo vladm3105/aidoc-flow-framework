@@ -1,10 +1,10 @@
 ---
-doc_id: EARS-{NNN}
+doc_id: EARS-{NN}
 section: {S}
 title: "{Section Title}"
-parent_doc: "EARS-{NNN}.0_index.md"
-prev_section: "EARS-{NNN}.{S-1}_{prev_slug}.md"
-next_section: "EARS-{NNN}.{S+1}_{next_slug}.md"
+parent_doc: "EARS-{NN}.0_index.md"
+prev_section: "EARS-{NN}.{S-1}_{prev_slug}.md"
+next_section: "EARS-{NN}.{S+1}_{next_slug}.md"
 tags:
   - section-file
   - ears-section
@@ -22,11 +22,11 @@ custom_fields:
   index_role: false
 ---
 
-# EARS-{NNN}.{S}: {Section Title}
+# EARS-{NN}.{S}: {Section Title}
 
-> **Navigation**: [Index](EARS-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](EARS-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
 >
-> **Parent Document**: EARS-{NNN}
+> **Parent Document**: EARS-{NN}
 > **Section**: {S} of {N}
 > **Layer**: 3 - Formal Requirements
 
@@ -44,23 +44,23 @@ custom_fields:
 
 ### Ubiquitous Requirements
 
-**EARS-{NNN}-{ID}**: The {system} SHALL {requirement}.
+**EARS-{NN}-{ID}**: The {system} SHALL {requirement}.
 
 ### Event-Driven Requirements
 
-**EARS-{NNN}-{ID}**: WHEN {trigger} THE {system} SHALL {requirement}.
+**EARS-{NN}-{ID}**: WHEN {trigger} THE {system} SHALL {requirement}.
 
 ### State-Driven Requirements
 
-**EARS-{NNN}-{ID}**: WHILE {state} THE {system} SHALL {requirement}.
+**EARS-{NN}-{ID}**: WHILE {state} THE {system} SHALL {requirement}.
 
 ### Optional Feature Requirements
 
-**EARS-{NNN}-{ID}**: WHERE {feature} THE {system} SHALL {requirement}.
+**EARS-{NN}-{ID}**: WHERE {feature} THE {system} SHALL {requirement}.
 
 ### Unwanted Behavior Requirements
 
-**EARS-{NNN}-{ID}**: IF {unwanted condition} THEN THE {system} SHALL {response} WITHIN {timeframe}.
+**EARS-{NN}-{ID}**: IF {unwanted condition} THEN THE {system} SHALL {response} WITHIN {timeframe}.
 
 ---
 
@@ -68,17 +68,17 @@ custom_fields:
 
 | ID | Pattern | Statement | Priority | Source |
 |----|---------|-----------|----------|--------|
-| EARS-{NNN}-{ID} | {pattern} | {statement} | MUST/SHOULD/MAY | @ref: PRD-{NNN} |
+| EARS-{NN}-{ID} | {pattern} | {statement} | MUST/SHOULD/MAY | @ref: PRD-{NN} |
 
 ---
 
 ## References
 
-- **Parent Document**: @ref: EARS-{NNN}.0
-- **Related Sections**: @ref: EARS-{NNN}.{related}
-- **Upstream**: @ref: PRD-{NNN} (Product Requirements)
-- **Downstream**: @ref: BDD-{NNN} (Behavior), @ref: ADR-{NNN} (Architecture)
+- **Parent Document**: @ref: EARS-{NN}.0
+- **Related Sections**: @ref: EARS-{NN}.{related}
+- **Upstream**: @ref: PRD-{NN} (Product Requirements)
+- **Downstream**: @ref: BDD-{NN} (Behavior), @ref: ADR-{NN} (Architecture)
 
 ---
 
-> **Navigation**: [Index](EARS-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](EARS-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})

@@ -33,12 +33,12 @@ BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC �
 
 ### Format
 ```
-{TYPE}-{NNN}_{descriptive_slug}.{ext}
+{TYPE}-{NN}_{descriptive_slug}.{ext}
 ```
 
 ### Examples
 ```
-REQ-001_resource_limit_enforcement.md
+REQ-01_resource_limit_enforcement.md
 ADR-005_database_selection.md
 CTR-012_data_service_api.md
 CTR-012_data_service_api.yaml  (dual-file)
@@ -48,17 +48,20 @@ TASKS-023_implement_risk_calculator.md
 
 ### Section Files (DEFAULT for BRD/PRD/ADR)
 ```
-docs/{TYPE}/{TYPE}-{NNN}/{TYPE}-{NNN}.{S}_{section_slug}.{ext}
+docs/{TYPE}/{TYPE}-{NN}_{slug}/{TYPE}-{NN}.{S}_{section_slug}.{ext}
 
-Index File:   docs/BRD/BRD-001/BRD-001.0_index.md
-Section File: docs/BRD/BRD-001/BRD-001.1_executive_summary.md
-Section File: docs/PRD/PRD-002/PRD-002.3_problem_statement.md
-Section File: docs/ADR/ADR-005/ADR-005.2_alternatives.md
+Folder:       docs/BRD/BRD-01_platform_architecture/
+Index File:   docs/BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md
+Section File: docs/BRD/BRD-01_platform_architecture/BRD-01.1_platform_architecture_executive_summary.md
+Section File: docs/PRD/PRD-02_user_authentication/PRD-02.3_user_authentication_problem_statement.md
+Section File: docs/ADR/ADR-005_database_selection/ADR-005.2_database_selection_alternatives.md
 ```
+
+**Note**: Folder slug MUST match the index file slug (e.g., `BRD-01_platform_architecture/` contains `BRD-01.0_platform_architecture_index.md`).
 
 ### Monolithic (Optional for <25KB)
 ```
-docs/{TYPE}/{TYPE}-{NNN}_{descriptive_slug}.md
+docs/{TYPE}/{TYPE}-{NN}_{descriptive_slug}.md
 
 Example: docs/REQ/REQ-042_authentication_methods.md
 ```
@@ -71,12 +74,12 @@ Example: docs/REQ/REQ-042_authentication_methods.md
 [{TYPE}-{ID}](../path/to/document.md#{TYPE}-{ID})
 
 Examples (nested folder structure - BRD/PRD/ADR):
-[BRD-001](../BRD/BRD-001/BRD-001.0_index.md#BRD-001)
-[PRD-002](../PRD/PRD-002/PRD-002.0_index.md#PRD-002)
-[ADR-005](../ADR/ADR-005/ADR-005.0_index.md#ADR-005)
+[BRD-01](../BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md#BRD-01)
+[PRD-02](../PRD/PRD-02_user_authentication/PRD-02.0_user_authentication_index.md#PRD-02)
+[ADR-005](../ADR/ADR-005_database_selection/ADR-005.0_database_selection_index.md#ADR-005)
 
 Examples (flat structure - other types):
-[REQ-003](../REQ/risk/REQ-003_resource_limit.md#REQ-003)
+[REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)
 [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
 ```
 
@@ -88,9 +91,9 @@ Examples (flat structure - other types):
 graph TB
     subgraph docs["docs/"]
         subgraph nested["Nested Folders (BRD/PRD/ADR)"]
-            BRD["BRD/BRD-NNN/ - Business Requirements"]
-            PRD["PRD/PRD-NNN/ - Product Requirements"]
-            ADR["ADR/ADR-NNN/ - Architecture Decisions"]
+            BRD["BRD/BRD-NN_{slug}/ - Business Requirements"]
+            PRD["PRD/PRD-NN_{slug}/ - Product Requirements"]
+            ADR["ADR/ADR-NN_{slug}/ - Architecture Decisions"]
         end
         subgraph flat["Flat Structure (Other Types)"]
             EARS["EARS/ - EARS Syntax"]
@@ -105,10 +108,10 @@ graph TB
         end
     end
 
-    subgraph nested_example["Nested Example: docs/BRD/BRD-001/"]
-        idx["BRD-001.0_index.md"]
-        sec1["BRD-001.1_executive_summary.md"]
-        sec2["BRD-001.2_business_objectives.md"]
+    subgraph nested_example["Nested Example: docs/BRD/BRD-01_platform_architecture/"]
+        idx["BRD-01.0_platform_architecture_index.md"]
+        sec1["BRD-01.1_platform_architecture_executive_summary.md"]
+        sec2["BRD-01.2_platform_architecture_business_objectives.md"]
     end
 
     subgraph req_sub["REQ/ subdirectories"]
@@ -142,9 +145,10 @@ mkdir -p docs/{EARS,BDD,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
 mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
 
 # Create nested document folders (BRD/PRD/ADR - DEFAULT)
-mkdir -p docs/BRD/BRD-001  # Creates docs/BRD/BRD-001/
-mkdir -p docs/PRD/PRD-001  # Creates docs/PRD/PRD-001/
-mkdir -p docs/ADR/ADR-001  # Creates docs/ADR/ADR-001/
+# Folder slug MUST match the index file slug
+mkdir -p docs/BRD/BRD-01_platform_architecture  # Creates docs/BRD/BRD-01_platform_architecture/
+mkdir -p docs/PRD/PRD-01_user_authentication    # Creates docs/PRD/PRD-01_user_authentication/
+mkdir -p docs/ADR/ADR-01_cloud_migration        # Creates docs/ADR/ADR-01_cloud_migration/
 
 # Domain-specific (Financial)
 mkdir -p docs/REQ/{core,operations,data,compliance,ml}
@@ -193,8 +197,8 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 ### Upstream Sources (REQUIRED - except BRD)
 | Source | Type | Reference |
 |--------|------|-----------|
-| [BRD-001](../BRD/BRD-001_business.md#BRD-001) | Business Requirements | Context |
-| [PRD-002](../PRD/PRD-002_product.md#PRD-002) | Product Requirements | Feature spec |
+| [BRD-01](../BRD/BRD-01_business.md#BRD-01) | Business Requirements | Context |
+| [PRD-02](../PRD/PRD-02_product.md#PRD-02) | Product Requirements | Feature spec |
 
 ### Downstream Artifacts (OPTIONAL - only existing docs)
 | Artifact | Type | Reference |
@@ -203,7 +207,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 | [TASKS-023](../TASKS/TASKS-023_impl.md#TASKS-023) | Implementation Tasks | TODOs |
 
 ### Primary Anchor/ID
-- **REQ-003**: resource limit enforcement requirement
+- **REQ-03**: resource limit enforcement requirement
 
 ### Code Paths
 - `src/risk/resource_limiter.py::PositionLimiter.enforce_limit()`
@@ -282,15 +286,15 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 ### Pre-Creation
 - [ ] Read upstream documents (strategy, BRD, PRD, EARS, etc.)
 - [ ] Identify which template to use from `ai_dev_flow/[TYPE]/`
-- [ ] Assign next sequential ID ([TYPE]-NNN)
+- [ ] Assign next sequential ID ([TYPE]-NN)
 - [ ] Check for existing traceability matrix: `[TYPE]-000_TRACEABILITY_MATRIX.md`
 
 ### During Creation
 - [ ] Use template from `ai_dev_flow/[TYPE]/[TYPE]-TEMPLATE.[ext]`
-- [ ] Include H1 header with ID: `# [TYPE]-NNN: Title`
+- [ ] Include H1 header with ID: `# [TYPE]-NN: Title`
 - [ ] Fill all required sections from template
 - [ ] Add Traceability section (section 7) with upstream/downstream links
-- [ ] Validate inline cross-references use anchor format: `#[TYPE]-NNN`
+- [ ] Validate inline cross-references use anchor format: `#[TYPE]-NN`
 
 ### Post-Creation (MANDATORY)
 - [ ] **CREATE/UPDATE TRACEABILITY MATRIX** ⚠️ **CRITICAL STEP**
@@ -343,10 +347,10 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 
 | Type | Purpose | Format | Structure | Example |
 |------|---------|--------|-----------|---------|
-| **BRD** | Business objectives | .md | **Nested** | `BRD/BRD-001/BRD-001.0_index.md` |
-| **PRD** | Product features | .md | **Nested** | `PRD/PRD-002/PRD-002.0_index.md` |
-| **ADR** | Architecture decisions | .md | **Nested** | `ADR/ADR-005/ADR-005.0_index.md` |
-| **EARS** | Measurable requirements | .md | Flat | EARS-003_performance.md |
+| **BRD** | Business objectives | .md | **Nested** | `BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md` |
+| **PRD** | Product features | .md | **Nested** | `PRD/PRD-02_user_auth/PRD-02.0_user_auth_index.md` |
+| **ADR** | Architecture decisions | .md | **Nested** | `ADR/ADR-005_db_selection/ADR-005.0_db_selection_index.md` |
+| **EARS** | Measurable requirements | .md | Flat | EARS-03_performance.md |
 | **BDD** | Acceptance tests | .feature | Flat | BDD-004_resource_limits.feature |
 | **SYS** | System specifications | .md | Flat | SYS-006_api_gateway.md |
 | **REQ** | Atomic requirements | .md | Flat | REQ-007_limit_enforcement.md |
@@ -354,9 +358,9 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 | **CTR** | API contracts | .md + .yaml | Flat | CTR-009_market_api.md + .yaml |
 | **SPEC** | Technical SPEC | .yaml | Flat | SPEC-010_limiter.yaml |
 | **TASKS** | Implementation TODOs | .md | Flat | TASKS-010_implement_limiter.md |
-| **IPLAN** | Session execution plans | .md | Flat | IPLAN-001_db_migration.md |
+| **IPLAN** | Session execution plans | .md | Flat | IPLAN-01_db_migration.md |
 
-**Note**: BRD/PRD/ADR use nested folder structure (`{TYPE}/{TYPE}-NNN/{TYPE}-NNN.S_slug.md`) by DEFAULT. Other types use flat structure.
+**Note**: BRD/PRD/ADR use nested folder structure (`{TYPE}/{TYPE}-NN_{slug}/{TYPE}-NN.S_{slug}.md`) by DEFAULT. Folder slug MUST match index file slug. Other types use flat structure.
 
 ---
 
@@ -399,7 +403,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 python scripts/check_broken_references.py
 
 # Fix pattern
-[REQ-003](../REQ/risk/REQ-003_resource_limit.md#REQ-003)
+[REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)
          ^^^^^ correct path ^^^^^ ^^^^^^^ anchor matches ID ^^^^^^^
 ```
 

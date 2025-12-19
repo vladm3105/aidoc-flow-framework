@@ -132,7 +132,7 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 
 **Fix**:
 ```markdown
-| **Source Document** | SYS-002 section 3.1.1 |
+| **Source Document** | SYS-02 section 3.1.1 |
 | **Author** | System Architect |
 | **Category** | Functional |
 | **Verification Method** | BDD + Integration Test |
@@ -164,7 +164,7 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-001](../../BRD/BRD-001.md) | ... | ... | ... |
+| BRD | [BRD-01](../../BRD/BRD-01.md) | ... | ... | ... |
 ```
 
 ---
@@ -272,21 +272,21 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 **Type**: Warning
 
 **Valid Examples**:
-- `SYS-002 section 3.1.1` ✅
-- `BRD-001 section 4.2` ✅
+- `SYS-02 section 3.1.1` ✅
+- `BRD-01 section 4.2` ✅
 
 **Invalid Examples**:
-- `SYS-002` ❌
+- `SYS-02` ❌
 - `section 3.1.1` ❌
 
 **Warning Message**:
 ```
-⚠️  WARNING: Source Document should include section number (e.g., 'SYS-002 section 3.1.1')
+⚠️  WARNING: Source Document should include section number (e.g., 'SYS-02 section 3.1.1')
 ```
 
 **Fix**:
 ```markdown
-| **Source Document** | SYS-002 section 3.1.1 |
+| **Source Document** | SYS-02 section 3.1.1 |
 ```
 
 ---
@@ -386,26 +386,26 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 **Type**: Error (blocking)
 
 **Valid Examples**:
-- `REQ-002_connection_heartbeat.md` ✅
+- `REQ-02_connection_heartbeat.md` ✅
 - `REQ-023_quote_retrieval.md` ✅
 - `REQ-009.1_prerequisite.md` ✅ (section file)
 
 **Invalid Examples**:
-- `REQ-002.md` ❌ (missing description)
+- `REQ-02.md` ❌ (missing description)
 - `req-002_connection.md` ❌ (wrong case)
 - `REQ002_connection.md` ❌ (missing hyphen)
-- `REQ-002_Connection.md` ❌ (uppercase in slug)
+- `REQ-02_Connection.md` ❌ (uppercase in slug)
 
-**Pattern**: `REQ-\d{3,4}(-\d{2,3})?_[a-z0-9_]+\.md`
+**Pattern**: `REQ-\d{2,}(-\d{2,3})?_[a-z0-9_]+\.md`
 
 **Error Messages**:
 ```
 ❌ ERROR: Invalid filename format: req-002_connection.md
-         Expected: REQ-NNN_{slug}.md or REQ-NNN-YY_{slug}.md
+         Expected: REQ-NN_{slug}.md or REQ-NN-YY_{slug}.md
 
 ❌ ERROR: H1 header ID doesn't match filename
-         Filename ID: REQ-002
-         H1 Header: # REQ-003: Connection Monitoring
+         Filename ID: REQ-02
+         H1 Header: # REQ-03: Connection Monitoring
 ```
 
 **Fix**:
@@ -426,15 +426,15 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 
 **Valid Examples**:
 ```markdown
-# REQ-001: [EXTERNAL_SERVICE_GATEWAY] IB Gateway Connection ✅
-# REQ-002: [HEALTH_CHECK_SERVICE] Heartbeat Monitoring ✅
-# REQ-003: [RESILIENCE_PATTERN] Automatic Reconnection ✅
+# REQ-01: [EXTERNAL_SERVICE_GATEWAY] IB Gateway Connection ✅
+# REQ-02: [HEALTH_CHECK_SERVICE] Heartbeat Monitoring ✅
+# REQ-03: [RESILIENCE_PATTERN] Automatic Reconnection ✅
 ```
 
 **Invalid Examples**:
 ```markdown
-# REQ-001: IB Gateway Connection ❌ (missing tag)
-# REQ-002: Connection Monitoring ❌ (missing tag)
+# REQ-01: IB Gateway Connection ❌ (missing tag)
+# REQ-02: Connection Monitoring ❌ (missing tag)
 ```
 
 **Valid Resource Tags**:
@@ -456,13 +456,13 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 **Error Message**:
 ```
 ❌ ERROR: Template 2.0 requires [RESOURCE_INSTANCE] tag in H1
-         Current H1: # REQ-002: Connection Monitoring
-         Expected: # REQ-002: [HEALTH_CHECK_SERVICE] Connection Monitoring
+         Current H1: # REQ-02: Connection Monitoring
+         Expected: # REQ-02: [HEALTH_CHECK_SERVICE] Connection Monitoring
 ```
 
 **Fix**:
 ```markdown
-# REQ-002: [HEALTH_CHECK_SERVICE] Connection Heartbeat Monitoring
+# REQ-02: [HEALTH_CHECK_SERVICE] Connection Heartbeat Monitoring
 ```
 
 **Reference**: `REQ-TEMPLATE.md` (H1 Header Format - includes resource instance tags)
@@ -480,7 +480,7 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 @prd: PRD.NN.EE.SS
 @ears: EARS.NN.EE.SS
 @bdd: BDD.NN.EE.SS
-@adr: ADR-NNN
+@adr: ADR-NN
 @sys: SYS.NN.EE.SS
 ```
 
@@ -509,13 +509,13 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
          Reference: doc-flow TRACEABILITY.md section 2.5
 
 ❌ ERROR: Invalid tag format: @brd BRD.09.01.15
-         Expected: @type: TYPE.NN.EE.SS (unified 4-segment element ID)
+         Expected: @type: TYPE.NN.TT.SS (unified 4-segment element ID)
          Example: @brd: BRD.09.01.15
 ```
 
 **Fix**:
 1. Add all 6 missing tags to section 11 (Traceability)
-2. Use format: `@type: TYPE.NN.EE.SS (Unified 4-Segment Element ID)`
+2. Use format: `@type: TYPE.NN.TT.SS (Unified 4-Segment Element ID)`
 3. Verify all referenced documents exist
 
 **Reference**: `TRACEABILITY.md` section 2.5 (Cumulative Tagging Hierarchy)
@@ -541,12 +541,12 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-001](...) | ... | ... | Primary business need |
-| PRD | [PRD-001](...) | ... | ... | Product requirement |
+| BRD | [BRD-01](...) | ... | ... | Primary business need |
+| PRD | [PRD-01](...) | ... | ... | Product requirement |
 | EARS | [EARS-012](...) | ... | ... | Formal requirement |
 | BDD | [BDD-015](...) | ... | ... | Acceptance test |
 | ADR | [ADR-033](...) | ... | ... | Architecture decision |
-| SYS | [SYS-002](...) | ... | ... | Parent system requirement |
+| SYS | [SYS-02](...) | ... | ... | Parent system requirement |
 ```
 
 **Error Message**:
@@ -572,13 +572,13 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 **Valid Link Format**:
 ```markdown
-[REQ-003](../REQ/risk/lim/REQ-003_resource_limit.md#REQ-003) ✅
+[REQ-03](../REQ/risk/lim/REQ-03_resource_limit.md#REQ-03) ✅
 [ADR-033](../../ADR/ADR-033_architecture.md#ADR-033) ✅
 ```
 
 **Invalid Examples**:
 ```markdown
-[REQ-003](REQ-003.md) ❌ (missing relative path)
+[REQ-03](REQ-03.md) ❌ (missing relative path)
 [ADR-033](../../ADR/ADR-999.md) ❌ (file doesn't exist)
 ```
 
@@ -615,7 +615,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 ⚠️  WARNING: Complex REQ detected but section 11.4 (Traceability Matrix) missing
          Upstream sources: 7 (≥5 suggests complexity)
          Sub-components: yes
-         Recommendation: Add section 11.4 or create separate REQ-NNN_TRACEABILITY_MATRIX.md
+         Recommendation: Add section 11.4 or create separate REQ-NN_TRACEABILITY_MATRIX.md
          Reference: REQ-TEMPLATE.md section 11 (Traceability)
 ```
 
@@ -696,6 +696,34 @@ class HeartbeatConfig(BaseModel):
 
 ---
 
+### CHECK 20: Element ID Format Compliance ⭐ NEW
+
+**Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
+**Type**: Error
+
+| Check | Pattern | Result |
+|-------|---------|--------|
+| Valid format | `### REQ.NN.TT.SS:` | ✅ Pass |
+| Removed pattern | `### R-XXX` | ❌ Fail - use REQ.NN.27.SS |
+| Removed pattern | `### REQ-XXX` | ❌ Fail - use REQ.NN.27.SS |
+| Removed pattern | `### FR-XXX` | ❌ Fail - use REQ.NN.01.SS |
+
+**Regex**: `^###\s+REQ\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+**Common Element Types for REQ**:
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Functional Requirement | 01 | REQ.02.01.01 |
+| Dependency | 05 | REQ.02.05.01 |
+| Acceptance Criteria | 06 | REQ.02.06.01 |
+| Atomic Requirement | 27 | REQ.02.27.01 |
+
+**Fix**: Replace `### REQ-01: Requirement` with `### REQ.02.27.01: Requirement`
+
+**Reference**: REQ_CREATION_RULES.md Section 4.1, ID_NAMING_STANDARDS.md lines 783-793
+
+---
+
 ## Error Fix Guide
 
 ### Quick Fix Matrix
@@ -723,7 +751,7 @@ class HeartbeatConfig(BaseModel):
 
 ```bash
 # Validate single file
-./scripts/validate_req_template_v3.sh docs/REQ/api/ib/REQ-002_connection_heartbeat.md
+./scripts/validate_req_template_v3.sh docs/REQ/api/ib/REQ-02_connection_heartbeat.md
 
 # Validate all REQ files
 find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template_v3.sh {} \;
@@ -795,13 +823,13 @@ Warnings: 1
 
 **Error**:
 ```
-❌ ERROR: Invalid filename format: REQ-002.md
-         Expected: REQ-NNN_{slug}.md
+❌ ERROR: Invalid filename format: REQ-02.md
+         Expected: REQ-NN_{slug}.md
 ```
 
 **Cause**: Missing descriptive slug in filename
 
-**Fix**: Rename file to `REQ-002_connection_heartbeat_monitoring.md`
+**Fix**: Rename file to `REQ-02_connection_heartbeat_monitoring.md`
 
 ---
 
@@ -810,15 +838,15 @@ Warnings: 1
 **Error**:
 ```
 ❌ ERROR: H1 header ID doesn't match filename
-         Filename ID: REQ-002
-         H1 Header: # REQ-003: Connection Monitoring
+         Filename ID: REQ-02
+         H1 Header: # REQ-03: Connection Monitoring
 ```
 
 **Cause**: H1 header has different ID than filename
 
 **Fix**: Update H1 to match filename:
 ```markdown
-# REQ-002: [HEALTH_CHECK_SERVICE] Connection Heartbeat Monitoring
+# REQ-02: [HEALTH_CHECK_SERVICE] Connection Heartbeat Monitoring
 ```
 
 ---
@@ -860,14 +888,14 @@ Warnings: 1
 **Error**:
 ```
 ❌ ERROR: Template 2.0 requires [RESOURCE_INSTANCE] tag in H1
-         Current H1: # REQ-002: Connection Monitoring
+         Current H1: # REQ-02: Connection Monitoring
 ```
 
 **Cause**: Template 2.0 requires resource classification tag
 
 **Fix**:
 ```markdown
-# REQ-002: [HEALTH_CHECK_SERVICE] Connection Heartbeat Monitoring
+# REQ-02: [HEALTH_CHECK_SERVICE] Connection Heartbeat Monitoring
 ```
 
 ---

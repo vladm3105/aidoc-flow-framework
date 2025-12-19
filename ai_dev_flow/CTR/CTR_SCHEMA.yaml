@@ -100,14 +100,14 @@ structure:
     naming_pattern:
       md: "^CTR-\\d{3}_[a-z0-9_]+\\.md$"
       yaml: "^CTR-\\d{3}_[a-z0-9_]+\\.yaml$"
-    description: "CTR-NNN_descriptive_name.md + CTR-NNN_descriptive_name.yaml"
+    description: "CTR-NN_descriptive_name.md + CTR-NN_descriptive_name.yaml"
 
   # Required sections in .md file (organized in 5 parts)
   required_sections:
     # Part 1: Contract Context and Requirements
     - pattern: "^# CTR-\\d{3}:"
       name: "Title (H1)"
-      description: "Single H1 with format CTR-NNN: Title"
+      description: "Single H1 with format CTR-NN: Title"
 
     - pattern: "^## 1\\. Document Control$"
       name: "Document Control"
@@ -373,7 +373,7 @@ validation_rules:
     - rule: "Document Control must have minimum 6 fields"
       severity: error
 
-    - rule: "File name must match CTR-NNN_name.md format"
+    - rule: "File name must match CTR-NN_name.md format"
       severity: warning
 
   # Schema validation (YAML file)
@@ -423,7 +423,7 @@ traceability:
       - "@prd: PRD.NN.EE.SS"
       - "@ears: EARS.NN.EE.SS"
       - "@bdd: BDD.NN.EE.SS"
-      - "@adr: ADR-NNN"
+      - "@adr: ADR-NN"
       - "@sys: SYS.NN.EE.SS"
       - "@req: REQ.NN.EE.SS"
     optional:
@@ -445,7 +445,7 @@ traceability:
         format: "@bdd: BDD.NN.EE.SS"
         location: "Section 19 or Traceability Tags section"
       - type: ADR
-        format: "@adr: ADR-NNN"
+        format: "@adr: ADR-NN"
         location: "Section 19 or Traceability Tags section"
       - type: SYS
         format: "@sys: SYS.NN.EE.SS"
@@ -461,19 +461,19 @@ traceability:
   downstream:
     expected:
       - type: SPEC
-        format: "SPEC-NNN"
+        format: "SPEC-NN"
       - type: TASKS
-        format: "TASKS-NNN"
+        format: "TASKS-NN"
       - type: Code
         format: "src/..."
 
   same_type:
     optional:
       - type: CTR
-        format: "@related-ctr: CTR-NNN"
+        format: "@related-ctr: CTR-NN"
         description: "Related CTR document sharing API context"
       - type: CTR
-        format: "@depends-ctr: CTR-NNN"
+        format: "@depends-ctr: CTR-NN"
         description: "Prerequisite CTR document"
 
 # =============================================================================
@@ -494,7 +494,7 @@ error_messages:
   CTR-E011: "YAML schema is not valid OpenAPI 3.x or JSON Schema"
   CTR-E012: "Missing request/response schemas for endpoints"
   CTR-E013: "Missing Error Handling section"
-  CTR-E014: "File name does not match CTR-NNN_name.md format"
+  CTR-E014: "File name does not match CTR-NN_name.md format"
   CTR-E015: "Contract Definition missing Provider/Consumer specification"
   CTR-E016: "Error Codes table missing in Error Handling section"
   CTR-W001: "Missing Context Problem Statement"

@@ -71,7 +71,7 @@ def extract_tags_from_file(file_path: Path) -> Dict:
             'tags': {
                 'brd': [('BRD.01.01.01', None), ('BRD.01.01.02', None)],
                 'sys': [('SYS.01.01.01', None)],
-                'spec': [('SPEC-001', None)],
+                'spec': [('SPEC-01', None)],
                 'test': [('BDD.01.01.01', None)],
                 'impl-status': ['complete']
             },

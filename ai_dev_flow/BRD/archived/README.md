@@ -41,12 +41,12 @@ When archiving a BRD:
 Archived BRD filenames maintain original format with archive date:
 
 ```
-BRD-NNN_{original_slug}_ARCHIVED_YYYYMMDD.md
+BRD-NN_{original_slug}_ARCHIVED_YYYYMMDD.md
 ```
 
 Example:
-- Original: `BRD-003_mobile_app_features.md`
-- Archived: `BRD-003_mobile_app_features_ARCHIVED_20251113.md`
+- Original: `BRD-03_mobile_app_features.md`
+- Archived: `BRD-03_mobile_app_features_ARCHIVED_20251113.md`
 
 ## Archived Documents
 

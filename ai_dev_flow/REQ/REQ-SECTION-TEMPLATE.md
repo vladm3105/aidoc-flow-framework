@@ -1,10 +1,10 @@
 ---
-doc_id: REQ-{NNN}
+doc_id: REQ-{NN}
 section: {S}
 title: "{Section Title}"
-parent_doc: "REQ-{NNN}.0_index.md"
-prev_section: "REQ-{NNN}.{S-1}_{prev_slug}.md"
-next_section: "REQ-{NNN}.{S+1}_{next_slug}.md"
+parent_doc: "REQ-{NN}.0_index.md"
+prev_section: "REQ-{NN}.{S-1}_{prev_slug}.md"
+next_section: "REQ-{NN}.{S+1}_{next_slug}.md"
 tags:
   - section-file
   - req-section
@@ -22,11 +22,11 @@ custom_fields:
   index_role: false
 ---
 
-# REQ-{NNN}.{S}: {Section Title}
+# REQ-{NN}.{S}: {Section Title}
 
-> **Navigation**: [Index](REQ-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](REQ-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
 >
-> **Parent Document**: REQ-{NNN}
+> **Parent Document**: REQ-{NN}
 > **Section**: {S} of {N}
 > **Layer**: 7 - Atomic Requirements
 
@@ -40,14 +40,14 @@ custom_fields:
 
 ## Requirements
 
-### REQ-{NNN}-{ID}: {Requirement Title}
+### REQ-{NN}-{ID}: {Requirement Title}
 
 | Field | Value |
 |-------|-------|
-| **ID** | REQ-{NNN}-{ID} |
+| **ID** | REQ-{NN}-{ID} |
 | **Priority** | MUST / SHOULD / MAY |
 | **Category** | Functional / Performance / Security |
-| **Source** | @ref: SYS-{NNN}-{ID} |
+| **Source** | @ref: SYS-{NN}-{ID} |
 | **Rationale** | {Why this requirement exists} |
 
 **Statement**: {EARS-format requirement statement}
@@ -60,18 +60,18 @@ custom_fields:
 **Verification Method**: {Test / Analysis / Inspection / Demonstration}
 
 **Traceability**:
-- @ref: SYS-{NNN}-{ID} (upstream)
-- @ref: SPEC-{NNN}-{ID} (downstream)
+- @ref: SYS-{NN}-{ID} (upstream)
+- @ref: SPEC-{NN}-{ID} (downstream)
 
 ---
 
 ## References
 
-- **Parent Document**: @ref: REQ-{NNN}.0
-- **Related Sections**: @ref: REQ-{NNN}.{related}
-- **Upstream**: @ref: SYS-{NNN} (System Requirements)
-- **Downstream**: @ref: IMPL-{NNN} (Implementation), @ref: SPEC-{NNN} (Specifications)
+- **Parent Document**: @ref: REQ-{NN}.0
+- **Related Sections**: @ref: REQ-{NN}.{related}
+- **Upstream**: @ref: SYS-{NN} (System Requirements)
+- **Downstream**: @ref: IMPL-{NN} (Implementation), @ref: SPEC-{NN} (Specifications)
 
 ---
 
-> **Navigation**: [Index](REQ-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](REQ-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})

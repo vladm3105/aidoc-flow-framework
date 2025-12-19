@@ -59,7 +59,7 @@ Define thresholds in a dedicated section using YAML code blocks:
 ## Thresholds
 
 ```yaml
-# BRD-001, PRD-001, or ADR-001 Thresholds
+# BRD-01, PRD-01, or ADR-01 Thresholds
 thresholds:
   kyc:
     l1:
@@ -111,17 +111,17 @@ Downstream documents reference thresholds using the `@threshold:` tag:
 | Component | Description | Example |
 |-----------|-------------|---------|
 | `DOC_TYPE` | Source document type | `BRD`, `PRD`, `ADR` |
-| `DOC_NUM` | Document number (3 digits) | `001`, `035` |
+| `DOC_NUM` | Document number (2+ digits, starts at 01) | `01`, `35`, `100` |
 | `threshold_key` | Full threshold key | `kyc.l1.daily`, `circuit.failure.count` |
 
 **Examples**:
 
 ```markdown
-@threshold: PRD.001.kyc.l1.daily
-@threshold: BRD.002.risk.low.max
-@threshold: ADR.015.circuit.failure.count
-@threshold: ADR.015.pool.db.max
-@threshold: ADR.020.perf.api.p95
+@threshold: PRD.01.kyc.l1.daily
+@threshold: BRD.02.risk.low.max
+@threshold: ADR.15.circuit.failure.count
+@threshold: ADR.15.pool.db.max
+@threshold: ADR.20.perf.api.p95
 ```
 
 #### 1.3.3 Usage in Downstream Documents
@@ -131,23 +131,23 @@ Downstream documents reference thresholds using the `@threshold:` tag:
 ```markdown
 ## Thresholds Referenced
 
-@threshold: PRD.001.kyc.l1.daily
-@threshold: PRD.001.kyc.l1.monthly
+@threshold: PRD.01.kyc.l1.daily
+@threshold: PRD.01.kyc.l1.monthly
 
-EARS-001: WHEN a L1 user initiates a transaction,
-THE system SHALL validate the amount against @threshold: PRD.001.kyc.l1.daily
+EARS-01: WHEN a L1 user initiates a transaction,
+THE system SHALL validate the amount against @threshold: PRD.01.kyc.l1.daily
 WITHIN 100ms.
 ```
 
 **In BDD Scenarios**:
 
 ```gherkin
-# @threshold: PRD.001.kyc.l1.daily
-# @threshold: PRD.001.risk.high.min
+# @threshold: PRD.01.kyc.l1.daily
+# @threshold: PRD.01.risk.high.min
 
 Scenario: L1 user exceeds daily limit
   Given a L1 verified user
-  And the daily limit is $1,000 per @threshold: PRD.001.kyc.l1.daily
+  And the daily limit is $1,000 per @threshold: PRD.01.kyc.l1.daily
   When the user attempts a $1,500 transaction
   Then the transaction is blocked
 ```
@@ -155,25 +155,25 @@ Scenario: L1 user exceeds daily limit
 **In SPEC Documents**:
 
 ```yaml
-# @threshold: PRD.001.perf.api.p95
-# @threshold: PRD.001.timeout.partner.default
+# @threshold: PRD.01.perf.api.p95
+# @threshold: PRD.01.timeout.partner.default
 
 performance:
   response_time:
-    p95_ms: 200  # per @threshold: PRD.001.perf.api.p95
+    p95_ms: 200  # per @threshold: PRD.01.perf.api.p95
   timeouts:
-    partner_api: 30  # per @threshold: PRD.001.timeout.partner.default
+    partner_api: 30  # per @threshold: PRD.01.timeout.partner.default
 ```
 
 **In ADR Documents** (defining AND referencing thresholds):
 
 ```markdown
-# ADR-015: Circuit Breaker Architecture
+# ADR-15: Circuit Breaker Architecture
 
 ## Thresholds Referenced
 
-@threshold: PRD.001.perf.api.p95
-@threshold: BRD.002.timeout.partner.max
+@threshold: PRD.01.perf.api.p95
+@threshold: BRD.02.timeout.partner.max
 
 ## Thresholds Defined
 
@@ -194,8 +194,8 @@ thresholds:
 
 ## Decision
 
-To meet the p95 latency requirement of 200ms (per @threshold: PRD.001.perf.api.p95),
-we implement circuit breakers with @threshold: ADR.015.circuit.failure.count = 5.
+To meet the p95 latency requirement of 200ms (per @threshold: PRD.01.perf.api.p95),
+we implement circuit breakers with @threshold: ADR.15.circuit.failure.count = 5.
 ```
 
 **In Code**:
@@ -205,9 +205,9 @@ we implement circuit breakers with @threshold: ADR.015.circuit.failure.count = 5
 
 @brd: BRD.01.01.30
 @prd: PRD.01.07.05
-@adr: ADR-015
-@threshold: PRD.001.kyc.l1.daily
-@threshold: ADR.015.circuit.failure.count
+@adr: ADR-15
+@threshold: PRD.01.kyc.l1.daily
+@threshold: ADR.15.circuit.failure.count
 @impl-status: complete
 """
 
@@ -220,23 +220,23 @@ CIRCUIT_FAILURE_COUNT = config.get("thresholds.circuit.failure.count")  # 5
 
 ```text
 Source Documents (define thresholds):
-├── BRD (business thresholds)     → defines: @threshold: BRD.001.risk.high.min
-├── PRD (product thresholds)      → defines: @threshold: PRD.001.kyc.l1.daily
-└── ADR (technical thresholds)    → defines: @threshold: ADR.015.circuit.failure.count
+├── BRD (business thresholds)     → defines: @threshold: BRD.01.risk.high.min
+├── PRD (product thresholds)      → defines: @threshold: PRD.01.kyc.l1.daily
+└── ADR (technical thresholds)    → defines: @threshold: ADR.15.circuit.failure.count
          ↓
 Consumer Documents (reference via @threshold: tags):
-├── EARS  → references: @threshold: PRD.001.kyc.l1.daily
-├── BDD   → references: @threshold: PRD.001.kyc.l1.daily
-├── SYS   → references: @threshold: ADR.015.pool.db.max
-├── ADR   → references: @threshold: PRD.001.perf.api.p95 (to satisfy product SLA)
-├── REQ   → references: @threshold: BRD.001.risk.high.min
-├── CTR   → references: @threshold: PRD.001.rate.api.user
-└── SPEC  → references: @threshold: ADR.015.circuit.failure.count
+├── EARS  → references: @threshold: PRD.01.kyc.l1.daily
+├── BDD   → references: @threshold: PRD.01.kyc.l1.daily
+├── SYS   → references: @threshold: ADR.15.pool.db.max
+├── ADR   → references: @threshold: PRD.01.perf.api.p95 (to satisfy product SLA)
+├── REQ   → references: @threshold: BRD.01.risk.high.min
+├── CTR   → references: @threshold: PRD.01.rate.api.user
+└── SPEC  → references: @threshold: ADR.15.circuit.failure.count
          ↓
 Code (implements with config reference)
 ```
 
-> **ADR Dual Role**: An ADR can define its own technical thresholds (e.g., `ADR.015.circuit.failure.count`) while also referencing business/product thresholds from BRD/PRD (e.g., `@threshold: PRD.001.perf.api.p95`) that the architecture must satisfy.
+> **ADR Dual Role**: An ADR can define its own technical thresholds (e.g., `ADR.15.circuit.failure.count`) while also referencing business/product thresholds from BRD/PRD (e.g., `@threshold: PRD.01.perf.api.p95`) that the architecture must satisfy.
 
 ---
 
@@ -541,15 +541,15 @@ rate.tx.user.velocity: 5  # Rolling: 5 transactions per 5-minute window
 | Component | Format | Example |
 |-----------|--------|---------|
 | `DOC_TYPE` | BRD, PRD, or ADR | `PRD`, `ADR` |
-| `DOC_NUM` | 3-digit number | `001`, `015` |
+| `DOC_NUM` | 2+ digit number (starts at 01) | `01`, `15`, `100` |
 | `threshold_key` | Dot-separated key | `kyc.l1.daily`, `circuit.failure.count` |
 
 ### 6.2 Reference Formats by Context
 
 | Context | Format | Example |
 |---------|--------|---------|
-| @threshold: tag | `@threshold: {TYPE}.{NUM}.{key}` | `@threshold: PRD.001.kyc.l1.daily` |
-| Inline citation | `per @threshold: {TYPE}.{NUM}.{key}` | `1,000 USD per @threshold: PRD.001.kyc.l1.daily` |
+| @threshold: tag | `@threshold: {TYPE}.{NUM}.{key}` | `@threshold: PRD.01.kyc.l1.daily` |
+| Inline citation | `per @threshold: {TYPE}.{NUM}.{key}` | `1,000 USD per @threshold: PRD.01.kyc.l1.daily` |
 | Code constant | `THRESHOLD_{CATEGORY}_{KEY}` | `THRESHOLD_KYC_L1_DAILY` |
 | Config path | `thresholds.{key}` | `thresholds.kyc.l1.daily` |
 | Environment var | `THRESHOLD_{CATEGORY}_{KEY}` | `THRESHOLD_KYC_L1_DAILY=1000` |
@@ -563,15 +563,15 @@ All downstream documents referencing thresholds MUST:
    ```markdown
    ## Thresholds Referenced
 
-   @threshold: PRD.001.kyc.l1.daily
-   @threshold: PRD.001.kyc.l1.monthly
-   @threshold: BRD.002.risk.high.min
+   @threshold: PRD.01.kyc.l1.daily
+   @threshold: PRD.01.kyc.l1.monthly
+   @threshold: BRD.02.risk.high.min
    ```
 
 2. **Reference values inline** with tag:
 
    ```markdown
-   L1 users limited to 1,000 USD daily (per @threshold: PRD.001.kyc.l1.daily)
+   L1 users limited to 1,000 USD daily (per @threshold: PRD.01.kyc.l1.daily)
    ```
 
 3. **Never hardcode values** - always use @threshold: tags
@@ -901,7 +901,7 @@ thresholds:
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2025-12-16 | AI Dev Flow Team | Initial creation based on PRD-035 analysis |
+| 1.0 | 2025-12-16 | AI Dev Flow Team | Initial creation based on PRD-35 analysis |
 | 1.1 | 2025-12-16 | AI Dev Flow Team | Added detailed Boundary Specification, Reference Format, Definition, and Environment Override rules |
 | 1.2 | 2025-12-16 | AI Dev Flow Team | Converted to framework: replaced fixed categories with category creation rules; added universal vs domain-specific categories and abbreviations |
 | 1.3 | 2025-12-16 | AI Dev Flow Team | Removed Threshold Registry requirement; thresholds now defined in BRD/PRD/ADR YAML blocks; introduced `@threshold:` tags for traceability; ADR added as source for technical thresholds (circuit breakers, pools, performance SLAs) |

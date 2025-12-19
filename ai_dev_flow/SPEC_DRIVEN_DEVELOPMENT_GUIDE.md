@@ -37,7 +37,7 @@ Quality gates prevent progression to downstream layers until artifacts meet spec
 - **Automated Recovery**: Validation scripts provide specific guidance for reaching quality thresholds
 
 **Validation Commands:**
-- `./scripts/validate_quality_gates.sh docs/PRD/PRD-001/PRD-001.0_index.md` - Validates individual artifact readiness
+- `./scripts/validate_quality_gates.sh docs/PRD/PRD-01_product_overview/PRD-01.0_product_overview_index.md` - Validates individual artifact readiness
 - Pre-commit automation: Quality gates run on every commit to docs/ directory
 - Refer to [TRACEABILITY_VALIDATION.md](./TRACEABILITY_VALIDATION.md) for complete quality gate specifications
 
@@ -167,11 +167,11 @@ See [index.md](./index.md#traceability-flow) for additional workflow visualizati
 PRDs should reference the documentation in this directory, but the documentation itself should not reference PRDs. The documentation is the authoritative source for requirements and features.
 # Spec-Driven Development (SDD) Guide — Examples
 
-**Note**: File paths shown below are illustrative examples. Replace `{category}`, `{subcategory}`, `{NNN}`, and `{slug}` with actual values for your project.
+**Note**: File paths shown below are illustrative examples. Replace `{category}`, `{subcategory}`, `{NN}`, and `{slug}` with actual values for your project.
 
-@requirement:[REQ-NNN](./REQ/{category}/{subcategory}/REQ-NNN_{slug}.md#REQ-NNN)
-@adr:[ADR-NNN](./ADR/ADR-NNN_{slug}.md#ADR-NNN)
-@spec:[{service_name}](./SPEC/{category}/SPEC-NNN_{slug}.yaml)
+@requirement:[REQ-NN](./REQ/{category}/{subcategory}/REQ-NN_{slug}.md#REQ-NN)
+@adr:[ADR-NN](./ADR/ADR-NN_{slug}.md#ADR-NN)
+@spec:[{service_name}](./SPEC/{category}/SPEC-NN_{slug}.yaml)
 
 Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructions/DOCUMENT_ID_CORE_RULES.md`, `docs/DOCUMENT_ID_CORE_RULES.md`, `TRACEABILITY.md`, and `ID_NAMING_STANDARDS.md`.
 
@@ -210,7 +210,7 @@ AI Dev Flow uses **dual metadata approaches** to serve both human and machine re
 **Example**:
 ```yaml
 ---
-title: "BRD-002: Partner Ecosystem Integration"
+title: "BRD-02: Partner Ecosystem Integration"
 tags:
   - platform-brd
   - shared-architecture
@@ -285,7 +285,7 @@ custom_fields:
 
 ### Downstream References
 - @impl: IMPL.01.28.01 (Quoteboard Implementation Approach)
-- @spec: SPEC-001 (WebSocket Quote Ingestion Technical Spec)
+- @spec: SPEC-01 (WebSocket Quote Ingestion Technical Spec)
 ```
 
 ### 4. Cumulative Tagging Hierarchy
@@ -309,7 +309,7 @@ Each layer in the SDD workflow inherits ALL upstream traceability tags:
 
 **⚠️ CRITICAL: Document IDs are independent of document content**
 
-- **ID Numbers Do Not Match Content**: A document's ID number (e.g., PRD-009, REQ-015, BDD-003) does NOT necessarily correspond to related documents in other artifact types
+- **ID Numbers Do Not Match Content**: A document's ID number (e.g., PRD-009, REQ-015, BDD-03) does NOT necessarily correspond to related documents in other artifact types
 - **Always Try to Find and Use Index Files**: To find documents by topic/content, consult the index file for each artifact type
   - Index files use ID `000` in their identifier (e.g., PRD-000, REQ-000, ADR-000)
   - Index filenames include "index" in the name
@@ -333,7 +333,7 @@ Each layer in the SDD workflow inherits ALL upstream traceability tags:
 
 ### Business Requirements Documents (BRD)
 - **Purpose**: Capture high-level business objectives and workflow requirements
-- **File Format**: `BRD-NNN_descriptive_title.md`
+- **File Format**: `BRD-NN_descriptive_title.md`
 - **Categories**:
   - **Platform BRDs (001-005)**: Infrastructure foundation (sections 3.6/3.7 NOT required)
   - **Feature BRDs (006+)**: Workflow-specific requirements (sections 3.6/3.7 MANDATORY)
@@ -363,9 +363,9 @@ Each layer in the SDD workflow inherits ALL upstream traceability tags:
 **Platform BRDs (001-005)**: Foundation infrastructure documents that DO NOT require sections 3.6/3.7
 
 Platform BRDs define the technology stack and infrastructure that Feature BRDs depend on:
-- **BRD-001**: Platform Architecture & Technology Stack (Node.js, PostgreSQL, Redis, Python, n8n)
-- **BRD-002**: Partner Ecosystem Integration (Bridge, LLM providers, payment processors)
-- **BRD-003**: security, Compliance & Regulatory Framework (encryption, audit, SOC 2)
+- **BRD-01**: Platform Architecture & Technology Stack (Node.js, PostgreSQL, Redis, Python, n8n)
+- **BRD-02**: Partner Ecosystem Integration (Bridge, LLM providers, payment processors)
+- **BRD-03**: security, Compliance & Regulatory Framework (encryption, audit, SOC 2)
 - **BRD-004**: Data Model, Ledger & Double-Entry Accounting (PostgreSQL schema, normalization)
 - **BRD-005**: Multi-Agent AI System Architecture (Google ADK, A2A Protocol, shared context)
 
@@ -378,7 +378,7 @@ Platform BRDs define the technology stack and infrastructure that Feature BRDs d
 **Structure**:
 1. List Platform BRD dependencies (which BRDs 001-005 are required)
 2. Document relevance to current Feature BRD (why this dependency matters)
-3. Reference specific Platform BRD sections (e.g., "See BRD-001 section 3.6 items 1-10")
+3. Reference specific Platform BRD sections (e.g., "See BRD-01 section 3.6 items 1-10")
 4. Include Feature BRD cross-references when workflows depend on each other
 
 **Example** (from BRD-022 Fraud Detection Agent):
@@ -387,10 +387,10 @@ Platform BRDs define the technology stack and infrastructure that Feature BRDs d
 
 This AI Agent BRD depends on the following Platform BRDs:
 
-1. **Platform BRD-001: Platform Architecture & Technology Stack**
+1. **Platform BRD-01: Platform Architecture & Technology Stack**
    - **Required Foundation**: Node.js 18+, PostgreSQL 14+, Redis 7+, Python 3.11+
    - **Relevance to BRD-022**: Fraud detection agent runs as Python microservice
-   - **Specific Prerequisites**: See BRD-001 section 3.6 items 1-10
+   - **Specific Prerequisites**: See BRD-01 section 3.6 items 1-10
 
 2. **Platform BRD-005: Multi-Agent AI System Architecture**
    - **Required AI Infrastructure**: Google ADK, A2A Protocol, shared context store
@@ -408,10 +408,10 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 **Structure**:
 - **Platform-Inherited Conditions** (4 core conditions from Platform BRDs):
-  1. PostgreSQL High Availability (from BRD-001)
-  2. Audit Trail Retention (from BRD-003)
-  3. Google ADK Agent Framework OR n8n Workflow Engine (from BRD-005 or BRD-001)
-  4. Field-Level PII Encryption (from BRD-003)
+  1. PostgreSQL High Availability (from BRD-01)
+  2. Audit Trail Retention (from BRD-03)
+  3. Google ADK Agent Framework OR n8n Workflow Engine (from BRD-005 or BRD-01)
+  4. Field-Level PII Encryption (from BRD-03)
 
 - **Feature-Specific Conditions** (6-12 conditions unique to this workflow):
   - **Condition**: Precise technical requirement
@@ -425,7 +425,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 **Platform-Inherited Mandatory Conditions**:
 
-1. **PostgreSQL High Availability** (from BRD-001)
+1. **PostgreSQL High Availability** (from BRD-01)
    - **Condition**: Multi-AZ deployment with ≤60s failover
    - **Relevance**: Fraud cases stored in PostgreSQL
    - **Business Impact**: DB outage → fraud detection blocked → losses
@@ -448,19 +448,19 @@ This AI Agent BRD depends on the following Platform BRDs:
 **BRD Pattern Categories**
 
 **AI Agent BRD Pattern** (BRD-022 through BRD-029):
-- **Platform Dependencies**: BRD-001 (infra), BRD-005 (Google ADK/A2A)
+- **Platform Dependencies**: BRD-01 (infra), BRD-005 (Google ADK/A2A)
 - **Technology Stack**: Python 3.11+, Google ADK, A2A Protocol, Redis (shared context)
 - **Mandatory Conditions**: Platform conditions + ML-specific (model performance, explainability, retraining)
 - **Example**: BRD-022 (Fraud Detection Agent), BRD-023 (Compliance Agent)
 
 **n8n Automation BRD Pattern** (BRD-030 through BRD-033):
-- **Platform Dependencies**: BRD-001 (n8n self-hosted), BRD-002 (webhooks)
+- **Platform Dependencies**: BRD-01 (n8n self-hosted), BRD-02 (webhooks)
 - **Technology Stack**: Node.js 18+, n8n self-hosted, PostgreSQL (workflow state)
 - **Mandatory Conditions**: Platform conditions + workflow-specific (webhook reliability, state persistence)
 - **Example**: BRD-030 (Webhook Processing Hub), BRD-031 (Notification Orchestration)
 
 **Standard Feature BRD Pattern** (BRD-006 through BRD-021):
-- **Platform Dependencies**: BRD-001 (infra), BRD-002 (partners), BRD-003 (compliance), BRD-004 (data model)
+- **Platform Dependencies**: BRD-01 (infra), BRD-02 (partners), BRD-03 (compliance), BRD-004 (data model)
 - **Technology Stack**: Node.js 18+, PostgreSQL 14+, Redis 7+, partner APIs
 - **Mandatory Conditions**: Platform conditions + workflow-specific SLAs
 - **Example**: BRD-009 (Remittance Transaction), BRD-013 (Settlement & Reconciliation)
@@ -479,7 +479,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### Product Requirements Documents (PRD)
 - **Purpose**: Capture business requirements and product strategy before technical implementation
-- **File Format**: `PRD-NNN_descriptive_title.md`
+- **File Format**: `PRD-NN_descriptive_title.md`
 - **Contents**: Problem statement, goals, non-goals, KPIs, acceptance criteria
 - **resource**: Starting point of development workflow - defines "what" needs to be built
 - **Key sections**:
@@ -491,13 +491,13 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### System Requirements (SYS)
 - **Purpose**: Technical interpretation of business requirements
-- **File Format**: `SYS-NNN_descriptive_title.md`
+- **File Format**: `SYS-NN_descriptive_title.md`
 - **Contents**: Functional requirements, quality attributes, system flows
 - **resource**: Bridge between business PRDs and technical EARS requirements
 
 ### EARS Requirements (EARS)
 - **Purpose**: Precise, testable requirements using structured WHEN-THE-SHALL-WITHIN syntax
-- **File Format**: `EARS-NNN_descriptive_title.md`
+- **File Format**: `EARS-NN_descriptive_title.md`
 - **Statement Types**:
   - Event-driven: `WHEN [condition] THE [system] SHALL [action] WITHIN [timeframe]`
   - State-driven: `WHILE [condition] THE [system] SHALL [behavior] WITHIN [constraint]`
@@ -507,7 +507,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### Atomic Requirements (REQ)
 - **Purpose**: Break complex requirements into single, testable statements
-- **File Format**: `REQ/{domain}/{subdomain}/REQ-NNN_descriptive_title.md`
+- **File Format**: `REQ/{domain}/{subdomain}/REQ-NN_descriptive_title.md`
 - **Structure**:
   - Description: Precise SHALL statement defining one behavior
   - Acceptance Criteria: Measurable validation conditions
@@ -519,7 +519,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### API Contracts (CTR)
 - **Purpose**: Formal interface specifications for component-to-component communication
-- **File Format (Dual)**: `CTR/CTR-NNN_descriptive_slug.md` + `CTR-NNN_descriptive_slug.yaml`
+- **File Format (Dual)**: `CTR/CTR-NN_descriptive_slug.md` + `CTR-NN_descriptive_slug.yaml`
 - **When to Create**: When REQ specifies interface requirements between components/services
 - **Structure**:
   - Markdown (.md): Human-readable context, requirements satisfied, quality attributes, versioning, traceability
@@ -536,7 +536,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### Architecture Decision Records (ADR)
 - **Purpose**: Document architectural decisions with rationale and consequences
-- **File Format**: `ADR-NNN_descriptive_title.md`
+- **File Format**: `ADR-NN_descriptive_title.md`
 - **Template Structure**:
   - Context: Problem, background, driving forces, constraints
   - Decision: Chosen solution and implementation approach
@@ -549,7 +549,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### Behavior-Driven Development (BDD)
 - **Purpose**: Executable specifications written in natural language
-- **File Format**: `BDD-NNN_descriptive_requirements.feature`
+- **File Format**: `BDD-NN_descriptive_requirements.feature`
 - **Scenario Types**: Success path, alternative path, error path, edge cases
 - **Gherkin Syntax**: Given-When-Then structure for behavioral specifications
 - **Key Features**:
@@ -561,7 +561,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### Technical Specifications (SPEC)
 - **Purpose**: Machine-readable technical blueprints for implementation
-- **File Format**: `SPEC/{domain}/SPEC-NNN_{component_name}.yaml`
+- **File Format**: `SPEC/{domain}/SPEC-NN_{component_name}.yaml`
 - **Core sections**:
   - Interface definitions (functions, classes, schemas)
   - Behavioral specifications (states, error handling, circuit breakers)
@@ -572,7 +572,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### AI Tasks (TASKS)
 - **Purpose**: Structured implementation guidance for AI-assisted development
-- **File Format**: `TASKS-NNN_descriptive_component_tasks.md`
+- **File Format**: `TASKS-NN_descriptive_component_tasks.md`
 - **Structure**:
   - Scope: Clearly bounded implementation responsibility
   - Plan: Numbered sequence of development activities
@@ -592,10 +592,10 @@ Reference documents provide supplementary context that supports workflow artifac
 
 - **Purpose**: Capture supporting documentation (project overviews, glossaries, infrastructure guides, strategic vision documents) that doesn't fit the formal SDD workflow
 - **Scope**: REF documents are LIMITED to **BRD and ADR artifact types only**
-  - `BRD-REF-NNN_{slug}.md` - Business context reference documents
-  - `ADR-REF-NNN_{slug}.md` - Architecture reference documents
-- **File Format**: `{TYPE}-REF-NNN_{slug}.md` where `{TYPE}` is BRD or ADR
-- **Numbering**: Independent sequence per parent TYPE (BRD-REF-001, ADR-REF-001, etc.)
+  - `BRD-REF-NN_{slug}.md` - Business context reference documents
+  - `ADR-REF-NN_{slug}.md` - Architecture reference documents
+- **File Format**: `{TYPE}-REF-NN_{slug}.md` where `{TYPE}` is BRD or ADR
+- **Numbering**: Independent sequence per parent TYPE (BRD-REF-01, ADR-REF-01, etc.)
 - **Template**: [`ai_dev_flow/REF-TEMPLATE.md`](./REF-TEMPLATE.md)
 - **Skill**: Use `doc-ref` skill for creation
 - **Required Sections**:
@@ -626,10 +626,10 @@ Reference documents provide supplementary context that supports workflow artifac
 4. H1 ID match with filename (required)
 
 - **Use Cases**:
-  - Project overview documents (`BRD-REF-001_project_overview.md`)
-  - Executive summaries (`BRD-REF-002_strategic_vision.md`)
-  - Infrastructure guides (`ADR-REF-001_infrastructure_setup.md`)
-  - Technology stack summaries (`ADR-REF-002_tech_overview.md`)
+  - Project overview documents (`BRD-REF-01_project_overview.md`)
+  - Executive summaries (`BRD-REF-02_strategic_vision.md`)
+  - Infrastructure guides (`ADR-REF-01_infrastructure_setup.md`)
+  - Technology stack summaries (`ADR-REF-02_tech_overview.md`)
 
 **Relationship to Workflow Artifacts**: REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal business requirements or architecture decisions. The parent TYPE prefix (BRD or ADR) indicates which workflow artifact the REF document supports.
 
@@ -687,9 +687,9 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 | `@req:` | 7 | Atomic Requirements | `@req: REQ.03.26.01` |
 | `@impl:` | 8 | Implementation Plans | `@impl: IMPL.01.28.01` |
 | `@ctr:` | 9 | Data Contracts | `@ctr: CTR-001` |
-| `@spec:` | 10 | Technical Specs | `@spec: SPEC-003` |
+| `@spec:` | 10 | Technical Specs | `@spec: SPEC-03` |
 | `@tasks:` | 11 | Task Breakdowns | `@tasks: TASKS.01.29.03` |
-| `@iplan:` | 12 | Implementation Plans | `@iplan: IPLAN-001` |
+| `@iplan:` | 12 | Implementation Plans | `@iplan: IPLAN-01` |
 
 **Note**: Quality attributes use unified sequential numbering (e.g., `@sys: SYS.08.25.15` for a performance quality attribute).
 
@@ -700,15 +700,15 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 | `@test:` | Test file reference | `@test: tests/test_service.py` |
 | `@code:` | Source code reference | `@code: src/services/limit.py` |
 | `@impl-status:` | Implementation status | `@impl-status: complete` (pending\|in-progress\|complete\|deprecated) |
-| `@icon:` | Implementation contract | `@icon: TASKS-001:ServiceConnector` |
+| `@icon:` | Implementation contract | `@icon: TASKS-01:ServiceConnector` |
 | `@icon-role:` | Contract role | `@icon-role: provider` (provider\|consumer) |
 | `@threshold:` | Threshold reference | `@threshold: PRD.001.kyc.l1.daily` |
 | `@entity:` | Data entity reference | `@entity: PRD.004.UserProfile` |
 | `@priority:` | Requirement priority | `@priority: critical` |
 | `@component:` | Component reference | `@component: risk-engine` |
-| `@supersedes:` | Superseded document | `@supersedes: REQ-001` |
-| `@related-{type}:` | Related same-type doc | `@related-req: REQ-001` |
-| `@depends-{type}:` | Prerequisite same-type | `@depends-req: REQ-002` |
+| `@supersedes:` | Superseded document | `@supersedes: REQ-01` |
+| `@related-{type}:` | Related same-type doc | `@related-req: REQ-01` |
+| `@depends-{type}:` | Prerequisite same-type | `@depends-req: REQ-02` |
 
 > **Threshold Naming Standards**: For `@threshold:` tag format (`@threshold: DOC_TYPE.DOC_NUM.key`) and threshold key naming conventions, see [THRESHOLD_NAMING_RULES.md](./THRESHOLD_NAMING_RULES.md). Thresholds are defined in BRD/PRD/ADR YAML blocks (BRD: business, PRD: product, ADR: technical) and referenced via `@threshold:` tags in downstream documents.
 
@@ -716,7 +716,7 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 
 **Format Rules:**
 - **Unified format:** Use dot separator: `BRD.01.01.30` (TYPE.DOC.ELEM.SEQ)
-- **Single-document references:** `SPEC-003` or `SPEC.03.10.01` for element-level
+- **Single-document references:** `SPEC-03` or `SPEC.03.10.01` for element-level
 - **Multiple references:** Comma-separated: `BRD.01.01.30, BRD.01.01.06`
 - **Multiple documents:** `BRD.01.01.20, BRD.02.01.05`
 
@@ -731,7 +731,7 @@ Python docstring:
 @req: REQ.03.26.01
 @adr: ADR-033
 @ctr: CTR-001
-@spec: SPEC-002
+@spec: SPEC-02
 @test: BDD.02.13.01, BDD.08.13.01
 @impl-status: complete
 """
@@ -744,7 +744,7 @@ Markdown document:
 @req: REQ.03.26.01
 @adr: ADR-033
 @ctr: CTR-001
-@spec: SPEC-002
+@spec: SPEC-02
 @test: BDD.01.13.01
 @impl-status: complete
 ```
@@ -753,7 +753,7 @@ YAML comment header:
 ```yaml
 # @brd: BRD.01.01.10, BRD.01.01.05
 # @req: REQ.03.26.02
-# @spec: SPEC-002
+# @spec: SPEC-02
 # @impl-status: complete
 ```
 
@@ -761,7 +761,7 @@ Gherkin feature file:
 ```gherkin
 # @brd: BRD.01.01.30
 # @req: REQ.03.26.01
-# @spec: SPEC-002
+# @spec: SPEC-02
 
 Feature: resource limit Enforcement
 ```
@@ -826,7 +826,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 **Example**: A SPEC file includes tags from: BRD, PRD, EARS, BDD, ADR, SYS, REQ, and optionally IMPL/CTR if they exist in the chain.
 
-**Format**: `@artifact-type: TYPE.NN.EE.SS` (e.g., `@brd: BRD.01.01.30`)
+**Format**: `@artifact-type: TYPE.NN.TT.SS` (e.g., `@brd: BRD.01.01.30`)
 
 **Usage**:
 - Embed tags in document metadata sections (markdown documents)
@@ -859,7 +859,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 **Basic Format**:
 ```
-@artifact-type: TYPE.NN.EE.SS
+@artifact-type: TYPE.NN.TT.SS
 ```
 
 **Components**:
@@ -882,7 +882,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @req: REQ.03.26.01, REQ.04.26.01
 @impl: IMPL.01.28.01
 @ctr: CTR-001
-@spec: SPEC-003
+@spec: SPEC-03
 @tasks: TASKS.01.29.03
 ```
 
@@ -904,9 +904,9 @@ Implements real-time resource limit validation and enforcement.
 @req: REQ.03.26.01
 @impl: IMPL.01.28.01
 @ctr: CTR-001
-@spec: SPEC-003
+@spec: SPEC-03
 @tasks: TASKS.01.29.03
-@iplan: IPLAN-001
+@iplan: IPLAN-01
 """
 ```
 
@@ -1042,9 +1042,9 @@ excessive collection concentration risk through automated validation.
 @req: REQ.03.26.01, REQ.04.26.01
 @impl: IMPL.01.28.01
 @ctr: CTR-001
-@spec: SPEC-003
+@spec: SPEC-03
 @tasks: TASKS.01.29.03, TASKS.01.29.05
-@iplan: IPLAN-001
+@iplan: IPLAN-01
 
 @impl-status: complete
 @test-coverage: 95%
@@ -1076,7 +1076,7 @@ class PositionLimitService:
 """
 resource limit Validation Service Tests
 
-Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
+Tests all scenarios from BDD-03 and validates REQ-03 acceptance criteria.
 
 ## Traceability Tags
 
@@ -1087,7 +1087,7 @@ Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
 @adr: ADR-033
 @sys: SYS.08.25.01
 @req: REQ.03.26.01
-@spec: SPEC-003
+@spec: SPEC-03
 @tasks: TASKS.01.29.03
 @code: src/services/resource_limit_service.py
 
@@ -1250,10 +1250,10 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
 - **When**: Create CTR when REQ specifies interface requirements for component-to-component communication
 - **Skip If**: REQ is purely internal logic with no external interfaces
 - **Input**: Interface-focused REQ, ADR architecture decisions
-- **Output**: Dual-file contract (CTR-NNN_slug.md + CTR-NNN_slug.yaml)
+- **Output**: Dual-file contract (CTR-NN_slug.md + CTR-NN_slug.yaml)
 - **Process**:
   1. Identify upstream REQ/ADR specifying interface needs
-  2. Reserve next CTR-NNN from CTR-000_index.md
+  2. Reserve next CTR-NN from CTR-000_index.md
   3. Copy CTR-TEMPLATE.md + CTR-TEMPLATE.yaml
   4. Complete markdown file:
      - Contract Definition: Interface overview, provider/consumer parties, communication pattern
@@ -1380,7 +1380,7 @@ class EventCallbackRegistry(ABC):
 
 **Provider → ICON → Consumer Chain**:
 ```
-SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) → Code
+SPEC-01 → TASKS-01 (Provider) → ICON-01 → TASKS-02-009 (Consumers) → Code
                 ↓                       ↓              ↓
          section 8.1             Contract Def    section 8.2
          @icon-role:            Type-Safe       @icon-role:
@@ -1389,20 +1389,20 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 
 #### Provider TASKS Integration (section 8.1)
 
-**In TASKS-001 (Provider)**:
+**In TASKS-01 (Provider)**:
 
 ```markdown
 ## 8. Implementation Contracts
 
 ### 8.1 Contracts Provided by This TASKS
 
-#### ICON-001: ServiceConnector Protocol
+#### ICON-01: ServiceConnector Protocol
 
 - **Purpose**: Protocol interface defining async IB Gateway connection operations
-- **Location**: `[project_root]/docs/ICON/ICON-001_gateway_connector_protocol.md`
+- **Location**: `[project_root]/docs/ICON/ICON-01_gateway_connector_protocol.md`
 - **Contract Type**: Protocol Interface (typing.Protocol)
-- **Consumers**: TASKS-002, 003, 004, 005, 007, 008, 009, 010
-- **Traceability**: @icon: ICON-001:ServiceConnector
+- **Consumers**: TASKS-02, 003, 004, 005, 007, 008, 009, 010
+- **Traceability**: @icon: ICON-01:ServiceConnector
 - **Role**: @icon-role: provider
 
 **Key Interface Methods**:
@@ -1418,70 +1418,70 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 **Contract Status**: Active (2025-11-25)
 ```
 
-**Traceability Tags** (in TASKS-001):
+**Traceability Tags** (in TASKS-01):
 ```markdown
 ## Traceability Tags
 
-@spec: SPEC-001
+@spec: SPEC-01
 @tasks: TASKS.01.29.01
-@icon: ICON-001:ServiceConnector
-@icon: ICON-003:GatewayExceptions
+@icon: ICON-01:ServiceConnector
+@icon: ICON-03:GatewayExceptions
 @icon-role: provider
 ```
 
 #### Consumer TASKS Integration (section 8.2)
 
-**In TASKS-002 (Consumer)**:
+**In TASKS-02 (Consumer)**:
 
 ```markdown
 ## 8. Implementation Contracts
 
 ### 8.2 Contracts Consumed by This TASKS
 
-#### ICON-001: ServiceConnector Protocol
+#### ICON-01: ServiceConnector Protocol
 
-- **Provider**: TASKS-001 (IB Gateway Connection Implementation)
+- **Provider**: TASKS-01 (IB Gateway Connection Implementation)
 - **Purpose**: Connection operations for heartbeat monitoring
-- **Location**: `[project_root]/docs/ICON/ICON-001_gateway_connector_protocol.md`
+- **Location**: `[project_root]/docs/ICON/ICON-01_gateway_connector_protocol.md`
 - **Usage in This TASKS**:
   - Use `is_connected()` to verify connection before heartbeat
   - Use `register_callback()` to monitor connection events
   - Use `get_connection_state()` for state validation
-- **Traceability**: @icon: ICON-001:ServiceConnector
+- **Traceability**: @icon: ICON-01:ServiceConnector
 - **Role**: @icon-role: consumer
 
-#### ICON-002: ConnectionState State Machine
+#### ICON-02: ConnectionState State Machine
 
-- **Provider**: TASKS-005 (Connection State Machine)
+- **Provider**: TASKS-05 (Connection State Machine)
 - **Purpose**: Connection lifecycle state definitions
-- **Location**: `[project_root]/docs/ICON/ICON-002_connection_state_machine.md`
+- **Location**: `[project_root]/docs/ICON/ICON-02_connection_state_machine.md`
 - **Usage in This TASKS**:
   - Validate connection is in CONNECTED state before heartbeat
   - Handle DISCONNECTED and RECONNECTING states
   - Use valid state transitions
-- **Traceability**: @icon: ICON-002:ConnectionState
+- **Traceability**: @icon: ICON-02:ConnectionState
 - **Role**: @icon-role: consumer
 ```
 
-**Traceability Tags** (in TASKS-002):
+**Traceability Tags** (in TASKS-02):
 ```markdown
 ## Traceability Tags
 
-@spec: SPEC-002
+@spec: SPEC-02
 @tasks: TASKS.02.29.01
-@icon: ICON-001:ServiceConnector
-@icon: ICON-002:ConnectionState
-@icon: ICON-003:GatewayExceptions
+@icon: ICON-01:ServiceConnector
+@icon: ICON-02:ConnectionState
+@icon: ICON-03:GatewayExceptions
 @icon-role: consumer
 ```
 
 #### Benefits of ICON Contracts
 
-**Quantified Impact** (from TASKS-001 implementation analysis):
+**Quantified Impact** (from TASKS-01 implementation analysis):
 
 **65% Faster Delivery**:
-- **Without ICON**: 11.5 weeks sequential (TASKS-001 complete → TASKS-002-009 start)
-- **With ICON**: 4 weeks parallel (TASKS-001 provides contract → TASKS-002-009 start immediately)
+- **Without ICON**: 11.5 weeks sequential (TASKS-01 complete → TASKS-02-009 start)
+- **With ICON**: 4 weeks parallel (TASKS-01 provides contract → TASKS-02-009 start immediately)
 - **Time saved**: 7.5 weeks (65% reduction)
 
 **90% Reduction in Integration Bugs**:
@@ -1506,7 +1506,7 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 - **Audience**: Internal implementation teams (provider and consumer TASKS)
 - **Format**: Embedded in TASKS section 8 OR standalone ICON files
 - **Examples**: `ServiceConnector` Protocol, `ConnectionState` State Machine
-- **Tag**: `@icon: TASKS-001:ServiceConnector` or `@icon: ICON-001:ServiceConnector`
+- **Tag**: `@icon: TASKS-01:ServiceConnector` or `@icon: ICON-01:ServiceConnector`
 - **Location**: `docs/ICON/` or embedded in `docs/TASKS/`
 - **Versioning**: Tied to TASKS implementation cycles
 
@@ -1536,7 +1536,7 @@ grep -r "@icon:" docs/TASKS/ | wc -l
 grep -r "## 8. Implementation Contracts" docs/TASKS/ | wc -l
 
 # Verify specific ICON integration
-grep -r "@icon: ICON-001" docs/TASKS/
+grep -r "@icon: ICON-01" docs/TASKS/
 
 # Check provider roles
 grep -r "@icon-role: provider" docs/TASKS/
@@ -1548,16 +1548,16 @@ grep -r "@icon-role: consumer" docs/TASKS/
 **Expected Results** (IB MCP Project):
 - 3 ICON files → 21 @icon: tags (1 provider + 6 consumers × 3 contracts = 21)
 - 9 TASKS files with section 8 (2 providers + 7 consumers)
-- 3 provider role tags (TASKS-001 × 2 contracts + TASKS-005 × 1 contract)
-- 18 consumer role tags (8 consumers × ICON-001 + 7 consumers × ICON-002 + 3 consumers × ICON-003)
+- 3 provider role tags (TASKS-01 × 2 contracts + TASKS-05 × 1 contract)
+- 18 consumer role tags (8 consumers × ICON-01 + 7 consumers × ICON-02 + 3 consumers × ICON-03)
 
 #### Common Anti-Patterns
 
 **Anti-Pattern 1: Orphaned ICON Files**
 
 ❌ **Problem**: ICON file created but no TASKS files reference it
-- ICON-001 exists in `docs/ICON/`
-- `grep -r "@icon: ICON-001" docs/TASKS/` returns 0 results
+- ICON-01 exists in `docs/ICON/`
+- `grep -r "@icon: ICON-01" docs/TASKS/` returns 0 results
 - No section 8 in any TASKS file
 
 ✅ **Solution**: Update all provider and consumer TASKS files with section 8
@@ -1565,26 +1565,26 @@ grep -r "@icon-role: consumer" docs/TASKS/
 **Anti-Pattern 2: Missing Provider section 8.1**
 
 ❌ **Problem**: Provider TASKS doesn't document contracts it provides
-- TASKS-001 implements ServiceConnector interface
-- No section 8.1 documenting ICON-001
+- TASKS-01 implements ServiceConnector interface
+- No section 8.1 documenting ICON-01
 - Consumers don't know contract exists
 
-✅ **Solution**: Add section 8.1 to TASKS-001 with contract details
+✅ **Solution**: Add section 8.1 to TASKS-01 with contract details
 
 **Anti-Pattern 3: Missing Consumer section 8.2**
 
 ❌ **Problem**: Consumer TASKS doesn't document contracts it uses
-- TASKS-002 uses ServiceConnector methods
-- No section 8.2 documenting dependency on ICON-001
+- TASKS-02 uses ServiceConnector methods
+- No section 8.2 documenting dependency on ICON-01
 - Unclear which contracts are required
 
-✅ **Solution**: Add section 8.2 to TASKS-002 listing all consumed contracts
+✅ **Solution**: Add section 8.2 to TASKS-02 listing all consumed contracts
 
 **Anti-Pattern 4: Missing @icon: Tags**
 
 ❌ **Problem**: section 8 exists but no traceability tags
-- TASKS-001 has section 8.1
-- No @icon: ICON-001:ServiceConnector tag
+- TASKS-01 has section 8.1
+- No @icon: ICON-01:ServiceConnector tag
 - Automated validation fails
 
 ✅ **Solution**: Add @icon: and @icon-role: tags to all TASKS files with section 8
@@ -1605,7 +1605,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 
 #### Guidelines
 
-- **Create contracts early**: Define ICON immediately after SPEC-001, before TASKS-002-009 start
+- **Create contracts early**: Define ICON immediately after SPEC-01, before TASKS-02-009 start
 - **section 8 is mandatory**: All TASKS files with contracts must have section 8
 - **Bidirectional traceability**: Provider lists consumers, consumers list provider
 - **Type safety first**: Use `typing.Protocol`, `@runtime_checkable`, validate with mypy
@@ -1721,13 +1721,13 @@ grep -r "@icon-role: consumer" docs/TASKS/
 
 **Note**: File paths shown are generic examples. Replace with actual paths for your project.
 
-- PRD: [PRD-NNN](./PRD/PRD-NNN_{slug}.md)
-- SYS: [SYS-NNN](./SYS/SYS-NNN_{slug}.md)
-- EARS: [EARS-NNN](./EARS/EARS-NNN_{slug}.md)
+- PRD: [PRD-NN](./PRD/PRD-NN_{slug}.md)
+- SYS: [SYS-NN](./SYS/SYS-NN_{slug}.md)
+- EARS: [EARS-NN](./EARS/EARS-NN_{slug}.md)
 - BDD: [{slug}_requirements.feature](./BDD/{slug}_requirements.feature)
-- ADR: [ADR-NNN](./ADR/ADR-NNN_{slug}.md#ADR-NNN)
-- **REQ V2**: [REQ-NNN](./REQ/{category}/{subcategory}/REQ-NNN_{slug}.md#REQ-NNN) ← Contains complete interface/schema/error/config specifications
-- CTR: [CTR-NNN](./CTR/CTR-NNN_{slug}.md#CTR-NNN) + [CTR-NNN.yaml](./CTR/CTR-NNN_{slug}.yaml) ← Contract for service interface
+- ADR: [ADR-NN](./ADR/ADR-NN_{slug}.md#ADR-NN)
+- **REQ V2**: [REQ-NN](./REQ/{category}/{subcategory}/REQ-NN_{slug}.md#REQ-NN) ← Contains complete interface/schema/error/config specifications
+- CTR: [CTR-NN](./CTR/CTR-NN_{slug}.md#CTR-NN) + [CTR-NN.yaml](./CTR/CTR-NN_{slug}.yaml) ← Contract for service interface
 - SPEC: [{service_name}.yaml](./SPEC/{category}/{service_name}.yaml) ← Derived from REQ content
 - TASKS: [{service_name}_tasks.md](./TASKS/{service_name}_tasks.md)
 - Code: `{project_root}/{module}/{service_name}.py`
@@ -1736,21 +1736,21 @@ grep -r "@icon-role: consumer" docs/TASKS/
 
 **Scenario**: API Integration for Market Data
 
-**Step 1: Create REQ V2** (REQ-001_api_integration_example.md)
+**Step 1: Create REQ V2** (REQ-01_api_integration_example.md)
 - section 3: Define `MarketDataAPIClient` Protocol with 5 async methods (connect, get_quote, get_chain, disconnect, health_check)
 - section 4: Provide JSON Schema + Pydantic models (QuoteRequest, QuoteResponse, OptionChainRequest) with validators
 - section 5: Document 8 exception types (ConnectionError, AuthenticationError, RateLimitError, etc.) with HTTP codes
 - section 6: Provide complete YAML configuration (endpoints, authentication, retry_policy, rate_limits, circuit_breaker)
 - section 7: Specify quality attributes (p95 latency <100ms, 99.9% uptime, rate limit 60 req/min)
 
-**Step 2: Generate SPEC** (SPEC-001_external_data_client.yaml)
+**Step 2: Generate SPEC** (SPEC-01_external_data_client.yaml)
 ```yaml
-# @requirement:[REQ-001](../REQ/api/REQ-001_api_integration_example.md#REQ-001)
+# @requirement:[REQ-01](../REQ/api/REQ-01_api_integration_example.md#REQ-01)
 
 id: external_data_client
 interfaces:
   - name: MarketDataAPIClient
-    # Copy from REQ-001 section 3
+    # Copy from REQ-01 section 3
     methods:
       - name: connect
         parameters:
@@ -1760,19 +1760,19 @@ interfaces:
         raises: [ConnectionError, AuthenticationError]
 
 schemas:
-  # Copy from REQ-001 section 4
-  QuoteRequest: {$ref: "../REQ/api/REQ-001_api_integration_example.md#json-schema"}
-  QuoteResponse: {$ref: "../REQ/api/REQ-001_api_integration_example.md#pydantic-model"}
+  # Copy from REQ-01 section 4
+  QuoteRequest: {$ref: "../REQ/api/REQ-01_api_integration_example.md#json-schema"}
+  QuoteResponse: {$ref: "../REQ/api/REQ-01_api_integration_example.md#pydantic-model"}
 
 errors:
-  # Copy from REQ-001 section 5
+  # Copy from REQ-01 section 5
   - error_code: "API_001"
     exception: ConnectionError
     http_status: 503
     retry_strategy: exponential_backoff
 
 configuration:
-  # Copy from REQ-001 section 6
+  # Copy from REQ-01 section 6
   endpoints:
     base_url: "${data_service_api_URL}"
   retry_policy:
@@ -1786,7 +1786,7 @@ configuration:
       alert_threshold: 0.05
 
 performance:
-  # Reference REQ-001 section 7 Quality Attributes
+  # Reference REQ-01 section 7 Quality Attributes
   max_latency_p95_ms: 100
   target_availability: 0.999
 ```
@@ -1796,7 +1796,7 @@ performance:
 ## Validation Commands
 
 ### Core Validation Scripts
-- **REQ V2 Validation**: `python scripts/validate_req_spec_readiness.py --req-file REQ/api/REQ-001.md`
+- **REQ V2 Validation**: `python scripts/validate_req_spec_readiness.py --req-file REQ/api/REQ-01.md`
   - Checks for interface definitions with type signatures
   - Validates schema completeness (JSON Schema/Pydantic)
   - Verifies error catalog with recovery strategies
@@ -1810,13 +1810,13 @@ performance:
 ### Artifact-Specific Validation Scripts
 ```bash
 # Document structure validation (available scripts)
-bash scripts/validate_brd_template.sh docs/BRD/BRD-001/BRD-001.0_index.md    # BRD template compliance (nested folder)
-bash scripts/validate_req_template.sh docs/REQ/REQ-001.md    # REQ 12-section format
+bash scripts/validate_brd_template.sh docs/BRD/BRD-01_platform_overview/BRD-01.0_platform_overview_index.md    # BRD template compliance (nested folder)
+bash scripts/validate_req_template.sh docs/REQ/REQ-01.md    # REQ 12-section format
 bash scripts/validate_ctr.sh docs/CTR/CTR-001_*.md           # CTR dual-file format (.md + .yaml)
-bash scripts/validate_impl.sh docs/IMPL/IMPL-001_*.md        # IMPL 4-PART structure
-bash scripts/validate_tasks.sh docs/TASKS/TASKS-001_*.md     # TASKS format including Section 8
-bash scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md     # IPLAN session-based execution plans
-bash scripts/validate_icon.sh docs/ICON/ICON-001_*.md        # ICON Implementation Contracts
+bash scripts/validate_impl.sh docs/IMPL/IMPL-01_*.md        # IMPL 4-PART structure
+bash scripts/validate_tasks.sh docs/TASKS/TASKS-01_*.md     # TASKS format including Section 8
+bash scripts/validate_iplan.sh docs/IPLAN/IPLAN-01_*.md     # IPLAN session-based execution plans
+bash scripts/validate_icon.sh docs/ICON/ICON-01_*.md        # ICON Implementation Contracts
 ```
 
 ## Traceability Matrix Management (MANDATORY)
@@ -1924,7 +1924,7 @@ Before committing, verify:
 
 ### Why This Is Critical
 
-**Impact Analysis**: When BRD-001 changes, matrix shows affected PRDs, EARS, BDD, REQ, SPEC, Code
+**Impact Analysis**: When BRD-01 changes, matrix shows affected PRDs, EARS, BDD, REQ, SPEC, Code
 
 **Regulatory Compliance**: regulatory, FDA, ISO audits require complete traceability
 
@@ -2006,7 +2006,7 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 - Do NOT split solely for tool compatibility - use appropriate tool features instead
 - Each split file must be independently understandable (minimal context header and links back to index)
 - Maintain an index page listing split files and their dependencies
-- Example: For complex SPEC exceeding 100K tokens, create SPEC-003_part1.yaml (interfaces/state), SPEC-003_part2.yaml (performance/verification); reference as [SPEC-003_part1.yaml](./SPEC/services/SPEC-003_part1.yaml), with [index.md](./index.md) enumerating splits and dependencies
+- Example: For complex SPEC exceeding 100K tokens, create SPEC-03_part1.yaml (interfaces/state), SPEC-03_part2.yaml (performance/verification); reference as [SPEC-03_part1.yaml](./SPEC/services/SPEC-03_part1.yaml), with [index.md](./index.md) enumerating splits and dependencies
 - Estimate tokens using tools like `wc -w` or AI token counters for maintenance
 - External References: Paths to project files are placeholders; verify existence or update to local copies for standalone use
 
@@ -2025,7 +2025,7 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 - AI tasks file includes scope, plan, constraints, acceptance criteria, and traceability links.
 - security implications documented (input validation, Secrets policy references, correlation id handling).
 - Run validators:
-  - `python scripts/validate_req_spec_readiness.py --req-file REQ/{domain}/REQ-NNN.md`
+  - `python scripts/validate_req_spec_readiness.py --req-file REQ/{domain}/REQ-NN.md`
   - `python scripts/validate_requirement_ids.py`
   - Manual link checks
 

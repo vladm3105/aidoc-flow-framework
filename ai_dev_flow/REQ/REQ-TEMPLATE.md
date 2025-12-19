@@ -31,7 +31,7 @@ custom_fields:
 > - **Creation Rules**: `REQ_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `REQ_VALIDATION_RULES.md` - Post-creation checks
 
-# REQ-NNN: [Descriptive Requirement Title]
+# REQ-NN: [Descriptive Requirement Title]
 
 ## Position in Document Workflow
 
@@ -99,7 +99,7 @@ Production-Ready Code
 | **Author** | [Author name and role] |
 | **Priority** | Critical (P1) / High (P2) / Medium (P3) / Low (P4) |
 | **Category** | Functional/Security/Performance/Reliability/Scalability |
-| **Source Document** | [PRD-NNN, SYS-NNN, or EARS-NNN reference with section] |
+| **Source Document** | [PRD-NN, SYS-NN, or EARS-NN reference with section] |
 | **Verification Method** | BDD/Spec/Unit Test/Integration Test/Contract Test |
 | **Assigned Team** | [Team/Person responsible] |
 | **SPEC-Ready Score** | ✅ XX% (Target: ≥90%) |
@@ -733,17 +733,17 @@ class APIClientConfig(BaseModel):
 
 | Metric | Target (p50) | Target (p95) | Target (p99) | Measurement Method | SLI/SLO |
 |--------|--------------|--------------|--------------|-------------------|---------|
-| Response Time | <@threshold: PRD.NNN.perf.api.p50_latency | <@threshold: PRD.NNN.perf.api.p95_latency | <@threshold: PRD.NNN.perf.api.p99_latency | APM traces (Datadog/New Relic) | SLI: p95 latency, SLO: @threshold: PRD.NNN.sla.success_rate.target% |
-| Throughput | @threshold: PRD.NNN.perf.throughput.target_rps | @threshold: PRD.NNN.perf.throughput.sustained_rps | @threshold: PRD.NNN.perf.throughput.min_rps | Load testing (k6/Locust) | SLI: requests/s, SLO: @threshold: PRD.NNN.sla.success_rate.target% |
-| Connection Time | <@threshold: PRD.NNN.timeout.connection.p50 | <@threshold: PRD.NNN.timeout.connection.p95 | <@threshold: PRD.NNN.timeout.connection.p99 | Metrics (Prometheus) | SLI: connection duration, SLO: @threshold: PRD.NNN.sla.connection_success% |
+| Response Time | <@threshold: PRD.NN.perf.api.p50_latency | <@threshold: PRD.NN.perf.api.p95_latency | <@threshold: PRD.NN.perf.api.p99_latency | APM traces (Datadog/New Relic) | SLI: p95 latency, SLO: @threshold: PRD.NN.sla.success_rate.target% |
+| Throughput | @threshold: PRD.NN.perf.throughput.target_rps | @threshold: PRD.NN.perf.throughput.sustained_rps | @threshold: PRD.NN.perf.throughput.min_rps | Load testing (k6/Locust) | SLI: requests/s, SLO: @threshold: PRD.NN.sla.success_rate.target% |
+| Connection Time | <@threshold: PRD.NN.timeout.connection.p50 | <@threshold: PRD.NN.timeout.connection.p95 | <@threshold: PRD.NN.timeout.connection.p99 | Metrics (Prometheus) | SLI: connection duration, SLO: @threshold: PRD.NN.sla.connection_success% |
 
 ### 7.2 Reliability
 
-- **Availability**: @threshold: PRD.NNN.sla.uptime.target% uptime
-- **Error Rate**: <@threshold: PRD.NNN.sla.error_rate.max% of requests
+- **Availability**: @threshold: PRD.NN.sla.uptime.target% uptime
+- **Error Rate**: <@threshold: PRD.NN.sla.error_rate.max% of requests
 - **Data Integrity**: 100% (checksums, validation)
-- **Recovery Time Objective (RTO)**: <@threshold: PRD.NNN.sla.rto minutes for service recovery
-- **Recovery Point Objective (RPO)**: <@threshold: PRD.NNN.sla.rpo minutes for data loss
+- **Recovery Time Objective (RTO)**: <@threshold: PRD.NN.sla.rto minutes for service recovery
+- **Recovery Point Objective (RPO)**: <@threshold: PRD.NN.sla.rpo minutes for data loss
 
 ### security
 
@@ -1078,7 +1078,7 @@ async def get_quote(
 
 ### 10.1 Automated Testing
 
-- **BDD Scenarios**: [BDD-NNN.feature](../../BDD/BDD-NNN.feature#scenarios)
+- **BDD Scenarios**: [BDD-NN.feature](../../BDD/BDD-NN.feature#scenarios)
   - Scenario: Successful API connection with valid credentials
   - Scenario: Rate limiting enforcement at premium tier threshold
   - Scenario: Retry on transient failure with exponential backoff
@@ -1117,7 +1117,7 @@ async def get_quote(
 
 ### 10.2 Technical Validation
 
-- **Specification Compliance**: [SPEC-NNN](../../SPEC/.../SPEC-NNN.yaml)
+- **Specification Compliance**: [SPEC-NN](../../SPEC/.../SPEC-NN.yaml)
   - Interface implementation matches Protocol/ABC definition
   - All methods have complete type annotations
   - Error handling follows specification
@@ -1167,12 +1167,12 @@ Document the business strategy, product requirements, system specifications, and
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-NNN](../../BRD/BRD-NNN_...md) | [Business requirements title] | sections 2.4, 4.x | Business objectives justifying this requirement |
-| PRD | [PRD-NNN](../../PRD/PRD-NNN_...md) | [Product requirements title] | Functional Requirements 4.x | Product features this requirement enables |
-| EARS | [EARS-NNN](../../EARS/EARS-NNN_...md) | [Engineering requirements] | Event-driven/State-driven statements | Formal engineering requirement this satisfies |
-| BDD | [BDD-NNN](../../BDD/BDD-NNN_...feature) | [BDD feature title] | Scenarios 1-5 | Behavioral specification this implements |
-| ADR | [ADR-NNN](../../ADR/ADR-NNN_...md) | [Architecture decision title] | Decision outcome | Architecture decision driving this requirement |
-| SYS | [SYS-NNN](../../SYS/SYS-NNN_...md) | [System requirements title] | System Requirements 3.x | System-level specification this implements |
+| BRD | [BRD-NN](../../BRD/BRD-NN_...md) | [Business requirements title] | sections 2.4, 4.x | Business objectives justifying this requirement |
+| PRD | [PRD-NN](../../PRD/PRD-NN_...md) | [Product requirements title] | Functional Requirements 4.x | Product features this requirement enables |
+| EARS | [EARS-NN](../../EARS/EARS-NN_...md) | [Engineering requirements] | Event-driven/State-driven statements | Formal engineering requirement this satisfies |
+| BDD | [BDD-NN](../../BDD/BDD-NN_...feature) | [BDD feature title] | Scenarios 1-5 | Behavioral specification this implements |
+| ADR | [ADR-NN](../../ADR/ADR-NN_...md) | [Architecture decision title] | Decision outcome | Architecture decision driving this requirement |
+| SYS | [SYS-NN](../../SYS/SYS-NN_...md) | [System requirements title] | System Requirements 3.x | System-level specification this implements |
 
 ### 11.2 Downstream Artifacts
 
@@ -1180,25 +1180,25 @@ Document the business strategy, product requirements, system specifications, and
 
 | ADR ID | ADR Title | Requirement Aspects Addressed | Decision Impact |
 |--------|-----------|------------------------------|-----------------|
-| [ADR-NNN](../../ADR/ADR-NNN_...md#ADR-NNN) | [Architecture decision title] | Technology selection, patterns, trade-offs | Architectural implementation constraints |
+| [ADR-NN](../../ADR/ADR-NN_...md#ADR-NN) | [Architecture decision title] | Technology selection, patterns, trade-offs | Architectural implementation constraints |
 
 #### Technical Specifications
 
 | SPEC ID | Specification Title | Requirement Aspects Implemented | Implementation Path |
 |---------|-------------------|--------------------------------|---------------------|
-| [SPEC-NNN](../../SPEC/.../SPEC-NNN.yaml) | [Technical spec title] | Interfaces, schemas, error handling, config | src/[module]/[component].py |
+| [SPEC-NN](../../SPEC/.../SPEC-NN.yaml) | [Technical spec title] | Interfaces, schemas, error handling, config | src/[module]/[component].py |
 
 #### Behavioral Specifications
 
 | BDD ID | Scenario Title | Acceptance Criteria Validated | Test Coverage |
 |--------|----------------|-------------------------------|---------------|
-| [BDD-NNN](../../BDD/BDD-NNN_....feature) | Feature: [Feature name] | REQ.NN.06.01 through REQ.NN.06.18 | Scenarios 1-8 |
+| [BDD-NN](../../BDD/BDD-NN_....feature) | Feature: [Feature name] | REQ.NN.06.01 through REQ.NN.06.18 | Scenarios 1-8 |
 
 #### API Contracts
 
 | CTR ID | Contract Title | Interface Defined | Relationship |
 |--------|----------------|-------------------|--------------|
-| [CTR-NNN](../../CTR/CTR-NNN.md) | [API Contract Title] | REST API / Event Schema / gRPC Proto | Interface specification and versioning |
+| [CTR-NN](../../CTR/CTR-NN.md) | [API Contract Title] | REST API / Event Schema / gRPC Proto | Interface specification and versioning |
 
 ### 11.3 Code Implementation Paths
 
@@ -1219,7 +1219,7 @@ Document the business strategy, product requirements, system specifications, and
 **Database Paths** (if applicable):
 - `src/[module]/repositories/quote_repository.py`: Repository pattern implementation
 - `src/[module]/models/quote.py`: SQLAlchemy models
-- `migrations/versions/NNN_create_quotes_table.py`: Alembic migrations
+- `migrations/versions/NN_create_quotes_table.py`: Alembic migrations
 
 **Infrastructure Paths**:
 - `config/api_client.yaml`: Configuration file
@@ -1232,13 +1232,13 @@ Document the business strategy, product requirements, system specifications, and
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | [REQ-NNN](./REQ-NNN_...md) | [Related REQ title] | Shared domain context |
-| Depends | [REQ-NNN](./REQ-NNN_...md) | [Prerequisite REQ title] | Must complete before this |
+| Related | [REQ-NN](./REQ-NN_...md) | [Related REQ title] | Shared domain context |
+| Depends | [REQ-NN](./REQ-NN_...md) | [Prerequisite REQ title] | Must complete before this |
 
 **Tags:**
 ```markdown
-@related-req: REQ-NNN
-@depends-req: REQ-NNN
+@related-req: REQ-NN
+@depends-req: REQ-NN
 ```
 
 ### 11.5 Traceability Tags
@@ -1249,16 +1249,16 @@ Document the business strategy, product requirements, system specifications, and
 @prd: PRD.NN.EE.SS
 @ears: EARS.NN.24.SS
 @bdd: BDD.NN.13.SS
-@adr: ADR-NNN
+@adr: ADR-NN
 @sys: SYS.NN.25.SS
 ```
 
 **Threshold Registry Tag** (Required when quality attributes reference quantitative values):
 ```markdown
-@threshold: PRD.NNN.category.subcategory.key
+@threshold: PRD.NN.category.subcategory.key
 ```
 
-**Format**: `@artifact-type: TYPE.NN.EE.SS` (Unified Element ID format: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
+**Format**: `@artifact-type: TYPE.NN.TT.SS` (Unified Element ID format: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
 
 **Layer 7 Requirements**: REQ must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)

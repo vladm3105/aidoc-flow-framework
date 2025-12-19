@@ -1,4 +1,4 @@
-# REQ-001: External API Integration
+# REQ-01: External API Integration
 
 ## Requirements in Development Workflow
 
@@ -35,7 +35,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 | **Author** | Platform Team |
 | **Priority** | High |
 | **Category** | Functional - External Integration |
-| **Source Document** | PRD-001, SYS-001 |
+| **Source Document** | PRD-01, SYS-01 |
 | **Verification Method** | BDD/Integration Test/Contract Test |
 | **Assigned Team** | Integration Team |
 | **SPEC-Ready Score** | 95% (Target: ≥90%) |
@@ -953,17 +953,17 @@ class TokenBucketRateLimiter:
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | BRD-001 | External Integration Business Requirements | section 3: External Data Integration | Business need for external data |
-| PRD | PRD-001 | Platform Product Requirements | section 4.2: External APIs | Product feature enabling data consumption |
-| SYS | SYS-001 | System Architecture Requirements | section 5: External Integration Layer | System-level API integration patterns |
+| BRD | BRD-01 | External Integration Business Requirements | section 3: External Data Integration | Business need for external data |
+| PRD | PRD-01 | Platform Product Requirements | section 4.2: External APIs | Product feature enabling data consumption |
+| SYS | SYS-01 | System Architecture Requirements | section 5: External Integration Layer | System-level API integration patterns |
 
 ### Downstream Artifacts
 
 | Artifact Type | Document ID | Title | Relationship |
 |---------------|-------------|-------|--------------|
 | ADR | ADR-005 | External API Integration Architecture | Resilience pattern selection |
-| SPEC | SPEC-001 | External API Client | Technical specification |
-| BDD | BDD-001 | API Integration Scenarios | Test scenarios |
+| SPEC | SPEC-01 | External API Client | Technical specification |
+| BDD | BDD-01 | API Integration Scenarios | Test scenarios |
 
 ### Code Implementation Paths
 

@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: REQ-001 through REQ-NNN
+# Traceability Matrix: REQ-01 through REQ-NN
 
 ## Document Control
 
@@ -105,7 +105,7 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 - Prefix: `@` symbol
 - Artifact Types: lowercase (`brd`, `prd`, `ears`, `bdd`, `adr`, `sys`)
 - Separator: colon `:` after artifact type
-- Document ID: `TYPE-NNN` format
+- Document ID: `TYPE-NN` format
 - Requirement ID: specific requirement/section identifier
 - Multiple Values: comma-separated within each tag line
 
@@ -255,9 +255,9 @@ Code (Layer 13) → Source code (@brd through @tasks)
 
 | REQ ID | Title | Domain | Priority | Status | Date | Upstream Sources | Downstream Artifacts |
 |--------|-------|--------|----------|--------|------|------------------|---------------------|
-| REQ-001 | [Atomic requirement title] | [Domain] | Must | Active | YYYY-MM-DD | EARS-001, SYS-001 | SPEC-001, Code: module.py |
-| REQ-002 | [Atomic requirement title] | [Domain] | Should | Active | YYYY-MM-DD | EARS-002, ADR-001 | SPEC-002, CTR-001 |
-| REQ-NNN | ... | ... | ... | ... | ... | ... | ... |
+| REQ-01 | [Atomic requirement title] | [Domain] | Must | Active | YYYY-MM-DD | EARS-01, SYS-01 | SPEC-01, Code: module.py |
+| REQ-02 | [Atomic requirement title] | [Domain] | Should | Active | YYYY-MM-DD | EARS-02, ADR-01 | SPEC-02, CTR-01 |
+| REQ-NN | ... | ... | ... | ... | ... | ... | ... |
 
 **Priority Legend**: Must, Should, Could, Won't (MoSCoW)
 
@@ -271,56 +271,56 @@ Code (Layer 13) → Source code (@brd through @tasks)
 
 | EARS ID | EARS Title | REQ IDs | REQ Titles | Relationship |
 |---------|------------|---------|------------|--------------|
-| EARS-001 | [Formal requirement] | REQ-001, REQ-002 | [Atomic requirements] | EARS decomposed into atomic implementation requirements |
-| EARS-NNN | ... | ... | ... | ... |
+| EARS-01 | [Formal requirement] | REQ-01, REQ-02 | [Atomic requirements] | EARS decomposed into atomic implementation requirements |
+| EARS-NN | ... | ... | ... | ... |
 
 ### 15.2 SYS → REQ Traceability
 
 | SYS ID | SYS Title | REQ IDs | REQ Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| SYS-001 | [System requirement] | REQ-003, REQ-004, REQ-005 | [Atomic requirements] | System requirements broken down to atomic level |
-| SYS-NNN | ... | ... | ... | ... |
+| SYS-01 | [System requirement] | REQ-03, REQ-04, REQ-005 | [Atomic requirements] | System requirements broken down to atomic level |
+| SYS-NN | ... | ... | ... | ... |
 
 ### 11.3 ADR → REQ Traceability
 
 | ADR ID | ADR Title | REQ IDs | REQ Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| ADR-001 | [Architecture decision] | REQ-006 | [Atomic requirement] | Architectural decisions necessitate specific requirements |
-| ADR-NNN | ... | ... | ... | ... |
+| ADR-01 | [Architecture decision] | REQ-006 | [Atomic requirement] | Architectural decisions necessitate specific requirements |
+| ADR-NN | ... | ... | ... | ... |
 
 ---
 
 ## 11. Downstream Traceability (OPTIONAL)
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
 
 ### 15.1 REQ → IMPL Traceability
 
 | REQ ID | REQ Title | IMPL IDs | IMPL Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| REQ-001 | [Atomic requirement] | IMPL-001 | [Implementation plan] | Requirement included in implementation plan |
-| REQ-NNN | ... | ... | ... | ... |
+| REQ-01 | [Atomic requirement] | IMPL-01 | [Implementation plan] | Requirement included in implementation plan |
+| REQ-NN | ... | ... | ... | ... |
 
 ### 15.2 REQ → CTR Traceability
 
 | REQ ID | REQ Title | CTR IDs | CTR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| REQ-001 | [API interface requirement] | CTR-001 | [API contract] | Requirement defines API contract |
-| REQ-NNN | ... | ... | ... | ... |
+| REQ-01 | [API interface requirement] | CTR-01 | [API contract] | Requirement defines API contract |
+| REQ-NN | ... | ... | ... | ... |
 
 ### 11.3 REQ → SPEC Traceability
 
 | REQ ID | REQ Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| REQ-001 | [Atomic requirement] | SPEC-001 | [Technical specification] | Requirement implemented in specification |
-| REQ-NNN | ... | ... | ... | ... |
+| REQ-01 | [Atomic requirement] | SPEC-01 | [Technical specification] | Requirement implemented in specification |
+| REQ-NN | ... | ... | ... | ... |
 
 ### 11.4 REQ → Code Traceability
 
 | REQ ID | REQ Title | Code Files | Functions/Classes | Relationship |
 |--------|-----------|------------|-------------------|--------------|
-| REQ-001 | [Atomic requirement] | src/module.py | FeatureClass.method() | Direct implementation |
-| REQ-NNN | ... | ... | ... | ... |
+| REQ-01 | [Atomic requirement] | src/module.py | FeatureClass.method() | Direct implementation |
+| REQ-NN | ... | ... | ... | ... |
 
 ---
 
@@ -330,8 +330,8 @@ Code (Layer 13) → Source code (@brd through @tasks)
 
 | Domain | REQ IDs | Total | Must | Should | Could | Status |
 |--------|---------|-------|------|--------|-------|--------|
-| [api/] | REQ-001, REQ-002, REQ-003 | 3 | 2 | 1 | 0 | [Status] |
-| [auth/] | REQ-004, REQ-005 | 2 | 2 | 0 | 0 | [Status] |
+| [api/] | REQ-01, REQ-02, REQ-03 | 3 | 2 | 1 | 0 | [Status] |
+| [auth/] | REQ-04, REQ-005 | 2 | 2 | 0 | 0 | [Status] |
 | [data/] | REQ-006, REQ-007 | 2 | 1 | 1 | 0 | [Status] |
 | [risk/lim/] | REQ-008, REQ-009 | 2 | 2 | 0 | 0 | [Status] |
 
@@ -350,25 +350,25 @@ Code (Layer 13) → Source code (@brd through @tasks)
 
 ```mermaid
 graph TD
-    EARS001[EARS-001: Formal Req] --> REQ001[REQ-001: Atomic Req]
-    SYS001[SYS-001: System Req] --> REQ002[REQ-002: Atomic Req]
-    SYS001 --> REQ003[REQ-003: Atomic Req]
+    EARS001[EARS-01: Formal Req] --> REQ01[REQ-01: Atomic Req]
+    SYS001[SYS-01: System Req] --> REQ02[REQ-02: Atomic Req]
+    SYS001 --> REQ03[REQ-03: Atomic Req]
 
-    REQ001 --> SPEC001[SPEC-001: Tech Spec]
-    REQ001 --> CTR001[CTR-001: API Contract]
-    REQ002 --> SPEC002[SPEC-002: Tech Spec]
-    REQ003 --> SPEC003[SPEC-003: Tech Spec]
+    REQ01 --> SPEC01[SPEC-01: Tech Spec]
+    REQ01 --> CTR01[CTR-01: API Contract]
+    REQ02 --> SPEC002[SPEC-02: Tech Spec]
+    REQ03 --> SPEC003[SPEC-03: Tech Spec]
 
-    SPEC001 --> Code1[src/module.py]
-    CTR001 --> Code2[src/api.py]
+    SPEC01 --> Code1[src/module.py]
+    CTR01 --> Code2[src/api.py]
 
-    REQ001 -.depends on.-> REQ005[REQ-005: Prerequisite]
+    REQ01 -.depends on.-> REQ005[REQ-005: Prerequisite]
 
-    style REQ001 fill:#e8f5e9
-    style REQ002 fill:#e8f5e9
-    style REQ003 fill:#e8f5e9
-    style SPEC001 fill:#e3f2fd
-    style CTR001 fill:#fff3e0
+    style REQ01 fill:#e8f5e9
+    style REQ02 fill:#e8f5e9
+    style REQ03 fill:#e8f5e9
+    style SPEC01 fill:#e3f2fd
+    style CTR01 fill:#fff3e0
 ```
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
@@ -377,9 +377,9 @@ graph TD
 
 | Source REQ | Target REQ | Dependency Type | Description |
 |------------|------------|-----------------|-------------|
-| REQ-001 | REQ-005 | Prerequisite | Authentication required before authorization |
-| REQ-002 | REQ-003 | Related | Data validation supports data processing |
-| REQ-NNN | ... | ... | ... |
+| REQ-01 | REQ-005 | Prerequisite | Authentication required before authorization |
+| REQ-02 | REQ-03 | Related | Data validation supports data processing |
+| REQ-NN | ... | ... | ... |
 
 ---
 
@@ -389,19 +389,19 @@ graph TD
 
 | REQ ID | Verification Method | BDD Scenarios | Code Tests | Verified | Status |
 |--------|---------------------|---------------|------------|----------|--------|
-| REQ-001 | BDD + Unit Tests | BDD-001 | test_module.py | Yes | ✅ |
-| REQ-002 | Integration Tests | BDD-002 | test_integration.py | Yes | ✅ |
-| REQ-003 | Unit Tests | N/A | test_feature.py | No | 🟡 |
-| REQ-NNN | ... | ... | ... | ... | ... |
+| REQ-01 | BDD + Unit Tests | BDD-01 | test_module.py | Yes | ✅ |
+| REQ-02 | Integration Tests | BDD-02 | test_integration.py | Yes | ✅ |
+| REQ-03 | Unit Tests | N/A | test_feature.py | No | 🟡 |
+| REQ-NN | ... | ... | ... | ... | ... |
 
 ### 15.2 Acceptance Criteria Coverage
 
 | REQ ID | Total Criteria | Verified | Coverage % | Status |
 |--------|----------------|----------|------------|--------|
-| REQ-001 | 5 | 5 | 100% | ✅ Complete |
-| REQ-002 | 3 | 2 | 67% | 🟡 Partial |
-| REQ-003 | 4 | 0 | 0% | ⏳ Pending |
-| REQ-NNN | ... | ... | ... | ... |
+| REQ-01 | 5 | 5 | 100% | ✅ Complete |
+| REQ-02 | 3 | 2 | 67% | 🟡 Partial |
+| REQ-03 | 4 | 0 | 0% | ⏳ Pending |
+| REQ-NN | ... | ... | ... | ... |
 
 ---
 
@@ -411,10 +411,10 @@ graph TD
 
 | REQ ID | IMPL Status | CTR Status | SPEC Status | Code Status | Overall | Completion % |
 |--------|-------------|------------|-------------|-------------|---------|--------------|
-| REQ-001 | ✅ | ✅ | ✅ | ✅ | Complete | 100% |
-| REQ-002 | ✅ | N/A | 🟡 | 🟡 | In Progress | 60% |
-| REQ-003 | 🟡 | N/A | ⏳ | ⏳ | Started | 25% |
-| REQ-NNN | ... | ... | ... | ... | ... | ... |
+| REQ-01 | ✅ | ✅ | ✅ | ✅ | Complete | 100% |
+| REQ-02 | ✅ | N/A | 🟡 | 🟡 | In Progress | 60% |
+| REQ-03 | 🟡 | N/A | ⏳ | ⏳ | Started | 25% |
+| REQ-NN | ... | ... | ... | ... | ... | ... |
 
 ### 15.2 Gap Analysis
 

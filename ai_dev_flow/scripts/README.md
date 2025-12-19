@@ -40,7 +40,7 @@ python generate_traceability_matrix.py --type ADR --input ../ADR/ --output TRACE
 ```
 
 **Features:**
-- Scans directories for documents matching TYPE-NNN pattern
+- Scans directories for documents matching TYPE-NN pattern
 - Extracts metadata from section 7 Traceability
 - Calculates coverage metrics automatically
 - Generates inventory tables and Mermaid diagrams
@@ -155,7 +155,7 @@ python validate_iplan_naming.py [base_path]
 ```
 
 **Features:**
-- Validates filename format: `IPLAN-NNN_{descriptive_slug}_YYYYMMDD_HHMMSS.md`
+- Validates filename format: `IPLAN-NN_{descriptive_slug}_YYYYMMDD_HHMMSS.md`
 - Checks sequential ID format (3-4 digits: 001-999, 1000+)
 - Validates descriptive slug (lowercase, hyphen-separated)
 - Verifies timestamp validity (YYYYMMDD_HHMMSS format)
@@ -179,7 +179,7 @@ python validate_iplan_naming.py || exit 1
 ```
 
 **Validation Checks:**
-1. **Filename Pattern**: `IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md`
+1. **Filename Pattern**: `IPLAN-NN_{slug}_YYYYMMDD_HHMMSS.md`
 2. **ID Format**: 3 digits (001-999) or 4 digits (1000+) with proper zero-padding
 3. **Slug Format**: Lowercase alphanumeric with hyphens only, no consecutive/leading/trailing hyphens
 4. **Timestamp Validity**: Valid date and time (year: 1900-2100)
@@ -207,12 +207,12 @@ All IPLAN files follow naming conventions.
 
 ERRORS:
   • IPLAN-01_test_20251113_140000.md: ID must be 3-4 digits (found 2 digits)
-  • IPLAN-001_Test_Plan_20251113_140000.md: Slug must be lowercase (found 'Test_Plan')
-  • IPLAN-001_test-plan_20251313_140000.md: Invalid month 13 (expected 1-12)
-  • IPLAN-001_test-plan_20251113_140000.md: H1 ID mismatch (filename has IPLAN-001, H1 has IPLAN-002)
+  • IPLAN-01_Test_Plan_20251113_140000.md: Slug must be lowercase (found 'Test_Plan')
+  • IPLAN-01_test-plan_20251313_140000.md: Invalid month 13 (expected 1-12)
+  • IPLAN-01_test-plan_20251113_140000.md: H1 ID mismatch (filename has IPLAN-01, H1 has IPLAN-02)
 
 ⚠️  WARNINGS:
-  • Sequential gap: Expected IPLAN-002, found IPLAN-003 in IPLAN-003_refactor_20251114_100000.md
+  • Sequential gap: Expected IPLAN-02, found IPLAN-03 in IPLAN-03_refactor_20251114_100000.md
 ```
 
 ---
@@ -259,7 +259,7 @@ python validate_documentation_paths.py --root /path/to/project/
 **Placeholder Detection:**
 Automatically skips intentional placeholders:
 - Template patterns: `XXX`, `NNN`, `PPP`, `{variable}`
-- Example IDs: `BRD-001`, `REQ-003`, `ADR-033`, etc.
+- Example IDs: `BRD-01`, `REQ-03`, `ADR-33`, etc.
 - Example keywords: `example`, `some_`, `your_`, `_file`
 
 **Exit Codes:**
@@ -311,8 +311,8 @@ Cross-document validation for the SDD framework. Validates semantic consistency 
 
 **Usage:**
 ```bash
-# Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/ADR/ADR-001_*.md --auto-fix
+# Per-document validation (Phase 1) - nested folder structure (DEFAULT)
+python scripts/validate_cross_document.py --document docs/ADR/ADR-01_cloud_migration/ADR-01.0_cloud_migration_index.md --auto-fix
 
 # Layer validation (Phase 2)
 python scripts/validate_cross_document.py --layer ADR --auto-fix
@@ -341,7 +341,7 @@ python scripts/validate_cross_document.py --full --auto-fix
 **Examples:**
 ```bash
 # Validate single REQ document with auto-fix
-python scripts/validate_cross_document.py --document docs/REQ/REQ-001_api_validation.md --auto-fix
+python scripts/validate_cross_document.py --document docs/REQ/REQ-01_api_validation.md --auto-fix
 
 # Validate all SPEC documents
 python scripts/validate_cross_document.py --layer SPEC --auto-fix
@@ -390,7 +390,7 @@ python scripts/validate_cross_document.py --full --output validation_report.md
 | Issue | Fix Action |
 |-------|------------|
 | Missing cumulative tag | Add tag with placeholder reference to upstream document |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken relative link | Recalculate path from current document location |
 | Missing traceability section | Insert standard traceability section from template |
 | Incorrect Document Control format | Apply standardized format |
@@ -419,7 +419,7 @@ python scripts/validate_cross_document.py --full --output validation_report.md
 Cross-Document Validation Report
 ================================================================================
 Phase: Per-Document
-Document: docs/REQ/REQ-001_api_validation.md
+Document: docs/REQ/REQ-01_api_validation.md
 Layer: 7 (REQ)
 
 Checking cumulative tags...
@@ -427,16 +427,16 @@ Checking cumulative tags...
   ✅ @prd: PRD.01.07.02
   ✅ @ears: EARS.01.24.01
   ✅ @bdd: BDD.01.13.01
-  ✅ @adr: ADR-033, ADR-045
+  ✅ @adr: ADR-33, ADR-045
   ✅ @sys: SYS.01.25.01
 
 Checking upstream references...
-  ✅ BRD-001 exists: docs/BRD/BRD-001_platform.md
-  ✅ PRD-001 exists: docs/PRD/PRD-001_integration.md
-  ✅ EARS-001 exists: docs/EARS/EARS-001_risk.md
-  ✅ BDD-001 exists: docs/BDD/BDD-001_limits.feature
-  ✅ ADR-033 exists: docs/ADR/ADR-033_database.md
-  ✅ SYS-001 exists: docs/SYS/SYS-001_order.md
+  ✅ BRD-01 exists: docs/BRD/BRD-01_platform/BRD-01.0_platform_index.md
+  ✅ PRD-01 exists: docs/PRD/PRD-01_integration/PRD-01.0_integration_index.md
+  ✅ EARS-01 exists: docs/EARS/EARS-01_risk.md
+  ✅ BDD-01 exists: docs/BDD/BDD-01_limits.feature
+  ✅ ADR-33 exists: docs/ADR/ADR-33_database/ADR-33.0_database_index.md
+  ✅ SYS-01 exists: docs/SYS/SYS-01_order.md
 
 Checking internal links...
   ✅ 12 links validated
@@ -458,7 +458,11 @@ Validates Business Requirements Document (BRD) structure and template compliance
 
 **Usage:**
 ```bash
-./scripts/validate_brd_template.sh docs/BRD/BRD-001_*.md
+# For nested folder structure (DEFAULT)
+./scripts/validate_brd_template.sh docs/BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md
+
+# For monolithic files (OPTIONAL for <25KB)
+./scripts/validate_brd_template.sh docs/BRD/BRD-01_platform_architecture.md
 ```
 
 ### 7. validate_req_template.sh
@@ -467,7 +471,7 @@ Validates REQ documents against the 12-section REQ v3.0 format.
 
 **Usage:**
 ```bash
-./scripts/validate_req_template.sh docs/REQ/REQ-001_*.md
+./scripts/validate_req_template.sh docs/REQ/REQ-01_*.md
 ```
 
 ### 8. validate_ctr.sh
@@ -476,7 +480,7 @@ Validates CTR (Contract) documents for dual-file format compliance (.md + .yaml)
 
 **Usage:**
 ```bash
-./scripts/validate_ctr.sh docs/CTR/CTR-001_*.md
+./scripts/validate_ctr.sh docs/CTR/CTR-01_*.md
 ```
 
 **Features:**
@@ -491,7 +495,7 @@ Validates IMPL documents for 4-PART structure compliance.
 
 **Usage:**
 ```bash
-./scripts/validate_impl.sh docs/IMPL/IMPL-001_*.md
+./scripts/validate_impl.sh docs/IMPL/IMPL-01_*.md
 ```
 
 **Validates:**
@@ -506,7 +510,7 @@ Validates TASKS documents including Section 8 Implementation Contracts.
 
 **Usage:**
 ```bash
-./scripts/validate_tasks.sh docs/TASKS/TASKS-001_*.md
+./scripts/validate_tasks.sh docs/TASKS/TASKS-01_*.md
 ```
 
 **Features:**
@@ -521,7 +525,7 @@ Validates IPLAN (Implementation Plan) session-based execution plans.
 
 **Usage:**
 ```bash
-./scripts/validate_iplan.sh docs/IPLAN/IPLAN-001_*.md
+./scripts/validate_iplan.sh docs/IPLAN/IPLAN-01_*.md
 ```
 
 **Features:**
@@ -536,7 +540,7 @@ Validates ICON (Implementation Contracts) documents.
 
 **Usage:**
 ```bash
-./scripts/validate_icon.sh docs/ICON/ICON-001_*.md
+./scripts/validate_icon.sh docs/ICON/ICON-01_*.md
 ```
 
 **Features:**
@@ -650,22 +654,22 @@ All scripts support the following document types:
 
 | Type | Description | Pattern |
 |------|-------------|---------|
-| BRD | Business Requirements Document | `BRD-NNN_*.md` |
-| PRD | Product Requirements Document | `PRD-NNN_*.md` |
-| EARS | Easy Approach to Requirements Syntax | `EARS-NNN_*.md` |
-| BDD | Behavior-Driven Development | `BDD-NNN_*.feature` |
-| ADR | Architecture Decision Record | `ADR-NNN_*.md` |
-| SYS | System Requirements | `SYS-NNN_*.md` |
-| REQ | Atomic Requirements | `REQ-NNN_*.md` |
-| IMPL | Implementation Plans | `IMPL-NNN_*.md` |
-| CTR | API Contracts | `CTR-NNN_*.md`, `CTR-NNN_*.yaml` |
-| SPEC | Technical Specifications | `SPEC-NNN_*.yaml` |
-| TASKS | Code Generation Tasks | `TASKS-NNN_*.md` |
-| IPLAN | Session Implementation Plans | `IPLAN-NNN_*_YYYYMMDD_HHMMSS.md` |
+| BRD | Business Requirements Document | `BRD-NN_*.md` |
+| PRD | Product Requirements Document | `PRD-NN_*.md` |
+| EARS | Easy Approach to Requirements Syntax | `EARS-NN_*.md` |
+| BDD | Behavior-Driven Development | `BDD-NN_*.feature` |
+| ADR | Architecture Decision Record | `ADR-NN_*.md` |
+| SYS | System Requirements | `SYS-NN_*.md` |
+| REQ | Atomic Requirements | `REQ-NN_*.md` |
+| IMPL | Implementation Plans | `IMPL-NN_*.md` |
+| CTR | API Contracts | `CTR-NN_*.md`, `CTR-NN_*.yaml` |
+| SPEC | Technical Specifications | `SPEC-NN_*.yaml` |
+| TASKS | Code Generation Tasks | `TASKS-NN_*.md` |
+| IPLAN | Session Implementation Plans | `IPLAN-NN_*_YYYYMMDD_HHMMSS.md` |
 
 Document IDs support both formats:
-- Simple: `TYPE-NNN` (e.g., `ADR-001`)
-- Section files: `TYPE-NNN.S` (e.g., `REQ-010.1`)
+- Simple: `TYPE-NN` (e.g., `ADR-01`)
+- Section files: `TYPE-NN.S` (e.g., `REQ-010.1`)
 
 ---
 

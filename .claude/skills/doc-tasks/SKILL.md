@@ -77,7 +77,7 @@ Use `doc-tasks` when:
 
 ### Phase 1: Project Setup (3 tasks)
 
-**TASK-001-001: Initialize Project Structure**
+**TASK-01-001: Initialize Project Structure**
 - **Action**: Create directory structure per SPEC architecture
 - **Files to Create**:
   - `src/controllers/data_validation_controller.py`
@@ -86,26 +86,26 @@ Use `doc-tasks` when:
   - `src/models/data_request.py`
 - **Dependencies**: None
 - **Estimated Effort**: 30 minutes
-- **SPEC Reference**: SPEC-001:implementation.modules
+- **SPEC Reference**: SPEC-01:implementation.modules
 - **Success Criteria**: All directories and empty files created
 
-**TASK-001-002: Set Up Development Environment**
+**TASK-01-002: Set Up Development Environment**
 - **Action**: Configure Python environment and dependencies
 - **Files to Create**: `requirements.txt`, `pyproject.toml`
-- **Dependencies**: TASK-001-001
+- **Dependencies**: TASK-01-001
 - **Estimated Effort**: 1 hour
-- **SPEC Reference**: SPEC-001:deployment.container
+- **SPEC Reference**: SPEC-01:deployment.container
 - **Success Criteria**: `pip install -r requirements.txt` succeeds
 
 ### Phase 2: Data Models (2 tasks)
 
-**TASK-001-003: Implement DataRequest Model**
-- **Action**: Create Pydantic model per CTR-001 schema
+**TASK-01-003: Implement DataRequest Model**
+- **Action**: Create Pydantic model per CTR-01 schema
 - **Files to Modify**: `src/models/data_request.py`
-- **Dependencies**: TASK-001-002
+- **Dependencies**: TASK-01-002
 - **Estimated Effort**: 1 hour
-- **SPEC Reference**: SPEC-001:interfaces.data_models
-- **CTR Reference**: CTR-001#/components/schemas/DataRequest
+- **SPEC Reference**: SPEC-01:interfaces.data_models
+- **CTR Reference**: CTR-01#/components/schemas/DataRequest
 - **Success Criteria**: Model validates per schema, unit tests pass
 ```
 
@@ -126,8 +126,8 @@ Use `doc-tasks` when:
 
 **Format**: `TASK-{SPEC-ID}-{Task-Number}`
 
-**Example**: `TASK-001-003` means:
-- SPEC-001 (from SPEC-001_data_validation.yaml)
+**Example**: `TASK-01-003` means:
+- SPEC-01 (from SPEC-01_data_validation.yaml)
 - Task 003 (third task in breakdown)
 
 **Benefits**:
@@ -145,7 +145,7 @@ Use `doc-tasks` when:
 4. **Files to Create/Modify**: Specific file paths
 5. **Dependencies**: Other TASK IDs (or "None")
 6. **Estimated Effort**: Time estimate
-7. **SPEC Reference**: Section in SPEC (e.g., SPEC-001:implementation.modules)
+7. **SPEC Reference**: Section in SPEC (e.g., SPEC-01:implementation.modules)
 8. **Success Criteria**: How to verify completion
 9. **Optional: CTR Reference**: Link to contract if applicable
 
@@ -171,13 +171,13 @@ Use `doc-tasks` when:
 
 ```mermaid
 graph TD
-    T001[TASK-001-001: Project Setup]
-    T002[TASK-001-002: Dev Environment]
-    T003[TASK-001-003: DataRequest Model]
-    T004[TASK-001-004: ValidationResponse Model]
-    T005[TASK-001-005: Data Repository]
-    T006[TASK-001-006: Data Validator Service]
-    T007[TASK-001-007: API Controller]
+    T001[TASK-01-001: Project Setup]
+    T002[TASK-01-002: Dev Environment]
+    T003[TASK-01-003: DataRequest Model]
+    T004[TASK-01-004: ValidationResponse Model]
+    T005[TASK-01-005: Data Repository]
+    T006[TASK-01-006: Data Validator Service]
+    T007[TASK-01-007: API Controller]
 
     T001 --> T002
     T002 --> T003
@@ -266,8 +266,8 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
@@ -277,7 +277,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
@@ -304,7 +304,7 @@ Examples:
 @adr: ADR-033, ADR-045
 @sys: SYS.01.25.01
 @req: REQ.01.26.01
-@spec: SPEC-001
+@spec: SPEC-01
 ```
 
 **Maximum (IMPL, CTR, and ICON included)**:
@@ -317,9 +317,9 @@ Examples:
 @sys: SYS.01.25.01
 @req: REQ.01.26.01
 @impl: IMPL.01.28.01
-@ctr: CTR-001
-@spec: SPEC-001
-@icon: TASKS-001:DataValidator  # if providing or consuming implementation contracts
+@ctr: CTR-01
+@spec: SPEC-01
+@icon: TASKS-01:DataValidator  # if providing or consuming implementation contracts
 @icon-role: provider  # or consumer
 ```
 
@@ -342,8 +342,8 @@ Examples:
 - **Code** (Layer 13) - Implementation
 
 **Same-Type Document Relationships** (conditional):
-- `@related-tasks: TASKS-NNN` - TASKS sharing implementation context
-- `@depends-tasks: TASKS-NNN` - TASKS that must be completed first
+- `@related-tasks: TASKS-NN` - TASKS sharing implementation context
+- `@depends-tasks: TASKS-NN` - TASKS that must be completed first
 
 ## Creation Process
 
@@ -355,13 +355,13 @@ Read SPEC (Layer 10) - technical specifications to decompose.
 
 Check `ai_dev_flow/TASKS/` for next available ID number.
 
-**ID Matching**: TASKS ID typically matches SPEC ID (TASKS-001 from SPEC-001).
+**ID Matching**: TASKS ID typically matches SPEC ID (TASKS-01 from SPEC-01).
 
 ### Step 3: Create TASKS File
 
-**File naming**: `ai_dev_flow/TASKS/TASKS-NNN_{slug}.md`
+**File naming**: `ai_dev_flow/TASKS/TASKS-NN_{slug}.md`
 
-**Example**: `ai_dev_flow/TASKS/TASKS-001_data_validation.md`
+**Example**: `ai_dev_flow/TASKS/TASKS-01_data_validation.md`
 
 ### Step 4: Fill Document Control Section
 
@@ -405,9 +405,9 @@ Include all 8-10 upstream tags (@brd through @spec).
 ### Step 12: Validate TASKS
 
 ```bash
-./ai_dev_flow/scripts/validate_tasks.sh ai_dev_flow/TASKS/TASKS-001_*.md
+./ai_dev_flow/scripts/validate_tasks.sh ai_dev_flow/TASKS/TASKS-01_*.md
 
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact TASKS-001 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts,spec --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact TASKS-01 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts,spec --strict
 ```
 
 ### Step 13: Commit Changes
@@ -420,14 +420,14 @@ Commit TASKS file and traceability matrix.
 
 ```bash
 # Quality gates
-./scripts/validate_quality_gates.sh ai_dev_flow/TASKS/TASKS-001_*.md
+./scripts/validate_quality_gates.sh ai_dev_flow/TASKS/TASKS-01_*.md
 
 # Task format validation
-./ai_dev_flow/scripts/validate_tasks.sh ai_dev_flow/TASKS/TASKS-001_*.md
+./ai_dev_flow/scripts/validate_tasks.sh ai_dev_flow/TASKS/TASKS-01_*.md
 
 # Cumulative tagging
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --artifact TASKS-001 \
+  --artifact TASKS-01 \
   --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts,spec \
   --strict
 ```
@@ -479,7 +479,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/TASKS/TASKS-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/TASKS/TASKS-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all TASKS documents complete
 python ai_dev_flow/scripts/validate_cross_document.py --layer TASKS --auto-fix
@@ -496,7 +496,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer TASKS --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing upstream tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

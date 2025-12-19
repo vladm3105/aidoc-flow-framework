@@ -12,9 +12,9 @@ Scores REQ files on completeness (0-100%) based on presence of:
 - No placeholders
 
 Usage:
-    python validate_req_spec_readiness.py --req-file REQ/api/REQ-001.md
+    python validate_req_spec_readiness.py --req-file REQ/api/REQ-01.md
     python validate_req_spec_readiness.py --directory REQ/
-    python validate_req_spec_readiness.py --req-file REQ/api/REQ-001.md --min-score 90
+    python validate_req_spec_readiness.py --req-file REQ/api/REQ-01.md --min-score 90
 """
 
 import argparse

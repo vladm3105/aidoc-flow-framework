@@ -76,23 +76,40 @@ Rules for creating Data Contracts (CTR) documents in the SDD framework.
 ### Format
 
 ```
-CTR-NNN_{descriptive_slug}.md
-CTR-NNN_{descriptive_slug}.yaml
+CTR-NN_{descriptive_slug}.md
+CTR-NN_{descriptive_slug}.yaml
 ```
 
 ### Rules
 
-1. **CTR-NNN**: Sequential numbering starting from 001
+1. **CTR-NN**: Sequential numbering starting from 001
 2. **descriptive_slug**: Lowercase with underscores
 3. **Extension**: `.md` for documentation, `.yaml` for schema
 4. **Dual-file**: Create both `.md` and `.yaml` for complete contracts
 
 ### Examples
 
-- `CTR-001_user_authentication_api.md`
-- `CTR-001_user_authentication_api.yaml`
-- `CTR-002_market_data_feed.md`
-- `CTR-003_order_execution_service.md`
+- `CTR-01_user_authentication_api.md`
+- `CTR-01_user_authentication_api.yaml`
+- `CTR-02_market_data_feed.md`
+- `CTR-03_order_execution_service.md`
+
+### 2.1 Element ID Format (MANDATORY)
+
+**Pattern**: `CTR.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Interface | 16 | CTR.02.16.01 |
+| Data Model | 17 | CTR.02.17.01 |
+| Contract Clause | 20 | CTR.02.20.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `INT-XXX` → Use `CTR.NN.16.SS`
+> - `MODEL-XXX` → Use `CTR.NN.17.SS`
+> - `CLAUSE-XXX` → Use `CTR.NN.20.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
 
 ---
 
@@ -102,7 +119,7 @@ CTR-NNN_{descriptive_slug}.yaml
 
 ```yaml
 ---
-title: "CTR-NNN: [Contract Name]"
+title: "CTR-NN: [Contract Name]"
 tags:
   - contract
   - layer-9-artifact
@@ -119,7 +136,7 @@ custom_fields:
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| Contract ID | Yes | CTR-NNN format |
+| Contract ID | Yes | CTR-NN format |
 | Title | Yes | Descriptive contract name |
 | Version | Yes | Semantic version (X.Y.Z) |
 | Status | Yes | Draft/Active/Deprecated |
@@ -189,14 +206,14 @@ components:
 
 CTR must reference:
 - `@req: REQ.NN.EE.SS` - Atomic requirements (unified format)
-- `@spec: SPEC-NNN` - Technical specifications
-- `@adr: ADR-NNN` - Architecture decisions
+- `@spec: SPEC-NN` - Technical specifications
+- `@adr: ADR-NN` - Architecture decisions
 
 ### 5.2 Downstream References
 
 CTR is referenced by:
 - `@tasks: TASKS.NN.EE.SS` - Implementation tasks
-- `@iplan: IPLAN-NNN` - Implementation plans
+- `@iplan: IPLAN-NN` - Implementation plans
 - Code implementations
 
 ### 5.3 Tag Format
@@ -205,8 +222,8 @@ CTR is referenced by:
 ## Traceability Tags
 
 @req: REQ.01.26.01, REQ.02.26.01
-@adr: ADR-003
-@spec: SPEC-001
+@adr: ADR-03
+@spec: SPEC-01
 ```
 
 ---
@@ -258,7 +275,7 @@ CTR is referenced by:
 ### Automated Validation
 
 ```bash
-./scripts/validate_ctr.sh /path/to/CTR-NNN_name.md
+./scripts/validate_ctr.sh /path/to/CTR-NN_name.md
 ```
 
 ### Manual Checklist
@@ -293,8 +310,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -319,13 +336,13 @@ Include ONLY if relationships exist between CTR documents sharing API context or
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | CTR-NNN | [Related CTR title] | Shared API context |
-| Depends | CTR-NNN | [Prerequisite CTR title] | Must complete before this |
+| Related | CTR-NN | [Related CTR title] | Shared API context |
+| Depends | CTR-NN | [Prerequisite CTR title] | Must complete before this |
 
 **Tags**:
 ```markdown
-@related-ctr: CTR-NNN
-@depends-ctr: CTR-NNN
+@related-ctr: CTR-NN
+@depends-ctr: CTR-NN
 ```
 
 
@@ -363,7 +380,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/CTR/CTR-NNN_slug.md --auto-fix
+python scripts/validate_cross_document.py --document docs/CTR/CTR-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all CTR documents complete
 python scripts/validate_cross_document.py --layer CTR --auto-fix
@@ -380,7 +397,7 @@ python scripts/validate_cross_document.py --layer CTR --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd through @req tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

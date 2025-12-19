@@ -55,7 +55,7 @@ Feature: [Feature Title]
 - [ ] Tags are Gherkin-native (NOT in comments)
 - [ ] Tags appear on separate lines BEFORE `Feature:` keyword
 - [ ] All three tags present: @brd, @prd, @ears
-- [ ] Extended format with unified TYPE.NN.EE.SS suffix (4-segment Unified Element ID)
+- [ ] Extended format with unified TYPE.NN.TT.SS suffix (4-segment Unified Element ID)
 - [ ] NO spaces after colon in tag (use `@brd:BRD.01.01.01` not `@brd: BRD.01.01.01`)
 
 ### AI-Agent Files Additional Requirements
@@ -86,7 +86,7 @@ Before generating a BDD file, confirm these documents exist:
 # Check for required upstream artifacts
 ls docs/BRD/BRD-NNN*.md   # Business Requirements
 ls docs/PRD/PRD-NNN*.md   # Product Requirements
-ls docs/EARS/EARS-NNN*.md # Engineering Requirements
+ls docs/EARS/EARS-NN*.md # Engineering Requirements
 ```
 
 **Rules**:
@@ -237,15 +237,15 @@ After generating a BDD file, run:
 
 ```bash
 # Validate format compliance
-./scripts/validate_bdd_format.sh docs/BDD/BDD-NNN_feature_name.feature
+./scripts/validate_bdd_format.sh docs/BDD/BDD-NN_feature_name.feature
 
 # Check for tags in comments (should return nothing)
-grep -n "^#.*@brd:" docs/BDD/BDD-NNN*.feature
-grep -n "^#.*@prd:" docs/BDD/BDD-NNN*.feature
-grep -n "^#.*@ears:" docs/BDD/BDD-NNN*.feature
+grep -n "^#.*@brd:" docs/BDD/BDD-NN*.feature
+grep -n "^#.*@prd:" docs/BDD/BDD-NN*.feature
+grep -n "^#.*@ears:" docs/BDD/BDD-NN*.feature
 
 # Verify ADR-Ready Score format
-grep "ADR-Ready Score" docs/BDD/BDD-NNN*.feature | grep -v "✅"
+grep "ADR-Ready Score" docs/BDD/BDD-NN*.feature | grep -v "✅"
 ```
 
 ---

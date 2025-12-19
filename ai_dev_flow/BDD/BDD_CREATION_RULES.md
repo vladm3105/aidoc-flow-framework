@@ -59,7 +59,7 @@ custom_fields:
 ## 1. File Organization and Directory Structure
 
 - **Location**: `docs/BDD/` within project docs directory
-- **Naming**: `BDD-NNN_descriptive_slug.md` or `BDD-NNN_descriptive_slug.feature` (NNN = 3-digit sequential)
+- **Naming**: `BDD-NN_descriptive_slug.md` or `BDD-NN_descriptive_slug.feature` (NN = 3-digit sequential)
 - **Structure**: One primary feature file per EARS requirement set
 
 ---
@@ -72,7 +72,7 @@ All BDD markdown files MUST include YAML frontmatter metadata consistent with ot
 
 ```yaml
 ---
-title: "BDD-NNN: Feature Title"
+title: "BDD-NN: Feature Title"
 tags:
   - bdd
   - layer-4-artifact
@@ -85,12 +85,12 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]  # or single approach
   priority: shared  # or primary/fallback
   development_status: active
-  agent_id: AGENT-NNN  # Only for ai-agent-primary documents
+  agent_id: AGENT-NN  # Only for ai-agent-primary documents
   requirements_verified:
-    - EARS-NNN
-    - BRD-NNN
+    - EARS-NN
+    - BRD-NN
   traceability:
-    upstream: [BRD-NNN, PRD-NNN, EARS-NNN]
+    upstream: [BRD-NN, PRD-NN, EARS-NN]
     downstream: [ADR, SYS, REQ, SPEC, Code, Tests]
 ---
 ```
@@ -226,7 +226,7 @@ Feature: [Business Capability Title]
 
 ## 4. Feature File Standards
 
-**Filename**: `BDD-NNN_descriptive_requirements.feature`
+**Filename**: `BDD-NN_descriptive_requirements.feature`
 
 **Feature Declaration**:
 - Business-focused title
@@ -238,6 +238,22 @@ Feature: [Business Capability Title]
 - `@brd: BRD.NN.EE.SS` - Business requirements upstream (sub-ID dot notation)
 - `@prd: PRD.NN.EE.SS` - Product requirements upstream (sub-ID dot notation)
 - `@ears: EARS.NN.EE.SS` - Engineering requirements upstream (sub-ID dot notation)
+
+### 4.1 Element ID Format (MANDATORY)
+
+**Pattern**: `BDD.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Test Scenario | 14 | BDD.02.14.01 |
+| Step | 15 | BDD.02.15.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `SCENARIO-XXX` → Use `BDD.NN.14.SS`
+> - `STEP-XXX` → Use `BDD.NN.15.SS`
+> - `TC-XXX` → Use `BDD.NN.14.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
 
 ---
 
@@ -355,7 +371,7 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 @ears: EARS.NN.EE.SS  # MANDATORY - engineering requirements
 ```
 
-**Format**: Extended format with requirement ID suffix (`:NNN`) is REQUIRED.
+**Format**: Extended format with requirement ID suffix (`:NN`) is REQUIRED.
 
 **Layer 4 Requirements**: BDD must reference ALL upstream artifacts (BRD + PRD + EARS)
 
@@ -412,9 +428,9 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 | `Given-When-Then` without concrete values | Use specific data in steps |
 | Vague outcomes like "should work" | Observable verification: "response status code is 200" |
 | Missing Background section | Add common preconditions to Background |
-| `response time is less than 200ms` (hardcoded) | `response time is less than @threshold: PRD.NNN.perf.api.p95_latency` |
-| `timeout after 5000ms` (magic number) | `timeout after @threshold: PRD.NNN.timeout.default` |
-| `rate limit of 100 requests` (hardcoded) | `rate limit of @threshold: PRD.NNN.limit.api.requests_per_second` |
+| `response time is less than 200ms` (hardcoded) | `response time is less than @threshold: PRD.NN.perf.api.p95_latency` |
+| `timeout after 5000ms` (magic number) | `timeout after @threshold: PRD.NN.timeout.default` |
+| `rate limit of 100 requests` (hardcoded) | `rate limit of @threshold: PRD.NN.limit.api.requests_per_second` |
 
 ### 12.1 Critical Anti-Patterns (Visual Examples)
 
@@ -513,8 +529,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -539,8 +555,8 @@ Include ONLY if relationships exist between BDD features sharing domain context 
 
 **Tags**:
 ```markdown
-@related-bdd: BDD-NNN
-@depends-bdd: BDD-NNN
+@related-bdd: BDD-NN
+@depends-bdd: BDD-NN
 ```
 
 ---
@@ -561,13 +577,13 @@ Use `@threshold` for ALL quantitative values in BDD scenarios that are:
 
 **Scenario Tag Format**:
 ```gherkin
-@threshold: PRD.NNN.perf.api.p95_latency
+@threshold: PRD.NN.perf.api.p95_latency
 Scenario: API responds within performance threshold
 ```
 
 **Step Definition Format**:
 ```gherkin
-Then the response time SHOULD be less than @threshold: PRD.NNN.perf.api.p95_latency
+Then the response time SHOULD be less than @threshold: PRD.NN.perf.api.p95_latency
 ```
 
 **Examples**:
@@ -597,11 +613,11 @@ Scenario: API performance validation
 
 **Valid (registry references)**:
 ```gherkin
-@threshold: PRD.NNN.perf.api.p95_latency
+@threshold: PRD.NN.perf.api.p95_latency
 Scenario: API performance validation
   Given the system is under normal load
   When a client sends a request
-  Then the response time SHOULD be less than @threshold: PRD.NNN.perf.api.p95_latency
+  Then the response time SHOULD be less than @threshold: PRD.NN.perf.api.p95_latency
 ```
 
 ### Examples Table Integration
@@ -616,8 +632,8 @@ Scenario Outline: Transaction limit validation
 
   Examples:
     | role   | amount                                         | result   |
-    | user   | @threshold: PRD.NNN.limit.transaction.max     | rejected |
-    | admin  | @threshold: PRD.NNN.limit.transaction.max     | approved |
+    | user   | @threshold: PRD.NN.limit.transaction.max     | rejected |
+    | admin  | @threshold: PRD.NN.limit.transaction.max     | approved |
 ```
 
 ### Traceability Requirements Update
@@ -626,7 +642,7 @@ Add `@threshold` to Required Tags:
 
 | Tag | Format | When Required |
 |-----|--------|---------------|
-| @threshold | PRD-NNN:category.key | When scenarios validate performance, SLA, limits, or compliance values |
+| @threshold | PRD-NN:category.key | When scenarios validate performance, SLA, limits, or compliance values |
 
 ### Validation
 
@@ -657,7 +673,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/BDD/BDD-NNN_slug.md --auto-fix
+python scripts/validate_cross_document.py --document docs/BDD/BDD-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all BDD documents complete
 python scripts/validate_cross_document.py --layer BDD --auto-fix
@@ -674,7 +690,7 @@ python scripts/validate_cross_document.py --layer BDD --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

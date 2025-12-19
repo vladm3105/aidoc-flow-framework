@@ -31,7 +31,7 @@ custom_fields:
 > - **Creation Rules**: `SYS_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `SYS_VALIDATION_RULES.md` - Post-creation checks
 
-# SYS-NNN: [System Name/Component Name]
+# SYS-NN: [System Name/Component Name]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
@@ -208,19 +208,19 @@ custom_fields:
 > **Note**: All performance thresholds MUST use @threshold registry references. See PRD-000_threshold_registry_template.md for registry format.
 
 #### Response Time Requirements
-- **Interactive Operations**: p95 response time < @threshold: PRD.NNN.perf.api.p95_latency for user-facing operations
-- **Background Operations**: p95 processing time < @threshold: PRD.NNN.perf.batch.p95_latency for batch/asynchronous operations
-- **SLA Compliance**: @threshold: PRD.NNN.sla.success_rate.target% of operations complete within agreed timeframes
+- **Interactive Operations**: p95 response time < @threshold: PRD.NN.perf.api.p95_latency for user-facing operations
+- **Background Operations**: p95 processing time < @threshold: PRD.NN.perf.batch.p95_latency for batch/asynchronous operations
+- **SLA Compliance**: @threshold: PRD.NN.sla.success_rate.target% of operations complete within agreed timeframes
 
 #### Throughput Requirements
-- **Peak Load**: Sustain @threshold: PRD.NNN.perf.throughput.peak_rps operations per second during peak usage periods
-- **Normal Load**: Handle @threshold: PRD.NNN.perf.throughput.sustained_rps concurrent users/operations per minute continuously
+- **Peak Load**: Sustain @threshold: PRD.NN.perf.throughput.peak_rps operations per second during peak usage periods
+- **Normal Load**: Handle @threshold: PRD.NN.perf.throughput.sustained_rps concurrent users/operations per minute continuously
 - **Scaling Requirements**: Support linear throughput increases with horizontal scaling
 
 #### Resource Utilization
-- **CPU Usage**: Maintain < @threshold: PRD.NNN.resource.cpu.max_utilization% CPU utilization under normal load
-- **Memory Usage**: Stay within @threshold: PRD.NNN.resource.memory.max_heap GB memory allocation limits under all conditions
-- **Storage Performance**: Process @threshold: PRD.NNN.perf.storage.read_iops IOPS for read operations
+- **CPU Usage**: Maintain < @threshold: PRD.NN.resource.cpu.max_utilization% CPU utilization under normal load
+- **Memory Usage**: Stay within @threshold: PRD.NN.resource.memory.max_heap GB memory allocation limits under all conditions
+- **Storage Performance**: Process @threshold: PRD.NN.perf.storage.read_iops IOPS for read operations
 
 ### 5.2 Reliability Requirements
 [Up time, fault tolerance, and availability expectations]
@@ -228,19 +228,19 @@ custom_fields:
 > **Note**: All SLA and reliability thresholds MUST use @threshold registry references.
 
 #### Availability Requirements
-- **Service Uptime**: Maintain @threshold: PRD.NNN.sla.uptime.target% uptime excluding planned maintenance windows
-- **Maintenance Windows**: Scheduled maintenance limited to @threshold: PRD.NNN.sla.maintenance.max_hours hours per month
-- **Disaster Recovery**: Restore service within @threshold: PRD.NNN.sla.rto minutes following regional failures
+- **Service Uptime**: Maintain @threshold: PRD.NN.sla.uptime.target% uptime excluding planned maintenance windows
+- **Maintenance Windows**: Scheduled maintenance limited to @threshold: PRD.NN.sla.maintenance.max_hours hours per month
+- **Disaster Recovery**: Restore service within @threshold: PRD.NN.sla.rto minutes following regional failures
 
 #### Fault Tolerance Requirements
 - **Single Point of Failure**: No single component failure can bring down the entire system
 - **Graceful Degradation**: Continue with reduced functionality when non-critical components fail
-- **Self-Healing**: Automatic recovery from transient failures within @threshold: PRD.NNN.timeout.recovery.self_healing ms
+- **Self-Healing**: Automatic recovery from transient failures within @threshold: PRD.NN.timeout.recovery.self_healing ms
 
 #### Data Durability Requirements
 - **Data Loss Prevention**: Zero data loss for committed transactions
-- **Backup Frequency**: Automated backups every @threshold: PRD.NNN.batch.backup.interval_hours hours with @threshold: PRD.NNN.batch.backup.retention_days days retention
-- **Recovery Time**: Restore data from backups within @threshold: PRD.NNN.sla.rpo minutes
+- **Backup Frequency**: Automated backups every @threshold: PRD.NN.batch.backup.interval_hours hours with @threshold: PRD.NN.batch.backup.retention_days days retention
+- **Recovery Time**: Restore data from backups within @threshold: PRD.NN.sla.rpo minutes
 
 ### 5.3 Scalability Requirements
 [How the system must grow to meet increasing demands]
@@ -292,8 +292,8 @@ custom_fields:
 - **Correlation Tracking**: Request IDs and trace IDs propagated through all operations
 
 #### Alerting Requirements
-- **Error Rate Alerts**: Alert when error rate exceeds @threshold: PRD.NNN.sla.error_rate.max% for @threshold: PRD.NNN.limit.alert.duration_minutes consecutive minutes
-- **Performance Alerts**: Alert when p95 latency exceeds @threshold: PRD.NNN.perf.api.p95_latency for @threshold: PRD.NNN.limit.alert.latency_minutes minutes
+- **Error Rate Alerts**: Alert when error rate exceeds @threshold: PRD.NN.sla.error_rate.max% for @threshold: PRD.NN.limit.alert.duration_minutes consecutive minutes
+- **Performance Alerts**: Alert when p95 latency exceeds @threshold: PRD.NN.perf.api.p95_latency for @threshold: PRD.NN.limit.alert.latency_minutes minutes
 - **Availability Alerts**: Alert immediately when service becomes unavailable
 
 #### Tracing Requirements
@@ -553,10 +553,10 @@ Document the business strategy, product requirements, and architectural decision
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-NNN](../BRD/BRD-NNN_...md) | [Business requirements title] | sections 2.4, 4.x | Business objectives driving system design |
-| PRD | [PRD-NNN](../PRD/PRD-NNN_...md) | [Product requirements title] | Functional Requirements 4.x | Product features this system implements |
-| EARS | [EARS-NNN](../EARS/EARS-NNN_...md) | [Engineering requirements] | Event-driven, State-driven requirements | Formal requirements this system satisfies |
-| ADR | [ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN) | [Architecture decision title] | Decision, Consequences | Architectural approach enabling this system |
+| BRD | [BRD-NN](../BRD/BRD-NN_...md) | [Business requirements title] | sections 2.4, 4.x | Business objectives driving system design |
+| PRD | [PRD-NN](../PRD/PRD-NN_...md) | [Product requirements title] | Functional Requirements 4.x | Product features this system implements |
+| EARS | [EARS-NN](../EARS/EARS-NN_...md) | [Engineering requirements] | Event-driven, State-driven requirements | Formal requirements this system satisfies |
+| ADR | [ADR-NN](../ADR/ADR-NN_...md#ADR-NN) | [Architecture decision title] | Decision, Consequences | Architectural approach enabling this system |
 
 **Business Context**:
 - [Specific business goals from BRD that justify this system]
@@ -581,8 +581,8 @@ System requirements decomposed into implementation-ready atomic requirements.
 
 | REQ ID | Requirement Title | SYS Features Driving Requirement | Verification Method | Relationship |
 |--------|------------------|----------------------------------|---------------------|--------------|
-| [REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN) | [Atomic requirement title] | Derived from SYS sections [IDs] | Unit test, Integration test | Detailed implementation requirement |
-| [REQ-MMM](../REQ/.../REQ-MMM_...md#REQ-MMM) | [Another requirement] | Derived from SYS sections [IDs] | BDD scenario, Contract test | Specific functional behavior |
+| [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN) | [Atomic requirement title] | Derived from SYS sections [IDs] | Unit test, Integration test | Detailed implementation requirement |
+| [REQ-MM](../REQ/.../REQ-MM_...md#REQ-MM) | [Another requirement] | Derived from SYS sections [IDs] | BDD scenario, Contract test | Specific functional behavior |
 
 **Decomposition Notes**:
 - [How system requirements were broken down into atomic requirements]
@@ -595,8 +595,8 @@ Implementation blueprints and interface definitions for this system.
 
 | SPEC ID | Specification Title | SYS sections Implemented | Implementation Path | Relationship |
 |---------|-------------------|--------------------------|---------------------|--------------|
-| [SPEC-NNN](../SPEC/.../SPEC-NNN.yaml) | [Technical spec title] | sections 3.1, 4.2, 5.x | src/[module]/[component].py | Implementation blueprint |
-| [SPEC-MMM](../SPEC/.../SPEC-MMM.yaml) | [Interface spec] | sections 6.x (Interfaces) | src/[module]/interfaces/ | API/contract definition |
+| [SPEC-NN](../SPEC/.../SPEC-NN.yaml) | [Technical spec title] | sections 3.1, 4.2, 5.x | src/[module]/[component].py | Implementation blueprint |
+| [SPEC-MM](../SPEC/.../SPEC-MM.yaml) | [Interface spec] | sections 6.x (Interfaces) | src/[module]/interfaces/ | API/contract definition |
 
 **Specification Coverage**:
 - [All functional requirements mapped to specifications]
@@ -609,7 +609,7 @@ Architecture decisions that implement or reference this system.
 
 | ADR ID | ADR Title | SYS Requirements Addressed | Decision Impact | Relationship |
 |--------|-----------|---------------------------|-----------------|--------------|
-| [ADR-MMM](../ADR/ADR-MMM_...md) | [Architecture decision] | Quality attributes sections 4.x, 5.x | Technology selection, patterns | Architectural implementation |
+| [ADR-MM](../ADR/ADR-MM_...md) | [Architecture decision] | Quality attributes sections 4.x, 5.x | Technology selection, patterns | Architectural implementation |
 | [ADR-PPP](../ADR/ADR-PPP_...md) | [Another decision] | Integration requirements 3.4 | Integration patterns | System integration approach |
 
 #### Behavioral Specifications
@@ -618,9 +618,9 @@ BDD scenarios and acceptance tests validating this system.
 
 | BDD ID | Scenario Title | SYS Requirements Validated | Test Coverage | Relationship |
 |--------|----------------|---------------------------|---------------|--------------|
-| [BDD-NNN](../BDD/BDD-NNN_....feature) | Feature: [Feature name] | Functional requirements 3.x | Scenarios 1-5 | Acceptance test |
-| [BDD-NNN](../BDD/BDD-NNN_....feature#scenario-1) | Scenario: [Specific scenario] | Specific capability 3.2.1 | Lines 15-45 | Functional validation |
-| [BDD-MMM](../BDD/BDD-MMM_....feature) | Feature: [Quality attribute validation] | Performance requirements 4.1 | Performance scenarios | Quality validation |
+| [BDD-NN](../BDD/BDD-NN_....feature) | Feature: [Feature name] | Functional requirements 3.x | Scenarios 1-5 | Acceptance test |
+| [BDD-NN](../BDD/BDD-NN_....feature#scenario-1) | Scenario: [Specific scenario] | Specific capability 3.2.1 | Lines 15-45 | Functional validation |
+| [BDD-MM](../BDD/BDD-MM_....feature) | Feature: [Quality attribute validation] | Performance requirements 4.1 | Performance scenarios | Quality validation |
 
 **BDD Coverage**:
 - [All functional capabilities have BDD scenarios]
@@ -638,8 +638,8 @@ API contracts and interface agreements for external integration.
 
 | System Capability (section) | BDD Feature File | Scenario Count | Coverage Status |
 |-----------------------------|-----------------|----------------|-----------------|
-| Core System Behaviors (3.1) | [BDD-NNN.feature](../BDD/BDD-NNN_....feature) | 8 scenarios | ✅ Complete |
-| Data Processing (3.2) | [BDD-MMM.feature](../BDD/BDD-MMM_....feature) | 12 scenarios | ✅ Complete |
+| Core System Behaviors (3.1) | [BDD-NN.feature](../BDD/BDD-NN_....feature) | 8 scenarios | ✅ Complete |
+| Data Processing (3.2) | [BDD-MM.feature](../BDD/BDD-MM_....feature) | 12 scenarios | ✅ Complete |
 | Error Handling (3.3) | [BDD-PPP.feature](../BDD/BDD-PPP_....feature) | 15 scenarios | ✅ Complete |
 | Integration Points (3.4) | [BDD-QQQ.feature](../BDD/BDD-QQQ_....feature) | 10 scenarios | 🔄 In Progress |
 
@@ -647,8 +647,8 @@ API contracts and interface agreements for external integration.
 
 | Acceptance Criterion (section 11) | BDD Validation | Status |
 |-----------------------------------|----------------|--------|
-| Functional Validation Points | [BDD-NNN.feature](../BDD/BDD-NNN_....feature) Lines 100-250 | ✅ Validated |
-| Quality Attribute Validation Points | [BDD-MMM.feature](../BDD/BDD-MMM_....feature) Lines 50-120 | ✅ Validated |
+| Functional Validation Points | [BDD-NN.feature](../BDD/BDD-NN_....feature) Lines 100-250 | ✅ Validated |
+| Quality Attribute Validation Points | [BDD-MM.feature](../BDD/BDD-MM_....feature) Lines 50-120 | ✅ Validated |
 | Operational Validation Points | [BDD-PPP.feature](../BDD/BDD-PPP_....feature) Lines 200-300 | 🔄 Pending |
 
 ### 13.4 Code Implementation Paths
@@ -675,7 +675,7 @@ API contracts and interface agreements for external integration.
 ### 13.5 Document Links and Cross-References
 
 **Internal Document References**:
-- Anchor ID: `#SYS-NNN` (for direct linking within this document)
+- Anchor ID: `#SYS-NN` (for direct linking within this document)
 - Change History: See section "Change History" for version evolution
 - Related Systems: Links to other SYS documents for dependent/related systems
 
@@ -743,13 +743,13 @@ API contracts and interface agreements for external integration.
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | [SYS-NNN](./SYS-NNN_...md) | [Related SYS title] | Shared system context |
-| Depends | [SYS-NNN](./SYS-NNN_...md) | [Prerequisite SYS title] | Must complete before this |
+| Related | [SYS-NN](./SYS-NN_...md) | [Related SYS title] | Shared system context |
+| Depends | [SYS-NN](./SYS-NN_...md) | [Prerequisite SYS title] | Must complete before this |
 
 **Tags:**
 ```markdown
-@related-sys: SYS-NNN
-@depends-sys: SYS-NNN
+@related-sys: SYS-NN
+@depends-sys: SYS-NN
 ```
 
 ### 13.9 Traceability Tags
@@ -760,11 +760,11 @@ API contracts and interface agreements for external integration.
 @prd: PRD.NN.EE.SS
 @ears: EARS.NN.24.SS
 @bdd: BDD.NN.13.SS
-@adr: ADR-NNN
-@threshold: PRD.NNN  # Threshold registry reference (when quantitative values used)
+@adr: ADR-NN
+@threshold: PRD.NN  # Threshold registry reference (when quantitative values used)
 ```
 
-**Format**: `@artifact-type: TYPE.NN.EE.SS` (Unified Element ID format: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
+**Format**: `@artifact-type: TYPE.NN.TT.SS` (Unified Element ID format: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
 
 **Layer 6 Requirements**: SYS must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)
@@ -787,7 +787,7 @@ API contracts and interface agreements for external integration.
 ```
 
 **Threshold Tag Usage**:
-- Use `@threshold: PRD.NNN.category.key` format for inline quantitative values
+- Use `@threshold: PRD.NN.category.key` format for inline quantitative values
 - Reference the PRD threshold registry document for centralized value management
 - Prevents magic numbers in quality attribute and SLA specifications
 - See [PRD-000_threshold_registry_template.md](../PRD/PRD-000_threshold_registry_template.md) for registry format
@@ -800,57 +800,57 @@ API contracts and interface agreements for external integration.
 
 **Purpose**: SYS documents REFERENCE thresholds defined in the PRD threshold registry. All quantitative values in quality attributes, SLAs, and performance specifications must use `@threshold:` tags to ensure single source of truth.
 
-**Threshold Naming Convention**: `@threshold: PRD.NNN.category.subcategory.key`
+**Threshold Naming Convention**: `@threshold: PRD.NN.category.subcategory.key`
 
 **Format Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for complete naming standards.
 
 **Thresholds Used in This Document**:
 ```yaml
 # Thresholds referenced from PRD threshold registry
-# Format: @threshold: PRD.NNN.category.subcategory.key
+# Format: @threshold: PRD.NN.category.subcategory.key
 
 performance:
   # Response time and latency requirements (Section 5.1)
-  - "@threshold: PRD.NNN.perf.api.p95_latency"         # API response time target
-  - "@threshold: PRD.NNN.perf.batch.p95_latency"       # Batch processing latency
-  - "@threshold: PRD.NNN.perf.throughput.peak_rps"    # Peak requests per second
-  - "@threshold: PRD.NNN.perf.throughput.sustained_rps" # Sustained throughput
-  - "@threshold: PRD.NNN.perf.storage.read_iops"      # Storage read IOPS
+  - "@threshold: PRD.NN.perf.api.p95_latency"         # API response time target
+  - "@threshold: PRD.NN.perf.batch.p95_latency"       # Batch processing latency
+  - "@threshold: PRD.NN.perf.throughput.peak_rps"    # Peak requests per second
+  - "@threshold: PRD.NN.perf.throughput.sustained_rps" # Sustained throughput
+  - "@threshold: PRD.NN.perf.storage.read_iops"      # Storage read IOPS
 
 sla:
   # Service level agreements (Sections 5.1, 5.2)
-  - "@threshold: PRD.NNN.sla.success_rate.target"     # Operation success rate
-  - "@threshold: PRD.NNN.sla.uptime.target"           # Service availability
-  - "@threshold: PRD.NNN.sla.maintenance.max_hours"   # Maintenance window limit
-  - "@threshold: PRD.NNN.sla.rto"                     # Recovery time objective
-  - "@threshold: PRD.NNN.sla.rpo"                     # Recovery point objective
-  - "@threshold: PRD.NNN.sla.error_rate.max"          # Maximum error rate
+  - "@threshold: PRD.NN.sla.success_rate.target"     # Operation success rate
+  - "@threshold: PRD.NN.sla.uptime.target"           # Service availability
+  - "@threshold: PRD.NN.sla.maintenance.max_hours"   # Maintenance window limit
+  - "@threshold: PRD.NN.sla.rto"                     # Recovery time objective
+  - "@threshold: PRD.NN.sla.rpo"                     # Recovery point objective
+  - "@threshold: PRD.NN.sla.error_rate.max"          # Maximum error rate
 
 timeout:
   # Timeout constraints (Section 5.2)
-  - "@threshold: PRD.NNN.timeout.recovery.self_healing" # Self-healing timeout
+  - "@threshold: PRD.NN.timeout.recovery.self_healing" # Self-healing timeout
 
 resource:
   # Resource utilization limits (Section 5.1)
-  - "@threshold: PRD.NNN.resource.cpu.max_utilization"  # CPU utilization cap
-  - "@threshold: PRD.NNN.resource.memory.max_heap"      # Memory allocation limit
+  - "@threshold: PRD.NN.resource.cpu.max_utilization"  # CPU utilization cap
+  - "@threshold: PRD.NN.resource.memory.max_heap"      # Memory allocation limit
 
 batch:
   # Batch processing configuration (Section 5.2)
-  - "@threshold: PRD.NNN.batch.backup.interval_hours"   # Backup frequency
-  - "@threshold: PRD.NNN.batch.backup.retention_days"   # Backup retention
+  - "@threshold: PRD.NN.batch.backup.interval_hours"   # Backup frequency
+  - "@threshold: PRD.NN.batch.backup.retention_days"   # Backup retention
 
 limit:
   # Alerting thresholds (Section 5.5)
-  - "@threshold: PRD.NNN.limit.alert.duration_minutes"  # Alert duration trigger
-  - "@threshold: PRD.NNN.limit.alert.latency_minutes"   # Latency alert duration
+  - "@threshold: PRD.NN.limit.alert.duration_minutes"  # Alert duration trigger
+  - "@threshold: PRD.NN.limit.alert.latency_minutes"   # Latency alert duration
 ```
 
 **Example Usage in SYS Requirements**:
 ```markdown
-- **Interactive Operations**: p95 response time < @threshold: PRD.NNN.perf.api.p95_latency
-- **Service Uptime**: Maintain @threshold: PRD.NNN.sla.uptime.target% uptime
-- **Error Rate Alerts**: Alert when error rate exceeds @threshold: PRD.NNN.sla.error_rate.max%
+- **Interactive Operations**: p95 response time < @threshold: PRD.NN.perf.api.p95_latency
+- **Service Uptime**: Maintain @threshold: PRD.NN.sla.uptime.target% uptime
+- **Error Rate Alerts**: Alert when error rate exceeds @threshold: PRD.NN.sla.error_rate.max%
 ```
 
 **Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.

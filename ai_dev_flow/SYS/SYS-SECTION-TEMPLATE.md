@@ -1,10 +1,10 @@
 ---
-doc_id: SYS-{NNN}
+doc_id: SYS-{NN}
 section: {S}
 title: "{Section Title}"
-parent_doc: "SYS-{NNN}.0_index.md"
-prev_section: "SYS-{NNN}.{S-1}_{prev_slug}.md"
-next_section: "SYS-{NNN}.{S+1}_{next_slug}.md"
+parent_doc: "SYS-{NN}.0_index.md"
+prev_section: "SYS-{NN}.{S-1}_{prev_slug}.md"
+next_section: "SYS-{NN}.{S+1}_{next_slug}.md"
 tags:
   - section-file
   - sys-section
@@ -22,11 +22,11 @@ custom_fields:
   index_role: false
 ---
 
-# SYS-{NNN}.{S}: {Section Title}
+# SYS-{NN}.{S}: {Section Title}
 
-> **Navigation**: [Index](SYS-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](SYS-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
 >
-> **Parent Document**: SYS-{NNN}
+> **Parent Document**: SYS-{NN}
 > **Section**: {S} of {N}
 > **Layer**: 6 - System Requirements
 
@@ -62,11 +62,11 @@ custom_fields:
 
 ## References
 
-- **Parent Document**: @ref: SYS-{NNN}.0
-- **Related Sections**: @ref: SYS-{NNN}.{related}
-- **Upstream**: @ref: ADR-{NNN} (Architecture), @ref: BDD-{NNN} (Behavior)
-- **Downstream**: @ref: REQ-{NNN} (Atomic Requirements)
+- **Parent Document**: @ref: SYS-{NN}.0
+- **Related Sections**: @ref: SYS-{NN}.{related}
+- **Upstream**: @ref: ADR-{NN} (Architecture), @ref: BDD-{NN} (Behavior)
+- **Downstream**: @ref: REQ-{NN} (Atomic Requirements)
 
 ---
 
-> **Navigation**: [Index](SYS-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](SYS-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})

@@ -53,13 +53,13 @@ Comprehensive recovery procedures for the 7 most common ICON creation errors, ba
    grep "### Consumers" docs/ICON/ICON-XXX_*.md
 
    # Should show consumer list like:
-   # | TASKS-002 | Heartbeat Monitoring | Health check operations |
+   # | TASKS-02 | Heartbeat Monitoring | Health check operations |
    ```
 
 2. **Verify Consumer TASKS Exist**:
    ```bash
    # Check if listed TASKS files exist
-   ls docs/TASKS/TASKS-002.md docs/TASKS/TASKS-003.md
+   ls docs/TASKS/TASKS-02.md docs/TASKS/TASKS-03.md
    ```
 
 3. **Update Provider TASKS** (if missing section 8.1):
@@ -307,7 +307,7 @@ Comprehensive recovery procedures for the 7 most common ICON creation errors, ba
    ```python
    class MockProtocolName:
        """Mock ProtocolName for unit tests."""
-       # ... (copy from similar ICON like ICON-001)
+       # ... (copy from similar ICON like ICON-01)
    ```
    \`\`\`
 
@@ -459,7 +459,7 @@ Comprehensive recovery procedures for the 7 most common ICON creation errors, ba
    ```
 
 3. **Reference Similar ICON**:
-   - ICON-001: Protocol latencies (connect/disconnect)
+   - ICON-01: Protocol latencies (connect/disconnect)
    - ICON-005: State machine transitions
    - ICON-006: Monitoring intervals
 

@@ -27,7 +27,7 @@ custom_fields:
 ## Purpose
 
 - Central index for formal requirements documents
-- Tracks allocation and sequencing for `REQ-NNN_{slug}.md` files
+- Tracks allocation and sequencing for `REQ-NN_{slug}.md` files
 - Provides quick navigation to all framework and project requirements
 
 ## Allocation Rules
@@ -58,9 +58,9 @@ custom_fields:
 
 | ID | Domain | File | Version | Description |
 |----|--------|------|---------|-------------|
-| REQ-001 | API | [examples/api/REQ-001_api_integration_example.md](examples/api/REQ-001_api_integration_example.md) | V2.1 | External API integration example |
-| REQ-002 | Data | [examples/data/REQ-002_data_validation_example.md](examples/data/REQ-002_data_validation_example.md) | V2 | Data validation pipeline example |
-| REQ-003 | Auth | [examples/auth/REQ-003_access_control_example.md](examples/auth/REQ-003_access_control_example.md) | V2 | RBAC access control example |
+| REQ-01 | API | [examples/api/REQ-01_api_integration_example.md](examples/api/REQ-01_api_integration_example.md) | V2.1 | External API integration example |
+| REQ-02 | Data | [examples/data/REQ-02_data_validation_example.md](examples/data/REQ-02_data_validation_example.md) | V2 | Data validation pipeline example |
+| REQ-03 | Auth | [examples/auth/REQ-03_access_control_example.md](examples/auth/REQ-03_access_control_example.md) | V2 | RBAC access control example |
 
 ---
 

@@ -73,10 +73,10 @@ Use `doc-spec` when:
 
 **Structure**:
 ```yaml
-# SPEC-NNN: [Specification Title]
+# SPEC-NN: [Specification Title]
 
 metadata:
-  spec_id: SPEC-001
+  spec_id: SPEC-01
   title: "Order Validation Service Specification"
   version: "1.0.0"
   created_date: "2025-01-15"
@@ -93,14 +93,14 @@ cumulative_tags:
   sys: ["SYS.01.25.01"]
   req: ["REQ.01.26.01"]
   impl: ["IMPL.01.28.01"]  # optional
-  contracts: ["CTR-001"]  # optional
+  contracts: ["CTR-01"]  # optional
 
 overview:
   purpose: "Define trade order validation service implementation"
   scope: "Validate trade orders against position limits and business rules"
   requirements:
-    - "REQ-risk-limits-001"
-    - "REQ-risk-limits-002"
+    - "REQ-risk-limits-01"
+    - "REQ-risk-limits-02"
 
 architecture:
   pattern: "layered"
@@ -119,16 +119,16 @@ interfaces:
   api_endpoints:
     - endpoint: "/api/v1/trades/validate"
       method: "POST"
-      contract_ref: "CTR-001"
+      contract_ref: "CTR-01"
       authentication: "Bearer token"
       rate_limit: 100
       rate_limit_window: "1min"
 
   data_models:
     - model: "TradeOrderRequest"
-      schema_ref: "CTR-001#/components/schemas/TradeOrderRequest"
+      schema_ref: "CTR-01#/components/schemas/TradeOrderRequest"
     - model: "ValidationResponse"
-      schema_ref: "CTR-001#/components/schemas/ValidationResponse"
+      schema_ref: "CTR-01#/components/schemas/ValidationResponse"
 
 implementation:
   modules:
@@ -227,16 +227,16 @@ monitoring:
 
 traceability:
   upstream_sources:
-    - artifact: "BRD-001"
+    - artifact: "BRD-01"
       sections: ["section-3"]
-    - artifact: "PRD-001"
+    - artifact: "PRD-01"
       sections: ["feature-2"]
-    - artifact: "REQ-risk-limits-001"
+    - artifact: "REQ-risk-limits-01"
       sections: ["all"]
 
   downstream_artifacts:
-    - "TASKS-001"
-    - "IPLAN-001"
+    - "TASKS-01"
+    - "IPLAN-01"
     - "Code: src/services/trade_validator.py"
 ```
 
@@ -271,7 +271,7 @@ cumulative_tags:
   sys: ["SYS.01.25.01", "SYS.01.25.07"]
   req: ["REQ.01.26.01"]
   impl: ["IMPL.01.28.01"]  # optional - omit if Layer 8 skipped
-  contracts: ["CTR-001"]  # optional - omit if Layer 9 skipped
+  contracts: ["CTR-01"]  # optional - omit if Layer 9 skipped
 ```
 
 **Tag Count**: 7-9 tags (minimum 7 if IMPL/CTR skipped, 9 if both included)
@@ -286,12 +286,12 @@ interfaces:
   api_endpoints:
     - endpoint: "/api/v1/trades/validate"
       method: "POST"
-      contract_ref: "CTR-001"  # Link to contract
+      contract_ref: "CTR-01"  # Link to contract
       contract_path: "#/paths/~1api~1v1~1trades~1validate/post"  # JSON Pointer
 
   data_models:
     - model: "TradeOrderRequest"
-      schema_ref: "CTR-001#/components/schemas/TradeOrderRequest"
+      schema_ref: "CTR-01#/components/schemas/TradeOrderRequest"
 ```
 
 ### 5. Implementation Readiness
@@ -314,8 +314,8 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
@@ -325,7 +325,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
@@ -362,7 +362,7 @@ cumulative_tags:
   sys: ["SYS.01.25.01"]
   req: ["REQ.01.26.01"]
   impl: ["IMPL.01.28.01"]
-  contracts: ["CTR-001"]
+  contracts: ["CTR-01"]
 ```
 
 ## Upstream/Downstream Artifacts
@@ -384,8 +384,8 @@ cumulative_tags:
 - **Code** (Layer 13) - Implementation
 
 **Same-Type Document Relationships** (conditional):
-- `@related-spec: SPEC-NNN` - SPECs sharing implementation context
-- `@depends-spec: SPEC-NNN` - SPEC that must be implemented first
+- `@related-spec: SPEC-NN` - SPECs sharing implementation context
+- `@depends-spec: SPEC-NN` - SPEC that must be implemented first
 
 ## Creation Process
 
@@ -399,9 +399,9 @@ Check `docs/SPEC/` for next available ID number (or create `docs/SPEC/` director
 
 ### Step 3: Create SPEC File
 
-**File naming**: `docs/SPEC/SPEC-NNN_{slug}.yaml`
+**File naming**: `docs/SPEC/SPEC-NN_{slug}.yaml`
 
-**Example**: `docs/SPEC/SPEC-001_trade_validation.yaml`
+**Example**: `docs/SPEC/SPEC-01_trade_validation.yaml`
 
 **IMPORTANT**: Pure YAML format (NOT markdown)
 
@@ -463,16 +463,16 @@ Upstream sources and downstream artifacts.
 
 ```bash
 # YAML validation
-yamllint docs/SPEC/SPEC-001_*.yaml
+yamllint docs/SPEC/SPEC-01_*.yaml
 
 # Schema validation (use SPEC_SCHEMA.yaml as reference)
 # Manual: Compare against ai_dev_flow/SPEC/SPEC_SCHEMA.yaml structure
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact SPEC-001 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact SPEC-01 --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts --strict
 
 # Cross-document validation
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-001_*.yaml
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-01_*.yaml
 ```
 
 ### Step 18: Commit Changes
@@ -485,19 +485,19 @@ Commit SPEC file and traceability matrix.
 
 ```bash
 # YAML validation
-yamllint docs/SPEC/SPEC-001_*.yaml
+yamllint docs/SPEC/SPEC-01_*.yaml
 
 # Schema validation (use SPEC_SCHEMA.yaml as reference)
 # Manual: Compare against ai_dev_flow/SPEC/SPEC_SCHEMA.yaml structure
 
 # Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --artifact SPEC-001 \
+  --artifact SPEC-01 \
   --expected-layers brd,prd,ears,bdd,adr,sys,req,impl,contracts \
   --strict
 
 # Cross-document validation
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-001_*.yaml
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-01_*.yaml
 ```
 
 ### Manual Checklist
@@ -546,7 +546,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-NNN_slug.yaml --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-NN_slug.yaml --auto-fix
 
 # Layer validation (Phase 2) - run when all SPEC documents complete
 python ai_dev_flow/scripts/validate_cross_document.py --layer SPEC --auto-fix
@@ -563,7 +563,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer SPEC --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing upstream tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

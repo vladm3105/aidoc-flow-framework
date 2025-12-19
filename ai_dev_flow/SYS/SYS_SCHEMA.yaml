@@ -96,7 +96,7 @@ structure:
   required_sections:
     - pattern: "^# SYS-\\d{3}:"
       name: "Title (H1)"
-      description: "Single H1 with format SYS-NNN: Title"
+      description: "Single H1 with format SYS-NN: Title"
 
     - pattern: "^## 1\\. Document Control$"
       name: "Document Control"
@@ -192,7 +192,7 @@ structure:
   # File naming convention
   file_naming:
     pattern: "^SYS-\\d{3}_[a-z0-9_]+\\.md$"
-    description: "Format: SYS-NNN_descriptive_name.md"
+    description: "Format: SYS-NN_descriptive_name.md"
 
 # =============================================================================
 # SYS-Specific Patterns
@@ -328,7 +328,7 @@ validation_rules:
     - rule: "Document Control must have minimum 8 fields"
       severity: error
 
-    - rule: "File name must match SYS-NNN_name.md format"
+    - rule: "File name must match SYS-NN_name.md format"
       severity: warning
 
   # Content validation
@@ -364,7 +364,7 @@ traceability:
       - "@prd: PRD.NN.07.SS"
       - "@ears: EARS.NN.24.SS"
       - "@bdd: BDD.NN.13.SS"
-      - "@adr: ADR-NNN"
+      - "@adr: ADR-NN"
     description: "Layer 6 requires @brd, @prd, @ears, @bdd, @adr tags for complete traceability (4-segment format)"
 
   upstream:
@@ -382,25 +382,25 @@ traceability:
         format: "@bdd: BDD.NN.13.SS"
         location: "Section 13 Traceability or Traceability Tags section"
       - type: ADR
-        format: "@adr: ADR-NNN"
+        format: "@adr: ADR-NN"
         location: "Section 13 Traceability or Traceability Tags section"
 
   downstream:
     expected:
       - type: REQ
-        format: "REQ-NNN"
+        format: "REQ-NN"
       - type: SPEC
-        format: "SPEC-NNN"
+        format: "SPEC-NN"
       - type: TASKS
-        format: "TASKS-NNN"
+        format: "TASKS-NN"
 
   same_type:
     optional:
       - type: SYS
-        format: "@related-sys: SYS-NNN"
+        format: "@related-sys: SYS-NN"
         description: "Related SYS document sharing system context"
       - type: SYS
-        format: "@depends-sys: SYS-NNN"
+        format: "@depends-sys: SYS-NN"
         description: "Prerequisite SYS document"
 
 # =============================================================================
@@ -420,7 +420,7 @@ error_messages:
   SYS-E010: "Missing Functional Requirements section (Section 4)"
   SYS-E011: "Missing Quality Attributes section (Section 5)"
   SYS-E012: "Missing Traceability section (Section 13)"
-  SYS-E013: "File name does not match SYS-NNN_name.md format"
+  SYS-E013: "File name does not match SYS-NN_name.md format"
   SYS-W001: "Functional requirements not using FR-NNN format"
   SYS-W002: "Quality attributes not using 4-segment numbering (e.g., SYS.08.25.15)"
   SYS-W003: "Quality attributes section missing Performance category"

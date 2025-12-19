@@ -60,7 +60,7 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 ### Pattern
 
 ```regex
-^TASKS-[0-9]{3,4}_[a-z0-9_]+_tasks\.md$
+^TASKS-[0-9]{2,}_[a-z0-9_]+_tasks\.md$
 ```
 
 ### Rules
@@ -68,7 +68,7 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 | Rule | Check | Error Level |
 |------|-------|-------------|
 | TASKS prefix | Must start with "TASKS-" | ERROR |
-| ID format | NNN or NNNN digits | ERROR |
+| ID format | NN or NNN digits | ERROR |
 | Slug format | lowercase, underscores only | ERROR |
 | _tasks suffix | Must end with "_tasks" | ERROR |
 | Extension | .md only | ERROR |
@@ -77,11 +77,11 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 
 | Filename | Valid | Reason |
 |----------|-------|--------|
-| `TASKS-001_gateway_service_tasks.md` | ✅ | Correct format |
+| `TASKS-01_gateway_service_tasks.md` | ✅ | Correct format |
 | `tasks-001_gateway_service_tasks.md` | ❌ | Lowercase prefix |
 | `TASKS-1_gateway_service_tasks.md` | ❌ | Single digit ID |
-| `TASKS-001_gateway_service.md` | ❌ | Missing _tasks suffix |
-| `TASKS-001-gateway-service-tasks.md` | ❌ | Hyphens in slug |
+| `TASKS-01_gateway_service.md` | ❌ | Missing _tasks suffix |
+| `TASKS-01-gateway-service-tasks.md` | ❌ | Hyphens in slug |
 
 ---
 
@@ -91,11 +91,11 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 
 | Field | Type | Required | Validation |
 |-------|------|----------|------------|
-| title | string | Yes | Must match "TASKS-NNN: [Name]" |
+| title | string | Yes | Must match "TASKS-NN: [Name]" |
 | tags | array | Yes | Must include layer-11-artifact |
 | custom_fields.artifact_type | string | Yes | Must equal "TASKS" |
 | custom_fields.layer | integer | Yes | Must equal 11 |
-| custom_fields.parent_spec | string | Yes | SPEC-NNN format |
+| custom_fields.parent_spec | string | Yes | SPEC-NN format |
 
 ### Validation Script
 
@@ -124,13 +124,13 @@ fi
 
 | Field | Required | Format |
 |-------|----------|--------|
-| TASKS ID | Yes | TASKS-NNN |
+| TASKS ID | Yes | TASKS-NN |
 | Title | Yes | Non-empty string |
 | Status | Yes | Draft/Ready/In Progress/Completed |
 | Version | Yes | X.Y.Z (semantic) |
 | Created | Yes | YYYY-MM-DD |
 | Author | Yes | Non-empty string |
-| Parent SPEC | Yes | SPEC-NNN |
+| Parent SPEC | Yes | SPEC-NN |
 | Complexity | Yes | 1-5 integer |
 
 ### Validation Rules
@@ -282,18 +282,18 @@ fi
 | @prd | Yes | PRD.NN.EE.SS |
 | @ears | Yes | EARS.NN.EE.SS |
 | @bdd | Yes | BDD.NN.EE.SS |
-| @adr | Yes | ADR-NNN |
+| @adr | Yes | ADR-NN |
 | @sys | Yes | SYS.NN.EE.SS |
 | @req | Yes | REQ.NN.EE.SS |
-| @spec | Yes | SPEC-NNN |
+| @spec | Yes | SPEC-NN |
 
 ### Optional Tags
 
 | Tag | Required | Format |
 |-----|----------|--------|
-| @impl | Conditional | IMPL-NNN (if project uses IMPL) |
-| @ctr | Conditional | CTR-NNN (if contracts defined) |
-| @icon | Conditional | ICON-NNN:ContractName |
+| @impl | Conditional | IMPL-NN (if project uses IMPL) |
+| @ctr | Conditional | CTR-NN (if contracts defined) |
+| @icon | Conditional | ICON-NN:ContractName |
 
 ### Validation Commands
 
@@ -350,10 +350,10 @@ fi
 
 | Link Type | Validation | Error Level |
 |-----------|------------|-------------|
-| SPEC references | SPEC-NNN file exists | ERROR |
-| BDD references | BDD-NNN file exists | WARNING |
-| REQ references | REQ-NNN file exists | WARNING |
-| ICON references | ICON-NNN file exists | ERROR |
+| SPEC references | SPEC-NN file exists | ERROR |
+| BDD references | BDD-NN file exists | WARNING |
+| REQ references | REQ-NN file exists | WARNING |
+| ICON references | ICON-NN file exists | ERROR |
 
 ### Validation Commands
 
@@ -410,8 +410,8 @@ done
 
 ```bash
 ./scripts/validate_tasks.sh --help
-./scripts/validate_tasks.sh --verbose TASKS-001.md
-./scripts/validate_tasks.sh --strict TASKS-001.md  # Treat warnings as errors
+./scripts/validate_tasks.sh --verbose TASKS-01.md
+./scripts/validate_tasks.sh --strict TASKS-01.md  # Treat warnings as errors
 ```
 
 ### Output Format
@@ -420,7 +420,7 @@ done
 =========================================
 TASKS Validation Report
 =========================================
-File: TASKS-001_gateway_service_tasks.md
+File: TASKS-01_gateway_service_tasks.md
 Version: 1.0.0
 
 CHECK 1: Filename Format
@@ -455,7 +455,36 @@ Result: PASSED WITH WARNINGS
 
 ---
 
-## 13. Common Validation Errors
+## 14. Element ID Format Compliance ⭐ NEW
+
+**Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
+**Type**: Error
+
+| Check | Pattern | Result |
+|-------|---------|--------|
+| Valid format | `TASKS.NN.TT.SS:` | ✅ Pass |
+| Removed pattern | `TASK-XXX` | ❌ Fail - use TASKS.NN.18.SS |
+| Removed pattern | `T-XXX` | ❌ Fail - use TASKS.NN.18.SS |
+
+**Regex**: `^###?\s+TASKS\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+**Common Element Types for TASKS**:
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Task | 18 | TASKS.02.18.01 |
+| Task Item | 30 | TASKS.02.30.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `TASK-XXX` → Use `TASKS.NN.18.SS`
+> - `T-XXX` → Use `TASKS.NN.18.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+
+**Fix**: Replace `### TASK-01: Implementation` with `### TASKS.02.18.01: Implementation`
+
+---
+
+## 15. Common Validation Errors
 
 ### Error: Missing Section 8
 
@@ -465,7 +494,7 @@ Result: PASSED WITH WARNINGS
 ### Error: Invalid Parent SPEC
 
 **Symptom**: "ERROR: Parent SPEC file not found"
-**Fix**: Verify SPEC-NNN exists in SPEC directory
+**Fix**: Verify SPEC-NN exists in SPEC directory
 
 ### Error: Empty Traceability Tags
 

@@ -140,7 +140,7 @@ find docs/SPEC/ -type f -name "*.yaml" -exec sed -i \
 **Traceability in Documents**:
 ```markdown
 **Regulatory Requirement**: regulatory Rule 15c3-5 (Market Access)
-**Compliance Control**: REG-regulatory-15c3-5-001
+**Compliance Control**: REG-regulatory-15c3-5-01
 ```
 
 ### compliance (Financial Industry Regulatory Authority)
@@ -296,9 +296,9 @@ mkdir -p work_plans              # Implementation plans (/save-plan output)
 ```
 docs/REQ/
 ├── risk/
-│   ├── REQ-001_resource_limit_enforcement.md
-│   ├── REQ-002_var_calculation_methodology.md
-│   ├── REQ-003_stress_test_scenarios.md
+│   ├── REQ-01_resource_limit_enforcement.md
+│   ├── REQ-02_var_calculation_methodology.md
+│   ├── REQ-03_stress_test_scenarios.md
 │   └── lim/
 │       ├── REQ-010_hard_limit_implementation.md
 │       └── REQ-011_soft_limit_warnings.md
@@ -345,9 +345,9 @@ docs/REQ/
 ```
 
 **Key Requirements**:
-- REQ-001: Pre-trade risk checks (regulatory 15c3-5)
-- REQ-002: Order validation and routing
-- REQ-003: Real-time market data ingestion
+- REQ-01: Pre-trade risk checks (regulatory 15c3-5)
+- REQ-02: Order validation and routing
+- REQ-03: Real-time market data ingestion
 - REQ-004: Execution algorithm (TWAP, VWAP, POV)
 - REQ-005: Post-trade TCA (Transaction Cost Analysis)
 
@@ -408,15 +408,15 @@ docs/REQ/
 ### Example REQ Document (Financial Services)
 
 ```markdown
-# REQ-003: resource limit Enforcement
+# REQ-03: resource limit Enforcement
 
-<a id="REQ-003"></a>
+<a id="REQ-03"></a>
 
 ## Document Control
 
 | Attribute | Value |
 |-----------|-------|
-| **ID** | REQ-003 |
+| **ID** | REQ-03 |
 | **Title** | resource limit Enforcement |
 | **Status** | Approved |
 | **Priority** | Critical |
@@ -445,17 +445,17 @@ Trading desks require real-time enforcement of resource limits to prevent excess
 
 ### Core Functionality
 
-**REQ-003-F1**: System SHALL enforce hard resource limits in real-time before order execution.
+**REQ-03-F1**: System SHALL enforce hard resource limits in real-time before order execution.
 
-**REQ-003-F2**: System SHALL generate soft limit warnings when position approaches threshold (configurable, default 80% of limit).
+**REQ-03-F2**: System SHALL generate soft limit warnings when position approaches threshold (configurable, default 80% of limit).
 
-**REQ-003-F3**: System SHALL support multiple limit types:
+**REQ-03-F3**: System SHALL support multiple limit types:
 - Per-symbol resource limits (shares/contracts)
 - Per-asset-class notional limits (USD exposure)
 - Per-strategy VaR limits (99% 1-day VaR)
 - regulatorytor exposure limits (percentage of NAV)
 
-**REQ-003-F4**: System SHALL allow authorized users (Risk Manager, Compliance Officer) to override limits with justification and audit trail.
+**REQ-03-F4**: System SHALL allow authorized users (Risk Manager, Compliance Officer) to override limits with justification and audit trail.
 
 ---
 
@@ -570,7 +570,7 @@ Trading desks require real-time enforcement of resource limits to prevent excess
 - `@adr: ADR-005`: Real-time risk architecture decision
 
 ### Downstream Dependencies
-- `@spec: SPEC-003`: resource limiter technical specification
+- `@spec: SPEC-03`: resource limiter technical specification
 - `@bdd: BDD.03.13.01`: resource limit acceptance tests
 
 ---
@@ -607,14 +607,14 @@ Trading desks require real-time enforcement of resource limits to prevent excess
 ### Downstream Artifacts
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| `@spec: SPEC-003` | Technical Specification | Implementation spec |
+| `@spec: SPEC-03` | Technical Specification | Implementation spec |
 | `@tasks: TASKS.03.29.01` | Implementation Tasks | AI generation tasks |
 | `@bdd: BDD.03.13.01` | BDD Scenarios | Acceptance tests |
 | `src/risk/resource_limiter.py` | Code | Implementation |
 | `tests/risk/test_resource_limits.py` | Tests | Unit tests |
 
 ### Primary Anchor/ID
-- **REQ-003**: resource limit enforcement requirement
+- **REQ-03**: resource limit enforcement requirement
 
 ### Regulatory References
 - **regulatory Rule 15c3-5(c)(1)(i)**: Pre-trade risk controls for order size and value
@@ -709,7 +709,7 @@ Trading desks require real-time enforcement of resource limits to prevent excess
 
 ---
 
-**End of REQ-003**
+**End of REQ-03**
 ```
 
 ---

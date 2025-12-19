@@ -224,15 +224,15 @@ skills:
 context:
   project_root: /path/to/project
   artifact_inventory:
-    BRD: [BRD-001, BRD-002]
-    PRD: [PRD-001]
+    BRD: [BRD-01, BRD-02]
+    PRD: [PRD-01]
     SPEC: []
   workflow_position:
     current_layer: 2
     completed_layers: [1]
     next_layers: [3, 4, 5]
   upstream_candidates:
-    - id: BRD-001
+    - id: BRD-01
       title: Platform Foundation
       relevance: high
   key_terms: [trading, risk, position]

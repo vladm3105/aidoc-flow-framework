@@ -158,7 +158,7 @@ structure:
   # File naming convention
   file_naming:
     pattern: "^BDD-\\d{3}_[a-z0-9_]+\\.feature$"
-    description: "Format: BDD-NNN_descriptive_name.feature"
+    description: "Format: BDD-NN_descriptive_name.feature"
 
 # =============================================================================
 # Gherkin Syntax Patterns
@@ -352,7 +352,7 @@ validation_rules:
     - rule: "At least one Scenario or Scenario Outline required"
       severity: error
 
-    - rule: "File name must match BDD-NNN_name.feature format"
+    - rule: "File name must match BDD-NN_name.feature format"
       severity: warning
 
   # Gherkin syntax validation
@@ -444,19 +444,19 @@ traceability:
   downstream:
     expected:
       - type: SYS
-        format: "SYS-NNN"
+        format: "SYS-NN"
       - type: REQ
-        format: "REQ-NNN"
+        format: "REQ-NN"
       - type: SPEC
-        format: "SPEC-NNN"
+        format: "SPEC-NN"
 
   same_type:
     optional:
       - type: BDD
-        format: "@related-bdd: BDD-NNN"
+        format: "@related-bdd: BDD-NN"
         description: "Related BDD feature sharing domain context"
       - type: BDD
-        format: "@depends-bdd: BDD-NNN"
+        format: "@depends-bdd: BDD-NN"
         description: "Prerequisite BDD feature"
 
 # =============================================================================
@@ -476,7 +476,7 @@ error_messages:
   BDD-E010: "Invalid step order: Given must precede When, When must precede Then"
   BDD-E011: "Scenario Outline missing Examples section"
   BDD-E012: "Examples table headers do not match placeholders"
-  BDD-E013: "File name does not match BDD-NNN_name.feature format"
+  BDD-E013: "File name does not match BDD-NN_name.feature format"
   BDD-E014: "BDD artifacts require @brd, @prd, and @ears traceability tags"
   BDD-E015: "ADR-Ready Score does not match document Status (>=90% requires Approved, 70-89% requires In Review, <70% requires Draft)"
   BDD-W001: "Feature missing user story (As a/I want/So that)"

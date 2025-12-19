@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: IPLAN-001 through IPLAN-NNN
+# Traceability Matrix: IPLAN-01 through IPLAN-NN
 
 ## Document Control
 
@@ -62,12 +62,12 @@ python scripts/generate_traceability_matrices.py --type iplan --output ai_dev_fl
 - `@prd: PRD.NN.EE.SS` (Product Requirements)
 - `@ears: EARS.NN.EE.SS` (Event-Action-Response)
 - `@bdd: BDD.NN.EE.SS` (Behavioral Scenarios)
-- `@adr: ADR-NNN` (Architecture Decisions)
+- `@adr: ADR-NN` (Architecture Decisions)
 - `@sys: SYS.NN.EE.SS` (System Requirements)
 - `@req: REQ.NN.EE.SS` (Atomic Requirements)
 - `@impl: IMPL.NN.EE.SS` (Implementation Plans - optional)
-- `@ctr: CTR-NNN` (Contracts - optional)
-- `@spec: SPEC-NNN` (Technical Specifications)
+- `@ctr: CTR-NN` (Contracts - optional)
+- `@spec: SPEC-NN` (Technical Specifications)
 - `@tasks: TASKS.NN.EE.SS` (Code Generation Plans)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete tag-based workflow.
@@ -135,8 +135,8 @@ This matrix tracks all iplan documents, mapping:
 - Prefix: `@` symbol
 - Artifact Type: lowercase (`brd`, `prd`, `ears`, `bdd`, `adr`, `sys`, `req`, `spec`, `tasks`)
 - Separator: colon `:` after artifact type, dot `.` between document ID and element ID
-- Document ID: Standard format (e.g., `IPLAN-NNN`)
-- Unified Element ID: `TYPE.NN.EE.SS` format (e.g., `BRD.09.01.15`)
+- Document ID: Standard format (e.g., `IPLAN-NN`)
+- Unified Element ID: `TYPE.NN.TT.SS` format (e.g., `BRD.09.01.15`)
 - Multiple Values: comma-separated for same artifact type
 
 ### 2.3 Example: IPLAN with Required Tags
@@ -170,7 +170,7 @@ This matrix tracks all iplan documents, mapping:
 ### 2.4 Validation Rules
 
 1. **Required**: Each IPLAN artifact MUST include at least one tag for each required layer
-2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NNN` format
+2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NN` format
 3. **Valid References**: All referenced documents and requirements must exist
 4. **No Gaps**: Cannot skip any required upstream layer in the chain
 5. **Tag Count**: Must have exactly 9-11 (includes all layers through @tasks) tags for Layer 12
@@ -214,10 +214,10 @@ All iplan documents MUST include these tags to maintain traceability chain:
 | @prd | 2 | Product Requirements | `@prd: PRD.NN.EE.SS` | [✅/❌] |
 | @ears | 3 | Event-Action-Response | `@ears: EARS.NN.EE.SS` | [✅/❌] |
 | @bdd | 4 | Behavioral Scenarios | `@bdd: BDD.NN.EE.SS` | [✅/❌] |
-| @adr | 5 | Architecture Decisions | `@adr: ADR-NNN` | [✅/❌] |
+| @adr | 5 | Architecture Decisions | `@adr: ADR-NN` | [✅/❌] |
 | @sys | 6 | System Requirements | `@sys: SYS.NN.EE.SS` | [✅/❌] |
 | @req | 7 | Atomic Requirements | `@req: REQ.NN.EE.SS` | [✅/❌] |
-| @spec | 10 | Technical Specifications | `@spec: SPEC-NNN` | [✅/❌] |
+| @spec | 10 | Technical Specifications | `@spec: SPEC-NN` | [✅/❌] |
 | @tasks | 11 | Code Generation Plans | `@tasks: TASKS.NN.EE.SS` | [✅/❌] |
 
 ### 3.2 Optional Tags (Conditional)
@@ -225,23 +225,23 @@ All iplan documents MUST include these tags to maintain traceability chain:
 | Tag | Layer | Artifact Type | Format | Required If... |
 |-----|-------|---------------|--------|----------------|
 | @impl | 8 | Implementation Plans | `@impl: IMPL.NN.EE.SS` | Project uses IMPL artifacts |
-| @ctr | 9 | Interface Contracts | `@ctr: CTR-NNN` | Contracts defined in project |
+| @ctr | 9 | Interface Contracts | `@ctr: CTR-NN` | Contracts defined in project |
 
 ### 3.3 Tag Format Validation
 
-**Standard Format**: `@artifact-type: TYPE.NN.EE.SS (Unified Feature ID)`
+**Standard Format**: `@artifact-type: TYPE.NN.TT.SS (Unified Feature ID)`
 
 **Format Rules**:
 1. Lowercase artifact type (e.g., `@brd`, not `@BRD`)
-2. Uppercase document ID with hyphens (e.g., `BRD-001`, not `brd_001`)
+2. Uppercase document ID with hyphens (e.g., `BRD-01`, not `brd_001`)
 3. Colon separator with space after artifact type
 4. Requirement ID or section after document ID (optional for some types)
 
 **Examples**:
 ```markdown
 ✅ Correct: @brd: BRD.01.01.42
-✅ Correct: @adr: ADR-002
-✅ Correct: @spec: SPEC-001
+✅ Correct: @adr: ADR-02
+✅ Correct: @spec: SPEC-01
 ✅ Correct: @tasks: TASKS.01.29.01
 
 ❌ Wrong: @BRD: brd.01.01.42 (case incorrect)
@@ -263,7 +263,7 @@ All iplan documents MUST include these tags to maintain traceability chain:
 **Validation Commands**:
 ```bash
 # Validate single iplan document
-python scripts/validate_tags_against_docs.py --file IPLAN/IPLAN-001_*.md
+python scripts/validate_tags_against_docs.py --file IPLAN/IPLAN-01_*.md
 
 # Validate all iplan documents
 for file in IPLAN/IPLAN-*.md; do
@@ -280,9 +280,9 @@ python scripts/generate_tag_coverage_report.py --artifact-type iplan
 
 | ID | Title | Status | Parent TASKS | Tag Compliance | Estimated Effort | Actual Effort | Date | Upstream Tags | Downstream Artifacts |
 |----|-------|--------|--------------|----------------|------------------|---------------|------|---------------|---------------------|
-| IPLAN-001 | [Implementation plan title] | Completed | TASKS-001 | ✅ 9/9 | 80h | 85h | YYYY-MM-DD | All 9 tags verified | Code: src/service.py, Tests: tests/test_service.py |
-| IPLAN-002 | [Implementation plan title] | In Progress | TASKS-002 | ✅ 11/11 | 40h | 25h (partial) | YYYY-MM-DD | All 11 tags verified | Code: src/feature.py |
-| IPLAN-NNN | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| IPLAN-01 | [Implementation plan title] | Completed | TASKS-01 | ✅ 9/9 | 80h | 85h | YYYY-MM-DD | All 9 tags verified | Code: src/service.py, Tests: tests/test_service.py |
+| IPLAN-02 | [Implementation plan title] | In Progress | TASKS-02 | ✅ 11/11 | 40h | 25h (partial) | YYYY-MM-DD | All 11 tags verified | Code: src/feature.py |
+| IPLAN-NN | ... | ... | ... | ... | ... | ... | ... | ... | ... |
 
 **Status Legend**:
 - **Draft**: Document created, not started
@@ -308,9 +308,9 @@ python scripts/generate_tag_coverage_report.py --artifact-type iplan
 
 | iplan ID | @brd | @prd | @ears | @bdd | @adr | @sys | @req | @impl | @ctr | @spec | @tasks | Tag Completeness |
 |---------------|------|------|-------|------|------|------|------|-------|------|-------|--------|------------------|
-| IPLAN-001 | ✅ BRD-001 | ✅ PRD-001 | ✅ EARS-001 | ✅ BDD-001 | ✅ ADR-002 | ✅ SYS-002 | ✅ REQ-001 | ✅ IMPL-001 | ✅ CTR-001 | ✅ SPEC-001 | ✅ TASKS-001 | 11/11 ✅ |
-| IPLAN-002 | ✅ BRD-001 | ✅ PRD-001 | ✅ EARS-001 | ✅ BDD-002 | ✅ ADR-003 | ✅ SYS-002 | ✅ REQ-002 | - | - | ✅ SPEC-002 | ✅ TASKS-002 | 9/9 ✅ |
-| IPLAN-NNN | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| IPLAN-01 | ✅ BRD-01 | ✅ PRD-01 | ✅ EARS-01 | ✅ BDD-01 | ✅ ADR-02 | ✅ SYS-02 | ✅ REQ-01 | ✅ IMPL-01 | ✅ CTR-01 | ✅ SPEC-01 | ✅ TASKS-01 | 11/11 ✅ |
+| IPLAN-02 | ✅ BRD-01 | ✅ PRD-01 | ✅ EARS-01 | ✅ BDD-02 | ✅ ADR-03 | ✅ SYS-02 | ✅ REQ-02 | - | - | ✅ SPEC-02 | ✅ TASKS-02 | 9/9 ✅ |
+| IPLAN-NN | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
 
 **Validation Status**:
 - ✅ Green: Tag present and document verified
@@ -321,9 +321,9 @@ python scripts/generate_tag_coverage_report.py --artifact-type iplan
 
 | TASKS ID | TASKS Title | iplan IDs | iplan Titles | Relationship |
 |----------|------------|-----------------|-------------------|--------------|
-| TASKS-001 | [Code generation plan] | IPLAN-001, IPLAN-002 | [Implementation plans] | 1:N mapping: TASKS may have multiple IPLAN (sessions) |
-| TASKS-002 | [Code generation plan] | IPLAN-003 | [Implementation plan] | 1:1 mapping: Single session implementation |
-| TASKS-NNN | ... | ... | ... | ... |
+| TASKS-01 | [Code generation plan] | IPLAN-01, IPLAN-02 | [Implementation plans] | 1:N mapping: TASKS may have multiple IPLAN (sessions) |
+| TASKS-02 | [Code generation plan] | IPLAN-03 | [Implementation plan] | 1:1 mapping: Single session implementation |
+| TASKS-NN | ... | ... | ... | ... |
 
 ### 5.3 Upstream Source Summary
 
@@ -345,39 +345,39 @@ python scripts/generate_tag_coverage_report.py --artifact-type iplan
 
 | iplan ID | BRD Exists | PRD Exists | EARS Exists | BDD Exists | ADR Exists | SYS Exists | REQ Exists | SPEC Exists | TASKS Exists | Overall Status |
 |---------------|-----------|-----------|------------|-----------|-----------|-----------|-----------|------------|-------------|---------------|
-| IPLAN-001 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ Valid |
-| IPLAN-002 | ✅ | ✅ | ✅ | ⚠️ Not Found | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ Incomplete |
-| IPLAN-NNN | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| IPLAN-01 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ Valid |
+| IPLAN-02 | ✅ | ✅ | ✅ | ⚠️ Not Found | ✅ | ✅ | ✅ | ✅ | ✅ | ⚠️ Incomplete |
+| IPLAN-NN | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
 
 ---
 
 ## 7. Downstream Traceability (OPTIONAL)
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
 
 ### 6.1 iplan → Code Traceability
 
 | iplan ID | iplan Title | Code Files | Modules/Classes | LOC | Relationship |
 |---------------|------------------|------------|-----------------|-----|--------------|
-| IPLAN-001 | [Implementation plan] | src/[project_module]/gateway/service.py | ServiceConnectionService | 450 | Direct implementation from plan |
-| IPLAN-002 | [Implementation plan] | src/[project_module]/gateway/retry.py, src/[project_module]/gateway/circuit_breaker.py | RetryHandler, CircuitBreaker | 320 | Multi-module implementation |
-| IPLAN-NNN | ... | ... | ... | ... | ... |
+| IPLAN-01 | [Implementation plan] | src/[project_module]/gateway/service.py | ServiceConnectionService | 450 | Direct implementation from plan |
+| IPLAN-02 | [Implementation plan] | src/[project_module]/gateway/retry.py, src/[project_module]/gateway/circuit_breaker.py | RetryHandler, CircuitBreaker | 320 | Multi-module implementation |
+| IPLAN-NN | ... | ... | ... | ... | ... |
 
 ### 6.2 iplan → Tests Traceability
 
 | iplan ID | iplan Title | Test Files | Test Functions | Coverage % | Relationship |
 |---------------|------------------|------------|----------------|------------|--------------|
-| IPLAN-001 | [Implementation plan] | tests/unit/test_service.py | test_connect(), test_disconnect(), ... | 95% | Tests implemented per plan |
-| IPLAN-002 | [Implementation plan] | tests/integration/test_retry.py | test_retry_logic(), ... | 85% | Integration tests verified |
-| IPLAN-NNN | ... | ... | ... | ... | ... |
+| IPLAN-01 | [Implementation plan] | tests/unit/test_service.py | test_connect(), test_disconnect(), ... | 95% | Tests implemented per plan |
+| IPLAN-02 | [Implementation plan] | tests/integration/test_retry.py | test_retry_logic(), ... | 85% | Integration tests verified |
+| IPLAN-NN | ... | ... | ... | ... | ... |
 
 ### 6.3 iplan → Deployment Artifacts Traceability
 
 | iplan ID | Deployment Files | Configuration | Infrastructure | CI/CD Pipeline |
 |---------------|------------------|---------------|----------------|----------------|
-| IPLAN-001 | docker/gateway.Dockerfile | config/gateway.yaml | terraform/gateway.tf | .github/workflows/gateway-ci.yml |
-| IPLAN-002 | - | config/retry.yaml | - | - |
-| IPLAN-NNN | ... | ... | ... | ... |
+| IPLAN-01 | docker/gateway.Dockerfile | config/gateway.yaml | terraform/gateway.tf | .github/workflows/gateway-ci.yml |
+| IPLAN-02 | - | config/retry.yaml | - | - |
+| IPLAN-NN | ... | ... | ... | ... |
 
 ---
 
@@ -387,8 +387,8 @@ python scripts/generate_tag_coverage_report.py --artifact-type iplan
 
 | iplan ID | Missing Mandatory Tags | Missing Optional Tags | Action Required |
 |---------------|----------------------|----------------------|-----------------|
-| IPLAN-002 | None | @impl, @ctr | Add optional tags if project uses IMPL/CTR |
-| IPLAN-NNN | ... | ... | ... |
+| IPLAN-02 | None | @impl, @ctr | Add optional tags if project uses IMPL/CTR |
+| IPLAN-NN | ... | ... | ... |
 
 **Status**:
 - ✅ All iplan have 9 mandatory tags
@@ -399,9 +399,9 @@ python scripts/generate_tag_coverage_report.py --artifact-type iplan
 
 | iplan ID | Layer 1 (BRD) | Layer 2 (PRD) | Layer 3 (EARS) | Layer 4 (BDD) | Layer 5 (ADR) | Layer 6 (SYS) | Layer 7 (REQ) | Layer 10 (SPEC) | Layer 11 (TASKS) | Coverage % |
 |---------------|--------------|--------------|---------------|--------------|--------------|--------------|--------------|----------------|----------------|------------|
-| IPLAN-001 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 100% |
-| IPLAN-002 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 100% |
-| IPLAN-NNN | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| IPLAN-01 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 100% |
+| IPLAN-02 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 100% |
+| IPLAN-NN | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
 
 **Target**: 100% of iplan documents have 100% tag coverage
 
@@ -409,9 +409,9 @@ python scripts/generate_tag_coverage_report.py --artifact-type iplan
 
 | iplan ID | Upstream Links Valid | Downstream Links Valid | Bidirectional Status |
 |---------------|---------------------|----------------------|---------------------|
-| IPLAN-001 | ✅ All 9 tags resolve | ✅ Code files reference | ✅ Complete |
-| IPLAN-002 | ⚠️ BDD-002 not found | ✅ Code files reference | ⚠️ Incomplete |
-| IPLAN-NNN | ... | ... | ... |
+| IPLAN-01 | ✅ All 9 tags resolve | ✅ Code files reference | ✅ Complete |
+| IPLAN-02 | ⚠️ BDD-02 not found | ✅ Code files reference | ⚠️ Incomplete |
+| IPLAN-NN | ... | ... | ... |
 
 ---
 
@@ -421,9 +421,9 @@ python scripts/generate_tag_coverage_report.py --artifact-type iplan
 
 | iplan ID | Phases | Estimated Effort | Actual Effort | Variance | Variance % | Status |
 |---------------|--------|------------------|---------------|----------|------------|--------|
-| IPLAN-001 | 4 | 80h | 85h | +5h | +6.25% | Completed |
-| IPLAN-002 | 4 | 40h | 25h (partial) | -15h | -37.5% | In Progress |
-| IPLAN-NNN | ... | ... | ... | ... | ... | ... |
+| IPLAN-01 | 4 | 80h | 85h | +5h | +6.25% | Completed |
+| IPLAN-02 | 4 | 40h | 25h (partial) | -15h | -37.5% | In Progress |
+| IPLAN-NN | ... | ... | ... | ... | ... | ... |
 
 **Summary**:
 - Total Estimated: [XXX] hours
@@ -434,17 +434,17 @@ python scripts/generate_tag_coverage_report.py --artifact-type iplan
 
 | iplan ID | Unit Tests | Integration Tests | BDD Tests | Total Coverage % | Target % | Met Target |
 |---------------|------------|-------------------|-----------|------------------|----------|------------|
-| IPLAN-001 | 95% | 90% | 100% | 95% | 85% | ✅ Yes |
-| IPLAN-002 | 80% | 75% | 90% | 82% | 85% | ⚠️ Close |
-| IPLAN-NNN | ... | ... | ... | ... | ... | ... |
+| IPLAN-01 | 95% | 90% | 100% | 95% | 85% | ✅ Yes |
+| IPLAN-02 | 80% | 75% | 90% | 82% | 85% | ⚠️ Close |
+| IPLAN-NN | ... | ... | ... | ... | ... | ... |
 
 ### 8.3 Phase Completion Metrics
 
 | iplan ID | Total Phases | Completed | In Progress | Pending | Blocked | Completion % |
 |---------------|--------------|-----------|-------------|---------|---------|--------------|
-| IPLAN-001 | 4 | 4 | 0 | 0 | 0 | 100% |
-| IPLAN-002 | 4 | 2 | 1 | 1 | 0 | 50% |
-| IPLAN-NNN | ... | ... | ... | ... | ... | ... |
+| IPLAN-01 | 4 | 4 | 0 | 0 | 0 | 100% |
+| IPLAN-02 | 4 | 2 | 1 | 1 | 0 | 50% |
+| IPLAN-NN | ... | ... | ... | ... | ... | ... |
 
 ---
 
@@ -456,12 +456,12 @@ python scripts/generate_tag_coverage_report.py --artifact-type iplan
 gantt
     title iplan Implementation Timeline
     dateFormat YYYY-MM-DD
-    section IPLAN-001
+    section IPLAN-01
     Phase 1: Foundation    :done, p1, 2025-11-10, 2d
     Phase 2: Implementation:done, p2, after p1, 5d
     Phase 3: Testing       :done, p3, after p2, 3d
     Phase 4: QA            :done, p4, after p3, 2d
-    section IPLAN-002
+    section IPLAN-02
     Phase 1: Foundation    :done, p5, 2025-11-18, 1d
     Phase 2: Implementation:active, p6, after p5, 4d
     Phase 3: Testing       :p7, after p6, 2d
@@ -475,10 +475,10 @@ gantt
 | Status | Count | Percentage | iplan IDs |
 |--------|-------|------------|----------------|
 | Draft | 0 | 0% | - |
-| Ready for Implementation | 1 | 20% | IPLAN-003 |
-| In Progress | 2 | 40% | IPLAN-002, IPLAN-004 |
+| Ready for Implementation | 1 | 20% | IPLAN-03 |
+| In Progress | 2 | 40% | IPLAN-02, IPLAN-004 |
 | Blocked | 0 | 0% | - |
-| Completed | 2 | 40% | IPLAN-001, IPLAN-005 |
+| Completed | 2 | 40% | IPLAN-01, IPLAN-005 |
 | On Hold | 0 | 0% | - |
 
 ---
@@ -487,8 +487,8 @@ gantt
 
 ```mermaid
 graph TD
-    TASKS001[TASKS-001: Gateway Connection] --> TP001[IPLAN-001: Implement Gateway]
-    TASKS002[TASKS-002: Retry Logic] --> TP002[IPLAN-002: Implement Retry]
+    TASKS001[TASKS-01: Gateway Connection] --> TP001[IPLAN-01: Implement Gateway]
+    TASKS002[TASKS-02: Retry Logic] --> TP002[IPLAN-02: Implement Retry]
 
     TP001 --> Code1[src/gateway/service.py]
     TP001 --> Tests1[tests/test_service.py]
@@ -514,9 +514,9 @@ graph TD
 
 | Source iplan | Target iplan | Dependency Type | Description |
 |-------------------|-------------------|-----------------|-------------|
-| IPLAN-001 | IPLAN-002 | Prerequisite | Gateway service must be implemented before retry logic |
-| IPLAN-003 | IPLAN-001 | Uses | Circuit breaker uses gateway connection |
-| IPLAN-NNN | ... | ... | ... |
+| IPLAN-01 | IPLAN-02 | Prerequisite | Gateway service must be implemented before retry logic |
+| IPLAN-03 | IPLAN-01 | Uses | Circuit breaker uses gateway connection |
+| IPLAN-NN | ... | ... | ... |
 
 ---
 
@@ -529,7 +529,7 @@ graph TD
 **Usage**:
 ```bash
 # Validate single document
-python scripts/validate_tags_against_docs.py --file IPLAN/IPLAN-001_*.md
+python scripts/validate_tags_against_docs.py --file IPLAN/IPLAN-01_*.md
 
 # Validate all iplan
 for file in IPLAN/IPLAN-*.md; do

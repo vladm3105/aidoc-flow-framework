@@ -30,20 +30,20 @@ custom_fields:
 
 | ICON ID | Contract Name | Type | Status | Providers | Consumers | Created |
 |---------|---------------|------|--------|-----------|-----------|---------|
-| ICON-001 | [Example] | Protocol | Active | 1 | 5 | 2025-11-25 |
+| ICON-01 | [Example] | Protocol | Active | 1 | 5 | 2025-11-25 |
 
 ---
 
 ## Active Contracts
 
-### ICON-001: [Contract Name]
+### ICON-01: [Contract Name]
 
 **Status**: Active
 **Type**: [Protocol/Exception/State Machine/Data Model/DI Interface]
 **Purpose**: [Brief description]
 **Providers**: [TASKS-IDs]
 **Consumers**: [TASKS-IDs]
-**File**: [ICON-001_contract_name.md](./ICON-001_contract_name.md)
+**File**: [ICON-01_contract_name.md](./ICON-01_contract_name.md)
 **Created**: YYYY-MM-DD
 **Last Updated**: YYYY-MM-DD
 
@@ -79,12 +79,12 @@ custom_fields:
 
 ### File Naming Convention
 
-**Format**: `ICON-NNN_descriptive_name.md`
+**Format**: `ICON-NN_descriptive_name.md`
 
 **Examples**:
-- `ICON-001_gateway_connector_protocol.md`
-- `ICON-002_external_data_event_bus.md`
-- `ICON-003_order_execution_exceptions.md`
+- `ICON-01_gateway_connector_protocol.md`
+- `ICON-02_external_data_event_bus.md`
+- `ICON-03_order_execution_exceptions.md`
 
 ### Directory Location
 
@@ -103,18 +103,18 @@ custom_fields:
 
 **Contract Definition**:
 ```markdown
-@icon: ICON-001:GatewayConnector
+@icon: ICON-01:GatewayConnector
 ```
 
 **Provider TASKS**:
 ```markdown
-@icon: ICON-001:GatewayConnector
+@icon: ICON-01:GatewayConnector
 @icon-role: provider
 ```
 
 **Consumer TASKS**:
 ```markdown
-@icon: ICON-001:GatewayConnector
+@icon: ICON-01:GatewayConnector
 @icon-role: consumer
 ```
 
@@ -128,7 +128,7 @@ grep -r "@icon: ICON-" docs/
 ls -la docs/ICON/ICON-*.md
 
 # Verify provider/consumer pairs
-grep -A1 "@icon: ICON-001" docs/TASKS/
+grep -A1 "@icon: ICON-01" docs/TASKS/
 ```
 
 ---
@@ -139,7 +139,7 @@ grep -A1 "@icon: ICON-001" docs/TASKS/
 
 1. Verify criteria (5+ consumers, >500 lines, platform-level)
 2. Copy ICON-TEMPLATE.md
-3. Assign next available ICON-NNN ID
+3. Assign next available ICON-NN ID
 4. Complete contract definition
 5. Update this registry
 6. Notify provider and consumer TASKS owners

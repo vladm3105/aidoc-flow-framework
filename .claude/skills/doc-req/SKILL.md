@@ -124,7 +124,7 @@ SPEC-Ready Score = (Completed Sections / 12) × 100%
 
 **Format**: `REQ-domain-subdomain-NNN`
 
-**Example**: `REQ-risk-limits-001`, `REQ-api-auth-001`
+**Example**: `REQ-risk-limits-01`, `REQ-api-auth-001`
 
 **Benefits**:
 - Groups related requirements
@@ -148,7 +148,7 @@ SPEC-Ready Score = (Completed Sections / 12) × 100%
 ### Data Contracts
 **Input**: Trade order (symbol, quantity, price, account)
 **Output**: Validation result (pass/fail, error details)
-**Contract**: See CTR-001_trade_validation.yaml
+**Contract**: See CTR-01_trade_validation.yaml
 ```
 
 **Section 4: Data Schemas**
@@ -250,8 +250,8 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
@@ -261,7 +261,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
@@ -290,17 +290,17 @@ Examples:
 ```
 
 **Upstream Sources**:
-- [BRD-001](../BRD/BRD-001_platform.md#BRD-001)
-- [PRD-001](../PRD/PRD-001_integration.md#PRD-001)
-- [EARS-001](../EARS/EARS-001_risk.md#EARS-001)
-- [BDD-001](../BDD/BDD-001_limits.feature)
+- [BRD-01](../BRD/BRD-01_platform.md#BRD-01)
+- [PRD-01](../PRD/PRD-01_integration.md#PRD-01)
+- [EARS-01](../EARS/EARS-01_risk.md#EARS-01)
+- [BDD-01](../BDD/BDD-01_limits.feature)
 - [ADR-033](../ADR/ADR-033_database.md#ADR-033)
-- [SYS-001](../SYS/SYS-001_order.md#SYS-001)
+- [SYS-01](../SYS/SYS-01_order.md#SYS-01)
 
 **Downstream Artifacts**:
-- IMPL-NNN (to be created) - Implementation approach
-- CTR-NNN (to be created) - Data contracts
-- SPEC-NNN (to be created) - Technical specifications
+- IMPL-NN (to be created) - Implementation approach
+- CTR-NN (to be created) - Data contracts
+- SPEC-NN (to be created) - Technical specifications
 ```
 
 ## Upstream/Downstream Artifacts
@@ -320,8 +320,8 @@ Examples:
 - **Code** (Layer 13) - Implementation
 
 **Same-Type Document Relationships** (conditional):
-- `@related-req: REQ-NNN` - REQs sharing domain context
-- `@depends-req: REQ-NNN` - REQ that must be implemented first
+- `@related-req: REQ-NN` - REQs sharing domain context
+- `@depends-req: REQ-NN` - REQ that must be implemented first
 
 ## Creation Process
 
@@ -339,7 +339,7 @@ Check `ai_dev_flow/REQ/` for next available ID number.
 
 **Location**: `docs/REQ/REQ-{domain}-{subdomain}-NNN_{slug}.md` (flat structure, domain in filename)
 
-**Example**: `docs/REQ/REQ-risk-limits-001_position_validation.md`
+**Example**: `docs/REQ/REQ-risk-limits-01_position_validation.md`
 
 ### Step 4: Fill Document Control Section
 
@@ -379,9 +379,9 @@ Include all 6 upstream tags (@brd through @sys).
 ### Step 9: Validate REQ
 
 ```bash
-./ai_dev_flow/scripts/validate_req_template.sh ai_dev_flow/REQ/REQ-risk-limits-001_*.md
+./ai_dev_flow/scripts/validate_req_template.sh ai_dev_flow/REQ/REQ-risk-limits-01_*.md
 
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact REQ-risk-limits-001 --expected-layers brd,prd,ears,bdd,adr,sys --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact REQ-risk-limits-01 --expected-layers brd,prd,ears,bdd,adr,sys --strict
 ```
 
 ### Step 10: Commit Changes
@@ -394,19 +394,19 @@ Commit REQ file and traceability matrix.
 
 ```bash
 # Quality gates
-./scripts/validate_quality_gates.sh ai_dev_flow/REQ/REQ-risk-limits-001_*.md
+./scripts/validate_quality_gates.sh ai_dev_flow/REQ/REQ-risk-limits-01_*.md
 
 # REQ template validation (12 sections)
-./ai_dev_flow/scripts/validate_req_template.sh ai_dev_flow/REQ/REQ-risk-limits-001_*.md
+./ai_dev_flow/scripts/validate_req_template.sh ai_dev_flow/REQ/REQ-risk-limits-01_*.md
 
 # Cumulative tagging
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --artifact REQ-risk-limits-001 \
+  --artifact REQ-risk-limits-01 \
   --expected-layers brd,prd,ears,bdd,adr,sys \
   --strict
 
 # SPEC-readiness score check
-python ai_dev_flow/scripts/validate_req_spec_readiness.py ai_dev_flow/REQ/REQ-risk-limits-001_*.md
+python ai_dev_flow/scripts/validate_req_spec_readiness.py ai_dev_flow/REQ/REQ-risk-limits-01_*.md
 ```
 
 ### Manual Checklist
@@ -453,7 +453,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/REQ/REQ-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/REQ/REQ-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all REQ documents complete
 python ai_dev_flow/scripts/validate_cross_document.py --layer REQ --auto-fix
@@ -470,7 +470,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer REQ --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd/@adr/@sys tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

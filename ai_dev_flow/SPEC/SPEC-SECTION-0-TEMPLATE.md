@@ -1,5 +1,5 @@
 ---
-doc_id: SPEC-{NNN}
+doc_id: SPEC-{NN}
 section: 0
 title: "{Document Title} - Index"
 total_sections: {N}
@@ -22,13 +22,13 @@ custom_fields:
   index_role: true
 ---
 
-# SPEC-{NNN}.0: {Document Title} - Index
+# SPEC-{NN}.0: {Document Title} - Index
 
 ## Document Overview
 
 | Field | Value |
 |-------|-------|
-| **Document ID** | SPEC-{NNN} |
+| **Document ID** | SPEC-{NN} |
 | **Document Type** | Technical Specification |
 | **Layer** | 10 - Technical Specifications |
 | **Title** | {Document Title} |
@@ -49,23 +49,23 @@ custom_fields:
 
 | Section | File | Title | Description |
 |---------|------|-------|-------------|
-| 0 | [SPEC-{NNN}.0_index.md](SPEC-{NNN}.0_index.md) | Index | This file - document overview and navigation |
-| 1 | [SPEC-{NNN}.1_{slug1}.md](SPEC-{NNN}.1_{slug1}.md) | {Title 1} | {Description 1} |
-| 2 | [SPEC-{NNN}.2_{slug2}.md](SPEC-{NNN}.2_{slug2}.md) | {Title 2} | {Description 2} |
-| 3 | [SPEC-{NNN}.3_{slug3}.md](SPEC-{NNN}.3_{slug3}.md) | {Title 3} | {Description 3} |
+| 0 | [SPEC-{NN}.0_index.md](SPEC-{NN}.0_index.md) | Index | This file - document overview and navigation |
+| 1 | [SPEC-{NN}.1_{slug1}.md](SPEC-{NN}.1_{slug1}.md) | {Title 1} | {Description 1} |
+| 2 | [SPEC-{NN}.2_{slug2}.md](SPEC-{NN}.2_{slug2}.md) | {Title 2} | {Description 2} |
+| 3 | [SPEC-{NN}.3_{slug3}.md](SPEC-{NN}.3_{slug3}.md) | {Title 3} | {Description 3} |
 
 ---
 
 ## Dependencies
 
 ### Upstream References
-- @ref: CTR-{NNN} - Contracts this SPEC implements
-- @ref: REQ-{NNN} - Requirements this SPEC fulfills
-- @ref: ADR-{NNN} - Architecture decisions guiding this SPEC
+- @ref: CTR-{NN} - Contracts this SPEC implements
+- @ref: REQ-{NN} - Requirements this SPEC fulfills
+- @ref: ADR-{NN} - Architecture decisions guiding this SPEC
 
 ### Downstream References
-- @ref: TASKS-{NNN} - Task breakdown for implementation
-- @ref: IPLAN-{NNN} - Implementation plans
+- @ref: TASKS-{NN} - Task breakdown for implementation
+- @ref: IPLAN-{NN} - Implementation plans
 
 ### Cross-Section Dependencies
 - Section 2 depends on Section 1 (data models)
@@ -97,8 +97,8 @@ custom_fields:
 
 ## Traceability
 
-- **Original Document**: SPEC-{NNN} (before split)
+- **Original Document**: SPEC-{NN} (before split)
 - **Element ID Range**: SPEC.{NN}.{TT}.01 through SPEC.{NN}.{TT}.{MAX}
-- **Tag Format**: @ref: SPEC-{NNN}.{S} (section reference)
+- **Tag Format**: @ref: SPEC-{NN}.{S} (section reference)
 - **Upstream Trace**: BRD -> PRD -> EARS -> BDD -> ADR -> SYS -> REQ -> IMPL -> CTR
 - **Downstream Trace**: TASKS -> IPLAN -> Code

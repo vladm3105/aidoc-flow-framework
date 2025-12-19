@@ -1,5 +1,5 @@
 ---
-doc_id: PRD-{NNN}
+doc_id: PRD-{NN}
 section: 0
 title: "{Document Title} - Index"
 total_sections: {N}
@@ -23,13 +23,13 @@ custom_fields:
   index_role: true
 ---
 
-# PRD-{NNN}.0: {Document Title} - Index
+# PRD-{NN}.0: {Document Title} - Index
 
 ## Document Overview
 
 | Field | Value |
 |-------|-------|
-| **Document ID** | PRD-{NNN} |
+| **Document ID** | PRD-{NN} |
 | **Document Type** | Product Requirements Document |
 | **Layer** | 2 - Product Requirements |
 | **Title** | {Document Title} |
@@ -50,21 +50,21 @@ custom_fields:
 
 | Section | File | Title | Description |
 |---------|------|-------|-------------|
-| 0 | [PRD-{NNN}.0_index.md](PRD-{NNN}.0_index.md) | Index | This file - document overview and navigation |
-| 1 | [PRD-{NNN}.1_{slug1}.md](PRD-{NNN}.1_{slug1}.md) | {Title 1} | {Description 1} |
-| 2 | [PRD-{NNN}.2_{slug2}.md](PRD-{NNN}.2_{slug2}.md) | {Title 2} | {Description 2} |
-| 3 | [PRD-{NNN}.3_{slug3}.md](PRD-{NNN}.3_{slug3}.md) | {Title 3} | {Description 3} |
+| 0 | [PRD-{NN}.0_index.md](PRD-{NN}.0_index.md) | Index | This file - document overview and navigation |
+| 1 | [PRD-{NN}.1_{slug1}.md](PRD-{NN}.1_{slug1}.md) | {Title 1} | {Description 1} |
+| 2 | [PRD-{NN}.2_{slug2}.md](PRD-{NN}.2_{slug2}.md) | {Title 2} | {Description 2} |
+| 3 | [PRD-{NN}.3_{slug3}.md](PRD-{NN}.3_{slug3}.md) | {Title 3} | {Description 3} |
 
 ---
 
 ## Dependencies
 
 ### Upstream References
-- @ref: BRD-{NNN} - Business Requirements this PRD implements
+- @ref: BRD-{NN} - Business Requirements this PRD implements
 
 ### Downstream References
-- @ref: EARS-{NNN} - Formal requirements derived from this PRD
-- @ref: BDD-{NNN} - Behavior scenarios based on PRD features
+- @ref: EARS-{NN} - Formal requirements derived from this PRD
+- @ref: BDD-{NN} - Behavior scenarios based on PRD features
 
 ### Cross-Section Dependencies
 - Section 2 depends on Section 1 (product vision)
@@ -96,8 +96,8 @@ custom_fields:
 
 ## Traceability
 
-- **Original Document**: PRD-{NNN} (before split)
+- **Original Document**: PRD-{NN} (before split)
 - **Element ID Range**: PRD.{NN}.{TT}.01 through PRD.{NN}.{TT}.{MAX}
-- **Tag Format**: @ref: PRD-{NNN}.{S} (section reference)
+- **Tag Format**: @ref: PRD-{NN}.{S} (section reference)
 - **Upstream Trace**: BRD
 - **Downstream Trace**: EARS -> BDD -> ADR -> SYS -> REQ -> IMPL -> CTR -> SPEC

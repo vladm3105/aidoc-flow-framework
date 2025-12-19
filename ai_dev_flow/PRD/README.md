@@ -37,7 +37,7 @@ PRDs are the **starting point** of specification-driven development within the c
 
 **⚠️ CRITICAL - Workflow Order**: PRDs are created BEFORE ADRs in the SDD workflow. Therefore:
 
-❌ **Do NOT** reference specific ADR numbers (ADR-001, ADR-011, etc.) in PRD documents
+❌ **Do NOT** reference specific ADR numbers (ADR-01, ADR-011, etc.) in PRD documents
 
 ✅ **DO** include "Architecture Decision Requirements" section describing what decisions are needed
 
@@ -71,11 +71,11 @@ Every PRD should include a section that lists architectural topics requiring dec
 All PRDs include traceability links to related artifacts (note: ADR links added AFTER ADRs are created):
 
 ```markdown
-@requirement:[REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN)
-@SYS:[SYS-NNN](../SYS/SYS-NNN_...md)
-@EARS:[EARS-NNN](../EARS/EARS-NNN_...md)
-@spec:[SPEC-NNN](../SPEC/.../SPEC-NNN_...yaml)
-@bdd:[BDD-NNN:scenarios](../BDD/BDD-NNN_....feature#scenarios)
+@requirement:[REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN)
+@SYS:[SYS-NN](../SYS/SYS-NN_...md)
+@EARS:[EARS-NN](../EARS/EARS-NN_...md)
+@spec:[SPEC-NN](../SPEC/.../SPEC-NN_...yaml)
+@bdd:[BDD-NN:scenarios](../BDD/BDD-NN_....feature#scenarios)
 
 Note: @adr tags added to PRD AFTER ADRs are created (not during initial PRD creation)
 ```
@@ -143,8 +143,8 @@ Link to upstream and downstream artifacts:
 
 ```markdown
 ## Traceability
-- Downstream Artifacts: [SYS-NNN](../SYS/SYS-NNN_...md), [EARS-NNN](../EARS/EARS-NNN_...md), [REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN)
-- Anchors/IDs: `# PRD-NNN`
+- Downstream Artifacts: [SYS-NN](../SYS/SYS-NN_...md), [EARS-NN](../EARS/EARS-NN_...md), [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN)
+- Anchors/IDs: `# PRD-NN`
 - Code Path(s): `src/component/module.py`
 ```
 
@@ -153,7 +153,7 @@ Link to upstream and downstream artifacts:
 PRDs inherit categorization context from their source BRDs:
 
 **Platform BRDs → Foundation PRDs**:
-- Platform BRDs (e.g., BRD-001 Platform Architecture) drive foundation-level PRDs
+- Platform BRDs (e.g., BRD-01 Platform Architecture) drive foundation-level PRDs
 - These PRDs define core capabilities, infrastructure components, and cross-cutting concerns
 - Typically created early in the development workflow
 - Referenced by multiple feature-specific PRDs
@@ -218,7 +218,7 @@ PRDs inherit categorization context from their source BRDs:
 
 **Workflow Integration**:
 1. **PRD Creation**: Include SYS-ready and EARS-ready scores in Document Control section
-2. **Quality Check**: Run `./scripts/validate_prd_template.sh docs/PRD/PRD-001_name.md`
+2. **Quality Check**: Run `./scripts/validate_prd_template.sh docs/PRD/PRD-01_name.md`
 3. **EARS Readiness**: EARS-ready score ≥90% enables progression to EARS artifact creation
 4. **SYS Readiness**: SYS-ready score ≥90% enables progression to SYS artifact creation
 
@@ -234,16 +234,16 @@ PRDs inherit categorization context from their source BRDs:
 ## File Naming Convention
 
 ```
-PRD-NNN_descriptive_title.md
+PRD-NN_descriptive_title.md
 ```
 
 Where:
 - `PRD` is the constant prefix
-- `NNN` is the three-digit sequence number (001, 002, 003, etc.)
+- `NNN` is the 2+ digit sequence number (01, 02, 003, etc.)
 - `descriptive_title` uses snake_case for clarity
 
 **Examples:**
-- `PRD-001_external_api_integration.md`
+- `PRD-01_external_api_integration.md`
 - `PRD-035_resource_limit_enforcement.md`
 - `PRD-042_ml_model_serving.md`
 
@@ -322,8 +322,8 @@ Include complete traceability and acceptance criteria:
 
 ```markdown
 ## Traceability
-- SRC: [SYS-NNN](../SYS/SYS-NNN_component.md)
-- EARS: [EARS-NNN](../EARS/EARS-NNN_component.md)
+- SRC: [SYS-NN](../SYS/SYS-NN_component.md)
+- EARS: [EARS-NN](../EARS/EARS-NN_component.md)
 - Implementation: src/component/
 ```
 
@@ -361,7 +361,7 @@ Maintain [SLA] during peak usage periods.
 
 ## Example PRD Template
 
-See `PRD-001_external_api_integration.md` for a complete example of a well-structured PRD that follows these conventions.
+See `PRD-01_external_api_integration.md` for a complete example of a well-structured PRD that follows these conventions.
 
 ## Benefits of Strong PRDs
 

@@ -33,14 +33,14 @@
 
 | ADR ID | Title | Category | Status | Date | Upstream Sources | Downstream Artifacts |
 |---|---|---|---|---|---|---|
-| ADR-001 | Adopt Microservices Architecture | architecture | Accepted | 2024-11-15 | BRD-001, PRD-002 | SYS-001, SYS-002, REQ-005 |
-| ADR-002 | Use PostgreSQL for Primary Database | data | Accepted | 2024-11-18 | PRD-003, ADR-001 | SYS-003, REQ-010, REQ-011 |
-| ADR-003 | Implement Event-Driven Architecture with Apache Kafka | integration | Accepted | 2024-11-20 | PRD-004, ADR-001 | SYS-004, REQ-015, SPEC-003 |
-| ADR-004 | Deploy on Kubernetes with Helm Charts | deployment | Accepted | 2024-11-22 | PRD-005, ADR-001 | SYS-005, REQ-020, IMPL-001 |
-| ADR-005 | Use OAuth 2.0 and OpenID Connect for Authentication | security | Accepted | 2024-11-25 | BRD-002, PRD-006 | SYS-006, REQ-025, REQ-026 (+2 more) |
-| ADR-006 | Implement GraphQL API Gateway | api | Accepted | 2024-12-01 | PRD-007, ADR-001 | SYS-007, REQ-030, SPEC-005 |
-| ADR-007 | Use Redis for Caching Layer | performance | Proposed | 2024-12-10 | PRD-008, ADR-002 | None |
-| ADR-008 | Monolithic Architecture (Initial Version) | architecture | Superseded | 2024-10-15 | BRD-001 | None |
+| ADR-001 | Adopt Microservices Architecture | architecture | Accepted | 2024-11-15 | BRD-01, PRD-02 | SYS-01, SYS-02, REQ-005 |
+| ADR-02 | Use PostgreSQL for Primary Database | data | Accepted | 2024-11-18 | PRD-03, ADR-001 | SYS-03, REQ-010, REQ-011 |
+| ADR-03 | Implement Event-Driven Architecture with Apache Kafka | integration | Accepted | 2024-11-20 | PRD-004, ADR-001 | SYS-004, REQ-015, SPEC-03 |
+| ADR-004 | Deploy on Kubernetes with Helm Charts | deployment | Accepted | 2024-11-22 | PRD-005, ADR-001 | SYS-005, REQ-020, IMPL-01 |
+| ADR-005 | Use OAuth 2.0 and OpenID Connect for Authentication | security | Accepted | 2024-11-25 | BRD-02, PRD-006 | SYS-006, REQ-025, REQ-026 (+2 more) |
+| ADR-006 | Implement GraphQL API Gateway | api | Accepted | 2024-12-01 | PRD-007, ADR-001 | SYS-007, REQ-030, SPEC-05 |
+| ADR-007 | Use Redis for Caching Layer | performance | Proposed | 2024-12-10 | PRD-008, ADR-02 | None |
+| ADR-008 | Monolithic Architecture (Initial Version) | architecture | Superseded | 2024-10-15 | BRD-01 | None |
 
 ## 3. Upstream Traceability
 
@@ -48,11 +48,11 @@
 
 | Upstream Source | Source Title | ADR IDs | ADR Titles | Relationship |
 |----------------|--------------|---------|------------|--------------|
-| BRD-001 | Enterprise Platform Requirements | ADR-001, ADR-008 | Microservices Architecture, Monolithic Architecture | Business drivers to architecture decisions |
-| BRD-002 | security and Compliance Requirements | ADR-005 | OAuth 2.0 Authentication | security requirements to security architecture |
-| PRD-002 | Scalability and High Availability | ADR-001 | Microservices Architecture | Product requirements to architecture pattern |
-| PRD-003 | Data Management Requirements | ADR-002 | PostgreSQL Database | Data requirements to database choice |
-| PRD-004 | System Integration Requirements | ADR-003 | Event-Driven Architecture | Integration needs to messaging pattern |
+| BRD-01 | Enterprise Platform Requirements | ADR-001, ADR-008 | Microservices Architecture, Monolithic Architecture | Business drivers to architecture decisions |
+| BRD-02 | security and Compliance Requirements | ADR-005 | OAuth 2.0 Authentication | security requirements to security architecture |
+| PRD-02 | Scalability and High Availability | ADR-001 | Microservices Architecture | Product requirements to architecture pattern |
+| PRD-03 | Data Management Requirements | ADR-02 | PostgreSQL Database | Data requirements to database choice |
+| PRD-004 | System Integration Requirements | ADR-03 | Event-Driven Architecture | Integration needs to messaging pattern |
 | PRD-005 | Deployment and Operations | ADR-004 | Kubernetes Deployment | Operational requirements to deployment strategy |
 | PRD-006 | Authentication and Authorization | ADR-005 | OAuth 2.0 Authentication | Auth requirements to auth mechanism |
 | PRD-007 | API Design Requirements | ADR-006 | GraphQL API Gateway | API requirements to API technology |
@@ -62,11 +62,11 @@
 
 | Source ADR | Target ADR | Dependency Type | Description |
 |------------|------------|-----------------|-------------|
-| ADR-001 | ADR-002 | Influences | Microservices architecture influences database partitioning strategy |
-| ADR-001 | ADR-003 | Requires | Microservices require inter-service communication mechanism |
+| ADR-001 | ADR-02 | Influences | Microservices architecture influences database partitioning strategy |
+| ADR-001 | ADR-03 | Requires | Microservices require inter-service communication mechanism |
 | ADR-001 | ADR-004 | Requires | Microservices deployment requires container orchestration |
 | ADR-001 | ADR-006 | Influences | Microservices architecture influences API gateway design |
-| ADR-002 | ADR-007 | Influences | Database choice influences caching strategy |
+| ADR-02 | ADR-007 | Influences | Database choice influences caching strategy |
 | ADR-008 | ADR-001 | Superseded By | Monolithic architecture replaced by microservices |
 
 ### 3.3 Upstream Source Summary
@@ -83,9 +83,9 @@
 
 | ADR ID | ADR Title | SYS IDs | SYS Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| ADR-001 | Microservices Architecture | SYS-001, SYS-002 | Service Decomposition, API Communication Protocols | Architecture decision to system requirements |
-| ADR-002 | PostgreSQL Database | SYS-003 | Data Persistence and ACID Compliance | Database choice to data system requirements |
-| ADR-003 | Event-Driven Architecture | SYS-004 | Asynchronous Messaging System | Architecture pattern to messaging requirements |
+| ADR-001 | Microservices Architecture | SYS-01, SYS-02 | Service Decomposition, API Communication Protocols | Architecture decision to system requirements |
+| ADR-02 | PostgreSQL Database | SYS-03 | Data Persistence and ACID Compliance | Database choice to data system requirements |
+| ADR-03 | Event-Driven Architecture | SYS-004 | Asynchronous Messaging System | Architecture pattern to messaging requirements |
 | ADR-004 | Kubernetes Deployment | SYS-005 | Container Orchestration Platform | Deployment strategy to infrastructure requirements |
 | ADR-005 | OAuth 2.0 Authentication | SYS-006 | Identity and Access Management | Auth mechanism to security system requirements |
 | ADR-006 | GraphQL API Gateway | SYS-007 | API Gateway and Query Language | API technology to gateway requirements |
@@ -95,8 +95,8 @@
 | ADR ID | ADR Title | REQ IDs (Sample) | Relationship |
 |--------|-----------|------------------|--------------|
 | ADR-001 | Microservices Architecture | REQ-005, REQ-006, REQ-007 | Architecture drives service-level requirements |
-| ADR-002 | PostgreSQL Database | REQ-010, REQ-011, REQ-012 | Database drives data persistence requirements |
-| ADR-003 | Event-Driven Architecture | REQ-015, REQ-016, REQ-017 | Messaging drives integration requirements |
+| ADR-02 | PostgreSQL Database | REQ-010, REQ-011, REQ-012 | Database drives data persistence requirements |
+| ADR-03 | Event-Driven Architecture | REQ-015, REQ-016, REQ-017 | Messaging drives integration requirements |
 | ADR-004 | Kubernetes Deployment | REQ-020, REQ-021, REQ-022 | Deployment drives operational requirements |
 | ADR-005 | OAuth 2.0 Authentication | REQ-025, REQ-026, REQ-027, REQ-028 | Auth mechanism drives security requirements |
 | ADR-006 | GraphQL API Gateway | REQ-030, REQ-031, REQ-032 | API technology drives API requirements |
@@ -105,14 +105,14 @@
 
 | ADR ID | ADR Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| ADR-003 | Event-Driven Architecture | SPEC-003 | Kafka Event Bus Technical Specification | Architecture drives implementation specifications |
-| ADR-006 | GraphQL API Gateway | SPEC-005 | GraphQL Schema and Resolver Specification | API choice drives API implementation SPEC |
+| ADR-03 | Event-Driven Architecture | SPEC-03 | Kafka Event Bus Technical Specification | Architecture drives implementation specifications |
+| ADR-006 | GraphQL API Gateway | SPEC-05 | GraphQL Schema and Resolver Specification | API choice drives API implementation SPEC |
 
 ### 4.4 ADR → IMPL Traceability
 
 | ADR ID | ADR Title | IMPL IDs | IMPL Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| ADR-004 | Kubernetes Deployment | IMPL-001 | Kubernetes Infrastructure Implementation Plan | Deployment decision drives implementation planning |
+| ADR-004 | Kubernetes Deployment | IMPL-01 | Kubernetes Infrastructure Implementation Plan | Deployment decision drives implementation planning |
 
 ## 5. Decision Categories
 
@@ -121,8 +121,8 @@
 | Category | ADR IDs | Total | Description |
 |----------|---------|-------|-------------|
 | Architecture | ADR-001, ADR-008 | 2 | Fundamental system architecture patterns |
-| Data | ADR-002 | 1 | Data storage and persistence decisions |
-| Integration | ADR-003 | 1 | Inter-service communication patterns |
+| Data | ADR-02 | 1 | Data storage and persistence decisions |
+| Integration | ADR-03 | 1 | Inter-service communication patterns |
 | Deployment | ADR-004 | 1 | Deployment and infrastructure decisions |
 | security | ADR-005 | 1 | security and authentication mechanisms |
 | API | ADR-006 | 1 | API design and gateway decisions |
@@ -133,8 +133,8 @@
 | Technology Area | Chosen Technology | ADR ID | Alternatives Considered |
 |-----------------|-------------------|--------|------------------------|
 | Architecture Pattern | Microservices | ADR-001 | Monolithic (ADR-008), SOA |
-| Primary Database | PostgreSQL | ADR-002 | MySQL, MongoDB, Oracle |
-| Message Bus | Apache Kafka | ADR-003 | RabbitMQ, AWS SNS/SQS, Azure Service Bus |
+| Primary Database | PostgreSQL | ADR-02 | MySQL, MongoDB, Oracle |
+| Message Bus | Apache Kafka | ADR-03 | RabbitMQ, AWS SNS/SQS, Azure Service Bus |
 | Container Orchestration | Kubernetes | ADR-004 | Docker Swarm, AWS ECS, Nomad |
 | Authentication | OAuth 2.0 + OIDC | ADR-005 | SAML, Custom JWT, Auth0 |
 | API Gateway | GraphQL | ADR-006 | REST, gRPC, WebSockets |
@@ -147,8 +147,8 @@
 | ADR ID | Decision | Cost Impact | Category |
 |--------|----------|-------------|----------|
 | ADR-001 | Microservices Architecture | High (increased operational complexity) | Infrastructure |
-| ADR-002 | PostgreSQL | Low (open source) | Software Licensing |
-| ADR-003 | Apache Kafka | Medium (infrastructure + management) | Infrastructure |
+| ADR-02 | PostgreSQL | Low (open source) | Software Licensing |
+| ADR-03 | Apache Kafka | Medium (infrastructure + management) | Infrastructure |
 | ADR-004 | Kubernetes | Medium (learning curve + tooling) | Platform |
 | ADR-005 | OAuth 2.0 | Low (open standard) | Integration |
 | ADR-006 | GraphQL | Low (open source) | Software |
@@ -159,8 +159,8 @@
 | ADR ID | Decision | Complexity | Effort Estimate | Risk Level |
 |--------|----------|------------|-----------------|------------|
 | ADR-001 | Microservices Architecture | Very High | 6+ months | High |
-| ADR-002 | PostgreSQL | Medium | 2-4 weeks | Low |
-| ADR-003 | Event-Driven Architecture | High | 3-4 months | Medium |
+| ADR-02 | PostgreSQL | Medium | 2-4 weeks | Low |
+| ADR-03 | Event-Driven Architecture | High | 3-4 months | Medium |
 | ADR-004 | Kubernetes Deployment | High | 2-3 months | Medium |
 | ADR-005 | OAuth 2.0 Authentication | Medium | 4-6 weeks | Medium |
 | ADR-006 | GraphQL API Gateway | Medium | 6-8 weeks | Low |
@@ -170,13 +170,13 @@
 
 ```mermaid
 graph TD
-    BRD001[BRD-001: Enterprise Platform] --> ADR001[ADR-001: Microservices]
+    BRD001[BRD-01: Enterprise Platform] --> ADR001[ADR-001: Microservices]
     BRD001 --> ADR008[ADR-008: Monolithic]
-    BRD002[BRD-002: security] --> ADR005[ADR-005: OAuth 2.0]
+    BRD002[BRD-02: security] --> ADR005[ADR-005: OAuth 2.0]
 
-    PRD002[PRD-002: Scalability] --> ADR001
-    PRD003[PRD-003: Data Management] --> ADR002[ADR-002: PostgreSQL]
-    PRD004[PRD-004: Integration] --> ADR003[ADR-003: Kafka Events]
+    PRD002[PRD-02: Scalability] --> ADR001
+    PRD003[PRD-03: Data Management] --> ADR002[ADR-02: PostgreSQL]
+    PRD004[PRD-004: Integration] --> ADR003[ADR-03: Kafka Events]
     PRD005[PRD-005: Deployment] --> ADR004[ADR-004: Kubernetes]
     PRD006[PRD-006: Authentication] --> ADR005
     PRD007[PRD-007: API Design] --> ADR006[ADR-006: GraphQL]
@@ -190,16 +190,16 @@ graph TD
 
     ADR008 -.superseded by.-> ADR001
 
-    ADR001 --> SYS001[SYS-001, SYS-002]
-    ADR002 --> SYS003[SYS-003]
+    ADR001 --> SYS001[SYS-01, SYS-02]
+    ADR002 --> SYS003[SYS-03]
     ADR003 --> SYS004[SYS-004]
     ADR004 --> SYS005[SYS-005]
     ADR005 --> SYS006[SYS-006]
     ADR006 --> SYS007[SYS-007]
 
-    ADR003 --> SPEC003[SPEC-003: Kafka Spec]
-    ADR006 --> SPEC005[SPEC-005: GraphQL Spec]
-    ADR004 --> IMPL001[IMPL-001: K8s Plan]
+    ADR003 --> SPEC003[SPEC-03: Kafka Spec]
+    ADR006 --> SPEC005[SPEC-05: GraphQL Spec]
+    ADR004 --> IMPL001[IMPL-01: K8s Plan]
 
     style ADR001 fill:#e3f2fd
     style ADR002 fill:#e3f2fd

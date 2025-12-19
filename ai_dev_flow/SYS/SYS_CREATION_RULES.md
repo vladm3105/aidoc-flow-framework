@@ -55,7 +55,7 @@ custom_fields:
 ## 1. File Organization and Directory Structure
 
 - **Location**: `docs/SYS/` within project docs directory
-- **Naming**: `SYS-NNN_descriptive_system_name.md` (NNN = 3-digit sequential)
+- **Naming**: `SYS-NN_descriptive_system_name.md` (NN = 3-digit sequential)
 - **Structure**: One primary SYS file per architectural subsystem
 
 ---
@@ -108,9 +108,26 @@ SYS documents follow a comprehensive structure translating ADR decisions into sy
 
 ## 4. ID and Naming Standards
 
-- **Filename**: `SYS-NNN_descriptive_system_name.md`
-- **H1**: `# SYS-NNN: [System Name/Component Name]`
-- **Requirement IDs**: SYS-NNN-P-N (Performance), SYS-NNN-R-N (Reliability), etc.
+- **Filename**: `SYS-NN_descriptive_system_name.md`
+- **H1**: `# SYS-NN: [System Name/Component Name]`
+- **Requirement IDs**: SYS-NN-P-N (Performance), SYS-NN-R-N (Reliability), etc.
+
+### 4.1 Element ID Format (MANDATORY)
+
+**Pattern**: `SYS.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Functional Requirement | 01 | SYS.02.01.01 |
+| Quality Attribute | 02 | SYS.02.02.01 |
+| Use Case | 11 | SYS.02.11.01 |
+| System Requirement | 26 | SYS.02.26.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `FR-XXX` → Use `SYS.NN.01.SS`
+> - `QA-XXX` → Use `SYS.NN.02.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
 
 ---
 
@@ -192,7 +209,7 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 @prd: PRD.NN.EE.SS
 @ears: EARS.NN.EE.SS
 @bdd: BDD.NN.EE.SS
-@adr: ADR-NNN
+@adr: ADR-NN
 ```
 
 **Layer 6 Requirements**: SYS must reference ALL upstream artifacts
@@ -274,9 +291,9 @@ SYS documents establish system requirements that must be decomposed into atomic 
 | Interface specs without CTR reference | Create CTR for external APIs |
 | Requirements without acceptance criteria | Include measurable acceptance criteria for all requirements |
 | Missing ADR alignment verification | Verify all requirements fit within ADR architectural boundaries |
-| `response time < 200ms` (hardcoded) | `response time < @threshold: PRD.NNN.perf.api.p95_latency` |
-| `timeout: 5000` (magic number) | `timeout: @threshold: PRD.NNN.timeout.default` |
-| `uptime: 99.9%` (hardcoded SLA) | `uptime: @threshold: PRD.NNN.sla.uptime.target` |
+| `response time < 200ms` (hardcoded) | `response time < @threshold: PRD.NN.perf.api.p95_latency` |
+| `timeout: 5000` (magic number) | `timeout: @threshold: PRD.NN.timeout.default` |
+| `uptime: 99.9%` (hardcoded SLA) | `uptime: @threshold: PRD.NN.sla.uptime.target` |
 
 ---
 
@@ -302,8 +319,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -328,13 +345,13 @@ Include ONLY if relationships exist between SYS documents sharing system context
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | SYS-NNN | [Related SYS title] | Shared system context |
-| Depends | SYS-NNN | [Prerequisite SYS title] | Must complete before this |
+| Related | SYS-NN | [Related SYS title] | Shared system context |
+| Depends | SYS-NN | [Prerequisite SYS title] | Must complete before this |
 
 **Tags**:
 ```markdown
-@related-sys: SYS-NNN
-@depends-sys: SYS-NNN
+@related-sys: SYS-NN
+@depends-sys: SYS-NN
 ```
 
 ---
@@ -354,7 +371,7 @@ Use `@threshold` for ALL quantitative values that are:
 ### @threshold Tag Format
 
 ```markdown
-@threshold: PRD.NNN.category.subcategory.key
+@threshold: PRD.NN.category.subcategory.key
 ```
 
 **Examples**:
@@ -382,10 +399,10 @@ Use `@threshold` for ALL quantitative values that are:
 - `circuit breaker threshold: 5 failures`
 
 **Valid (registry references)**:
-- `p95 latency: @threshold: PRD.NNN.perf.api.p95_latency`
-- `uptime: @threshold: PRD.NNN.sla.uptime.target`
-- `memory limit: @threshold: PRD.NNN.resource.memory.max_heap`
-- `circuit breaker threshold: @threshold: PRD.NNN.timeout.circuit_breaker.threshold`
+- `p95 latency: @threshold: PRD.NN.perf.api.p95_latency`
+- `uptime: @threshold: PRD.NN.sla.uptime.target`
+- `memory limit: @threshold: PRD.NN.resource.memory.max_heap`
+- `circuit breaker threshold: @threshold: PRD.NN.timeout.circuit_breaker.threshold`
 
 ### Traceability Requirements Update
 
@@ -393,7 +410,7 @@ Add `@threshold` to Required Tags table in Traceability section:
 
 | Tag | Format | When Required |
 |-----|--------|---------------|
-| @threshold | PRD-NNN:category.key | When referencing SLAs, timing, limits, or configurable values |
+| @threshold | PRD-NN:category.key | When referencing SLAs, timing, limits, or configurable values |
 
 ### Validation
 
@@ -423,7 +440,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/SYS/SYS-NNN_slug.md --auto-fix
+python scripts/validate_cross_document.py --document docs/SYS/SYS-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all SYS documents complete
 python scripts/validate_cross_document.py --layer SYS --auto-fix
@@ -440,7 +457,7 @@ python scripts/validate_cross_document.py --layer SYS --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd/@adr tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

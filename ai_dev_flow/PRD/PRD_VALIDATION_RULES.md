@@ -550,16 +550,16 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 
 ```bash
 # Validate single PRD (nested folder structure - DEFAULT)
-./scripts/validate_prd_template.sh docs/PRD/PRD-001/PRD-001.0_index.md
+./scripts/validate_prd_template.sh docs/PRD/PRD-01_product_name/PRD-01.0_product_name_index.md
 
 # Validate all PRDs (section-based structure)
 find docs/PRD -type f -name "PRD-*.md" -exec ./scripts/validate_prd_template.sh {} \;
 
 # Validate monolithic PRD (optional for <25KB)
-./scripts/validate_prd_template.sh docs/PRD/PRD-001_product_name.md
+./scripts/validate_prd_template.sh docs/PRD/PRD-01_product_name.md
 
 # Check YAML frontmatter (nested structure)
-python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001/PRD-001.0_index.md').read().split('---')[1])"
+python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-01_product_name/PRD-01.0_product_name_index.md').read().split('---')[1])"
 ```
 
 ### Quality Thresholds Table
@@ -782,7 +782,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001/PRD-001.0_index.m
 ```markdown
 | This PRD | References | Relationship | Reciprocal Status |
 |----------|------------|--------------|-------------------|
-| PRD-NNN | @prd: PRD.NN.EE.SS | Primary/Fallback | ✅/❌ |
+| PRD-NN | @prd: PRD.NN.EE.SS | Primary/Fallback | ✅/❌ |
 ```
 
 ---
@@ -803,7 +803,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001/PRD-001.0_index.m
 | `Feature-001` | Deprecated format | `PRD.NN.01.01` |
 | `FR-AGENT-001` | Non-standard prefix | `PRD.NN.01.01` |
 | `Feature 3.1` | Text format | `PRD.NN.01.03` |
-| `F-001` | Deprecated F- format | `PRD.NN.01.01` |
+| `F-01` | Deprecated F- format | `PRD.NN.01.01` |
 | `PRD.1.1.1` | Not zero-padded | `PRD.01.01.01` |
 
 **Error Messages**:
@@ -828,7 +828,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-001/PRD-001.0_index.m
 
 **Requirements**:
 - Numeric thresholds shared across 2+ PRDs must reference Threshold Registry
-- Use format: `@prd: PRD.NN.EE.SS` with `@threshold: PRD.NNN.{category}.{key}`
+- Use format: `@prd: PRD.NN.EE.SS` with `@threshold: PRD.NN.{category}.{key}`
 - No "magic numbers" for common thresholds (KYC limits, risk scores, timeouts)
 
 **Threshold Categories Requiring Registry Reference**:
@@ -870,6 +870,37 @@ Transaction limit: $1,000 USD (per @threshold: PRD.035.kyc.l1.daily)
 
 ---
 
+### CHECK 15: Element ID Format Compliance ⭐ NEW
+
+**Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
+**Type**: Error
+
+| Check | Pattern | Result |
+|-------|---------|--------|
+| Valid format | `### PRD.NN.TT.SS:` | ✅ Pass |
+| Removed pattern | `### F-XXX` | ❌ Fail - use PRD.NN.09.SS |
+| Removed pattern | `### US-XXX` | ❌ Fail - use PRD.NN.09.SS |
+| Removed pattern | `### FR-XXX` | ❌ Fail - use PRD.NN.01.SS |
+| Removed pattern | `### AC-XXX` | ❌ Fail - use PRD.NN.06.SS |
+
+**Regex**: `^###\s+PRD\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+**Common Element Types for PRD**:
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Functional Requirement | 01 | PRD.02.01.01 |
+| Quality Attribute | 02 | PRD.02.02.01 |
+| Acceptance Criteria | 06 | PRD.02.06.01 |
+| User Story | 09 | PRD.02.09.01 |
+| Use Case | 11 | PRD.02.11.01 |
+| Feature Item | 22 | PRD.02.22.01 |
+
+**Fix**: Replace `### US-01: User Story` with `### PRD.02.09.01: User Story`
+
+**Reference**: PRD_CREATION_RULES.md Section 4.1, ID_NAMING_STANDARDS.md lines 783-793
+
+---
+
 ## 7. Validation Summary Table
 
 | Check | Type | Purpose | Blocking |
@@ -888,6 +919,7 @@ Transaction limit: $1,000 USD (per @threshold: PRD.035.kyc.l1.daily)
 | CHECK 12 | Bidirectional References | A→B implies B→A | No |
 | CHECK 13 | Feature ID Format | PRD.NN.EE.SS format | No |
 | CHECK 14 | Threshold Registry | Registry references | No |
+| CHECK 15 | Element ID Format | Unified 4-segment format | Yes |
 
 ---
 

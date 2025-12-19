@@ -231,7 +231,7 @@ Output:
   "age_analysis": {
     "average_age_days": 45,
     "oldest_requirement": {
-      "id": "REQ-AUTH-001",
+      "id": "REQ-AUTH-01",
       "age_days": 120,
       "status": "implemented"
     },
@@ -256,7 +256,7 @@ Generated Mermaid diagram:
 ```mermaid
 graph LR
     BRD001[BRD-SYSTEM-001] --> PRD001[PRD-FEATURES-001]
-    PRD001 --> REQ001[REQ-AUTH-001]
+    PRD001 --> REQ001[REQ-AUTH-01]
     PRD001 --> REQ002[REQ-AUTH-002]
 
     REQ001 --> BDD001[BDD-LOGIN-001]
@@ -308,7 +308,7 @@ Generated report:
 ✓ Code Coverage: 87% → 91% (+4%)
 
 ## Requirements Completed
-1. REQ-AUTH-001: User login with JWT ✓
+1. REQ-AUTH-01: User login with JWT ✓
 2. REQ-AUTH-002: User logout ✓
 3. REQ-AUTH-003: Password reset ✓
 4. REQ-AUTH-004: Email verification ✓

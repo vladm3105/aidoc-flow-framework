@@ -81,7 +81,7 @@ The EARS validation script performs comprehensive checks ensuring EARS documents
 | Metadata/Tags | E002-E008 | Required tags, custom_fields |
 | Structure | E010-E013 | Sections, numbering, Document Control |
 | Table Syntax | E020 | Markdown table formatting |
-| Requirement IDs | E030 | EARS-XXX-NNN format |
+| Requirement IDs | E030 | EARS-XXX-NN format |
 | Traceability | E040-E041 | @prd: prefix, pipe separators |
 | EARS Syntax | W010-W012 | SHALL patterns, atomicity |
 | BDD-Ready | W020-W021 | Score format |
@@ -121,7 +121,7 @@ The EARS validation script performs comprehensive checks ensuring EARS documents
 - `ears-requirements`
 - `ears-formal-requirements`
 - `ears-document`
-- `ears-NNN` (e.g., `ears-030`)
+- `ears-NN` (e.g., `ears-030`)
 
 **Fix**: Replace with `ears`
 
@@ -265,11 +265,34 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 ---
 
-### E030: Requirement ID Format
+### E030: Requirement ID Format ⭐ ENHANCED
 
 **Type**: Error (blocking)
 
-**Check**: Requirement headings use `#### EARS-{DocID}-{Num}: Title` format
+**Check**: Requirement headings use unified 4-segment format `#### EARS.NN.TT.SS: Title`
+
+**Pattern**: `EARS.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+**Regex**: `^####\s+EARS\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+| Check | Pattern | Result |
+|-------|---------|--------|
+| Valid format | `#### EARS.NN.25.SS:` | ✅ Pass |
+| Removed pattern | `#### Event-XXX` | ❌ Fail - use EARS.NN.25.SS |
+| Removed pattern | `#### State-XXX` | ❌ Fail - use EARS.NN.25.SS |
+| Removed pattern | `#### EARS-NN-XXX` | ❌ Fail - use EARS.NN.25.SS |
+
+**Common Element Types for EARS**:
+| Element Type | Code | Example |
+|--------------|------|---------|
+| EARS Statement | 25 | EARS.06.25.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `Event-XXX` → Use `EARS.NN.25.SS`
+> - `State-XXX` → Use `EARS.NN.25.SS`
+> - `EARS-NN-XXX` → Use `EARS.NN.25.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
 
 **Invalid**:
 ```markdown
@@ -279,9 +302,11 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Valid**:
 ```markdown
-#### EARS.06.24.01: L1 KYC Submission
-#### EARS.06.24.02: Pending Status
+#### EARS.06.25.01: L1 KYC Submission
+#### EARS.06.25.02: Pending Status
 ```
+
+**Fix**: Replace `#### Event-001: L1 KYC Submission` with `#### EARS.06.25.01: L1 KYC Submission`
 
 ---
 
@@ -293,7 +318,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Invalid**:
 ```markdown
-| **Source Document** | PRD-001 |
+| **Source Document** | PRD-01 |
 ```
 
 **Valid**:
@@ -436,7 +461,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 | E011/E013 | Change `## 0. Document Control` to `## Document Control`, use table format |
 | E020 | Remove trailing `\| \|` from table separator |
 | E030 | Change `#### Event-N:` to `#### EARS-{DocID}-N:` |
-| E040 | Change `PRD-NNN` to `@prd: PRD.NN.EE.SS` |
+| E040 | Change `PRD-NN` to `@prd: PRD.NN.EE.SS` |
 | E041 | Add `\|` between traceability tags |
 
 ---

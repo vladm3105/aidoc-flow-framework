@@ -4,7 +4,7 @@ Requirement ID and Structure Validator
 
 Validates REQ document IDs, naming conventions, and V2 template compliance.
 Ensures:
-- REQ-NNN ID format compliance
+- REQ-NN ID format compliance
 - Filename matches document ID
 - V2 mandatory sections present
 - No duplicate REQ-IDs
@@ -12,7 +12,7 @@ Ensures:
 
 Usage:
     python validate_requirement_ids.py --directory REQ/
-    python validate_requirement_ids.py --req-file REQ/api/REQ-001.md
+    python validate_requirement_ids.py --req-file REQ/api/REQ-01.md
     python validate_requirement_ids.py --directory REQ/ --check-v2-sections
 """
 
@@ -115,7 +115,7 @@ class RequirementIDValidator:
         if not re.match(self.FILENAME_PATTERN, filename):
             result.errors.append(
                 f"Invalid filename format: {filename}. "
-                "Expected: REQ-NNN_descriptive_title.md"
+                "Expected: REQ-NN_descriptive_title.md"
             )
             result.valid = False
             return False
@@ -124,11 +124,11 @@ class RequirementIDValidator:
 
     def _extract_req_id(self, content: str, result: ValidationResult) -> str:
         """Extract REQ-ID from document header."""
-        # Look for ## REQ-NNN: Title or # REQ-NNN: Title
+        # Look for ## REQ-NN: Title or # REQ-NN: Title
         id_patterns = [
-            r"^##?\s*(REQ-\d{3})",  # ## REQ-001 or # REQ-001
-            r"^\*\*ID\*\*:\s*(REQ-\d{3})",  # **ID**: REQ-001
-            r"^\|\s*\*\*ID\*\*\s*\|\s*(REQ-\d{3})"  # | **ID** | REQ-001 |
+            r"^##?\s*(REQ-\d{3})",  # ## REQ-01 or # REQ-01
+            r"^\*\*ID\*\*:\s*(REQ-\d{3})",  # **ID**: REQ-01
+            r"^\|\s*\*\*ID\*\*\s*\|\s*(REQ-\d{3})"  # | **ID** | REQ-01 |
         ]
 
         for pattern in id_patterns:
@@ -144,7 +144,7 @@ class RequirementIDValidator:
         if not re.match(self.REQ_ID_PATTERN, req_id):
             result.errors.append(
                 f"Invalid REQ-ID format: {req_id}. "
-                "Expected: REQ-NNN (e.g., REQ-001)"
+                "Expected: REQ-NN (e.g., REQ-01)"
             )
             return False
 

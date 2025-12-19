@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: ADR-001 through ADR-NNN
+# Traceability Matrix: ADR-01 through ADR-NN
 
 ## Document Control
 
@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type ADR --output docs/ADR/AD
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@adr: ADR-NNN` (document-level format, e.g., `ADR-033`)
+**Tag Format:** `@adr: ADR-NN` (document-level format, e.g., `ADR-033`)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -103,7 +103,7 @@ This matrix tracks all ADRs, mapping upstream business/product requirements to d
 - Prefix: `@` symbol
 - Artifact Type: lowercase (`brd`, `prd`, `ears`, `bdd`)
 - Separator: colon `:` after artifact type, `:` between document ID and requirement ID
-- Document ID: Standard format (e.g., `ADR-NNN`)
+- Document ID: Standard format (e.g., `ADR-NN`)
 - Requirement ID: Specific requirement/section identifier
 - Multiple Values: comma-separated for same artifact type
 
@@ -131,7 +131,7 @@ This matrix tracks all ADRs, mapping upstream business/product requirements to d
 ### 2.4 Validation Rules
 
 1. **Required**: Each ADR artifact MUST include at least one tag for each required layer
-2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NNN` format
+2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NN` format
 3. **Valid References**: All referenced documents and requirements must exist
 4. **No Gaps**: Cannot skip any required upstream layer in the chain
 5. **Tag Count**: Must have exactly 4 tags for Layer 5
@@ -165,9 +165,9 @@ python scripts/generate_traceability_matrices.py \
 
 | ADR ID | Title | Decision Category | Status | Date | Upstream Sources | Downstream Artifacts |
 |--------|-------|-------------------|--------|------|------------------|---------------------|
-| ADR-001 | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | BRD-001, PRD-001, EARS-001 | SYS-001, REQ-001, SPEC-001 |
-| ADR-002 | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | PRD-002, BDD-001 | SYS-002, REQ-002, REQ-003 |
-| ADR-NNN | ... | ... | ... | ... | ... | ... |
+| ADR-01 | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | BRD-01, PRD-01, EARS-01 | SYS-01, REQ-01, SPEC-01 |
+| ADR-02 | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | PRD-02, BDD-01 | SYS-02, REQ-02, REQ-03 |
+| ADR-NN | ... | ... | ... | ... | ... | ... |
 
 **Status Legend**:
 - **Proposed**: Under review
@@ -186,29 +186,29 @@ python scripts/generate_traceability_matrices.py \
 
 | BRD ID | BRD Title | ADR IDs | ADR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| BRD-001 | [Business requirement] | ADR-001, ADR-005 | [Architecture decisions] | Business constraints drive technical decisions |
-| BRD-NNN | ... | ... | ... | ... |
+| BRD-01 | [Business requirement] | ADR-01, ADR-005 | [Architecture decisions] | Business constraints drive technical decisions |
+| BRD-NN | ... | ... | ... | ... |
 
 ### 4.2 PRD → ADR Traceability
 
 | PRD ID | PRD Title | ADR IDs | ADR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| PRD-001 | [Product feature] | ADR-002, ADR-008 | [Architecture decisions] | Product requirements necessitate architectural choices |
-| PRD-NNN | ... | ... | ... | ... |
+| PRD-01 | [Product feature] | ADR-02, ADR-008 | [Architecture decisions] | Product requirements necessitate architectural choices |
+| PRD-NN | ... | ... | ... | ... |
 
 ### 4.3 EARS → ADR Traceability
 
 | EARS ID | EARS Title | ADR IDs | ADR Titles | Relationship |
 |---------|------------|---------|------------|--------------|
-| EARS-001 | [Formal requirement] | ADR-003 | [Architecture decision] | Performance requirements drive architectural patterns |
-| EARS-NNN | ... | ... | ... | ... |
+| EARS-01 | [Formal requirement] | ADR-03 | [Architecture decision] | Performance requirements drive architectural patterns |
+| EARS-NN | ... | ... | ... | ... |
 
 ### 4.4 BDD → ADR Traceability
 
 | BDD ID | BDD Title | ADR IDs | ADR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| BDD-001 | [Test scenarios] | ADR-004 | [Architecture decision] | Testing requirements influence architectural approach |
-| BDD-NNN | ... | ... | ... | ... |
+| BDD-01 | [Test scenarios] | ADR-004 | [Architecture decision] | Testing requirements influence architectural approach |
+| BDD-NN | ... | ... | ... | ... |
 
 ### 4.5 Upstream Source Summary
 
@@ -224,35 +224,35 @@ python scripts/generate_traceability_matrices.py \
 
 ## 6. Downstream Traceability (OPTIONAL)
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NNN).
+> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
 
 ### 5.1 ADR → SYS Traceability
 
 | ADR ID | ADR Title | SYS IDs | SYS Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| ADR-001 | [Architecture decision] | SYS-001, SYS-002 | [System requirements] | Architectural decisions define system-level requirements |
-| ADR-NNN | ... | ... | ... | ... |
+| ADR-01 | [Architecture decision] | SYS-01, SYS-02 | [System requirements] | Architectural decisions define system-level requirements |
+| ADR-NN | ... | ... | ... | ... |
 
 ### 5.2 ADR → REQ Traceability
 
 | ADR ID | ADR Title | REQ IDs | REQ Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| ADR-001 | [Architecture decision] | REQ-001, REQ-002, REQ-003 | [Atomic requirements] | Architectural patterns require specific implementations |
-| ADR-NNN | ... | ... | ... | ... |
+| ADR-01 | [Architecture decision] | REQ-01, REQ-02, REQ-03 | [Atomic requirements] | Architectural patterns require specific implementations |
+| ADR-NN | ... | ... | ... | ... |
 
 ### 5.3 ADR → SPEC Traceability
 
 | ADR ID | ADR Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| ADR-001 | [Architecture decision] | SPEC-001, SPEC-002 | [Technical specifications] | Architectural decisions implemented in specifications |
-| ADR-NNN | ... | ... | ... | ... |
+| ADR-01 | [Architecture decision] | SPEC-01, SPEC-02 | [Technical specifications] | Architectural decisions implemented in specifications |
+| ADR-NN | ... | ... | ... | ... |
 
 ### 5.4 ADR → IMPL Traceability
 
 | ADR ID | ADR Title | IMPL IDs | IMPL Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| ADR-001 | [Architecture decision] | IMPL-001 | [Implementation plan] | Architectural changes require implementation planning |
-| ADR-NNN | ... | ... | ... | ... |
+| ADR-01 | [Architecture decision] | IMPL-01 | [Implementation plan] | Architectural changes require implementation planning |
+| ADR-NN | ... | ... | ... | ... |
 
 ### 5.5 Downstream Artifact Summary
 
@@ -272,7 +272,7 @@ python scripts/generate_traceability_matrices.py \
 
 | Decision Category | ADR IDs | Total | Description |
 |-------------------|---------|-------|-------------|
-| [Infrastructure] | ADR-001, ADR-002, ADR-003 | 3 | Cloud platform, deployment, hosting |
+| [Infrastructure] | ADR-01, ADR-02, ADR-03 | 3 | Cloud platform, deployment, hosting |
 | [Data Architecture] | ADR-004, ADR-005 | 2 | Database, storage, data flow |
 | [security] | ADR-006, ADR-007 | 2 | Authentication, encryption, access control |
 | [Integration] | ADR-008, ADR-009 | 2 | API design, messaging, protocols |
@@ -282,7 +282,7 @@ python scripts/generate_traceability_matrices.py \
 
 | Technology Area | Technologies Selected | ADR IDs | Status |
 |-----------------|----------------------|---------|--------|
-| [Cloud Platform] | [Azure/AWS/GCP] | ADR-001 | Implemented |
+| [Cloud Platform] | [Azure/AWS/GCP] | ADR-01 | Implemented |
 | [Database] | [PostgreSQL] | ADR-004 | Implemented |
 | [API Framework] | [FastAPI] | ADR-008 | Implemented |
 | [Authentication] | [OAuth 2.0] | ADR-006 | In Progress |
@@ -295,20 +295,20 @@ python scripts/generate_traceability_matrices.py \
 
 ```mermaid
 graph TD
-    BRD001[BRD-001: Business Req] --> ADR001[ADR-001: Cloud Platform]
-    PRD001[PRD-001: Product Feature] --> ADR002[ADR-002: API Design]
-    EARS001[EARS-001: Performance Req] --> ADR003[ADR-003: Caching Strategy]
+    BRD001[BRD-01: Business Req] --> ADR001[ADR-01: Cloud Platform]
+    PRD001[PRD-01: Product Feature] --> ADR002[ADR-02: API Design]
+    EARS001[EARS-01: Performance Req] --> ADR003[ADR-03: Caching Strategy]
 
-    ADR001 --> SYS001[SYS-001: Infrastructure Req]
-    ADR001 --> REQ001[REQ-001: Deployment Req]
-    ADR001 --> SPEC001[SPEC-001: Infra Spec]
+    ADR001 --> SYS001[SYS-01: Infrastructure Req]
+    ADR001 --> REQ01[REQ-01: Deployment Req]
+    ADR001 --> SPEC01[SPEC-01: Infra Spec]
 
-    ADR002 --> SYS002[SYS-002: API System Req]
-    ADR002 --> REQ002[REQ-002: API Endpoint Req]
-    ADR002 --> SPEC002[SPEC-002: API Spec]
+    ADR002 --> SYS002[SYS-02: API System Req]
+    ADR002 --> REQ02[REQ-02: API Endpoint Req]
+    ADR002 --> SPEC002[SPEC-02: API Spec]
 
-    ADR003 --> REQ003[REQ-003: Caching Req]
-    ADR003 --> SPEC003[SPEC-003: Cache Spec]
+    ADR003 --> REQ03[REQ-03: Caching Req]
+    ADR003 --> SPEC003[SPEC-03: Cache Spec]
 
     ADR001 -.depends on.-> ADR004[ADR-004: Database]
     ADR002 -.depends on.-> ADR001
@@ -318,8 +318,8 @@ graph TD
     style ADR002 fill:#f3e5f5
     style ADR003 fill:#f3e5f5
     style SYS001 fill:#fff3e0
-    style REQ001 fill:#e8f5e9
-    style SPEC001 fill:#e3f2fd
+    style REQ01 fill:#e8f5e9
+    style SPEC01 fill:#e3f2fd
 ```
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
@@ -328,10 +328,10 @@ graph TD
 
 | Source ADR | Target ADR | Dependency Type | Description |
 |------------|------------|-----------------|-------------|
-| ADR-001 | ADR-004 | Prerequisite | Cloud platform must be selected before database choice |
-| ADR-002 | ADR-001 | Related | API design depends on cloud platform capabilities |
-| ADR-003 | ADR-002 | Enhancement | Caching strategy enhances API performance |
-| ADR-NNN | ... | ... | ... |
+| ADR-01 | ADR-004 | Prerequisite | Cloud platform must be selected before database choice |
+| ADR-02 | ADR-01 | Related | API design depends on cloud platform capabilities |
+| ADR-03 | ADR-02 | Enhancement | Caching strategy enhances API performance |
+| ADR-NN | ... | ... | ... |
 
 ---
 
@@ -341,29 +341,29 @@ graph TD
 
 | ADR ID | Technology/Service | Est. Monthly Cost | Annual Cost | Impact Level |
 |--------|-------------------|-------------------|-------------|--------------|
-| ADR-001 | Azure Cloud Services | $X,XXX | $XX,XXX | High |
+| ADR-01 | Azure Cloud Services | $X,XXX | $XX,XXX | High |
 | ADR-004 | PostgreSQL Database | $XXX | $X,XXX | Medium |
 | ADR-006 | Auth0 Service | $XXX | $X,XXX | Medium |
-| ADR-NNN | ... | ... | ... | ... |
+| ADR-NN | ... | ... | ... | ... |
 | **Total** | | **$X,XXX** | **$XX,XXX** | |
 
 ### 8.2 Implementation Complexity
 
 | ADR ID | ADR Title | Complexity (1-5) | Effort (days) | Team Size | Status |
 |--------|-----------|------------------|---------------|-----------|--------|
-| ADR-001 | [Architecture decision] | 4 | 20 | 3 | Complete |
-| ADR-002 | [Architecture decision] | 3 | 10 | 2 | In Progress |
-| ADR-003 | [Architecture decision] | 2 | 5 | 1 | Not Started |
-| ADR-NNN | ... | ... | ... | ... | ... |
+| ADR-01 | [Architecture decision] | 4 | 20 | 3 | Complete |
+| ADR-02 | [Architecture decision] | 3 | 10 | 2 | In Progress |
+| ADR-03 | [Architecture decision] | 2 | 5 | 1 | Not Started |
+| ADR-NN | ... | ... | ... | ... | ... |
 
 ### 8.3 Risk Assessment
 
 | ADR ID | Identified Risks | Mitigation Strategies | Risk Level |
 |--------|------------------|----------------------|------------|
-| ADR-001 | Vendor lock-in | Use abstraction layer, containerization | Medium |
+| ADR-01 | Vendor lock-in | Use abstraction layer, containerization | Medium |
 | ADR-004 | Data migration complexity | Incremental migration, rollback plan | High |
 | ADR-006 | Third-party service dependency | Implement failover, local caching | Low |
-| ADR-NNN | ... | ... | ... |
+| ADR-NN | ... | ... | ... |
 
 ---
 
@@ -384,10 +384,10 @@ graph TD
 
 | ADR ID | SYS Status | REQ Status | SPEC Status | Code Status | Overall Status | Completion % |
 |--------|------------|------------|-------------|-------------|----------------|--------------|
-| ADR-001 | ✅ Complete | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
-| ADR-002 | ✅ Complete | 🟡 In Progress | 🟡 In Progress | ⏳ Pending | In Progress | 60% |
-| ADR-003 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | ⏳ Pending | Started | 25% |
-| ADR-NNN | ... | ... | ... | ... | ... | ... |
+| ADR-01 | ✅ Complete | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
+| ADR-02 | ✅ Complete | 🟡 In Progress | 🟡 In Progress | ⏳ Pending | In Progress | 60% |
+| ADR-03 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | ⏳ Pending | Started | 25% |
+| ADR-NN | ... | ... | ... | ... | ... | ... |
 
 ### 9.3 Gap Analysis
 

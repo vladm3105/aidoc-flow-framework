@@ -1,10 +1,10 @@
 ---
-doc_id: BRD-{NNN}
+doc_id: BRD-{NN}
 section: {S}
 title: "{Section Title}"
-parent_doc: "BRD-{NNN}.0_index.md"
-prev_section: "BRD-{NNN}.{S-1}_{prev_slug}.md"
-next_section: "BRD-{NNN}.{S+1}_{next_slug}.md"
+parent_doc: "BRD-{NN}.0_index.md"
+prev_section: "BRD-{NN}.{S-1}_{prev_slug}.md"
+next_section: "BRD-{NN}.{S+1}_{next_slug}.md"
 tags:
   - section-file
   - brd-section
@@ -23,11 +23,11 @@ custom_fields:
   index_role: false
 ---
 
-# BRD-{NNN}.{S}: {Section Title}
+# BRD-{NN}.{S}: {Section Title}
 
-> **Navigation**: [Index](BRD-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](BRD-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
 >
-> **Parent Document**: BRD-{NNN}
+> **Parent Document**: BRD-{NN}
 > **Section**: {S} of {N}
 > **Layer**: 1 - Business Requirements
 
@@ -59,10 +59,10 @@ custom_fields:
 
 ## References
 
-- **Parent Document**: @ref: BRD-{NNN}.0
-- **Related Sections**: @ref: BRD-{NNN}.{related}
-- **Downstream**: @ref: PRD-{NNN} (Product Requirements)
+- **Parent Document**: @ref: BRD-{NN}.0
+- **Related Sections**: @ref: BRD-{NN}.{related}
+- **Downstream**: @ref: PRD-{NN} (Product Requirements)
 
 ---
 
-> **Navigation**: [Index](BRD-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](BRD-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})

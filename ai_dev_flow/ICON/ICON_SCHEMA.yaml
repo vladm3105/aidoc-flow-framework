@@ -101,7 +101,7 @@ structure:
   required_sections:
     - pattern: "^# ICON-\\d{3}:"
       name: "Title (H1)"
-      description: "Single H1 with format ICON-NNN: Title"
+      description: "Single H1 with format ICON-NN: Title"
 
     - pattern: "^## 1\\. Pre-Creation Checklist$"
       name: "Pre-Creation Checklist"
@@ -185,7 +185,7 @@ structure:
   # File naming convention
   file_naming:
     pattern: "^ICON-\\d{3}_[a-z0-9_]+\\.md$"
-    description: "Format: ICON-NNN_descriptive_name.md"
+    description: "Format: ICON-NN_descriptive_name.md"
 
 # =============================================================================
 # ICON-Specific Patterns
@@ -281,7 +281,7 @@ validation_rules:
     - rule: "contract_type must be one of: protocol, exception, state-machine, data-model, di-interface"
       severity: error
 
-    - rule: "provider_tasks must reference valid TASKS-NNN format"
+    - rule: "provider_tasks must reference valid TASKS-NN format"
       severity: error
 
     - rule: "consumer_count must be integer >= 0"
@@ -304,7 +304,7 @@ validation_rules:
     - rule: "Sections must be numbered 1-10 sequentially"
       severity: error
 
-    - rule: "File name must match ICON-NNN_name.md format"
+    - rule: "File name must match ICON-NN_name.md format"
       severity: warning
 
   # Content validation
@@ -337,13 +337,13 @@ traceability:
       - "@prd: PRD.NN.EE.SS"
       - "@ears: EARS.NN.EE.SS"
       - "@bdd: BDD.NN.EE.SS"
-      - "@adr: ADR-NNN"
+      - "@adr: ADR-NN"
       - "@sys: SYS.NN.EE.SS"
       - "@req: REQ.NN.EE.SS"
-      - "@spec: SPEC-NNN"
+      - "@spec: SPEC-NN"
     optional:
       - "@impl: IMPL.NN.EE.SS"
-      - "@ctr: CTR-NNN"
+      - "@ctr: CTR-NN"
     description: "Layer 11 requires 8 upstream artifact tags (10 including optional IMPL and CTR)"
 
   upstream:
@@ -364,14 +364,14 @@ traceability:
 
   # ICON-specific tags
   icon_tags:
-    format: "@icon: ICON-NNN:ContractName"
+    format: "@icon: ICON-NN:ContractName"
     role_tag: "@icon-role: provider|consumer"
     description: "Links to implementation contract definitions"
 
   same_type:
     optional:
       - type: ICON
-        format: "@related-icon: ICON-NNN"
+        format: "@related-icon: ICON-NN"
         description: "Related ICON document (e.g., exception hierarchy for protocol)"
 
 # =============================================================================
@@ -391,8 +391,8 @@ error_messages:
   ICON-E010: "Missing Contract Definition section (Section 4)"
   ICON-E011: "Missing Traceability section (Section 10)"
   ICON-E012: "Contract Definition has no typed interface code"
-  ICON-E013: "File name does not match ICON-NNN_name.md format"
-  ICON-E014: "Provider TASKS not in valid TASKS-NNN format"
+  ICON-E013: "File name does not match ICON-NN_name.md format"
+  ICON-E014: "Provider TASKS not in valid TASKS-NN format"
   ICON-W001: "Consumer count below standalone threshold (5+)"
   ICON-W002: "Contract size below standalone threshold (500 lines)"
   ICON-W003: "Missing upstream traceability tags (require 8: @brd through @spec)"

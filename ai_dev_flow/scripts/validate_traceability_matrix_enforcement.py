@@ -129,7 +129,7 @@ class TraceabilityValidator:
 
     def _check_references(self, content: str) -> List[str]:
         """Check if all references in matrix resolve"""
-        # Extract all [TYPE-NNN] style references
+        # Extract all [TYPE-NN] style references
         references = re.findall(r'\[([A-Z]+-[0-9]+)\]', content)
         unresolved = []
 

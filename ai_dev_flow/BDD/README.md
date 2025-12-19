@@ -84,12 +84,12 @@ Business Requirements (PRD) → BDD Scenarios ← Technical Design → Implement
 ### File Dependencies and Sequence
 
 ```
-1. PRD-NNN.md (Business Requirements)     ← Foundation documents
-2. EARS-NNN.md (Atomic Requirements)      ← Prerequisite - provides WHEN/THEN statements
-3. ADR-NNN.md (Architecture Decisions)    ← Optional but helpful context
-4. BDD-NNN.feature (BDD Scenarios)        ← Created from steps 1-3
-5. SPEC-NNN.yaml (Technical Specs)        ← Can start in parallel with BDD
-6. TASKS-NNN.md (Implementation Plans)    ← Uses BDD scenarios for validation
+1. PRD-NN.md (Business Requirements)     ← Foundation documents
+2. EARS-NN.md (Atomic Requirements)      ← Prerequisite - provides WHEN/THEN statements
+3. ADR-NN.md (Architecture Decisions)    ← Optional but helpful context
+4. BDD-NN.feature (BDD Scenarios)        ← Created from steps 1-3
+5. SPEC-NN.yaml (Technical Specs)        ← Can start in parallel with BDD
+6. TASKS-NN.md (Implementation Plans)    ← Uses BDD scenarios for validation
 7. Code Implementation                    ← Validates against BDD scenarios
 8. Automated Tests                        ← Generated from BDD scenarios
 ```
@@ -119,14 +119,14 @@ Feature files include mandatory traceability linking:
 
 ```gherkin
 # REQUIREMENTS VERIFIED:
-#   - REQ-NNN: [Brief description]
+#   - REQ-NN: [Brief description]
 # TRACEABILITY:
-#   Upstream: [REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN), [ADR-NNN](../../../ADR/ADR-NNN_...md#ADR-NNN)
-#   Downstream: Spec(../SPEC/.../SPEC-NNN_...yaml), Code(`component.module`)
+#   Upstream: [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN), [ADR-NN](../../../ADR/ADR-NN_...md#ADR-NN)
+#   Downstream: Spec(../SPEC/.../SPEC-NN_...yaml), Code(`component.module`)
 
-@requirement:[REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN)
-@adr:[ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN)
-@bdd:[BDD-NNN:scenarios](feature_name.feature#scenarios)
+@requirement:[REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN)
+@adr:[ADR-NN](../ADR/ADR-NN_...md#ADR-NN)
+@bdd:[BDD-NN:scenarios](feature_name.feature#scenarios)
 Feature: Feature Title
 ```
 
@@ -251,18 +251,18 @@ And cache hit metrics are incremented
 ## File Naming Convention
 
 ```
-BDD-NNN_descriptive_requirements.feature
+BDD-NN_descriptive_requirements.feature
 ```
 
 Where:
 - `BDD` is the constant prefix
-- `NNN` is the three-digit sequence number (001, 002, 003, etc.)
+- `NNN` is the 2+ digit sequence number (01, 02, 003, etc.)
 - `descriptive_requirements` uses snake_case focusing on what requirements are being validated
 - `.feature` is the mandatory Gherkin file extension
 
 **Examples:**
-- `BDD-001_external_api_integration_requirements.feature`
-- `BDD-003_risk_limits_requirements.feature`
+- `BDD-01_external_api_integration_requirements.feature`
+- `BDD-03_risk_limits_requirements.feature`
 - `BDD-042_ml_model_serving_requirements.feature`
 
 ## Tagging Standards
@@ -271,13 +271,13 @@ Tags establish traceability and enable selective execution:
 
 ### Requirement Tags - Mandatory
 ```gherkin
-@requirement:[REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN)
-@requirement:[REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN):L23
+@requirement:[REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN)
+@requirement:[REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN):L23
 ```
 
 ### Architecture Tags
 ```gherkin
-@adr:[ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN)
+@adr:[ADR-NN](../ADR/ADR-NN_...md#ADR-NN)
 ```
 
 ### Custom Tags
@@ -535,4 +535,4 @@ Scenario: Response within time limits
 
 ## Example BDD Template
 
-See `BDD-001_external_api_integration_requirements.feature` for a complete example of a well-structured BDD feature file that follows these conventions.
+See `BDD-01_external_api_integration_requirements.feature` for a complete example of a well-structured BDD feature file that follows these conventions.

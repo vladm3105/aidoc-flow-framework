@@ -34,7 +34,7 @@ Tasks create the **code generation roadmap** that:
 | **Scope** | Multi-component systems | Single YAML SPEC implementation |
 | **Audience** | Project managers, architects | AI code generators, developers |
 | **Content** | Phases, teams, deliverables (CTR/SPEC/TASKS) | Exact steps to implement SPEC in code |
-| **Example** | "Phase 1: Build resource management (Week 1-2)" | "Step 3: Generate PositionLimitService class from SPEC-003.yaml line 45-78" |
+| **Example** | "Phase 1: Build resource management (Week 1-2)" | "Step 3: Generate PositionLimitService class from SPEC-03.yaml line 45-78" |
 
 **Flow**: IMPL Plans organize work → Create SPEC → TASKS plans code generation from SPEC → Code generated
 
@@ -64,14 +64,14 @@ Tasks are the **code generation bridge** that connects YAML specifications to ex
 Comprehensive links establish implementation context:
 
 ```markdown
-@requirement:[REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN)
-@adr:[ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN)
-@PRD:[PRD-NNN](../PRD/PRD-NNN_...md)
-@SYS:[SYS-NNN](../SYS/SYS-NNN_...md)
-@EARS:[EARS-NNN](../EARS/EARS-NNN_...md)
-@spec:[SPEC-NNN](../SPEC/.../SPEC-NNN_...yaml)
+@requirement:[REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN)
+@adr:[ADR-NN](../ADR/ADR-NN_...md#ADR-NN)
+@PRD:[PRD-NN](../PRD/PRD-NN_...md)
+@SYS:[SYS-NN](../SYS/SYS-NN_...md)
+@EARS:[EARS-NN](../EARS/EARS-NN_...md)
+@spec:[SPEC-NN](../SPEC/.../SPEC-NN_...yaml)
 
-@bdd:[BDD-NNN:scenarios](../BDD/BDD-NNN.feature#scenarios)
+@bdd:[BDD-NN:scenarios](../BDD/BDD-NN.feature#scenarios)
 ```
 
 ### Scope Definition
@@ -123,29 +123,29 @@ Tasks map to specific architectural components:
 
 ```
 TASKS/
-├── TASKS-001_resource_limit_service_tasks.md     # Service component
-├── TASKS-002_ib_gateway_integration_tasks.md      # Integration component
-├── TASKS-003_external_api_integration_tasks.md    # API client component
+├── TASKS-01_resource_limit_service_tasks.md     # Service component
+├── TASKS-02_ib_gateway_integration_tasks.md      # Integration component
+├── TASKS-03_external_api_integration_tasks.md    # API client component
 └── TASKS-004_user_interface_implementation_tasks.md # UI component
 ```
 
 ## File Naming Convention
 
 ```
-TASKS-NNN_descriptive_component_tasks.md
+TASKS-NN_descriptive_component_tasks.md
 ```
 
 Where:
 - `TASKS` is the constant prefix indicating AI Task instructions
-- `NNN` is the three-digit sequence number (001, 002, 003, etc.)
+- `NNN` is the 2+ digit sequence number (01, 02, 003, etc.)
 - `descriptive_component` uses snake_case describing the component being implemented
 - `tasks` is the constant suffix indicating implementation tasks
 - `.md` is the required file extension
 
 **Examples:**
-- `TASKS-001_resource_limit_service_tasks.md`
-- `TASKS-002_ib_gateway_integration_tasks.md`
-- `TASKS-003_external_api_integration_tasks.md`
+- `TASKS-01_resource_limit_service_tasks.md`
+- `TASKS-02_ib_gateway_integration_tasks.md`
+- `TASKS-03_external_api_integration_tasks.md`
 
 ## Writing Guidelines
 
@@ -216,9 +216,9 @@ Review related artifacts to understand requirements:
 
 ```markdown
 Analysis Steps:
-- Review SPEC-NNN.yaml for interface and behavioral specifications
+- Review SPEC-NN.yaml for interface and behavioral specifications
 - Review BDD scenarios for test case coverage requirements
-- Review ADR-NNN for architectural constraints and decisions
+- Review ADR-NN for architectural constraints and decisions
 ```
 
 ### 2. Component Decomposition
@@ -432,8 +432,8 @@ Track relationships between implementation tasks:
 
 ```markdown
 ## Dependencies
-**Blocks**: TASKS-005_database_migration (requires completed service)
-**Blocked By**: TASKS-003_authentication_service (required for security)
+**Blocks**: TASKS-05_database_migration (requires completed service)
+**Blocked By**: TASKS-03_authentication_service (required for security)
 **Related**: TASKS-006_monitoring_implementation (parallel monitoring setup)
 ```
 
@@ -481,7 +481,7 @@ Capture lessons for future task planning:
 python validate_tasks.py --directory TASKS/
 
 # Check task completeness
-python check_task_coverage.py --task-file TASKS/TASKS-001_*.md
+python check_task_coverage.py --task-file TASKS/TASKS-01_*.md
 
 # Generate implementation reports
 python generate_task_reports.py --tasks TASKS/TASKS-*.md --format html
@@ -490,7 +490,7 @@ python generate_task_reports.py --tasks TASKS/TASKS-*.md --format html
 ### Progress Tracking
 ```bash
 # Update task status
-python update_task_status.py --task TASKS-001 --status completed
+python update_task_status.py --task TASKS-01 --status completed
 
 # Generate dependency graphs
 python show_task_dependencies.py --output dependencies.png
@@ -499,14 +499,14 @@ python show_task_dependencies.py --output dependencies.png
 ### Code Generation Integration
 ```bash
 # Generate implementation from task
-ai-codegen --task TASKS/TASKS-001_resource_limit_service_tasks.md --framework fastapi
+ai-codegen --task TASKS/TASKS-01_resource_limit_service_tasks.md --framework fastapi
 
 # Validate generated code against contracts
 ```
 
 ## Example Task Template
 
-See `TASKS-001_resource_limit_service_tasks.md` for a complete example of a well-structured tasks document that includes scope definition, implementation plan, constraints, acceptance criteria, and comprehensive traceability.
+See `TASKS-01_resource_limit_service_tasks.md` for a complete example of a well-structured tasks document that includes scope definition, implementation plan, constraints, acceptance criteria, and comprehensive traceability.
 
 ## ICON Contract Integration Rules
 
@@ -531,7 +531,7 @@ grep -r "## 8. Implementation Contracts" docs/TASKS/ | wc -l
 
 **Check specific ICON integration**:
 ```bash
-grep -r "@icon: ICON-001" docs/TASKS/
+grep -r "@icon: ICON-01" docs/TASKS/
 ```
 
 **Check provider/consumer roles**:
@@ -545,25 +545,25 @@ grep -r "@icon-role: consumer" docs/TASKS/
 ❌ **Anti-Pattern 1**: ICON file exists but 0 TASKS references
 ```bash
 # Bad: This should never return 0
-grep -r "@icon: ICON-001" docs/TASKS/ | wc -l
+grep -r "@icon: ICON-01" docs/TASKS/ | wc -l
 ```
 
 ❌ **Anti-Pattern 2**: Provider TASKS missing section 8
 ```
-TASKS-001 provides ICON-001
-But TASKS-001 has no "## 8. Implementation Contracts"
+TASKS-01 provides ICON-01
+But TASKS-01 has no "## 8. Implementation Contracts"
 ```
 
 ❌ **Anti-Pattern 3**: Consumer TASKS missing section 8
 ```
-TASKS-002 consumes ICON-001
-But TASKS-002 has no "## 8. Implementation Contracts"
+TASKS-02 consumes ICON-01
+But TASKS-02 has no "## 8. Implementation Contracts"
 ```
 
 ✅ **Correct Pattern**: Bidirectional integration
 ```
-ICON-001 created → TASKS-001 section 8.1 added → TASKS-002 section 8.2 added
-grep "@icon: ICON-001" docs/TASKS/ returns 2+ matches
+ICON-01 created → TASKS-01 section 8.1 added → TASKS-02 section 8.2 added
+grep "@icon: ICON-01" docs/TASKS/ returns 2+ matches
 ```
 
 ---

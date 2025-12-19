@@ -254,8 +254,8 @@ AI Assistant **MUST**:
 
 ```bash
 # For each template file copied:
-sed -i 's/\[RESOURCE_COLLECTION\]/collection/g' docs/REQ/REQ-001_example.md
-sed -i 's/\[RESOURCE_ITEM\]/Position/g' docs/REQ/REQ-001_example.md
+sed -i 's/\[RESOURCE_COLLECTION\]/collection/g' docs/REQ/REQ-01_example.md
+sed -i 's/\[RESOURCE_ITEM\]/Position/g' docs/REQ/REQ-01_example.md
 # ... apply all domain mappings
 ```
 
@@ -319,16 +319,16 @@ touch docs/TASKS/TASKS-000_index.md
 
 | ID | Title | Status | Priority | Created | Last Modified |
 |----|-------|--------|----------|---------|---------------|
-| {TYPE}-001 | [First Document Title](../path/to/doc.md) | Draft | High | YYYY-MM-DD | YYYY-MM-DD |
+| {TYPE}-01 | [First Document Title](../path/to/doc.md) | Draft | High | YYYY-MM-DD | YYYY-MM-DD |
 
 ---
 
 ## Next Available ID
 
-**Next ID**: {TYPE}-001
+**Next ID**: {TYPE}-01
 
 **ID Assignment Rules**:
-- Sequential numbering (001-999, then 1000+)
+- Sequential numbering (01-99, then 100+)
 - Never reuse IDs
 - Stable once assigned
 - Update this section when creating new documents
@@ -416,24 +416,24 @@ AI Assistant **MUST** follow these rules when creating **documentation** files:
 
 #### Format
 ```
-{TYPE}-{NNN}_{descriptive_slug}.{ext}
+{TYPE}-{NN}_{descriptive_slug}.{ext}
 ```
 
 or for sub-documents:
 ```
-{TYPE}-{NNN}-{YY}_{descriptive_slug}.{ext}
+{TYPE}-{NN}-{YY}_{descriptive_slug}.{ext}
 ```
 
 #### Components
 - **{TYPE}**: Document type (BRD, PRD, REQ, ADR, CTR, SPEC, TASKS, etc.)
-- **{NNN}**: Sequential number (001-999, then 1000+)
+- **{NN}**: Sequential number (01-99, then 100+)
 - **{YY}**: Sub-document number (01-99, then 100+) - optional
 - **{descriptive_slug}**: Lowercase, underscores, describes content
 - **{ext}**: File extension (.md, .yaml, .feature)
 
 #### Examples
 ```
-REQ-001_resource_limit_enforcement.md
+REQ-01_resource_limit_enforcement.md
 ADR-005_database_selection.md
 CTR-012_data_service_api.md
 CTR-012_data_service_api.yaml  (dual-file contract)
@@ -477,12 +477,12 @@ AI Assistant **MUST** use this format for all document references:
 #### Examples
 ```markdown
 # Nested folder structure (BRD/PRD/ADR - DEFAULT)
-[BRD-001](../BRD/BRD-001/BRD-001.0_index.md#BRD-001)
-[PRD-002](../PRD/PRD-002/PRD-002.0_index.md#PRD-002)
+[BRD-01](../BRD/BRD-01/BRD-01.0_index.md#BRD-01)
+[PRD-02](../PRD/PRD-02/PRD-02.0_index.md#PRD-02)
 [ADR-005](../ADR/ADR-005/ADR-005.0_index.md#ADR-005)
 
 # Flat structure (REQ, SPEC, CTR, etc.)
-[REQ-003](../REQ/risk/REQ-003_resource_limit.md#REQ-003)
+[REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)
 [CTR-012](../CTR/CTR-012_data_service_api.md#CTR-012)
 [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
 ```
@@ -516,7 +516,7 @@ Every document **MUST** include section 7 with:
 | `@bdd: BDD.15.13.01` | BDD Scenarios | Acceptance tests |
 
 ### Primary Anchor/ID
-- **REQ-003**: resource limit enforcement requirement
+- **REQ-03**: resource limit enforcement requirement
 
 ### Code Paths
 - `src/risk/resource_limiter.py::PositionLimiter.enforce_limit()`
@@ -836,7 +836,7 @@ class PositionLimiter:
     """
     resource limit enforcement per [REQ-023](../docs/REQ/risk/REQ-023_resource_limit.md).
 
-    Architecture: [ADR-008](../docs/ADR/ADR-008/ADR-008.0_index.md) - Real-time enforcement
+    Architecture: [ADR-008](../docs/ADR/ADR-008_realtime_enforcement/ADR-008.0_realtime_enforcement_index.md) - Real-time enforcement
     Acceptance Tests: [BDD-015](../docs/BDD/BDD-015_resource_limits.feature)
     """
 
@@ -936,7 +936,7 @@ Claude Code:
    User response: "Yes - REST API for market data"
    Action: "Including CTR layer in workflow"
 6. Index Initialization: "Creating index files for all document types... ✓ Complete"
-7. Ready: "Project initialized. Ready to create BRD-001. Next: Define business objectives."
+7. Ready: "Project initialized. Ready to create BRD-01. Next: Define business objectives."
 ```
 
 ### Gemini CLI Example
@@ -953,7 +953,7 @@ Gemini CLI:
    User: "Yes - GraphQL API for workspace management"
    Action: "Including CTR layer"
 5. Templates: "Initializing with SaaS examples..."
-6. Status: "✓ Project ready. Starting with BRD-001..."
+6. Status: "✓ Project ready. Starting with BRD-01..."
 ```
 
 ---
@@ -1038,7 +1038,7 @@ Add visual indicators for primary/fallback documents:
 **Recommended Approach:**
 ```markdown
 :::recommended Primary Implementation (AI Agent-Based)
-**Architecture**: AI Agent-Based Platform (@adr: ADR-002)
+**Architecture**: AI Agent-Based Platform (@adr: ADR-02)
 **Priority**: ✅ Recommended approach
 **Status**: Active development
 
@@ -1049,7 +1049,7 @@ Add visual indicators for primary/fallback documents:
 **Fallback Approach:**
 ```markdown
 :::fallback Fallback Implementation (Traditional)
-**Architecture**: Traditional Platform (@adr: ADR-001)
+**Architecture**: Traditional Platform (@adr: ADR-01)
 **Priority**: ⚠️ Fallback option (use only if primary not viable)
 **Status**: Reference implementation
 
@@ -1130,7 +1130,7 @@ LOOP:
 | XDOC-003 | Upstream document file not found | ERROR | **REMOVE functionality requiring it** |
 | XDOC-004 | Title mismatch with upstream | WARNING | Update title to match upstream |
 | XDOC-005 | Referencing deprecated requirement | WARNING | Remove or suggest replacement |
-| XDOC-006 | Tag format invalid | ERROR | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| XDOC-006 | Tag format invalid | ERROR | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | XDOC-007 | Gap in cumulative tag chain | ERROR | Add missing tags from chain |
 | XDOC-008 | Broken internal link/anchor | ERROR | Fix path or remove link |
 | XDOC-009 | Missing traceability section | ERROR | Add template section |
@@ -1150,12 +1150,12 @@ The following issues are fixed automatically by the validation script:
 
 | Issue Type | Fix Action | Example |
 |------------|------------|---------|
-| Tag format errors | Correct to TYPE.NN.EE.SS or TYPE-NNN | `@brd: brd001` → `@brd: BRD.01.01.01` |
+| Tag format errors | Correct to TYPE.NN.TT.SS or TYPE-NN | `@brd: brd001` → `@brd: BRD.01.01.01` |
 | Missing cumulative tags | Add with upstream reference | Add `@prd: PRD.01.01.01` for EARS layer |
 | Broken relative paths | Recalculate correct path | `../REQ/file.md` → `../../REQ/file.md` |
 | Missing traceability section | Insert from template | Add Section 7 template |
 | Title/reference mismatches | Update to match upstream | Sync title with BRD source |
-| Deprecated references | Replace with null + comment | `@adr: ADR-003` → `@adr: null <!-- deprecated -->` |
+| Deprecated references | Replace with null + comment | `@adr: ADR-03` → `@adr: null <!-- deprecated -->` |
 
 ### Backup Strategy
 

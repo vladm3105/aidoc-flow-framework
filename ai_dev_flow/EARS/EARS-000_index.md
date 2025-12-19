@@ -74,10 +74,10 @@ When creating a new EARS document:
 1. **Copy Template**:
    ```bash
    cp ai_dev_flow/EARS/EARS-TEMPLATE.md \
-      docs/EARS/EARS-NNN_requirement_area.md
+      docs/EARS/EARS-NN_requirement_area.md
    ```
 
-2. **Assign EARS ID**: Use next sequential number (EARS-001, EARS-002, ...)
+2. **Assign EARS ID**: Use next sequential number (EARS-01, EARS-02, ...)
 
 3. **Update This Index**: Add new row to table above
 
@@ -86,7 +86,7 @@ When creating a new EARS document:
 ## Allocation Rules
 
 - **Numbering**: Allocate sequentially starting at `001`
-- **One Area Per File**: Each `EARS-NNN` file covers a coherent requirement area
+- **One Area Per File**: Each `EARS-NN` file covers a coherent requirement area
 - **Slugs**: Short, descriptive, lower_snake_case
 - **Testability**: Every requirement must be verifiable through testing
 - **Index Updates**: Add entry for every new EARS document

@@ -92,9 +92,9 @@ ls -la docs/IPLAN/  # Layer 12 - Implementation Plans
 
 | Tag | Required for Your Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
-| @ears | Yes/No | EARS-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
+| @ears | Yes/No | EARS-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 ### Step 3: Decision Rules
@@ -108,7 +108,7 @@ ls -la docs/IPLAN/  # Layer 12 - Implementation Plans
 
 ### Traceability Tag Rules
 
-- **NEVER** use placeholder IDs like `BRD-XXX`, `PRD-NNN`, or `TBD`
+- **NEVER** use placeholder IDs like `BRD-XXX`, `PRD-NN`, or `TBD`
 - **NEVER** reference documents that don't exist
 - **ALWAYS** verify document exists before adding reference
 - **USE** `null` only when artifact type is genuinely not applicable
@@ -125,7 +125,7 @@ ls -la docs/IPLAN/  # Layer 12 - Implementation Plans
 
 **✅ CORRECT** (verified references):
 ```markdown
-@brd: BRD.01.01.30  # Verified: docs/BRD/BRD-001_project.md exists
+@brd: BRD.01.01.30  # Verified: docs/BRD/BRD-01_project.md exists
 @prd: null         # No PRD exists for this feature (legitimate)
 @adr: ADR-005      # Verified: docs/ADR/ADR-005_architecture.md exists
 ```
@@ -338,24 +338,24 @@ Document the business and product requirements that drive this specification.
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-NNN](../BRD/BRD-NNN_...md) | [Business requirement title] | sections X.Y | Business objectives driving these requirements |
-| PRD | [PRD-NNN](../PRD/PRD-NNN_...md) | [Product requirement title] | Functional Requirements X | Product features and user needs |
-| SYS | [SYS-NNN](../SYS/SYS-NNN_...md) | [System requirement title] | System architecture section X | Technical system constraints |
-| EARS | [EARS-NNN](../EARS/EARS-NNN_...md) | [EARS requirement title] | Statement IDs X-Y | Formal requirements driving this specification |
+| BRD | [BRD-NN](../BRD/BRD-NN_...md) | [Business requirement title] | sections X.Y | Business objectives driving these requirements |
+| PRD | [PRD-NN](../PRD/PRD-NN_...md) | [Product requirement title] | Functional Requirements X | Product features and user needs |
+| SYS | [SYS-NN](../SYS/SYS-NN_...md) | [System requirement title] | System architecture section X | Technical system constraints |
+| EARS | [EARS-NN](../EARS/EARS-NN_...md) | [EARS requirement title] | Statement IDs X-Y | Formal requirements driving this specification |
 
 ### Downstream Artifacts
 Document the technical specifications and designs derived from this document.
 
 | Artifact Type | Document ID | Document Title | Relationship |
 |---------------|-------------|----------------|--------------|
-| ADR | [ADR-NNN](../ADR/ADR-NNN_...md#ADR-NNN) | [Architecture decision title] | Architectural approach implementing these requirements |
-| REQ | [REQ-NNN](../REQ/.../REQ-NNN_...md#REQ-NNN) | [Detailed requirement] | Detailed atomic requirement |
-| IMPL | [IMPL-NNN](../IMPL/IMPL-NNN_...md#IMPL-NNN) | [Implementation plan] | Project management plan (WHO/WHEN) |
-| CTR | [CTR-NNN](../CTR/CTR-NNN_...md#CTR-NNN) | [API contract] | Interface contract (if interface requirement) |
-| BDD | [BDD-NNN](../BDD/BDD-NNN_...feature#scenarios) | [Test scenarios] | Acceptance test scenarios |
-| SPEC | [SPEC-NNN](../SPEC/.../SPEC-NNN_...yaml) | [Technical specification] | Implementation blueprint (HOW to build) |
-| TASKS | [TASKS-NNN](../TASKS/TASKS-NNN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code |
-| IPLAN | [IPLAN-NNN](../IPLAN/IPLAN-NNN_...md) | [Implementation work plan] | Session context with bash commands to execute TASKS |
+| ADR | [ADR-NN](../ADR/ADR-NN_...md#ADR-NN) | [Architecture decision title] | Architectural approach implementing these requirements |
+| REQ | [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN) | [Detailed requirement] | Detailed atomic requirement |
+| IMPL | [IMPL-NN](../IMPL/IMPL-NN_...md#IMPL-NN) | [Implementation plan] | Project management plan (WHO/WHEN) |
+| CTR | [CTR-NN](../CTR/CTR-NN_...md#CTR-NN) | [API contract] | Interface contract (if interface requirement) |
+| BDD | [BDD-NN](../BDD/BDD-NN_...feature#scenarios) | [Test scenarios] | Acceptance test scenarios |
+| SPEC | [SPEC-NN](../SPEC/.../SPEC-NN_...yaml) | [Technical specification] | Implementation blueprint (HOW to build) |
+| TASKS | [TASKS-NN](../TASKS/TASKS-NN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code |
+| IPLAN | [IPLAN-NN](../IPLAN/IPLAN-NN_...md) | [Implementation work plan] | Session context with bash commands to execute TASKS |
 
 ### Same-Type References (Conditional)
 
@@ -363,17 +363,17 @@ Document the technical specifications and designs derived from this document.
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | [REQ-001](../REQ/.../REQ-001_...md) | [Related requirement] | Shared domain context |
-| Depends | [REQ-002](../REQ/.../REQ-002_...md) | [Prerequisite requirement] | Must complete before this |
+| Related | [REQ-01](../REQ/.../REQ-01_...md) | [Related requirement] | Shared domain context |
+| Depends | [REQ-02](../REQ/.../REQ-02_...md) | [Prerequisite requirement] | Must complete before this |
 
 **Tags**:
 ```markdown
-@related-req: REQ-001
-@depends-req: REQ-002
+@related-req: REQ-01
+@depends-req: REQ-02
 ```
 
 ### Document Links
-- **Anchors/IDs**: `#PRIMARY-ID` (e.g., `#REQ-003`, `#ADR-033`, `#IMPL-001`)
+- **Anchors/IDs**: `#PRIMARY-ID` (e.g., `#REQ-03`, `#ADR-033`, `#IMPL-01`)
 - **Code Path(s)**: `path/to/implementation.py` (if applicable)
 - **Cross-references**: [Related documents and their relationship]
 ```
@@ -394,7 +394,7 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 @sys: SYS.08.25.01
 @req: REQ.03.26.01
 @adr: ADR-033
-@spec: SPEC-003
+@spec: SPEC-03
 @ctr: CTR-001
 @test: BDD.03.13.01, BDD.03.13.05
 @impl-status: complete
@@ -403,7 +403,7 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 
 ### Tag Structure
 
-**Format:** `@tag-type: TYPE.NN.EE.SS` (Unified Element ID format)
+**Format:** `@tag-type: TYPE.NN.TT.SS` (Unified Element ID format)
 
 **Components:**
 - **Tag Type:** Document type tags or valid non-document tags (see tables below)
@@ -419,8 +419,8 @@ The SDD framework uses two distinct notation systems for cross-references, each 
 
 | Notation | Format       | Artifacts                               | Purpose                                                             |
 |----------|--------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dash     | TYPE-NN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 
@@ -429,9 +429,9 @@ The SDD framework uses two distinct notation systems for cross-references, each 
 
 **Why Two Systems?**
 
-1. **Dash notation** (`TYPE-NNN`): Used for technical artifacts that are referenced as complete documents. Each ADR, SPEC, or CTR file is a self-contained unit.
+1. **Dash notation** (`TYPE-NN`): Used for technical artifacts that are referenced as complete documents. Each ADR, SPEC, or CTR file is a self-contained unit.
 
-2. **Dot notation** (`TYPE.NN.EE.SS`): Used for requirement artifacts that contain multiple numbered elements within a single document. The element type (EE) and sequence (SS) identify the specific element inside the document.
+2. **Dot notation** (`TYPE.NN.TT.SS`): Used for requirement artifacts that contain multiple numbered elements within a single document. The element type (EE) and sequence (SS) identify the specific element inside the document.
 
 ### Complete Tag Reference
 
@@ -445,14 +445,14 @@ These tags reference documents in the SDD workflow hierarchy. Use the document t
 | `@prd` | 2 | Product Requirements | `@prd: PRD.NN.EE.SS` | `@prd: PRD.03.01.02` |
 | `@ears` | 3 | EARS Statements | `@ears: EARS.NN.EE.SS` | `@ears: EARS.01.24.03` |
 | `@bdd` | 4 | BDD Scenarios | `@bdd: BDD.NN.EE.SS` | `@bdd: BDD.03.13.07` |
-| `@adr` | 5 | Architecture Decisions | `@adr: ADR-NNN` | `@adr: ADR-033` |
+| `@adr` | 5 | Architecture Decisions | `@adr: ADR-NN` | `@adr: ADR-033` |
 | `@sys` | 6 | System Requirements | `@sys: SYS.NN.EE.SS` | `@sys: SYS.08.25.01` |
 | `@req` | 7 | Atomic Requirements | `@req: REQ.NN.EE.SS` | `@req: REQ.03.26.01` |
 | `@impl` | 8 | Implementation Plans | `@impl: IMPL.NN.EE.SS` | `@impl: IMPL.01.28.01` |
-| `@ctr` | 9 | Data Contracts | `@ctr: CTR-NNN` | `@ctr: CTR-001` |
-| `@spec` | 10 | Technical Specs | `@spec: SPEC-NNN` | `@spec: SPEC-003` |
+| `@ctr` | 9 | Data Contracts | `@ctr: CTR-NN` | `@ctr: CTR-001` |
+| `@spec` | 10 | Technical Specs | `@spec: SPEC-NN` | `@spec: SPEC-03` |
 | `@tasks` | 11 | Task Breakdowns | `@tasks: TASKS.NN.EE.SS` | `@tasks: TASKS.01.29.03` |
-| `@iplan` | 12 | Implementation Plans | `@iplan: IPLAN-NNN` | `@iplan: IPLAN-001` |
+| `@iplan` | 12 | Implementation Plans | `@iplan: IPLAN-NN` | `@iplan: IPLAN-01` |
 
 **Note**: All requirements use sequential numbering (001, 002, 003...) within documents.
 
@@ -462,16 +462,16 @@ These tags serve specific purposes beyond cross-layer document traceability.
 
 | Tag | Purpose | Format | Example | Notes |
 |-----|---------|--------|---------|-------|
-| `@test` | Test file reference | `@test: path` or `@test: BDD-NNN:ID` | `@test: tests/test_service.py` | Links to test implementations |
+| `@test` | Test file reference | `@test: path` or `@test: BDD-NN:ID` | `@test: tests/test_service.py` | Links to test implementations |
 | `@code` | Source code reference | `@code: path` | `@code: src/services/limit.py` | Links to implementation files |
 | `@impl-status` | Implementation status | `@impl-status: status` | `@impl-status: complete` | Values: pending, in-progress, complete, deprecated |
-| `@icon` | Implementation contract | `@icon: TASKS-NNN:Name` | `@icon: TASKS-001:ServiceConnector` | Internal contracts for parallel dev |
+| `@icon` | Implementation contract | `@icon: TASKS-NN:Name` | `@icon: TASKS-01:ServiceConnector` | Internal contracts for parallel dev |
 | `@icon-role` | Contract role | `@icon-role: role` | `@icon-role: provider` | Values: provider, consumer |
 | `@threshold` | Threshold registry ref | `@threshold: PRD.NNN.key` | `@threshold: PRD.035.kyc.tier1_timeout` | References Platform Threshold Registry |
 | `@entity` | Data entity reference | `@entity: PRD.NNN.Name` | `@entity: PRD.004.UserProfile` | References Data Model document |
 | `@priority` | Requirement priority | `@priority: level` | `@priority: critical` | Values: critical, high, medium, low |
 | `@component` | Component reference | `@component: name` | `@component: risk-engine` | Links to system component |
-| `@supersedes` | Superseded document | `@supersedes: DOC-NNN` | `@supersedes: REQ-001` | Indicates document replacement |
+| `@supersedes` | Superseded document | `@supersedes: DOC-NN` | `@supersedes: REQ-01` | Indicates document replacement |
 
 #### Same-Type Relationship Tags
 
@@ -479,8 +479,8 @@ These tags define relationships between documents of the same artifact type.
 
 | Tag Pattern | Purpose | Format | Example |
 |-------------|---------|--------|---------|
-| `@related-{type}` | Related context | `@related-req: REQ-NNN` | `@related-req: REQ-001, REQ-005` |
-| `@depends-{type}` | Implementation prerequisite | `@depends-req: REQ-NNN` | `@depends-req: REQ-001` |
+| `@related-{type}` | Related context | `@related-req: REQ-NN` | `@related-req: REQ-01, REQ-005` |
+| `@depends-{type}` | Implementation prerequisite | `@depends-req: REQ-NN` | `@depends-req: REQ-01` |
 
 **Supported Types**: req, spec, tasks, adr, bdd, sys, ears, prd, ctr, impl, iplan
 
@@ -507,10 +507,10 @@ Do NOT use these tag patterns:
 @sys: SYS.08.25.01
 
 # Single document reference (no element ID needed)
-@spec: SPEC-003
+@spec: SPEC-03
 @ctr: CTR-001
 @test: BDD.03.13.01
-@iplan: IPLAN-001
+@iplan: IPLAN-01
 ```
 
 ### Validation
@@ -557,9 +557,9 @@ From EARS-TEMPLATE.md:
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-001](../BRD/BRD-001_service_platform.md) | [APPLICATION_TYPE - e.g., e-commerce platform, SaaS application] Requirements | sections 2.4, 4.x | Business objectives driving these requirements |
-| PRD | [PRD-001](../PRD/PRD-001_risk_management.md) | resource management Product Requirements | Functional Requirements 4.x | Product features and user needs |
-| SYS | [SYS-001](../SYS/SYS-001_resource_limits.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] System Requirements | System architecture section 3 | Technical system constraints |
+| BRD | [BRD-01](../BRD/BRD-01_service_platform.md) | [APPLICATION_TYPE - e.g., e-commerce platform, SaaS application] Requirements | sections 2.4, 4.x | Business objectives driving these requirements |
+| PRD | [PRD-01](../PRD/PRD-01_risk_management.md) | resource management Product Requirements | Functional Requirements 4.x | Product features and user needs |
+| SYS | [SYS-01](../SYS/SYS-01_resource_limits.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] System Requirements | System architecture section 3 | Technical system constraints |
 
 **Key Business Objectives Satisfied**:
 - BRD.NN.23.01: Prevent excessive resource collection heat → Satisfied by EARS statements EARS.NN.21.01, EARS.NN.21.02
@@ -582,18 +582,18 @@ From EARS-TEMPLATE.md:
 
 | REQ ID | Requirement Title | Source EARS Statements | Relationship |
 |--------|------------------|----------------------|--------------|
-| [REQ-003](../REQ/risk/lim/REQ-003_resource_limit.md#REQ-003) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Validation | Derived from EARS.NN.21.01, EARS.NN.21.02 | Detailed implementation requirement |
+| [REQ-03](../REQ/risk/lim/REQ-03_resource_limit.md#REQ-03) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Validation | Derived from EARS.NN.21.01, EARS.NN.21.02 | Detailed implementation requirement |
 | [REQ-004](../REQ/risk/lim/REQ-004_resource_usage.md#REQ-004) | resource collection Heat Calculation | Derived from EARS.NN.22.01 | Detailed implementation requirement |
 
 #### 7.2.3 BDD Scenarios
 
 | BDD Feature | Scenario | Source EARS Statements | Relationship |
 |-------------|----------|----------------------|--------------|
-| [BDD-003](../BDD/BDD-003_risk_limits.feature#scenario-1) | Validate [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] rejection | Tests EARS.NN.21.01 | Acceptance test for requirement |
-| [BDD-003](../BDD/BDD-003_risk_limits.feature#scenario-2) | Validate resource collection heat threshold | Tests EARS.NN.22.01 | Acceptance test for requirement |
+| [BDD-03](../BDD/BDD-03_risk_limits.feature#scenario-1) | Validate [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] rejection | Tests EARS.NN.21.01 | Acceptance test for requirement |
+| [BDD-03](../BDD/BDD-03_risk_limits.feature#scenario-2) | Validate resource collection heat threshold | Tests EARS.NN.22.01 | Acceptance test for requirement |
 
 ### Document Links
-- **Anchors/IDs**: `#EARS-001`
+- **Anchors/IDs**: `#EARS-01`
 - **Code Path(s)**: N/A (Requirements document)
 - **Cross-references**: See sections 7.1 and 7.2 above
 ```
@@ -616,7 +616,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 **Example**: A SPEC file includes tags from: BRD, PRD, EARS, BDD, ADR, SYS, REQ, and optionally IMPL/CTR if they exist in the chain.
 
-**Format**: `@artifact-type: TYPE.NN.EE.SS` (e.g., `@brd: BRD.01.01.30`)
+**Format**: `@artifact-type: TYPE.NN.TT.SS` (e.g., `@brd: BRD.01.01.30`)
 
 **Usage**:
 - Embed tags in document metadata sections (markdown documents)
@@ -649,7 +649,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 **Basic Format** (Unified Feature ID):
 ```
-@artifact-type: TYPE.NN.EE.SS
+@artifact-type: TYPE.NN.TT.SS
 ```
 
 **Components**:
@@ -676,9 +676,9 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @req: REQ.03.26.01, REQ.04.26.02
 @impl: IMPL.01.28.01
 @ctr: CTR-001
-@spec: SPEC-003
+@spec: SPEC-03
 @tasks: TASKS.01.29.03
-@icon: TASKS-001:ServiceConnector
+@icon: TASKS-01:ServiceConnector
 @icon-role: consumer
 ```
 
@@ -691,12 +691,12 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 **Example**:
 ```markdown
-## Provider TASKS (TASKS-001)
-@icon: TASKS-001:ServiceConnector
+## Provider TASKS (TASKS-01)
+@icon: TASKS-01:ServiceConnector
 @icon-role: provider
 
-## Consumer TASKS (TASKS-002)
-@icon: TASKS-001:ServiceConnector
+## Consumer TASKS (TASKS-02)
+@icon: TASKS-01:ServiceConnector
 @icon-role: consumer
 ```
 
@@ -711,17 +711,17 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 **Examples**:
 ```markdown
-@related-req: REQ-001, REQ-005
-@depends-req: REQ-001
-@related-spec: SPEC-002, SPEC-004
-@depends-spec: SPEC-001
-@related-tasks: TASKS-002
-@depends-tasks: TASKS-001
+@related-req: REQ-01, REQ-005
+@depends-req: REQ-01
+@related-spec: SPEC-02, SPEC-004
+@depends-spec: SPEC-01
+@related-tasks: TASKS-02
+@depends-tasks: TASKS-01
 ```
 
 ### Feature-Level Traceability Tags (Unified Feature ID Format)
 
-Internal element IDs within documents use the unified format `TYPE.NN.EE.SS` for fine-grained traceability.
+Internal element IDs within documents use the unified format `TYPE.NN.TT.SS` for fine-grained traceability.
 
 | Context | Element Type | Code | Cross-Reference (Unified) |
 |---------|--------------|------|---------------------------|
@@ -730,7 +730,7 @@ Internal element IDs within documents use the unified format `TYPE.NN.EE.SS` for
 | EARS Statements | EARS Statement | `24` | `@ears: EARS.06.24.03` |
 | SYS Requirements | System Requirement | `25` | `@sys: SYS.08.25.01` |
 
-**Global Uniqueness**: Unified Element ID (`TYPE.NN.EE.SS`) creates globally unique references.
+**Global Uniqueness**: Unified Element ID (`TYPE.NN.TT.SS`) creates globally unique references.
 - `PRD.22.01.15` = PRD-022, Element Type 01 (FR), Sequence 15 (globally unique)
 - `EARS.06.24.03` = EARS-006, Element Type 24 (ES), Sequence 03 (globally unique)
 - `SYS.08.25.15` = SYS-008, Element Type 25 (SYS), Sequence 15 (globally unique)
@@ -801,9 +801,9 @@ Implements real-time resource limit validation and enforcement.
 @req: REQ.03.26.01
 @impl: IMPL.01.28.01
 @ctr: CTR-001
-@spec: SPEC-003
+@spec: SPEC-03
 @tasks: TASKS.01.29.03
-@iplan: IPLAN-001
+@iplan: IPLAN-01
 """
 ```
 
@@ -811,7 +811,7 @@ Implements real-time resource limit validation and enforcement.
 
 **Mandatory Checks**:
 1. **Complete Chain**: Each artifact must include ALL upstream tags
-2. **Format Compliance**: All tags follow unified format `@type: TYPE.NN.EE.SS` (dot separator)
+2. **Format Compliance**: All tags follow unified format `@type: TYPE.NN.TT.SS` (dot separator)
 3. **Document Exists**: Referenced document must exist in repository
 4. **Element Exists**: Element ID must exist within referenced document
 5. **No Orphans**: All tags resolve to actual artifacts
@@ -868,16 +868,16 @@ In addition to upstream/downstream layer traceability, documents may have relati
 
 **Related Documents** (informational, no ordering):
 ```
-@related-req: REQ-001, REQ-005
-@related-spec: SPEC-002
-@related-tasks: TASKS-003
+@related-req: REQ-01, REQ-005
+@related-spec: SPEC-02
+@related-tasks: TASKS-03
 ```
 
 **Dependency Documents** (implementation order):
 ```
-@depends-req: REQ-001  # Must implement REQ-001 before this
-@depends-spec: SPEC-001, SPEC-002  # Prerequisites
-@depends-tasks: TASKS-001  # Depends on TASKS-001 completion
+@depends-req: REQ-01  # Must implement REQ-01 before this
+@depends-spec: SPEC-01, SPEC-02  # Prerequisites
+@depends-tasks: TASKS-01  # Depends on TASKS-01 completion
 ```
 
 ### Decision Rules
@@ -891,7 +891,7 @@ In addition to upstream/downstream layer traceability, documents may have relati
 
 ### Examples
 
-**REQ-003 with same-type relationships**:
+**REQ-03 with same-type relationships**:
 ```markdown
 ## Traceability Tags
 
@@ -901,8 +901,8 @@ In addition to upstream/downstream layer traceability, documents may have relati
 @sys: SYS.08.25.01
 
 ### Same-Type References
-@related-req: REQ-001, REQ-002  # Shared risk management domain
-@depends-req: REQ-001  # Connection must exist before validation
+@related-req: REQ-01, REQ-02  # Shared risk management domain
+@depends-req: REQ-01  # Connection must exist before validation
 ```
 
 ### Validation Rules
@@ -917,11 +917,11 @@ In addition to upstream/downstream layer traceability, documents may have relati
 **Forward-only approach**: Reverse relationships derived via scripts, not stored in documents.
 
 ```bash
-# Find all documents that depend on REQ-001
-grep -r "@depends-req:.*REQ-001" docs/REQ/
+# Find all documents that depend on REQ-01
+grep -r "@depends-req:.*REQ-01" docs/REQ/
 
-# Find all documents related to SPEC-003
-grep -r "@related-spec:.*SPEC-003" docs/SPEC/
+# Find all documents related to SPEC-03
+grep -r "@related-spec:.*SPEC-03" docs/SPEC/
 ```
 
 ## TASKS ↔ ICON Bidirectional Traceability
@@ -937,7 +937,7 @@ Implementation Contracts (ICON) enable parallel development by defining type-saf
 **Provider → ICON → Consumer Chain**:
 
 ```
-SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) → Code
+SPEC-01 → TASKS-01 (Provider) → ICON-01 → TASKS-02-009 (Consumers) → Code
                 ↓                       ↓              ↓
          section 8.1             Contract Def    section 8.2
          @icon-role:            Type-Safe       @icon-role:
@@ -946,7 +946,7 @@ SPEC-001 → TASKS-001 (Provider) → ICON-001 → TASKS-002-009 (Consumers) →
 
 ### Contract Provider Workflow
 
-**Step 1: Identify Contract Need (in TASKS-001)**
+**Step 1: Identify Contract Need (in TASKS-01)**
 
 When creating a provider TASKS file with 3+ downstream dependencies:
 - Determine if implementation contracts are needed
@@ -963,22 +963,22 @@ Standalone ICON file required when:
 
 Otherwise embed contract in TASKS section 8.1.
 
-**Step 3: Update Provider TASKS-001 with section 8.1**
+**Step 3: Update Provider TASKS-01 with section 8.1**
 
-Mandatory integration in TASKS-001:
+Mandatory integration in TASKS-01:
 
 ```markdown
 ## 8. Implementation Contracts
 
 ### 8.1 Contracts Provided by This TASKS
 
-#### ICON-001: ServiceConnector Protocol
+#### ICON-01: ServiceConnector Protocol
 
 - **Purpose**: Protocol interface defining async IB Gateway connection operations
-- **Location**: `[project_root]/docs/ICON/ICON-001_gateway_connector_protocol.md`
+- **Location**: `[project_root]/docs/ICON/ICON-01_gateway_connector_protocol.md`
 - **Contract Type**: Protocol Interface (typing.Protocol)
-- **Consumers**: TASKS-002, 003, 004, 005, 007, 008, 009, 010
-- **Traceability**: @icon: ICON-001:ServiceConnector
+- **Consumers**: TASKS-02, 003, 004, 005, 007, 008, 009, 010
+- **Traceability**: @icon: ICON-01:ServiceConnector
 - **Role**: @icon-role: provider
 
 **Key Interface Methods**:
@@ -996,14 +996,14 @@ Mandatory integration in TASKS-001:
 
 ### Contract Consumer Workflow
 
-**Step 1: Identify Contracts Needed (in TASKS-002)**
+**Step 1: Identify Contracts Needed (in TASKS-02)**
 
 When creating consumer TASKS files:
 - Review upstream TASKS files for provided contracts (section 8.1)
 - Identify which contracts this TASKS consumes
 - Document in section 8.2
 
-**Step 2: Update Consumer TASKS-002 with section 8.2**
+**Step 2: Update Consumer TASKS-02 with section 8.2**
 
 Mandatory integration in consumer TASKS:
 
@@ -1012,28 +1012,28 @@ Mandatory integration in consumer TASKS:
 
 ### 8.2 Contracts Consumed by This TASKS
 
-#### ICON-001: ServiceConnector Protocol
+#### ICON-01: ServiceConnector Protocol
 
-- **Provider**: TASKS-001 (IB Gateway Connection Implementation)
+- **Provider**: TASKS-01 (IB Gateway Connection Implementation)
 - **Purpose**: Connection operations for heartbeat monitoring
-- **Location**: `[project_root]/docs/ICON/ICON-001_gateway_connector_protocol.md`
+- **Location**: `[project_root]/docs/ICON/ICON-01_gateway_connector_protocol.md`
 - **Usage in This TASKS**:
   - Use `is_connected()` to verify connection before heartbeat
   - Use `register_callback()` to monitor connection events
   - Use `get_connection_state()` for state validation
-- **Traceability**: @icon: ICON-001:ServiceConnector
+- **Traceability**: @icon: ICON-01:ServiceConnector
 - **Role**: @icon-role: consumer
 
-#### ICON-002: ConnectionState State Machine
+#### ICON-02: ConnectionState State Machine
 
-- **Provider**: TASKS-005 (Connection State Machine)
+- **Provider**: TASKS-05 (Connection State Machine)
 - **Purpose**: Connection lifecycle state definitions
-- **Location**: `[project_root]/docs/ICON/ICON-002_connection_state_machine.md`
+- **Location**: `[project_root]/docs/ICON/ICON-02_connection_state_machine.md`
 - **Usage in This TASKS**:
   - Validate connection is in CONNECTED state before heartbeat
   - Handle DISCONNECTED and RECONNECTING states
   - Use valid state transitions
-- **Traceability**: @icon: ICON-002:ConnectionState
+- **Traceability**: @icon: ICON-02:ConnectionState
 - **Role**: @icon-role: consumer
 ```
 
@@ -1052,7 +1052,7 @@ grep -r "@icon:" docs/TASKS/ | wc -l
 grep -r "## 8. Implementation Contracts" docs/TASKS/ | wc -l
 
 # Verify specific ICON integration
-grep -r "@icon: ICON-001" docs/TASKS/
+grep -r "@icon: ICON-01" docs/TASKS/
 
 # Check provider roles
 grep -r "@icon-role: provider" docs/TASKS/
@@ -1064,8 +1064,8 @@ grep -r "@icon-role: consumer" docs/TASKS/
 **Expected Results (IB MCP Project)**:
 - 3 ICON files → 21 @icon: tags (1 provider + 6 consumers × 3 contracts = 21)
 - 9 TASKS files with section 8 (2 providers + 7 consumers)
-- 3 provider role tags (TASKS-001 × 2 contracts + TASKS-005 × 1 contract)
-- 18 consumer role tags (8 consumers × ICON-001 + 7 consumers × ICON-002 + 3 consumers × ICON-003)
+- 3 provider role tags (TASKS-01 × 2 contracts + TASKS-05 × 1 contract)
+- 18 consumer role tags (8 consumers × ICON-01 + 7 consumers × ICON-02 + 3 consumers × ICON-03)
 
 ### Traceability Tags
 
@@ -1074,10 +1074,10 @@ grep -r "@icon-role: consumer" docs/TASKS/
 ```markdown
 ## Traceability Tags
 
-@spec: SPEC-001
+@spec: SPEC-01
 @tasks: TASKS.01.29.01
-@icon: ICON-001:ServiceConnector
-@icon: ICON-003:GatewayExceptions
+@icon: ICON-01:ServiceConnector
+@icon: ICON-03:GatewayExceptions
 @icon-role: provider
 ```
 
@@ -1086,11 +1086,11 @@ grep -r "@icon-role: consumer" docs/TASKS/
 ```markdown
 ## Traceability Tags
 
-@spec: SPEC-002
+@spec: SPEC-02
 @tasks: TASKS.02.29.01
-@icon: ICON-001:ServiceConnector
-@icon: ICON-002:ConnectionState
-@icon: ICON-003:GatewayExceptions
+@icon: ICON-01:ServiceConnector
+@icon: ICON-02:ConnectionState
+@icon: ICON-03:GatewayExceptions
 @icon-role: consumer
 ```
 
@@ -1099,9 +1099,9 @@ grep -r "@icon-role: consumer" docs/TASKS/
 ```markdown
 ## Traceability Tags
 
-@spec: SPEC-001
+@spec: SPEC-01
 @tasks: TASKS.01.29.01  # Provider TASKS
-@icon: ICON-001:ServiceConnector
+@icon: ICON-01:ServiceConnector
 @icon-role: provider
 
 ## Consumers
@@ -1118,8 +1118,8 @@ grep -r "@icon-role: consumer" docs/TASKS/
 **Anti-Pattern 1: Orphaned ICON Files**
 
 ❌ **Problem**: ICON file created but no TASKS files reference it
-- ICON-001 exists in `docs/ICON/`
-- `grep -r "@icon: ICON-001" docs/TASKS/` returns 0 results
+- ICON-01 exists in `docs/ICON/`
+- `grep -r "@icon: ICON-01" docs/TASKS/` returns 0 results
 - No section 8 in any TASKS file
 
 ✅ **Solution**: Update all provider and consumer TASKS files with section 8
@@ -1127,26 +1127,26 @@ grep -r "@icon-role: consumer" docs/TASKS/
 **Anti-Pattern 2: Missing Provider section 8.1**
 
 ❌ **Problem**: Provider TASKS doesn't document contracts it provides
-- TASKS-001 implements ServiceConnector interface
-- No section 8.1 documenting ICON-001
+- TASKS-01 implements ServiceConnector interface
+- No section 8.1 documenting ICON-01
 - Consumers don't know contract exists
 
-✅ **Solution**: Add section 8.1 to TASKS-001 with contract details
+✅ **Solution**: Add section 8.1 to TASKS-01 with contract details
 
 **Anti-Pattern 3: Missing Consumer section 8.2**
 
 ❌ **Problem**: Consumer TASKS doesn't document contracts it uses
-- TASKS-002 uses ServiceConnector methods
-- No section 8.2 documenting dependency on ICON-001
+- TASKS-02 uses ServiceConnector methods
+- No section 8.2 documenting dependency on ICON-01
 - Unclear which contracts are required
 
-✅ **Solution**: Add section 8.2 to TASKS-002 listing all consumed contracts
+✅ **Solution**: Add section 8.2 to TASKS-02 listing all consumed contracts
 
 **Anti-Pattern 4: Missing @icon: Tags**
 
 ❌ **Problem**: section 8 exists but no traceability tags
-- TASKS-001 has section 8.1
-- No @icon: ICON-001:ServiceConnector tag
+- TASKS-01 has section 8.1
+- No @icon: ICON-01:ServiceConnector tag
 - Automated validation fails
 
 ✅ **Solution**: Add @icon: and @icon-role: tags to all TASKS files with section 8
@@ -1154,7 +1154,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 **Anti-Pattern 5: Missing Role Tags**
 
 ❌ **Problem**: @icon: tag exists but no role specified
-- TASKS-001 has @icon: ICON-001:ServiceConnector
+- TASKS-01 has @icon: ICON-01:ServiceConnector
 - No @icon-role: provider tag
 - Cannot distinguish provider from consumer
 
@@ -1162,11 +1162,11 @@ grep -r "@icon-role: consumer" docs/TASKS/
 
 ### Benefits of ICON Integration
 
-**Quantified Impact** (from TASKS-001 analysis):
+**Quantified Impact** (from TASKS-01 analysis):
 
 **65% Faster Delivery**:
-- Without ICON: 11.5 weeks sequential (TASKS-001 complete → TASKS-002-009 start)
-- With ICON: 4 weeks parallel (TASKS-001 provides contract → TASKS-002-009 start immediately)
+- Without ICON: 11.5 weeks sequential (TASKS-01 complete → TASKS-02-009 start)
+- With ICON: 4 weeks parallel (TASKS-01 provides contract → TASKS-02-009 start immediately)
 - Time saved: 7.5 weeks (65% reduction)
 
 **90% Reduction in Integration Bugs**:
@@ -1191,7 +1191,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 - **Audience**: Internal implementation teams (provider and consumer TASKS)
 - **Format**: Embedded in TASKS section 8 OR standalone ICON files
 - **Examples**: `ServiceConnector` Protocol, `ConnectionState` State Machine
-- **Tag**: `@icon: TASKS-001:ServiceConnector` or `@icon: ICON-001:ServiceConnector`
+- **Tag**: `@icon: TASKS-01:ServiceConnector` or `@icon: ICON-01:ServiceConnector`
 - **Location**: `docs/ICON/` or embedded in `docs/TASKS/`
 - **Versioning**: Tied to TASKS implementation cycles
 
@@ -1221,17 +1221,17 @@ grep -r "@icon-role: consumer" docs/TASKS/
 - [ ] Contract type documented (Protocol/State Machine/Exception/Data Model/DI)
 - [ ] Usage examples provided for consumers
 
-**Example Validation** (ICON-001: ServiceConnector):
+**Example Validation** (ICON-01: ServiceConnector):
 
 ```bash
-# Should return 9: 1 provider (TASKS-001) + 8 consumers
-grep -r "@icon: ICON-001" docs/TASKS/ | wc -l
+# Should return 9: 1 provider (TASKS-01) + 8 consumers
+grep -r "@icon: ICON-01" docs/TASKS/ | wc -l
 
-# Should return 1: TASKS-001 only
-grep -r "@icon: ICON-001" docs/TASKS/ | grep "@icon-role: provider" | wc -l
+# Should return 1: TASKS-01 only
+grep -r "@icon: ICON-01" docs/TASKS/ | grep "@icon-role: provider" | wc -l
 
-# Should return 8: TASKS-002, 003, 004, 005, 007, 008, 009, 010
-grep -r "@icon: ICON-001" docs/TASKS/ | grep "@icon-role: consumer" | wc -l
+# Should return 8: TASKS-02, 003, 004, 005, 007, 008, 009, 010
+grep -r "@icon: ICON-01" docs/TASKS/ | grep "@icon-role: consumer" | wc -l
 ```
 
 ## Artifact Tracking Methods
@@ -1322,9 +1322,9 @@ excessive collection concentration risk through automated validation.
 @req: REQ.03.26.01, REQ.04.26.01
 @impl: IMPL.01.28.01
 @ctr: CTR-001
-@spec: SPEC-003
+@spec: SPEC-03
 @tasks: TASKS.01.29.03, TASKS.01.29.05
-@iplan: IPLAN-001
+@iplan: IPLAN-01
 
 @impl-status: complete
 @test-coverage: 95%
@@ -1356,7 +1356,7 @@ class PositionLimitService:
 """
 resource limit Validation Service Tests
 
-Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
+Tests all scenarios from BDD-03 and validates REQ-03 acceptance criteria.
 
 ## Traceability Tags
 
@@ -1367,7 +1367,7 @@ Tests all scenarios from BDD-003 and validates REQ-003 acceptance criteria.
 @adr: ADR-033
 @sys: SYS.08.25.01
 @req: REQ.03.26.01
-@spec: SPEC-003
+@spec: SPEC-03
 @tasks: TASKS.01.29.03
 @code: src/services/resource_limit_service.py
 
@@ -1454,7 +1454,7 @@ def test_validate_resource_limit_within_threshold():
 - **Upstream**: REQ (interface requirements), ADR (architecture decisions), IMPL (implementation schedules)
 - **Downstream**: SPEC (technical implementation), TASKS (implementation plans), Code (provider/consumer implementations)
 - **Format**: Dual-file format (.md + .yaml), section 7 Traceability in markdown
-- **Note**: Both .md and .yaml files must exist for each CTR-NNN
+- **Note**: Both .md and .yaml files must exist for each CTR-NN
 
 ### SPEC (Technical Specifications)
 - **Upstream**: REQ, ADR (requirements and architecture), CTR (interface contracts), IMPL (implementation plans)
@@ -1482,19 +1482,19 @@ def test_validate_resource_limit_within_threshold():
 All traceability references MUST use markdown links with anchors:
 
 ```markdown
-[REQ-003](../REQ/risk/lim/REQ-003_resource_limit_enforcement.md#REQ-003)
+[REQ-03](../REQ/risk/lim/REQ-03_resource_limit_enforcement.md#REQ-03)
 [ADR-033](../ADR/ADR-033_risk_limit_enforcement_architecture.md#ADR-033)
 [CTR-001](../CTR/CTR-001_position_risk_validation.md#CTR-001)
 [CTR-001 Schema](../CTR/CTR-001_position_risk_validation.yaml)
-[PRD-001](../PRD/PRD-001_risk_management.md)
-[BDD-003](../BDD/BDD-003_risk_limits.feature#scenarios)
+[PRD-01](../PRD/PRD-01_risk_management.md)
+[BDD-03](../BDD/BDD-03_risk_limits.feature#scenarios)
 ```
 
 ### Anchor Types
 
-1. **ID Anchors** (Preferred): `#REQ-003`, `#ADR-033`, `#CTR-001`
+1. **ID Anchors** (Preferred): `#REQ-03`, `#ADR-033`, `#CTR-001`
    - Stable across document changes
-   - Used in H1 headers: `# REQ-003: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`, `# CTR-001: resource Risk Validation Contract`
+   - Used in H1 headers: `# REQ-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`, `# CTR-001: resource Risk Validation Contract`
 
 2. **Named Anchors**: `#scenarios`, `#acceptance-criteria`
    - For specific sections within documents
@@ -1514,8 +1514,8 @@ All traceability references MUST use markdown links with anchors:
 - Examples:
   - From `REQ/risk/lim/` to `ADR/`: `../../../ADR/ADR-033_...md`
   - From `REQ/risk/lim/` to `CTR/`: `../../../CTR/CTR-001_...md`
-  - From `PRD/` to `EARS/`: `../EARS/EARS-001_...md`
-  - From `SPEC/services/` to `REQ/`: `../../REQ/.../REQ-003_...md`
+  - From `PRD/` to `EARS/`: `../EARS/EARS-01_...md`
+  - From `SPEC/services/` to `REQ/`: `../../REQ/.../REQ-03_...md`
   - From `SPEC/services/` to `CTR/`: `../../CTR/CTR-001_...md`
 
 ## Validation Requirements
@@ -1628,7 +1628,7 @@ BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC �
 ### Granular Relationships
 
 - Don't just link documents - specify sections
-- Example: "PRD-001 section 4.2 drives EARS.01.21.03"
+- Example: "PRD-01 section 4.2 drives EARS.01.21.03"
 - Enables precise change impact assessment
 
 ### Table Format for Complex Traceability
@@ -1637,8 +1637,8 @@ Use tables for multiple relationships:
 
 | Source | Target | Relationship Type | Notes |
 |--------|--------|------------------|-------|
-| BRD-001 section 2.4 | PRD-001 Feature-003 | Business objective → Product feature | resource management capability |
-| PRD-001 Feature-003 | EARS.01.21.01 | Product feature → Formal requirement | Real-time validation |
+| BRD-01 section 2.4 | PRD-01 Feature-03 | Business objective → Product feature | resource management capability |
+| PRD-01 Feature-03 | EARS.01.21.01 | Product feature → Formal requirement | Real-time validation |
 
 ### Code Traceability
 
@@ -1649,12 +1649,12 @@ In code docstrings, include:
 [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service
 
 ## Traceability
-- Requirements: REQ-003, REQ-004
+- Requirements: REQ-03, REQ-004
 - Architecture: ADR-033
-- Implementation Plan: IMPL-001_phase1_risk_services
+- Implementation Plan: IMPL-01_phase1_risk_services
 - Contract: CTR-001_position_risk_validation (if implementing contract)
-- Specification: SPEC-003_resource_limit_service.yaml
-- BDD: BDD-003_risk_limits.feature
+- Specification: SPEC-03_resource_limit_service.yaml
+- BDD: BDD-03_risk_limits.feature
 """
 ```
 
@@ -1667,7 +1667,7 @@ Risk Validator Service - Contract Provider
 - Requirements: REQ-005
 - Architecture: ADR-033
 - Contract: CTR-001_position_risk_validation.md + .yaml (IMPLEMENTS)
-- Specification: SPEC-005_risk_validator_service.yaml
+- Specification: SPEC-05_risk_validator_service.yaml
 - BDD: BDD-004_contract_validation.feature
 - Role: Provider (implements contract interface)
 """
@@ -1687,9 +1687,9 @@ Risk Validator Service - Contract Provider
 ### Creating a New Contract (CTR)
 
 1. Identify upstream REQ/ADR that specify interface needs
-2. Reserve next CTR-NNN number from CTR-000_index.md
+2. Reserve next CTR-NN number from CTR-000_index.md
 3. Copy CTR-TEMPLATE.md and CTR-TEMPLATE.yaml
-4. Create both files: `CTR-NNN_slug.md` + `CTR-NNN_slug.yaml`
+4. Create both files: `CTR-NN_slug.md` + `CTR-NN_slug.yaml`
 5. Complete markdown file:
    - Status, Context, Contract Definition
    - Interface specification with request/response schemas
@@ -1708,7 +1708,7 @@ Risk Validator Service - Contract Provider
 ### Creating a New Implementation Plan (IMPL)
 
 1. Identify upstream REQ that need implementation coordination
-2. Reserve next IMPL-NNN number from IMPL-000_index.md
+2. Reserve next IMPL-NN number from IMPL-000_index.md
 3. Copy IMPL-TEMPLATE.md from ai_dev_flow/IMPL/
 4. Complete implementation plan:
    - Scope: What REQs are being implemented

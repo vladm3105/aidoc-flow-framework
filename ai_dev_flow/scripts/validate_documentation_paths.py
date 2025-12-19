@@ -67,7 +67,7 @@ class DocumentationPathValidator:
 
         # Patterns for placeholder IDs in examples
         self.placeholder_patterns = [
-            r'BRD-\d{3}',  # BRD-001, BRD-002, etc.
+            r'BRD-\d{3}',  # BRD-01, BRD-002, etc.
             r'PRD-\d{3}',
             r'REQ-\d{3}',
             r'ADR-\d{3}',
@@ -175,7 +175,7 @@ class DocumentationPathValidator:
         if re.search(r'XXX|NNN|PPP|YYY', path):
             return True
 
-        # Check for placeholder ID patterns (BRD-001, REQ-003, etc.)
+        # Check for placeholder ID patterns (BRD-01, REQ-03, etc.)
         for pattern in self.placeholder_patterns:
             if re.search(pattern, path):
                 return True

@@ -62,8 +62,8 @@ def build_document_index(docs_dir: Path) -> Dict:
 
     Returns:
         {
-            'BRD-001': {
-                'path': Path('docs/BRD/BRD-001_...md'),
+            'BRD-01': {
+                'path': Path('docs/BRD/BRD-01_...md'),
                 'elements': {'BRD.01.01.01', 'BRD.01.01.02', ...}
             },
             'SPEC-003': {
@@ -103,7 +103,7 @@ def build_document_index(docs_dir: Path) -> Dict:
                 continue
 
             # Extract document ID from filename
-            # E.g., BRD-001_ib_stock_options.md -> BRD-001
+            # E.g., BRD-01_ib_stock_options.md -> BRD-01
             filename = doc_file.stem
             match = re.match(r'([A-Z]+-\d+)', filename)
 

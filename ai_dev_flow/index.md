@@ -57,9 +57,9 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Organization: Domain-specific subdirectories (`api/`, `risk/`, `ml/`, `data/`)
   - Format: 12-section framework with validation rules
   - Examples:
-    - [REQ-001](./REQ/api/av/REQ-001_external_api_integration.md) (API Integration)
-    - [REQ-002](./REQ/api/ib/REQ-002_ib_gateway_integration.md) (Gateway Integration)
-    - [REQ-003](./REQ/risk/lim/REQ-003_resource_limit_enforcement.md) (Risk Limits)
+    - [REQ-01](./REQ/api/av/REQ-01_external_api_integration.md) (API Integration)
+    - [REQ-02](./REQ/api/ib/REQ-02_ib_gateway_integration.md) (Gateway Integration)
+    - [REQ-03](./REQ/risk/lim/REQ-03_resource_limit_enforcement.md) (Risk Limits)
 
 ### Project Management Layer (Layer 8 - Optional)
 
@@ -69,7 +69,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Purpose: Project management (WHO does WHAT, WHEN) - NOT technical specifications
   - Identifies deliverables: which CTR, SPEC, TASKS to create
   - When to use: [WHEN_TO_CREATE_IMPL.md](./WHEN_TO_CREATE_IMPL.md)
-  - Example: [IMPL-001](./IMPL/examples/IMPL-001_risk_management_system.md)
+  - Example: [IMPL-01](./IMPL/examples/IMPL-01_risk_management_system.md)
 
 ### Interface Layer (Layer 9 - Optional)
 
@@ -89,7 +89,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Template: [SPEC-TEMPLATE.yaml](./SPEC/SPEC-TEMPLATE.yaml)
   - Purpose: YAML format with classes, methods, algorithms (HOW to build)
   - References CTR contracts when implementing interfaces
-  - Example: [SPEC-001](./SPEC/SPEC-001_api_client_example.yaml)
+  - Example: [SPEC-01](./SPEC/SPEC-01_api_client_example.yaml)
 
 ### Code Generation Layer (Layer 11)
 
@@ -113,7 +113,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Index: [IPLAN-000_index.md](./IPLAN/IPLAN-000_index.md)
   - Template: [IPLAN-TEMPLATE.md](./IPLAN/IPLAN-TEMPLATE.md)
   - Purpose: Session-based execution context with executable bash commands
-  - Format: Timestamp-based naming `IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md`
+  - Format: Timestamp-based naming `IPLAN-NN_{slug}_YYYYMMDD_HHMMSS.md`
   - Enables context resumption across AI coding sessions
   - Contains bash commands for setup, execution, and validation
   - Each IPLAN executes one or more TASKS within a session
@@ -232,8 +232,8 @@ Each document maintains bidirectional traceability:
 
 All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md):
 
-- **Format**: `{TYPE}-{NNN}_{descriptive_slug}.{ext}`
-- **Numbering**: Sequential from 001, stable once assigned
+- **Format**: `{TYPE}-{NN}_{descriptive_slug}.{ext}`
+- **Numbering**: Sequential from 01, stable once assigned
 - **Slugs**: lower_snake_case, descriptive but concise
 - **Index Files**: `{TYPE}-000_index.{ext}` for each document type
 - **CTR Exception**: Dual-file format requires both `.md` and `.yaml` with matching slugs
@@ -288,7 +288,7 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 1. Identify document type and functional area
 2. Check relevant index file (`{TYPE}-000_index.md`) for next available ID
 3. Copy appropriate template from the directory
-4. Name file following ID standards: `{TYPE}-{NNN}_{slug}.{ext}`
+4. Name file following ID standards: `{TYPE}-{NN}_{slug}.{ext}`
 5. Fill in all template sections with complete traceability links
 6. Update index file with new document entry
 7. Validate traceability using validation scripts

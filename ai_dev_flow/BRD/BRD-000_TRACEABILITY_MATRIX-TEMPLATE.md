@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: BRD-001 through BRD-NNN
+# Traceability Matrix: BRD-01 through BRD-NN
 
 ## Document Control
 
@@ -58,7 +58,7 @@ python scripts/generate_traceability_matrices.py --type BRD --output docs/BRD/BR
 
 **Tag Format:** `@brd: BRD.NN.01.SS` (unified element ID format, e.g., `BRD.01.01.30`)
 
-**Format**: TYPE.NN.EE.SS (DOC_NUM.ELEM_TYPE.SEQ) - Element type 01 = Functional Requirement
+**Format**: TYPE.NN.TT.SS (DOC_NUM.ELEM_TYPE.SEQ) - Element type 01 = Functional Requirement
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -174,9 +174,9 @@ Strategy (External) → BRD (Layer 1)
 
 | BRD ID | Title | Business Domain | Status | Date | Upstream Sources | Downstream Artifacts |
 |--------|-------|-----------------|--------|------|------------------|---------------------|
-| BRD-001 | [Business requirement title] | [Domain/category] | Active | YYYY-MM-DD | Market Research, Strategic Plan | PRD-001, PRD-002, EARS-001 |
-| BRD-002 | [Business requirement title] | [Domain/category] | Active | YYYY-MM-DD | Stakeholder Interviews | PRD-003, EARS-002 |
-| BRD-NNN | ... | ... | ... | ... | ... | ... |
+| BRD-01 | [Business requirement title] | [Domain/category] | Active | YYYY-MM-DD | Market Research, Strategic Plan | PRD-01, PRD-02, EARS-01 |
+| BRD-02 | [Business requirement title] | [Domain/category] | Active | YYYY-MM-DD | Stakeholder Interviews | PRD-03, EARS-02 |
+| BRD-NN | ... | ... | ... | ... | ... | ... |
 
 **Document Status Legend**:
 - **Active**: Current and actively referenced
@@ -194,9 +194,9 @@ Strategy (External) → BRD (Layer 1)
 
 | Source Type | Source ID/Reference | BRD IDs | Relationship Description |
 |-------------|---------------------|---------|--------------------------|
-| Market Research | [Research Report Name/Date] | BRD-001, BRD-004 | Market opportunity analysis drives business requirements |
-| Strategic Plan | [Strategic Plan section X.Y] | BRD-002, BRD-005 | Corporate strategy defines business objectives |
-| Stakeholder Interviews | [Interview Notes Date] | BRD-003, BRD-006 | Stakeholder needs inform requirement priorities |
+| Market Research | [Research Report Name/Date] | BRD-01, BRD-004 | Market opportunity analysis drives business requirements |
+| Strategic Plan | [Strategic Plan section X.Y] | BRD-02, BRD-005 | Corporate strategy defines business objectives |
+| Stakeholder Interviews | [Interview Notes Date] | BRD-03, BRD-006 | Stakeholder needs inform requirement priorities |
 | Competitive Analysis | [Analysis Document] | BRD-007, BRD-008 | Competitive positioning drives feature requirements |
 | Regulatory Requirements | [Regulation Reference] | BRD-009 | Compliance mandates business requirements |
 
@@ -220,24 +220,24 @@ Strategy (External) → BRD (Layer 1)
 
 | BRD ID | BRD Title | PRD IDs | PRD Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| BRD-001 | [Business requirement] | PRD-001, PRD-002 | [Product features] | Business objectives drive product requirements |
-| BRD-002 | [Business requirement] | PRD-003 | [Product feature] | Stakeholder needs translate to product SPEC |
-| BRD-NNN | ... | ... | ... | ... |
+| BRD-01 | [Business requirement] | PRD-01, PRD-02 | [Product features] | Business objectives drive product requirements |
+| BRD-02 | [Business requirement] | PRD-03 | [Product feature] | Stakeholder needs translate to product SPEC |
+| BRD-NN | ... | ... | ... | ... |
 
 ### 7.2 BRD → EARS Traceability
 
 | BRD ID | BRD Title | EARS IDs | EARS Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| BRD-001 | [Business requirement] | EARS-001, EARS-002 | [Formal requirements] | Business goals formalized as EARS statements |
-| BRD-002 | [Business requirement] | EARS-003 | [Formal requirement] | Business constraints expressed as formal requirements |
-| BRD-NNN | ... | ... | ... | ... |
+| BRD-01 | [Business requirement] | EARS-01, EARS-02 | [Formal requirements] | Business goals formalized as EARS statements |
+| BRD-02 | [Business requirement] | EARS-03 | [Formal requirement] | Business constraints expressed as formal requirements |
+| BRD-NN | ... | ... | ... | ... |
 
 ### 7.3 BRD → ADR Traceability (Strategic Architecture Decisions)
 
 | BRD ID | BRD Title | ADR IDs | ADR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| BRD-001 | [Business requirement with architectural impact] | ADR-005, ADR-012 | [Architecture decisions] | Business requirements drive strategic technical decisions |
-| BRD-NNN | ... | ... | ... | ... |
+| BRD-01 | [Business requirement with architectural impact] | ADR-005, ADR-012 | [Architecture decisions] | Business requirements drive strategic technical decisions |
+| BRD-NN | ... | ... | ... | ... |
 
 ### 7.4 Downstream Artifact Summary
 
@@ -256,22 +256,22 @@ Strategy (External) → BRD (Layer 1)
 
 ```mermaid
 graph TD
-    BRD001[BRD-001: Core Business Objective] --> PRD001[PRD-001: Feature Set A]
-    BRD001 --> PRD002[PRD-002: Feature Set B]
-    BRD001 --> EARS001[EARS-001: Formal Requirements]
+    BRD001[BRD-01: Core Business Objective] --> PRD001[PRD-01: Feature Set A]
+    BRD001 --> PRD002[PRD-02: Feature Set B]
+    BRD001 --> EARS001[EARS-01: Formal Requirements]
 
-    BRD002[BRD-002: Stakeholder Needs] --> PRD003[PRD-003: User Stories]
-    BRD002 --> EARS002[EARS-002: Acceptance Criteria]
+    BRD002[BRD-02: Stakeholder Needs] --> PRD003[PRD-03: User Stories]
+    BRD002 --> EARS002[EARS-02: Acceptance Criteria]
 
-    BRD003[BRD-003: Compliance Requirements] --> ADR005[ADR-005: security Architecture]
-    BRD003 --> EARS003[EARS-003: Compliance Requirements]
+    BRD003[BRD-03: Compliance Requirements] --> ADR005[ADR-005: security Architecture]
+    BRD003 --> EARS003[EARS-03: Compliance Requirements]
 
     PRD001 --> EARS004[EARS-004: Feature Requirements]
     PRD002 --> EARS005[EARS-005: Feature Requirements]
     PRD003 --> EARS006[EARS-006: User Story Requirements]
 
-    EARS001 --> BDD001[BDD-001: Acceptance Tests]
-    EARS002 --> BDD002[BDD-002: Acceptance Tests]
+    EARS001 --> BDD001[BDD-01: Acceptance Tests]
+    EARS002 --> BDD002[BDD-02: Acceptance Tests]
 
     style BRD001 fill:#e1f5ff
     style BRD002 fill:#e1f5ff
@@ -290,9 +290,9 @@ graph TD
 
 | Source BRD | Target BRD | Dependency Type | Description |
 |------------|------------|-----------------|-------------|
-| BRD-001 | BRD-005 | Prerequisite | Core platform must exist before advanced features |
-| BRD-002 | BRD-003 | Related | Authentication requirements support authorization features |
-| BRD-NNN | ... | ... | ... |
+| BRD-01 | BRD-005 | Prerequisite | Core platform must exist before advanced features |
+| BRD-02 | BRD-03 | Related | Authentication requirements support authorization features |
+| BRD-NN | ... | ... | ... |
 
 ---
 
@@ -302,7 +302,7 @@ graph TD
 
 | Business Domain | BRD IDs | Total | Description |
 |-----------------|---------|-------|-------------|
-| [Core Platform] | BRD-001, BRD-002, BRD-003 | 3 | Fundamental platform capabilities |
+| [Core Platform] | BRD-01, BRD-02, BRD-03 | 3 | Fundamental platform capabilities |
 | [User Experience] | BRD-004, BRD-005 | 2 | User-facing features and workflows |
 | [security & Compliance] | BRD-006, BRD-007 | 2 | security requirements and regulatory compliance |
 | [Integration] | BRD-008, BRD-009 | 2 | External system integration requirements |
@@ -312,9 +312,9 @@ graph TD
 
 | Strategic Goal | Related BRDs | Impact Level | Status |
 |----------------|--------------|--------------|--------|
-| [Goal 1: Market Leadership] | BRD-001, BRD-004, BRD-008 | High | On Track |
+| [Goal 1: Market Leadership] | BRD-01, BRD-004, BRD-008 | High | On Track |
 | [Goal 2: Regulatory Compliance] | BRD-006, BRD-007 | Critical | In Progress |
-| [Goal 3: Customer Satisfaction] | BRD-002, BRD-005 | High | Complete |
+| [Goal 3: Customer Satisfaction] | BRD-02, BRD-005 | High | Complete |
 
 ---
 
@@ -333,9 +333,9 @@ graph TD
 
 | BRD ID | Business Value | Implementation Complexity | ROI Score | Priority |
 |--------|----------------|---------------------------|-----------|----------|
-| BRD-001 | High | Medium | 8/10 | Critical |
-| BRD-002 | Medium | Low | 7/10 | High |
-| BRD-NNN | ... | ... | ... | ... |
+| BRD-01 | High | Medium | 8/10 | Critical |
+| BRD-02 | Medium | Low | 7/10 | High |
+| BRD-NN | ... | ... | ... | ... |
 
 ---
 
@@ -355,10 +355,10 @@ graph TD
 
 | BRD ID | PRD Status | EARS Status | BDD Status | Overall Status | Completion % |
 |--------|------------|-------------|------------|----------------|--------------|
-| BRD-001 | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
-| BRD-002 | ✅ Complete | 🟡 In Progress | ⏳ Pending | In Progress | 60% |
-| BRD-003 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | Started | 20% |
-| BRD-NNN | ... | ... | ... | ... | ... |
+| BRD-01 | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
+| BRD-02 | ✅ Complete | 🟡 In Progress | ⏳ Pending | In Progress | 60% |
+| BRD-03 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | Started | 20% |
+| BRD-NN | ... | ... | ... | ... | ... |
 
 **Status Legend**:
 - ✅ Complete: Artifact created and validated
@@ -392,7 +392,7 @@ graph TD
 
 | Milestone | Target Date | Required BRDs | Status |
 |-----------|-------------|---------------|--------|
-| [Milestone 1: MVP Release] | YYYY-MM-DD | BRD-001 through BRD-005 | On Track |
+| [Milestone 1: MVP Release] | YYYY-MM-DD | BRD-01 through BRD-005 | On Track |
 | [Milestone 2: Feature Expansion] | YYYY-MM-DD | BRD-006 through BRD-010 | Planning |
 | [Milestone 3: Market Launch] | YYYY-MM-DD | All BRDs | Not Started |
 

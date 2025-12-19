@@ -1,10 +1,10 @@
 ---
-doc_id: ADR-{NNN}
+doc_id: ADR-{NN}
 section: {S}
 title: "{Section Title}"
-parent_doc: "ADR-{NNN}.0_index.md"
-prev_section: "ADR-{NNN}.{S-1}_{prev_slug}.md"
-next_section: "ADR-{NNN}.{S+1}_{next_slug}.md"
+parent_doc: "ADR-{NN}.0_index.md"
+prev_section: "ADR-{NN}.{S-1}_{prev_slug}.md"
+next_section: "ADR-{NN}.{S+1}_{next_slug}.md"
 tags:
   - section-file
   - adr-section
@@ -23,11 +23,11 @@ custom_fields:
   index_role: false
 ---
 
-# ADR-{NNN}.{S}: {Section Title}
+# ADR-{NN}.{S}: {Section Title}
 
-> **Navigation**: [Index](ADR-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](ADR-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
 >
-> **Parent Document**: ADR-{NNN}
+> **Parent Document**: ADR-{NN}
 > **Section**: {S} of {N}
 > **Layer**: 5 - Architecture Decisions
 
@@ -75,11 +75,11 @@ custom_fields:
 
 ## References
 
-- **Parent Document**: @ref: ADR-{NNN}.0
-- **Related Sections**: @ref: ADR-{NNN}.{related}
-- **Upstream**: @ref: BDD-{NNN} (Behavior), @ref: EARS-{NNN} (Requirements)
-- **Downstream**: @ref: SYS-{NNN} (System), @ref: SPEC-{NNN} (Specifications)
+- **Parent Document**: @ref: ADR-{NN}.0
+- **Related Sections**: @ref: ADR-{NN}.{related}
+- **Upstream**: @ref: BDD-{NN} (Behavior), @ref: EARS-{NN} (Requirements)
+- **Downstream**: @ref: SYS-{NN} (System), @ref: SPEC-{NN} (Specifications)
 
 ---
 
-> **Navigation**: [Index](ADR-{NNN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})
+> **Navigation**: [Index](ADR-{NN}.0_index.md) | [Previous]({prev_section}) | [Next]({next_section})

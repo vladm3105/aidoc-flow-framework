@@ -12,7 +12,7 @@
 # SCHEMA_VERSION: 1.0
 
 # ===================
-# SPEC-NNN: [Component Name]
+# SPEC-NN: [Component Name]
 # ===================
 #
 # ⚠️ CRITICAL: Always reference SPEC_DRIVEN_DEVELOPMENT_GUIDE.md as the single source of truth
@@ -74,57 +74,57 @@ metadata:
 traceability:
   upstream_sources:
     business_requirements:
-      - id: "BRD-NNN"
-        link: "../../brds/BRD-NNN_...md"
+      - id: "BRD-NN"
+        link: "../../brds/BRD-NN_...md"
         title: "[Business requirements title]"
         relevant_sections: ["2.4", "4.x"]
         relationship: "Business objectives driving this component"
         context: "[Specific business goals that justify this component]"
 
     product_requirements:
-      - id: "PRD-NNN"
-        link: "../../prd/PRD-NNN_...md"
+      - id: "PRD-NN"
+        link: "../../prd/PRD-NN_...md"
         title: "[Product requirements title]"
         relevant_sections: ["Functional Requirements 4.x"]
         relationship: "Product features this component implements"
         context: "[User needs this component fulfills]"
 
     system_requirements:
-      - id: "SYS-NNN"
-        link: "../../sys/SYS-NNN_...md"
+      - id: "SYS-NN"
+        link: "../../sys/SYS-NN_...md"
         title: "[System requirements title]"
         relevant_sections: ["System Requirements 3.x"]
         relationship: "System-level specification this component satisfies"
         context: "[System capabilities this component provides]"
 
     engineering_requirements:
-      - id: "EARS-NNN"
-        link: "../../ears/EARS-NNN_...md"
+      - id: "EARS-NN"
+        link: "../../ears/EARS-NN_...md"
         title: "[Engineering requirements]"
         relevant_sections: ["Event-driven", "State-driven", "Ubiquitous"]
         relationship: "Formal engineering requirements this component satisfies"
         context: "[EARS statements this component implements]"
 
     architecture_decisions:
-      - id: "ADR-NNN"
-        link: "../adrs/ADR-NNN_...md#ADR-NNN"
+      - id: "ADR-NN"
+        link: "../adrs/ADR-NN_...md#ADR-NN"
         title: "[Architecture decision title]"
         relevant_sections: ["Decision", "Consequences", "Implementation"]
         relationship: "Architectural approach enabling this component"
         context: "[Technology selections and patterns applied]"
 
     implementation_plan:
-      - id: "IMPL-NNN"
-        link: "../IMPL/IMPL-NNN_...md#IMPL-NNN"
+      - id: "IMPL-NN"
+        link: "../IMPL/IMPL-NN_...md#IMPL-NN"
         title: "[Implementation plan title]"
         relevant_sections: ["Phases", "Deliverables", "Team Structure"]
         relationship: "Project plan coordinating this component's development"
         context: "[Which phase/team/deliverable this SPEC belongs to]"
 
     contracts:
-      - id: "CTR-NNN"
-        link: "../CTR/CTR-NNN_...md#CTR-NNN"
-        schema: "../CTR/CTR-NNN_...yaml"
+      - id: "CTR-NN"
+        link: "../CTR/CTR-NN_...md#CTR-NN"
+        schema: "../CTR/CTR-NN_...yaml"
         title: "[API contract title]"
         relevant_sections: ["Request Schema", "Response Schema", "Error Codes"]
         relationship: "Interface contract this component implements"
@@ -133,23 +133,23 @@ traceability:
 
   downstream_artifacts:
     atomic_requirements:
-      - id: "REQ-NNN"
-        link: "../reqs/.../REQ-NNN_...md#REQ-NNN"
+      - id: "REQ-NN"
+        link: "../reqs/.../REQ-NN_...md#REQ-NN"
         title: "[Atomic requirement title]"
         spec_sections: ["interfaces", "behavior"]
         relationship: "Detailed implementation requirement this SPEC satisfies"
         verification_method: "Unit test, Integration test"
 
-      - id: "REQ-MMM"
-        link: "../reqs/.../REQ-MMM_...md#REQ-MMM"
+      - id: "REQ-MM"
+        link: "../reqs/.../REQ-MM_...md#REQ-MM"
         title: "[Another requirement title]"
         spec_sections: ["performance", "security"]
         relationship: "Quality attribute this SPEC satisfies"
         verification_method: "Performance test, security scan"
 
     behavioral_tests:
-      - id: "BDD-NNN"
-        link: "../bbds/BDD-NNN.feature"
+      - id: "BDD-NN"
+        link: "../bbds/BDD-NN.feature"
         title: "Feature: [Feature name]"
         scenarios:
           - name: "Scenario: Primary success path"
@@ -164,8 +164,8 @@ traceability:
         relationship: "Acceptance tests validating this SPEC"
         coverage_percentage: 0  # Target: 100%
 
-      - id: "BDD-MMM"
-        link: "../bbds/BDD-MMM.feature"
+      - id: "BDD-MM"
+        link: "../bbds/BDD-MM.feature"
         title: "Feature: [Integration scenarios]"
         scenarios:
           - name: "Scenario: External service integration"
@@ -220,8 +220,8 @@ traceability:
           spec_sections: ["verification.performance_tests"]
 
     implementation_tasks:
-      - id: "TASKS-NNN"
-        link: "../ai_tasks/TASKS-NNN_....md"
+      - id: "TASKS-NN"
+        link: "../ai_tasks/TASKS-NN_....md"
         title: "[Implementation plan title]"
         status: "pending"  # pending, in_progress, completed
         spec_sections: ["interfaces", "behavior", "implementation"]
@@ -338,18 +338,18 @@ traceability:
 
   # Cumulative Tagging Hierarchy (Layer 10)
   # Required tags from ALL upstream artifacts for complete traceability
-  # Format: artifact-type: TYPE.NN.EE.SS (Unified Element ID: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
+  # Format: artifact-type: TYPE.NN.TT.SS (Unified Element ID: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
   cumulative_tags:
     brd: "BRD.NN.EE.SS"  # Business Requirements
     prd: "PRD.NN.EE.SS"  # Product Requirements
     ears: "EARS.NN.24.SS"  # Engineering Requirements (24=EARS Statement)
     bdd: "BDD.NN.13.SS"  # BDD Test Scenarios (13=Test Scenario)
-    adr: "ADR-NNN"  # Architecture Decisions
+    adr: "ADR-NN"  # Architecture Decisions
     sys: "SYS.NN.25.SS"  # System Requirements (25=System Requirement)
     req: "REQ.NN.26.SS"  # Atomic Requirements (26=Atomic Requirement)
     impl: "IMPL.NN.EE.SS"  # Implementation Plans (optional)
-    ctr: "CTR-NNN"  # API Contracts (optional)
-    threshold: "PRD-NNN"  # Threshold Registry (when performance/SLA values used)
+    ctr: "CTR-NN"  # API Contracts (optional)
+    threshold: "PRD-NN"  # Threshold Registry (when performance/SLA values used)
     # Layer 10: SPEC must include all upstream tags (BRD through REQ)
     # Optional: IMPL, CTR, and threshold if they exist in the traceability chain
     # Purpose: Complete traceability from business requirements to implementation
@@ -361,11 +361,11 @@ traceability:
   # All quantitative values in performance, rate limiting, and operational sections
   # must use @threshold: tags to ensure single source of truth.
   #
-  # Threshold Naming Convention: @threshold: PRD.NNN.category.subcategory.key
+  # Threshold Naming Convention: @threshold: PRD.NN.category.subcategory.key
   # Format Reference: See THRESHOLD_NAMING_RULES.md for complete naming standards.
   # =======================================================================
   threshold_references:
-    registry_document: "PRD-NNN"  # Threshold registry document ID
+    registry_document: "PRD-NN"  # Threshold registry document ID
     format_reference: "../THRESHOLD_NAMING_RULES.md"
 
     # Comprehensive list of threshold keys used in this SPEC
@@ -427,20 +427,20 @@ traceability:
         - key: "resource.connections.pool_size"
           usage: "architecture.scalability"
 
-    # Validation: All keys must exist in PRD-NNN threshold registry
+    # Validation: All keys must exist in PRD-NN threshold registry
     # See: ../PRD/PRD-000_threshold_registry_template.md
 
     # Example Usage in SPEC Sections:
-    # performance.latency_targets.p95_milliseconds: "@threshold: PRD.NNN.perf.api.p95_latency"
-    # rate_limiting.global_limits.requests_per_minute: "@threshold: PRD.NNN.limit.api.requests_per_minute"
-    # operations.alerting_rules[].condition: "error_rate > @threshold: PRD.NNN.sla.error_rate.warning"
+    # performance.latency_targets.p95_milliseconds: "@threshold: PRD.NN.perf.api.p95_latency"
+    # rate_limiting.global_limits.requests_per_minute: "@threshold: PRD.NN.limit.api.requests_per_minute"
+    # operations.alerting_rules[].condition: "error_rate > @threshold: PRD.NN.sla.error_rate.warning"
 
   # Same-Type References (Conditional)
   # Include only if same-type relationships exist between SPEC documents
   same_type_references:
-    related_spec: []  # List of related SPEC-NNN IDs sharing domain context
-    depends_spec: []  # List of prerequisite SPEC-NNN IDs (must complete before this)
-    # Tags: @related-spec: SPEC-NNN, @depends-spec: SPEC-NNN
+    related_spec: []  # List of related SPEC-NN IDs sharing domain context
+    depends_spec: []  # List of prerequisite SPEC-NN IDs (must complete before this)
+    # Tags: @related-spec: SPEC-NN, @depends-spec: SPEC-NN
 
 # ===================
 # COMPONENT ARCHITECTURE
@@ -485,9 +485,9 @@ architecture:
 # See: ADR-CTR_SEPARATE_FILES_POLICY.md
 #
 # Contract References:
-# - API contracts → See CTR/CTR-NNN_{slug}.md + CTR-NNN_{slug}.yaml
-# - Event schemas → See CTR/CTR-NNN_{slug}.yaml (AsyncAPI)
-# - Data models → See CTR/CTR-NNN_{slug}.yaml (JSON Schema)
+# - API contracts → See CTR/CTR-NN_{slug}.md + CTR-NN_{slug}.yaml
+# - Event schemas → See CTR/CTR-NN_{slug}.yaml (AsyncAPI)
+# - Data models → See CTR/CTR-NN_{slug}.yaml (JSON Schema)
 #
 # This SPEC defines:
 # - Implementation classes, methods, and logic flows
@@ -501,7 +501,7 @@ architecture:
 # - classes[].methods[].errors → Internal error handling (not API)
 #
 # For API contracts (exposed interfaces):
-# 1. Create separate CTR files: CTR-NNN.md + CTR-NNN.yaml
+# 1. Create separate CTR files: CTR-NN.md + CTR-NN.yaml
 # 2. Reference CTR in traceability.upstream_sources.contracts[] section
 # 3. Document implementation details here (HOW to implement the contract)
 #
@@ -782,24 +782,24 @@ caching:
 # RATE LIMITING
 # ===================
 # NOTE: Use @threshold registry references for rate limit values
-# Format: "@threshold: PRD.NNN.limit.category.key"
+# Format: "@threshold: PRD.NN.limit.category.key"
 
 rate_limiting:
   enabled: true
   strategy: "token_bucket"  # token_bucket, sliding_window, fixed_window, leaky_bucket
 
   global_limits:
-    requests_per_minute: "@threshold: PRD.NNN.limit.api.requests_per_minute"
-    requests_per_hour: "@threshold: PRD.NNN.limit.api.requests_per_hour"
-    burst_limit: "@threshold: PRD.NNN.limit.api.burst"
+    requests_per_minute: "@threshold: PRD.NN.limit.api.requests_per_minute"
+    requests_per_hour: "@threshold: PRD.NN.limit.api.requests_per_hour"
+    burst_limit: "@threshold: PRD.NN.limit.api.burst"
 
   per_client_limits:
     identified_users:
-      requests_per_minute: "@threshold: PRD.NNN.limit.user.requests_per_minute"
-      requests_per_hour: "@threshold: PRD.NNN.limit.user.requests_per_hour"
+      requests_per_minute: "@threshold: PRD.NN.limit.user.requests_per_minute"
+      requests_per_hour: "@threshold: PRD.NN.limit.user.requests_per_hour"
     anonymous_users:
-      requests_per_minute: "@threshold: PRD.NNN.limit.anonymous.requests_per_minute"
-      requests_per_hour: "@threshold: PRD.NNN.limit.anonymous.requests_per_hour"
+      requests_per_minute: "@threshold: PRD.NN.limit.anonymous.requests_per_minute"
+      requests_per_hour: "@threshold: PRD.NN.limit.anonymous.requests_per_hour"
 
   per_endpoint_limits:
     "/api/expensive-operation":
@@ -882,26 +882,26 @@ circuit_breaker:
 # PERFORMANCE SPECIFICATIONS
 # ===================
 # NOTE: Use @threshold registry references for all quantitative values
-# Format: "@threshold: PRD.NNN.category.subcategory.key"
+# Format: "@threshold: PRD.NN.category.subcategory.key"
 # See: ../PRD/PRD-000_threshold_registry_template.md
 
 performance:
   latency_targets:
-    p50_milliseconds: "@threshold: PRD.NNN.perf.api.p50_latency"
-    p95_milliseconds: "@threshold: PRD.NNN.perf.api.p95_latency"
-    p99_milliseconds: "@threshold: PRD.NNN.perf.api.p99_latency"
-    max_milliseconds: "@threshold: PRD.NNN.perf.api.max_latency"
+    p50_milliseconds: "@threshold: PRD.NN.perf.api.p50_latency"
+    p95_milliseconds: "@threshold: PRD.NN.perf.api.p95_latency"
+    p99_milliseconds: "@threshold: PRD.NN.perf.api.p99_latency"
+    max_milliseconds: "@threshold: PRD.NN.perf.api.max_latency"
 
   throughput_targets:
-    sustained_requests_per_second: "@threshold: PRD.NNN.limit.api.requests_per_second"
-    burst_requests_per_second: "@threshold: PRD.NNN.limit.api.burst"
+    sustained_requests_per_second: "@threshold: PRD.NN.limit.api.requests_per_second"
+    burst_requests_per_second: "@threshold: PRD.NN.limit.api.burst"
     cooldown_period_minutes: 5  # Non-critical operational value
 
   resource_limits:
-    cpu_cores_allocated: "@threshold: PRD.NNN.resource.compute.cpu_cores"
-    memory_mb_allocated: "@threshold: PRD.NNN.resource.memory.max_heap"
-    network_bandwidth_mbps: "@threshold: PRD.NNN.resource.network.bandwidth_mbps"
-    disk_iops: "@threshold: PRD.NNN.resource.storage.iops"
+    cpu_cores_allocated: "@threshold: PRD.NN.resource.compute.cpu_cores"
+    memory_mb_allocated: "@threshold: PRD.NN.resource.memory.max_heap"
+    network_bandwidth_mbps: "@threshold: PRD.NN.resource.network.bandwidth_mbps"
+    disk_iops: "@threshold: PRD.NN.resource.storage.iops"
 
   scaling_characteristics:
     vertical_scaling_supported: true
@@ -1087,14 +1087,14 @@ observability:
 
 verification:
   bdd_scenarios:
-    - "[BDD-NNN.feature](../bbds/BDD-NNN.feature#scenario-primary-success-path)"
-    - "[BDD-NNN.feature](../bbds/BDD-NNN.feature#scenario-error-handling)"
-    - "[BDD-NNN.feature](../bbds/BDD-NNN.feature#scenario-performance-under-load)"
+    - "[BDD-NN.feature](../bbds/BDD-NN.feature#scenario-primary-success-path)"
+    - "[BDD-NN.feature](../bbds/BDD-NN.feature#scenario-error-handling)"
+    - "[BDD-NN.feature](../bbds/BDD-NN.feature#scenario-performance-under-load)"
 
   performance_tests:
-    - target_p95_latency_ms: "@threshold: PRD.NNN.perf.api.p95_latency"
+    - target_p95_latency_ms: "@threshold: PRD.NN.perf.api.p95_latency"
       test_scenario: "mixed_workload_100_rps"
-      success_criteria: "p95_latency < @threshold: PRD.NNN.perf.api.p95_latency AND error_rate < @threshold: PRD.NNN.sla.error_rate.target"
+      success_criteria: "p95_latency < @threshold: PRD.NN.perf.api.p95_latency AND error_rate < @threshold: PRD.NN.sla.error_rate.target"
 
   security_tests:
     - vulnerability_scanning: true
@@ -1102,10 +1102,10 @@ verification:
     - compliance_audit: ["owasp_top_10", "pci_dss_if_applicable"]
 
   load_tests:
-    - sustained_load_rps: "@threshold: PRD.NNN.limit.api.requests_per_second"
+    - sustained_load_rps: "@threshold: PRD.NN.limit.api.requests_per_second"
       duration_minutes: 60
       success_criteria: "no_degradation_in_latency OR graceful_degradation"
-    - burst_load_rps: "@threshold: PRD.NNN.limit.api.burst"
+    - burst_load_rps: "@threshold: PRD.NN.limit.api.burst"
       duration_minutes: 5
       success_criteria: "no_service_disruption"
 
@@ -1238,10 +1238,10 @@ operations:
       - circuit_breaker_state
     alerting_rules:
       # Use @threshold references for alert thresholds
-      - condition: "error_rate > @threshold: PRD.NNN.sla.error_rate.warning"
+      - condition: "error_rate > @threshold: PRD.NN.sla.error_rate.warning"
         severity: "warning"
         notification_channels: ["slack", "email"]
-      - condition: "p95_latency > @threshold: PRD.NNN.perf.api.p95_latency for 5 minutes"
+      - condition: "p95_latency > @threshold: PRD.NN.perf.api.p95_latency for 5 minutes"
         severity: "warning"
         notification_channels: ["slack", "pagerduty"]
       - condition: "circuit_breaker_open for 5 minutes"

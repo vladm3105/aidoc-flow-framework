@@ -84,7 +84,7 @@ Use `doc-adr` when:
 **Quick Template (Essential Sections)**:
 
 ```markdown
-# ADR-NNN: [Decision Title]
+# ADR-NN: [Decision Title]
 
 ## 1. Document Control
 | Item | Details |
@@ -217,11 +217,11 @@ Add Socket.IO to technology stack for real-time communication.
 
 **Example Flow**:
 ```
-BRD-001 (Platform) identifies: "Database technology decision needed"
+BRD-01 (Platform) identifies: "Database technology decision needed"
   ↓
 ADR-033: Choose PostgreSQL (Platform ADR - CREATED FIRST)
   ↓
-BRD-002 (Feature) references: "Use database per ADR-033"
+BRD-02 (Feature) references: "Use database per ADR-033"
   ↓
 ADR-045: User data schema design (Feature ADR - references ADR-033)
 ```
@@ -265,10 +265,10 @@ Real-time market data integration requires low-latency, bidirectional communicat
 - **Compatibility**: Broker API support
 
 **References**:
-- BRD: [BRD-001](../BRD/BRD-001_platform.md) §7.2.1
-- PRD: [PRD-001](../PRD/PRD-001_integration.md) §18.1
-- EARS: [EARS-001](../EARS/EARS-001_api.md) §3.1 (if applicable)
-- BDD: [BDD-001](../BDD/BDD-001_api.feature) (if applicable)
+- BRD: [BRD-01](../BRD/BRD-01_platform.md) §7.2.1
+- PRD: [PRD-01](../PRD/PRD-01_integration.md) §18.1
+- EARS: [EARS-01](../EARS/EARS-01_api.md) §3.1 (if applicable)
+- BDD: [BDD-01](../BDD/BDD-01_api.feature) (if applicable)
 ```
 
 **Cross-Reference Flow**:
@@ -288,8 +288,8 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NNN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.EE.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
@@ -299,7 +299,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 **For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NNN:NNN` (colon separator - DEPRECATED)
+- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
@@ -327,14 +327,14 @@ Examples:
 ```
 
 **Upstream Sources**:
-- [BRD-001](../BRD/BRD-001_platform.md#BRD-001) - Architecture Decision Requirements
-- [PRD-001](../PRD/PRD-001_integration.md#PRD-001) - Product requirements
-- [EARS-001](../EARS/EARS-001_risk.md#EARS-001) - Formal requirements
-- [BDD-001](../BDD/BDD-001_limits.feature) - Test scenarios
+- [BRD-01](../BRD/BRD-01_platform.md#BRD-01) - Architecture Decision Requirements
+- [PRD-01](../PRD/PRD-01_integration.md#PRD-01) - Product requirements
+- [EARS-01](../EARS/EARS-01_risk.md#EARS-01) - Formal requirements
+- [BDD-01](../BDD/BDD-01_limits.feature) - Test scenarios
 
 **Downstream Artifacts**:
-- SYS-NNN (to be created) - System requirements
-- REQ-NNN (to be created) - Atomic requirements
+- SYS-NN (to be created) - System requirements
+- REQ-NN (to be created) - Atomic requirements
 ```
 
 ## Upstream/Downstream Artifacts
@@ -351,8 +351,8 @@ Examples:
 - **Code** (Execution Layer) - Implementation per decision
 
 **Same-Type Document Relationships** (conditional):
-- `@related-adr: ADR-NNN` - ADRs sharing architectural context
-- `@depends-adr: ADR-NNN` - ADR that must be decided first
+- `@related-adr: ADR-NN` - ADRs sharing architectural context
+- `@depends-adr: ADR-NN` - ADR that must be decided first
 
 ## Creation Process
 
@@ -366,29 +366,29 @@ Check `docs/ADR/ADR-000_technology_stack.md` for approved technologies.
 
 ### Step 3: Reserve ID Number
 
-Check `docs/ADR/` for next available ID number (e.g., ADR-001, ADR-033).
+Check `docs/ADR/` for next available ID number (e.g., ADR-01, ADR-033).
 
 **Special IDs**:
 - **ADR-000**: Reserved for Technology Stack reference
-- **ADR-001 onwards**: Regular decision records
+- **ADR-01 onwards**: Regular decision records
 
 ### Step 4: Create ADR Folder and Files
 
-**Folder structure** (DEFAULT - nested folder per document):
-1. Create folder: `docs/ADR/ADR-NNN/`
-2. Create index file: `docs/ADR/ADR-NNN/ADR-NNN.0_index.md`
-3. Create section files: `docs/ADR/ADR-NNN/ADR-NNN.S_{slug}.md`
+**Folder structure** (DEFAULT - nested folder per document with descriptive slug):
+1. Create folder: `docs/ADR/ADR-NN_{slug}/` (folder slug MUST match index file slug)
+2. Create index file: `docs/ADR/ADR-NN_{slug}/ADR-NN.0_{slug}_index.md`
+3. Create section files: `docs/ADR/ADR-NN_{slug}/ADR-NN.S_{slug}_{section}.md`
 
 **Example**:
 ```
-docs/ADR/ADR-033/
-├── ADR-033.0_index.md
-├── ADR-033.1_context.md
-├── ADR-033.2_decision.md
-└── ADR-033.3_consequences.md
+docs/ADR/ADR-033_database_selection/
+├── ADR-033.0_database_selection_index.md
+├── ADR-033.1_database_selection_context.md
+├── ADR-033.2_database_selection_decision.md
+└── ADR-033.3_database_selection_consequences.md
 ```
 
-**OPTIONAL** (for small documents <25KB): `docs/ADR/ADR-NNN_{slug}.md` (monolithic)
+**OPTIONAL** (for small documents <25KB): `docs/ADR/ADR-NN_{slug}.md` (monolithic)
 
 ### Step 5: Fill Document Control Section
 
@@ -461,7 +461,7 @@ Commit ADR and traceability matrix.
 python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact ADR-033 --expected-layers brd,prd,ears,bdd --strict
 
 # Cross-document validation
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/ADR/ADR-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/ADR/ADR-NN_slug.md --auto-fix
 ```
 
 **Note**: ADR-specific validation script is under development. Use manual checklist and cross-document validation.
@@ -507,7 +507,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/ADR/ADR-NNN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/ADR/ADR-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all ADR documents complete
 python ai_dev_flow/scripts/validate_cross_document.py --layer ADR --auto-fix
@@ -524,7 +524,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer ADR --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS (4-segment) or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -591,7 +591,7 @@ For supplementary documentation related to ADR artifacts:
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
 **Section Templates** (DEFAULT for all ADR documents):
-- **Structure**: `docs/ADR/ADR-NNN/ADR-NNN.S_slug.md` (nested folder per document)
+- **Structure**: `docs/ADR/ADR-NN/ADR-NN.S_slug.md` (nested folder per document)
 - Index template: `ai_dev_flow/ADR/ADR-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_flow/ADR/ADR-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)

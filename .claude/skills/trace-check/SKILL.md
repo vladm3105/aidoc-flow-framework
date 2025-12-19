@@ -103,7 +103,7 @@ Code & Validation Layer: Code → Tests → Validation → Review → Production
 
 **Actions**:
 - Scan `docs/` directory for all artifact types
-- Parse filenames to extract document IDs (BRD-001, SPEC-001, etc.)
+- Parse filenames to extract document IDs (BRD-01, SPEC-01, etc.)
 - Build artifact inventory with file paths
 - Filter by artifact_types parameter if specified
 
@@ -129,14 +129,14 @@ Code & Validation Layer: Code → Tests → Validation → Review → Production
 **Markdown Pattern Recognition**:
 ```
 **Upstream Sources:**
-- [BRD-001](../BRD/BRD-001_file.md#BRD-001) - Title (Status, Date)
+- [BRD-01](../BRD/BRD-01_file.md#BRD-01) - Title (Status, Date)
 
 **Downstream Artifacts:**
 **In Progress:**
-- [SPEC-001](../SPEC/SPEC-001_file.yaml#anchor) - Title (Status, Date)
+- [SPEC-01](../SPEC/SPEC-01_file.yaml#anchor) - Title (Status, Date)
 
 **To Be Created:**
-- SPEC-002+: Description (TBD)
+- SPEC-02+: Description (TBD)
 ```
 
 **Data Structure**:
@@ -149,7 +149,7 @@ Code & Validation Layer: Code → Tests → Validation → Review → Production
 **Actions**:
 1. Scan all source files (.py, .md, .yaml, .feature) for tag patterns
 2. Parse @brd:, @sys:, @spec:, @test:, @impl-status: tags
-3. Validate format: TYPE.NN.EE.SS (4-segment unified format)
+3. Validate format: TYPE.NN.TT.SS (4-segment unified format)
 4. Build tag-to-document mapping
 5. Cross-reference with actual document existence
 
@@ -159,7 +159,7 @@ import re
 
 TAG_PATTERN = r'@(\w+(?:-\w+)?):\s*([\w\.\-]+(?:[\.:]\w[\w\.\-]*)?(?:\s*,\s*[\w\.\-]+(?:[\.:]\w[\w\.\-]*)?)*)'
 
-# Example matches (unified TYPE.NN.EE.SS format):
+# Example matches (unified TYPE.NN.TT.SS format):
 # @brd: BRD.01.01.30, BRD.01.01.03
 # @sys: SYS.01.25.08
 # @spec: SPEC-003
@@ -167,7 +167,7 @@ TAG_PATTERN = r'@(\w+(?:-\w+)?):\s*([\w\.\-]+(?:[\.:]\w[\w\.\-]*)?(?:\s*,\s*[\w\
 ```
 
 **Validation Rules**:
-1. **Format Check:** All @brd/@prd tags must use unified TYPE.NN.EE.SS format (4-segment)
+1. **Format Check:** All @brd/@prd tags must use unified TYPE.NN.TT.SS format (4-segment)
 2. **Document Exists:** DOCUMENT-ID must reference existing file in docs/{TYPE}/
 3. **Requirement Exists:** REQUIREMENT-ID must exist within the document
 4. **No Orphans:** All tags must resolve to actual requirements
@@ -180,7 +180,7 @@ TAG_PATTERN = r'@(\w+(?:-\w+)?):\s*([\w\.\-]+(?:[\.:]\w[\w\.\-]*)?(?:\s*,\s*[\w\
     "tags": {
       "brd": ["BRD.01.01.01", "BRD.01.01.02", "BRD.01.01.03"],
       "sys": ["SYS.01.25.01", "SYS.01.25.02"],
-      "spec": ["SPEC-001"],
+      "spec": ["SPEC-01"],
       "test": ["BDD.01.13.01", "BDD.07.13.01"],
       "impl-status": ["complete"]
     },
@@ -291,7 +291,7 @@ python scripts/validate_tags_against_docs.py \
 
 **Checks**:
 - ID format: `TYPE-XXX` or `TYPE-XXX-YY`
-- H1 header contains full ID: `# BRD-001`
+- H1 header contains full ID: `# BRD-01`
 - Zero-padding: `001` not `1`
 - No ID collisions (each XXX unique per type)
 - Valid TYPE: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN
@@ -301,7 +301,7 @@ python scripts/validate_tags_against_docs.py \
 
 **Failure Examples**:
 - `BRD-9` → Should be `BRD-009`
-- `SPEC-1` → Should be `SPEC-001`
+- `SPEC-1` → Should be `SPEC-01`
 - `REQ-42` → Should be `REQ-042`
 
 ### Step 3.5: Validate CTR Dual-File Format (MANDATORY)
@@ -376,7 +376,7 @@ def validate_ctr_dual_files(contracts_dir):
 ```
 
 **Error Examples**:
-- `CTR-001: Missing .yaml file (MANDATORY)` → Only .md exists
+- `CTR-01: Missing .yaml file (MANDATORY)` → Only .md exists
 - `CTR-002: Missing .md file (MANDATORY)` → Only .yaml exists
 - `CTR-003: Slug mismatch - MD: 'api_contract' vs YAML: 'api_spec'` → Slugs don't match
 - `CTR-004: YAML missing 'openapi' or 'asyncapi' field` → Schema format unclear
@@ -406,7 +406,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 | Component | Description | Example |
 |-----------|-------------|---------|
 | `{DOC_TYPE}` | Document type | `BRD` |
-| `.NNN` | Document number (3-4 digits) | `.001` = BRD-001 |
+| `.NNN` | Document number (3-4 digits) | `.001` = BRD-01 |
 | `.NNN` | Sequential topic number (3 digits, 001-999) | `.003` = third topic |
 
 **Validation Logic**:
@@ -459,13 +459,13 @@ def validate_architecture_topics(docs_dir):
 **Validation Regex Patterns**:
 ```python
 # BRD Section 7.2 subsection header (H3-H5 depending on document context)
-ARCHITECTURE_TOPIC_PATTERN = r'^#{3,5}\s+([A-Z]+\.\d{3,4}\.\d{3}):\s+.+'
+ARCHITECTURE_TOPIC_PATTERN = r'^#{3,5}\s+([A-Z]+\.\d{2,}\.\d{3}):\s+.+'
 
 # PRD Section 18 upstream reference (3-digit topic number)
-PRD_UPSTREAM_PATTERN = r'\*\*Upstream\*\*:\s*BRD-\d{3,4}\s+§7\.2\.\d{3}'
+PRD_UPSTREAM_PATTERN = r'\*\*Upstream\*\*:\s*BRD-\d{2,}\s+§7\.2\.\d{3}'
 
 # ADR Section 4.1 originating topic
-ADR_ORIGINATING_PATTERN = r'\*\*Originating Topic\*\*:\s*([A-Z]+\.\d{3,4}\.\d{3})\s*-\s*.+'
+ADR_ORIGINATING_PATTERN = r'\*\*Originating Topic\*\*:\s*([A-Z]+\.\d{2,}\.\d{3})\s*-\s*.+'
 ```
 
 **Cross-Reference Validation**:
@@ -478,7 +478,7 @@ ADR_ORIGINATING_PATTERN = r'\*\*Originating Topic\*\*:\s*([A-Z]+\.\d{3,4}\.\d{3}
 - `BRD.001.1: Invalid format` → Should be `BRD.001.001` (3-digit topic)
 - `BRD.001.001: Contains technical content` → "WebSocket" in BRD (move to PRD)
 - `PRD 18.1: Upstream BRD topic not found` → References non-existent BRD topic
-- `ADR-001: Originating topic BRD.999.001 not found` → Invalid topic reference
+- `ADR-01: Originating topic BRD.999.001 not found` → Invalid topic reference
 
 **Success Criteria**:
 - ✅ All BRD Section 7.2 topics use `{DOC_TYPE}.NN.EE.SS` format
@@ -497,18 +497,18 @@ ADR_ORIGINATING_PATTERN = r'\*\*Originating Topic\*\*:\s*([A-Z]+\.\d{3,4}\.\d{3}
 - Feature files: Verify `Scenario:` lines create anchors
 
 **Relative Path Calculation**:
-- From: `/docs/SPEC/SPEC-001.yaml`
-- To: `/docs/BRD/BRD-001.md`
-- Link: `[BRD-001](../BRD/BRD-001.md#BRD-001)`
+- From: `/docs/SPEC/SPEC-01.yaml`
+- To: `/docs/BRD/BRD-01.md`
+- Link: `[BRD-01](../BRD/BRD-01.md#BRD-01)`
 
 **Anchor Validation**:
-- Markdown: `# BRD-001` → anchor `#BRD-001`
+- Markdown: `# BRD-01` → anchor `#BRD-01`
 - YAML: `id: ib_gateway_connection_service` → anchor `#ib_gateway_connection_service`
 - Feature: `Scenario: User connects to IB Gateway` → anchor varies
 
 **Failure Examples**:
-- Link: `[SPEC-001](../SPEC/SPEC-001.yaml)` → File not found
-- Link: `[BRD-001](../BRD/BRD-001.md#BRD-002)` → Anchor mismatch
+- Link: `[SPEC-01](../SPEC/SPEC-01.yaml)` → File not found
+- Link: `[BRD-01](../BRD/BRD-01.md#BRD-02)` → Anchor mismatch
 
 ### Step 5: Generate Bidirectional Consistency from Tags
 
@@ -620,7 +620,7 @@ tar -czf ../backups/docs_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
 
 **Failure Examples**:
 - `BRD-9` → Should be `BRD-009`
-- `SPEC-1` → Should be `SPEC-001`
+- `SPEC-1` → Should be `SPEC-01`
 - `REQ-042-1` → Should be `REQ-042-01`
 
 ### Link Resolution Check
@@ -632,8 +632,8 @@ tar -czf ../backups/docs_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
 - Anchor exists: `#anchor` found in target file
 
 **Failure Examples**:
-- `[SPEC-001](../SPEC/SPEC-001.yaml)` → File not found
-- `[BRD-001](../../BRD/BRD-001.md#BRD-001)` → Wrong path depth
+- `[SPEC-01](../SPEC/SPEC-01.yaml)` → File not found
+- `[BRD-01](../../BRD/BRD-01.md#BRD-01)` → Wrong path depth
 - `[REQ-015](../REQ/REQ-015.md#REQ-015)` → File exists but anchor missing
 
 ### Anchor Validation Check
@@ -649,8 +649,8 @@ tar -czf ../backups/docs_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
 - Verify anchor format matches file type
 
 **Failure Examples**:
-- Link: `[SPEC-001](../SPEC/SPEC-001.yaml#SPEC-001)` → YAML has `id:` field, not H1
-- Link: `[BDD-001](../BDD/BDD-001.feature#ib-gateway-connection)` → Scenario title mismatch
+- Link: `[SPEC-01](../SPEC/SPEC-01.yaml#SPEC-01)` → YAML has `id:` field, not H1
+- Link: `[BDD-01](../BDD/BDD-01.feature#ib-gateway-connection)` → Scenario title mismatch
 
 ### Bidirectional Consistency Check
 
@@ -662,8 +662,8 @@ tar -czf ../backups/docs_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
 **Scoring**: (matched pairs / total links) × 100%
 
 **Failure Examples**:
-- SPEC-001→BRD-001 exists, but BRD-001→SPEC-001 missing (50% consistency for this pair)
-- BRD-001→PRD-001 exists, PRD-001→BRD-001 exists (100% consistency)
+- SPEC-01→BRD-01 exists, but BRD-01→SPEC-01 missing (50% consistency for this pair)
+- BRD-01→PRD-01 exists, PRD-01→BRD-01 exists (100% consistency)
 
 ### Coverage Check
 
@@ -675,7 +675,7 @@ tar -czf ../backups/docs_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
 **Calculation**: (complete / total) × 100%
 
 **Failure Examples**:
-- SPEC-001 created but no upstream BRD reference (incomplete)
+- SPEC-01 created but no upstream BRD reference (incomplete)
 - REQ-042 with no downstream SPEC reference and no "To Be Created" note (incomplete)
 
 ### Orphan Detection Check
@@ -702,8 +702,8 @@ tar -czf ../backups/docs_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
 - Downstream: OPTIONAL for all artifacts - only add when downstream docs exist
 
 **Failure Examples**:
-- REQ-005 with no BRD/PRD/EARS upstream (ERROR - upstream REQUIRED)
-- PRD-002 with no BRD upstream (ERROR - upstream REQUIRED)
+- REQ-05 with no BRD/PRD/EARS upstream (ERROR - upstream REQUIRED)
+- PRD-02 with no BRD upstream (ERROR - upstream REQUIRED)
 - SPEC-003 with no downstream IMPL (OK - downstream is OPTIONAL)
 - Any document using "TBD", "XXX", or "NNN" placeholders (ERROR - No-TBD rule)
 
@@ -711,7 +711,7 @@ tar -czf ../backups/docs_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
 
 ### Scenario 1: Quick Validation Before Commit
 
-**User Request**: "Validate traceability before I commit SPEC-001"
+**User Request**: "Validate traceability before I commit SPEC-01"
 
 **Assistant Action**: Uses trace-check skill with:
 - project_root_path: `{project_root}/docs/`
@@ -721,13 +721,13 @@ tar -czf ../backups/docs_backup_$(date +%Y%m%d_%H%M%S).tar.gz .
 
 **Output**:
 ```
-✅ SPEC-001: ID format valid
-✅ SPEC-001: Links resolve (BRD-001, SYS-002, REQ-001, ADR-002)
-❌ SPEC-001: Bidirectional gap - BRD-001 missing reverse link
+✅ SPEC-01: ID format valid
+✅ SPEC-01: Links resolve (BRD-01, SYS-002, REQ-01, ADR-02)
+❌ SPEC-01: Bidirectional gap - BRD-01 missing reverse link
 Coverage: SPEC artifacts 100% (1/1)
 Consistency: 75% (3/4 links bidirectional)
 
-Recommendation: Update BRD-001 Section 7.2 to add SPEC-001 reference
+Recommendation: Update BRD-01 Section 7.2 to add SPEC-01 reference
 ```
 
 ### Scenario 2: Full Audit with Auto-Fix
@@ -768,8 +768,8 @@ Recommendation: Update BRD-001 Section 7.2 to add SPEC-001 reference
 **Output**:
 ```
 Validated: 8 SPEC files
-✅ SPEC-001: Perfect (100% traceability)
-✅ SPEC-002: Perfect (100% traceability)
+✅ SPEC-01: Perfect (100% traceability)
+✅ SPEC-02: Perfect (100% traceability)
 ⚠️ SPEC-003: Missing BDD reference
 ❌ SPEC-004: Broken link to REQ-015 (file not found)
 Coverage: 88% (7/8 SPEC with complete traceability)
@@ -881,8 +881,8 @@ Recommendations:
 
 | Forward Link | Reverse Link | Status | Fix Command |
 |--------------|--------------|--------|-------------|
-| SPEC-001 → BRD-001 | BRD-001 → SPEC-001 | ✅ Fixed | Added to BRD-001:463 |
-| SPEC-002 → REQ-003 | REQ-003 → SPEC-002 | ❌ Missing | Add to REQ-003 Section 7 |
+| SPEC-01 → BRD-01 | BRD-01 → SPEC-01 | ✅ Fixed | Added to BRD-01:463 |
+| SPEC-02 → REQ-03 | REQ-03 → SPEC-02 | ❌ Missing | Add to REQ-03 Section 7 |
 ```
 
 ### Coverage by Type
@@ -945,15 +945,15 @@ Recommendations:
 
 | Version | Date       | Author | Changes |
 |---------|------------|--------|---------|
-| 2.1     | 2025-11-11 | trace-check skill | Updated traceability: Added SPEC-001 reference |
+| 2.1     | 2025-11-11 | trace-check skill | Updated traceability: Added SPEC-01 reference |
 | 2.0     | 2025-11-10 | User | Initial complete draft |
 ```
 
 ### 2. Add Missing Downstream References
 
-**Detection**: SPEC-001 references BRD-001, but BRD-001 does not reference SPEC-001
+**Detection**: SPEC-01 references BRD-01, but BRD-01 does not reference SPEC-01
 
-**Action**: Add to BRD-001 Section 7.2 "Downstream Artifacts"
+**Action**: Add to BRD-01 Section 7.2 "Downstream Artifacts"
 
 **Before**:
 ```markdown
@@ -964,27 +964,27 @@ Recommendations:
 **After**:
 ```markdown
 **In Progress:**
-- [SPEC-001](../SPEC/SPEC-001_ib_gateway_connection_service.yaml#ib_gateway_connection_service) - IB Gateway Connection Service (Status: Draft, Created: 2025-11-11)
+- [SPEC-01](../SPEC/SPEC-01_ib_gateway_connection_service.yaml#ib_gateway_connection_service) - IB Gateway Connection Service (Status: Draft, Created: 2025-11-11)
 
 **To Be Created:**
-- SPEC-002+: Additional technical specifications (TBD)
+- SPEC-02+: Additional technical specifications (TBD)
 ```
 
 ### 3. Fix Relative Path Errors
 
-**Detection**: Link `[BRD-001](../../BRD/BRD-001.md#BRD-001)` from `/docs/SPEC/SPEC-001.yaml`
+**Detection**: Link `[BRD-01](../../BRD/BRD-01.md#BRD-01)` from `/docs/SPEC/SPEC-01.yaml`
 
 **Calculation**:
-- From: `/docs/SPEC/SPEC-001.yaml`
-- To: `/docs/BRD/BRD-001.md`
-- Correct: `../BRD/BRD-001.md`
+- From: `/docs/SPEC/SPEC-01.yaml`
+- To: `/docs/BRD/BRD-01.md`
+- Correct: `../BRD/BRD-01.md`
 
-**Action**: Update link to `[BRD-001](../BRD/BRD-001.md#BRD-001)`
+**Action**: Update link to `[BRD-01](../BRD/BRD-01.md#BRD-01)`
 
 ### 4. Suggest New Traceability Entries
 
 **Pattern Analysis**:
-- SPEC-001 likely relates to REQ-001, BDD-001
+- SPEC-01 likely relates to REQ-01, BDD-01
 - REQ-042 likely relates to SPEC-004
 - BDD-003 likely relates to SPEC-003
 

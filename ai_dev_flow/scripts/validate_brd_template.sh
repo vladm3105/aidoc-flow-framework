@@ -15,7 +15,7 @@ SCRIPT_VERSION="1.0.0"
 
 if [ -z "$BRD_FILE" ]; then
   echo "Usage: $0 <BRD_FILE>"
-  echo "Example: $0 /opt/data/docs_flow_framework/docs/BRD/BRD-001_platform_architecture.md"
+  echo "Example: $0 /opt/data/docs_flow_framework/docs/BRD/BRD-01_platform_architecture.md"
   exit 1
 fi
 
@@ -139,13 +139,13 @@ echo "-----------------------------------------"
 filename=$(basename "$BRD_FILE")
 
 # Pattern: BRD-NNN or BRD-NNN-YY_{slug}.md
-if [[ $filename =~ ^BRD-[0-9]{3,4}(-[0-9]{2,3})?_[a-z0-9_]+\.md$ ]]; then
+if [[ $filename =~ ^BRD-[0-9]{2,}(-[0-9]{2,3})?_[a-z0-9_]+\.md$ ]]; then
   echo "  ✅ Filename format valid: $filename"
 
   # Check if it follows Platform or Feature pattern
   if echo "$filename" | grep -qE "platform|infrastructure"; then
     echo "  ✅ Recognized as Platform BRD pattern"
-  elif echo "$filename" | grep -qE "^BRD-[0-9]{3,4}(-[0-9]{2,3})?_[a-z0-9_]+\.md$"; then
+  elif echo "$filename" | grep -qE "^BRD-[0-9]{2,}(-[0-9]{2,3})?_[a-z0-9_]+\.md$"; then
     # Additional check to ensure it's not Platform (contains platform/infrastructure keywords)
     if echo "$filename" | grep -qE "_platform_|_infrastructure_"; then
       echo "  ✅ Confirmed Platform BRD"
@@ -174,7 +174,7 @@ brd_type=""
 if echo "$filename" | grep -qE "_platform_|_infrastructure_"; then
   brd_type="platform"
   echo "  📋 BRD Type: Platform BRD"
-elif [[ $filename =~ ^BRD-[0-9]{3,4}(-[0-9]{2,3})?_[a-z0-9_]+\.md$ ]]; then
+elif [[ $filename =~ ^BRD-[0-9]{2,}(-[0-9]{2,3})?_[a-z0-9_]+\.md$ ]]; then
   brd_type="feature"
   echo "  📋 BRD Type: Feature BRD"
 else
@@ -743,7 +743,7 @@ if [ -n "$brd_refs" ]; then
   fi
 else
   echo "  ⚠️  WARNING: No BRD cross-references found in Related Requirements"
-  echo "           FRs should reference Platform BRDs (BRD-001 through BRD-005)"
+  echo "           FRs should reference Platform BRDs (BRD-01 through BRD-005)"
   ((WARNINGS++))
 fi
 

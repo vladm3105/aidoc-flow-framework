@@ -4,7 +4,7 @@ IPLAN Naming Convention Validator
 
 Validates IPLAN (Implementation Plan) files against timestamp-based naming standards.
 
-Format: IPLAN-NNN_{descriptive_slug}_YYYYMMDD_HHMMSS.md
+Format: IPLAN-NN_{descriptive_slug}_YYYYMMDD_HHMMSS.md
 - NNN: Sequential ID (3-4 digits: 001-999, 1000+)
 - descriptive_slug: Lowercase, hyphen-separated description
 - YYYYMMDD_HHMMSS: Timestamp (EST timezone)
@@ -33,11 +33,11 @@ class IPLANValidator:
 
     # Regex pattern for IPLAN filename
     FILENAME_PATTERN = re.compile(
-        r'^IPLAN-(\d{3,4})_([a-z0-9]+(?:-[a-z0-9]+)*)_(\d{8})_(\d{6})\.md$'
+        r'^IPLAN-(\d{2,})_([a-z0-9]+(?:-[a-z0-9]+)*)_(\d{8})_(\d{6})\.md$'
     )
 
     # Regex pattern for H1 ID inside file
-    H1_PATTERN = re.compile(r'^#\s+IPLAN-(\d{3,4}):\s+(.+)$', re.MULTILINE)
+    H1_PATTERN = re.compile(r'^#\s+IPLAN-(\d{2,}):\s+(.+)$', re.MULTILINE)
 
     def __init__(self, base_path: Path):
         """Initialize validator with base path."""
@@ -239,7 +239,7 @@ class IPLANValidator:
             if not result:
                 self.errors.append(
                     f"{filename}: Invalid filename format. "
-                    f"Expected: IPLAN-NNN_{{descriptive_slug}}_YYYYMMDD_HHMMSS.md"
+                    f"Expected: IPLAN-NN_{{descriptive_slug}}_YYYYMMDD_HHMMSS.md"
                 )
                 continue
 

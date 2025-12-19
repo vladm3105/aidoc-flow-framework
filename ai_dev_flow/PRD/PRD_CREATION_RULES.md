@@ -128,13 +128,14 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- **Location**: `docs/PRD/PRD-NNN/` within project docs directory (nested folder per document)
-- **Folder Structure** (DEFAULT): `docs/PRD/PRD-NNN/PRD-NNN.S_slug.md`
-  - Index file: `docs/PRD/PRD-NNN/PRD-NNN.0_index.md`
-  - Section files: `docs/PRD/PRD-NNN/PRD-NNN.1_executive_summary.md`, etc.
-- **Section Files**: Section-based structure is DEFAULT for all PRD documents. Use format: `PRD-NNN.S_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
-- **Monolithic** (OPTIONAL for <25KB): `docs/PRD/PRD-NNN_descriptive_title.md` (flat structure)
-- **Subdocuments**: For complex business features: `PRD-NNN-YY_additional_detail.md` (YY = 2-digit sub-number)
+- **Location**: `docs/PRD/PRD-NN_{slug}/` within project docs directory (nested folder per document with descriptive slug)
+- **Folder Naming**: `PRD-NN_{slug}/` where slug MUST match the index file slug
+- **Folder Structure** (DEFAULT): `docs/PRD/PRD-NN_{slug}/PRD-NN.S_{slug}.md`
+  - Index file: `docs/PRD/PRD-NN_{slug}/PRD-NN.0_{slug}_index.md`
+  - Section files: `docs/PRD/PRD-NN_{slug}/PRD-NN.1_{slug}_executive_summary.md`, etc.
+- **Section Files**: Section-based structure is DEFAULT for all PRD documents. Use format: `PRD-NN.S_{slug}_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
+- **Monolithic** (OPTIONAL for <25KB): `docs/PRD/PRD-NN_{slug}/PRD-NN.0_{slug}.md` (single file in folder)
+- **Subdocuments**: For complex business features: `PRD-NN-YY_{additional_detail}.md` (YY = 2-digit sub-number)
 
 ---
 
@@ -219,11 +220,42 @@ Every PRD must contain these exact 21 sections (1-21) in order. Section numberin
 
 ## 4. ID and Naming Standards
 
-- **Filename**: `PRD-NNN_descriptive_title.md` (e.g., `PRD-001_external_api_integration.md`)
-- **H1 Header**: `# PRD-NNN: [Descriptive Product Name/Feature Name]`
-- **Document Title**: Include in H1 as subtitle (e.g., "PRD-001: External API Integration")
-- **ID Format**: PRD-NNN (3-digit sequential), PRD-NNN-YY for multi-part documents
-- **Uniqueness Rule**: Each NNN number unique across all PRDs
+- **Filename**: `PRD-NN_descriptive_title.md` (e.g., `PRD-01_external_api_integration.md`)
+- **H1 Header**: `# PRD-NN: [Descriptive Product Name/Feature Name]`
+- **Document Title**: Include in H1 as subtitle (e.g., "PRD-01: External API Integration")
+- **ID Format**: PRD-NN (3-digit sequential), PRD-NN-YY for multi-part documents
+- **Uniqueness Rule**: Each NN number unique across all PRDs
+
+### 4.1 Element ID Format (MANDATORY)
+
+**Pattern**: `PRD.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Functional Requirement | 01 | PRD.02.01.01 |
+| Quality Attribute | 02 | PRD.02.02.01 |
+| Constraint | 03 | PRD.02.03.01 |
+| Assumption | 04 | PRD.02.04.01 |
+| Dependency | 05 | PRD.02.05.01 |
+| **Acceptance Criteria** | **06** | **PRD.02.06.01** |
+| Risk | 07 | PRD.02.07.01 |
+| Metric | 08 | PRD.02.08.01 |
+| User Story | 09 | PRD.02.09.01 |
+| Use Case | 11 | PRD.02.11.01 |
+| Feature Item | 22 | PRD.02.22.01 |
+| Stakeholder Need | 24 | PRD.02.24.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `AC-XXX` → Use `PRD.NN.06.SS`
+> - `FR-XXX` → Use `PRD.NN.01.SS`
+> - `BC-XXX` → Use `PRD.NN.03.SS`
+> - `BA-XXX` → Use `PRD.NN.04.SS`
+> - `QA-XXX` → Use `PRD.NN.02.SS`
+> - `RISK-XXX` → Use `PRD.NN.07.SS`
+> - `METRIC-XXX` → Use `PRD.NN.08.SS`
+> - `Feature F-XXX` → Use `PRD.NN.09.SS`
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
 
 ---
 
@@ -303,7 +335,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 
 | PRD Section 18 Field | Content Source | Example |
 |---------------------|----------------|---------|
-| **Upstream** | BRD reference | "BRD-001 §7.2.3" |
+| **Upstream** | BRD reference | "BRD-01 §7.2.3" |
 | **Technical Options** | Product team research | "1. Modern Treasury (SaaS), 2. Custom PostgreSQL, 3. TigerBeetle" |
 | **Evaluation Criteria** | Measurable targets | "Throughput ≥10K TPS, Latency <100ms P99" |
 | **Product Constraints** | Integration/technical limits | "Must support Python SDK" |
@@ -315,7 +347,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 ```markdown
 ##### {DOC_TYPE}.NN.EE.SS: [Topic Name]
 
-**Upstream**: BRD-NNN §7.2.X
+**Upstream**: BRD-NN §7.2.X
 
 **Technical Options**:
 1. **[Option A]**: [Description]
@@ -372,7 +404,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 ```markdown
 ##### BRD.01.01.03: Ledger System Selection
 
-**Upstream**: BRD-001 §7.2.3
+**Upstream**: BRD-01 §7.2.3
 
 **Technical Options**:
 1. **Modern Treasury**: Managed SaaS, REST API, SOC 2 certified
@@ -549,13 +581,13 @@ Include ONLY if relationships exist between PRD documents sharing domain context
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | PRD-NNN | [Related PRD title] | Shared domain context |
-| Depends | PRD-NNN | [Prerequisite PRD title] | Must complete before this |
+| Related | PRD-NN | [Related PRD title] | Shared domain context |
+| Depends | PRD-NN | [Prerequisite PRD title] | Must complete before this |
 
 **Tags**:
 ```markdown
-@related-prd: PRD-NNN
-@depends-prd: PRD-NNN
+@related-prd: PRD-NN
+@depends-prd: PRD-NN
 ```
 
 ---
@@ -602,7 +634,7 @@ All business objectives follow SMART criteria and include:
 **Pre-Commit Validation**:
 ```bash
 # Validate single file
-./scripts/validate_prd_template.sh docs/PRD/PRD-001_product_requirements.md
+./scripts/validate_prd_template.sh docs/PRD/PRD-01_product_requirements.md
 
 # Validate all PRD files
 find docs/PRD -name "PRD-*.md" -exec ./scripts/validate_prd_template.sh {} \;
@@ -643,8 +675,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -824,7 +856,7 @@ For a PRD to be EARS-Ready, it must contain:
 
 **Mandatory for EARS-Ready**:
 - Numeric thresholds reference centralized registry where applicable
-- Use format: `@threshold: PRD.NNN.{category}.{key}`
+- Use format: `@threshold: PRD.NN.{category}.{key}`
 
 **When to Reference Registry**:
 - KYC/KYB velocity limits
@@ -865,7 +897,7 @@ Create a dedicated Threshold Registry PRD when:
 **In consuming PRDs**, reference registry thresholds using:
 
 ```markdown
-@threshold: PRD.NNN.{category}.{key}
+@threshold: PRD.NN.{category}.{key}
 
 Example: @threshold: PRD.035.kyc.l1.daily
 ```
@@ -904,12 +936,12 @@ Example: @threshold: PRD.035.kyc.l1.daily
 
 ### Standard Format (Simple Numeric)
 
-**Format**: `NNN` (3-digit zero-padded sequential number)
+**Format**: `NN` (3-digit zero-padded sequential number)
 
 | Component | Format | Description |
 |-----------|--------|-------------|
-| Feature ID | `NNN` | 3-digit sequential (001-999) |
-| Document Context | `PRD-NNN` | PRD number provides namespace |
+| Feature ID | `NN` | 3-digit sequential (001-999) |
+| Document Context | `PRD-NN` | PRD number provides namespace |
 
 **Rationale**: The document context (PRD-022) already provides the namespace. Embedding the PRD number in the feature ID is redundant.
 
@@ -948,7 +980,7 @@ When referencing features from other PRDs, use the cross-reference format:
 | `FR-AGENT-001` | Non-standard prefix | `PRD.22.01.01` |
 | `Feature 3.1` | Text format | `PRD.25.01.03` |
 | `PRD.1.1` | Not zero-padded | `PRD.01.01.01` |
-| `F-001` | Deprecated F- format | `PRD.NN.01.01` |
+| `F-01` | Deprecated F- format | `PRD.NN.01.01` |
 
 ### Common Mistakes to Avoid
 
@@ -976,7 +1008,7 @@ For PRDs with non-standard Feature IDs:
 | Feature-022-001 | PRD.22.01.01 | @prd: PRD.22.01.01 |
 | FR-AGENT-001 | PRD.22.01.01 | @prd: PRD.22.01.01 |
 | Feature 3.1 | PRD.25.01.03 | @prd: PRD.25.01.03 |
-| F-001 | PRD.NN.01.01 | @prd: PRD.NN.01.01 |
+| F-01 | PRD.NN.01.01 | @prd: PRD.NN.01.01 |
 
 ### Benefits
 
@@ -1007,7 +1039,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/PRD/PRD-NNN_slug.md --auto-fix
+python scripts/validate_cross_document.py --document docs/PRD/PRD-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all PRD documents complete
 python scripts/validate_cross_document.py --layer PRD --auto-fix
@@ -1024,7 +1056,7 @@ python scripts/validate_cross_document.py --layer PRD --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd tag | Add with upstream BRD document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 

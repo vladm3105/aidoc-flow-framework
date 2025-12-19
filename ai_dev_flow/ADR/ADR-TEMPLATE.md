@@ -33,9 +33,9 @@ custom_fields:
 
 > **Note**: Section-based templates are the DEFAULT for BRD/PRD/ADR.
 > This monolithic template is for small documents only (<25KB).
-> Use nested folder structure: `docs/ADR/ADR-NNN/ADR-NNN.S_slug.md`
+> Use nested folder structure: `docs/ADR/ADR-NN/ADR-NN.S_slug.md`
 
-# ADR-NNN: [Architecture Decision Title]
+# ADR-NN: [Architecture Decision Title]
 
 ## 1. Document Control
 
@@ -144,10 +144,10 @@ The following fields are copied from upstream documents to maintain traceability
 - [Criterion 2]: [Measurable target]
 
 **References**:
-- BRD: [BRD-NNN](../BRD/BRD-NNN_slug.md) §7.2.X
-- PRD: [PRD-NNN](../PRD/PRD-NNN_slug.md) §18.X
-- EARS: [EARS-NNN](../EARS/EARS-NNN_slug.md)
-- BDD: [BDD-NNN](../BDD/BDD-NNN_slug.feature)
+- BRD: [BRD-NN](../BRD/BRD-NN_slug.md) §7.2.X
+- PRD: [PRD-NN](../PRD/PRD-NN_slug.md) §18.X
+- EARS: [EARS-NN](../EARS/EARS-NN_slug.md)
+- BDD: [BDD-NN](../BDD/BDD-NN_slug.feature)
 
 ### 4.2 Background
 [Historical context and existing system state - how did we get here? What current system state drove this need?]
@@ -192,7 +192,7 @@ Before proposing new technologies, verify compliance with project-wide technolog
 1. **Reference** platform-wide thresholds from PRD threshold registry
 2. **Define** architecture-specific thresholds unique to this decision
 
-**Threshold Naming Convention**: `@threshold: ADR.NNN.category.subcategory.key`
+**Threshold Naming Convention**: `@threshold: ADR.NN.category.subcategory.key`
 
 **Format Reference**: See `THRESHOLD_NAMING_RULES.md` for complete naming standards.
 
@@ -200,45 +200,45 @@ Before proposing new technologies, verify compliance with project-wide technolog
 ```yaml
 # Reference thresholds from PRD that constrain this architectural decision
 performance:
-  - "@threshold: PRD.NNN.perf.api.p95_latency"      # Architecture must meet this target
-  - "@threshold: PRD.NNN.perf.api.p99_latency"      # Architecture must meet this target
+  - "@threshold: PRD.NN.perf.api.p95_latency"      # Architecture must meet this target
+  - "@threshold: PRD.NN.perf.api.p99_latency"      # Architecture must meet this target
 sla:
-  - "@threshold: PRD.NNN.sla.uptime.target"         # Architecture availability requirement
-  - "@threshold: PRD.NNN.sla.error_rate.target"     # Architecture error budget
+  - "@threshold: PRD.NN.sla.uptime.target"         # Architecture availability requirement
+  - "@threshold: PRD.NN.sla.error_rate.target"     # Architecture error budget
 resource:
-  - "@threshold: PRD.NNN.resource.cpu.max"          # Infrastructure constraint
-  - "@threshold: PRD.NNN.resource.memory.max"       # Infrastructure constraint
+  - "@threshold: PRD.NN.resource.cpu.max"          # Infrastructure constraint
+  - "@threshold: PRD.NN.resource.memory.max"       # Infrastructure constraint
 ```
 
 **Architecture-Specific Thresholds Defined** (unique to this ADR):
 ```yaml
 # Define thresholds specific to this architectural decision
-# Format: @threshold: ADR.NNN.category.key
+# Format: @threshold: ADR.NN.category.key
 circuit_breaker:
-  - "@threshold: ADR.NNN.circuit.failure_threshold"    # e.g., 5 failures
-  - "@threshold: ADR.NNN.circuit.recovery_timeout"     # e.g., 30s
-  - "@threshold: ADR.NNN.circuit.half_open_requests"   # e.g., 3 requests
+  - "@threshold: ADR.NN.circuit.failure_threshold"    # e.g., 5 failures
+  - "@threshold: ADR.NN.circuit.recovery_timeout"     # e.g., 30s
+  - "@threshold: ADR.NN.circuit.half_open_requests"   # e.g., 3 requests
 retry:
-  - "@threshold: ADR.NNN.retry.max_attempts"           # e.g., 3 attempts
-  - "@threshold: ADR.NNN.retry.backoff_base_ms"        # e.g., 100ms
-  - "@threshold: ADR.NNN.retry.backoff_max_ms"         # e.g., 10000ms
+  - "@threshold: ADR.NN.retry.max_attempts"           # e.g., 3 attempts
+  - "@threshold: ADR.NN.retry.backoff_base_ms"        # e.g., 100ms
+  - "@threshold: ADR.NN.retry.backoff_max_ms"         # e.g., 10000ms
 caching:
-  - "@threshold: ADR.NNN.cache.ttl_seconds"            # e.g., 300s
-  - "@threshold: ADR.NNN.cache.max_entries"            # e.g., 10000
-  - "@threshold: ADR.NNN.cache.eviction_percent"       # e.g., 20%
+  - "@threshold: ADR.NN.cache.ttl_seconds"            # e.g., 300s
+  - "@threshold: ADR.NN.cache.max_entries"            # e.g., 10000
+  - "@threshold: ADR.NN.cache.eviction_percent"       # e.g., 20%
 pool:
-  - "@threshold: ADR.NNN.pool.min_connections"         # e.g., 5
-  - "@threshold: ADR.NNN.pool.max_connections"         # e.g., 50
-  - "@threshold: ADR.NNN.pool.idle_timeout"            # e.g., 300s
+  - "@threshold: ADR.NN.pool.min_connections"         # e.g., 5
+  - "@threshold: ADR.NN.pool.max_connections"         # e.g., 50
+  - "@threshold: ADR.NN.pool.idle_timeout"            # e.g., 300s
 ```
 
 **Threshold Impact Analysis**:
 
 | Threshold ID | Type | Value | Architecture Impact | Justification |
 |--------------|------|-------|-------------------|---------------|
-| PRD.NNN.perf.api.p95_latency | Referenced | 200ms | Constrains component selection | SLA requirement |
-| ADR.NNN.circuit.failure_threshold | Defined | 5 | Resilience pattern tuning | Prevent cascade failures |
-| ADR.NNN.retry.max_attempts | Defined | 3 | Error handling strategy | Balance reliability vs latency |
+| PRD.NN.perf.api.p95_latency | Referenced | 200ms | Constrains component selection | SLA requirement |
+| ADR.NN.circuit.failure_threshold | Defined | 5 | Resilience pattern tuning | Prevent cascade failures |
+| ADR.NN.retry.max_attempts | Defined | 3 | Error handling strategy | Balance reliability vs latency |
 
 **Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
 
@@ -262,11 +262,11 @@ pool:
 | Requirement ID | Description | How This Decision Satisfies It |
 |----------------|-------------|-------------------------------|
 | PRD-### | [Brief description] | [Specific mechanism/technique used] |
-| **PRD-NNN | [Brief description] | [Specific mechanism/technique used] | * if this ADR satify more then 1 PRD 
+| **PRD-NN | [Brief description] | [Specific mechanism/technique used] | * if this ADR satify more then 1 PRD 
 | EARS-### | [Brief description] | [Specific mechanism/technique used] |
-| **EARS-NNN | [Brief description] | [Specific mechanism/technique used] | * if this ADR satify more then  1 EARS 
+| **EARS-NN | [Brief description] | [Specific mechanism/technique used] | * if this ADR satify more then  1 EARS 
 | BDD-### | [Brief description] | [Specific mechanism/technique used] |
-| **BDD-NNN | [Brief description] | [Specific mechanism/technique used] | * if this ADR satify more then 1 BDD requirements
+| **BDD-NN | [Brief description] | [Specific mechanism/technique used] | * if this ADR satify more then 1 BDD requirements
 
 
 ### 6.2 Source Business Logic
@@ -419,7 +419,7 @@ flowchart TD
 ### 11.1 BDD Scenarios
 [List or reference BDD scenarios that validate this architectural approach:
 
-- Scenario: [Brief description] - File: [BDD-NNN.feature#L##]]
+- Scenario: [Brief description] - File: [BDD-NN.feature#L##]]
 
 ### 11.2 Specification Impact
 [Changes required in downstream specifications and contracts]
@@ -563,7 +563,7 @@ flowchart TD
 - **Implementation**: [Code location and key files/classes]
 
 ### 16.3 Document Links
-- **Anchors/IDs**: `#ADR-NNN` (internal document reference)
+- **Anchors/IDs**: `#ADR-NN` (internal document reference)
 - **Code Path(s)**: [Specific file paths, classes, or modules implementing this decision]
 - **Cross-references**: [Related documents and their relationship to this ADR]
 
@@ -578,13 +578,13 @@ flowchart TD
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | [ADR-NNN](./ADR-NNN_...md) | [Related ADR title] | Shared architectural context |
-| Depends | [ADR-NNN](./ADR-NNN_...md) | [Prerequisite ADR title] | Must complete before this |
+| Related | [ADR-NN](./ADR-NN_...md) | [Related ADR title] | Shared architectural context |
+| Depends | [ADR-NN](./ADR-NN_...md) | [Prerequisite ADR title] | Must complete before this |
 
 **Tags:**
 ```markdown
-@related-adr: ADR-NNN
-@depends-adr: ADR-NNN
+@related-adr: ADR-NN
+@depends-adr: ADR-NN
 ```
 
 ### 16.6 Traceability Tags
@@ -597,7 +597,7 @@ flowchart TD
 @bdd: BDD.NN.13.SS
 ```
 
-**Format**: `@artifact-type: TYPE.NN.EE.SS` (Unified Element ID format: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
+**Format**: `@artifact-type: TYPE.NN.TT.SS` (Unified Element ID format: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
 
 **Layer 5 Requirements**: ADR must reference ALL upstream artifacts:
 - `@brd`: Business Requirements Document(s)

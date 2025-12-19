@@ -184,13 +184,13 @@ gemini @SMALL_FILE.md "Analyze this document"
 
    Use section-based dot notation per [ID_NAMING_STANDARDS.md - Section-Based File Splitting](./ID_NAMING_STANDARDS.md#section-based-file-splitting-document-chunking):
    ```
-   SPEC-003.0_index.md           (required index/overview)
-   SPEC-003.1_interfaces.md      (interfaces, data models)
-   SPEC-003.2_business_logic.md  (business logic, state management)
-   SPEC-003.3_quality.md         (performance, observability)
+   SPEC-03.0_index.md           (required index/overview)
+   SPEC-03.1_interfaces.md      (interfaces, data models)
+   SPEC-03.2_business_logic.md  (business logic, state management)
+   SPEC-03.3_quality.md         (performance, observability)
    ```
 
-   **Pattern**: `{TYPE}-{NNN}.{SECTION}_{slug}.md`
+   **Pattern**: `{TYPE}-{NN}.{SECTION}_{slug}.md`
    - Dash before document number, dot before section number
    - Section 0 is always required (index)
    - Distinct from element IDs which use all dots (`SPEC.03.01.05`)
@@ -198,20 +198,20 @@ gemini @SMALL_FILE.md "Analyze this document"
 3. **Create Index File (Section 0):**
    ```markdown
    ---
-   doc_id: SPEC-003
+   doc_id: SPEC-03
    section: 0
    title: "Complete Specification Index"
    total_sections: 4
    ---
-   # SPEC-003.0: Complete Specification - Index
+   # SPEC-03.0: Complete Specification - Index
 
    ## Section Map
    | Section | File | Description |
    |---------|------|-------------|
-   | 0 | [Index](SPEC-003.0_index.md) | This file |
-   | 1 | [Interfaces](SPEC-003.1_interfaces.md) | Interfaces & Data Models |
-   | 2 | [Business Logic](SPEC-003.2_business_logic.md) | Core Logic |
-   | 3 | [Quality](SPEC-003.3_quality.md) | Performance & Observability |
+   | 0 | [Index](SPEC-03.0_index.md) | This file |
+   | 1 | [Interfaces](SPEC-03.1_interfaces.md) | Interfaces & Data Models |
+   | 2 | [Business Logic](SPEC-03.2_business_logic.md) | Core Logic |
+   | 3 | [Quality](SPEC-03.3_quality.md) | Performance & Observability |
 
    ## Dependencies
    - Section 2 depends on Section 1 (data models)
@@ -295,7 +295,7 @@ python -c "import tiktoken; enc = tiktoken.get_encoding('cl100k_base'); print(le
 
 ### Example 1: Standard Requirement Document (20KB)
 
-**File**: REQ-001_authentication.md (20KB, ~5,000 tokens)
+**File**: REQ-01_authentication.md (20KB, ~5,000 tokens)
 
 **Tool Usage:**
 - **Claude Code**: ✅ Optimal (uses 2.5% of context)
@@ -340,9 +340,9 @@ gemini
 
 **Recommended Split:**
 ```
-SPEC-SYSTEM-001_overview.md      (20KB) - Architecture, interfaces
-SPEC-SYSTEM-002_core.md          (40KB) - Core business logic
-SPEC-SYSTEM-003_integration.md   (30KB) - External integrations
+SPEC-SYSTEM-01_overview.md      (20KB) - Architecture, interfaces
+SPEC-SYSTEM-02_core.md          (40KB) - Core business logic
+SPEC-SYSTEM-03_integration.md   (30KB) - External integrations
 SPEC-SYSTEM-004_quality.md       (30KB) - Performance, observability
 SPEC-SYSTEM-000_index.md         (5KB)  - Complete index with cross-refs
 ```

@@ -65,10 +65,10 @@ When creating a new PRD:
 1. **Copy Template**:
    ```bash
    cp ai_dev_flow/PRD/PRD-TEMPLATE.md \
-      docs/PRD/PRD-NNN_product_name.md
+      docs/PRD/PRD-NN_product_name.md
    ```
 
-2. **Assign PRD ID**: Use next sequential number (PRD-001, PRD-002, ...)
+2. **Assign PRD ID**: Use next sequential number (PRD-01, PRD-02, ...)
 
 3. **Update This Index**: Add new row to table above with:
    - PRD ID and link to file
@@ -84,7 +84,7 @@ When creating a new PRD:
 ## Allocation Rules
 
 - **Numbering**: Allocate sequentially starting at `001`; keep numbers stable
-- **One Product Per File**: Each `PRD-NNN` file covers a coherent product or feature area
+- **One Product Per File**: Each `PRD-NN` file covers a coherent product or feature area
 - **Slugs**: Short, descriptive, lower_snake_case
 - **Cross-Links**: Each PRD should reference upstream BRD and downstream EARS/BDD/SYS/REQ
 - **Index Updates**: Add a line for every new PRD; do not remove past entries

@@ -53,12 +53,13 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- **Location**: `docs/ADR/ADR-NNN/` within project docs directory (nested folder per document)
-- **Folder Structure** (DEFAULT): `docs/ADR/ADR-NNN/ADR-NNN.S_slug.md`
-  - Index file: `docs/ADR/ADR-NNN/ADR-NNN.0_index.md`
-  - Section files: `docs/ADR/ADR-NNN/ADR-NNN.1_context.md`, etc.
-- **Section Files**: Section-based structure is DEFAULT for all ADR documents. Use format: `ADR-NNN.S_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
-- **Monolithic** (OPTIONAL for <25KB): `docs/ADR/ADR-NNN_descriptive_architecture_decision.md` (flat structure)
+- **Location**: `docs/ADR/ADR-NN_{slug}/` within project docs directory (nested folder per document with descriptive slug)
+- **Folder Naming**: `ADR-NN_{slug}/` where slug MUST match the index file slug (e.g., `ADR-01_cloud_migration/`)
+- **Folder Structure** (DEFAULT): `docs/ADR/ADR-NN_{slug}/ADR-NN.S_{slug}.md`
+  - Index file: `docs/ADR/ADR-NN_{slug}/ADR-NN.0_{slug}_index.md`
+  - Section files: `docs/ADR/ADR-NN_{slug}/ADR-NN.1_{slug}_context.md`, etc.
+- **Section Files**: Section-based structure is DEFAULT for all ADR documents. Use format: `ADR-NN.S_{section_slug}.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
+- **Monolithic** (OPTIONAL for <25KB): `docs/ADR/ADR-NN_{descriptive_slug}.md` (flat structure)
 - **Structure**: One primary ADR document folder per architecture decision
 
 ---
@@ -111,9 +112,23 @@ ADR documents follow a comprehensive 4-part structure:
 
 ## 4. ID and Naming Standards
 
-- **Filename**: `ADR-NNN_descriptive_architecture_decision.md`
-- **H1**: `# ADR-NNN: [Architecture Decision Title]`
+- **Filename**: `ADR-NN_descriptive_architecture_decision.md`
+- **H1**: `# ADR-NN: [Architecture Decision Title]`
 - **Status Tags**: Proposed, Accepted, Rejected, Superseded, Deprecated
+
+### 4.1 Element ID Format (MANDATORY)
+
+**Pattern**: `ADR.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Decision | 10 | ADR.02.10.01 |
+| Alternative | 12 | ADR.02.12.01 |
+| Consequence | 13 | ADR.02.13.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use legacy formats like `DEC-XXX`, `ALT-XXX`.
+>
+> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
 
 ---
 
@@ -253,7 +268,7 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 | `Status: Accepted` (with <90% SYS-Ready score) | Match status to score threshold |
 | Missing Consequences section | Document positive AND negative consequences |
 | Alternatives without evaluation | Include trade-off analysis for each option |
-| `@sys: SYS-NNN` (referencing downstream) | ADR should not reference downstream SYS |
+| `@sys: SYS-NN` (referencing downstream) | ADR should not reference downstream SYS |
 | Decision without context | Provide problem statement and constraints |
 | Missing architecture diagrams | Include Mermaid diagrams for architecture flow |
 
@@ -281,8 +296,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-001 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-001 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -307,13 +322,13 @@ Include ONLY if relationships exist between ADRs sharing architectural context o
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | ADR-NNN | [Related ADR title] | Shared architectural context |
-| Depends | ADR-NNN | [Prerequisite ADR title] | Must complete before this |
+| Related | ADR-NN | [Related ADR title] | Shared architectural context |
+| Depends | ADR-NN | [Prerequisite ADR title] | Must complete before this |
 
 **Tags**:
 ```markdown
-@related-adr: ADR-NNN
-@depends-adr: ADR-NNN
+@related-adr: ADR-NN
+@depends-adr: ADR-NN
 ```
 
 ---
@@ -337,7 +352,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/ADR/ADR-NNN_slug.md --auto-fix
+python scripts/validate_cross_document.py --document docs/ADR/ADR-NN_slug.md --auto-fix
 
 # Layer validation (Phase 2) - run when all ADR documents complete
 python scripts/validate_cross_document.py --layer ADR --auto-fix
@@ -354,7 +369,7 @@ python scripts/validate_cross_document.py --layer ADR --auto-fix
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.EE.SS or TYPE-NNN format |
+| Invalid tag format | Correct to TYPE.NN.TT.SS or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
