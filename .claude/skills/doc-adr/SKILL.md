@@ -354,6 +354,9 @@ Examples:
 - **REQ** (Layer 7) - Atomic requirements following decision
 - **Code** (Execution Layer) - Implementation per decision
 
+**Upstream-Only Traceability Policy**:
+> The ADR traceability matrix tracks ADRs and their **upstream sources** (BRD, PRD, EARS, BDD) only. Downstream documents (SYS, REQ, SPEC) track their own upstream references to ADRs—the ADR matrix does NOT maintain downstream links. This avoids circular maintenance and ensures each layer owns its own traceability.
+
 **Same-Type Document Relationships** (conditional):
 - `@related-adr: ADR-NN` - ADRs sharing architectural context
 - `@depends-adr: ADR-NN` - ADR that must be decided first
@@ -450,6 +453,8 @@ Include @brd, @prd, @ears, @bdd tags (Layers 1-4).
 ### Step 13: Create/Update Traceability Matrix
 
 **MANDATORY**: Update `docs/ADR/ADR-000_TRACEABILITY_MATRIX.md`
+- Add ADR entry with **upstream sources only** (BRD, PRD, EARS, BDD)
+- Do NOT add downstream links (SYS, REQ track their own references to ADRs)
 
 ### Step 14: Commit Changes
 

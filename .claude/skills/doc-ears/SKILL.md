@@ -1,5 +1,4 @@
 ---
-name: "doc-ears: Create EARS formal requirements (Layer 3)"
 name: doc-ears
 description: Create EARS (Easy Approach to Requirements Syntax) formal requirements - Layer 3 artifact using WHEN-THE-SHALL-WITHIN format
 tags:
@@ -50,7 +49,7 @@ Before creating EARS, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream BRD and PRD**: Read the BRD and PRD that drive this EARS
-3. **Template**: `ai_dev_flow/EARS/EARS-TEMPLATE.md` (includes METADATA CLARIFICATION block)
+3. **Template**: `ai_dev_flow/EARS/EARS-TEMPLATE.md` (Template Version 3.0, includes METADATA CLARIFICATION block)
 4. **Schema**: `ai_dev_flow/EARS/EARS_SCHEMA.yaml` (machine-readable validation rules)
 5. **Creation Rules**: `ai_dev_flow/EARS/EARS_CREATION_RULES.md`
 6. **Validation Rules**: `ai_dev_flow/EARS/EARS_VALIDATION_RULES.md`
@@ -480,7 +479,7 @@ For supplementary documentation related to EARS artifacts:
 
 ## Related Resources
 
-- **Template**: `ai_dev_flow/EARS/EARS-TEMPLATE.md` (primary authority)
+- **Template**: `ai_dev_flow/EARS/EARS-TEMPLATE.md` (Template Version 3.0, primary authority)
 - **Schema**: `ai_dev_flow/EARS/EARS_SCHEMA.yaml` (machine-readable validation)
 - **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 - **EARS Creation Rules**: `ai_dev_flow/EARS/EARS_CREATION_RULES.md`

@@ -150,7 +150,7 @@ Use `doc-brd` when:
 
 **BRD-TEMPLATE.md** - Comprehensive business requirements (general purpose)
 - Use for: All business requirements documents
-- Sections: Complete 17-section structure
+- Sections: Complete 18-section structure
 - Best for: Complex projects, regulatory compliance needs
 - Location: `ai_dev_flow/BRD/BRD-TEMPLATE.md`
 
@@ -166,7 +166,7 @@ Use `doc-brd` when:
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 - **Note**: Monolithic template is OPTIONAL for small documents (<25KB)
 
-### 2. Required Sections (17 Total)
+### 2. Required Sections (18 Total)
 
 **Document Control** (MANDATORY - First section before all numbered sections):
 - Project Name
@@ -187,6 +187,9 @@ Use `doc-brd` when:
 7. **Architecture Decision Requirements** (topics needing ADRs, NOT specific ADR numbers)
 8. Risk Assessment
 9. Traceability (Section 7 format from SHARED_CONTENT.md)
+10-16. Additional content sections (see BRD-TEMPLATE.md for full structure)
+17. **Glossary** - Domain terms and definitions
+18. **Appendices** - Supporting materials and references
 
 **Platform BRD Additional Sections**:
 - **3.6 Technology Stack Prerequisites** (MUST populate for Platform BRD)

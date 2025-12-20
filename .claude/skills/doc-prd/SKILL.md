@@ -1,5 +1,4 @@
 ---
-name: "doc-prd: Create Product Requirements Documents (Layer 2)"
 name: doc-prd
 description: Create Product Requirements Documents (PRD) following SDD methodology - Layer 2 artifact defining product features and user needs
 tags:
@@ -216,7 +215,26 @@ Business constraints          Evaluation criteria        Trade-off analysis
 - Decrease error rate from 5% to <1%
 ```
 
-### 6. EARS Enhancement Appendix (Section 20)
+### 6. Feature ID Naming Standard
+
+**Purpose**: Simple sequential numbering within document context.
+
+**Format**: `NN` (2+ digit sequential within document)
+
+**Examples**:
+- Feature `01`, Feature `02`, Feature `03` (within PRD-01)
+- NOT: `F-001`, `PRD-01-F-01`, `Feature-01` (redundant prefixes)
+
+**Rationale**: Document context (PRD-01) provides namespace, making additional prefixes redundant.
+
+**Cross-PRD Reference Format**: When referencing features from other PRDs:
+- `@prd: PRD.22.07.15` - Feature 15 from Section 7 of PRD-22
+
+**Validation Regex**: `^\d{2,}$`
+
+**Reference**: `PRD_CREATION_RULES.md` Section 20
+
+### 7. EARS Enhancement Appendix (Section 20)
 
 **Purpose**: Section 20 provides structured requirements ready for EARS transformation in Layer 3.
 
