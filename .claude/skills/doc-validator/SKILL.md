@@ -1,12 +1,13 @@
 ---
-title: "doc-validator: Automated validation of SDD documentation standards"
+title: "doc-validator: Cross-document validation for SDD framework"
 name: doc-validator
-description: Automated validation of documentation standards for SDD framework compliance
+description: Cross-document validation, traceability gaps, and project-wide consistency checks for SDD framework
 tags:
   - sdd-workflow
   - shared-architecture
   - quality-assurance
   - required-both-approaches
+  - cross-document-validation
 custom_fields:
   layer: null
   artifact_type: null
@@ -20,64 +21,77 @@ custom_fields:
 
 # doc-validator
 
+Cross-document validation for SDD framework compliance. For single-document validation, use the dedicated layer validators.
+
 ## Purpose
 
-Automated validation of documentation standards for SDD framework compliance.
+Validates relationships and consistency ACROSS documents in the SDD framework.
 
 **Core Functions**:
-- Validates document structure against artifact-specific schemas
-- Enforces ID format compliance (unified `TYPE.NN.TT.SS` element format)
-- Checks YAML frontmatter metadata requirements
-- Validates cumulative tagging hierarchy per layer
-- Detects language standard violations (objective, factual language)
-- Monitors token count limits (50K standard, 100K max)
-- Identifies broken cross-references and links
-- Detects duplicate IDs and content
+- Identifies broken cross-references between documents
+- Detects orphaned artifacts (documents with no upstream references)
+- Validates bidirectional link consistency
+- Checks cumulative tagging hierarchy across layers
+- Detects duplicate IDs across documents
+- Validates traceability matrix completeness
+- Monitors project-wide consistency
 
-**SDD Layer Coverage** (12 layers):
-```
-Layer 1: BRD → Layer 2: PRD → Layer 3: EARS →
-Layer 4: BDD → Layer 5: ADR → Layer 6: SYS →
-Layer 7: REQ → Layer 8: IMPL → Layer 9: CTR →
-Layer 10: SPEC → Layer 11: TASKS → Layer 12: IPLAN
-```
+**This Skill Does NOT**:
+- Validate single document structure (use `doc-{type}-validator` skills)
+- Validate single document metadata (use `doc-{type}-validator` skills)
+- Validate single document content (use `doc-{type}-validator` skills)
+
+**Dedicated Layer Validators**:
+| Layer | Artifact | Validator Skill |
+|-------|----------|-----------------|
+| 1 | BRD | `doc-brd-validator` |
+| 2 | PRD | `doc-prd-validator` |
+| 3 | EARS | `doc-ears-validator` |
+| 4 | BDD | `doc-bdd-validator` |
+| 5 | ADR | `doc-adr-validator` |
+| 6 | SYS | `doc-sys-validator` |
+| 7 | REQ | `doc-req-validator` |
+| 8 | IMPL | `doc-impl-validator` |
+| 9 | CTR | `doc-ctr-validator` |
+| 10 | SPEC | `doc-spec-validator` |
+| 11 | TASKS | `doc-tasks-validator` |
+| 12 | IPLAN | `doc-iplan-validator` |
 
 **Reference**: [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md)
 
-**Complexity**: Medium (schema validation + cross-reference analysis)
+**Complexity**: Medium (cross-reference analysis across multiple documents)
 
 **Resource Requirements**:
-- CPU: Moderate (file parsing, regex matching)
-- Memory: 100-500MB for 100-200 documents
+- CPU: Moderate (file parsing, graph traversal)
+- Memory: 200-500MB for 100-200 documents
 - Disk: Minimal (read-only validation)
 - Network: None (local file operations only)
 
 **Failure Modes**:
-- Invalid ID format: Reports non-compliant document/element IDs
-- Missing metadata: Reports required YAML frontmatter fields
-- Broken links: Reports file paths that do not resolve
-- Schema violations: Reports missing required sections
-- Token limit exceeded: Reports files requiring split
+- Broken cross-reference: Reports links to non-existent documents
+- Missing bidirectional link: Reports one-way references
+- Orphaned artifact: Reports documents with no upstream connections
+- Duplicate ID: Reports ID conflicts across documents
+- Traceability gap: Reports missing required upstream tags
 
 ---
 
 ## When to Use This Skill
 
 **Use doc-validator when**:
-- Before committing changes to documentation
-- After creating new artifacts (BRD, PRD, SPEC, etc.)
-- After updating existing artifacts
-- During periodic audits (weekly/sprint/release)
-- Validating document structure against templates
-- Detecting ID format violations
-- Verifying metadata completeness
-- Checking language standards compliance
+- Validating relationships BETWEEN documents
+- Checking project-wide traceability
+- Detecting orphaned artifacts
+- Validating bidirectional link consistency
+- Checking cumulative tagging across layers
+- Detecting duplicate IDs across documents
+- Before major releases (project-wide validation)
 
 **Do NOT use doc-validator when**:
-- Validating traceability (use trace-check skill instead)
-- Validating code implementation
-- For non-SDD documentation projects
-- During active editing sessions (wait until stable state)
+- Validating a single document's structure (use `doc-{type}-validator`)
+- Validating a single document's metadata (use `doc-{type}-validator`)
+- Validating a single document's content (use `doc-{type}-validator`)
+- For detailed traceability analysis (use `trace-check` skill)
 
 ---
 
@@ -86,46 +100,33 @@ Layer 10: SPEC → Layer 11: TASKS → Layer 12: IPLAN
 | Input | Type | Description | Example/Default |
 |-------|------|-------------|-----------------|
 | docs_path | Required | Path to documentation directory | `{project_root}/docs/` |
-| artifact_type | Optional | Specific artifact type to validate | `"REQ"`, `"SPEC"`, or `"all"` (default) |
+| scope | Optional | Validation scope | `"cross-document"` (default), `"traceability"`, `"full"` |
 | strictness | Optional | Validation strictness level | `"strict"` (default), `"permissive"` |
 | report_format | Optional | Output report format | `"markdown"` (default), `"json"`, `"text"` |
-| auto_fix | Optional | Apply automatic fixes | `true` or `false` (default) |
 
-**Strictness Levels**:
-- `permissive`: Warnings only, validation continues on errors
-- `strict`: Fails on errors, reports warnings
+**Scopes**:
+- `cross-document`: Links, references, bidirectional consistency
+- `traceability`: Cumulative tags, upstream/downstream validation
+- `full`: All cross-document validations
 
 ---
 
-## Implementation Status
+## Cross-Document Validators
 
-### [IMPLEMENTED] Validators Ready for Use
-
-| Layer | Artifact | Script | Schema | Status |
-|-------|----------|--------|--------|--------|
-| 1 | BRD | `validate_brd_template.sh` | `BRD_SCHEMA.yaml` | [IMPLEMENTED] |
-| 2 | PRD | `validate_prd.py` | `PRD_SCHEMA.yaml` | [IMPLEMENTED] |
-| 3 | EARS | `validate_ears.py` | `EARS_SCHEMA.yaml` | [IMPLEMENTED] |
-| 4 | BDD | `validate_bdd.py` | `BDD_SCHEMA.yaml` | [IMPLEMENTED] |
-| 5 | ADR | `validate_adr.py` | `ADR_SCHEMA.yaml` | [IMPLEMENTED] |
-| 6 | SYS | `validate_sys.py` | `SYS_SCHEMA.yaml` | [IMPLEMENTED] |
-| 7 | REQ | `validate_req_template.sh` | `REQ_SCHEMA.yaml` | [IMPLEMENTED] |
-| 8 | IMPL | `validate_impl.sh` | `IMPL_SCHEMA.yaml` | [IMPLEMENTED] |
-| 9 | CTR | `validate_ctr.sh` | `CTR_SCHEMA.yaml` | [IMPLEMENTED] |
-| 10 | SPEC | `validate_spec.py` | `SPEC_SCHEMA.yaml` | [IMPLEMENTED] |
-| 11 | TASKS | `validate_tasks.sh` | `TASKS_SCHEMA.yaml` | [IMPLEMENTED] |
-| 12 | IPLAN | `validate_iplan.sh` | `IPLAN_SCHEMA.yaml` | [IMPLEMENTED] |
-| N/A | ICON | `validate_icon.sh` | N/A | [IMPLEMENTED] |
-
-### [IMPLEMENTED] Cross-Document Validators
+### [IMPLEMENTED] Validation Scripts
 
 | Category | Script | Description | Error Codes |
 |----------|--------|-------------|-------------|
+| LINKS | `validate_links.py` | Markdown link resolution | XDOC-E001, XDOC-E004 |
+| CROSS-REF | `validate_cross_document.py` | Cross-reference validation | XDOC-E001, XDOC-E003 |
 | SECTION | `validate_section_count.py` | Section file count vs metadata | SEC-E001, SEC-E002, SEC-E003, SEC-W001 |
 | DIAGRAM | `validate_diagram_consistency.py` | Mermaid diagrams match prose | DIAG-E001, DIAG-E002, DIAG-W001, DIAG-W002 |
 | TERM | `validate_terminology.py` | Terminology/acronym consistency | TERM-E001, TERM-E002, TERM-W001, TERM-W002 |
 | COUNT | `validate_counts.py` | Stated counts match itemized totals | COUNT-E001, COUNT-W001 |
-| FWDREF | `validate_forward_references.py` | Prevent upstream→downstream ID refs | FWDREF-E001, FWDREF-E002, FWDREF-W001 |
+| FWDREF | `validate_forward_references.py` | Prevent upstream to downstream ID refs | FWDREF-E001, FWDREF-E002, FWDREF-W001 |
+| TAGS | `validate_tags_against_docs.py` | Cumulative tag compliance | XDOC-E002 |
+| IDS | `validate_requirement_ids.py` | Duplicate ID detection | XDOC-E006 |
+| MATRIX | `validate_traceability_matrix.py` | Matrix validation | XDOC-W001 |
 
 **Auto-Fix Support**: SECTION, TERM, COUNT validators support `--auto-fix` flag.
 
@@ -136,240 +137,124 @@ Layer 10: SPEC → Layer 11: TASKS → Layer 12: IPLAN
 | Script | Purpose | Status |
 |--------|---------|--------|
 | `validate_all.py` | Unified orchestrator for all validators | [IMPLEMENTED] |
-| `validate_artifact.py` | Unified validator with auto-detection | [IMPLEMENTED] |
 | `validate_cross_document.py` | Cross-reference validation | [IMPLEMENTED] |
 | `validate_links.py` | Markdown link resolution | [IMPLEMENTED] |
-| `validate_requirement_ids.py` | REQ ID format validation | [IMPLEMENTED] |
-| `validate_tags_against_docs.py` | Tag taxonomy compliance | [IMPLEMENTED] |
+| `validate_tags_against_docs.py` | Cumulative tag compliance | [IMPLEMENTED] |
 | `validate_traceability_matrix.py` | Matrix validation | [IMPLEMENTED] |
-| `validate_iplan_naming.py` | IPLAN naming convention | [IMPLEMENTED] |
 | `error_codes.py` | Standardized error code registry | [IMPLEMENTED] |
 
 ---
-
-## Diagram Standards
-
-All diagrams in SDD artifacts MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited per `ai_dev_flow/DIAGRAM_STANDARDS.md`.
-
-**Validation includes**: Checking that artifacts use Mermaid diagrams instead of prohibited text-based formats.
 
 ## Validation Workflow
 
 ```mermaid
 graph TD
-    A[Input: Documentation File] --> B{Detect Artifact Type}
-    B --> C{Schema Exists?}
-    C -->|Yes| D[Load Schema]
-    C -->|No| E[Use Generic Validation]
-    D --> F{Metadata Check}
-    E --> F
-    F -->|Invalid| G[VAL-E001: Metadata Error]
-    F -->|Valid| H{ID Format Check}
-    H -->|Invalid| I[VAL-E002: ID Format Error]
-    H -->|Valid| J{Section Structure}
-    J -->|Missing| K[VAL-E003: Section Missing]
-    J -->|Valid| L{Token Count}
-    L -->|>100K| M[VAL-E004: Token Limit]
-    L -->|OK| N{Language Standards}
-    N -->|Violations| O[VAL-W001: Language Warning]
-    N -->|OK| P{Cross-References}
-    P -->|Broken| Q[VAL-E005: Broken Link]
-    P -->|Valid| R[Validation PASS]
+    A[Input: Documentation Directory] --> B[Collect All Documents]
+    B --> C[Build Document Graph]
+    C --> D{Cross-Reference Check}
+    D -->|Broken| E[XDOC-E001: Broken Link]
+    D -->|Valid| F{Bidirectional Check}
+    F -->|Missing| G[XDOC-E003: One-Way Reference]
+    F -->|Valid| H{Anchor Check}
+    H -->|Missing| I[XDOC-E004: Anchor Not Found]
+    H -->|Valid| J{Orphan Check}
+    J -->|Orphaned| K[XDOC-E005: Orphaned Artifact]
+    J -->|Connected| L{Cumulative Tags}
+    L -->|Missing| M[XDOC-E002: Missing Tag]
+    L -->|Complete| N{Duplicate IDs}
+    N -->|Found| O[XDOC-E006: Duplicate ID]
+    N -->|Unique| P[Validation PASS]
 
-    G --> S[Validation Report]
-    I --> S
-    K --> S
-    M --> S
-    O --> S
-    Q --> S
-    R --> S
+    E --> Q[Validation Report]
+    G --> Q
+    I --> Q
+    K --> Q
+    M --> Q
+    O --> Q
+    P --> Q
 ```
 
 ---
 
 ## Error Codes Reference
 
-### Standardized Error Code Format
-
-**Pattern**: `{TYPE}-{SEVERITY}{NNN}`
-
-| Component | Values | Description |
-|-----------|--------|-------------|
-| TYPE | VAL, BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, XDOC | Artifact or validation type |
-| SEVERITY | E (Error), W (Warning), I (Info) | Severity level |
-| NNN | 001-999 | Sequential number |
-
-### General Validation Errors (VAL)
-
-| Code | Message | Severity | Fix |
-|------|---------|----------|-----|
-| VAL-E001 | Missing required metadata field | ERROR | Add field to YAML frontmatter |
-| VAL-E002 | Invalid ID format | ERROR | Use `TYPE.NN.TT.SS` format |
-| VAL-E003 | Missing required section | ERROR | Add section per template |
-| VAL-E004 | Token count exceeds 100K | ERROR | Split at logical boundaries |
-| VAL-E005 | Broken cross-reference link | ERROR | Fix file path or anchor |
-| VAL-E006 | Duplicate ID detected | ERROR | Use unique sequential IDs |
-| VAL-E007 | Invalid YAML syntax | ERROR | Fix YAML formatting |
-| VAL-W001 | Subjective language detected | WARNING | Use objective language |
-| VAL-W002 | Token count >50K | WARNING | Consider splitting |
-| VAL-W003 | Missing optional section | WARNING | Add section if applicable |
-| VAL-I001 | Token count >10K (Gemini) | INFO | Use file read tool |
-| VAL-I002 | Naming suggestion | INFO | Consider improvement |
-
 ### Cross-Document Errors (XDOC)
 
 | Code | Message | Severity | Fix |
 |------|---------|----------|-----|
-| XDOC-E001 | Referenced ID not found | ERROR | Verify upstream document exists |
+| XDOC-E001 | Referenced ID/file not found | ERROR | Verify target document exists |
 | XDOC-E002 | Missing cumulative tag | ERROR | Add required upstream tag |
 | XDOC-E003 | Bidirectional link missing | ERROR | Add reverse reference |
 | XDOC-E004 | Anchor not found in target | ERROR | Fix anchor reference |
 | XDOC-E005 | Orphaned artifact | ERROR | Add upstream reference |
+| XDOC-E006 | Duplicate ID detected | ERROR | Use unique IDs across project |
 | XDOC-W001 | Weak traceability | WARNING | Add direct links |
+| XDOC-W002 | Unused artifact | WARNING | Consider removal or linking |
+
+### Section Consistency Errors (SEC)
+
+| Code | Message | Severity | Fix |
+|------|---------|----------|-----|
+| SEC-E001 | Section count mismatch | ERROR | Update metadata or add sections |
+| SEC-E002 | Missing referenced section | ERROR | Create referenced section file |
+| SEC-E003 | Section ordering invalid | ERROR | Fix section numbering |
+| SEC-W001 | Empty section detected | WARNING | Add content or remove section |
+
+### Diagram Consistency Errors (DIAG)
+
+| Code | Message | Severity | Fix |
+|------|---------|----------|-----|
+| DIAG-E001 | Diagram references missing entity | ERROR | Add entity to prose |
+| DIAG-E002 | Diagram syntax error | ERROR | Fix Mermaid syntax |
+| DIAG-W001 | Diagram outdated vs prose | WARNING | Update diagram |
+| DIAG-W002 | Prose entity missing from diagram | WARNING | Add to diagram |
+
+### Terminology Errors (TERM)
+
+| Code | Message | Severity | Fix |
+|------|---------|----------|-----|
+| TERM-E001 | Undefined term used | ERROR | Add to glossary |
+| TERM-E002 | Conflicting term definitions | ERROR | Standardize definition |
+| TERM-W001 | Inconsistent term usage | WARNING | Use canonical form |
+| TERM-W002 | Acronym without expansion | WARNING | Add first-use expansion |
+
+### Count Consistency Errors (COUNT)
+
+| Code | Message | Severity | Fix |
+|------|---------|----------|-----|
+| COUNT-E001 | Stated count differs from actual | ERROR | Update count or items |
+| COUNT-W001 | Count format non-standard | WARNING | Use standard count format |
+
+### Forward Reference Errors (FWDREF)
+
+| Code | Message | Severity | Fix |
+|------|---------|----------|-----|
+| FWDREF-E001 | Upstream references downstream ID | ERROR | Remove forward reference |
+| FWDREF-E002 | Circular reference detected | ERROR | Break reference cycle |
+| FWDREF-W001 | Implicit forward reference | WARNING | Make explicit or remove |
 
 ---
 
-## Validation Capabilities
+## Cumulative Tag Validation
 
-### 1. Token Count Validation [IMPLEMENTED]
+Each layer must include ALL upstream tags per the SDD hierarchy:
 
-**Tool-Specific Limits**:
-| Tool | Standard | Maximum | Action |
-|------|----------|---------|--------|
-| Claude Code | 50,000 tokens | 100,000 tokens | Split at 100K |
-| Gemini CLI | 10,000 tokens | No limit | Use file read tool |
-| GitHub Copilot | 30,000 bytes | 60,000 bytes | Create summary |
-
-**Validation Script**: `validate_artifact.py` (token counting via tiktoken)
-
-### 2. ID Format Validation [IMPLEMENTED]
-
-**Document ID Format**: `TYPE-NNN_{slug}.md`
-- Example: `REQ-01_authentication.md`, `SPEC-02_api_contract.yaml`
-
-**Element ID Format**: `TYPE.NN.TT.SS` (unified 4-segment)
-- TYPE: Document type (BRD, PRD, REQ, etc.)
-- NN: Document number (2+ digits)
-- TT: Element type code (01-31)
-- SS: Sequential within element type
-
-**Element Type Codes**:
-| Code | Type | Code | Type |
-|------|------|------|------|
-| 01 | Functional Requirement | 09 | User Story |
-| 02 | Quality Attribute | 10 | Decision |
-| 03 | Constraint | 11 | Implementation Note |
-| 04 | Assumption | 12 | Verification Method |
-| 05 | Dependency | 13 | Configuration |
-| 06 | Acceptance Criteria | 14 | Error Handling |
-| 07 | Risk | 15 | Feature |
-| 08 | Metric | 16 | Business Rule |
-
-**Reference**: [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md)
-
-### 3. Metadata Validation [IMPLEMENTED]
-
-**Required YAML Frontmatter**:
-```yaml
----
-title: "TYPE-NNN: Document Title"
-tags:
-  - artifact-type-tag
-  - layer-N-artifact
-custom_fields:
-  artifact_type: TYPE
-  layer: N
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: primary|fallback|shared
-  development_status: active|draft|deprecated
----
-```
-
-**Validation Script**: `validate_artifact.py`
-
-### 4. Section Structure Validation [IMPLEMENTED]
-
-Each artifact type has required sections defined in its schema:
-
-**Example (REQ - 12 sections)**:
-1. Document Control
-2. Functional Requirements
-3. Interface Specifications
-4. Data Schemas
-5. Error Handling
-6. Configuration Parameters
-7. Quality Attributes
-8. Implementation Guidance
-9. Acceptance Criteria
-10. Verification Methods
-11. Assumptions & Constraints
-12. Traceability Matrix
-
-**Validation Scripts**: `validate_brd_template.sh`, `validate_req_template.sh`, etc.
-
-### 5. Language Standards Validation [IMPLEMENTED]
-
-**Objective Language Required**:
-- No subjective qualifiers (amazing, powerful, efficient, easy)
-- No promotional content
-- No time estimates or performance claims
-- Factual, imperative language
-
-**Validation Script**: Pattern matching in `validate_artifact.py`
-
-### 6. Cross-Reference Validation [IMPLEMENTED]
-
-**Link Format**: `[ID](../TYPE/TYPE-NNN_file.md#anchor)`
-
-**Validation Checks**:
-- File path resolves
-- Anchor exists in target file
-- Bidirectional consistency
-
-**Validation Script**: `validate_links.py`, `validate_cross_document.py`
-
-### 7. Cumulative Tag Validation [IMPLEMENTED]
-
-Each layer must include ALL upstream tags:
-
-| Layer | Artifact | Required Tags |
-|-------|----------|---------------|
+| Layer | Artifact | Required Upstream Tags |
+|-------|----------|------------------------|
 | 1 | BRD | None (top level) |
 | 2 | PRD | @brd |
 | 3 | EARS | @brd, @prd |
 | 4 | BDD | @brd, @prd, @ears |
 | 5 | ADR | @brd, @prd, @ears, @bdd |
-| 6 | SYS | @brd through @adr |
-| 7 | REQ | @brd through @sys |
-| ... | ... | Cumulative |
+| 6 | SYS | @brd through @adr (5 tags) |
+| 7 | REQ | @brd through @sys (6 tags) |
+| 8 | IMPL | @brd through @req (7 tags) |
+| 9 | CTR | @brd through @req (7 tags) |
+| 10 | SPEC | @brd through @req (7 tags) |
+| 11 | TASKS | @brd through @spec (8 tags) |
+| 12 | IPLAN | @brd through @tasks (9 tags) |
 
 **Validation Script**: `validate_tags_against_docs.py`
-
-### 8. PRD Upstream Source Verification [PLANNED]
-
-**Purpose**: Validate PRD documents correctly reference sectioned BRD input.
-
-**Validation Checks**:
-- Verify @brd tag references valid BRD document
-- If BRD is sectioned (folder exists), verify PRD references entire BRD (not individual sections)
-- Warn if PRD appears to reference only subset of sectioned BRD
-
-**Validation Script**: `validate_prd_upstream.py` [PLANNED]
-
-**Error Codes**:
-| Code | Message | Severity | Fix |
-|------|---------|----------|-----|
-| PRD-W010 | Sectioned BRD detected, verify complete read | WARNING | Confirm all sections read |
-| PRD-E010 | Missing BRD upstream reference | ERROR | Add @brd tag |
-
-### 9. Duplicate Detection [IMPLEMENTED]
-
-**Checks**:
-- Duplicate element IDs within document
-- Duplicate document IDs across project
-- Near-duplicate content (>80% similarity)
-
-**Validation Script**: `validate_requirement_ids.py`
 
 ---
 
@@ -383,71 +268,57 @@ Each layer must include ALL upstream tags:
 | WARNING | W | 1 | --strict only | Should fix |
 | INFO | I | 0 | No | Suggestion |
 
-### Per-Document Gates
-
-| Gate | Threshold | Measurement |
-|------|-----------|-------------|
-| Zero Errors | 0 | Count of E-level issues |
-| Warning Limit | ≤5 | Count of W-level issues |
-| Token Limit | ≤100K | Token count |
-
 ### Project-Wide Gates
 
 | Gate | Threshold | Measurement |
 |------|-----------|-------------|
-| Coverage | ≥90% | Documents passing validation |
-| ID Compliance | 100% | Documents with valid IDs |
-| Metadata Compliance | 100% | Documents with valid frontmatter |
+| Zero Cross-Ref Errors | 0 | Count of XDOC-E level issues |
+| Orphan Limit | 0 | Count of orphaned artifacts |
+| Bidirectional Compliance | 100% | Links with reverse references |
+| Cumulative Tag Compliance | 100% | Documents with complete upstream tags |
+| Duplicate ID Count | 0 | Duplicate IDs across project |
 
 ---
 
 ## Integration Points
 
-### With doc-flow
-- Invoked automatically after artifact generation
-- Blocks workflow on critical errors
-- Provides inline fix suggestions
+### With Layer Validators
 
-### With trace-check
-- Complementary validation (structure vs. traceability)
-- Shared cumulative tag validation logic
+- Single-document validation delegated to `doc-{type}-validator` skills
+- Cross-document validation runs after layer validators pass
 - Combined quality reports
 
-### With code-review
-- Post-commit documentation validation
-- Quality gate enforcement
+### With doc-flow
 
-### With test-automation
-- BDD feature file validation
-- Test traceability verification
+- Invoked after artifact generation for cross-document checks
+- Blocks workflow on cross-reference errors
+- Provides link fix suggestions
+
+### With trace-check
+
+- Complementary validation (cross-refs vs. detailed traceability)
+- Shared cumulative tag validation logic
+- Combined traceability reports
+
+### With code-review
+
+- Post-commit cross-document validation
+- Quality gate enforcement
 
 ---
 
 ## Usage Examples
 
-### Validate Single Document
-
-```bash
-# Using implemented validator
-./ai_dev_flow/scripts/validate_brd_template.sh docs/BRD/BRD-01_platform.md
-
-# Using unified validator
-python ai_dev_flow/scripts/validate_artifact.py docs/REQ/REQ-01_auth.md
-```
-
-### Validate All Documents of Type
-
-```bash
-# Validate all REQ documents
-for f in docs/REQ/REQ-*.md; do
-  ./ai_dev_flow/scripts/validate_req_template.sh "$f"
-done
-```
-
 ### Validate Cross-References
 
 ```bash
 python ai_dev_flow/scripts/validate_cross_document.py docs/ --strict
+```
+
+### Validate All Links
+
+```bash
+python ai_dev_flow/scripts/validate_links.py docs/
 ```
 
 ### Validate Cumulative Tags
@@ -459,108 +330,93 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
   --strict
 ```
 
+### Detect Duplicate IDs
+
+```bash
+python ai_dev_flow/scripts/validate_requirement_ids.py docs/ --check-duplicates
+```
+
+### Full Cross-Document Validation
+
+```bash
+python ai_dev_flow/scripts/validate_all.py docs/ --scope cross-document
+```
+
 ---
 
 ## Validation Report Format
 
 ```
-=== Documentation Validation Report ===
+=== Cross-Document Validation Report ===
 
-File: docs/REQ/REQ-01_requirements.md
+Scope: docs/
 Status: FAILED
 
-Errors (2):
-- [VAL-E002] Invalid element ID "REQ-USER-LOGIN-1" at line 156
-  → Expected format: REQ.01.01.01 (TYPE.NN.TT.SS)
+Cross-Reference Errors (3):
+- [XDOC-E001] REQ-02_payments.md references non-existent SPEC-05_gateway.yaml
+  → Create target document or fix reference
 
-- [VAL-E003] Missing required section "Quality Attributes"
-  → Add section per REQ template
+- [XDOC-E003] ADR-03_caching.md linked from SYS-01 but no reverse link
+  → Add @sys reference to ADR-03
 
-Warnings (1):
-- [VAL-W001] Subjective language "easy to use" at line 89
-  → Replace with objective description
+- [XDOC-E005] IMPL-04_batch.md has no upstream references
+  → Add @req tag to connect to requirements
 
-Info (1):
-- [VAL-I001] Token count 12,450 (Gemini: use file read tool)
+Cumulative Tag Warnings (2):
+- [XDOC-E002] TASKS-02 missing required @adr tag
+  → Add @adr: ADR-NN to traceability section
+
+- [XDOC-E002] IPLAN-01 missing required @spec tag
+  → Add @spec: SPEC-NN to traceability section
 
 Summary:
-- Total elements: 45
-- ID compliance: 98% (44/45)
-- Section compliance: 92% (11/12)
+- Documents analyzed: 45
+- Cross-reference errors: 3
+- Orphaned artifacts: 1
+- Bidirectional compliance: 94% (32/34)
+- Cumulative tag compliance: 96% (43/45)
 ```
-
----
-
-## REF Document Rules (Minimal Validation)
-
-Reference documents (`{TYPE}-REF-NNN`) use minimal, non-blocking validation:
-
-**Required (Blocking)**:
-| Check | Pattern | Severity |
-|-------|---------|----------|
-| H1 ID Match | `^#\s[A-Z]{2,5}-REF-\d{3}:.+` | ERROR |
-| Document Control | Section present | ERROR |
-| Revision History | Section present | ERROR |
-| Introduction | Section present | ERROR |
-
-**Exempted (Not Checked)**:
-| Check | Reason |
-|-------|--------|
-| Cumulative Tags | REF docs don't participate in traceability |
-| Full Traceability | Optional for REF docs |
-| Quality Gates | Non-blocking validation only |
-| Layer Requirements | REF has no layer assignment |
 
 ---
 
 ## Script Reference
 
-### Artifact Validators (Location: `ai_dev_flow/scripts/`)
-
-| Script | Artifact | Usage |
-|--------|----------|-------|
-| `validate_brd_template.sh` | BRD | `./validate_brd_template.sh <file>` |
-| `validate_prd.py` | PRD | `python validate_prd.py <file_or_dir>` |
-| `validate_ears.py` | EARS | `python validate_ears.py <file>` |
-| `validate_bdd.py` | BDD | `python validate_bdd.py <file_or_dir>` |
-| `validate_adr.py` | ADR | `python validate_adr.py <file_or_dir>` |
-| `validate_sys.py` | SYS | `python validate_sys.py <file_or_dir>` |
-| `validate_req_template.sh` | REQ | `./validate_req_template.sh <file>` |
-| `validate_impl.sh` | IMPL | `./validate_impl.sh <file>` |
-| `validate_ctr.sh` | CTR | `./validate_ctr.sh <file>` |
-| `validate_spec.py` | SPEC | `python validate_spec.py <file_or_dir>` |
-| `validate_tasks.sh` | TASKS | `./validate_tasks.sh <file>` |
-| `validate_iplan.sh` | IPLAN | `./validate_iplan.sh <file>` |
-| `validate_icon.sh` | ICON | `./validate_icon.sh <file>` |
-
-### Support Scripts (Location: `ai_dev_flow/scripts/`)
+### Cross-Document Validation Scripts (Location: `ai_dev_flow/scripts/`)
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
-| `validate_all.py` | Unified orchestrator | `python validate_all.py <dir> [--layer TYPE] [--all]` |
-| `validate_artifact.py` | Unified validator | `python validate_artifact.py <file>` |
+| `validate_all.py` | Unified orchestrator | `python validate_all.py <dir> --scope cross-document` |
 | `validate_cross_document.py` | Cross-references | `python validate_cross_document.py <dir>` |
 | `validate_links.py` | Link resolution | `python validate_links.py <dir>` |
-| `validate_requirement_ids.py` | ID format | `python validate_requirement_ids.py <dir>` |
-| `validate_tags_against_docs.py` | Tag compliance | `python validate_tags_against_docs.py <dir>` |
+| `validate_tags_against_docs.py` | Cumulative tags | `python validate_tags_against_docs.py <dir>` |
+| `validate_traceability_matrix.py` | Matrix validation | `python validate_traceability_matrix.py <dir>` |
+| `validate_requirement_ids.py` | Duplicate IDs | `python validate_requirement_ids.py <dir>` |
+| `validate_section_count.py` | Section consistency | `python validate_section_count.py <dir>` |
+| `validate_diagram_consistency.py` | Diagram vs prose | `python validate_diagram_consistency.py <dir>` |
+| `validate_terminology.py` | Term consistency | `python validate_terminology.py <dir>` |
+| `validate_counts.py` | Count consistency | `python validate_counts.py <dir>` |
+| `validate_forward_references.py` | Forward refs | `python validate_forward_references.py <dir>` |
 | `error_codes.py` | Error code registry | (library - import in validators) |
 
 ---
 
 ## Version Information
 
-**Version**: 2.0.0
-**Last Updated**: 2025-12-19
+**Version**: 3.0.0
+**Last Updated**: 2025-12-20
 **Created**: 2025-11-01
 **Status**: Active
 
 **Change Log**:
+- 3.0.0 (2025-12-20): Refactored to cross-document validation only
+  - Removed single-document validation (now in dedicated layer validators)
+  - Added references to 12 layer-specific validator skills
+  - Focused scope on cross-document relationships
+  - Updated workflow diagram for cross-document focus
+  - Streamlined error codes to XDOC, SEC, DIAG, TERM, COUNT, FWDREF
+  - Removed redundant single-document sections
 - 2.0.0 (2025-12-19): Complete overhaul
   - Restructured following trace-check pattern
   - Added [IMPLEMENTED]/[PLANNED] status markers
-  - Standardized error codes (`{TYPE}-{SEVERITY}{NNN}`)
-  - Updated ID format to unified `TYPE.NN.TT.SS`
-  - Added clear implementation status section
-  - Added script reference tables
-  - Removed aspirational features without status markers
+  - Standardized error codes
 - 1.0.0 (2025-11-01): Initial release
