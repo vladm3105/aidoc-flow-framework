@@ -50,6 +50,7 @@ Before creating a PRD, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream BRD**: Read the BRD that drives this PRD
+   **Note on Sectioned BRDs**: If BRD is split into multiple section files (0-18), read ALL files as ONE logical document. See `PRD_CREATION_RULES.md` Section 22.
 3. **Template**: `ai_dev_flow/PRD/PRD-TEMPLATE.md`
 4. **Creation Rules**: `ai_dev_flow/PRD/PRD_CREATION_RULES.md`
 5. **Validation Rules**: `ai_dev_flow/PRD/PRD_VALIDATION_RULES.md`
@@ -319,6 +320,13 @@ Examples:
 ### Step 1: Read Parent BRD
 
 Read and understand the BRD that drives this PRD.
+
+**Sectioned BRD Handling**:
+If BRD is split into multiple section files (folder structure `docs/BRD/BRD-NN_{slug}/`):
+1. Read ALL section files (BRD-NN.0 through BRD-NN.18)
+2. Treat as ONE logical document
+3. Extract information holistically (no section-to-section mapping)
+4. Reference: `PRD_CREATION_RULES.md` Section 22
 
 ### Step 2: Reserve ID Number
 

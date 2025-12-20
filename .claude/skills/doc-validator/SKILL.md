@@ -331,7 +331,24 @@ Each layer must include ALL upstream tags:
 
 **Validation Script**: `validate_tags_against_docs.py`
 
-### 8. Duplicate Detection [IMPLEMENTED]
+### 8. PRD Upstream Source Verification [PLANNED]
+
+**Purpose**: Validate PRD documents correctly reference sectioned BRD input.
+
+**Validation Checks**:
+- Verify @brd tag references valid BRD document
+- If BRD is sectioned (folder exists), verify PRD references entire BRD (not individual sections)
+- Warn if PRD appears to reference only subset of sectioned BRD
+
+**Validation Script**: `validate_prd_upstream.py` [PLANNED]
+
+**Error Codes**:
+| Code | Message | Severity | Fix |
+|------|---------|----------|-----|
+| PRD-W010 | Sectioned BRD detected, verify complete read | WARNING | Confirm all sections read |
+| PRD-E010 | Missing BRD upstream reference | ERROR | Add @brd tag |
+
+### 9. Duplicate Detection [IMPLEMENTED]
 
 **Checks**:
 - Duplicate element IDs within document

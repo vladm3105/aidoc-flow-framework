@@ -936,24 +936,26 @@ Example: @threshold: PRD.035.kyc.l1.daily
 
 ### Standard Format (Simple Numeric)
 
-**Format**: `NN` (3-digit zero-padded sequential number)
+**Format**: `NN` (variable-length sequential number, minimum 2 digits)
 
 | Component | Format | Description |
 |-----------|--------|-------------|
-| Feature ID | `NN` | 3-digit sequential (001-999) |
+| Feature ID | `NN` | 2+ digit sequential (01-99, then 100-999, 1000+) |
 | Document Context | `PRD-NN` | PRD number provides namespace |
 
-**Rationale**: The document context (PRD-022) already provides the namespace. Embedding the PRD number in the feature ID is redundant.
+**Rationale**: The document context (PRD-01) already provides the namespace. Embedding the PRD number in the feature ID is redundant. Feature IDs match document ID numbering convention.
 
 **Examples**:
-- `001`: First feature (in any PRD)
-- `015`: 15th feature
-- `042`: 42nd feature
+- `01`: First feature (in any PRD)
+- `15`: 15th feature
+- `99`: 99th feature
+- `100`: 100th feature (auto-expands)
+- `1000`: 1000th feature
 
 ### Validation Regex
 
 ```regex
-^\d{3}$
+^\d{2,}$
 ```
 
 ### Cross-PRD Reference Format
@@ -1074,3 +1076,51 @@ python scripts/validate_cross_document.py --layer PRD --auto-fix
 ### Quality Gate
 
 **Blocking**: YES - Cannot proceed to EARS creation until Phase 1 validation passes with 0 errors.
+
+---
+
+## 22. BRD Input Document Handling (MANDATORY)
+
+### Purpose
+
+Define rules for consuming BRD documents as upstream input for PRD creation.
+
+### Sectioned BRD Handling
+
+BRD documents may be split into 19 section files (0-18) for AI context window management:
+
+| Section | Content |
+|---------|---------|
+| 0 | Index |
+| 1-18 | Introduction through Appendices |
+
+**Critical Rules:**
+1. Read ALL section files as ONE logical document
+2. Sections are for AI context window management only
+3. No BRD section → PRD section mapping exists
+4. Extract information holistically across all sections
+
+### Discovery Pattern
+
+```
+docs/BRD/BRD-NN_{slug}/
+├── BRD-NN.0_index.md          <- Read first
+├── BRD-NN.1_introduction.md    <- Read in order
+├── ...
+└── BRD-NN.18_appendices.md     <- Read last
+```
+
+### Extraction Guidelines
+
+From BRD sections, extract for PRD:
+- Business objectives → PRD Goals & Objectives
+- User stories → PRD User Stories (summary level)
+- Functional requirements → PRD Functional Requirements
+- Quality attributes → PRD Quality Attributes
+- Constraints → PRD Constraints & Assumptions
+- Acceptance criteria → PRD Acceptance Criteria
+
+### Traceability
+
+- Reference entire BRD: `@brd: BRD-01`
+- Reference specific elements: `@brd: BRD.01.01.05`

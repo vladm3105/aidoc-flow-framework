@@ -23,6 +23,7 @@ skill: "doc-prd"
 3. Specify functional requirements with KPIs
 4. Document user personas and journeys
 5. Create traceability to upstream BRD and downstream EARS/BDD
+6. Discover and consolidate sectioned BRD documents as ONE input
 
 ## Output Location
 
@@ -51,10 +52,20 @@ BRD → PRD → EARS, BDD
 ## Quick Validation
 
 - [ ] References upstream BRD document(s)
+- [ ] BRD sections read completely (all 19 files if sectioned)
+- [ ] BRD treated as single logical document
 - [ ] User stories follow standard format
 - [ ] Acceptance criteria are testable
 - [ ] Success metrics are quantifiable
 - [ ] Traceability matrix complete
+
+## BRD Input Handling
+
+When BRD is sectioned (multiple files):
+- Read ALL section files (0-18) as ONE document
+- No BRD section → PRD section mapping
+- Extract holistically across all sections
+- Reference: See `PRD_CREATION_RULES.md` Section 22
 
 ## Template Location
 
