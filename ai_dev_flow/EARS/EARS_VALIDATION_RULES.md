@@ -364,16 +364,16 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Invalid**:
 ```markdown
-#### EARS.02.24.01: First Requirement
+#### EARS.02.25.01: First Requirement
 ...
-#### EARS.02.24.01: Different Requirement  ← DUPLICATE ID
+#### EARS.02.25.01: Different Requirement  ← DUPLICATE ID
 ```
 
 **Valid**:
 ```markdown
-#### EARS.02.24.01: First Requirement
+#### EARS.02.25.01: First Requirement
 ...
-#### EARS.02.24.02: Second Requirement  ← UNIQUE ID
+#### EARS.02.25.02: Second Requirement  ← UNIQUE ID
 ```
 
 **Fix**: Renumber duplicate IDs sequentially
@@ -512,7 +512,7 @@ python ai_dev_flow/scripts/validate_ears.py --summary-only
 ### Mistake #3: Non-Standard Requirement IDs
 ```
 ❌ #### Event-001: L1 KYC Submission
-✅ #### EARS.06.24.01: L1 KYC Submission
+✅ #### EARS.06.25.01: L1 KYC Submission
 ```
 
 ### Mistake #4: List-Style Document Control

@@ -139,20 +139,20 @@ WITHIN [operational boundary].
 
 | QA ID | Requirement Statement | Metric | Target | Priority | Measurement Method |
 |-------|----------------------|--------|--------|----------|-------------------|
-| EARS.NN.24.15 | THE [component] SHALL complete [operation] | Latency | p95 < NNms | High | [method] |
-| EARS.NN.24.16 | THE [component] SHALL process [workload] | Throughput | NN/s | Medium | [method] |
+| EARS.NN.02.01 | THE [component] SHALL complete [operation] | Latency | p95 < NNms | High | [method] |
+| EARS.NN.02.02 | THE [component] SHALL process [workload] | Throughput | NN/s | Medium | [method] |
 
 ### 4.2 Security Requirements
 
 | QA ID | Requirement Statement | Standard/Framework | Priority | Validation Method |
 |-------|----------------------|-------------------|----------|-------------------|
-| EARS.NN.24.17 | THE [component] SHALL [security requirement] | [standard] | High | [method] |
+| EARS.NN.02.03 | THE [component] SHALL [security requirement] | [standard] | High | [method] |
 
 ### 4.3 Reliability Requirements
 
 | QA ID | Requirement Statement | Target | Priority | Measurement Period |
 |-------|----------------------|--------|----------|-------------------|
-| EARS.NN.24.18 | THE [component] SHALL maintain uptime | 99.9% | High | Monthly |
+| EARS.NN.02.04 | THE [component] SHALL maintain uptime | 99.9% | High | Monthly |
 
 ---
 
@@ -253,10 +253,10 @@ WITHIN @threshold: PRD.NN.timeout.request.sync.
 
 | Category | ID Range | Pattern | Example |
 |----------|----------|---------|---------|
-| Event-Driven | 001-099 | EARS.NN.24.0SS | EARS.01.24.001 |
-| State-Driven | 101-199 | EARS.NN.24.1SS | EARS.01.24.101 |
-| Unwanted Behavior | 201-299 | EARS.NN.24.2SS | EARS.01.24.201 |
-| Ubiquitous | 401-499 | EARS.NN.24.4SS | EARS.01.24.401 |
+| Event-Driven | 001-099 | EARS.NN.25.0SS | EARS.01.25.001 |
+| State-Driven | 101-199 | EARS.NN.25.1SS | EARS.01.25.101 |
+| Unwanted Behavior | 201-299 | EARS.NN.25.2SS | EARS.01.25.201 |
+| Ubiquitous | 401-499 | EARS.NN.25.4SS | EARS.01.25.401 |
 
 ---
 

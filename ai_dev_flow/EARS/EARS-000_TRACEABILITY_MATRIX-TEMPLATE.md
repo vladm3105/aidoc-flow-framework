@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type EARS --output docs/EARS/
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@ears: EARS.NN.24.SS` (unified 4-segment format, e.g., `EARS.02.24.03`)
+**Tag Format:** `@ears: EARS.NN.25.SS` (unified 4-segment format, e.g., `EARS.02.25.03`)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -134,7 +134,7 @@ This matrix tracks all EARS documents and their upstream sources (BRD, PRD). Dow
 ```markdown
 ## 5.1 Event-Driven Requirements
 
-### 5.1 EARS.12.24.01
+### 5.1 EARS.12.25.01
 **WHEN** user selects "Place Order" button
 **THE** system **SHALL** validate order parameters
 **WITHIN** 100 milliseconds
@@ -145,7 +145,7 @@ This matrix tracks all EARS documents and their upstream sources (BRD, PRD). Dow
 - Downstream: [BDD ID when created] (Test scenario)
 - Downstream: [REQ ID when created] (Validation logic requirement)
 
-### 5.2 EARS.12.24.02
+### 5.2 EARS.12.25.02
 **WHEN** order validation succeeds
 **THE** system **SHALL** execute the trade
 **WITHIN** 2 seconds
@@ -263,10 +263,10 @@ When creating downstream artifacts, they MUST include `@ears` tags referencing t
 
 | Downstream Type | Required Tag Format | Example |
 |-----------------|---------------------|---------|
-| BDD | `@ears: EARS.NN.24.SS` | `@ears: EARS.12.24.01` |
-| ADR | `@ears: EARS.NN.24.SS` | `@ears: EARS.05.24.03` |
-| SYS | `@ears: EARS.NN.24.SS` | `@ears: EARS.12.24.02` |
-| REQ | `@ears: EARS.NN.24.SS` | `@ears: EARS.08.24.01` |
+| BDD | `@ears: EARS.NN.25.SS` | `@ears: EARS.12.25.01` |
+| ADR | `@ears: EARS.NN.25.SS` | `@ears: EARS.05.25.03` |
+| SYS | `@ears: EARS.NN.25.SS` | `@ears: EARS.12.25.02` |
+| REQ | `@ears: EARS.NN.25.SS` | `@ears: EARS.08.25.01` |
 
 ### 7.2 Finding Downstream References
 
@@ -280,7 +280,7 @@ grep -r "@ears: EARS.12" ../BDD/
 grep -r "@ears:" ../ADR/
 
 # Find all downstream references to a specific EARS statement
-grep -r "EARS.12.24.01" ../BDD/ ../ADR/ ../SYS/ ../REQ/
+grep -r "EARS.12.25.01" ../BDD/ ../ADR/ ../SYS/ ../REQ/
 
 # Generate reverse traceability report
 python scripts/generate_reverse_traceability.py --upstream EARS-12 --downstream BDD,ADR,SYS,REQ

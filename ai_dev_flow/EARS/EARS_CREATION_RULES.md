@@ -173,7 +173,7 @@ for [scope/context].
 Always use triple backticks for EARS statements:
 
 ````markdown
-**EARS.01.24.01: Requirement Name**
+**EARS.01.25.01: Requirement Name**
 ```
 WHEN [condition],
 THE [component] SHALL [action]

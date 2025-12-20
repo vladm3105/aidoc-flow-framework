@@ -129,7 +129,7 @@ structure:
       - Source Document
 
     source_document_format:
-      pattern: "^@prd: PRD\\.\\d{3}\\.\\d{3}$"
+      pattern: "^@prd: PRD\\.[0-9]{2,}\\.[0-9]{2,}\\.[0-9]{2,}$"
       description: "Must use @prd: prefix with dot notation (PRD.NN.EE.SS) for traceability"
 
   # Section numbering rules
