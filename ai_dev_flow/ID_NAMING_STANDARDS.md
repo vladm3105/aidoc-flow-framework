@@ -1062,6 +1062,58 @@ For the complete list of valid traceability tags, see [TRACEABILITY.md - Complet
 
 ---
 
+## Validation Rules Reference
+
+ID naming standards are enforced by automated validators. For the complete error code registry and validation rules, see [VALIDATION_STANDARDS.md](./VALIDATION_STANDARDS.md).
+
+### Quick Error Code Reference
+
+| Code | Severity | Issue | Resolution |
+|------|----------|-------|------------|
+| IDPAT-E001 | Error | Inconsistent document ID format | Use `TYPE-NN+` (2+ digits) |
+| IDPAT-E002 | Error | Inconsistent element ID format | Use `TYPE.NN.TT.SS` format |
+| IDPAT-E003 | Error | Mixed ID notation | Normalize to dot notation |
+| IDPAT-W001 | Warning | Legacy ID format detected | Update to unified format |
+| ELEM-E001 | Error | Undefined element type code | Use valid code from table (01-31) |
+| ELEM-W001 | Warning | Undocumented custom code | Document custom codes (50-99) |
+| FWDREF-E001 | Error | Downstream ID in upstream doc | Remove specific ID, use descriptive text |
+| FWDREF-E002 | Error | Non-existent downstream reference | Create document or remove reference |
+
+### Common Violations and Fixes
+
+**Mixed ID Notation** (IDPAT-E003):
+```markdown
+❌ Incorrect: BRD-01.02, PRD-001.AC.05
+✓ Correct: BRD.01.02.01, PRD.001.06.05
+```
+
+**Legacy ID Format** (IDPAT-W001):
+```markdown
+❌ Legacy: FR-001, AC-005, NFR-003
+✓ Unified: REQ.01.01.001, REQ.01.06.005, SYS.01.02.003
+```
+
+**Forward Reference** (FWDREF-E001):
+```markdown
+❌ In PRD: "See ADR-01 for database decision"
+✓ In PRD: "Architecture decisions required for: database selection"
+```
+
+### Running Validators
+
+```bash
+# Validate ID patterns
+python ai_dev_flow/scripts/validate_requirement_ids.py docs/
+
+# Validate forward references
+python ai_dev_flow/scripts/validate_forward_references.py docs/
+
+# Run all validators
+python ai_dev_flow/scripts/validate_all.py docs/ --all
+```
+
+---
+
 ## Checklist
 
 - H1 titles contain IDs for PRD/SYS/EARS/REQ/ADR/CTR/IMPL/TASKS/BRD where applicable (use `TYPE-DOC_NUM` format).

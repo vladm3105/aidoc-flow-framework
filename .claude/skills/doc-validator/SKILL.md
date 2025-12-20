@@ -117,6 +117,20 @@ Layer 10: SPEC → Layer 11: TASKS → Layer 12: IPLAN
 | 12 | IPLAN | `validate_iplan.sh` | `IPLAN_SCHEMA.yaml` | [IMPLEMENTED] |
 | N/A | ICON | `validate_icon.sh` | N/A | [IMPLEMENTED] |
 
+### [IMPLEMENTED] Cross-Document Validators
+
+| Category | Script | Description | Error Codes |
+|----------|--------|-------------|-------------|
+| SECTION | `validate_section_count.py` | Section file count vs metadata | SEC-E001, SEC-E002, SEC-E003, SEC-W001 |
+| DIAGRAM | `validate_diagram_consistency.py` | Mermaid diagrams match prose | DIAG-E001, DIAG-E002, DIAG-W001, DIAG-W002 |
+| TERM | `validate_terminology.py` | Terminology/acronym consistency | TERM-E001, TERM-E002, TERM-W001, TERM-W002 |
+| COUNT | `validate_counts.py` | Stated counts match itemized totals | COUNT-E001, COUNT-W001 |
+| FWDREF | `validate_forward_references.py` | Prevent upstream→downstream ID refs | FWDREF-E001, FWDREF-E002, FWDREF-W001 |
+
+**Auto-Fix Support**: SECTION, TERM, COUNT validators support `--auto-fix` flag.
+
+**Reference**: See [VALIDATION_STANDARDS.md]({project_root}/ai_dev_flow/VALIDATION_STANDARDS.md) for complete error code registry.
+
 ### [IMPLEMENTED] Support Scripts
 
 | Script | Purpose | Status |

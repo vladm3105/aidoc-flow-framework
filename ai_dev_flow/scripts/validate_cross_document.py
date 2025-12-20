@@ -467,6 +467,91 @@ class CrossDocumentValidator:
                         fix_action=f"Remove section reference or fix to valid section"
                     ))
 
+    def _validate_section_title_accuracy(self, content: str, doc_path: Path) -> None:
+        """Validate section cross-reference titles match actual target headings.
+
+        Checks XREF-E001/E002 for section number/title mismatches.
+        """
+        # Pattern for section references: [Section N: Title](path#anchor) or [N. Title](path)
+        section_ref_pattern = re.compile(
+            r'\[(?:Section\s+)?(\d+(?:\.\d+)*)(?:[\.:]\s*)?([^\]]*)\]\(([^)]+)\)'
+        )
+
+        for match in section_ref_pattern.finditer(content):
+            ref_section_num = match.group(1)
+            ref_title = match.group(2).strip()
+            link_path = match.group(3)
+
+            # Skip external URLs and anchor-only links
+            if link_path.startswith(('http://', 'https://', 'mailto:', '#')):
+                continue
+
+            # Extract anchor if present
+            anchor = None
+            if '#' in link_path:
+                link_path, anchor = link_path.split('#', 1)
+
+            # Resolve relative path
+            if link_path.startswith('./') or link_path.startswith('../'):
+                resolved_path = (doc_path.parent / link_path).resolve()
+            elif link_path:
+                resolved_path = (self.docs_root / link_path).resolve()
+            else:
+                # Anchor-only reference to current document
+                resolved_path = doc_path
+
+            if not resolved_path.exists():
+                continue  # Handled by _validate_internal_links
+
+            try:
+                target_content = resolved_path.read_text(encoding='utf-8')
+            except Exception:
+                continue
+
+            # Find the referenced section heading
+            # Pattern: ## N. Title or ## N Title or ### N.N. Title
+            heading_pattern = re.compile(
+                rf'^(#{2,})\s*{re.escape(ref_section_num)}[\.\s]+(.+)$',
+                re.MULTILINE
+            )
+            heading_match = heading_pattern.search(target_content)
+
+            if not heading_match:
+                self.issues.append(ValidationIssue(
+                    code=IssueCode.XDOC_001,
+                    severity=Severity.ERROR,
+                    message=f"Section {ref_section_num} not found in target: {link_path}",
+                    location=str(doc_path),
+                    fix_action="Verify section number or fix target document"
+                ))
+                continue
+
+            # Check if title matches
+            actual_title = heading_match.group(2).strip()
+            if ref_title and actual_title:
+                # Fuzzy match: check if titles are similar
+                ref_title_norm = ref_title.lower().strip()
+                actual_title_norm = actual_title.lower().strip()
+
+                if ref_title_norm != actual_title_norm:
+                    # Check for minor differences
+                    if ref_title_norm in actual_title_norm or actual_title_norm in ref_title_norm:
+                        self.issues.append(ValidationIssue(
+                            code=IssueCode.XDOC_004,  # Reusing title mismatch code
+                            severity=Severity.WARNING,
+                            message=f"Section title fuzzy match: '{ref_title}' vs '{actual_title}'",
+                            location=str(doc_path),
+                            fix_action=f"Update link text to: {actual_title}"
+                        ))
+                    else:
+                        self.issues.append(ValidationIssue(
+                            code=IssueCode.XDOC_004,
+                            severity=Severity.ERROR,
+                            message=f"Section title mismatch: '{ref_title}' vs actual '{actual_title}'",
+                            location=str(doc_path),
+                            fix_action=f"Update link text to match: {actual_title}"
+                        ))
+
     def _validate_internal_links(self, content: str, doc_path: Path) -> None:
         """Validate internal markdown links resolve"""
         # Pattern for markdown links: [text](path)

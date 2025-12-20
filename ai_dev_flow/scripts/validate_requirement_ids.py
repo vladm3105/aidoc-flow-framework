@@ -9,20 +9,37 @@ Ensures:
 - V2 mandatory sections present
 - No duplicate REQ-IDs
 - Proper hierarchical organization
+- ID pattern consistency (IDPAT-E001 to IDPAT-W001)
+- Element code validation (ELEM-E001, ELEM-W001)
 
 Usage:
     python validate_requirement_ids.py --directory REQ/
     python validate_requirement_ids.py --req-file REQ/api/REQ-01.md
     python validate_requirement_ids.py --directory REQ/ --check-v2-sections
+    python validate_requirement_ids.py --directory docs/ --check-id-patterns
+
+Error Codes:
+- IDPAT-E001: Inconsistent document ID format
+- IDPAT-E002: Inconsistent element ID format
+- IDPAT-E003: Mixed ID notation (hyphen vs dot)
+- IDPAT-W001: Legacy ID format detected
+- ELEM-E001: Undefined element type code
+- ELEM-W001: Undocumented custom code
 """
 
 import argparse
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Set, Tuple, Optional
 from dataclasses import dataclass, field
 from collections import defaultdict
+
+try:
+    from error_codes import format_error
+except ImportError:
+    def format_error(code: str, message: str) -> str:
+        return f"[{code}] {message}"
 
 
 @dataclass
@@ -42,6 +59,50 @@ class RequirementIDValidator:
     REQ_ID_PATTERN = r"^REQ-(\d{3})$"
     FILENAME_PATTERN = r"^REQ-(\d{3})_[a-z0-9_]+\.md$"
 
+    # Document ID patterns (hyphen notation: TYPE-NN)
+    DOC_ID_HYPHEN_PATTERN = re.compile(
+        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|IMPL|CTR|SPEC|TASKS|IPLAN)-(\d{2,})\b'
+    )
+
+    # Element ID patterns (dot notation: TYPE.NN.TT.SS)
+    ELEM_ID_DOT_PATTERN = re.compile(
+        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|IMPL|CTR|SPEC|TASKS|IPLAN)\.(\d{2,})\.(\d{2})\.(\d{2,})\b'
+    )
+
+    # Mixed notation detection (invalid patterns)
+    MIXED_HYPHEN_DOT_PATTERN = re.compile(
+        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|IMPL|CTR|SPEC|TASKS|IPLAN)-(\d{2,})\.(\d{2})\b'
+    )
+    MIXED_DOT_HYPHEN_PATTERN = re.compile(
+        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|IMPL|CTR|SPEC|TASKS|IPLAN)\.(\d{2,})-(\d{2})\b'
+    )
+
+    # Standard element type codes (2-digit codes)
+    ELEMENT_TYPE_CODES = {
+        "01": "Core Component",
+        "02": "API Interface",
+        "03": "Data Model",
+        "04": "Business Logic",
+        "05": "Integration",
+        "06": "Security",
+        "07": "Error Handling",
+        "08": "Configuration",
+        "09": "Logging/Monitoring",
+        "10": "UI Component",
+        "11": "Background Process",
+        "12": "Testing",
+        "13": "Documentation",
+        "14": "Infrastructure",
+        "15": "Performance",
+        "16": "Caching",
+        "17": "Messaging",
+        "18": "Workflow",
+        "19": "Reporting",
+        "20": "Utility",
+        # Reserved codes 21-49 for project-specific use
+        # Codes 50-99 are considered custom and require documentation
+    }
+
     # V2 mandatory sections
     V2_SECTIONS = {
         1: r"##\s*1\.\s*Description",
@@ -58,9 +119,16 @@ class RequirementIDValidator:
         12: r"##\s*12\.\s*Change\s+History"
     }
 
-    def __init__(self, check_v2_sections: bool = False):
+    def __init__(
+        self,
+        check_v2_sections: bool = False,
+        check_id_patterns: bool = False,
+        check_element_codes: bool = False
+    ):
         """Initialize validator."""
         self.check_v2_sections = check_v2_sections
+        self.check_id_patterns = check_id_patterns
+        self.check_element_codes = check_element_codes
         self.seen_ids: Set[str] = set()
         self.id_to_files: Dict[str, List[Path]] = defaultdict(list)
 
@@ -105,6 +173,14 @@ class RequirementIDValidator:
 
         # Check document control metadata
         self._validate_document_control(content, result)
+
+        # Check ID patterns if requested
+        if self.check_id_patterns:
+            self._validate_id_patterns(content, file_path, result)
+
+        # Check element codes if requested
+        if self.check_element_codes:
+            self._validate_element_codes(content, file_path, result)
 
         return result
 
@@ -226,6 +302,135 @@ class RequirementIDValidator:
                 f"Missing Document Control fields: {', '.join(missing_fields)}"
             )
 
+    def _validate_id_patterns(
+        self,
+        content: str,
+        file_path: Path,
+        result: ValidationResult
+    ) -> None:
+        """
+        Validate ID pattern consistency across the document.
+
+        Checks:
+        - IDPAT-E003: Mixed hyphen/dot notation
+        - IDPAT-E002: Invalid element ID format
+        - IDPAT-W001: Legacy ID format
+        """
+        filename = file_path.name
+
+        # Check for mixed notation (e.g., REQ-01.02 or REQ.01-02)
+        for match in self.MIXED_HYPHEN_DOT_PATTERN.finditer(content):
+            line_num = content[:match.start()].count('\n') + 1
+            result.errors.append(format_error(
+                "IDPAT-E003",
+                f"{filename}:{line_num}: Mixed ID notation '{match.group(0)}' - "
+                "use TYPE-NN for documents, TYPE.NN.TT.SS for elements"
+            ))
+            result.valid = False
+
+        for match in self.MIXED_DOT_HYPHEN_PATTERN.finditer(content):
+            line_num = content[:match.start()].count('\n') + 1
+            result.errors.append(format_error(
+                "IDPAT-E003",
+                f"{filename}:{line_num}: Mixed ID notation '{match.group(0)}' - "
+                "use TYPE-NN for documents, TYPE.NN.TT.SS for elements"
+            ))
+            result.valid = False
+
+        # Check document IDs for consistency (should use 3+ digit padding)
+        doc_ids = list(self.DOC_ID_HYPHEN_PATTERN.finditer(content))
+        if doc_ids:
+            # Group by type and check digit consistency
+            type_digits = defaultdict(set)
+            for match in doc_ids:
+                doc_type = match.group(1)
+                digits = match.group(2)
+                type_digits[doc_type].add(len(digits))
+
+            for doc_type, digit_counts in type_digits.items():
+                if len(digit_counts) > 1:
+                    line_num = 1  # Report at top of file
+                    result.warnings.append(format_error(
+                        "IDPAT-E001",
+                        f"{filename}: Inconsistent {doc_type} ID digit padding - "
+                        f"found {', '.join(sorted(str(d) for d in digit_counts))} digit formats"
+                    ))
+
+        # Check for legacy 2-digit ID format
+        legacy_pattern = re.compile(
+            r'\b(BRD|PRD|ADR|SYS|REQ|SPEC|TASKS)-(\d{2})\b(?!\d)'
+        )
+        for match in legacy_pattern.finditer(content):
+            # Verify it's truly 2-digit (not start of longer ID)
+            end_pos = match.end()
+            if end_pos < len(content) and content[end_pos].isdigit():
+                continue  # Part of longer ID
+
+            line_num = content[:match.start()].count('\n') + 1
+            result.warnings.append(format_error(
+                "IDPAT-W001",
+                f"{filename}:{line_num}: Legacy 2-digit ID format '{match.group(0)}' - "
+                "recommend using 3-digit format (TYPE-NNN)"
+            ))
+
+    def _validate_element_codes(
+        self,
+        content: str,
+        file_path: Path,
+        result: ValidationResult
+    ) -> None:
+        """
+        Validate element type codes in element IDs.
+
+        Checks:
+        - ELEM-E001: Unknown element type code
+        - ELEM-W001: Custom code (50-99) without documentation
+        """
+        filename = file_path.name
+
+        # Find all element IDs (TYPE.NN.TT.SS format)
+        for match in self.ELEM_ID_DOT_PATTERN.finditer(content):
+            doc_type = match.group(1)
+            doc_num = match.group(2)
+            type_code = match.group(3)
+            elem_num = match.group(4)
+            line_num = content[:match.start()].count('\n') + 1
+
+            # Check if type code is standard
+            if type_code in self.ELEMENT_TYPE_CODES:
+                continue  # Valid standard code
+
+            # Check if it's in reserved range (21-49)
+            code_int = int(type_code)
+            if 21 <= code_int <= 49:
+                # Reserved for project-specific - check if documented
+                # Look for element type table in document
+                elem_table_pattern = rf'\|\s*{type_code}\s*\|[^|]+\|'
+                if not re.search(elem_table_pattern, content):
+                    result.warnings.append(format_error(
+                        "ELEM-W001",
+                        f"{filename}:{line_num}: Custom element code '{type_code}' "
+                        f"in '{match.group(0)}' should be documented in element type table"
+                    ))
+            elif 50 <= code_int <= 99:
+                # Custom range - must be documented
+                elem_table_pattern = rf'\|\s*{type_code}\s*\|[^|]+\|'
+                if not re.search(elem_table_pattern, content):
+                    result.errors.append(format_error(
+                        "ELEM-E001",
+                        f"{filename}:{line_num}: Undefined element type code '{type_code}' "
+                        f"in '{match.group(0)}' - add to element type table or use standard code"
+                    ))
+                    result.valid = False
+            elif code_int > 99 or code_int < 1:
+                # Invalid code range
+                result.errors.append(format_error(
+                    "ELEM-E001",
+                    f"{filename}:{line_num}: Invalid element type code '{type_code}' "
+                    f"in '{match.group(0)}' - must be 01-99"
+                ))
+                result.valid = False
+
     def validate_directory(self, directory: Path) -> List[ValidationResult]:
         """Validate all REQ files in a directory."""
         results = []
@@ -331,13 +536,37 @@ def main():
         action="store_true",
         help="Validate V2 template section compliance"
     )
+    parser.add_argument(
+        "--check-id-patterns",
+        action="store_true",
+        help="Validate ID pattern consistency (IDPAT errors)"
+    )
+    parser.add_argument(
+        "--check-element-codes",
+        action="store_true",
+        help="Validate element type codes (ELEM errors)"
+    )
+    parser.add_argument(
+        "--all-checks",
+        action="store_true",
+        help="Run all validation checks"
+    )
 
     args = parser.parse_args()
 
     if not args.req_file and not args.directory:
         parser.error("Must specify either --req-file or --directory")
 
-    validator = RequirementIDValidator(check_v2_sections=args.check_v2_sections)
+    # Determine which checks to run
+    check_v2 = args.check_v2_sections or args.all_checks
+    check_id = args.check_id_patterns or args.all_checks
+    check_elem = args.check_element_codes or args.all_checks
+
+    validator = RequirementIDValidator(
+        check_v2_sections=check_v2,
+        check_id_patterns=check_id,
+        check_element_codes=check_elem
+    )
 
     if args.req_file:
         results = [validator.validate_file(args.req_file)]

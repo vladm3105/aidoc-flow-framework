@@ -163,6 +163,41 @@ CROSS_VALIDATORS = {
         layer=0,
         description="Tag compliance validator"
     ),
+    "SECTION": ValidatorConfig(
+        script="validate_section_count.py",
+        script_type="python",
+        implemented=True,
+        layer=0,
+        description="Section file count validator"
+    ),
+    "DIAGRAM": ValidatorConfig(
+        script="validate_diagram_consistency.py",
+        script_type="python",
+        implemented=True,
+        layer=0,
+        description="Mermaid diagram vs prose consistency validator"
+    ),
+    "TERM": ValidatorConfig(
+        script="validate_terminology.py",
+        script_type="python",
+        implemented=True,
+        layer=0,
+        description="Terminology and acronym consistency validator"
+    ),
+    "COUNT": ValidatorConfig(
+        script="validate_counts.py",
+        script_type="python",
+        implemented=True,
+        layer=0,
+        description="Stated count vs itemized total validator"
+    ),
+    "FWDREF": ValidatorConfig(
+        script="validate_forward_references.py",
+        script_type="python",
+        implemented=True,
+        layer=0,
+        description="Forward reference prevention validator"
+    ),
 }
 
 

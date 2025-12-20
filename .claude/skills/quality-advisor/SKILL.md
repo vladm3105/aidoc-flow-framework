@@ -142,6 +142,13 @@ Identify common documentation mistakes:
 | AP-008 | Orphan Artifact | No upstream references | Warning | Traceability check |
 | AP-009 | Missing Anchor | Document lacks primary anchor ID | Warning | Anchor detection |
 | AP-010 | Duplicate ID Reference | Same ID referenced multiple times | Info | Duplicate check |
+| AP-011 | Section Count Mismatch | `total_sections` metadata differs from actual section files | Error | SEC-E001 validation |
+| AP-012 | Cross-Reference Title Mismatch | Link text differs from target section heading | Error | XREF-E001/E002 validation |
+| AP-013 | Mixed ID Notation | Document uses both hyphen (TYPE-NN) and dot (TYPE.NN) formats | Error | IDPAT-E003 validation |
+| AP-014 | Diagram-Text Inconsistency | Mermaid diagram components don't match prose claims | Warning | DIAG-E001/W001 validation |
+| AP-015 | Undefined Acronym | Acronym used without first-use definition | Error | TERM-E002 validation |
+| AP-016 | Count Mismatch | Stated count (e.g., "18 requirements") differs from itemized total | Error | COUNT-E001 validation |
+| AP-017 | Forward Reference to Non-Existent Document | Upstream doc references specific downstream IDs (e.g., PRD→ADR-01) | Error | FWDREF-E001 validation |
 
 **Anti-Pattern Detection Output**:
 ```yaml

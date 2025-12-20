@@ -205,6 +205,78 @@ ERROR_REGISTRY: Dict[str, Tuple[str, str]] = {
     "IPLAN-E005": ("Missing session sections", "Add session-based structure"),
     "IPLAN-W001": ("Missing bash commands", "Add executable commands"),
     "IPLAN-W002": ("Missing validation steps", "Add verification commands"),
+
+    # -------------------------------------------------------------------------
+    # Section File Validation (SEC) - Section count and structure validation
+    # -------------------------------------------------------------------------
+    "SEC-E001": ("Section count mismatch", "Update total_sections to match actual section files"),
+    "SEC-E002": ("Missing section file", "Create missing section file or update total_sections"),
+    "SEC-E003": ("Missing Section 0 file", "Create Section 0 with document control and index"),
+    "SEC-W001": ("Section file gap detected", "Sections should be consecutive (1, 2, 3...)"),
+
+    # -------------------------------------------------------------------------
+    # Cross-Reference Accuracy (XREF) - Section reference validation
+    # -------------------------------------------------------------------------
+    "XREF-E001": ("Section number mismatch", "Referenced section number differs from target"),
+    "XREF-E002": ("Section title mismatch", "Referenced section title differs from target"),
+    "XREF-E003": ("Anchor not found in target", "Target document missing referenced anchor"),
+    "XREF-W001": ("Fuzzy title match", "Section title has minor differences from reference"),
+
+    # -------------------------------------------------------------------------
+    # ID Pattern Consistency (IDPAT) - ID format validation
+    # -------------------------------------------------------------------------
+    "IDPAT-E001": ("Inconsistent document ID format", "Use consistent format: TYPE-NN+ (2+ digits)"),
+    "IDPAT-E002": ("Inconsistent element ID format", "Use TYPE.NN.TT.SS format for all element IDs"),
+    "IDPAT-E003": ("Mixed ID notation", "Do not mix hyphen (TYPE-NN) and dot (TYPE.NN) formats"),
+    "IDPAT-W001": ("Legacy ID format detected", "Consider updating to unified 4-segment format"),
+
+    # -------------------------------------------------------------------------
+    # Diagram Consistency (DIAG) - Mermaid diagram validation
+    # -------------------------------------------------------------------------
+    "DIAG-E001": ("Diagram-text component mismatch", "Diagram components not mentioned in prose"),
+    "DIAG-E002": ("Missing diagram for architecture section", "Add Mermaid diagram per DIAGRAM_STANDARDS.md"),
+    "DIAG-W001": ("Diagram count differs from text claim", "Text states N components, diagram shows M"),
+    "DIAG-W002": ("Node label not referenced in text", "Diagram node not mentioned in surrounding prose"),
+
+    # -------------------------------------------------------------------------
+    # Terminology Consistency (TERM) - Glossary and acronym validation
+    # -------------------------------------------------------------------------
+    "TERM-E001": ("Conflicting term definition", "Same term defined differently in glossary vs text"),
+    "TERM-E002": ("Undefined acronym", "Acronym used without definition in document"),
+    "TERM-W001": ("Inconsistent term usage", "Term used with variant spellings/capitalizations"),
+    "TERM-W002": ("Missing glossary entry", "Technical term used but not in glossary"),
+
+    # -------------------------------------------------------------------------
+    # Timezone Validation (TZ) - Timezone format validation
+    # -------------------------------------------------------------------------
+    "TZ-E001": ("Non-standard timezone format", "Use ET (America/New_York) format, not EST/EDT"),
+    "TZ-W001": ("Ambiguous timezone abbreviation", "Specify IANA timezone: America/New_York"),
+
+    # -------------------------------------------------------------------------
+    # Date Validation (DATE) - Date consistency validation
+    # -------------------------------------------------------------------------
+    "DATE-E001": ("Future document date", "Document date cannot be future date"),
+    "DATE-E002": ("Timeline inconsistency", "Timeline dates conflict with document creation date"),
+    "DATE-W001": ("Missing date metadata", "Add created/updated dates to frontmatter"),
+
+    # -------------------------------------------------------------------------
+    # Element Code Validation (ELEM) - Element type code validation
+    # -------------------------------------------------------------------------
+    "ELEM-E001": ("Undefined element type code", "Element code NN not in element type table"),
+    "ELEM-W001": ("Undocumented custom code", "Custom element code requires documentation"),
+
+    # -------------------------------------------------------------------------
+    # Count Validation (COUNT) - Stated vs itemized count validation
+    # -------------------------------------------------------------------------
+    "COUNT-E001": ("Count mismatch", "Stated count N differs from itemized count M"),
+    "COUNT-W001": ("Missing count verification", "Large list without stated total for verification"),
+
+    # -------------------------------------------------------------------------
+    # Forward Reference Validation (FWDREF) - SDD layer-aware reference validation
+    # -------------------------------------------------------------------------
+    "FWDREF-E001": ("Specific downstream ID in upstream doc", "PRD cannot reference specific ADR/SYS/REQ numbers"),
+    "FWDREF-E002": ("Non-existent downstream reference", "Referenced downstream document does not exist"),
+    "FWDREF-W001": ("Downstream count claim", "Avoid stating exact counts of future documents"),
 }
 
 

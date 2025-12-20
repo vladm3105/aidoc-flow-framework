@@ -480,6 +480,59 @@ All customer-facing content must meet:
 3. ADRs document which option was chosen and WHY
 4. This separation maintains clear workflow phases and prevents broken references
 
+### 9.1 Forward Reference Validation (FWDREF)
+
+PRD (Layer 2) documents are subject to automated forward reference validation. The validator prevents references to specific downstream document IDs.
+
+**SDD Layer Hierarchy**:
+
+| Layer | Artifact | PRD Can Reference |
+|-------|----------|-------------------|
+| 1 | BRD | ✅ Yes |
+| 2 | PRD | ✅ Yes (same layer) |
+| 3 | EARS | ❌ No - created after PRD |
+| 4 | BDD | ❌ No - created after PRD |
+| 5 | ADR | ❌ No - created after PRD |
+| 6+ | SYS, REQ, etc. | ❌ No - created after PRD |
+
+**Validation Error Codes**:
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| FWDREF-E001 | Error | PRD references specific downstream ID (e.g., ADR-01) that doesn't exist |
+| FWDREF-E002 | Error | Referenced downstream document does not exist in filesystem |
+| FWDREF-W001 | Warning | PRD claims count of downstream documents (e.g., "5 ADRs required") |
+
+**Examples**:
+
+❌ **INCORRECT** (triggers FWDREF-E001):
+```markdown
+See ADR-01 through ADR-05 for implementation details.
+@adr: ADR-01, ADR-02
+The database selection is documented in ADR-003.
+```
+
+✅ **CORRECT** (describes needs without specific IDs):
+```markdown
+Architecture decisions required for:
+- Database technology selection (PostgreSQL vs MongoDB vs TimescaleDB)
+- Caching strategy (Redis vs in-memory vs hybrid)
+- API versioning approach (URL path vs header vs query parameter)
+
+Section 18 identifies topics requiring formal ADR documentation.
+```
+
+**Running Validation**:
+```bash
+# Validate single PRD
+python ai_dev_flow/scripts/validate_forward_references.py docs/PRD/PRD-01_slug.md
+
+# Validate all PRDs
+python ai_dev_flow/scripts/validate_forward_references.py docs/PRD/
+```
+
+**Reference**: See [VALIDATION_STANDARDS.md](../VALIDATION_STANDARDS.md) for complete error code registry.
+
 ---
 
 ## 10. SYS-Ready Scoring System

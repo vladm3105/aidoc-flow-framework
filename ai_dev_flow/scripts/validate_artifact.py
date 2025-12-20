@@ -5,6 +5,13 @@ Unified Artifact Validator
 Auto-detects artifact type from document's schema_reference field and validates
 against the corresponding schema rules.
 
+Additional validations:
+- TZ-E001: Non-standard timezone format (EST/EDT instead of ET)
+- TZ-W001: Ambiguous timezone abbreviation
+- DATE-E001: Future document date
+- DATE-E002: Timeline inconsistency
+- DATE-W001: Missing date metadata
+
 Usage:
     python scripts/validate_artifact.py <document_path> [--verbose] [--strict]
     python scripts/validate_artifact.py docs/PRD/PRD-01_example.md
@@ -13,11 +20,13 @@ Usage:
 Options:
     --verbose    Show detailed validation results
     --strict     Treat warnings as errors
+    --auto-fix   Auto-fix simple timezone issues
 """
 
 import sys
 import re
 import yaml
+from datetime import datetime, date
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, field
@@ -267,7 +276,214 @@ def validate_traceability(content: str, frontmatter: Dict, schema: Dict, result:
             result.add_warning("W_MISSING_UPSTREAM", f"Missing required upstream reference: {tag_format}")
 
 
-def validate_document(doc_path: Path, verbose: bool = False) -> ValidationResult:
+def validate_timezone(content: str, result: ValidationResult, auto_fix: bool = False) -> Optional[str]:
+    """
+    Validate timezone format in document.
+
+    Checks:
+    - TZ-E001: Non-standard timezone format (EST/EDT instead of ET)
+    - TZ-W001: Ambiguous timezone abbreviation
+
+    Returns:
+        Modified content if auto_fix is True and changes were made, None otherwise
+    """
+    modified_content = content if auto_fix else None
+    made_changes = False
+
+    # Pattern for EST/EDT (should be ET with IANA zone)
+    est_edt_pattern = re.compile(r'\b(EST|EDT)\b(?!\s*\()', re.IGNORECASE)
+
+    for match in est_edt_pattern.finditer(content):
+        line_num = content[:match.start()].count('\n') + 1
+        tz_abbrev = match.group(1).upper()
+
+        result.add_error(
+            "TZ-E001",
+            f"Line {line_num}: Non-standard timezone '{tz_abbrev}' - "
+            "use 'ET (America/New_York)' format instead"
+        )
+
+        if auto_fix and modified_content:
+            modified_content = modified_content.replace(
+                match.group(0),
+                "ET (America/New_York)",
+                1
+            )
+            made_changes = True
+
+    # Pattern for bare ET without IANA zone
+    bare_et_pattern = re.compile(r'\bET\b(?!\s*\(America)', re.IGNORECASE)
+
+    for match in bare_et_pattern.finditer(content):
+        # Skip if already flagged as EST/EDT
+        context = content[max(0, match.start()-5):min(len(content), match.end()+20)]
+        if 'America/New_York' in context:
+            continue
+
+        line_num = content[:match.start()].count('\n') + 1
+
+        result.add_warning(
+            "TZ-W001",
+            f"Line {line_num}: Ambiguous timezone 'ET' - "
+            "recommend 'ET (America/New_York)' for clarity"
+        )
+
+        if auto_fix and modified_content:
+            # Only fix if not part of another word
+            if match.start() == 0 or not content[match.start()-1].isalpha():
+                if match.end() >= len(content) or not content[match.end()].isalpha():
+                    modified_content = (
+                        modified_content[:match.start()] +
+                        "ET (America/New_York)" +
+                        modified_content[match.end():]
+                    )
+                    made_changes = True
+
+    # Check for other common timezone abbreviations that should use IANA
+    other_tz_pattern = re.compile(
+        r'\b(PST|PDT|MST|MDT|CST|CDT|GMT|UTC)\b(?!\s*[:\d])',
+        re.IGNORECASE
+    )
+
+    for match in other_tz_pattern.finditer(content):
+        line_num = content[:match.start()].count('\n') + 1
+        tz_abbrev = match.group(1).upper()
+
+        result.add_warning(
+            "TZ-W001",
+            f"Line {line_num}: Timezone '{tz_abbrev}' - "
+            "consider using IANA zone format (e.g., America/Los_Angeles)"
+        )
+
+    return modified_content if made_changes else None
+
+
+def validate_dates(content: str, frontmatter: Optional[Dict], result: ValidationResult):
+    """
+    Validate date consistency in document.
+
+    Checks:
+    - DATE-E001: Future document date
+    - DATE-E002: Timeline inconsistency
+    - DATE-W001: Missing date metadata
+    """
+    today = date.today()
+
+    # Check frontmatter dates
+    if frontmatter:
+        custom_fields = frontmatter.get('custom_fields', {})
+
+        # Check for created/updated dates
+        created_date = custom_fields.get('created') or frontmatter.get('created')
+        updated_date = custom_fields.get('updated') or frontmatter.get('updated')
+
+        if not created_date and not updated_date:
+            result.add_warning(
+                "DATE-W001",
+                "Missing date metadata: add 'created' and/or 'updated' fields"
+            )
+        else:
+            # Validate created date is not in future
+            if created_date:
+                try:
+                    if isinstance(created_date, str):
+                        created = datetime.strptime(created_date, "%Y-%m-%d").date()
+                    elif isinstance(created_date, date):
+                        created = created_date
+                    else:
+                        created = None
+
+                    if created and created > today:
+                        result.add_error(
+                            "DATE-E001",
+                            f"Document creation date '{created}' is in the future"
+                        )
+                except ValueError:
+                    pass  # Invalid date format, not our concern here
+
+            # Validate updated date is not before created date
+            if created_date and updated_date:
+                try:
+                    if isinstance(created_date, str):
+                        created = datetime.strptime(created_date, "%Y-%m-%d").date()
+                    else:
+                        created = created_date
+
+                    if isinstance(updated_date, str):
+                        updated = datetime.strptime(updated_date, "%Y-%m-%d").date()
+                    else:
+                        updated = updated_date
+
+                    if created and updated and updated < created:
+                        result.add_error(
+                            "DATE-E002",
+                            f"Updated date '{updated}' is before created date '{created}'"
+                        )
+                except (ValueError, TypeError):
+                    pass
+
+    # Check for timeline inconsistencies in content
+    # Find date patterns in timeline/milestone sections
+    timeline_section = re.search(
+        r'##\s*(?:\d+\.)?\s*(?:Timeline|Milestones?|Schedule).*?\n(.*?)(?=\n##|\Z)',
+        content,
+        re.IGNORECASE | re.DOTALL
+    )
+
+    if timeline_section:
+        timeline_content = timeline_section.group(1)
+
+        # Extract dates from timeline
+        date_patterns = [
+            r'Q([1-4])\s*[-–]\s*(\d{4})',  # Q1-2025
+            r'(\d{4})[-/](\d{2})[-/](\d{2})',  # 2025-01-15
+            r'(\w+)\s+(\d{4})',  # January 2025
+        ]
+
+        dates_found = []
+
+        # Q1-2025 pattern
+        for match in re.finditer(r'Q([1-4])\s*[-–]?\s*(\d{4})', timeline_content):
+            quarter = int(match.group(1))
+            year = int(match.group(2))
+            # Convert to approximate date (start of quarter)
+            month = (quarter - 1) * 3 + 1
+            dates_found.append(date(year, month, 1))
+
+        # ISO date pattern
+        for match in re.finditer(r'(\d{4})[-/](\d{2})[-/](\d{2})', timeline_content):
+            try:
+                d = date(int(match.group(1)), int(match.group(2)), int(match.group(3)))
+                dates_found.append(d)
+            except ValueError:
+                pass
+
+        # Check if any timeline dates are significantly in the past compared to doc date
+        if frontmatter and dates_found:
+            created_date = frontmatter.get('custom_fields', {}).get('created')
+            if created_date:
+                try:
+                    if isinstance(created_date, str):
+                        doc_date = datetime.strptime(created_date, "%Y-%m-%d").date()
+                    else:
+                        doc_date = created_date
+
+                    # Check for timeline dates that are before doc creation
+                    past_dates = [d for d in dates_found if d < doc_date]
+                    if past_dates and len(past_dates) == len(dates_found):
+                        result.add_warning(
+                            "DATE-E002",
+                            f"All timeline dates are before document creation date ({doc_date})"
+                        )
+                except (ValueError, TypeError):
+                    pass
+
+
+def validate_document(
+    doc_path: Path,
+    verbose: bool = False,
+    auto_fix: bool = False
+) -> ValidationResult:
     """Validate a document against its schema."""
     result = ValidationResult(
         document_path=doc_path,
@@ -352,6 +568,18 @@ def validate_document(doc_path: Path, verbose: bool = False) -> ValidationResult
 
     validate_structure(content, schema, result)
     validate_traceability(content, frontmatter or {}, schema, result)
+
+    # Run timezone validation
+    fixed_content = validate_timezone(content, result, auto_fix=auto_fix)
+    if fixed_content and auto_fix:
+        try:
+            doc_path.write_text(fixed_content, encoding='utf-8')
+            result.add_info("I_AUTO_FIXED", "Auto-fixed timezone format issues")
+        except Exception as e:
+            result.add_warning("W_AUTO_FIX_FAILED", f"Could not write auto-fix: {e}")
+
+    # Run date validation
+    validate_dates(content, frontmatter, result)
 
     return result
 
