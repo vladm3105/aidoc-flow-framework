@@ -370,7 +370,7 @@ Complete all required metadata fields and initialize Document Revision History t
 
 ### Step 7: Complete Core Sections
 
-Fill all 17 required sections following template structure.
+Fill all 18 required sections following template structure.
 
 **Platform BRD**: Populate sections 3.6 and 3.7 with technology details
 **Feature BRD**: Mark sections 3.6 and 3.7 as "N/A - See Platform BRD-NN"
@@ -428,7 +428,7 @@ Commit BRD file and traceability matrix together.
 - [ ] Sections 3.6 & 3.7 handled correctly for BRD type
 - [ ] Architecture Decision Requirements listed (no ADR numbers referenced)
 - [ ] Strategy references in Traceability section
-- [ ] All 17 sections completed
+- [ ] All 18 sections completed
 - [ ] Traceability matrix created/updated
 - [ ] No broken links
 - [ ] File size <50,000 tokens (standard) or <100,000 tokens (maximum)
@@ -526,7 +526,7 @@ For supplementary documentation related to BRD artifacts:
 | PRD-Ready Score: ✅ Required (≥90%) | PRD-Ready Score: **NOT APPLICABLE** |
 | Cumulative tags: Required | Cumulative tags: **NOT REQUIRED** |
 | Quality gates: Full validation | Quality gates: **EXEMPT** |
-| Format: Structured 17 sections | Format: **Free format, business-oriented** |
+| Format: Structured 18 sections | Format: **Free format, business-oriented** |
 
 **Purpose**: BRD-REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal business requirements.
 

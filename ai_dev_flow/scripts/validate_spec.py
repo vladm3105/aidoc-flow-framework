@@ -36,8 +36,8 @@ from error_codes import Severity, calculate_exit_code, format_error
 # VALIDATION CONSTANTS
 # =============================================================================
 
-# File naming pattern
-FILE_NAME_PATTERN = r"^SPEC-\d{3}_[a-z0-9_]+\.yaml$"
+# File naming pattern (2+ digits per ID_NAMING_STANDARDS.md)
+FILE_NAME_PATTERN = r"^SPEC-\d{2,}_[a-z0-9_]+\.yaml$"
 
 # Required top-level fields
 REQUIRED_TOP_LEVEL = [

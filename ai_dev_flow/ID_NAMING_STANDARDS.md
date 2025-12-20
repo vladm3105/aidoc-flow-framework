@@ -690,8 +690,8 @@ Traceability Requirements
 Validation Rules & Aids
 - Run before commit:
   - `python scripts/validate_requirement_ids.py`
-  - Optional: `python scripts/check_broken_references.py`
-  - Optional: `python scripts/complete_traceability_matrix.py`
+  - Optional: `python scripts/validate_links.py` (broken references)
+  - Optional: `python scripts/validate_traceability_matrix.py` (matrix compliance)
 - Quick regexes (conceptual):
   - **Unified Element ID** (all document types): `^[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}$`
   - **Internal Heading**: `^###\s+[A-Z]{2,5}\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}:\s+.+$`

@@ -33,8 +33,8 @@ from error_codes import Severity, calculate_exit_code, format_error
 # VALIDATION CONSTANTS
 # =============================================================================
 
-# File naming pattern
-FILE_NAME_PATTERN = r"^BDD-\d{3}_[a-z0-9_]+\.feature$"
+# File naming pattern (2+ digits per ID_NAMING_STANDARDS.md)
+FILE_NAME_PATTERN = r"^BDD-\d{2,}_[a-z0-9_]+\.feature$"
 
 # Gherkin keywords
 FEATURE_KEYWORD = "Feature:"

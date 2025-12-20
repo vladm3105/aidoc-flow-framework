@@ -37,6 +37,40 @@ custom_fields:
 > This monolithic template is for small documents only (<25KB).
 > Use nested folder structure: `docs/BRD/BRD-NN/BRD-NN.S_slug.md`
 
+---
+
+## Section Classification
+
+| Section | Status | When Required |
+|---------|--------|---------------|
+| 1. Introduction | MANDATORY | All BRDs |
+| 2. Business Objectives | MANDATORY | All BRDs |
+| 3. Project Scope | MANDATORY | All BRDs |
+| 4. Stakeholders | MANDATORY | All BRDs |
+| 5. User Stories | MANDATORY | All BRDs |
+| 6. Functional Requirements | MANDATORY | All BRDs |
+| 7. Quality Attributes | MANDATORY | All BRDs |
+| 8. Business Constraints and Assumptions | MANDATORY | All BRDs |
+| 9. Acceptance Criteria | MANDATORY | All BRDs |
+| 10. Business Risk Management | MANDATORY | All BRDs |
+| 11. Implementation Approach | MANDATORY | All BRDs |
+| 12. Support and Maintenance | MANDATORY | All BRDs |
+| 13. Cost-Benefit Analysis | MANDATORY | All BRDs |
+| 14. Project Governance | MANDATORY | All BRDs |
+| 15. Quality Assurance | MANDATORY | All BRDs |
+| 16. Traceability | MANDATORY | All BRDs |
+| 16.2 Same-Type References | CONDITIONAL | Only if cross-BRD dependencies exist |
+| 17. Glossary | MANDATORY | All BRDs (project-specific terms only) |
+| 18. Appendices A-G | MANDATORY | All BRDs |
+| Appendix H: Fee Schedule | CONDITIONAL | Financial/transactional BRDs only |
+
+**Status Definitions**:
+- **MANDATORY**: Section must be completed for all BRDs
+- **OPTIONAL**: Section may be omitted if not applicable; include note "N/A - [reason]" if skipped
+- **CONDITIONAL**: Section required only when specified condition applies
+
+---
+
 # Business Requirements Document (BRD)
 
 ## Document Control
@@ -1602,7 +1636,7 @@ This BRD is considered approved when:
 1. All stakeholders listed in section 14.5.1 have provided written approval
 2. All critical business risks (section 10) with risk score ≥12 have documented mitigation strategies
 3. Regulatory compliance requirements have been validated by legal counsel (if applicable)
-4. Required dependencies (section 17.2) are confirmed available or have mitigation plans
+4. Required dependencies (section 16.2) are confirmed available or have mitigation plans
 5. Budget allocation has been approved by appropriate financial authority
 
 #### 14.5.3 Change Control Process for Approved BRD
@@ -1630,9 +1664,9 @@ Changes to this approved BRD must follow this process:
 
 ---
 
-## 15. Quality Assurance (Optional)
+## 15. Quality Assurance
 
-> **Note**: This section is optional but recommended for production-critical BRDs. When included, subsequent sections are renumbered (Traceability becomes Section 16, etc.).
+> **Note**: This section is mandatory for all BRDs. It defines quality standards, testing strategy, and quality gates to ensure consistent delivery quality.
 
 ### 15.1 Quality Standards
 

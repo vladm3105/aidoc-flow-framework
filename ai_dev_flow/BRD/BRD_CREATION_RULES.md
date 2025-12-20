@@ -24,12 +24,12 @@ custom_fields:
 
 # BRD Creation Rules
 
-**Version**: 1.2
+**Version**: 1.3
 **Date**: 2025-11-19
-**Last Updated**: 2025-12-10
+**Last Updated**: 2025-12-19
 **Source**: Extracted from BRD-TEMPLATE.md, BRD-VALIDATION_RULES.md, README.md, and BRD-000_index.md
 **Purpose**: Complete reference for creating BRD files according to doc-flow SDD framework
-**Changes**: Added schema flexibility design decision documentation; clarified Platform vs Feature BRD section requirements
+**Changes**: Added Section Classification table (MANDATORY/OPTIONAL/CONDITIONAL); Section 15 (Quality Assurance) now MANDATORY; 18 total sections
 
 ---
 
@@ -57,7 +57,7 @@ custom_fields:
 ## Table of Contents
 
 1. [File Organization and Directory Structure](#1-file-organization-and-directory-structure)
-2. [Document Structure (17 Required sections)](#2-document-structure-17-required-sections)
+2. [Document Structure (18 Sections with Classification)](#2-document-structure-18-sections-with-classification)
 3. [Document Control Requirements](#3-document-control-requirements)
 4. [ID and Naming Standards](#4-id-and-naming-standards)
 5. [Business Requirements Principles](#5-business-requirements-principles)
@@ -85,11 +85,30 @@ custom_fields:
 
 ---
 
-## 2. Document Structure (17 Required Numbered sections)
+## 2. Document Structure (18 Sections with Classification)
 
 **Document Control section**: Located at the very beginning (before all numbered sections)
 
-Every BRD must contain these exact 17 numbered sections in order:
+### 2.1 Section Classification
+
+| Section | Status | When Required |
+|---------|--------|---------------|
+| 1-14 | MANDATORY | All BRDs |
+| 15. Quality Assurance | MANDATORY | All BRDs |
+| 16. Traceability | MANDATORY | All BRDs |
+| 16.2 Same-Type References | CONDITIONAL | Only if cross-BRD dependencies exist |
+| 17. Glossary | MANDATORY | All BRDs (project-specific terms only) |
+| 18. Appendices A-G | MANDATORY | All BRDs |
+| Appendix H: Fee Schedule | CONDITIONAL | Financial/transactional BRDs only |
+
+**Status Definitions**:
+- **MANDATORY**: Section must be completed for all BRDs
+- **OPTIONAL**: Section may be omitted if not applicable; include note "N/A - [reason]" if skipped
+- **CONDITIONAL**: Section required only when specified condition applies
+
+### 2.2 Section List
+
+Every BRD contains these sections (mandatory unless noted):
 
 1. **Introduction** - Purpose, scope, audience, conventions, references
 2. **Business Objectives** - Background/context, business problem, goals, objectives, strategic alignment, expected benefits
@@ -105,9 +124,10 @@ Every BRD must contain these exact 17 numbered sections in order:
 12. **Support and Maintenance** - Support model/services/SLAs, maintenance plan
 13. **Cost-Benefit Analysis** - One-time/recurring costs, quantifiable/qualitative benefits, ROI, payback NPV
 14. **Project Governance** - Governance structure, decision-making authority, status reporting, change control
-15. **Traceability** - Requirements traceability matrix, cross-BRD dependencies, test coverage traceability, traceability summary
-16. **Glossary** - Business terms, technical terms, domain-specific terms, acronyms, cross-references, external standards
-17. **Appendices** - References, supporting documentation, process flow diagrams, data requirements, UI mockups, integration specifications, stakeholder interview notes
+15. **Quality Assurance** *(MANDATORY)* - Quality standards, testing strategy, quality gates
+16. **Traceability** - Requirements traceability matrix, cross-BRD dependencies, test coverage traceability, traceability summary
+17. **Glossary** - Business terms, technical terms, domain-specific terms, acronyms, cross-references, external standards
+18. **Appendices** - References, supporting documentation, process flow diagrams, data requirements, UI mockups, integration specifications, stakeholder interview notes
 
 > **Note**: Technical QA (quality standards, testing strategy, defect management) moved to PRD-TEMPLATE.md Section 21.
 
@@ -119,7 +139,7 @@ Every BRD must contain these exact 17 numbered sections in order:
 
 See section 5.6 below for detailed guidance on the simplified user stories approach.
 
-### 2.2 Executive Summary Quantitative Pattern
+### 2.3 Executive Summary Quantitative Pattern
 
 **Purpose**: Provide quantitative structure for Executive Summary section that enables measurable business impact assessment.
 
@@ -1246,13 +1266,13 @@ if (amount >= 501 && amount <= 2000) {
 
 **Purpose**: Establish bidirectional linkage between business objectives, functional requirements, and downstream technical artifacts to ensure complete coverage, enable impact analysis, and prevent orphaned requirements.
 
-**Location in Template**: section 17 (Traceability)
+**Location in Template**: section 16 (Traceability)
 
-### 8.1 Requirements Traceability Matrix (Template section 17.1)
+### 8.1 Requirements Traceability Matrix (Template section 16.1)
 
 The traceability matrix provides three levels of bidirectional mapping to ensure complete requirements coverage:
 
-#### 17.1.1 Business Objectives → Functional Requirements
+#### 16.1.1 Business Objectives → Functional Requirements
 
 **Required Table Format**:
 
@@ -1273,7 +1293,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 - **Unlinked Functional Requirement**: Functional requirement not appearing in any Business Objective row
 - Zero orphans required for BRD approval
 
-#### 17.1.2 Functional Requirements → Technical Specifications
+#### 16.1.2 Functional Requirements → Technical Specifications
 
 **Required Table Format**:
 
@@ -1290,7 +1310,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 
 **Forward Traceability**: Enables impact analysis when changing functional requirements
 
-#### 17.1.3 Quality Attributes → Technical Specifications
+#### 16.1.3 Quality Attributes → Technical Specifications
 
 **Required Table Format**:
 | Quality Attribute Category | Downstream SPEC (Planned) | Validation Method |
@@ -1307,7 +1327,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 - Specify validation method for each category (testing, audit, monitoring)
 - Use quality attribute SPEC naming convention (SPEC-XXX-QA-[Category])
 
-### 8.2 Same-Type References / Cross-BRD Dependencies (Template section 17.2)
+### 8.2 Same-Type References / Cross-BRD Dependencies (Template section 16.2)
 
 **Purpose**: Document dependencies on other BRDs to prevent integration issues and support parallel development.
 
@@ -1343,7 +1363,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 - Status: "Required" (blocking), "Optional" (nice-to-have)
 - Include standard same-type tags for automated traceability validation
 
-### 8.3 Test Coverage Traceability (Template section 17.3)
+### 8.3 Test Coverage Traceability (Template section 16.3)
 
 **Purpose**: Map requirements to planned test artifacts to ensure comprehensive test coverage.
 
@@ -1363,7 +1383,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 - **Acceptance Tests**: 100% coverage for user stories (BDD scenarios)
 - **Quality Attribute Tests**: 100% coverage for all SLA thresholds and security controls
 
-### 8.4 Traceability Summary (Template section 17.4)
+### 8.4 Traceability Summary (Template section 16.4)
 
 **Purpose**: Quantify traceability coverage to ensure no orphaned or unlinked requirements.
 
@@ -1592,7 +1612,7 @@ All business objectives in section 2.4 must follow SMART criteria:
 1. All stakeholders listed in 15.5.1 have provided written approval
 2. All critical business risks (section 10) with risk score ≥12 have documented mitigation strategies
 3. Regulatory compliance requirements validated by legal counsel (if applicable)
-4. Required dependencies (section 17.2) confirmed available or have mitigation plans
+4. Required dependencies (section 16.2) confirmed available or have mitigation plans
 5. Budget allocation approved by appropriate financial authority
 
 **Format**: Numbered list with specific, verifiable conditions
@@ -1680,7 +1700,7 @@ find docs/BRD -name "BRD-*.md" -exec ./scripts/validate_brd_template.sh {} \;
 ```
 
 **Template Location**: [BRD-TEMPLATE.md](BRD-TEMPLATE.md)
-**Validation Rules**: [BRD-VALIDATION-RULES.md](BRD-VALIDATION-RULES.md)
+**Validation Rules**: [BRD_VALIDATION_RULES.md](BRD_VALIDATION_RULES.md)
 **Index**: [BRD-000_index.md](BRD-000_index.md)
 
 ---

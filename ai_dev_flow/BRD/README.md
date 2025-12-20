@@ -198,12 +198,12 @@ Standard metadata including version, date, owner, status, revision history
 - **Implementation Phases**: Phased delivery plan with milestones
 - **Rollout Plan**: Deployment strategy and user adoption plan
 
-### Quality Assurance (Optional)
+### Quality Assurance
 - **Quality Standards**: Target metrics and measurement methods
 - **Testing Strategy**: Test types, scope, automation level
 - **Quality Gates**: Criteria and ownership for release gates
 
-> **Note**: Section 15 (Quality Assurance) is optional but recommended for production-critical BRDs. When included, subsequent sections are renumbered (Traceability becomes Section 16, etc.).
+> **Note**: Section 15 (Quality Assurance) is mandatory for all BRDs. It defines quality standards, testing strategy, and quality gates to ensure consistent delivery quality.
 
 ### Traceability, Glossary and Appendices
 - **Traceability**: Requirements traceability matrix and cross-BRD dependencies
@@ -313,8 +313,7 @@ BRDs now include PRD-ready scoring (mirroring REQ SPEC-ready scoring) to ensure 
 ### Scoring Criteria
 
 **Business Requirements Completeness (40%)**:
-- All 17 mandatory sections present and populated: 10%
-  - Note: Section 15 (Quality Assurance) is optional but recommended for production-critical BRDs
+- All 18 mandatory sections present and populated: 10%
 - Business objectives follow SMART criteria: 10%
 - Acceptance criteria quantifiable and verifiable: 10%
 - Stakeholder analysis complete: 10%

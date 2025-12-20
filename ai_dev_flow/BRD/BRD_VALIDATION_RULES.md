@@ -26,14 +26,14 @@ custom_fields:
 
 # BRD Validation Rules Reference
 
-**Version**: 1.3.0
+**Version**: 1.4.0
 **Date**: 2025-11-19
-**Last Updated**: 2025-12-16
+**Last Updated**: 2025-12-19
 **Purpose**: Complete validation rules for BRD documents
 **Script**: `scripts/validate_brd_template.sh`
 **Primary Template**: `BRD-TEMPLATE.md`
 **Framework**: doc_flow SDD (100% compliant)
-**Changes**: Updated from 18 to 17 sections (Section 15 QA moved to PRD Section 21); renumbered sections 16→15, 17→16, 18→17
+**Changes**: Added Section Classification (MANDATORY/OPTIONAL/CONDITIONAL); Section 15 (Quality Assurance) now MANDATORY; 18 total sections
 
 ---
 
@@ -99,7 +99,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 - CHECK 4 (partial): H1 ID match with filename (required)
 
 **Exempted Checks** (20 total):
-- CHECK 1 (full): 19 required sections (exempt - only Introduction required)
+- CHECK 1 (full): 18 sections (exempt - only Introduction required)
 - CHECK 5-6: Platform/Feature type validation (exempt)
 - CHECK 7-12: Content quality warnings (exempt)
 - CHECK 13-18: PRD-Ready Score and FR validation (exempt)
@@ -139,11 +139,23 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 
 ### CHECK 1: Required sections
 
-**Purpose**: Verify all 17 mandatory sections exist
-**Type**: Error (blocking)
+**Purpose**: Verify all mandatory sections exist (18 mandatory sections)
+**Type**: Error (blocking for mandatory sections)
 
-**Required sections**:
+**Section Classification**:
+
+| Section | Status | Validation |
+|---------|--------|------------|
+| 1-14 | MANDATORY | Error if missing |
+| 15. Quality Assurance | MANDATORY | Error if missing |
+| 16. Traceability | MANDATORY | Error if missing |
+| 17. Glossary | MANDATORY | Error if missing |
+| 18. Appendices | MANDATORY | Error if missing |
+| Document Control | MANDATORY | Error if missing (must be at top) |
+
+**Required sections (MANDATORY)**:
 ```markdown
+## Document Control (must be at top)
 ## 1. Introduction
 ## 2. Business Objectives
 ## 3. Project Scope
@@ -158,13 +170,15 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 ## 12. Support and Maintenance
 ## 13. Cost-Benefit Analysis
 ## 14. Project Governance
-## 15. Traceability
-## 16. Glossary
-## 17. Appendices
-## Document Control (must be at top)
+## 15. Quality Assurance
+## 16. Traceability
+## 17. Glossary
+## 18. Appendices
 ```
 
-**Note**: All 17 sections are mandatory. Section 15 (Quality Assurance) was moved to PRD-TEMPLATE.md Section 21 as technical QA belongs at product level.
+**Conditional Subsections**:
+- **16.2 Same-Type References**: Only required if cross-BRD dependencies exist
+- **Appendix H: Fee Schedule**: Only required for financial/transactional BRDs
 
 > **Note**: For technical QA standards, testing strategy, and defect management, see PRD-TEMPLATE.md Section 21.
 
@@ -176,7 +190,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 **Fix**:
 1. Add missing section header
 2. Ensure exact spelling and numbering
-3. sections 1-17 must be in order (Document Control at top)
+3. Sections 1-18 must be in order (Document Control at top)
 
 ---
 
@@ -662,7 +676,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 
 **Required sections** (CHECK 1):
 - **Deduction**: -1 point per missing section (max -10 points)
-- **Required**: All 17 sections from BRD-TEMPLATE.md
+- **Required**: All 18 mandatory sections from BRD-TEMPLATE.md
 
 **Revision History** (CHECK 3):
 - **Deduction**: -3 points if Document Revision History table missing or empty
@@ -682,7 +696,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 - **Missing subsections**: 2 FRs each missing Complexity subsection → -10 points
 - **Invalid cross-references**: 1 reference to non-existent BRD-099 → -2 points
 - **Document Control**: All fields present → 0 points
-- **Required sections**: All 17 sections present → 0 points
+- **Required sections**: All 18 mandatory sections present → 0 points
 - **Revision History**: Table present → 0 points
 
 **Total Deductions**: 20 + 16 + 8 + 10 + 2 = 56 points
@@ -1332,72 +1346,72 @@ Fix: Complete all required subsections per BRD-TEMPLATE.md section 14.5
 
 ### CHECK 24: Glossary Subsections ⭐ NEW
 
-**Purpose**: Verify section 16 (Glossary) contains all 6 required subsections for comprehensive terminology documentation
+**Purpose**: Verify section 17 (Glossary) contains all 6 required subsections for comprehensive terminology documentation
 **Type**: Warning (non-blocking) - Complete glossary improves document clarity and reduces ambiguity
 
-**Location**: section 16 (Glossary)
+**Location**: section 17 (Glossary)
 
 **Required Subsections**:
-- [ ] 16.1 Business Terms
-- [ ] 16.2 Technical Terms
-- [ ] 16.3 Domain-Specific Terms
-- [ ] 16.4 Acronyms
-- [ ] 16.5 Cross-References
-- [ ] 16.6 External Standards
+- [ ] 17.1 Business Terms
+- [ ] 17.2 Technical Terms
+- [ ] 17.3 Domain-Specific Terms
+- [ ] 17.4 Acronyms
+- [ ] 17.5 Cross-References
+- [ ] 17.6 External Standards
 
 **Validation Checks**:
-- [ ] section 16 header exists: `## 16. Glossary`
-- [ ] All 6 subsections present (16.1-16.6)
+- [ ] section 17 header exists: `## 17. Glossary`
+- [ ] All 6 subsections present (17.1-17.6)
 - [ ] Each subsection contains at least one term definition
-- [ ] Business Terms (16.1) defines business-level concepts (ROI, KPI, SLA, etc.)
-- [ ] Technical Terms (16.2) defines technical concepts mentioned in BRD
-- [ ] Domain-Specific Terms (16.3) defines industry/domain terminology
-- [ ] Acronyms (16.4) expands all abbreviations used in document
-- [ ] Cross-References (16.5) links to related BRDs or external documents
-- [ ] External Standards (16.6) references regulatory/industry standards
+- [ ] Business Terms (17.1) defines business-level concepts (ROI, KPI, SLA, etc.)
+- [ ] Technical Terms (17.2) defines technical concepts mentioned in BRD
+- [ ] Domain-Specific Terms (17.3) defines industry/domain terminology
+- [ ] Acronyms (17.4) expands all abbreviations used in document
+- [ ] Cross-References (17.5) links to related BRDs or external documents
+- [ ] External Standards (17.6) references regulatory/industry standards
 
 **Warning Message**:
 ```
-⚠️  WARNING: Incomplete Glossary structure in section 16
+⚠️  WARNING: Incomplete Glossary structure in section 17
 Missing subsections:
-- 16.3 Domain-Specific Terms not found
-- 16.5 Cross-References not found
-- 16.6 External Standards not found
+- 17.3 Domain-Specific Terms not found
+- 17.5 Cross-References not found
+- 17.6 External Standards not found
 
 Recommendation: Add all 6 subsections for comprehensive terminology coverage
-Reference: BRD-TEMPLATE.md section 16
+Reference: BRD-TEMPLATE.md section 17
 ```
 
 **Required Structure**:
 ```markdown
-## 16. Glossary
+## 17. Glossary
 
-### 16.1 Business Terms
+### 17.1 Business Terms
 | Term | Definition | Related section |
 |------|------------|-----------------|
 | KPI | Key Performance Indicator - measurable value demonstrating effectiveness | section 7 (Acceptance Criteria) |
 
-### 16.2 Technical Terms
+### 17.2 Technical Terms
 | Term | Definition | Related section |
 |------|------------|-----------------|
 | API | Application Programming Interface - defines interactions between software | section 4.3 (Integration Requirements) |
 
-### 16.3 Domain-Specific Terms
+### 17.3 Domain-Specific Terms
 | Term | Definition | Related section |
 |------|------------|-----------------|
 | Remittance | Transfer of money by foreign worker to home country | section 1 (Introduction) |
 
-### 16.4 Acronyms
+### 17.4 Acronyms
 | Acronym | Full Form | First Use |
 |---------|-----------|-----------|
 | GMV | Gross Merchandise Value | section 2.4 (Business Objectives) |
 
-### 16.5 Cross-References
+### 17.5 Cross-References
 | Term | Referenced Document | section |
 |------|---------------------|---------|
-| Platform Architecture | BRD-01_platform_architecture_technology_stack.md | section 15.2 |
+| Platform Architecture | BRD-01_platform_architecture_technology_stack.md | section 16.2 |
 
-### 16.6 External Standards
+### 17.6 External Standards
 | Standard | Organization | Relevance | section |
 |----------|--------------|-----------|---------|
 | PCI-DSS | Payment Card Industry | Payment security compliance | section 7.3 (security Requirements) |
@@ -1411,8 +1425,8 @@ Reference: BRD-TEMPLATE.md section 16
 - [ ] External standards include organization and relevance
 
 **Fix**:
-1. Add section 16 if missing, or enhance existing section
-2. Create all 6 subsections (16.1-16.6)
+1. Add section 17 if missing, or enhance existing section
+2. Create all 6 subsections (17.1-17.6)
 3. Populate Business Terms with business-level concepts from document
 4. Define Technical Terms mentioned in Functional Requirements
 5. Document Domain-Specific terminology (industry jargon, specialized concepts)
@@ -1420,7 +1434,7 @@ Reference: BRD-TEMPLATE.md section 16
 7. List Cross-References to related BRDs and documents
 8. Document External Standards referenced (regulatory, industry, technical)
 
-**Reference**: BRD-TEMPLATE.md section 16, BRD_CREATION_RULES.md section 2 (line 76)
+**Reference**: BRD-TEMPLATE.md section 17, BRD_CREATION_RULES.md section 2 (line 76)
 
 ---
 
@@ -1481,9 +1495,9 @@ Reference: BRD-TEMPLATE.md section 16
 | **CHECK 19** | Add quantitative elements to Executive Summary (market data, outcomes, segments, timeline, investment) |
 | **CHECK 20** | Add section 5 (User Stories) with standard format and FR traceability |
 | **CHECK 21** | Add sections 3.5.4-3.5.5 with Mermaid workflow diagrams and summary tables |
-| **CHECK 22** | Add section 15 (Traceability) with complete bidirectional mapping and Health Score ≥90% |
+| **CHECK 22** | Add section 16 (Traceability) with complete bidirectional mapping and Health Score ≥90% |
 | **CHECK 23** | Add section 14.5 (Approval and Sign-off) with approval table, criteria, and change control process |
-| **CHECK 24** | Add section 16 subsections 16.1-16.6 for complete Glossary (Business Terms, Technical Terms, Domain-Specific, Acronyms, Cross-References, External Standards) |
+| **CHECK 24** | Add section 17 subsections 17.1-17.6 for complete Glossary (Business Terms, Technical Terms, Domain-Specific, Acronyms, Cross-References, External Standards) |
 | **CHECK 25** | Replace legacy element IDs (AC-XXX, FR-XXX, BC-XXX, BO-XXX, QA-XXX) with unified format `BRD.NN.TT.SS` |
 
 ---
@@ -1504,7 +1518,7 @@ find docs/BRD -type f -name "BRD-*.md" -exec ./scripts/validate_brd_template.sh 
 
 # Validate all BRD files (legacy pattern)
 **Business Requirements Completeness (40%)**:
-- All 17 sections present and populated: 10%
+- All 18 mandatory sections present and populated: 10%
 - Business objectives follow SMART criteria: 10%
 - Acceptance criteria quantifiable and verifiable: 10%
 - Stakeholder analysis complete: 10%

@@ -20,20 +20,20 @@ custom_fields:
 
 ## Purpose
 
-This document provides centralized definitions for common business, technical, regulatory, and domain-specific terminology used across all Business Requirements Documents (BRDs) in the AI Dev Flow framework. Individual BRDs reference this glossary and define project-specific terms only in their local section 18.
+This document provides centralized definitions for common business, technical, regulatory, and domain-specific terminology used across all Business Requirements Documents (BRDs) in the AI Dev Flow framework. Individual BRDs reference this glossary and define project-specific terms only in their local section 17 (Glossary).
 
 ## Usage Guidelines
 
 ### For BRD Authors
 
-1. **Check this glossary first** before defining any term in individual BRD section 18
+1. **Check this glossary first** before defining any term in individual BRD section 17
 2. **Reference entries** from this glossary instead of duplicating definitions
-3. **Add project-specific terms** to individual BRD section 18 when they don't belong here
+3. **Add project-specific terms** to individual BRD section 17 when they don't belong here
 4. **Propose additions** to this master glossary when terms are used across 3+ BRDs
 
 ### When to Define Terms Here vs. Individual BRD
 
-| Define in BRD-000_GLOSSARY.md | Define in Individual BRD section 18 |
+| Define in BRD-000_GLOSSARY.md | Define in Individual BRD section 17 |
 |-------------------------------|-------------------------------------|
 | ✅ Terms used across 3+ BRDs | ✅ Project-specific terminology |
 | ✅ Standard BRD framework terms (FR, QA, BO) | ✅ Unique partner names |
@@ -191,7 +191,7 @@ Add terms to this glossary when they meet ANY of these criteria:
 
 ### Proposal Process
 
-1. **Identify candidate term** in individual BRD section 18
+1. **Identify candidate term** in individual BRD section 17
 2. **Check usage frequency** across existing BRDs
 3. **Submit proposal** to Business Analyst Team with:
    - Term definition

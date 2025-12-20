@@ -58,7 +58,7 @@ FORBIDDEN_TAG_PATTERNS = [
 
 # Required sections (patterns)
 REQUIRED_SECTIONS = [
-    (r"^# PRD-\d{3}:", "Title (H1 with PRD-NNN format)"),
+    (r"^# PRD-\d{2,}:", "Title (H1 with PRD-NN+ format)"),
     (r"^## 0\. Document Control", "Section 0: Document Control"),
     (r"^## 1\. Executive Summary", "Section 1: Executive Summary"),
     (r"^## 2\. Product Vision", "Section 2: Product Vision"),
@@ -69,12 +69,12 @@ REQUIRED_SECTIONS = [
 BRD_REF_PATTERN = r"@brd:\s*BRD\.\d{2,9}\.\d{2,9}\.\d{2,9}"
 
 # File naming patterns
-# Monolithic: PRD-NNN_slug.md
-FILE_NAME_PATTERN_MONOLITHIC = r"^PRD-\d{3}_[a-z0-9_]+\.md$"
-# Section (shortened): PRD-NNN.S_section_type.md (PREFERRED for nested folders)
-FILE_NAME_PATTERN_SECTION_SHORT = r"^PRD-\d{3}\.\d+_[a-z_]+\.md$"
-# Section (full): PRD-NNN.S_slug_section_type.md (backward compatible)
-FILE_NAME_PATTERN_SECTION_FULL = r"^PRD-\d{3}\.\d+_[a-z0-9_]+_[a-z_]+\.md$"
+# Monolithic: PRD-NN+_slug.md (2+ digits per ID_NAMING_STANDARDS.md)
+FILE_NAME_PATTERN_MONOLITHIC = r"^PRD-\d{2,}_[a-z0-9_]+\.md$"
+# Section (shortened): PRD-NN+.S_section_type.md (PREFERRED for nested folders)
+FILE_NAME_PATTERN_SECTION_SHORT = r"^PRD-\d{2,}\.\d+_[a-z_]+\.md$"
+# Section (full): PRD-NN+.S_slug_section_type.md (backward compatible)
+FILE_NAME_PATTERN_SECTION_FULL = r"^PRD-\d{2,}\.\d+_[a-z0-9_]+_[a-z_]+\.md$"
 
 
 # =============================================================================
@@ -250,8 +250,8 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
         result.add_error("PRD-E001", f"Multiple H1 headings found ({len(h1_sections)})")
     else:
         h1_text = h1_sections[0][0]
-        if not re.match(r"^# PRD-\d{3}:", h1_text):
-            result.add_error("PRD-E001", f"Invalid H1 format. Expected '# PRD-NNN: Title', got '{h1_text[:50]}'")
+        if not re.match(r"^# PRD-\d{2,}:", h1_text):
+            result.add_error("PRD-E001", f"Invalid H1 format. Expected '# PRD-NN+: Title', got '{h1_text[:50]}'")
 
     # Check required sections
     section_headers = [s[0] for s in sections]

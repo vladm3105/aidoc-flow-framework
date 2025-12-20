@@ -57,7 +57,7 @@ FORBIDDEN_TAG_PATTERNS = [
 
 # Required sections (patterns)
 REQUIRED_SECTIONS = [
-    (r"^# ADR-\d{3}:", "Title (H1 with ADR-NNN format)"),
+    (r"^# ADR-\d{2,}:", "Title (H1 with ADR-NN+ format)"),
     (r"^## 1\. Document Control", "Section 1: Document Control"),
     (r"^## 2\. Position in Development Workflow", "Section 2: Position in Development Workflow"),
     (r"^## 3\. Status", "Section 3: Status"),
@@ -93,12 +93,12 @@ CONSEQUENCES_SUBSECTIONS = [
 VALID_STATUS_VALUES = ["Proposed", "Accepted", "Deprecated", "Superseded", "Draft", "In Review", "Approved"]
 
 # File naming patterns
-# Monolithic: ADR-NNN_slug.md
-FILE_NAME_PATTERN_MONOLITHIC = r"^ADR-\d{3}_[a-z0-9_]+\.md$"
-# Section (shortened): ADR-NNN.S_section_type.md (PREFERRED for nested folders)
-FILE_NAME_PATTERN_SECTION_SHORT = r"^ADR-\d{3}\.\d+_[a-z_]+\.md$"
-# Section (full): ADR-NNN.S_slug_section_type.md (backward compatible)
-FILE_NAME_PATTERN_SECTION_FULL = r"^ADR-\d{3}\.\d+_[a-z0-9_]+_[a-z_]+\.md$"
+# Monolithic: ADR-NN+_slug.md (2+ digits per ID_NAMING_STANDARDS.md)
+FILE_NAME_PATTERN_MONOLITHIC = r"^ADR-\d{2,}_[a-z0-9_]+\.md$"
+# Section (shortened): ADR-NN+.S_section_type.md (PREFERRED for nested folders)
+FILE_NAME_PATTERN_SECTION_SHORT = r"^ADR-\d{2,}\.\d+_[a-z_]+\.md$"
+# Section (full): ADR-NN+.S_slug_section_type.md (backward compatible)
+FILE_NAME_PATTERN_SECTION_FULL = r"^ADR-\d{2,}\.\d+_[a-z0-9_]+_[a-z_]+\.md$"
 
 
 # =============================================================================
@@ -298,8 +298,8 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
         result.add_error("ADR-E001", f"Multiple H1 headings found ({len(h1_sections)})")
     else:
         h1_text = h1_sections[0][0]
-        if not re.match(r"^# ADR-\d{3}:", h1_text):
-            result.add_error("ADR-E001", f"Invalid H1 format. Expected '# ADR-NNN: Title', got '{h1_text[:50]}'")
+        if not re.match(r"^# ADR-\d{2,}:", h1_text):
+            result.add_error("ADR-E001", f"Invalid H1 format. Expected '# ADR-NN+: Title', got '{h1_text[:50]}'")
 
     # Check required sections
     section_headers = [s[0] for s in sections]

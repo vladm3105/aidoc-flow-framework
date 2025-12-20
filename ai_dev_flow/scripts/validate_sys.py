@@ -57,7 +57,7 @@ FORBIDDEN_TAG_PATTERNS = [
 
 # Required sections (patterns) - 15 sections
 REQUIRED_SECTIONS = [
-    (r"^# SYS-\d{3}:", "Title (H1 with SYS-NNN format)"),
+    (r"^# SYS-\d{2,}:", "Title (H1 with SYS-NN+ format)"),
     (r"^## 1\. Document Control", "Section 1: Document Control"),
     (r"^## 2\. Executive Summary", "Section 2: Executive Summary"),
     (r"^## 3\. Scope", "Section 3: Scope"),
@@ -85,8 +85,8 @@ QUALITY_CATEGORIES = [
     "maintainability",
 ]
 
-# File naming pattern
-FILE_NAME_PATTERN = r"^SYS-\d{3}_[a-z0-9_]+\.md$"
+# File naming pattern (2+ digits per ID_NAMING_STANDARDS.md)
+FILE_NAME_PATTERN = r"^SYS-\d{2,}_[a-z0-9_]+\.md$"
 
 
 # =============================================================================
@@ -280,8 +280,8 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
         result.add_error("SYS-E001", f"Multiple H1 headings found ({len(h1_sections)})")
     else:
         h1_text = h1_sections[0][0]
-        if not re.match(r"^# SYS-\d{3}:", h1_text):
-            result.add_error("SYS-E001", f"Invalid H1 format. Expected '# SYS-NNN: Title', got '{h1_text[:50]}'")
+        if not re.match(r"^# SYS-\d{2,}:", h1_text):
+            result.add_error("SYS-E001", f"Invalid H1 format. Expected '# SYS-NN+: Title', got '{h1_text[:50]}'")
 
     # Check required sections
     section_headers = [s[0] for s in sections]
