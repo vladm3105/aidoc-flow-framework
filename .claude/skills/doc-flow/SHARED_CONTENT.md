@@ -455,6 +455,32 @@ Must include a table with at least the initial version entry:
 
 ---
 
+## 8. Diagram Standards
+
+**Central Authority**: `ai_dev_flow/DIAGRAM_STANDARDS.md`
+
+All diagrams, charts, workflows, and visual representations in SDD artifacts MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
+
+### Exempted Content
+
+- Directory tree structures (`├── └── │`) - allowed for file/folder representation
+- Code blocks (for source code examples)
+- ASCII tables (for tabular data)
+
+### Mermaid Diagram Types
+
+| Use Case | Mermaid Type |
+|----------|--------------|
+| Architecture | `graph`, `flowchart` |
+| Sequences | `sequenceDiagram` |
+| State machines | `stateDiagram-v2` |
+| Data flow | `flowchart` |
+| Component relationships | `graph` |
+
+**Diagram Skill**: Use `mermaid-gen` skill for diagram creation.
+
+---
+
 ## Usage in Artifact Skills
 
 Each artifact-specific skill (doc-brd, doc-prd, etc.) should include:

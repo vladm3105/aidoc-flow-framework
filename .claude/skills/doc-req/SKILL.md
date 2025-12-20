@@ -425,6 +425,10 @@ python ai_dev_flow/scripts/validate_req_spec_readiness.py ai_dev_flow/REQ/REQ-ri
 - [ ] Acceptance criteria testable
 - [ ] Traceability matrix updated
 
+### Diagram Standards
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
+See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+
 ## Common Pitfalls
 
 1. **Incomplete sections**: All 12 sections mandatory for SPEC-readiness

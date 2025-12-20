@@ -433,6 +433,10 @@ Commit BRD file and traceability matrix together.
 - [ ] No broken links
 - [ ] File size <50,000 tokens (standard) or <100,000 tokens (maximum)
 
+### Diagram Standards
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
+See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+
 ## Common Pitfalls
 
 1. **Referencing ADR numbers**: Don't write "See ADR-033" in Architecture Decision Requirements section (ADRs don't exist yet)

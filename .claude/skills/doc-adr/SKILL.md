@@ -161,9 +161,13 @@ Use `doc-adr` when:
 
 **Scoring Criteria**:
 - **Decision Completeness (30%)**: Context/Decision/Consequences/Alternatives process
-- **Architecture Clarity (35%)**: Mermaid diagrams, component responsibilities, cross-cutting concerns
+- **Architecture Clarity (35%)**: Mermaid diagrams (REQUIRED - no text-based diagrams), component responsibilities, cross-cutting concerns
 - **Implementation Readiness (20%)**: Complexity assessment, dependencies, rollback strategies
 - **Verification Approach (15%)**: Testing strategy, success metrics, operational readiness
+
+### Diagram Standards
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
+See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 **Quality Gate**: Score <90% blocks SYS artifact creation.
 

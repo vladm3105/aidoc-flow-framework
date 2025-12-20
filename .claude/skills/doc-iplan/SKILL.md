@@ -498,6 +498,10 @@ bash -n docs/IPLAN/IPLAN-01_*.md
 - [ ] Traceability matrix updated
 - [ ] Bash syntax valid (bash -n passes)
 
+### Diagram Standards
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
+See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+
 ## Common Pitfalls
 
 1. **Non-executable commands**: Commands must be copy-paste ready

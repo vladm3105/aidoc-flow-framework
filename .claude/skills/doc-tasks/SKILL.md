@@ -164,7 +164,7 @@ Use `doc-tasks` when:
 
 ### 6. Dependencies Graph
 
-**Use Mermaid diagram** to visualize task dependencies:
+**Use Mermaid diagram ONLY** (text-based diagrams prohibited per `ai_dev_flow/DIAGRAM_STANDARDS.md`):
 
 ```markdown
 ## Dependencies Graph
@@ -450,6 +450,10 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 - [ ] `@icon` tags added if providing/consuming contracts
 - [ ] Traceability matrix updated
 
+### Diagram Standards
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
+See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+
 ## Common Pitfalls
 
 1. **Vague tasks**: Tasks must be specific and actionable
@@ -459,6 +463,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 5. **No success criteria**: Must define how to verify completion
 6. **Missing cumulative tags**: Layer 11 must include all 8-10 upstream tags
 7. **Missing Section 8**: Implementation Contracts section is MANDATORY
+8. **Text-based diagrams**: Use Mermaid ONLY for Dependencies Graph
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
 

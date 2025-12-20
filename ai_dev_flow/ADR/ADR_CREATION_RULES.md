@@ -46,8 +46,10 @@ custom_fields:
 9. [Quality Attributes](#9-quality-attributes)
 10. [Quality Gates](#10-quality-gates)
 11. [Additional Requirements](#11-additional-requirements)
-12. [Common Mistakes to Avoid](#12-common-mistakes-to-avoid)
-13. [Upstream Artifact Verification Process](#13-upstream-artifact-verification-process)
+12. [Diagram Standards](#12-diagram-standards)
+13. [Common Mistakes to Avoid](#13-common-mistakes-to-avoid)
+14. [Upstream Artifact Verification Process](#14-upstream-artifact-verification-process)
+15. [Cross-Document Validation](#15-cross-document-validation-mandatory)
 
 ---
 
@@ -261,7 +263,16 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 ---
 
-## 12. Common Mistakes to Avoid
+## 12. Diagram Standards
+
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited. Directory tree structures (`├── └── │`) are exempted.
+
+**Central Authority**: `ai_dev_flow/DIAGRAM_STANDARDS.md`
+**Diagram Skill**: `mermaid-gen` skill
+
+---
+
+## 13. Common Mistakes to Avoid
 
 | Mistake | Correct |
 |---------|---------|
@@ -274,7 +285,7 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 ---
 
-## 13. Upstream Artifact Verification Process
+## 14. Upstream Artifact Verification Process
 
 ### Before Creating This Document
 
@@ -333,7 +344,7 @@ Include ONLY if relationships exist between ADRs sharing architectural context o
 
 ---
 
-## 14. Cross-Document Validation (MANDATORY)
+## 15. Cross-Document Validation (MANDATORY)
 
 **CRITICAL**: Execute cross-document validation IMMEDIATELY after creating any ADR document. Do NOT proceed to downstream artifacts until validation passes.
 

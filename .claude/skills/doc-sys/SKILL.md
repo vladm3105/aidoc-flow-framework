@@ -116,7 +116,7 @@ Use `doc-sys` when:
 
 ### 3. System Flows
 
-**Use Mermaid diagrams** (per documentation standards - no Python code):
+**Use Mermaid diagrams ONLY** (text-based diagrams prohibited per `ai_dev_flow/DIAGRAM_STANDARDS.md`):
 
 ```markdown
 ## System Flows
@@ -331,11 +331,15 @@ python ai_dev_flow/scripts/validate_cross_document.py --document docs/SYS/SYS-01
 - [ ] Verification method specified for each requirement
 - [ ] Traceability matrix updated
 
+### Diagram Standards
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
+See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+
 ## Common Pitfalls
 
 1. **Vague requirements**: Must be measurable (not "fast" but "P95 <50ms")
 2. **Missing ADR constraints**: System requirements must respect ADR decisions
-3. **Python code in diagrams**: Use Mermaid, not code blocks
+3. **Text-based diagrams**: Use Mermaid ONLY, not ASCII art or code blocks
 4. **Missing cumulative tags**: Layer 6 must include all 5 upstream tags
 5. **No verification method**: Each requirement needs test approach
 

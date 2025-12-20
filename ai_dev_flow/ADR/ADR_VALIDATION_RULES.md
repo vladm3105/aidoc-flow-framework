@@ -283,6 +283,15 @@ find docs/ADR -type f -name "ADR-*.md" -exec ./scripts/validate_adr_template.sh 
 
 ---
 
+## Diagram Standards
+
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited. Directory tree structures (`├── └── │`) are exempted.
+
+**Central Authority**: `ai_dev_flow/DIAGRAM_STANDARDS.md`
+**Diagram Skill**: `mermaid-gen` skill
+
+---
+
 ## Common Mistakes
 
 ### Mistake #1: Incomplete Decision Process

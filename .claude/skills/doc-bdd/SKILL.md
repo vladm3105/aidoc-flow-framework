@@ -404,6 +404,10 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 - [ ] Traceability matrix updated
 - [ ] Gherkin syntax valid
 
+### Diagram Standards
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
+See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+
 ## Common Pitfalls
 
 1. **Missing tags**: Every scenario needs @requirement tags

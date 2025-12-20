@@ -361,6 +361,10 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 - [ ] Cumulative tags: @brd through @req (7 tags) included
 - [ ] Traceability matrix updated
 
+### Diagram Standards
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
+See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+
 ## Common Pitfalls
 
 1. **Vague assignments**: WHO must specify actual people/teams

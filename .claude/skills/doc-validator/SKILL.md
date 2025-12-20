@@ -133,6 +133,12 @@ Layer 10: SPEC → Layer 11: TASKS → Layer 12: IPLAN
 
 ---
 
+## Diagram Standards
+
+All diagrams in SDD artifacts MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited per `ai_dev_flow/DIAGRAM_STANDARDS.md`.
+
+**Validation includes**: Checking that artifacts use Mermaid diagrams instead of prohibited text-based formats.
+
 ## Validation Workflow
 
 ```mermaid

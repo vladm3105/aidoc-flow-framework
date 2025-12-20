@@ -1966,6 +1966,35 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 - Use flowcharts for logic with decision points and error paths; keep diagrams concise.
 - Reference code with explicit paths and optional symbol hints: `[See Code Example: src/domain/risk/resource_limit_service.py - validate_resource_limit()]`.
 
+## Diagram Standards
+
+> **📋 Authoritative Source**: [`ai_dev_flow/DIAGRAM_STANDARDS.md`](DIAGRAM_STANDARDS.md) is the single source of truth for all diagram requirements. This section provides a summary; defer to the core document for complete specifications.
+
+**Mandatory Rule**: All diagrams, charts, workflows, and visual representations MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
+
+| Aspect | Specification |
+|--------|---------------|
+| **Format** | Mermaid syntax in fenced code blocks |
+| **Prohibited** | ASCII art, Unicode box-drawing, text arrows outside Mermaid |
+| **Exempted** | Directory trees (`├── └── │`), code blocks, ASCII tables |
+| **Validation** | Pre-commit quality gates check for prohibited patterns |
+
+**Diagram Types** (from core document):
+
+| Content Type | Mermaid Diagram |
+|--------------|-----------------|
+| Process flows | `flowchart TD/LR` |
+| Sequences | `sequenceDiagram` |
+| State machines | `stateDiagram-v2` |
+| Class relationships | `classDiagram` |
+| Entity relationships | `erDiagram` |
+
+**Related Skills**:
+- `mermaid-gen`: Syntax generation and best practices
+- `charts-flow`: File management and SVG conversion
+
+**Full Reference**: See `ai_dev_flow/DIAGRAM_STANDARDS.md` for prohibited format examples, enforcement rules, and traceability requirements.
+
 ## Quality Attribute Templates
 - **Performance**: Add to SPEC performance section, e.g., latency_p95_ms: 50, throughput: 1000 rps; to ADR impact analysis, e.g., "p95 latency < 50 ms, trade-off: reduced batch size".
 - **Reliability**: SYS/REQ: "System availability > 99.9%"; ADR: [SAFETY_MECHANISM - e.g., rate limiter, error threshold] on >5 failures/1min; SPEC: retry_policy with exponential backoff.

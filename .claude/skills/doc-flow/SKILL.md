@@ -393,6 +393,16 @@ This document contains:
 
 **All artifact skills (doc-brd through doc-iplan) import these shared standards.**
 
+### Diagram Standards (Global Requirement)
+
+**All diagrams MUST use Mermaid syntax.** Text-based diagrams (ASCII art, box drawings) are prohibited.
+
+- **Authority Document**: `ai_dev_flow/DIAGRAM_STANDARDS.md`
+- **Syntax Generation**: `mermaid-gen` skill
+- **File Management**: `charts-flow` skill (SVG conversion, embedding)
+
+**Allowed Exception**: Directory tree structures (using `├── └── │`) are permitted as they represent file structure, not diagrams.
+
 ---
 
 ## Validation Overview

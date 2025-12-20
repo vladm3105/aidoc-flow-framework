@@ -449,6 +449,10 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 **Size Limits**:
 - [ ] File size <50,000 tokens (standard) or <100,000 tokens (maximum)
 
+### Diagram Standards
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
+See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+
 ## Common Pitfalls
 
 1. **Missing KPIs**: PRD must have quantitative success metrics
