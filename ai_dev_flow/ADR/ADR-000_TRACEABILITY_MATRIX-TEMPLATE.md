@@ -27,7 +27,7 @@ custom_fields:
 | Version | 1.0.0 |
 | Date Created | YYYY-MM-DD |
 | Author | [Team Name] |
-| Purpose | Track bidirectional traceability for all Architecture Decision Records |
+| Purpose | Track upstream traceability for all Architecture Decision Records |
 
 
 ---
@@ -68,7 +68,7 @@ See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) 
 Architecture Decision Records (ADRs) document significant architectural decisions, their context, rationale, consequences, and alternatives considered. ADRs provide the "WHY" behind technical choices.
 
 ### 1.2 Coverage Scope
-This matrix tracks all ADRs, mapping upstream business/product requirements to downstream system requirements, atomic requirements, and specifications that implement the decisions.
+This matrix tracks all ADRs and their upstream sources (BRD, PRD, EARS, BDD). Downstream documents (SYS, REQ, SPEC, IMPL) track their own upstream references to ADRs—this matrix does not maintain downstream links.
 
 ### 1.3 Statistics
 - **Total ADRs Tracked**: [X] documents
@@ -163,11 +163,11 @@ python scripts/generate_traceability_matrices.py \
 
 ## 4. Complete ADR Inventory
 
-| ADR ID | Title | Decision Category | Status | Date | Upstream Sources | Downstream Artifacts |
-|--------|-------|-------------------|--------|------|------------------|---------------------|
-| ADR-01 | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | BRD-01, PRD-01, EARS-01 | SYS-01, REQ-01, SPEC-01 |
-| ADR-02 | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | PRD-02, BDD-01 | SYS-02, REQ-02, REQ-03 |
-| ADR-NN | ... | ... | ... | ... | ... | ... |
+| ADR ID | Title | Decision Category | Status | Date | Upstream Sources |
+|--------|-------|-------------------|--------|------|------------------|
+| ADR-01 | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | BRD-01, PRD-01, EARS-01, BDD-01 |
+| ADR-02 | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | BRD-01, PRD-02, EARS-02, BDD-02 |
+| ADR-NN | ... | ... | ... | ... | ... |
 
 **Status Legend**:
 - **Proposed**: Under review
@@ -222,47 +222,44 @@ python scripts/generate_traceability_matrices.py \
 
 ---
 
-## 6. Downstream Traceability (OPTIONAL)
+## 6. Downstream Reference Guidance
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
+> **Upstream-Only Traceability Rule**: This matrix does NOT track downstream documents. Each downstream artifact (SYS, REQ, SPEC, IMPL) tracks its own upstream references to ADRs. This eliminates post-creation maintenance and ensures traceability accuracy.
 
-### 5.1 ADR → SYS Traceability
+### 6.1 How Downstream Documents Reference ADRs
 
-| ADR ID | ADR Title | SYS IDs | SYS Titles | Relationship |
-|--------|-----------|---------|------------|--------------|
-| ADR-01 | [Architecture decision] | SYS-01, SYS-02 | [System requirements] | Architectural decisions define system-level requirements |
-| ADR-NN | ... | ... | ... | ... |
+| Downstream Type | Required Tag Format | Example |
+|-----------------|---------------------|---------|
+| SYS | `@adr: ADR-NNN` | `@adr: ADR-033` |
+| REQ | `@adr: ADR-NNN` | `@adr: ADR-005, ADR-012` |
+| SPEC | `@adr: ADR-NNN` | `@adr: ADR-008` |
+| IMPL | `@adr: ADR-NNN` | `@adr: ADR-001, ADR-004` |
 
-### 5.2 ADR → REQ Traceability
+### 6.2 Finding Downstream References
 
-| ADR ID | ADR Title | REQ IDs | REQ Titles | Relationship |
-|--------|-----------|---------|------------|--------------|
-| ADR-01 | [Architecture decision] | REQ-01, REQ-02, REQ-03 | [Atomic requirements] | Architectural patterns require specific implementations |
-| ADR-NN | ... | ... | ... | ... |
+To discover which downstream documents reference a specific ADR, use reverse traceability:
 
-### 5.3 ADR → SPEC Traceability
+```bash
+# Find all SYS documents referencing ADR-033
+grep -r "@adr: ADR-033" ../SYS/
 
-| ADR ID | ADR Title | SPEC IDs | SPEC Titles | Relationship |
-|--------|-----------|----------|-------------|--------------|
-| ADR-01 | [Architecture decision] | SPEC-01, SPEC-02 | [Technical specifications] | Architectural decisions implemented in specifications |
-| ADR-NN | ... | ... | ... | ... |
+# Find all REQ documents referencing any ADR
+grep -r "@adr:" ../REQ/
 
-### 5.4 ADR → IMPL Traceability
+# Generate reverse traceability report
+python scripts/generate_reverse_traceability.py \
+  --upstream ADR-033 \
+  --downstream SYS,REQ,SPEC,IMPL
+```
 
-| ADR ID | ADR Title | IMPL IDs | IMPL Titles | Relationship |
-|--------|-----------|----------|-------------|--------------|
-| ADR-01 | [Architecture decision] | IMPL-01 | [Implementation plan] | Architectural changes require implementation planning |
-| ADR-NN | ... | ... | ... | ... |
+### 6.3 Downstream Document Responsibilities
 
-### 5.5 Downstream Artifact Summary
-
-| Artifact Type | Total Artifacts | ADRs Traced | Coverage % |
-|---------------|-----------------|-------------|------------|
-| SYS | [X] | [Y] ADRs | XX% |
-| REQ | [X] | [Y] ADRs | XX% |
-| SPEC | [X] | [Y] ADRs | XX% |
-| IMPL | [X] | [Y] ADRs | XX% |
-| Code | [X] | [Y] ADRs | XX% |
+| Downstream Type | Layer | Required Upstream Tags | ADR Relationship |
+|-----------------|-------|------------------------|------------------|
+| SYS | 6 | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr` | System requirements derived from architecture |
+| REQ | 7 | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys` | Atomic requirements implement architecture |
+| SPEC | 10 | All upstream layers | Specifications detail architecture implementation |
+| IMPL | 8 | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req` | Implementation plans execute architecture |
 
 ---
 
@@ -295,31 +292,30 @@ python scripts/generate_traceability_matrices.py \
 
 ```mermaid
 graph TD
-    BRD001[BRD-01: Business Req] --> ADR001[ADR-01: Cloud Platform]
-    PRD001[PRD-01: Product Feature] --> ADR002[ADR-02: API Design]
-    EARS001[EARS-01: Performance Req] --> ADR003[ADR-03: Caching Strategy]
+    subgraph Upstream[Upstream Sources - Layers 1-4]
+        BRD001[BRD-01: Business Req]
+        PRD001[PRD-01: Product Feature]
+        EARS001[EARS-01: Performance Req]
+        BDD001[BDD-01: Acceptance Test]
+    end
 
-    ADR001 --> SYS001[SYS-01: Infrastructure Req]
-    ADR001 --> REQ01[REQ-01: Deployment Req]
-    ADR001 --> SPEC01[SPEC-01: Infra Spec]
+    subgraph Current[ADR Layer - Layer 5]
+        ADR001[ADR-01: Cloud Platform]
+        ADR002[ADR-02: API Design]
+        ADR003[ADR-03: Caching Strategy]
+    end
 
-    ADR002 --> SYS002[SYS-02: API System Req]
-    ADR002 --> REQ02[REQ-02: API Endpoint Req]
-    ADR002 --> SPEC002[SPEC-02: API Spec]
+    BRD001 --> ADR001
+    PRD001 --> ADR002
+    EARS001 --> ADR003
+    BDD001 --> ADR001
 
-    ADR003 --> REQ03[REQ-03: Caching Req]
-    ADR003 --> SPEC003[SPEC-03: Cache Spec]
-
-    ADR001 -.depends on.-> ADR004[ADR-004: Database]
     ADR002 -.depends on.-> ADR001
     ADR003 -.depends on.-> ADR002
 
     style ADR001 fill:#f3e5f5
     style ADR002 fill:#f3e5f5
     style ADR003 fill:#f3e5f5
-    style SYS001 fill:#fff3e0
-    style REQ01 fill:#e8f5e9
-    style SPEC01 fill:#e3f2fd
 ```
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
@@ -391,15 +387,20 @@ graph TD
 
 ### 9.3 Gap Analysis
 
-**Missing Downstream Artifacts**:
-- ADR-XXX: Missing SYS requirements (decision not translated to system requirements)
-- ADR-YYY: Missing REQ decomposition (no atomic requirements defined)
-- ADR-ZZZ: Missing SPEC implementation (no technical specifications)
+**Missing Upstream References**:
+- ADR-XXX: Missing BRD reference (no business justification documented)
+- ADR-YYY: Missing EARS reference (no formal requirements linked)
+- ADR-ZZZ: Missing BDD reference (no acceptance criteria linked)
 
-**Orphaned Artifacts** (not linked to any ADR):
-- SYS-XXX: System requirement with no architectural justification
-- REQ-YYY: Atomic requirement with no architectural context
-- SPEC-ZZZ: Technical specification with no architectural decision
+**Incomplete Upstream Chains**:
+- ADR-XXX: References PRD but missing BRD link (broken chain)
+- ADR-YYY: References BDD but missing EARS link (incomplete hierarchy)
+
+**To find downstream coverage** (reverse traceability):
+```bash
+# Run reverse traceability to find downstream references
+python scripts/generate_reverse_traceability.py --upstream ADR --downstream SYS,REQ,SPEC,IMPL
+```
 
 ---
 
@@ -481,14 +482,15 @@ python ../scripts/update_traceability_matrix.py \
 
 ### 14.2 Quality Checklist
 - [ ] All ADR documents included in inventory
-- [ ] Upstream sources documented (BRD, PRD, EARS, BDD)
-- [ ] Downstream artifacts mapped (SYS, REQ, SPEC, IMPL)
+- [ ] All ADRs have complete upstream tags (`@brd`, `@prd`, `@ears`, `@bdd`)
+- [ ] No broken upstream reference chains
 - [ ] Decision categories classified
 - [ ] Technology stack documented
 - [ ] Cost impact analysis complete
 - [ ] Implementation complexity assessed
 - [ ] Risk assessment included
 - [ ] Inter-ADR dependencies mapped
-- [ ] Gap analysis identifies missing artifacts
+- [ ] Gap analysis identifies missing upstream references
 - [ ] All hyperlinks resolve correctly
 - [ ] Mermaid diagrams render without errors
+- [ ] Reverse traceability scripts documented for downstream discovery

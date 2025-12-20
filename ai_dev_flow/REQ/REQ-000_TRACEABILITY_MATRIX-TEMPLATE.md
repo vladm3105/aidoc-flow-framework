@@ -30,7 +30,7 @@ custom_fields:
 | Last Updated | YYYY-MM-DD |
 | Author | [Team Name] |
 | **Layer** | **7 (Requirements)** |
-| Purpose | Track bidirectional traceability for all Atomic Requirements Documents |
+| Purpose | Track upstream traceability for all Atomic Requirements Documents |
 
 
 ---
@@ -71,7 +71,7 @@ See: [TRACEABILITY.md](../../TRACEABILITY.md#tag-based-auto-discovery-alternativ
 Atomic Requirements Documents (REQ) define single, testable, implementation-ready requirements. REQ documents are the bridge between formal requirements (EARS/SYS) and technical specifications (SPEC/Code).
 
 ### 4.2 Coverage Scope
-This matrix tracks all REQ documents across all requirement domains, mapping upstream requirements to downstream specifications, contracts, and code implementations.
+This matrix tracks all REQ documents and their upstream sources (BRD, PRD, EARS, BDD, ADR, SYS). Downstream documents (IMPL, CTR, SPEC, TASKS, Code) track their own upstream references to REQ—this matrix does not maintain downstream links.
 
 ### 4.3 Statistics
 - **Total REQ Tracked**: [X] documents
@@ -142,11 +142,13 @@ This matrix tracks all REQ documents across all requirement domains, mapping ups
 
 ### 15.2 Downstream Artifacts
 
-**Direct Dependencies**:
-- SPEC-018: request submission service specification (`@req: REQ.45.26.01`)
-- CTR-005: operation execution API contract (`@req: REQ.45.26.02`)
-- Code: `src/execution/order_service.py` (`@req: REQ.45.26.01`)
-- Tests: `tests/test_order_service.py` (`@req: REQ.45.26.01`)
+> **Note**: Downstream links are added AFTER those documents are created.
+
+**Direct Dependencies** (populated after downstream creation):
+- SPEC: [SPEC IDs when created] - implementation specifications
+- CTR: [CTR IDs when created] - API contracts
+- Code: [Code paths when implemented] (`@req: REQ.45.26.01`)
+- Tests: [Test paths when implemented] (`@req: REQ.45.26.01`)
 ```
 
 ### 5.4 Example: Atomic Requirement Structure
@@ -253,11 +255,11 @@ Code (Layer 13) → Source code (@brd through @tasks)
 
 ## 9. Complete REQ Inventory
 
-| REQ ID | Title | Domain | Priority | Status | Date | Upstream Sources | Downstream Artifacts |
-|--------|-------|--------|----------|--------|------|------------------|---------------------|
-| REQ-01 | [Atomic requirement title] | [Domain] | Must | Active | YYYY-MM-DD | EARS-01, SYS-01 | SPEC-01, Code: module.py |
-| REQ-02 | [Atomic requirement title] | [Domain] | Should | Active | YYYY-MM-DD | EARS-02, ADR-01 | SPEC-02, CTR-01 |
-| REQ-NN | ... | ... | ... | ... | ... | ... | ... |
+| REQ ID | Title | Domain | Priority | Status | Date | Upstream Sources |
+|--------|-------|--------|----------|--------|------|------------------|
+| REQ-01 | [Atomic requirement title] | [Domain] | Must | Active | YYYY-MM-DD | BRD-01, PRD-01, EARS-01, BDD-01, ADR-01, SYS-01 |
+| REQ-02 | [Atomic requirement title] | [Domain] | Should | Active | YYYY-MM-DD | BRD-01, PRD-01, EARS-02, BDD-02, ADR-01, SYS-02 |
+| REQ-NN | ... | ... | ... | ... | ... | ... |
 
 **Priority Legend**: Must, Should, Could, Won't (MoSCoW)
 
@@ -290,37 +292,49 @@ Code (Layer 13) → Source code (@brd through @tasks)
 
 ---
 
-## 11. Downstream Traceability (OPTIONAL)
+## 11. Downstream Reference Guidance
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
+> **Upstream-Only Traceability Rule**: This matrix does NOT track downstream documents. Each downstream artifact (IMPL, CTR, SPEC, TASKS, Code) tracks its own upstream references to REQ. This eliminates post-creation maintenance and ensures traceability accuracy.
 
-### 15.1 REQ → IMPL Traceability
+### 11.1 How Downstream Documents Reference REQ
 
-| REQ ID | REQ Title | IMPL IDs | IMPL Titles | Relationship |
-|--------|-----------|----------|-------------|--------------|
-| REQ-01 | [Atomic requirement] | IMPL-01 | [Implementation plan] | Requirement included in implementation plan |
-| REQ-NN | ... | ... | ... | ... |
+| Downstream Type | Required Tag Format | Example |
+|-----------------|---------------------|---------|
+| IMPL | `@req: REQ.NN.26.SS` | `@req: REQ.45.26.01` |
+| CTR | `@req: REQ.NN.26.SS` | `@req: REQ.10.26.03, REQ.10.26.04` |
+| SPEC | `@req: REQ.NN.26.SS` | `@req: REQ.03.26.01` |
+| TASKS | `@req: REQ.NN.26.SS` | `@req: REQ.20.26.02` |
+| Code | `@req: REQ.NN.26.SS` | `@req: REQ.45.26.01` |
 
-### 15.2 REQ → CTR Traceability
+### 11.2 Finding Downstream References
 
-| REQ ID | REQ Title | CTR IDs | CTR Titles | Relationship |
-|--------|-----------|---------|------------|--------------|
-| REQ-01 | [API interface requirement] | CTR-01 | [API contract] | Requirement defines API contract |
-| REQ-NN | ... | ... | ... | ... |
+To discover which downstream documents reference a specific REQ, use reverse traceability:
 
-### 11.3 REQ → SPEC Traceability
+```bash
+# Find all IMPL documents referencing REQ-045
+grep -r "@req: REQ.45" ../IMPL/
 
-| REQ ID | REQ Title | SPEC IDs | SPEC Titles | Relationship |
-|--------|-----------|----------|-------------|--------------|
-| REQ-01 | [Atomic requirement] | SPEC-01 | [Technical specification] | Requirement implemented in specification |
-| REQ-NN | ... | ... | ... | ... |
+# Find all SPEC documents referencing any REQ
+grep -r "@req:" ../SPEC/
 
-### 11.4 REQ → Code Traceability
+# Find code files with REQ tags
+grep -r "@req:" src/
 
-| REQ ID | REQ Title | Code Files | Functions/Classes | Relationship |
-|--------|-----------|------------|-------------------|--------------|
-| REQ-01 | [Atomic requirement] | src/module.py | FeatureClass.method() | Direct implementation |
-| REQ-NN | ... | ... | ... | ... |
+# Generate reverse traceability report
+python scripts/generate_reverse_traceability.py \
+  --upstream REQ-045 \
+  --downstream IMPL,CTR,SPEC,TASKS,Code
+```
+
+### 11.3 Downstream Document Responsibilities
+
+| Downstream Type | Layer | Required Upstream Tags | REQ Relationship |
+|-----------------|-------|------------------------|------------------|
+| IMPL | 8 | `@brd` through `@req` | Implementation plans for requirement delivery |
+| CTR | 9 | `@brd` through `@impl` | API contracts defined by requirements |
+| SPEC | 10 | All upstream layers | Technical specifications implementing requirements |
+| TASKS | 11 | `@brd` through `@spec` | Development tasks derived from requirements |
+| Code | 13 | `@brd` through `@tasks` | Source code implementing requirements |
 
 ---
 
@@ -350,25 +364,28 @@ Code (Layer 13) → Source code (@brd through @tasks)
 
 ```mermaid
 graph TD
-    EARS001[EARS-01: Formal Req] --> REQ01[REQ-01: Atomic Req]
-    SYS001[SYS-01: System Req] --> REQ02[REQ-02: Atomic Req]
-    SYS001 --> REQ03[REQ-03: Atomic Req]
+    subgraph Upstream[Upstream Sources - Layers 1-6]
+        EARS001[EARS-01: Formal Req]
+        SYS001[SYS-01: System Req]
+        ADR001[ADR-01: Architecture]
+    end
 
-    REQ01 --> SPEC01[SPEC-01: Tech Spec]
-    REQ01 --> CTR01[CTR-01: API Contract]
-    REQ02 --> SPEC002[SPEC-02: Tech Spec]
-    REQ03 --> SPEC003[SPEC-03: Tech Spec]
+    subgraph Current[REQ Layer - Layer 7]
+        REQ01[REQ-01: Atomic Req]
+        REQ02[REQ-02: Atomic Req]
+        REQ03[REQ-03: Atomic Req]
+    end
 
-    SPEC01 --> Code1[src/module.py]
-    CTR01 --> Code2[src/api.py]
+    EARS001 --> REQ01
+    SYS001 --> REQ02
+    SYS001 --> REQ03
+    ADR001 --> REQ01
 
-    REQ01 -.depends on.-> REQ005[REQ-005: Prerequisite]
+    REQ01 -.depends on.-> REQ02
 
     style REQ01 fill:#e8f5e9
     style REQ02 fill:#e8f5e9
     style REQ03 fill:#e8f5e9
-    style SPEC01 fill:#e3f2fd
-    style CTR01 fill:#fff3e0
 ```
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
@@ -418,14 +435,20 @@ graph TD
 
 ### 15.2 Gap Analysis
 
-**Missing Downstream Artifacts**:
-- REQ-XXX: Missing SPEC (requirement not specified)
-- REQ-YYY: Missing Code (requirement not implemented)
-- REQ-ZZZ: Missing Tests (requirement not verified)
+**Missing Upstream References**:
+- REQ-XXX: Missing SYS reference (no system requirement linkage)
+- REQ-YYY: Missing EARS reference (no formal requirement linked)
+- REQ-ZZZ: Missing ADR reference (no architecture decision linked)
 
-**Orphaned Artifacts**:
-- SPEC-XXX: Specification with no REQ traceability
-- Code File: src/orphan.py with no REQ linkage
+**Incomplete Upstream Chains**:
+- REQ-XXX: References SYS but missing ADR link (broken chain)
+- REQ-YYY: References ADR but missing EARS link (incomplete hierarchy)
+
+**To find downstream coverage** (reverse traceability):
+```bash
+# Run reverse traceability to find downstream references
+python scripts/generate_reverse_traceability.py --upstream REQ --downstream IMPL,CTR,SPEC,TASKS,Code
+```
 
 ---
 

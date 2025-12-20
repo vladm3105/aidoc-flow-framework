@@ -27,7 +27,7 @@ custom_fields:
 | Version | 1.0.0 |
 | Date Created | YYYY-MM-DD |
 | Author | [Team Name] |
-| Purpose | Track bidirectional traceability for all Technical Specification Documents (YAML format) |
+| Purpose | Track upstream traceability for all Technical Specification Documents (YAML format) |
 
 
 ---
@@ -68,7 +68,7 @@ See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) 
 Technical Specification Documents (SPEC) define HOW to implement requirements using YAML format. SPEC documents provide AI-optimized implementation blueprints including interfaces, algorithms, patterns, performance targets, and observability.
 
 ### 1.2 Coverage Scope
-This matrix tracks all SPEC documents, mapping upstream requirements/contracts to downstream code generation tasks and implementations.
+This matrix tracks all SPEC documents and their upstream sources (BRD, PRD, EARS, BDD, ADR, SYS, REQ, and optionally IMPL, CTR). Downstream documents (TASKS, Code) track their own upstream references to SPEC—this matrix does not maintain downstream links.
 
 ### 1.3 Statistics
 - **Total SPEC Tracked**: [X] documents
@@ -231,11 +231,11 @@ Code (Layer 13) → Source code
 
 ## 3. Complete SPEC Inventory
 
-| SPEC ID | Title | Spec Type | Status | Date | Upstream Sources | Downstream Artifacts |
-|---------|-------|-----------|--------|------|------------------|---------------------|
-| SPEC-01 | [Technical specification title] | Service | Active | YYYY-MM-DD | REQ-01, ADR-01, CTR-01 | TASKS-01, Code: src/service.py |
-| SPEC-02 | [Technical specification title] | Agent | Active | YYYY-MM-DD | REQ-02, ADR-02 | TASKS-02, Code: src/agent.py |
-| SPEC-NN | ... | ... | ... | ... | ... | ... |
+| SPEC ID | Title | Spec Type | Status | Date | Upstream Sources |
+|---------|-------|-----------|--------|------|------------------|
+| SPEC-01 | [Technical specification title] | Service | Active | YYYY-MM-DD | BRD-01, PRD-01, EARS-01, BDD-01, ADR-01, SYS-01, REQ-01, CTR-01 |
+| SPEC-02 | [Technical specification title] | Agent | Active | YYYY-MM-DD | BRD-01, PRD-01, EARS-02, BDD-02, ADR-02, SYS-02, REQ-02 |
+| SPEC-NN | ... | ... | ... | ... | ... |
 
 **Status Legend**:
 - **Active**: Current specification
@@ -273,30 +273,45 @@ Code (Layer 13) → Source code
 
 ---
 
-## 6. Downstream Traceability (OPTIONAL)
+## 6. Downstream Reference Guidance
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
+> **Upstream-Only Traceability Rule**: This matrix does NOT track downstream documents. Each downstream artifact (TASKS, Code, Tests) tracks its own upstream references to SPEC. This eliminates post-creation maintenance and ensures traceability accuracy.
 
-### 9.1 SPEC → TASKS Traceability
+### 6.1 How Downstream Documents Reference SPEC
 
-| SPEC ID | SPEC Title | TASKS IDs | TASKS Titles | Relationship |
-|---------|------------|-----------|--------------|--------------|
-| SPEC-01 | [Technical specification] | TASKS-01 | [Code generation plan] | 1:1 mapping SPEC to TASKS |
-| SPEC-NN | ... | ... | ... | ... |
+| Downstream Type | Required Tag Format | Example |
+|-----------------|---------------------|---------|
+| TASKS | `@spec: SPEC.NN.27.SS` | `@spec: SPEC.01.27.01` |
+| Code | `@spec: SPEC.NN.27.SS` | `@spec: SPEC.18.27.03` |
+| Tests | `@spec: SPEC.NN.27.SS` | `@spec: SPEC.05.27.01, SPEC.05.27.02` |
 
-### 9.2 SPEC → Code Traceability
+### 6.2 Finding Downstream References
 
-| SPEC ID | SPEC Title | Code Files | Functions/Classes | Relationship |
-|---------|------------|------------|-------------------|--------------|
-| SPEC-01 | [Technical specification] | src/service.py | ServiceClass, method1(), method2() | Direct implementation |
-| SPEC-NN | ... | ... | ... | ... |
+To discover which downstream documents reference a specific SPEC, use reverse traceability:
 
-### 6.3 SPEC → Tests Traceability
+```bash
+# Find all TASKS documents referencing SPEC-018
+grep -r "@spec: SPEC.18" ../TASKS/
 
-| SPEC ID | SPEC Title | Test Files | Test Functions | Coverage % |
-|---------|------------|------------|----------------|------------|
-| SPEC-01 | [Technical specification] | tests/test_service.py | test_method1(), test_method2() | 95% |
-| SPEC-NN | ... | ... | ... | ... |
+# Find all code files referencing any SPEC
+grep -r "@spec:" src/
+
+# Find all test files referencing SPEC
+grep -r "@spec:" tests/
+
+# Generate reverse traceability report
+python scripts/generate_reverse_traceability.py \
+  --upstream SPEC-018 \
+  --downstream TASKS,Code,Tests
+```
+
+### 6.3 Downstream Document Responsibilities
+
+| Downstream Type | Layer | Required Upstream Tags | SPEC Relationship |
+|-----------------|-------|------------------------|-------------------|
+| TASKS | 11 | All upstream layers | Code generation plans decompose SPEC |
+| Code | 13 | `@spec:`, `@req:`, `@tasks:` | Implementation of SPEC |
+| Tests | 13 | `@spec:`, `@bdd:` | Validation of SPEC behavior |
 
 ---
 
@@ -326,22 +341,26 @@ Code (Layer 13) → Source code
 
 ```mermaid
 graph TD
-    REQ01[REQ-01] --> SPEC01[SPEC-01: Service Spec]
-    ADR001[ADR-01] --> SPEC01
-    CTR01[CTR-01: API Contract] --> SPEC01
+    subgraph Upstream[Upstream Sources - Layers 1-9]
+        REQ01[REQ-01: Atomic Req]
+        ADR001[ADR-01: Architecture]
+        CTR01[CTR-01: API Contract]
+    end
 
-    SPEC01 --> TASKS001[TASKS-01: Code Plan]
-    TASKS001 --> Code1[src/service.py]
-    TASKS001 --> Tests1[tests/test_service.py]
+    subgraph Current[SPEC Layer - Layer 10]
+        SPEC01[SPEC-01: Service Spec]
+        SPEC02[SPEC-02: Feature Spec]
+    end
 
-    SPEC01 -.depends on.-> SPEC004[SPEC-004: Auth Service]
-    SPEC002[SPEC-02: Feature Spec] -.uses.-> SPEC01
+    REQ01 --> SPEC01
+    ADR001 --> SPEC01
+    CTR01 --> SPEC01
+    REQ01 --> SPEC02
+
+    SPEC02 -.uses.-> SPEC01
 
     style SPEC01 fill:#e3f2fd
-    style SPEC002 fill:#e3f2fd
-    style SPEC004 fill:#e3f2fd
-    style TASKS001 fill:#fff3e0
-    style Code1 fill:#e8f5e9
+    style SPEC02 fill:#e3f2fd
 ```
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
@@ -402,19 +421,19 @@ graph TD
 
 ## 10. Gap Analysis
 
-### 10.1 Missing Downstream Artifacts
-- SPEC-XXX: Missing TASKS (no code generation plan)
-- SPEC-YYY: Missing Code (not implemented)
-- SPEC-ZZZ: Missing Tests (no test coverage)
+### 10.1 Missing Upstream References
+- SPEC-XXX: Missing REQ references (no atomic requirement linkage)
+- SPEC-YYY: Missing ADR references (no architecture decision linkage)
+- SPEC-ZZZ: Incomplete cumulative tags (missing layers in chain)
 
-### 10.2 Orphaned Artifacts
-- Code File: src/orphan.py (no SPEC traceability)
-- TASKS-XXX: Code plan with no SPEC source
-
-### 10.3 Quality Issues
+### 10.2 YAML Validation Issues
 - SPEC-02: Invalid YAML syntax
 - SPEC-05: Missing performance targets
 - SPEC-08: Incomplete observability definition
+
+### 10.3 Upstream Coverage Gaps
+- REQ-XXX: No SPEC implements this requirement
+- ADR-YYY: Architecture decision not reflected in any SPEC
 
 ---
 
@@ -467,10 +486,10 @@ python ../scripts/generate_traceability_matrix.py \
 
 ### 14.2 Quality Checklist
 - [ ] All SPEC documents are valid YAML
-- [ ] Upstream sources documented (REQ, ADR, CTR)
-- [ ] Downstream artifacts mapped (TASKS, Code, Tests)
+- [ ] Cumulative upstream tags complete (7-9 layers)
+- [ ] All upstream references validated (documents exist)
 - [ ] Performance targets defined
 - [ ] Observability specifications complete
 - [ ] Validation evidence tracked
 - [ ] Inter-SPEC dependencies identified
-- [ ] Code generation metrics calculated
+- [ ] No forward references to non-existent documents

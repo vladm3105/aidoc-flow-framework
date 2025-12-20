@@ -27,7 +27,7 @@ custom_fields:
 | Version | 1.0.0 |
 | Date Created | YYYY-MM-DD |
 | Author | [Team Name] |
-| Purpose | Track bidirectional traceability for all EARS (Easy Approach to Requirements Syntax) Documents |
+| Purpose | Track upstream traceability for all EARS (Easy Approach to Requirements Syntax) Documents |
 
 
 ---
@@ -68,7 +68,7 @@ See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) 
 EARS documents formalize requirements using the WHEN-THE-SHALL-WITHIN syntax, providing unambiguous, testable, and verifiable requirement statements. EARS bridges product requirements (PRD) and technical implementation.
 
 ### 1.2 Coverage Scope
-This matrix tracks all EARS documents, mapping upstream product requirements to downstream BDD test scenarios, atomic requirements (REQ), and architecture decisions (ADR).
+This matrix tracks all EARS documents and their upstream sources (BRD, PRD). Downstream documents (BDD, REQ, ADR, SYS) track their own upstream references to EARS—this matrix does not maintain downstream links.
 
 ### 1.3 Statistics
 - **Total EARS Tracked**: [X] documents
@@ -123,10 +123,10 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 
 ### 11.2 Downstream Artifacts
 
-**Direct Dependencies**:
-- BDD-015: operation execution test scenarios (`@ears: EARS.12.24.02`)
-- REQ-045: Place limit order atomic requirement (`@ears: EARS.12.24.02`)
-- ADR-033: operation execution architecture (`@ears: EARS.12.24.02`)
+**Direct Dependencies** (populated after downstream docs exist):
+- [BDD IDs when created]: operation execution test scenarios
+- [REQ IDs when created]: Place limit order atomic requirement
+- [ADR IDs when created]: operation execution architecture
 ```
 
 ### 2.4 Example: EARS Statements with Traceability
@@ -142,8 +142,8 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 **Traceability**:
 - Upstream: BRD.09.01.15 (request submission capability)
 - Upstream: PRD.16.01.03 (request submission UI)
-- Downstream: BDD.15.13.01 (Test scenario)
-- Downstream: REQ-045 (Validation logic requirement)
+- Downstream: [BDD ID when created] (Test scenario)
+- Downstream: [REQ ID when created] (Validation logic requirement)
 
 ### 5.2 EARS.12.24.02
 **WHEN** order validation succeeds
@@ -153,8 +153,8 @@ This matrix tracks all EARS documents, mapping upstream product requirements to 
 **Traceability**:
 - Upstream: BRD.09.01.06 (Performance requirement)
 - Upstream: PRD.16.01.03 (operation execution feature)
-- Downstream: BDD.15.13.02 (Test scenario)
-- Downstream: REQ-046 (operation execution logic)
+- Downstream: [BDD ID when created] (Test scenario)
+- Downstream: [REQ ID when created] (operation execution logic)
 ```
 
 ### 2.5 Validation Rules
@@ -209,11 +209,11 @@ ADR (Layer 5) → Architecture decisions (@brd through @bdd)
 
 ## 5. Complete EARS Inventory
 
-| EARS ID | Title | Requirement Category | Total Statements | Status | Date | Upstream Sources | Downstream Artifacts |
-|---------|-------|---------------------|------------------|--------|------|------------------|---------------------|
-| EARS-01 | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-01, BRD-01 | BDD-01, REQ-01, REQ-02 |
-| EARS-02 | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-02 | BDD-02, REQ-03 |
-| EARS-NN | ... | ... | ... | ... | ... | ... | ... |
+| EARS ID | Title | Requirement Category | Total Statements | Status | Date | Upstream Sources |
+|---------|-------|---------------------|------------------|--------|------|------------------|
+| EARS-01 | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-01, BRD-01 |
+| EARS-02 | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-02, BRD-01 |
+| EARS-NN | ... | ... | ... | ... | ... | ... |
 
 **Document Status Legend**:
 - **Active**: Current and actively referenced
@@ -253,49 +253,49 @@ ADR (Layer 5) → Architecture decisions (@brd through @bdd)
 
 ---
 
-## 7. Downstream Traceability (OPTIONAL)
+## 7. Downstream Reference Guidance
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
+> **Upstream-Only Traceability Rule**: This matrix does NOT track downstream documents. Each downstream artifact tracks its own upstream references. This eliminates post-creation maintenance and ensures traceability accuracy.
 
-### 11.1 EARS → BDD Traceability
+### 7.1 How Downstream Documents Reference EARS
 
-| EARS ID | EARS Title | BDD IDs | BDD Scenarios | Relationship |
-|---------|------------|---------|---------------|--------------|
-| EARS-01 | [Formal requirement] | BDD-01 | [Test scenarios] | EARS statements validated through BDD scenarios |
-| EARS-02 | [Formal requirement] | BDD-02, BDD-03 | [Test scenarios] | Multiple test scenarios verify requirement |
-| EARS-NN | ... | ... | ... | ... |
+When creating downstream artifacts, they MUST include `@ears` tags referencing this matrix's EARS:
 
-### 11.2 EARS → REQ Traceability
+| Downstream Type | Required Tag Format | Example |
+|-----------------|---------------------|---------|
+| BDD | `@ears: EARS.NN.24.SS` | `@ears: EARS.12.24.01` |
+| ADR | `@ears: EARS.NN.24.SS` | `@ears: EARS.05.24.03` |
+| SYS | `@ears: EARS.NN.24.SS` | `@ears: EARS.12.24.02` |
+| REQ | `@ears: EARS.NN.24.SS` | `@ears: EARS.08.24.01` |
 
-| EARS ID | EARS Title | REQ IDs | REQ Titles | Relationship |
-|---------|------------|---------|------------|--------------|
-| EARS-01 | [Formal requirement] | REQ-01, REQ-02 | [Atomic requirements] | EARS decomposed into implementation requirements |
-| EARS-02 | [Formal requirement] | REQ-03 | [Atomic requirement] | Direct 1:1 implementation requirement |
-| EARS-NN | ... | ... | ... | ... |
+### 7.2 Finding Downstream References
 
-### 7.3 EARS → ADR Traceability
+To discover which downstream documents reference a specific EARS:
 
-| EARS ID | EARS Title | ADR IDs | ADR Titles | Relationship |
-|---------|------------|---------|------------|--------------|
-| EARS-01 | [Requirement driving architectural decision] | ADR-005 | [Architecture decision] | Requirement necessitates technical decision |
-| EARS-NN | ... | ... | ... | ... |
+```bash
+# Find all BDD documents referencing EARS-12
+grep -r "@ears: EARS.12" ../BDD/
 
-### 6.4 EARS → SYS Traceability
+# Find all ADR documents referencing any EARS
+grep -r "@ears:" ../ADR/
 
-| EARS ID | EARS Title | SYS IDs | SYS Titles | Relationship |
-|---------|------------|---------|------------|--------------|
-| EARS-01 | [Formal requirement] | SYS-01 | [System requirement] | EARS informs system-level requirements |
-| EARS-NN | ... | ... | ... | ... |
+# Find all downstream references to a specific EARS statement
+grep -r "EARS.12.24.01" ../BDD/ ../ADR/ ../SYS/ ../REQ/
 
-### 6.5 Downstream Artifact Summary
+# Generate reverse traceability report
+python scripts/generate_reverse_traceability.py --upstream EARS-12 --downstream BDD,ADR,SYS,REQ
+```
 
-| Artifact Type | Total Artifacts | EARS Traced | Coverage % |
-|---------------|-----------------|-------------|------------|
-| BDD | [X] | [Y] EARS | XX% |
-| REQ | [X] | [Y] EARS | XX% |
-| ADR | [X] | [Y] EARS | XX% |
-| SYS | [X] | [Y] EARS | XX% |
-| SPEC | [X] | [Y] EARS | XX% |
+### 7.3 Downstream Document Responsibilities
+
+Each downstream artifact type has specific tagging responsibilities:
+
+| Artifact | Layer | Must Include | Purpose |
+|----------|-------|--------------|---------|
+| BDD | 4 | `@brd`, `@prd`, `@ears` | Test scenarios validate EARS statements |
+| ADR | 5 | `@brd`, `@prd`, `@ears`, `@bdd` | Architecture decisions trace to formal requirements |
+| SYS | 6 | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr` | System requirements derive from EARS |
+| REQ | 7 | `@brd` through `@sys` | Atomic requirements decompose EARS statements |
 
 ---
 
@@ -330,33 +330,27 @@ ADR (Layer 5) → Architecture decisions (@brd through @bdd)
 
 ```mermaid
 graph TD
-    PRD001[PRD-01: Product Feature] --> EARS001[EARS-01: Formal Req 1]
-    PRD001 --> EARS002[EARS-02: Formal Req 2]
-    PRD002[PRD-02: Product Feature] --> EARS003[EARS-03: Formal Req 3]
+    subgraph Upstream[Upstream Sources - Layers 1-2]
+        BRD001[BRD-01: Business Need]
+        PRD001[PRD-01: Product Feature]
+        PRD002[PRD-02: Product Feature]
+    end
 
-    EARS001 --> BDD001[BDD-01: Acceptance Test]
-    EARS001 --> REQ01[REQ-01: Atomic Req 1]
-    EARS001 --> REQ02[REQ-02: Atomic Req 2]
+    subgraph Current[EARS Layer - Layer 3]
+        EARS001[EARS-01: Formal Req 1]
+        EARS002[EARS-02: Formal Req 2]
+        EARS003[EARS-03: Formal Req 3]
+    end
 
-    EARS002 --> BDD002[BDD-02: Acceptance Test]
-    EARS002 --> REQ03[REQ-03: Atomic Req 3]
-    EARS002 --> ADR005[ADR-005: Architecture]
-
-    EARS003 --> BDD003[BDD-03: Acceptance Test]
-    EARS003 --> REQ004[REQ-04: Atomic Req 4]
-
-    BDD001 --> Tests1[Test Implementation]
-    BDD002 --> Tests2[Test Implementation]
-    REQ01 --> SPEC01[SPEC-01: Technical Spec]
-    REQ02 --> SPEC002[SPEC-02: Technical Spec]
+    BRD001 --> PRD001
+    BRD001 --> PRD002
+    PRD001 --> EARS001
+    PRD001 --> EARS002
+    PRD002 --> EARS003
 
     style EARS001 fill:#e8f5e9
     style EARS002 fill:#e8f5e9
     style EARS003 fill:#e8f5e9
-    style BDD001 fill:#e3f2fd
-    style BDD002 fill:#e3f2fd
-    style REQ01 fill:#fff3e0
-    style ADR005 fill:#f3e5f5
 ```
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
@@ -434,15 +428,15 @@ graph TD
 
 ### 11.3 Gap Analysis
 
-**Missing Downstream Artifacts**:
-- EARS-XXX: Missing BDD scenarios (requirement not testable)
-- EARS-YYY: Missing REQ decomposition (not implemented)
-- EARS-ZZZ: Missing ADR (technical decision undocumented)
+**Missing Upstream References**:
+- EARS-XXX: Missing `@brd` tag (no business requirement link)
+- EARS-YYY: Missing `@prd` tag (no product feature link)
+- EARS-ZZZ: Upstream BRD-NN no longer exists (orphaned reference)
 
-**Orphaned Documents** (downstream artifacts with no EARS source):
-- BDD-XXX: Test scenario with no formal requirement
-- REQ-YYY: Atomic requirement with no EARS foundation
-- SPEC-ZZZ: Specification with no requirements traceability
+**Upstream Validation Issues**:
+- EARS-AAA: References deprecated PRD (needs update)
+- EARS-BBB: BRD reference points to wrong section
+- EARS-CCC: Missing rationale for upstream derivation
 
 **Quality Issues**:
 - EARS-AAA: Ambiguous SHALL statement (needs clarification)
@@ -540,14 +534,14 @@ python ../scripts/update_traceability_matrix.py \
 
 ### 15.3 Quality Checklist
 - [ ] All EARS documents included in inventory
-- [ ] Upstream PRD/BRD sources documented for each EARS
-- [ ] Downstream artifacts mapped (BDD, REQ, ADR, SYS)
+- [ ] All EARS have valid `@brd` tags (Layer 1 upstream)
+- [ ] All EARS have valid `@prd` tags (Layer 2 upstream)
+- [ ] All upstream references point to existing documents
 - [ ] EARS syntax pattern distribution analyzed
-- [ ] Verification coverage tracked (BDD + REQ)
 - [ ] Testability assessment complete
 - [ ] Requirements quality metrics calculated
 - [ ] Inter-EARS dependencies identified
-- [ ] Gap analysis identifies missing artifacts
+- [ ] Gap analysis identifies missing upstream references
 - [ ] All EARS statements follow WHEN-THE-SHALL-WITHIN syntax
 - [ ] All hyperlinks resolve correctly
 - [ ] Mermaid diagrams render without errors

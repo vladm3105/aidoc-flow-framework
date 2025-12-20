@@ -27,7 +27,7 @@ custom_fields:
 | Version | 1.0.0 |
 | Date Created | YYYY-MM-DD |
 | Author | [Team Name] |
-| Purpose | Track bidirectional traceability for all Product Requirements Documents |
+| Purpose | Track upstream traceability for all Product Requirements Documents |
 
 
 ---
@@ -68,7 +68,7 @@ See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) 
 Product Requirements Documents (PRDs) translate business objectives into concrete product features, user stories, and functional specifications. PRDs define WHAT the product does from a user perspective.
 
 ### 1.2 Coverage Scope
-This matrix tracks all PRD documents, mapping upstream business requirements (BRDs) to downstream formal requirements (EARS), acceptance tests (BDD), and architecture decisions (ADRs).
+This matrix tracks all PRD documents, mapping each to its upstream business requirements (BRDs). Downstream documents (EARS, BDD, ADR) track their own upstream references to PRDs - no post-creation updates are required here.
 
 ### 1.3 Statistics
 - **Total PRDs Tracked**: [X] documents
@@ -138,11 +138,11 @@ python scripts/extract_tags.py --type PRD --show-upstream brd
 
 ## 4. Complete PRD Inventory
 
-| PRD ID | Title | Feature Category | Status | Date | Upstream Sources | Downstream Artifacts | Bidir | EARS | Variant | Migration |
-|--------|-------|------------------|--------|------|------------------|---------------------|-------|------|---------|-----------|
-| PRD-01 | [Product feature title] | [Category] | Active | YYYY-MM-DD | BRD-01, BRD-02 | EARS-01, EARS-02, BDD-01, ADR-005 | ✓ | 95 | S | Current |
-| PRD-02 | [Product feature title] | [Category] | Active | YYYY-MM-DD | BRD-03 | EARS-03, BDD-02 | ✓ | 88 | S | Current |
-| PRD-NN | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| PRD ID | Title | Feature Category | Status | Date | Upstream Sources | EARS | Variant | Migration |
+|--------|-------|------------------|--------|------|------------------|------|---------|-----------|
+| PRD-01 | [Product feature title] | [Category] | Active | YYYY-MM-DD | BRD-01, BRD-02 | 95 | S | Current |
+| PRD-02 | [Product feature title] | [Category] | Active | YYYY-MM-DD | BRD-03 | 88 | S | Current |
+| PRD-NN | ... | ... | ... | ... | ... | ... | ... | ... |
 
 **Document Status Legend**:
 - **Active**: Current and actively referenced
@@ -151,8 +151,7 @@ python scripts/extract_tags.py --type PRD --show-upstream brd
 - **Superseded**: Replaced by newer version
 - **Archived**: Historical reference only
 
-**New Column Legend**:
-- **Bidir** (Bidirectional Validation): ✓ = All cross-references validated bidirectionally, ✗ = Validation pending/failed
+**Column Legend**:
 - **EARS** (EARS-Ready Score): 0-100 score based on timing profiles (25%), boundary values (25%), state machines (25%), fallback paths (15%), threshold registry (10%)
 - **Variant** (Template Variant): S = Standard (21 sections), A = Agent-Based (12-15 sections), W = Automation/Workflow-Focused (9-12 sections)
 - **Migration** (Migration Status): Current = Compliant with v2.0 template, Legacy = Pre-v2.0 format, Migrated = Updated from legacy to current
@@ -190,87 +189,77 @@ python scripts/extract_tags.py --type PRD --show-upstream brd
 
 ---
 
-## 6. Downstream Traceability (OPTIONAL)
+## 6. Downstream Reference Guidance
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
+> **Upstream-Only Traceability Rule**: This matrix does NOT track downstream documents. Each downstream artifact tracks its own upstream references. This eliminates post-creation maintenance and ensures traceability accuracy.
 
-### 6.1 PRD → EARS Traceability
+### 6.1 How Downstream Documents Reference PRDs
 
-| PRD ID | PRD Title | EARS IDs | EARS Titles | Relationship |
-|--------|-----------|----------|-------------|--------------|
-| PRD-01 | [Product feature] | EARS-01, EARS-02, EARS-03 | [Formal requirements] | Product features formalized as EARS statements |
-| PRD-02 | [Product feature] | EARS-004 | [Formal requirement] | User story converted to formal requirement |
-| PRD-NN | ... | ... | ... | ... |
+When creating downstream artifacts, they MUST include `@prd` tags referencing this matrix's PRDs:
 
-### 6.2 PRD → BDD Traceability
+| Downstream Type | Required Tag Format | Example |
+|-----------------|---------------------|---------|
+| EARS | `@prd: PRD.NN.SS.RR` | `@prd: PRD.01.03.02` |
+| BDD | `@prd: PRD.NN.SS.RR` | `@prd: PRD.01.03.02` |
+| ADR | `@prd: PRD.NN.SS.RR` | `@prd: PRD.02.01.01` |
+| REQ | `@prd: PRD.NN.SS.RR` | `@prd: PRD.01.03.02` |
 
-| PRD ID | PRD Title | BDD IDs | BDD Titles | Relationship |
-|--------|-----------|---------|------------|--------------|
-| PRD-01 | [Product feature] | BDD-01, BDD-02 | [Test scenarios] | Acceptance criteria defined in BDD scenarios |
-| PRD-02 | [Product feature] | BDD-03 | [Test scenario] | User story validation through BDD |
-| PRD-NN | ... | ... | ... | ... |
+### 6.2 Finding Downstream References
 
-### 6.3 PRD → ADR Traceability
+To discover which downstream documents reference a specific PRD:
 
-| PRD ID | PRD Title | ADR IDs | ADR Titles | Relationship |
-|--------|-----------|---------|------------|--------------|
-| PRD-01 | [Product feature requiring architectural decision] | ADR-005, ADR-012 | [Architecture decisions] | Product requirements drive technical decisions |
-| PRD-NN | ... | ... | ... | ... |
+```bash
+# Find all EARS documents referencing PRD-01
+grep -r "@prd: PRD.01" ../EARS/
 
-### 6.4 PRD → REQ Traceability (Direct)
+# Find all BDD scenarios referencing PRD-01
+grep -r "@prd: PRD.01" ../BDD/
 
-| PRD ID | PRD Title | REQ IDs | REQ Titles | Relationship |
-|--------|-----------|---------|------------|--------------|
-| PRD-01 | [Product feature] | REQ-010, REQ-011 | [Atomic requirements] | Feature decomposed into atomic requirements |
-| PRD-NN | ... | ... | ... | ... |
+# Generate reverse traceability report
+python scripts/generate_reverse_traceability.py --upstream PRD-01 --downstream EARS,BDD,ADR,REQ
+```
 
-### 6.5 Downstream Artifact Summary
+### 6.3 Downstream Coverage Validation
 
-| Artifact Type | Total Artifacts | PRDs Traced | Coverage % |
-|---------------|-----------------|-------------|------------|
-| EARS | [X] | [Y] PRDs | XX% |
-| BDD | [X] | [Y] PRDs | XX% |
-| ADR | [X] | [Y] PRDs | XX% |
-| REQ | [X] | [Y] PRDs | XX% |
-| SPEC | [X] | [Y] PRDs | XX% |
+Run automated validation to check downstream coverage:
+
+```bash
+# Validate all PRDs have required downstream coverage
+python scripts/validate_downstream_coverage.py \
+  --source PRD \
+  --expected EARS,BDD \
+  --optional ADR,REQ
+```
 
 ---
 
 ## 7. Cross-PRD Dependencies
 
-### 7.1 PRD Relationship Map
+### 7.1 PRD Upstream Relationship Map
 
 ```mermaid
 graph TD
-    BRD001[BRD-01: Business Objective] --> PRD001[PRD-01: Core Feature]
-    BRD001 --> PRD002[PRD-02: Supporting Feature]
-    BRD002[BRD-02: User Needs] --> PRD003[PRD-03: User Experience]
+    subgraph Upstream[Upstream Sources - Layer 1]
+        BRD001[BRD-01: Business Objective]
+        BRD002[BRD-02: User Needs]
+    end
 
-    PRD001 --> EARS001[EARS-01: Formal Req 1]
-    PRD001 --> EARS002[EARS-02: Formal Req 2]
-    PRD001 --> BDD001[BDD-01: Acceptance Test]
-    PRD001 --> ADR005[ADR-005: Architecture]
+    subgraph Current[PRD Layer - Layer 2]
+        PRD001[PRD-01: Core Feature]
+        PRD002[PRD-02: Supporting Feature]
+        PRD003[PRD-03: User Experience]
+    end
 
-    PRD002 --> EARS003[EARS-03: Formal Req 3]
-    PRD002 --> BDD002[BDD-02: Acceptance Test]
-
-    PRD003 --> EARS004[EARS-004: UX Requirements]
-    PRD003 --> BDD003[BDD-03: UX Testing]
-
-    EARS001 --> REQ01[REQ-01: Atomic Requirement]
-    EARS002 --> REQ02[REQ-02: Atomic Requirement]
-    ADR005 --> SYS001[SYS-01: System Requirement]
+    BRD001 --> PRD001
+    BRD001 --> PRD002
+    BRD002 --> PRD003
 
     style PRD001 fill:#fff4e1
     style PRD002 fill:#fff4e1
     style PRD003 fill:#fff4e1
-    style EARS001 fill:#e8f5e9
-    style EARS002 fill:#e8f5e9
-    style BDD001 fill:#e3f2fd
-    style ADR005 fill:#f3e5f5
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note**: This diagram shows only upstream relationships (BRD→PRD). Downstream documents (EARS, BDD, ADR, REQ) track their own upstream references to PRDs - see their respective traceability matrices.
 
 ### 7.2 Inter-PRD Dependencies
 
@@ -339,39 +328,35 @@ graph TD
 | SPEC | [X] | [Y] | [Z] | XX% |
 | **Total** | **[X]** | **[Y]** | **[Z]** | **XX%** |
 
-### 10.2 PRD Implementation Status
+### 10.2 PRD Upstream Validation Status
 
-| PRD ID | EARS Status | BDD Status | ADR Status | REQ Status | Overall Status | Completion % | Bidir | EARS Score | Variant | Migration |
-|--------|-------------|------------|------------|------------|----------------|--------------|-------|------------|---------|-----------|
-| PRD-01 | ✅ Complete | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% | ✓ | 95 | S | Current |
-| PRD-02 | ✅ Complete | 🟡 In Progress | N/A | 🟡 In Progress | In Progress | 60% | ✓ | 88 | S | Current |
-| PRD-03 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | ⏳ Pending | Started | 25% | ✗ | 45 | A | Legacy |
-| PRD-NN | ... | ... | ... | ... | ... | ... | ... | ... | ... | ... |
+| PRD ID | Upstream Valid | EARS Score | Variant | Migration | Notes |
+|--------|----------------|------------|---------|-----------|-------|
+| PRD-01 | ✓ | 95 | S | Current | All BRD refs validated |
+| PRD-02 | ✓ | 88 | S | Current | All BRD refs validated |
+| PRD-03 | ✗ | 45 | A | Legacy | Missing BRD-04 reference |
+| PRD-NN | ... | ... | ... | ... | ... |
 
-**Status Legend**:
-- ✅ Complete: Artifact created and validated
-- 🟡 In Progress: Artifact under development
-- ⏳ Pending: Artifact not yet started
-- N/A: Not applicable for this PRD
-- ❌ Blocked: Artifact creation blocked by dependencies
-
-**Quality Metrics Legend**:
-- **Bidir**: ✓ = Bidirectional validation complete, ✗ = Validation needed
+**Validation Legend**:
+- **Upstream Valid**: ✓ = All upstream BRD references exist and are valid, ✗ = Validation needed
 - **EARS Score**: 0-100 (target ≥90 for EARS progression)
 - **Variant**: S (Standard), A (Agent-Based), W (Workflow/Automation)
 - **Migration**: Current, Legacy, Migrated
 
 ### 10.3 Gap Analysis
 
-**Missing Downstream Artifacts**:
-- PRD-XXX: Missing EARS formalization (feature not formalized)
-- PRD-YYY: Missing BDD scenarios (no acceptance tests)
-- PRD-ZZZ: Missing REQ decomposition (not broken into atomic requirements)
+**Missing Upstream References**:
+- PRD-XXX: Missing BRD reference (no business justification documented)
+- PRD-YYY: References deprecated BRD-ZZZ (needs update)
 
-**Orphaned Documents** (downstream artifacts with no PRD source):
-- EARS-XXX: Formal requirement with no product feature
-- BDD-YYY: Test scenario with no user story
-- REQ-ZZZ: Atomic requirement with no feature context
+**Validation Commands**:
+```bash
+# Check all PRDs have valid upstream references
+python scripts/validate_upstream_refs.py --type PRD --strict
+
+# Find PRDs with missing or invalid BRD references
+python scripts/find_orphaned_artifacts.py --type PRD --check-upstream
+```
 
 ---
 
@@ -396,8 +381,8 @@ graph TD
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
+| Upstream Validation | 100% | [XX]% | 🟡 |
 | EARS-Ready Score (Average) | ≥90 | [XX] | 🟡 |
-| Bidirectional Validation | 100% | [XX]% | 🟡 |
 | Template Variant Compliance | 100% | [XX]% | 🟡 |
 | Migration Status (Current) | 100% | [XX]% | 🟡 |
 | Legacy PRDs Pending Migration | 0 | [X] | 🟡 |
@@ -419,14 +404,11 @@ graph TD
 
 ### 11.4 Quality Improvement Recommendations
 
-- **Traceability Coverage**: Achieve 100% PRD → EARS → BDD coverage
-- **User Story Validation**: Ensure all user stories have BDD scenarios
-- **Architecture Review**: Document ADRs for all technical decisions
-- **Acceptance Criteria**: Complete BDD scenario coverage for all PRDs
-- **Stakeholder Review**: Schedule feature validation with product owners
+- **Upstream Validation**: Ensure all PRDs have valid BRD references
 - **EARS-Ready Score**: Improve all PRDs to ≥90 before EARS progression
-- **Bidirectional Validation**: Complete validation for all cross-references
 - **Legacy Migration**: Migrate all Legacy PRDs to Current template version
+- **Tag Compliance**: Verify all PRDs use correct `@brd` tag format
+- **Stakeholder Review**: Schedule feature validation with product owners
 
 ---
 
@@ -492,18 +474,15 @@ python ../scripts/update_traceability_matrix.py \
 ### 14.3 Quality Checklist
 - [ ] All PRD documents included in inventory
 - [ ] Upstream BRD sources documented for each PRD
-- [ ] Downstream artifacts mapped (EARS, BDD, ADR, REQ)
+- [ ] All upstream references validated (exist and are current)
 - [ ] Cross-PRD dependencies identified
 - [ ] Feature category classification complete
 - [ ] User persona alignment documented
 - [ ] User story and acceptance criteria coverage tracked
-- [ ] Implementation status current (within 1 week)
-- [ ] Gap analysis identifies missing artifacts
 - [ ] All hyperlinks resolve correctly
 - [ ] Mermaid diagrams render without errors
-- [ ] Coverage metrics mathematically correct
 - [ ] Revision history updated
-- [ ] **Bidirectional validation column populated** (✓/✗ for each PRD)
+- [ ] **Upstream validation column populated** (✓/✗ for each PRD)
 - [ ] **EARS-Ready scores calculated** (0-100, target ≥90)
 - [ ] **Template variant identified** (S/A/W for each PRD)
 - [ ] **Migration status tracked** (Current/Legacy/Migrated)

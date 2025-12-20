@@ -27,7 +27,7 @@ custom_fields:
 | Version | 1.0.0 |
 | Date Created | YYYY-MM-DD |
 | Author | [Team Name] |
-| Purpose | Track bidirectional traceability for all System Requirements Documents |
+| Purpose | Track upstream traceability for all System Requirements Documents |
 
 
 ---
@@ -68,7 +68,7 @@ See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) 
 System Requirements Documents (SYS) define system-level functional requirements and quality attributes derived from architecture decisions. SYS documents bridge architectural decisions (ADR) and atomic implementation requirements (REQ).
 
 ### 1.2 Coverage Scope
-This matrix tracks all SYS documents, mapping upstream architecture decisions to downstream atomic requirements and technical specifications.
+This matrix tracks all SYS documents and their upstream sources (BRD, PRD, EARS, BDD, ADR). Downstream documents (REQ, SPEC) track their own upstream references to SYS—this matrix does not maintain downstream links.
 
 ### 1.3 Statistics
 - **Total SYS Tracked**: [X] documents
@@ -164,11 +164,11 @@ python scripts/generate_traceability_matrices.py \
 
 ## 4. Complete SYS Inventory
 
-| SYS ID | Title | System Category | Total Requirements | Status | Date | Upstream Sources | Downstream Artifacts |
-|--------|-------|-----------------|-------------------|--------|------|------------------|---------------------|
-| SYS-01 | [System requirement title] | [Category] | [X] | Active | YYYY-MM-DD | ADR-01, EARS-01 | REQ-01, REQ-02, SPEC-01 |
-| SYS-02 | [System requirement title] | [Category] | [X] | Active | YYYY-MM-DD | ADR-02 | REQ-03, SPEC-02 |
-| SYS-NN | ... | ... | ... | ... | ... | ... | ... |
+| SYS ID | Title | System Category | Total Requirements | Status | Date | Upstream Sources |
+|--------|-------|-----------------|-------------------|--------|------|------------------|
+| SYS-01 | [System requirement title] | [Category] | [X] | Active | YYYY-MM-DD | BRD-01, PRD-01, EARS-01, BDD-01, ADR-01 |
+| SYS-02 | [System requirement title] | [Category] | [X] | Active | YYYY-MM-DD | BRD-01, PRD-02, EARS-02, BDD-02, ADR-02 |
+| SYS-NN | ... | ... | ... | ... | ... | ... |
 
 ---
 
@@ -192,23 +192,40 @@ python scripts/generate_traceability_matrices.py \
 
 ---
 
-## 6. Downstream Traceability (OPTIONAL)
+## 6. Downstream Reference Guidance
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
+> **Upstream-Only Traceability Rule**: This matrix does NOT track downstream documents. Each downstream artifact (REQ, SPEC) tracks its own upstream references to SYS. This eliminates post-creation maintenance and ensures traceability accuracy.
 
-### 6.1 SYS → REQ Traceability
+### 6.1 How Downstream Documents Reference SYS
 
-| SYS ID | SYS Title | REQ IDs | REQ Titles | Relationship |
-|--------|-----------|---------|------------|--------------|
-| SYS-01 | [System requirement] | REQ-01, REQ-02, REQ-03 | [Atomic requirements] | System requirements decomposed into atomic requirements |
-| SYS-NN | ... | ... | ... | ... |
+| Downstream Type | Required Tag Format | Example |
+|-----------------|---------------------|---------|
+| REQ | `@sys: SYS.NN.EE.SS` | `@sys: SYS.08.25.01` |
+| SPEC | `@sys: SYS.NN.EE.SS` | `@sys: SYS.12.03.02, SYS.12.03.03` |
 
-### 6.2 SYS → SPEC Traceability
+### 6.2 Finding Downstream References
 
-| SYS ID | SYS Title | SPEC IDs | SPEC Titles | Relationship |
-|--------|-----------|----------|-------------|--------------|
-| SYS-01 | [System requirement] | SPEC-01, SPEC-02 | [Technical specifications] | System requirements implemented in specifications |
-| SYS-NN | ... | ... | ... | ... |
+To discover which downstream documents reference a specific SYS, use reverse traceability:
+
+```bash
+# Find all REQ documents referencing SYS-012
+grep -r "@sys: SYS.12" ../REQ/
+
+# Find all SPEC documents referencing any SYS
+grep -r "@sys:" ../SPEC/
+
+# Generate reverse traceability report
+python scripts/generate_reverse_traceability.py \
+  --upstream SYS-012 \
+  --downstream REQ,SPEC
+```
+
+### 6.3 Downstream Document Responsibilities
+
+| Downstream Type | Layer | Required Upstream Tags | SYS Relationship |
+|-----------------|-------|------------------------|------------------|
+| REQ | 7 | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys` | Atomic requirements decompose system requirements |
+| SPEC | 10 | All upstream layers | Specifications detail system requirement implementation |
 
 ---
 
@@ -239,20 +256,24 @@ python scripts/generate_traceability_matrices.py \
 
 ```mermaid
 graph TD
-    ADR001[ADR-01: Architecture] --> SYS001[SYS-01: System Req]
-    ADR002[ADR-02: Architecture] --> SYS002[SYS-02: System Req]
+    subgraph Upstream[Upstream Sources - Layers 1-5]
+        BRD001[BRD-01: Business Need]
+        PRD001[PRD-01: Product Feature]
+        ADR001[ADR-01: Architecture]
+    end
 
-    SYS001 --> REQ01[REQ-01: Atomic Req]
-    SYS001 --> REQ02[REQ-02: Atomic Req]
-    SYS001 --> SPEC01[SPEC-01: Tech Spec]
+    subgraph Current[SYS Layer - Layer 6]
+        SYS001[SYS-01: System Req]
+        SYS002[SYS-02: System Req]
+    end
 
-    SYS002 --> REQ03[REQ-03: Atomic Req]
-    SYS002 --> SPEC002[SPEC-02: Tech Spec]
+    BRD001 --> PRD001
+    PRD001 --> ADR001
+    ADR001 --> SYS001
+    ADR001 --> SYS002
 
     style SYS001 fill:#fff3e0
     style SYS002 fill:#fff3e0
-    style REQ01 fill:#e8f5e9
-    style SPEC01 fill:#e3f2fd
 ```
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.

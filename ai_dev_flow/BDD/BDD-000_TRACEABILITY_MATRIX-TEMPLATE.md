@@ -27,7 +27,7 @@ custom_fields:
 | Version | 1.0.0 |
 | Date Created | YYYY-MM-DD |
 | Author | [Team Name] |
-| Purpose | Track bidirectional traceability for all Behavior-Driven Development (BDD) test scenarios |
+| Purpose | Track upstream traceability for all Behavior-Driven Development (BDD) test scenarios |
 
 
 ---
@@ -68,7 +68,7 @@ See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) 
 BDD documents define acceptance criteria using Gherkin syntax (Given-When-Then), providing executable specifications that validate requirements through automated testing.
 
 ### 1.2 Coverage Scope
-This matrix tracks all BDD feature files, mapping upstream requirements (EARS, PRD, REQ) to downstream test implementations and code artifacts.
+This matrix tracks all BDD feature files and their upstream sources (BRD, PRD, EARS). Downstream documents (ADR, SYS, REQ, SPEC) track their own upstream references to BDD—this matrix does not maintain downstream links.
 
 ### 1.3 Statistics
 - **Total BDD Files Tracked**: [X] documents
@@ -224,11 +224,11 @@ Test Implementation & Code (Layers 13-14)
 
 ## 4. Complete BDD Inventory
 
-| BDD ID | Title | Feature Category | Scenarios | Steps | Status | Date | Upstream Sources | Downstream Artifacts |
-|--------|-------|------------------|-----------|-------|--------|------|------------------|---------------------|
-| BDD-01 | [Feature file title] | [Category] | 5 | 25 | Passing | YYYY-MM-DD | EARS-01, PRD-01, REQ-01 | tests/test_feature.py, src/module.py |
-| BDD-02 | [Feature file title] | [Category] | 3 | 15 | Failing | YYYY-MM-DD | EARS-02, REQ-02 | tests/test_api.py |
-| BDD-NN | ... | ... | ... | ... | ... | ... | ... | ... |
+| BDD ID | Title | Feature Category | Scenarios | Steps | Status | Date | Upstream Sources |
+|--------|-------|------------------|-----------|-------|--------|------|------------------|
+| BDD-01 | [Feature file title] | [Category] | 5 | 25 | Passing | YYYY-MM-DD | EARS-01, PRD-01, BRD-01 |
+| BDD-02 | [Feature file title] | [Category] | 3 | 15 | Failing | YYYY-MM-DD | EARS-02, PRD-02, BRD-01 |
+| BDD-NN | ... | ... | ... | ... | ... | ... | ... |
 
 **Status Legend**:
 - **Passing**: All scenarios pass
@@ -257,58 +257,70 @@ Test Implementation & Code (Layers 13-14)
 | PRD-01 | [User story] | BDD-01 | Scenarios 1-5 | Acceptance criteria defined in BDD |
 | PRD-NN | ... | ... | ... | ... |
 
-### 5.3 REQ → BDD Traceability
+### 5.3 BRD → BDD Traceability
 
-| REQ ID | REQ Title | BDD IDs | BDD Scenarios | Relationship |
+> **Note**: REQ (Layer 7) is DOWNSTREAM from BDD (Layer 4), not upstream. BDD references BRD, PRD, and EARS only.
+
+| BRD ID | BRD Title | BDD IDs | BDD Scenarios | Relationship |
 |--------|-----------|---------|---------------|--------------|
-| REQ-01 | [Atomic requirement] | BDD-01 | Scenario 3 | Requirement verified through test |
-| REQ-NN | ... | ... | ... | ... |
+| BRD-01 | [Business requirement] | BDD-01, BDD-02 | Scenarios 1-5 | Business requirement validated through acceptance tests |
+| BRD-NN | ... | ... | ... | ... |
 
 ### 5.4 Upstream Source Summary
 
 | Source Category | Total Sources | BDD Files | Scenarios | Coverage % |
 |-----------------|---------------|-----------|-----------|------------|
-| EARS | [X] | [Y] | [Z] | XX% |
+| BRD | [X] | [Y] | [Z] | XX% |
 | PRD | [X] | [Y] | [Z] | XX% |
-| REQ | [X] | [Y] | [Z] | XX% |
-| ADR | [X] | [Y] | [Z] | XX% |
+| EARS | [X] | [Y] | [Z] | XX% |
+
+> **Note**: BDD (Layer 4) upstream sources are limited to BRD (Layer 1), PRD (Layer 2), and EARS (Layer 3). REQ and ADR are downstream artifacts.
 
 ---
 
-## 6. Downstream Traceability (OPTIONAL)
+## 6. Downstream Reference Guidance
 
-> **Traceability Rule**: Downstream traceability is OPTIONAL. Only add links to documents that already exist. Do NOT use placeholder IDs (TBD, XXX, NN).
+> **Upstream-Only Traceability Rule**: This matrix does NOT track downstream documents. Each downstream artifact tracks its own upstream references. This eliminates post-creation maintenance and ensures traceability accuracy.
 
-### 6.1 BDD → Test Implementation Traceability
+### 6.1 How Downstream Documents Reference BDD
 
-| BDD ID | BDD Scenarios | Test Files | Test Functions | Implementation Status |
-|--------|---------------|------------|----------------|----------------------|
-| BDD-01 | 5 scenarios | tests/test_feature.py | test_scenario_1(), test_scenario_2(), ... | ✅ Complete |
-| BDD-02 | 3 scenarios | tests/test_api.py | test_api_scenario_1(), ... | 🟡 Partial (2/3) |
-| BDD-NN | ... | ... | ... | ... |
+When creating downstream artifacts, they MUST include `@bdd` tags referencing this matrix's BDD files:
 
-### 6.2 BDD → Code Implementation Traceability
+| Downstream Type | Required Tag Format | Example |
+|-----------------|---------------------|---------|
+| ADR | `@bdd: BDD.NN.EE.SS` | `@bdd: BDD.15.13.01` |
+| SYS | `@bdd: BDD.NN.EE.SS` | `@bdd: BDD.03.13.02` |
+| REQ | `@bdd: BDD.NN.EE.SS` | `@bdd: BDD.15.13.01` |
+| SPEC | `@bdd: BDD.NN.EE.SS` | `@bdd: BDD.08.13.03` |
 
-| BDD ID | BDD Scenarios | Source Files | Functions/Classes | Relationship |
-|--------|---------------|--------------|-------------------|--------------|
-| BDD-01 | Scenarios 1-3 | src/module.py | FeatureClass, method_1() | Tests validate implementation |
-| BDD-02 | Scenarios 1-2 | src/api.py | APIHandler.endpoint() | Tests verify API behavior |
-| BDD-NN | ... | ... | ... | ... |
+### 6.2 Finding Downstream References
 
-### 6.3 BDD → ADR Traceability (Architecture Verification)
+To discover which downstream documents reference a specific BDD:
 
-| BDD ID | ADR IDs | ADR Titles | Relationship |
-|--------|---------|------------|--------------|
-| BDD-01 | ADR-005 | [Architecture decision] | Tests verify architectural decision |
-| BDD-NN | ... | ... | ... |
+```bash
+# Find all ADR documents referencing BDD-15
+grep -r "@bdd: BDD.15" ../ADR/
 
-### 6.4 Downstream Artifact Summary
+# Find all REQ documents referencing any BDD
+grep -r "@bdd:" ../REQ/
 
-| Artifact Type | Total Artifacts | BDD Files | Coverage % |
-|---------------|-----------------|-----------|------------|
-| Test Files | [X] | [Y] BDD | XX% |
-| Source Files | [X] | [Y] BDD | XX% |
-| ADR Validations | [X] | [Y] BDD | XX% |
+# Find all downstream references to a specific BDD scenario
+grep -r "BDD.15.13.01" ../ADR/ ../SYS/ ../REQ/ ../SPEC/
+
+# Generate reverse traceability report
+python scripts/generate_reverse_traceability.py --upstream BDD-15 --downstream ADR,SYS,REQ,SPEC
+```
+
+### 6.3 Downstream Document Responsibilities
+
+Each downstream artifact type has specific tagging responsibilities:
+
+| Artifact | Layer | Must Include | Purpose |
+|----------|-------|--------------|---------|
+| ADR | 5 | `@brd`, `@prd`, `@ears`, `@bdd` | Architecture decisions validated by BDD tests |
+| SYS | 6 | `@brd` through `@bdd`, `@adr` | System requirements derive from BDD scenarios |
+| REQ | 7 | `@brd` through `@sys` | Atomic requirements trace to acceptance tests |
+| SPEC | 10 | `@brd` through `@ctr` | Specifications implement tested requirements |
 
 ---
 
@@ -350,24 +362,28 @@ Test Implementation & Code (Layers 13-14)
 
 ```mermaid
 graph TD
-    EARS001[EARS-01: Formal Req] --> BDD001[BDD-01: Acceptance Test]
-    EARS002[EARS-02: Formal Req] --> BDD002[BDD-02: Acceptance Test]
-    PRD001[PRD-01: User Story] --> BDD001
-    REQ01[REQ-01: Atomic Req] --> BDD001
+    subgraph Upstream[Upstream Sources - Layers 1-3]
+        BRD01[BRD-01: Business Req]
+        PRD001[PRD-01: User Story]
+        EARS001[EARS-01: Formal Req]
+        EARS002[EARS-02: Formal Req]
+    end
 
-    BDD001 --> TestImpl1[tests/test_feature.py]
-    BDD001 --> Code1[src/feature.py]
-    BDD002 --> TestImpl2[tests/test_api.py]
-    BDD002 --> Code2[src/api.py]
+    subgraph Current[BDD Layer - Layer 4]
+        BDD001[BDD-01: Acceptance Test]
+        BDD002[BDD-02: Acceptance Test]
+    end
 
-    ADR005[ADR-005: Architecture] -.validates.-> BDD001
-    ADR005 -.validates.-> BDD002
+    BRD01 --> PRD001
+    PRD001 --> EARS001
+    PRD001 --> EARS002
+    EARS001 --> BDD001
+    EARS002 --> BDD002
 
     style BDD001 fill:#e3f2fd
     style BDD002 fill:#e3f2fd
     style EARS001 fill:#e8f5e9
-    style TestImpl1 fill:#fff3e0
-    style Code1 fill:#f3e5f5
+    style EARS002 fill:#e8f5e9
 ```
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
@@ -417,10 +433,15 @@ graph TD
 
 ### 10.2 Gap Analysis
 
-**Missing BDD Coverage**:
-- EARS-XXX: Formal requirement with no BDD validation
-- REQ-YYY: Atomic requirement not tested
-- PRD-ZZZ: User story without acceptance criteria
+**Missing Upstream References**:
+- BDD-XXX: Missing `@brd` tag (no business requirement link)
+- BDD-YYY: Missing `@ears` tag (no formal requirement link)
+- BDD-ZZZ: Upstream EARS-NN no longer exists (orphaned reference)
+
+**Upstream Validation Issues**:
+- BDD-AAA: References deprecated PRD (needs update)
+- BDD-BBB: EARS reference points to wrong statement
+- BDD-CCC: Missing rationale for upstream derivation
 
 **Failing Tests**:
 - BDD-02, Scenario 3: API timeout issue
@@ -504,11 +525,12 @@ python ../scripts/update_traceability_matrix.py \
 
 ### 14.2 Quality Checklist
 - [ ] All BDD files included in inventory
-- [ ] Upstream sources documented (EARS, PRD, REQ)
-- [ ] Downstream test implementations mapped
+- [ ] All BDD have valid `@brd` tags (Layer 1 upstream)
+- [ ] All BDD have valid `@prd` tags (Layer 2 upstream)
+- [ ] All BDD have valid `@ears` tags (Layer 3 upstream)
+- [ ] All upstream references point to existing documents
 - [ ] Scenario execution status current
 - [ ] Coverage metrics calculated
 - [ ] Flakiness analysis complete
-- [ ] All @requirement and @adr tags resolve
 - [ ] Test performance metrics included
-- [ ] Gap analysis identifies missing tests
+- [ ] Gap analysis identifies missing upstream references
