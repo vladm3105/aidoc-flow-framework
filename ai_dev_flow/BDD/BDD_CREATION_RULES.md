@@ -27,12 +27,12 @@ custom_fields:
 
 # BDD Creation Rules
 
-**Version**: 1.2
+**Version**: 1.3
 **Date**: 2025-11-19
-**Last Updated**: 2025-11-30
-**Source**: Derived from BDD-TEMPLATE.feature, EARS requirements, and Gherkin best practices
+**Last Updated**: 2025-12-26
+**Source**: Derived from BDD-TEMPLATE.feature, EARS requirements, Gherkin best practices, and BDD_SPLITTING_RULES.md
 **Purpose**: Complete reference for creating BDD feature files according to doc_flow SDD framework
-**Changes**: Added Threshold Registry Integration section (v1.2). Previous: Status/Score mapping, common mistakes section (v1.1)
+**Changes**: Added Split-File Structure section (v1.3). Previous: Threshold Registry Integration section (v1.2)
 
 ---
 
@@ -40,6 +40,7 @@ custom_fields:
 
 1. [File Organization and Directory Structure](#1-file-organization-and-directory-structure)
    1.1. [YAML Frontmatter Metadata](#11-yaml-frontmatter-metadata-required-for-md-files)
+   1.2. [Split-File Structure (Multi-File BDD Suites)](#12-split-file-structure-multi-file-bdd-suites)
 2. [Document Structure (Gherkin Syntax)](#2-document-structure-gherkin-syntax)
 3. [Document Control Requirements](#3-document-control-requirements)
 4. [Feature File Standards](#4-feature-file-standards)
@@ -58,9 +59,61 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
+### 1.0 Structure Selection Criteria
+
+**Single-File Structure** (use when):
+- Feature file < 500 lines
+- <25 scenarios total
+- Single domain/feature scope
+- Simple requirement coverage
+
+**Split-File Structure** (use when):
+- Feature file would exceed 500 lines
+- ≥25 scenarios
+- Multiple domains/modules
+- Complex requirement coverage (see Section 1.2)
+
+### 1.0.1 Single-File Structure
+
 - **Location**: `docs/BDD/` within project docs directory
-- **Naming**: `BDD-NN_descriptive_slug.md` or `BDD-NN_descriptive_slug.feature` (NN = 3-digit sequential)
+- **Naming**: `BDD-NN_descriptive_slug.feature` (NN = 2-digit sequential: 01, 02)
 - **Structure**: One primary feature file per EARS requirement set
+- **Companion**: Optional `BDD-NN_descriptive_slug.md` for documentation
+
+**Example**:
+```
+docs/BDD/
+├── BDD-03_graph_database_architecture.feature  (131 scenarios)
+├── BDD-04_vector_search_embeddings.feature     (84 scenarios)
+└── BDD-12_technical_infrastructure.feature     (77 scenarios)
+```
+
+### 1.0.2 Split-File Structure
+
+- **Location**: `docs/BDD/BDD-NN_descriptive_slug/` within project docs directory
+- **Naming**: Directory: `BDD-NN_descriptive_slug/`, Files: `features/BDD-NN_domain.feature`
+- **Structure**: Multiple feature files organized by domain/module
+- **Required**: README.md, TRACEABILITY.md, GLOSSARY.md, features/ subdirectory
+
+**Example**:
+```
+docs/BDD/
+├── BDD-06_level0_system_agents/
+│   ├── README.md
+│   ├── TRACEABILITY.md
+│   ├── GLOSSARY.md
+│   ├── features/
+│   │   ├── BDD-06_health_monitor.feature      (38 scenarios)
+│   │   ├── BDD-06_data_guardian.feature       (38 scenarios)
+│   │   ├── BDD-06_position_reconciliation.feature (37 scenarios)
+│   │   └── BDD-06_integration.feature         (37 scenarios)
+│   └── archive/  (optional - for deprecated scenarios)
+└── BDD-06_level0_system_agents.feature  (redirect stub - 0 scenarios)
+```
+
+**Key Rule**: ALL `.feature` files in split structure MUST reside in `features/` subdirectory. No `.feature` files at suite root (except redirect stub).
+
+**See Section 1.2 for complete split-file structure details.**
 
 ---
 
@@ -155,6 +208,453 @@ custom_fields:
 - Traceability information moves to `custom_fields.traceability`
 - Architecture classification uses standard tags (`shared-architecture`, `ai-agent-primary`)
 - Agent ID included for AI-agent documents
+
+---
+
+## 1.2 Section-Based File Organization (MANDATORY)
+
+### Purpose
+Unify BDD naming with PRD/BRD section-based standards. All BDD files use section-based numbering (dot notation) with flat file structure at `docs/BDD/` root level.
+
+**Section-based format is MANDATORY**. No backward compatibility with legacy formats (single-file `BDD-NN_slug.feature` or directory-based `BDD-NN_slug/features/`).
+
+**When to Use Section-Based Organization**:
+- ALL new BDD suites (required structure)
+- BDD suite would exceed 500 lines in single file
+- ≥25 scenarios total
+- Multiple domains/modules/agents
+- Complex requirement coverage across multiple EARS sections
+
+**Authority**: See `BDD_SPLITTING_RULES.md` for comprehensive guidance.
+
+### 1.2.1 Three Valid File Patterns (ONLY)
+
+All BDD files must match one of these three patterns:
+
+#### 1. Section-Only Format (Primary)
+**Pattern**: `^BDD-\d{2,}\.\d+_[a-z0-9_]+\.feature$`
+**Example**: `BDD-02.14_query_result_filtering.feature`
+**Use When**: Standard section file (≤500 lines, ≤12 scenarios)
+
+```gherkin
+# File: BDD-02.14_query_result_filtering.feature
+@section: 2.14
+@parent_doc: BDD-02
+@index: BDD-02.0_index.md
+@brd:BRD.02.03.14
+@prd:PRD.02.05.14
+@ears:EARS.02.14.01
+
+Feature: BDD-02.14: Query Result Filtering
+  As a user querying the knowledge graph
+  I want to filter results by multiple criteria
+  So that I can find precisely relevant information
+```
+
+#### 2. Subsection Format (When Section >500 Lines)
+**Pattern**: `^BDD-\d{2,}\.\d+\.\d{2}_[a-z0-9_]+\.feature$`
+**Example**: `BDD-02.24.01_quality_performance.feature`
+**Use When**: Section requires splitting (each subsection ≤500 lines)
+
+```gherkin
+# File: BDD-02.24.01_quality_performance.feature
+@section: 2.24.01
+@parent_section: 2.24
+@parent_doc: BDD-02
+@index: BDD-02.0_index.md
+
+Feature: BDD-02.24.01: Performance Quality Attributes
+  Performance scenarios for knowledge engine operations
+```
+
+#### 3. Aggregator Format (Optional Redirect Stub)
+**Pattern**: `^BDD-\d{2,}\.\d+\.00_[a-z0-9_]+\.feature$`
+**Example**: `BDD-02.12.00_query_graph_traversal.feature`
+**Use When**: Organizing multiple subsections under one section
+
+**Requirements**:
+- `@redirect` tag MUST be present
+- 0 scenarios (no executable tests)
+- References to subsections in comments
+
+```gherkin
+# File: BDD-02.12.00_query_graph_traversal.feature
+@redirect
+@section: 2.12.00
+@parent_doc: BDD-02
+@index: BDD-02.0_index.md
+
+Feature: BDD-02.12: Query Graph Traversal (Aggregator)
+
+  This is a redirect stub. Test scenarios are in subsections:
+  - BDD-02.12.01_basic_traversal.feature
+  - BDD-02.12.02_path_finding.feature
+  - BDD-02.12.03_relationship_queries.feature
+
+Background:
+  Given the system timezone is "America/New_York"
+  # No scenarios - redirect only
+```
+
+### 1.2.2 Prohibited Patterns (Cause Validation ERROR)
+
+These legacy formats are **PROHIBITED** and will cause validation failure:
+
+❌ **_partN Suffix**: `BDD-02_query_part1.feature`, `BDD-02_query_part2.feature`
+✅ **Use instead**: `BDD-02.2.01_query_semantic.feature`, `BDD-02.2.02_query_graph.feature`
+
+❌ **Single-File Format**: `BDD-02_knowledge_engine.feature` (legacy)
+✅ **Use instead**: `BDD-02.1_ingest.feature`, `BDD-02.2_query.feature` (section-based)
+
+❌ **Directory-Based Structure**: `BDD-02_knowledge_engine/features/`
+✅ **Use instead**: Flat structure at `docs/BDD/` root with section-based naming
+
+### 1.2.3 File Organization Structure
+
+**Flat structure at BDD/ root** (no subdirectories):
+
+```
+docs/BDD/
+├── BDD-02.0_index.md                          # Index file (MANDATORY)
+├── BDD-02.1_ingest.feature                    # Section 1
+├── BDD-02.2_query.feature                     # Section 2
+├── BDD-02.3.00_learning.feature              # Section 3 aggregator
+├── BDD-02.3.01_learning_path.feature         # Section 3, subsection 01
+├── BDD-02.3.02_bias_detection.feature        # Section 3, subsection 02
+├── BDD-02_README.md                           # Optional companion doc
+└── BDD-02_TRACEABILITY.md                     # Optional companion doc
+```
+
+**Key Rules**:
+- ALL `.feature` files at `docs/BDD/` root level
+- NO subdirectories for BDD files
+- Each suite MUST have index file: `BDD-NN.0_index.md`
+- Optional companion docs: `BDD-NN_README.md`, `BDD-NN_TRACEABILITY.md`, `BDD-NN_GLOSSARY.md`
+
+### 1.2.4 Numbering Scheme
+
+#### Index Files (.0 suffix)
+**Format**: `BDD-NN.0_index.md`
+**Example**: `BDD-02.0_index.md`
+**Status**: MANDATORY for each BDD suite
+
+```markdown
+# BDD-02.0: Knowledge Engine Test Suite Index
+
+## Sections
+
+| Section | File | Scenarios | Lines | Status |
+|---------|------|-----------|-------|--------|
+| 2.1 | BDD-02.1_ingest.feature | 42 | 387 | Active |
+| 2.2 | BDD-02.2_query.feature | 38 | 421 | Active |
+| 2.3 | BDD-02.3_learning.feature | 35 | 358 | Active |
+```
+
+#### Content Sections (.1, .2, .3, ...)
+**Format**: `BDD-NN.SS_{slug}.feature`
+**Numbering**: Sequential from 1 (no gaps)
+**Example**: `BDD-02.1_ingest.feature`, `BDD-02.2_query.feature`
+
+#### Subsections (.SS.01, .SS.02, ...)
+**Format**: `BDD-NN.SS.mm_{slug}.feature`
+**Numbering**: Sequential from 01 within each section
+**Example**: `BDD-02.3.01_learning_path.feature`, `BDD-02.3.02_bias_detection.feature`
+
+#### Aggregators (.SS.00)
+**Format**: `BDD-NN.SS.00_{slug}.feature`
+**Fixed Subsection**: Always .00
+**Example**: `BDD-02.2.00_query.feature`
+
+### 1.2.5 Split Strategy (Prioritized)
+
+When creating or splitting BDD suites, use these criteria in order:
+
+#### 1. Domain Modules (Preferred)
+Group by functional domain or lifecycle phase:
+- Ingest and Analysis
+- Query and Search
+- Learning and Adaptation
+- State Management
+- Validation and Safeguards
+- Governance and Compliance
+
+**Example**:
+```
+BDD-02.1_ingest_analysis.feature        # Ingest domain
+BDD-02.2_query_semantic_search.feature  # Query domain
+BDD-02.3_learning_adaptation.feature    # Learning domain
+```
+
+#### 2. Requirement Groups (EARS/PRD Alignment)
+Align with upstream EARS or PRD sections:
+- Group contiguous EARS sections (2-3 per BDD section)
+- Map to PRD feature areas
+
+**Example**:
+```
+# EARS sections 01-05 → BDD section 1
+BDD-02.1_data_ingestion.feature
+
+# EARS sections 06-12 → BDD section 2
+BDD-02.2_query_processing.feature
+```
+
+#### 3. Quality Attributes (Cross-Cutting)
+When scenarios span all domains:
+- Performance testing
+- Security scenarios
+- Reliability testing
+- Operational scenarios
+
+**Example**:
+```
+BDD-02.24_quality_performance.feature
+BDD-02.25_quality_security.feature
+BDD-02.26_quality_reliability.feature
+```
+
+### 1.2.6 Hard Limits and Guidance
+
+#### File Size Limits
+- **Maximum**: 500 lines per `.feature` file
+- **Soft limit**: 400 lines (recommended)
+- **Action**: If section exceeds 500 lines → Split into subsections (`.SS.mm` format)
+
+#### Scenario Limits
+- **Maximum**: 12 scenarios per Feature block
+- **Recommendation**: 6-10 scenarios per Feature
+- **Action**: If Feature exceeds 12 scenarios → Split into multiple Feature blocks or subsections
+
+#### Splitting Decision Tree
+```
+Is section >500 lines?
+├─ NO  → Keep as section-only format (BDD-NN.SS_{slug}.feature)
+└─ YES → Create subsections
+    ├─ 2-4 subsections?
+    │  └─ Create: BDD-NN.SS.01_{slug}.feature, BDD-NN.SS.02_{slug}.feature, ...
+    └─ 5+ subsections?
+       ├─ Create: BDD-NN.SS.00_{slug}.feature (aggregator)
+       └─ Create: BDD-NN.SS.01_{slug}.feature, BDD-NN.SS.02_{slug}.feature, ...
+```
+
+### 1.2.7 Section Metadata Requirements
+
+All `.feature` files MUST include section metadata tags:
+
+```gherkin
+@section: NN.SS              # Section number (e.g., 2.1, 2.14)
+@parent_doc: BDD-NN          # Parent BDD suite (e.g., BDD-02)
+@index: BDD-NN.0_index.md    # Index file reference
+@brd:BRD.NN.EE.SS            # Upstream BRD element
+@prd:PRD.NN.EE.SS            # Upstream PRD element
+@ears:EARS.NN.SS.RR          # Upstream EARS requirement
+```
+
+**Feature Title Format**:
+```gherkin
+Feature: BDD-NN.SS: Domain Description
+```
+
+**Example**:
+```gherkin
+@section: 2.14
+@parent_doc: BDD-02
+@index: BDD-02.0_index.md
+
+Feature: BDD-02.14: Query Result Filtering
+```
+
+### 1.2.8 Gherkin Standards
+
+**Content Rules**:
+- NO non-Gherkin Markdown in `.feature` files
+- Put tables and prose in companion markdown files
+
+**Time and Timezone**:
+- All times include seconds (HH:MM:SS)
+- Use IANA timezone format: `America/New_York`, `America/Los_Angeles`
+- Avoid ambiguous abbreviations (EST/EDT/PST/PDT)
+
+**Threshold Assertions**:
+- All quantitative values use `@threshold:PRD.NN.category.key`
+- No raw numbers for durations, retries, or limits
+- Format: `@threshold:PRD.NN.category.key`
+
+**Error Code Formatting**:
+- Quoted in steps: `And error code "ERROR_CODE" SHALL be returned`
+- Unquoted or `null` in Examples tables
+
+**Step Wording**:
+- Use canonical forms for reusability
+- Examples:
+  - `Given the system is in "active" state`
+  - `When the system attempts to transition to "shutdown" state`
+  - `Then the validation result SHALL be "success"`
+
+### 1.2.9 Suite Generation Workflow
+
+**Step 1**: Create index file from template
+```bash
+# Create BDD-NN.0_index.md from BDD-SECTION-0-TEMPLATE.md
+cp ai_dev_flow/BDD/BDD-SECTION-0-TEMPLATE.md docs/BDD/BDD-02.0_index.md
+```
+
+**Step 2**: Design section split (3-8 sections recommended)
+- Identify logical domains or EARS groupings
+- Estimate scenarios per section (target: 6-10)
+- Plan for subsections if needed (>500 lines)
+
+**Step 3**: Create section files from template
+```bash
+# Use BDD-SECTION-TEMPLATE.feature for standard sections
+# Use BDD-SUBSECTION-TEMPLATE.feature for subsections
+# Use BDD-AGGREGATOR-TEMPLATE.feature for aggregators
+```
+
+**Step 4**: Add section metadata tags
+- `@section`, `@parent_doc`, `@index`
+- Upstream traceability: `@brd`, `@prd`, `@ears`
+
+**Step 5**: Replace raw numbers with threshold keys
+- Add to PRD threshold registry first if key missing
+
+**Step 6**: Update index file
+- List all section files with scenario counts
+- Add traceability matrix
+
+**Step 7**: Run validation
+```bash
+python ai_dev_flow/scripts/validate_bdd_suite.py --root docs/BDD
+```
+
+### 1.2.10 Optional Companion Files
+
+**BDD-NN_README.md** - Suite Overview:
+```markdown
+# BDD-02: Knowledge Engine Test Suite
+
+Section-based BDD suite for knowledge engine functionality.
+
+## Sections
+- `BDD-02.1_ingest.feature` — Data ingestion and analysis (42 scenarios)
+- `BDD-02.2_query.feature` — Query processing and search (38 scenarios)
+- `BDD-02.3_learning.feature` — Learning and adaptation (35 scenarios)
+
+See `BDD-02.0_index.md` for complete section map.
+```
+
+**BDD-NN_TRACEABILITY.md** - Upstream/Downstream Mapping:
+```markdown
+# BDD-02: Knowledge Engine — Traceability
+
+## Upstream Sources
+| BDD Section | Upstream | Description |
+|-------------|----------|-------------|
+| BDD-02.1 | BRD.02.03.01, EARS.02.01.001-009 | Data ingestion |
+| BDD-02.2 | BRD.02.03.06, EARS.02.06.001-012 | Query processing |
+```
+
+**BDD-NN_GLOSSARY.md** - Domain Terms:
+```markdown
+# Glossary — Knowledge Engine (BDD-02)
+
+## Threshold Registry Keys
+- PRD.02.timeout.query_response
+- PRD.02.perf.api.p95_latency
+
+## Timezone Policy
+- Use `America/New_York` (ET) with HH:MM:SS
+```
+
+### 1.2.11 Quality Gates (Pre-Commit)
+
+**File Structure**:
+- ✅ All `.feature` files at `docs/BDD/` root level (no subdirectories)
+- ✅ Index file exists: `BDD-NN.0_index.md`
+- ✅ No `.feature` file exceeds 500 lines
+- ✅ No Feature block exceeds 12 scenarios
+
+**File Naming**:
+- ✅ All files match one of 3 valid patterns (section-only, subsection, aggregator)
+- ✅ No prohibited patterns (`_partN`, single-file format, directory-based)
+
+**Metadata**:
+- ✅ All quantitative values use `@threshold:` keys
+- ✅ Times include seconds (HH:MM:SS) with IANA timezone
+- ✅ Section metadata tags present in all `.feature` files
+
+**Aggregators**:
+- ✅ Aggregator files (.00) have `@redirect` tag
+- ✅ Aggregator files have 0 scenarios
+
+**Validation**:
+- ✅ Validation passes: `python validate_bdd_suite.py --root docs/BDD`
+
+### 1.2.12 Canonical Step Phrases
+
+Use consistent wording to maximize step reuse:
+
+**Time and Timezone**:
+```gherkin
+Given the current time is "14:30:00" in "America/New_York"
+And the system timezone is "America/New_York"
+```
+
+**State and Phase**:
+```gherkin
+Given the system is in "active" state
+Given the system is in "pre_market" phase
+```
+
+**Transitions**:
+```gherkin
+When the system attempts to transition to "shutdown" state
+```
+
+**Validation Results**:
+```gherkin
+Then the validation result SHALL be "success"
+And error code "VAL_001" SHALL be returned
+```
+
+**Threshold Assertions**:
+```gherkin
+Then it SHALL complete WITHIN @threshold:PRD.02.timeout.query_response
+And memory usage SHALL NOT exceed @threshold:PRD.02.perf.max_memory
+```
+
+### 1.2.13 Examples
+
+**Example 1: Simple Suite** (3 sections, no subsections):
+```
+docs/BDD/
+├── BDD-03.0_index.md
+├── BDD-03.1_registration.feature       # 25 scenarios, 312 lines
+├── BDD-03.2_login.feature              # 28 scenarios, 367 lines
+├── BDD-03.3_password_reset.feature     # 18 scenarios, 245 lines
+└── BDD-03_README.md                     # Optional
+```
+
+**Example 2: Complex Suite** (with subsections):
+```
+docs/BDD/
+├── BDD-02.0_index.md
+├── BDD-02.1_ingest.feature             # 42 scenarios, 387 lines
+├── BDD-02.2_query.feature              # 38 scenarios, 421 lines
+├── BDD-02.3.00_learning.feature        # Aggregator (0 scenarios)
+├── BDD-02.3.01_learning_path.feature   # 20 scenarios, 298 lines
+├── BDD-02.3.02_bias_detection.feature  # 15 scenarios, 215 lines
+├── BDD-02_README.md                     # Optional
+└── BDD-02_TRACEABILITY.md               # Optional
+```
+
+**Example 3: Quality Attributes** (cross-cutting scenarios):
+```
+docs/BDD/
+├── BDD-02.24_quality_performance.feature
+├── BDD-02.25_quality_security.feature
+└── BDD-02.26_quality_reliability.feature
+```
 
 ---
 

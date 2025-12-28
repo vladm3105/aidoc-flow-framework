@@ -73,6 +73,7 @@ Example: docs/REQ/REQ-042_authentication_methods.md
 ```markdown
 [{TYPE}-{ID}](../path/to/document.md#{TYPE}-{ID})
 
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 Examples (nested folder structure - BRD/PRD/ADR):
 [BRD-01](../BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md#BRD-01)
 [PRD-02](../PRD/PRD-02_user_authentication/PRD-02.0_user_authentication_index.md#PRD-02)
@@ -191,7 +192,9 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 
 ## section 7: Traceability Template
 
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 ```markdown
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 ## 7. Traceability
 
 ### Upstream Sources (REQUIRED - except BRD)
@@ -307,7 +310,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
   - [ ] Update section 3 (Upstream Traceability)
   - [ ] Update section 4 (Downstream Traceability)
   - [ ] Update section 8 (Implementation Status)
-- [ ] Update index file: `[TYPE]-000_index.md`
+- [ ] Update index file: `[TYPE]-00_index.md`
 - [ ] Validate all markdown links resolve correctly
 - [ ] Run validation scripts:
   ```bash
@@ -351,7 +354,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 | **PRD** | Product features | .md | **Nested** | `PRD/PRD-02_user_auth/PRD-02.0_user_auth_index.md` |
 | **ADR** | Architecture decisions | .md | **Nested** | `ADR/ADR-005_db_selection/ADR-005.0_db_selection_index.md` |
 | **EARS** | Measurable requirements | .md | Flat | EARS-03_performance.md |
-| **BDD** | Acceptance tests | .feature | Flat | BDD-004_resource_limits.feature |
+| **BDD** | Acceptance tests | .feature | Flat (section-based) | BDD-02.14_query_filtering.feature |
 | **SYS** | System specifications | .md | Flat | SYS-006_api_gateway.md |
 | **REQ** | Atomic requirements | .md | Flat | REQ-007_limit_enforcement.md |
 | **IMPL** | Implementation plan | .md | Flat | IMPL-008_phase1_plan.md |
@@ -361,6 +364,81 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 | **IPLAN** | Session execution plans | .md | Flat | IPLAN-01_db_migration.md |
 
 **Note**: BRD/PRD/ADR use nested folder structure (`{TYPE}/{TYPE}-NN_{slug}/{TYPE}-NN.S_{slug}.md`) by DEFAULT. Folder slug MUST match index file slug. Other types use flat structure.
+
+---
+
+## BDD Section-Based Format (MANDATORY)
+
+**All BDD files MUST use section-based numbering** - No backward compatibility with legacy formats.
+
+### Three Valid Patterns
+
+#### 1. Section-Only Format (Primary)
+```
+Pattern: BDD-NN.SS_{slug}.feature
+Example: BDD-02.14_query_result_filtering.feature
+Use When: Standard section file (≤500 lines, ≤12 scenarios)
+```
+
+#### 2. Subsection Format (When Section >500 Lines)
+```
+Pattern: BDD-NN.SS.mm_{slug}.feature
+Example: BDD-02.24.01_quality_performance.feature
+Use When: Section requires splitting (each subsection ≤500 lines)
+```
+
+#### 3. Aggregator Format (Optional Redirect Stub)
+```
+Pattern: BDD-NN.SS.00_{slug}.feature
+Example: BDD-02.12.00_query_graph_traversal.feature
+Use When: Organizing multiple subsections under one section
+Requirements: @redirect tag MANDATORY, 0 scenarios
+```
+
+### Index File (Mandatory)
+```
+Pattern: BDD-NN.0_index.md
+Example: BDD-02.0_index.md
+Purpose: Suite overview, section map, traceability matrix
+```
+
+### Prohibited Patterns (ERROR)
+```
+❌ BDD-02_query_part1.feature          # _partN suffix
+❌ BDD-02_knowledge_engine.feature     # Single-file format
+❌ BDD-02_knowledge_engine/features/   # Directory-based structure
+```
+
+### File Organization
+```
+docs/BDD/
+├── BDD-02.0_index.md                       # Index (MANDATORY)
+├── BDD-02.1_ingest.feature                 # Section-only
+├── BDD-02.2_query.feature                  # Section-only
+├── BDD-02.12.00_graph_traversal.feature    # Aggregator (@redirect)
+├── BDD-02.12.01_depth_first.feature        # Subsection
+├── BDD-02.12.02_breadth_first.feature      # Subsection
+└── BDD-02.3_learning.feature               # Section-only
+```
+
+### Section Metadata Tags (Required)
+```gherkin
+@section: 2.14              # Section number
+@parent_doc: BDD-02         # Parent BDD suite
+@index: BDD-02.0_index.md   # Index file reference
+@brd:BRD.02.03.14          # Upstream traceability
+@prd:PRD.02.05.14
+@ears:EARS.02.14.01
+```
+
+### Validation
+```bash
+# Validate section-based format
+python ai_dev_flow/scripts/validate_bdd_suite.py --root docs/BDD
+
+# Migrate legacy formats
+python ai_dev_flow/scripts/migrate_bdd_to_sections.py --root docs/BDD --suite BDD-02_knowledge_engine
+```
 
 ---
 
@@ -417,6 +495,7 @@ python scripts/validate_requirement_ids.py
 ```
 
 ### Missing section 7
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 ```markdown
 ## 7. Traceability
 

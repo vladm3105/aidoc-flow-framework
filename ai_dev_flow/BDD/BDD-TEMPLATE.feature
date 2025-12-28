@@ -44,6 +44,72 @@
 #    Then response time is less than @threshold: PRD.035.perf.api.p95_latency
 #
 # =============================================================================
+# 📁 FILE ORGANIZATION: Section-Based Structure (MANDATORY)
+# =============================================================================
+#
+# BDD uses section-based numbering aligned with PRD/BRD standards.
+# All .feature files use dot notation at BDD/ root level (flat structure).
+#
+# **Three Valid Patterns**:
+#
+# 1. **Section-Only Format** (primary pattern):
+#    - Pattern: ^BDD-\d{2,}\.\d+_[a-z0-9_]+\.feature$
+#    - Example: BDD-02.14_query_result_filtering.feature
+#    - Use when: Standard section file (≤500 lines, ≤12 scenarios)
+#    - Metadata:
+#      @section: 2.14
+#      @parent_doc: BDD-02
+#      @index: BDD-02.0_index.md
+#    - Feature title: Feature: BDD-02.14: Query Result Filtering
+#
+# 2. **Subsection Format** (when section >500 lines):
+#    - Pattern: ^BDD-\d{2,}\.\d+\.\d{2}_[a-z0-9_]+\.feature$
+#    - Example: BDD-02.24.01_quality_performance.feature
+#    - Use when: Section requires splitting (each subsection ≤500 lines)
+#    - Metadata:
+#      @section: 2.24.01
+#      @parent_section: 2.24
+#      @parent_doc: BDD-02
+#      @index: BDD-02.0_index.md
+#    - Feature title: Feature: BDD-02.24.01: Performance Quality Attributes
+#
+# 3. **Aggregator Format** (optional redirect stub):
+#    - Pattern: ^BDD-\d{2,}\.\d+\.00_[a-z0-9_]+\.feature$
+#    - Example: BDD-02.12.00_query_graph_traversal.feature
+#    - Use when: Organizing multiple subsections under one section
+#    - Requirements: @redirect tag, 0 scenarios, references to subsections
+#    - Metadata:
+#      @redirect
+#      @section: 2.12.00
+#      @parent_doc: BDD-02
+#      @index: BDD-02.0_index.md
+#
+# **Numbering Scheme**:
+# - .0 suffix: Index file (e.g., BDD-02.0_index.md) - MANDATORY for each suite
+# - .1, .2, .3: Content sections (e.g., BDD-02.1_ingest.feature)
+# - .SS.01, .SS.02: Subsections (e.g., BDD-02.3.01_learning_path.feature)
+# - .SS.00: Aggregator/redirect stub (e.g., BDD-02.2.00_query.feature)
+#
+# **File Organization**:
+# - All .feature files at BDD/ root level (flat structure)
+# - NO features/ subdirectory (prohibited - legacy format)
+# - Index file required: BDD-NN.0_index.md
+# - Optional companions: BDD-NN_README.md, BDD-NN_TRACEABILITY.md
+#
+# **Hard Limits**:
+# - Maximum 500 lines per .feature file (soft limit: 400 lines)
+# - Maximum 12 scenarios per Feature block
+# - If section exceeds 500 lines → Split into subsections (.SS.mm format)
+# - If many subsections → Add aggregator (.SS.00 format)
+#
+# **Prohibited Patterns** (cause validation ERROR):
+# - ❌ _partN suffix (e.g., BDD-02_query_part1.feature)
+# - ❌ Single-file format: BDD-NN_slug.feature (legacy)
+# - ❌ Directory-based: BDD-NN_{slug}/features/ (legacy)
+#
+# **Reference**: BDD_SPLITTING_RULES.md, ID_NAMING_STANDARDS.md
+#
+# =============================================================================
 #
 # QUICK SELF-CHECK BEFORE WRITING BDD SCENARIOS:
 # Use these questions to verify your requirements are at the appropriate abstraction level:

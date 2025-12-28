@@ -69,8 +69,13 @@ Scope & Authority
 - One document per file.
 - Filenames use sequential numeric prefixes for ordering; the full document IDs live in the H1 headings and tags.
 - Categories are expressed by folder paths (e.g., `REQ/api/av`, `REQ/risk/lim`).
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - All cross-references use markdown link format: `[ID](relative/path.md#ANCHOR)`.
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 - **Exception**: CTR (API Contracts) uses dual-file format: both .md and .yaml files required per contract.
+
+Note on paths: Examples may show a top-level `docs/` prefix; in this ai_dev_flow directory, type folders live at the ai_dev_flow root (e.g., `BRD/`, `PRD/`, `ADR/`). Adjust relative links accordingly.
+
 
 Universal Numbering Pattern (All Document Types)
 - **Primary Number (DOC_NUM)**: Variable-length sequential number starting at 2 digits (01-99, then 100-999, 1000+)
@@ -78,9 +83,11 @@ Universal Numbering Pattern (All Document Types)
   - **NOT**: Placeholder text like "NN" or "XXX"
   - **Minimum**: 2 digits (01)
   - **Growth**: Automatically expands when needed (99 → 100, 999 → 1000)
+  - **Numbering Policy (explicit)**: Document numbers start at `01` and increase sequentially. As the sequence grows, the digit width MAY expand (e.g., `01…99` → `100…999` → `1000…`). Previously created documents keep their original width; new documents adopt the width required by the next number in sequence.
 - **Section Number (S)**: 1-2 digit section number for split documents (0-99)
   - **Notation**: "S" represents actual numeric digit (e.g., 0, 1, 2, 10)
   - **Section 0**: Always the index file for split documents
+- **Section H1 match**: For section files, the H1 title MUST include the section suffix `.S` to match the filename (e.g., `# BRD-03.1: …`).
 - **Format**:
   - **Nested Folder Types (BRD, PRD, ADR)** - section ALWAYS required:
     - **Full pattern**: `TYPE-DOC_NUM.S_{folder_slug}_{section_type}.md` (e.g., `BRD-01.0_platform_architecture_index.md`)
@@ -91,6 +98,10 @@ Universal Numbering Pattern (All Document Types)
     - Atomic: `TYPE-DOC_NUM_{slug}.md` (e.g., `REQ-01_auth.md`, `TASKS-99_service.md`)
     - Split: `TYPE-DOC_NUM.S_{slug}.md` (e.g., `SPEC-100.1_split.yaml`)
 - **Zero-Padding**: Start with 2 digits (01), expand as needed
+  - **Index/Common Files Use Zeros (default 2 digits)**: Index or other common registry-style files use an all‑zero `DOC_NUM` to separate them from numbered documents. The default index width is 2 digits (`00`) for new files.
+    - Preferred examples: `BRD-00.0_index.md`, `PRD-00_index.md`, `TASKS-00_index.md`, `ICON-00_index.md`.
+    - Acceptable when a project uses 3+ digits for document numbers: `BRD-000_index.md`, `PRD-000_index.md`, etc. The zero width SHOULD match the active width for the document type directory.
+    - Compatibility note: Existing repositories may use 000_index; do not rename existing files to avoid broken links. New projects default to 00_index.
 - **Element ID DOC_NUM**: MUST match filename digit count exactly
   - Filename `BRD-01.0_index.md` → Element ID `BRD.01.01.01`
   - Filename `ADR-100.1_context.md` → Element ID `ADR.100.10.01`
@@ -133,14 +144,76 @@ Document ID Standards (ai_dev_flow)
     - **Index/Directory**: `BDD-00_index.md` (Markdown format - `.md` extension)
     - **Template**: `BDD-TEMPLATE.feature` (Gherkin format - `.feature` extension)
     - **Traceability Matrix**: `BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md` (Markdown format - `.md` extension)
-  - Filename: `BDD/BDD-DOC_NUM_{slug}.feature`.
+
+  **Section-Based File Organization** (MANDATORY):
+
+  All BDD files use section-based numbering (dot notation) aligned with PRD/BRD standards.
+
+  **Three Valid Patterns**:
+
+  1. **Section-Only Format** (primary pattern):
+     - Filename: `BDD/BDD-DOC_NUM.SECTION_{slug}.feature`
+     - Pattern: `^BDD-\d{2,}\.\d+_[a-z0-9_]+\.feature$`
+     - Example: `BDD/BDD-02.14_query_result_filtering.feature`
+     - Use when: Standard section file (≤500 lines, ≤12 scenarios)
+
+  2. **Subsection Format** (when section >500 lines):
+     - Filename: `BDD/BDD-DOC_NUM.SECTION.SUBSECTION_{slug}.feature`
+     - Pattern: `^BDD-\d{2,}\.\d+\.\d{2}_[a-z0-9_]+\.feature$`
+     - Example: `BDD/BDD-02.24.01_quality_performance.feature`
+     - Use when: Section requires splitting (each subsection ≤500 lines)
+
+  3. **Aggregator Format** (optional redirect stub):
+     - Filename: `BDD/BDD-DOC_NUM.SECTION.00_{slug}.feature`
+     - Pattern: `^BDD-\d{2,}\.\d+\.00_[a-z0-9_]+\.feature$`
+     - Example: `BDD/BDD-02.12.00_query_graph_traversal.feature`
+     - Use when: Organizing multiple subsections under one section
+     - Requirements: `@redirect` tag, 0 scenarios, references to subsections
+
+  **Numbering Scheme**:
+  - `.0` suffix: Index file (e.g., `BDD-02.0_index.md`)
+  - `.1`, `.2`, `.3`, etc.: Content sections (e.g., `BDD-02.1_ingest.feature`)
+  - `.SS.01`, `.SS.02`, etc.: Subsections (e.g., `BDD-02.3.01_learning_path.feature`)
+  - `.SS.00`: Aggregator/redirect stub (e.g., `BDD-02.2.00_query.feature`)
+
+  **File Organization**:
+  - All `.feature` files at `BDD/` root level (flat structure)
+  - NO `features/` subdirectory
+  - Each BDD suite MUST have index file: `BDD-DOC_NUM.0_index.md`
+  - Optional companion docs: `BDD-DOC_NUM_README.md`, `BDD-DOC_NUM_TRACEABILITY.md`
+
+  **Hard Limits**:
+  - Max file size: 500 lines per `.feature` file (soft limit: 400 lines)
+  - Max scenarios: 12 scenarios per Feature block
+  - If section exceeds 500 lines → Split into subsections (`.SS.mm` format)
+  - If many subsections → Add aggregator (`.SS.00` format)
+
+  **Prohibited Patterns** (cause validation ERROR):
+  - `_partN` suffix (e.g., `BDD-02_query_part1.feature`)
+  - Single-file format: `BDD-NN_slug.feature` (legacy format)
+  - Directory-based structure: `BDD-NN_{slug}/features/` (legacy format)
+
+  **Section Metadata** (in .feature files):
+  - Add section tags: `@section: NN.SS`, `@parent_doc: BDD-NN`, `@index: BDD-NN.0_index.md`
+  - Feature title format: `Feature: BDD-NN.SS: Domain Description`
+  - Example:
+    ```gherkin
+    @section: 2.1
+    @parent_doc: BDD-02
+    @index: BDD-02.0_index.md
+    Feature: BDD-02.1: Ingest and Analysis
+    ```
+
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
+  - Section Numbers: SECTION = 0 (index), 1+ (content sections)
+  - Subsection Numbers: SUBSECTION = 01-99 (subsections), 00 (aggregator)
   - Tags (mandatory):
-    - `@requirement:[REQ-DOC_NUM](../REQ/.../REQ-DOC_NUM_{slug}.md#REQ-DOC_NUM)`
-    - `@adr:[ADR-DOC_NUM](../ADR/ADR-DOC_NUM_{slug}.md#ADR-DOC_NUM)` (if applicable)
-  - Tags appear before `Scenario:` using valid relative paths + anchors.
-  - Index: maintain `BDD/BDD-00_index.md` (note: `.md` format, not `.feature`).
-  - Notes: Use Section Files for large feature files that exceed 50KB.
+    - `@brd:BRD.NN.EE.SS` (upstream BRD element)
+    - `@prd:PRD.NN.EE.SS` (upstream PRD element)
+    - `@ears:EARS.NN.SS.RR` (upstream EARS requirement)
+  - Tags appear before `Scenario:` using valid relative paths + anchors
+  - Index: Each suite MUST have `BDD/BDD-DOC_NUM.0_index.md` listing all sections
+  - Reference: `BDD_SPLITTING_RULES.md` for section-based structure rules
 - Technical Specifications (SPEC)
   - YAML `id:` uses lowercase snake_case; pattern: `^[a-z][a-z0-9_]*[a-z0-9]$`.
   - Filename: `SPEC/{type}/SPEC-DOC_NUM_{slug}.yaml` (e.g., `SPEC/services/SPEC-03_resource_limit_service.yaml`).
@@ -330,8 +403,12 @@ The framework uses three distinct ID patterns for different purposes:
 
 | What You're Referencing | Format | Example |
 |------------------------|--------|---------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | A **document file** | Dash format | `BRD-01`, `[BRD-01](../BRD/BRD-01.md)` |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | A **section file** | Dash+dot format | `BRD-01.1`, `[BRD-01.1](../BRD/BRD-01.1_summary.md)` |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 | A **specific element** (requirement, feature, constraint) | 4-segment dot format | `BRD.01.01.05`, `@brd: BRD.01.01.05` |
 
 **Key Insight**: The 4-segment format unifies internal and external element references to avoid confusion. Use it consistently everywhere you reference a specific element. Element ID DOC_NUM MUST match filename digit count.
@@ -442,7 +519,9 @@ custom_fields:
 docs/BRD/
 └── BRD-03_trading_platform/             # Nested folder with descriptive slug
     ├── BRD-03.0_index.md                        # Section 0: Index/Overview
+<!-- VALIDATOR:IGNORE-LINKS-START -->
     ├── BRD-03.1_executive_summary.md            # Section 1: Executive Summary
+<!-- VALIDATOR:IGNORE-LINKS-END -->
     ├── BRD-03.2_business_context.md             # Section 2: Business Context
     ├── BRD-03.3_functional_requirements.md      # Section 3: Functional Requirements
     ├── BRD-03.4_non_functional_requirements.md  # Section 4: Non-Functional Requirements
@@ -501,7 +580,9 @@ custom_fields:
 | Section | Title | Size | Link |
 |---------|-------|------|------|
 | 0 | Index (this file) | 3KB | [BRD-03.0](BRD-03.0_index.md) |
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | 1 | Executive Summary | 8KB | [BRD-03.1](BRD-03.1_executive_summary.md) |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 | 2 | Business Context | 25KB | [BRD-03.2](BRD-03.2_business_context.md) |
 | 3 | Functional Requirements | 45KB | [BRD-03.3](BRD-03.3_functional_requirements.md) |
 | 4 | Non-Functional Requirements | 30KB | [BRD-03.4](BRD-03.4_non_functional_requirements.md) |
@@ -515,7 +596,9 @@ custom_fields:
 3. Reference Section 6 for detailed appendices
 ```
 
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 **Content Section Example** (`BRD-03.1_executive_summary.md`):
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 ```markdown
 ---
 doc_id: BRD-03
@@ -556,8 +639,12 @@ custom_fields:
 - `@ref: BRD-03.2.3` → References subsection 2.3 of BRD-03
 
 **Markdown Links to Sections**:
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - Same directory: `[BRD-03.1](BRD-03.1_executive_summary.md)`
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - Cross-directory: `[BRD-03.1](../BRD/BRD-03.1_executive_summary.md)`
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### Metadata Tags for Document Type Distinction
 
@@ -667,7 +754,9 @@ Cross-Reference Link Format (MANDATORY)
       - "[ADR-DOC_NUM](../../ADR/ADR-DOC_NUM_{slug}.md#ADR-DOC_NUM)"`
   - BDD in SPEC verification:
     - `verification:
+<!-- VALIDATOR:IGNORE-LINKS-START -->
       - BDD: "[feature_name.feature(:LNN)](../../BDD/feature_name.feature#LNN)"`
+<!-- VALIDATOR:IGNORE-LINKS-END -->
   - BRD in BRD:
     - `[BRD-DOC_NUM](BRD-DOC_NUM_{slug}.md)` (same directory)
     - `[BRD-DOC_NUM.S](BRD-DOC_NUM.S_{slug}.md)` (section file reference)

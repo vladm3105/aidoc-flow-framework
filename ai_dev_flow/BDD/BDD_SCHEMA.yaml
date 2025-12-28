@@ -155,10 +155,96 @@ structure:
       example: "✅ 85% (Target: ≥90%)"
       required: true
 
-  # File naming convention
+  # File naming conventions (Section-Based ONLY)
   file_naming:
-    pattern: "^BDD-\\d{3}_[a-z0-9_]+\\.feature$"
-    description: "Format: BDD-NN_descriptive_name.feature"
+    description: "Section-based numbering aligned with PRD/BRD standards"
+    mandatory_format: "section_based"
+
+    # Three valid patterns (strict enforcement)
+    valid_patterns:
+      section_only:
+        pattern: "^BDD-\\d{2,}\\.\\d+_[a-z0-9_]+\\.feature$"
+        description: "Section-only format (primary)"
+        example: "BDD-02.14_query_result_filtering.feature"
+        use_when: "Standard section file (≤500 lines, ≤12 scenarios)"
+
+      subsection:
+        pattern: "^BDD-\\d{2,}\\.\\d+\\.\\d{2}_[a-z0-9_]+\\.feature$"
+        description: "Subsection format (when section >500 lines)"
+        example: "BDD-02.24.01_quality_performance.feature"
+        use_when: "Section requires splitting (each subsection ≤500 lines)"
+
+      aggregator:
+        pattern: "^BDD-\\d{2,}\\.\\d+\\.00_[a-z0-9_]+\\.feature$"
+        description: "Aggregator format (redirect stub)"
+        example: "BDD-02.12.00_query_graph_traversal.feature"
+        use_when: "Organizing multiple subsections under one section"
+        requirements:
+          - "@redirect tag required"
+          - "0 scenarios (no executable tests)"
+          - "References to subsections in comments"
+
+    # Prohibited patterns (cause validation ERROR)
+    prohibited_patterns:
+      part_suffix:
+        pattern: "_part\\d+\\.feature$"
+        error: "PROHIBITED: _partN suffix not allowed (use subsection format instead)"
+        example_bad: "BDD-02_query_part1.feature"
+        example_good: "BDD-02.2.01_query_semantic.feature"
+
+      single_file:
+        pattern: "^BDD-\\d{2,}_[a-z0-9_]+\\.feature$"
+        error: "PROHIBITED: Single-file format (legacy) - use section-based format"
+        example_bad: "BDD-02_knowledge_engine.feature"
+        example_good: "BDD-02.1_ingest.feature"
+
+      directory_based:
+        pattern: "^BDD-\\d{2,}_[a-z0-9_]+/features/"
+        error: "PROHIBITED: Directory-based structure (legacy) - use flat section-based structure"
+        example_bad: "BDD-02_knowledge_engine/features/BDD-02_ingest.feature"
+        example_good: "BDD-02.1_ingest.feature (at BDD/ root)"
+
+    # Section numbering specification
+    section_numbering:
+      index_file:
+        format: "BDD-NN.0_index.md"
+        description: "Mandatory index file for each BDD suite"
+        example: "BDD-02.0_index.md"
+        required: true
+
+      content_sections:
+        format: "BDD-NN.SS_{slug}.feature"
+        description: "Content section files (SS = 1, 2, 3, ...)"
+        example: "BDD-02.1_ingest.feature, BDD-02.2_query.feature"
+        numbering: "Sequential from 1 (no gaps)"
+
+      subsections:
+        format: "BDD-NN.SS.mm_{slug}.feature"
+        description: "Subsections when section >500 lines (mm = 01, 02, ...)"
+        example: "BDD-02.3.01_learning_path.feature"
+        numbering: "Sequential from 01 within each section"
+
+      aggregators:
+        format: "BDD-NN.SS.00_{slug}.feature"
+        description: "Optional aggregator/redirect stub (always .00)"
+        example: "BDD-02.2.00_query.feature"
+        fixed_subsection: "00 (always)"
+
+    # Hard limits
+    hard_limits:
+      max_file_lines: 500
+      soft_file_lines: 400
+      max_scenarios_per_feature: 12
+      split_strategy: "When section exceeds 500 lines, create subsections (.SS.mm format)"
+      aggregator_strategy: "When many subsections, add aggregator (.SS.00 format)"
+
+    # File organization
+    file_organization:
+      structure: "flat"
+      location: "BDD/ root level"
+      subdirectories_allowed: false
+      features_subdirectory: "PROHIBITED (legacy format)"
+      index_file_location: "BDD/ root (e.g., BDD-02.0_index.md)"
 
 # =============================================================================
 # Gherkin Syntax Patterns
@@ -444,11 +530,11 @@ traceability:
   downstream:
     expected:
       - type: SYS
-        format: "SYS-NN"
+        format: "SYS"   # Generic name only; do not reference numeric IDs until they exist
       - type: REQ
-        format: "REQ-NN"
+        format: "REQ"   # Generic name only; do not reference numeric IDs until they exist
       - type: SPEC
-        format: "SPEC-NN"
+        format: "SPEC"  # Generic name only; do not reference numeric IDs until they exist
 
   same_type:
     optional:

@@ -1,98 +1,165 @@
----
-doc_id: BDD-{NN}
-section: 0
-title: "{Document Title} - Index"
-total_sections: {N}
-original_size_kb: {SIZE}
-split_date: {YYYY-MM-DD}
-tags:
-  - section-index
-  - bdd-section
-  - layer-4-artifact
-custom_fields:
-  section_type: index
-  artifact_type: BDD
-  layer: 4
-  architecture_approach: {approach-name}
-  priority: {primary|fallback|shared}
-  development_status: {active|reference|planned}
-  split_type: section
-  reading_order: sequential
-  traceability_scope: inherited
-  index_role: true
+# BDD-NN.0: [Suite Name] Test Suite Index
+
+**Version**: 1.0
+**Last Updated**: YYYY-MM-DD
+**Status**: Active
+**Parent Document**: BDD-NN
+
 ---
 
-# BDD-{NN}.0: {Document Title} - Index
-
-## Document Overview
+## Document Control
 
 | Field | Value |
 |-------|-------|
-| **Document ID** | BDD-{NN} |
-| **Document Type** | Behavior-Driven Development Scenarios |
-| **Layer** | 4 - Behavior Specifications |
-| **Title** | {Document Title} |
-| **Total Sections** | {N} |
-| **Original Size** | {SIZE} KB |
-| **Split Date** | {YYYY-MM-DD} |
-| **Status** | {status} |
+| **Document ID** | BDD-NN.0 |
+| **Document Type** | BDD Suite Index |
+| **Version** | 1.0 |
+| **Status** | Draft / Active / Archived |
+| **Created** | YYYY-MM-DD |
+| **Last Updated** | YYYY-MM-DD |
+| **Owner** | [Team/Role] |
 
 ---
 
-## Purpose
+## Suite Overview
 
-{Brief description of BDD scenarios scope and why split into sections}
+**Purpose**: Brief description of what this BDD suite tests (1-2 sentences)
 
----
+**Scope**: Define boundaries of test coverage
+- ✅ **In Scope**: What is tested
+- ❌ **Out of Scope**: What is not tested
 
-## Section Map
-
-| Section | File | Title | Description |
-|---------|------|-------|-------------|
-| 0 | [BDD-{NN}.0_index.md](BDD-{NN}.0_index.md) | Index | This file - document overview and navigation |
-| 1 | [BDD-{NN}.1_{slug1}.md](BDD-{NN}.1_{slug1}.md) | {Title 1} | {Description 1} |
-| 2 | [BDD-{NN}.2_{slug2}.md](BDD-{NN}.2_{slug2}.md) | {Title 2} | {Description 2} |
-| 3 | [BDD-{NN}.3_{slug3}.md](BDD-{NN}.3_{slug3}.md) | {Title 3} | {Description 3} |
+**Testing Approach**:
+- Domain-based: [e.g., Functional modules, lifecycle phases]
+- Quality attributes: [e.g., Performance, security, reliability]
 
 ---
 
-## Scenario Summary
+## Section File Map
 
-| Feature Area | Scenarios | Happy Path | Edge Cases | Error Cases |
-|--------------|-----------|------------|------------|-------------|
-| {Feature 1} | {N} | {N} | {N} | {N} |
-| {Feature 2} | {N} | {N} | {N} | {N} |
-| **Total** | {N} | {N} | {N} | {N} |
+| Section | File | Scenarios | Lines | Status | Description |
+|---------|------|-----------|-------|--------|-------------|
+| NN.1 | BDD-NN.1_[slug].feature | XX | XXX | Active | Brief description |
+| NN.2 | BDD-NN.2_[slug].feature | XX | XXX | Active | Brief description |
+| NN.3 | BDD-NN.3_[slug].feature | XX | XXX | Active | Brief description |
+| NN.4 | BDD-NN.4_[slug].feature | XX | XXX | Pending | Brief description |
 
----
+**Totals**: XX scenarios, XXXX lines
 
-## Dependencies
-
-### Upstream References
-- @ref: EARS-{NN} - Formal requirements these scenarios validate
-- @ref: PRD-{NN} - Product requirements driving scenarios
-
-### Downstream References
-- @ref: ADR-{NN} - Architecture decisions informed by behaviors
-- @ref: SYS-{NN} - System requirements derived from scenarios
-
-### Cross-Section Dependencies
-- Section 2 depends on Section 1 (core scenarios)
-- Section 3 references all prior sections
+**Legend**:
+- **Active**: Currently in use, validated
+- **Pending**: Under development
+- **Deprecated**: Scheduled for removal
+- **Archived**: Historical reference only
 
 ---
 
-## Reading Order
+## Traceability Matrix
 
-**Recommended reading sequence:**
-1. **Section 1**: {Title 1} - Start here for core user scenarios
-2. **Section 2**: {Title 2} - Continue with edge case scenarios
-3. **Section 3**: {Title 3} - Conclude with error handling scenarios
+### Upstream Dependencies
 
-**Quick reference:**
-- For happy path scenarios, see Section {N}
-- For edge cases, see Section {M}
-- For error scenarios, see Section {O}
+Links to requirements and specifications that this BDD suite validates:
+
+| BDD Section | Upstream Source | Description |
+|-------------|----------------|-------------|
+| BDD-NN.1 | BRD.XX.YY.ZZ, PRD.AA.BB.CC | [Brief description] |
+| BDD-NN.2 | EARS.NN.SS.RR | [Brief description] |
+| BDD-NN.3 | SYS.NN.SS | [Brief description] |
+
+### Downstream Dependencies
+
+Components that depend on these test scenarios:
+
+| BDD Section | Downstream Artifact | Description |
+|-------------|---------------------|-------------|
+| BDD-NN.1 | SPEC.XXX, TASKS.YYY | [Brief description] |
+| BDD-NN.2 | IPLAN.ZZZ | [Brief description] |
+
+---
+
+## Section Details
+
+### Section NN.1: [Section Name]
+
+**File**: `BDD-NN.1_[slug].feature`
+**Scenarios**: XX
+**Focus**: Brief description of section focus
+**Upstream**: BRD.XX.YY.ZZ, PRD.AA.BB.CC
+**Key Scenarios**:
+- Primary scenario 1 description
+- Primary scenario 2 description
+- Edge case scenario description
+
+### Section NN.2: [Section Name]
+
+**File**: `BDD-NN.2_[slug].feature`
+**Scenarios**: XX
+**Focus**: Brief description of section focus
+**Upstream**: EARS.NN.SS.RR
+**Key Scenarios**:
+- Primary scenario 1 description
+- Primary scenario 2 description
+
+---
+
+## Execution Strategy
+
+### Execution Order
+
+**Recommended Sequence**:
+1. Section NN.1 - [Rationale for order]
+2. Section NN.2 - [Rationale for order]
+3. Section NN.3 - [Rationale for order]
+
+**Parallelization**:
+- Sections NN.1 and NN.2 can run in parallel (independent)
+- Section NN.3 requires NN.1 completion (state dependency)
+
+### Environment Requirements
+
+**Prerequisites**:
+- System state: [e.g., "active", "pre_market"]
+- Timezone: America/New_York
+- Data fixtures: [Required test data]
+- External dependencies: [APIs, services]
+
+**Test Data**:
+- Data set 1: [Description, location]
+- Data set 2: [Description, location]
+
+---
+
+## Quality Gates
+
+### Pre-Execution Gates
+
+Before running BDD scenarios:
+- [ ] All upstream requirements validated (BRD/PRD/EARS)
+- [ ] Section metadata tags present in all .feature files
+- [ ] Threshold registry keys defined for all quantitative assertions
+- [ ] Timezone policy enforced (IANA format, HH:MM:SS)
+- [ ] No .feature file exceeds 500 lines
+- [ ] No Feature block exceeds 12 scenarios
+- [ ] Validation passes: `python validate_bdd_suite.py --root docs/BDD`
+
+### Post-Execution Gates
+
+After scenario execution:
+- [ ] All scenarios passed or have documented exceptions
+- [ ] Performance thresholds met (@threshold assertions)
+- [ ] Traceability verified (scenarios link to upstream requirements)
+- [ ] Test coverage >85% for targeted requirements
+- [ ] No regressions in existing scenarios
+
+---
+
+## Companion Documents
+
+| Document | Path | Purpose |
+|----------|------|---------|
+| **README** | `BDD-NN_README.md` | Suite overview, testing approach, conventions |
+| **Traceability** | `BDD-NN_TRACEABILITY.md` | Detailed upstream/downstream mapping |
+| **Glossary** | `BDD-NN_GLOSSARY.md` | Domain terms, threshold keys, timezone policy |
 
 ---
 
@@ -100,14 +167,23 @@ custom_fields:
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | {YYYY-MM-DD} | {Author} | Initial split from monolithic document |
+| 1.0 | YYYY-MM-DD | [Author] | Initial index file creation |
 
 ---
 
-## Traceability
+## References
 
-- **Original Document**: BDD-{NN} (before split)
-- **Element ID Range**: BDD.{NN}.{TT}.01 through BDD.{NN}.{TT}.{MAX}
-- **Tag Format**: @ref: BDD-{NN}.{S} (section reference)
-- **Upstream Trace**: BRD -> PRD -> EARS
-- **Downstream Trace**: ADR -> SYS -> REQ -> IMPL -> CTR -> SPEC
+- **ID_NAMING_STANDARDS.md**: Section-based file naming patterns
+- **BDD_SCHEMA.yaml**: Validation rules
+- **BDD_SPLITTING_RULES.md**: Section organization guidance
+- **BDD-SECTION-TEMPLATE.feature**: Section file template
+- **BDD-SUBSECTION-TEMPLATE.feature**: Subsection file template
+- **BDD-AGGREGATOR-TEMPLATE.feature**: Aggregator/redirect stub template
+
+---
+
+**Document Path**: `/opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD-NN.0_index.md`
+**Framework**: AI Dev Flow SDD
+**Layer**: 4 (BDD - Behavior-Driven Development)
+**Template Version**: 1.0
+**Last Updated**: 2025-12-27

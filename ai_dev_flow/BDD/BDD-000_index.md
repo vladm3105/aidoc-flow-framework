@@ -279,18 +279,32 @@ Track acceptance test coverage for requirements:
 
 | Source Type | Document ID | Relationship |
 |-------------|-------------|--------------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | BRD | [BRD-NN](../BRD/BRD-NN.md) | Business requirements driving acceptance criteria |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | PRD | [PRD-NN](../PRD/PRD-NN.md) | Product requirements defining features |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | EARS | [EARS-NN](../EARS/EARS-NN.md) | Event-driven specifications for behavior |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### Downstream Consumers
 
 | Consumer Type | Document ID | Relationship |
 |---------------|-------------|--------------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | ADR | [ADR-NN](../ADR/ADR-NN.md) | Architecture decisions must satisfy BDD scenarios |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | SYS | [SYS-NN](../SYS/SYS-NN.md) | System requirements traced from BDD scenarios |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | REQ | [REQ-NN](../REQ/.../REQ-NN.md) | Atomic requirements validated by BDD scenarios |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | SPEC | [SPEC-NN](../SPEC/.../SPEC-NN.yaml) | Technical SPEC implement BDD acceptance criteria |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 | Code | `src/module/component.py` | Implementation satisfies BDD tests |
 
 ## References
