@@ -58,6 +58,16 @@ SPECs serve as the **technical implementation contracts** that:
 - **Support Verification**: Define measurable criteria for implementation correctness
 - **Enable Independent Development**: Allow teams to develop components in parallel with well-defined contracts
 
+## Position in Document Workflow
+
+**⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
+
+**Layer 10: Technical Specifications**
+
+SPECs sit between REQ (atomic requirements) and TASKS (implementation tasks) in the 16-layer architecture (Layer 0-15):
+
+**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
+
 ## SPEC YAML Structure
 
 Note: For large specifications that warrant splitting, see `SPEC/SPEC_SPLITTING_RULES.md` for SPEC-specific guidance and `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.

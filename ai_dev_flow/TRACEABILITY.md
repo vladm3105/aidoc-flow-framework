@@ -261,6 +261,8 @@ Execution (Code → Tests) → Validation (Validation → Review → Production)
 | 14 | Tests | Unit/integration tests |
 | 15 | Validation | End-to-end validation |
 
+**Note**: REF (Reference Documents) are supplementary documentation that does NOT participate in the formal traceability chain. Use REF for external research, standards references, glossaries, and other supporting material.
+
 #### Mermaid Diagram Visual Groupings (L1-L11)
 
 Diagrams use simplified labels for visual clarity:

@@ -137,6 +137,7 @@ Universal Numbering Pattern (All Document Types)
   - Flat types: `TYPE-DOC_NUM_{slug}.md` (e.g., `REQ-01_auth.md`)
   - ❌ INVALID: Cannot have both `REQ-09_{slug}.md` AND `REQ-09.0_{slug}.md` (collision)
   - ✅ VALID: Can have `BRD-09.0_{index}.md` AND `BRD-09.1_{slug}.md` (same DOC_NUM, different sections)
+- **Document ID Independence**: Document IDs are independent across types. BRD-09 does NOT necessarily relate to PRD-09, ADR-09, or SPEC-09. Each document type maintains its own sequential numbering.
 
 Document ID Standards (ai_dev_flow)
 - Requirements (REQ)

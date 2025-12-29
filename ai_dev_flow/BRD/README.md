@@ -441,8 +441,7 @@ BRDs serve as:
 ## Example BRDs
 
 See `BRD/examples/` for minimal, validator-compliant examples:
-- `BRD-01_platform_architecture_example.md` (Platform BRD)
-- `BRD-06_example_feature.md` (Feature BRD)
+- `BRD-06.0_example_feature.md` (Feature BRD)
 
 Also consult:
 - `BRD-TEMPLATE.md` (primary standard)

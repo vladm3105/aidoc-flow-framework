@@ -1,0 +1,201 @@
+# CTR-01: Validation API Schema (Example)
+# Companion YAML file for CTR-01_data_validation_api.md
+# This file provides the machine-readable API schema
+
+openapi: "3.0.3"
+info:
+  title: Validation API
+  version: "1.0.0"
+  description: |
+    Synchronous REST API for validating records against configurable rules.
+    Provider accepts a record and rules; returns PASS/FAIL and violations.
+  contact:
+    name: Example Team
+    email: team@example.com
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: https://api.staging.example.com/v1
+    description: Staging server
+
+paths:
+  /validate:
+    post:
+      operationId: validateRecord
+      summary: Validate a record against specified rules
+      description: |
+        Accepts a record and validation rules, returns validation result
+        with any violations found.
+      tags:
+        - validation
+      security:
+        - mTLS: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidationRequest'
+            example:
+              request_id: "550e8400-e29b-41d4-a716-446655440000"
+              record:
+                type: "entity"
+                fields:
+                  id: "ABC-123"
+                  name: "Example Entity"
+              rules:
+                - "required:id"
+                - "format:id:^[A-Z]{3}-\\d{3}$"
+      responses:
+        '200':
+          description: Validation completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResponse'
+              examples:
+                pass:
+                  summary: Validation passed
+                  value:
+                    request_id: "550e8400-e29b-41d4-a716-446655440000"
+                    validation_result: "PASS"
+                    violations: []
+                fail:
+                  summary: Validation failed
+                  value:
+                    request_id: "550e8400-e29b-41d4-a716-446655440000"
+                    validation_result: "FAIL"
+                    violations:
+                      - rule_id: "format:id"
+                        message: "id format invalid"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    mTLS:
+      type: mutualTLS
+      description: Mutual TLS authentication required
+
+  schemas:
+    ValidationRequest:
+      type: object
+      required:
+        - request_id
+        - record
+        - rules
+      properties:
+        request_id:
+          type: string
+          format: uuid
+          description: Unique identifier for the validation request
+        record:
+          $ref: '#/components/schemas/Record'
+        rules:
+          type: array
+          items:
+            type: string
+          description: List of validation rules to apply
+          example:
+            - "required:id"
+            - "format:id:^[A-Z]{3}-\\d{3}$"
+
+    Record:
+      type: object
+      required:
+        - type
+        - fields
+      properties:
+        type:
+          type: string
+          description: Type of record being validated
+          example: "entity"
+        fields:
+          type: object
+          additionalProperties: true
+          description: Field-value pairs to validate
+          example:
+            id: "ABC-123"
+            name: "Example Entity"
+
+    ValidationResponse:
+      type: object
+      required:
+        - request_id
+        - validation_result
+      properties:
+        request_id:
+          type: string
+          format: uuid
+          description: Echo of the request identifier
+        validation_result:
+          type: string
+          enum:
+            - PASS
+            - FAIL
+          description: Overall validation result
+        violations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Violation'
+          description: List of rule violations (empty if PASS)
+
+    Violation:
+      type: object
+      required:
+        - rule_id
+        - message
+      properties:
+        rule_id:
+          type: string
+          description: Identifier of the failed rule
+          example: "format:id"
+        message:
+          type: string
+          description: Human-readable violation message
+          example: "id format invalid"
+
+    ErrorResponse:
+      type: object
+      required:
+        - error_code
+        - message
+      properties:
+        error_code:
+          type: string
+          enum:
+            - INVALID_INPUT
+            - INSUFFICIENT_DATA
+            - RATE_LIMITED
+            - SERVICE_UNAVAILABLE
+            - INTERNAL_ERROR
+          description: Machine-readable error code
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: object
+          additionalProperties: true
+          description: Additional error details
+
+# Quality Attributes (from documentation)
+# Performance: p95 < 100ms; throughput 1k rps; 100+ concurrent
+# Reliability: 99.9% business hours; error rate <0.1%; backoff max 3
+# Security: mTLS; RBAC; audit all decisions

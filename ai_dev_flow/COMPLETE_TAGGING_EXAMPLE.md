@@ -23,6 +23,12 @@
   - @brd: BRD-NN
   - @prd: PRD-NN
 
+> **Tag Format Note**: EARS references support two valid formats:
+> - **Document-level**: `EARS-NN` (e.g., `@ears: EARS-01`) - References entire EARS document
+> - **Element-level**: `EARS.NN.SECTION.ELEMENT` (e.g., `@ears: EARS.01.24.03`) - References specific requirement element within a section
+>
+> Use document-level when referencing the overall EARS document. Use element-level for precise traceability to specific requirements within the document. The same pattern applies to other artifacts with section-based element IDs.
+
 ### Layer 4: BDD (Acceptance Tests)
 ```gherkin
 @brd: BRD-NN
@@ -52,6 +58,18 @@ Feature: Request processing
 - REQ-NN: Provide API endpoint to submit requests with required fields.
 - Tags:
   - @brd: BRD-NN, @prd: PRD-NN, @ears: EARS.NN.24.NN, @bdd: BDD.NN.13.NN, @adr: ADR-NN, @sys: SYS.NN.25.NN
+
+### Layer 8: IMPL (Optional - Skip if not needed)
+- IMPL-NN: Implementation approach document defining WHO does WHAT and WHEN.
+- Tags:
+  - @brd: BRD-NN, @prd: PRD-NN, @ears: EARS.NN.24.NN, @bdd: BDD.NN.13.NN, @adr: ADR-NN, @sys: SYS.NN.25.NN, @req: REQ.NN.NN.NN
+- **Note**: Skip this layer for simple features. Use when project management coordination is needed.
+
+### Layer 9: CTR (Optional - Skip if not needed)
+- CTR-NN: API contract defining external interface specifications.
+- Tags:
+  - @brd: BRD-NN, @prd: PRD-NN, @ears: EARS.NN.24.NN, @bdd: BDD.NN.13.NN, @adr: ADR-NN, @sys: SYS.NN.25.NN, @req: REQ.NN.NN.NN, @impl: IMPL.NN.NN.NN (if Layer 8 exists)
+- **Note**: Skip this layer for internal-only components. Use when external API contracts are required.
 
 ### Layer 10: SPEC (Technical Specification)
 ```yaml
@@ -89,6 +107,46 @@ implementation:
 @sys: SYS.NN.25.NN
 @req: REQ.NN.NN.NN
 @spec: SPEC-NN
+## Optional ICON Tags (Layer 11 shared with TASKS)
+@icon: TASKS-NN:ValidationProtocol
+@icon-role: provider
+```
+- **Note**: ICON (Implementation Contracts) shares Layer 11 with TASKS. Use @icon/@icon-role when referencing standalone ICON documents or embedded implementation contracts.
+
+### Layer 12: IPLAN (Implementation Work Plans)
+```markdown
+# IPLAN-NN: Request Endpoint Session Plan
+
+## Objective
+Implement TASKS-NN request submission endpoint in a single session.
+
+## Context
+- Parent TASKS: TASKS-NN
+- Related: SPEC-NN, REQ-NN
+
+## Execution Steps
+
+### Step 1: Create Module
+```bash
+mkdir -p src/services
+touch src/services/request_service.py
+```
+
+### Step 2: Run Tests
+```bash
+pytest tests/unit/test_request_service.py -v
+```
+
+## Tags
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS.NN.24.NN
+@bdd: BDD.NN.13.NN
+@adr: ADR-NN
+@sys: SYS.NN.25.NN
+@req: REQ.NN.NN.NN
+@spec: SPEC-NN
+@tasks: TASKS.NN.NN.NN
 ```
 
 ### Layer 13: Code (Implementation)
@@ -103,6 +161,7 @@ implementation:
 @req: REQ.NN.NN.NN
 @spec: SPEC-NN
 @tasks: TASKS.NN.NN.NN
+@iplan: IPLAN-NN
 @impl-status: complete
 """
 from fastapi import APIRouter
@@ -125,6 +184,7 @@ async def submit_request(payload: dict):
 @req: REQ.NN.NN.NN
 @spec: SPEC-NN
 @tasks: TASKS.NN.NN.NN
+@iplan: IPLAN-NN
 @code: src/services/request_service.py
 """
 def test_submit_request_accepts_valid_payload():
@@ -137,16 +197,21 @@ def test_submit_request_accepts_valid_payload():
 
 ## Tag Progression Summary
 ```
-Layer 1  BRD  -> 0 tags
-Layer 2  PRD  -> @brd
-Layer 3  EARS -> @brd, @prd
-Layer 4  BDD  -> @brd, @prd, @ears
-Layer 5  ADR  -> +@bdd
-Layer 6  SYS  -> +@adr
-Layer 7  REQ  -> +@sys
-Layer 10 SPEC -> +@req (+@impl/@ctr if exist)
-Layer 11 TASKS-> +@spec
-Layer 13 Code -> +@tasks
-Layer 14 Tests-> +@code
-Layer 15 Valid-> all upstream tags
+Layer 1  BRD   -> 0 tags
+Layer 2  PRD   -> @brd
+Layer 3  EARS  -> @brd, @prd
+Layer 4  BDD   -> @brd, @prd, @ears
+Layer 5  ADR   -> +@bdd
+Layer 6  SYS   -> +@adr
+Layer 7  REQ   -> +@sys
+Layer 8  IMPL  -> +@req (Optional - skip if not needed)
+Layer 9  CTR   -> +@impl if exists (Optional - skip if not needed)
+Layer 10 SPEC  -> +@req (+@impl/@ctr if exist)
+Layer 11 TASKS -> +@spec (+@icon/@icon-role optional, ICON shares Layer 11)
+Layer 12 IPLAN -> +@tasks
+Layer 13 Code  -> +@iplan
+Layer 14 Tests -> +@code
+Layer 15 Valid -> all upstream tags
 ```
+
+**Note on Layer 0 (Strategy/STRAT)**: Layer 0 represents strategic planning inputs that exist before formal documentation begins. The formal documentation layers start at Layer 1 (BRD).

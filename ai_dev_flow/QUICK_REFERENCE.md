@@ -36,10 +36,16 @@ Note: Path mapping — examples often use a top-level `docs/` folder. In this re
 BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation
 ```
 
-Note: “Production” is an outcome, not a formal layer.
+**Note**: Layer 0 (Strategy/STRAT) is external business context; formal documentation begins at Layer 1 (BRD). "Production" is an outcome, not a formal layer.
 
 **With Contracts**: `REQ → IMPL → CTR → SPEC → TASKS → IPLAN`
 **Without Contracts**: `REQ → IMPL → SPEC → TASKS → IPLAN`
+
+**BRD Section Requirements**:
+- Platform BRDs (001-005): Foundation architecture, cross-cutting concerns
+- Feature BRDs (006+): Feature-specific business requirements
+
+**Note**: For distinction between metadata (YAML frontmatter) and traceability (Section 7 links), see `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`.
 
 ---
 
@@ -390,6 +396,9 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 | **SPEC** | Technical SPEC | .yaml | **Nested** | `SPEC/SPEC-10_limiter/SPEC-10_limiter.yaml` |
 | **TASKS** | Implementation TODOs | .md | **Nested** | `TASKS/TASKS-10_implement_limiter/TASKS-10_implement_limiter.md` |
 | **IPLAN** | Session execution plans | .md | **Nested** | `IPLAN/IPLAN-01_db_migration/IPLAN-01_db_migration.md` |
+| **REF** | Supplementary docs | .md | **Nested** | `REF/TYPE-REF-NN_{slug}/TYPE-REF-NN_{slug}.md` |
+
+**Note**: REF (Reference Documents) are supplementary and do not participate in formal traceability chain.
 
 **Default Directory Model**: All document types use nested folder structure by default. The primary file(s) live inside that folder, using section-based filenames where applicable. Folder slug MUST match the document slug.
 

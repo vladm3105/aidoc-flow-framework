@@ -106,13 +106,14 @@ When contributing new examples:
 
 ## Available Examples
 
-Currently no IPLAN examples available.
+| ID | Title | Category | Complexity | Related Artifacts |
+|----|-------|----------|------------|-------------------|
+| [IPLAN-01](IPLAN-01_example.md) | User Authentication API Implementation | API Integration | 3 (moderate) | TASKS-001, SPEC-001, REQ-001, ADR-001, BDD-001 |
 
-As examples are added, they will be listed here with:
-- IPLAN ID and title
-- Category and complexity
-- Key learning points
-- Related artifacts (REQ, SPEC, TASKS)
+**Key Learning Points**:
+- JWT-based authentication implementation
+- Session-based execution with verification steps
+- Complete traceability chain from BRD through IPLAN
 
 ---
 

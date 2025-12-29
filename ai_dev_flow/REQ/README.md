@@ -35,7 +35,7 @@ REQs create the **formal contract** for system behavior by:
 - **Quality Assurance**: Establishing baselines for testing and compliance verification
 - **Traceability Bridge**: Linking business needs to architectural decisions and technical specifications
 
-## REQ in Development Workflow
+## Position in Document Workflow
 
 **⚠️ See [index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 

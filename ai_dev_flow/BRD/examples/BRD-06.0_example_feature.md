@@ -24,8 +24,8 @@
 Brief introduction to the example feature BRD used for validator testing.
 
 ## 2. Business Objectives
-BO-001: Reduce onboarding decision time by 50% within 6 months.
-BO-002: Achieve ≥95% completion rate within 3 months.
+BRD.06.23.01: Reduce onboarding decision time by 50% within 6 months.
+BRD.06.23.02: Achieve ≥95% completion rate within 3 months.
 
 ## 3. Project Scope
 Overview of in-scope and out-of-scope items.

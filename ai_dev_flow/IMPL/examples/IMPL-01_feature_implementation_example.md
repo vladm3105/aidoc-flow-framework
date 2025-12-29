@@ -1,4 +1,21 @@
-# IMPL-NN: Feature Implementation Plan (Example)
+---
+title: "IMPL-01: Feature Implementation Plan Example"
+tags:
+  - impl-example
+  - layer-8-artifact
+  - shared-architecture
+custom_fields:
+  document_type: example
+  artifact_type: IMPL
+  layer: 8
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+---
+
+# IMPL-01: Feature Implementation Plan (Example)
+
+**Position**: Layer 8 (Project Management Layer) - organizes WHO does WHAT, WHEN.
 
 **Implementation Plan ID**: IMPL-NN
 **Feature**: [FEATURE_NAME]

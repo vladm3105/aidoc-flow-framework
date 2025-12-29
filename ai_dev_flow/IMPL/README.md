@@ -19,6 +19,24 @@ Implementation Plans (IMPL) are **project management documents** that organize a
 
 **Key Role**: IMPL Plans bridge the gap between business requirements (REQ) and technical implementation by organizing work into phases, assigning teams, and scheduling deliverables.
 
+## IMPL vs IPLAN: Critical Distinction
+
+**These are different artifacts at different layers with different purposes:**
+
+| Aspect | IMPL (Layer 8) | IPLAN (Layer 12) |
+|--------|----------------|------------------|
+| **Full Name** | Implementation Approach Document | Implementation Plan |
+| **Layer** | Layer 8 (Project Management) | Layer 12 (Session Execution) |
+| **Purpose** | WHO does WHAT, WHEN | HOW to execute with bash commands |
+| **Scope** | Multi-component project coordination | Single session execution steps |
+| **Audience** | Project managers, architects | AI assistants, developers in active sessions |
+| **Content** | Phases, teams, timelines, deliverables | Bash commands, verification steps, resume points |
+| **Optional** | Yes - skip for simple features | No - always needed between TASKS and Code |
+| **Upstream** | REQ (Layer 7) | TASKS (Layer 11) |
+| **Downstream** | CTR, SPEC | Code (Layer 13) |
+
+**Key Rule**: IMPL organizes project work; IPLAN executes implementation sessions.
+
 ## Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**

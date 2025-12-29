@@ -1,4 +1,19 @@
-# CTR-NN: Validation API (Example)
+---
+title: "CTR-01: Validation API Contract"
+tags:
+  - ctr-example
+  - layer-9-artifact
+  - shared-architecture
+custom_fields:
+  document_type: example
+  artifact_type: CTR
+  layer: 9
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+---
+
+# CTR-01: Validation API (Example)
 
 ## Contract Context (Minimal)
 Status: Active | Owner: Example Team | Version: 1.0.0

@@ -573,7 +573,7 @@ done
 
 ## Integration with SDD Workflow
 
-### Layer Position
+## Position in Document Workflow
 
 **Layer 11**: TASKS (Task Breakdown)
 - Bridges SPEC (Layer 10) and IPLAN (Layer 12)

@@ -428,7 +428,7 @@ traceability:
       - "@req: REQ.NN.EE.SS"
     optional:
       - "@impl: IMPL.NN.EE.SS"
-    description: "Layer 9 requires 7 upstream artifact tags (8 including optional IMPL)"
+    description: "Layer 9 requires 8 upstream artifact tags (@brd through @impl, where @impl is from optional Layer 8)"
 
   upstream:
     required:

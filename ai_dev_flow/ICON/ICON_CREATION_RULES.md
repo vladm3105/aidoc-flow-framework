@@ -9,12 +9,12 @@ title: ICON Creation Rules
 tags:
   - framework-guide
   - implementation-contract
-  - layer-11.5-artifact
+  - layer-11-artifact
   - decision-criteria
 custom_fields:
   document_type: creation-rules
   artifact_type: ICON
-  layer: 11.5
+  layer: 11
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
@@ -485,7 +485,7 @@ python scripts/validate_cross_document.py --layer ICON --auto-fix
 
 | This Layer | Required Upstream Tags | Tag Count |
 |------------|------------------------|-----------|
-| ICON (Layer 11+) | @brd through @tasks | 8-10 |
+| ICON (Layer 11, shared with TASKS) | @brd through @tasks | 8-10 |
 
 ### Auto-Fix Actions (No Confirmation Required)
 
