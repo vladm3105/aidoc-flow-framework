@@ -76,6 +76,15 @@ Scope & Authority
 
 Note on paths: Examples may show a top-level `docs/` prefix; in this ai_dev_flow directory, type folders live at the ai_dev_flow root (e.g., `BRD/`, `PRD/`, `ADR/`). Adjust relative links accordingly.
 
+## Default Directory Model (All Types)
+
+- Default: Use nested per-document folders for all artifact types: `{TYPE}/{TYPE}-DOC_NUM_{slug}/`.
+- Primary file(s) live inside the folder; section-based files use `TYPE-DOC_NUM.S_{section_slug}.{ext}` when applicable.
+- Folder slug MUST match the document slug.
+- Exceptions:
+  - BDD uses nested per-suite folders with section-based `.feature` files at `BDD/BDD-DOC_NUM_{slug}/`.
+  - CTR remains dual-file (both `.md` and `.yaml`) stored together inside the contract’s nested folder.
+
 
 Universal Numbering Pattern (All Document Types)
 - **Primary Number (DOC_NUM)**: Variable-length sequential number starting at 2 digits (01-99, then 100-999, 1000+)
@@ -154,33 +163,33 @@ Document ID Standards (ai_dev_flow)
   1. **Section-Only Format** (primary pattern):
      - Filename: `BDD/BDD-DOC_NUM.SECTION_{slug}.feature`
      - Pattern: `^BDD-\d{2,}\.\d+_[a-z0-9_]+\.feature$`
-     - Example: `BDD/BDD-02.14_query_result_filtering.feature`
+     - Example: `BDD/BDD-02_knowledge_engine/BDD-02.14_query_result_filtering.feature`
      - Use when: Standard section file (≤500 lines, ≤12 scenarios)
 
   2. **Subsection Format** (when section >500 lines):
      - Filename: `BDD/BDD-DOC_NUM.SECTION.SUBSECTION_{slug}.feature`
      - Pattern: `^BDD-\d{2,}\.\d+\.\d{2}_[a-z0-9_]+\.feature$`
-     - Example: `BDD/BDD-02.24.01_quality_performance.feature`
+     - Example: `BDD/BDD-02_knowledge_engine/BDD-02.24.01_quality_performance.feature`
      - Use when: Section requires splitting (each subsection ≤500 lines)
 
   3. **Aggregator Format** (optional redirect stub):
      - Filename: `BDD/BDD-DOC_NUM.SECTION.00_{slug}.feature`
      - Pattern: `^BDD-\d{2,}\.\d+\.00_[a-z0-9_]+\.feature$`
-     - Example: `BDD/BDD-02.12.00_query_graph_traversal.feature`
+     - Example: `BDD/BDD-02_knowledge_engine/BDD-02.12.00_query_graph_traversal.feature`
      - Use when: Organizing multiple subsections under one section
      - Requirements: `@redirect` tag, 0 scenarios, references to subsections
 
   **Numbering Scheme**:
   - `.0` suffix: Index file (e.g., `BDD-02.0_index.md`)
-  - `.1`, `.2`, `.3`, etc.: Content sections (e.g., `BDD-02.1_ingest.feature`)
+  - `.1`, `.2`, `.3`, etc.: Content sections (e.g., `BDD-02_knowledge_engine/BDD-02.1_ingest.feature`)
   - `.SS.01`, `.SS.02`, etc.: Subsections (e.g., `BDD-02.3.01_learning_path.feature`)
   - `.SS.00`: Aggregator/redirect stub (e.g., `BDD-02.2.00_query.feature`)
 
   **File Organization**:
-  - All `.feature` files at `BDD/` root level (flat structure)
-  - NO `features/` subdirectory
+  - Nested folder per suite: `BDD/BDD-DOC_NUM_{slug}/`
+  - All `.feature` files and the index live inside the suite folder
   - Each BDD suite MUST have index file: `BDD-DOC_NUM.0_index.md`
-  - Optional companion docs: `BDD-DOC_NUM_README.md`, `BDD-DOC_NUM_TRACEABILITY.md`
+  - Optional companion docs: `BDD-DOC_NUM_README.md`, `BDD-DOC_NUM_TRACEABILITY.md` (inside the suite folder)
 
   **Hard Limits**:
   - Max file size: 500 lines per `.feature` file (soft limit: 400 lines)
@@ -216,11 +225,12 @@ Document ID Standards (ai_dev_flow)
   - Reference: `BDD_SPLITTING_RULES.md` for section-based structure rules
 - Technical Specifications (SPEC)
   - YAML `id:` uses lowercase snake_case; pattern: `^[a-z][a-z0-9_]*[a-z0-9]$`.
-  - Filename: `SPEC/{type}/SPEC-DOC_NUM_{slug}.yaml` (e.g., `SPEC/services/SPEC-03_resource_limit_service.yaml`).
+  - Directory: `SPEC/SPEC-DOC_NUM_{slug}/`
+  - Filename: `SPEC/SPEC-DOC_NUM_{slug}/SPEC-DOC_NUM_{slug}.yaml`
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - The `id:` may differ from the filename; tags and prose should use the `id:` as the human-readable spec name.
   - Include traceability fields with markdown links: `requirements_source`, `architecture`, `verification`.
-  - Notes: Use Section Files when SPEC documentation exceeds 50KB.
+  - Monolithic: SPEC stays a single YAML file; optional companion markdown files may live alongside for human-readable context (e.g., `SPEC-DOC_NUM.0_readme.md`).
 - API Contracts (CTR)
   - H1 ID: `CTR-DOC_NUM` (e.g., `# CTR-01: resource Risk Validation Contract`).
   - Filename (Dual Format): `CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml` (both required)
@@ -362,7 +372,7 @@ File Organization Rules
     - **Metadata field `descriptive_slug`** captures folder's descriptive name for tools
   - **Flat Types** - section optional:
     - `REQ/{category}/{subcategory}/REQ-DOC_NUM_{slug}.md`
-    - `BDD/BDD-DOC_NUM_{slug}.feature`
+    - `BDD/BDD-DOC_NUM_{suite}/BDD-DOC_NUM.SECTION_{slug}.feature`
     - `SPEC/{type}/SPEC-DOC_NUM_{slug}.yaml`
     - `CTR/CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml` (optional subdirs: `CTR/{agents,mcp,infra}/`)
     - `IMPL/IMPL-DOC_NUM_{slug}.md`
@@ -427,6 +437,16 @@ The framework uses three distinct ID patterns for different purposes:
 **Flat Types (all others)** - section OPTIONAL:
 - **Atomic Pattern**: `{TYPE}-{DOC_NUM}_{slug}.md`
 - **Split Pattern**: `{TYPE}-{DOC_NUM}.{SECTION}_{slug}.md`
+
+#### Document Number Width Policy (Unified)
+
+- Start with 2 digits and expand only as needed. Do not use unnecessary leading zeros beyond the active width of the current number.
+- Correct examples: `BRD-01`, `BRD-99`, `BRD-102`, `BRD-999`, `BRD-1000`.
+- Incorrect examples: `BRD-001`, `BRD-009` (extra leading zero not required by the number).
+- This rule is unified across all document types: `BRD`, `PRD`, `EARS`, `BDD`, `ADR`, `SYS`, `REQ`, `IMPL`, `CTR`, `SPEC`, `TASKS`, `IPLAN` (and `ICON`).
+- Element IDs MUST match filename digit width exactly (e.g., `BRD-06` ⇄ `BRD.06.xx.xx`; `PRD-22` ⇄ `PRD.22.xx.xx`).
+- Exception: Reserved infrastructure artifacts use `-000` (e.g., `BRD-000_index.md`, `PRD-000_index.md`) by design.
+- Note: Source code and unit test files follow coding standards for their languages and are excluded from this document ID filename policy.
 - **Regex**: `^[A-Z]{2,5}-[0-9]{2,}(\.[0-9]+)?_[a-z0-9_]+\.(md|yaml|feature)$`
 - **Examples**: `REQ-01_api_auth.md`, `TASKS-99_service.md`, `SPEC-100.1_split.yaml`
 
@@ -511,13 +531,13 @@ custom_fields:
 
 ### Section File Examples
 
-**Source Document**: `BRD-03.0_trading_platform_requirements.md` (150KB)
+**Source Document**: `BRD-03.0_platform_requirements.md` (150KB)
 
 **Split into Section Files (shortened pattern - PREFERRED)**:
 
 ```
 docs/BRD/
-└── BRD-03_trading_platform/             # Nested folder with descriptive slug
+└── BRD-03_platform_example/             # Nested folder with descriptive slug
     ├── BRD-03.0_index.md                        # Section 0: Index/Overview
 <!-- VALIDATOR:IGNORE-LINKS-START -->
     ├── BRD-03.1_executive_summary.md            # Section 1: Executive Summary
@@ -533,14 +553,14 @@ docs/BRD/
 
 ```
 docs/BRD/
-└── BRD-03_trading_platform/             # Nested folder with descriptive slug
-    ├── BRD-03.0_trading_platform_index.md              # Section 0
-    ├── BRD-03.1_trading_platform_executive_summary.md  # Section 1
+└── BRD-03_platform_example/             # Nested folder with descriptive slug
+    ├── BRD-03.0_platform_example_index.md              # Section 0
+    ├── BRD-03.1_platform_example_executive_summary.md  # Section 1
     └── ...
 ```
 
 **Key Rules**:
-- Folder slug (`trading_platform`) provides the descriptive context
+- Folder slug (`platform_example`) provides the descriptive context
 - Shortened pattern omits redundant slug from filenames (PREFERRED for new documents)
 - Full pattern accepted for backward compatibility
 - Use `descriptive_slug` metadata field to capture the folder's descriptive name
@@ -550,7 +570,7 @@ docs/BRD/
 ---
 doc_id: BRD-03
 section: 0
-title: "Trading Platform Requirements - Index"
+title: "Platform Requirements - Index"
 total_sections: 7
 original_size_kb: 146
 split_date: 2025-12-17
@@ -558,14 +578,14 @@ tags:
   - section-index
   - platform-brd
 custom_fields:
-  descriptive_slug: trading_platform  # Folder's descriptive name for tools
+  descriptive_slug: platform_example  # Folder's descriptive name for tools
   section_type: index
   architecture_approach: ai-agent-primary
   priority: primary
   development_status: active
 ---
 
-# BRD-03.0: Trading Platform Requirements - Index
+# BRD-03.0: Platform Requirements - Index
 
 ## Document Control
 
@@ -611,7 +631,7 @@ tags:
   - section-file
   - platform-brd
 custom_fields:
-  descriptive_slug: trading_platform  # Folder's descriptive name for tools
+  descriptive_slug: platform_example  # Folder's descriptive name for tools
   total_sections: 7
   section_type: content
   architecture_approach: ai-agent-primary
@@ -755,7 +775,7 @@ Cross-Reference Link Format (MANDATORY)
   - BDD in SPEC verification:
     - `verification:
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-      - BDD: "[feature_name.feature(:LNN)](../../BDD/feature_name.feature#LNN)"`
+      - BDD: "`BDD/BDD-DOC_NUM_{suite}/BDD-DOC_NUM.SECTION_{slug}.feature(:LNN)`"`
 <!-- VALIDATOR:IGNORE-LINKS-END -->
   - BRD in BRD:
     - `[BRD-DOC_NUM](BRD-DOC_NUM_{slug}.md)` (same directory)
@@ -821,7 +841,7 @@ Validation Rules & Aids
   - Shortened pattern (PREFERRED): `^(BRD|PRD|ADR)-[0-9]{2,}\.[0-9]+_[a-z_]+\.md$`
     - Example: `BRD-03.0_index.md`, `PRD-01.1_overview.md`, `ADR-15.2_decision.md`
   - Full pattern (backward compatible): `^(BRD|PRD|ADR)-[0-9]{2,}\.[0-9]+_[a-z0-9_]+_[a-z_]+\.md$`
-    - Example: `BRD-03.0_trading_platform_index.md`
+    - Example: `BRD-03.0_platform_example_index.md`
   - Combined regex (validates both): `^(BRD|PRD|ADR)-[0-9]{2,}\.[0-9]+_([a-z0-9]+_)*[a-z_]+\.md$`
 
 Examples (ai_dev_flow) - Atomic Documents (DOC_NUM)
@@ -834,7 +854,7 @@ Examples (ai_dev_flow) - Atomic Documents (DOC_NUM)
   - EARS: `EARS/EARS-03_resource_limit_enforcement.md` (H1: `# EARS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
   - REQ: `REQ/risk/lim/REQ-03_resource_limit_enforcement.md` (H1: `# REQ-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
   - CTR: `CTR/CTR-01_position_risk_validation.md` + `CTR-01_position_risk_validation.yaml` (H1: `# CTR-01: resource Risk Validation Contract`, YAML: `contract_id: position_risk_validation`)
-  - BDD: `BDD/BDD-03_risk_limits_requirements.feature`
+  - BDD: `BDD/BDD-03_risk_limits_requirements/BDD-03.1_risk_limits_requirements.feature`
   - SPEC: `SPEC/services/SPEC-03_resource_limit_service.yaml` (id: `resource_limit_service`)
   - IMPL: `IMPL/IMPL-01_risk_management_system.md` (H1: `# IMPL-01: resource management System Implementation`)
   - TASKS: `TASKS/TASKS-03_resource_limit_service.md` (H1: `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
@@ -842,10 +862,10 @@ Examples (ai_dev_flow) - Atomic Documents (DOC_NUM)
 
 Examples (ai_dev_flow) - Section Files (DOC_NUM.S) - Nested Folder Structure
 - Split BRD document (150KB original → 7 sections):
-  - Index: `docs/BRD/BRD-03_trading_platform/BRD-03.0_trading_platform_index.md` (H1: `# BRD-03.0: Trading Platform - Index`)
-  - Section 1: `docs/BRD/BRD-03_trading_platform/BRD-03.1_trading_platform_executive_summary.md` (H1: `# BRD-03.1: Executive Summary`)
-  - Section 2: `docs/BRD/BRD-03_trading_platform/BRD-03.2_trading_platform_business_context.md` (H1: `# BRD-03.2: Business Context`)
-  - Section 3: `docs/BRD/BRD-03_trading_platform/BRD-03.3_trading_platform_functional_requirements.md` (H1: `# BRD-03.3: Functional Requirements`)
+  - Index: `docs/BRD/BRD-03_platform_example/BRD-03.0_platform_example_index.md` (H1: `# BRD-03.0: Platform Requirements - Index`)
+  - Section 1: `docs/BRD/BRD-03_platform_example/BRD-03.1_platform_example_executive_summary.md` (H1: `# BRD-03.1: Executive Summary`)
+  - Section 2: `docs/BRD/BRD-03_platform_example/BRD-03.2_platform_example_business_context.md` (H1: `# BRD-03.2: Business Context`)
+  - Section 3: `docs/BRD/BRD-03_platform_example/BRD-03.3_platform_example_functional_requirements.md` (H1: `# BRD-03.3: Functional Requirements`)
 - Split PRD document with subsections:
   - Index: `docs/PRD/PRD-15_product_features/PRD-15.0_product_features_index.md`
   - Section 2.1: `docs/PRD/PRD-15_product_features/PRD-15.2.1_product_features_api.md` (H1: `# PRD-15.2.1: API Features`)

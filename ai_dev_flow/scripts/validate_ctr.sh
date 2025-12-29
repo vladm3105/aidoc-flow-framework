@@ -21,7 +21,7 @@ NC='\033[0m' # No Color
 
 if [ -z "$CTR_FILE" ]; then
   echo "Usage: $0 <CTR_FILE>"
-  echo "Example: $0 /opt/data/project/docs/CTR/CTR-001_service_api.md"
+  echo "Example: $0 /opt/data/project/docs/CTR/CTR-01_service_api.md"
   exit 1
 fi
 

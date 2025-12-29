@@ -344,7 +344,7 @@ SPEC-SYSTEM-01_overview.md      (20KB) - Architecture, interfaces
 SPEC-SYSTEM-02_core.md          (40KB) - Core business logic
 SPEC-SYSTEM-03_integration.md   (30KB) - External integrations
 SPEC-SYSTEM-004_quality.md       (30KB) - Performance, observability
-SPEC-SYSTEM-000_index.md         (5KB)  - Complete index with cross-refs
+SPEC-SYSTEM-00_index.md         (5KB)  - Complete index with cross-refs
 ```
 
 ---

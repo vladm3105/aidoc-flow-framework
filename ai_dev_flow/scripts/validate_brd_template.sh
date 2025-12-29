@@ -6,7 +6,8 @@
 # - Platform vs Feature BRD validation rules
 # Usage: ./scripts/validate_brd_template.sh <BRD_FILE>
 
-set -e
+# Do not exit on first error; always reach summary
+# set -e
 
 BRD_FILE=$1
 ERRORS=0
@@ -49,14 +50,13 @@ required_sections=(
   "## 9. Acceptance Criteria"
   "## 10. Business Risk Management"
   "## 11. Implementation Approach"
-  "## 12. Training and Change Management"
-  "## 13. Support and Maintenance"
-  "## 14. Cost-Benefit Analysis"
-  "## 15. Project Governance"
-  "## 16. Quality Assurance"
-  "## 17. Traceability"
-  "## 18. Glossary"
-  "## 19. Appendices"
+  "## 12. Support and Maintenance"
+  "## 13. Cost-Benefit Analysis"
+  "## 14. Project Governance"
+  "## 15. Quality Assurance"
+  "## 16. Traceability"
+  "## 17. Glossary"
+  "## 18. Appendices"
 )
 
 for section in "${required_sections[@]}"; do
@@ -198,17 +198,19 @@ if [ "$brd_type" = "platform" ]; then
     ((ERRORS++))
   fi
 elif [ "$brd_type" = "feature" ]; then
-  # Feature BRD validation - optional technology sections
+  # Feature BRD validation - sections 3.6 and 3.7 required (may reference Platform BRD)
   if grep -q "## 3.6 Technology Stack Prerequisites" "$BRD_FILE"; then
-    echo "  ⚠️  WARNING: Feature BRD has technology section (may reference Platform BRD instead)"
-    ((WARNINGS++))
+    echo "  ✅ Feature BRD: Section 3.6 present (may reference Platform BRD)"
   else
-    echo "  ℹ️  Feature BRD: No technology sections (normal for Feature BRDs)"
+    echo "  ❌ ERROR: Feature BRD missing required Section 3.6 (Technology Stack Prerequisites)"
+    ((ERRORS++))
   fi
 
   if grep -q "## 3.7 Mandatory Technology Conditions" "$BRD_FILE"; then
-    echo "  ⚠️  WARNING: Feature BRD should focus on business conditions, not technology constraints"
-    ((WARNINGS++))
+    echo "  ✅ Feature BRD: Section 3.7 present (platform-inherited + feature-specific constraints)"
+  else
+    echo "  ❌ ERROR: Feature BRD missing required Section 3.7 (Mandatory Technology Conditions)"
+    ((ERRORS++))
   fi
 fi
 
@@ -220,28 +222,28 @@ echo ""
 echo "CHECK 6: Architecture Decision Requirements Section"
 echo "-----------------------------------------"
 
-if grep -q "## 5.2 Architecture Decision Requirements" "$BRD_FILE"; then
-  echo "  ✅ Found: Section 5.2 Architecture Decision Requirements"
+if grep -q "## 7.2 Architecture Decision Requirements" "$BRD_FILE"; then
+  echo "  ✅ Found: Section 7.2 Architecture Decision Requirements"
 
   # Check for required table structure
   if grep -q "| Topic Area | Decision Needed | Business Driver | Key Considerations |" "$BRD_FILE"; then
-    echo "  ✅ Section 5.2 has required table structure"
+    echo "  ✅ Section 7.2 has required table structure"
   else
-    echo "  ❌ ERROR: Section 5.2 missing required table structure (Topic Area, Decision Needed, Business Driver, Key Considerations)"
+    echo "  ❌ ERROR: Section 7.2 missing required table structure (Topic Area, Decision Needed, Business Driver, Key Considerations)"
     ((ERRORS++))
   fi
 
   # Check for minimum 3 architectural topics
-  topic_count=$(grep -A 100 "## 5.2 Architecture Decision Requirements" "$BRD_FILE" | grep "^|" | grep -v "^|---" | grep -v "^| Topic Area " | wc -l)
+  topic_count=$(grep -A 100 "## 7.2 Architecture Decision Requirements" "$BRD_FILE" | grep "^|" | grep -v "^|---" | grep -v "^| Topic Area " | wc -l)
 
   if [ "$topic_count" -ge 3 ]; then
-    echo "  ✅ Section 5.2 identifies $topic_count architectural topics (≥3 required)"
+    echo "  ✅ Section 7.2 identifies $topic_count architectural topics (≥3 required)"
   else
-    echo "  ❌ ERROR: Section 5.2 must identify at least 3 architectural topics (found: $topic_count)"
+    echo "  ❌ ERROR: Section 7.2 must identify at least 3 architectural topics (found: $topic_count)"
     ((ERRORS++))
   fi
 else
-  echo "  ❌ MISSING: Section 5.2 Architecture Decision Requirements"
+  echo "  ❌ MISSING: Section 7.2 Architecture Decision Requirements"
   ((ERRORS++))
 fi
 
@@ -346,12 +348,12 @@ else
   echo "  ✅ No specific ADR number references found (correct for BRD phase)"
 fi
 
-# Verify Section 5.2 exists (where ADR topics should be listed)
-if grep -q "## 5.2 Architecture Decision Requirements" "$BRD_FILE"; then
-  adr_topics=$(grep -A 100 "## 5.2 Architecture Decision Requirements" "$BRD_FILE" | grep "^|" | grep -v "^|---" | grep -v "^| Topic Area " | wc -l)
-  echo "  ✅ Section 5.2 identifies $adr_topics ADR topics for future creation"
+# Verify Section 7.2 exists (where ADR topics should be listed)
+if grep -q "## 7.2 Architecture Decision Requirements" "$BRD_FILE"; then
+  adr_topics=$(grep -A 100 "## 7.2 Architecture Decision Requirements" "$BRD_FILE" | grep "^|" | grep -v "^|---" | grep -v "^| Topic Area " | wc -l)
+  echo "  ✅ Section 7.2 identifies $adr_topics ADR topics for future creation"
 else
-  echo "  ❌ ERROR: Missing Section 5.2 to identify ADR topics"
+  echo "  ❌ ERROR: Missing Section 7.2 to identify ADR topics"
   ((ERRORS++))
 fi
 
@@ -448,11 +450,12 @@ if grep -q "### 3.3 Out-of-Scope Items" "$BRD_FILE"; then
   # Check if section has content
   oos_content=$(grep -A 20 "### 3.3 Out-of-Scope Items" "$BRD_FILE" | head -20)
 
-  if echo "$oos_content" | grep -qE "^[0-9]+\.\s*\*\*.*\*\*" || echo "$oos_content" | grep -qE "- "; then
+  # Consider content substantive if numbered or dash bullets exist
+  if printf "%s" "$oos_content" | grep -Eq '(^[0-9]+\.)|(^- )'; then
     echo "  ✅ Out-of-Scope Items section has substantive content"
 
-    # Check for rationale
-    if echo "$oos_content" | grep -qE "- excluded|:|reason|rationale" | head -5 | grep -q .; then
+    # Check for rationale keywords in first lines
+    if printf "%s" "$oos_content" | head -10 | grep -Eqi '(excluded|rationale|because|: )'; then
       echo "  ✅ Out-of-scope items include rationale"
     else
       echo "  ⚠️  WARNING: Out-of-scope items should include rationale"
@@ -482,8 +485,8 @@ if grep -q "| \*\*PRD-Ready Score\*\* |" "$BRD_FILE"; then
   # Extract score value
   score_line=$(grep "| \*\*PRD-Ready Score\*\* |" "$BRD_FILE" || echo "")
 
-  # Check format: should have ✅ emoji and percentage
-  if echo "$score_line" | grep -qE "✅.*[0-9]+/100"; then
+  # Accept formats with or without ✅ emoji; require [Score]/100 and target clause
+  if echo "$score_line" | grep -qE "[0-9]+/100" && echo "$score_line" | grep -qE "\(Target: ≥90/100\)"; then
     score_value=$(echo "$score_line" | grep -oE "[0-9]+/100" | head -1 | cut -d'/' -f1)
     echo "  ✅ PRD-Ready Score format valid: $score_value/100"
 
@@ -500,13 +503,13 @@ if grep -q "| \*\*PRD-Ready Score\*\* |" "$BRD_FILE"; then
       ((ERRORS++))
     fi
   else
-    echo "  ❌ ERROR: PRD-Ready Score missing ✅ emoji and/or proper format"
-    echo "           Expected: ✅ [Score]/100 (Target: ≥90/100)"
+    echo "  ❌ ERROR: PRD-Ready Score format invalid"
+    echo "           Expected: [Score]/100 (Target: ≥90/100) (✅ optional)"
     ((ERRORS++))
   fi
 else
   echo "  ❌ MISSING: PRD-Ready Score field in Document Control"
-  echo "           Add: | **PRD-Ready Score** | ✅ [Score]/100 (Target: ≥90/100) |"
+  echo "           Add: | **PRD-Ready Score** | [Score]/100 (Target: ≥90/100) |"
   ((ERRORS++))
 fi
 
@@ -638,23 +641,28 @@ echo ""
 echo "CHECK 17: Functional Requirement 6-Subsection Structure"
 echo "-----------------------------------------"
 
-# Find all FRs (#### FR-NNN: format)
-fr_count=$(grep -c "^#### FR-[0-9]\+:" "$BRD_FILE" || echo "0")
+# Find all FRs (standard BRD.NN.01.SS heading format)
+fr_lines=$(grep -nE '^### +BRD\.[0-9]{2,9}\.01\.[0-9]{2,9}:' "$BRD_FILE" || true)
+fr_count=$(printf "%s" "$fr_lines" | sed '/^$/d' | wc -l)
 
 if [ "$fr_count" -gt 0 ]; then
   echo "  Found $fr_count Functional Requirement(s)"
 
   incomplete_frs=0
 
-  # Check each FR for 6 required subsections
-  grep -n "^#### FR-[0-9]\+:" "$BRD_FILE" | while IFS=: read -r line_num fr_title; do
-    fr_id=$(echo "$fr_title" | grep -oE "FR-[0-9]+" | head -1)
+  # Check each FR for 6 required subsections (standard pattern)
+  while IFS=: read -r line_num fr_title; do
+    fr_id=$(echo "$fr_title" | grep -oE 'BRD\.[0-9]+\.[0-9]+\.[0-9]+' | head -1)
 
     # Get FR content (from this FR to next FR or end of section)
-    next_fr_line=$(grep -n "^#### FR-[0-9]\+:" "$BRD_FILE" | grep -A1 "^${line_num}:" | tail -1 | cut -d':' -f1)
+    next_fr_line=$(grep -nE '^### +BRD\.[0-9]{2,9}\.01\.[0-9]{2,9}:' "$BRD_FILE" | grep -A1 "^${line_num}:" | tail -1 | cut -d':' -f1)
     if [ "$next_fr_line" = "$line_num" ]; then
-      # Last FR - go to next section
-      next_fr_line=$(grep -n "^## 5\. " "$BRD_FILE" | head -1 | cut -d':' -f1)
+      # Last FR - go to the next top-level section heading after this line
+      next_fr_line=$(grep -n "^## [0-9]\+\." "$BRD_FILE" | awk -F: -v ln="$line_num" '$1>ln{print $1; exit}')
+      # Fallback: if not found, go to end of file
+      if [ -z "$next_fr_line" ]; then
+        next_fr_line=$(wc -l < "$BRD_FILE")
+      fi
     fi
 
     fr_content=$(sed -n "${line_num},${next_fr_line}p" "$BRD_FILE")
@@ -690,9 +698,9 @@ if [ "$fr_count" -gt 0 ]; then
       echo "  ❌ ERROR: $fr_id missing subsections: ${missing_subsections%, }"
       incomplete_frs=$((incomplete_frs + 1))
     fi
-  done
+  done < <(printf "%s" "$fr_lines")
 
-  if [ $incomplete_frs -gt 0 ]; then
+  if [ "$incomplete_frs" -gt 0 ]; then
     echo "  ❌ ERROR: $incomplete_frs FR(s) missing required subsections"
     echo "           All FRs must have: Business Capability, Business Requirements, Business Rules,"
     echo "           Business Acceptance Criteria, Related Requirements, Complexity"
@@ -701,7 +709,7 @@ if [ "$fr_count" -gt 0 ]; then
     echo "  ✅ All FRs have complete 6-subsection structure"
   fi
 else
-  echo "  ⚠️  WARNING: No Functional Requirements found (#### FR-NNN: format expected)"
+  echo "  ⚠️  WARNING: No Functional Requirements found (### BRD.NN.01.SS: format expected)"
   ((WARNINGS++))
 fi
 
@@ -715,6 +723,7 @@ echo "-----------------------------------------"
 
 # Find all BRD-NNN references in Related Requirements subsections
 brd_refs=$(grep -A 5 "^\*\*Related Requirements\*\*:" "$BRD_FILE" | grep -oE "BRD-[0-9]+" || echo "")
+invalid_refs=0
 
 if [ -n "$brd_refs" ]; then
   brd_ref_count=$(echo "$brd_refs" | wc -l)
@@ -743,7 +752,7 @@ if [ -n "$brd_refs" ]; then
   fi
 else
   echo "  ⚠️  WARNING: No BRD cross-references found in Related Requirements"
-  echo "           FRs should reference Platform BRDs (BRD-01 through BRD-005)"
+  echo "           FRs should reference Platform BRDs (BRD-01 through BRD-05)"
   ((WARNINGS++))
 fi
 

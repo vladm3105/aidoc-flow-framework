@@ -109,7 +109,7 @@ Feature: Feature Name
 - Prefix: `@` symbol
 - Artifact Type: lowercase (`brd`, `prd`, `ears`)
 - Separator: colon `:` after artifact type, `:` between document ID and requirement ID
-- Document ID: Standard format (e.g., `BRD-009`, `PRD-016`, `EARS-012`)
+- Document ID: Standard format (e.g., `BRD-09`, `PRD-016`, `EARS-012`)
 - Requirement ID: Specific requirement/section identifier
 - Multiple Values: comma-separated `@brd: BRD.01.01.30, BRD.01.01.06`
 - Gherkin: Use tag-per-line format before Feature declaration
@@ -468,7 +468,7 @@ graph TD
 |------------------|--------------|-------------|-------|
 | Fix failing API tests | BDD-02 | YYYY-MM-DD | [Owner] |
 | Implement pending scenarios | BDD-03, BDD-007 | YYYY-MM-DD | [Owner] |
-| Reduce test execution time | BDD-02, BDD-008 | YYYY-MM-DD | [Owner] |
+| Reduce test execution time | BDD-NN, BDD-NN | YYYY-MM-DD | [Owner] |
 | Stabilize flaky tests | BDD-02, BDD-009 | YYYY-MM-DD | [Owner] |
 
 ---

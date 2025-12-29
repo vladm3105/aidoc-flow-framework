@@ -71,7 +71,7 @@ Comprehensive links establish implementation context:
 @EARS:[EARS-NN](../EARS/EARS-NN_...md)
 @spec:[SPEC-NN](../SPEC/.../SPEC-NN_...yaml)
 
-@bdd:[BDD-NN:scenarios](../BDD/BDD-NN.feature#scenarios)
+@bdd:[BDD-NN.SS:scenarios](../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
 ```
 
 ### Scope Definition
@@ -343,7 +343,7 @@ Implement service dashboard with real-time resource monitoring.
 2. Implement WebSocket connection for real-time data feeds.
 3. Build resource display components with sorting and filtering.
 4. Add [EXTERNAL_DATA - e.g., customer data, sensor readings] visualization with charting library.
-5. Implement order entry forms with validation.
+5. Implement submission forms with validation.
 6. Create notification system for alerts and updates.
 7. Add responsive design for mobile compatibility.
 8. Integrate e2e testing and accessibility validation.
@@ -595,3 +595,15 @@ grep "@icon: ICON-01" docs/TASKS/ returns 2+ matches
 - Adaptive planning based on implementation progress
 - Automated dependency and risk analysis
 - Bidirectional contract integration validated
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If a file approaches/exceeds limits, split tasks by scope or phase and update the task index.
+
+## Document Splitting Standard
+
+When TASKS grow large, split by scope/phase:
+- Create additional TASKS files (e.g., `TASKS-{NN}_phase1_{slug}.md`, `TASKS-{NN}_phase2_{slug}.md`)
+- Update any mapping tables and the parent plan (IMPL/IPLAN)
+- Validate links and run size lints

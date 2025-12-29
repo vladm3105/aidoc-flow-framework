@@ -315,8 +315,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-NN or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-NN or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**

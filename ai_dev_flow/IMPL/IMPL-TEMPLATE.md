@@ -49,7 +49,7 @@ custom_fields:
 | **Owner** | [Team or Person Responsible] |
 | **Last Updated** | YYYY-MM-DD |
 | **Version** | 1.0 |
-| **Related REQs** | [REQ-NN](../REQ/.../REQ-NN.md), [REQ-MM](../REQ/.../REQ-MM.md) |
+| **Related REQs** | [REQ-NN](<!-- VALIDATOR:IGNORE-LINKS-START -->../REQ/.../REQ-NN.md<!-- VALIDATOR:IGNORE-LINKS-END -->), [REQ-MM](<!-- VALIDATOR:IGNORE-LINKS-START -->../REQ/.../REQ-MM.md<!-- VALIDATOR:IGNORE-LINKS-END -->) |
 | **Deliverables** | CTR-NN, SPEC-NN, TASKS-NN, CTR-YY, SPEC-YY, TASKS-YY |
 
 ## Position in Document Workflow
@@ -113,8 +113,8 @@ flowchart LR
 
 | Requirement ID | Description | Implementation Approach |
 |----------------|-------------|------------------------|
-| [REQ-NN](../REQ/.../REQ-NN.md) | [What business need] | [High-level approach in this IMPL] |
-| [REQ-MM](../REQ/.../REQ-MM.md) | [Another requirement] | [How we'll address it] |
+| [REQ-NN](<!-- VALIDATOR:IGNORE-LINKS-START -->../REQ/.../REQ-NN.md<!-- VALIDATOR:IGNORE-LINKS-END -->) | [What business need] | [High-level approach in this IMPL] |
+| [REQ-MM](<!-- VALIDATOR:IGNORE-LINKS-START -->../REQ/.../REQ-MM.md<!-- VALIDATOR:IGNORE-LINKS-END -->) | [Another requirement] | [How we'll address it] |
 
 **Source Business Logic**:
 [References to product strategy documents or business rules driving this implementation]
@@ -150,8 +150,10 @@ flowchart LR
 
 | Dependency | Type | Status | Impact if Delayed |
 |------------|------|--------|-------------------|
-| [REQ-NN](../REQ/.../REQ-NN.md) | Requirement | Approved | Cannot start Phase 1 |
+| [REQ-NN](<!-- VALIDATOR:IGNORE-LINKS-START -->../REQ/.../REQ-NN.md<!-- VALIDATOR:IGNORE-LINKS-END -->) | Requirement | Approved | Cannot start Phase 1 |
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | [ADR-MM](../ADR/ADR-MM.md) | Architecture Decision | Draft | Risk: Design changes |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **External Dependencies** (Outside this IMPL):
 - [Other systems, services, or teams we depend on]
@@ -344,21 +346,25 @@ flowchart LR
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| REQ | [REQ-NN](../REQ/.../REQ-NN.md) | [Requirement Title] | section X.Y | Business requirement |
-| REQ | [REQ-MM](../REQ/.../REQ-MM.md) | [Another Requirement] | section Z | Functional requirement |
+| REQ | [REQ-NN](<!-- VALIDATOR:IGNORE-LINKS-START -->../REQ/.../REQ-NN.md<!-- VALIDATOR:IGNORE-LINKS-END -->) | [Requirement Title] | section X.Y | Business requirement |
+| REQ | [REQ-MM](<!-- VALIDATOR:IGNORE-LINKS-START -->../REQ/.../REQ-MM.md<!-- VALIDATOR:IGNORE-LINKS-END -->) | [Another Requirement] | section Z | Functional requirement |
 | ADR | [ADR-PPP](../ADR/ADR-PPP.md) | [Architecture Decision] | All | Architecture guidance |
-| SYS | [SYS-QQQ](../SYS/SYS-QQQ.md) | [System Requirement] | section A | System constraint |
+| SYS | [SYS-QQQ](<!-- VALIDATOR:IGNORE-LINKS-START -->../SYS/SYS-QQQ.md<!-- VALIDATOR:IGNORE-LINKS-END -->) | [System Requirement] | section A | System constraint |
 
 ### 6.2 Downstream Artifacts (Deliverables)
 
 | Artifact Type | Document ID | Document Title | Status | Relationship |
 |---------------|-------------|----------------|--------|--------------|
-| CTR | [CTR-NN](../CTR/CTR-NN.md) | [API Contract] | Pending | Interface definition |
-| SPEC | [SPEC-NN](../SPEC/.../SPEC-NN.yaml) | [Technical Spec] | Pending | Implementation blueprint |
-| TASKS | [TASKS-NN](../TASKS/TASKS-NN.md) | [Code Generation Plan] | Pending | Code generation guide |
-| CTR | [CTR-YY](../CTR/CTR-YY.md) | [API Contract] | Pending | Interface definition |
+| CTR | [CTR-NN](<!-- VALIDATOR:IGNORE-LINKS-START -->../CTR/CTR-NN.md<!-- VALIDATOR:IGNORE-LINKS-END -->) | [API Contract] | Pending | Interface definition |
+| SPEC | [SPEC-NN](<!-- VALIDATOR:IGNORE-LINKS-START -->../SPEC/.../SPEC-NN.yaml<!-- VALIDATOR:IGNORE-LINKS-END -->) | [Technical Spec] | Pending | Implementation blueprint |
+| TASKS | [TASKS-NN](<!-- VALIDATOR:IGNORE-LINKS-START -->../TASKS/TASKS-NN.md<!-- VALIDATOR:IGNORE-LINKS-END -->) | [Code Generation Plan] | Pending | Code generation guide |
+| CTR | [CTR-YY](<!-- VALIDATOR:IGNORE-LINKS-START -->../CTR/CTR-YY.md<!-- VALIDATOR:IGNORE-LINKS-END -->) | [API Contract] | Pending | Interface definition |
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | SPEC | [SPEC-YY](../SPEC/.../SPEC-YY.yaml) | [Technical Spec] | Pending | Implementation blueprint |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | TASKS | [TASKS-YY](../TASKS/TASKS-YY.md) | [Code Generation Plan] | Pending | Code generation guide |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### 6.3 Same-Type References (Conditional)
 
@@ -366,8 +372,12 @@ flowchart LR
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Related | [IMPL-NN](./IMPL-NN_...md) | [Related IMPL title] | Shared implementation context |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Depends | [IMPL-NN](./IMPL-NN_...md) | [Prerequisite IMPL title] | Must complete before this |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Legacy Format** (for backward compatibility):
 - **Depends On**: [IMPL-NN previous implementation plans this depends on]
@@ -425,7 +435,7 @@ flowchart LR
 
 ## 7. References
 
-**Internal**: [REQ-NN](../REQ/.../REQ-NN.md) \| [ADR-PPP](../ADR/ADR-PPP.md) \| [IMPL-000 Index](./IMPL-000_index.md)
+**Internal**: [REQ-NN](<!-- VALIDATOR:IGNORE-LINKS-START -->../REQ/.../REQ-NN.md<!-- VALIDATOR:IGNORE-LINKS-END -->) \| [ADR-PPP](../ADR/ADR-PPP.md) \| [IMPL-000 Index](./IMPL-000_index.md)
 
 **Templates**: [CTR-TEMPLATE](../CTR/CTR-TEMPLATE.md) \| [SPEC-TEMPLATE](../SPEC/SPEC-TEMPLATE.yaml) \| [TASKS-TEMPLATE](../TASKS/TASKS-TEMPLATE.md)
 

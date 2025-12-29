@@ -398,6 +398,10 @@ validation_rules:
     - rule: "Traceability must include all 6 upstream artifact types"
       severity: warning
 
+    - rule: "No numeric downstream references (IMPL-#, CTR-#, SPEC-#, TASKS-#)"
+      severity: error
+      fix: "Use generic downstream names (IMPL, CTR, SPEC, TASKS) until those artifacts exist."
+
   # Code block validation
   code_blocks:
     - rule: "Python code blocks should have type hints"
@@ -447,13 +451,13 @@ traceability:
   downstream:
     expected:
       - type: IMPL
-        format: "IMPL-NN"
+        format: "IMPL"   # Generic name only; do not reference numeric IDs until they exist
       - type: CTR
-        format: "CTR-NN"
+        format: "CTR"    # Generic name only; do not reference numeric IDs until they exist
       - type: SPEC
-        format: "SPEC-NN"
+        format: "SPEC"   # Generic name only; do not reference numeric IDs until they exist
       - type: TASKS
-        format: "TASKS-NN"
+        format: "TASKS"  # Generic name only; do not reference numeric IDs until they exist
 
   same_type:
     optional:

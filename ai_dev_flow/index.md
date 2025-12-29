@@ -17,6 +17,8 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 
 The AI Dev Flow organizes documentation through a hierarchical, traceable structure:
 
+> Default Directory Model: All artifact types use nested folders by default — `{TYPE}/{TYPE}-NN_{slug}/` — containing the primary document file(s). BDD is the single exception and remains flat due to validator requirements.
+
 ### Business Layer (Layers 1-3)
 
 - **BRD** (`BRD/`) - Layer 1: Business Requirements Documents defining business objectives and constraints
@@ -26,14 +28,15 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 - **PRD** (`PRD/`) - Layer 2: Product Requirements Documents translating business needs to product features
   - Index: [PRD-000_index.md](./PRD/PRD-000_index.md)
   - Template: [PRD-TEMPLATE.md](./PRD/PRD-TEMPLATE.md)
-- **EARS** (`EARS/`) - Layer 3: Event Analysis Requirements Specification for event-driven requirements
+ - **EARS** (`EARS/`) - Layer 3: Easy Approach to Requirements Syntax (event-driven requirements)
   - Index: [EARS-000_index.md](./EARS/EARS-000_index.md)
   - Template: [EARS-TEMPLATE.md](./EARS/EARS-TEMPLATE.md)
 
 ### Testing Layer (Layer 4)
 
 - **BDD** (`BDD/`) - Layer 4: Behavior-Driven Development feature files defining acceptance criteria
-  - Index: [BDD-000_index.md](./BDD/BDD-000_index.md)
+  - Nested: One folder per suite: `BDD/BDD-NN_{slug}/`
+  - Index: `BDD/BDD-NN_{slug}/BDD-NN.0_index.md`
   - Template: [BDD-TEMPLATE.feature](./BDD/BDD-TEMPLATE.feature)
   - Purpose: Executable acceptance tests written before implementation (Test-First approach)
   - Maps to IPLAN scenarios for test-driven development workflow
@@ -54,12 +57,20 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 - **REQ** (`REQ/`) - Layer 7: Atomic, testable requirements with SPEC-readiness scoring
   - Index: [REQ-000_index.md](./REQ/REQ-000_index.md)
   - Template: [REQ-TEMPLATE.md](./REQ/REQ-TEMPLATE.md)
-  - Organization: Domain-specific subdirectories (`api/`, `risk/`, `ml/`, `data/`)
+  - Organization: Domain-specific subdirectories
+    - Standard: `api/`, `auth/`, `data/`, `core/`, `integration/`, `monitoring/`, `reporting/`, `security/`, `ui/`
+    - Financial: `risk/`, `operations/`, `data/`, `compliance/`, `ml/`
   - Format: 12-section framework with validation rules
+<!-- VALIDATOR:IGNORE-LINKS-START -->
   - Examples:
+    <!-- VALIDATOR:IGNORE-LINKS-START -->
     - [REQ-01](./REQ/api/av/REQ-01_external_api_integration.md) (API Integration)
     - [REQ-02](./REQ/api/ib/REQ-02_ib_gateway_integration.md) (Gateway Integration)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
     - [REQ-03](./REQ/risk/lim/REQ-03_resource_limit_enforcement.md) (Risk Limits)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+    <!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### Project Management Layer (Layer 8 - Optional)
 
@@ -69,7 +80,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Purpose: Project management (WHO does WHAT, WHEN) - NOT technical specifications
   - Identifies deliverables: which CTR, SPEC, TASKS to create
   - When to use: [WHEN_TO_CREATE_IMPL.md](./WHEN_TO_CREATE_IMPL.md)
-  - Example: [IMPL-01](./IMPL/examples/IMPL-01_risk_management_system.md)
+  - Example: [IMPL-01](./IMPL/examples/IMPL-01_feature_implementation_example.md)
 
 ### Interface Layer (Layer 9 - Optional)
 
@@ -80,16 +91,17 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - When to use: [CONTRACT_DECISION_QUESTIONNAIRE.md](./CONTRACT_DECISION_QUESTIONNAIRE.md)
   - Enables parallel development and contract testing
   - Optional organization: subdirectories by service type (agents/, mcp/, infra/)
-  - Examples: [CTR-001](./CTR/examples/CTR-001_risk_validator_api.md)
+  - Examples: [CTR-01](./CTR/examples/CTR-01_data_validation_api.md)
 
 ### Implementation Layer (Layer 10)
 
 - **SPEC** (`SPEC/`) - Layer 10: Technical specifications ready for code generation
-  - Index: [SPEC-000_index.md](./SPEC/SPEC-000_index.md)
+  - Nested directory per spec: `SPEC/SPEC-NN_{slug}/`
+  - Primary file (monolithic YAML): `SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml`
   - Template: [SPEC-TEMPLATE.yaml](./SPEC/SPEC-TEMPLATE.yaml)
   - Purpose: YAML format with classes, methods, algorithms (HOW to build)
   - References CTR contracts when implementing interfaces
-  - Example: [SPEC-01](./SPEC/SPEC-01_api_client_example.yaml)
+  - Example: [SPEC-NN](./SPEC/SPEC-01_api_client_example.yaml)
 
 ### Code Generation Layer (Layer 11)
 
@@ -100,7 +112,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Each TASKS document corresponds to one SPEC
   - **Section 8**: Implementation Contracts for parallel development coordination
 
-- **ICON** (`ICON/`) - Layer 11+: Implementation Contracts (Optional)
+- **ICON** (`ICON/`) - Layer 11 (optional): Implementation Contracts
   - Index: [ICON-000_index.md](./ICON/ICON-000_index.md)
   - Template: [ICON-TEMPLATE.md](./ICON/ICON-TEMPLATE.md)
   - Purpose: Standalone contracts for parallel development coordination
@@ -113,11 +125,13 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Index: [IPLAN-000_index.md](./IPLAN/IPLAN-000_index.md)
   - Template: [IPLAN-TEMPLATE.md](./IPLAN/IPLAN-TEMPLATE.md)
   - Purpose: Session-based execution context with executable bash commands
-  - Format: Timestamp-based naming `IPLAN-NN_{slug}_YYYYMMDD_HHMMSS.md`
+  - Format: Sequential naming `IPLAN-NN_{descriptive_slug}.md` (timestamp suffix optional)
   - Enables context resumption across AI coding sessions
   - Contains bash commands for setup, execution, and validation
   - Each IPLAN executes one or more TASKS within a session
   - BDD Scenario Mapping: [BDD_SCENARIO_MAPPING.md](./IPLAN/BDD_SCENARIO_MAPPING.md)
+
+<!-- Path Prefix Note: Examples in some guides use a top-level `docs/` prefix. In this `ai_dev_flow` folder, type folders (BRD/, PRD/, etc.) live at the repository root. Adjust relative links accordingly. -->
 
 ## Traceability Flow
 
@@ -237,7 +251,7 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 - **Slugs**: lower_snake_case, descriptive but concise
 - **Index Files**: `{TYPE}-000_index.{ext}` for each document type
 - **CTR Exception**: Dual-file format requires both `.md` and `.yaml` with matching slugs
-  - Example: `CTR-001_position_risk_validation.md` + `CTR-001_position_risk_validation.yaml`
+  - Example: `CTR-01_position_risk_validation.md` + `CTR-01_position_risk_validation.yaml`
 
 ## Core Standards Documents
 
@@ -258,7 +272,7 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 
 - **Domain Adaptation Guide**: [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) - Adapting framework to specific domains
 - **Domain Selection**: [DOMAIN_SELECTION_QUESTIONNAIRE.md](./DOMAIN_SELECTION_QUESTIONNAIRE.md) - Questionnaire for selecting domain
-- **Financial Domain**: [FINANCIAL_DOMAIN_CONFIG.md](./FINANCIAL_DOMAIN_CONFIG.md) - Financial regulatorytor configuration
+- **Financial Domain**: [FINANCIAL_DOMAIN_CONFIG.md](./FINANCIAL_DOMAIN_CONFIG.md) - Financial regulatory configuration
 - **Software Domain**: [SOFTWARE_DOMAIN_CONFIG.md](./SOFTWARE_DOMAIN_CONFIG.md) - Generic software configuration
 - **Generic Domain**: [GENERIC_DOMAIN_CONFIG.md](./GENERIC_DOMAIN_CONFIG.md) - Minimal configuration template
 

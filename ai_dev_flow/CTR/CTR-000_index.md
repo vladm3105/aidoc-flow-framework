@@ -74,8 +74,8 @@ For projects with 10+ contracts or multiple service types, consider organizing c
 ```
 CTR/
 ├── agents/
-│   ├── CTR-001_data_processor_api.md
-│   └── CTR-001_data_processor_api.yaml
+│   ├── CTR-01_data_processor_api.md
+│   └── CTR-01_data_processor_api.yaml
 ├── mcp/
 │   ├── CTR-010_validation_service_mcp.md
 │   └── CTR-010_validation_service_mcp.yaml

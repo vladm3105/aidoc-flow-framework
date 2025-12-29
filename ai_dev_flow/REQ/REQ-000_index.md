@@ -51,7 +51,7 @@ custom_fields:
 |----------|---------|--------|-------------|
 | [REQ-TEMPLATE.md](REQ-TEMPLATE.md) | 3.0 | ✅ CURRENT | Enhanced SPEC-ready template with Layer 7, absolute paths |
 | [archived/REQ-TEMPLATE-V2-ARCHIVED.md](archived/REQ-TEMPLATE-V2-ARCHIVED.md) | 2.0 | 📦 ARCHIVED | Legacy V2 template (archived 2025-11-19) |
-| [REQ-VALIDATION-RULES.md](REQ-VALIDATION-RULES.md) | 3.0 | ✅ ACTIVE | V3 validation rules and fix guide |
+| [REQ_VALIDATION_RULES.md](REQ_VALIDATION_RULES.md) | 3.0 | ✅ ACTIVE | V3 validation rules and fix guide |
 | [REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md](REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md) | 3.0 | ✅ ACTIVE | Traceability matrix template |
 
 ## Example Requirements

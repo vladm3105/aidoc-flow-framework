@@ -100,7 +100,7 @@ LAYER_CONFIG = {
 TAG_PATTERN = re.compile(r'^@(\w+):\s*(.+)$', re.MULTILINE)
 
 # Document-level IDs (TYPE-NN format for filenames)
-# Examples: ADR-001, SPEC-01, BRD-003.1 (section files)
+# Examples: ADR-001, SPEC-01, BRD-03.1 (section files)
 DOC_FILE_PATTERN = re.compile(r'^([A-Z]{2,5})-(\d{2,})(?:\.(\d+))?$')
 
 # Element-level IDs (TYPE.NN.TT.SS format for content)
@@ -144,7 +144,8 @@ class RequirementIndex:
                 continue
 
             for ext in config["extensions"]:
-                for doc_path in type_dir.glob(f"*{ext}"):
+                # Recursive glob to support subdirectory-based organization (e.g., BRD-01/, PRD-07/)
+                for doc_path in type_dir.glob(f"**/*{ext}"):
                     self._index_document(doc_path, doc_type)
 
     def _index_document(self, doc_path: Path, doc_type: str) -> None:
@@ -191,18 +192,56 @@ class RequirementIndex:
             self.deprecated_ids.add(doc_id)
 
     def exists(self, doc_id: str) -> bool:
-        """Check if a document ID exists in the index"""
+        """Check if a document ID exists in the index
+
+        Supports both exact matches and parent document lookups for section-based documents.
+        Examples:
+        - BRD-01 → matches BRD-01, BRD-01.0, BRD-01.1, etc.
+        - BRD-01.0 → exact match only
+        """
         # Try exact match first
         if doc_id in self.requirements:
             return True
         # Try base ID (without section reference)
         base_id = doc_id.split(':')[0]
-        return base_id in self.requirements
+        if base_id in self.requirements:
+            return True
+
+        # For parent document IDs (TYPE-NN), check if any section files exist (TYPE-NN.*)
+        # This handles section-based document organization where BRD-01/ contains BRD-01.0, BRD-01.1, etc.
+        if '.' not in base_id:  # Only for parent IDs like BRD-01, not section IDs like BRD-01.0
+            for indexed_id in self.requirements.keys():
+                # Check if indexed_id starts with base_id and has section number (TYPE-NN.S pattern)
+                if indexed_id.startswith(f"{base_id}.") and indexed_id.replace(f"{base_id}.", "").isdigit():
+                    return True
+
+        return False
 
     def get_document(self, doc_id: str) -> Optional[Dict]:
-        """Get document metadata by ID"""
+        """Get document metadata by ID
+
+        Supports both exact matches and parent document lookups for section-based documents.
+        For parent IDs (TYPE-NN), returns the first section file (TYPE-NN.0) if found.
+        """
         base_id = doc_id.split(':')[0]
-        return self.requirements.get(base_id)
+
+        # Try exact match first
+        if base_id in self.requirements:
+            return self.requirements.get(base_id)
+
+        # For parent document IDs (TYPE-NN), return first section file (TYPE-NN.0)
+        if '.' not in base_id:
+            # Look for index file (TYPE-NN.0) first
+            index_id = f"{base_id}.0"
+            if index_id in self.requirements:
+                return self.requirements[index_id]
+
+            # Fallback: return any section file
+            for indexed_id in sorted(self.requirements.keys()):
+                if indexed_id.startswith(f"{base_id}.") and indexed_id.replace(f"{base_id}.", "").isdigit():
+                    return self.requirements[indexed_id]
+
+        return None
 
     def is_deprecated(self, doc_id: str) -> bool:
         """Check if a document is deprecated"""
@@ -210,11 +249,25 @@ class RequirementIndex:
         return base_id in self.deprecated_ids
 
     def section_exists(self, doc_id: str, section_id: str) -> bool:
-        """Check if a section exists within a document"""
+        """Check if a section exists within a document
+
+        Supports both exact matches and parent document lookups for section-based documents.
+        For parent IDs (TYPE-NN), searches all section files (TYPE-NN.*) for the section.
+        """
         base_id = doc_id.split(':')[0]
-        if base_id not in self.sections:
-            return False
-        return section_id in self.sections[base_id]
+
+        # Try exact match first
+        if base_id in self.sections:
+            return section_id in self.sections[base_id]
+
+        # For parent document IDs (TYPE-NN), search all section files
+        if '.' not in base_id:
+            for indexed_id in self.sections.keys():
+                if indexed_id.startswith(f"{base_id}.") and indexed_id.replace(f"{base_id}.", "").isdigit():
+                    if section_id in self.sections[indexed_id]:
+                        return True
+
+        return False
 
     def get_documents_by_type(self, doc_type: str) -> List[str]:
         """Get all document IDs of a specific type"""
@@ -428,11 +481,12 @@ class CrossDocumentValidator:
                 if doc_id_match.group(3):
                     doc_id += f".{doc_id_match.group(3)}"  # Section file format: TYPE-NN.S
                 section_ref = None
-            else:  # Dot notation format: TYPE.NN.TT.SS
+            else:  # Dot notation format: TYPE.NN.TT.SS (element ID)
                 doc_num = doc_id_match.group(4)
-                sub_num = doc_id_match.group(5)
                 doc_id = f"{doc_type}-{doc_num}"  # Convert to hyphen for index lookup
-                section_ref = sub_num  # Sub-ID can be treated as section reference
+                # Element IDs reference specific requirements, not document sections
+                # We only validate the parent document exists, not element-level granularity
+                section_ref = None
 
             # Check document exists
             if not self.index.exists(doc_id):

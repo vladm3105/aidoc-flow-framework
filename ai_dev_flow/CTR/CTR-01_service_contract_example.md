@@ -1,6 +1,6 @@
-# CTR-001: [SERVICE_NAME] API Contract
+# CTR-01: [SERVICE_NAME] API Contract
 
-**Contract ID**: CTR-001
+**Contract ID**: CTR-01
 **Service**: [SERVICE_NAME - e.g., User Service, Payment Gateway, Notification Service]
 **Type**: [TYPE - e.g., REST API, GraphQL, gRPC, WebSocket]
 **Version**: 1.0.0
@@ -545,7 +545,7 @@ Link: </api/v2/users>; rel="successor-version"
 
 ## OpenAPI Specification
 
-**Full OpenAPI 3.0 specification**: See companion file `CTR-001_service_contract_example.yaml`
+**Full OpenAPI 3.0 specification**: See companion file `CTR-01_service_contract_example.yaml`
 
 ---
 

@@ -73,12 +73,9 @@ custom_fields:
 - Multiple domains/modules
 - Complex requirement coverage (see Section 1.2)
 
-### 1.0.1 Single-File Structure
+### 1.0.1 Single-File Structure (Legacy - Prohibited)
 
-- **Location**: `docs/BDD/` within project docs directory
-- **Naming**: `BDD-NN_descriptive_slug.feature` (NN = 2-digit sequential: 01, 02)
-- **Structure**: One primary feature file per EARS requirement set
-- **Companion**: Optional `BDD-NN_descriptive_slug.md` for documentation
+- Legacy guidance shown for historical context only. Use section-based nested suite structure instead (see 1.0.2).
 
 **Example**:
 ```
@@ -88,30 +85,28 @@ docs/BDD/
 └── BDD-12_technical_infrastructure.feature     (77 scenarios)
 ```
 
-### 1.0.2 Split-File Structure
+### 1.0.2 Split-File Structure (Required)
 
-- **Location**: `docs/BDD/BDD-NN_descriptive_slug/` within project docs directory
-- **Naming**: Directory: `BDD-NN_descriptive_slug/`, Files: `features/BDD-NN_domain.feature`
-- **Structure**: Multiple feature files organized by domain/module
-- **Required**: README.md, TRACEABILITY.md, GLOSSARY.md, features/ subdirectory
+- **Location**: `docs/BDD/BDD-NN_{descriptive_slug}/` within project docs directory
+- **Naming**: Section-based files inside suite folder: `BDD-NN.0_index.md`, `BDD-NN.SS_{slug}.feature`, `BDD-NN.SS.mm_{slug}.feature`, `BDD-NN.SS.00_{slug}.feature` (aggregator)
+- **Structure**: Multiple section/subsection feature files organized by suite, no `features/` subdirectory
+- **Recommended**: Optional companion docs inside suite folder: `BDD-NN_README.md`, `BDD-NN_TRACEABILITY.md`
 
 **Example**:
 ```
 docs/BDD/
 ├── BDD-06_level0_system_agents/
-│   ├── README.md
-│   ├── TRACEABILITY.md
-│   ├── GLOSSARY.md
-│   ├── features/
-│   │   ├── BDD-06_health_monitor.feature      (38 scenarios)
-│   │   ├── BDD-06_data_guardian.feature       (38 scenarios)
-│   │   ├── BDD-06_position_reconciliation.feature (37 scenarios)
-│   │   └── BDD-06_integration.feature         (37 scenarios)
-│   └── archive/  (optional - for deprecated scenarios)
+│   ├── BDD-06.0_index.md
+│   ├── BDD-06.1_health_monitor.feature        (38 scenarios)
+│   ├── BDD-06.2_data_guardian.feature         (38 scenarios)
+│   ├── BDD-06.3_position_reconciliation.feature (37 scenarios)
+│   ├── BDD-06.4_integration.feature           (37 scenarios)
+│   ├── BDD-06_README.md                       (optional)
+│   └── BDD-06_TRACEABILITY.md                 (optional)
 └── BDD-06_level0_system_agents.feature  (redirect stub - 0 scenarios)
 ```
 
-**Key Rule**: ALL `.feature` files in split structure MUST reside in `features/` subdirectory. No `.feature` files at suite root (except redirect stub).
+**Key Rule**: All `.feature` files MUST reside at the suite folder root (no `features/` subdirectory). Aggregator and section/subsection files live together.
 
 **See Section 1.2 for complete split-file structure details.**
 
@@ -151,14 +146,12 @@ custom_fields:
 **Shared Architecture Example** (most BDD files):
 ```yaml
 ---
-title: "BDD-008: Wallet Funding via ACH, Card, and PayPal"
+title: "BDD-NN: [Descriptive Title]"
 tags:
   - bdd
   - layer-4-artifact
   - shared-architecture
-  - wallet
-  - funding
-  - payments
+  - example
 custom_fields:
   document_type: bdd
   artifact_type: BDD
@@ -167,10 +160,10 @@ custom_fields:
   priority: shared
   development_status: active
   requirements_verified:
-    - EARS-008
-    - BRD-008
+    - EARS-NN
+    - BRD-NN
   traceability:
-    upstream: [BRD-008, PRD-008, EARS-008]
+    upstream: [BRD-NN, PRD-NN, EARS-NN]
     downstream: [ADR, SYS, REQ, SPEC, Code, Tests]
 ---
 ```
@@ -196,9 +189,9 @@ custom_fields:
   agent_id: AGENT-001
   requirements_verified:
     - EARS-022
-    - BRD-022
+    - BRD-22
   traceability:
-    upstream: [BRD-022, PRD-022, EARS-022]
+    upstream: [BRD-22, PRD-022, EARS-022]
     downstream: [ADR, SYS, REQ, SPEC, Code, Tests]
 ---
 ```
@@ -214,7 +207,7 @@ custom_fields:
 ## 1.2 Section-Based File Organization (MANDATORY)
 
 ### Purpose
-Unify BDD naming with PRD/BRD section-based standards. All BDD files use section-based numbering (dot notation) with flat file structure at `docs/BDD/` root level.
+Unify BDD naming with PRD/BRD section-based standards. All BDD files use section-based numbering (dot notation) with a nested suite folder structure at `docs/BDD/BDD-NN_{slug}/`.
 
 **Section-based format is MANDATORY**. No backward compatibility with legacy formats (single-file `BDD-NN_slug.feature` or directory-based `BDD-NN_slug/features/`).
 
@@ -307,27 +300,27 @@ These legacy formats are **PROHIBITED** and will cause validation failure:
 ✅ **Use instead**: `BDD-02.1_ingest.feature`, `BDD-02.2_query.feature` (section-based)
 
 ❌ **Directory-Based Structure**: `BDD-02_knowledge_engine/features/`
-✅ **Use instead**: Flat structure at `docs/BDD/` root with section-based naming
+✅ **Use instead**: Nested suite folder `docs/BDD/BDD-NN_{slug}/` with section-based naming
 
 ### 1.2.3 File Organization Structure
 
-**Flat structure at BDD/ root** (no subdirectories):
+**Nested suite structure** (one folder per suite):
 
 ```
-docs/BDD/
+docs/BDD/BDD-02_knowledge_engine/
 ├── BDD-02.0_index.md                          # Index file (MANDATORY)
 ├── BDD-02.1_ingest.feature                    # Section 1
 ├── BDD-02.2_query.feature                     # Section 2
-├── BDD-02.3.00_learning.feature              # Section 3 aggregator
-├── BDD-02.3.01_learning_path.feature         # Section 3, subsection 01
-├── BDD-02.3.02_bias_detection.feature        # Section 3, subsection 02
+├── BDD-02.3.00_learning.feature               # Section 3 aggregator
+├── BDD-02.3.01_learning_path.feature          # Section 3, subsection 01
+├── BDD-02.3.02_bias_detection.feature         # Section 3, subsection 02
 ├── BDD-02_README.md                           # Optional companion doc
 └── BDD-02_TRACEABILITY.md                     # Optional companion doc
 ```
 
 **Key Rules**:
-- ALL `.feature` files at `docs/BDD/` root level
-- NO subdirectories for BDD files
+- ALL `.feature` files inside `docs/BDD/BDD-NN_{slug}/` suite folder
+- NO additional subdirectories (no `features/` folder)
 - Each suite MUST have index file: `BDD-NN.0_index.md`
 - Optional companion docs: `BDD-NN_README.md`, `BDD-NN_TRACEABILITY.md`, `BDD-NN_GLOSSARY.md`
 
@@ -413,12 +406,12 @@ BDD-02.25_quality_security.feature
 BDD-02.26_quality_reliability.feature
 ```
 
-### 1.2.6 Hard Limits and Guidance
+### 1.2.6 File Size & Scenario Limits
 
 #### File Size Limits
-- **Maximum**: 500 lines per `.feature` file
-- **Soft limit**: 400 lines (recommended)
-- **Action**: If section exceeds 500 lines → Split into subsections (`.SS.mm` format)
+- **Target**: 300–500 lines per `.feature` file
+- **Maximum**: 600 lines (absolute)
+- **Action**: If section exceeds 600 lines or approaches the upper target → Split into subsections (`.SS.mm` format)
 
 #### Scenario Limits
 - **Maximum**: 12 scenarios per Feature block
@@ -569,8 +562,8 @@ See `BDD-02.0_index.md` for complete section map.
 ### 1.2.11 Quality Gates (Pre-Commit)
 
 **File Structure**:
-- ✅ All `.feature` files at `docs/BDD/` root level (no subdirectories)
-- ✅ Index file exists: `BDD-NN.0_index.md`
+- ✅ All `.feature` files live inside suite folders: `docs/BDD/BDD-NN_{slug}/`
+- ✅ Index file exists inside each suite folder: `BDD-NN.0_index.md`
 - ✅ No `.feature` file exceeds 500 lines
 - ✅ No Feature block exceeds 12 scenarios
 
@@ -726,7 +719,7 @@ Feature: [Business Capability Title]
 
 ## 4. Feature File Standards
 
-**Filename**: `BDD-NN_descriptive_requirements.feature`
+**Section Filename**: `BDD-NN.SS_{slug}.feature`
 
 **Feature Declaration**:
 - Business-focused title

@@ -32,7 +32,7 @@ The AI dev flow templates previously provided contradictory guidance, with some 
 ```yaml
 # Option A: Reference separate contract files
 contracts:
-  - ref: CTR-001
+  - ref: CTR-01
 
 # Option B: Embed contract inline
 contracts:
@@ -95,7 +95,7 @@ Every API contract requires:
 3. **Clear Traceability** (zero broken links):
    - REQ → IMPL → **CTR** → SPEC → TASKS (explicit chain)
    - Git history shows contract evolution independently
-   - Impact analysis: "Which SPECs use CTR-042?"
+   - Impact analysis: "Which SPECs use CTR-NN?"
 
 4. **Version Control** (granular commits):
    - Contract changes isolated from implementation changes
@@ -227,7 +227,7 @@ fi
 
 - ⚠️ **More Files**: Accepted as necessary for clarity and tooling
 - ⚠️ **Sync Effort**: Mitigated by validation scripts and pre-commit hooks
-- ⚠️ **Learning Curve**: Mitigated by templates, examples (CTR-001), documentation
+- ⚠️ **Learning Curve**: Mitigated by templates, examples (CTR-01), documentation
 
 ### [NORMAL_CONDITION - e.g., steady state, balanced load]
 

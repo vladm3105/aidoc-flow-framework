@@ -349,28 +349,28 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 from datetime import datetime
 from typing import Literal
 
-class QuoteResponse(BaseModel):
-    """Quote response with field-level validation."""
+class ItemPricing(BaseModel):
+    """Generic item pricing model with field-level validation."""
 
-    symbol: str = Field(
+    item_id: str = Field(
         ...,
         min_length=1,
-        max_length=5,
-        pattern=r"^[A-Z]{1,5}$",
-        description="item resource identifier"
+        max_length=32,
+        pattern=r"^[A-Z0-9_-]{1,32}$",
+        description="Item identifier"
     )
-    price: float = Field(
+    unit_price: float = Field(
         ...,
         gt=0,
         decimal_places=2,
-        description="Current price in USD"
+        description="Current unit price"
     )
     timestamp: datetime
-    bid: float | None = Field(None, ge=0)
-    ask: float | None = Field(None, ge=0)
-    volume: int | None = Field(None, ge=0)
+    min_price: float | None = Field(None, ge=0)
+    max_price: float | None = Field(None, ge=0)
+    units_in_stock: int | None = Field(None, ge=0)
 
-    @field_validator('price', 'bid', 'ask')
+    @field_validator('unit_price', 'min_price', 'max_price')
     @classmethod
     def validate_price_precision(cls, v: float) -> float:
         """Ensure prices have maximum 2 decimal places."""
@@ -379,12 +379,12 @@ class QuoteResponse(BaseModel):
         return v
 
     @model_validator(mode='after')
-    def validate_bid_ask_spread(self) -> 'QuoteResponse':
-        """Ensure bid <= price <= ask when all present."""
-        if self.bid and self.ask and self.price:
-            if not (self.bid <= self.price <= self.ask):
+    def validate_price_bounds(self) -> 'ItemPricing':
+        """Ensure min_price <= unit_price <= max_price when bounds are present."""
+        if self.min_price is not None and self.max_price is not None:
+            if not (self.min_price <= self.unit_price <= self.max_price):
                 raise ValueError(
-                    f"Invalid spread: bid={self.bid}, price={self.price}, ask={self.ask}"
+                    f"Invalid price bounds: min={self.min_price}, unit={self.unit_price}, max={self.max_price}"
                 )
         return self
 
@@ -393,12 +393,12 @@ class QuoteResponse(BaseModel):
         json_schema_extra = {
             "examples": [
                 {
-                    "symbol": "ITEM-001",
-                    "price": 182.50,
+                    "item_id": "ITEM-001",
+                    "unit_price": 49.99,
                     "timestamp": "2025-01-15T14:30:00Z",
-                    "bid": 182.45,
-                    "ask": 182.55,
-                    "volume": 1000000
+                    "min_price": 39.99,
+                    "max_price": 59.99,
+                    "units_in_stock": 250
                 }
             ]
         }
@@ -414,53 +414,53 @@ from datetime import datetime
 
 Base = declarative_base()
 
-class Quote(Base):
-    """Quote model with database constraints."""
-    __tablename__ = 'quotes'
+class ItemPrice(Base):
+    """Generic pricing model with database constraints."""
+    __tablename__ = 'item_prices'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    symbol = Column(String(5), nullable=False, index=True)
-    price = Column(Float, nullable=False)
+    item_id = Column(String(32), nullable=False, index=True)
+    unit_price = Column(Float, nullable=False)
     timestamp = Column(DateTime, nullable=False, index=True)
-    bid = Column(Float, nullable=True)
-    ask = Column(Float, nullable=True)
-    volume = Column(Integer, nullable=True)
+    min_price = Column(Float, nullable=True)
+    max_price = Column(Float, nullable=True)
+    units_in_stock = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     __table_args__ = (
-        CheckConstraint('price > 0', name='check_price_positive'),
-        CheckConstraint('bid >= 0', name='check_bid_non_negative'),
-        CheckConstraint('ask >= 0', name='check_ask_non_negative'),
-        CheckConstraint('volume >= 0', name='check_volume_non_negative'),
-        Index('idx_symbol_timestamp', 'symbol', 'timestamp'),
+        CheckConstraint('unit_price > 0', name='check_unit_price_positive'),
+        CheckConstraint('min_price >= 0', name='check_min_price_non_negative'),
+        CheckConstraint('max_price >= 0', name='check_max_price_non_negative'),
+        CheckConstraint('units_in_stock >= 0', name='check_units_in_stock_non_negative'),
+        Index('idx_item_id_timestamp', 'item_id', 'timestamp'),
     )
 ```
 
 **Migration Script** (Alembic):
 
 ```python
-# migrations/versions/001_create_quotes_table.py
+# migrations/versions/001_create_item_prices_table.py
 def upgrade():
     op.create_table(
-        'quotes',
+        'item_prices',
         sa.Column('id', sa.Integer(), primary_key=True, autoincrement=True),
-        sa.Column('symbol', sa.String(5), nullable=False, index=True),
-        sa.Column('price', sa.Float(), nullable=False),
+        sa.Column('item_id', sa.String(32), nullable=False, index=True),
+        sa.Column('unit_price', sa.Float(), nullable=False),
         sa.Column('timestamp', sa.DateTime(), nullable=False, index=True),
-        sa.Column('bid', sa.Float(), nullable=True),
-        sa.Column('ask', sa.Float(), nullable=True),
-        sa.Column('volume', sa.Integer(), nullable=True),
+        sa.Column('min_price', sa.Float(), nullable=True),
+        sa.Column('max_price', sa.Float(), nullable=True),
+        sa.Column('units_in_stock', sa.Integer(), nullable=True),
         sa.Column('created_at', sa.DateTime(), default=datetime.utcnow, nullable=False),
-        sa.CheckConstraint('price > 0', name='check_price_positive'),
-        sa.CheckConstraint('bid >= 0', name='check_bid_non_negative'),
-        sa.CheckConstraint('ask >= 0', name='check_ask_non_negative'),
-        sa.CheckConstraint('volume >= 0', name='check_volume_non_negative'),
+        sa.CheckConstraint('unit_price > 0', name='check_unit_price_positive'),
+        sa.CheckConstraint('min_price >= 0', name='check_min_price_non_negative'),
+        sa.CheckConstraint('max_price >= 0', name='check_max_price_non_negative'),
+        sa.CheckConstraint('units_in_stock >= 0', name='check_units_in_stock_non_negative'),
     )
-    op.create_index('idx_symbol_timestamp', 'quotes', ['symbol', 'timestamp'])
+    op.create_index('idx_item_id_timestamp', 'item_prices', ['item_id', 'timestamp'])
 
 def downgrade():
-    op.drop_index('idx_symbol_timestamp', 'quotes')
-    op.drop_table('quotes')
+    op.drop_index('idx_item_id_timestamp', 'item_prices')
+    op.drop_table('item_prices')
 ```
 
 ---
@@ -1078,7 +1078,9 @@ async def get_quote(
 
 ### 10.1 Automated Testing
 
-- **BDD Scenarios**: [BDD-NN.feature](../../BDD/BDD-NN.feature#scenarios)
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+- **BDD Scenarios**: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios`
+<!-- VALIDATOR:IGNORE-LINKS-END -->
   - Scenario: Successful API connection with valid credentials
   - Scenario: Rate limiting enforcement at premium tier threshold
   - Scenario: Retry on transient failure with exponential backoff
@@ -1117,7 +1119,9 @@ async def get_quote(
 
 ### 10.2 Technical Validation
 
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - **Specification Compliance**: [SPEC-NN](../../SPEC/.../SPEC-NN.yaml)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
   - Interface implementation matches Protocol/ABC definition
   - All methods have complete type annotations
   - Error handling follows specification
@@ -1165,40 +1169,40 @@ async def get_quote(
 
 Document the business strategy, product requirements, system specifications, and engineering requirements that drive this atomic requirement.
 
-| Source Type | Document ID | Document Title | Relevant sections | Relationship |
-|-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-NN](../../BRD/BRD-NN_...md) | [Business requirements title] | sections 2.4, 4.x | Business objectives justifying this requirement |
-| PRD | [PRD-NN](../../PRD/PRD-NN_...md) | [Product requirements title] | Functional Requirements 4.x | Product features this requirement enables |
-| EARS | [EARS-NN](../../EARS/EARS-NN_...md) | [Engineering requirements] | Event-driven/State-driven statements | Formal engineering requirement this satisfies |
-| BDD | [BDD-NN](../../BDD/BDD-NN_...feature) | [BDD feature title] | Scenarios 1-5 | Behavioral specification this implements |
-| ADR | [ADR-NN](../../ADR/ADR-NN_...md) | [Architecture decision title] | Decision outcome | Architecture decision driving this requirement |
-| SYS | [SYS-NN](../../SYS/SYS-NN_...md) | [System requirements title] | System Requirements 3.x | System-level specification this implements |
+| Source Type | Document | Document Title | Relevant sections | Relationship |
+|-------------|----------|----------------|-------------------|--------------|
+| BRD | BRD (TBD link) | [Business requirements title] | sections 2.4, 4.x | Business objectives justifying this requirement |
+| PRD | PRD (TBD link) | [Product requirements title] | Functional Requirements 4.x | Product features this requirement enables |
+| EARS | EARS (TBD link) | [Engineering requirements] | Event-driven/State-driven statements | Formal engineering requirement this satisfies |
+| BDD | BDD (TBD link) | [BDD feature title] | Scenarios 1-5 | Behavioral specification this implements |
+| ADR | ADR (TBD link) | [Architecture decision title] | Decision outcome | Architecture decision driving this requirement |
+| SYS | SYS (TBD link) | [System requirements title] | System Requirements 3.x | System-level specification this implements |
 
 ### 11.2 Downstream Artifacts
 
 #### Architecture Decisions
 
-| ADR ID | ADR Title | Requirement Aspects Addressed | Decision Impact |
-|--------|-----------|------------------------------|-----------------|
-| [ADR-NN](../../ADR/ADR-NN_...md#ADR-NN) | [Architecture decision title] | Technology selection, patterns, trade-offs | Architectural implementation constraints |
+| Artifact | ADR Title | Requirement Aspects Addressed | Decision Impact |
+|----------|-----------|------------------------------|-----------------|
+| ADR (TBD) | [Architecture decision title] | Technology selection, patterns, trade-offs | Architectural implementation constraints |
 
 #### Technical Specifications
 
-| SPEC ID | Specification Title | Requirement Aspects Implemented | Implementation Path |
-|---------|-------------------|--------------------------------|---------------------|
-| [SPEC-NN](../../SPEC/.../SPEC-NN.yaml) | [Technical spec title] | Interfaces, schemas, error handling, config | src/[module]/[component].py |
+| Artifact | Specification Title | Requirement Aspects Implemented | Implementation Path |
+|----------|-------------------|--------------------------------|---------------------|
+| SPEC (TBD) | [Technical spec title] | Interfaces, schemas, error handling, config | src/[module]/[component].py |
 
 #### Behavioral Specifications
 
-| BDD ID | Scenario Title | Acceptance Criteria Validated | Test Coverage |
-|--------|----------------|-------------------------------|---------------|
-| [BDD-NN](../../BDD/BDD-NN_....feature) | Feature: [Feature name] | REQ.NN.06.01 through REQ.NN.06.18 | Scenarios 1-8 |
+| Artifact | Scenario Title | Acceptance Criteria Validated | Test Coverage |
+|----------|----------------|-------------------------------|---------------|
+| BDD (TBD) | Feature: [Feature name] | REQ.NN.06.01 through REQ.NN.06.18 | Scenarios 1-8 |
 
 #### API Contracts
 
-| CTR ID | Contract Title | Interface Defined | Relationship |
-|--------|----------------|-------------------|--------------|
-| [CTR-NN](../../CTR/CTR-NN.md) | [API Contract Title] | REST API / Event Schema / gRPC Proto | Interface specification and versioning |
+| Artifact | Contract Title | Interface Defined | Relationship |
+|----------|----------------|-------------------|--------------|
+| CTR (TBD) | [API Contract Title] | REST API / Event Schema / gRPC Proto | Interface specification and versioning |
 
 ### 11.3 Code Implementation Paths
 
@@ -1232,8 +1236,12 @@ Document the business strategy, product requirements, system specifications, and
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Related | [REQ-NN](./REQ-NN_...md) | [Related REQ title] | Shared domain context |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Depends | [REQ-NN](./REQ-NN_...md) | [Prerequisite REQ title] | Must complete before this |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Tags:**
 ```markdown
@@ -1371,3 +1379,15 @@ SPEC-Ready Score = (
 ---
 
 *This is the authoritative unified template v3.0 for creating SPEC-ready REQ documents with 100% doc_flow framework compliance.*
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If this document approaches/exceeds limits, split into logically separate requirement files and update cross-references.
+
+## Document Splitting Standard
+
+Split REQ content by capability scope rather than using section files:
+- Create additional REQ documents with clear slugs and update traceability
+- Keep each REQ focused and measurable; avoid broad multi-topic files
+- Update any summary/mapping tables; re-run validation and lints

@@ -22,11 +22,15 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: business-requirements-document
-  descriptive_slug: null  # Folder's descriptive name (e.g., trading_platform)
+  descriptive_slug: null  # Folder's descriptive name (e.g., platform_example)
   schema_reference: "BRD_SCHEMA.yaml"
   schema_version: "1.0"
   schema_status: optional
 ---
+
+> Reference Template — For learning and small docs only. Real BRDs should be split per `../DOCUMENT_SPLITTING_RULES.md` using:
+> - `BRD-SECTION-0-TEMPLATE.md` to create `BRD-{NN}.0_index.md`
+> - `BRD-SECTION-TEMPLATE.md` to create `BRD-{NN}.{S}_{slug}.md`
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for BRD structure.
 > - **Schema**: `BRD_SCHEMA.yaml` (OPTIONAL - Layer 1 entry point, human-authored)
@@ -665,7 +669,7 @@ Document both platform-inherited mandatory conditions and feature-specific techn
    - 2/5: 2-3 partners, standard compliance requirements, moderate business complexity
    - 3/5: 3-4 partners, regulatorytor-specific regulations, complex fee structures or multi-tier logic
    - 4/5: 4+ partners, multi-jurisdiction compliance, cross-border requirements, high integration complexity
-   - 5/5: Extensive partner ecosystem, complex regulatory framework, multi-currency/multi-corridor, AI/ML business outcomes
+   - 5/5: Extensive partner ecosystem, complex regulatory framework, multi-region/multi-locale, AI/ML business outcomes
 
 4. **Cross-References**: Always reference related Platform BRDs (BRD-NN through BRD-NN), Partner Integration BRDs, and Feature BRDs for traceability
 
@@ -745,15 +749,15 @@ The following architectural topics require formal Architecture Decision Records 
 **Example** (Business-Focused):
 
 ```markdown
-#### BRD.01.21.03: Ledger System Selection
+#### BRD.01.21.03: Core Data System Selection
 
-**Business Driver**: Real-time financial position visibility required for treasury
-management (BRD.01.21.04) and regulatory reporting (Section 8.4.2 BSA compliance).
+**Business Driver**: Real-time operational visibility required for business reporting
+and audit trails (see Section 8.4.2 compliance).
 
 **Business Constraints**:
-- Must support multi-currency operations (USD, UZS, USDC) per Section 3.2 market requirements
-- Audit trail retention per BSA requirements (5 years) per Section 8.4.2
-- Maximum budget allocation: $50K annual licensing per Section 8.2
+- Must support multi-locale operations (e.g., currency/units/locales) per Section 3.2 requirements
+- Audit trail retention per organizational compliance policy (e.g., 5 years) per Section 8.4.2
+- Maximum budget allocation: [Budget] annual licensing per Section 8.2
 
 **PRD Requirements**: [What PRD must elaborate for THIS topic - e.g., "Evaluate technical options for data persistence. Include scalability analysis."]
 ```
@@ -927,7 +931,7 @@ Constraints imposed by laws, regulations, and compliance requirements.
 
 **Examples**:
 - BRD.01.03.01: FinCEN recordkeeping requires 5-year transaction audit trail retention
-- BRD.01.03.02: OFAC compliance requires real-time sanctions screening for all transactions
+- BRD.01.03.02: Sanctions compliance requires real-time screening for all transactions
 - BRD.01.03.03: State MTL licensing restricts operations to approved jurisdictions
 
 #### 8.1.2 Partner SLA Constraints
@@ -939,8 +943,8 @@ Constraints imposed by partner agreements and service level commitments.
 | BRD.01.03.XX | [Partner SLA constraint] | [Partner name] | [How this affects business requirements] |
 
 **Examples**:
-- BRD.01.03.10: Bridge custody settlement requires T+1 for ACH deposits
-- BRD.01.03.11: Paynet delivery confirmation SLA is 24-48 hours for bank transfers
+- BRD.01.03.10: External provider settlement requires T+1 for bank deposits
+- BRD.01.03.11: Delivery confirmation SLA is 24-48 hours for bank transfers
 - BRD.01.03.12: Partner API rate limits cap at 1,000 requests per minute
 
 #### 8.1.3 Technical Platform Constraints
@@ -978,7 +982,7 @@ Constraints from approved budget allocations and cost limitations.
 | BRD.NN.03.SS | [Budget constraint] | [Category] | [How this affects business requirements] |
 
 **Examples**:
-- BRD.01.03.40: Partner integration budget limits initial corridors to 3 countries
+- BRD.01.03.40: Partner integration budget limits initial regions to [N]
 - BRD.01.03.41: Marketing budget caps launch promotions at 90-day fee waiver period
 - BRD.01.03.42: Infrastructure budget requires shared hosting for non-production environments
 
@@ -991,7 +995,7 @@ Constraints from business deadlines, market windows, and regulatory dates.
 | BRD.NN.03.SS | [Timeline constraint] | [Driver] | [How this affects business requirements] |
 
 **Examples**:
-- BRD.01.03.50: Ramadan corridor launch requires completion before religious calendar dates
+- BRD.01.03.50: Seasonal launch requires completion before key calendar dates
 - BRD.01.03.51: Regulatory filing deadline requires compliance features by Q4
 - BRD.01.03.52: Partner contract renewal requires integration completion within 6 months
 
@@ -1012,8 +1016,8 @@ Assumptions about market conditions, customer demand, and competitive landscape.
 | BRD.NN.04.SS | [Market assumption] | [How to validate] | [Business impact] |
 
 **Examples**:
-- BRD.01.04.01: US-Uzbekistan remittance corridor has sufficient demand (>10,000 monthly transactions)
-- BRD.01.04.02: Target customers prefer mobile-first remittance experience
+- BRD.01.04.01: Target market has sufficient demand (>10,000 monthly transactions)
+- BRD.01.04.02: Target customers prefer mobile-first experience
 - BRD.01.04.03: Competitive pricing at 3% all-in cost will drive customer acquisition
 
 #### 8.2.2 Partner Assumptions
@@ -1025,8 +1029,8 @@ Assumptions about partner capabilities, availability, and performance.
 | BRD.NN.04.SS | [Partner assumption] | [Partner] | [How to validate] | [Business impact] |
 
 **Examples**:
-- BRD.01.04.10: Bridge custody provider will maintain 99.9% API availability
-- BRD.01.04.11: Paynet delivery network covers 95% of Uzbekistan banking infrastructure
+- BRD.01.04.10: External provider will maintain 99.9% API availability
+- BRD.01.04.11: Delivery network coverage meets ≥95% of target region infrastructure
 - BRD.01.04.12: Partner onboarding will complete within 30 days of contract signing
 
 #### 8.2.3 User Behavior Assumptions
@@ -1078,7 +1082,7 @@ Assumptions about regulatory environment, licensing, and compliance requirements
 
 **Examples**:
 - BRD.01.04.50: MTL licensing will be maintained in all operating states
-- BRD.01.04.51: Uzbekistan regulatory environment will remain stable for remittance services
+- BRD.01.04.51: Regulatory environment will remain stable for services in target regions
 - BRD.01.04.52: KYC requirements will not significantly change during development period
 
 ---
@@ -1314,13 +1318,13 @@ This section documents business-level risks that could impact requirement delive
 | BRD.01.09.60 | Strategic | [Risk description] | [1-3] | [3-15] | [Score] | [Preventive action] | [If occurs] | [Role] |
 
 **Examples by Category**:
-- **Market**: Competitor launches similar corridor with lower fees (L:2 × I:8 = 16)
+- **Market**: Competitor launches similar offering with lower fees (L:2 × I:8 = 16)
 - **Regulatory**: MTL license renewal delayed or denied (L:1 × I:15 = 15)
 - **Partner**: Delivery partner fails to meet SLA commitments (L:2 × I:8 = 16)
 - **Financial**: Partner fee increases erode transaction margins (L:2 × I:8 = 16)
 - **CX**: High false positive rate blocks legitimate customers (L:2 × I:8 = 16)
 - **Technology**: Security breach compromises customer data (L:1 × I:15 = 15)
-- **Strategic**: Single-corridor dependency limits growth options (L:2 × I:8 = 16)
+- **Strategic**: Single-region dependency limits growth options (L:2 × I:8 = 16)
 
 ---
 
@@ -1715,9 +1719,9 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 | Business Objective | Related Functional Requirements | Related User Stories | Coverage Status |
 |--------------------|--------------------------------|----------------------|-----------------|
-| [BO-N: Objective description] | BRD.NN.01.01, BRD.NN.01.02, BRD.NN.01.03 | PRD.NN.07.01, PRD.NN.07.03, PRD.NN.07.08 | Complete/Partial/Gap |
-| [BO-N: Objective description] | BRD.NN.01.04, BRD.NN.01.05, BRD.NN.01.06 | PRD.NN.07.02, PRD.NN.07.05, PRD.NN.07.12 | Complete/Partial/Gap |
-| [BO-N: Objective description] | BRD.NN.01.07, BRD.NN.01.08, BRD.NN.01.09 | PRD.NN.07.04, PRD.NN.07.09, PRD.NN.07.15 | Complete/Partial/Gap |
+| [BO-N: Objective description] | BRD.NN.01.01, BRD.NN.01.02, BRD.NN.01.03 | PRD.NN.09.01, PRD.NN.09.03, PRD.NN.09.08 | Complete/Partial/Gap |
+| [BO-N: Objective description] | BRD.NN.01.04, BRD.NN.01.05, BRD.NN.01.06 | PRD.NN.09.02, PRD.NN.09.05, PRD.NN.09.12 | Complete/Partial/Gap |
+| [BO-N: Objective description] | BRD.NN.01.07, BRD.NN.01.08, BRD.NN.01.09 | PRD.NN.09.04, PRD.NN.09.09, PRD.NN.09.15 | Complete/Partial/Gap |
 
 #### 16.1.2 Functional Requirements → Technical Specifications
 
@@ -1725,20 +1729,20 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 | Functional Requirement | Downstream SPEC (Planned) | Downstream IMPL (Planned) | Status |
 |------------------------|---------------------------|---------------------------|--------|
-| BRD.NN.01.01: [Requirement title] | SPEC.NN.15.01: [Specification name] | IMPL.NN.17.01: [Implementation name] | Planned |
-| BRD.NN.01.02: [Requirement title] | SPEC.NN.15.02: [Specification name] | IMPL.NN.17.02: [Implementation name] | Planned |
-| BRD.NN.01.03: [Requirement title] | SPEC.NN.15.03: [Specification name] | IMPL.NN.17.03: [Implementation name] | Planned |
+| BRD.NN.01.01: [Requirement title] | SPEC (TBD): [Specification name] | IMPL (TBD): [Implementation name] | Planned |
+| BRD.NN.01.02: [Requirement title] | SPEC (TBD): [Specification name] | IMPL (TBD): [Implementation name] | Planned |
+| BRD.NN.01.03: [Requirement title] | SPEC (TBD): [Specification name] | IMPL (TBD): [Implementation name] | Planned |
 
 #### 16.1.3 Quality Attributes → Technical Specifications
 
 | Quality Attribute Category | Downstream SPEC (Planned) | Validation Method |
 |---------------------------|---------------------------|-------------------|
-| Performance | SPEC-XXX-QA-P: Performance Testing | Load testing |
-| Reliability | SPEC-XXX-QA-R: Deployment Architecture | Uptime monitoring |
-| Scalability | SPEC-XXX-QA-SC: Scaling Infrastructure | Capacity testing |
-| Security & Compliance | SPEC-XXX-QA-S: Security Controls | Security audit |
-| Observability | SPEC-XXX-QA-O: Monitoring Stack | Dashboard review |
-| Maintainability | SPEC-XXX-QA-M: DevOps Pipeline | CI/CD metrics |
+| Performance | SPEC (TBD): Performance Testing | Load testing |
+| Reliability | SPEC (TBD): Deployment Architecture | Uptime monitoring |
+| Scalability | SPEC (TBD): Scaling Infrastructure | Capacity testing |
+| Security & Compliance | SPEC (TBD): Security Controls | Security audit |
+| Observability | SPEC (TBD): Monitoring Stack | Dashboard review |
+| Maintainability | SPEC (TBD): DevOps Pipeline | CI/CD metrics |
 
 ### 16.2 Same-Type References (Conditional)
 
@@ -1780,7 +1784,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 |----------------------|-------------------|---------------------------|-----------------|
 | BRD.NN.01.SS (Feature Requirements) | Unit Tests | TEST-XXX-UNIT: FR Unit Test Suite | 95% |
 | BRD.NN.01.SS (Feature Requirements) | Integration Tests | TEST-XXX-INT: Integration Test Suite | 85% |
-| PRD.NN.07.SS (User Stories) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
+| PRD.NN.09.SS (User Stories) | Acceptance Tests | TEST-XXX-ACC: Acceptance Test Suite | 100% |
 | Performance Quality Attributes | Load Tests | TEST-XXX-LOAD: Performance Tests | All SLAs |
 | Security Quality Attributes | Security Tests | TEST-XXX-SEC: Security Audit | All controls |
 
@@ -1931,7 +1935,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 #### ✅ KEEP in Functional Requirements (Business-Level Content)
 1. Business capability required (WHAT the system must do)
 2. Business rules and policies (transaction limits, KYC tiers)
-3. Regulatory/compliance requirements (OFAC screening, SAR filing)
+3. Regulatory/compliance requirements (sanctions screening, regulatory reporting)
 4. Business acceptance criteria with measurable targets (≤3 seconds for 95%)
 5. Business outcomes and metrics (≥95% delivery success)
 6. Partner dependencies (business-level SLAs, not API specs)
@@ -1964,7 +1968,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 **Reference: BRD-NN Gold Standard (100/100 Score)**
 
-See `/opt/data/blocal_n8n/docs/BRD/BRD-NN_remittance_transaction_us_to_uzbekistan.md` for examples of business-level FRs that achieved perfect PRD-Ready Score.
+See BRD examples in your project repositories that implement this framework, and consult `FR_EXAMPLES_GUIDE.md` for patterns that achieve high PRD-Ready Scores.
 
 **Key Success Factors from BRD-NN**:
 - Zero code blocks in entire document
@@ -2014,14 +2018,14 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NN_remittance_transaction_us_to_uzbekista
 | Fee Type | Amount | Trigger | Calculation Basis | Customer Communication |
 |----------|--------|---------|-------------------|----------------------|
 | Service Fee | [Amount or formula] | [When charged] | [How calculated] | [How displayed to customer] |
-| FX Spread | [Percentage range] | [On FX conversion] | [Mid-market rate + spread] | [Disclosed as "Exchange rate includes..."] |
+| Conversion Margin | [Percentage range] | [On currency conversion] | [Reference rate + margin] | [Disclosed as "Rate includes conversion margin"] |
 | Delivery Fee | [Amount or formula] | [On payout] | [Based on method] | [Shown in fee breakdown] |
 
 **Example (Remittance):**
 | Fee Type | Amount | Trigger | Calculation Basis | Customer Communication |
 |----------|--------|---------|-------------------|----------------------|
-| Service Fee | $3.00 flat | Per transaction | Fixed regardless of amount | "BeeLocal service fee: $3.00" |
-| FX Spread | 1.5-2.0% | USD→UZS conversion | Mid-market rate + 1.5-2% | "Rate includes ~1.5% exchange margin" |
+| Service Fee | $3.00 flat | Per transaction | Fixed regardless of amount | "Service fee: $3.00" |
+| Conversion Margin | 1.5-2.0% | Currency conversion | Reference rate + 1.5-2% | "Rate includes conversion margin" |
 | Delivery Fee | $0.00 | Standard delivery | Absorbed in FX spread | "No additional delivery fee" |
 
 #### H.2 Partner Cost Structure (Internal Reference)
@@ -2053,9 +2057,9 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NN_remittance_transaction_us_to_uzbekista
 **Example:**
 | Partner | Service | Availability SLA | Response Time SLA | Error Rate SLA | Escalation Contact |
 |---------|---------|-----------------|-------------------|----------------|-------------------|
-| Bridge | Custody API | 99.9% | <2 seconds (95th) | <0.1% | bridge-support@example.com |
-| Paynet | Delivery API | 99.5% | <5 seconds (95th) | <0.5% | paynet-ops@example.com |
-| Sardine | Risk Screening | 99.9% | <3 seconds (95th) | <0.01% | sardine-sla@example.com |
+| Provider A | External API | 99.9% | <2 seconds (95th) | <0.1% | provider-a-support@example.com |
+| Provider B | Delivery API | 99.5% | <5 seconds (95th) | <0.5% | provider-b-ops@example.com |
+| Provider C | Risk Screening | 99.9% | <3 seconds (95th) | <0.01% | provider-c-sla@example.com |
 
 #### I.2 SLA Impact on Business Requirements
 
@@ -2080,7 +2084,7 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NN_remittance_transaction_us_to_uzbekista
 | Regulation | section/Rule | Requirement Summary | BRD section | BRD Reference | Compliance Approach |
 |------------|--------------|---------------------|-------------|---------------|---------------------|
 | FinCEN MSB | 31 CFR 1010.410 | Recordkeeping for 5 years | section 6 | BRD.01.01.12 | Transaction audit trail with 5-year retention |
-| OFAC SDN | 31 CFR 501.603 | Sanctions screening | section 5 | BRD.01.01.13 | Real-time OFAC screening before authorization |
+| Sanctions List | [Applicable Regulation] | Sanctions screening | section 5 | BRD.01.01.13 | Real-time screening before authorization |
 | Travel Rule | 31 CFR 1010.410(f) | Identity for ≥$3,000 | section 5 | BRD.01.01.14 | Sender/recipient identity capture above threshold |
 
 #### J.2 Regulatory Calendar
@@ -2175,3 +2179,17 @@ See `/opt/data/blocal_n8n/docs/BRD/BRD-NN_remittance_transaction_us_to_uzbekista
 - Recipients must comply with organizational information security policies
 
 ---
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If this document approaches/exceeds limits, split into `BRD-{NN}.{S}_{slug}.md` section files using `BRD-SECTION-TEMPLATE.md` and update `BRD-{NN}.0_index.md`.
+
+## Document Splitting Standard
+
+Split a BRD when size or complexity warrants:
+- Prepare or update `BRD-{NN}.0_index.md` with sections table
+- Create sections from `BRD-SECTION-TEMPLATE.md` with filenames `BRD-{NN}.{S}_{slug}.md`
+- Add Prev/Next navigation between sections; keep numbers sequential
+- Update cross-links and traceability entries to specific sections
+- Re-run validation and lints (link checker, size linter)

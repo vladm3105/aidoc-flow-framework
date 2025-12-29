@@ -351,6 +351,10 @@ validation_rules:
     - rule: "Acceptance Criteria must be measurable"
       severity: warning
 
+    - rule: "No numeric downstream references (REQ-#, SPEC-#, TASKS-#)"
+      severity: error
+      fix: "Use generic downstream names (REQ, SPEC, TASKS) until those artifacts exist."
+
 # =============================================================================
 # Cross-Reference Requirements (Cumulative Tagging - Layer 6)
 # =============================================================================
@@ -361,7 +365,7 @@ traceability:
     layer: 6
     required:
       - "@brd: BRD.NN.01.SS"
-      - "@prd: PRD.NN.07.SS"
+      - "@prd: PRD.NN.EE.SS"
       - "@ears: EARS.NN.24.SS"
       - "@bdd: BDD.NN.13.SS"
       - "@adr: ADR-NN"
@@ -373,7 +377,7 @@ traceability:
         format: "@brd: BRD.NN.01.SS"
         location: "Section 13 Traceability or Traceability Tags section"
       - type: PRD
-        format: "@prd: PRD.NN.07.SS"
+        format: "@prd: PRD.NN.EE.SS"
         location: "Section 13 Traceability or Traceability Tags section"
       - type: EARS
         format: "@ears: EARS.NN.24.SS"
@@ -388,11 +392,11 @@ traceability:
   downstream:
     expected:
       - type: REQ
-        format: "REQ-NN"
+        format: "REQ"    # Generic name only; do not reference numeric IDs until they exist
       - type: SPEC
-        format: "SPEC-NN"
+        format: "SPEC"   # Generic name only; do not reference numeric IDs until they exist
       - type: TASKS
-        format: "TASKS-NN"
+        format: "TASKS"  # Generic name only; do not reference numeric IDs until they exist
 
   same_type:
     optional:

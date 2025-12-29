@@ -27,17 +27,17 @@ BRDs fall into two categories based on their focus. Both use the same template (
 
 **Examples**:
 - BRD-01: Platform Architecture & Technology Stack
-- BRD-034: ML Infrastructure Technology Decisions
-- BRD-050: Mobile Architecture Technology Stack
+- BRD-34: ML Infrastructure Technology Decisions
+- BRD-50: Mobile Architecture Technology Stack
 
 **Workflow**:
 ```
-Platform BRD → ADRs (critical technology decisions) → PRD → ADRs (implementation details) → SPEC
+Platform BRD → PRD → EARS → BDD → ADR → SPEC
 ```
 
 **Key sections**:
 - section 3.6: Technology Stack Prerequisites (REQUIRED)
-- section 3.7: Mandatory Technology Conditions (REQUIRED - lists ADRs needed before PRD)
+- section 3.7: Mandatory Technology Conditions (REQUIRED - identify architecture decision topics; do not reference ADR numbers)
 
 ## Feature BRDs
 
@@ -50,13 +50,13 @@ Platform BRD → ADRs (critical technology decisions) → PRD → ADRs (implemen
 - Document **what** features deliver business value
 
 **Examples**:
-- BRD-006: B2C Progressive KYC Onboarding
-- BRD-009: Remittance Transaction Workflow
-- BRD-022: Fraud Detection Agent
+- BRD-06: B2C Progressive KYC Onboarding
+- BRD-09: Remittance Transaction Workflow
+- BRD-22: Fraud Detection Agent
 
 **Workflow**:
 ```
-Feature BRD → PRD → ADRs (if needed for implementation) → SPEC
+Feature BRD → PRD → EARS → BDD → ADR (if needed) → SPEC
 ```
 
 **Key sections**:
@@ -70,13 +70,13 @@ Feature BRD → PRD → ADRs (if needed for implementation) → SPEC
 ### Infrastructure/Architecture?
 → **Platform BRD**
 - Populate "Technology Stack Prerequisites"
-- List required ADRs before PRD creation
+- Identify architecture decision topics (ADRs authored after BDD; no forward ADR references)
 - Document business drivers for technology
 
 ### Business Functionality?
 → **Feature BRD**
 - Reference Platform BRD if technology constraints exist
-- Standard workflow: BRD → PRD → ADR
+- Standard workflow: BRD → PRD → EARS → BDD → ADR
 - Focus on user value and business outcomes
 
 ### Both?
@@ -89,13 +89,13 @@ Feature BRD → PRD → ADRs (if needed for implementation) → SPEC
 
 **Platform BRDs**:
 - `BRD-01_platform_architecture_technology_stack.md`
-- `BRD-034_ml_infrastructure_technology_decisions.md`
-- `BRD-050_mobile_platform_architecture.md`
+- `BRD-34_ml_infrastructure_technology_decisions.md`
+- `BRD-50_mobile_platform_architecture.md`
 
 **Feature BRDs**:
-- `BRD-006_b2c_progressive_kyc_onboarding.md`
-- `BRD-009_remittance_transaction_workflow.md`
-- `BRD-022_fraud_detection_agent.md`
+- `BRD-06_b2c_progressive_kyc_onboarding.md`
+- `BRD-09_remittance_transaction_workflow.md`
+- `BRD-22_fraud_detection_agent.md`
 
 ## Workflow Comparison
 
@@ -104,7 +104,7 @@ Feature BRD → PRD → ADRs (if needed for implementation) → SPEC
 | **Focus** | Technology/architecture | Business/user features |
 | **Prerequisites** | Defines technology requirements | References Platform BRD |
 | **ADR Timing** | Before PRD (critical decisions) | After PRD (implementation details) |
-| **Example** | BRD-01 | BRD-006 |
+| **Example** | BRD-01 | BRD-06 |
 | **Next Step** | Create ADRs first | Create PRD first |
 
 ## section 3.6 & 3.7 Implementation Guide
@@ -201,11 +201,11 @@ This feature must comply with all Platform BRD-01 mandatory technology condition
 - [ ] Label sections 3.6 and 3.7 with "**Platform BRDs Only** - *Skip this section for Feature BRDs*"
 - [ ] Populate section 3.6 with detailed technology prerequisites organized by category
 - [ ] Include Requirement, Rationale, Business Impact for each prerequisite
-- [ ] Link prerequisites to ADRs using (ADR-NN) format
+- [ ] Identify architecture decision topics (no ADR numbers; topics listed in section 7.2 of BRD)
 - [ ] Populate section 3.7 with mandatory conditions organized by category
 - [ ] Include Condition, Rationale, Business Impact, Exception Path for each condition
 - [ ] Document business rationale for each technology requirement
-- [ ] Create ADRs before moving to PRD phase
+- [ ] Create ADRs after BDD (no forward ADR references in BRD)
 
 **Feature BRD Checklist**:
 - [ ] Add "**N/A - See Platform BRD-XXX section 3.6**" to section 3.6
@@ -214,7 +214,7 @@ This feature must comply with all Platform BRD-01 mandatory technology condition
 - [ ] Note any feature-specific constraints beyond platform requirements
 - [ ] Focus on business value and user workflows (sections 2, 5)
 - [ ] Proceed to PRD creation after BRD approval
-- [ ] Create ADRs during implementation if needed (not before PRD)
+- [ ] Create ADRs after BDD if needed (no forward ADR references in BRD)
 
 ## Common Mistakes to Avoid
 
@@ -238,4 +238,6 @@ This feature must comply with all Platform BRD-01 mandatory technology condition
 - [BRD-TEMPLATE.md](./BRD/BRD-TEMPLATE.md) - Standard template for both types
 - [BRD/README.md](./BRD/README.md) - BRD documentation guidelines
 - [ADR/README.md](./ADR/README.md) - Architecture decision record creation
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - **Reference Implementation**: [BRD-01](../docs/BRD/BRD-01_platform_architecture_technology_stack.md) - Gold standard Platform BRD with sections 3.6 and 3.7 fully populated
+<!-- VALIDATOR:IGNORE-LINKS-END -->

@@ -145,9 +145,9 @@ Feature: My Feature
 **Detection Pattern**:
 ```bash
 # Detect comment-based tags (invalid)
-grep -n "^#.*@brd:" docs/BDD/*.feature
-grep -n "^#.*@prd:" docs/BDD/*.feature
-grep -n "^#.*@ears:" docs/BDD/*.feature
+grep -n "^#.*@brd:" docs/BDD/BDD-*/BDD-*.feature
+grep -n "^#.*@prd:" docs/BDD/BDD-*/BDD-*.feature
+grep -n "^#.*@ears:" docs/BDD/BDD-*/BDD-*.feature
 ```
 
 **Error Message**: `❌ INVALID: Tags found in comments. Move to Gherkin-native format before Feature: keyword`
@@ -279,7 +279,7 @@ echo "$filename" | grep -qE "^BDD-[0-9]{2,}\.[0-9]+\.00_[a-z0-9_]+\.feature$" &&
 3. **Directory-Based Structure** (Legacy)
    - Pattern: `BDD-NN_{slug}/features/` subdirectory
    - Example: `BDD-02_knowledge_engine/features/` ❌
-   - Fix: Flatten to BDD/ root level with section-based naming
+   - Fix: Move `.feature` files to the suite folder root: `docs/BDD/BDD-NN_{slug}/BDD-NN.SS_{slug}.feature`
 
 **Validation Commands**:
 ```bash
@@ -289,9 +289,6 @@ find docs/BDD -name "*.feature" | grep -E "BDD-[0-9]{2,}_.*_part[0-9]+" && echo 
 # Detect single-file format (prohibited)
 find docs/BDD -name "*.feature" | grep -vE "\.[0-9]+" && echo "❌ Prohibited single-file format found"
 
-# Detect directory-based structure (prohibited)
-find docs/BDD -type d -name "BDD-*" | grep -E "BDD-[0-9]{2,}_" && echo "❌ Prohibited directory structure found"
-
 # Detect features/ subdirectory (prohibited)
 find docs/BDD -type d -name "features" && echo "❌ Prohibited features/ subdirectory found"
 ```
@@ -299,8 +296,8 @@ find docs/BDD -type d -name "features" && echo "❌ Prohibited features/ subdire
 **Error Messages**:
 - `❌ PROHIBITED: _partN suffix detected. Use subsection format: BDD-NN.SS.01_{}, BDD-NN.SS.02_{}, etc.`
 - `❌ PROHIBITED: Single-file format detected. Use section-based format: BDD-NN.SS_{}.feature`
-- `❌ PROHIBITED: Directory-based structure detected. Migrate to section-based format at BDD/ root level`
-- `❌ PROHIBITED: features/ subdirectory detected. All .feature files must be at BDD/ root level`
+- `❌ PROHIBITED: Legacy directory structure detected. Use nested suite folder with section-based files`
+- `❌ PROHIBITED: features/ subdirectory detected. Use nested suite folder; no features/ subfolder`
 
 #### 9.3 Aggregator Validation
 
@@ -362,11 +359,11 @@ echo "BDD-02.12.00_query.feature" | grep -qE "\.00_" && echo "✅ Valid aggregat
 
 **Validation Commands**:
 ```bash
-# Check line count for each .feature file at BDD/ root
-find docs/BDD -maxdepth 1 -name "*.feature" -exec wc -l {} \; | awk '$1 > 500 {print "❌ " $2 ": " $1 " lines (max 500)"}'
+# Check line count for each .feature file inside suite folders
+find docs/BDD/BDD-* -maxdepth 1 -name "BDD-*.feature" -exec wc -l {} \; | awk '$1 > 500 {print "❌ " $2 ": " $1 " lines (max 500)"}'
 
 # Check scenario count per Feature block
-for f in docs/BDD/*.feature; do
+for f in docs/BDD/BDD-*/BDD-*.feature; do
   count=$(grep -c "^\s*Scenario" "$f")
   if [ $count -gt 12 ]; then
     echo "❌ $f: $count scenarios (max 12)"
@@ -493,10 +490,10 @@ done
 **Validation Commands**:
 ```bash
 # Detect Markdown tables in .feature files (invalid)
-grep -n "^|.*|.*|$" docs/BDD/*.feature && echo "❌ Markdown table found in .feature file"
+grep -n "^|.*|.*|$" docs/BDD/BDD-*/BDD-*.feature && echo "❌ Markdown table found in .feature file"
 
 # Detect Markdown headers in .feature files (invalid - Gherkin uses ##)
-grep -n "^# [^@]" docs/BDD/*.feature && echo "❌ Non-Gherkin Markdown header found"
+grep -n "^# [^@]" docs/BDD/BDD-*/BDD-*.feature && echo "❌ Non-Gherkin Markdown header found"
 ```
 
 **Error Messages**:
@@ -511,9 +508,9 @@ grep -n "^# [^@]" docs/BDD/*.feature && echo "❌ Non-Gherkin Markdown header fo
 - ✅ NO features/ subdirectory
 
 **File Structure** (ALL REQUIRED):
-- ✅ ALL .feature files at docs/BDD/ root level (flat structure)
-- ✅ Index file exists for each suite: BDD-NN.0_index.md
-- ✅ Optional companion docs at BDD/ root: BDD-NN_README.md, BDD-NN_TRACEABILITY.md
+- ✅ ALL .feature files live inside suite folders: docs/BDD/BDD-NN_{slug}/
+- ✅ Index file exists for each suite: BDD-NN.0_index.md (inside the suite folder)
+- ✅ Optional companion docs live with the suite: BDD-NN_README.md, BDD-NN_TRACEABILITY.md
 
 **Feature File Quality** (ALL REQUIRED):
 - ✅ No .feature exceeds 500 lines
@@ -642,7 +639,7 @@ done
 
 ```bash
 # Validate single BDD feature file
-./scripts/validate_bdd_template.sh docs/BDD/BDD-01_feature_scenarios.feature
+./scripts/validate_bdd_template.sh docs/BDD/BDD-01_feature_scenarios/BDD-01.1_feature_scenarios.feature
 
 # Validate all BDD files
 find docs/BDD -name "BDD-*.feature" -exec ./scripts/validate_bdd_template.sh {} \;
@@ -710,30 +707,32 @@ find docs/BDD -name "BDD-*.feature" -exec ./scripts/validate_bdd_template.sh {} 
 
 ### Mistake #5: Incorrect Split-File Structure
 ```
-❌ .feature files at suite root level
+✅ .feature files at suite folder root (no features/ subdirectory)
 docs/BDD/BDD-06_level0_system_agents/
-├── BDD-06_health_monitor.feature     (WRONG - at suite root)
-├── BDD-06_data_guardian.feature      (WRONG - at suite root)
-└── features/                          (EMPTY)
+├── BDD-06.0_index.md
+├── BDD-06.1_health_monitor.feature     (CORRECT - at suite root)
+├── BDD-06.2_data_guardian.feature      (CORRECT - at suite root)
+├── BDD-06.3.00_integration.feature     (CORRECT - aggregator)
+└── BDD-06_README.md
 
-✅ .feature files in features/ subdirectory
+❌ features/ subdirectory present (legacy)
 docs/BDD/BDD-06_level0_system_agents/
 ├── README.md
 ├── TRACEABILITY.md
 ├── GLOSSARY.md
 └── features/
-    ├── BDD-06_health_monitor.feature  (CORRECT - in features/)
-    ├── BDD-06_data_guardian.feature   (CORRECT - in features/)
-    └── BDD-06_integration.feature     (CORRECT - in features/)
+    ├── BDD-06_health_monitor.feature  (WRONG - move to suite root)
+    ├── BDD-06_data_guardian.feature   (WRONG - move to suite root)
+    └── BDD-06_integration.feature     (WRONG - move to suite root)
 
-❌ Missing redirect stub
-docs/BDD/BDD-06_level0_system_agents.feature  (MISSING)
+❌ Missing aggregator stub when 5+ subsections
+docs/BDD/BDD-06_level0_system_agents/BDD-06.3.00_integration.feature  (MISSING)
 
-✅ Redirect stub at docs/BDD/ root level
-docs/BDD/BDD-06_level0_system_agents.feature  (redirect stub with 0 scenarios)
+✅ Redirect/aggregator stub inside suite folder
+docs/BDD/BDD-06_level0_system_agents/BDD-06.3.00_integration.feature  (redirect stub with 0 scenarios)
 
 ❌ File exceeds 500 lines
-BDD-06_health_monitor.feature: 625 lines (SPLIT NEEDED)
+BDD-06.1_health_monitor.feature: 625 lines (SPLIT NEEDED)
 
 ✅ Files within size limits
 BDD-06_health_monitor.feature: 450 lines (GOOD)

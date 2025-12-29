@@ -48,13 +48,13 @@
 # =============================================================================
 #
 # BDD uses section-based numbering aligned with PRD/BRD standards.
-# All .feature files use dot notation at BDD/ root level (flat structure).
+# All .feature files use dot notation inside the suite folder: docs/BDD/BDD-NN_{slug}/
 #
 # **Three Valid Patterns**:
 #
 # 1. **Section-Only Format** (primary pattern):
 #    - Pattern: ^BDD-\d{2,}\.\d+_[a-z0-9_]+\.feature$
-#    - Example: BDD-02.14_query_result_filtering.feature
+#    - Example: docs/BDD/BDD-02_knowledge_engine/BDD-02.14_query_result_filtering.feature
 #    - Use when: Standard section file (≤500 lines, ≤12 scenarios)
 #    - Metadata:
 #      @section: 2.14
@@ -86,20 +86,21 @@
 #
 # **Numbering Scheme**:
 # - .0 suffix: Index file (e.g., BDD-02.0_index.md) - MANDATORY for each suite
-# - .1, .2, .3: Content sections (e.g., BDD-02.1_ingest.feature)
+# - .1, .2, .3: Content sections (e.g., docs/BDD/BDD-02_knowledge_engine/BDD-02.1_ingest.feature)
 # - .SS.01, .SS.02: Subsections (e.g., BDD-02.3.01_learning_path.feature)
 # - .SS.00: Aggregator/redirect stub (e.g., BDD-02.2.00_query.feature)
 #
 # **File Organization**:
-# - All .feature files at BDD/ root level (flat structure)
+# - All .feature files live inside the suite folder: docs/BDD/BDD-NN_{slug}/
 # - NO features/ subdirectory (prohibited - legacy format)
 # - Index file required: BDD-NN.0_index.md
 # - Optional companions: BDD-NN_README.md, BDD-NN_TRACEABILITY.md
 #
-# **Hard Limits**:
-# - Maximum 500 lines per .feature file (soft limit: 400 lines)
+# **File Size & Scenario Limits**:
+# - Target: 300–500 lines per .feature file
+# - Maximum: 600 lines per file (absolute)
 # - Maximum 12 scenarios per Feature block
-# - If section exceeds 500 lines → Split into subsections (.SS.mm format)
+# - If section approaches/exceeds limits → Split into subsections (.SS.mm format)
 # - If many subsections → Add aggregator (.SS.00 format)
 #
 # **Prohibited Patterns** (cause validation ERROR):
@@ -242,7 +243,7 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 @ears: EARS.NN.24.SS    # REQUIRED - engineering requirements traceability
 @requirement:[REQ-NN](../reqs/.../REQ-NN_...md#REQ-NN)
 @adr:[ADR-NN](../adrs/ADR-NN_...md#ADR-NN)
-@bdd:[BDD-NN:scenarios](BDD-NN_descriptive_requirements.feature#scenarios)
+@bdd:[BDD-NN.SS:scenarios](BDD-NN.SS_{slug}.feature#scenarios)
 Feature: [Feature Title]
   [Additional context about business value and importance]
   As a [user/stakeholder role: e.g., trader, risk manager, system administrator]
@@ -488,7 +489,7 @@ Feature: [Feature Title]
 # Format: TYPE.NN.TT.SS (DOC_NUM.ELEM_TYPE.SEQ)
 #
 # @brd: BRD.NN.01.SS     # Element type 01 = Functional Requirement
-# @prd: PRD.NN.07.SS     # Element type 07 = Product Feature
+# @prd: PRD.NN.EE.SS     # Element type 07 = Product Feature
 # @ears: EARS.NN.24.SS   # Element type 24 = EARS Statement
 # Feature: [Feature Title]
 #
@@ -496,7 +497,7 @@ Feature: [Feature Title]
 # Format: TYPE.NN.TT.SS (DOC_NUM.ELEM_TYPE.SEQ)
 #
 # @brd: BRD.NN.01.SS     # Element type 01 = Functional Requirement
-# @prd: PRD.NN.07.SS     # Element type 07 = Product Feature
+# @prd: PRD.NN.EE.SS     # Element type 07 = Product Feature
 # @ears: EARS.NN.24.SS   # Element type 24 = EARS Statement
 # @ctr: CTR-005
 # Feature: [Agent Feature Title]

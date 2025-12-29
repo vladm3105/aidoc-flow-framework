@@ -27,6 +27,10 @@ custom_fields:
   schema_version: "1.0"
 ---
 
+> Reference Template — For learning and small docs only. Real ADRs should be split per `../DOCUMENT_SPLITTING_RULES.md` using:
+> - `ADR-SECTION-0-TEMPLATE.md` to create `ADR-{NN}.0_index.md`
+> - `ADR-SECTION-TEMPLATE.md` to create `ADR-{NN}.{S}_{slug}.md`
+
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for ADR structure.
 > - **Schema**: `ADR_SCHEMA.yaml v1.0` - Validation rules
 > - **Creation Rules**: `ADR_CREATION_RULES.md` - Usage guidance
@@ -145,10 +149,10 @@ The following fields are copied from upstream documents to maintain traceability
 - [Criterion 2]: [Measurable target]
 
 **References**:
-- BRD: [BRD-NN](../BRD/BRD-NN_slug.md) §7.2.X
-- PRD: [PRD-NN](../PRD/PRD-NN_slug.md) §18.X
-- EARS: [EARS-NN](../EARS/EARS-NN_slug.md)
-- BDD: [BDD-NN](../BDD/BDD-NN_slug.feature)
+- BRD: [BRD] (TBD link) §7.2.X
+- PRD: [PRD] (TBD link) §18.X
+- EARS: [EARS] (TBD link)
+- BDD: [BDD] (TBD link)
 
 ### 4.2 Background
 [Historical context and existing system state - how did we get here? What current system state drove this need?]
@@ -420,7 +424,7 @@ flowchart TD
 ### 11.1 BDD Scenarios
 [List or reference BDD scenarios that validate this architectural approach:
 
-- Scenario: [Brief description] - File: [BDD-NN.feature#L##]]
+- Scenario: [Brief description] - File: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#L##`
 
 ### 11.2 Specification Impact
 [Changes required in downstream specifications and contracts]
@@ -553,14 +557,26 @@ flowchart TD
 ## 16. Traceability
 
 ### 16.1 Upstream Sources
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - **Business Logic**: [PRD-### - Product requirements driving this decision](../PRD/PRD-###.md)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - **EARS Requirements**: [EARS-### - Engineering requirements driving this decision](../EARS/EARS-###.md)
-- **BDD scenarios**: [BDD-### - Behavior-driven test scenarios](../bdd/BDD-###.feature)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+- **BDD scenarios**: `BDD/BDD-###{suite}/BDD-###.SS_{slug}.feature` - Behavior-driven test scenarios
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### 16.2 Downstream Artifacts
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - **System Requirements**: [SYS-### - System-level requirements satisfied](../SYS/SYS-###.md)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - **Requirements**: [REQ-### - Links to specific requirements this ADR addresses](../REQ/.../REQ-###.md)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - **Specifications**: [SPEC-### - Technical specifications this ADR enables](../SPEC/.../SPEC-###.yaml)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 - **Implementation**: [Code location and key files/classes]
 
 ### 16.3 Document Links
@@ -579,8 +595,12 @@ flowchart TD
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Related | [ADR-NN](./ADR-NN_...md) | [Related ADR title] | Shared architectural context |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Depends | [ADR-NN](./ADR-NN_...md) | [Prerequisite ADR title] | Must complete before this |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Tags:**
 ```markdown
@@ -623,17 +643,35 @@ flowchart TD
 ## 17. References
 
 ### 17.1 Internal Links
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [PRD-###: Product Requirements](../PRD/PRD-###.md)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [EARS-###: Engineering Requirements](../EARS/EARS-###.md)
-- [BDD-###: Behavior-Driven Development](../bdd/BDD-###.feature)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+- [BDD-###.SS: Behavior-Driven Development](../BDD/BDD-###{suite}/BDD-###.SS_{slug}.feature)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [SYS-###: System Requirements](../SYS/SYS-###.md)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [REQ-###: Related Requirement](../REQ/.../REQ-###.md)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [SPEC-###: Technical Specification](../SPEC/.../SPEC-###.yaml)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### 17.2 External Links
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [Technology Documentation](URL): Reference for chosen technology/solution
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [Research/Articles](URL): Supporting evidence for architectural decision
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [Standards/Compliance](URL): Applicable industry standards or compliance requirements
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### 17.3 Additional Context
 - **Related Research**: [Papers, blog posts, or studies informing this decision]
@@ -645,3 +683,16 @@ flowchart TD
 **Template Version**: 1.0
 **Last Reviewed**: YYYY-MM-DD
 **Next Review**: YYYY-MM-DD (recommend quarterly for active ADRs)
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If this document approaches/exceeds limits, split into `ADR-{NN}.{S}_{slug}.md` section files using `ADR-SECTION-TEMPLATE.md` and update `ADR-{NN}.0_index.md`.
+
+## Document Splitting Standard
+
+Split ADRs when the narrative grows long or contains multiple cohesive subtopics:
+- Add/update `ADR-{NN}.0_index.md` with sections and navigation
+- Create `ADR-{NN}.{S}_{slug}.md` via `ADR-SECTION-TEMPLATE.md`
+- Maintain consistent context, consequences, and verification across sections; link related decisions
+- Validate references and run size lint

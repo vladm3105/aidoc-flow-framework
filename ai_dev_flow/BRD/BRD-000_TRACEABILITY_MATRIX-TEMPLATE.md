@@ -108,7 +108,7 @@ However, BRD documents should reference their strategic sources in the "Upstream
 ### 2.3 Example: BRD with Strategic References
 
 ```markdown
-# BRD-009: service integration Business Requirements
+# BRD-09: service integration Business Requirements
 
 ## 10. Traceability
 
@@ -143,8 +143,8 @@ However, BRD documents should reference their strategic sources in the "Upstream
 Find all artifacts that reference a specific BRD:
 
 ```bash
-# Find all downstream artifacts referencing BRD-009
-python scripts/extract_tags.py --find-references BRD-009
+# Find all downstream artifacts referencing BRD-09
+python scripts/extract_tags.py --find-references BRD-09
 
 # Generate reverse traceability report
 python scripts/generate_traceability_matrices.py --type BRD --show-downstream
@@ -194,11 +194,11 @@ Strategy (External) → BRD (Layer 1)
 
 | Source Type | Source ID/Reference | BRD IDs | Relationship Description |
 |-------------|---------------------|---------|--------------------------|
-| Market Research | [Research Report Name/Date] | BRD-01, BRD-004 | Market opportunity analysis drives business requirements |
-| Strategic Plan | [Strategic Plan section X.Y] | BRD-02, BRD-005 | Corporate strategy defines business objectives |
-| Stakeholder Interviews | [Interview Notes Date] | BRD-03, BRD-006 | Stakeholder needs inform requirement priorities |
-| Competitive Analysis | [Analysis Document] | BRD-007, BRD-008 | Competitive positioning drives feature requirements |
-| Regulatory Requirements | [Regulation Reference] | BRD-009 | Compliance mandates business requirements |
+| Market Research | [Research Report Name/Date] | BRD-01, BRD-04 | Market opportunity analysis drives business requirements |
+| Strategic Plan | [Strategic Plan section X.Y] | BRD-02, BRD-05 | Corporate strategy defines business objectives |
+| Stakeholder Interviews | [Interview Notes Date] | BRD-03, BRD-06 | Stakeholder needs inform requirement priorities |
+| Competitive Analysis | [Analysis Document] | BRD-NN, BRD-NN | Competitive positioning drives feature requirements |
+| Regulatory Requirements | [Regulation Reference] | BRD-09 | Compliance mandates business requirements |
 
 ### 6.2 Upstream Source Summary
 
@@ -236,7 +236,7 @@ Strategy (External) → BRD (Layer 1)
 
 | BRD ID | BRD Title | ADR IDs | ADR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| BRD-01 | [Business requirement with architectural impact] | ADR-005, ADR-012 | [Architecture decisions] | Business requirements drive strategic technical decisions |
+| BRD-NN | [Business requirement with architectural impact] | ADR-NN, ADR-NN | [Architecture decisions] | Business requirements drive strategic technical decisions |
 | BRD-NN | ... | ... | ... | ... |
 
 ### 7.4 Downstream Artifact Summary
@@ -290,7 +290,7 @@ graph TD
 
 | Source BRD | Target BRD | Dependency Type | Description |
 |------------|------------|-----------------|-------------|
-| BRD-01 | BRD-005 | Prerequisite | Core platform must exist before advanced features |
+| BRD-01 | BRD-05 | Prerequisite | Core platform must exist before advanced features |
 | BRD-02 | BRD-03 | Related | Authentication requirements support authorization features |
 | BRD-NN | ... | ... | ... |
 
@@ -303,18 +303,18 @@ graph TD
 | Business Domain | BRD IDs | Total | Description |
 |-----------------|---------|-------|-------------|
 | [Core Platform] | BRD-01, BRD-02, BRD-03 | 3 | Fundamental platform capabilities |
-| [User Experience] | BRD-004, BRD-005 | 2 | User-facing features and workflows |
-| [security & Compliance] | BRD-006, BRD-007 | 2 | security requirements and regulatory compliance |
-| [Integration] | BRD-008, BRD-009 | 2 | External system integration requirements |
-| [Analytics & Reporting] | BRD-010 | 1 | Business intelligence and reporting |
+| [User Experience] | BRD-04, BRD-05 | 2 | User-facing features and workflows |
+| [security & Compliance] | BRD-06, BRD-07 | 2 | security requirements and regulatory compliance |
+| [Integration] | BRD-NN, BRD-NN | 2 | External system integration requirements |
+| [Analytics & Reporting] | BRD-NN | 1 | Business intelligence and reporting |
 
 ### 12.2 Strategic Alignment
 
 | Strategic Goal | Related BRDs | Impact Level | Status |
 |----------------|--------------|--------------|--------|
-| [Goal 1: Market Leadership] | BRD-01, BRD-004, BRD-008 | High | On Track |
-| [Goal 2: Regulatory Compliance] | BRD-006, BRD-007 | Critical | In Progress |
-| [Goal 3: Customer Satisfaction] | BRD-02, BRD-005 | High | Complete |
+| [Goal 1: Market Leadership] | BRD-NN, BRD-NN, BRD-NN | High | On Track |
+| [Goal 2: Regulatory Compliance] | BRD-06, BRD-07 | Critical | In Progress |
+| [Goal 3: Customer Satisfaction] | BRD-02, BRD-05 | High | Complete |
 
 ---
 
@@ -392,8 +392,8 @@ graph TD
 
 | Milestone | Target Date | Required BRDs | Status |
 |-----------|-------------|---------------|--------|
-| [Milestone 1: MVP Release] | YYYY-MM-DD | BRD-01 through BRD-005 | On Track |
-| [Milestone 2: Feature Expansion] | YYYY-MM-DD | BRD-006 through BRD-010 | Planning |
+| [Milestone 1: MVP Release] | YYYY-MM-DD | BRD-01 through BRD-05 | On Track |
+| [Milestone 2: Feature Expansion] | YYYY-MM-DD | BRD-NN range | Planning |
 | [Milestone 3: Market Launch] | YYYY-MM-DD | All BRDs | Not Started |
 
 ### 12.3 Quality Improvement Recommendations

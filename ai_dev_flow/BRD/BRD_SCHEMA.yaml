@@ -197,6 +197,10 @@ validation_rules:
     - rule: "PRD-Ready Score should be present"
       severity: warning
 
+    - rule: "No numeric downstream references (PRD-#, EARS-#, ADR-#)"
+      severity: warning
+      fix: "Use generic downstream names (PRD, EARS, ADR) until those artifacts exist."
+
     - rule: "Business objectives should have measurable success criteria"
       severity: info
 
@@ -214,11 +218,11 @@ traceability:
   downstream:
     expected:
       - type: PRD
-        format: "@prd: PRD.NN.01.SS"
+        format: "PRD"   # Generic name only; do not reference numeric IDs until they exist
       - type: EARS
-        format: "@ears: EARS.NN.24.SS"
+        format: "EARS"  # Generic name only; do not reference numeric IDs until they exist
       - type: ADR
-        format: "@adr: ADR-NN"
+        format: "ADR"
 
   lateral:
     format: "@brd: BRD.NN.01.SS"

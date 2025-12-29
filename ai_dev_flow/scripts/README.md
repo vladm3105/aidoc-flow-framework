@@ -259,7 +259,7 @@ python validate_documentation_paths.py --root /path/to/project/
 **Placeholder Detection:**
 Automatically skips intentional placeholders:
 - Template patterns: `XXX`, `NNN`, `PPP`, `{variable}`
-- Example IDs: `BRD-01`, `REQ-03`, `ADR-33`, etc.
+- Example IDs: `BRD-NN`, `REQ-NN`, `ADR-NN`, etc.
 - Example keywords: `example`, `some_`, `your_`, `_file`
 
 **Exit Codes:**
@@ -312,7 +312,7 @@ Cross-document validation for the SDD framework. Validates semantic consistency 
 **Usage:**
 ```bash
 # Per-document validation (Phase 1) - nested folder structure (DEFAULT)
-python scripts/validate_cross_document.py --document docs/ADR/ADR-01_cloud_migration/ADR-01.0_cloud_migration_index.md --auto-fix
+python scripts/validate_cross_document.py --document docs/ADR/ADR-NN_cloud_migration/ADR-NN.0_cloud_migration_index.md --auto-fix
 
 # Layer validation (Phase 2)
 python scripts/validate_cross_document.py --layer ADR --auto-fix
@@ -341,7 +341,7 @@ python scripts/validate_cross_document.py --full --auto-fix
 **Examples:**
 ```bash
 # Validate single REQ document with auto-fix
-python scripts/validate_cross_document.py --document docs/REQ/REQ-01_api_validation.md --auto-fix
+python scripts/validate_cross_document.py --document docs/REQ/REQ-NN_api_validation.md --auto-fix
 
 # Validate all SPEC documents
 python scripts/validate_cross_document.py --layer SPEC --auto-fix
@@ -419,24 +419,24 @@ python scripts/validate_cross_document.py --full --output validation_report.md
 Cross-Document Validation Report
 ================================================================================
 Phase: Per-Document
-Document: docs/REQ/REQ-01_api_validation.md
+Document: docs/REQ/REQ-NN_api_validation.md
 Layer: 7 (REQ)
 
 Checking cumulative tags...
-  ✅ @brd: BRD.01.01.03
-  ✅ @prd: PRD.01.07.02
-  ✅ @ears: EARS.01.24.01
-  ✅ @bdd: BDD.01.13.01
-  ✅ @adr: ADR-33, ADR-045
-  ✅ @sys: SYS.01.25.01
+  ✅ @brd: BRD.NN.NN.NN
+  ✅ @prd: PRD.NN.NN.NN
+  ✅ @ears: EARS.NN.24.NN
+  ✅ @bdd: BDD.NN.13.NN
+  ✅ @adr: ADR-NN, ADR-NN
+  ✅ @sys: SYS.NN.25.NN
 
 Checking upstream references...
-  ✅ BRD-01 exists: docs/BRD/BRD-01_platform/BRD-01.0_platform_index.md
-  ✅ PRD-01 exists: docs/PRD/PRD-01_integration/PRD-01.0_integration_index.md
-  ✅ EARS-01 exists: docs/EARS/EARS-01_risk.md
-  ✅ BDD-01 exists: docs/BDD/BDD-01_limits.feature
-  ✅ ADR-33 exists: docs/ADR/ADR-33_database/ADR-33.0_database_index.md
-  ✅ SYS-01 exists: docs/SYS/SYS-01_order.md
+  ✅ BRD-NN exists: docs/BRD/BRD-NN_platform/BRD-NN.0_platform_index.md
+  ✅ PRD-NN exists: docs/PRD/PRD-NN_integration/PRD-NN.0_integration_index.md
+  ✅ EARS-NN exists: docs/EARS/EARS-NN_risk.md
+  ✅ BDD-NN exists: docs/BDD/BDD-NN_limits/BDD-NN.1_limits.feature
+  ✅ ADR-NN exists: docs/ADR/ADR-NN_database/ADR-NN.0_database_index.md
+  ✅ SYS-NN exists: docs/SYS/SYS-NN_example.md
 
 Checking internal links...
   ✅ 12 links validated
@@ -548,6 +548,121 @@ Validates ICON (Implementation Contracts) documents.
 - Checks provider/consumer documentation
 - Verifies protocol interface syntax
 - Validates `@icon` tag references
+
+### 13. validate_ears.py
+
+Comprehensive EARS document validator against EARS_VALIDATION_RULES.md.
+
+**Usage:**
+```bash
+python validate_ears.py                                # Validate all EARS docs
+python validate_ears.py --path docs/EARS/EARS-01.md    # Validate single file
+python validate_ears.py --verbose                       # Show all checks
+python validate_ears.py --fix-suggestions               # Show fix commands
+```
+
+**Features:**
+- Validates metadata (tags, custom_fields, document_type)
+- Checks EARS syntax patterns (WHEN-THE-SHALL-WITHIN)
+- Validates requirement ID format (EARS.NN.TT.SSS)
+- Verifies traceability tags (@brd, @prd)
+- Checks structural sections (Document Control, Traceability)
+- Detects malformed tables and formatting issues
+
+**Validation Categories:**
+- **Metadata Rules**: Required tags, custom fields, document type
+- **Structure Rules**: Required sections (Document Control, Purpose, Traceability)
+- **EARS Syntax**: Event-driven, state-driven, unwanted, ubiquitous patterns
+- **Requirement IDs**: 4-segment format validation (EARS.NN.TT.SSS)
+- **Traceability**: Source document references and tags
+
+### 14. validate_ears_duplicates.sh
+
+Validates EARS documents for duplicate requirement IDs within individual files.
+
+**Usage:**
+```bash
+./validate_ears_duplicates.sh                    # Use default docs/EARS/
+./validate_ears_duplicates.sh /path/to/EARS/     # Custom EARS directory
+```
+
+**Features:**
+- Detects duplicate requirement IDs within same file
+- Extracts requirement IDs using pattern matching
+- Reports duplicates with clear error messages
+- Provides file-level duplicate analysis
+
+**Exit Codes:**
+- `0`: No duplicates found
+- `1`: Duplicates detected
+- `2`: Invalid arguments or directory not found
+
+**Example Output:**
+```
+========================================
+EARS Duplicate Requirement ID Check
+========================================
+Directory: docs/EARS/
+
+✅ No duplicate requirement IDs found
+Files checked: 11
+```
+
+### 15. validate_ears_consistency.sh
+
+Validates structural consistency across all EARS documents for required sections.
+
+**Usage:**
+```bash
+./validate_ears_consistency.sh                      # Use default, warning mode
+./validate_ears_consistency.sh docs/EARS/           # Custom directory
+./validate_ears_consistency.sh docs/EARS/ --strict  # Strict mode (fail on missing References)
+```
+
+**Required Sections (Critical):**
+- Document Control (metadata)
+- BDD-Ready Score (quality gate)
+- Document Revision History (change tracking)
+- Traceability section (upstream/downstream)
+- @brd and @prd tags (cumulative tagging)
+
+**Optional Sections (Warning):**
+- References section (documentation standards)
+
+**Features:**
+- Batch validation across all EARS files
+- Critical vs. non-critical section detection
+- Strict mode for References section enforcement
+- Clear pass/warning/fail status per file
+
+**Exit Codes:**
+- `0`: All checks passed or only warnings
+- `1`: Critical validation failures
+- `2`: Invalid arguments or directory not found
+
+**Example Output:**
+```
+========================================
+EARS Structural Consistency Check
+========================================
+Directory: docs/EARS/
+Strict mode: false
+
+Checking EARS-01_analytics_platform.md...
+  ✅ All checks passed
+
+Checking EARS-04_vector_search_embeddings.md...
+  ⚠  Missing References section (non-blocking)
+  ⚠  Passed with warnings
+
+========================================
+Files checked: 11
+Files passed: 11
+Files with warnings: 8
+========================================
+✅ All structural consistency checks passed
+Note: 8 file(s) have non-blocking warnings
+```
 
 ---
 
@@ -697,11 +812,11 @@ Run scripts with example matrices to verify functionality:
 # Test generation (will warn about missing documents)
 python generate_traceability_matrix.py --type ADR --input ../ADR/examples/ --output /tmp/test_matrix.md
 
-# Test validation (expected to find issues with example matrices)
-python validate_traceability_matrix.py --matrix ../ADR/examples/TRACEABILITY_MATRIX_ADR_EXAMPLE.md --input ../ADR/examples/
+# Test validation (use generated matrix)
+python validate_traceability_matrix.py --matrix /tmp/test_matrix.md --input ../ADR/examples/
 
 # Test update in dry-run mode
-python update_traceability_matrix.py --matrix ../ADR/examples/TRACEABILITY_MATRIX_ADR_EXAMPLE.md --input ../ADR/examples/ --dry-run
+python update_traceability_matrix.py --matrix /tmp/test_matrix.md --input ../ADR/examples/ --dry-run
 ```
 
 ---
@@ -755,10 +870,8 @@ All three scripts follow consistent design principles:
 
 ## Example Matrices
 
-See the `examples/` directories for complete example matrices:
-- `ADR/examples/TRACEABILITY_MATRIX_ADR_EXAMPLE.md`
+See the `examples/` directories for example matrices where available:
 - `REQ/examples/TRACEABILITY_MATRIX_REQ_EXAMPLE.md`
-- `SPEC/examples/TRACEABILITY_MATRIX_SPEC_EXAMPLE.md`
 
 ---
 

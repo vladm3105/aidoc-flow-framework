@@ -25,6 +25,10 @@ custom_fields:
   schema_version: "1.0"
 ---
 
+> Reference Template — For learning and small docs only. Real EARS suites should be split per `../DOCUMENT_SPLITTING_RULES.md` using:
+> - `EARS-SECTION-0-TEMPLATE.md` to create `EARS-{NN}.0_index.md`
+> - `EARS-SECTION-TEMPLATE.md` to create `EARS-{NN}.{S}_{slug}.md`
+
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for EARS structure.
 > - **Schema**: `EARS_SCHEMA.yaml v1.0` - Validation rules
 > - **Creation Rules**: `EARS_CREATION_RULES.md` - Usage guidance
@@ -40,7 +44,7 @@ custom_fields:
 | **Version** | 1.0.0 |
 | **Date Created** | YYYY-MM-DD |
 | **Last Updated** | YYYY-MM-DD |
-| **Author** | BeeLocal Engineering Team |
+| **Author** | Project Engineering Team |
 | **Priority** | High |
 | **Source Document** | @prd: PRD.NN.EE.SS |
 | **BDD-Ready Score** | XX% (Target: ≥90%) |
@@ -164,16 +168,18 @@ WITHIN [operational boundary].
 |-------------|-------------|----------------|-------------------|--------------|
 | BRD | BRD-NN | [Title] | Sections X.X | Business objectives |
 | PRD | PRD-NN | [Title] | Section X.X | Product features |
-| Threshold Registry | PRD-035 | Platform Threshold Registry | Sections X.X | Timing thresholds |
+| Threshold Registry | PRD-NN | Platform Threshold Registry | Sections X.X | Timing thresholds |
 | Entity Definitions | PRD-004 | Data Model & Ledger | Section 1.3 | Entity definitions |
 
 ### 5.2 Downstream Artifacts
 
+> Note: Use generic downstream names; do not reference numeric IDs until the artifacts exist.
+
 | Target | Document ID | Status | Relationship |
 |--------|-------------|--------|--------------|
-| BDD | BDD-NN | Planned | Test scenarios |
-| REQ | REQ-NN | Planned | Atomic requirements |
-| SPEC | SPEC-NN | Planned | Technical specifications |
+| BDD | (TBD) | Planned | Test scenarios |
+| REQ | (TBD) | Planned | Atomic requirements |
+| SPEC | (TBD) | Planned | Technical specifications |
 
 ### 5.3 Traceability Tags
 
@@ -236,10 +242,10 @@ WITHIN @threshold: PRD.NN.timeout.request.sync.
 
 ### 6.1 Internal Documentation
 
-- [EARS Style Guide](EARS_STYLE_GUIDE.md)
-- [PRD-NN](../PRD/PRD-NN_name.md) - Source product requirements
-- [PRD-035](../PRD/PRD-035_platform_threshold_registry.md) - Platform threshold registry
-- [PRD-004](../PRD/PRD-004_data_model_ledger_double_entry_accounting.md) - Entity definitions
+- EARS Style Guide (EARS_STYLE_GUIDE.md)
+- PRD-NN (../PRD/PRD-NN_name.md) - Source product requirements (example)
+- PRD-NN (../PRD/PRD-NN_platform_threshold_registry.md) - Platform threshold registry (example)
+- PRD-004 (../PRD/PRD-004_data_model_ledger_double_entry_accounting.md) - Entity definitions (example)
 
 ### 6.2 External Standards
 
@@ -264,4 +270,17 @@ WITHIN @threshold: PRD.NN.timeout.request.sync.
 **Template Version**: 3.0
 **Last Reviewed**: YYYY-MM-DD
 **Next Review**: YYYY-MM-DD (quarterly review)
-**Maintained By**: BeeLocal Engineering Team
+**Maintained By**: Project Engineering Team
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If this document approaches/exceeds limits, split into `EARS-{NN}.{S}_{slug}.md` section files using `EARS-SECTION-TEMPLATE.md` and update `EARS-{NN}.0_index.md`.
+
+## Document Splitting Standard
+
+Split EARS when sections become large or cover distinct capability areas:
+- Add/update `EARS-{NN}.0_index.md` with sections and descriptions
+- Create section files from `EARS-SECTION-TEMPLATE.md` (`EARS-{NN}.{S}_{slug}.md`)
+- Maintain Prev/Next links, consistent YAML frontmatter, and update traceability
+- Re-run validators and lints

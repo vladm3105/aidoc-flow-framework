@@ -50,8 +50,8 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 **Feature**: [EXTERNAL_SERVICE - e.g., Payment Gateway, CRM System] Gateway Integration
 **File**: `BDD-01_ib_gateway_integration.feature`
-**Requirements**: REQ-026 ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] Integration)
-**ADRs**: ADR-030 ([EXTERNAL_SERVICE_GATEWAY] Architecture)
+**Requirements**: REQ-NN ([EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] Integration)
+**ADRs**: ADR-NN ([EXTERNAL_SERVICE_GATEWAY] Architecture)
 
 | Scenario | Description | Test File | Test Method | Status | Priority |
 |----------|-------------|-----------|-------------|--------|----------|
@@ -64,8 +64,8 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 | 1.7 | Market data unsubscription | test_external_data.py | test_unsubscribe() | Automated | Medium |
 | 1.8 | Real-time data updates | test_external_data.py | test_data() | Automated | High |
 | 1.9 | Historical data retrieval | test_historical_data.py | test_historical() | Automated | Medium |
-| 1.10 | request submission validation | test_orders.py | test_place_order() | Automated | High |
-| 1.11 | Order status tracking | test_orders.py | test_order_status() | Automated | High |
+| 1.10 | request submission validation | test_orders.py | test_place_request() | Automated | High |
+| 1.11 | Request status tracking | test_orders.py | test_request_status() | Automated | High |
 | 1.12 | Data reconciliation | test_resources.py | test_data_sync() | Automated | High |
 
 **Coverage**: 12/12 scenarios (100%)
@@ -78,13 +78,13 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 **Feature**: [RESOURCE_VALIDATION - e.g., input sanitization, schema validation]
 **File**: `BDD-02_risk_validation.feature`
-**Requirements**: REQ-03 ([RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement), REQ-005 (resource collection Risk Aggregation)
-**ADRs**: ADR-015 (resource management Framework)
+**Requirements**: REQ-NN ([RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement), REQ-NN (resource collection Risk Aggregation)
+**ADRs**: ADR-NN (resource management Framework)
 
 | Scenario | Description | Test File | Test Method | Status | Priority |
 |----------|-------------|-----------|-------------|--------|----------|
 | 2.1 | resource limit enforcement | test_limits.py | test_resource_limit() | Automated | High |
-| 2.2 | Order size validation | test_limits.py | test_order_size() | Automated | High |
+| 2.2 | Submission size validation | test_limits.py | test_submission_size() | Automated | High |
 | 2.3 | Account balance check | test_balance.py | test_balance_check() | Automated | High |
 | 2.4 | Margin requirement validation | test_margin.py | test_margin_req() | Automated | High |
 | 2.5 | resource collection risk aggregation | test_collection_risk.py | test_aggregate() | Automated | High |
@@ -102,8 +102,8 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 **Feature**: ML [SYSTEM_STATE - e.g., operating mode, environment condition] Classification
 **File**: `BDD-03_regime_classifier.feature`
-**Requirements**: REQ-070 ([SYSTEM_STATE - e.g., operating mode, environment condition] Detection)
-**ADRs**: ADR-050 (ML Model Architecture)
+**Requirements**: REQ-NN ([SYSTEM_STATE - e.g., operating mode, environment condition] Detection)
+**ADRs**: ADR-NN (ML Model Architecture)
 
 | Scenario | Description | Test File | Test Method | Status | Priority |
 |----------|-------------|-----------|-------------|--------|----------|
@@ -148,8 +148,8 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 **Pending Automation** (7 scenarios):
 1. BDD-03.13: Model drift detection (complexity: high)
 2. BDD-03.14: Ensemble model selection (complexity: medium)
-3. BDD-008.7: Multi-asset correlation (complexity: high)
-4. BDD-008.9: Real-time data quality (complexity: high)
+3. BDD-NN.7: Multi-asset correlation (complexity: high)
+4. BDD-NN.9: Real-time data quality (complexity: high)
 5. BDD-010.4: Log aggregation scaling (complexity: medium)
 6. BDD-011.8: Disaster recovery (complexity: high)
 7. BDD-012.5: security penetration testing (complexity: high)
@@ -268,7 +268,9 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 - [BDD-000_index.md](../BDD/BDD-000_index.md) - BDD master index
 - [BDD-TEMPLATE.feature](../BDD/BDD-TEMPLATE.feature) - Scenario template
 - [IPLAN-TEMPLATE.md](./IPLAN-TEMPLATE.md) - Implementation plan template
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [Testing Strategy](../SYS/SYS-01_testing_strategy.md) - Overall testing approach
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ---
 

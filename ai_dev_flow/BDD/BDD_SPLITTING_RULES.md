@@ -12,7 +12,7 @@
 
 - Unify BDD naming with PRD/BRD section-based standards
 - Keep feature files executable and maintainable (≤500 lines, ≤12 scenarios)
-- Enforce flat file structure at BDD/ root level
+- Enforce nested suite structure under docs/BDD/BDD-NN_{slug}/
 - Standardize section numbering and index files
 - Eliminate backward compatibility with legacy formats
 
@@ -136,25 +136,25 @@ Background:
 
 ## File Organization
 
-### Structure: Flat (at BDD/ root)
+### Structure: Nested (per suite folder)
 
 ```
-docs/BDD/
+docs/BDD/BDD-02_knowledge_engine/
 ├── BDD-02.0_index.md                          # Index file (MANDATORY)
 ├── BDD-02.1_ingest.feature                    # Section 1
 ├── BDD-02.2_query.feature                     # Section 2
-├── BDD-02.3.00_learning.feature              # Section 3 aggregator
-├── BDD-02.3.01_learning_path.feature         # Section 3, subsection 01
-├── BDD-02.3.02_bias_detection.feature        # Section 3, subsection 02
+├── BDD-02.3.00_learning.feature               # Section 3 aggregator
+├── BDD-02.3.01_learning_path.feature          # Section 3, subsection 01
+├── BDD-02.3.02_bias_detection.feature         # Section 3, subsection 02
 ├── BDD-02_README.md                           # Optional companion doc
 └── BDD-02_TRACEABILITY.md                     # Optional companion doc
 ```
 
-### NO Subdirectories
+### Suite Subdirectories Only
 
-- ❌ **PROHIBITED**: `BDD-NN_{slug}/features/` (legacy directory-based)
-- ❌ **PROHIBITED**: Any subdirectories under BDD/
-- ✅ **REQUIRED**: All `.feature` files at BDD/ root level
+- ❌ **PROHIBITED**: `BDD-NN_{slug}/features/` (legacy nested features/)
+- ❌ **PROHIBITED**: Additional subdirectories inside suite folder (beyond files shown)
+- ✅ **REQUIRED**: All `.feature` files live inside the suite folder `BDD/BDD-NN_{slug}/`
 
 ### Optional Companion Documents
 
@@ -221,9 +221,9 @@ BDD-02.26_quality_reliability.feature
 
 ### File Size Limits
 
-- **Maximum**: 500 lines per `.feature` file
-- **Soft limit**: 400 lines (recommended)
-- **Action**: If section exceeds 500 lines → Split into subsections (`.SS.mm` format)
+- **Target**: 300–500 lines per `.feature` file
+- **Maximum**: 600 lines (absolute)
+- **Action**: If section exceeds 600 lines or approaches upper target → Split into subsections (`.SS.mm` format)
 
 ### Scenario Limits
 
@@ -368,7 +368,7 @@ And memory usage SHALL NOT exceed @threshold:PRD.02.perf.max_memory
 
 Before committing BDD files:
 
-- [ ] All `.feature` files at BDD/ root level (no subdirectories)
+- [ ] All `.feature` files live inside suite folder: docs/BDD/BDD-NN_{slug}/
 - [ ] Index file exists: `BDD-NN.0_index.md`
 - [ ] No `.feature` file exceeds 500 lines
 - [ ] No Feature block exceeds 12 scenarios

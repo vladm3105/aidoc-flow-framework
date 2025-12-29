@@ -264,13 +264,13 @@ find docs/SPEC -name "SPEC-*.yaml" -exec ./scripts/validate_spec_template.sh {} 
 ### Mistake #3: Incomplete Traceability
 ```
 ❌ cumulative_tags:
-    brd: "BRD-01"
+    brd: "BRD-NN"
 ✅ cumulative_tags:
     brd: "BRD.01.01.30"
     prd: "PRD.03.01.02"
     ears: "EARS.01.24.03"
     bdd: "BDD.03.13.01"
-    adr: "ADR-033"
+    adr: "ADR-NN"
     sys: "SYS.01.25.01"
     req: "REQ.02.26.05"
 ```

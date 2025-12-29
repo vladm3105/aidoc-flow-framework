@@ -9,7 +9,7 @@ comprehensive validation of interfaces, performance, security, and observability
 Usage:
     python validate_spec.py <file_or_directory>
     python validate_spec.py /path/to/docs/SPEC
-    python validate_spec.py /path/to/docs/SPEC/SPEC-001_example.yaml
+    python validate_spec.py /path/to/docs/SPEC/SPEC-01_example.yaml
 
 Exit Codes:
     0 = Pass (no errors, no warnings)
@@ -220,7 +220,7 @@ def validate_id_field(data: Dict, file_path: Path, result: ValidationResult):
         )
 
     # Check if id matches filename slug
-    file_name = file_path.stem  # SPEC-001_component_name
+    file_name = file_path.stem  # SPEC-01_component_name
     match = re.match(r"SPEC-\d{3}_(.+)", file_name)
     if match:
         expected_id = match.group(1)
@@ -596,7 +596,7 @@ def main():
         epilog="""
 Examples:
   python validate_spec.py /path/to/docs/SPEC
-  python validate_spec.py /path/to/SPEC-001_example.yaml
+  python validate_spec.py /path/to/SPEC-01_example.yaml
   python validate_spec.py . --verbose
         """
     )

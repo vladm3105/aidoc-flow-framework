@@ -18,6 +18,8 @@ Development Principles Guide
 
 > ⚠️ **Token Limit Update (2025-11)**: This guide contains historical 10K token limits.
 > For current token limits (Claude Code: 50K-100K), see [TOOL_OPTIMIZATION_GUIDE.md](./TOOL_OPTIMIZATION_GUIDE.md).
+>
+> Script name canonicalization: matrix generation uses `scripts/generate_traceability_matrix.py`. Historical references to `generate_traceability_matrices.py` refer to the same tool; use the singular script.
 
 ## The AI-Driven Specification-Driven Development Workflow
 
@@ -280,7 +282,7 @@ custom_fields:
 - @prd: PRD.03.01.01 (Unified Quoteboard Product Definition)
 - @ears: EARS.02.24.01 (Exchange Integration Requirements)
 - @bdd: BDD.01.13.01 (Quote Display Acceptance Criteria)
-- @adr: ADR-005 (WebSocket Connection Architecture)
+- @adr: ADR-05 (WebSocket Connection Architecture)
 - @sys: SYS.01.25.01 (Quoteboard System Requirements)
 
 ### Downstream References
@@ -309,7 +311,7 @@ Each layer in the SDD workflow inherits ALL upstream traceability tags:
 
 **⚠️ CRITICAL: Document IDs are independent of document content**
 
-- **ID Numbers Do Not Match Content**: A document's ID number (e.g., PRD-009, REQ-015, BDD-03) does NOT necessarily correspond to related documents in other artifact types
+- **ID Numbers Do Not Match Content**: A document's ID number (e.g., PRD-09, REQ-15, BDD-03) does NOT necessarily correspond to related documents in other artifact types
 - **Always Try to Find and Use Index Files**: To find documents by topic/content, consult the index file for each artifact type
   - Index files use ID `000` in their identifier (e.g., PRD-000, REQ-000, ADR-000)
   - Index filenames include "index" in the name
@@ -317,9 +319,9 @@ Each layer in the SDD workflow inherits ALL upstream traceability tags:
   - Organized by domain, category, or functional area depending on artifact type
 
 **Example Scenario**:
-- BRD-009 covers "[EXTERNAL_INTEGRATION - e.g., third-party API, service provider] Integration Pilot"
-- PRD-009 might cover "[STRATEGY_NAME] Workflow" (completely unrelated topic)
-- The corresponding PRD for [EXTERNAL_INTEGRATION - e.g., third-party API, service provider] integration might be PRD-016 or any other number
+- BRD-09 covers "[EXTERNAL_INTEGRATION - e.g., third-party API, service provider] Integration Pilot"
+- PRD-09 might cover "[STRATEGY_NAME] Workflow" (completely unrelated topic)
+- The corresponding PRD for [EXTERNAL_INTEGRATION - e.g., third-party API, service provider] integration might be PRD-16 or any other number
 - **Solution**: Find and read the PRD index file (ID: 000, filename contains "index") to search descriptions for [EXTERNAL_INTEGRATION - e.g., third-party API, service provider] integration keywords
 
 **Best Practice for AI Assistants**:
@@ -364,10 +366,10 @@ Each layer in the SDD workflow inherits ALL upstream traceability tags:
 
 Platform BRDs define the technology stack and infrastructure that Feature BRDs depend on:
 - **BRD-01**: Platform Architecture & Technology Stack (Node.js, PostgreSQL, Redis, Python, n8n)
-- **BRD-02**: Partner Ecosystem Integration (Bridge, LLM providers, payment processors)
+- **BRD-02**: Partner Ecosystem Integration (external providers such as data, AI, and payment services)
 - **BRD-03**: security, Compliance & Regulatory Framework (encryption, audit, SOC 2)
-- **BRD-004**: Data Model, Ledger & Double-Entry Accounting (PostgreSQL schema, normalization)
-- **BRD-005**: Multi-Agent AI System Architecture (Google ADK, A2A Protocol, shared context)
+- **BRD-04**: Data Model, Ledger & Double-Entry Accounting (PostgreSQL schema, normalization)
+- **BRD-05**: Multi-Agent AI System Architecture (Google ADK, A2A Protocol, shared context)
 
 **Feature BRDs (006+)**: Workflow-specific documents that MUST include sections 3.6 and 3.7
 
@@ -381,7 +383,7 @@ Platform BRDs define the technology stack and infrastructure that Feature BRDs d
 3. Reference specific Platform BRD sections (e.g., "See BRD-01 section 3.6 items 1-10")
 4. Include Feature BRD cross-references when workflows depend on each other
 
-**Example** (from BRD-022 Fraud Detection Agent):
+**Example** (from BRD-22 Fraud Detection Agent):
 ```markdown
 ### 3.6 Technology Stack Prerequisites
 
@@ -389,17 +391,17 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 1. **Platform BRD-01: Platform Architecture & Technology Stack**
    - **Required Foundation**: Node.js 18+, PostgreSQL 14+, Redis 7+, Python 3.11+
-   - **Relevance to BRD-022**: Fraud detection agent runs as Python microservice
+   - **Relevance to BRD-22**: Fraud detection agent runs as Python microservice
    - **Specific Prerequisites**: See BRD-01 section 3.6 items 1-10
 
-2. **Platform BRD-005: Multi-Agent AI System Architecture**
+2. **Platform BRD-05: Multi-Agent AI System Architecture**
    - **Required AI Infrastructure**: Google ADK, A2A Protocol, shared context store
-   - **Relevance to BRD-022**: Fraud Agent communicates with Compliance Agent via A2A
-   - **Specific Prerequisites**: See BRD-005 section 3.6 items 1-8
+   - **Relevance to BRD-22**: Fraud Agent communicates with Compliance Agent via A2A
+   - **Specific Prerequisites**: See BRD-05 section 3.6 items 1-8
 
-3. **Feature BRD-016: Fraud Detection & Risk Screening** (Human Workflow)
+3. **Feature BRD-16: Fraud Detection & Risk Screening** (Human Workflow)
    - **Required Integration**: Agent augments human fraud analyst workflows
-   - **Relevance to BRD-022**: Agent provides automated first-pass screening
+   - **Relevance to BRD-22**: Agent provides automated first-pass screening
 ```
 
 **section 3.7: Mandatory Technology Conditions**
@@ -410,7 +412,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 - **Platform-Inherited Conditions** (4 core conditions from Platform BRDs):
   1. PostgreSQL High Availability (from BRD-01)
   2. Audit Trail Retention (from BRD-03)
-  3. Google ADK Agent Framework OR n8n Workflow Engine (from BRD-005 or BRD-01)
+  3. Google ADK Agent Framework OR n8n Workflow Engine (from BRD-05 or BRD-01)
   4. Field-Level PII Encryption (from BRD-03)
 
 - **Feature-Specific Conditions** (6-12 conditions unique to this workflow):
@@ -419,7 +421,7 @@ This AI Agent BRD depends on the following Platform BRDs:
   - **Business Impact**: What happens if condition not met
   - **Exception Path**: Fallback or workaround if available
 
-**Example** (from BRD-022 Fraud Detection Agent):
+**Example** (from BRD-22 Fraud Detection Agent):
 ```markdown
 ### 3.7 Mandatory Technology Conditions
 
@@ -447,27 +449,27 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 **BRD Pattern Categories**
 
-**AI Agent BRD Pattern** (BRD-022 through BRD-029):
-- **Platform Dependencies**: BRD-01 (infra), BRD-005 (Google ADK/A2A)
+**AI Agent BRD Pattern** (BRD-22 through BRD-29):
+- **Platform Dependencies**: BRD-01 (infra), BRD-05 (Google ADK/A2A)
 - **Technology Stack**: Python 3.11+, Google ADK, A2A Protocol, Redis (shared context)
 - **Mandatory Conditions**: Platform conditions + ML-specific (model performance, explainability, retraining)
-- **Example**: BRD-022 (Fraud Detection Agent), BRD-023 (Compliance Agent)
+- **Example**: BRD-22 (Fraud Detection Agent), BRD-23 (Compliance Agent)
 
-**n8n Automation BRD Pattern** (BRD-030 through BRD-033):
+**n8n Automation BRD Pattern** (BRD-30 through BRD-33):
 - **Platform Dependencies**: BRD-01 (n8n self-hosted), BRD-02 (webhooks)
 - **Technology Stack**: Node.js 18+, n8n self-hosted, PostgreSQL (workflow state)
 - **Mandatory Conditions**: Platform conditions + workflow-specific (webhook reliability, state persistence)
-- **Example**: BRD-030 (Webhook Processing Hub), BRD-031 (Notification Orchestration)
+- **Example**: BRD-30 (Webhook Processing Hub), BRD-31 (Notification Orchestration)
 
-**Standard Feature BRD Pattern** (BRD-006 through BRD-021):
-- **Platform Dependencies**: BRD-01 (infra), BRD-02 (partners), BRD-03 (compliance), BRD-004 (data model)
+**Standard Feature BRD Pattern** (BRD-06 through BRD-21):
+- **Platform Dependencies**: BRD-01 (infra), BRD-02 (partners), BRD-03 (compliance), BRD-04 (data model)
 - **Technology Stack**: Node.js 18+, PostgreSQL 14+, Redis 7+, partner APIs
 - **Mandatory Conditions**: Platform conditions + workflow-specific SLAs
-- **Example**: BRD-009 (Remittance Transaction), BRD-013 (Settlement & Reconciliation)
+- **Example**: BRD-09 (Remittance Transaction), BRD-13 (Settlement & Reconciliation)
 
 **Abbreviated vs Full sections**
 
-**Full sections (BRD-022, BRD-023, BRD-024)**:
+**Full sections (BRD-22, BRD-23, BRD-24)**:
 - section 3.6: Complete list of 7 dependencies with detailed relevance explanations
 - section 3.7: 4 platform + 8-12 feature-specific conditions with full impact analysis
 
@@ -549,12 +551,16 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### Behavior-Driven Development (BDD)
 - **Purpose**: Executable specifications written in natural language
-- **File Format**: `BDD-NN_descriptive_requirements.feature`
+- **Location**: `BDD/BDD-NN_{suite_slug}/`
+- **File Formats**:
+  - Section: `BDD-NN.SS_{section_slug}.feature`
+  - Subsection: `BDD-NN.SS.mm_{subsection_slug}.feature`
+  - Aggregator (redirect): `BDD-NN.SS.00_{section_slug}.feature`
 - **Scenario Types**: Success path, alternative path, error path, edge cases
 - **Gherkin Syntax**: Given-When-Then structure for behavioral specifications
 - **Key Features**:
   - Feature statements with business value
-  - Tagged scenarios for traceability (`@requirement`, `@adr`)
+  - Gherkin-native traceability tags: `@brd:BRD.NN.EE.SS`, `@prd:PRD.NN.EE.SS`, `@ears:EARS.NN.EE.SS`
   - Background setup shared across scenarios
   - Example tables for data-driven scenarios
 - **resource**: Operational requirements validating technical implementation
@@ -645,7 +651,7 @@ Documents with reserved ID `000` are framework infrastructure, not project artif
 
 | Pattern | Description | Examples |
 |---------|-------------|----------|
-| `{TYPE}-000_index.md` | Directory indexes | `BRD-000_index.md`, `ADR-000_index.md` |
+| `{TYPE}-00_index.md` | Directory indexes (default) | `BRD-00_index.md`, `ADR-00_index.md` |
 | `{TYPE}-000_TRACEABILITY_MATRIX-TEMPLATE.md` | Matrix templates | All 12 artifact types |
 | `{TYPE}-000_GLOSSARY.md` | Term definitions | `BRD-000_GLOSSARY.md` |
 | `{TYPE}-000_*_template.md` | Document templates | `BRD-000_TEMPLATE.md`, `PRD-000_TEMPLATE.md` |
@@ -682,11 +688,11 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 | `@prd:` | 2 | Product Requirements | `@prd: PRD.03.01.02` |
 | `@ears:` | 3 | EARS Statements | `@ears: EARS.01.24.03` |
 | `@bdd:` | 4 | BDD Scenarios | `@bdd: BDD.03.13.07` |
-| `@adr:` | 5 | Architecture Decisions | `@adr: ADR-033` |
+| `@adr:` | 5 | Architecture Decisions | `@adr: ADR-33` |
 | `@sys:` | 6 | System Requirements | `@sys: SYS.08.25.01` |
 | `@req:` | 7 | Atomic Requirements | `@req: REQ.03.26.01` |
 | `@impl:` | 8 | Implementation Plans | `@impl: IMPL.01.28.01` |
-| `@ctr:` | 9 | Data Contracts | `@ctr: CTR-001` |
+| `@ctr:` | 9 | Data Contracts | `@ctr: CTR-01` |
 | `@spec:` | 10 | Technical Specs | `@spec: SPEC-03` |
 | `@tasks:` | 11 | Task Breakdowns | `@tasks: TASKS.01.29.03` |
 | `@iplan:` | 12 | Implementation Plans | `@iplan: IPLAN-01` |
@@ -729,8 +735,8 @@ Python docstring:
 @brd: BRD.01.01.10, BRD.01.01.11, BRD.01.01.05
 @prd: PRD.03.01.01
 @req: REQ.03.26.01
-@adr: ADR-033
-@ctr: CTR-001
+@adr: ADR-33
+@ctr: CTR-01
 @spec: SPEC-02
 @test: BDD.02.13.01, BDD.08.13.01
 @impl-status: complete
@@ -742,8 +748,8 @@ Markdown document:
 @brd: BRD.01.01.30, BRD.01.01.06
 @prd: PRD.03.01.01
 @req: REQ.03.26.01
-@adr: ADR-033
-@ctr: CTR-001
+@adr: ADR-33
+@ctr: CTR-01
 @spec: SPEC-02
 @test: BDD.01.13.01
 @impl-status: complete
@@ -877,11 +883,11 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @prd: PRD.03.01.02
 @ears: EARS.01.24.03
 @bdd: BDD.03.13.01
-@adr: ADR-033
+@adr: ADR-33
 @sys: SYS.08.25.01
 @req: REQ.03.26.01, REQ.04.26.01
 @impl: IMPL.01.28.01
-@ctr: CTR-001
+@ctr: CTR-01
 @spec: SPEC-03
 @tasks: TASKS.01.29.03
 ```
@@ -899,11 +905,11 @@ Implements real-time resource limit validation and enforcement.
 @prd: PRD.03.01.02
 @ears: EARS.01.24.03
 @bdd: BDD.03.13.01
-@adr: ADR-033
+@adr: ADR-33
 @sys: SYS.08.25.01
 @req: REQ.03.26.01
 @impl: IMPL.01.28.01
-@ctr: CTR-001
+@ctr: CTR-01
 @spec: SPEC-03
 @tasks: TASKS.01.29.03
 @iplan: IPLAN-01
@@ -1037,11 +1043,11 @@ excessive collection concentration risk through automated validation.
 @prd: PRD.03.01.02
 @ears: EARS.01.24.03, EARS.01.24.02
 @bdd: BDD.03.13.01, BDD.03.13.02
-@adr: ADR-033
+@adr: ADR-33
 @sys: SYS.08.25.01, SYS.08.25.02
 @req: REQ.03.26.01, REQ.04.26.01
 @impl: IMPL.01.28.01
-@ctr: CTR-001
+@ctr: CTR-01
 @spec: SPEC-03
 @tasks: TASKS.01.29.03, TASKS.01.29.05
 @iplan: IPLAN-01
@@ -1055,7 +1061,7 @@ class PositionLimitService:
     """
     Validates resource limits against resource usage thresholds.
 
-    Implements CTR-001 position_risk_validation interface.
+    Implements CTR-01 position_risk_validation interface.
     """
 
     def validate_resource_limit(self, position: Position) -> ValidationResult:
@@ -1084,7 +1090,7 @@ Tests all scenarios from BDD-03 and validates REQ-03 acceptance criteria.
 @prd: PRD.03.01.02
 @ears: EARS.01.24.03
 @bdd: BDD.03.13.01
-@adr: ADR-033
+@adr: ADR-33
 @sys: SYS.08.25.01
 @req: REQ.03.26.01
 @spec: SPEC-03
@@ -1222,8 +1228,8 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
 - **Input**: REQ acceptance criteria expressed as executable scenarios
 - **Output**: Gherkin feature files with Given-When-Then scenarios
 - **Scenario Types**: Success paths, alternative paths, error conditions, edge cases
-- **Tagging**: `@requirement:[REQ-...](...)` and `@adr:[ADR-...](...)` links
-- **Guidelines**: Business language; declarative over imperative; tagged with traceability links
+- **Tagging**: Gherkin-native upstream tags: `@brd: BRD.NN.EE.SS`, `@prd: PRD.NN.EE.SS`, `@ears: EARS.NN.EE.SS`
+- **Guidelines**: Business language; declarative over imperative; use section metadata and upstream tags
 
 ### 6. Author Technical Specifications (SPEC)
 - **Input**: REQ acceptance criteria with interface/schema/error definitions, ADR constraints
@@ -1515,7 +1521,7 @@ SPEC-01 → TASKS-01 (Provider) → ICON-01 → TASKS-02-009 (Consumers) → Cod
 - **Audience**: External consumers, API clients, microservices
 - **Format**: Dual-file (.md + .yaml) with JSON Schema definitions
 - **Examples**: REST API contracts, gRPC service definitions, message schemas
-- **Tag**: `@ctr: CTR-001`
+- **Tag**: `@ctr: CTR-01`
 - **Location**: `docs/CTR/`
 - **Versioning**: Semantic versioning (MAJOR.MINOR.PATCH), strict compatibility rules
 
@@ -1724,7 +1730,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 - PRD: [PRD-NN](./PRD/PRD-NN_{slug}.md)
 - SYS: [SYS-NN](./SYS/SYS-NN_{slug}.md)
 - EARS: [EARS-NN](./EARS/EARS-NN_{slug}.md)
-- BDD: [{slug}_requirements.feature](./BDD/{slug}_requirements.feature)
+- BDD: `BDD/BDD-NN_{suite}/BDD-NN.SS_{section}.feature`
 - ADR: [ADR-NN](./ADR/ADR-NN_{slug}.md#ADR-NN)
 - **REQ V2**: [REQ-NN](./REQ/{category}/{subcategory}/REQ-NN_{slug}.md#REQ-NN) ← Contains complete interface/schema/error/config specifications
 - CTR: [CTR-NN](./CTR/CTR-NN_{slug}.md#CTR-NN) + [CTR-NN.yaml](./CTR/CTR-NN_{slug}.yaml) ← Contract for service interface
@@ -1812,7 +1818,7 @@ performance:
 # Document structure validation (available scripts)
 bash scripts/validate_brd_template.sh docs/BRD/BRD-01_platform_overview/BRD-01.0_platform_overview_index.md    # BRD template compliance (nested folder)
 bash scripts/validate_req_template.sh docs/REQ/REQ-01.md    # REQ 12-section format
-bash scripts/validate_ctr.sh docs/CTR/CTR-001_*.md           # CTR dual-file format (.md + .yaml)
+bash scripts/validate_ctr.sh docs/CTR/CTR-01_*.md           # CTR dual-file format (.md + .yaml)
 bash scripts/validate_impl.sh docs/IMPL/IMPL-01_*.md        # IMPL 4-PART structure
 bash scripts/validate_tasks.sh docs/TASKS/TASKS-01_*.md     # TASKS format including Section 8
 bash scripts/validate_iplan.sh docs/IPLAN/IPLAN-01_*.md     # IPLAN session-based execution plans
@@ -2035,7 +2041,9 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 - Do NOT split solely for tool compatibility - use appropriate tool features instead
 - Each split file must be independently understandable (minimal context header and links back to index)
 - Maintain an index page listing split files and their dependencies
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - Example: For complex SPEC exceeding 100K tokens, create SPEC-03_part1.yaml (interfaces/state), SPEC-03_part2.yaml (performance/verification); reference as [SPEC-03_part1.yaml](./SPEC/services/SPEC-03_part1.yaml), with [index.md](./index.md) enumerating splits and dependencies
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 - Estimate tokens using tools like `wc -w` or AI token counters for maintenance
 - External References: Paths to project files are placeholders; verify existence or update to local copies for standalone use
 
@@ -2050,7 +2058,7 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
   - [ ] SPEC-Ready Score ≥90% (`validate_req_spec_readiness.py`)
 - ADR updated with Impact Analysis and Implementation Assessment sections.
 - Tech Spec updated: `id` equals filename; includes upstream/downstream links, interfaces, data model, states, errors, performance, observability.
-- BDD scenarios tagged with markdown-link format `@requirement:[REQ-...](...)` and `@adr:[ADR-...](...)`.
+- BDD scenarios include Gherkin-native upstream tags: `@brd: BRD.NN.EE.SS`, `@prd: PRD.NN.EE.SS`, `@ears: EARS.NN.EE.SS`.
 - AI tasks file includes scope, plan, constraints, acceptance criteria, and traceability links.
 - security implications documented (input validation, Secrets policy references, correlation id handling).
 - Run validators:
@@ -2153,11 +2161,11 @@ Quality attribute clarification (allowed)
 - Include file dependency mapping for multi-file documentation sets
 - Use consistent naming convention: [component]_[sequence]_[type].md
 
-**Example: BRD-009 Section File Structure (Justified Case):**
-- BRD-009.1_prerequisites.md (20K) - Audience: Architects, PMs - Focus: Critical path dependencies
-- BRD-009.2_provider_integration_pilot.md (51K) - Audience: Developers - Focus: Full technical requirements
-- BRD-009.3_phase_gates_quick_reference.md (12K) - Audience: PMs, QA - Focus: Go/no-go checklists
-- **Justification**: BRD-009 is Phase 1 critical prerequisite blocking 6 downstream BRDs, requires separate phase gate documentation, serves 3 distinct audiences with different information needs
+**Example: BRD-09 Section File Structure (Justified Case):**
+- BRD-09.1_prerequisites.md (20K) - Audience: Architects, PMs - Focus: Critical path dependencies
+- BRD-09.2_provider_integration_pilot.md (51K) - Audience: Developers - Focus: Full technical requirements
+- BRD-09.3_phase_gates_quick_reference.md (12K) - Audience: PMs, QA - Focus: Go/no-go checklists
+- **Justification**: BRD-09 is Phase 1 critical prerequisite blocking 6 downstream BRDs, requires separate phase gate documentation, serves 3 distinct audiences with different information needs
 
 **AI Assistant Compatibility:**
 - Structure each file for independent processing by AI systems

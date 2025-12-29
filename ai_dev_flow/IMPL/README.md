@@ -83,11 +83,11 @@ This is the most critical distinction:
 | **Traceability** | IMPL → CTR, SPEC, TASKS | TASKS → Code |
 
 **Example Flow**:
-1. **REQ-03**: "System must enforce resource limits"
-2. **IMPL-01**: "Resource Management System" - Phase 1: Build resource limits (Week 1-2, Agent Team) → Deliverables: CTR-03, SPEC-03, TASKS-03
-3. **SPEC-03.yaml**: Technical spec with ResourceLimitService class, methods, algorithms
-4. **TASKS-03**: Step-by-step TODOs to generate code from SPEC-03.yaml
-5. **Code**: `resource_limit_service.py` generated following TASKS-03
+1. **REQ-NN**: "System must enforce resource limits"
+2. **IMPL-NN**: "Resource Management System" - Phase 1: Build resource limits (Week 1-2, Agent Team) → Deliverables: CTR-NN, SPEC-NN, TASKS-NN
+3. **SPEC-NN.yaml**: Technical spec with ResourceLimitService class, methods, algorithms
+4. **TASKS-NN**: Step-by-step TODOs to generate code from SPEC-NN.yaml
+5. **Code**: `resource_limit_service.py` generated following TASKS-NN
 
 ## When to Create IMPL Plans
 
@@ -200,13 +200,13 @@ Before completing an IMPL Plan, verify:
 **Team**: Agent Development Team (3 developers)
 
 **Deliverables**:
-- CTR-03: Resource Limit API Contract
-- SPEC-03: Resource Limit Service Specification
-- TASKS-03: Code Generation Plan for SPEC-03
+- CTR-NN: API Contract
+- SPEC-NN: Service Specification
+- TASKS-NN: Code Generation Plan for SPEC-NN
 
 **Dependencies**:
-- Database schema approved (ADR-008)
-- Risk parameter configuration complete (REQ-03)
+- Database schema approved (ADR-NN)
+- Parameter configuration complete (REQ-NN)
 
 **Timeline**: Sprint 1 (2 weeks)
 ```
@@ -225,12 +225,12 @@ limit = base_limit * (1 - risk_factor * 0.1)
 **Good** (Business Value):
 ```markdown
 ## Phase 1: Core Resource Management (Sprint 1-2)
-- Resource limits (CTR-03, SPEC-03)
-- Risk calculator (CTR-005, SPEC-05)
+- Resource limits (CTR-NN, SPEC-NN)
+- Risk calculator (CTR-NN, SPEC-NN)
 
 ## Phase 2: Advanced Features (Sprint 3)
-- Circuit breakers (CTR-008, SPEC-08)
-- Correlation analysis (CTR-010, SPEC-010)
+- Circuit breakers (CTR-NN, SPEC-NN)
+- Correlation analysis (CTR-NN, SPEC-NN)
 ```
 
 **Bad** (Technical Layers):
@@ -253,15 +253,15 @@ When components must be built in order:
 
 ```markdown
 ## Phase 1: Foundation (Week 1-2)
-- Core data models (SPEC-01, SPEC-02)
-- Database setup (SPEC-03)
+- Core data models (SPEC-NN, SPEC-NN)
+- Database setup (SPEC-NN)
 
 ## Phase 2: Services (Week 3-4)
-- Business logic (SPEC-004, SPEC-05)
+- Business logic (SPEC-NN, SPEC-NN)
 - Depends on: Phase 1 complete
 
 ## Phase 3: Integration (Week 5)
-- API layer (SPEC-006)
+- API layer (SPEC-NN)
 - Depends on: Phase 2 complete
 ```
 
@@ -273,13 +273,13 @@ When teams can work independently:
 ## Phase 1 (Parallel): Core Services (Week 1-2)
 
 **Team A**: Resource Limits
-- CTR-03, SPEC-03, TASKS-03
+- CTR-NN, SPEC-NN, TASKS-NN
 
 **Team B**: Risk Calculator
-- CTR-005, SPEC-05, TASKS-05
+- CTR-NN, SPEC-NN, TASKS-NN
 
 **Team C**: Circuit Breakers
-- CTR-008, SPEC-08, TASKS-008
+- CTR-NN, SPEC-NN, TASKS-NN
 
 No dependencies between teams.
 ```
@@ -290,17 +290,17 @@ When delivering incremental value:
 
 ```markdown
 ## Phase 1: MVP (Sprint 1)
-- Basic resource limits (SPEC-03)
-- Manual override capability (SPEC-004)
+- Basic resource limits (SPEC-NN)
+- Manual override capability (SPEC-NN)
 - **Release**: V1.0 to production
 
 ## Phase 2: Enhancements (Sprint 2)
-- Automated limit calculation (SPEC-05)
-- Real-time monitoring (SPEC-006)
+- Automated calculation (SPEC-NN)
+- Real-time monitoring (SPEC-NN)
 - **Release**: V1.1 to production
 
 ## Phase 3: Advanced Features (Sprint 3)
-- ML-based limit recommendations (SPEC-007)
+- ML-based recommendations (SPEC-NN)
 - **Release**: V2.0 to production
 ```
 
@@ -363,7 +363,7 @@ Throughout implementation:
 
 **Problem**: IMPL Plan includes data structures, algorithms, class hierarchies
 
-**Solution**: Move technical details to SPEC. IMPL only says "create SPEC-03 for Resource Limit service"
+**Solution**: Move technical details to SPEC. IMPL only says "create SPEC-NN for the service"
 
 ### Pitfall 2: IMPL Duplicates TASKS
 
@@ -381,7 +381,7 @@ Throughout implementation:
 
 **Problem**: Phase says "Build resource management" but doesn't list which CTR/SPEC/TASKS
 
-**Solution**: Always enumerate deliverables: "CTR-03, SPEC-03, TASKS-03"
+**Solution**: Always enumerate deliverables: "CTR-NN, SPEC-NN, TASKS-NN"
 
 ### Pitfall 5: No Team [ALLOCATION - e.g., task assignment, resource allocation]
 
@@ -397,7 +397,7 @@ Start with `IMPL-TEMPLATE.md`:
 
 ```bash
 cp ai_dev_flow/IMPL/IMPL-TEMPLATE.md \
-   docs/IMPL/IMPL-042_my_feature.md
+   docs/IMPL/IMPL-NN_my_feature.md
 ```
 
 ### Validation
@@ -415,12 +415,12 @@ Check IMPL Plan quality:
 ### Example 1: Simple IMPL (Single Team)
 
 ```markdown
-# IMPL-042: User Authentication System
+# IMPL-NN: Authentication System
 
 ## PART 1: Project Context
 **Overview**: Implement OAuth2 authentication for API access
 
-**Business Objectives**: REQ-042 (Secure API access)
+**Business Objectives**: REQ-NN (Secure access)
 
 **Scope**:
 - OAuth2 provider integration
@@ -431,17 +431,17 @@ Check IMPL Plan quality:
 
 ### Phase 1: Core Auth (Week 1)
 **Deliverables**:
-- CTR-042: Authentication API Contract
-- SPEC-042: OAuth2 Service Specification
-- TASKS-042: Code Generation Plan
+- CTR-NN: Authentication API Contract
+- SPEC-NN: Service Specification
+- TASKS-NN: Code Generation Plan
 
 **Team**: security Team (2 developers)
 **Dependencies**: None
 
 ### Phase 2: Session Management (Week 2)
 **Deliverables**:
-- SPEC-043: Session Service Specification
-- TASKS-043: Code Generation Plan
+- SPEC-NN: Session Service Specification
+- TASKS-NN: Code Generation Plan
 
 **Team**: security Team
 **Dependencies**: Phase 1 complete

@@ -43,7 +43,7 @@ flowchart LR
 | IMPL ID | Title | Status | Related REQs | Deliverables | Timeline | Owner | Last Updated |
 |---------|-------|--------|--------------|--------------|----------|-------|--------------|
 | [IMPL_IMPLEMENTATION_PLAN](./IMPL_IMPLEMENTATION_PLAN.md) | Create IMPL/ System | In Progress | N/A | IMPL/ folder, templates | 4-5 hours | Documentation Team | 2025-11-02 |
-| [IMPL-01](./examples/IMPL-01_risk_management_system.md) | resource management System | Planned | REQ-03, REQ-005, REQ-008 | CTR-03, SPEC-03, TASKS-03, CTR-005, SPEC-05, TASKS-05, CTR-008, SPEC-08, TASKS-008 | 3 sprints (6 weeks) | Agent Team | 2025-11-02 |
+| [IMPL-01](./examples/IMPL-01_risk_management_system.md) | resource management System | Planned | REQ-03, REQ-05, REQ-08 | CTR-03, SPEC-03, TASKS-03, CTR-05, SPEC-05, TASKS-05, CTR-08, SPEC-08, TASKS-08 | 3 sprints (6 weeks) | Agent Team | 2025-11-02 |
 
 ## Status Definitions
 
@@ -116,8 +116,8 @@ When creating a new IMPL Plan:
 
 ### CTR Documents to Create
 - CTR-03 (IMPL-01)
-- CTR-005 (IMPL-01)
-- CTR-008 (IMPL-01)
+- CTR-05 (IMPL-01)
+- CTR-08 (IMPL-01)
 
 ### SPEC Documents to Create
 - SPEC-03 (IMPL-01)
@@ -127,7 +127,7 @@ When creating a new IMPL Plan:
 ### TASKS Documents to Create
 - TASKS-03 (IMPL-01)
 - TASKS-05 (IMPL-01)
-- TASKS-008 (IMPL-01)
+- TASKS-08 (IMPL-01)
 
 ## Related Documents
 

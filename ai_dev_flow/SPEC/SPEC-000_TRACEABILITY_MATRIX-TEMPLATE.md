@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: SPEC-01 through SPEC-NN
+# Traceability Matrix: SPEC-NN (project-agnostic example IDs)
 
 ## Document Control
 
@@ -56,7 +56,7 @@ python scripts/generate_traceability_matrices.py --type SPEC --output docs/SPEC/
 - ✅ No manual sync: Automated validation prevents drift
 - ✅ Coverage metrics: Automatically calculated
 
-**Tag Format:** `@spec: SPEC.01.27.NN` (for specific requirements) or `@spec: SPEC-01` (for single-doc refs)
+**Tag Format:** `@spec: SPEC.NN.27.NN` (for specific requirements) or `@spec: SPEC-NN` (for single-doc refs)
 
 See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
@@ -97,11 +97,11 @@ cumulative_tags:
   prd: "PRD.16.01.03"
   ears: "EARS.12.24.02"
   bdd: "BDD.15.13.01"
-  adr: "ADR-033"
+  adr: "ADR-NN"
   sys: "SYS.12.25.01"
   req: "REQ.45.26.01"
   impl: "IMPL.03.28.02"  # Optional - include if exists
-  ctr: "CTR-005"  # Optional - include if exists
+  ctr: "CTR-NN"  # Optional - include if exists
 ```
 
 **Format Rules**:
@@ -114,9 +114,9 @@ cumulative_tags:
 ### 2.3 Example: SPEC with Required Tags
 
 ```yaml
-# SPEC-018: request submission Service Specification
+# SPEC-NN: request submission Service Specification
 
-spec_id: SPEC-018
+spec_id: SPEC-NN
 title: "request submission Service Technical Specification"
 version: "1.0.0"
 status: active
@@ -129,14 +129,14 @@ cumulative_tags:
   prd: "PRD.16.01.03"
   ears: "EARS.12.24.02, EARS.12.24.01"
   bdd: "BDD.15.13.01, BDD.15.13.02"
-  adr: "ADR-033"
+  adr: "ADR-NN"
   sys: "SYS.12.25.01, SYS.12.25.02"
   req: "REQ.45.26.01, REQ.45.26.02"
   impl: "IMPL.03.28.02"  # Optional
-  ctr: "CTR-005"  # Optional
+  ctr: "CTR-NN"  # Optional
 
 component:
-  name: "OrderPlacementService"
+  name: "RequestSubmissionService"
   type: "service"
   layer: "business_logic"
 
@@ -148,14 +148,14 @@ component:
 When IMPL and CTR don't exist in the traceability chain:
 
 ```yaml
-# SPEC-040: Simple Data Processor Specification
+# SPEC-NN: Simple Data Processor Specification
 
 cumulative_tags:
   brd: "BRD.01.01.20"
   prd: "PRD.03.01.05"
   ears: "EARS.05.24.01"
   bdd: "BDD.08.13.01"
-  adr: "ADR-015"
+  adr: "ADR-NN"
   sys: "SYS.20.25.03"
   req: "REQ.30.26.01"
   # No IMPL or CTR - not needed for this component
@@ -182,9 +182,9 @@ component:
 # Find all SPECs and validate cumulative tags
 python scripts/extract_tags.py --type SPEC --validate-cumulative
 
-# Check SPEC-018 has all required upstream tags
+# Check SPEC-NN has all required upstream tags
 python scripts/validate_tags_against_docs.py \
-  --artifact SPEC-018 \
+  --artifact SPEC-NN \
   --expected-layers brd,prd,ears,bdd,adr,sys,req \
   --strict
 
@@ -233,8 +233,8 @@ Code (Layer 13) → Source code
 
 | SPEC ID | Title | Spec Type | Status | Date | Upstream Sources |
 |---------|-------|-----------|--------|------|------------------|
-| SPEC-01 | [Technical specification title] | Service | Active | YYYY-MM-DD | BRD-01, PRD-01, EARS-01, BDD-01, ADR-01, SYS-01, REQ-01, CTR-01 |
-| SPEC-02 | [Technical specification title] | Agent | Active | YYYY-MM-DD | BRD-01, PRD-01, EARS-02, BDD-02, ADR-02, SYS-02, REQ-02 |
+| SPEC-NN | [Technical specification title] | Service | Active | YYYY-MM-DD | BRD-NN, PRD-NN, EARS-NN, BDD-NN, ADR-NN, SYS-NN, REQ-NN, CTR-NN |
+| SPEC-NN | [Technical specification title] | Agent | Active | YYYY-MM-DD | BRD-NN, PRD-NN, EARS-NN, BDD-NN, ADR-NN, SYS-NN, REQ-NN |
 | SPEC-NN | ... | ... | ... | ... | ... |
 
 **Status Legend**:
@@ -253,22 +253,22 @@ Code (Layer 13) → Source code
 
 | REQ ID | REQ Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| REQ-01 | [Atomic requirement] | SPEC-01 | [Technical specification] | Requirement implemented in specification |
+| REQ-NN | [Atomic requirement] | SPEC-NN | [Technical specification] | Requirement implemented in specification |
 | REQ-NN | ... | ... | ... | ... |
 
 ### 9.2 ADR → SPEC Traceability
 
 | ADR ID | ADR Title | SPEC IDs | SPEC Titles | Relationship |
 |--------|-----------|----------|-------------|--------------|
-| ADR-01 | [Architecture decision] | SPEC-01, SPEC-02 | [Technical specifications] | Architectural patterns implemented in SPEC |
+| ADR-NN | [Architecture decision] | SPEC-NN, SPEC-NN | [Technical specifications] | Architectural patterns implemented in SPEC |
 | ADR-NN | ... | ... | ... | ... |
 
 ### 6.3 CTR → SPEC Traceability
 
 | CTR ID | CTR Title | SPEC IDs | SPEC Titles | Provider/Consumer |
 |--------|-----------|----------|-------------|-------------------|
-| CTR-01 | [API contract] | SPEC-01 | [Technical specification] | Provider |
-| CTR-01 | [API contract] | SPEC-02, SPEC-03 | [Technical specifications] | Consumers |
+| CTR-NN | [API contract] | SPEC-NN | [Technical specification] | Provider |
+| CTR-NN | [API contract] | SPEC-NN, SPEC-NN | [Technical specifications] | Consumers |
 | CTR-NN | ... | ... | ... | ... |
 
 ---
@@ -281,17 +281,17 @@ Code (Layer 13) → Source code
 
 | Downstream Type | Required Tag Format | Example |
 |-----------------|---------------------|---------|
-| TASKS | `@spec: SPEC.NN.27.SS` | `@spec: SPEC.01.27.01` |
-| Code | `@spec: SPEC.NN.27.SS` | `@spec: SPEC.18.27.03` |
-| Tests | `@spec: SPEC.NN.27.SS` | `@spec: SPEC.05.27.01, SPEC.05.27.02` |
+| TASKS | `@spec: SPEC.NN.27.NN` | `@spec: SPEC.NN.27.NN` |
+| Code | `@spec: SPEC.NN.27.NN` | `@spec: SPEC.NN.27.NN` |
+| Tests | `@spec: SPEC.NN.27.NN` | `@spec: SPEC.NN.27.NN, SPEC.NN.27.NN` |
 
 ### 6.2 Finding Downstream References
 
 To discover which downstream documents reference a specific SPEC, use reverse traceability:
 
 ```bash
-# Find all TASKS documents referencing SPEC-018
-grep -r "@spec: SPEC.18" ../TASKS/
+# Find all TASKS documents referencing a SPEC
+grep -r "@spec: SPEC\.NN" ../TASKS/
 
 # Find all code files referencing any SPEC
 grep -r "@spec:" src/
@@ -301,7 +301,7 @@ grep -r "@spec:" tests/
 
 # Generate reverse traceability report
 python scripts/generate_reverse_traceability.py \
-  --upstream SPEC-018 \
+  --upstream SPEC-NN \
   --downstream TASKS,Code,Tests
 ```
 
@@ -321,18 +321,18 @@ python scripts/generate_reverse_traceability.py \
 
 | Spec Type | SPEC IDs | Total | Description |
 |-----------|---------|-------|-------------|
-| Service | SPEC-01, SPEC-02, SPEC-03 | 3 | Backend services |
-| Agent | SPEC-004, SPEC-05 | 2 | AI agents |
-| Infrastructure | SPEC-006, SPEC-007 | 2 | Infrastructure components |
-| Integration | SPEC-08 | 1 | External integrations |
+| Service | SPEC-NN, SPEC-NN | 2 | Backend services |
+| Agent | SPEC-NN, SPEC-NN | 2 | AI agents |
+| Infrastructure | SPEC-NN, SPEC-NN | 2 | Infrastructure components |
+| Integration | SPEC-NN | 1 | External integrations |
 
 ### 9.2 SPEC Validation Evidence
 
 | SPEC ID | Requirements Coverage | Test Coverage | Upstream Traceability | Validation Status |
 |---------|----------------------|---------------|----------------------|-------------------|
-| SPEC-01 | 100% (5/5 REQ) | 95% | 100% | ✅ Validated |
-| SPEC-02 | 80% (4/5 REQ) | 85% | 100% | 🟡 Partial |
-| SPEC-03 | 0% (0/3 REQ) | 0% | 0% | ⏳ Pending |
+| SPEC-NN | 100% (5/5 REQ) | 95% | 100% | ✅ Validated |
+| SPEC-NN | 80% (4/5 REQ) | 85% | 100% | 🟡 Partial |
+| SPEC-NN | 0% (0/3 REQ) | 0% | 0% | ⏳ Pending |
 | SPEC-NN | ... | ... | ... | ... |
 
 ---
@@ -342,14 +342,14 @@ python scripts/generate_reverse_traceability.py \
 ```mermaid
 graph TD
     subgraph Upstream[Upstream Sources - Layers 1-9]
-        REQ01[REQ-01: Atomic Req]
-        ADR001[ADR-01: Architecture]
-        CTR01[CTR-01: API Contract]
+        REQ01[REQ-NN: Atomic Req]
+        ADR001[ADR-NN: Architecture]
+        CTR01[CTR-NN: API Contract]
     end
 
     subgraph Current[SPEC Layer - Layer 10]
-        SPEC01[SPEC-01: Service Spec]
-        SPEC02[SPEC-02: Feature Spec]
+        SPEC01[SPEC-NN: Service Spec]
+        SPEC02[SPEC-NN: Feature Spec]
     end
 
     REQ01 --> SPEC01
@@ -369,8 +369,8 @@ graph TD
 
 | Source SPEC | Target SPEC | Dependency Type | Description |
 |-------------|-------------|-----------------|-------------|
-| SPEC-01 | SPEC-004 | Prerequisite | Authentication service required |
-| SPEC-02 | SPEC-01 | Uses | Feature uses core service |
+| SPEC-NN | SPEC-NN | Prerequisite | Authentication service required |
+| SPEC-NN | SPEC-NN | Uses | Feature uses core service |
 | SPEC-NN | ... | ... | ... |
 
 ---
@@ -381,18 +381,18 @@ graph TD
 
 | SPEC ID | YAML Valid | TASKS Status | Code Status | Tests Status | Overall | Completion % |
 |---------|------------|--------------|-------------|--------------|---------|--------------|
-| SPEC-01 | ✅ | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
-| SPEC-02 | ✅ | 🟡 In Progress | 🟡 Partial | 🟡 Partial | In Progress | 60% |
-| SPEC-03 | ❌ | ⏳ Pending | ⏳ Pending | ⏳ Pending | Not Started | 0% |
+| SPEC-NN | ✅ | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
+| SPEC-NN | ✅ | 🟡 In Progress | 🟡 Partial | 🟡 Partial | In Progress | 60% |
+| SPEC-NN | ❌ | ⏳ Pending | ⏳ Pending | ⏳ Pending | Not Started | 0% |
 | SPEC-NN | ... | ... | ... | ... | ... | ... |
 
 ### 9.2 Code Generation Metrics
 
 | SPEC ID | Spec Size (LOC in YAML) | Generated Code (LOC) | Generation Ratio | Quality Score |
 |---------|------------------------|---------------------|------------------|---------------|
-| SPEC-01 | 250 | 1200 | 4.8x | 9/10 |
-| SPEC-02 | 180 | 850 | 4.7x | 8/10 |
-| SPEC-03 | 200 | 0 | N/A | N/A |
+| SPEC-NN | 250 | 1200 | 4.8x | 9/10 |
+| SPEC-NN | 180 | 850 | 4.7x | 8/10 |
+| SPEC-NN | 200 | 0 | N/A | N/A |
 | SPEC-NN | ... | ... | ... | ... |
 
 ---
@@ -403,18 +403,18 @@ graph TD
 
 | SPEC ID | Response Time Target | Throughput Target | Resource Limit | Achieved | Status |
 |---------|---------------------|-------------------|----------------|----------|--------|
-| SPEC-01 | < 100ms | 1000 req/s | 512MB RAM | 95ms, 950 req/s | ✅ Met |
-| SPEC-02 | < 200ms | 500 req/s | 256MB RAM | 180ms, 480 req/s | ✅ Met |
-| SPEC-03 | < 50ms | 2000 req/s | 1GB RAM | Not Tested | ⏳ Pending |
+| SPEC-NN | < 100ms | 1000 req/s | 512MB RAM | 95ms, 950 req/s | ✅ Met |
+| SPEC-NN | < 200ms | 500 req/s | 256MB RAM | 180ms, 480 req/s | ✅ Met |
+| SPEC-NN | < 50ms | 2000 req/s | 1GB RAM | Not Tested | ⏳ Pending |
 | SPEC-NN | ... | ... | ... | ... | ... |
 
 ### 9.2 Observability Coverage
 
 | SPEC ID | Metrics Defined | Logs Defined | Traces Defined | Alerts Defined | Coverage % |
 |---------|-----------------|--------------|----------------|----------------|------------|
-| SPEC-01 | ✅ (10) | ✅ (5) | ✅ (3) | ✅ (5) | 100% |
-| SPEC-02 | ✅ (8) | ✅ (3) | ❌ (0) | 🟡 (2) | 65% |
-| SPEC-03 | ❌ (0) | ❌ (0) | ❌ (0) | ❌ (0) | 0% |
+| SPEC-NN | ✅ (10) | ✅ (5) | ✅ (3) | ✅ (5) | 100% |
+| SPEC-NN | ✅ (8) | ✅ (3) | ❌ (0) | 🟡 (2) | 65% |
+| SPEC-NN | ❌ (0) | ❌ (0) | ❌ (0) | ❌ (0) | 0% |
 | SPEC-NN | ... | ... | ... | ... | ... |
 
 ---
@@ -427,9 +427,9 @@ graph TD
 - SPEC-ZZZ: Incomplete cumulative tags (missing layers in chain)
 
 ### 10.2 YAML Validation Issues
-- SPEC-02: Invalid YAML syntax
-- SPEC-05: Missing performance targets
-- SPEC-08: Incomplete observability definition
+- SPEC-NN: Invalid YAML syntax
+- SPEC-NN: Missing performance targets
+- SPEC-NN: Incomplete observability definition
 
 ### 10.3 Upstream Coverage Gaps
 - REQ-XXX: No SPEC implements this requirement

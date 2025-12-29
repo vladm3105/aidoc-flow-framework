@@ -118,17 +118,17 @@ This matrix tracks all iplan documents, mapping:
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD.09.01.15
-@prd: PRD.16.01.03
-@ears: EARS.12.24.02
-@bdd: BDD.15.13.01
-@adr: ADR-033
-@sys: SYS.12.25.01
-@req: REQ.45.26.01
-@impl: IMPL.03.28.02
-@ctr: CTR-005
-@spec: SPEC-018
-@tasks: TASKS.15.29.01
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS-NN
+@bdd: BDD-NN
+@adr: ADR-NN
+@sys: SYS-NN
+@req: REQ-NN
+@impl: IMPL-NN
+@ctr: CTR-NN
+@spec: SPEC-NN
+@tasks: TASKS.NN.NN.NN
 ```
 
 **Format Rules**:
@@ -142,7 +142,7 @@ This matrix tracks all iplan documents, mapping:
 ### 2.3 Example: IPLAN with Required Tags
 
 ```markdown
-# session-2025-11-13-order-service: Order Service Development Session
+# session-2025-11-13-service: Service Development Session
 
 ## 7. Traceability
 
@@ -150,17 +150,17 @@ This matrix tracks all iplan documents, mapping:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 12):
 ```markdown
-@brd: BRD.09.01.15
-@prd: PRD.16.01.03
-@ears: EARS.12.24.02
-@bdd: BDD.15.13.01
-@adr: ADR-033
-@sys: SYS.12.25.01
-@req: REQ.45.26.01
-@impl: IMPL.03.28.02
-@ctr: CTR-005
-@spec: SPEC-018
-@tasks: TASKS.15.29.01
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS-NN
+@bdd: BDD-NN
+@adr: ADR-NN
+@sys: SYS-NN
+@req: REQ-NN
+@impl: IMPL-NN
+@ctr: CTR-NN
+@spec: SPEC-NN
+@tasks: TASKS.NN.NN.NN
 ```
 
 ### 7.2 Downstream Artifacts

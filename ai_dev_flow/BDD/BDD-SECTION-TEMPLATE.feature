@@ -181,9 +181,10 @@ Scenario: [External system integration]
 # SCENARIO GUIDELINES
 # =============================================================================
 #
-# **Hard Limits**:
+# **File Size & Scenario Limits**:
+# - Target: 300–500 lines per file
+# - Maximum: 600 lines per file (absolute)
 # - Maximum 12 scenarios per Feature block
-# - Maximum 500 lines per file
 # - If limits exceeded → Create subsections (BDD-NN.SS.mm format)
 #
 # **Canonical Step Phrases**:

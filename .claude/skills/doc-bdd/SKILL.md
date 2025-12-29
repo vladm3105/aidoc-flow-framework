@@ -63,6 +63,12 @@ Use `doc-bdd` when:
 - Creating acceptance criteria for features
 - You are at Layer 4 of the SDD workflow
 
+**Structure Selection** (Section-Based ONLY):
+- **Section Files**: `BDD-NN.SS_{slug}.feature` (max 500 lines, max 12 scenarios per Feature)
+- **Subsections**: `BDD-NN.SS.mm_{slug}.feature` (when section >500 lines)
+- **Aggregators**: `BDD-NN.SS.00_{slug}.feature` (redirect stubs with @redirect tag, 0 scenarios)
+- **Index File**: `BDD-NN.0_index.md` (MANDATORY for all BDD suites)
+
 ## BDD-Specific Guidance
 
 ### 1. Gherkin Syntax
@@ -235,6 +241,166 @@ Then response time is less than 200ms
 Then response time is less than @threshold: PRD.035.perf.api.p95_latency
 ```
 
+### 7. Section-Based Structure (Mandatory Format)
+
+**Purpose**: All BDD suites MUST use section-based flat structure at `docs/BDD/` root level. No directory-based or single-file legacy formats permitted.
+
+**Valid Section-Based Patterns** (ONLY 3 patterns):
+
+1. **Section-Only Format**: `BDD-NN.SS_{slug}.feature`
+   - Example: `BDD-02.14_query_result_filtering.feature`
+   - Use for: Standard sections within a suite
+
+2. **Subsection Format**: `BDD-NN.SS.mm_{slug}.feature`
+   - Example: `BDD-02.24.01_quality_performance.feature`
+   - Use when: Section exceeds 500 lines or 12 scenarios
+
+3. **Aggregator Format**: `BDD-NN.SS.00_{slug}.feature`
+   - Example: `BDD-02.12.00_query_graph_traversal.feature`
+   - Use when: Section has 5+ subsections (redirect stub only)
+   - Requirements: `@redirect` tag, 0 scenarios
+
+**Prohibited Patterns** (ERROR if found):
+- ❌ `_partN` suffix (e.g., `BDD-02_query_part1.feature`)
+- ❌ Single-file format (e.g., `BDD-02_knowledge_engine.feature`)
+- ❌ Directory-based structure (e.g., `BDD-02_{slug}/features/`)
+
+**File Organization**:
+```
+docs/BDD/
+├── BDD-02.0_index.md                    # REQUIRED: Suite index
+├── BDD-02.1_ingest.feature              # Section 1
+├── BDD-02.2_query.feature               # Section 2
+├── BDD-02.3_learning.feature            # Section 3
+├── BDD-02.12.00_traversal.feature       # Aggregator (if 5+ subsections)
+├── BDD-02.12.01_depth_first.feature     # Subsection 1
+├── BDD-02.12.02_breadth_first.feature   # Subsection 2
+└── archive/                             # OPTIONAL: Legacy files
+```
+
+**Critical Rules**:
+1. **All `.feature` files at BDD root** (no subdirectories except `archive/`)
+2. **Index file mandatory**: `BDD-NN.0_index.md` for all suites
+3. **Max 500 lines per section file** (soft limit: 400)
+4. **Max 12 scenarios per Feature block**
+5. **Section metadata tags required**: `@section`, `@parent_doc`, `@index`
+
+**Section Split Strategy** (Prioritized):
+1. **Domain/Module Boundaries** (Preferred): Ingest, Query, Learning, Monitoring
+2. **Lifecycle/Phase Management**: Setup, Operation, Teardown, Recovery
+3. **Quality Attributes** (Cross-cutting): Performance, Security, Reliability
+4. **Requirement Groups** (EARS/PRD Alignment): Map EARS sections to BDD sections
+
+**Section File Example**:
+```gherkin
+# Traceability Tags
+@section: 2.14
+@parent_doc: BDD-02
+@index: BDD-02.0_index.md
+@brd:BRD.02.01.03
+@prd:PRD.02.07.02
+@ears:EARS.02.14.01
+
+Feature: BDD-02.14: Query Result Filtering
+  As a data analyst
+  I want filtered query results
+  So that I can focus on relevant data
+
+  Background:
+    Given the system timezone is "America/New_York"
+    And the current time is "09:30:00" in "America/New_York"
+```
+
+**Subsection File Example** (when section >500 lines):
+```gherkin
+# Traceability Tags
+@section: 2.24.01
+@parent_section: 2.24
+@parent_doc: BDD-02
+@index: BDD-02.0_index.md
+@brd:BRD.02.01.03
+@prd:PRD.02.07.02
+@ears:EARS.02.24.01
+
+Feature: BDD-02.24.01: Quality Attribute - Performance
+  As a system administrator
+  I want performance monitoring
+  So that I can ensure system responsiveness
+```
+
+**Aggregator File Example** (redirect stub for 5+ subsections):
+```gherkin
+# Traceability Tags
+@redirect
+@section: 2.12.00
+@parent_doc: BDD-02
+@index: BDD-02.0_index.md
+
+Feature: BDD-02.12: Query Graph Traversal (Aggregator)
+
+  This is a redirect stub. Test scenarios are in subsections:
+  - BDD-02.12.01_depth_first.feature - Depth-first traversal tests
+  - BDD-02.12.02_breadth_first.feature - Breadth-first traversal tests
+  - BDD-02.12.03_bidirectional.feature - Bidirectional search tests
+
+  Background:
+    Given the system timezone is "America/New_York"
+    # No scenarios in aggregator - redirect only
+```
+
+**Index File Template** (`BDD-NN.0_index.md`):
+```markdown
+# BDD-02.0: Knowledge Engine Test Suite Index
+
+## Suite Overview
+**Purpose**: Test scenarios for Knowledge Engine functionality
+**Scope**: Ingest, Query, Learning, Performance Monitoring
+
+## Section File Map
+| Section | File | Scenarios | Lines | Status | Description |
+|---------|------|-----------|-------|--------|-------------|
+| 02.1 | BDD-02.1_ingest.feature | 8 | 350 | Active | Ingest and analysis tests |
+| 02.2 | BDD-02.2_query.feature | 10 | 420 | Active | Query processing tests |
+| 02.3 | BDD-02.3_learning.feature | 7 | 280 | Active | Learning adaptation tests |
+
+## Traceability Matrix
+| BDD Section | Upstream Source | Description |
+|-------------|----------------|-------------|
+| BDD-02.1 | EARS.02.01-05 | Ingest requirements |
+| BDD-02.2 | EARS.02.06-12 | Query requirements |
+```
+
+**Quality Gates**:
+- [ ] Index file exists: `BDD-NN.0_index.md`
+- [ ] All .feature files at `docs/BDD/` root (no subdirectories)
+- [ ] All files match section-based pattern (one of 3 valid patterns)
+- [ ] No file exceeds 500 lines
+- [ ] No Feature block exceeds 12 scenarios
+- [ ] All section files have metadata tags: `@section`, `@parent_doc`, `@index`
+- [ ] Aggregators have `@redirect` tag and 0 scenarios
+- [ ] All quantitative values use `@threshold:` keys
+- [ ] Times include seconds (HH:MM:SS), timezone is America/New_York
+- [ ] NO Markdown tables/prose in .feature files
+
+**Canonical Step Phrases** (for step reuse):
+```gherkin
+Given the current time is "HH:MM:SS" in America/New_York
+And the system timezone is "America/New_York"
+Given the system is in <STATE>
+Given the system is in <PHASE> phase
+When the system attempts to transition to <STATE/PHASE>
+Then the validation result SHALL be <RESULT>
+And error code "<ERROR_CODE>" SHALL be returned
+Then it SHALL complete WITHIN @threshold:PRD.NN.timeout.<key>
+```
+
+**Migration from Legacy Formats**:
+- Use `ai_dev_flow/scripts/migrate_bdd_to_sections.py` for automated migration
+- Archive legacy files in `archive/` directory with `.txt` extension
+- See `ai_dev_flow/BDD/BDD_GENERATION_CHECKLIST.md` for step-by-step guidance
+
+**Reference**: `ai_dev_flow/BDD/BDD_SPLITTING_RULES.md` (authoritative source)
+
 ## Tag Format Convention (By Design)
 
 The SDD framework uses two distinct notation systems for cross-references:
@@ -308,11 +474,19 @@ Read BRD, PRD, and EARS to understand requirements to test.
 
 Check `docs/BDD/` for next available ID number (e.g., BDD-01, BDD-02).
 
-### Step 3: Create BDD Feature File
+### Step 3: Select Structure and Create BDD Suite
 
-**File naming**: `docs/BDD/BDD-NN_{slug}.feature`
+**Structure Selection Criteria**:
+- **Single-File** (<300 lines, <25 scenarios, single domain):
+  - **File naming**: `docs/BDD/BDD-NN_{slug}.feature`
+  - **Example**: `docs/BDD/BDD-01_position_limits.feature`
 
-**Example**: `docs/BDD/BDD-01_position_limits.feature`
+- **Split-File** (≥300 lines, ≥25 scenarios, multiple domains):
+  - **Directory**: `docs/BDD/BDD-NN_{slug}/`
+  - **Required files**: README.md, TRACEABILITY.md, GLOSSARY.md, features/ subdirectory
+  - **Feature files**: `features/BDD-NN_domain.feature`
+  - **Redirect stub**: `docs/BDD/BDD-NN_{slug}.feature` (@redirect tag, 0 scenarios)
+  - **Reference**: See Section 7 for complete split-file structure guidance
 
 ### Step 4: Add Feature Description
 
@@ -382,6 +556,9 @@ Commit BDD feature file and traceability matrix.
 # Gherkin syntax validation
 cucumber --dry-run docs/BDD/BDD-01_limits.feature
 
+# Split-file structure validation (for multi-file suites only)
+./scripts/validate_bdd_split_structure.sh docs/BDD/BDD-NN_slug/
+
 # Tag validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
   --artifact BDD-01 \
@@ -391,6 +568,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ### Manual Checklist
 
+**Single-File Structure**:
 - [ ] Document Control in companion .md file (if created)
 - [ ] Feature description with user story format
 - [ ] Background section (if shared setup needed)
@@ -404,6 +582,20 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 - [ ] Traceability matrix updated
 - [ ] Gherkin syntax valid
 
+**Split-File Structure** (additional checks):
+- [ ] Suite directory created: `docs/BDD/BDD-NN_slug/`
+- [ ] README.md with suite overview and file map
+- [ ] TRACEABILITY.md with cumulative tags and upstream/downstream links
+- [ ] GLOSSARY.md with domain terms, threshold keys, timezone policy
+- [ ] features/ subdirectory created
+- [ ] ALL .feature files in features/ subdirectory (NONE at suite root)
+- [ ] Redirect stub at `docs/BDD/BDD-NN_slug.feature` with @redirect tag and 0 scenarios
+- [ ] Each .feature file <300 lines (soft limit: 250)
+- [ ] Each Feature block ≤12 scenarios
+- [ ] NO Markdown tables/prose in .feature files (moved to companion files)
+- [ ] All quantitative values use @threshold: keys
+- [ ] All times include seconds (HH:MM:SS), timezone is America/New_York
+
 ### Diagram Standards
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
 See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
@@ -415,6 +607,12 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 3. **Vague steps**: Use specific, testable assertions
 4. **Missing cumulative tags**: Layer 4 must include Layers 1-3 tags
 5. **No traceability**: Each scenario must link to upstream requirement
+6. **Incorrect split-file structure**:
+   - ❌ .feature files at suite root level (should be in features/ subdirectory)
+   - ❌ Missing redirect stub at docs/BDD/BDD-NN_slug.feature
+   - ❌ Missing companion files (README.md, TRACEABILITY.md, GLOSSARY.md)
+   - ❌ Files exceeding 300 lines (split into smaller domain-focused files)
+   - ❌ Markdown tables/prose in .feature files (move to companion files)
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
 
@@ -499,14 +697,16 @@ For supplementary documentation related to BDD artifacts:
 - **Schema**: `ai_dev_flow/BDD/BDD_SCHEMA.yaml` (machine-readable validation)
 - **BDD Creation Rules**: `ai_dev_flow/BDD/BDD_CREATION_RULES.md`
 - **BDD Validation Rules**: `ai_dev_flow/BDD/BDD_VALIDATION_RULES.md`
+- **BDD Splitting Rules**: `ai_dev_flow/BDD/BDD_SPLITTING_RULES.md` (split-file structure authority)
 - **BDD README**: `ai_dev_flow/BDD/README.md`
 - **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
-**Section Templates** (for documents >25K tokens):
+**Section Templates** (for companion .md files >25K tokens):
 - Index template: `ai_dev_flow/BDD/BDD-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_flow/BDD/BDD-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- Note: Section templates are for splitting large companion .md documentation, not .feature files (use domain-based split for .feature files)
 
 ## Quick Reference
 
@@ -517,6 +717,17 @@ For supplementary documentation related to BDD artifacts:
 **Tags Required**: @brd, @prd, @ears (3 tags)
 
 **Format**: Gherkin Given-When-Then
+
+**Structure Selection**:
+- **Single-File**: <300 lines, <25 scenarios, single domain → `docs/BDD/BDD-NN_slug.feature`
+- **Split-File**: ≥300 lines, ≥25 scenarios, multiple domains → `docs/BDD/BDD-NN_slug/features/`
+
+**Split-File Critical Rules**:
+- ALL .feature files in `features/` subdirectory (NONE at suite root)
+- Redirect stub at `docs/BDD/BDD-NN_slug.feature` (@redirect tag, 0 scenarios)
+- Required companion files: README.md, TRACEABILITY.md, GLOSSARY.md
+- Max 300 lines per file (soft: 250), max 12 scenarios per Feature block
+- Reference: Section 7, BDD_SPLITTING_RULES.md
 
 **ADR-Ready Score**: ≥90% required for "Approved" status
 

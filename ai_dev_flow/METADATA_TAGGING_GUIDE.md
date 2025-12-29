@@ -176,7 +176,7 @@ AI assistants automatically validate:
 **User Creates New Document:**
 ```markdown
 ---
-title: "BRD-030: Payment Routing Agent"
+title: "BRD-30: Payment Routing Agent"
 tags:
   - feature-brd
   - ai-agent-primary
@@ -505,8 +505,8 @@ This document provides objective comparison between:
 
 | Tag | Purpose | Document Types |
 |-----|---------|----------------|
-| `feature-brd` | Feature-specific BRD | BRD-006 through BRD-029 |
-| `platform-brd` | Platform/foundation BRD | BRD-01 through BRD-005 |
+| `feature-brd` | Feature-specific BRD | BRD-06 through BRD-29 |
+| `platform-brd` | Platform/foundation BRD | BRD-01 through BRD-05 |
 | `architecture-adr` | Architecture decision | ADR-XXX |
 | `product-requirements` | Product specs | PRD-XXX |
 | `technical-spec` | Implementation specs | SPEC-XXX |
@@ -565,26 +565,26 @@ Domain-specific tags for categorization:
 
 Primary and fallback implementations must cross-reference each other:
 
-**Primary Document (BRD-022):**
+**Primary Document (BRD-22):**
 ```yaml
 custom_fields:
-  fallback_reference: BRD-016
+  fallback_reference: BRD-16
 ```
 
-**Fallback Document (BRD-016):**
+**Fallback Document (BRD-16):**
 ```yaml
 custom_fields:
-  primary_alternative: BRD-022_fraud_detection_agent_ml_based_risk
+  primary_alternative: BRD-22_fraud_detection_agent_ml_based_risk
 ```
 
 ### 7.2 Reference Format
 
 **In Metadata:**
-- Use document ID only: `BRD-016`
-- Or full filename without extension: `BRD-022_fraud_detection_agent_ml_based_risk`
+- Use document ID only: `BRD-16`
+- Or full filename without extension: `BRD-22_fraud_detection_agent_ml_based_risk`
 
 **In Admonitions:**
-- Use full markdown link: `[@brd: BRD-022](./BRD-022_fraud_detection_agent_ml_based_risk.md)`
+- Example (not an active link): `[@brd: BRD-NN] (./BRD-NN_example.md)`
 
 **In Document Body:**
 - Use tag notation: `@brd: BRD.22.01.01`, `@adr: ADR-02`
@@ -601,7 +601,7 @@ The SDD framework uses two distinct notation systems for cross-references, each 
 **Key Distinction**:
 
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
+- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-17.md`
 
 **Why Two Systems?**
 
@@ -732,7 +732,7 @@ Before committing documents with metadata:
 - [ ] Bidirectional cross-references correct (primary ↔ fallback)
 - [ ] Tags follow taxonomy standards
 - [ ] Agent IDs unique (for AI Agent documents)
-- [ ] Custom admonitions present on key documents (BRD-022, BRD-016)
+- [ ] Custom admonitions present on key documents (BRD-22, BRD-16)
 - [ ] Development status accurate
 - [ ] Document ID in frontmatter matches filename
 
@@ -852,7 +852,7 @@ echo "✅ Metadata validation passed"
 #!/bin/bash
 # scripts/bulk_add_metadata.sh
 
-# Add metadata to all AI Agent BRDs (BRD-022 to BRD-029)
+# Add metadata to all AI Agent BRDs (BRD-22 to BRD-29)
 for i in {022..029}; do
   file="docs/BRD/BRD-${i}_*.md"
   if [ -f $file ]; then
@@ -893,7 +893,7 @@ done
 - Solution: Use lowercase with hyphens consistently
 
 **Pitfall 2: Missing Bidirectional References**
-- Problem: BRD-022 references BRD-016, but BRD-016 doesn't reference BRD-022
+- Problem: BRD-22 references BRD-16, but BRD-16 doesn't reference BRD-22
 - Solution: Always add both directions when creating pairs
 
 **Pitfall 3: Invalid YAML Syntax**
@@ -912,7 +912,7 @@ done
 
 ```markdown
 ---
-title: "BRD-022: Fraud Detection Agent (ML-based Risk)"
+title: "BRD-22: Fraud Detection Agent (ML-based Risk)"
 tags:
   - feature-brd
   - ai-agent-primary
@@ -923,10 +923,10 @@ custom_fields:
   priority: primary
   development_status: active
   agent_id: AGENT-001
-  fallback_reference: BRD-016
+  fallback_reference: BRD-16
 ---
 
-# BRD-022: Fraud Detection Agent (ML-based Risk)
+# BRD-22: Fraud Detection Agent (ML-based Risk)
 
 :::recommended Primary Implementation (AI Agent-Based)
 **Architecture**: AI Agent-Based Platform (@adr: ADR-02)
@@ -934,7 +934,7 @@ custom_fields:
 **Status**: Active development
 **Agent ID**: AGENT-001
 
-**Fallback Alternative**: If AI/ML capabilities not available, see [@brd: BRD-016](./BRD-016_fraud_detection_risk_screening.md) for traditional implementation.
+**Fallback Alternative**: If AI/ML capabilities not available, see [@brd: BRD-16](./BRD-16_fraud_detection_risk_screening.md) for traditional implementation.
 
 **Advantages of AI Agent Approach**:
 - Adaptive ML-based fraud detection (vs static rules)
@@ -951,7 +951,7 @@ custom_fields:
 
 ```markdown
 ---
-title: "BRD-016: Fraud Detection & Risk Screening (Traditional)"
+title: "BRD-16: Fraud Detection & Risk Screening (Traditional)"
 tags:
   - feature-brd
   - traditional-fallback
@@ -961,17 +961,17 @@ custom_fields:
   architecture_approach: traditional-8layer
   priority: fallback
   development_status: reference
-  primary_alternative: BRD-022_fraud_detection_agent_ml_based_risk
+  primary_alternative: BRD-22_fraud_detection_agent_ml_based_risk
 ---
 
-# BRD-016: Fraud Detection & Risk Screening
+# BRD-16: Fraud Detection & Risk Screening
 
 :::fallback Fallback Implementation (Traditional 8-Layer)
 **Architecture**: Traditional 8-Layer Platform (@adr: ADR-01)
 **Priority**: ⚠️ Fallback option (use only if AI approach not viable)
 **Status**: Reference implementation
 
-**Recommended Alternative**: [@brd: BRD-022 - Fraud Detection Agent](./BRD-022_fraud_detection_agent_ml_based_risk.md) (AI-powered, preferred approach)
+**Recommended Alternative**: [@brd: BRD-22 - Fraud Detection Agent](./BRD-22_fraud_detection_agent_ml_based_risk.md) (AI-powered, preferred approach)
 
 **Use This Approach If**:
 - AI/ML expertise not available on team
@@ -980,7 +980,7 @@ custom_fields:
 - Risk-averse stakeholders require proven patterns
 :::
 
-**Document ID**: BRD-016
+**Document ID**: BRD-16
 [rest of document]
 ```
 
@@ -1021,7 +1021,7 @@ When instructing AI assistants (Claude, Gemini, Copilot) to create or update doc
 Explicitly specify metadata fields:
 
 ```
-Create BRD-030: Payment Routing Agent using AI-agent metadata:
+Create BRD-30: Payment Routing Agent using AI-agent metadata:
 - priority: primary
 - agent_id: AGENT-009
 - architecture_approach: ai-agent-based
@@ -1033,7 +1033,7 @@ Create BRD-030: Payment Routing Agent using AI-agent metadata:
 **AI Assistant Will Apply:**
 ```yaml
 ---
-title: "BRD-030: Payment Routing Agent"
+title: "BRD-30: Payment Routing Agent"
 tags:
   - feature-brd
   - ai-agent-primary
@@ -1085,10 +1085,10 @@ custom_fields:
 Specify exact YAML structure in prompt:
 
 ```
-Create BRD-030 with this metadata:
+Create BRD-30 with this metadata:
 
 ---
-title: "BRD-030: Payment Routing Agent (Intelligent Optimization)"
+title: "BRD-30: Payment Routing Agent (Intelligent Optimization)"
 tags:
   - feature-brd
   - ai-agent-primary
@@ -1111,7 +1111,7 @@ Point to specific template from this guide:
 
 ```
 Use the "Primary (AI Agent) BRD" metadata template (section 4.1)
-for BRD-030: Payment Routing Agent
+for BRD-30: Payment Routing Agent
 ```
 
 AI assistant will look up template and apply appropriate metadata.
@@ -1121,13 +1121,13 @@ AI assistant will look up template and apply appropriate metadata.
 Define relationships to other documents:
 
 ```
-Create BRD-030 as the AI-agent version with BRD-018 as its
+Create BRD-30 as the AI-agent version with BRD-18 as its
 traditional fallback alternative.
 ```
 
 **AI Assistant Adds Bidirectional References:**
-- BRD-030 (primary): `fallback_reference: BRD-018`
-- BRD-018 (fallback): `primary_alternative: BRD-030_payment_routing_agent`
+- BRD-30 (primary): `fallback_reference: BRD-18`
+- BRD-18 (fallback): `primary_alternative: BRD-30_payment_routing_agent`
 
 #### Method 6: Describe Document Characteristics
 
@@ -1151,12 +1151,12 @@ AI assistant translates to appropriate metadata tags.
 For multiple documents at once:
 
 ```
-Apply AI-agent metadata to BRDs from BRD-030 to BRD-035:
+Apply AI-agent metadata to BRDs from BRD-30 to BRD-35:
 - Use primary priority
 - Agent IDs: AGENT-009 through AGENT-014
 - All are transaction-processing category
 - All active development status
-- BRD-030 links to BRD-018 (fallback)
+- BRD-30 links to BRD-18 (fallback)
 - Others have no fallback
 ```
 
@@ -1165,9 +1165,9 @@ Apply AI-agent metadata to BRDs from BRD-030 to BRD-035:
 For modifying existing documents:
 
 ```
-Update BRD-025 metadata:
+Update BRD-25 metadata:
 - Change development_status from "planned" to "active"
-- Add fallback_reference: BRD-020
+- Add fallback_reference: BRD-20
 - Update the recommended admonition to reflect active status
 ```
 
@@ -1250,7 +1250,7 @@ custom_fields:
 
 **Prompt:**
 ```
-Create traditional fallback version of BRD-030 (reference implementation status)
+Create traditional fallback version of BRD-30 (reference implementation status)
 ```
 
 **Applied Metadata:**
@@ -1264,7 +1264,7 @@ custom_fields:
   architecture_approach: traditional-8layer
   priority: fallback
   development_status: reference
-  primary_alternative: BRD-030_payment_routing_agent
+  primary_alternative: BRD-30_payment_routing_agent
 ```
 
 #### Pattern 3: Shared Platform Requirement
@@ -1293,9 +1293,9 @@ custom_fields:
 
 **Prompt:**
 ```
-Update BRD-025:
+Update BRD-25:
 - Change development_status to "active"
-- Add fallback_reference: BRD-020
+- Add fallback_reference: BRD-20
 - Update admonition to reflect active development
 ```
 
@@ -1308,7 +1308,7 @@ custom_fields:
 # After
 custom_fields:
   development_status: active
-  fallback_reference: BRD-020
+  fallback_reference: BRD-20
 ```
 
 ### 13.5 Template Reference Shortcuts
@@ -1325,7 +1325,7 @@ You can reference templates from section 4 directly in prompts:
 
 **Example:**
 ```
-Create BRD-031 using the Primary AI Agent BRD template from section 4.1
+Create BRD-31 using the Primary AI Agent BRD template from section 4.1
 ```
 
 ### 13.6 Validation in Prompts
@@ -1333,7 +1333,7 @@ Create BRD-031 using the Primary AI Agent BRD template from section 4.1
 You can request validation in your prompt:
 
 ```
-Create BRD-030 as AI-agent primary (AGENT-009) and validate:
+Create BRD-30 as AI-agent primary (AGENT-009) and validate:
 - Agent ID uniqueness
 - Bidirectional references if fallback exists
 - YAML syntax correctness
@@ -1382,13 +1382,13 @@ Create AI-agent BRD for fraud detection (AGENT-011, active)
 
 **❌ Incomplete Cross-Reference:**
 ```
-Create BRD-030 with a fallback version
+Create BRD-30 with a fallback version
 ```
 *Problem: Fallback version not identified*
 
 **✅ Complete Cross-Reference:**
 ```
-Create BRD-030 (AI-agent primary) with BRD-018 as traditional fallback
+Create BRD-30 (AI-agent primary) with BRD-18 as traditional fallback
 ```
 
 ### 13.9 Examples: Complete Prompt Workflows
@@ -1397,7 +1397,7 @@ Create BRD-030 (AI-agent primary) with BRD-018 as traditional fallback
 
 **Prompt:**
 ```
-Create BRD-031: Risk Scoring Agent (Real-time Assessment)
+Create BRD-31: Risk Scoring Agent (Real-time Assessment)
 
 Metadata requirements:
 - AI-agent primary implementation
@@ -1426,15 +1426,15 @@ Content requirements:
 ```
 Create document pair for customer onboarding:
 
-1. BRD-032: Customer Onboarding Agent (AI-agent primary, AGENT-011, active)
-2. BRD-033: Customer Onboarding Workflow (traditional fallback, reference)
+1. BRD-32: Customer Onboarding Agent (AI-agent primary, AGENT-011, active)
+2. BRD-33: Customer Onboarding Workflow (traditional fallback, reference)
 
 Establish bidirectional cross-references between them.
 ```
 
 **AI Assistant Creates:**
-- BRD-032 with `fallback_reference: BRD-033`
-- BRD-033 with `primary_alternative: BRD-032_customer_onboarding_agent`
+- BRD-32 with `fallback_reference: BRD-33`
+- BRD-33 with `primary_alternative: BRD-32_customer_onboarding_agent`
 - Appropriate admonitions on both documents
 - Validates cross-references are correct
 
@@ -1442,7 +1442,7 @@ Establish bidirectional cross-references between them.
 
 **Prompt:**
 ```
-Update all BRDs from BRD-022 to BRD-029:
+Update all BRDs from BRD-22 to BRD-29:
 - Change development_status from "planned" to "active"
 - Ensure all have recommended admonitions
 - Validate all agent IDs are unique

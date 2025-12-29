@@ -497,7 +497,7 @@ The REQ validation script (`validate_req_template_v3.sh`) performs **18 validati
 **Invalid Examples**:
 ```markdown
 @brd BRD.09.01.15 ❌ (missing colon after tag type)
-@brd: BRD-009 ❌ (missing element ID)
+@brd: BRD-09 ❌ (missing element ID)
 brd: BRD.09.01.15 ❌ (missing @ prefix)
 ```
 
@@ -931,4 +931,4 @@ Warnings: 1
 **Related Documents**:
 - [REQ-TEMPLATE.md](REQ-TEMPLATE.md) - Current template (v3.0)
 - [README.md](README.md) - REQ directory guide with creation steps
-- [archived/REQ-TEMPLATE-UNIFIED-ARCHIVED.md](archived/REQ-TEMPLATE-UNIFIED-ARCHIVED.md) - Archived template (v3.0.2)
+- [<!-- VALIDATOR:IGNORE-LINKS-START -->archived/REQ-TEMPLATE-UNIFIED-ARCHIVED.md<!-- VALIDATOR:IGNORE-LINKS-END -->](<!-- VALIDATOR:IGNORE-LINKS-START -->archived/REQ-TEMPLATE-UNIFIED-ARCHIVED.md<!-- VALIDATOR:IGNORE-LINKS-END -->) - Archived template (v3.0.2)

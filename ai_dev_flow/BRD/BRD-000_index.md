@@ -39,7 +39,7 @@ Templates
 
 Validation Tools
 
-- [validate_brd_template.sh](../../scripts/validate_brd_template.sh): Pre-commit validation script for BRD documents (12 validation checks)
+- validate_brd_template.sh (../../scripts/validate_brd_template.sh): Pre-commit validation script for BRD documents (example)
 
 Documents
 

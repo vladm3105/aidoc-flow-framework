@@ -15,6 +15,8 @@ custom_fields:
 
 Architecture Decision Records (ADRs) document significant architectural decisions, their context, consequences, and the rationale for choosing one approach over alternatives. ADRs create a historical record of how and why architectural choices were made, enabling teams to understand design decisions years later and avoid repeating past mistakes.
 
+Note: `ADR-TEMPLATE.md` is a reference template. For real ADRs, prefer sectioned docs using `ADR-SECTION-0-TEMPLATE.md` and `ADR-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`.
+
 ## Purpose
 
 ADRs serve as the **architectural foundation** that:
@@ -131,7 +133,7 @@ Requirements (PRD/EARS) → BDD Scenarios ← ADR Decision → SYS/SPEC/Implemen
 ```text
 1. PRD-NN.md (Product Requirements)     ← Foundation documents
 2. EARS-NN.md (Technical Requirements)  ← Prerequisite - provides atomic requirements
-3. BDD-NN.feature (Behavior Scenarios)  ← Prerequisite - defines expected behaviors
+3. `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` (Behavior Scenarios)  ← Prerequisite - defines expected behaviors
 4. ADR-NN.md (Architecture Decision)    ← Created from steps 1-3
 5. SYS-NN.md (System Requirements)      ← Uses ADR decisions as constraints
 6. REQ-NN.md (Atomic Requirements)      ← Implements ADR at granular level
@@ -173,7 +175,7 @@ ADRs have different relationships with Platform BRDs versus Feature BRDs:
 - Typically created together at project inception
 
 **Feature BRDs → Feature-Specific ADRs**:
-- Feature BRDs (e.g., BRD-006 B2C KYC Onboarding) drive architectural decisions for specific features
+- Feature BRDs (e.g., BRD-06 B2C KYC Onboarding) drive architectural decisions for specific features
 - Feature ADRs build upon foundation established by Platform BRDs and Foundation ADRs
 - Address feature-specific architectural concerns (e.g., API design, data models, integration patterns)
 - Reference Foundation ADRs for technology stack and infrastructure decisions
@@ -201,7 +203,7 @@ All ADRs include mandatory traceability linking to upstream and downstream artif
 
 @PRD:[PRD-NN](../PRD/PRD-NN_descriptive_title.md)
 @EARS:[EARS-NN](../EARS/EARS-NN_descriptive_title.md)
-@bdd:[BDD-NN:scenarios](../bdd/BDD-NN_descriptive_title.feature#scenarios)
+@bdd:[BDD-NN.SS:scenarios](../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
 
 @SYS:[SYS-NN](../SYS/SYS-NN_descriptive_title.md)
 @requirement:[REQ-NN](../REQ/infrastructure/REQ-NN_descriptive_title.md#REQ-NN)
@@ -706,7 +708,7 @@ Every ADR should include traceability tags in the header:
 
 @PRD:[PRD-01](../PRD/PRD-01_serverless_deployment.md)
 @EARS:[EARS-01](../EARS/EARS-01_infrastructure_requirements.md)
-@bdd:[BDD-01:scenarios](../bdd/BDD-01_gcp_cloud_run_deployment.feature#scenarios)
+@bdd:[BDD-01.1:scenarios](../BDD/BDD-01_gcp_cloud_run/BDD-01.1_gcp_cloud_run_deployment.feature#scenarios)
 ```
 
 #### Documenting Upstream Sources in PART 4
@@ -727,7 +729,7 @@ The "Upstream Sources" section in PART 4 details what requirements drove the dec
   performance SLOs (p95 <100ms latency), cost optimization (<$110/month per agent group)
 
 **BDD Scenarios**: 
-- [BDD-01 - GCP Cloud Run Deployment](../bdd/BDD-01_gcp_cloud_run_deployment.feature): 
+- [BDD-01 - GCP Cloud Run Deployment](../BDD/BDD-01_gcp_cloud_run/BDD-01.1_gcp_cloud_run_deployment.feature): 
   Provides behavior scenarios for container deployment, auto-scaling events, 
   multi-zone failover procedures, and scheduled scaling
 ```
@@ -915,7 +917,7 @@ Document your ADR's relationship to other project artifacts:
 **Upstream Requirements Documentation:**
 - [PRD-01: Product Requirements - Serverless Deployment](../PRD/PRD-01_serverless_deployment.md): Business requirements for multi-agent deployment
 - [EARS-01: Engineering Requirements - Infrastructure](../EARS/EARS-01_infrastructure_requirements.md): Atomic technical requirements for container management
-- [BDD-01: Behavior-Driven Tests - GCP Cloud Run](../bdd/BDD-01_gcp_cloud_run_deployment.feature): Executable scenarios for deployment behavior
+- [BDD-01: Behavior-Driven Tests - GCP Cloud Run](../BDD/BDD-01_gcp_cloud_run/BDD-01.1_gcp_cloud_run_deployment.feature): Executable scenarios for deployment behavior
 
 **Related ADRs:**
 - [ADR-NN: Networking Architecture](./ADR-NN_networking_architecture.md): VPC and Load Balancer prerequisite
@@ -1081,3 +1083,16 @@ See `{project_root}/docs/ADR/ADR-000_technology_stack.md` for a comprehensive re
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md): Document ID allocation and naming conventions
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md): Complete SDD workflow overview
 - [TRACEABILITY.md](../TRACEABILITY.md): Cross-document traceability standards
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If a file approaches/exceeds limits, split into section files using `ADR-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
+
+## Document Splitting Standard
+
+When ADRs become lengthy or cover multiple decisions/sub-decisions:
+- Ensure `ADR-{NN}.0_index.md` exists and contains a section map
+- Create `ADR-{NN}.{S}_{section_slug}.md` from `ADR-SECTION-TEMPLATE.md` (see `../DOCUMENT_SPLITTING_RULES.md` for numbering and required front‑matter)
+- Keep Prev/Next navigation, update links and impacts to related artifacts
+- Validate links and size; keep decision history/appendices coherent across sections

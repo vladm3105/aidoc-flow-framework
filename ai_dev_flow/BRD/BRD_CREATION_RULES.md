@@ -33,9 +33,13 @@ custom_fields:
 
 ---
 
-## Design Decision: No BRD_SCHEMA.yaml
+> Note: Examples in this guide are domain-agnostic. Replace any placeholder providers, regions, currencies, or regulatory bodies with those appropriate for your project. Avoid assuming a specific industry (e.g., finance, trading) in your BRDs.
 
-> **Intentional Design Choice**: BRD artifacts do NOT have a schema file (`BRD_SCHEMA.yaml`).
+---
+
+## Design Decision: Optional BRD_SCHEMA.yaml (Human-Centric Validation)
+
+> **Intentional Design Choice**: BRD validation is script-first and human-centric. An optional `BRD_SCHEMA.yaml` exists for non-blocking, machine-readable checks.
 >
 > **Rationale**:
 > - **Business Flexibility**: Layer 1 artifacts capture diverse business needs across domains (financial, healthcare, SaaS, IoT) - rigid schema validation would constrain legitimate business expression
@@ -43,12 +47,12 @@ custom_fields:
 > - **Human-Centric Validation**: Business requirements require human judgment for quality assessment rather than automated schema validation
 > - **Sufficient Guidance**: This document (`BRD_CREATION_RULES.md`) and `BRD_VALIDATION_RULES.md` provide comprehensive guidance without rigid constraints
 >
-> **Validation Approach**: Use `scripts/validate_brd_template.sh` for structural validation while allowing content flexibility.
+> **Validation Approach**: Use `scripts/validate_brd_template.sh` for structural validation while allowing content flexibility. Use the optional schema only for advisory checks.
 >
 > **Comparison with Other Layers**:
 > | Layer | Artifact | Schema File | Rationale |
 > |-------|----------|-------------|-----------|
-> | Layer 1 | BRD | None | Business flexibility, human-centric validation |
+> | Layer 1 | BRD | Optional | Business flexibility, human-centric validation |
 > | Layer 2 | PRD | PRD_SCHEMA.yaml | Product specifications benefit from consistent structure |
 > | Layer 3+ | EARS, REQ, etc. | *_SCHEMA.yaml | Technical artifacts require strict validation |
 
@@ -154,22 +158,22 @@ See section 5.6 below for detailed guidance on the simplified user stories appro
 | Paragraph | Required Quantitative Element | Example |
 |-----------|------------------------------|---------|
 | Business Context | Market size, volume, or gap | "$XX billion market", "X million potential customers", "Y% market gap" |
-| Solution Overview | Capability scope with numbers | "X corridors", "Y transaction types", "Z user segments" |
+| Solution Overview | Capability scope with numbers | "X regions", "Y transaction types", "Z user segments" |
 | Business Impact | Measurable outcome targets | "X% cost reduction", "$Y revenue opportunity", "Z% efficiency gain" |
 
-**Example Executive Summary** (from BRD-009):
+**Example Executive Summary** (from BRD-09):
 
 > **Paragraph 1 (Business Context)**:
-> The US-Uzbekistan remittance corridor represents a $2.1 billion annual market with approximately 350,000 Uzbek diaspora in the United States sending an average of $500 per month to family members. Current solutions charge 5-8% all-in fees with delivery times of 24-48 hours.
+> The target market segment represents a [sizeable] annual opportunity with approximately [X] prospective customers sending an average of [Y] per [period]. Current solutions cost [A-B]% with delivery times of [time range].
 >
 > **Paragraph 2 (Solution Overview)**:
-> BeeLocal enables US-based customers to send money to Uzbekistan recipients within 15 minutes at an all-in cost of approximately 3.5% ($3.00 flat fee + 1.5% FX spread). The solution leverages Bridge custody for wallet funding, real-time FX conversion, and Paynet delivery network for instant recipient payouts.
+> Our solution enables customers to complete transactions within [target time] at an all-in cost of approximately [Z]% ([fee] flat fee + [margin]% conversion margin). The solution leverages external providers for funding, conversion, and delivery to achieve reliable outcomes.
 >
 > **Paragraph 3 (Business Impact)**:
 > Initial launch targets 10,000 monthly active users within 6 months, representing $5M monthly transaction volume. At 3.5% effective margin, this generates $175K monthly gross revenue. Customer acquisition cost target is <$50, enabling payback within 3 transactions per customer.
 
 **Anti-Patterns (Avoid)**:
-- ❌ "BeeLocal will provide a fast and affordable way to send money" - No quantitative measures
+- ❌ "[Company] will provide a fast and affordable way to send money" - No quantitative measures
 - ❌ "The solution will significantly improve the customer experience" - Subjective, not measurable
 - ❌ "We expect strong market adoption" - No specific targets
 
@@ -336,11 +340,11 @@ When performing major FR structure refactoring, use this template in Document Re
 When performing major refactoring (version X.0), document the transformation:
 
 1. **Create Backup**: Save original BRD version with `.backup` suffix before refactoring
-   - Example: `BRD-009_remittance_transaction_us_to_uzbekistan.md.backup_v1.0`
+   - Example: `BRD-09_transaction_workflow_regionA_to_regionB.md.backup_v1.0`
 
 2. **Document in CHANGELOG.md** (or work plan):
    ```markdown
-   ## BRD-009 v2.0 Major Refactoring (2024-11-24)
+   ## BRD-09 v2.0 Major Refactoring (2024-11-24)
 
    **PRD-Ready Score Improvement**: 65/100 → 95/100
 
@@ -352,8 +356,8 @@ When performing major refactoring (version X.0), document the transformation:
 
    **Content Additions**:
    - Added Complexity ratings (1/5 to 5/5) to all 12 FRs with business-level rationale
-   - Added Related Requirements cross-references to Platform BRDs (BRD-01 through BRD-005)
-   - Added Business Rules subsections with regulatory constraints (OFAC, FinCEN)
+   - Added Related Requirements cross-references to Platform BRDs (BRD-01 through BRD-05)
+   - Added Business Rules subsections with regulatory constraints (sanctions, applicable regulatory frameworks)
 
    **Validation**:
    - All FRs now have 6 required subsections (Business Capability, Business Requirements, Business Rules, Business Acceptance Criteria, Related Requirements, Complexity)
@@ -380,18 +384,18 @@ When performing major refactoring (version X.0), document the transformation:
    ```markdown
    ### BRD.NN.005: Customer-Initiated Cross-Border Transaction
 
-   **Business Capability**: Enable customers to initiate remittance transactions to Uzbekistan recipients with selected funding source
+   **Business Capability**: Enable customers to initiate transactions to recipients with selected funding source
 
    **Business Requirements**:
-   - Customer selects amount ($1 minimum), recipient, and funding source (ACH/card/wallet)
+   - Customer selects amount, recipient, and funding source (bank transfer/card/wallet)
    - System validates customer identity (KYC status), transaction limits (daily/monthly), recipient status (active)
    - Customer receives immediate transaction confirmation with estimated delivery time
 
    **Business Rules**:
    - Minimum transaction: $1.00 USD
    - Maximum transaction: $10,000 per transaction, $50,000 per rolling 30 days (FinCEN MSB limits)
-   - Customer must have completed KYC (BRD-006 B2C onboarding)
-   - Recipient must be pre-validated (BRD-011 recipient management)
+   - Customer must have completed KYC (BRD-06 B2C onboarding)
+   - Recipient must be pre-validated (BRD-11 recipient management)
 
    **Business Acceptance Criteria**:
    - 95% of valid transactions complete initiation in <5 seconds
@@ -400,16 +404,16 @@ When performing major refactoring (version X.0), document the transformation:
 
    **Related Requirements**:
    - Platform BRDs: BRD-01 (Architecture), BRD-02 (Partner Ecosystem), BRD-03 (Compliance)
-   - Feature BRDs: BRD-006 (KYC Onboarding), BRD-008 (Wallet Funding), BRD-011 (Recipient Management)
+   - Feature BRDs: BRD-NN (Feature Example A), BRD-NN (Feature Example B), BRD-NN (Feature Example C)
 
-   **Complexity**: 3/5 (Three partner integrations (Bridge custody, Plaid/Stripe funding, Sardine compliance); FinCEN transaction monitoring requirements; references BRD-01, BRD-02, BRD-03, BRD-006, BRD-008, BRD-011)
+   **Complexity**: 3/5 (Three partner integrations ([Custody Provider], [Funding Provider], [Compliance Provider]); regulatory monitoring requirements; references BRD-01, BRD-02, BRD-03, BRD-06, BRD-08, BRD-11)
    ```
 
 **Refactoring Workflow Summary**:
 1. Assess current PRD-Ready Score (should be <90/100 to justify refactoring)
 2. Create backup of current version (`.backup_vX.Y` suffix)
 3. Increment to next major version (1.0 → 2.0)
-4. Transform FRs using 4-subsection structure (see BRD-TEMPLATE.md section 5.2)
+4. Transform FRs using 4-subsection structure (see BRD-TEMPLATE.md section 6.2)
 5. Remove PRD-level content per Appendix B exclusion rules
 6. Add Complexity ratings and Related Requirements
 7. Document changes in Revision History with "Major Refactoring" label
@@ -417,7 +421,7 @@ When performing major refactoring (version X.0), document the transformation:
 9. Validate new PRD-Ready Score (target ≥90/100)
 10. Submit for review/approval
 
-**Reference**: See BRD-009 v2.0 refactoring as gold standard example (65/100 → 100/100 improvement).
+**Reference**: See BRD-09 v2.0 refactoring as gold standard example (65/100 → 100/100 improvement).
 
 ---
 
@@ -475,12 +479,12 @@ When performing major refactoring (version X.0), document the transformation:
 3. **Measurement Method**: How the metric will be collected (system logs, surveys, manual counts)
 4. **Success Criteria**: Clear pass/fail threshold for the objective
 
-**Example Baseline Table** (from BRD-009):
+**Example Baseline Table** (from BRD-09):
 
 | Objective | Current State (Baseline) | Target State | Measurement Method | Success Criteria |
 |-----------|-------------------------|--------------|-------------------|------------------|
-| Transaction delivery time | N/A - new corridor | <15 minutes for 95% of transactions | System timestamp tracking | 95th percentile ≤15 min |
-| Transaction success rate | N/A - new corridor | ≥98% first-attempt success | Transaction status logs | Monthly success rate ≥98% |
+| Transaction delivery time | N/A - new region | <15 minutes for 95% of transactions | System timestamp tracking | 95th percentile ≤15 min |
+| Transaction success rate | N/A - new region | ≥98% first-attempt success | Transaction status logs | Monthly success rate ≥98% |
 | Customer acquisition cost | Industry avg: $75/customer | <$50/customer | Marketing spend / new customers | CAC <$50 within 6 months |
 | All-in cost competitiveness | Competitors: 5-8% | ≤3.5% total cost | Fee + FX spread analysis | All-in cost ≤3.5% |
 
@@ -502,7 +506,7 @@ When performing major refactoring (version X.0), document the transformation:
 **Business Objectives With Baselines**:
 - ✅ "Reduce transaction delivery time from industry average 24-48 hours to <15 minutes for 95% of transactions"
 - ✅ "Achieve customer acquisition cost <$50/customer vs industry average $75"
-- ✅ "Deliver 98% first-attempt transaction success rate (no baseline - new corridor)"
+- ✅ "Deliver 98% first-attempt transaction success rate (no baseline - new region)"
 
 ---
 
@@ -538,7 +542,7 @@ When performing major refactoring (version X.0), document the transformation:
 - Minimal cross-BRD dependencies (≤1 Platform BRD reference)
 - Single business process state
 
-**Example - Recipient Selection (BRD-011)**:
+**Example - Recipient Selection (BRD-11)**:
 ```markdown
 **Complexity**: 1/5 (Simple recipient selection from existing saved list; no partner integration required; single-state operation)
 ```
@@ -547,7 +551,7 @@ When performing major refactoring (version X.0), document the transformation:
 - Partners: 0 (internal database query only)
 - Regulatory: None
 - Constraints: Basic validation only
-- Dependencies: BRD-004 (Data Model)
+- Dependencies: BRD-04 (Data Model)
 - Process: Single-state lookup
 
 ---
@@ -561,7 +565,7 @@ When performing major refactoring (version X.0), document the transformation:
 - 2-3 Platform BRD dependencies
 - Sequential 2-3 state process
 
-**Example - Email Notification Delivery (BRD-018)**:
+**Example - Email Notification Delivery (BRD-18)**:
 ```markdown
 **Complexity**: 2/5 (Two notification partners (SendGrid, Twilio); basic template management; standard retry policies; references BRD-02 partner ecosystem)
 ```
@@ -584,16 +588,16 @@ When performing major refactoring (version X.0), document the transformation:
 - 3-4 Platform BRD dependencies
 - Multi-state process with conditional branching
 
-**Example - AI-Powered Risk Scoring (BRD-022)**:
+**Example - AI-Powered Risk Scoring (BRD-22)**:
 ```markdown
-**Complexity**: 3/5 (ML-based fraud detection with Sardine + Unit21 integration; AML compliance requirements; multi-tier risk thresholds; references BRD-03, BRD-005, BRD-016)
+**Complexity**: 3/5 (ML-based fraud detection with Sardine + Unit21 integration; AML compliance requirements; multi-tier risk thresholds; references BRD-03, BRD-05, BRD-16)
 ```
 
 **Business Factors**:
 - Partners: 3 (Sardine risk API, Unit21 case management, internal ML model)
 - Regulatory: AML/CFT transaction monitoring requirements
 - Constraints: <3 second screening SLA for 95% of transactions
-- Dependencies: BRD-03 (Compliance), BRD-005 (AI/ML Architecture), BRD-016 (Fraud Detection)
+- Dependencies: BRD-03 (Compliance), BRD-05 (AI/ML Architecture), BRD-16 (Fraud Detection)
 - Process: 3-state with branching (Auto-Approve, Manual Review, Auto-Decline)
 
 ---
@@ -607,16 +611,16 @@ When performing major refactoring (version X.0), document the transformation:
 - 4-6 Platform/Feature BRD dependencies
 - Complex state machine with exception handling
 
-**Example - Multi-Region Wallet Funding (BRD-008)**:
+**Example - Multi-Region Wallet Funding (BRD-NN)**:
 ```markdown
-**Complexity**: 4/5 (Five funding partners (Plaid, Stripe, Bridge, PayPal, Unit); FinCEN compliance; multi-currency settlement; references BRD-01, BRD-02, BRD-03, BRD-004, BRD-013)
+**Complexity**: 4/5 (Five funding partners ([Funding Provider 1], [Funding Provider 2], [Custody Provider], [Wallet Provider], [Banking Partner]); applicable compliance; multi-currency/multi-locale settlement; references BRD-01, BRD-02, BRD-03, BRD-04, BRD-13)
 ```
 
 **Business Factors**:
-- Partners: 5 (Plaid ACH, Stripe card processing, Bridge USDC custody, PayPal wallet, Unit banking)
-- Regulatory: FinCEN compliance, card network rules, ACH regulations, MSB licensing
+- Partners: 5 (Bank transfer, Card processing, Custody provider, Wallet provider, Banking partner)
+- Regulatory: Applicable compliance, card network rules, bank transfer regulations, licensing
 - Constraints: T+1 settlement SLA, 95% success rate, refund processing <1 hour
-- Dependencies: BRD-01 (Architecture), BRD-02 (Partners), BRD-03 (Compliance), BRD-004 (Ledger), BRD-013 (Settlement)
+- Dependencies: BRD-01 (Architecture), BRD-02 (Partners), BRD-03 (Compliance), BRD-04 (Ledger), BRD-13 (Settlement)
 - Process: Multi-state with error recovery (Initiated → Authorized → Captured → Settled → Reconciled)
 
 ---
@@ -625,21 +629,21 @@ When performing major refactoring (version X.0), document the transformation:
 
 **Characteristics**:
 - 6+ partner integrations across multiple countries/regions
-- Maximum regulatory requirements (international remittance, OFAC, sanctions, cross-border reporting)
+- Maximum regulatory exposure (cross-border transactions, sanctions compliance, cross-border reporting)
 - Highly complex business rules (>15 decision points)
 - 6+ Platform/Feature BRD dependencies
 - Complex state machine with multiple exception paths and rollback scenarios
 
-**Example - US-to-Uzbekistan Remittance (BRD-009)**:
+**Example - Cross-Region Transfer (BRD-09)**:
 ```markdown
-**Complexity**: 5/5 (Seven partners across two countries; OFAC/sanctions screening; cross-border FX; Uzbekistan bill payment integration; references BRD-01, BRD-02, BRD-03, BRD-004, BRD-005, BRD-008, BRD-010, BRD-013)
+**Complexity**: 5/5 (Seven partners across two regions; sanctions screening; cross-border currency conversion; regional bill payment integration; references BRD-NN series)
 ```
 
 **Business Factors**:
-- Partners: 7+ (Bridge custody, Plaid/Stripe funding, Sardine/Unit21 compliance, Uzbekistan delivery partners, Paynet bill payment)
-- Regulatory: FinCEN MSB licensing, OFAC sanctions screening, Uzbekistan Central Bank compliance, cross-border reporting
+- Partners: 7+ ([Custody Provider], [Funding Providers], [Compliance Providers], [Delivery Partners], [Bill Payment Providers])
+- Regulatory: Licensing, sanctions screening, central bank/local authority compliance (as applicable), cross-border reporting
 - Constraints: 95% delivery in <15 minutes, T+1 settlement, multi-currency reconciliation, refund SLAs
-- Dependencies: 8 BRDs (BRD-01 through BRD-005, BRD-008, BRD-010, BRD-013)
+- Dependencies: Multiple BRDs (BRD-NN series)
 - Process: 7-state transaction lifecycle with exception handling (Initiated → Screened → Funded → FX Converted → Delivered → Settled → Reconciled)
 
 ---
@@ -648,7 +652,7 @@ When performing major refactoring (version X.0), document the transformation:
 
 **Required Elements**:
 - Number of partners involved (with partner names or categories)
-- Regulatory scope (specific regulations: FinCEN, OFAC, card networks, etc.)
+- Regulatory scope (specific regulations: sanctions, card networks, licensing bodies, etc.)
 - Key business constraints (SLAs, settlement timing, refund policies)
 - Cross-BRD dependencies (list specific BRD references)
 
@@ -661,39 +665,39 @@ When performing major refactoring (version X.0), document the transformation:
 
 | Pattern | Meaning | Example |
 |---------|---------|---------|
-| Simple Chain | `A→B→C` | Sequential partner flow: `BeeLocal→Bridge→Paynet` |
-| Parallel Chains | `A→B; A→C` | Multiple paths from same source: `BeeLocal→Bridge; BeeLocal→Compliance` |
+| Simple Chain | `A→B→C` | Sequential partner flow: `[Your App]→[Provider A]→[Provider B]` |
+| Parallel Chains | `A→B; A→C` | Multiple paths from same source: `[Your App]→[Provider A]; [Your App]→[Compliance]` |
 | Complex Chain | `A→B→C; A→D→E` | Multiple paths with different destinations |
 
 **Complexity Level by Partner Chain**:
 | Chain Complexity | Typical Rating | Example |
 |-----------------|----------------|---------|
 | No chain (internal only) | 1/5 | Internal database query |
-| Single link (A→B) | 2/5 | `BeeLocal→Notification Provider` |
-| Two-link chain (A→B→C) | 3/5 | `BeeLocal→Bridge→Paynet` |
-| Multi-link (A→B→C→D) or parallel | 4/5 | `BeeLocal→Bridge→Paynet→Bank` |
-| Multi-chain with branching | 5/5 | `BeeLocal→Bridge→Paynet; BeeLocal→Compliance→OFAC` |
+| Single link (A→B) | 2/5 | `[Your App]→[Notification Provider]` |
+| Two-link chain (A→B→C) | 3/5 | `[Your App]→[Provider A]→[Provider B]` |
+| Multi-link (A→B→C→D) or parallel | 4/5 | `[Your App]→[Provider A]→[Provider B]→[Provider C]` |
+| Multi-chain with branching | 5/5 | `[Your App]→[Provider A]→[Provider B]; [Your App]→[Compliance]→[Sanctions Provider]` |
 
 **Correct Format Examples**:
 
 **Complexity 2/5** (Standard Integration):
 ```markdown
-**Complexity**: 2/5 (Standard customer data management; single partner integration (BeeLocal→RecipientAPI); requires recipient validation from BRD-011)
+**Complexity**: 2/5 (Standard customer data management; single partner integration ([Your App]→[RecipientAPI]); requires recipient validation from BRD-11)
 ```
 
 **Complexity 3/5** (Multi-Partner with Compliance):
 ```markdown
-**Complexity**: 3/5 (Multiple screening systems: BeeLocal→Sardine→OFAC; ML model inference with business rule thresholds; 4 business rules across risk tiers; manual review workflow coordination)
+**Complexity**: 3/5 (Multiple screening systems: [Your App]→[Risk Provider]→[Sanctions Provider]; ML model inference with business rule thresholds; 4 business rules across risk tiers; manual review workflow coordination)
 ```
 
 **Complexity 4/5** (Dual-Region with Multi-Partner):
 ```markdown
-**Complexity**: 4/5 (Dual-region funding: BeeLocal→Bridge→ACH|SEPA; 5 business constraints including T+1 settlement; unified wallet balance across currency sources; multi-jurisdiction compliance US+EU)
+**Complexity**: 4/5 (Dual-region funding: [Your App]→[Custody Provider]→[Regional Rails]; 5 business constraints including T+1 settlement; unified wallet balance across sources; multi-jurisdiction compliance)
 ```
 
 **Complexity 5/5** (End-to-End Cross-Border):
 ```markdown
-**Complexity**: 5/5 (End-to-end orchestration: BeeLocal→Bridge→Paynet partner chain; parallel compliance path BeeLocal→Sardine→OFAC; 7 business constraints including regulatory hold periods; multi-jurisdiction compliance US+Uzbekistan; automated retry with business escalation; 12 business rules across 4 decision categories)
+**Complexity**: 5/5 (End-to-end orchestration: [Your App]→[Provider A]→[Provider B] partner chain; parallel compliance path [Your App]→[Risk Provider]→[Sanctions Provider]; 7 business constraints including regulatory hold periods; multi-jurisdiction compliance; automated retry with business escalation; 12 business rules across 4 decision categories)
 ```
 
 **Incorrect Format Examples**:
@@ -771,14 +775,14 @@ When performing major refactoring (version X.0), document the transformation:
 
 ## 6. Platform vs Feature BRD Distinctions
 
-### Platform BRDs (e.g., BRD-01, BRD-034)
+### Platform BRDs (e.g., BRD-NN examples)
 - **Purpose**: Define foundational capabilities, technology stacks, prerequisites
 - **sections 3.6 & 3.7**: ALWAYS PRESENT - Define foundational technology stacks and mandatory constraints
 - **ADR Timing**: ADRs created BEFORE PRD to validate architectural decisions
 - **Technology Focus**: Infrastructure, security, compliance foundations
 - **Interdependencies**: Establish foundation for Feature BRDs
 
-### Feature BRDs (e.g., BRD-006, BRD-009)
+### Feature BRDs (e.g., BRD-06, BRD-09)
 - **Purpose**: Define business features and user workflows
 - **sections 3.6 & 3.7**: ALWAYS PRESENT - Reference Platform BRD dependencies and feature-specific conditions
 - **ADR Timing**: Standard workflow (BRD → PRD → SYS → EARS → REQ → ADR)
@@ -825,8 +829,8 @@ Use tables when Business Rules have **≥3 decision variables** or involve **tie
 ```markdown
 | Region | Funding Methods | Settlement Time | Managed By |
 |--------|----------------|-----------------|------------|
-| US | ACH, Debit/Credit Card | 1-3 days (ACH), Instant (Card) | BRD-008 |
-| EU | SEPA Transfer | <10 minutes after EUR receipt | BRD-008 |
+| Region A | Bank transfer, Card | 1-3 days (bank), Instant (card) | BRD-NN |
+| Region B | Regional bank transfer | <10 minutes after receipt | BRD-NN |
 ```
 
 #### When to Use Bullets
@@ -843,7 +847,7 @@ Use bullets when Business Rules are **sequential**, have **single conditions**, 
 ```markdown
 **Business Rules**:
 - Recipients validated successfully in first transaction become saved for future reuse
-- Recipient information must match Paynet network requirements for successful delivery
+- Recipient information must match delivery network requirements for successful delivery
 - Invalid recipient data must be rejected before transaction initiation
 - Duplicate recipient detection within same customer profile (name + phone match)
 ```
@@ -884,9 +888,9 @@ Business Rules Count?
 
 **Examples**:
 
-❌ **REMOVE (PRD-Level)**: "Platform MUST use Bridge custody provider for USDC wallet operations"
+❌ **REMOVE (PRD-Level)**: "Platform MUST use a specific custody provider for wallet operations"
 
-✅ **KEEP (Business-Level)**: "Platform requires segregated USDC custody with MTL sponsorship (BRD-02 partner selection)"
+✅ **KEEP (Business-Level)**: "Platform requires segregated custody with appropriate licensing (BRD-02 partner selection)"
 
 **Additional Examples**:
 - ❌ "MUST use PostgreSQL" → ✅ "Platform requires scalable relational data storage with ACID compliance (BRD-01 technology stack)"
@@ -897,8 +901,8 @@ Business Rules Count?
 - BRD-01: Platform architecture and technology stack
 - BRD-02: Partner ecosystem and integration requirements
 - BRD-03: security, compliance, and authentication requirements
-- BRD-004: Data model and ledger architecture
-- BRD-005: AI/ML agent system architecture
+- BRD-04: Data model and ledger architecture
+- BRD-05: AI/ML agent system architecture
 
 ---
 
@@ -1077,7 +1081,7 @@ if (amount >= 501 && amount <= 2000) {
 | **KYC Document Types** | SSN, Driver's License | National ID, Passport | Local ID standards |
 | **Cooling-Off Period** | None | 14 days for first transaction | EU consumer protection |
 | **Data Retention** | 5 years | 7 years (AML directive) | Regulatory requirement |
-| **Supported Funding** | ACH, Card, Wire | SEPA, Card | Regional payment rails |
+| **Supported Funding** | Bank transfer, Card, Wire | Regional transfer, Card | Regional payment rails |
 | **Default Currency** | USD | EUR | Market standard |
 ```
 
@@ -1087,7 +1091,7 @@ if (amount >= 501 && amount <= 2000) {
 |----------|------------|------------|-------------------|
 | **Custody Provider** | Noah | Noah EU entity | Regulatory license scope |
 | **Compliance Screening** | Chainalysis US | Chainalysis EU | Data residency requirement |
-| **Fiat Rails** | Bridge (ACH) | Bridge (SEPA) | Payment network availability |
+| **Funding Rails** | Custody provider (bank transfer) | Custody provider (regional transfer) | Payment network availability |
 | **Identity Verification** | Plaid + Jumio | Onfido + Jumio | Regional coverage |
 ```
 
@@ -1095,11 +1099,11 @@ if (amount >= 501 && amount <= 2000) {
 ```markdown
 **US Region**:
 - ✅ Transactions complete within US business hours (9am-6pm EST)
-- ✅ ACH funding settles T+1 business day
+- ✅ Bank transfer funding settles next business day
 - ✅ Customer support available in English and Spanish
 
 **EU Region**:
-- ✅ SEPA transactions complete within 1 business day
+- ✅ Regional bank transfers complete within 1 business day
 - ✅ Customer support available in English, German, French, Spanish
 - ✅ GDPR data subject rights (access, deletion, portability) within 30 days
 - ✅ Strong Customer Authentication (SCA) for transactions >€30
@@ -1161,8 +1165,8 @@ if (amount >= 501 && amount <= 2000) {
 ```markdown
 **Business Rules**:
 - Refunds initiated within 24 hours of permanent failure determination
-- Original funding source credited (ACH) or wallet balance credited (card)
-- Fees refunded for failures due to BeeLocal or partner errors
+- Original funding source credited (bank transfer) or wallet balance credited (card)
+- Fees refunded for failures due to [Your App] or partner errors
 - Fees retained for failures due to invalid recipient information provided by customer
 ```
 
@@ -1196,7 +1200,7 @@ if (amount >= 501 && amount <= 2000) {
 | Database query | Look up/search | "Search saved recipients" not "Query recipient table" |
 | Store/persist | Record/maintain | "Record transaction audit trail" not "Store in database" |
 | Validate | Verify/confirm | "Verify recipient eligibility" not "Validate against schema" |
-| Process | Handle/execute | "Execute remittance transaction" not "Process API payload" |
+| Process | Handle/execute | "Execute transaction" not "Process API payload" |
 | Cache | Remember/retain | "Retain quote for customer review" not "Cache quote response" |
 | Trigger | Initiate/activate | "Initiate compliance screening" not "Trigger webhook" |
 | Return/respond | Provide/deliver | "Provide confirmation to customer" not "Return JSON response" |
@@ -1224,7 +1228,7 @@ if (amount >= 501 && amount <= 2000) {
 | Threshold | "[Entity] [condition] [threshold] require [action]" | "Transactions ≥$3,000 require Travel Rule disclosure" |
 | Conditional | "[When condition] [entity] [receives/triggers] [outcome]" | "When KYC L3 verified, customer receives $10,000 daily limit" |
 | Sequence | "[Action A] must complete before [Action B]" | "Sanctions screening must complete before transaction authorization" |
-| Validation | "[Entity] must [meet/match] [criterion] for [outcome]" | "Recipient phone must match Uzbekistan format (+998) for delivery" |
+| Validation | "[Entity] must [meet/match] [criterion] for [outcome]" | "Recipient phone must match required regional format (e.g., +[country code]) for delivery" |
 | Default | "[Entity] [defaults to/uses] [value] [unless/when] [condition]" | "Wallet balance displays in USD regardless of funding source currency" |
 
 #### Acceptance Criteria Language Patterns
@@ -1233,7 +1237,7 @@ if (amount >= 501 && amount <= 2000) {
 |---------------|---------|---------|
 | Performance | "[Metric]: [threshold] for [percentile]% of [operations] ([justification])" | "Screening time: ≤3 seconds for 95% of transactions (customer experience)" |
 | Accuracy | "[Metric] rate: [threshold]% ([justification])" | "False positive rate: ≤3% (minimize blocking legitimate customers)" |
-| Compliance | "[Requirement]: [threshold] from [trigger] ([regulatory reference])" | "Sanctions updates: ≤24 hours from OFAC publication (regulatory mandate)" |
+| Compliance | "[Requirement]: [threshold] from [trigger] ([regulatory reference])" | "Sanctions updates: ≤24 hours from official publication (regulatory mandate)" |
 | Customer | "[Outcome] [condition] ([business benefit])" | "Recipient auto-saved after successful delivery (reduces friction)" |
 
 **Reference**: See BRD-TEMPLATE.md Appendix C for complete FR examples using business language patterns.
@@ -1253,7 +1257,7 @@ if (amount >= 501 && amount <= 2000) {
 2. ADRs document which option was chosen and WHY
 3. This separation maintains workflow integrity and prevents forward references
 
-**section 6.1: Architecture Decision Requirements**
+**section 7.2: Architecture Decision Requirements**
 ```markdown
 | Topic Area | Decision Needed | Business Driver | Key Considerations |
 |------------|-----------------|---------------|-------------------|
@@ -1305,8 +1309,8 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 
 - Every Functional Requirement (section 4) MUST appear in this table
 - Downstream artifacts initially marked "Planned" (created during PRD/SPEC phases)
-- SPEC-XXX format: Use BRD ID as XXX (e.g., BRD-005 → SPEC-05.1)
-- IMPL-XXX format: Use BRD ID as XXX (e.g., BRD-005 → IMPL-005.1)
+- SPEC-XXX format: Use BRD ID as XXX (e.g., BRD-05 → SPEC-05.1)
+- IMPL-XXX format: Use BRD ID as XXX (e.g., BRD-05 → IMPL-05.1)
 
 **Forward Traceability**: Enables impact analysis when changing functional requirements
 
@@ -1535,7 +1539,7 @@ ADR placeholder               ADR placeholder            ADR document
 treasury management (BRD.01.01.04) and regulatory reporting (Section 8.4.2 BSA compliance).
 
 **Business Constraints**:
-- Must support multi-currency operations (USD, UZS, USDC) per Section 3.2 market requirements
+- Must support multi-currency operations per Section 3.2 requirements
 - Audit trail retention per BSA requirements (5 years) per Section 8.4.2
 - Maximum budget allocation: $50K annual licensing per Section 8.2
 

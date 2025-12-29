@@ -15,7 +15,7 @@ custom_fields:
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: EARS-01 through EARS-NN
+# Traceability Matrix: EARS-NN (project-agnostic example IDs)
 
 ## Document Control
 
@@ -90,8 +90,8 @@ This matrix tracks all EARS documents and their upstream sources (BRD, PRD). Dow
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
+@brd: BRD.NN.NN.NN, BRD.NN.NN.NN
+@prd: PRD.NN.NN.NN
 ```
 
 **Format Rules**:
@@ -105,7 +105,7 @@ This matrix tracks all EARS documents and their upstream sources (BRD, PRD). Dow
 ### 2.3 Example: EARS with Required Tags
 
 ```markdown
-# EARS-012: operation execution Formal Requirements
+# EARS-NN: operation execution Formal Requirements
 
 ## 10. Traceability
 
@@ -113,8 +113,8 @@ This matrix tracks all EARS documents and their upstream sources (BRD, PRD). Dow
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 3):
 ```markdown
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
+@brd: BRD.NN.NN.NN, BRD.NN.NN.NN
+@prd: PRD.NN.NN.NN
 ```
 
 - **BRD.09.01.15**: Functional requirement for service integration
@@ -125,7 +125,7 @@ This matrix tracks all EARS documents and their upstream sources (BRD, PRD). Dow
 
 **Direct Dependencies** (populated after downstream docs exist):
 - [BDD IDs when created]: operation execution test scenarios
-- [REQ IDs when created]: Place limit order atomic requirement
+- [REQ IDs when created]: Submit constrained operation request (atomic requirement)
 - [ADR IDs when created]: operation execution architecture
 ```
 
@@ -136,7 +136,7 @@ This matrix tracks all EARS documents and their upstream sources (BRD, PRD). Dow
 
 ### 5.1 EARS.12.25.01
 **WHEN** user selects "Place Order" button
-**THE** system **SHALL** validate order parameters
+**THE** system **SHALL** validate request parameters
 **WITHIN** 100 milliseconds
 
 **Traceability**:
@@ -146,13 +146,13 @@ This matrix tracks all EARS documents and their upstream sources (BRD, PRD). Dow
 - Downstream: [REQ ID when created] (Validation logic requirement)
 
 ### 5.2 EARS.12.25.02
-**WHEN** order validation succeeds
-**THE** system **SHALL** execute the trade
+**WHEN** validation succeeds
+**THE** system **SHALL** execute the operation
 **WITHIN** 2 seconds
 
 **Traceability**:
-- Upstream: BRD.09.01.06 (Performance requirement)
-- Upstream: PRD.16.01.03 (operation execution feature)
+- Upstream: BRD-NN (Performance requirement)
+- Upstream: PRD-NN (operation execution feature)
 - Downstream: [BDD ID when created] (Test scenario)
 - Downstream: [REQ ID when created] (operation execution logic)
 ```
@@ -171,9 +171,9 @@ This matrix tracks all EARS documents and their upstream sources (BRD, PRD). Dow
 # Find all EARS and their upstream tags
 python scripts/extract_tags.py --type EARS --show-upstream brd,prd
 
-# Validate EARS-012 has required tags
+# Validate EARS-NN has required tags
 python scripts/validate_tags_against_docs.py \
-  --artifact EARS-012 \
+  --artifact EARS-NN \
   --expected-layers brd,prd \
   --strict
 
@@ -211,8 +211,8 @@ ADR (Layer 5) → Architecture decisions (@brd through @bdd)
 
 | EARS ID | Title | Requirement Category | Total Statements | Status | Date | Upstream Sources |
 |---------|-------|---------------------|------------------|--------|------|------------------|
-| EARS-01 | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-01, BRD-01 |
-| EARS-02 | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-02, BRD-01 |
+| EARS-NN | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-NN, BRD-NN |
+| EARS-NN | [Formal requirement title] | [Category] | [X] | Active | YYYY-MM-DD | PRD-NN, BRD-NN |
 | EARS-NN | ... | ... | ... | ... | ... | ... |
 
 **Document Status Legend**:
@@ -231,15 +231,15 @@ ADR (Layer 5) → Architecture decisions (@brd through @bdd)
 
 | BRD ID | BRD Title | EARS IDs | EARS Titles | Relationship Description |
 |--------|-----------|----------|-------------|--------------------------|
-| BRD-01 | [Business requirement] | EARS-01, EARS-02 | [Formal requirements] | Business goals formalized as verifiable requirements |
+| BRD-NN | [Business requirement] | EARS-NN, EARS-NN | [Formal requirements] | Business goals formalized as verifiable requirements |
 | BRD-NN | ... | ... | ... | ... |
 
 ### 11.2 PRD → EARS Traceability
 
 | PRD ID | PRD Title | EARS IDs | EARS Titles | Relationship Description |
 |--------|-----------|----------|-------------|--------------------------|
-| PRD-01 | [Product feature] | EARS-01, EARS-02, EARS-03 | [Formal requirements] | Product features decomposed into formal EARS statements |
-| PRD-02 | [Product feature] | EARS-004 | [Formal requirement] | User stories converted to WHEN-THE-SHALL syntax |
+| PRD-NN | [Product feature] | EARS-NN | [Formal requirements] | Product features decomposed into formal EARS statements |
+| PRD-NN | [Product feature] | EARS-NN | [Formal requirement] | User stories converted to WHEN-THE-SHALL syntax |
 | PRD-NN | ... | ... | ... | ... |
 
 ### 5.3 Upstream Source Summary
@@ -265,25 +265,25 @@ When creating downstream artifacts, they MUST include `@ears` tags referencing t
 |-----------------|---------------------|---------|
 | BDD | `@ears: EARS.NN.25.SS` | `@ears: EARS.12.25.01` |
 | ADR | `@ears: EARS.NN.25.SS` | `@ears: EARS.05.25.03` |
-| SYS | `@ears: EARS.NN.25.SS` | `@ears: EARS.12.25.02` |
-| REQ | `@ears: EARS.NN.25.SS` | `@ears: EARS.08.25.01` |
+| SYS | `@ears: EARS.NN.25.SS` | `@ears: EARS.NN.25.NN` |
+| REQ | `@ears: EARS.NN.25.SS` | `@ears: EARS.NN.25.NN` |
 
 ### 7.2 Finding Downstream References
 
 To discover which downstream documents reference a specific EARS:
 
 ```bash
-# Find all BDD documents referencing EARS-12
-grep -r "@ears: EARS.12" ../BDD/
+# Find all BDD documents referencing an EARS artifact
+grep -r "@ears: EARS\.NN" ../BDD/
 
 # Find all ADR documents referencing any EARS
 grep -r "@ears:" ../ADR/
 
 # Find all downstream references to a specific EARS statement
-grep -r "EARS.12.25.01" ../BDD/ ../ADR/ ../SYS/ ../REQ/
+grep -r "EARS\.NN\.25\.NN" ../BDD/ ../ADR/ ../SYS/ ../REQ/
 
 # Generate reverse traceability report
-python scripts/generate_reverse_traceability.py --upstream EARS-12 --downstream BDD,ADR,SYS,REQ
+python scripts/generate_reverse_traceability.py --upstream EARS-NN --downstream BDD,ADR,SYS,REQ
 ```
 
 ### 7.3 Downstream Document Responsibilities
@@ -331,15 +331,15 @@ Each downstream artifact type has specific tagging responsibilities:
 ```mermaid
 graph TD
     subgraph Upstream[Upstream Sources - Layers 1-2]
-        BRD001[BRD-01: Business Need]
-        PRD001[PRD-01: Product Feature]
-        PRD002[PRD-02: Product Feature]
+        BRD001[BRD-NN: Business Need]
+        PRD001[PRD-NN: Product Feature]
+        PRD002[PRD-NN: Product Feature]
     end
 
     subgraph Current[EARS Layer - Layer 3]
-        EARS001[EARS-01: Formal Req 1]
-        EARS002[EARS-02: Formal Req 2]
-        EARS003[EARS-03: Formal Req 3]
+        EARS001[EARS-NN: Formal Req]
+        EARS002[EARS-NN: Formal Req]
+        EARS003[EARS-NN: Formal Req]
     end
 
     BRD001 --> PRD001
@@ -360,7 +360,7 @@ graph TD
 | Source EARS | Target EARS | Dependency Type | Description |
 |-------------|-------------|-----------------|-------------|
 | EARS-01 | EARS-005 | Prerequisite | Authentication required before authorization |
-| EARS-02 | EARS-03 | Related | Data validation supports data processing |
+| EARS-NN | EARS-NN | Related | Data validation supports data processing |
 | EARS-NN | ... | ... | ... |
 
 ---
@@ -372,8 +372,8 @@ graph TD
 | EARS ID | Total Statements | BDD Scenarios | REQ Mappings | Verification % | Status |
 |---------|------------------|---------------|--------------|----------------|--------|
 | EARS-01 | 5 | 5 | 5 | 100% | ✅ Verified |
-| EARS-02 | 3 | 3 | 3 | 100% | ✅ Verified |
-| EARS-03 | 4 | 2 | 4 | 50% | 🟡 Partial |
+| EARS-NN | 3 | 3 | 3 | 100% | ✅ Verified |
+| EARS-NN | 4 | 2 | 4 | 50% | 🟡 Partial |
 | EARS-NN | ... | ... | ... | ... | ... |
 
 ### 11.2 Testability Assessment
@@ -381,8 +381,8 @@ graph TD
 | EARS ID | Testability Score | Ambiguity Level | Completeness | Issues |
 |---------|-------------------|-----------------|--------------|--------|
 | EARS-01 | High (9/10) | Low | Complete | None |
-| EARS-02 | Medium (6/10) | Medium | Partial | Missing performance criteria |
-| EARS-03 | High (8/10) | Low | Complete | None |
+| EARS-NN | Medium (6/10) | Medium | Partial | Missing performance criteria |
+| EARS-NN | High (8/10) | Low | Complete | None |
 | EARS-NN | ... | ... | ... | ... |
 
 ### 11.3 Requirements Quality Metrics
@@ -415,8 +415,8 @@ graph TD
 | EARS ID | BDD Status | REQ Status | ADR Status | Overall Status | Completion % |
 |---------|------------|------------|------------|----------------|--------------|
 | EARS-01 | ✅ Complete | ✅ Complete | N/A | Complete | 100% |
-| EARS-02 | ✅ Complete | 🟡 In Progress | ✅ Complete | In Progress | 80% |
-| EARS-03 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | Started | 30% |
+| EARS-NN | ✅ Complete | 🟡 In Progress | ✅ Complete | In Progress | 80% |
+| EARS-NN | 🟡 In Progress | ⏳ Pending | ⏳ Pending | Started | 30% |
 | EARS-NN | ... | ... | ... | ... | ... |
 
 **Status Legend**:
@@ -458,16 +458,16 @@ graph TD
 
 | Improvement Area | EARS Affected | Target Date | Owner |
 |------------------|---------------|-------------|-------|
-| Add performance criteria (WITHIN) | EARS-02, EARS-005 | YYYY-MM-DD | [Owner] |
-| Create missing BDD scenarios | EARS-03, EARS-007 | YYYY-MM-DD | [Owner] |
-| Refine ambiguous statements | EARS-010 | YYYY-MM-DD | [Owner] |
-| Complete REQ decomposition | EARS-008, EARS-009 | YYYY-MM-DD | [Owner] |
+| Add performance criteria (WITHIN) | EARS-NN, EARS-NN | YYYY-MM-DD | [Owner] |
+| Create missing BDD scenarios | EARS-NN, EARS-NN | YYYY-MM-DD | [Owner] |
+| Refine ambiguous statements | EARS-NN | YYYY-MM-DD | [Owner] |
+| Complete REQ decomposition | EARS-NN, EARS-NN | YYYY-MM-DD | [Owner] |
 
 ### 12.3 Validation Milestones
 
 | Milestone | Target Date | EARS Scope | Status |
 |-----------|-------------|------------|--------|
-| [Milestone 1: MVP Validation] | YYYY-MM-DD | EARS-01 through EARS-010 | On Track |
+| [Milestone 1: MVP Validation] | YYYY-MM-DD | EARS-NN range | On Track |
 | [Milestone 2: Full Coverage] | YYYY-MM-DD | All EARS | Planning |
 
 ---

@@ -296,7 +296,7 @@ All PRD requirements must include:
 2. Preserve capitalization and punctuation
 3. Include (MANDATORY) marker for section 8
 
-### CHECK 7: User Stories Scope Validation (section 7)
+### CHECK 7: User Stories Scope Validation (section 8)
 
 **Purpose**: Ensure PRD-level user stories stay within Layer 2 scope
 **Type**: Error (blocking)
@@ -316,16 +316,16 @@ All PRD requirements must include:
 - System architecture decisions → ADR (Layer 5)
 
 **Required Elements**:
-1. **Scope Note Present**: section 7 must include layer separation explanation
+1. **Scope Note Present**: section 8 must include layer separation explanation
 2. **Role Definitions**: User personas with characteristics and needs
 3. **Story Summaries**: High-level capability descriptions
 4. **No Technical Details**: No EARS/BDD/SYS-level content
 
 **Error Messages**:
 ```
-❌ SCOPE VIOLATION: section 7 contains WHEN-THE-SHALL format (belongs in EARS)
-❌ SCOPE VIOLATION: section 7 contains Given-When-Then scenarios (belongs in BDD)
-❌ MISSING: section 7 scope note explaining layer separation
+❌ SCOPE VIOLATION: section 8 contains WHEN-THE-SHALL format (belongs in EARS)
+❌ SCOPE VIOLATION: section 8 contains Given-When-Then scenarios (belongs in BDD)
+❌ MISSING: section 8 scope note explaining layer separation
 ```
 
 **Resolution Steps**:
@@ -539,7 +539,7 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 - [ ] **section numbering explicit** (## N. Title format)
 - [ ] **Dual scoring ≥90%** (SYS-Ready and EARS-Ready)
 - [ ] **Customer-Facing Content (section 10)** populated with (MANDATORY) designation
-- [ ] **User Stories (section 7)** include scope note, stay within PRD layer
+- [ ] **User Stories (section 8)** include scope note, stay within PRD layer
 - [ ] **No ADR-XXX forward references** (use topics only)
 - [ ] **@brd upstream tag** present in Traceability section
 - [ ] **Document Control** has all 11 required fields
@@ -579,7 +579,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-01_product_name/PRD-0
 - ✅ Both SYS-Ready and EARS-Ready scores ≥90%
 - ✅ All 21 sections complete with substantive content
 - ✅ section 10 (Customer-Facing Content) populated
-- ✅ section 7 (User Stories) within PRD scope
+- ✅ section 8 (User Stories) within PRD scope
 - ✅ @brd upstream reference valid
 - ✅ No blocking validation errors
 
@@ -587,7 +587,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-01_product_name/PRD-0
 - ❌ Either score <90%
 - ❌ Missing mandatory sections
 - ❌ section 10 missing or placeholder-only
-- ❌ section 7 contains EARS/BDD-level detail
+- ❌ section 8 contains EARS/BDD-level detail
 - ❌ ADR-XXX forward references present
 - ❌ Missing Document Control fields
 
@@ -638,14 +638,14 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-01_product_name/PRD-0
 
 **Symptoms**:
 ```
-❌ SCOPE VIOLATION: section 7 contains WHEN-THE-SHALL format (belongs in EARS)
-❌ SCOPE VIOLATION: section 7 contains Given-When-Then scenarios (belongs in BDD)
+❌ SCOPE VIOLATION: section 8 contains WHEN-THE-SHALL format (belongs in EARS)
+❌ SCOPE VIOLATION: section 8 contains Given-When-Then scenarios (belongs in BDD)
 ```
 
 **Root Cause**: Mixing PRD-level requirements with EARS/BDD-level technical details
 
 **Fix**:
-1. Add scope note from PRD-TEMPLATE.md to section 7
+1. Add scope note from PRD-TEMPLATE.md to section 8
 2. Keep only PRD-level content:
    - User role definitions (who they are)
    - Story titles and summaries (what they need)
@@ -769,7 +769,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-01_product_name/PRD-0
 ⚠️ WARNING: @prd: PRD.22.01.01 reference found, but PRD-022 does not reference this document
 ⚠️ WARNING: Found placeholder ID "PRD.NN.EE.SS" - replace with actual ID or null
 ⚠️ WARNING: @prd: PRD.99.01.01 references non-existent document
-⚠️ WARNING: Prose reference "see PRD-016" should use tag format @prd: PRD.16.01.01
+⚠️ WARNING: Prose reference "see PRD-NN" should use tag format @prd: PRD.NN.NN.NN
 ```
 
 **Resolution Steps**:

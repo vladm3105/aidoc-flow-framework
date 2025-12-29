@@ -214,9 +214,9 @@ custom_fields:
 **Optional Fields** (context-dependent):
 ```yaml
 custom_fields:
-  agent_id: AGENT-009                    # For AI agent documents only
-  fallback_reference: BRD-016            # For primary docs with traditional equivalent
-  primary_alternative: BRD-022_name      # For fallback docs linking to primary
+  agent_id: AGENT-XXX                    # For AI agent documents only
+  fallback_reference: BRD-NN             # For primary docs with traditional equivalent
+  primary_alternative: BRD-NN_name       # For fallback docs linking to primary
   implementation_differs: false          # For shared docs
   architecture_approaches: [...]         # For shared docs (instead of architecture_approach)
 ```
@@ -250,7 +250,7 @@ When instructing AI assistants to create or update documents, use these prompt p
 ### Method 1: Direct Instruction (Recommended)
 
 ```
-Create BRD-030 for Payment Routing Agent using AI-agent metadata:
+Create BRD-NN for Payment Routing Agent using AI-agent metadata:
 - priority: primary
 - agent_id: AGENT-009
 - architecture_approach: ai-agent-based
@@ -266,12 +266,12 @@ AI assistants understand abbreviated instructions:
 | "AI-agent primary" | `ai-agent-primary` tag, `priority: primary`, `recommended-approach` tag |
 | "Traditional fallback" | `traditional-fallback` tag, `priority: fallback`, `reference-implementation` tag |
 | "Shared platform" | `shared-architecture` tag, `priority: shared`, applies to both architectures |
-| "AGENT-009" | `agent_id: AGENT-009`, validates uniqueness |
+| "AGENT-XXX" | `agent_id: AGENT-XXX`, validates uniqueness |
 | "Active development" | `development_status: active` |
 
 **Example:**
 ```
-Create an AI-agent primary BRD for risk scoring (AGENT-010, active)
+Create an AI-agent primary BRD for risk scoring (AGENT-XXX, active)
 ```
 
 AI assistant applies:
@@ -284,16 +284,16 @@ custom_fields:
   architecture_approach: ai-agent-based
   priority: primary
   development_status: active
-  agent_id: AGENT-010
+  agent_id: AGENT-XXX
 ```
 
 ### Method 3: Provide Complete Frontmatter
 
 ```
-Create BRD-030 with this metadata:
+Create BRD-NN with this metadata:
 
 ---
-title: "BRD-030: Payment Routing Agent"
+title: "BRD-NN: Payment Routing Agent"
 tags:
   - feature-brd
   - ai-agent-primary
@@ -301,36 +301,36 @@ tags:
 custom_fields:
   architecture_approach: ai-agent-based
   priority: primary
-  agent_id: AGENT-009
+  agent_id: AGENT-XXX
 ---
 ```
 
 ### Method 4: Reference Template
 
 ```
-Use the "Primary (AI Agent) BRD" metadata template for BRD-030
+Use the "Primary (AI Agent) BRD" metadata template for BRD-NN
 ```
 
 ### Method 5: Specify Cross-References
 
 ```
-Create BRD-030 as AI-agent version with BRD-018 as fallback
+Create BRD-NN as AI-agent version with BRD-NN as fallback
 ```
 
 AI assistant adds:
-- BRD-030: `fallback_reference: BRD-018`
-- BRD-018: `primary_alternative: BRD-030_payment_routing_agent`
+- BRD-NN: `fallback_reference: BRD-NN`
+- BRD-NN: `primary_alternative: BRD-NN_payment_routing_agent`
 
 ### Common Prompt Patterns
 
 **New AI Agent Document:**
 ```
-Create AI-agent BRD for fraud detection (AGENT-011, active, no fallback)
+Create AI-agent BRD for fraud detection (AGENT-XXX, active, no fallback)
 ```
 
 **Traditional Fallback:**
 ```
-Create traditional fallback version of BRD-030 (reference status)
+Create traditional fallback version of BRD-NN (reference status)
 ```
 
 **Shared Platform:**
@@ -340,7 +340,7 @@ Create shared platform BRD for API gateway (applies to both architectures)
 
 **Update Existing:**
 ```
-Update BRD-025: change status to "active", add fallback_reference: BRD-020
+Update BRD-NN: change status to "active", add fallback_reference: BRD-NN
 ```
 
 ### What AI Assistants Automatically Apply
@@ -385,7 +385,7 @@ Before committing documents with metadata:
 
 ```bash
 # Validate single file
-python scripts/validate_metadata.py docs/BRD/BRD-022_name.md
+python scripts/validate_metadata.py docs/BRD/BRD-NN_name.md
 
 # Validate all BRDs
 for file in docs/BRD/*.md; do
@@ -393,8 +393,8 @@ for file in docs/BRD/*.md; do
 done
 
 # Check bidirectional references
-grep -l "fallback_reference: BRD-016" docs/BRD/*.md  # Should find BRD-022
-grep -l "primary_alternative: BRD-022" docs/BRD/*.md  # Should find BRD-016
+grep -l "fallback_reference: BRD-NN" docs/BRD/*.md  # Should find BRD-NN
+grep -l "primary_alternative: BRD-NN" docs/BRD/*.md  # Should find BRD-NN
 ```
 
 ---
@@ -403,18 +403,18 @@ grep -l "primary_alternative: BRD-022" docs/BRD/*.md  # Should find BRD-016
 
 ### BRD Pattern (Business Requirements)
 
-**AI Agent BRDs (BRD-022 to BRD-029):**
+**AI Agent BRDs (BRD-NN range):**
 - `priority: primary`
 - `architecture_approach: ai-agent-based`
 - `agent_id: AGENT-001` through `AGENT-008`
 - `fallback_reference:` (if traditional equivalent exists)
 
-**Traditional BRDs (BRD-016, BRD-017, BRD-019):**
+**Traditional BRDs (BRD-NN examples):**
 - `priority: fallback`
 - `architecture_approach: traditional-8layer`
 - `primary_alternative:` (link to AI Agent equivalent)
 
-**Shared BRDs (BRD-01 to BRD-005):**
+**Shared BRDs (BRD-NN range):**
 - `priority: shared`
 - `architecture_approaches: [ai-agent-based, traditional-8layer]`
 
@@ -458,7 +458,7 @@ grep -l "primary_alternative: BRD-022" docs/BRD/*.md  # Should find BRD-016
 
 ```markdown
 ---
-title: "BRD-022: Fraud Detection Agent (ML-based Risk)"
+title: "BRD-NN: Fraud Detection Agent (ML-based Risk)"
 tags:
   - feature-brd
   - ai-agent-primary
@@ -468,19 +468,19 @@ custom_fields:
   architecture_approach: ai-agent-based
   priority: primary
   development_status: active
-  agent_id: AGENT-001
-  fallback_reference: BRD-016
+  agent_id: AGENT-XXX
+  fallback_reference: BRD-NN
 ---
 
-# BRD-022: Fraud Detection Agent (ML-based Risk)
+# BRD-NN: Fraud Detection Agent (ML-based Risk)
 
 :::recommended Primary Implementation (AI Agent-Based)
 **Architecture**: AI Agent-Based Platform (@adr: ADR-02)
 **Priority**: ✅ Recommended approach
 **Status**: Active development
-**Agent ID**: AGENT-001
+**Agent ID**: AGENT-XXX
 
-**Fallback Alternative**: [@brd: BRD-016](./BRD-016_fraud_detection_risk_screening.md)
+**Fallback Alternative**: [@brd: BRD-NN](./BRD-NN_fraud_detection_risk_screening.md)
 
 **Advantages of AI Agent Approach**:
 - Adaptive ML-based fraud detection

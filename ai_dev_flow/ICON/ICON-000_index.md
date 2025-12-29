@@ -43,7 +43,11 @@ custom_fields:
 **Purpose**: [Brief description]
 **Providers**: [TASKS-IDs]
 **Consumers**: [TASKS-IDs]
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 **File**: [ICON-01_contract_name.md](./ICON-01_contract_name.md)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 **Created**: YYYY-MM-DD
 **Last Updated**: YYYY-MM-DD
 

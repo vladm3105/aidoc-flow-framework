@@ -15,6 +15,8 @@ custom_fields:
 
 System Requirements Specifications (SYS) capture comprehensive system-level requirements that bridge the gap between high-level business objectives and technical implementation. SYS documents define what the system must accomplish from a behavioral and performance perspective while remaining technology-agnostic.
 
+Note: `SYS-TEMPLATE.md` is a reference template. For real SYS documents, prefer sectioned docs using `SYS-SECTION-0-TEMPLATE.md` and `SYS-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`.
+
 ## Purpose
 
 SYS documents establish the **system behavior contracts** that:
@@ -45,7 +47,7 @@ Comprehensive bidirectional linking establishes system context:
 @PRD:[PRD-NN](../PRD/PRD-NN_...md)
 @EARS:[EARS-NN](../EARS/EARS-NN_...md)
 @spec:[SPEC-NN](../SPEC/.../SPEC-NN_...yaml)
-@bdd:[BDD-NN:scenarios](../BDD/BDD-NN.feature#scenarios)
+@bdd:[BDD-NN.SS:scenarios](../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
 ```
 
 ### Scope Definition
@@ -556,3 +558,16 @@ See `SYS/SYS-01_external_api_integration.md` for a complete example of a well-st
 5. Re-run validation to confirm quality gate passage
 
 **Purpose in SDD Workflow**: Ensures SYS quality meets EARS phase requirements, preventing immature system requirements from progressing to formal requirements decomposition.
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If a file approaches/exceeds limits, split into section files using `SYS-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
+
+## Document Splitting Standard
+
+When system specifications expand or span distinct subsystems:
+- Ensure `SYS-{NN}.0_index.md` exists with an updated section map
+- Create `SYS-{NN}.{S}_{slug}.md` from `SYS-SECTION-TEMPLATE.md` (see `../DOCUMENT_SPLITTING_RULES.md` for numbering and required front‑matter)
+- Maintain Prev/Next navigation; update traceability to REQ/ADR/BDD
+- Validate references; run link and size lints

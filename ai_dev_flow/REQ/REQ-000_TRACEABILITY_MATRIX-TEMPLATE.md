@@ -61,7 +61,7 @@ python scripts/generate_traceability_matrices.py --type REQ --output docs/REQ/RE
 
 **Tag Format:** `@req: REQ.NN.26.SS` (unified 4-segment format, e.g., `REQ.03.26.01`)
 
-See: [TRACEABILITY.md](../../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
+See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) for complete tag-based workflow.
 
 ---
 

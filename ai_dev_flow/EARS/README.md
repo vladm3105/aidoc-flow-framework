@@ -13,6 +13,8 @@ custom_fields:
 
 # EARS (Easy Approach to Requirements Syntax)
 
+Note: `EARS-TEMPLATE.md` is a reference template. For real EARS documents, prefer sectioned docs using `EARS-SECTION-0-TEMPLATE.md` and `EARS-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`.
+
 ## Overview
 
 EARS files capture requirements in a structured, precise format that transforms high-level product requirements into clear, testable statements. EARS uses the **WHEN-THE-SHALL-WITHIN** syntax to ensure every requirement is measurable and implementation-ready.
@@ -93,7 +95,7 @@ All EARS files start with traceability tags linking to related artifacts:
 @PRD:[PRD-NN](../PRD/PRD-NN_...md)
 @SYS:[SYS-NN](../SYS/SYS-NN_...md)
 @spec:[SPEC-NN](../SPEC/.../SPEC-NN_...yaml)
-@bdd:[BDD-NN:scenarios](../BDD/BDD-NN_....feature#scenarios)
+@bdd:[BDD-NN.SS:scenarios](../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
 ```
 
 ### Requirements section
@@ -241,3 +243,16 @@ See `EARS-01_external_api_integration.md` for a complete example of a well-struc
 - Reviews should verify completeness of PRD coverage
 - Regular updates may be needed as PRDs evolve
 - Changes should maintain backward traceability links
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If a file approaches/exceeds limits, split into section files using `EARS-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
+
+## Document Splitting Standard
+
+When EARS documents grow large or span disparate requirement groups:
+- Ensure `EARS-{NN}.0_index.md` exists and contains a section map
+- Create `EARS-{NN}.{S}_{section_slug}.md` from `EARS-SECTION-TEMPLATE.md` (see `../DOCUMENT_SPLITTING_RULES.md` for numbering and required front‑matter)
+- Keep Prev/Next navigation and update traceability entries
+- Validate with link and size lints; keep YAML frontmatter consistent across sections

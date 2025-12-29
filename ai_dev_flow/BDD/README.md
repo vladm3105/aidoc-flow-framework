@@ -87,7 +87,7 @@ Business Requirements (PRD) → BDD Scenarios ← Technical Design → Implement
 1. PRD-NN.md (Business Requirements)     ← Foundation documents
 2. EARS-NN.md (Atomic Requirements)      ← Prerequisite - provides WHEN/THEN statements
 3. ADR-NN.md (Architecture Decisions)    ← Optional but helpful context
-4. BDD-NN.feature (BDD Scenarios)        ← Created from steps 1-3
+4. `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` (BDD Scenarios)        ← Created from steps 1-3
 5. SPEC-NN.yaml (Technical Specs)        ← Can start in parallel with BDD
 6. TASKS-NN.md (Implementation Plans)    ← Uses BDD scenarios for validation
 7. Code Implementation                    ← Validates against BDD scenarios
@@ -224,7 +224,7 @@ Given the market is available for operations
 Describes the action being tested:
 
 ```gherkin
-When the user submits an order
+When the user submits a request
 When the system processes [EXTERNAL_DATA - e.g., customer data, sensor readings]
 When the calculation service receives parameters
 ```
@@ -233,7 +233,7 @@ When the calculation service receives parameters
 Specifies expected results and validations:
 
 ```gherkin
-Then the order is successfully placed
+Then the request is successfully processed
 Then the response includes expected data
 Then no errors are returned
 ```
@@ -248,22 +248,26 @@ Then data is returned immediately
 And cache hit metrics are incremented
 ```
 
-## File Naming Convention
+## File Naming Convention (Section-Based, Nested Suite Folder)
+
+Location: `BDD/BDD-NN_{suite_slug}/`
 
 ```
-BDD-NN_descriptive_requirements.feature
+BDD-NN.SS_{section_slug}.feature
+BDD-NN.SS.mm_{subsection_slug}.feature
+BDD-NN.SS.00_{section_slug}.feature  # aggregator/redirect
 ```
 
 Where:
-- `BDD` is the constant prefix
-- `NNN` is the 2+ digit sequence number (01, 02, 003, etc.)
-- `descriptive_requirements` uses snake_case focusing on what requirements are being validated
-- `.feature` is the mandatory Gherkin file extension
+- `BDD-NN` is the suite identifier (two+ digits, e.g., 01, 02, 042)
+- `SS` is the section number within the suite (1, 2, 3, ...)
+- `mm` is the subsection number within a section (01, 02, ...); `00` indicates aggregator
+- Slugs use `lower_snake_case` describing the feature scope
 
 **Examples:**
-- `BDD-01_external_api_integration_requirements.feature`
-- `BDD-03_risk_limits_requirements.feature`
-- `BDD-042_ml_model_serving_requirements.feature`
+- `BDD/BDD-02_knowledge_engine/BDD-02.1_ingest.feature`
+- `BDD/BDD-02_knowledge_engine/BDD-02.3.01_learning_path.feature`
+- `BDD/BDD-02_knowledge_engine/BDD-02.3.00_learning.feature`
 
 ## Tagging Standards
 
@@ -400,13 +404,13 @@ Ensure scenarios cover all requirement aspects:
 Map scenarios to complete business journeys:
 
 ```gherkin
-Feature: Order to fulfillment
-  Scenario: Complete order lifecycle
-    Given a customer places an order
-    When payment is processed
-    And inventory is confirmed
-    Then order status shows "processing"
-    And fulfillment email is sent
+Feature: Request to completion
+  Scenario: Complete request lifecycle
+    Given a user submits a request
+    When submission is validated
+    And preconditions are confirmed
+    Then request status shows "processing"
+    And confirmation notification is sent
 ```
 
 ### Integration Coverage
@@ -535,4 +539,17 @@ Scenario: Response within time limits
 
 ## Example BDD Template
 
-See `BDD-01_external_api_integration_requirements.feature` for a complete example of a well-structured BDD feature file that follows these conventions.
+See `BDD/BDD-01_example_suite/BDD-01.1_external_api_integration.feature` for a complete example of a well-structured, section-based BDD feature file that follows these conventions.
+## File Size Limits
+
+- Target: 300–500 lines per `.feature` file
+- Maximum: 600 lines per file (absolute)
+- If a section approaches/exceeds limits, split into subsections `BDD-NN.SS.mm_{slug}.feature` and add an aggregator `BDD-NN.SS.00_{slug}.feature` if many subsections.
+
+## Document Splitting Standard
+
+Splitting BDD suites follows section/subsection rules:
+- Primary files: `BDD-NN.SS_{slug}.feature` (≤12 scenarios; target 300–500 lines)
+- If a section grows: create `BDD-NN.SS.mm_{slug}.feature` and add `.SS.00_{slug}.feature` with `@redirect` for many subsections
+- Update `BDD-NN.0_index.md` with section/subsection map and statuses
+- See `BDD_SPLITTING_RULES.md` for full details; validate with size lints

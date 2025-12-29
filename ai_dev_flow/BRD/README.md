@@ -32,17 +32,17 @@ BRDs transform strategic business goals into concrete, actionable requirements t
 
 BRDs are the **first step** in specification-driven development within the complete SDD workflow:
 
-**⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
+**Authoritative flow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code. See [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) for details.
 
 ## ADR References in BRD
 
 **⚠️ CRITICAL - Workflow Order**: BRDs are created BEFORE ADRs in the SDD workflow. Therefore:
 
-❌ **Do NOT** reference specific ADR numbers (ADR-01, ADR-011, etc.) in BRD documents
+❌ **Do NOT** reference specific ADR numbers (ADR-NN, etc.) in BRD documents
 
 ✅ **DO** include "Architecture Decision Requirements" section describing what decisions are needed
 
-**Correct Workflow Order**: **BRD** → PRD → SYS → EARS → REQ → **ADR** → BDD → IMPL → CTR → SPEC → TASKS
+**Correct Workflow Order**: **BRD** → PRD → EARS → BDD → **ADR** → SYS → REQ → IMPL → CTR → SPEC → TASKS
 
 **Rationale**:
 - BRD/PRD identify **WHAT** architectural decisions are needed
@@ -50,10 +50,10 @@ BRDs are the **first step** in specification-driven development within the compl
 - This separation maintains clear workflow phases and prevents broken references
 
 **Architecture Decision Requirements section**:
-Every BRD should include a section (typically section 5.2) that lists architectural topics requiring decisions:
+Every BRD should include a section (section 7.2) that lists architectural topics requiring decisions:
 
 ```markdown
-## 5.2 Architecture Decision Requirements
+## 7.2 Architecture Decision Requirements
 
 | Topic Area | Decision Needed | Business Driver (BRD Reference) | Key Considerations |
 |------------|-----------------|--------------------------------|-------------------|
@@ -65,8 +65,7 @@ Every BRD should include a section (typically section 5.2) that lists architectu
 - Multi-Agent Framework, State Management, Communication Protocol
 - Data Storage, [EXTERNAL_INTEGRATION - e.g., third-party API, service provider] Integration, Risk Calculation Engine
 
-**Purpose**: Identify architectural topics requiring decisions. Specific ADRs created AFTER this BRD.
-**Timing**: ADRs created after BRD → PRD → SYS → EARS → REQ in SDD workflow.
+**Purpose**: Identify architectural topics requiring decisions. Specific ADRs are created AFTER BDD as per the authoritative flow.
 ```
 
 ## BRD Categories: Platform vs Feature
@@ -79,14 +78,15 @@ Every BRD should include a section (typically section 5.2) that lists architectu
 - Focus on business drivers for technology decisions
 - Populate "Technology Stack Prerequisites" section (section 3.6)
 - List required ADRs in "Mandatory Technology Conditions" (section 3.7)
-- ADRs created BEFORE PRD
+  
+Note: ADRs are authored after BDD in the SDD workflow; do not create ADRs before PRD.
 
-**Workflow**: Platform BRD → **ADRs (critical)** → PRD → ADRs (remaining) → SPEC
+**Workflow**: Platform BRD → PRD → EARS → BDD → ADR → SPEC
 
 **Examples**:
-- BRD-01: Platform Architecture & Technology Stack
-- BRD-034: ML Infrastructure Technology Decisions
-- BRD-050: Mobile Platform Architecture
+- BRD-NN: Platform Architecture & Technology Stack
+- BRD-NN: ML Infrastructure Technology Decisions
+- BRD-NN: Mobile Platform Architecture
 
 **Key Template sections**:
 - section 3.6: Technology Stack Prerequisites (REQUIRED)
@@ -102,26 +102,26 @@ Every BRD should include a section (typically section 5.2) that lists architectu
 - Technology decisions deferred to PRD/ADR phase
 - Standard workflow
 
-**Workflow**: Feature BRD → PRD → ADRs (if needed) → SPEC
+**Workflow**: Feature BRD → PRD → EARS → BDD → ADR (if needed) → SPEC
 
 **Examples**:
-- BRD-006: B2C Progressive KYC Onboarding
-- BRD-009: Remittance Transaction Workflow
-- BRD-022: Fraud Detection Agent
+- BRD-NN: Progressive User Onboarding
+- BRD-NN: Multi-Step Request Workflow
+- BRD-NN: Anomaly Detection Agent
 
 **Key Template sections**:
-- section 3.6: Technology Stack Prerequisites (OPTIONAL - may reference Platform BRD)
-- section 3.7: Mandatory Technology Conditions (Usually empty)
+- section 3.6: Technology Stack Prerequisites (REQUIRED - may reference Platform BRD)
+- section 3.7: Mandatory Technology Conditions (REQUIRED - include platform-inherited and any feature-specific constraints)
 
 ### Naming Conventions
 
 **Platform BRDs**:
 - Pattern: `BRD-NN_platform_*` or `BRD-NN_infrastructure_*`
-- Examples: `BRD-01_platform_architecture_technology_stack.md`
+- Examples: `BRD-NN_platform_architecture_technology_stack.md`
 
 **Feature BRDs**:
 - Pattern: `BRD-NN_{feature_name}`
-- Examples: `BRD-006_b2c_progressive_kyc_onboarding.md`
+- Examples: `BRD-06_progressive_user_onboarding.md`
 
 ### Decision Guide
 
@@ -129,7 +129,7 @@ Every BRD should include a section (typically section 5.2) that lists architectu
 - Building platform/infrastructure
 - Defining technology stack
 - Technology decisions constrain product features
-- ADRs needed before PRD creation
+- Architecture decision topics must be identified early (ADRs will be authored after BDD)
 
 **Use Feature BRD when**:
 - Building user features
@@ -168,14 +168,14 @@ Standard metadata including version, date, owner, status, revision history
 
 ### Functional Requirements
 - **Overview**: High-level functional capabilities
-- **Detailed Requirements**: FR-XXX IDs with MoSCoW priority, risk level, acceptance criteria
+- **Detailed Requirements**: Use internal heading IDs `BRD.NN.01.SS` with MoSCoW priority, risk level, acceptance criteria
 - **Business Rules**: Operational rules and constraints
 - **User Roles and Permissions**: Stakeholder roles and access levels
 
 ### Quality Attributes
 - **Overview**: Quality attributes (performance, security, availability)
 - **Detailed Requirements**: QA-XXX IDs with metrics, targets, priorities
-- **Architecture Decision Requirements**: Architectural topics needing decisions (section 5.2)
+- **Architecture Decision Requirements**: Architectural topics needing decisions (section 7.2)
 
 ### Assumptions and Constraints
 - **Assumptions**: Assumed conditions with validation methods
@@ -216,17 +216,16 @@ Standard metadata including version, date, owner, status, revision history
 
 This directory provides the **BRD-TEMPLATE.md** for business requirements documentation:
 
-> **Design Decision: No BRD_SCHEMA.yaml**
+> **Schema Policy: Optional BRD_SCHEMA.yaml**
 >
-> BRD intentionally does not have a schema file (`BRD_SCHEMA.yaml`). This is a deliberate design choice:
+> BRD validation is human-centric. An optional schema file (`BRD_SCHEMA.yaml`) exists for non-blocking, machine-readable consistency checks. Primary validation remains script-based and human review.
 >
 > **Rationale**:
-> - **Business Flexibility**: Layer 1 artifacts capture diverse business needs across domains (financial, healthcare, SaaS, IoT) - rigid schema validation would constrain legitimate business expression
-> - **Domain Variability**: Business requirements vary significantly by industry, organization size, and project type - a fixed schema cannot accommodate this diversity
-> - **Human-Centric Validation**: Business requirements require human judgment for quality assessment rather than automated schema validation
-> - **Sufficient Guidance**: `BRD_CREATION_RULES.md` and `BRD_VALIDATION_RULES.md` provide comprehensive guidance without rigid constraints
+> - Business flexibility and domain variability require flexibility over rigidity
+> - Human-centric validation is preferred at Layer 1
+> - Sufficient guidance via `BRD_CREATION_RULES.md` and `BRD_VALIDATION_RULES.md`
 >
-> **Validation Approach**: Use `scripts/validate_brd_template.sh` for structural validation while allowing content flexibility.
+> **Validation Approach**: Use `scripts/validate_brd_template.sh` for structural validation; use the optional schema for advisory checks only.
 
 **BRD-TEMPLATE.md** - Comprehensive business requirements template
 - Full-featured template with all sections
@@ -250,10 +249,10 @@ Where:
 
 **Examples:**
 - `BRD-01_foundation_overview.md` (atomic document)
-- `BRD-009.1_provider_integration_prerequisites.md` (section file)
-- `BRD-009.2_provider_integration_pilot.md` (section file)
+- `BRD-09.1_provider_integration_prerequisites.md` (section file)
+- `BRD-09.2_provider_integration_pilot.md` (section file)
 
-**Important**: Each NNN number must be unique. Section files use `.S` suffix (e.g., `BRD-009.0` for index, `BRD-009.1` for first section). See `ID_NAMING_STANDARDS.md` for metadata tags.
+**Important**: Each NN number must be unique. Section files use `.S` suffix (e.g., `BRD-09.0` for index, `BRD-09.1` for first section). See `ID_NAMING_STANDARDS.md` for metadata tags.
 
 ## Writing Guidelines
 
@@ -303,12 +302,12 @@ BRDs now include PRD-ready scoring (mirroring REQ SPEC-ready scoring) to ensure 
 **PRD-Ready Score** evaluates if a BRD is complete enough to proceed to Product Requirements Document (PRD) creation in the SDD workflow:
 
 ```markdown
-| **PRD-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **PRD-Ready Score** | 95/100 (Target: ≥90/100) |
 ```
 
-- **Format**: `✅ emoji + percentage (Target: ≥90%)`
+- **Format**: `[Score]/100 (Target: ≥90/100)` (optional ✅ emoji allowed)
 - **Validation**: Required in Document Control table (blocking validation)
-- **Warnings**: Scores below 90% trigger validation warnings
+- **Warnings**: Scores below 90/100 trigger validation warnings
 
 ### Scoring Criteria
 
@@ -320,7 +319,7 @@ BRDs now include PRD-ready scoring (mirroring REQ SPEC-ready scoring) to ensure 
 
 **Technical Readiness (30%)**:
 - section 3.6 & 3.7 properly populated by BRD type: 10%
-- section 5.2 Architecture Decision Requirements table: 10%
+- section 7.2 Architecture Decision Requirements table: 10%
 - No forward ADR references: 10%
 
 **Quality Standards (20%)**:
@@ -343,14 +342,14 @@ BRDs now include PRD-ready scoring (mirroring REQ SPEC-ready scoring) to ensure 
 ### Integration with Validation
 
 **New Validation Check**: `CHECK 13: PRD-Ready Score Validation`
-- Verifies format: `✅ NN% (Target: ≥90%)`
-- Enforces ≥90% threshold for progression
+- Verifies format: `[Score]/100 (Target: ≥90/100)`
+- Enforces ≥90/100 threshold for progression
 - Blocking validation - must pass before PRD creation
 
 ### Workflow Integration
 
 ```
-BRD (with PRD-Ready Score ≥90%) → PRD Creation → SYS → EARS → REQ → ADR → BDD → IMPL → CTR → SPEC → TASKS → Code
+BRD (with PRD-Ready Score ≥90/100) → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code
 ```
 
 **Quality Gate**: BRD documents must achieve ≥90% PRD-ready score before proceeding to PRD phase, ensuring business requirements are sufficiently mature for product implementation planning.
@@ -362,8 +361,8 @@ BRD (with PRD-Ready Score ≥90%) → PRD Creation → SYS → EARS → REQ → 
 - Specific, achievable business objectives
 - Explicit out-of-scope items defining boundaries
 - Measurable success criteria and KPIs
-- **PRD-Ready Score ≥90%** in Document Control
-- Architecture Decision Requirements section (section 5.2)
+- **PRD-Ready Score ≥90/100** in Document Control
+- Architecture Decision Requirements section (section 7.2)
 - Business-focused acceptance criteria
 - Comprehensive risk assessment
 
@@ -372,7 +371,7 @@ BRD (with PRD-Ready Score ≥90%) → PRD Creation → SYS → EARS → REQ → 
 - Links resolve to existing documents or include placeholders
 - Assumptions and constraints explicitly documented
 - Stakeholder roles and responsibilities defined
-- All requirements have unique IDs (BO-XXX, FR-XXX, QA-XXX)
+- All requirements have unique IDs using unified format (e.g., `BRD.NN.23.SS` for objectives, `BRD.NN.01.SS` for functional requirements, `BRD.NN.02.SS` for quality)
 
 ## Common Patterns
 
@@ -441,8 +440,29 @@ BRDs serve as:
 
 ## Example BRDs
 
-See existing BRD documents in `docs/BRD/` for complete examples:
-- `BRD-01.1_foundation_overview.md` - Multi-agent system strategic overview (section file)
-- `BRD-009.2_provider_integration_pilot.md` - [EXTERNAL_SERVICE_GATEWAY] integration pilot (section file)
+See `BRD/examples/` for minimal, validator-compliant examples:
+- `BRD-01_platform_architecture_example.md` (Platform BRD)
+- `BRD-06_example_feature.md` (Feature BRD)
+
+Also consult:
+- `BRD-TEMPLATE.md` (primary standard)
+- `FR_EXAMPLES_GUIDE.md` (functional requirements patterns)
+
+Note: `BRD-TEMPLATE.md` is a reference template. For real BRDs, prefer sectioned docs using `BRD-SECTION-0-TEMPLATE.md` and `BRD-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`.
 
 These demonstrate well-structured BRDs following these conventions with proper Architecture Decision Requirements sections.
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If a file approaches/exceeds limits, split into section files using `BRD-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
+
+## Document Splitting Standard
+
+When BRD content grows beyond the target range or becomes hard to navigate:
+- Create or update the suite index: `BRD-{NN}.0_index.md`
+- Split content into section files using `BRD-SECTION-TEMPLATE.md` (see `../DOCUMENT_SPLITTING_RULES.md` for numbering and required front‑matter):
+  - Filenames: `BRD-{NN}.{S}_{section_slug}.md` (S = 1, 2, 3, ...)
+  - Maintain Prev/Next navigation and update the index table (section map)
+- Update cross-references and any traceability matrices to point to the new section files
+- Validate links and run `./scripts/lint_file_sizes.sh`

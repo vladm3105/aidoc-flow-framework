@@ -231,7 +231,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 ## 0. Document Control
 
 **Document Metadata**
-- **Document ID**: EARS-024
+- **Document ID**: EARS-NN
 - **Version**: 1.0
 ```
 
@@ -325,6 +325,46 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 ```markdown
 | **Source Document** | @prd: PRD.01.01.01 |
 ```
+
+---
+
+### E044: Source Document Single @prd (No Ranges)
+
+**Type**: Error (blocking)
+
+**Check**: Document Control “Source Document” contains exactly one `@prd: PRD.NN.EE.SS` reference. No ranges (e.g., `@prd: ... - @prd: ...`) and no multiple `@prd` values.
+
+**Invalid**:
+```markdown
+| **Source Document** | @prd: PRD.12.19.01 - @prd: PRD.12.19.57 |
+```
+
+**Valid**:
+```markdown
+| **Source Document** | @prd: PRD.12.19.01 |
+```
+
+**Fix**: Provide one canonical `@prd` in the table; list additional IDs in an Upstream Sources subsection or per-requirement traceability.
+
+---
+
+### E045: No Numeric Downstream References
+
+**Type**: Error (blocking)
+
+**Check**: Document contains no numeric downstream references of the form `BDD-##`, `ADR-##`, `REQ-##`, `SPEC-##`, `SYS-##`.
+
+**Invalid**:
+```markdown
+Downstream: BDD-NN, ADR-NN
+```
+
+**Valid**:
+```markdown
+Downstream: BDD, ADR, SYS
+```
+
+**Fix**: Use generic downstream names until those artifacts exist; add numeric IDs only after creation.
 
 ---
 

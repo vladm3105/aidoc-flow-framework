@@ -15,6 +15,8 @@
 # SPEC-NN: [Component Name]
 # ===================
 #
+# Reference Template — For learning and small specs only. Real SPECs are monolithic per component by default; split only when needed per '../DOCUMENT_SPLITTING_RULES.md' and 'SPEC/SPEC_SPLITTING_RULES.md'.
+#
 # ⚠️ CRITICAL: Always reference SPEC_DRIVEN_DEVELOPMENT_GUIDE.md as the single source of truth
 #              for workflow steps, artifact definitions, and quality gates.
 #              Location: ../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
@@ -149,7 +151,7 @@ traceability:
 
     behavioral_tests:
       - id: "BDD-NN"
-        link: "../bbds/BDD-NN.feature"
+        link: "../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature"
         title: "Feature: [Feature name]"
         scenarios:
           - name: "Scenario: Primary success path"
@@ -165,7 +167,7 @@ traceability:
         coverage_percentage: 0  # Target: 100%
 
       - id: "BDD-MM"
-        link: "../bbds/BDD-MM.feature"
+        link: "../BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature"
         title: "Feature: [Integration scenarios]"
         scenarios:
           - name: "Scenario: External service integration"
@@ -1087,9 +1089,9 @@ observability:
 
 verification:
   bdd_scenarios:
-    - "[BDD-NN.feature](../bbds/BDD-NN.feature#scenario-primary-success-path)"
-    - "[BDD-NN.feature](../bbds/BDD-NN.feature#scenario-error-handling)"
-    - "[BDD-NN.feature](../bbds/BDD-NN.feature#scenario-performance-under-load)"
+    - "`BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-primary-success-path`"
+    - "`BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-error-handling`"
+    - "`BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-performance-under-load`"
 
   performance_tests:
     - target_p95_latency_ms: "@threshold: PRD.NN.perf.api.p95_latency"

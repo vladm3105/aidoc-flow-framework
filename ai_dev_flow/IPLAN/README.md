@@ -321,20 +321,20 @@ Total: 9 tags (all mandatory, no optional)
 ### Current State Analysis
 
 **Documentation Status**: ✅ 100% Complete
-- SPEC-01: [description]
-- REQ-01 through REQ-010: [coverage]
-- BDD-01: [scenarios]
+- SPEC-NN: [description]
+- REQ-NN through REQ-NN: [coverage]
+- BDD-NN: [scenarios]
 
 **Code Status**: ❌ 0% - Starting from Scratch
 - [Current implementation state]
 
 ### Key Technical Decisions
 
-**Architecture** (from ADR-02):
+**Architecture** (from ADR-NN):
 - [Decision #1]
 - [Decision #2]
 
-**Error Handling** (from SPEC-01):
+**Error Handling** (from SPEC-NN):
 - [Strategy]
 ```
 
@@ -948,10 +948,10 @@ Next actions:
 
 **IPLAN Structure**:
 ```markdown
-# IPLAN-005: Add Circuit Breaker Timeout Configuration
+# IPLAN-NN: Add Circuit Breaker Timeout Configuration
 
 ## Objective
-Add configurable timeout parameter to circuit breaker per REQ-042 enhancement.
+Add configurable timeout parameter to circuit breaker per REQ-NN enhancement.
 
 ## Context
 **Code Status**: ✅ Existing implementation functional
@@ -1482,3 +1482,15 @@ IPLAN documents are essential for **session-based implementation work** with AI 
 **Document Version**: 1.0.0
 **Last Updated**: 2025-11-12
 **Framework Version**: AI Dev Flow 2.0
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If a file approaches/exceeds limits, split plans by scope or timebox and update indexes.
+
+## Document Splitting Standard
+
+Split IPLAN by sprint/phase to improve clarity:
+- Create additional IPLAN files (e.g., `IPLAN-{NN}_sprint1_{slug}.md`)
+- Update any roll-up indexes and cross-links to TASKS/REQs
+- Validate links and run size lints

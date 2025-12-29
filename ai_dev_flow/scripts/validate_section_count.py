@@ -38,7 +38,7 @@ def parse_frontmatter(content: str) -> Optional[Dict]:
 def get_document_prefix(filepath: str) -> Optional[str]:
     """Extract document prefix (e.g., PRD-001) from filename."""
     filename = os.path.basename(filepath)
-    # Match patterns like PRD-001.0_, BRD-002.1_, etc.
+    # Match patterns like PRD-001.0_, BRD-02.1_, etc.
     match = re.match(r'^([A-Z]+-\d+)\.\d+_', filename)
     if match:
         return match.group(1)

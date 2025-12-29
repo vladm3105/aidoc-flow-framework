@@ -270,7 +270,7 @@ else:
 **Workflow**: `REQ → IMPL → CTR → SPEC → TASKS → Code`
 
 **Contracts to Create**:
-- CTR-001: request submission API (OpenAPI 3.0)
+- CTR-01: request submission API (OpenAPI 3.0)
 - CTR-02: Order Execution Event (AsyncAPI 2.x)
 - CTR-03: Position Data Model (JSON Schema)
 
@@ -305,9 +305,9 @@ else:
 **Workflow**: `REQ → IMPL → CTR → SPEC → TASKS → Code`
 
 **Contracts to Create**:
-- CTR-010: User Service API (OpenAPI 3.0)
-- CTR-011: Payment Service API (OpenAPI 3.0)
-- CTR-012: Notification Service Events (AsyncAPI 2.x)
+- CTR-NN: User Service API (OpenAPI 3.0)
+- CTR-NN: Payment Service API (OpenAPI 3.0)
+- CTR-NN: Notification Service Events (AsyncAPI 2.x)
 
 ---
 

@@ -153,9 +153,15 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 #### 1.1 Review Prerequisites
 - **Action**: Analyze upstream specifications and requirements
 - **Artifacts to Review**:
+<!-- VALIDATOR:IGNORE-LINKS-START -->
   - [REQ-NN](../REQ/.../REQ-NN.md) - Atomic requirements
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
   - [SPEC-NN](../SPEC/.../SPEC-NN.yaml) - Technical specification
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
   - [ADR-NN](../ADR/ADR-NN.md) - Architecture decisions
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 - **Success Criteria**: All requirements understood, ambiguities resolved
 - **Estimated Duration**: [X hours]
 
@@ -260,8 +266,12 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 #### 3.3 BDD Scenario Execution
 - **Action**: Execute automated behavior-driven tests
 - **Scenarios to Validate**:
-  - [BDD-NN.feature](../BDD/BDD-NN.feature) - [Scenario description]
-  - [BDD-MM.feature](../BDD/BDD-MM.feature) - [Scenario description]
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+  - `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` - [Scenario description]
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+  - `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` - [Scenario description]
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 - **Success Criteria**: All BDD scenarios pass with expected outcomes
 - **Estimated Duration**: [X hours]
 
@@ -344,7 +354,9 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 | TASKS ID | Contract Name | Contract Type | Purpose | Status |
 |----------|---------------|---------------|---------|--------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | [TASKS-NN](./TASKS-NN.md) | [Interface Name] | Protocol/Exception/State/Data/DI | [What this TASKS needs from dependency] | Available/Pending |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Example**:
 ```
@@ -363,8 +375,12 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 | TASKS ID | Consuming Purpose | Contract Used | Blocking Status |
 |----------|------------------|---------------|-----------------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | [TASKS-AAA](./TASKS-AAA.md) | [How they use this contract] | [Contract name] | Unblocked when: [condition] |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | [TASKS-BBB](./TASKS-BBB.md) | [How they use this contract] | [Contract name] | Unblocked when: [condition] |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Example**:
 ```
@@ -387,9 +403,15 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 **Purpose**: [Single sentence describing what this contract enables]
 
 **Consumers** ([N] TASKS):
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [TASKS-AAA](./TASKS-AAA.md): [How they use it]
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [TASKS-BBB](./TASKS-BBB.md): [How they use it]
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [TASKS-CCC](./TASKS-CCC.md): [How they use it]
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Contract Definition**:
 
@@ -491,7 +513,9 @@ class MockGatewayConnector:
 
 #### Consumed Contract 1: [Contract Name from TASKS-NN]
 
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 **Source**: [TASKS-NN](./TASKS-NN.md) - [Contract Name]
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Type**: [Protocol/Exception/State/Data/DI]
 
@@ -1041,12 +1065,24 @@ Document the business strategy, product requirements, system specifications, and
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | BRD | [BRD-NN](../BRD/BRD-NN_...md) | [Business requirements title] | sections X.Y | Business objectives this task supports |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | PRD | [PRD-NN](../PRD/PRD-NN_...md) | [Product requirements title] | Features A, B, C | Product features this task implements |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | EARS | [EARS-NN](../EARS/EARS-NN_...md) | [Engineering requirements] | Event-001, State-002 | Formal requirements this task satisfies |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | ADR | [ADR-NN](../ADR/ADR-NN_...md#ADR-NN) | [Architecture decision title] | Decision, Consequences | Architectural approach this task follows |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | SYS | [SYS-NN](../SYS/SYS-NN_...md) | [System requirements title] | sections 3.1, 4.2 | System specification this task implements |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | REQ | [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN) | [Atomic requirement title] | All acceptance criteria | Detailed requirements this task fulfills |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Business Context**:
 - Business Objective: [Specific goal from BRD] → Enabled by completing this task
@@ -1071,8 +1107,12 @@ Document the technical specifications, contracts, and tests that guide and valid
 
 | SPEC ID | Specification Title | Task Implementation Scope | Relationship |
 |---------|-------------------|-------------------------|--------------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | [SPEC-NN](../SPEC/.../SPEC-NN.yaml) | [Technical spec title] | This task implements sections X, Y, Z | Implementation blueprint |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | [SPEC-MM](../SPEC/.../SPEC-MM.yaml) | [Interface spec] | This task implements API contracts | Interface implementation |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Specification Coverage**:
 - All SPEC sections mapped to implementation plan steps
@@ -1092,9 +1132,15 @@ Document the technical specifications, contracts, and tests that guide and valid
 
 | BDD ID | BDD Feature/Scenario | Task BDD Coverage | Test Status | Relationship |
 |--------|---------------------|------------------|-------------|--------------|
-| [BDD-NN](../BDD/BDD-NN.feature) | Feature: [Feature name] | Scenarios 1-5 validated by this task | Pending/Pass/Fail | Acceptance test |
-| [BDD-NN](../BDD/BDD-NN.feature#scenario-1) | Scenario: [Specific scenario] | Specific acceptance criterion validated | Pending/Pass/Fail | Functional validation |
-| [BDD-MM](../BDD/BDD-MM.feature) | Feature: [Error handling] | Error scenarios validated | Pending/Pass/Fail | Negative testing |
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Feature: [Feature name] | Scenarios 1-5 validated by this task | Pending/Pass/Fail | Acceptance test |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1` | Scenario: [Specific scenario] | Specific acceptance criterion validated | Pending/Pass/Fail | Functional validation |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` | Feature: [Error handling] | Error scenarios validated | Pending/Pass/Fail | Negative testing |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **BDD Coverage Summary**:
 - Total BDD scenarios: [count]
@@ -1109,16 +1155,26 @@ Document the technical specifications, contracts, and tests that guide and valid
 
 | BDD Scenario | Implementation Step | Code Location | Test File | Status |
 |--------------|-------------------|---------------|-----------|--------|
-| [BDD-NN#scenario-1](../BDD/BDD-NN.feature#scenario-1) | Phase 2.2: Core Logic | src/module/component.py:function_name() | tests/acceptance/test_scenario_1.py | ✅ Pass |
-| [BDD-NN#scenario-2](../BDD/BDD-NN.feature#scenario-2) | Phase 2.3: Integration | src/module/api_client.py:call_external() | tests/acceptance/test_scenario_2.py | 🔄 Pending |
-| [BDD-MM#error-1](../BDD/BDD-MM.feature#error-1) | Phase 2.4: Error Handling | src/module/error_handler.py:handle_error() | tests/acceptance/test_errors.py | ✅ Pass |
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1` | Phase 2.2: Core Logic | src/module/component.py:function_name() | tests/acceptance/test_scenario_1.py | ✅ Pass |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-2` | Phase 2.3: Integration | src/module/api_client.py:call_external() | tests/acceptance/test_scenario_2.py | 🔄 Pending |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature#error-1` | Phase 2.4: Error Handling | src/module/error_handler.py:handle_error() | tests/acceptance/test_errors.py | ✅ Pass |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Acceptance Criteria Validation**:
 
 | Acceptance Criterion (from REQ-NN) | BDD Validation | Implementation Evidence | Status |
 |------------------------------------|----------------|------------------------|--------|
-| Primary Functional Criteria #1 | [BDD-NN.feature](../BDD/BDD-NN.feature) Lines 20-45 | src/module/component.py:120-145 | ✅ Validated |
-| Error and Edge Case #1 | [BDD-MM.feature](../BDD/BDD-MM.feature) Lines 100-120 | src/module/error_handler.py:50-75 | ✅ Validated |
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| Primary Functional Criteria #1 | `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` Lines 20-45 | src/module/component.py:120-145 | ✅ Validated |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| Error and Edge Case #1 | `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` Lines 100-120 | src/module/error_handler.py:50-75 | ✅ Validated |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 | Quality and Constraint #1 | Performance test results | tests/performance/load_test.py | 🔄 Pending |
 
 ### 10.4 Code Implementation Paths
@@ -1228,8 +1284,12 @@ Document evidence that this task has been implemented correctly and meets all ac
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Related | [TASKS-NN](./TASKS-NN_...md) | [Related TASKS title] | Shared implementation context |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Depends | [TASKS-NN](./TASKS-NN_...md) | [Prerequisite TASKS title] | Must complete before this |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Tags:**
 ```markdown
@@ -1277,7 +1337,7 @@ Document evidence that this task has been implemented correctly and meets all ac
 @prd: PRD.03.01.02
 @ears: EARS.01.24.03
 @bdd: BDD.03.13.01
-@adr: ADR-033
+@adr: ADR-NN
 @sys: SYS.08.25.01
 @req: REQ.03.26.01
 @impl: IMPL.01.28.01
@@ -1664,3 +1724,14 @@ timeout:
 6. Validate template compliance using `python scripts/validate_traceability.py`
 7. Update Change History upon each significant modification
 8. Review and update TASKS-000_index.md when creating new tasks
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If this task document approaches/exceeds limits, split into multiple task files (e.g., Phase 1/2) and update cross-links.
+
+## Document Splitting Standard
+
+- Split by scope/phase (Phase 1/2 or sub-modules)
+- Ensure acceptance/traceability sections point to the correct BDD/SPEC after splitting
+- Validate links and run size lints

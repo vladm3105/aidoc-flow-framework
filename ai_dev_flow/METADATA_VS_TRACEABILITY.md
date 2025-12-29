@@ -68,13 +68,13 @@ AI Dev Flow uses **TWO SEPARATE SYSTEMS** for document information:
 
 ---
 
-## Examples: REQ-007 (Atomic Requirement)
+## Examples: REQ-NN (Atomic Requirement)
 
 ### YAML Frontmatter Example
 
 ```yaml
 ---
-title: "REQ-007: WebSocket Reconnection Logic"
+title: "REQ-NN: WebSocket Reconnection Logic"
 tags:
   - atomic-requirement
   - layer-7-artifact
@@ -127,7 +127,7 @@ custom_fields:
   - Defines expected user experience
 
 #### Architecture Decisions (@adr)
-- @adr: ADR-005 (WebSocket Connection Architecture)
+- @adr: ADR-NN (WebSocket Connection Architecture)
   - Decision: Exponential backoff reconnection strategy
   - Provides architectural context
 
@@ -143,7 +143,7 @@ custom_fields:
   - section 3.2: Connection management strategy
 
 #### Technical Specifications (@spec)
-- @spec: SPEC-01 (WebSocket Quote Ingestion Technical Spec)
+- @spec: SPEC-NN (WebSocket Quote Ingestion Technical Spec)
   - section 4: Reconnection algorithm implementation
   - section 5: Error handling and logging
 ```
@@ -239,7 +239,7 @@ python3 scripts/validate_metadata.py --strict .
 ```yaml
 # DON'T DO THIS - Too generic, no audit trail
 custom_fields:
-  references: [BRD-01, PRD-03, ADR-005]
+  references: [BRD-NN, PRD-NN, ADR-NN]
 ```
 
 **Problem**: No context, no descriptions, no compliance value
@@ -250,9 +250,9 @@ custom_fields:
 ## 7. Traceability
 
 ### Upstream References
-- @brd: BRD.01.01.01 (Platform Architecture)
+- @brd: BRD.NN.NN.NN (Platform Architecture)
   - section 3.5: Technology stack requirements
-- @prd: PRD.03.01.01 (Quoteboard Product)
+- @prd: PRD.NN.NN.NN (Product)
   - section 4: Real-time data requirements
 ```
 
@@ -265,8 +265,8 @@ custom_fields:
 ```yaml
 custom_fields:
   upstream:
-    brd: "BRD-01"
-    prd: "PRD-03"
+    brd: "BRD-NN"
+    prd: "PRD-NN"
 ```
 
 **Problems**:
@@ -280,7 +280,7 @@ custom_fields:
 ### ❌ Wrong: Omitting YAML Frontmatter
 
 ```markdown
-# REQ-007: WebSocket Reconnection Logic
+# REQ-NN: WebSocket Reconnection Logic
 
 ## 1. Requirement Statement
 ...
@@ -338,6 +338,8 @@ Need AI assistant to follow dependency chains?
 ## See Also
 
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - section "Metadata Management Approaches"
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [/home/ya/.claude/CLAUDE.md](../../.claude/CLAUDE.md) - section "Metadata Standards"
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 - [scripts/validate_metadata.py](../scripts/validate_metadata.py) - YAML validation tool
 - Claude Code skill: `trace-check` - Traceability validation tool

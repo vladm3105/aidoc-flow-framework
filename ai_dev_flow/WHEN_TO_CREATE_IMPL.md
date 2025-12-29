@@ -171,7 +171,7 @@ graph TD
 
 **Documents**:
 ```
-REQ-03 → IMPL-01 → CTR-001 (Risk Validator API) → SPEC-03 → TASKS-03
+REQ-NN → IMPL-NN → CTR-NN (Validator API) → SPEC-NN → TASKS-NN
 ```
 
 **Example 2: [METRICS - e.g., performance indicators, quality scores] Calculation ⏭️ Skip CTR**
@@ -183,11 +183,11 @@ REQ-03 → IMPL-01 → CTR-001 (Risk Validator API) → SPEC-03 → TASKS-03
 
 **Documents**:
 ```
-REQ-042 → SPEC-042 (internal implementation) → TASKS-042
+REQ-NN → SPEC-NN (internal implementation) → TASKS-NN
 (No CTR needed - internal logic only)
 ```
 
-**Example 3: Trade Event Schema ✅ Create CTR**
+**Example 3: Event Schema ✅ Create CTR**
 
 **Criteria Met**:
 - Pub/Sub event consumed by 5+ services
@@ -196,7 +196,7 @@ REQ-042 → SPEC-042 (internal implementation) → TASKS-042
 
 **Documents**:
 ```
-REQ-075 → IMPL-075 → CTR-075 (Trade Event Schema) → SPEC-075 → TASKS-075
+REQ-NN → IMPL-NN → CTR-NN (Event Schema) → SPEC-NN → TASKS-NN
 ```
 
 ## Examples
@@ -213,7 +213,7 @@ REQ-075 → IMPL-075 → CTR-075 (Trade Event Schema) → SPEC-075 → TASKS-075
 
 **Documents**:
 ```
-REQ-01 → IMPL-01 → CTR-001, CTR-02 → SPEC-01.1, SPEC-01.2 → TASKS-01
+REQ-NN → IMPL-NN → CTR-NN, CTR-NN → SPEC-NN, SPEC-NN → TASKS-NN
 ```
 
 ### Example 2: Bug Fix - [METRICS - e.g., performance indicators, quality scores] Calculation ⏭️ Skip IMPL
@@ -228,7 +228,7 @@ REQ-01 → IMPL-01 → CTR-001, CTR-02 → SPEC-01.1, SPEC-01.2 → TASKS-01
 
 **Documents**:
 ```
-REQ-042 → SPEC-042.1 → TASKS-042
+REQ-NN → SPEC-NN.1 → TASKS-NN
 (No IMPL, no CTR needed - internal calculation fix)
 ```
 
@@ -244,7 +244,7 @@ REQ-042 → SPEC-042.1 → TASKS-042
 
 **Documents**:
 ```
-REQ-099 → SPEC-099.1 → TASKS-099
+REQ-NN → SPEC-NN.1 → TASKS-NN
 (No IMPL - standard config deployment)
 ```
 
@@ -260,7 +260,7 @@ REQ-099 → SPEC-099.1 → TASKS-099
 
 **Documents**:
 ```
-REQ-075 → IMPL-075 → CTR-075, CTR-076 → SPEC-075.1, SPEC-075.2, SPEC-075.3 → TASKS-075
+REQ-NN → IMPL-NN → CTR-NN, CTR-NN → SPEC-NN, SPEC-NN, SPEC-NN → TASKS-NN
 ```
 
 ## Traceability Impact

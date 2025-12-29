@@ -1,4 +1,4 @@
-# SPEC-001: [EXTERNAL_API] Client Specification
+# SPEC-01: [EXTERNAL_API] Client Specification
 # This is a template example showing YAML specification format
 # Replace all [PLACEHOLDERS] with your project-specific values
 
@@ -9,8 +9,8 @@ status: "example"  # planning | development | testing | production
 
 # === TRACEABILITY ===
 requirements:
-  - "REQ-001"  # [EXTERNAL_API] Integration
-  - "REQ-002"  # Data Validation
+  - "REQ-01"  # [EXTERNAL_API] Integration
+  - "REQ-02"  # Data Validation
   - "REQ-XXX"  # [Additional requirements]
 
 adrs:

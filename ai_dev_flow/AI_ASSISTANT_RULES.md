@@ -75,7 +75,7 @@ If user does not specify or says "default", use **Financial Services** configura
 
 ---
 
-## Rule 2: Folder Structure Creation (regulatoryOND STEP)
+## Rule 2: Folder Structure Creation (SECOND STEP)
 
 ### Critical Rule
 **AI Assistant MUST create complete directory structure BEFORE creating any documents.**
@@ -837,7 +837,7 @@ class PositionLimiter:
     resource limit enforcement per [REQ-023](../docs/REQ/risk/REQ-023_resource_limit.md).
 
     Architecture: [ADR-008](../docs/ADR/ADR-008_realtime_enforcement/ADR-008.0_realtime_enforcement_index.md) - Real-time enforcement
-    Acceptance Tests: [BDD-015](../docs/BDD/BDD-015_resource_limits.feature)
+    Acceptance Tests: [BDD-015](../docs/BDD/BDD-015_resource_limits/BDD-015.1_resource_limits.feature)
     """
 
     def enforce_limit(self, position: Position) -> EnforcementResult:
@@ -1063,7 +1063,7 @@ When creating documents for dual-architecture projects:
 
 1. **Identify Document Type**: Determine if primary, fallback, or shared
 2. **Apply Metadata Template**: Use appropriate template from above
-3. **Add Custom Admonition**: For key documents (e.g., BRD-022, BRD-016)
+3. **Add Custom Admonition**: For key documents (e.g., BRD-22, BRD-16)
 4. **Create Bidirectional References**: Link primary ↔ fallback
 5. **Validate**: Ensure YAML syntax correct, references exist
 

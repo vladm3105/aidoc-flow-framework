@@ -651,6 +651,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 - **Manual**: Verify each tag resolves to existing document in framework
 - **Traceability Matrix**: Update `IPLAN-000_TRACEABILITY_MATRIX-TEMPLATE.md`
 
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 ### 8.6 Same-Type References (Conditional)
 
 **Include this section only if same-type relationships exist between IPLAN documents.**
@@ -660,7 +661,8 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 | Related | [IPLAN-NN](./IPLAN-NN_...md) | [Related IPLAN title] | Shared session context |
 | Depends | [IPLAN-NN](./IPLAN-NN_...md) | [Prerequisite IPLAN title] | Must complete before this |
 
-**Tags:**
+**Tags:**<!-- VALIDATOR:IGNORE-LINKS-END -->
+
 ```markdown
 @related-iplan: IPLAN-NN
 @depends-iplan: IPLAN-NN
@@ -721,6 +723,8 @@ pytest --cov --cov-fail-under=@threshold: PRD.NN.quality.test.unit_coverage
 
 ## 9. Traceability
 
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 ### 9.1 Upstream References (→ references TO)
 
 **Direct Parent**:
@@ -741,7 +745,7 @@ pytest --cov --cov-fail-under=@threshold: PRD.NN.quality.test.unit_coverage
 - [SYS-NN](../SYS/[path]/SYS-NN.md) - System-level requirements
 
 **BDD Scenarios**:
-- [BDD-NN](../BDD/[path]/BDD-NN.feature) - Behavioral tests to satisfy
+- `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` - Behavioral tests to satisfy
 
 **EARS Requirements**:
 - [EARS-NN](../EARS/[path]/EARS-NN.md) - Event-action-response specifications
@@ -756,6 +760,10 @@ pytest --cov --cov-fail-under=@threshold: PRD.NN.quality.test.unit_coverage
 - [IMPL-NN](../IMPL/[path]/IMPL-NN.md) - Implementation strategies
 - [CTR-NN](../CTR/[path]/CTR-NN.md) - Interface contracts to implement
 
+
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 ### 9.2 Downstream Impact (← referenced BY)
 
 **Code Implementation**:
@@ -771,6 +779,8 @@ pytest --cov --cov-fail-under=@threshold: PRD.NN.quality.test.unit_coverage
 - [config/deployment.yaml] - Deployment configurations
 - [.github/workflows/ci.yml] - CI/CD pipeline definitions
 
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 ### 9.3 Related Documents
 
 **Sibling Documents**:
@@ -780,6 +790,7 @@ pytest --cov --cov-fail-under=@threshold: PRD.NN.quality.test.unit_coverage
 **Traceability Matrix**:
 - [IPLAN-000_TRACEABILITY_MATRIX.md](./IPLAN-000_TRACEABILITY_MATRIX.md) - Complete traceability matrix
 
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 ### 9.4 Traceability Tags
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 12):
@@ -816,17 +827,17 @@ pytest --cov --cov-fail-under=@threshold: PRD.NN.quality.test.unit_coverage
 
 **Example**:
 ```markdown
-@brd: BRD.01.01.30
-@prd: PRD.03.01.02
-@ears: EARS.01.24.03
-@bdd: BDD.03.13.01
-@adr: ADR-033
-@sys: SYS.08.25.01
-@req: REQ.03.26.01
-@impl: IMPL.01.28.01
-@ctr: CTR-01
-@spec: SPEC-03
-@tasks: TASKS.01.29.01
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS.NN.24.NN
+@bdd: BDD.NN.13.NN
+@adr: ADR-NN
+@sys: SYS-NN
+@req: REQ-NN
+@impl: IMPL-NN
+@ctr: CTR-NN
+@spec: SPEC-NN
+@tasks: TASKS.NN.NN.NN
 ```
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through TASKS) are properly linked.
@@ -944,9 +955,15 @@ pytest --cov --cov-fail-under=@threshold: PRD.NN.quality.test.unit_coverage
 - [BDD-TEMPLATE.feature](../BDD/BDD-TEMPLATE.feature) - BDD scenario template
 
 ### 12.3 Related Artifacts
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [TASKS-NN](../TASKS/[path]/TASKS-NN.md) - Parent code generation plan
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [SPEC-NN](../SPEC/[path]/SPEC-NN.yaml) - Technical specification
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [REQ-NN](../REQ/[path]/REQ-NN.md) - Requirements being implemented
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### 12.4 External References
 - [External documentation or API references]
@@ -1000,3 +1017,14 @@ Quick reference for common commands used in this implementation:
 
 **Next Actions**: [What to do after completing this implementation plan]
 **Follow-up**: [Related tasks or future enhancements]
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If this plan approaches/exceeds limits, split into multiple IPLAN files (e.g., sprint/phase) and update cross-links.
+
+## Document Splitting Standard
+
+- Split by sprint/phase or functional scope
+- Keep links to TASKS/REQ/SPEC in sync; update any indexes
+- Validate references and run size lints

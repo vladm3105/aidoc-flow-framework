@@ -55,7 +55,8 @@ BDD-02: Knowledge Engine Test Suite
 
 ### Index File Creation
 
-- [ ] Create `docs/BDD/BDD-NN.0_index.md` from `BDD-SECTION-0-TEMPLATE.md`
+- [ ] Create suite folder: `docs/BDD/BDD-NN_{slug}/`
+- [ ] Create `docs/BDD/BDD-NN_{slug}/BDD-NN.0_index.md` from `BDD-SECTION-0-TEMPLATE.md`
 - [ ] Update YAML frontmatter:
   - [ ] Set `title` to actual suite title
   - [ ] Update `parent_doc` reference (if applicable)
@@ -118,7 +119,7 @@ Choose split criteria (in priority order):
 
 ### For Each Section
 
-- [ ] Create section file: `docs/BDD/BDD-NN.SS_{slug}.feature`
+- [ ] Create section file: `docs/BDD/BDD-NN_{slug}/BDD-NN.SS_{slug}.feature`
 - [ ] Copy from `BDD-SECTION-TEMPLATE.feature`
 - [ ] Update file-level traceability tags:
   ```gherkin
@@ -211,8 +212,8 @@ If a section file exceeds 500 lines or 12 scenarios:
 
 ```bash
 # Check for raw numeric values (should return 0 matches)
-rg -n "WITHIN\s+[0-9]+\s+(seconds?|minutes?)" docs/BDD/BDD-NN.*.feature
-rg -n "after\s+[0-9]+\s+(attempts?|retries?)" docs/BDD/BDD-NN.*.feature
+rg -n "WITHIN\s+[0-9]+\s+(seconds?|minutes?)" docs/BDD/BDD-NN_*/BDD-NN*.feature
+rg -n "after\s+[0-9]+\s+(attempts?|retries?)" docs/BDD/BDD-NN_*/BDD-NN*.feature
 ```
 
 ---
@@ -225,8 +226,8 @@ rg -n "after\s+[0-9]+\s+(attempts?|retries?)" docs/BDD/BDD-NN.*.feature
   ```markdown
   | Section | File | Scenarios | Lines | Status | Description |
   |---------|------|-----------|-------|--------|-------------|
-  | 02.1 | BDD-02.1_ingest.feature | 8 | 350 | Active | Ingest and analysis tests |
-  | 02.2 | BDD-02.2_query.feature | 10 | 420 | Active | Query processing tests |
+  | 02.1 | BDD-02_knowledge_engine/BDD-02.1_ingest.feature | 8 | 350 | Active | Ingest and analysis tests |
+  | 02.2 | BDD-02_knowledge_engine/BDD-02.2_query.feature | 10 | 420 | Active | Query processing tests |
   ```
 - [ ] Update Traceability Matrix with upstream dependencies:
   ```markdown
@@ -254,7 +255,7 @@ python ai_dev_flow/scripts/validate_bdd_suite.py \
 ### Manual Validation Checklist
 
 **File Organization**:
-- [ ] All `.feature` files at `docs/BDD/` root level (no subdirectories)
+- [ ] All `.feature` files are inside suite folder: `docs/BDD/BDD-NN_{slug}/`
 - [ ] Index file exists: `BDD-NN.0_index.md`
 - [ ] Section files follow pattern: `BDD-NN.SS_{slug}.feature`
 - [ ] Subsections (if any) follow pattern: `BDD-NN.SS.mm_{slug}.feature`
@@ -342,8 +343,8 @@ If migrating from legacy format:
 ### Git Commit
 
 ```bash
-git add docs/BDD/BDD-NN.0_index.md
-git add docs/BDD/BDD-NN.*.feature
+git add docs/BDD/BDD-NN_*/BDD-NN.0_index.md
+git add docs/BDD/BDD-NN_*/BDD-NN.*.feature
 git commit -m "feat(bdd): add BDD-NN [Suite Title] section-based suite
 
 - Created section-based structure with [N] sections

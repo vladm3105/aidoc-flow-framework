@@ -23,6 +23,8 @@ API Contracts (CTR) define precise interface specifications between components u
 
 Contracts enable parallel development by allowing providers and consumers to implement independently against the same specification, reducing integration time and defects.
 
+Note: `CTR-TEMPLATE.md`/`.yaml` are reference templates. For real CTRs, keep paired `.md`+`.yaml` files, and when splitting is needed follow `CTR/CTR_SPLITTING_RULES.md` and `../DOCUMENT_SPLITTING_RULES.md`.
+
 ## 2. Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
@@ -40,7 +42,7 @@ Contracts enable parallel development by allowing providers and consumers to imp
 
 ## 3. Dual-File Structure
 
-Each contract consists of TWO synchronized files:
+Each contract consists of TWO synchronized files (see `CTR/CTR_SPLITTING_RULES.md` for CTR-specific split rules and `../DOCUMENT_SPLITTING_RULES.md` for core standards):
 
 ### 3.1 Markdown File (.md)
 **Purpose**: Human-readable documentation
@@ -159,8 +161,8 @@ CTR/
 
 #### SPEC Compatibility
 - **Alignment**: Directory structure mirrors SPEC organization
-  - `CTR/agents/CTR-01` → `SPEC/agents/SPEC-01`
-  - `CTR/mcp/CTR-010` → `SPEC/mcp/SPEC-010`
+  - `CTR/agents/CTR-NN` → `SPEC/agents/SPEC-NN`
+  - `CTR/mcp/CTR-NN` → `SPEC/mcp/SPEC-NN`
 - **Traceability**: Enables tracing CTR → SPEC relationships
 - **Navigation**: Consistent paths across contract and implementation docs
 
@@ -663,3 +665,16 @@ except ValidationError as e:
 **README Version**: 1.0
 **Last Updated**: YYYY-MM-DD
 **Next Review**: YYYY-MM-DD (recommend quarterly for active documentation)
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum (Markdown): 600 lines per file (absolute)
+- YAML Exception (monolithic): Warnings at ~1000 lines, errors at ~2000 lines in linter; splitting is not required unless readability suffers.
+- If a contract approaches/exceeds limits, split content logically (e.g., separate endpoints/schemas) and maintain dual-file `.md` + `.yaml` structure (prefer monolithic YAML where logical).
+
+## Document Splitting Standard
+
+CTR uses a dual-file structure per contract (`.md` + `.yaml`):
+- Prefer keeping each contract monolithic (pairs) unless extremely large
+- If splitting is necessary, split by endpoint groups or modules, keeping pairs consistent (`CTR-XX_group.md` with `CTR-XX_group.yaml`)
+- Update indexes and cross-references; validate and lint

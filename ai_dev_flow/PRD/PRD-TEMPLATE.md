@@ -28,6 +28,10 @@ custom_fields:
   schema_version: "1.0"
 ---
 
+> Reference Template — For learning and small docs only. Real PRDs should be split per `../DOCUMENT_SPLITTING_RULES.md` using:
+> - `PRD-SECTION-0-TEMPLATE.md` to create `PRD-{NN}.0_index.md`
+> - `PRD-SECTION-TEMPLATE.md` to create `PRD-{NN}.{S}_{slug}.md`
+
 <!-- ======================================================================
 METADATA CLARIFICATION (DO NOT INCLUDE IN OUTPUT)
 
@@ -368,24 +372,24 @@ User stories follow the standard format:
 
 #### Primary Persona 1: [Name - e.g., End User, Customer, Admin]
 
-**ID Format**: `PRD.NN.07.SS` (User Story - Element Type 07)
+**ID Format**: `PRD.NN.09.SS` (User Story - Element Type 09)
 
 | Story ID | User Story | Priority | Acceptance Criteria | Related BRD Requirement |
 |----------|------------|----------|---------------------|-------------------------|
-| PRD.NN.07.01 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NN.01.SS |
-| PRD.NN.07.02 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NN.01.SS |
-| PRD.NN.07.03 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NN.01.SS |
+| PRD.NN.09.01 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NN.01.SS |
+| PRD.NN.09.02 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NN.01.SS |
+| PRD.NN.09.03 | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NN.01.SS |
 
 **Example User Stories**:
-- PRD.01.07.01: As a **sender**, I want to **view transparent fee breakdown before confirming transaction**, so that **I understand total cost with no surprises**.
-- PRD.01.07.02: As a **sender**, I want to **save recipient details for future transactions**, so that **repeat sends are faster and more convenient**.
-- PRD.01.07.03: As a **recipient**, I want to **receive SMS notification when money arrives**, so that **I know funds are available immediately**.
+- PRD.01.09.01: As a **sender**, I want to **view transparent fee breakdown before confirming transaction**, so that **I understand total cost with no surprises**.
+- PRD.01.09.02: As a **sender**, I want to **save recipient details for future transactions**, so that **repeat sends are faster and more convenient**.
+- PRD.01.09.03: As a **recipient**, I want to **receive SMS notification when money arrives**, so that **I know funds are available immediately**.
 
 #### Primary Persona 2: [Name - e.g., Support Agent, Compliance Officer]
 
 | Story ID | User Story | Priority | Acceptance Criteria | Related BRD Requirement |
 |----------|------------|----------|---------------------|-------------------------|
-| PRD.NN.07.SS | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NN.01.SS |
+| PRD.NN.09.SS | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NN.01.SS |
 
 ### Operational User Stories
 
@@ -393,9 +397,9 @@ User stories follow the standard format:
 
 | Story ID | User Story | Priority | Acceptance Criteria | Related BRD Requirement |
 |----------|------------|----------|---------------------|-------------------------|
-| PRD.NN.07.SS | As a **compliance officer**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NN.01.SS |
-| PRD.NN.07.SS | As a **support agent**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NN.01.SS |
-| PRD.NN.07.SS | As an **operations manager**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NN.01.SS |
+| PRD.NN.09.SS | As a **compliance officer**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NN.01.SS |
+| PRD.NN.09.SS | As a **support agent**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NN.01.SS |
+| PRD.NN.09.SS | As an **operations manager**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NN.01.SS |
 
 ### User Story Summary
 
@@ -412,9 +416,9 @@ User stories follow the standard format:
 
 | Business Objective | Related User Stories | Coverage Notes |
 |--------------------|---------------------|----------------|
-| [BRD.NN.23.01: Objective description] | PRD.NN.07.01, PRD.NN.07.03, PRD.NN.07.08 | [How stories address objective] |
-| [BRD.NN.23.02: Objective description] | PRD.NN.07.02, PRD.NN.07.05, PRD.NN.07.12 | [How stories address objective] |
-| [BRD.NN.23.03: Objective description] | PRD.NN.07.04, PRD.NN.07.09, PRD.NN.07.15 | [How stories address objective] |
+| [BRD.NN.23.01: Objective description] | PRD.NN.09.01, PRD.NN.09.03, PRD.NN.09.08 | [How stories address objective] |
+| [BRD.NN.23.02: Objective description] | PRD.NN.09.02, PRD.NN.09.05, PRD.NN.09.12 | [How stories address objective] |
+| [BRD.NN.23.03: Objective description] | PRD.NN.09.04, PRD.NN.09.09, PRD.NN.09.15 | [How stories address objective] |
 
 ### User Roles and Permissions
 
@@ -422,7 +426,7 @@ User stories follow the standard format:
 
 | Role | Description | Key Responsibilities | Permissions | Related User Stories |
 |------|-------------|---------------------|-------------|---------------------|
-| [Role Name] | [Who this role represents] | [What they do] | [What access they have] | PRD.NN.07.SS |
+| [Role Name] | [Who this role represents] | [What they do] | [What access they have] | PRD.NN.09.SS |
 
 **Example Roles**:
 - **Primary User**: End customers who initiate transactions, save recipients, view transaction history
@@ -874,7 +878,9 @@ Document the business strategy and research that drive this PRD.
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | BRD | [BRD-NN](../BRD/BRD-NN_...md) | [Business requirements title] | sections 2.4, 4.x | Business objectives driving product features |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 | Business Strategy | [Strategy Doc] | [Company OKRs/Strategic initiatives] | [section reference] | Strategic alignment and rationale |
 | Market Research | [Research Report] | [Customer insights, competitive analysis] | [Key findings] | User needs and market opportunity |
 
@@ -888,28 +894,30 @@ Document the business strategy and research that drive this PRD.
 
 ### Downstream Artifacts
 
+> Note: Use generic downstream names until artifacts exist. Avoid numeric IDs like `SYS-##`, `EARS-##`, `REQ-##`, `SPEC-##`.
+
 Document the technical specifications and designs derived from this PRD.
 
 #### System Requirements
 
-| SYS ID | System Requirement Title | PRD Features Driving Requirement | Relationship |
-|--------|------------------------|--------------------------------|--------------|
-| [SYS-NN](../SYS/SYS-NN_...md) | [System requirement] | Derived from PRD features [IDs] | Technical system specification |
-| [SYS-NN](../SYS/SYS-NN_...md) | [System requirement] | Derived from PRD features [IDs] | Technical system specification |
+| Artifact | Title | PRD Features Driving Requirement | Relationship |
+|----------|-------|----------------------------------|--------------|
+| SYS (TBD) | [System requirement] | Derived from PRD features [IDs] | Technical system specification |
+| SYS (TBD) | [System requirement] | Derived from PRD features [IDs] | Technical system specification |
 
 #### EARS Requirements
 
-| EARS ID | EARS Title | PRD Capabilities Specified | Relationship |
-|---------|-----------|---------------------------|--------------|
-| [EARS-NN](../EARS/EARS-NN_...md) | [Engineering requirement] | Specifies PRD capabilities [IDs] | Atomic engineering requirements |
-| [EARS-NN](../EARS/EARS-NN_...md) | [Engineering requirement] | Specifies PRD capabilities [IDs] | Atomic engineering requirements |
+| Artifact | Title | PRD Capabilities Specified | Relationship |
+|----------|-------|-----------------------------|--------------|
+| EARS (TBD) | [Engineering requirement] | Specifies PRD capabilities [IDs] | Atomic engineering requirements |
+| EARS (TBD) | [Engineering requirement] | Specifies PRD capabilities [IDs] | Atomic engineering requirements |
 
 #### Atomic Requirements
 
-| REQ ID | Requirement Title | PRD Source | Relationship |
-|--------|------------------|------------|--------------|
-| [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN) | [Detailed requirement] | Implements PRD feature [ID] | Detailed implementation requirement |
-| [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN) | [Detailed requirement] | Implements PRD feature [ID] | Detailed implementation requirement |
+| Artifact | Title | PRD Source | Relationship |
+|----------|-------|------------|--------------|
+| REQ (TBD) | [Detailed requirement] | Implements PRD feature [ID] | Detailed implementation requirement |
+| REQ (TBD) | [Detailed requirement] | Implements PRD feature [ID] | Detailed implementation requirement |
 
 #### Architecture Decision Requirements
 
@@ -1011,8 +1019,12 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 | BDD Feature | PRD Feature/Journey | Scenarios | Test Coverage |
 |-------------|---------------------|-----------|---------------|
-| [BDD-NN.feature](../BDD/BDD-NN.feature) | Maps to PRD User Journey [name] | [Scenario list] | Acceptance test coverage |
-| [BDD-NN.feature](../BDD/BDD-NN.feature) | Maps to PRD Feature [name] | [Scenario list] | Functional validation |
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Maps to PRD User Journey [name] | [Scenario list] | Acceptance test coverage |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Maps to PRD Feature [name] | [Scenario list] | Functional validation |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### Same-Type References (Conditional)
 
@@ -1020,8 +1032,12 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Related | [PRD-NN](./PRD-NN_...md) | [Related PRD title] | Shared domain context |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Depends | [PRD-NN](./PRD-NN_...md) | [Prerequisite PRD title] | Must complete before this |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Tags:**
 ```markdown
@@ -1061,14 +1077,14 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 |------|-------------|---------|
 | **A→B implies B→A** | If this PRD references another PRD, that PRD must reference this one | PRD-016 → PRD-022 requires PRD-022 → PRD-016 |
 | **No placeholder IDs** | Never use PRD-XXX, TBD, or undefined references | Use `null` if artifact doesn't exist |
-| **Tag format required** | Use `@prd: PRD.NN.EE.SS` format in body, not just metadata | `@prd: PRD.22.07.01` not `see PRD-022` |
+| **Tag format required** | Use `@prd: PRD.NN.EE.SS` format in body, not just metadata | `@prd: PRD.22.09.01` not `see PRD-022` |
 | **Referenced doc must exist** | Verify target document exists before adding reference | Check `docs/PRD/PRD-NN_*.md` exists |
 
 **Cross-PRD Reference Table** (for PRDs with bidirectional dependencies):
 
 | This PRD | References PRD | Relationship Type | Reciprocal Reference Status |
 |----------|---------------|-------------------|----------------------------|
-| PRD-NN | @prd: PRD.NN.07.SS | [Primary/Fallback/Related/Orchestrates] | ✅ Verified / ❌ Missing |
+| PRD-NN | @prd: PRD.NN.09.SS | [Primary/Fallback/Related/Orchestrates] | ✅ Verified / ❌ Missing |
 
 **Common Relationship Types**:
 - **Primary/Fallback**: AI-agent vs traditional approach (e.g., PRD-022/PRD-016)
@@ -1088,7 +1104,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 - **Anchors/IDs**: `#PRD-NN` (for referencing this document)
 - **section References**: Use `#problem-statement` for Problem Statement section
-- **Feature References**: Use Unified Element ID format (e.g., `PRD.01.07.01`, `PRD.01.07.02`). Cross-reference format: `@prd: PRD.NN.EE.SS`
+- **Feature References**: Use Unified Element ID format (e.g., `PRD.01.09.01`, `PRD.01.09.02`). Cross-reference format: `@prd: PRD.NN.EE.SS`
 
 #### External References
 
@@ -1101,7 +1117,9 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 - [Data_Architecture: e.g., Data Model, Database Design](../../docs/[data_architecture].md) - Data architecture
 
 **Business Requirements**:
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [Business Requirements Document](../BRD/BRD-NN_[project_name].md) - Source business case
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 - [Market_Research: e.g., User Research, [DATA_ANALYSIS - e.g., user behavior analysis, trend detection]](../research/[market_analysis].md) - Customer insights
 
 #### Cross-Reference Validation
@@ -1267,7 +1285,7 @@ Define behavior when external dependencies are unavailable.
 **Example Entries**:
 | External Dependency | Failure Mode | Detection | Fallback Behavior | Timeout | Recovery |
 |---------------------|--------------|-----------|-------------------|---------|----------|
-| Partner API (Bridge) | Connection timeout | HTTP timeout | Queue for retry, notify user | 30s | Exponential backoff, max 3 retries |
+| Partner API (External) | Connection timeout | HTTP timeout | Queue for retry, notify user | 30s | Exponential backoff, max 3 retries |
 | ML Fraud Model | Model unavailable | Health check failure | Use rule-based scoring | 5s | Automatic failover to rules |
 | Database | Connection pool exhausted | Connection error | Return cached data, queue writes | 10s | Connection pool refresh |
 | Cache (Redis) | Cache miss | Key not found | Fall through to database | N/A | Automatic on next request |
@@ -1357,3 +1375,16 @@ Before progressing to EARS creation, verify:
 **Approval Status**: [Draft/Under Review/Approved/Rejected]
 **Approver Signatures**: [Space for stakeholder signatures or approval tracking]
 **Maintained By**: [Product Manager/Team responsible for PRD maintenance]
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If this document approaches/exceeds limits, split into `PRD-{NN}.{S}_{slug}.md` section files using `PRD-SECTION-TEMPLATE.md` and update `PRD-{NN}.0_index.md`.
+
+## Document Splitting Standard
+
+Split PRD when size or scope requires:
+- Prepare `PRD-{NN}.0_index.md` and section map
+- Create `PRD-{NN}.{S}_{slug}.md` files from `PRD-SECTION-TEMPLATE.md`
+- Maintain Prev/Next navigation and sequential `S`
+- Update links and matrices; run validation and lints

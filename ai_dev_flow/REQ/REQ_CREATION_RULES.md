@@ -27,7 +27,7 @@ custom_fields:
 **Version**: 3.2
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-30
-**Source**: Extracted from REQ-TEMPLATE.md, REQ-VALIDATION-RULES.md, README.md, and REQ-000_index.md
+**Source**: Extracted from REQ-TEMPLATE.md, REQ_VALIDATION_RULES.md, README.md, and REQ-000_index.md
 **Purpose**: Complete reference for creating REQ files according to doc-flow SDD framework
 **Changes**: Added Threshold Registry Integration section (v3.2). Previous: Status/Score mapping, common mistakes section (v3.1)
 
@@ -207,7 +207,7 @@ find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template_v3.sh {} \;
 ```
 
 **Template Location**: [REQ-TEMPLATE.md](REQ-TEMPLATE.md)
-**Validation Rules**: [REQ-VALIDATION-RULES.md](REQ-VALIDATION-RULES.md)
+**Validation Rules**: [REQ_VALIDATION_RULES.md](REQ_VALIDATION_RULES.md)
 **Index**: [REQ-000_index.md](REQ-000_index.md)
 
 ---

@@ -275,11 +275,11 @@ mkdir -p work_plans                 # Implementation plans (/save-plan output)
 ```
 
 **Key Requirements**:
-- REQ-01: Multi-tenant workspace isolation
-- REQ-02: Role-based access control (Admin, Member, Guest)
-- REQ-03: Real-time collaboration (WebSocket)
-- REQ-004: Third-party integrations (Slack, Jira, GitHub)
-- REQ-005: Usage analytics and billing
+- REQ-NN: Multi-tenant workspace isolation
+- REQ-NN: Role-based access control (Admin, Member, Guest)
+- REQ-NN: Real-time collaboration (WebSocket)
+- REQ-NN: Third-party integrations (Slack, Jira, GitHub)
+- REQ-NN: Usage analytics and billing
 
 ### Use Case 2: API-First CRM Platform
 
@@ -297,11 +297,11 @@ mkdir -p work_plans                 # Implementation plans (/save-plan output)
 ```
 
 **Key Requirements**:
-- REQ-010: RESTful API with OpenAPI specification
-- REQ-011: Webhook support for events
-- REQ-012: API rate limiting (per tenant)
-- REQ-013: GDPR-compliant data export/deletion
-- REQ-014: OAuth 2.0 authentication
+- REQ-NN: RESTful API with OpenAPI specification
+- REQ-NN: Webhook support for events
+- REQ-NN: API rate limiting (per tenant)
+- REQ-NN: GDPR-compliant data export/deletion
+- REQ-NN: OAuth 2.0 authentication
 
 ---
 

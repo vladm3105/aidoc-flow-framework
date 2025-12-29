@@ -245,7 +245,7 @@ This index should be reviewed:
 
 | TASKS | SPEC | CTR | IMPL | REQ | BDD | ADR |
 |-------|------|-----|------|-----|-----|-----|
-| TASKS-01 | SPEC-03 | CTR-03 | IMPL-01 | REQ-03 | BDD-03 | ADR-008 |
+| TASKS-01 | SPEC-03 | CTR-03 | IMPL-01 | REQ-03 | BDD-03 | ADR-08 |
 
 ## Code Generation Workflow
 

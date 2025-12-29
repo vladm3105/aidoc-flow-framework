@@ -227,5 +227,5 @@ For AI-Agent BDD files, verify:
 
 ---
 
-**Maintained By**: BeeLocal Engineering Team
+**Maintained By**: Project Engineering Team
 **Review Frequency**: Updated with AI-agent architecture changes

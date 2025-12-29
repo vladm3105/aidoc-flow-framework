@@ -200,9 +200,9 @@ structure:
 
       directory_based:
         pattern: "^BDD-\\d{2,}_[a-z0-9_]+/features/"
-        error: "PROHIBITED: Directory-based structure (legacy) - use flat section-based structure"
+        error: "PROHIBITED: Legacy features/ subdirectory - use nested suite folder with section-based files"
         example_bad: "BDD-02_knowledge_engine/features/BDD-02_ingest.feature"
-        example_good: "BDD-02.1_ingest.feature (at BDD/ root)"
+        example_good: "BDD-02_knowledge_engine/BDD-02.1_ingest.feature"
 
     # Section numbering specification
     section_numbering:
@@ -230,21 +230,21 @@ structure:
         example: "BDD-02.2.00_query.feature"
         fixed_subsection: "00 (always)"
 
-    # Hard limits
+    # Hard/soft limits
     hard_limits:
-      max_file_lines: 500
-      soft_file_lines: 400
+      max_file_lines: 600   # Absolute maximum
+      soft_file_lines: 500  # Soft limit; target range is 300-500
       max_scenarios_per_feature: 12
       split_strategy: "When section exceeds 500 lines, create subsections (.SS.mm format)"
       aggregator_strategy: "When many subsections, add aggregator (.SS.00 format)"
 
     # File organization
     file_organization:
-      structure: "flat"
-      location: "BDD/ root level"
-      subdirectories_allowed: false
+      structure: "nested per-suite (one folder per suite)"
+      location: "BDD/BDD-NN_{suite_slug}/"
+      subdirectories_allowed: true  # suite folder only; no features/ subfolder
       features_subdirectory: "PROHIBITED (legacy format)"
-      index_file_location: "BDD/ root (e.g., BDD-02.0_index.md)"
+      index_file_location: "inside suite folder (e.g., BDD-02.0_index.md)"
 
 # =============================================================================
 # Gherkin Syntax Patterns
@@ -438,7 +438,7 @@ validation_rules:
     - rule: "At least one Scenario or Scenario Outline required"
       severity: error
 
-    - rule: "File name must match BDD-NN_name.feature format"
+    - rule: "File name must match section-based patterns (BDD-NN.SS_{slug}.feature | BDD-NN.SS.mm_{slug}.feature | BDD-NN.SS.00_{slug}.feature)"
       severity: warning
 
   # Gherkin syntax validation
@@ -562,7 +562,7 @@ error_messages:
   BDD-E010: "Invalid step order: Given must precede When, When must precede Then"
   BDD-E011: "Scenario Outline missing Examples section"
   BDD-E012: "Examples table headers do not match placeholders"
-  BDD-E013: "File name does not match BDD-NN_name.feature format"
+  BDD-E013: "File name does not match section-based patterns (BDD-NN.SS_{slug}.feature | BDD-NN.SS.mm_{slug}.feature | BDD-NN.SS.00_{slug}.feature)"
   BDD-E014: "BDD artifacts require @brd, @prd, and @ears traceability tags"
   BDD-E015: "ADR-Ready Score does not match document Status (>=90% requires Approved, 70-89% requires In Review, <70% requires Draft)"
   BDD-W001: "Feature missing user story (As a/I want/So that)"

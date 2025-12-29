@@ -268,28 +268,28 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 from datetime import datetime
 from typing import Literal
 
-class QuoteResponse(BaseModel):
-    """Quote response with field-level validation."""
+class ItemPricing(BaseModel):
+    """Generic item pricing model with field-level validation."""
 
-    symbol: str = Field(
+    item_id: str = Field(
         ...,
         min_length=1,
-        max_length=5,
-        pattern=r"^[A-Z]{1,5}$",
+        max_length=32,
+        pattern=r"^[A-Z0-9_-]{1,32}$",
         description="item resource identifier"
     )
-    price: float = Field(
+    unit_price: float = Field(
         ...,
         gt=0,
         decimal_places=2,
-        description="Current price in USD"
+        description="Current unit price"
     )
     timestamp: datetime
-    bid: float | None = Field(None, ge=0)
-    ask: float | None = Field(None, ge=0)
-    volume: int | None = Field(None, ge=0)
+    min_price: float | None = Field(None, ge=0)
+    max_price: float | None = Field(None, ge=0)
+    units_in_stock: int | None = Field(None, ge=0)
 
-    @field_validator('price', 'bid', 'ask')
+    @field_validator('unit_price', 'min_price', 'max_price')
     @classmethod
     def validate_price_precision(cls, v: float) -> float:
         """Ensure prices have maximum 2 decimal places."""
@@ -298,12 +298,12 @@ class QuoteResponse(BaseModel):
         return v
 
     @model_validator(mode='after')
-    def validate_bid_ask_spread(self) -> 'QuoteResponse':
-        """Ensure bid <= price <= ask when all present."""
-        if self.bid and self.ask and self.price:
-            if not (self.bid <= self.price <= self.ask):
+    def validate_price_bounds(self) -> 'ItemPricing':
+        """Ensure min_price <= unit_price <= max_price when bounds are present."""
+        if self.min_price is not None and self.max_price is not None:
+            if not (self.min_price <= self.unit_price <= self.max_price):
                 raise ValueError(
-                    f"Invalid spread: bid={self.bid}, price={self.price}, ask={self.ask}"
+                    f"Invalid price bounds: min={self.min_price}, unit={self.unit_price}, max={self.max_price}"
                 )
         return self
 
@@ -312,12 +312,12 @@ class QuoteResponse(BaseModel):
         json_schema_extra = {
             "examples": [
                 {
-                    "symbol": "ITEM-001",
-                    "price": 182.50,
+                    "item_id": "ITEM-001",
+                    "unit_price": 49.99,
                     "timestamp": "2025-01-15T14:30:00Z",
-                    "bid": 182.45,
-                    "ask": 182.55,
-                    "volume": 1000000
+                    "min_price": 39.99,
+                    "max_price": 59.99,
+                    "units_in_stock": 250
                 }
             ]
         }
@@ -332,12 +332,12 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-class Quote(Base):
-    """Quote model with database constraints."""
-    __tablename__ = 'quotes'
+class ItemPrice(Base):
+    """Generic pricing model with database constraints."""
+    __tablename__ = 'item_prices'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    symbol = Column(String(5), nullable=False, index=True)
+    item_id = Column(String(32), nullable=False, index=True)
     price = Column(Float, nullable=False)
     timestamp = Column(DateTime, nullable=False, index=True)
     bid = Column(Float, nullable=True)
@@ -783,7 +783,7 @@ class Container(containers.DeclarativeContainer):
 
 ### Automated Testing
 
-- **BDD Scenarios**: [BDD-NN.feature](../../BDD/BDD-NN.feature#scenarios)
+- **BDD Scenarios**: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios`
   - Scenario: Successful API connection
   - Scenario: Rate limiting enforcement
   - Scenario: Retry on transient failure
@@ -869,7 +869,7 @@ Document the business strategy, product requirements, system specifications, and
 
 | BDD ID | Scenario Title | Acceptance Criteria Validated | Test Coverage |
 |--------|----------------|-------------------------------|---------------|
-| [BDD-NN](../../BDD/BDD-NN_....feature) | Feature: [Feature name] | AC-001, AC-002, AC-003 | Scenarios 1-5 |
+| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Feature: [Feature name] | AC-001, AC-002, AC-003 | Scenarios 1-5 |
 
 #### API Contracts
 

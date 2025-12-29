@@ -498,7 +498,7 @@ done
 ### 3. State Machine Contracts
 
 **Purpose**: Valid state transitions
-**Use Case**: Connection states, order lifecycle, session management
+**Use Case**: Connection states, request lifecycle, session management
 **Example**: ConnectionState, RequestState
 
 ### 4. Data Models

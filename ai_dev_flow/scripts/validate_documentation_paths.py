@@ -56,7 +56,7 @@ class DocumentationPathValidator:
         self.issues: List[Issue] = []
 
         # Directories to exclude from scanning
-        self.exclude_dirs = {'.git', 'work_plans', 'archived', '__pycache__', 'node_modules'}
+        self.exclude_dirs = {'.git', '.claude', 'work_plans', 'archived', '__pycache__', 'node_modules'}
 
         # Known missing files that are intentional (placeholders, examples)
         self.intentional_missing = {
@@ -124,7 +124,26 @@ class DocumentationPathValidator:
             ))
             return
 
+        # Ignore regions and code fences
+        ignore = False
+        in_code_block = False
+
         for line_num, line in enumerate(lines, start=1):
+            # Toggle validator ignore markers
+            if '<!-- VALIDATOR:IGNORE-LINKS-START -->' in line:
+                ignore = True
+            if '<!-- VALIDATOR:IGNORE-LINKS-END -->' in line:
+                ignore = False
+                continue
+
+            # Toggle fenced code block state
+            if line.strip().startswith('```'):
+                in_code_block = not in_code_block
+                continue
+
+            if ignore or in_code_block:
+                continue
+
             # Check for markdown links
             self._check_markdown_links(file_path, line_num, line)
 

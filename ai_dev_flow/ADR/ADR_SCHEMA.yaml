@@ -380,11 +380,11 @@ traceability:
   downstream:
     expected:
       - type: SYS
-        format: "SYS-NN"
+        format: "SYS"   # Generic name only; do not reference numeric IDs until they exist
       - type: REQ
-        format: "REQ-NN"
+        format: "REQ"   # Generic name only; do not reference numeric IDs until they exist
       - type: SPEC
-        format: "SPEC-NN"
+        format: "SPEC"  # Generic name only; do not reference numeric IDs until they exist
 
   same_type:
     optional:

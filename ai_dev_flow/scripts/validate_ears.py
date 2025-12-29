@@ -627,13 +627,13 @@ class EarsValidator:
     # === AUTHOR STANDARDIZATION ===
 
     def _validate_author(self, file_path: Path, content: str) -> None:
-        """Validate author is standard 'BeeLocal Engineering Team' (E051)."""
+        """Validate author matches the project-standard 'Project Engineering Team' (E051)."""
         author_match = re.search(r"\|\s*\*\*Author\*\*\s*\|\s*([^|]+)\s*\|", content)
         if not author_match:
             return  # Skip if no author field
 
         author = author_match.group(1).strip()
-        standard_author = "BeeLocal Engineering Team"
+        standard_author = "Project Engineering Team"
 
         if author != standard_author:
             self.results.append(ValidationResult(

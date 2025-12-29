@@ -128,7 +128,7 @@ flowchart TD
 ## Threshold Registry Integration
 
 ### Purpose
-The Threshold Registry (PRD-035 pattern) centralizes magic numbers, limits, and configuration values that span multiple PRDs. This prevents conflicts and enables consistent updates.
+The Threshold Registry (PRD-NN pattern) centralizes magic numbers, limits, and configuration values that span multiple PRDs. This prevents conflicts and enables consistent updates.
 
 ### Reference Pattern
 ```markdown
@@ -171,12 +171,12 @@ When migrating a Legacy PRD to Current status:
    - [ ] Add `template_variant` to YAML metadata
 
 2. **Feature ID Standardization**
-   - [ ] Convert all Feature IDs to `FR-{PRD#}-{sequence}` format
-   - [ ] Validate with regex: `^FR-\d{3}-\d{3}$`
-   - [ ] Update cross-references in downstream artifacts
+   - [ ] Convert all Element IDs to unified 4-segment format: `PRD.NN.EE.SS`
+   - [ ] Use correct element codes (e.g., User Story = 09)
+   - [ ] Update cross-references in downstream artifacts (e.g., `@prd: PRD.NN.EE.SS`)
 
 3. **EARS Enhancement Appendix**
-   - [ ] Add Section 19 with all 5 subsections
+   - [ ] Add Section 20 with all 5 subsections
    - [ ] Populate timing profile matrix (p50/p95/p99)
    - [ ] Define boundary value matrix with explicit operators
    - [ ] Create state transition diagram
@@ -185,7 +185,7 @@ When migrating a Legacy PRD to Current status:
 
 4. **Threshold Registry Integration**
    - [ ] Identify all magic numbers/thresholds
-   - [ ] Create PRD-035 entries for shared values
+   - [ ] Create PRD-NN entries for shared values
    - [ ] Replace inline values with registry references
 
 5. **Bidirectional Reference Validation**
@@ -308,7 +308,7 @@ Before marking PRD as "Approved":
 - ✅ **EARS-Ready score ≥90** (required for EARS progression)
 - ✅ **Bidirectional references validated** (all A→B have B→A)
 - ✅ **Template variant declared** in YAML metadata
-- ✅ **Feature IDs follow standard format** (`FR-NNN-NNN`)
+- ✅ **Feature IDs follow standard format** (`PRD.NN.01.SS`)
 - ✅ **Threshold registry references** for shared values
 
 ---

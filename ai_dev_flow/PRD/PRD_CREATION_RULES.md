@@ -63,11 +63,11 @@ custom_fields:
 
 ---
 
-## 0. Document Control
+## 1. Document Control
 
 **Purpose**: Establishes document metadata, versioning, and dual scoring requirements for PRD quality gates.
 
-**Position**: Must be section 0 at the very beginning of PRD (before all numbered sections)
+**Position**: Must be section 1 at the very beginning of PRD (before all numbered sections)
 
 **Required Fields** (11 mandatory + 4 optional):
 
@@ -98,7 +98,7 @@ custom_fields:
 
 **Template**:
 ```markdown
-## 0. Document Control
+## 1. Document Control
 
 | Item | Details |
 |------|---------|
@@ -304,7 +304,7 @@ Define who the users are (personas):
 
 ### Scope Note
 
-**MANDATORY**: Include this note in PRD section 7:
+**MANDATORY**: Include this note in PRD section 8:
 
 > This section provides role definitions and story summaries. Detailed behavioral requirements are captured in EARS; executable test specifications are in BDD feature files.
 
@@ -395,9 +395,9 @@ Business constraints          Evaluation criteria        Trade-off analysis
 
 **Business Driver**: Real-time position visibility for treasury management (BRD.01.01.04)
 **Business Constraints**:
-- Multi-currency support (USD, UZS, USDC) per Section 3.2
-- 5-year audit retention per BSA requirements
-- Max $50K annual licensing
+- Multi-currency support (e.g., multiple currencies) per Section 3.2
+- 5-year audit retention per compliance requirements
+- Max [Budget] annual licensing
 ```
 
 **PRD Section 18 (Technical Elaboration)**:
@@ -809,7 +809,7 @@ Add template variant to Document Control:
   - Trigger/Event Documentation (webhook schemas)
   - Workflow State Machine (n8n node flow)
   - Integration Mapping (connected services)
-- May omit: User Stories (Section 7) if no direct user interaction
+- May omit: User Stories (Section 8) if no direct user interaction
 - May omit: Customer-Facing Content (Section 9) if internal automation
 
 ### Migration Notes
@@ -934,7 +934,7 @@ Create a dedicated Threshold Registry PRD when:
 
 ### Threshold Registry Structure
 
-**Registry PRD Structure** (see PRD-035 as example):
+**Registry PRD Structure** (see PRD-NN as example):
 ```markdown
 ## N. [Threshold Category]
 
@@ -1021,7 +1021,7 @@ When referencing features from other PRDs, use the cross-reference format:
 
 **Components**:
 - `@prd:` - Tag prefix
-- `PRD-022` - Document ID (22 in element ID)
+- `PRD-NN` - Document ID (NN in element ID)
 - `.01` - Element type (01 = Functional Requirement)
 - `.15` - Sequence ID within document
 
@@ -1032,7 +1032,7 @@ When referencing features from other PRDs, use the cross-reference format:
 | Invalid Format | Issue | Correct Format |
 |----------------|-------|----------------|
 | `Feature-022-001` | Deprecated format | `PRD.22.01.01` |
-| `FR-AGENT-001` | Non-standard prefix | `PRD.22.01.01` |
+| `FR-AGENT-001` | Non-standard prefix | `PRD.NN.01.01` |
 | `Feature 3.1` | Text format | `PRD.25.01.03` |
 | `PRD.1.1` | Not zero-padded | `PRD.01.01.01` |
 | `F-01` | Deprecated F- format | `PRD.NN.01.01` |

@@ -102,84 +102,122 @@ metadata:
 structure:
   # Required sections (in order)
   required_sections:
-    - pattern: "^# PRD-\\d{3}:"
+    - pattern: "^# PRD-\d{2,}:"
       name: "Title (H1)"
       description: "Single H1 with format PRD-NN: Title"
 
-    - pattern: "^## 0\\. Document Control$"
+    - pattern: "^## 1\. Document Control$"
       name: "Document Control"
-      description: "Section 0 with metadata table"
+      description: "Section 1 with metadata table"
 
-    - pattern: "^## 1\\. Executive Summary$"
+    - pattern: "^## 2\. Executive Summary$"
       name: "Executive Summary"
-      description: "Section 1 with business overview"
+      description: "Section 2 with business overview"
 
-    - pattern: "^## 2\\. Product Vision$"
-      name: "Product Vision"
-      description: "Section 2 with vision and goals"
+    - pattern: "^## 3\. Problem Statement$"
+      name: "Problem Statement"
+      description: "Section 3 with problem and impact"
 
-    - pattern: "^## 3\\. Functional Requirements$"
+    - pattern: "^## 4\. Target Audience & User Personas$"
+      name: "Target Audience & User Personas"
+      description: "Section 4 with users and stakeholders"
+
+    - pattern: "^## 5\. Success Metrics \(KPIs\)$"
+      name: "Success Metrics (KPIs)"
+      description: "Section 5 with KPIs and criteria"
+
+    - pattern: "^## 6\. Goals & Objectives$"
+      name: "Goals & Objectives"
+      description: "Section 6 with goals and objectives"
+
+    - pattern: "^## 7\. Scope & Requirements$"
+      name: "Scope & Requirements"
+      description: "Section 7 with scope in/out and dependencies"
+
+    - pattern: "^## 8\. User Stories & User Roles$"
+      name: "User Stories & User Roles"
+      description: "Section 8 with user stories (PRD-level)"
+
+    - pattern: "^## 9\. Functional Requirements$"
       name: "Functional Requirements"
-      description: "Section 3 with detailed feature requirements"
+      description: "Section 9 with functional capabilities"
+
+    - pattern: "^## 10\. Customer-Facing Content & Messaging \(MANDATORY\)$"
+      name: "Customer-Facing Content & Messaging (MANDATORY)"
+      description: "Section 10 with customer-visible content"
+
+    - pattern: "^## 11\. Acceptance Criteria$"
+      name: "Acceptance Criteria"
+      description: "Section 11 with acceptance criteria"
+
+    - pattern: "^## 12\. Constraints & Assumptions$"
+      name: "Constraints & Assumptions"
+      description: "Section 12 with constraints and assumptions"
+
+    - pattern: "^## 13\. Risk Assessment$"
+      name: "Risk Assessment"
+      description: "Section 13 with risks"
+
+    - pattern: "^## 14\. Success Definition$"
+      name: "Success Definition"
+      description: "Section 14 with go-live and validation"
+
+    - pattern: "^## 15\. Stakeholders & Communication$"
+      name: "Stakeholders & Communication"
+      description: "Section 15 with teams and communications"
+
+    - pattern: "^## 16\. Implementation Approach$"
+      name: "Implementation Approach"
+      description: "Section 16 with phases and testing strategy"
+
+    - pattern: "^## 17\. Budget & Resources$"
+      name: "Budget & Resources"
+      description: "Section 17 with budget and resources"
+
+    - pattern: "^## 18\. Traceability$"
+      name: "Traceability"
+      description: "Section 18 with upstream/downstream links"
+
+    - pattern: "^## 19\. References$"
+      name: "References"
+      description: "Section 19 with references"
+
+    - pattern: "^## 20\. EARS Enhancement Appendix$"
+      name: "EARS Enhancement Appendix"
+      description: "Section 20 with EARS appendix"
+
+    - pattern: "^## 21\. Quality Assurance & Testing Strategy$"
+      name: "Quality Assurance & Testing Strategy"
+      description: "Section 21 with QA/testing strategy"
 
   # Document Control table requirements
   document_control:
     required_fields:
-      - PRD ID
-      - PRD Name
-      - Version
-      - Date
-      - Author
       - Status
-      - Related BRD
+      - Version
+      - Date Created
+      - Last Updated
+      - Author
+      - Reviewer
+      - Approver
+      - BRD Reference
+      - SYS-Ready Score
+      - EARS-Ready Score
 
     related_brd_format:
-      pattern: "^@brd: BRD\\.[0-9]{2,9}\\.[0-9]{2,9}\\.[0-9]{2,9}$"
+      pattern: "^@brd: BRD\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}$"
       description: "Must use @brd: prefix with 4-segment format for traceability (DOC_NUM.ELEM_TYPE.SEQ)"
+    # Enforce single upstream BRD reference in Document Control
+    related_brd_constraints:
+      single_reference_only: true
+      notes: "Provide exactly one canonical @brd in Document Control; list additional BRDs in an Upstream Sources subsection if needed."
 
   # Section numbering rules
   section_numbering:
-    start: 0
+    start: 1
     format: "## N. Section Title"
     subsection_format: "### N.N Subsection Title"
     no_duplicate_numbers: true
-
-# =============================================================================
-# Feature Requirement Patterns
-# =============================================================================
-
-feature_patterns:
-  # Feature ID format (Simple Numeric - per ID_NAMING_STANDARDS.md)
-  # Document context (PRD-NN) provides namespace; no need to embed in feature ID
-  feature_id:
-    pattern: "^\\d{3}$"
-    format: "NNN"
-    description: "Simple 3-digit sequential feature ID within document"
-    examples:
-      - "001"
-      - "015"
-      - "042"
-    cross_reference_format:
-      pattern: "@prd: PRD.NN.07.SS"
-      example: "@prd: PRD.22.07.15"
-      description: "Cross-reference format: DOC_NUM.ELEM_TYPE.SEQ (unified 4-segment format)"
-
-  # Feature table structure
-  feature_table:
-    required_columns:
-      - "Feature ID"
-      - "Feature Name"
-      - "Description"
-      - "Priority"
-      - "Complexity"
-
-    priority_values: ["P0-Critical", "P1-High", "P2-Medium", "P3-Low"]
-    complexity_values: ["Low", "Medium", "High"]
-
-# =============================================================================
-# Validation Rules
-# =============================================================================
-
 validation_rules:
   # Metadata validation
   metadata:
@@ -221,6 +259,10 @@ validation_rules:
     - rule: "Complexity ratings must be Low/Medium/High"
       severity: warning
 
+    - rule: "No numeric downstream references (EARS-#, SYS-#, REQ-#, SPEC-#)"
+      severity: error
+      fix: "Use generic downstream names (EARS, SYS, REQ, SPEC) until those artifacts exist."
+
 # =============================================================================
 # Cross-Reference Requirements
 # =============================================================================
@@ -236,16 +278,16 @@ traceability:
   downstream:
     expected:
       - type: SYS
-        format: "@sys: SYS.NN.25.SS"
+        format: "SYS"   # Generic name only; do not reference numeric IDs until they exist
       - type: EARS
-        format: "@ears: EARS.NN.24.SS"
+        format: "EARS"  # Generic name only; do not reference numeric IDs until they exist
       - type: REQ
-        format: "@req: REQ.NN.26.SS"
+        format: "REQ"   # Generic name only; do not reference numeric IDs until they exist
       - type: SPEC
-        format: "@spec: SPEC-NN"
+        format: "SPEC"  # Generic name only; do not reference numeric IDs until they exist
 
   lateral:
-    format: "@prd: PRD.NN.07.SS"
+    format: "@prd: PRD.NN.EE.SS"
     description: "Cross-reference to related PRDs (unified 4-segment format)"
 
   threshold_references:
@@ -272,3 +314,91 @@ error_messages:
   PRD-W001: "Feature ID not using simple 3-digit format (001, 015, 042)"
   PRD-W002: "Priority not using P0-P3 format"
   PRD-W003: "Section numbering not sequential"
+  required_sections:
+    - pattern: "^# PRD-\d{2,}:"
+      name: "Title (H1)"
+      description: "Single H1 with format PRD-NN: Title"
+
+    - pattern: "^## 1\. Document Control$"
+      name: "Document Control"
+      description: "Section 1 with metadata table"
+
+    - pattern: "^## 2\. Executive Summary$"
+      name: "Executive Summary"
+      description: "Section 2 with business overview"
+
+    - pattern: "^## 3\. Problem Statement$"
+      name: "Problem Statement"
+      description: "Section 3 with problem and impact"
+
+    - pattern: "^## 4\. Target Audience & User Personas$"
+      name: "Target Audience & User Personas"
+      description: "Section 4 with users and stakeholders"
+
+    - pattern: "^## 5\. Success Metrics \(KPIs\)$"
+      name: "Success Metrics (KPIs)"
+      description: "Section 5 with KPIs and criteria"
+
+    - pattern: "^## 6\. Goals & Objectives$"
+      name: "Goals & Objectives"
+      description: "Section 6 with goals and objectives"
+
+    - pattern: "^## 7\. Scope & Requirements$"
+      name: "Scope & Requirements"
+      description: "Section 7 with scope in/out and dependencies"
+
+    - pattern: "^## 8\. User Stories & User Roles$"
+      name: "User Stories & User Roles"
+      description: "Section 8 with user stories (PRD-level)"
+
+    - pattern: "^## 9\. Functional Requirements$"
+      name: "Functional Requirements"
+      description: "Section 9 with functional capabilities"
+
+    - pattern: "^## 10\. Customer-Facing Content & Messaging \(MANDATORY\)$"
+      name: "Customer-Facing Content & Messaging (MANDATORY)"
+      description: "Section 10 with customer-visible content"
+
+    - pattern: "^## 11\. Acceptance Criteria$"
+      name: "Acceptance Criteria"
+      description: "Section 11 with acceptance criteria"
+
+    - pattern: "^## 12\. Constraints & Assumptions$"
+      name: "Constraints & Assumptions"
+      description: "Section 12 with constraints and assumptions"
+
+    - pattern: "^## 13\. Risk Assessment$"
+      name: "Risk Assessment"
+      description: "Section 13 with risks"
+
+    - pattern: "^## 14\. Success Definition$"
+      name: "Success Definition"
+      description: "Section 14 with go-live and validation"
+
+    - pattern: "^## 15\. Stakeholders & Communication$"
+      name: "Stakeholders & Communication"
+      description: "Section 15 with teams and communications"
+
+    - pattern: "^## 16\. Implementation Approach$"
+      name: "Implementation Approach"
+      description: "Section 16 with phases and testing strategy"
+
+    - pattern: "^## 17\. Budget & Resources$"
+      name: "Budget & Resources"
+      description: "Section 17 with budget and resources"
+
+    - pattern: "^## 18\. Traceability$"
+      name: "Traceability"
+      description: "Section 18 with upstream/downstream links"
+
+    - pattern: "^## 19\. References$"
+      name: "References"
+      description: "Section 19 with references"
+
+    - pattern: "^## 20\. EARS Enhancement Appendix$"
+      name: "EARS Enhancement Appendix"
+      description: "Section 20 with EARS appendix"
+
+    - pattern: "^## 21\. Quality Assurance & Testing Strategy$"
+      name: "Quality Assurance & Testing Strategy"
+      description: "Section 21 with QA/testing strategy"

@@ -1,11 +1,9 @@
-# IMPL-01: [FEATURE_NAME] Implementation Plan
+# IMPL-NN: Feature Implementation Plan (Example)
 
-**Implementation Plan ID**: IMPL-01
-**Feature**: [FEATURE_NAME - e.g., User Authentication System, Payment Processing Module, Real-time Notifications]
-**Project**: [PROJECT_NAME]
-**Type**: [TYPE - e.g., New Feature, Enhancement, Migration, Infrastructure]
-**Priority**: [PRIORITY - e.g., P0-Critical, P1-High, P2-Medium, P3-Low]
-**Status**: [STATUS - e.g., Planning, In Progress, On Hold, Completed]
+**Implementation Plan ID**: IMPL-NN
+**Feature**: [FEATURE_NAME]
+**Type**: [New Feature | Enhancement]
+**Status**: Planning
 
 **Created**: [YYYY-MM-DD]
 **Updated**: [YYYY-MM-DD]
@@ -17,127 +15,51 @@
 
 ---
 
-## Executive Summary
+## Summary
 
-### Problem Statement
-[PROBLEM - e.g., Current system lacks secure user authentication, causing security vulnerabilities and poor user experience]
-
-### Proposed Solution
-[SOLUTION - e.g., Implement OAuth 2.0 / OIDC authentication with multi-factor authentication (MFA) support, session management, and role-based access control]
-
-### Business Value
-- **[BENEFIT_1]**: [METRIC - e.g., Reduce security incidents by 80%]
-- **[BENEFIT_2]**: [METRIC - e.g., Improve user login success rate from 85% to 98%]
-- **[BENEFIT_3]**: [METRIC - e.g., Enable compliance with SOC2/ISO27001 requirements]
-
-### Success Criteria
-1. **[CRITERIA_1]**: [MEASURABLE_GOAL - e.g., 100% of users migrated to new auth system]
-2. **[CRITERIA_2]**: [MEASURABLE_GOAL - e.g., <2s login latency p95]
-3. **[CRITERIA_3]**: [MEASURABLE_GOAL - e.g., Zero authentication-related security incidents in first 90 days]
+Problem: [one sentence].
+Solution: [one sentence].
+Success Criteria: [2–3 measurable goals].
 
 ---
 
-## Scope
+## Scope (High-Level)
 
-### In Scope
-- ✅ [DELIVERABLE_1 - e.g., OAuth 2.0 / OIDC integration with social providers (Google, GitHub)]
-- ✅ [DELIVERABLE_2 - e.g., Multi-factor authentication (TOTP, SMS, email)]
-- ✅ [DELIVERABLE_3 - e.g., Session management with Redis backend]
-- ✅ [DELIVERABLE_4 - e.g., Role-based access control (RBAC) with 5 default roles]
-- ✅ [DELIVERABLE_5 - e.g., Password reset flow with email verification]
-- ✅ [DELIVERABLE_6 - e.g., User profile management API]
-
-### Out of Scope
-- ❌ [NON_DELIVERABLE_1 - e.g., Biometric authentication (fingerprint, Face ID)]
-- ❌ [NON_DELIVERABLE_2 - e.g., SSO integration with enterprise identity providers (Okta, AD)]
-- ❌ [NON_DELIVERABLE_3 - e.g., Account recovery via security questions]
-- ❌ [NON_DELIVERABLE_4 - e.g., Mobile app SDKs (deferred to Phase 2)]
-
-### Assumptions
-1. **[ASSUMPTION_1]**: [DETAIL - e.g., Users have email addresses for account recovery]
-2. **[ASSUMPTION_2]**: [DETAIL - e.g., Redis infrastructure is available and maintained by Platform team]
-3. **[ASSUMPTION_3]**: [DETAIL - e.g., SMS provider (Twilio) budget approved by Finance]
-
-### Constraints
-1. **[CONSTRAINT_1]**: [DETAIL - e.g., Must maintain backward compatibility with existing session tokens during migration]
-2. **[CONSTRAINT_2]**: [DETAIL - e.g., Total project budget: $X, cannot exceed without executive approval]
-3. **[CONSTRAINT_3]**: [DETAIL - e.g., Deployment must occur outside business hours (Sat 2AM-6AM EST)]
+- In: [core deliverable A], [core deliverable B].
+- Out: [deferred C].
+- Assumptions: [A1], [A2].
+- Constraints: [C1], [C2].
 
 ---
 
 ## Traceability
 
-### Requirements Coverage
-| Requirement | Type | Priority | Status |
-|-------------|------|----------|--------|
-| REQ-01: [REQ_TITLE] | Functional | High | ✅ In Scope |
-| REQ-02: [REQ_TITLE] | Functional | High | ✅ In Scope |
-| REQ-03: [REQ_TITLE] | security | Critical | ✅ In Scope |
-| REQ-004: [REQ_TITLE] | Performance | Medium | ✅ In Scope |
-| REQ-005: [REQ_TITLE] | Functional | Low | ❌ Deferred to Phase 2 |
-
-### Architecture Decisions
-| ADR | Decision | Impact on Implementation |
-|-----|----------|--------------------------|
-| ADR-XXX: [DECISION] | [SUMMARY] | [IMPACT - e.g., Requires Redis cluster setup] |
-| ADR-YYY: [DECISION] | [SUMMARY] | [IMPACT - e.g., Adds OAuth library dependency] |
-
-### BDD Scenarios
-| Feature File | Scenarios | Implementation Phase |
-|--------------|-----------|----------------------|
-| [FEATURE.feature] | [COUNT - e.g., 12] scenarios | Phase 1 (Weeks 1-2) |
-| [FEATURE.feature] | [COUNT - e.g., 8] scenarios | Phase 2 (Weeks 3-4) |
+Tags (Layer 8 optional):
+```markdown
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS-NN
+@bdd: BDD-NN
+@adr: ADR-NN
+@sys: SYS-NN
+@req: REQ-NN
+```
 
 ---
 
-## Implementation Phases
+## Implementation Phases (Minimal)
 
-### Phase 1: Foundation (Weeks 1-2)
-**Objective**: Core authentication infrastructure
+### Phase 1 (Weeks 1–2)
+- Objective: Core service foundations
+- Deliverables: CTR-NN (contract), SPEC-NN (spec), TASKS-NN (plan)
+- Dependencies: [D1]
+- Success: [S1], [S2]
 
-**Deliverables**:
-- ✅ OAuth 2.0 authorization server setup
-- ✅ User database schema (users, sessions, refresh_tokens)
-- ✅ Session management service with Redis
-- ✅ Login/logout API endpoints
-- ✅ Basic integration tests
-
-**Dependencies**:
-- [DEPENDENCY_1 - e.g., Redis cluster provisioned by Platform team]
-- [DEPENDENCY_2 - e.g., OAuth client credentials from Google/GitHub]
-
-**Success Criteria**:
-- Users can log in via OAuth providers
-- Sessions persist across requests
-- Logout invalidates sessions
-
-**Risks**:
-- ⚠️ Redis cluster provisioning delay (Mitigation: Use local Redis for dev)
-- ⚠️ OAuth provider approval process (Mitigation: Start application early)
-
----
-
-### Phase 2: security Features (Weeks 3-4)
-**Objective**: Multi-factor authentication and password reset
-
-**Deliverables**:
-- ✅ TOTP-based MFA implementation
-- ✅ SMS/Email MFA fallback
-- ✅ Password reset flow with email verification
-- ✅ Rate limiting on auth endpoints
-- ✅ security event logging
-
-**Dependencies**:
-- [DEPENDENCY - e.g., Twilio account provisioned]
-- [DEPENDENCY - e.g., Email service configured (SendGrid, SES)]
-
-**Success Criteria**:
-- MFA enrollment >50% of users within 1 week
-- Password reset emails delivered within 30 seconds
-- <0.1% failed MFA verification rate
-
-**Risks**:
-- ⚠️ SMS delivery delays in certain regions (Mitigation: Offer TOTP as primary)
+### Phase 2 (Weeks 3–4)
+- Objective: Feature completion
+- Deliverables: SPEC-NN updates, tests, docs
+- Dependencies: [D2]
+- Success: [S3]
 - ⚠️ Email deliverability issues (Mitigation: Configure SPF/DKIM/DMARC)
 
 ---
@@ -294,7 +216,7 @@ gantt
 ### API Contracts
 | Contract | Specification | Consumer |
 |----------|---------------|----------|
-| [CTR_1 - e.g., Auth API] | [CTR_REF - CTR-001_auth_api.yaml] | Frontend, Mobile |
+| [CTR_1 - e.g., Auth API] | [CTR_REF - CTR-01_auth_api.yaml] | Frontend, Mobile |
 | [CTR_2 - e.g., User API] | [CTR_REF - CTR-02_user_api.yaml] | Admin Dashboard |
 
 ---

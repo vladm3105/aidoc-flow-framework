@@ -125,7 +125,7 @@ validate_quality_gates() {
             docs/BRD/*.md) validate_ears_ready "$file" ;;
             docs/PRD/*.md) validate_bdd_ready "$file" ;;
             docs/EARS/*.md) validate_adr_ready "$file" ;;
-            docs/BDD/*.feature) validate_sys_ready "$file" ;;
+            docs/BDD/BDD-*/BDD-*.feature) validate_sys_ready "$file" ;;
             docs/ADR/*.md) validate_req_ready "$file" ;;
             docs/SYS/*.md) validate_spec_ready "$file" ;;
             docs/REQ/*.md) validate_impl_ready "$file" ;;
@@ -240,7 +240,7 @@ validate_quality_gates() {
         docs/BRD/*.md) validate_score "$file" "EARS-Ready Score" ;;
         docs/PRD/*.md) validate_score "$file" "BDD-Ready Score" ;;
         docs/EARS/*.md) validate_score "$file" "ADR-Ready Score" ;;
-        docs/BDD/*.feature) validate_score "$file" "SYS-Ready Score" ;;
+        docs/BDD/BDD-*/BDD-*.feature) validate_score "$file" "SYS-Ready Score" ;;
         docs/ADR/*.md) validate_score "$file" "REQ-Ready Score" ;;
         docs/SYS/*.md) validate_score "$file" "SPEC-Ready Score" ;;
         docs/REQ/*.md) validate_score "$file" "IMPL-Ready Score" ;;

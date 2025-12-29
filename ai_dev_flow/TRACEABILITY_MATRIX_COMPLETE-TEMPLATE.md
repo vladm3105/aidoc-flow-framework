@@ -174,7 +174,7 @@ The Docs Flow Framework implements **cumulative tagging** where each artifact ty
 #### Example 1: SPEC Artifact (Layer 10)
 
 ```yaml
-# SPEC-018: request submission Service Specification
+# SPEC-NN: request submission Service Specification
 
 # ... spec content ...
 
@@ -183,11 +183,11 @@ cumulative_tags:
   prd: "PRD.16.01.03"
   ears: "EARS.12.24.02"
   bdd: "BDD.15.13.01"
-  adr: "ADR-033"
+  adr: "ADR-NN"
   sys: "SYS.12.25.01"
   req: "REQ.45.26.01"
   impl: "IMPL.03.28.02"  # Optional - included if exists
-  ctr: "CTR-005"  # Optional - included if exists
+  ctr: "CTR-NN"  # Optional - included if exists
 ```
 
 **Tag Count**: 9 tags (7 required + 2 optional)
@@ -198,7 +198,7 @@ cumulative_tags:
 """
 request submission Service
 
-Handles trade request submission with validation and execution.
+Handles request submission with validation and execution.
 
 ## 3. Traceability Tags
 
@@ -206,12 +206,12 @@ Handles trade request submission with validation and execution.
 @prd: PRD.16.01.03
 @ears: EARS.12.24.02, EARS.12.24.01
 @bdd: BDD.15.13.01, BDD.15.13.02
-@adr: ADR-033
+@adr: ADR-NN
 @sys: SYS.12.25.01, SYS.12.25.02
 @req: REQ.45.26.01, REQ.45.26.02
 @impl: IMPL.03.28.02
-@ctr: CTR-005
-@spec: SPEC-018
+@ctr: CTR-NN
+@spec: SPEC-NN
 @tasks: TASKS.18.29.03, TASKS.18.29.07
 @iplan: IPLAN-03
 
@@ -234,12 +234,12 @@ Test suite for request submission Service
 @prd: PRD.16.01.03
 @ears: EARS.12.24.02, EARS.12.24.01
 @bdd: BDD.15.13.01, BDD.15.13.02
-@adr: ADR-033
+@adr: ADR-NN
 @sys: SYS.12.25.01, SYS.12.25.02
 @req: REQ.45.26.01, REQ.45.26.02
 @impl: IMPL.03.28.02
-@ctr: CTR-005
-@spec: SPEC-018
+@ctr: CTR-NN
+@spec: SPEC-NN
 @tasks: TASKS.18.29.03, TASKS.18.29.07
 @iplan: IPLAN-03
 @code: src/execution/order_service.py:OrderService
@@ -264,9 +264,9 @@ Test suite for request submission Service
 
 **Check for Missing Upstream Tags**:
 ```bash
-# Validate that SPEC-018 has all required upstream tags
+# Validate that SPEC-NN has all required upstream tags
 python scripts/validate_tags_against_docs.py \
-  --artifact SPEC-018 \
+  --artifact SPEC-NN \
   --expected-layers brd,prd,ears,bdd,adr,sys,req \
   --strict
 ```
@@ -304,27 +304,27 @@ python scripts/generate_traceability_matrices.py \
 ```
 Strategy Document
   ↓ @brd
-BRD-009 (Business Requirements)
+BRD-NN (Business Requirements)
   ↓ @brd, @prd
-PRD-016 (Product Requirements)
+PRD-NN (Product Requirements)
   ↓ @brd, @prd, @ears
-EARS-012 (Engineering Requirements)
+EARS-NN (Engineering Requirements)
   ↓ @brd, @prd, @ears, @bdd
-BDD-015 (Test Scenarios)
+BDD-NN (Test Scenarios)
   ↓ @brd through @bdd, @adr
-ADR-033 (Architecture Decision)
+ADR-NN (Architecture Decision)
   ↓ @brd through @adr, @sys
-SYS-012 (System Requirements)
+SYS-NN (System Requirements)
   ↓ @brd through @sys, @req
-REQ-045 (Atomic Requirement)
+REQ-NN (Atomic Requirement)
   ↓ @brd through @req, @impl
-IMPL-03 (Implementation Plan)
+IMPL-NN (Implementation Plan)
   ↓ @brd through @impl, @ctr
-CTR-005 (API Contract)
+CTR-NN (API Contract)
   ↓ @brd through @ctr, @spec
-SPEC-018 (Technical Specification)
+SPEC-NN (Technical Specification)
   ↓ @brd through @spec, @tasks
-TASKS-018 (Implementation Tasks)
+TASKS-NN (Implementation Tasks)
   ↓ @brd through @tasks, @code
 Code: src/execution/order_service.py
   ↓ @brd through @code, @test
@@ -338,11 +338,11 @@ Production Deployment
 When IMPL and CTR layers don't exist:
 
 ```
-BRD-01 → PRD-03 → EARS-005 → BDD-008 → ADR-015 → SYS-020 → REQ-030
+BRD-NN → PRD-NN → EARS-NN → BDD-NN → ADR-NN → SYS-NN → REQ-NN
   ↓
-SPEC-040 (tags: @brd through @req = 7 tags)
+SPEC-NN (tags: @brd through @req = 7 tags)
   ↓
-TASKS-040 (tags: @brd through @spec = 8 tags)
+TASKS-NN (tags: @brd through @spec = 8 tags)
   ↓
 Code (tags: @brd through @tasks = 9 tags)
 ```
@@ -355,18 +355,18 @@ Code (tags: @brd through @tasks = 9 tags)
 
 | Strategy Source | BRD ID | PRD ID | EARS ID | BDD ID | Status |
 |-----------------|--------|--------|---------|--------|--------|
-| [Strategic Goal 1] | BRD-01 | PRD-01, PRD-02 | EARS-01, EARS-02, EARS-03 | BDD-01, BDD-02 | ✅ Complete |
-| [Strategic Goal 2] | BRD-02 | PRD-03 | EARS-004, EARS-005 | BDD-03 | ✅ Complete |
-| [Strategic Goal 3] | BRD-03 | PRD-004, PRD-005 | EARS-006 | BDD-004 | 🟡 Partial |
+| [Strategic Goal 1] | BRD-NN | PRD-NN | EARS-NN | BDD-NN | ✅ Complete |
+| [Strategic Goal 2] | BRD-NN | PRD-NN | EARS-NN | BDD-NN | ✅ Complete |
+| [Strategic Goal 3] | BRD-NN | PRD-NN | EARS-NN | BDD-NN | 🟡 Partial |
 | [Strategic Goal N] | ... | ... | ... | ... | ... |
 
 ### 3.2 Architecture Layer Traceability
 
 | BRD ID | PRD ID | EARS ID | ADR ID | SYS ID | REQ IDs | Status |
 |--------|--------|---------|--------|--------|---------|--------|
-| BRD-01 | PRD-01 | EARS-01 | ADR-01, ADR-005 | SYS-01 | REQ-01, REQ-02, REQ-03 | ✅ Complete |
-| BRD-02 | PRD-03 | EARS-004 | ADR-02 | SYS-02 | REQ-04, REQ-005 | ✅ Complete |
-| BRD-03 | PRD-004 | EARS-006 | ADR-03 | SYS-03 | REQ-006 | 🟡 Partial |
+| BRD-NN | PRD-NN | EARS-NN | ADR-NN | SYS-NN | REQ-NN | ✅ Complete |
+| BRD-NN | PRD-NN | EARS-NN | ADR-NN | SYS-NN | REQ-NN | ✅ Complete |
+| BRD-NN | PRD-NN | EARS-NN | ADR-NN | SYS-NN | REQ-NN | 🟡 Partial |
 | ... | ... | ... | ... | ... | ... | ... |
 
 ### 3.3 Implementation Layer Traceability
@@ -375,20 +375,20 @@ Code (tags: @brd through @tasks = 9 tags)
 
 | REQ ID | IMPL ID | CTR ID | SPEC ID | TASKS ID | IPLAN ID | Code Files | Tag Discovery | Tests | Status |
 |--------|---------|--------|---------|----------|---------------|------------|---------------|-------|--------|
-| REQ-01 | IMPL-01 | CTR-01 | SPEC-01 | TASKS-01 | IPLAN-01 | src/module.py | @req: REQ.001.15 | test_module.py | ✅ Complete |
-| REQ-02 | IMPL-01 | N/A | SPEC-02 | TASKS-02 | IPLAN-02 | src/service.py | test_service.py | ✅ Complete |
-| REQ-03 | IMPL-02 | CTR-02 | SPEC-03 | TASKS-03 | IPLAN-03 | src/api.py | test_api.py | 🟡 In Progress |
-| REQ-04 | IMPL-02 | N/A | SPEC-004 | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Not Started |
+| REQ-NN | IMPL-NN | CTR-NN | SPEC-NN | TASKS-NN | IPLAN-NN | src/module.py | @req: REQ.NN.EE.SS | test_module.py | ✅ Complete |
+| REQ-NN | IMPL-NN | N/A | SPEC-NN | TASKS-NN | IPLAN-NN | src/service.py | test_service.py | ✅ Complete |
+| REQ-NN | IMPL-NN | CTR-NN | SPEC-NN | TASKS-NN | IPLAN-NN | src/api.py | test_api.py | 🟡 In Progress |
+| REQ-NN | IMPL-NN | N/A | SPEC-NN | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Not Started |
 | ... | ... | ... | ... | ... | ... | ... | ... |
 
 ### 3.4 Validation Layer Traceability
 
 | BDD ID | EARS ID | Code Files | Test Files | Test Results | Production Status | Status |
 |--------|---------|------------|------------|--------------|-------------------|--------|
-| BDD-01 | EARS-01 | src/module.py | test_module.py | ✅ Passed (100%) | ✅ Deployed v1.0 | Complete |
-| BDD-02 | EARS-02 | src/service.py | test_service.py | ✅ Passed (95%) | ✅ Deployed v1.0 | Complete |
-| BDD-03 | EARS-004 | src/api.py | test_api.py | 🟡 Partial (80%) | 🟡 Staging | Testing |
-| BDD-004 | EARS-006 | ⏳ Pending | ⏳ Pending | ⏳ Not Tested | ⏳ Not Deployed | Not Started |
+| BDD-NN | EARS-NN | src/module.py | test_module.py | ✅ Passed (100%) | ✅ Deployed v1.0 | Complete |
+| BDD-NN | EARS-NN | src/service.py | test_service.py | ✅ Passed (95%) | ✅ Deployed v1.0 | Complete |
+| BDD-NN | EARS-NN | src/api.py | test_api.py | 🟡 Partial (80%) | 🟡 Staging | Testing |
+| BDD-NN | EARS-NN | ⏳ Pending | ⏳ Pending | ⏳ Not Tested | ⏳ Not Deployed | Not Started |
 | ... | ... | ... | ... | ... | ... | ... |
 
 ---
@@ -400,33 +400,33 @@ Code (tags: @brd through @tasks = 9 tags)
 ```
 Strategy: [Strategic Document section X.Y]
    ↓ drives
-BRD-009: service integration Business Requirements
+BRD-NN: service integration Business Requirements
    ↓ defines
-PRD-016: operation execution Product Requirements
+PRD-NN: operation execution Product Requirements
    ↓ formalizes
-EARS-012: operation execution formal requirements (WHEN user places order, THE system SHALL execute trade WITHIN 2 seconds)
+EARS-NN: operation execution formal requirements (WHEN a user submits a request, THE system SHALL execute action WITHIN [time])
    ↓ validates
-BDD-015: operation execution acceptance tests (Gherkin scenarios)
+BDD-NN: operation execution acceptance tests (Gherkin scenarios)
    ↓ informs
-ADR-033: operation execution architecture decision (Event-driven architecture for trade processing)
+ADR-NN: operation execution architecture decision (Event-driven architecture for operation processing)
    ↓ defines
-SYS-012: operation execution system requirements (Event bus, order processing service)
+SYS-NN: operation execution system requirements (Event bus, operation processing service)
    ↓ decomposes
-REQ-045: Place limit order atomic requirement
+REQ-NN: Submit constrained operation request (atomic requirement)
    ↓ plans
-IMPL-03: operation execution implementation plan (Phase 2, Team B, 3 developers, 20 days)
+IMPL-NN: operation execution implementation plan (Phase 2, Team B, 3 developers, 20 days)
    ↓ specifies
-CTR-005: operation execution API contract (.md + .yaml)
+CTR-NN: operation execution API contract (.md + .yaml)
    ↓ implements
-SPEC-018: request submission service specification (YAML blueprint)
+SPEC-NN: request submission service specification (YAML blueprint)
    ↓ guides
-TASKS-018: request submission implementation tasks (15 step-by-step TODOs)
+TASKS-NN: request submission implementation tasks (15 step-by-step TODOs)
    ↓ generates
-Code: src/execution/order_service.py (implements CTR-005, 350 LOC)
+Code: src/execution/order_service.py (implements CTR-NN, 350 LOC)
    ↓ verifies
 Tests: tests/test_order_service.py + contract tests (95% coverage)
    ↓ validates
-BDD-015: Acceptance tests pass (100% scenarios passing)
+BDD-NN: Acceptance tests pass (100% scenarios passing)
    ↓ deploys
 Production: Deployed v1.2.0 (YYYY-MM-DD)
 ```
@@ -436,27 +436,27 @@ Production: Deployed v1.2.0 (YYYY-MM-DD)
 ### 3.2 Example 2: Partial Implementation Chain (Gap Identification)
 
 ```
-Strategy: [Market Analysis Report section 4.3]
+Strategy: [Business Analysis Report section 4.3]
    ↓
-BRD-015: ML-Based Market Sentiment Analysis
+BRD-NN: ML-Based Real-Time Sentiment Analysis
    ↓
-PRD-025: Real-time sentiment scoring for option strategies
+PRD-NN: Real-time sentiment scoring for user-generated content
    ↓
-EARS-020: WHEN market data updates, THE system SHALL compute sentiment score WITHIN 500ms
+EARS-NN: WHEN new input data arrives, THE system SHALL compute sentiment score WITHIN 500ms
    ↓
-BDD-028: Sentiment calculation test scenarios
+BDD-NN: Sentiment calculation test scenarios
    ↓
-ADR-042: ML model architecture for sentiment analysis
+ADR-NN: ML model architecture for sentiment analysis
    ↓
-SYS-018: Sentiment service system requirements
+SYS-NN: Sentiment service system requirements
    ↓
-REQ-075: Calculate sentiment score from market data
+REQ-NN: Calculate sentiment score from input data
    ↓
-IMPL-008: Phase 3 ML implementation plan
+IMPL-NN: Phase 3 ML implementation plan
    ↓ [GAP: CTR missing]
 ⚠️ CTR-NN: No API contract defined for sentiment service
    ↓
-SPEC-032: Sentiment scoring service specification (YAML)
+SPEC-NN: Sentiment scoring service specification (YAML)
    ↓ [GAP: TASKS missing]
 ⚠️ TASKS-NN: No code generation plan created
    ↓ [GAP: Code missing]
@@ -464,7 +464,7 @@ SPEC-032: Sentiment scoring service specification (YAML)
    ↓ [GAP: Tests missing]
 ⚠️ Tests: No tests created
    ↓ [GAP: Validation missing]
-⚠️ BDD-028: Acceptance tests not executed
+⚠️ BDD-NN: Acceptance tests not executed
    ↓
 Production: ⏳ Not deployed
 ```
@@ -474,29 +474,29 @@ Production: ⏳ Not deployed
 ### 3.3 Example 3: Interface-Heavy Implementation
 
 ```
-BRD-012: External data provider integration
+BRD-NN: External data provider integration
    ↓
-PRD-020: Alpha Vantage API integration
+PRD-NN: External API integration
    ↓
-EARS-015: WHEN system requests item data, THE system SHALL receive response WITHIN 2 seconds
+EARS-NN: WHEN system requests item data, THE system SHALL receive response WITHIN [time]
    ↓
-BDD-022: API integration test scenarios
+BDD-NN: API integration test scenarios
    ↓
-ADR-038: External API integration architecture
+ADR-NN: External API integration architecture
    ↓
-REQ-062: Fetch real-time item quotes from Alpha Vantage
+REQ-NN: Fetch real-time item data from external provider
    ↓
-IMPL-005: Integration implementation plan (Phase 2, Team C)
+IMPL-NN: Integration implementation plan (Phase 2, Team C)
    ↓
-CTR-03: Alpha Vantage API contract (.md + .yaml)
-   ├─ SPEC-025: API client specification (consumer)
-   └─ SPEC-026: Data transformation service (processor)
+CTR-NN: External Provider API contract (.md + .yaml)
+   ├─ SPEC-NN: API client specification (consumer)
+   └─ SPEC-NN: Data transformation service (processor)
    ↓
-TASKS-025: API client implementation tasks
-TASKS-026: Data transformation tasks
+TASKS-NN: API client implementation tasks
+TASKS-NN: Data transformation tasks
    ↓
 Code: src/integrations/external_api/
-   ├─ client.py (implements CTR-03 consumer)
+   ├─ client.py (implements CTR-NN consumer)
    ├─ transformer.py (data processing)
    └─ rate_limiter.py (API throttling)
    ↓
@@ -505,7 +505,7 @@ Tests:
    ├─ tests/contract/test_ctr_003.py
    └─ tests/unit/test_transformer.py
    ↓
-BDD-022: Integration tests pass (5/5 scenarios)
+BDD-NN: Integration tests pass (5/5 scenarios)
    ↓
 Production: ✅ Deployed v1.1.0
 ```
@@ -671,19 +671,19 @@ Final Impact (Tier 3+):
 
 ### 6.2 Change Impact Examples
 
-**Example: Changing BRD-009 (Business Requirement Change)**
+**Example: Changing BRD-NN (Business Requirement Change)**
 ```
-BRD-009: service integration Requirements
+BRD-NN: service integration Requirements
    ↓ Direct Impact (Tier 1)
-   PRD-016: operation execution Features (Requires review and potential update)
+   PRD-NN: operation execution Features (Requires review and potential update)
    ↓ Indirect Impact (Tier 2)
-   EARS-012: Formal trade requirements (May need revision)
-   BDD-015: Test scenarios (May need new scenarios)
-   ADR-033: Architecture decision (May need reconsideration)
+   EARS-NN: Formal operation requirements (May need revision)
+   BDD-NN: Test scenarios (May need new scenarios)
+   ADR-NN: Architecture decision (May need reconsideration)
    ↓ Cascading Impact (Tier 3)
-   SYS-012, REQ-045: System/atomic requirements (Potential updates)
-   IMPL-03: Implementation plan (Timeline may change)
-   CTR-005, SPEC-018, TASKS-018: Implementation artifacts (Code changes)
+   SYS-NN, REQ-NN: System/atomic requirements (Potential updates)
+   IMPL-NN: Implementation plan (Timeline may change)
+   CTR-NN, SPEC-NN, TASKS-NN: Implementation artifacts (Code changes)
    ↓ Final Impact (Tier 4)
    Code: src/execution/order_service.py (Refactoring required)
    Tests: tests/test_order_service.py (Test updates)
@@ -876,21 +876,21 @@ python scripts/validate_requirement_ids.py \
 7. **Validate**: Re-run BDD scenarios
 
 ### 10.3 Scenario 3: Requirements Change Request
-1. **Change Request**: Update to EARS-012
+1. **Change Request**: Update to EARS-NN
 2. **Impact Analysis**: Use matrix to find:
    - Upstream: Which PRD/BRD drives this requirement?
    - Downstream: Which BDD, REQ, SPEC, Code affected?
 3. **Assess**: Determine change scope and effort
 4. **Approve**: Stakeholder sign-off on impact
-5. **Execute**: Update EARS-012 + all downstream artifacts
+5. **Execute**: Update EARS-NN + all downstream artifacts
 6. **Validate**: Run affected BDD scenarios
 7. **Update Matrix**: Reflect changes
 
 ### 10.4 Scenario 4: Architecture Decision Update
-1. **New ADR**: ADR-050 supersedes ADR-033
+1. **New ADR**: ADR (TBD) supersedes ADR (previous)
 2. **Find Affected**:
-   - Upstream: Which BRD/PRD/EARS drove ADR-033?
-   - Downstream: Which SYS, REQ, SPEC, Code implement ADR-033?
+   - Upstream: Which BRD/PRD/EARS drove ADR (previous)?
+   - Downstream: Which SYS, REQ, SPEC, Code implement ADR (previous)?
 3. **Plan Migration**:
    - Create IMPL for architecture change
    - Update all affected SPEC

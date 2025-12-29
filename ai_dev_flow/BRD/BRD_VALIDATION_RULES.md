@@ -37,11 +37,11 @@ custom_fields:
 
 ---
 
-## Design Decision: Human-Centric Validation (No Schema File)
+## Design Decision: Human-Centric Validation (Optional Schema)
 
-> **Intentional Design Choice**: BRD validation uses script-based structural checks rather than YAML schema validation.
+> **Intentional Design Choice**: BRD validation is script-first and human-centric. An optional `BRD_SCHEMA.yaml` exists for non-blocking, machine-readable checks.
 >
-> **Why No BRD_SCHEMA.yaml**:
+> **Why Schema is Optional**:
 > - **Business Content Diversity**: Business requirements span multiple domains with varying terminology, structure, and emphasis
 > - **Judgment-Based Quality**: BRD quality depends on business stakeholder comprehension, not technical schema compliance
 > - **Flexibility Over Rigidity**: A fixed schema would reject legitimate business expressions that don't fit a predefined mold
@@ -57,7 +57,7 @@ custom_fields:
 > |-----------------|--------------|--------------|
 > | Structure | `validate_brd_template.sh` | `*_SCHEMA.yaml` |
 > | Content | Human review + PRD-Ready Score | Schema field validation |
-> | Quality Gate | ≥90% PRD-Ready Score | Schema compliance + tests |
+> | Quality Gate | ≥90/100 PRD-Ready Score | Schema compliance + tests |
 
 ---
 
@@ -88,9 +88,9 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 | **Feature BRD** | `BRD-NN_{feature_name}` | Full (24 checks) | Business capability requirements |
 | **BRD-REF** | `BRD-REF-NN_{slug}.md` | Reduced (4 checks) | Supplementary reference documents |
 
-### BRD-REF Reduced Validation
+### BRD-REF Reduced Validation (Deprecated)
 
-**Purpose**: BRD-REF documents are supplementary reference materials that support BRD artifacts but do not define formal business requirements.
+**Purpose**: Legacy support for `BRD-REF` documents as supplementary references. Prefer using `REF` artifacts (`REF-TEMPLATE.md`) instead. Validation remains reduced for backward compatibility.
 
 **Applicable Checks** (4 total):
 - CHECK 2: Document Control Fields (required)
@@ -107,7 +107,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 - CHECK 22: Traceability Matrix (exempt)
 - CHECK 23-24: Approval and Glossary (exempt)
 
-**Reference**: See `REF-TEMPLATE.md` for BRD-REF document structure and requirements.
+**Reference**: See `REF-TEMPLATE.md` for reference document structure and requirements.
 
 ### Validation Tiers
 
@@ -225,7 +225,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 | **Document Version** | [e.g., 1.0] |
 | **Date** | [Current date] |
 | **Document Owner** | [Name and title] | |
-| **PRD-Ready Score** | ✅ 95% (Target: ≥90%)
+| **PRD-Ready Score** | 95/100 (Target: ≥90/100)
 ```
 
 ---
@@ -262,8 +262,8 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 
 **Valid Examples**:
 - `BRD-01_platform_architecture_technology_stack.md` ✅ (Platform BRD)
-- `BRD-006_b2c_progressive_kyc_onboarding.md` ✅ (Feature BRD)
-- `BRD-009.1_provider_integration_prerequisites.md` ✅ (Feature BRD section file)
+- `BRD-06_b2c_progressive_kyc_onboarding.md` ✅ (Feature BRD)
+- `BRD-09.1_provider_integration_prerequisites.md` ✅ (Feature BRD section file)
 - `BRD-REF-01_glossary_financial_terms.md` ✅ (Reference document)
 - `BRD-REF-02_regulatory_standards_matrix.md` ✅ (Reference document)
 
@@ -347,24 +347,24 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 
 ### CHECK 6: Architecture Decision Requirements section
 
-**Purpose**: Verify section 5.2 exists and has required structure
+**Purpose**: Verify section 7.2 exists and has required structure
 **Type**: Error (blocking)
 
 **Requirements**:
-1. section 5.2 "Architecture Decision Requirements" exists
+1. section 7.2 "Architecture Decision Requirements" exists
 2. Contains table with columns: Topic Area, Decision Needed, Business Driver, Key Considerations
 3. At least 3 architectural topics identified
 
 **Error Message**:
 ```
-❌ MISSING: section 5.2 Architecture Decision Requirements
-❌ ERROR: section 5.2 missing required table structure (Topic Area, Decision Needed, Business Driver, Key Considerations)
-❌ ERROR: section 5.2 must identify at least 3 architectural topics
+❌ MISSING: section 7.2 Architecture Decision Requirements
+❌ ERROR: section 7.2 missing required table structure (Topic Area, Decision Needed, Business Driver, Key Considerations)
+❌ ERROR: section 7.2 must identify at least 3 architectural topics
 ```
 
 **Fix**:
 ```markdown
-## 5.2 Architecture Decision Requirements
+## 7.2 Architecture Decision Requirements
 
 | Topic Area | Decision Needed | Business Driver | Key Considerations |
 |------------|-----------------|---------------|-------------------|
@@ -455,13 +455,13 @@ BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (5
 **Error Message**:
 ```
 ❌ ERROR: BRD must not reference specific ADR numbers (ADR-XXX)
-         BRDs are created BEFORE ADRs - only identify decision topics in section 5.2
+         BRDs are created BEFORE ADRs - only identify decision topics in section 7.2
          Found: ADR-033_risk_architecture.md
 ```
 
 **Fix**:
 1. Remove any ADR-NN references
-2. Ensure ADR references are only in section 5.2 as topic identification
+2. Ensure ADR references are only in section 7.2 as topic identification
 3. Add ADR references AFTER BRD approval when ADRs are created
 
 **Reference**: `BRD_CREATION_RULES.md` section 7 (ADR Relationship Guidelines)
@@ -568,22 +568,22 @@ BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (5
 **Type**: Error (blocking) - Required for BRD documents
 
 **Valid Examples**:
-- `✅ 95% (Target: ≥90%)` ✅
-- `✅ 92% (Target: ≥90%)` ✅
+- `95/100 (Target: ≥90/100)` ✅
+- `✅ 92/100 (Target: ≥90/100)` ✅
 
 **Invalid Examples**:
 - `95%` ❌
-- `✓ 95%` ❌
+- `65/100` with missing target clause ❌
 - `High` ❌
 
 **Error Message** (format):
 ```
-❌ MISSING: PRD-Ready Score with ✅ emoji and percentage
+❌ MISSING: PRD-Ready Score in format: [Score]/100 (Target: ≥90/100)
 ```
 
 **Warning Message** (threshold):
 ```
-⚠️  WARNING: PRD-Ready Score below 90%: 85%
+⚠️  WARNING: PRD-Ready Score below 90/100: 85/100
 ```
 
 **Error Message** (threshold blocking):
@@ -634,7 +634,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 **Category 1 Calculation**:
 - Minimum deduction: 0 points (no PRD-level content found)
 - Maximum deduction: 50 points (heavy PRD-level contamination)
-- **Gold Standard**: BRD-009 has 0 deductions (100% business-level content)
+- **Gold Standard**: BRD-09 has 0 deductions (100% business-level content)
 
 ---
 
@@ -707,7 +707,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 
 ---
 
-**Example Gold Standard (BRD-009)**:
+**Example Gold Standard (BRD-09)**:
 - **Code blocks**: 0 → -0 points
 - **API terms**: 0 → -0 points
 - **UI terms**: 0 → -0 points
@@ -871,7 +871,7 @@ Line X: "Customer clicks 'Send Money' button" - UI implementation detail
 Line Y: "Modal displays recipient selection dropdown" - UI component specification
 
 Suggested business-level rewrites:
-- Line X: "Customer initiates remittance transaction"
+- Line X: "Customer initiates a transaction"
 - Line Y: "Customer selects recipient from saved list"
 
 UI implementation details should be deferred to PRD.
@@ -939,15 +939,15 @@ Found structure:
 ❌ Business Capability
 ❌ Complexity
 
-Fix: Add missing subsections per BRD-TEMPLATE.md section 5.2 format
+Fix: Add missing subsections per BRD-TEMPLATE.md section 7.2 format
 ```
 
 **Fix**:
 1. Verify each FR has all 6 subsections in correct order
-2. Add missing subsections using BRD-TEMPLATE.md section 5.2 as reference
+2. Add missing subsections using BRD-TEMPLATE.md section 7.2 as reference
 3. Ensure subsection headers match exactly (case-sensitive)
 
-**Reference**: BRD-TEMPLATE.md section 5.2, BRD_CREATION_RULES.md section 5.5 (Complexity Rating)
+**Reference**: BRD-TEMPLATE.md section 7.2, BRD_CREATION_RULES.md section 5.5 (Complexity Rating)
 
 ---
 
@@ -957,16 +957,16 @@ Fix: Add missing subsections per BRD-TEMPLATE.md section 5.2 format
 **Type**: Warning (non-blocking) - Invalid cross-references reduce traceability
 
 **Validation Rules**:
-1. All BRD-NN references must follow correct ID format (BRD-01, BRD-034, etc.)
+1. All BRD-NN references must follow correct ID format (BRD-01, BRD-34, etc.)
 2. Referenced BRD files must exist in `docs/BRD/` directory
-3. Platform BRDs should reference BRD-01 through BRD-005 (foundational)
+3. Platform BRDs should reference BRD-01 through BRD-05 (foundational)
 4. Feature BRDs should reference both Platform BRDs and related Feature BRDs
 
 **Valid Related Requirements Example**:
 ```markdown
 **Related Requirements**:
 - Platform BRDs: BRD-01 (Platform Architecture), BRD-02 (Partner Ecosystem), BRD-03 (Compliance)
-- Feature BRDs: BRD-006 (KYC Onboarding), BRD-008 (Wallet Funding), BRD-011 (Recipient Management)
+- Feature BRDs: BRD-NN (Feature Example A), BRD-NN (Feature Example B), BRD-NN (Feature Example C)
 ```
 
 **Warning Message**:
@@ -978,7 +978,7 @@ Fix: Add missing subsections per BRD-TEMPLATE.md section 5.2 format
 
 Valid cross-references:
 ✅ BRD-01 (Platform Architecture) - exists
-✅ BRD-008 (Wallet Funding) - exists
+✅ BRD-NN (Wallet Funding) - exists
 
 Fix: Verify all BRD references exist and use correct ID format (BRD-NN)
 ```
@@ -1016,17 +1016,17 @@ Fix: Verify all BRD references exist and use correct ID format (BRD-NN)
 - [ ] Timeline mentions phases or duration
 - [ ] Investment level mentioned (even if approximate)
 
-**Valid Example** (BRD-009):
+**Valid Example** (BRD-09):
 ```markdown
 ### 1.1 Executive Summary
 
-The US-Uzbekistan remittance corridor represents a **$2.1 billion annual market** with approximately **350,000 Uzbek diaspora**
+The target market segment represents a **$X market** with approximately **Y potential customers**
 in the United States sending an average of **$500 per month** to family members. Current solutions charge **5-8% all-in fees**
 with delivery times of 24-48 hours.
 
-BeeLocal enables US-based customers to send money to Uzbekistan recipients **within 15 minutes** at an all-in cost of
-approximately **3.5%** ($3.00 flat fee + 1.5% FX spread). The solution leverages Bridge custody for wallet funding,
-real-time FX conversion, and Paynet delivery network for instant recipient payouts.
+Our solution enables customers to complete transactions **within [target time]** at an all-in cost of
+approximately **[Z]%** ([flat fee] + [conversion margin]). The solution leverages external providers for funding,
+conversion, and delivery to achieve reliable outcomes.
 
 This BRD defines business requirements for **Phase 1: Core Remittance Platform**, targeting **$10M GMV in Year 1**
 with **5,000 active senders**. Implementation will occur over **4 phases** (Q1-Q4 2025) with an estimated investment
@@ -1242,7 +1242,7 @@ Orphaned Requirements:
 - BRD.NN.012: Not linked to any Business Objective
 - PRD.NN.09.07: Not linked to any Functional Requirement
 
-Traceability Health Score: 78% (Target: ≥90%)
+Traceability Health Score: 78/100 (Target: ≥90/100)
 
 Fix: Ensure bidirectional links for all objectives, BRD requirements, and user stories
 ```
@@ -1483,8 +1483,8 @@ Reference: BRD-TEMPLATE.md section 17
 | **CHECK 3** | Add initial entry to Document Revision History table |
 | **CHECK 4** | Rename file to Platform (`BRD-NN_platform_*`), Feature (`BRD-NN_{feature_name}`), or Reference (`BRD-REF-NN_{slug}`) pattern |
 | **CHECK 5** | For Platform/Feature: Ensure section 3.6 & 3.7 exist; For BRD-REF: Only Document Control, Revision History, Introduction required |
-| **CHECK 6** | Add section 5.2 with table structure and at least 3 architectural topics |
-| **CHECK 9** | Remove ADR-NN references; ensure ADRs only identified as topics in section 5.2 |
+| **CHECK 6** | Add section 7.2 with table structure and at least 3 architectural topics |
+| **CHECK 9** | Remove ADR-NN references; ensure ADRs only identified as topics in section 7.2 |
 | **CHECK 11** | Fix broken links, use relative paths, verify target files exist |
 | **CHECK 13** | Add PRD-Ready Score to Document Control: `✅ [Score]/100 (Target: ≥90/100)` |
 | **CHECK 14** | Remove all code blocks (```) from section 4 FRs; replace with business-level descriptions |
@@ -1525,7 +1525,7 @@ find docs/BRD -type f -name "BRD-*.md" -exec ./scripts/validate_brd_template.sh 
 
 **Technical Readiness (30%)**:
 - section 3.6 & 3.7 properly populated by BRD type: 10%
-- section 5.2 Architecture Decision Requirements table: 10%
+- section 7.2 Architecture Decision Requirements table: 10%
 - No forward ADR references: 10%
 
 **Quality Standards (20%)**:
@@ -1595,7 +1595,7 @@ Warnings: 1
 
 **Fix**: Rename file to match appropriate pattern:
 - Platform: `BRD-01_platform_architecture_technology_stack.md`
-- Feature: `BRD-006_b2c_progressive_kyc_onboarding.md`
+- Feature: `BRD-06_b2c_progressive_kyc_onboarding.md`
 
 ---
 
@@ -1603,15 +1603,15 @@ Warnings: 1
 
 **Error**:
 ```
-❌ MISSING: section 5.2 Architecture Decision Requirements
-❌ ERROR: section 5.2 must identify at least 3 architectural topics
+❌ MISSING: section 7.2 Architecture Decision Requirements
+❌ ERROR: section 7.2 must identify at least 3 architectural topics
 ```
 
 **Cause**: Missing required section or empty/inadequate table
 
 **Fix**:
 ```markdown
-## 5.2 Architecture Decision Requirements
+## 7.2 Architecture Decision Requirements
 
 | Topic Area | Decision Needed | Business Driver | Key Considerations |
 |------------|-----------------|---------------|-------------------|
@@ -1634,7 +1634,7 @@ Warnings: 1
 
 **Fix**:
 1. Remove ADR-NN references
-2. Convert to topic identification in section 5.2
+2. Convert to topic identification in section 7.2
 3. Add ADR links AFTER BRD approval when ADRs are created
 
 ---

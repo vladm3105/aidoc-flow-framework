@@ -14,16 +14,31 @@ from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 from collections import defaultdict
 
-# Tag pattern: @tag-type: DOCUMENT-ID:REQUIREMENT-ID, ...
+# Tag pattern: @tag-type: DOCUMENT-ID[:REQUIREMENT-ID], ...
+# Allow dot (.) for unified IDs like TYPE.NN.TT.SS and no space after ':' (Gherkin-friendly)
 TAG_PATTERN = re.compile(
-    r'@(\w+(?:-\w+)?):\s*([\w\-]+(?::[\w\-]+)?(?:\s*,\s*[\w\-]+(?::[\w\-]+)?)*)',
+    r'@(\w+(?:-\w+)?):\s*([\w\.-]+(?::[\w\.-]+)?(?:\s*,\s*[\w\.-]+(?::[\w\.-]+)?)*)',
     re.MULTILINE
 )
 
-# Valid tag types
+# BDD link-style tags, e.g., "@requirement:[REQ-01](../REQ/...#REQ-01)"
+BDD_LINK_TAG_PATTERN = re.compile(
+    r'@(\w+(?:-\w+)?):\s*\[([A-Z]+-\d+)\]',
+    re.MULTILINE
+)
+
+# Valid tag types (aligned with validator expectations)
+# Keep some aliases for backward compatibility (handled via TAG_ALIASES)
 VALID_TAG_TYPES = {
-    'brd', 'prd', 'ears', 'sys', 'adr', 'req', 'spec', 'impl',
-    'contract', 'test', 'impl-status'
+    'brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'impl', 'ctr', 'spec',
+    'tasks', 'iplan', 'code', 'tests', 'icon', 'contract', 'test', 'impl-status'
+}
+
+# Legacy/common aliases mapped to canonical keys
+TAG_ALIASES = {
+    'contract': 'ctr',
+    'test': 'tests',
+    'requirement': 'req',
 }
 
 # Valid implementation status values
@@ -101,6 +116,7 @@ def extract_tags_from_file(file_path: Path) -> Dict:
 
         for tag_type, tag_value in matches:
             tag_type = tag_type.lower()
+            tag_type = TAG_ALIASES.get(tag_type, tag_type)
 
             # Validate tag type
             if tag_type not in VALID_TAG_TYPES:
@@ -139,6 +155,19 @@ def extract_tags_from_file(file_path: Path) -> Dict:
                 result['errors'].append(
                     f"Line {line_num}: Failed to parse tag value '{tag_value}': {e}"
                 )
+
+    # Secondary pass: capture BDD link-style tags like @requirement:[REQ-01](...)
+    for match in BDD_LINK_TAG_PATTERN.finditer(content):
+        tag_type, doc_id = match.groups()
+        tag_type = TAG_ALIASES.get(tag_type.lower(), tag_type.lower())
+
+        if tag_type not in VALID_TAG_TYPES:
+            result['errors'].append(
+                f"Line ?: Invalid tag type '{tag_type}' in BDD link tag. Valid: {VALID_TAG_TYPES}"
+            )
+            continue
+
+        result['tags'][tag_type].append((doc_id, None))
 
     # Convert defaultdict to regular dict for JSON serialization
     result['tags'] = dict(result['tags'])

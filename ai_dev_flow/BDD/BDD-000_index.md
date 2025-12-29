@@ -37,15 +37,15 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 ## Purpose
 
 - Central index for Behavior-Driven Development (BDD) feature files
-- Tracks allocation and sequencing for `BDD-NN_{slug}.feature` files
+- Tracks allocation and sequencing for section-based files inside suite folders (`BDD-NN.SS_{slug}.feature`)
 - Provides traceability from requirements to acceptance tests
 
 ## Allocation Rules
 
 **Numbering**:
-- Allocate sequentially starting at `001`
+- Allocate suite numbers sequentially starting at `01` (e.g., `BDD-01`, `BDD-02`)
 - Keep numbers stable once assigned (never reuse or renumber)
-- Use three-digit format: BDD-01, BDD-02, etc.
+- Within each suite, allocate section numbers sequentially: `.1`, `.2`, `.3`, ...
 
 **File Naming**:
 - Format: `BDD-NN_{descriptive_slug}.feature`
@@ -93,9 +93,11 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ## Documents
 
-### Template
+### Templates
 
-- **[BDD-TEMPLATE.feature](./BDD-TEMPLATE.feature)**: Comprehensive template with examples and best practices
+- **[BDD-SECTION-TEMPLATE.feature](./BDD-SECTION-TEMPLATE.feature)**: Primary section file template
+- **[BDD-SUBSECTION-TEMPLATE.feature](./BDD-SUBSECTION-TEMPLATE.feature)**: Subsection template for splits
+- **[BDD-AGGREGATOR-TEMPLATE.feature](./BDD-AGGREGATOR-TEMPLATE.feature)**: Redirect stub when many subsections
 
 ### API Integrations
 
@@ -103,7 +105,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
-- **BDD-01**: [External Service Gateway Integration](./BDD-01_external_gateway_integration.feature)
+- **BDD-01**: External Service Gateway Integration (./BDD-01_external_gateway_integration.feature)
   - **Requirements**: REQ.NN.EE.SS (Integration), REQ.NN.EE.SS (Gateway)
   - **ADRs**: ADR-NN (Architecture)
   - **Status**: Draft | Review | Approved
@@ -115,7 +117,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
-- **BDD-02**: [Resource Risk Limits Validation](./BDD-02_resource_risk_limits.feature)
+- **BDD-02**: Resource Risk Limits Validation (./BDD-02_resource_risk_limits.feature)
   - **Requirements**: REQ.NN.EE.SS (Risk Limits)
   - **ADRs**: ADR-NN (Risk Parameters)
   - **Status**: Draft | Review | Approved
@@ -127,7 +129,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 <!-- EXAMPLE ENTRY FORMAT - Copy and modify for actual documents -->
 <!--
-- **BDD-03**: [System State Classifier Behavior](./BDD-03_system_state_classifier.feature)
+- **BDD-03**: System State Classifier Behavior (./BDD-03_system_state_classifier.feature)
   - **Requirements**: REQ.NN.EE.SS (ML Models)
   - **ADRs**: ADR-NN (ML Architecture)
   - **Status**: Draft | Review | Approved
@@ -171,34 +173,34 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ## Usage Guidelines
 
-### Creating a New BDD Feature File
+### Creating a New BDD Suite and Sections
 
-1. **Identify Next Number**: Check this index for the next available BDD-NN number
-2. **Choose Descriptive Slug**: Use lower_snake_case matching the feature name
-3. **Copy Template**: `cp BDD-TEMPLATE.feature BDD-NN_your_slug.feature`
-4. **Fill Out Header**: Add traceability tags (@requirement, @adr, @spec)
-5. **Write Feature Description**: Clear, concise feature title and context
-6. **Define Scenarios**: Use Given/When/Then format for acceptance criteria
-7. **Update This Index**: Add entry to appropriate functional area section
-8. **Link Requirements**: Ensure corresponding REQ documents reference this BDD file
+1. **Assign Suite Number**: Choose next `BDD-NN` and suite slug (e.g., `knowledge_engine`)
+2. **Create Suite Folder**: `BDD/BDD-NN_{suite_slug}`
+3. **Create Index**: Copy `BDD-SECTION-0-TEMPLATE.md` to `BDD/BDD-NN_{suite_slug}/BDD-NN.0_index.md`
+4. **Plan Sections**: Define `.1`, `.2`, `.3` sections and slugs
+5. **Create Section Files**: Copy `BDD-SECTION-TEMPLATE.feature` to `BDD/BDD-NN_{suite_slug}/BDD-NN.SS_{slug}.feature`
+6. **If Needed, Create Subsections**: Copy `BDD-SUBSECTION-TEMPLATE.feature` to `BDD/BDD-NN_{suite_slug}/BDD-NN.SS.mm_{slug}.feature`
+7. **Add Traceability Tags**: `@brd`, `@prd`, `@ears` at file top (Gherkin-native)
+8. **Write Scenarios**: Given/When/Then; include primary, negative, edge, quality, integration, data-driven
+9. **Use Thresholds**: Reference PRD threshold registry via `@threshold:` keys (no hardcoded numbers)
+10. **Update Suite Index**: List sections, counts, and status in `BDD-NN.0_index.md`
+11. **Update Global Index**: Add entry to this `BDD-000_index.md` under the appropriate area
 
-### BDD File Structure
+### BDD File Structure (Section-Based)
 
 ```gherkin
-# REQUIREMENTS VERIFIED:
-#   - REQ-NN: [Primary requirement description]
-# TRACEABILITY:
-#   Upstream: [REQ-NN], [ADR-NN]
-#   Downstream: [SPEC-NN], Code(module.component), [TASKS-NN]
+@section: N.S
+@parent_doc: BDD-NN
+@index: BDD-NN.0_index.md
+@brd:BRD.NN.EE.SS
+@prd:PRD.NN.EE.SS
+@ears:EARS.NN.EE.SS
 
-@requirement:[REQ-NN]
-@adr:[ADR-NN]
-@priority:high
-Feature: [Clear feature description]
-  [Business value context]
+Feature: BDD-NN.SS: [Clear feature description]
   As a [role]
   I want [capability]
-  So that [benefit]
+  So that [business value]
 
   Background:
     Given [common precondition]
@@ -230,8 +232,8 @@ In REQ documents, reference BDD scenarios:
 
 | BDD ID | Scenario Title | Acceptance Criteria Validated |
 |--------|----------------|-------------------------------|
-| [BDD-NN](../../BDD/BDD-NN_slug.feature) | Feature: Title | Primary functional criteria |
-| [BDD-NN](../../BDD/BDD-NN_slug.feature#scenario-1) | Scenario: Specific | Specific acceptance criterion |
+| [BDD-NN.SS](../../BDD/BDD-NN_suite/BDD-NN.SS_section.feature) | Feature: Title | Primary functional criteria |
+| [BDD-NN.SS](../../BDD/BDD-NN_suite/BDD-NN.SS_section.feature#scenario-1) | Scenario: Specific | Specific acceptance criterion |
 ```
 
 ### Running BDD Tests
@@ -265,8 +267,8 @@ Track acceptance test coverage for requirements:
 
 ### Validation Checklist
 
-- [ ] All BDD files follow naming convention: `BDD-NN_{slug}.feature`
-- [ ] All BDD files have traceability tags (@requirement, @adr)
+- [ ] All BDD files follow section-based naming: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature`
+- [ ] All BDD files have traceability tags (@brd, @prd, @ears)
 - [ ] All BDD files have upstream links (REQ, SYS, ADR)
 - [ ] All BDD files have downstream links (SPEC, Code, TASKS)
 - [ ] All requirements have corresponding BDD scenarios

@@ -15,6 +15,8 @@ custom_fields:
 
 Product Requirements Documents (PRDs) serve as the foundational business requirements that drive all downstream technical development. PRDs capture "what" needs to be built before any consideration of "how," establishing the product contract between business goals and technical implementation.
 
+Note: `PRD-TEMPLATE.md` is a reference template. For real PRDs, prefer sectioned docs using `PRD-SECTION-0-TEMPLATE.md` and `PRD-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`.
+
 ## Purpose
 
 PRDs transform high-level business objectives into concrete, measurable product requirements that:
@@ -37,7 +39,7 @@ PRDs are the **starting point** of specification-driven development within the c
 
 **⚠️ CRITICAL - Workflow Order**: PRDs are created BEFORE ADRs in the SDD workflow. Therefore:
 
-❌ **Do NOT** reference specific ADR numbers (ADR-01, ADR-011, etc.) in PRD documents
+❌ **Do NOT** reference specific ADR numbers (ADR-NN, etc.) in PRD documents
 
 ✅ **DO** include "Architecture Decision Requirements" section describing what decisions are needed
 
@@ -56,12 +58,12 @@ Every PRD should include a section that lists architectural topics requiring dec
 
 | Topic Area | Decision Needed | Business Driver (PRD Reference) | Key Considerations |
 |------------|-----------------|--------------------------------|-------------------|
-| Agent Framework | Select orchestration framework | FR-XXX (multi-agent coordination) | Google ADK, LangGraph, custom |
-| Database Technology | Choose operational database | FR-XXX (data persistence) + QA-XXX (performance) | Cloud SQL, Firestore, BigQuery |
+| Agent Framework | Select orchestration framework | PRD.NN.01.SS (multi-agent coordination) | Google ADK, LangGraph, custom |
+| Database Technology | Choose operational database | PRD.NN.01.SS (data persistence) + PRD.NN.02.SS (performance) | Cloud SQL, Firestore, BigQuery |
 | Caching Strategy | Define cache architecture | QA-XXX (<100ms latency) | Redis, in-memory, CDN |
 
 **Purpose**: Identify architectural topics requiring decisions. Specific ADRs created AFTER this PRD.
-**Timing**: ADRs created after BRD → PRD → SYS → EARS → REQ in SDD workflow.
+**Timing**: ADRs created after BRD → PRD → EARS → BDD in SDD workflow.
 ```
 
 ## PRD Structure
@@ -75,7 +77,7 @@ All PRDs include traceability links to related artifacts (note: ADR links added 
 @SYS:[SYS-NN](../SYS/SYS-NN_...md)
 @EARS:[EARS-NN](../EARS/EARS-NN_...md)
 @spec:[SPEC-NN](../SPEC/.../SPEC-NN_...yaml)
-@bdd:[BDD-NN:scenarios](../BDD/BDD-NN_....feature#scenarios)
+@bdd:[BDD-NN.SS:scenarios](../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
 
 Note: @adr tags added to PRD AFTER ADRs are created (not during initial PRD creation)
 ```
@@ -159,7 +161,7 @@ PRDs inherit categorization context from their source BRDs:
 - Referenced by multiple feature-specific PRDs
 
 **Feature BRDs → Feature PRDs**:
-- Feature BRDs (e.g., BRD-006 B2C KYC Onboarding) drive feature-specific PRDs
+- Feature BRDs (e.g., BRD-06 B2C KYC Onboarding) drive feature-specific PRDs
 - These PRDs detail user-facing functionality and workflows
 - Build upon platform capabilities defined in Platform BRDs
 - Reference foundation PRDs for infrastructure dependencies
@@ -393,3 +395,17 @@ PRDs serve as:
 - Major changes require stakeholder re-approval
 - Include PRD references in specification reviews
 - Archive superseded PRDs while maintaining links to replacements
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If a file approaches/exceeds limits, split into section files using `PRD-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
+
+## Document Splitting Standard
+
+When PRD content exceeds targets or needs modularization:
+- Ensure `PRD-{NN}.0_index.md` exists and reflects sections
+- Create sections from `PRD-SECTION-TEMPLATE.md` (see `../DOCUMENT_SPLITTING_RULES.md` for numbering and required front‑matter):
+  - `PRD-{NN}.{S}_{section_slug}.md` with sequential `S`
+- Maintain Prev/Next links and index table
+- Update traceability and cross-links; validate with lints

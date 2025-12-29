@@ -127,7 +127,7 @@ ls -la docs/IPLAN/  # Layer 12 - Implementation Plans
 ```markdown
 @brd: BRD.01.01.30  # Verified: docs/BRD/BRD-01_project.md exists
 @prd: null         # No PRD exists for this feature (legitimate)
-@adr: ADR-005      # Verified: docs/ADR/ADR-005_architecture.md exists
+@adr: ADR-05      # Verified: docs/ADR/ADR-05_architecture.md exists
 ```
 
 **16-Layer Workflow**: This traceability system implements the 16-layer SDD workflow (Layer 0: Strategy through Layer 15: Validation):
@@ -330,7 +330,10 @@ Diagrams use simplified labels for visual clarity:
 
 ### For Markdown Documents (PRD, SYS, EARS, REQ, ADR, CTR, IMPL, TASKS)
 
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 ```markdown
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 ## 7. Traceability
 
 ### Upstream Sources
@@ -352,28 +355,32 @@ Document the technical specifications and designs derived from this document.
 | REQ | [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN) | [Detailed requirement] | Detailed atomic requirement |
 | IMPL | [IMPL-NN](../IMPL/IMPL-NN_...md#IMPL-NN) | [Implementation plan] | Project management plan (WHO/WHEN) |
 | CTR | [CTR-NN](../CTR/CTR-NN_...md#CTR-NN) | [API contract] | Interface contract (if interface requirement) |
-| BDD | [BDD-NN](../BDD/BDD-NN_...feature#scenarios) | [Test scenarios] | Acceptance test scenarios |
+| BDD | [BDD-NN.SS](../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios) | [Test scenarios] | Acceptance test scenarios |
 | SPEC | [SPEC-NN](../SPEC/.../SPEC-NN_...yaml) | [Technical specification] | Implementation blueprint (HOW to build) |
 | TASKS | [TASKS-NN](../TASKS/TASKS-NN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code |
 | IPLAN | [IPLAN-NN](../IPLAN/IPLAN-NN_...md) | [Implementation work plan] | Session context with bash commands to execute TASKS |
 
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 ### Same-Type References (Conditional)
 
 **Include this section only if same-type relationships exist.**
 
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
 | Related | [REQ-01](../REQ/.../REQ-01_...md) | [Related requirement] | Shared domain context |
 | Depends | [REQ-02](../REQ/.../REQ-02_...md) | [Prerequisite requirement] | Must complete before this |
 
 **Tags**:
+
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 ```markdown
 @related-req: REQ-01
 @depends-req: REQ-02
 ```
 
 ### Document Links
-- **Anchors/IDs**: `#PRIMARY-ID` (e.g., `#REQ-03`, `#ADR-033`, `#IMPL-01`)
+- **Anchors/IDs**: `#PRIMARY-ID` (e.g., `#REQ-03`, `#ADR-33`, `#IMPL-01`)
 - **Code Path(s)**: `path/to/implementation.py` (if applicable)
 - **Cross-references**: [Related documents and their relationship]
 ```
@@ -393,9 +400,9 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 @prd: PRD.03.01.01
 @sys: SYS.08.25.01
 @req: REQ.03.26.01
-@adr: ADR-033
+@adr: ADR-33
 @spec: SPEC-03
-@ctr: CTR-001
+@ctr: CTR-01
 @test: BDD.03.13.01, BDD.03.13.05
 @impl-status: complete
 """
@@ -424,8 +431,8 @@ The SDD framework uses two distinct notation systems for cross-references, each 
 
 **Key Distinction**:
 
-- `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.01` → Points to element 01 (feature requirement) inside document `BRD-017.md`
+- `@adr: ADR-33` → Points to the document `ADR-33_risk_limit_enforcement.md`
+- `@brd: BRD.17.01.01` → Points to element 01 (feature requirement) inside document `BRD-17.md`
 
 **Why Two Systems?**
 
@@ -445,11 +452,11 @@ These tags reference documents in the SDD workflow hierarchy. Use the document t
 | `@prd` | 2 | Product Requirements | `@prd: PRD.NN.EE.SS` | `@prd: PRD.03.01.02` |
 | `@ears` | 3 | EARS Statements | `@ears: EARS.NN.EE.SS` | `@ears: EARS.01.24.03` |
 | `@bdd` | 4 | BDD Scenarios | `@bdd: BDD.NN.EE.SS` | `@bdd: BDD.03.13.07` |
-| `@adr` | 5 | Architecture Decisions | `@adr: ADR-NN` | `@adr: ADR-033` |
+| `@adr` | 5 | Architecture Decisions | `@adr: ADR-NN` | `@adr: ADR-33` |
 | `@sys` | 6 | System Requirements | `@sys: SYS.NN.EE.SS` | `@sys: SYS.08.25.01` |
 | `@req` | 7 | Atomic Requirements | `@req: REQ.NN.EE.SS` | `@req: REQ.03.26.01` |
 | `@impl` | 8 | Implementation Plans | `@impl: IMPL.NN.EE.SS` | `@impl: IMPL.01.28.01` |
-| `@ctr` | 9 | Data Contracts | `@ctr: CTR-NN` | `@ctr: CTR-001` |
+| `@ctr` | 9 | Data Contracts | `@ctr: CTR-NN` | `@ctr: CTR-01` |
 | `@spec` | 10 | Technical Specs | `@spec: SPEC-NN` | `@spec: SPEC-03` |
 | `@tasks` | 11 | Task Breakdowns | `@tasks: TASKS.NN.EE.SS` | `@tasks: TASKS.01.29.03` |
 | `@iplan` | 12 | Implementation Plans | `@iplan: IPLAN-NN` | `@iplan: IPLAN-01` |
@@ -508,7 +515,7 @@ Do NOT use these tag patterns:
 
 # Single document reference (no element ID needed)
 @spec: SPEC-03
-@ctr: CTR-001
+@ctr: CTR-01
 @test: BDD.03.13.01
 @iplan: IPLAN-01
 ```
@@ -550,7 +557,9 @@ python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
 
 From EARS-TEMPLATE.md:
 
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 ```markdown
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 ## 7. Traceability
 
 ### 7.1 Upstream Sources
@@ -575,8 +584,8 @@ From EARS-TEMPLATE.md:
 
 | ADR ID | ADR Title | Decisions Driven by EARS | Relationship |
 |--------|-----------|-------------------------|--------------|
-| [ADR-033](../ADR/ADR-033_risk_limit_enforcement.md#ADR-033) | Risk Limit Enforcement Architecture | EARS statements EARS.NN.21.01, EARS.NN.22.01 | This EARS requirement necessitates the architectural approach |
-| [ADR-034](../ADR/ADR-034_circuit_breaker.md#ADR-034) | [SAFETY_MECHANISM - e.g., rate limiter, error threshold] Pattern | EARS.01.24.901 | Performance requirement drives architectural pattern |
+| [ADR-33](../ADR/ADR-33_risk_limit_enforcement.md#ADR-33) | Risk Limit Enforcement Architecture | EARS statements EARS.NN.21.01, EARS.NN.22.01 | This EARS requirement necessitates the architectural approach |
+| [ADR-34](../ADR/ADR-34_circuit_breaker.md#ADR-34) | [SAFETY_MECHANISM - e.g., rate limiter, error threshold] Pattern | EARS.01.24.901 | Performance requirement drives architectural pattern |
 
 #### 7.2.2 Atomic Requirements
 
@@ -589,8 +598,8 @@ From EARS-TEMPLATE.md:
 
 | BDD Feature | Scenario | Source EARS Statements | Relationship |
 |-------------|----------|----------------------|--------------|
-| [BDD-03](../BDD/BDD-03_risk_limits.feature#scenario-1) | Validate [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] rejection | Tests EARS.NN.21.01 | Acceptance test for requirement |
-| [BDD-03](../BDD/BDD-03_risk_limits.feature#scenario-2) | Validate resource collection heat threshold | Tests EARS.NN.22.01 | Acceptance test for requirement |
+| [BDD-03](../BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature#scenario-1) | Validate [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] rejection | Tests EARS.NN.21.01 | Acceptance test for requirement |
+| [BDD-03](../BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature#scenario-2) | Validate resource collection heat threshold | Tests EARS.NN.22.01 | Acceptance test for requirement |
 
 ### Document Links
 - **Anchors/IDs**: `#EARS-01`
@@ -671,11 +680,11 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @prd: PRD.03.01.02
 @ears: EARS.01.24.03
 @bdd: BDD.03.13.07
-@adr: ADR-033
+@adr: ADR-33
 @sys: SYS.08.25.01
 @req: REQ.03.26.01, REQ.04.26.02
 @impl: IMPL.01.28.01
-@ctr: CTR-001
+@ctr: CTR-01
 @spec: SPEC-03
 @tasks: TASKS.01.29.03
 @icon: TASKS-01:ServiceConnector
@@ -711,7 +720,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 **Examples**:
 ```markdown
-@related-req: REQ-01, REQ-005
+@related-req: REQ-01, REQ-05
 @depends-req: REQ-01
 @related-spec: SPEC-02, SPEC-004
 @depends-spec: SPEC-01
@@ -731,9 +740,9 @@ Internal element IDs within documents use the unified format `TYPE.NN.TT.SS` for
 | SYS Requirements | System Requirement | `25` | `@sys: SYS.08.25.01` |
 
 **Global Uniqueness**: Unified Element ID (`TYPE.NN.TT.SS`) creates globally unique references.
-- `PRD.22.01.15` = PRD-022, Element Type 01 (FR), Sequence 15 (globally unique)
-- `EARS.06.24.03` = EARS-006, Element Type 24 (ES), Sequence 03 (globally unique)
-- `SYS.08.25.15` = SYS-008, Element Type 25 (SYS), Sequence 15 (globally unique)
+- `PRD.22.01.15` = PRD-22, Element Type 01 (FR), Sequence 15 (globally unique)
+- `EARS.06.24.03` = EARS-06, Element Type 24 (ES), Sequence 03 (globally unique)
+- `SYS.08.25.15` = SYS-08, Element Type 25 (SYS), Sequence 15 (globally unique)
 
 **Element-Level Tag Examples**:
 ```markdown
@@ -796,11 +805,11 @@ Implements real-time resource limit validation and enforcement.
 @prd: PRD.03.01.02
 @ears: EARS.01.24.03
 @bdd: BDD.03.13.07
-@adr: ADR-033
+@adr: ADR-33
 @sys: SYS.08.25.01
 @req: REQ.03.26.01
 @impl: IMPL.01.28.01
-@ctr: CTR-001
+@ctr: CTR-01
 @spec: SPEC-03
 @tasks: TASKS.01.29.03
 @iplan: IPLAN-01
@@ -868,7 +877,7 @@ In addition to upstream/downstream layer traceability, documents may have relati
 
 **Related Documents** (informational, no ordering):
 ```
-@related-req: REQ-01, REQ-005
+@related-req: REQ-01, REQ-05
 @related-spec: SPEC-02
 @related-tasks: TASKS-03
 ```
@@ -1200,7 +1209,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 - **Audience**: External consumers, API clients, microservices
 - **Format**: Dual-file (.md + .yaml) with JSON Schema definitions
 - **Examples**: REST API contracts, gRPC service definitions, message schemas
-- **Tag**: `@ctr: CTR-001`
+- **Tag**: `@ctr: CTR-01`
 - **Location**: `docs/CTR/`
 - **Versioning**: Semantic versioning (MAJOR.MINOR.PATCH), strict compatibility rules
 
@@ -1317,11 +1326,11 @@ excessive collection concentration risk through automated validation.
 @prd: PRD.03.01.02
 @ears: EARS.01.24.03, EARS.01.24.02
 @bdd: BDD.03.13.01, BDD.03.13.02
-@adr: ADR-033
+@adr: ADR-33
 @sys: SYS.08.25.01, SYS.08.25.02
 @req: REQ.03.26.01, REQ.04.26.01
 @impl: IMPL.01.28.01
-@ctr: CTR-001
+@ctr: CTR-01
 @spec: SPEC-03
 @tasks: TASKS.01.29.03, TASKS.01.29.05
 @iplan: IPLAN-01
@@ -1335,7 +1344,7 @@ class PositionLimitService:
     """
     Validates resource limits against resource usage thresholds.
 
-    Implements CTR-001 position_risk_validation interface.
+    Implements CTR-01 position_risk_validation interface.
     """
 
     def validate_resource_limit(self, position: Position) -> ValidationResult:
@@ -1483,18 +1492,18 @@ All traceability references MUST use markdown links with anchors:
 
 ```markdown
 [REQ-03](../REQ/risk/lim/REQ-03_resource_limit_enforcement.md#REQ-03)
-[ADR-033](../ADR/ADR-033_risk_limit_enforcement_architecture.md#ADR-033)
-[CTR-001](../CTR/CTR-001_position_risk_validation.md#CTR-001)
-[CTR-001 Schema](../CTR/CTR-001_position_risk_validation.yaml)
+[ADR-33](../ADR/ADR-33_risk_limit_enforcement_architecture.md#ADR-33)
+\[CTR-01](../CTR/CTR-01_position_risk_validation.md#CTR-01)
+\[CTR-01 Schema](../CTR/CTR-01_position_risk_validation.yaml)
 [PRD-01](../PRD/PRD-01_risk_management.md)
-[BDD-03](../BDD/BDD-03_risk_limits.feature#scenarios)
+[BDD-03.1](../BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature#scenarios)
 ```
 
 ### Anchor Types
 
-1. **ID Anchors** (Preferred): `#REQ-03`, `#ADR-033`, `#CTR-001`
+1. **ID Anchors** (Preferred): `#REQ-03`, `#ADR-33`, `#CTR-01`
    - Stable across document changes
-   - Used in H1 headers: `# REQ-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`, `# CTR-001: resource Risk Validation Contract`
+   - Used in H1 headers: `# REQ-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`, `# CTR-01: resource Risk Validation Contract`
 
 2. **Named Anchors**: `#scenarios`, `#acceptance-criteria`
    - For specific sections within documents
@@ -1505,18 +1514,18 @@ All traceability references MUST use markdown links with anchors:
    - Revalidate after any edits
 
 4. **Schema References** (CTR-specific): Link to `.yaml` files
-   - Format: `[CTR-001 Schema](../CTR/CTR-001_position_risk_validation.yaml)`
+   - Format (example): `[CTR-NN Schema] (../CTR/CTR-NN_example.yaml)`
    - Used for referencing machine-readable contract schemas
 
 ### Relative Path Rules
 
 - Use relative paths from current file location
 - Examples:
-  - From `REQ/risk/lim/` to `ADR/`: `../../../ADR/ADR-033_...md`
-  - From `REQ/risk/lim/` to `CTR/`: `../../../CTR/CTR-001_...md`
+- From `REQ/risk/lim/` to `ADR/`: `../../../ADR/ADR-33_...md`
+  - From `REQ/risk/lim/` to `CTR/`: `../../../CTR/CTR-01_...md`
   - From `PRD/` to `EARS/`: `../EARS/EARS-01_...md`
   - From `SPEC/services/` to `REQ/`: `../../REQ/.../REQ-03_...md`
-  - From `SPEC/services/` to `CTR/`: `../../CTR/CTR-001_...md`
+  - From `SPEC/services/` to `CTR/`: `../../CTR/CTR-01_...md`
 
 ## Validation Requirements
 
@@ -1649,12 +1658,14 @@ In code docstrings, include:
 [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service
 
 ## Traceability
-- Requirements: REQ-03, REQ-004
-- Architecture: ADR-033
-- Implementation Plan: IMPL-01_phase1_risk_services
-- Contract: CTR-001_position_risk_validation (if implementing contract)
+
+Note: Script name canonicalization — for generating traceability matrices, use `scripts/generate_traceability_matrix.py`. Any references to `generate_traceability_matrices.py` in templates or examples refer to the same tool; use the singular script.
+- Requirements: REQ-03, REQ-04
+- Architecture: ADR-33
+ - Implementation Plan: IMPL-01_phase1_risk_services
+ - Contract: CTR-01_position_risk_validation (if implementing contract)
 - Specification: SPEC-03_resource_limit_service.yaml
-- BDD: BDD-03_risk_limits.feature
+- BDD: BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature
 """
 ```
 
@@ -1664,11 +1675,11 @@ In code docstrings, include:
 Risk Validator Service - Contract Provider
 
 ## Traceability
-- Requirements: REQ-005
-- Architecture: ADR-033
-- Contract: CTR-001_position_risk_validation.md + .yaml (IMPLEMENTS)
+- Requirements: REQ-05
+- Architecture: ADR-33
+ - Contract: CTR-01_position_risk_validation.md + .yaml (IMPLEMENTS)
 - Specification: SPEC-05_risk_validator_service.yaml
-- BDD: BDD-004_contract_validation.feature
+- BDD: BDD/BDD-04_contract_validation/BDD-04.1_contract_validation.feature
 - Role: Provider (implements contract interface)
 """
 ```

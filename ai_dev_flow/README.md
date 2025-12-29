@@ -41,6 +41,16 @@ This directory provides a **universal, reusable framework** for Specification-Dr
 
 **📚 New to this framework?** Start with [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) for domain-specific guidance (financial, healthcare, e-commerce, SaaS, IoT, or generic software).
 
+### ID Numbering Rule (Unified)
+
+- Start with 2 digits and expand only as needed; avoid unnecessary leading zeros.
+- Correct: `BRD-01`, `BRD-99`, `BRD-102`, `BRD-999`, `BRD-1000`.
+- Incorrect: `BRD-001`, `BRD-009`.
+- Unified across all doc types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN (and ICON).
+- Element IDs must match filename digit width (e.g., `BRD-06` ↔ `BRD.06.xx.xx`).
+- Reserved infra docs may use `-000` (e.g., `BRD-000_index.md`). Source code and tests follow coding standards, not this rule.
+- See details in [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md).
+
 ## Metadata Management in AI Dev Flow
 
 AI Dev Flow uses **dual metadata approaches** to serve both human and machine audiences:
@@ -123,6 +133,14 @@ python3 scripts/validate_metadata.py .
 
 **⚠️ See [index.md](./index.md#traceability-flow) for the authoritative workflow diagram with full Mermaid visualization.**
 
+### Splitting Rules
+
+- Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
+- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./BDD/BDD_SPLITTING_RULES.md)
+- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./CTR/CTR_SPLITTING_RULES.md)
+- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./SPEC/SPEC_SPLITTING_RULES.md)
+- Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
+
 ### 16-Layer Architecture with Cumulative Tagging
 
 The AI Dev Flow transforms business requirements into production code through a structured, traceable workflow. Each layer includes cumulative tags from ALL upstream layers, creating complete audit trails for regulatory compliance (regulatory, FDA, ISO).
@@ -141,7 +159,7 @@ The AI Dev Flow transforms business requirements into production code through a 
 | **9** | CTR | API contracts (optional) | @brd→@impl (8) | INTERFACE definitions |
 | **10** | SPEC | YAML technical specifications | @brd→@req (+optional) (7-9) | HOW to build |
 | **11** | TASKS | Implementation task breakdown | @brd→@spec (8-10) | EXACT TODOs |
-| **11** | ICON | Implementation contracts (optional) | @brd→@spec (8-10) | Interface definitions |
+| **11 (optional)** | ICON | Implementation contracts | @brd→@spec (8-10) | Interface definitions |
 | **12** | IPLAN | Session-specific plans | @brd→@tasks (9-11) | Session work scope |
 | **13** | Code | Source code implementation | @brd→@tasks (9-11) | RUNNABLE artifacts |
 | **14** | Tests | Test suite implementation | @brd→@code (10-12) | Quality validation |
@@ -259,7 +277,7 @@ Diagrams use simplified labels for visual clarity:
 **BDD/** - Behavior-Driven Development Scenarios
 - Executable acceptance tests in Gherkin format
 - Business-readable behavioral specifications
-- **Files**: [BDD-000_index.md](./BDD/BDD-000_index.md) | [Template](./BDD/BDD-TEMPLATE.feature)
+- **Files**: [BDD-000_index.md](./BDD/BDD-000_index.md) | Templates: `BDD-SECTION-TEMPLATE.feature`, `BDD-SUBSECTION-TEMPLATE.feature`, `BDD-AGGREGATOR-TEMPLATE.feature` (examples)
 
 ### 3. Architecture Layer
 
@@ -366,9 +384,9 @@ Format: `{TYPE}-{NN}_{descriptive_slug}.{ext}`
 
 Examples:
 - `PRD-01_external_api_integration.md`
-- `BDD-03_risk_limits_requirements.feature`
+- `BDD-03.2_risk_limits_requirements.feature`
 - `CTR-01_data_validation.md` + `CTR-01_data_validation.yaml` (dual-file format)
-- `SPEC-042_real_time_processor.yaml`
+- `SPEC-42_real_time_processor.yaml`
 
 **Note**: CTR (API Contracts) requires both `.md` and `.yaml` files with matching slugs.
 
@@ -390,14 +408,18 @@ Internal feature IDs within documents use 3-digit sequential numbering with unif
 
 **Examples**:
 ```markdown
-@brd: BRD.01.01.30, BRD.01.01.06
-@prd: PRD.22.01.15
-@ears: EARS.06.24.03
-@sys: SYS.08.25.01
-@sys: SYS.08.25.16  # Quality attributes use unified sequential numbering
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS-NN
+@sys: SYS-NN
+@sys: SYS-NN  # Quality attributes may use unified sequential numbering
 ```
 
 **Global Uniqueness**: `TYPE.NN.TT.SS` format creates globally unique references (e.g., `PRD.22.01.15` is unique across all documents).
+
+Note on ADR references:
+- Use `ADR-NN` for document-level references (e.g., `@adr: ADR-NN`).
+- Use `ADR.NN.TT.SS` for decision/element-level anchors within ADR documents (e.g., `@adr: ADR.NN.TT.SS`).
 
 ## Schema File Reference
 
@@ -432,23 +454,23 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 **Example Progression**:
 ```markdown
 # Layer 2 (PRD)
-@brd: BRD.09.01.15
+@brd: BRD-NN
 
 # Layer 4 (BDD)
-@brd: BRD.09.01.15
-@prd: PRD.16.01.03
-@ears: EARS.12.24.02
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS-NN
 
 # Layer 7 (REQ)
-@brd: BRD.09.01.15
-@prd: PRD.16.01.03
-@ears: EARS.12.24.02
-@bdd: BDD.15.13.01
-@adr: ADR-033
-@sys: SYS.12.25.01
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS-NN
+@bdd: BDD-NN
+@adr: ADR-NN
+@sys: SYS-NN
 
 # Layer 13 (Code)
-@brd: BRD.09.01.15
+@brd: BRD-NN
 ... [all upstream tags through @tasks]
 @impl-status: complete
 ```
@@ -462,6 +484,8 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 - **Change Management**: Track complete lineage from requirements through code
 
 ### Validation
+
+Note: Script name canonicalization — the canonical script is `scripts/generate_traceability_matrix.py`. Any historical references in this guide to `generate_traceability_matrices.py` refer to the same tool; use the singular script name.
 
 ```bash
 # Extract tags from codebase
@@ -561,16 +585,16 @@ python scripts/extract_tags.py --type REQ --show-all-upstream
 - Generates JSON file with all discovered tags
 - Reports orphaned or malformed tags
 
-**Output Example**:
+  **Output Example**:
 ```json
 {
-  "REQ-045": {
-    "brd": ["BRD.09.01.15", "BRD.09.01.06"],
-    "prd": ["PRD.16.01.03"],
-    "ears": ["EARS.12.24.02"],
-    "bdd": ["BDD.15.13.01"],
-    "adr": ["ADR-033"],
-    "sys": ["SYS.12.25.01"]
+  "REQ-NN": {
+    "brd": ["BRD-NN"],
+    "prd": ["PRD-NN"],
+    "ears": ["EARS-NN"],
+    "bdd": ["BDD-NN"],
+    "adr": ["ADR-NN"],
+    "sys": ["SYS-NN"]
   }
 }
 ```
@@ -590,7 +614,7 @@ python scripts/validate_tags_against_docs.py \
 
 # Validate specific artifact
 python scripts/validate_tags_against_docs.py \
-  --artifact REQ-045 \
+  --artifact REQ-NN \
   --expected-layers brd,prd,ears,bdd,adr,sys \
   --strict
 
@@ -625,6 +649,8 @@ Layer 13 (Code):  9-11 tags (@brd through @tasks)
 Layer 14 (Tests): 10-12 tags (@brd through @code)
 ```
 
+Note: ICON (Implementation Contracts) is optional and does not affect tag counts. If present, `@icon` tags are allowed but excluded from cumulative count and chain validation.
+
 **Output Example**:
 ```
 ✅ VALIDATION PASSED
@@ -641,11 +667,11 @@ Statistics:
 ❌ CUMULATIVE TAGGING ERRORS FOUND: 3
 
 MISSING_REQUIRED_TAGS: 1
-  📄 docs/REQ/api/REQ-045_place_order.md
+  📄 docs/REQ/api/REQ-NN_submit_request.md
      ❌ Missing required upstream tags for REQ (Layer 7): bdd
 
 TAG_CHAIN_GAP: 2
-  📄 docs/SPEC/order_service.yaml
+  📄 docs/SPEC/service.yaml
      ❌ Gap in cumulative tag chain: @bdd (Layer 4) missing but higher layers present
 ```
 
@@ -678,12 +704,12 @@ python scripts/generate_traceability_matrices.py \
 
 **Output Example** (REQ Matrix):
 ```markdown
-# Traceability Matrix: REQ-01 through REQ-150
+# Traceability Matrix: REQ-NN through REQ-NN
 
 ## Complete REQ Inventory
 | REQ ID | Title | Status | Upstream | Downstream |
 |--------|-------|--------|----------|------------|
-| REQ-045 | Place Order | Active | BRD-009, PRD-016, EARS-012, BDD-015, ADR-033, SYS-012 | SPEC-018, TASKS-015, Code |
+| REQ-NN | Submit Request | Active | BRD-NN, PRD-NN, EARS-NN, BDD-NN, ADR-NN, SYS-NN | SPEC-NN, TASKS-NN, Code |
 
 ## Coverage Metrics
 - Total Requirements: 150
@@ -721,18 +747,18 @@ python scripts/generate_traceability_matrices.py --auto
 **Issue**: "Missing required upstream tags"
 ```bash
 # Fix: Add missing tags to artifact's section 7 Traceability
-# Example: REQ-045 missing @bdd tag
+# Example: REQ-NN missing @bdd tag
 ```
 ```markdown
 ## 7. Traceability
 
 **Required Tags**:
-@brd: BRD.09.01.15
-@prd: PRD.16.01.03
-@ears: EARS.12.24.02
-@bdd: BDD.15.13.01  # ← Add this
-@adr: ADR-033
-@sys: SYS.12.25.01
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS-NN
+@bdd: BDD-NN  # ← Add this
+@adr: ADR-NN
+@sys: SYS-NN
 ```
 
 **Issue**: "Gap in cumulative tag chain"
@@ -744,7 +770,7 @@ python scripts/generate_traceability_matrices.py --auto
 **Issue**: "Orphaned tag - referenced document not found"
 ```bash
 # Fix: Either create the referenced document or remove invalid tag
-# Verify: ls docs/BRD/BRD-009*.md
+# Verify: ls docs/BRD/BRD-NN*.md
 ```
 
 **Issue**: "Insufficient tag count"
@@ -1051,6 +1077,45 @@ graph LR
 - [CLAUDE.md]({project_root}/CLAUDE.md) - Project-level SDD guidance
 - [docs/SPEC/]({project_root}/docs/SPEC/) - Production specifications
 - [docs/src/]({project_root}/docs/src/) - Component implementations
+
+## BDD Tag Examples
+
+The framework supports two BDD tagging styles. Prefer the canonical inline form for best compatibility with validators; link-style is also recognized.
+
+### Canonical Inline Tags (preferred)
+
+```feature
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS-NN
+@adr: ADR-NN
+@sys: SYS-NN
+@req: REQ-NN
+@impl-status: in-progress
+
+Feature: Request validation
+  Scenario: Submit a valid request
+    Given a logged-in user
+    When the user submits a valid request
+    Then the system accepts the request
+```
+
+### Link-Style Tags (also supported)
+
+```feature
+@requirement:[REQ-NN](../REQ/api/REQ-NN_submit_request.md#REQ-NN)
+
+Feature: Request validation
+  Scenario: Submit a valid request
+    Given a logged-in user
+    When the user submits a valid request
+    Then the system accepts the request
+```
+
+Notes:
+- Both forms are extracted by `scripts/extract_tags.py`.
+- Link-style tags capture the document ID; inline tags are recommended for cumulative tagging checks.
+- Optional layers (e.g., IMPL/CTR) may be omitted when not applicable.
 
 ## Adoption and Support
 

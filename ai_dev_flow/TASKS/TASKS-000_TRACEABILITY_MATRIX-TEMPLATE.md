@@ -96,12 +96,12 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 @prd: PRD.16.01.03
 @ears: EARS.12.24.02
 @bdd: BDD.15.13.01
-@adr: ADR-033
-@sys: SYS.12.25.01
-@req: REQ.45.26.01
-@impl: IMPL.03.28.02
-@ctr: CTR-005
-@spec: SPEC-018
+@adr: ADR-NN
+@sys: SYS-NN
+@req: REQ-NN
+@impl: IMPL-NN
+@ctr: CTR-NN
+@spec: SPEC-NN
 ```
 
 **Format Rules**:
@@ -115,7 +115,7 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 ### 2.3 Example: TASKS with Required Tags
 
 ```markdown
-# TASKS-015: Order Service Implementation Tasks
+# TASKS-NN: Service Implementation Tasks
 
 ## 7. Traceability
 
@@ -123,16 +123,16 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
 ```markdown
-@brd: BRD.09.01.15
-@prd: PRD.16.01.03
-@ears: EARS.12.24.02
-@bdd: BDD.15.13.01
-@adr: ADR-033
-@sys: SYS.12.25.01
-@req: REQ.45.26.01
-@impl: IMPL.03.28.02
-@ctr: CTR-005
-@spec: SPEC-018
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS-NN
+@bdd: BDD-NN
+@adr: ADR-NN
+@sys: SYS-NN
+@req: REQ-NN
+@impl: IMPL-NN
+@ctr: CTR-NN
+@spec: SPEC-NN
 ```
 
 ### 7.2 Downstream Artifacts
@@ -154,9 +154,9 @@ TASKS tags can be discovered automatically:
 # Find all TASKSs and their upstream tags
 python scripts/extract_tags.py --type TASKS --show-all-upstream
 
-# Validate TASKS-015 has required tags
+# Validate TASKS-NN has required tags
 python scripts/validate_tags_against_docs.py \
-  --artifact TASKS-015 \
+  --artifact TASKS-NN \
   --expected-layers brd,prd,ears,bdd,adr,sys,req,spec \
   --strict
 
@@ -176,8 +176,8 @@ python scripts/generate_traceability_matrices.py \
 
 | TASKS ID | Title | Related SPEC | Total Tasks | Status | Date | Upstream Sources | Downstream Artifacts |
 |----------|-------|--------------|-------------|--------|------|------------------|---------------------|
-| TASKS-01 | [Code generation plan title] | SPEC-01 | 15 | Complete | YYYY-MM-DD | SPEC-01 | Code: src/service.py, Tests: tests/test_service.py |
-| TASKS-02 | [Code generation plan title] | SPEC-02 | 10 | In Progress | YYYY-MM-DD | SPEC-02 | Code: src/feature.py |
+| TASKS-NN | [Code generation plan title] | SPEC-NN | 15 | Complete | YYYY-MM-DD | SPEC-NN | Code: src/service.py, Tests: tests/test_service.py |
+| TASKS-NN | [Code generation plan title] | SPEC-NN | 10 | In Progress | YYYY-MM-DD | SPEC-NN | Code: src/feature.py |
 | TASKS-NN | ... | ... | ... | ... | ... | ... | ... |
 
 **Status Legend**:
@@ -196,8 +196,8 @@ python scripts/generate_traceability_matrices.py \
 
 | SPEC ID | SPEC Title | TASKS IDs | TASKS Titles | Relationship |
 |---------|------------|-----------|--------------|--------------|
-| SPEC-01 | [Technical specification] | TASKS-01 | [Code generation plan] | 1:1 mapping: each SPEC has corresponding TASKS |
-| SPEC-02 | [Technical specification] | TASKS-02 | [Code generation plan] | SPEC provides HOW, TASKS provides step-by-step |
+| SPEC-NN | [Technical specification] | TASKS-NN | [Code generation plan] | 1:1 mapping: each SPEC has corresponding TASKS |
+| SPEC-NN | [Technical specification] | TASKS-NN | [Code generation plan] | SPEC provides HOW, TASKS provides step-by-step |
 | SPEC-NN | ... | ... | ... | ... |
 
 ### 4.2 Upstream Source Summary
@@ -257,8 +257,8 @@ python scripts/generate_traceability_matrices.py \
 
 ```mermaid
 graph TD
-    SPEC01[SPEC-01: Service Spec] --> TASKS001[TASKS-01: Code Plan]
-    SPEC002[SPEC-02: Feature Spec] --> TASKS002[TASKS-02: Code Plan]
+    SPEC01[SPEC-NN: Service Spec] --> TASKS001[TASKS-NN: Code Plan]
+    SPEC002[SPEC-NN: Feature Spec] --> TASKS002[TASKS-NN: Code Plan]
 
     TASKS001 --> Code1[src/service.py]
     TASKS001 --> Tests1[tests/test_service.py]

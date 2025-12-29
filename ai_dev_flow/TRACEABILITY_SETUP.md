@@ -101,7 +101,7 @@ python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs d
 ```bash
 # Validate specific artifact type
 python scripts/validate_tags_against_docs.py \
-  --artifact REQ-045 \
+  --artifact REQ-NN \
   --expected-layers brd,prd,ears,bdd,adr,sys \
   --strict
 ```
@@ -343,7 +343,9 @@ def send_metrics():
 1. Check if referenced document exists
 2. Verify file path is correct (relative from current document)
 3. Verify anchor ID matches document ID
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 4. Example fix: `[REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)`
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Issue**: Duplicate requirement IDs
 
@@ -364,3 +366,4 @@ def send_metrics():
 ---
 
 **End of Traceability Setup Guide**
+Note: Script name canonicalization — the canonical script is `scripts/generate_traceability_matrix.py`. Any historical references to `generate_traceability_matrices.py` in guides or templates refer to the same tool; use the singular script name.

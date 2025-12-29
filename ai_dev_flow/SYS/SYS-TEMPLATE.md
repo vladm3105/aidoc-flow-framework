@@ -26,6 +26,10 @@ custom_fields:
   schema_version: "1.0"
 ---
 
+> Reference Template — For learning and small docs only. Real SYS docs should be split per `../DOCUMENT_SPLITTING_RULES.md` using:
+> - `SYS-SECTION-0-TEMPLATE.md` to create `SYS-{NN}.0_index.md`
+> - `SYS-SECTION-TEMPLATE.md` to create `SYS-{NN}.{S}_{slug}.md`
+
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for SYS structure.
 > - **Schema**: `SYS_SCHEMA.yaml v1.0` - Validation rules
 > - **Creation Rules**: `SYS_CREATION_RULES.md` - Usage guidance
@@ -553,10 +557,18 @@ Document the business strategy, product requirements, and architectural decision
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | BRD | [BRD-NN](../BRD/BRD-NN_...md) | [Business requirements title] | sections 2.4, 4.x | Business objectives driving system design |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | PRD | [PRD-NN](../PRD/PRD-NN_...md) | [Product requirements title] | Functional Requirements 4.x | Product features this system implements |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | EARS | [EARS-NN](../EARS/EARS-NN_...md) | [Engineering requirements] | Event-driven, State-driven requirements | Formal requirements this system satisfies |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | ADR | [ADR-NN](../ADR/ADR-NN_...md#ADR-NN) | [Architecture decision title] | Decision, Consequences | Architectural approach enabling this system |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Business Context**:
 - [Specific business goals from BRD that justify this system]
@@ -579,10 +591,10 @@ Document the business strategy, product requirements, and architectural decision
 
 System requirements decomposed into implementation-ready atomic requirements.
 
-| REQ ID | Requirement Title | SYS Features Driving Requirement | Verification Method | Relationship |
-|--------|------------------|----------------------------------|---------------------|--------------|
-| [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN) | [Atomic requirement title] | Derived from SYS sections [IDs] | Unit test, Integration test | Detailed implementation requirement |
-| [REQ-MM](../REQ/.../REQ-MM_...md#REQ-MM) | [Another requirement] | Derived from SYS sections [IDs] | BDD scenario, Contract test | Specific functional behavior |
+| Artifact | Requirement Title | SYS Features Driving Requirement | Verification Method | Relationship |
+|----------|------------------|----------------------------------|---------------------|--------------|
+| REQ (TBD) | [Atomic requirement title] | Derived from SYS sections [IDs] | Unit test, Integration test | Detailed implementation requirement |
+| REQ (TBD) | [Another requirement] | Derived from SYS sections [IDs] | BDD scenario, Contract test | Specific functional behavior |
 
 **Decomposition Notes**:
 - [How system requirements were broken down into atomic requirements]
@@ -593,10 +605,10 @@ System requirements decomposed into implementation-ready atomic requirements.
 
 Implementation blueprints and interface definitions for this system.
 
-| SPEC ID | Specification Title | SYS sections Implemented | Implementation Path | Relationship |
-|---------|-------------------|--------------------------|---------------------|--------------|
-| [SPEC-NN](../SPEC/.../SPEC-NN.yaml) | [Technical spec title] | sections 3.1, 4.2, 5.x | src/[module]/[component].py | Implementation blueprint |
-| [SPEC-MM](../SPEC/.../SPEC-MM.yaml) | [Interface spec] | sections 6.x (Interfaces) | src/[module]/interfaces/ | API/contract definition |
+| Artifact | Specification Title | SYS sections Implemented | Implementation Path | Relationship |
+|----------|-------------------|--------------------------|---------------------|--------------|
+| SPEC (TBD) | [Technical spec title] | sections 3.1, 4.2, 5.x | src/[module]/[component].py | Implementation blueprint |
+| SPEC (TBD) | [Interface spec] | sections 6.x (Interfaces) | src/[module]/interfaces/ | API/contract definition |
 
 **Specification Coverage**:
 - [All functional requirements mapped to specifications]
@@ -609,8 +621,12 @@ Architecture decisions that implement or reference this system.
 
 | ADR ID | ADR Title | SYS Requirements Addressed | Decision Impact | Relationship |
 |--------|-----------|---------------------------|-----------------|--------------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | [ADR-MM](../ADR/ADR-MM_...md) | [Architecture decision] | Quality attributes sections 4.x, 5.x | Technology selection, patterns | Architectural implementation |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | [ADR-PPP](../ADR/ADR-PPP_...md) | [Another decision] | Integration requirements 3.4 | Integration patterns | System integration approach |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 #### Behavioral Specifications
 
@@ -618,9 +634,15 @@ BDD scenarios and acceptance tests validating this system.
 
 | BDD ID | Scenario Title | SYS Requirements Validated | Test Coverage | Relationship |
 |--------|----------------|---------------------------|---------------|--------------|
-| [BDD-NN](../BDD/BDD-NN_....feature) | Feature: [Feature name] | Functional requirements 3.x | Scenarios 1-5 | Acceptance test |
-| [BDD-NN](../BDD/BDD-NN_....feature#scenario-1) | Scenario: [Specific scenario] | Specific capability 3.2.1 | Lines 15-45 | Functional validation |
-| [BDD-MM](../BDD/BDD-MM_....feature) | Feature: [Quality attribute validation] | Performance requirements 4.1 | Performance scenarios | Quality validation |
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Feature: [Feature name] | Functional requirements 3.x | Scenarios 1-5 | Acceptance test |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1` | Scenario: [Specific scenario] | Specific capability 3.2.1 | Lines 15-45 | Functional validation |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` | Feature: [Quality attribute validation] | Performance requirements 4.1 | Performance scenarios | Quality validation |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **BDD Coverage**:
 - [All functional capabilities have BDD scenarios]
@@ -638,18 +660,32 @@ API contracts and interface agreements for external integration.
 
 | System Capability (section) | BDD Feature File | Scenario Count | Coverage Status |
 |-----------------------------|-----------------|----------------|-----------------|
-| Core System Behaviors (3.1) | [BDD-NN.feature](../BDD/BDD-NN_....feature) | 8 scenarios | ✅ Complete |
-| Data Processing (3.2) | [BDD-MM.feature](../BDD/BDD-MM_....feature) | 12 scenarios | ✅ Complete |
-| Error Handling (3.3) | [BDD-PPP.feature](../BDD/BDD-PPP_....feature) | 15 scenarios | ✅ Complete |
-| Integration Points (3.4) | [BDD-QQQ.feature](../BDD/BDD-QQQ_....feature) | 10 scenarios | 🔄 In Progress |
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| Core System Behaviors (3.1) | `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | 8 scenarios | ✅ Complete |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| Data Processing (3.2) | `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` | 12 scenarios | ✅ Complete |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| Error Handling (3.3) | `BDD/BDD-PPP_{suite}/BDD-PPP.SS_{slug}.feature` | 15 scenarios | ✅ Complete |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| Integration Points (3.4) | `BDD/BDD-QQQ_{suite}/BDD-QQQ.SS_{slug}.feature` | 10 scenarios | 🔄 In Progress |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Acceptance Criteria Validation**:
 
 | Acceptance Criterion (section 11) | BDD Validation | Status |
 |-----------------------------------|----------------|--------|
-| Functional Validation Points | [BDD-NN.feature](../BDD/BDD-NN_....feature) Lines 100-250 | ✅ Validated |
-| Quality Attribute Validation Points | [BDD-MM.feature](../BDD/BDD-MM_....feature) Lines 50-120 | ✅ Validated |
-| Operational Validation Points | [BDD-PPP.feature](../BDD/BDD-PPP_....feature) Lines 200-300 | 🔄 Pending |
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| Functional Validation Points | `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` Lines 100-250 | ✅ Validated |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| Quality Attribute Validation Points | `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` Lines 50-120 | ✅ Validated |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
+| Operational Validation Points | `BDD/BDD-PPP_{suite}/BDD-PPP.SS_{slug}.feature` Lines 200-300 | 🔄 Pending |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### 13.4 Code Implementation Paths
 
@@ -680,16 +716,32 @@ API contracts and interface agreements for external integration.
 - Related Systems: Links to other SYS documents for dependent/related systems
 
 **External References**:
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [Technology Documentation](URL): Reference for chosen technology/platform
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [API Standards](URL): RESTful API design standards and conventions
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [security Standards](URL): security compliance frameworks (NIST, ISO 27001)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [Industry Best Practices](URL): Relevant industry standards and benchmarks
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Supporting Analysis**:
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [Architecture Evaluation](link): Technical evaluation and trade-off analysis
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [Feasibility Study](link): Technical feasibility and risk assessment
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [Technology Comparison](link): Comparison of alternative technologies/approaches
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [Performance Benchmarks](link): Performance testing results and capacity planning
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### 13.6 Validation Evidence
 
@@ -743,8 +795,12 @@ API contracts and interface agreements for external integration.
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Related | [SYS-NN](./SYS-NN_...md) | [Related SYS title] | Shared system context |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Depends | [SYS-NN](./SYS-NN_...md) | [Prerequisite SYS title] | Must complete before this |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Tags:**
 ```markdown
@@ -952,3 +1008,16 @@ limit:
 **Template Version**: 1.0
 **Next Review Date**: YYYY-MM-DD (Quarterly review recommended)
 **Technical Authority**: [Name/Role for technical clarification]
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If this document approaches/exceeds limits, split into `SYS-{NN}.{S}_{slug}.md` section files using `SYS-SECTION-TEMPLATE.md` and update `SYS-{NN}.0_index.md`.
+
+## Document Splitting Standard
+
+Split SYS docs when content covers multiple system areas or becomes lengthy:
+- Add/update `SYS-{NN}.0_index.md` (section map, descriptions)
+- Create `SYS-{NN}.{S}_{slug}.md` via `SYS-SECTION-TEMPLATE.md`
+- Maintain navigation; update cross-links to REQ/ADR/BDD/SPEC
+- Validate and lint

@@ -432,8 +432,8 @@ Downstream Dependencies (8 TASKS):
 - TASKS-006: Resource Tracking (needs ServiceConnector)
 - TASKS-007: Historical Data (needs ServiceConnector)
 - TASKS-009: Real-time Metrics (needs ServiceConnector)
-- TASKS-010: Operation execution (needs ServiceConnector)
-- TASKS-011: Risk Management (needs ServiceConnector)
+- TASKS-NN: Operation execution (needs ServiceConnector)
+- TASKS-NN: Risk Management (needs ServiceConnector)
 
 Decision: Create contracts (8 downstream dependencies)
 ```
@@ -1006,8 +1006,8 @@ class ServiceConnector(Protocol):
 - TASKS-006: Resource Tracking
 - TASKS-007: Historical Data
 - TASKS-009: Real-time Metrics
-- TASKS-010: Operation Execution
-- TASKS-011: Risk Management
+- TASKS-NN: Operation Execution
+- TASKS-NN: Risk Management
 
 **Problem**: All 8 TASKS blocked until TASKS-01 complete.
 
@@ -1287,7 +1287,7 @@ class ServiceConnector(Protocol):
 
 **Layer 9 (@ctr)**: External API contracts
 ```yaml
-@ctr: CTR-001
+@ctr: CTR-01
 ```
 
 **Layer 11 (@icon)**: Internal implementation contracts

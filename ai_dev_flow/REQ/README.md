@@ -37,7 +37,7 @@ REQs create the **formal contract** for system behavior by:
 
 ## REQ in Development Workflow
 
-**⚠️ See [index.md](../../index.md#traceability-flow) for the authoritative workflow visualization.**
+**⚠️ See [index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
 
 
 REQs are the **testable specification layer** that operationalizes business requirements within the complete SDD workflow:
@@ -56,7 +56,7 @@ Comprehensive links establish the requirement's context and relationships:
 @sys:[SYS-NN](../../SYS/SYS-NN_...md)
 @ears:[EARS-NN](../../EARS/EARS-NN_...md)
 @spec:[SPEC-NN](../../SPEC/.../SPEC-NN_...yaml)
-@bdd:[BDD-NN:scenarios](../../BDD/BDD-NN.feature#scenarios)
+@bdd:[BDD-NN.SS:scenarios](../../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
 ```
 
 ### Description
@@ -99,7 +99,7 @@ How this requirement will be tested and validated:
 
 ```markdown
 ### Verification
-- BDD: [BDD-NN.feature](../../BDD/BDD-NN.feature#scenarios)
+- BDD: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios`
 - Spec: [SPEC-NN.yaml](../../SPEC/.../SPEC-NN.yaml)
 - [Additional verification methods: performance tests, security tests, etc.]
 ```
@@ -268,7 +268,7 @@ Track implementation artifacts that realize the requirement:
 ```markdown
 ### Verification
 - ADR: [ADR-NN](../ADR/ADR-NN_...md#ADR-NN) - [Implementation approach]
-- BDD: [BDD-NN.feature](../../BDD/BDD-NN.feature#scenario-1)
+- BDD: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1`
 - Spec: [SPEC-NN.yaml](../../SPEC/.../SPEC-NN.yaml)
 - Code Module: `component.module.function()`
 ```
@@ -788,7 +788,7 @@ find REQ -name "REQ-*.md" ! -path "*/archived/*" -exec ./scripts/validate_req_te
 - CHECK 7-11: V2 sections (interfaces, schemas, errors, config, quality attributes)
 - CHECK 12-18: V3 enhancements (filename, resource tags, cumulative tagging, link resolution, traceability matrix, SPEC-Ready content)
 
-**Validation Reference**: See [REQ-VALIDATION-RULES.md](REQ-VALIDATION-RULES.md) for detailed fix instructions for each check.
+**Validation Reference**: See [REQ_VALIDATION_RULES.md](REQ_VALIDATION_RULES.md) for detailed fix instructions for each check.
 
 #### Python-Based Validators
 
@@ -885,3 +885,15 @@ python scripts/add_requirement_anchors.py --req-file REQ/api/REQ-01.md
 - Authorization middleware with JWT
 
 For detailed examples, see the V2 example files in `REQ/api/`, `REQ/data/`, and `REQ/auth/`.
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute)
+- If a file approaches/exceeds limits, split into section files where appropriate and update indexes or mapping tables.
+
+## Document Splitting Standard
+
+REQ documents are atomic by design; prefer separate REQ files over long monoliths:
+- If a REQ grows too large, split it into multiple focused REQ files (by capability/domain)
+- Maintain consistent numbering and update any mapping tables or indexes
+- Validate all cross-references after splitting; run size lints

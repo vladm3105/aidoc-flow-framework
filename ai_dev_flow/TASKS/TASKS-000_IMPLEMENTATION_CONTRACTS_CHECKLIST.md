@@ -86,7 +86,7 @@ Select contract type(s) based on what you're sharing:
 
 #### State Machine Contracts ✓ Use When:
 - [ ] Managing connection lifecycles
-- [ ] Tracking order/workflow states
+- [ ] Tracking request/workflow states
 - [ ] Validating state transitions
 - [ ] Sharing state logic across TASKS
 
@@ -620,7 +620,7 @@ class ServiceConnector(Protocol):
 ### Internal Documentation
 - [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) - Comprehensive guide
 - [TASKS-TEMPLATE.md](./TASKS-TEMPLATE.md) - TASKS template with contracts section
-- [CLAUDE.md](/home/ya/.claude/CLAUDE.md) - Global instructions with contracts strategy
+- Example: CLAUDE.md (global instructions; link not included)
 
 ### External Resources
 - [PEP 544: Protocols](https://peps.python.org/pep-0544/) - Structural subtyping

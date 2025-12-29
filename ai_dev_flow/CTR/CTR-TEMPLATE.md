@@ -26,6 +26,10 @@ custom_fields:
   schema_version: "1.0"
 ---
 
+> Reference Template — For learning and small contracts only. Real CTRs should follow `../DOCUMENT_SPLITTING_RULES.md` and `CTR/CTR_SPLITTING_RULES.md`:
+> - Split into paired sections when needed: `CTR-{NN}.{S}_{slug}.md` + `CTR-{NN}.{S}_{slug}.yaml`
+> - Use `CTR-SECTION-0-TEMPLATE.md` for the index and `CTR-SECTION-TEMPLATE.md` for Markdown sections
+
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for CTR structure.
 > - **Schema**: `CTR_SCHEMA.yaml v1.0` - Validation rules
 > - **Creation Rules**: `CTR_CREATION_RULES.md` - Usage guidance
@@ -217,7 +221,9 @@ retry:
 ## 6. Schema Reference
 
 ### 6.1 YAML Schema File
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 [Schema: CTR-NN_descriptive_name.yaml](./CTR-NN_descriptive_name.yaml)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### 6.2 Schema Overview
 Contract defines two primary operations:
@@ -658,7 +664,7 @@ Common types across endpoints:
 ## 17. Related Contracts
 
 **Depends On**:
-- CTR-100 (Common Data Types): Shared resource/resource collection types
+- CTR-NN (Common Data Types): Shared resource/resource collection types
 - ADR-008 (Risk Parameters): Configuration contract for risk limits
 
 **Supersedes**:
@@ -669,7 +675,7 @@ Common types across endpoints:
 - CTR-006 (resource collection State): Provides current resource collection state
 
 **Impacts**:
-- CTR-010+ (Future strategy contracts): Will reference this validation contract
+- CTR-NN (Future strategy contracts): Will reference this validation contract
 
 ## 18. Implementation Notes
 
@@ -713,7 +719,9 @@ Common types across endpoints:
 ### 19.1 Upstream Sources
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | REQ | [REQ-03](../REQ/risk/lim/REQ-03_resource_limit_enforcement.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement | section 3.1 | Defines validation requirements |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 | REQ | [REQ-008](../REQ/risk/cfg/REQ-008_centralized_risk_parameters.md) | Centralized Risk Parameters | section 2.0 | Defines risk limits to validate against |
 | ADR | [ADR-008](../ADR/ADR-008_centralized_risk_parameters.md) | Centralized Risk Parameters | section 4.0 | Architecture decision for centralization |
 | SYS | [SYS-004](../SYS/SYS-004_centralized_risk_controls.md) | Centralized Risk Controls | section 5.2 | System requirement for validation service |
@@ -721,15 +729,23 @@ Common types across endpoints:
 ### 19.2 Downstream Artifacts
 | Artifact Type | Document ID | Document Title | Relationship |
 |---------------|-------------|----------------|--------------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | SPEC | [SPEC-05](../SPEC/services/SPEC-05_risk_validation_service.yaml) | Risk Validation Service | Provider implementation |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | SPEC | [SPEC-01](../SPEC/agents/SPEC-01_service_orchestrator.yaml) | [ORCHESTRATION_COMPONENT] | Primary consumer |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | TASKS | [TASKS-05](../TASKS/TASKS-05_risk_validation_implementation.md) | Risk Validation Implementation | Implementation plan |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 | Code | src/services/risk_validation_service.py | Risk Validation Service | Provider implementation |
 | Code | src/agents/service_orchestrator/risk_validator_client.py | Risk Validator Client | Consumer implementation |
 
 ### 19.3 Document Links
 - **Anchors/IDs**: `#CTR-NN` (internal document reference)
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - **YAML Schema**: [CTR-NN_risk_validation.yaml](./CTR-NN_risk_validation.yaml)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 - **Code Path(s)**:
   - Provider: `src/services/risk_validation_service.py`
   - Consumers: `src/agents/*/risk_validator_client.py`
@@ -740,8 +756,12 @@ Common types across endpoints:
 
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Related | [CTR-NN](./CTR-NN_...md) | [Related CTR title] | Shared API context |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Depends | [CTR-NN](./CTR-NN_...md) | [Prerequisite CTR title] | Must complete before this |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Tags:**
 ```markdown
@@ -783,7 +803,7 @@ Common types across endpoints:
 @prd: PRD.03.01.02
 @ears: EARS.01.24.03
 @bdd: BDD.03.13.01
-@adr: ADR-033
+@adr: ADR-NN
 @sys: SYS.08.25.01
 @req: REQ.03.26.01
 @impl: IMPL.01.28.01
@@ -800,8 +820,11 @@ Common types across endpoints:
 - [REQ-008: Centralized Risk Parameters](../REQ/risk/cfg/REQ-008_centralized_risk_parameters.md)
 - [ADR-008: Centralized Risk Parameters Architecture](../ADR/ADR-008_centralized_risk_parameters.md)
 - [SYS-004: Centralized Risk Controls](../SYS/SYS-004_centralized_risk_controls.md)
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 - [SPEC-05: Risk Validation Service](../SPEC/services/SPEC-05_risk_validation_service.yaml)
-- [BDD-012: Risk Validation Scenarios](../BDD/BDD-012_risk_validation.feature)
+<!-- VALIDATOR:IGNORE-LINKS-END -->
+- [BDD-NN: Risk Validation Scenarios] (../BDD/BDD-NN_risk_validation/BDD-NN.1_risk_validation.feature)  
+  (example placeholder)
 
 ### 20.2 External Links
 - [JSON Schema Specification](https://json-schema.org/): JSON schema validation standard
@@ -828,3 +851,15 @@ Common types across endpoints:
 **Template Version**: 1.0
 **Last Reviewed**: YYYY-MM-DD
 **Next Review**: YYYY-MM-DD (recommend quarterly for active contracts)
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum (Markdown): 600 lines per file (absolute)
+- YAML Exception (monolithic): Warnings at ~1000 lines, errors at ~2000 lines in linter; splitting is not required unless readability suffers.
+- If this contract approaches/exceeds limits, split content logically (e.g., separate endpoint groups) and maintain the dual-file `.md` + `.yaml` structure (prefer monolithic YAML where logical).
+
+## Document Splitting Standard
+
+- Prefer monolithic dual-file contracts (`.md` + `.yaml`) per service
+- If necessary, split by endpoint groups/modules with matching pairs and clear naming
+- Update cross-links, indexes, and validation

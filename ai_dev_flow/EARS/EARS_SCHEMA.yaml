@@ -131,6 +131,11 @@ structure:
     source_document_format:
       pattern: "^@prd: PRD\\.[0-9]{2,}\\.[0-9]{2,}\\.[0-9]{2,}$"
       description: "Must use @prd: prefix with dot notation (PRD.NN.EE.SS) for traceability"
+    # Additional constraints for Source Document cell
+    source_document_constraints:
+      single_reference_only: true
+      no_ranges: true
+      notes: "Do not include PRD ranges or multiple @prd values in the Source Document cell. Use a single canonical @prd and list the rest elsewhere (e.g., Upstream Sources)."
 
   # Section numbering rules
   section_numbering:
@@ -199,6 +204,10 @@ validation_rules:
     - rule: "Source Document must use @prd: prefix"
       severity: error
 
+    - rule: "Source Document must contain a single @prd reference (no ranges)"
+      severity: error
+      fix: "Provide exactly one canonical @prd in the Document Control table; list additional IDs in an Upstream Sources subsection."
+
     - rule: "No duplicate section numbers"
       severity: error
 
@@ -215,6 +224,10 @@ validation_rules:
 
     - rule: "Timing specifications must include percentile (p95, p99)"
       severity: warning
+
+    - rule: "No numeric downstream references (BDD-#, ADR-#, REQ-#, SPEC-#, SYS-#)"
+      severity: error
+      fix: "Use generic downstream names (BDD, ADR, REQ, SPEC, SYS) until those artifacts exist."
 
 # =============================================================================
 # Cross-Reference Requirements
@@ -241,9 +254,13 @@ traceability:
   downstream:
     expected:
       - type: BDD
-        format: "BDD-NN"
+        format: "BDD"   # Generic name only; do not reference numeric IDs until they exist
       - type: SPEC
-        format: "SPEC-NN"
+        format: "SPEC"  # Generic name only; do not reference numeric IDs until they exist
+      - type: ADR
+        format: "ADR"
+      - type: SYS
+        format: "SYS"
 
   threshold_references:
     format: "@threshold: PRD.035.category.subcategory"

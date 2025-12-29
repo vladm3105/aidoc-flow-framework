@@ -46,7 +46,7 @@ custom_fields:
 
 ```gherkin
 @brd:BRD.NN.01.SS
-@prd:PRD.NN.07.SS
+@prd:PRD.NN.EE.SS
 @ears:EARS.NN.24.SS
 Feature: [Feature Title]
 ```
@@ -62,7 +62,7 @@ Feature: [Feature Title]
 
 ```gherkin
 @brd:BRD.NN.01.SS
-@prd:PRD.NN.07.SS
+@prd:PRD.NN.EE.SS
 @ears:EARS.NN.24.SS
 @ctr:CTR-005
 Feature: [Agent Feature Title]
@@ -146,7 +146,7 @@ Use `BDD-TEMPLATE.feature` directly.
 **Copy-paste the following tags**:
 ```gherkin
 @brd:BRD.NN.01.SS
-@prd:PRD.NN.07.SS
+@prd:PRD.NN.EE.SS
 @ears:EARS.NN.24.SS
 Feature: [Feature Title]
 ```
@@ -158,7 +158,7 @@ Use `BDD-TEMPLATE.feature` + `BDD_AI_AGENT_EXTENSION.md`.
 **Copy-paste the following tags**:
 ```gherkin
 @brd:BRD.NN.01.SS
-@prd:PRD.NN.07.SS
+@prd:PRD.NN.EE.SS
 @ears:EARS.NN.24.SS
 @ctr:CTR-005
 Feature: [Agent Feature Title]
@@ -237,15 +237,15 @@ After generating a BDD file, run:
 
 ```bash
 # Validate format compliance
-./scripts/validate_bdd_format.sh docs/BDD/BDD-NN_feature_name.feature
+./scripts/validate_bdd_format.sh docs/BDD/BDD-NN_{slug}/BDD-NN.SS_{slug}.feature
 
 # Check for tags in comments (should return nothing)
-grep -n "^#.*@brd:" docs/BDD/BDD-NN*.feature
-grep -n "^#.*@prd:" docs/BDD/BDD-NN*.feature
-grep -n "^#.*@ears:" docs/BDD/BDD-NN*.feature
+grep -n "^#.*@brd:" docs/BDD/BDD-NN_*/BDD-NN*.feature
+grep -n "^#.*@prd:" docs/BDD/BDD-NN_*/BDD-NN*.feature
+grep -n "^#.*@ears:" docs/BDD/BDD-NN_*/BDD-NN*.feature
 
 # Verify ADR-Ready Score format
-grep "ADR-Ready Score" docs/BDD/BDD-NN*.feature | grep -v "✅"
+grep "ADR-Ready Score" docs/BDD/BDD-NN_*/BDD-NN*.feature | grep -v "✅"
 ```
 
 ---
@@ -267,5 +267,5 @@ Before committing any BDD file, verify:
 
 ---
 
-**Maintained By**: BeeLocal Engineering Team
+**Maintained By**: Project Engineering Team
 **Review Frequency**: Updated with BDD framework changes

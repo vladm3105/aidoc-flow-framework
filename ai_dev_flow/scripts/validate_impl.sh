@@ -23,7 +23,7 @@ NC='\033[0m' # No Color
 
 if [ -z "$IMPL_FILE" ]; then
   echo "Usage: $0 <IMPL_FILE>"
-  echo "Example: $0 /opt/data/project/docs/IMPL/IMPL-001_risk_management_system.md"
+  echo "Example: $0 /opt/data/project/docs/IMPL/IMPL-01_risk_management_system.md"
   exit 1
 fi
 

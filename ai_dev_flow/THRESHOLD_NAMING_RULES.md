@@ -168,7 +168,7 @@ performance:
 **In ADR Documents** (defining AND referencing thresholds):
 
 ```markdown
-# ADR-15: Circuit Breaker Architecture
+# ADR-NN: Circuit Breaker Architecture (example)
 
 ## Thresholds Referenced
 
@@ -205,7 +205,7 @@ we implement circuit breakers with @threshold: ADR.15.circuit.failure.count = 5.
 
 @brd: BRD.01.01.30
 @prd: PRD.01.07.05
-@adr: ADR-15
+@adr: ADR-NN
 @threshold: PRD.01.kyc.l1.daily
 @threshold: ADR.15.circuit.failure.count
 @impl-status: complete
@@ -901,7 +901,7 @@ thresholds:
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2025-12-16 | AI Dev Flow Team | Initial creation based on PRD-35 analysis |
+| 1.0 | 2025-12-16 | AI Dev Flow Team | Initial creation based on PRD-NN analysis |
 | 1.1 | 2025-12-16 | AI Dev Flow Team | Added detailed Boundary Specification, Reference Format, Definition, and Environment Override rules |
 | 1.2 | 2025-12-16 | AI Dev Flow Team | Converted to framework: replaced fixed categories with category creation rules; added universal vs domain-specific categories and abbreviations |
 | 1.3 | 2025-12-16 | AI Dev Flow Team | Removed Threshold Registry requirement; thresholds now defined in BRD/PRD/ADR YAML blocks; introduced `@threshold:` tags for traceability; ADR added as source for technical thresholds (circuit breakers, pools, performance SLAs) |

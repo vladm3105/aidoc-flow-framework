@@ -110,7 +110,7 @@ This matrix tracks all ADRs and their upstream sources (BRD, PRD, EARS, BDD). Do
 ### 2.3 Example: ADR with Required Tags
 
 ```markdown
-# ADR-033: Order Service Architecture
+# ADR-NN: Service Architecture
 
 ## 7. Traceability
 
@@ -118,10 +118,10 @@ This matrix tracks all ADRs and their upstream sources (BRD, PRD, EARS, BDD). Do
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
 ```markdown
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
-@ears: EARS.12.24.02, EARS.12.24.01
-@bdd: BDD.15.13.01, BDD.15.13.02
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS-NN, EARS-NN
+@bdd: BDD-NN, BDD-NN
 ```
 
 ### 7.2 Downstream Artifacts
@@ -143,9 +143,9 @@ ADR tags can be discovered automatically:
 # Find all ADRs and their upstream tags
 python scripts/extract_tags.py --type ADR --show-all-upstream
 
-# Validate ADR-033 has required tags
+# Validate ADR-NN has required tags
 python scripts/validate_tags_against_docs.py \
-  --artifact ADR-033 \
+  --artifact ADR-NN \
   --expected-layers brd,prd,ears,bdd \
   --strict
 
@@ -165,8 +165,8 @@ python scripts/generate_traceability_matrices.py \
 
 | ADR ID | Title | Decision Category | Status | Date | Upstream Sources |
 |--------|-------|-------------------|--------|------|------------------|
-| ADR-01 | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | BRD-01, PRD-01, EARS-01, BDD-01 |
-| ADR-02 | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | BRD-01, PRD-02, EARS-02, BDD-02 |
+| ADR-NN | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | BRD-NN, PRD-NN, EARS-NN, BDD-NN |
+| ADR-NN | [Architecture decision title] | [Category] | Accepted | YYYY-MM-DD | BRD-NN, PRD-NN, EARS-NN, BDD-NN |
 | ADR-NN | ... | ... | ... | ... | ... |
 
 **Status Legend**:
@@ -186,28 +186,28 @@ python scripts/generate_traceability_matrices.py \
 
 | BRD ID | BRD Title | ADR IDs | ADR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| BRD-01 | [Business requirement] | ADR-01, ADR-005 | [Architecture decisions] | Business constraints drive technical decisions |
+| BRD-NN | [Business requirement] | ADR-NN | [Architecture decisions] | Business constraints drive technical decisions |
 | BRD-NN | ... | ... | ... | ... |
 
 ### 4.2 PRD → ADR Traceability
 
 | PRD ID | PRD Title | ADR IDs | ADR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| PRD-01 | [Product feature] | ADR-02, ADR-008 | [Architecture decisions] | Product requirements necessitate architectural choices |
+| PRD-NN | [Product feature] | ADR-NN | [Architecture decisions] | Product requirements necessitate architectural choices |
 | PRD-NN | ... | ... | ... | ... |
 
 ### 4.3 EARS → ADR Traceability
 
 | EARS ID | EARS Title | ADR IDs | ADR Titles | Relationship |
 |---------|------------|---------|------------|--------------|
-| EARS-01 | [Formal requirement] | ADR-03 | [Architecture decision] | Performance requirements drive architectural patterns |
+| EARS-NN | [Formal requirement] | ADR-NN | [Architecture decision] | Performance requirements drive architectural patterns |
 | EARS-NN | ... | ... | ... | ... |
 
 ### 4.4 BDD → ADR Traceability
 
 | BDD ID | BDD Title | ADR IDs | ADR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
-| BDD-01 | [Test scenarios] | ADR-004 | [Architecture decision] | Testing requirements influence architectural approach |
+| BDD-NN | [Test scenarios] | ADR-NN | [Architecture decision] | Testing requirements influence architectural approach |
 | BDD-NN | ... | ... | ... | ... |
 
 ### 4.5 Upstream Source Summary
@@ -230,25 +230,25 @@ python scripts/generate_traceability_matrices.py \
 
 | Downstream Type | Required Tag Format | Example |
 |-----------------|---------------------|---------|
-| SYS | `@adr: ADR-NNN` | `@adr: ADR-033` |
-| REQ | `@adr: ADR-NNN` | `@adr: ADR-005, ADR-012` |
-| SPEC | `@adr: ADR-NNN` | `@adr: ADR-008` |
-| IMPL | `@adr: ADR-NNN` | `@adr: ADR-001, ADR-004` |
+| SYS | `@adr: ADR-NNN` | `@adr: ADR-NN` |
+| REQ | `@adr: ADR-NNN` | `@adr: ADR-NN` |
+| SPEC | `@adr: ADR-NNN` | `@adr: ADR-NN` |
+| IMPL | `@adr: ADR-NNN` | `@adr: ADR-NN` |
 
 ### 6.2 Finding Downstream References
 
 To discover which downstream documents reference a specific ADR, use reverse traceability:
 
 ```bash
-# Find all SYS documents referencing ADR-033
-grep -r "@adr: ADR-033" ../SYS/
+# Find all SYS documents referencing ADR-NN
+grep -r "@adr: ADR-NN" ../SYS/
 
 # Find all REQ documents referencing any ADR
 grep -r "@adr:" ../REQ/
 
 # Generate reverse traceability report
 python scripts/generate_reverse_traceability.py \
-  --upstream ADR-033 \
+  --upstream ADR-NN \
   --downstream SYS,REQ,SPEC,IMPL
 ```
 

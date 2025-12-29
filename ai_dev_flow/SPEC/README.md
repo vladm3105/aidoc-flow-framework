@@ -15,6 +15,8 @@ custom_fields:
 
 Specifications (SPEC) are machine-readable technical blueprints that define how software components should be implemented. SPECs transform requirements into actionable design decisions, providing complete implementation guidance for developers while establishing contracts for testing and integration.
 
+Note: `SPEC-TEMPLATE.md`/`.yaml` are reference templates. Real SPECs are monolithic per component by default; split only when needed per `SPEC/SPEC_SPLITTING_RULES.md` and `../DOCUMENT_SPLITTING_RULES.md`.
+
 ## Complete SDD Document Flow
 
 The workflow transforms business requirements into production-ready code through traceable artifacts:
@@ -32,6 +34,8 @@ SPECs serve as the **technical implementation contracts** that:
 
 ## SPEC YAML Structure
 
+Note: For large specifications that warrant splitting, see `SPEC/SPEC_SPLITTING_RULES.md` for SPEC-specific guidance and `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
+
 ### Header with Traceability Comments
 
 YAML files include traceability links in comment headers:
@@ -39,7 +43,7 @@ YAML files include traceability links in comment headers:
 ```yaml
 # @requirement:[REQ-NN](../../REQ/.../REQ-NN_...md#REQ-NN)
 # @adr:[ADR-NN](../../ADR/ADR-NN_...md#ADR-NN)
-# @bdd:[BDD-NN:scenarios](../../BDD/BDD-NN.feature#scenarios)
+# @bdd:[BDD-NN.SS:scenarios](../../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
 id: component_name
 summary: Single-sentence description of component purpose and scope.
 ```
@@ -269,8 +273,8 @@ Link specifications to behavioral tests:
 ```yaml
 verification:
   bdd_scenarios:
-    - "[BDD-NN.feature:L23](../../BDD/BDD-NN.feature#L23)"  # Specific scenario line
-    - "[BDD-NN.feature:L45](../../BDD/BDD-NN.feature#L45)"  # Additional scenarios
+    - "[BDD-NN.SS_{slug}.feature:L23](../../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#L23)"  # Specific scenario line
+    - "[BDD-NN.SS_{slug}.feature:L45](../../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#L45)"  # Additional scenarios
   contract_tests:
   load_tests:
     - target_rps: 1000
@@ -604,24 +608,38 @@ generate-tests --spec SPEC/services/SPEC-03_resource_limit_service.yaml --framew
 ### Validation and Compliance
 ```bash
 # Validate SPEC against schema
-validate-spec --spec SPEC/services/SPEC-01.yaml --schema spec_schema.json
+validate-spec --spec SPEC/services/SPEC-NN.yaml --schema spec_schema.json
 
 # Check SPEC-test alignment
-verify-spec-coverage --spec SPEC/services/SPEC-01.yaml --tests test_external_api/
+verify-spec-coverage --spec SPEC/services/SPEC-NN.yaml --tests test_external_api/
 
 # Generate API documentation
-generate-docs --spec SPEC/services/SPEC-01.yaml --format openapi --output docs/api/
+generate-docs --spec SPEC/services/SPEC-NN.yaml --format openapi --output docs/api/
 ```
 
 ### Monitoring Configuration
 ```bash
 # Generate monitoring configuration
-generate-monitoring --spec SPEC/services/SPEC-01.yaml --output prometheus.yml
+generate-monitoring --spec SPEC/services/SPEC-NN.yaml --output prometheus.yml
 
 # Validate metrics against SPEC
-validate-metrics --spec SPEC/services/SPEC-01.yaml --actual-metrics metrics.json
+validate-metrics --spec SPEC/services/SPEC-NN.yaml --actual-metrics metrics.json
 ```
 
 ## Example SPEC Template
 
 See `SPEC/services/SPEC-01_external_api_client.yaml` for a complete example of a well-structured specification that includes interface definitions, operational characteristics, observability requirements, and comprehensive traceability.
+## File Size Limits
+
+- Target: 300–500 lines per file
+- Maximum (Markdown): 600 lines per file (absolute)
+- YAML Exception (monolithic): Warnings at ~1000 lines, errors at ~2000 lines in linter; splitting is not required unless readability suffers.
+- If a file approaches/exceeds limits, split specifications by domain/component while preserving coherent interfaces (prefer keeping YAML monolithic where logical).
+
+## Document Splitting Standard
+
+SPEC files (YAML) are typically monolithic per component/domain:
+- Prefer monolithic unless extremely large or impacting readability
+- If splitting, create multiple YAML specs grouped by domain/component and update references
+- Keep interfaces coherent and avoid cross-file fragmentation of single interfaces
+- Validate references and run size lints

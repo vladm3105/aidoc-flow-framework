@@ -18,6 +18,8 @@ custom_fields:
 
 ---
 
+<!-- Path Prefix Note: Some examples use a top-level `docs/` prefix. In this `ai_dev_flow` folder, BRD/, PRD/, etc. live at the repository root. Adjust links accordingly. -->
+
 ## 16-Layer Workflow
 
 ```
@@ -39,12 +41,21 @@ BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC �
 ### Examples
 ```
 REQ-01_resource_limit_enforcement.md
-ADR-005_database_selection.md
-CTR-012_data_service_api.md
-CTR-012_data_service_api.yaml  (dual-file)
-SPEC-023_risk_calculator.yaml
-TASKS-023_implement_risk_calculator.md
+ADR-05_database_selection.md
+CTR-12_data_service_api.md
+CTR-12_data_service_api.yaml  (dual-file)
+SPEC-23_risk_calculator.yaml
+TASKS-23_implement_risk_calculator.md
 ```
+
+### Numbering Rule (Unified)
+
+- Start at 2 digits and expand only when needed (no extra leading zeros).
+- Correct: `BRD-01`, `BRD-99`, `BRD-102`, `BRD-999`, `BRD-1000`.
+- Incorrect: `BRD-001`, `BRD-009`.
+- Applies to all document types (BRD→IPLAN). Element IDs must match filename digit width (e.g., `PRD-16` ↔ `PRD.16.xx.xx`).
+- Reserved infra docs: `-000` is intentional for indexes/templates. Code and tests use their language-specific naming rules.
+- See: `ID_NAMING_STANDARDS.md` for full details.
 
 ### Section Files (DEFAULT for BRD/PRD/ADR)
 ```
@@ -54,7 +65,7 @@ Folder:       docs/BRD/BRD-01_platform_architecture/
 Index File:   docs/BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md
 Section File: docs/BRD/BRD-01_platform_architecture/BRD-01.1_platform_architecture_executive_summary.md
 Section File: docs/PRD/PRD-02_user_authentication/PRD-02.3_user_authentication_problem_statement.md
-Section File: docs/ADR/ADR-005_database_selection/ADR-005.2_database_selection_alternatives.md
+Section File: docs/ADR/ADR-05_database_selection/ADR-05.2_database_selection_alternatives.md
 ```
 
 **Note**: Folder slug MUST match the index file slug (e.g., `BRD-01_platform_architecture/` contains `BRD-01.0_platform_architecture_index.md`).
@@ -63,7 +74,7 @@ Section File: docs/ADR/ADR-005_database_selection/ADR-005.2_database_selection_a
 ```
 docs/{TYPE}/{TYPE}-{NN}_{descriptive_slug}.md
 
-Example: docs/REQ/REQ-042_authentication_methods.md
+Example: docs/REQ/REQ-42_authentication_methods.md
 ```
 
 ---
@@ -77,55 +88,41 @@ Example: docs/REQ/REQ-042_authentication_methods.md
 Examples (nested folder structure - BRD/PRD/ADR):
 [BRD-01](../BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md#BRD-01)
 [PRD-02](../PRD/PRD-02_user_authentication/PRD-02.0_user_authentication_index.md#PRD-02)
-[ADR-005](../ADR/ADR-005_database_selection/ADR-005.0_database_selection_index.md#ADR-005)
+[ADR-05](../ADR/ADR-05_database_selection/ADR-05.0_database_selection_index.md#ADR-05)
 
 Examples (flat structure - other types):
 [REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)
-[SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
+[SPEC-23](../SPEC/SPEC-23_risk_calculator.yaml)
 ```
 
 ---
 
-## Folder Structure
+## Folder Structure (Unified Nested)
 
 ```mermaid
 graph TB
-    subgraph docs["docs/"]
-        subgraph nested["Nested Folders (BRD/PRD/ADR)"]
-            BRD["BRD/BRD-NN_{slug}/ - Business Requirements"]
-            PRD["PRD/PRD-NN_{slug}/ - Product Requirements"]
-            ADR["ADR/ADR-NN_{slug}/ - Architecture Decisions"]
-        end
-        subgraph flat["Flat Structure (Other Types)"]
-            EARS["EARS/ - EARS Syntax"]
-            BDD["BDD/ - BDD Gherkin"]
-            SYS["SYS/ - System Specs"]
-            REQ["REQ/ - Atomic Requirements"]
-            IMPL["IMPL/ - Implementation Plans"]
-            CTR["CTR/ - API Contracts"]
-            SPEC["SPEC/ - Technical Specs"]
-            TASKS["TASKS/ - Implementation Tasks"]
-            IPLAN["IPLAN/ - Session Plans"]
-        end
-    end
+  subgraph docs["docs/"]
+    BRD["BRD/BRD-NN_{slug}/ - Business Requirements"]
+    PRD["PRD/PRD-NN_{slug}/ - Product Requirements"]
+    ADR["ADR/ADR-NN_{slug}/ - Architecture Decisions"]
+    EARS["EARS/EARS-NN_{slug}/ - EARS Syntax"]
+    BDD["BDD/BDD-NN_{suite}/ - BDD Gherkin (sections)"]
+    SYS["SYS/SYS-NN_{slug}/ - System Specs"]
+    REQ["REQ/{domain}/ - Atomic Requirements"]
+    IMPL["IMPL/IMPL-NN_{slug}/ - Implementation Plans"]
+    CTR["CTR/CTR-NN_{slug}/ - API Contracts"]
+    SPEC["SPEC/{category}/ - Technical Specs"]
+    TASKS["TASKS/TASKS-NN_{slug}/ - Implementation Tasks"]
+    IPLAN["IPLAN/IPLAN-NN_{slug}/ - Session Plans"]
+  end
 
-    subgraph nested_example["Nested Example: docs/BRD/BRD-01_platform_architecture/"]
-        idx["BRD-01.0_platform_architecture_index.md"]
-        sec1["BRD-01.1_platform_architecture_executive_summary.md"]
-        sec2["BRD-01.2_platform_architecture_business_objectives.md"]
-    end
+  subgraph nested_example["Nested Example: BRD-01_platform_architecture/"]
+    idx["BRD-01.0_index.md"]
+    sec1["BRD-01.1_executive_summary.md"]
+    sec2["BRD-01.2_business_objectives.md"]
+  end
 
-    subgraph req_sub["REQ/ subdirectories"]
-        api["api/"]
-        auth["auth/"]
-        data["data/"]
-        risk["risk/"]
-        ops["operations/"]
-        tenant["tenant/"]
-    end
-
-    BRD --> nested_example
-    REQ --> req_sub
+  BRD --> nested_example
 ```
 
 <!-- Migration History -->
@@ -134,6 +131,15 @@ graph TB
 <!-- BRD/PRD/ADR migrated to nested folder structure (2025-12-18) -->
 
 ---
+
+Note: This repository includes some flat examples for historical reasons. For new projects, use the nested folder structure for BRD/PRD/ADR by default.
+
+## REQ Subfolder Taxonomy
+
+- Standard (domain‑agnostic): `api`, `auth`, `data`, `core`, `integration`, `monitoring`, `reporting`, `security`, `ui`
+- Financial (domain‑specific): `risk`, `operations`, `data`, `compliance`, `ml`
+
+Use the Standard set for general projects, and add Financial sets as needed for financial services domains.
 
 ## Common Commands
 
@@ -172,6 +178,9 @@ python scripts/check_broken_references.py
 
 # Generate traceability matrix
 python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
+
+# Lint file sizes (target 300–500, max 600)
+./scripts/lint_file_sizes.sh
 ```
 
 ---
@@ -206,8 +215,8 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 ### Downstream Artifacts (OPTIONAL - only existing docs)
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| [SPEC-023](../SPEC/SPEC-023_impl.yaml) | Technical Specification | Implementation |
-| [TASKS-023](../TASKS/TASKS-023_impl.md#TASKS-023) | Implementation Tasks | TODOs |
+| [SPEC-23](../SPEC/SPEC-23_impl.yaml) | Technical Specification | Implementation |
+| [TASKS-23](../TASKS/TASKS-23_impl.md#TASKS-23) | Implementation Tasks | TODOs |
 
 ### Primary Anchor/ID
 - **REQ-03**: resource limit enforcement requirement
@@ -352,18 +361,44 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 |------|---------|--------|-----------|---------|
 | **BRD** | Business objectives | .md | **Nested** | `BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md` |
 | **PRD** | Product features | .md | **Nested** | `PRD/PRD-02_user_auth/PRD-02.0_user_auth_index.md` |
-| **ADR** | Architecture decisions | .md | **Nested** | `ADR/ADR-005_db_selection/ADR-005.0_db_selection_index.md` |
-| **EARS** | Measurable requirements | .md | Flat | EARS-03_performance.md |
-| **BDD** | Acceptance tests | .feature | Flat (section-based) | BDD-02.14_query_filtering.feature |
-| **SYS** | System specifications | .md | Flat | SYS-006_api_gateway.md |
-| **REQ** | Atomic requirements | .md | Flat | REQ-007_limit_enforcement.md |
-| **IMPL** | Implementation plan | .md | Flat | IMPL-008_phase1_plan.md |
-| **CTR** | API contracts | .md + .yaml | Flat | CTR-009_market_api.md + .yaml |
-| **SPEC** | Technical SPEC | .yaml | Flat | SPEC-010_limiter.yaml |
-| **TASKS** | Implementation TODOs | .md | Flat | TASKS-010_implement_limiter.md |
-| **IPLAN** | Session execution plans | .md | Flat | IPLAN-01_db_migration.md |
+| **ADR** | Architecture decisions | .md | **Nested** | `ADR/ADR-05_db_selection/ADR-05.0_db_selection_index.md` |
+| **EARS** | Measurable requirements | .md | **Nested** | `EARS/EARS-03_performance/EARS-03_performance.md` |
+| **BDD** | Acceptance tests | .feature | **Nested (section-based)** | `BDD/BDD-02_query/BDD-02.14_query_filtering.feature` |
+| **SYS** | System specifications | .md | **Nested** | `SYS/SYS-06_api_gateway/SYS-06_api_gateway.md` |
+| **REQ** | Atomic requirements | .md | **Nested** | `REQ/REQ-07_limit_enforcement/REQ-07_limit_enforcement.md` |
+| **IMPL** | Implementation plan | .md | **Nested** | `IMPL/IMPL-08_phase1_plan/IMPL-08_phase1_plan.md` |
+| **CTR** | API contracts | .md + .yaml | **Nested** | `CTR/CTR-09_market_api/CTR-09_market_api.{md,yaml}` |
+| **SPEC** | Technical SPEC | .yaml | **Nested** | `SPEC/SPEC-10_limiter/SPEC-10_limiter.yaml` |
+| **TASKS** | Implementation TODOs | .md | **Nested** | `TASKS/TASKS-10_implement_limiter/TASKS-10_implement_limiter.md` |
+| **IPLAN** | Session execution plans | .md | **Nested** | `IPLAN/IPLAN-01_db_migration/IPLAN-01_db_migration.md` |
 
-**Note**: BRD/PRD/ADR use nested folder structure (`{TYPE}/{TYPE}-NN_{slug}/{TYPE}-NN.S_{slug}.md`) by DEFAULT. Folder slug MUST match index file slug. Other types use flat structure.
+**Default Directory Model**: All document types use nested folder structure by default. The primary file(s) live inside that folder, using section-based filenames where applicable. Folder slug MUST match the document slug.
+
+## File Size Limits (All Documents)
+
+- Target: 300–500 lines per file
+- Maximum: 600 lines per file (absolute) for Markdown and feature files
+- YAML Exception: YAML specs are monolithic; warnings start at ~1000 lines and errors at ~2000 lines in the linter. Prefer readability and coherent grouping over splitting.
+- If a file approaches/exceeds limits, split into sections/subsections per the type’s templates (except YAML where monolithic files are preferred)
+
+## Document Splitting Standard (All Types)
+
+- Triggers:
+  - Approaches or exceeds size limits (MD/feature > 500 target or > 600 max; YAML > ~2000 only if readability suffers)
+  - Logical boundaries emerge (distinct topics, modules, or lifecycle phases)
+  - Navigation or maintenance suffers (anchors hard to find, very long TOC)
+- General Steps:
+  1) Identify natural split points (headings or feature groupings)
+  2) Create a section index if not present (`{TYPE}-{NN}.0_index.md`)
+  3) Create section files from the type’s SECTION-TEMPLATE:
+     - Pattern: `{TYPE}-{NN}.{S}_{slug}.{ext}` (S starts at 1)
+  4) Update index with section map, prev/next links, and brief descriptions
+  5) Update cross-references and traceability matrices
+  6) Validate links and run `./scripts/lint_file_sizes.sh`
+- Type-specific Notes:
+  - BDD: Use section-based `.SS_{slug}.feature`. If a section grows, split into subsections `.SS.mm_{slug}.feature` and add an aggregator `.SS.00_{slug}.feature` with `@redirect`.
+  - SPEC (YAML): Prefer monolithic. Only split by component/domain when extremely large or harming readability; ensure interfaces remain coherent.
+  - CTR: Maintain dual-file structure (`.md` + `.yaml`). If split by endpoint groups, keep paired files consistent and cross-linked.
 
 ---
 
@@ -409,16 +444,17 @@ Purpose: Suite overview, section map, traceability matrix
 ❌ BDD-02_knowledge_engine/features/   # Directory-based structure
 ```
 
-### File Organization
+### File Organization (Nested Suite)
 ```
 docs/BDD/
-├── BDD-02.0_index.md                       # Index (MANDATORY)
-├── BDD-02.1_ingest.feature                 # Section-only
-├── BDD-02.2_query.feature                  # Section-only
-├── BDD-02.12.00_graph_traversal.feature    # Aggregator (@redirect)
-├── BDD-02.12.01_depth_first.feature        # Subsection
-├── BDD-02.12.02_breadth_first.feature      # Subsection
-└── BDD-02.3_learning.feature               # Section-only
+└── BDD-02_knowledge_engine/
+    ├── BDD-02.0_index.md                       # Index (MANDATORY)
+    ├── BDD-02.1_ingest.feature                 # Section-only
+    ├── BDD-02.2_query.feature                  # Section-only
+    ├── BDD-02.12.00_graph_traversal.feature    # Aggregator (@redirect)
+    ├── BDD-02.12.01_depth_first.feature        # Subsection
+    ├── BDD-02.12.02_breadth_first.feature      # Subsection
+    └── BDD-02.3_learning.feature               # Section-only
 ```
 
 ### Section Metadata Tags (Required)
@@ -429,6 +465,21 @@ docs/BDD/
 @brd:BRD.02.03.14          # Upstream traceability
 @prd:PRD.02.05.14
 @ears:EARS.02.14.01
+```
+
+### Cross-Doc BDD Link Format
+```markdown
+# Suite folder
+../BDD/BDD-NN_{suite}/
+
+# Section link (most common)
+[BDD-NN.SS](../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
+
+# Subsection link
+[BDD-NN.SS.mm](../BDD/BDD-NN_{suite}/BDD-NN.SS.mm_{slug}.feature#scenario-1)
+
+# Aggregator link (redirect, 0 scenarios)
+[BDD-NN.SS.00](../BDD/BDD-NN_{suite}/BDD-NN.SS.00_{slug}.feature)
 ```
 
 ### Validation

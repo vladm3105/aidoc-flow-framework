@@ -8,7 +8,7 @@ Supports Gherkin syntax validation.
 Usage:
     python validate_bdd.py <file_or_directory>
     python validate_bdd.py /path/to/tests/bdd
-    python validate_bdd.py /path/to/tests/bdd/BDD-001_example.feature
+    python validate_bdd.py /path/to/docs/BDD/BDD-01_example/BDD-01.1_example.feature
 
 Exit Codes:
     0 = Pass (no errors, no warnings)
@@ -483,7 +483,7 @@ def main():
         epilog="""
 Examples:
   python validate_bdd.py /path/to/tests/bdd
-  python validate_bdd.py /path/to/BDD-001_example.feature
+  python validate_bdd.py /path/to/BDD/BDD-01_example/BDD-01.1_example.feature
   python validate_bdd.py . --verbose
         """
     )

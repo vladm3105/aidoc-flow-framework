@@ -92,14 +92,14 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 ### 2.2 Tag Format
 
 ```markdown
-@brd: BRD.09.01.15
-@prd: PRD.16.01.03
-@ears: EARS.12.24.02
-@bdd: BDD.15.13.01
-@adr: ADR-033
-@sys: SYS.12.25.01
-@req: REQ.45.26.01
-@impl: IMPL.03.28.02
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS-NN
+@bdd: BDD-NN
+@adr: ADR-NN
+@sys: SYS-NN
+@req: REQ-NN
+@impl: IMPL-NN
 ```
 
 **Format Rules**:
@@ -113,7 +113,7 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 ### 2.3 Example: CTR with Required Tags
 
 ```markdown
-# CTR-005: request submission API Contract
+# CTR-NN: request submission API Contract
 
 ## 7. Traceability
 
@@ -121,14 +121,14 @@ This matrix tracks all CTR documents (both .md and .yaml files), mapping upstrea
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
 ```markdown
-@brd: BRD.09.01.15
-@prd: PRD.16.01.03
-@ears: EARS.12.24.02
-@bdd: BDD.15.13.01
-@adr: ADR-033
-@sys: SYS.12.25.01
-@req: REQ.45.26.01
-@impl: IMPL.03.28.02
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS-NN
+@bdd: BDD-NN
+@adr: ADR-NN
+@sys: SYS-NN
+@req: REQ-NN
+@impl: IMPL-NN
 ```
 
 ### 7.2 Downstream Artifacts

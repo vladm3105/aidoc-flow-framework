@@ -173,17 +173,19 @@ Options:
 **Commands**:
 ```bash
 # Create index files
-touch docs/BRD/BRD-000_index.md
-touch docs/PRD/PRD-000_index.md
-touch docs/EARS/EARS-000_index.md
-touch docs/BDD/BDD-000_index.md
-touch docs/ADR/ADR-000_index.md
-touch docs/SYS/SYS-000_index.md
-touch docs/REQ/REQ-000_index.md
-touch docs/IMPL/IMPL-000_index.md
-touch docs/CTR/CTR-000_index.md
-touch docs/SPEC/SPEC-000_index.yaml
-touch docs/TASKS/TASKS-000_index.md
+touch docs/BRD/BRD-00_index.md
+touch docs/PRD/PRD-00_index.md
+touch docs/EARS/EARS-00_index.md
+# Create a BDD suite folder and index file (per suite)
+mkdir -p docs/BDD/BDD-NN_{slug}
+touch docs/BDD/BDD-NN_{slug}/BDD-NN.0_index.md
+touch docs/ADR/ADR-00_index.md
+touch docs/SYS/SYS-00_index.md
+touch docs/REQ/REQ-00_index.md
+touch docs/IMPL/IMPL-00_index.md
+touch docs/CTR/CTR-00_index.md
+touch docs/SPEC/SPEC-00_index.yaml
+touch docs/TASKS/TASKS-00_index.md
 ```
 
 **Output**: All index files created
@@ -386,7 +388,7 @@ python scripts/trace_check.py --type REQ
 
 **Layer 1: Business Requirements Documents (BRD)**
 - **Status**: ✅ COMPLETE (100% compliance, 70/70 checks passed)
-- **Documents Created**: 5 MVP BRDs (BRD-01 through BRD-005)
+- **Documents Created**: 5 MVP BRDs (BRD-01 through BRD-05)
 - **Creation Method**: doc-brd skill (AI-powered generation)
 - **Validation Method**: Dual-layer (automated script + manual review)
 - **Template Compliance**: 100%
@@ -396,8 +398,8 @@ python scripts/trace_check.py --type REQ
 1. ✅ BRD-01: Platform Overview (Platform BRD)
 2. ✅ BRD-02: Content Ingestion (Feature BRD)
 3. ✅ BRD-03: Analysis Engine (Feature BRD)
-4. ✅ BRD-004: Reporting System (Feature BRD)
-5. ✅ BRD-005: REST API (Feature BRD)
+4. ✅ BRD-04: Reporting System (Feature BRD)
+5. ✅ BRD-05: REST API (Feature BRD)
 
 ### ⚠️ Known Issues
 
@@ -410,7 +412,7 @@ python scripts/trace_check.py --type REQ
 ### 🎯 Next Steps
 
 **Immediate Actions** (Optional):
-1. Update BRD-000_index.md with all 5 created BRDs
+1. Update BRD-00_index.md with all 5 created BRDs
 2. Fix BRD-01 structural issues (YAML frontmatter, table format)
 3. Create BRD-000_TRACEABILITY_MATRIX.md
 

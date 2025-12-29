@@ -34,6 +34,12 @@ custom_fields:
 
 ---
 
+## Do Not (Guardrails)
+
+- Do not reference numeric downstream artifacts (no `BDD-##`, `ADR-##`, `REQ-##`, `SPEC-##`, or `SYS-##`). Use generic names: `BDD`, `ADR`, `REQ`, `SPEC`, `SYS` until those artifacts exist.
+- In the Document Control table, “Source Document” must contain exactly one canonical `@prd: PRD.NN.EE.SS` value. Do not include ranges (e.g., `@prd: ... - @prd: ...`) or multiple `@prd` values. List additional IDs in an “Upstream Sources” subsection or within per-requirement traceability.
+- Keep `architecture_approaches` as an array using allowed values: `[ai-agent-based]`, `[traditional-8layer]`, or `[ai-agent-based, traditional-8layer]`. Do not use `ai-agent-primary` in this field.
+
 ## Table of Contents
 
 1. [File Organization and Directory Structure](#1-file-organization-and-directory-structure)
@@ -269,7 +275,7 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 ### Standard Format
 
 ```markdown
-**Traceability**: @brd: BRD.NN.01.SS | @prd: PRD.NN.07.SS | @threshold: PRD.035.category.key
+**Traceability**: @brd: BRD.NN.01.SS | @prd: PRD.NN.EE.SS | @threshold: PRD.035.category.key
 ```
 
 ### Required Tags
@@ -277,7 +283,7 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 | Tag | Format | When Required |
 |-----|--------|---------------|
 | @brd | BRD.NN.01.SS | Always |
-| @prd | PRD.NN.07.SS | Always |
+| @prd | PRD.NN.EE.SS | Always |
 | @threshold | PRD.035.category.key | When referencing timing/limits |
 | @entity | PRD.004.EntityName | When referencing data entities |
 | @ctr | CTR-NN | When referencing API contracts |
@@ -348,8 +354,8 @@ ls -la docs/REQ/    # Layer 7
 
 | Tag | Required for This Layer | Existing Document | Action |
 |-----|------------------------|-------------------|--------|
-| @brd | Yes/No | BRD-01 or null | Reference/Create/Skip |
-| @prd | Yes/No | PRD-01 or null | Reference/Create/Skip |
+| @brd | Yes/No | BRD-NN or null | Reference/Create/Skip |
+| @prd | Yes/No | PRD-NN or null | Reference/Create/Skip |
 | ... | ... | ... | ... |
 
 **Step 3: Decision Rules**
@@ -404,7 +410,7 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 2. Check for:
    - Tag consistency (all use `ears`)
    - document_type consistency (all use `ears`)
-   - Source Document format (`@prd: PRD.NN.07.SS`)
+   - Source Document format (`@prd: PRD.NN.EE.SS`)
    - Section numbering (sequential)
 3. Fix any errors before continuing
 
@@ -425,7 +431,7 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 | `ears-NN` | `ears` |
 | `document_type: engineering-requirements` | `document_type: ears` |
 | `architecture_approach: value` | `architecture_approaches: [value]` |
-| `Source Document: PRD-NN` | `Source Document: @prd: PRD.NN.07.SS` |
+| `Source Document: PRD-NN` | `Source Document: @prd: PRD.NN.EE.SS` |
 | `> **Tags**: @prd: ...` | `**Traceability**: @prd: ...` |
 | `@prd: PRD.01.07.01, @threshold: ...` | `@prd: PRD.01.07.01 \| @threshold: ...` |
 | `Status: Approved` (with 50% BDD score) | `Status: Draft` |

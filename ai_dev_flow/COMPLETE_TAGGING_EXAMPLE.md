@@ -1,1031 +1,153 @@
----
-title: "Complete Cumulative Tagging Example"
-tags:
-  - framework-guide
-  - shared-architecture
-custom_fields:
-  document_type: guide
-  priority: shared
-  development_status: active
----
+# Minimal End-to-End Tagging Example (TYPE-NN)
 
-# Complete Cumulative Tagging Example
+## Purpose
+- Demonstrate a compact, vendor-neutral, end-to-end traceability chain using TYPE-NN placeholders.
+- Show only what’s necessary to understand cumulative tagging across layers.
 
-**Version**: 1.1
-**Purpose**: End-to-end example of cumulative tagging from BRD through Code
-**Created**: 2025-11-13
-**Updated**: 2025-11-26
-**Status**: Reference Example
+## Layers and Artifacts (One Chain)
 
----
+### Layer 1: BRD (Business Requirements)
+- BRD-NN: Business objective to process user requests reliably and quickly.
+- Tags: none (top level).
 
-## Overview
+### Layer 2: PRD (Product Requirements)
+- PRD-NN: Product requirement to expose request submission via UI/API.
+- Tags:
+  - @brd: BRD-NN
 
-This document demonstrates complete cumulative tagging through all 16 layers of the SDD workflow, from Strategy (Layer 0) through Validation (Layer 15). Each artifact shows:
+### Layer 3: EARS (Formal Requirements)
+- EARS-NN:
+  - WHEN a user submits a valid request, THE system SHALL validate fields WITHIN 100ms.
+  - WHEN validation succeeds, THE system SHALL accept and enqueue the request WITHIN 200ms.
+- Tags:
+  - @brd: BRD-NN
+  - @prd: PRD-NN
 
-- Required upstream tags for its layer
-- Cumulative tag accumulation pattern
-- Tag format (markdown, YAML, or Gherkin)
-- Traceability to all upstream sources
-
-**Example Feature**: Notification Service
-
----
-
-## Layer 0: Strategy (External)
-
-**Artifact**: `{domain_strategy}/product_strategy_v5.md`
-**Required Tags**: None (0 tags)
-**Format**: External document (not part of formal SDD workflow)
-
-**Content Example**:
-```markdown
-## 4.2 Notification Logic
-
-When notification criteria satisfied:
-1. Determine notification channel (email, SMS, push)
-2. Format message based on template
-3. Send notification via provider integration
-4. Track delivery status
-5. Update notification history
-```
-
-**Note**: Strategy documents are external business logic. BRD references them but does not tag them.
-
----
-
-## Layer 1: BRD (Business Requirements Document)
-
-**Artifact**: `docs/BRD/BRD-009_notification_system.md`
-**Required Tags**: None (0 tags)
-**Format**: Markdown
-
-**Content Example**:
-```markdown
-# BRD-009: Notification System Business Requirements
-
-## 1. Executive Summary
-
-Enable automated notification delivery through external provider APIs to support user communication.
-
-## 7. Traceability
-
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 1):
-```markdown
-# No upstream tags required for BRD (Layer 1 - top level)
-```
-
-**Upstream Sources**:
-- Strategy: `{domain_strategy}/product_strategy_v5.md` section 4.2
-
-**Downstream Artifacts**:
-- PRD-016 (Product requirements for notification service)
-- EARS-012 (Formal requirements)
-```
-
-**Tag Analysis**:
-- Tag count: 0 (BRD is top-level artifact)
-- No upstream dependencies
-- Serves as traceability anchor for downstream artifacts
-
----
-
-## Layer 2: PRD (Product Requirements Document)
-
-**Artifact**: `docs/PRD/PRD-016_notification_service.md`
-**Required Tags**: `@brd` (1 tag)
-**Format**: Markdown
-
-**Content Example**:
-```markdown
-# PRD-016: Notification Service Product Requirements
-
-## 2. Problem Statement
-
-Need UI and API for sending notifications through multiple channels.
-
-## 7. Traceability
-
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 2):
-```markdown
-@brd: BRD.09.01.15, BRD.09.01.06
-```
-
-**Tag Explanation**:
-- BRD.09.01.15 - Functional requirement for provider integration
-- BRD.09.01.06 - Quality attribute for delivery performance
-
-**Quality Attribute References** (using unified sequential format):
-```markdown
-@brd: BRD.09.01.06
-```
-
-**Upstream Sources**:
-- BRD-009 (Notification System Business Requirements)
-
-**Downstream Artifacts**:
-- EARS-012 (Formal WHEN-THE-SHALL-WITHIN requirements)
-```
-
-**Tag Analysis**:
-- Tag count: 1 (cumulative: @brd)
-- Includes ALL upstream tags from Layer 1
-- References specific BRD functional requirements and quality attributes
-
----
-
-## Layer 3: EARS (Easy Approach to Requirements Syntax)
-
-**Artifact**: `docs/EARS/EARS-012_notification_validation.md`
-**Required Tags**: `@brd`, `@prd` (2 tags)
-**Format**: Markdown
-
-**Content Example**:
-```markdown
-# EARS-012: Notification Validation Requirements
-
-## 3.1 Event-Driven Requirements
-
-### EARS.12.24.01
-**WHEN** user selects "Send Notification" button
-**THE** system **SHALL** validate notification parameters
-**WITHIN** 100 milliseconds
-
-### EARS.12.24.02
-**WHEN** notification validation succeeds
-**THE** system **SHALL** submit notification to provider API
-**WITHIN** 200 milliseconds
-
-## 7. Traceability
-
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 3):
-```markdown
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
-```
-
-**Tag Explanation**:
-- BRD.09.01.15 - Provider integration capability
-- BRD.09.01.06 - Performance requirements
-- PRD.16.01.03 - Notification UI feature
-
-**Upstream Sources**:
-- BRD-009 (Business requirements)
-- PRD-016 (Product requirements)
-
-**Downstream Artifacts**:
-- BDD-015 (Test scenarios for notification service)
-```
-
-**Tag Analysis**:
-- Tag count: 2 (cumulative: @brd, @prd)
-- Includes ALL upstream tags from Layers 1-2
-- No gaps in tag chain
-
----
-
-## Layer 4: BDD (Behavior-Driven Development)
-
-**Artifact**: `docs/BDD/BDD-015_notification_service.feature`
-**Required Tags**: `@brd`, `@prd`, `@ears` (3+ tags)
-**Format**: Gherkin with tags
-
-**Content Example**:
+### Layer 4: BDD (Acceptance Tests)
 ```gherkin
-# BDD-015: Notification Service Test Scenarios
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS.NN.24.NN
 
-@brd:BRD.09.01.15
-@brd:BRD.09.01.06
-@prd:PRD.16.01.03
-@ears:EARS.12.24.01
-@ears:EARS.12.24.02
-Feature: Notification Service
-
-  Scenario: Send valid email notification
-    Given user is authenticated
-    And notification service is available
-    When user sends email notification with:
-      | Recipient  | user@example.com |
-      | Subject    | Test Message     |
-      | Channel    | EMAIL            |
-      | Priority   | HIGH             |
-    Then notification validation completes within 100ms
-    And notification is submitted to provider within 200ms
-    And delivery confirmation is displayed
-
-  Scenario: Reject invalid notification (missing recipient)
-    Given user is authenticated
-    And notification service is available
-    When user attempts to send notification without recipient
-    Then system rejects notification with error "MISSING_RECIPIENT"
-    And error message is displayed within 100ms
+Feature: Request processing
+  Scenario: Accept valid request
+    Given a logged-in user
+    When the user submits a valid request
+    Then the request is accepted
 ```
 
-**Tag Analysis**:
-- Tag count: 3+ (cumulative: @brd, @prd, @ears)
-- Gherkin format uses `@tag:value` syntax
-- Tags appear before Feature declaration
-- Includes ALL upstream tags from Layers 1-3
+### Layer 5: ADR (Architecture Decisions)
+- ADR-NN: Choose event-driven queue for request intake.
+- Tags:
+  - @brd: BRD-NN, @prd: PRD-NN, @ears: EARS.NN.24.NN, @bdd: BDD.NN.13.NN
 
----
+### Layer 6: SYS (System Requirements)
+- SYS-NN:
+  - Provide POST /api/v1/requests.
+  - Validate request in ≤100ms p95.
+- Tags:
+  - @brd: BRD-NN, @prd: PRD-NN, @ears: EARS.NN.24.NN, @bdd: BDD.NN.13.NN, @adr: ADR-NN
 
-## Layer 5: ADR (Architecture Decision Record)
+### Layer 7: REQ (Atomic Requirement)
+- REQ-NN: Provide API endpoint to submit requests with required fields.
+- Tags:
+  - @brd: BRD-NN, @prd: PRD-NN, @ears: EARS.NN.24.NN, @bdd: BDD.NN.13.NN, @adr: ADR-NN, @sys: SYS.NN.25.NN
 
-**Artifact**: `docs/ADR/ADR-033_notification_routing.md`
-**Required Tags**: `@brd`, `@prd`, `@ears`, `@bdd` (4 tags)
-**Format**: Markdown
-
-**Content Example**:
-```markdown
-# ADR-033: Notification Routing Architecture
-
-## Status
-Accepted
-
-## Context
-Need architectural approach for routing notifications to appropriate providers.
-
-## Decision
-Implement asynchronous routing layer between API and provider integrations.
-
-## 7. Traceability
-
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
-```markdown
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
-@ears: EARS.12.24.01, EARS.12.24.02
-@bdd: BDD.15.13.01, BDD.15.13.02
-```
-
-**Tag Explanation**:
-- BRD.09.01.15, 06 - Business and performance requirements
-- PRD.16.01.03 - Product feature specification
-- EARS.12.24.01, 02 - Formal behavioral requirements
-- BDD.15.13.01, 02 - Test coverage
-
-**Upstream Sources**:
-- BRD-009, PRD-016, EARS-012, BDD-015
-
-**Downstream Artifacts**:
-- SYS-012 (System requirements)
-```
-
-**Tag Analysis**:
-- Tag count: 4 (cumulative: @brd through @bdd)
-- Includes ALL upstream tags from Layers 1-4
-- Multiple requirement IDs per tag type
-- No gaps in tag chain
-
----
-
-## Layer 6: SYS (System Requirements)
-
-**Artifact**: `docs/SYS/SYS-012_notification_service_system.md`
-**Required Tags**: `@brd` through `@adr` (5 tags)
-**Format**: Markdown
-
-**Content Example**:
-```markdown
-# SYS-012: Notification Service System Requirements
-
-## 2. Functional Requirements
-
-### SYS.12.25.01
-System shall provide REST API endpoint for notification submission.
-
-### SYS.12.25.02
-Notification validation latency shall not exceed 100ms at 95th percentile.
-
-## 7. Traceability
-
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
-```markdown
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
-@ears: EARS.12.24.01, EARS.12.24.02
-@bdd: BDD.15.13.01, BDD.15.13.02
-@adr: ADR-033
-```
-
-**Tag Explanation**:
-- All upstream tags from Layers 1-5
-- ADR-033 defines architectural constraints for this system
-
-**Upstream Sources**:
-- BRD-009, PRD-016, EARS-012, BDD-015, ADR-033
-
-**Downstream Artifacts**:
-- REQ-045 (Atomic requirements)
-```
-
-**Tag Analysis**:
-- Tag count: 5 (cumulative: @brd through @adr)
-- Includes ALL upstream tags from Layers 1-5
-- Complete chain validation: all layers present
-
----
-
-## Layer 7: REQ (Atomic Requirements)
-
-**Artifact**: `docs/REQ/api/notification/REQ-045_send_notification.md`
-**Required Tags**: `@brd` through `@sys` (6 tags)
-**Format**: Markdown
-
-**Content Example**:
-```markdown
-# REQ-045: Send Notification Atomic Requirement
-
-## 1. Requirement Statement
-
-The system SHALL provide an API endpoint to send notifications with the following parameters:
-- Recipient (required, string, format: EMAIL or PHONE)
-- Subject (required, string, max 200 characters)
-- Body (required, string, max 5000 characters)
-- Channel (required, enum: EMAIL, SMS, PUSH)
-- Priority (required, enum: LOW, NORMAL, HIGH)
-
-## 7. Traceability
-
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 7):
-```markdown
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
-@ears: EARS.12.24.01, EARS.12.24.02
-@bdd: BDD.15.13.01
-@adr: ADR-033
-@sys: SYS.12.25.01, SYS.12.25.02
-```
-
-**Tag Explanation**:
-- All upstream tags from Layers 1-6
-- SYS.12.25.01 - API endpoint requirement
-- SYS.12.25.02 - Performance constraint
-
-**Upstream Sources**:
-- BRD-009, PRD-016, EARS-012, BDD-015, ADR-033, SYS-012
-
-**Downstream Artifacts**:
-- SPEC-018 (Technical specification)
-- TASKS-015 (Implementation tasks)
-```
-
-**Tag Analysis**:
-- Tag count: 6 (cumulative: @brd through @sys)
-- Includes ALL upstream tags from Layers 1-6
-- Ready for SPEC creation (may skip IMPL for single-component task)
-- Complete audit trail from business to technical requirement
-
----
-
-## Layer 8: IMPL (Implementation Plan) [OPTIONAL]
-
-**Artifact**: `docs/IMPL/IMPL-03_notification_integration_phase2.md`
-**Required Tags**: `@brd` through `@req` (7 tags)
-**Format**: Markdown
-
-**Content Example**:
-```markdown
-# IMPL-03: Notification Integration Phase 2 Implementation Plan
-
-## 2. Implementation Phases
-
-### Phase 2.1: Notification Service Development
-- Team: Backend Team
-- Deliverables: SPEC-018, TASKS-015, notification_service.py
-
-## 7. Traceability
-
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 8):
-```markdown
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
-@ears: EARS.12.24.01, EARS.12.24.02
-@bdd: BDD.15.13.01
-@adr: ADR-033
-@sys: SYS.12.25.01, SYS.12.25.02
-@req: REQ.45.26.01, REQ.45.26.02
-```
-
-**Tag Explanation**:
-- All upstream tags from Layers 1-7
-- REQ.45.26.01, 02 - Atomic requirements being implemented
-
-**Note**: IMPL is optional layer. Include @impl tags in downstream only if IMPL exists.
-```
-
-**Tag Analysis**:
-- Tag count: 7 (cumulative: @brd through @req)
-- Optional layer - only created for complex multi-team projects
-- If present, downstream artifacts must include @impl tags
-
----
-
-## Layer 9: CTR (API Contracts) [OPTIONAL]
-
-**Artifact**: `docs/CTR/CTR-005_notification_service_api.md` + `.yaml`
-**Required Tags**: `@brd` through `@impl` (8 tags)
-**Format**: Markdown + YAML (dual-file)
-
-**Content Example** (CTR-005_notification_service_api.md):
-```markdown
-# CTR-005: Notification Service API Contract
-
-## 1. Contract Overview
-
-REST API contract for notification service.
-
-## 7. Traceability
-
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
-```markdown
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
-@ears: EARS.12.24.01, EARS.12.24.02
-@bdd: BDD.15.13.01
-@adr: ADR-033
-@sys: SYS.12.25.01, SYS.12.25.02
-@req: REQ.45.26.01
-@impl: IMPL.03.28.02
-```
-
-**Tag Explanation**:
-- All upstream tags from Layers 1-8
-- IMPL.03.28.02 - Implementation phase containing this contract
-
-**Note**: CTR is optional layer. Include @ctr tags in downstream only if CTR exists.
-```
-
-**YAML Schema** (CTR-005_notification_service_api.yaml):
+### Layer 10: SPEC (Technical Specification)
 ```yaml
-openapi: 3.0.0
-info:
-  title: Notification Service API
-  version: 1.0.0
-
-# Traceability embedded in description
-description: |
-  Notification API for external provider integration.
-
-  Traceability:
-  - @brd: BRD.09.01.15, BRD.09.01.06
-  - @prd: PRD.16.01.03
-  - @ears: EARS.12.24.01, EARS.12.24.02
-  - @bdd: BDD.15.13.01
-  - @adr: ADR-033
-  - @sys: SYS.12.25.01, SYS.12.25.02
-  - @req: REQ.45.26.01
-  - @impl: IMPL.03.28.02
-
-paths:
-  /api/v1/notifications:
-    post:
-      summary: Send notification
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [recipient, subject, body, channel, priority]
-```
-
-**Tag Analysis**:
-- Tag count: 8 (cumulative: @brd through @impl)
-- Optional layer - only for interface requirements
-- Dual-file format required (.md + .yaml)
-- If present, downstream artifacts must include @ctr tags
-
----
-
-## Layer 10: SPEC (Technical Specification)
-
-**Artifact**: `docs/SPEC/services/SPEC-018_notification_service.yaml`
-**Required Tags**: `@brd` through `@req` + optional `@impl`, `@ctr` (7-9 tags)
-**Format**: YAML with `cumulative_tags` section
-
-**Content Example**:
-```yaml
-# SPEC-018: Notification Service Technical Specification
-
-spec_id: SPEC-018
-title: "Notification Service Technical Specification"
-version: "1.0.0"
+spec_id: SPEC-NN
+title: "Request Service"
 status: active
-
-# Cumulative Tagging Hierarchy (Layer 10)
-# Required: 7 upstream tags (BRD through REQ)
-# Optional: IMPL, CTR (include if they exist in chain)
 cumulative_tags:
-  brd: "BRD.09.01.15, BRD.09.01.06"
-  prd: "PRD.16.01.03"
-  ears: "EARS.12.24.01, EARS.12.24.02"
-  bdd: "BDD.15.13.01, BDD.15.13.02"
-  adr: "ADR-033"
-  sys: "SYS.12.25.01, SYS.12.25.02"
-  req: "REQ.45.26.01, REQ.45.26.02"
-  impl: "IMPL.03.28.02"  # Optional - included because IMPL-03 exists
-  ctr: "CTR-005"  # Optional - included because CTR-005 exists
-
+  brd: BRD-NN
+  prd: PRD-NN
+  ears: EARS.NN.24.NN
+  bdd: BDD.NN.13.NN
+  adr: ADR-NN
+  sys: SYS.NN.25.NN
+  req: REQ.NN.NN.NN
 implementation:
-  service_name: notification_service
   language: python
   framework: fastapi
-
-  interfaces:
-    rest_api:
-      contract_ref: CTR-005  # References optional CTR layer
-      endpoint: /api/v1/notifications
-      method: POST
-
-  validation:
-    - Validate recipient format (EMAIL or PHONE pattern)
-    - Check subject length <= 200 characters
-    - Verify body length <= 5000 characters
-    - Validate channel enum
-    - Check priority enum
-
-  error_handling:
-    - MISSING_RECIPIENT: 400
-    - INVALID_CHANNEL: 400
-    - PROVIDER_ERROR: 502
-    - TIMEOUT: 504
+  rest_api:
+    endpoint: /api/v1/requests
+    method: POST
 ```
 
-**Tag Analysis**:
-- Tag count: 9 (cumulative: @brd through @req + optional @impl, @ctr)
-- SPEC uses YAML `cumulative_tags:` mapping (not markdown tags)
-- Includes optional layers because they exist in this example
-- Contract reference: `contract_ref: CTR-005` links to optional CTR layer
-
----
-
-## Layer 11: TASKS (Code Generation Plans)
-
-**Artifact**: `docs/TASKS/TASKS-015_notification_service_implementation.md`
-**Required Tags**: `@brd` through `@spec` (8-10 tags)
-**Format**: Markdown
-
-**Content Example**:
+### Layer 11: TASKS (Implementation Tasks)
 ```markdown
-# TASKS-015: Notification Service Implementation Tasks
-
-## 2. Implementation Plan
-
-### Task 1: REST API Endpoint
-**File**: `src/services/notification_service.py`
-**Function**: `send_notification()`
-**Dependencies**: SPEC-018, CTR-005
-**Acceptance**: BDD.15.13.01 passes
-
-### Task 2: Validation Logic
-**File**: `src/services/notification_validator.py`
-**Function**: `validate_notification_params()`
-**Dependencies**: REQ-045, SPEC-018
-**Acceptance**: All validation rules enforced
-
-## 7. Traceability
-
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
-```markdown
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
-@ears: EARS.12.24.01, EARS.12.24.02
-@bdd: BDD.15.13.01, BDD.15.13.02
-@adr: ADR-033
-@sys: SYS.12.25.01, SYS.12.25.02
-@req: REQ.45.26.01, REQ.45.26.02
-@impl: IMPL.03.28.02
-@ctr: CTR-005
-@spec: SPEC-018
+# TASKS-NN: Implement submission endpoint
+## Plan
+- Add handler `POST /api/v1/requests` per SPEC-NN
+- Validate fields, return 202 on success
+## Tags
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS.NN.24.NN
+@bdd: BDD.NN.13.NN
+@adr: ADR-NN
+@sys: SYS.NN.25.NN
+@req: REQ.NN.NN.NN
+@spec: SPEC-NN
 ```
 
-**Tag Explanation**:
-- All upstream tags from Layers 1-10
-- SPEC-018 - Technical specification being implemented
-- CTR-005, IMPL-03 - Optional layers included because they exist
-```
-
-**Tag Analysis**:
-- Tag count: 10 (cumulative: @brd through @spec including optionals)
-- Includes optional layers (@impl, @ctr) because they exist in chain
-- Ready for code implementation
-
----
-
-## Layer 12: IPLAN (Implementation Work Plans)
-
-**Artifact**: `work_plans/implement_notification_service_20251113_120000.md`
-**Required Tags**: `@brd` through `@tasks` (9-11 tags)
-**Format**: Markdown
-
-**Content Example**:
-```markdown
-# Implementation Work Plan: Notification Service
-**Session**: 2025-11-13 12:00:00
-**Duration**: 2 hours
-**Engineer**: Backend Team
-
-## Phase 1: Setup (15 min)
-```bash
-cd src/services
-touch notification_service.py notification_validator.py
-```
-
-## Phase 2: Implementation (90 min)
-- Implement send_notification() per SPEC-018
-- Implement validate_notification_params() per REQ-045
-- Add error handling per SPEC-018 error codes
-
-## Traceability
-
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 12):
-```markdown
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
-@ears: EARS.12.24.01, EARS.12.24.02
-@bdd: BDD.15.13.01, BDD.15.13.02
-@adr: ADR-033
-@sys: SYS.12.25.01, SYS.12.25.02
-@req: REQ.45.26.01, REQ.45.26.02
-@impl: IMPL.03.28.02
-@ctr: CTR-005
-@spec: SPEC-018
-@tasks: TASKS.15.29.01
-```
-
-**Tag Explanation**:
-- All upstream tags from Layers 1-11
-- TASKS.15.29.01 - Implementation tasks for this session
-```
-
-**Tag Analysis**:
-- Tag count: 11 (cumulative: @brd through @tasks including optionals)
-- Session-specific implementation plan
-- Includes ALL upstream tags from previous layers
-
----
-
-## Layer 13: Code (Implementation)
-
-**Artifact**: `src/services/notification_service.py`
-**Required Tags**: `@brd` through `@tasks` (9-11 tags)
-**Format**: Python docstrings
-
-**Content Example**:
+### Layer 13: Code (Implementation)
 ```python
-"""Notification service implementation.
-
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
-@ears: EARS.12.24.01, EARS.12.24.02
-@bdd: BDD.15.13.01, BDD.15.13.02
-@adr: ADR-033
-@sys: SYS.12.25.01, SYS.12.25.02
-@req: REQ.45.26.01, REQ.45.26.02
-@impl: IMPL.03.28.02
-@ctr: CTR-005
-@spec: SPEC-018
-@tasks: TASKS.15.29.01
+"""Request service implementation
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS.NN.24.NN
+@bdd: BDD.NN.13.NN
+@adr: ADR-NN
+@sys: SYS.NN.25.NN
+@req: REQ.NN.NN.NN
+@spec: SPEC-NN
+@tasks: TASKS.NN.NN.NN
 @impl-status: complete
 """
-
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from typing import Literal
-
+from fastapi import APIRouter
 router = APIRouter()
 
-
-class NotificationRequest(BaseModel):
-    """Notification request model.
-
-    Implements: CTR-005 (API Contract)
-    Validates: REQ-045 (Atomic Requirement)
-    """
-    recipient: str
-    subject: str
-    body: str
-    channel: Literal["EMAIL", "SMS", "PUSH"]
-    priority: Literal["LOW", "NORMAL", "HIGH"]
-
-
-@router.post("/api/v1/notifications")
-async def send_notification(notification: NotificationRequest):
-    """Send notification endpoint.
-
-    Implements SPEC-018 notification service specification.
-    Satisfies BDD.15.13.01 acceptance criteria.
-    Enforces SYS.12.25.01 latency requirement (100ms).
-
-    Args:
-        notification: Notification parameters per CTR-005
-
-    Returns:
-        Notification confirmation with notification ID
-
-    Raises:
-        HTTPException: 400 for validation errors per SPEC-018
-        HTTPException: 502 for provider errors per SPEC-018
-    """
-    # Implementation omitted for brevity
-    pass
+@router.post("/api/v1/requests")
+async def submit_request(payload: dict):
+    return {"status": "accepted", "id": "REQ-123"}
 ```
 
-**Tag Analysis**:
-- Tag count: 11 (cumulative: @brd through @tasks including optionals)
-- Tags in module docstring (top of file)
-- `@impl-status: complete` indicates implementation finished
-- Includes ALL upstream tags from Layers 1-11
-
----
-
-## Layer 14: Tests (Test Suites)
-
-**Artifact**: `tests/services/test_notification_service.py`
-**Required Tags**: `@brd` through `@code` (10-12 tags)
-**Format**: Python docstrings
-
-**Content Example**:
+### Layer 14: Tests (Test Suites)
 ```python
-"""Test suite for notification service.
-
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
-@ears: EARS.12.24.01, EARS.12.24.02
-@bdd: BDD.15.13.01, BDD.15.13.02
-@adr: ADR-033
-@sys: SYS.12.25.01, SYS.12.25.02
-@req: REQ.45.26.01, REQ.45.26.02
-@impl: IMPL.03.28.02
-@ctr: CTR-005
-@spec: SPEC-018
-@tasks: TASKS.15.29.01
-@code: src/services/notification_service.py
-@impl-status: complete
+"""Test: Request processing
+@brd: BRD-NN
+@prd: PRD-NN
+@ears: EARS.NN.24.NN
+@bdd: BDD.NN.13.NN
+@adr: ADR-NN
+@sys: SYS.NN.25.NN
+@req: REQ.NN.NN.NN
+@spec: SPEC-NN
+@tasks: TASKS.NN.NN.NN
+@code: src/services/request_service.py
 """
-
-import pytest
-from fastapi.testclient import TestClient
-from src.services.notification_service import router, NotificationRequest
-
-client = TestClient(router)
-
-
-def test_send_valid_notification():
-    """Test sending valid notification.
-
-    Validates: BDD.15.13.01
-    Contract: CTR-005 request/response format
-    Performance: SYS.12.25.01 (< 100ms)
-    """
-    notification = {
-        "recipient": "user@example.com",
-        "subject": "Test Message",
-        "body": "This is a test notification.",
-        "channel": "EMAIL",
-        "priority": "HIGH"
-    }
-
-    response = client.post("/api/v1/notifications", json=notification)
-
-    assert response.status_code == 200
-    assert response.json()["notification_id"]
-    # Performance assertion omitted for brevity
-
-
-def test_reject_missing_recipient():
-    """Test rejection of missing recipient.
-
-    Validates: BDD.15.13.02
-    Contract: CTR-005 error response format
-    Requirement: REQ.45.26.02
-    """
-    notification = {
-        "recipient": "",
-        "subject": "Test Message",
-        "body": "This is a test notification.",
-        "channel": "EMAIL",
-        "priority": "HIGH"
-    }
-
-    response = client.post("/api/v1/notifications", json=notification)
-
-    assert response.status_code == 400
-    assert response.json()["error"] == "MISSING_RECIPIENT"
+def test_submit_request_accepts_valid_payload():
+    assert True
 ```
 
-**Tag Analysis**:
-- Tag count: 12 (cumulative: @brd through @code including optionals)
-- Includes `@code:` tag referencing implementation file
-- Tags in module docstring
-- Validates BDD scenarios (BDD-015)
-- Tests contract compliance (CTR-005)
+### Layer 15: Validation (Results)
+- All cumulative tags present from BRD through Tests.
+- No gaps detected; coverage acceptable.
 
----
-
-## Layer 15: Validation (Validation Results)
-
-**Artifact**: `docs/validation/VALIDATION-015_notification_service.md`
-**Required Tags**: All upstream (10-15 tags)
-**Format**: Markdown
-
-**Content Example**:
-```markdown
-# VALIDATION-015: Notification Service Validation Results
-
-**Validation Date**: 2025-11-13
-**Engineer**: QA Team
-**Status**: PASSED
-
-## 1. BDD Scenario Execution
-
-### BDD.15.13.01
-- **Status**: PASSED
-- **Execution Time**: 87ms (< 100ms requirement per SYS.12.25.01)
-- **Contract Compliance**: CTR-005 validated
-- **Requirement Coverage**: REQ.45.26.01 satisfied
-
-### BDD.15.13.02
-- **Status**: PASSED
-- **Error Handling**: SPEC-018 error codes validated
-- **Contract Compliance**: CTR-005 error schema validated
-
-## 2. Contract Testing
-
-### CTR-005 Compliance
-- **Request Schema**: PASSED
-- **Response Schema**: PASSED
-- **Error Schema**: PASSED
-
-## 3. Traceability Validation
-
-**Traceability Check**: PASSED
-- All tags validated from BRD-009 through test_notification_service.py
-- No gaps in cumulative tag chain
-- Tag count compliance: 12 tags in test layer
-
-## 7. Traceability
-
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 15):
-```markdown
-@brd: BRD.09.01.15, BRD.09.01.06
-@prd: PRD.16.01.03
-@ears: EARS.12.24.01, EARS.12.24.02
-@bdd: BDD.15.13.01, BDD.15.13.02
-@adr: ADR-033
-@sys: SYS.12.25.01, SYS.12.25.02
-@req: REQ.45.26.01, REQ.45.26.02
-@impl: IMPL.03.28.02
-@ctr: CTR-005
-@spec: SPEC-018
-@tasks: TASKS.15.29.01
-@iplan: IPLAN-015
-@code: src/services/notification_service.py
-@test: tests/services/test_notification_service.py
+## Tag Progression Summary
+```
+Layer 1  BRD  -> 0 tags
+Layer 2  PRD  -> @brd
+Layer 3  EARS -> @brd, @prd
+Layer 4  BDD  -> @brd, @prd, @ears
+Layer 5  ADR  -> +@bdd
+Layer 6  SYS  -> +@adr
+Layer 7  REQ  -> +@sys
+Layer 10 SPEC -> +@req (+@impl/@ctr if exist)
+Layer 11 TASKS-> +@spec
+Layer 13 Code -> +@tasks
+Layer 14 Tests-> +@code
+Layer 15 Valid-> all upstream tags
 ```
 
-**Validation Summary**:
-- Complete audit trail from BRD-009 through validation
-- All 14 layers validated (Layers 0-15, excluding Strategy)
-- 14 cumulative tags verified
-- No gaps in traceability chain
-- Regulatory compliance: audit trail complete
-```
-
-**Tag Analysis**:
-- Tag count: 14 (cumulative: all layers excluding Strategy)
-- Includes ALL upstream tags from Layers 1-14
-- Complete end-to-end traceability validation
-- Ready for production deployment
-
----
-
-## Quality Attribute Tagging Reference
-
-Quality Attributes use unified sequential numbering (same as functional requirements):
-
-| Category | Example in This Chain |
-|----------|----------------------|
-| Performance | `BRD.09.01.06` (100ms latency, 95th percentile) |
-| Reliability | N/A in this example |
-| Scalability | N/A in this example |
-| Security | N/A in this example |
-| Observability | N/A in this example |
-| Maintainability | N/A in this example |
-
-**Quality Attribute Cross-Reference Format**: Use unified format with sequential IDs (e.g., `@brd: BRD.09.01.06`, `@sys: SYS.12.25.16`)
-
-**Example from this chain**:
-```markdown
-@brd: BRD.09.01.06   # Performance: 100ms validation latency
-@sys: SYS.12.25.16   # Quality attribute inherited to SYS layer
-```
-
-**Cross-Layer Consistency**: Quality attribute IDs use unified sequential numbering across all layers for complete traceability (BRD → PRD → EARS → SYS).
-
----
-
-## Summary: Complete Cumulative Tagging Chain
-
-### Tag Progression by Layer
-
-```
-Layer 0  (Strategy)      ->  0 tags  [External]
-Layer 1  (BRD)           ->  0 tags  [Top level]
-Layer 2  (PRD)           ->  1 tag   [@brd]
-Layer 3  (EARS)          ->  2 tags  [@brd, @prd]
-Layer 4  (BDD)           ->  3 tags  [@brd, @prd, @ears]
-Layer 5  (ADR)           ->  4 tags  [+ @bdd]
-Layer 6  (SYS)           ->  5 tags  [+ @adr]
-Layer 7  (REQ)           ->  6 tags  [+ @sys]
-Layer 8  (IMPL)          ->  7 tags  [+ @req] *optional*
-Layer 9  (CTR)           ->  8 tags  [+ @impl] *optional*
-Layer 10 (SPEC)          ->  7-9 tags [+ optional @impl, @ctr]
-Layer 11 (TASKS)         ->  8-10 tags [+ @spec]
-Layer 12 (IPLAN)   ->  9-11 tags [+ @tasks]
-Layer 13 (Code)          ->  9-11 tags [+ @IPLAN]
-Layer 14 (Tests)         ->  10-12 tags [+ @code]
-Layer 15 (Validation)    ->  10-15 tags [all upstream]
-```
-
-### Cumulative Tagging Benefits Demonstrated
-
-1. **Complete Audit Trail**
-   - Every artifact traces back to BRD-009 business requirement
-   - Full justification chain from business need to production code
-
-2. **Impact Analysis**
-   - If BRD.09.01.15 changes, immediately identify affected:
-     * PRD-016 (product requirements)
-     * EARS-012 (formal requirements)
-     * BDD-015 (test scenarios)
-     * ADR-033 (architecture)
-     * SYS-012, REQ-045, SPEC-018, TASKS-015
-     * notification_service.py (code)
-     * test_notification_service.py (tests)
-
-3. **Regulatory Compliance**
-   - Audit requirements satisfied for regulated industries
-   - Complete traceability from business requirements to validation
-   - No orphaned code or requirements
-
-4. **Automated Validation**
-   - `validate_tags_against_docs.py --validate-cumulative --strict`
-   - Enforces no gaps in tag chain
-   - Verifies tag count per layer
-   - Pre-commit hooks prevent non-compliant code
-
-5. **Change Management**
-   - Know exactly what breaks when upstream changes occur
-   - Update propagation is traceable
-   - Version control of traceability tags
-
----
-
-## Validation Commands
-
-### Extract Tags
-```bash
-python scripts/extract_tags.py \
-  --source src/ docs/ tests/ \
-  --output docs/generated/tags.json
-```
-
-### Validate Cumulative Tagging
-```bash
-python scripts/validate_tags_against_docs.py \
-  --source src/ docs/ tests/ \
-  --docs docs/ \
-  --validate-cumulative \
-  --strict
-```
-
-### Expected Output
-```
-Indexed 15 documents
-Validated 15 artifacts
-No validation errors found
-Cumulative tagging validation passed
-
-COVERAGE METRICS
-================
-Documents Referenced: 15/15 (100%)
-Requirements Referenced: 24/24 (100%)
-Files with Tags: 15/15 (100%)
-```
-
----
-
-## References
-
-- **Core Documentation**: [TRACEABILITY.md](./TRACEABILITY.md#cumulative-tagging-hierarchy)
-- **Workflow Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
-- **Validation Setup**: [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md#cumulative-tagging-validation)
-- **Doc-Flow Skill**: [.claude/skills/doc-flow/SKILL.md](../.claude/skills/doc-flow/SKILL.md#25-cumulative-tagging-hierarchy)
-- **Validation Script**: [scripts/validate_tags_against_docs.py](./scripts/validate_tags_against_docs.py)
-
----
-
-**Document Status**: Reference Example
-**Purpose**: End-to-end cumulative tagging demonstration
-**Usage**: Reference, validation pattern, CI/CD setup guidance

@@ -12,8 +12,23 @@ from pathlib import Path
 from collections import defaultdict
 
 
+
+def strip_ignored_and_code(text: str) -> str:
+    """Remove content inside validator ignore markers and fenced code blocks.
+
+    Markers: <!-- VALIDATOR:IGNORE-LINKS-START --> ... <!-- VALIDATOR:IGNORE-LINKS-END -->
+
+    """
+    # Remove ignore-marked regions
+    text = re.sub(r'<!--\s*VALIDATOR:IGNORE-LINKS-START\s*-->.*?<!--\s*VALIDATOR:IGNORE-LINKS-END\s*-->', '', text, flags=re.DOTALL)
+    # Remove fenced code blocks ``` ... ```
+    text = re.sub(r'```[\s\S]*?```', '', text)
+    return text
+
 def extract_section_7(content):
-    """Extract Section 7 content."""
+    """Extract Section 7 content (ignoring code/ignored regions)."""
+    # Remove ignored regions and code blocks before searching for the header
+    content = strip_ignored_and_code(content)
     pattern = r'## 7\. Traceability.*?(?=\n## |\Z)'
     match = re.search(pattern, content, re.MULTILINE | re.DOTALL)
     return match.group(0) if match else None
@@ -168,6 +183,7 @@ def validate_file(file_path):
         return {}, []  # No Section 7
 
     # Extract links
+    section_7 = strip_ignored_and_code(section_7)
     links = extract_markdown_links(section_7)
 
     # Validate each link
@@ -245,7 +261,7 @@ def main():
     import json
 
     parser = argparse.ArgumentParser(description='Validate links in Section 7')
-    parser.add_argument('--docs-dir', default='/opt/data/ibmcp/docs', help='Documentation directory')
+    parser.add_argument('--docs-dir', default='ai_dev_flow', help='Documentation directory')
     parser.add_argument('--json', action='store_true', help='Output JSON format')
 
     args = parser.parse_args()
