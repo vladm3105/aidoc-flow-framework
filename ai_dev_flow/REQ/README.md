@@ -124,7 +124,7 @@ REQ/
 ## File Naming Convention
 
 ```
-REQ/{domain}/{subdomain}/REQ-NN_descriptive_title.md
+REQ/REQ-NN_{slug}/REQ-NN_{slug}.md
 ```
 
 Where:
@@ -502,7 +502,7 @@ See `REQ/api/av/REQ-01_external_api_integration.md` for a complete example of a 
 - **Document Control**: 12 fields (added Template Version)
 - **Resource tags**: Required in H1 header `[RESOURCE_TYPE]`
 - **Cumulative tagging**: All 6 upstream tags required (@brd, @prd, @ears, @bdd, @adr, @sys)
-- **18-check validation**: Shell-based script (validate_req_template_v3.sh)
+- **18-check validation**: Shell-based script (validate_req_template.sh)
 
 **V2.0 Features** (January 2025):
 - 12 mandatory sections
@@ -527,7 +527,7 @@ See `REQ/api/av/REQ-01_external_api_integration.md` for a complete example of a 
 7. Add resource tag to H1 header (e.g., `# REQ-01: [EXTERNAL_SERVICE_GATEWAY] Title`)
 8. Add all 6 cumulative tags to section 11 (@brd, @prd, @ears, @bdd, @adr, @sys)
 9. Add new subsections (3.3, 4.3, 5.4, 8.3) as applicable
-10. Run `scripts/validate_req_template_v3.sh` for verification
+10. Run `scripts/validate_req_template.sh` for verification
 
 **Migration Script**: `scripts/migrate_req_v2_to_v3.py` automates transformations 1-6
 
@@ -767,11 +767,11 @@ Before marking a REQ as complete, verify:
 
 #### V3 Shell-Based Validator (Recommended)
 
-**Script**: `scripts/validate_req_template_v3.sh` (623 lines, 18 checks)
+**Script**: `scripts/validate_req_template.sh` (623 lines, 18 checks)
 
 ```bash
 # Validate single REQ file
-./scripts/validate_req_template_v3.sh REQ/api/REQ-01_api_integration.md
+./scripts/validate_req_template.sh REQ/api/REQ-01_api_integration.md
 
 # Expected output (success):
 # ✅ PASSED: All validation checks passed with no warnings
@@ -779,7 +779,7 @@ Before marking a REQ as complete, verify:
 # Warnings: 0
 
 # Validate all REQ files
-find REQ -name "REQ-*.md" ! -path "*/archived/*" -exec ./scripts/validate_req_template_v3.sh {} \;
+find REQ -name "REQ-*.md" ! -path "*/archived/*" -exec ./scripts/validate_req_template.sh {} \;
 ```
 
 **18 Validation Checks**:

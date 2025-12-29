@@ -34,12 +34,20 @@ This directory provides a **universal, reusable framework** for Specification-Dr
 - ✅ **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
 - ✅ **AI-Optimized**: YAML specifications designed for deterministic code generation
 - ✅ **16-Layer Architecture**: Structured progression from strategy through validation
-- ✅ **Dual-File Contracts**: Human-readable `.md` + machine-readable `.yaml`
+ - ✅ **Dual-File Contracts (CTR only)**: Human-readable `.md` + machine-readable `.yaml` for API Contracts
 - ✅ **Strict ID Standards**: Consistent naming and organization across all documents
 - ✅ **Example-Driven**: Generic examples with `[PLACEHOLDER]` format for easy customization
 - ✅ **Automated Validation**: Scripts for tag validation, traceability matrix generation, cumulative hierarchy enforcement
 
 **📚 New to this framework?** Start with [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) for domain-specific guidance (financial, healthcare, e-commerce, SaaS, IoT, or generic software).
+
+## Using This Repo
+
+- Docs root: In this repository, artifact folders (`BRD/`, `PRD/`, `EARS/`, `BDD/`, `ADR/`, `SYS/`, `REQ/`, `IMPL/`, `CTR/`, `SPEC/`, `TASKS/`, `ICON/`, `IPLAN/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
+- BDD layout: Uses nested per-suite folders `BDD/BDD-NN_{slug}/` with sectioned `.feature` files.
+- Index width: This repo commonly uses `-000_index.md` for indices; follow existing width and do not rename history. New repos should choose a consistent zero width (`00` or `000`) and keep it stable.
+- Validators: Use the validators listed in TRACEABILITY_VALIDATION.md (e.g., `python scripts/validate_prd.py`, `./scripts/validate_req_template.sh`). Older `*_template.sh` examples in some guides have been updated here.
+- Path mapping example: `docs/PRD/PRD-01/...` in generic guides corresponds to `PRD/PRD-01/...` in this repo.
 
 ### ID Numbering Rule (Unified)
 
@@ -112,7 +120,7 @@ custom_fields:
 | **Purpose** | Document classification, tooling | Audit trail, compliance |
 | **Location** | Top of file (lines 1-20) | section 7 (body) |
 | **Format** | YAML key-value pairs | `@artifact: ID (Description)` |
-| **Validation** | `validate_metadata.py` | `trace-check` skill |
+| **Validation** | `validate_metadata.py` | `scripts/validate_tags_against_docs.py` |
 | **Changeability** | Can be updated | Immutable after approval |
 
 **Learn More**:
@@ -125,8 +133,8 @@ custom_fields:
 # Validate YAML frontmatter
 python3 scripts/validate_metadata.py .
 
-# Validate traceability tags (use Claude Code trace-check skill)
-# Checks bidirectional links and cumulative tagging hierarchy
+# Validate traceability tags locally
+# See `scripts/validate_tags_against_docs.py`, `scripts/validate_traceability_matrix.py`, and `scripts/validate_cross_document.py`
 ```
 
 ## Complete Development Workflow
@@ -159,7 +167,7 @@ The AI Dev Flow transforms business requirements into production code through a 
 | **9** | CTR | API contracts (optional) | @brd→@impl (8) | INTERFACE definitions |
 | **10** | SPEC | YAML technical specifications | @brd→@req (+optional) (7-9) | HOW to build |
 | **11** | TASKS | Implementation task breakdown | @brd→@spec (8-10) | EXACT TODOs |
-| **11 (optional)** | ICON | Implementation contracts | @brd→@spec (8-10) | Interface definitions |
+| **11 (shared, optional)** | ICON | Implementation contracts | @brd→@spec (8-10) | Interface definitions |
 | **12** | IPLAN | Session-specific plans | @brd→@tasks (9-11) | Session work scope |
 | **13** | Code | Source code implementation | @brd→@tasks (9-11) | RUNNABLE artifacts |
 | **14** | Tests | Test suite implementation | @brd→@code (10-12) | Quality validation |
@@ -178,7 +186,7 @@ The 16-layer architecture uses the following structure:
 - **Layers 1-12**: Formal Documentation Artifacts
   - Layer 1: BRD (Business Requirements)
   - Layer 2: PRD (Product Requirements)
-  - Layer 3: EARS (Easy Approach to Requirements Syntax)
+  - Layer 3: EARS (Event-Action-Response-State) — Engineering Requirements
   - Layer 4: BDD (Behavior-Driven Development)
   - Layer 5: ADR (Architecture Decision Records)
   - Layer 6: SYS (System Architecture)
@@ -209,7 +217,7 @@ The 16-layer architecture uses the following structure:
 | 0 | Strategy (STRAT) | Strategic business direction |
 | 1 | Business Requirements (BRD) | Business needs and goals |
 | 2 | Product Requirements (PRD) | Product features and specifications |
-| 3 | EARS | Structured requirement statements |
+| 3 | EARS | Engineering Requirements (Event-Action-Response-State) |
 | 4 | BDD | Behavior-driven test scenarios |
 | 5 | Architecture Decisions (ADR) | Technical architecture choices |
 | 6 | System Requirements (SYS) | System-level specifications |
@@ -222,6 +230,8 @@ The 16-layer architecture uses the following structure:
 | 13 | Code | Actual implementation |
 | 14 | Tests | Unit/integration tests |
 | 15 | Validation | End-to-end validation |
+
+Note: ICON (Implementation Contracts) is an optional artifact that shares Layer 11 alongside TASKS. ICON provides standalone implementation contracts when needed for parallel development.
 
 #### Mermaid Diagram Visual Groupings (L1-L11)
 
@@ -255,6 +265,8 @@ Diagrams use simplified labels for visual clarity:
 
 ## Template Directories
 
+<!-- See “Using This Repo” above for path mapping guidance. -->
+
 ### 1. Business Layer
 
 **BRD/** - Business Requirements Documents
@@ -267,7 +279,7 @@ Diagrams use simplified labels for visual clarity:
 - Business requirements and acceptance criteria
 - **Files**: [PRD-000_index.md](./PRD/PRD-000_index.md) | [Template](./PRD/PRD-TEMPLATE.md)
 
-**EARS/** - Easy Approach to Requirements Syntax
+**EARS/** - Event-Action-Response-State (Engineering Requirements)
 - Measurable requirements using WHEN-THE-SHALL-WITHIN format
 - Event-driven and state-driven requirements
 - **Files**: [EARS-000_index.md](./EARS/EARS-000_index.md) | [Template](./EARS/EARS-TEMPLATE.md)
@@ -295,12 +307,11 @@ Diagrams use simplified labels for visual clarity:
 
 **REQ/** - Atomic Requirements
 - Granular, testable requirements with acceptance criteria
-- **Organization**: Subdirectories by functional domain
-  - `api/` - API integration requirements (examples: REQ-01_api_integration_example.md)
-  - `auth/` - Authentication/authorization (examples: REQ-03_access_control_example.md)
-  - `data/` - Data architecture (examples: REQ-02_data_validation_example.md)
-  - `risk/` - Risk management (legacy: REQ-03_resource_limit_enforcement.md)
-- **Files**: [REQ-000_index.md](./REQ/REQ-000_index.md) | [Template](./REQ/REQ-TEMPLATE.md)
+- Organization: Nested per-document folders (DEFAULT for all types)
+  - Folder: `REQ/REQ-NN_{slug}/`
+  - Primary file (atomic): `REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
+  - Split (optional when large): index + sections `REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ/REQ-NN.1_{section}.md`, ...
+- Files: [REQ-000_index.md](./REQ/REQ-000_index.md) | [Template](./REQ/REQ-TEMPLATE.md)
 
 ### 5. Project Management Layer
 
@@ -309,7 +320,7 @@ Diagrams use simplified labels for visual clarity:
 - **Focus**: WHO does WHAT, WHEN - NOT technical specifications (HOW)
 - Identifies which CTR, SPEC, TASKS to create
 - **Files**: [IMPL-000_index.md](./IMPL/IMPL-000_index.md) | [Template](./IMPL/IMPL-TEMPLATE.md)
-- **Examples**: [IMPL-01_risk_management_system.md](./IMPL/examples/IMPL-01_risk_management_system.md) | [IMPL-01_feature_implementation_example.md](./IMPL/examples/IMPL-01_feature_implementation_example.md)
+- **Examples**: [IMPL-01_feature_implementation_example.md](./IMPL/examples/IMPL-01_feature_implementation_example.md)
 
 ### 6. Interface Layer
 
@@ -326,8 +337,8 @@ Diagrams use simplified labels for visual clarity:
 ### 7. Implementation Layer
 
 **SPEC/** - Technical Specifications
-- Implementation-ready YAML specifications for code generation
-- Behavioral specifications and operational characteristics
+- YAML: Monolithic per component (code generation source)
+- Markdown: Split narrative with `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` when needed
 - References CTR contracts when implementing interfaces
 - **Files**: [SPEC-000_index.md](./SPEC/SPEC-000_index.md) | [Template](./SPEC/SPEC-TEMPLATE.yaml)
 - **Examples**: [SPEC-01_api_client_example.yaml](./SPEC/SPEC-01_api_client_example.yaml)
@@ -340,13 +351,13 @@ Diagrams use simplified labels for visual clarity:
 - **1:1 mapping**: Each TASKS document corresponds to one SPEC
 - **Files**: [TASKS-000_index.md](./TASKS/TASKS-000_index.md) | [Template](./TASKS/TASKS-TEMPLATE.md)
 
-### 8b. Implementation Contracts Layer (Optional)
+### Layer 11: Implementation Contracts (Optional)
 
-**ICON/** - Implementation Contracts (Layer 11)
+**ICON/** - Implementation Contracts (Layer 11, Optional; shares with TASKS)
 - Type-safe interface definitions for parallel development coordination
 - Protocol interfaces, exception hierarchies, state machines, data models
 - **When to use**: 5+ consumer TASKS, >500 lines, platform-level, cross-project
-- **Default**: Embed contracts in TASKS section 5 unless criteria met
+- **Default**: Embed contracts in TASKS section 8 unless criteria met
 - **Files**: [ICON-000_index.md](./ICON/ICON-000_index.md) | [Template](./ICON/ICON-TEMPLATE.md)
 - **Guide**: [IMPLEMENTATION_CONTRACTS_GUIDE.md](./TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
 
@@ -378,7 +389,7 @@ Diagrams use simplified labels for visual clarity:
 Format: `{TYPE}-{NN}_{descriptive_slug}.{ext}`
 
 - **TYPE**: Document type prefix (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS)
-- **NNN**: 2+ digit sequence number (01, 02, 003)
+- **NNN**: 2+ digit sequence number (01, 02, 03, 100)
 - **descriptive_slug**: snake_case description
 - **ext**: File extension (md, feature, yaml)
 
@@ -391,6 +402,10 @@ Examples:
 **Note**: CTR (API Contracts) requires both `.md` and `.yaml` files with matching slugs.
 
 See [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) for complete rules.
+
+Index Width Policy (This Repository): Index, registry, and general utility documents use `-000` (e.g., `-000_index.md`). Follow the existing width per type in this repo and do not rename historical files. For new repositories, pick a consistent zero width (`00` or `000`) and keep it stable.
+
+General Utility Documents (`{DOC_TYPE}-000_*`): Use `{DOC_TYPE}-000_{slug}.{ext}` for general-purpose or cross-project documents (guides, templates, matrices) that are not tied to a specific numbered artifact.
 
 ### Feature-Level Traceability Tags
 
@@ -488,6 +503,7 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 Note: Script name canonicalization — the canonical script is `scripts/generate_traceability_matrix.py`. Any historical references in this guide to `generate_traceability_matrices.py` refer to the same tool; use the singular script name.
 
 ```bash
+# Note: In this repo, drop any `docs/` prefix used in generic examples.
 # Extract tags from codebase
 python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
 
@@ -495,7 +511,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --validate-cumulative --strict
 
 # Generate traceability matrices
-python scripts/generate_traceability_matrices.py --auto
+python scripts/generate_traceability_matrix.py --auto
 ```
 
 See [TRACEABILITY.md](./TRACEABILITY.md) and [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) for complete guidelines.
@@ -548,16 +564,16 @@ The framework includes comprehensive validation tooling:
 # Cumulative tagging validation (recommended)
 python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
 python scripts/validate_tags_against_docs.py --validate-cumulative --strict
-python scripts/generate_traceability_matrices.py --auto
+python scripts/generate_traceability_matrix.py --auto
 
 # Legacy validation (optional)
 python scripts/validate_requirement_ids.py
-python scripts/check_broken_references.py
+python scripts/validate_links.py
 ```
 
 **CI/CD Integration**: See [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md) for pre-commit hooks and GitHub Actions workflows.
 
-**Note**: Framework includes `scripts/make_framework_generic.py` for maintaining placeholder consistency.
+<!-- Historical note removed: scripts/make_framework_generic.py is no longer part of this repo -->
 
 ### Using Automated Validation Tooling
 
@@ -647,6 +663,7 @@ Layer 11 (TASKS): 8-10 tags (@brd through @spec)
 Layer 12 (IPLAN): 9-11 tags (@brd through @tasks)
 Layer 13 (Code):  9-11 tags (@brd through @tasks)
 Layer 14 (Tests): 10-12 tags (@brd through @code)
+Layer 15 (Validation): Consumes all upstream tags (counts not enforced)
 ```
 
 Note: ICON (Implementation Contracts) is optional and does not affect tag counts. If present, `@icon` tags are allowed but excluded from cumulative count and chain validation.
@@ -675,22 +692,22 @@ TAG_CHAIN_GAP: 2
      ❌ Gap in cumulative tag chain: @bdd (Layer 4) missing but higher layers present
 ```
 
-#### 3. Traceability Matrix Generation (`generate_traceability_matrices.py`)
+#### 3. Traceability Matrix Generation (`generate_traceability_matrix.py`)
 
 **Purpose**: Auto-generate traceability matrices showing bidirectional relationships between artifacts.
 
 **Usage**:
 ```bash
 # Generate all matrices automatically
-python scripts/generate_traceability_matrices.py --auto
+python scripts/generate_traceability_matrix.py --auto
 
 # Generate matrix for specific artifact type
-python scripts/generate_traceability_matrices.py \
+python scripts/generate_traceability_matrix.py \
   --type REQ \
   --output docs/REQ/REQ-000_TRACEABILITY_MATRIX.md
 
 # Show coverage metrics
-python scripts/generate_traceability_matrices.py \
+python scripts/generate_traceability_matrix.py \
   --type BDD \
   --show-coverage
 ```
@@ -732,7 +749,7 @@ python scripts/validate_tags_against_docs.py --validate-cumulative --strict
 **Step 2: Before Committing**
 ```bash
 # Complete validation workflow
-python scripts/generate_traceability_matrices.py --auto
+python scripts/generate_traceability_matrix.py --auto
 ```
 
 **Step 3: CI/CD Integration** (see [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md))
@@ -790,7 +807,7 @@ pip install pyyaml  # For YAML parsing (SPEC documents)
 
 - **extract_tags.py**: ~5-10 seconds for 1,000 files
 - **validate_tags_against_docs.py**: ~30 seconds for 100 artifacts with cumulative validation
-- **generate_traceability_matrices.py**: ~1-2 minutes for complete matrix suite
+- **generate_traceability_matrix.py**: ~1-2 minutes for complete matrix suite
 
 #### Next Steps
 
@@ -897,6 +914,8 @@ The AI Dev Flow follows a structured progression through 16 layers:
 
 ### AI-Assisted Development
 
+Quick link: AI Assistant Playbook (index): AI_ASSISTANT_PLAYBOOK.md
+
 Templates are optimized for AI code generation:
 
 **Human-Readable**:
@@ -915,6 +934,14 @@ Templates are optimized for AI code generation:
 - Automatic traceability comment injection
 - Consistent implementation patterns
 - Reduced manual coding effort (48x speed improvement documented)
+
+#### Assistant Output Style (All Tools)
+
+- Professional engineering tone: no marketing or emotional language.
+- Token‑efficient: concise bullets, short paragraphs, concrete commands.
+- Actionable output: commands, file paths, code identifiers, checklists.
+- Emoji policy: informational only, minimal (0–1 typical).
+- See Tool Optimization Guide → Style and Tone Guidelines for details and Claude‑specific rules: `AI_TOOL_OPTIMIZATION_GUIDE.md`.
 
 ## Best Practices
 
@@ -956,11 +983,7 @@ Templates are optimized for AI code generation:
 - **Run Validation**: Check links and IDs before committing (if validation scripts available)
 - **Placeholder Consistency**: Use `[UPPERCASE_BRACKET]` format for domain-agnostic placeholders
 - **Cross-References**: Use relative paths within template directory
-- **Token Limits (Tool-Optimized)**:
-  - **Claude Code** (Primary): Up to 50,000 tokens (200KB) standard, 100,000 tokens (400KB) maximum
-  - **Gemini CLI** (secondary): Use file read tool (not `@`) for files >10,000 tokens
-  - **GitHub Copilot**: Keep <30KB or create companion summaries
-  - See: [TOOL_OPTIMIZATION_GUIDE.md](TOOL_OPTIMIZATION_GUIDE.md) and [Gemini_CLI_Large_File_Workarounds.md](../Gemini_CLI_Large_File_Workarounds.md)
+- **Token Limits (Tool-Optimized)**: See [AI_TOOL_OPTIMIZATION_GUIDE.md](AI_TOOL_OPTIMIZATION_GUIDE.md) for assistant-specific token guidance and file handling strategies.
 - **Update History**: Document version and last updated date in headers
 
 ## Directory Organization
@@ -1140,5 +1163,5 @@ Notes:
 If enhancing this framework:
 - Maintain `[PLACEHOLDER]` format for domain-agnostic templates
 - Update [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) with new domains
-- Run `scripts/make_framework_generic.py` to ensure consistency
+<!-- Historical note removed: scripts/make_framework_generic.py is no longer part of this repo -->
 - Document version and last updated date in modified files

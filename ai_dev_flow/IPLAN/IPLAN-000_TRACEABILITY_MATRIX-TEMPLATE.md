@@ -47,7 +47,7 @@ python scripts/extract_tags.py --source ai_dev_flow/IPLAN/ --output generated/ip
 python scripts/validate_tags_against_docs.py --tags generated/iplan_tags.json --strict
 
 # Generate iplan traceability matrix
-python scripts/generate_traceability_matrices.py --type iplan --output ai_dev_flow/IPLAN/IPLAN-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type iplan --output ai_dev_flow/IPLAN/IPLAN-000_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits**:
@@ -189,7 +189,7 @@ python scripts/validate_tags_against_docs.py \
   --strict
 
 # Generate IPLAN traceability report
-python scripts/generate_traceability_matrices.py \
+python scripts/generate_traceability_matrix.py \
   --type IPLAN \
   --show-coverage
 ```

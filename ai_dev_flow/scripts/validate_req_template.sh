@@ -2,9 +2,9 @@
 # REQ Template Validator v3.0
 # Validates REQ documents against:
 # - REQ-TEMPLATE-V3.md (primary template - authoritative)
-# - doc_flow SDD framework standards
+# - AI Dev Flow SDD framework standards
 # - Cumulative tagging hierarchy (Layer 7: 6 required tags)
-# Usage: ./validate_req_template_v3.sh <REQ_FILE>
+# Usage: ./validate_req_template.sh <REQ_FILE>
 
 set -e
 
@@ -28,7 +28,7 @@ echo "========================================="
 echo "REQ Template Validator v${SCRIPT_VERSION}"
 echo "========================================="
 echo "File: $REQ_FILE"
-echo "Template: REQ-TEMPLATE-V3.md + doc_flow framework"
+echo "Template: REQ-TEMPLATE-V3.md + AI Dev Flow framework"
 echo ""
 
 # ============================================
@@ -618,6 +618,6 @@ else
   echo "  1. Fix all errors listed above"
   echo "  2. Review REQ-TEMPLATE-UNIFIED.md for requirements"
   echo "  3. Check doc-flow TRACEABILITY.md for tagging rules"
-  echo "  4. Re-run validation: ./scripts/validate_req_template_v3.sh $REQ_FILE"
+  echo "  4. Re-run validation: ./scripts/validate_req_template.sh $REQ_FILE"
   exit 1
 fi

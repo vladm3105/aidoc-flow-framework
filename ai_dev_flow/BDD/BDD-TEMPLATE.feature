@@ -172,8 +172,8 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 #   - REQ-NN: [Brief description of primary requirement being verified]
 #   - REQ-NN: [Additional requirements if multiple are covered]
 # TRACEABILITY:
-#   Upstream: [REQ-NN](../reqs/.../REQ-NN_...md#REQ-NN), [ADR-NN](../../../adrs/ADR-NN_...md#ADR-NN)
-#   Downstream: Spec(../specs/.../SPEC-NN_...yaml), Code(`component.module`), Tasks([TASKS-NN](../ai_tasks/TASKS-NN_....md))
+#   Upstream: [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN), [ADR-NN](../../../ADR/ADR-NN_...md#ADR-NN)
+#   Downstream: Spec(../specs/.../SPEC-NN_...yaml), Code(`component.module`), Tasks([TASKS-NN](../TASKS/TASKS-NN_....md))
 #
 # SAME-TYPE REFERENCES (Conditional):
 #   Include only if same-type relationships exist between BDD features.
@@ -241,8 +241,8 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 @brd: BRD.NN.EE.SS      # REQUIRED - business requirements traceability
 @prd: PRD.NN.EE.SS      # REQUIRED - product requirements traceability
 @ears: EARS.NN.24.SS    # REQUIRED - engineering requirements traceability
-@requirement:[REQ-NN](../reqs/.../REQ-NN_...md#REQ-NN)
-@adr:[ADR-NN](../adrs/ADR-NN_...md#ADR-NN)
+@requirement:[REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN)
+@adr:[ADR-NN](../ADR/ADR-NN_...md#ADR-NN)
 @bdd:[BDD-NN.SS:scenarios](BDD-NN.SS_{slug}.feature#scenarios)
 Feature: [Feature Title]
   [Additional context about business value and importance]
@@ -306,12 +306,12 @@ Feature: [Feature Title]
     And [error details are properly logged]
     And [system state remains consistent]
 
-  @negative @regulatoryurity
+  @negative @security
   Scenario: [Handle unauthorized access attempts]
     Given [user lacks required permissions]
     When [attempting a restricted operation]
     Then [access is denied with clear error message]
-    And [regulatoryurity event is logged appropriately]
+    And [security event is logged appropriately]
 
   @negative @boundary
   Scenario: [Enforce required field validations]
@@ -411,7 +411,7 @@ Feature: [Feature Title]
   # QUALITY ATTRIBUTE SCENARIOS
   # ===================
 
-  @quality_attribute @regulatoryurity
+  @quality_attribute @security
   Scenario: [Data protection and privacy compliance]
     Given [sensitive data is processed]
     When [operations involve personal information]

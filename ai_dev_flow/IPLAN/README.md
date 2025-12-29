@@ -19,7 +19,7 @@ Implementation Plans (IPLAN) provide **session-based execution context** with ba
 
 IPLAN create the **implementation execution roadmap** that:
 - **Provides Session Context**: Bash commands, file paths, environment setup for AI assistants
-- **Guides Step-by-Step Execution**: Specific commands to run in Claude Code, Gemini CLI, or similar tools
+- **Guides Step-by-Step Execution**: Commands and steps runnable in AI coding assistants or CLI tools
 - **Establishes Verification Checkpoints**: Clear validation steps after each phase
 - **Maintains Implementation State**: Tracks progress through phases and tasks
 - **Enables Context Resumption**: Allows new sessions to continue work from checkpoints
@@ -795,7 +795,7 @@ touch src/[project]/services/connector.py
 
 ### 9. Maintain Token Efficiency
 
-**Target**: 25-40KB per IPLAN document (optimal for Claude Code)
+**Target**: 25-40KB per IPLAN document (see AI_TOOL_OPTIMIZATION_GUIDE.md for tool-specific sizing)
 
 **Techniques**:
 - Use tables for repetitive data

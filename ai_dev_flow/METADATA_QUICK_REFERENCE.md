@@ -439,18 +439,7 @@ grep -l "primary_alternative: BRD-NN" docs/BRD/*.md  # Should find BRD-NN
 
 ## Tool-Specific Notes
 
-### Claude Code
-- ✅ Optimal for bulk metadata migration (20-50 files)
-- ✅ Validates YAML syntax automatically
-- ✅ Can handle 100KB files easily
-
-### Gemini CLI
-- ✅ Good for single-file updates
-- ⚠️ Use file read tool (not `@`) for files >10K tokens
-
-### GitHub Copilot
-- ✅ Good for individual file metadata
-- ⚠️ Limited context for bulk operations
+For assistant-specific tips (bulk operations, file size handling, validation behavior), see `AI_TOOL_OPTIMIZATION_GUIDE.md`.
 
 ---
 
@@ -498,7 +487,7 @@ custom_fields:
 
 - **Full Guide**: [METADATA_TAGGING_GUIDE.md](./METADATA_TAGGING_GUIDE.md)
 - **AI Rules**: [AI_ASSISTANT_RULES.md](./AI_ASSISTANT_RULES.md) - Rule 10
-- **Tool Guide**: [TOOL_OPTIMIZATION_GUIDE.md](./TOOL_OPTIMIZATION_GUIDE.md)
+- **Tool Guide**: [AI_TOOL_OPTIMIZATION_GUIDE.md](./AI_TOOL_OPTIMIZATION_GUIDE.md)
 - **ID Standards**: [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md)
 
 ---

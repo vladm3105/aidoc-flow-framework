@@ -14,7 +14,7 @@ custom_fields:
 **Version**: 1.0
 **Date**: 2025-11-19
 **Status**: Active
-**Framework**: doc_flow SDD (100% Compliant with TRACEABILITY.md)
+**Framework**: AI Dev Flow SDD (100% Compliant with TRACEABILITY.md)
 **Purpose**: Quality gate system aligned with 16-layer architecture and cumulative tagging hierarchy
 
 ---
@@ -63,7 +63,7 @@ metadata:
   task_ready_score: "✅ 95% (Target: ≥90%)"
 
 # Document Control (MarkDown artifacts)
-| SPECS-Ready Score | ✅ 92% (Target: ≥90%) |
+| SPEC-Ready Score | ✅ 92% (Target: ≥90%) |
 | IMPL-Ready Score | ✅ 95% (Target: ≥90%) |
 ```
 
@@ -74,22 +74,23 @@ metadata:
 Aligned with the 16-Layer Architecture (TRACEABILITY.md §1.2.1):
 
 | **Layer** | **Artifact Type** | **Ready Score Field** | **Validation Command** | **Gates Upstream Tags** |
-|-----------|-------------------|----------------------|----------------------|----------------------|
+|-----------|-------------------|----------------------|------------------------|------------------------|
 | **0** | Strategy | N/A | N/A | None |
 | **1** | BRD | `EARS-Ready Score` | `./scripts/validate_brd_template.sh` | None |
-| **2** | PRD | `BDD-Ready Score` | `./scripts/validate_prd_template.sh` | `@brd` |
-| **3** | EARS | `ADR-Ready Score` | `./scripts/validate_ears_template.sh` | `@brd @prd` |
-| **4** | BDD | `SYS-Ready Score` | `./scripts/validate_bdd_template.sh` | `@brd @prd @ears` |
-| **5** | ADR | `REQ-Ready Score` | `./scripts/validate_adr_template.sh` | `@brd→@bdd` |
-| **6** | SYS | `SPEC-Ready Score` | `./scripts/validate_sys_template.sh` | `@brd→@adr` |
-| **7** | REQ | `IMPL-Ready Score` | `./scripts/validate_req_template_v3.sh` | `@brd→@sys` |
-| **8** | IMPL | N/A (Project Management) | Manual approval | `@brd→@req` |
-| **9** | CTR | N/A (Interface Contracts) | `./scripts/validate_ctr_template.sh` | `@brd→@req @impl` |
-| **10** | SPEC | `TASKS-Ready Score` | `./scripts/validate_spec_template.sh` | `@brd→@req +optional` |
-| **11** | TASKS | `IPLAN-Ready Score` | `./scripts/validate_tasks_template.sh` | `@brd→@spec` |
-| **12** | IPLAN | N/A (Implementation Plans) | Manual verification | `@brd→@tasks` |
-| **13** | Code | N/A | `./scripts/validate_implementation.py` | `@brd→@iplan` |
-| **14** | Tests | N/A | `./scripts/validate_tests.py` | `@brd→@code` |
+| **2** | PRD | `BDD-Ready Score` | `python scripts/validate_prd.py` | `@brd` |
+| **3** | EARS | `ADR-Ready Score` | `python scripts/validate_ears.py` | `@brd @prd` |
+| **4** | BDD | `SYS-Ready Score` | `python scripts/validate_bdd.py` | `@brd @prd @ears` |
+| **5** | ADR | `REQ-Ready Score` | `python scripts/validate_adr.py` | `@brd→@bdd` |
+| **6** | SYS | `SPEC-Ready Score` | `python scripts/validate_sys.py` | `@brd→@adr` |
+| **7** | REQ | `IMPL-Ready Score` | `./scripts/validate_req_template.sh` | `@brd→@sys` |
+| **8** | IMPL | N/A (Project Management) | `./scripts/validate_impl.sh` | `@brd→@req` |
+| **9** | CTR | N/A (Interface Contracts) | `./scripts/validate_ctr.sh` | `@brd→@req @impl` |
+| **10** | SPEC | `TASKS-Ready Score` | `python scripts/validate_spec.py` | `@brd→@req +optional` |
+| **11** | TASKS | `IPLAN-Ready Score` | `./scripts/validate_tasks.sh` | `@brd→@spec` |
+| **11 (optional)** | ICON | N/A (Implementation Contracts) | `./scripts/validate_icon.sh` | `@brd→@spec (+ optional @icon)` |
+| **12** | IPLAN | N/A (Implementation Plans) | `./scripts/validate_iplan.sh` | `@brd→@tasks` |
+| **13** | Code | N/A | TBD | `@brd→@iplan` |
+| **14** | Tests | N/A | TBD | `@brd→@code` |
 | **15** | Validation | N/A | Deployment verification | All upstream tags |
 
 ### Layer Transition Quality Gates
@@ -122,15 +123,17 @@ validate_quality_gates() {
 
     for file in $changed_files; do
         case "$file" in
-            docs/BRD/*.md) validate_ears_ready "$file" ;;
-            docs/PRD/*.md) validate_bdd_ready "$file" ;;
-            docs/EARS/*.md) validate_adr_ready "$file" ;;
-            docs/BDD/BDD-*/BDD-*.feature) validate_sys_ready "$file" ;;
-            docs/ADR/*.md) validate_req_ready "$file" ;;
-            docs/SYS/*.md) validate_spec_ready "$file" ;;
-            docs/REQ/*.md) validate_impl_ready "$file" ;;
-            docs/SPEC/*.yaml) validate_tasks_ready "$file" ;;
-            docs/TASKS/*.md) validate_iplan_ready "$file" ;;
+            BRD/*.md) ./scripts/validate_brd_template.sh "$file" ;;
+            PRD/*.md) python scripts/validate_prd.py "$file" ;;
+            EARS/*.md) python scripts/validate_ears.py --path "$file" ;;
+            BDD/BDD-*/BDD-*.feature) python scripts/validate_bdd.py "$file" ;;
+            ADR/*.md) python scripts/validate_adr.py "$file" ;;
+            SYS/*.md) python scripts/validate_sys.py "$file" ;;
+            REQ/**/*.md|REQ/*.md) ./scripts/validate_req_template.sh "$file" ;;
+            SPEC/*.yaml|SPEC/**/*.yaml) python scripts/validate_spec.py "$file" ;;
+            TASKS/*.md) ./scripts/validate_tasks.sh "$file" ;;
+            ICON/*.md) ./scripts/validate_icon.sh "$file" ;;
+            IPLAN/*.md) ./scripts/validate_iplan.sh "$file" ;;
         esac
 
         # Check cumulative tagging (TRACEABILITY.md §4)
@@ -202,10 +205,10 @@ validate_cumulative_tags() {
 cat > .git/hooks/pre-commit << 'EOF'
 #!/bin/sh
 
-# doc_flow Quality Gates Integration
+# AI Dev Flow Quality Gates Integration
 # Validates against 16-Layer Architecture (TRACEABILITY.md)
 
-echo "🔍 Running doc_flow quality gate validation..."
+echo "🔍 Running AI Dev Flow quality gate validation..."
 
 # Get changed artifact files
 changed_artifacts=$(git diff --cached --name-only | grep '^docs/')

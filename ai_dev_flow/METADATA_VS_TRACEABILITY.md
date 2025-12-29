@@ -34,13 +34,13 @@ AI Dev Flow uses **TWO SEPARATE SYSTEMS** for document information:
 | **Location** | Top of file (lines 1-20) | section 7 (Traceability) in document body |
 | **Format** | YAML key-value pairs | Markdown inline: `@artifact: ID (Description)` |
 | **Audience** | Documentation systems (Docusaurus), validation tools | Auditors, reviewers, QA, AI assistants |
-| **Validation** | Schema-based (validate_metadata.py) | Bidirectional link checking (trace-check skill) |
+| **Validation** | Schema-based (`scripts/validate_metadata.py`) | Bidirectional link checking (`scripts/validate_tags_against_docs.py`) |
 | **Changeability** | Can be updated as needed | Immutable after document approval |
 | **Content** | Classification tags, layer info, architecture approach | Specific document IDs with descriptions |
 | **Machine-Readable** | Yes (YAML parsers) | Yes (regex: `@[a-z]+: [A-Z]+-\d+`) |
 | **Human-Readable** | Moderate (structured data) | High (prose with inline references) |
 | **Required In** | Templates, index files, published docs | All production documents (BRD → IPLAN) |
-| **Quality Gate** | validate_metadata.py must pass | trace-check skill must pass |
+| **Quality Gate** | `validate_metadata.py` must pass | `validate_tags_against_docs.py` must pass |
 | **Git Conflicts** | Low risk (top of file) | Low risk (section 7 only) |
 
 ---
@@ -112,11 +112,11 @@ custom_fields:
   - Establishes need for persistent connections
 
 #### Product Requirements (@prd)
-- @prd: PRD.03.01.01 (Unified Quoteboard Product Definition)
+- @prd: PRD.03.01.01 (Unified [PRODUCT_NAME] Product Definition)
   - section 4.1: Live quote updates with <500ms latency
   - Drives WebSocket choice over polling
 
-#### Engineering Requirements (@ears)
+#### EARS (@ears) — Event-Action-Response-State (Engineering Requirements)
 - @ears: EARS.02.24.01 (Exchange Integration Requirements)
   - EARS.02.24.03: WHEN connection lost THEN system SHALL reconnect WITHIN 5 seconds
   - Direct source for this requirement
@@ -132,14 +132,14 @@ custom_fields:
   - Provides architectural context
 
 #### System Requirements (@sys)
-- @sys: SYS.01.25.01 (Quoteboard System Requirements)
+- @sys: SYS.01.25.01 ([PRODUCT_NAME] System Requirements)
   - SYS.01.25.12: Connection resilience requirements
   - System-level performance constraints
 
 ### Downstream References
 
 #### Implementation Approach (@impl)
-- @impl: IMPL.01.28.01 (Quoteboard Implementation Approach)
+- @impl: IMPL.01.28.01 ([PRODUCT_NAME] Implementation Approach)
   - section 3.2: Connection management strategy
 
 #### Technical Specifications (@spec)
@@ -219,7 +219,7 @@ python3 scripts/validate_metadata.py --strict .
 ### Traceability Tags Validation
 
 ```bash
-# Run trace-check skill in Claude Code
+# Run a traceability check with your AI assistant (or local scripts)
 # Checks bidirectional links between documents
 ```
 
@@ -339,7 +339,7 @@ Need AI assistant to follow dependency chains?
 
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - section "Metadata Management Approaches"
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-- [/home/ya/.claude/CLAUDE.md](../../.claude/CLAUDE.md) - section "Metadata Standards"
+- See `scripts/validate_metadata.py` and `scripts/validate_tags_against_docs.py` for local validation tooling.
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 - [scripts/validate_metadata.py](../scripts/validate_metadata.py) - YAML validation tool
-- Claude Code skill: `trace-check` - Traceability validation tool
+- Local validation: `scripts/validate_tags_against_docs.py` for cumulative tag compliance and bidirectional checks

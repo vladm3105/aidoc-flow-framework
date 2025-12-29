@@ -28,7 +28,7 @@ custom_fields:
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-30
 **Source**: Derived from ADR-TEMPLATE.md and SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
-**Purpose**: Complete reference for creating ADR documents according to doc_flow SDD framework
+**Purpose**: Complete reference for creating ADR documents according to AI Dev Flow SDD framework
 **Changes**: Added Status/Score mapping table, new common mistakes section. Previous: SYS-ready scoring system
 
 ---
@@ -55,6 +55,7 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
+- Note: Example paths use a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `docs/ADR/ADR-NN_{slug}/` within project docs directory (nested folder per document with descriptive slug)
 - **Folder Naming**: `ADR-NN_{slug}/` where slug MUST match the index file slug (e.g., `ADR-01_cloud_migration/`)
 - **Folder Structure** (DEFAULT): `docs/ADR/ADR-NN_{slug}/ADR-NN.S_{slug}.md`
@@ -258,7 +259,7 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 ---
 
-**Framework Compliance**: 100% doc_flow SDD framework (Layer 5)
+**Framework Compliance**: 100% AI Dev Flow SDD framework (Layer 5)
 **Integration**: Enforces ADR → SYS progression quality gates
 
 ---

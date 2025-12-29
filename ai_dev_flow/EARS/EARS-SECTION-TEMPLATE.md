@@ -28,7 +28,7 @@ custom_fields:
 >
 > **Parent Document**: EARS-{NN}
 > **Section**: {S} of {N}
-> **Layer**: 3 - Formal Requirements
+> **Layer**: 3 - Engineering Requirements
 
 ---
 

@@ -1,8 +1,19 @@
+---
+title: "Project Setup Guide"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # Project Setup Guide
 
 **Version**: 1.1
 **Purpose**: Master initialization guide for AI Assistants to set up new projects
-**Target**: AI Coding Assistants (Claude AI, Claude Code, Gemini CLI, GitHub Copilot)
+**Target**: AI coding assistants (see AI_TOOL_OPTIMIZATION_GUIDE.md for tool-specific notes)
 **Status**: Production
 
 ---
@@ -13,7 +24,7 @@ This guide walks AI Assistants through initializing a brand new project using th
 
 ### 🚀 Using the project-init Skill (Recommended)
 
-**For Claude Code Users**: The easiest way to initialize a new project is to use the **`project-init` skill**, which automates this entire guide:
+For users of AI coding assistants: If your assistant provides a project initialization capability (e.g., a `project-init` skill), use it to automate this guide. See AI_TOOL_OPTIMIZATION_GUIDE.md for tool-specific tips.
 
 ```
 User: "Initialize new project"
@@ -28,7 +39,7 @@ AI Assistant: Uses project-init skill
 ```
 
 **To use the skill**:
-1. Invoke: `project-init` skill (in Claude Code)
+1. Invoke: your assistant’s project initialization command (e.g., `project-init`)
 2. Follow the interactive prompts
 3. After completion, use `doc-flow` skill for workflow execution
 
@@ -96,6 +107,8 @@ mkdir -p docs/REQ/tenant docs/REQ/subscription docs/REQ/billing docs/REQ/workspa
 mkdir -p scripts
 mkdir -p work_plans
 ```
+
+Note: `work_plans/` is an optional helper directory for scratch operational notes and is not part of the formal IPLAN artifact set (Layer 12).
 
 **Validation**:
 ```bash
@@ -294,7 +307,7 @@ After all documents of type created:
 # Use: doc-brd, doc-prd, doc-req, etc.
 
 # 2. Automated validation (framework scripts)
-python scripts/validate_req_template_v3.sh docs/REQ/REQ-01_example.md
+./scripts/validate_req_template.sh docs/REQ/REQ-01_example.md
 python scripts/validate_metadata.py docs/REQ/REQ-01_example.md
 
 # 3. Manual validation checklist
@@ -498,7 +511,7 @@ ls docs/BRD/BRD-*.md
 **Validation Commands**:
 ```bash
 # Primary validation
-python scripts/validate_req_template_v3.sh docs/REQ/REQ-01_*.md
+./scripts/validate_req_template.sh docs/REQ/REQ-01_*.md
 
 # Duplicate detection
 grep -h "^## REQ-" docs/REQ/*.md | sort | uniq -d
@@ -750,7 +763,7 @@ Validation Results:
 ✓ Metadata compliant
 
 Automated Checks:
-✓ validate_req_template_v3.sh: PASS
+✓ validate_req_template.sh: PASS
 ✓ validate_metadata.py: PASS
 
 Status: Ready for review ✓
@@ -767,7 +780,7 @@ Validation Results:
 ⚠ WARNING: Incomplete traceability (@prd tag missing)
 
 Automated Checks:
-✗ validate_req_template_v3.sh: FAIL (2 errors, 1 warning)
+✗ validate_req_template.sh: FAIL (2 errors, 1 warning)
 
 Status: Requires fixes before proceeding
 
@@ -958,7 +971,7 @@ ls -laR docs/
 
 ## Relationship to project-init Skill
 
-### For AI Assistants in Claude Code
+### For AI coding assistants
 
 **Best Practice**: Use the **`project-init` skill** which automates this entire guide:
 
@@ -1005,7 +1018,7 @@ PROJECT_KICKOFF_TASKS.md (Day 1-7)
 
 ### Related Skills
 
-- **project-init** skill - Automates this guide (Claude Code)
+- Use your assistant’s project initialization capability (e.g., `project-init`) to automate this guide
 - **doc-flow** skill - Workflow execution after initialization
 
 ---

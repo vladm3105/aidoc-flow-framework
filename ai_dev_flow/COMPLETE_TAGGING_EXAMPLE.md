@@ -15,7 +15,7 @@
 - Tags:
   - @brd: BRD-NN
 
-### Layer 3: EARS (Formal Requirements)
+### Layer 3: EARS (Engineering Requirements)
 - EARS-NN:
   - WHEN a user submits a valid request, THE system SHALL validate fields WITHIN 100ms.
   - WHEN validation succeeds, THE system SHALL accept and enqueue the request WITHIN 200ms.
@@ -150,4 +150,3 @@ Layer 13 Code -> +@tasks
 Layer 14 Tests-> +@code
 Layer 15 Valid-> all upstream tags
 ```
-

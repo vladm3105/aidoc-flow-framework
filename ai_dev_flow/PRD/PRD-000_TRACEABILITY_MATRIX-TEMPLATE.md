@@ -47,7 +47,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate PRD traceability matrix
-python scripts/generate_traceability_matrices.py --type PRD --output docs/PRD/PRD-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type PRD --output docs/PRD/PRD-000_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**

@@ -30,9 +30,9 @@ custom_fields:
 **Date**: 2025-11-19
 **Last Updated**: 2025-12-12
 **Purpose**: Complete validation rules for ADR documents
-**Script**: `scripts/validate_adr_template.sh`
+**Script**: `python scripts/validate_adr.py`
 **Primary Template**: `ADR-TEMPLATE.md`
-**Framework**: doc_flow SDD (100% compliant)
+**Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added ADR-REF as second document category with reduced validation; Updated CHECK 3 and CHECK 4 for reference documents
 
 ---
@@ -48,6 +48,8 @@ custom_fields:
 ---
 
 ## Overview
+
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 The ADR validation script ensures architecture decisions follow quality standards for SYS progression and meet SDD quality gates.
 
@@ -242,13 +244,13 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 ```bash
 # Validate single ADR document (nested folder structure)
-./scripts/validate_adr_template.sh docs/ADR/ADR-01_architecture_decision/ADR-01.0_architecture_decision_index.md
+python scripts/validate_adr.py docs/ADR/ADR-01_architecture_decision/ADR-01.0_architecture_decision_index.md
 
 # Validate all ADR files (section-based structure)
-find docs/ADR -type f -name "ADR-*.md" -exec ./scripts/validate_adr_template.sh {} \;
+find docs/ADR -type f -name "ADR-*.md" -exec python scripts/validate_adr.py {} \;
 
 # Validate monolithic ADR (optional for <25KB)
-./scripts/validate_adr_template.sh docs/ADR/ADR-01_architecture_decision.md
+python scripts/validate_adr.py docs/ADR/ADR-01_architecture_decision.md
 ```
 
 ### SYS-Ready Scoring Criteria ⭐ NEW

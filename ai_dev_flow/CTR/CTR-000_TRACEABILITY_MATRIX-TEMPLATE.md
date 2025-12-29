@@ -47,7 +47,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate CTR traceability matrix
-python scripts/generate_traceability_matrices.py --type CTR --output docs/CTR/CTR-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type CTR --output docs/CTR/CTR-000_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -157,7 +157,7 @@ python scripts/validate_tags_against_docs.py \
   --strict
 
 # Generate CTR traceability report
-python scripts/generate_traceability_matrices.py \
+python scripts/generate_traceability_matrix.py \
   --type CTR \
   --show-coverage
 ```

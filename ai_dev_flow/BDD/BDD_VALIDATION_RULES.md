@@ -31,9 +31,9 @@ custom_fields:
 **Date**: 2025-11-19
 **Last Updated**: 2025-12-26
 **Purpose**: Complete validation rules for BDD feature files
-**Script**: `scripts/validate_bdd_template.sh`
+**Script**: `python scripts/validate_bdd.py`
 **Primary Template**: `BDD-TEMPLATE.feature`
-**Framework**: doc_flow SDD (100% compliant)
+**Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added split-file structure validation (v1.1). Previous: ADR-ready scoring validation system (v1.0)
 
 ---
@@ -50,6 +50,8 @@ custom_fields:
 ---
 
 ## Overview
+
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 The BDD validation script ensures feature files meet quality standards for ADR progression and automated test execution.
 
@@ -639,10 +641,10 @@ done
 
 ```bash
 # Validate single BDD feature file
-./scripts/validate_bdd_template.sh docs/BDD/BDD-01_feature_scenarios/BDD-01.1_feature_scenarios.feature
+python scripts/validate_bdd.py docs/BDD/BDD-01_feature_scenarios/BDD-01.1_feature_scenarios.feature
 
 # Validate all BDD files
-find docs/BDD -name "BDD-*.feature" -exec ./scripts/validate_bdd_template.sh {} \;
+find docs/BDD -name "BDD-*.feature" -exec python scripts/validate_bdd.py {} \;
 ```
 
 ### ADR-Ready Scoring Criteria ⭐ NEW

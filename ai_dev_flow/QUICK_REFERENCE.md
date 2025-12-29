@@ -18,7 +18,17 @@ custom_fields:
 
 ---
 
-<!-- Path Prefix Note: Some examples use a top-level `docs/` prefix. In this `ai_dev_flow` folder, BRD/, PRD/, etc. live at the repository root. Adjust links accordingly. -->
+Note: Path mapping — many examples use a top-level `docs/` folder. In this repository, artifact folders live directly under `ai_dev_flow/`. When running commands here, drop the `docs/` prefix.
+
+### Splitting Rules
+
+- Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
+- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./BDD/BDD_SPLITTING_RULES.md)
+- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./CTR/CTR_SPLITTING_RULES.md)
+- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./SPEC/SPEC_SPLITTING_RULES.md)
+- Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
+
+<!-- See README.md → “Using This Repo” for path mapping guidance. -->
 
 ## 16-Layer Workflow
 
@@ -54,8 +64,13 @@ TASKS-23_implement_risk_calculator.md
 - Correct: `BRD-01`, `BRD-99`, `BRD-102`, `BRD-999`, `BRD-1000`.
 - Incorrect: `BRD-001`, `BRD-009`.
 - Applies to all document types (BRD→IPLAN). Element IDs must match filename digit width (e.g., `PRD-16` ↔ `PRD.16.xx.xx`).
-- Reserved infra docs: `-000` is intentional for indexes/templates. Code and tests use their language-specific naming rules.
+- Reserved infra docs: This repository uses `-000` for index/registry and general utility docs. Code and tests use their language-specific naming rules.
 - See: `ID_NAMING_STANDARDS.md` for full details.
+
+### General Utility Documents (`{DOC_TYPE}-000_*`)
+- Purpose: Group general-purpose, cross-project, or utility documents not tied to a specific project artifact.
+- Pattern: `{DOC_TYPE}-000_{slug}.{ext}` (e.g., `REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md`, `ICON-000_index.md`).
+- Usage: May be referenced across artifacts but are excluded from sequential DOC_NUM series. Keep guidance, templates, matrices, and reference content here.
 
 ### Section Files (DEFAULT for BRD/PRD/ADR)
 ```
@@ -70,12 +85,17 @@ Section File: docs/ADR/ADR-05_database_selection/ADR-05.2_database_selection_alt
 
 **Note**: Folder slug MUST match the index file slug (e.g., `BRD-01_platform_architecture/` contains `BRD-01.0_platform_architecture_index.md`).
 
-### Monolithic (Optional for <25KB)
-```
-docs/{TYPE}/{TYPE}-{NN}_{descriptive_slug}.md
+### SPEC Policy (YAML vs Markdown)
 
-Example: docs/REQ/REQ-42_authentication_methods.md
-```
+- YAML: Keep monolithic per component for codegen (`SPEC-{DOC_NUM}_{slug}.yaml`).
+- Markdown: Split narrative with `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` when needed.
+- Layout:
+  - Nested default: `SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml`
+  - Flat exception: `SPEC/SPEC-{DOC_NUM}_{slug}.yaml` (small, stable specs)
+
+Examples:
+- Flat: `SPEC/SPEC-01_api_client_example.yaml`
+- Nested: `SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml` (+ `SPEC-02.0_index.md`)
 
 ---
 
@@ -85,12 +105,12 @@ Example: docs/REQ/REQ-42_authentication_methods.md
 [{TYPE}-{ID}](../path/to/document.md#{TYPE}-{ID})
 
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-Examples (nested folder structure - BRD/PRD/ADR):
+Examples (nested folder structure):
 [BRD-01](../BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md#BRD-01)
 [PRD-02](../PRD/PRD-02_user_authentication/PRD-02.0_user_authentication_index.md#PRD-02)
 [ADR-05](../ADR/ADR-05_database_selection/ADR-05.0_database_selection_index.md#ADR-05)
 
-Examples (flat structure - other types):
+Examples (flat structure - legacy):
 [REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)
 [SPEC-23](../SPEC/SPEC-23_risk_calculator.yaml)
 ```
@@ -108,10 +128,10 @@ graph TB
     EARS["EARS/EARS-NN_{slug}/ - EARS Syntax"]
     BDD["BDD/BDD-NN_{suite}/ - BDD Gherkin (sections)"]
     SYS["SYS/SYS-NN_{slug}/ - System Specs"]
-    REQ["REQ/{domain}/ - Atomic Requirements"]
+    REQ["REQ/REQ-NN_{slug}/ - Atomic Requirements"]
     IMPL["IMPL/IMPL-NN_{slug}/ - Implementation Plans"]
     CTR["CTR/CTR-NN_{slug}/ - API Contracts"]
-    SPEC["SPEC/{category}/ - Technical Specs"]
+    SPEC["SPEC/SPEC-NN_{slug}/ - Technical Specs"]
     TASKS["TASKS/TASKS-NN_{slug}/ - Implementation Tasks"]
     IPLAN["IPLAN/IPLAN-NN_{slug}/ - Session Plans"]
   end
@@ -132,7 +152,7 @@ graph TB
 
 ---
 
-Note: This repository includes some flat examples for historical reasons. For new projects, use the nested folder structure for BRD/PRD/ADR by default.
+Note: This repository includes some flat examples for historical reasons. For new projects, use the nested folder structure for all document types by default.
 
 ## REQ Subfolder Taxonomy
 
@@ -146,35 +166,47 @@ Use the Standard set for general projects, and add Financial sets as needed for 
 ### Project Initialization
 
 ```bash
-# Create top-level folders (nested structure for BRD/PRD/ADR)
+# NOTE: In this repo, drop any `docs/` prefix used in generic examples.
+# Create top-level folders (nested structure is DEFAULT for all document types)
 mkdir -p docs/{BRD,PRD,ADR}
 mkdir -p docs/{EARS,BDD,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
-mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
+# REQ: Nested per-document folders (DEFAULT)
+mkdir -p docs/REQ/REQ-01_resource_limits
 
-# Create nested document folders (BRD/PRD/ADR - DEFAULT)
+# Create nested document folders (ALL TYPES - DEFAULT)
 # Folder slug MUST match the index file slug
 mkdir -p docs/BRD/BRD-01_platform_architecture  # Creates docs/BRD/BRD-01_platform_architecture/
 mkdir -p docs/PRD/PRD-01_user_authentication    # Creates docs/PRD/PRD-01_user_authentication/
 mkdir -p docs/ADR/ADR-01_cloud_migration        # Creates docs/ADR/ADR-01_cloud_migration/
 
-# Domain-specific (Financial)
-mkdir -p docs/REQ/{core,operations,data,compliance,ml}
+# Examples for other types (nested per document)
+mkdir -p docs/EARS/EARS-01_event_processing
+mkdir -p docs/SYS/SYS-01_api_gateway
+mkdir -p docs/REQ/REQ-01_resource_limits
+mkdir -p docs/SPEC/SPEC-01_rate_limiter
+mkdir -p docs/TASKS/TASKS-01_implement_rate_limiter
+mkdir -p docs/CTR/CTR-01_data_service_api
+mkdir -p docs/IPLAN/IPLAN-01_initial_session
 
-# Domain-specific (Software/SaaS)
-mkdir -p docs/REQ/{tenant,subscription,billing,workspace}
+# Legacy category folders are not used in new projects.
 
 # Support directories
 mkdir -p scripts work_plans
 ```
 
+Note: Traceability matrix generator — use the singular script `scripts/generate_traceability_matrix.py`. The plural `generate_traceability_matrices.py` is a backward-compatible wrapper.
+
+Index Width Policy: See README.md → “Using This Repo” for the `-000` index/utility convention used here.
+
 ### Validation
 
 ```bash
+# NOTE: In this repo, drop any `docs/` prefix used in generic examples.
 # Validate requirement IDs
 python scripts/validate_requirement_ids.py
 
 # Check broken references
-python scripts/check_broken_references.py
+python scripts/validate_links.py
 
 # Generate traceability matrix
 python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
@@ -219,11 +251,11 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 | [TASKS-23](../TASKS/TASKS-23_impl.md#TASKS-23) | Implementation Tasks | TODOs |
 
 ### Primary Anchor/ID
-- **REQ-03**: resource limit enforcement requirement
+- **REQ-03**: [placeholder] requirement title
 
 ### Code Paths
-- `src/risk/resource_limiter.py::PositionLimiter.enforce_limit()`
-- `tests/risk/test_resource_limits.py::test_hard_limit_enforcement()`
+- `src/[module]/[component].py::[ClassOrFunc]`
+- `tests/[module]/test_[component].py::test_[behavior]()`
 ```
 
 ---
@@ -261,20 +293,8 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 
 ## Tool Optimization
 
-### Claude Code
-- **File limit**: 50K tokens (200KB) standard, 100K max
-- **Strategy**: Single comprehensive files
-- **Command**: Use `Read` tool for all file operations
-
-### Gemini CLI
-- **@ reference limit**: 10K tokens (40KB)
-- **Large files**: Use file read tool, not `@` reference
-- **Command**: `gemini read FILE.md` instead of `@FILE.md`
-
-### GitHub Copilot
-- **Optimal**: 10-30KB per file
-- **Large files**: Create companion summaries
-- **Working set**: Max 10 files in Edits mode
+For tool-specific guidance (token limits, file handling, working set strategies), see `AI_TOOL_OPTIMIZATION_GUIDE.md`.
+Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 
 ---
 
@@ -319,7 +339,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
   - [ ] Update section 3 (Upstream Traceability)
   - [ ] Update section 4 (Downstream Traceability)
   - [ ] Update section 8 (Implementation Status)
-- [ ] Update index file: `[TYPE]-00_index.md`
+- [ ] Update index file: `[TYPE]-000_index.md`
 - [ ] Validate all markdown links resolve correctly
 - [ ] Run validation scripts:
   ```bash
@@ -529,7 +549,7 @@ python ai_dev_flow/scripts/migrate_bdd_to_sections.py --root docs/BDD --suite BD
 ### Broken Reference
 ```bash
 # Find all broken references
-python scripts/check_broken_references.py
+python scripts/validate_links.py
 
 # Fix pattern
 [REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)

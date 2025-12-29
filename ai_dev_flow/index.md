@@ -9,7 +9,7 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 - ✅ **Project Setup**: New comprehensive setup guide with domain selection questionnaire
 - ✅ **Traceability Enhancements**: Added setup guide, validation guide, and complete tagging examples
 - ✅ **Decision Frameworks**: Contract decision questionnaire and IMPL creation guidelines
-- ✅ **Tool Optimization**: Token limits and optimization strategies for Claude Code, Gemini CLI, GitHub Copilot
+- ✅ **Tool Optimization**: Guidance for AI coding assistants (see AI_TOOL_OPTIMIZATION_GUIDE.md)
 - ✅ **BRD Guidance**: Platform vs Feature BRD selection guide
 - ✅ **IPLAN Layer**: Formalized Layer 12 Implementation Plans with timestamp-based naming convention
 
@@ -17,7 +17,7 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 
 The AI Dev Flow organizes documentation through a hierarchical, traceable structure:
 
-> Default Directory Model: All artifact types use nested folders by default — `{TYPE}/{TYPE}-NN_{slug}/` — containing the primary document file(s). BDD is the single exception and remains flat due to validator requirements.
+> Default Directory Model: All artifact types use nested folders by default — `{TYPE}/{TYPE}-NN_{slug}/` — containing the primary document file(s). BDD uses nested per-suite folders (`BDD/BDD-NN_{slug}/`) due to validator requirements.
 
 ### Business Layer (Layers 1-3)
 
@@ -28,7 +28,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 - **PRD** (`PRD/`) - Layer 2: Product Requirements Documents translating business needs to product features
   - Index: [PRD-000_index.md](./PRD/PRD-000_index.md)
   - Template: [PRD-TEMPLATE.md](./PRD/PRD-TEMPLATE.md)
- - **EARS** (`EARS/`) - Layer 3: Easy Approach to Requirements Syntax (event-driven requirements)
+- **EARS** (`EARS/`) - Layer 3: Event-Action-Response-State (Engineering Requirements)
   - Index: [EARS-000_index.md](./EARS/EARS-000_index.md)
   - Template: [EARS-TEMPLATE.md](./EARS/EARS-TEMPLATE.md)
 
@@ -36,7 +36,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 - **BDD** (`BDD/`) - Layer 4: Behavior-Driven Development feature files defining acceptance criteria
   - Nested: One folder per suite: `BDD/BDD-NN_{slug}/`
-  - Index: `BDD/BDD-NN_{slug}/BDD-NN.0_index.md`
+  - Index: `BDD/BDD-000_index.md`
   - Template: [BDD-TEMPLATE.feature](./BDD/BDD-TEMPLATE.feature)
   - Purpose: Executable acceptance tests written before implementation (Test-First approach)
   - Maps to IPLAN scenarios for test-driven development workflow
@@ -57,20 +57,15 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 - **REQ** (`REQ/`) - Layer 7: Atomic, testable requirements with SPEC-readiness scoring
   - Index: [REQ-000_index.md](./REQ/REQ-000_index.md)
   - Template: [REQ-TEMPLATE.md](./REQ/REQ-TEMPLATE.md)
-  - Organization: Domain-specific subdirectories
-    - Standard: `api/`, `auth/`, `data/`, `core/`, `integration/`, `monitoring/`, `reporting/`, `security/`, `ui/`
-    - Financial: `risk/`, `operations/`, `data/`, `compliance/`, `ml/`
+  - Organization: Nested per-document folders (DEFAULT)
+    - Folder: `REQ/REQ-NN_{slug}/`
+    - Primary file (atomic): `REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
+    - Split (optional when large): `REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ/REQ-NN.1_{section}.md`, ...
   - Format: 12-section framework with validation rules
 <!-- VALIDATOR:IGNORE-LINKS-START -->
   - Examples:
-    <!-- VALIDATOR:IGNORE-LINKS-START -->
-    - [REQ-01](./REQ/api/av/REQ-01_external_api_integration.md) (API Integration)
-    - [REQ-02](./REQ/api/ib/REQ-02_ib_gateway_integration.md) (Gateway Integration)
-<!-- VALIDATOR:IGNORE-LINKS-END -->
-<!-- VALIDATOR:IGNORE-LINKS-START -->
-    - [REQ-03](./REQ/risk/lim/REQ-03_resource_limit_enforcement.md) (Risk Limits)
-<!-- VALIDATOR:IGNORE-LINKS-END -->
-    <!-- VALIDATOR:IGNORE-LINKS-END -->
+    - [REQ-01: API Integration Example](./REQ/examples/api/REQ-01_api_integration_example.md)
+    - See more in [REQ/examples/](./REQ/examples/)
 
 ### Project Management Layer (Layer 8 - Optional)
 
@@ -96,12 +91,17 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Implementation Layer (Layer 10)
 
 - **SPEC** (`SPEC/`) - Layer 10: Technical specifications ready for code generation
-  - Nested directory per spec: `SPEC/SPEC-NN_{slug}/`
-  - Primary file (monolithic YAML): `SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml`
+  - YAML: Monolithic single file per component (codegen source)
+  - Markdown: Split narrative using `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` when needed
+  - Layout:
+    - Nested (default): `SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml` (+ Markdown sections alongside)
+    - Flat (exception): `SPEC/SPEC-{DOC_NUM}_{slug}.yaml` for small, stable specs
   - Template: [SPEC-TEMPLATE.yaml](./SPEC/SPEC-TEMPLATE.yaml)
   - Purpose: YAML format with classes, methods, algorithms (HOW to build)
   - References CTR contracts when implementing interfaces
-  - Example: [SPEC-NN](./SPEC/SPEC-01_api_client_example.yaml)
+  - Examples:
+    - Flat (small): [SPEC-01](./SPEC/SPEC-01_api_client_example.yaml)
+    - Nested (recommended): [SPEC-02 nested example](./SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) with [index](./SPEC/examples/SPEC-02_nested_example/SPEC-02.0_index.md)
 
 ### Code Generation Layer (Layer 11)
 
@@ -112,7 +112,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Each TASKS document corresponds to one SPEC
   - **Section 8**: Implementation Contracts for parallel development coordination
 
-- **ICON** (`ICON/`) - Layer 11 (optional): Implementation Contracts
+- **ICON** (`ICON/`) - Layer 11 (optional; shares with TASKS): Implementation Contracts
   - Index: [ICON-000_index.md](./ICON/ICON-000_index.md)
   - Template: [ICON-TEMPLATE.md](./ICON/ICON-TEMPLATE.md)
   - Purpose: Standalone contracts for parallel development coordination
@@ -131,7 +131,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Each IPLAN executes one or more TASKS within a session
   - BDD Scenario Mapping: [BDD_SCENARIO_MAPPING.md](./IPLAN/BDD_SCENARIO_MAPPING.md)
 
-<!-- Path Prefix Note: Examples in some guides use a top-level `docs/` prefix. In this `ai_dev_flow` folder, type folders (BRD/, PRD/, etc.) live at the repository root. Adjust relative links accordingly. -->
+<!-- See README.md → “Using This Repo” for path mapping guidance. -->
 
 ## Traceability Flow
 
@@ -229,6 +229,14 @@ flowchart TD
     class Code,Tests,Validation,Review,Prod executionLayer
 ```
 
+### Splitting Rules
+
+- Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
+- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./BDD/BDD_SPLITTING_RULES.md)
+- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./CTR/CTR_SPLITTING_RULES.md)
+- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./SPEC/SPEC_SPLITTING_RULES.md)
+- Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
+
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 
 ### Workflow Explanation
@@ -289,7 +297,7 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 
 ### Tool Optimization
 
-- **Tool Optimization**: [TOOL_OPTIMIZATION_GUIDE.md](./TOOL_OPTIMIZATION_GUIDE.md) - AI tool token limits and optimization strategies
+- **Tool Optimization**: [AI_TOOL_OPTIMIZATION_GUIDE.md](./AI_TOOL_OPTIMIZATION_GUIDE.md) - AI tool token limits and optimization strategies
 - **AI Assistant Rules**: [AI_ASSISTANT_RULES.md](./AI_ASSISTANT_RULES.md) - Rules for AI assistants working with framework
 
 ### Templates & Examples

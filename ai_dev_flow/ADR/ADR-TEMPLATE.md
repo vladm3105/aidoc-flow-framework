@@ -86,7 +86,7 @@ BRD (Business Requirements)
   ↓
 PRD (Product Requirements)
   ↓
-EARS (Formal Requirements - WHEN/THEN format)
+EARS (Engineering Requirements — Event-Action-Response-State)
   ↓
 BDD (Behavior-Driven Tests)
   ↓

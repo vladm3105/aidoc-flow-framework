@@ -76,6 +76,16 @@ Scope & Authority
 
 Note on paths: Examples may show a top-level `docs/` prefix; in this ai_dev_flow directory, type folders live at the ai_dev_flow root (e.g., `BRD/`, `PRD/`, `ADR/`). Adjust relative links accordingly.
 
+## General Utility Documents (`{DOC_TYPE}-000_*`)
+
+Definition and Purpose
+- `{DOC_TYPE}-000` is reserved across all artifact types to group general-purpose, cross-project, or utility documents that are not directly tied to a specific numbered project document.
+- Typical uses: indexes, templates, traceability matrix templates, validation checklists, and reference guides.
+
+Format
+- Pattern: `{DOC_TYPE}-000_{slug}.{ext}` (e.g., `REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md`, `ICON-000_index.md`).
+- These do not participate in the sequential DOC_NUM series and are globally recognizable as general/utility artifacts.
+
 ## Default Directory Model (All Types)
 
 - Default: Use nested per-document folders for all artifact types: `{TYPE}/{TYPE}-DOC_NUM_{slug}/`.
@@ -105,12 +115,13 @@ Universal Numbering Pattern (All Document Types)
     - **Shortened Filename Rule**: For BRD, PRD, ADR section files inside nested folders, the descriptive slug MAY be omitted from the filename since the parent folder already contains it. The shortened pattern is PREFERRED for new documents.
   - **Flat Types (all others)** - section optional:
     - Atomic: `TYPE-DOC_NUM_{slug}.md` (e.g., `REQ-01_auth.md`, `TASKS-99_service.md`)
-    - Split: `TYPE-DOC_NUM.S_{slug}.md` (e.g., `SPEC-100.1_split.yaml`)
+    - Split: `TYPE-DOC_NUM.S_{slug}.md` (e.g., `SPEC-100.1_split.md` for SPEC narrative)
+    - Note: For SPEC, splitting applies to Markdown narrative; the SPEC YAML remains a single monolithic file for code generation.
 - **Zero-Padding**: Start with 2 digits (01), expand as needed
-  - **Index/Common Files Use Zeros (default 2 digits)**: Index or other common registry-style files use an all‑zero `DOC_NUM` to separate them from numbered documents. The default index width is 2 digits (`00`) for new files.
-    - Preferred examples: `BRD-00.0_index.md`, `PRD-00_index.md`, `TASKS-00_index.md`, `ICON-00_index.md`.
-    - Acceptable when a project uses 3+ digits for document numbers: `BRD-000_index.md`, `PRD-000_index.md`, etc. The zero width SHOULD match the active width for the document type directory.
-    - Compatibility note: Existing repositories may use 000_index; do not rename existing files to avoid broken links. New projects default to 00_index.
+  - **Index/General Utility Files Use Zeros**: Use all‑zero `DOC_NUM` to separate indexes and general utility artifacts from numbered documents.
+    - This repository: uses 3 zeros (`-000_index.md`) consistently; do not rename historical files.
+    - New repositories: choose `00` or `000` and keep it consistent across types.
+    - General utility files follow `{DOC_TYPE}-000_{slug}.{ext}`.
 - **Element ID DOC_NUM**: MUST match filename digit count exactly
   - Filename `BRD-01.0_index.md` → Element ID `BRD.01.01.01`
   - Filename `ADR-100.1_context.md` → Element ID `ADR.100.10.01`
@@ -130,9 +141,11 @@ Universal Numbering Pattern (All Document Types)
 Document ID Standards (ai_dev_flow)
 - Requirements (REQ)
   - H1 ID: `REQ-DOC_NUM` (e.g., `# REQ-01: [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] Integration`). Do not use category-coded IDs like `REQ-API-AV-01`.
-  - Filename: `REQ-DOC_NUM_{slug}.md` under category folders: `REQ/{category}/{subcategory}/REQ-DOC_NUM_{slug}.md` (e.g., `REQ/api/av/REQ-01_external_api_integration.md`).
+  - Directory Structure (DEFAULT): Nested per-document folders: `REQ/REQ-DOC_NUM_{slug}/`
+  - Primary File (atomic): `REQ/REQ-DOC_NUM_{slug}/REQ-DOC_NUM_{slug}.md`
+  - Split (optional when large): `REQ/REQ-DOC_NUM_{slug}/REQ-DOC_NUM.0_index.md`, `REQ/REQ-DOC_NUM.1_{section}.md`, ...
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
-  - Notes: Categories are encoded by folders. Use Section Files (`REQ-DOC_NUM.S_{slug}.md`) when document exceeds 50KB.
+  - Notes: Legacy category folders are not used in new projects. Keep categorization in metadata/tags, not paths.
 - ADRs
   - H1 ID: `ADR-DOC_NUM` (e.g., `# ADR-33: Risk Limit Enforcement Architecture`).
   - Filename: `ADR-DOC_NUM.S_{slug}.md` (section-based is REQUIRED)
@@ -371,7 +384,7 @@ File Organization Rules
     - **Folder contains descriptive slug** - filenames can omit it since context is in path
     - **Metadata field `descriptive_slug`** captures folder's descriptive name for tools
   - **Flat Types** - section optional:
-    - `REQ/{category}/{subcategory}/REQ-DOC_NUM_{slug}.md`
+    - `REQ/REQ-DOC_NUM_{slug}/REQ-DOC_NUM_{slug}.md`
     - `BDD/BDD-DOC_NUM_{suite}/BDD-DOC_NUM.SECTION_{slug}.feature`
     - `SPEC/{type}/SPEC-DOC_NUM_{slug}.yaml`
     - `CTR/CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml` (optional subdirs: `CTR/{agents,mcp,infra}/`)
@@ -448,7 +461,7 @@ The framework uses three distinct ID patterns for different purposes:
 - Exception: Reserved infrastructure artifacts use `-000` (e.g., `BRD-000_index.md`, `PRD-000_index.md`) by design.
 - Note: Source code and unit test files follow coding standards for their languages and are excluded from this document ID filename policy.
 - **Regex**: `^[A-Z]{2,5}-[0-9]{2,}(\.[0-9]+)?_[a-z0-9_]+\.(md|yaml|feature)$`
-- **Examples**: `REQ-01_api_auth.md`, `TASKS-99_service.md`, `SPEC-100.1_split.yaml`
+- **Examples**: `REQ-01_api_auth.md`, `TASKS-99_service.md`, `SPEC-100.1_split.md`
 
 | Component | Format | Description |
 |-----------|--------|-------------|
@@ -468,7 +481,7 @@ The framework uses three distinct ID patterns for different purposes:
 |-----------|--------|-----------|
 | <50KB | Keep as single file | Optimal for all AI tools |
 | 50-100KB | Consider splitting | May cause issues with some tools |
-| >100KB | **MUST split** | Exceeds Claude Code practical limit |
+| >100KB | **MUST split** | Exceeds primary assistant practical limit (see AI_TOOL_OPTIMIZATION_GUIDE.md) |
 
 **Split Triggers**:
 1. File exceeds 50KB standard limit

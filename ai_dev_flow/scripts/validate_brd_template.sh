@@ -2,7 +2,7 @@
 # BRD Template Validator v1.0
 # Validates BRD documents against:
 # - BRD-TEMPLATE.md (authoritative template)
-# - doc_flow SDD framework standards
+# - AI Dev Flow SDD framework standards
 # - Platform vs Feature BRD validation rules
 # Usage: ./scripts/validate_brd_template.sh <BRD_FILE>
 
@@ -29,7 +29,7 @@ echo "========================================="
 echo "BRD Template Validator v${SCRIPT_VERSION}"
 echo "========================================="
 echo "File: $BRD_FILE"
-echo "Template: BRD-TEMPLATE.md + doc_flow framework"
+echo "Template: BRD-TEMPLATE.md + AI Dev Flow framework"
 echo ""
 
 # ============================================
@@ -909,7 +909,7 @@ if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
   echo ""
   echo "Document complies with:"
   echo "  - BRD-TEMPLATE.md structure"
-  echo "  - doc_flow SDD framework requirements"
+  echo "  - AI Dev Flow SDD framework requirements"
   echo "  - Platform/Feature BRD validation rules"
   exit 0
 elif [ $ERRORS -eq 0 ]; then

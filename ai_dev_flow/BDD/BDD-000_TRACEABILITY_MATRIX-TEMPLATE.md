@@ -47,7 +47,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate BDD traceability matrix
-python scripts/generate_traceability_matrices.py --type BDD --output docs/BDD/BDD-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type BDD --output docs/BDD/BDD-000_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -195,7 +195,7 @@ python scripts/validate_tags_against_docs.py \
   --strict
 
 # Generate BDD traceability report
-python scripts/generate_traceability_matrices.py \
+python scripts/generate_traceability_matrix.py \
   --type BDD \
   --show-coverage
 ```
@@ -209,7 +209,7 @@ BRD (Layer 1) ← Business Requirements
     ↓
 PRD (Layer 2) ← Product Features
     ↓
-EARS (Layer 3) ← Formal Requirements
+EARS (Layer 3) ← Engineering Requirements
     ↓
 [BDD (Layer 4)] ← YOU ARE HERE - Acceptance Tests
     ↓
@@ -218,7 +218,7 @@ ADR (Layer 5) ← Architecture Decisions
 Test Implementation & Code (Layers 13-14)
 ```
 
-**Key Role**: BDD bridges formal requirements (EARS) and technical implementation, providing executable acceptance criteria that validate product behavior against business needs.
+**Key Role**: BDD bridges engineering requirements (EARS) and technical implementation, providing executable acceptance criteria that validate product behavior against business needs.
 
 ---
 
@@ -246,8 +246,8 @@ Test Implementation & Code (Layers 13-14)
 
 | EARS ID | EARS Title | BDD IDs | BDD Scenarios | Relationship |
 |---------|------------|---------|---------------|--------------|
-| EARS-01 | [Formal requirement] | BDD-01 | Scenarios 1-3 | EARS statements validated through BDD |
-| EARS-02 | [Formal requirement] | BDD-02, BDD-03 | Scenarios 1-2, 1 | Multiple BDD files test requirement |
+| EARS-01 | [Engineering requirement] | BDD-01 | Scenarios 1-3 | EARS statements validated through BDD |
+| EARS-02 | [Engineering requirement] | BDD-02, BDD-03 | Scenarios 1-2, 1 | Multiple BDD files test requirement |
 | EARS-NN | ... | ... | ... | ... |
 
 ### 5.2 PRD → BDD Traceability

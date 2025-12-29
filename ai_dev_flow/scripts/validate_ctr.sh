@@ -2,7 +2,7 @@
 # CTR (Contract) Template Validator v1.0
 # Validates CTR documents against:
 # - CTR-TEMPLATE.md and CTR-TEMPLATE.yaml (authoritative templates)
-# - doc_flow SDD framework standards
+# - AI Dev Flow SDD framework standards
 # - Layer 9 artifact requirements
 # Usage: ./scripts/validate_ctr.sh <CTR_FILE>
 
@@ -487,7 +487,7 @@ if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
   echo ""
   echo "Document complies with:"
   echo "  - CTR-TEMPLATE.md structure"
-  echo "  - doc_flow SDD framework requirements"
+  echo "  - AI Dev Flow SDD framework requirements"
   echo "  - Layer 9 artifact standards"
   exit 0
 elif [ $ERRORS -eq 0 ]; then

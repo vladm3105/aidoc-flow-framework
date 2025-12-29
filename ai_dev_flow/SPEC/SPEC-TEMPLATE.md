@@ -26,7 +26,7 @@ custom_fields:
   schema_version: "1.0"
 ---
 
-> Reference Template — For learning and small specs only. Real SPECs are monolithic per component by default; split only when needed per `../DOCUMENT_SPLITTING_RULES.md` and `SPEC/SPEC_SPLITTING_RULES.md`.
+> Reference Template — For learning and small specs only. Real SPECs use a monolithic YAML per component for code generation. When narrative grows, split the Markdown only per `../DOCUMENT_SPLITTING_RULES.md` and `SPEC/SPEC_SPLITTING_RULES.md`.
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for SPEC Markdown structure.
 > - All SPEC Markdown documents must conform to this template
@@ -97,14 +97,13 @@ configuration:
 **Note**: For the full SPEC structure with all traceability fields, see `SPEC-TEMPLATE.yaml`.
 ## File Size Limits
 
-- Target: 300–500 lines per file
-- Maximum (Markdown): 600 lines per file (absolute)
-- YAML Exception (monolithic): Warnings at ~1000 lines, errors at ~2000 lines in linter; splitting is not required unless readability suffers.
-- If this spec approaches/exceeds limits, split into multiple spec files organized by domain/component and update cross-references (prefer monolithic YAML where logical).
+- Target (Markdown): 300–500 lines per section file
+- Maximum (Markdown): 600 lines per section file (absolute)
+- YAML (monolithic): Warnings at ~1000 lines, errors at ~2000 lines in linter; keep YAML monolithic and move narrative to Markdown sections if readability suffers.
 
 ## Document Splitting Standard
 
-Split specs when very large or logically separable by component/domain:
-- Create additional YAML files per component/domain; update cross-references and code generation pointers
-- Avoid splitting a single interface across multiple files
-- Validate references and run size lints
+Split Markdown when the narrative becomes large or logically separable by audience/domain:
+- Create `SPEC-{DOC_NUM}.0_index.md` and one or more `SPEC-{DOC_NUM}.{S}_{slug}.md` files
+- Keep the SPEC YAML as a single file; move explanatory content to Markdown
+- Validate links and cross-references; ensure YAML traceability remains complete

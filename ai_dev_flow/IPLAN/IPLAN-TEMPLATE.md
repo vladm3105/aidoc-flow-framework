@@ -947,7 +947,7 @@ pytest --cov --cov-fail-under=@threshold: PRD.NN.quality.test.unit_coverage
 ### 12.1 Framework Documentation
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Workflow guide
 - [TRACEABILITY.md](../TRACEABILITY.md) - Cumulative tagging hierarchy
-- [TOOL_OPTIMIZATION_GUIDE.md](../TOOL_OPTIMIZATION_GUIDE.md) - Token efficiency guidelines
+- [AI_TOOL_OPTIMIZATION_GUIDE.md](../AI_TOOL_OPTIMIZATION_GUIDE.md) - Token efficiency guidelines
 
 ### 12.2 Artifact Templates
 - [TASKS-TEMPLATE.md](../TASKS/TASKS-TEMPLATE.md) - Parent artifact template

@@ -66,7 +66,7 @@ custom_fields:
 - **Parent Document**: @ref: PRD-{NN}.0
 - **Related Sections**: @ref: PRD-{NN}.{related}
 - **Upstream**: @ref: BRD-{NN} (Business Requirements)
-- **Downstream**: @ref: EARS-{NN} (Formal Requirements)
+- **Downstream**: @ref: EARS-{NN} (Engineering Requirements)
 
 ---
 

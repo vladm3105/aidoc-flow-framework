@@ -16,8 +16,16 @@ custom_fields:
 
 Development Principles Guide
 
+### Splitting Rules
+
+- Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
+- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./BDD/BDD_SPLITTING_RULES.md)
+- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./CTR/CTR_SPLITTING_RULES.md)
+- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./SPEC/SPEC_SPLITTING_RULES.md)
+- Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
+
 > ⚠️ **Token Limit Update (2025-11)**: This guide contains historical 10K token limits.
-> For current token limits (Claude Code: 50K-100K), see [TOOL_OPTIMIZATION_GUIDE.md](./TOOL_OPTIMIZATION_GUIDE.md).
+> For current token limits (Claude Code: 50K-100K), see [AI_TOOL_OPTIMIZATION_GUIDE.md](./AI_TOOL_OPTIMIZATION_GUIDE.md).
 >
 > Script name canonicalization: matrix generation uses `scripts/generate_traceability_matrix.py`. Historical references to `generate_traceability_matrices.py` refer to the same tool; use the singular script.
 
@@ -39,7 +47,7 @@ Quality gates prevent progression to downstream layers until artifacts meet spec
 - **Automated Recovery**: Validation scripts provide specific guidance for reaching quality thresholds
 
 **Validation Commands:**
-- `./scripts/validate_quality_gates.sh docs/PRD/PRD-01_product_overview/PRD-01.0_product_overview_index.md` - Validates individual artifact readiness
+- Validation note: use the per-artifact validators and the pre-commit hook pattern defined in `TRACEABILITY_VALIDATION.md` instead of a monolithic `validate_quality_gates.sh` script.
 - Pre-commit automation: Quality gates run on every commit to docs/ directory
 - Refer to [TRACEABILITY_VALIDATION.md](./TRACEABILITY_VALIDATION.md) for complete quality gate specifications
 
@@ -137,7 +145,7 @@ graph LR
 **Layer Descriptions** (Formal Layer Numbers 0-15):
 - **Layer 1 - Business Requirements** (Blue): BRD - Business objectives, stakeholder groups (business-level), high-level functional requirements and quality attributes, business constraints
 - **Layer 2 - Product Requirements** (Blue): PRD - User personas, user stories, user roles, product features, detailed functional requirements derived from business objectives
-- **Layer 3 - Formal Requirements** (Blue): EARS - Formal requirements syntax with business/product boundary guidance
+- **Layer 3 - Engineering Requirements** (Blue): EARS - Event-Action-Response-State requirements bridging PRD to BDD/ADR/SYS
 - **Layer 4 - Testing** (Yellow): BDD - Acceptance criteria and test scenarios
 - **Layers 5-6 - Architecture** (Green): ADR (L5) → SYS (L6) - Technical decisions and system design
 - **Layer 7 - Requirements** (Red): REQ - Detailed atomic requirements
@@ -173,7 +181,7 @@ PRDs should reference the documentation in this directory, but the documentation
 
 @requirement:[REQ-NN](./REQ/{category}/{subcategory}/REQ-NN_{slug}.md#REQ-NN)
 @adr:[ADR-NN](./ADR/ADR-NN_{slug}.md#ADR-NN)
-@spec:[{service_name}](./SPEC/{category}/SPEC-NN_{slug}.yaml)
+@spec:[{service_name}](./SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml)
 
 Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructions/DOCUMENT_ID_CORE_RULES.md`, `docs/DOCUMENT_ID_CORE_RULES.md`, `TRACEABILITY.md`, and `ID_NAMING_STANDARDS.md`.
 
@@ -793,7 +801,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate bidirectional matrices
-python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json --output docs/generated/matrices/
+python scripts/generate_traceability_matrix.py --tags docs/generated/tags.json --output docs/generated/matrices/
 
 # CI/CD enforcement
 pre-commit run validate-traceability-tags
@@ -935,7 +943,7 @@ python scripts/validate_tags_against_docs.py --strict
 python scripts/validate_tags_against_docs.py --check-cumulative
 
 # Generate traceability matrix from tags
-python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
+python scripts/generate_traceability_matrix.py --tags docs/generated/tags.json
 ```
 
 ### Benefits of Cumulative Tagging
@@ -1296,13 +1304,14 @@ REQ (Requirement Layer)                    SPEC (Implementation Layer)
 
 ### 7.5. Define Implementation Contracts (ICON) [IF PARALLEL DEVELOPMENT]
 
-**Layer 11 (Code Generation) - Optional**: Create ICON when provider TASKS has 3+ downstream consumer TASKS dependencies.
+**Layer 11 (Code Generation) - Optional**: Create ICON only when ALL criteria are met: 5+ consumer TASKS and contract definition >500 lines (otherwise keep contracts embedded in TASKS Section 8).
 
 #### When to Create ICON
 
 **Decision Criteria**:
 - ✅ **Create ICON** when provider TASKS has:
-  - 3+ downstream consumer TASKS files
+  - 5+ downstream consumer TASKS files
+  - Contract definition exceeds 500 lines
   - Shared interfaces requiring type safety
   - Complex state machines or exception hierarchies
   - Parallel development required (dependencies can't wait for full implementation)
@@ -1507,7 +1516,7 @@ SPEC-01 → TASKS-01 (Provider) → ICON-01 → TASKS-02-009 (Consumers) → Cod
 
 #### ICON vs CTR Distinction
 
-**ICON (Implementation Contracts)** - Layer 11 (Internal):
+**ICON (Implementation Contracts)** - Layer 11 (Internal; shares with TASKS):
 - **Purpose**: Enable parallel development within codebase
 - **Audience**: Internal implementation teams (provider and consumer TASKS)
 - **Format**: Embedded in TASKS section 8 OR standalone ICON files
@@ -1660,7 +1669,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
   - [ ] All code files must have @brd:/@req:/@spec: tags
   - [ ] Tag format validation passes: `python scripts/extract_tags.py --validate-only`
   - [ ] Tags reference existing documents: `python scripts/validate_tags_against_docs.py --strict`
-  - [ ] Matrices auto-generated: `python scripts/generate_traceability_matrices.py --auto`
+  - [ ] Matrices auto-generated: `python scripts/generate_traceability_matrix.py --auto`
   - [ ] No orphaned tags
   - [ ] Implementation status defined (@impl-status)
 - [ ] BDD scenarios tagged with @requirement and @adr links
@@ -1734,7 +1743,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 - ADR: [ADR-NN](./ADR/ADR-NN_{slug}.md#ADR-NN)
 - **REQ V2**: [REQ-NN](./REQ/{category}/{subcategory}/REQ-NN_{slug}.md#REQ-NN) ← Contains complete interface/schema/error/config specifications
 - CTR: [CTR-NN](./CTR/CTR-NN_{slug}.md#CTR-NN) + [CTR-NN.yaml](./CTR/CTR-NN_{slug}.yaml) ← Contract for service interface
-- SPEC: [{service_name}.yaml](./SPEC/{category}/{service_name}.yaml) ← Derived from REQ content
+- SPEC: [{service_name}.yaml](./SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml) ← Derived from REQ content
 - TASKS: [{service_name}_tasks.md](./TASKS/{service_name}_tasks.md)
 - Code: `{project_root}/{module}/{service_name}.py`
 
@@ -1810,7 +1819,7 @@ performance:
   - Generates SPEC-Ready Score (0-100%)
 - Validate requirement IDs: `python scripts/validate_requirement_ids.py`
   - Enhanced to validate REQ V2 mandatory sections
-- Check links (repo-level tools if available): `python scripts/check_broken_references.py`
+- Check links (repo-level tools if available): `python scripts/validate_links.py`
 - Generate matrices (if available): `python scripts/complete_traceability_matrix.py`
 
 ### Artifact-Specific Validation Scripts
@@ -2027,7 +2036,7 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 - `@` Reference: Limited to 10,000 tokens (40KB) per file
 - File Read Tool: No practical limit - use for files >10,000 tokens
 - Method: Don't use `@large_file.md`, instead: "Read large_file.md and..."
-- See: [Gemini_CLI_Large_File_Workarounds.md](../Gemini_CLI_Large_File_Workarounds.md)
+- See: AI_TOOL_OPTIMIZATION_GUIDE.md for file handling strategies
 
 **GitHub Copilot:**
 - Recommended: Keep files <30KB (7,500 tokens)
@@ -2152,7 +2161,7 @@ Quality attribute clarification (allowed)
 - Include cross-reference index in first file when splitting
 - Maintain logical content boundaries between files (functional modules, not arbitrary splits)
 - Ensure each file remains functionally complete for AI assistant processing
-- See [TOOL_OPTIMIZATION_GUIDE.md](TOOL_OPTIMIZATION_GUIDE.md) for detailed tool selection guidance
+- See [AI_TOOL_OPTIMIZATION_GUIDE.md](AI_TOOL_OPTIMIZATION_GUIDE.md) for detailed tool selection guidance
 
 **File Segmentation Strategy (When Multi-File is Justified):**
 - Segment by functional modules or API endpoints

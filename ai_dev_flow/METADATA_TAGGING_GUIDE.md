@@ -91,7 +91,7 @@ custom_fields:
 
 ### Purpose
 
-AI assistants (like Claude, Gemini, Copilot) use metadata tags to automatically:
+AI coding assistants use metadata tags to automatically:
 
 1. **Recognize Document Type**: Determine if document is BRD, PRD, SPEC, ADR, etc.
 2. **Understand Priority**: Identify recommended vs fallback approaches
@@ -1012,7 +1012,7 @@ custom_fields:
 
 ### 13.1 Overview
 
-When instructing AI assistants (Claude, Gemini, Copilot) to create or update documents, you can specify metadata tags using various prompt patterns. AI assistants understand both explicit YAML and natural language instructions.
+When instructing AI assistants to create or update documents, you can specify metadata tags using various prompt patterns. AI assistants understand both explicit YAML and natural language instructions. For tool-specific capabilities, see AI_TOOL_OPTIMIZATION_GUIDE.md.
 
 ### 13.2 Prompt Methods
 
@@ -1605,7 +1605,7 @@ primary_docs = query_metadata('docs/BRD', {
 
 - `ID_NAMING_STANDARDS.md` - Document naming conventions
 - `AI_ASSISTANT_RULES.md` - AI assistant guidelines
-- `TOOL_OPTIMIZATION_GUIDE.md` - Tool-specific optimization
+- `AI_TOOL_OPTIMIZATION_GUIDE.md` - Tool-specific optimization
 - `COMPLETE_TAGGING_EXAMPLE.md` - Traceability tagging examples
 
 ### 15.2 External Resources

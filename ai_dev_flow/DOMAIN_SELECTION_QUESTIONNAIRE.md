@@ -13,7 +13,7 @@ custom_fields:
 
 **Version**: 1.0
 **Purpose**: Interactive questionnaire for AI Assistants to determine project domain at initialization
-**Target**: AI Coding Assistants (Claude AI, Claude Code, Gemini CLI, GitHub Copilot)
+**Target**: AI coding assistants (see AI_TOOL_OPTIMIZATION_GUIDE.md for tool-specific tips)
 **Status**: Production
 **Default Domain**: Financial Services
 

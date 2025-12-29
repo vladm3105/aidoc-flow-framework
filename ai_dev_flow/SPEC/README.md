@@ -13,9 +13,35 @@ custom_fields:
 
 # Specifications (SPEC)
 
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
 Specifications (SPEC) are machine-readable technical blueprints that define how software components should be implemented. SPECs transform requirements into actionable design decisions, providing complete implementation guidance for developers while establishing contracts for testing and integration.
 
-Note: `SPEC-TEMPLATE.md`/`.yaml` are reference templates. Real SPECs are monolithic per component by default; split only when needed per `SPEC/SPEC_SPLITTING_RULES.md` and `../DOCUMENT_SPLITTING_RULES.md`.
+Note: `SPEC-TEMPLATE.md`/`.yaml` are reference templates. YAML stays monolithic per component for code generation. When narrative grows, split the Markdown only (index + section files) per `SPEC/SPEC_SPLITTING_RULES.md` and `../DOCUMENT_SPLITTING_RULES.md`.
+
+## Structure Policy
+
+- YAML: Monolithic single file per component (`SPEC-{DOC_NUM}_{slug}.yaml`).
+- Markdown: Split as needed using `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md`.
+- DOC_NUM: Variable-length starting at 2 digits (01, 02, 99, 100, 1000).
+- Layout:
+  - Nested (default): `SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml` with Markdown section files alongside.
+  - Flat (exception): `SPEC/SPEC-{DOC_NUM}_{slug}.yaml` for small, stable specs.
+
+### Examples
+
+- Flat (small): [SPEC-01_api_client_example.yaml](./SPEC-01_api_client_example.yaml)
+- Nested (recommended): [SPEC-02_nested_example.yaml](./examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) with [index](./examples/SPEC-02_nested_example/SPEC-02.0_index.md)
+
+## Codegen Compatibility
+
+- Discovery (recursive):
+  - Bash: `find SPEC -type f -name 'SPEC-*.yaml'`
+  - Python: `glob.glob('SPEC/**/SPEC-*.yaml', recursive=True)`
+- Identity: Use YAML `id` and `metadata.artifact_type` instead of inferring from path or fixed 3-digit IDs. DOC_NUM is variable-length (2+ digits).
+- Outputs: Derive names from `codegen.module_name` (or `id`) rather than DOC_NUM or folder name.
+- CTR Resolution: Prefer `interfaces[].contract_id: CTR-NN`; optionally support `contract_ref` (relative path) as fallback.
+- TASKS Mapping: Reference SPEC by `@spec: SPEC-{DOC_NUM}`; optionally include `spec_path` for explicit runs.
 
 ## Complete SDD Document Flow
 

@@ -48,7 +48,7 @@ BRD (Business Requirements Document): High-level business needs
         ↓
 PRD (Product Requirements Document): User needs and features
         ↓
-EARS (Easy Approach to Requirements Syntax): Atomic, measurable requirements
+EARS (Event-Action-Response-State): Engineering Requirements (atomic, measurable)
         ↓
 BDD (Behavior-Driven Development): Acceptance scenarios
         ↓
@@ -1301,12 +1301,12 @@ Document the business strategy, product requirements, system specifications, and
 
 | Date | Version | Change | Author |
 |------|---------|--------|---------|
-| 2025-11-18 | 3.0.0 | Created unified REQ template v3.0 with 100% doc_flow framework compliance, 12 Document Control fields, REST API endpoints (3.3), Database Schema (4.3), Circuit Breaker Configuration (5.4), Dependency Injection (8.3) | System Architect |
+| 2025-11-18 | 3.0.0 | Created unified REQ template v3.0 with 100% AI Dev Flow framework compliance, 12 Document Control fields, REST API endpoints (3.3), Database Schema (4.3), Circuit Breaker Configuration (5.4), Dependency Injection (8.3) | System Architect |
 
 **Template Version**: 3.0
 **Next Review**: 2025-12-18 (quarterly review recommended)
 **Technical Contact**: [Name/Email for technical clarification]
-**Framework Compliance**: 100% doc_flow framework aligned
+**Framework Compliance**: 100% AI Dev Flow framework aligned
 **SPEC-Ready Checklist**: ✅ Interfaces ✅ Schemas ✅ Errors ✅ Config ✅ QAs ✅ Implementation ✅ Acceptance Criteria ✅ Traceability
 
 ---
@@ -1365,20 +1365,20 @@ SPEC-Ready Score = (
 □ Change History: Entry for current version
 □ SPEC-Ready Score: ≥ 90%
 □ Traceability Tags: All 6 required (@brd, @prd, @ears, @bdd, @adr, @sys)
-□ Framework Compliance: 100% doc_flow aligned
+□ Framework Compliance: 100% AI Dev Flow aligned
 ```
 
 ---
 
 **Document Location**: `[project_root]/docs/REQ/REQ-TEMPLATE.md`
-**Framework Alignment**: 100% doc_flow framework compliant
+**Framework Alignment**: 100% AI Dev Flow framework compliant
 **Maintained By**: System Architect, Quality Assurance Team
 **Review Frequency**: Quarterly or after major template updates
 **Support**: See [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) for complete workflow documentation
 
 ---
 
-*This is the authoritative unified template v3.0 for creating SPEC-ready REQ documents with 100% doc_flow framework compliance.*
+*This is the authoritative unified template v3.0 for creating SPEC-ready REQ documents with 100% AI Dev Flow framework compliance.*
 ## File Size Limits
 
 - Target: 300–500 lines per file

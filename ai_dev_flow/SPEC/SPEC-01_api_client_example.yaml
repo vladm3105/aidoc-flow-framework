@@ -379,7 +379,7 @@ testing:
       - stress: "Ramp up to [MAX_TPS] to find breaking point"
       - spike: "Sudden [SPIKE_TPS] burst for [DURATION]"
 
-# === regulatoryURITY ===
+# === SECURITY ===
 security:
   authentication:
     credential_storage: "[MECHANISM - e.g., HashiCorp Vault, AWS Secrets Manager]"
@@ -442,7 +442,7 @@ acceptance_criteria:
 
   - id: "SPEC.01.06.03"
     scenario: "Circuit breaker activation"
-    given: "[THRESHOLD] conregulatoryutive failures"
+    given: "[THRESHOLD] consecutive failures"
     when: "Circuit breaker opens"
     then: "Subsequent requests fail fast for [TIMEOUT] seconds"
 
@@ -456,4 +456,4 @@ migration:
 ---
 # Example Usage Notes:
 # This is a template specification. Replace all [PLACEHOLDERS] with your actual values.
-# Use this YAML as input to code generation tools (see docs/specs/workflows/).
+# Use this YAML as input to code generation tools (see index.md#traceability-flow).

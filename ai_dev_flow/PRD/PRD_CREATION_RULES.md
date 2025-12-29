@@ -65,6 +65,8 @@ custom_fields:
 
 ## 1. Document Control
 
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
 **Purpose**: Establishes document metadata, versioning, and dual scoring requirements for PRD quality gates.
 
 **Position**: Must be section 1 at the very beginning of PRD (before all numbered sections)
@@ -664,7 +666,7 @@ All business objectives follow SMART criteria and include:
 
 ## 14. Quality Gates (Pre-Commit Validation)
 
-- **Multiple Validation Checks**: Run `./scripts/validate_prd_template.sh filename.md`
+- **Multiple Validation Checks**: Run `python scripts/validate_prd.py filename.md`
 - **Blockers**: Missing sections, invalid formats, incomplete SYS-ready score, broken traceability
 - **Warnings**: Incomplete sections, missing references, unverified assumptions
 - **SYS-Ready Threshold**: ≥90% required for progression to SYS phase
@@ -687,10 +689,10 @@ All business objectives follow SMART criteria and include:
 **Pre-Commit Validation**:
 ```bash
 # Validate single file
-./scripts/validate_prd_template.sh docs/PRD/PRD-01_product_requirements.md
+python scripts/validate_prd.py docs/PRD/PRD-01_product_requirements.md
 
 # Validate all PRD files
-find docs/PRD -name "PRD-*.md" -exec ./scripts/validate_prd_template.sh {} \;
+find docs/PRD -name "PRD-*.md" -exec python scripts/validate_prd.py {} \;
 ```
 
 **Template Location**: [PRD-TEMPLATE.md](PRD-TEMPLATE.md)
@@ -699,7 +701,7 @@ find docs/PRD -name "PRD-*.md" -exec ./scripts/validate_prd_template.sh {} \;
 
 ---
 
-**Framework Compliance**: 100% doc_flow SDD framework aligned (Layer 2 - Product Requirements)
+**Framework Compliance**: 100% AI Dev Flow SDD framework aligned (Layer 2 - Product Requirements)
 **Maintained By**: Product Management Team, SDD Framework Team
 **Review Frequency**: Updated with template and validation rule enhancements
 

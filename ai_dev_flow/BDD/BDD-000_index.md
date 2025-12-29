@@ -28,7 +28,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 ```
 
 **BDD Purpose**: Define acceptance criteria through executable scenarios
-- **Input**: BRD, PRD, EARS (business requirements and event-driven SPEC)
+- **Input**: BRD, PRD, EARS (engineering requirements — event/state driven)
 - **Output**: Gherkin feature files with executable acceptance tests
 - **Consumer**: All downstream artifacts (REQ, SPEC, Code) must satisfy BDD scenarios
 

@@ -32,7 +32,7 @@ custom_fields:
 **Purpose**: Complete validation rules for EARS documents
 **Script**: `ai_dev_flow/scripts/validate_ears.py`
 **Primary Template**: `EARS-TEMPLATE.md`
-**Framework**: doc_flow SDD (100% compliant)
+**Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: v2.0 - Added requirement ID, table syntax, custom_fields, traceability format checks
 
 ---

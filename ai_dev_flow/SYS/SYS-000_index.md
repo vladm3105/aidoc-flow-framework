@@ -13,6 +13,8 @@ custom_fields:
 
 # SYS-000: System Requirements Specification Master Index
 
+Note: Some examples in this index show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
 ## Purpose
 
 This document serves as the master index for all System Requirements Specification (SYS) documents in the project. Use this index to:

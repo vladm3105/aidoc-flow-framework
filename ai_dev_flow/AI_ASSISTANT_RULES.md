@@ -23,6 +23,28 @@ custom_fields:
 
 ---
 
+See also:
+- AI Assistant Playbook (index): AI_ASSISTANT_PLAYBOOK.md
+- Tool Optimization Guide (sizes, validation, style): AI_TOOL_OPTIMIZATION_GUIDE.md
+
+## Assistant Output Style (All Tools)
+
+- Use professional software development language (engineering tone).
+- Avoid marketing or emotional language; be factual and concise.
+- Be token‑efficient: prefer bullets, short paragraphs, and concrete commands.
+- Output should be actionable: commands, file paths, code identifiers, checklists.
+- Emoji policy: informational only; keep to a minimum (0–1 typical).
+- Avoid redundancy and filler (no restating prompts, apologies, or small talk).
+
+### Claude Code — Stricter Rules
+
+- Keep responses compact and highly structured.
+- Default to zero emoji; at most a single informational emoji for long summaries.
+- Prefer diffs, code blocks, and validations over narrative text.
+- Remove superfluous preambles; focus on steps, results, and next actions.
+
+See also: AI_TOOL_OPTIMIZATION_GUIDE.md → “Style and Tone Guidelines”.
+
 ## Critical Execution Order
 
 AI Coding Assistants **MUST** follow this sequence when initializing a new project:
@@ -102,6 +124,7 @@ mkdir -p docs/CTR
 mkdir -p docs/SPEC
 mkdir -p docs/TASKS
 mkdir -p docs/IPLAN
+mkdir -p docs/ICON   # Optional (Implementation Contracts)
 
 # Requirements subdirectories (domain-agnostic structure)
 mkdir -p docs/REQ/api
@@ -141,8 +164,7 @@ mkdir -p docs/REQ/billing
 mkdir -p scripts
 mkdir -p work_plans
 
-# Root documentation
-mkdir -p .
+# Root documentation (created by VCS init; no action required)
 ```
 
 ### Domain-Specific Extensions
@@ -197,8 +219,9 @@ After folder creation, AI Assistant **MUST** verify:
 # Verify directory structure
 ls -la docs/
 
-# Expected output should include all 11 directories:
-# BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
+# Expected to include at least 12 directories:
+# BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN
+# Optional: ICON (if using implementation contracts)
 
 # Verify requirements subdirectories
 ls -la docs/REQ/
@@ -278,8 +301,9 @@ cp /opt/data/docs_flow_framework/ai_dev_flow/SYS/* docs/SYS/
 cp /opt/data/docs_flow_framework/ai_dev_flow/REQ/* docs/REQ/
 cp /opt/data/docs_flow_framework/ai_dev_flow/IMPL/* docs/IMPL/
 cp /opt/data/docs_flow_framework/ai_dev_flow/CTR/* docs/CTR/
-cp /opt/data/docs_flow_framework/ai_dev_flow/SPEC/* ai_dev_flow/SPEC/
+cp /opt/data/docs_flow_framework/ai_dev_flow/SPEC/* docs/SPEC/
 cp /opt/data/docs_flow_framework/ai_dev_flow/TASKS/* docs/TASKS/
+cp /opt/data/docs_flow_framework/ai_dev_flow/ICON/* docs/ICON/ 2>/dev/null || true  # optional
 
 # Copy validation scripts
 cp /opt/data/docs_flow_framework/ai_dev_flow/scripts/*.py scripts/
@@ -300,8 +324,10 @@ touch docs/SYS/SYS-000_index.md
 touch docs/REQ/REQ-000_index.md
 touch docs/IMPL/IMPL-000_index.md
 touch docs/CTR/CTR-000_index.md
-touch ai_dev_flow/SPEC/SPEC-000_index.yaml
+touch docs/SPEC/SPEC-000_index.md
 touch docs/TASKS/TASKS-000_index.md
+touch docs/IPLAN/IPLAN-000_index.md
+touch docs/ICON/ICON-000_index.md  # optional
 ```
 
 ### Index File Content Template
@@ -476,7 +502,7 @@ AI Assistant **MUST** use this format for all document references:
 
 #### Examples
 ```markdown
-# Nested folder structure (BRD/PRD/ADR - DEFAULT)
+# Nested folder structure (ALL TYPES - DEFAULT)
 [BRD-01](../BRD/BRD-01/BRD-01.0_index.md#BRD-01)
 [PRD-02](../PRD/PRD-02/PRD-02.0_index.md#PRD-02)
 [ADR-005](../ADR/ADR-005/ADR-005.0_index.md#ADR-005)
@@ -487,7 +513,7 @@ AI Assistant **MUST** use this format for all document references:
 [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
 ```
 
-### section 7: Traceability
+### Section 7: Traceability
 
 Every document **MUST** include section 7 with:
 
@@ -641,7 +667,7 @@ ls -laR docs/
 ls docs/*/index.*
 
 # Check for broken references (after documents created)
-python scripts/check_broken_references.py
+python scripts/validate_links.py
 
 # Validate requirement IDs (after documents created)
 python scripts/validate_requirement_ids.py
@@ -748,7 +774,7 @@ Step 5: Update SPEC-023 and REQ-023
   - Add TASKS-023 to downstream sections
 
 Step 6: Validate
-  - Run check_broken_references.py
+  - Run validate_links.py
 ```
 
 ---
@@ -1303,8 +1329,84 @@ After each validation phase, generate report:
 - [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) - Document ID rules
 - [TRACEABILITY.md](./TRACEABILITY.md) - Traceability guidelines
 - [METADATA_TAGGING_GUIDE.md](./METADATA_TAGGING_GUIDE.md) - Dual-architecture metadata standards
-- [TOOL_OPTIMIZATION_GUIDE.md](./TOOL_OPTIMIZATION_GUIDE.md) - AI tool selection
+- [AI_TOOL_OPTIMIZATION_GUIDE.md](./AI_TOOL_OPTIMIZATION_GUIDE.md) - AI tool selection
 
 ---
 
 **End of AI Assistant Execution Rules**
+
+---
+
+## Product Appendix: AI‑Assisted Documentation Features (PRD Summary)
+
+This appendix consolidates and supersedes the former `PRD-000_ai_assisted_documentation_features.md`. It specifies the product requirements that guide assistant behavior and UX for documentation generation within the AI Dev Flow.
+
+### 1. Problem Statement
+
+Current challenges in assisted documentation creation:
+- Skill selection complexity (25+ skills; steep learning curve)
+- Context loss across artifacts and sessions
+- Quality inconsistency vs templates and validators
+- Workflow friction choosing next steps across 16 layers
+
+Business impact:
+- Productivity loss (40–60% on skill/workflow overhead)
+- Quality variance leading to traceability gaps
+- Onboarding friction (2–4 weeks to proficiency)
+- Rework (15–25% artifacts)
+
+### 2. Goals
+
+Primary (P0):
+- G‑001: Automate skill recommendation (≥85% accuracy)
+- G‑002: Intelligent context analysis (≥90% relevant context)
+- G‑003: Proactive quality guidance (≥30% fewer validation failures)
+- G‑004: Next‑step recommendations (≥50% less navigation time)
+
+Secondary (P1):
+- G‑005: Surface relevant existing artifacts (≥80% relevance)
+- G‑006: Detect common anti‑patterns (≥70% detection)
+- G‑007: Adaptive guidance by expertise level (≥4.0/5.0 satisfaction)
+
+### 3. Non‑Goals
+- Full automation of document creation (human review required)
+- Replacement of existing doc‑* skills (augment, don’t replace)
+- Cross‑project analysis (single project scope)
+- Free‑form NL generation (prefer structured templates)
+- Real‑time collaborative editing
+
+### 4. User Needs
+
+Personas and needs:
+- Framework Beginner: clear guidance, auto skill selection, validation feedback
+- Intermediate User: context awareness, workflow optimization, quality checks
+- Power User: customization, batch operations, efficiency tools
+
+Representative stories (abbrev.):
+- Skill Recommendation: suggest 1–3 skills with confidence and rationale; override allowed
+- Context Analysis: surface upstream artifacts and summarize context pre‑creation
+- Quality Guidance: real‑time section completeness and anti‑pattern warnings
+- Workflow Optimization: recommend downstream/parallel steps after completion
+
+### 5. Product Features
+
+- Skill Recommender: intent + project state → ranked skills with confidence/rationale
+- Context Analyzer: scan structure/metadata/traceability → context model for sessions
+- Quality Advisor: section completeness, anti‑patterns, cumulative tag checks, naming
+- Workflow Optimizer: current position, downstream needs, parallel work, progress
+
+### 6. KPIs
+
+Performance: recommendation <500ms; context <2s/100 artifacts; quality check <100ms/section; workflow <300ms.
+
+Adoption: feature adoption ≥80%; recommendation acceptance ≥70%; repeat usage ≥90%.
+
+Quality: recommendation accuracy ≥85%; context relevance ≥90%; validation failures −30%; time‑to‑artifact −40%.
+
+### 7. Architecture Topics → ADRs
+- Context storage strategy (session vs persistent)
+- Skill matching (rule‑based vs ML)
+- Quality check integration (hooks vs inline)
+- State management (file‑based vs in‑memory)
+
+Traceability note: This appendix documents product intent within execution rules; formal ADRs/EARS/BDD remain separate artifacts at their respective layers.

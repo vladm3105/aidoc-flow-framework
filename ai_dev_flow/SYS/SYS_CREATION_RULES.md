@@ -28,7 +28,7 @@ custom_fields:
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-30
 **Source**: Derived from SYS-TEMPLATE.md and ADR decisions
-**Purpose**: Complete reference for creating SYS documents according to doc_flow SDD framework
+**Purpose**: Complete reference for creating SYS documents according to AI Dev Flow SDD framework
 **Changes**: Added Threshold Registry Integration section (v1.2). Previous: Status/Score mapping, common mistakes section (v1.1)
 
 ---
@@ -276,7 +276,7 @@ SYS documents establish system requirements that must be decomposed into atomic 
 
 ---
 
-**Framework Compliance**: 100% doc_flow SDD framework (Layer 6)
+**Framework Compliance**: 100% AI Dev Flow SDD framework (Layer 6)
 **Integration**: Enforces SYS → Requirements Layer (REQ) progression quality gates
 
 ---

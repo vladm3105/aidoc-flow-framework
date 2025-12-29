@@ -33,7 +33,7 @@ BDD is in the **Testing Layer** within the complete SDD workflow:
 **Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) ← **YOU ARE HERE** → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Project Management Layer** (IMPL) → **Interface Layer** (CTR - optional) → **Implementation Layer** (SPEC) → **Code Generation Layer** (TASKS) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
 
 **Key Points**:
-- **Upstream**: EARS (Easy Approach to Requirements Syntax)
+- **Upstream**: EARS (Event-Action-Response-State) — Engineering Requirements
 - **Downstream**: ADR (Architecture Decision Records)
 - **Decision Point**: After IMPL, CTR is created if the requirement specifies an interface; otherwise, proceed directly to SPEC
 

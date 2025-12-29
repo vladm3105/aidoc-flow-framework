@@ -29,8 +29,8 @@ custom_fields:
 | Field | Value |
 |-------|-------|
 | **Document ID** | EARS-{NN} |
-| **Document Type** | EARS Formal Requirements |
-| **Layer** | 3 - Formal Requirements |
+| **Document Type** | EARS Engineering Requirements |
+| **Layer** | 3 - Engineering Requirements |
 | **Title** | {Document Title} |
 | **Total Sections** | {N} |
 | **Original Size** | {SIZE} KB |

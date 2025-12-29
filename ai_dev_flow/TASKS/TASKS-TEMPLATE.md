@@ -336,7 +336,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ---
 
-## 4. Implementation Contracts
+## 8. Implementation Contracts
 
 ### 4.1 Contract Overview
 
@@ -911,7 +911,7 @@ class ThisComponent:
 
 ---
 
-## 8. Success Metrics
+## 9. Success Metrics
 
 ### 8.1 Technical Metrics
 
@@ -984,76 +984,6 @@ class ThisComponent:
 - **Knowledge Sharing**: Implementation notes reviewed by 2+ team members
 - **Skill Development**: New techniques/patterns documented for team learning
 - **Morale**: Task completed within estimated timeline without overtime
-
----
-
-## 9. ICON Traceability
-
-**Purpose**: Define interfaces that enable parallel development of dependent TASKS files.
-
-### 9.1 Contracts Provided by This TASKS (if provider)
-
-**Use this section if this TASKS provides contracts to downstream TASKS.**
-
-For each contract provided:
-
-#### ICON-XXX: Contract Name
-
-- **Purpose**: [Brief description of what the contract defines]
-- **Location**: `[project_root]/docs/ICON/ICON-XXX_contract_name.md`
-- **Contract Type**: [Protocol Interface | State Machine | Exception Hierarchy | Data Model | DI Interface]
-- **Consumers**: [List consumer TASKS IDs]
-  - TASKS-YYY: [Purpose of consumption]
-- **Key Interfaces**:
-  - `InterfaceName`: [Brief description]
-  - `method_name()`: [Brief description]
-- **Traceability**: @icon: ICON-XXX:ContractName
-- **Role**: @icon-role: provider
-
-**Validation**:
-- [ ] Contract file exists at specified location
-- [ ] All consumer TASKS list this contract in their section 9.2
-- [ ] mypy --strict passes on contract code
-
-### 9.2 Contracts Consumed by This TASKS (if consumer)
-
-**Use this section if this TASKS consumes contracts from upstream TASKS.**
-
-For each contract consumed:
-
-#### ICON-XXX: Contract Name
-
-- **Provider**: TASKS-YYY
-- **Location**: `[project_root]/docs/ICON/ICON-XXX_contract_name.md`
-- **Purpose**: [Why this TASKS needs this contract]
-- **Used Interfaces**: [List specific interfaces/types used]
-  - `InterfaceName.method()`: [How it's used]
-  - `ExceptionType`: [How it's handled]
-- **Traceability**: @icon: ICON-XXX:ContractName
-- **Role**: @icon-role: consumer
-
-### 9.3 Contract Integration Checklist
-
-**For Provider TASKS**:
-- [ ] Created ICON file in `[project_root]/docs/ICON/`
-- [ ] Documented all provided contracts in section 9.1
-- [ ] Added @icon: traceability tags
-- [ ] Added @icon-role: provider
-- [ ] Listed all consumer TASKS
-- [ ] Ran mypy --strict validation
-
-**For Consumer TASKS**:
-- [ ] Documented all consumed contracts in section 9.2
-- [ ] Added @icon: traceability tags for each contract
-- [ ] Added @icon-role: consumer
-- [ ] Referenced provider TASKS
-- [ ] Imported contract interfaces in implementation
-- [ ] Type hints match contract signatures
-
-**For All TASKS**:
-- [ ] section 9 is mandatory (not optional)
-- [ ] If no contracts: State "No implementation contracts" and skip to section 10
-- [ ] Validated bidirectional references (provider ↔ consumer)
 
 ---
 

@@ -30,9 +30,9 @@ custom_fields:
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-19
 **Purpose**: Complete validation rules for SPEC YAML files
-**Script**: `scripts/validate_spec_template.sh`
+**Script**: `python scripts/validate_spec.py`
 **Primary Template**: `SPEC-TEMPLATE.yaml`
-**Framework**: doc_flow SDD (100% compliant)
+**Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added TASKS-ready scoring validation system
 
 ---
@@ -204,10 +204,10 @@ cumulative_tags:
 
 ```bash
 # Validate single SPEC YAML file
-./scripts/validate_spec_template.sh docs/SPEC/SPEC-01_component_spec.yaml
+python scripts/validate_spec.py docs/SPEC/SPEC-01_component_spec.yaml
 
 # Validate all SPEC files
-find docs/SPEC -name "SPEC-*.yaml" -exec ./scripts/validate_spec_template.sh {} \;
+find docs/SPEC -name "SPEC-*.yaml" -exec python scripts/validate_spec.py {} \;
 ```
 
 ### TASKS-Ready Scoring Criteria ⭐ NEW

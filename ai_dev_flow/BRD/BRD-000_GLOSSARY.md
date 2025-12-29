@@ -109,7 +109,7 @@ Standard abbreviations used across BRD framework.
 | BDD | Behavior-Driven Development | SDD Framework |
 | BO | Business Objective | BRD Framework |
 | BRD | Business Requirements Document | SDD Framework |
-| EARS | Easy Approach to Requirements Syntax | SDD Framework |
+| EARS | Event-Action-Response-State (Engineering Requirements) | SDD Framework |
 | FR | Functional Requirement | BRD Framework |
 | IPLAN | Implementation Plan | SDD Framework |
 | KPI | Key Performance Indicator | Business |

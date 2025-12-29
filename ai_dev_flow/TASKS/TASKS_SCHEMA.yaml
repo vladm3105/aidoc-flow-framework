@@ -98,37 +98,37 @@ structure:
       name: "Title (H1)"
       description: "Single H1 with format TASKS-NN: Title"
 
-    - pattern: "^## 1\\. Document Control$"
+    - pattern: "^## Document Control$"
       name: "Document Control"
-      description: "Section 1 with metadata table"
+      description: "Document control section with metadata table"
 
-    - pattern: "^## 2\\. Executive Summary$"
+    - pattern: "^## 1\\. Executive Summary$"
       name: "Executive Summary"
-      description: "Section 2 with objectives, scope, dependencies"
+      description: "Section 1 with objectives, scope, dependencies"
 
-    - pattern: "^## 3\\. Scope$"
+    - pattern: "^## 2\\. Scope$"
       name: "Scope"
-      description: "Section 3 with Inclusions, Exclusions, Boundaries"
+      description: "Section 2 with Inclusions, Exclusions, Boundaries"
 
-    - pattern: "^## 4\\. Implementation Plan$"
+    - pattern: "^## 3\\. Implementation Plan$"
       name: "Implementation Plan"
-      description: "Section 4 with Phases, Tasks, Dependencies"
+      description: "Section 3 with Phases, Tasks, Dependencies"
 
-    - pattern: "^## 5\\. Implementation Contracts$"
+    - pattern: "^## 8\\. Implementation Contracts$"
       name: "Implementation Contracts"
-      description: "Section 5 with Protocols, Exceptions, State Machines"
+      description: "Section 8 with Protocols, Exceptions, State Machines"
 
-    - pattern: "^## 6\\. Constraints$"
+    - pattern: "^## 5\\. Constraints$"
       name: "Constraints"
-      description: "Section 6 with Technical, Business, Operational constraints"
+      description: "Section 5 with Technical, Business, Operational constraints"
 
-    - pattern: "^## 7\\. Acceptance Criteria$"
+    - pattern: "^## 6\\. Acceptance Criteria$"
       name: "Acceptance Criteria"
-      description: "Section 7 with Functional, Technical, Quality criteria"
+      description: "Section 6 with Functional, Technical, Quality criteria"
 
-    - pattern: "^## 8\\. Risk Assessment$"
+    - pattern: "^## 7\\. Risk Assessment$"
       name: "Risk Assessment"
-      description: "Section 8 with Risk Matrix, Mitigation Strategies"
+      description: "Section 7 with Risk Matrix, Mitigation Strategies"
 
     - pattern: "^## 9\\. Success Metrics$"
       name: "Success Metrics"

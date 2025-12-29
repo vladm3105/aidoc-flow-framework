@@ -1,4 +1,5 @@
-# REQ-NN: API Integration (Example)
+# REQ-01: API Integration (Example)
+
 
 ## Document Control
 
@@ -50,4 +51,3 @@ Downstream:
 - BDD: scenarios for success, retries, rate limits, invalid responses.
 - Contract tests: request/response schema conformance.
 - Performance: latency and throughput tests against target SLAs.
-

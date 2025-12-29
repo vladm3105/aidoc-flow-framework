@@ -2,7 +2,7 @@
 # ICON (Implementation Contract) Template Validator v1.0
 # Validates ICON documents against:
 # - ICON-TEMPLATE.md (authoritative template)
-# - doc_flow SDD framework standards
+# - AI Dev Flow SDD framework standards
 # - Layer 11 artifact requirements
 # - Provider/Consumer relationship validation
 # Usage: ./scripts/validate_icon.sh <ICON_FILE>
@@ -500,7 +500,7 @@ if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
   echo ""
   echo "Document complies with:"
   echo "  - ICON-TEMPLATE.md structure"
-  echo "  - doc_flow SDD framework requirements"
+  echo "  - AI Dev Flow SDD framework requirements"
   echo "  - Layer 11 artifact standards"
   echo "  - Provider/Consumer relationship rules"
   exit 0

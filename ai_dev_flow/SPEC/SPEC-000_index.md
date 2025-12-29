@@ -13,6 +13,8 @@ custom_fields:
 
 # SPEC-000: Technical Specifications Master Index
 
+Note: Some examples in this index show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
 ## Purpose
 
 This document serves as the master index for all Technical Specification (SPEC) documents in the project. Use this index to:
@@ -46,6 +48,8 @@ flowchart LR
 | SPEC ID | Title | Specification Type | Status | Related REQ | Related CTR | Priority | Last Updated |
 |---------|-------|--------------------|--------|-------------|-------------|----------|--------------|
 | [SPEC-TEMPLATE](./SPEC-TEMPLATE.yaml) | Template | Reference | Reference | - | - | - | 2025-11-13 |
+| [SPEC-01_api_client_example](./SPEC-01_api_client_example.yaml) | API Client (flat example) | Example | Draft | REQ-.. | CTR-.. | Medium | 2025-12-28 |
+| [SPEC-02_nested_example](./examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) | Nested Example (YAML+MD) | Example | Draft | REQ-.. | CTR-.. | Low | 2025-12-28 |
 
 ## Status Definitions
 
@@ -76,11 +80,14 @@ When creating a new SPEC:
 
 1. **Copy Template**:
    ```bash
-   cp ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml \
-      docs/SPEC/{domain}/SPEC-NN_component_name.yaml
+   # Nested (default)
+   mkdir -p SPEC/SPEC-01_component_name
+   cp ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml SPEC/SPEC-01_component_name/SPEC-01_component_name.yaml
+   # Flat (exception)
+   # cp ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml SPEC/SPEC-01_component_name.yaml
    ```
 
-2. **Assign SPEC ID**: Use next sequential number (SPEC-01, SPEC-02, ...)
+2. **Assign SPEC ID**: Use next sequential number (SPEC-01, SPEC-02, 100, 1000 ...)
 
 3. **Update This Index**: Add new row to table above
 
@@ -88,10 +95,10 @@ When creating a new SPEC:
 
 ## Allocation Rules
 
-- **Numbering**: Allocate sequentially starting at `001`
+- **Numbering**: Allocate sequentially starting at `01` (variable-length DOC_NUM)
 - **One Component Per File**: Each `SPEC-NN` covers a single component or service
-- **Format**: YAML format for machine readability
-- **Organization**: Store in appropriate domain subdirectory (services/, agents/, infrastructure/)
+- **Format**: YAML format for machine readability (monolithic per component)
+- **Organization**: Nested per spec (default) or flat (exception) depending on size/complexity
 - **Slugs**: Short, descriptive, lower_snake_case
 - **Index Updates**: Add entry for every new SPEC
 

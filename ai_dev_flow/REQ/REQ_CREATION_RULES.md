@@ -54,6 +54,7 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
+- Note: Example paths use a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `REQ/{domain}/{subdomain}/` within project docs directory
 - **Domains**: `api/` (external integrations), `risk/` (risk management), `data/` (data requirements), `ml/` (ML requirements), `auth/` (security), etc.
 - **Naming**: `REQ-NN_descriptive_slug.md` (NN = 3-digit sequential number, lowercase snake_case slug)
@@ -167,7 +168,7 @@ Every REQ must contain these exact sections in order:
 
 ## 9. Quality Gates (Pre-Commit Validation)
 
-- **18 Validation Checks**: Run `./scripts/validate_req_template_v3.sh filename.md`
+- **18 Validation Checks**: Run `./scripts/validate_req_template.sh filename.md`
 - **Blockers**: Missing sections, format errors, broken links, incomplete traceability
 - **Warnings**: Missing resource tags, low SPEC-Ready score, incomplete upstream chain
 - **SPEC-Ready Threshold**: ≥90% or reduce claimed score
@@ -200,10 +201,10 @@ Every REQ must contain these exact sections in order:
 **Pre-Commit Validation**:
 ```bash
 # Validate single file
-./scripts/validate_req_template_v3.sh filename.md
+./scripts/validate_req_template.sh filename.md
 
 # Validate all REQ files
-find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template_v3.sh {} \;
+find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template.sh {} \;
 ```
 
 **Template Location**: [REQ-TEMPLATE.md](REQ-TEMPLATE.md)
@@ -212,7 +213,7 @@ find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template_v3.sh {} \;
 
 ---
 
-**Framework Compliance**: 100% doc_flow SDD framework aligned (Layer 7 - Requirements)
+**Framework Compliance**: 100% AI Dev Flow SDD framework aligned (Layer 7 - Requirements)
 **Maintained By**: System Architect, Quality Assurance Team
 **Review Frequency**: Updated with template and validation rule changes
 

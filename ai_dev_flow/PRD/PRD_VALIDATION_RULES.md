@@ -30,9 +30,9 @@ custom_fields:
 **Date**: 2025-11-26
 **Last Updated**: 2025-11-26
 **Purpose**: Complete validation rules for PRD documents
-**Script**: `scripts/validate_prd_template.sh`
+**Script**: `python scripts/validate_prd.py`
 **Primary Template**: `PRD-TEMPLATE.md`
-**Framework**: doc_flow SDD (100% compliant)
+**Framework**: AI Dev Flow SDD (100% compliant)
 
 ---
 
@@ -544,19 +544,19 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 - [ ] **@brd upstream tag** present in Traceability section
 - [ ] **Document Control** has all 11 required fields
 - [ ] **YAML frontmatter** valid syntax
-- [ ] **Run validation script**: `./scripts/validate_prd_template.sh [filename]`
+- [ ] **Run validation script**: `python scripts/validate_prd.py [filename]`
 
 ### Validation Script Commands
 
 ```bash
 # Validate single PRD (nested folder structure - DEFAULT)
-./scripts/validate_prd_template.sh docs/PRD/PRD-01_product_name/PRD-01.0_product_name_index.md
+python scripts/validate_prd.py docs/PRD/PRD-01_product_name/PRD-01.0_product_name_index.md
 
 # Validate all PRDs (section-based structure)
-find docs/PRD -type f -name "PRD-*.md" -exec ./scripts/validate_prd_template.sh {} \;
+find docs/PRD -type f -name "PRD-*.md" -exec python scripts/validate_prd.py {} \;
 
 # Validate monolithic PRD (optional for <25KB)
-./scripts/validate_prd_template.sh docs/PRD/PRD-01_product_name.md
+python scripts/validate_prd.py docs/PRD/PRD-01_product_name.md
 
 # Check YAML frontmatter (nested structure)
 python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-01_product_name/PRD-01.0_product_name_index.md').read().split('---')[1])"
@@ -923,7 +923,7 @@ Transaction limit: $1,000 USD (per @threshold: PRD.035.kyc.l1.daily)
 
 ---
 
-**Framework Compliance**: 100% doc_flow SDD framework aligned (Layer 2 - Product Requirements)
+**Framework Compliance**: 100% AI Dev Flow SDD framework aligned (Layer 2 - Product Requirements)
 **Maintained By**: Product Management Team, SDD Framework Team
 **Review Frequency**: Updated with template and validation rule enhancements
 

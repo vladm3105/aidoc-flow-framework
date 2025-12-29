@@ -2,7 +2,7 @@
 # IPLAN (Implementation Work Plan) Template Validator v1.0
 # Validates IPLAN documents against:
 # - IPLAN-TEMPLATE.md (authoritative template)
-# - doc_flow SDD framework standards
+# - AI Dev Flow SDD framework standards
 # - Layer 12 artifact requirements
 # - Session-based execution requirements
 # Usage: ./scripts/validate_iplan.sh <IPLAN_FILE>
@@ -525,7 +525,7 @@ if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
   echo ""
   echo "Document complies with:"
   echo "  - IPLAN-TEMPLATE.md structure"
-  echo "  - doc_flow SDD framework requirements"
+  echo "  - AI Dev Flow SDD framework requirements"
   echo "  - Layer 12 artifact standards"
   echo "  - Session-based execution requirements"
   exit 0

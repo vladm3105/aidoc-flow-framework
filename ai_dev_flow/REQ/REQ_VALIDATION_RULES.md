@@ -17,10 +17,10 @@
 **Date**: 2025-11-18
 **Last Updated**: 2025-11-19
 **Purpose**: Complete validation rules for REQ documents
-**Script**: `scripts/validate_req_template_v3.sh`
+**Script**: `scripts/validate_req_template.sh`
 **Primary Template**: `REQ-TEMPLATE.md` (v3.0)
 **Baseline Template**: `REQ-TEMPLATE.md` (v2.0)
-**Framework**: doc_flow SDD (100% compliant)
+**Framework**: AI Dev Flow SDD (100% compliant)
 
 ---
 
@@ -36,10 +36,12 @@
 
 ## Overview
 
-The REQ validation script (`validate_req_template_v3.sh`) performs **18 validation checks** to ensure compliance with:
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
+The REQ validation script (`validate_req_template.sh`) performs **18 validation checks** to ensure compliance with:
 
 - **REQ-TEMPLATE.md**: Current template (v3.0 - 100% doc_flow compliant)
-- **doc_flow SDD Framework**: Traceability and ID naming standards
+- **AI Dev Flow SDD Framework**: Traceability and ID naming standards
 - **Cumulative Tagging Hierarchy**: Layer 7 requirements (6 upstream tags)
 - **Document Control**: 12 required fields (v3.0 enhancement)
 
@@ -530,7 +532,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 **Required Upstream Layers**:
 1. **BRD** - Business Requirements
 2. **PRD** - Product Requirements
-3. **EARS** - Easy Approach to Requirements Syntax
+3. **EARS** - Event-Action-Response-State (Engineering Requirements)
 4. **BDD** - Behavior-Driven Development scenarios
 5. **ADR** - Architecture Decision Records
 6. **SYS** - System Requirements
@@ -552,7 +554,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 **Error Message**:
 ```
 ❌ ERROR: Incomplete upstream chain - missing: EARS BDD ADR
-         Complete chain required: BRD → PRD → EARS → BDD → ADR → SYS
+         Complete chain required: BRD → PRD → EARS (Engineering Requirements) → BDD → ADR → SYS
          Reference: REQ-TEMPLATE.md section 11 (Traceability)
 ```
 
@@ -633,7 +635,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 **Option 2 - Separate File** (10+ components):
 - Create: `REQ-045_TRACEABILITY_MATRIX.md`
-- Template: Available in doc_flow framework
+- Template: Available in AI Dev Flow framework
 - Link from section 11
 
 **Reference**: `REQ-TEMPLATE.md` section 11 (Traceability - includes matrix guidance)
@@ -751,10 +753,10 @@ class HeartbeatConfig(BaseModel):
 
 ```bash
 # Validate single file
-./scripts/validate_req_template_v3.sh docs/REQ/api/ib/REQ-02_connection_heartbeat.md
+./scripts/validate_req_template.sh docs/REQ/api/ib/REQ-02_connection_heartbeat.md
 
 # Validate all REQ files
-find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template_v3.sh {} \;
+find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template.sh {} \;
 ```
 
 ### Expected Output

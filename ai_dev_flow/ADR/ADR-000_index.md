@@ -13,6 +13,8 @@ custom_fields:
 
 # ADR-000: Architecture Decision Records Master Index
 
+Note: Some examples in this index show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
 ## Purpose
 
 This document serves as the master index for all Architecture Decision Records (ADRs) in the project. Use this index to:

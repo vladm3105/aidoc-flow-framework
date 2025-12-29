@@ -68,9 +68,9 @@ for dir in "${DIRS[@]}"; do
 done
 
 if (( EXIT != 0 )); then
-  echo "[lint_file_sizes] One or more files exceed ${MAX} lines."
+  echo "[lint_file_sizes] One or more files exceed max thresholds (MD/feature>${MAX_MD}, YAML>${MAX_YAML_ERROR})."
 else
-  echo "[lint_file_sizes] OK: No files exceed ${MAX} lines."
+  echo "[lint_file_sizes] OK: No files exceed max thresholds (MD/feature<=${MAX_MD}, YAML<=${MAX_YAML_ERROR})."
 fi
 
 exit "$EXIT"

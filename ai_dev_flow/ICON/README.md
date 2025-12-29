@@ -12,6 +12,8 @@ custom_fields:
 
 # ICON Directory
 
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
 **Purpose**: Standalone Implementation Contract files for Layer 11 (TASKS) parallel development coordination.
 
 **⚠️ IMPORTANT**: Most implementation contracts should be embedded in TASKS files. Use standalone ICON files only when criteria are met (see ICON_CREATION_RULES.md).

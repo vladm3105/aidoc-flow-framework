@@ -72,7 +72,7 @@ BRD-NN (Business Requirements)
         ↓
 PRD-NN (Product Requirements)
         ↓
-EARS-NN (Formal Requirements) ← You are here
+EARS-NN (Engineering Requirements) ← You are here
         ↓
 BDD-NN (Behavior-Driven Development)
         ↓
@@ -249,7 +249,7 @@ WITHIN @threshold: PRD.NN.timeout.request.sync.
 
 ### 6.2 External Standards
 
-- **EARS Notation**: Mavin, A. et al. (2009). "Easy Approach to Requirements Syntax (EARS)."
+- EARS-inspired structured patterns: Mavin, A. et al. (2009). "Easy Approach to Requirements Syntax (EARS)." (In this framework, EARS stands for Event-Action-Response-State — Engineering Requirements.)
 - **ISO/IEC/IEEE 29148:2018**: Systems and software engineering — Requirements engineering
 - **RFC 2119**: Key words for use in RFCs to Indicate Requirement Levels (SHALL, SHOULD, MAY)
 

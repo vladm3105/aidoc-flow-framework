@@ -181,7 +181,7 @@ PRDs inherit categorization context from their source BRDs:
 - **SYS-Ready Score**: Must be ≥90% to pass validation and progress to SYS phase
 - **Format**: `✅ NN% (Target: ≥90%)` in Document Control table
 - **Location**: Required field in Document Control metadata
-- **Validation**: Enforced before commit via `validate_prd_template.sh`
+- **Validation**: Enforced before commit via `python scripts/validate_prd.py`
 
 **Scoring Criteria**:
 
@@ -220,7 +220,7 @@ PRDs inherit categorization context from their source BRDs:
 
 **Workflow Integration**:
 1. **PRD Creation**: Include SYS-ready and EARS-ready scores in Document Control section
-2. **Quality Check**: Run `./scripts/validate_prd_template.sh docs/PRD/PRD-01_name.md`
+2. **Quality Check**: Run `python scripts/validate_prd.py docs/PRD/PRD-01_name.md`
 3. **EARS Readiness**: EARS-ready score ≥90% enables progression to EARS artifact creation
 4. **SYS Readiness**: SYS-ready score ≥90% enables progression to SYS artifact creation
 

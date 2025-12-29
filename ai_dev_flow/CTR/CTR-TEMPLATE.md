@@ -152,7 +152,7 @@ Example: "Synchronous REST-style request/response contract for resource risk val
 - **Type**: Synchronous
 - **Protocol**: REST over HTTP/2
 - **Data Format**: JSON
-- **Transport**: Internal service mesh (GCP Cloud Run)
+- **Transport**: Internal service network/service mesh (e.g., Istio, Linkerd, cloud-native runtime)
 
 ## 5. Requirements Satisfied
 

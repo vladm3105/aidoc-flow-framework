@@ -31,7 +31,7 @@ custom_fields:
 **Date**: 2025-11-19
 **Last Updated**: 2025-12-26
 **Source**: Derived from BDD-TEMPLATE.feature, EARS requirements, Gherkin best practices, and BDD_SPLITTING_RULES.md
-**Purpose**: Complete reference for creating BDD feature files according to doc_flow SDD framework
+**Purpose**: Complete reference for creating BDD feature files according to AI Dev Flow SDD framework
 **Changes**: Added Split-File Structure section (v1.3). Previous: Threshold Registry Integration section (v1.2)
 
 ---
@@ -58,6 +58,8 @@ custom_fields:
 ---
 
 ## 1. File Organization and Directory Structure
+
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 ### 1.0 Structure Selection Criteria
 
@@ -907,7 +909,7 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 
 ---
 
-**Framework Compliance**: 100% doc_flow SDD framework (Layer 4)
+**Framework Compliance**: 100% AI Dev Flow SDD framework (Layer 4)
 
 ---
 

@@ -77,6 +77,7 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
+- Note: Example paths use a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `docs/BRD/BRD-NN_{slug}/` within project docs directory (nested folder per document with descriptive slug)
 - **Folder Naming**: `BRD-NN_{slug}/` where slug MUST match the index file slug
 - **Folder Structure** (DEFAULT): `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{slug}.md`
@@ -1089,7 +1090,7 @@ if (amount >= 501 && amount <= 2000) {
 ```markdown
 | Function | US Partner | EU Partner | Selection Criteria |
 |----------|------------|------------|-------------------|
-| **Custody Provider** | Noah | Noah EU entity | Regulatory license scope |
+| **Custody Provider** | [PROVIDER_NAME] | [PROVIDER_NAME] EU entity | Regulatory license scope |
 | **Compliance Screening** | Chainalysis US | Chainalysis EU | Data residency requirement |
 | **Funding Rails** | Custody provider (bank transfer) | Custody provider (regional transfer) | Payment network availability |
 | **Identity Verification** | Plaid + Jumio | Onfido + Jumio | Regional coverage |
@@ -1709,7 +1710,7 @@ find docs/BRD -name "BRD-*.md" -exec ./scripts/validate_brd_template.sh {} \;
 
 ---
 
-**Framework Compliance**: 100% doc_flow SDD framework aligned (Layer 1 - Business Requirements)
+**Framework Compliance**: 100% AI Dev Flow SDD framework aligned (Layer 1 - Business Requirements)
 **Maintained By**: Business Analyst Team, SDD Framework Team
 **Review Frequency**: Updated with template and validation rule enhancements
 

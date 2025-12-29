@@ -86,7 +86,7 @@ thresholds:
     partner:
       default: 30          # seconds
       max: 60              # seconds
-`` `
+```
 ```
 
 **Required Metadata per Threshold**:

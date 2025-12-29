@@ -13,6 +13,8 @@ custom_fields:
 
 # SYS (System Requirements Specifications)
 
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
 System Requirements Specifications (SYS) capture comprehensive system-level requirements that bridge the gap between high-level business objectives and technical implementation. SYS documents define what the system must accomplish from a behavioral and performance perspective while remaining technology-agnostic.
 
 Note: `SYS-TEMPLATE.md` is a reference template. For real SYS documents, prefer sectioned docs using `SYS-SECTION-0-TEMPLATE.md` and `SYS-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`.
@@ -507,7 +509,7 @@ See `SYS/SYS-01_external_api_integration.md` for a complete example of a well-st
 - **EARS-Ready Score**: Must be ≥90% to pass validation and progress to EARS phase
 - **Format**: `✅ NN% (Target: ≥90%)` in Document Control table
 - **Location**: Required field in Document Control metadata
-- **Validation**: Enforced before commit via `validate_sys_template.sh`
+- **Validation**: Enforced before commit via `python scripts/validate_sys.py`
 
 **Scoring Criteria**:
 
@@ -546,7 +548,7 @@ See `SYS/SYS-01_external_api_integration.md` for a complete example of a well-st
 
 **Workflow Integration**:
 1. **SYS Creation**: Include EARS-ready score in Document Control section
-2. **Quality Check**: Run `./scripts/validate_sys_template.sh docs/SYS/SYS-01_name.md`
+2. **Quality Check**: Run `python scripts/validate_sys.py docs/SYS/SYS-01_name.md`
 3. **EARS Readiness**: Score ≥90% enables progression to EARS artifact creation
 4. **Improvement**: Rescore and revalidate if below threshold before EARS phase
 

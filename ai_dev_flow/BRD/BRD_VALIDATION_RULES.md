@@ -32,7 +32,7 @@ custom_fields:
 **Purpose**: Complete validation rules for BRD documents
 **Script**: `scripts/validate_brd_template.sh`
 **Primary Template**: `BRD-TEMPLATE.md`
-**Framework**: doc_flow SDD (100% compliant)
+**Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added Section Classification (MANDATORY/OPTIONAL/CONDITIONAL); Section 15 (Quality Assurance) now MANDATORY; 18 total sections
 
 ---
@@ -73,10 +73,12 @@ custom_fields:
 
 ## Overview
 
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
 The BRD validation script (`validate_brd_template.sh`) performs **24 validation checks** to ensure compliance with:
 
 - **BRD-TEMPLATE.md**: Complete business requirements structure
-- **doc_flow SDD Framework**: Business-driven SDD methodology
+- **AI Dev Flow SDD Framework**: Business-driven SDD methodology
 - **Platform vs Feature BRD**: Different validation requirements by type
 - **Business Requirements Quality**: Measurable objectives, acceptance criteria, strategic alignment
 

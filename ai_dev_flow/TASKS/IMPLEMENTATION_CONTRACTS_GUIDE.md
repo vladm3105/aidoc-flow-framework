@@ -35,7 +35,7 @@ Implementation Contracts define type-safe interfaces between dependent TASKS fil
 - Prevent interface mismatches at merge time
 - Reduce rework from cascade changes
 
-**Scope**: Applies to TASKS files with 3+ downstream dependencies or shared interfaces.
+**Scope**: Applies to TASKS files with significant shared interfaces; standalone ICON use requires 5+ downstream consumer TASKS and a contract definition >500 lines.
 
 **Complexity**: 3/5 (requires type system understanding)
 
@@ -393,7 +393,8 @@ validator = container.resolve(ClientIDValidator)
 ### 3.1 Decision Criteria
 
 **Create contracts when**:
-- TASKS file has 3+ downstream dependencies
+- TASKS file has 5+ downstream consumer TASKS
+  - And the contract definition exceeds 500 lines
 - Interfaces shared across 2+ implementation sessions
 - State machines with 4+ states
 - Exception hierarchies with 3+ exception types

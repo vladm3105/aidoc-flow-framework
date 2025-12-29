@@ -184,10 +184,7 @@ Before completing an IMPL Plan, verify:
 - [ ] **Deliverables Listed**: All CTR/SPEC/TASKS enumerated
 - [ ] **Risks Assessed**: Project risks identified with mitigations
 - [ ] **Traceability Complete**: Links to REQ/ADR/SYS
-- [ ] **Token Limit**:
-  - Claude Code: File under 50,000 tokens (200KB) standard, 100,000 tokens maximum
-  - Gemini CLI: Use file read tool (not `@`) for files >10,000 tokens
-  - See: [TOOL_OPTIMIZATION_GUIDE.md](../TOOL_OPTIMIZATION_GUIDE.md)
+- [ ] **Token Limit**: See [AI_TOOL_OPTIMIZATION_GUIDE.md](../AI_TOOL_OPTIMIZATION_GUIDE.md) for assistant-specific token guidance and file handling.
 
 ## Writing Guidelines
 
@@ -408,7 +405,7 @@ Check IMPL Plan quality:
 - **Deliverables**: All CTR/SPEC/TASKS enumerated?
 - **Timeline**: Realistic estimates?
 - **Dependencies**: Blockers identified?
-- **Token Limit**: File < 50,000 tokens (Claude Code) or < 100,000 tokens maximum?
+- **Token Limit**: See [AI_TOOL_OPTIMIZATION_GUIDE.md](../AI_TOOL_OPTIMIZATION_GUIDE.md) for assistant-specific token guidance.
 
 ## Examples
 

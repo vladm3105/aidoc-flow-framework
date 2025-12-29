@@ -30,9 +30,9 @@ custom_fields:
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-19
 **Purpose**: Complete validation rules for SYS documents
-**Script**: `scripts/validate_sys_template.sh`
+**Script**: `python scripts/validate_sys.py`
 **Primary Template**: `SYS-TEMPLATE.md`
-**Framework**: doc_flow SDD (100% compliant)
+**Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added REQ-ready scoring validation system
 
 ---
@@ -48,6 +48,8 @@ custom_fields:
 ---
 
 ## Overview
+
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 The SYS validation script ensures system requirements meet quality standards for REQ progression and implement ADR architectural decisions.
 
@@ -200,10 +202,10 @@ The SYS validation script ensures system requirements meet quality standards for
 
 ```bash
 # Validate single SYS document
-./scripts/validate_sys_template.sh docs/SYS/SYS-01_system_requirements.md
+python scripts/validate_sys.py docs/SYS/SYS-01_system_requirements.md
 
 # Validate all SYS files
-find docs/SYS -name "SYS-*.md" -exec ./scripts/validate_sys_template.sh {} \;
+find docs/SYS -name "SYS-*.md" -exec python scripts/validate_sys.py {} \;
 ```
 
 ### REQ-Ready Scoring Criteria ⭐ NEW

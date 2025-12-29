@@ -93,7 +93,7 @@ ERROR_REGISTRY: Dict[str, Tuple[str, str]] = {
     "PRD-W001": ("Feature ID not 3-digit format", "Use NNN format for feature IDs"),
 
     # -------------------------------------------------------------------------
-    # EARS (Layer 3) - Easy Approach to Requirements Syntax
+    # EARS (Layer 3) - Event-Action-Response-State (Engineering Requirements)
     # -------------------------------------------------------------------------
     "EARS-E001": ("Invalid EARS pattern", "Use WHEN-THE-SHALL-WITHIN format"),
     "EARS-E002": ("Missing requirement ID", "Add EARS.NN.TT.SS format ID"),
@@ -245,6 +245,8 @@ ERROR_REGISTRY: Dict[str, Tuple[str, str]] = {
     "TERM-E002": ("Undefined acronym", "Acronym used without definition in document"),
     "TERM-W001": ("Inconsistent term usage", "Term used with variant spellings/capitalizations"),
     "TERM-W002": ("Missing glossary entry", "Technical term used but not in glossary"),
+    "TERM-W003": ("Legacy term usage: 'Easy Approach to Requirements Syntax'",
+                  "Use 'Event-Action-Response-State (Engineering Requirements)' except in citations"),
 
     # -------------------------------------------------------------------------
     # Timezone Validation (TZ) - Timezone format validation

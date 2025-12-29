@@ -2,7 +2,7 @@
 # IMPL (Implementation Plan) Template Validator v1.0
 # Validates IMPL documents against:
 # - IMPL-TEMPLATE.md (authoritative template)
-# - doc_flow SDD framework standards
+# - AI Dev Flow SDD framework standards
 # - Layer 8 artifact requirements
 # - Project management focus (WHO/WHAT/WHEN, not HOW)
 # Usage: ./scripts/validate_impl.sh <IMPL_FILE>
@@ -512,7 +512,7 @@ if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
   echo ""
   echo "Document complies with:"
   echo "  - IMPL-TEMPLATE.md structure"
-  echo "  - doc_flow SDD framework requirements"
+  echo "  - AI Dev Flow SDD framework requirements"
   echo "  - Layer 8 artifact standards"
   echo "  - Project management scope boundaries"
   exit 0

@@ -59,6 +59,7 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
+- Note: Example paths use a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `docs/EARS/` within project docs directory
 - **Naming**: `EARS-NN_descriptive_title.md` (NN = 3-digit sequential number)
 - **Subdocuments**: For complex systems: `EARS-NN-YY_additional_detail.md`
@@ -328,7 +329,7 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 
 ---
 
-**Framework Compliance**: 100% doc_flow SDD framework (Layer 3)
+**Framework Compliance**: 100% AI Dev Flow SDD framework (Layer 3)
 **Integration**: Enforces EARS → BDD progression quality gates
 
 

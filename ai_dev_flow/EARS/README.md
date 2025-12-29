@@ -1,5 +1,5 @@
 ---
-title: "EARS (Easy Approach to Requirements Syntax)"
+title: "EARS (Event-Action-Response-State) — Engineering Requirements"
 tags:
   - index-document
   - layer-3-artifact
@@ -11,13 +11,13 @@ custom_fields:
   priority: shared
 ---
 
-# EARS (Easy Approach to Requirements Syntax)
+# EARS (Event-Action-Response-State) — Engineering Requirements
 
 Note: `EARS-TEMPLATE.md` is a reference template. For real EARS documents, prefer sectioned docs using `EARS-SECTION-0-TEMPLATE.md` and `EARS-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`.
 
 ## Overview
 
-EARS files capture requirements in a structured, precise format that transforms high-level product requirements into clear, testable statements. EARS uses the **WHEN-THE-SHALL-WITHIN** syntax to ensure every requirement is measurable and implementation-ready.
+EARS files capture engineering requirements in a structured, precise format that transforms high-level product requirements into clear, testable statements. EARS uses the **WHEN-THE-SHALL-WITHIN** syntax to ensure every requirement is measurable and implementation-ready.
 
 ## Purpose
 

@@ -12,6 +12,10 @@ custom_fields:
 
 This directory contains Python scripts for automated generation, validation, and maintenance of traceability matrices for the AI-Driven Specification-Driven Development (SDD) framework.
 
+Note: See README.md → “Using This Repo” for path mapping and validator guidance specific to this repository.
+
+Path mapping reminder: Examples often show a `docs/` prefix. In this repository, artifact directories are at the root of `ai_dev_flow/` — drop the `docs/` prefix when running commands here.
+
 ## Traceability Rules (REQUIRED vs OPTIONAL)
 
 All validation scripts enforce these centralized traceability rules:
@@ -771,7 +775,7 @@ All scripts support the following document types:
 |------|-------------|---------|
 | BRD | Business Requirements Document | `BRD-NN_*.md` |
 | PRD | Product Requirements Document | `PRD-NN_*.md` |
-| EARS | Easy Approach to Requirements Syntax | `EARS-NN_*.md` |
+| EARS | Event-Action-Response-State (Engineering Requirements) | `EARS-NN_*.md` |
 | BDD | Behavior-Driven Development | `BDD-NN_*.feature` |
 | ADR | Architecture Decision Record | `ADR-NN_*.md` |
 | SYS | System Requirements | `SYS-NN_*.md` |

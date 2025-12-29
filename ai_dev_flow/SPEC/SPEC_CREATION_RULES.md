@@ -28,7 +28,7 @@ custom_fields:
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-30
 **Source**: Derived from SPEC-TEMPLATE.yaml and technical specification patterns
-**Purpose**: Complete reference for creating SPEC YAML files according to doc_flow SDD framework
+**Purpose**: Complete reference for creating SPEC YAML files according to AI Dev Flow SDD framework
 **Changes**: Added Threshold Registry Integration section (v1.2). Previous: Status/Score mapping, common mistakes section (v1.1)
 
 ---
@@ -54,15 +54,18 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
+- Note: Example paths use a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `docs/SPEC/` within project docs directory
-- **Naming**: `SPEC-NN_descriptive_component_name.yaml` (NN = 3-digit sequential)
-- **Structure**: One primary SPEC file per architectural component
+- **Naming**: `SPEC-{DOC_NUM}_{descriptive_component_name}.yaml` (DOC_NUM = variable-length, starts at 2 digits)
+- **Structure**:
+  - One monolithic YAML file per architectural component (codegen source)
+  - Split Markdown narrative as needed using `SPEC-SECTION-0-TEMPLATE.md` and `SPEC-SECTION-TEMPLATE.md`
 
 ---
 
 ## 2. Document Structure (YAML Specification)
 
-**Complete YAML structure with 7 major sections:**
+**Complete YAML structure with 7 major sections (kept in a single YAML file):**
 
 ```yaml
 # Header section with required metadata
@@ -272,7 +275,7 @@ cumulative_tags:
 
 ---
 
-**Framework Compliance**: 100% doc_flow SDD framework (Layer 10)
+**Framework Compliance**: 100% AI Dev Flow SDD framework (Layer 10)
 **Integration**: Enforces SPEC → TASKS progression quality gates
 
 ---

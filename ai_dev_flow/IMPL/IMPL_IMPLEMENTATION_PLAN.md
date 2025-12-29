@@ -378,7 +378,7 @@ Create complete IMPL artifact system including folder structure, templates, inde
 | Layer 0: Strategy | BRD | Indirect - BRD informs PRD, PRD informs downstream layers |
 | Layer 1: Discovery | N/A | No artifact - conceptual layer only |
 | Layer 2: Product | PRD | Indirect - PRD informs EARS, EARS informs downstream |
-| Layer 3: Formal Requirements | EARS | Indirect - EARS inform REQ, REQ informs IMPL |
+| Layer 3: Engineering Requirements | EARS | Indirect - EARS inform REQ, REQ informs IMPL |
 | Layer 4: Testing | BDD | Indirect - IMPL references BDD for acceptance criteria |
 | Layer 5: Architecture | ADR | Indirect - ADR informs IMPL technical constraints |
 | Layer 6: System | SYS | Indirect - SYS informs REQ, REQ informs IMPL |

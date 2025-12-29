@@ -2,7 +2,7 @@
 # TASKS (Code Generation Plan) Template Validator v1.0
 # Validates TASKS documents against:
 # - TASKS-TEMPLATE.md (authoritative template)
-# - doc_flow SDD framework standards
+# - AI Dev Flow SDD framework standards
 # - Layer 11 artifact requirements
 # - Code generation task structure
 # Usage: ./scripts/validate_tasks.sh <TASKS_FILE>
@@ -538,7 +538,7 @@ if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
   echo ""
   echo "Document complies with:"
   echo "  - TASKS-TEMPLATE.md structure"
-  echo "  - doc_flow SDD framework requirements"
+  echo "  - AI Dev Flow SDD framework requirements"
   echo "  - Layer 11 artifact standards"
   echo "  - Code generation readiness requirements"
   exit 0

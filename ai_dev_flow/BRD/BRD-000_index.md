@@ -13,6 +13,8 @@ custom_fields:
 
 # BRD Index (Business Requirements Documents)
 
+Note: Some examples in this index show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
 Purpose
 
 - Central index for Business Requirements Documents (BRDs).

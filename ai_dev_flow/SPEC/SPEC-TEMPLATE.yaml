@@ -24,7 +24,7 @@
 # [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Workflow: SPEC (Technical Specifications) - Layer 10 (Technical Specification Layer)
 #
 # For complete traceability workflow with visual diagram, see:
-# ai_dev_flow/ai_dev_flow/index.md#traceability-flow
+# ../index.md#traceability-flow
 #
 # Quick Reference: ... → CTR → **SPEC** → TASKS → Code → ...
 #
@@ -77,7 +77,7 @@ traceability:
   upstream_sources:
     business_requirements:
       - id: "BRD-NN"
-        link: "../../brds/BRD-NN_...md"
+        link: "../BRD/BRD-NN_...md"
         title: "[Business requirements title]"
         relevant_sections: ["2.4", "4.x"]
         relationship: "Business objectives driving this component"
@@ -85,7 +85,7 @@ traceability:
 
     product_requirements:
       - id: "PRD-NN"
-        link: "../../prd/PRD-NN_...md"
+        link: "../PRD/PRD-NN_...md"
         title: "[Product requirements title]"
         relevant_sections: ["Functional Requirements 4.x"]
         relationship: "Product features this component implements"
@@ -93,7 +93,7 @@ traceability:
 
     system_requirements:
       - id: "SYS-NN"
-        link: "../../sys/SYS-NN_...md"
+        link: "../SYS/SYS-NN_...md"
         title: "[System requirements title]"
         relevant_sections: ["System Requirements 3.x"]
         relationship: "System-level specification this component satisfies"
@@ -101,7 +101,7 @@ traceability:
 
     engineering_requirements:
       - id: "EARS-NN"
-        link: "../../ears/EARS-NN_...md"
+        link: "../EARS/EARS-NN_...md"
         title: "[Engineering requirements]"
         relevant_sections: ["Event-driven", "State-driven", "Ubiquitous"]
         relationship: "Formal engineering requirements this component satisfies"
@@ -109,7 +109,7 @@ traceability:
 
     architecture_decisions:
       - id: "ADR-NN"
-        link: "../adrs/ADR-NN_...md#ADR-NN"
+        link: "../ADR/ADR-NN_...md#ADR-NN"
         title: "[Architecture decision title]"
         relevant_sections: ["Decision", "Consequences", "Implementation"]
         relationship: "Architectural approach enabling this component"
@@ -136,14 +136,14 @@ traceability:
   downstream_artifacts:
     atomic_requirements:
       - id: "REQ-NN"
-        link: "../reqs/.../REQ-NN_...md#REQ-NN"
+        link: "../REQ/.../REQ-NN_...md#REQ-NN"
         title: "[Atomic requirement title]"
         spec_sections: ["interfaces", "behavior"]
         relationship: "Detailed implementation requirement this SPEC satisfies"
         verification_method: "Unit test, Integration test"
 
       - id: "REQ-MM"
-        link: "../reqs/.../REQ-MM_...md#REQ-MM"
+        link: "../REQ/.../REQ-MM_...md#REQ-MM"
         title: "[Another requirement title]"
         spec_sections: ["performance", "security"]
         relationship: "Quality attribute this SPEC satisfies"
@@ -223,7 +223,7 @@ traceability:
 
     implementation_tasks:
       - id: "TASKS-NN"
-        link: "../ai_tasks/TASKS-NN_....md"
+        link: "../TASKS/TASKS-NN_....md"
         title: "[Implementation plan title]"
         status: "pending"  # pending, in_progress, completed
         spec_sections: ["interfaces", "behavior", "implementation"]
@@ -231,13 +231,13 @@ traceability:
 
   requirements_source:
     business_domain:
-      - link: "../../reqs/domain/requirement.md"
+      - link: "../REQ/domain/requirement.md"
         description: "[Business domain requirements description]"
     system_level:
-      - link: "../../sys/system_requirement.md"
+      - link: "../SYS/system_requirement.md"
         description: "[System-level requirements description]"
     integration:
-      - link: "../../reqs/integration/requirement.md"
+      - link: "../REQ/integration/requirement.md"
         description: "[Integration requirements description]"
 
   validation_evidence:
@@ -922,7 +922,7 @@ performance:
     - optimize_serialization_deserialization
 
 # ===================
-# regulatoryURITY SPECIFICATIONS
+# SECURITY SPECIFICATIONS
 # ===================
 
 security:
@@ -1075,7 +1075,7 @@ observability:
 
     check_interval_seconds: 30
     timeout_seconds: 5
-    conregulatoryutive_failures_before_unhealthy: 3
+    consecutive_failures_before_unhealthy: 3
 
   distributed_tracing:
     enabled: true

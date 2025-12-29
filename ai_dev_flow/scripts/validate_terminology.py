@@ -258,6 +258,17 @@ def validate_terminology(
                 f"{filename}:{line_num}: '{found_term}' should be '{canonical_term}'"
             ))
 
+    # Check for legacy EARS terminology usage
+    legacy_phrase = "Easy Approach to Requirements Syntax"
+    if legacy_phrase in content:
+        # Allow citations that explicitly frame legacy usage
+        if ("EARS-inspired structured patterns" not in content
+                and "In this framework, EARS stands for" not in content):
+            warnings.append(format_error(
+                "TERM-W003",
+                f"{filename}: Replace legacy term with 'Event-Action-Response-State (Engineering Requirements)'"
+            ))
+
     return errors, warnings
 
 

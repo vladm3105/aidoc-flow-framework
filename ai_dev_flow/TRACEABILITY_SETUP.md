@@ -11,6 +11,8 @@ custom_fields:
 
 # Traceability Setup Guide
 
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
 **Version**: 1.0
 **Purpose**: Configure automated traceability validation for projects
 **Target**: AI Assistants setting up continuous validation
@@ -47,7 +49,7 @@ Located in `scripts/` directory after project initialization:
 | Script | Purpose | When to Run |
 |--------|---------|-------------|
 | `validate_requirement_ids.py` | Check REQ ID uniqueness and format | After creating/modifying REQ documents |
-| `check_broken_references.py` | Find broken markdown links | After any document creation/modification |
+| `validate_links.py` | Find broken markdown links | After any document creation/modification |
 | `generate_traceability_matrix.py` | Generate traceability matrix for document type | End of day, before commits |
 | `validate_traceability_matrix.py` | Validate existing matrix against documents | After matrix generation |
 | `update_traceability_matrix.py` | Incrementally update matrix | After document updates |
@@ -71,12 +73,12 @@ python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --s
 
 **Generate bidirectional matrices:**
 ```bash
-python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json --output docs/generated/matrices/
+python scripts/generate_traceability_matrix.py --tags docs/generated/tags.json --output docs/generated/matrices/
 ```
 
 **Complete workflow (extract → validate → generate):**
 ```bash
-python scripts/generate_traceability_matrices.py --auto
+python scripts/generate_traceability_matrix.py --auto
 ```
 
 **Validate only (no output):**
@@ -135,7 +137,7 @@ python scripts/validate_tags_against_docs.py \
 python scripts/validate_requirement_ids.py
 
 # Check for broken links
-python scripts/check_broken_references.py
+python scripts/validate_links.py
 ```
 
 ---
@@ -251,7 +253,7 @@ jobs:
         run: python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
       - name: Generate Traceability Matrices
-        run: python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json --output docs/generated/matrices/
+        run: python scripts/generate_traceability_matrix.py --tags docs/generated/tags.json --output docs/generated/matrices/
 
       - name: Upload Generated Matrices
         uses: actions/upload-artifact@v3
@@ -272,7 +274,7 @@ jobs:
 def after_document_created(document_path):
     # Validate immediately
     run_command("python scripts/validate_requirement_ids.py")
-    run_command("python scripts/check_broken_references.py")
+    run_command("python scripts/validate_links.py")
 
     # Report results
     if validation_passed:

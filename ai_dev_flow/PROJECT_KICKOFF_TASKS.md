@@ -52,7 +52,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-01_business_objectives.md
    - User-facing features
    - Quality attributes
    - Constraints
-2. Create EARS-01 (Easy Approach to Requirements Syntax)
+2. Create EARS-01 (Event-Action-Response-State Engineering Requirements)
    - Measurable requirements using WHEN-THE-SHALL format
 3. Update PRD-000_index.md and EARS-000_index.md
 
@@ -175,7 +175,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-01_business_objectives.md
 ```bash
 # Create TASKS documents
 python scripts/validate_requirement_ids.py
-python scripts/check_broken_references.py
+python scripts/validate_links.py
 python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
 ```
 
@@ -274,7 +274,7 @@ By end of Week 1, project should have:
 find docs/ -type f -name "*.md" | wc -l  # Expect >10 documents
 
 # Check traceability
-python scripts/check_broken_references.py  # Expect 0 broken links
+python scripts/validate_links.py  # Expect 0 broken links
 
 # Check index files
 ls docs/*/index.* || ls docs/*/*_index.*  # All should exist
@@ -285,7 +285,7 @@ ls docs/*/index.* || ls docs/*/*_index.*  # All should exist
 ```bash
 # Comprehensive validation
 python scripts/validate_requirement_ids.py
-python scripts/check_broken_references.py
+python scripts/validate_links.py
 python scripts/complete_traceability_matrix.py
 
 # Generate matrices

@@ -204,7 +204,7 @@ python scripts/validate_tags_against_docs.py \
   --strict
 
 # Generate [ARTIFACT] traceability report
-python scripts/generate_traceability_matrices.py \
+python scripts/generate_traceability_matrix.py \
   --type [ARTIFACT] \
   --show-coverage
 ```

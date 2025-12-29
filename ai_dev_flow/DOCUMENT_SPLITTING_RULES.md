@@ -16,7 +16,7 @@ custom_fields:
 
 Purpose: Define the minimal, stable rules for splitting long documents into indexed sections while preserving IDs, readability, and traceability. This supersedes ad‑hoc guidance and serves as the single source of truth for split standards.
 
-Scope: Applies to narrative Markdown types (e.g., BRD, PRD) and test/spec artifacts where applicable (e.g., BDD). YAML‑heavy SPECs may follow adjusted size thresholds but must keep references coherent.
+Scope: Applies to narrative Markdown types (e.g., BRD, PRD) and test/spec artifacts where applicable (e.g., BDD). For SPEC, split applies to Markdown narrative only; SPEC YAML remains monolithic per component for code generation.
 
 ## When To Split
 
@@ -91,9 +91,10 @@ next_section: "TYPE-NN.(S+1)_{slug}.md"
   - Use an aggregator file with `@redirect` lines to scenarios; do not use headings in `.feature` files.
   - Prefix scenario files with the numeric suite/section for ordering (e.g., `07.01_...`, `07.02_...`). Optional companion Markdown files may hold narrative context.
 
-- Structured specs (YAML‑heavy):
-  - Prefer monolithic per component; only split when required for readability.
-  - When split, group by domain/component and maintain coherent cross‑file references; avoid splitting a single interface across files.
+- Structured specs (YAML‑heavy / SPEC):
+  - SPEC YAML: Keep monolithic per component for deterministic code generation (do not split YAML).
+  - SPEC Markdown: Split narrative when needed (index + section files) to improve readability for reviewers and different audiences.
+  - If your tooling explicitly supports YAML includes and you document it, treat it as an advanced exception; otherwise keep YAML in a single file and move narrative to Markdown.
 
 ---
 

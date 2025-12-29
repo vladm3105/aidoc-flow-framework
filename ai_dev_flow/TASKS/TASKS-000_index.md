@@ -13,6 +13,8 @@ custom_fields:
 
 # TASKS-000: Code Generation Plans Master Index
 
+Note: Some examples in this index show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
 ## Purpose
 
 This document serves as the master index for all Code Generation Plans (TASKS) in the project. Use this index to:

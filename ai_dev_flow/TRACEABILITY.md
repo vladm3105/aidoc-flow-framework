@@ -16,6 +16,8 @@ custom_fields:
 
 # Traceability Guidelines for AI Dev Flow
 
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
 ## Purpose
 
 This document defines the standard traceability practices for the AI-Driven Specification-Driven Development (SDD) workflow. Traceability ensures complete linkage from business requirements through to production code, enabling impact analysis, change management, and validation.
@@ -534,7 +536,7 @@ python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --d
 
 **Generate bidirectional matrices:**
 ```bash
-python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json --output docs/generated/matrices/
+python scripts/generate_traceability_matrix.py --tags docs/generated/tags.json --output docs/generated/matrices/
 ```
 
 **Validation Rules:**
@@ -691,7 +693,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @icon-role: consumer
 ```
 
-**Implementation Contracts** (`@icon` - Layer 11, optional):
+**Implementation Contracts** (`@icon` - Layer 11, optional; shares with TASKS):
 - Tags implementation contracts for parallel development
 - Format: `@icon: TASKS-XXX:ContractName` or `@icon: ICON-XXX:ContractName`
 - Optional role: `@icon-role: provider|consumer`
@@ -835,7 +837,7 @@ python scripts/validate_tags_against_docs.py --strict
 python scripts/validate_tags_against_docs.py --check-cumulative
 
 # Generate traceability matrix from tags
-python scripts/generate_traceability_matrices.py --tags docs/generated/tags.json
+python scripts/generate_traceability_matrix.py --tags docs/generated/tags.json
 ```
 
 ### Benefits of Cumulative Tagging
@@ -1566,7 +1568,7 @@ Before committing any document:
 python scripts/validate_requirement_ids.py
 
 # Check broken references (if available)
-python scripts/check_broken_references.py
+python scripts/validate_links.py
 
 # Generate traceability matrix (if available)
 python scripts/complete_traceability_matrix.py
