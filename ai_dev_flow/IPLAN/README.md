@@ -1077,7 +1077,7 @@ IPLAN-01_gateway_connection_part2.md (Phase 3-4)
 ```markdown
 ## Error Handling
 
-Per [SPEC-01:error_handling](../SPEC/SPEC-01.yaml):
+Per [SPEC-01:error_handling](../SPEC/SPEC-01_{slug}/SPEC-01_{slug}.yaml):
 - 6 typed exceptions with error codes (SVC_ERR_001 through SVC_ERR_006)
 - Retry strategy: Exponential backoff, max 6 attempts
 - See SPEC-01 for complete specification
@@ -1134,7 +1134,7 @@ Use:
 **TASK-2.1: Models** (6 hours)
 - File: models.py
 - Classes: ConnectionConfig (8 fields), IbConnection (5 fields), ConnectionState (enum)
-- See [SPEC-01:models](../SPEC/SPEC-01.yaml) for field specifications
+- See [SPEC-01:models](../SPEC/SPEC-01_{slug}/SPEC-01_{slug}.yaml) for field specifications
 ```
 
 ## Troubleshooting

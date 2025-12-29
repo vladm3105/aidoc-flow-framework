@@ -15,7 +15,7 @@ Additional validations:
 Usage:
     python scripts/validate_artifact.py <document_path> [--verbose] [--strict]
     python scripts/validate_artifact.py docs/PRD/PRD-01_example.md
-    python scripts/validate_artifact.py docs/SPEC/SPEC-01_component.yaml --verbose
+    python scripts/validate_artifact.py docs/SPEC/SPEC-01_component/SPEC-01_component.yaml --verbose
 
 Options:
     --verbose    Show detailed validation results
@@ -82,7 +82,7 @@ ARTIFACT_PATTERNS = {
     "CTR": r"^CTR-\d{3}",
     "EARS": r"^EARS-\d{3}",
     "IMPL": r"^IMPL-\d{3}",
-    "IPLAN": r"^IPLAN-\d{3}",
+    "IPLAN": r"^IPLAN-\d{2,}",
     "PRD": r"^PRD-\d{3}",
     "REF": r"^[A-Z]{2,5}-REF-\d{3}",
     "REQ": r"^REQ-\d{3}",
@@ -173,7 +173,7 @@ def detect_artifact_type_from_content(content: str, frontmatter: Optional[Dict])
                 return match.group(1)
 
     # Check for H1 heading with artifact ID pattern
-    h1_match = re.search(r'^# ([A-Z]+)-\d{3}:', content, re.MULTILINE)
+    h1_match = re.search(r'^# ([A-Z]+)-\d{2,}:', content, re.MULTILINE)
     if h1_match:
         return h1_match.group(1)
 

@@ -177,7 +177,7 @@ graph LR
         CTR["CTR<br/><i>optional</i><br/><small>(@brd through @impl)</small>"]
     end
 
-    subgraph L7["Implementation Layer"]
+    subgraph L7["Technical Specs (SPEC)"]
         SPEC["SPEC<br/><i>YAML</i><br/><small>(@brd through @req + opt)</small>"]
     end
 
@@ -1526,8 +1526,8 @@ All traceability references MUST use markdown links with anchors:
 - From `REQ/risk/lim/` to `ADR/`: `../../../ADR/ADR-33_...md`
   - From `REQ/risk/lim/` to `CTR/`: `../../../CTR/CTR-01_...md`
   - From `PRD/` to `EARS/`: `../EARS/EARS-01_...md`
-  - From `SPEC/services/` to `REQ/`: `../../REQ/.../REQ-03_...md`
-  - From `SPEC/services/` to `CTR/`: `../../CTR/CTR-01_...md`
+  - From `SPEC/` to `REQ/`: `../../REQ/.../REQ-03_...md`
+  - From `SPEC/` to `CTR/`: `../../CTR/CTR-01_...md`
 
 ## Validation Requirements
 

@@ -472,7 +472,7 @@ LOOP:
 
 ```bash
 # Per-document validation (Phase 1)
-python scripts/validate_cross_document.py --document docs/SPEC/SPEC-NN_slug.yaml --auto-fix
+python scripts/validate_cross_document.py --document docs/SPEC/SPEC-NN_slug/SPEC-NN_slug.yaml --auto-fix
 
 # Layer validation (Phase 2) - run when all SPEC documents complete
 python scripts/validate_cross_document.py --layer SPEC --auto-fix

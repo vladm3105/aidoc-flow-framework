@@ -868,7 +868,7 @@ Examples (ai_dev_flow) - Atomic Documents (DOC_NUM)
   - REQ: `REQ/risk/lim/REQ-03_resource_limit_enforcement.md` (H1: `# REQ-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
   - CTR: `CTR/CTR-01_position_risk_validation.md` + `CTR-01_position_risk_validation.yaml` (H1: `# CTR-01: resource Risk Validation Contract`, YAML: `contract_id: position_risk_validation`)
   - BDD: `BDD/BDD-03_risk_limits_requirements/BDD-03.1_risk_limits_requirements.feature`
-  - SPEC: `SPEC/services/SPEC-03_resource_limit_service.yaml` (id: `resource_limit_service`)
+  - SPEC: `SPEC/SPEC-03_resource_limit_service.yaml` (id: `resource_limit_service`)
   - IMPL: `IMPL/IMPL-01_risk_management_system.md` (H1: `# IMPL-01: resource management System Implementation`)
   - TASKS: `TASKS/TASKS-03_resource_limit_service.md` (H1: `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
   - IPLAN: `IPLAN/IPLAN-01_database_migration_20251113_143022.md` (H1: `# IPLAN-01: Database Migration Plan`)

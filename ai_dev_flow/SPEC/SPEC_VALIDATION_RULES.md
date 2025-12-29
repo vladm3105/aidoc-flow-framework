@@ -204,7 +204,7 @@ cumulative_tags:
 
 ```bash
 # Validate single SPEC YAML file
-python scripts/validate_spec.py docs/SPEC/SPEC-01_component_spec.yaml
+python scripts/validate_spec.py docs/SPEC/SPEC-01_component_spec/SPEC-01_component_spec.yaml
 
 # Validate all SPEC files
 find docs/SPEC -name "SPEC-*.yaml" -exec python scripts/validate_spec.py {} \;

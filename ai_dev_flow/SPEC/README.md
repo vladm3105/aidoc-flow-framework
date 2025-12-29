@@ -353,7 +353,7 @@ Where:
 - `.yaml` is the required file extension
 
 **Examples:**
-- `SPEC/services/SPEC-01_external_api_client.yaml`
+- `SPEC/SPEC-01_external_api_client/SPEC-01_external_api_client.yaml`
 - `SPEC/data/SPEC-042_real_time_price_processor.yaml`
 - `SPEC/api/SPEC-102_service_api_gateway.yaml`
 
@@ -621,40 +621,40 @@ monitoring:
 
 ### Code Generation
 ```bash
-# Generate Python client from SPEC
-generate-client --spec SPEC/services/SPEC-01_external_api_client.yaml --output client_sdk/
+# Generate Python client from SPEC (nested default)
+generate-client --spec SPEC/SPEC-01_external_api_client/SPEC-01_external_api_client.yaml --output client_sdk/
 
-# Generate interface stubs
-generate-stubs --spec SPEC/services/SPEC-02_ib_gateway_service.yaml --language python --framework flask
+# Generate interface stubs (nested default)
+generate-stubs --spec SPEC/SPEC-02_ib_gateway_service/SPEC-02_ib_gateway_service.yaml --language python --framework flask
 
-# Generate tests from SPEC
-generate-tests --spec SPEC/services/SPEC-03_resource_limit_service.yaml --framework pytest
+# Generate tests from SPEC (nested default)
+generate-tests --spec SPEC/SPEC-03_resource_limit_service/SPEC-03_resource_limit_service.yaml --framework pytest
 ```
 
 ### Validation and Compliance
 ```bash
-# Validate SPEC against schema
-validate-spec --spec SPEC/services/SPEC-NN.yaml --schema spec_schema.json
+# Validate SPEC against schema (nested default)
+validate-spec --spec SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml --schema spec_schema.json
 
-# Check SPEC-test alignment
-verify-spec-coverage --spec SPEC/services/SPEC-NN.yaml --tests test_external_api/
+# Check SPEC-test alignment (nested default)
+verify-spec-coverage --spec SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml --tests tests/test_external_api/
 
-# Generate API documentation
-generate-docs --spec SPEC/services/SPEC-NN.yaml --format openapi --output docs/api/
+# Generate API documentation (nested default)
+generate-docs --spec SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml --format openapi --output docs/api/
 ```
 
 ### Monitoring Configuration
 ```bash
-# Generate monitoring configuration
-generate-monitoring --spec SPEC/services/SPEC-NN.yaml --output prometheus.yml
+# Generate monitoring configuration (nested default)
+generate-monitoring --spec SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml --output prometheus.yml
 
-# Validate metrics against SPEC
-validate-metrics --spec SPEC/services/SPEC-NN.yaml --actual-metrics metrics.json
+# Validate metrics against SPEC (nested default)
+validate-metrics --spec SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml --actual-metrics metrics.json
 ```
 
 ## Example SPEC Template
 
-See `SPEC/services/SPEC-01_external_api_client.yaml` for a complete example of a well-structured specification that includes interface definitions, operational characteristics, observability requirements, and comprehensive traceability.
+See `SPEC/SPEC-01_external_api_client.yaml` for a flat example (small, stable). For nested default, see `SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml`.
 ## File Size Limits
 
 - Target: 300–500 lines per file

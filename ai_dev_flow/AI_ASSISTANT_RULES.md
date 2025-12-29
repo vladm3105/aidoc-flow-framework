@@ -510,7 +510,7 @@ AI Assistant **MUST** use this format for all document references:
 # Flat structure (REQ, SPEC, CTR, etc.)
 [REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)
 [CTR-012](../CTR/CTR-012_data_service_api.md#CTR-012)
-[SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
+[SPEC-023](../SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
 ```
 
 ### Section 7: Traceability
@@ -765,10 +765,10 @@ Step 2: Create SPEC-023_risk_calculator.yaml
   - Upstream section: [REQ-023](../REQ/risk/REQ-023_risk_calculator.md#REQ-023)
 
 Step 3: Update REQ-023
-  - Downstream section: [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
+  - Downstream section: [SPEC-023](../SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
 
 Step 4: Create TASKS-023_implement_risk_calculator.md
-  - Upstream section: [SPEC-023](../SPEC/SPEC-023_risk_calculator.yaml)
+  - Upstream section: [SPEC-023](../SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
 
 Step 5: Update SPEC-023 and REQ-023
   - Add TASKS-023 to downstream sections

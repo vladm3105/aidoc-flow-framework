@@ -18,7 +18,7 @@ custom_fields:
 
 ---
 
-Note: Path mapping — many examples use a top-level `docs/` folder. In this repository, artifact folders live directly under `ai_dev_flow/`. When running commands here, drop the `docs/` prefix.
+Note: Path mapping — examples often use a top-level `docs/` folder. In this repository, artifact folders live directly under `ai_dev_flow/`. For path mapping details, see README.md → “Using This Repo”.
 
 ### Splitting Rules
 
@@ -33,8 +33,10 @@ Note: Path mapping — many examples use a top-level `docs/` folder. In this rep
 ## 16-Layer Workflow
 
 ```
-BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation → Production
+BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation
 ```
+
+Note: “Production” is an outcome, not a formal layer.
 
 **With Contracts**: `REQ → IMPL → CTR → SPEC → TASKS → IPLAN`
 **Without Contracts**: `REQ → IMPL → SPEC → TASKS → IPLAN`
@@ -112,7 +114,7 @@ Examples (nested folder structure):
 
 Examples (flat structure - legacy):
 [REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)
-[SPEC-23](../SPEC/SPEC-23_risk_calculator.yaml)
+[SPEC-23](../SPEC/SPEC-23_risk_calculator/SPEC-23_risk_calculator.yaml)
 ```
 
 ---
@@ -145,10 +147,7 @@ graph TB
   BRD --> nested_example
 ```
 
-<!-- Migration History -->
-<!-- CONTRACTS/ migrated to CTR/ (2025-01-13) -->
-<!-- tasks_plans/ migrated to IPLAN/ (2025-01-13) -->
-<!-- BRD/PRD/ADR migrated to nested folder structure (2025-12-18) -->
+<!-- Repository migration notes are tracked in the changelog; this quick reference remains generic. -->
 
 ---
 
@@ -247,7 +246,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 ### Downstream Artifacts (OPTIONAL - only existing docs)
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| [SPEC-23](../SPEC/SPEC-23_impl.yaml) | Technical Specification | Implementation |
+| [SPEC-23](../SPEC/SPEC-23_impl/SPEC-23_impl.yaml) | Technical Specification | Implementation |
 | [TASKS-23](../TASKS/TASKS-23_impl.md#TASKS-23) | Implementation Tasks | TODOs |
 
 ### Primary Anchor/ID
@@ -309,7 +308,7 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 7. **Validate Continuously** - Run validation after each document
 8. **Follow ID Standards** - Sequential numbering, stable IDs
 9. **Dual-File Contracts** - Both .md and .yaml for CTR
-10. **Token Optimization** - Target 50K tokens per file, 100K max
+10. **Tool Optimization** - See AI_TOOL_OPTIMIZATION_GUIDE.md for token guidance
 
 ---
 

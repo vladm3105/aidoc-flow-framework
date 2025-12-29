@@ -2,21 +2,19 @@
 """
 IPLAN Naming Convention Validator
 
-Validates IPLAN (Implementation Plan) files against timestamp-based naming standards.
+Validates IPLAN (Implementation Plan) files against non-timestamped naming standards.
 
-Format: IPLAN-NN_{descriptive_slug}_YYYYMMDD_HHMMSS.md
-- NNN: Sequential ID (3-4 digits: 001-999, 1000+)
-- descriptive_slug: Lowercase, hyphen-separated description
-- YYYYMMDD_HHMMSS: Timestamp (EST timezone)
+Format: IPLAN-NN_{descriptive_slug}.md
+- NN+: Sequential ID (2 or more digits, zero-padded e.g., 01, 02, 003)
+- descriptive_slug: Lowercase, underscore-separated description
 
 Validation Checks:
 1. Filename pattern compliance
-2. Sequential ID format (3-4 digits)
-3. Descriptive slug format (lowercase, hyphens only)
-4. Timestamp validity (YYYYMMDD_HHMMSS)
-5. File extension (.md)
-6. H1 ID format inside file
-7. Sequential ID ordering
+2. Sequential ID format (2+ digits)
+3. Descriptive slug format (lowercase, underscores only)
+4. File extension (.md)
+5. H1 ID format inside file
+6. Sequential ID ordering
 
 Reference: ID_NAMING_STANDARDS.md lines 123-145
 """
@@ -31,10 +29,8 @@ from typing import List, Tuple, Optional
 class IPLANValidator:
     """Validates IPLAN files against naming conventions."""
 
-    # Regex pattern for IPLAN filename
-    FILENAME_PATTERN = re.compile(
-        r'^IPLAN-(\d{2,})_([a-z0-9]+(?:-[a-z0-9]+)*)_(\d{8})_(\d{6})\.md$'
-    )
+    # Regex pattern for IPLAN filename (no timestamps)
+    FILENAME_PATTERN = re.compile(r'^IPLAN-(\d{2,})_([a-z0-9_]+)\.md$')
 
     # Regex pattern for H1 ID inside file
     H1_PATTERN = re.compile(r'^#\s+IPLAN-(\d{2,}):\s+(.+)$', re.MULTILINE)
@@ -46,64 +42,20 @@ class IPLANValidator:
         self.errors = []
         self.warnings = []
 
-    def validate_filename(self, filename: str) -> Optional[Tuple[str, str, str, str]]:
+    def validate_filename(self, filename: str) -> Optional[Tuple[str, str]]:
         """
         Validate IPLAN filename format.
 
-        Returns tuple of (id, slug, date, time) if valid, None otherwise.
+        Returns tuple of (id, slug) if valid, None otherwise.
         """
         match = self.FILENAME_PATTERN.match(filename)
         if not match:
             return None
 
-        iplan_id, slug, date_str, time_str = match.groups()
-        return iplan_id, slug, date_str, time_str
+        iplan_id, slug = match.groups()
+        return iplan_id, slug
 
-    def validate_timestamp(self, date_str: str, time_str: str, filename: str) -> bool:
-        """Validate timestamp format and validity."""
-        try:
-            # Parse date
-            year = int(date_str[:4])
-            month = int(date_str[4:6])
-            day = int(date_str[6:8])
-
-            # Parse time
-            hour = int(time_str[:2])
-            minute = int(time_str[2:4])
-            second = int(time_str[4:6])
-
-            # Validate ranges
-            if not (1900 <= year <= 2100):
-                self.errors.append(f"{filename}: Invalid year {year} (expected 1900-2100)")
-                return False
-
-            if not (1 <= month <= 12):
-                self.errors.append(f"{filename}: Invalid month {month} (expected 1-12)")
-                return False
-
-            if not (1 <= day <= 31):
-                self.errors.append(f"{filename}: Invalid day {day} (expected 1-31)")
-                return False
-
-            if not (0 <= hour <= 23):
-                self.errors.append(f"{filename}: Invalid hour {hour} (expected 0-23)")
-                return False
-
-            if not (0 <= minute <= 59):
-                self.errors.append(f"{filename}: Invalid minute {minute} (expected 0-59)")
-                return False
-
-            if not (0 <= second <= 59):
-                self.errors.append(f"{filename}: Invalid second {second} (expected 0-59)")
-                return False
-
-            # Create datetime object to verify date validity
-            datetime(year, month, day, hour, minute, second)
-            return True
-
-        except ValueError as e:
-            self.errors.append(f"{filename}: Invalid timestamp - {e}")
-            return False
+    # Timestamp validation removed: timestamps are not part of the filename pattern
 
     def validate_slug(self, slug: str, filename: str) -> bool:
         """Validate descriptive slug format."""
@@ -112,50 +64,36 @@ class IPLANValidator:
             self.errors.append(f"{filename}: Slug must be lowercase (found '{slug}')")
             return False
 
-        # Check valid characters (alphanumeric and hyphens only)
-        if not re.match(r'^[a-z0-9]+(?:-[a-z0-9]+)*$', slug):
+        # Check valid characters (alphanumeric and underscores only)
+        if not re.match(r'^[a-z0-9]+(?:_[a-z0-9]+)*$', slug):
             self.errors.append(
                 f"{filename}: Slug must contain only lowercase letters, "
-                f"numbers, and hyphens (found '{slug}')"
+                f"numbers, and underscores (found '{slug}')"
             )
             return False
 
-        # Check no consecutive hyphens
-        if '--' in slug:
-            self.errors.append(f"{filename}: Slug contains consecutive hyphens")
+        # Check no consecutive underscores
+        if '__' in slug:
+            self.errors.append(f"{filename}: Slug contains consecutive underscores")
             return False
 
-        # Check no leading/trailing hyphens
-        if slug.startswith('-') or slug.endswith('-'):
-            self.errors.append(f"{filename}: Slug cannot start or end with hyphen")
+        # Check no leading/trailing underscores
+        if slug.startswith('_') or slug.endswith('_'):
+            self.errors.append(f"{filename}: Slug cannot start or end with underscore")
             return False
 
         return True
 
     def validate_id_format(self, iplan_id: str, filename: str) -> bool:
-        """Validate IPLAN ID format (3-4 digits)."""
+        """Validate IPLAN ID format (2+ digits)."""
         if not iplan_id.isdigit():
             self.errors.append(f"{filename}: ID must be numeric (found '{iplan_id}')")
             return False
 
         id_len = len(iplan_id)
-        if id_len < 3 or id_len > 4:
+        if id_len < 2:
             self.errors.append(
-                f"{filename}: ID must be 3-4 digits (found {id_len} digits)"
-            )
-            return False
-
-        # Check for leading zeros (required for 001-999)
-        id_num = int(iplan_id)
-        if id_num < 1000 and id_len != 3:
-            self.errors.append(
-                f"{filename}: IDs 001-999 must use 3 digits with leading zeros"
-            )
-            return False
-
-        if id_num >= 1000 and id_len != 4:
-            self.errors.append(
-                f"{filename}: IDs 1000+ must use 4 digits"
+                f"{filename}: ID must be at least 2 digits (zero-padded)"
             )
             return False
 
@@ -239,17 +177,16 @@ class IPLANValidator:
             if not result:
                 self.errors.append(
                     f"{filename}: Invalid filename format. "
-                    f"Expected: IPLAN-NN_{{descriptive_slug}}_YYYYMMDD_HHMMSS.md"
+                    f"Expected: IPLAN-NN_{{descriptive_slug}}.md"
                 )
                 continue
 
-            iplan_id, slug, date_str, time_str = result
+            iplan_id, slug = result
 
             # Validate components
             valid = True
             valid &= self.validate_id_format(iplan_id, filename)
             valid &= self.validate_slug(slug, filename)
-            valid &= self.validate_timestamp(date_str, time_str, filename)
 
             if valid:
                 # Validate H1 ID inside file

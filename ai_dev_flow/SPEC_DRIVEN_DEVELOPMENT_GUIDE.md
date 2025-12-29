@@ -53,7 +53,7 @@ Quality gates prevent progression to downstream layers until artifacts meet spec
 
 The quality gates ensure smooth 16-layer transitions and prevent immature artifacts from affecting downstream development.
 
-**Strategy Layer** (Layer 0) → **Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Project Management Layer** (IMPL) → **Interface Layer** (CTR - optional) → **Implementation Layer** (SPEC) → **Code Generation Layer** (TASKS) → **Implementation Plans Layer** (IPLAN) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
+**Strategy Layer** (Layer 0) → **Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Project Management Layer** (IMPL) → **Interface Layer** (CTR - optional) → **Technical Specs (SPEC)** → **Code Generation Layer** (TASKS) → **Implementation Plans Layer** (IPLAN) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
 
 **Key Decision Point**: After IMPL, if the requirement involves an interface (API, event schema, data model), create CTR before SPEC. Otherwise, go directly to SPEC.
 
@@ -89,7 +89,7 @@ graph LR
         CTR["CTR<br/><i>optional</i><br/><small>(@brd through @impl)</small>"]
     end
 
-    subgraph L7["Implementation Layer"]
+    subgraph L7["Technical Specs (SPEC)"]
         SPEC["SPEC<br/><i>YAML</i><br/><small>(@brd through @req + opt)</small>"]
     end
 
@@ -1196,7 +1196,7 @@ A SPEC-ready REQ contains ≥90% of the technical information required to genera
 
 **REQ → SPEC Data Flow**:
 ```
-REQ (Requirement Layer)                    SPEC (Implementation Layer)
+REQ (Requirement Layer)                    SPEC (Technical Specs)
 ├─ Interface Specifications          →    interfaces: (copy signatures)
 │  └─ Protocol/ABC with type hints         └─ Add implementation notes
 ├─ Data Schemas                      →    schemas: (copy JSON Schema/Pydantic)
@@ -2051,7 +2051,7 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 - Each split file must be independently understandable (minimal context header and links back to index)
 - Maintain an index page listing split files and their dependencies
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-- Example: For complex SPEC exceeding 100K tokens, create SPEC-03_part1.yaml (interfaces/state), SPEC-03_part2.yaml (performance/verification); reference as [SPEC-03_part1.yaml](./SPEC/services/SPEC-03_part1.yaml), with [index.md](./index.md) enumerating splits and dependencies
+- Example: For complex SPEC exceeding 100K tokens, create SPEC-03_part1.yaml (interfaces/state), SPEC-03_part2.yaml (performance/verification); reference as [SPEC-03_part1.yaml](./SPEC/SPEC-03_part1.yaml), with [index.md](./index.md) enumerating splits and dependencies
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 - Estimate tokens using tools like `wc -w` or AI token counters for maintenance
 - External References: Paths to project files are placeholders; verify existence or update to local copies for standalone use

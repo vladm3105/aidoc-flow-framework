@@ -233,6 +233,8 @@ The 16-layer architecture uses the following structure:
 
 Note: ICON (Implementation Contracts) is an optional artifact that shares Layer 11 alongside TASKS. ICON provides standalone implementation contracts when needed for parallel development.
 
+Important: “Review” and “Production” are outcomes, not formal layers. The formal model is fixed at Layers 0–15.
+
 #### Mermaid Diagram Visual Groupings (L1-L11)
 
 Diagrams use simplified labels for visual clarity:
@@ -267,7 +269,7 @@ Diagrams use simplified labels for visual clarity:
 
 <!-- See “Using This Repo” above for path mapping guidance. -->
 
-### 1. Business Layer
+### Business Layer
 
 **BRD/** - Business Requirements Documents
 - High-level business objectives and market context
@@ -284,14 +286,14 @@ Diagrams use simplified labels for visual clarity:
 - Event-driven and state-driven requirements
 - **Files**: [EARS-000_index.md](./EARS/EARS-000_index.md) | [Template](./EARS/EARS-TEMPLATE.md)
 
-### 2. Testing Layer
+### Testing Layer
 
 **BDD/** - Behavior-Driven Development Scenarios
 - Executable acceptance tests in Gherkin format
 - Business-readable behavioral specifications
-- **Files**: [BDD-000_index.md](./BDD/BDD-000_index.md) | Templates: `BDD-SECTION-TEMPLATE.feature`, `BDD-SUBSECTION-TEMPLATE.feature`, `BDD-AGGREGATOR-TEMPLATE.feature` (examples)
+- **Files**: [BDD-000_index.md](./BDD/BDD-000_index.md) | Main template: [BDD-TEMPLATE.feature](./BDD/BDD-TEMPLATE.feature) | Section templates: `BDD-SECTION-TEMPLATE.feature`, `BDD-SUBSECTION-TEMPLATE.feature`, `BDD-AGGREGATOR-TEMPLATE.feature`
 
-### 3. Architecture Layer
+### Architecture Layer
 
 **ADR/** - Architecture Decision Records
 - Architectural choices and rationale
@@ -303,7 +305,7 @@ Diagrams use simplified labels for visual clarity:
 - Performance, security, and operational characteristics
 - **Files**: [SYS-000_index.md](./SYS/SYS-000_index.md) | [Template](./SYS/SYS-TEMPLATE.md)
 
-### 4. Requirements Layer
+### Requirements Layer
 
 **REQ/** - Atomic Requirements
 - Granular, testable requirements with acceptance criteria
@@ -313,7 +315,7 @@ Diagrams use simplified labels for visual clarity:
   - Split (optional when large): index + sections `REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ/REQ-NN.1_{section}.md`, ...
 - Files: [REQ-000_index.md](./REQ/REQ-000_index.md) | [Template](./REQ/REQ-TEMPLATE.md)
 
-### 5. Project Management Layer
+### Project Management Layer
 
 **IMPL/** - Implementation Specifications (Layer 8)
 - Project management documents organizing work into phases, teams, deliverables
@@ -322,7 +324,7 @@ Diagrams use simplified labels for visual clarity:
 - **Files**: [IMPL-000_index.md](./IMPL/IMPL-000_index.md) | [Template](./IMPL/IMPL-TEMPLATE.md)
 - **Examples**: [IMPL-01_feature_implementation_example.md](./IMPL/examples/IMPL-01_feature_implementation_example.md)
 
-### 6. Interface Layer
+### Interface Layer
 
 **CTR/** - API Contracts (CTR)
 - Formal interface specifications for component-to-component communication
@@ -334,7 +336,7 @@ Diagrams use simplified labels for visual clarity:
 - **Files**: [CTR-000_index.md](./CTR/CTR-000_index.md) | [Template .md](./CTR/CTR-TEMPLATE.md) + [Template .yaml](./CTR/CTR-TEMPLATE.yaml)
 - **Examples**: [CTR-01_service_contract_example.md](./CTR/CTR-01_service_contract_example.md) + [CTR-01_service_contract_example.yaml](./CTR/CTR-01_service_contract_example.yaml)
 
-### 7. Implementation Layer
+### Technical Specs (SPEC)
 
 **SPEC/** - Technical Specifications
 - YAML: Monolithic per component (code generation source)
@@ -343,7 +345,7 @@ Diagrams use simplified labels for visual clarity:
 - **Files**: [SPEC-000_index.md](./SPEC/SPEC-000_index.md) | [Template](./SPEC/SPEC-TEMPLATE.yaml)
 - **Examples**: [SPEC-01_api_client_example.yaml](./SPEC/SPEC-01_api_client_example.yaml)
 
-### 8. Code Generation Layer
+### Code Generation Layer
 
 **TASKS/** - Code Generation Plans (TASKS)
 - Exact TODOs to implement SPEC in source code
@@ -351,7 +353,7 @@ Diagrams use simplified labels for visual clarity:
 - **1:1 mapping**: Each TASKS document corresponds to one SPEC
 - **Files**: [TASKS-000_index.md](./TASKS/TASKS-000_index.md) | [Template](./TASKS/TASKS-TEMPLATE.md)
 
-### Layer 11: Implementation Contracts (Optional)
+### Implementation Contracts (Optional, Layer 11)
 
 **ICON/** - Implementation Contracts (Layer 11, Optional; shares with TASKS)
 - Type-safe interface definitions for parallel development coordination
@@ -387,9 +389,10 @@ Diagrams use simplified labels for visual clarity:
 ### Documentation Naming Format
 
 Format: `{TYPE}-{NN}_{descriptive_slug}.{ext}`
+Note: `NN` denotes a variable-width 2+ digit number (e.g., 01, 12, 105, 1002).
 
 - **TYPE**: Document type prefix (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS)
-- **NNN**: 2+ digit sequence number (01, 02, 03, 100)
+- **NNN**: 2+ digit sequence number (01, 02, 03, 100); examples and placeholders may show `NN` to indicate variable width
 - **descriptive_slug**: snake_case description
 - **ext**: File extension (md, feature, yaml)
 
@@ -573,7 +576,6 @@ python scripts/validate_links.py
 
 **CI/CD Integration**: See [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md) for pre-commit hooks and GitHub Actions workflows.
 
-<!-- Historical note removed: scripts/make_framework_generic.py is no longer part of this repo -->
 
 ### Using Automated Validation Tooling
 
@@ -899,7 +901,7 @@ The AI Dev Flow follows a structured progression through 16 layers:
 12. **TASKS** (Layer 11) - Implementation task breakdown
 13. **IPLAN** (Layer 12) - Session-specific plans
 
-**Implementation Layers (13-15)**:
+**Execution Layers (13-15)**:
 14. **Code** (Layer 13) - Source code with cumulative tags
 15. **Tests** (Layer 14) - Test suite with cumulative tags
 16. **Validation** (Layer 15) - Production readiness verification
@@ -1054,7 +1056,7 @@ graph LR
 
 <!-- Directory Structure Migration History -->
 <!-- 2025-01-13: CONTRACTS/ → CTR/ (contracts now use dual-file format) -->
-<!-- 2025-01-13: tasks_plans/ → IPLAN/ (implementation plans with timestamps) -->
+<!-- 2025-01-13: tasks_plans/ → IPLAN/ (implementation plans; filenames no longer use timestamps) -->
 
 ## Framework Versions and Updates
 

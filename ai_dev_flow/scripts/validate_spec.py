@@ -9,7 +9,7 @@ comprehensive validation of interfaces, performance, security, and observability
 Usage:
     python validate_spec.py <file_or_directory>
     python validate_spec.py /path/to/docs/SPEC
-    python validate_spec.py /path/to/docs/SPEC/SPEC-01_example.yaml
+    python validate_spec.py /path/to/docs/SPEC/SPEC-01_example/SPEC-01_example.yaml
 
 Exit Codes:
     0 = Pass (no errors, no warnings)

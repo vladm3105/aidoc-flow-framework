@@ -311,7 +311,7 @@ TASKS (Code Generation Plans) ← AI-structured code guidance
    - Risk tracking, dependencies
    - Budget, timeline, approvals
 
-2. **SPEC = Technical Implementation Layer** (not project planning)
+2. **SPEC = Technical Specs layer** (not project planning)
    - API designs, data models
    - Algorithms, logic flows
    - Configuration, deployment

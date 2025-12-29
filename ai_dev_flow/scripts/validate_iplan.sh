@@ -55,6 +55,11 @@ if [[ $filename =~ ^IPLAN-[0-9]{2,}_[a-z0-9_]+\.md$ ]]; then
   # Extract IPLAN ID
   IPLAN_ID=$(echo "$filename" | grep -oE "IPLAN-[0-9]+" | head -1)
   echo "  IPLAN ID: $IPLAN_ID"
+  # Disallow timestamp-like suffixes in slug (e.g., _YYYYMMDD or _YYYYMMDD_HHMMSS)
+  if [[ $filename =~ _[0-9]{8}(_[0-9]{6})?\.md$ ]]; then
+    echo -e "  ${RED}❌ ERROR: Timestamp-like suffix detected in filename (timestamps are not allowed)${NC}"
+    ERRORS=$((ERRORS + 1))
+  fi
 else
   echo -e "  ${RED}❌ ERROR: Invalid filename format: $filename${NC}"
   echo "           Expected: IPLAN-NN_descriptive_slug.md"

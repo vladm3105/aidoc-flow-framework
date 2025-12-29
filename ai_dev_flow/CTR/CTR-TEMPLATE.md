@@ -730,7 +730,7 @@ Common types across endpoints:
 | Artifact Type | Document ID | Document Title | Relationship |
 |---------------|-------------|----------------|--------------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| SPEC | [SPEC-05](../SPEC/services/SPEC-05_risk_validation_service.yaml) | Risk Validation Service | Provider implementation |
+| SPEC | [SPEC-05](../SPEC/SPEC-05_risk_validation_service/SPEC-05_risk_validation_service.yaml) | Risk Validation Service | Provider implementation |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 | SPEC | [SPEC-01](../SPEC/agents/SPEC-01_service_orchestrator.yaml) | [ORCHESTRATION_COMPONENT] | Primary consumer |
@@ -821,7 +821,7 @@ Common types across endpoints:
 - [ADR-008: Centralized Risk Parameters Architecture](../ADR/ADR-008_centralized_risk_parameters.md)
 - [SYS-004: Centralized Risk Controls](../SYS/SYS-004_centralized_risk_controls.md)
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-- [SPEC-05: Risk Validation Service](../SPEC/services/SPEC-05_risk_validation_service.yaml)
+- [SPEC-05: Risk Validation Service](../SPEC/SPEC-05_risk_validation_service/SPEC-05_risk_validation_service.yaml)
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 - [BDD-NN: Risk Validation Scenarios] (../BDD/BDD-NN_risk_validation/BDD-NN.1_risk_validation.feature)  
   (example placeholder)

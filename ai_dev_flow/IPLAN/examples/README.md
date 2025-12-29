@@ -85,10 +85,10 @@ To use an example as a template:
 ```bash
 # Copy example to your project docs
 cp ai_dev_flow/IPLAN/examples/IPLAN-NN_feature_example_*.md \
-   docs/IPLAN/IPLAN-YYY_your_feature_$(date +%Y%m%d_%H%M%S).md
+   docs/IPLAN/IPLAN-YY_your_feature.md
 
 # Customize for your implementation
-# - Update IPLAN ID
+# - Update IPLAN ID (zero-padded, e.g., 01, 02, 003)
 # - Modify phases for your specific feature
 # - Adjust bash commands for your environment
 # - Update traceability references

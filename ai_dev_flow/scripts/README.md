@@ -151,7 +151,7 @@ python update_traceability_matrix.py --matrix ../REQ/matrix.md --input ../REQ/ -
 
 ### 4. validate_iplan_naming.py
 
-Validates IPLAN (Implementation Plan) files against timestamp-based naming conventions.
+Validates IPLAN (Implementation Plan) files against non-timestamped naming conventions.
 
 **Usage:**
 ```bash
@@ -159,10 +159,9 @@ python validate_iplan_naming.py [base_path]
 ```
 
 **Features:**
-- Validates filename format: `IPLAN-NN_{descriptive_slug}_YYYYMMDD_HHMMSS.md`
-- Checks sequential ID format (3-4 digits: 001-999, 1000+)
-- Validates descriptive slug (lowercase, hyphen-separated)
-- Verifies timestamp validity (YYYYMMDD_HHMMSS format)
+- Validates filename format: `IPLAN-NN_{descriptive_slug}.md`
+- Checks sequential ID format (2+ digits, zero-padded)
+- Validates descriptive slug (lowercase, underscore-separated)
 - Confirms H1 ID inside file matches filename ID
 - Detects sequential ID gaps (warnings only)
 - Skips template files (IPLAN-TEMPLATE.md, IPLAN-000_*.md)
@@ -183,12 +182,11 @@ python validate_iplan_naming.py || exit 1
 ```
 
 **Validation Checks:**
-1. **Filename Pattern**: `IPLAN-NN_{slug}_YYYYMMDD_HHMMSS.md`
-2. **ID Format**: 3 digits (001-999) or 4 digits (1000+) with proper zero-padding
-3. **Slug Format**: Lowercase alphanumeric with hyphens only, no consecutive/leading/trailing hyphens
-4. **Timestamp Validity**: Valid date and time (year: 1900-2100)
-5. **H1 ID Match**: Header ID in file matches filename ID
-6. **Sequential Order**: Warns if ID gaps exist (non-blocking)
+1. **Filename Pattern**: `IPLAN-NN_{slug}.md`
+2. **ID Format**: 2+ digits with zero-padding
+3. **Slug Format**: Lowercase alphanumeric with underscores only, no consecutive/leading/trailing underscores
+4. **H1 ID Match**: Header ID in file matches filename ID
+5. **Sequential Order**: Warns if ID gaps exist (non-blocking)
 
 **Exit Codes:**
 - `0`: Validation passed (warnings allowed)
@@ -533,7 +531,7 @@ Validates IPLAN (Implementation Plan) session-based execution plans.
 ```
 
 **Features:**
-- Validates timestamp-based filename format
+- Validates filename format (no timestamps)
 - Checks session structure
 - Verifies bash command syntax
 - Validates cumulative tagging (Layers 1-11)
@@ -784,7 +782,7 @@ All scripts support the following document types:
 | CTR | API Contracts | `CTR-NN_*.md`, `CTR-NN_*.yaml` |
 | SPEC | Technical Specifications | `SPEC-NN_*.yaml` |
 | TASKS | Code Generation Tasks | `TASKS-NN_*.md` |
-| IPLAN | Session Implementation Plans | `IPLAN-NN_*_YYYYMMDD_HHMMSS.md` |
+| IPLAN | Session Implementation Plans | `IPLAN-NN_*.md` |
 
 Document IDs support both formats:
 - Simple: `TYPE-NN` (e.g., `ADR-01`)

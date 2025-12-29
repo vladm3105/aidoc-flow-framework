@@ -67,7 +67,7 @@ def build_document_index(docs_dir: Path) -> Dict:
                 'elements': {'BRD.01.01.01', 'BRD.01.01.02', ...}
             },
             'SPEC-003': {
-                'path': Path('docs/SPEC/SPEC-003_...yaml'),
+                'path': Path('docs/SPEC/SPEC-03_example/SPEC-03_example.yaml'),
                 'requirements': set()
             }
         }

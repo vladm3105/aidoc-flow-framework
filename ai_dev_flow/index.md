@@ -11,7 +11,7 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 - ✅ **Decision Frameworks**: Contract decision questionnaire and IMPL creation guidelines
 - ✅ **Tool Optimization**: Guidance for AI coding assistants (see AI_TOOL_OPTIMIZATION_GUIDE.md)
 - ✅ **BRD Guidance**: Platform vs Feature BRD selection guide
-- ✅ **IPLAN Layer**: Formalized Layer 12 Implementation Plans with timestamp-based naming convention
+- ✅ **IPLAN Layer**: Formalized Layer 12 Implementation Plans with stable, non-timestamped naming
 
 ## Document Structure
 
@@ -88,7 +88,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Optional organization: subdirectories by service type (agents/, mcp/, infra/)
   - Examples: [CTR-01](./CTR/examples/CTR-01_data_validation_api.md)
 
-### Implementation Layer (Layer 10)
+### Technical Specs (SPEC) (Layer 10)
 
 - **SPEC** (`SPEC/`) - Layer 10: Technical specifications ready for code generation
   - YAML: Monolithic single file per component (codegen source)
@@ -125,7 +125,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Index: [IPLAN-000_index.md](./IPLAN/IPLAN-000_index.md)
   - Template: [IPLAN-TEMPLATE.md](./IPLAN/IPLAN-TEMPLATE.md)
   - Purpose: Session-based execution context with executable bash commands
-  - Format: Sequential naming `IPLAN-NN_{descriptive_slug}.md` (timestamp suffix optional)
+  - Format: Sequential naming `IPLAN-NN_{descriptive_slug}.md` (no timestamps)
   - Enables context resumption across AI coding sessions
   - Contains bash commands for setup, execution, and validation
   - Each IPLAN executes one or more TASKS within a session
@@ -164,7 +164,7 @@ flowchart TD
     %% Interface Layer
     CTR[CTR<br/>API Contracts<br/>Interface definitions between components<br/>Dual format: .md + .yaml<br/><small><i>@brd through @impl</i></small>]
 
-    %% Implementation Layer
+    %% Technical Specs (SPEC)
     SPEC[SPEC<br/>Technical Specifications<br/>HOW - Implementation blueprints<br/>YAML format with full details<br/><small><i>@brd through @req + opt</i></small>]
 
     %% Code Generation Layer
@@ -202,6 +202,7 @@ flowchart TD
     IPLAN --> Code
     Code --> Tests
     Tests --> Validation
+    %% Note: Review and Prod are outcomes, not formal layers
     Validation --> Review
     Review --> Prod
 
@@ -237,11 +238,11 @@ flowchart TD
 - SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only. “Review” and “Prod” are outcomes, not formal layers.
 
 ### Workflow Explanation
 
-**Business Layer** → **Testing Layer** → **Architecture Layer** → **Requirements Layer** → **Project Management Layer** → **Interface Layer** → **Implementation Layer** → **Code Generation Layer** → **Execution Layer**
+**Business Layer** → **Testing Layer** → **Architecture Layer** → **Requirements Layer** → **Project Management Layer** → **Interface Layer** → **Technical Specs (SPEC)** → **Code Generation Layer** → **Execution Layer**
 
 **Key Decision Point**: After IMPL, if the requirement involves an interface (API, event schema, data model), create CTR before SPEC. Otherwise, go directly to SPEC.
 

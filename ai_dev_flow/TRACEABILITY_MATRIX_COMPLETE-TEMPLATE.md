@@ -90,7 +90,7 @@ python scripts/generate_traceability_matrix.py --auto --report
 | IMPL | [X]/[Y] | XX% | [Status] |
 | **Interface Layer** | | | |
 | CTR | [X]/[Y] | XX% | [Status] |
-| **Implementation Layer (Layer 10)** | | | |
+| **Technical Specs (SPEC) (Layer 10)** | | | |
 | SPEC | [X]/[Y] | XX% | [Status] |
 | **Code Generation Layer (Layer 11)** | | | |
 | TASKS | [X]/[Y] | XX% | [Status] |
@@ -123,7 +123,7 @@ ICON policy: Embed contracts in TASKS by default; promote to a standalone ICON o
 
 ### 2.1 Overview
 
-The Docs Flow Framework implements **cumulative tagging** where each artifact type must include traceability tags from ALL upstream artifact types. This creates complete end-to-end traceability chains from business strategy through production deployment.
+AI Dev Flow implements **cumulative tagging** where each artifact type must include traceability tags from ALL upstream artifact types. This creates complete end-to-end traceability chains from business strategy through production deployment.
 
 **Key Principle**: Each layer inherits ALL tags from upstream layers and adds its own.
 
@@ -746,7 +746,7 @@ Before making changes, verify:
 - **Testing Layer**: 100% EARS → BDD coverage
 - **Architecture Layer**: 100% ADR → SYS → REQ linkage
 - **Requirements Layer**: 100% REQ → SPEC linkage
-- **Implementation Layer**: 100% SPEC → TASKS → Code linkage
+- **Technical Specs (SPEC)**: 100% SPEC → TASKS → Code linkage
 - **Validation Layer**: 95%+ test coverage, all BDD scenarios passing
 
 ### 7.2 Automated Validation Commands

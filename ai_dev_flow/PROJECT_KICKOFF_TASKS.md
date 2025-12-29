@@ -146,7 +146,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-01_business_objectives.md
    - Reference CTR contracts (if applicable)
    - Include traceability comments
    - Behavioral specifications (pre/post conditions)
-2. Update SPEC-000_index.yaml
+2. Update SPEC-000_index.md
 
 **AI Assistant Actions**:
 ```bash
@@ -258,7 +258,7 @@ By end of Week 1, project should have:
 - [ ] **Requirements Layer**: Initial REQ documents (10-20 requirements)
 - [ ] **Project Management Layer**: IMPL plan with phases
 - [ ] **Interface Layer**: CTR contracts (if applicable)
-- [ ] **Implementation Layer**: Initial SPEC documents (3-5 SPEC)
+- [ ] **Technical Specs (SPEC)**: Initial SPEC documents (3-5 SPEC)
 - [ ] **Code Generation Layer**: Initial TASKS documents
 - [ ] **Validation**: All traceability links verified
 - [ ] **Documentation**: All index files updated
