@@ -26,6 +26,8 @@ custom_fields:
 
 # IMPL Validation Rules
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 Rules for validating Implementation Plans (IMPL) documents in the SDD framework.
 
 ## Document Control
@@ -534,7 +536,7 @@ Result: PASSED WITH WARNINGS
 > - `Phase-XXX` → Use `IMPL.NN.29.SS`
 > - `IP-XXX` → Use `IMPL.NN.29.SS`
 >
-> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 **Fix**: Replace `### Phase-01: Setup` with `### IMPL.02.29.01: Setup`
 

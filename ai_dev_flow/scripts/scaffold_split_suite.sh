@@ -86,8 +86,8 @@ EARSNN=${EARSNN:-$NN}
 # =============================================================================
 command -v rg >/dev/null 2>&1 || { echo "Error: ripgrep (rg) is required." >&2; exit 1; }
 
-TEMPL_DIR="/opt/data/docs_flow_framework/ai_dev_flow/BDD/templates/BDD_SPLIT_SUITE"
-[[ -d "$TEMPL_DIR" ]] || { echo "Error: Templates dir not found: $TEMPL_DIR" >&2; exit 1; }
+TEMPL_DIR="BDD/templates/BDD_SPLIT_SUITE"
+[[ -d "$TEMPL_DIR" ]] || { echo "Error: Templates dir not found: $TEMPL_DIR (run from repo root)" >&2; exit 1; }
 
 # =============================================================================
 # Setup Target Directory

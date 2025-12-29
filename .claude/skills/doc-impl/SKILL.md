@@ -1,5 +1,4 @@
 ---
-name: "doc-impl: Create Implementation Approach (Layer 8)"
 name: doc-impl
 description: Create Implementation Approach (IMPL) - Optional Layer 8 artifact documenting WHO-WHEN-WHAT implementation strategy
 tags:
@@ -64,6 +63,51 @@ Use `doc-impl` when:
 - Coordinating multiple developers or teams
 - This layer is **OPTIONAL** - skip if not needed
 
+### Create IMPL When
+
+- Multi-component feature requiring 3+ SPEC files
+- Phased rollout over multiple sprints/weeks
+- Multiple teams coordinating on related components
+- Complex dependencies between work packages
+
+### Do NOT Create IMPL When
+
+- Single SPEC implementation (use TASKS directly)
+- Simple feature with no phase dependencies
+- Work can be completed in one sprint by one team
+- Documentation-only updates
+
+## Reserved ID Exemption (IMPL-000_*)
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Pattern**: `IMPL-000_*.md`
+
+**Document Types**:
+- Index documents (`IMPL-000_index.md`)
+- Traceability matrix templates (`IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Glossaries, registries, checklists
+
+**Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+
+**Validation Behavior**: Skip all checks when filename matches `IMPL-000_*` pattern.
+
+## Element ID Format (MANDATORY)
+
+**Pattern**: `IMPL.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Implementation Phase | 29 | IMPL.02.29.01 |
+
+**Removed Patterns** (do NOT use):
+- `PHASE-XXX` → Use `IMPL.NN.29.SS`
+- `IP-XXX` → Use `IMPL.NN.29.SS`
+
+**Fix**: Replace `### Phase-01: Setup` with `### IMPL.02.29.01: Setup`
+
+**Reference**: `ID_NAMING_STANDARDS.md` — Cross-Reference Link Format
+
 ## IMPL-Specific Guidance
 
 ### 1. WHO-WHEN-WHAT Format
@@ -102,51 +146,75 @@ Use `doc-impl` when:
 
 **Document Control** (MANDATORY - First section before all numbered sections)
 
+**Document Control Fields** (10 mandatory):
+| Field | Required | Format |
+|-------|----------|--------|
+| IMPL ID | Yes | IMPL-NN |
+| Title | Yes | Non-empty string |
+| Status | Yes | Draft/Planned/In Progress/On Hold/Completed/Cancelled |
+| Version | Yes | X.Y.Z (semantic) |
+| Created | Yes | YYYY-MM-DD |
+| Author | Yes | Non-empty string |
+| Owner | Yes | Non-empty string |
+| Last Updated | Yes | YYYY-MM-DD |
+| Related REQs | Yes | REQ-NN references |
+| Deliverables | Yes | CTR/SPEC/TASKS list |
+
 **4-PART Structure**:
 
 **PART 1: Project Context and Strategy**
 - 1.1 Overview: What system/feature is being implemented
 - 1.2 Business Objectives: Requirements satisfied, success criteria
 - 1.3 Scope: In-scope and out-of-scope boundaries
+- 1.4 Dependencies: Upstream dependencies listed
 
 **PART 2: Implementation Strategy (WHO-WHEN-WHAT)**
 - 2.1 Phases and Milestones: Implementation timeline
 - 2.2 Team and Responsibilities (WHO): Team assignments
-- 2.3 Deliverables (WHAT): Per-phase outputs
+- 2.3 Deliverables (WHAT): Per-phase outputs (CTR-NN, SPEC-NN, TASKS-NN)
 - 2.4 Dependencies and Blockers
 
-**PART 3: Risk Management**
-- 3.1 Risk Assessment: Risks with likelihood, impact, mitigation
-- 3.2 Contingency Plans: Backup strategies
+**PART 3: Project Management and Risk**
+- 3.1 Resources: Team assignments and effort estimates
+- 3.2 Risk Register: Project management risks with mitigation
 
-**PART 4: Traceability**
-- 4.1 Upstream Sources: Links to BRD, PRD, EARS, BDD, ADR, SYS, REQ
-- 4.2 Downstream Artifacts: CTR, SPEC, TASKS to be created
-- 4.3 Cumulative Tags: @brd through @req (7 tags)
+**PART 4: Tracking and Completion**
+- 4.1 Deliverables Checklist: [ ] checkboxes for each deliverable
+- 4.2 Project Validation: Validation criteria
+- 4.3 Completion Criteria: Definition of done
+- 4.5 Sign-off: Sign-off table with roles
 
-### 3. Technical Approach Section
+**Traceability**: Upstream/downstream references
 
-**Format**:
+### 3. Phase Content Rules
+
+1. **Focus on WHO/WHAT/WHEN** - not technical details (HOW goes in SPEC)
+2. **List specific deliverables** - CTR-NN, SPEC-NN, TASKS-NN
+3. **Assign ownership** - team or person responsible
+4. **Include timeline** - dates or sprint numbers
+5. **Identify dependencies** - what blocks this phase
+
+**Good Example**:
 ```markdown
-## Technical Approach
+### IMPL.02.29.01: Core Risk Engine
 
-### Architecture Pattern
-**Pattern**: Layered architecture (Controller → Service → Repository)
-**Rationale**: Aligns with ADR-045 (REST API design)
+| Attribute | Details |
+|-----------|---------|
+| **Purpose** | Build foundation risk calculation engine |
+| **Owner** | Risk Team (3 developers) |
+| **Timeline** | Sprint 1-2 (4 weeks) |
+| **Deliverables** | CTR-03, SPEC-03, TASKS-03 |
+| **Dependencies** | Requires: Database schema (ADR-008) |
+| **Success Criteria** | [ ] All deliverables created [ ] Tests passing |
 
-### Technology Choices
-**Language**: Python 3.11+ (per ADR-000 Technology Stack)
-**Framework**: FastAPI (per ADR-000)
-**Database**: PostgreSQL (per ADR-033)
-**Testing**: pytest, pytest-cov
+**Key Risks**: Resource availability → Mitigation: Cross-train team
+```
 
-### Implementation Strategy
-1. **Phase 1**: Define data models and schemas (REQ Section 4)
-2. **Phase 2**: Implement API endpoints (REQ Section 3)
-3. **Phase 3**: Add error handling (REQ Section 5)
-4. **Phase 4**: Implement business logic
-5. **Phase 5**: Add configuration (REQ Section 6)
-6. **Phase 6**: Write tests (REQ Section 10)
+**Bad Example**:
+```markdown
+### Phase 1
+- Build the risk engine
+- Make it work
 ```
 
 ### 4. Dependencies Section
@@ -171,18 +239,23 @@ Use `doc-impl` when:
 - [ ] Market data API access granted
 ```
 
-### 5. Risk Assessment
+### 5. Risk Assessment (Project Management Focus)
 
 **Format**:
 ```markdown
 ## Risk Assessment
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| Database performance under load | Medium | High | Load testing, connection pooling |
-| OAuth integration complexity | Low | Medium | Use proven library, early prototype |
-| Market data API rate limits | High | Medium | Implement caching, request batching |
+| Risk ID | Risk Description | Probability | Impact | Mitigation | Owner | Status |
+|---------|------------------|-------------|--------|------------|-------|--------|
+| R-001 | Resource unavailability | Medium | High | Cross-train team | PM | Open |
+| R-002 | Timeline slippage | Medium | Medium | Scope buffer | PM | Open |
 ```
+
+**Focus Areas** (Project management risks only - technical risks go in ADR/SPEC):
+- Resource allocation risks
+- Timeline management risks
+- Scope control risks
+- Dependency coordination risks
 
 ## Tag Format Convention (By Design)
 
@@ -199,12 +272,13 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 ## Unified Element ID Format (MANDATORY)
 
-**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
+**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ, IMPL)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
 - **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
 Examples:
+- `IMPL.02.29.01` ✅ (Implementation Phase element)
 - `@brd: BRD.17.01.01` ✅
 - `@brd: BRD.017.001` ❌ (old 3-segment format)
 
@@ -223,11 +297,11 @@ Examples:
 ```markdown
 @brd: BRD.01.01.03
 @prd: PRD.01.07.02
-@ears: EARS.01.24.01
-@bdd: BDD.01.13.01
+@ears: EARS.01.25.01
+@bdd: BDD.01.14.01
 @adr: ADR-033, ADR-045
-@sys: SYS.01.25.01
-@req: REQ.01.26.01, REQ.01.26.02
+@sys: SYS.01.26.01
+@req: REQ.01.27.01, REQ.01.27.02
 ```
 
 **Upstream Sources**:
@@ -244,6 +318,22 @@ Examples:
 - SPEC-NN (to be created) - Technical specifications
 - TASKS-NN (to be created) - Task breakdown
 ```
+
+## Scope Boundaries
+
+### IMPL Contains (Project Management)
+
+- **WHO**: Teams, people, assignments
+- **WHAT**: Deliverables (CTR/SPEC/TASKS documents)
+- **WHEN**: Timeline, milestones, phases
+- **WHY**: Business objectives, success criteria
+
+### IMPL Does NOT Contain (Technical)
+
+- **HOW**: Technical implementation → SPEC
+- **Code**: Implementation details → TASKS
+- **Tests**: Test specifications → BDD/TASKS
+- **Architecture**: System design → ADR
 
 ## Upstream/Downstream Artifacts
 
@@ -284,7 +374,7 @@ Check `docs/IMPL/` for next available ID number (templates are in `ai_dev_flow/I
 
 ### Step 4: Fill Document Control Section
 
-Complete metadata and Document Revision History table.
+Complete metadata and Document Revision History table. Verify all 10 mandatory fields.
 
 ### Step 5: Complete Implementation Overview
 
@@ -296,11 +386,12 @@ Summarize what will be implemented and why.
 **WHEN**: Define timeline and milestones
 **WHAT**: Specify scope and deliverables
 
-### Step 7: Define Technical Approach
+### Step 7: Define Phases
 
-- Architecture pattern
-- Technology choices (reference ADR-000)
-- Implementation strategy (phases)
+Use unified Element ID format: `### IMPL.NN.29.SS: Phase Name`
+
+- Each phase has Purpose, Owner, Timeline, Deliverables, Dependencies
+- List specific deliverables: CTR-NN, SPEC-NN, TASKS-NN
 
 ### Step 8: Identify Dependencies
 
@@ -310,7 +401,7 @@ Summarize what will be implemented and why.
 
 ### Step 9: Assess Risks
 
-Document risks with likelihood, impact, and mitigation.
+Document project management risks (not technical) with likelihood, impact, and mitigation.
 
 ### Step 10: Add Cumulative Tags
 
@@ -332,7 +423,31 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact IMPL-01 --ex
 
 Commit IMPL file and traceability matrix.
 
-## Validation
+## Validation Checks
+
+| Check | Description | Type |
+|-------|-------------|------|
+| CHECK 1 | Filename format (IMPL-NN_{slug}.md) | ERROR |
+| CHECK 2 | Frontmatter validation (artifact_type: IMPL, layer: 8) | ERROR |
+| CHECK 3 | Document Control fields (10 mandatory) | ERROR |
+| CHECK 4 | Required Parts (PART 1-4 + Traceability) | ERROR |
+| CHECK 5 | PART 1 subsections (1.1-1.4) | WARNING |
+| CHECK 6 | Phases defined with deliverables | ERROR |
+| CHECK 7 | Deliverables referenced (CTR/SPEC/TASKS) | ERROR |
+| CHECK 8 | PART 3 risk register present | WARNING |
+| CHECK 9 | PART 4 sign-off section present | WARNING |
+| CHECK 10 | Traceability tags (7 required) | ERROR |
+| CHECK 11 | Scope boundary validation (PM focus) | WARNING |
+| CHECK 12 | Cross-reference validation | WARNING |
+| CHECK 13 | Element ID format compliance | ERROR |
+
+### Validation Tiers
+
+| Tier | Type | Action |
+|------|------|--------|
+| **Tier 1** | ERROR | Must fix before commit |
+| **Tier 2** | WARNING | Recommended to fix |
+| **Tier 3** | INFO | No action required |
 
 ### Automated Validation
 
@@ -349,15 +464,16 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 
 ### Manual Checklist
 
-- [ ] Document Control section at top
-- [ ] Implementation Overview clear and concise
+- [ ] Document Control section with 10 required fields
+- [ ] All 4 PARTS present
+- [ ] Phases use unified ID format (IMPL.NN.29.SS)
 - [ ] WHO-WHEN-WHAT framework completed
 - [ ] Team assignments documented
 - [ ] Timeline and milestones defined
-- [ ] Technical approach specified
+- [ ] Deliverables listed (CTR-NN, SPEC-NN, TASKS-NN)
 - [ ] Dependencies identified
 - [ ] Blockers documented (if any)
-- [ ] Risk assessment completed
+- [ ] Risk assessment completed (project management focus)
 - [ ] Cumulative tags: @brd through @req (7 tags) included
 - [ ] Traceability matrix updated
 
@@ -371,8 +487,11 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 2. **Unrealistic timeline**: WHEN must account for dependencies
 3. **Scope creep**: WHAT must align strictly with REQ scope
 4. **Missing cumulative tags**: Layer 8 must include all 7 upstream tags
-5. **No risk assessment**: Must document implementation risks
-6. **Skipping when not needed**: IMPL is optional - skip if not valuable
+5. **No risk assessment**: Must document project management risks
+6. **Technical risks in IMPL**: Project risks only (technical → ADR/SPEC)
+7. **Legacy element IDs**: Use `IMPL.NN.29.SS` not `Phase-XXX` or `IP-XXX`
+8. **Missing deliverables**: Each phase must list CTR/SPEC/TASKS IDs
+9. **Skipping when not needed**: IMPL is optional - skip if not valuable
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
 
@@ -463,6 +582,7 @@ For supplementary documentation related to IMPL artifacts:
 - **IMPL Validation Rules**: `ai_dev_flow/IMPL/IMPL_VALIDATION_RULES.md`
 - **IMPL README**: `ai_dev_flow/IMPL/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+- **ID Naming Standards**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
 
 **Section Templates** (for documents >25K tokens):
 - Index template: `ai_dev_flow/IMPL/IMPL-SECTION-0-TEMPLATE.md`
@@ -477,13 +597,24 @@ For supplementary documentation related to IMPL artifacts:
 
 **Tags Required**: @brd through @req (7 tags)
 
+**Element ID Format**: `IMPL.NN.29.SS`
+- Implementation Phase = 29
+
+**Removed Patterns**: PHASE-XXX, IP-XXX
+
+**Document Control Fields**: 10 required
+
 **Format**: 4-PART Structure
 
 **Key Parts**:
-- **PART 1**: Project Context and Strategy (Overview, Business Objectives, Scope)
+- **PART 1**: Project Context and Strategy (Overview, Objectives, Scope, Dependencies)
 - **PART 2**: Implementation Strategy - WHO-WHEN-WHAT (Phases, Team, Deliverables)
-- **PART 3**: Risk Management (Assessment, Contingency)
-- **PART 4**: Traceability (Upstream, Downstream, Tags)
+- **PART 3**: Project Management and Risk (Resources, Risk Register)
+- **PART 4**: Tracking and Completion (Deliverables Checklist, Sign-off)
+
+**Scope Boundaries**:
+- **IMPL Contains**: WHO/WHAT/WHEN/WHY (Project Management)
+- **IMPL Does NOT Contain**: HOW (Technical details → SPEC)
 
 **Optional**: Skip this layer if implementation approach is straightforward
 

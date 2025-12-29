@@ -18,7 +18,19 @@ custom_fields:
 
 ---
 
-Note: Path mapping — examples often use a top-level `docs/` folder. In this repository, artifact folders live directly under `ai_dev_flow/`. For path mapping details, see README.md → “Using This Repo”.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
+## Units & Conversions (KB vs tokens)
+
+- KB: 1 KB = 1,024 bytes (OS file size).
+- Tokens: ~4 characters per token on average for English plaintext (≈0.75 words).
+- Estimate tokens from size: tokens ≈ (KB × 1024) ÷ 4.
+  - Examples: 10 KB ≈ 2,500 tokens; 20 KB ≈ 5,000 tokens; 50 KB ≈ 12,500 tokens.
+- Estimate size from tokens: KB ≈ (tokens × 4) ÷ 1024.
+  - Examples: 10,000 tokens ≈ 39 KB; 50,000 tokens ≈ 195 KB.
+- Caveats: Code/JSON and non‑ASCII text increase token counts; tools may compress inputs.
+
+See also: [README → Units & Conversions](./README.md#units--conversions-kb-vs-tokens)
 
 ### Splitting Rules
 
@@ -236,7 +248,7 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 
 ---
 
-## section 7: Traceability Template
+## 7. Traceability Template
 
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 ```markdown
@@ -513,10 +525,10 @@ docs/BDD/
 ### Validation
 ```bash
 # Validate section-based format
-python ai_dev_flow/scripts/validate_bdd_suite.py --root docs/BDD
+python3 scripts/validate_bdd_suite.py --root BDD
 
 # Migrate legacy formats
-python ai_dev_flow/scripts/migrate_bdd_to_sections.py --root docs/BDD --suite BDD-02_knowledge_engine
+python3 scripts/migrate_bdd_to_sections.py --root BDD --suite BDD-02_knowledge_engine
 ```
 
 ---

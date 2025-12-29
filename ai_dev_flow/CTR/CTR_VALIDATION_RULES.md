@@ -26,6 +26,8 @@ custom_fields:
 
 # CTR Validation Rules
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 Rules for validating Data Contracts (CTR) documents in the SDD framework.
 
 ## Document Control
@@ -422,7 +424,7 @@ Result: PASSED WITH WARNINGS
 > - `DM-XXX` → Use `CTR.NN.17.SS`
 > - `CC-XXX` → Use `CTR.NN.20.SS`
 >
-> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 **Fix**: Replace `### IF-01: Interface` with `### CTR.02.16.01: Interface`
 

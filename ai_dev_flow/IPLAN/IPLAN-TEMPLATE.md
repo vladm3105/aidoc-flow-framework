@@ -647,7 +647,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 ### 8.5 Validation Methods
 
-- **Automated**: Run `/opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_docs.py`
+- **Automated**: Run `python3 scripts/validate_tags_against_docs.py`
 - **Manual**: Verify each tag resolves to existing document in framework
 - **Traceability Matrix**: Update `IPLAN-000_TRACEABILITY_MATRIX-TEMPLATE.md`
 

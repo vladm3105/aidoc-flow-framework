@@ -26,6 +26,8 @@ custom_fields:
 
 # IPLAN Validation Rules
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 Rules for validating Implementation Plans (IPLAN) documents in the SDD framework.
 
 ## Document Control
@@ -724,7 +726,7 @@ grep -r "pattern" src/
 > - `CMD-XXX` → Use `IPLAN.NN.19.SS`
 > - `STEP-XXX` → Use `IPLAN.NN.31.SS`
 >
-> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 **Fix**: Replace `### CMD-01: Build Command` with `### IPLAN.02.19.01: Build Command`
 

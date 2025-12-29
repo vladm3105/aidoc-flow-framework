@@ -1,3 +1,18 @@
+---
+title: "BDD Section Index Template"
+tags:
+  - bdd-template
+  - layer-4-artifact
+  - shared-architecture
+  - section-template
+custom_fields:
+  document_type: section-template
+  artifact_type: BDD
+  layer: 4
+  priority: shared
+  development_status: active
+---
+
 # BDD-NN.0: [Suite Name] Test Suite Index
 
 **Version**: 1.0
@@ -140,7 +155,7 @@ Before running BDD scenarios:
 - [ ] Timezone policy enforced (IANA format, HH:MM:SS)
 - [ ] No .feature file exceeds 500 lines
 - [ ] No Feature block exceeds 12 scenarios
-- [ ] Validation passes: `python validate_bdd_suite.py --root docs/BDD`
+- [ ] Validation passes: `python3 scripts/validate_bdd_suite.py --root BDD`
 
 ### Post-Execution Gates
 
@@ -182,7 +197,7 @@ After scenario execution:
 
 ---
 
-**Document Path**: `/opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD-NN.0_index.md`
+**Document Path**: `BDD/BDD-NN.0_index.md`
 **Framework**: AI Dev Flow SDD
 **Layer**: 4 (BDD - Behavior-Driven Development)
 **Template Version**: 1.0

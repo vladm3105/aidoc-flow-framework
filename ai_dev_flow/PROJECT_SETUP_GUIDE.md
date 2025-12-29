@@ -127,11 +127,15 @@ ls -la work_plans/  # Verify work_plans directory
 
 **Commands**:
 ```bash
-# Copy all templates
-cp -r /opt/data/docs_flow_framework/ai_dev_flow/* docs/
+# Point to the framework checkout (adjust for your environment)
+FRAMEWORK_ROOT=/path/to/ai_dev_flow
+
+# Copy all templates into your project docs/ root
+cp -r "$FRAMEWORK_ROOT"/* docs/
 
 # Copy validation scripts
-cp /opt/data/docs_flow_framework/ai_dev_flow/scripts/*.py scripts/
+mkdir -p scripts
+cp "$FRAMEWORK_ROOT/scripts"/*.py scripts/
 ```
 
 ---
@@ -186,19 +190,19 @@ Options:
 **Commands**:
 ```bash
 # Create index files
-touch docs/BRD/BRD-00_index.md
-touch docs/PRD/PRD-00_index.md
-touch docs/EARS/EARS-00_index.md
+touch docs/BRD/BRD-000_index.md
+touch docs/PRD/PRD-000_index.md
+touch docs/EARS/EARS-000_index.md
 # Create a BDD suite folder and index file (per suite)
 mkdir -p docs/BDD/BDD-NN_{slug}
 touch docs/BDD/BDD-NN_{slug}/BDD-NN.0_index.md
-touch docs/ADR/ADR-00_index.md
-touch docs/SYS/SYS-00_index.md
-touch docs/REQ/REQ-00_index.md
-touch docs/IMPL/IMPL-00_index.md
-touch docs/CTR/CTR-00_index.md
-touch docs/SPEC/SPEC-00_index.yaml
-touch docs/TASKS/TASKS-00_index.md
+touch docs/ADR/ADR-000_index.md
+touch docs/SYS/SYS-000_index.md
+touch docs/REQ/REQ-000_index.md
+touch docs/IMPL/IMPL-000_index.md
+touch docs/CTR/CTR-000_index.md
+touch docs/SPEC/SPEC-000_index.yaml
+touch docs/TASKS/TASKS-000_index.md
 ```
 
 **Output**: All index files created
@@ -425,7 +429,7 @@ python scripts/trace_check.py --type REQ
 ### 🎯 Next Steps
 
 **Immediate Actions** (Optional):
-1. Update BRD-00_index.md with all 5 created BRDs
+1. Update BRD-000_index.md with all 5 created BRDs
 2. Fix BRD-01 structural issues (YAML frontmatter, table format)
 3. Create BRD-000_TRACEABILITY_MATRIX.md
 
@@ -925,7 +929,7 @@ Next: Review PROJECT_KICKOFF_TASKS.md for Day 1-7 action plan
 
 ### Error: Template Not Found
 
-**Issue**: `cp: cannot stat '/opt/data/docs_flow_framework/ai_dev_flow/*': No such file or directory`
+**Issue**: `cp: cannot stat "$FRAMEWORK_ROOT"/*: No such file or directory`
 
 **Resolution**:
 - Verify framework path
@@ -949,8 +953,9 @@ mkdir -p scripts work_plans
 # Add domain-specific subdirectories based on Step 1
 
 # Step 3: Copy Templates
-cp -r /opt/data/docs_flow_framework/ai_dev_flow/* docs/
-cp /opt/data/docs_flow_framework/ai_dev_flow/scripts/*.py scripts/
+FRAMEWORK_ROOT=/path/to/ai_dev_flow
+cp -r "$FRAMEWORK_ROOT"/* docs/
+cp "$FRAMEWORK_ROOT/scripts"/*.py scripts/
 
 # Step 4: Apply Domain Config
 # Run placeholder replacement based on domain selection

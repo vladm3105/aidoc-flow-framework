@@ -1,6 +1,5 @@
 ---
 name: "doc-sys: Create System Requirements (Layer 6)"
-name: doc-sys
 description: Create System Requirements (SYS) - Layer 6 artifact defining functional requirements and quality attributes
 tags:
   - sdd-workflow
@@ -13,7 +12,7 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: core-workflow
-  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR]
+  upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
   downstream_artifacts: [REQ]
 ---
 
@@ -63,110 +62,135 @@ Use `doc-sys` when:
 - Specifying functional system behavior and quality attributes
 - You are at Layer 6 of the SDD workflow
 
+## Reserved ID Exemption (SYS-000_*)
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Pattern**: `SYS-000_*.md`
+
+**Document Types**: Index, Traceability matrix, Glossaries, Registries, Checklists
+
+**Validation Behavior**: Skip all checks when filename matches `SYS-000_*` pattern.
+
 ## SYS-Specific Guidance
 
-### 1. Required Sections
+### 1. Five-Part SYS Document Structure
 
-**Document Control** (MANDATORY - First section before all numbered sections)
+**Full Template**: See `ai_dev_flow/SYS/SYS-TEMPLATE.md` for complete structure.
 
-**Core Sections**:
-1. **Introduction**: System overview and scope
-2. **System Requirements**: All requirements (functional and quality attributes)
-3. **System Flows**: Interaction diagrams and workflows
-4. **Technical Constraints**: ADR-imposed limitations
-5. **Traceability**: Section 7 format
+**Part 1 - System Definition**:
+- Document Control, Executive Summary, Scope
 
-### 2. System Requirements
+**Part 2 - System Requirements**:
+- Functional Requirements, Quality Attributes
 
-**Format**: Sequential numbering for all requirements (unified approach)
+**Part 3 - System Specification**:
+- Interface Specifications, Data Management Requirements, Testing and Validation Requirements
 
+**Part 4 - System Operations**:
+- Deployment and Operations Requirements, Compliance and Regulatory Requirements
+
+**Part 5 - Validation and Control**:
+- Acceptance Criteria, Risk Assessment, Traceability, Implementation Notes
+
+### 2. Document Control Requirements
+
+**Required Fields** (9 mandatory):
+- Status, Version, Date Created/Last Updated, Author, Reviewers, Owner, Priority
+- EARS-Ready Score
+- REQ-Ready Score
+
+**Format**:
 ```markdown
-## System Requirements
-
-### 001: Trade Order Validation
-**Description**: System SHALL validate all trade orders before submission
-**Input**: Trade order (symbol, quantity, price, account)
-**Processing**:
-- Validate symbol exists and is tradeable
-- Validate quantity is positive integer
-- Validate price within reasonable range
-- Validate account has sufficient buying power
-**Output**: Validation result (pass/fail) with error details
-**Source**: EARS.01.24.01, ADR-033
-**Verification**: BDD.01.13.01
-
-### 002: Order Validation Performance
-**Description**: Order validation SHALL complete within 50ms at P95
-**Measurement**: P50 <25ms, P95 <50ms, P99 <100ms
-**Rationale**: User experience requires sub-second feedback per PRD-01
-**Source**: PRD.01.07.02, EARS.01.24.02
-**Verification**: Performance benchmarks, load testing
-**Traceability**: @brd: BRD.01.01.02 | @prd: PRD.01.07.02
-
-### 003: System Availability
-**Description**: System SHALL maintain 99.9% uptime during market hours
-**Measurement**: Monthly uptime >99.9% (43.2 minutes downtime max)
-**Rationale**: Trading system criticality requires high availability
-**Source**: BRD.01.01.03
-**Verification**: Uptime monitoring, incident tracking
-**Traceability**: @brd: BRD.01.01.03
+| Item | Details |
+|------|---------|
+| **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **REQ-Ready Score** | ✅ 95% (Target: ≥90%) |
 ```
 
-**Note**: All requirements use sequential numbering (`001`, `002`, `003`...). Use folder structure, tags, or document sections for categorization if needed.
+### 3. REQ-Ready Scoring System
 
-### 3. System Flows
+**Purpose**: Measures SYS maturity and readiness for progression to Requirements (REQ) decomposition.
 
-**Use Mermaid diagrams ONLY** (text-based diagrams prohibited per `ai_dev_flow/DIAGRAM_STANDARDS.md`):
+**Format**: `✅ NN% (Target: ≥90%)`
 
+**Status and REQ-Ready Score Mapping**:
+
+| REQ-Ready Score | Required Status |
+|-----------------|-----------------|
+| ≥90% | Approved |
+| 70-89% | In Review |
+| <70% | Draft |
+
+**Scoring Criteria**:
+- **Requirements Decomposition Clarity (35%)**: System boundaries, functional decomposition, dependencies, ADR alignment
+- **Quality Attributes Quantification (30%)**: Performance percentiles, reliability SLAs, security compliance, scalability metrics
+- **Interface Specifications (20%)**: External APIs (CTR-ready), internal interfaces, data exchange protocols
+- **Implementation Readiness (15%)**: Testing requirements, deployment/ops, monitoring/observability
+
+**Quality Gate**: Score <90% blocks REQ artifact creation.
+
+### 4. Element ID Format (MANDATORY)
+
+**Pattern**: `SYS.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Functional Requirement | 01 | SYS.02.01.01 |
+| Quality Attribute | 02 | SYS.02.02.01 |
+| Use Case | 11 | SYS.02.11.01 |
+| System Requirement | 26 | SYS.02.26.01 |
+
+**REMOVED PATTERNS** - Do NOT use legacy formats:
+- ❌ `FR-XXX` → Use `SYS.NN.01.SS`
+- ❌ `QA-XXX` → Use `SYS.NN.02.SS`
+- ❌ `UC-XXX` → Use `SYS.NN.11.SS`
+- ❌ `SR-XXX` → Use `SYS.NN.26.SS`
+
+**Reference**: [ID_NAMING_STANDARDS.md](../../ai_dev_flow/ID_NAMING_STANDARDS.md)
+
+### 5. System Component Categorization
+
+**System Types**:
+- **API Services**: REST, GraphQL, or other API interfaces
+- **Data Processing**: ETL, stream processing, batch processing systems
+- **Integration Services**: Adapters, connectors, proxy services
+- **Supporting Services**: Caching, messaging, configuration services
+- **Infrastructure Components**: Load balancers, gateways, monitoring systems
+
+**Criticality Levels**:
+- **Mission-Critical**: Revenue-generating systems with <1 hour downtime SLA
+- **Business-Critical**: Core operational systems with <4 hour downtime SLA
+- **Operational Support**: Back-office systems with <24 hour downtime SLA
+
+### 6. Threshold Registry Integration
+
+**Purpose**: Prevent magic numbers by referencing centralized threshold registry.
+
+**@threshold Tag Format**:
 ```markdown
-## System Flows
-
-### Flow 1: Trade Order Submission
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant API
-    participant Validator
-    participant RiskEngine
-    participant Broker
-
-    User->>API: Submit trade order
-    API->>Validator: Validate order
-    Validator->>RiskEngine: Check position limits
-    RiskEngine-->>Validator: Limit check result
-    Validator-->>API: Validation result
-    alt Order Valid
-        API->>Broker: Submit to broker
-        Broker-->>API: Confirmation
-        API-->>User: Order accepted
-    else Order Invalid
-        API-->>User: Rejection with reason
-    end
-```
+@threshold: PRD.NN.category.subcategory.key
 ```
 
-### 4. Technical Constraints
+**SYS-Specific Threshold Categories**:
 
-**From ADR decisions**:
+| Category | SYS Usage | Example Key |
+|----------|-----------|-------------|
+| `perf.*` | Performance requirements | `perf.api.p95_latency` |
+| `sla.*` | Uptime and availability targets | `sla.uptime.target` |
+| `timeout.*` | Circuit breaker, connection timeouts | `timeout.circuit_breaker.threshold` |
+| `resource.*` | Memory, CPU, storage limits | `resource.memory.max_heap` |
+| `limit.*` | Rate limits, connection limits | `limit.connection.max_total` |
 
-```markdown
-## Technical Constraints
+**Invalid (hardcoded values)**:
+- ❌ `p95 latency: 200ms`
+- ❌ `uptime: 99.9%`
 
-### TC-001: Database Technology
-**Constraint**: System MUST use PostgreSQL per ADR-033
-**Impact**: All data models use PostgreSQL-specific features
-**Verification**: Architecture review, code inspection
-
-### TC-002: API Protocol
-**Constraint**: External APIs MUST use REST per ADR-045
-**Impact**: No GraphQL or gRPC for external interfaces
-**Verification**: API design review, contract validation
-```
+**Valid (registry references)**:
+- ✅ `p95 latency: @threshold: PRD.NN.perf.api.p95_latency`
+- ✅ `uptime: @threshold: PRD.NN.sla.uptime.target`
 
 ## Tag Format Convention (By Design)
-
-The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
@@ -176,18 +200,6 @@ The SDD framework uses two distinct notation systems for cross-references:
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
 - `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
-
-## Unified Element ID Format (MANDATORY)
-
-**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
-- **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
-
-Examples:
-- `@brd: BRD.17.01.01` ✅
-- `@brd: BRD.017.001` ❌ (old 3-segment format)
-
 
 ## Cumulative Tagging Requirements
 
@@ -200,24 +212,20 @@ Examples:
 ## Traceability
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 6):
-```markdown
+
 @brd: BRD.01.01.03
 @prd: PRD.01.07.02, PRD.01.07.15
-@ears: EARS.01.24.01, EARS.01.24.02
-@bdd: BDD.01.13.01
+@ears: EARS.01.25.01, EARS.01.25.02
+@bdd: BDD.01.14.01
 @adr: ADR-033, ADR-045
 ```
 
 **Upstream Sources**:
 - [BRD-01](../BRD/BRD-01_platform.md#BRD-01)
 - [PRD-01](../PRD/PRD-01_integration.md#PRD-01)
-- [EARS-01](../EARS/EARS-01_risk.md#EARS-01)
-- [BDD-01](../BDD/BDD-01_limits.feature)
+- [EARS-01](../EARS/EARS-01_risk.md#EARS-01) - EARS type code: 25
+- [BDD-01](../BDD/BDD-01_limits/) - BDD scenario type code: 14
 - [ADR-033](../ADR/ADR-033_database.md#ADR-033)
-
-**Downstream Artifacts**:
-- REQ-NN (to be created) - Atomic requirements
-```
 
 ## Upstream/Downstream Artifacts
 
@@ -248,26 +256,27 @@ Check `ai_dev_flow/SYS/` for next available ID number.
 
 ### Step 3: Create SYS File
 
-**Location**: `docs/SYS/SYS-NN_{slug}.md` (template available at `ai_dev_flow/SYS/`)
+**Location**: `docs/SYS/SYS-NN_{slug}.md` (template at `ai_dev_flow/SYS/`)
 
 **Example**: `docs/SYS/SYS-01_order_management.md`
 
 ### Step 4: Fill Document Control Section
 
-Complete metadata and Document Revision History table.
+Complete metadata including EARS-Ready Score and REQ-Ready Score.
 
 ### Step 5: Define System Requirements
 
-For each requirement (functional or quality attribute):
-- Number sequentially as `NNN` (001, 002, 003...)
+For each requirement:
+- Use unified element ID format (`SYS.NN.TT.SS`)
 - Specify inputs, processing, outputs (for functional)
 - Specify measurable criteria (for quality attributes)
+- Use `@threshold` tags for all quantitative values
 - Reference upstream EARS/PRD
-- Link to BDD verification or define verification method
+- Link to BDD verification
 
 ### Step 6: Create System Flows
 
-Use Mermaid diagrams (not Python code) to visualize:
+Use Mermaid diagrams (not text-based):
 - Sequence diagrams for interactions
 - Flowcharts for logic
 - State diagrams for workflows
@@ -285,17 +294,11 @@ Include all 5 upstream tags (@brd, @prd, @ears, @bdd, @adr).
 
 ### Step 9: Create/Update Traceability Matrix
 
-**MANDATORY**: Update traceability matrix (template: `ai_dev_flow/SYS/SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+**MANDATORY**: Update traceability matrix (`ai_dev_flow/SYS/SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
 
 ### Step 10: Validate SYS
 
-```bash
-# Validate cumulative tagging (script available)
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact SYS-01 --expected-layers brd,prd,ears,bdd,adr --strict
-
-# Note: SYS-specific template validation script is planned but not yet available.
-# Use manual checklist below and cross-document validation instead.
-```
+Run validation commands (see Validation section).
 
 ### Step 11: Commit Changes
 
@@ -303,45 +306,54 @@ Commit SYS file and traceability matrix.
 
 ## Validation
 
+### Validation Checks (8 Total)
+
+| Check | Type | Description |
+|-------|------|-------------|
+| CHECK 1 | Error | Required Document Control Fields (9 fields) |
+| CHECK 2 | Error | ADR Compliance Validation |
+| CHECK 3 | Error | REQ-Ready Score Validation (format, threshold) |
+| CHECK 4 | Error | Quality Attribute Quantification |
+| CHECK 5 | Warning | System Boundaries |
+| CHECK 6 | Warning | Interface Specifications (CTR-ready) |
+| CHECK 7 | Warning | Upstream Traceability |
+| CHECK 8 | Error | Element ID Format Compliance (unified 4-segment) |
+
+### Validation Tiers
+
+| Tier | Type | Exit Code | Action |
+|------|------|-----------|--------|
+| Tier 1 | Error | 1 | Must fix before commit |
+| Tier 2 | Warning | 0 | Recommended to fix |
+| Tier 3 | Info | 0 | No action required |
+
 ### Automated Validation
 
 ```bash
-# Quality gates (from repository root)
-./scripts/validate_quality_gates.sh docs/SYS/SYS-01_order.md
+# Per-document validation (Phase 1)
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/SYS/SYS-NN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all SYS documents complete
+python ai_dev_flow/scripts/validate_cross_document.py --layer SYS --auto-fix
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --artifact SYS-01 \
-  --expected-layers brd,prd,ears,bdd,adr \
-  --strict
-
-# Cross-document validation with auto-fix
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/SYS/SYS-01_order.md --auto-fix
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact SYS-01 --expected-layers brd,prd,ears,bdd,adr --strict
 ```
 
 ### Manual Checklist
 
-- [ ] Document Control section at top
-- [ ] Requirements numbered sequentially (001, 002, 003...)
+- [ ] Document Control section with 9 required fields
+- [ ] REQ-Ready Score with ✅ emoji and percentage
+- [ ] Requirements use unified element ID format (SYS.NN.TT.SS)
+- [ ] No legacy patterns (FR-XXX, QA-XXX, UC-XXX, SR-XXX)
 - [ ] Each requirement has measurable criteria
+- [ ] All quantitative values use @threshold tags
 - [ ] System flows use Mermaid diagrams
 - [ ] Technical constraints from ADR documented
 - [ ] Cumulative tags: @brd, @prd, @ears, @bdd, @adr included
 - [ ] Each requirement references upstream source
 - [ ] Verification method specified for each requirement
 - [ ] Traceability matrix updated
-
-### Diagram Standards
-All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
-
-## Common Pitfalls
-
-1. **Vague requirements**: Must be measurable (not "fast" but "P95 <50ms")
-2. **Missing ADR constraints**: System requirements must respect ADR decisions
-3. **Text-based diagrams**: Use Mermaid ONLY, not ASCII art or code blocks
-4. **Missing cumulative tags**: Layer 6 must include all 5 upstream tags
-5. **No verification method**: Each requirement needs test approach
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
 
@@ -358,16 +370,6 @@ LOOP:
   5. IF clean: Mark VALIDATED, proceed
 ```
 
-### Validation Command
-
-```bash
-# Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/SYS/SYS-NN_slug.md --auto-fix
-
-# Layer validation (Phase 2) - run when all SYS documents complete
-python ai_dev_flow/scripts/validate_cross_document.py --layer SYS --auto-fix
-```
-
 ### Layer-Specific Upstream Requirements
 
 | This Layer | Required Upstream Tags | Count |
@@ -380,6 +382,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer SYS --auto-fix
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd/@adr tag | Add with upstream document reference |
 | Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
+| Legacy element ID (FR-XXX, QA-XXX, etc.) | Convert to SYS.NN.TT.SS format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -396,7 +399,38 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer SYS --auto-fix
 
 ### Quality Gate
 
-**Blocking**: YES - Cannot proceed to next document until Phase 1 validation passes with 0 errors.
+**Blocking**: YES - Cannot proceed to REQ creation until Phase 1 validation passes with 0 errors.
+
+## Common Pitfalls
+
+1. **Vague requirements**: Must be measurable (not "fast" but "P95 <50ms")
+2. **Missing ADR constraints**: System requirements must respect ADR decisions
+3. **Text-based diagrams**: Use Mermaid ONLY, not ASCII art or code blocks
+4. **Missing cumulative tags**: Layer 6 must include all 5 upstream tags
+5. **No verification method**: Each requirement needs test approach
+6. **Legacy element IDs**: Use SYS.NN.TT.SS not FR-XXX/QA-XXX/SR-XXX
+7. **Hardcoded values**: Use @threshold tags, not magic numbers
+8. **Wrong REQ-Ready Score format**: Must include ✅ emoji and percentage
+
+---
+
+## Downstream Creation Guidelines
+
+### Creating REQ from SYS
+
+**REQ Decomposition Rules**:
+1. Each SYS functional requirement → 3-7 atomic REQ files
+2. Each SYS quality attribute category → 2-4 atomic REQ files per category
+3. Each SYS interface → 1-3 atomic REQ files per interface
+
+**REQ Validation Against SYS**:
+- All REQ capabilities must fit within SYS system boundaries
+- All REQ acceptance criteria must satisfy SYS exit criteria
+- All REQ quality attribute targets must meet or exceed SYS thresholds
+
+**Interface CTR Creation**:
+- When SYS specifies external API contracts, create CTR documents
+- CTR requirements must exactly match SYS interface specifications
 
 ---
 
@@ -441,9 +475,15 @@ For supplementary documentation needs, create:
 
 **Tags Required**: @brd, @prd, @ears, @bdd, @adr (5 tags)
 
+**REQ-Ready Score**: ≥90% required for "Approved" status
+
+**Element ID Format**: SYS.NN.TT.SS (FR=01, QA=02, UC=11, SR=26)
+
 **Key Sections**:
-- System Requirements (sequential numbering: 001, 002, 003...)
+- System Requirements (unified element IDs)
 - System Flows (Mermaid diagrams)
 - Technical Constraints (from ADR)
+
+**Critical**: Use @threshold tags for all quantitative values
 
 **Next**: doc-req

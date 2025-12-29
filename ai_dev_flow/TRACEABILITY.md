@@ -16,7 +16,7 @@ custom_fields:
 
 # Traceability Guidelines for AI Dev Flow
 
-Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 ## Purpose
 
@@ -307,7 +307,7 @@ Diagrams use simplified labels for visual clarity:
 |-------|----------|----------|----------|
 | 1 | BRD | 0 | 0 |
 | 2 | PRD | 1 | 1 |
-| 3 | EARS | 1 | 2 |
+| 3 | EARS | 2 | 2 |
 | 4 | BDD | 3 | 3 |
 | 5 | ADR | 4 | 4 |
 | 6 | SYS | 5 | 5 |
@@ -320,17 +320,12 @@ Diagrams use simplified labels for visual clarity:
 
 ### Tag Separator Rules
 
-| Format | Status |
-|--------|--------|
-| Space + Pipe + Space (` \| `) | **CORRECT** |
-| Comma (`,`) | **INCORRECT** |
-| Trailing comma (`, \|`) | **INCORRECT** |
+- Within a tag type’s value, separate multiple references with commas (supported by extractor).
+- Across different tag types in prose snippets, pipes may be used visually but are not parsed.
 
-**Correct Example**: `@prd: PRD.01.01.01 | @ears: EARS.01.24.01`
-
-**Incorrect Examples**:
-- `@prd: PRD.01.01.01, @ears: EARS.01.24.01` (comma separator)
-- `@prd: PRD.01.01.01, | @ears: EARS.01.24.01` (trailing comma before pipe)
+Examples:
+- Multiple PRD elements: `@prd: PRD-03:PRD.03.01.01, PRD-03:PRD.03.01.05`
+- Adjacent tag types (visual only): `@prd: ... | @ears: ...`
 
 ### For Markdown Documents (PRD, SYS, EARS, REQ, ADR, CTR, IMPL, TASKS)
 
@@ -400,10 +395,10 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 ```python
 """Module description.
 
-@brd: BRD.01.01.30, BRD.01.01.06, BRD.02.01.15
-@prd: PRD.03.01.01
-@sys: SYS.08.25.01
-@req: REQ.03.26.01
+@brd: BRD-01:BRD.01.01.30, BRD-01:BRD.01.01.06, BRD-02:BRD.02.01.15
+@prd: PRD-03:PRD.03.01.01
+@sys: SYS-08:SYS.08.25.01
+@req: REQ-03:REQ.03.26.01
 @adr: ADR-33
 @spec: SPEC-03
 @ctr: CTR-01
@@ -414,7 +409,8 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 
 ### Tag Structure
 
-**Format:** `@tag-type: TYPE.NN.TT.SS` (Unified Element ID format)
+**Format (hierarchical artifacts)**: `@tag-type: TYPE-NN:TYPE.NN.TT.SS` (document ID + element ID)
+**Format (file-level artifacts)**: `@tag-type: TYPE-NN`
 
 **Components:**
 - **Tag Type:** Document type tags or valid non-document tags (see tables below)
@@ -452,17 +448,17 @@ These tags reference documents in the SDD workflow hierarchy. Use the document t
 
 | Tag | Layer | Document Type | Format | Example |
 |-----|-------|---------------|--------|---------|
-| `@brd` | 1 | Business Requirements | `@brd: BRD.NN.EE.SS` | `@brd: BRD.01.01.30` |
-| `@prd` | 2 | Product Requirements | `@prd: PRD.NN.EE.SS` | `@prd: PRD.03.01.02` |
-| `@ears` | 3 | EARS Statements | `@ears: EARS.NN.EE.SS` | `@ears: EARS.01.24.03` |
-| `@bdd` | 4 | BDD Scenarios | `@bdd: BDD.NN.EE.SS` | `@bdd: BDD.03.13.07` |
+| `@brd` | 1 | Business Requirements | `@brd: BRD-NN:BRD.NN.EE.SS` | `@brd: BRD-01:BRD.01.01.30` |
+| `@prd` | 2 | Product Requirements | `@prd: PRD-NN:PRD.NN.EE.SS` | `@prd: PRD-03:PRD.03.01.02` |
+| `@ears` | 3 | EARS Statements | `@ears: EARS-NN:EARS.NN.EE.SS` | `@ears: EARS-01:EARS.01.24.03` |
+| `@bdd` | 4 | BDD Scenarios | `@bdd: BDD-NN:BDD.NN.EE.SS` | `@bdd: BDD-03:BDD.03.13.07` |
 | `@adr` | 5 | Architecture Decisions | `@adr: ADR-NN` | `@adr: ADR-33` |
-| `@sys` | 6 | System Requirements | `@sys: SYS.NN.EE.SS` | `@sys: SYS.08.25.01` |
-| `@req` | 7 | Atomic Requirements | `@req: REQ.NN.EE.SS` | `@req: REQ.03.26.01` |
-| `@impl` | 8 | Implementation Plans | `@impl: IMPL.NN.EE.SS` | `@impl: IMPL.01.28.01` |
+| `@sys` | 6 | System Requirements | `@sys: SYS-NN:SYS.NN.EE.SS` | `@sys: SYS-08:SYS.08.25.01` |
+| `@req` | 7 | Atomic Requirements | `@req: REQ-NN:REQ.NN.EE.SS` | `@req: REQ-03:REQ.03.26.01` |
+| `@impl` | 8 | Implementation Plans | `@impl: IMPL-NN:IMPL.NN.EE.SS` | `@impl: IMPL-01:IMPL.01.28.01` |
 | `@ctr` | 9 | Data Contracts | `@ctr: CTR-NN` | `@ctr: CTR-01` |
 | `@spec` | 10 | Technical Specs | `@spec: SPEC-NN` | `@spec: SPEC-03` |
-| `@tasks` | 11 | Task Breakdowns | `@tasks: TASKS.NN.EE.SS` | `@tasks: TASKS.01.29.03` |
+| `@tasks` | 11 | Task Breakdowns | `@tasks: TASKS-NN:TASKS.NN.EE.SS` | `@tasks: TASKS-01:TASKS.01.29.03` |
 | `@iplan` | 12 | Implementation Plans | `@iplan: IPLAN-NN` | `@iplan: IPLAN-01` |
 
 **Note**: All requirements use sequential numbering (001, 002, 003...) within documents.
@@ -538,7 +534,7 @@ python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --d
 
 **Generate bidirectional matrices:**
 ```bash
-python scripts/generate_traceability_matrix.py --tags docs/generated/tags.json --output docs/generated/matrices/
+python3 scripts/generate_traceability_matrix.py --tags docs/generated/tags.json --output docs/generated/matrices/
 ```
 
 **Validation Rules:**
@@ -839,7 +835,7 @@ python scripts/validate_tags_against_docs.py --strict
 python scripts/validate_tags_against_docs.py --check-cumulative
 
 # Generate traceability matrix from tags
-python scripts/generate_traceability_matrix.py --tags docs/generated/tags.json
+python3 scripts/generate_traceability_matrix.py --tags docs/generated/tags.json
 ```
 
 ### Benefits of Cumulative Tagging
@@ -1663,7 +1659,7 @@ In code docstrings, include:
 
 ## Traceability
 
-Note: Script name canonicalization — for generating traceability matrices, use `scripts/generate_traceability_matrix.py`. Any references to `generate_traceability_matrices.py` in templates or examples refer to the same tool; use the singular script.
+Note: Script name canonicalization — use `scripts/generate_traceability_matrix.py` (singular). A backward-compatible wrapper `scripts/generate_traceability_matrices.py` exists but is deprecated.
 - Requirements: REQ-03, REQ-04
 - Architecture: ADR-33
  - Implementation Plan: IMPL-01_phase1_risk_services

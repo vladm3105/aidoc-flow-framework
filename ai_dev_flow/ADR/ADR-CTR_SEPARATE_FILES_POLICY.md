@@ -1,3 +1,19 @@
+---
+title: "ADR-CTR: API Contract Files Policy"
+tags:
+  - adr
+  - layer-5-artifact
+  - shared-architecture
+  - policy-decision
+custom_fields:
+  document_type: adr
+  artifact_type: ADR
+  layer: 5
+  priority: shared
+  development_status: active
+  decision_status: accepted
+---
+
 # ADR-CTR: API Contract Files Policy
 
 **Status**: Accepted

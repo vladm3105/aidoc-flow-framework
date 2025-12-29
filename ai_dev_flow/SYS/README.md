@@ -13,7 +13,7 @@ custom_fields:
 
 # SYS (System Requirements Specifications)
 
-Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 System Requirements Specifications (SYS) capture comprehensive system-level requirements that bridge the gap between high-level business objectives and technical implementation. SYS documents define what the system must accomplish from a behavioral and performance perspective while remaining technology-agnostic.
 

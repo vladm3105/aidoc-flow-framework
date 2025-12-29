@@ -24,6 +24,8 @@ custom_fields:
 
 # TASKS Creation Rules
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 
 ## Document Control
@@ -77,7 +79,7 @@ Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 
 ## 2. File Naming Convention
 
-Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 ### Format
 
@@ -111,7 +113,7 @@ TASKS-NN_{descriptive_component}_tasks.md
 > - `TASK-XXX` → Use `TASKS.NN.18.SS`
 > - `T-XXX` → Use `TASKS.NN.18.SS`
 >
-> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 

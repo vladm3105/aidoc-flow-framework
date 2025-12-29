@@ -3,6 +3,9 @@
 Compatibility wrapper for historical references to `generate_traceability_matrices.py`.
 Delegates to `generate_traceability_matrix.py`.
 
+DEPRECATION NOTICE: Use `scripts/generate_traceability_matrix.py`.
+This wrapper remains for backward compatibility and may be removed in a future release.
+
 Supported modes:
 - --type TYPE --input DIR --output FILE  (direct pass-through)
 - --auto  (generate matrices for all supported types found in the repo)
@@ -58,6 +61,8 @@ def main():
         print("❌ Missing generator script: generate_traceability_matrix.py", file=sys.stderr)
         return 1
 
+    print("[DEPRECATED] Use scripts/generate_traceability_matrix.py (singular).", file=sys.stderr)
+
     if args.auto:
         base = Path(__file__).resolve().parent.parent
         return auto_mode(base)
@@ -74,4 +79,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-

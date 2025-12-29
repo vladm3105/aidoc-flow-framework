@@ -1,3 +1,19 @@
+---
+title: "BDD Section-Based File Organization"
+tags:
+  - framework-rules
+  - layer-4-artifact
+  - shared-architecture
+  - mandatory-standard
+custom_fields:
+  document_type: splitting-rules
+  artifact_type: BDD
+  layer: 4
+  priority: shared
+  development_status: active
+  version: "2.0"
+---
+
 # BDD Section-Based File Organization
 
 **Purpose**: Define mandatory section-based structure for all BDD files, eliminating legacy single-file and directory-based formats.
@@ -392,7 +408,7 @@ Before committing BDD files:
 
 ---
 
-**Document Path**: `/opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD_SPLITTING_RULES.md`
+**Document Path**: `BDD/BDD_SPLITTING_RULES.md`
 **Framework**: AI Dev Flow SDD
 **Version**: 2.0 (Section-Based ONLY)
 **Last Updated**: 2025-12-27

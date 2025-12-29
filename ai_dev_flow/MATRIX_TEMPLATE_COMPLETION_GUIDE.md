@@ -153,7 +153,8 @@ After adding section 2 (Required Tags), all subsequent sections are renumbered:
 
 1. **Read the existing template**
    ```bash
-   Read file_path: /opt/data/docs_flow_framework/ai_dev_flow/[ARTIFACT]/[ARTIFACT]-000_TRACEABILITY_MATRIX-TEMPLATE.md
+   Read file_path: $FRAMEWORK_ROOT/[ARTIFACT]/[ARTIFACT]-000_TRACEABILITY_MATRIX-TEMPLATE.md
+   # Example: FRAMEWORK_ROOT=/path/to/ai_dev_flow
    ```
 
 2. **Insert cumulative tagging section after section 1**

@@ -24,6 +24,8 @@ custom_fields:
 
 # ADR Creation Rules
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 **Version**: 1.1
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-30
@@ -55,7 +57,7 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- Note: Example paths use a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `docs/ADR/ADR-NN_{slug}/` within project docs directory (nested folder per document with descriptive slug)
 - **Folder Naming**: `ADR-NN_{slug}/` where slug MUST match the index file slug (e.g., `ADR-01_cloud_migration/`)
 - **Folder Structure** (DEFAULT): `docs/ADR/ADR-NN_{slug}/ADR-NN.S_{slug}.md`
@@ -131,7 +133,7 @@ ADR documents follow a comprehensive 4-part structure:
 
 > ⚠️ **REMOVED PATTERNS** - Do NOT use legacy formats like `DEC-XXX`, `ALT-XXX`.
 >
-> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 

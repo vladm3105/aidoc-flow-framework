@@ -35,11 +35,11 @@ custom_fields:
 
 ## Position in Document Workflow
 
-**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
+**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
 **REQ (Atomic Requirements)** ← YOU ARE HERE (Layer 7 - Requirements Layer)
 
-For the complete traceability workflow with visual diagram, see: [index.md - Traceability Flow](../../../docs_flow_framework/ai_dev_flow/index.md#traceability-flow)
+For the complete traceability workflow with visual diagram, see: [index.md - Traceability Flow](../index.md#traceability-flow)
 
 **Quick Reference**:
 
@@ -1171,12 +1171,12 @@ Document the business strategy, product requirements, system specifications, and
 
 | Source Type | Document | Document Title | Relevant sections | Relationship |
 |-------------|----------|----------------|-------------------|--------------|
-| BRD | BRD (TBD link) | [Business requirements title] | sections 2.4, 4.x | Business objectives justifying this requirement |
-| PRD | PRD (TBD link) | [Product requirements title] | Functional Requirements 4.x | Product features this requirement enables |
-| EARS | EARS (TBD link) | [Engineering requirements] | Event-driven/State-driven statements | Formal engineering requirement this satisfies |
-| BDD | BDD (TBD link) | [BDD feature title] | Scenarios 1-5 | Behavioral specification this implements |
-| ADR | ADR (TBD link) | [Architecture decision title] | Decision outcome | Architecture decision driving this requirement |
-| SYS | SYS (TBD link) | [System requirements title] | System Requirements 3.x | System-level specification this implements |
+| BRD | [BRD-NN] (link TBD) | [Business requirements title] | sections 2.4, 4.x | Business objectives justifying this requirement |
+| PRD | [PRD-NN] (link TBD) | [Product requirements title] | Functional Requirements 4.x | Product features this requirement enables |
+| EARS | [EARS-NN] (link TBD) | [Engineering requirements] | Event-driven/State-driven statements | Formal engineering requirement this satisfies |
+| BDD | [BDD-NN] (link TBD) | [BDD feature title] | Scenarios 1-5 | Behavioral specification this implements |
+| ADR | [ADR-NN] (link TBD) | [Architecture decision title] | Decision outcome | Architecture decision driving this requirement |
+| SYS | [SYS-NN] (link TBD) | [System requirements title] | System Requirements 3.x | System-level specification this implements |
 
 ### 11.2 Downstream Artifacts
 
@@ -1184,25 +1184,25 @@ Document the business strategy, product requirements, system specifications, and
 
 | Artifact | ADR Title | Requirement Aspects Addressed | Decision Impact |
 |----------|-----------|------------------------------|-----------------|
-| ADR (TBD) | [Architecture decision title] | Technology selection, patterns, trade-offs | Architectural implementation constraints |
+| [ADR-NN] (link TBD) | [Architecture decision title] | Technology selection, patterns, trade-offs | Architectural implementation constraints |
 
 #### Technical Specifications
 
 | Artifact | Specification Title | Requirement Aspects Implemented | Implementation Path |
 |----------|-------------------|--------------------------------|---------------------|
-| SPEC (TBD) | [Technical spec title] | Interfaces, schemas, error handling, config | src/[module]/[component].py |
+| [SPEC-NN] (link TBD) | [Technical spec title] | Interfaces, schemas, error handling, config | src/[module]/[component].py |
 
 #### Behavioral Specifications
 
 | Artifact | Scenario Title | Acceptance Criteria Validated | Test Coverage |
 |----------|----------------|-------------------------------|---------------|
-| BDD (TBD) | Feature: [Feature name] | REQ.NN.06.01 through REQ.NN.06.18 | Scenarios 1-8 |
+| [BDD-NN] (link TBD) | Feature: [Feature name] | REQ.NN.06.01 through REQ.NN.06.18 | Scenarios 1-8 |
 
 #### API Contracts
 
 | Artifact | Contract Title | Interface Defined | Relationship |
 |----------|----------------|-------------------|--------------|
-| CTR (TBD) | [API Contract Title] | REST API / Event Schema / gRPC Proto | Interface specification and versioning |
+| [CTR-NN] (link TBD) | [API Contract Title] | REST API / Event Schema / gRPC Proto | Interface specification and versioning |
 
 ### 11.3 Code Implementation Paths
 
@@ -1293,7 +1293,7 @@ Document the business strategy, product requirements, system specifications, and
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through SYS) are properly linked. Threshold references must resolve to valid keys in the threshold registry.
 
-**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through atomic requirements. Threshold tags prevent magic numbers and ensure quantitative values are centrally managed. See [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
+**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through atomic requirements. Threshold tags prevent magic numbers and ensure quantitative values are centrally managed. See [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
 
 ---
 
@@ -1374,7 +1374,7 @@ SPEC-Ready Score = (
 **Framework Alignment**: 100% AI Dev Flow framework compliant
 **Maintained By**: System Architect, Quality Assurance Team
 **Review Frequency**: Quarterly or after major template updates
-**Support**: See [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../../docs_flow_framework/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) for complete workflow documentation
+**Support**: See [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) for complete workflow documentation
 
 ---
 

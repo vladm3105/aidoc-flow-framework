@@ -59,7 +59,7 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 ### 1.0 Structure Selection Criteria
 
@@ -519,7 +519,7 @@ cp ai_dev_flow/BDD/BDD-SECTION-0-TEMPLATE.md docs/BDD/BDD-02.0_index.md
 
 **Step 7**: Run validation
 ```bash
-python ai_dev_flow/scripts/validate_bdd_suite.py --root docs/BDD
+python3 scripts/validate_bdd_suite.py --root BDD
 ```
 
 ### 1.2.10 Optional Companion Files
@@ -748,7 +748,7 @@ Feature: [Business Capability Title]
 > - `STEP-XXX` → Use `BDD.NN.15.SS`
 > - `TC-XXX` → Use `BDD.NN.14.SS`
 >
-> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 

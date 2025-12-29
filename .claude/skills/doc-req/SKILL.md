@@ -1,7 +1,6 @@
 ---
-name: "doc-req: Create Atomic Requirements (Layer 7)"
 name: doc-req
-description: Create Atomic Requirements (REQ) - Layer 7 artifact using REQ v3.0 format with 12 sections and SPEC-readiness scoring
+description: Create Atomic Requirements (REQ) - Layer 7 artifact using REQ v3.0 format with 12 sections, SPEC-readiness scoring, and IMPL-readiness scoring
 tags:
   - sdd-workflow
   - layer-7-artifact
@@ -61,8 +60,23 @@ Use `doc-req` when:
 - Have completed BRD through SYS (Layers 1-6)
 - Need to decompose system requirements into atomic units
 - Preparing for implementation (Layer 8+)
-- Achieving ≥90% SPEC-readiness score
+- Achieving >=90% SPEC-readiness score
 - You are at Layer 7 of the SDD workflow
+
+## Reserved ID Exemption (REQ-000_*)
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Pattern**: `REQ-000_*.md`
+
+**Document Types**:
+- Index documents (`REQ-000_index.md`)
+- Traceability matrix templates (`REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Glossaries, registries, checklists
+
+**Rationale**: Reserved ID 000 documents are framework infrastructure, not project artifacts requiring traceability or quality gates.
+
+**Validation Behavior**: Skip all checks when filename matches `REQ-000_*` pattern.
 
 ## REQ-Specific Guidance
 
@@ -73,176 +87,120 @@ Use `doc-req` when:
 **Document Control** (MANDATORY - First section before all numbered sections)
 
 **Core Sections**:
-1. **Requirement Overview**: ID, description, priority, source, rationale
-2. **Acceptance Criteria**: Testable conditions for completion
-3. **Interface Specifications**: APIs, data contracts, integration points
-4. **Data Schemas**: Data models, validation rules, constraints
-5. **Error Handling Specifications**: Error conditions, recovery procedures
-6. **Configuration Specifications**: Settings, parameters, environment variables
-7. **Quality Attributes**: Performance, security, scalability constraints
-8. **Dependencies**: Upstream/downstream requirements, external systems
-9. **Implementation Guidance**: Technical approach, patterns, libraries
-10. **Testing Strategy**: Unit, integration, e2e test requirements
-11. **Verification Methods**: How to validate requirement is met
-12. **Traceability**: Section 7 format with cumulative tags
+1. **Description**: Atomic requirement + SHALL/SHOULD/MAY language + context + scenario
+2. **Functional Requirements**: Core capabilities + business rules
+3. **Interface Specifications**: Protocol/ABC definitions + DTOs + REST endpoints
+4. **Data Schemas**: JSON Schema + Pydantic models + Database schema
+5. **Error Handling Specifications**: Exception catalog + error response schema + circuit breaker config
+6. **Configuration Specifications**: YAML schema + environment variables + validation
+7. **Quality Attributes**: Performance targets (p50/p95/p99) + reliability/security/scalability
+8. **Implementation Guidance**: Algorithms/patterns + concurrency/async + dependency injection
+9. **Acceptance Criteria**: >=15 measurable criteria covering functional/error/quality/data/integration
+10. **Verification Methods**: BDD scenarios + unit/integration/contract/performance tests
+11. **Traceability**: Section 7 format with cumulative tags (6 required)
+12. **Change History**: Version control table
 
-### 2. SPEC-Ready Score Field
+### 2. Document Control Requirements (11 Mandatory Fields)
 
-**MANDATORY**: Each REQ must calculate SPEC-readiness score
+| Field | Format | Example |
+|-------|--------|---------|
+| Status | Approved/In Review/Draft | Approved |
+| Version | Semantic X.Y.Z | 2.0.1 |
+| Date Created | ISO 8601 | 2025-11-18 |
+| Last Updated | ISO 8601 | 2025-11-19 |
+| Author | Name/Role | System Architect |
+| Priority | Level (P-level) | High (P2) |
+| Category | Type | Functional |
+| Source Document | DOC-ID section X.Y.Z | SYS-02 section 3.1.1 |
+| Verification Method | Method type | BDD + Integration Test |
+| Assigned Team | Team name | IB Integration Team |
+| SPEC-Ready Score | Format with emoji | >=90% (Target: >=90%) |
+| IMPL-Ready Score | Format with emoji | >=90% (Target: >=90%) |
+| Template Version | Must be 3.0 | 3.0 |
 
-**Formula**:
+### 3. Dual Readiness Scoring (SPEC-Ready + IMPL-Ready)
+
+**MANDATORY**: Each REQ must calculate BOTH scores
+
+**SPEC-Ready Score Formula**:
 ```
-SPEC-Ready Score = (Completed Sections / 12) × 100%
+SPEC-Ready Score = (Completed Sections / 12) * 100%
 ```
 
-**Quality Gate**: ≥90% required for Layer transition
+**IMPL-Ready Score**: Measures readiness for implementation approach documentation
+
+**Quality Gate**: Both scores >=90% required for layer transition
+
+**Status and Ready Score Mapping**:
+
+| Ready Score | Required Status |
+|-------------|-----------------|
+| >= 90% | Approved |
+| 70-89% | In Review |
+| < 70% | Draft |
+
+**Note**: For REQ documents with dual scores, use the LOWER score to determine status.
 
 **Example**:
 ```markdown
-## SPEC-Ready Score
+## Readiness Scores
 
-**Current Score**: 11/12 sections = 91.7% ✓ (≥90% threshold met)
+**SPEC-Ready Score**: >=95% (Target: >=90%)
+**IMPL-Ready Score**: >=92% (Target: >=90%)
 
 **Section Status**:
-- [✓] 1. Requirement Overview
-- [✓] 2. Acceptance Criteria
-- [✓] 3. Interface Specifications
-- [✓] 4. Data Schemas
-- [✓] 5. Error Handling Specifications
-- [✓] 6. Configuration Specifications
-- [✓] 7. Quality Attributes
-- [✓] 8. Dependencies
-- [✓] 9. Implementation Guidance
-- [✓] 10. Testing Strategy
-- [✓] 11. Verification Methods
-- [✗] 12. Traceability (In Progress)
+- [x] 1. Description
+- [x] 2. Functional Requirements
+- [x] 3. Interface Specifications
+- [x] 4. Data Schemas
+- [x] 5. Error Handling Specifications
+- [x] 6. Configuration Specifications
+- [x] 7. Quality Attributes
+- [x] 8. Implementation Guidance
+- [x] 9. Acceptance Criteria
+- [x] 10. Verification Methods
+- [x] 11. Traceability
+- [ ] 12. Change History (In Progress)
 
-**Readiness**: READY for SPEC creation ✓
+**Readiness**: READY for SPEC/IMPL creation
 ```
 
-### 3. Domain/Subdomain Organization
+### 4. Element ID Format (MANDATORY)
 
-**Format**: `REQ-domain-subdomain-NNN`
+**Pattern**: `REQ.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
 
-**Example**: `REQ-risk-limits-01`, `REQ-api-auth-001`
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Functional Requirement | 01 | REQ.02.01.01 |
+| Dependency | 05 | REQ.02.05.01 |
+| Acceptance Criteria | 06 | REQ.02.06.01 |
+| Atomic Requirement | 27 | REQ.02.27.01 |
 
-**Benefits**:
-- Groups related requirements
-- Improves traceability
-- Facilitates parallel development
+**REMOVED PATTERNS** - Do NOT use:
+- `AC-XXX` - Use `REQ.NN.06.SS`
+- `FR-XXX` - Use `REQ.NN.01.SS`
+- `R-XXX` - Use `REQ.NN.27.SS`
+- `REQ-XXX` - Use `REQ.NN.27.SS`
 
-### 4. New Sections in REQ v3.0
+**Reference**: `ID_NAMING_STANDARDS.md` - Cross-Reference Link Format
 
-**Section 3: Interface Specifications**
-```markdown
-## Interface Specifications
+### 5. Atomic Requirement Principles
 
-### API Endpoints
-**Endpoint**: POST /api/v1/trades/validate
-**Method**: POST
-**Request Schema**: TradeOrderRequest
-**Response Schema**: ValidationResponse
-**Authentication**: Bearer token required
-**Rate Limit**: 100 requests/minute
+- **Single Responsibility**: Each REQ defines exactly one requirement
+- **Measurable**: Acceptance criteria provide true/false outcomes
+- **Self-Contained**: Understandable without external context
+- **SPEC-Ready**: Contains ALL information for automated SPEC generation (>=90% completeness)
+- **Modal Language**: SHALL (absolute), SHOULD (preferred), MAY (optional)
 
-### Data Contracts
-**Input**: Trade order (symbol, quantity, price, account)
-**Output**: Validation result (pass/fail, error details)
-**Contract**: See CTR-01_trade_validation.yaml
-```
+### 6. Domain/Subdomain Organization
 
-**Section 4: Data Schemas**
-```markdown
-## Data Schemas
+**Location**: `REQ/{domain}/{subdomain}/` within project docs directory
 
-### TradeOrderRequest
-```yaml
-TradeOrderRequest:
-  type: object
-  required: [symbol, quantity, price, account_id]
-  properties:
-    symbol:
-      type: string
-      pattern: ^[A-Z]{1,5}$
-    quantity:
-      type: integer
-      minimum: 1
-      maximum: 10000
-    price:
-      type: number
-      minimum: 0.01
-```
+**Domains**: `api/` (external integrations), `risk/` (risk management), `data/` (data requirements), `ml/` (ML requirements), `auth/` (security), etc.
 
-**Validation Rules**:
-- Symbol must be valid ticker from approved list
-- Quantity must be positive integer
-- Price must be within 10% of last traded price
-```
+**Format**: `REQ-NN_descriptive_slug.md`
 
-**Section 5: Error Handling Specifications**
-```markdown
-## Error Handling Specifications
-
-### Error Conditions
-| Error Code | Condition | HTTP Status | Recovery |
-|------------|-----------|-------------|----------|
-| INVALID_SYMBOL | Symbol not found | 400 | User correction |
-| INSUFFICIENT_FUNDS | Account balance too low | 403 | Add funds |
-| LIMIT_EXCEEDED | Position limit breached | 403 | Reduce position |
-| SYSTEM_ERROR | Internal error | 500 | Retry with backoff |
-
-### Error Response Format
-```json
-{
-  "error_code": "LIMIT_EXCEEDED",
-  "message": "Position limit exceeded: current=0.55, limit=0.50",
-  "details": {"delta": 0.55, "limit": 0.50}
-}
-```
-```
-
-**Section 6: Configuration Specifications**
-```markdown
-## Configuration Specifications
-
-### Environment Variables
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
-| MAX_POSITION_DELTA | float | 0.50 | Maximum portfolio delta |
-| VALIDATION_TIMEOUT_MS | int | 50 | Validation timeout |
-| RETRY_ATTEMPTS | int | 3 | Number of retry attempts |
-
-### Feature Flags
-- `enable_strict_validation`: Enable enhanced validation rules
-- `log_rejected_trades`: Log all rejected trades for audit
-```
-
-**Section 7: Quality Attributes**
-
-Document quality constraints (performance, security, scalability, etc.) using sequential numbering.
-
-```markdown
-## Quality Attributes
-
-### 007: Validation Latency
-- P95 latency <50ms for validation
-- Throughput: 1000 validations/second
-- Memory usage <100MB per instance
-- **Traceability**: @sys: SYS.01.25.07
-
-### 008: Input Validation Security
-- Validate all inputs against schema
-- Sanitize error messages (no sensitive data)
-- Audit log all validation attempts
-- **Traceability**: @sys: SYS.01.25.08
-
-### 009: Horizontal Scaling
-- Horizontal scaling support
-- Stateless validation (no session required)
-- **Traceability**: @sys: SYS.01.25.09
-```
-
-**Note**: All requirements use sequential numbering. Use folder structure, tags, or document sections for categorization if needed.
+**Example**: `REQ-risk-limits-01_position_validation.md`
 
 ## Tag Format Convention (By Design)
 
@@ -254,20 +212,8 @@ The SDD framework uses two distinct notation systems for cross-references:
 | Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
-- `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.03` → Points to element 01.03 inside document `BRD-017.md`
-
-## Unified Element ID Format (MANDATORY)
-
-**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
-- **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
-
-Examples:
-- `@brd: BRD.17.01.03` ✅
-- `@brd: BRD.017.001` ❌ (old 3-segment format)
-
+- `@adr: ADR-033` -> Points to the document `ADR-033_risk_limit_enforcement.md`
+- `@brd: BRD.17.01.03` -> Points to element 01.03 inside document `BRD-017.md`
 
 ## Cumulative Tagging Requirements
 
@@ -283,10 +229,10 @@ Examples:
 ```markdown
 @brd: BRD.01.01.03
 @prd: PRD.01.07.02
-@ears: EARS.01.24.01
-@bdd: BDD.01.13.01
+@ears: EARS.01.25.01
+@bdd: BDD.01.14.01
 @adr: ADR-033, ADR-045
-@sys: SYS.01.25.01, SYS.01.25.07
+@sys: SYS.01.01.01, SYS.01.02.07
 ```
 
 **Upstream Sources**:
@@ -302,6 +248,58 @@ Examples:
 - CTR-NN (to be created) - Data contracts
 - SPEC-NN (to be created) - Technical specifications
 ```
+
+**Element Type Codes for Tags**:
+- EARS: Type 25 (formal requirement)
+- BDD: Type 14 (scenario)
+- SYS: Type 01 (functional), 02 (quality attribute), 26 (system req)
+
+## Threshold Registry Integration
+
+**Purpose**: Prevent magic numbers by referencing centralized threshold registry.
+
+### When @threshold Tag is Required
+
+Use `@threshold` for ALL quantitative values that are:
+- Business-critical (compliance limits, SLAs)
+- Configurable (timeout values, rate limits, retry policies)
+- Shared across documents (performance targets)
+- Quality attribute-related (p50/p95/p99 latencies, throughput limits)
+- Error handling configurations (circuit breaker, retry counts)
+
+### @threshold Tag Format
+
+```markdown
+@threshold: PRD.NN.category.subcategory.key
+```
+
+**Examples**:
+- `@threshold: PRD.035.perf.api.p95_latency`
+- `@threshold: PRD.035.timeout.circuit_breaker.threshold`
+- `@threshold: PRD.035.retry.max_attempts`
+- `@threshold: PRD.035.limit.api.requests_per_second`
+
+### REQ-Specific Threshold Categories
+
+| Category | REQ Usage | Example Key |
+|----------|-----------|-------------|
+| `perf.*` | Performance acceptance criteria | `perf.api.p95_latency` |
+| `timeout.*` | Circuit breaker, connection configs | `timeout.circuit_breaker.reset` |
+| `retry.*` | Retry policy configurations | `retry.max_attempts` |
+| `limit.*` | Rate limits, resource limits | `limit.api.requests_per_second` |
+| `resource.*` | Memory, CPU constraints | `resource.memory.max_heap` |
+
+### Magic Number Detection
+
+**Invalid (hardcoded values)**:
+- `p95 response time: 200ms`
+- `max_retries: 3`
+- `rate_limit: 100 req/s`
+
+**Valid (registry references)**:
+- `p95 response time: @threshold: PRD.NN.perf.api.p95_latency`
+- `max_retries: @threshold: PRD.NN.retry.max_attempts`
+- `rate_limit: @threshold: PRD.NN.limit.api.requests_per_second`
 
 ## Upstream/Downstream Artifacts
 
@@ -337,36 +335,37 @@ Check `ai_dev_flow/REQ/` for next available ID number.
 
 ### Step 3: Create REQ File
 
-**Location**: `docs/REQ/REQ-{domain}-{subdomain}-NNN_{slug}.md` (flat structure, domain in filename)
+**Location**: `docs/REQ/REQ-{NN}_{slug}.md` (flat structure)
+**Alternative**: `docs/REQ/{domain}/{subdomain}/REQ-NN_{slug}.md` (domain-based)
 
-**Example**: `docs/REQ/REQ-risk-limits-01_position_validation.md`
+**Section Files**: For large requirements (>50KB), use Section Files format: `REQ-NN.S_section_title.md` (S = section number).
 
 ### Step 4: Fill Document Control Section
 
-Complete metadata and Document Revision History table.
+Complete metadata with all 11 required fields plus Document Revision History table.
 
 ### Step 5: Complete All 12 Required Sections
 
-**Critical**: REQ v3.0 requires all 12 sections for ≥90% SPEC-readiness
+**Critical**: REQ v3.0 requires all 12 sections for >=90% SPEC-readiness
 
-1. **Requirement Overview**: Atomic requirement description
-2. **Acceptance Criteria**: Testable conditions
-3. **Interface Specifications**: APIs, endpoints, contracts
-4. **Data Schemas**: Models, validation, constraints
-5. **Error Handling Specifications**: Error codes, recovery
-6. **Configuration Specifications**: Settings, feature flags
-7. **Quality Attributes**: Performance, security, scalability
-8. **Dependencies**: Other requirements, systems
-9. **Implementation Guidance**: Technical approach
-10. **Testing Strategy**: Test requirements
-11. **Verification Methods**: Validation approach
-12. **Traceability**: Cumulative tags (6 tags)
+1. **Description**: Atomic requirement + SHALL/SHOULD/MAY language
+2. **Functional Requirements**: Core capabilities + business rules
+3. **Interface Specifications**: APIs, endpoints, contracts, Protocol/ABC class
+4. **Data Schemas**: Models, validation, constraints, Pydantic/dataclass
+5. **Error Handling Specifications**: Error codes, recovery, exception definitions
+6. **Configuration Specifications**: Settings, feature flags, YAML config
+7. **Quality Attributes**: Performance, security, scalability with thresholds
+8. **Implementation Guidance**: Technical approach, patterns
+9. **Acceptance Criteria**: >=15 measurable criteria
+10. **Verification Methods**: BDD scenarios, tests
+11. **Traceability**: Cumulative tags (6 tags)
+12. **Change History**: Version control table
 
-### Step 6: Calculate SPEC-Ready Score
+### Step 6: Calculate Readiness Scores
 
-Count completed sections and calculate percentage.
+Count completed sections and calculate both SPEC-Ready and IMPL-Ready percentages.
 
-**Quality Gate**: Must achieve ≥90% (11/12 sections minimum)
+**Quality Gate**: Both scores must achieve >=90%
 
 ### Step 7: Add Cumulative Tags
 
@@ -379,9 +378,9 @@ Include all 6 upstream tags (@brd through @sys).
 ### Step 9: Validate REQ
 
 ```bash
-./ai_dev_flow/scripts/validate_req_template.sh ai_dev_flow/REQ/REQ-risk-limits-01_*.md
+./ai_dev_flow/scripts/validate_req_template.sh ai_dev_flow/REQ/REQ-NN_*.md
 
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact REQ-risk-limits-01 --expected-layers brd,prd,ears,bdd,adr,sys --strict
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact REQ-NN --expected-layers brd,prd,ears,bdd,adr,sys --strict
 ```
 
 ### Step 10: Commit Changes
@@ -390,39 +389,71 @@ Commit REQ file and traceability matrix.
 
 ## Validation
 
+### Validation Checks (20 Total)
+
+| Check | Description | Type |
+|-------|-------------|------|
+| CHECK 1 | Required 12 sections | Error |
+| CHECK 2 | Document Control (11 fields) | Error |
+| CHECK 3 | Traceability structure | Error/Warning |
+| CHECK 4 | Legacy (deprecated) | Info |
+| CHECK 5 | Version format (X.Y.Z) | Error |
+| CHECK 6 | Date format (ISO 8601) | Error |
+| CHECK 7 | Priority format (P1-P4) | Warning |
+| CHECK 8 | Source document format | Warning |
+| CHECK 9 | SPEC-Ready Score | Error/Warning |
+| CHECK 10 | Template Version (3.0) | Error |
+| CHECK 11 | Change History | Error/Warning |
+| CHECK 12 | Filename/ID format | Error |
+| CHECK 13 | Resource tag (Template 2.0) | Error |
+| CHECK 14 | Cumulative tagging (6 tags) | Error |
+| CHECK 15 | Complete upstream chain | Error |
+| CHECK 16 | Link resolution | Error/Warning |
+| CHECK 17 | Traceability matrix | Warning |
+| CHECK 18 | SPEC-Ready content | Warning |
+| CHECK 19 | IMPL-Ready Score | Error |
+| CHECK 20 | Element ID format compliance | Error |
+
+### Validation Tiers
+
+| Tier | Type | Exit Code | Description |
+|------|------|-----------|-------------|
+| Tier 1 | Errors | 1 | Blocking - must fix before commit |
+| Tier 2 | Warnings | 0 | Quality issues - recommended to fix |
+| Tier 3 | Info | 0 | Informational - no action required |
+
 ### Automated Validation
 
 ```bash
-# Quality gates
-./scripts/validate_quality_gates.sh ai_dev_flow/REQ/REQ-risk-limits-01_*.md
+# Validate single file
+./scripts/validate_req_template.sh docs/REQ/REQ-NN_slug.md
 
-# REQ template validation (12 sections)
-./ai_dev_flow/scripts/validate_req_template.sh ai_dev_flow/REQ/REQ-risk-limits-01_*.md
+# Validate all REQ files
+find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template.sh {} \;
 
-# Cumulative tagging
+# Cumulative tagging validation
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
-  --artifact REQ-risk-limits-01 \
+  --artifact REQ-NN \
   --expected-layers brd,prd,ears,bdd,adr,sys \
   --strict
-
-# SPEC-readiness score check
-python ai_dev_flow/scripts/validate_req_spec_readiness.py ai_dev_flow/REQ/REQ-risk-limits-01_*.md
 ```
 
 ### Manual Checklist
 
-- [ ] Document Control section at top
+- [ ] Document Control section at top with 11 required fields
 - [ ] All 12 required sections completed
-- [ ] SPEC-Ready Score ≥90% (11/12 sections minimum)
-- [ ] Section 3: Interface Specifications detailed
-- [ ] Section 4: Data Schemas with validation rules
-- [ ] Section 5: Error Handling Specifications complete
-- [ ] Section 6: Configuration Specifications documented
-- [ ] Section 7: Quality Attributes quantified
-- [ ] Domain/subdomain organization used in ID
+- [ ] SPEC-Ready Score >=90%
+- [ ] IMPL-Ready Score >=90%
+- [ ] Template Version = 3.0
+- [ ] Section 3: Interface Specifications with Protocol/ABC class
+- [ ] Section 4: Data Schemas with Pydantic/dataclass models
+- [ ] Section 5: Error Handling with exception definitions
+- [ ] Section 6: Configuration with YAML schema
+- [ ] Section 7: Quality Attributes with @threshold references
+- [ ] Section 9: >=15 acceptance criteria
 - [ ] Cumulative tags: @brd through @sys (6 tags) included
 - [ ] Each requirement atomic (single responsibility)
-- [ ] Acceptance criteria testable
+- [ ] Acceptance criteria testable and measurable
 - [ ] Traceability matrix updated
 
 ### Diagram Standards
@@ -433,14 +464,17 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 1. **Incomplete sections**: All 12 sections mandatory for SPEC-readiness
 2. **Missing new sections**: Sections 3-7 are new in v3.0 - don't skip them
-3. **Low SPEC-Ready Score**: Must achieve ≥90% (11/12 sections)
+3. **Low readiness scores**: Both SPEC-Ready and IMPL-Ready must achieve >=90%
 4. **Non-atomic requirements**: Each REQ must be single, testable unit
 5. **Missing cumulative tags**: Layer 7 must include all 6 upstream tags
 6. **Vague acceptance criteria**: Must be measurable and testable
+7. **Hardcoded values**: Use @threshold references, not magic numbers
+8. **Legacy element IDs**: Use `REQ.NN.TT.SS` format, not AC-XXX or FR-XXX
+9. **Status/score mismatch**: Status must match the LOWER of the two scores
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
 
-**CRITICAL**: Execute this validation loop IMMEDIATELY after document creation. Do NOT proceed to next document until validation passes.
+**CRITICAL**: Execute this validation loop IMMEDIATELY after document creation.
 
 ### Automatic Validation Loop
 
@@ -491,7 +525,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer REQ --auto-fix
 
 ### Quality Gate
 
-**Blocking**: YES - Cannot proceed to next document until Phase 1 validation passes with 0 errors.
+**Blocking**: YES - Cannot proceed to IMPL/SPEC creation until Phase 1 validation passes with 0 errors.
 
 ---
 
@@ -524,7 +558,7 @@ For supplementary documentation needs, create:
 - **REQ README**: `ai_dev_flow/REQ/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 
-**Section Templates** (for documents >25K tokens):
+**Section Templates** (for documents >50KB):
 - Index template: `ai_dev_flow/REQ/REQ-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_flow/REQ/REQ-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
@@ -539,15 +573,20 @@ For supplementary documentation needs, create:
 
 **Format**: REQ v3.0 (12 sections)
 
-**Quality Gate**: SPEC-Ready Score ≥90% (11/12 sections)
+**Quality Gate**: SPEC-Ready Score >=90% AND IMPL-Ready Score >=90%
 
-**Key Enhancements**:
-- Section 3: Interface Specifications (NEW)
-- Section 4: Data Schemas (NEW)
-- Section 5: Error Handling Specifications (NEW)
-- Section 6: Configuration Specifications (NEW)
-- Section 7: Quality Attributes (NEW)
-- SPEC-Ready Score calculation (NEW)
-- Domain/subdomain organization (NEW)
+**Element ID Format**: `REQ.NN.TT.SS`
+- Functional Requirement = 01
+- Dependency = 05
+- Acceptance Criteria = 06
+- Atomic Requirement = 27
+
+**Removed Patterns**: AC-XXX, FR-XXX, R-XXX, REQ-XXX
+
+**Document Control Fields**: 11 required (+ Template Version = 3.0)
+
+**Status/Score Mapping**: >=90% Approved, 70-89% In Review, <70% Draft
+
+**File Size Limits**: >50KB use section files
 
 **Next**: doc-spec (or optionally doc-impl/doc-ctr first)

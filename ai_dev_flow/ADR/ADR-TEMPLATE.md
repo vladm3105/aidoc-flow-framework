@@ -149,10 +149,10 @@ The following fields are copied from upstream documents to maintain traceability
 - [Criterion 2]: [Measurable target]
 
 **References**:
-- BRD: [BRD] (TBD link) §7.2.X
-- PRD: [PRD] (TBD link) §18.X
-- EARS: [EARS] (TBD link)
-- BDD: [BDD] (TBD link)
+- BRD: [BRD-NN] (link TBD) §7.2.X
+- PRD: [PRD-NN] (link TBD) §18.X
+- EARS: [EARS-NN] (link TBD)
+- BDD: [BDD-NN] (link TBD)
 
 ### 4.2 Background
 [Historical context and existing system state - how did we get here? What current system state drove this need?]

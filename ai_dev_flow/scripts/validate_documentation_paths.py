@@ -26,6 +26,7 @@ import os
 import re
 import sys
 from pathlib import Path
+import os
 from typing import List, Tuple, Dict, Set
 from dataclasses import dataclass
 from enum import Enum
@@ -351,9 +352,26 @@ def main():
     if args.root:
         root_dir = Path(args.root)
     else:
-        # Default to ai_dev_flow parent directory (docs_flow_framework)
-        script_dir = Path(__file__).parent
-        root_dir = script_dir.parent.parent
+        # Prefer explicit env var, then discover by walking up from script dir
+        env_root = os.environ.get("AI_DEV_FLOW_ROOT")
+        if env_root and Path(env_root).exists():
+            root_dir = Path(env_root)
+        else:
+            script_dir = Path(__file__).resolve().parent
+            candidates = [script_dir, script_dir.parent, script_dir.parent.parent]
+            sentinels = {"BRD", "PRD", "EARS", "BDD", "ADR", "SYS", "REQ", "CTR", "SPEC", "TASKS"}
+            def has_sentinels(p: Path) -> bool:
+                try:
+                    return all((p / s).exists() for s in sentinels)
+                except Exception:
+                    return False
+            root_dir = None
+            for c in candidates:
+                if has_sentinels(c):
+                    root_dir = c
+                    break
+            if root_dir is None:
+                root_dir = script_dir.parent  # fallback
 
     if not root_dir.exists():
         print(f"Error: Root directory not found: {root_dir}")

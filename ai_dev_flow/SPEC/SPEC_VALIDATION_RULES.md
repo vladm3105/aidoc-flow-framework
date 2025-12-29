@@ -26,6 +26,8 @@ custom_fields:
 
 # SPEC Validation Rules Reference
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 **Version**: 1.0
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-19
@@ -180,7 +182,7 @@ cumulative_tags:
 
 **Fix**: Replace `IF-01: Interface` with `SPEC.02.16.01: Interface`
 
-**Reference**: SPEC_CREATION_RULES.md Section 4.1, ID_NAMING_STANDARDS.md lines 783-793
+**Reference**: SPEC_CREATION_RULES.md Section 4.1, [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 

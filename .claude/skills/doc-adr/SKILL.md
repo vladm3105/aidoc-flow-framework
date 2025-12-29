@@ -63,9 +63,26 @@ Use `doc-adr` when:
 - Making decisions with long-term impact
 - You are at Layer 5 of the SDD workflow
 
+## ADR Document Categories
+
+| Category | Filename Pattern | Validation Level | Description |
+|----------|------------------|------------------|-------------|
+| **Standard ADR** | `ADR-NN_{decision_topic}.md` | Full (7 checks) | Architecture decision records |
+| **ADR-REF** | `ADR-REF-NN_{slug}.md` | Reduced (4 checks) | Supplementary reference documents |
+
+### Reserved ID Exemption (ADR-000_*)
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Pattern**: `ADR-000_*.md`
+
+**Document Types**: Index, Traceability matrix, Glossaries, Registries, Checklists
+
+**Validation Behavior**: Skip all checks when filename matches `ADR-000_*` pattern.
+
 ## ADR-Specific Guidance
 
-### 1. Four-Part ADR Structure
+### 1. Four-Part ADR Structure (17 Sections Total)
 
 **Full Template**: See `ai_dev_flow/ADR/ADR-TEMPLATE.md` for complete 17-section structure.
 
@@ -80,45 +97,6 @@ Use `doc-adr` when:
 
 **Part 4 - Traceability and Documentation** (Sections 16-17):
 - Traceability, References
-
-**Quick Template (Essential Sections)**:
-
-```markdown
-# ADR-NN: [Decision Title]
-
-## 1. Document Control
-| Item | Details |
-|------|---------|
-| **Project Name** | [Project] |
-| **Document Version** | 1.0 |
-| **Date** | YYYY-MM-DD |
-| **Document Owner** | [Name] |
-| **Prepared By** | [Name] |
-| **Status** | Proposed |
-| **SYS-Ready Score** | ✅ 85% (Target: ≥90%) |
-
-## 3. Status
-**Status**: Proposed | Accepted | Deprecated | Superseded by ADR-XXX
-
-## 4. Context
-[What issue are we addressing? What constraints exist?]
-
-## 5. Decision
-[What solution are we choosing? How will it be implemented?]
-
-## 7. Consequences
-### Positive Outcomes / Negative Outcomes / Risks
-
-## 12. Alternatives Considered
-### Alternative A: [Name] - Pros, Cons, Rejection Reason
-
-## 16. Traceability
-### 16.6 Traceability Tags (Layer 5 - 4 tags required)
-@brd: BRD.01.01.30
-@prd: PRD.01.07.02
-@ears: EARS.01.24.01
-@bdd: BDD.01.13.01
-```
 
 ### 2. ADR Lifecycle States
 
@@ -165,130 +143,55 @@ Use `doc-adr` when:
 - **Implementation Readiness (20%)**: Complexity assessment, dependencies, rollback strategies
 - **Verification Approach (15%)**: Testing strategy, success metrics, operational readiness
 
-### Diagram Standards
-All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
-
 **Quality Gate**: Score <90% blocks SYS artifact creation.
 
-### 4. Technology Stack Reference (ADR-000)
+### 4. Element ID Format (MANDATORY)
 
-**CRITICAL**: Before proposing new technology:
+**Pattern**: `ADR.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
 
-1. Read `docs/ADR/ADR-000_technology_stack.md`
-2. Check if technology already approved
-3. If approved: Reference ADR-000 and explain use
-4. If new: Justify addition and update ADR-000
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Decision | 10 | ADR.02.10.01 |
+| Alternative | 12 | ADR.02.12.01 |
+| Consequence | 13 | ADR.02.13.01 |
 
-**Example**:
-```markdown
-## Context
-This service requires a message queue for asynchronous processing.
+**REMOVED PATTERNS** - Do NOT use legacy formats:
+- ❌ `DEC-XXX` → Use `ADR.NN.10.SS`
+- ❌ `ALT-XXX` → Use `ADR.NN.12.SS`
+- ❌ `CON-XXX` → Use `ADR.NN.13.SS`
 
-Per ADR-000 Technology Stack, the approved message queue is **Google Cloud Pub/Sub**.
-This ADR documents the specific implementation approach for our use case.
+**Reference**: [ID_NAMING_STANDARDS.md](../../ai_dev_flow/ID_NAMING_STANDARDS.md)
+
+### 5. Threshold Management
+
+**Dual Role**: ADR documents both reference and define thresholds.
+
+**Reference** platform-wide thresholds from PRD threshold registry:
+```yaml
+performance:
+  - "@threshold: PRD.NN.perf.api.p95_latency"
+sla:
+  - "@threshold: PRD.NN.sla.uptime.target"
 ```
 
-**If proposing new technology NOT in ADR-000**:
-```markdown
-## Context
-This feature requires real-time bidirectional communication (WebSocket).
-
-**Note**: WebSocket technology is not currently in ADR-000 Technology Stack.
-This ADR proposes adding Socket.IO to the approved stack.
-
-## Decision
-Add Socket.IO to technology stack for real-time communication.
-[Justify why existing stack insufficient]
-
-**Action**: Update ADR-000 Technology Stack if this ADR is accepted.
+**Define** architecture-specific thresholds unique to this decision:
+```yaml
+circuit_breaker:
+  - "@threshold: ADR.NN.circuit.failure_threshold"
+  - "@threshold: ADR.NN.circuit.recovery_timeout"
+retry:
+  - "@threshold: ADR.NN.retry.max_attempts"
+caching:
+  - "@threshold: ADR.NN.cache.ttl_seconds"
 ```
 
-### 5. Platform BRD Critical Decisions First
+### 6. File Size Limits
 
-**Priority Order**:
-
-1. **Platform BRD ADRs** (create first)
-   - Foundation decisions
-   - Technology stack
-   - Cross-cutting concerns
-   - Referenced by all Feature BRDs
-
-2. **Feature BRD ADRs** (create after Platform ADRs)
-   - Feature-specific decisions
-   - References Platform ADR decisions
-   - Implementation details
-
-**Example Flow**:
-```
-BRD-01 (Platform) identifies: "Database technology decision needed"
-  ↓
-ADR-033: Choose PostgreSQL (Platform ADR - CREATED FIRST)
-  ↓
-BRD-02 (Feature) references: "Use database per ADR-033"
-  ↓
-ADR-045: User data schema design (Feature ADR - references ADR-033)
-```
-
-### 6. Originating Topic Reference (Section 4.1)
-
-**Purpose**: Link ADR to its originating architecture topic from BRD Section 7.2 and PRD Section 18.
-
-**Layer Separation Principle**:
-```
-BRD Section 7.2          →    PRD Section 18         →    ADR Section 4.1
-(WHAT & WHY)                  (HOW to evaluate)          (Final decision)
-─────────────────────────────────────────────────────────────────────────
-Business drivers              Technical options          Selected option
-Business constraints          Evaluation criteria        Trade-off analysis
-```
-
-**Format** (Section 4.1 Problem Statement):
-```markdown
-### 4.1 Problem Statement
-
-**Originating Topic**: BRD.001.01 - API Communication Protocol
-
-**Business Driver** (from BRD §7.2):
-Real-time market data integration requires low-latency, bidirectional communication for competitive trading execution.
-
-**Business Constraints** (from BRD §7.2):
-- Must maintain <100ms latency for order execution
-- Must support reconnection without data loss during market hours
-- Must comply with broker API terms of service
-
-**Technical Options Evaluated** (from PRD §18):
-1. WebSocket - Full-duplex, low overhead
-2. REST + Polling - Stateless, cacheable
-3. gRPC Streaming - Efficient binary protocol
-
-**Evaluation Criteria** (from PRD §18):
-- **Latency**: Target <100ms
-- **Reconnection**: Auto-reconnect <5s
-- **Complexity**: Development effort
-- **Compatibility**: Broker API support
-
-**References**:
-- BRD: [BRD-01](../BRD/BRD-01_platform.md) §7.2.1
-- PRD: [PRD-01](../PRD/PRD-01_integration.md) §18.1
-- EARS: [EARS-01](../EARS/EARS-01_api.md) §3.1 (if applicable)
-- BDD: [BDD-01](../BDD/BDD-01_api.feature) (if applicable)
-```
-
-**Cross-Reference Flow**:
-1. BRD Section 7.2 → Defines business need (`{DOC_TYPE}.NN.EE.SS`)
-2. PRD Section 18 → Elaborates with technical options (references `{DOC_TYPE}.NN.EE.SS`)
-3. ADR Section 4.1 → Records final decision (references both)
-
-**Inherited Content**:
-- **Business Driver**: Copy from BRD Section 7.2
-- **Business Constraints**: Copy from BRD Section 7.2
-- **Technical Options**: Copy from PRD Section 18
-- **Evaluation Criteria**: Copy from PRD Section 18
+- **Target**: 300-500 lines per file
+- **Maximum**: 600 lines per file (absolute)
+- If document approaches/exceeds limits, split into section files
 
 ## Tag Format Convention (By Design)
-
-The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
@@ -298,18 +201,6 @@ The SDD framework uses two distinct notation systems for cross-references:
 **Key Distinction**:
 - `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
 - `@brd: BRD.17.01.30` → Points to element 01.30 inside document `BRD-017.md`
-
-## Unified Element ID Format (MANDATORY)
-
-**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
-- **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
-
-Examples:
-- `@brd: BRD.17.01.30` ✅
-- `@brd: BRD.017.001` ❌ (old 3-segment format)
-
 
 ## Cumulative Tagging Requirements
 
@@ -326,20 +217,15 @@ Examples:
 
 @brd: BRD.01.01.30
 @prd: PRD.01.07.02
-@ears: EARS.01.24.01
-@bdd: BDD.01.13.01
+@ears: EARS.01.25.01
+@bdd: BDD.01.14.01
 ```
 
 **Upstream Sources**:
 - [BRD-01](../BRD/BRD-01_platform.md#BRD-01) - Architecture Decision Requirements
 - [PRD-01](../PRD/PRD-01_integration.md#PRD-01) - Product requirements
-- [EARS-01](../EARS/EARS-01_risk.md#EARS-01) - Formal requirements
-- [BDD-01](../BDD/BDD-01_limits.feature) - Test scenarios
-
-**Downstream Artifacts**:
-- SYS-NN (to be created) - System requirements
-- REQ-NN (to be created) - Atomic requirements
-```
+- [EARS-01](../EARS/EARS-01_risk.md#EARS-01) - Formal requirements (EARS type code: 25)
+- [BDD-01](../BDD/BDD-01_limits/) - Test scenarios (BDD scenario type code: 14)
 
 ## Upstream/Downstream Artifacts
 
@@ -355,7 +241,7 @@ Examples:
 - **Code** (Execution Layer) - Implementation per decision
 
 **Upstream-Only Traceability Policy**:
-> The ADR traceability matrix tracks ADRs and their **upstream sources** (BRD, PRD, EARS, BDD) only. Downstream documents (SYS, REQ, SPEC) track their own upstream references to ADRs—the ADR matrix does NOT maintain downstream links. This avoids circular maintenance and ensures each layer owns its own traceability.
+> The ADR traceability matrix tracks ADRs and their **upstream sources** (BRD, PRD, EARS, BDD) only. Downstream documents (SYS, REQ, SPEC) track their own upstream references to ADRs—the ADR matrix does NOT maintain downstream links.
 
 **Same-Type Document Relationships** (conditional):
 - `@related-adr: ADR-NN` - ADRs sharing architectural context
@@ -381,21 +267,19 @@ Check `docs/ADR/` for next available ID number (e.g., ADR-01, ADR-033).
 
 ### Step 4: Create ADR Folder and Files
 
-**Folder structure** (DEFAULT - nested folder per document with descriptive slug):
+**Folder structure** (DEFAULT - nested folder per document):
 1. Create folder: `docs/ADR/ADR-NN_{slug}/` (folder slug MUST match index file slug)
-2. Create index file: `docs/ADR/ADR-NN_{slug}/ADR-NN.0_{section_type}.md` (shortened, PREFERRED)
-3. Create section files: `docs/ADR/ADR-NN_{slug}/ADR-NN.S_{section_type}.md` (shortened, PREFERRED)
+2. Create index file: `docs/ADR/ADR-NN_{slug}/ADR-NN.0_{slug}_index.md`
+3. Create section files: `docs/ADR/ADR-NN_{slug}/ADR-NN.S_{section_type}.md`
 
-**Example (Shortened Pattern - PREFERRED)**:
+**Example (Section-Based Pattern - DEFAULT)**:
 ```
 docs/ADR/ADR-033_database_selection/
-├── ADR-033.0_index.md
+├── ADR-033.0_database_selection_index.md
 ├── ADR-033.1_context.md
 ├── ADR-033.2_decision.md
 └── ADR-033.3_consequences.md
 ```
-
-**Note**: Folder contains descriptive slug, so filenames can omit it. Full pattern (`ADR-033.0_database_selection_index.md`) also accepted for backward compatibility.
 
 **OPTIONAL** (for small documents <25KB): `docs/ADR/ADR-NN_{slug}.md` (monolithic)
 
@@ -403,7 +287,10 @@ docs/ADR/ADR-033_database_selection/
 
 Complete all required metadata fields and initialize Document Revision History table.
 
-### Step 6: Document Context
+**Required Fields** (7 mandatory):
+- Project Name, Document Version, Date, Document Owner, Prepared By, Status, SYS-Ready Score
+
+### Step 6: Document Context (Section 4)
 
 **Context Section**: Explain the problem and factors:
 - What issue are we addressing?
@@ -411,42 +298,49 @@ Complete all required metadata fields and initialize Document Revision History t
 - What requirements drive this decision?
 - Reference upstream BRD/PRD sections
 
-### Step 7: State Decision
+**Section 4.1 Problem Statement** includes inherited content:
+- Business Driver (from BRD §7.2)
+- Business Constraints (from BRD §7.2)
+- Technical Options Evaluated (from PRD §18)
+- Evaluation Criteria (from PRD §18)
+
+### Step 7: State Decision (Section 5)
 
 **Decision Section**: Clear, concise statement:
 - What are we choosing to do?
 - How will it be implemented?
 - Reference technology stack (ADR-000) if applicable
 
-### Step 8: Analyze Consequences
+### Step 8: Analyze Consequences (Section 7)
 
 **Consequences Section**:
 - **Positive**: Benefits and advantages
 - **Negative**: Drawbacks and limitations
 - **Risks**: Potential issues and mitigations
 
-### Step 9: Document Alternatives
+### Step 9: Document Alternatives (Section 12)
 
 **Alternatives Considered**: For each alternative:
 - Name and description
 - Pros and cons
 - Why rejected
+- Fit Score (Poor/Good/Better)
 
-### Step 10: Define Verification
+### Step 10: Define Verification (Section 11)
 
 **Verification Section**: How to validate decision:
-- Success metrics
 - BDD scenarios that test it
+- Success metrics
 - Performance benchmarks
 
-### Step 11: Add Relations
+### Step 11: Add Relations (Section 14)
 
-**Relations Section**:
+**Related Decisions Section**:
 - Supersedes: Which ADR this replaces
 - Related to: Connected ADRs
 - Influences: Which SYS/REQ depend on this
 
-### Step 12: Add Cumulative Tags
+### Step 12: Add Cumulative Tags (Section 16.6)
 
 Include @brd, @prd, @ears, @bdd tags (Layers 1-4).
 
@@ -462,42 +356,56 @@ Commit ADR and traceability matrix.
 
 ## Validation
 
+### Validation Checks (8 Total)
+
+| Check | Type | Description |
+|-------|------|-------------|
+| CHECK 1 | Error | Required Document Control Fields (7 fields) |
+| CHECK 2 | Error | ADR Structure Completeness (required sections) |
+| CHECK 3 | Error | SYS-Ready Score Validation (format, threshold) |
+| CHECK 4 | Error | Upstream Traceability Tags (@brd, @prd, @ears, @bdd) |
+| CHECK 5 | Warning | Decision Quality Assessment |
+| CHECK 6 | Warning | Architecture Documentation (Mermaid diagrams) |
+| CHECK 7 | Warning | Implementation Readiness |
+| CHECK 8 | Error | Element ID Format Compliance (unified 4-segment) |
+
+### Validation Tiers
+
+| Tier | Type | Exit Code | Action |
+|------|------|-----------|--------|
+| Tier 1 | Error | 1 | Must fix before commit |
+| Tier 2 | Warning | 0 | Recommended to fix |
+| Tier 3 | Info | 0 | No action required |
+
 ### Automated Validation
 
 ```bash
-# ADR validation (planned - use manual checklist below for now)
-# ./ai_dev_flow/scripts/validate_adr_template.sh docs/ADR/ADR-033_*.md
+# Per-document validation (Phase 1)
+python ai_dev_flow/scripts/validate_cross_document.py --document docs/ADR/ADR-NN_slug.md --auto-fix
+
+# Layer validation (Phase 2) - run when all ADR documents complete
+python ai_dev_flow/scripts/validate_cross_document.py --layer ADR --auto-fix
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact ADR-033 --expected-layers brd,prd,ears,bdd --strict
-
-# Cross-document validation
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/ADR/ADR-NN_slug.md --auto-fix
+python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact ADR-NN --expected-layers brd,prd,ears,bdd --strict
 ```
-
-**Note**: ADR-specific validation script is under development. Use manual checklist and cross-document validation.
 
 ### Manual Checklist
 
-- [ ] Document Control section at top
+- [ ] Document Control section at top with 7 required fields
 - [ ] Status field completed (Proposed/Accepted/Deprecated/Superseded)
+- [ ] SYS-Ready Score with ✅ emoji and percentage
 - [ ] Context explains problem and constraints
 - [ ] Decision clearly stated
 - [ ] Consequences analyzed (positive, negative, risks)
-- [ ] Alternatives considered and documented
+- [ ] Alternatives considered and documented with rejection rationale
 - [ ] Verification approach defined
 - [ ] Relations to other ADRs documented
 - [ ] Technology Stack (ADR-000) referenced if applicable
 - [ ] Cumulative tags: @brd, @prd, @ears, @bdd included
+- [ ] Element IDs use unified format (ADR.NN.TT.SS)
+- [ ] No legacy patterns (DEC-XXX, ALT-XXX, CON-XXX)
 - [ ] Traceability matrix updated
-
-## Common Pitfalls
-
-1. **No alternatives**: Must document why other options rejected
-2. **Missing technology stack check**: Always check ADR-000 first
-3. **Vague consequences**: Be specific about impacts
-4. **No verification**: Must define how to validate decision
-5. **Missing cumulative tags**: Layer 5 must include Layers 1-4 tags
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
 
@@ -514,16 +422,6 @@ LOOP:
   5. IF clean: Mark VALIDATED, proceed
 ```
 
-### Validation Command
-
-```bash
-# Per-document validation (Phase 1)
-python ai_dev_flow/scripts/validate_cross_document.py --document docs/ADR/ADR-NN_slug.md --auto-fix
-
-# Layer validation (Phase 2) - run when all ADR documents complete
-python ai_dev_flow/scripts/validate_cross_document.py --layer ADR --auto-fix
-```
-
 ### Layer-Specific Upstream Requirements
 
 | This Layer | Required Upstream Tags | Count |
@@ -536,6 +434,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer ADR --auto-fix
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd tag | Add with upstream document reference |
 | Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
+| Legacy element ID (DEC-XXX, ALT-XXX, CON-XXX) | Convert to ADR.NN.TT.SS format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -552,7 +451,43 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer ADR --auto-fix
 
 ### Quality Gate
 
-**Blocking**: YES - Cannot proceed to next document until Phase 1 validation passes with 0 errors.
+**Blocking**: YES - Cannot proceed to SYS creation until Phase 1 validation passes with 0 errors.
+
+## Common Pitfalls
+
+1. **No alternatives**: Must document why other options rejected
+2. **Missing technology stack check**: Always check ADR-000 first
+3. **Vague consequences**: Be specific about impacts
+4. **No verification**: Must define how to validate decision
+5. **Missing cumulative tags**: Layer 5 must include Layers 1-4 tags
+6. **Legacy element IDs**: Use ADR.NN.TT.SS not DEC-XXX/ALT-XXX/CON-XXX
+7. **Wrong SYS-Ready Score format**: Must include ✅ emoji and percentage
+
+---
+
+## ADR-REF Reference Documents
+
+For supplementary documentation related to ADR artifacts:
+- **Format**: `ADR-REF-NNN_{slug}.md`
+- **Skill**: Use `doc-ref` skill
+- **Validation**: Reduced (4 checks only)
+- **Examples**: Technology stack summaries, architecture overviews
+
+### ADR-REF Reduced Validation
+
+**Applicable Checks** (4 total):
+- CHECK 1 (partial): Document Control Fields (required)
+- Document Revision History (required)
+- Status/Context sections only (required)
+- H1 ID match with filename (required)
+
+**Exempted** (NO SCORES):
+- SYS-Ready Score: NOT APPLICABLE
+- Cumulative tags: NOT REQUIRED
+- CHECK 5-7: Decision quality, architecture, implementation (exempt)
+- All quality gates and downstream readiness metrics: EXEMPT
+
+**Purpose**: ADR-REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal architecture decisions.
 
 ---
 
@@ -567,29 +502,6 @@ The SYS will:
 - Include `@brd`, `@prd`, `@ears`, `@bdd`, `@adr` tags (cumulative)
 - Define functional requirements and quality attributes
 - Translate ADR decisions into technical requirements
-
-## Reference Documents
-
-For supplementary documentation related to ADR artifacts:
-- **Format**: `ADR-REF-NNN_{slug}.md`
-- **Skill**: Use `doc-ref` skill
-- **Validation**: Reduced (4 checks only)
-- **Examples**: Technology stack summaries, architecture overviews
-
-### ADR-REF Ready-Score Exemption
-
-**ADR-REF documents are EXEMPT from ready-scores and quality gates:**
-
-| Standard ADR | ADR-REF |
-|--------------|---------|
-| SYS-Ready Score: ✅ Required (≥90%) | SYS-Ready Score: **NOT APPLICABLE** |
-| Cumulative tags: @brd, @prd, @ears, @bdd required | Cumulative tags: **NOT REQUIRED** |
-| Quality gates: Full validation (7 checks) | Quality gates: **EXEMPT** (4 checks only) |
-| Format: Context-Decision-Consequences | Format: **Free format, business-oriented** |
-
-**Purpose**: ADR-REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal architecture decisions.
-
-**Reference**: See `ai_dev_flow/ADR/ADR_VALIDATION_RULES.md` for validation details.
 
 ## Related Resources
 
@@ -619,6 +531,10 @@ For supplementary documentation related to ADR artifacts:
 **Format**: Four-Part Structure (17 sections)
 
 **SYS-Ready Score**: ≥90% required for "Accepted" status
+
+**Element ID Format**: ADR.NN.TT.SS (Decision=10, Alternative=12, Consequence=13)
+
+**File Size**: 300-500 lines target, 600 max
 
 **Lifecycle States**: Proposed → Accepted → Deprecated/Superseded
 

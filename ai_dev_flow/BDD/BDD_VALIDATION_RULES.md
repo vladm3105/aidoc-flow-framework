@@ -27,6 +27,8 @@ custom_fields:
 
 # BDD Validation Rules Reference
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 **Version**: 1.1
 **Date**: 2025-11-19
 **Last Updated**: 2025-12-26
@@ -51,7 +53,7 @@ custom_fields:
 
 ## Overview
 
-Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 The BDD validation script ensures feature files meet quality standards for ADR progression and automated test execution.
 
@@ -211,7 +213,7 @@ grep -n "^#.*@ears:" docs/BDD/BDD-*/BDD-*.feature
 
 **Fix**: Replace `Scenario: TS-01` with `Scenario: BDD.02.14.01`
 
-**Reference**: BDD_CREATION_RULES.md Section 4.1, ID_NAMING_STANDARDS.md lines 783-793
+**Reference**: BDD_CREATION_RULES.md Section 4.1, [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 
@@ -538,10 +540,10 @@ grep -n "^# [^@]" docs/BDD/BDD-*/BDD-*.feature && echo "❌ Non-Gherkin Markdown
 **Command**:
 ```bash
 # Validate section-based structure for all BDD files
-python ai_dev_flow/scripts/validate_bdd_suite.py --root docs/BDD --prd-root docs/PRD
+python3 scripts/validate_bdd_suite.py --root BDD --prd-root PRD
 
 # Validate specific suite
-python ai_dev_flow/scripts/validate_bdd_suite.py --root docs/BDD --prd-root docs/PRD | grep "BDD-02"
+python3 scripts/validate_bdd_suite.py --root BDD --prd-root PRD | grep "BDD-02"
 ```
 
 **Expected Output**:

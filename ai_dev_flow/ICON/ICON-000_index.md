@@ -16,7 +16,7 @@ custom_fields:
 
 # ICON-000: Implementation Contracts Registry
 
-Note: Some examples in this index show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 **Purpose**: Central registry for standalone implementation contract files (ICON).
 
@@ -95,7 +95,7 @@ Note: Some examples in this index show a portable `docs/` root. In this reposito
 ### Directory Location
 
 **Framework Templates**:
-- `/opt/data/docs_flow_framework/ai_dev_flow/ICON/`
+- `ai_dev_flow/ICON/`
 
 **Project-Specific**:
 - `[project_root]/docs/ICON/`

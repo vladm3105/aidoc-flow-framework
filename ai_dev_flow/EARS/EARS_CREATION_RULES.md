@@ -25,6 +25,8 @@ custom_fields:
 
 # EARS Creation Rules
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 **Version**: 1.1
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-30
@@ -59,7 +61,7 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- Note: Example paths use a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `docs/EARS/` within project docs directory
 - **Naming**: `EARS-NN_descriptive_title.md` (NN = 3-digit sequential number)
 - **Subdocuments**: For complex systems: `EARS-NN-YY_additional_detail.md`
@@ -132,7 +134,7 @@ EARS documents require specific structural elements for behavioral specification
 > - Category prefixes: `E-XXX`, `S-XXX`, `U-XXX`, `UB-XXX`, `EVENT-XXX`, `STATE-XXX`, `UNWANTED-XXX`, `UBIQ-XXX`
 > - 3-segment format: `EARS.NN.EE`
 >
-> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 

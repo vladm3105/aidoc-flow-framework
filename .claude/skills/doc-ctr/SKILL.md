@@ -1,5 +1,4 @@
 ---
-name: "doc-ctr: Create Data Contracts (Layer 9)"
 name: doc-ctr
 description: Create Data Contracts (CTR) - Optional Layer 9 artifact using dual-file format (.md + .yaml) for API/data contracts
 tags:
@@ -37,7 +36,7 @@ Create **Data Contracts (CTR)** - Optional Layer 9 artifact in the SDD workflow 
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ 2>/dev/null
+   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ docs/IMPL/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -54,6 +53,21 @@ Before creating CTR, read:
 4. **Creation Rules**: `ai_dev_flow/CTR/CTR_CREATION_RULES.md`
 5. **Validation Rules**: `ai_dev_flow/CTR/CTR_VALIDATION_RULES.md`
 6. **Validation Script**: `./ai_dev_flow/scripts/validate_ctr.sh`
+
+## Reserved ID Exemption (CTR-000_*)
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Pattern**: `CTR-000_*.md`, `CTR-000_*.yaml`
+
+**Document Types**:
+- Index documents (`CTR-000_index.md`)
+- Traceability matrix templates (`CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Glossaries, registries, checklists
+
+**Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+
+**Validation Behavior**: Skip all checks when filename matches `CTR-000_*` pattern.
 
 ## When to Use This Skill
 
@@ -90,7 +104,21 @@ ai_dev_flow/CTR/CTR-01_data_validation.md
 ai_dev_flow/CTR/CTR-01_data_validation.yaml
 ```
 
-### 2. Required Sections (Markdown File)
+### 2. Document Control Fields (9 Required)
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| CTR ID | Yes | CTR-NN format |
+| Title | Yes | Contract name |
+| Status | Yes | Draft/In Review/Active/Deprecated |
+| Version | Yes | Semantic version (Major.Minor.Patch) |
+| Created | Yes | YYYY-MM-DD |
+| Author | Yes | Document author |
+| Owner | Yes | Contract owner |
+| Last Updated | Yes | YYYY-MM-DD |
+| SPEC-Ready Score | Yes | ✅ NN% (Target: ≥90%) |
+
+### 3. Required Sections (Markdown File)
 
 **Document Control** (MANDATORY - First section before all numbered sections)
 
@@ -103,7 +131,27 @@ ai_dev_flow/CTR/CTR-01_data_validation.yaml
 6. **Error Handling**: Error codes and responses
 7. **Traceability**: Section 7 format with cumulative tags
 
-### 3. YAML Contract Format
+### 4. Element ID Format (MANDATORY)
+
+**Pattern**: `CTR.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Interface | 16 | CTR.02.16.01 |
+| Data Model | 17 | CTR.02.17.01 |
+| Contract Clause | 20 | CTR.02.20.01 |
+
+> **REMOVED PATTERNS** - Do NOT use legacy formats:
+> - `INT-XXX` - Use `CTR.NN.16.SS` instead
+> - `MODEL-XXX` - Use `CTR.NN.17.SS` instead
+> - `CLAUSE-XXX` - Use `CTR.NN.20.SS` instead
+> - `IF-XXX` - Use `CTR.NN.16.SS` instead
+> - `DM-XXX` - Use `CTR.NN.17.SS` instead
+> - `CC-XXX` - Use `CTR.NN.20.SS` instead
+
+**Reference**: [ID_NAMING_STANDARDS.md - Cross-Reference Link Format](../ai_dev_flow/ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
+
+### 5. YAML Contract Format
 
 **OpenAPI 3.0 Format** (for APIs):
 ```yaml
@@ -242,7 +290,7 @@ properties:
     example: 0.80
 ```
 
-### 4. Usage Examples Section
+### 6. Usage Examples Section
 
 **Format**:
 ```markdown
@@ -294,7 +342,7 @@ properties:
 ```
 ```
 
-### 5. Contract Versioning
+### 7. Contract Versioning
 
 **Semantic Versioning**: Major.Minor.Patch
 
@@ -318,7 +366,7 @@ info:
     - Changed: account_id now requires UUID format (was string)
 ```
 
-### 6. SPEC-Ready Scoring System
+### 8. SPEC-Ready Scoring System
 
 **Purpose**: Measures CTR maturity and readiness for progression to Technical Specifications (SPEC) phase.
 
@@ -344,7 +392,7 @@ info:
 
 **Quality Gate**: Score <90% blocks SPEC artifact creation.
 
-### 7. Directory Organization by Service Type
+### 9. Directory Organization by Service Type
 
 **Purpose**: Organize contracts by service type for large projects (30+ contracts).
 
@@ -379,7 +427,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 ## Unified Element ID Format (MANDATORY)
 
-**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
+**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ, IMPL)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
 - **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
@@ -395,6 +443,18 @@ Examples:
 
 **Tag Count**: 7-8 tags (7 if IMPL skipped, 8 if IMPL included)
 
+**Element Type Codes for Cumulative Tags**:
+| Tag | Artifact | Element Type | Code |
+|-----|----------|--------------|------|
+| @brd | BRD | Business Requirement | 01 |
+| @prd | PRD | Product Feature | 07 |
+| @ears | EARS | EARS Statement | 25 |
+| @bdd | BDD | Scenario | 14 |
+| @adr | ADR | Document reference | (dash notation) |
+| @sys | SYS | System Requirement | 26 |
+| @req | REQ | Atomic Requirement | 27 |
+| @impl | IMPL | Implementation Phase | 29 |
+
 **Format** (if IMPL included):
 ```markdown
 ## Traceability
@@ -403,23 +463,23 @@ Examples:
 ```markdown
 @brd: BRD.01.01.03
 @prd: PRD.01.07.02
-@ears: EARS.01.24.01
-@bdd: BDD.01.13.01
+@ears: EARS.01.25.01
+@bdd: BDD.01.14.01
 @adr: ADR-033, ADR-045
-@sys: SYS.01.25.01
-@req: REQ.01.26.03
-@impl: IMPL.01.28.01
+@sys: SYS.01.26.01
+@req: REQ.01.27.03
+@impl: IMPL.01.29.01
 ```
 
 **Format** (if IMPL skipped):
 ```markdown
 @brd: BRD.01.01.03
 @prd: PRD.01.07.02
-@ears: EARS.01.24.01
-@bdd: BDD.01.13.01
+@ears: EARS.01.25.01
+@bdd: BDD.01.14.01
 @adr: ADR-033, ADR-045
-@sys: SYS.01.25.01
-@req: REQ.01.26.03
+@sys: SYS.01.26.01
+@req: REQ.01.27.03
 ```
 
 ## Upstream/Downstream Artifacts
@@ -444,6 +504,35 @@ Examples:
 - `@related-ctr: CTR-NN` - CTRs sharing API context
 - `@depends-ctr: CTR-NN` - CTR that must be completed first
 
+## Validation Checks
+
+### Tier 1: Errors (Blocking)
+
+| Check | Description |
+|-------|-------------|
+| CHECK 1 | Required Document Control Fields (9 fields) |
+| CHECK 2 | Dual-File Format (both .md and .yaml exist) |
+| CHECK 3 | SPEC-Ready Score format (✅ emoji + percentage + target) |
+| CHECK 4 | YAML Schema Validation (OpenAPI/JSON Schema valid) |
+| CHECK 5 | Cumulative Tagging (7-8 upstream tags) |
+| CHECK 6 | Element ID Format (`CTR.NN.TT.SS`) |
+
+### Tier 2: Warnings (Recommended)
+
+| Check | Description |
+|-------|-------------|
+| CHECK 7 | Usage Examples (request/response pairs) |
+| CHECK 8 | Error Handling (error codes documented) |
+| CHECK 9 | Versioning Policy (semantic versioning) |
+| CHECK 10 | Validation Rules (schema validation specified) |
+
+### Tier 3: Info
+
+| Check | Description |
+|-------|-------------|
+| CHECK 11 | Directory Organization (subdirectories for 30+ contracts) |
+| CHECK 12 | Consumer/Provider identified |
+
 ## Creation Process
 
 ### Step 1: Read Upstream Artifacts
@@ -465,7 +554,7 @@ Check `ai_dev_flow/CTR/` for next available ID number.
 
 ### Step 4: Fill Document Control Section (Markdown)
 
-Complete metadata and Document Revision History table.
+Complete all 9 required fields including SPEC-Ready Score.
 
 ### Step 5: Write Contract Overview (Markdown)
 
@@ -542,7 +631,8 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 ### Manual Checklist
 
 - [ ] Both files created (.md and .yaml)
-- [ ] Document Control in markdown file
+- [ ] Document Control complete (9 fields)
+- [ ] SPEC-Ready Score format correct (✅ NN% (Target: ≥90%))
 - [ ] Contract Overview clear
 - [ ] Business Context explains why (links to REQ)
 - [ ] YAML contract valid (OpenAPI/JSON Schema)
@@ -551,6 +641,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 - [ ] Validation rules specified
 - [ ] Version number semantic (Major.Minor.Patch)
 - [ ] Cumulative tags: @brd through @req/impl (7-8 tags)
+- [ ] Element IDs use `CTR.NN.TT.SS` format
 - [ ] Traceability matrix updated
 
 ### Diagram Standards
@@ -565,6 +656,8 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 4. **Vague validation**: Schema validation must be precise and testable
 5. **Missing cumulative tags**: Layer 9 must include all 7-8 upstream tags
 6. **Skipping when needed**: Don't skip if multiple teams need shared contract
+7. **Wrong element IDs**: Use `CTR.NN.TT.SS`, not legacy `INT-XXX`, `MODEL-XXX`, `CLAUSE-XXX`
+8. **Wrong cumulative tag codes**: Use correct element type codes (EARS=25, BDD=14, SYS=26, REQ=27, IMPL=29)
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
 
@@ -665,6 +758,15 @@ For supplementary documentation related to CTR artifacts:
 **CTR Purpose**: Define API contracts and data schemas
 
 **Layer**: 9 (Optional)
+
+**Element ID Format**: `CTR.NN.TT.SS`
+- Interface = 16
+- Data Model = 17
+- Contract Clause = 20
+
+**Removed Patterns**: INT-XXX, MODEL-XXX, CLAUSE-XXX, IF-XXX, DM-XXX, CC-XXX
+
+**Document Control Fields**: 9 required
 
 **Tags Required**: @brd through @req/impl (7-8 tags)
 

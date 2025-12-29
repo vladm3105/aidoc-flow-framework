@@ -1257,7 +1257,7 @@ Document evidence that this task has been implemented correctly and meets all ac
 - `@impl`: Implementation Plans (optional - include if exists in chain)
 - `@ctr`: API Contracts (optional - include if exists in chain)
 - `@spec`: Technical Specifications
-- `@icon`: Implementation Contracts (optional - for parallel development coordination)
+- `@icon`: Implementation Contracts (optional - for parallel development coordination; allowed but excluded from cumulative tag counts)
 
 **Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
 

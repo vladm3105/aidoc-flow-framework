@@ -71,7 +71,7 @@ BDD-02: Knowledge Engine Test Suite
 - [ ] Create Section File Map table stub (will complete in Phase 3)
 - [ ] Create Traceability Matrix stub (will complete in Phase 4)
 
-**Template Source**: `/opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD-SECTION-0-TEMPLATE.md`
+**Template Source**: `BDD/BDD-SECTION-0-TEMPLATE.md`
 
 ---
 
@@ -136,7 +136,7 @@ Choose split criteria (in priority order):
 - [ ] Update Background with timezone and preconditions
 - [ ] Author scenarios (see Section File Requirements below)
 
-**Template Source**: `/opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD-SECTION-TEMPLATE.feature`
+**Template Source**: `BDD/BDD-SECTION-TEMPLATE.feature`
 
 ### Section File Requirements
 
@@ -190,8 +190,8 @@ If a section file exceeds 500 lines or 12 scenarios:
 - [ ] Create numbered subsections: `.01`, `.02`, `.03`, etc.
 
 **Template Sources**:
-- Subsection: `/opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD-SUBSECTION-TEMPLATE.feature`
-- Aggregator: `/opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD-AGGREGATOR-TEMPLATE.feature`
+- Subsection: `BDD/BDD-SUBSECTION-TEMPLATE.feature`
+- Aggregator: `BDD/BDD-AGGREGATOR-TEMPLATE.feature`
 
 ---
 
@@ -409,11 +409,11 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 - **BDD_VALIDATION_RULES.md** — Validation rules (CHECK 9)
 - **BDD_CREATION_RULES.md** — General BDD creation guidelines
 - **ID_NAMING_STANDARDS.md** — Element ID format (BDD.NN.TT.SS)
-- **Scaffold Script**: `ai_dev_flow/scripts/scaffold_split_suite.sh`
-- **Validation Script**: `ai_dev_flow/scripts/validate_bdd_suite.py`
+- **Scaffold Script**: `scripts/scaffold_split_suite.sh`
+- **Validation Script**: `scripts/validate_bdd_suite.py`
 
 ---
 
-**Document Path**: `/opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD_GENERATION_CHECKLIST.md`
+**Document Path**: `BDD/BDD_GENERATION_CHECKLIST.md`
 **Framework**: AI Dev Flow SDD
 **Last Updated**: 2025-12-27

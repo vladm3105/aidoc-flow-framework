@@ -19,6 +19,21 @@ Note: Some examples in this guide show a portable `docs/` root. In this reposito
 
 This document defines the complete error code registry, validation rules, and exit code conventions for the Specification-Driven Development (SDD) framework validation system.
 
+## Validation Scope
+
+**Artifact Layers (1-12)**: This validation system covers all 12 artifact layers defined in `LAYER_REGISTRY.yaml`:
+
+| Layer | Artifact | Description |
+|-------|----------|-------------|
+| 1-4 | BRD, PRD, EARS, BDD | Core requirements |
+| 5-7 | ADR, SYS, REQ | Architecture and detailed requirements |
+| 8-12 | IMPL, CTR, SPEC, TASKS, IPLAN | Implementation artifacts |
+
+**Out of Scope**:
+- Layer 0 (Strategy): Optional pre-artifact planning, not validated
+- Layers 13-15 (Code, Tests, QA): Source code traceability not implemented
+- ICON: Non-layer artifact, optional validation
+
 ## Exit Code Conventions
 
 | Exit Code | Meaning | CI/CD Action |
@@ -285,6 +300,54 @@ See ADR-01 through ADR-05 for implementation details.
 | `validate_counts.py` | COUNT | Count validation |
 | `validate_forward_references.py` | FWDREF | Forward reference prevention |
 
+### XDOC Error Codes Reference
+
+The `validate_cross_document.py` script detects and reports the following issue codes:
+
+| Code | Severity | Description | Auto-Fix Behavior |
+|------|----------|-------------|-------------------|
+| XDOC-001 | ERROR | Missing required traceability tag | Adds missing tag (prompts for ID) |
+| XDOC-002 | ERROR | Missing cumulative tag from ancestor layer | Adds tag with null placeholder |
+| XDOC-003 | ERROR | Reference to non-existent upstream document | **Removes tag** (requires confirmation) |
+| XDOC-004 | WARNING | Bidirectional reference mismatch | No auto-fix |
+| XDOC-005 | WARNING | Reference to deprecated document | Replaces with null + comment |
+| XDOC-006 | WARNING | Tag format inconsistency | Corrects format |
+| XDOC-007 | INFO | Optional tag missing | No auto-fix |
+| XDOC-008 | ERROR | Broken internal link | Removes or fixes link |
+| XDOC-009 | ERROR | Missing traceability section | Adds section template |
+| XDOC-010 | WARNING | Duplicate tag reference | No auto-fix |
+
+### Auto-Fix Command Options
+
+```bash
+# Preview changes without applying
+python scripts/validate_cross_document.py --all --auto-fix --dry-run
+
+# Apply fixes (XDOC-003 requires confirmation)
+python scripts/validate_cross_document.py --all --auto-fix
+
+# Apply all fixes including XDOC-003 without confirmation
+python scripts/validate_cross_document.py --all --auto-fix --force-xdoc
+
+# Disable backup creation
+python scripts/validate_cross_document.py --all --auto-fix --no-backup
+```
+
+### Audit Log Format
+
+All XDOC-003 tag removals are logged to `tmp/validation_audit.json`:
+
+```json
+{
+  "timestamp": "2025-12-29T14:30:00.000000",
+  "file": "/path/to/document.md",
+  "issue_code": "XDOC_003",
+  "action": "removed_tag",
+  "removed_content": "@brd: BRD-01",
+  "backup_path": "/path/to/document.md.bak"
+}
+```
+
 ---
 
 ## CI/CD Integration
@@ -294,7 +357,7 @@ See ADR-01 through ADR-05 for implementation details.
 ```yaml
 validate:
   script:
-    - python ai_dev_flow/scripts/validate_all.py docs/ --all
+    - python3 scripts/validate_all.py . --all
   allow_failure: false
 ```
 
@@ -303,7 +366,7 @@ validate:
 ```yaml
 validate-and-fix:
   script:
-    - python ai_dev_flow/scripts/validate_all.py docs/ --all --auto-fix
+    - python3 scripts/validate_all.py . --all --auto-fix
     - git diff --exit-code || git commit -am "Auto-fix validation issues"
 ```
 
@@ -312,7 +375,7 @@ validate-and-fix:
 ```yaml
 validate-strict:
   script:
-    - python ai_dev_flow/scripts/validate_all.py docs/ --all --strict
+    - python3 scripts/validate_all.py . --all --strict
 ```
 
 ---
@@ -323,38 +386,38 @@ validate-strict:
 
 ```bash
 # All validators, text output
-python ai_dev_flow/scripts/validate_all.py docs/ --all
+python3 scripts/validate_all.py . --all
 
 # Specific layers
-python ai_dev_flow/scripts/validate_all.py docs/ --layer BRD --layer PRD
+python3 scripts/validate_all.py . --layer BRD --layer PRD
 
 # Markdown report
-python ai_dev_flow/scripts/validate_all.py docs/ --all --report markdown
+python3 scripts/validate_all.py . --all --report markdown
 
 # JSON for CI/CD
-python ai_dev_flow/scripts/validate_all.py docs/ --all --report json
+python3 scripts/validate_all.py . --all --report json
 ```
 
 ### Running Individual Validators
 
 ```bash
 # Section count validation
-python ai_dev_flow/scripts/validate_section_count.py docs/
+python3 scripts/validate_section_count.py .
 
 # Forward reference validation
-python ai_dev_flow/scripts/validate_forward_references.py docs/
+python3 scripts/validate_forward_references.py .
 
 # Terminology with auto-fix
-python ai_dev_flow/scripts/validate_terminology.py docs/ --auto-fix
+python3 scripts/validate_terminology.py . --auto-fix
 
 # Count validation with auto-fix
-python ai_dev_flow/scripts/validate_counts.py docs/ --auto-fix
+python3 scripts/validate_counts.py . --auto-fix
 ```
 
 ### List Available Validators
 
 ```bash
-python ai_dev_flow/scripts/validate_all.py --list-validators
+python3 scripts/validate_all.py --list-validators
 ```
 
 ---

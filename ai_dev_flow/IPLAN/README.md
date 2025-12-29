@@ -228,7 +228,7 @@ Include these tags if present in your project:
 **Automated Validation**:
 ```bash
 # Run tag validation script
-python /opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_docs.py \
+python3 scripts/validate_tags_against_docs.py \
   --file IPLAN/IPLAN-01_example.md
 
 # Expected output:
@@ -1265,7 +1265,7 @@ Summary: 18 scenarios across BDD-01 and BDD-007
 **Diagnosis**:
 ```bash
 # Check if document exists
-ls /opt/data/docs_flow_framework/ai_dev_flow/REQ/REQ-01.md
+ls REQ/REQ-01.md
 # Error: No such file or directory
 ```
 
@@ -1283,7 +1283,7 @@ ls /opt/data/docs_flow_framework/ai_dev_flow/REQ/REQ-01.md
 **Solution 2**: Create missing document
 ```bash
 # If document truly should exist, create it
-cd /opt/data/docs_flow_framework/ai_dev_flow/REQ
+cd REQ
 cp REQ-TEMPLATE.md REQ-01_gateway_requirements.md
 # ... (populate with requirements)
 ```
@@ -1422,7 +1422,7 @@ graph TB
 
 ### Tag Validation Script
 
-**Location**: `/opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_docs.py`
+**Location**: `scripts/validate_tags_against_docs.py`
 
 **Usage**:
 ```bash
@@ -1446,7 +1446,7 @@ python validate_tags_against_docs.py --file IPLAN/IPLAN-01.md
 
 ### Traceability Matrix Update Script
 
-**Location**: `/opt/data/docs_flow_framework/ai_dev_flow/scripts/update_traceability_matrix.py`
+**Location**: `scripts/update_traceability_matrix.py`
 
 **Usage**:
 ```bash

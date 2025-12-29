@@ -1179,9 +1179,9 @@ await connector.connect("localhost", 4002)
 
 ### 12.1 Internal Documentation
 
-- `/opt/data/docs_flow_framework/ai_dev_flow/TASKS/TASKS-TEMPLATE.md` - TASKS file template with contracts section
-- `/opt/data/docs_flow_framework/ai_dev_flow/TASKS/TASKS-000_IMPLEMENTATION_CONTRACTS_CHECKLIST.md` - Quick reference checklist
-- `/opt/data/docs_flow_framework/ai_dev_flow/METADATA_TAGGING_GUIDE.md` - Metadata standards
+- `TASKS/TASKS-TEMPLATE.md` - TASKS file template with contracts section
+- `TASKS/TASKS-000_IMPLEMENTATION_CONTRACTS_CHECKLIST.md` - Quick reference checklist
+- `METADATA_TAGGING_GUIDE.md` - Metadata standards
 - `/home/ya/.claude/CLAUDE.md` - Global instructions with contracts strategy
 
 ### 12.2 External Resources
@@ -1342,7 +1342,7 @@ grep -A1 "@icon: TASKS-01:ServiceConnector" docs/TASKS/
 ### 14.2 ICON File Structure
 
 **Location**:
-- Framework: `/opt/data/docs_flow_framework/ai_dev_flow/ICON/`
+- Framework: `ICON/`
 - Projects: `[project_root]/docs/ICON/` or `[project_root]/ai_dev_flow/ICON/`
 
 **Naming Convention**: `ICON-NNN_descriptive_name.md`

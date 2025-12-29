@@ -1226,13 +1226,13 @@ ID naming standards are enforced by automated validators. For the complete error
 
 ```bash
 # Validate ID patterns
-python ai_dev_flow/scripts/validate_requirement_ids.py docs/
+python3 scripts/validate_requirement_ids.py .
 
 # Validate forward references
-python ai_dev_flow/scripts/validate_forward_references.py docs/
+python3 scripts/validate_forward_references.py .
 
 # Run all validators
-python ai_dev_flow/scripts/validate_all.py docs/ --all
+python3 scripts/validate_all.py . --all
 ```
 
 ---

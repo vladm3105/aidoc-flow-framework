@@ -24,6 +24,7 @@ Options:
 """
 
 import sys
+import os
 import re
 import yaml
 from datetime import datetime, date
@@ -108,18 +109,41 @@ SCHEMA_LOCATIONS = {
 
 
 def find_ai_dev_flow_dir() -> Path:
-    """Find the ai_dev_flow directory."""
-    candidates = [
-        Path("ai_dev_flow"),
-        Path("../ai_dev_flow"),
-        Path(__file__).parent.parent,
-    ]
+    """Locate the framework root flexibly without hardcoding repository names.
 
-    for candidate in candidates:
-        if candidate.exists() and (candidate / "PRD").exists():
-            return candidate.resolve()
+    Resolution order:
+    1) Environment variable AI_DEV_FLOW_ROOT, if set and valid
+    2) Walk up from this script's directory to find a directory containing key artifact folders
+    3) Current working directory (and its parents)
+    """
+    # 1) Environment override
+    env = Path(os.environ.get("AI_DEV_FLOW_ROOT", "")) if "AI_DEV_FLOW_ROOT" in os.environ else None
+    if env and env.exists() and (env / "PRD").exists():
+        return env.resolve()
 
-    raise FileNotFoundError("Could not find ai_dev_flow directory")
+    # Common artifact folders that must exist at the framework root
+    sentinels = {"BRD", "PRD", "EARS", "BDD", "ADR", "SYS", "REQ", "CTR", "SPEC", "TASKS"}
+
+    def has_sentinels(p: Path) -> bool:
+        try:
+            return all((p / s).exists() for s in sentinels)
+        except Exception:
+            return False
+
+    # 2) Walk up from script directory
+    here = Path(__file__).resolve()
+    for candidate in [here.parent, here.parent.parent, here.parent.parent.parent]:
+        if has_sentinels(candidate):
+            return candidate
+
+    # 3) Walk up from CWD
+    cwd = Path.cwd().resolve()
+    for candidate in [cwd, cwd.parent, cwd.parent.parent]:
+        if has_sentinels(candidate):
+            return candidate
+
+    raise FileNotFoundError(
+        "Could not locate framework root. Set AI_DEV_FLOW_ROOT or run from within the repository.")
 
 
 def extract_yaml_frontmatter(content: str) -> Tuple[Optional[Dict], int]:

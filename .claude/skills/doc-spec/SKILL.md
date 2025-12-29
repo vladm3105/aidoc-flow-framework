@@ -1,5 +1,4 @@
 ---
-name: "doc-spec: Create Technical Specifications (Layer 10)"
 name: doc-spec
 description: Create Technical Specifications (SPEC) - Layer 10 artifact using YAML format for implementation-ready specifications
 tags:
@@ -37,7 +36,7 @@ Create **Technical Specifications (SPEC)** - Layer 10 artifact in the SDD workfl
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ 2>/dev/null
+   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ docs/IMPL/ docs/CTR/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -55,6 +54,21 @@ Before creating SPEC, read:
 5. **Creation Rules**: `ai_dev_flow/SPEC/SPEC_CREATION_RULES.md`
 6. **Validation Rules**: `ai_dev_flow/SPEC/SPEC_VALIDATION_RULES.md`
 7. **Validation Script**: `./ai_dev_flow/scripts/validate_spec_template.sh` (under development - use template for manual validation until available)
+
+## Reserved ID Exemption (SPEC-000_*)
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Pattern**: `SPEC-000_*.md`, `SPEC-000_*.yaml`
+
+**Document Types**:
+- Index documents (`SPEC-000_index.md`)
+- Traceability matrix templates (`SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Glossaries, registries, checklists
+
+**Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+
+**Validation Behavior**: Skip all checks when filename matches `SPEC-000_*` pattern.
 
 ## When to Use This Skill
 
@@ -83,16 +97,17 @@ metadata:
   updated_date: "2025-01-15"
   status: "approved"
   owner: "team-backend"
+  task_ready_score: "✅ 95% (Target: ≥90%)"
 
 cumulative_tags:
   brd: ["BRD.01.01.03"]
   prd: ["PRD.01.07.02"]
-  ears: ["EARS.01.24.01"]
-  bdd: ["BDD.01.13.01"]
+  ears: ["EARS.01.25.01"]
+  bdd: ["BDD.01.14.01"]
   adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS.01.25.01"]
-  req: ["REQ.01.26.01"]
-  impl: ["IMPL.01.28.01"]  # optional
+  sys: ["SYS.01.26.01"]
+  req: ["REQ.01.27.01"]
+  impl: ["IMPL.01.29.01"]  # optional
   contracts: ["CTR-01"]  # optional
 
 overview:
@@ -121,7 +136,7 @@ interfaces:
       method: "POST"
       contract_ref: "CTR-01"
       authentication: "Bearer token"
-      rate_limit: 100
+      rate_limit: "@threshold: PRD.NN.limit.api.requests_per_second"
       rate_limit_window: "1min"
 
   data_models:
@@ -240,11 +255,31 @@ traceability:
     - "Code: src/services/trade_validator.py"
 ```
 
-### 2. Required Top-Level Sections
+### 2. Element ID Format (MANDATORY)
+
+**Pattern**: `SPEC.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Step | 15 | SPEC.02.15.01 |
+| Interface | 16 | SPEC.02.16.01 |
+| Data Model | 17 | SPEC.02.17.01 |
+| Validation Rule | 21 | SPEC.02.21.01 |
+| Specification Element | 28 | SPEC.02.28.01 |
+
+> **REMOVED PATTERNS** - Do NOT use legacy formats:
+> - `STEP-XXX` - Use `SPEC.NN.15.SS` instead
+> - `IF-XXX` or `INT-XXX` - Use `SPEC.NN.16.SS` instead
+> - `DM-XXX` or `MODEL-XXX` - Use `SPEC.NN.17.SS` instead
+> - `VR-XXX` - Use `SPEC.NN.21.SS` instead
+
+**Reference**: [ID_NAMING_STANDARDS.md - Cross-Reference Link Format](../ai_dev_flow/ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
+
+### 3. Required Top-Level Sections
 
 **MANDATORY Sections**:
-1. **metadata**: Spec ID, title, version, dates, status, owner
-2. **cumulative_tags**: All upstream tags (8-10 tags depending on layers)
+1. **metadata**: Spec ID, title, version, dates, status, owner, task_ready_score
+2. **cumulative_tags**: All upstream tags (7-9 tags depending on layers)
 3. **overview**: Purpose, scope, requirements
 4. **architecture**: Pattern, layers, technologies
 5. **interfaces**: API endpoints, data models
@@ -256,27 +291,120 @@ traceability:
 11. **monitoring**: Metrics, alerts, logging
 12. **traceability**: Upstream sources, downstream artifacts
 
-### 3. cumulative_tags Field (NEW)
+### 4. TASKS-Ready Scoring System
+
+**Purpose**: Measures SPEC maturity and readiness for progression to TASKS implementation planning.
+
+**Format in Metadata**:
+```yaml
+metadata:
+  task_ready_score: "✅ 95% (Target: ≥90%)"
+```
+
+**Status and TASKS-Ready Score Mapping**:
+
+| TASKS-Ready Score | Required Status |
+|-------------------|-----------------|
+| ≥90% | approved |
+| 70-89% | in_review |
+| <70% | draft |
+
+**Scoring Criteria**:
+- **YAML Completeness (25%)**: All metadata fields, traceability chain, all sections populated
+- **Interface Definitions (25%)**: External APIs with CTR contracts, internal interfaces, data schemas
+- **Implementation Specifications (25%)**: Behavior enables code generation, performance/security quantifiable
+- **Code Generation Readiness (25%)**: Machine-readable fields, TASKS-ready metadata
+
+**Quality Gate**: Score <90% prevents TASKS artifact creation.
+
+### 5. Threshold Registry Integration
+
+**Purpose**: Prevent magic numbers by referencing centralized threshold registry.
+
+**When @threshold Tag is Required**: Use for ALL quantitative values that are:
+- Performance configurations (latencies, throughput, IOPS)
+- Timeout configurations (connection, read, write timeouts)
+- Rate limiting values (requests per second, burst limits)
+- Resource limits (memory, CPU, storage)
+- Circuit breaker configurations
+
+**@threshold Tag Format in YAML**:
+```yaml
+# String value format
+performance:
+  p95_latency_ms: "@threshold: PRD.NN.perf.api.p95_latency"
+
+# Comment format for documentation
+timeout:
+  request_ms: 5000  # @threshold: PRD.NN.timeout.request.sync
+```
+
+**Invalid (hardcoded values)**:
+```yaml
+performance:
+  p95_latency_ms: 200
+timeout:
+  request_ms: 5000
+rate_limit:
+  requests_per_second: 100
+```
+
+**Valid (registry references)**:
+```yaml
+performance:
+  p95_latency_ms: "@threshold: PRD.NN.perf.api.p95_latency"
+timeout:
+  request_ms: "@threshold: PRD.NN.timeout.request.sync"
+rate_limit:
+  requests_per_second: "@threshold: PRD.NN.limit.api.requests_per_second"
+```
+
+### 6. cumulative_tags Field (CRITICAL)
 
 **CRITICAL**: SPEC must include cumulative_tags section with ALL upstream tags
 
-**Format**:
+**Element Type Codes for Cumulative Tags**:
+| Tag | Artifact | Element Type | Code |
+|-----|----------|--------------|------|
+| brd | BRD | Business Requirement | 01 |
+| prd | PRD | Product Feature | 07 |
+| ears | EARS | EARS Statement | 25 |
+| bdd | BDD | Scenario | 14 |
+| adr | ADR | Document reference | (dash notation) |
+| sys | SYS | System Requirement | 26 |
+| req | REQ | Atomic Requirement | 27 |
+| impl | IMPL | Implementation Phase | 29 |
+| contracts | CTR | Document reference | (dash notation) |
+
+**Format (maximum - IMPL and CTR included)**:
 ```yaml
 cumulative_tags:
   brd: ["BRD.01.01.03", "BRD.01.01.05"]
   prd: ["PRD.01.07.02", "PRD.01.07.15"]
-  ears: ["EARS.01.24.01", "EARS.01.24.02"]
-  bdd: ["BDD.01.13.01"]
+  ears: ["EARS.01.25.01", "EARS.01.25.02"]
+  bdd: ["BDD.01.14.01"]
   adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS.01.25.01", "SYS.01.25.07"]
-  req: ["REQ.01.26.01"]
-  impl: ["IMPL.01.28.01"]  # optional - omit if Layer 8 skipped
-  contracts: ["CTR-01"]  # optional - omit if Layer 9 skipped
+  sys: ["SYS.01.26.01", "SYS.01.26.07"]
+  req: ["REQ.01.27.01"]
+  impl: ["IMPL.01.29.01"]
+  contracts: ["CTR-01"]
 ```
 
-**Tag Count**: 7-9 tags (minimum 7 if IMPL/CTR skipped, 9 if both included)
+**Format (minimum - IMPL and CTR skipped)**:
+```yaml
+cumulative_tags:
+  brd: ["BRD.01.01.03"]
+  prd: ["PRD.01.07.02"]
+  ears: ["EARS.01.25.01"]
+  bdd: ["BDD.01.14.01"]
+  adr: ["ADR-033", "ADR-045"]
+  sys: ["SYS.01.26.01"]
+  req: ["REQ.01.27.01"]
+```
 
-### 4. contract_ref Field
+**Tag Count**: 7-9 tags (minimum 7, maximum 9)
+
+### 7. contract_ref Field
 
 **Purpose**: Link SPEC to CTR (if Layer 9 created)
 
@@ -294,7 +422,7 @@ interfaces:
       schema_ref: "CTR-01#/components/schemas/TradeOrderRequest"
 ```
 
-### 5. Implementation Readiness
+### 8. Implementation Readiness
 
 **100% Implementation-Ready**: SPEC must contain ALL information needed to write code
 
@@ -323,7 +451,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 ## Unified Element ID Format (MANDATORY)
 
-**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
+**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ, IMPL)**:
 - **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
 - **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
@@ -332,38 +460,32 @@ Examples:
 - `@brd: BRD.17.01.01` ✅
 - `@brd: BRD.017.001` ❌ (old 3-segment format)
 
+## Validation Checks
 
-## Cumulative Tagging Requirements
+### Tier 1: Errors (Blocking)
 
-**Layer 10 (SPEC)**: Must include tags from Layers 1-9
+| Check | Description |
+|-------|-------------|
+| CHECK 1 | YAML Syntax Validation (parseable) |
+| CHECK 2 | Required Metadata Fields (version, status, task_ready_score) |
+| CHECK 3 | TASKS-Ready Score format (✅ emoji + percentage + target) |
+| CHECK 4 | Complete Traceability Chain (cumulative_tags section) |
+| CHECK 5 | Element ID Format (`SPEC.NN.TT.SS`) |
 
-**Tag Count**: 7-9 tags (minimum 7, maximum 9)
+### Tier 2: Warnings (Recommended)
 
-**Minimum (IMPL and CTR skipped)**:
-```yaml
-cumulative_tags:
-  brd: ["BRD.01.01.03"]
-  prd: ["PRD.01.07.02"]
-  ears: ["EARS.01.24.01"]
-  bdd: ["BDD.01.13.01"]
-  adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS.01.25.01"]
-  req: ["REQ.01.26.01"]
-```
+| Check | Description |
+|-------|-------------|
+| CHECK 6 | Interface Specifications (CTR contract references) |
+| CHECK 7 | Implementation Readiness (code generation enabling) |
+| CHECK 8 | Code Generation Compatibility (TASKS creation) |
 
-**Maximum (IMPL and CTR included)**:
-```yaml
-cumulative_tags:
-  brd: ["BRD.01.01.03"]
-  prd: ["PRD.01.07.02"]
-  ears: ["EARS.01.24.01"]
-  bdd: ["BDD.01.13.01"]
-  adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS.01.25.01"]
-  req: ["REQ.01.26.01"]
-  impl: ["IMPL.01.28.01"]
-  contracts: ["CTR-01"]
-```
+### Tier 3: Info
+
+| Check | Description |
+|-------|-------------|
+| CHECK 9 | Threshold Registry Integration (@threshold references) |
+| CHECK 10 | Performance benchmarks defined |
 
 ## Upstream/Downstream Artifacts
 
@@ -409,7 +531,7 @@ Check `docs/SPEC/` for next available ID number (or create `docs/SPEC/` director
 
 ### Step 4: Fill Metadata Section
 
-Complete spec_id, title, version, dates, status, owner.
+Complete spec_id, title, version, dates, status, owner, task_ready_score.
 
 ### Step 5: Add Cumulative Tags
 
@@ -437,7 +559,7 @@ Error codes, HTTP status, messages, recovery procedures.
 
 ### Step 11: Define Configuration
 
-Environment variables, feature flags, defaults.
+Environment variables, feature flags, defaults. Use @threshold for quantitative values.
 
 ### Step 12: Specify Testing
 
@@ -503,7 +625,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-
 ### Manual Checklist
 
 - [ ] Pure YAML format (not markdown)
-- [ ] Metadata section complete
+- [ ] Metadata section complete with task_ready_score
 - [ ] cumulative_tags section with 7-9 upstream tags
 - [ ] Overview defines purpose and scope
 - [ ] Architecture references ADR decisions
@@ -511,12 +633,13 @@ python ai_dev_flow/scripts/validate_cross_document.py --document docs/SPEC/SPEC-
 - [ ] Implementation specifies modules with file paths
 - [ ] Functions have signatures and algorithms
 - [ ] Error handling complete
-- [ ] Configuration specified
+- [ ] Configuration uses @threshold for quantitative values
 - [ ] Testing requirements defined
 - [ ] Deployment requirements complete
 - [ ] Monitoring specified
 - [ ] Traceability links to upstream/downstream
 - [ ] 100% implementation-ready
+- [ ] Element IDs use `SPEC.NN.TT.SS` format
 
 ### Diagram Standards
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
@@ -530,6 +653,9 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 4. **Vague implementation**: Must specify exact file paths and signatures
 5. **Missing algorithms**: Functions need step-by-step algorithms
 6. **Incomplete**: Must be 100% implementation-ready
+7. **Hardcoded values**: Use @threshold for performance/timeout/rate limits
+8. **Wrong element IDs**: Use `SPEC.NN.TT.SS`, not legacy `STEP-XXX`, `IF-XXX`, `DM-XXX`
+9. **Wrong cumulative tag codes**: Use correct element type codes (EARS=25, BDD=14, SYS=26, REQ=27, IMPL=29)
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
 
@@ -628,16 +754,28 @@ For supplementary documentation needs, create:
 
 **Layer**: 10
 
+**Element ID Format**: `SPEC.NN.TT.SS`
+- Step = 15
+- Interface = 16
+- Data Model = 17
+- Validation Rule = 21
+- Specification Element = 28
+
+**Removed Patterns**: STEP-XXX, IF-XXX, INT-XXX, DM-XXX, MODEL-XXX, VR-XXX
+
 **Tags Required**: @brd through @req/impl/contracts (7-9 tags)
 
 **Format**: Pure YAML (not markdown)
 
 **Key Features**:
-- cumulative_tags section (NEW)
+- cumulative_tags section (CRITICAL)
 - contract_ref field (links to CTR)
 - schema_ref field (links to data models)
+- @threshold references for quantitative values
 - 100% implementation-ready
 - All modules, functions, algorithms specified
+
+**TASKS-Ready Score**: ≥90% required for "approved" status
 
 **Quality Gate**: Must be 100% implementation-ready
 

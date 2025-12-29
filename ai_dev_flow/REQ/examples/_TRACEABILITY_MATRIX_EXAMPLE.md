@@ -1,3 +1,17 @@
+---
+title: "Traceability Matrix Example"
+tags:
+  - example-document
+  - layer-7-artifact
+  - shared-architecture
+custom_fields:
+  document_type: example
+  artifact_type: REQ
+  layer: 7
+  priority: shared
+  development_status: active
+---
+
 # Traceability Matrix: REQ-01 through REQ-NN
 
 ## Document Control

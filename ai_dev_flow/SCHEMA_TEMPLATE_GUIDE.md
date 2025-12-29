@@ -1,3 +1,15 @@
+---
+title: "Schema-Template Relationship Guide"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+  version: "1.0"
+---
+
 # Schema-Template Relationship Guide
 
 **Version**: 1.0
@@ -116,10 +128,10 @@ Check that all templates and schemas have matching versions:
 
 ```bash
 # Basic check
-python ai_dev_flow/scripts/validate_schema_sync.py
+python3 scripts/validate_schema_sync.py
 
 # Verbose output
-python ai_dev_flow/scripts/validate_schema_sync.py --verbose
+python3 scripts/validate_schema_sync.py --verbose
 ```
 
 **Output Example**:
@@ -141,13 +153,13 @@ Validate any document against its schema:
 
 ```bash
 # Validate a single document
-python ai_dev_flow/scripts/validate_artifact.py docs/PRD/PRD-01_example.md
+python3 scripts/validate_artifact.py PRD/PRD-01_example.md
 
 # Verbose output with details
-python ai_dev_flow/scripts/validate_artifact.py docs/PRD/PRD-01_example.md --verbose
+python3 scripts/validate_artifact.py PRD/PRD-01_example.md --verbose
 
 # Strict mode (treat warnings as errors)
-python ai_dev_flow/scripts/validate_artifact.py docs/PRD/PRD-01_example.md --strict
+python3 scripts/validate_artifact.py PRD/PRD-01_example.md --strict
 ```
 
 **Output Example**:

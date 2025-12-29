@@ -27,7 +27,7 @@ Checks (all blocking):
   - Section metadata tags (@section, @parent_doc, @index)
 
 Usage:
-  python ai_dev_flow/scripts/validate_bdd_suite.py --root docs/BDD --prd-root docs/PRD
+  python3 scripts/validate_bdd_suite.py --root BDD --prd-root PRD
 
 Exit codes:
   0 = success, 1 = violations found

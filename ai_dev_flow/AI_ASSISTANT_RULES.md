@@ -27,6 +27,8 @@ See also:
 - AI Assistant Playbook (index): AI_ASSISTANT_PLAYBOOK.md
 - Tool Optimization Guide (sizes, validation, style): AI_TOOL_OPTIMIZATION_GUIDE.md
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. For details, see README → "Using This Repo".
+
 ## Assistant Output Style (All Tools)
 
 - Use professional software development language (engineering tone).
@@ -291,22 +293,26 @@ Or use domain-aware template generation when creating documents.
 ### Copy Framework Templates
 
 ```bash
-# Copy all templates from framework to project
-cp /opt/data/docs_flow_framework/ai_dev_flow/BRD/* docs/BRD/
-cp /opt/data/docs_flow_framework/ai_dev_flow/PRD/* docs/PRD/
-cp /opt/data/docs_flow_framework/ai_dev_flow/EARS/* docs/EARS/
-cp /opt/data/docs_flow_framework/ai_dev_flow/BDD/* docs/BDD/
-cp /opt/data/docs_flow_framework/ai_dev_flow/ADR/* docs/ADR/
-cp /opt/data/docs_flow_framework/ai_dev_flow/SYS/* docs/SYS/
-cp /opt/data/docs_flow_framework/ai_dev_flow/REQ/* docs/REQ/
-cp /opt/data/docs_flow_framework/ai_dev_flow/IMPL/* docs/IMPL/
-cp /opt/data/docs_flow_framework/ai_dev_flow/CTR/* docs/CTR/
-cp /opt/data/docs_flow_framework/ai_dev_flow/SPEC/* docs/SPEC/
-cp /opt/data/docs_flow_framework/ai_dev_flow/TASKS/* docs/TASKS/
-cp /opt/data/docs_flow_framework/ai_dev_flow/ICON/* docs/ICON/ 2>/dev/null || true  # optional
+# Point to the framework checkout (adjust for your environment)
+FRAMEWORK_ROOT=/path/to/ai_dev_flow
+
+# Copy templates by artifact type (portable example uses docs/)
+cp -r "$FRAMEWORK_ROOT/BRD"/*   docs/BRD/
+cp -r "$FRAMEWORK_ROOT/PRD"/*   docs/PRD/
+cp -r "$FRAMEWORK_ROOT/EARS"/*  docs/EARS/
+cp -r "$FRAMEWORK_ROOT/BDD"/*   docs/BDD/
+cp -r "$FRAMEWORK_ROOT/ADR"/*   docs/ADR/
+cp -r "$FRAMEWORK_ROOT/SYS"/*   docs/SYS/
+cp -r "$FRAMEWORK_ROOT/REQ"/*   docs/REQ/
+cp -r "$FRAMEWORK_ROOT/IMPL"/*  docs/IMPL/
+cp -r "$FRAMEWORK_ROOT/CTR"/*   docs/CTR/
+cp -r "$FRAMEWORK_ROOT/SPEC"/*  docs/SPEC/
+cp -r "$FRAMEWORK_ROOT/TASKS"/* docs/TASKS/
+cp -r "$FRAMEWORK_ROOT/ICON"/*  docs/ICON/ 2>/dev/null || true  # optional
 
 # Copy validation scripts
-cp /opt/data/docs_flow_framework/ai_dev_flow/scripts/*.py scripts/
+mkdir -p scripts
+cp "$FRAMEWORK_ROOT/scripts"/*.py scripts/
 ```
 
 ### Initialize Index Files
@@ -1164,28 +1170,66 @@ LOOP:
 
 ---
 
-## Rule 17: Auto-Fix Policy (NO CONFIRMATION REQUIRED)
+## Rule 17: Auto-Fix Policy
 
 ### Purpose
 
 Define which issues are auto-fixed without user confirmation and which require manual review.
 
+### Command Line Options
+
+| Option | Description |
+|--------|-------------|
+| `--auto-fix` | Enable automatic fixing of issues |
+| `--dry-run` | Preview changes without applying them |
+| `--force-xdoc` | Skip confirmation for XDOC-003 tag removals |
+| `--no-backup` | Do not create backup files before auto-fix |
+
 ### Auto-Fix WITHOUT Confirmation
 
-The following issues are fixed automatically by the validation script:
+The following issues are fixed automatically without prompting:
 
-| Issue Type | Fix Action | Example |
+| Issue Code | Fix Action | Example |
 |------------|------------|---------|
-| Tag format errors | Correct to TYPE.NN.TT.SS or TYPE-NN | `@brd: brd001` → `@brd: BRD.01.01.01` |
-| Missing cumulative tags | Add with upstream reference | Add `@prd: PRD.01.01.01` for EARS layer |
-| Broken relative paths | Recalculate correct path | `../REQ/file.md` → `../../REQ/file.md` |
-| Missing traceability section | Insert from template | Add Section 7 template |
-| Title/reference mismatches | Update to match upstream | Sync title with BRD source |
-| Deprecated references | Replace with null + comment | `@adr: ADR-03` → `@adr: null <!-- deprecated -->` |
+| XDOC-002 | Add missing cumulative tag | Add `@prd: PRD-01` for EARS layer |
+| XDOC-005 | Replace deprecated reference | `@adr: ADR-03` → `@adr: null <!-- deprecated -->` |
+| XDOC-006 | Correct tag format | `@brd: brd001` → `@brd: BRD-01` |
+| XDOC-008 | Fix broken internal link | Recalculate correct path |
+| XDOC-009 | Insert traceability section | Add Section 7 template |
+
+### Requires Confirmation (XDOC-003)
+
+**CRITICAL**: Reference to missing upstream document requires user confirmation:
+
+```
+WARNING: XDOC-003 - Removing reference to missing document: BRD-01
+  File: REQ-001.md
+  Tag:  @brd: BRD-01
+Continue with removal? [y/N]:
+```
+
+**Bypass options:**
+- `--force-xdoc`: Skip confirmation (use in CI/CD pipelines)
+- `--dry-run`: Preview without prompting or applying changes
+
+### Audit Trail
+
+All XDOC-003 tag removals are logged to `tmp/validation_audit.json`:
+
+```json
+{
+  "timestamp": "2025-12-29T14:30:00.000000",
+  "file": "/path/to/document.md",
+  "issue_code": "XDOC_003",
+  "action": "removed_tag",
+  "removed_content": "@brd: BRD-01",
+  "backup_path": "/path/to/document.md.bak"
+}
+```
 
 ### Backup Strategy
 
-Before ANY auto-fix:
+Before ANY auto-fix (unless `--no-backup` specified):
 1. Create `.bak` backup file: `{filename}.md.bak`
 2. Apply fixes to original file
 3. If validation passes: Delete backup
@@ -1193,19 +1237,19 @@ Before ANY auto-fix:
 
 ### Requires Manual Review (NOT Auto-Fixed)
 
-| Issue Type | Reason | Action |
+| Issue Code | Reason | Action |
 |------------|--------|--------|
-| Missing upstream document | Cannot create document automatically | Log: "Create BRD-XXX before proceeding" |
-| Semantic content issues | Requires human judgment | Log: "Review content alignment" |
-| Ambiguous requirement matches | <90% confidence | Log: "Multiple possible matches" |
-| Orphan requirements | May be intentional | Log: "No downstream references found" |
+| XDOC-001 | Missing required tag needs human input | Log: "Add required @tag reference" |
+| XDOC-004 | Bidirectional mismatch needs review | Log: "Review bidirectional reference" |
+| XDOC-007 | Optional tag is intentionally missing | Log: "Optional tag not present" |
+| XDOC-010 | Duplicate may be intentional | Log: "Review duplicate references" |
 
 ### Strict Hierarchy Enforcement
 
 **CRITICAL**: If upstream document is missing (XDOC-003), the fix action is:
-1. **REMOVE** the @tag reference to missing document
-2. **REMOVE** any dependent content that requires that upstream
-3. **LOG** removal for audit trail
+1. **PROMPT** for user confirmation (unless `--force-xdoc`)
+2. **REMOVE** the @tag reference to missing document
+3. **LOG** removal to audit trail (`tmp/validation_audit.json`)
 4. **DO NOT** create placeholder or phantom references
 
 This enforces strict hierarchy - no orphan forward references allowed.

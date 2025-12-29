@@ -91,7 +91,7 @@ Scenario: [Subsection scenario 2 name]
 #
 # =============================================================================
 
-# Document Path: /opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD-NN.SS.mm_{slug}.feature
+# Document Path: BDD/BDD-NN.SS.mm_{slug}.feature
 # Framework: AI Dev Flow SDD
 # Layer: 4 (BDD - Behavior-Driven Development)
 # Template Version: 1.0

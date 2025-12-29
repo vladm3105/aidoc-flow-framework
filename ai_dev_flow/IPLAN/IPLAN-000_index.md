@@ -98,7 +98,7 @@ Use this index to track tag completeness:
 
 **Validation Command**:
 ```bash
-python /opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_docs.py \
+python3 scripts/validate_tags_against_docs.py \
   --file IPLAN/IPLAN-NN_*.md
 ```
 
@@ -108,8 +108,8 @@ When creating a new IPLAN document:
 
 1. **Copy Template**:
    ```bash
-   cp /opt/data/docs_flow_framework/ai_dev_flow/IPLAN/IPLAN-TEMPLATE.md \
-      /opt/data/docs_flow_framework/ai_dev_flow/IPLAN/IPLAN-NN_descriptive_name.md
+   cp IPLAN/IPLAN-TEMPLATE.md \
+      IPLAN/IPLAN-NN_descriptive_name.md
    ```
 
 2. **Assign ID**: Use next sequential number (IPLAN-01, IPLAN-02, ...)

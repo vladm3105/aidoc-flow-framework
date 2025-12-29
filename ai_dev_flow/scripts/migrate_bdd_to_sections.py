@@ -345,7 +345,7 @@ def create_index_file(dest: Path, suite_num: str) -> None:
 
 ---
 
-**Document Path**: `/opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD-{suite_num}.0_index.md`
+**Document Path**: `BDD/BDD-{suite_num}.0_index.md`
 **Framework**: AI Dev Flow SDD
 **Layer**: 4 (BDD - Behavior-Driven Development)
 **Last Updated**: [YYYY-MM-DD]
@@ -403,7 +403,7 @@ For each logical section:
 
 ### 5. Validate
 ```bash
-python ai_dev_flow/scripts/validate_bdd_suite.py --root docs/BDD
+python3 scripts/validate_bdd_suite.py --root BDD
 ```
 
 ### 6. Archive Original
@@ -439,8 +439,8 @@ def main() -> int:
     )
     parser.add_argument(
         "--root",
-        default="docs/BDD",
-        help="Root directory for BDD files (default: docs/BDD)",
+        default="BDD",
+        help="Root directory for BDD files (default: BDD)",
     )
     parser.add_argument(
         "--suite",
@@ -508,7 +508,7 @@ def main() -> int:
         print("  1. Review migrated files")
         print("  2. Update section metadata tags (@section, @brd, @prd, @ears)")
         print("  3. Update index file (BDD-NN.0_index.md)")
-        print("  4. Run validation: python ai_dev_flow/scripts/validate_bdd_suite.py --root docs/BDD")
+        print("  4. Run validation: python3 scripts/validate_bdd_suite.py --root BDD")
     
     return 0
 

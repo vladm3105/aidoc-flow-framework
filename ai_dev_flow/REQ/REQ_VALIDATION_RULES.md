@@ -13,6 +13,8 @@
 
 # REQ Validation Rules Reference
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 **Version**: 3.0.0
 **Date**: 2025-11-18
 **Last Updated**: 2025-11-19
@@ -722,7 +724,7 @@ class HeartbeatConfig(BaseModel):
 
 **Fix**: Replace `### REQ-01: Requirement` with `### REQ.02.27.01: Requirement`
 
-**Reference**: REQ_CREATION_RULES.md Section 4.1, ID_NAMING_STANDARDS.md lines 783-793
+**Reference**: REQ_CREATION_RULES.md Section 4.1, [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 

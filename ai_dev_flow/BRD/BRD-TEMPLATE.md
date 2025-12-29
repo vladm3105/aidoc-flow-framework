@@ -560,6 +560,8 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 
 ## 6. Functional Requirements
 
+> **Terminology Note**: "Functional Requirements" in BRD Layer 1 refers to **business-level capability statements**. These are decomposed into **Atomic Requirements** (REQ Layer 7) during the SDD workflow.
+
 ### 6.1 Requirements Overview
 [Provide an introduction to the functional requirements section, explaining how requirements are organized and prioritized. For complex projects, detailed requirements may be documented in appendices rather than inline tables.]
 
@@ -1752,10 +1754,12 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 [Document dependencies on other BRDs in the system]
 
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
 | Related | [BRD-NN](./BRD-NN_...md) | [Related BRD title] | Shared domain context |
 | Depends | [BRD-NN](./BRD-NN_...md) | [Prerequisite BRD title] | Must complete before this |
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Detailed Dependency Table:**
 

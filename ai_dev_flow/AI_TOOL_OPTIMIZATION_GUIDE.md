@@ -54,6 +54,16 @@ See also:
 
 ---
 
+## Units & Conversions (KB vs tokens)
+
+- KB: 1 KB = 1,024 bytes (file size reported by the OS).
+- Tokens: ~4 characters per token on average for English plaintext (≈0.75 words).
+- Estimate tokens from size: tokens ≈ (KB × 1024) ÷ 4.
+  - Examples: 20 KB ≈ 5,000 tokens; 50 KB ≈ 12,500 tokens; 100 KB ≈ 25,000 tokens.
+- Estimate size from tokens: KB ≈ (tokens × 4) ÷ 1024.
+  - Examples: 10,000 tokens ≈ 39 KB; 50,000 tokens ≈ 195 KB.
+- Caveats: Code/JSON and non‑ASCII text tend to increase token counts; some tools compress inputs differently.
+
 ## Style and Tone Guidelines (All Tools)
 
 - Use professional software development language (engineering tone).
@@ -120,7 +130,7 @@ Assistant guidance:
 - **Standard**: 50,000 tokens (200KB) per file
 - **Maximum**: 100,000 tokens (400KB) absolute limit
 - **Simultaneous Files**: Can handle 30-50 files at once
-- **Total Context**: Aim for <150KB total across all files
+- **Total Context**: Aim for <150KB of plain-text input across all files (approx.)
 
 **When to Use Claude Code:**
 - Complex refactoring across multiple files
@@ -216,7 +226,7 @@ gemini @SMALL_FILE.md "Analyze this document"
 - **Single File**: 10-30KB (2,500-7,500 tokens)
 - **Code File**: Up to 40KB (800-1,500 lines)
 - **Multiple Files**: 10-20 files maximum
-- **Total Context**: Aim for <50KB total
+- **Total Context**: Aim for <50KB of plain-text input (approx.)
 
 **Token Limits:**
 - **Comfortable**: <30KB per file

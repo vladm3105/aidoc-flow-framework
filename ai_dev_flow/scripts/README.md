@@ -76,7 +76,7 @@ Validates traceability matrices against actual documents to ensure consistency a
 
 **Usage:**
 ```bash
-python validate_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 validate_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --input ../ADR/
 ```
 
 **Features:**
@@ -96,13 +96,13 @@ python validate_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --inp
 **Examples:**
 ```bash
 # Validate ADR matrix
-python validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
 
 # Strict validation (warnings = errors)
-python validate_traceability_matrix.py --matrix ../REQ/matrix.md --input ../REQ/ --strict
+python3 validate_traceability_matrix.py --matrix ../REQ/matrix.md --input ../REQ/ --strict
 
 # Save validation report
-python validate_traceability_matrix.py --matrix ../SPEC/matrix.md --input ../SPEC/ --output validation_report.md
+python3 validate_traceability_matrix.py --matrix ../SPEC/matrix.md --input ../SPEC/ --output validation_report.md
 ```
 
 **Exit Codes:**
@@ -117,7 +117,7 @@ Incrementally updates existing traceability matrices by detecting new, modified,
 
 **Usage:**
 ```bash
-python update_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 update_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --input ../ADR/
 ```
 
 **Features:**
@@ -138,13 +138,13 @@ python update_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --input
 **Examples:**
 ```bash
 # Update ADR matrix
-python update_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 update_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
 
 # Preview changes without modifying file
-python update_traceability_matrix.py --matrix ../SPEC/matrix.md --input ../SPEC/ --dry-run
+python3 update_traceability_matrix.py --matrix ../SPEC/matrix.md --input ../SPEC/ --dry-run
 
 # Update and save changelog
-python update_traceability_matrix.py --matrix ../REQ/matrix.md --input ../REQ/ --changelog changelog.md
+python3 update_traceability_matrix.py --matrix ../REQ/matrix.md --input ../REQ/ --changelog changelog.md
 ```
 
 ---
@@ -155,7 +155,7 @@ Validates IPLAN (Implementation Plan) files against non-timestamped naming conve
 
 **Usage:**
 ```bash
-python validate_iplan_naming.py [base_path]
+python3 validate_iplan_naming.py [base_path]
 ```
 
 **Features:**
@@ -172,13 +172,13 @@ python validate_iplan_naming.py [base_path]
 **Examples:**
 ```bash
 # Validate IPLAN files in default location
-python validate_iplan_naming.py
+python3 validate_iplan_naming.py
 
 # Validate IPLAN files in specific project
-python validate_iplan_naming.py /path/to/project/ai_dev_flow/
+python3 validate_iplan_naming.py /path/to/project/ai_dev_flow/
 
 # Use in CI/CD pipeline
-python validate_iplan_naming.py || exit 1
+python3 validate_iplan_naming.py || exit 1
 ```
 
 **Validation Checks:**
@@ -194,7 +194,7 @@ python validate_iplan_naming.py || exit 1
 
 **Example Output:**
 ```
-Validating IPLAN files in: /opt/data/docs_flow_framework/ai_dev_flow/IPLAN/
+Validating IPLAN files in: IPLAN/
 ================================================================================
 
 ✅ IPLAN Naming Validation PASSED
@@ -225,7 +225,7 @@ Validates path references in markdown documentation to identify broken links, mi
 
 **Usage:**
 ```bash
-python validate_documentation_paths.py [--strict] [--root PATH]
+python3 validate_documentation_paths.py [--strict] [--root PATH]
 ```
 
 **Features:**
@@ -243,13 +243,13 @@ python validate_documentation_paths.py [--strict] [--root PATH]
 **Examples:**
 ```bash
 # Validate all documentation paths
-python validate_documentation_paths.py
+python3 validate_documentation_paths.py
 
 # Strict mode for CI/CD pipelines
-python validate_documentation_paths.py --strict
+python3 validate_documentation_paths.py --strict
 
 # Validate specific project
-python validate_documentation_paths.py --root /path/to/project/
+python3 validate_documentation_paths.py --root /path/to/project/
 ```
 
 **Validation Checks:**
@@ -557,10 +557,10 @@ Comprehensive EARS document validator against EARS_VALIDATION_RULES.md.
 
 **Usage:**
 ```bash
-python validate_ears.py                                # Validate all EARS docs
-python validate_ears.py --path docs/EARS/EARS-01.md    # Validate single file
-python validate_ears.py --verbose                       # Show all checks
-python validate_ears.py --fix-suggestions               # Show fix commands
+python3 validate_ears.py                                # Validate all EARS docs
+python3 validate_ears.py --path docs/EARS/EARS-01.md    # Validate single file
+python3 validate_ears.py --verbose                       # Show all checks
+python3 validate_ears.py --fix-suggestions               # Show fix commands
 ```
 
 **Features:**
@@ -678,25 +678,25 @@ Note: 8 file(s) have non-blocking warnings
 python generate_traceability_matrix.py --type ADR --input ../ADR/ --output ../ADR/TRACEABILITY_MATRIX_ADR.md
 
 # Validate newly created matrix
-python validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
 ```
 
 **2. Incremental Updates**
 ```bash
 # After adding new ADR documents, update matrix incrementally
-python update_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 update_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
 
 # Validate updates
-python validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
 ```
 
 **3. Regular Validation**
 ```bash
 # Run validation as part of CI/CD pipeline
-python validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/ --strict
+python3 validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/ --strict
 
 # Validate IPLAN naming conventions
-python validate_iplan_naming.py
+python3 validate_iplan_naming.py
 ```
 
 ### Pre-Commit Hook Example
@@ -708,12 +708,12 @@ Add to `.git/hooks/pre-commit`:
 # Validate all traceability matrices before commit
 echo "Validating traceability matrices..."
 
-python ai_dev_flow/scripts/validate_traceability_matrix.py --matrix ai_dev_flow/ADR/TRACEABILITY_MATRIX_ADR.md --input ai_dev_flow/ADR/ || exit 1
-python ai_dev_flow/scripts/validate_traceability_matrix.py --matrix ai_dev_flow/REQ/TRACEABILITY_MATRIX_REQ.md --input ai_dev_flow/REQ/ || exit 1
-python ai_dev_flow/scripts/validate_traceability_matrix.py --matrix ai_dev_flow/SPEC/TRACEABILITY_MATRIX_SPEC.md --input ai_dev_flow/SPEC/ || exit 1
+python3 scripts/validate_traceability_matrix.py --matrix ADR/TRACEABILITY_MATRIX_ADR.md --input ADR/ || exit 1
+python3 scripts/validate_traceability_matrix.py --matrix REQ/TRACEABILITY_MATRIX_REQ.md --input REQ/ || exit 1
+python3 scripts/validate_traceability_matrix.py --matrix SPEC/TRACEABILITY_MATRIX_SPEC.md --input SPEC/ || exit 1
 
 echo "Validating IPLAN naming conventions..."
-python ai_dev_flow/scripts/validate_iplan_naming.py || exit 1
+python3 scripts/validate_iplan_naming.py || exit 1
 
 echo "All validations passed successfully!"
 ```
@@ -739,28 +739,28 @@ jobs:
 
       - name: Validate ADR Matrix
         run: |
-          python ai_dev_flow/scripts/validate_traceability_matrix.py \
-            --matrix ai_dev_flow/ADR/TRACEABILITY_MATRIX_ADR.md \
-            --input ai_dev_flow/ADR/ \
+          python3 scripts/validate_traceability_matrix.py \
+            --matrix ADR/TRACEABILITY_MATRIX_ADR.md \
+            --input ADR/ \
             --strict
 
       - name: Validate REQ Matrix
         run: |
-          python ai_dev_flow/scripts/validate_traceability_matrix.py \
-            --matrix ai_dev_flow/REQ/TRACEABILITY_MATRIX_REQ.md \
-            --input ai_dev_flow/REQ/ \
+          python3 scripts/validate_traceability_matrix.py \
+            --matrix REQ/TRACEABILITY_MATRIX_REQ.md \
+            --input REQ/ \
             --strict
 
       - name: Validate SPEC Matrix
         run: |
-          python ai_dev_flow/scripts/validate_traceability_matrix.py \
-            --matrix ai_dev_flow/SPEC/TRACEABILITY_MATRIX_SPEC.md \
-            --input ai_dev_flow/SPEC/ \
+          python3 scripts/validate_traceability_matrix.py \
+            --matrix SPEC/TRACEABILITY_MATRIX_SPEC.md \
+            --input SPEC/ \
             --strict
 
       - name: Validate IPLAN Naming
         run: |
-          python ai_dev_flow/scripts/validate_iplan_naming.py
+          python3 scripts/validate_iplan_naming.py
 ```
 
 ---
@@ -815,10 +815,10 @@ Run scripts with example matrices to verify functionality:
 python generate_traceability_matrix.py --type ADR --input ../ADR/examples/ --output /tmp/test_matrix.md
 
 # Test validation (use generated matrix)
-python validate_traceability_matrix.py --matrix /tmp/test_matrix.md --input ../ADR/examples/
+python3 validate_traceability_matrix.py --matrix /tmp/test_matrix.md --input ../ADR/examples/
 
 # Test update in dry-run mode
-python update_traceability_matrix.py --matrix /tmp/test_matrix.md --input ../ADR/examples/ --dry-run
+python3 update_traceability_matrix.py --matrix /tmp/test_matrix.md --input ../ADR/examples/ --dry-run
 ```
 
 ---

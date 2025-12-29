@@ -1,3 +1,18 @@
+---
+title: "REQ Template V1 - ARCHIVED"
+tags:
+  - archived
+  - deprecated
+  - layer-7-artifact
+custom_fields:
+  document_type: template
+  artifact_type: REQ
+  layer: 7
+  status: ARCHIVED
+  replacement: "REQ/REQ-TEMPLATE.md"
+  development_status: deprecated
+---
+
 # REQ-NN: [Descriptive Requirement Title]
 
 ## Position in Document Workflow

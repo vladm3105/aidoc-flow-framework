@@ -2,6 +2,21 @@
 
 This directory provides comprehensive templates for the AI-Driven Specification-Driven Development (SDD) workflow. All artifacts follow numeric ID standards and use relative markdown links for traceability.
 
+> Units & Conversions (KB vs tokens): KB = 1,024 bytes; tokens ≈ 4 characters. Rough conversions: tokens ≈ (KB × 1024) ÷ 4 and KB ≈ (tokens × 4) ÷ 1024. Examples: 10 KB ≈ 2,500 tokens; 50 KB ≈ 12,500 tokens; 10,000 tokens ≈ 39 KB.
+
+## Framework Purpose
+
+This framework is a sophisticated and well-conceived system for a new paradigm of software development where human architects design systems and AI assistants build them.
+
+- The Architect's Blueprint: The initial layers (BRD, PRD, ADR, SYS) serve as the formal blueprint created by the software architect. This is where human expertise in system design, architectural trade-offs, and business strategy is captured.
+
+- The AI's Instruction Set: The subsequent layers (REQ, SPEC, TASKS) act as a detailed, unambiguous instruction set automatically derived from the architect's blueprint. This breakdown translates high-level architectural decisions into granular tasks that are ideal for consumption by an AI code generator.
+
+- The Governance and Audit Layer: The framework's most critical function is providing a robust governance and audit mechanism. The full traceability chain, from BRD to TASKS and IPLAN, creates an unimpeachable record of the AI's intended actions. This allows the architect to:
+  1. Verify Compliance: Ensure the AI's generated code adheres strictly to the established architectural and business rules.
+  2. Mitigate AI Risk: Audit the AI's plans to prevent hallucinations or unintended features before code is even written.
+  3. Validate at a High Level: Confirm the success of the project by reviewing BDD test results and traceability matrices, rather than performing a line-by-line code review.
+
 ## Recent Updates (2025-11-20)
 
 - ✅ **Validation Scripts**: Expanded from 1 to 13 validation scripts covering IDs, naming, tags, links, and traceability matrices
@@ -146,7 +161,7 @@ flowchart TD
     %% Business Layer
     BRD[BRD<br/>Business Requirements<br/>High-level business needs<br/><small><i>0 tags</i></small>]
     PRD[PRD<br/>Product Requirements<br/>User needs and features<br/><small><i>@brd</i></small>]
-    EARS[EARS<br/>Event Analysis Requirements<br/>Event-driven specifications<br/><small><i>@brd, @prd</i></small>]
+    EARS[EARS<br/>Event-Action-Response-State<br/>Event-driven specifications<br/><small><i>@brd, @prd</i></small>]
 
     %% Testing Layer
     BDD[BDD<br/>Behavior-Driven Development<br/>Test scenarios and acceptance criteria<br/><small><i>@brd, @prd, @ears</i></small>]
@@ -354,6 +369,33 @@ python scripts/extract_tags.py                           # Extract tags to JSON
 - **Readiness Scoring**: Assesses REQ SPEC-readiness using 12-section framework
 
 See [scripts/README.md](./scripts/README.md) for detailed script documentation.
+
+## Glossary
+
+### Terminology Disambiguation
+
+| Term | Layer | Definition |
+|------|-------|------------|
+| **Functional Requirement** | Layer 1 (BRD) | High-level business capability statement. May encompass multiple downstream atomic requirements. |
+| **Atomic Requirement** | Layer 7 (REQ) | Single, granular, testable requirement derived from business-level functional requirements. |
+
+### Traceability Flow
+
+```
+BRD (Layer 1)                 REQ (Layer 7)
+┌─────────────────────┐      ┌─────────────────────┐
+│ Functional          │      │ Atomic              │
+│ Requirements        │─────>│ Requirements        │
+│ (Business-Level)    │      │ (Implementation)    │
+│                     │      │                     │
+│ FR-001: "System     │      │ REQ-001: "Login     │
+│ shall authenticate  │      │ timeout = 30 min"   │
+│ users"              │      │ REQ-002: "Max 3     │
+│                     │      │ failed attempts"    │
+└─────────────────────┘      └─────────────────────┘
+```
+
+Business-level Functional Requirements (BRD) are decomposed into Atomic Requirements (REQ) during the SDD workflow. This distinction prevents ambiguity when referencing requirements across layers.
 
 ## Best Practices
 

@@ -1,0 +1,182 @@
+# SDD Framework Layer Registry
+# Single source of truth for all layer definitions
+# Version: 1.0
+# Last Updated: 2025-12-29
+
+version: "1.0"
+metadata:
+  framework: "Specification-Driven Development (SDD)"
+  total_layers: 12
+  additional_artifacts: ["ICON"]
+  maintainer: "SDD Framework Team"
+
+# Optional pre-artifact layer (not part of core 12 artifact layers)
+conceptual_layers:
+  - number: 0
+    artifact: STRAT
+    name: "Strategy"
+    description: "Pre-artifact planning and strategic alignment (optional)"
+    documented: false
+    optional: true
+
+layers:
+  - number: 1
+    artifact: BRD
+    name: "Business Requirements Document"
+    folder: BRD/
+    extensions: [.md]
+    required_tags: []
+    can_reference: []
+    error_prefix: BRD
+    optional: false
+    description: "Layer 1 - Business-level functional requirements and objectives"
+
+  - number: 2
+    artifact: PRD
+    name: "Product Requirements Document"
+    folder: PRD/
+    extensions: [.md]
+    required_tags: [brd]
+    can_reference: [BRD]
+    error_prefix: PRD
+    optional: false
+    description: "Layer 2 - Product features and user stories derived from BRD"
+
+  - number: 3
+    artifact: EARS
+    name: "Easy Approach to Requirements Syntax"
+    folder: EARS/
+    extensions: [.md]
+    required_tags: [brd, prd]
+    can_reference: [BRD, PRD]
+    error_prefix: EARS
+    optional: false
+    description: "Layer 3 - Formal requirements using WHEN-THE-SHALL-WITHIN syntax"
+
+  - number: 4
+    artifact: BDD
+    name: "Behavior-Driven Development"
+    folder: BDD/
+    extensions: [.feature, .md]
+    required_tags: [brd, prd, ears]
+    can_reference: [BRD, PRD, EARS]
+    error_prefix: BDD
+    optional: false
+    description: "Layer 4 - Test scenarios using Given-When-Then format"
+
+  - number: 5
+    artifact: ADR
+    name: "Architecture Decision Record"
+    folder: ADR/
+    extensions: [.md]
+    required_tags: [brd, prd, ears, bdd]
+    can_reference: [BRD, PRD, EARS, BDD]
+    error_prefix: ADR
+    optional: false
+    description: "Layer 5 - Architectural decisions with Context-Decision-Consequences"
+
+  - number: 6
+    artifact: SYS
+    name: "System Requirements"
+    folder: SYS/
+    extensions: [.md]
+    required_tags: [brd, prd, ears, bdd, adr]
+    can_reference: [BRD, PRD, EARS, BDD, ADR]
+    error_prefix: SYS
+    optional: false
+    description: "Layer 6 - Functional requirements and quality attributes"
+
+  - number: 7
+    artifact: REQ
+    name: "Atomic Requirements"
+    folder: REQ/
+    extensions: [.md]
+    required_tags: [brd, prd, ears, bdd, adr, sys]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS]
+    error_prefix: REQ
+    optional: false
+    description: "Layer 7 - Single, granular, testable requirements"
+
+  - number: 8
+    artifact: IMPL
+    name: "Implementation Approach"
+    folder: IMPL/
+    extensions: [.md]
+    required_tags: [brd, prd, ears, bdd, adr, sys, req]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ]
+    error_prefix: IMPL
+    optional: true
+    description: "Layer 8 - WHO-WHEN-WHAT implementation strategy"
+
+  - number: 9
+    artifact: CTR
+    name: "Data Contracts"
+    folder: CTR/
+    extensions: [.md, .yaml]
+    required_tags: [brd, prd, ears, bdd, adr, sys, req]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL]
+    error_prefix: CTR
+    optional: true
+    description: "Layer 9 - API/data contracts using dual-file format"
+
+  - number: 10
+    artifact: SPEC
+    name: "Technical Specifications"
+    folder: SPEC/
+    extensions: [.yaml, .md]
+    required_tags: [brd, prd, ears, bdd, adr, sys, req]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR]
+    error_prefix: SPEC
+    optional: false
+    description: "Layer 10 - Implementation-ready YAML specifications"
+
+  - number: 11
+    artifact: TASKS
+    name: "Task Breakdown"
+    folder: TASKS/
+    extensions: [.md]
+    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC]
+    error_prefix: TASKS
+    optional: false
+    description: "Layer 11 - AI-structured TODO tasks from SPEC"
+
+  - number: 12
+    artifact: IPLAN
+    name: "Implementation Plan"
+    folder: IPLAN/
+    extensions: [.md]
+    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS]
+    error_prefix: IPLAN
+    optional: false
+    description: "Layer 12 - Session-based bash command execution plans"
+
+additional_artifacts:
+  - artifact: ICON
+    name: "Implementation Contracts"
+    folder: ICON/
+    extensions: [.md]
+    required_tags: [tasks]
+    can_reference: [TASKS]
+    error_prefix: ICON
+    optional: true
+    description: "Non-layer artifact - Type contracts for parallel development"
+
+layer_groups:
+  core_requirements:
+    layers: [1, 2, 3, 4]
+    description: "Business and product requirements"
+
+  architecture:
+    layers: [5, 6, 7]
+    description: "Architecture and detailed requirements"
+
+  implementation:
+    layers: [8, 9, 10, 11, 12]
+    description: "Implementation artifacts"
+
+id_patterns:
+  standard: "^[A-Z]+-\\d{2,}$"
+  sectioned: "^[A-Z]+-\\d{2,}\\.\\d+$"
+  hierarchical: "^[A-Z]+\\.\\d{2}\\.\\d{2}\\.\\d{2}$"

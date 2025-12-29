@@ -20,6 +20,19 @@ custom_fields:
 
 This directory provides a **universal, reusable framework** for Specification-Driven Development (SDD), transforming business needs into production-ready code through a systematic, traceable workflow.
 
+### Framework Purpose
+
+This framework is a sophisticated and well-conceived system for a new paradigm of software development where human architects design systems and AI assistants build them.
+
+- The Architect's Blueprint: The initial layers (BRD, PRD, ADR, SYS) serve as the formal blueprint created by the software architect. This is where human expertise in system design, architectural trade-offs, and business strategy is captured.
+
+- The AI's Instruction Set: The subsequent layers (REQ, SPEC, TASKS) act as a detailed, unambiguous instruction set automatically derived from the architect's blueprint. This breakdown translates high-level architectural decisions into granular tasks that are ideal for consumption by an AI code generator.
+
+- The Governance and Audit Layer: The framework's most critical function is providing a robust governance and audit mechanism. The full traceability chain, from BRD to TASKS and IPLAN, creates an unimpeachable record of the AI's intended actions. This allows the architect to:
+  1. Verify Compliance: Ensure the AI's generated code adheres strictly to the established architectural and business rules.
+  2. Mitigate AI Risk: Audit the AI's plans to prevent hallucinations or unintended features before code is even written.
+  3. Validate at a High Level: Confirm the success of the project by reviewing BDD test results and traceability matrices, rather than performing a line-by-line code review.
+
 ### Why AI Dev Flow?
 
 **Traditional Development Challenges**:
@@ -48,6 +61,16 @@ This directory provides a **universal, reusable framework** for Specification-Dr
 - Index width: This repo commonly uses `-000_index.md` for indices; follow existing width and do not rename history. New repos should choose a consistent zero width (`00` or `000`) and keep it stable.
 - Validators: Use the validators listed in TRACEABILITY_VALIDATION.md (e.g., `python scripts/validate_prd.py`, `./scripts/validate_req_template.sh`). Older `*_template.sh` examples in some guides have been updated here.
 - Path mapping example: `docs/PRD/PRD-01/...` in generic guides corresponds to `PRD/PRD-01/...` in this repo.
+
+### Units & Conversions (KB vs tokens)
+
+- KB: 1 KB = 1,024 bytes (OS file size).
+- Tokens: ~4 characters per token on average (≈0.75 words).
+- Estimate tokens from size: tokens ≈ (KB × 1024) ÷ 4.
+  - Examples: 10 KB ≈ 2,500 tokens; 20 KB ≈ 5,000; 50 KB ≈ 12,500.
+- Estimate size from tokens: KB ≈ (tokens × 4) ÷ 1024.
+  - Examples: 10,000 tokens ≈ 39 KB; 50,000 tokens ≈ 195 KB.
+- Caveats: Code/JSON and non‑ASCII text increase token counts; tools may compress inputs.
 
 ### ID Numbering Rule (Unified)
 
@@ -141,6 +164,26 @@ python3 scripts/validate_metadata.py .
 
 **⚠️ See [index.md](./index.md#traceability-flow) for the authoritative workflow diagram with full Mermaid visualization.**
 
+#### SDD Workflow Overview
+
+```mermaid
+flowchart LR
+    BRD[BRD<br/>Layer 1] --> PRD[PRD<br/>Layer 2]
+    PRD --> EARS[EARS<br/>Layer 3]
+    EARS --> BDD[BDD<br/>Layer 4]
+    BDD --> ADR[ADR<br/>Layer 5]
+    ADR --> SYS[SYS<br/>Layer 6]
+    SYS --> REQ[REQ<br/>Layer 7]
+    REQ --> IMPL[IMPL<br/>Layer 8]
+    IMPL --> CTR[CTR<br/>Layer 9]
+    CTR --> SPEC[SPEC<br/>Layer 10]
+    SPEC --> TASKS[TASKS<br/>Layer 11]
+    TASKS --> IPLAN[IPLAN<br/>Layer 12]
+    IPLAN --> Code[Code<br/>Layer 13]
+    Code --> Tests[Tests<br/>Layer 14]
+    Tests --> Val[Validation<br/>Layer 15]
+```
+
 ### Splitting Rules
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
@@ -174,6 +217,41 @@ The AI Dev Flow transforms business requirements into production code through a 
 | **15** | Validation | Production readiness verification | All upstream (10-15) | PRODUCTION-READY |
 
 **Note**: Layers 8 (IMPL) and 9 (CTR) are optional - include only when needed for project management or API contracts.
+
+#### 16-Layer Architecture Diagram
+
+```mermaid
+graph TB
+    subgraph "Strategic Layer 0"
+        L0[Strategy & Vision]
+    end
+    subgraph "Business Layers 1-2"
+        L1[BRD - Business Requirements]
+        L2[PRD - Product Requirements]
+    end
+    subgraph "Requirements Layers 3-7"
+        L3[EARS - Formal Requirements]
+        L4[BDD - Behavior Scenarios]
+        L5[ADR - Architecture Decisions]
+        L6[SYS - System Requirements]
+        L7[REQ - Atomic Requirements]
+    end
+    subgraph "Design Layers 8-10"
+        L8[IMPL - Implementation Approach]
+        L9[CTR - Contracts/APIs]
+        L10[SPEC - Technical Specs]
+    end
+    subgraph "Implementation Layers 11-15"
+        L11[TASKS - Task Breakdown]
+        L12[IPLAN - Session Plans]
+        L13[Code - Source Code]
+        L14[Tests - Test Suite]
+        L15[Validation - Quality Gates]
+    end
+
+    L0 --> L1 --> L2 --> L3 --> L4 --> L5 --> L6 --> L7
+    L7 --> L8 --> L9 --> L10 --> L11 --> L12 --> L13 --> L14 --> L15
+```
 
 #### Layer Numbering Explained
 
@@ -264,6 +342,18 @@ Diagrams use simplified labels for visual clarity:
 - **No interface requirement** (internal logic, business rules) → Create **SPEC** directly
 
 **CTR Format**: Dual-file contract with human-readable `.md` (context, traceability) + machine-readable `.yaml` (OpenAPI/AsyncAPI schema)
+
+#### Critical Decision Point Diagram
+
+```mermaid
+flowchart TD
+    REQ[REQ - Atomic Requirements] --> IMPL[IMPL - Implementation Approach]
+    IMPL --> Decision{Interface<br/>Required?}
+    Decision -->|Yes| CTR[CTR - API Contracts]
+    Decision -->|No| SPEC[SPEC - Technical Specs]
+    CTR --> SPEC
+    SPEC --> TASKS[TASKS - Task Breakdown]
+```
 
 ## Template Directories
 
@@ -467,28 +557,31 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 
 **Core Principle**: Each layer N includes tags from layers 1 through N-1 plus its own identifier.
 
-**Tag Format**: `@artifact-type: TYPE.NN.TT.SS` (unified dot separator)
+**Tag Format**:
+- Hierarchical artifacts (BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS): `@type: TYPE-NN:TYPE.NN.TT.SS` (document ID + element ID)
+- File-level artifacts (ADR, SPEC, CTR, IPLAN): `@type: TYPE-NN`
+- ICON contracts: `@icon: ICON-NN:ContractName`
 
 **Example Progression**:
 ```markdown
 # Layer 2 (PRD)
-@brd: BRD-NN
+@brd: BRD-01:BRD.01.01.30
 
 # Layer 4 (BDD)
-@brd: BRD-NN
-@prd: PRD-NN
-@ears: EARS-NN
+@brd: BRD-01:BRD.01.01.30
+@prd: PRD-02:PRD.02.03.01
+@ears: EARS-03:EARS.03.05.02
 
 # Layer 7 (REQ)
-@brd: BRD-NN
-@prd: PRD-NN
-@ears: EARS-NN
-@bdd: BDD-NN
-@adr: ADR-NN
-@sys: SYS-NN
+@brd: BRD-01:BRD.01.01.30
+@prd: PRD-02:PRD.02.03.01
+@ears: EARS-03:EARS.03.05.02
+@bdd: BDD-04:BDD.04.01.07
+@adr: ADR-33
+@sys: SYS-06:SYS.06.02.01
 
 # Layer 13 (Code)
-@brd: BRD-NN
+@brd: BRD-01:BRD.01.01.30
 ... [all upstream tags through @tasks]
 @impl-status: complete
 ```
@@ -518,6 +611,8 @@ python scripts/generate_traceability_matrix.py --auto
 ```
 
 See [TRACEABILITY.md](./TRACEABILITY.md) and [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) for complete guidelines.
+
+Note on Validation layer (Layer 15): Validation consumes all upstream tags. Documentation presents counts as advisory; the validator enforces a broad acceptable range (10–15) to preserve complete chains.
 
 ## Getting Started
 
@@ -759,6 +854,19 @@ python scripts/generate_traceability_matrix.py --auto
 # .github/workflows/traceability.yml
 - name: Validate Cumulative Tagging
   run: python scripts/validate_tags_against_docs.py --validate-cumulative --strict
+```
+
+#### Validation Workflow Diagram
+
+```mermaid
+flowchart TD
+    Start[Start Validation] --> Extract[extract_tags.py<br/>Extract all tags]
+    Extract --> Validate[validate_tags_against_docs.py<br/>Check tag validity]
+    Validate --> Check{All Valid?}
+    Check -->|Yes| Generate[generate_traceability_matrix.py<br/>Create matrix]
+    Check -->|No| Fix[Fix invalid tags]
+    Fix --> Extract
+    Generate --> Report[Validation Report]
 ```
 
 #### Common Issues and Fixes

@@ -24,6 +24,8 @@ custom_fields:
 
 # REQ Creation Rules
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 **Version**: 3.2
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-30
@@ -54,7 +56,7 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- Note: Example paths use a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `REQ/{domain}/{subdomain}/` within project docs directory
 - **Domains**: `api/` (external integrations), `risk/` (risk management), `data/` (data requirements), `ml/` (ML requirements), `auth/` (security), etc.
 - **Naming**: `REQ-NN_descriptive_slug.md` (NN = 3-digit sequential number, lowercase snake_case slug)
@@ -122,7 +124,7 @@ Every REQ must contain these exact sections in order:
 > - `AC-XXX` → Use `REQ.NN.06.SS`
 > - `FR-XXX` → Use `REQ.NN.01.SS`
 >
-> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 

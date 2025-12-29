@@ -1,3 +1,16 @@
+---
+title: "Metadata Tagging Guide"
+tags:
+  - framework-guide
+  - shared-architecture
+  - required-both-approaches
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+  version: "1.0"
+---
+
 # Metadata Tagging Guide
 
 ## Document Control

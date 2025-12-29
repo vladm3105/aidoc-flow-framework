@@ -26,6 +26,8 @@ custom_fields:
 
 # PRD Validation Rules Reference
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 **Version**: 1.0.0
 **Date**: 2025-11-26
 **Last Updated**: 2025-11-26
@@ -897,7 +899,7 @@ Transaction limit: $1,000 USD (per @threshold: PRD.035.kyc.l1.daily)
 
 **Fix**: Replace `### US-01: User Story` with `### PRD.02.09.01: User Story`
 
-**Reference**: PRD_CREATION_RULES.md Section 4.1, ID_NAMING_STANDARDS.md lines 783-793
+**Reference**: PRD_CREATION_RULES.md Section 4.1, [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 

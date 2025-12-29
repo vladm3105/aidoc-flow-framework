@@ -714,9 +714,9 @@ async def payment_exception_handler(request: Request, exc: PaymentException):
 ## 8. References
 
 ### 8.1 Internal Documentation
-- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
-- [TASKS-TEMPLATE.md](../TASKS/TASKS-TEMPLATE.md)
-- [TRACEABILITY.md](../TRACEABILITY.md)
+- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
+- [TASKS-TEMPLATE.md](../../TASKS/TASKS-TEMPLATE.md)
+- [TRACEABILITY.md](../../TRACEABILITY.md)
 
 ### 8.2 Related Contracts
 - ICON-03: Order State Machine Contract

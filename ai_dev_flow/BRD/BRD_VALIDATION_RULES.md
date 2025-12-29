@@ -1470,7 +1470,7 @@ Reference: BRD-TEMPLATE.md section 17
 
 **Fix**: Replace `### AC-01: Criterion` with `### BRD.02.06.01: Criterion`
 
-**Reference**: BRD_CREATION_RULES.md Section 4.1, ID_NAMING_STANDARDS.md lines 783-793
+**Reference**: BRD_CREATION_RULES.md Section 4.1, [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 

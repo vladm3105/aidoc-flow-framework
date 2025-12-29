@@ -524,7 +524,7 @@ graph TD
 
 ### 11.1 Tag Validation Script
 
-**Location**: `/opt/data/docs_flow_framework/ai_dev_flow/scripts/validate_tags_against_docs.py`
+**Location**: `scripts/validate_tags_against_docs.py`
 
 **Usage**:
 ```bash

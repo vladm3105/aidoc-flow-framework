@@ -24,6 +24,8 @@ custom_fields:
 
 # IPLAN Creation Rules
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 Rules for creating Implementation Plans (IPLAN) documents in the SDD framework.
 
 ## Document Control
@@ -118,7 +120,7 @@ IPLAN-NN_{descriptive_slug}.md
 > - `CMD-XXX` → Use `IPLAN.NN.19.SS`
 > - `STEP-XXX` → Use `IPLAN.NN.31.SS`
 >
-> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 
@@ -148,7 +150,7 @@ custom_fields:
 
 ```bash
 # Validate immediately after creation
-./ai_dev_flow/scripts/validate_iplan.sh docs/IPLAN/IPLAN-NN_*.md
+./scripts/validate_iplan.sh IPLAN/IPLAN-NN_*.md
 
 # Quick check for required tag
 grep -q "layer-12-artifact" docs/IPLAN/IPLAN-NN_*.md || echo "ERROR: Missing layer-12-artifact tag"

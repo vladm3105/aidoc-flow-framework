@@ -42,6 +42,7 @@ from typing import Dict, List, Optional, Set, Tuple
 from collections import defaultdict
 from dataclasses import dataclass, field
 from enum import Enum
+import json
 
 
 class Severity(Enum):
@@ -716,7 +717,8 @@ class AutoFixer:
 - Primary ID: {doc_id}
 """
 
-    def __init__(self, docs_root: Path, index: RequirementIndex, create_backup: bool = True):
+    def __init__(self, docs_root: Path, index: RequirementIndex, create_backup: bool = True,
+                 dry_run: bool = False, force_xdoc: bool = False):
         """
         Initialize the auto-fixer
 
@@ -724,11 +726,16 @@ class AutoFixer:
             docs_root: Root directory containing docs/
             index: Pre-built requirement index
             create_backup: Whether to create .bak files before modifications
+            dry_run: Preview changes without applying them
+            force_xdoc: Skip confirmation for XDOC-003 tag removals
         """
         self.docs_root = docs_root
         self.index = index
         self.create_backup = create_backup
+        self.dry_run = dry_run
+        self.force_xdoc = force_xdoc
         self.changes_log: List[str] = []
+        self.audit_entries: List[Dict] = []
 
     def fix_issues(self, doc_path: Path, issues: List[ValidationIssue]) -> List[ValidationIssue]:
         """
@@ -770,14 +777,23 @@ class AutoFixer:
 
         # Write back if modified
         if modified:
-            try:
-                doc_path.write_text(content, encoding='utf-8')
-            except Exception as e:
-                print(f"Error writing {doc_path}: {e}")
-                # Restore from backup
-                self._restore_backup(doc_path)
+            if self.dry_run:
+                print(f"[DRY-RUN] Would modify {doc_path.name}:")
+                for issue in issues:
+                    if issue.fixed:
+                        print(f"  - Would fix {issue.code.value}: {issue.message}")
+                # Reset fixed status since we didn't actually modify
                 for issue in issues:
                     issue.fixed = False
+            else:
+                try:
+                    doc_path.write_text(content, encoding='utf-8')
+                except Exception as e:
+                    print(f"Error writing {doc_path}: {e}")
+                    # Restore from backup
+                    self._restore_backup(doc_path)
+                    for issue in issues:
+                        issue.fixed = False
 
         return issues
 
@@ -798,7 +814,7 @@ class AutoFixer:
 
         elif issue.code == IssueCode.XDOC_003:
             # Remove functionality requiring missing upstream (strict hierarchy)
-            return self._fix_missing_upstream(content, issue)
+            return self._fix_missing_upstream(content, issue, doc_path)
 
         elif issue.code == IssueCode.XDOC_005:
             # Remove deprecated reference
@@ -879,7 +895,7 @@ class AutoFixer:
 
         return content
 
-    def _fix_missing_upstream(self, content: str, issue: ValidationIssue) -> str:
+    def _fix_missing_upstream(self, content: str, issue: ValidationIssue, doc_path: Path) -> Optional[str]:
         """Remove functionality requiring missing upstream (strict hierarchy)"""
         # Extract the missing document reference (supports TYPE-NN and TYPE-NN.S section files)
         match = re.search(r'([A-Z]+-\d{2,}(?:\.\d+)?)', issue.message)
@@ -889,9 +905,24 @@ class AutoFixer:
         missing_id = match.group(1)
         tag_type = missing_id.split('-')[0].lower()
 
+        # XDOC-003 confirmation requirement (unless --force-xdoc or --dry-run)
+        if not self.force_xdoc and not self.dry_run:
+            print(f"\nWARNING: XDOC-003 - Removing reference to missing document: {missing_id}")
+            print(f"  File: {doc_path.name}")
+            print(f"  Tag:  @{tag_type}: {missing_id}")
+            response = input("Continue with removal? [y/N]: ")
+            if response.lower() != 'y':
+                print(f"  Skipped removal of @{tag_type}: {missing_id}")
+                return None
+
+        # Find the tag line being removed (for audit)
+        tag_pattern = re.compile(rf'^@{tag_type}:\s*{re.escape(missing_id)}.*$', re.MULTILINE | re.IGNORECASE)
+        tag_match = tag_pattern.search(content)
+        removed_line = tag_match.group(0) if tag_match else f"@{tag_type}: {missing_id}"
+
         # Remove the tag line referencing missing upstream
-        tag_pattern = re.compile(rf'^@{tag_type}:\s*{re.escape(missing_id)}.*$\n?', re.MULTILINE | re.IGNORECASE)
-        content = tag_pattern.sub('', content)
+        remove_pattern = re.compile(rf'^@{tag_type}:\s*{re.escape(missing_id)}.*$\n?', re.MULTILINE | re.IGNORECASE)
+        content = remove_pattern.sub('', content)
 
         # Add comment noting removal
         removal_comment = f"<!-- Removed @{tag_type} reference: {missing_id} not found (strict hierarchy enforcement) -->\n"
@@ -903,6 +934,17 @@ class AutoFixer:
             content = content[:insert_pos] + removal_comment + content[insert_pos:]
         else:
             content = removal_comment + content
+
+        # Create audit entry
+        backup_path = doc_path.with_suffix(doc_path.suffix + '.bak') if self.create_backup else None
+        self.audit_entries.append({
+            "timestamp": datetime.now().isoformat(),
+            "file": str(doc_path),
+            "issue_code": issue.code.value,
+            "action": "removed_tag",
+            "removed_content": removed_line,
+            "backup_path": str(backup_path) if backup_path else None
+        })
 
         return content
 
@@ -954,6 +996,30 @@ class AutoFixer:
         backup_path = doc_path.with_suffix(doc_path.suffix + '.bak')
         if backup_path.exists():
             backup_path.unlink()
+
+    def write_audit_log(self) -> Optional[Path]:
+        """
+        Write audit entries to JSON log file.
+
+        Returns:
+            Path to audit log file, or None if no entries
+        """
+        if not self.audit_entries:
+            return None
+
+        log_path = Path('tmp/validation_audit.json')
+        log_path.parent.mkdir(exist_ok=True)
+
+        existing = []
+        if log_path.exists():
+            try:
+                existing = json.loads(log_path.read_text())
+            except json.JSONDecodeError:
+                existing = []
+
+        existing.extend(self.audit_entries)
+        log_path.write_text(json.dumps(existing, indent=2))
+        return log_path
 
 
 def generate_report(doc_path: Optional[Path], issues: List[ValidationIssue], phase: int = 1) -> str:
@@ -1086,6 +1152,18 @@ Examples:
     )
 
     parser.add_argument(
+        '--dry-run',
+        action='store_true',
+        help='Preview changes without applying them'
+    )
+
+    parser.add_argument(
+        '--force-xdoc',
+        action='store_true',
+        help='Skip confirmation for XDOC-003 tag removals'
+    )
+
+    parser.add_argument(
         '--root',
         default='.',
         help='Root directory of the project (default: current directory)'
@@ -1141,8 +1219,10 @@ Examples:
 
     # Apply auto-fixes if requested
     if args.auto_fix and issues:
-        print("\nApplying auto-fixes...")
-        fixer = AutoFixer(docs_root, index, create_backup=not args.no_backup)
+        mode_msg = "[DRY-RUN] Previewing" if args.dry_run else "Applying"
+        print(f"\n{mode_msg} auto-fixes...")
+        fixer = AutoFixer(docs_root, index, create_backup=not args.no_backup,
+                          dry_run=args.dry_run, force_xdoc=args.force_xdoc)
 
         # Group issues by document
         issues_by_doc = defaultdict(list)
@@ -1161,20 +1241,28 @@ Examples:
             for change in fixer.changes_log:
                 print(f"  - {change}")
 
-        # Re-validate to check remaining issues
-        print("\nRe-validating after fixes...")
-        if args.document:
-            issues = validator.validate_document(Path(args.document).resolve())
-        elif args.layer:
-            issues = validator.validate_layer(args.layer)
-        else:
-            issues = validator.validate_all()
+        # Write audit log
+        audit_path = fixer.write_audit_log()
+        if audit_path:
+            print(f"\nAudit log written to: {audit_path}")
 
-        # Cleanup backups if all issues fixed
-        remaining_issues = [i for i in issues if not i.fixed]
-        if not remaining_issues and not args.no_backup:
-            for doc_path in validated_paths:
-                fixer.cleanup_backups(doc_path)
+        # Re-validate to check remaining issues (skip in dry-run mode)
+        if args.dry_run:
+            print("\n[DRY-RUN] Skipping re-validation (no changes were made)")
+        else:
+            print("\nRe-validating after fixes...")
+            if args.document:
+                issues = validator.validate_document(Path(args.document).resolve())
+            elif args.layer:
+                issues = validator.validate_layer(args.layer)
+            else:
+                issues = validator.validate_all()
+
+            # Cleanup backups if all issues fixed
+            remaining_issues = [i for i in issues if not i.fixed]
+            if not remaining_issues and not args.no_backup:
+                for doc_path in validated_paths:
+                    fixer.cleanup_backups(doc_path)
 
     # Generate report
     phase = 1 if args.document else (2 if args.layer else 3)

@@ -1,3 +1,17 @@
+---
+title: "BRD Generation Prompt"
+tags:
+  - generation-prompt
+  - layer-1-artifact
+  - shared-architecture
+custom_fields:
+  document_type: prompt
+  artifact_type: BRD
+  layer: 1
+  priority: shared
+  development_status: active
+---
+
 Generate a comprehensive Business Requirements Document (BRD) based on the provided project details and objectives.
 
 The BRD should clearly articulate the business needs, goals, scope, functional requirements, quality attributes, stakeholders, assumptions, constraints, and acceptance criteria relevant to the project.

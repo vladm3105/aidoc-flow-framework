@@ -24,6 +24,8 @@ custom_fields:
 
 # CTR Creation Rules
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 Rules for creating Data Contracts (CTR) documents in the SDD framework.
 
 ## Document Control
@@ -109,7 +111,7 @@ CTR-NN_{descriptive_slug}.yaml
 > - `MODEL-XXX` → Use `CTR.NN.17.SS`
 > - `CLAUSE-XXX` → Use `CTR.NN.20.SS`
 >
-> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 

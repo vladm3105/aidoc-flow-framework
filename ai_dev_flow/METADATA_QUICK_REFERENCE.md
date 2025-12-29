@@ -1,3 +1,16 @@
+---
+title: "Metadata Tagging Quick Reference"
+tags:
+  - framework-guide
+  - shared-architecture
+  - quick-reference
+custom_fields:
+  document_type: quick-reference
+  priority: shared
+  development_status: active
+  version: "1.0"
+---
+
 # Metadata Tagging Quick Reference
 
 **Version**: 1.0

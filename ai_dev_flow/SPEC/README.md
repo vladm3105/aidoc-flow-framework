@@ -13,7 +13,7 @@ custom_fields:
 
 # Specifications (SPEC)
 
-Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 Specifications (SPEC) are machine-readable technical blueprints that define how software components should be implemented. SPECs transform requirements into actionable design decisions, providing complete implementation guidance for developers while establishing contracts for testing and integration.
 

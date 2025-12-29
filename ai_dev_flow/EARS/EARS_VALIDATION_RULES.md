@@ -26,11 +26,13 @@ custom_fields:
 
 # EARS Validation Rules Reference
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 **Version**: 2.0
 **Date**: 2025-11-29
 **Last Updated**: 2025-11-29
 **Purpose**: Complete validation rules for EARS documents
-**Script**: `ai_dev_flow/scripts/validate_ears.py`
+**Script**: `scripts/validate_ears.py`
 **Primary Template**: `EARS-TEMPLATE.md`
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: v2.0 - Added requirement ID, table syntax, custom_fields, traceability format checks
@@ -292,7 +294,7 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 > - `State-XXX` → Use `EARS.NN.25.SS`
 > - `EARS-NN-XXX` → Use `EARS.NN.25.SS`
 >
-> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 **Invalid**:
 ```markdown
@@ -512,21 +514,21 @@ Downstream: BDD, ADR, SYS
 
 ```bash
 # Validate all EARS files
-python ai_dev_flow/scripts/validate_ears.py
+python3 scripts/validate_ears.py
 
 # Validate single file
-python ai_dev_flow/scripts/validate_ears.py --path docs/EARS/EARS-006.md
+python3 scripts/validate_ears.py --path EARS/EARS-006.md
 
 # Show fix suggestions
-python ai_dev_flow/scripts/validate_ears.py --fix-suggestions
+python3 scripts/validate_ears.py --fix-suggestions
 
 # Summary only (counts by rule)
-python ai_dev_flow/scripts/validate_ears.py --summary-only
+python3 scripts/validate_ears.py --summary-only
 ```
 
 ### Pre-Commit Checklist
 
-- [ ] Run `python ai_dev_flow/scripts/validate_ears.py` - 0 errors
+- [ ] Run `python3 scripts/validate_ears.py` - 0 errors
 - [ ] All files have `tags: ears, layer-3-artifact`
 - [ ] All files have `custom_fields` with document_type, artifact_type, layer
 - [ ] All requirement IDs use `EARS-{DocID}-{Num}:` format
@@ -583,4 +585,4 @@ python ai_dev_flow/scripts/validate_ears.py --summary-only
 
 **Maintained By**: Engineering Team
 **Review Frequency**: Updated with EARS template enhancements
-**Script Location**: `ai_dev_flow/scripts/validate_ears.py`
+**Script Location**: `scripts/validate_ears.py`

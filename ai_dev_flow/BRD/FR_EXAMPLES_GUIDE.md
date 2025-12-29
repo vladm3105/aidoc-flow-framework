@@ -1,4 +1,19 @@
-# Functional Requirements Examples Guide (Minimal)
+---
+title: "Business-Level Functional Requirements Examples Guide (Layer 1 BRD)"
+tags:
+  - framework-guide
+  - layer-1-artifact
+  - shared-architecture
+  - examples
+custom_fields:
+  document_type: examples-guide
+  artifact_type: BRD
+  layer: 1
+  priority: shared
+  development_status: active
+---
+
+# Business-Level Functional Requirements Examples Guide (Layer 1 BRD)
 
 **Purpose**: Show concise, business-level Functional Requirements that achieve PRD-Ready Score ≥90/100 with clear patterns and minimal examples.
 

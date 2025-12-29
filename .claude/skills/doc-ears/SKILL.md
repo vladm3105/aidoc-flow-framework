@@ -36,7 +36,7 @@ Create **EARS (Easy Approach to Requirements Syntax)** documents - Layer 3 artif
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/ docs/SYS/ docs/REQ/ 2>/dev/null
+   ls docs/BRD/ docs/PRD/ docs/EARS/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -44,12 +44,11 @@ Create **EARS (Easy Approach to Requirements Syntax)** documents - Layer 3 artif
 4. **NEVER use placeholders** like `BRD-XXX` or `TBD`
 5. **Do NOT create missing upstream artifacts** - skip functionality instead
 
-
 Before creating EARS, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
 2. **Upstream BRD and PRD**: Read the BRD and PRD that drive this EARS
-3. **Template**: `ai_dev_flow/EARS/EARS-TEMPLATE.md` (Template Version 3.0, includes METADATA CLARIFICATION block)
+3. **Template**: `ai_dev_flow/EARS/EARS-TEMPLATE.md` (Template Version 3.0, primary authority)
 4. **Schema**: `ai_dev_flow/EARS/EARS_SCHEMA.yaml` (machine-readable validation rules)
 5. **Creation Rules**: `ai_dev_flow/EARS/EARS_CREATION_RULES.md`
 6. **Validation Rules**: `ai_dev_flow/EARS/EARS_VALIDATION_RULES.md`
@@ -68,20 +67,9 @@ custom_fields:
   document_type: ears    # NOT 'engineering-requirements'
   artifact_type: EARS
   layer: 3
-  architecture_approaches: [ai-agent-based, traditional-8layer]  # ARRAY format
+  architecture_approaches: [ai-agent-based, traditional-8layer]  # ARRAY format required
   priority: shared
   development_status: active
-```
-
-**Source Document Format:**
-```
-| **Source Document** | @prd: PRD.NN.07.SS |
-```
-
-**Post-Creation Validation:**
-```bash
-# EARS validation (under development - use template for manual validation)
-# python scripts/validate_ears.py --path docs/EARS/EARS-NN.md
 ```
 
 ## When to Use This Skill
@@ -93,77 +81,131 @@ Use `doc-ears` when:
 - Establishing event-driven, state-driven, or conditional requirements
 - You are at Layer 3 of the SDD workflow
 
-## EARS-Specific Guidance
+## Document Structure (MANDATORY)
 
-### 1. WHEN-THE-SHALL-WITHIN Syntax
+Per EARS-TEMPLATE.md, EARS documents require these sections:
 
-**Format**: `WHEN [trigger] THE [system] SHALL [response] WITHIN [constraint]`
+| Section | Content |
+|---------|---------|
+| **Document Control** | Status, Version, Date, BDD-Ready Score, Source Document |
+| **1. Purpose and Context** | Document Purpose, Scope, Intended Audience |
+| **2. EARS in Development Workflow** | Layer positioning diagram |
+| **3. Requirements** | Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous |
+| **4. Quality Attributes** | Performance, Security, Reliability (tabular format) |
+| **5. Traceability** | Upstream Sources, Downstream Artifacts, Tags, Thresholds |
+| **6. References** | Internal Documentation, External Standards |
 
-**Components**:
-- **WHEN**: Trigger condition or event
-- **THE**: System or component name
-- **SHALL**: Required behavior (use SHALL for mandatory, SHOULD for recommended, MAY for optional)
-- **WITHIN**: Time, resource, or quality constraint
+### Document Control Requirements
+
+**Required Fields** (6 mandatory):
+- **Status**: Draft/In Review/Approved/Implemented
+- **Version**: Semantic versioning (e.g., 1.0.0)
+- **Date Created/Last Updated**: YYYY-MM-DD
+- **Priority**: High/Medium/Low
+- **Source Document**: Single `@prd: PRD.NN.EE.SS` value (NO ranges, NO multiple @prd values)
+- **BDD-Ready Score**: Format `XX% (Target: ≥90%)`
+
+**Source Document Rule (E044)**:
+```markdown
+# VALID - Single @prd reference
+| **Source Document** | @prd: PRD.01.07.01 |
+
+# INVALID - Range or multiple values
+| **Source Document** | @prd: PRD.12.19.01 - @prd: PRD.12.19.57 |
+```
+
+## EARS Syntax Patterns
+
+### 1. Event-Driven Requirements
+**WHEN** [triggering condition] **THE** [system] **SHALL** [response] **WITHIN** [constraint]
+
+```
+WHEN [trigger condition],
+THE [system component] SHALL [action 1],
+[action 2],
+and [action 3]
+WITHIN [timing constraint].
+```
 
 **Example**:
 ```
-WHEN position limit is exceeded
-THE risk management system
-SHALL reject the trade
-WITHIN 100 milliseconds
+WHEN trade order received,
+THE order management system SHALL validate order parameters
+WITHIN 50 milliseconds (@threshold: PRD.035.timeout.order.validation).
 ```
 
-### 2. Four EARS Statement Types
+### 2. State-Driven Requirements
+**WHILE** [system state] **THE** [system] **SHALL** [behavior] **WITHIN** [constraint]
 
-**1. Event-Driven Requirements**
-- Triggered by specific events
-- Format: `WHEN [event occurs] THE [system] SHALL [response] WITHIN [time]`
-- Example: `WHEN data update received THE calculation engine SHALL recalculate metrics WITHIN 50ms`
+```
+WHILE [state condition],
+THE [system component] SHALL [continuous behavior]
+WITHIN [operational context].
+```
 
-**2. State-Driven Requirements**
-- Triggered by system state
-- Format: `WHEN [system is in state] THE [system] SHALL [maintain/enforce] WITHIN [constraint]`
-- Example: `WHEN resource utilization exceeds 80% THE scaling system SHALL initiate rebalance WITHIN 2 minutes`
+### 3. Unwanted Behavior Requirements
+**IF** [error/problem] **THE** [system] **SHALL** [prevention/workaround] **WITHIN** [constraint]
 
-**3. Unwanted Behavior Requirements**
-- Prevents undesired outcomes
-- Format: `IF [unwanted condition], THEN THE [system] SHALL [preventive action] WITHIN [constraint]`
-- Example: `IF API rate limit exceeded, THEN THE system SHALL queue requests WITHIN 100ms`
+```
+IF [error condition],
+THE [system component] SHALL [prevention/recovery action]
+WITHIN [timing constraint].
+```
 
-**4. Ubiquitous Requirements**
-- Always active, no trigger
-- Format: `THE [system] SHALL [behavior] WITHIN [constraint]`
-- Example: `THE authentication service SHALL encrypt all passwords using bcrypt WITHIN security policy`
+### 4. Ubiquitous Requirements
+**THE** [system] **SHALL** [system-wide requirement] **WITHIN** [architectural boundary]
 
-### 3. Required Sections
+```
+THE [system component] SHALL [universal behavior]
+for [scope/context].
+```
 
-**Document Control** (MANDATORY - First section before all numbered sections):
-- Project Name
-- Document Version
-- Date (YYYY-MM-DD)
-- Document Owner
-- Prepared By
-- Status (Draft, In Review, Approved, Superseded)
-- Document Revision History table
+### Code Block Formatting (MANDATORY)
 
-**Core Sections**:
-1. **Introduction**: Purpose and scope of requirements
-2. **Event-Driven Requirements**: WHEN [event] THE SHALL WITHIN
-3. **State-Driven Requirements**: WHEN [state] THE SHALL WITHIN
-4. **Unwanted Behavior Requirements**: IF [unwanted], THEN THE SHALL WITHIN
-5. **Ubiquitous Requirements**: THE SHALL WITHIN (always active)
-6. **Traceability**: Section 7 format from SHARED_CONTENT.md
+Always use triple backticks for EARS statements:
 
-### 4. BDD-Ready Scoring System
+````markdown
+#### EARS.01.25.01: Requirement Name
+```
+WHEN [condition],
+THE [component] SHALL [action]
+WITHIN [constraint].
+```
+**Traceability**: @brd: BRD.01.01.01 | @prd: PRD.01.07.01
+````
 
-**Purpose**: Measures EARS maturity and readiness for progression to Behavior-Driven Development (BDD) phase.
+## Unified Element ID Format (MANDATORY)
+
+**Pattern**: `EARS.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| EARS Statement | 25 | EARS.02.25.01 |
+
+**Category ID Ranges**:
+
+| Category | ID Range | Example |
+|----------|----------|---------|
+| Event-Driven | 001-099 | EARS.01.25.001 |
+| State-Driven | 101-199 | EARS.01.25.101 |
+| Unwanted Behavior | 201-299 | EARS.01.25.201 |
+| Ubiquitous | 401-499 | EARS.01.25.401 |
+
+> **REMOVED PATTERNS** - Do NOT use:
+> - Category prefixes: `E-XXX`, `S-XXX`, `Event-XXX`, `State-XXX`
+> - 3-segment format: `EARS.NN.EE`
+> - Dash-based: `EARS-NN-XXX`
+
+## BDD-Ready Scoring System
+
+**Purpose**: Measures EARS maturity and readiness for BDD progression.
 
 **Format in Document Control**:
 ```markdown
-| **BDD-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **BDD-Ready Score** | 95% (Target: ≥90%) |
 ```
 
-**Status and BDD-Ready Score Mapping**:
+### Status and BDD-Ready Score Mapping
 
 | BDD-Ready Score | Required Status |
 |-----------------|-----------------|
@@ -171,15 +213,52 @@ WITHIN 100 milliseconds
 | 70-89% | In Review |
 | <70% | Draft |
 
-**Scoring Criteria**:
-- **Requirements Clarity (40%)**: EARS statements follow WHEN-THE-SHALL-WITHIN syntax, atomicity, quantifiable constraints
-- **Testability (35%)**: BDD translation possible, observable verification methods, edge cases specified
-- **Quality Attribute Completeness (15%)**: Performance targets with percentiles, security/compliance complete, reliability measurable
-- **Strategic Alignment (10%)**: Links to business objectives, implementation paths documented
+### Scoring Criteria
+
+**Requirements Clarity (40%)**:
+- EARS statements follow WHEN-THE-SHALL-WITHIN syntax: 20%
+- Each statement defines one testable concept (atomicity): 15%
+- All timing/constraint clauses are quantifiable: 5%
+
+**Testability (35%)**:
+- BDD translation possible for each statement: 15%
+- Observable verification methods defined: 10%
+- Edge cases and error conditions specified: 10%
+
+**Quality Attribute Completeness (15%)**:
+- Performance targets with percentiles: 5%
+- Security/compliance requirements complete: 5%
+- Reliability/scalability targets measurable: 5%
+
+**Strategic Alignment (10%)**:
+- Links to business objectives traceable: 5%
+- Implementation paths documented: 5%
 
 **Quality Gate**: Score <90% blocks BDD artifact creation.
 
-### 5. Formal Language Rules
+## Quality Attributes Section
+
+Use tabular format for quality attribute requirements:
+
+### Performance Requirements
+
+| QA ID | Requirement Statement | Metric | Target | Priority | Measurement Method |
+|-------|----------------------|--------|--------|----------|-------------------|
+| EARS.NN.02.01 | THE [component] SHALL complete [operation] | Latency | p95 < NNms | High | [method] |
+| EARS.NN.02.02 | THE [component] SHALL process [workload] | Throughput | NN/s | Medium | [method] |
+
+### Quality Attribute Categories
+
+| Category | Keywords for Detection |
+|----------|------------------------|
+| Performance | latency, throughput, response time, p95, p99 |
+| Reliability | availability, MTBF, MTTR, fault tolerance, recovery |
+| Scalability | concurrent users, data volumes, horizontal scaling |
+| Security | authentication, authorization, encryption, RBAC |
+| Observability | logging, monitoring, tracing, alerting, metrics |
+| Maintainability | code coverage, deployment, CI/CD, documentation |
+
+## Formal Language Rules
 
 **Mandatory Keywords**:
 - **SHALL**: Mandatory requirement (do this)
@@ -187,44 +266,45 @@ WITHIN 100 milliseconds
 - **SHOULD**: Recommended requirement (preferred but not mandatory)
 - **MAY**: Optional requirement (allowed but not required)
 
-**Avoid**:
-- Ambiguous terms: "fast", "efficient", "user-friendly"
-- Use quantifiable metrics: "within 100ms", "with 99.9% uptime", "using bcrypt with 12 rounds"
+**Avoid ambiguous terms**: "fast", "efficient", "user-friendly"
+**Use quantifiable metrics**: "within 100ms", "with 99.9% uptime"
 
-**Example - Bad**:
+## Threshold References (Section 5.4)
+
+**Purpose**: EARS documents REFERENCE thresholds defined in PRD threshold registry. All quantitative values must use `@threshold:` tags.
+
+**Threshold Naming Convention**: `@threshold: PRD.NN.category.subcategory.key`
+
+**Example Usage**:
 ```
-WHEN trade is placed THE system SHALL process it quickly
+WHEN [trigger condition],
+THE [system component] SHALL [action]
+WITHIN @threshold: PRD.035.timeout.request.sync.
 ```
 
-**Example - Good**:
+**Common Threshold Categories**:
+```yaml
+timing:
+  - "@threshold: PRD.NN.timeout.request.sync"
+  - "@threshold: PRD.NN.timeout.connection.default"
+
+performance:
+  - "@threshold: PRD.NN.perf.api.p95_latency"
+  - "@threshold: PRD.NN.perf.batch.max_duration"
+
+limits:
+  - "@threshold: PRD.NN.limit.api.requests_per_second"
+
+error:
+  - "@threshold: PRD.NN.sla.error_rate.target"
 ```
-WHEN trade order received THE order management system SHALL validate and route order WITHIN 50 milliseconds
-```
 
-## Tag Format Convention (By Design)
+## Tag Format Convention
 
-The SDD framework uses two distinct notation systems for cross-references:
-
-| Notation | Format        | Artifacts                               | Purpose                                                             |
-|----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
-
-**Key Distinction**:
-- `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.01` → Points to element 01.01 inside document `BRD-017.md`
-
-## Unified Element ID Format (MANDATORY)
-
-**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NN.TT.SS` (dot separator, 4-segment unified format)
-- **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
-- **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
-
-Examples:
-- `@brd: BRD.17.01.01` ✅
-- `@brd: BRD.017.001` ❌ (old 3-segment format)
-
+| Notation | Format | Artifacts | Purpose |
+|----------|--------|-----------|---------|
+| Dash | TYPE-NN | ADR, SPEC, CTR, IPLAN | Technical artifacts - document references |
+| Dot | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - element references |
 
 ## Cumulative Tagging Requirements
 
@@ -241,36 +321,61 @@ Examples:
 @brd: BRD.01.01.03, BRD.01.01.10
 @prd: PRD.01.07.02, PRD.01.07.15
 ```
-
-- BRD.01.01.03 - Business requirements driving these formal requirements
-- BRD.01.01.10 - Success criteria from business case
-- PRD.01.07.02 - Product feature being formalized
-- PRD.01.07.15 - Performance KPI targets
-
-**Upstream Sources**:
-- [BRD-01](../BRD/BRD-01_platform.md#BRD-01) - Business requirements
-- [PRD-01](../PRD/PRD-01_integration.md#PRD-01) - Product requirements
-
-**Downstream Artifacts**:
-- BDD-NN (to be created) - Test scenarios
-- ADR-NN (to be created) - Architecture decisions
-- SYS-NN (to be created) - System requirements
 ```
 
-## Upstream/Downstream Artifacts
+### Traceability Tag Separators (E041)
 
-**Upstream Sources** (what drives EARS creation):
-- **BRD** (Layer 1) - Business objectives
-- **PRD** (Layer 2) - Product features and requirements
+**Inline format** - Use pipes:
+```markdown
+**Traceability**: @brd: BRD.02.01.10 | @prd: PRD.02.01.01 | @threshold: PRD.035.key
+```
 
-**Downstream Artifacts** (what EARS drives):
-- **BDD** (Layer 4) - Test scenarios validating EARS statements
-- **ADR** (Layer 5) - Architecture decisions implementing EARS requirements
-- **SYS** (Layer 6) - System requirements derived from EARS
+**List format** - Also valid:
+```markdown
+**Traceability**:
+- @brd: BRD.02.01.10
+- @prd: PRD.02.01.01
+- @threshold: PRD.035.category.key
+```
 
-**Same-Type Document Relationships** (conditional):
-- `@related-ears: EARS-NN` - EARS sharing domain context (references EARS document)
-- `@depends-ears: EARS-NN` - EARS that must be implemented first
+## Downstream Artifact References (E045)
+
+**CRITICAL**: Do NOT use numeric downstream references until artifacts exist.
+
+```markdown
+# INVALID - Numeric references to non-existent artifacts
+Downstream: BDD-01, ADR-02, REQ-03
+
+# VALID - Generic downstream names
+Downstream: BDD, ADR, SYS, REQ, SPEC
+```
+
+## File Size Limits and Splitting
+
+**Limits**:
+- Target: 300-500 lines per file
+- Maximum: 600 lines per file (absolute)
+
+**When to Split**:
+- Document approaches 600 lines
+- Sections cover distinct capability areas
+
+**Splitting Process**:
+1. Create `EARS-{NN}.0_index.md` using `EARS-SECTION-0-TEMPLATE.md`
+2. Create section files `EARS-{NN}.{S}_{slug}.md` using `EARS-SECTION-TEMPLATE.md`
+3. Maintain Prev/Next links
+4. Update traceability
+
+## Reserved ID Exemption
+
+**Pattern**: `EARS-000_*.md`
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Document Types**:
+- Index documents (`EARS-000_index.md`)
+- Traceability matrix templates (`EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Glossaries, registries, checklists
 
 ## Creation Process
 
@@ -280,17 +385,23 @@ Read and understand BRD and PRD that drive these formal requirements.
 
 ### Step 2: Reserve ID Number
 
-Check `ai_dev_flow/EARS/` for next available ID number (e.g., EARS-01, EARS-02).
+Check `docs/EARS/` for next available ID number (e.g., EARS-01, EARS-02).
 
 ### Step 3: Create EARS File
 
-**Location**: `docs/EARS/EARS-NN_{slug}.md` (template available at `ai_dev_flow/EARS/`)
+**Location**: `docs/EARS/EARS-NN_{slug}.md`
 
 **Example**: `docs/EARS/EARS-01_risk_limits.md`
 
 ### Step 4: Fill Document Control Section
 
-Complete all required metadata fields and initialize Document Revision History table.
+Complete all required metadata fields:
+- Status
+- Version
+- Dates
+- Priority
+- Source Document (single @prd: PRD.NN.EE.SS)
+- BDD-Ready Score
 
 ### Step 5: Categorize Requirements
 
@@ -304,156 +415,144 @@ Group requirements into 4 categories:
 
 For each requirement:
 - Use formal EARS syntax
-- Specify quantifiable constraints (time, accuracy, resource)
+- Specify quantifiable constraints with @threshold tags
 - Use SHALL/SHOULD/MAY keywords correctly
 - Reference upstream PRD features
 
-**Format**:
-```markdown
-## Event-Driven Requirements
+### Step 7: Create Quality Attributes Section
 
-### EARS.01.24.01: Trade Order Validation
-```
-WHEN trade order received,
-THE order management system SHALL validate order parameters (symbol, quantity, price, account)
-WITHIN 50 milliseconds.
-```
-**Traceability**: @brd: BRD.01.01.05 | @prd: PRD.01.07.03
-```
+Use tabular format for Performance, Security, Reliability requirements.
 
-### Step 7: Add Cumulative Tags
+### Step 8: Add Cumulative Tags
 
 Include @brd and @prd tags (Layers 1-2) in Traceability section.
 
-### Step 8: Create/Update Traceability Matrix
+### Step 9: Add Threshold References
 
-**MANDATORY**: Create or update `ai_dev_flow/EARS/EARS-000_TRACEABILITY_MATRIX.md`
-- Use template: `ai_dev_flow/EARS/EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-- Add EARS entry with upstream BRD/PRD and downstream artifacts
-- Update within same commit as EARS creation
+Document all thresholds used in section 5.4.
 
-### Step 9: Validate EARS
+### Step 10: Create/Update Traceability Matrix
+
+**MANDATORY**: Create or update `docs/EARS/EARS-000_TRACEABILITY_MATRIX.md`
+
+### Step 11: Validate EARS
 
 Run validation scripts:
 ```bash
-# EARS validation (under development - use template for manual validation)
-# ./ai_dev_flow/scripts/validate_ears_template.sh docs/EARS/EARS-01_*.md
-
-# Link integrity
-./ai_dev_flow/scripts/validate_links.py --path ai_dev_flow/EARS/
+# EARS validation
+python scripts/validate_ears.py --path docs/EARS/EARS-01_*.md
 
 # Cumulative tagging validation
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact EARS-01 --expected-layers brd,prd --strict
-```
-
-### Step 10: Commit Changes
-
-Commit EARS file and traceability matrix together.
-
-## Validation
-
-### Automated Validation
-
-**Quality Gates Validation**:
-```bash
-./scripts/validate_quality_gates.sh ai_dev_flow/EARS/EARS-01_risk.md
-```
-
-**Tag Validation**:
-```bash
-# Validate cumulative tags (must have @brd, @prd)
 python ai_dev_flow/scripts/validate_tags_against_docs.py \
   --artifact EARS-01 \
   --expected-layers brd,prd \
   --strict
 ```
 
+### Step 12: Commit Changes
+
+Commit EARS file and traceability matrix together.
+
+## Batch Creation Checkpoint Rules
+
+### Pre-Batch Verification
+
+Before starting batch creation:
+1. Read `EARS_SCHEMA.yaml` for current metadata requirements
+2. Verify tag standards: `ears` (not `ears-requirements`)
+3. Verify document_type: `ears`
+4. Verify architecture format: `architecture_approaches: [value]` (array)
+
+### Every 5-Document Checkpoint
+
+After creating every 5 EARS documents:
+1. Run validation: `python scripts/validate_ears.py --path docs/EARS`
+2. Check for tag consistency, document_type, Source Document format
+3. Fix any errors before continuing
+
+### End-of-Session Validation
+
+Before ending session:
+1. Run full validation: `python scripts/validate_ears.py`
+2. Verify 0 errors
+3. Update EARS-000_index.md if document counts changed
+
+## Validation
+
+### Validation Error Codes Reference
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| E001 | YAML frontmatter invalid | ERROR |
+| E002 | Required tags missing (ears, layer-3-artifact) | ERROR |
+| E003 | Forbidden tag patterns (ears-requirements, etc.) | ERROR |
+| E004 | Missing custom_fields | ERROR |
+| E005 | document_type not 'ears' | ERROR |
+| E006 | artifact_type not 'EARS' | ERROR |
+| E007 | layer not 3 | ERROR |
+| E008 | architecture_approaches not array | ERROR |
+| E010 | Required sections missing | ERROR |
+| E011 | Section numbering starts with 0 | ERROR |
+| E013 | Document Control not in table format | ERROR |
+| E020 | Malformed table syntax | ERROR |
+| E030 | Requirement ID format invalid | ERROR |
+| E040 | Source Document missing @prd: prefix | ERROR |
+| E041 | Traceability tags missing pipe separators | ERROR |
+| E042 | Duplicate requirement IDs | ERROR |
+| E044 | Source Document has multiple @prd values | ERROR |
+| E045 | Numeric downstream references | ERROR |
+
 ### Manual Checklist
 
-- [ ] Document Control section at top (before all numbered sections)
+- [ ] Document Control section uses table format
 - [ ] All required metadata fields completed
-- [ ] Document Revision History table initialized
+- [ ] Source Document has single @prd: PRD.NN.EE.SS value
 - [ ] All statements use WHEN-THE-SHALL-WITHIN format
 - [ ] Requirements categorized (Event, State, Unwanted, Ubiquitous)
+- [ ] Element IDs use EARS.NN.25.SS format
 - [ ] SHALL/SHOULD/MAY keywords used correctly
-- [ ] Quantifiable constraints specified (time, accuracy, resource)
-- [ ] No ambiguous terms ("fast", "efficient", "user-friendly")
+- [ ] Quantifiable constraints with @threshold tags
+- [ ] No ambiguous terms ("fast", "efficient")
 - [ ] Cumulative tags: @brd, @prd included
-- [ ] Each requirement references upstream PRD feature
-- [ ] Traceability matrix created/updated
-- [ ] No broken links
-- [ ] File size <50,000 tokens (standard) or <100,000 tokens (maximum)
-
-### Diagram Standards
-All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+- [ ] Traceability tags use pipe separators
+- [ ] No numeric downstream references
+- [ ] Quality Attributes in tabular format
+- [ ] Thresholds documented in section 5.4
+- [ ] File size <600 lines
 
 ## Common Pitfalls
 
-1. **Missing WITHIN clause**: Every EARS statement needs a constraint
-2. **Ambiguous language**: Use quantifiable metrics, not subjective terms
-3. **Wrong keyword**: SHALL for mandatory, SHOULD for recommended, MAY for optional
-4. **Missing cumulative tags**: Layer 3 must include Layers 1-2 tags (@brd, @prd)
-5. **No categorization**: Requirements must be grouped into 4 EARS types
+| Mistake | Correction |
+|---------|------------|
+| `ears-requirements` tag | Use `ears` |
+| `document_type: engineering-requirements` | Use `document_type: ears` |
+| `architecture_approach: value` | Use `architecture_approaches: [value]` |
+| `#### Event-001: Title` | Use `#### EARS.01.25.01: Title` |
+| `Source Document: PRD-NN` | Use `Source Document: @prd: PRD.NN.EE.SS` |
+| Multiple @prd in Source Document | Use single @prd, list others in Upstream Sources |
+| `@brd: X @prd: Y` (no separators) | Use `@brd: X \| @prd: Y` |
+| `Downstream: BDD-01, ADR-02` | Use `Downstream: BDD, ADR` |
+| `Status: Approved` (with 50% score) | Use `Status: Draft` |
+| `## 0. Document Control` | Use `## Document Control` (no numbering) |
 
-## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
+## Post-Creation Validation (MANDATORY)
 
-**CRITICAL**: Execute this validation loop IMMEDIATELY after document creation. Do NOT proceed to next document until validation passes.
+**CRITICAL**: Execute validation loop IMMEDIATELY after document creation.
 
 ### Automatic Validation Loop
 
 ```
 LOOP:
-  1. Run: Validation script (when available) --document {doc_path} --auto-fix
+  1. Run: python scripts/validate_ears.py --path {doc_path}
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
-  4. IF unfixable issues: Log for manual review, continue
+  4. IF unfixable issues: Log for manual review
   5. IF clean: Mark VALIDATED, proceed
 ```
 
-### Validation Command
-
-```bash
-# Per-document validation (Phase 1) - scripts under development
-# python scripts/validate_cross_document.py --document docs/EARS/EARS-NN_slug.md --auto-fix
-
-# Layer validation (Phase 2) - run when all EARS documents complete
-# python scripts/validate_cross_document.py --layer EARS --auto-fix
-
-# Currently available validations:
-./scripts/validate_quality_gates.sh docs/EARS/EARS-NN_slug.md
-python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact EARS-NN --expected-layers brd,prd --strict
-```
-
-### Layer-Specific Upstream Requirements
-
-| This Layer | Required Upstream Tags | Count |
-|------------|------------------------|-------|
-| EARS (Layer 3) | @brd, @prd | 2 tags |
-
-### Auto-Fix Actions (No Confirmation Required)
-
-| Issue | Fix Action |
-|-------|------------|
-| Missing @brd/@prd tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.TT.SS (4-segment) or TYPE-NN format |
-| Broken link | Recalculate path from current location |
-| Missing traceability section | Insert from template |
-
-### Validation Codes Reference
-
-| Code | Description | Severity |
-|------|-------------|----------|
-| XDOC-001 | Referenced requirement ID not found | ERROR |
-| XDOC-002 | Missing cumulative tag | ERROR |
-| XDOC-003 | Upstream document not found | ERROR |
-| XDOC-006 | Tag format invalid | ERROR |
-| XDOC-007 | Gap in cumulative tag chain | ERROR |
-| XDOC-009 | Missing traceability section | ERROR |
-
 ### Quality Gate
 
-**Blocking**: YES - Cannot proceed to next document until Phase 1 validation passes with 0 errors.
+**Blocking**: YES - Cannot proceed to BDD creation until validation passes with 0 errors.
 
 ---
 
@@ -469,47 +568,30 @@ The BDD will:
 - Use Gherkin Given-When-Then format
 - Validate EARS formal requirements with executable tests
 
-## Reference Documents
-
-For supplementary documentation related to EARS artifacts:
-- **Format**: `EARS-REF-NNN_{slug}.md`
-- **Skill**: Use `doc-ref` skill
-- **Validation**: Minimal (non-blocking)
-- **Examples**: Requirements syntax guides, EARS pattern catalogs
-
 ## Related Resources
 
 - **Template**: `ai_dev_flow/EARS/EARS-TEMPLATE.md` (Template Version 3.0, primary authority)
 - **Schema**: `ai_dev_flow/EARS/EARS_SCHEMA.yaml` (machine-readable validation)
-- **Main Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **EARS Creation Rules**: `ai_dev_flow/EARS/EARS_CREATION_RULES.md`
-- **EARS Validation Rules**: `ai_dev_flow/EARS/EARS_VALIDATION_RULES.md`
-- **EARS README**: `ai_dev_flow/EARS/README.md`
+- **Creation Rules**: `ai_dev_flow/EARS/EARS_CREATION_RULES.md`
+- **Validation Rules**: `ai_dev_flow/EARS/EARS_VALIDATION_RULES.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+- **ID Standards**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
+- **Threshold Naming**: `ai_dev_flow/THRESHOLD_NAMING_RULES.md`
 
-**Section Templates** (for documents >25K tokens):
+**Section Templates** (for documents >300 lines):
 - Index template: `ai_dev_flow/EARS/EARS-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_flow/EARS/EARS-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ## Quick Reference
 
-**EARS Purpose**: Formalize requirements with WHEN-THE-SHALL-WITHIN syntax
-
-**Layer**: 3
-
-**Tags Required**: @brd, @prd (2 tags)
-
-**Syntax**: WHEN [trigger] THE [system] SHALL [response] WITHIN [constraint]
-
-**BDD-Ready Score**: ≥90% required for "Approved" status
-
-**Requirement IDs**: `EARS.NN.24.SS` format (unified 4-segment format)
-
-**4 Types**:
-1. Event-Driven (WHEN event)
-2. State-Driven (WHEN state)
-3. Unwanted Behavior (IF unwanted, THEN)
-4. Ubiquitous (THE SHALL - always active)
-
-**Next**: doc-bdd
+| Item | Value |
+|------|-------|
+| **Purpose** | Formalize requirements with WHEN-THE-SHALL-WITHIN syntax |
+| **Layer** | 3 |
+| **Tags Required** | @brd, @prd (2 tags) |
+| **BDD-Ready Score** | ≥90% required for "Approved" status |
+| **Element ID Format** | `EARS.NN.25.SS` (4-segment unified format) |
+| **Source Document** | Single @prd: PRD.NN.EE.SS value |
+| **Downstream References** | Generic names only (no numeric IDs) |
+| **File Size Limit** | 600 lines maximum |
+| **Next Skill** | doc-bdd |

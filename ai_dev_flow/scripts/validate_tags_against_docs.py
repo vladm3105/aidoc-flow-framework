@@ -323,7 +323,8 @@ def validate_cumulative_tags(file_path: str, tags: Dict, artifact_layer: int) ->
 
     required_tags = layer_config['required_tags']
     # Exclude optional/non-chain tags from counting and chain checks
-    present_tags = set(tags.keys()) - {'impl-status', 'icon'}
+    # Custom supplementary tags (related-impl, depends-ctr, icon-role) are not part of cumulative hierarchy
+    present_tags = set(tags.keys()) - {'impl-status', 'icon', 'related-impl', 'depends-ctr', 'icon-role'}
 
     # Calculate expected tag count (accounting for optional layers)
     if 'tag_count' in layer_config:

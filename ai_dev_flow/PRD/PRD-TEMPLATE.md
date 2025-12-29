@@ -1108,6 +1108,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 #### External References
 
+<!-- VALIDATOR:IGNORE-LINKS-START -->
 **Product Strategy Documents**:
 - [Strategy_Document: e.g., Product Vision, Strategic Plan](../../[domain_folder]/[strategy_doc].md) - Strategic foundation
 - [Business_Rules_Document: e.g., Business Logic, Domain Rules](../../[domain_folder]/[business_rules].md) - Business logic
@@ -1115,6 +1116,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 **Architecture Documentation**:
 - [System_Architecture: e.g., System Design, Technical Blueprint](../../docs/[system_architecture].md) - System design
 - [Data_Architecture: e.g., Data Model, Database Design](../../docs/[data_architecture].md) - Data architecture
+<!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Business Requirements**:
 <!-- VALIDATOR:IGNORE-LINKS-START -->

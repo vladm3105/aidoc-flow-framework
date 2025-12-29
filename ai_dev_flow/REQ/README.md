@@ -26,6 +26,8 @@ custom_fields:
 
 Requirements (REQ) documents capture atomic, testable requirements that serve as the granular specification layer between high-level Product Requirements Documents (PRDs) and implementation. REQs transform business intentions into precise, verifiable statements that drive technical specification and testing.
 
+> **Terminology Disambiguation**: REQ documents represent **Atomic Requirements** (Layer 7) - single, granular, testable requirements derived from business-level Functional Requirements in BRD (Layer 1). While BRDs use "Functional Requirements" for high-level capability statements, REQs decompose these into implementation-ready specifications.
+
 ## Purpose
 
 REQs create the **formal contract** for system behavior by:

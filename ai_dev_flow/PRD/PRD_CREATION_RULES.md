@@ -28,6 +28,8 @@ custom_fields:
 
 # PRD Creation Rules
 
+> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
 **Version**: 2.1
 **Date**: 2025-11-26
 **Last Updated**: 2025-11-30
@@ -65,7 +67,7 @@ custom_fields:
 
 ## 1. Document Control
 
-Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 **Purpose**: Establishes document metadata, versioning, and dual scoring requirements for PRD quality gates.
 
@@ -257,7 +259,7 @@ Every PRD must contain these exact 21 sections (1-21) in order. Section numberin
 > - `METRIC-XXX` → Use `PRD.NN.08.SS`
 > - `Feature F-XXX` → Use `PRD.NN.09.SS`
 >
-> **Reference**: `ai_dev_flow/ID_NAMING_STANDARDS.md` lines 783-793
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 
@@ -527,10 +529,10 @@ Section 18 identifies topics requiring formal ADR documentation.
 **Running Validation**:
 ```bash
 # Validate single PRD
-python ai_dev_flow/scripts/validate_forward_references.py docs/PRD/PRD-01_slug.md
+python3 scripts/validate_forward_references.py PRD/PRD-01_slug.md
 
 # Validate all PRDs
-python ai_dev_flow/scripts/validate_forward_references.py docs/PRD/
+python3 scripts/validate_forward_references.py PRD/
 ```
 
 **Reference**: See [VALIDATION_STANDARDS.md](../VALIDATION_STANDARDS.md) for complete error code registry.
@@ -696,7 +698,7 @@ find docs/PRD -name "PRD-*.md" -exec python scripts/validate_prd.py {} \;
 ```
 
 **Template Location**: [PRD-TEMPLATE.md](PRD-TEMPLATE.md)
-**Validation Rules**: [PRD-VALIDATION_RULES.md](PRD-VALIDATION_RULES.md)
+**Validation Rules**: [PRD_VALIDATION_RULES.md](PRD_VALIDATION_RULES.md)
 **Index**: [PRD-000_index.md](PRD-000_index.md)
 
 ---
