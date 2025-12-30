@@ -540,7 +540,7 @@ api:
 ### 16.2 Downstream Artifacts
 
 - **System Requirements**: SYS-01 - API Specifications
-- **Specifications**: SPEC-002 - OpenAPI Specification
+- **Specifications**: SPEC-02 - OpenAPI Specification
 - **Contracts**: CTR-01 - API Contract Definition
 - **Implementation**: `src/api/v2/`
 

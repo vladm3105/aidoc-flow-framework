@@ -29,8 +29,8 @@ custom_fields:
 | **Author** | AI Assistant |
 | **Estimated Effort** | 4-6 hours |
 | **Complexity** | 3 (moderate implementation) |
-| **Parent TASKS** | TASKS-001 |
-| **Related Artifacts** | SPEC-001, REQ-001, ADR-001, BDD-001 |
+| **Parent TASKS** | TASKS-01 |
+| **Related Artifacts** | SPEC-01, REQ-01, ADR-01, BDD-01 |
 | **IPLAN-Ready Score** | ✅ 95% |
 
 ---
@@ -51,7 +51,7 @@ custom_fields:
 
 ## 3. Objective
 
-Implement TASKS-001 User Authentication API, creating JWT-based authentication with login, logout, and token refresh endpoints.
+Implement TASKS-01 User Authentication API, creating JWT-based authentication with login, logout, and token refresh endpoints.
 
 **Deliverables**:
 - 3 Python modules (auth_service, token_manager, user_validator)
@@ -65,9 +65,9 @@ Implement TASKS-001 User Authentication API, creating JWT-based authentication w
 ### 4.1 Current State Analysis
 
 **Documentation Status**: ✅ 100% Complete
-- SPEC-001: Authentication service specification (approved)
-- REQ-001: Security requirements (approved)
-- BDD-001: Authentication scenarios defined
+- SPEC-01: Authentication service specification (approved)
+- REQ-01: Security requirements (approved)
+- BDD-01: Authentication scenarios defined
 
 **Code Status**: ⚠️ 0% Complete
 - No existing implementation
@@ -76,12 +76,12 @@ Implement TASKS-001 User Authentication API, creating JWT-based authentication w
 
 ### 4.2 Key Technical Decisions
 
-**Architecture** (from ADR-001):
+**Architecture** (from ADR-01):
 - JWT tokens with RS256 signing
 - Redis for token blacklist
 - Rate limiting: 10 requests/minute per IP
 
-**Error Handling** (from SPEC-001):
+**Error Handling** (from SPEC-01):
 - Custom AuthenticationError hierarchy
 - Structured error responses with codes
 
@@ -148,7 +148,7 @@ poetry show | grep -E "pyjwt|redis|bcrypt"
 
 For each module:
 1. Create file with docstring and imports
-2. Implement classes/functions per SPEC-001
+2. Implement classes/functions per SPEC-01
 3. Run type checking: `mypy src/auth/`
 
 **Step 4: Run Tests**
@@ -184,8 +184,8 @@ feat(auth): implement JWT authentication service
 - Unit test coverage: 87%
 - Integration test coverage: 78%
 
-Implements: TASKS-001
-Satisfies: REQ-001
+Implements: TASKS-01
+Satisfies: REQ-01
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
@@ -213,14 +213,14 @@ EOF
 ## 7. Traceability Tags
 
 ```markdown
-@brd: BRD-001
-@prd: PRD-001
+@brd: BRD-01
+@prd: PRD-01
 @ears: EARS.01.24.01
 @bdd: BDD.01.13.01
-@adr: ADR-001
-@sys: SYS-001
-@req: REQ-001
-@spec: SPEC-001
+@adr: ADR-01
+@sys: SYS-01
+@req: REQ-01
+@spec: SPEC-01
 @tasks: TASKS.01.29.01
 ```
 
@@ -228,7 +228,7 @@ EOF
 
 ## 8. Success Criteria
 
-- [ ] All modules implemented per SPEC-001
+- [ ] All modules implemented per SPEC-01
 - [ ] Unit test coverage ≥85%
 - [ ] Integration test coverage ≥75%
 - [ ] All quality checks pass

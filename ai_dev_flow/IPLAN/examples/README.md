@@ -108,7 +108,7 @@ When contributing new examples:
 
 | ID | Title | Category | Complexity | Related Artifacts |
 |----|-------|----------|------------|-------------------|
-| [IPLAN-01](IPLAN-01_example.md) | User Authentication API Implementation | API Integration | 3 (moderate) | TASKS-001, SPEC-001, REQ-001, ADR-001, BDD-001 |
+| [IPLAN-01](IPLAN-01_example.md) | User Authentication API Implementation | API Integration | 3 (moderate) | TASKS-01, SPEC-01, REQ-01, ADR-01, BDD-01 |
 
 **Key Learning Points**:
 - JWT-based authentication implementation

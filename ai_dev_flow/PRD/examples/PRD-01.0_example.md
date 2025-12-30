@@ -1,5 +1,5 @@
 ---
-title: "PRD-001: User Authentication System"
+title: "PRD-01: User Authentication System"
 tags:
   - prd
   - layer-2-artifact
@@ -13,7 +13,7 @@ custom_fields:
   development_status: active
 ---
 
-# PRD-001: User Authentication System
+# PRD-01: User Authentication System
 
 **Position**: Layer 2 (Product Requirements) - defines product requirements from BRD business needs.
 
@@ -133,7 +133,7 @@ Users currently authenticate via basic username/password without MFA, creating s
 ## 7. Threshold Registry
 
 ```yaml
-# PRD-001 Threshold Registry
+# PRD-01 Threshold Registry
 # Format: @threshold: PRD.01.category.subcategory.key
 
 performance:
@@ -191,12 +191,12 @@ quality:
 
 ### 10.2 Downstream Artifacts
 
-- EARS-001: Authentication requirements syntax
-- BDD-001: Authentication test scenarios
-- ADR-001: JWT architecture decision
-- SYS-001: System authentication requirements
-- REQ-001: Atomic authentication requirements
-- SPEC-001: Authentication service specification
+- EARS-01: Authentication requirements syntax
+- BDD-01: Authentication test scenarios
+- ADR-01: JWT architecture decision
+- SYS-01: System authentication requirements
+- REQ-01: Atomic authentication requirements
+- SPEC-01: Authentication service specification
 
 ### 10.3 Traceability Tags
 

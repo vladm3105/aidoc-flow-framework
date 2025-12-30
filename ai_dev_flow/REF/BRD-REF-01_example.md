@@ -1,5 +1,5 @@
 ---
-title: "BRD-REF-001: Industry Authentication Standards Reference"
+title: "BRD-REF-01: Industry Authentication Standards Reference"
 tags:
   - ref
   - supplementary-documentation
@@ -14,7 +14,7 @@ custom_fields:
   valid_parent_types: [BRD]
 ---
 
-# BRD-REF-001: Industry Authentication Standards Reference
+# BRD-REF-01: Industry Authentication Standards Reference
 
 > **Scope**: REF documents are limited to **BRD and ADR** types only.
 > **Ready-Scores**: NOT APPLICABLE - REF documents use free format with no scores.
@@ -41,7 +41,7 @@ custom_fields:
 
 ### 1.1 Purpose
 
-This reference document provides an overview of industry authentication standards and compliance requirements that inform BRD-001 security decisions.
+This reference document provides an overview of industry authentication standards and compliance requirements that inform BRD-01 security decisions.
 
 ### 1.2 Scope
 
@@ -106,8 +106,8 @@ Covers NIST, OWASP, and SOC 2 authentication guidelines. Does not cover implemen
 
 | Document Type | Document ID | Title | Relationship |
 |---------------|-------------|-------|--------------|
-| BRD | BRD-001 | Platform Security Requirements | References standards |
-| ADR | ADR-001 | JWT Authentication Decision | Implements guidelines |
+| BRD | BRD-01 | Platform Security Requirements | References standards |
+| ADR | ADR-01 | JWT Authentication Decision | Implements guidelines |
 
 ---
 

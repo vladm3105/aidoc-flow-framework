@@ -173,7 +173,7 @@ Phased migration over 4 months:
 
 | Requirement ID | Description | How This Decision Satisfies It |
 |----------------|-------------|-------------------------------|
-| PRD-001 | High-volume order processing | PostgreSQL partitioning and indexing supports 10K+ TPS |
+| PRD-01 | High-volume order processing | PostgreSQL partitioning and indexing supports 10K+ TPS |
 | PRD-015 | Real-time order status | Streaming replication provides < 100ms replica lag |
 | EARS-012 | ACID transaction support | PostgreSQL native ACID compliance |
 | BDD-01.2 | Order state transitions | Database constraints enforce valid state machines |
@@ -200,7 +200,7 @@ Phased migration over 4 months:
 ### 7.1 Positive Outcomes
 
 **Requirements Satisfaction:**
-- Satisfies PRD-001, PRD-015 through optimized query execution and replication
+- Satisfies PRD-01, PRD-015 through optimized query execution and replication
 - Addresses performance requirements with 50% headroom above targets
 
 **Technical Benefits:**
@@ -440,7 +440,7 @@ database:
 ### 16.2 Downstream Artifacts
 
 - **System Requirements**: SYS-01 - Order Management System Requirements
-- **Specifications**: SPEC-001 - Database Schema Specification
+- **Specifications**: SPEC-01 - Database Schema Specification
 - **Implementation**: `src/infrastructure/database/postgresql.py`
 
 ### 16.3 Traceability Tags

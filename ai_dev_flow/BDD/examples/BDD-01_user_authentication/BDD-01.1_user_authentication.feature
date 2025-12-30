@@ -22,8 +22,8 @@
 @brd: BRD.01.01.10
 @prd: PRD.01.07.01
 @ears: EARS.01.24.01
-@requirement: REQ-001
-@adr: ADR-001
+@requirement: REQ-01
+@adr: ADR-01
 @bdd: BDD-01.1:scenarios
 @section: 1.1
 @parent_doc: BDD-01
