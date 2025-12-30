@@ -130,13 +130,20 @@ ls -la work_plans/  # Verify work_plans directory
 # Point to the framework checkout (adjust for your environment)
 FRAMEWORK_ROOT=/path/to/ai_dev_flow
 
-# Copy all templates into your project docs/ root
-cp -r "$FRAMEWORK_ROOT"/* docs/
+# Create ai_dev_flow directory for framework templates
+mkdir -p ai_dev_flow
+
+# Copy all templates into your project ai_dev_flow/ directory
+cp -r "$FRAMEWORK_ROOT"/* ai_dev_flow/
 
 # Copy validation scripts
 mkdir -p scripts
 cp "$FRAMEWORK_ROOT/scripts"/*.py scripts/
 ```
+
+**Directory Purpose**:
+- `ai_dev_flow/` = Framework templates (BRD-TEMPLATE.md, examples/, etc.)
+- `docs/` = Project documentation (BRD-01.md, PRD-01.md, etc.)
 
 ---
 
@@ -954,7 +961,8 @@ mkdir -p scripts work_plans
 
 # Step 3: Copy Templates
 FRAMEWORK_ROOT=/path/to/ai_dev_flow
-cp -r "$FRAMEWORK_ROOT"/* docs/
+mkdir -p ai_dev_flow
+cp -r "$FRAMEWORK_ROOT"/* ai_dev_flow/
 cp "$FRAMEWORK_ROOT/scripts"/*.py scripts/
 
 # Step 4: Apply Domain Config

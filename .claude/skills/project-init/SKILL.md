@@ -276,12 +276,19 @@ ls -la work_plans/  # Verify work_plans directory
 
 **Commands**:
 ```bash
+# Create ai_dev_flow directory for framework templates
+mkdir -p ai_dev_flow
+
 # Copy all templates (if framework templates exist)
-cp -r {project_root}/ai_dev_flow/* docs/
+cp -r {framework_root}/ai_dev_flow/* ai_dev_flow/
 
 # Copy validation scripts
-cp {project_root}/ai_dev_flow/scripts/*.py scripts/
+cp {framework_root}/ai_dev_flow/scripts/*.py scripts/
 ```
+
+**Directory Purpose**:
+- `ai_dev_flow/` = Framework templates (BRD-TEMPLATE.md, examples/, etc.)
+- `docs/` = Project documentation (BRD-01.md, PRD-01.md, etc.)
 
 **Note**: This step is optional. Templates can also be referenced directly from framework location.
 
