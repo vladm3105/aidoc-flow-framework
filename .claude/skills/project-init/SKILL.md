@@ -151,7 +151,7 @@ cd {project_root}
 **Commands to Execute**:
 
 ```bash
-# Core 16-layer architecture (Layers 0-15) with 12 artifact directories (BRD through IPLAN)
+# Core 12-layer architecture artifact directories (BRD through IPLAN)
 mkdir -p docs/BRD
 mkdir -p docs/PRD
 mkdir -p docs/EARS
@@ -165,49 +165,8 @@ mkdir -p docs/SPEC
 mkdir -p docs/TASKS
 mkdir -p docs/IPLAN
 
-# Standard requirements subdirectories (ALL PROJECTS)
-mkdir -p docs/REQ/api
-mkdir -p docs/REQ/auth
-mkdir -p docs/REQ/data
-mkdir -p docs/REQ/core
-mkdir -p docs/REQ/integration
-mkdir -p docs/REQ/monitoring
-mkdir -p docs/REQ/reporting
-mkdir -p docs/REQ/security
-mkdir -p docs/REQ/ui
-
-# Domain-specific subdirectories (based on Step 1 selection)
-# Financial Services:
-mkdir -p docs/REQ/risk
-mkdir -p docs/REQ/trading
-mkdir -p docs/REQ/portfolio
-mkdir -p docs/REQ/compliance
-mkdir -p docs/REQ/ml
-
-# Software/SaaS:
-mkdir -p docs/REQ/tenant
-mkdir -p docs/REQ/subscription
-mkdir -p docs/REQ/billing
-mkdir -p docs/REQ/workspace
-
-# Healthcare:
-mkdir -p docs/REQ/patient
-mkdir -p docs/REQ/clinical
-mkdir -p docs/REQ/ehr
-mkdir -p docs/REQ/hipaa
-
-# E-commerce:
-mkdir -p docs/REQ/catalog
-mkdir -p docs/REQ/cart
-mkdir -p docs/REQ/order
-mkdir -p docs/REQ/payment
-mkdir -p docs/REQ/inventory
-
-# IoT:
-mkdir -p docs/REQ/device
-mkdir -p docs/REQ/telemetry
-mkdir -p docs/REQ/firmware
-mkdir -p docs/REQ/edge
+# NOTE: REQ and CTR subdirectories are created on-demand by doc-req and doc-ctr skills
+# when documents are generated. This ensures folders match actual project needs.
 
 # Scripts directory
 mkdir -p scripts
@@ -219,7 +178,6 @@ mkdir -p work_plans
 **Validation**:
 ```bash
 ls -la docs/  # Verify 12 artifact directories created
-ls -la docs/REQ/  # Verify subdirectories
 ls -la work_plans/  # Verify work_plans directory
 ```
 

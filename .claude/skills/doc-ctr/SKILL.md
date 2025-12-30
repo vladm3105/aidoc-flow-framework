@@ -545,12 +545,25 @@ Check `ai_dev_flow/CTR/` for next available ID number.
 
 ### Step 3: Create CTR Files (Dual Format)
 
-**Markdown file**: `ai_dev_flow/CTR/CTR-NN_{slug}.md`
-**YAML file**: `ai_dev_flow/CTR/CTR-NN_{slug}.yaml`
+**Location Options**:
+- Flat: `docs/CTR/CTR-NN_{slug}.md` + `.yaml`
+- Service-based: `docs/CTR/{service_type}/CTR-NN_{slug}.md` + `.yaml`
+
+**On-Demand Folder Creation**: Before saving, create the target directory if needed:
+```bash
+# For 10+ contracts, create service-type subdirectory
+mkdir -p docs/CTR/{service_type}/
+```
+
+**Service Types** (when 10+ contracts):
+- `agents/` - Agent-to-agent communication
+- `mcp/` - MCP server contracts
+- `infra/` - Infrastructure services
+- `shared/` - Cross-cutting contracts
 
 **Example**:
-- `ai_dev_flow/CTR/CTR-01_data_validation.md`
-- `ai_dev_flow/CTR/CTR-01_data_validation.yaml`
+- Flat: `docs/CTR/CTR-01_data_validation.md` + `.yaml`
+- Subdirectory: `docs/CTR/agents/CTR-01_data_validation.md` + `.yaml`
 
 ### Step 4: Fill Document Control Section (Markdown)
 

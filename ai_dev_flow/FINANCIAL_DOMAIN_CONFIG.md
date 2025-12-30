@@ -258,38 +258,17 @@ find docs/SPEC/ -type f -name "*.yaml" -exec sed -i \
 
 ### Financial-Specific Subdirectories
 
-AI Assistant **MUST** create these subdirectories under `docs/REQ/`:
+The following subdirectories are recommended for Financial Services projects. They are **created on-demand** by the `doc-req` skill when REQ documents are generated:
 
-```bash
-mkdir -p docs/REQ/risk/          # Risk management requirements
-mkdir -p docs/REQ/risk/lim/      # resource limits
-mkdir -p docs/REQ/risk/var/      # VaR calculations
-mkdir -p docs/REQ/risk/stress/   # Stress testing
+| Subdirectory | Description | Child Directories |
+|--------------|-------------|-------------------|
+| `docs/REQ/risk/` | Risk management requirements | `lim/`, `var/`, `stress/` |
+| `docs/REQ/trading/` | Operation execution requirements | `ord/`, `exec/`, `rou/` |
+| `docs/REQ/collection/` | Collection management | `alloc/`, `rebal/`, `perf/` |
+| `docs/REQ/compliance/` | Regulatory compliance | `regulatory/`, `compliance/`, `audit/` |
+| `docs/REQ/ml/` | ML model requirements | `pricing/`, `sentiment/`, `regime/` |
 
-mkdir -p docs/REQ/trading/       # operation execution requirements
-mkdir -p docs/REQ/trading/ord/   # Order management
-mkdir -p docs/REQ/trading/exec/  # Execution algorithms
-mkdir -p docs/REQ/trading/rou/   # Order routing
-
-mkdir -p docs/REQ/collection/     # collection management
-mkdir -p docs/REQ/collection/alloc/   # Asset allocation
-mkdir -p docs/REQ/collection/rebal/   # Rebalancing
-mkdir -p docs/REQ/collection/perf/    # Performance attribution
-
-mkdir -p docs/REQ/compliance/    # Regulatory compliance
-mkdir -p docs/REQ/compliance/regulatory/    # regulatory rules
-mkdir -p docs/REQ/compliance/compliance/  # compliance rules
-mkdir -p docs/REQ/compliance/audit/  # Audit trails
-
-mkdir -p docs/REQ/ml/            # ML model requirements
-mkdir -p docs/REQ/ml/pricing/    # Pricing models
-mkdir -p docs/REQ/ml/sentiment/  # Sentiment analysis
-mkdir -p docs/REQ/ml/regime/     # system state detection
-
-# Support directories
-mkdir -p scripts                 # Validation and utility scripts
-mkdir -p work_plans              # Implementation plans (/save-plan output)
-```
+**Note**: Folders are NOT created at project initialization. The `doc-req` skill creates the appropriate folder structure when generating a REQ document, ensuring only used folders exist.
 
 ### Example Requirements Organization
 

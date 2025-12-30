@@ -335,8 +335,23 @@ Check `ai_dev_flow/REQ/` for next available ID number.
 
 ### Step 3: Create REQ File
 
-**Location**: `docs/REQ/REQ-{NN}_{slug}.md` (flat structure)
-**Alternative**: `docs/REQ/{domain}/{subdomain}/REQ-NN_{slug}.md` (domain-based)
+**Location Options**:
+- Flat: `docs/REQ/REQ-{NN}_{slug}.md`
+- Domain-based: `docs/REQ/{domain}/REQ-NN_{slug}.md`
+- Subdomain: `docs/REQ/{domain}/{subdomain}/REQ-NN_{slug}.md`
+
+**On-Demand Folder Creation**: Before saving the document, create the target directory:
+```bash
+# Create target directory if it doesn't exist
+mkdir -p docs/REQ/{domain}/         # For domain-based structure
+# OR
+mkdir -p docs/REQ/{domain}/{subdomain}/  # For subdomain structure
+```
+
+**Domain Selection**: Use domain from project configuration or upstream SYS context:
+- Financial: `risk/`, `trading/`, `collection/`, `compliance/`, `ml/`
+- SaaS: `tenant/`, `subscription/`, `billing/`, `workspace/`
+- Generic: `api/`, `auth/`, `data/`, `core/`, `integration/`
 
 **Section Files**: For large requirements (>50KB), use Section Files format: `REQ-NN.S_section_title.md` (S = section number).
 

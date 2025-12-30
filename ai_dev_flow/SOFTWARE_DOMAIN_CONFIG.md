@@ -233,27 +233,16 @@ find docs/SPEC/ -type f -name "*.yaml" -exec sed -i \
 
 ### Software-Specific Subdirectories
 
-```bash
-mkdir -p docs/REQ/tenant/           # Multi-tenancy requirements
-mkdir -p docs/REQ/tenant/isolation/ # Data isolation
-mkdir -p docs/REQ/tenant/onboard/   # Tenant onboarding
+The following subdirectories are recommended for Software/SaaS projects. They are **created on-demand** by the `doc-req` skill when REQ documents are generated:
 
-mkdir -p docs/REQ/subscription/     # Subscription management
-mkdir -p docs/REQ/subscription/plan/    # Plan management
-mkdir -p docs/REQ/subscription/billing/ # Billing & invoicing
+| Subdirectory | Description | Child Directories |
+|--------------|-------------|-------------------|
+| `docs/REQ/tenant/` | Multi-tenancy requirements | `isolation/`, `onboard/` |
+| `docs/REQ/subscription/` | Subscription management | `plan/`, `billing/` |
+| `docs/REQ/billing/` | Billing engine | `metered/`, `invoice/` |
+| `docs/REQ/workspace/` | Workspace features | `collab/`, `perm/` |
 
-mkdir -p docs/REQ/billing/          # Billing engine
-mkdir -p docs/REQ/billing/metered/  # Usage-based billing
-mkdir -p docs/REQ/billing/invoice/  # Invoice generation
-
-mkdir -p docs/REQ/workspace/        # Workspace features
-mkdir -p docs/REQ/workspace/collab/ # Collaboration tools
-mkdir -p docs/REQ/workspace/perm/   # Permissions
-
-# Support directories
-mkdir -p scripts                    # Validation and utility scripts
-mkdir -p work_plans                 # Implementation plans (/save-plan output)
-```
+**Note**: Folders are NOT created at project initialization. The `doc-req` skill creates the appropriate folder structure when generating a REQ document, ensuring only used folders exist.
 
 ---
 

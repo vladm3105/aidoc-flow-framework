@@ -72,7 +72,7 @@ Options:
 ```
 ✓ Domain selected: Financial Services
 ✓ Loading configuration: FINANCIAL_DOMAIN_CONFIG.md
-✓ Domain-specific subdirectories: risk, operations, data, compliance, ml
+✓ Domain-specific REQ subdirectories will be created on-demand during document generation
 ```
 
 ---
@@ -90,18 +90,11 @@ cd /opt/data/project_name
 
 **Commands**:
 ```bash
-# Core 16-layer architecture (13 documentation artifacts + 3 execution layers)
+# Core 12-layer architecture artifact directories (BRD through IPLAN)
 mkdir -p docs/BRD docs/PRD docs/EARS docs/BDD docs/ADR docs/SYS docs/REQ docs/IMPL docs/CTR docs/SPEC docs/TASKS docs/IPLAN
 
-# Standard requirements subdirectories (ALL PROJECTS)
-mkdir -p docs/REQ/api docs/REQ/auth docs/REQ/data docs/REQ/core docs/REQ/integration docs/REQ/monitoring docs/REQ/reporting docs/REQ/security docs/REQ/ui
-
-# Domain-specific subdirectories (based on Step 1 selection)
-# Financial Services:
-mkdir -p docs/REQ/core docs/REQ/operations docs/REQ/collection docs/REQ/compliance docs/REQ/ml
-
-# Software/SaaS:
-mkdir -p docs/REQ/tenant docs/REQ/subscription docs/REQ/billing docs/REQ/workspace
+# NOTE: REQ and CTR subdirectories are created on-demand by doc-req and doc-ctr skills
+# when documents are generated. This ensures folders match actual project needs.
 
 # Support directories
 mkdir -p scripts
@@ -112,8 +105,7 @@ Note: `work_plans/` is an optional helper directory for scratch operational note
 
 **Validation**:
 ```bash
-ls -la docs/  # Verify 13 artifact directories created (BRD through IPLAN)
-ls -la docs/REQ/  # Verify subdirectories
+ls -la docs/  # Verify 12 artifact directories created (BRD through IPLAN)
 ls -la work_plans/  # Verify work_plans directory
 ```
 
@@ -954,10 +946,9 @@ Next: Review PROJECT_KICKOFF_TASKS.md for Day 1-7 action plan
 # AI Assistant runs DOMAIN_SELECTION_QUESTIONNAIRE.md
 
 # Step 2: Create Folders
-mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
-mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
+mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
 mkdir -p scripts work_plans
-# Add domain-specific subdirectories based on Step 1
+# NOTE: REQ/CTR subdirectories created on-demand by doc-req/doc-ctr skills
 
 # Step 3: Copy Templates
 FRAMEWORK_ROOT=/path/to/ai_dev_flow
