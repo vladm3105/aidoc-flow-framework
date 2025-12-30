@@ -78,6 +78,8 @@ Common technical terminology explained for business stakeholders.
 |------|------------|---------------------|
 | API | Application Programming Interface - method for systems to communicate and exchange data | Partner integrations, section 6 FRs |
 | Integration | Connection between two or more systems to share data and functionality | Partner ecosystems, external systems |
+| MCP | Model Context Protocol - standard protocol enabling AI assistants to connect with external data sources and tools | AI agent integrations, tool connectivity FRs |
+| RAG | Retrieval-Augmented Generation - technique combining information retrieval with LLM generation for contextual responses | AI/ML features, knowledge base FRs |
 | SLA | Service Level Agreement - commitment between service provider and client defining service expectations | Quality Attributes section 7.5, performance requirements |
 | Webhook | Automated notification sent from one system to another when specific events occur | Status updates, real-time integrations |
 
@@ -91,6 +93,7 @@ Industry/domain terminology requiring definition for cross-domain understanding.
 |------|------------|--------|---------------------|
 | AML | Anti-Money Laundering - regulations and procedures preventing illicit financial activity | FinTech/Compliance | Transaction monitoring FRs, section 6 |
 | KYC | Know Your Customer - identity verification process required by financial regulations | FinTech/Compliance | User onboarding, section 6 FRs |
+| NAV | Net Asset Value - total value of assets minus liabilities, typically per share/unit | Financial Services | Portfolio valuation, fund accounting BRDs |
 | Remittance | Transfer of money by foreign worker to individual in home country | Financial Services | Cross-border payment BRDs |
 
 ---
@@ -114,8 +117,11 @@ Standard abbreviations used across BRD framework.
 | IPLAN | Implementation Plan | SDD Framework |
 | KPI | Key Performance Indicator | Business |
 | KYC | Know Your Customer | Compliance |
+| MCP | Model Context Protocol | Technical |
+| NAV | Net Asset Value | Financial |
 | QA | Quality Attribute | BRD Framework |
 | PRD | Product Requirements Document | SDD Framework |
+| RAG | Retrieval-Augmented Generation | Technical |
 | REQ | Atomic Requirement | SDD Framework |
 | ROI | Return on Investment | Business |
 | SLA | Service Level Agreement | Technical |
@@ -162,17 +168,18 @@ Regulatory, industry, and technical standards referenced in BRDs.
 | Item | Details |
 |------|---------|
 | **Document ID** | BRD-000_GLOSSARY |
-| **Document Version** | 1.0 |
+| **Document Version** | 1.1 |
 | **Creation Date** | 2025-11-26 |
 | **Document Owner** | SDD Framework Team |
 | **Maintained By** | Business Analyst Team |
 | **Review Frequency** | Quarterly or with framework updates |
-| **Last Reviewed** | 2025-11-26 |
+| **Last Reviewed** | 2025-12-30 |
 
 ### Revision History
 
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
+| 1.1 | 2025-12-30 | Claude | Added MCP, NAV, RAG terms per audit recommendation | Framework Lead |
 | 1.0 | 2025-11-26 | Claude | Initial master glossary creation | Framework Lead |
 
 ---
