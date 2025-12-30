@@ -1,5 +1,4 @@
 ---
-name: "doc-ref: Create Reference Documents (Supplementary)"
 name: doc-ref
 description: Create Reference Documents (REF) - supplementary documentation that doesn't participate in formal traceability chain
 tags:
@@ -33,30 +32,30 @@ Create **Reference Documents (REF)** - supplementary documentation for BRD and A
 
 ## Naming Convention
 
-**Format**: `{TYPE}-REF-NNN_{slug}.md`
+**Format**: `{TYPE}-REF-DOC_NUM_{slug}.md`
 
 | Component | Description | Example |
 |-----------|-------------|---------|
 | `{TYPE}` | Parent artifact type | **BRD or ADR only** |
 | `REF` | Reference document indicator | REF |
-| `NNN` | 3-digit sequence number | 001, 002, 003 |
+| `DOC_NUM` | Variable-length sequence (2+ digits) | 01, 02, 100, 1000 |
 | `{slug}` | Descriptive slug (snake_case) | project_overview |
 
 **Scope**: REF documents are LIMITED to **BRD and ADR artifact types ONLY**.
 
 **Examples**:
-- `BRD-REF-001_project_overview.md` - Business context
-- `BRD-REF-002_strategic_vision.md` - Strategic vision
-- `ADR-REF-001_technology_stack_summary.md` - Tech overview
-- `ADR-REF-002_infrastructure_guide.md` - Infrastructure reference
+- `BRD-REF-01_project_overview.md` - Business context
+- `BRD-REF-02_strategic_vision.md` - Strategic vision
+- `ADR-REF-01_technology_stack_summary.md` - Tech overview
+- `ADR-REF-02_infrastructure_guide.md` - Infrastructure reference
 
-**Numbering**: Independent sequence per parent TYPE
-- BRD-REF-001, BRD-REF-002 (BRD sequence)
-- ADR-REF-001, ADR-REF-002 (ADR sequence - separate from BRD)
+**Numbering**: Independent sequence per parent TYPE (variable-length: 01-99, 100-999, 1000+)
+- BRD-REF-01, BRD-REF-02 (BRD sequence)
+- ADR-REF-01, ADR-REF-02 (ADR sequence - separate from BRD)
 
 **Location**: Within parent TYPE directory
-- `docs/BRD/BRD-REF-001_project_overview.md`
-- `docs/ADR/ADR-REF-001_technology_stack_summary.md`
+- `docs/BRD/BRD-REF-01_project_overview.md`
+- `docs/ADR/ADR-REF-01_technology_stack_summary.md`
 
 ## When to Use This Skill
 
@@ -92,8 +91,8 @@ Use `doc-ref` when creating supplementary documentation that:
 ### Step 1: Determine Parent Type
 
 Identify which artifact type this reference document supports (**BRD or ADR only**):
-- Business context → BRD-REF-NNN
-- Architecture context → ADR-REF-NNN
+- Business context → BRD-REF-NN
+- Architecture context → ADR-REF-NN
 
 ### Step 2: Check Existing REF Documents
 
@@ -113,8 +112,8 @@ ls docs/BRD/*-REF-*.md 2>/dev/null | sort -V | tail -1
 ### Step 4: Create Document
 
 1. Copy template: `ai_dev_flow/REF-TEMPLATE.md`
-2. Rename to: `{TYPE}-REF-NNN_{slug}.md`
-3. Update H1 heading: `# {TYPE}-REF-NNN: [Document Title]`
+2. Rename to: `{TYPE}-REF-NN_{slug}.md` (NN = next sequence number, 2+ digits)
+3. Update H1 heading: `# {TYPE}-REF-NN: [Document Title]`
 4. Fill Document Control section
 5. Write Introduction
 6. Add content sections as needed
@@ -124,8 +123,18 @@ ls docs/BRD/*-REF-*.md 2>/dev/null | sort -V | tail -1
 
 Save in parent TYPE directory:
 ```
-docs/{TYPE}/{TYPE}-REF-NNN_{slug}.md
+docs/{TYPE}/{TYPE}-REF-NN_{slug}.md
 ```
+
+## Element IDs (Not Applicable)
+
+REF documents are **free-format supplementary documents** and do NOT use element IDs:
+
+- **No element type codes** (01-31 codes from ID_NAMING_STANDARDS.md do not apply)
+- **No sub-element IDs** (no `TYPE.NN.TT.SS` pattern)
+- Content sections can be organized freely without formal ID structure
+
+**Rationale**: REF documents serve as reference targets that other documents link to. They provide supporting information but do not define formal requirements or architecture decisions requiring element-level traceability.
 
 ## Validation Rules
 
@@ -133,7 +142,7 @@ docs/{TYPE}/{TYPE}-REF-NNN_{slug}.md
 
 | Check | Description |
 |-------|-------------|
-| H1 ID Match | H1 must match pattern `{TYPE}-REF-NNN: Title` |
+| H1 ID Match | H1 must match pattern `{TYPE}-REF-NN: Title` |
 | Document Control | Must have Document Control section |
 | Revision History | Must have Document Revision History |
 | Introduction | Must have Introduction section |
@@ -153,7 +162,7 @@ docs/{TYPE}/{TYPE}-REF-NNN_{slug}.md
 
 General project description for stakeholders:
 ```markdown
-# BRD-REF-001: Project Overview
+# BRD-REF-01: Project Overview
 
 ## Document Control
 ...
@@ -167,7 +176,7 @@ This document provides a high-level overview of the project for stakeholder refe
 
 Strategic roadmap and vision:
 ```markdown
-# BRD-REF-002: Strategic Vision
+# BRD-REF-02: Strategic Vision
 
 ## Document Control
 ...
@@ -181,7 +190,7 @@ This document outlines the strategic vision and roadmap for the project...
 
 Consolidated architecture reference:
 ```markdown
-# ADR-REF-001: Technology Stack Summary
+# ADR-REF-01: Technology Stack Summary
 
 ## Document Control
 ...
@@ -195,7 +204,7 @@ This document summarizes the technology decisions documented across ADRs...
 
 Infrastructure reference documentation:
 ```markdown
-# ADR-REF-002: Infrastructure Guide
+# ADR-REF-02: Infrastructure Guide
 
 ## Document Control
 ...
@@ -225,7 +234,7 @@ Reference guide for infrastructure components and deployment architecture...
 | Validation | Full (blocking) | Minimal (4 checks only) |
 | Quality Gates | Must pass | Exempt |
 | Workflow Position | Defined layer | No layer |
-| Numbering | TYPE-NN | {TYPE}-REF-NNN |
+| Numbering | TYPE-NN | {TYPE}-REF-NN |
 | Valid Parent Types | All artifact types | **BRD and ADR only** |
 
 ### Diagram Standards
@@ -238,11 +247,38 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 - **Naming Standards**: `ai_dev_flow/ID_NAMING_STANDARDS.md`
 - **Validation**: `ai_dev_flow/scripts/validate_artifact.py`
 
+## Regex Validation Patterns
+
+### Filename Pattern
+```regex
+^(BRD|ADR)-REF-[0-9]{2,}_[a-z0-9_]+\.md$
+```
+
+**Valid**: `BRD-REF-01_project_overview.md`, `ADR-REF-100_technology_stack.md`
+**Invalid**: `PRD-REF-01_features.md` (PRD not allowed), `BRD-REF-1_overview.md` (single digit)
+
+### H1 ID Pattern
+```regex
+^#\s(BRD|ADR)-REF-[0-9]{2,}:.+$
+```
+
+**Valid**: `# BRD-REF-01: Project Overview`, `# ADR-REF-100: Technology Stack Summary`
+**Invalid**: `# REQ-REF-01: Requirements Reference` (REQ not allowed)
+
 ## Quick Reference
 
-- **Format**: `{TYPE}-REF-NNN_{slug}.md`
+- **Format**: `{TYPE}-REF-NN_{slug}.md`
+- **DOC_NUM**: Variable-length (2+ digits: 01-99, 100-999, 1000+)
 - **Valid Parent Types**: **BRD and ADR only**
 - **Required Sections**: Document Control, Revision History, Introduction
 - **Traceability**: Optional (encouraged but not required)
 - **Validation**: Minimal (non-blocking, 4 checks only)
-- **Ready-Scores**: NOT APPLICABLE - REF documents use free format with no scores
+- **Element IDs**: NOT APPLICABLE - REF documents use free format
+- **Ready-Scores**: NOT APPLICABLE - no quality gate enforcement
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.1 | 2025-12-29 | Fixed DOC_NUM to variable-length (was NNN 3-digit); Added Element IDs section; Added Regex Validation; Updated examples |
+| 1.0 | 2025-11-30 | Initial skill creation |

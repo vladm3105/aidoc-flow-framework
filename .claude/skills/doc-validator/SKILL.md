@@ -37,25 +37,27 @@ Validates relationships and consistency ACROSS documents in the SDD framework.
 - Monitors project-wide consistency
 
 **This Skill Does NOT**:
-- Validate single document structure (use `doc-{type}-validator` skills)
-- Validate single document metadata (use `doc-{type}-validator` skills)
-- Validate single document content (use `doc-{type}-validator` skills)
+- Validate single document structure (use `{TYPE}_VALIDATION_RULES.md` in each artifact directory)
+- Validate single document metadata (use `{TYPE}_VALIDATION_RULES.md` in each artifact directory)
+- Validate single document content (use `{TYPE}_VALIDATION_RULES.md` in each artifact directory)
 
 **Dedicated Layer Validators**:
-| Layer | Artifact | Validator Skill |
-|-------|----------|-----------------|
-| 1 | BRD | `doc-brd-validator` |
-| 2 | PRD | `doc-prd-validator` |
-| 3 | EARS | `doc-ears-validator` |
-| 4 | BDD | `doc-bdd-validator` |
-| 5 | ADR | `doc-adr-validator` |
-| 6 | SYS | `doc-sys-validator` |
-| 7 | REQ | `doc-req-validator` |
-| 8 | IMPL | `doc-impl-validator` |
-| 9 | CTR | `doc-ctr-validator` |
-| 10 | SPEC | `doc-spec-validator` |
-| 11 | TASKS | `doc-tasks-validator` |
-| 12 | IPLAN | `doc-iplan-validator` |
+| Layer | Artifact | Validation Rules File |
+|-------|----------|----------------------|
+| 1 | BRD | `ai_dev_flow/BRD/BRD_VALIDATION_RULES.md` |
+| 2 | PRD | `ai_dev_flow/PRD/PRD_VALIDATION_RULES.md` |
+| 3 | EARS | `ai_dev_flow/EARS/EARS_VALIDATION_RULES.md` |
+| 4 | BDD | `ai_dev_flow/BDD/BDD_VALIDATION_RULES.md` |
+| 5 | ADR | `ai_dev_flow/ADR/ADR_VALIDATION_RULES.md` |
+| 6 | SYS | `ai_dev_flow/SYS/SYS_VALIDATION_RULES.md` |
+| 7 | REQ | `ai_dev_flow/REQ/REQ_VALIDATION_RULES.md` |
+| 8 | IMPL | `ai_dev_flow/IMPL/IMPL_VALIDATION_RULES.md` |
+| 9 | CTR | `ai_dev_flow/CTR/CTR_VALIDATION_RULES.md` |
+| 10 | SPEC | `ai_dev_flow/SPEC/SPEC_VALIDATION_RULES.md` |
+| 11 | TASKS | `ai_dev_flow/TASKS/TASKS_VALIDATION_RULES.md` |
+| 12 | IPLAN | `ai_dev_flow/IPLAN/IPLAN_VALIDATION_RULES.md` |
+
+**ID Format Validation**: For unified ID format validation (4-segment element IDs), use `doc-naming` skill.
 
 **Reference**: [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md)
 
@@ -88,9 +90,10 @@ Validates relationships and consistency ACROSS documents in the SDD framework.
 - Before major releases (project-wide validation)
 
 **Do NOT use doc-validator when**:
-- Validating a single document's structure (use `doc-{type}-validator`)
-- Validating a single document's metadata (use `doc-{type}-validator`)
-- Validating a single document's content (use `doc-{type}-validator`)
+- Validating a single document's structure (use `{TYPE}_VALIDATION_RULES.md`)
+- Validating a single document's metadata (use `{TYPE}_VALIDATION_RULES.md`)
+- Validating a single document's content (use `{TYPE}_VALIDATION_RULES.md`)
+- Validating ID format compliance (use `doc-naming` skill)
 - For detailed traceability analysis (use `trace-check` skill)
 
 ---
@@ -402,12 +405,16 @@ Summary:
 
 ## Version Information
 
-**Version**: 3.0.0
-**Last Updated**: 2025-12-20
+**Version**: 3.1.0
+**Last Updated**: 2025-12-29
 **Created**: 2025-11-01
 **Status**: Active
 
 **Change Log**:
+- 3.1.0 (2025-12-29): Updated layer validator references
+  - Changed from non-existent `doc-{type}-validator` skills to actual `{TYPE}_VALIDATION_RULES.md` files
+  - Added doc-naming skill reference for ID format validation
+  - Updated "Do NOT use" section with additional guidance
 - 3.0.0 (2025-12-20): Refactored to cross-document validation only
   - Removed single-document validation (now in dedicated layer validators)
   - Added references to 12 layer-specific validator skills

@@ -54,7 +54,33 @@ This skill covers all 12 SDD document types:
 
 ---
 
-## 2. Document ID Format (TYPE-NN)
+## 2. Reserved ID Exemption (TYPE-000_*)
+
+### Scope
+
+Documents with reserved ID `000` are FULLY EXEMPT from standard validation.
+
+### Pattern
+
+`{DOC_TYPE}-000_{slug}.{ext}`
+
+### Document Types
+
+- Index documents (e.g., `BRD-000_index.md`, `REQ-000_index.md`)
+- Traceability matrix templates (e.g., `SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Glossaries, registries, checklists
+
+### Rationale
+
+Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+
+### Validation Behavior
+
+Skip all element ID and traceability checks when filename matches `{TYPE}-000_*` pattern.
+
+---
+
+## 3. Document ID Format (TYPE-NN)
 
 ### Pattern
 
@@ -93,9 +119,24 @@ TYPE-NN_descriptive_slug.md
 
 Example: `BRD-01_ib_stock_options_mcp_server.md`
 
+### REF Document Pattern
+
+Reference documents use a modified pattern within parent TYPE directories:
+
+| Component | Pattern | Example |
+|-----------|---------|---------|
+| H1 ID | `{TYPE}-REF-NN` | `# BRD-REF-01: Project Overview` |
+| Filename | `{TYPE}-REF-NN_{slug}.md` | `BRD-REF-01_project_overview.md` |
+| Location | Within parent TYPE directory | `docs/BRD/BRD-REF-01_project_overview.md` |
+
+**Notes**:
+- REF documents are supplementary and do not participate in formal traceability chain
+- Similar exemption treatment as `{TYPE}-000` index documents
+- Numbering is independent per parent TYPE (BRD-REF-01, ADR-REF-01 are separate sequences)
+
 ---
 
-## 3. Element ID Format (TYPE.NN.TT.SS)
+## 4. Element ID Format (TYPE.NN.TT.SS)
 
 ### Pattern
 
@@ -140,7 +181,7 @@ Element IDs appear as markdown headings:
 
 ---
 
-## 4. Element Type Codes Table
+## 5. Element Type Codes Table
 
 All 31 element type codes with document type applicability:
 
@@ -154,8 +195,8 @@ All 31 element type codes with document type applicability:
 | 06 | Acceptance Criteria | BRD, PRD, REQ |
 | 07 | Risk | BRD, PRD |
 | 08 | Metric | BRD, PRD |
-| 09 | User Story | PRD |
-| 10 | Decision | ADR |
+| 09 | User Story | PRD, BRD |
+| 10 | Decision | ADR, BRD |
 | 11 | Use Case | PRD, SYS |
 | 12 | Alternative | ADR |
 | 13 | Consequence | ADR |
@@ -182,7 +223,7 @@ All 31 element type codes with document type applicability:
 
 | Document | Common Element Codes |
 |----------|---------------------|
-| BRD | 01, 02, 03, 04, 05, 06, 07, 08, 22, 23, 24 |
+| BRD | 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24 |
 | PRD | 01, 02, 03, 04, 05, 06, 07, 08, 09, 11, 22, 24 |
 | EARS | 25 |
 | BDD | 14, 15 |
@@ -197,7 +238,7 @@ All 31 element type codes with document type applicability:
 
 ---
 
-## 5. Removed/Legacy Patterns
+## 6. Removed/Legacy Patterns
 
 These patterns are DEPRECATED. Do NOT use them in new documents.
 
@@ -221,6 +262,11 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 | `IF-XXX` | `TYPE.NN.16.SS` | CTR |
 | `DM-XXX` | `TYPE.NN.17.SS` | CTR |
 | `CC-XXX` | `TYPE.NN.20.SS` | CTR |
+| `DEC-XXX` | `TYPE.NN.10.SS` | ADR |
+| `ALT-XXX` | `TYPE.NN.12.SS` | ADR |
+| `CON-XXX` | `TYPE.NN.13.SS` | ADR |
+| `CMD-XXX` | `TYPE.NN.19.SS` | IPLAN |
+| `STEP-XXX` | `TYPE.NN.31.SS` | IPLAN |
 
 ### Migration Examples
 
@@ -231,10 +277,13 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 | `### Event-001: KYC Submission` | `### EARS.06.25.01: KYC Submission` |
 | `### TASK-01: Setup` | `### TASKS.02.18.01: Setup` |
 | `### Phase-01: Init` | `### IMPL.02.29.01: Init` |
+| `### DEC-01: Use PostgreSQL` | `### ADR.05.10.01: Use PostgreSQL` |
+| `### ALT-01: MongoDB Option` | `### ADR.05.12.01: MongoDB Option` |
+| `### CMD-01: Install deps` | `### IPLAN.01.19.01: Install deps` |
 
 ---
 
-## 6. Threshold Tag Format
+## 7. Threshold Tag Format
 
 ### Tag Pattern
 
@@ -283,7 +332,7 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 
 ---
 
-## 7. Validation Examples by Document Type
+## 8. Validation Examples by Document Type
 
 ### BRD Examples
 
@@ -291,6 +340,8 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 ### BRD.02.01.01: User Authentication Requirement
 ### BRD.02.06.01: Login Acceptance Criteria
 ### BRD.02.23.01: Revenue Growth Objective
+### BRD.02.09.01: User Onboarding Story
+### BRD.02.10.01: Database Selection Decision
 @threshold: BRD.02.perf.response_time.max
 ```
 
@@ -358,7 +409,7 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 
 ---
 
-## 8. Pre-Flight Checklist
+## 9. Pre-Flight Checklist
 
 Run this checklist BEFORE creating any SDD document:
 
@@ -367,13 +418,14 @@ Run this checklist BEFORE creating any SDD document:
 - [ ] Document ID follows `TYPE-NN` format
 - [ ] Filename follows `TYPE-NN_descriptive_slug.md` pattern
 - [ ] YAML frontmatter includes correct `artifact_type` and `layer`
+- [ ] Not a reserved ID document (TYPE-000_*) requiring exemption
 
 ### Element IDs
 
 - [ ] All element IDs use 4-segment dot notation: `TYPE.NN.TT.SS`
-- [ ] Element type code (TT) is valid for this document type (see Section 4)
+- [ ] Element type code (TT) is valid for this document type (see Section 5)
 - [ ] Sequential numbers (SS) are unique within the document
-- [ ] No legacy patterns (AC-XXX, FR-XXX, etc.) are used
+- [ ] No legacy patterns (AC-XXX, FR-XXX, DEC-XXX, CMD-XXX, etc.) are used
 
 ### Threshold Tags
 
@@ -389,7 +441,7 @@ Run this checklist BEFORE creating any SDD document:
 
 ---
 
-## 9. Error Recovery
+## 10. Error Recovery
 
 ### Detecting Legacy Patterns
 
@@ -399,6 +451,7 @@ Use grep to find legacy patterns:
 # Find all legacy patterns in a file
 grep -E "(AC|FR|BC|BA|QA|BO|RISK|METRIC)-[0-9]+" file.md
 grep -E "(Event|State|TASK|Phase|IP|IF|DM|CC)-[0-9]+" file.md
+grep -E "(DEC|ALT|CON|CMD|STEP)-[0-9]+" file.md
 grep -E "Feature F-[0-9]+" file.md
 grep -E "T-[0-9]+" file.md
 ```
@@ -408,23 +461,29 @@ grep -E "T-[0-9]+" file.md
 1. **Identify the document type and number** from the filename
    - Example: `BRD-02_requirements.md` → DOC_TYPE=BRD, DOC_NUM=02
 
-2. **Look up the element type code** from Section 4
+2. **Look up the element type code** from Section 5
    - Example: `AC-XXX` → Acceptance Criteria → Code 06
+   - Example: `DEC-XXX` → Decision → Code 10
+   - Example: `CMD-XXX` → Command → Code 19
 
 3. **Construct the unified ID**
    - Pattern: `{DOC_TYPE}.{DOC_NUM}.{ELEM_TYPE}.{SEQ}`
    - Example: `AC-001` in BRD-02 → `BRD.02.06.01`
+   - Example: `DEC-01` in ADR-05 → `ADR.05.10.01`
+   - Example: `CMD-01` in IPLAN-01 → `IPLAN.01.19.01`
 
 4. **Replace all occurrences**
    ```bash
    # Example sed replacement
    sed -i 's/### AC-001:/### BRD.02.06.01:/g' file.md
+   sed -i 's/### DEC-01:/### ADR.05.10.01:/g' file.md
+   sed -i 's/### CMD-01:/### IPLAN.01.19.01:/g' file.md
    ```
 
 5. **Validate the result**
    ```bash
    # Verify no legacy patterns remain
-   grep -E "(AC|FR|BC|BA)-[0-9]+" file.md
+   grep -E "(AC|FR|BC|BA|DEC|ALT|CON|CMD|STEP)-[0-9]+" file.md
    ```
 
 ### Common Migration Errors
@@ -435,10 +494,11 @@ grep -E "T-[0-9]+" file.md
 | Missing document number | `BRD..06.01` | Include document number: `BRD.02.06.01` |
 | Dash instead of dot | `BRD-02-06-01` | Use dots: `BRD.02.06.01` |
 | Lowercase type | `brd.02.06.01` | Uppercase: `BRD.02.06.01` |
+| Wrong IPLAN code | Using 15 (Step) for Plan Step | Use code 31 for Plan Step |
 
 ---
 
-## 10. Source References
+## 11. Source References
 
 ### Primary Sources
 
@@ -477,6 +537,7 @@ Each document type has validation rules with Element ID compliance checks:
 ---
 
 ### Diagram Standards
+
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
 See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
@@ -484,4 +545,5 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1.0 | 2025-12-29 | Added Reserved ID Exemption, REF document pattern, ADR/IPLAN removed patterns, fixed element type codes for BRD |
 | 1.0.0 | 2025-12-19 | Initial release with all 31 element codes and 18 removed patterns |

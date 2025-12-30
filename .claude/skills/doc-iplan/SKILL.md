@@ -1,5 +1,4 @@
 ---
-name: "doc-iplan: Create Implementation Plans (Layer 12)"
 name: doc-iplan
 description: Create Implementation Plans (IPLAN) - Layer 12 artifact converting TASKS into session-based bash command execution plans
 tags:
@@ -65,6 +64,21 @@ Use `doc-iplan` when:
 - Need step-by-step execution plan
 - You are at Layer 12 of the SDD workflow
 
+## Reserved ID Exemption (IPLAN-000_*)
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Pattern**: `IPLAN-000_*.md`
+
+**Document Types**:
+- Index documents (`IPLAN-000_index.md`)
+- Traceability matrix templates (`IPLAN-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Glossaries, registries, checklists
+
+**Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+
+**Validation Behavior**: Skip all checks when filename matches `IPLAN-000_*` pattern.
+
 ## IPLAN-Specific Guidance
 
 ### 1. File Naming Convention
@@ -72,7 +86,7 @@ Use `doc-iplan` when:
 **Format**: `IPLAN-NN_{descriptive_slug}.md`
 
 **Components**:
-- **IPLAN-NN**: Sequential 3-digit ID (e.g., IPLAN-01, IPLAN-02)
+- **IPLAN-NN**: Sequential 2+ digit ID (e.g., IPLAN-01, IPLAN-02)
 - **descriptive_slug**: Short lowercase description with underscores (e.g., gateway_connection, trade_validation)
 
 **Examples**:
@@ -92,7 +106,22 @@ fi
 
 **Tag Format**: `@iplan: IPLAN-01` (use ID only, not full filename)
 
-### 1.1 Required Frontmatter Structure
+### 1.1 Element ID Format (MANDATORY)
+
+**Pattern**: `IPLAN.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Command | 19 | IPLAN.02.19.01 |
+| Plan Step | 31 | IPLAN.02.31.01 |
+
+> ⚠️ **REMOVED PATTERNS** - Do NOT use:
+> - `CMD-XXX` → Use `IPLAN.NN.19.SS`
+> - `STEP-XXX` → Use `IPLAN.NN.31.SS`
+>
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
+
+### 1.2 Required Frontmatter Structure
 
 **CRITICAL**: Every IPLAN file MUST include this frontmatter structure with the `tags:` section:
 
@@ -141,11 +170,11 @@ traceability:
 
 ### Session 1: Project Setup (Estimated: 1.5 hours)
 
-**Tasks**: TASK-01-001, TASK-01-002
+**Tasks**: IPLAN.01.31.01, IPLAN.01.31.02
 
 **Commands**:
 ```bash
-# TASK-01-001: Initialize Project Structure
+# IPLAN.01.19.01: Initialize Project Structure
 mkdir -p src/controllers src/services src/repositories src/models
 mkdir -p tests/unit tests/integration
 touch src/controllers/data_validation_controller.py
@@ -157,7 +186,7 @@ touch src/__init__.py
 # Verify structure created
 ls -R src/
 
-# TASK-01-002: Set Up Development Environment
+# IPLAN.01.19.02: Set Up Development Environment
 cat > requirements.txt <<EOF
 fastapi==0.104.1
 pydantic==2.5.0
@@ -225,7 +254,7 @@ rm -rf src/ tests/ requirements.txt pyproject.toml .venv
 8. **Session 8: Deployment** (Docker, CI/CD)
 
 **Each Session Includes**:
-- Tasks covered (TASK IDs)
+- Tasks covered (IPLAN element IDs)
 - Bash commands (executable)
 - Validation commands
 - Rollback procedure
@@ -324,9 +353,20 @@ The SDD framework uses two distinct notation systems for cross-references:
 - **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
 - **Never use**: `TYPE.NN.TT` (3-segment format - DEPRECATED)
 
-Examples:
-- `@brd: BRD.17.01.01` ✅
-- `@brd: BRD.017.001` ❌ (old 3-segment format)
+**Element Type Codes** (use in cumulative tags):
+
+| Artifact | Element Type | Code | Example |
+|----------|--------------|------|---------|
+| BRD | Business Requirement | 01 | BRD.01.01.03 |
+| PRD | Product Feature | 07 | PRD.01.07.02 |
+| EARS | Statement | 25 | EARS.01.25.01 |
+| BDD | Scenario | 14 | BDD.01.14.01 |
+| SYS | System Requirement | 26 | SYS.01.26.01 |
+| REQ | Atomic Requirement | 27 | REQ.01.27.01 |
+| IMPL | Implementation Phase | 29 | IMPL.01.29.01 |
+| TASKS | Task | 18 | TASKS.01.18.01 |
+| IPLAN | Command | 19 | IPLAN.01.19.01 |
+| IPLAN | Plan Step | 31 | IPLAN.01.31.01 |
 
 
 ## Cumulative Tagging Requirements
@@ -343,28 +383,28 @@ Examples:
 ```markdown
 @brd: BRD.01.01.03
 @prd: PRD.01.07.02
-@ears: EARS.01.24.01
-@bdd: BDD.01.13.01
+@ears: EARS.01.25.01
+@bdd: BDD.01.14.01
 @adr: ADR-033, ADR-045
-@sys: SYS.01.25.01
-@req: REQ.01.26.01
+@sys: SYS.01.26.01
+@req: REQ.01.27.01
 @spec: SPEC-01
-@tasks: TASKS.01.29.01
+@tasks: TASKS.01.18.01
 ```
 
 **Maximum (IMPL and CTR included)**:
 ```markdown
 @brd: BRD.01.01.03
 @prd: PRD.01.07.02
-@ears: EARS.01.24.01
-@bdd: BDD.01.13.01
+@ears: EARS.01.25.01
+@bdd: BDD.01.14.01
 @adr: ADR-033, ADR-045
-@sys: SYS.01.25.01
-@req: REQ.01.26.01
-@impl: IMPL.01.28.01
+@sys: SYS.01.26.01
+@req: REQ.01.27.01
+@impl: IMPL.01.29.01
 @ctr: CTR-01
 @spec: SPEC-01
-@tasks: TASKS.01.29.01
+@tasks: TASKS.01.18.01
 ```
 
 ## Upstream/Downstream Artifacts
@@ -420,7 +460,7 @@ List what must be ready before starting (database, credentials, etc.).
 ### Step 7: Create Session-by-Session Execution Plan
 
 For each session:
-1. List tasks covered (TASK IDs)
+1. List tasks covered (IPLAN element IDs)
 2. Write executable bash commands
 3. Add comments explaining each step
 4. Include error checking
@@ -462,6 +502,23 @@ Commit IPLAN file and traceability matrix.
 
 ## Validation
 
+### Validation Checks Summary
+
+| Tier | Check | Description | Severity |
+|------|-------|-------------|----------|
+| **Tier 1** | CHECK 1 | Filename format (IPLAN-NN_{slug}.md) | ERROR |
+| **Tier 1** | CHECK 2 | Frontmatter with layer-12-artifact tag | ERROR |
+| **Tier 1** | CHECK 3 | Document Control table | ERROR |
+| **Tier 1** | CHECK 4 | Required sections (9 mandatory) | ERROR |
+| **Tier 1** | CHECK 5 | Traceability tags (9-11 required) | ERROR |
+| **Tier 1** | CHECK 6 | Element ID format (IPLAN.NN.TT.SS) | ERROR |
+| **Tier 2** | CHECK 7 | Task List phases and checkboxes | WARNING |
+| **Tier 2** | CHECK 8 | Bash commands (3+ blocks) | WARNING |
+| **Tier 2** | CHECK 9 | Verification steps | WARNING |
+| **Tier 2** | CHECK 10 | Absolute paths (no relative) | WARNING |
+| **Tier 3** | CHECK 11 | Token size (<100KB) | INFO |
+| **Tier 3** | CHECK 12 | Cross-reference resolution | INFO |
+
 ### Automated Validation
 
 ```bash
@@ -488,7 +545,7 @@ bash -n docs/IPLAN/IPLAN-01_*.md
 - [ ] Overview explains session-based approach
 - [ ] Prerequisites listed (database, credentials, etc.)
 - [ ] Execution Plan organized into sessions
-- [ ] Each session lists covered TASK IDs
+- [ ] Each session lists covered element IDs (IPLAN.NN.TT.SS format)
 - [ ] Bash commands are executable (copy-paste ready)
 - [ ] Comments explain each command
 - [ ] Validation commands provided for each session
@@ -510,6 +567,9 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 4. **Wrong file naming**: Must use IPLAN-NN_{slug}.md format
 5. **Missing cumulative tags**: Layer 12 must include all 9-11 upstream tags
 6. **No error checking**: Commands should check for errors
+7. **Relative paths**: Use absolute paths always (not `../src`)
+8. **Missing layer-12-artifact tag**: Validation will FAIL without this tag
+9. **Legacy element IDs**: Use `IPLAN.NN.19.SS` not `CMD-XXX`; use `IPLAN.NN.31.SS` not `STEP-XXX`
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
 
@@ -599,6 +659,12 @@ For supplementary documentation related to IPLAN artifacts:
 
 **Layer**: 12
 
+**Element ID Format**: `IPLAN.NN.TT.SS`
+- Command = 19
+- Plan Step = 31
+
+**Removed Patterns**: CMD-XXX, STEP-XXX
+
 **Tags Required**: @brd through @tasks (9-11 tags)
 
 **Format**: Session-based execution plan with bash commands
@@ -617,7 +683,7 @@ For supplementary documentation related to IPLAN artifacts:
 - Notes and Warnings
 
 **Session Structure**:
-- Tasks covered (TASK IDs)
+- Tasks covered (IPLAN element IDs)
 - Executable bash commands
 - Validation commands
 - Rollback procedure

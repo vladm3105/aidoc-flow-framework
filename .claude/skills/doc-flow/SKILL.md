@@ -29,7 +29,7 @@ This skill serves as the **orchestrator** for the AI-Driven Specification-Driven
 3. **General SDD Principles**: Specification-driven methodology fundamentals
 4. **Integration Guidance**: How skills work together
 
-**For Artifact Creation**: Use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-iplan, doc-ref).
+**For Artifact Creation**: Use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-iplan, doc-ref, doc-naming).
 
 **Authoritative Reference**: [ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
@@ -248,8 +248,8 @@ strategy/ (WHAT - Product Owner Voice)
 **Development Standard and Templates**: The single source of truth for SDD workflow
 
 - **Status**: Authoritative development standard for this project
-- **Contents**: Complete SDD workflow (BRD → PRD → SYS → EARS → REQ → ADR → BDD → SPEC → TASKS → Code)
-- **Templates**: `{TYPE}-TEMPLATE.{ext}` for each artifact type (BRD, PRD, EARS, REQ, ADR, BDD, SPEC, TASKS)
+- **Contents**: Complete SDD workflow (BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code)
+- **Templates**: `{TYPE}-TEMPLATE.{ext}` for each artifact type (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, REF)
 - **Indices**: `{TYPE}-000_index.{ext}` listing all documents of each type
 - **READMEs**: Detailed usage guides and best practices for each artifact type
 - **Standards**: ID naming, traceability format, cross-referencing rules
@@ -341,6 +341,18 @@ If a required upstream artifact is missing, the downstream functionality **MUST 
 - Detects orphaned artifacts and traceability gaps
 - Reference: `.claude/skills/trace-check/SKILL.md`
 
+**`doc-naming`** - Unified ID naming standards enforcement
+- Use for ID format validation across all artifact types
+- Validates 4-segment element IDs (TYPE.NN.TT.SS)
+- Enforces variable-length DOC_NUM (2+ digits)
+- Reference: `.claude/skills/doc-naming/SKILL.md`
+
+**`doc-validator`** - Cross-document validation orchestrator
+- Validates traceability across all layers
+- Detects gaps, broken links, and format violations
+- Runs auto-fix actions for common issues
+- Reference: `.claude/skills/doc-validator/SKILL.md`
+
 ### Planning & Architecture
 
 **`adr-roadmap`** - Generate implementation roadmaps from ADRs
@@ -390,7 +402,7 @@ This document contains:
 6. Documentation Standards
 7. Document Control Section Requirements
 
-**All artifact skills (doc-brd through doc-iplan) import these shared standards.**
+**All artifact skills (doc-brd through doc-iplan, plus doc-ref, doc-naming) import these shared standards.**
 
 ### Diagram Standards (Global Requirement)
 
@@ -510,7 +522,7 @@ LOOP:
 
 **Primary References - Authoritative Development Standard:**
 
-- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 13-step workflow
+- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 16-layer workflow
 - **Workflow Diagram**: [index.md]({project_root}/ai_dev_flow/index.md#traceability-flow) - Complete Mermaid diagram
 - **ID Standards**: [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md) - File naming, ID format rules
 - **Traceability**: [TRACEABILITY.md]({project_root}/ai_dev_flow/TRACEABILITY.md) - Cross-reference format, link standards
@@ -601,4 +613,14 @@ Based on your current progress, I'll recommend the appropriate skill to use next
 
 ---
 
-**For detailed artifact creation guidance, use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-iplan).**
+**For detailed artifact creation guidance, use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-iplan, doc-ref, doc-naming).**
+
+---
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.2 | 2025-12-29 | Fixed workflow sequence; Added doc-naming and doc-validator to Integration section; Updated layer count to 16 |
+| 1.1 | 2025-11-30 | Added IPLAN layer, REF documents, ICON section |
+| 1.0 | 2025-11-01 | Initial skill creation |

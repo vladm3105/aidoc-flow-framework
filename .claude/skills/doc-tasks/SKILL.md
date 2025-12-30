@@ -1,5 +1,4 @@
 ---
-name: "doc-tasks: Create Task Breakdown (Layer 11)"
 name: doc-tasks
 description: Create Task Breakdown (TASKS) - Layer 11 artifact decomposing SPEC into AI-structured TODO tasks
 tags:
@@ -65,6 +64,39 @@ Use `doc-tasks` when:
 - Need structured TODO format for AI agents
 - You are at Layer 11 of the SDD workflow
 
+## Reserved ID Exemption (TASKS-000_*)
+
+**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+
+**Pattern**: `TASKS-000_*.md`
+
+**Document Types**:
+- Index documents (`TASKS-000_index.md`)
+- Traceability matrix templates (`TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Implementation contracts checklists (`TASKS-000_IMPLEMENTATION_CONTRACTS_CHECKLIST.md`)
+- Glossaries, registries
+
+**Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+
+**Validation Behavior**: Skip all checks when filename matches `TASKS-000_*` pattern.
+
+## Element ID Format (MANDATORY)
+
+**Pattern**: `TASKS.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
+
+| Element Type | Code | Example |
+|--------------|------|---------|
+| Task | 18 | TASKS.02.18.01 |
+| Task Item | 30 | TASKS.02.30.01 |
+
+> **REMOVED PATTERNS** - Do NOT use:
+> - `TASK-XXX` → Use `TASKS.NN.18.SS`
+> - `T-XXX` → Use `TASKS.NN.18.SS`
+>
+> **Reference**: [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
+
+**Fix**: Replace `### TASK-01: Implementation` with `### TASKS.02.18.01: Implementation`
+
 ## TASKS-Specific Guidance
 
 ### 1. AI-Structured TODO Format
@@ -77,7 +109,7 @@ Use `doc-tasks` when:
 
 ### Phase 1: Project Setup (3 tasks)
 
-**TASK-01-001: Initialize Project Structure**
+**TASKS.01.18.01: Initialize Project Structure**
 - **Action**: Create directory structure per SPEC architecture
 - **Files to Create**:
   - `src/controllers/data_validation_controller.py`
@@ -89,20 +121,20 @@ Use `doc-tasks` when:
 - **SPEC Reference**: SPEC-01:implementation.modules
 - **Success Criteria**: All directories and empty files created
 
-**TASK-01-002: Set Up Development Environment**
+**TASKS.01.18.02: Set Up Development Environment**
 - **Action**: Configure Python environment and dependencies
 - **Files to Create**: `requirements.txt`, `pyproject.toml`
-- **Dependencies**: TASK-01-001
+- **Dependencies**: TASKS.01.18.01
 - **Estimated Effort**: 1 hour
 - **SPEC Reference**: SPEC-01:deployment.container
 - **Success Criteria**: `pip install -r requirements.txt` succeeds
 
 ### Phase 2: Data Models (2 tasks)
 
-**TASK-01-003: Implement DataRequest Model**
+**TASKS.01.18.03: Implement DataRequest Model**
 - **Action**: Create Pydantic model per CTR-01 schema
 - **Files to Modify**: `src/models/data_request.py`
-- **Dependencies**: TASK-01-002
+- **Dependencies**: TASKS.01.18.02
 - **Estimated Effort**: 1 hour
 - **SPEC Reference**: SPEC-01:interfaces.data_models
 - **CTR Reference**: CTR-01#/components/schemas/DataRequest
@@ -124,11 +156,12 @@ Use `doc-tasks` when:
 
 ### 3. Task Numbering Format
 
-**Format**: `TASK-{SPEC-ID}-{Task-Number}`
+**Format**: `TASKS.{SPEC-ID}.18.{SEQ}` (unified element ID format)
 
-**Example**: `TASK-01-003` means:
+**Example**: `TASKS.01.18.03` means:
 - SPEC-01 (from SPEC-01_data_validation.yaml)
-- Task 003 (third task in breakdown)
+- Element type 18 (Task)
+- Sequence 03 (third task in breakdown)
 
 **Benefits**:
 - Links task directly to SPEC
@@ -139,7 +172,7 @@ Use `doc-tasks` when:
 
 **Each task MUST include**:
 
-1. **Task ID**: TASK-{SPEC-ID}-{Task-Number}
+1. **Task ID**: TASKS.{SPEC-ID}.18.{SEQ}
 2. **Title**: Short description (5-10 words)
 3. **Action**: What to do (imperative form)
 4. **Files to Create/Modify**: Specific file paths
@@ -171,13 +204,13 @@ Use `doc-tasks` when:
 
 ```mermaid
 graph TD
-    T001[TASK-01-001: Project Setup]
-    T002[TASK-01-002: Dev Environment]
-    T003[TASK-01-003: DataRequest Model]
-    T004[TASK-01-004: ValidationResponse Model]
-    T005[TASK-01-005: Data Repository]
-    T006[TASK-01-006: Data Validator Service]
-    T007[TASK-01-007: API Controller]
+    T001[TASKS.01.18.01: Project Setup]
+    T002[TASKS.01.18.02: Dev Environment]
+    T003[TASKS.01.18.03: DataRequest Model]
+    T004[TASKS.01.18.04: ValidationResponse Model]
+    T005[TASKS.01.18.05: Data Repository]
+    T006[TASKS.01.18.06: Data Validator Service]
+    T007[TASKS.01.18.07: API Controller]
 
     T001 --> T002
     T002 --> T003
@@ -291,6 +324,18 @@ Examples:
 
 **Tag Count**: 8-10 tags (minimum 8, maximum 10)
 
+### Element Type Codes for Cumulative Tags
+
+| Artifact | Element Type | Code | Example |
+|----------|--------------|------|---------|
+| BRD | Business Requirement | 01 | BRD.01.01.03 |
+| PRD | Product Feature | 07 | PRD.01.07.02 |
+| EARS | Statement | 25 | EARS.01.25.01 |
+| BDD | Scenario | 14 | BDD.01.14.01 |
+| SYS | System Requirement | 26 | SYS.01.26.01 |
+| REQ | Atomic Requirement | 27 | REQ.01.27.01 |
+| IMPL | Implementation Phase | 29 | IMPL.01.29.01 |
+
 **Minimum (IMPL and CTR skipped)**:
 ```markdown
 ## Traceability
@@ -299,11 +344,11 @@ Examples:
 ```markdown
 @brd: BRD.01.01.03
 @prd: PRD.01.07.02
-@ears: EARS.01.24.01
-@bdd: BDD.01.13.01
+@ears: EARS.01.25.01
+@bdd: BDD.01.14.01
 @adr: ADR-033, ADR-045
-@sys: SYS.01.25.01
-@req: REQ.01.26.01
+@sys: SYS.01.26.01
+@req: REQ.01.27.01
 @spec: SPEC-01
 ```
 
@@ -311,12 +356,12 @@ Examples:
 ```markdown
 @brd: BRD.01.01.03
 @prd: PRD.01.07.02
-@ears: EARS.01.24.01
-@bdd: BDD.01.13.01
+@ears: EARS.01.25.01
+@bdd: BDD.01.14.01
 @adr: ADR-033, ADR-045
-@sys: SYS.01.25.01
-@req: REQ.01.26.01
-@impl: IMPL.01.28.01
+@sys: SYS.01.26.01
+@req: REQ.01.27.01
+@impl: IMPL.01.29.01
 @ctr: CTR-01
 @spec: SPEC-01
 @icon: TASKS-01:DataValidator  # if providing or consuming implementation contracts
@@ -345,6 +390,40 @@ Examples:
 - `@related-tasks: TASKS-NN` - TASKS sharing implementation context
 - `@depends-tasks: TASKS-NN` - TASKS that must be completed first
 
+## Validation Checks
+
+### Tier 1: Errors (Blocking)
+
+| Check | Description |
+|-------|-------------|
+| CHECK 1 | Filename format valid (TASKS-NN_slug_tasks.md) |
+| CHECK 2 | YAML frontmatter present with required fields |
+| CHECK 3 | Document Control table complete (8 fields) |
+| CHECK 4 | All 8 required sections present |
+| CHECK 5 | Section 8 (Implementation Contracts) exists with 8.1/8.2/8.3 subsection |
+| CHECK 6 | All 8 required traceability tags present |
+| CHECK 7 | Parent SPEC reference valid and file exists |
+| CHECK 8 | Element ID format compliance (TASKS.NN.TT.SS) |
+
+### Tier 2: Warnings
+
+| Check | Description |
+|-------|-------------|
+| CHECK W1 | Scope section has exclusions documented |
+| CHECK W2 | Plan has at least 3 numbered steps |
+| CHECK W3 | SPEC line references present |
+| CHECK W4 | At least 3 acceptance criteria checkboxes |
+| CHECK W5 | BDD scenario reference in acceptance criteria |
+| CHECK W6 | @icon-role tag present if @icon tag used |
+
+### Tier 3: Info
+
+| Check | Description |
+|-------|-------------|
+| CHECK I1 | Time estimates present in plan |
+| CHECK I2 | Optional @impl and @ctr tags present |
+| CHECK I3 | ICON references valid and files exist |
+
 ## Creation Process
 
 ### Step 1: Read Upstream SPEC
@@ -359,9 +438,9 @@ Check `ai_dev_flow/TASKS/` for next available ID number.
 
 ### Step 3: Create TASKS File
 
-**File naming**: `ai_dev_flow/TASKS/TASKS-NN_{slug}.md`
+**File naming**: `ai_dev_flow/TASKS/TASKS-NN_{slug}_tasks.md`
 
-**Example**: `ai_dev_flow/TASKS/TASKS-01_data_validation.md`
+**Example**: `ai_dev_flow/TASKS/TASKS-01_data_validation_tasks.md`
 
 ### Step 4: Fill Document Control Section
 
@@ -378,7 +457,7 @@ Organize tasks into logical phases (8 typical phases).
 ### Step 7: Create Detailed Tasks
 
 For each task in SPEC:
-- Assign TASK ID (TASK-{SPEC-ID}-{Number})
+- Assign TASK ID (TASKS.{SPEC-ID}.18.{SEQ})
 - Write clear Action (imperative)
 - List Files to Create/Modify
 - Identify Dependencies
@@ -437,7 +516,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py \
 - [ ] Document Control section at top
 - [ ] Overview explains breakdown approach
 - [ ] Tasks organized into phases (8 typical phases)
-- [ ] Each task has TASK-{SPEC-ID}-{Number} ID
+- [ ] Each task has TASKS.{SPEC-ID}.18.{SEQ} ID
 - [ ] Each task has all required fields
 - [ ] Dependencies identified (or "None")
 - [ ] Effort estimates provided
@@ -464,6 +543,7 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 6. **Missing cumulative tags**: Layer 11 must include all 8-10 upstream tags
 7. **Missing Section 8**: Implementation Contracts section is MANDATORY
 8. **Text-based diagrams**: Use Mermaid ONLY for Dependencies Graph
+9. **Legacy task IDs**: Use TASKS.NN.18.SS, NOT TASK-XXX or T-XXX
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
 
@@ -561,11 +641,17 @@ For supplementary documentation needs, create:
 
 **Layer**: 11
 
+**Element ID Format**: `TASKS.NN.18.SS`
+- Task = 18
+- Task Item = 30
+
+**Removed Patterns**: TASK-XXX, T-XXX
+
 **Tags Required**: @brd through @spec (8-10 tags)
 
 **Format**: AI-structured TODO with phases
 
-**Task ID Format**: TASK-{SPEC-ID}-{Task-Number}
+**Task ID Format**: TASKS.{SPEC-ID}.18.{SEQ}
 
 **Required Task Fields**:
 - Task ID, Title, Action
@@ -580,5 +666,6 @@ For supplementary documentation needs, create:
 - Detailed Tasks (primary content)
 - Dependencies Graph (Mermaid)
 - Effort Summary
+- Implementation Contracts (Section 8 - MANDATORY)
 
 **Next**: doc-iplan
