@@ -196,7 +196,7 @@ Business constraints           Evaluation criteria         Trade-off analysis
 
 **PRD Section 18 Format**:
 ```markdown
-##### BRD.NN.21.SS: [Topic Name]
+##### BRD.NN.32.SS: [Topic Name]
 
 **Upstream**: BRD-NN section 7.2.X
 

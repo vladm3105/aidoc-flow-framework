@@ -205,6 +205,115 @@ validation_rules:
       severity: info
 
 # =============================================================================
+# Architecture Decision Requirements (MANDATORY SECTION 7.2)
+# =============================================================================
+
+architecture_decision_requirements:
+  # Section 7.2 is mandatory for all BRDs
+  section_required: true
+  section_number: "7.2"
+  section_title: "Architecture Decision Requirements"
+
+  # 7 Mandatory ADR Topic Categories
+  mandatory_categories:
+    - id: 1
+      name: "Infrastructure"
+      element_pattern: "^BRD\\.\\d+\\.32\.01$"
+      description: "Compute, deployment, scaling"
+      valid_na_reasons:
+        - "Pure data/analytics project"
+        - "No compute infrastructure needed"
+
+    - id: 2
+      name: "Data Architecture"
+      element_pattern: "^BRD\\.\\d+\\.32\.02$"
+      description: "Database, storage, caching"
+      valid_na_reasons:
+        - "No persistent data needed"
+        - "Using existing data layer"
+
+    - id: 3
+      name: "Integration"
+      element_pattern: "^BRD\\.\\d+\\.32\.03$"
+      description: "APIs, messaging, external systems"
+      valid_na_reasons:
+        - "Standalone system"
+        - "No external integrations"
+
+    - id: 4
+      name: "Security"
+      element_pattern: "^BRD\\.\\d+\\.32\.04$"
+      description: "Auth, encryption, access control"
+      valid_na_reasons:
+        - "Internal tool, no sensitive data"
+        - "Security handled at platform level"
+
+    - id: 5
+      name: "Observability"
+      element_pattern: "^BRD\\.\\d+\\.32\.05$"
+      description: "Monitoring, logging, alerting"
+      valid_na_reasons:
+        - "MVP/prototype only"
+        - "Observability deferred to Phase 2"
+
+    - id: 6
+      name: "AI/ML"
+      element_pattern: "^BRD\\.\\d+\\.32\.06$"
+      description: "Model serving, training, MLOps"
+      valid_na_reasons:
+        - "No AI/ML components"
+        - "Traditional rule-based approach"
+
+    - id: 7
+      name: "Technology Selection"
+      element_pattern: "^BRD\\.\\d+\\.32\.07$"
+      description: "Languages, frameworks, platforms"
+      valid_na_reasons:
+        - "Using existing stack"
+        - "Technology mandated by platform"
+
+  # Required fields per topic
+  required_fields:
+    - name: "Status"
+      allowed_values: ["Selected", "Pending", "N/A"]
+      required: true
+
+    - name: "Business Driver"
+      required: true
+      description: "WHY this decision matters to business"
+
+    - name: "Business Constraints"
+      required: true
+      description: "Non-negotiable business rules"
+
+    - name: "Alternatives Overview"
+      required: true
+      table_columns: ["Option", "Function", "Est. Monthly Cost", "Selection Rationale"]
+      description: "MANDATORY table with cost estimates"
+
+    - name: "Cloud Provider Comparison"
+      required: true
+      table_columns: ["Criterion", "GCP", "Azure", "AWS"]
+      required_rows:
+        - "Service Name"
+        - "Est. Monthly Cost"
+        - "Key Strength"
+        - "Key Limitation"
+        - "Fit for This Project"
+
+    - name: "Recommended Selection"
+      required: true
+      description: "Selected option with brief rationale"
+
+    - name: "PRD Requirements"
+      required: true
+      description: "What PRD must elaborate for this topic"
+
+  # Element type code for architecture topics
+  element_type_code: 32
+  element_format: "BRD.NN.32.SS"
+
+# =============================================================================
 # Cross-Reference Requirements (OPTIONAL VALIDATION)
 # =============================================================================
 

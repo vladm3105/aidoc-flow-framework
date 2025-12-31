@@ -208,55 +208,145 @@ Use `doc-brd` when:
 
 **Every BRD MUST cite specific strategy document sections in Traceability section.**
 
-### 4. Architecture Decision Requirements Section (7.2)
+### 4. Architecture Decision Requirements Section (7.2) - MANDATORY
 
-**Purpose**: Identify architectural topics requiring decisions using **business-only content**.
+**Purpose**: Identify architectural topics requiring decisions with **cost-focused, alternatives-based analysis**.
 
-**Layer Separation Principle**:
-```
-BRD Section 7.2          →    PRD Section 18         →    ADR
-(WHAT & WHY)                  (HOW to evaluate)          (Final decision)
-─────────────────────────────────────────────────────────────────────────
-Business drivers              Technical options          Selected option
-Business constraints          Evaluation criteria        Trade-off analysis
-```
+Every BRD **MUST** include **Section 7.2: "Architecture Decision Requirements"** addressing all 7 mandatory ADR topic categories.
 
-**Subsection ID Format**: `{DOC_TYPE}.NN.EE.SS` (unified 4-segment format)
+#### 7 Mandatory ADR Topic Categories
 
-| Component | Description | Example |
-|-----------|-------------|---------|
-| `{DOC_TYPE}` | Document type | `BRD` |
-| `.NN` | Document number (2-9 digits) | `.01` = BRD-01 |
-| `.EE` | Element type code (01=Functional Req) | `.01` = functional requirement |
-| `.SS` | Sequential number (2-9 digits) | `.03` = third item |
+| # | Category | Element ID | Description | When N/A |
+|---|----------|------------|-------------|----------|
+| 1 | **Infrastructure** | BRD.NN.32.01 | Compute, deployment, scaling | Pure data/analytics project |
+| 2 | **Data Architecture** | BRD.NN.32.02 | Database, storage, caching | No persistent data needed |
+| 3 | **Integration** | BRD.NN.32.03 | APIs, messaging, external systems | Standalone system |
+| 4 | **Security** | BRD.NN.32.04 | Auth, encryption, access control | Internal tool, no sensitive data |
+| 5 | **Observability** | BRD.NN.32.05 | Monitoring, logging, alerting | MVP/prototype only |
+| 6 | **AI/ML** | BRD.NN.32.06 | Model serving, training, MLOps | No AI/ML components |
+| 7 | **Technology Selection** | BRD.NN.32.07 | Languages, frameworks, platforms | Using existing stack |
 
-**Format** (business-only content):
+**Element Type Code**: `21` = Architecture Topic
+
+#### Required Fields Per Topic
+
+| Field | Description | Required For |
+|-------|-------------|--------------|
+| **Status** | `Selected`, `Pending`, or `N/A` | All topics |
+| **Business Driver** | WHY this decision matters to business | Selected/Pending |
+| **Business Constraints** | Non-negotiable business rules | Selected/Pending |
+| **Alternatives Overview** | MANDATORY table with cost estimates | Selected |
+| **Cloud Provider Comparison** | MANDATORY GCP/Azure/AWS comparison | Selected |
+| **Recommended Selection** | Selected option with rationale | Selected |
+| **PRD Requirements** | What PRD must elaborate | All topics |
+
+#### Alternatives Overview Table (MANDATORY for Selected status)
+
 ```markdown
-## 7.2 Architecture Decision Requirements
+**Alternatives Overview**:
 
-### BRD.01.01.01: API Communication Protocol
+| Option | Function | Est. Monthly Cost | Selection Rationale |
+|--------|----------|-------------------|---------------------|
+| Serverless | Event-driven compute | $200-$800 | Selected - cost-effective |
+| Kubernetes | Container orchestration | $500-$2,000 | Rejected - over-engineered |
+| VM-based | Traditional VMs | $400-$1,500 | Rejected - manual scaling |
+```
 
-**Business Driver**: Real-time market data integration requires low-latency, bidirectional communication for competitive trading execution.
+#### Cloud Provider Comparison Table (MANDATORY for Selected status)
+
+```markdown
+**Cloud Provider Comparison**:
+
+| Criterion | GCP | Azure | AWS |
+|-----------|-----|-------|-----|
+| **Service Name** | Cloud Run | Container Apps | Fargate |
+| **Est. Monthly Cost** | $300 | $350 | $400 |
+| **Key Strength** | Auto-scaling | AD integration | Ecosystem |
+| **Key Limitation** | Fewer features | Higher cost | Complex pricing |
+| **Fit for This Project** | High | Medium | Medium |
+```
+
+#### Complete Topic Example
+
+```markdown
+### BRD.01.32.01: Infrastructure
+
+**Status**: Selected
+
+**Business Driver**: Customer onboarding workflow requires scalable compute for variable registration volumes.
 
 **Business Constraints**:
-- Must maintain <100ms latency for order execution
-- Must support reconnection without data loss during market hours
-- Must comply with broker API terms of service
+- Must support auto-scaling for peak periods (10x baseline)
+- Maximum infrastructure cost: $5,000/month
+- 99.9% availability during business hours
 
-**PRD Requirements**: [What PRD must elaborate for THIS topic]
+**Alternatives Overview**:
+
+| Option | Function | Est. Monthly Cost | Selection Rationale |
+|--------|----------|-------------------|---------------------|
+| Serverless (Cloud Functions) | Event-driven compute | $200-$800 | Selected - cost-effective for variable load |
+| Kubernetes (GKE/EKS) | Container orchestration | $500-$2,000 | Rejected - over-engineered for this scale |
+| VM-based (Compute Engine) | Traditional VMs | $400-$1,500 | Rejected - manual scaling overhead |
+
+**Cloud Provider Comparison**:
+
+| Criterion | GCP | Azure | AWS |
+|-----------|-----|-------|-----|
+| **Service Name** | Cloud Run | Container Apps | Lambda + Fargate |
+| **Est. Monthly Cost** | $300 | $350 | $400 |
+| **Key Strength** | Simple container deployment | Azure AD integration | Largest ecosystem |
+| **Key Limitation** | Fewer enterprise features | Higher baseline cost | Complex pricing |
+| **Fit for This Project** | High | Medium | Medium |
+
+**Recommended Selection**: GCP Cloud Run - serverless containers with optimal cost-to-scale ratio.
+
+**PRD Requirements**: Evaluate cold start impact on latency. Specify concurrency limits and scaling policies.
 ```
 
-**Business-Only Content Rules**:
-- **Business Driver**: WHY this decision matters to business outcomes
-- **Business Constraints**: Non-negotiable business rules (not technical constraints)
-- **Do NOT include**: Technical options, implementation approaches, or evaluation criteria (those belong in PRD Section 18)
+#### Handling N/A and Pending Status
+
+**N/A Example**:
+```markdown
+### BRD.01.32.06: AI/ML Architecture
+
+**Status**: N/A - No AI/ML components in project scope
+
+**Reason**: This feature uses standard rule-based validation. No machine learning, AI agents, or predictive analytics required.
+
+**PRD Requirements**: None for current scope. Flag for Phase 2 evaluation if ML-based fraud detection needed.
+```
+
+**Pending Example**:
+```markdown
+### BRD.01.32.05: Observability
+
+**Status**: Pending - Awaiting infrastructure finalization
+
+**Business Driver**: System monitoring required for SLA compliance.
+
+**Business Constraints**:
+- Real-time alerting for system failures
+- Minimum 30-day log retention
+
+**Alternatives Overview**: [Placeholder - To be completed after infrastructure selection]
+
+**PRD Requirements**: Complete observability analysis after infrastructure finalization.
+```
+
+#### Layer Separation Principle
+
+```
+BRD Section 7.2          →    PRD Section 18         →    ADR
+(WHAT & WHY & HOW MUCH)       (HOW to evaluate)          (Final decision)
+─────────────────────────────────────────────────────────────────────────
+Business drivers              Technical details          Implementation decision
+Business constraints          Deep-dive analysis         Trade-off analysis
+Cost estimates                Evaluation criteria        Selected approach
+```
 
 **Do NOT write**: "See ADR-033" or "Reference ADR-045" (ADRs don't exist yet)
 
-**Cross-Reference Flow**:
-1. BRD Section 7.2 → Defines business need (`{DOC_TYPE}.NN.EE.SS`)
-2. PRD Section 18 → Elaborates with technical options (references `{DOC_TYPE}.NN.EE.SS`)
-3. ADR Section 4.1 → Records final decision (references both)
+**Reference**: See `ai_dev_flow/BRD/BRD_CREATION_RULES.md` Section 9 for complete guidelines
 
 ### 5. Document Control Section Positioning
 

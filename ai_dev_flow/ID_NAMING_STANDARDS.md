@@ -989,7 +989,8 @@ Consistent across ALL document types:
 | 29 | Implementation Phase | IMPL |
 | 30 | Task Item | TASKS |
 | 31 | Plan Step | IPLAN |
-| 32-99 | Reserved for future use | - |
+| 32 | Architecture Topic | BRD |
+| 33-99 | Reserved for future use | - |
 
 ### Examples
 
@@ -1002,6 +1003,7 @@ Consistent across ALL document types:
 | `TASKS.01.17.128` | 15 | TASKS #1, Task #128 |
 | `BRD.99.01.9999` | 15 | BRD #99, Functional Requirement #9999 |
 | `SPEC.01.15.03` | 13 | SPEC #1, Interface #3 |
+| `BRD.01.32.01` | 12 | BRD #1, Architecture Topic #1 (Infrastructure) |
 
 ### Growth Pattern
 

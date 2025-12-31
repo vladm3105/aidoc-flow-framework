@@ -704,67 +704,258 @@ Document both platform-inherited mandatory conditions and feature-specific techn
 ### 7.1 Quality Attributes Overview
 [Explain that quality attributes define system qualities and characteristics rather than specific behaviors. These quality attributes are critical success factors for the system.]
 
-### 7.2 Architecture Decision Requirements
+### 7.2 Architecture Decision Requirements (MANDATORY)
 
-The following architectural topics require formal Architecture Decision Records (ADRs). Each topic uses subsection format `{DOC_TYPE}.NN.21.SS` (Architecture Topic - Element Type 21) containing **business content only**. Technical options and evaluation criteria belong in PRD Section 18.
+All BRDs **MUST** address each of the 7 mandatory ADR topic categories below. For each category, provide either a complete topic entry OR mark as "N/A - [reason]" if not applicable to this project.
 
 **Format Reference**: See `ai_dev_flow/ID_NAMING_STANDARDS.md` - "Architecture Decision Topic Subsection Format"
 
----
+#### 7.2.1 Mandatory ADR Topic Categories
 
-#### BRD.NN.21.01: [Topic Name]
-
-**ID Format**: `BRD.NN.21.SS` (Architecture Topic - Element Type 21)
-
-**Business Driver**: [Why this decision matters to business - reference upstream business objectives from sections 3-5]
-
-**Business Constraints**:
-- [Non-negotiable business rule 1 - e.g., regulatory requirement, budget limit]
-- [Non-negotiable business rule 2 - e.g., timeline constraint, partner SLA]
-
-**PRD Requirements**: [What PRD must elaborate - technical options, evaluation criteria]
+| # | Category | Element ID | Description | When N/A |
+|---|----------|------------|-------------|----------|
+| 1 | **Infrastructure** | BRD.NN.32.01 | Compute, deployment, scaling | Pure data/analytics project |
+| 2 | **Data Architecture** | BRD.NN.32.02 | Database, storage, caching | No persistent data needed |
+| 3 | **Integration** | BRD.NN.32.03 | APIs, messaging, external systems | Standalone system |
+| 4 | **Security** | BRD.NN.32.04 | Auth, encryption, access control | Internal tool, no sensitive data |
+| 5 | **Observability** | BRD.NN.32.05 | Monitoring, logging, alerting | MVP/prototype only |
+| 6 | **AI/ML** | BRD.NN.32.06 | Model serving, training, MLOps | No AI/ML components |
+| 7 | **Technology Selection** | BRD.NN.32.07 | Languages, frameworks, platforms | Using existing stack |
 
 ---
 
-#### BRD.NN.21.02: [Topic Name]
+#### BRD.NN.32.01: Infrastructure - [Specific Topic]
 
-**Business Driver**: [Why this decision matters to business]
+**Status**: [ ] Selected | [ ] Pending | [ ] N/A
+
+**Business Driver**: [Why this decision matters to business - reference BRD.NN.23.xx objectives]
 
 **Business Constraints**:
-- [Business constraint 1]
-- [Business constraint 2]
+- Budget: [Max annual/monthly spend]
+- Timeline: [Go-live date or development window]
+- Compliance: [Regulatory requirements affecting infrastructure]
 
-**PRD Requirements**: [What PRD must elaborate - technical options, evaluation criteria]
+**Alternatives Overview**:
+
+| Alternative | Function | Est. Monthly Cost | Selection Rationale |
+|-------------|----------|-------------------|---------------------|
+| Option A | [1-line functional description] | $X-Y/mo | [Why selected OR why not] |
+| Option B | [1-line functional description] | $X-Y/mo | [Why selected OR why not] |
+| Option C | [1-line functional description] | $X-Y/mo | [Why selected OR why not] |
+
+**Cloud Provider Comparison** (if applicable):
+
+| Capability | GCP | Azure | AWS | Notes |
+|------------|-----|-------|-----|-------|
+| Service Name | [Service] | [Service] | [Service] | |
+| Est. Cost | $X/mo | $X/mo | $X/mo | Based on [usage assumption] |
+| Key Differentiator | [1-line] | [1-line] | [1-line] | |
+
+**Recommended Selection**: [Option X] - [1-2 sentence business justification]
+
+**PRD Requirements**: [What PRD must elaborate - technical evaluation criteria]
 
 ---
 
-**Content Guidelines**:
+#### BRD.NN.32.02: Data Architecture - [Specific Topic]
 
-| Include (Business Content) | Exclude (Technical Content - goes to PRD §18) |
-|---------------------------|---------------------------------------------|
-| Business objectives | Technology options/alternatives |
-| Regulatory constraints | Performance specifications |
-| Non-negotiable business rules | Evaluation criteria |
-| Business impact statements | Implementation patterns |
-| Budget/timeline constraints | Technical timelines |
+**Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
-**Example** (Business-Focused):
-
-```markdown
-#### BRD.01.21.03: Core Data System Selection
-
-**Business Driver**: Real-time operational visibility required for business reporting
-and audit trails (see Section 8.4.2 compliance).
+**Business Driver**: [Data requirements and business impact]
 
 **Business Constraints**:
-- Must support multi-locale operations (e.g., currency/units/locales) per Section 3.2 requirements
-- Audit trail retention per organizational compliance policy (e.g., 5 years) per Section 8.4.2
-- Maximum budget allocation: [Budget] annual licensing per Section 8.2
+- Data volume: [Expected size/growth]
+- Retention: [Compliance-driven retention period]
+- Budget: [Max database/storage spend]
 
-**PRD Requirements**: [What PRD must elaborate for THIS topic - e.g., "Evaluate technical options for data persistence. Include scalability analysis."]
-```
+**Alternatives Overview**:
 
-**Layer Separation Principle**: BRD identifies WHAT decisions are needed and WHY (business justification). PRD Section 18 elaborates HOW to evaluate options (technical criteria). ADR documents the final decision.
+| Alternative | Function | Est. Monthly Cost | Selection Rationale |
+|-------------|----------|-------------------|---------------------|
+| Option A | [1-line functional description] | $X-Y/mo | |
+| Option B | [1-line functional description] | $X-Y/mo | |
+
+**Cloud Provider Comparison**:
+
+| Capability | GCP | Azure | AWS | Notes |
+|------------|-----|-------|-----|-------|
+| Relational DB | Cloud SQL | Azure SQL | RDS | |
+| Est. Cost | $X/mo | $X/mo | $X/mo | |
+| NoSQL | Firestore | Cosmos DB | DynamoDB | |
+| Est. Cost | $X/mo | $X/mo | $X/mo | |
+
+**Recommended Selection**: [Option] OR **Pending** - [What information is needed]
+
+**PRD Requirements**: [Technical evaluation scope]
+
+---
+
+#### BRD.NN.32.03: Integration - [Specific Topic]
+
+**Status**: [ ] Selected | [ ] Pending | [ ] N/A - [No external integrations required]
+
+**Business Driver**: [Integration requirements]
+
+**Business Constraints**:
+- Partner SLAs: [Required availability/latency]
+- Data formats: [Required standards]
+- Budget: [Integration platform costs]
+
+**Alternatives Overview**:
+
+| Alternative | Function | Est. Monthly Cost | Selection Rationale |
+|-------------|----------|-------------------|---------------------|
+| Option A | [1-line description] | $X/mo | |
+| Option B | [1-line description] | $X/mo | |
+
+**Recommended Selection**: [Option] OR **Pending**
+
+---
+
+#### BRD.NN.32.04: Security - [Specific Topic]
+
+**Status**: [ ] Selected | [ ] Pending | [ ] N/A
+
+**Business Driver**: [Security/compliance requirements]
+
+**Business Constraints**:
+- Compliance: [GDPR, HIPAA, SOC2, PCI-DSS, etc.]
+- Data classification: [Sensitivity level]
+- Authentication: [SSO, MFA requirements]
+
+**Alternatives Overview**:
+
+| Alternative | Function | Est. Monthly Cost | Selection Rationale |
+|-------------|----------|-------------------|---------------------|
+| Option A | [1-line description] | $X/mo | |
+| Option B | [1-line description] | $X/mo | |
+
+**Cloud Provider Comparison**:
+
+| Capability | GCP | Azure | AWS | Notes |
+|------------|-----|-------|-----|-------|
+| Identity | Cloud Identity | Entra ID | IAM/Cognito | |
+| Secrets | Secret Manager | Key Vault | Secrets Manager | |
+| Est. Cost | $X/mo | $X/mo | $X/mo | |
+
+**Recommended Selection**: [Option] OR **Pending**
+
+---
+
+#### BRD.NN.32.05: Observability - [Specific Topic]
+
+**Status**: [ ] Selected | [ ] Pending | [ ] N/A - [MVP/prototype only]
+
+**Business Driver**: [Operational visibility requirements]
+
+**Business Constraints**:
+- Retention: [Log/metric retention period]
+- SLA monitoring: [Required dashboards/alerts]
+- Budget: [Monitoring platform costs]
+
+**Alternatives Overview**:
+
+| Alternative | Function | Est. Monthly Cost | Selection Rationale |
+|-------------|----------|-------------------|---------------------|
+| Cloud-native | [Provider's monitoring] | $X/mo | Integrated, lower ops |
+| Third-party | [Datadog/New Relic/etc.] | $X/mo | Feature-rich, vendor-neutral |
+
+**Recommended Selection**: [Option] OR **Pending**
+
+---
+
+#### BRD.NN.32.06: AI/ML - [Specific Topic]
+
+**Status**: [ ] Selected | [ ] Pending | [ ] N/A - [No AI/ML components in scope]
+
+**Business Driver**: [AI/ML business requirements]
+
+**Business Constraints**:
+- Model types: [Classification, NLP, vision, etc.]
+- Inference volume: [Requests/day]
+- Training frequency: [One-time, periodic, continuous]
+- Budget: [AI/ML platform spend]
+
+**Alternatives Overview**:
+
+| Alternative | Function | Est. Monthly Cost | Selection Rationale |
+|-------------|----------|-------------------|---------------------|
+| Managed AI | [Pre-built APIs] | $X/mo | Fast deployment, limited customization |
+| Custom ML | [Self-trained models] | $X/mo | Full control, higher ops cost |
+| Hybrid | [Mix of both] | $X/mo | Balance flexibility and speed |
+
+**Cloud Provider Comparison**:
+
+| Capability | GCP | Azure | AWS | Notes |
+|------------|-----|-------|-----|-------|
+| LLM APIs | Vertex AI | Azure OpenAI | Bedrock | |
+| ML Platform | Vertex AI | Azure ML | SageMaker | |
+| Est. Cost | $X/mo | $X/mo | $X/mo | Based on [usage] |
+
+**Recommended Selection**: [Option] OR **Pending**
+
+---
+
+#### BRD.NN.32.07: Technology Selection - [Specific Topic]
+
+**Status**: [ ] Selected | [ ] Pending | [ ] N/A - [Using existing tech stack]
+
+**Business Driver**: [Why new technology selection needed]
+
+**Business Constraints**:
+- Team skills: [Existing expertise]
+- Timeline: [Learning curve considerations]
+- Support: [Enterprise support requirements]
+
+**Alternatives Overview**:
+
+| Alternative | Function | Est. Monthly Cost | Selection Rationale |
+|-------------|----------|-------------------|---------------------|
+| Option A | [Language/framework/platform] | $X/mo | |
+| Option B | [Language/framework/platform] | $X/mo | |
+
+**Recommended Selection**: [Option] OR **Pending**
+
+---
+
+#### 7.2.2 Content Guidelines
+
+| Include in BRD | Exclude (goes to PRD §18) |
+|----------------|---------------------------|
+| Business objectives | Detailed technical specs |
+| Cost estimates (ranges) | Exact pricing calculations |
+| Functional descriptions | Implementation architecture |
+| Selection rationale (business) | Performance benchmarks |
+| Cloud provider cost comparison | Vendor contract terms |
+
+#### 7.2.3 Missing Information Handling
+
+When information is unavailable, use these templates:
+
+**For Missing Cost Data**:
+> **Cost**: TBD - Requires [usage projections / vendor quote / PoC results]
+
+**For Missing Alternatives**:
+> **Alternatives**: Pending - Need to evaluate [category] options based on [constraint]
+
+**For N/A Categories**:
+> **Status**: N/A - [Category] not applicable because [specific reason]
+
+#### 7.2.4 AI Clarification Prompts
+
+During BRD generation, the AI assistant should ask for clarification when:
+
+| Missing Information | Suggested Question |
+|--------------------|-------------------|
+| Budget constraints | "What is your monthly/annual budget range for [category]?" |
+| Cloud preference | "Do you have an existing cloud provider preference (GCP/Azure/AWS)?" |
+| Compliance requirements | "Are there specific compliance frameworks (GDPR, HIPAA, SOC2) to consider?" |
+| Scale expectations | "What are your expected user/transaction volumes at launch and Year 1?" |
+| Team expertise | "What technologies does your team currently have experience with?" |
+| Timeline | "What is your target go-live date or development timeline?" |
+| Existing systems | "Are there existing systems this must integrate with?" |
+
+**Layer Separation Principle**: BRD identifies WHAT decisions are needed, WHY (business justification), and preliminary cost/alternatives. PRD Section 18 elaborates detailed technical evaluation. ADR documents the final decision with full trade-off analysis.
 
 **ADR Creation Timing**: ADRs are created in Layer 5 of SDD workflow (after BRD → PRD → EARS → BDD). Do NOT reference specific ADR numbers until they exist.
 

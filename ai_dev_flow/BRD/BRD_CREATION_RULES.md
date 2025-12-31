@@ -1595,32 +1595,129 @@ Quality attribute IDs use unified element ID format consistently across all down
 
 ---
 
-## 9. Architecture Decision Requirements
+## 9. Architecture Decision Requirements (MANDATORY)
 
-Every BRD must include **Section 7.2: "Architecture Decision Requirements"** with numbered subsections using format `{DOC_TYPE}.NN.EE.SS`.
+Every BRD **MUST** include **Section 7.2: "Architecture Decision Requirements"** addressing all 7 mandatory ADR topic categories. For each category, provide either a complete topic entry OR mark as "N/A - [reason]" if not applicable.
 
-### 9.1 Subsection ID Format
+### 9.1 Mandatory ADR Topic Categories
 
-| Component | Format | Example |
-|-----------|--------|---------|
-| Document ID | `NN` (2+ digit) | `01` (BRD-01) |
-| Element Type | `EE` (2+ digit) | `01` (Functional Requirement) |
-| Sequence | `SS` (2+ digit) | `03` (third item) |
-| Full ID | `{DOC_TYPE}.NN.EE.SS` | `BRD.01.01.03` |
+All BRDs must address each of the following 7 categories:
 
-**Reference**: See `ai_dev_flow/ID_NAMING_STANDARDS.md` - "Architecture Decision Topic Subsection Format"
+| # | Category | Element ID | Description | When N/A |
+|---|----------|------------|-------------|----------|
+| 1 | **Infrastructure** | BRD.NN.32.01 | Compute, deployment, scaling | Pure data/analytics project |
+| 2 | **Data Architecture** | BRD.NN.32.02 | Database, storage, caching | No persistent data needed |
+| 3 | **Integration** | BRD.NN.32.03 | APIs, messaging, external systems | Standalone system |
+| 4 | **Security** | BRD.NN.32.04 | Auth, encryption, access control | Internal tool, no sensitive data |
+| 5 | **Observability** | BRD.NN.32.05 | Monitoring, logging, alerting | MVP/prototype only |
+| 6 | **AI/ML** | BRD.NN.32.06 | Model serving, training, MLOps | No AI/ML components |
+| 7 | **Technology Selection** | BRD.NN.32.07 | Languages, frameworks, platforms | Using existing stack |
 
-### 9.2 Required Fields (Business-Only)
+**Element Type Code**: `21` = Architecture Topic (see `ID_NAMING_STANDARDS.md`)
 
-Each subsection **MUST** contain:
+### 9.2 Required Fields Per Topic
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Business Driver** | WHY this decision matters to business - reference upstream requirements | "Real-time position visibility required for treasury management (BRD.01.01.04)" |
-| **Business Constraints** | Non-negotiable business rules (bullet list) | "Must support multi-currency per Section 3.2", "5-year audit retention per BSA" |
-| **PRD Requirements** | Guidance for PRD Section 18 elaboration | "Evaluate technical options for data persistence. Include scalability analysis." |
+Each ADR topic subsection **MUST** contain:
 
-### 9.3 Content Guidelines (Layer Separation)
+| Field | Description | Required |
+|-------|-------------|----------|
+| **Status** | `Selected`, `Pending`, or `N/A - [reason]` | Yes |
+| **Business Driver** | WHY this decision matters - reference upstream requirements | Yes |
+| **Business Constraints** | Non-negotiable business rules (bullet list) | Yes |
+| **Alternatives Overview** | Table with options, function, estimated cost, selection rationale | Yes |
+| **Cloud Provider Comparison** | GCP/Azure/AWS comparison for costs and functionality | Yes |
+| **Recommended Selection** | Business-level recommendation with rationale | If Status=Selected |
+| **PRD Requirements** | Guidance for PRD Section 18 elaboration | Yes |
+
+### 9.3 Alternatives Overview Table (MANDATORY)
+
+Each topic must include an alternatives table with cost estimates:
+
+**Required Format**:
+
+| Option | Function | Est. Monthly Cost | Selection Rationale |
+|--------|----------|-------------------|---------------------|
+| Option A | [Short functional description] | $X,XXX | [Why selected/rejected] |
+| Option B | [Short functional description] | $X,XXX | [Why selected/rejected] |
+| Option C | [Short functional description] | $X,XXX | [Why selected/rejected] |
+
+**Cost Estimation Guidelines**:
+- Use monthly cost estimates (annual for licensing)
+- Include compute, storage, and egress where applicable
+- Reference vendor pricing pages or calculators
+- Use ranges for variable workloads: "$500-$2,000/month based on volume"
+
+**Function Description Guidelines**:
+- Keep descriptions short (10-20 words)
+- Focus on business capability, not technical implementation
+- Highlight key differentiators between options
+
+### 9.4 Cloud Provider Comparison (MANDATORY)
+
+Each topic must include comparison across major cloud providers:
+
+**Required Format**:
+
+| Criterion | GCP | Azure | AWS |
+|-----------|-----|-------|-----|
+| **Service Name** | [Service] | [Service] | [Service] |
+| **Est. Monthly Cost** | $X,XXX | $X,XXX | $X,XXX |
+| **Key Strength** | [1-sentence] | [1-sentence] | [1-sentence] |
+| **Key Limitation** | [1-sentence] | [1-sentence] | [1-sentence] |
+| **Fit for This Project** | High/Medium/Low | High/Medium/Low | High/Medium/Low |
+
+**Comparison Guidelines**:
+- Compare equivalent services across providers
+- Base costs on similar configurations
+- Focus on business-relevant differences (cost, compliance, regions)
+- Rate fit based on project-specific requirements
+
+### 9.5 Missing Information Handling
+
+When ADR topic information is unavailable or not applicable:
+
+**For N/A Topics**:
+```markdown
+### BRD.NN.32.06: AI/ML Architecture
+
+**Status**: N/A - No AI/ML components in project scope
+
+**Reason**: This project does not include machine learning, AI agents, or predictive analytics.
+Future phases may introduce ML capabilities; revisit this topic if scope changes.
+
+**PRD Requirements**: None for current scope. Flag for Phase 2 evaluation if ML features added.
+```
+
+**For Pending Topics**:
+```markdown
+### BRD.NN.32.02: Data Architecture
+
+**Status**: Pending - Awaiting vendor evaluation
+
+**Business Driver**: [Complete as normal]
+**Business Constraints**: [Complete as normal]
+
+**Alternatives Overview**: [Placeholder - To be completed by YYYY-MM-DD]
+**Cloud Provider Comparison**: [Placeholder - To be completed by YYYY-MM-DD]
+
+**Recommended Selection**: Pending vendor evaluation
+**PRD Requirements**: Complete alternatives analysis before PRD development.
+```
+
+### 9.6 AI Clarification Prompts
+
+During BRD generation, AI assistants should clarify missing ADR information:
+
+| Missing Information | Clarification Prompt |
+|--------------------|----------------------|
+| No infrastructure info | "What deployment model do you prefer? (Serverless, Kubernetes, VMs)" |
+| No database selection | "What are your data persistence requirements? (Relational, NoSQL, Time-series)" |
+| No cloud preference | "Do you have a cloud provider preference? (GCP, Azure, AWS, Multi-cloud)" |
+| No cost constraints | "What is your approximate monthly infrastructure budget?" |
+| No scaling requirements | "What is your expected user/transaction volume at launch and 12-month horizon?" |
+| No compliance requirements | "Are there specific compliance frameworks required? (SOC 2, HIPAA, PCI-DSS)" |
+
+### 9.7 Content Guidelines (Layer Separation)
 
 **Include in BRD Section 7.2** (Business Content):
 
@@ -1631,46 +1728,81 @@ Each subsection **MUST** contain:
 | Non-negotiable rules | Business rules that cannot change | "Multi-currency support mandatory" |
 | Business impact | Consequences of the decision | "Enables $50M annual transaction volume" |
 | Budget constraints | Financial limitations | "Max $50K annual licensing" |
+| Cost estimates | Monthly/annual cost ranges | "$2,000-$5,000/month for production tier" |
+| Provider comparison | GCP/Azure/AWS overview | See Section 9.4 format |
 
 **Exclude from BRD Section 7.2** (Goes to PRD Section 18):
 
 | Content Type | Why Excluded | Where It Belongs |
 |--------------|--------------|------------------|
-| Technology options | Technical exploration | PRD §18 "Technical Options" |
-| Performance specs | Technical criteria | PRD §18 "Evaluation Criteria" |
-| Evaluation criteria | Technical comparison | PRD §18 "Evaluation Criteria" |
+| Detailed technical specs | Technical exploration | PRD §18 "Technical Options" |
+| Performance benchmarks | Technical criteria | PRD §18 "Evaluation Criteria" |
 | Implementation patterns | Technical approach | ADR "Decision" |
-| Technical timelines | Implementation details | PRD §18 "Decision Timeline" |
+| Configuration details | Technical implementation | SPEC documents |
 
-### 9.4 Layer Separation Principle
+### 9.8 Layer Separation Principle
 
 ```
 BRD Section 7.2          →    PRD Section 18         →    ADR
-(WHAT & WHY)                  (HOW to evaluate)          (Final decision)
+(WHAT & WHY & HOW MUCH)       (HOW to evaluate)          (Final decision)
 ─────────────────────────────────────────────────────────────────────────
 Business drivers              Technical options          Selected option
 Business constraints          Evaluation criteria        Trade-off analysis
-Business impact               Product constraints        Consequences
-ADR placeholder               ADR placeholder            ADR document
+Cost estimates                Performance benchmarks     Consequences
+Alternatives overview         Detailed specifications    Implementation plan
+Cloud comparison              Technical deep-dive        Configuration
 ```
 
-### 9.5 Example (Business-Focused)
+### 9.9 Example (Complete ADR Topic)
 
 ```markdown
-#### BRD.01.01.03: Ledger System Selection
+### BRD.06.32.02: Data Architecture
 
-**Business Driver**: Real-time financial position visibility required for
-treasury management (BRD.01.01.04) and regulatory reporting (Section 8.4.2 BSA compliance).
+**Status**: Selected
+
+**Business Driver**: Customer onboarding workflow requires persistent storage
+for KYC documents and verification history (BRD.06.23.01 - Reduce onboarding time).
 
 **Business Constraints**:
-- Must support multi-currency operations per Section 3.2 requirements
-- Audit trail retention per BSA requirements (5 years) per Section 8.4.2
-- Maximum budget allocation: $50K annual licensing per Section 8.2
+- Must support multi-region data residency for GDPR compliance
+- 7-year document retention per regulatory requirements
+- Query performance <500ms for customer lookup operations
 
-**PRD Requirements**: [What PRD must elaborate for THIS topic - e.g., "Evaluate technical options for data persistence. Include scalability analysis."]
+**Alternatives Overview**:
+
+| Option | Function | Est. Monthly Cost | Selection Rationale |
+|--------|----------|-------------------|---------------------|
+| PostgreSQL (managed) | Relational DB with ACID compliance | $200-$800 | Selected - mature, cost-effective |
+| MongoDB Atlas | Document store with flexible schema | $300-$1,200 | Rejected - higher cost, less SQL tooling |
+| DynamoDB | Serverless NoSQL with auto-scaling | $150-$600 | Rejected - vendor lock-in concerns |
+
+**Cloud Provider Comparison**:
+
+| Criterion | GCP | Azure | AWS |
+|-----------|-----|-------|-----|
+| **Service Name** | Cloud SQL | Azure Database | RDS |
+| **Est. Monthly Cost** | $200 | $250 | $220 |
+| **Key Strength** | Automatic failover | AD integration | Widest ecosystem |
+| **Key Limitation** | Fewer regions | Higher baseline cost | Complex pricing |
+| **Fit for This Project** | High | Medium | High |
+
+**Recommended Selection**: GCP Cloud SQL PostgreSQL - best balance of cost,
+reliability, and regional availability for our target markets.
+
+**PRD Requirements**: Evaluate read replica configurations for analytics workloads.
+Include backup/recovery procedures and connection pooling specifications.
 ```
 
-**Purpose**: Identifies architectural topics requiring formal evaluation. Technical details are elaborated in PRD Section 18
+### 9.10 Subsection ID Format Reference
+
+| Component | Format | Example |
+|-----------|--------|---------|
+| Document ID | `NN` (2+ digit) | `06` (BRD-06) |
+| Element Type | `21` (Architecture Topic) | `21` |
+| Sequence | `SS` (2+ digit) | `02` (Data Architecture) |
+| Full ID | `BRD.NN.32.SS` | `BRD.06.32.02` |
+
+**Reference**: See `ai_dev_flow/ID_NAMING_STANDARDS.md` - "Architecture Decision Topic Subsection Format"
 
 ---
 

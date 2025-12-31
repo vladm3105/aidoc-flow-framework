@@ -217,30 +217,54 @@ fi
 echo ""
 
 # ============================================
-# CHECK 6: Architecture Decision Requirements Section
+# CHECK 6: Architecture Decision Requirements Section (7 Mandatory Categories)
 # ============================================
 echo "CHECK 6: Architecture Decision Requirements Section"
 echo "-----------------------------------------"
 
-if grep -q "## 7.2 Architecture Decision Requirements" "$BRD_FILE"; then
+if grep -q "## 7.2 Architecture Decision Requirements" "$BRD_FILE" || grep -q "### 7.2 Architecture Decision Requirements" "$BRD_FILE"; then
   echo "  ✅ Found: Section 7.2 Architecture Decision Requirements"
 
-  # Check for required table structure
-  if grep -q "| Topic Area | Decision Needed | Business Driver | Key Considerations |" "$BRD_FILE"; then
+  # Check for required table structure (new format with Category/Element ID)
+  if grep -qE "\| *# *\| *\*?\*?Category\*?\*? *\| *\*?\*?Element ID\*?\*? *\|" "$BRD_FILE"; then
     echo "  ✅ Section 7.2 has required table structure"
   else
-    echo "  ❌ ERROR: Section 7.2 missing required table structure (Topic Area, Decision Needed, Business Driver, Key Considerations)"
+    echo "  ❌ ERROR: Section 7.2 missing required table structure (# | Category | Element ID | ...)"
     ((ERRORS++))
   fi
 
-  # Check for minimum 3 architectural topics
-  topic_count=$(grep -A 100 "## 7.2 Architecture Decision Requirements" "$BRD_FILE" | grep "^|" | grep -v "^|---" | grep -v "^| Topic Area " | wc -l)
+  # Check for 7 mandatory ADR topic categories
+  mandatory_categories=("Infrastructure" "Data Architecture" "Integration" "Security" "Observability" "AI/ML" "Technology Selection")
+  missing_categories=0
 
-  if [ "$topic_count" -ge 3 ]; then
-    echo "  ✅ Section 7.2 identifies $topic_count architectural topics (≥3 required)"
-  else
-    echo "  ❌ ERROR: Section 7.2 must identify at least 3 architectural topics (found: $topic_count)"
+  for category in "${mandatory_categories[@]}"; do
+    if grep -qi "$category" "$BRD_FILE"; then
+      echo "  ✅ Found mandatory category: $category"
+    else
+      echo "  ❌ MISSING mandatory ADR category: $category"
+      ((missing_categories++))
+    fi
+  done
+
+  if [ "$missing_categories" -gt 0 ]; then
+    echo "  ❌ ERROR: $missing_categories mandatory ADR topic categories missing"
     ((ERRORS++))
+  fi
+
+  # Check for element ID format BRD.NN.32.SS
+  if grep -qE "BRD\.[0-9]+\.32\.[0-9]+" "$BRD_FILE"; then
+    echo "  ✅ Section 7.2 uses correct element ID format (BRD.NN.32.SS)"
+  else
+    echo "  ⚠️  WARNING: Section 7.2 should use element ID format BRD.NN.32.SS"
+    ((WARNINGS++))
+  fi
+
+  # Check for Status field (Selected/Pending/N/A)
+  if grep -qE "(Selected|Pending|N/A)" "$BRD_FILE"; then
+    echo "  ✅ ADR topics include Status indicators"
+  else
+    echo "  ⚠️  WARNING: ADR topics should include Status (Selected/Pending/N/A)"
+    ((WARNINGS++))
   fi
 else
   echo "  ❌ MISSING: Section 7.2 Architecture Decision Requirements"
@@ -349,9 +373,15 @@ else
 fi
 
 # Verify Section 7.2 exists (where ADR topics should be listed)
-if grep -q "## 7.2 Architecture Decision Requirements" "$BRD_FILE"; then
-  adr_topics=$(grep -A 100 "## 7.2 Architecture Decision Requirements" "$BRD_FILE" | grep "^|" | grep -v "^|---" | grep -v "^| Topic Area " | wc -l)
-  echo "  ✅ Section 7.2 identifies $adr_topics ADR topics for future creation"
+if grep -q "## 7.2 Architecture Decision Requirements" "$BRD_FILE" || grep -q "### 7.2 Architecture Decision Requirements" "$BRD_FILE"; then
+  # Count ADR topics with element IDs (BRD.NN.32.SS format)
+  adr_topics=$(grep -cE "BRD\.[0-9]+\.32\.[0-9]+" "$BRD_FILE" || echo 0)
+  if [ "$adr_topics" -ge 7 ]; then
+    echo "  ✅ Section 7.2 identifies $adr_topics ADR topic elements (7 mandatory categories)"
+  else
+    echo "  ⚠️  WARNING: Section 7.2 has $adr_topics ADR topics (7 mandatory categories expected)"
+    ((WARNINGS++))
+  fi
 else
   echo "  ❌ ERROR: Missing Section 7.2 to identify ADR topics"
   ((ERRORS++))

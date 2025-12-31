@@ -49,24 +49,76 @@ BRDs are the **first step** in specification-driven development within the compl
 - ADRs document **WHICH** option was chosen and **WHY**
 - This separation maintains clear workflow phases and prevents broken references
 
-**Architecture Decision Requirements section**:
-Every BRD should include a section (section 7.2) that lists architectural topics requiring decisions:
+### Architecture Decision Requirements Section (7.2) - MANDATORY
+
+Every BRD **MUST** include **Section 7.2: "Architecture Decision Requirements"** addressing all 7 mandatory ADR topic categories.
+
+#### 7 Mandatory ADR Topic Categories
+
+| # | Category | Element ID | Description | When N/A |
+|---|----------|------------|-------------|----------|
+| 1 | **Infrastructure** | BRD.NN.32.01 | Compute, deployment, scaling | Pure data/analytics project |
+| 2 | **Data Architecture** | BRD.NN.32.02 | Database, storage, caching | No persistent data needed |
+| 3 | **Integration** | BRD.NN.32.03 | APIs, messaging, external systems | Standalone system |
+| 4 | **Security** | BRD.NN.32.04 | Auth, encryption, access control | Internal tool, no sensitive data |
+| 5 | **Observability** | BRD.NN.32.05 | Monitoring, logging, alerting | MVP/prototype only |
+| 6 | **AI/ML** | BRD.NN.32.06 | Model serving, training, MLOps | No AI/ML components |
+| 7 | **Technology Selection** | BRD.NN.32.07 | Languages, frameworks, platforms | Using existing stack |
+
+#### Required Fields Per Topic
+
+Each ADR topic **MUST** include:
+
+| Field | Description | Required For |
+|-------|-------------|--------------|
+| **Status** | `Selected`, `Pending`, or `N/A` | All topics |
+| **Business Driver** | WHY this decision matters to business | Selected/Pending |
+| **Business Constraints** | Non-negotiable business rules | Selected/Pending |
+| **Alternatives Overview** | Table with Option, Function, Est. Cost, Rationale | Selected |
+| **Cloud Provider Comparison** | GCP vs Azure vs AWS comparison table | Selected |
+| **Recommended Selection** | Selected option with brief rationale | Selected |
+| **PRD Requirements** | What PRD must elaborate for this topic | All topics |
+
+#### Alternatives Overview Table (MANDATORY)
 
 ```markdown
-## 7.2 Architecture Decision Requirements
-
-| Topic Area | Decision Needed | Business Driver (BRD Reference) | Key Considerations |
-|------------|-----------------|--------------------------------|-------------------|
-| Multi-Agent Framework | Select orchestration framework | BO-XXX (automated operations) | Google ADK, LangGraph, custom |
-| State Management | Define persistence strategy | QA-XXX (99.99% reliability) | Cloud SQL, Firestore, Redis |
-| Communication Protocol | Choose messaging pattern | QA-XXX (<50ms latency) | Pub/Sub, gRPC, REST |
-
-**Example Topics**:
-- Multi-Agent Framework, State Management, Communication Protocol
-- Data Storage, [EXTERNAL_INTEGRATION - e.g., third-party API, service provider] Integration, Risk Calculation Engine
-
-**Purpose**: Identify architectural topics requiring decisions. Specific ADRs are created AFTER BDD as per the authoritative flow.
+| Option | Function | Est. Monthly Cost | Selection Rationale |
+|--------|----------|-------------------|---------------------|
+| Option A | Brief description | $X-$Y | Selected - reason |
+| Option B | Brief description | $X-$Y | Rejected - reason |
+| Option C | Brief description | $X-$Y | Rejected - reason |
 ```
+
+#### Cloud Provider Comparison Table (MANDATORY)
+
+```markdown
+| Criterion | GCP | Azure | AWS |
+|-----------|-----|-------|-----|
+| **Service Name** | Cloud Run | Container Apps | Fargate |
+| **Est. Monthly Cost** | $300 | $350 | $400 |
+| **Key Strength** | Auto-scaling | AD integration | Ecosystem |
+| **Key Limitation** | Fewer features | Higher cost | Complex pricing |
+| **Fit for This Project** | High | Medium | Medium |
+```
+
+#### Status Indicators
+
+- **Selected**: Decision made, includes full Alternatives Overview and Cloud Provider Comparison
+- **Pending**: Awaiting information/decision, includes reason and expected timeline
+- **N/A**: Not applicable, includes explicit reason why category doesn't apply
+
+#### Layer Separation Principle
+
+```
+BRD Section 7.2          →    PRD Section 18         →    ADR
+(WHAT & WHY & HOW MUCH)       (HOW to evaluate)          (Final decision)
+─────────────────────────────────────────────────────────────────────────
+Business drivers              Technical details          Implementation decision
+Business constraints          Deep-dive analysis         Trade-off analysis
+Cost estimates                Evaluation criteria        Selected approach
+```
+
+**Reference**: See `BRD_CREATION_RULES.md` Section 9 for detailed guidelines and `examples/BRD-06.0_example_feature.md` for complete demonstration
 
 ## BRD Categories: Platform vs Feature
 
