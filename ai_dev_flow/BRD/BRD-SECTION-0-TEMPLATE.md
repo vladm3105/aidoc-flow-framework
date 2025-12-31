@@ -97,6 +97,18 @@ custom_fields:
 ## Traceability
 
 - **Original Document**: BRD-{NN} (before split)
-- **Element ID Range**: BRD.{NN}.{TT}.01 through BRD.{NN}.{TT}.{MAX}
+- **Element ID Patterns**:
+    - Functional Requirements: BRD.{NN}.01.xx (Section 6)
+    - Quality Attributes: BRD.{NN}.02.xx (Section 7)
+    - Constraints: BRD.{NN}.03.xx (Section 8)
+    - Assumptions: BRD.{NN}.04.xx (Section 8)
+    - Dependencies: BRD.{NN}.05.xx (Section 8)
+    - Acceptance Criteria: BRD.{NN}.06.xx (Section 9)
+    - Risks: BRD.{NN}.07.xx (Section 10)
+    - Business Objectives: BRD.{NN}.23.xx (Section 2)
+    - User Stories:
+        - Primary User Stories: PRD.{NN}.09.xx (PRD Section 5, referenced from BRD Section 5)
+        - Operational User Stories: PRD.{NN}.10.xx (PRD Section 5, referenced from BRD Section 5)
+- **Note**: This BRD utilizes a multi-segment ID format (`BRD.DOC_ID.TYPE_CODE.SEQUENCE`). The TYPE_CODE identifies the element category (e.g., 01=Functional Requirements, 23=Business Objectives). See `ID_NAMING_STANDARDS.md` for complete element type codes.
 - **Tag Format**: @ref: BRD-{NN}.{S} (section reference)
 - **Downstream Trace**: PRD -> EARS -> BDD -> ADR -> SYS -> REQ -> IMPL -> CTR -> SPEC

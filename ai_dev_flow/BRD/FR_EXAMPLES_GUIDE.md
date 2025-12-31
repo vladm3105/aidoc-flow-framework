@@ -221,14 +221,17 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 - Calculate delivery partner fees based on payout method (bank vs mobile wallet vs prepaid card)
 ```
 
-**Cross-Reference Pattern**:
+**Cross-Reference Pattern** (with Section Context):
 
 | Reference Type | Format | Example |
 |---------------|--------|---------|
-| Platform BRD | `(per BRD-NN)` | `(per BRD-NN)` |
-| Feature BRD | `(managed per BRD-XXX)` | `(managed per BRD-11)` |
-| Internal section | `(per section X)` | `(per Fee Schedule in section 10)` |
-| Related Functional Requirement | `(per BRD.NN.EE.SS)` | `(per BRD.NNN.003)` |
+| Platform BRD | `(per BRD-NN, Section X)` | `(per BRD-01, Section 6)` |
+| Feature BRD | `(managed per BRD-XXX, Section X)` | `(managed per BRD-11, Section 6)` |
+| Internal section | `(per BRD-XX.Y_filename.md)` | `(per BRD-09.7_quality_attributes.md)` |
+| Related Functional Requirement | `BRD.NN.EE.SS (Section X)` | `BRD.09.01.05 (Section 6)` |
+| Business Objective | `BRD.NN.23.SS (Section 2)` | `BRD.09.23.01 (Section 2)` |
+
+**Note**: Always include section context in parentheses after element IDs to improve navigability. For file-based references, use explicit markdown filenames instead of vague "Section X" references.
 
 ---
 
@@ -336,15 +339,24 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 
 ### Subsection 5: Related Requirements (Required)
 
-**Purpose**: Cross-references to Platform BRDs, Partner Integration BRDs, and other Feature BRDs.
+**Purpose**: Cross-references to Platform BRDs, Partner Integration BRDs, and other Feature BRDs with section context for navigability.
 
-**Format**:
+**Format** (with Section Context):
 ```markdown
 **Related Requirements**:
-- Platform: BRD-01 (Platform Architecture), BRD-02 (Partner Ecosystem)
-- Partner Integration: BRD-NN (Wallet Funding via Custody Provider), BRD-NN (Recipient Management)
-- Compliance: BRD-03 (security & Compliance Framework), BRD-17 (Compliance Monitoring)
-- AI Agent: BRD-22 (Fraud Detection Agent - ML implementation details)
+- Platform: BRD-01 (Platform Architecture, Section 6), BRD-02 (Partner Ecosystem, Section 6)
+- Partner Integration: BRD-08 (Wallet Funding via Custody Provider, Section 6), BRD-11 (Recipient Management, Section 6)
+- Compliance: BRD-03 (Security & Compliance Framework, Section 6), BRD-17 (Compliance Monitoring, Section 6)
+- AI Agent: BRD-22 (Fraud Detection Agent - ML implementation details, Section 6)
+- Business Objectives: BRD.09.23.01 (Section 2), BRD.09.23.02 (Section 2)
+```
+
+**Explicit File Path Format** (preferred for split BRDs):
+```markdown
+**Related Requirements**:
+- Platform: [BRD-01.6_functional_requirements.md](../BRD-01_platform_architecture/BRD-01.6_functional_requirements.md)
+- Quality: [BRD-09.7_quality_attributes.md](BRD-09.7_quality_attributes.md)
+- Business Objectives: BRD.09.23.01 (Section 2 - [BRD-09.2_business_objectives.md](BRD-09.2_business_objectives.md))
 ```
 
 **Category Definitions**:

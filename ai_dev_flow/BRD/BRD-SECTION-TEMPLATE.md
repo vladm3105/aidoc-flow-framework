@@ -59,9 +59,16 @@ custom_fields:
 
 ## References
 
-- **Parent Document**: @ref: BRD-{NN}.0
-- **Related Sections**: @ref: BRD-{NN}.{related}
-- **Downstream**: @ref: PRD-{NN} (Product Requirements)
+- **Parent Document**: [BRD-{NN}.0_index.md](BRD-{NN}.0_index.md) (Index and Document Overview)
+- **Related Sections**: [BRD-{NN}.{related}_{slug}.md](BRD-{NN}.{related}_{slug}.md) (Section {related} Title)
+- **Downstream**: PRD-{NN}_{slug}/PRD-{NN}.0_index.md (Product Requirements derived from this BRD)
+
+### Cross-Reference Context
+
+When referencing elements from other sections, include section context for navigability:
+- **Business Objectives**: `BRD.{NN}.23.01 (Section 2)` - links to Business Objectives in Section 2
+- **Functional Requirements**: `BRD.{NN}.01.01 (Section 6)` - links to FRs in Section 6
+- **Quality Attributes**: `BRD.{NN}.02.01 (Section 7)` - links to QAs in Section 7
 
 ---
 

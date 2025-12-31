@@ -1416,7 +1416,82 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 - **Zero Orphaned User Stories**: Every US must link to at least one FR
 - **Complete Forward Links**: Every FR/QA must have planned downstream SPEC
 
-### 8.5 Legacy Traceability Fields (Project-Specific)
+### 8.5 Element ID Patterns in Index Files (MANDATORY for Split BRDs)
+
+**Purpose**: Provide clear element identification scheme in index files (`BRD-XX.0_index.md`) to improve navigability and support automated processing.
+
+**Problem Solved**: Vague "Element ID Range" entries (e.g., `BRD.06.01.01 through BRD.06.24.XX`) do not accurately represent the various types of element IDs used in the document.
+
+**Required Format in Index Traceability Section**:
+
+```markdown
+## Traceability
+
+- **Element ID Patterns**:
+    - Functional Requirements: BRD.{NN}.01.xx (Section 6)
+    - Quality Attributes: BRD.{NN}.02.xx (Section 7)
+    - Constraints: BRD.{NN}.03.xx (Section 8)
+    - Assumptions: BRD.{NN}.04.xx (Section 8)
+    - Acceptance Criteria: BRD.{NN}.06.xx (Section 9)
+    - Risks: BRD.{NN}.07.xx (Section 10)
+    - Business Objectives: BRD.{NN}.23.xx (Section 2)
+    - User Stories:
+        - Primary User Stories: PRD.{NN}.09.xx (PRD Section 5)
+        - Operational User Stories: PRD.{NN}.10.xx (PRD Section 5)
+- **Note**: This BRD utilizes a multi-segment ID format (`BRD.DOC_ID.TYPE_CODE.SEQUENCE`).
+  The TYPE_CODE identifies the element category (e.g., 01=Functional Requirements, 23=Business Objectives).
+```
+
+**Benefits**:
+- Readers can see at a glance all element types in the document
+- ID prefixes are clearly documented with section locations
+- Greatly improves navigability for human readers
+- Enables automated parsing and traceability matrix generation
+
+### 8.5.1 Contextualized Cross-References (MANDATORY)
+
+**Purpose**: Add section context to all internal BRD element ID references to improve navigability.
+
+**Pattern**: `{Element_ID} (Section {N})` or `{Element_ID} ({File_Reference})`
+
+**Required Formats**:
+
+| Reference Type | Before (Avoid) | After (Required) |
+|---------------|----------------|------------------|
+| Business Objective | `BRD.09.23.01` | `BRD.09.23.01 (Section 2)` |
+| Functional Requirement | `BRD.09.01.05` | `BRD.09.01.05 (Section 6)` |
+| Quality Attribute | `BRD.09.02.01` | `BRD.09.02.01 (Section 7)` |
+| Section Reference | `Section 7` | `BRD-09.7_quality_attributes.md` |
+| Related BRD | `BRD-01` | `BRD-01 (Platform Architecture, Section 6)` |
+
+**Example - Functional Requirement Related Requirements**:
+
+```markdown
+**Related Requirements**:
+- BRD.09.23.01 (Section 2) - Primary business objective
+- BRD.09.01.03 (Section 6) - Upstream functional requirement
+- BRD-01 (Platform Architecture, Section 6) - Platform dependency
+
+**Traces To**: BRD-09.7_quality_attributes.md (not "Section 7")
+```
+
+### 8.5.2 Standardized Requirement IDs (MANDATORY)
+
+**Purpose**: Ensure all element IDs follow consistent `BRD.NN.TT.SS` format across all BRD documents.
+
+**Problem Solved**: Inconsistent ID formats (e.g., `16.01.01` without `BRD.` prefix) make cross-document tracing unreliable.
+
+**Standardization Rule**:
+
+| Before (Invalid) | After (Valid) | Rationale |
+|-----------------|---------------|-----------|
+| `16.01.01` | `BRD.16.01.01` | Full prefix required |
+| `FR-001` | `BRD.16.01.01` | Deprecated format |
+| `BO-001` | `BRD.16.23.01` | Use element type code 23 |
+
+**Validation**: All Req IDs in Functional Requirements tables MUST include the `BRD.` prefix.
+
+### 8.5.3 Legacy Traceability Fields (Project-Specific)
 
 For projects with existing strategy documents:
 
@@ -1427,7 +1502,7 @@ For projects with existing strategy documents:
 - **Strategy References**: Specific sections from strategy documents
 - **Business Rationale**: Business justification for each requirement
 - **Acceptance Criteria**: Verifiable by business stakeholders
-- **Anchors/IDs**: `BO-XXX`, `BRD.NN.EE.SS` (functional requirements), quality attributes use unified sequential numbering
+- **Anchors/IDs**: `BRD.NN.EE.SS` (functional requirements), quality attributes use unified sequential numbering
 - **Code Path(s)**: Strategic impact area
 
 ---

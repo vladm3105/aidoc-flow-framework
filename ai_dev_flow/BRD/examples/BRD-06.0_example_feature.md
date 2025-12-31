@@ -49,14 +49,14 @@ Current and future state summaries.
 
 ## 3.6 Technology Stack Prerequisites
 Feature BRD references Platform prerequisites where applicable.
-- Platform BRD-01: Core services available
-- Platform BRD-02: Partner ecosystem available
+- Platform: See `BRD-01.3_technology_stack.md` - Core services available
+- Platform: See `BRD-02.3_technology_stack.md` - Partner ecosystem available
 
 ## 3.7 Mandatory Technology Conditions
 Platform-inherited and feature-specific conditions (business-level wording):
-- Inherit audit trail retention policy from Platform
-- Inherit data retention compliance from Platform
-- Feature-specific: Requires business-configurable fee schedule
+- Inherit audit trail retention policy from Platform (See `BRD-01.8_constraints.md`)
+- Inherit data retention compliance from Platform (See `BRD-01.8_constraints.md`)
+- Feature-specific: Requires business-configurable fee schedule (`BRD.06.03.01` - Section 8)
 
 ## 4. Stakeholders (High-Level)
 - Executive Sponsor
@@ -94,7 +94,11 @@ Business-level FRs with acceptance criteria; no technical details.
 | BRD.06.06.02 | Compliance completeness rate | ≥ 99.5% |
 
 **Related Requirements**:
-- References Platform prerequisites; related Feature BRDs if applicable.
+- Business Objectives: `BRD.06.23.01` (Section 2) - Reduce onboarding decision time
+- Business Objectives: `BRD.06.23.02` (Section 2) - Achieve completion rate target
+- Quality Attributes: See `BRD-06.7_quality_attributes.md` for performance targets
+- Platform Prerequisites: See `BRD-01.3_technology_stack.md` (Core services)
+- Platform Prerequisites: See `BRD-02.3_technology_stack.md` (Partner ecosystem)
 
 **Complexity**: 2/5 (Single partner, standard compliance, limited dependencies)
 
@@ -134,7 +138,28 @@ Overview of performance, security, and availability goals.
 - Quality standards, testing strategy, and quality gates.
 
 ## 16. Traceability
-- Traceability matrix placeholders; to be populated post-PRD.
+
+### Element ID Patterns
+
+| Element Type | ID Pattern | Section Location |
+|--------------|------------|------------------|
+| Functional Requirements | `BRD.06.01.xx` | Section 6 |
+| Quality Attributes | `BRD.06.02.xx` | Section 7 |
+| Constraints | `BRD.06.03.xx` | Section 8 |
+| Assumptions | `BRD.06.04.xx` | Section 8 |
+| Dependencies | `BRD.06.05.xx` | Section 8 |
+| Acceptance Criteria | `BRD.06.06.xx` | Section 9 |
+| Risks | `BRD.06.07.xx` | Section 10 |
+| Business Objectives | `BRD.06.23.xx` | Section 2 |
+
+**Note**: This BRD utilizes a multi-segment ID format (`BRD.DOC_ID.TYPE_CODE.SEQUENCE`). The TYPE_CODE identifies the element category (e.g., 01=Functional Requirements, 23=Business Objectives). See `ID_NAMING_STANDARDS.md` for complete element type codes.
+
+### Downstream References
+
+- **PRD**: PRD-06 (Product Requirements derived from this BRD)
+- **EARS**: EARS-06 (Formal requirements derived from PRD)
+- **Tag Format**: `@ref: BRD-06.{S}` (section reference)
+- **Downstream Trace**: PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC
 
 ## 17. Glossary
 - Project-specific terms and definitions.
