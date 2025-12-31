@@ -37,6 +37,18 @@ custom_fields:
 | **Original Size** | {SIZE} KB |
 | **Split Date** | {YYYY-MM-DD} |
 | **Status** | {status} |
+| **PRD-Ready Score** | {score}/100 (Target: ≥90/100) |
+
+### PRD-Ready Score Breakdown
+
+| Category | Max Points | Score | Notes |
+|----------|------------|-------|-------|
+| Business-Level Language | 30 | {score} | No technical jargon, API specs, or code |
+| Functional Requirements Structure | 25 | {score} | 4-subsection format with acceptance criteria |
+| Traceability Completeness | 20 | {score} | All FRs linked to BOs, downstream refs |
+| Quality Attributes Coverage | 15 | {score} | Performance, security, availability defined |
+| Document Completeness | 10 | {score} | All mandatory sections present |
+| **Total** | **100** | **{total}** | Target: ≥90/100 |
 
 ---
 
@@ -50,10 +62,12 @@ custom_fields:
 
 | Section | File | Title | Description |
 |---------|------|-------|-------------|
-| 0 | [BRD-{NN}.0_index.md](BRD-{NN}.0_index.md) | Index | This file - document overview and navigation |
-| 1 | [BRD-{NN}.1_{slug1}.md](BRD-{NN}.1_{slug1}.md) | {Title 1} | {Description 1} |
-| 2 | [BRD-{NN}.2_{slug2}.md](BRD-{NN}.2_{slug2}.md) | {Title 2} | {Description 2} |
-| 3 | [BRD-{NN}.3_{slug3}.md](BRD-{NN}.3_{slug3}.md) | {Title 3} | {Description 3} |
+| 0 | [BRD-{NN}.0_index.md](BRD-{NN}.0_index.md) | Index | Document overview, navigation, and traceability summary |
+| 1 | [BRD-{NN}.1_{slug1}.md](BRD-{NN}.1_{slug1}.md) | {Title 1} | Purpose, scope, document control, and references |
+| 2 | [BRD-{NN}.2_{slug2}.md](BRD-{NN}.2_{slug2}.md) | {Title 2} | Background, business goals, and strategic alignment |
+| 3 | [BRD-{NN}.3_{slug3}.md](BRD-{NN}.3_{slug3}.md) | {Title 3} | {Meaningful description of section content} |
+
+> **Note**: Descriptions must be meaningful (5-15 words). Avoid generic entries like "Section 1" or "Section 2". See `BRD_CREATION_RULES.md` section 8.5.3 for guidelines.
 
 ---
 

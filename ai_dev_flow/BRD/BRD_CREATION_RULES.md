@@ -1491,7 +1491,53 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 
 **Validation**: All Req IDs in Functional Requirements tables MUST include the `BRD.` prefix.
 
-### 8.5.3 Legacy Traceability Fields (Project-Specific)
+### 8.5.3 Section Map Descriptions (MANDATORY for Split BRDs)
+
+**Purpose**: Ensure Section Map tables in index files contain meaningful descriptions that serve as quick references for document navigation.
+
+**Problem Solved**: Generic descriptions like "Section 1", "Section 2" provide no value for readers trying to quickly locate specific content.
+
+**Required Format**:
+
+| Section | File | Title | Description |
+|---------|------|-------|-------------|
+| 0 | BRD-06.0_index.md | Index | Document overview and navigation |
+| 1 | BRD-06.1_introduction.md | Introduction | Purpose, scope, document control, and references |
+| 2 | BRD-06.2_business_objectives.md | Business Objectives | Background, goals, and strategic alignment |
+| 6 | BRD-06.6_functional_requirements.md | Functional Requirements | Business capabilities, rules, and acceptance criteria |
+
+**Avoid (Generic)**:
+
+| Section | File | Title | Description |
+|---------|------|-------|-------------|
+| 1 | BRD-06.1_introduction.md | Introduction | Section 1 |
+| 2 | BRD-06.2_business_objectives.md | Business Objectives | Section 2 |
+
+**Description Guidelines**:
+- Use 5-15 words describing the section's primary content
+- Include key subsections or topics covered
+- Reference specific element types for requirements sections (e.g., "FRs with acceptance criteria")
+- Avoid repeating the Title verbatim
+
+### 8.5.4 User Story ID Format Standardization (MANDATORY)
+
+**Purpose**: Ensure consistent User Story identification across all BRD documents using the standard 4-segment element ID format.
+
+**Standard Format**: `BRD.NN.09.SS` (type code 09 = User Stories)
+
+**Deprecated Formats** (do not use):
+
+| Deprecated Format | Standard Format | Migration Action |
+|-------------------|-----------------|------------------|
+| `US-01.01` | `BRD.01.09.01` | Replace prefix, add doc ID |
+| `US-09.05` | `BRD.09.09.05` | Replace prefix, add doc ID |
+| `UserStory-001` | `BRD.01.09.01` | Convert to 4-segment format |
+
+**Note**: User Stories defined in PRD documents use `PRD.NN.09.SS` format. BRD documents may reference PRD User Stories but should use the full `PRD.NN.09.SS` format when doing so.
+
+**Reference**: See `ID_NAMING_STANDARDS.md` for complete element type codes.
+
+### 8.5.5 Legacy Traceability Fields (Project-Specific)
 
 For projects with existing strategy documents:
 
