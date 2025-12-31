@@ -259,7 +259,11 @@ Check `docs/ADR/ADR-000_technology_stack.md` for approved technologies.
 
 ### Step 3: Reserve ID Number
 
-Check `docs/ADR/` for next available ID number (e.g., ADR-01, ADR-033).
+Check `docs/ADR/` for next available ID number (e.g., ADR-01, ADR-33).
+
+**ID Numbering Convention**: Start with 2 digits and expand only as needed.
+- ✅ Correct: ADR-01, ADR-99, ADR-102
+- ❌ Incorrect: ADR-001, ADR-033 (extra leading zero not required)
 
 **Special IDs**:
 - **ADR-000**: Reserved for Technology Stack reference

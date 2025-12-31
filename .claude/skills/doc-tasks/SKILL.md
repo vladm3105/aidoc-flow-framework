@@ -434,6 +434,10 @@ Read SPEC (Layer 10) - technical specifications to decompose.
 
 Check `ai_dev_flow/TASKS/` for next available ID number.
 
+**ID Numbering Convention**: Start with 2 digits and expand only as needed.
+- ✅ Correct: TASKS-01, TASKS-99, TASKS-102
+- ❌ Incorrect: TASKS-001, TASKS-009 (extra leading zero not required)
+
 **ID Matching**: TASKS ID typically matches SPEC ID (TASKS-01 from SPEC-01).
 
 ### Step 3: Create TASKS File

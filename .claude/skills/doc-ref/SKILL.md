@@ -109,6 +109,10 @@ ls docs/ADR/*-REF-*.md 2>/dev/null    # For ADR references
 ls docs/BRD/*-REF-*.md 2>/dev/null | sort -V | tail -1
 ```
 
+**ID Numbering Convention**: Start with 2 digits and expand only as needed.
+- ✅ Correct: BRD-REF-01, ADR-REF-99, BRD-REF-102
+- ❌ Incorrect: BRD-REF-001, ADR-REF-009 (extra leading zero not required)
+
 ### Step 4: Create Document
 
 1. Copy template: `ai_dev_flow/REF-TEMPLATE.md`

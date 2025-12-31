@@ -412,6 +412,10 @@ Read BRD, PRD, and EARS to understand requirements to test.
 
 Check `docs/BDD/` for next available ID (e.g., BDD-01, BDD-02).
 
+**ID Numbering Convention**: Start with 2 digits and expand only as needed.
+- ✅ Correct: BDD-01, BDD-99, BDD-102
+- ❌ Incorrect: BDD-001, BDD-009 (extra leading zero not required)
+
 ### Step 3: Create Suite Folder
 
 ```bash

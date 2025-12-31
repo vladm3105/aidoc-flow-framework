@@ -322,7 +322,11 @@ If BRD is split into multiple section files (folder structure `docs/BRD/BRD-NN_{
 
 Check `docs/PRD/` for next available ID number (e.g., PRD-01, PRD-02).
 
-**ID Matching**: PRD ID does NOT need to match BRD ID (PRD-009 may implement BRD-016).
+**ID Numbering Convention**: Start with 2 digits and expand only as needed.
+- ✅ Correct: PRD-01, PRD-99, PRD-102
+- ❌ Incorrect: PRD-001, PRD-009 (extra leading zero not required)
+
+**ID Matching**: PRD ID does NOT need to match BRD ID (PRD-09 may implement BRD-16).
 
 ### Step 3: Create PRD Folder and Files
 
@@ -387,7 +391,27 @@ Quality standards and testing strategy (moved from BRD).
 
 **MANDATORY**: Create or update `docs/PRD/PRD-000_TRACEABILITY_MATRIX.md`
 
-### Step 11: Validate PRD
+### Step 11: Update Upstream BRD Traceability (MANDATORY)
+
+**CRITICAL - Often Missed**: When creating a PRD, you MUST update the parent BRD's traceability section.
+
+**Process**:
+1. Open the upstream BRD (e.g., `docs/BRD/BRD-01_platform.md`)
+2. Locate the `## Traceability` section
+3. Add this PRD to `Downstream Artifacts`:
+   ```markdown
+   - Downstream Artifacts: [PRD-01](../PRD/PRD-01_user_authentication/PRD-01.0_index.md#PRD-01)
+   ```
+4. Commit BRD update with PRD creation (single commit)
+
+**Why This Matters**:
+- Enables bidirectional navigation between BRD and PRD
+- Impact analysis: BRD changes show affected PRDs
+- Audit compliance: Regulators require bidirectional traceability
+
+**Reference**: See `.claude/skills/doc-flow/SHARED_CONTENT.md` Section 4.3 "Bidirectional Traceability Update Workflow" for complete guidance.
+
+### Step 12: Validate PRD
 
 ```bash
 # PRD validation
@@ -433,6 +457,7 @@ python ai_dev_flow/scripts/validate_tags_against_docs.py --artifact PRD-NN --exp
 **Traceability**:
 - [ ] Cumulative tags: @brd included
 - [ ] Traceability matrix created/updated
+- [ ] Upstream BRD traceability section updated with this PRD
 - [ ] No ADR forward references
 - [ ] No broken links
 
@@ -487,6 +512,7 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 6. **Missing @brd tags**: Layer 2 must include Layer 1 tags
 7. **ID format errors**: Use unified format PRD.NN.TT.SS (not F-XXX, US-XXX, etc.)
 8. **Missing EARS Enhancement Appendix**: Section 20 required for EARS-Ready score
+9. **Missing upstream BRD update**: Must add PRD reference to parent BRD's Downstream Artifacts
 
 ## Template Binding (MANDATORY)
 

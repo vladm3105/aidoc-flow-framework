@@ -100,7 +100,7 @@ However, BRD documents should reference their strategic sources in the "Upstream
 ```markdown
 ## 10. Traceability
 
-### 12.1 Upstream Sources
+### 2.3.1 Upstream Sources
 
 **Strategic Source**: Market Analysis Report section 4.2 - service integration Requirements
 **Business Justification**: Q4 2024 Strategic Initiative - Platform Modernization
@@ -114,7 +114,7 @@ However, BRD documents should reference their strategic sources in the "Upstream
 
 ## 10. Traceability
 
-### 12.1 Upstream Sources
+### 2.3.2 Upstream Sources (Example)
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 1):
 - None (BRD is top-level artifact)
@@ -125,7 +125,7 @@ However, BRD documents should reference their strategic sources in the "Upstream
 - Executive Committee Decision (2024-09-15): "Approved service integration roadmap"
 - Stakeholder Interviews (2024-08-20 through 2024-09-10): provider connectivity pain points
 
-### 12.2 Downstream Artifacts
+### 2.3.3 Downstream Artifacts
 
 **Direct Dependencies**:
 - PRD.16.07.01: operation execution Product Requirements (`@brd: BRD.09.01.15`)
@@ -254,7 +254,7 @@ Strategy (External) → BRD (Layer 1)
 
 ## 8. Cross-BRD Dependencies
 
-### 12.1 BRD Relationship Map
+### 8.1 BRD Relationship Map
 
 ```mermaid
 graph TD
@@ -288,7 +288,7 @@ graph TD
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
 
-### 12.2 Inter-BRD Dependencies
+### 8.2 Inter-BRD Dependencies
 
 | Source BRD | Target BRD | Dependency Type | Description |
 |------------|------------|-----------------|-------------|
@@ -298,9 +298,9 @@ graph TD
 
 ---
 
-## 10. Business Domain Summary
+## 9. Business Domain Summary
 
-### 12.1 BRDs by Business Domain
+### 9.1 BRDs by Business Domain
 
 | Business Domain | BRD IDs | Total | Description |
 |-----------------|---------|-------|-------------|
@@ -310,7 +310,7 @@ graph TD
 | [Integration] | BRD-NN, BRD-NN | 2 | External system integration requirements |
 | [Analytics & Reporting] | BRD-NN | 1 | Business intelligence and reporting |
 
-### 12.2 Strategic Alignment
+### 9.2 Strategic Alignment
 
 | Strategic Goal | Related BRDs | Impact Level | Status |
 |----------------|--------------|--------------|--------|
@@ -322,7 +322,7 @@ graph TD
 
 ## 10. Business Value and Priority Summary
 
-### 12.1 Priority Distribution
+### 10.1 Priority Distribution
 
 | Priority Level | BRD Count | Percentage | Status |
 |----------------|-----------|------------|--------|
@@ -331,7 +331,7 @@ graph TD
 | Medium | [X] | XX% | [Implementation status] |
 | Low | [X] | XX% | [Implementation status] |
 
-### 12.2 ROI Impact Analysis
+### 10.2 ROI Impact Analysis
 
 | BRD ID | Business Value | Implementation Complexity | ROI Score | Priority |
 |--------|----------------|---------------------------|-----------|----------|
@@ -343,7 +343,7 @@ graph TD
 
 ## 11. Implementation Status
 
-### 12.1 Artifact Creation Coverage
+### 11.1 Artifact Creation Coverage
 
 | Artifact Type | Required | Created | Pending | Coverage % |
 |---------------|----------|---------|---------|------------|
@@ -353,7 +353,7 @@ graph TD
 | ADR | [X] | [Y] | [Z] | XX% |
 | **Total** | **[X]** | **[Y]** | **[Z]** | **XX%** |
 
-### 12.2 BRD Implementation Status
+### 11.2 BRD Implementation Status
 
 | BRD ID | PRD Status | EARS Status | BDD Status | Overall Status | Completion % |
 |--------|------------|-------------|------------|----------------|--------------|
@@ -368,7 +368,7 @@ graph TD
 - ⏳ Pending: Artifact not yet started
 - ❌ Blocked: Artifact creation blocked by dependencies
 
-### 12.3 Gap Analysis
+### 11.3 Gap Analysis
 
 **Missing Downstream Artifacts**:
 - BRD-XXX: Missing PRD mapping (business requirements not translated to product features)

@@ -387,6 +387,10 @@ Read and understand BRD and PRD that drive these formal requirements.
 
 Check `docs/EARS/` for next available ID number (e.g., EARS-01, EARS-02).
 
+**ID Numbering Convention**: Start with 2 digits and expand only as needed.
+- ✅ Correct: EARS-01, EARS-99, EARS-102
+- ❌ Incorrect: EARS-001, EARS-009 (extra leading zero not required)
+
 ### Step 3: Create EARS File
 
 **Location**: `docs/EARS/EARS-NN_{slug}.md`

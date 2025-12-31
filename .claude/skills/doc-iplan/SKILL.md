@@ -439,6 +439,10 @@ Read TASKS (Layer 11) - task breakdown to convert to commands.
 
 Check `docs/IPLAN/` for next available ID number.
 
+**ID Numbering Convention**: Start with 2 digits and expand only as needed.
+- ✅ Correct: IPLAN-01, IPLAN-99, IPLAN-102
+- ❌ Incorrect: IPLAN-001, IPLAN-009 (extra leading zero not required)
+
 ### Step 3: Create IPLAN File
 
 **Location**: `docs/IPLAN/IPLAN-NN_{slug}.md` (template available at `ai_dev_flow/IPLAN/`)

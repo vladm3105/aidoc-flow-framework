@@ -14,9 +14,9 @@
 
 ### Document Revision History
 
-| Date | Author | Changes Made | Approver |
-|------|--------|--------------|----------|
-| 2025-12-28 | Business Analyst | Initial draft | |
+| Version | Date | Author | Changes Made | Approver |
+|---------|------|--------|--------------|----------|
+| 1.0 | 2025-12-28 | Business Analyst | Initial draft | |
 
 ---
 

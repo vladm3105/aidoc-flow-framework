@@ -66,6 +66,7 @@ Before creating ANY BRD section, confirm:
 | 01 | Functional Requirement | BRD.02.01.01 |
 | 06 | Acceptance Criteria | BRD.02.06.01 |
 | 23 | Business Objective | BRD.02.23.01 |
+| 32 | Architecture Topic | BRD.02.32.01 |
 
 > ⚠️ **Removed Patterns**: Do NOT use `AC-XXX`, `FR-XXX`, `BC-XXX`, `BO-XXX` formats.
 
@@ -226,7 +227,7 @@ Every BRD **MUST** include **Section 7.2: "Architecture Decision Requirements"**
 | 6 | **AI/ML** | BRD.NN.32.06 | Model serving, training, MLOps | No AI/ML components |
 | 7 | **Technology Selection** | BRD.NN.32.07 | Languages, frameworks, platforms | Using existing stack |
 
-**Element Type Code**: `21` = Architecture Topic
+**Element Type Code**: `32` = Architecture Topic
 
 #### Required Fields Per Topic
 
@@ -436,6 +437,10 @@ Choose appropriate template (comprehensive, simplified, or domain-specific).
 ### Step 4: Reserve ID Number
 
 Check `docs/BRD/` for next available ID number (e.g., BRD-01, BRD-02).
+
+**ID Numbering Convention**: Start with 2 digits and expand only as needed.
+- ✅ Correct: BRD-01, BRD-99, BRD-102
+- ❌ Incorrect: BRD-001, BRD-009 (extra leading zero not required)
 
 ### Step 5: Create BRD Folder and Files
 

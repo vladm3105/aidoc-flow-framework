@@ -437,6 +437,54 @@ The framework uses three distinct ID patterns for different purposes:
 
 **Key Insight**: The 4-segment format unifies internal and external element references to avoid confusion. Use it consistently everywhere you reference a specific element. Element ID DOC_NUM MUST match filename digit count.
 
+### Hyperlinked Traceability References (RECOMMENDED)
+
+For enhanced navigability, traceability tags MAY be converted to clickable hyperlinks. This is **optional but recommended** for improved documentation usability.
+
+**Tag-Only Format** (Primary - Always Valid):
+```markdown
+@brd: BRD.01.09.01
+```
+
+**Hyperlinked Format** (Enhanced - Recommended for Published Docs):
+```markdown
+[@brd: BRD.01.09.01](../../BRD/BRD-01_platform/BRD-01.5_user_stories.md#brd010901-feature-name)
+```
+
+**Anchor ID Convention**: Convert element ID to lowercase, remove dots, append slug:
+- Element: `BRD.01.09.01` → Anchor: `#brd010901-feature-name`
+
+**Format Comparison**:
+
+| Aspect | Tag-Only | Hyperlinked |
+|--------|----------|-------------|
+| **Validation** | ✅ Easy regex parsing | ⚠️ Requires link checker |
+| **Maintainability** | ✅ No path breakage | ❌ Breaks when files move |
+| **Navigation** | ❌ Manual search required | ✅ One-click access |
+| **Automation** | ✅ Script-friendly extraction | ⚠️ Complex link parsing |
+| **Recommended For** | Working drafts, automation | Published documentation |
+
+**Hybrid Approach** (Best Practice):
+1. Use tag-only format during active development
+2. Convert to hyperlinked format before documentation release
+3. Run link validation after conversion: `./scripts/validate_links.py --path docs/`
+
+**Cross-Document Hyperlink Patterns**:
+
+| Reference Type | Pattern | Example |
+|----------------|---------|---------|
+| Same folder | `[text](./file.md#anchor)` | `[BRD.01.01.01](./BRD-01.1_summary.md#brd010101)` |
+| Parent folder | `[text](../TYPE/file.md#anchor)` | `[BRD.01.01.01](../BRD/BRD-01.1_summary.md#brd010101)` |
+| Nested folder | `[text](../TYPE/TYPE-NN_slug/file.md#anchor)` | `[BRD.01.01.01](../BRD/BRD-01_platform/BRD-01.1_summary.md#brd010101)` |
+
+**Internal Section Links** (within same document or folder):
+
+| Link Type | Format | Example |
+|-----------|--------|---------|
+| Section reference | `[Section N](./file.md)` | `[PRD-01.8](./PRD-01.8_user_stories.md)` |
+| Index to section | `[PRD-01.N](PRD-01.N_slug.md)` | `[PRD-01.9](PRD-01.9_functional_requirements.md)` |
+| Cross-PRD | `[PRD-NN](../PRD-NN_slug/)` | `[PRD-02](../PRD-02_knowledge_engine/)` |
+
 ### Section File Naming Pattern
 
 **Nested Folder Types (BRD, PRD, ADR)** - section ALWAYS required:

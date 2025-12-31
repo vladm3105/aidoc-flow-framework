@@ -331,7 +331,11 @@ Especially focus on SYS (Layer 6) - system requirements to decompose.
 
 Check `ai_dev_flow/REQ/` for next available ID number.
 
-**Domain-based naming**: `REQ-domain-subdomain-NNN`
+**ID Numbering Convention**: Start with 2 digits and expand only as needed.
+- ✅ Correct: REQ-01, REQ-99, REQ-102
+- ❌ Incorrect: REQ-001, REQ-009 (extra leading zero not required)
+
+**Domain-based naming**: `REQ-domain-subdomain-NN`
 
 ### Step 3: Create REQ File
 

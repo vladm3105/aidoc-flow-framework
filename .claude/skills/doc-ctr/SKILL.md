@@ -543,6 +543,10 @@ Focus on REQ Section 3 (Interface Specifications) and Section 4 (Data Schemas).
 
 Check `ai_dev_flow/CTR/` for next available ID number.
 
+**ID Numbering Convention**: Start with 2 digits and expand only as needed.
+- ✅ Correct: CTR-01, CTR-99, CTR-102
+- ❌ Incorrect: CTR-001, CTR-009 (extra leading zero not required)
+
 ### Step 3: Create CTR Files (Dual Format)
 
 **Location Options**:

@@ -366,6 +366,10 @@ Focus on REQ (Layer 7) - atomic requirements to implement.
 
 Check `docs/IMPL/` for next available ID number (templates are in `ai_dev_flow/IMPL/`).
 
+**ID Numbering Convention**: Start with 2 digits and expand only as needed.
+- ✅ Correct: IMPL-01, IMPL-99, IMPL-102
+- ❌ Incorrect: IMPL-001, IMPL-009 (extra leading zero not required)
+
 ### Step 3: Create IMPL File
 
 **File naming**: `docs/IMPL/IMPL-NN_{slug}.md`

@@ -358,6 +358,74 @@ python ai_dev_flow/scripts/generate_traceability_matrices.py --auto
 
 **Rationale**: Single commit ensures matrix stays synchronized with artifacts. Validation gate prevents bad data in matrix.
 
+### Bidirectional Traceability Update Workflow (MANDATORY)
+
+When creating a downstream artifact, you MUST update the upstream document's traceability section to maintain bidirectional linkage.
+
+**Workflow**:
+
+```
+1. CREATE downstream artifact
+   └─ Example: Create PRD-01 from BRD-01
+
+2. UPDATE downstream artifact
+   └─ Add upstream traceability tags:
+      @brd: BRD.01.01.15
+
+3. UPDATE upstream artifact (CRITICAL - often missed)
+   └─ Add downstream reference in Traceability section:
+      - Downstream Artifacts: [PRD-01](../PRD/PRD-01_feature.md#PRD-01)
+
+4. VALIDATE both documents
+   └─ Run validation scripts on both upstream and downstream
+
+5. COMMIT together
+   └─ Single commit with descriptive message referencing both artifacts
+```
+
+**Bidirectional Update Table**:
+
+| When Creating | Update Upstream | Add to Section |
+|---------------|-----------------|----------------|
+| PRD | BRD | `Downstream Artifacts: PRD-NNN` |
+| EARS | PRD (and BRD) | `Downstream Artifacts: EARS-NNN` |
+| BDD | EARS (and PRD, BRD) | `Downstream Artifacts: BDD-NNN` |
+| ADR | BDD (and upstream) | `Downstream Artifacts: ADR-NNN` |
+| SYS | ADR (and upstream) | `Downstream Artifacts: SYS-NNN` |
+| REQ | SYS (and upstream) | `Downstream Artifacts: REQ-NNN` |
+| SPEC | REQ (and upstream) | `Downstream Artifacts: SPEC-NNN` |
+| TASKS | SPEC (and upstream) | `Downstream Artifacts: TASKS-NNN` |
+| IPLAN | TASKS (and upstream) | `Downstream Artifacts: IPLAN-NNN` |
+
+**Practical Guidance**:
+
+1. **Minimum Requirement**: Update immediate upstream document (PRD → update originating BRD)
+2. **Recommended**: Update all referenced upstream documents in traceability chain
+3. **Tooling**: Use `./scripts/update_traceability.py --artifact PRD-01 --update-upstream` (when available)
+4. **Manual Process**: Open each upstream document, locate Traceability section, add downstream link
+
+**Example - Creating PRD-01 from BRD-01**:
+
+```markdown
+# In PRD-01 (new downstream artifact):
+## Traceability
+- Upstream Sources: [BRD-01](../BRD/BRD-01_platform.md#BRD-01)
+- Downstream Artifacts: (none yet)
+@brd: BRD.01.01.15
+
+# In BRD-01 (update existing upstream artifact):
+## Traceability
+- Upstream Sources: (none - BRD is Layer 1)
+- Downstream Artifacts: [PRD-01](../PRD/PRD-01_feature.md#PRD-01)  ← ADD THIS
+```
+
+**Why This Matters**:
+
+- **Orphan Prevention**: Ensures no downstream artifacts exist without upstream knowledge
+- **Impact Analysis**: When BRD changes, immediately see all dependent artifacts
+- **Audit Compliance**: Regulatory audits require bidirectional traceability evidence
+- **Navigation**: Users can traverse the artifact chain in either direction
+
 ---
 
 ## 5. Traceability Matrix Enforcement (MANDATORY)

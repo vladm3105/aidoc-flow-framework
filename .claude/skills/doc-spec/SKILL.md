@@ -519,6 +519,10 @@ Focus on REQ (Layer 7) and optionally CTR (Layer 9).
 
 Check `docs/SPEC/` for next available ID number (or create `docs/SPEC/` directory if first SPEC).
 
+**ID Numbering Convention**: Start with 2 digits and expand only as needed.
+- ✅ Correct: SPEC-01, SPEC-99, SPEC-102
+- ❌ Incorrect: SPEC-001, SPEC-009 (extra leading zero not required)
+
 ### Step 3: Create SPEC File
 
 **File naming**: `docs/SPEC/SPEC-NN_{slug}.yaml`

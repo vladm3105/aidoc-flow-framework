@@ -254,6 +254,10 @@ Especially focus on ADR (Layer 5) - architecture decisions constrain system requ
 
 Check `ai_dev_flow/SYS/` for next available ID number.
 
+**ID Numbering Convention**: Start with 2 digits and expand only as needed.
+- ✅ Correct: SYS-01, SYS-99, SYS-102
+- ❌ Incorrect: SYS-001, SYS-009 (extra leading zero not required)
+
 ### Step 3: Create SYS File
 
 **Location**: `docs/SYS/SYS-NN_{slug}.md` (template at `ai_dev_flow/SYS/`)
