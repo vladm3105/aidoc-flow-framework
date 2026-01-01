@@ -512,6 +512,41 @@ For enhanced navigability, traceability tags MAY be converted to clickable hyper
 - **Regex**: `^[A-Z]{2,5}-[0-9]{2,}(\.[0-9]+)?_[a-z0-9_]+\.(md|yaml|feature)$`
 - **Examples**: `REQ-01_api_auth.md`, `TASKS-99_service.md`, `SPEC-100.1_split.md`
 
+#### Sequential vs Non-Sequential Element IDs
+
+**Document Numbers**: MUST be sequential (01, 02, 03...). No gaps allowed in document numbering.
+
+**Element IDs within Documents**: MAY be non-sequential. Gaps are permitted when:
+
+| Reason | Example | Recommendation |
+|--------|---------|----------------|
+| Deprecation | `EARS.04.25.008` deprecated, `009` remains | Document deprecation in revision history |
+| Historical removal | Requirements removed during review | Add note: "IDs 010-015 removed per review" |
+| Logical grouping | IDs 001-050 for auth, 100-150 for data | Document grouping convention |
+| Reserved ranges | IDs 900-999 reserved for future use | Document reservation in index |
+
+**Policy Summary**:
+
+| ID Type | Sequential Required | Gaps Allowed | Re-numbering |
+|---------|---------------------|--------------|--------------|
+| Document numbers (TYPE-NN) | YES | NO | Avoid (breaks references) |
+| Element IDs (TYPE.NN.TT.SS) | NO | YES | Avoid (breaks traceability) |
+| Section numbers (.S) | YES | NO | Requires index update |
+
+**Re-numbering Risks**:
+
+1. **Breaks traceability**: Downstream artifacts reference specific IDs
+2. **Invalidates history**: Git history and reviews reference old IDs
+3. **Requires impact analysis**: All referencing documents must be updated
+4. **Coordination overhead**: Multiple team members may have local changes
+
+**Recommendation**: Avoid gaps when possible, but accept them when they occur. Do NOT re-number existing IDs unless absolutely necessary (e.g., major document restructure with full impact analysis).
+
+**Documentation Requirement**: When gaps exist, document the reason in:
+- Document revision history
+- Index file notes
+- YAML frontmatter `custom_fields.id_gaps` (optional)
+
 | Component | Format | Description |
 |-----------|--------|-------------|
 | `TYPE` | 2-5 uppercase letters | Document type (BRD, PRD, REQ, etc.) |

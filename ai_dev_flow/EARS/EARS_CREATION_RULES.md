@@ -507,3 +507,136 @@ python scripts/validate_cross_document.py --layer EARS --auto-fix
 ### Quality Gate
 
 **Blocking**: YES - Cannot proceed to BDD creation until Phase 1 validation passes with 0 errors.
+
+---
+
+## 15. Requirement Counting and total_requirements Field
+
+### Overview
+
+The `total_requirements` field in EARS index documents (EARS-00_index.md) tracks the aggregate count of EARS statements across all EARS documents in a project.
+
+### What Counts as a Requirement
+
+Each unique EARS statement ID counts as one requirement:
+
+| Element | Counts As | Example |
+|---------|-----------|---------|
+| `EARS.NN.25.SS` statement | 1 requirement | `EARS.04.25.001` = 1 |
+| Duplicate mapping to objectives | Count once | Same ID mapped to 3 objectives = 1 |
+| Requirement in multiple sections | Count once | Same ID in overview + detail = 1 |
+
+### Calculation Rules
+
+1. **Per-Document Count**: Count unique `EARS.NN.25.SS` IDs in each EARS-NN document
+2. **Index Total**: Sum of all individual document counts
+3. **Business Objectives Mapping**: Requirements mapped to multiple objectives count ONCE (by unique ID)
+4. **Deprecated Requirements**: Do NOT count deprecated/removed requirements
+
+### Index Document Format
+
+```markdown
+## Document Statistics
+
+| Document | Requirements | Status |
+|----------|-------------|--------|
+| EARS-01 | 45 | Approved |
+| EARS-02 | 38 | Approved |
+| EARS-03 | 52 | In Review |
+| **Total** | **135** | - |
+```
+
+### Clarifying Notes
+
+Add clarifying notes when counts require explanation:
+
+```markdown
+**Note**: Some requirements are mapped to multiple business objectives in Section 6.
+The total counts each requirement once by unique EARS ID, not by mapping.
+```
+
+### Validation
+
+Run `python scripts/validate_ears.py --check-counts` to verify:
+- Individual document counts match actual EARS statement count
+- Index total equals sum of individual counts
+- No duplicate EARS IDs across documents
+
+---
+
+## 16. Adding New Requirement Categories
+
+### When to Create a New Category
+
+Create a new EARS document (not category prefix) when:
+
+1. **Domain boundary**: New functional area not covered by existing documents
+2. **Scale threshold**: Existing document exceeds 100 requirements
+3. **Ownership change**: Different team/stakeholder owns requirements
+4. **Lifecycle difference**: Requirements have different approval/release cycles
+
+### Process for Adding New EARS Documents
+
+**Step 1: Reserve Document Number**
+
+```bash
+# Check existing EARS documents
+ls -la docs/EARS/EARS-*.md | tail -5
+
+# Reserve next sequential number
+# If last is EARS-19, next is EARS-20
+```
+
+**Step 2: Create Document from Template**
+
+```bash
+cp docs/EARS/EARS-TEMPLATE.md docs/EARS/EARS-20_new_category_name.md
+```
+
+**Step 3: Update Schema (if new element types needed)**
+
+If the new category introduces new element types beyond `EARS.NN.25.SS`:
+
+1. Document in `EARS_SCHEMA.yaml` under `element_types`
+2. Add validation rules to `scripts/validate_ears.py`
+3. Update `ID_NAMING_STANDARDS.md` element type table
+
+**Step 4: Update Index Document**
+
+Add entry to `EARS-00_index.md`:
+
+```markdown
+| EARS-20 | [New Category Name] | 0 | Draft | [link] |
+```
+
+**Step 5: Notify Downstream Consumers**
+
+Downstream artifacts may need updates:
+
+| Artifact | Action Required |
+|----------|-----------------|
+| BDD | May need new feature files |
+| ADR | May need architectural decisions |
+| REQ | May derive atomic requirements |
+| SPEC | May need technical specifications |
+
+### Category Naming Guidelines
+
+| Good Names | Avoid |
+|------------|-------|
+| `EARS-20_mcp_tool_requirements` | `EARS-20_misc` |
+| `EARS-21_authentication_flows` | `EARS-21_new_stuff` |
+| `EARS-22_data_pipeline_events` | `EARS-22_category_a` |
+
+### Validation After Adding
+
+```bash
+# Validate new document
+python scripts/validate_ears.py --document docs/EARS/EARS-20_new_category.md
+
+# Validate index counts
+python scripts/validate_ears.py --check-counts
+
+# Validate cross-document consistency
+python scripts/validate_cross_document.py --layer EARS
+```
