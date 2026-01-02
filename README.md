@@ -1,4 +1,5 @@
 # AI Dev Flow Framework
+# AI Dev Flow Framework
 
 **Specification-Driven Development (SDD) Template System for AI-Assisted Software Engineering**
 
@@ -920,3 +921,145 @@ Developed for AI-assisted software engineering workflows optimized for:
 - Initial release with 10-layer SDD workflow
 - Complete template system for all artifact types
 - Traditional Section 7 traceability
+
+---
+
+## Project Example: Trading Nexus (merged)
+
+# Trading Nexus
+
+**AI-Powered Options Trading Intelligence Platform**
+
+[![Status](https://img.shields.io/badge/status-development-yellow)]()
+[![Framework](https://img.shields.io/badge/framework-Google%20ADK-blue)]()
+[![Protocol](https://img.shields.io/badge/tools-MCP-green)]()
+
+---
+
+## Overview
+
+Trading Nexus is a comprehensive AI trading platform that combines:
+
+- **Multi-LLM Ensemble**: 5 voting agents across 200+ models via AI Gateway
+- **MCP-First Architecture**: Unified tool protocol with ecosystem leverage
+- **Google ADK Framework**: Production-grade agent orchestration
+- **GCP Cloud-Native**: Serverless, scale-to-zero infrastructure
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              TRADING NEXUS                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐        │
+│   │  22+ Agents     │    │   MCP Tools     │    │   AI Gateway    │        │
+│   │  (Google ADK)   │───►│  (IB, Data,     │───►│  (200+ Models)  │        │
+│   │                 │    │   SEC, etc.)    │    │                 │        │
+│   └─────────────────┘    └─────────────────┘    └─────────────────┘        │
+│                                                                              │
+│   Strategies: Earnings Plays │ Covered Calls │ Cash-Secured Puts │ Hedging │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Key Features
+
+| Feature | Description |
+|---------|-------------|
+| **Earnings Trading** | Systematic analysis with multi-agent consensus |
+| **Income Strategies** | Covered calls, cash-secured puts, iron condors |
+| **Multi-LLM Voting** | 5 agents (Claude, GPT-4, Gemini, DeepSeek, Llama) |
+| **Risk Management** | 7 circuit breaker types, position limits |
+| **Continuous Learning** | Graph RAG with bias detection |
+| **Full Observability** | Metrics, logging, performance tracking |
+
+## Technology Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Agent Framework** | Google ADK (LlmAgent, ParallelAgent, SequentialAgent) |
+| **Tool Protocol** | MCP (Model Context Protocol) |
+| **AI Gateway** | LiteLLM (200+ models, cost optimization) |
+| **Broker** | Interactive Brokers |
+| **Infrastructure** | GCP (Cloud Run, Firestore, BigQuery) |
+| **Knowledge** | Neo4j (Graph) + ChromaDB (Vectors) |
+
+## Cost Estimate
+
+| Phase | Monthly Cost |
+|-------|--------------|
+| Development | $175 |
+| Active Trading | $375 |
+| Production | $525 |
+
+*See [docs/COST_ANALYSIS.md](docs/COST_ANALYSIS.md) for detailed breakdown.*
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [**TRADING_NEXUS_SPECIFICATION.md**](docs/TRADING_NEXUS_SPECIFICATION.md) | Complete technical specification |
+
+The specification covers:
+- System architecture
+- 22+ agent hierarchy
+- Agent ensemble engine
+- Google ADK implementation
+- MCP tool architecture
+- Infrastructure design
+- 16-week roadmap
+- Success metrics
+
+## Quick Start
+
+```bash
+# Install Google ADK
+pip install google-adk litellm
+
+# Start development UI
+adk web
+
+# Access at http://localhost:4200
+```
+
+## Project Structure
+
+```
+trading-nexus/
+├── docs/
+│   └── TRADING_NEXUS_SPECIFICATION.md  # Complete specification
+├── agents/                              # ADK agent definitions
+│   ├── earnings_agent.py
+│   ├── ensemble.py
+│   └── ...
+├── tools/                               # MCP server implementations
+│   ├── ib_mcp_server/
+│   └── browser_mcp_server/
+├── config/                              # Agent configurations
+└── tests/                               # Test suites
+```
+
+## Roadmap
+
+| Phase | Duration | Focus |
+|-------|----------|-------|
+| **Foundation** | Weeks 1-4 | ADK setup, infrastructure |
+| **Ensemble** | Weeks 5-8 | Voting agents, consensus |
+| **MCP Integration** | Weeks 9-12 | Third-party MCPs, Graph RAG |
+| **Production** | Weeks 13-16 | Strategy agents, hardening |
+
+## Architecture Decisions
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Agent Framework | Google ADK | Native GCP, multi-agent, Dev UI |
+| Tool Protocol | MCP | Industry standard, 2000+ servers |
+| AI Gateway | LiteLLM | 200+ models, cost optimization |
+| Infrastructure | GCP | Managed services, scale-to-zero |
+
+## License
+
+Private - All rights reserved
+
+---
+
+*Trading Nexus - Systematic AI-powered trading intelligence*
