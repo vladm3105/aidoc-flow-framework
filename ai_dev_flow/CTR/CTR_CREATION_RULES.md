@@ -253,7 +253,7 @@ CTR is referenced by:
 - [ ] Validate YAML against OpenAPI schema
 - [ ] Verify all endpoints documented
 - [ ] Test example requests/responses
-- [ ] Update CTR-000_index.md
+- [ ] Update CTR-00_index.md
 - [ ] Notify consumers of new contract
 - [ ] Run validation script
 
@@ -286,7 +286,7 @@ CTR is referenced by:
 - [ ] All required sections present
 - [ ] YAML validates against OpenAPI schema
 - [ ] Traceability tags complete
-- [ ] Registered in CTR-000_index.md
+- [ ] Registered in CTR-00_index.md
 
 ---
 
@@ -352,7 +352,7 @@ Include ONLY if relationships exist between CTR documents sharing API context or
 
 - [CTR-TEMPLATE.md](./CTR-TEMPLATE.md) - Contract template
 - [CTR-TEMPLATE.yaml](./CTR-TEMPLATE.yaml) - YAML template
-- [CTR-000_index.md](./CTR-000_index.md) - Contract registry
+- [CTR-00_index.md](./CTR-00_index.md) - Contract registry
 - [README.md](./README.md) - Directory overview
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Workflow guide
 

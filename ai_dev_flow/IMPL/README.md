@@ -183,7 +183,7 @@ IMPL Plans identify deliverables:
 ```
 ai_dev_flow/IMPL/
 ├── README.md                          # This file
-├── IMPL-000_index.md                  # Master index of all IMPL plans
+├── IMPL-00_index.md                  # Master index of all IMPL plans
 ├── IMPL-TEMPLATE.md                   # Template for new IMPL plans
 ├── IMPL_IMPLEMENTATION_PLAN.md        # Example: Plan for creating IMPL/ system
 └── examples/                          # Reference examples
@@ -475,7 +475,7 @@ See: `examples/IMPL-01_risk_management_system.md`
 
 ## Related Documents
 
-- **IMPL-000_index.md**: Master index of all IMPL plans
+- **IMPL-00_index.md**: Master index of all IMPL plans
 - **IMPL-TEMPLATE.md**: Template for new IMPL plans
 - **TASKS README**: Understanding code generation plans (TASKS/README.md)
 - **SPEC_DRIVEN_DEVELOPMENT_GUIDE.md**: Full workflow including IMPL

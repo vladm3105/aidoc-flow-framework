@@ -47,7 +47,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate ADR traceability matrix
-python scripts/generate_traceability_matrix.py --type ADR --output docs/ADR/ADR-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type ADR --output docs/ADR/ADR-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -441,7 +441,7 @@ python scripts/generate_reverse_traceability.py --upstream ADR --downstream SYS,
 ## 13. References
 
 ### 13.1 Internal Documentation
-- **ADR Index**: [ADR-000_index.md](ADR-000_index.md)
+- **ADR Index**: [ADR-00_index.md](ADR-00_index.md)
 - **ADR Template**: [ADR-TEMPLATE.md](ADR-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
@@ -452,9 +452,9 @@ python scripts/generate_reverse_traceability.py --upstream ADR --downstream SYS,
 - Architecture Decision Records GitHub Organization
 
 ### 13.3 Related Matrices
-- [SYS Traceability Matrix](../SYS/SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [REQ Traceability Matrix](../REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [SPEC Traceability Matrix](../SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [SYS Traceability Matrix](../SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [REQ Traceability Matrix](../REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [SPEC Traceability Matrix](../SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 
@@ -466,7 +466,7 @@ python scripts/generate_reverse_traceability.py --upstream ADR --downstream SYS,
 python ../scripts/generate_traceability_matrix.py \
   --type ADR \
   --input ../ADR/ \
-  --template ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md \
+  --template ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md \
   --output TRACEABILITY_MATRIX_ADR.md
 
 # Validate matrix

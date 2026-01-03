@@ -60,20 +60,20 @@ The EARS validation script performs comprehensive checks ensuring EARS documents
 | **Tier 1** | Errors (E###) | 1 | Blocking issues - must fix before commit |
 | **Tier 2** | Warnings (W###) | 0 | Quality issues - recommended to fix |
 
-### Reserved ID Exemption (EARS-000_*)
+### Reserved ID Exemption (EARS-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `EARS-000_*.md`
+**Pattern**: `EARS-00_*.md`
 
 **Document Types**:
-- Index documents (`EARS-000_index.md`)
-- Traceability matrix templates (`EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`EARS-00_index.md`)
+- Traceability matrix templates (`EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `EARS-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `EARS-00_*` pattern.
 
 ### Rule Categories
 

@@ -37,21 +37,21 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Business Layer (Layers 1-3)
 
 - **BRD** (`BRD/`) - Layer 1: Business Requirements Documents defining business objectives and constraints
-  - Template: [BRD-TEMPLATE.md](./BRD/BRD-TEMPLATE.md)
-  - Index: [BRD-000_index.md](./BRD/BRD-000_index.md)
+  - Template: [BRD-TEMPLATE.md](./BRD/BRD-TEMPLATE.md) | **MVP**: [BRD-MVP-TEMPLATE.md](./BRD/BRD-MVP-TEMPLATE.md)
+  - Index: [BRD-00_index.md](./BRD/BRD-00_index.md)
   - Guidance: [PLATFORM_VS_FEATURE_BRD.md](./PLATFORM_VS_FEATURE_BRD.md)
 - **PRD** (`PRD/`) - Layer 2: Product Requirements Documents translating business needs to product features
-  - Index: [PRD-000_index.md](./PRD/PRD-000_index.md)
-  - Template: [PRD-TEMPLATE.md](./PRD/PRD-TEMPLATE.md)
+  - Index: [PRD-00_index.md](./PRD/PRD-00_index.md)
+  - Template: [PRD-TEMPLATE.md](./PRD/PRD-TEMPLATE.md) | **MVP**: [PRD-MVP-TEMPLATE.md](./PRD/PRD-MVP-TEMPLATE.md)
 - **EARS** (`EARS/`) - Layer 3: Event-Action-Response-State (Engineering Requirements)
-  - Index: [EARS-000_index.md](./EARS/EARS-000_index.md)
+  - Index: [EARS-00_index.md](./EARS/EARS-00_index.md)
   - Template: [EARS-TEMPLATE.md](./EARS/EARS-TEMPLATE.md)
 
 ### Testing Layer (Layer 4)
 
 - **BDD** (`BDD/`) - Layer 4: Behavior-Driven Development feature files defining acceptance criteria
   - Nested: One folder per suite: `BDD/BDD-NN_{slug}/`
-  - Index: `BDD/BDD-000_index.md`
+  - Index: `BDD/BDD-00_index.md`
   - Template: [BDD-TEMPLATE.feature](./BDD/BDD-TEMPLATE.feature)
   - Purpose: Executable acceptance tests written before implementation (Test-First approach)
   - Maps to IPLAN scenarios for test-driven development workflow
@@ -59,19 +59,19 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Architecture Layer (Layers 5-6)
 
 - **ADR** (`ADR/`) - Layer 5: Architecture Decision Records documenting key architectural choices
-  - Index: [ADR-000_index.md](./ADR/ADR-000_index.md)
-  - Template: [ADR-TEMPLATE.md](./ADR/ADR-TEMPLATE.md)
+  - Index: [ADR-00_index.md](./ADR/ADR-00_index.md)
+  - Template: [ADR-TEMPLATE.md](./ADR/ADR-TEMPLATE.md) | **MVP**: [ADR-MVP-TEMPLATE.md](./ADR/ADR-MVP-TEMPLATE.md)
   - Purpose: Technical decisions with context, decision, and consequences
 - **SYS** (`SYS/`) - Layer 6: System Requirements Specifications consolidating requirements into system designs
-  - Index: [SYS-000_index.md](./SYS/SYS-000_index.md)
-  - Template: [SYS-TEMPLATE.md](./SYS/SYS-TEMPLATE.md)
+  - Index: [SYS-00_index.md](./SYS/SYS-00_index.md)
+  - Template: [SYS-TEMPLATE.md](./SYS/SYS-TEMPLATE.md) | **MVP**: [SYS-MVP-TEMPLATE.md](./SYS/SYS-MVP-TEMPLATE.md)
   - Purpose: System-level functional requirements and quality attributes
 
 ### Requirements Layer (Layer 7)
 
 - **REQ** (`REQ/`) - Layer 7: Atomic, testable requirements with SPEC-readiness scoring
-  - Index: [REQ-000_index.md](./REQ/REQ-000_index.md)
-  - Template: [REQ-TEMPLATE.md](./REQ/REQ-TEMPLATE.md)
+  - Index: [REQ-00_index.md](./REQ/REQ-00_index.md)
+  - Template: [REQ-TEMPLATE.md](./REQ/REQ-TEMPLATE.md) | **MVP**: [REQ-MVP-TEMPLATE.md](./REQ/REQ-MVP-TEMPLATE.md)
   - Organization: Nested per-document folders (DEFAULT)
     - Folder: `REQ/REQ-NN_{slug}/`
     - Primary file (atomic): `REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
@@ -85,7 +85,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Project Management Layer (Layer 8 - Optional)
 
 - **IMPL** (`IMPL/`) - Layer 8: Implementation planning documents organizing work into phases
-  - Index: [IMPL-000_index.md](./IMPL/IMPL-000_index.md)
+  - Index: [IMPL-00_index.md](./IMPL/IMPL-00_index.md)
   - Template: [IMPL-TEMPLATE.md](./IMPL/IMPL-TEMPLATE.md)
   - Purpose: Project management (WHO does WHAT, WHEN) - NOT technical specifications
   - Identifies deliverables: which CTR, SPEC, TASKS to create
@@ -95,7 +95,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Interface Layer (Layer 9 - Optional)
 
 - **CTR** (`CTR/`) - Layer 9: API Contracts defining component-to-component interfaces
-  - Index: [CTR-000_index.md](./CTR/CTR-000_index.md)
+  - Index: [CTR-00_index.md](./CTR/CTR-00_index.md)
   - Templates: [CTR-TEMPLATE.md](./CTR/CTR-TEMPLATE.md), [CTR-TEMPLATE.yaml](./CTR/CTR-TEMPLATE.yaml)
   - Dual-file format: `.md` (human-readable context) + `.yaml` (machine-readable schema)
   - When to use: [CONTRACT_DECISION_QUESTIONNAIRE.md](./CONTRACT_DECISION_QUESTIONNAIRE.md)
@@ -121,14 +121,14 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Code Generation Layer (Layer 11)
 
 - **TASKS** (`TASKS/`) - Layer 11: Code generation plans with exact TODOs
-  - Index: [TASKS-000_index.md](./TASKS/TASKS-000_index.md)
+  - Index: [TASKS-00_index.md](./TASKS/TASKS-00_index.md)
   - Template: [TASKS-TEMPLATE.md](./TASKS/TASKS-TEMPLATE.md)
   - Purpose: Step-by-step guide to generate code from YAML SPEC
   - Each TASKS document corresponds to one SPEC
   - **Section 8**: Implementation Contracts for parallel development coordination
 
 - **ICON** (`ICON/`) - Layer 11 (optional; shares with TASKS): Implementation Contracts
-  - Index: [ICON-000_index.md](./ICON/ICON-000_index.md)
+  - Index: [ICON-00_index.md](./ICON/ICON-00_index.md)
   - Template: [ICON-TEMPLATE.md](./ICON/ICON-TEMPLATE.md)
   - Purpose: Standalone contracts for parallel development coordination
   - Default: Embed contracts in TASKS Section 8 (standalone only when 5+ consumers)
@@ -137,7 +137,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Session Execution Layer (Layer 12)
 
 - **IPLAN** (`IPLAN/`) - Layer 12: Implementation Work Plans for specific coding sessions
-  - Index: [IPLAN-000_index.md](./IPLAN/IPLAN-000_index.md)
+  - Index: [IPLAN-00_index.md](./IPLAN/IPLAN-00_index.md)
   - Template: [IPLAN-TEMPLATE.md](./IPLAN/IPLAN-TEMPLATE.md)
   - Purpose: Session-based execution context with executable bash commands
   - Format: Sequential naming `IPLAN-NN_{descriptive_slug}.md` (no timestamps)
@@ -273,7 +273,7 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 - **Format**: `{TYPE}-{NN}_{descriptive_slug}.{ext}`
 - **Numbering**: Sequential from 01, stable once assigned
 - **Slugs**: lower_snake_case, descriptive but concise
-- **Index Files**: `{TYPE}-000_index.{ext}` for each document type
+- **Index Files**: `{TYPE}-00_index.{ext}` for each document type
 - **CTR Exception**: Dual-file format requires both `.md` and `.yaml` with matching slugs
   - Example: `CTR-01_position_risk_validation.md` + `CTR-01_position_risk_validation.yaml`
 
@@ -324,7 +324,7 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 ## Creating New Documents
 
 1. Identify document type and functional area
-2. Check relevant index file (`{TYPE}-000_index.md`) for next available ID
+2. Check relevant index file (`{TYPE}-00_index.md`) for next available ID
 3. Copy appropriate template from the directory
 4. Name file following ID standards: `{TYPE}-{NN}_{slug}.{ext}`
 5. Fill in all template sections with complete traceability links

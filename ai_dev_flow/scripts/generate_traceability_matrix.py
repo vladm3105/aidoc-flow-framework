@@ -367,7 +367,7 @@ class TraceabilityMatrixGenerator:
 
         content += "---\n\n"
         content += "*This matrix was automatically generated. For template, see*\n"
-        content += f"*`{self.doc_type}-000_TRACEABILITY_MATRIX-TEMPLATE.md`*\n"
+        content += f"*`{self.doc_type}-00_TRACEABILITY_MATRIX-TEMPLATE.md`*\n"
 
         # Write to file
         output_file = Path(output_path)

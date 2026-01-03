@@ -76,14 +76,14 @@ Scope & Authority
 
 Note on paths: Examples may show a top-level `docs/` prefix; in this ai_dev_flow directory, type folders live at the ai_dev_flow root (e.g., `BRD/`, `PRD/`, `ADR/`). Adjust relative links accordingly.
 
-## General Utility Documents (`{DOC_TYPE}-000_*`)
+## General Utility Documents (`{DOC_TYPE}-00_*`)
 
 Definition and Purpose
 - `{DOC_TYPE}-000` is reserved across all artifact types to group general-purpose, cross-project, or utility documents that are not directly tied to a specific numbered project document.
 - Typical uses: indexes, templates, traceability matrix templates, validation checklists, and reference guides.
 
 Format
-- Pattern: `{DOC_TYPE}-000_{slug}.{ext}` (e.g., `REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md`, `ICON-000_index.md`).
+- Pattern: `{DOC_TYPE}-00_{slug}.{ext}` (e.g., `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`, `ICON-00_index.md`).
 - These do not participate in the sequential DOC_NUM series and are globally recognizable as general/utility artifacts.
 
 ## Default Directory Model (All Types)
@@ -119,9 +119,9 @@ Universal Numbering Pattern (All Document Types)
     - Note: For SPEC, splitting applies to Markdown narrative; the SPEC YAML remains a single monolithic file for code generation.
 - **Zero-Padding**: Start with 2 digits (01), expand as needed
   - **Index/General Utility Files Use Zeros**: Use all‑zero `DOC_NUM` to separate indexes and general utility artifacts from numbered documents.
-    - This repository: uses 3 zeros (`-000_index.md`) consistently; do not rename historical files.
+    - This repository: uses 3 zeros (`-00_index.md`) consistently; do not rename historical files.
     - New repositories: choose `00` or `000` and keep it consistent across types.
-    - General utility files follow `{DOC_TYPE}-000_{slug}.{ext}`.
+    - General utility files follow `{DOC_TYPE}-00_{slug}.{ext}`.
 - **Element ID DOC_NUM**: MUST match filename digit count exactly
   - Filename `BRD-01.0_index.md` → Element ID `BRD.01.01.01`
   - Filename `ADR-100.1_context.md` → Element ID `ADR.100.10.01`
@@ -507,7 +507,7 @@ For enhanced navigability, traceability tags MAY be converted to clickable hyper
 - Incorrect examples: `BRD-001`, `BRD-009` (extra leading zero not required by the number).
 - This rule is unified across all document types: `BRD`, `PRD`, `EARS`, `BDD`, `ADR`, `SYS`, `REQ`, `IMPL`, `CTR`, `SPEC`, `TASKS`, `IPLAN` (and `ICON`).
 - Element IDs MUST match filename digit width exactly (e.g., `BRD-06` ⇄ `BRD.06.xx.xx`; `PRD-22` ⇄ `PRD.22.xx.xx`).
-- Exception: Reserved infrastructure artifacts use `-000` (e.g., `BRD-000_index.md`, `PRD-000_index.md`) by design.
+- Exception: Reserved infrastructure artifacts use `-000` (e.g., `BRD-00_index.md`, `PRD-00_index.md`) by design.
 - Note: Source code and unit test files follow coding standards for their languages and are excluded from this document ID filename policy.
 - **Regex**: `^[A-Z]{2,5}-[0-9]{2,}(\.[0-9]+)?_[a-z0-9_]+\.(md|yaml|feature)$`
 - **Examples**: `REQ-01_api_auth.md`, `TASKS-99_service.md`, `SPEC-100.1_split.md`

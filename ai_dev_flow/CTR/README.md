@@ -195,7 +195,7 @@ Before marking a contract as "Active", ensure:
 - [ ] **Versioning Policy**: Semantic versioning rules and deprecation policy documented
 - [ ] **Stakeholder Approval**: Provider and consumer teams reviewed and approved
 - [ ] **Contract Tests Planned**: Test strategy for validating implementation compliance
-- [ ] **Index Updated**: CTR-000_index.md updated with new contract metadata
+- [ ] **Index Updated**: CTR-00_index.md updated with new contract metadata
 
 ## 7. Writing Guidelines
 
@@ -652,13 +652,13 @@ except ValidationError as e:
 | Task | Location |
 |------|----------|
 | **Copy template** | CTR-TEMPLATE.md + CTR-TEMPLATE.yaml |
-| **Reserve ID** | CTR-000_index.md (check next available) |
+| **Reserve ID** | CTR-00_index.md (check next available) |
 | **Naming format** | CTR-NN_snake_case_slug.md + .yaml |
 | **Organize by type** | Optional: CTR/{agents,mcp,infra}/ |
 | **Validate schema** | yamllint, jsonschema, spectral |
 | **Link traceability** | REQ/ADR (upstream), SPEC/Code (downstream) |
 | **Contract tests** | Pact, Spring Cloud Contract, custom validators |
-| **Update index** | Add entry to CTR-000_index.md |
+| **Update index** | Add entry to CTR-00_index.md |
 
 ---
 

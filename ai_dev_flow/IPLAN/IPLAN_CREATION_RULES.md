@@ -455,7 +455,7 @@ poetry show | grep -E "(async_client|pydantic)"
 
 - [ ] All bash commands tested/valid
 - [ ] All traceability tags reference existing documents
-- [ ] Update IPLAN-000_index.md
+- [ ] Update IPLAN-00_index.md
 - [ ] Validate with validation script
 - [ ] Token count within limits (25-40KB optimal)
 
@@ -542,7 +542,7 @@ IPLAN-01_feature_part2.md (Phase 3-4)
 - [ ] Bash commands are executable
 - [ ] Verification after each step
 - [ ] All 9+ traceability tags complete
-- [ ] Registered in IPLAN-000_index.md
+- [ ] Registered in IPLAN-00_index.md
 - [ ] Token count < 100KB
 
 ---
@@ -735,7 +735,7 @@ def handle_external(data: Any) -> None:  # Any: third-party API response
 ## References
 
 - [IPLAN-TEMPLATE.md](./IPLAN-TEMPLATE.md) - Implementation plan template
-- [IPLAN-000_index.md](./IPLAN-000_index.md) - Plan registry
+- [IPLAN-00_index.md](./IPLAN-00_index.md) - Plan registry
 - [README.md](./README.md) - Directory overview
 - [BDD_SCENARIO_MAPPING.md](./BDD_SCENARIO_MAPPING.md) - Scenario mapping guide
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Workflow guide

@@ -316,7 +316,7 @@ If migrating from legacy format:
 
 ### Documentation Updates
 
-- [ ] Update `BDD-000_index.md` with new suite entry
+- [ ] Update `BDD-00_index.md` with new suite entry
 - [ ] Add suite to project documentation index
 - [ ] Document section split rationale in index file
 

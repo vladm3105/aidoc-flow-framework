@@ -308,17 +308,17 @@ When creating documents from templates, users must complete the Document Control
 **Commands**:
 ```bash
 # Create index files
-touch docs/BRD/BRD-000_index.md
+touch docs/BRD/BRD-00_index.md
 touch docs/prd/PRD-00_index.md
-touch docs/ears/EARS-000_index.md
-touch docs/BDD/BDD-000_index.md
-touch docs/adrs/ADR-000_index.md
-touch docs/sys/SYS-000_index.md
-touch docs/REQ/REQ-000_index.md
-touch docs/IMPL/IMPL-000_index.md
-touch docs/CTR/CTR-000_index.md
-touch docs/specs/SPEC-000_index.yaml
-touch docs/TASKS/TASKS-000_index.md
+touch docs/ears/EARS-00_index.md
+touch docs/BDD/BDD-00_index.md
+touch docs/adrs/ADR-00_index.md
+touch docs/sys/SYS-00_index.md
+touch docs/REQ/REQ-00_index.md
+touch docs/IMPL/IMPL-00_index.md
+touch docs/CTR/CTR-00_index.md
+touch docs/specs/SPEC-00_index.yaml
+touch docs/TASKS/TASKS-00_index.md
 ```
 
 **Index File Purpose**:

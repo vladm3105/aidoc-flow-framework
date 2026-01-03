@@ -77,6 +77,26 @@ Options:
 
 ---
 
+### Step 1.5: Workflow Selection (REQUIRED)
+
+**AI Assistant Action**: Determine if this is a Standard or MVP project.
+
+```
+User is prompted with:
+"Is this a full enterprise project or a rapid Minimum Viable Product (MVP)?"
+
+Options:
+1. Standard Flow (Full templates, 16 layers, strict validation) - Recommended for Enterprise
+2. MVP Track (Streamlined templates, faster setup, "Good Enough" validation) - Recommended for Startups/Prototypes
+```
+
+**If MVP Track Selected**:
+- Use **MVP Templates** (`*-MVP-TEMPLATE.md`) instead of full templates.
+- Follow schedule in [MVP_WORKFLOW_GUIDE.md](./MVP_WORKFLOW_GUIDE.md).
+- Skip to Step 2.
+
+---
+
 ### Step 2: Folder Structure Creation (REQUIRED SECOND)
 
 **AI Assistant Action**: Create complete directory structure BEFORE creating any documents
@@ -134,8 +154,12 @@ cp "$FRAMEWORK_ROOT/scripts"/*.py scripts/
 ```
 
 **Directory Purpose**:
-- `ai_dev_flow/` = Framework templates (BRD-TEMPLATE.md, examples/, etc.)
+- `ai_dev_flow/` = Framework templates (BRD-TEMPLATE.md, BRD-MVP-TEMPLATE.md, etc.)
 - `docs/` = Project documentation (BRD-01.md, PRD-01.md, etc.)
+
+**Action for MVP Track**:
+- When creating `BRD-01`, `PRD-01`, etc., use the `*-MVP-TEMPLATE.md` source files.
+- See [MVP_WORKFLOW_GUIDE.md](./MVP_WORKFLOW_GUIDE.md) for details.
 
 ---
 
@@ -189,19 +213,19 @@ Options:
 **Commands**:
 ```bash
 # Create index files
-touch docs/BRD/BRD-000_index.md
-touch docs/PRD/PRD-000_index.md
-touch docs/EARS/EARS-000_index.md
+touch docs/BRD/BRD-00_index.md
+touch docs/PRD/PRD-00_index.md
+touch docs/EARS/EARS-00_index.md
 # Create a BDD suite folder and index file (per suite)
 mkdir -p docs/BDD/BDD-NN_{slug}
 touch docs/BDD/BDD-NN_{slug}/BDD-NN.0_index.md
-touch docs/ADR/ADR-000_index.md
-touch docs/SYS/SYS-000_index.md
-touch docs/REQ/REQ-000_index.md
-touch docs/IMPL/IMPL-000_index.md
-touch docs/CTR/CTR-000_index.md
-touch docs/SPEC/SPEC-000_index.yaml
-touch docs/TASKS/TASKS-000_index.md
+touch docs/ADR/ADR-00_index.md
+touch docs/SYS/SYS-00_index.md
+touch docs/REQ/REQ-00_index.md
+touch docs/IMPL/IMPL-00_index.md
+touch docs/CTR/CTR-00_index.md
+touch docs/SPEC/SPEC-00_index.yaml
+touch docs/TASKS/TASKS-00_index.md
 ```
 
 **Output**: All index files created
@@ -428,9 +452,9 @@ python scripts/trace_check.py --type REQ
 ### 🎯 Next Steps
 
 **Immediate Actions** (Optional):
-1. Update BRD-000_index.md with all 5 created BRDs
+1. Update BRD-00_index.md with all 5 created BRDs
 2. Fix BRD-01 structural issues (YAML frontmatter, table format)
-3. Create BRD-000_TRACEABILITY_MATRIX.md
+3. Create BRD-00_TRACEABILITY_MATRIX.md
 
 **Ready to Proceed**:
 - Layer 2: PRD creation (5 PRD documents: PRD-01 through PRD-005)

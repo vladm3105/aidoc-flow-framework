@@ -201,7 +201,7 @@ Decision framework for when to create standalone ICON files versus embedding imp
 **Process**:
 1. Create ICON file from embedded contract
 2. Assign ICON-NN ID
-3. Update ICON-000_index.md registry
+3. Update ICON-00_index.md registry
 4. Update all TASKS files to reference ICON
 5. Archive embedded versions
 6. Notify all stakeholders
@@ -219,7 +219,7 @@ Decision framework for when to create standalone ICON files versus embedding imp
 2. Embed contract in provider TASKS
 3. Update consumer TASKS references
 4. Deprecate ICON file
-5. Update ICON-000_index.md registry
+5. Update ICON-00_index.md registry
 6. Archive ICON after transition period
 
 ---
@@ -279,7 +279,7 @@ Decision framework for when to create standalone ICON files versus embedding imp
 
 **Exception Process**:
 1. Document rationale in contract
-2. Record in ICON-000_index.md
+2. Record in ICON-00_index.md
 3. Review exception in quarterly audit
 4. Re-evaluate when conditions change
 
@@ -431,7 +431,7 @@ ls -la docs/REQ/    # Layer 7
 
 ### Internal Documentation
 - [IMPLEMENTATION_CONTRACTS_GUIDE.md](../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
-- [ICON-000_index.md](./ICON-000_index.md)
+- [ICON-00_index.md](./ICON-00_index.md)
 - [ICON-TEMPLATE.md](./ICON-TEMPLATE.md)
 - [ICON_INTEGRATION_WORKFLOW.md](./ICON_INTEGRATION_WORKFLOW.md)
 - [ICON_ERROR_RECOVERY.md](./ICON_ERROR_RECOVERY.md)

@@ -434,8 +434,8 @@ When creating a downstream artifact, you MUST update the upstream document's tra
 
 **CRITICAL RULE**: EVERY time you create or update a document of ANY artifact type, you MUST:
 
-1. **Check for existing traceability matrix**: Look for `[TYPE]-000_TRACEABILITY_MATRIX.md`
-2. **Create if missing**: Use template from `ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+1. **Check for existing traceability matrix**: Look for `[TYPE]-00_TRACEABILITY_MATRIX.md`
+2. **Create if missing**: Use template from `ai_dev_flow/[TYPE]/[TYPE]-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 3. **Update if exists**: Add new document entry with:
    - Document ID and title
    - Upstream sources (documents that drove this artifact)

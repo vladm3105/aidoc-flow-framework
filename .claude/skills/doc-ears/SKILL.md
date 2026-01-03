@@ -368,13 +368,13 @@ Downstream: BDD, ADR, SYS, REQ, SPEC
 
 ## Reserved ID Exemption
 
-**Pattern**: `EARS-000_*.md`
+**Pattern**: `EARS-00_*.md`
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
 **Document Types**:
-- Index documents (`EARS-000_index.md`)
-- Traceability matrix templates (`EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`EARS-00_index.md`)
+- Traceability matrix templates (`EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 ## Creation Process
@@ -437,7 +437,7 @@ Document all thresholds used in section 5.4.
 
 ### Step 10: Create/Update Traceability Matrix
 
-**MANDATORY**: Create or update `docs/EARS/EARS-000_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Create or update `docs/EARS/EARS-00_TRACEABILITY_MATRIX.md`
 
 ### Step 11: Validate EARS
 
@@ -479,7 +479,7 @@ After creating every 5 EARS documents:
 Before ending session:
 1. Run full validation: `python scripts/validate_ears.py`
 2. Verify 0 errors
-3. Update EARS-000_index.md if document counts changed
+3. Update EARS-00_index.md if document counts changed
 
 ## Validation
 

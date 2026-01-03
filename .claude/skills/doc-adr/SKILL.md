@@ -48,7 +48,7 @@ Create **Architecture Decision Records (ADR)** - Layer 5 artifact in the SDD wor
 Before creating ADR, read:
 
 1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-2. **Technology Stack**: `docs/ADR/ADR-000_technology_stack.md` (approved technologies)
+2. **Technology Stack**: `docs/ADR/ADR-00_technology_stack.md` (approved technologies)
 3. **Upstream BRD, PRD**: Read Architecture Decision Requirements sections
 4. **Template**: `ai_dev_flow/ADR/ADR-TEMPLATE.md`
 5. **Creation Rules**: `ai_dev_flow/ADR/ADR_CREATION_RULES.md`
@@ -70,15 +70,15 @@ Use `doc-adr` when:
 | **Standard ADR** | `ADR-NN_{decision_topic}.md` | Full (7 checks) | Architecture decision records |
 | **ADR-REF** | `ADR-REF-NN_{slug}.md` | Reduced (4 checks) | Supplementary reference documents |
 
-### Reserved ID Exemption (ADR-000_*)
+### Reserved ID Exemption (ADR-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `ADR-000_*.md`
+**Pattern**: `ADR-00_*.md`
 
 **Document Types**: Index, Traceability matrix, Glossaries, Registries, Checklists
 
-**Validation Behavior**: Skip all checks when filename matches `ADR-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `ADR-00_*` pattern.
 
 ## ADR-Specific Guidance
 
@@ -255,7 +255,7 @@ From BRD/PRD Architecture Decision Requirements sections, identify topic needing
 
 ### Step 2: Read Technology Stack
 
-Check `docs/ADR/ADR-000_technology_stack.md` for approved technologies.
+Check `docs/ADR/ADR-00_technology_stack.md` for approved technologies.
 
 ### Step 3: Reserve ID Number
 
@@ -350,7 +350,7 @@ Include @brd, @prd, @ears, @bdd tags (Layers 1-4).
 
 ### Step 13: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `docs/ADR/ADR-000_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Update `docs/ADR/ADR-00_TRACEABILITY_MATRIX.md`
 - Add ADR entry with **upstream sources only** (BRD, PRD, EARS, BDD)
 - Do NOT add downstream links (SYS, REQ track their own references to ADRs)
 
@@ -511,7 +511,7 @@ The SYS will:
 
 - **Template**: `ai_dev_flow/ADR/ADR-TEMPLATE.md` (primary authority)
 - **Schema**: `ai_dev_flow/ADR/ADR_SCHEMA.yaml` (machine-readable validation)
-- **Technology Stack**: `docs/ADR/ADR-000_technology_stack.md`
+- **Technology Stack**: `docs/ADR/ADR-00_technology_stack.md`
 - **ADR Creation Rules**: `ai_dev_flow/ADR/ADR_CREATION_RULES.md`
 - **ADR Validation Rules**: `ai_dev_flow/ADR/ADR_VALIDATION_RULES.md`
 - **ADR README**: `ai_dev_flow/ADR/README.md`

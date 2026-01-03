@@ -21,7 +21,7 @@ Inputs:
 - ADR directory: {project_root}/docs/ADR/
 - Project context: Web application, 3 developers, 6-month timeline
 
-Generate roadmap in {project_root}/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md
+Generate roadmap in {project_root}/docs/ADR/ADR-00_IMPLEMENTATION-ROADMAP.md
 ```
 
 ---
@@ -85,7 +85,7 @@ Phase by ADR category: Infrastructure → Core → Integration → Optimization
 
 ## Output Example
 
-**Generated File**: `{project}/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md`
+**Generated File**: `{project}/docs/ADR/ADR-00_IMPLEMENTATION-ROADMAP.md`
 
 **Structure** (~1,400 lines):
 ```markdown
@@ -178,7 +178,7 @@ Generate roadmap document
     ↓
 Validate quality gates
     ↓
-Output: ADR-000_IMPLEMENTATION-ROADMAP.md
+Output: ADR-00_IMPLEMENTATION-ROADMAP.md
 ```
 
 ---
@@ -243,7 +243,7 @@ Project context: "[type], [team size], [constraints]"
 
 ### Optional Inputs
 ```
-Output file: /path/to/roadmap.md (default: {adr_dir}/ADR-000_IMPLEMENTATION-ROADMAP.md)
+Output file: /path/to/roadmap.md (default: {adr_dir}/ADR-00_IMPLEMENTATION-ROADMAP.md)
 Max phase duration: 8 weeks (default)
 Phase model: poc-mvp-prod | iterative | waterfall (default: poc-mvp-prod)
 Team size: 3 FTE (default)
@@ -315,7 +315,7 @@ Output: {project_root}/docs/ROADMAP.md
 - [ADR-TEMPLATE.md]({project_root}/ai_dev_flow/ADR-TEMPLATE.md)
 - [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md)
 
-**Example Output**: `{project_root}/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md`
+**Example Output**: `{project_root}/docs/ADR/ADR-00_IMPLEMENTATION-ROADMAP.md`
 
 ---
 

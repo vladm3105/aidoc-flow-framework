@@ -49,7 +49,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate BRD traceability matrix
-python scripts/generate_traceability_matrix.py --type BRD --output docs/BRD/BRD-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type BRD --output docs/BRD/BRD-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -419,7 +419,7 @@ graph TD
 ## 14. References
 
 ### 14.1 Internal Documentation
-- **BRD Index**: [BRD-000_index.md](BRD-000_index.md)
+- **BRD Index**: [BRD-00_index.md](BRD-00_index.md)
 - **BRD Template**: [BRD-TEMPLATE.md](BRD-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
@@ -431,9 +431,9 @@ graph TD
 - PMI Business Analysis for Practitioners Guide
 
 ### 14.3 Related Matrices
-- [PRD Traceability Matrix](../PRD/PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [EARS Traceability Matrix](../EARS/EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [ADR Traceability Matrix](../ADR/ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [PRD Traceability Matrix](../PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [EARS Traceability Matrix](../EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [ADR Traceability Matrix](../ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 
@@ -451,7 +451,7 @@ graph TD
 python ../scripts/generate_traceability_matrix.py \
   --type BRD \
   --input ../BRD/ \
-  --template BRD-000_TRACEABILITY_MATRIX-TEMPLATE.md \
+  --template BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md \
   --output TRACEABILITY_MATRIX_BRD.md
 
 # Validate matrix

@@ -55,20 +55,20 @@ Before creating SPEC, read:
 6. **Validation Rules**: `ai_dev_flow/SPEC/SPEC_VALIDATION_RULES.md`
 7. **Validation Script**: `./ai_dev_flow/scripts/validate_spec_template.sh` (under development - use template for manual validation until available)
 
-## Reserved ID Exemption (SPEC-000_*)
+## Reserved ID Exemption (SPEC-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `SPEC-000_*.md`, `SPEC-000_*.yaml`
+**Pattern**: `SPEC-00_*.md`, `SPEC-00_*.yaml`
 
 **Document Types**:
-- Index documents (`SPEC-000_index.md`)
-- Traceability matrix templates (`SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`SPEC-00_index.md`)
+- Traceability matrix templates (`SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `SPEC-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `SPEC-00_*` pattern.
 
 ## When to Use This Skill
 
@@ -583,7 +583,7 @@ Upstream sources and downstream artifacts.
 
 ### Step 16: Create/Update Traceability Matrix
 
-**MANDATORY**: Create or update `docs/SPEC/SPEC-000_TRACEABILITY_MATRIX.md` (use template from `ai_dev_flow/SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+**MANDATORY**: Create or update `docs/SPEC/SPEC-00_TRACEABILITY_MATRIX.md` (use template from `ai_dev_flow/SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 
 ### Step 17: Validate SPEC
 

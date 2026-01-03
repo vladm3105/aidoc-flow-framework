@@ -17,7 +17,18 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 
 System Requirements Specifications (SYS) capture comprehensive system-level requirements that bridge the gap between high-level business objectives and technical implementation. SYS documents define what the system must accomplish from a behavioral and performance perspective while remaining technology-agnostic.
 
-Note: `SYS-TEMPLATE.md` is a reference template. For real SYS documents, prefer sectioned docs using `SYS-SECTION-0-TEMPLATE.md` and `SYS-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`.
+## Available Templates
+
+**SYS-TEMPLATE.md** - Comprehensive system requirements template (~1,000 lines)
+- Full-featured template with all sections
+- For real SYS documents, prefer sectioned docs using `SYS-SECTION-0-TEMPLATE.md` and `SYS-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`
+
+**SYS-MVP-TEMPLATE.md** - Streamlined MVP version in a single file without sectioning (~350 lines)
+- Focused on 5-10 core system capabilities
+- Maintains framework compliance while reducing documentation overhead
+- Ideal for MVPs with focused system scope
+
+**Usage**: Use `SYS-TEMPLATE.md` for comprehensive system specs and `SYS-MVP-TEMPLATE.md` for MVP-focused specifications.
 
 ## Purpose
 

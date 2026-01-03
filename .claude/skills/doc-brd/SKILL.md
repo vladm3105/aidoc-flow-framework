@@ -483,8 +483,8 @@ In Traceability section, link to specific `{project_root}/strategy/` sections.
 
 ### Step 10: Create/Update Traceability Matrix
 
-**MANDATORY**: Create or update `docs/BRD/BRD-000_TRACEABILITY_MATRIX.md`
-- Use template: `ai_dev_flow/BRD/BRD-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+**MANDATORY**: Create or update `docs/BRD/BRD-00_TRACEABILITY_MATRIX.md`
+- Use template: `ai_dev_flow/BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - Add BRD entry with upstream sources and downstream artifacts
 - Update traceability matrix in same commit after BRD validation passes (see SHARED_CONTENT.md Traceability Matrix Update Workflow)
 

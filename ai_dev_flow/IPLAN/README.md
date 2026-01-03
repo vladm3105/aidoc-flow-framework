@@ -1452,7 +1452,7 @@ python validate_tags_against_docs.py --file IPLAN/IPLAN-01.md
 ```bash
 python update_traceability_matrix.py \
   --artifact IPLAN/IPLAN-01.md \
-  --matrix IPLAN/IPLAN-000_TRACEABILITY_MATRIX.md
+  --matrix IPLAN/IPLAN-00_TRACEABILITY_MATRIX.md
 
 # Output:
 # ✅ Matrix updated with IPLAN-01

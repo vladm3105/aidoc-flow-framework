@@ -228,7 +228,7 @@ def generate_report(violations: list[MagicNumberViolation]) -> str:
         "",
         "=" * 60,
         "RECOMMENDATION: Replace hardcoded values with @threshold references",
-        "See: ai_dev_flow/PRD/PRD-000_threshold_registry_template.md",
+        "See: ai_dev_flow/PRD/PRD-00_threshold_registry_template.md",
         "=" * 60,
     ])
 

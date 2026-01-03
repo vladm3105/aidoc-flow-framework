@@ -604,7 +604,7 @@ class ServiceConnector(Protocol):
 **ICON Resources**:
 - [ICON Directory README](../ICON/README.md)
 - [ICON_CREATION_RULES.md](../ICON/ICON_CREATION_RULES.md)
-- [ICON-000_index.md](../ICON/ICON-000_index.md)
+- [ICON-00_index.md](../ICON/ICON-00_index.md)
 - [ICON-TEMPLATE.md](../ICON/ICON-TEMPLATE.md)
 
 **Quick Decision**:

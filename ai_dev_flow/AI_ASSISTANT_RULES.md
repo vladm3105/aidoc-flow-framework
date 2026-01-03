@@ -321,19 +321,19 @@ AI Assistant **MUST** create index files for each document type:
 
 ```bash
 # Create index files
-touch docs/BRD/BRD-000_index.md
-touch docs/PRD/PRD-000_index.md
-touch docs/EARS/EARS-000_index.md
-touch docs/BDD/BDD-000_index.md
-touch docs/ADR/ADR-000_index.md
-touch docs/SYS/SYS-000_index.md
-touch docs/REQ/REQ-000_index.md
-touch docs/IMPL/IMPL-000_index.md
-touch docs/CTR/CTR-000_index.md
-touch docs/SPEC/SPEC-000_index.md
-touch docs/TASKS/TASKS-000_index.md
-touch docs/IPLAN/IPLAN-000_index.md
-touch docs/ICON/ICON-000_index.md  # optional
+touch docs/BRD/BRD-00_index.md
+touch docs/PRD/PRD-00_index.md
+touch docs/EARS/EARS-00_index.md
+touch docs/BDD/BDD-00_index.md
+touch docs/ADR/ADR-00_index.md
+touch docs/SYS/SYS-00_index.md
+touch docs/REQ/REQ-00_index.md
+touch docs/IMPL/IMPL-00_index.md
+touch docs/CTR/CTR-00_index.md
+touch docs/SPEC/SPEC-00_index.md
+touch docs/TASKS/TASKS-00_index.md
+touch docs/IPLAN/IPLAN-00_index.md
+touch docs/ICON/ICON-00_index.md  # optional
 ```
 
 ### Index File Content Template
@@ -569,7 +569,7 @@ When creating ANY artifact document type:
 - BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
 
 You MUST:
-1. Create or update the corresponding `[TYPE]-000_TRACEABILITY_MATRIX.md`
+1. Create or update the corresponding `[TYPE]-00_TRACEABILITY_MATRIX.md`
 2. Add the new document to section 2 (Complete Inventory)
 3. Document upstream sources in section 3
 4. Document downstream artifacts in section 4 (even if "To Be Created")
@@ -582,7 +582,7 @@ You MUST:
 
 All artifact types have traceability matrix templates:
 ```
-ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md
+ai_dev_flow/[TYPE]/[TYPE]-00_TRACEABILITY_MATRIX-TEMPLATE.md
 ```
 
 ### Validation Requirements
@@ -939,7 +939,7 @@ AI Assistant **MUST** complete this checklist for every new project:
 - [ ] **Step 3**: Load domain configuration file
 - [ ] **Step 4**: Copy templates with domain placeholder replacement
 - [ ] **Step 5**: Run contract decision questionnaire
-- [ ] **Step 6**: Initialize all index files ({TYPE}-000_index.{ext})
+- [ ] **Step 6**: Initialize all index files ({TYPE}-00_index.{ext})
 - [ ] **Step 7**: Validate folder structure (ls -laR docs/)
 - [ ] **Step 8**: Begin document creation following kickoff tasks
 - [ ] **Step 9**: Maintain traceability (section 7 in all documents)
@@ -1383,7 +1383,7 @@ After each validation phase, generate report:
 
 ## Product Appendix: AI‑Assisted Documentation Features (PRD Summary)
 
-This appendix consolidates and supersedes the former `PRD-000_ai_assisted_documentation_features.md`. It specifies the product requirements that guide assistant behavior and UX for documentation generation within the AI Dev Flow.
+This appendix consolidates and supersedes the former `PRD-00_ai_assisted_documentation_features.md`. It specifies the product requirements that guide assistant behavior and UX for documentation generation within the AI Dev Flow.
 
 ### 1. Problem Statement
 

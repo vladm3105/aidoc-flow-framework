@@ -77,20 +77,20 @@ Use `doc-impl` when:
 - Work can be completed in one sprint by one team
 - Documentation-only updates
 
-## Reserved ID Exemption (IMPL-000_*)
+## Reserved ID Exemption (IMPL-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `IMPL-000_*.md`
+**Pattern**: `IMPL-00_*.md`
 
 **Document Types**:
-- Index documents (`IMPL-000_index.md`)
-- Traceability matrix templates (`IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`IMPL-00_index.md`)
+- Traceability matrix templates (`IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `IMPL-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `IMPL-00_*` pattern.
 
 ## Element ID Format (MANDATORY)
 
@@ -413,7 +413,7 @@ Include all 7 upstream tags (@brd through @req).
 
 ### Step 11: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `docs/IMPL/IMPL-000_TRACEABILITY_MATRIX.md` (create from `ai_dev_flow/IMPL/IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md` if not exists)
+**MANDATORY**: Update `docs/IMPL/IMPL-00_TRACEABILITY_MATRIX.md` (create from `ai_dev_flow/IMPL/IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md` if not exists)
 
 ### Step 12: Validate IMPL
 

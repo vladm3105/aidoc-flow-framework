@@ -88,20 +88,20 @@ The ADR validation script ensures architecture decisions follow quality standard
 | **Tier 2** | Warnings | 0 | Quality issues - recommended to fix |
 | **Tier 3** | Info | 0 | Informational - no action required |
 
-### Reserved ID Exemption (ADR-000_*)
+### Reserved ID Exemption (ADR-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `ADR-000_*.md`
+**Pattern**: `ADR-00_*.md`
 
 **Document Types**:
-- Index documents (`ADR-000_index.md`)
-- Traceability matrix templates (`ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`ADR-00_index.md`)
+- Traceability matrix templates (`ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `ADR-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `ADR-00_*` pattern.
 
 ---
 

@@ -1698,7 +1698,7 @@ Risk Validator Service - Contract Provider
 ### Creating a New Contract (CTR)
 
 1. Identify upstream REQ/ADR that specify interface needs
-2. Reserve next CTR-NN number from CTR-000_index.md
+2. Reserve next CTR-NN number from CTR-00_index.md
 3. Copy CTR-TEMPLATE.md and CTR-TEMPLATE.yaml
 4. Create both files: `CTR-NN_slug.md` + `CTR-NN_slug.yaml`
 5. Complete markdown file:
@@ -1711,7 +1711,7 @@ Risk Validator Service - Contract Provider
    - endpoints with JSON Schema definitions
    - error_codes, non_functional requirements
    - upstream_requirements, upstream_adrs
-7. Update CTR-000_index.md with new contract entry
+7. Update CTR-00_index.md with new contract entry
 8. Update upstream REQ to link to CTR
 9. Validate both files, verify slugs match
 10. Run contract schema validation
@@ -1719,7 +1719,7 @@ Risk Validator Service - Contract Provider
 ### Creating a New Implementation Plan (IMPL)
 
 1. Identify upstream REQ that need implementation coordination
-2. Reserve next IMPL-NN number from IMPL-000_index.md
+2. Reserve next IMPL-NN number from IMPL-00_index.md
 3. Copy IMPL-TEMPLATE.md from ai_dev_flow/IMPL/
 4. Complete implementation plan:
    - Scope: What REQs are being implemented
@@ -1728,7 +1728,7 @@ Risk Validator Service - Contract Provider
    - section 7 Traceability with upstream REQ/ADR links
 5. Identify if any REQ requires interfaces (CTR)
 6. Create placeholder downstream entries (CTR if needed, SPEC, TASKS)
-7. Update IMPL-000_index.md with new plan entry
+7. Update IMPL-00_index.md with new plan entry
 8. Update upstream REQ to link to IMPL
 9. Validate all links resolve
 

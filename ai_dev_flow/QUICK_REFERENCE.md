@@ -87,9 +87,9 @@ TASKS-23_implement_risk_calculator.md
 - Reserved infra docs: This repository uses `-000` for index/registry and general utility docs. Code and tests use their language-specific naming rules.
 - See: `ID_NAMING_STANDARDS.md` for full details.
 
-### General Utility Documents (`{DOC_TYPE}-000_*`)
+### General Utility Documents (`{DOC_TYPE}-00_*`)
 - Purpose: Group general-purpose, cross-project, or utility documents not tied to a specific project artifact.
-- Pattern: `{DOC_TYPE}-000_{slug}.{ext}` (e.g., `REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md`, `ICON-000_index.md`).
+- Pattern: `{DOC_TYPE}-00_{slug}.{ext}` (e.g., `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`, `ICON-00_index.md`).
 - Usage: May be referenced across artifacts but are excluded from sequential DOC_NUM series. Keep guidance, templates, matrices, and reference content here.
 
 ### Section Files (DEFAULT for BRD/PRD/ADR)
@@ -321,7 +321,7 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 2. **Create Folders Before Documents** - Complete directory structure
 3. **Apply Domain Config** - Replace placeholders with domain terms
 4. **Run Contract Questionnaire** - Determine if CTR layer needed
-5. **Initialize Index Files** - Create all {TYPE}-000_index files
+5. **Initialize Index Files** - Create all {TYPE}-00_index files
 6. **Maintain Traceability** - section 7 in every document
 7. **Validate Continuously** - Run validation after each document
 8. **Follow ID Standards** - Sequential numbering, stable IDs
@@ -336,7 +336,7 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 - [ ] Read upstream documents (strategy, BRD, PRD, EARS, etc.)
 - [ ] Identify which template to use from `ai_dev_flow/[TYPE]/`
 - [ ] Assign next sequential ID ([TYPE]-NN)
-- [ ] Check for existing traceability matrix: `[TYPE]-000_TRACEABILITY_MATRIX.md`
+- [ ] Check for existing traceability matrix: `[TYPE]-00_TRACEABILITY_MATRIX.md`
 
 ### During Creation
 - [ ] Use template from `ai_dev_flow/[TYPE]/[TYPE]-TEMPLATE.[ext]`
@@ -347,8 +347,8 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 
 ### Post-Creation (MANDATORY)
 - [ ] **CREATE/UPDATE TRACEABILITY MATRIX** ⚠️ **CRITICAL STEP**
-  - [ ] Check if `[TYPE]-000_TRACEABILITY_MATRIX.md` exists
-  - [ ] If missing: Create from `[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+  - [ ] Check if `[TYPE]-00_TRACEABILITY_MATRIX.md` exists
+  - [ ] If missing: Create from `[TYPE]-00_TRACEABILITY_MATRIX-TEMPLATE.md`
   - [ ] Add this document to section 2 (Complete Inventory) with:
     - Document ID, title, status, date
     - Upstream sources (which documents drove this)
@@ -356,7 +356,7 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
   - [ ] Update section 3 (Upstream Traceability)
   - [ ] Update section 4 (Downstream Traceability)
   - [ ] Update section 8 (Implementation Status)
-- [ ] Update index file: `[TYPE]-000_index.md`
+- [ ] Update index file: `[TYPE]-00_index.md`
 - [ ] Validate all markdown links resolve correctly
 - [ ] Run validation scripts:
   ```bash

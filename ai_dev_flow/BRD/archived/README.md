@@ -33,7 +33,7 @@ When archiving a BRD:
 1. **Update Status**: Mark BRD status as "Archived" in main document
 2. **Add Archive Date**: Document when and why it was archived
 3. **Move File**: Move from main BRD directory to this archived/ subdirectory
-4. **Update Index**: Update `BRD-000_index.md` to reflect archived status
+4. **Update Index**: Update `BRD-00_index.md` to reflect archived status
 5. **Preserve Links**: Ensure downstream documents (PRD, EARS) note the archival
 
 ## Archive Format

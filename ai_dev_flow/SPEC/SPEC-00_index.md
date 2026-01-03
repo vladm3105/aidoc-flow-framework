@@ -177,7 +177,7 @@ When creating a new SPEC:
 
 - **Template**: [SPEC-TEMPLATE.yaml](./SPEC-TEMPLATE.yaml) - Use this to create new SPECs
 - **README**: [README.md](./README.md) - Learn about SPEC purpose, format, and structure
-- **Traceability Matrix**: [SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md](./SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Traceability Matrix**: [SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md](./SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 - **Example**: [SPEC-01_api_client_example.yaml](./SPEC-01_api_client_example.yaml) - Reference specification
 
 ## Maintenance Guidelines

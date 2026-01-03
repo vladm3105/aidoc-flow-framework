@@ -352,7 +352,7 @@ def send_metrics():
 **Issue**: Duplicate requirement IDs
 
 **Resolution**:
-1. Check REQ-000_index.md for next available ID
+1. Check REQ-00_index.md for next available ID
 2. Rename duplicate document with next sequential ID
 3. Update all references to use new ID
 4. Re-run validation

@@ -411,7 +411,7 @@ IMPL produces (as deliverables):
 - [ ] All upstream references valid
 - [ ] Deliverable list complete
 - [ ] Timeline realistic
-- [ ] Update IMPL-000_index.md
+- [ ] Update IMPL-00_index.md
 - [ ] Notify stakeholders
 - [ ] Run validation script
 
@@ -446,7 +446,7 @@ IMPL produces (as deliverables):
 - [ ] Phases have deliverables listed
 - [ ] Owners assigned to phases
 - [ ] Traceability tags complete
-- [ ] Registered in IMPL-000_index.md
+- [ ] Registered in IMPL-00_index.md
 
 ---
 
@@ -511,7 +511,7 @@ Include ONLY if relationships exist between IMPL documents sharing implementatio
 ## References
 
 - [IMPL-TEMPLATE.md](./IMPL-TEMPLATE.md) - Implementation plan template
-- [IMPL-000_index.md](./IMPL-000_index.md) - Plan registry
+- [IMPL-00_index.md](./IMPL-00_index.md) - Plan registry
 - [README.md](./README.md) - Directory overview
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Workflow guide
 - [TRACEABILITY.md](../TRACEABILITY.md) - Traceability hierarchy

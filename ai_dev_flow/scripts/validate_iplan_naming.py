@@ -162,8 +162,8 @@ class IPLANValidator:
         all_files = list(self.iplan_dir.glob("IPLAN-*.md"))
 
         # Filter out template and index files
-        template_files = {"IPLAN-TEMPLATE.md", "IPLAN-000_index.md",
-                         "IPLAN-000_TRACEABILITY_MATRIX-TEMPLATE.md"}
+        template_files = {"IPLAN-TEMPLATE.md", "IPLAN-00_index.md",
+                         "IPLAN-00_TRACEABILITY_MATRIX-TEMPLATE.md"}
 
         for filepath in all_files:
             filename = filepath.name

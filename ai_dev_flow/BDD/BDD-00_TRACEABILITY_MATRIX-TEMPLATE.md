@@ -47,7 +47,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate BDD traceability matrix
-python scripts/generate_traceability_matrix.py --type BDD --output docs/BDD/BDD-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type BDD --output docs/BDD/BDD-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -484,7 +484,7 @@ graph TD
 ## 13. References
 
 ### 13.1 Internal Documentation
-- **BDD Index**: [BDD-000_index.md](BDD-000_index.md)
+- **BDD Index**: [BDD-00_index.md](BDD-00_index.md)
 - **BDD Template**: [BDD-TEMPLATE.feature](BDD-TEMPLATE.feature)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
@@ -495,9 +495,9 @@ graph TD
 - BDD Testing Patterns
 
 ### 13.3 Related Matrices
-- [EARS Traceability Matrix](../EARS/EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [PRD Traceability Matrix](../PRD/PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [REQ Traceability Matrix](../REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [EARS Traceability Matrix](../EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [PRD Traceability Matrix](../PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [REQ Traceability Matrix](../REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 
@@ -509,7 +509,7 @@ graph TD
 python ../scripts/generate_traceability_matrix.py \
   --type BDD \
   --input ../BDD/ \
-  --template BDD-000_TRACEABILITY_MATRIX-TEMPLATE.md \
+  --template BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md \
   --output TRACEABILITY_MATRIX_BDD.md
 
 # Validate matrix

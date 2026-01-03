@@ -1653,7 +1653,7 @@ timeout:
 5. Update Document Control table as task progresses
 6. Validate template compliance using `python scripts/validate_traceability.py`
 7. Update Change History upon each significant modification
-8. Review and update TASKS-000_index.md when creating new tasks
+8. Review and update TASKS-00_index.md when creating new tasks
 ## File Size Limits
 
 - Target: 300–500 lines per file

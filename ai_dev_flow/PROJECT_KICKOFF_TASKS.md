@@ -20,6 +20,11 @@ custom_fields:
 
 ## Week 1 Action Plan
 
+> **⚡ Building an MVP?**
+> If you selected the **MVP Track**, do NOT use the schedule below.
+> Instead, follow the accelerated **[MVP Development Workflow](./MVP_WORKFLOW_GUIDE.md)**.
+> The schedule below is for the **Standard 16-Layer Enterprise Flow**.
+
 ### Day 1: Project Setup & Business Requirements
 
 **Tasks**:
@@ -31,7 +36,7 @@ custom_fields:
    - Strategic objectives
    - Market context
    - Success criteria
-6. Update BRD-000_index.md
+6. Update BRD-00_index.md
 
 **AI Assistant Actions**:
 ```bash
@@ -54,7 +59,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-01_business_objectives.md
    - Constraints
 2. Create EARS-01 (Event-Action-Response-State Engineering Requirements)
    - Measurable requirements using WHEN-THE-SHALL format
-3. Update PRD-000_index.md and EARS-000_index.md
+3. Update PRD-00_index.md and EARS-00_index.md
 
 **AI Assistant Actions**:
 ```bash
@@ -77,7 +82,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-01_business_objectives.md
    - Key architectural choices
    - Technology stack decisions
    - Trade-offs documented
-3. Update BDD-000_index.md and ADR-000_index.md
+3. Update BDD-00_index.md and ADR-00_index.md
 
 **AI Assistant Actions**:
 ```bash
@@ -101,7 +106,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-01_business_objectives.md
    - One atomic requirement per file
    - Complete section 7 traceability
    - Acceptance criteria per REQ
-3. Update SYS-000_index.md and REQ-000_index.md
+3. Update SYS-00_index.md and REQ-00_index.md
 
 **AI Assistant Actions**:
 ```bash
@@ -125,7 +130,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-01_business_objectives.md
    - Dual files: .md + .yaml
    - OpenAPI/AsyncAPI specifications
    - Contract-first design
-3. Update IMPL-000_index.md and CTR-000_index.md
+3. Update IMPL-00_index.md and CTR-00_index.md
 
 **AI Assistant Actions**:
 ```bash
@@ -146,7 +151,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-01_business_objectives.md
    - Reference CTR contracts (if applicable)
    - Include traceability comments
    - Behavioral specifications (pre/post conditions)
-2. Update SPEC-000_index.md
+2. Update SPEC-00_index.md
 
 **AI Assistant Actions**:
 ```bash
@@ -227,7 +232,7 @@ section 7 Traceability:
 
 ✓ BRD-01 created
 
-Task 6: Updating BRD-000_index.md...
+Task 6: Updating BRD-00_index.md...
 
 Added entry:
 | BRD-01 | service Platform Business Requirements | Draft | High | 2025-01-15 | 2025-01-15 |

@@ -33,7 +33,7 @@ custom_fields:
 **Version**: 2.1
 **Date**: 2025-11-26
 **Last Updated**: 2025-11-30
-**Source**: Extracted from PRD-TEMPLATE.md, PRD-VALIDATION_RULES.md, README.md, and PRD-000_index.md
+**Source**: Extracted from PRD-TEMPLATE.md, PRD-VALIDATION_RULES.md, README.md, and PRD-00_index.md
 **Purpose**: Complete reference for creating PRD files according to doc-flow SDD framework
 **Changes**: Updated to 21-section structure (1-21) with Section 20 (EARS Enhancement Appendix) and Section 21 (Quality Assurance & Testing Strategy). Previous: 19-section structure (0-18)
 
@@ -699,7 +699,7 @@ find docs/PRD -name "PRD-*.md" -exec python scripts/validate_prd.py {} \;
 
 **Template Location**: [PRD-TEMPLATE.md](PRD-TEMPLATE.md)
 **Validation Rules**: [PRD_VALIDATION_RULES.md](PRD_VALIDATION_RULES.md)
-**Index**: [PRD-000_index.md](PRD-000_index.md)
+**Index**: [PRD-00_index.md](PRD-00_index.md)
 
 ---
 

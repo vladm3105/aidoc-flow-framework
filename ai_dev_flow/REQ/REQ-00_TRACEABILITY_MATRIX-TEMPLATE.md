@@ -50,7 +50,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate REQ traceability matrix
-python scripts/generate_traceability_matrix.py --type REQ --output docs/REQ/REQ-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type REQ --output docs/REQ/REQ-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -471,10 +471,10 @@ python scripts/generate_reverse_traceability.py --upstream REQ --downstream IMPL
 
 ## 18. References
 
-- **REQ Index**: [REQ-000_index.md](REQ-000_index.md)
+- **REQ Index**: [REQ-00_index.md](REQ-00_index.md)
 - **REQ Template**: [REQ-TEMPLATE.md](REQ-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
-- **Related Matrices**: [EARS](../EARS/EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md), [CTR](../CTR/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Related Matrices**: [EARS](../EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md), [CTR](../CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 
@@ -485,6 +485,6 @@ python scripts/generate_reverse_traceability.py --upstream REQ --downstream IMPL
 python ../scripts/generate_traceability_matrix.py \
   --type REQ \
   --input ../REQ/ \
-  --template REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md \
+  --template REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md \
   --output TRACEABILITY_MATRIX_REQ.md
 ```

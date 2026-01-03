@@ -29,7 +29,7 @@ custom_fields:
 **Version**: 1.3
 **Date**: 2025-11-19
 **Last Updated**: 2025-12-19
-**Source**: Extracted from BRD-TEMPLATE.md, BRD-VALIDATION_RULES.md, README.md, and BRD-000_index.md
+**Source**: Extracted from BRD-TEMPLATE.md, BRD-VALIDATION_RULES.md, README.md, and BRD-00_index.md
 **Purpose**: Complete reference for creating BRD files according to doc-flow SDD framework
 **Changes**: Added Section Classification table (MANDATORY/OPTIONAL/CONDITIONAL); Section 15 (Quality Assurance) now MANDATORY; 18 total sections
 
@@ -1961,7 +1961,7 @@ find docs/BRD -name "BRD-*.md" -exec ./scripts/validate_brd_template.sh {} \;
 
 **Template Location**: [BRD-TEMPLATE.md](BRD-TEMPLATE.md)
 **Validation Rules**: [BRD_VALIDATION_RULES.md](BRD_VALIDATION_RULES.md)
-**Index**: [BRD-000_index.md](BRD-000_index.md)
+**Index**: [BRD-00_index.md](BRD-00_index.md)
 
 ---
 

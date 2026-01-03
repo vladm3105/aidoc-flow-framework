@@ -36,7 +36,7 @@ class TraceabilityValidator:
         print(f"{'='*60}")
 
         # Check 1: Matrix file exists
-        matrix_file = self.docs_dir / artifact_type / f"{artifact_type}-000_TRACEABILITY_MATRIX.md"
+        matrix_file = self.docs_dir / artifact_type / f"{artifact_type}-00_TRACEABILITY_MATRIX.md"
 
         if not matrix_file.exists():
             self.errors.append(f"❌ Matrix file missing: {matrix_file}")

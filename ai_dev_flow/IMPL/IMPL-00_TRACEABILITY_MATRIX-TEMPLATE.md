@@ -47,7 +47,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate IMPL traceability matrix
-python scripts/generate_traceability_matrix.py --type IMPL --output docs/IMPL/IMPL-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type IMPL --output docs/IMPL/IMPL-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -373,7 +373,7 @@ graph TD
 
 ## 13. References
 
-- **IMPL Index**: [IMPL-000_index.md](IMPL-000_index.md)
+- **IMPL Index**: [IMPL-00_index.md](IMPL-00_index.md)
 - **IMPL Template**: [IMPL-TEMPLATE.md](IMPL-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
-- **Related Matrices**: [REQ](../REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md), [CTR](../CTR/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md), [TASKS](../TASKS/TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Related Matrices**: [REQ](../REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md), [CTR](../CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md), [TASKS](../TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md)

@@ -17,7 +17,7 @@
 | **Last Updated** | 2025-11-14 |
 | **Version** | 1.0 |
 | **Related REQs** | Framework Requirements |
-| **Deliverables** | IMPL/ folder structure, IMPL-TEMPLATE.md, IMPL-000_index.md, examples |
+| **Deliverables** | IMPL/ folder structure, IMPL-TEMPLATE.md, IMPL-00_index.md, examples |
 
 ## Position in Document Workflow
 
@@ -64,8 +64,8 @@ Create complete IMPL artifact system including folder structure, templates, inde
 **Success Criteria**:
 - [ ] IMPL/ folder structure created
 - [ ] IMPL-TEMPLATE.md complete with all sections
-- [ ] IMPL-000_index.md created
-- [ ] IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md created
+- [ ] IMPL-00_index.md created
+- [ ] IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md created
 - [ ] README.md with clear usage instructions
 - [ ] At least 2 example IMPL documents
 - [ ] Integration with existing artifact types (REQ, CTR, SPEC, TASKS)
@@ -76,8 +76,8 @@ Create complete IMPL artifact system including folder structure, templates, inde
 **In Scope**:
 - IMPL folder structure (`ai_dev_flow/IMPL/`)
 - IMPL-TEMPLATE.md (comprehensive template)
-- IMPL-000_index.md (master index)
-- IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md
+- IMPL-00_index.md (master index)
+- IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md
 - README.md documentation
 - Example IMPL documents (2-3 examples)
 - Integration points with REQ, CTR, SPEC, TASKS
@@ -127,13 +127,13 @@ Create complete IMPL artifact system including folder structure, templates, inde
 | **Purpose** | Create basic IMPL/ folder structure and index |
 | **Owner** | Documentation Team |
 | **Timeline** | 2025-11-02 → 2025-11-02 (2 hours) |
-| **Deliverables** | IMPL/ folder, IMPL-000_index.md, examples/ subfolder |
+| **Deliverables** | IMPL/ folder, IMPL-00_index.md, examples/ subfolder |
 | **Dependencies** | None (can start immediately) |
 
 **Tasks**:
 1. Create `/ai_dev_flow/IMPL/` directory
 2. Create `/ai_dev_flow/IMPL/examples/` subdirectory
-3. Create IMPL-000_index.md with:
+3. Create IMPL-00_index.md with:
    - Purpose statement
    - Allocation rules
    - Document listing structure
@@ -141,7 +141,7 @@ Create complete IMPL artifact system including folder structure, templates, inde
 
 **Success Criteria**:
 - [x] Folder structure created
-- [x] IMPL-000_index.md contains allocation rules
+- [x] IMPL-00_index.md contains allocation rules
 - [x] Index includes traceability to REQ/CTR/SPEC/TASKS
 - [x] Examples folder ready for sample documents
 
@@ -159,7 +159,7 @@ Create complete IMPL artifact system including folder structure, templates, inde
 | **Purpose** | Create comprehensive IMPL template |
 | **Owner** | Documentation Team |
 | **Timeline** | 2025-11-02 → 2025-11-03 (4 hours) |
-| **Deliverables** | IMPL-TEMPLATE.md, IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md |
+| **Deliverables** | IMPL-TEMPLATE.md, IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md |
 | **Dependencies** | Phase 1 complete (folder structure exists) |
 
 **Tasks**:
@@ -356,9 +356,9 @@ Create complete IMPL artifact system including folder structure, templates, inde
 
 **Core Deliverables**:
 - [x] `/ai_dev_flow/IMPL/` folder structure
-- [x] `IMPL-000_index.md` - Master index
+- [x] `IMPL-00_index.md` - Master index
 - [x] `IMPL-TEMPLATE.md` - Main template
-- [x] `IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md` - Traceability template
+- [x] `IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md` - Traceability template
 - [x] `README.md` - Usage documentation
 
 **Example Deliverables**:
@@ -455,7 +455,7 @@ Create complete IMPL artifact system including folder structure, templates, inde
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Single source of truth
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Naming conventions
 - [IMPL-TEMPLATE.md](./IMPL-TEMPLATE.md) - Created template
-- [IMPL-000_index.md](./IMPL-000_index.md) - Master index
+- [IMPL-00_index.md](./IMPL-00_index.md) - Master index
 - [ai_dev_flow/index.md](../index.md) - Framework overview
 
 ---

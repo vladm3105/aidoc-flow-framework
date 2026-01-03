@@ -185,7 +185,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 8. **Write Scenarios**: Given/When/Then; include primary, negative, edge, quality, integration, data-driven
 9. **Use Thresholds**: Reference PRD threshold registry via `@threshold:` keys (no hardcoded numbers)
 10. **Update Suite Index**: List sections, counts, and status in `BDD-NN.0_index.md`
-11. **Update Global Index**: Add entry to this `BDD-000_index.md` under the appropriate area
+11. **Update Global Index**: Add entry to this `BDD-00_index.md` under the appropriate area
 
 ### BDD File Structure (Section-Based)
 

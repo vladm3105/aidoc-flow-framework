@@ -435,7 +435,7 @@ flowchart LR
 
 ## 7. References
 
-**Internal**: [REQ-NN](<!-- VALIDATOR:IGNORE-LINKS-START -->../REQ/.../REQ-NN.md<!-- VALIDATOR:IGNORE-LINKS-END -->) \| [ADR-PPP](../ADR/ADR-PPP.md) \| [IMPL-000 Index](./IMPL-000_index.md)
+**Internal**: [REQ-NN](<!-- VALIDATOR:IGNORE-LINKS-START -->../REQ/.../REQ-NN.md<!-- VALIDATOR:IGNORE-LINKS-END -->) \| [ADR-PPP](../ADR/ADR-PPP.md) \| [IMPL-000 Index](./IMPL-00_index.md)
 
 **Templates**: [CTR-TEMPLATE](../CTR/CTR-TEMPLATE.md) \| [SPEC-TEMPLATE](../SPEC/SPEC-TEMPLATE.yaml) \| [TASKS-TEMPLATE](../TASKS/TASKS-TEMPLATE.md)
 
@@ -450,7 +450,7 @@ flowchart LR
 **Fill Out in Order**:
 1. Document Control table → Part 1 (Context) → Part 2 (Phases) → Part 3 (Resources/Risks) → Part 4 (Tracking)
 2. Each phase lists deliverables (CTR/SPEC/TASKS), teams, timelines, dependencies
-3. Update index: Add entry to IMPL-000_index.md
+3. Update index: Add entry to IMPL-00_index.md
 4. Track progress: Update status as phases complete
 
 **⚠️ SCOPE BOUNDARIES**:

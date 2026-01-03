@@ -47,7 +47,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate SYS traceability matrix
-python scripts/generate_traceability_matrix.py --type SYS --output docs/SYS/SYS-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type SYS --output docs/SYS/SYS-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -312,7 +312,7 @@ graph TD
 
 ## 12. References
 
-- **SYS Index**: [SYS-000_index.md](SYS-000_index.md)
+- **SYS Index**: [SYS-00_index.md](SYS-00_index.md)
 - **SYS Template**: [SYS-TEMPLATE.md](SYS-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
-- **Related Matrices**: [ADR](../ADR/ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md), [REQ](../REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Related Matrices**: [ADR](../ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md), [REQ](../REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)

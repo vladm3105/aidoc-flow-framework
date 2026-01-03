@@ -64,20 +64,20 @@ Use `doc-iplan` when:
 - Need step-by-step execution plan
 - You are at Layer 12 of the SDD workflow
 
-## Reserved ID Exemption (IPLAN-000_*)
+## Reserved ID Exemption (IPLAN-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `IPLAN-000_*.md`
+**Pattern**: `IPLAN-00_*.md`
 
 **Document Types**:
-- Index documents (`IPLAN-000_index.md`)
-- Traceability matrix templates (`IPLAN-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`IPLAN-00_index.md`)
+- Traceability matrix templates (`IPLAN-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `IPLAN-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `IPLAN-00_*` pattern.
 
 ## IPLAN-Specific Guidance
 
@@ -487,7 +487,7 @@ Include all 9-11 upstream tags (@brd through @tasks).
 
 ### Step 12: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `docs/IPLAN/IPLAN-000_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Update `docs/IPLAN/IPLAN-00_TRACEABILITY_MATRIX.md`
 
 ### Step 13: Validate IPLAN
 

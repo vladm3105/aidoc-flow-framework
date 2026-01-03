@@ -174,7 +174,7 @@ When creating a new SYS document:
 
 - **Template**: [SYS-TEMPLATE.md](./SYS-TEMPLATE.md) - Use this to create new SYS
 - **README**: [README.md](./README.md) - Learn about SYS purpose and structure
-- **Traceability Matrix**: [SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md](./SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Traceability Matrix**: [SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md](./SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ## Maintenance Guidelines
 

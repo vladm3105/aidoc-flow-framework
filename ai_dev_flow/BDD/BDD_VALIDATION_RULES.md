@@ -65,20 +65,20 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 | **Tier 2** | Warnings | 0 | Quality issues - recommended to fix |
 | **Tier 3** | Info | 0 | Informational - no action required |
 
-### Reserved ID Exemption (BDD-000_*)
+### Reserved ID Exemption (BDD-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `BDD-000_*.md` or `BDD-000_*.feature`
+**Pattern**: `BDD-00_*.md` or `BDD-00_*.feature`
 
 **Document Types**:
-- Index documents (`BDD-000_index.md`)
-- Traceability matrix templates (`BDD-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`BDD-00_index.md`)
+- Traceability matrix templates (`BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `BDD-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `BDD-00_*` pattern.
 
 ---
 

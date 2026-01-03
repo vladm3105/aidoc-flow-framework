@@ -15,7 +15,19 @@ custom_fields:
 
 Product Requirements Documents (PRDs) serve as the foundational business requirements that drive all downstream technical development. PRDs capture "what" needs to be built before any consideration of "how," establishing the product contract between business goals and technical implementation.
 
-Note: `PRD-TEMPLATE.md` is a reference template. For real PRDs, prefer sectioned docs using `PRD-SECTION-0-TEMPLATE.md` and `PRD-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`.
+## Available Templates
+
+**PRD-TEMPLATE.md** - Comprehensive product requirements template (21 sections, ~1,400 lines)
+- Full-featured template with all sections
+- Suitable for all project types
+- For real PRDs, prefer sectioned docs using `PRD-SECTION-0-TEMPLATE.md` and `PRD-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`
+
+**PRD-MVP-TEMPLATE.md** - Streamlined MVP version in a single file without sectioning (~500 lines)
+- Focused on core MVP features and rapid development
+- Maintains framework compliance while reducing documentation overhead
+- Ideal for MVPs with 5-15 core features and short development cycles
+
+**Usage**: Use `PRD-TEMPLATE.md` for full-featured PRDs and `PRD-MVP-TEMPLATE.md` for MVP-focused PRDs.
 
 ## Purpose
 

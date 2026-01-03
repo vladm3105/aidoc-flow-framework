@@ -183,7 +183,7 @@ The Master Architect Agent now takes over, executing the setup rules defined in 
     * *BMAD Action:* `Agent.invoke_tool("AnalyzeTextTool", text=mission, purpose="Determine project domain")`
 2. **Folder Creation:** It uses its `Bash` tool to execute `mkdir` commands to create the 12-layer directory structure and specific subdirectories as per `AI_ASSISTANT_RULES.md`.
     * *BMAD Action:* `Agent.invoke_tool("Bash", command="mkdir -p /path/to/project/docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}")`
-3. **Template Initialization:** It copies all necessary `AI_DEV_FLOW` templates into the new project structure and initializes all `*-000_index.md` files.
+3. **Template Initialization:** It copies all necessary `AI_DEV_FLOW` templates into the new project structure and initializes all `*-00_index.md` files.
     * *BMAD Action:* `Agent.invoke_tool("Bash", command="cp /path/to/ai_dev_flow/BRD/* /path/to/project/docs/BRD/")`
 
 ### Step 3: Generating the Initial BRD (BMAD Documentation Sub-Agent)
@@ -196,9 +196,9 @@ The Master Architect Agent delegates to a specialized "Documentation Sub-Agent" 
 1. **Content Generation:** The DocAgent receives the initial project description and the empty `BRD-TEMPLATE.md`. Using its LLM capabilities, it generates the content for the initial `BRD-01`. It populates sections like "Business Objectives," "Project Scope," and high-level "Business Capabilities."
     * *BMAD Action:* `DocAgent.generate_document(template_path="BRD-TEMPLATE.md", context=mission_description)`
 2. **Metadata and Traceability:** The DocAgent ensures the YAML frontmatter is correctly populated and the "Document Control" section (including `PRD-Ready Score`) is initialized.
-3. **File Operations:** It uses its tools to save `BRD-01_local_analysis_service.md` and update `docs/BRD/BRD-000_index.md`.
+3. **File Operations:** It uses its tools to save `BRD-01_local_analysis_service.md` and update `docs/BRD/BRD-00_index.md`.
     * *BMAD Action:* `DocAgent.invoke_tool("WriteFile", path="docs/BRD/BRD-01_local_analysis_service.md", content=generated_brd)`
-    * *BMAD Action:* `DocAgent.invoke_tool("UpdateIndexTool", index_path="docs/BRD/BRD-000_index.md", doc_id="BRD-01", title="Local Analysis Service")`
+    * *BMAD Action:* `DocAgent.invoke_tool("UpdateIndexTool", index_path="docs/BRD/BRD-00_index.md", doc_id="BRD-01", title="Local Analysis Service")`
 
 ### Step 4: Human Review and Approval (Human Architect)
 

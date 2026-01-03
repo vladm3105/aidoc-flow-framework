@@ -50,7 +50,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate EARS traceability matrix
-python scripts/generate_traceability_matrix.py --type EARS --output docs/EARS/EARS-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type EARS --output docs/EARS/EARS-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -487,7 +487,7 @@ graph TD
 ## 14. References
 
 ### 14.1 Internal Documentation
-- **EARS Index**: [EARS-000_index.md](EARS-000_index.md)
+- **EARS Index**: [EARS-00_index.md](EARS-00_index.md)
 - **EARS Template**: [EARS-TEMPLATE.md](EARS-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
@@ -499,10 +499,10 @@ graph TD
 - INCOSE Guide to Writing Requirements
 
 ### 14.3 Related Matrices
-- [PRD Traceability Matrix](../PRD/PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [BDD Traceability Matrix](../BDD/BDD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [REQ Traceability Matrix](../REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [ADR Traceability Matrix](../ADR/ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [PRD Traceability Matrix](../PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [BDD Traceability Matrix](../BDD/BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [REQ Traceability Matrix](../REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [ADR Traceability Matrix](../ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 
@@ -520,7 +520,7 @@ graph TD
 python ../scripts/generate_traceability_matrix.py \
   --type EARS \
   --input ../EARS/ \
-  --template EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md \
+  --template EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md \
   --output TRACEABILITY_MATRIX_EARS.md
 
 # Validate matrix

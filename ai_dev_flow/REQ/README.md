@@ -28,6 +28,19 @@ Requirements (REQ) documents capture atomic, testable requirements that serve as
 
 > **Terminology Disambiguation**: REQ documents represent **Atomic Requirements** (Layer 7) - single, granular, testable requirements derived from business-level Functional Requirements in BRD (Layer 1). While BRDs use "Functional Requirements" for high-level capability statements, REQs decompose these into implementation-ready specifications.
 
+## Available Templates
+
+**REQ-TEMPLATE.md** - Comprehensive atomic requirements template (~1,400 lines)
+- Full-featured template with all sections (V3.0)
+- SPEC-ready with interfaces, schemas, error handling, configuration
+
+**REQ-MVP-TEMPLATE.md** - Streamlined MVP version in a single file without sectioning (~350 lines)
+- Focused on SPEC-ready, atomic requirements for MVP
+- Maintains framework compliance while reducing documentation overhead
+- Ideal for MVPs with 10-20 core requirements
+
+**Usage**: Use `REQ-TEMPLATE.md` for full-featured requirements and `REQ-MVP-TEMPLATE.md` for MVP-focused requirements.
+
 ## Purpose
 
 REQs create the **formal contract** for system behavior by:
@@ -837,7 +850,7 @@ python scripts/validate_links.py --directory REQ/
 **Traceability Matrix Validator** (`scripts/validate_traceability_matrix.py`):
 ```bash
 # Validate matrix consistency
-python scripts/validate_traceability_matrix.py --matrix-file REQ/REQ-000_TRACEABILITY_MATRIX.md
+python scripts/validate_traceability_matrix.py --matrix-file REQ/REQ-00_TRACEABILITY_MATRIX.md
 
 # Verifies:
 # - Document counts match actual files

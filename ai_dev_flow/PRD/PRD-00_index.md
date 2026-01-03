@@ -288,7 +288,7 @@ When migrating a Legacy PRD to Current status:
 
 - **Template**: [PRD-TEMPLATE.md](./PRD-TEMPLATE.md) - Use this to create new PRDs
 - **README**: [README.md](./README.md) - Learn about PRD purpose and structure
-- **Traceability Matrix**: [PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md](./PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Traceability Matrix**: [PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md](./PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ## Maintenance Guidelines
 

@@ -649,7 +649,7 @@ All IPLAN documents MUST include these cumulative tags from upstream artifacts:
 
 - **Automated**: Run `python3 scripts/validate_tags_against_docs.py`
 - **Manual**: Verify each tag resolves to existing document in framework
-- **Traceability Matrix**: Update `IPLAN-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+- **Traceability Matrix**: Update `IPLAN-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 ### 8.6 Same-Type References (Conditional)
@@ -785,10 +785,10 @@ pytest --cov --cov-fail-under=@threshold: PRD.NN.quality.test.unit_coverage
 
 **Sibling Documents**:
 - [IPLAN-NN](./IPLAN-NN.md) - Related implementation plans
-- [IPLAN-000_index.md](./IPLAN-000_index.md) - Index of all implementation plans
+- [IPLAN-00_index.md](./IPLAN-00_index.md) - Index of all implementation plans
 
 **Traceability Matrix**:
-- [IPLAN-000_TRACEABILITY_MATRIX.md](./IPLAN-000_TRACEABILITY_MATRIX.md) - Complete traceability matrix
+- [IPLAN-00_TRACEABILITY_MATRIX.md](./IPLAN-00_TRACEABILITY_MATRIX.md) - Complete traceability matrix
 
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 ### 9.4 Traceability Tags

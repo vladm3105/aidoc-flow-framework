@@ -3,7 +3,7 @@
 
 Usage:
     python extract_tags.py --source src/ docs/ --output docs/generated/tags.json
-    python extract_tags.py --type BRD --output docs/BRD/BRD-000_TRACEABILITY_MATRIX.md
+    python extract_tags.py --type BRD --output docs/BRD/BRD-00_TRACEABILITY_MATRIX.md
     python extract_tags.py --validate-only
 """
 

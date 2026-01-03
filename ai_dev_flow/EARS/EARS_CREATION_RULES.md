@@ -422,7 +422,7 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 **Before ending session:**
 1. Run full validation: `python scripts/validate_ears.py`
 2. Verify 0 errors (warnings acceptable)
-3. Update EARS-000_index.md if document counts changed
+3. Update EARS-00_index.md if document counts changed
 4. Document any issues in session notes
 
 ### Common Batch Errors to Avoid

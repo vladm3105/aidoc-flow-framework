@@ -39,20 +39,20 @@ Rules for validating Implementation Plans (IMPL) documents in the SDD framework.
 | **Last Updated** | 2025-11-27 |
 | **Status** | Active |
 
-### Reserved ID Exemption (IMPL-000_*)
+### Reserved ID Exemption (IMPL-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `IMPL-000_*.md`
+**Pattern**: `IMPL-00_*.md`
 
 **Document Types**:
-- Index documents (`IMPL-000_index.md`)
-- Traceability matrix templates (`IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`IMPL-00_index.md`)
+- Traceability matrix templates (`IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `IMPL-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `IMPL-00_*` pattern.
 
 ---
 
@@ -575,7 +575,7 @@ Result: PASSED WITH WARNINGS
 
 - [IMPL_CREATION_RULES.md](./IMPL_CREATION_RULES.md) - Creation guidelines
 - [IMPL-TEMPLATE.md](./IMPL-TEMPLATE.md) - Implementation plan template
-- [IMPL-000_index.md](./IMPL-000_index.md) - Plan registry
+- [IMPL-00_index.md](./IMPL-00_index.md) - Plan registry
 - [validate_impl.sh](../scripts/validate_impl.sh) - Validation script
 - [README.md](./README.md) - Directory overview
 

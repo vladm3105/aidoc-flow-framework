@@ -250,7 +250,7 @@ strategy/ (WHAT - Product Owner Voice)
 - **Status**: Authoritative development standard for this project
 - **Contents**: Complete SDD workflow (BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code)
 - **Templates**: `{TYPE}-TEMPLATE.{ext}` for each artifact type (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, REF)
-- **Indices**: `{TYPE}-000_index.{ext}` listing all documents of each type
+- **Indices**: `{TYPE}-00_index.{ext}` listing all documents of each type
 - **READMEs**: Detailed usage guides and best practices for each artifact type
 - **Standards**: ID naming, traceability format, cross-referencing rules
 - **Examples**: Reference implementations with full traceability chains
@@ -551,7 +551,7 @@ LOOP:
 - **REF** (root): `REF-TEMPLATE.md` (Reference Documents)
 
 **Each artifact type directory also contains:**
-- Index file: `{TYPE}-000_index.{ext}`
+- Index file: `{TYPE}-00_index.{ext}`
 - README.md: Usage guide and best practices
 - Creation Rules: `{TYPE}_CREATION_RULES.md`
 - Validation Rules: `{TYPE}_VALIDATION_RULES.md`

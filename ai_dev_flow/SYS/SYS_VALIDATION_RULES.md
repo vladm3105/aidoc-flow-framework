@@ -63,20 +63,20 @@ The SYS validation script ensures system requirements meet quality standards for
 | **Tier 2** | Warnings | 0 | Quality issues - recommended to fix |
 | **Tier 3** | Info | 0 | Informational - no action required |
 
-### Reserved ID Exemption (SYS-000_*)
+### Reserved ID Exemption (SYS-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `SYS-000_*.md`
+**Pattern**: `SYS-00_*.md`
 
 **Document Types**:
-- Index documents (`SYS-000_index.md`)
-- Traceability matrix templates (`SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`SYS-00_index.md`)
+- Traceability matrix templates (`SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `SYS-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `SYS-00_*` pattern.
 
 ---
 

@@ -1180,7 +1180,7 @@ await connector.connect("localhost", 4002)
 ### 12.1 Internal Documentation
 
 - `TASKS/TASKS-TEMPLATE.md` - TASKS file template with contracts section
-- `TASKS/TASKS-000_IMPLEMENTATION_CONTRACTS_CHECKLIST.md` - Quick reference checklist
+- `TASKS/TASKS-00_IMPLEMENTATION_CONTRACTS_CHECKLIST.md` - Quick reference checklist
 - `METADATA_TAGGING_GUIDE.md` - Metadata standards
 - `/home/ya/.claude/CLAUDE.md` - Global instructions with contracts strategy
 
@@ -1367,7 +1367,7 @@ grep -A1 "@icon: TASKS-01:ServiceConnector" docs/TASKS/
 
 ### 14.4 ICON Registry
 
-**Centralized Tracking**: [ICON-000_index.md](../ICON/ICON-000_index.md)
+**Centralized Tracking**: [ICON-00_index.md](../ICON/ICON-00_index.md)
 
 **Registry Contents**:
 - Contract ID, name, type, status
@@ -1386,7 +1386,7 @@ grep -A1 "@icon: TASKS-01:ServiceConnector" docs/TASKS/
 **TASKS → ICON** (when criteria met):
 1. Create ICON file from embedded contract
 2. Assign ICON-NNN ID
-3. Update ICON-000_index.md registry
+3. Update ICON-00_index.md registry
 4. Update all TASKS files to reference ICON
 5. Archive embedded versions
 6. Notify stakeholders
@@ -1442,7 +1442,7 @@ Requires ServiceConnector protocol for service connections.
 **Documentation**:
 - [ICON Directory README](../ICON/README.md) - Overview and quick start
 - [ICON_CREATION_RULES.md](../ICON/ICON_CREATION_RULES.md) - Detailed decision framework
-- [ICON-000_index.md](../ICON/ICON-000_index.md) - Contract registry
+- [ICON-00_index.md](../ICON/ICON-00_index.md) - Contract registry
 - [ICON-TEMPLATE.md](../ICON/ICON-TEMPLATE.md) - Contract template
 
 **Validation**:

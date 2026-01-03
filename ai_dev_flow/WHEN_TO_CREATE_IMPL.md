@@ -347,6 +347,6 @@ Before skipping IMPL, verify:
 ## References
 
 - [IMPL-TEMPLATE.md](IMPL/IMPL-TEMPLATE.md) - Full IMPL template
-- [IMPL-000_index.md](IMPL/IMPL-000_index.md) - IMPL document index
+- [IMPL-00_index.md](IMPL/IMPL-00_index.md) - IMPL document index
 - [SPEC-TEMPLATE.yaml](SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
 - [Traceability Standards](TRACEABILITY.md) - Document linking requirements

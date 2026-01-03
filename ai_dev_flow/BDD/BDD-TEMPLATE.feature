@@ -198,7 +198,7 @@ POSITION: BDD is in Layer 4 (Testing Layer) - defines acceptance criteria from E
 #   @threshold: PRD.035.sla.uptime.target
 #   @threshold: PRD.035.limit.api.requests_per_second
 # Purpose: Prevent magic numbers by referencing centralized threshold registry
-# See: ../PRD/PRD-000_threshold_registry_template.md
+# See: ../PRD/PRD-00_threshold_registry_template.md
 #
 # THRESHOLDS REFERENCED IN THIS BDD FILE:
 # BDD scenarios REFERENCE thresholds defined in the PRD threshold registry.

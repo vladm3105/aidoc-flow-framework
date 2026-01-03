@@ -62,15 +62,15 @@ Use `doc-sys` when:
 - Specifying functional system behavior and quality attributes
 - You are at Layer 6 of the SDD workflow
 
-## Reserved ID Exemption (SYS-000_*)
+## Reserved ID Exemption (SYS-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `SYS-000_*.md`
+**Pattern**: `SYS-00_*.md`
 
 **Document Types**: Index, Traceability matrix, Glossaries, Registries, Checklists
 
-**Validation Behavior**: Skip all checks when filename matches `SYS-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `SYS-00_*` pattern.
 
 ## SYS-Specific Guidance
 
@@ -298,7 +298,7 @@ Include all 5 upstream tags (@brd, @prd, @ears, @bdd, @adr).
 
 ### Step 9: Create/Update Traceability Matrix
 
-**MANDATORY**: Update traceability matrix (`ai_dev_flow/SYS/SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+**MANDATORY**: Update traceability matrix (`ai_dev_flow/SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 
 ### Step 10: Validate SYS
 

@@ -430,7 +430,7 @@ traceability:
           usage: "architecture.scalability"
 
     # Validation: All keys must exist in PRD-NN threshold registry
-    # See: ../PRD/PRD-000_threshold_registry_template.md
+    # See: ../PRD/PRD-00_threshold_registry_template.md
 
     # Example Usage in SPEC Sections:
     # performance.latency_targets.p95_milliseconds: "@threshold: PRD.NN.perf.api.p95_latency"
@@ -885,7 +885,7 @@ circuit_breaker:
 # ===================
 # NOTE: Use @threshold registry references for all quantitative values
 # Format: "@threshold: PRD.NN.category.subcategory.key"
-# See: ../PRD/PRD-000_threshold_registry_template.md
+# See: ../PRD/PRD-00_threshold_registry_template.md
 
 performance:
   latency_targets:

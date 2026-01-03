@@ -572,12 +572,12 @@ LOOP:
 
 ## Reserved ID Exemption
 
-**Pattern**: `BDD-000_*.md` or `BDD-000_*.feature`
+**Pattern**: `BDD-00_*.md` or `BDD-00_*.feature`
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
 **Document Types**:
-- Index documents (`BDD-000_index.md`)
+- Index documents (`BDD-00_index.md`)
 - Traceability matrix templates
 - Glossaries, registries, checklists
 

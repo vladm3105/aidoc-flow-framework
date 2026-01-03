@@ -175,7 +175,7 @@ Every API contract requires:
    - **Strengthen**: "ALWAYS create dual files (.md + .yaml)"
    - **Remove**: Any "optional" wording
 
-3. **CTR/CTR-000_index.md**:
+3. **CTR/CTR-00_index.md**:
    - **Create**: Index file listing all contracts
    - **Format**: Table with CTR-ID, title, status, SPECs using it
 
@@ -274,7 +274,7 @@ Before merging PR with new CTR:
 - [ ] CTR-NNN.md exists with complete documentation
 - [ ] CTR-NNN.yaml exists with valid schema (OpenAPI/AsyncAPI)
 - [ ] Examples in .md match schema in .yaml
-- [ ] CTR-000_index.md updated with new entry
+- [ ] CTR-00_index.md updated with new entry
 - [ ] Traceability links: REQ ← CTR → SPEC
 - [ ] Pre-commit hooks pass (dual-file check)
 

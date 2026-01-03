@@ -1998,14 +1998,14 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 ## 17. Glossary
 
-📚 **Master Glossary Reference**: For common terminology used across all BRDs, see [BRD-000_GLOSSARY.md](BRD-000_GLOSSARY.md). This section defines **project-specific terms** not covered in the master glossary.
+📚 **Master Glossary Reference**: For common terminology used across all BRDs, see [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md). This section defines **project-specific terms** not covered in the master glossary.
 
 ### Glossary Guidelines for BRD Authors
 
 **Step 1: Check the Master Glossary First**
-- Review [BRD-000_GLOSSARY.md](BRD-000_GLOSSARY.md) before defining any term
+- Review [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md) before defining any term
 - Reference master glossary entries instead of duplicating definitions
-- Use format: "See BRD-000_GLOSSARY.md section X for definition"
+- Use format: "See BRD-00_GLOSSARY.md section X for definition"
 
 **Step 2: Define Project-Specific Terms Only**
 - Add terms unique to THIS project that don't appear in master glossary
@@ -2014,13 +2014,13 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 **Step 3: Validation Requirements**
 - Ensure all 6 subsections present (16.1-16.6)
-- Minimum 1 entry per subsection OR note "See BRD-000_GLOSSARY.md"
+- Minimum 1 entry per subsection OR note "See BRD-00_GLOSSARY.md"
 - All acronyms used in document must be defined (here or in master glossary)
 - All cross-references must link to existing documents
 
 **Step 4: Propose Master Glossary Additions**
 - When term is used across 3+ BRDs, propose addition to master glossary
-- Submit to Business Analyst Team per BRD-000_GLOSSARY.md contribution guidelines
+- Submit to Business Analyst Team per BRD-00_GLOSSARY.md contribution guidelines
 
 ---
 

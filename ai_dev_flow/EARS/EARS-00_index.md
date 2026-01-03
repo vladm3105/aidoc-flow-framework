@@ -148,7 +148,7 @@ When creating a new EARS document:
 
 - **Template**: [EARS-TEMPLATE.md](./EARS-TEMPLATE.md) - Use this to create new EARS
 - **README**: [README.md](./README.md) - Learn about EARS purpose and statement types
-- **Traceability Matrix**: [EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md](./EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Traceability Matrix**: [EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md](./EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ## Maintenance Guidelines
 

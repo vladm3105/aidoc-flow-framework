@@ -30,62 +30,62 @@ custom_fields:
    - Complete examples for all layers
    - Validation rules and patterns
 
-2. **BRD-000_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 1)
+2. **BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 1)
    - No upstream tags required
    - Strategic source documentation
    - Traceability anchor pattern
 
-3. **PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 2)
+3. **PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 2)
    - Required tags: `@brd`
    - Tag count: 1
    - Product requirements pattern
 
-4. **EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 3)
+4. **EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 3)
    - Required tags: `@brd`, `@prd`
    - Tag count: 2
    - WHEN-THE-SHALL syntax integration
 
-5. **REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 7)
+5. **REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 7)
    - Required tags: `@brd` through `@sys`
    - Tag count: 6
    - Atomic requirements pattern
 
-6. **SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 10)
+6. **SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 10)
    - Required tags: `@brd` through `@req` + optional `@impl`, `@ctr`
    - Tag count: 7-9
    - YAML cumulative_tags format
 
-7. **BDD-000_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 4)
+7. **BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 4)
    - Required tags: `@brd`, `@prd`, `@ears`
    - Tag count: 3+
    - Gherkin tags and markdown format
 
-8. **ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 5)
+8. **ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 5)
    - Required tags: `@brd` through `@bdd`
    - Tag count: 4
    - Architecture decisions with test scenario references
 
-9. **SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 6)
+9. **SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 6)
    - Required tags: `@brd` through `@adr`
    - Tag count: 5
    - System requirements with architecture decisions
 
-10. **IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 8)
+10. **IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 8)
     - Required tags: `@brd` through `@req`
     - Tag count: 7
     - Implementation plans (optional layer)
 
-11. **CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 9)
+11. **CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 9)
     - Required tags: `@brd` through `@impl`
     - Tag count: 8
     - API contracts (optional layer)
 
-12. **TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 11)
+12. **TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 11)
     - Required tags: `@brd` through `@spec`
     - Tag count: 8-10
     - Implementation tasks with all upstream references
 
-13. **IPLAN-000_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 12)
+13. **IPLAN-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 12)
     - Required tags: `@brd` through `@tasks`
     - Tag count: 9-11
     - Session-specific implementation plans
@@ -153,7 +153,7 @@ After adding section 2 (Required Tags), all subsequent sections are renumbered:
 
 1. **Read the existing template**
    ```bash
-   Read file_path: $FRAMEWORK_ROOT/[ARTIFACT]/[ARTIFACT]-000_TRACEABILITY_MATRIX-TEMPLATE.md
+   Read file_path: $FRAMEWORK_ROOT/[ARTIFACT]/[ARTIFACT]-00_TRACEABILITY_MATRIX-TEMPLATE.md
    # Example: FRAMEWORK_ROOT=/path/to/ai_dev_flow
    ```
 
@@ -220,10 +220,10 @@ python scripts/generate_traceability_matrix.py \
   - [batch_update_matrix_templates.py](scripts/batch_update_matrix_templates.py) - Generates tag sections for all layers
 
 - **Completed Examples**:
-  - Simple (1 tag): PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md
-  - Medium (2 tags): EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md
-  - Complex (6 tags): REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md
-  - YAML (7-9 tags): SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md
+  - Simple (1 tag): PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md
+  - Medium (2 tags): EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md
+  - Complex (6 tags): REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md
+  - YAML (7-9 tags): SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md
 
 ## 5. Completion Summary
 

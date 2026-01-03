@@ -176,7 +176,7 @@ gantt
 
 - **Template**: [ADR-TEMPLATE.md](./ADR-TEMPLATE.md) - Use this to create new ADRs
 - **README**: [README.md](./README.md) - Learn about ADR purpose, structure, and best practices
-- **Traceability Matrix**: [ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md](./ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Traceability Matrix**: [ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md](./ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 - **CTR Policy**: [ADR-CTR_SEPARATE_FILES_POLICY.md](./ADR-CTR_SEPARATE_FILES_POLICY.md) - Contract file naming policy
 
 ## Maintenance Guidelines

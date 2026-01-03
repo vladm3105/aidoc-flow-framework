@@ -67,7 +67,7 @@ Analyze Architecture Decision Records (ADRs) and generate phased implementation 
 
 | Input | Description | Default |
 |-------|-------------|---------|
-| **output_file** | Roadmap destination path | `{adr_directory}/ADR-000_IMPLEMENTATION-ROADMAP.md` |
+| **output_file** | Roadmap destination path | `{adr_directory}/ADR-00_IMPLEMENTATION-ROADMAP.md` |
 | **max_phase_duration** | Maximum weeks per phase | 8 weeks |
 | **prioritize_adr** | Force specific ADR ID first (e.g., "ADR-02") | None |
 | **phase_model** | Phasing approach: `poc-mvp-prod`, `iterative`, `waterfall` | `poc-mvp-prod` |
@@ -89,7 +89,7 @@ Analyze Architecture Decision Records (ADRs) and generate phased implementation 
    - Effort estimate (from Implementation Assessment section)
    - Dependencies (from Related Decisions section)
 3. Count total ADRs and validate structure
-4. Identify ADR index file (`ADR-000_index.md`) if present
+4. Identify ADR index file (`ADR-00_index.md`) if present
 5. Identify traceability matrix if present
 
 **Validation**:
@@ -569,7 +569,7 @@ Inputs:
 - Phase model: poc-mvp-prod
 - Team size: 3
 
-Generate roadmap in {project_root}/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md
+Generate roadmap in {project_root}/docs/ADR/ADR-00_IMPLEMENTATION-ROADMAP.md
 ```
 
 **Skill Actions**:
@@ -589,7 +589,7 @@ Generate roadmap in {project_root}/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md
 6. Generate Mermaid dependency graph
 7. Create comprehensive roadmap document
 
-**Generated Output**: `ADR-000_IMPLEMENTATION-ROADMAP.md` (~1,400 lines)
+**Generated Output**: `ADR-00_IMPLEMENTATION-ROADMAP.md` (~1,400 lines)
 
 ---
 
@@ -605,7 +605,7 @@ Inputs:
 - Phase model: iterative
 - Team size: 8
 
-Generate roadmap in {example_project_a}/architecture/decisions/ADR-000_IMPLEMENTATION-ROADMAP.md
+Generate roadmap in {example_project_a}/architecture/decisions/ADR-00_IMPLEMENTATION-ROADMAP.md
 ```
 
 **Skill Actions**:
@@ -644,7 +644,7 @@ Inputs:
 - Team size: 10
 - Target phases: 6
 
-Generate roadmap in {example_project_b}/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md
+Generate roadmap in {example_project_b}/docs/ADR/ADR-00_IMPLEMENTATION-ROADMAP.md
 ```
 
 **Skill Actions**:
@@ -682,7 +682,7 @@ Inputs:
 - Team size: 2
 - Constraints: Hardware prototype available Week 4
 
-Generate roadmap in /firmware/docs/adr/ADR-000_IMPLEMENTATION-ROADMAP.md
+Generate roadmap in /firmware/docs/adr/ADR-00_IMPLEMENTATION-ROADMAP.md
 ```
 
 **Skill Actions**:
@@ -781,7 +781,7 @@ Roadmap document must satisfy:
 
 ### Generated Roadmap Document
 
-**File**: `{project}/docs/ADR/ADR-000_IMPLEMENTATION-ROADMAP.md`
+**File**: `{project}/docs/ADR/ADR-00_IMPLEMENTATION-ROADMAP.md`
 
 **Size**: 1,000-2,000 lines (varies by ADR count)
 

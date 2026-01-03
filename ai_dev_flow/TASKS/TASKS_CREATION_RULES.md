@@ -382,7 +382,7 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 
 - [ ] All traceability tags valid
 - [ ] Links resolve to existing documents
-- [ ] Update TASKS-000_index.md
+- [ ] Update TASKS-00_index.md
 - [ ] Run validation script
 - [ ] Notify downstream IPLAN creators
 
@@ -481,7 +481,7 @@ Include ONLY if relationships exist between TASKS documents sharing implementati
 ## References
 
 - [TASKS-TEMPLATE.md](./TASKS-TEMPLATE.md) - Tasks template
-- [TASKS-000_index.md](./TASKS-000_index.md) - Tasks registry
+- [TASKS-00_index.md](./TASKS-00_index.md) - Tasks registry
 - [README.md](./README.md) - Directory overview
 - [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) - Contracts guide
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Workflow guide

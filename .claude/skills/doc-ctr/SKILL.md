@@ -54,20 +54,20 @@ Before creating CTR, read:
 5. **Validation Rules**: `ai_dev_flow/CTR/CTR_VALIDATION_RULES.md`
 6. **Validation Script**: `./ai_dev_flow/scripts/validate_ctr.sh`
 
-## Reserved ID Exemption (CTR-000_*)
+## Reserved ID Exemption (CTR-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `CTR-000_*.md`, `CTR-000_*.yaml`
+**Pattern**: `CTR-00_*.md`, `CTR-00_*.yaml`
 
 **Document Types**:
-- Index documents (`CTR-000_index.md`)
-- Traceability matrix templates (`CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`CTR-00_index.md`)
+- Traceability matrix templates (`CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `CTR-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `CTR-00_*` pattern.
 
 ## When to Use This Skill
 
@@ -602,7 +602,7 @@ Include all 7-8 upstream tags (@brd through @req/impl).
 
 ### Step 11: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_flow/CTR/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+**MANDATORY**: Update `ai_dev_flow/CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ### Step 12: Validate CTR
 

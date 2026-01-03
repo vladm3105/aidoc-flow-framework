@@ -15,7 +15,18 @@ custom_fields:
 
 Architecture Decision Records (ADRs) document significant architectural decisions, their context, consequences, and the rationale for choosing one approach over alternatives. ADRs create a historical record of how and why architectural choices were made, enabling teams to understand design decisions years later and avoid repeating past mistakes.
 
-Note: `ADR-TEMPLATE.md` is a reference template. For real ADRs, prefer sectioned docs using `ADR-SECTION-0-TEMPLATE.md` and `ADR-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`.
+## Available Templates
+
+**ADR-TEMPLATE.md** - Comprehensive ADR template (~700 lines)
+- Full-featured template with all sections (4-part structure)
+- For real ADRs, prefer sectioned docs using `ADR-SECTION-0-TEMPLATE.md` and `ADR-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`
+
+**ADR-MVP-TEMPLATE.md** - Streamlined MVP version in a single file without sectioning (~250 lines)
+- Focused on decision + rationale + 2-3 alternatives
+- Maintains framework compliance while reducing documentation overhead
+- Ideal for MVP architecture decisions with quick turnaround
+
+**Usage**: Use `ADR-TEMPLATE.md` for comprehensive ADRs and `ADR-MVP-TEMPLATE.md` for MVP-focused decisions.
 
 ## Purpose
 
@@ -32,7 +43,7 @@ ADRs serve as the **architectural foundation** that:
 Foundation ADRs establish project-wide standards that all other ADRs must reference:
 
 ### ADR-000: Technology Stack
-**Location**: [ADR-000_technology_stack.md](ADR-000_technology_stack.md)
+**Location**: [ADR-00_technology_stack.md](ADR-00_technology_stack.md)
 
 **Purpose**: Single source of truth for all technology decisions across the entire options [SYSTEM_TYPE - e.g., inventory system, booking system].
 
@@ -277,7 +288,7 @@ Where:
 
 ### Index File
 
-An `ADR-000_index.md` file maintains a central index of all ADRs:
+An `ADR-00_index.md` file maintains a central index of all ADRs:
 
 ```markdown
 # ADR Index
@@ -1064,7 +1075,7 @@ When writing an ADR, include references that:
 
 See `ADR-TEMPLATE.md` for the complete structural template with all sections and helpful prompts for each part.
 
-See `{project_root}/docs/ADR/ADR-000_technology_stack.md` for a comprehensive real-world example of a fully-developed ADR demonstrating all best practices including:
+See `{project_root}/docs/ADR/ADR-00_technology_stack.md` for a comprehensive real-world example of a fully-developed ADR demonstrating all best practices including:
 
 - Complete upstream source traceability to PRD/EARS/BDD
 - Detailed downstream artifact mapping to SYS/REQ/SPEC/code

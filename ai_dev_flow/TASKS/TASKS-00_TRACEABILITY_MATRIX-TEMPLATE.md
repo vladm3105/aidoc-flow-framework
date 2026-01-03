@@ -50,7 +50,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate TASKS traceability matrix
-python scripts/generate_traceability_matrix.py --type TASKS --output docs/TASKS/TASKS-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type TASKS --output docs/TASKS/TASKS-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -383,10 +383,10 @@ graph TD
 
 ## 14. References
 
-- **TASKS Index**: [TASKS-000_index.md](TASKS-000_index.md)
+- **TASKS Index**: [TASKS-00_index.md](TASKS-00_index.md)
 - **TASKS Template**: [TASKS-TEMPLATE.md](TASKS-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
-- **Related Matrices**: [SPEC](../SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md), Code Repository
+- **Related Matrices**: [SPEC](../SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md), Code Repository
 
 ---
 
@@ -397,7 +397,7 @@ graph TD
 python ../scripts/generate_traceability_matrix.py \
   --type TASKS \
   --input ../TASKS/ \
-  --template TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md \
+  --template TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md \
   --output TRACEABILITY_MATRIX_TASKS.md \
   --scan-code-repo
 ```

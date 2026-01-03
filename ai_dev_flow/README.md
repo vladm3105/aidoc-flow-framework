@@ -58,7 +58,7 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 
 - Docs root: In this repository, artifact folders (`BRD/`, `PRD/`, `EARS/`, `BDD/`, `ADR/`, `SYS/`, `REQ/`, `IMPL/`, `CTR/`, `SPEC/`, `TASKS/`, `ICON/`, `IPLAN/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
 - BDD layout: Uses nested per-suite folders `BDD/BDD-NN_{slug}/` with sectioned `.feature` files.
-- Index width: This repo commonly uses `-000_index.md` for indices; follow existing width and do not rename history. New repos should choose a consistent zero width (`00` or `000`) and keep it stable.
+- Index width: This repo commonly uses `-00_index.md` for indices; follow existing width and do not rename history. New repos should choose a consistent zero width (`00` or `000`) and keep it stable.
 - Validators: Use the validators listed in TRACEABILITY_VALIDATION.md (e.g., `python scripts/validate_prd.py`, `./scripts/validate_req_template.sh`). Older `*_template.sh` examples in some guides have been updated here.
 - Path mapping example: `docs/PRD/PRD-01/...` in generic guides corresponds to `PRD/PRD-01/...` in this repo.
 
@@ -79,7 +79,7 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 - Incorrect: `BRD-001`, `BRD-009`.
 - Unified across all doc types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN (and ICON).
 - Element IDs must match filename digit width (e.g., `BRD-06` ↔ `BRD.06.xx.xx`).
-- Reserved infra docs may use `-000` (e.g., `BRD-000_index.md`). Source code and tests follow coding standards, not this rule.
+- Reserved infra docs may use `-000` (e.g., `BRD-00_index.md`). Source code and tests follow coding standards, not this rule.
 - See details in [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md).
 
 ## Metadata Management in AI Dev Flow
@@ -364,36 +364,36 @@ flowchart TD
 **BRD/** - Business Requirements Documents
 - High-level business objectives and market context
 - Strategic goals and success criteria
-- **Files**: [BRD-000_index.md](./BRD/BRD-000_index.md) | [Template](./BRD/BRD-TEMPLATE.md)
+- **Files**: [BRD-00_index.md](./BRD/BRD-00_index.md) | [Template](./BRD/BRD-TEMPLATE.md) | **MVP**: [BRD-MVP-TEMPLATE.md](./BRD/BRD-MVP-TEMPLATE.md)
 
 **PRD/** - Product Requirements Documents
 - User-facing features and product capabilities
 - Business requirements and acceptance criteria
-- **Files**: [PRD-000_index.md](./PRD/PRD-000_index.md) | [Template](./PRD/PRD-TEMPLATE.md)
+- **Files**: [PRD-00_index.md](./PRD/PRD-00_index.md) | [Template](./PRD/PRD-TEMPLATE.md) | **MVP**: [PRD-MVP-TEMPLATE.md](./PRD/PRD-MVP-TEMPLATE.md)
 
 **EARS/** - Event-Action-Response-State (Engineering Requirements)
 - Measurable requirements using WHEN-THE-SHALL-WITHIN format
 - Event-driven and state-driven requirements
-- **Files**: [EARS-000_index.md](./EARS/EARS-000_index.md) | [Template](./EARS/EARS-TEMPLATE.md)
+- **Files**: [EARS-00_index.md](./EARS/EARS-00_index.md) | [Template](./EARS/EARS-TEMPLATE.md)
 
 ### Testing Layer
 
 **BDD/** - Behavior-Driven Development Scenarios
 - Executable acceptance tests in Gherkin format
 - Business-readable behavioral specifications
-- **Files**: [BDD-000_index.md](./BDD/BDD-000_index.md) | Main template: [BDD-TEMPLATE.feature](./BDD/BDD-TEMPLATE.feature) | Section templates: `BDD-SECTION-TEMPLATE.feature`, `BDD-SUBSECTION-TEMPLATE.feature`, `BDD-AGGREGATOR-TEMPLATE.feature`
+- **Files**: [BDD-00_index.md](./BDD/BDD-00_index.md) | Main template: [BDD-TEMPLATE.feature](./BDD/BDD-TEMPLATE.feature) | Section templates: `BDD-SECTION-TEMPLATE.feature`, `BDD-SUBSECTION-TEMPLATE.feature`, `BDD-AGGREGATOR-TEMPLATE.feature`
 
 ### Architecture Layer
 
 **ADR/** - Architecture Decision Records
 - Architectural choices and rationale
 - Technology selections and trade-offs
-- **Files**: [ADR-000_index.md](./ADR/ADR-000_index.md) | [Template](./ADR/ADR-TEMPLATE.md)
+- **Files**: [ADR-00_index.md](./ADR/ADR-00_index.md) | [Template](./ADR/ADR-TEMPLATE.md) | **MVP**: [ADR-MVP-TEMPLATE.md](./ADR/ADR-MVP-TEMPLATE.md)
 
 **SYS/** - System Requirements Specifications
 - System-level functional requirements and quality attributes
 - Performance, security, and operational characteristics
-- **Files**: [SYS-000_index.md](./SYS/SYS-000_index.md) | [Template](./SYS/SYS-TEMPLATE.md)
+- **Files**: [SYS-00_index.md](./SYS/SYS-00_index.md) | [Template](./SYS/SYS-TEMPLATE.md) | **MVP**: [SYS-MVP-TEMPLATE.md](./SYS/SYS-MVP-TEMPLATE.md)
 
 ### Requirements Layer
 
@@ -403,7 +403,7 @@ flowchart TD
   - Folder: `REQ/REQ-NN_{slug}/`
   - Primary file (atomic): `REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
   - Split (optional when large): index + sections `REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ/REQ-NN.1_{section}.md`, ...
-- Files: [REQ-000_index.md](./REQ/REQ-000_index.md) | [Template](./REQ/REQ-TEMPLATE.md)
+- Files: [REQ-00_index.md](./REQ/REQ-00_index.md) | [Template](./REQ/REQ-TEMPLATE.md) | **MVP**: [REQ-MVP-TEMPLATE.md](./REQ/REQ-MVP-TEMPLATE.md)
 
 ### Project Management Layer
 
@@ -411,7 +411,7 @@ flowchart TD
 - Project management documents organizing work into phases, teams, deliverables
 - **Focus**: WHO does WHAT, WHEN - NOT technical specifications (HOW)
 - Identifies which CTR, SPEC, TASKS to create
-- **Files**: [IMPL-000_index.md](./IMPL/IMPL-000_index.md) | [Template](./IMPL/IMPL-TEMPLATE.md)
+- **Files**: [IMPL-00_index.md](./IMPL/IMPL-00_index.md) | [Template](./IMPL/IMPL-TEMPLATE.md)
 - **Examples**: [IMPL-01_feature_implementation_example.md](./IMPL/examples/IMPL-01_feature_implementation_example.md)
 
 ### Interface Layer
@@ -423,7 +423,7 @@ flowchart TD
   - `.yaml` file: Machine-readable schema (OpenAPI/AsyncAPI/JSON Schema)
 - **When to use**: Created when REQ specifies interface requirements (APIs, events, data models)
 - **Benefits**: Enables parallel development and contract testing
-- **Files**: [CTR-000_index.md](./CTR/CTR-000_index.md) | [Template .md](./CTR/CTR-TEMPLATE.md) + [Template .yaml](./CTR/CTR-TEMPLATE.yaml)
+- **Files**: [CTR-00_index.md](./CTR/CTR-00_index.md) | [Template .md](./CTR/CTR-TEMPLATE.md) + [Template .yaml](./CTR/CTR-TEMPLATE.yaml)
 - **Examples**: [CTR-01_service_contract_example.md](./CTR/CTR-01_service_contract_example.md) + [CTR-01_service_contract_example.yaml](./CTR/CTR-01_service_contract_example.yaml)
 
 ### Technical Specs (SPEC)
@@ -432,7 +432,7 @@ flowchart TD
 - YAML: Monolithic per component (code generation source)
 - Markdown: Split narrative with `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` when needed
 - References CTR contracts when implementing interfaces
-- **Files**: [SPEC-000_index.md](./SPEC/SPEC-000_index.md) | [Template](./SPEC/SPEC-TEMPLATE.yaml)
+- **Files**: [SPEC-00_index.md](./SPEC/SPEC-00_index.md) | [Template](./SPEC/SPEC-TEMPLATE.yaml)
 - **Examples**: [SPEC-01_api_client_example.yaml](./SPEC/SPEC-01_api_client_example.yaml)
 
 ### Code Generation Layer
@@ -441,7 +441,7 @@ flowchart TD
 - Exact TODOs to implement SPEC in source code
 - Step-by-step guide for AI code generation from YAML specifications
 - **1:1 mapping**: Each TASKS document corresponds to one SPEC
-- **Files**: [TASKS-000_index.md](./TASKS/TASKS-000_index.md) | [Template](./TASKS/TASKS-TEMPLATE.md)
+- **Files**: [TASKS-00_index.md](./TASKS/TASKS-00_index.md) | [Template](./TASKS/TASKS-TEMPLATE.md)
 
 ### Implementation Contracts (Optional, Layer 11)
 
@@ -450,7 +450,7 @@ flowchart TD
 - Protocol interfaces, exception hierarchies, state machines, data models
 - **When to use**: 5+ consumer TASKS, >500 lines, platform-level, cross-project
 - **Default**: Embed contracts in TASKS section 8 unless criteria met
-- **Files**: [ICON-000_index.md](./ICON/ICON-000_index.md) | [Template](./ICON/ICON-TEMPLATE.md)
+- **Files**: [ICON-00_index.md](./ICON/ICON-00_index.md) | [Template](./ICON/ICON-TEMPLATE.md)
 - **Guide**: [IMPLEMENTATION_CONTRACTS_GUIDE.md](./TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
 
 ### 9. Session Planning Layer
@@ -496,9 +496,9 @@ Examples:
 
 See [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) for complete rules.
 
-Index Width Policy (This Repository): Index, registry, and general utility documents use `-000` (e.g., `-000_index.md`). Follow the existing width per type in this repo and do not rename historical files. For new repositories, pick a consistent zero width (`00` or `000`) and keep it stable.
+Index Width Policy (This Repository): Index, registry, and general utility documents use `-000` (e.g., `-00_index.md`). Follow the existing width per type in this repo and do not rename historical files. For new repositories, pick a consistent zero width (`00` or `000`) and keep it stable.
 
-General Utility Documents (`{DOC_TYPE}-000_*`): Use `{DOC_TYPE}-000_{slug}.{ext}` for general-purpose or cross-project documents (guides, templates, matrices) that are not tied to a specific numbered artifact.
+General Utility Documents (`{DOC_TYPE}-00_*`): Use `{DOC_TYPE}-00_{slug}.{ext}` for general-purpose or cross-project documents (guides, templates, matrices) that are not tied to a specific numbered artifact.
 
 ### Feature-Level Traceability Tags
 
@@ -638,7 +638,7 @@ cp ai_dev_flow/REQ/REQ-TEMPLATE.md <your_project>/docs/REQ/
 
 **Step 4: Create Your First Document**
 1. **Choose Document Type**: Select directory (BRD/, PRD/, REQ/, etc.)
-2. **Check Index**: Review `{TYPE}-000_index.{ext}` for next available ID
+2. **Check Index**: Review `{TYPE}-00_index.{ext}` for next available ID
 3. **Copy Template**: Use template file from the directory
 4. **Fill Content**: Complete all sections with traceability links
 5. **Update Index**: Add entry to index file
@@ -647,7 +647,7 @@ cp ai_dev_flow/REQ/REQ-TEMPLATE.md <your_project>/docs/REQ/
 ### Template Structure
 
 Each directory contains:
-- **Index File**: `{TYPE}-000_index.{ext}` - Master list of all documents
+- **Index File**: `{TYPE}-00_index.{ext}` - Master list of all documents
 - **Template File**: `{TYPE}-TEMPLATE.{ext}` - Copy for new documents
 - **README.md**: Detailed usage guide and best practices
 - **Example Files**: Reference implementations showing real-world usage
@@ -801,7 +801,7 @@ python scripts/generate_traceability_matrix.py --auto
 # Generate matrix for specific artifact type
 python scripts/generate_traceability_matrix.py \
   --type REQ \
-  --output docs/REQ/REQ-000_TRACEABILITY_MATRIX.md
+  --output docs/REQ/REQ-00_TRACEABILITY_MATRIX.md
 
 # Show coverage metrics
 python scripts/generate_traceability_matrix.py \

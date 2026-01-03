@@ -39,20 +39,20 @@ Rules for validating Data Contracts (CTR) documents in the SDD framework.
 | **Last Updated** | 2025-11-27 |
 | **Status** | Active |
 
-### Reserved ID Exemption (CTR-000_*)
+### Reserved ID Exemption (CTR-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `CTR-000_*.md` or `CTR-000_*.yaml`
+**Pattern**: `CTR-00_*.md` or `CTR-00_*.yaml`
 
 **Document Types**:
-- Index documents (`CTR-000_index.md`)
-- Traceability matrix templates (`CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`CTR-00_index.md`)
+- Traceability matrix templates (`CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `CTR-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `CTR-00_*` pattern.
 
 ---
 

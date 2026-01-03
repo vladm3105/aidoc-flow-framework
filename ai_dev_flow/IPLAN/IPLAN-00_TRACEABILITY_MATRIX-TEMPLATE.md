@@ -47,7 +47,7 @@ python scripts/extract_tags.py --source ai_dev_flow/IPLAN/ --output generated/ip
 python scripts/validate_tags_against_docs.py --tags generated/iplan_tags.json --strict
 
 # Generate iplan traceability matrix
-python scripts/generate_traceability_matrix.py --type iplan --output ai_dev_flow/IPLAN/IPLAN-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type iplan --output ai_dev_flow/IPLAN/IPLAN-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits**:
@@ -605,7 +605,7 @@ For each iplan document:
 
 ## 14. Related Documents
 
-- **Index**: [IPLAN-000_index.md](./IPLAN-000_index.md) - Master index of all iplan
+- **Index**: [IPLAN-00_index.md](./IPLAN-00_index.md) - Master index of all iplan
 - **Template**: [IPLAN-TEMPLATE.md](./IPLAN-TEMPLATE.md) - Use this to create new iplan
 - **README**: [README.md](./README.md) - Complete guide to iplan with tagging requirements
 - **Framework**: [../TRACEABILITY.md](../TRACEABILITY.md) - Cumulative tagging hierarchy documentation

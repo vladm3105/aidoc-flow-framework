@@ -209,7 +209,7 @@ custom_fields:
 ### 5.1 Performance Requirements
 [Quantitative performance expectations for the system]
 
-> **Note**: All performance thresholds MUST use @threshold registry references. See PRD-000_threshold_registry_template.md for registry format.
+> **Note**: All performance thresholds MUST use @threshold registry references. See PRD-00_threshold_registry_template.md for registry format.
 
 #### Response Time Requirements
 - **Interactive Operations**: p95 response time < @threshold: PRD.NN.perf.api.p95_latency for user-facing operations
@@ -846,7 +846,7 @@ API contracts and interface agreements for external integration.
 - Use `@threshold: PRD.NN.category.key` format for inline quantitative values
 - Reference the PRD threshold registry document for centralized value management
 - Prevents magic numbers in quality attribute and SLA specifications
-- See [PRD-000_threshold_registry_template.md](../PRD/PRD-000_threshold_registry_template.md) for registry format
+- See [PRD-00_threshold_registry_template.md](../PRD/PRD-00_threshold_registry_template.md) for registry format
 
 **Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through ADR) are properly linked.
 

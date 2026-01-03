@@ -63,20 +63,20 @@ Use `doc-req` when:
 - Achieving >=90% SPEC-readiness score
 - You are at Layer 7 of the SDD workflow
 
-## Reserved ID Exemption (REQ-000_*)
+## Reserved ID Exemption (REQ-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `REQ-000_*.md`
+**Pattern**: `REQ-00_*.md`
 
 **Document Types**:
-- Index documents (`REQ-000_index.md`)
-- Traceability matrix templates (`REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`REQ-00_index.md`)
+- Traceability matrix templates (`REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure, not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `REQ-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `REQ-00_*` pattern.
 
 ## REQ-Specific Guidance
 
@@ -392,7 +392,7 @@ Include all 6 upstream tags (@brd through @sys).
 
 ### Step 8: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_flow/REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+**MANDATORY**: Update `ai_dev_flow/REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ### Step 9: Validate REQ
 

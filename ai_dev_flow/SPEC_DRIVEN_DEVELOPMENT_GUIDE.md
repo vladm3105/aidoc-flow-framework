@@ -652,7 +652,7 @@ Reference documents provide supplementary context that supports workflow artifac
 Documents with reserved ID `000` are framework infrastructure, not project artifacts.
 
 - **Purpose**: Framework infrastructure (indexes, templates, glossaries, registries, checklists)
-- **Pattern**: `{TYPE}-000_*.md` where `{TYPE}` is any artifact type
+- **Pattern**: `{TYPE}-00_*.md` where `{TYPE}` is any artifact type
 - **Validation**: **FULLY EXEMPT** from all validation checks
 
 #### Document Types
@@ -660,14 +660,14 @@ Documents with reserved ID `000` are framework infrastructure, not project artif
 | Pattern | Description | Examples |
 |---------|-------------|----------|
 | `{TYPE}-00_index.md` | Directory indexes (default) | `BRD-00_index.md`, `ADR-00_index.md` |
-| `{TYPE}-000_TRACEABILITY_MATRIX-TEMPLATE.md` | Matrix templates | All 12 artifact types |
-| `{TYPE}-000_GLOSSARY.md` | Term definitions | `BRD-000_GLOSSARY.md` |
-| `{TYPE}-000_*_template.md` | Document templates | `BRD-000_TEMPLATE.md`, `PRD-000_TEMPLATE.md` |
-| `{TYPE}-000_*_CHECKLIST.md` | Checklists | `TASKS-000_IMPLEMENTATION_CONTRACTS_CHECKLIST.md` |
+| `{TYPE}-00_TRACEABILITY_MATRIX-TEMPLATE.md` | Matrix templates | All 12 artifact types |
+| `{TYPE}-00_GLOSSARY.md` | Term definitions | `BRD-00_GLOSSARY.md` |
+| `{TYPE}-00_*_template.md` | Document templates | `BRD-00_TEMPLATE.md`, `PRD-00_TEMPLATE.md` |
+| `{TYPE}-00_*_CHECKLIST.md` | Checklists | `TASKS-00_IMPLEMENTATION_CONTRACTS_CHECKLIST.md` |
 
 #### Validation Exemption
 
-**All `{TYPE}-000_*` documents are FULLY EXEMPT from validation:**
+**All `{TYPE}-00_*` documents are FULLY EXEMPT from validation:**
 
 | Aspect | Standard Documents | Reserved ID 000 Documents |
 |--------|-------------------|---------------------------|
@@ -1267,7 +1267,7 @@ REQ (Requirement Layer)                    SPEC (Technical Specs)
 - **Output**: Dual-file contract (CTR-NN_slug.md + CTR-NN_slug.yaml)
 - **Process**:
   1. Identify upstream REQ/ADR specifying interface needs
-  2. Reserve next CTR-NN from CTR-000_index.md
+  2. Reserve next CTR-NN from CTR-00_index.md
   3. Copy CTR-TEMPLATE.md + CTR-TEMPLATE.yaml
   4. Complete markdown file:
      - Contract Definition: Interface overview, provider/consumer parties, communication pattern
@@ -1282,7 +1282,7 @@ REQ (Requirement Layer)                    SPEC (Technical Specs)
      - error_codes with HTTP status and retry behavior
      - non_functional requirements (max_latency_ms, idempotent, circuit_breaker)
      - upstream_requirements, upstream_adrs
-  6. Update CTR-000_index.md catalog
+  6. Update CTR-00_index.md catalog
   7. Update upstream REQ to link to CTR
   8. Validate both files, verify slugs match
 - **Benefits**:
@@ -1861,25 +1861,25 @@ Each document type has its own dedicated traceability matrix template:
 
 | Document Type | Template Location | Matrix File | MANDATORY |
 |---------------|------------------|-------------|-----------|
-| **BRD** | `BRD/BRD-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `BRD/BRD-000_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **PRD** | `PRD/PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `PRD/PRD-000_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **EARS** | `EARS/EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `EARS/EARS-000_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **BDD** | `BDD/BDD-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `BDD/BDD-000_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **ADR** | `ADR/ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `ADR/ADR-000_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **SYS** | `SYS/SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `SYS/SYS-000_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **REQ** | `REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `REQ/REQ-000_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **IMPL** | `IMPL/IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `IMPL/IMPL-000_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **CTR** | `CTR/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `CTR/CTR-000_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **SPEC** | `SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `SPEC/SPEC-000_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **TASKS** | `TASKS/TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md` | `TASKS/TASKS-000_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **BRD** | `BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `BRD/BRD-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **PRD** | `PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `PRD/PRD-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **EARS** | `EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `EARS/EARS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **BDD** | `BDD/BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `BDD/BDD-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **ADR** | `ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `ADR/ADR-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **SYS** | `SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `SYS/SYS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **REQ** | `REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `REQ/REQ-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **IMPL** | `IMPL/IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `IMPL/IMPL-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **CTR** | `CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `CTR/CTR-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **SPEC** | `SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `SPEC/SPEC-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **TASKS** | `TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `TASKS/TASKS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
 | **Complete** | `TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` | `TRACEABILITY_MATRIX_COMPLETE.md` | ✅ YES |
 
 ### Mandatory Matrix Update Workflow
 
 **Every time you create or update an artifact document, follow these steps:**
 
-1. **Check for Matrix File**: Look for `[TYPE]-000_TRACEABILITY_MATRIX.md` in artifact folder
-2. **Create if Missing**: Copy template from `ai_dev_flow/[TYPE]/[TYPE]-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+1. **Check for Matrix File**: Look for `[TYPE]-00_TRACEABILITY_MATRIX.md` in artifact folder
+2. **Create if Missing**: Copy template from `ai_dev_flow/[TYPE]/[TYPE]-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 3. **Update Matrix sections**:
    - section 2: Add document to inventory with ID, title, status, date
    - section 3: Document upstream sources (which documents drove this artifact)

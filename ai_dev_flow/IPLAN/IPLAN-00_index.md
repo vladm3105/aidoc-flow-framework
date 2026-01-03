@@ -141,7 +141,7 @@ When creating a new IPLAN document:
    ```bash
    python scripts/update_traceability_matrix.py \
      --artifact IPLAN/IPLAN-NN_*.md \
-     --matrix IPLAN/IPLAN-000_TRACEABILITY_MATRIX.md
+     --matrix IPLAN/IPLAN-00_TRACEABILITY_MATRIX.md
    ```
 
 ## Allocation Rules
@@ -240,7 +240,7 @@ Use this section to track which IPLAN are suitable for resumption:
 
 - **Template**: [IPLAN-TEMPLATE.md](./IPLAN-TEMPLATE.md) - Use this to create new implementation work plans
 - **README**: [README.md](./README.md) - Learn about IPLAN purpose, structure, and cumulative tagging
-- **Traceability Matrix**: [IPLAN-000_TRACEABILITY_MATRIX.md](./IPLAN-000_TRACEABILITY_MATRIX.md) - Complete traceability tracking
+- **Traceability Matrix**: [IPLAN-00_TRACEABILITY_MATRIX.md](./IPLAN-00_TRACEABILITY_MATRIX.md) - Complete traceability tracking
 - **Parent Artifact**: [../TASKS/README.md](../TASKS/README.md) - TASKS code generation plans
 - **Framework Guide**: [../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete workflow documentation
 

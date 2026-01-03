@@ -64,21 +64,21 @@ Use `doc-tasks` when:
 - Need structured TODO format for AI agents
 - You are at Layer 11 of the SDD workflow
 
-## Reserved ID Exemption (TASKS-000_*)
+## Reserved ID Exemption (TASKS-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `TASKS-000_*.md`
+**Pattern**: `TASKS-00_*.md`
 
 **Document Types**:
-- Index documents (`TASKS-000_index.md`)
-- Traceability matrix templates (`TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
-- Implementation contracts checklists (`TASKS-000_IMPLEMENTATION_CONTRACTS_CHECKLIST.md`)
+- Index documents (`TASKS-00_index.md`)
+- Traceability matrix templates (`TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Implementation contracts checklists (`TASKS-00_IMPLEMENTATION_CONTRACTS_CHECKLIST.md`)
 - Glossaries, registries
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `TASKS-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `TASKS-00_*` pattern.
 
 ## Element ID Format (MANDATORY)
 
@@ -483,7 +483,7 @@ Include all 8-10 upstream tags (@brd through @spec).
 
 ### Step 11: Create/Update Traceability Matrix
 
-**MANDATORY**: Update `ai_dev_flow/TASKS/TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+**MANDATORY**: Update `ai_dev_flow/TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ### Step 12: Validate TASKS
 

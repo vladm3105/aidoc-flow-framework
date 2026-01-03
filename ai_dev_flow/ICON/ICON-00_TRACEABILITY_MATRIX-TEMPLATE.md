@@ -47,7 +47,7 @@ python scripts/extract_tags.py --source docs/TASKS/ docs/ICON/ --output docs/gen
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate ICON traceability matrix
-python scripts/generate_traceability_matrix.py --type ICON --output docs/ICON/ICON-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type ICON --output docs/ICON/ICON-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -426,11 +426,11 @@ graph TD
 
 ## 14. References
 
-- **ICON Index**: [ICON-000_index.md](ICON-000_index.md)
+- **ICON Index**: [ICON-00_index.md](ICON-00_index.md)
 - **ICON Template**: [ICON-TEMPLATE.md](ICON-TEMPLATE.md)
 - **ICON Integration Workflow**: [ICON_INTEGRATION_WORKFLOW.md](ICON_INTEGRATION_WORKFLOW.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
-- **Related Matrices**: [TASKS](../TASKS/TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Related Matrices**: [TASKS](../TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 - **Implementation Contracts Guide**: [../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md](../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
 
 ---
@@ -442,7 +442,7 @@ graph TD
 python ../scripts/generate_traceability_matrix.py \
   --type ICON \
   --input ../ICON/ \
-  --template ICON-000_TRACEABILITY_MATRIX-TEMPLATE.md \
+  --template ICON-00_TRACEABILITY_MATRIX-TEMPLATE.md \
   --output TRACEABILITY_MATRIX_ICON.md \
   --scan-tasks-for-tags
 ```

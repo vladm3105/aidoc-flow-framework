@@ -54,7 +54,7 @@ This skill covers all 12 SDD document types:
 
 ---
 
-## 2. Reserved ID Exemption (TYPE-000_*)
+## 2. Reserved ID Exemption (TYPE-00_*)
 
 ### Scope
 
@@ -62,12 +62,12 @@ Documents with reserved ID `000` are FULLY EXEMPT from standard validation.
 
 ### Pattern
 
-`{DOC_TYPE}-000_{slug}.{ext}`
+`{DOC_TYPE}-00_{slug}.{ext}`
 
 ### Document Types
 
-- Index documents (e.g., `BRD-000_index.md`, `REQ-000_index.md`)
-- Traceability matrix templates (e.g., `SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (e.g., `BRD-00_index.md`, `REQ-00_index.md`)
+- Traceability matrix templates (e.g., `SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 ### Rationale
@@ -76,7 +76,7 @@ Reserved ID 000 documents are framework infrastructure (indexes, templates, refe
 
 ### Validation Behavior
 
-Skip all element ID and traceability checks when filename matches `{TYPE}-000_*` pattern.
+Skip all element ID and traceability checks when filename matches `{TYPE}-00_*` pattern.
 
 ---
 
@@ -418,7 +418,7 @@ Run this checklist BEFORE creating any SDD document:
 - [ ] Document ID follows `TYPE-NN` format
 - [ ] Filename follows `TYPE-NN_descriptive_slug.md` pattern
 - [ ] YAML frontmatter includes correct `artifact_type` and `layer`
-- [ ] Not a reserved ID document (TYPE-000_*) requiring exemption
+- [ ] Not a reserved ID document (TYPE-00_*) requiring exemption
 
 ### Element IDs
 

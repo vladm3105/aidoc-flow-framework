@@ -119,21 +119,21 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 | **Tier 2** | Warnings | 0 | Quality issues - recommended to fix |
 | **Tier 3** | Info | 0 | Informational - no action required |
 
-### Reserved ID Exemption (BRD-000_*)
+### Reserved ID Exemption (BRD-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `BRD-000_*.md`
+**Pattern**: `BRD-00_*.md`
 
 **Document Types**:
-- Index documents (`BRD-000_index.md`)
-- Traceability matrix templates (`BRD-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
-- Glossaries (`BRD-000_GLOSSARY.md`)
+- Index documents (`BRD-00_index.md`)
+- Traceability matrix templates (`BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Glossaries (`BRD-00_GLOSSARY.md`)
 - Registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `BRD-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `BRD-00_*` pattern.
 
 ---
 

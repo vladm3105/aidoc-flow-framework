@@ -39,20 +39,20 @@ Rules for validating Implementation Plans (IPLAN) documents in the SDD framework
 | **Last Updated** | 2025-11-29 |
 | **Status** | Active |
 
-### Reserved ID Exemption (IPLAN-000_*)
+### Reserved ID Exemption (IPLAN-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `IPLAN-000_*.md`
+**Pattern**: `IPLAN-00_*.md`
 
 **Document Types**:
-- Index documents (`IPLAN-000_index.md`)
-- Traceability matrix templates (`IPLAN-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`IPLAN-00_index.md`)
+- Traceability matrix templates (`IPLAN-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `IPLAN-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `IPLAN-00_*` pattern.
 
 ---
 
@@ -780,7 +780,7 @@ grep -r "pattern" src/
 
 - [IPLAN_CREATION_RULES.md](./IPLAN_CREATION_RULES.md) - Creation guidelines
 - [IPLAN-TEMPLATE.md](./IPLAN-TEMPLATE.md) - Implementation plan template
-- [IPLAN-000_index.md](./IPLAN-000_index.md) - Plan registry
+- [IPLAN-00_index.md](./IPLAN-00_index.md) - Plan registry
 - [validate_iplan.sh](../scripts/validate_iplan.sh) - Validation script
 - [README.md](./README.md) - Directory overview
 - [TRACEABILITY.md](../TRACEABILITY.md) - Cumulative tagging hierarchy

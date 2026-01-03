@@ -319,7 +319,7 @@ pip install google-adk
 **Inputs**:
 - `adr_directory`: Path to ADR markdown files (required)
 - `project_context`: Project type, team size, constraints (required)
-- `output_file`: Roadmap destination (default: `{adr_directory}/ADR-000_IMPLEMENTATION-ROADMAP.md`)
+- `output_file`: Roadmap destination (default: `{adr_directory}/ADR-00_IMPLEMENTATION-ROADMAP.md`)
 - `max_phase_duration`: Maximum weeks per phase (default: 8)
 - `phase_model`: Phasing approach - `poc-mvp-prod`, `iterative`, `waterfall` (default: `poc-mvp-prod`)
 - `team_size`: Number of FTE engineers (default: 3)

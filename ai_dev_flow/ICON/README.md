@@ -73,7 +73,7 @@ done
 
 | File | Purpose |
 |------|---------|
-| **ICON-000_index.md** | Contract registry and quick reference |
+| **ICON-00_index.md** | Contract registry and quick reference |
 | **ICON-TEMPLATE.md** | Template for creating new contracts |
 | **ICON_CREATION_RULES.md** | Decision framework for ICON vs embedded |
 | **README.md** | This file - directory overview |
@@ -537,7 +537,7 @@ done
 **Process**:
 1. Announce deprecation (6-month notice)
 2. Provide migration guide
-3. Update status to "Deprecated" in ICON-000_index.md
+3. Update status to "Deprecated" in ICON-00_index.md
 4. Monitor consumer migration progress
 5. Archive after all consumers migrate
 
@@ -557,7 +557,7 @@ done
 - **Use semantic versioning** for contract changes
 - **Document all changes** in version history
 - **Notify stakeholders** of breaking changes
-- **Maintain registry** (ICON-000_index.md) current
+- **Maintain registry** (ICON-00_index.md) current
 - **Review quarterly** for relevance and usage
 
 ### ❌ Don't
@@ -603,7 +603,7 @@ done
 **Primary Guides**:
 - [IMPLEMENTATION_CONTRACTS_GUIDE.md](../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md) - Comprehensive guide
 - [ICON_CREATION_RULES.md](./ICON_CREATION_RULES.md) - Decision criteria
-- [ICON-000_index.md](./ICON-000_index.md) - Contract registry
+- [ICON-00_index.md](./ICON-00_index.md) - Contract registry
 - [ICON-TEMPLATE.md](./ICON-TEMPLATE.md) - Contract template
 
 **Related Artifacts**:
@@ -628,7 +628,7 @@ done
 **Documentation**:
 - Check IMPLEMENTATION_CONTRACTS_GUIDE.md first
 - Review ICON_CREATION_RULES.md for decisions
-- Consult ICON-000_index.md for examples
+- Consult ICON-00_index.md for examples
 
 **Unclear Criteria**:
 - Apply decision matrix from ICON_CREATION_RULES.md

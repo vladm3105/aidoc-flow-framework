@@ -32,20 +32,20 @@ Rules for validating Implementation Contracts (ICON) documents in the SDD framew
 | **Last Updated** | 2025-11-27 |
 | **Status** | Active |
 
-### Reserved ID Exemption (ICON-000_*)
+### Reserved ID Exemption (ICON-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `ICON-000_*.md`
+**Pattern**: `ICON-00_*.md`
 
 **Document Types**:
-- Index documents (`ICON-000_index.md`)
-- Traceability matrix templates (`ICON-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`ICON-00_index.md`)
+- Traceability matrix templates (`ICON-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `ICON-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `ICON-00_*` pattern.
 
 ---
 
@@ -558,7 +558,7 @@ Result: PASSED WITH WARNINGS
 
 - [ICON_CREATION_RULES.md](./ICON_CREATION_RULES.md) - Creation guidelines
 - [ICON-TEMPLATE.md](./ICON-TEMPLATE.md) - Contract template
-- [ICON-000_index.md](./ICON-000_index.md) - Contract registry
+- [ICON-00_index.md](./ICON-00_index.md) - Contract registry
 - [validate_icon.sh](../scripts/validate_icon.sh) - Validation script
 - [README.md](./README.md) - Directory overview
 - [IMPLEMENTATION_CONTRACTS_GUIDE.md](../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md) - Contracts guide

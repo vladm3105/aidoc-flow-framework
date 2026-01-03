@@ -39,21 +39,21 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 | **Last Updated** | 2025-11-27 |
 | **Status** | Active |
 
-### Reserved ID Exemption (TASKS-000_*)
+### Reserved ID Exemption (TASKS-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `TASKS-000_*.md`
+**Pattern**: `TASKS-00_*.md`
 
 **Document Types**:
-- Index documents (`TASKS-000_index.md`)
-- Traceability matrix templates (`TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
-- Implementation contracts checklists (`TASKS-000_IMPLEMENTATION_CONTRACTS_CHECKLIST.md`)
+- Index documents (`TASKS-00_index.md`)
+- Traceability matrix templates (`TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Implementation contracts checklists (`TASKS-00_IMPLEMENTATION_CONTRACTS_CHECKLIST.md`)
 - Glossaries, registries
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `TASKS-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `TASKS-00_*` pattern.
 
 ---
 

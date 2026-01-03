@@ -164,7 +164,7 @@ python3 validate_iplan_naming.py [base_path]
 - Validates descriptive slug (lowercase, underscore-separated)
 - Confirms H1 ID inside file matches filename ID
 - Detects sequential ID gaps (warnings only)
-- Skips template files (IPLAN-TEMPLATE.md, IPLAN-000_*.md)
+- Skips template files (IPLAN-TEMPLATE.md, IPLAN-00_*.md)
 
 **Parameters:**
 - `base_path`: Base directory path (optional, defaults to script parent directory)
@@ -880,22 +880,105 @@ See the `examples/` directories for example matrices where available:
 ## Template References
 
 Matrix templates for each document type:
-- `BRD/BRD-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `PRD/PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `EARS/EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `BDD/BDD-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `ADR/ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `SYS/SYS-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `IMPL/IMPL-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `CTR/CTR-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `TASKS/TASKS-000_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `IPLAN/IPLAN-000_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `BDD/BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `IMPL/IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `IPLAN/IPLAN-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` (master template)
 
 ---
 
-**Version**: 1.1.0
+## MVP Template Validation
+
+### Overview
+
+MVP (Minimum Viable Product) templates provide streamlined versions of full document templates. These are single-file, monolithic templates designed for rapid development with reduced documentation overhead.
+
+**Available MVP Templates:**
+- `BRD/BRD-MVP-TEMPLATE.md` (~600 lines vs ~2,400 lines full)
+- `PRD/PRD-MVP-TEMPLATE.md` (~500 lines vs ~1,400 lines full)
+- `ADR/ADR-MVP-TEMPLATE.md` (~250 lines vs ~700 lines full)
+- `SYS/SYS-MVP-TEMPLATE.md` (~350 lines vs ~1,024 lines full)
+- `REQ/REQ-MVP-TEMPLATE.md` (~350 lines vs ~1,400 lines full)
+
+### Validation Behavior
+
+> **Important**: Current validation scripts are designed for full template compliance and will report errors when run against MVP templates. This is expected behavior.
+
+**Why MVP Templates "Fail" Validation:**
+1. **Section Requirements**: MVP templates have fewer sections than full templates
+2. **Section Numbering**: MVP uses simplified section structure (may not be numbered 0-15)
+3. **Placeholder Format**: MVPs use `# TYPE-NN:` placeholder in H1
+
+### How to Handle MVP Template Validation
+
+**Option 1: Exclude MVP Templates from Validation (Recommended)**
+
+```bash
+# Validate only produced documents, not templates
+python3 scripts/validate_brd.py BRD/ 2>&1 | grep -v "MVP-TEMPLATE"
+
+# Or use find to exclude MVP templates
+find BRD/ -name "BRD-*.md" ! -name "*MVP-TEMPLATE*" -exec python3 scripts/validate_brd.py {} \;
+```
+
+**Option 2: Validate Produced Documents Only**
+
+When validating a directory, validation scripts automatically detect templates via `"TEMPLATE" in filename` and apply relaxed tag validation. However, structure validation still runs.
+
+```bash
+# Validate specific produced documents (not templates)
+python3 scripts/validate_brd.py BRD/BRD-01_my_project.md
+python3 scripts/validate_prd.py PRD/PRD-01_my_feature.md
+```
+
+**Option 3: Accept MVP Template Errors as Expected**
+
+When running validation on the entire framework, MVP template errors are expected and can be filtered:
+
+```bash
+# Run validation and filter MVP template results
+python3 scripts/validate_all.py 2>&1 | grep -v "MVP-TEMPLATE" | grep -v "Expected for MVP"
+```
+
+### MVP Template Compliance Notes
+
+MVP templates maintain framework compliance through:
+- ✅ **YAML frontmatter** with correct metadata
+- ✅ **Traceability tags** (proper `@type:` format)
+- ✅ **Layer identification** (correct `layer-N-artifact` tags)
+- ✅ **Document Control** section with required fields
+- ⚠️ **Reduced section count** (by design, not an error)
+- ⚠️ **Simplified structure** (by design, not an error)
+
+### When to Use Full vs MVP Templates
+
+| Scenario | Template to Use |
+|----------|-----------------|
+| Rapid MVP/prototype development | `*-MVP-TEMPLATE.md` |
+| Production system documentation | `*-TEMPLATE.md` |
+| Regulatory/audit requirements | `*-TEMPLATE.md` |
+| Quick proof-of-concept | `*-MVP-TEMPLATE.md` |
+| Enterprise/large-scale projects | `*-TEMPLATE.md` |
+| Startup/agile environments | `*-MVP-TEMPLATE.md` |
+
+### Future Improvement
+
+A future enhancement may add:
+- `--mvp` flag to validators for MVP-specific rules
+- Separate `validate_*_mvp.py` scripts
+- Automatic MVP detection with appropriate rule sets
+
+---
+
+**Version**: 1.2.0
 **Author**: AI-Driven SDD Framework
-**Last Updated**: 2025-12-01
+**Last Updated**: 2026-01-03

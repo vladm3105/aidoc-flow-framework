@@ -284,7 +284,12 @@ This directory provides the **BRD-TEMPLATE.md** for business requirements docume
 - Suitable for all project types
 - Includes business objectives, functional requirements, quality attributes, architecture decision requirements, and acceptance criteria
 
-**Usage**: Use BRD-TEMPLATE.md as the foundation for all Business Requirements Documents.
+**BRD-MVP-TEMPLATE.md** - Streamlined MVP version in a single file without sectioning
+- Focused on core MVP features and rapid development
+- Maintains framework compliance while reducing documentation overhead
+- Ideal for quick MVP launches and hypothesis validation
+
+**Usage**: Use `BRD-TEMPLATE.md` for full-featured BRDs and `BRD-MVP-TEMPLATE.md` for MVP-focused BRDs.
 
 ## File Naming Convention
 

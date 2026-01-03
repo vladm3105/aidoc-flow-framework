@@ -47,7 +47,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate PRD traceability matrix
-python scripts/generate_traceability_matrix.py --type PRD --output docs/PRD/PRD-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type PRD --output docs/PRD/PRD-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -424,7 +424,7 @@ python scripts/find_orphaned_artifacts.py --type PRD --check-upstream
 ## 13. References
 
 ### 13.1 Internal Documentation
-- **PRD Index**: [PRD-000_index.md](PRD-000_index.md)
+- **PRD Index**: [PRD-00_index.md](PRD-00_index.md)
 - **PRD Template**: [PRD-TEMPLATE.md](PRD-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
@@ -436,10 +436,10 @@ python scripts/find_orphaned_artifacts.py --type PRD --check-upstream
 - Agile Alliance User Story Best Practices
 
 ### 13.3 Related Matrices
-- [BRD Traceability Matrix](../BRD/BRD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [EARS Traceability Matrix](../EARS/EARS-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [BDD Traceability Matrix](../BDD/BDD-000_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [ADR Traceability Matrix](../ADR/ADR-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [BRD Traceability Matrix](../BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [EARS Traceability Matrix](../EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [BDD Traceability Matrix](../BDD/BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [ADR Traceability Matrix](../ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 
@@ -457,7 +457,7 @@ python scripts/find_orphaned_artifacts.py --type PRD --check-upstream
 python ../scripts/generate_traceability_matrix.py \
   --type PRD \
   --input ../PRD/ \
-  --template PRD-000_TRACEABILITY_MATRIX-TEMPLATE.md \
+  --template PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md \
   --output TRACEABILITY_MATRIX_PRD.md
 
 # Validate matrix

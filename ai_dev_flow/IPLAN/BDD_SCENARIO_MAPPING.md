@@ -265,7 +265,7 @@ Maps BDD feature files to their corresponding test implementations, tracking:
 
 ## References
 
-- [BDD-000_index.md](../BDD/BDD-000_index.md) - BDD master index
+- [BDD-00_index.md](../BDD/BDD-00_index.md) - BDD master index
 - [BDD-TEMPLATE.feature](../BDD/BDD-TEMPLATE.feature) - Scenario template
 - [IPLAN-TEMPLATE.md](./IPLAN-TEMPLATE.md) - Implementation plan template
 <!-- VALIDATOR:IGNORE-LINKS-START -->

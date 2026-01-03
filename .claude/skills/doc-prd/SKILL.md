@@ -389,7 +389,7 @@ Quality standards and testing strategy (moved from BRD).
 
 ### Step 10: Create/Update Traceability Matrix
 
-**MANDATORY**: Create or update `docs/PRD/PRD-000_TRACEABILITY_MATRIX.md`
+**MANDATORY**: Create or update `docs/PRD/PRD-00_TRACEABILITY_MATRIX.md`
 
 ### Step 11: Update Upstream BRD Traceability (MANDATORY)
 

@@ -39,7 +39,7 @@ def auto_mode(base: Path) -> int:
         t_dir = base / t
         if t_dir.exists():
             # Default output file in that directory
-            out = t_dir / f"{t}-000_TRACEABILITY_MATRIX.md"
+            out = t_dir / f"{t}-00_TRACEABILITY_MATRIX.md"
             rc = run_single(t, t_dir, out)
             if rc != 0:
                 status = rc

@@ -33,7 +33,7 @@ This document provides centralized definitions for common business, technical, r
 
 ### When to Define Terms Here vs. Individual BRD
 
-| Define in BRD-000_GLOSSARY.md | Define in Individual BRD section 17 |
+| Define in BRD-00_GLOSSARY.md | Define in Individual BRD section 17 |
 |-------------------------------|-------------------------------------|
 | ✅ Terms used across 3+ BRDs | ✅ Project-specific terminology |
 | ✅ Standard BRD framework terms (FR, QA, BO) | ✅ Unique partner names |
@@ -167,7 +167,7 @@ Regulatory, industry, and technical standards referenced in BRDs.
 
 | Item | Details |
 |------|---------|
-| **Document ID** | BRD-000_GLOSSARY |
+| **Document ID** | BRD-00_GLOSSARY |
 | **Document Version** | 1.1 |
 | **Creation Date** | 2025-11-26 |
 | **Document Owner** | SDD Framework Team |

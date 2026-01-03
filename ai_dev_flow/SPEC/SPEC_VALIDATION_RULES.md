@@ -61,20 +61,20 @@ The SPEC validation script ensures YAML specification files meet quality standar
 | **Tier 2** | Warnings | 0 | Quality issues - recommended to fix |
 | **Tier 3** | Info | 0 | Informational - no action required |
 
-### Reserved ID Exemption (SPEC-000_*)
+### Reserved ID Exemption (SPEC-00_*)
 
 **Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
 
-**Pattern**: `SPEC-000_*.md` or `SPEC-000_*.yaml`
+**Pattern**: `SPEC-00_*.md` or `SPEC-00_*.yaml`
 
 **Document Types**:
-- Index documents (`SPEC-000_index.md`)
-- Traceability matrix templates (`SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Index documents (`SPEC-00_index.md`)
+- Traceability matrix templates (`SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
-**Validation Behavior**: Skip all checks when filename matches `SPEC-000_*` pattern.
+**Validation Behavior**: Skip all checks when filename matches `SPEC-00_*` pattern.
 
 ---
 

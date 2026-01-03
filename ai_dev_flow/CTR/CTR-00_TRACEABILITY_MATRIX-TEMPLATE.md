@@ -47,7 +47,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate CTR traceability matrix
-python scripts/generate_traceability_matrix.py --type CTR --output docs/CTR/CTR-000_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type CTR --output docs/CTR/CTR-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -365,10 +365,10 @@ graph TD
 
 ## 13. References
 
-- **CTR Index**: [CTR-000_index.md](CTR-000_index.md)
+- **CTR Index**: [CTR-00_index.md](CTR-00_index.md)
 - **CTR Template**: [CTR-TEMPLATE.md](CTR-TEMPLATE.md), [CTR-TEMPLATE.yaml](CTR-TEMPLATE.yaml)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
-- **Related Matrices**: [REQ](../REQ/REQ-000_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../SPEC/SPEC-000_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Related Matrices**: [REQ](../REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 

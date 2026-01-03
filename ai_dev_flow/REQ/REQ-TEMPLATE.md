@@ -727,7 +727,7 @@ class APIClientConfig(BaseModel):
 
 ## 7. Quality Attributes
 
-> **Note**: All quality attribute targets MUST use @threshold registry references. See PRD-000_threshold_registry_template.md for registry format.
+> **Note**: All quality attribute targets MUST use @threshold registry references. See PRD-00_threshold_registry_template.md for registry format.
 
 ### 7.1 Performance
 

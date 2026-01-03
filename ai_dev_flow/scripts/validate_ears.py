@@ -664,7 +664,7 @@ class EarsValidator:
         all_results = []
 
         for md_file in sorted(dir_path.glob("EARS-*.md")):
-            if md_file.name == "EARS-000_index.md":
+            if md_file.name == "EARS-00_index.md":
                 continue  # Skip index file
             results = self.validate_file(md_file)
             all_results.extend(results)
