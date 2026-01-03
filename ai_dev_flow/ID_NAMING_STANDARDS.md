@@ -64,6 +64,66 @@ tests/bdd/gateway/BDD-01_connection_management.feature
 tests/bdd/gateway/BDD-02_error_handling.feature
 ```
 
+---
+
+## ID Notation Clarification (CRITICAL)
+
+The SDD framework uses **two distinct notations** that serve different purposes. Understanding this distinction is essential:
+
+| Purpose | Notation | Format | Example | References |
+|---------|----------|--------|---------|------------|
+| **Document Reference** | Dash | `TYPE-NN` | `ADR-01`, `BRD-07` | Whole document/file |
+| **Element Reference** | Dot | `TYPE.NN.TT.SS` | `BRD.07.01.01` | Specific element within document |
+
+### Document Reference (Dash Notation)
+
+**Format**: `TYPE-NN` (hyphen separator)
+
+**Purpose**: References the complete document file. Use when pointing to an entire document.
+
+**Examples**:
+- `ADR-33` → References the document file `ADR-33_risk_limit_enforcement.md`
+- `SPEC-01` → References `SPEC-01_api_client.yaml`
+- `CTR-05` → References `CTR-05_data_service.md` + `CTR-05_data_service.yaml`
+
+**Tag Usage**: `@adr: ADR-33`, `@spec: SPEC-01`, `@ctr: CTR-05`
+
+### Element Reference (Dot Notation)
+
+**Format**: `TYPE.NN.TT.SS` (dot separator, 4 segments)
+
+**Purpose**: References a specific element (requirement, feature, constraint) inside a document.
+
+**Components**:
+- `TYPE`: Document type (BRD, PRD, REQ, etc.)
+- `NN`: Document number (matching filename digits)
+- `TT`: Element type code (01=Functional Req, 06=Acceptance Criteria, etc.)
+- `SS`: Sequential number within element type
+
+**Examples**:
+- `BRD.07.01.01` → Functional Requirement #1 inside BRD-07
+- `PRD.02.09.05` → User Story #5 inside PRD-02
+- `EARS.04.25.08` → EARS Requirement #8 inside EARS-04
+
+**Tag Usage**: `@brd: BRD.07.01.01`, `@prd: PRD.02.09.05`
+
+### Which Artifacts Use Which Notation?
+
+| Notation | Document Types | Rationale |
+|----------|---------------|-----------|
+| **Dash** (Document-level) | ADR, SPEC, CTR, IPLAN, ICON | Referenced as complete units |
+| **Dot** (Element-level) | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Contain multiple numbered elements |
+
+### Common Mistakes to Avoid
+
+| Incorrect | Correct | Explanation |
+|-----------|---------|-------------|
+| `@brd: BRD-07` | `@brd: BRD.07.01.01` | BRD uses element notation (dot) |
+| `@adr: ADR.33.10.01` | `@adr: ADR-33` | ADR uses document notation (dash) |
+| `BRD.7.01.01` | `BRD.07.01.01` | Element DOC_NUM must match filename digits |
+
+---
+
 Scope & Authority
 - Applies to: PRD, SYS, REQ, ADR, BDD, SPEC, EARS, CTR, IMPL, AI-TASKS in this example.
 - One document per file.

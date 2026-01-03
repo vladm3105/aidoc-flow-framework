@@ -85,10 +85,12 @@ custom_fields:
 
 ### 3.2 Business Rules
 
+**ID Format**: `REQ.NN.21.SS` (Validation Rule)
+
 | Rule ID | Condition | Action |
 |---------|-----------|--------|
-| BR-01 | IF [condition] | THEN [action/outcome] |
-| BR-02 | IF [condition] | THEN [action/outcome] |
+| REQ.NN.21.01 | IF [condition] | THEN [action/outcome] |
+| REQ.NN.21.02 | IF [condition] | THEN [action/outcome] |
 
 ### 3.3 Input/Output Specification
 
@@ -186,21 +188,23 @@ class ResponseModel(BaseModel):
 
 ## 6. Quality Attributes
 
-### 6.1 Performance
+**ID Format**: `REQ.NN.02.SS` (Quality Attribute)
+
+### 6.1 Performance (REQ.NN.02.01)
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
 | Response time (p95) | < [X]ms | APM traces |
 | Throughput | [X] req/sec | Load test |
 
-### 6.2 Security
+### 6.2 Security (REQ.NN.02.02)
 
 - [ ] Input validation: All inputs validated
 - [ ] Authentication: [Required/Optional]
 - [ ] Authorization: [Role-based check]
 - [ ] Data protection: [PII handling]
 
-### 6.3 Reliability
+### 6.3 Reliability (REQ.NN.02.03)
 
 - Error rate: < [X]% of operations
 - Idempotency: [Required for POST/PUT operations]
@@ -254,17 +258,23 @@ class ResponseModel(BaseModel):
 
 ## 9. Acceptance Criteria
 
+**ID Format**: `REQ.NN.06.SS` (Acceptance Criteria)
+
 ### 9.1 Functional Acceptance
 
-- [ ] [Criterion 1]: [Measurable outcome]
-- [ ] [Criterion 2]: [Measurable outcome]
-- [ ] [Criterion 3]: [Measurable outcome]
+| Criteria ID | Criterion | Measurable Outcome | Status |
+|-------------|-----------|-------------------|--------|
+| REQ.NN.06.01 | [Criterion 1] | [Measurable outcome] | [ ] |
+| REQ.NN.06.02 | [Criterion 2] | [Measurable outcome] | [ ] |
+| REQ.NN.06.03 | [Criterion 3] | [Measurable outcome] | [ ] |
 
 ### 9.2 Quality Acceptance
 
-- [ ] Performance target met (p95 < [X]ms)
-- [ ] No critical security vulnerabilities
-- [ ] Test coverage ≥ [X]%
+| Criteria ID | Criterion | Target | Status |
+|-------------|-----------|--------|--------|
+| REQ.NN.06.04 | Performance target | p95 < [X]ms | [ ] |
+| REQ.NN.06.05 | Security | No critical vulnerabilities | [ ] |
+| REQ.NN.06.06 | Test coverage | ≥ [X]% | [ ] |
 
 ---
 
@@ -289,12 +299,14 @@ class ResponseModel(BaseModel):
 ### 10.3 Traceability Tags
 
 ```markdown
-@brd: BRD.NN.EE.SS
-@prd: PRD.NN.EE.SS
-@sys: SYS.NN.EE.SS
+@brd: BRD.NN.TT.SS
+@prd: PRD.NN.TT.SS
+@sys: SYS.NN.TT.SS
 @ears: EARS.NN.24.SS
-@adr: ADR.NN.EE.SS
+@adr: ADR.NN.TT.SS
 ```
+
+> **Note**: Document references use dash notation (`ADR-NN`). Element references within documents use 4-segment dot notation (`ADR.NN.TT.SS`).
 
 ---
 

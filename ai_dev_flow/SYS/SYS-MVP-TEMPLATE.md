@@ -90,9 +90,11 @@ custom_fields:
 
 ## 4. Functional Requirements
 
+**ID Format**: `SYS.NN.01.SS` (Functional Requirement)
+
 ### 4.1 Core System Behaviors
 
-#### Capability 1: [Capability Name]
+#### SYS.NN.01.01: [Capability Name]
 
 **Description**: [What the system does for this capability]
 
@@ -105,7 +107,7 @@ custom_fields:
 
 ---
 
-#### Capability 2: [Capability Name]
+#### SYS.NN.01.02: [Capability Name]
 
 **Description**: [What the system does]
 
@@ -118,7 +120,7 @@ custom_fields:
 
 ---
 
-#### Capability 3: [Capability Name]
+#### SYS.NN.01.03: [Capability Name]
 
 **Description**: [What the system does]
 
@@ -157,7 +159,9 @@ custom_fields:
 
 ## 5. Quality Attributes (Baseline)
 
-### 5.1 Performance
+**ID Format**: `SYS.NN.02.SS` (Quality Attribute)
+
+### 5.1 Performance (SYS.NN.02.01)
 
 | Metric | MVP Target | Measurement |
 |--------|------------|-------------|
@@ -165,7 +169,7 @@ custom_fields:
 | Response time (p95) | < [X]ms | APM traces |
 | Throughput | [X] req/sec | Load testing |
 
-### 5.2 Reliability
+### 5.2 Reliability (SYS.NN.02.02)
 
 | Metric | MVP Target | Notes |
 |--------|------------|-------|
@@ -173,7 +177,7 @@ custom_fields:
 | Error rate | < [X]% | Of total requests |
 | Recovery time | < [X] minutes | From failure detection |
 
-### 5.3 Security
+### 5.3 Security (SYS.NN.02.03)
 
 - [ ] **Authentication**: [JWT/OAuth2/API Key]
 - [ ] **Authorization**: [Role-based/Attribute-based]
@@ -181,7 +185,7 @@ custom_fields:
 - [ ] **Encryption at rest**: [AES-256/None for MVP]
 - [ ] **Input validation**: All user inputs validated
 
-### 5.4 Observability
+### 5.4 Observability (SYS.NN.02.04)
 
 **Logging**:
 - Format: [Structured JSON]
@@ -332,11 +336,13 @@ flowchart LR
 
 ## 11. Risk Assessment (Top 5)
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| [Risk 1] | [H/M/L] | [H/M/L] | [Strategy] |
-| [Risk 2] | [H/M/L] | [H/M/L] | [Strategy] |
-| [Risk 3] | [H/M/L] | [H/M/L] | [Strategy] |
+**ID Format**: `SYS.NN.07.SS` (Risk)
+
+| Risk ID | Risk | Likelihood | Impact | Mitigation |
+|---------|------|------------|--------|------------|
+| SYS.NN.07.01 | [Risk description] | [H/M/L] | [H/M/L] | [Strategy] |
+| SYS.NN.07.02 | [Risk description] | [H/M/L] | [H/M/L] | [Strategy] |
+| SYS.NN.07.03 | [Risk description] | [H/M/L] | [H/M/L] | [Strategy] |
 
 ---
 

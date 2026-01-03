@@ -239,18 +239,26 @@ sequenceDiagram
 
 > **Complete user stories**: Detailed user story tables belong in PRD. This section provides high-level summaries for MVP.
 
+**ID Format**: `BRD.NN.09.SS` (User Story)
+
 ### 5.1 Primary User Stories (MVP Essential)
 
 **End Users** (5-7 core stories):
-1. As a **[user role]**, I want to **[core action]**, so that **[business value]**
-2. As a **[user role]**, I want to **[core action]**, so that **[business value]**
-3. As a **[user role]**, I want to **[core action]**, so that **[business value]**
-4. As a **[user role]**, I want to **[core action]**, so that **[business value]**
-5. As a **[user role]**, I want to **[core action]**, so that **[business value]**
+
+| Story ID | User Role | Action | Business Value | Priority |
+|----------|-----------|--------|----------------|----------|
+| BRD.NN.09.01 | [user role] | [core action] | [business value] | P1 |
+| BRD.NN.09.02 | [user role] | [core action] | [business value] | P1 |
+| BRD.NN.09.03 | [user role] | [core action] | [business value] | P1 |
+| BRD.NN.09.04 | [user role] | [core action] | [business value] | P2 |
+| BRD.NN.09.05 | [user role] | [core action] | [business value] | P2 |
 
 **Operational Users** (2-3 stories):
-1. As an **[admin/support role]**, I want to **[capability]**, so that **[operational efficiency]**
-2. As a **[compliance role]**, I want to **[capability]**, so that **[regulatory compliance]**
+
+| Story ID | User Role | Action | Business Value | Priority |
+|----------|-----------|--------|----------------|----------|
+| BRD.NN.09.06 | [admin/support role] | [capability] | [operational efficiency] | P1 |
+| BRD.NN.09.07 | [compliance role] | [capability] | [regulatory compliance] | P1 |
 
 ### 5.2 User Story Summary
 

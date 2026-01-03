@@ -87,6 +87,19 @@ TASKS-23_implement_risk_calculator.md
 - Reserved infra docs: This repository uses `-000` for index/registry and general utility docs. Code and tests use their language-specific naming rules.
 - See: `ID_NAMING_STANDARDS.md` for full details.
 
+### ID Notation Clarification (Document vs Element)
+
+| Reference Type | Notation | Format | Example | Use For |
+|----------------|----------|--------|---------|---------|
+| **Document** | Dash | `TYPE-NN` | `ADR-33` | Whole document/file |
+| **Element** | Dot | `TYPE.NN.TT.SS` | `BRD.07.01.01` | Specific item within document |
+
+**Which uses which?**
+- **Dash** (document-level): ADR, SPEC, CTR, IPLAN, ICON
+- **Dot** (element-level): BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS
+
+**Common mistakes**: `@brd: BRD-07` ❌ → `@brd: BRD.07.01.01` ✓ | `@adr: ADR.33.10.01` ❌ → `@adr: ADR-33` ✓
+
 ### General Utility Documents (`{DOC_TYPE}-00_*`)
 - Purpose: Group general-purpose, cross-project, or utility documents not tied to a specific project artifact.
 - Pattern: `{DOC_TYPE}-00_{slug}.{ext}` (e.g., `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`, `ICON-00_index.md`).

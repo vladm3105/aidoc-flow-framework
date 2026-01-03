@@ -260,7 +260,9 @@ custom_fields:
 
 > **Note**: This section identifies architecture decisions needed for MVP. Full ADR documents created separately per SDD workflow.
 
-### 10.1 Infrastructure
+**ID Format**: `PRD.NN.32.SS` (Architecture Topic)
+
+### 10.1 Infrastructure (PRD.NN.32.01)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -274,7 +276,7 @@ custom_fields:
 
 ---
 
-### 10.2 Data Architecture
+### 10.2 Data Architecture (PRD.NN.32.02)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -286,7 +288,7 @@ custom_fields:
 
 ---
 
-### 10.3 Integration
+### 10.3 Integration (PRD.NN.32.03)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -298,7 +300,7 @@ custom_fields:
 
 ---
 
-### 10.4 Security
+### 10.4 Security (PRD.NN.32.04)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -310,7 +312,7 @@ custom_fields:
 
 ---
 
-### 10.5 Observability
+### 10.5 Observability (PRD.NN.32.05)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A (MVP/prototype)
 
@@ -322,7 +324,7 @@ custom_fields:
 
 ---
 
-### 10.6 AI/ML (If Applicable)
+### 10.6 AI/ML (PRD.NN.32.06)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -334,7 +336,7 @@ custom_fields:
 
 ---
 
-### 10.7 Technology Selection
+### 10.7 Technology Selection (PRD.NN.32.07)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -350,34 +352,40 @@ custom_fields:
 
 ### MVP Constraints
 
-| Constraint Type | Description | Impact |
-|-----------------|-------------|--------|
-| **Budget** | $[X] total for MVP | [How it limits scope] |
-| **Timeline** | [X] weeks to launch | [Trade-offs made] |
-| **Team** | [X] developers | [What can be accomplished] |
-| **Technical** | [Specific limitation] | [Workaround/approach] |
+**ID Format**: `PRD.NN.03.SS` (Constraint)
+
+| Constraint ID | Constraint Type | Description | Impact |
+|---------------|-----------------|-------------|--------|
+| PRD.NN.03.01 | **Budget** | $[X] total for MVP | [How it limits scope] |
+| PRD.NN.03.02 | **Timeline** | [X] weeks to launch | [Trade-offs made] |
+| PRD.NN.03.03 | **Team** | [X] developers | [What can be accomplished] |
+| PRD.NN.03.04 | **Technical** | [Specific limitation] | [Workaround/approach] |
 
 ### Key Assumptions
 
-| Assumption | Risk Level | Validation Method |
-|------------|------------|-------------------|
-| [Assumption about users] | [H/M/L] | [How we'll validate] |
-| [Assumption about market] | [H/M/L] | [How we'll validate] |
-| [Technical assumption] | [H/M/L] | [How we'll validate] |
+**ID Format**: `PRD.NN.04.SS` (Assumption)
+
+| Assumption ID | Assumption | Risk Level | Validation Method |
+|---------------|------------|------------|-------------------|
+| PRD.NN.04.01 | [Assumption about users] | [H/M/L] | [How we'll validate] |
+| PRD.NN.04.02 | [Assumption about market] | [H/M/L] | [How we'll validate] |
+| PRD.NN.04.03 | [Technical assumption] | [H/M/L] | [How we'll validate] |
 
 ---
 
 ## 12. Risk Assessment (Top 5)
 
+**ID Format**: `PRD.NN.07.SS` (Risk)
+
 ### MVP Risks
 
-| # | Risk | Likelihood | Impact | Mitigation |
-|---|------|------------|--------|------------|
-| 1 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
-| 2 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
-| 3 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
-| 4 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
-| 5 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
+| Risk ID | Risk | Likelihood | Impact | Mitigation |
+|---------|------|------------|--------|------------|
+| PRD.NN.07.01 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
+| PRD.NN.07.02 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
+| PRD.NN.07.03 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
+| PRD.NN.07.04 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
+| PRD.NN.07.05 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
 
 ---
 

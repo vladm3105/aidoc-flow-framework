@@ -77,7 +77,9 @@ custom_fields:
 
 ## 3. Decision
 
-### 3.1 Chosen Solution
+**ID Format**: `ADR.NN.10.SS` (Decision)
+
+### 3.1 Chosen Solution (ADR.NN.10.01)
 
 **We will use**: [Selected option/technology/approach]
 
@@ -106,7 +108,9 @@ custom_fields:
 
 ## 4. Alternatives Considered
 
-### 4.1 Option A: [Selected Option Name] ✓
+**ID Format**: `ADR.NN.12.SS` (Alternative)
+
+### 4.1 Option A: [Selected Option Name] ✓ (ADR.NN.12.01)
 
 **Description**: [Brief description of the chosen approach]
 
@@ -122,7 +126,7 @@ custom_fields:
 
 ---
 
-### 4.2 Option B: [Alternative Option Name]
+### 4.2 Option B: [Alternative Option Name] (ADR.NN.12.02)
 
 **Description**: [Brief description]
 
@@ -140,7 +144,7 @@ custom_fields:
 
 ---
 
-### 4.3 Option C: [Alternative Option Name] (Optional)
+### 4.3 Option C: [Alternative Option Name] (Optional) (ADR.NN.12.03)
 
 **Description**: [Brief description]
 
@@ -158,13 +162,15 @@ custom_fields:
 
 ## 5. Consequences
 
-### 5.1 Positive Outcomes
+**ID Format**: `ADR.NN.13.SS` (Consequence)
+
+### 5.1 Positive Outcomes (ADR.NN.13.01)
 
 - [Benefit 1]: [Quantifiable impact]
 - [Benefit 2]: [Quantifiable impact]
 - [Benefit 3]: [Qualitative benefit]
 
-### 5.2 Trade-offs & Risks
+### 5.2 Trade-offs & Risks (ADR.NN.13.02)
 
 | Risk/Trade-off | Impact | Mitigation |
 |----------------|--------|------------|

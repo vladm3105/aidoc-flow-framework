@@ -420,25 +420,43 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 - **Separator:** Dot (.) separates all components
 - **Multiple:** Comma-separated list
 
-### Tag Format Convention (By Design)
+### Tag Format Convention (By Design) — CRITICAL DISTINCTION
 
-The SDD framework uses two distinct notation systems for cross-references, each serving a specific purpose:
+> **IMPORTANT**: The SDD framework uses **two distinct notations**. Using the wrong one is a validation error.
 
-| Notation | Format       | Artifacts                               | Purpose                                                             |
-|----------|--------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NN     | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Purpose | Notation | Format | Example | What It References |
+|---------|----------|--------|---------|-------------------|
+| **Document Reference** | Dash | `TYPE-NN` | `ADR-33`, `SPEC-01` | Whole document/file |
+| **Element Reference** | Dot | `TYPE.NN.TT.SS` | `BRD.17.01.01` | Specific element within document |
 
 **Key Distinction**:
 
-- `@adr: ADR-33` → Points to the document `ADR-33_risk_limit_enforcement.md`
-- `@brd: BRD.17.01.01` → Points to element 01 (feature requirement) inside document `BRD-17.md`
+- `@adr: ADR-33` → Points to the **document** `ADR-33_risk_limit_enforcement.md`
+- `@brd: BRD.17.01.01` → Points to **element 01** (functional requirement) inside document `BRD-17`
+
+**Which Artifacts Use Which?**
+
+| Notation | Artifacts | Rationale |
+|----------|-----------|-----------|
+| **Dash** (Document-level) | ADR, SPEC, CTR, IPLAN, ICON | Referenced as complete self-contained units |
+| **Dot** (Element-level) | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Contain multiple numbered elements requiring specific references |
 
 **Why Two Systems?**
 
-1. **Dash notation** (`TYPE-NN`): Used for technical artifacts that are referenced as complete documents. Each ADR, SPEC, or CTR file is a self-contained unit.
+1. **Dash notation** (`TYPE-NN`): Used for technical artifacts referenced as complete documents. Each ADR, SPEC, or CTR file is a self-contained unit. No internal element subdivision needed.
 
-2. **Dot notation** (`TYPE.NN.TT.SS`): Used for requirement artifacts that contain multiple numbered elements within a single document. The element type (EE) and sequence (SS) identify the specific element inside the document.
+2. **Dot notation** (`TYPE.NN.TT.SS`): Used for requirement artifacts containing multiple numbered elements within a single document. The 4-segment format identifies:
+   - `TYPE`: Document type
+   - `NN`: Document number (matches filename digits)
+   - `TT`: Element type code (01=Functional Req, 06=Acceptance Criteria, etc.)
+   - `SS`: Sequential number within element type
+
+**Common Errors to Avoid**:
+
+| Error | Correction |
+|-------|------------|
+| `@brd: BRD-07` (dash for BRD) | `@brd: BRD.07.01.01` (dot notation for elements) |
+| `@adr: ADR.33.10.01` (dot for ADR) | `@adr: ADR-33` (dash notation for documents) |
 
 ### Complete Tag Reference
 
