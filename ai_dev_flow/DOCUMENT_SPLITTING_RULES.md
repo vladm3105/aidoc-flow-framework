@@ -18,6 +18,31 @@ Purpose: Define the minimal, stable rules for splitting long documents into inde
 
 Scope: Applies to narrative Markdown types (e.g., BRD, PRD) and test/spec artifacts where applicable (e.g., BDD). For SPEC, split applies to Markdown narrative only; SPEC YAML remains monolithic per component for code generation.
 
+## Monolithic vs Section-Based Structure
+
+**Choose the appropriate structure based on document size and complexity:**
+
+| Structure | File Pattern | Use When |
+|-----------|--------------|----------|
+| **Monolithic (Flat)** | `TYPE-DOC_NUM_{slug}.md` | Single-file documents <25KB, MVP templates |
+| **Section-Based (Nested)** | `TYPE-DOC_NUM_{slug}/TYPE-DOC_NUM.S_{section}.md` | Documents >25KB, complex multi-section artifacts |
+
+### Monolithic Documents (Flat Structure)
+
+- **Location**: Directly in type directory (e.g., `docs/BRD/BRD-01_platform.md`)
+- **No nested folder**: File lives at type root, not inside a subfolder
+- **No section suffix**: Filename uses `TYPE-DOC_NUM_{slug}.md` pattern
+- **H1 Title**: `# TYPE-DOC_NUM: Title` (no `.S` suffix)
+- **Use for**: MVP templates, streamlined documents, single-file artifacts under 25KB
+
+### Section-Based Documents (Nested Structure)
+
+- **Location**: Inside nested folder (e.g., `docs/BRD/BRD-03_complex/BRD-03.0_index.md`)
+- **Folder required**: Create `TYPE-DOC_NUM_{slug}/` folder containing all section files
+- **Section suffix required**: All files use `TYPE-DOC_NUM.S_{section}.md` pattern
+- **H1 Title**: `# TYPE-DOC_NUM.S: Section Title` (includes `.S` suffix)
+- **Use for**: Large documents, complex multi-section artifacts, documents requiring splitting
+
 ## When To Split
 
 - Trigger: Size linter warnings/errors or poor readability during review.

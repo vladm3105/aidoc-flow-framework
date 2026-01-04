@@ -159,13 +159,26 @@ Use `doc-brd` when:
 
 > **Note**: Technical QA standards, testing strategy, and defect management are documented in PRD-TEMPLATE.md Section 21 (product level).
 
-**Section Templates** (DEFAULT for all BRD documents):
-- **Structure**: `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{slug}.md` (nested folder per document with descriptive slug)
+**Two Structure Options**:
+
+| Structure | Format | Use When |
+|-----------|--------|----------|
+| **Monolithic (Flat)** | `docs/BRD/BRD-NN_{slug}.md` | Single-file documents <25KB, MVP templates |
+| **Section-Based (Nested)** | `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md` | Documents >25KB, complex multi-section |
+
+**Monolithic Structure (Flat)** - for MVP/small documents:
+- **Location**: `docs/BRD/BRD-NN_{slug}.md` (directly in BRD directory, no nested folder)
+- **H1 Title**: `# BRD-NN: Document Title` (no `.S` suffix)
+- **Template**: `ai_dev_flow/BRD/BRD-MVP-TEMPLATE.md` or simplified `BRD-TEMPLATE.md`
+- **Rule**: Do NOT create a folder for monolithic files
+
+**Section-Based Structure (Nested)** - for large/complex documents:
+- **Location**: `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md`
 - **Folder Naming**: `BRD-NN_{slug}/` where slug MUST match the index file slug
+- **H1 Title**: `# BRD-NN.S: Section Title` (includes `.S` suffix)
 - Index template: `ai_dev_flow/BRD/BRD-SECTION-0-TEMPLATE.md`
 - Content template: `ai_dev_flow/BRD/BRD-SECTION-TEMPLATE.md`
 - Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
-- **Note**: Monolithic template is OPTIONAL for small documents (<25KB)
 
 ### 2. Required Sections (18 Total)
 

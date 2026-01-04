@@ -148,12 +148,40 @@ Format
 
 ## Default Directory Model (All Types)
 
-- Default: Use nested per-document folders for all artifact types: `{TYPE}/{TYPE}-DOC_NUM_{slug}/`.
-- Primary file(s) live inside the folder; section-based files use `TYPE-DOC_NUM.S_{section_slug}.{ext}` when applicable.
-- Folder slug MUST match the document slug.
-- Exceptions:
-  - BDD uses nested per-suite folders with section-based `.feature` files at `BDD/BDD-DOC_NUM_{slug}/`.
-  - CTR remains dual-file (both `.md` and `.yaml`) stored together inside the contract’s nested folder.
+**Two Structure Options**:
+
+| Structure | Format | Use When |
+|-----------|--------|----------|
+| **Flat** (Monolithic) | `{TYPE}/{TYPE}-DOC_NUM_{slug}.md` | Single-file documents, MVP templates, <25KB |
+| **Nested** (Section-based) | `{TYPE}/{TYPE}-DOC_NUM_{slug}/` folder with section files | Multi-section documents, >25KB, complex structure |
+
+### Flat Structure (Monolithic Documents)
+
+- **Format**: `{TYPE}/{TYPE}-DOC_NUM_{slug}.md` (no folder, no section suffix)
+- **Use for**: MVP documents, single-file documents under 25KB, streamlined artifacts
+- **H1 Title**: `# TYPE-DOC_NUM: Document Title` (no `.0` suffix)
+- **Examples**:
+  - `docs/BRD/BRD-01_platform_architecture.md`
+  - `docs/PRD/PRD-02_user_authentication.md`
+  - `docs/ADR/ADR-15_database_selection.md`
+- **Rule**: Do NOT create a folder for monolithic files. The file lives directly in the type directory.
+
+### Nested Structure (Section-Based Documents)
+
+- **Format**: `{TYPE}/{TYPE}-DOC_NUM_{slug}/` folder containing section files
+- **Use for**: Large documents (>25KB), documents requiring splitting, complex multi-section artifacts
+- **Section files**: `TYPE-DOC_NUM.S_{section_type}.md` where S = section number (0, 1, 2, ...)
+- **H1 Title**: `# TYPE-DOC_NUM.S: Section Title` (includes `.S` suffix matching filename)
+- **Folder slug MUST match** the index file slug
+- **Examples**:
+  - `docs/BRD/BRD-03_complex_system/BRD-03.0_index.md`
+  - `docs/BRD/BRD-03_complex_system/BRD-03.1_executive_summary.md`
+  - `docs/BRD/BRD-03_complex_system/BRD-03.2_requirements.md`
+
+### Type-Specific Exceptions
+
+- **BDD**: Uses nested per-suite folders with section-based `.feature` files at `BDD/BDD-DOC_NUM_{slug}/`.
+- **CTR**: Dual-file format (both `.md` and `.yaml`) stored together; use nested folder for multi-file contracts.
 
 
 Universal Numbering Pattern (All Document Types)
@@ -168,12 +196,17 @@ Universal Numbering Pattern (All Document Types)
   - **Section 0**: Always the index file for split documents
 - **Section H1 match**: For section files, the H1 title MUST include the section suffix `.S` to match the filename (e.g., `# BRD-03.1: …`).
 - **Format**:
-  - **Nested Folder Types (BRD, PRD, ADR)** - section ALWAYS required:
+  - **Monolithic Documents (BRD, PRD, ADR)** - flat structure, no section suffix:
+    - **Pattern**: `TYPE-DOC_NUM_{slug}.md` (e.g., `BRD-01_platform_architecture.md`)
+    - **Use for**: MVP templates, single-file documents <25KB
+    - **H1 Title**: `# TYPE-DOC_NUM: Title` (no `.S` suffix)
+    - **Location**: Directly in type directory (no nested folder)
+  - **Section-Based Documents (BRD, PRD, ADR)** - nested folder, section suffix required:
     - **Full pattern**: `TYPE-DOC_NUM.S_{folder_slug}_{section_type}.md` (e.g., `BRD-01.0_platform_architecture_index.md`)
     - **Shortened pattern** (PREFERRED): `TYPE-DOC_NUM.S_{section_type}.md` (e.g., `BRD-01.0_index.md`)
-    - Section is MANDATORY, minimum `.0` for single-file documents
-    - **Shortened Filename Rule**: For BRD, PRD, ADR section files inside nested folders, the descriptive slug MAY be omitted from the filename since the parent folder already contains it. The shortened pattern is PREFERRED for new documents.
-  - **Flat Types (all others)** - section optional:
+    - Section suffix is MANDATORY for all files in nested folders
+    - **Shortened Filename Rule**: For section files inside nested folders, the descriptive slug MAY be omitted since the parent folder contains it.
+  - **Other Types (REQ, TASKS, SPEC, etc.)** - section optional:
     - Atomic: `TYPE-DOC_NUM_{slug}.md` (e.g., `REQ-01_auth.md`, `TASKS-99_service.md`)
     - Split: `TYPE-DOC_NUM.S_{slug}.md` (e.g., `SPEC-100.1_split.md` for SPEC narrative)
     - Note: For SPEC, splitting applies to Markdown narrative; the SPEC YAML remains a single monolithic file for code generation.
@@ -190,13 +223,15 @@ Universal Numbering Pattern (All Document Types)
   - Distinct sections need separate files for maintenance
   - Use `split_type` metadata to distinguish sectional vs related documents
 - **Default by Document Type**:
-  - **BRD, PRD, ADR**: Section-based (`.0`, `.1`, etc.) - section REQUIRED
+  - **BRD, PRD, ADR**:
+    - **Monolithic** (<25KB, MVP): Flat structure `TYPE-DOC_NUM_{slug}.md` - no section suffix
+    - **Section-based** (>25KB, complex): Nested folder with section files - section suffix REQUIRED
   - **All others**: Atomic (no section) - section OPTIONAL
 - **Uniqueness Rule**: Each DOC_NUM is unique within its type
-  - Nested types: `TYPE-DOC_NUM.S_{slug}.md` (e.g., `BRD-01.0_index.md`)
-  - Flat types: `TYPE-DOC_NUM_{slug}.md` (e.g., `REQ-01_auth.md`)
-  - ❌ INVALID: Cannot have both `REQ-09_{slug}.md` AND `REQ-09.0_{slug}.md` (collision)
-  - ✅ VALID: Can have `BRD-09.0_{index}.md` AND `BRD-09.1_{slug}.md` (same DOC_NUM, different sections)
+  - Monolithic: `TYPE-DOC_NUM_{slug}.md` (e.g., `BRD-01_platform.md`)
+  - Section-based: `TYPE-DOC_NUM.S_{slug}.md` (e.g., `BRD-01.0_index.md`)
+  - ❌ INVALID: Cannot have both `BRD-09_platform.md` AND `BRD-09.0_index.md` (collision - same DOC_NUM, different structure)
+  - ✅ VALID: `BRD-09.0_index.md` AND `BRD-09.1_requirements.md` (same DOC_NUM, different sections in nested folder)
 - **Document ID Independence**: Document IDs are independent across types. BRD-09 does NOT necessarily relate to PRD-09, ADR-09, or SPEC-09. Each document type maintains its own sequential numbering.
 
 Document ID Standards (ai_dev_flow)

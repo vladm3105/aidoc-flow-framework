@@ -79,16 +79,41 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
-- **Location**: `docs/BRD/BRD-NN_{slug}/` within project docs directory (nested folder per document with descriptive slug)
+- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → "Using This Repo" for path mapping.
+
+### Two Structure Options
+
+| Structure | Format | Use When |
+|-----------|--------|----------|
+| **Monolithic (Flat)** | `docs/BRD/BRD-NN_{slug}.md` | Single-file documents <25KB, MVP templates |
+| **Section-Based (Nested)** | `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md` | Documents >25KB, complex multi-section |
+
+### Monolithic Structure (Flat - for MVP/small documents)
+
+- **Location**: `docs/BRD/BRD-NN_{slug}.md` (directly in BRD directory, no nested folder)
+- **H1 Title**: `# BRD-NN: Document Title` (no `.S` suffix)
+- **Use for**: MVP templates, single-file documents under 25KB, streamlined BRDs
+- **Examples**:
+  - `docs/BRD/BRD-01_platform_architecture.md`
+  - `docs/BRD/BRD-02_ai_gateway.md`
+- **Rule**: Do NOT create a folder for monolithic files
+
+### Section-Based Structure (Nested - DEFAULT for large documents)
+
+- **Location**: `docs/BRD/BRD-NN_{slug}/` (nested folder per document)
 - **Folder Naming**: `BRD-NN_{slug}/` where slug MUST match the index file slug
-- **Folder Structure** (DEFAULT): `docs/BRD/BRD-NN_{slug}/BRD-NN.S_{slug}.md`
-  - Index file: `docs/BRD/BRD-NN_{slug}/BRD-NN.0_{slug}_index.md`
-  - Section files: `docs/BRD/BRD-NN_{slug}/BRD-NN.1_{slug}_executive_summary.md`, etc.
-- **Platform BRDs**: `BRD-NN_platform_*` (e.g., `docs/BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md`)
-- **Feature BRDs**: `BRD-NN_{feature_name}` (e.g., `docs/BRD/BRD-06_user_authentication/BRD-06.0_user_authentication_index.md`)
-- **Section Files**: Section-based structure is DEFAULT for all BRD documents. Use format: `BRD-NN.S_{slug}_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
-- **Monolithic** (OPTIONAL for <25KB): `docs/BRD/BRD-NN_{slug}/BRD-NN.0_{slug}.md` (single file in folder)
+- **Index file**: `docs/BRD/BRD-NN_{slug}/BRD-NN.0_index.md`
+- **Section files**: `docs/BRD/BRD-NN_{slug}/BRD-NN.1_executive_summary.md`, etc.
+- **H1 Title**: `# BRD-NN.S: Section Title` (includes `.S` suffix)
+- **Use for**: Documents exceeding 25KB, complex multi-section BRDs
+- **Examples**:
+  - `docs/BRD/BRD-03_complex_system/BRD-03.0_index.md`
+  - `docs/BRD/BRD-03_complex_system/BRD-03.1_executive_summary.md`
+
+### BRD Type Naming
+
+- **Platform BRDs**: `BRD-NN_platform_*` or domain-specific slug (e.g., `BRD-01_platform_architecture.md`)
+- **Feature BRDs**: `BRD-NN_{feature_name}` (e.g., `BRD-06_user_authentication.md`)
 
 ---
 
