@@ -539,7 +539,8 @@ def try_minimal_autofix(file: Path, layer: Layer, upstream_ids: Dict[str, str]) 
             return cc
         newc = _fix_sys(content)
     elif layer.name == "REQ":
-        newc = content  # fixing REQ is heavy; rely on skeleton fallback
+        # REQ auto-fixes are intentionally minimal to avoid unintended rewrites
+        newc = content
     elif layer.name == "SPEC":
         # Ensure YAML has required top-level keys; fallback if not
         try:
@@ -561,171 +562,7 @@ def try_minimal_autofix(file: Path, layer: Layer, upstream_ids: Dict[str, str]) 
         file.write_text(newc, encoding="utf-8")
 
 
-def _minimal_brd(nn: str, human_slug: str) -> str:
-    return (
-        f"---\n"
-        f"title: \"BRD-{nn}: {human_slug}\"\n"
-        f"tags:\n  - brd\n  - layer-1-artifact\n"
-        f"custom_fields:\n  document_type: brd\n  artifact_type: BRD\n  layer: 1\n  architecture_approaches: [ai-agent-based]\n  priority: shared\n  development_status: active\n"
-        f"---\n\n"
-        f"# BRD-{nn}: {human_slug}\n\n"
-        f"## 0. Document Control\n"
-        f"| Item | Details |\n|------|---------|\n| Status | Draft |\n| Related PRD | PRD-{nn} |\n\n"
-        f"## 1. Executive Summary\n[One-paragraph summary]\n\n"
-        f"## 2. Business Context\n[Context]\n\n"
-        f"## 3. Business Requirements\n- [ ] MVP Requirement 1\n"
-    )
-
-
-def _minimal_prd(nn: str, human_slug: str, brd_dot: str) -> str:
-    return (
-        f"---\n"
-        f"title: \"PRD-{nn}: {human_slug}\"\n"
-        f"tags:\n  - prd\n  - layer-2-artifact\n"
-        f"custom_fields:\n  document_type: prd\n  artifact_type: PRD\n  layer: 2\n  architecture_approaches: [ai-agent-based]\n  priority: shared\n  development_status: active\n"
-        f"---\n\n"
-        f"# PRD-{nn}: {human_slug}\n\n"
-        f"## 0. Document Control\n| Item | Details |\n|------|---------|\n| Related BRD | @brd: {brd_dot} |\n| Status | Draft |\n\n"
-        f"## 1. Executive Summary\n[Summary]\n\n"
-        f"## 2. Product Vision\n[Vision]\n\n"
-        f"## 3. Functional Requirements\n- [ ] Core capability\n"
-    )
-
-
-def _minimal_ears(nn: str, human_slug: str, brd_dot: str, prd_dot: str) -> str:
-    return (
-        f"---\n"
-        f"title: \"EARS-{nn}: {human_slug}\"\n"
-        f"tags:\n  - ears\n  - layer-3-artifact\n"
-        f"custom_fields:\n  document_type: ears\n  artifact_type: EARS\n  layer: 3\n  priority: shared\n  development_status: active\n"
-        f"---\n\n"
-        f"# EARS-{nn}: {human_slug}\n\n"
-        f"## Document Control\n| Item | Details |\n|------|---------|\n| Source BRD | @brd: {brd_dot} |\n| Source PRD | @prd: {prd_dot} |\n| Status | Draft |\n\n"
-        f"## Purpose\n[Purpose]\n\n"
-        f"## Traceability\n- `@brd: {brd_dot}`\n- `@prd: {prd_dot}`\n\n"
-        f"#### EARS.30.24.01: MVP shall provide basic capability\n\nWHEN a user triggers action THE system SHALL execute core flow.\n"
-    )
-
-
-def _minimal_bdd(nn: str, human_slug: str, brd_dot: str, prd_dot: str, ears_dot: str) -> str:
-    return (
-        f"@brd: {brd_dot} @prd: {prd_dot} @ears: {ears_dot}\n"
-        f"Feature: BDD-{nn} — {human_slug}\n\n"
-        f"  As a user\n  I want a core behavior\n  So that I get value\n\n"
-        f"  Scenario: Primary path\n    Given a precondition\n    When the user performs an action\n    Then the system responds\n"
-    )
-
-
-def _minimal_iplan(nn: str, human_slug: str, brd_dot: str, prd_dot: str, ears_dot: str) -> str:
-    return (
-        f"---\n"
-        f"title: \"IPLAN-{nn}: {human_slug}\"\n"
-        f"tags:\n  - layer-12-artifact\n"
-        f"custom_fields:\n  artifact_type: IPLAN\n  layer: 12\n  parent_tasks: TASKS-{nn}\n  complexity: 3\n"
-        f"---\n\n"
-        f"# IPLAN-{nn}: {human_slug}\n\n"
-        f"## Position in\nLayer 12 — Implementation Plan\n\n"
-        f"## Objective\nDeliver MVP capability\n\n"
-        f"## Context\nLinked to TASKS and SPEC\n\n"
-        f"## Task List\n\n### Phase 1\n- [ ] Setup repository (2 hours)\n\n"
-        f"## Implementation Guide\n```bash\n# commands\n```\n\nVerification: confirm build succeeds.\n\n"
-        f"## Traceability Tags\n- `@brd: {brd_dot}`\n- `@prd: {prd_dot}`\n- `@ears: {ears_dot}`\n- `@bdd: BDD.{nn}.01.01`\n- `@adr: ADR.{nn}.01.01`\n- `@sys: SYS.{nn}.01.01`\n- `@req: REQ.{nn}.01.01`\n- `@spec: SPEC.{nn}`\n- `@tasks: TASKS-{nn}`\n\n"
-        f"## Traceability\n[Describe how this plan maps to requirements]\n\n"
-        f"## Risk\n[Key risks]\n\n"
-        f"## Success Criteria\n[Measurable criteria]\n\n"
-        f"### Prerequisites\n- Access to repo\n\n"
-        f"### Required tools\n- bash\n\n"
-        f"### Required files\n- README.md\n"
-    )
-
-
-def _minimal_adr(nn: str, human_slug: str) -> str:
-    return (
-        f"---\n"
-        f"title: \"ADR-{nn}: {human_slug}\"\n"
-        f"tags:\n  - adr\n  - layer-5-artifact\n"
-        f"custom_fields:\n  document_type: adr\n  artifact_type: ADR\n  layer: 5\n  architecture_approaches: [ai-agent-based]\n  priority: shared\n  development_status: draft\n"
-        f"---\n\n"
-        f"# ADR-{nn}: {human_slug}\n\n"
-        f"## 1. Document Control\n| Item | Details |\n|------|---------|\n| Status | Draft |\n\n"
-        f"## 2. Position in Development Workflow\n[Position]\n\n"
-        f"## 3. Status\nProposed\n\n"
-        f"## 4. Context\n### 4.1 Problem Statement\n[Problem]\n\n### 4.2 Background\n[Background]\n\n### 4.3 Driving Forces\n[Forces]\n\n### 4.4 Constraints\n[Constraints]\n\n"
-        f"## 5. Decision\n### 5.1 Chosen Solution\n[Solution]\n\n### 5.2 Key Components\n[Components]\n\n### 5.3 Implementation Approach\n[Approach]\n\n"
-        f"## 6. Requirements Satisfied\n[Requirements]\n\n"
-        f"## 7. Consequences\n### 7.1 Positive Outcomes\n[Positive]\n\n### 7.2 Negative Outcomes\n[Negative]\n\n"
-        f"## 8. Architecture Flow\n[Flow]\n\n"
-        f"## 9. Implementation Assessment\n[Assessment]\n\n"
-        f"## 10. Impact Analysis\n[Impact]\n\n"
-    )
-
-
-def _minimal_sys(nn: str, human_slug: str, brd_dot: str, prd_dot: str, ears_dot: str, bdd_dot: str, adr_dot: str) -> str:
-    def row(k, v):
-        return f"| {k} | {v} |\n"
-    dc = "| Item | Details |\n|------|---------|\n" + row("Status","Draft") + row("Version","0.1.0") + row("Date","2025-01-04")
-    parts = [
-        f"---\n",
-        f"title: \"SYS-{nn}: {human_slug}\"\n",
-        "tags:\n  - sys\n  - layer-6-artifact\n",
-        "custom_fields:\n  document_type: sys\n  artifact_type: SYS\n  layer: 6\n  architecture_approaches: [ai-agent-based]\n  priority: shared\n  development_status: draft\n",
-        "---\n\n",
-        f"# SYS-{nn}: {human_slug}\n\n",
-        f"## 1. Document Control\n{dc}\n",
-        "## 2. Executive Summary\n[Summary]\n\n",
-        "## 3. Scope\n[Scope]\n\n",
-        "## 4. Functional Requirements\n- FR-001: Describe function\n\n",
-        "## 5. Quality Attributes\nPerformance: target latency 200ms\nSecurity: baseline\n\n",
-        "## 6. Interface Specifications\nExternal Interfaces: API\n\n",
-        "## 7. Data Management\n[Data]\n\n",
-        "## 8. Testing Requirements\nCoverage: 80%\n\n",
-        "## 9. Deployment Requirements\n[Deploy]\n\n",
-        "## 10. Compliance Requirements\n[Compliance]\n\n",
-        "## 11. Acceptance Criteria\n[Criteria]\n\n",
-        "## 12. Risk Assessment\n[Risks]\n\n",
-        f"## 13. Traceability\n@brd: {brd_dot}\n@prd: {prd_dot}\n@ears: {ears_dot}\n@bdd: {bdd_dot}\n@adr: {adr_dot}\n\n",
-        "## 14. Implementation Notes\n[Notes]\n\n",
-        "## 15. Change History\n| Date | Version | Notes |\n|------|---------|-------|\n| 2025-01-04 | 0.1.0 | Initial |\n",
-    ]
-    return "".join(parts)
-
-
-def _minimal_req(nn: str, human_slug: str, brd_dot: str, prd_dot: str, ears_dot: str, bdd_dot: str, adr_dot: str, sys_dot: str) -> str:
-    today = "2025-01-04"
-    return (
-        f"# REQ-{nn}: {human_slug}\n\n"
-        f"## 1. Description\n[Summary]\n\n"
-        f"## 2. Functional Requirements\n- [ ] REQ.{nn}.01.01: MVP function\n\n"
-        f"## 3. Interface Specifications\n[Interfaces]\n\n"
-        f"## 4. Data Schemas\n[Schemas]\n\n"
-        f"## 5. Error Handling Specifications\n[Errors]\n\n"
-        f"## 6. Configuration Specifications\n[Config]\n\n"
-        f"## 7. Quality Attributes\n[QA]\n\n"
-        f"## 8. Implementation Guidance\n[Guidance]\n\n"
-        f"## 9. Acceptance Criteria\n- [ ] Criteria 1\n\n"
-        f"## 10. Verification Methods\n[Methods]\n\n"
-        f"## 11. Traceability\n### Upstream Sources\n| BRD | {brd_dot} |\n| PRD | {prd_dot} |\n| EARS | {ears_dot} |\n| BDD | {bdd_dot} |\n| ADR | {adr_dot} |\n| SYS | {sys_dot} |\n\n### Downstream Artifacts\n[None]\n\n### Code Implementation Paths\n[None]\n\n@brd: {brd_dot}\n@prd: {prd_dot}\n@ears: {ears_dot}\n@bdd: {bdd_dot}\n@adr: {adr_dot}\n@sys: {sys_dot}\n\n"
-        f"## 12. Change History\n| Date | Version | Notes |\n|------|---------|-------|\n| {today} | 1.0.0 | Initial |\n\n"
-        f"## Document Control\n| **Status** | Draft |\n| **Version** | 1.0.0 |\n| **Date Created** | {today} |\n| **Last Updated** | {today} |\n| **Priority** | High (P2) |\n| **Source Document** | SYS-{nn} Section 3 |\n| **SPEC-Ready Score** | ✅ 90% |\n| **Template Version** | 1.0 |\n\n"
-    )
-
-
-def _minimal_spec(nn: str, human_slug: str, brd_dot: str, prd_dot: str, ears_dot: str, bdd_dot: str, adr_dot: str, sys_dot: str, req_dot: str) -> str:
-    today = "2025-01-04"
-    return (
-        f"id: spec_{nn}_{human_slug.lower().replace(' ', '_')}\n"
-        f"summary: Minimal SPEC for {human_slug}\n"
-        f"metadata:\n  version: 0.1.0\n  status: draft\n  created_date: {today}\n  last_updated: {today}\n  authors:\n    - autopilot\n"
-        f"traceability:\n  cumulative_tags:\n    brd: {brd_dot}\n    prd: {prd_dot}\n    ears: {ears_dot}\n    bdd: {bdd_dot}\n    adr: {adr_dot}\n    sys: {sys_dot}\n    req: {req_dot}\n  upstream_sources:\n    business_requirements: [\"{brd_dot}\"]\n"
-        f"architecture:\n  components: []\n"
-        f"interfaces:\n  classes:\n    - name: ApiClient\n      methods:\n        - name: fetch_data\n          inputs: []\n          outputs: []\n"
-        f"behavior:\n  scenarios: []\n"
-        f"performance:\n  latency_targets:\n    p50_milliseconds: 100\n    p95_milliseconds: 200\n    p99_milliseconds: 400\n"
-        f"security:\n  authentication:\n    required: true\n  authorization:\n    enabled: true\n  input_validation:\n    strategy: basic\n"
-        f"observability:\n  metrics:\n    standard_metrics: [cpu_usage]\n  logging:\n    level: INFO\n  health_checks:\n    enabled: true\n"
-        f"verification:\n  bdd_scenarios: []\n  tests: []\n"
-        f"implementation:\n  notes: Minimal implementation plan\n"
-    )
+    # All skeleton-related helpers removed; no minimal templates are generated
 
 
 def run_layer_validation(root_or_file: Path, layer_name: str, strict: bool = False, mvp_validators: bool = False) -> Tuple[bool, str]:
@@ -781,8 +618,10 @@ def main():
     parser.add_argument("--from-layer", default="", help="Start from this layer (e.g., BDD) instead of BRD")
     parser.add_argument("--auto-fix", action="store_true", help="Attempt simple auto-fixes on failures")
     parser.add_argument("--skip-validate", action="store_true", help="Skip validations (generate only)")
+    parser.add_argument("--no-precheck", action="store_true", help="Skip pre-checks (path validator and upstream existence checks)")
+    parser.add_argument("--precheck-strict", action="store_true", help="Treat pre-check failures as fatal (block generation)")
     parser.add_argument("--slug", default="", help="Slug hint for filenames")
-    parser.add_argument("--no-skeleton", action="store_true", help="Disable minimal skeleton fallback (fail if fixes insufficient)")
+    # Skeletons are not supported; no related flags
     parser.add_argument("--strict", action="store_true", help="Treat warnings as errors during validation")
     parser.add_argument("--report", choices=["none","markdown","json","text"], default="none", help="Write a run summary report")
     parser.add_argument("--report-path", default="", help="Custom report file path (defaults to work_plans/)")
@@ -845,8 +684,7 @@ def main():
                 args.auto_fix = _apply_cfg_flag(args.auto_fix, bool(val))
             elif key == "strict":
                 args.strict = _apply_cfg_flag(args.strict, bool(val))
-            elif key == "no_skeleton":
-                args.no_skeleton = _apply_cfg_flag(getattr(args, "no_skeleton", False), bool(val))
+            # no_skeleton removed; skeletons are not supported
             elif key == "mvp_validators":
                 args.mvp_validators = _apply_cfg_flag(args.mvp_validators, bool(val))
             elif key == "report":
@@ -904,6 +742,38 @@ def main():
         return selected
 
     to_run = _filter_layers(LAYERS)
+
+    # Pre-check helpers
+    def _run_path_precheck() -> Tuple[bool, str]:
+        """Run path validator; return (ok, output)."""
+        try:
+            import subprocess
+            script_path = SCRIPT_DIR / "validate_documentation_paths.py"
+            cmd = [sys.executable, str(script_path), "--root", str(root)]
+            if args.precheck_strict:
+                cmd.append("--strict")
+            res = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+            ok = (res.returncode == 0) or (not args.precheck_strict)
+            out = (res.stdout or "") + ("\n" + res.stderr if res.stderr else "")
+            return ok, out.strip()
+        except Exception as e:
+            return False, f"precheck failed: {e}"
+
+    # map layer name -> expected extension for existence checks
+    ext_map: Dict[str, str] = {l.name: l.ext for l in LAYERS}
+
+    def _find_upstream_file(up_name: str, nn: str) -> Optional[Path]:
+        up_dir = root / up_name
+        if not up_dir.exists():
+            return None
+        ext = ext_map.get(up_name, ".md")
+        # Try monolithic pattern first
+        for p in up_dir.glob(f"{up_name}-{nn}_*{ext}"):
+            return p
+        # Fallback to any matching NN (including sectional names)
+        for p in up_dir.glob(f"{up_name}-{nn}*"):
+            return p
+        return None
 
     created_ids: Dict[str, str] = {}
     last_success = True
@@ -1014,43 +884,36 @@ def main():
     effective_nn = args.new_nn if (args.fork_from_nn and args.new_nn and args.new_slug) else args.nn
     effective_slug = args.new_slug if (args.fork_from_nn and args.new_nn and args.new_slug) else args.slug
 
-    # Try loading external skeleton templates (optional) before falling back to inline minimal_*
-    def _load_skeleton_template(layer_name: str) -> Optional[str]:
-        # Allow config override
-        try:
-            sk_over = (cfg or {}).get("skeletons", {})
-            if layer_name in sk_over:
-                p = Path(sk_over[layer_name])
-                if p.exists():
-                    return p.read_text(encoding="utf-8")
-        except Exception:
-            pass
-        # Default locations under each layer dir
-        layer_dir = root / layer_name
-        # Choose extension based on layer
-        exts = [".md"]
-        if layer_name == "BDD":
-            exts = [".feature"]
-        if layer_name == "SPEC":
-            exts = [".yaml", ".yml"]
-        for ext in exts:
-            candidate = layer_dir / f"{layer_name}-SKELETON-TEMPLATE{ext}"
-            if candidate.exists():
-                try:
-                    return candidate.read_text(encoding="utf-8")
-                except Exception:
-                    pass
-        return None
-
-    def _render_skeleton(skel: str, layer_name: str, nn: str, slug_title: str) -> str:
-        # Very simple variable replacement for common placeholders
-        return (
-            skel.replace("{{LAYER}}", layer_name)
-                .replace("{{NN}}", nn)
-                .replace("{{SLUG_TITLE}}", slug_title)
-        )
+    # Skeleton templates removed; no external or inline skeleton support
 
     for layer in to_run:
+        # Optional pre-checks (paths + upstream presence) before generation
+        if not args.no_precheck:
+            ok_paths, out_paths = _run_path_precheck()
+            if not ok_paths:
+                print("⚠️  Pre-Check (paths) reported issues")
+                if out_paths:
+                    print(out_paths)
+                if args.precheck_strict:
+                    print("❌ Pre-Check failed in strict mode; aborting")
+                    last_success = False
+                    break
+
+            # Verify required upstream artifacts exist when not already created in-session
+            missing_up: List[str] = []
+            for up in (layer.upstream_tags or []):
+                if up in created_ids:
+                    continue
+                up_name = up.upper()
+                if not _find_upstream_file(up_name, effective_nn):
+                    missing_up.append(up_name)
+            if missing_up:
+                print(f"⚠️  Pre-Check: missing upstream artifacts for {layer.name}: {', '.join(missing_up)}")
+                if args.precheck_strict:
+                    print("❌ Pre-Check missing upstream (strict); aborting")
+                    last_success = False
+                    break
+
         # Decide target path and whether to generate
         layer_dir = root / layer.name
         slug_eff = effective_slug or (args.intent or layer.name).lower().replace(' ', '_')
@@ -1109,73 +972,12 @@ def main():
                     print(f"🩹 {layer.name} auto-fix succeeded")
                     results.append({"layer": layer.name, "file": str(target), "status": "fixed", "notes": "auto-fix"})
                 else:
-                    # Force minimal skeleton for stubborn layers
-                    nn = args.nn
-                    human_slug = (target.stem.split("_", 1)[1].replace("_", " ").title() if "_" in target.stem else target.stem)
-                    brd_dot = created_ids.get("brd", f"BRD-{nn}").replace("-", ".") + ".01.01"
-                    prd_dot = created_ids.get("prd", f"PRD-{nn}").replace("-", ".") + ".01.01"
-                    ears_dot = created_ids.get("ears", f"EARS-{nn}").replace("-", ".") + ".01.01"
-                    bdd_dot = created_ids.get("bdd", f"BDD-{nn}").replace("-", ".") + ".01.01"
-                    adr_dot = created_ids.get("adr", f"ADR-{nn}").replace("-", ".") + ".01.01"
-                    forced = False
-                    try:
-                        # Prefer external skeleton templates when available
-                        skel = _load_skeleton_template(layer.name)
-                        if skel:
-                            rendered = _render_skeleton(skel, layer.name, nn, human_slug)
-                            target.write_text(rendered, encoding="utf-8")
-                            forced = True
-                        else:
-                            if layer.name == "BRD":
-                                target.write_text(_minimal_brd(nn, human_slug), encoding="utf-8")
-                                forced = True
-                            elif layer.name == "PRD":
-                                target.write_text(_minimal_prd(nn, human_slug, brd_dot), encoding="utf-8")
-                                forced = True
-                            elif layer.name == "EARS":
-                                target.write_text(_minimal_ears(nn, human_slug, brd_dot, prd_dot), encoding="utf-8")
-                                forced = True
-                            elif layer.name == "BDD":
-                                target.write_text(_minimal_bdd(nn, human_slug, brd_dot, prd_dot, ears_dot), encoding="utf-8")
-                                forced = True
-                            elif layer.name == "IPLAN":
-                                target.write_text(_minimal_iplan(nn, human_slug, brd_dot, prd_dot, ears_dot), encoding="utf-8")
-                                forced = True
-                            elif layer.name == "ADR":
-                                target.write_text(_minimal_adr(nn, human_slug), encoding="utf-8")
-                                forced = True
-                            elif layer.name == "SYS":
-                                target.write_text(_minimal_sys(nn, human_slug, brd_dot, prd_dot, ears_dot, bdd_dot, adr_dot), encoding="utf-8")
-                                forced = True
-                            elif layer.name == "REQ":
-                                sys_dot = created_ids.get("sys", f"SYS-{nn}").replace("-", ".") + ".01.01"
-                                target.write_text(_minimal_req(nn, human_slug, brd_dot, prd_dot, ears_dot, bdd_dot, adr_dot, sys_dot), encoding="utf-8")
-                                forced = True
-                            elif layer.name == "SPEC":
-                                req_dot = created_ids.get("req", f"REQ-{nn}").replace("-", ".") + ".01.01"
-                                sys_dot = created_ids.get("sys", f"SYS-{nn}").replace("-", ".") + ".01.01"
-                                target.write_text(_minimal_spec(nn, human_slug, brd_dot, prd_dot, ears_dot, bdd_dot, adr_dot, sys_dot, req_dot), encoding="utf-8")
-                                forced = True
-                    except Exception:
-                        forced = False
-
-                    if forced:
-                        ok3, msg3 = run_layer_validation(target, layer.name, strict=args.strict, mvp_validators=args.mvp_validators)
-                        if ok3:
-                            print(f"🧱 {layer.name} minimal skeleton enforced and passed")
-                            results.append({"layer": layer.name, "file": str(target), "status": "skeleton", "notes": "minimal skeleton"})
-                        else:
-                            print(f"🧱 {layer.name} minimal skeleton still failing")
-                            if msg3:
-                                print(msg3)
-                            last_success = False
-                            results.append({"layer": layer.name, "file": str(target), "status": "fail", "notes": "skeleton failed"})
-                    else:
-                        print(f"🩹 {layer.name} auto-fix did not resolve all issues")
-                        if msg2:
-                            print(msg2)
-                        last_success = False
-                        results.append({"layer": layer.name, "file": str(target), "status": "fail", "notes": "fix failed"})
+                    # Auto-fix did not resolve issues; no skeleton fallback
+                    print(f"🩹 {layer.name} auto-fix did not resolve all issues")
+                    if msg2:
+                        print(msg2)
+                    last_success = False
+                    results.append({"layer": layer.name, "file": str(target), "status": "fail", "notes": "fix failed"})
             else:
                 last_success = False
                 results.append({"layer": layer.name, "file": str(target), "status": "fail", "notes": "no auto-fix"})
@@ -1223,7 +1025,6 @@ def main():
                         "status": summary_status,
                         "up_to": args.up_to,
                         "strict": args.strict,
-                        "no_skeleton": args.no_skeleton,
                         "links_ok": bool(links_result) if links_result is not None else None,
                     },
                     "results": results,
@@ -1236,7 +1037,6 @@ def main():
                     "",
                     f"- Up to: `{args.up_to}`",
                     f"- Strict: `{args.strict}`",
-                    f"- No skeleton: `{args.no_skeleton}`",
                     (f"- Links OK: `{links_result}`" if links_result is not None else "- Links OK: `N/A`"),
                     "",
                     "## Results",

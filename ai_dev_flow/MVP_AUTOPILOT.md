@@ -90,6 +90,8 @@ Tip: Use `--strict` with the path validator when you want failures to block gene
 - `--from-layer`: Start from this layer (e.g., `BDD`) instead of BRD.
 - `--auto-fix`: Enables deterministic auto-fixers (safe rewriting of frontmatter, titles, required sections, tags).
 - `--strict`: Treat warnings as errors (validator must exit code 0).
+- `--no-precheck`: Skip pre-checks (path validator and upstream existence checks).
+- `--precheck-strict`: Fail fast when pre-checks report issues or missing upstreams.
 - `--mvp-validators`: Prefer lighter MVP validators when available (currently uses Python validator for BRD).
 - `--skip-validate`: Generate artifacts only; skip all validators.
 - `--report`: `none|markdown|json|text`. Writes a summary report.
