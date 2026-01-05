@@ -184,7 +184,7 @@ Every API contract requires:
    - **Add**: Reference to this ADR
 
 5. **CTR-TEMPLATE.yaml** (already exists):
-   - **Verify**: Provides OpenAPI/AsyncAPI skeleton
+   - **Verify**: Provides OpenAPI/AsyncAPI base definition
    - **Add**: Comment referencing CTR-TEMPLATE.md
 
 ### Validation

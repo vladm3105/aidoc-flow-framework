@@ -87,7 +87,7 @@ When creating a new ADR:
       docs/ADR/ADR-NN_decision_title.md
    ```
 
-2. **Assign ADR ID**: Use next sequential number (ADR-001, ADR-02, ...)
+2. **Assign ADR ID**: Use next sequential number (ADR-01, ADR-02, ...)
 
 3. **Update This Index**: Add new row to table above
 
@@ -97,7 +97,7 @@ When creating a new ADR:
 
 ## Allocation Rules
 
-- **Numbering**: Allocate sequentially starting at `001`
+- **Numbering**: Allocate sequentially starting at `01`
 - **One Decision Per File**: Each `ADR-NN` covers a single significant architectural decision
 - **Slugs**: Short, descriptive, lower_snake_case
 - **Alternatives Required**: Document at least 2-3 alternatives considered

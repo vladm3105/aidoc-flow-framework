@@ -1638,7 +1638,7 @@ All BRDs must address each of the following 7 categories:
 | 6 | **AI/ML** | BRD.NN.32.06 | Model serving, training, MLOps | No AI/ML components |
 | 7 | **Technology Selection** | BRD.NN.32.07 | Languages, frameworks, platforms | Using existing stack |
 
-**Element Type Code**: `21` = Architecture Topic (see `ID_NAMING_STANDARDS.md`)
+**Element Type Code**: `32` = Architecture Topic (see `ID_NAMING_STANDARDS.md`)
 
 ### 9.2 Required Fields Per Topic
 
@@ -1823,7 +1823,7 @@ Include backup/recovery procedures and connection pooling specifications.
 | Component | Format | Example |
 |-----------|--------|---------|
 | Document ID | `NN` (2+ digit) | `06` (BRD-06) |
-| Element Type | `21` (Architecture Topic) | `21` |
+| Element Type | `32` (Architecture Topic) | `32` |
 | Sequence | `SS` (2+ digit) | `02` (Data Architecture) |
 | Full ID | `BRD.NN.32.SS` | `BRD.06.32.02` |
 
@@ -1862,15 +1862,15 @@ All business objectives in section 2.4 must follow SMART criteria:
 
 ---
 
-## 11.5 Approval and Sign-off Requirements (Template section 15.5)
+## 11.5 Approval and Sign-off Requirements (Template section 14.5)
 
 **Purpose**: Document formal approval process, approval criteria, and change control for the BRD after approval.
 
-**Location in Template**: section 15.5 (Approval and Sign-off) within Project Governance
+**Location in Template**: section 14.5 (Approval and Sign-off) within Project Governance
 
-### Required Subsections (15.5.1-15.5.4)
+### Required Subsections (14.5.1-14.5.4)
 
-#### 15.5.1 Document Approval Table
+#### 14.5.1 Document Approval Table
 
 **Purpose**: Define stakeholders who must approve the BRD
 
@@ -1889,12 +1889,12 @@ All business objectives in section 2.4 must follow SMART criteria:
 - Name/Title initially [TBD], updated when stakeholders assigned
 - Approval Date initially [Pending], updated when approval granted
 
-#### 15.5.2 Approval Criteria
+#### 14.5.2 Approval Criteria
 
 **Purpose**: Define conditions that must be met for BRD approval
 
 **Required Criteria** (minimum):
-1. All stakeholders listed in 15.5.1 have provided written approval
+1. All stakeholders listed in 14.5.1 have provided written approval
 2. All critical business risks (section 10) with risk score ≥12 have documented mitigation strategies
 3. Regulatory compliance requirements validated by legal counsel (if applicable)
 4. Required dependencies (section 16.2) confirmed available or have mitigation plans
@@ -1902,7 +1902,7 @@ All business objectives in section 2.4 must follow SMART criteria:
 
 **Format**: Numbered list with specific, verifiable conditions
 
-#### 15.5.3 Change Control Process for Approved BRD
+#### 14.5.3 Change Control Process for Approved BRD
 
 **Purpose**: Define how changes to approved BRD are managed
 
@@ -1918,7 +1918,7 @@ All business objectives in section 2.4 must follow SMART criteria:
 - Specify approval authority for each change type
 - Map change types to semantic versioning (major.minor.patch)
 
-#### 15.5.4 Approval Status Tracking
+#### 14.5.4 Approval Status Tracking
 
 **Purpose**: Track review and approval progress for each approver
 
@@ -1936,10 +1936,10 @@ All business objectives in section 2.4 must follow SMART criteria:
 ### Best Practices
 
 **Document Approval**:
-- Identify all approvers at BRD draft stage (section 15.5.1)
-- Set approval criteria before starting stakeholder review (section 15.5.2)
-- Track approval status throughout review cycle (section 15.5.4)
-- Use change control process for all post-approval changes (section 15.5.3)
+- Identify all approvers at BRD draft stage (section 14.5.1)
+- Set approval criteria before starting stakeholder review (section 14.5.2)
+- Track approval status throughout review cycle (section 14.5.4)
+- Use change control process for all post-approval changes (section 14.5.3)
 
 **Approval Criteria**:
 - Link to specific BRD sections (e.g., "section 10 critical risks")
@@ -1959,7 +1959,7 @@ All business objectives in section 2.4 must follow SMART criteria:
 - ❌ No change control process defined
 - ❌ Approval table left entirely blank (populate with [TBD])
 
-**Reference**: See BRD-TEMPLATE.md section 15.5 for complete structure and table examples.
+**Reference**: See BRD-TEMPLATE.md section 14.5 for complete structure and table examples.
 
 ---
 

@@ -82,6 +82,15 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 - **Platform vs Feature BRD**: Different validation requirements by type
 - **Business Requirements Quality**: Measurable objectives, acceptance criteria, strategic alignment
 
+### Validation Levels
+
+| Level | Scope | Script | When to Run |
+|-------|-------|--------|-------------|
+| **Individual** | Single BRD file | `validate_brd_template.sh` | After each BRD creation |
+| **Corpus** | Entire BRD set | `validate_brd_corpus.sh` | Before PRD creation begins |
+
+> **Note**: After all BRDs are complete, run corpus-level validation using [BRD_CORPUS_VALIDATION.md](./BRD_CORPUS_VALIDATION.md) before proceeding to PRD layer. This validates cross-document consistency, reference integrity, and corpus-wide quality standards.
+
 ### BRD Document Categories
 
 | Category | Filename Pattern | Validation Level | Description |
@@ -134,6 +143,24 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
 **Validation Behavior**: Skip all checks when filename matches `BRD-00_*` pattern.
+
+### BRD-MVP Reduced Validation
+
+**Purpose**: Validation mode for MVP BRD documents created from `BRD-MVP-TEMPLATE.md`.
+
+**Pattern**: Documents with "MVP" in filename OR containing `template_for: mvp-business-requirements-document` in frontmatter
+
+**Applicable Checks** (10 total):
+- CHECK 1 (partial): Sections 1-13 required (not 14-18)
+- CHECK 2: Document Control Fields (required)
+- CHECK 3: Document Revision History (required)
+- CHECK 4: Filename/ID Format (required)
+- CHECK 13: PRD-Ready Score (required, threshold ≥90/100)
+- CHECK 14-18: FR structure validation (required)
+
+**Exempted Checks** (14 total):
+- CHECK 1 (full): Sections 14-18 exempt
+- CHECK 19-24: Advanced structure checks exempt
 
 ---
 
@@ -209,6 +236,11 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 - Prepared By
 - Status
 - PRD-Ready Score (⭐ NEW - v1.1)
+
+**MVP Template Additional Fields** (optional for validation):
+- MVP Target Launch
+
+These fields are recognized but not required by validation.
 
 **Error Message**:
 ```

@@ -34,6 +34,10 @@ This document defines the complete error code registry, validation rules, and ex
 - Layers 13-15 (Code, Tests, QA): Source code traceability not implemented
 - ICON: Non-layer artifact, optional validation
 
+### MVP Validator Profile
+
+- Validators support a relaxed MVP profile using frontmatter `custom_fields.template_profile: mvp` in MVP templates. Under the MVP profile, certain non-critical checks are downgraded to warnings to speed early drafting. Use the default (full) profile for enterprise/regulatory documents.
+
 ## Exit Code Conventions
 
 | Exit Code | Meaning | CI/CD Action |

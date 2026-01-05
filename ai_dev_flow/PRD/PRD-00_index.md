@@ -85,7 +85,7 @@ When creating a new PRD:
 
 ## Allocation Rules
 
-- **Numbering**: Allocate sequentially starting at `001`; keep numbers stable
+- **Numbering**: Allocate sequentially starting at `01`; keep numbers stable
 - **One Product Per File**: Each `PRD-NN` file covers a coherent product or feature area
 - **Slugs**: Short, descriptive, lower_snake_case
 - **Cross-Links**: Each PRD should reference upstream BRD and downstream EARS/BDD/SYS/REQ

@@ -22,14 +22,19 @@ custom_fields:
   document_type: brd
   artifact_type: BRD
   layer: 1
-  architecture_approaches: [ai-agent-based, traditional-8layer]
+  architecture_approaches: [ai-agent-based]
   priority: shared
-  development_status: active
+  development_status: draft
   template_for: mvp-business-requirements-document
   descriptive_slug: null
   schema_reference: "BRD_SCHEMA.yaml"
   schema_version: "1.0"
   schema_status: optional
+  template_profile: mvp
+  template_source: "BRD-TEMPLATE.md"
+  creation_rules_reference: "BRD_CREATION_RULES.md"
+  validation_rules_reference: "BRD_VALIDATION_RULES.md"
+  traceability_matrix_template: "BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md"
 ---
 
 > **Purpose**: This is a **streamlined BRD template** for Minimum Viable Product (MVP) projects. It maintains framework compliance while reducing documentation overhead for projects focused on delivering core functionality quickly.
@@ -46,7 +51,18 @@ custom_fields:
 > - Multiple partner integrations with complex SLAs
 > - Enterprise-scale projects with extensive stakeholder matrices
 
-> **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_brd.py`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance on validating documents created from this template.
+> **Section Mapping Note**: This MVP template uses condensed section numbering:
+> - MVP Section 13 (Traceability) maps to Full BRD Section 16
+> - MVP Section 14 (Glossary) maps to Full BRD Section 17
+> - MVP Section 15 (Appendices) maps to Full BRD Section 18
+> - Sections 15 (Quality Assurance), 12 (Support), 13 (Cost-Benefit) consolidated/simplified
+
+> **Validation Note**: MVP templates are intentionally streamlined. When validated against `validate_brd_template.sh`:
+> - **Expected Errors**: CHECK 1 (missing sections 15-18), CHECK 20 (detailed user stories), CHECK 22 (full traceability matrix), CHECK 24 (6 glossary subsections)
+> - **Must Pass**: CHECK 2-6, CHECK 13-18 (FR structure)
+> See `scripts/README.md` → "MVP Template Validation" for guidance.
+
+> References: Full Template `BRD-TEMPLATE.md` | Schema `BRD_SCHEMA.yaml` | Rules `BRD_CREATION_RULES.md`, `BRD_VALIDATION_RULES.md` | Matrix `BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ---
 
@@ -61,7 +77,10 @@ custom_fields:
 | **Prepared By** | [Business Analyst name] |
 | **Status** | [Draft / In Review / Approved] |
 | **MVP Target Launch** | [Target date] |
-| **PRD-Ready Score** | [Score]/100 (Target: ≥85/100 for MVP) |
+| **PRD-Ready Score** | [Score]/100 (Target: ≥90/100) |
+
+### Executive Summary (MVP)
+[One-paragraph elevator pitch of the MVP: target users, core value, and expected impact.]
 
 ### Document Revision History
 
@@ -72,6 +91,9 @@ custom_fields:
 ---
 
 ## 1. Introduction
+
+Business Context (MVP):
+[Brief situational context — what business environment or trigger motivates this MVP?]
 
 ### 1.1 Purpose
 This Business Requirements Document (BRD) defines the business requirements for [MVP Project Name]. This document focuses on the **Minimum Viable Product** - the smallest set of features needed to deliver value to early users and validate the core business hypothesis.
@@ -239,6 +261,10 @@ sequenceDiagram
 
 > **Complete user stories**: Detailed user story tables belong in PRD. This section provides high-level summaries for MVP.
 
+> **MVP vs Full BRD**: These user story tables are simplified for MVP scope (5-10 stories).
+> Full BRD Section 5 would contain only category summaries with detailed stories in PRD.
+> For MVP, consolidated tables are acceptable to reduce document count.
+
 **ID Format**: `BRD.NN.09.SS` (User Story)
 
 ### 5.1 Primary User Stories (MVP Essential)
@@ -279,6 +305,12 @@ sequenceDiagram
 - **Future**: Post-MVP enhancements based on user feedback
 
 ### 6.2 MVP Functional Requirements
+
+Quick Core MVP Requirements Checklist:
+- [ ] P1 Requirement 1 (must have for MVP)
+- [ ] P1 Requirement 2
+- [ ] P1 Requirement 3
+
 
 ---
 
@@ -634,6 +666,12 @@ sequenceDiagram
 |------|------------|---------|
 | [MVP Term 1] | [Definition] | [Where used in this BRD] |
 | [MVP Term 2] | [Definition] | [Where used in this BRD] |
+
+> **MVP Simplification**: Full BRD requires 6 glossary subsections (17.1-17.6). MVP consolidates to:
+> - Master Glossary reference (links to shared terms)
+> - MVP-Specific Terms (project-unique terminology)
+>
+> Expand to full structure during Migration to Full BRD (Section 16).
 
 ---
 

@@ -23,6 +23,31 @@ references:
   validation_rules: "BRD_VALIDATION_RULES.md"
 
 # =============================================================================
+# Profiles (Full vs MVP)
+# =============================================================================
+
+profiles:
+  default: full
+  allowed:
+    - full
+    - mvp
+  mvp:
+    enforcement_level: optional
+    notes:
+      - "MVP BRDs are streamlined; structural checks are advisory."
+      - "Accept section name variants like 'MVP Scope' and allow 'Introduction' in place of 'Executive Summary'."
+    section_aliases:
+      required_sections:
+        - name: "Executive Summary"
+          accept:
+            - "^## 1\\. Executive Summary$"
+            - "^## 1\\. Introduction$"  # MVP variant
+        - name: "Scope"
+          accept:
+            - "^## 3\\. Scope$"
+            - "^## 3\\. MVP Scope$"     # MVP variant
+
+# =============================================================================
 # YAML Frontmatter Requirements (OPTIONAL VALIDATION)
 # =============================================================================
 
@@ -72,18 +97,23 @@ metadata:
   optional_custom_fields:
     agent_id:
       type: string
-      pattern: "^AGENT-\\d{3}$"
+      pattern: "^AGENT-\\d{2,}$"
       description: "Required for ai-agent-primary documents"
 
     fallback_reference:
       type: string
-      pattern: "^BRD-\\d{3}$|^traditional-8layer$"
+      pattern: "^BRD-\\d{2,}$|^traditional-8layer$"
       description: "Reference to fallback document"
 
     primary_alternative:
       type: string
-      pattern: "^BRD-\\d{3}$"
+      pattern: "^BRD-\\d{2,}$"
       description: "Reference to primary alternative document"
+
+    template_profile:
+      type: string
+      allowed_values: ["mvp", "full"]
+      description: "Template profile hint for validators (e.g., 'mvp')"
 
   # Required tags
   required_tags:
@@ -96,7 +126,7 @@ metadata:
     - "^feature-brd$"           # Use 'brd' instead
     - "^business-requirements$" # Use 'brd' for document_type
     - "^business_requirements$" # Use 'brd' for document_type
-    - "^brd-\\d{3}$"            # Don't include document number in tags
+    - "^brd-\\d{2,}$"           # Don't include document number in tags
 
 # =============================================================================
 # Document Structure Requirements (OPTIONAL VALIDATION)
@@ -105,7 +135,7 @@ metadata:
 structure:
   # Required sections (in order)
   required_sections:
-    - pattern: "^# BRD-\\d{3}:|^# Business Requirements Document"
+    - pattern: "^# BRD-\\d{2,}:|^# Business Requirements Document"
       name: "Title (H1)"
       description: "Single H1 with format BRD-NN: Title or generic title"
 
@@ -149,15 +179,16 @@ structure:
 requirement_patterns:
   # Requirement ID format (Simple Numeric - per ID_NAMING_STANDARDS.md)
   requirement_id:
-    pattern: "^\\d{3}$"
-    format: "NNN"
-    description: "Simple 3-digit sequential requirement ID within document"
+    pattern: "^\\d{2,}$"
+    format: "NN+"
+    description: "Sequential requirement ID within document (starts at 2 digits, expands as needed)"
     examples:
-      - "001"
-      - "015"
-      - "042"
+      - "01"
+      - "15"
+      - "42"
+      - "100"
     cross_reference_format:
-      pattern: "@brd: BRD.NN.01.SS"
+      pattern: "@brd: BRD.NN.TT.SS"
       example: "@brd: BRD.01.01.15"
       description: "Cross-reference format: DOC_NUM.ELEM_TYPE.SEQ (unified 4-segment format)"
 

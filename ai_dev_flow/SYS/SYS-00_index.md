@@ -89,7 +89,7 @@ When creating a new SYS document:
 
 ## Allocation Rules
 
-- **Numbering**: Allocate sequentially starting at `001`
+- **Numbering**: Allocate sequentially starting at `01`
 - **One System Area Per File**: Each `SYS-NN` covers a coherent system area
 - **Slugs**: Short, descriptive, lower_snake_case
 - **Decomposition**: Each SYS should decompose into atomic REQ documents

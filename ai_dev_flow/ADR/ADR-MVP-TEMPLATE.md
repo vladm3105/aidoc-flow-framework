@@ -7,6 +7,7 @@ Constraints:
 - Analyze 2-3 viable alternatives maximum.
 - Be decisive; clear recommendation required.
 - Keep implementation notes focused on immediate MVP needs.
+- Maintain single-file structure (no document splitting in MVP).
 AI_CONTEXT_END
 -->
 ---
@@ -19,10 +20,18 @@ custom_fields:
   document_type: template
   artifact_type: ADR
   layer: 5
-  architecture_approaches: [ai-agent-based, traditional-8layer]
+  architecture_approaches: [ai-agent-based]
   priority: shared
-  development_status: active
+  development_status: draft
   template_variant: mvp
+  template_profile: mvp
+  template_source: "ADR-TEMPLATE.md"
+  schema_reference: "ADR_SCHEMA.yaml"
+  schema_version: "1.0"
+  schema_status: optional
+  creation_rules_reference: "ADR_CREATION_RULES.md"
+  validation_rules_reference: "ADR_VALIDATION_RULES.md"
+  traceability_matrix_template: "ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md"
 ---
 
 > **MVP Template** — Single-file, streamlined ADR for rapid MVP decisions.
@@ -30,6 +39,8 @@ custom_fields:
 > For comprehensive ADRs (complex tradeoffs, extensive analysis), use `ADR-TEMPLATE.md`.
 
 > **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_adr.py`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
+
+> References: Full Template `ADR-TEMPLATE.md` | Schema `ADR_SCHEMA.yaml` | Rules `ADR_CREATION_RULES.md`, `ADR_VALIDATION_RULES.md` | Matrix `ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # ADR-NN: [Architecture Decision Title]
 

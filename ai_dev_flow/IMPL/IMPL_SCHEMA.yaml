@@ -91,7 +91,7 @@ metadata:
     - "^implementation-plan$"       # Use 'impl' instead
     - "^implementation_plan$"       # Use 'impl' instead
     - "^project-plan$"              # Use 'impl' instead
-    - "^impl-\\d{3}$"               # Don't include document number in tags
+    - "^impl-\\d{2,}$"              # Don't include document number in tags
 
 # =============================================================================
 # Document Structure Requirements
@@ -100,7 +100,7 @@ metadata:
 structure:
   # Required sections (based on IMPL-TEMPLATE.md 4-part structure)
   required_sections:
-    - pattern: "^# IMPL-\\d{3}:"
+    - pattern: "^# IMPL-\\d{2,}:"
       name: "Title (H1)"
       description: "Single H1 with format IMPL-NN: Title"
 
@@ -155,15 +155,15 @@ structure:
       - "Cancelled"
 
     impl_id_format:
-      pattern: "^IMPL-\\d{3}$"
+      pattern: "^IMPL-\\d{2,}$"
       description: "Format: IMPL-NN"
 
     related_reqs_format:
-      pattern: "REQ-\\d{3}"
+      pattern: "REQ-\\d{2,}"
       description: "Must reference at least one REQ document"
 
     deliverables_format:
-      pattern: "(CTR|SPEC|TASKS)-\\d{3}"
+      pattern: "(CTR|SPEC|TASKS)-\\d{2,}"
       description: "Must list downstream deliverables (CTR, SPEC, TASKS)"
 
   # Section numbering rules
@@ -202,12 +202,13 @@ phase_patterns:
 
 risk_patterns:
   risk_id:
-    pattern: "^R-\\d{3}$"
-    format: "R-{sequence}"
-    description: "Risk identifier format"
+    pattern: "^R-\\d{2,}$"
+    format: "R-NN+"
+    description: "Risk identifier format (starts at 2 digits, expands as needed)"
     examples:
-      - "R-001"
-      - "R-002"
+      - "R-01"
+      - "R-15"
+      - "R-100"
 
   risk_table:
     required_columns:

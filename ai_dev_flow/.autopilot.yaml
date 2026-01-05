@@ -1,0 +1,21 @@
+# Default MVP Autopilot configuration (optional)
+# This file is auto-detected by mvp_autopilot.py unless overridden with --config
+
+defaults:
+  auto_fix: true
+  mvp_validators: true
+  report: markdown
+
+# default_profile: mvp
+
+profiles:
+  mvp:
+    auto_fix: true
+    strict: false
+    mvp_validators: true
+    report: markdown
+  strict:
+    auto_fix: true
+    strict: true
+    no_skeleton: true
+    report: markdown

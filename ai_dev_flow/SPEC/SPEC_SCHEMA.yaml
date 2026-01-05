@@ -20,12 +20,24 @@ references:
   validation_rules: "SPEC_VALIDATION_RULES.md"
 
 # =============================================================================
+# Profiles (Full vs MVP)
+# =============================================================================
+
+profiles:
+  default: full
+  allowed: [full, mvp]
+  mvp:
+    enforcement_level: optional
+    notes:
+      - "MVP SPECs may omit non-critical sections; validators treat breadth/coverage gaps as warnings."
+
+# =============================================================================
 # File Format Requirements
 # =============================================================================
 
 file_format:
   extension: ".yaml"
-  naming_pattern: "^SPEC-\\d{3}_[a-z0-9_]+\\.yaml$"
+  naming_pattern: "^SPEC-\\d{2,}_[a-z0-9_]+\\.yaml$"
   description: "Format: SPEC-NN_descriptive_name.yaml"
   encoding: "UTF-8"
   yaml_version: "1.2"
@@ -175,6 +187,11 @@ metadata_schema:
       pattern: "^✅ \\d+% \\(Target: ≥\\d+%\\)$"
       description: "Quality gate score"
 
+    template_profile:
+      type: string
+      allowed_values: ["mvp", "full"]
+      description: "Template profile hint for validators (e.g., 'mvp')"
+
     reviewers:
       type: array
       item_schema:
@@ -221,32 +238,32 @@ traceability_schema:
       required_fields:
         brd:
           type: string
-          pattern: "^BRD-\\d{3}:[A-Z]+-\\d{3}$"
+          pattern: "^BRD-\\d{2,}:[A-Z]+-\\d{2,}$"
         prd:
           type: string
-          pattern: "^PRD-\\d{3}:[A-Z]+-\\d{3}$"
+          pattern: "^PRD-\\d{2,}:[A-Z]+-\\d{2,}$"
         ears:
           type: string
-          pattern: "^EARS-\\d{3}:\\d{3}$"
+          pattern: "^EARS-\\d{2,}:\\d{2,}$"
         bdd:
           type: string
-          pattern: "^BDD-\\d{3}:[a-z\\-]+"
+          pattern: "^BDD-\\d{2,}:[a-z\\-]+"
         adr:
           type: string
-          pattern: "^ADR-\\d{3}$"
+          pattern: "^ADR-\\d{2,}$"
         sys:
           type: string
-          pattern: "^SYS-\\d{3}:[A-Z]+-\\d{3}$"
+          pattern: "^SYS-\\d{2,}:[A-Z]+-\\d{2,}$"
         req:
           type: string
-          pattern: "^REQ-\\d{3}:[a-z\\-]+"
+          pattern: "^REQ-\\d{2,}:[a-z\\-]+"
       optional_fields:
         impl:
           type: string
-          pattern: "^IMPL-\\d{3}:[a-z\\-]+"
+          pattern: "^IMPL-\\d{2,}:[a-z\\-]+"
         ctr:
           type: string
-          pattern: "^CTR-\\d{3}$"
+          pattern: "^CTR-\\d{2,}$"
 
   optional_sections:
     system_requirements:

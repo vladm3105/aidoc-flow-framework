@@ -20,6 +20,18 @@ references:
   validation_rules: "BDD_VALIDATION_RULES.md"
 
 # =============================================================================
+# Profiles (Full vs MVP)
+# =============================================================================
+
+profiles:
+  default: full
+  allowed: [full, mvp]
+  mvp:
+    enforcement_level: optional
+    notes:
+      - "MVP BDDs may include a reduced scenario set; completeness checks are warnings."
+
+# =============================================================================
 # DOCUMENT AUTHORITY
 # =============================================================================
 # BDD-TEMPLATE.feature is the PRIMARY AUTHORITY (single source of truth).
@@ -83,18 +95,23 @@ metadata:
   optional_custom_fields:
     agent_id:
       type: string
-      pattern: "^AGENT-\\d{3}$"
+      pattern: "^AGENT-\\d{2,}$"
       description: "Required for ai-agent-primary documents"
 
     source_prd:
       type: string
-      pattern: "^PRD-\\d{3}$"
+      pattern: "^PRD-\\d{2,}$"
       description: "Alternative to Source Document in table"
 
     source_ears:
       type: string
-      pattern: "^EARS-\\d{3}$"
+      pattern: "^EARS-\\d{2,}$"
       description: "Reference to source EARS document"
+
+    template_profile:
+      type: string
+      allowed_values: ["mvp", "full"]
+      description: "Template profile hint for validators (e.g., 'mvp')"
 
   # Required tags
   required_tags:
@@ -106,7 +123,7 @@ metadata:
     - "^bdd-feature$"           # Use 'bdd' instead
     - "^bdd-scenarios$"         # Use 'bdd' instead
     - "^bdd-document$"          # Use 'bdd' instead
-    - "^bdd-\\d{3}$"            # Don't include document number in tags
+    - "^bdd-\\d{2,}$"            # Don't include document number in tags
     - "^behavior-driven$"       # Use 'bdd' for document_type
 
 # =============================================================================
@@ -344,20 +361,20 @@ gherkin_patterns:
       - "@recovery"
 
     traceability_tags:
-      - pattern: "@brd:\\s*BRD\\.\\d{3}\\.\\d{3}"
+      - pattern: "@brd:\\s*BRD\\.\\d{2,}\\.\\d{2,}"
         description: "BRD traceability tag"
         required: true   # MANDATORY per BDD-TEMPLATE.feature
-      - pattern: "@prd:\\s*PRD\\.\\d{3}\\.\\d{3}"
+      - pattern: "@prd:\\s*PRD\\.\\d{2,}\\.\\d{2,}"
         description: "PRD traceability tag"
         required: true   # MANDATORY per BDD-TEMPLATE.feature
-      - pattern: "@ears:\\s*EARS\\.\\d{3}\\.\\d{3}"
+      - pattern: "@ears:\\s*EARS\\.\\d{2,}\\.\\d{2,}"
         description: "EARS traceability tag"
         required: true   # MANDATORY per BDD-TEMPLATE.feature
-      - pattern: "@requirement:\\[REQ-\\d{3}\\]"
+      - pattern: "@requirement:\\[REQ-\\d{2,}\\]"
         description: "REQ traceability tag"
-      - pattern: "@adr:\\[ADR-\\d{3}\\]"
+      - pattern: "@adr:\\[ADR-\\d{2,}\\]"
         description: "ADR traceability tag"
-      - pattern: "@threshold:\\s*PRD-\\d{3}:[a-z_]+\\.[a-z_]+(?:\\.[a-z_]+)?"
+      - pattern: "@threshold:\\s*PRD-\\d{2,}:[a-z_]+\\.[a-z_]+(?:\\.[a-z_]+)?"
         description: "Threshold registry reference for quantitative values"
         example: "@threshold: PRD.035.perf.api.p95_latency"
         required: false

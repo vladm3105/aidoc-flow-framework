@@ -20,6 +20,18 @@ references:
   validation_rules: "CTR_VALIDATION_RULES.md"
 
 # =============================================================================
+# Profiles (Full vs MVP)
+# =============================================================================
+
+profiles:
+  default: full
+  allowed: [full, mvp]
+  mvp:
+    enforcement_level: optional
+    notes:
+      - "MVP contracts may define minimal fields for iteration; validators treat omissions as warnings."
+
+# =============================================================================
 # YAML Frontmatter Requirements
 # =============================================================================
 
@@ -69,8 +81,13 @@ metadata:
   optional_custom_fields:
     agent_id:
       type: string
-      pattern: "^AGENT-\\d{3}$"
+      pattern: "^AGENT-\\d{2,}$"
       description: "Required for ai-agent-primary documents"
+
+    template_profile:
+      type: string
+      allowed_values: ["mvp", "full"]
+      description: "Template profile hint for validators (e.g., 'mvp')"
 
     template_for:
       type: string
@@ -86,7 +103,7 @@ metadata:
     - "^ctr-document$"          # Use 'ctr' instead
     - "^contract$"              # Use 'ctr' instead
     - "^api-contract$"          # Use 'ctr' instead
-    - "^ctr-\\d{3}$"            # Don't include document number in tags
+    - "^ctr-\\d{2,}$"           # Don't include document number in tags
 
 # =============================================================================
 # Document Structure Requirements (Dual-File Format)
@@ -98,14 +115,14 @@ structure:
     documentation: ".md"
     schema: ".yaml"
     naming_pattern:
-      md: "^CTR-\\d{3}_[a-z0-9_]+\\.md$"
-      yaml: "^CTR-\\d{3}_[a-z0-9_]+\\.yaml$"
+      md: "^CTR-\\d{2,}_[a-z0-9_]+\\.md$"
+      yaml: "^CTR-\\d{2,}_[a-z0-9_]+\\.yaml$"
     description: "CTR-NN_descriptive_name.md + CTR-NN_descriptive_name.yaml"
 
   # Required sections in .md file (organized in 5 parts)
   required_sections:
     # Part 1: Contract Context and Requirements
-    - pattern: "^# CTR-\\d{3}:"
+    - pattern: "^# CTR-\\d{2,}:"
       name: "Title (H1)"
       description: "Single H1 with format CTR-NN: Title"
 

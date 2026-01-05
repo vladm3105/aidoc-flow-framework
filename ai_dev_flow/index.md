@@ -4,6 +4,8 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 
 > Units & Conversions (KB vs tokens): KB = 1,024 bytes; tokens ≈ 4 characters. Rough conversions: tokens ≈ (KB × 1024) ÷ 4 and KB ≈ (tokens × 4) ÷ 1024. Examples: 10 KB ≈ 2,500 tokens; 50 KB ≈ 12,500 tokens; 10,000 tokens ≈ 39 KB.
 
+> MVP Note: MVP templates are single, flat files. Ignore document splitting and `DOCUMENT_SPLITTING_RULES.md` when using the MVP track.
+
 ## Framework Purpose
 
 This framework is a sophisticated and well-conceived system for a new paradigm of software development where human architects design systems and AI assistants build them.

@@ -20,6 +20,21 @@ references:
   validation_rules: "PRD_VALIDATION_RULES.md"
 
 # =============================================================================
+# Profiles (Full vs MVP)
+# =============================================================================
+
+profiles:
+  default: full
+  allowed:
+    - full
+    - mvp
+  mvp:
+    enforcement_level: optional
+    notes:
+      - "MVP PRDs are streamlined; some sections may be condensed or omitted."
+      - "Validators should treat missing non-critical sections as warnings."
+
+# =============================================================================
 # YAML Frontmatter Requirements
 # =============================================================================
 
@@ -69,18 +84,23 @@ metadata:
   optional_custom_fields:
     agent_id:
       type: string
-      pattern: "^AGENT-\\d{3}$"
+      pattern: "^AGENT-\\d{2,}$"
       description: "Required for ai-agent-primary documents"
 
     fallback_reference:
       type: string
-      pattern: "^PRD-\\d{3}$|^traditional-8layer$"
+      pattern: "^PRD-\\d{2,}$|^traditional-8layer$"
       description: "Reference to fallback document"
 
     primary_alternative:
       type: string
-      pattern: "^PRD-\\d{3}$"
+      pattern: "^PRD-\\d{2,}$"
       description: "Reference to primary alternative document"
+
+    template_profile:
+      type: string
+      allowed_values: ["mvp", "full"]
+      description: "Template profile hint for validators (e.g., 'mvp')"
 
   # Required tags
   required_tags:
@@ -93,7 +113,7 @@ metadata:
     - "^feature-prd$"           # Use 'prd' instead
     - "^product-requirements$"  # Use 'prd' for document_type
     - "^product_requirements$"  # Use 'prd' for document_type
-    - "^prd-\\d{3}$"            # Don't include document number in tags
+    - "^prd-\\d{2,}$"            # Don't include document number in tags
 
 # =============================================================================
 # Document Structure Requirements

@@ -190,7 +190,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 ### 3.3 Phase 2: Implementation
 
 #### 2.1 Component Foundation
-- **Action**: Create base structures, interfaces, and skeletons
+- **Action**: Create base structures, interfaces, and scaffolds
 - **Deliverables**:
   - Class/module structure matching specification
   - Interface definitions and type annotations

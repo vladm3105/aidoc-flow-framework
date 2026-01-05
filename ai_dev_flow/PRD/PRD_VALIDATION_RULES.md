@@ -134,7 +134,7 @@ All PRD requirements must include:
 | Target Release | Release version/Quarter | OPTIONAL |
 | Estimated Effort | Story Points or Person-Months | OPTIONAL |
 
-**Note**: Optional fields are recommended but not validation-blocking. Document Revision History table is also optional but recommended.
+**Note**: Optional fields (Priority, Target Release, Estimated Effort) are recommended but not validation-blocking. Document Revision History table is recommended but optional for Draft status; required for Review/Approved status.
 
 **Error Messages**:
 ```
@@ -442,7 +442,7 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 **section 1 - Document Control**:
 - 11 required fields present (See CHECK 1)
 - Dual scoring with ≥90% thresholds (See CHECK 2-3)
-- Document Revision History table with at least one entry
+- Document Revision History table with at least one initial entry (required for Review/Approved status)
 
 **section 2 - Executive Summary**:
 - 2-3 sentence overview

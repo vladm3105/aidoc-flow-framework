@@ -24,6 +24,8 @@ Development Principles Guide
 - SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
+> MVP Mode: For MVP workflows, use single flat files and ignore splitting rules and references to `DOCUMENT_SPLITTING_RULES.md`.
+
 > ⚠️ **Token Limit Update (2025-11)**: This guide contains historical 10K token limits.
 > For current token limits (Claude Code: 50K-100K), see [AI_TOOL_OPTIMIZATION_GUIDE.md](./AI_TOOL_OPTIMIZATION_GUIDE.md).
 >

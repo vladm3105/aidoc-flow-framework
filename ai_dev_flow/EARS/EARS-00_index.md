@@ -87,7 +87,7 @@ When creating a new EARS document:
 
 ## Allocation Rules
 
-- **Numbering**: Allocate sequentially starting at `001`
+- **Numbering**: Allocate sequentially starting at `01`
 - **One Area Per File**: Each `EARS-NN` file covers a coherent requirement area
 - **Slugs**: Short, descriptive, lower_snake_case
 - **Testability**: Every requirement must be verifiable through testing

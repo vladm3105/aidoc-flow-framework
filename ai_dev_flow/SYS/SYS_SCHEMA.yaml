@@ -20,6 +20,18 @@ references:
   validation_rules: "SYS_VALIDATION_RULES.md"
 
 # =============================================================================
+# Profiles (Full vs MVP)
+# =============================================================================
+
+profiles:
+  default: full
+  allowed: [full, mvp]
+  mvp:
+    enforcement_level: optional
+    notes:
+      - "MVP SYS documents may outline only core systems and interfaces; completeness checks are warnings."
+
+# =============================================================================
 # YAML Frontmatter Requirements
 # =============================================================================
 
@@ -69,8 +81,13 @@ metadata:
   optional_custom_fields:
     agent_id:
       type: string
-      pattern: "^AGENT-\\d{3}$"
+      pattern: "^AGENT-\\d{2,}$"
       description: "Required for ai-agent-primary documents"
+
+    template_profile:
+      type: string
+      allowed_values: ["mvp", "full"]
+      description: "Template profile hint for validators (e.g., 'mvp')"
 
     template_for:
       type: string
@@ -85,7 +102,7 @@ metadata:
   forbidden_tag_patterns:
     - "^system-requirements$"     # Use 'sys' instead
     - "^sys-doc$"                 # Use 'sys' instead
-    - "^sys-\\d{3}$"              # Don't include document number in tags
+    - "^sys-\\d{2,}$"             # Don't include document number in tags
 
 # =============================================================================
 # Document Structure Requirements
@@ -94,7 +111,7 @@ metadata:
 structure:
   # Required sections (15 sections)
   required_sections:
-    - pattern: "^# SYS-\\d{3}:"
+    - pattern: "^# SYS-\\d{2,}:"
       name: "Title (H1)"
       description: "Single H1 with format SYS-NN: Title"
 
@@ -191,7 +208,7 @@ structure:
 
   # File naming convention
   file_naming:
-    pattern: "^SYS-\\d{3}_[a-z0-9_]+\\.md$"
+    pattern: "^SYS-\\d{2,}_[a-z0-9_]+\\.md$"
     description: "Format: SYS-NN_descriptive_name.md"
 
 # =============================================================================
@@ -201,8 +218,8 @@ structure:
 sys_patterns:
   # Functional requirement format
   functional_requirements:
-    format: "FR-NNN"
-    pattern: "^FR-\\d{3}$"
+    format: "FR-NN+"
+    pattern: "^FR-\\d{2,}$"
     description: "Functional requirement identifier"
     table_columns:
       - "FR-ID"

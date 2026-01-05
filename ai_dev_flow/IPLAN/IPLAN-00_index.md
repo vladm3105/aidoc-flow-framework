@@ -146,7 +146,7 @@ When creating a new IPLAN document:
 
 ## Allocation Rules
 
-- **Numbering**: Allocate sequentially starting at `001`; keep numbers stable
+- **Numbering**: Allocate sequentially starting at `01`; keep numbers stable
 - **One Plan Per File**: Each `IPLAN-NN` file covers one implementation session or phase
 - **Slugs**: Short, descriptive, lower_case_with_underscores
 - **Cross-Links**: Reference parent TASKS and all upstream artifacts via tags

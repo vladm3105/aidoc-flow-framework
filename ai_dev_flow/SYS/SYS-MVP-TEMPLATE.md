@@ -19,17 +19,28 @@ custom_fields:
   document_type: template
   artifact_type: SYS
   layer: 6
-  architecture_approaches: [ai-agent-based, traditional-8layer]
+  architecture_approaches: [ai-agent-based]
   priority: shared
-  development_status: active
+  development_status: draft
   template_variant: mvp
+  template_profile: mvp
+  template_source: "SYS-TEMPLATE.md"
+  schema_reference: "SYS_SCHEMA.yaml"
+  schema_version: "1.0"
+  schema_status: optional
+  creation_rules_reference: "SYS_CREATION_RULES.md"
+  validation_rules_reference: "SYS_VALIDATION_RULES.md"
+  traceability_matrix_template: "SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md"
 ---
 
 > **MVP Template** — Single-file, streamlined SYS for rapid MVP development.
+> MVP Note: Single flat file; do not use `DOCUMENT_SPLITTING_RULES.md`.
 > Use this template for MVPs with focused system scope (5-10 core capabilities).
 > For comprehensive system specs (20+ capabilities, enterprise), use `SYS-TEMPLATE.md`.
 
 > **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_sys.py`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
+
+> References: Full Template `SYS-TEMPLATE.md` | Schema `SYS_SCHEMA.yaml` | Rules `SYS_CREATION_RULES.md`, `SYS_VALIDATION_RULES.md` | Matrix `SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # SYS-NN: [System/Component Name]
 

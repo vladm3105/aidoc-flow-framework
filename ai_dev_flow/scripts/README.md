@@ -16,6 +16,8 @@ Note: See README.md → “Using This Repo” for path mapping and validator gui
 
 Path mapping reminder: Examples often show a `docs/` prefix. In this repository, artifact directories are at the root of `ai_dev_flow/` — drop the `docs/` prefix when running commands here.
 
+MVP Validator Profile: Validators support a relaxed MVP profile when documents include `custom_fields.template_profile: mvp` in frontmatter. This downgrades certain non-critical checks to warnings to accelerate early drafting. Use full templates without the MVP profile for strict/enterprise needs.
+
 ## Traceability Rules (REQUIRED vs OPTIONAL)
 
 All validation scripts enforce these centralized traceability rules:
@@ -901,6 +903,8 @@ Matrix templates for each document type:
 ### Overview
 
 MVP (Minimum Viable Product) templates provide streamlined versions of full document templates. These are single-file, monolithic templates designed for rapid development with reduced documentation overhead.
+
+> MVP uses flat files only. Do not apply document splitting rules or references to `DOCUMENT_SPLITTING_RULES.md` when working with `*-MVP-TEMPLATE.*` artifacts or the MVP workflow.
 
 **Available MVP Templates:**
 - `BRD/BRD-MVP-TEMPLATE.md` (~600 lines vs ~2,400 lines full)

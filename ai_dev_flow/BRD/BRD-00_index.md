@@ -22,7 +22,7 @@ Purpose
 
 Allocation Rules
 
-- Numbering: allocate sequentially starting at `001`; keep numbers stable.
+- Numbering: allocate sequentially starting at `01`; keep numbers stable.
 - BRDs define high-level business objectives, market context, and strategic goals.
 - Each BRD should link to downstream PRDs that translate business requirements into product features.
 - BRDs are typically created during initial project planning and major strategic initiatives.

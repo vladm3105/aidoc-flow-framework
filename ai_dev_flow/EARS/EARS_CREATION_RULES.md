@@ -63,7 +63,7 @@ custom_fields:
 
 - Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `docs/EARS/` within project docs directory
-- **Naming**: `EARS-NN_descriptive_title.md` (NN = 3-digit sequential number)
+- **Naming**: `EARS-NN_descriptive_title.md` (NN = 2-digit minimum, expand when needed)
 - **Subdocuments**: For complex systems: `EARS-NN-YY_additional_detail.md`
 
 ---
@@ -453,7 +453,7 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 
 ---
 
-## 13. Cross-Document Validation (MANDATORY)
+## 15. Cross-Document Validation (MANDATORY)
 
 **CRITICAL**: Execute cross-document validation IMMEDIATELY after creating any EARS document. Do NOT proceed to downstream artifacts until validation passes.
 
@@ -510,7 +510,7 @@ python scripts/validate_cross_document.py --layer EARS --auto-fix
 
 ---
 
-## 15. Requirement Counting and total_requirements Field
+## 16. Requirement Counting and total_requirements Field
 
 ### Overview
 
@@ -564,7 +564,7 @@ Run `python scripts/validate_ears.py --check-counts` to verify:
 
 ---
 
-## 16. Adding New Requirement Categories
+## 17. Adding New Requirement Categories
 
 ### When to Create a New Category
 

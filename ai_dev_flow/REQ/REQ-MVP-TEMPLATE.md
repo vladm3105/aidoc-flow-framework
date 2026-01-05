@@ -7,6 +7,7 @@ Constraints:
 - Ensure SPEC-ready clarity (Inputs, Processing, Outputs).
 - Use distinct P1/P2 priorities.
 - Do not create external references to non-existent files.
+ - Maintain single-file structure (no document splitting in MVP).
 AI_CONTEXT_END
 -->
 ---
@@ -19,10 +20,18 @@ custom_fields:
   document_type: template
   artifact_type: REQ
   layer: 7
-  architecture_approaches: [ai-agent-based, traditional-8layer]
+  architecture_approaches: [ai-agent-based]
   priority: shared
-  development_status: active
+  development_status: draft
   template_variant: mvp
+  template_profile: mvp
+  template_source: "REQ-TEMPLATE.md"
+  schema_reference: "REQ_SCHEMA.yaml"
+  schema_version: "1.0"
+  schema_status: optional
+  creation_rules_reference: "REQ_CREATION_RULES.md"
+  validation_rules_reference: "REQ_VALIDATION_RULES.md"
+  traceability_matrix_template: "REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md"
 ---
 
 > **MVP Template** — Single-file, streamlined REQ for rapid MVP development.
@@ -30,6 +39,8 @@ custom_fields:
 > For comprehensive requirements (50+ detailed specs), use `REQ-TEMPLATE.md`.
 
 > **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_req_template.sh`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
+
+> References: Full Template `REQ-TEMPLATE.md` | Schema `REQ_SCHEMA.yaml` | Rules `REQ_CREATION_RULES.md`, `REQ_VALIDATION_RULES.md` | Matrix `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # REQ-NN: [Requirement Title]
 

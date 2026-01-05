@@ -130,7 +130,7 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 
 ---
 
-## 1. File Organization and Directory Structure
+## 0. File Organization and Directory Structure
 
 - **Location**: `docs/PRD/PRD-NN_{slug}/` within project docs directory (nested folder per document with descriptive slug)
 - **Folder Naming**: `PRD-NN_{slug}/` where slug MUST match the index file slug
@@ -765,6 +765,7 @@ PRDs vary in structure based on domain. Select the appropriate variant at PRD cr
 | Variant | Section Count | Primary Use Case | Key Differences |
 |---------|---------------|------------------|-----------------|
 | **Standard** | 21 sections (1-21) | Business features, core platform, user-facing products | Full template with comprehensive business analysis |
+| **MVP** | 17 sections | Rapid prototyping, hypothesis validation, short cycles | Streamlined, ≥85% scores, single-file |
 | **Agent-Based** | 12-15 sections | ML/AI agents, intelligent systems, autonomous processes | Extended ML metrics, state machine focus, A2A protocol |
 | **Automation-Focused** | 9-12 sections | n8n workflows, event processing, integrations | Webhook-focused, workflow states, trigger/action pairs |
 
@@ -772,6 +773,9 @@ PRDs vary in structure based on domain. Select the appropriate variant at PRD cr
 
 ```
 START: What is the primary domain of this PRD?
+│
+├─► MVP / Rapid Prototype / Hypothesis Validation?
+│   └─► YES → Use **MVP** template (PRD-MVP-TEMPLATE.md)
 │
 ├─► ML/AI Agent or Intelligent System?
 │   └─► YES → Use **Agent-Based** template

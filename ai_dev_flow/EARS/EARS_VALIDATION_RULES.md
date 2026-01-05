@@ -502,7 +502,7 @@ Downstream: BDD, ADR, SYS
 | E008 | Change `architecture_approach:` to `architecture_approaches: [value]` |
 | E011/E013 | Change `## 0. Document Control` to `## Document Control`, use table format |
 | E020 | Remove trailing `\| \|` from table separator |
-| E030 | Change `#### Event-N:` to `#### EARS-{DocID}-N:` |
+| E030 | Change `#### Event-N:` to `#### EARS.NN.25.SS:` |
 | E040 | Change `PRD-NN` to `@prd: PRD.NN.EE.SS` |
 | E041 | Add `\|` between traceability tags |
 
@@ -531,7 +531,7 @@ python3 scripts/validate_ears.py --summary-only
 - [ ] Run `python3 scripts/validate_ears.py` - 0 errors
 - [ ] All files have `tags: ears, layer-3-artifact`
 - [ ] All files have `custom_fields` with document_type, artifact_type, layer
-- [ ] All requirement IDs use `EARS-{DocID}-{Num}:` format
+- [ ] All requirement IDs use `EARS.NN.25.SS:` format
 - [ ] No malformed table syntax
 - [ ] Document Control uses table format (not list)
 

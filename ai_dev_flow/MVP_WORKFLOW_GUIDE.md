@@ -15,6 +15,10 @@ custom_fields:
 **Purpose**: Streamlined workflow for rapid Minimum Viable Product (MVP) development using AI Dev Flow.
 **Target Audience**: AI Assistants and small teams (2-10 people) building early-stage products.
 
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live under `ai_dev_flow/` without the `docs/` prefix. Run commands from the repo root and use explicit paths, e.g., `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/PRD`.
+
+Important MVP note: MVP artifacts are single, flat files. Do not use document splitting; `DOCUMENT_SPLITTING_RULES.md` does not apply to the MVP track.
+
 ---
 
 ## 🚀 The MVP Track
@@ -26,69 +30,87 @@ The **MVP Track** offers a faster, lighter alternative to the standard 16-layer 
 | Feature | Standard Flow | MVP Track |
 |---------|---------------|-----------|
 | **Templates** | Full multi-section templates | **Streamlined, single-file MVP templates** |
+| **File Structure** | May use document splitting rules | **Single flat files; no splitting** |
 | **BRD Layer** | Detailed strategy & finance | **Hypothesis & Core Validation** |
-| **Requirements** | BRD → PRD → EARS → REQ | **BRD → PRD → REQ** (EARS merged into PRD) |
+| **Requirements** | BRD → PRD → EARS → REQ | **BRD → PRD → EARS → REQ** (Streamlined) |
 | **Validation** | Strict, full compliance | **Focus on active documents & links** |
 | **Time-to-Code** | 1-2 Weeks (Planning) | **1-2 Days (Planning)** |
 
 ---
 
-## ⚡ 5-Step MVP Workflow
+## 🔄 The 6-Step Universal Verification Loop
 
-### Step 1: Business Hypothesis (BRD)
-**Artifact**: `BRD/BRD-MVP-TEMPLATE.md`
-- **Goal**: Define the *one* core problem and *one* solution hypothesis.
-- **AI Prompt**: "Create an MVP BRD for [Project]. Focus on validating [Hypothesis] with 5-10 core features."
+For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact micro-workflow:
 
-### Step 2: Core Product Definition (PRD)
-**Artifact**: `PRD/PRD-MVP-TEMPLATE.md`
-- **Goal**: List the 5-15 "Must Have" features.
-- **Changes**: 
-    - Skip detailed user indices.
-    - Merge "EARS" requirements into User Stories if simple.
-- **AI Prompt**: "Create an MVP PRD based on BRD-01. List only P1 features needed for launch."
-
-### Step 3: lean Architecture (ADR & SYS)
-**Artifacts**: `ADR/ADR-MVP-TEMPLATE.md`, `SYS/SYS-MVP-TEMPLATE.md`
-- **Goal**: Make "Good Enough" technical decisions.
-- **ADR**: Only document *irreversible* decisions (e.g., Cloud Provider, Language, Database). Skip minor choices.
-- **SYS**: Define high-level system boundary and 3-5 core quality attributes (e.g., "Must handle 100 concurrent users").
-
-### Step 4: Atomic Requirements (REQ)
-**Artifact**: `REQ/REQ-MVP-TEMPLATE.md`
-- **Goal**: Atomic, testable units for code generation.
-- **Streamlining**: 
-    - Use broader requirements where possible.
-    - Focus on "Happy Path" and critical errors only.
-
-### Step 5: Spec & Code (SPEC -> CODE)
-**Artifact**: Standard `SPEC` (YAML) and `TASKS`.
-- **Goal**: Generate code.
-- **Note**: The SPEC/TASKS layers remain standard to ensure the AI coding assistant has precise instructions.
+1.  **PLAN**: Create/Update `X-00_index.md` & `X-00_required_documents_list.md`.
+2.  **PRE-CHECK**: Run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow` (verify planning docs exist for the layer).
+3.  **SETUP**: Load `X_CREATION_RULES.md` + `X-MVP-TEMPLATE.md`. See also: [`ID_NAMING_STANDARDS.md`](./ID_NAMING_STANDARDS.md). Note: MVP uses flat files only; do not use document splitting rules.
+4.  **GENERATE**: Create the file (e.g., `X-01.md`).
+5.  **VALIDATE**: Run single-file validator (e.g., `validate_brd.py`). Fix errors.
+6.  **CORPUS CHECK**: Once all files in *required list* are done, run full corpus validation.
 
 ---
 
-## 📅 MVP Kickoff Schedule (Day 1-2)
+## ⚡ 7-Step MVP Workflow
 
-Accelerated timeline for getting to code by Day 3.
+### Step 1: Business Hypothesis (BRD) — **Day 1 (Morning)**
+**Artifacts**: `BRD/BRD-MVP-TEMPLATE.md`, `BRD_CREATION_RULES.md`
+1.  **Plan**: Edit `BRD-00_index.md`. Create `BRD-00_required_documents_list.md` (List: BRD-01).
+2.  **Pre-Check**: Verify index/required lists structure; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+3.  **Generate**: "Create BRD-01 using BRD-MVP-TEMPLATE. Focus on Hypothesis."
+4.  **Validate**: `python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/BRD`
+5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer BRD`
 
-### Day 1: Definition & Design
-1. **Morning**: 
-   - Initialize project.
-   - Generate `BRD-01` (MVP).
-   - Generate `PRD-01` (MVP).
-2. **Afternoon**:
-   - Generate `ADR-01` (Tech Stack).
-   - Generate `SYS-01` (System Baseline).
+### Step 2: Core Product Definition (PRD) — **Day 1 (Morning)**
+**Artifacts**: `PRD/PRD-MVP-TEMPLATE.md`, `PRD_CREATION_RULES.md`
+1.  **Plan**: Edit `PRD-00_index.md`. Create `PRD-00_required_documents_list.md` (List: PRD-01).
+2.  **Pre-Check**: Ensure `BRD-01` exists; verify PRD index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+3.  **Generate**: "Create PRD-01 using PRD-MVP-TEMPLATE. List P1 features."
+4.  **Validate**: `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/PRD`
+5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow` (check traceability)
 
-### Day 2: Requirements & Specs
-1. **Morning**:
-   - Generate `REQ` documents (Batch generation).
-   - Validate links (`scripts/validate_links.py`).
-2. **Afternoon**:
-   - Generate `SPEC` files (YAML).
-   - Generate `TASKS`.
-   - **Start Coding**.
+### Step 3: Logic Mapping (EARS) — **Day 1 (Afternoon)**
+**Artifacts**: `EARS/EARS-MVP-TEMPLATE.md`, `EARS_CREATION_RULES.md`
+1.  **Plan**: Edit `EARS-00_index.md`, `EARS-00_required_documents_list.md`.
+2.  **Pre-Check**: Ensure `PRD-01` exists; verify EARS index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+3.  **Generate**: "Create EARS-01. Map PRD features to MVP Logic."
+4.  **Validate**: `python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/EARS`
+5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer EARS`
+
+### Step 4: Critical Scenarios (BDD) — **Day 1 (Late Afternoon)**
+**Artifacts**: `BDD/BDD-MVP-TEMPLATE.feature`, `BDD_CREATION_RULES.md`
+1.  **Plan**: Edit `BDD-00_index.md` (one per suite), `required_documents_list`.
+2.  **Pre-Check**: Ensure `EARS-01` exists; verify BDD index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+3.  **Generate**: "Create `BDD-01_checkout.feature`. Include Happy Path + Critical Error Path scenarios."
+4.  **Validate**: `python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/BDD`
+5.  **Corpus Validation**: Verify Gherkin syntax across suite.
+
+### Step 5: Lean Architecture (ADR & SYS) — **Day 2 (Morning)**
+**Artifacts**: MVP Templates for ADR/SYS.
+1.  **Plan**: Identify *irreversible* decisions (ADR) and System Boundary (SYS).
+2.  **Pre-Check**: Ensure upstream docs exist (`BRD-01`, `PRD-01`, `EARS-01`); verify `ADR-00_index.md` and `SYS-00_index.md` + required lists; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+3.  **Generate**: `ADR-01` (Tech Stack), `SYS-01` (System Spec).
+4.  **Validate**:
+    - `python3 ai_dev_flow/scripts/validate_adr.py ai_dev_flow/ADR`
+    - `python3 ai_dev_flow/scripts/validate_sys.py ai_dev_flow/SYS`
+5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer ADR --layer SYS`
+
+### Step 6: Atomic Requirements (REQ) — **Day 2 (Mid-Day)**
+**Artifacts**: `REQ/REQ-MVP-TEMPLATE.md`, `REQ_CREATION_RULES.md`
+1.  **Plan**: List all required REQ files in `REQ-00_required_documents_list.md`.
+2.  **Pre-Check**: Ensure upstream docs exist (`ADR-01`, `SYS-01`); verify REQ index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+3.  **Generate**: Batch creation of atomic requirements.
+4.  **Validate** (per file):
+    - `find ai_dev_flow/REQ -name 'REQ-*.md' -exec bash ai_dev_flow/scripts/validate_req_template.sh {} \;`
+5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_requirement_ids.py --directory ai_dev_flow/REQ` (unique IDs)
+
+### Step 7: Spec & Code (SPEC -> TASKS) — **Day 2 (Afternoon)**
+**Artifacts**: Standard `SPEC` (YAML), `TASKS`.
+1.  **Plan**: Map REQs to Specs.
+2.  **Pre-Check**: Ensure required REQ files exist; verify any SPEC/TASKS index/required lists used; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+3.  **Generate**: Specs and Task Lists.
+4.  **Validate**: `python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/SPEC`.
+5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow` (final pre-code check).
 
 ---
 
@@ -98,12 +120,26 @@ When using the MVP track, run validation with awareness:
 
 1. **Use Specific Scripts**:
    - Traceability is still strictly enforced.
-   - Use `scripts/validate_links.py` frequently.
+   - Use `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow` frequently.
+   - Optional cross-checks:
+     - Forward refs: `python3 ai_dev_flow/scripts/validate_forward_references.py ai_dev_flow`
+     - Cross-doc: `python3 ai_dev_flow/scripts/validate_cross_document.py --all --strict`
 
 2. **Ignore "Missing Section" Warnings**:
    - MVP templates intentionally omit sections found in full templates.
    - If `validate_brd.py` complains about missing "Financial Analysis", **ignore it**.
    - **Green Flag**: As long as Traceability Links (@brd, @req) are valid, you are good.
+
+3. **Use MVP Validator Profile**:
+   - Set `custom_fields.template_profile: mvp` in MVP template frontmatter to relax non-critical checks to warnings during drafting.
+   - Use the full profile (omit `template_profile` or set `full`) for strict/enterprise runs.
+
+```yaml
+---
+custom_fields:
+  template_profile: mvp
+---
+```
 
 ---
 
@@ -116,3 +152,34 @@ See the "Migration" section at the bottom of every MVP template when you are rea
 3. **Traceability**: Link new full documents to original MVP ones as "Supersedes".
 
 ---
+
+## Quick Commands
+
+- Plan Check: `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`
+- BRD: `python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/BRD`
+- PRD: `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/PRD`
+- EARS: `python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/EARS`
+- BDD: `python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/BDD`
+- ADR: `python3 ai_dev_flow/scripts/validate_adr.py ai_dev_flow/ADR`
+- SYS: `python3 ai_dev_flow/scripts/validate_sys.py ai_dev_flow/SYS`
+- REQ (per-file): `find ai_dev_flow/REQ -name 'REQ-*.md' -exec bash ai_dev_flow/scripts/validate_req_template.sh {} \;`
+- SPEC (YAML): `python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/SPEC`
+- Links (corpus): `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow`
+- Forward Refs: `python3 ai_dev_flow/scripts/validate_forward_references.py ai_dev_flow`
+- Cross-Doc: `python3 ai_dev_flow/scripts/validate_cross_document.py --all --strict`
+- Orchestrator (layer): `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer BRD`
+- Orchestrator (multiple): `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer ADR --layer SYS`
+- Orchestrator (all): `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --all --strict --report markdown`
+
+### Validate Only (No Generation)
+
+- Preferred (pure validation, zero writes):
+  - Validate everything: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --all --report markdown`
+  - Validate subset: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer BRD --layer PRD --report text`
+  - Add `--strict` for stricter checks
+
+- Using Autopilot to validate existing docs (no new files):
+  - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --resume --include-layers BRD PRD EARS BDD ADR SYS REQ SPEC TASKS --up-to TASKS --mvp-validators --strict`
+  - Notes:
+    - `--resume` reuses existing files; it will generate missing ones unless excluded or already present.
+    - For guaranteed no writes, use `validate_all.py` above.

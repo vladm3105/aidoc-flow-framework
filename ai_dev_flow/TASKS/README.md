@@ -285,7 +285,7 @@ Verification Methods:
 Implement the [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] service with core validation logic.
 
 ## Plan
-1. Create service skeleton with dependency injection framework.
+1. Create service scaffold with dependency injection framework.
 2. Implement configuration management for risk limits.
 3. Build resource calculation logic with pending order aggregation.
 4. Create validation API endpoints per OpenAPI contract.
@@ -341,7 +341,7 @@ Build [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] API client wit
 Implement service dashboard with real-time resource monitoring.
 
 ## Plan
-1. Create React component skeleton with TypeScript definitions.
+1. Create React component scaffold with TypeScript definitions.
 2. Implement WebSocket connection for real-time data feeds.
 3. Build resource display components with sorting and filtering.
 4. Add [EXTERNAL_DATA - e.g., customer data, sensor readings] visualization with charting library.
@@ -397,7 +397,7 @@ Tasks establish collaboration patterns:
 
 ```markdown
 ## AI Implementation Guidance
-- Step 1 (AI): Generate service skeleton with stubs
+- Step 1 (AI): Generate service scaffold with stubs
 - Step 2 (Review): Human review of generated structure
 - Step 3 (AI): Implement core business logic
 - Step 4 (Testing): Automated test execution and validation

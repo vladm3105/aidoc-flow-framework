@@ -19,17 +19,27 @@ custom_fields:
   document_type: template
   artifact_type: PRD
   layer: 2
-  architecture_approaches: [ai-agent-based, traditional-8layer]
+  architecture_approaches: [ai-agent-based]
   priority: shared
-  development_status: active
+  development_status: draft
   template_variant: mvp
+  template_profile: mvp
+  template_source: "PRD-TEMPLATE.md"
+  schema_reference: "PRD_SCHEMA.yaml"
+  schema_version: "1.0"
+  schema_status: optional
+  creation_rules_reference: "PRD_CREATION_RULES.md"
+  validation_rules_reference: "PRD_VALIDATION_RULES.md"
+  traceability_matrix_template: "PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md"
 ---
 
 > **MVP Template** — Single-file, streamlined PRD for rapid MVP development.
 > Use this template for MVPs with 5-15 core features and short development cycles.
 > For comprehensive PRDs (20+ features, enterprise projects), use `PRD-TEMPLATE.md`.
 
-> **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_prd.py`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
+> **Validation Note**: MVP templates are intentionally streamlined (17 sections vs 21 standard) and use ≥85% score thresholds (vs ≥90% standard). These will show validation errors when run against full template validators. This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
+
+> References: Full Template `PRD-TEMPLATE.md` | Schema `PRD_SCHEMA.yaml` | Rules `PRD_CREATION_RULES.md`, `PRD_VALIDATION_RULES.md` | Matrix `PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # PRD-NN: [MVP Product/Feature Name]
 
@@ -46,11 +56,12 @@ custom_fields:
 | **Author** | [Product Manager Name] |
 | **Reviewer** | [Technical Lead Name] |
 | **Approver** | [Stakeholder Name] |
-| **BRD Reference** | @brd: BRD-MVP.NN |
+| **BRD Reference** | @brd: BRD.NN.TT.SS |
 | **Priority** | High |
 | **Target Release** | [MVP Launch Date] |
 | **Estimated Effort** | [X person-weeks] |
 | **SYS-Ready Score** | [Score]/100 (Target: ≥85 for MVP) |
+| **EARS-Ready Score** | [Score]/100 (Target: ≥85 for MVP) |
 
 ### Document Revision History
 
@@ -474,7 +485,7 @@ custom_fields:
 
 | Source | Document | Relationship |
 |--------|----------|--------------|
-| BRD | BRD-MVP.NN | Business requirements source |
+| BRD | @brd: BRD.NN.TT.SS | Business requirements source |
 | Strategy | [Strategic document] | Strategic alignment |
 
 ### Downstream Artifacts
@@ -488,7 +499,7 @@ custom_fields:
 ### Traceability Tags
 
 ```markdown
-@brd: BRD-MVP.NN
+@brd: BRD.NN.TT.SS
 ```
 
 ---
@@ -538,7 +549,7 @@ Migrate from MVP PRD to full `PRD-TEMPLATE.md` when:
 
 1. **Create new document**: Copy `PRD-TEMPLATE.md` to `PRD-NN_{slug}.md`
 2. **Transfer core content**: Map MVP sections to full template (see table below)
-3. **Expand to sectioned format**: If document exceeds 50KB, split per `DOCUMENT_SPLITTING_RULES.md`
+3. **Keep monolithic**: Maintain a single-file document; defer any sectioning to the full framework phase.
 4. **Add missing sections**: Product Vision, detailed User Stories, full NFRs
 5. **Update traceability**: Update downstream artifacts (EARS, BDD, etc.)
 6. **Archive MVP version**: Move to archive with "superseded by PRD-NN" note

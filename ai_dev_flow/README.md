@@ -62,6 +62,12 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 - Validators: Use the validators listed in TRACEABILITY_VALIDATION.md (e.g., `python scripts/validate_prd.py`, `./scripts/validate_req_template.sh`). Older `*_template.sh` examples in some guides have been updated here.
 - Path mapping example: `docs/PRD/PRD-01/...` in generic guides corresponds to `PRD/PRD-01/...` in this repo.
 
+### Default Starting Point: MVP Templates
+
+- For new documents, prefer the `-MVP-TEMPLATE` variants (e.g., `BRD/BRD-MVP-TEMPLATE.md`, `PRD/PRD-MVP-TEMPLATE.md`, `ADR/ADR-MVP-TEMPLATE.md`).
+- Use full templates when projects are enterprise-scale, regulatory, or require extensive detail.
+- Validators support an `mvp` profile via `template_profile: mvp` in frontmatter to relax non-critical checks during early drafting.
+
 ### Units & Conversions (KB vs tokens)
 
 - KB: 1 KB = 1,024 bytes (OS file size).

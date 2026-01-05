@@ -84,7 +84,7 @@ When creating a new TASKS Plan:
 
 ## Allocation Rules
 
-- **Numbering**: Allocate sequentially starting at `001`; keep numbers stable
+- **Numbering**: Allocate sequentially starting at `01`; keep numbers stable
 - **One Task Per File**: Each `TASKS-NN` file covers a coherent implementation task
 - **Slugs**: Short, descriptive, lower_snake_case
 - **Cross-Links**: Each task should reference upstream REQ/ADR/IMPL/SPEC/CTR and downstream code/tests

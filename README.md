@@ -9,6 +9,8 @@
 
 The AI Dev Flow Framework is a comprehensive template system for implementing AI-Driven Specification-Driven Development (SDD). It provides structured workflows, document templates, and traceability mechanisms to transform business requirements into production-ready code through a systematic, traceable approach optimized for AI-assisted development.
 
+> MVP Note: When using the MVP track, all artifacts are single, flat files. Do not use document splitting or `DOCUMENT_SPLITTING_RULES.md`.
+
 ### Key Features
 
 - **16-Layer Architecture**: Structured progression from strategy to validation (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation)
@@ -143,7 +145,7 @@ ls -R
 
 ### 4. Start Your Project
 
-Choose your entry point based on project context:
+Choose your entry point based on project context. For new documents, prefer the `-MVP-TEMPLATE` variants (e.g., `BRD/BRD-MVP-TEMPLATE.md`, `PRD/PRD-MVP-TEMPLATE.md`, `ADR/ADR-MVP-TEMPLATE.md`). Use full templates for complex/regulatory projects.
 
 **Option A: Greenfield Project (New)**
 ```bash
@@ -160,13 +162,13 @@ cp -r ai_dev_flow/* your-project/docs/
 
 ### 5. Follow the Workflow
 
-1. **Business Requirements** → Start with `BRD/BRD-TEMPLATE.md` (Layer 1)
-2. **Product Requirements** → Create `PRD/PRD-TEMPLATE.md` (Layer 2)
-3. **Formal Requirements** → Use `EARS/EARS-TEMPLATE.md` (Layer 3)
-4. **Behavior Tests** → Write `BDD/BDD-TEMPLATE.feature` (Layer 4)
-5. **Architecture** → Document with `ADR/ADR-TEMPLATE.md` (Layer 5)
-6. **System Design** → Create `SYS/SYS-TEMPLATE.md` (Layer 6)
-7. **Atomic Requirements** → Define `REQ/REQ-TEMPLATE.md` (Layer 7)
+1. **Business Requirements** → Start with `BRD/BRD-MVP-TEMPLATE.md` (or full `BRD-TEMPLATE.md`)
+2. **Product Requirements** → Create `PRD/PRD-MVP-TEMPLATE.md` (or full `PRD-TEMPLATE.md`)
+3. **Formal Requirements** → Use `EARS/EARS-MVP-TEMPLATE.md` (or full `EARS-TEMPLATE.md`)
+4. **Behavior Tests** → Write `BDD/BDD-MVP-TEMPLATE.feature` (or full `BDD-TEMPLATE.feature`)
+5. **Architecture** → Document with `ADR/ADR-MVP-TEMPLATE.md` (or full `ADR-TEMPLATE.md`)
+6. **System Design** → Create `SYS/SYS-MVP-TEMPLATE.md` (or full `SYS-TEMPLATE.md`)
+7. **Atomic Requirements** → Define `REQ/REQ-MVP-TEMPLATE.md` (or full `REQ-TEMPLATE.md`)
 8. **Implementation Plan** → Organize with `IMPL/IMPL-TEMPLATE.md` (Layer 8 - optional)
 9. **API Contracts** → Specify with `CTR/CTR-TEMPLATE.md + .yaml` (Layer 9 - if interfaces)
 10. **Technical Specs** → Design with `SPEC/SPEC-TEMPLATE.yaml` (Layer 10)

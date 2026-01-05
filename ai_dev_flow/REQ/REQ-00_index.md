@@ -32,7 +32,7 @@ custom_fields:
 
 ## Allocation Rules
 
-- **Numbering**: Allocate sequentially starting at `001`; keep numbers stable
+- **Numbering**: Allocate sequentially starting at `01`; keep numbers stable
 - **Slugs**: Short, descriptive, lower_snake_case by functional area
 - **Organization**: By category subtree: `REQ/api/`, `REQ/risk/`, `REQ/ml/`, `REQ/data/`, etc.
 - **Traceability**: Each requirement links to upstream PRD/EARS and downstream SYS/SPEC/BDD

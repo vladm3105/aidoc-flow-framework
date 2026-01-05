@@ -69,7 +69,7 @@ metadata:
   optional_custom_fields:
     agent_id:
       type: string
-      pattern: "^AGENT-\\d{3}$"
+      pattern: "^AGENT-\\d{2,}$"
       description: "Required for ai-agent-primary documents"
 
     template_for:
@@ -89,7 +89,7 @@ metadata:
   forbidden_tag_patterns:
     - "^implementation-plan$"     # Use 'iplan' instead
     - "^tasks-plan$"              # Use 'iplan' (deprecated naming)
-    - "^iplan-\\d{3}$"            # Don't include document number in tags
+    - "^iplan-\\d{2,}$"           # Don't include document number in tags
 
 # =============================================================================
 # Document Structure Requirements
@@ -98,7 +98,7 @@ metadata:
 structure:
   # Required sections (13 sections)
   required_sections:
-    - pattern: "^# IPLAN-\\d{3}:"
+    - pattern: "^# IPLAN-\\d{2,}:"
       name: "Title (H1)"
       description: "Single H1 with format IPLAN-NN: Title"
 
@@ -190,7 +190,7 @@ structure:
 
   # File naming convention
   file_naming:
-    pattern: "^IPLAN-\\d{3}_[a-z0-9_]+\\.md$"
+    pattern: "^IPLAN-\\d{2,}_[a-z0-9_]+\\.md$"
     description: "Format: IPLAN-NN_descriptive_name.md"
 
 # =============================================================================

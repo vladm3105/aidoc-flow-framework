@@ -53,7 +53,7 @@ metadata:
     provider_tasks:
       type: string
       required: true
-      pattern: "^TASKS-\\d{3}$"
+      pattern: "^TASKS-\\d{2,}$"
       description: "Source TASKS document that defines this contract"
 
     consumer_count:
@@ -90,7 +90,7 @@ metadata:
   # Forbidden tag patterns (will fail validation)
   forbidden_tag_patterns:
     - "^contract$"              # Use 'implementation-contract' instead
-    - "^icon-\\d{3}$"           # Don't include document number in tags
+    - "^icon-\\d{2,}$"          # Don't include document number in tags
 
 # =============================================================================
 # Document Structure Requirements
@@ -99,7 +99,7 @@ metadata:
 structure:
   # Required sections
   required_sections:
-    - pattern: "^# ICON-\\d{3}:"
+    - pattern: "^# ICON-\\d{2,}:"
       name: "Title (H1)"
       description: "Single H1 with format ICON-NN: Title"
 
@@ -184,7 +184,7 @@ structure:
 
   # File naming convention
   file_naming:
-    pattern: "^ICON-\\d{3}_[a-z0-9_]+\\.md$"
+    pattern: "^ICON-\\d{2,}_[a-z0-9_]+\\.md$"
     description: "Format: ICON-NN_descriptive_name.md"
 
 # =============================================================================

@@ -40,6 +40,8 @@ See also: [README → Units & Conversions](./README.md#units--conversions-kb-vs-
 - SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
+> MVP Mode: For MVP workflows, use a single flat file per artifact and ignore splitting rules and references to `DOCUMENT_SPLITTING_RULES.md`.
+
 <!-- See README.md → “Using This Repo” for path mapping guidance. -->
 
 ## 16-Layer Workflow
