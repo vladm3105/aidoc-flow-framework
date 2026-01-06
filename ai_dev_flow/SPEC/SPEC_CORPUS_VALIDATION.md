@@ -308,8 +308,8 @@ done
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
 | CORPUS-W004 | Index out of sync | CORPUS-04 |
 | CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
-| CORPUS-W009 | Parameter type format inconsistency | CORPUS-09 |
-| CORPUS-W012 | Parameter type inconsistency | CORPUS-12 |
+| CORPUS-W006 | Naming convention violation (PascalCase classes, snake_case methods - dunder methods allowed) | - |
+| CORPUS-W008 | ID formatting issue | - |
 
 ### Info Codes (Advisory)
 

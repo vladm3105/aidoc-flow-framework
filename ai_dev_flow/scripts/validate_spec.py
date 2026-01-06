@@ -84,8 +84,8 @@ ID_PATTERN = r"^[a-z][a-z0-9_]*$"
 # Class name pattern (PascalCase)
 PASCAL_CASE_PATTERN = r"^[A-Z][a-zA-Z0-9]+$"
 
-# Method name pattern (snake_case)
-SNAKE_CASE_PATTERN = r"^[a-z][a-z0-9_]*$"
+# Method name pattern (snake_case, allowing dunder methods like __init__)
+SNAKE_CASE_PATTERN = r"^_{0,2}[a-z][a-z0-9_]*_{0,2}$"
 
 # Required cumulative tags (Layer 10)
 REQUIRED_CUMULATIVE_TAGS = ["brd", "prd", "ears", "bdd", "adr", "sys", "req"]
@@ -369,7 +369,7 @@ def validate_interfaces(data: Dict, result: ValidationResult):
                 if method_name and not re.match(SNAKE_CASE_PATTERN, str(method_name)):
                     result.add_warning(
                         "SPEC-W006",
-                        f"Method name '{method_name}' in class '{class_name}' not in snake_case"
+                        f"Method name '{method_name}' (repr: {repr(method_name)}) in class '{class_name}' not in snake_case"
                     )
 
 
