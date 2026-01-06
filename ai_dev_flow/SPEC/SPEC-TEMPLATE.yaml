@@ -53,6 +53,7 @@ summary: Single-sentence description of component purpose, scope, and primary va
 metadata:
   version: "1.0.0"
   status: "draft"  # draft, review, approved, implemented, deprecated
+  # ⚠️ REQUIRED: Ensure these dates are valid YYYY-MM-DD
   created_date: "YYYY-MM-DD"
   last_updated: "YYYY-MM-DD"
   task_ready_score: "✅ 95% (Target: ≥90%)"  # Added for quality gates
@@ -133,6 +134,15 @@ traceability:
         context: "[Which API endpoints/events this SPEC implements]"
         policy: "See ADR-CTR_SEPARATE_FILES_POLICY.md - separate CTR files REQUIRED"
 
+    cumulative_tags:
+      brd: "TBD"
+      prd: "TBD"
+      ears: "TBD"
+      bdd: "TBD"
+      adr: "TBD"
+      sys: "TBD"
+      req: "TBD"
+
   downstream_artifacts:
     atomic_requirements:
       - id: "REQ-NN"
@@ -205,15 +215,18 @@ traceability:
           spec_sections: ["implementation.environment_variables"]
 
       tests:
-        - path: "tests/unit/[module_name]/test_[component].py"
-          description: "Unit tests for this component"
-          coverage_target: ">=85%"
-          spec_sections: ["verification.unit_tests"]
-        - path: "tests/integration/[module_name]/test_[workflow].py"
-          description: "Integration tests for component workflows"
-          coverage_target: ">=75%"
-          spec_sections: ["verification.integration_tests"]
-        - path: "tests/acceptance/[module_name]/"
+        unit_tests:
+          - path: "tests/unit/[module_name]/test_[component].py"
+            description: "Unit tests for this component"
+            coverage_target: ">=85%"
+            spec_sections: ["verification.unit_tests"]
+        integration_tests:
+          - path: "tests/integration/[module_name]/test_[workflow].py"
+            description: "Integration tests for component workflows"
+            coverage_target: ">=75%"
+            spec_sections: ["verification.integration_tests"]
+        acceptance_tests:
+          - path: "tests/acceptance/[module_name]/"
           description: "BDD scenarios and acceptance tests"
           coverage_target: "100%"
           spec_sections: ["verification.bdd_scenarios"]

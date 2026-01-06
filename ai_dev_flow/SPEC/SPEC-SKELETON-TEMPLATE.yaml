@@ -37,10 +37,12 @@ performance:
 security:
   authentication:
     required: true
+    methods: ["service_account"]
   authorization:
     enabled: true
+    model: "role_based_access_control"
   input_validation:
-    strategy: basic
+    strategy: "pydantic_schema_validation"
 observability:
   metrics:
     standard_metrics: [cpu_usage]
@@ -48,6 +50,9 @@ observability:
     level: INFO
   health_checks:
     enabled: true
+    endpoints:
+      - path: "/health/live"
+        description: "Liveness"
 verification:
   bdd_scenarios: []
   tests: []

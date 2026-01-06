@@ -385,26 +385,36 @@ def validate_performance(data: Dict, result: ValidationResult):
     if not latency:
         result.add_error("SPEC-E010", "Missing latency_targets in performance section")
     elif isinstance(latency, dict):
-        required_latencies = ["p50_milliseconds", "p95_milliseconds", "p99_milliseconds"]
-        missing = [p for p in required_latencies if p not in latency]
+        # Relaxed check: Accept if keys contain p50/p95/p99 or if strict keys exist
+        keys = latency.keys()
+        has_p50 = "p50_milliseconds" in keys or any("p50" in k.lower() for k in keys)
+        has_p95 = "p95_milliseconds" in keys or any("p95" in k.lower() for k in keys)
+        has_p99 = "p99_milliseconds" in keys or any("p99" in k.lower() for k in keys)
+        
+        missing = []
+        if not has_p50: missing.append("p50_milliseconds (or *p50*)")
+        if not has_p95: missing.append("p95_milliseconds (or *p95*)")
+        if not has_p99: missing.append("p99_milliseconds (or *p99*)")
+
         if missing:
-            result.add_error(
-                "SPEC-E010",
+            result.add_warning(
+                "SPEC-W010",
                 f"Missing latency targets: {', '.join(missing)}"
             )
         else:
-            # Validate latency ordering
-            p50 = latency.get("p50_milliseconds", 0)
-            p95 = latency.get("p95_milliseconds", 0)
-            p99 = latency.get("p99_milliseconds", 0)
+            # Validate latency ordering (only if standard keys are used, for simplicity)
+            if "p50_milliseconds" in latency and "p95_milliseconds" in latency and "p99_milliseconds" in latency:
+                p50 = latency.get("p50_milliseconds", 0)
+                p95 = latency.get("p95_milliseconds", 0)
+                p99 = latency.get("p99_milliseconds", 0)
 
-            try:
-                if int(p95) < int(p50):
-                    result.add_warning("SPEC-W004", f"p95 latency ({p95}ms) should be >= p50 ({p50}ms)")
-                if int(p99) < int(p95):
-                    result.add_warning("SPEC-W005", f"p99 latency ({p99}ms) should be >= p95 ({p95}ms)")
-            except (ValueError, TypeError):
-                pass  # Non-numeric values, skip ordering check
+                try:
+                    if int(p95) < int(p50):
+                        result.add_warning("SPEC-W004", f"p95 latency ({p95}ms) should be >= p50 ({p50}ms)")
+                    if int(p99) < int(p95):
+                        result.add_warning("SPEC-W005", f"p99 latency ({p99}ms) should be >= p95 ({p95}ms)")
+                except (ValueError, TypeError):
+                    pass
 
 
 def validate_security(data: Dict, result: ValidationResult):

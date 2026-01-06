@@ -28,14 +28,14 @@ custom_fields:
 
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
-**Version**: 1.0
-**Date**: 2025-11-19
-**Last Updated**: 2025-11-19
+**Version**: 1.1
+**Date**: 2026-01-06
+**Last Updated**: 2026-01-06
 **Purpose**: Complete validation rules for SPEC YAML files
 **Script**: `python scripts/validate_spec.py`
 **Primary Template**: `SPEC-TEMPLATE.yaml`
 **Framework**: AI Dev Flow SDD (100% compliant)
-**Changes**: Added TASKS-ready scoring validation system
+**Changes**: Relaxed method naming (dunder support), downgraded missing latency targets to Warning, added TASKS-ready scoring validation system
 
 ---
 

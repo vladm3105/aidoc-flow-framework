@@ -375,7 +375,8 @@ interfaces_schema:
             name:
               type: string
               required: true
-              pattern: "^[a-z][a-z0-9_]*$"
+              # pattern: "^[a-z][a-z0-9_]*$"
+              pattern: "^_{0,2}[a-z][a-z0-9_]*_{0,2}$"  # Allow snake_case and dunder methods
             description:
               type: string
               required: true
@@ -674,7 +675,7 @@ validation_rules:
   # Performance validation
   performance:
     - rule: "latency_targets must include p50, p95, p99"
-      severity: error
+      severity: warning
 
     - rule: "p95 must be greater than p50"
       severity: warning

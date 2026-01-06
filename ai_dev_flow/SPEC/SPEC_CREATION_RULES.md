@@ -298,8 +298,8 @@ cumulative_tags:
 | Missing interface CTR references | Create CTR for external API specifications |
 | Incomplete performance specifications | Include latency/throughput/error rate targets |
 | `latency_ms: 200` (hardcoded) | `latency_ms: "@threshold: PRD.NN.perf.api.p95_latency"` |
-| `timeout: 5000` (magic number) | `timeout: "@threshold: PRD.NN.timeout.default"` |
-| `rate_limit: 100` (hardcoded) | `rate_limit: "@threshold: PRD.NN.limit.api.requests_per_second"` |
+| **Split List Syntax** (e.g., `tests:` under `- path:`) | **Use nested structure**: `tests:` as a child key of the list item |
+| Missing `security` or `observability` | **Mandatory**: Include `authentication` (method specified) and `health_checks` (endpoints specified) |
 
 ---
 
