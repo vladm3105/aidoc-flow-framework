@@ -57,13 +57,41 @@ FORBIDDEN_TAG_PATTERNS = [
 ]
 
 # Required sections (patterns)
-REQUIRED_SECTIONS = [
+# Required sections (patterns)
+REQUIRED_SECTIONS_STANDARD = [
     (r"^# PRD-\d{2,}:", "Title (H1 with PRD-NN+ format)"),
     (r"^## 0\. Document Control", "Section 0: Document Control"),
     (r"^## 1\. Executive Summary", "Section 1: Executive Summary"),
     (r"^## 2\. Product Vision", "Section 2: Product Vision"),
     (r"^## 3\. Functional Requirements", "Section 3: Functional Requirements"),
 ]
+
+REQUIRED_SECTIONS_MVP = [
+    (r"^# PRD-\d{2,}:", "Title (H1 with PRD-NN+ format)"),
+    (r"^## 1\. Document Control", "Section 1: Document Control"),
+    (r"^## 2\. Executive Summary", "Section 2: Executive Summary"),
+    (r"^## 3\. Problem Statement", "Section 3: Problem Statement"),
+    (r"^## 4\. Target Audience & User Personas", "Section 4: Target Audience & User Personas"),
+    (r"^## 5\. Success Metrics", "Section 5: Success Metrics"),
+    (r"^## 6\. Scope & Requirements", "Section 6: Scope & Requirements"),
+    (r"^## 7\. User Stories & User Roles", "Section 7: User Stories & User Roles"),
+    (r"^## 8\. Functional Requirements", "Section 8: Functional Requirements"),
+    (r"^## 9\. Quality Attributes", "Section 9: Quality Attributes"),
+    (r"^## 10\. Architecture Requirements", "Section 10: Architecture Requirements"),
+    (r"^## 11\. Constraints & Assumptions", "Section 11: Constraints & Assumptions"),
+    (r"^## 12\. Risk Assessment", "Section 12: Risk Assessment"),
+    (r"^## 13\. Implementation Approach", "Section 13: Implementation Approach"),
+    (r"^## 14\. Acceptance Criteria", "Section 14: Acceptance Criteria"),
+    (r"^## 15\. Budget & Resources", "Section 15: Budget & Resources"),
+    (r"^## 16\. Traceability", "Section 16: Traceability"),
+    (r"^## 17\. Glossary", "Section 17: Glossary"),
+]
+
+# Map profiles to section lists
+SECTION_MAP = {
+    "standard": REQUIRED_SECTIONS_STANDARD,
+    "mvp": REQUIRED_SECTIONS_MVP
+}
 
 # BRD reference pattern
 BRD_REF_PATTERN = r"@brd:\s*BRD\.\d{2,9}\.\d{2,9}\.\d{2,9}"
@@ -239,7 +267,7 @@ def validate_metadata(metadata: Optional[Dict], result: ValidationResult):
                 result.add_error("PRD-E003", f"Forbidden tag pattern: '{tag}'")
 
 
-def validate_structure(content: str, sections: List[Tuple[str, int]], result: ValidationResult):
+def validate_structure(content: str, sections: List[Tuple[str, int]], result: ValidationResult, metadata: Optional[Dict] = None):
     """Validate document structure."""
     # Check H1 format
     h1_sections = [s for s in sections if s[0].startswith("# ") and not s[0].startswith("## ")]
@@ -253,12 +281,24 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
         if not re.match(r"^# PRD-\d{2,}:", h1_text):
             result.add_error("PRD-E001", f"Invalid H1 format. Expected '# PRD-NN+: Title', got '{h1_text[:50]}'")
 
+    # Determine profile and required sections
+    profile = "standard"
+    if metadata and "custom_fields" in metadata:
+        profile = metadata["custom_fields"].get("template_profile", "standard")
+    
+    # Handle unknown profile (default to standard)
+    if profile not in SECTION_MAP:
+        result.add_warning("PRD-W001", f"Unknown template_profile '{profile}', defaulting to standard validation")
+        profile = "standard"
+        
+    required_sections = SECTION_MAP[profile]
+
     # Check required sections
     section_headers = [s[0] for s in sections]
-    for pattern, section_name in REQUIRED_SECTIONS[1:]:  # Skip H1, already checked
+    for pattern, section_name in required_sections[1:]:  # Skip H1, already checked
         found = any(re.match(pattern, h) for h in section_headers)
         if not found:
-            result.add_error("PRD-E002", f"Missing required section: {section_name}")
+            result.add_error("PRD-E002", f"Missing required section for {profile} profile: {section_name}")
 
     # Check for duplicate section numbers
     section_numbers = []
@@ -279,9 +319,9 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
 
 def validate_traceability(content: str, result: ValidationResult):
     """Validate upstream traceability (BRD reference)."""
-    # Look for @brd: reference in Document Control section
+    # Look for @brd: reference in Document Control section (Section 0 or 1)
     doc_control_match = re.search(
-        r"## 0\. Document Control.*?(?=## \d+\.|\Z)",
+        r"## [01]\. Document Control.*?(?=## \d+\.|\Z)",
         content,
         re.DOTALL
     )
@@ -365,7 +405,7 @@ def validate_prd_file(file_path: Path) -> ValidationResult:
     # Run validations
     validate_file_name(file_path, result)
     validate_metadata(metadata, result)
-    validate_structure(content, sections, result)
+    validate_structure(content, sections, result, metadata)
     validate_traceability(content, result)
     validate_feature_ids(content, result)
 

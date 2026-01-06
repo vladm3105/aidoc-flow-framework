@@ -374,7 +374,7 @@ docs/REQ/
 ```
 
 **Key Requirements**:
-- REQ-020: Account opening and KYC
+- REQ-020: Account opening and identity verification
 - REQ-021: Fund transfer (ACH, wire, internal)
 - REQ-022: Bill payment processing
 - REQ-023: Interest calculation and accrual

@@ -55,8 +55,8 @@ class ValidatorConfig:
 
 VALIDATOR_REGISTRY: Dict[str, ValidatorConfig] = {
     "BRD": ValidatorConfig(
-        script="validate_brd_template.sh",
-        script_type="shell",
+        script="validate_brd.py",
+        script_type="python",
         implemented=True,
         layer=1,
         description="Business Requirements Document validator"

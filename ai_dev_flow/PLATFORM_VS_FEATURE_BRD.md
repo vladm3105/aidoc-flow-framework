@@ -50,7 +50,7 @@ Platform BRD → PRD → EARS → BDD → ADR → SPEC
 - Document **what** features deliver business value
 
 **Examples**:
-- BRD-06: B2C Progressive KYC Onboarding
+- BRD-06: B2C Progressive Identity Verification Onboarding
 - BRD-09: Remittance Transaction Workflow
 - BRD-22: Fraud Detection Agent
 

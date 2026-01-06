@@ -421,13 +421,13 @@ When performing major refactoring (version X.0), document the transformation:
 
    **Business Requirements**:
    - Customer selects amount, recipient, and funding source (bank transfer/card/wallet)
-   - System validates customer identity (KYC status), transaction limits (daily/monthly), recipient status (active)
+   - System validates customer identity (verification status), transaction limits (daily/monthly), recipient status (active)
    - Customer receives immediate transaction confirmation with estimated delivery time
 
    **Business Rules**:
    - Minimum transaction: $1.00 USD
    - Maximum transaction: $10,000 per transaction, $50,000 per rolling 30 days (FinCEN MSB limits)
-   - Customer must have completed KYC (BRD-06 B2C onboarding)
+   - Customer must have completed identity verification (BRD-06 B2C onboarding)
    - Recipient must be pre-validated (BRD-11 recipient management)
 
    **Business Acceptance Criteria**:
@@ -559,7 +559,7 @@ When performing major refactoring (version X.0), document the transformation:
 
 **Business Factors for Complexity Assessment**:
 1. **Partner Integration Count**: Number of third-party partners/APIs involved
-2. **Regulatory Scope**: Compliance requirements (KYC/KYB, AML, licensing, cross-border)
+2. **Regulatory Scope**: Compliance requirements (identity verification, AML, licensing, cross-border)
 3. **Business Constraints**: SLAs, settlement timing, refund policies, customer service commitments
 4. **Cross-BRD Dependencies**: Number of Platform/Feature BRDs referenced
 5. **Business Process Complexity**: State transitions, decision branches, exception handling paths
@@ -593,7 +593,7 @@ When performing major refactoring (version X.0), document the transformation:
 
 **Characteristics**:
 - 2-3 partner integrations
-- Light regulatory requirements (e.g., basic KYC verification)
+- Light regulatory requirements (e.g., basic identity verification)
 - Moderate business rules (3-5 decision points)
 - 2-3 Platform BRD dependencies
 - Sequential 2-3 state process
@@ -834,7 +834,7 @@ Use tables when Business Rules have **≥3 decision variables** or involve **tie
 
 | Scenario | Variables | Example |
 |----------|-----------|---------|
-| Tiered limits | KYC level + limit type + limit value | Transaction limits by KYC tier |
+| Tiered limits | Verification tier + limit type + limit value | Transaction limits by tier |
 | Decision matrices | Input condition + output action + SLA | Risk score → action → escalation |
 | Multi-option comparisons | Option + characteristics + constraints | Funding methods comparison |
 | Fee structures | Amount tier + fee + calculation | Fee schedule by transaction size |
@@ -842,11 +842,11 @@ Use tables when Business Rules have **≥3 decision variables** or involve **tie
 
 **Table Pattern: Tiered Thresholds**
 ```markdown
-| KYC Level | Daily Limit | Per-Transaction Limit | Velocity Limit |
+| Verification Tier | Daily Limit | Per-Transaction Limit | Velocity Limit |
 |-----------|-------------|----------------------|----------------|
-| L1 (Basic) | $500 | $200 | 3 transactions/day |
-| L2 (Enhanced) | $2,000 | $500 | 5 transactions/day |
-| L3 (Full) | $10,000 | $2,500 | 10 transactions/day |
+| L1 (Basic) | @threshold: PRD.NN.quota.l1.daily | @threshold: PRD.NN.quota.l1.per_txn | @threshold: PRD.NN.quota.l1.velocity |
+| L2 (Enhanced) | @threshold: PRD.NN.quota.l2.daily | @threshold: PRD.NN.quota.l2.per_txn | @threshold: PRD.NN.quota.l2.velocity |
+| L3 (Full) | @threshold: PRD.NN.quota.l3.daily | @threshold: PRD.NN.quota.l3.per_txn | @threshold: PRD.NN.quota.l3.velocity |
 ```
 
 **Table Pattern: Decision Matrix**
@@ -1110,8 +1110,8 @@ if (amount >= 501 && amount <= 2000) {
 ```markdown
 | Business Attribute | US Region | EU Region | Difference Reason |
 |-------------------|-----------|-----------|-------------------|
-| **Daily Transaction Limit** | $10,000 | €8,500 | Regulatory (FinCEN vs AMLD6) |
-| **KYC Document Types** | SSN, Driver's License | National ID, Passport | Local ID standards |
+| **Daily Transaction Limit** | @threshold: BRD.NN.limit.transaction.daily.us | @threshold: BRD.NN.limit.transaction.daily.eu | Regulatory differences |
+| **Verification Document Types** | Government ID types | Government ID types | Local ID standards |
 | **Cooling-Off Period** | None | 14 days for first transaction | EU consumer protection |
 | **Data Retention** | 5 years | 7 years (AML directive) | Regulatory requirement |
 | **Supported Funding** | Bank transfer, Card, Wire | Regional transfer, Card | Regional payment rails |
@@ -1258,8 +1258,8 @@ if (amount >= 501 && amount <= 2000) {
 
 | Rule Type | Pattern | Example |
 |-----------|---------|---------|
-| Threshold | "[Entity] [condition] [threshold] require [action]" | "Transactions ≥$3,000 require Travel Rule disclosure" |
-| Conditional | "[When condition] [entity] [receives/triggers] [outcome]" | "When KYC L3 verified, customer receives $10,000 daily limit" |
+| Threshold | "[Entity] [condition] [threshold] require [action]" | "Transactions ≥ @threshold: PRD.NN.limit.travel_rule.amount require Travel Rule disclosure" |
+| Conditional | "[When condition] [entity] [receives/triggers] [outcome]" | "When Tier L3 verified, customer receives @threshold: PRD.NN.quota.l3.daily daily limit" |
 | Sequence | "[Action A] must complete before [Action B]" | "Sanctions screening must complete before transaction authorization" |
 | Validation | "[Entity] must [meet/match] [criterion] for [outcome]" | "Recipient phone must match required regional format (e.g., +[country code]) for delivery" |
 | Default | "[Entity] [defaults to/uses] [value] [unless/when] [condition]" | "Wallet balance displays in USD regardless of funding source currency" |
@@ -1791,7 +1791,7 @@ Cloud comparison              Technical deep-dive        Configuration
 **Status**: Selected
 
 **Business Driver**: Customer onboarding workflow requires persistent storage
-for KYC documents and verification history (BRD.06.23.01 - Reduce onboarding time).
+for verification documents and history (BRD.06.23.01 - Reduce onboarding time).
 
 **Business Constraints**:
 - Must support multi-region data residency for GDPR compliance

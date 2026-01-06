@@ -148,7 +148,7 @@ The Threshold Registry (PRD-NN pattern) centralizes magic numbers, limits, and c
 ### Common Threshold Categories
 | Category | Example Key | Description |
 |----------|-------------|-------------|
-| KYC Limits | `kyc_velocity_daily` | Daily transaction limits by verification tier |
+| Quota Limits | `quota_velocity_daily` | Daily transaction limits by verification tier |
 | Transaction Limits | `tx_max_single` | Maximum single transaction amount |
 | Timeout Values | `api_timeout_p99` | API response time SLAs |
 | Risk Thresholds | `risk_score_high` | Risk scoring breakpoints |

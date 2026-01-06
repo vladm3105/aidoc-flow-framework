@@ -1,22 +1,11 @@
-<!--
-AI_CONTEXT_START
-Role: AI Product Manager
-Objective: Create a streamlined MVP Product Requirements Document.
-Constraints:
-- Focus on hypothesis validation and core user stories.
-- Keep functional requirements atomic and testable.
-- Do not split file; keep it monolithic.
-- Prioritize essential features (P1) over nice-to-haves (P2).
-AI_CONTEXT_END
--->
 ---
-title: "PRD-MVP-TEMPLATE: Product Requirements Document (MVP Version)"
+title: "PRD-01: A Simple Todo App"
 tags:
-  - prd-template
+  - prd
   - mvp-template
   - layer-2-artifact
 custom_fields:
-  document_type: template
+  document_type: prd
   artifact_type: PRD
   layer: 2
   architecture_approaches: [ai-agent-based]
@@ -33,6 +22,17 @@ custom_fields:
   traceability_matrix_template: "PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md"
 ---
 
+<!--
+AI_CONTEXT_START
+Role: AI Product Manager
+Objective: Create a streamlined MVP Product Requirements Document.
+Constraints:
+- Focus on hypothesis validation and core user stories.
+- Keep functional requirements atomic and testable.
+- Do not split file; keep it monolithic.
+- Prioritize essential features (P1) over nice-to-haves (P2).
+AI_CONTEXT_END
+-->
 > **MVP Template** — Single-file, streamlined PRD for rapid MVP development.
 > Use this template for MVPs with 5-15 core features and short development cycles.
 > For comprehensive PRDs (20+ features, enterprise projects), use `PRD-TEMPLATE.md`.
@@ -41,7 +41,7 @@ custom_fields:
 
 > References: Full Template `PRD-TEMPLATE.md` | Schema `PRD_SCHEMA.yaml` | Rules `PRD_CREATION_RULES.md`, `PRD_VALIDATION_RULES.md` | Matrix `PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
-# PRD-NN: [MVP Product/Feature Name]
+# PRD-01: A Simple Todo App
 
 **⚠️ MVP Scope**: This PRD focuses on core hypothesis validation. Detailed specifications defer to PRD full template upon MVP success.
 
@@ -56,7 +56,7 @@ custom_fields:
 | **Author** | [Product Manager Name] |
 | **Reviewer** | [Technical Lead Name] |
 | **Approver** | [Stakeholder Name] |
-| **BRD Reference** | @brd: BRD.NN.TT.SS |
+| **BRD Reference** | @brd: BRD.01.01.01 |
 | **Priority** | High |
 | **Target Release** | [MVP Launch Date] |
 | **Estimated Effort** | [X person-weeks] |
@@ -198,11 +198,11 @@ custom_fields:
 
 | ID | User Story | Priority | Acceptance Criteria |
 |----|------------|----------|---------------------|
-| PRD.NN.09.01 | As a [persona], I want to [action], so that [benefit] | P1 | [Brief criteria] |
-| PRD.NN.09.02 | As a [persona], I want to [action], so that [benefit] | P1 | [Brief criteria] |
-| PRD.NN.09.03 | As a [persona], I want to [action], so that [benefit] | P1 | [Brief criteria] |
-| PRD.NN.09.04 | As a [persona], I want to [action], so that [benefit] | P2 | [Brief criteria] |
-| PRD.NN.09.05 | As a [persona], I want to [action], so that [benefit] | P2 | [Brief criteria] |
+| PRD.01.09.01 | As a [persona], I want to [action], so that [benefit] | P1 | [Brief criteria] |
+| PRD.01.09.02 | As a [persona], I want to [action], so that [benefit] | P1 | [Brief criteria] |
+| PRD.01.09.03 | As a [persona], I want to [action], so that [benefit] | P1 | [Brief criteria] |
+| PRD.01.09.04 | As a [persona], I want to [action], so that [benefit] | P2 | [Brief criteria] |
+| PRD.01.09.05 | As a [persona], I want to [action], so that [benefit] | P2 | [Brief criteria] |
 
 ### Story Summary
 
@@ -222,9 +222,9 @@ custom_fields:
 
 | ID | Capability | Description | Success Criteria |
 |----|------------|-------------|------------------|
-| PRD.NN.01.01 | [Capability name] | [What it does] | [How to validate] |
-| PRD.NN.01.02 | [Capability name] | [What it does] | [How to validate] |
-| PRD.NN.01.03 | [Capability name] | [What it does] | [How to validate] |
+| PRD.01.01.01 | [Capability name] | [What it does] | [How to validate] |
+| PRD.01.01.02 | [Capability name] | [What it does] | [How to validate] |
+| PRD.01.01.03 | [Capability name] | [What it does] | [How to validate] |
 
 ### User Journey (Happy Path)
 
@@ -271,9 +271,9 @@ custom_fields:
 
 > **Note**: This section identifies architecture decisions needed for MVP. Full ADR documents created separately per SDD workflow.
 
-**ID Format**: `PRD.NN.32.SS` (Architecture Topic)
+**ID Format**: `PRD.01.32.SS` (Architecture Topic)
 
-### 10.1 Infrastructure (PRD.NN.32.01)
+### 10.1 Infrastructure (PRD.01.32.01)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -287,7 +287,7 @@ custom_fields:
 
 ---
 
-### 10.2 Data Architecture (PRD.NN.32.02)
+### 10.2 Data Architecture (PRD.01.32.02)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -299,7 +299,7 @@ custom_fields:
 
 ---
 
-### 10.3 Integration (PRD.NN.32.03)
+### 10.3 Integration (PRD.01.32.03)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -311,7 +311,7 @@ custom_fields:
 
 ---
 
-### 10.4 Security (PRD.NN.32.04)
+### 10.4 Security (PRD.01.32.04)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -323,7 +323,7 @@ custom_fields:
 
 ---
 
-### 10.5 Observability (PRD.NN.32.05)
+### 10.5 Observability (PRD.01.32.05)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A (MVP/prototype)
 
@@ -335,7 +335,7 @@ custom_fields:
 
 ---
 
-### 10.6 AI/ML (PRD.NN.32.06)
+### 10.6 AI/ML (PRD.01.32.06)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -347,7 +347,7 @@ custom_fields:
 
 ---
 
-### 10.7 Technology Selection (PRD.NN.32.07)
+### 10.7 Technology Selection (PRD.01.32.07)
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -363,40 +363,40 @@ custom_fields:
 
 ### MVP Constraints
 
-**ID Format**: `PRD.NN.03.SS` (Constraint)
+**ID Format**: `PRD.01.03.SS` (Constraint)
 
 | Constraint ID | Constraint Type | Description | Impact |
 |---------------|-----------------|-------------|--------|
-| PRD.NN.03.01 | **Budget** | $[X] total for MVP | [How it limits scope] |
-| PRD.NN.03.02 | **Timeline** | [X] weeks to launch | [Trade-offs made] |
-| PRD.NN.03.03 | **Team** | [X] developers | [What can be accomplished] |
-| PRD.NN.03.04 | **Technical** | [Specific limitation] | [Workaround/approach] |
+| PRD.01.03.01 | **Budget** | $[X] total for MVP | [How it limits scope] |
+| PRD.01.03.02 | **Timeline** | [X] weeks to launch | [Trade-offs made] |
+| PRD.01.03.03 | **Team** | [X] developers | [What can be accomplished] |
+| PRD.01.03.04 | **Technical** | [Specific limitation] | [Workaround/approach] |
 
 ### Key Assumptions
 
-**ID Format**: `PRD.NN.04.SS` (Assumption)
+**ID Format**: `PRD.01.04.SS` (Assumption)
 
 | Assumption ID | Assumption | Risk Level | Validation Method |
 |---------------|------------|------------|-------------------|
-| PRD.NN.04.01 | [Assumption about users] | [H/M/L] | [How we'll validate] |
-| PRD.NN.04.02 | [Assumption about market] | [H/M/L] | [How we'll validate] |
-| PRD.NN.04.03 | [Technical assumption] | [H/M/L] | [How we'll validate] |
+| PRD.01.04.01 | [Assumption about users] | [H/M/L] | [How we'll validate] |
+| PRD.01.04.02 | [Assumption about market] | [H/M/L] | [How we'll validate] |
+| PRD.01.04.03 | [Technical assumption] | [H/M/L] | [How we'll validate] |
 
 ---
 
 ## 12. Risk Assessment
 
-**ID Format**: `PRD.NN.07.SS` (Risk)
+**ID Format**: `PRD.01.07.SS` (Risk)
 
 ### MVP Risks
 
 | Risk ID | Risk | Likelihood | Impact | Mitigation |
 |---------|------|------------|--------|------------|
-| PRD.NN.07.01 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
-| PRD.NN.07.02 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
-| PRD.NN.07.03 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
-| PRD.NN.07.04 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
-| PRD.NN.07.05 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
+| PRD.01.07.01 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
+| PRD.01.07.02 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
+| PRD.01.07.03 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
+| PRD.01.07.04 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
+| PRD.01.07.05 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
 
 ---
 
@@ -485,7 +485,7 @@ custom_fields:
 
 | Source | Document | Relationship |
 |--------|----------|--------------|
-| BRD | @brd: BRD.NN.TT.SS | Business requirements source |
+| BRD | @brd: BRD.01.01.01 | Business requirements source |
 | Strategy | [Strategic document] | Strategic alignment |
 
 ### Downstream Artifacts
@@ -499,7 +499,7 @@ custom_fields:
 ### Traceability Tags
 
 ```markdown
-@brd: BRD.NN.TT.SS
+@brd: BRD.01.01.01
 ```
 
 ---
@@ -547,12 +547,12 @@ Migrate from MVP PRD to full `PRD-TEMPLATE.md` when:
 
 ### Migration Steps
 
-1. **Create new document**: Copy `PRD-TEMPLATE.md` to `PRD-NN_{slug}.md`
+1. **Create new document**: Copy `PRD-TEMPLATE.md` to `PRD-01_{slug}.md`
 2. **Transfer core content**: Map MVP sections to full template (see table below)
 3. **Keep monolithic**: Maintain a single-file document; defer any sectioning to the full framework phase.
 4. **Add missing sections**: Product Vision, detailed User Stories, full NFRs
 5. **Update traceability**: Update downstream artifacts (EARS, BDD, etc.)
-6. **Archive MVP version**: Move to archive with "superseded by PRD-NN" note
+6. **Archive MVP version**: Move to archive with "superseded by PRD-01" note
 7. **Run validation**: Execute `python3 scripts/validate_prd.py` on new document
 
 ### Section Mapping (MVP → Full)

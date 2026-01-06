@@ -117,7 +117,7 @@ Downstream documents reference thresholds using the `@threshold:` tag:
 **Examples**:
 
 ```markdown
-@threshold: PRD.01.kyc.l1.daily
+@threshold: PRD.01.quota.l1.daily
 @threshold: BRD.02.risk.low.max
 @threshold: ADR.15.circuit.failure.count
 @threshold: ADR.15.pool.db.max
@@ -212,7 +212,7 @@ we implement circuit breakers with @threshold: ADR.15.circuit.failure.count = 5.
 """
 
 # Values loaded from configuration
-KYC_L1_DAILY = config.get("thresholds.kyc.l1.daily")  # 1000 USD
+QUOTA_L1_DAILY = config.get("thresholds.quota.l1.daily")  # e.g., 1000 USD
 CIRCUIT_FAILURE_COUNT = config.get("thresholds.circuit.failure.count")  # 5
 ```
 
@@ -221,12 +221,12 @@ CIRCUIT_FAILURE_COUNT = config.get("thresholds.circuit.failure.count")  # 5
 ```text
 Source Documents (define thresholds):
 ├── BRD (business thresholds)     → defines: @threshold: BRD.01.risk.high.min
-├── PRD (product thresholds)      → defines: @threshold: PRD.01.kyc.l1.daily
+├── PRD (product thresholds)      → defines: @threshold: PRD.01.quota.l1.daily
 └── ADR (technical thresholds)    → defines: @threshold: ADR.15.circuit.failure.count
          ↓
 Consumer Documents (reference via @threshold: tags):
-├── EARS  → references: @threshold: PRD.01.kyc.l1.daily
-├── BDD   → references: @threshold: PRD.01.kyc.l1.daily
+├── EARS  → references: @threshold: PRD.01.quota.l1.daily
+├── BDD   → references: @threshold: PRD.01.quota.l1.daily
 ├── SYS   → references: @threshold: ADR.15.pool.db.max
 ├── ADR   → references: @threshold: PRD.01.perf.api.p95 (to satisfy product SLA)
 ├── REQ   → references: @threshold: BRD.01.risk.high.min
@@ -250,7 +250,7 @@ Code (implements with config reference)
 
 | Component | Required | Description | Example |
 |-----------|----------|-------------|---------|
-| `category` | Yes | Top-level domain | `kyc`, `risk`, `perf` |
+| `category` | Yes | Top-level domain | `quota`, `risk`, `perf` |
 | `subcategory` | Yes | Feature/scope within category | `l1`, `api`, `partner` |
 | `attribute` | Yes | Specific metric/limit | `daily`, `p95`, `timeout` |
 | `qualifier` | No | Additional specificity | `max`, `min`, `warning` |
@@ -291,7 +291,7 @@ Projects define domain-specific categories in the BRD/PRD Thresholds section. Do
 ```yaml
 thresholds:
   # Domain: Financial - Category: kyc
-  # Purpose: KYC verification tier limits
+  # Purpose: Verification tier limits (quota)
   # Owner: Compliance Team
   kyc:
     l1:
@@ -330,7 +330,7 @@ thresholds:
 
 | Rule ID | Rule | Correct | Incorrect |
 |---------|------|---------|-----------|
-| NR-01 | Use lowercase letters only | `kyc.l1.daily` | `KYC.L1.Daily` |
+| NR-01 | Use lowercase letters only | `quota.l1.daily` | `QUOTA.L1.DAILY` |
 | NR-02 | Use dots as separators | `risk.low.max` | `risk_low_max`, `risk-low-max` |
 | NR-03 | Use singular nouns | `alert.cpu` | `alerts.cpus` |
 | NR-04 | Avoid abbreviations except standard ones | `perf.api` | `prf.a` |
@@ -582,7 +582,7 @@ When multiple documents could define similar thresholds, establish clear ownersh
 
 | Threshold Domain | Source Document | Rationale |
 |------------------|-----------------|-----------|
-| Compliance limits (KYC/AML) | BRD | Regulatory/business authority |
+| Compliance limits (verification/AML) | BRD | Regulatory/business authority |
 | Product feature limits | PRD | Product-level decisions |
 | Risk scores | BRD | Platform-level risk framework |
 | Circuit breakers, pools | ADR | Technical architecture decisions |
@@ -626,7 +626,7 @@ When multiple documents could define similar thresholds, establish clear ownersh
 
 ### 7.3 Verification Tier Definitions
 
-| Tier | KYC (B2C) | KYB (B2B) | Requirements |
+| Tier | Individual (B2C) | Business (B2B) | Requirements |
 |------|-----------|-----------|--------------|
 | L1 (Basic) | Name, DOB, Address | Business name, Registration | Self-declaration |
 | L2 (Verified) | + ID verification | + Director verification | Document verification |

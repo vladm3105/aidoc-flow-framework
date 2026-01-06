@@ -92,7 +92,7 @@ Industry/domain terminology requiring definition for cross-domain understanding.
 | Term | Definition | Domain | Common Usage Context |
 |------|------------|--------|---------------------|
 | AML | Anti-Money Laundering - regulations and procedures preventing illicit financial activity | FinTech/Compliance | Transaction monitoring FRs, section 6 |
-| KYC | Know Your Customer - identity verification process required by financial regulations | FinTech/Compliance | User onboarding, section 6 FRs |
+| Identity Verification | Verification of user or business identity required by regulations | Compliance | User onboarding, section 6 FRs |
 | NAV | Net Asset Value - total value of assets minus liabilities, typically per share/unit | Financial Services | Portfolio valuation, fund accounting BRDs |
 | Remittance | Transfer of money by foreign worker to individual in home country | Financial Services | Cross-border payment BRDs |
 
@@ -116,7 +116,7 @@ Standard abbreviations used across BRD framework.
 | FR | Functional Requirement | BRD Framework |
 | IPLAN | Implementation Plan | SDD Framework |
 | KPI | Key Performance Indicator | Business |
-| KYC | Know Your Customer | Compliance |
+| Verification | Identity verification (individual or business) | Compliance |
 | MCP | Model Context Protocol | Technical |
 | NAV | Net Asset Value | Financial |
 | QA | Quality Attribute | BRD Framework |

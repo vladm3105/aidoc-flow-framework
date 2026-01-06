@@ -56,13 +56,40 @@ FORBIDDEN_TAG_PATTERNS = [
 ]
 
 # Required sections (patterns)
-REQUIRED_SECTIONS = [
+# Required sections (patterns)
+REQUIRED_SECTIONS_STANDARD = [
     (r"^# BRD-\d{2,}:", "Title (H1 with BRD-NN format)"),
     (r"^## 0\. Document Control", "Section 0: Document Control"),
     (r"^## 1\. Executive Summary", "Section 1: Executive Summary"),
     (r"^## 2\. Business Context", "Section 2: Business Context"),
     (r"^## 3\. Business Requirements", "Section 3: Business Requirements"),
 ]
+
+REQUIRED_SECTIONS_MVP = [
+    (r"^# BRD-\d{2,}:", "Title (H1 with BRD-NN format)"),
+    (r"^## 0\. Document Control", "Section 0: Document Control"),
+    (r"^## 1\. Introduction", "Section 1: Introduction"),
+    (r"^## 2\. Business Objectives", "Section 2: Business Objectives"),
+    (r"^## 3\. Project Scope", "Section 3: Project Scope"),
+    (r"^## 4\. Stakeholders", "Section 4: Stakeholders"),
+    (r"^## 5\. User Stories", "Section 5: User Stories"),
+    (r"^## 6\. Functional Requirements", "Section 6: Functional Requirements"),
+    (r"^## 7\. Quality Attributes", "Section 7: Quality Attributes"),
+    (r"^## 8\. Business Constraints and Assumptions", "Section 8: Business Constraints and Assumptions"),
+    (r"^## 9\. Acceptance Criteria", "Section 9: Acceptance Criteria"),
+    (r"^## 10\. Business Risk Management", "Section 10: Business Risk Management"),
+    (r"^## 11\. Implementation Approach", "Section 11: Implementation Approach"),
+    (r"^## 12\. Cost-Benefit Analysis", "Section 12: Cost-Benefit Analysis"),
+    (r"^## 13\. Traceability", "Section 13: Traceability"),
+    (r"^## 14\. Glossary", "Section 14: Glossary"),
+    (r"^## 15\. Appendices", "Section 15: Appendices"),
+]
+
+# Map profiles to section lists
+SECTION_MAP = {
+    "standard": REQUIRED_SECTIONS_STANDARD,
+    "mvp": REQUIRED_SECTIONS_MVP
+}
 
 # File naming patterns
 # Monolithic: BRD-NN_slug.md
@@ -244,7 +271,7 @@ def validate_metadata(metadata: Optional[Dict], result: ValidationResult, is_tem
                 result.add_error("BRD-E003", f"Forbidden tag pattern: '{tag}'")
 
 
-def validate_structure(content: str, sections: List[Tuple[str, int]], result: ValidationResult):
+def validate_structure(content: str, sections: List[Tuple[str, int]], result: ValidationResult, metadata: Optional[Dict] = None):
     """Validate document structure."""
     # Check H1 format
     h1_sections = [s for s in sections if s[0].startswith("# ") and not s[0].startswith("## ")]
@@ -258,12 +285,24 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
         if not re.match(r"^# BRD-\d{2,}:", h1_text):
             result.add_error("BRD-E001", f"Invalid H1 format. Expected '# BRD-NN: Title', got '{h1_text[:50]}'")
 
+    # Determine profile and required sections
+    profile = "standard"
+    if metadata and "custom_fields" in metadata:
+        profile = metadata["custom_fields"].get("template_profile", "standard")
+    
+    # Handle unknown profile (default to standard)
+    if profile not in SECTION_MAP:
+        result.add_warning("BRD-W001", f"Unknown template_profile '{profile}', defaulting to standard validation")
+        profile = "standard"
+        
+    required_sections = SECTION_MAP[profile]
+
     # Check required sections
     section_headers = [s[0] for s in sections]
-    for pattern, section_name in REQUIRED_SECTIONS[1:]:  # Skip H1, already checked
+    for pattern, section_name in required_sections[1:]:  # Skip H1, already checked
         found = any(re.match(pattern, h) for h in section_headers)
         if not found:
-            result.add_error("BRD-E002", f"Missing required section: {section_name}")
+            result.add_error("BRD-E002", f"Missing required section for {profile} profile: {section_name}")
 
     # Check for duplicate section numbers
     section_numbers = []
@@ -303,16 +342,29 @@ def validate_document_control(content: str, result: ValidationResult):
             result.add_warning("BRD-W001", f"Missing field in Document Control: {field}")
 
 
-def validate_business_requirements(content: str, result: ValidationResult):
-    """Validate Business Requirements section structure."""
-    brd_section_match = re.search(
-        r"## 3\. Business Requirements.*?(?=## \d+\.|\Z)",
-        content,
-        re.DOTALL
-    )
+def validate_business_requirements(content: str, result: ValidationResult, metadata: Optional[Dict] = None):
+    """Validate Business Requirements (Sec 3 Standard / Sec 6 MVP) structure."""
+    
+    # Determine profile
+    profile = "standard"
+    if metadata and "custom_fields" in metadata:
+        profile = metadata["custom_fields"].get("template_profile", "standard")
+        
+    if profile == "mvp":
+        # MVP: Section 6. Functional Requirements
+        pattern = r"## 6\. Functional Requirements.*?(?=## \d+\.|\Z)"
+        section_name = "Section 6: Functional Requirements"
+        err_code = "BRD-E005"
+    else:
+        # Standard: Section 3. Business Requirements
+        pattern = r"## 3\. Business Requirements.*?(?=## \d+\.|\Z)"
+        section_name = "Section 3: Business Requirements"
+        err_code = "BRD-E005"
+
+    brd_section_match = re.search(pattern, content, re.DOTALL)
 
     if not brd_section_match:
-        result.add_error("BRD-E005", "Missing Section 3: Business Requirements")
+        result.add_error(err_code, f"Missing {section_name}")
         return
 
     brd_section = brd_section_match.group(0)
@@ -322,7 +374,7 @@ def validate_business_requirements(content: str, result: ValidationResult):
     has_req_bullets = re.search(r"^\s*[-*]\s+", brd_section, re.MULTILINE)
 
     if not (has_req_table or has_req_bullets):
-        result.add_warning("BRD-W001", "Section 3 appears to lack structured requirements (no tables or bullet lists)")
+        result.add_warning("BRD-W001", f"{section_name} appears to lack structured requirements (no tables or bullet lists)")
 
 
 def validate_brd_file(file_path: Path) -> ValidationResult:
@@ -366,9 +418,9 @@ def validate_brd_file(file_path: Path) -> ValidationResult:
     # Run validations
     validate_file_name(file_path, result)
     validate_metadata(metadata, result, is_template)
-    validate_structure(content, sections, result)
+    validate_structure(content, sections, result, metadata)
     validate_document_control(content, result)
-    validate_business_requirements(content, result)
+    validate_business_requirements(content, result, metadata)
 
     return result
 

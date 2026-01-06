@@ -1,23 +1,11 @@
-<!--
-AI_CONTEXT_START
-Role: AI Software Architect
-Objective: Create a streamlined MVP Architecture Decision Record.
-Constraints:
-- Focus on the single decision at hand.
-- Analyze 2-3 viable alternatives maximum.
-- Be decisive; clear recommendation required.
-- Keep implementation notes focused on immediate MVP needs.
-- Maintain single-file structure (no document splitting in MVP).
-AI_CONTEXT_END
--->
 ---
-title: "ADR-MVP-TEMPLATE: Architecture Decision Record (MVP Version)"
+title: "ADR-01: A Simple Todo App"
 tags:
-  - adr-template
+  - adr
   - mvp-template
   - layer-5-artifact
 custom_fields:
-  document_type: template
+  document_type: adr
   artifact_type: ADR
   layer: 5
   architecture_approaches: [ai-agent-based]
@@ -34,6 +22,18 @@ custom_fields:
   traceability_matrix_template: "ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md"
 ---
 
+<!--
+AI_CONTEXT_START
+Role: AI Software Architect
+Objective: Create a streamlined MVP Architecture Decision Record.
+Constraints:
+- Focus on the single decision at hand.
+- Analyze 2-3 viable alternatives maximum.
+- Be decisive; clear recommendation required.
+- Keep implementation notes focused on immediate MVP needs.
+- Maintain single-file structure (no document splitting in MVP).
+AI_CONTEXT_END
+-->
 > **MVP Template** — Single-file, streamlined ADR for rapid MVP decisions.
 > Use this template for MVP architecture decisions with 2-3 alternatives.
 > For comprehensive ADRs (complex tradeoffs, extensive analysis), use `ADR-TEMPLATE.md`.
@@ -42,7 +42,7 @@ custom_fields:
 
 > References: Full Template `ADR-TEMPLATE.md` | Schema `ADR_SCHEMA.yaml` | Rules `ADR_CREATION_RULES.md`, `ADR_VALIDATION_RULES.md` | Matrix `ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
-# ADR-NN: [Architecture Decision Title]
+# ADR-01: [Architecture Decision Title]
 
 ## 1. Document Control
 
@@ -61,7 +61,7 @@ custom_fields:
 
 ### 2.1 Problem Statement
 
-**Originating Topic**: BRD.NN.32.SS - [Topic Name from BRD Section 7.2]
+**Originating Topic**: BRD.01.32.01 - [Topic Name from BRD Section 7.2]
 
 [1-2 paragraph description of the architectural challenge or decision needed]
 
@@ -88,9 +88,9 @@ custom_fields:
 
 ## 3. Decision
 
-**ID Format**: `ADR.NN.10.SS` (Decision)
+**ID Format**: `ADR.01.10.SS` (Decision)
 
-### 3.1 Chosen Solution (ADR.NN.10.01)
+### 3.1 Chosen Solution (ADR.01.10.01)
 
 **We will use**: [Selected option/technology/approach]
 
@@ -119,9 +119,9 @@ custom_fields:
 
 ## 4. Alternatives Considered
 
-**ID Format**: `ADR.NN.12.SS` (Alternative)
+**ID Format**: `ADR.01.12.SS` (Alternative)
 
-### 4.1 Option A: [Selected Option Name] ✓ (ADR.NN.12.01)
+### 4.1 Option A: [Selected Option Name] ✓ (ADR.01.12.01)
 
 **Description**: [Brief description of the chosen approach]
 
@@ -137,7 +137,7 @@ custom_fields:
 
 ---
 
-### 4.2 Option B: [Alternative Option Name] (ADR.NN.12.02)
+### 4.2 Option B: [Alternative Option Name] (ADR.01.12.02)
 
 **Description**: [Brief description]
 
@@ -155,7 +155,7 @@ custom_fields:
 
 ---
 
-### 4.3 Option C: [Alternative Option Name] (Optional) (ADR.NN.12.03)
+### 4.3 Option C: [Alternative Option Name] (Optional) (ADR.01.12.03)
 
 **Description**: [Brief description]
 
@@ -173,15 +173,15 @@ custom_fields:
 
 ## 5. Consequences
 
-**ID Format**: `ADR.NN.13.SS` (Consequence)
+**ID Format**: `ADR.01.13.SS` (Consequence)
 
-### 5.1 Positive Outcomes (ADR.NN.13.01)
+### 5.1 Positive Outcomes (ADR.01.13.01)
 
 - [Benefit 1]: [Quantifiable impact]
 - [Benefit 2]: [Quantifiable impact]
 - [Benefit 3]: [Qualitative benefit]
 
-### 5.2 Trade-offs & Risks (ADR.NN.13.02)
+### 5.2 Trade-offs & Risks (ADR.01.13.02)
 
 | Risk/Trade-off | Impact | Mitigation |
 |----------------|--------|------------|
@@ -275,7 +275,7 @@ flowchart TD
 
 [Reference to BDD scenarios that validate this decision]
 
-- Feature: [Feature name] - `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature`
+- Feature: [Feature name] - `BDD/BDD-01_{suite}/BDD-01.SS_{slug}.feature`
 
 ---
 
@@ -285,24 +285,24 @@ flowchart TD
 
 | Source | Document | Relevant Section |
 |--------|----------|------------------|
-| BRD | BRD.NN | §7.2 - Architecture Decision Requirements |
-| PRD | PRD.NN | §18 - Architecture Decision Topics |
-| EARS | EARS.NN | [Relevant requirements] |
+| BRD | BRD.01 | §7.2 - Architecture Decision Requirements |
+| PRD | PRD.01 | §18 - Architecture Decision Topics |
+| EARS | EARS.01 | [Relevant requirements] |
 
 ### 9.2 Downstream Artifacts
 
 | Artifact | Status | Relationship |
 |----------|--------|--------------|
-| SYS-NN | TBD | System requirements derived from this ADR |
-| REQ-NN | TBD | Atomic requirements |
-| SPEC-NN | TBD | Technical specifications |
+| SYS-01 | TBD | System requirements derived from this ADR |
+| REQ-01 | TBD | Atomic requirements |
+| SPEC-01 | TBD | Technical specifications |
 
 ### 9.3 Traceability Tags
 
 ```markdown
-@brd: BRD.NN.32.SS
-@prd: PRD.NN.EE.SS
-@ears: EARS.NN.24.SS
+@brd: BRD.01.32.01
+@prd: PRD.01.01.01
+@ears: EARS.01.24.01
 ```
 
 ---
@@ -311,9 +311,9 @@ flowchart TD
 
 | Relationship | ADR | Description |
 |--------------|-----|-------------|
-| Depends On | ADR-NN | [What this decision depends on] |
-| Related | ADR-NN | [Related parallel decision] |
-| Supersedes | ADR-NN | [Previous decision replaced] |
+| Depends On | ADR-01 | [What this decision depends on] |
+| Related | ADR-01 | [Related parallel decision] |
+| Supersedes | ADR-01 | [Previous decision replaced] |
 
 ---
 
@@ -330,7 +330,7 @@ Migrate from MVP ADR to full `ADR-TEMPLATE.md` when:
 
 ### Migration Steps
 
-1. **Create new document**: Copy `ADR-TEMPLATE.md` to `ADR-NN_{slug}.md`
+1. **Create new document**: Copy `ADR-TEMPLATE.md` to `ADR-01_{slug}.md`
 2. **Transfer core content**: Map MVP sections to full template
 3. **Add detailed analysis**: Expand alternatives, add scoring matrices
 4. **Add missing sections**: 

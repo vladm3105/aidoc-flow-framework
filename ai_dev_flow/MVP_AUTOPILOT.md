@@ -40,10 +40,10 @@ It generates and validates the entire MVP pipeline in one command:
 
 ## 2) Quick Start
 
-  - MVP speed run (warnings allowed; auto-fix; write report):
+- MVP speed run (warnings allowed; auto-fix; write report):
   - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP" --slug my_mvp --up-to IPLAN --auto-fix --report markdown`
 
-  - Strict validation (warnings fail):
+- Strict validation (warnings fail):
   - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP" --slug my_mvp --up-to IPLAN --auto-fix --strict --report markdown`
 
 - Lighter MVP validators for BRD (`--mvp-validators`):
@@ -71,7 +71,7 @@ Tip: Use `--strict` with the path validator when you want failures to block gene
 
 ---
 
-## 2.1) Dependencies
+## 2.2) Dependencies
 
 - Python dependencies for the Autopilot live in `ai_dev_flow/scripts/requirements.txt`.
 - Install (virtualenv recommended):
@@ -381,7 +381,7 @@ The Autopilot can be used to continue a partially created project or to fork an 
 
 - **Fork**:
   - `--fork-from-nn 01 --new-nn 02 --new-slug new_product`: copy all `*-01_*` artifacts as `*-02_*` updating IDs and tags.
-  - `--id-map path/to/id_map.yaml`: advanced mappings across layers (e.g., `REQ-15→REQ-03`).
+  - `--id-map path/to/id_map.yaml`: advanced mappings across layers. Format: simple YAML dictionary `{"OLD-ID": "NEW-ID"}` (e.g., `REQ-15: REQ-03`).
   - `--supersede`: inject “Supersedes/Derived from” blocks automatically.
   - `--copy-assets`: copy images/diagrams referenced by relative paths (preserves sectional folder layouts).
 

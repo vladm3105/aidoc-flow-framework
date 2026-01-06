@@ -56,7 +56,8 @@ FORBIDDEN_TAG_PATTERNS = [
 ]
 
 # Required sections (patterns) - 15 sections
-REQUIRED_SECTIONS = [
+# Required sections (patterns) - Standard (15 sections)
+REQUIRED_SECTIONS_STANDARD = [
     (r"^# SYS-\d{2,}:", "Title (H1 with SYS-NN+ format)"),
     (r"^## 1\. Document Control", "Section 1: Document Control"),
     (r"^## 2\. Executive Summary", "Section 2: Executive Summary"),
@@ -74,6 +75,35 @@ REQUIRED_SECTIONS = [
     (r"^## 14\. Implementation Notes", "Section 14: Implementation Notes"),
     (r"^## 15\. Change History", "Section 15: Change History"),
 ]
+
+# Required sections (patterns) - MVP (12 sections)
+REQUIRED_SECTIONS_MVP = [
+    (r"^# SYS-\d{2,}:", "Title (H1 with SYS-NN+ format)"),
+    (r"^## 1\. Document Control", "Section 1: Document Control"),
+    (r"^## 2\. Executive Summary", "Section 2: Executive Summary"),
+    (r"^## 3\. Scope", "Section 3: Scope"),
+    (r"^## 4\. Functional Requirements", "Section 4: Functional Requirements"),
+    (r"^## 5\. Quality Attributes", "Section 5: Quality Attributes"),
+    (r"^## 6\. Interface Specifications", "Section 6: Interface Specifications"),
+    (r"^## 7\. Data Management Requirements", "Section 7: Data Management Requirements"),
+    # MVP combines or reorders:
+    # 8. Deployment & Operations (matches standard 9 but different name/number)
+    (r"^## 8\. Deployment and Operations Requirements", "Section 8: Deployment and Operations Requirements"),
+    # 9. Testing Requirements (matches standard 8 but different number)
+    (r"^## 9\. Testing and Validation Requirements", "Section 9: Testing and Validation Requirements"),
+    # 10. Acceptance Criteria (matches standard 11)
+    (r"^## 10\. Acceptance Criteria", "Section 10: Acceptance Criteria"),
+    # 11. Risk Assessment (matches standard 12)
+    (r"^## 11\. Risk Assessment", "Section 11: Risk Assessment"),
+    # 12. Traceability (matches standard 13)
+    (r"^## 12\. Traceability", "Section 12: Traceability"),
+]
+
+# Map profiles to section lists
+SECTION_MAP = {
+    "standard": REQUIRED_SECTIONS_STANDARD,
+    "mvp": REQUIRED_SECTIONS_MVP
+}
 
 # Quality attribute categories to check
 QUALITY_CATEGORIES = [
@@ -269,7 +299,7 @@ def validate_metadata(metadata: Optional[Dict], result: ValidationResult, is_tem
                 result.add_error("SYS-E002", f"Forbidden tag pattern: '{tag}'")
 
 
-def validate_structure(content: str, sections: List[Tuple[str, int]], result: ValidationResult):
+def validate_structure(content: str, sections: List[Tuple[str, int]], result: ValidationResult, metadata: Optional[Dict] = None):
     """Validate document structure."""
     # Check H1 format
     h1_sections = [s for s in sections if s[0].startswith("# ") and not s[0].startswith("## ")]
@@ -283,12 +313,24 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
         if not re.match(r"^# SYS-\d{2,}:", h1_text):
             result.add_error("SYS-E001", f"Invalid H1 format. Expected '# SYS-NN+: Title', got '{h1_text[:50]}'")
 
+    # Determine profile and required sections
+    profile = "standard"
+    if metadata and "custom_fields" in metadata:
+        profile = metadata["custom_fields"].get("template_profile", "standard")
+    
+    # Handle unknown profile (default to standard)
+    if profile not in SECTION_MAP:
+        result.add_warning("SYS-W001", f"Unknown template_profile '{profile}', defaulting to standard validation")
+        profile = "standard"
+        
+    required_sections = SECTION_MAP[profile]
+
     # Check required sections
     section_headers = [s[0] for s in sections]
-    for pattern, section_name in REQUIRED_SECTIONS[1:]:  # Skip H1, already checked
+    for pattern, section_name in required_sections[1:]:  # Skip H1, already checked
         found = any(re.match(pattern, h) for h in section_headers)
         if not found:
-            result.add_error("SYS-E005", f"Missing required section: {section_name}")
+            result.add_error("SYS-E005", f"Missing required section for {profile} profile: {section_name}")
 
     # Check section numbering is sequential
     section_numbers = []
@@ -298,10 +340,20 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
             section_numbers.append(int(match.group(1)))
 
     if section_numbers:
-        expected = list(range(1, 16))  # 1-15
+        # Standard: 1-15, MVP: 1-12
+        max_section = 12 if profile == "mvp" else 15
+        expected = list(range(1, max_section + 1))
+        
+        # Check if we have roughly the right sections, allow some gaps if sections are optional in future
+        # But for strictly defined templates, we expect exact matches
         missing = set(expected) - set(section_numbers)
         if missing:
-            result.add_warning("SYS-E005", f"Missing section numbers: {sorted(missing)}")
+             # Just warn if standard, because MVP might be stricter on fewer sections
+             # But if we use SECTION_MAP, we effectively enforced presence.
+             # This check is just for sequentiality and completeness of numbering range.
+             # If MVP has 1-12, expected is 1-12.
+             # If missing 10, it's missing.
+             result.add_warning("SYS-E005", f"Missing section numbers: {sorted(missing)}")
 
 
 def validate_functional_requirements(content: str, result: ValidationResult):
@@ -445,7 +497,7 @@ def validate_sys_file(file_path: Path) -> ValidationResult:
 
     # Run validations
     validate_metadata(metadata, result, is_template)
-    validate_structure(content, sections, result)
+    validate_structure(content, sections, result, metadata)
     validate_functional_requirements(content, result)
     validate_quality_attributes(content, result)
     validate_interface_specs(content, result)

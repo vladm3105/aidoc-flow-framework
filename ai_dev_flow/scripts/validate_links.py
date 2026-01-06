@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Validate all markdown links in Section 7 Traceability sections.
+Validate all markdown links in Traceability sections (e.g. Section 7 or 11).
 Check that:
 1. Relative paths resolve to actual files
 2. Anchors exist in target files
@@ -25,11 +25,12 @@ def strip_ignored_and_code(text: str) -> str:
     text = re.sub(r'```[\s\S]*?```', '', text)
     return text
 
-def extract_section_7(content):
-    """Extract Section 7 content (ignoring code/ignored regions)."""
+def extract_traceability_section(content):
+    """Extract Traceability section content (ignoring code/ignored regions)."""
     # Remove ignored regions and code blocks before searching for the header
     content = strip_ignored_and_code(content)
-    pattern = r'## 7\. Traceability.*?(?=\n## |\Z)'
+    # Match any Traceability section number (e.g., 7. Traceability, 11. Traceability)
+    pattern = r'## \d+\. Traceability.*?(?=\n## |\Z)'
     match = re.search(pattern, content, re.MULTILINE | re.DOTALL)
     return match.group(0) if match else None
 
@@ -177,10 +178,10 @@ def validate_file(file_path):
     except Exception as e:
         return {'error': f"Could not read file: {e}"}, []
 
-    section_7 = extract_section_7(content)
+    section_7 = extract_traceability_section(content)
 
     if not section_7:
-        return {}, []  # No Section 7
+        return {}, []  # No Traceability section
 
     # Extract links
     section_7 = strip_ignored_and_code(section_7)

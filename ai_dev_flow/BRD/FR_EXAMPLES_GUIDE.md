@@ -244,7 +244,7 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 | Use Tables When | Use Bullets When |
 |-----------------|------------------|
 | ≥3 decision variables | Simple if/then rules |
-| Tiered thresholds (KYC levels, fee tiers) | Sequential business rules |
+| Tiered thresholds (verification tiers, fee tiers) | Sequential business rules |
 | Multi-column decision matrix | Rules with single condition |
 | Comparing options (funding methods, payout types) | Rules requiring narrative explanation |
 
@@ -252,11 +252,11 @@ This section provides detailed patterns for each FR subsection to achieve PRD-Re
 ```markdown
 **Business Rules**:
 
-| KYC Level | Daily Limit | Per-Transaction Limit | Velocity Limit |
+| Verification Tier | Daily Limit | Per-Transaction Limit | Velocity Limit |
 |-----------|-------------|----------------------|----------------|
-| L1 (Basic) | $500 | $200 | 3 transactions/day |
-| L2 (Enhanced) | $2,000 | $500 | 5 transactions/day |
-| L3 (Full) | $10,000 | $2,500 | 10 transactions/day |
+| L1 (Basic) | @threshold: PRD.NN.quota.l1.daily | @threshold: PRD.NN.quota.l1.per_txn | @threshold: PRD.NN.quota.l1.velocity |
+| L2 (Enhanced) | @threshold: PRD.NN.quota.l2.daily | @threshold: PRD.NN.quota.l2.per_txn | @threshold: PRD.NN.quota.l2.velocity |
+| L3 (Full) | @threshold: PRD.NN.quota.l3.daily | @threshold: PRD.NN.quota.l3.per_txn | @threshold: PRD.NN.quota.l3.velocity |
 ```
 
 **Table Pattern (Decision Matrix)**:

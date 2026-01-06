@@ -25,7 +25,8 @@ import argparse
 import re
 import shutil
 import sys
-from dataclasses import dataclass
+import subprocess
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -52,7 +53,7 @@ class Layer:
     # expected file extension for generated artifact
     ext: str = ".md"
     # upstream tag list to apply for basic auto-fixes
-    upstream_tags: List[str] = None  # type: ignore
+    upstream_tags: List[str] = field(default_factory=list)
 
     def dir(self, root: Path) -> Path:
         return root / self.name
@@ -71,15 +72,28 @@ def slugify(text: str, fallback: str) -> str:
 
 
 def substitute_ids(content: str, layer_name: str, nn: str = "01") -> str:
-    # Replace common NN tokens in templates (e.g., BRD-NN, PRD-NN)
-    patterns = [
-        fr"{layer_name}-NN",
-        fr"{layer_name}\.NN",
-        fr"{layer_name}_NN",
-    ]
-    for p in patterns:
-        content = re.sub(p, f"{layer_name}-{nn}", content)
-    # Also handle generic placeholders like [MVP Product/Feature Name]
+    # 1. Handle complex/nested placeholders first (specific to templates)
+    # BRD.NN.TT.SS -> BRD.01.01.01
+    content = re.sub(fr"BRD\.NN\.TT\.SS", f"BRD.{nn}.01.01", content)
+    # PRD.NN.EE.SS -> PRD.01.01.01
+    content = re.sub(fr"PRD\.NN\.EE\.SS", f"PRD.{nn}.01.01", content)
+    # BRD.NN.32.SS -> BRD.01.32.01 (Architecture reference)
+    content = re.sub(fr"BRD\.NN\.32\.SS", f"BRD.{nn}.32.01", content)
+    # EARS.NN.24.SS -> EARS.01.24.01
+    content = re.sub(fr"EARS\.NN\.24\.SS", f"EARS.{nn}.24.01", content)
+    
+    # 2. Handle standard NN tokens for ALL layers with separator preservation
+    prefixes = ["BRD", "PRD", "EARS", "BDD", "ADR", "SYS", "REQ", "SPEC"]
+    for prefix in prefixes:
+        # Match Prefix + Separator + NN (e.g. BRD-NN or BRD.NN)
+        # Capture separator to preserve style (dot vs hyphen)
+        # Use \g<N> syntax to avoid octal/group ambiguity with subsequent digits
+        content = re.sub(fr"({prefix})([-._])NN", fr"\g<1>\g<2>{nn}", content)
+    
+    # 3. Fallback for current layer generic reference
+    if layer_name not in prefixes:
+         content = re.sub(fr"({layer_name})([-._])NN", fr"\g<1>\g<2>{nn}", content)
+    
     return content
 
 
@@ -108,7 +122,10 @@ def generate_from_template(
     if target.exists():
         return target
 
-    tpl = layer.template_path(root)
+    # Fix: use SCRIPT_DIR to find templates in the framework directory
+    # layer.template_path(root) was incorrectly looking in the output directory
+    tpl = SCRIPT_DIR.parent / layer.name / layer.template
+    
     if not tpl.exists():
         # fallback: create minimal file if template missing
         target.write_text(
@@ -120,6 +137,15 @@ def generate_from_template(
 
     content = tpl.read_text(encoding="utf-8")
     content = substitute_ids(content, layer.name, nn)
+    
+    # Fix: update document_type from template to artifact type
+    content = content.replace("document_type: template", f"document_type: {layer.name.lower()}")
+    
+    # Fix: update tags (remove template tag, ensure artifact tag exists)
+    # Replace 'layer-template' with 'layer' (e.g. 'prd-template' -> 'prd')
+    content = content.replace(f"{layer.name.lower()}-template", layer.name.lower())
+    # Ensure mandatory tag exists if replacement didn't just add it
+    # (Since we replaced prd-template with prd, prd is now there. If prd was duplicate, YAML handles it or we don't care)
 
     # Shallow injection of intent where obvious placeholders exist
     human_slug = slug.replace("_", " ").title()
@@ -155,6 +181,12 @@ def generate_from_template(
     except Exception:
         pass
 
+    # Ensure frontmatter is at the top (fix for templates with leading comments)
+    try:
+        content = _move_frontmatter_to_top(content)
+    except Exception:
+        pass
+
     target.write_text(content, encoding="utf-8")
     ensure_planning_docs(layer_dir, layer.name, nn, target.name)
     return target
@@ -175,7 +207,7 @@ def _move_frontmatter_to_top(content: str) -> str:
     if content.startswith("---\n"):
         return content
     # find any frontmatter block
-    import re
+
     m = re.search(r"\n---\n(.*?)\n---\n", content, re.DOTALL)
     if not m:
         return content
@@ -188,7 +220,7 @@ def _move_frontmatter_to_top(content: str) -> str:
 
 def _ensure_frontmatter_keys(content: str, required_tags: List[str], required_cf: Dict[str, str | int | list]) -> str:
     """Best-effort frontmatter patcher: inject tags and custom_fields keys if missing in the first block."""
-    import re
+
     if not content.startswith("---\n"):
         # create a minimal frontmatter
         tags_yaml = "\n".join([f"  - {t}" for t in required_tags])
@@ -241,7 +273,7 @@ def _ensure_frontmatter_keys(content: str, required_tags: List[str], required_cf
 
 
 def _ensure_h1(content: str, layer_name: str, nn: str, human_slug: str) -> str:
-    import re
+
     # Remove any first H1 and replace with standardized one
     lines = content.splitlines()
     idx = None
@@ -265,7 +297,7 @@ def _ensure_h1(content: str, layer_name: str, nn: str, human_slug: str) -> str:
 
 
 def _ensure_section(content: str, header: str, stub: str) -> str:
-    import re
+
     if re.search(rf"^\s*{re.escape(header)}\s*$", content, re.MULTILINE):
         return content
     return content.rstrip() + "\n\n" + header + "\n" + stub.strip() + "\n"
@@ -292,7 +324,7 @@ def _fix_brd(content: str, nn: str, human_slug: str) -> str:
     dc_stub = "| Item | Details |\n|------|---------|\n| Related PRD | PRD-" + nn + " |\n| Status | Draft |"
     content = _ensure_section(content, "## 0. Document Control", dc_stub)
 
-    import re
+
     def _ensure_or_rename(num: int, expected: str, stub: str) -> str:
         nonlocal content
         # If exact header exists, do nothing
@@ -539,7 +571,34 @@ def try_minimal_autofix(file: Path, layer: Layer, upstream_ids: Dict[str, str]) 
             return cc
         newc = _fix_sys(content)
     elif layer.name == "REQ":
-        # REQ auto-fixes are intentionally minimal to avoid unintended rewrites
+        content = _move_frontmatter_to_top(content)
+        content = _ensure_frontmatter_keys(
+            content,
+            required_tags=["req", "layer-7-artifact"],
+            required_cf={
+                "document_type": "req",
+                "artifact_type": "REQ",
+                "layer": 7,
+                "architecture_approaches": ["ai-agent-based"],
+                "priority": "shared",
+                "development_status": "draft",
+            },
+        )
+        content = _ensure_h1(content, "REQ", nn, human_slug)
+        # 1. Document Control
+        dc_stub = "| Item | Details |\n|------|---------|\n| Source | SYS." + nn + ".01.01 |\n| Status | Draft |"
+        content = _ensure_section(content, "## 1. Document Control", dc_stub)
+        # 2. Requirement Description
+        content = _ensure_section(content, "## 2. Requirement Description", "### 2.1 Statement\n\nThe system SHALL...")
+        # 3. Traceability
+        trace = "@brd: {brd}\n@prd: {prd}\n@sys: {sys}\n@ears: {ears}\n@adr: {adr}".format(
+             brd=upstream_ids.get('brd','BRD.'+nn+'.01.01').replace('-', '.'),
+             prd=upstream_ids.get('prd','PRD.'+nn+'.01.01').replace('-', '.'),
+             sys=upstream_ids.get('sys','SYS.'+nn+'.01.01').replace('-', '.'),
+             ears=upstream_ids.get('ears','EARS.'+nn+'.01.01').replace('-', '.'),
+             adr=upstream_ids.get('adr','ADR.'+nn+'.01.01').replace('-', '.'),
+        )
+        content = _ensure_section(content, "## 10. Traceability", f"### 10.3 Traceability Tags\n\n{trace}")
         newc = content
     elif layer.name == "SPEC":
         # Ensure YAML has required top-level keys; fallback if not
@@ -567,7 +626,7 @@ def try_minimal_autofix(file: Path, layer: Layer, upstream_ids: Dict[str, str]) 
 
 def run_layer_validation(root_or_file: Path, layer_name: str, strict: bool = False, mvp_validators: bool = False) -> Tuple[bool, str]:
     """Run a single validator. Success when exit code is 0 (strict) or 0/1 (warnings-only)."""
-    import subprocess
+
     if not VALIDATOR_REGISTRY:
         return False, "Validator registry unavailable"
     # MVP-friendly overrides
@@ -747,7 +806,7 @@ def main():
     def _run_path_precheck() -> Tuple[bool, str]:
         """Run path validator; return (ok, output)."""
         try:
-            import subprocess
+
             script_path = SCRIPT_DIR / "validate_documentation_paths.py"
             cmd = [sys.executable, str(script_path), "--root", str(root)]
             if args.precheck_strict:
@@ -1000,6 +1059,11 @@ def main():
                     links_result = True
                 else:
                     print("🔗 Link integrity issues detected")
+                    if hasattr(result, 'output') and result.output:
+                         print(result.output)
+                    elif hasattr(result, 'messages') and result.messages:
+                         for m in result.messages:
+                              print(f"  - {m}")
                     links_result = False
         except Exception:
             pass

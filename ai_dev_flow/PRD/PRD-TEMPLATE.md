@@ -444,7 +444,7 @@ User stories follow the standard format:
 **Format Reference**: See `THRESHOLD_NAMING_RULES.md` for complete naming standards.
 
 **When to Define Threshold Registry References**:
-- Transaction velocity limits (KYC/KYB limits)
+- Transaction velocity limits (quota limits)
 - Risk score thresholds (Low/Medium/High boundaries)
 - Performance timing targets (p50/p95/p99 latencies)
 - Timeout configurations (API, session, job timeouts)

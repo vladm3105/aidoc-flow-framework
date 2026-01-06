@@ -1066,7 +1066,7 @@ business_sla:
 business_performance:
   # Business-level performance expectations
   - "@threshold: BRD.NN.perf.transaction.completion"  # e.g., < 30 seconds end-to-end
-  - "@threshold: BRD.NN.perf.onboarding.duration"     # e.g., < 5 minutes KYC flow
+  - "@threshold: BRD.NN.perf.onboarding.duration"     # e.g., < 5 minutes verification flow
 
 business_limits:
   # Business policy limits and caps
@@ -1235,7 +1235,7 @@ Assumptions about how customers will interact with the solution.
 | BRD.NN.04.SS | [User behavior assumption] | [Segment] | [How to validate] | [Business impact] |
 
 **Examples**:
-- BRD.01.04.20: Users will complete KYC within single session (no drop-off mid-process)
+- BRD.01.04.20: Users will complete identity verification within a single session (no drop-off mid-process)
 - BRD.01.04.21: Repeat senders will use saved recipient feature (80% reuse rate)
 - BRD.01.04.22: Users accept mobile-only experience (no desktop requirement)
 
@@ -1276,7 +1276,7 @@ Assumptions about regulatory environment, licensing, and compliance requirements
 **Examples**:
 - BRD.01.04.50: MTL licensing will be maintained in all operating states
 - BRD.01.04.51: Regulatory environment will remain stable for services in target regions
-- BRD.01.04.52: KYC requirements will not significantly change during development period
+- BRD.01.04.52: Verification requirements will not significantly change during development period
 
 ---
 
@@ -1293,7 +1293,7 @@ This section clarifies dependency types and their impact on requirement prioriti
 **Dependency Type Definitions**:
 | Type | Definition | Example |
 |------|-----------|---------|
-| **Hard** | Blocker - requirement cannot be implemented without this | KYC system required before transaction processing |
+| **Hard** | Blocker - requirement cannot be implemented without this | Verification system required before transaction processing |
 | **Medium** | Degrades functionality - can proceed with reduced capability | ML fraud detection; can use rule-based fallback |
 | **Soft** | Nice-to-have - affects user experience but not core functionality | Push notifications; email fallback acceptable |
 
@@ -2129,7 +2129,7 @@ This section maps BRD requirements to upstream business objectives and downstrea
 
 #### ✅ KEEP in Functional Requirements (Business-Level Content)
 1. Business capability required (WHAT the system must do)
-2. Business rules and policies (transaction limits, KYC tiers)
+2. Business rules and policies (transaction limits, verification tiers)
 3. Regulatory/compliance requirements (sanctions screening, regulatory reporting)
 4. Business acceptance criteria with measurable targets (≤3 seconds for 95%)
 5. Business outcomes and metrics (≥95% delivery success)

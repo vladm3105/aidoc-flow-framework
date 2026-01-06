@@ -788,7 +788,7 @@ References centralized timing, limits, and configuration values from a Platform 
 **Format**: `@threshold: PRD.NNN.category.key`
 
 **Example Categories**:
-- `kyc.*` - KYC timing and limits
+- `quota.*` - Verification/quota timing and limits
 - `transaction.*` - Transaction processing
 - `compliance.*` - Compliance thresholds
 - `security.*` - Security parameters

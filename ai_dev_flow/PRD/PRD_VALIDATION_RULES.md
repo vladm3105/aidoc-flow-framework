@@ -831,13 +831,13 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-01_product_name/PRD-0
 **Requirements**:
 - Numeric thresholds shared across 2+ PRDs must reference Threshold Registry
 - Use format: `@prd: PRD.NN.EE.SS` with `@threshold: PRD.NN.{category}.{key}`
-- No "magic numbers" for common thresholds (KYC limits, risk scores, timeouts)
+- No "magic numbers" for common thresholds (quota limits, risk scores, timeouts)
 
 **Threshold Categories Requiring Registry Reference**:
 
 | Category | Example Thresholds | Registry Key Pattern |
 |----------|-------------------|---------------------|
-| KYC/KYB Limits | Daily limits, monthly limits | `kyc.l1.daily`, `kyb.l2.monthly` |
+| Quota Limits | Daily limits, monthly limits | `quota.l1.daily`, `quota.l2.monthly` |
 | Risk Scores | Low/Medium/High boundaries | `risk.low.max`, `risk.high.min` |
 | Performance | p50/p95/p99 targets | `perf.api.standard.p95` |
 | Timeouts | API, session, job timeouts | `timeout.partner.bridge` |
@@ -850,13 +850,13 @@ python3 -c "import yaml; yaml.safe_load(open('docs/PRD/PRD-01_product_name/PRD-0
 
 **Error Messages**:
 ```
-⚠️ WARNING: Hardcoded KYC limit "$1,000" found - reference @threshold: PRD.035.kyc.l1.daily
+⚠️ WARNING: Hardcoded quota limit "$1,000" found - reference @threshold: PRD.035.quota.l1.daily
 ⚠️ WARNING: Risk score threshold "75" found - reference @threshold: PRD.035.risk.high.min
 ⚠️ WARNING: Timeout value "30s" found - reference @threshold: PRD.035.timeout.partner.bridge
 ```
 
 **Resolution Steps**:
-1. Identify threshold category (KYC, risk, performance, timeout, rate)
+1. Identify threshold category (quota, risk, performance, timeout, rate)
 2. Look up key in Threshold Registry (PRD-035 or project-specific)
 3. Add reference: `(per @threshold: PRD.035.{category}.{key})`
 4. If threshold doesn't exist in registry: Add to registry first

@@ -298,17 +298,17 @@ architecture_approaches: [ai-agent-based]  # CORRECT - plural, array
 
 **Invalid**:
 ```markdown
-#### Event-001: L1 KYC Submission
+#### Event-001: L1 Verification Submission
 #### State-001: Pending Status
 ```
 
 **Valid**:
 ```markdown
-#### EARS.06.25.01: L1 KYC Submission
+#### EARS.06.25.01: L1 Verification Submission
 #### EARS.06.25.02: Pending Status
 ```
 
-**Fix**: Replace `#### Event-001: L1 KYC Submission` with `#### EARS.06.25.01: L1 KYC Submission`
+**Fix**: Replace `#### Event-001: L1 Verification Submission` with `#### EARS.06.25.01: L1 Verification Submission`
 
 ---
 
@@ -553,8 +553,8 @@ python3 scripts/validate_ears.py --summary-only
 
 ### Mistake #3: Non-Standard Requirement IDs
 ```
-❌ #### Event-001: L1 KYC Submission
-✅ #### EARS.06.25.01: L1 KYC Submission
+❌ #### Event-001: L1 Verification Submission
+✅ #### EARS.06.25.01: L1 Verification Submission
 ```
 
 ### Mistake #4: List-Style Document Control

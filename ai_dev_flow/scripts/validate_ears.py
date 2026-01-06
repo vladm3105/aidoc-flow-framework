@@ -56,11 +56,24 @@ class EarsValidator:
     REQUIRED_LAYER = 3
 
     # === STRUCTURE RULES ===
-    REQUIRED_SECTIONS = [
+    # === STRUCTURE RULES ===
+    REQUIRED_SECTIONS_STANDARD = [
         "Document Control",
         "Purpose",
         "Traceability",
+        "Requirements Logic"
     ]
+    
+    REQUIRED_SECTIONS_MVP = [
+        "Document Control",
+        "Requirements Logic"
+    ]
+    
+    # Map profiles to section lists
+    SECTION_MAP = {
+        "standard": REQUIRED_SECTIONS_STANDARD,
+        "mvp": REQUIRED_SECTIONS_MVP
+    }
 
     # === EARS SYNTAX PATTERNS ===
     EARS_PATTERNS = {
@@ -128,7 +141,7 @@ class EarsValidator:
         self._validate_custom_fields(file_path, frontmatter)
 
         # === STRUCTURE VALIDATIONS ===
-        self._validate_required_sections(file_path, content)
+        self._validate_required_sections(file_path, content, frontmatter)
         self._validate_section_numbering(file_path, content)
         self._validate_document_control(file_path, content)
         self._validate_single_h1(file_path, content)
@@ -272,16 +285,23 @@ class EarsValidator:
 
     # === STRUCTURE VALIDATORS ===
 
-    def _validate_required_sections(self, file_path: Path, content: str) -> None:
+    def _validate_required_sections(self, file_path: Path, content: str, frontmatter: dict) -> None:
         """Validate required sections exist."""
-        for section in self.REQUIRED_SECTIONS:
+        # Determine profile
+        profile = "standard"
+        if "custom_fields" in frontmatter:
+            profile = frontmatter["custom_fields"].get("template_profile", "standard")
+            
+        required_sections = self.SECTION_MAP.get(profile, self.SECTION_MAP["standard"])
+
+        for section in required_sections:
             pattern = rf"^##\s+(\d+\.\s+)?{re.escape(section)}"
             if not re.search(pattern, content, re.MULTILINE | re.IGNORECASE):
                 self.results.append(ValidationResult(
                     file=str(file_path),
                     rule="E010",
                     severity="error",
-                    message=f"Missing required section: '{section}'",
+                    message=f"Missing required section for {profile} profile: '{section}'",
                     fix_suggestion=f"Add '## N. {section}' section"
                 ))
 

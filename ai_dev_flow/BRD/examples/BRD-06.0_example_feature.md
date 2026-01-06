@@ -162,7 +162,7 @@ All BRDs must address each of the 7 mandatory ADR topic categories below. For ea
 
 **Status**: Selected
 
-**Business Driver**: Customer onboarding requires persistent storage for KYC documents and verification history (BRD.06.23.02 - Achieve completion rate target).
+**Business Driver**: Customer onboarding requires persistent storage for verification documents and history (BRD.06.23.02 - Achieve completion rate target).
 
 **Business Constraints**:
 - Must support multi-region data residency for GDPR compliance
@@ -197,7 +197,7 @@ All BRDs must address each of the 7 mandatory ADR topic categories below. For ea
 
 **Status**: Selected
 
-**Business Driver**: Identity verification requires integration with external KYC provider for compliant onboarding (BRD.06.01.01 - Customer Onboarding Validation).
+**Business Driver**: Identity verification requires integration with external provider for compliant onboarding (BRD.06.01.01 - Customer Onboarding Validation).
 
 **Business Constraints**:
 - Must support webhook callbacks for async verification results
@@ -373,4 +373,3 @@ All BRDs must address each of the 7 mandatory ADR topic categories below. For ea
 
 ## 18. Appendices
 - References and supporting details.
-

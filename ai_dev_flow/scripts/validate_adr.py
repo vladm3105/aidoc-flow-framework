@@ -56,7 +56,8 @@ FORBIDDEN_TAG_PATTERNS = [
 ]
 
 # Required sections (patterns)
-REQUIRED_SECTIONS = [
+# Required regions (patterns) - Standard
+REQUIRED_SECTIONS_STANDARD = [
     (r"^# ADR-\d{2,}:", "Title (H1 with ADR-NN+ format)"),
     (r"^## 1\. Document Control", "Section 1: Document Control"),
     (r"^## 2\. Position in Development Workflow", "Section 2: Position in Development Workflow"),
@@ -69,6 +70,27 @@ REQUIRED_SECTIONS = [
     (r"^## 9\. Implementation Assessment", "Section 9: Implementation Assessment"),
     (r"^## 10\. Impact Analysis", "Section 10: Impact Analysis"),
 ]
+
+# Required regions (patterns) - MVP
+REQUIRED_SECTIONS_MVP = [
+    (r"^# ADR-\d{2,}:", "Title (H1 with ADR-NN+ format)"),
+    (r"^## 1\. Document Control", "Section 1: Document Control"),
+    (r"^## 2\. Context", "Section 2: Context"),
+    (r"^## 3\. Decision", "Section 3: Decision"),
+    (r"^## 4\. Alternatives Considered", "Section 4: Alternatives Considered"),
+    (r"^## 5\. Consequences", "Section 5: Consequences"),
+    (r"^## 6\. Architecture Flow", "Section 6: Architecture Flow"),
+    (r"^## 7\. Implementation Assessment", "Section 7: Implementation Assessment"),
+    (r"^## 8\. Verification", "Section 8: Verification"),
+    (r"^## 9\. Traceability", "Section 9: Traceability"),
+    (r"^## 10\. Related Decisions", "Section 10: Related Decisions"),
+]
+
+# Map profiles to section lists
+SECTION_MAP = {
+    "standard": REQUIRED_SECTIONS_STANDARD,
+    "mvp": REQUIRED_SECTIONS_MVP
+}
 
 # Required subsections
 CONTEXT_SUBSECTIONS = [
@@ -287,7 +309,7 @@ def validate_metadata(metadata: Optional[Dict], result: ValidationResult, is_tem
                 result.add_error("ADR-E006", f"Forbidden tag pattern: '{tag}'")
 
 
-def validate_structure(content: str, sections: List[Tuple[str, int]], result: ValidationResult):
+def validate_structure(content: str, sections: List[Tuple[str, int]], result: ValidationResult, metadata: Optional[Dict] = None):
     """Validate document structure."""
     # Check H1 format
     h1_sections = [s for s in sections if s[0].startswith("# ") and not s[0].startswith("## ")]
@@ -301,41 +323,91 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
         if not re.match(r"^# ADR-\d{2,}:", h1_text):
             result.add_error("ADR-E001", f"Invalid H1 format. Expected '# ADR-NN+: Title', got '{h1_text[:50]}'")
 
+    # Determine profile and required sections
+    profile = "standard"
+    if metadata and "custom_fields" in metadata:
+        profile = metadata["custom_fields"].get("template_profile", "standard")
+    
+    # Handle unknown profile (default to standard)
+    if profile not in SECTION_MAP:
+        result.add_warning("ADR-W001", f"Unknown template_profile '{profile}', defaulting to standard validation")
+        profile = "standard"
+        
+    required_sections = SECTION_MAP[profile]
+
     # Check required sections
     section_headers = [s[0] for s in sections]
-    for pattern, section_name in REQUIRED_SECTIONS[1:]:  # Skip H1, already checked
+    for pattern, section_name in required_sections[1:]:  # Skip H1, already checked
         found = any(re.match(pattern, h) for h in section_headers)
         if not found:
-            result.add_error("ADR-E002", f"Missing required section: {section_name}")
+            result.add_error("ADR-E002", f"Missing required section for {profile} profile: {section_name}")
 
 
-def validate_context_section(content: str, result: ValidationResult):
-    """Validate Context section (Section 4) and its subsections."""
-    context_content = extract_section_content(content, r"## 4\. Context")
+def validate_context_section(content: str, result: ValidationResult, metadata: Optional[Dict] = None):
+    """Validate Context section and its subsections."""
+    # Determine profile
+    profile = "standard"
+    if metadata and "custom_fields" in metadata:
+        profile = metadata["custom_fields"].get("template_profile", "standard")
+
+    if profile == "mvp":
+        section_pattern = r"## 2\. Context"
+        subsections = [
+            (r"### 2\.1 Problem Statement", "2.1 Problem Statement"),
+            (r"### 2\.2 Technical Context", "2.2 Technical Context"), # MVP specific
+        ]
+        # MVP has different subsections than Standard?
+        # Template: 2.1 Problem Statement, 2.2 Technical Context
+        # Standard: 4.1 Problem Statement, 4.2 Background, 4.3 Driving Forces, 4.4 Constraints
+    else:
+        section_pattern = r"## 4\. Context"
+        subsections = CONTEXT_SUBSECTIONS
+
+    context_content = extract_section_content(content, section_pattern)
 
     if not context_content:
-        result.add_error("ADR-E002", "Missing Section 4: Context")
+        # Error is added by validate_structure, but we can add warning here or return
+        # If structure validation failed, this might fail too. 
+        # But let's check content if section exists.
         return
 
     # Check required subsections
-    for pattern, subsection_name in CONTEXT_SUBSECTIONS:
+    for pattern, subsection_name in subsections:
         if not re.search(pattern, context_content):
             if "Problem Statement" in subsection_name:
                 result.add_error("ADR-E002", f"Missing required subsection: {subsection_name}")
             else:
+                 # In MVP, Technical Context is required? Template has it.
+                 # Let's warn.
                 result.add_warning("ADR-W001", f"Missing subsection: {subsection_name}")
 
 
-def validate_decision_section(content: str, result: ValidationResult):
-    """Validate Decision section (Section 5) and its subsections."""
-    decision_content = extract_section_content(content, r"## 5\. Decision")
+def validate_decision_section(content: str, result: ValidationResult, metadata: Optional[Dict] = None):
+    """Validate Decision section and its subsections."""
+    # Determine profile
+    profile = "standard"
+    if metadata and "custom_fields" in metadata:
+        profile = metadata["custom_fields"].get("template_profile", "standard")
+
+    if profile == "mvp":
+        section_pattern = r"## 3\. Decision"
+        # MVP: 3.1 Chosen Solution, 3.2 Key Components, 3.3 Implementation Approach
+        subsections = [
+            (r"### 3\.1 Chosen Solution", "3.1 Chosen Solution"),
+            (r"### 3\.2 Key Components", "3.2 Key Components"),
+            (r"### 3\.3 Implementation Approach", "3.3 Implementation Approach"),
+        ]
+    else:
+        section_pattern = r"## 5\. Decision"
+        subsections = DECISION_SUBSECTIONS
+
+    decision_content = extract_section_content(content, section_pattern)
 
     if not decision_content:
-        result.add_error("ADR-E003", "Missing Section 5: Decision")
         return
 
     # Check required subsections
-    for pattern, subsection_name in DECISION_SUBSECTIONS:
+    for pattern, subsection_name in subsections:
         if not re.search(pattern, decision_content):
             if "Chosen Solution" in subsection_name:
                 result.add_error("ADR-E003", f"Missing required subsection: {subsection_name}")
@@ -343,35 +415,71 @@ def validate_decision_section(content: str, result: ValidationResult):
                 result.add_warning("ADR-W001", f"Missing subsection: {subsection_name}")
 
 
-def validate_consequences_section(content: str, result: ValidationResult):
-    """Validate Consequences section (Section 7) and its subsections."""
-    consequences_content = extract_section_content(content, r"## 7\. Consequences")
+def validate_consequences_section(content: str, result: ValidationResult, metadata: Optional[Dict] = None):
+    """Validate Consequences section and its subsections."""
+     # Determine profile
+    profile = "standard"
+    if metadata and "custom_fields" in metadata:
+        profile = metadata["custom_fields"].get("template_profile", "standard")
+
+    if profile == "mvp":
+        section_pattern = r"## 5\. Consequences"
+        # MVP: 5.1 Positive Outcomes, 5.2 Trade-offs & Risks, 5.3 Cost Estimate
+        subsections = [
+            (r"### 5\.1 Positive Outcomes", "5.1 Positive Outcomes"),
+            (r"### 5\.2 Trade-offs & Risks", "5.2 Trade-offs & Risks"),
+            # Cost Estimate is new in MVP? It's in template.
+        ]
+    else:
+        section_pattern = r"## 7\. Consequences"
+        subsections = CONSEQUENCES_SUBSECTIONS
+
+    consequences_content = extract_section_content(content, section_pattern)
 
     if not consequences_content:
-        result.add_error("ADR-E004", "Missing Section 7: Consequences")
         return
 
     # Check required subsections
-    for pattern, subsection_name in CONSEQUENCES_SUBSECTIONS:
+    for pattern, subsection_name in subsections:
         if not re.search(pattern, consequences_content):
             result.add_error("ADR-E004", f"Missing required subsection: {subsection_name}")
 
 
-def validate_architecture_flow(content: str, result: ValidationResult):
-    """Validate Architecture Flow section contains Mermaid diagram."""
-    arch_content = extract_section_content(content, r"## 8\. Architecture Flow")
+def validate_architecture_section(content: str, result: ValidationResult, metadata: Optional[Dict] = None):
+    """Validate Architecture Flow/Overview section contains Mermaid diagram."""
+    # Determine profile
+    profile = "standard"
+    if metadata and "custom_fields" in metadata:
+        profile = metadata["custom_fields"].get("template_profile", "standard")
+    
+    if profile == "mvp":
+        section_pattern = r"## 6\. Architecture Overview"
+    else:
+        section_pattern = r"## 8\. Architecture Flow"
+
+    arch_content = extract_section_content(content, section_pattern)
 
     if not arch_content:
-        result.add_warning("ADR-E005", "Missing Section 8: Architecture Flow")
+        # validate_structure checks existence
         return
 
     # Check for Mermaid diagram
     if "```mermaid" not in arch_content:
-        result.add_warning("ADR-E005", "Section 8 missing Mermaid diagram")
+        result.add_warning("ADR-E005", f"Architecture section missing Mermaid diagram")
 
 
-def validate_status(content: str, result: ValidationResult):
+def validate_status(content: str, result: ValidationResult, metadata: Optional[Dict] = None):
     """Validate Status section has valid status value."""
+    # Determine profile
+    profile = "standard"
+    if metadata and "custom_fields" in metadata:
+        profile = metadata["custom_fields"].get("template_profile", "standard")
+    
+    if profile == "mvp":
+        # MVP has status in Document Control, validated by existence of Section 1 but generic validator doesn't check table content yet
+        # We skip separate Status section check
+        return
+
     status_content = extract_section_content(content, r"## 3\. Status")
 
     if not status_content:
@@ -469,12 +577,13 @@ def validate_adr_file(file_path: Path) -> ValidationResult:
 
     # Run validations
     validate_metadata(metadata, result, is_template)
-    validate_structure(content, sections, result)
-    validate_context_section(content, result)
-    validate_decision_section(content, result)
-    validate_consequences_section(content, result)
-    validate_architecture_flow(content, result)
-    validate_status(content, result)
+    validate_structure(content, sections, result, metadata)
+    validate_structure(content, sections, result, metadata)
+    validate_context_section(content, result, metadata)
+    validate_decision_section(content, result, metadata)
+    validate_consequences_section(content, result, metadata)
+    validate_architecture_section(content, result, metadata)
+    validate_status(content, result, metadata)
     validate_traceability(content, result)
     validate_optional_sections(content, result)
 

@@ -153,33 +153,31 @@ See the "Migration" section at the bottom of every MVP template when you are rea
 
 ---
 
-## Quick Commands
+### Primary Workflow Command (Autopilot)
 
-- Plan Check: `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`
-- BRD: `python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/BRD`
-- PRD: `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/PRD`
-- EARS: `python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/EARS`
-- BDD: `python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/BDD`
-- ADR: `python3 ai_dev_flow/scripts/validate_adr.py ai_dev_flow/ADR`
-- SYS: `python3 ai_dev_flow/scripts/validate_sys.py ai_dev_flow/SYS`
-- REQ (per-file): `find ai_dev_flow/REQ -name 'REQ-*.md' -exec bash ai_dev_flow/scripts/validate_req_template.sh {} \;`
-- SPEC (YAML): `python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/SPEC`
-- Links (corpus): `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow`
-- Forward Refs: `python3 ai_dev_flow/scripts/validate_forward_references.py ai_dev_flow`
-- Cross-Doc: `python3 ai_dev_flow/scripts/validate_cross_document.py --all --strict`
-- Orchestrator (layer): `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer BRD`
-- Orchestrator (multiple): `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer ADR --layer SYS`
-- Orchestrator (all): `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --all --strict --report markdown`
+**The recommended way to run the entire MVP workflow:**
 
-### Validate Only (No Generation)
+```bash
+# Start new project
+python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP Idea" --auto-fix
 
-- Preferred (pure validation, zero writes):
-  - Validate everything: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --all --report markdown`
-  - Validate subset: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer BRD --layer PRD --report text`
-  - Add `--strict` for stricter checks
+# Resume existing project (Generate missing files + Validate)
+python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --resume --auto-fix
 
-- Using Autopilot to validate existing docs (no new files):
-  - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --resume --include-layers BRD PRD EARS BDD ADR SYS REQ SPEC TASKS --up-to TASKS --mvp-validators --strict`
-  - Notes:
-    - `--resume` reuses existing files; it will generate missing ones unless excluded or already present.
-    - For guaranteed no writes, use `validate_all.py` above.
+# Validate only (no new files)
+python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --resume --skip-validate
+```
+
+### Manual Validation Commands (Debugging)
+
+- **Orchestrator (All)**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --all --report markdown`
+- **Plan Check**: `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`
+- **BRD**: `python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/BRD`
+- **PRD**: `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/PRD`
+- **EARS**: `python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/EARS`
+- **BDD**: `python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/BDD`
+- **ADR**: `python3 ai_dev_flow/scripts/validate_adr.py ai_dev_flow/ADR`
+- **SYS**: `python3 ai_dev_flow/scripts/validate_sys.py ai_dev_flow/SYS`
+- **REQ**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer REQ` (Auto-runs shell script)
+- **SPEC**: `python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/SPEC`
+- **Links**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow`

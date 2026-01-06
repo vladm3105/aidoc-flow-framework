@@ -193,7 +193,7 @@ ADRs have different relationships with Platform BRDs versus Feature BRDs:
 - Typically created together at project inception
 
 **Feature BRDs → Feature-Specific ADRs**:
-- Feature BRDs (e.g., BRD-06 B2C KYC Onboarding) drive architectural decisions for specific features
+- Feature BRDs (e.g., BRD-06 B2C Identity Verification Onboarding) drive architectural decisions for specific features
 - Feature ADRs build upon foundation established by Platform BRDs and Foundation ADRs
 - Address feature-specific architectural concerns (e.g., API design, data models, integration patterns)
 - Reference Foundation ADRs for technology stack and infrastructure decisions

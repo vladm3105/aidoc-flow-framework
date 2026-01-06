@@ -37,7 +37,14 @@ echo ""
 echo "CHECK 1: Required Sections"
 echo "-----------------------------------------"
 
-required_sections=(
+# Detect profile
+PROFILE="standard"
+if grep -q "template_profile: mvp" "$REQ_FILE"; then
+  PROFILE="mvp"
+  echo "  ℹ️  MVP Profile detected"
+fi
+
+required_sections_standard=(
   "## 1. Description"
   "## 2. Functional Requirements"
   "## 3. Interface Specifications"
@@ -51,6 +58,26 @@ required_sections=(
   "## 11. Traceability"
   "## 12. Change History"
 )
+
+required_sections_mvp=(
+  "## 1. Document Control"
+  "## 2. Requirement Description"
+  "## 3. Functional Specification"
+  "## 4. Interface Definition"
+  "## 5. Error Handling"
+  "## 6. Quality Attributes"
+  "## 7. Configuration"
+  "## 8. Testing Requirements"
+  "## 9. Acceptance Criteria"
+  "## 10. Traceability"
+  "## 11. Implementation Notes"
+)
+
+if [ "$PROFILE" = "mvp" ]; then
+  required_sections=("${required_sections_mvp[@]}")
+else
+  required_sections=("${required_sections_standard[@]}")
+fi
 
 for section in "${required_sections[@]}"; do
   if grep -q "^$section" "$REQ_FILE"; then
@@ -263,24 +290,39 @@ echo ""
 echo "CHECK 10: Change History"
 echo "-----------------------------------------"
 
-# Count change history entries (rows in the table)
-change_count=$(grep -A 100 "## 12. Change History" "$REQ_FILE" | grep "^|.*|.*|.*|.*|$" | grep -v "^| Date " | grep -v "^|---" | wc -l)
-
-if [ "$change_count" -gt 0 ]; then
-  echo "  ✅ Change History has $change_count entries"
-
-  # Check if latest change matches current version
-  latest_change_version=$(grep -A 100 "## 12. Change History" "$REQ_FILE" | grep "^|.*|.*|.*|.*|$" | grep -v "^| Date " | grep -v "^|---" | head -1 | awk -F'|' '{print $3}' | xargs)
-
-  if [ "$latest_change_version" = "$version" ]; then
-    echo "  ✅ Latest change history entry matches current version: $version"
+# Skip Change History check for MVP if not present, or enforce relaxed rule
+if [ "$PROFILE" = "mvp" ]; then
+  if grep -q "## .*Change History" "$REQ_FILE"; then
+     # Use standard check logic if section exists
+     check_history=true
   else
-    echo "  ⚠️  WARNING: Latest change history version ($latest_change_version) doesn't match document version ($version)"
-    ((WARNINGS++))
+     echo "  ℹ️  MVP Profile: Skipping Change History check (optional)"
+     check_history=false
   fi
 else
-  echo "  ❌ MISSING: Change History entries"
-  ((ERRORS++))
+  check_history=true
+fi
+
+if [ "$check_history" = "true" ]; then
+  # Count change history entries (rows in the table)
+  change_count=$(grep -A 100 "## .*Change History" "$REQ_FILE" | grep "^|.*|.*|.*|.*|$" | grep -v "^| Date " | grep -v "^|---" | wc -l)
+
+  if [ "$change_count" -gt 0 ]; then
+    echo "  ✅ Change History has $change_count entries"
+
+    # Check if latest change matches current version
+    latest_change_version=$(grep -A 100 "## .*Change History" "$REQ_FILE" | grep "^|.*|.*|.*|.*|$" | grep -v "^| Date " | grep -v "^|---" | head -1 | awk -F'|' '{print $3}' | xargs)
+
+    if [ "$latest_change_version" = "$version" ]; then
+      echo "  ✅ Latest change history entry matches current version: $version"
+    else
+      echo "  ⚠️  WARNING: Latest change history version ($latest_change_version) doesn't match document version ($version)"
+      ((WARNINGS++))
+    fi
+  else
+    echo "  ❌ MISSING: Change History entries"
+    ((ERRORS++))
+  fi
 fi
 
 echo ""

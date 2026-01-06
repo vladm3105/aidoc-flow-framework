@@ -1,20 +1,7 @@
-# BRD-MVP-TEMPLATE: Business Requirements Document (MVP)
-
-<!--
-AI_CONTEXT_START
-Role: AI Product Owner / Business Analyst
-Objective: Create a streamlined MVP Business Requirements Document.
-Constraints:
-- Focus strictly on MVP scope (5-15 core requirements).
-- Keep descriptions concise and avoiding generic filler.
-- Maintain single-file structure.
-- Prioritize P1 (Must Have) features.
-AI_CONTEXT_END
--->
 ---
-title: "BRD-MVP-TEMPLATE: Streamlined Business Requirements Document for MVP"
+title: "BRD-01: A Simple Todo App"
 tags:
-  - brd-template
+  - brd
   - mvp-template
   - layer-1-artifact
   - document-template
@@ -37,6 +24,19 @@ custom_fields:
   traceability_matrix_template: "BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md"
 ---
 
+# BRD-01: A Simple Todo App
+
+<!--
+AI_CONTEXT_START
+Role: AI Product Owner / Business Analyst
+Objective: Create a streamlined MVP Business Requirements Document.
+Constraints:
+- Focus strictly on MVP scope (5-15 core requirements).
+- Keep descriptions concise and avoiding generic filler.
+- Maintain single-file structure.
+- Prioritize P1 (Must Have) features.
+AI_CONTEXT_END
+-->
 > **Purpose**: This is a **streamlined BRD template** for Minimum Viable Product (MVP) projects. It maintains framework compliance while reducing documentation overhead for projects focused on delivering core functionality quickly.
 >
 > **Use this template when**:
@@ -152,9 +152,9 @@ This document covers:
 
 | Objective ID | Objective Statement | Success Metric | MVP Target | Measurement Period |
 |--------------|---------------------|----------------|------------|-------------------|
-| BRD.NN.23.01 | [Objective] | [How measured] | [Target] | [90 days post-launch] |
-| BRD.NN.23.02 | [Objective] | [How measured] | [Target] | [90 days post-launch] |
-| BRD.NN.23.03 | [Objective] | [How measured] | [Target] | [90 days post-launch] |
+| BRD.01.23.01 | [Objective] | [How measured] | [Target] | [90 days post-launch] |
+| BRD.01.23.02 | [Objective] | [How measured] | [Target] | [90 days post-launch] |
+| BRD.01.23.03 | [Objective] | [How measured] | [Target] | [90 days post-launch] |
 
 ### 2.5 Expected Benefits (MVP Scope)
 
@@ -265,7 +265,7 @@ sequenceDiagram
 > Full BRD Section 5 would contain only category summaries with detailed stories in PRD.
 > For MVP, consolidated tables are acceptable to reduce document count.
 
-**ID Format**: `BRD.NN.09.SS` (User Story)
+**ID Format**: `BRD.01.09.SS` (User Story)
 
 ### 5.1 Primary User Stories (MVP Essential)
 
@@ -273,18 +273,18 @@ sequenceDiagram
 
 | Story ID | User Role | Action | Business Value | Priority |
 |----------|-----------|--------|----------------|----------|
-| BRD.NN.09.01 | [user role] | [core action] | [business value] | P1 |
-| BRD.NN.09.02 | [user role] | [core action] | [business value] | P1 |
-| BRD.NN.09.03 | [user role] | [core action] | [business value] | P1 |
-| BRD.NN.09.04 | [user role] | [core action] | [business value] | P2 |
-| BRD.NN.09.05 | [user role] | [core action] | [business value] | P2 |
+| BRD.01.09.01 | [user role] | [core action] | [business value] | P1 |
+| BRD.01.09.02 | [user role] | [core action] | [business value] | P1 |
+| BRD.01.09.03 | [user role] | [core action] | [business value] | P1 |
+| BRD.01.09.04 | [user role] | [core action] | [business value] | P2 |
+| BRD.01.09.05 | [user role] | [core action] | [business value] | P2 |
 
 **Operational Users** (2-3 stories):
 
 | Story ID | User Role | Action | Business Value | Priority |
 |----------|-----------|--------|----------------|----------|
-| BRD.NN.09.06 | [admin/support role] | [capability] | [operational efficiency] | P1 |
-| BRD.NN.09.07 | [compliance role] | [capability] | [regulatory compliance] | P1 |
+| BRD.01.09.06 | [admin/support role] | [capability] | [operational efficiency] | P1 |
+| BRD.01.09.07 | [compliance role] | [capability] | [regulatory compliance] | P1 |
 
 ### 5.2 User Story Summary
 
@@ -314,9 +314,9 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-### BRD.NN.01.01: [MVP Core Feature 1 - Business Capability Name]
+### BRD.01.01.01: [MVP Core Feature 1 - Business Capability Name]
 
-**ID Format**: `BRD.NN.01.SS` (Feature Requirement)
+**ID Format**: `BRD.01.01.SS` (Feature Requirement)
 
 **Business Capability**: [One-sentence description of what business capability this enables for MVP]
 
@@ -333,8 +333,8 @@ Quick Core MVP Requirements Checklist:
 
 | Criteria ID | Criterion | MVP Target |
 |-------------|-----------|------------|
-| BRD.NN.06.01 | [Measurable criterion] | [Target value] |
-| BRD.NN.06.02 | [Measurable criterion] | [Target value] |
+| BRD.01.06.01 | [Measurable criterion] | [Target value] |
+| BRD.01.06.02 | [Measurable criterion] | [Target value] |
 
 **Related Requirements**: [Platform BRDs or related Feature BRDs]
 
@@ -342,7 +342,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-### BRD.NN.01.02: [MVP Core Feature 2]
+### BRD.01.01.02: [MVP Core Feature 2]
 
 [Repeat structure above for each core MVP feature - aim for 5-15 requirements total]
 
@@ -373,7 +373,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.01: Infrastructure - [Hosting & Deployment]
+#### BRD.01.32.01: Infrastructure - [Hosting & Deployment]
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -389,7 +389,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.02: Data Architecture - [Database & Storage]
+#### BRD.01.32.02: Data Architecture - [Database & Storage]
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -405,7 +405,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.03: Integration - [External Systems]
+#### BRD.01.32.03: Integration - [External Systems]
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A - [No external integrations for MVP]
 
@@ -417,7 +417,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.04: Security - [Authentication & Data Protection]
+#### BRD.01.32.04: Security - [Authentication & Data Protection]
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -431,7 +431,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.05: Observability - [Monitoring & Logging]
+#### BRD.01.32.05: Observability - [Monitoring & Logging]
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A - [Basic logging only for MVP]
 
@@ -443,7 +443,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.06: AI/ML - [If Applicable]
+#### BRD.01.32.06: AI/ML - [If Applicable]
 
 **Status**: [ ] Selected | [ ] Pending | [X] N/A - [No AI/ML in MVP scope]
 
@@ -451,7 +451,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-#### BRD.NN.32.07: Technology Selection - [Core Stack]
+#### BRD.01.32.07: Technology Selection - [Core Stack]
 
 **Status**: [ ] Selected | [ ] Pending | [ ] N/A
 
@@ -469,30 +469,30 @@ Quick Core MVP Requirements Checklist:
 
 ### 7.3 Performance Requirements (MVP Baseline)
 
-**ID Format**: `BRD.NN.02.SS` (Quality Attribute)
+**ID Format**: `BRD.01.02.SS` (Quality Attribute)
 
 | Req ID | Requirement | Metric | MVP Target | Priority |
 |--------|-------------|--------|------------|----------|
-| BRD.NN.02.01 | Page load time | Load time | <3 seconds | P1 |
-| BRD.NN.02.02 | Transaction processing | Response time | <10 seconds | P1 |
-| BRD.NN.02.03 | Concurrent users | User capacity | 100 users | P2 |
+| BRD.01.02.01 | Page load time | Load time | <3 seconds | P1 |
+| BRD.01.02.02 | Transaction processing | Response time | <10 seconds | P1 |
+| BRD.01.02.03 | Concurrent users | User capacity | 100 users | P2 |
 
 ### 7.4 Security Requirements (MVP Essential)
 
 | Req ID | Requirement | Standard | Priority | Validation |
 |--------|-------------|----------|----------|------------|
-| BRD.NN.02.10 | User authentication | Email + password (min) | P1 | Login testing |
-| BRD.NN.02.11 | Data encryption at rest | AES-256 | P1 | Security audit |
-| BRD.NN.02.12 | HTTPS/TLS | TLS 1.2+ | P1 | Certificate check |
-| BRD.NN.02.13 | PII protection | Field-level encryption | P1 | Compliance review |
+| BRD.01.02.10 | User authentication | Email + password (min) | P1 | Login testing |
+| BRD.01.02.11 | Data encryption at rest | AES-256 | P1 | Security audit |
+| BRD.01.02.12 | HTTPS/TLS | TLS 1.2+ | P1 | Certificate check |
+| BRD.01.02.13 | PII protection | Field-level encryption | P1 | Compliance review |
 
 ### 7.5 Reliability Requirements (MVP Baseline)
 
 | Req ID | Requirement | MVP Target | Priority |
 |--------|-------------|------------|----------|
-| BRD.NN.02.20 | System uptime | 95% (MVP acceptable) | P2 |
-| BRD.NN.02.25 | Backup frequency | Daily | P1 |
-| BRD.NN.02.26 | Recovery time (RTO) | <4 hours | P2 |
+| BRD.01.02.20 | System uptime | 95% (MVP acceptable) | P2 |
+| BRD.01.02.25 | Backup frequency | Daily | P1 |
+| BRD.01.02.26 | Recovery time (RTO) | <4 hours | P2 |
 
 > **Note**: Full product will target 99.9% uptime. MVP focuses on functionality validation.
 
@@ -502,23 +502,23 @@ Quick Core MVP Requirements Checklist:
 
 ### 8.1 MVP Business Constraints
 
-**ID Format**: `BRD.NN.03.SS` (Business Constraint)
+**ID Format**: `BRD.01.03.SS` (Business Constraint)
 
 | ID | Constraint Category | Description | Impact |
 |----|---------------------|-------------|--------|
-| BRD.NN.03.01 | Budget | MVP budget capped at $[XXX,XXX] | Limits scope to core features |
-| BRD.NN.03.02 | Timeline | Must launch within [X] weeks | Drives feature prioritization |
-| BRD.NN.03.03 | Team Size | [X] developers available | Limits parallel workstreams |
-| BRD.NN.03.04 | [Regulatory] | [If applicable] | [Impact] |
+| BRD.01.03.01 | Budget | MVP budget capped at $[XXX,XXX] | Limits scope to core features |
+| BRD.01.03.02 | Timeline | Must launch within [X] weeks | Drives feature prioritization |
+| BRD.01.03.03 | Team Size | [X] developers available | Limits parallel workstreams |
+| BRD.01.03.04 | [Regulatory] | [If applicable] | [Impact] |
 
 ### 8.2 MVP Assumptions
 
-**ID Format**: `BRD.NN.04.SS` (Business Assumption)
+**ID Format**: `BRD.01.04.SS` (Business Assumption)
 
 | ID | Assumption | Validation Method | Impact if False |
 |----|------------|-------------------|-----------------|
-| BRD.NN.04.01 | [Assumption] | [How to validate] | [Mitigation plan] |
-| BRD.NN.04.02 | [Assumption] | [How to validate] | [Mitigation plan] |
+| BRD.01.04.01 | [Assumption] | [How to validate] | [Mitigation plan] |
+| BRD.01.04.02 | [Assumption] | [How to validate] | [Mitigation plan] |
 
 ---
 
@@ -556,13 +556,13 @@ Quick Core MVP Requirements Checklist:
 
 ## 10. Business Risk Management
 
-**ID Format**: `BRD.NN.05.SS` (Business Risk)
+**ID Format**: `BRD.01.05.SS` (Business Risk)
 
 | Risk ID | Risk Description | Likelihood | Impact | Mitigation Strategy | Owner |
 |---------|------------------|------------|--------|---------------------|-------|
-| BRD.NN.05.01 | [Top risk 1] | High/Med/Low | High/Med/Low | [How to mitigate] | [Role] |
-| BRD.NN.05.02 | [Top risk 2] | High/Med/Low | High/Med/Low | [How to mitigate] | [Role] |
-| BRD.NN.05.03 | [Top risk 3] | High/Med/Low | High/Med/Low | [How to mitigate] | [Role] |
+| BRD.01.05.01 | [Top risk 1] | High/Med/Low | High/Med/Low | [How to mitigate] | [Role] |
+| BRD.01.05.02 | [Top risk 2] | High/Med/Low | High/Med/Low | [How to mitigate] | [Role] |
+| BRD.01.05.03 | [Top risk 3] | High/Med/Low | High/Med/Low | [How to mitigate] | [Role] |
 
 **Risk Acceptance**: MVP accepts higher risk tolerance than full product. Focus on critical user experience and data security risks only.
 
@@ -709,7 +709,7 @@ Migrate from MVP BRD to full `BRD-TEMPLATE.md` when:
 
 ### Migration Steps
 
-1. **Create new document**: Copy `BRD-TEMPLATE.md` to `BRD-NN_{slug}.md`
+1. **Create new document**: Copy `BRD-TEMPLATE.md` to `BRD-01_{slug}.md`
 2. **Transfer core content**: Copy sections 1-7 from MVP to corresponding full template sections
 3. **Expand sections**: Add missing sections from full template:
    - Extended stakeholder analysis (Section 4 in full)
@@ -718,7 +718,7 @@ Migrate from MVP BRD to full `BRD-TEMPLATE.md` when:
    - Full support and operations plan (Section 10 in full)
    - Complete appendices
 4. **Update traceability**: Ensure all downstream references point to new document ID
-5. **Archive MVP version**: Move MVP BRD to archive with "superseded by BRD-NN" note
+5. **Archive MVP version**: Move MVP BRD to archive with "superseded by BRD-01" note
 6. **Run validation**: Execute `python3 scripts/validate_brd.py` on new document
 
 ### Section Mapping (MVP → Full)

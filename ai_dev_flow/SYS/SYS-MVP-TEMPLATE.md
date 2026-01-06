@@ -168,7 +168,7 @@ custom_fields:
 
 ---
 
-## 5. Quality Attributes (Baseline)
+## 5. Quality Attributes
 
 **ID Format**: `SYS.NN.02.SS` (Quality Attribute)
 
@@ -258,7 +258,7 @@ custom_fields:
 
 ---
 
-## 7. Data Management
+## 7. Data Management Requirements
 
 ### 7.1 Data Model (MVP)
 
@@ -283,7 +283,7 @@ flowchart LR
 
 ---
 
-## 8. Deployment & Operations
+## 8. Deployment and Operations Requirements
 
 ### 8.1 Deployment (MVP)
 
@@ -307,7 +307,7 @@ flowchart LR
 
 ---
 
-## 9. Testing Requirements
+## 9. Testing and Validation Requirements
 
 ### 9.1 Test Coverage (MVP Targets)
 

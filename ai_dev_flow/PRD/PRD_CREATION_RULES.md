@@ -925,7 +925,7 @@ For a PRD to be EARS-Ready, it must contain:
 - Use format: `@threshold: PRD.NN.{category}.{key}`
 
 **When to Reference Registry**:
-- KYC/KYB velocity limits
+- Quota velocity limits
 - Risk score thresholds
 - Performance timing targets
 - Timeout configurations

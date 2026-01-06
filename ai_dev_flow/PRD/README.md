@@ -180,7 +180,7 @@ PRDs inherit categorization context from their source BRDs:
 - Referenced by multiple feature-specific PRDs
 
 **Feature BRDs → Feature PRDs**:
-- Feature BRDs (e.g., BRD-06 B2C KYC Onboarding) drive feature-specific PRDs
+- Feature BRDs (e.g., BRD-06 B2C Identity Verification Onboarding) drive feature-specific PRDs
 - These PRDs detail user-facing functionality and workflows
 - Build upon platform capabilities defined in Platform BRDs
 - Reference foundation PRDs for infrastructure dependencies

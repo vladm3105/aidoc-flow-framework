@@ -242,7 +242,7 @@ This document serves as the **single source of truth** for all configurable, bus
 | Key | Value | Unit | Notes |
 |-----|-------|------|-------|
 | `compliance.travel_rule.amount` | 3000 | USD | Travel Rule reporting threshold |
-| `compliance.kyc.verification_timeout` | 24 | hours | KYC verification deadline |
+| `compliance.verification.timeout` | 24 | hours | Verification deadline |
 
 ### 8.2 Business Limits
 
