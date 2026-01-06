@@ -1,0 +1,12 @@
+MVP Autopilot Report: PASS
+- BRD: generated -> /opt/data/docs_flow_framework/ai_dev_flow/BRD/BRD-02_new_proj.md (validation skipped)
+- PRD: generated -> /opt/data/docs_flow_framework/ai_dev_flow/PRD/PRD-02_new_proj.md (validation skipped)
+- EARS: generated -> /opt/data/docs_flow_framework/ai_dev_flow/EARS/EARS-02_new_proj.md (validation skipped)
+- BDD: generated -> /opt/data/docs_flow_framework/ai_dev_flow/BDD/BDD-02_new_proj.feature (validation skipped)
+- ADR: generated -> /opt/data/docs_flow_framework/ai_dev_flow/ADR/ADR-02_new_proj.md (validation skipped)
+- SYS: generated -> /opt/data/docs_flow_framework/ai_dev_flow/SYS/SYS-02_new_proj.md (validation skipped)
+- REQ: generated -> /opt/data/docs_flow_framework/ai_dev_flow/REQ/REQ-02_new_proj.md (validation skipped)
+- SPEC: generated -> /opt/data/docs_flow_framework/ai_dev_flow/SPEC/SPEC-02_new_proj.yaml (validation skipped)
+- TASKS: generated -> /opt/data/docs_flow_framework/ai_dev_flow/TASKS/TASKS-02_new_proj.md (validation skipped)
+- IPLAN: generated -> /opt/data/docs_flow_framework/ai_dev_flow/IPLAN/IPLAN-02_new_proj.md (validation skipped)
+- Links OK: False
