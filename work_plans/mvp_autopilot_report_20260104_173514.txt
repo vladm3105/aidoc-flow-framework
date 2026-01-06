@@ -1,0 +1,2 @@
+MVP Autopilot Report: FAIL
+- BRD: fail -> /opt/data/docs_flow_framework/ai_dev_flow/BRD/BRD-02_new_proj.md (no auto-fix)
