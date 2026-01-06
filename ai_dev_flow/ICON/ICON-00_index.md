@@ -28,6 +28,16 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 
 ---
 
+## Planned
+
+- Use this section to list standalone ICON files planned but not yet created. Move rows to the Active Contracts section when created.
+
+| ID | Contract | Provider/Consumers | Priority | Notes |
+|----|----------|--------------------|----------|-------|
+| ICON-XX | … | Provider: … / Consumers: … | High/Med/Low | … |
+
+---
+
 ## Quick Reference
 
 | ICON ID | Contract Name | Type | Status | Providers | Consumers | Created |

@@ -13,6 +13,13 @@ custom_fields:
 
 # API Contracts (CTR) - README
 
+## Generation Rules
+
+- Index-only: maintain `CTR-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
+- Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
+- Inputs used for generation: `CTR-00_index.md` + selected template profile; no skeletons are used.
+- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+
 ## 1. Purpose
 
 API Contracts (CTR) define precise interface specifications between components using a **Design by Contract** approach. Contracts establish formal agreements on:

@@ -49,6 +49,14 @@ flowchart LR
 |--------|-------|--------|-------------|----------|----------|--------------|
 | [PRD-TEMPLATE](./PRD-TEMPLATE.md) | Template | Reference | - | - | - | 2025-11-13 |
 
+## Planned
+
+- Use this section to list PRDs planned but not yet created. Move rows to the main index table when created.
+
+| ID | Title | Priority | Target Date | Notes |
+|----|-------|----------|-------------|-------|
+| PRD-XX | … | High/Med/Low | YYYY-MM-DD | … |
+
 ## Status Definitions
 
 | Status | Meaning | Description |

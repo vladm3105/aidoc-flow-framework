@@ -51,6 +51,14 @@ flowchart LR
 | [SPEC-01_api_client_example](./SPEC-01_api_client_example.yaml) | API Client (flat example) | Example | Draft | REQ-.. | CTR-.. | Medium | 2025-12-28 |
 | [SPEC-02_nested_example](./examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) | Nested Example (YAML+MD) | Example | Draft | REQ-.. | CTR-.. | Low | 2025-12-28 |
 
+## Planned
+
+- Use this section to list SPEC documents planned but not yet created. Move rows to the main index table when created.
+
+| ID | Component | Source (REQ/CTR) | Priority | Notes |
+|----|-----------|-------------------|----------|-------|
+| SPEC-XX | … | REQ/CTR-YY | High/Med/Low | … |
+
 ## Status Definitions
 
 | Status | Meaning | Description |

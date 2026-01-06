@@ -13,6 +13,13 @@ custom_fields:
 
 # Business Requirements Documents (BRD)
 
+## Generation Rules
+
+- Index-only: maintain `BRD-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
+- Templates: default to the MVP template; use the full (sectioned) template only when it is explicitly requested in project settings or clearly stated in the prompt.
+- Inputs used for generation: `BRD-00_index.md` + selected template profile; no skeletons are used.
+- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+
 Business Requirements Documents (BRDs) serve as the highest-level business requirements that establish the strategic foundation for all downstream development. BRDs capture business objectives, stakeholder needs, and success criteria before any product or technical considerations.
 
 ## Purpose

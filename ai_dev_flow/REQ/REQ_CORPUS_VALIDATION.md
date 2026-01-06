@@ -220,10 +220,20 @@ find "$REQ_DIR" -name "REQ-*.md" -exec grep -ohE "REQ\.[0-9]+\.[0-9]+\.[0-9]+" {
 **Severity**: Warning at 600 lines, Error at 1200 lines
 
 **Thresholds**:
+| Range | Status | Action |
+|-------|--------|--------|
+| 300-500 lines | Target | Optimal for readability |
+| 500-600 lines | Acceptable | Review for splitting opportunity |
+| 600-800 lines | Warning | Justify complexity or split |
+| 800-1200 lines | Caution | Consider section-based splitting |
+| >1200 lines | Error | Must split into sections |
+
+**Token Limits**:
 | Metric | Warning | Error |
 |--------|---------|-------|
-| Lines | 600 | 1,200 |
 | Tokens | 50,000 | 100,000 |
+
+**MVP Exception**: Documents with `template_variant: mvp` may accept higher line counts if content is cohesive.
 
 ---
 
@@ -378,6 +388,123 @@ done
 
 ---
 
+### CORPUS-17: YAML Frontmatter Compliance
+
+**Purpose**: Verify required custom_fields are present in YAML frontmatter
+
+**Severity**: Error
+
+**Required Fields**:
+| Field | Value | Required |
+|-------|-------|----------|
+| `artifact_type` | `REQ` | Yes |
+| `layer` | `7` | Yes |
+| `upstream_sys` | `SYS-NN` | Yes |
+| `spec_ready_score` | `NN%` | Yes |
+| `impl_ready_score` | `NN%` | No |
+
+**Validation Logic**:
+```bash
+find "$REQ_DIR" -name "REQ-[0-9]*_*.md" | while read f; do
+  ! grep -q "artifact_type: REQ" "$f" && echo "ERROR: Missing artifact_type: $f"
+  ! grep -q "layer: 7" "$f" && echo "ERROR: Missing layer: $f"
+  ! grep -q "upstream_sys:" "$f" && echo "ERROR: Missing upstream_sys: $f"
+done
+```
+
+---
+
+### CORPUS-18: Tag Notation Consistency
+
+**Purpose**: Validate correct notation (dot vs dash) for traceability tags
+
+**Severity**: Error
+
+**Tag Notation Rules**:
+| Tag Type | Required Notation | Example | Rationale |
+|----------|-------------------|---------|-----------|
+| `@brd` | Dot (element-level) | `BRD.07.01.01` | References specific element |
+| `@prd` | Dot (element-level) | `PRD.03.02.01` | References specific element |
+| `@ears` | Dot (element-level) | `EARS.05.01.01` | References specific element |
+| `@bdd` | Dot (element-level) | `BDD.02.01.01` | References specific element |
+| `@sys` | Dot (element-level) | `SYS.07.01.01` | References specific element |
+| `@req` | Dot (element-level) | `REQ.01.01.01` | References specific element |
+| `@adr` | Dash (document-level) | `ADR-33` | References whole document |
+| `@spec` | Dash (document-level) | `SPEC-07` | References whole document |
+
+**Validation Logic**:
+```bash
+grep -rn "@brd:" "$REQ_DIR"/*.md | grep "BRD-" && echo "ERROR: @brd should use dot notation"
+grep -rn "@adr:" "$REQ_DIR"/*.md | grep "ADR\." && echo "ERROR: @adr should use dash notation"
+```
+
+---
+
+### CORPUS-19: Date Format Consistency
+
+**Purpose**: Verify all dates use ISO 8601 format
+
+**Severity**: Error
+
+**Required Format**: `YYYY-MM-DD` (e.g., `2026-01-05`)
+
+**Invalid Formats**:
+| Pattern | Example | Issue |
+|---------|---------|-------|
+| `MM/DD/YYYY` | `01/05/2026` | US format ambiguous |
+| `DD/MM/YYYY` | `05/01/2026` | EU format ambiguous |
+| `Month D, YYYY` | `January 5, 2026` | Verbose, inconsistent |
+
+**Validation Logic**:
+```bash
+grep -rE "[0-9]{2}/[0-9]{2}/[0-9]{4}" "$REQ_DIR"/*.md && echo "ERROR: Invalid date format"
+```
+
+---
+
+### CORPUS-20: ASCII Art Detection
+
+**Purpose**: Detect box drawing characters in non-index files
+
+**Severity**: Warning
+
+**Exempt Files**: `*_index.md` (directory structure visualization allowed)
+
+**Characters to Detect**: `┌┐└┘─│├┤┬┴┼`
+
+**Validation Logic**:
+```bash
+find "$REQ_DIR" -name "REQ-[0-9]*_*.md" ! -name "*_index.md" | while read f; do
+  if grep -qE "┌|┐|└|┘|─|│|├|┤|┬|┴|┼" "$f"; then
+    echo "WARNING: $(basename $f) contains box drawing characters"
+  fi
+done
+```
+
+---
+
+### CORPUS-21: custom_fields Key Naming Consistency
+
+**Purpose**: Enforce consistent key naming in custom_fields YAML section
+
+**Severity**: Error
+
+**Key Naming Rules**:
+| Correct Key | Incorrect Key | Description |
+|-------------|---------------|-------------|
+| `upstream_sys` | `sys_source` | Source SYS document |
+| `spec_ready_score` | `specReadyScore` | Use snake_case |
+| `impl_ready_score` | `implReadyScore` | Use snake_case |
+
+**Validation Logic**:
+```bash
+find "$REQ_DIR" -name "REQ-[0-9]*_*.md" | while read f; do
+  grep -q "sys_source:" "$f" && echo "ERROR: $f uses 'sys_source' instead of 'upstream_sys'"
+done
+```
+
+---
+
 ## 2. Error Codes
 
 ### Error Codes (Blocking)
@@ -396,6 +523,10 @@ done
 | CORPUS-E015 | Missing @adr traceability tag | CORPUS-11 |
 | CORPUS-E016 | Missing @sys traceability tag | CORPUS-11 |
 | CORPUS-E017 | Missing required section (12-section format) | CORPUS-12 |
+| CORPUS-E018 | Missing required YAML frontmatter field | CORPUS-17 |
+| CORPUS-E019 | Wrong tag notation (dot vs dash) | CORPUS-18 |
+| CORPUS-E020 | Invalid date format | CORPUS-19 |
+| CORPUS-E021 | Invalid custom_fields key name | CORPUS-21 |
 
 ### Warning Codes (Recommended)
 
@@ -408,6 +539,7 @@ done
 | CORPUS-W013 | Invalid domain subdirectory | CORPUS-13 |
 | CORPUS-W014 | SPEC-Ready Score below 90% | CORPUS-14 |
 | CORPUS-W016 | Insufficient acceptance criteria | CORPUS-16 |
+| CORPUS-W017 | ASCII art in non-index file | CORPUS-20 |
 
 ### Info Codes (Advisory)
 
@@ -464,6 +596,11 @@ done
 - [ ] **CORPUS-14**: All REQ have SPEC-Ready Score ≥90%
 - [ ] **CORPUS-15**: IMPL-Ready scores present
 - [ ] **CORPUS-16**: Adequate acceptance criteria coverage
+- [ ] **CORPUS-17**: Required YAML frontmatter fields present
+- [ ] **CORPUS-18**: Tag notation consistent (dot vs dash)
+- [ ] **CORPUS-19**: All dates use ISO 8601 format
+- [ ] **CORPUS-20**: No ASCII art in non-index files
+- [ ] **CORPUS-21**: custom_fields keys use correct naming
 
 ---
 
@@ -553,6 +690,39 @@ else
   exit 1
 fi
 ```
+
+---
+
+## 6. Fix Priority Classification
+
+### Priority 1: Blocking (Must Fix Before Layer Transition)
+
+- Placeholder text for existing documents (CORPUS-01)
+- Premature downstream references (CORPUS-02)
+- Index synchronization errors (CORPUS-04)
+- Duplicate element IDs (CORPUS-08)
+- Missing cumulative traceability tags (CORPUS-11)
+- Missing required sections (CORPUS-12)
+- YAML frontmatter issues (CORPUS-17)
+- Tag notation errors (CORPUS-18)
+- Invalid date formats (CORPUS-19)
+- custom_fields key naming (CORPUS-21)
+
+### Priority 2: Quality (Recommended Before Approval)
+
+- Internal count mismatches (CORPUS-03)
+- Missing diagrams (CORPUS-06)
+- Terminology inconsistencies (CORPUS-07)
+- Priority distribution imbalance (CORPUS-09)
+- File size warnings (CORPUS-10)
+- Invalid domain subdirectory (CORPUS-13)
+- Acceptance criteria coverage (CORPUS-16)
+- ASCII art in non-index files (CORPUS-20)
+
+### Priority 3: Continuous (Address During Maintenance)
+
+- SPEC-Ready Score below 90% (CORPUS-14)
+- IMPL-Ready Score below 85% (CORPUS-15)
 
 ---
 

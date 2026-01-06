@@ -13,6 +13,13 @@ custom_fields:
 
 # Implementation Plans (IMPL): Project Management Layer
 
+## Generation Rules
+
+- Index-only: maintain `IMPL-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
+- Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
+- Inputs used for generation: `IMPL-00_index.md` + selected template profile; no skeletons are used.
+- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+
 ## Purpose
 
 Implementation Plans (IMPL) are **project management documents** that organize and coordinate development work between requirements and technical specifications. They answer **WHO does WHAT and WHEN**, not HOW to build it.

@@ -41,6 +41,14 @@ See [README.md](./README.md) for detailed guidance on organizational structure.
 
 *Add new contracts below as they are created*
 
+## Planned
+
+- Use this section to list CTRs planned but not yet created. Move rows to the Active Contracts table when created.
+
+| ID | Interface | Providers/Consumers | Priority | Notes |
+|----|-----------|----------------------|----------|-------|
+| CTR-XX | … | Provider: … / Consumers: … | High/Med/Low | … |
+
 ### Deprecated Contracts
 
 | Contract ID | Title | Deprecated Date | Superseded By | Migration Deadline |

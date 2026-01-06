@@ -13,6 +13,13 @@ custom_fields:
 
 # Architecture Decision Records (ADRs)
 
+## Generation Rules
+
+- Index-only: maintain `ADR-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
+- Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
+- Inputs used for generation: `ADR-00_index.md` + selected template profile; no skeletons are used.
+- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+
 Architecture Decision Records (ADRs) document significant architectural decisions, their context, consequences, and the rationale for choosing one approach over alternatives. ADRs create a historical record of how and why architectural choices were made, enabling teams to understand design decisions years later and avoid repeating past mistakes.
 
 ## Available Templates

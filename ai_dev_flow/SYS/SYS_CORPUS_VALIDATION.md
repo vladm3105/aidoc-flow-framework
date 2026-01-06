@@ -202,10 +202,20 @@ grep -rohE "SYS\.[0-9]+\.[0-9]+\.[0-9]+" "$SYS_DIR"/*.md | sort | uniq -d
 **Severity**: Warning at 600 lines, Error at 1200 lines
 
 **Thresholds**:
+| Range | Status | Action |
+|-------|--------|--------|
+| 300-500 lines | Target | Optimal for readability |
+| 500-600 lines | Acceptable | Review for splitting opportunity |
+| 600-800 lines | Warning | Justify complexity or split |
+| 800-1200 lines | Caution | Consider section-based splitting |
+| >1200 lines | Error | Must split into sections |
+
+**Token Thresholds**:
 | Metric | Warning | Error |
 |--------|---------|-------|
-| Lines | 600 | 1,200 |
 | Tokens | 50,000 | 100,000 |
+
+**MVP Exception**: Documents with `template_variant: mvp` may accept higher line counts if content is cohesive.
 
 ---
 
@@ -340,6 +350,101 @@ done
 
 ---
 
+### CORPUS-16: Template Variant Declaration
+
+**Purpose**: Verify documents using specialized templates declare template variant in metadata
+
+**Severity**: Error
+
+**Required for**: Documents containing template-specific sections (e.g., "MVP Scope")
+
+**Validation Logic**:
+```bash
+for f in "$SYS_DIR"/SYS-[0-9]*_*.md; do
+  if grep -q "MVP Scope\|Full Scope" "$f" 2>/dev/null; then
+    if ! grep -q "template_variant:" "$f" 2>/dev/null; then
+      echo "ERROR: $(basename $f) missing template_variant declaration"
+    fi
+  fi
+done
+```
+
+---
+
+### CORPUS-17: Parent-Child Document Hierarchy
+
+**Purpose**: Verify subsystem documents reference their parent document
+
+**Severity**: Error (for designated subsystem documents)
+
+**Applicability**: Documents designated as subsystems (configurable per project)
+
+**Required Tag**: `@parent-sys: SYS-NN`
+
+**Configuration**: Define `SUBSYSTEM_START` environment variable per project
+
+**Validation Logic**:
+```bash
+for f in "$SYS_DIR"/SYS-[0-9]*_*.md; do
+  doc_num=$(basename "$f" | grep -oE "SYS-[0-9]+" | grep -oE "[0-9]+")
+  if [[ $doc_num -ge $SUBSYSTEM_START ]]; then
+    if ! grep -q "@parent-sys:" "$f" 2>/dev/null; then
+      echo "ERROR: $(basename $f) is subsystem but missing @parent-sys tag"
+    fi
+  fi
+done
+```
+
+---
+
+### CORPUS-18: Tag Notation Consistency
+
+**Purpose**: Validate correct notation (dot vs dash) for traceability tags
+
+**Severity**: Error
+
+**Tag Notation Rules**:
+| Tag Type | Required Notation | Example | Rationale |
+|----------|-------------------|---------|-----------|
+| `@brd` | Dot (element-level) | `BRD.07.01.01` | References specific element |
+| `@prd` | Dot (element-level) | `PRD.03.02.01` | References specific element |
+| `@ears` | Dot (element-level) | `EARS.05.01.01` | References specific element |
+| `@bdd` | Dot (element-level) | `BDD.02.01.01` | References specific element |
+| `@sys` | Dot (element-level) | `SYS.07.01.01` | References specific element |
+| `@adr` | Dash (document-level) | `ADR-33` | References whole document |
+| `@spec` | Dash (document-level) | `SPEC-07` | References whole document |
+| `@parent-sys` | Dash (document-level) | `SYS-07` | References parent document |
+
+**Validation Logic**:
+```bash
+grep -rn "@brd:" "$SYS_DIR"/*.md | grep "BRD-" && echo "ERROR: @brd should use dot notation"
+grep -rn "@adr:" "$SYS_DIR"/*.md | grep "ADR\." && echo "ERROR: @adr should use dash notation"
+```
+
+---
+
+### CORPUS-19: Date Format Consistency
+
+**Purpose**: Verify all dates use ISO 8601 format
+
+**Severity**: Error
+
+**Required Format**: `YYYY-MM-DD` (e.g., `2026-01-04`)
+
+**Invalid Formats**:
+| Pattern | Example | Issue |
+|---------|---------|-------|
+| `MM/DD/YYYY` | `01/04/2026` | US format ambiguous |
+| `DD/MM/YYYY` | `04/01/2026` | EU format ambiguous |
+| `Month D, YYYY` | `January 4, 2026` | Verbose, inconsistent |
+
+**Validation Logic**:
+```bash
+grep -rE "[0-9]{2}/[0-9]{2}/[0-9]{4}" "$SYS_DIR"/*.md && echo "ERROR: Invalid date format"
+```
+
+---
+
 ## 2. Error Codes
 
 ### Error Codes (Blocking)
@@ -356,6 +461,10 @@ done
 | CORPUS-E013 | Missing @ears traceability tag | CORPUS-11 |
 | CORPUS-E014 | Missing @bdd traceability tag | CORPUS-11 |
 | CORPUS-E015 | Missing @adr traceability tag | CORPUS-11 |
+| CORPUS-E016 | Missing template_variant declaration | CORPUS-16 |
+| CORPUS-E017 | Missing @parent-sys in subsystem doc | CORPUS-17 |
+| CORPUS-E018 | Wrong tag notation (dot vs dash) | CORPUS-18 |
+| CORPUS-E019 | Invalid date format | CORPUS-19 |
 
 ### Warning Codes (Recommended)
 
@@ -423,6 +532,10 @@ done
 - [ ] **CORPUS-13**: NFR categories addressed
 - [ ] **CORPUS-14**: Interface definitions complete
 - [ ] **CORPUS-15**: All SYS have REQ-Ready Score ≥90%
+- [ ] **CORPUS-16**: Template variant declared for specialized templates
+- [ ] **CORPUS-17**: Parent-child hierarchy tags present for subsystems
+- [ ] **CORPUS-18**: Tag notation consistent (dot vs dash)
+- [ ] **CORPUS-19**: All dates use ISO 8601 format
 
 ---
 
@@ -512,6 +625,37 @@ else
   exit 1
 fi
 ```
+
+---
+
+## 6. Fix Priority Classification
+
+### Priority 1: Blocking (Must Fix Before Layer Transition)
+
+- Placeholder text for existing documents (CORPUS-01)
+- Premature downstream references (CORPUS-02)
+- Index synchronization errors (CORPUS-04)
+- Duplicate element IDs (CORPUS-08)
+- Missing cumulative traceability tags (CORPUS-11)
+- Tag notation errors (CORPUS-18)
+- Invalid date formats (CORPUS-19)
+
+### Priority 2: Quality (Recommended Before Approval)
+
+- Internal count mismatches (CORPUS-03)
+- Missing diagrams (CORPUS-06)
+- Terminology inconsistencies (CORPUS-07)
+- Unquantified quality attributes (CORPUS-09)
+- File size warnings (CORPUS-10)
+- Template variant declaration (CORPUS-16)
+- Parent-child hierarchy (CORPUS-17)
+
+### Priority 3: Continuous (Address During Maintenance)
+
+- Quality attribute coverage gaps (CORPUS-12)
+- NFR category gaps (CORPUS-13)
+- Interface completeness (CORPUS-14)
+- REQ-Ready score below threshold (CORPUS-15)
 
 ---
 

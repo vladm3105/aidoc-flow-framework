@@ -46,3 +46,11 @@ Validation Tools
 Documents
 
 (No BRD documents created yet. Add entries here as new BRDs are created.)
+
+## Planned
+
+- Use this section to list BRDs planned but not yet created. Move rows to the documents table when created.
+
+| ID | Title | Priority | Target Date | Notes |
+|----|-------|----------|-------------|-------|
+| BRD-XX | … | High/Med/Low | YYYY-MM-DD | … |

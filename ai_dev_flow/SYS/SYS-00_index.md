@@ -48,6 +48,14 @@ flowchart LR
 |--------|-------|-----------------|--------|-------------|--------------|--------------|
 | [SYS-TEMPLATE](./SYS-TEMPLATE.md) | Template | Reference | Reference | - | - | 2025-11-13 |
 
+## Planned
+
+- Use this section to list SYS documents planned but not yet created. Move rows to the main index table when created.
+
+| ID | Title | Sources (PRD/EARS) | Priority | Notes |
+|----|-------|---------------------|----------|-------|
+| SYS-XX | … | PRD/EARS-YY | High/Med/Low | … |
+
 ## Status Definitions
 
 | Status | Meaning | Description |

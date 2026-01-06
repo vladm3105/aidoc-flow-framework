@@ -22,6 +22,11 @@ custom_fields:
 
 # ICON Creation Rules
 
+## Index-Only Generation Workflow
+
+- Maintain `ICON-00_index.md` as the authoritative source of planned and active ICON files (mark planned items with Status: Planned).
+- Generators use: `ICON-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
+
 ## Table of Contents
 
 1. [Purpose](#purpose)

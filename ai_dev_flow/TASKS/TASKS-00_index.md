@@ -47,6 +47,14 @@ flowchart LR
 |----------|-------|--------|--------------|-------------|------------|----------------|--------------|
 | [TASKS-01](./examples/TASKS-01_risk_validator_implementation.md) | Risk Validator Implementation | Planned | SPEC-03 | CTR-03 | RiskValidator class | `src/risk/validator.py` | 2025-11-02 |
 
+## Planned
+
+- Use this section to list TASKS documents planned but not yet created. Move rows to the main index table when created.
+
+| ID | Plan Name | Source (SPEC) | Priority | Notes |
+|----|-----------|---------------|----------|-------|
+| TASKS-XX | … | SPEC-YY | High/Med/Low | … |
+
 ## Status Definitions
 
 | Status | Meaning | Description |

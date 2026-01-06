@@ -13,6 +13,13 @@ custom_fields:
 
 # Implementation Plans (IPLAN): Session-Based Execution Plans
 
+## Generation Rules
+
+- Index-only: maintain `IPLAN-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
+- Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
+- Inputs used for generation: `IPLAN-00_index.md` + selected template profile; no skeletons are used.
+- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+
 Implementation Plans (IPLAN) provide **session-based execution context** with bash commands, verification steps, and specific instructions for AI assistants to implement TASKS documents. IPLAN serve as the executable bridge between code generation plans and actual implementation.
 
 ## Purpose

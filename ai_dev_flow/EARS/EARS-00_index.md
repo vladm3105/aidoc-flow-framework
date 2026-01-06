@@ -48,6 +48,14 @@ flowchart LR
 |---------|-------|------------------|--------|-------------|---------------|--------------|
 | [EARS-TEMPLATE](./EARS-TEMPLATE.md) | Template | Reference | Reference | - | - | 2025-11-13 |
 
+## Planned
+
+- Use this section to list EARS documents planned but not yet created. Move rows to the main index table when created.
+
+| ID | Title | Source PRD | Priority | Notes |
+|----|-------|------------|----------|-------|
+| EARS-XX | … | PRD-YY | High/Med/Low | … |
+
 ## Status Definitions
 
 | Status | Meaning | Description |

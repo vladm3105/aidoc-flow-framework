@@ -65,3 +65,11 @@ custom_fields:
 ---
 
 **Note**: Example files in `examples/` directory are for reference only and may use older template versions.
+
+## Planned
+
+- Use this section to list REQ documents planned but not yet created. Move rows to the main index areas when created.
+
+| ID | Title | Source (EARS/SYS) | Priority | Notes |
+|----|-------|--------------------|----------|-------|
+| REQ-XX | … | EARS/SYS-YY | High/Med/Low | … |

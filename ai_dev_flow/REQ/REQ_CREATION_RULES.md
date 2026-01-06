@@ -24,6 +24,11 @@ custom_fields:
 
 # REQ Creation Rules
 
+## Index-Only Generation Workflow
+
+- Maintain `REQ-00_index.md` as the authoritative source of planned and active REQ files (mark planned items with Status: Planned).
+- Generators use: `REQ-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
+
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 3.2

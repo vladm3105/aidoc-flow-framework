@@ -79,6 +79,11 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
+### Index-Only Generation Workflow
+
+- Maintain `BRD-00_index.md` as the authoritative source of planned and active BRD documents (mark planned items with Status: Planned).
+- Generators use: `BRD-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
+
 - Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → "Using This Repo" for path mapping.
 
 ### Two Structure Options

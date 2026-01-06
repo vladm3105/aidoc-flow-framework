@@ -13,6 +13,13 @@ custom_fields:
 
 # EARS (Event-Action-Response-State) — Engineering Requirements
 
+## Generation Rules
+
+- Index-only: maintain `EARS-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
+- Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
+- Inputs used for generation: `EARS-00_index.md` + selected template profile; no skeletons are used.
+- Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+
 Note: `EARS-TEMPLATE.md` is a reference template. For real EARS documents, prefer sectioned docs using `EARS-SECTION-0-TEMPLATE.md` and `EARS-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`.
 
 ## Overview

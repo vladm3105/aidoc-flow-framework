@@ -47,6 +47,14 @@ flowchart LR
 | [IMPL_IMPLEMENTATION_PLAN](./IMPL_IMPLEMENTATION_PLAN.md) | Create IMPL/ System | In Progress | N/A | IMPL/ folder, templates | 4-5 hours | Documentation Team | 2025-11-02 |
 | [IMPL-01](./examples/IMPL-01_risk_management_system.md) | resource management System | Planned | REQ-03, REQ-05, REQ-08 | CTR-03, SPEC-03, TASKS-03, CTR-05, SPEC-05, TASKS-05, CTR-08, SPEC-08, TASKS-08 | 3 sprints (6 weeks) | Agent Team | 2025-11-02 |
 
+## Planned
+
+- Use this section to list IMPL plans planned but not yet created. Move rows to the main index table when created.
+
+| ID | Plan Name | Scope | Priority | Notes |
+|----|-----------|-------|----------|-------|
+| IMPL-XX | … | REQ-YY.. | High/Med/Low | … |
+
 ## Status Definitions
 
 | Status | Meaning | Description |

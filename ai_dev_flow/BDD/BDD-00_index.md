@@ -99,6 +99,14 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 - **[BDD-SUBSECTION-TEMPLATE.feature](./BDD-SUBSECTION-TEMPLATE.feature)**: Subsection template for splits
 - **[BDD-AGGREGATOR-TEMPLATE.feature](./BDD-AGGREGATOR-TEMPLATE.feature)**: Redirect stub when many subsections
 
+## Planned
+
+- Use this section to list BDD features planned but not yet created. Move rows to the appropriate functional area once created.
+
+| ID | Suite/Feature | Source (EARS/REQ) | Priority | Notes |
+|----|----------------|-------------------|----------|-------|
+| BDD-XX | … | EARS/REQ-YY | High/Med/Low | … |
+
 ### API Integrations
 
 *[BDD scenarios for external service integrations will be listed here as they are created]*

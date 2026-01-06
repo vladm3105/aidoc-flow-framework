@@ -27,6 +27,11 @@ custom_fields:
 
 # BDD Creation Rules
 
+## Index-Only Generation Workflow
+
+- Maintain `BDD-00_index.md` as the authoritative source of planned and active BDD files (mark planned items with Status: Planned).
+- Generators use: `BDD-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
+
 **Version**: 1.3
 **Date**: 2025-11-19
 **Last Updated**: 2025-12-26

@@ -49,6 +49,14 @@ flowchart LR
 |----|-------|--------|--------------|---------------|-----------|------------------|---------|-----------|------|
 | *No IPLAN documents yet* | - | - | - | - | - | - | - | - | - |
 
+## Planned
+
+- Use this section to list IPLAN documents planned but not yet created. Move rows to the main index table when created.
+
+| ID | Session Name | Scope (TASKS/SPEC) | Priority | Notes |
+|----|--------------|--------------------|----------|-------|
+| IPLAN-XX | … | TASKS/SPEC-YY | High/Med/Low | … |
+
 ### Example Entry (for reference):
 ```markdown
 | IPLAN-01 | Implement Gateway Connection | In Progress | TASKS-01 | ✅ 9/9 tags | Gateway Service | 80 hours | 2025-11-12 | - | [Link](./IPLAN-01_implement_gateway_connection.md) |
