@@ -39,33 +39,72 @@ Rules for creating Implementation Plans (IPLAN) documents in the SDD framework.
 |-------|-------|
 | **Version** | 1.1.0 |
 | **Created** | 2025-11-27 |
-| **Last Updated** | 2025-11-29 |
+| **Last Updated** | 2026-01-06 |
 | **Status** | Active |
 
 ---
 
 ## Table of Contents
 
-1. [When to Create an IPLAN Document](#1-when-to-create-an-iplan-document)
-2. [File Naming Convention](#2-file-naming-convention)
-3. [Required Sections](#3-required-sections)
-4. [Objective Section Rules](#4-objective-section-rules)
-5. [Context Section Rules](#5-context-section-rules)
-6. [Task List Section Rules](#6-task-list-section-rules)
-7. [Implementation Guide Section Rules](#7-implementation-guide-section-rules)
-8. [Traceability Tags Section](#8-traceability-tags-section-mandatory)
-9. [Quality Checklist](#9-quality-checklist)
-10. [Session Context Rules](#10-session-context-rules)
-11. [Token Efficiency Guidelines](#11-token-efficiency-guidelines)
-12. [Common Anti-Patterns](#12-common-anti-patterns)
-13. [Validation](#13-validation)
-14. [Upstream Artifact Verification Process](#14-upstream-artifact-verification-process)
-15. [Required Implementation Patterns](#15-required-implementation-patterns)
-16. [Cross-Document Validation](#16-cross-document-validation-mandatory)
+1. [Generation Strategy](#1-generation-strategy-hybrid-workflow)
+2. [When to Create an IPLAN Document](#2-when-to-create-an-iplan-document)
+3. [File Naming Convention](#3-file-naming-convention)
+4. [Required Sections](#4-required-sections)
+5. [Objective Section Rules](#5-objective-section-rules)
+6. [Context Section Rules](#6-context-section-rules)
+7. [Task List Section Rules](#7-task-list-section-rules)
+8. [Implementation Guide Section Rules](#8-implementation-guide-section-rules)
+9. [Traceability Tags Section](#9-traceability-tags-section-mandatory)
+10. [Quality Checklist](#10-quality-checklist)
+11. [Session Context Rules](#11-session-context-rules)
+12. [Token Efficiency Guidelines](#12-token-efficiency-guidelines)
+13. [Common Anti-Patterns](#13-common-anti-patterns)
+14. [Validation](#14-validation)
+15. [Upstream Artifact Verification Process](#15-upstream-artifact-verification-process)
+16. [Required Implementation Patterns](#16-required-implementation-patterns)
+17. [Cross-Document Validation](#17-cross-document-validation-mandatory)
 
 ---
 
-## 1. When to Create an IPLAN Document
+## 1. Generation Strategy (Hybrid Workflow)
+
+**The Recommended Workflow combines bulk generation for audit with just-in-time detail for accuracy.**
+
+### Step 0: Development Plan Strategy (Project Level)
+- **Who**: Architect / AI Assistant
+- **When**: Before Phase 1 Implementation
+- **Action**: Create `docs/DEVELOPMENT_PLAN.md`
+- **Content**:
+  - **Phase 0: Project Initialization** (Poetry/Env Setup)
+  - 7-Phase Implementation Strategy (Foundation -> UI)
+  - Status Tracking Table for all TASKS/Services
+  - Session Log for continuity
+- **Goal**: Persistent roadmap for multi-session execution.
+
+### Step 1: Bulk Shell Generation (Audit Phase)
+- **Who**: Automated Script (`generate_iplan.py`)
+- **When**: Immediately after TASKS approval
+- **Output**: Skeleton IPLAN files for ALL tasks
+- **Content**: 
+  - Correct Filenames (`IPLAN-NN_slug.md`)
+  - Complete Metadata & Frontmatter
+  - Full Traceability Tags (Inherited from TASKS)
+  - Generic "To Be Implemented" task lists
+- **Goal**: Establish audit trail and artifact registry.
+
+### Step 2: Implementation Detail (Execution Phase)
+- **Who**: AI Assistant or Developer
+- **When**: Just-in-time (start of specific task implementation)
+- **Action**: Update the specific `IPLAN-NN` file
+- **Content**:
+  - Specific Bash commands (pip install, mkdir, etc.)
+  - Context-aware verification steps
+  - Detailed per-module implementation plan
+- **Goal**: Create executable, debuggable session context.
+
+---
+
+## 2. When to Create an IPLAN Document
 
 ### Create IPLAN When
 
@@ -85,7 +124,7 @@ Rules for creating Implementation Plans (IPLAN) documents in the SDD framework.
 
 ---
 
-## 2. File Naming Convention
+## 3. File Naming Convention
 
 ### Format
 
@@ -112,7 +151,7 @@ IPLAN-NN_{descriptive_slug}.md
 3. Descriptive slug uses underscores, not hyphens or camelCase
 4. Do NOT include timestamps in filename (use Document Control for versioning)
 
-### 2.1 Element ID Format (MANDATORY)
+### 3.1 Element ID Format (MANDATORY)
 
 **Pattern**: `IPLAN.{DOC_NUM}.{ELEM_TYPE}.{SEQ}` (4 segments, dot-separated)
 
@@ -129,9 +168,9 @@ IPLAN-NN_{descriptive_slug}.md
 
 ---
 
-## 3. Required Sections
+## 4. Required Sections
 
-### 3.1 Frontmatter
+### 4.1 Frontmatter
 
 ```yaml
 ---
@@ -149,7 +188,7 @@ custom_fields:
 ---
 ```
 
-### 3.1.1 Immediate Validation After Creation
+### 4.1.1 Immediate Validation After Creation
 
 **MANDATORY**: Run validation immediately after creating each IPLAN file.
 
@@ -166,7 +205,7 @@ grep -q "^tags:" docs/IPLAN/IPLAN-NN_*.md || echo "ERROR: Missing tags: section"
 
 **CRITICAL**: Do NOT proceed to next IPLAN until validation passes. Files missing `layer-12-artifact` tag will fail validation.
 
-### 3.2 Document Control Table
+### 4.2 Document Control Table
 
 | Field | Required | Description |
 |-------|----------|-------------|
@@ -181,7 +220,7 @@ grep -q "^tags:" docs/IPLAN/IPLAN-NN_*.md || echo "ERROR: Missing tags: section"
 | Parent TASKS | Yes | TASKS-NN reference |
 | IPLAN-Ready Score | Recommended | Percentage (target: ≥90%) |
 
-### 3.3 Mandatory Sections
+### 4.3 Mandatory Sections
 
 | Section | Purpose |
 |---------|---------|
@@ -199,7 +238,7 @@ grep -q "^tags:" docs/IPLAN/IPLAN-NN_*.md || echo "ERROR: Missing tags: section"
 
 ---
 
-## 4. Objective Section Rules
+## 5. Objective Section Rules
 
 ### Requirements
 
@@ -232,7 +271,7 @@ Build the gateway connection stuff.
 
 ---
 
-## 5. Context Section Rules
+## 6. Context Section Rules
 
 ### Required Subsections
 
@@ -276,7 +315,7 @@ Build the gateway connection stuff.
 
 ---
 
-## 6. Task List Section Rules
+## 7. Task List Section Rules
 
 ### Requirements
 
@@ -314,7 +353,7 @@ Build the gateway connection stuff.
 
 ---
 
-## 7. Implementation Guide Section Rules
+## 8. Implementation Guide Section Rules
 
 ### Required Subsections
 
@@ -388,7 +427,7 @@ poetry show | grep -E "(async_client|pydantic)"
 
 ---
 
-## 8. Traceability Tags Section (MANDATORY)
+## 9. Traceability Tags Section (MANDATORY)
 
 ### Required Tags (Layer 12 - All 9 mandatory)
 
@@ -438,7 +477,7 @@ poetry show | grep -E "(async_client|pydantic)"
 
 ---
 
-## 9. Quality Checklist
+## 10. Quality Checklist
 
 ### Before Creating
 
@@ -466,7 +505,7 @@ poetry show | grep -E "(async_client|pydantic)"
 
 ---
 
-## 10. Session Context Rules
+## 11. Session Context Rules
 
 ### DO Include
 
@@ -487,7 +526,7 @@ poetry show | grep -E "(async_client|pydantic)"
 
 ---
 
-## 11. Token Efficiency Guidelines
+## 12. Token Efficiency Guidelines
 
 ### Target Sizes
 
@@ -518,7 +557,7 @@ IPLAN-01_feature_part2.md (Phase 3-4)
 
 ---
 
-## 12. Common Anti-Patterns
+## 13. Common Anti-Patterns
 
 ### Avoid
 
@@ -532,7 +571,7 @@ IPLAN-01_feature_part2.md (Phase 3-4)
 
 ---
 
-## 13. Validation
+## 14. Validation
 
 ### Automated Validation
 
@@ -552,7 +591,7 @@ IPLAN-01_feature_part2.md (Phase 3-4)
 
 ---
 
-## 14. Upstream Artifact Verification Process
+## 15. Upstream Artifact Verification Process
 
 ### Before Creating This Document
 
@@ -610,7 +649,7 @@ Include ONLY if relationships exist between IPLAN documents sharing session cont
 ```
 
 
-## 15. Required Implementation Patterns
+## 16. Required Implementation Patterns
 
 ### Error Handling Pattern
 
@@ -750,11 +789,11 @@ def handle_external(data: Any) -> None:  # Any: third-party API response
 ---
 
 **Document Version**: 1.1.0
-**Last Updated**: 2025-11-29
+**Last Updated**: 2026-01-06
 
 ---
 
-## 16. Cross-Document Validation (MANDATORY)
+## 17. Cross-Document Validation (MANDATORY)
 
 **CRITICAL**: Execute cross-document validation IMMEDIATELY after creating any IPLAN document. Do NOT proceed to implementation until validation passes.
 
@@ -798,13 +837,3 @@ python scripts/validate_cross_document.py --layer IPLAN --auto-fix
 
 | Code | Description | Severity |
 |------|-------------|----------|
-| XDOC-001 | Referenced requirement ID not found | ERROR |
-| XDOC-002 | Missing cumulative tag | ERROR |
-| XDOC-003 | Upstream document not found | ERROR |
-| XDOC-006 | Tag format invalid | ERROR |
-| XDOC-007 | Gap in cumulative tag chain | ERROR |
-| XDOC-009 | Missing traceability section | ERROR |
-
-### Quality Gate
-
-**Blocking**: YES - Cannot proceed to implementation until Phase 1 validation passes with 0 errors.
