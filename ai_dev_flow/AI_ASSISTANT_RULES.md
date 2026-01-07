@@ -930,6 +930,19 @@ AI Assistant should suggest framework updates when:
 
 ---
 
+## Rule 16: TASKS Implementation Workflow
+
+### Execution
+When implementing a `TASKS` artifact, AI Assistant **MUST** follow the `TASKS_IMPLEMENTATION_GUIDE.md` workflow.
+
+### Key Steps
+1.  **Create IPLAN**: Generate `IPLAN-XX` breaking down the TASKS into Phases (Domain, Logic, Service, Test).
+2.  **Update Task Artifact**: Maintain `task.md` with granular progress.
+3.  **Execute & Verify**: TDD loop with `pytest`.
+4.  **Document**: Update `DEVELOPMENT_PLAN.md` (Status & Log) and `walkthrough.md`.
+
+---
+
 ## Summary: Execution Checklist
 
 AI Assistant **MUST** complete this checklist for every new project:
@@ -948,6 +961,7 @@ AI Assistant **MUST** complete this checklist for every new project:
 - [ ] **Step 12**: Create tests matching BDD scenarios
 - [ ] **Step 13**: Generate traceability matrices
 - [ ] **Step 14**: Final validation before marking project setup complete
+- [ ] **Step 15**: Implement TASKS using Phase-based workflow (IPLAN -> Code -> Verify)
 
 ---
 

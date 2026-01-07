@@ -594,6 +594,7 @@ This AI Agent BRD depends on the following Platform BRDs:
   - Plan: Numbered sequence of development activities
   - Constraints: Technical boundaries and limitations
   - Acceptance: Verification requirements for completion
+- **Reference**: See [`TASKS_IMPLEMENTATION_GUIDE.md`](./TASKS_IMPLEMENTATION_GUIDE.md) for detailed workflow.
 - **resource**: Implementation roadmap connecting specifications to code
 
 ### Code Implementation
