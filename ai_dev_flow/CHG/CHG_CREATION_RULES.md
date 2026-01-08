@@ -54,7 +54,7 @@ docs/CHG/CHG-XX_{slug}/
 
 ### Step 4: Repair & Audit
 - **Traceability**: Update all downstream documents (`DEVELOPMENT_PLAN.md`, `task.md`) to point to the new direction.
-- **Development Plan Update**: You MUST add a specific sub-phase entry in `DEVELOPMENT_PLAN.md` to track the change execution.
+- **Development Plan Update**: You MUST add a specific sub-phase entry in `DEVELOPMENT_PLAN.md` (project-specific file created from `TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`) to track the change execution.
   - Format: `Phase X.Y: {Change Title} (Implementation)`
   - Link: Must reference the frozen `implementation_plan.md` inside the CHG directory.
   - Example: `Phase 1.1: [CHG-01 Unified Postgres](docs/CHG/CHG-01/implementation_plan.md)`

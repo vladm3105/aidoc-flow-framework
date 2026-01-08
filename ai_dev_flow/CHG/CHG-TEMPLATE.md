@@ -1,6 +1,10 @@
 ---
 id: CHG-XX
 title: Title of Change
+tags:
+  - change-document
+  - architectural-change
+  - shared-architecture
 status: [Proposed/Implemented]
 date: YYYY-MM-DD
 author: [Author Name]

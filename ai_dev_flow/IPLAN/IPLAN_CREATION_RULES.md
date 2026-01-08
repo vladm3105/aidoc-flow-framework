@@ -73,7 +73,7 @@ Rules for creating Implementation Plans (IPLAN) documents in the SDD framework.
 ### Step 0: Development Plan Strategy (Project Level)
 - **Who**: Architect / AI Assistant
 - **When**: Before Phase 1 Implementation
-- **Action**: Create `docs/DEVELOPMENT_PLAN.md`
+- **Action**: Create `docs/DEVELOPMENT_PLAN.md` from template `TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`
 - **Content**:
   - **Phase 0: Project Initialization** (Poetry/Env Setup)
   - 7-Phase Implementation Strategy (Foundation -> UI)

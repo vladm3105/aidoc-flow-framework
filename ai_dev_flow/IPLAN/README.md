@@ -128,6 +128,24 @@ mypy src/[project]/services/connector.py
 # Expected: 0 errors
 ```
 
+## Why IPLAN? (The "Hallucination Check")
+
+We strongly recommend generating IPLAN separately (Layer 12) rather than embedding implementation steps in TASKS (Layer 11). Here is why the `SPEC → TASKS → IPLAN → Code` workflow is superior:
+
+### 1. The "Hallucination Check" (Critically Important)
+Between `TASKS` (Design) and `Code` (Implementation), there is often a gap where architectural inconsistencies creep in.
+*   **Without IPLAN**: You start coding based on `TASKS`. If `TASKS` says "Put code in Agent X" but the Architecture says "Put code in Shared Service Y", you might write the wrong code before realizing it.
+*   **With IPLAN**: You create a concise plan first. This forces you to resolve architectural conflicts *before* writing a single line of code.
+
+### 2. Context Window Efficiency
+*   **TASKS Documents** are heavy. They contain extensive context, requirements, BDD scenarios, and constraints. Feeding that entire file to an AI coder every time creates noise.
+*   **IPLAN Documents** are lighter. They are pure "Action Checklists" (e.g., "1. Create file, 2. Add class, 3. Verify"). This gives the AI coder highly focused instructions, reducing errors and token usage.
+
+### 3. Separation of "What" vs. "How"
+*   **TASKS (The Blueprint)**: Defines *what* needs to be built (The "Contract"). This shouldn't change often.
+*   **IPLAN (The Construction Schedule)**: Defines *how* we build it (Phase 1 Models, Phase 2 Logic, etc.). This changes frequently as we discover things during coding.
+*   By separating them, you can iterate on your *execution strategy* (IPLAN) without rewriting your *requirements* (TASKS).
+
 ## When to Create IPLAN Documents
 
 Create IPLAN documents when:
@@ -539,6 +557,18 @@ poetry show | grep async_client
 - Artifact templates
 - Related artifacts
 - External references
+
+### 13. Mandatory Verification Checklist (CRITICAL)
+
+**Purpose**: Force self-correction before implementation begins.
+
+**Requirements**:
+- Must be the LAST section of the IPLAN.
+- Must include these specific checks:
+    - [ ] Verified against REQ-NN (Atomic Requirements)
+    - [ ] Verified against TASKS-NN (Task Breakdown)
+    - [ ] Confirmed Architecture (Shared Service vs Agent)
+    - [ ] Checked for Missing Logic/Fields
 
 ## File Naming Conventions
 

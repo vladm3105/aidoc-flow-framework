@@ -19,8 +19,47 @@ custom_fields:
 - Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
 - Inputs used for generation: `TASKS-00_index.md` + selected template profile; no skeletons are used.
 - Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
+- **Development Plan Tracking**: Use `DEVELOPMENT_PLAN_TEMPLATE.md` in this directory to organize TASKS into phases with dependencies and status tracking.
 
 Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+
+---
+
+## Development Plan: Implementation Tracking & Workflow Enforcement
+
+**Critical Tool**: The Development Plan (`DEVELOPMENT_PLAN_TEMPLATE.md`) serves as the **central command center** for organizing and tracking TASKS implementation across all phases.
+
+### Why Development Plan is Essential
+
+1. **Phase Organization**: Groups TASKS by implementation phase (Foundation → Infrastructure → Core → etc.)
+2. **Priority Ordering**: Orders TASKS within each phase by priority (P0, P1, P2)
+3. **Workflow Enforcement**: Embeds mandatory pre-execution and post-execution checks directly in TASKS structure
+4. **Status Tracking**: Uses YAML-based format for machine-parsable progress tracking
+5. **Audit Trail**: Maintains session log for continuity and regulatory compliance
+
+### Key Features
+
+**YAML-Based TASKS Structure**: Each TASKS includes:
+- **Pre-Check** (Rule 3): Verification before implementation starts
+- **Main Implementation**: TASKS and IPLAN status tracking  
+- **Post-Check** (Rules 1 & 2): Updates after implementation completes
+
+**Mandatory Workflow Rules**:
+- **Rule 3**: Pre-Execution Verification (blocks implementation until complete)
+- **Rule 2**: Immediate Phase Tracker Update (enforced after completion)
+- **Rule 1**: Immediate Session Log Update (audit trail requirement)
+
+### Quick Reference
+
+| Resource | Purpose |
+|----------|---------|
+| `DEVELOPMENT_PLAN_TEMPLATE.md` | Template to copy to project (`docs/DEVELOPMENT_PLAN.md`) |
+| `DEVELOPMENT_PLAN_README.md` | **Complete user guide** - YAML structure, workflow rules, automation |
+| `TASKS-00_index.md` | Registry of all TASKS documents |
+
+**See Also**: [DEVELOPMENT_PLAN_README.md](./DEVELOPMENT_PLAN_README.md) for complete documentation.
+
+---
 
 AI Tasks provide **exact implementation plans and TODOs** for generating code from YAML specifications. Tasks serve as precise, AI-friendly instructions that guide code generation from SPEC files with clear steps, constraints, and verification criteria.
 

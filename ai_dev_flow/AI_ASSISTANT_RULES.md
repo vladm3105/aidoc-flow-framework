@@ -932,14 +932,83 @@ AI Assistant should suggest framework updates when:
 
 ## Rule 16: TASKS Implementation Workflow
 
-### Execution
-When implementing a `TASKS` artifact, AI Assistant **MUST** follow the `TASKS_IMPLEMENTATION_GUIDE.md` workflow.
+### Development Plan Tracking (CRITICAL)
 
-### Key Steps
-1.  **Create IPLAN**: Generate `IPLAN-XX` breaking down the TASKS into Phases (Domain, Logic, Service, Test).
-2.  **Update Task Artifact**: Maintain `task.md` with granular progress.
-3.  **Execute & Verify**: TDD loop with `pytest`.
-4.  **Document**: Update `DEVELOPMENT_PLAN.md` (Status & Log) and `walkthrough.md`.
+**Before ANY TASKS Implementation**: The Development Plan (`docs/DEVELOPMENT_PLAN.md`) is the **central command center** for organizing and tracking all TASKS across implementation phases.
+
+**Mandatory Setup**:
+1. Copy `TASKS/DEVELOPMENT_PLAN_TEMPLATE.md` to `docs/DEVELOPMENT_PLAN.md` at project start
+2. Populate with all TASKS organized by phase and priority
+3. Use YAML-based structure for machine-parsable tracking
+
+**See**: `TASKS/DEVELOPMENT_PLAN_README.md` for complete documentation.
+
+### Mandatory Workflow Rules
+
+AI Assistant **MUST** enforce these rules for EVERY TASKS:
+
+**Rule 3: Pre-Execution Verification** (BEFORE starting)
+- Update `pre_check` status and checklist in Development Plan YAML
+- Verify against REQ-NN and TASKS-NN
+- Confirm architecture decisions
+- Check for missing logic/fields
+- Review upstream artifact consistency
+- Confirm all dependencies available
+- **Block implementation until all checklist items complete**
+
+**Rule 2: Phase Tracker Update** (AFTER completing)
+- Update TASKS status: `IN_PROGRESS` → `COMPLETED` in YAML
+- Update IPLAN status to `COMPLETED` if applicable
+- Mark `post_check` checklist items as complete
+- **Required BEFORE moving to next TASKS**
+
+**Rule 1: Session Log Update** (AFTER completing)
+- Add entry to Development Plan Section 3 (Session Log)
+- Include: date, TASKS ID, COMPLETED status, implementation summary
+- Mark session log checklist items in YAML as complete
+- **Required for audit trail and continuity**
+
+### Execution Steps
+
+1. **Verify Pre-Conditions**: Check Development Plan that TASKS is next in queue and `pre_check` complete
+2. **Create IPLAN**: Generate `IPLAN-XX` breaking down TASKS into Phases (Domain, Logic, Service, Test)
+3. **Update Task Artifact**: Maintain `task.md` with granular progress
+4. **Execute & Verify**: TDD loop with `pytest`
+5. **Update Development Plan**: 
+   - Mark TASKS status as `COMPLETED` in YAML
+   - Mark IPLAN status as `COMPLETED` in YAML
+   - Complete `post_check` checklist in YAML
+   - Add Session Log entry
+6. **Document**: Update `walkthrough.md` with implementation summary
+
+### Development Plan Structure
+
+The Development Plan uses YAML blocks for each phase:
+
+```yaml
+phase_N_tasks:
+  - id: TASKS-XX
+    service_name: "[Service Name]"
+    priority: P0
+    workflow:
+      pre_check:        # Rule 3: Verification before start
+        status: COMPLETED
+        checklist: [6 items: all must be true]
+      tasks:            # Main implementation tracking
+        status: COMPLETED
+        iplan_id: IPLAN-XX
+        iplan_status: COMPLETED
+      post_check:       # Rules 1 & 2: Updates after completion
+        status: COMPLETED
+        checklist: [7 items: all must be true]
+```
+
+### Quality Gates
+
+**Block IF**:
+- `pre_check.status != COMPLETED` → Cannot start implementation
+- `tasks.status == COMPLETED` AND `post_check.status != COMPLETED` → Cannot move to next TASKS
+- Session Log missing entry for completed TASKS → Audit trail incomplete
 
 ---
 

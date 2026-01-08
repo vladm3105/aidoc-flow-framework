@@ -26,16 +26,31 @@ custom_fields:
   schema_version: "1.0"
 ---
 
-> **📋 Document Authority**: This is the **PRIMARY STANDARD** for IPLAN structure.
+> **Document Authority**: This is the **PRIMARY STANDARD** for IPLAN structure.
 > - **Schema**: `IPLAN_SCHEMA.yaml v1.0` - Validation rules
 > - **Creation Rules**: `IPLAN_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `IPLAN_VALIDATION_RULES.md` - Post-creation checks
 
 # Implementation Plan - IPLAN-NN: [Descriptive Task/Feature Name]
 
-**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
+**CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
 **Position**: Layer 12 (Implementation Work Plans) - translates TASKS into executable session plans with bash commands and verification steps.
+
+##  Mandatory Verification Checklist (CRITICAL)
+
+**Purpose**: Force self-correction before implementation begins.
+
+**Requirements**:
+ Should be executed before the implementation of the IPLAN.
+
+- Must include these specific checks:
+    - [ ] Verified against REQ-NN (Atomic Requirements)
+    - [ ] Verified against TASKS-NN (Task Breakdown)
+    - [ ] Confirmed Architecture (Shared Service vs Agent)
+    - [ ] Checked for Missing Logic/Fields
+
+**Workflow**: SPEC (Layer 10) → TASKS (Layer 11) → **IPLAN (Layer 12)** → Implementation.
 
 ## 1. Document Control
 
@@ -56,7 +71,7 @@ custom_fields:
 
 ---
 
-> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
+> **UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
 > 1. **Check existing artifacts**: List what upstream documents actually exist in `docs/`
 > 2. **Reference only existing documents**: Use actual document IDs, not placeholders
 > 3. **Use `null` appropriately**: Only when upstream artifact type genuinely doesn't exist for this feature
@@ -1028,3 +1043,5 @@ Quick reference for common commands used in this implementation:
 - Split by sprint/phase or functional scope
 - Keep links to TASKS/REQ/SPEC in sync; update any indexes
 - Validate references and run size lints
+
+
