@@ -41,6 +41,13 @@
 |:------:|----|---------|:--------:|------------|
 | 🔴 | **TASKS-ZZ** | [Service Name] | P1 | [Dependents] |
 
+### Phase X.Y: CHG-NN [Change Title] (Architectural Pivot)
+**Goal**: Execute major architectural change or pivot.
+
+| Status | ID | Task | Link |
+|:------:|----|------|------|
+| 🔴 | **CHG-NN** | **[Change Name]** | [Implementation Audit Log](CHG/CHG-NN_slug/implementation_plan.md) |
+
 ---
 
 ## 3. Session Log

@@ -943,6 +943,19 @@ When implementing a `TASKS` artifact, AI Assistant **MUST** follow the `TASKS_IM
 
 ---
 
+## Rule 17: Change Management Protocol
+
+### Trigger
+When executing a major architectural pivot or technology switch (e.g., changing databases, replacing a framework), AI Assistant **MUST** follow the `CHANGE_MANAGEMENT_GUIDE.md`.
+
+### Execution
+1.  **Plan**: Create a dedicated `implementation_plan.md` section for the migration.
+2.  **Archive**: Move obsolete artifacts to `docs/archive/vX_<reason>/`. **NEVER DELETE** significant planning documents.
+3.  **Supersede**: Explicitly state in new documents which artifacts they replace.
+4.  **Revalidate**: Perform structural validation on the new set of documents.
+
+---
+
 ## Summary: Execution Checklist
 
 AI Assistant **MUST** complete this checklist for every new project:

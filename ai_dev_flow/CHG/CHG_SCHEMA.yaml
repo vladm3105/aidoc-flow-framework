@@ -1,0 +1,39 @@
+artifact_type: CHG
+layer: 0
+description: "Change Management Artifact for tracking major architectural pivots."
+
+filename_pattern: "^CHG-[0-9]{2}_[a-z0-9_]+\\.md$"
+
+frontmatter:
+  required:
+    - id
+    - title
+    - status
+    - date
+    - author
+    - supersedes
+  optional:
+    - related_chg
+
+structure:
+  required_sections:
+    - "1. Overview"
+    - "2. Impacted Artifacts"
+    - "3. Migration Steps"
+    - "4. Rollback Plan"
+  
+  section_rules:
+    "1. Overview":
+      - "Must contain 'Reason for Change'"
+      - "Must contain '1.1 Reason for Change'"
+    "2. Impacted Artifacts":
+      - "Must list 'Archived' artifacts"
+      - "Must list 'New / Updated' artifacts"
+    "3. Migration Steps":
+      - "Must reference 'implementation_plan.md' for audit log"
+    "4. Rollback Plan":
+      - "Must define triggers for rollback"
+
+validation_rules:
+  - "metadata.status in ['Proposed', 'Implemented', 'Rejected']"
+  - "metadata.supersedes is list"

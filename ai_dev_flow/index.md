@@ -36,6 +36,15 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 > Default Directory Model: All artifact types use nested folders by default — `{TYPE}/{TYPE}-NN_{slug}/` — containing the primary document file(s). BDD uses nested per-suite folders (`BDD/BDD-NN_{slug}/`) due to validator requirements.
 
+### Change Management Layer (Layer 0)
+
+- **CHG** (`CHG/`) - Layer 0: Change Management Artifacts for audit trails of major pivots
+  - Template: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md)
+  - Schema: [CHG_SCHEMA.yaml](./CHG/CHG_SCHEMA.yaml)
+  - Rules: [CHG_CREATION_RULES.md](./CHG/CHG_CREATION_RULES.md)
+  - Purpose: Formal audit trail for architectural changes, pivots, and deprecations
+  - Structure: Directory-based (`CHG/CHG-XX_{slug}/`) containing Definition, Frozen Plan, and Archive
+
 ### Business Layer (Layers 1-3)
 
 - **BRD** (`BRD/`) - Layer 1: Business Requirements Documents defining business objectives and constraints
