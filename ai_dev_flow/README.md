@@ -88,6 +88,32 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 - Reserved infra docs may use `-000` (e.g., `BRD-00_index.md`). Source code and tests follow coding standards, not this rule.
 - See details in [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md).
 
+### Index File Digit Width by Artifact Type
+
+This repository uses consistent **2-digit width** (`00`) for all index files across all artifact types.
+
+| Artifact Type | Index File Format | Width | Example |
+|---------------|-------------------|-------|---------|
+| BRD | BRD-00_index.md | 2-digit | `BRD-00_index.md` |
+| PRD | PRD-00_index.md | 2-digit | `PRD-00_index.md` |
+| EARS | EARS-00_index.md | 2-digit | `EARS-00_index.md` |
+| BDD | BDD-00_index.md | 2-digit | `BDD-00_index.md` |
+| ADR | ADR-00_index.md | 2-digit | `ADR-00_index.md` |
+| SYS | SYS-00_index.md | 2-digit | `SYS-00_index.md` |
+| REQ | REQ-00_index.md | 2-digit | `REQ-00_index.md` |
+| IMPL | IMPL-00_index.md | 2-digit | `IMPL-00_index.md` |
+| CTR | CTR-00_index.md | 2-digit | `CTR-00_index.md` |
+| SPEC | SPEC-00_index.md | 2-digit | `SPEC-00_index.md` |
+| TASKS | TASKS-00_index.md | 2-digit | `TASKS-00_index.md` |
+| ICON | ICON-00_index.md | 2-digit | `ICON-00_index.md` |
+| IPLAN | IPLAN-00_index.md | 2-digit | `IPLAN-00_index.md` |
+
+**Policy for New Repositories**:
+- Choose either 2-digit (`00`) or 3-digit (`000`) width consistently
+- Apply the same width across ALL artifact types in the project
+- Do NOT mix widths (e.g., BRD-00 with PRD-000)
+- Once chosen, keep stable throughout project lifetime
+
 ## Metadata Management in AI Dev Flow
 
 AI Dev Flow uses **dual metadata approaches** to serve both human and machine audiences:
@@ -539,7 +565,7 @@ Note on ADR references:
 
 | Artifact | Schema File | Layer | Notes |
 |----------|-------------|-------|-------|
-| BRD | N/A¹ | 1 | No schema by design |
+| BRD | BRD_SCHEMA.yaml | 1 | Optional¹ - advisory validation only |
 | PRD | PRD_SCHEMA.yaml | 2 | |
 | EARS | EARS_SCHEMA.yaml | 3 | |
 | BDD | BDD_SCHEMA.yaml | 4 | |
@@ -553,7 +579,7 @@ Note on ADR references:
 | ICON | ICON_SCHEMA.yaml | 11 | Optional artifact |
 | IPLAN | IPLAN_SCHEMA.yaml | 12 | |
 
-¹ BRD has no schema by design - business requirements are inherently flexible and domain-specific.
+¹ BRD schema is OPTIONAL. BRD validation is human-centric with advisory-only automated checks. All validation rules in BRD_SCHEMA.yaml have 'warning' or 'info' severity (not 'error'). See BRD_SCHEMA.yaml header (lines 1-12) for enforcement level details.
 
 ## Traceability
 
@@ -602,7 +628,7 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 
 ### Validation
 
-Note: Script name canonicalization — the canonical script is `scripts/generate_traceability_matrix.py`. Any historical references in this guide to `generate_traceability_matrices.py` refer to the same tool; use the singular script name.
+Note: Script name canonicalization — the canonical script is `scripts/generate_traceability_matrix.py`. Any historical references in this guide to `generate_traceability_matrix.py` refer to the same tool; use the singular script name.
 
 ```bash
 # Note: In this repo, drop any `docs/` prefix used in generic examples.
@@ -751,23 +777,17 @@ python scripts/validate_tags_against_docs.py \
 5. **Optional Layers**: Correctly handles IMPL (Layer 8) and CTR (Layer 9)
 
 **Expected Tag Counts by Layer**:
-```
-Layer 1 (BRD):    0 tags (top level)
-Layer 2 (PRD):    1 tag  (@brd)
-Layer 3 (EARS):   2 tags (@brd, @prd)
-Layer 4 (BDD):    3+ tags (@brd through @ears)
-Layer 5 (ADR):    4 tags (@brd through @bdd)
-Layer 6 (SYS):    5 tags (@brd through @adr)
-Layer 7 (REQ):    6 tags (@brd through @sys)
-Layer 8 (IMPL):   7 tags (@brd through @req) [optional]
-Layer 9 (CTR):    8 tags (@brd through @impl) [optional]
-Layer 10 (SPEC):  7-9 tags (@brd through @req + optional impl/ctr)
-Layer 11 (TASKS): 8-10 tags (@brd through @spec)
-Layer 12 (IPLAN): 9-11 tags (@brd through @tasks)
-Layer 13 (Code):  9-11 tags (@brd through @tasks)
-Layer 14 (Tests): 10-12 tags (@brd through @code)
-Layer 15 (Validation): Consumes all upstream tags (counts not enforced)
-```
+
+See [CUMULATIVE_TAG_REFERENCE.md](./CUMULATIVE_TAG_REFERENCE.md) for complete tag count formulas by layer, including:
+- Full reference table (Layers 1-15)
+- Handling of optional layers (IMPL, CTR)
+- Validation formulas and Python implementation
+- Example scenarios for different project configurations
+
+**Quick Reference**:
+- Layers 1-9: Fixed count (layer number - 1)
+- Layers 10-15: Range based on optional layers (IMPL, CTR)
+- Layer 15 (Validation): Advisory count (10-15 tags)
 
 Note: ICON (Implementation Contracts) is optional and does not affect tag counts. If present, `@icon` tags are allowed but excluded from cumulative count and chain validation.
 

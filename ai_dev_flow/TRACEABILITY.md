@@ -1592,6 +1592,89 @@ python scripts/complete_traceability_matrix.py
 
 ## Change Management
 
+### Overview
+
+The SDD framework employs two types of change management based on scope and impact:
+
+1. **Routine Updates**: Standard document evolution through editing (most changes)
+2. **CHG (Architectural Pivots)**: Document immutability procedure for major restructuring (rare)
+
+### Routine Updates (Standard Workflow)
+
+**When to Use**: 95% of all changes, including:
+- Adding new requirements to existing documents
+- Updating implementation details
+- Clarifying existing specifications
+- Bug fixes and corrections
+- Performance optimizations
+
+**Process**:
+1. Edit document in place
+2. Update version number and revision history
+3. Update downstream artifacts as needed
+4. Maintain traceability links
+5. Run validation scripts
+
+### CHG: Change Management for Architectural Pivots
+
+⚠️ **IMPORTANT**: CHG is NOT a layer in the 16-layer architecture - it's an archival and immutability enforcement procedure.
+
+**When to Use CHG** (rare - \u003c5% of changes):
+- Complete architectural restructuring requiring new BRD/PRD
+- Deprecating entire workflow modules
+- Major scope pivots affecting 5+ downstream artifacts
+- Framework-wide pattern changes
+
+**Why CHG Exists**:
+LLMs are probabilistic - editing complex documents in place can introduce subtle inconsistencies that cascade through the artifact chain. For major changes, creating fresh documents from scratch ensures coherent, bug-free artifacts.
+
+**CHG Workflow**:
+
+**Step 1: Archive Superseded Documents**
+```bash
+# Create CHG directory for this change
+mkdir -p CHG/CHG-01_architecture_pivot/archive/
+
+# Move old documents
+mv BRD/BRD-05_old_architecture/ CHG/CHG-01_architecture_pivot/archive/
+mv PRD/PRD-08_old_product/ CHG/CHG-01_architecture_pivot/archive/
+```
+
+**Step 2: Create CHG Definition Document**
+```markdown
+# CHG-01: Architecture Pivot to Microservices
+
+## Overview
+Superseded monolithic architecture in favor of microservices approach.
+
+## Superseded Artifacts
+- BRD-05_monolithic_architecture (archived)
+- PRD-08_monolithic_product (archived)
+- ADR-15_monolith_design (archived)
+
+## Reason for Change
+Scalability requirements exceeded monolithic architecture capabilities.
+
+## Impact Analysis
+- 12 downstream artifacts require regeneration
+- Estimated effort: 3 weeks
+- All source code must be regenerated
+```
+
+**Step 3: Create NEW Documents from Scratch**
+- Do NOT copy-paste old documents
+- Start from templates
+- Write fresh content aligned with new architecture
+- Use new document IDs (e.g., BRD-25, PRD-32)
+
+**Step 4: Regenerate Entire Downstream Chain**
+1. Create new BRD → PRD → EARS → BDD → ADR → SYS → REQ
+2. Create new SPEC → TASKS → IPLAN
+3. Regenerate all source code
+4. Update all tests
+
+**Files**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) | [CHG_CREATION_RULES.md](./CHG/CHG_CREATION_RULES.md) | [CHG_SCHEMA.yaml](./CHG/CHG_SCHEMA.yaml)
+
 ### Upstream Changes (BRD, PRD, SYS, EARS, REQ)
 
 When upstream documents change:
@@ -1677,7 +1760,7 @@ In code docstrings, include:
 
 ## Traceability
 
-Note: Script name canonicalization — use `scripts/generate_traceability_matrix.py` (singular). A backward-compatible wrapper `scripts/generate_traceability_matrices.py` exists but is deprecated.
+Note: Script name canonicalization — use `scripts/generate_traceability_matrix.py` (singular). A backward-compatible wrapper `scripts/generate_traceability_matrix.py` exists but is deprecated.
 - Requirements: REQ-03, REQ-04
 - Architecture: ADR-33
  - Implementation Plan: IMPL-01_phase1_risk_services

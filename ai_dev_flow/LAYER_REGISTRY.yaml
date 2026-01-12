@@ -1,21 +1,21 @@
 # SDD Framework Layer Registry
 # Single source of truth for all layer definitions
 # Version: 1.0
-# Last Updated: 2025-12-29
+# Last Updated: 2026-01-11
 
-version: "1.0"
+version: "1.1"
 metadata:
   framework: "Specification-Driven Development (SDD)"
-  total_layers: 12
+  total_layers: 16
   additional_artifacts: ["ICON"]
   maintainer: "SDD Framework Team"
 
-# Optional pre-artifact layer (not part of core 12 artifact layers)
+# Optional pre-artifact layer (not part of core 16 artifact layers)
 conceptual_layers:
   - number: 0
     artifact: STRAT
     name: "Strategy"
-    description: "Pre-artifact planning and strategic alignment (optional)"
+    description: "External business strategy documents (market analysis, vision)"
     documented: false
     optional: true
 
@@ -152,6 +152,48 @@ layers:
     optional: false
     description: "Layer 12 - Session-based bash command execution plans"
 
+  - number: 13
+    artifact: CODE
+    name: "Source Code"
+    folder: src/
+    extensions: [.py, .js, .ts, .java, .go, .rb, .php, .cpp, .c, .h]
+    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks, iplan]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN]
+    error_prefix: CODE
+    optional: false
+    description: "Layer 13 - Source code implementation generated from IPLAN/TASKS"
+
+  - number: 14
+    artifact: TESTS
+    name: "Test Suite"
+    folder: tests/
+    extensions: [.py, .js, .ts, .java, .go, .rb, .php, .cpp]
+    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks, iplan, code]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, CODE]
+    error_prefix: TEST
+    optional: false
+    description: "Layer 14 - Unit, integration, and end-to-end test implementations"
+
+  - number: 15
+    artifact: VALIDATION
+    name: "Validation Results"
+    folder: validation/
+    extensions: [.md, .json, .yaml, .xml]
+    required_tags: []  # Consumes all upstream tags, count not strictly enforced
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, CODE, TESTS]
+    error_prefix: VAL
+    optional: false
+    description: "Layer 15 - Production readiness validation and quality gate results"
+
+# Change Management Utilities (NOT layers)
+change_management:
+  artifact: CHG
+  name: "Change Management"
+  folder: CHG/
+  purpose: "Document archival and immutability enforcement"
+  not_a_layer: true
+  description: "Archival mechanism for superseded documents. When requirements change, old documents are archived in CHG/ and NEW documents are created from scratch to prevent LLM probabilistic errors. After archival, entire layer chain must be regenerated."
+
 additional_artifacts:
   - artifact: ICON
     name: "Implementation Contracts"
@@ -172,9 +214,13 @@ layer_groups:
     layers: [5, 6, 7]
     description: "Architecture and detailed requirements"
 
-  implementation:
+  implementation_design:
     layers: [8, 9, 10, 11, 12]
-    description: "Implementation artifacts"
+    description: "Implementation design artifacts"
+  
+  execution:
+    layers: [13, 14, 15]
+    description: "Code execution and validation layers"
 
 id_patterns:
   standard: "^[A-Z]+-\\d{2,}$"

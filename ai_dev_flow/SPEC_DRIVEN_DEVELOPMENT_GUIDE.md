@@ -29,11 +29,34 @@ Development Principles Guide
 > ⚠️ **Token Limit Update (2025-11)**: This guide contains historical 10K token limits.
 > For current token limits (Claude Code: 50K-100K), see [AI_TOOL_OPTIMIZATION_GUIDE.md](./AI_TOOL_OPTIMIZATION_GUIDE.md).
 >
-> Script name canonicalization: matrix generation uses `scripts/generate_traceability_matrix.py`. Historical references to `generate_traceability_matrices.py` refer to the same tool; use the singular script.
+> Script name canonicalization: matrix generation uses `scripts/generate_traceability_matrix.py`. Historical references to `generate_traceability_matrix.py` refer to the same tool; use the singular script.
 
 ## The AI-Driven Specification-Driven Development Workflow
 
 **⚠️ For the complete authoritative workflow diagram, see [index.md](./index.md#traceability-flow).**
+
+### Change Management (CHG) - Document Immutability
+
+⚠️ **Important**: CHG is NOT a layer in the 16-layer architecture - it's a **change management archival procedure**.
+
+**Purpose**: Ensure document immutability by archiving superseded documents when requirements change fundamentally
+
+**When to Use CHG**:
+- Architectural pivots requiring document restructuring
+- Deprecating/replacing existing artifacts due to major scope changes
+- Framework-wide changes affecting multiple layers
+
+**CHG Workflow**:
+1. **Archive old documents** in `CHG/CHG-XX_{slug}/archive/`
+2. **Create CHG record** documenting reason for change
+3. **Create NEW documents from scratch** (never edit in place)
+4. **Regenerate entire downstream chain** and source code
+
+**Why Immutability Matters**: LLMs are probabilistic - editing documents in place can introduce subtle inconsistencies. Creating fresh documents ensures coherent, bug-free artifacts aligned with new requirements.
+
+**Files**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) | [CHG_CREATION_RULES.md](./CHG/CHG_CREATION_RULES.md) | [CHG_SCHEMA.yaml](./CHG/CHG_SCHEMA.yaml)
+
+**Note**: Most projects never use CHG - it's only for major pivots, not routine updates.
 
 ### Workflow Overview
 

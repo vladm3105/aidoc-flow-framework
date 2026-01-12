@@ -226,7 +226,7 @@ mkdir -p docs/IPLAN/IPLAN-01_initial_session
 mkdir -p scripts work_plans
 ```
 
-Note: Traceability matrix generator — use the singular script `scripts/generate_traceability_matrix.py`. The plural `generate_traceability_matrices.py` is a backward-compatible wrapper.
+Note: Traceability matrix generator — use the singular script `scripts/generate_traceability_matrix.py`. The plural `generate_traceability_matrix.py` is a backward-compatible wrapper.
 
 Index Width Policy: See README.md → “Using This Repo” for the `-000` index/utility convention used here.
 

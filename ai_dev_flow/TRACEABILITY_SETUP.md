@@ -368,4 +368,4 @@ def send_metrics():
 ---
 
 **End of Traceability Setup Guide**
-Note: Script name canonicalization — the canonical script is `scripts/generate_traceability_matrix.py`. Any historical references to `generate_traceability_matrices.py` in guides or templates refer to the same tool; use the singular script name.
+Note: Script name canonicalization — the canonical script is `scripts/generate_traceability_matrix.py`. Any historical references to `generate_traceability_matrix.py` in guides or templates refer to the same tool; use the singular script name.
