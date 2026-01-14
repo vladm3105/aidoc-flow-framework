@@ -94,7 +94,7 @@ Business Requirements (PRD) → BDD Scenarios ← Technical Design → Implement
 1. PRD-NN.md (Business Requirements)     ← Foundation documents
 2. EARS-NN.md (Atomic Requirements)      ← Prerequisite - provides WHEN/THEN statements
 3. ADR-NN.md (Architecture Decisions)    ← Optional but helpful context
-4. `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` (BDD Scenarios)        ← Created from steps 1-3
+4. `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` (BDD Scenarios)        ← Created from steps 1-3
 5. SPEC-NN.yaml (Technical Specs)        ← Can start in parallel with BDD
 6. TASKS-NN.md (Implementation Plans)    ← Uses BDD scenarios for validation
 7. Code Implementation                    ← Validates against BDD scenarios
@@ -257,7 +257,7 @@ And cache hit metrics are incremented
 
 ## File Naming Convention (Section-Based, Nested Suite Folder)
 
-Location: `BDD/BDD-NN_{suite_slug}/`
+Location: `04_BDD/BDD-NN_{suite_slug}/`
 
 ```
 BDD-NN.SS_{section_slug}.feature
@@ -272,9 +272,9 @@ Where:
 - Slugs use `lower_snake_case` describing the feature scope
 
 **Examples:**
-- `BDD/BDD-02_knowledge_engine/BDD-02.1_ingest.feature`
-- `BDD/BDD-02_knowledge_engine/BDD-02.3.01_learning_path.feature`
-- `BDD/BDD-02_knowledge_engine/BDD-02.3.00_learning.feature`
+- `04_BDD/BDD-02_knowledge_engine/BDD-02.1_ingest.feature`
+- `04_BDD/BDD-02_knowledge_engine/BDD-02.3.01_learning_path.feature`
+- `04_BDD/BDD-02_knowledge_engine/BDD-02.3.00_learning.feature`
 
 ## Tagging Standards
 
@@ -546,7 +546,7 @@ Scenario: Response within time limits
 
 ## Example BDD Template
 
-See `BDD/BDD-01_example_suite/BDD-01.1_external_api_integration.feature` for a complete example of a well-structured, section-based BDD feature file that follows these conventions.
+See `04_BDD/BDD-01_example_suite/BDD-01.1_external_api_integration.feature` for a complete example of a well-structured, section-based BDD feature file that follows these conventions.
 ## File Size Limits
 
 - Target: 300–500 lines per `.feature` file

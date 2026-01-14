@@ -67,7 +67,7 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 
 The AI Dev Flow organizes documentation through a hierarchical, traceable structure:
 
-> Default Directory Model: All artifact types use nested folders by default — `{TYPE}/{TYPE}-NN_{slug}/` — containing the primary document file(s). BDD uses nested per-suite folders (`BDD/BDD-NN_{slug}/`) due to validator requirements.
+> Default Directory Model: All artifact types use nested folders by default — `NN_{TYPE}/{TYPE}-NN_{slug}/` — containing the primary document file(s). BDD uses nested per-suite folders (`04_BDD/BDD-NN_{slug}/`) due to validator requirements.
 
 ### Change Management (CHG) - Archival Procedure
 
@@ -90,55 +90,55 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Business Layer (Layers 1-3)
 
-- **BRD** (`BRD/`) - Layer 1: Business Requirements Documents defining business objectives and constraints
+- **BRD** (`01_BRD/`) - Layer 1: Business Requirements Documents defining business objectives and constraints
   - Template: [BRD-TEMPLATE.md](./01_BRD/BRD-TEMPLATE.md) | **MVP**: [BRD-MVP-TEMPLATE.md](./01_BRD/BRD-MVP-TEMPLATE.md)
   - Index: [BRD-00_index.md](./01_BRD/BRD-00_index.md)
   - Guidance: [PLATFORM_VS_FEATURE_BRD.md](./PLATFORM_VS_FEATURE_BRD.md)
-- **PRD** (`PRD/`) - Layer 2: Product Requirements Documents translating business needs to product features
+- **PRD** (`02_PRD/`) - Layer 2: Product Requirements Documents translating business needs to product features
   - Index: [PRD-00_index.md](./02_PRD/PRD-00_index.md)
   - Template: [PRD-TEMPLATE.md](./02_PRD/PRD-TEMPLATE.md) | **MVP**: [PRD-MVP-TEMPLATE.md](./02_PRD/PRD-MVP-TEMPLATE.md)
-- **EARS** (`EARS/`) - Layer 3: Event-Action-Response-State (Engineering Requirements)
+- **EARS** (`03_EARS/`) - Layer 3: Event-Action-Response-State (Engineering Requirements)
   - Index: [EARS-00_index.md](./03_EARS/EARS-00_index.md)
   - Template: [EARS-TEMPLATE.md](./03_EARS/EARS-TEMPLATE.md)
 
 ### Testing Layer (Layer 4)
 
-- **BDD** (`BDD/`) - Layer 4: Behavior-Driven Development feature files defining acceptance criteria
-  - Nested: One folder per suite: `BDD/BDD-NN_{slug}/`
-  - Index: `BDD/BDD-00_index.md`
+- **BDD** (`04_BDD/`) - Layer 4: Behavior-Driven Development feature files defining acceptance criteria
+  - Nested: One folder per suite: `04_BDD/BDD-NN_{slug}/`
+  - Index: `04_BDD/BDD-00_index.md`
   - Template: [BDD-TEMPLATE.feature](./04_BDD/BDD-TEMPLATE.feature)
   - Purpose: Executable acceptance tests written before implementation (Test-First approach)
   - Maps to IPLAN scenarios for test-driven development workflow
 
 ### Architecture Layer (Layers 5-6)
 
-- **ADR** (`ADR/`) - Layer 5: Architecture Decision Records documenting key architectural choices
+- **ADR** (`05_ADR/`) - Layer 5: Architecture Decision Records documenting key architectural choices
   - Index: [ADR-00_index.md](./05_ADR/ADR-00_index.md)
   - Template: [ADR-TEMPLATE.md](./05_ADR/ADR-TEMPLATE.md) | **MVP**: [ADR-MVP-TEMPLATE.md](./05_ADR/ADR-MVP-TEMPLATE.md)
   - Purpose: Technical decisions with context, decision, and consequences
-- **SYS** (`SYS/`) - Layer 6: System Requirements Specifications consolidating requirements into system designs
+- **SYS** (`06_SYS/`) - Layer 6: System Requirements Specifications consolidating requirements into system designs
   - Index: [SYS-00_index.md](./06_SYS/SYS-00_index.md)
   - Template: [SYS-TEMPLATE.md](./06_SYS/SYS-TEMPLATE.md) | **MVP**: [SYS-MVP-TEMPLATE.md](./06_SYS/SYS-MVP-TEMPLATE.md)
   - Purpose: System-level functional requirements and quality attributes
 
 ### Requirements Layer (Layer 7)
 
-- **REQ** (`REQ/`) - Layer 7: Atomic, testable requirements with SPEC-readiness scoring
+- **REQ** (`07_REQ/`) - Layer 7: Atomic, testable requirements with SPEC-readiness scoring
   - Index: [REQ-00_index.md](./07_REQ/REQ-00_index.md)
   - Template: [REQ-TEMPLATE.md](./07_REQ/REQ-TEMPLATE.md) | **MVP**: [REQ-MVP-TEMPLATE.md](./07_REQ/REQ-MVP-TEMPLATE.md)
   - Organization: Nested per-document folders (DEFAULT)
-    - Folder: `REQ/REQ-NN_{slug}/`
-    - Primary file (atomic): `REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
-    - Split (optional when large): `REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ/REQ-NN.1_{section}.md`, ...
+    - Folder: `07_REQ/REQ-NN_{slug}/`
+    - Primary file (atomic): `07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
+    - Split (optional when large): `07_REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ-NN.1_{section}.md`, ...
   - Format: 12-section framework with validation rules
 <!-- VALIDATOR:IGNORE-LINKS-START -->
   - Examples:
     - [REQ-01: API Integration Example](./07_REQ/examples/api/REQ-01_api_integration_example.md)
-    - See more in [REQ/examples/](./07_REQ/examples/)
+    - See more in [07_REQ/examples/](./07_REQ/examples/)
 
 ### Project Management Layer (Layer 8 - Optional)
 
-- **IMPL** (`IMPL/`) - Layer 8: Implementation planning documents organizing work into phases
+- **IMPL** (`08_IMPL/`) - Layer 8: Implementation planning documents organizing work into phases
   - Index: [IMPL-00_index.md](./08_IMPL/IMPL-00_index.md)
   - Template: [IMPL-TEMPLATE.md](./08_IMPL/IMPL-TEMPLATE.md)
   - Purpose: Project management (WHO does WHAT, WHEN) - NOT technical specifications
@@ -148,7 +148,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Interface Layer (Layer 9 - Optional)
 
-- **CTR** (`CTR/`) - Layer 9: API Contracts defining component-to-component interfaces
+- **CTR** (`09_CTR/`) - Layer 9: API Contracts defining component-to-component interfaces
   - Index: [CTR-00_index.md](./09_CTR/CTR-00_index.md)
   - Templates: [CTR-TEMPLATE.md](./09_CTR/CTR-TEMPLATE.md), [CTR-TEMPLATE.yaml](./09_CTR/CTR-TEMPLATE.yaml)
   - Dual-file format: `.md` (human-readable context) + `.yaml` (machine-readable schema)
@@ -159,12 +159,12 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Technical Specs (SPEC) (Layer 10)
 
-- **SPEC** (`SPEC/`) - Layer 10: Technical specifications ready for code generation
+- **SPEC** (`10_SPEC/`) - Layer 10: Technical specifications ready for code generation
   - YAML: Monolithic single file per component (codegen source)
   - Markdown: Split narrative using `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` when needed
   - Layout:
-    - Nested (default): `SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml` (+ Markdown sections alongside)
-    - Flat (exception): `SPEC/SPEC-{DOC_NUM}_{slug}.yaml` for small, stable specs
+    - Nested (default): `10_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml` (+ Markdown sections alongside)
+    - Flat (exception): `10_SPEC/SPEC-{DOC_NUM}_{slug}.yaml` for small, stable specs
   - Template: [SPEC-TEMPLATE.yaml](./10_SPEC/SPEC-TEMPLATE.yaml)
   - Purpose: YAML format with classes, methods, algorithms (HOW to build)
   - References CTR contracts when implementing interfaces
@@ -174,7 +174,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Code Generation Layer (Layer 11)
 
-- **TASKS** (`TASKS/`) - Layer 11: Code generation plans with exact TODOs
+- **TASKS** (`11_TASKS/`) - Layer 11: Code generation plans with exact TODOs
   - Index: [TASKS-00_index.md](./11_TASKS/TASKS-00_index.md)
   - Template: [TASKS-TEMPLATE.md](./11_TASKS/TASKS-TEMPLATE.md)
   - Purpose: Step-by-step guide to generate code from YAML SPEC
@@ -190,7 +190,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Session Execution Layer (Layer 12)
 
-- **IPLAN** (`IPLAN/`) - Layer 12: Implementation Work Plans for specific coding sessions
+- **IPLAN** (`12_IPLAN/`) - Layer 12: Implementation Work Plans for specific coding sessions
   - Index: [IPLAN-00_index.md](./12_IPLAN/IPLAN-00_index.md)
   - Template: [IPLAN-TEMPLATE.md](./12_IPLAN/IPLAN-TEMPLATE.md)
   - Purpose: Session-based execution context with executable bash commands
@@ -302,9 +302,9 @@ flowchart TD
 ### Splitting Rules
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
-- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
-- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
+- BDD addendum: [04_BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
+- CTR addendum: [09_CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
+- SPEC addendum: [10_SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only. “Review” and “Prod” are outcomes, not formal layers.

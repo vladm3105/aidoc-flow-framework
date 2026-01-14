@@ -1539,11 +1539,11 @@ All traceability references MUST use markdown links with anchors:
 
 - Use relative paths from current file location
 - Examples:
-- From `REQ/risk/lim/` to `ADR/`: `../../../05_ADR/ADR-33_...md`
-  - From `REQ/risk/lim/` to `CTR/`: `../../../09_CTR/CTR-01_...md`
-  - From `PRD/` to `EARS/`: `../03_EARS/EARS-01_...md`
-  - From `SPEC/` to `REQ/`: `../../07_REQ/.../REQ-03_...md`
-  - From `SPEC/` to `CTR/`: `../../09_CTR/CTR-01_...md`
+- From `07_REQ/risk/lim/` to `05_ADR/`: `../../../05_ADR/ADR-33_...md`
+  - From `07_REQ/risk/lim/` to `09_CTR/`: `../../../09_CTR/CTR-01_...md`
+  - From `02_PRD/` to `03_EARS/`: `../03_EARS/EARS-01_...md`
+  - From `10_SPEC/` to `07_REQ/`: `../../07_REQ/.../REQ-03_...md`
+  - From `10_SPEC/` to `09_CTR/`: `../../09_CTR/CTR-01_...md`
 
 ## Validation Requirements
 

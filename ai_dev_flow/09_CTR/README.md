@@ -30,7 +30,7 @@ API Contracts (CTR) define precise interface specifications between components u
 
 Contracts enable parallel development by allowing providers and consumers to implement independently against the same specification, reducing integration time and defects.
 
-Note: `CTR-TEMPLATE.md`/`.yaml` are reference templates. For real CTRs, keep paired `.md`+`.yaml` files, and when splitting is needed follow `CTR/CTR_SPLITTING_RULES.md` and `../DOCUMENT_SPLITTING_RULES.md`.
+Note: `CTR-TEMPLATE.md`/`.yaml` are reference templates. For real CTRs, keep paired `.md`+`.yaml` files, and when splitting is needed follow `09_CTR/CTR_SPLITTING_RULES.md` and `../DOCUMENT_SPLITTING_RULES.md`.
 
 ## 2. Position in Document Workflow
 
@@ -49,7 +49,7 @@ Note: `CTR-TEMPLATE.md`/`.yaml` are reference templates. For real CTRs, keep pai
 
 ## 3. Dual-File Structure
 
-Each contract consists of TWO synchronized files (see `CTR/CTR_SPLITTING_RULES.md` for CTR-specific split rules and `../DOCUMENT_SPLITTING_RULES.md` for core standards):
+Each contract consists of TWO synchronized files (see `09_CTR/CTR_SPLITTING_RULES.md` for CTR-specific split rules and `../DOCUMENT_SPLITTING_RULES.md` for core standards):
 
 ### 3.1 Markdown File (.md)
 **Purpose**: Human-readable documentation
@@ -168,8 +168,8 @@ Organize contracts in subdirectories by service type for better document managem
 
 #### SPEC Compatibility
 - **Alignment**: Directory structure mirrors SPEC organization
-  - `CTR/agents/CTR-NN` → `SPEC/agents/SPEC-NN`
-  - `CTR/mcp/CTR-NN` → `SPEC/mcp/SPEC-NN`
+  - `09_CTR/agents/CTR-NN` → `10_SPEC/agents/SPEC-NN`
+  - `09_CTR/mcp/CTR-NN` → `10_SPEC/mcp/SPEC-NN`
 - **Traceability**: Enables tracing CTR → SPEC relationships
 - **Navigation**: Consistent paths across contract and implementation docs
 

@@ -271,7 +271,7 @@ class ResponseModel(BaseModel):
 ### 8.3 BDD Scenarios
 
 **Feature**: [Feature name]
-**File**: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature`
+**File**: `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature`
 
 | Scenario | Priority | Status |
 |----------|----------|--------|

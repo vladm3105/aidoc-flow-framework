@@ -635,13 +635,13 @@ BDD scenarios and acceptance tests validating this system.
 | BDD ID | Scenario Title | SYS Requirements Validated | Test Coverage | Relationship |
 |--------|----------------|---------------------------|---------------|--------------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Feature: [Feature name] | Functional requirements 3.x | Scenarios 1-5 | Acceptance test |
+| `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Feature: [Feature name] | Functional requirements 3.x | Scenarios 1-5 | Acceptance test |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1` | Scenario: [Specific scenario] | Specific capability 3.2.1 | Lines 15-45 | Functional validation |
+| `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1` | Scenario: [Specific scenario] | Specific capability 3.2.1 | Lines 15-45 | Functional validation |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` | Feature: [Quality attribute validation] | Performance requirements 4.1 | Performance scenarios | Quality validation |
+| `04_BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` | Feature: [Quality attribute validation] | Performance requirements 4.1 | Performance scenarios | Quality validation |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **BDD Coverage**:
@@ -661,16 +661,16 @@ API contracts and interface agreements for external integration.
 | System Capability (section) | BDD Feature File | Scenario Count | Coverage Status |
 |-----------------------------|-----------------|----------------|-----------------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Core System Behaviors (3.1) | `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | 8 scenarios | ✅ Complete |
+| Core System Behaviors (3.1) | `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | 8 scenarios | ✅ Complete |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Data Processing (3.2) | `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` | 12 scenarios | ✅ Complete |
+| Data Processing (3.2) | `04_BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` | 12 scenarios | ✅ Complete |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Error Handling (3.3) | `BDD/BDD-PPP_{suite}/BDD-PPP.SS_{slug}.feature` | 15 scenarios | ✅ Complete |
+| Error Handling (3.3) | `04_BDD/BDD-PPP_{suite}/BDD-PPP.SS_{slug}.feature` | 15 scenarios | ✅ Complete |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Integration Points (3.4) | `BDD/BDD-QQQ_{suite}/BDD-QQQ.SS_{slug}.feature` | 10 scenarios | 🔄 In Progress |
+| Integration Points (3.4) | `04_BDD/BDD-QQQ_{suite}/BDD-QQQ.SS_{slug}.feature` | 10 scenarios | 🔄 In Progress |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Acceptance Criteria Validation**:
@@ -678,13 +678,13 @@ API contracts and interface agreements for external integration.
 | Acceptance Criterion (section 11) | BDD Validation | Status |
 |-----------------------------------|----------------|--------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Functional Validation Points | `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` Lines 100-250 | ✅ Validated |
+| Functional Validation Points | `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` Lines 100-250 | ✅ Validated |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Quality Attribute Validation Points | `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` Lines 50-120 | ✅ Validated |
+| Quality Attribute Validation Points | `04_BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` Lines 50-120 | ✅ Validated |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Operational Validation Points | `BDD/BDD-PPP_{suite}/BDD-PPP.SS_{slug}.feature` Lines 200-300 | 🔄 Pending |
+| Operational Validation Points | `04_BDD/BDD-PPP_{suite}/BDD-PPP.SS_{slug}.feature` Lines 200-300 | 🔄 Pending |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### 13.4 Code Implementation Paths

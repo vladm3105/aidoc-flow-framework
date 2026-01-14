@@ -41,7 +41,7 @@ The AI Dev Flow framework is domain-agnostic and designed for reuse across any s
 
 ### Step 4: Establish Naming Conventions
 1. **Define ID prefixes**: Choose consistent prefixes (REQ-, ADR-, BDD-, etc.)
-2. **Organize by domain**: Create subdirectories in `REQ/` (e.g., `REQ/auth/`, `REQ/billing/`)
+2. **Organize by domain**: Create subdirectories in `07_REQ/` (e.g., `07_REQ/auth/`, `07_REQ/billing/`)
 3. **Document standards**: Update `ID_NAMING_STANDARDS.md` for your project
 
 ---

@@ -1179,8 +1179,8 @@ await connector.connect("localhost", 4002)
 
 ### 12.1 Internal Documentation
 
-- `TASKS/TASKS-TEMPLATE.md` - TASKS file template with contracts section
-- `TASKS/TASKS-00_IMPLEMENTATION_CONTRACTS_CHECKLIST.md` - Quick reference checklist
+- `11_TASKS/TASKS-TEMPLATE.md` - TASKS file template with contracts section
+- `11_TASKS/TASKS-00_IMPLEMENTATION_CONTRACTS_CHECKLIST.md` - Quick reference checklist
 - `METADATA_TAGGING_GUIDE.md` - Metadata standards
 - `/home/ya/.claude/CLAUDE.md` - Global instructions with contracts strategy
 

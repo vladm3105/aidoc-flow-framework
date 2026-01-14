@@ -73,7 +73,7 @@ Rules for creating Implementation Plans (IPLAN) documents in the SDD framework.
 ### Step 0: Development Plan Strategy (Project Level)
 - **Who**: Architect / AI Assistant
 - **When**: Before Phase 1 Implementation
-- **Action**: Create `docs/DEVELOPMENT_PLAN.md` from template `TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`
+- **Action**: Create `docs/DEVELOPMENT_PLAN.md` from template `11_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`
 - **Content**:
   - **Phase 0: Project Initialization** (Poetry/Env Setup)
   - 7-Phase Implementation Strategy (Foundation -> UI)
@@ -784,7 +784,7 @@ def handle_external(data: Any) -> None:  # Any: third-party API response
 - [BDD_SCENARIO_MAPPING.md](./BDD_SCENARIO_MAPPING.md) - Scenario mapping guide
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Workflow guide
 - [TRACEABILITY.md](../TRACEABILITY.md) - Cumulative tagging hierarchy
-- [TASKS/README.md](../11_TASKS/README.md) - Parent artifact guidance
+- [11_TASKS/README.md](../11_TASKS/README.md) - Parent artifact guidance
 
 ---
 

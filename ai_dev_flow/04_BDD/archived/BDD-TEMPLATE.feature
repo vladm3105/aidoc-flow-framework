@@ -47,7 +47,7 @@
 # 📁 FILE ORGANIZATION: Section-Based Structure (MANDATORY)
 # =============================================================================
 #
-# BDD uses section-based numbering aligned with PRD/BRD standards.
+# BDD uses section-based numbering aligned with 02_PRD/BRD standards.
 # All .feature files use dot notation inside the suite folder: docs/04_BDD/BDD-NN_{slug}/
 #
 # **Three Valid Patterns**:

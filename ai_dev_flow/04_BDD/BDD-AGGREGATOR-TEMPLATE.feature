@@ -76,7 +76,7 @@ Background:
 #
 # =============================================================================
 
-# Document Path: BDD/BDD-NN.SS.00_{slug}.feature
+# Document Path: 04_BDD/BDD-NN.SS.00_{slug}.feature
 # Framework: AI Dev Flow SDD
 # Layer: 4 (BDD - Behavior-Driven Development)
 # Template Version: 1.0

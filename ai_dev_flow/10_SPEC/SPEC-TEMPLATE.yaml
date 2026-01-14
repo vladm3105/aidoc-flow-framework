@@ -15,7 +15,7 @@
 # SPEC-NN: [Component Name]
 # ===================
 #
-# Reference Template — For learning and small specs only. Real SPECs are monolithic per component by default; split only when needed per '../DOCUMENT_SPLITTING_RULES.md' and 'SPEC/SPEC_SPLITTING_RULES.md'.
+# Reference Template — For learning and small specs only. Real SPECs are monolithic per component by default; split only when needed per '../DOCUMENT_SPLITTING_RULES.md' and '10_SPEC/SPEC_SPLITTING_RULES.md'.
 #
 # ⚠️ CRITICAL: Always reference SPEC_DRIVEN_DEVELOPMENT_GUIDE.md as the single source of truth
 #              for workflow steps, artifact definitions, and quality gates.
@@ -1102,9 +1102,9 @@ observability:
 
 verification:
   bdd_scenarios:
-    - "`BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-primary-success-path`"
-    - "`BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-error-handling`"
-    - "`BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-performance-under-load`"
+    - "`04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-primary-success-path`"
+    - "`04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-error-handling`"
+    - "`04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-performance-under-load`"
 
   performance_tests:
     - target_p95_latency_ms: "@threshold: PRD.NN.perf.api.p95_latency"

@@ -16,7 +16,7 @@ custom_fields:
 **Target**: AI coding assistants (see AI_TOOL_OPTIMIZATION_GUIDE.md for tool-specific notes)
 **Status**: Production
 
-> **Note**: The artifact type for contracts is 'CTR', not 'CONTRACTS'. Files are stored in `CTR/` directory using dual-file format (`.md` + `.yaml`).
+> **Note**: The artifact type for contracts is 'CTR', not 'CONTRACTS'. Files are stored in `09_CTR/` directory using dual-file format (`.md` + `.yaml`).
 
 ---
 

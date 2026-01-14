@@ -71,7 +71,7 @@ BDD-02: Knowledge Engine Test Suite
 - [ ] Create Section File Map table stub (will complete in Phase 3)
 - [ ] Create Traceability Matrix stub (will complete in Phase 4)
 
-**Template Source**: `BDD/BDD-SECTION-0-TEMPLATE.md`
+**Template Source**: `04_BDD/BDD-SECTION-0-TEMPLATE.md`
 
 ---
 
@@ -136,7 +136,7 @@ Choose split criteria (in priority order):
 - [ ] Update Background with timezone and preconditions
 - [ ] Author scenarios (see Section File Requirements below)
 
-**Template Source**: `BDD/BDD-SECTION-TEMPLATE.feature`
+**Template Source**: `04_BDD/BDD-SECTION-TEMPLATE.feature`
 
 ### Section File Requirements
 
@@ -190,8 +190,8 @@ If a section file exceeds 500 lines or 12 scenarios:
 - [ ] Create numbered subsections: `.01`, `.02`, `.03`, etc.
 
 **Template Sources**:
-- Subsection: `BDD/BDD-SUBSECTION-TEMPLATE.feature`
-- Aggregator: `BDD/BDD-AGGREGATOR-TEMPLATE.feature`
+- Subsection: `04_BDD/BDD-SUBSECTION-TEMPLATE.feature`
+- Aggregator: `04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
 
 ---
 
@@ -414,6 +414,6 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 
 ---
 
-**Document Path**: `BDD/BDD_GENERATION_CHECKLIST.md`
+**Document Path**: `04_BDD/BDD_GENERATION_CHECKLIST.md`
 **Framework**: AI Dev Flow SDD
 **Last Updated**: 2025-12-27

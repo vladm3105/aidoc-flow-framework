@@ -56,7 +56,7 @@ Use this workflow when:
 1.  **Create New Artifacts**:
     - **Header**: Add "Supersedes: [Link to Archived Doc]" in metadata.
 2.  **Update Project Plan**:
-    - Update `DEVELOPMENT_PLAN.md` (created from `TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`) to link to new artifacts.
+    - Update `DEVELOPMENT_PLAN.md` (created from `11_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`) to link to new artifacts.
 
 ### Step 4: Traceability Repair & Audit
 **What to do**: Re-stitch the documentation web and audit the change.

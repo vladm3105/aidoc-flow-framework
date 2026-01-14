@@ -424,7 +424,7 @@ flowchart TD
 ### 11.1 BDD Scenarios
 [List or reference BDD scenarios that validate this architectural approach:
 
-- Scenario: [Brief description] - File: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#L##`
+- Scenario: [Brief description] - File: `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#L##`
 
 ### 11.2 Specification Impact
 [Changes required in downstream specifications and contracts]
@@ -564,7 +564,7 @@ flowchart TD
 - **EARS Requirements**: [EARS-### - Engineering requirements driving this decision](../03_EARS/EARS-###.md)
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-- **BDD scenarios**: `BDD/BDD-###{suite}/BDD-###.SS_{slug}.feature` - Behavior-driven test scenarios
+- **BDD scenarios**: `04_BDD/BDD-###{suite}/BDD-###.SS_{slug}.feature` - Behavior-driven test scenarios
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### 16.2 Downstream Artifacts

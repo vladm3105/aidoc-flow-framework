@@ -267,10 +267,10 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 - **Action**: Execute automated behavior-driven tests
 - **Scenarios to Validate**:
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-  - `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` - [Scenario description]
+  - `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` - [Scenario description]
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-  - `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` - [Scenario description]
+  - `04_BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` - [Scenario description]
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 - **Success Criteria**: All BDD scenarios pass with expected outcomes
 - **Estimated Duration**: [X hours]
@@ -1063,13 +1063,13 @@ Document the technical specifications, contracts, and tests that guide and valid
 | BDD ID | BDD Feature/Scenario | Task BDD Coverage | Test Status | Relationship |
 |--------|---------------------|------------------|-------------|--------------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Feature: [Feature name] | Scenarios 1-5 validated by this task | Pending/Pass/Fail | Acceptance test |
+| `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Feature: [Feature name] | Scenarios 1-5 validated by this task | Pending/Pass/Fail | Acceptance test |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1` | Scenario: [Specific scenario] | Specific acceptance criterion validated | Pending/Pass/Fail | Functional validation |
+| `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1` | Scenario: [Specific scenario] | Specific acceptance criterion validated | Pending/Pass/Fail | Functional validation |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` | Feature: [Error handling] | Error scenarios validated | Pending/Pass/Fail | Negative testing |
+| `04_BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` | Feature: [Error handling] | Error scenarios validated | Pending/Pass/Fail | Negative testing |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **BDD Coverage Summary**:
@@ -1086,13 +1086,13 @@ Document the technical specifications, contracts, and tests that guide and valid
 | BDD Scenario | Implementation Step | Code Location | Test File | Status |
 |--------------|-------------------|---------------|-----------|--------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1` | Phase 2.2: Core Logic | src/module/component.py:function_name() | tests/acceptance/test_scenario_1.py | ✅ Pass |
+| `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1` | Phase 2.2: Core Logic | src/module/component.py:function_name() | tests/acceptance/test_scenario_1.py | ✅ Pass |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-2` | Phase 2.3: Integration | src/module/api_client.py:call_external() | tests/acceptance/test_scenario_2.py | 🔄 Pending |
+| `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-2` | Phase 2.3: Integration | src/module/api_client.py:call_external() | tests/acceptance/test_scenario_2.py | 🔄 Pending |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature#error-1` | Phase 2.4: Error Handling | src/module/error_handler.py:handle_error() | tests/acceptance/test_errors.py | ✅ Pass |
+| `04_BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature#error-1` | Phase 2.4: Error Handling | src/module/error_handler.py:handle_error() | tests/acceptance/test_errors.py | ✅ Pass |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Acceptance Criteria Validation**:
@@ -1100,10 +1100,10 @@ Document the technical specifications, contracts, and tests that guide and valid
 | Acceptance Criterion (from REQ-NN) | BDD Validation | Implementation Evidence | Status |
 |------------------------------------|----------------|------------------------|--------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Primary Functional Criteria #1 | `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` Lines 20-45 | src/module/component.py:120-145 | ✅ Validated |
+| Primary Functional Criteria #1 | `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` Lines 20-45 | src/module/component.py:120-145 | ✅ Validated |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| Error and Edge Case #1 | `BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` Lines 100-120 | src/module/error_handler.py:50-75 | ✅ Validated |
+| Error and Edge Case #1 | `04_BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature` Lines 100-120 | src/module/error_handler.py:50-75 | ✅ Validated |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 | Quality and Constraint #1 | Performance test results | tests/performance/load_test.py | 🔄 Pending |
 

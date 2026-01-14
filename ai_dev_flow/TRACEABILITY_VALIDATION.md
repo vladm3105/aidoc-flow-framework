@@ -133,8 +133,8 @@ validate_quality_gates() {
             04_BDD/BDD-*/BDD-*.feature) python scripts/validate_bdd.py "$file" ;;
             05_ADR/*.md) python scripts/validate_adr.py "$file" ;;
             06_SYS/*.md) python scripts/validate_sys.py "$file" ;;
-            07_REQ/**/*.md|REQ/*.md) ./scripts/validate_req_template.sh "$file" ;;
-            10_SPEC/*.yaml|SPEC/**/*.yaml) python scripts/validate_spec.py "$file" ;;
+            07_REQ/**/*.md|07_REQ/*.md) ./scripts/validate_req_template.sh "$file" ;;
+            10_SPEC/*.yaml|10_SPEC/**/*.yaml) python scripts/validate_spec.py "$file" ;;
             11_TASKS/*.md) ./scripts/validate_tasks.sh "$file" ;;
             ICON/*.md) ./scripts/validate_icon.sh "$file" ;;
             12_IPLAN/*.md) ./scripts/validate_iplan.sh "$file" ;;

@@ -35,8 +35,8 @@ Purpose: Extend the core splitting rules for SPEC artifacts. SPEC YAML is the si
 - Index (recommended when split): `SPEC-{DOC_NUM}.0_index.md` from `SPEC-SECTION-0-TEMPLATE.md`.
 - Section files: `SPEC-{DOC_NUM}.{S}_{slug}.md` (S starts at 1 and increments contiguously).
 - YAML file path (monolithic): keep as either nested default or flat exception:
-  - Nested default: `SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml`
-  - Flat exception: `SPEC/SPEC-{DOC_NUM}_{slug}.yaml` (for small, stable specs)
+  - Nested default: `10_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml`
+  - Flat exception: `10_SPEC/SPEC-{DOC_NUM}_{slug}.yaml` (for small, stable specs)
 
 ## Cross‑References
 

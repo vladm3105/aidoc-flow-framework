@@ -760,7 +760,7 @@ pytest --cov --cov-fail-under=@threshold: PRD.NN.quality.test.unit_coverage
 - [SYS-NN](../06_SYS/[path]/SYS-NN.md) - System-level requirements
 
 **BDD Scenarios**:
-- `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` - Behavioral tests to satisfy
+- `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` - Behavioral tests to satisfy
 
 **EARS Requirements**:
 - [EARS-NN](../03_EARS/[path]/EARS-NN.md) - Event-action-response specifications

@@ -236,8 +236,8 @@ This feature must comply with all Platform BRD-01 mandatory technology condition
 
 **See Also**:
 - [BRD-TEMPLATE.md](./01_BRD/BRD-TEMPLATE.md) - Standard template for both types
-- [BRD/README.md](./01_BRD/README.md) - BRD documentation guidelines
-- [ADR/README.md](./05_ADR/README.md) - Architecture decision record creation
+- [01_BRD/README.md](./01_BRD/README.md) - BRD documentation guidelines
+- [05_ADR/README.md](./05_ADR/README.md) - Architecture decision record creation
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 - **Reference Implementation**: [BRD-01](../docs/01_BRD/BRD-01_platform_architecture_technology_stack.md) - Gold standard Platform BRD with sections 3.6 and 3.7 fully populated
 <!-- VALIDATOR:IGNORE-LINKS-END -->

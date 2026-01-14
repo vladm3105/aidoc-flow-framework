@@ -28,17 +28,18 @@ Purpose
 
 ### ✅ Apply ID_NAMING_STANDARDS To:
 - Documentation files in `docs/` directories:
-  - `BRD/` - Business Requirements Documents
-  - `PRD/` - Product Requirements Documents
-  - `REQ/` - Requirements
-  - `ADR/` - Architecture Decision Records
-  - `SPEC/` - Technical Specifications (YAML)
-  - `CTR/` - API Contracts (CTR)
-  - `IMPL/` - Implementation Plans
-  - `TASKS/` - AI Task Lists
-  - `BDD/` - Feature files (`.feature` format only)
-  - `EARS/` - EARS Requirements
-  - `SYS/` - System Requirements
+  - `01_BRD/` - Business Requirements Documents
+  - `02_PRD/` - Product Requirements Documents
+  - `03_EARS/` - EARS Requirements
+  - `04_BDD/` - Feature files (`.feature` format only)
+  - `05_ADR/` - Architecture Decision Records
+  - `06_SYS/` - System Requirements
+  - `07_REQ/` - Requirements
+  - `08_IMPL/` - Implementation Plans
+  - `09_CTR/` - API Contracts (CTR)
+  - `10_SPEC/` - Technical Specifications (YAML)
+  - `11_TASKS/` - AI Task Lists
+  - `12_IPLAN/` - Implementation Plans
   - `REF/` - Reference Documents (supplementary, non-workflow documentation)
 
 ### ❌ Do NOT Apply ID_NAMING_STANDARDS To:
@@ -128,13 +129,13 @@ Scope & Authority
 - Applies to: PRD, SYS, REQ, ADR, BDD, SPEC, EARS, CTR, IMPL, AI-TASKS in this example.
 - One document per file.
 - Filenames use sequential numeric prefixes for ordering; the full document IDs live in the H1 headings and tags.
-- Categories are expressed by folder paths (e.g., `REQ/api/av`, `REQ/risk/lim`).
+- Categories are expressed by folder paths (e.g., `07_REQ/api/av`, `07_REQ/risk/lim`).
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 - All cross-references use markdown link format: `[ID](relative/path.md#ANCHOR)`.
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 - **Exception**: CTR (API Contracts) uses dual-file format: both .md and .yaml files required per contract.
 
-Note on paths: Examples may show a top-level `docs/` prefix; in this ai_dev_flow directory, type folders live at the ai_dev_flow root (e.g., `BRD/`, `PRD/`, `ADR/`). Adjust relative links accordingly.
+Note on paths: Examples may show a top-level `docs/` prefix; in this ai_dev_flow directory, type folders live at the ai_dev_flow root (e.g., `01_BRD/`, `02_PRD/`, `05_ADR/`). Adjust relative links accordingly.
 
 ## General Utility Documents (`{DOC_TYPE}-00_*`)
 
@@ -180,7 +181,7 @@ Format
 
 ### Type-Specific Exceptions
 
-- **BDD**: Uses nested per-suite folders with section-based `.feature` files at `BDD/BDD-DOC_NUM_{slug}/`.
+- **BDD**: Uses nested per-suite folders with section-based `.feature` files at `04_BDD/BDD-DOC_NUM_{slug}/`.
 - **CTR**: Dual-file format (both `.md` and `.yaml`) stored together; use nested folder for multi-file contracts.
 
 
@@ -237,9 +238,9 @@ Universal Numbering Pattern (All Document Types)
 Document ID Standards (ai_dev_flow)
 - Requirements (REQ)
   - H1 ID: `REQ-DOC_NUM` (e.g., `# REQ-01: [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] Integration`). Do not use category-coded IDs like `REQ-API-AV-01`.
-  - Directory Structure (DEFAULT): Nested per-document folders: `REQ/REQ-DOC_NUM_{slug}/`
-  - Primary File (atomic): `REQ/REQ-DOC_NUM_{slug}/REQ-DOC_NUM_{slug}.md`
-  - Split (optional when large): `REQ/REQ-DOC_NUM_{slug}/REQ-DOC_NUM.0_index.md`, `REQ/REQ-DOC_NUM.1_{section}.md`, ...
+  - Directory Structure (DEFAULT): Nested per-document folders: `07_REQ/REQ-DOC_NUM_{slug}/`
+  - Primary File (atomic): `07_REQ/REQ-DOC_NUM_{slug}/REQ-DOC_NUM_{slug}.md`
+  - Split (optional when large): `07_REQ/REQ-DOC_NUM_{slug}/REQ-DOC_NUM.0_index.md`, `07_REQ/REQ-DOC_NUM.1_{section}.md`, ...
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - Notes: Legacy category folders are not used in new projects. Keep categorization in metadata/tags, not paths.
 - ADRs
@@ -270,21 +271,21 @@ Document ID Standards (ai_dev_flow)
   **Three Valid Patterns**:
 
   1. **Section-Only Format** (primary pattern):
-     - Filename: `BDD/BDD-DOC_NUM.SECTION_{slug}.feature`
+     - Filename: `04_BDD/BDD-DOC_NUM.SECTION_{slug}.feature`
      - Pattern: `^BDD-\d{2,}\.\d+_[a-z0-9_]+\.feature$`
-     - Example: `BDD/BDD-02_knowledge_engine/BDD-02.14_query_result_filtering.feature`
+     - Example: `04_BDD/BDD-02_knowledge_engine/BDD-02.14_query_result_filtering.feature`
      - Use when: Standard section file (≤500 lines, ≤12 scenarios)
 
   2. **Subsection Format** (when section >500 lines):
-     - Filename: `BDD/BDD-DOC_NUM.SECTION.SUBSECTION_{slug}.feature`
+     - Filename: `04_BDD/BDD-DOC_NUM.SECTION.SUBSECTION_{slug}.feature`
      - Pattern: `^BDD-\d{2,}\.\d+\.\d{2}_[a-z0-9_]+\.feature$`
-     - Example: `BDD/BDD-02_knowledge_engine/BDD-02.24.01_quality_performance.feature`
+     - Example: `04_BDD/BDD-02_knowledge_engine/BDD-02.24.01_quality_performance.feature`
      - Use when: Section requires splitting (each subsection ≤500 lines)
 
   3. **Aggregator Format** (optional redirect stub):
-     - Filename: `BDD/BDD-DOC_NUM.SECTION.00_{slug}.feature`
+     - Filename: `04_BDD/BDD-DOC_NUM.SECTION.00_{slug}.feature`
      - Pattern: `^BDD-\d{2,}\.\d+\.00_[a-z0-9_]+\.feature$`
-     - Example: `BDD/BDD-02_knowledge_engine/BDD-02.12.00_query_graph_traversal.feature`
+     - Example: `04_BDD/BDD-02_knowledge_engine/BDD-02.12.00_query_graph_traversal.feature`
      - Use when: Organizing multiple subsections under one section
      - Requirements: `@redirect` tag, 0 scenarios, references to subsections
 
@@ -295,7 +296,7 @@ Document ID Standards (ai_dev_flow)
   - `.SS.00`: Aggregator/redirect stub (e.g., `BDD-02.2.00_query.feature`)
 
   **File Organization**:
-  - Nested folder per suite: `BDD/BDD-DOC_NUM_{slug}/`
+  - Nested folder per suite: `04_BDD/BDD-DOC_NUM_{slug}/`
   - All `.feature` files and the index live inside the suite folder
   - Each BDD suite MUST have index file: `BDD-DOC_NUM.0_index.md`
   - Optional companion docs: `BDD-DOC_NUM_README.md`, `BDD-DOC_NUM_TRACEABILITY.md` (inside the suite folder)
@@ -330,12 +331,12 @@ Document ID Standards (ai_dev_flow)
     - `@prd:PRD.NN.EE.SS` (upstream PRD element)
     - `@ears:EARS.NN.SS.RR` (upstream EARS requirement)
   - Tags appear before `Scenario:` using valid relative paths + anchors
-  - Index: Each suite MUST have `BDD/BDD-DOC_NUM.0_index.md` listing all sections
+  - Index: Each suite MUST have `04_BDD/BDD-DOC_NUM.0_index.md` listing all sections
   - Reference: `BDD_SPLITTING_RULES.md` for section-based structure rules
 - Technical Specifications (SPEC)
   - YAML `id:` uses lowercase snake_case; pattern: `^[a-z][a-z0-9_]*[a-z0-9]$`.
-  - Directory: `SPEC/SPEC-DOC_NUM_{slug}/`
-  - Filename: `SPEC/SPEC-DOC_NUM_{slug}/SPEC-DOC_NUM_{slug}.yaml`
+  - Directory: `10_SPEC/SPEC-DOC_NUM_{slug}/`
+  - Filename: `10_SPEC/SPEC-DOC_NUM_{slug}/SPEC-DOC_NUM_{slug}.yaml`
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - The `id:` may differ from the filename; tags and prose should use the `id:` as the human-readable spec name.
   - Include traceability fields with markdown links: `requirements_source`, `architecture`, `verification`.
@@ -343,18 +344,18 @@ Document ID Standards (ai_dev_flow)
 - API Contracts (CTR)
   - H1 ID: `CTR-DOC_NUM` (e.g., `# CTR-01: resource Risk Validation Contract`).
   - Filename (Dual Format): `CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml` (both required)
-  - Organization: Optional subdirectories by service type: `CTR/{agents,mcp,infra}/CTR-DOC_NUM_{slug}.{md,yaml}`
+  - Organization: Optional subdirectories by service type: `09_CTR/{agents,mcp,infra}/CTR-DOC_NUM_{slug}.{md,yaml}`
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - YAML `contract_id:` uses lowercase_snake_case (e.g., `contract_id: position_risk_validation`)
   - Notes: Both .md and .yaml must exist for each CTR-DOC_NUM; slugs must match exactly. Use Section Files when contract documentation exceeds 50KB.
 - Implementation Plans (IMPL)
   - H1 ID: `IMPL-DOC_NUM` (e.g., `# IMPL-01: resource management System Implementation`)
-  - Filename: `IMPL/IMPL-DOC_NUM_{slug}.md` (e.g., `IMPL/IMPL-01_risk_management_system.md`)
+  - Filename: `08_IMPL/IMPL-DOC_NUM_{slug}.md` (e.g., `08_IMPL/IMPL-01_risk_management_system.md`)
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - Notes: Project management documents (WHO/WHEN), not technical specifications (HOW). Lists deliverables: CTR, SPEC, TASKS to be created. Use Section Files when document exceeds 50KB.
 - AI Tasks (TASKS)
   - H1 ID: `TASKS-DOC_NUM` (e.g., `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
-  - Filename: `TASKS/TASKS-DOC_NUM_{slug}.md` with a tasks index at `TASKS/TASKS-00_index.md`.
+  - Filename: `11_TASKS/TASKS-DOC_NUM_{slug}.md` with a tasks index at `11_TASKS/TASKS-00_index.md`.
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - Notes: SPEC implementation plans with exact TODOs for code generation. Each TASKS corresponds to one SPEC. Use Section Files when document exceeds 50KB.
   - Allocation: reserve next number, do not reuse; keep slugs stable.
@@ -456,12 +457,12 @@ PRD, SYS, and EARS Document Types
     - Section files: `docs/02_PRD/PRD-01_user_authentication/PRD-01.0_user_authentication_index.md`
 - System Architecture Documents (SYS)
   - H1 ID: `SYS-DOC_NUM` (e.g., `# SYS-03: resource Risk Limits`)
-  - Filename: `SYS/SYS-DOC_NUM_{slug}.md`
+  - Filename: `06_SYS/SYS-DOC_NUM_{slug}.md`
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - Notes: Use Section Files (`SYS-DOC_NUM.S_{slug}.md`) when document exceeds 50KB.
 - EARS Requirements (EARS)
   - H1 ID: `EARS-DOC_NUM` (e.g., `# EARS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
-  - Filename: `EARS/EARS-DOC_NUM_{slug}.md`
+  - Filename: `03_EARS/EARS-DOC_NUM_{slug}.md`
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - Notes: Use Section Files (`EARS-DOC_NUM.S_{slug}.md`) when document exceeds 50KB.
 
@@ -472,23 +473,23 @@ File Organization Rules
 - For large documents (>50KB), use Section Files: `TYPE-DOC_NUM.S_{slug}.md`
 - Structure (this example):
   - **Nested Folder Types (BRD, PRD, ADR)** - section ALWAYS required:
-    - **Shortened pattern** (PREFERRED): `BRD/BRD-DOC_NUM_{slug}/BRD-DOC_NUM.S_{section_type}.md`
-      - Example: `BRD/BRD-01_platform_architecture/BRD-01.0_index.md`
-    - **Full pattern** (backward compatible): `BRD/BRD-DOC_NUM_{slug}/BRD-DOC_NUM.S_{slug}_{section_type}.md`
-      - Example: `BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md`
+    - **Shortened pattern** (PREFERRED): `01_BRD/BRD-DOC_NUM_{slug}/BRD-DOC_NUM.S_{section_type}.md`
+      - Example: `01_BRD/BRD-01_platform_architecture/BRD-01.0_index.md`
+    - **Full pattern** (backward compatible): `01_BRD/BRD-DOC_NUM_{slug}/BRD-DOC_NUM.S_{slug}_{section_type}.md`
+      - Example: `01_BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md`
     - Same patterns apply to PRD and ADR
     - **Folder contains descriptive slug** - filenames can omit it since context is in path
     - **Metadata field `descriptive_slug`** captures folder's descriptive name for tools
   - **Flat Types** - section optional:
-    - `REQ/REQ-DOC_NUM_{slug}/REQ-DOC_NUM_{slug}.md`
-    - `BDD/BDD-DOC_NUM_{suite}/BDD-DOC_NUM.SECTION_{slug}.feature`
-    - `SPEC/{type}/SPEC-DOC_NUM_{slug}.yaml`
-    - `CTR/CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml` (optional subdirs: `CTR/{agents,mcp,infra}/`)
-    - `IMPL/IMPL-DOC_NUM_{slug}.md`
-    - `TASKS/TASKS-DOC_NUM_{slug}.md`
-    - `IPLAN/IPLAN-DOC_NUM_{slug}.md`
-    - `SYS/SYS-DOC_NUM_{slug}.md`
-    - `EARS/EARS-DOC_NUM_{slug}.md`
+    - `07_REQ/REQ-DOC_NUM_{slug}/REQ-DOC_NUM_{slug}.md`
+    - `04_BDD/BDD-DOC_NUM_{suite}/BDD-DOC_NUM.SECTION_{slug}.feature`
+    - `10_SPEC/{type}/SPEC-DOC_NUM_{slug}.yaml`
+    - `09_CTR/CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml` (optional subdirs: `09_CTR/{agents,mcp,infra}/`)
+    - `08_IMPL/IMPL-DOC_NUM_{slug}.md`
+    - `11_TASKS/TASKS-DOC_NUM_{slug}.md`
+    - `12_IPLAN/IPLAN-DOC_NUM_{slug}.md`
+    - `06_SYS/SYS-DOC_NUM_{slug}.md`
+    - `03_EARS/EARS-DOC_NUM_{slug}.md`
 
 ## Section-Based File Splitting (Document Chunking)
 
@@ -931,16 +932,16 @@ Each document type has dedicated section templates providing type-specific metad
 
 | Type | Layer | Index Template | Content Template |
 |------|-------|----------------|------------------|
-| BRD | 1 | `BRD/BRD-SECTION-0-TEMPLATE.md` | `BRD/BRD-SECTION-TEMPLATE.md` |
-| PRD | 2 | `PRD/PRD-SECTION-0-TEMPLATE.md` | `PRD/PRD-SECTION-TEMPLATE.md` |
-| EARS | 3 | `EARS/EARS-SECTION-0-TEMPLATE.md` | `EARS/EARS-SECTION-TEMPLATE.md` |
-| BDD | 4 | `BDD/BDD-SECTION-0-TEMPLATE.md` | `BDD/BDD-SECTION-TEMPLATE.md` |
-| ADR | 5 | `ADR/ADR-SECTION-0-TEMPLATE.md` | `ADR/ADR-SECTION-TEMPLATE.md` |
-| SYS | 6 | `SYS/SYS-SECTION-0-TEMPLATE.md` | `SYS/SYS-SECTION-TEMPLATE.md` |
-| REQ | 7 | `REQ/REQ-SECTION-0-TEMPLATE.md` | `REQ/REQ-SECTION-TEMPLATE.md` |
-| IMPL | 8 | `IMPL/IMPL-SECTION-0-TEMPLATE.md` | `IMPL/IMPL-SECTION-TEMPLATE.md` |
-| CTR | 9 | `CTR/CTR-SECTION-0-TEMPLATE.md` | `CTR/CTR-SECTION-TEMPLATE.md` |
-| SPEC | 10 | `SPEC/SPEC-SECTION-0-TEMPLATE.md` | `SPEC/SPEC-SECTION-TEMPLATE.md` |
+| BRD | 1 | `01_BRD/BRD-SECTION-0-TEMPLATE.md` | `01_BRD/BRD-SECTION-TEMPLATE.md` |
+| PRD | 2 | `02_PRD/PRD-SECTION-0-TEMPLATE.md` | `02_PRD/PRD-SECTION-TEMPLATE.md` |
+| EARS | 3 | `03_EARS/EARS-SECTION-0-TEMPLATE.md` | `03_EARS/EARS-SECTION-TEMPLATE.md` |
+| BDD | 4 | `04_BDD/BDD-SECTION-0-TEMPLATE.md` | `04_BDD/BDD-SECTION-TEMPLATE.md` |
+| ADR | 5 | `05_ADR/ADR-SECTION-0-TEMPLATE.md` | `05_ADR/ADR-SECTION-TEMPLATE.md` |
+| SYS | 6 | `06_SYS/SYS-SECTION-0-TEMPLATE.md` | `06_SYS/SYS-SECTION-TEMPLATE.md` |
+| REQ | 7 | `07_REQ/REQ-SECTION-0-TEMPLATE.md` | `07_REQ/REQ-SECTION-TEMPLATE.md` |
+| IMPL | 8 | `08_IMPL/IMPL-SECTION-0-TEMPLATE.md` | `08_IMPL/IMPL-SECTION-TEMPLATE.md` |
+| CTR | 9 | `09_CTR/CTR-SECTION-0-TEMPLATE.md` | `09_CTR/CTR-SECTION-TEMPLATE.md` |
+| SPEC | 10 | `10_SPEC/SPEC-SECTION-0-TEMPLATE.md` | `10_SPEC/SPEC-SECTION-TEMPLATE.md` |
 
 **Types NOT requiring section templates**: TASKS, IPLAN, ICON (typically remain under 25KB)
 
@@ -967,7 +968,7 @@ Cross-Reference Link Format (MANDATORY)
   - BDD in SPEC verification:
     - `verification:
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-      - BDD: "`BDD/BDD-DOC_NUM_{suite}/BDD-DOC_NUM.SECTION_{slug}.feature(:LNN)`"`
+      - BDD: "`04_BDD/BDD-DOC_NUM_{suite}/BDD-DOC_NUM.SECTION_{slug}.feature(:LNN)`"`
 <!-- VALIDATOR:IGNORE-LINKS-END -->
   - BRD in BRD:
     - `[BRD-DOC_NUM](BRD-DOC_NUM_{slug}.md)` (same directory)
@@ -1039,18 +1040,18 @@ Validation Rules & Aids
 Examples (ai_dev_flow) - Atomic Documents (DOC_NUM)
 - **Nested Folder Types (monolithic option, still in nested folder)**:
   - BRD: `docs/01_BRD/BRD-01_foundation/BRD-01.0_foundation_overview.md` (H1: `# BRD-01.0: Foundation & Overview`)
-  - PRD: `PRD/PRD-03_risk_limits/PRD-03.0_risk_limits_overview.md` (H1: `# PRD-03.0: resource Risk Limits`)
-  - ADR: `ADR/ADR-33_risk_enforcement/ADR-33.0_risk_enforcement_architecture.md` (H1: `# ADR-33.0: Risk Limit Enforcement Architecture`)
+  - PRD: `02_PRD/PRD-03_risk_limits/PRD-03.0_risk_limits_overview.md` (H1: `# PRD-03.0: resource Risk Limits`)
+  - ADR: `05_ADR/ADR-33_risk_enforcement/ADR-33.0_risk_enforcement_architecture.md` (H1: `# ADR-33.0: Risk Limit Enforcement Architecture`)
 - **Flat Types**:
-  - SYS: `SYS/SYS-03_position_risk_limits.md` (H1: `# SYS-03: resource Risk Limits`)
-  - EARS: `EARS/EARS-03_resource_limit_enforcement.md` (H1: `# EARS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
-  - REQ: `REQ/risk/lim/REQ-03_resource_limit_enforcement.md` (H1: `# REQ-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
-  - CTR: `CTR/CTR-01_position_risk_validation.md` + `CTR-01_position_risk_validation.yaml` (H1: `# CTR-01: resource Risk Validation Contract`, YAML: `contract_id: position_risk_validation`)
-  - BDD: `BDD/BDD-03_risk_limits_requirements/BDD-03.1_risk_limits_requirements.feature`
-  - SPEC: `SPEC/SPEC-03_resource_limit_service.yaml` (id: `resource_limit_service`)
-  - IMPL: `IMPL/IMPL-01_risk_management_system.md` (H1: `# IMPL-01: resource management System Implementation`)
-  - TASKS: `TASKS/TASKS-03_resource_limit_service.md` (H1: `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
-  - IPLAN: `IPLAN/IPLAN-01_database_migration_20251113_143022.md` (H1: `# IPLAN-01: Database Migration Plan`)
+  - SYS: `06_SYS/SYS-03_position_risk_limits.md` (H1: `# SYS-03: resource Risk Limits`)
+  - EARS: `03_EARS/EARS-03_resource_limit_enforcement.md` (H1: `# EARS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
+  - REQ: `07_REQ/risk/lim/REQ-03_resource_limit_enforcement.md` (H1: `# REQ-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
+  - CTR: `09_CTR/CTR-01_position_risk_validation.md` + `CTR-01_position_risk_validation.yaml` (H1: `# CTR-01: resource Risk Validation Contract`, YAML: `contract_id: position_risk_validation`)
+  - BDD: `04_BDD/BDD-03_risk_limits_requirements/BDD-03.1_risk_limits_requirements.feature`
+  - SPEC: `10_SPEC/SPEC-03_resource_limit_service.yaml` (id: `resource_limit_service`)
+  - IMPL: `08_IMPL/IMPL-01_risk_management_system.md` (H1: `# IMPL-01: resource management System Implementation`)
+  - TASKS: `11_TASKS/TASKS-03_resource_limit_service.md` (H1: `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
+  - IPLAN: `12_IPLAN/IPLAN-01_database_migration_20251113_143022.md` (H1: `# IPLAN-01: Database Migration Plan`)
 
 Examples (ai_dev_flow) - Section Files (DOC_NUM.S) - Nested Folder Structure
 - Split BRD document (150KB original → 7 sections):

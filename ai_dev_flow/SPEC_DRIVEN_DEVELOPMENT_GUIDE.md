@@ -19,9 +19,9 @@ Development Principles Guide
 ### Splitting Rules
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
-- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
-- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
+- BDD addendum: [04_BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
+- CTR addendum: [09_CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
+- SPEC addendum: [10_SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
 > MVP Mode: For MVP workflows, use single flat files and ignore splitting rules and references to `DOCUMENT_SPLITTING_RULES.md`.
@@ -193,7 +193,7 @@ graph LR
 - BRD template optimized to ~21K tokens through modular appendices and content extraction
 - Teaching materials (FR examples, content exclusion rules) moved to standalone reference guides
 - User stories, user roles, and product appendices relocated to PRD for proper layer separation
-- See [BRD/FR_EXAMPLES_GUIDE.md](./01_BRD/FR_EXAMPLES_GUIDE.md) for functional requirement examples
+- See [01_BRD/FR_EXAMPLES_GUIDE.md](./01_BRD/FR_EXAMPLES_GUIDE.md) for functional requirement examples
 
 See [index.md](./index.md#traceability-flow) for additional workflow visualizations and [TRACEABILITY.md](./TRACEABILITY.md) for complete traceability guidelines.
 
@@ -542,7 +542,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### Atomic Requirements (REQ)
 - **Purpose**: Break complex requirements into single, testable statements
-- **File Format**: `REQ/{domain}/{subdomain}/REQ-NN_descriptive_title.md`
+- **File Format**: `07_REQ/{domain}/{subdomain}/REQ-NN_descriptive_title.md`
 - **Structure**:
   - Description: Precise SHALL statement defining one behavior
   - Acceptance Criteria: Measurable validation conditions
@@ -554,7 +554,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### API Contracts (CTR)
 - **Purpose**: Formal interface specifications for component-to-component communication
-- **File Format (Dual)**: `CTR/CTR-NN_descriptive_slug.md` + `CTR-NN_descriptive_slug.yaml`
+- **File Format (Dual)**: `09_CTR/CTR-NN_descriptive_slug.md` + `CTR-NN_descriptive_slug.yaml`
 - **When to Create**: When REQ specifies interface requirements between components/services
 - **Structure**:
   - Markdown (.md): Human-readable context, requirements satisfied, quality attributes, versioning, traceability
@@ -584,7 +584,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### Behavior-Driven Development (BDD)
 - **Purpose**: Executable specifications written in natural language
-- **Location**: `BDD/BDD-NN_{suite_slug}/`
+- **Location**: `04_BDD/BDD-NN_{suite_slug}/`
 - **File Formats**:
   - Section: `BDD-NN.SS_{section_slug}.feature`
   - Subsection: `BDD-NN.SS.mm_{subsection_slug}.feature`
@@ -600,7 +600,7 @@ This AI Agent BRD depends on the following Platform BRDs:
 
 ### Technical Specifications (SPEC)
 - **Purpose**: Machine-readable technical blueprints for implementation
-- **File Format**: `SPEC/{domain}/SPEC-NN_{component_name}.yaml`
+- **File Format**: `10_SPEC/{domain}/SPEC-NN_{component_name}.yaml`
 - **Core sections**:
   - Interface definitions (functions, classes, schemas)
   - Behavioral specifications (states, error handling, circuit breakers)
@@ -1199,7 +1199,7 @@ def test_validate_resource_limit_within_threshold():
   - Verification Methods: BDD scenarios, unit tests, integration tests, security tests
   - Traceability: Upstream sources (01_BRD/02_PRD/06_SYS/EARS) and downstream artifacts (05_ADR/10_SPEC/Code)
   - Related ADRs: Architecture decisions implementing the requirement
-- **Organization**: Hierarchical by functional domains (`REQ/{domain}/{subdomain}/`)
+- **Organization**: Hierarchical by functional domains (`07_REQ/{domain}/{subdomain}/`)
 - **Guidelines**:
   - Atomic principle (one requirement per file)
   - Include error and edge cases
@@ -1765,7 +1765,7 @@ grep -r "@icon-role: consumer" docs/11_TASKS/
 - PRD: [PRD-NN](./02_PRD/PRD-NN_{slug}.md)
 - SYS: [SYS-NN](./06_SYS/SYS-NN_{slug}.md)
 - EARS: [EARS-NN](./03_EARS/EARS-NN_{slug}.md)
-- BDD: `BDD/BDD-NN_{suite}/BDD-NN.SS_{section}.feature`
+- BDD: `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{section}.feature`
 - ADR: [ADR-NN](./05_ADR/ADR-NN_{slug}.md#ADR-NN)
 - **REQ V2**: [REQ-NN](./07_REQ/{category}/{subcategory}/REQ-NN_{slug}.md#REQ-NN) ← Contains complete interface/schema/error/config specifications
 - CTR: [CTR-NN](./09_CTR/CTR-NN_{slug}.md#CTR-NN) + [CTR-NN.yaml](./09_CTR/CTR-NN_{slug}.yaml) ← Contract for service interface
@@ -1887,17 +1887,17 @@ Each document type has its own dedicated traceability matrix template:
 
 | Document Type | Template Location | Matrix File | MANDATORY |
 |---------------|------------------|-------------|-----------|
-| **BRD** | `BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `BRD/BRD-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **PRD** | `PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `PRD/PRD-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **EARS** | `EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `EARS/EARS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **BDD** | `BDD/BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `BDD/BDD-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **ADR** | `ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `ADR/ADR-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **SYS** | `SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `SYS/SYS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **REQ** | `REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `REQ/REQ-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **IMPL** | `IMPL/IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `IMPL/IMPL-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **CTR** | `CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `CTR/CTR-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **SPEC** | `SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `SPEC/SPEC-00_TRACEABILITY_MATRIX.md` | ✅ YES |
-| **TASKS** | `TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `TASKS/TASKS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **BRD** | `01_BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `01_BRD/BRD-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **PRD** | `02_PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `02_PRD/PRD-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **EARS** | `03_EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `03_EARS/EARS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **BDD** | `04_BDD/BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `04_BDD/BDD-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **ADR** | `05_ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `05_ADR/ADR-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **SYS** | `06_SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `06_SYS/SYS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **REQ** | `07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `07_REQ/REQ-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **IMPL** | `08_IMPL/IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `08_IMPL/IMPL-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **CTR** | `09_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `09_CTR/CTR-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **SPEC** | `10_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `10_SPEC/SPEC-00_TRACEABILITY_MATRIX.md` | ✅ YES |
+| **TASKS** | `11_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md` | `11_TASKS/TASKS-00_TRACEABILITY_MATRIX.md` | ✅ YES |
 | **Complete** | `TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` | `TRACEABILITY_MATRIX_COMPLETE.md` | ✅ YES |
 
 ### Mandatory Matrix Update Workflow

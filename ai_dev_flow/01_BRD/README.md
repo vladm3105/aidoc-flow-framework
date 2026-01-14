@@ -504,7 +504,7 @@ BRDs serve as:
 
 ## Example BRDs
 
-See `BRD/examples/` for minimal, validator-compliant examples:
+See `01_BRD/examples/` for minimal, validator-compliant examples:
 - `BRD-06.0_example_feature.md` (Feature BRD)
 
 Also consult:

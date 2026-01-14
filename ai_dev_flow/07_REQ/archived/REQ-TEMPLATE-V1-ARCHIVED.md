@@ -9,7 +9,7 @@ custom_fields:
   artifact_type: REQ
   layer: 7
   status: ARCHIVED
-  replacement: "REQ/REQ-TEMPLATE.md"
+  replacement: "07_REQ/REQ-TEMPLATE.md"
   development_status: deprecated
 ---
 
@@ -164,7 +164,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ### Automated Testing
 
-- **BDD Scenarios**: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios` - [List specific scenarios that validate this requirement]
+- **BDD Scenarios**: `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios` - [List specific scenarios that validate this requirement]
 - **Unit Tests**: [Code location] - [Specific tests that verify the requirement]
 - **Integration Tests**: [Test suite] - [Cross-component validation]
 
@@ -243,8 +243,8 @@ BDD scenarios and acceptance tests validating this requirement.
 
 | BDD ID | Scenario Title | Acceptance Criteria Validated | Test Coverage | Relationship |
 |--------|----------------|-------------------------------|---------------|--------------|
-| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Feature: [Feature name] | Primary functional criteria | Scenarios 1-5 | Acceptance test |
-| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1` | Scenario: [Specific scenario] | Specific acceptance criterion | Lines 15-45 | Functional validation |
+| `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Feature: [Feature name] | Primary functional criteria | Scenarios 1-5 | Acceptance test |
+| `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1` | Scenario: [Specific scenario] | Specific acceptance criterion | Lines 15-45 | Functional validation |
 | [BDD-MM](../../04_BDD/BDD-MM_....feature) | Feature: [Error handling] | Error and edge case criteria | Error scenarios | Negative testing |
 
 **BDD Coverage**:
@@ -276,9 +276,9 @@ AI-assisted implementation plans derived from this requirement.
 
 | Acceptance Criterion | Validation Method | BDD Scenario | Test Coverage | Status |
 |---------------------|-------------------|--------------|---------------|--------|
-| Primary Functional Criteria #1 | BDD Scenario | `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` Lines 20-45 | Unit + Integration | ✅ Validated |
+| Primary Functional Criteria #1 | BDD Scenario | `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` Lines 20-45 | Unit + Integration | ✅ Validated |
 | Primary Functional Criteria #2 | Unit Test | tests/unit/[module]/test_[component].py | Unit | ✅ Validated |
-| Error and Edge Case #1 | BDD Scenario | `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` Lines 100-120 | Integration | ✅ Validated |
+| Error and Edge Case #1 | BDD Scenario | `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` Lines 100-120 | Integration | ✅ Validated |
 | Quality and Constraint #1 | Performance Test | tests/performance/[module]/ | Load/Stress | 🔄 Pending |
 | Integration Criteria #1 | Integration Test | tests/integration/[module]/ | Integration | 🔄 Pending |
 

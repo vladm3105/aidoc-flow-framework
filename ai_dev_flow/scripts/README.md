@@ -875,25 +875,25 @@ All three scripts follow consistent design principles:
 ## Example Matrices
 
 See the `examples/` directories for example matrices where available:
-- `REQ/examples/TRACEABILITY_MATRIX_REQ_EXAMPLE.md`
+- `07_REQ/examples/TRACEABILITY_MATRIX_REQ_EXAMPLE.md`
 
 ---
 
 ## Template References
 
 Matrix templates for each document type:
-- `BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `BDD/BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `IMPL/IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `IPLAN/IPLAN-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `01_BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `02_PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `03_EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `04_BDD/BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `05_ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `06_SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `08_IMPL/IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `09_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `10_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `11_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `12_IPLAN/IPLAN-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` (master template)
 
 ---
@@ -907,11 +907,11 @@ MVP (Minimum Viable Product) templates provide streamlined versions of full docu
 > MVP uses flat files only. Do not apply document splitting rules or references to `DOCUMENT_SPLITTING_RULES.md` when working with `*-MVP-TEMPLATE.*` artifacts or the MVP workflow.
 
 **Available MVP Templates:**
-- `BRD/BRD-MVP-TEMPLATE.md` (~600 lines vs ~2,400 lines full)
-- `PRD/PRD-MVP-TEMPLATE.md` (~500 lines vs ~1,400 lines full)
-- `ADR/ADR-MVP-TEMPLATE.md` (~250 lines vs ~700 lines full)
-- `SYS/SYS-MVP-TEMPLATE.md` (~350 lines vs ~1,024 lines full)
-- `REQ/REQ-MVP-TEMPLATE.md` (~350 lines vs ~1,400 lines full)
+- `01_BRD/BRD-MVP-TEMPLATE.md` (~600 lines vs ~2,400 lines full)
+- `02_PRD/PRD-MVP-TEMPLATE.md` (~500 lines vs ~1,400 lines full)
+- `05_ADR/ADR-MVP-TEMPLATE.md` (~250 lines vs ~700 lines full)
+- `06_SYS/SYS-MVP-TEMPLATE.md` (~350 lines vs ~1,024 lines full)
+- `07_REQ/REQ-MVP-TEMPLATE.md` (~350 lines vs ~1,400 lines full)
 
 ### Validation Behavior
 

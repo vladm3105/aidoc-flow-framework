@@ -170,7 +170,7 @@ docs/04_BDD/BDD-02_knowledge_engine/
 
 - ❌ **PROHIBITED**: `BDD-NN_{slug}/features/` (legacy nested features/)
 - ❌ **PROHIBITED**: Additional subdirectories inside suite folder (beyond files shown)
-- ✅ **REQUIRED**: All `.feature` files live inside the suite folder `BDD/BDD-NN_{slug}/`
+- ✅ **REQUIRED**: All `.feature` files live inside the suite folder `04_BDD/BDD-NN_{slug}/`
 
 ### Optional Companion Documents
 
@@ -408,7 +408,7 @@ Before committing BDD files:
 
 ---
 
-**Document Path**: `BDD/BDD_SPLITTING_RULES.md`
+**Document Path**: `04_BDD/BDD_SPLITTING_RULES.md`
 **Framework**: AI Dev Flow SDD
 **Version**: 2.0 (Section-Based ONLY)
 **Last Updated**: 2025-12-27

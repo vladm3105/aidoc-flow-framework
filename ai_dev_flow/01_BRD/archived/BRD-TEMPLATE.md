@@ -1096,7 +1096,7 @@ growth_targets:
 
 **Downstream Consumption**:
 - **PRD**: Refines business thresholds into technical thresholds (`@threshold: PRD.NN...`)
-- **EARS/04_BDD/06_SYS/SPEC**: Reference PRD threshold registry (not BRD directly)
+- **03_EARS/04_BDD/06_SYS/SPEC**: Reference PRD threshold registry (not BRD directly)
 - **Threshold Registry**: PRD consolidates all thresholds for platform-wide consumption
 
 **Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.

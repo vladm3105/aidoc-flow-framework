@@ -35,9 +35,9 @@ See also: [README → Units & Conversions](./README.md#units--conversions-kb-vs-
 ### Splitting Rules
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
-- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
-- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
+- BDD addendum: [04_BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
+- CTR addendum: [09_CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
+- SPEC addendum: [10_SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
 > MVP Mode: For MVP workflows, use a single flat file per artifact and ignore splitting rules and references to `DOCUMENT_SPLITTING_RULES.md`.
@@ -125,12 +125,12 @@ Section File: docs/05_ADR/ADR-05_database_selection/ADR-05.2_database_selection_
 - YAML: Keep monolithic per component for codegen (`SPEC-{DOC_NUM}_{slug}.yaml`).
 - Markdown: Split narrative with `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` when needed.
 - Layout:
-  - Nested default: `SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml`
-  - Flat exception: `SPEC/SPEC-{DOC_NUM}_{slug}.yaml` (small, stable specs)
+  - Nested default: `10_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml`
+  - Flat exception: `10_SPEC/SPEC-{DOC_NUM}_{slug}.yaml` (small, stable specs)
 
 Examples:
-- Flat: `SPEC/SPEC-01_api_client_example.yaml`
-- Nested: `SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml` (+ `SPEC-02.0_index.md`)
+- Flat: `10_SPEC/SPEC-01_api_client_example.yaml`
+- Nested: `10_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml` (+ `SPEC-02.0_index.md`)
 
 ---
 
@@ -157,18 +157,18 @@ Examples (flat structure - legacy):
 ```mermaid
 graph TB
   subgraph docs["docs/"]
-    BRD["BRD/BRD-NN_{slug}/ - Business Requirements"]
-    PRD["PRD/PRD-NN_{slug}/ - Product Requirements"]
-    ADR["ADR/ADR-NN_{slug}/ - Architecture Decisions"]
-    EARS["EARS/EARS-NN_{slug}/ - EARS Syntax"]
-    BDD["BDD/BDD-NN_{suite}/ - BDD Gherkin (sections)"]
-    SYS["SYS/SYS-NN_{slug}/ - System Specs"]
-    REQ["REQ/REQ-NN_{slug}/ - Atomic Requirements"]
-    IMPL["IMPL/IMPL-NN_{slug}/ - Implementation Plans"]
-    CTR["CTR/CTR-NN_{slug}/ - API Contracts"]
-    SPEC["SPEC/SPEC-NN_{slug}/ - Technical Specs"]
-    TASKS["TASKS/TASKS-NN_{slug}/ - Implementation Tasks"]
-    IPLAN["IPLAN/IPLAN-NN_{slug}/ - Session Plans"]
+    BRD["01_BRD/BRD-NN_{slug}/ - Business Requirements"]
+    PRD["02_PRD/PRD-NN_{slug}/ - Product Requirements"]
+    ADR["05_ADR/ADR-NN_{slug}/ - Architecture Decisions"]
+    EARS["03_EARS/EARS-NN_{slug}/ - EARS Syntax"]
+    BDD["04_BDD/BDD-NN_{suite}/ - BDD Gherkin (sections)"]
+    SYS["06_SYS/SYS-NN_{slug}/ - System Specs"]
+    REQ["07_REQ/REQ-NN_{slug}/ - Atomic Requirements"]
+    IMPL["08_IMPL/IMPL-NN_{slug}/ - Implementation Plans"]
+    CTR["09_CTR/CTR-NN_{slug}/ - API Contracts"]
+    SPEC["10_SPEC/SPEC-NN_{slug}/ - Technical Specs"]
+    TASKS["11_TASKS/TASKS-NN_{slug}/ - Implementation Tasks"]
+    IPLAN["12_IPLAN/IPLAN-NN_{slug}/ - Session Plans"]
   end
 
   subgraph nested_example["Nested Example: BRD-01_platform_architecture/"]
@@ -411,18 +411,18 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 
 | Type | Purpose | Format | Structure | Example |
 |------|---------|--------|-----------|---------|
-| **BRD** | Business objectives | .md | **Nested** | `BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md` |
-| **PRD** | Product features | .md | **Nested** | `PRD/PRD-02_user_auth/PRD-02.0_user_auth_index.md` |
-| **ADR** | Architecture decisions | .md | **Nested** | `ADR/ADR-05_db_selection/ADR-05.0_db_selection_index.md` |
-| **EARS** | Measurable requirements | .md | **Nested** | `EARS/EARS-03_performance/EARS-03_performance.md` |
-| **BDD** | Acceptance tests | .feature | **Nested (section-based)** | `BDD/BDD-02_query/BDD-02.14_query_filtering.feature` |
-| **SYS** | System specifications | .md | **Nested** | `SYS/SYS-06_api_gateway/SYS-06_api_gateway.md` |
-| **REQ** | Atomic requirements | .md | **Nested** | `REQ/REQ-07_limit_enforcement/REQ-07_limit_enforcement.md` |
-| **IMPL** | Implementation plan | .md | **Nested** | `IMPL/IMPL-08_phase1_plan/IMPL-08_phase1_plan.md` |
-| **CTR** | API contracts | .md + .yaml | **Nested** | `CTR/CTR-09_market_api/CTR-09_market_api.{md,yaml}` |
-| **SPEC** | Technical SPEC | .yaml | **Nested** | `SPEC/SPEC-10_limiter/SPEC-10_limiter.yaml` |
-| **TASKS** | Implementation TODOs | .md | **Nested** | `TASKS/TASKS-10_implement_limiter/TASKS-10_implement_limiter.md` |
-| **IPLAN** | Session execution plans | .md | **Nested** | `IPLAN/IPLAN-01_db_migration/IPLAN-01_db_migration.md` |
+| **BRD** | Business objectives | .md | **Nested** | `01_BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md` |
+| **PRD** | Product features | .md | **Nested** | `02_PRD/PRD-02_user_auth/PRD-02.0_user_auth_index.md` |
+| **ADR** | Architecture decisions | .md | **Nested** | `05_ADR/ADR-05_db_selection/ADR-05.0_db_selection_index.md` |
+| **EARS** | Measurable requirements | .md | **Nested** | `03_EARS/EARS-03_performance/EARS-03_performance.md` |
+| **BDD** | Acceptance tests | .feature | **Nested (section-based)** | `04_BDD/BDD-02_query/BDD-02.14_query_filtering.feature` |
+| **SYS** | System specifications | .md | **Nested** | `06_SYS/SYS-06_api_gateway/SYS-06_api_gateway.md` |
+| **REQ** | Atomic requirements | .md | **Nested** | `07_REQ/REQ-07_limit_enforcement/REQ-07_limit_enforcement.md` |
+| **IMPL** | Implementation plan | .md | **Nested** | `08_IMPL/IMPL-08_phase1_plan/IMPL-08_phase1_plan.md` |
+| **CTR** | API contracts | .md + .yaml | **Nested** | `09_CTR/CTR-09_market_api/CTR-09_market_api.{md,yaml}` |
+| **SPEC** | Technical SPEC | .yaml | **Nested** | `10_SPEC/SPEC-10_limiter/SPEC-10_limiter.yaml` |
+| **TASKS** | Implementation TODOs | .md | **Nested** | `11_TASKS/TASKS-10_implement_limiter/TASKS-10_implement_limiter.md` |
+| **IPLAN** | Session execution plans | .md | **Nested** | `12_IPLAN/IPLAN-01_db_migration/IPLAN-01_db_migration.md` |
 | **REF** | Supplementary docs | .md | **Nested** | `REF/TYPE-REF-NN_{slug}/TYPE-REF-NN_{slug}.md` |
 
 **Note**: REF (Reference Documents) are supplementary and do not participate in formal traceability chain.

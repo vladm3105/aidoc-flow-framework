@@ -1079,7 +1079,7 @@ async def get_quote(
 ### 10.1 Automated Testing
 
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-- **BDD Scenarios**: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios`
+- **BDD Scenarios**: `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios`
 <!-- VALIDATOR:IGNORE-LINKS-END -->
   - Scenario: Successful API connection with valid credentials
   - Scenario: Rate limiting enforcement at premium tier threshold

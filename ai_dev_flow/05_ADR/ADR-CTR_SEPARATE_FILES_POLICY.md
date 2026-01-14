@@ -57,7 +57,7 @@ contracts:
     ...
 ```
 
-**CTR/README.md** stated:
+**09_CTR/README.md** stated:
 > "Each contract SHOULD have dual files (.md + .yaml)"
 
 Use of "SHOULD" (optional) vs "MUST" (mandatory) created ambiguity.
@@ -170,12 +170,12 @@ Every API contract requires:
    - **Keep**: "Option A: Reference separate contract files"
    - **Add**: "Contract References" section with CTR-NNN links
 
-2. **CTR/README.md**:
+2. **09_CTR/README.md**:
    - **Change**: "SHOULD" → "MUST"
    - **Strengthen**: "ALWAYS create dual files (.md + .yaml)"
    - **Remove**: Any "optional" wording
 
-3. **CTR/CTR-00_index.md**:
+3. **09_CTR/CTR-00_index.md**:
    - **Create**: Index file listing all contracts
    - **Format**: Table with CTR-ID, title, status, SPECs using it
 
@@ -195,7 +195,7 @@ Add pre-commit hook:
 # Check: Every CTR-NNN.md has matching CTR-NNN.yaml
 for md in 09_CTR/CTR-*.md; do
   base=$(basename "$md" .md)
-  yaml="CTR/${base}.yaml"
+  yaml="09_CTR/${base}.yaml"
   if [ ! -f "$yaml" ]; then
     echo "ERROR: Missing $yaml for $md"
     exit 1
@@ -284,7 +284,7 @@ Before merging PR with new CTR:
 
 - [CTR-TEMPLATE.md](../09_CTR/CTR-TEMPLATE.md) - Markdown template
 - [CTR-TEMPLATE.yaml](../09_CTR/CTR-TEMPLATE.yaml) - YAML schema template
-- [CTR/README.md](../09_CTR/README.md) - Contracts overview
+- [09_CTR/README.md](../09_CTR/README.md) - Contracts overview
 - [SPEC-TEMPLATE.yaml](../10_SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
 - [TRACEABILITY.md](../TRACEABILITY.md) - Document linking standards
 

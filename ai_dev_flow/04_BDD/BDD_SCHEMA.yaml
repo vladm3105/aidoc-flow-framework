@@ -258,7 +258,7 @@ structure:
     # File organization
     file_organization:
       structure: "nested per-suite (one folder per suite)"
-      location: "BDD/BDD-NN_{suite_slug}/"
+      location: "04_BDD/BDD-NN_{suite_slug}/"
       subdirectories_allowed: true  # suite folder only; no features/ subfolder
       features_subdirectory: "PROHIBITED (legacy format)"
       index_file_location: "inside suite folder (e.g., BDD-02.0_index.md)"

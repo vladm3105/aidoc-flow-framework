@@ -534,7 +534,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 **Upstream/Downstream Flow**:
 - **BRD**: Defines business-level thresholds (customer SLAs, compliance requirements)
 - **PRD**: Refines into technical thresholds (THIS DOCUMENT - primary definition source)
-- **EARS/04_BDD/06_SYS/10_SPEC/CTR**: Reference PRD thresholds using `@threshold:` tags
+- **03_EARS/04_BDD/06_SYS/10_SPEC/CTR**: Reference PRD thresholds using `@threshold:` tags
 
 **Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
 
@@ -1020,10 +1020,10 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 | BDD Feature | PRD Feature/Journey | Scenarios | Test Coverage |
 |-------------|---------------------|-----------|---------------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Maps to PRD User Journey [name] | [Scenario list] | Acceptance test coverage |
+| `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Maps to PRD User Journey [name] | [Scenario list] | Acceptance test coverage |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Maps to PRD Feature [name] | [Scenario list] | Functional validation |
+| `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Maps to PRD Feature [name] | [Scenario list] | Functional validation |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### Same-Type References (Conditional)

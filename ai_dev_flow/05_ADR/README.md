@@ -151,7 +151,7 @@ Requirements (02_PRD/EARS) → BDD Scenarios ← ADR Decision → 06_SYS/10_SPEC
 ```text
 1. PRD-NN.md (Product Requirements)     ← Foundation documents
 2. EARS-NN.md (Technical Requirements)  ← Prerequisite - provides atomic requirements
-3. `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` (Behavior Scenarios)  ← Prerequisite - defines expected behaviors
+3. `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` (Behavior Scenarios)  ← Prerequisite - defines expected behaviors
 4. ADR-NN.md (Architecture Decision)    ← Created from steps 1-3
 5. SYS-NN.md (System Requirements)      ← Uses ADR decisions as constraints
 6. REQ-NN.md (Atomic Requirements)      ← Implements ADR at granular level

@@ -937,11 +937,11 @@ AI Assistant should suggest framework updates when:
 **Before ANY TASKS Implementation**: The Development Plan (`docs/DEVELOPMENT_PLAN.md`) is the **central command center** for organizing and tracking all TASKS across implementation phases.
 
 **Mandatory Setup**:
-1. Copy `TASKS/DEVELOPMENT_PLAN_TEMPLATE.md` to `docs/DEVELOPMENT_PLAN.md` at project start
+1. Copy `11_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md` to `docs/DEVELOPMENT_PLAN.md` at project start
 2. Populate with all TASKS organized by phase and priority
 3. Use YAML-based structure for machine-parsable tracking
 
-**See**: `TASKS/DEVELOPMENT_PLAN_README.md` for complete documentation.
+**See**: `11_TASKS/DEVELOPMENT_PLAN_README.md` for complete documentation.
 
 ### Mandatory Workflow Rules
 

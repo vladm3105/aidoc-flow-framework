@@ -641,7 +641,7 @@ Quick Core MVP Requirements Checklist:
 **ID Format**: `@downstream: [artifact-type]: [placeholder]`
 
 - **PRD**: Product Requirements Document (Layer 2) - Detailed technical specifications
-- **EARS/BDD**: Test specifications (Layer 7) - Acceptance test scenarios
+- **03_EARS/BDD**: Test specifications (Layer 7) - Acceptance test scenarios
 - **ADR**: Architecture Decision Records (Layer 5) - Technology selections from Section 7
 
 > **Note**: Do NOT create numeric downstream references (PRD-#, ADR-#) until artifacts exist.

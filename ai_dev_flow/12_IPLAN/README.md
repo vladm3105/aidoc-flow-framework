@@ -1439,10 +1439,10 @@ graph TB
         end
 
         subgraph docs["docs/"]
-            BRD["BRD/"]
-            SPEC["SPEC/"]
-            TASKS["TASKS/"]
-            IPLAN["IPLAN/"]
+            BRD["01_BRD/"]
+            SPEC["10_SPEC/"]
+            TASKS["11_TASKS/"]
+            IPLAN["12_IPLAN/"]
         end
 
         pyproject["pyproject.toml"]
@@ -1530,7 +1530,7 @@ IPLAN documents are essential for **session-based implementation work** with AI 
 **Questions?**:
 - Review [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) for workflow
 - Check [TRACEABILITY.md](../TRACEABILITY.md) for tagging hierarchy
-- Consult [TASKS/README.md](../11_TASKS/README.md) for parent artifact guidance
+- Consult [11_TASKS/README.md](../11_TASKS/README.md) for parent artifact guidance
 
 ---
 

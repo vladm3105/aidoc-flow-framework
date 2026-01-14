@@ -275,7 +275,7 @@ flowchart TD
 
 [Reference to BDD scenarios that validate this decision]
 
-- Feature: [Feature name] - `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature`
+- Feature: [Feature name] - `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature`
 
 ---
 

@@ -64,7 +64,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 ## ⚡ 7-Step MVP Workflow
 
 ### Step 1: Business Hypothesis (BRD) — **Day 1 (Morning)**
-**Artifacts**: `BRD/BRD-MVP-TEMPLATE.md`, `BRD_CREATION_RULES.md`
+**Artifacts**: `01_BRD/BRD-MVP-TEMPLATE.md`, `BRD_CREATION_RULES.md`
 1.  **Plan**: Edit `BRD-00_index.md`. Create `BRD-00_required_documents_list.md` (List: BRD-01).
 2.  **Pre-Check**: Verify index/required lists structure; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: "Create BRD-01 using BRD-MVP-TEMPLATE. Focus on Hypothesis."
@@ -72,7 +72,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer BRD`
 
 ### Step 2: Core Product Definition (PRD) — **Day 1 (Morning)**
-**Artifacts**: `PRD/PRD-MVP-TEMPLATE.md`, `PRD_CREATION_RULES.md`
+**Artifacts**: `02_PRD/PRD-MVP-TEMPLATE.md`, `PRD_CREATION_RULES.md`
 1.  **Plan**: Edit `PRD-00_index.md`. Create `PRD-00_required_documents_list.md` (List: PRD-01).
 2.  **Pre-Check**: Ensure `BRD-01` exists; verify PRD index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: "Create PRD-01 using PRD-MVP-TEMPLATE. List P1 features."
@@ -80,7 +80,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow` (check traceability)
 
 ### Step 3: Logic Mapping (EARS) — **Day 1 (Afternoon)**
-**Artifacts**: `EARS/EARS-MVP-TEMPLATE.md`, `EARS_CREATION_RULES.md`
+**Artifacts**: `03_EARS/EARS-MVP-TEMPLATE.md`, `EARS_CREATION_RULES.md`
 1.  **Plan**: Edit `EARS-00_index.md`, `EARS-00_required_documents_list.md`.
 2.  **Pre-Check**: Ensure `PRD-01` exists; verify EARS index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: "Create EARS-01. Map PRD features to MVP Logic."
@@ -88,7 +88,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer EARS`
 
 ### Step 4: Critical Scenarios (BDD) — **Day 1 (Late Afternoon)**
-**Artifacts**: `BDD/BDD-MVP-TEMPLATE.feature`, `BDD_CREATION_RULES.md`
+**Artifacts**: `04_BDD/BDD-MVP-TEMPLATE.feature`, `BDD_CREATION_RULES.md`
 1.  **Plan**: Edit `BDD-00_index.md` (one per suite), `required_documents_list`.
 2.  **Pre-Check**: Ensure `EARS-01` exists; verify BDD index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: "Create `BDD-01_checkout.feature`. Include Happy Path + Critical Error Path scenarios."
@@ -106,7 +106,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer ADR --layer SYS`
 
 ### Step 6: Atomic Requirements (REQ) — **Day 2 (Mid-Day)**
-**Artifacts**: `REQ/REQ-MVP-TEMPLATE.md`, `REQ_CREATION_RULES.md`
+**Artifacts**: `07_REQ/REQ-MVP-TEMPLATE.md`, `REQ_CREATION_RULES.md`
 1.  **Plan**: List all required REQ files in `REQ-00_required_documents_list.md`.
 2.  **Pre-Check**: Ensure upstream docs exist (`ADR-01`, `SYS-01`); verify REQ index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: Batch creation of atomic requirements.

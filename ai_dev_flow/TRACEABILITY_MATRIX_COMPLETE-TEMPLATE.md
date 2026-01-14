@@ -652,7 +652,7 @@ graph TD
 When making changes to any document, use this matrix to identify affected artifacts:
 
 **Step 1: Identify Changed Document**
-- Document Type: [BRD/02_PRD/03_EARS/etc.]
+- Document Type: [01_BRD/02_PRD/03_EARS/etc.]
 - Document ID: [DOC-NN]
 - Change Type: [New/Modified/Deprecated]
 

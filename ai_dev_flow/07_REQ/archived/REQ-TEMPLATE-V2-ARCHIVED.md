@@ -9,7 +9,7 @@ custom_fields:
   artifact_type: REQ
   layer: 7
   status: ARCHIVED
-  replacement: "REQ/REQ-TEMPLATE.md"
+  replacement: "07_REQ/REQ-TEMPLATE.md"
   development_status: deprecated
 ---
 
@@ -798,7 +798,7 @@ class Container(containers.DeclarativeContainer):
 
 ### Automated Testing
 
-- **BDD Scenarios**: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios`
+- **BDD Scenarios**: `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios`
   - Scenario: Successful API connection
   - Scenario: Rate limiting enforcement
   - Scenario: Retry on transient failure
@@ -884,7 +884,7 @@ Document the business strategy, product requirements, system specifications, and
 
 | BDD ID | Scenario Title | Acceptance Criteria Validated | Test Coverage |
 |--------|----------------|-------------------------------|---------------|
-| `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Feature: [Feature name] | AC-001, AC-002, AC-003 | Scenarios 1-5 |
+| `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Feature: [Feature name] | AC-001, AC-002, AC-003 | Scenarios 1-5 |
 
 #### API Contracts
 

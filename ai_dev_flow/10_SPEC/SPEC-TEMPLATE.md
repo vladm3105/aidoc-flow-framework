@@ -26,7 +26,7 @@ custom_fields:
   schema_version: "1.0"
 ---
 
-> Reference Template — For learning and small specs only. Real SPECs use a monolithic YAML per component for code generation. When narrative grows, split the Markdown only per `../DOCUMENT_SPLITTING_RULES.md` and `SPEC/SPEC_SPLITTING_RULES.md`.
+> Reference Template — For learning and small specs only. Real SPECs use a monolithic YAML per component for code generation. When narrative grows, split the Markdown only per `../DOCUMENT_SPLITTING_RULES.md` and `10_SPEC/SPEC_SPLITTING_RULES.md`.
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for SPEC Markdown structure.
 > - All SPEC Markdown documents must conform to this template

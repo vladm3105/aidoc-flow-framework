@@ -197,7 +197,7 @@ After scenario execution:
 
 ---
 
-**Document Path**: `BDD/BDD-NN.0_index.md`
+**Document Path**: `04_BDD/BDD-NN.0_index.md`
 **Framework**: AI Dev Flow SDD
 **Layer**: 4 (BDD - Behavior-Driven Development)
 **Template Version**: 1.0

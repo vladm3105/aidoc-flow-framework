@@ -393,6 +393,6 @@ The Autopilot can be used to continue a partially created project or to fork an 
 
   - **Start with Resume (non-destructive)** for teams picking up partial work; enable `--auto-fix --report markdown` to normalize and see what’s missing. Use `--plan-only` first to review intended actions.
 - **Fork only when scope diverges** or IDs need to branch cleanly; pick a fresh `NN` and add “Supersedes” info to keep the lineage auditable.
-- **Incremental layers**: If 01_BRD/02_PRD/EARS are stable but implementation isn’t, set `--up-to IPLAN` while targeting `SYS/07_REQ/10_SPEC/11_TASKS/IPLAN` phases.
+- **Incremental layers**: If 01_BRD/02_PRD/EARS are stable but implementation isn’t, set `--up-to IPLAN` while targeting `06_SYS/07_REQ/10_SPEC/11_TASKS/IPLAN` phases.
   - Use `--from-layer BDD` (or `ADR`/`SYS`) to skip earlier layers cleanly.
 - **Reports & Plans**: Save reports and plans in `work_plans/` and attach to review PRs.

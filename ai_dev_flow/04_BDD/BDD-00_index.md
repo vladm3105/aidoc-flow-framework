@@ -184,11 +184,11 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 ### Creating a New BDD Suite and Sections
 
 1. **Assign Suite Number**: Choose next `BDD-NN` and suite slug (e.g., `knowledge_engine`)
-2. **Create Suite Folder**: `BDD/BDD-NN_{suite_slug}`
-3. **Create Index**: Copy `BDD-SECTION-0-TEMPLATE.md` to `BDD/BDD-NN_{suite_slug}/BDD-NN.0_index.md`
+2. **Create Suite Folder**: `04_BDD/BDD-NN_{suite_slug}`
+3. **Create Index**: Copy `BDD-SECTION-0-TEMPLATE.md` to `04_BDD/BDD-NN_{suite_slug}/BDD-NN.0_index.md`
 4. **Plan Sections**: Define `.1`, `.2`, `.3` sections and slugs
-5. **Create Section Files**: Copy `BDD-SECTION-TEMPLATE.feature` to `BDD/BDD-NN_{suite_slug}/BDD-NN.SS_{slug}.feature`
-6. **If Needed, Create Subsections**: Copy `BDD-SUBSECTION-TEMPLATE.feature` to `BDD/BDD-NN_{suite_slug}/BDD-NN.SS.mm_{slug}.feature`
+5. **Create Section Files**: Copy `BDD-SECTION-TEMPLATE.feature` to `04_BDD/BDD-NN_{suite_slug}/BDD-NN.SS_{slug}.feature`
+6. **If Needed, Create Subsections**: Copy `BDD-SUBSECTION-TEMPLATE.feature` to `04_BDD/BDD-NN_{suite_slug}/BDD-NN.SS.mm_{slug}.feature`
 7. **Add Traceability Tags**: `@brd`, `@prd`, `@ears` at file top (Gherkin-native)
 8. **Write Scenarios**: Given/When/Then; include primary, negative, edge, quality, integration, data-driven
 9. **Use Thresholds**: Reference PRD threshold registry via `@threshold:` keys (no hardcoded numbers)
@@ -275,7 +275,7 @@ Track acceptance test coverage for requirements:
 
 ### Validation Checklist
 
-- [ ] All BDD files follow section-based naming: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature`
+- [ ] All BDD files follow section-based naming: `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature`
 - [ ] All BDD files have traceability tags (@brd, @prd, @ears)
 - [ ] All BDD files have upstream links (REQ, SYS, ADR)
 - [ ] All BDD files have downstream links (SPEC, Code, TASKS)

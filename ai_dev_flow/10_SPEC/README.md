@@ -24,7 +24,7 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 
 Specifications (SPEC) are machine-readable technical blueprints that define how software components should be implemented. SPECs transform requirements into actionable design decisions, providing complete implementation guidance for developers while establishing contracts for testing and integration.
 
-Note: `SPEC-TEMPLATE.md`/`.yaml` are reference templates. YAML stays monolithic per component for code generation. When narrative grows, split the Markdown only (index + section files) per `SPEC/SPEC_SPLITTING_RULES.md` and `../DOCUMENT_SPLITTING_RULES.md`.
+Note: `SPEC-TEMPLATE.md`/`.yaml` are reference templates. YAML stays monolithic per component for code generation. When narrative grows, split the Markdown only (index + section files) per `10_SPEC/SPEC_SPLITTING_RULES.md` and `../DOCUMENT_SPLITTING_RULES.md`.
 
 ## Structure Policy
 
@@ -32,8 +32,8 @@ Note: `SPEC-TEMPLATE.md`/`.yaml` are reference templates. YAML stays monolithic 
 - Markdown: Split as needed using `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md`.
 - DOC_NUM: Variable-length starting at 2 digits (01, 02, 99, 100, 1000).
 - Layout:
-  - Nested (default): `SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml` with Markdown section files alongside.
-  - Flat (exception): `SPEC/SPEC-{DOC_NUM}_{slug}.yaml` for small, stable specs.
+  - Nested (default): `10_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml` with Markdown section files alongside.
+  - Flat (exception): `10_SPEC/SPEC-{DOC_NUM}_{slug}.yaml` for small, stable specs.
 
 ### Examples
 
@@ -44,7 +44,7 @@ Note: `SPEC-TEMPLATE.md`/`.yaml` are reference templates. YAML stays monolithic 
 
 - Discovery (recursive):
   - Bash: `find SPEC -type f -name 'SPEC-*.yaml'`
-  - Python: `glob.glob('SPEC/**/SPEC-*.yaml', recursive=True)`
+  - Python: `glob.glob('10_SPEC/**/SPEC-*.yaml', recursive=True)`
 - Identity: Use YAML `id` and `metadata.artifact_type` instead of inferring from path or fixed 3-digit IDs. DOC_NUM is variable-length (2+ digits).
 - Outputs: Derive names from `codegen.module_name` (or `id`) rather than DOC_NUM or folder name.
 - CTR Resolution: Prefer `interfaces[].contract_id: CTR-NN`; optionally support `contract_ref` (relative path) as fallback.
@@ -77,7 +77,7 @@ SPECs sit between REQ (atomic requirements) and TASKS (implementation tasks) in 
 
 ## SPEC YAML Structure
 
-Note: For large specifications that warrant splitting, see `SPEC/SPEC_SPLITTING_RULES.md` for SPEC-specific guidance and `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
+Note: For large specifications that warrant splitting, see `10_SPEC/SPEC_SPLITTING_RULES.md` for SPEC-specific guidance and `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
 
 ### Header with Traceability Comments
 
@@ -362,7 +362,7 @@ implementation:
 ```
 
 Where:
-- `SPEC/` is the base specifications directory
+- `10_SPEC/` is the base specifications directory
 - `{domain}` is architectural domain (`services`, `data`, `api`, etc.)
 - `SPEC` is the constant prefix
 - `NNN` is the 2+ digit sequence number (01, 02, 003, etc.)
@@ -370,9 +370,9 @@ Where:
 - `.yaml` is the required file extension
 
 **Examples:**
-- `SPEC/SPEC-01_external_api_client/SPEC-01_external_api_client.yaml`
-- `SPEC/data/SPEC-042_real_time_price_processor.yaml`
-- `SPEC/api/SPEC-102_service_api_gateway.yaml`
+- `10_SPEC/SPEC-01_external_api_client/SPEC-01_external_api_client.yaml`
+- `10_SPEC/data/SPEC-042_real_time_price_processor.yaml`
+- `10_SPEC/api/SPEC-102_service_api_gateway.yaml`
 
 ## SPEC Quality Gates
 
@@ -671,7 +671,7 @@ validate-metrics --spec 10_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml --actual-metr
 
 ## Example SPEC Template
 
-See `SPEC/SPEC-01_external_api_client.yaml` for a flat example (small, stable). For nested default, see `SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml`.
+See `10_SPEC/SPEC-01_external_api_client.yaml` for a flat example (small, stable). For nested default, see `10_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml`.
 ## File Size Limits
 
 - Target: 300–500 lines per file

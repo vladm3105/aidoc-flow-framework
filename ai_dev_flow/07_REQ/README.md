@@ -121,7 +121,7 @@ How this requirement will be tested and validated:
 
 ```markdown
 ### Verification
-- BDD: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios`
+- BDD: `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios`
 - Spec: [SPEC-NN.yaml](../../10_SPEC/.../SPEC-NN.yaml)
 - [Additional verification methods: performance tests, security tests, etc.]
 ```
@@ -150,7 +150,7 @@ REQ files are organized by functional domains and subdomains:
 ```
 
 Where:
-- `REQ/` is the base requirements directory
+- `07_REQ/` is the base requirements directory
 - `{domain}` is functional area (`api`, `risk`, `data`, `ui`, etc.)
 - `{subdomain}` is specific sub-area (`av`, `ib`, `lim`, `mon`, etc.)
 - `REQ` is the constant prefix
@@ -158,9 +158,9 @@ Where:
 - `descriptive_title` uses snake_case describing the requirement
 
 **Examples:**
-- `REQ/api/av/REQ-01_external_api_integration.md`
-- `REQ/risk/lim/REQ-03_resource_limit_enforcement.md`
-- `REQ/data/proc/REQ-045_real_time_data_processing.md`
+- `07_REQ/api/av/REQ-01_external_api_integration.md`
+- `07_REQ/risk/lim/REQ-03_resource_limit_enforcement.md`
+- `07_REQ/data/proc/REQ-045_real_time_data_processing.md`
 
 ## Requirement Statement Quality
 
@@ -290,7 +290,7 @@ Track implementation artifacts that realize the requirement:
 ```markdown
 ### Verification
 - ADR: [ADR-NN](../05_ADR/ADR-NN_...md#ADR-NN) - [Implementation approach]
-- BDD: `BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1`
+- BDD: `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1`
 - Spec: [SPEC-NN.yaml](../../10_SPEC/.../SPEC-NN.yaml)
 - Code Module: `component.module.function()`
 ```
@@ -495,7 +495,7 @@ def test_req_coverage():
 
 ## Example REQ Template
 
-See `REQ/api/av/REQ-01_external_api_integration.md` for a complete example of a well-structured requirement document that follows these conventions and includes proper traceability and acceptance criteria.
+See `07_REQ/api/av/REQ-01_external_api_integration.md` for a complete example of a well-structured requirement document that follows these conventions and includes proper traceability and acceptance criteria.
 
 ---
 
@@ -752,19 +752,19 @@ Before marking a REQ as complete, verify:
 
 ### V2 Example Files
 
-**REQ-01: API Integration Example** (`REQ/api/REQ-01_api_integration_example.md`)
+**REQ-01: API Integration Example** (`07_REQ/api/REQ-01_api_integration_example.md`)
 - 1372 lines, 95% SPEC-ready
 - Complete REST API client with resilience patterns
 - Rate limiting, circuit breaker, retry logic
 - 18 acceptance criteria with verification methods
 
-**REQ-02: Data Validation Example** (`REQ/data/REQ-02_data_validation_example.md`)
+**REQ-02: Data Validation Example** (`07_REQ/data/REQ-02_data_validation_example.md`)
 - 345 lines, 95% SPEC-ready
 - Multi-layer validation pipeline
 - Schema + business rules + database constraints
 - Cross-field validation with Pydantic
 
-**REQ-03: Access Control Example** (`REQ/auth/REQ-03_access_control_example.md`)
+**REQ-03: Access Control Example** (`07_REQ/auth/REQ-03_access_control_example.md`)
 - 464 lines, 95% SPEC-ready
 - RBAC with role hierarchy
 - Permission inheritance algorithm
@@ -906,7 +906,7 @@ python scripts/add_requirement_anchors.py --req-file 07_REQ/api/REQ-01.md
 - Hierarchical role inheritance
 - Authorization middleware with JWT
 
-For detailed examples, see the V2 example files in `REQ/api/`, `REQ/data/`, and `REQ/auth/`.
+For detailed examples, see the V2 example files in `07_REQ/api/`, `07_REQ/data/`, and `07_REQ/auth/`.
 ## File Size Limits
 
 - Target: 300–500 lines per file
