@@ -41,13 +41,13 @@ See also:
   python3 scripts/validate_metadata.py .
 
   # Cross-document references
-  python3 scripts/validate_cross_document.py --document SPEC/SPEC-01_api_client_example.yaml
+  python3 scripts/validate_cross_document.py --document 10_SPEC/SPEC-01_api_client_example.yaml
 
   # Traceability Section-7 links
   python3 scripts/validate_links.py
 
   # TASKS structure (checks Section 8: Implementation Contracts)
-  bash scripts/validate_tasks.sh TASKS/TASKS-01_example.md
+  bash scripts/validate_tasks.sh 11_TASKS/TASKS-01_example.md
   ```
 - Split only when needed: Files >100KB or strong logical boundaries.
 - See details: Token limits by tool and full validation guidance below.
@@ -99,13 +99,13 @@ Common local checks:
 python3 scripts/validate_metadata.py .
 
 # Cross-document references (upstream/downstream integrity)
-python3 scripts/validate_cross_document.py --document SPEC/SPEC-01_api_client_example.yaml
+python3 scripts/validate_cross_document.py --document 10_SPEC/SPEC-01_api_client_example.yaml
 
 # Section-7 link integrity (Traceability sections)
 python3 scripts/validate_links.py
 
 # TASKS structure rules (includes Section 8: Implementation Contracts)
-bash scripts/validate_tasks.sh TASKS/TASKS-01_example.md
+bash scripts/validate_tasks.sh 11_TASKS/TASKS-01_example.md
 ```
 
 Assistant guidance:

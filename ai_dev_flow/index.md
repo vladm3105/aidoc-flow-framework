@@ -6,6 +6,39 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 
 > MVP Note: MVP templates are single, flat files. Ignore document splitting and `DOCUMENT_SPLITTING_RULES.md` when using the MVP track.
 
+## Template Selection (MVP is Default)
+
+**MVP templates are now the framework default** for all new document creation. Full templates are used only when explicitly triggered.
+
+### Quick Decision
+
+| Condition | Template Used |
+|-----------|---------------|
+| No special settings or keywords | **MVP** (automatic) |
+| `template_profile: enterprise` in settings | Full |
+| Prompt contains "use full template" | Full |
+| Prompt contains "enterprise mode" | Full |
+| Prompt contains "regulatory compliance" | Full |
+
+### Available MVP Templates
+
+| Layer | Type | MVP Template | Full Template |
+|-------|------|--------------|---------------|
+| 1 | BRD | `BRD-MVP-TEMPLATE.md` ✓ | `BRD-TEMPLATE.md` |
+| 2 | PRD | `PRD-MVP-TEMPLATE.md` ✓ | `PRD-TEMPLATE.md` |
+| 3 | EARS | `EARS-MVP-TEMPLATE.md` ✓ | `EARS-TEMPLATE.md` |
+| 4 | BDD | `BDD-MVP-TEMPLATE.feature` ✓ | `BDD-TEMPLATE.feature` |
+| 5 | ADR | `ADR-MVP-TEMPLATE.md` ✓ | `ADR-TEMPLATE.md` |
+| 6 | SYS | `SYS-MVP-TEMPLATE.md` ✓ | `SYS-TEMPLATE.md` |
+| 7 | REQ | `REQ-MVP-TEMPLATE.md` ✓ | `REQ-TEMPLATE.md` |
+| 8-12 | IMPL, CTR, SPEC, TASKS, IPLAN | — | Full only |
+
+### Configuration Reference
+
+- Registry: [LAYER_REGISTRY.yaml](./LAYER_REGISTRY.yaml) - `mvp_available` and `default_template` fields
+- Profiles: [.autopilot.yaml](./.autopilot.yaml) - `template_selection` and `profiles` sections
+- Workflow: [MVP_WORKFLOW_GUIDE.md](./MVP_WORKFLOW_GUIDE.md) - Detailed MVP workflow
+
 ## Framework Purpose
 
 This framework is a sophisticated and well-conceived system for a new paradigm of software development where human architects design systems and AI assistants build them.
@@ -58,41 +91,41 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Business Layer (Layers 1-3)
 
 - **BRD** (`BRD/`) - Layer 1: Business Requirements Documents defining business objectives and constraints
-  - Template: [BRD-TEMPLATE.md](./BRD/BRD-TEMPLATE.md) | **MVP**: [BRD-MVP-TEMPLATE.md](./BRD/BRD-MVP-TEMPLATE.md)
-  - Index: [BRD-00_index.md](./BRD/BRD-00_index.md)
+  - Template: [BRD-TEMPLATE.md](./01_BRD/BRD-TEMPLATE.md) | **MVP**: [BRD-MVP-TEMPLATE.md](./01_BRD/BRD-MVP-TEMPLATE.md)
+  - Index: [BRD-00_index.md](./01_BRD/BRD-00_index.md)
   - Guidance: [PLATFORM_VS_FEATURE_BRD.md](./PLATFORM_VS_FEATURE_BRD.md)
 - **PRD** (`PRD/`) - Layer 2: Product Requirements Documents translating business needs to product features
-  - Index: [PRD-00_index.md](./PRD/PRD-00_index.md)
-  - Template: [PRD-TEMPLATE.md](./PRD/PRD-TEMPLATE.md) | **MVP**: [PRD-MVP-TEMPLATE.md](./PRD/PRD-MVP-TEMPLATE.md)
+  - Index: [PRD-00_index.md](./02_PRD/PRD-00_index.md)
+  - Template: [PRD-TEMPLATE.md](./02_PRD/PRD-TEMPLATE.md) | **MVP**: [PRD-MVP-TEMPLATE.md](./02_PRD/PRD-MVP-TEMPLATE.md)
 - **EARS** (`EARS/`) - Layer 3: Event-Action-Response-State (Engineering Requirements)
-  - Index: [EARS-00_index.md](./EARS/EARS-00_index.md)
-  - Template: [EARS-TEMPLATE.md](./EARS/EARS-TEMPLATE.md)
+  - Index: [EARS-00_index.md](./03_EARS/EARS-00_index.md)
+  - Template: [EARS-TEMPLATE.md](./03_EARS/EARS-TEMPLATE.md)
 
 ### Testing Layer (Layer 4)
 
 - **BDD** (`BDD/`) - Layer 4: Behavior-Driven Development feature files defining acceptance criteria
   - Nested: One folder per suite: `BDD/BDD-NN_{slug}/`
   - Index: `BDD/BDD-00_index.md`
-  - Template: [BDD-TEMPLATE.feature](./BDD/BDD-TEMPLATE.feature)
+  - Template: [BDD-TEMPLATE.feature](./04_BDD/BDD-TEMPLATE.feature)
   - Purpose: Executable acceptance tests written before implementation (Test-First approach)
   - Maps to IPLAN scenarios for test-driven development workflow
 
 ### Architecture Layer (Layers 5-6)
 
 - **ADR** (`ADR/`) - Layer 5: Architecture Decision Records documenting key architectural choices
-  - Index: [ADR-00_index.md](./ADR/ADR-00_index.md)
-  - Template: [ADR-TEMPLATE.md](./ADR/ADR-TEMPLATE.md) | **MVP**: [ADR-MVP-TEMPLATE.md](./ADR/ADR-MVP-TEMPLATE.md)
+  - Index: [ADR-00_index.md](./05_ADR/ADR-00_index.md)
+  - Template: [ADR-TEMPLATE.md](./05_ADR/ADR-TEMPLATE.md) | **MVP**: [ADR-MVP-TEMPLATE.md](./05_ADR/ADR-MVP-TEMPLATE.md)
   - Purpose: Technical decisions with context, decision, and consequences
 - **SYS** (`SYS/`) - Layer 6: System Requirements Specifications consolidating requirements into system designs
-  - Index: [SYS-00_index.md](./SYS/SYS-00_index.md)
-  - Template: [SYS-TEMPLATE.md](./SYS/SYS-TEMPLATE.md) | **MVP**: [SYS-MVP-TEMPLATE.md](./SYS/SYS-MVP-TEMPLATE.md)
+  - Index: [SYS-00_index.md](./06_SYS/SYS-00_index.md)
+  - Template: [SYS-TEMPLATE.md](./06_SYS/SYS-TEMPLATE.md) | **MVP**: [SYS-MVP-TEMPLATE.md](./06_SYS/SYS-MVP-TEMPLATE.md)
   - Purpose: System-level functional requirements and quality attributes
 
 ### Requirements Layer (Layer 7)
 
 - **REQ** (`REQ/`) - Layer 7: Atomic, testable requirements with SPEC-readiness scoring
-  - Index: [REQ-00_index.md](./REQ/REQ-00_index.md)
-  - Template: [REQ-TEMPLATE.md](./REQ/REQ-TEMPLATE.md) | **MVP**: [REQ-MVP-TEMPLATE.md](./REQ/REQ-MVP-TEMPLATE.md)
+  - Index: [REQ-00_index.md](./07_REQ/REQ-00_index.md)
+  - Template: [REQ-TEMPLATE.md](./07_REQ/REQ-TEMPLATE.md) | **MVP**: [REQ-MVP-TEMPLATE.md](./07_REQ/REQ-MVP-TEMPLATE.md)
   - Organization: Nested per-document folders (DEFAULT)
     - Folder: `REQ/REQ-NN_{slug}/`
     - Primary file (atomic): `REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
@@ -100,29 +133,29 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Format: 12-section framework with validation rules
 <!-- VALIDATOR:IGNORE-LINKS-START -->
   - Examples:
-    - [REQ-01: API Integration Example](./REQ/examples/api/REQ-01_api_integration_example.md)
-    - See more in [REQ/examples/](./REQ/examples/)
+    - [REQ-01: API Integration Example](./07_REQ/examples/api/REQ-01_api_integration_example.md)
+    - See more in [REQ/examples/](./07_REQ/examples/)
 
 ### Project Management Layer (Layer 8 - Optional)
 
 - **IMPL** (`IMPL/`) - Layer 8: Implementation planning documents organizing work into phases
-  - Index: [IMPL-00_index.md](./IMPL/IMPL-00_index.md)
-  - Template: [IMPL-TEMPLATE.md](./IMPL/IMPL-TEMPLATE.md)
+  - Index: [IMPL-00_index.md](./08_IMPL/IMPL-00_index.md)
+  - Template: [IMPL-TEMPLATE.md](./08_IMPL/IMPL-TEMPLATE.md)
   - Purpose: Project management (WHO does WHAT, WHEN) - NOT technical specifications
   - Identifies deliverables: which CTR, SPEC, TASKS to create
   - When to use: [WHEN_TO_CREATE_IMPL.md](./WHEN_TO_CREATE_IMPL.md)
-  - Example: [IMPL-01](./IMPL/examples/IMPL-01_feature_implementation_example.md)
+  - Example: [IMPL-01](./08_IMPL/examples/IMPL-01_feature_implementation_example.md)
 
 ### Interface Layer (Layer 9 - Optional)
 
 - **CTR** (`CTR/`) - Layer 9: API Contracts defining component-to-component interfaces
-  - Index: [CTR-00_index.md](./CTR/CTR-00_index.md)
-  - Templates: [CTR-TEMPLATE.md](./CTR/CTR-TEMPLATE.md), [CTR-TEMPLATE.yaml](./CTR/CTR-TEMPLATE.yaml)
+  - Index: [CTR-00_index.md](./09_CTR/CTR-00_index.md)
+  - Templates: [CTR-TEMPLATE.md](./09_CTR/CTR-TEMPLATE.md), [CTR-TEMPLATE.yaml](./09_CTR/CTR-TEMPLATE.yaml)
   - Dual-file format: `.md` (human-readable context) + `.yaml` (machine-readable schema)
   - When to use: [CONTRACT_DECISION_QUESTIONNAIRE.md](./CONTRACT_DECISION_QUESTIONNAIRE.md)
   - Enables parallel development and contract testing
   - Optional organization: subdirectories by service type (agents/, mcp/, infra/)
-  - Examples: [CTR-01](./CTR/examples/CTR-01_data_validation_api.md)
+  - Examples: [CTR-01](./09_CTR/examples/CTR-01_data_validation_api.md)
 
 ### Technical Specs (SPEC) (Layer 10)
 
@@ -132,18 +165,18 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Layout:
     - Nested (default): `SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml` (+ Markdown sections alongside)
     - Flat (exception): `SPEC/SPEC-{DOC_NUM}_{slug}.yaml` for small, stable specs
-  - Template: [SPEC-TEMPLATE.yaml](./SPEC/SPEC-TEMPLATE.yaml)
+  - Template: [SPEC-TEMPLATE.yaml](./10_SPEC/SPEC-TEMPLATE.yaml)
   - Purpose: YAML format with classes, methods, algorithms (HOW to build)
   - References CTR contracts when implementing interfaces
   - Examples:
-    - Flat (small): [SPEC-01](./SPEC/SPEC-01_api_client_example.yaml)
-    - Nested (recommended): [SPEC-02 nested example](./SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) with [index](./SPEC/examples/SPEC-02_nested_example/SPEC-02.0_index.md)
+    - Flat (small): [SPEC-01](./10_SPEC/SPEC-01_api_client_example.yaml)
+    - Nested (recommended): [SPEC-02 nested example](./10_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) with [index](./10_SPEC/examples/SPEC-02_nested_example/SPEC-02.0_index.md)
 
 ### Code Generation Layer (Layer 11)
 
 - **TASKS** (`TASKS/`) - Layer 11: Code generation plans with exact TODOs
-  - Index: [TASKS-00_index.md](./TASKS/TASKS-00_index.md)
-  - Template: [TASKS-TEMPLATE.md](./TASKS/TASKS-TEMPLATE.md)
+  - Index: [TASKS-00_index.md](./11_TASKS/TASKS-00_index.md)
+  - Template: [TASKS-TEMPLATE.md](./11_TASKS/TASKS-TEMPLATE.md)
   - Purpose: Step-by-step guide to generate code from YAML SPEC
   - Each TASKS document corresponds to one SPEC
   - **Section 8**: Implementation Contracts for parallel development coordination
@@ -158,14 +191,14 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Session Execution Layer (Layer 12)
 
 - **IPLAN** (`IPLAN/`) - Layer 12: Implementation Work Plans for specific coding sessions
-  - Index: [IPLAN-00_index.md](./IPLAN/IPLAN-00_index.md)
-  - Template: [IPLAN-TEMPLATE.md](./IPLAN/IPLAN-TEMPLATE.md)
+  - Index: [IPLAN-00_index.md](./12_IPLAN/IPLAN-00_index.md)
+  - Template: [IPLAN-TEMPLATE.md](./12_IPLAN/IPLAN-TEMPLATE.md)
   - Purpose: Session-based execution context with executable bash commands
   - Format: Sequential naming `IPLAN-NN_{descriptive_slug}.md` (no timestamps)
   - Enables context resumption across AI coding sessions
   - Contains bash commands for setup, execution, and validation
   - Each IPLAN executes one or more TASKS within a session
-  - BDD Scenario Mapping: [BDD_SCENARIO_MAPPING.md](./IPLAN/BDD_SCENARIO_MAPPING.md)
+  - BDD Scenario Mapping: [BDD_SCENARIO_MAPPING.md](./12_IPLAN/BDD_SCENARIO_MAPPING.md)
 
 <!-- See README.md → “Using This Repo” for path mapping guidance. -->
 
@@ -269,9 +302,9 @@ flowchart TD
 ### Splitting Rules
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./BDD/BDD_SPLITTING_RULES.md)
-- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./CTR/CTR_SPLITTING_RULES.md)
-- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./SPEC/SPEC_SPLITTING_RULES.md)
+- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
+- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
+- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only. “Review” and “Prod” are outcomes, not formal layers.

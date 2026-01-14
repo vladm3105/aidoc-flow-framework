@@ -80,15 +80,15 @@ No domain-specific subdirectories added. Use standard structure:
 
 ```bash
 # Standard subdirectories (no domain extensions)
-docs/REQ/api/          # API requirements
-docs/REQ/auth/         # Authentication
-docs/REQ/data/         # Data management
-docs/REQ/core/         # Core business logic
-docs/REQ/integration/  # External integrations
-docs/REQ/monitoring/   # Monitoring & observability
-docs/REQ/reporting/    # Reporting features
-docs/REQ/security/     # security requirements
-docs/REQ/ui/           # User interface
+docs/07_REQ/api/          # API requirements
+docs/07_REQ/auth/         # Authentication
+docs/07_REQ/data/         # Data management
+docs/07_REQ/core/         # Core business logic
+docs/07_REQ/integration/  # External integrations
+docs/07_REQ/monitoring/   # Monitoring & observability
+docs/07_REQ/reporting/    # Reporting features
+docs/07_REQ/security/     # security requirements
+docs/07_REQ/ui/           # User interface
 
 # Support directories
 scripts/               # Validation and utility scripts

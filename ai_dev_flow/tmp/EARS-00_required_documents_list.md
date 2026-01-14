@@ -16,9 +16,9 @@ This document lists all required EARS (Easy Approach to Requirements Syntax) doc
 **Template**:
 
 Reference templates from framework:
-- `/opt/data/docs_flow_framework/ai_dev_flow/EARS/EARS-MVP-TEMPLATE.md`
-- `/opt/data/docs_flow_framework/ai_dev_flow/EARS/EARS_CREATION_RULES.md`
-- `/opt/data/docs_flow_framework/ai_dev_flow/EARS/EARS_VALIDATION_RULES.md`
+- `/opt/data/docs_flow_framework/ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md`
+- `/opt/data/docs_flow_framework/ai_dev_flow/03_EARS/EARS_CREATION_RULES.md`
+- `/opt/data/docs_flow_framework/ai_dev_flow/03_EARS/EARS_VALIDATION_RULES.md`
 
 ---
 
@@ -421,7 +421,7 @@ Each EARS document MUST include:
 
 1. **Document Control** with BDD-Ready Score
 2. **Upstream Tags**: `@brd: BRD.NN.EE.SS` | `@prd: PRD.NN.EE.SS`
-3. **Section 7 Traceability** linking to downstream BDD/ADR/SYS
+3. **Section 7 Traceability** linking to downstream 04_BDD/05_ADR/SYS
 
 ---
 
@@ -444,7 +444,7 @@ After creating each EARS document:
 ./scripts/validate_ears_post_creation.sh
 
 # Or use manual validation checklist
-# See: docs/EARS/EARS_CORPUS_VALIDATION_RULES.md
+# See: docs/03_EARS/EARS_CORPUS_VALIDATION_RULES.md
 ```
 
 ---

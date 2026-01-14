@@ -11,7 +11,7 @@ custom_fields:
 
 # When to Create an IMPL (Implementation Plan)
 
-**Purpose**: Guide developers on when an IMPL document is necessary vs when to skip directly from REQ → CTR/SPEC
+**Purpose**: Guide developers on when an IMPL document is necessary vs when to skip directly from REQ → 09_CTR/SPEC
 
 ## Decision Criteria
 
@@ -46,7 +46,7 @@ Use IMPL documents for **complex projects** that meet ANY of these criteria:
 
 ### Skip IMPL When: ⏭️
 
-Go directly from REQ → CTR/SPEC for **simple tasks**:
+Go directly from REQ → 09_CTR/SPEC for **simple tasks**:
 
 1. **Single-Component Changes**
    - One service/agent modification
@@ -346,7 +346,7 @@ Before skipping IMPL, verify:
 
 ## References
 
-- [IMPL-TEMPLATE.md](IMPL/IMPL-TEMPLATE.md) - Full IMPL template
-- [IMPL-00_index.md](IMPL/IMPL-00_index.md) - IMPL document index
-- [SPEC-TEMPLATE.yaml](SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
+- [IMPL-TEMPLATE.md](08_IMPL/IMPL-TEMPLATE.md) - Full IMPL template
+- [IMPL-00_index.md](08_IMPL/IMPL-00_index.md) - IMPL document index
+- [SPEC-TEMPLATE.yaml](10_SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
 - [Traceability Standards](TRACEABILITY.md) - Document linking requirements

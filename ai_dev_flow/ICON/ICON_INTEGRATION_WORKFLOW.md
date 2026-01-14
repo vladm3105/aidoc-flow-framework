@@ -30,7 +30,7 @@ ICON creation is an **8-file atomic operation** requiring updates across:
 
 ### Step 1: Dependency Analysis (Provider TASKS)
 
-**Location**: Provider TASKS file (e.g., `docs/TASKS/TASKS-XXX.md`)
+**Location**: Provider TASKS file (e.g., `docs/11_TASKS/TASKS-XXX.md`)
 
 **Required sections**:
 - Section 3.2: Downstream Dependencies (identifies consumers)
@@ -39,7 +39,7 @@ ICON creation is an **8-file atomic operation** requiring updates across:
 **Validation**:
 ```bash
 # Check if provider TASKS has dependencies identified
-grep -A 10 "### 3.2 Downstream Dependencies" docs/TASKS/TASKS-XXX.md
+grep -A 10 "### 3.2 Downstream Dependencies" docs/11_TASKS/TASKS-XXX.md
 
 # Should show list of consuming TASKS
 # Example output:
@@ -61,7 +61,7 @@ grep -A 10 "### 3.2 Downstream Dependencies" docs/TASKS/TASKS-XXX.md
 **Method 2: Automated (after TASKS files have placeholder tags)**:
 ```bash
 # If TASKS files already mention the planned ICON
-grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l
+grep -r "@icon: ICON-XXX" docs/11_TASKS/ | wc -l
 ```
 
 **Output**: Consumer count = N (must be > 0)
@@ -84,7 +84,7 @@ grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l
 
 **Output (success)**:
 ```
-✓ Provider TASKS found: docs/TASKS/TASKS-XXX.md
+✓ Provider TASKS found: docs/11_TASKS/TASKS-XXX.md
 ✓ Consumer count: N TASKS
 ✓ No self-reference detected
 ✓ No duplicate ICON-XXX found
@@ -284,9 +284,9 @@ custom_fields:
 **Commit all 8 files atomically**:
 ```bash
 git add docs/ICON/ICON-XXX_descriptive_name.md
-git add docs/TASKS/TASKS-XXX.md  # Provider
-git add docs/TASKS/TASKS-02.md  # Consumer 1
-git add docs/TASKS/TASKS-03.md  # Consumer 2
+git add docs/11_TASKS/TASKS-XXX.md  # Provider
+git add docs/11_TASKS/TASKS-02.md  # Consumer 1
+git add docs/11_TASKS/TASKS-03.md  # Consumer 2
 # ... (add all N consumers)
 git add docs/ICON/README.md
 
@@ -324,7 +324,7 @@ git commit -m "Add ICON-XXX: ContractName with N consumers
 **Fix**:
 ```bash
 # Re-calculate correct count
-actual_count=$(grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l)
+actual_count=$(grep -r "@icon: ICON-XXX" docs/11_TASKS/ | wc -l)
 
 # Update frontmatter
 # Change: consumer_count: [old_value]
@@ -381,7 +381,7 @@ actual_count=$(grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l)
 **Fix**:
 ```bash
 # Get accurate count
-grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l
+grep -r "@icon: ICON-XXX" docs/11_TASKS/ | wc -l
 # Output: 3
 
 # Update ICON-XXX.md frontmatter
@@ -445,4 +445,4 @@ grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l
 - [ICON_CREATION_RULES.md](./ICON_CREATION_RULES.md) - Detailed creation rules
 - [ICON-TEMPLATE.md](./ICON-TEMPLATE.md) - Contract template with all sections
 - [ICON_ERROR_RECOVERY.md](./ICON_ERROR_RECOVERY.md) - Error recovery procedures
-- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md) - Strategic guidance
+- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md) - Strategic guidance

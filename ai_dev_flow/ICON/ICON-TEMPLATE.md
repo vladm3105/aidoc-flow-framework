@@ -52,7 +52,7 @@ Before creating this ICON, verify:
 
 - [ ] Provider TASKS file exists with complete section 8.1
 - [ ] All N consumer TASKS identified with grep verification
-- [ ] Consumer count calculated: `grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l`
+- [ ] Consumer count calculated: `grep -r "@icon: ICON-XXX" docs/11_TASKS/ | wc -l`
 - [ ] No self-reference (provider TASKS not in consumer list)
 - [ ] Contract type selected (Protocol/Exception/State/Model/DI)
 - [ ] Performance requirements defined (if applicable)
@@ -393,8 +393,8 @@ def test_external_data_service_with_mock(mock_connector):
 ## 8. References
 
 ### 8.1 Internal Documentation
-- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
-- [TASKS-TEMPLATE.md](../TASKS/TASKS-TEMPLATE.md)
+- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
+- [TASKS-TEMPLATE.md](../11_TASKS/TASKS-TEMPLATE.md)
 - [TRACEABILITY.md](../TRACEABILITY.md)
 
 ### 8.2 Related Contracts

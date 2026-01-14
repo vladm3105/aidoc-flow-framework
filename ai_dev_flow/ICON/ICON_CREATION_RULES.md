@@ -380,7 +380,7 @@ grep -r "consumer_count:" docs/ICON/ | while read -r line; do
     icon_file=$(echo "$line" | cut -d: -f1)
     declared_count=$(echo "$line" | cut -d: -f3 | xargs)
     icon_id=$(basename "$icon_file" .md)
-    actual_count=$(grep -r "@icon: $icon_id" docs/TASKS/ | wc -l)
+    actual_count=$(grep -r "@icon: $icon_id" docs/11_TASKS/ | wc -l)
     if [ "$declared_count" -ne "$actual_count" ]; then
         echo "MISMATCH: $icon_id (declared=$declared_count, actual=$actual_count)"
     fi
@@ -397,13 +397,13 @@ done
 
 ```bash
 # List existing upstream artifacts for this layer
-ls -la docs/BRD/    # Layer 1
-ls -la docs/PRD/    # Layer 2
-ls -la docs/EARS/   # Layer 3
-ls -la docs/BDD/    # Layer 4
-ls -la docs/ADR/    # Layer 5
-ls -la docs/SYS/    # Layer 6
-ls -la docs/REQ/    # Layer 7
+ls -la docs/01_BRD/    # Layer 1
+ls -la docs/02_PRD/    # Layer 2
+ls -la docs/03_EARS/   # Layer 3
+ls -la docs/04_BDD/    # Layer 4
+ls -la docs/05_ADR/    # Layer 5
+ls -la docs/06_SYS/    # Layer 6
+ls -la docs/07_REQ/    # Layer 7
 # ... continue for applicable layers
 ```
 
@@ -435,12 +435,12 @@ ls -la docs/REQ/    # Layer 7
 ## References
 
 ### Internal Documentation
-- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
+- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
 - [ICON-00_index.md](./ICON-00_index.md)
 - [ICON-TEMPLATE.md](./ICON-TEMPLATE.md)
 - [ICON_INTEGRATION_WORKFLOW.md](./ICON_INTEGRATION_WORKFLOW.md)
 - [ICON_ERROR_RECOVERY.md](./ICON_ERROR_RECOVERY.md)
-- [TASKS-TEMPLATE.md](../TASKS/TASKS-TEMPLATE.md)
+- [TASKS-TEMPLATE.md](../11_TASKS/TASKS-TEMPLATE.md)
 
 ### Decision Examples
 - Example 1: Gateway Connector (embedded)

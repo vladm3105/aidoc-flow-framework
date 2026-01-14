@@ -56,17 +56,51 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 
 ## Using This Repo
 
-- Docs root: In this repository, artifact folders (`BRD/`, `PRD/`, `EARS/`, `BDD/`, `ADR/`, `SYS/`, `REQ/`, `IMPL/`, `CTR/`, `SPEC/`, `TASKS/`, `ICON/`, `IPLAN/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
-- BDD layout: Uses nested per-suite folders `BDD/BDD-NN_{slug}/` with sectioned `.feature` files.
+- Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_IMPL/`, `09_CTR/`, `10_SPEC/`, `11_TASKS/`, `12_IPLAN/`, `ICON/`, `CHG/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
+- BDD layout: Uses nested per-suite folders `04_BDD/BDD-NN_{slug}/` with sectioned `.feature` files.
 - Index width: This repo commonly uses `-00_index.md` for indices; follow existing width and do not rename history. New repos should choose a consistent zero width (`00` or `000`) and keep it stable.
 - Validators: Use the validators listed in TRACEABILITY_VALIDATION.md (e.g., `python scripts/validate_prd.py`, `./scripts/validate_req_template.sh`). Older `*_template.sh` examples in some guides have been updated here.
-- Path mapping example: `docs/PRD/PRD-01/...` in generic guides corresponds to `PRD/PRD-01/...` in this repo.
+- Path mapping example: `docs/02_PRD/PRD-01/...` in generic guides corresponds to `02_PRD/PRD-01/...` in this repo.
 
-### Default Starting Point: MVP Templates
+### Default Starting Point: MVP Templates (FRAMEWORK DEFAULT)
 
-- For new documents, prefer the `-MVP-TEMPLATE` variants (e.g., `BRD/BRD-MVP-TEMPLATE.md`, `PRD/PRD-MVP-TEMPLATE.md`, `ADR/ADR-MVP-TEMPLATE.md`).
-- Use full templates when projects are enterprise-scale, regulatory, or require extensive detail.
-- Validators support an `mvp` profile via `template_profile: mvp` in frontmatter to relax non-critical checks during early drafting.
+**MVP templates are the FRAMEWORK DEFAULT for all new document creation.** The framework automatically uses MVP templates unless explicitly configured otherwise.
+
+#### Why MVP is Default
+- **Faster iteration**: Streamlined templates for rapid development
+- **Reduced overhead**: Fewer required sections, relaxed validation
+- **Full traceability**: Same traceability chain as full templates
+- **Easy upgrade path**: Migrate to full templates when needed
+
+#### Available MVP Templates (Layers 1-7)
+| Layer | Artifact | Default Template |
+|-------|----------|-----------------|
+| 1 | BRD | `BRD-MVP-TEMPLATE.md` |
+| 2 | PRD | `PRD-MVP-TEMPLATE.md` |
+| 3 | EARS | `EARS-MVP-TEMPLATE.md` |
+| 4 | BDD | `BDD-MVP-TEMPLATE.feature` |
+| 5 | ADR | `ADR-MVP-TEMPLATE.md` |
+| 6 | SYS | `SYS-MVP-TEMPLATE.md` |
+| 7 | REQ | `REQ-MVP-TEMPLATE.md` |
+
+Layers 8-15 use full templates only (no MVP variants).
+
+#### Switching to Full Templates
+
+**Option 1 - Project Setting** (persistent):
+```yaml
+# In .autopilot.yaml or CLAUDE.md
+template_profile: enterprise  # or "full" or "strict"
+```
+
+**Option 2 - Prompt Keyword** (per-request):
+Say any of: "use full template", "enterprise mode", "regulatory compliance", "comprehensive template"
+
+**Option 3 - Direct Reference** (explicit):
+"Create BRD-01 using BRD-TEMPLATE.md" (specify full template by name)
+
+#### Validation Profile
+Validators support relaxed MVP validation via `template_profile: mvp` in frontmatter. Set `template_profile: enterprise` for strict validation.
 
 ### Units & Conversions (KB vs tokens)
 
@@ -219,9 +253,9 @@ flowchart LR
 ### Splitting Rules
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./BDD/BDD_SPLITTING_RULES.md)
-- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./CTR/CTR_SPLITTING_RULES.md)
-- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./SPEC/SPEC_SPLITTING_RULES.md)
+- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
+- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
+- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
 ### 16-Layer Architecture with Cumulative Tagging
@@ -396,36 +430,36 @@ flowchart TD
 **BRD/** - Business Requirements Documents
 - High-level business objectives and market context
 - Strategic goals and success criteria
-- **Files**: [BRD-00_index.md](./BRD/BRD-00_index.md) | [Template](./BRD/BRD-TEMPLATE.md) | **MVP**: [BRD-MVP-TEMPLATE.md](./BRD/BRD-MVP-TEMPLATE.md)
+- **Files**: [BRD-00_index.md](./01_BRD/BRD-00_index.md) | [Template](./01_BRD/BRD-TEMPLATE.md) | **MVP**: [BRD-MVP-TEMPLATE.md](./01_BRD/BRD-MVP-TEMPLATE.md)
 
 **PRD/** - Product Requirements Documents
 - User-facing features and product capabilities
 - Business requirements and acceptance criteria
-- **Files**: [PRD-00_index.md](./PRD/PRD-00_index.md) | [Template](./PRD/PRD-TEMPLATE.md) | **MVP**: [PRD-MVP-TEMPLATE.md](./PRD/PRD-MVP-TEMPLATE.md)
+- **Files**: [PRD-00_index.md](./02_PRD/PRD-00_index.md) | [Template](./02_PRD/PRD-TEMPLATE.md) | **MVP**: [PRD-MVP-TEMPLATE.md](./02_PRD/PRD-MVP-TEMPLATE.md)
 
 **EARS/** - Event-Action-Response-State (Engineering Requirements)
 - Measurable requirements using WHEN-THE-SHALL-WITHIN format
 - Event-driven and state-driven requirements
-- **Files**: [EARS-00_index.md](./EARS/EARS-00_index.md) | [Template](./EARS/EARS-TEMPLATE.md)
+- **Files**: [EARS-00_index.md](./03_EARS/EARS-00_index.md) | [Template](./03_EARS/EARS-TEMPLATE.md)
 
 ### Testing Layer
 
 **BDD/** - Behavior-Driven Development Scenarios
 - Executable acceptance tests in Gherkin format
 - Business-readable behavioral specifications
-- **Files**: [BDD-00_index.md](./BDD/BDD-00_index.md) | Main template: [BDD-TEMPLATE.feature](./BDD/BDD-TEMPLATE.feature) | Section templates: `BDD-SECTION-TEMPLATE.feature`, `BDD-SUBSECTION-TEMPLATE.feature`, `BDD-AGGREGATOR-TEMPLATE.feature`
+- **Files**: [BDD-00_index.md](./04_BDD/BDD-00_index.md) | Main template: [BDD-TEMPLATE.feature](./04_BDD/BDD-TEMPLATE.feature) | Section templates: `BDD-SECTION-TEMPLATE.feature`, `BDD-SUBSECTION-TEMPLATE.feature`, `BDD-AGGREGATOR-TEMPLATE.feature`
 
 ### Architecture Layer
 
 **ADR/** - Architecture Decision Records
 - Architectural choices and rationale
 - Technology selections and trade-offs
-- **Files**: [ADR-00_index.md](./ADR/ADR-00_index.md) | [Template](./ADR/ADR-TEMPLATE.md) | **MVP**: [ADR-MVP-TEMPLATE.md](./ADR/ADR-MVP-TEMPLATE.md)
+- **Files**: [ADR-00_index.md](./05_ADR/ADR-00_index.md) | [Template](./05_ADR/ADR-TEMPLATE.md) | **MVP**: [ADR-MVP-TEMPLATE.md](./05_ADR/ADR-MVP-TEMPLATE.md)
 
 **SYS/** - System Requirements Specifications
 - System-level functional requirements and quality attributes
 - Performance, security, and operational characteristics
-- **Files**: [SYS-00_index.md](./SYS/SYS-00_index.md) | [Template](./SYS/SYS-TEMPLATE.md) | **MVP**: [SYS-MVP-TEMPLATE.md](./SYS/SYS-MVP-TEMPLATE.md)
+- **Files**: [SYS-00_index.md](./06_SYS/SYS-00_index.md) | [Template](./06_SYS/SYS-TEMPLATE.md) | **MVP**: [SYS-MVP-TEMPLATE.md](./06_SYS/SYS-MVP-TEMPLATE.md)
 
 ### Requirements Layer
 
@@ -435,7 +469,7 @@ flowchart TD
   - Folder: `REQ/REQ-NN_{slug}/`
   - Primary file (atomic): `REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
   - Split (optional when large): index + sections `REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ/REQ-NN.1_{section}.md`, ...
-- Files: [REQ-00_index.md](./REQ/REQ-00_index.md) | [Template](./REQ/REQ-TEMPLATE.md) | **MVP**: [REQ-MVP-TEMPLATE.md](./REQ/REQ-MVP-TEMPLATE.md)
+- Files: [REQ-00_index.md](./07_REQ/REQ-00_index.md) | [Template](./07_REQ/REQ-TEMPLATE.md) | **MVP**: [REQ-MVP-TEMPLATE.md](./07_REQ/REQ-MVP-TEMPLATE.md)
 
 ### Project Management Layer
 
@@ -443,8 +477,8 @@ flowchart TD
 - Project management documents organizing work into phases, teams, deliverables
 - **Focus**: WHO does WHAT, WHEN - NOT technical specifications (HOW)
 - Identifies which CTR, SPEC, TASKS to create
-- **Files**: [IMPL-00_index.md](./IMPL/IMPL-00_index.md) | [Template](./IMPL/IMPL-TEMPLATE.md)
-- **Examples**: [IMPL-01_feature_implementation_example.md](./IMPL/examples/IMPL-01_feature_implementation_example.md)
+- **Files**: [IMPL-00_index.md](./08_IMPL/IMPL-00_index.md) | [Template](./08_IMPL/IMPL-TEMPLATE.md)
+- **Examples**: [IMPL-01_feature_implementation_example.md](./08_IMPL/examples/IMPL-01_feature_implementation_example.md)
 
 ### Interface Layer
 
@@ -455,8 +489,8 @@ flowchart TD
   - `.yaml` file: Machine-readable schema (OpenAPI/AsyncAPI/JSON Schema)
 - **When to use**: Created when REQ specifies interface requirements (APIs, events, data models)
 - **Benefits**: Enables parallel development and contract testing
-- **Files**: [CTR-00_index.md](./CTR/CTR-00_index.md) | [Template .md](./CTR/CTR-TEMPLATE.md) + [Template .yaml](./CTR/CTR-TEMPLATE.yaml)
-- **Examples**: [CTR-01_service_contract_example.md](./CTR/CTR-01_service_contract_example.md) + [CTR-01_service_contract_example.yaml](./CTR/CTR-01_service_contract_example.yaml)
+- **Files**: [CTR-00_index.md](./09_CTR/CTR-00_index.md) | [Template .md](./09_CTR/CTR-TEMPLATE.md) + [Template .yaml](./09_CTR/CTR-TEMPLATE.yaml)
+- **Examples**: [CTR-01_service_contract_example.md](./09_CTR/CTR-01_service_contract_example.md) + [CTR-01_service_contract_example.yaml](./09_CTR/CTR-01_service_contract_example.yaml)
 
 ### Technical Specs (SPEC)
 
@@ -464,8 +498,8 @@ flowchart TD
 - YAML: Monolithic per component (code generation source)
 - Markdown: Split narrative with `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` when needed
 - References CTR contracts when implementing interfaces
-- **Files**: [SPEC-00_index.md](./SPEC/SPEC-00_index.md) | [Template](./SPEC/SPEC-TEMPLATE.yaml)
-- **Examples**: [SPEC-01_api_client_example.yaml](./SPEC/SPEC-01_api_client_example.yaml)
+- **Files**: [SPEC-00_index.md](./10_SPEC/SPEC-00_index.md) | [Template](./10_SPEC/SPEC-TEMPLATE.yaml)
+- **Examples**: [SPEC-01_api_client_example.yaml](./10_SPEC/SPEC-01_api_client_example.yaml)
 
 ### Code Generation Layer
 
@@ -473,7 +507,7 @@ flowchart TD
 - Exact TODOs to implement SPEC in source code
 - Step-by-step guide for AI code generation from YAML specifications
 - **1:1 mapping**: Each TASKS document corresponds to one SPEC
-- **Files**: [TASKS-00_index.md](./TASKS/TASKS-00_index.md) | [Template](./TASKS/TASKS-TEMPLATE.md)
+- **Files**: [TASKS-00_index.md](./11_TASKS/TASKS-00_index.md) | [Template](./11_TASKS/TASKS-TEMPLATE.md)
 
 ### Implementation Contracts (Optional, Layer 11)
 
@@ -483,7 +517,7 @@ flowchart TD
 - **When to use**: 5+ consumer TASKS, >500 lines, platform-level, cross-project
 - **Default**: Embed contracts in TASKS section 8 unless criteria met
 - **Files**: [ICON-00_index.md](./ICON/ICON-00_index.md) | [Template](./ICON/ICON-TEMPLATE.md)
-- **Guide**: [IMPLEMENTATION_CONTRACTS_GUIDE.md](./TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
+- **Guide**: [IMPLEMENTATION_CONTRACTS_GUIDE.md](./11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
 
 ### 9. Session Planning Layer
 
@@ -660,7 +694,7 @@ Note on Validation layer (Layer 15): Validation consumes all upstream tags. Docu
 cp -r ai_dev_flow/ <your_project>/docs/
 
 # Or copy specific templates as needed
-cp ai_dev_flow/REQ/REQ-TEMPLATE.md <your_project>/docs/REQ/
+cp ai_dev_flow/07_REQ/REQ-TEMPLATE.md <your_project>/docs/07_REQ/
 ```
 
 **Step 3: Replace Placeholders**
@@ -669,7 +703,7 @@ cp ai_dev_flow/REQ/REQ-TEMPLATE.md <your_project>/docs/REQ/
 - Update examples to match your use cases
 
 **Step 4: Create Your First Document**
-1. **Choose Document Type**: Select directory (BRD/, PRD/, REQ/, etc.)
+1. **Choose Document Type**: Select directory (01_BRD/, 02_PRD/, 07_REQ/, etc.)
 2. **Check Index**: Review `{TYPE}-00_index.{ext}` for next available ID
 3. **Copy Template**: Use template file from the directory
 4. **Fill Content**: Complete all sections with traceability links
@@ -807,11 +841,11 @@ Statistics:
 ❌ CUMULATIVE TAGGING ERRORS FOUND: 3
 
 MISSING_REQUIRED_TAGS: 1
-  📄 docs/REQ/api/REQ-NN_submit_request.md
+  📄 docs/07_REQ/api/REQ-NN_submit_request.md
      ❌ Missing required upstream tags for REQ (Layer 7): bdd
 
 TAG_CHAIN_GAP: 2
-  📄 docs/SPEC/service.yaml
+  📄 docs/10_SPEC/service.yaml
      ❌ Gap in cumulative tag chain: @bdd (Layer 4) missing but higher layers present
 ```
 
@@ -827,7 +861,7 @@ python scripts/generate_traceability_matrix.py --auto
 # Generate matrix for specific artifact type
 python scripts/generate_traceability_matrix.py \
   --type REQ \
-  --output docs/REQ/REQ-00_TRACEABILITY_MATRIX.md
+  --output docs/07_REQ/REQ-00_TRACEABILITY_MATRIX.md
 
 # Show coverage metrics
 python scripts/generate_traceability_matrix.py \
@@ -923,7 +957,7 @@ flowchart TD
 **Issue**: "Orphaned tag - referenced document not found"
 ```bash
 # Fix: Either create the referenced document or remove invalid tag
-# Verify: ls docs/BRD/BRD-NN*.md
+# Verify: ls docs/01_BRD/BRD-NN*.md
 ```
 
 **Issue**: "Insufficient tag count"
@@ -974,24 +1008,24 @@ Each artifact type has a corresponding YAML schema file (`{TYPE}_SCHEMA.yaml`) t
 
 | Layer | Artifact | Schema File | Key Patterns |
 |-------|----------|-------------|--------------|
-| 1 | BRD | [BRD_SCHEMA.yaml](./BRD/BRD_SCHEMA.yaml) | Business objectives format |
-| 2 | PRD | [PRD_SCHEMA.yaml](./PRD/PRD_SCHEMA.yaml) | FR/QA format, template variants |
-| 3 | EARS | [EARS_SCHEMA.yaml](./EARS/EARS_SCHEMA.yaml) | WHEN-THE-SHALL-WITHIN format |
-| 4 | BDD | [BDD_SCHEMA.yaml](./BDD/BDD_SCHEMA.yaml) | Gherkin syntax, step patterns |
-| 5 | ADR | [ADR_SCHEMA.yaml](./ADR/ADR_SCHEMA.yaml) | Context-Decision-Consequences |
-| 6 | SYS | [SYS_SCHEMA.yaml](./SYS/SYS_SCHEMA.yaml) | FR-NN, unified sequential formats |
-| 7 | REQ | [REQ_SCHEMA.yaml](./REQ/REQ_SCHEMA.yaml) | 12 sections, interface schemas |
-| 8 | IMPL | [IMPL_SCHEMA.yaml](./IMPL/IMPL_SCHEMA.yaml) | Phase organization, deliverables |
-| 9 | CTR | [CTR_SCHEMA.yaml](./CTR/CTR_SCHEMA.yaml) | Dual-file, OpenAPI/AsyncAPI |
-| 10 | SPEC | [SPEC_SCHEMA.yaml](./SPEC/SPEC_SCHEMA.yaml) | YAML structure, code gen ready |
-| 11 | TASKS | [TASKS_SCHEMA.yaml](./TASKS/TASKS_SCHEMA.yaml) | TASK-NN, implementation contracts |
-| 12 | IPLAN | [IPLAN_SCHEMA.yaml](./IPLAN/IPLAN_SCHEMA.yaml) | Session format, bash commands |
+| 1 | BRD | [BRD_SCHEMA.yaml](./01_BRD/BRD_SCHEMA.yaml) | Business objectives format |
+| 2 | PRD | [PRD_SCHEMA.yaml](./02_PRD/PRD_SCHEMA.yaml) | FR/QA format, template variants |
+| 3 | EARS | [EARS_SCHEMA.yaml](./03_EARS/EARS_SCHEMA.yaml) | WHEN-THE-SHALL-WITHIN format |
+| 4 | BDD | [BDD_SCHEMA.yaml](./04_BDD/BDD_SCHEMA.yaml) | Gherkin syntax, step patterns |
+| 5 | ADR | [ADR_SCHEMA.yaml](./05_ADR/ADR_SCHEMA.yaml) | Context-Decision-Consequences |
+| 6 | SYS | [SYS_SCHEMA.yaml](./06_SYS/SYS_SCHEMA.yaml) | FR-NN, unified sequential formats |
+| 7 | REQ | [REQ_SCHEMA.yaml](./07_REQ/REQ_SCHEMA.yaml) | 12 sections, interface schemas |
+| 8 | IMPL | [IMPL_SCHEMA.yaml](./08_IMPL/IMPL_SCHEMA.yaml) | Phase organization, deliverables |
+| 9 | CTR | [CTR_SCHEMA.yaml](./09_CTR/CTR_SCHEMA.yaml) | Dual-file, OpenAPI/AsyncAPI |
+| 10 | SPEC | [SPEC_SCHEMA.yaml](./10_SPEC/SPEC_SCHEMA.yaml) | YAML structure, code gen ready |
+| 11 | TASKS | [TASKS_SCHEMA.yaml](./11_TASKS/TASKS_SCHEMA.yaml) | TASK-NN, implementation contracts |
+| 12 | IPLAN | [IPLAN_SCHEMA.yaml](./12_IPLAN/IPLAN_SCHEMA.yaml) | Session format, bash commands |
 
 ### Schema Validation Usage
 
 ```bash
 # Validate document against schema (planned)
-python scripts/validate_artifact.py --schema ai_dev_flow/REQ/REQ_SCHEMA.yaml --document docs/REQ/REQ-01_example.md
+python scripts/validate_artifact.py --schema ai_dev_flow/07_REQ/REQ_SCHEMA.yaml --document docs/07_REQ/REQ-01_example.md
 
 # Validate all documents of a type
 python scripts/validate_artifact.py --type REQ --strict
@@ -1189,8 +1223,8 @@ graph LR
 | `TRACEABILITY.md` | Traceability requirements and conventions |
 
 <!-- Directory Structure Migration History -->
-<!-- 2025-01-13: CONTRACTS/ → CTR/ (contracts now use dual-file format) -->
-<!-- 2025-01-13: tasks_plans/ → IPLAN/ (implementation plans; filenames no longer use timestamps) -->
+<!-- 2025-01-13: CONTRACTS/ → 09_CTR/ (contracts now use dual-file format) -->
+<!-- 2025-01-13: tasks_plans/ → 12_IPLAN/ (implementation plans; filenames no longer use timestamps) -->
 
 ## Framework Versions and Updates
 
@@ -1234,7 +1268,7 @@ graph LR
 
 **For Original Project Context** (example references - replace with your project path):
 - [CLAUDE.md]({project_root}/CLAUDE.md) - Project-level SDD guidance
-- [docs/SPEC/]({project_root}/docs/SPEC/) - Production specifications
+- [docs/10_SPEC/]({project_root}/docs/10_SPEC/) - Production specifications
 - [docs/src/]({project_root}/docs/src/) - Component implementations
 
 ## BDD Tag Examples
@@ -1262,7 +1296,7 @@ Feature: Request validation
 ### Link-Style Tags (also supported)
 
 ```feature
-@requirement:[REQ-NN](../REQ/api/REQ-NN_submit_request.md#REQ-NN)
+@requirement:[REQ-NN](../07_REQ/api/REQ-NN_submit_request.md#REQ-NN)
 
 Feature: Request validation
   Scenario: Submit a valid request
@@ -1274,7 +1308,7 @@ Feature: Request validation
 Notes:
 - Both forms are extracted by `scripts/extract_tags.py`.
 - Link-style tags capture the document ID; inline tags are recommended for cumulative tagging checks.
-- Optional layers (e.g., IMPL/CTR) may be omitted when not applicable.
+- Optional layers (e.g., 08_IMPL/CTR) may be omitted when not applicable.
 
 ## Adoption and Support
 

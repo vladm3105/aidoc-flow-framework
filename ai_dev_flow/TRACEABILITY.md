@@ -55,18 +55,18 @@ The following rules govern traceability in the SDD workflow:
 
 | Artifact | Schema File | Layer |
 |----------|-------------|-------|
-| PRD | `ai_dev_flow/PRD/PRD_SCHEMA.yaml` | 2 |
-| EARS | `ai_dev_flow/EARS/EARS_SCHEMA.yaml` | 3 |
-| BDD | `ai_dev_flow/BDD/BDD_SCHEMA.yaml` | 4 |
-| ADR | `ai_dev_flow/ADR/ADR_SCHEMA.yaml` | 5 |
-| SYS | `ai_dev_flow/SYS/SYS_SCHEMA.yaml` | 6 |
-| REQ | `ai_dev_flow/REQ/REQ_SCHEMA.yaml` | 7 |
-| IMPL | `ai_dev_flow/IMPL/IMPL_SCHEMA.yaml` | 8 |
-| CTR | `ai_dev_flow/CTR/CTR_SCHEMA.yaml` | 9 |
-| SPEC | `ai_dev_flow/SPEC/SPEC_SCHEMA.yaml` | 10 |
-| TASKS | `ai_dev_flow/TASKS/TASKS_SCHEMA.yaml` | 11 |
+| PRD | `ai_dev_flow/02_PRD/PRD_SCHEMA.yaml` | 2 |
+| EARS | `ai_dev_flow/03_EARS/EARS_SCHEMA.yaml` | 3 |
+| BDD | `ai_dev_flow/04_BDD/BDD_SCHEMA.yaml` | 4 |
+| ADR | `ai_dev_flow/05_ADR/ADR_SCHEMA.yaml` | 5 |
+| SYS | `ai_dev_flow/06_SYS/SYS_SCHEMA.yaml` | 6 |
+| REQ | `ai_dev_flow/07_REQ/REQ_SCHEMA.yaml` | 7 |
+| IMPL | `ai_dev_flow/08_IMPL/IMPL_SCHEMA.yaml` | 8 |
+| CTR | `ai_dev_flow/09_CTR/CTR_SCHEMA.yaml` | 9 |
+| SPEC | `ai_dev_flow/10_SPEC/SPEC_SCHEMA.yaml` | 10 |
+| TASKS | `ai_dev_flow/11_TASKS/TASKS_SCHEMA.yaml` | 11 |
 | ICON | `ai_dev_flow/ICON/ICON_SCHEMA.yaml` | 11 |
-| IPLAN | `ai_dev_flow/IPLAN/IPLAN_SCHEMA.yaml` | 12 |
+| IPLAN | `ai_dev_flow/12_IPLAN/IPLAN_SCHEMA.yaml` | 12 |
 
 ## ⚠️ Upstream Artifact Verification (CRITICAL)
 
@@ -76,18 +76,18 @@ The following rules govern traceability in the SDD workflow:
 
 ```bash
 # List all existing artifacts before adding traceability references
-ls -la docs/BRD/    # Layer 1 - Business Requirements
-ls -la docs/PRD/    # Layer 2 - Product Requirements
-ls -la docs/EARS/   # Layer 3 - Engineering Requirements
-ls -la docs/BDD/    # Layer 4 - Behavior Tests
-ls -la docs/ADR/    # Layer 5 - Architecture Decisions
-ls -la docs/SYS/    # Layer 6 - System Requirements
-ls -la docs/REQ/    # Layer 7 - Atomic Requirements
-ls -la docs/IMPL/   # Layer 8 - Implementation Plans
-ls -la docs/CTR/    # Layer 9 - Contracts
-ls -la docs/SPEC/   # Layer 10 - Specifications
-ls -la docs/TASKS/  # Layer 11 - Task Breakdowns
-ls -la docs/IPLAN/  # Layer 12 - Implementation Plans
+ls -la docs/01_BRD/    # Layer 1 - Business Requirements
+ls -la docs/02_PRD/    # Layer 2 - Product Requirements
+ls -la docs/03_EARS/   # Layer 3 - Engineering Requirements
+ls -la docs/04_BDD/    # Layer 4 - Behavior Tests
+ls -la docs/05_ADR/    # Layer 5 - Architecture Decisions
+ls -la docs/06_SYS/    # Layer 6 - System Requirements
+ls -la docs/07_REQ/    # Layer 7 - Atomic Requirements
+ls -la docs/08_IMPL/   # Layer 8 - Implementation Plans
+ls -la docs/09_CTR/    # Layer 9 - Contracts
+ls -la docs/10_SPEC/   # Layer 10 - Specifications
+ls -la docs/11_TASKS/  # Layer 11 - Task Breakdowns
+ls -la docs/12_IPLAN/  # Layer 12 - Implementation Plans
 ```
 
 ### Step 2: Map Existing Documents to Traceability Tags
@@ -127,14 +127,14 @@ ls -la docs/IPLAN/  # Layer 12 - Implementation Plans
 
 **✅ CORRECT** (verified references):
 ```markdown
-@brd: BRD.01.01.30  # Verified: docs/BRD/BRD-01_project.md exists
+@brd: BRD.01.01.30  # Verified: docs/01_BRD/BRD-01_project.md exists
 @prd: null         # No PRD exists for this feature (legitimate)
-@adr: ADR-05      # Verified: docs/ADR/ADR-05_architecture.md exists
+@adr: ADR-05      # Verified: docs/05_ADR/ADR-05_architecture.md exists
 ```
 
 **16-Layer Workflow**: This traceability system implements the 16-layer SDD workflow (Layer 0: Strategy through Layer 15: Validation):
 ```
-Strategy (Layer 0) → Business (BRD/PRD/EARS) → Testing (BDD) → Architecture (ADR/SYS) →
+Strategy (Layer 0) → Business (01_BRD/02_PRD/EARS) → Testing (BDD) → Architecture (05_ADR/SYS) →
 Requirements (REQ) → Project Management (IMPL) → Interface (CTR) → Implementation (SPEC) →
 Code Generation (TASKS) → Implementation Plans (IPLAN) → Execution (Code/Tests) → Validation
 ```
@@ -340,24 +340,24 @@ Document the business and product requirements that drive this specification.
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-NN](../BRD/BRD-NN_...md) | [Business requirement title] | sections X.Y | Business objectives driving these requirements |
-| PRD | [PRD-NN](../PRD/PRD-NN_...md) | [Product requirement title] | Functional Requirements X | Product features and user needs |
-| SYS | [SYS-NN](../SYS/SYS-NN_...md) | [System requirement title] | System architecture section X | Technical system constraints |
-| EARS | [EARS-NN](../EARS/EARS-NN_...md) | [EARS requirement title] | Statement IDs X-Y | Formal requirements driving this specification |
+| BRD | [BRD-NN](../01_BRD/BRD-NN_...md) | [Business requirement title] | sections X.Y | Business objectives driving these requirements |
+| PRD | [PRD-NN](../02_PRD/PRD-NN_...md) | [Product requirement title] | Functional Requirements X | Product features and user needs |
+| SYS | [SYS-NN](../06_SYS/SYS-NN_...md) | [System requirement title] | System architecture section X | Technical system constraints |
+| EARS | [EARS-NN](../03_EARS/EARS-NN_...md) | [EARS requirement title] | Statement IDs X-Y | Formal requirements driving this specification |
 
 ### Downstream Artifacts
 Document the technical specifications and designs derived from this document.
 
 | Artifact Type | Document ID | Document Title | Relationship |
 |---------------|-------------|----------------|--------------|
-| ADR | [ADR-NN](../ADR/ADR-NN_...md#ADR-NN) | [Architecture decision title] | Architectural approach implementing these requirements |
-| REQ | [REQ-NN](../REQ/.../REQ-NN_...md#REQ-NN) | [Detailed requirement] | Detailed atomic requirement |
-| IMPL | [IMPL-NN](../IMPL/IMPL-NN_...md#IMPL-NN) | [Implementation plan] | Project management plan (WHO/WHEN) |
-| CTR | [CTR-NN](../CTR/CTR-NN_...md#CTR-NN) | [API contract] | Interface contract (if interface requirement) |
-| BDD | [BDD-NN.SS](../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios) | [Test scenarios] | Acceptance test scenarios |
-| SPEC | [SPEC-NN](../SPEC/.../SPEC-NN_...yaml) | [Technical specification] | Implementation blueprint (HOW to build) |
-| TASKS | [TASKS-NN](../TASKS/TASKS-NN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code |
-| IPLAN | [IPLAN-NN](../IPLAN/IPLAN-NN_...md) | [Implementation work plan] | Session context with bash commands to execute TASKS |
+| ADR | [ADR-NN](../05_ADR/ADR-NN_...md#ADR-NN) | [Architecture decision title] | Architectural approach implementing these requirements |
+| REQ | [REQ-NN](../07_REQ/.../REQ-NN_...md#REQ-NN) | [Detailed requirement] | Detailed atomic requirement |
+| IMPL | [IMPL-NN](../08_IMPL/IMPL-NN_...md#IMPL-NN) | [Implementation plan] | Project management plan (WHO/WHEN) |
+| CTR | [CTR-NN](../09_CTR/CTR-NN_...md#CTR-NN) | [API contract] | Interface contract (if interface requirement) |
+| BDD | [BDD-NN.SS](../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios) | [Test scenarios] | Acceptance test scenarios |
+| SPEC | [SPEC-NN](../10_SPEC/.../SPEC-NN_...yaml) | [Technical specification] | Implementation blueprint (HOW to build) |
+| TASKS | [TASKS-NN](../11_TASKS/TASKS-NN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code |
+| IPLAN | [IPLAN-NN](../12_IPLAN/IPLAN-NN_...md) | [Implementation work plan] | Session context with bash commands to execute TASKS |
 
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 ### Same-Type References (Conditional)
@@ -367,8 +367,8 @@ Document the technical specifications and designs derived from this document.
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 | Relationship | Document ID | Document Title | Purpose |
 |--------------|-------------|----------------|---------|
-| Related | [REQ-01](../REQ/.../REQ-01_...md) | [Related requirement] | Shared domain context |
-| Depends | [REQ-02](../REQ/.../REQ-02_...md) | [Prerequisite requirement] | Must complete before this |
+| Related | [REQ-01](../07_REQ/.../REQ-01_...md) | [Related requirement] | Shared domain context |
+| Depends | [REQ-02](../07_REQ/.../REQ-02_...md) | [Prerequisite requirement] | Must complete before this |
 
 **Tags**:
 
@@ -584,9 +584,9 @@ From EARS-TEMPLATE.md:
 
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-01](../BRD/BRD-01_service_platform.md) | [APPLICATION_TYPE - e.g., e-commerce platform, SaaS application] Requirements | sections 2.4, 4.x | Business objectives driving these requirements |
-| PRD | [PRD-01](../PRD/PRD-01_risk_management.md) | resource management Product Requirements | Functional Requirements 4.x | Product features and user needs |
-| SYS | [SYS-01](../SYS/SYS-01_resource_limits.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] System Requirements | System architecture section 3 | Technical system constraints |
+| BRD | [BRD-01](../01_BRD/BRD-01_service_platform.md) | [APPLICATION_TYPE - e.g., e-commerce platform, SaaS application] Requirements | sections 2.4, 4.x | Business objectives driving these requirements |
+| PRD | [PRD-01](../02_PRD/PRD-01_risk_management.md) | resource management Product Requirements | Functional Requirements 4.x | Product features and user needs |
+| SYS | [SYS-01](../06_SYS/SYS-01_resource_limits.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] System Requirements | System architecture section 3 | Technical system constraints |
 
 **Key Business Objectives Satisfied**:
 - BRD.NN.23.01: Prevent excessive resource collection heat → Satisfied by EARS statements EARS.NN.21.01, EARS.NN.21.02
@@ -602,22 +602,22 @@ From EARS-TEMPLATE.md:
 
 | ADR ID | ADR Title | Decisions Driven by EARS | Relationship |
 |--------|-----------|-------------------------|--------------|
-| [ADR-33](../ADR/ADR-33_risk_limit_enforcement.md#ADR-33) | Risk Limit Enforcement Architecture | EARS statements EARS.NN.21.01, EARS.NN.22.01 | This EARS requirement necessitates the architectural approach |
-| [ADR-34](../ADR/ADR-34_circuit_breaker.md#ADR-34) | [SAFETY_MECHANISM - e.g., rate limiter, error threshold] Pattern | EARS.01.24.901 | Performance requirement drives architectural pattern |
+| [ADR-33](../05_ADR/ADR-33_risk_limit_enforcement.md#ADR-33) | Risk Limit Enforcement Architecture | EARS statements EARS.NN.21.01, EARS.NN.22.01 | This EARS requirement necessitates the architectural approach |
+| [ADR-34](../05_ADR/ADR-34_circuit_breaker.md#ADR-34) | [SAFETY_MECHANISM - e.g., rate limiter, error threshold] Pattern | EARS.01.24.901 | Performance requirement drives architectural pattern |
 
 #### 7.2.2 Atomic Requirements
 
 | REQ ID | Requirement Title | Source EARS Statements | Relationship |
 |--------|------------------|----------------------|--------------|
-| [REQ-03](../REQ/risk/lim/REQ-03_resource_limit.md#REQ-03) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Validation | Derived from EARS.NN.21.01, EARS.NN.21.02 | Detailed implementation requirement |
-| [REQ-004](../REQ/risk/lim/REQ-004_resource_usage.md#REQ-004) | resource collection Heat Calculation | Derived from EARS.NN.22.01 | Detailed implementation requirement |
+| [REQ-03](../07_REQ/risk/lim/REQ-03_resource_limit.md#REQ-03) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Validation | Derived from EARS.NN.21.01, EARS.NN.21.02 | Detailed implementation requirement |
+| [REQ-004](../07_REQ/risk/lim/REQ-004_resource_usage.md#REQ-004) | resource collection Heat Calculation | Derived from EARS.NN.22.01 | Detailed implementation requirement |
 
 #### 7.2.3 BDD Scenarios
 
 | BDD Feature | Scenario | Source EARS Statements | Relationship |
 |-------------|----------|----------------------|--------------|
-| [BDD-03](../BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature#scenario-1) | Validate [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] rejection | Tests EARS.NN.21.01 | Acceptance test for requirement |
-| [BDD-03](../BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature#scenario-2) | Validate resource collection heat threshold | Tests EARS.NN.22.01 | Acceptance test for requirement |
+| [BDD-03](../04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature#scenario-1) | Validate [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] rejection | Tests EARS.NN.21.01 | Acceptance test for requirement |
+| [BDD-03](../04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature#scenario-2) | Validate resource collection heat threshold | Tests EARS.NN.22.01 | Acceptance test for requirement |
 
 ### Document Links
 - **Anchors/IDs**: `#EARS-01`
@@ -641,7 +641,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 **Principle**: Each layer inherits ALL tags from upstream layers and adds its own.
 
-**Example**: A SPEC file includes tags from: BRD, PRD, EARS, BDD, ADR, SYS, REQ, and optionally IMPL/CTR if they exist in the chain.
+**Example**: A SPEC file includes tags from: BRD, PRD, EARS, BDD, ADR, SYS, REQ, and optionally 08_IMPL/CTR if they exist in the chain.
 
 **Format**: `@artifact-type: TYPE.NN.TT.SS` (e.g., `@brd: BRD.01.01.30`)
 
@@ -666,7 +666,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 | 8 | **IMPL** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req` | Formal Template | Cumulative: BRD through REQ |
 | 9 | **CTR** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl` | Formal Template | Cumulative: BRD through IMPL (optional layer) |
 | 10 | **SPEC** | All upstream through `@req` + optional `@impl`, `@ctr` | Formal Template (YAML) | Full upstream chain |
-| 11 | **TASKS** | All upstream through `@spec` + optional `@icon` | Formal Template | Include optional IMPL/CTR/ICON if present |
+| 11 | **TASKS** | All upstream through `@spec` + optional `@icon` | Formal Template | Include optional 08_IMPL/09_CTR/ICON if present |
 | 12 | **IPLAN** | All upstream through `@tasks` | Project Files | All formal artifact tags |
 | 13 | **Code** | **ALL tags** including `@iplan` | Docstring Tags | Complete traceability chain |
 | 14 | **Tests** | All upstream through `@code` | Docstring Tags + BDD | All upstream + code reference |
@@ -945,10 +945,10 @@ In addition to upstream/downstream layer traceability, documents may have relati
 
 ```bash
 # Find all documents that depend on REQ-01
-grep -r "@depends-req:.*REQ-01" docs/REQ/
+grep -r "@depends-req:.*REQ-01" docs/07_REQ/
 
 # Find all documents related to SPEC-03
-grep -r "@related-spec:.*SPEC-03" docs/SPEC/
+grep -r "@related-spec:.*SPEC-03" docs/10_SPEC/
 ```
 
 ## TASKS ↔ ICON Bidirectional Traceability
@@ -1073,19 +1073,19 @@ Mandatory integration in consumer TASKS:
 find docs/ICON/ -name "ICON-*.md" | wc -l
 
 # Count @icon: references in TASKS files
-grep -r "@icon:" docs/TASKS/ | wc -l
+grep -r "@icon:" docs/11_TASKS/ | wc -l
 
 # Count section 8 headers in TASKS files
-grep -r "## 8. Implementation Contracts" docs/TASKS/ | wc -l
+grep -r "## 8. Implementation Contracts" docs/11_TASKS/ | wc -l
 
 # Verify specific ICON integration
-grep -r "@icon: ICON-01" docs/TASKS/
+grep -r "@icon: ICON-01" docs/11_TASKS/
 
 # Check provider roles
-grep -r "@icon-role: provider" docs/TASKS/
+grep -r "@icon-role: provider" docs/11_TASKS/
 
 # Check consumer roles
-grep -r "@icon-role: consumer" docs/TASKS/
+grep -r "@icon-role: consumer" docs/11_TASKS/
 ```
 
 **Expected Results (IB MCP Project)**:
@@ -1146,7 +1146,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 
 ❌ **Problem**: ICON file created but no TASKS files reference it
 - ICON-01 exists in `docs/ICON/`
-- `grep -r "@icon: ICON-01" docs/TASKS/` returns 0 results
+- `grep -r "@icon: ICON-01" docs/11_TASKS/` returns 0 results
 - No section 8 in any TASKS file
 
 ✅ **Solution**: Update all provider and consumer TASKS files with section 8
@@ -1219,7 +1219,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 - **Format**: Embedded in TASKS section 8 OR standalone ICON files
 - **Examples**: `ServiceConnector` Protocol, `ConnectionState` State Machine
 - **Tag**: `@icon: TASKS-01:ServiceConnector` or `@icon: ICON-01:ServiceConnector`
-- **Location**: `docs/ICON/` or embedded in `docs/TASKS/`
+- **Location**: `docs/ICON/` or embedded in `docs/11_TASKS/`
 - **Versioning**: Tied to TASKS implementation cycles
 
 **CTR (Data Contracts)** - Layer 9 (External):
@@ -1228,7 +1228,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 - **Format**: Dual-file (.md + .yaml) with JSON Schema definitions
 - **Examples**: REST API contracts, gRPC service definitions, message schemas
 - **Tag**: `@ctr: CTR-01`
-- **Location**: `docs/CTR/`
+- **Location**: `docs/09_CTR/`
 - **Versioning**: Semantic versioning (MAJOR.MINOR.PATCH), strict compatibility rules
 
 ### Validation Checklist
@@ -1241,9 +1241,9 @@ grep -r "@icon-role: consumer" docs/TASKS/
 - [ ] All consumer TASKS have section 8.2 documenting contract usage
 - [ ] All consumer TASKS have @icon: and @icon-role: consumer tags
 - [ ] Validation commands return expected counts:
-  - [ ] `grep -r "@icon:" docs/TASKS/ | wc -l` ≥ (1 provider + N consumers)
-  - [ ] `grep -r "@icon-role: provider" docs/TASKS/ | wc -l` = 1 per contract
-  - [ ] `grep -r "@icon-role: consumer" docs/TASKS/ | wc -l` = N consumers
+  - [ ] `grep -r "@icon:" docs/11_TASKS/ | wc -l` ≥ (1 provider + N consumers)
+  - [ ] `grep -r "@icon-role: provider" docs/11_TASKS/ | wc -l` = 1 per contract
+  - [ ] `grep -r "@icon-role: consumer" docs/11_TASKS/ | wc -l` = N consumers
 - [ ] section 8 exists in all provider and consumer TASKS
 - [ ] Contract type documented (Protocol/State Machine/Exception/Data Model/DI)
 - [ ] Usage examples provided for consumers
@@ -1252,13 +1252,13 @@ grep -r "@icon-role: consumer" docs/TASKS/
 
 ```bash
 # Should return 9: 1 provider (TASKS-01) + 8 consumers
-grep -r "@icon: ICON-01" docs/TASKS/ | wc -l
+grep -r "@icon: ICON-01" docs/11_TASKS/ | wc -l
 
 # Should return 1: TASKS-01 only
-grep -r "@icon: ICON-01" docs/TASKS/ | grep "@icon-role: provider" | wc -l
+grep -r "@icon: ICON-01" docs/11_TASKS/ | grep "@icon-role: provider" | wc -l
 
 # Should return 8: TASKS-02, 003, 004, 005, 007, 008, 009, 010
-grep -r "@icon: ICON-01" docs/TASKS/ | grep "@icon-role: consumer" | wc -l
+grep -r "@icon: ICON-01" docs/11_TASKS/ | grep "@icon-role: consumer" | wc -l
 ```
 
 ## Artifact Tracking Methods
@@ -1456,7 +1456,7 @@ def test_validate_resource_limit_within_threshold():
 - **Format**: Gherkin tags at scenario level (not section 7)
 
 ### ADR (Architecture Decision Record)
-- **Upstream**: BRD/PRD (Architecture Decision Requirements identified in business/product docs), BDD (test scenarios), EARS (requirements)
+- **Upstream**: 01_BRD/PRD (Architecture Decision Requirements identified in business/product docs), BDD (test scenarios), EARS (requirements)
 - **Downstream**: SYS (system requirements), REQ (atomic requirements), CTR (contracts implementing architecture), SPEC (implementation)
 - **section**: Context, decision, consequences with full traceability
 
@@ -1509,12 +1509,12 @@ def test_validate_resource_limit_within_threshold():
 All traceability references MUST use markdown links with anchors:
 
 ```markdown
-[REQ-03](../REQ/risk/lim/REQ-03_resource_limit_enforcement.md#REQ-03)
-[ADR-33](../ADR/ADR-33_risk_limit_enforcement_architecture.md#ADR-33)
-\[CTR-01](../CTR/CTR-01_position_risk_validation.md#CTR-01)
-\[CTR-01 Schema](../CTR/CTR-01_position_risk_validation.yaml)
-[PRD-01](../PRD/PRD-01_risk_management.md)
-[BDD-03.1](../BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature#scenarios)
+[REQ-03](../07_REQ/risk/lim/REQ-03_resource_limit_enforcement.md#REQ-03)
+[ADR-33](../05_ADR/ADR-33_risk_limit_enforcement_architecture.md#ADR-33)
+\[CTR-01](../09_CTR/CTR-01_position_risk_validation.md#CTR-01)
+\[CTR-01 Schema](../09_CTR/CTR-01_position_risk_validation.yaml)
+[PRD-01](../02_PRD/PRD-01_risk_management.md)
+[BDD-03.1](../04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature#scenarios)
 ```
 
 ### Anchor Types
@@ -1532,18 +1532,18 @@ All traceability references MUST use markdown links with anchors:
    - Revalidate after any edits
 
 4. **Schema References** (CTR-specific): Link to `.yaml` files
-   - Format (example): `[CTR-NN Schema] (../CTR/CTR-NN_example.yaml)`
+   - Format (example): `[CTR-NN Schema] (../09_CTR/CTR-NN_example.yaml)`
    - Used for referencing machine-readable contract schemas
 
 ### Relative Path Rules
 
 - Use relative paths from current file location
 - Examples:
-- From `REQ/risk/lim/` to `ADR/`: `../../../ADR/ADR-33_...md`
-  - From `REQ/risk/lim/` to `CTR/`: `../../../CTR/CTR-01_...md`
-  - From `PRD/` to `EARS/`: `../EARS/EARS-01_...md`
-  - From `SPEC/` to `REQ/`: `../../REQ/.../REQ-03_...md`
-  - From `SPEC/` to `CTR/`: `../../CTR/CTR-01_...md`
+- From `REQ/risk/lim/` to `ADR/`: `../../../05_ADR/ADR-33_...md`
+  - From `REQ/risk/lim/` to `CTR/`: `../../../09_CTR/CTR-01_...md`
+  - From `PRD/` to `EARS/`: `../03_EARS/EARS-01_...md`
+  - From `SPEC/` to `REQ/`: `../../07_REQ/.../REQ-03_...md`
+  - From `SPEC/` to `CTR/`: `../../09_CTR/CTR-01_...md`
 
 ## Validation Requirements
 
@@ -1564,17 +1564,17 @@ Before committing any document:
 - [ ] Both `.md` and `.yaml` files exist for the contract
 - [ ] Slugs match exactly between `.md` and `.yaml` files
 - [ ] YAML `contract_id:` field uses lowercase_snake_case matching slug
-- [ ] Contract markdown file includes section 7 Traceability with upstream REQ/ADR links
-- [ ] Contract markdown file includes downstream SPEC/Code links
+- [ ] Contract markdown file includes section 7 Traceability with upstream 07_REQ/ADR links
+- [ ] Contract markdown file includes downstream 10_SPEC/Code links
 - [ ] YAML schema is valid (passes JSON Schema validation)
 - [ ] Both files are referenced correctly from SPEC (if implemented)
 
 **IMPL-Specific Validation** (when creating/updating implementation plans):
-- [ ] IMPL file references upstream REQ/ADR that drive the implementation
+- [ ] IMPL file references upstream 07_REQ/ADR that drive the implementation
 - [ ] Stakeholders (WHO) are clearly defined
 - [ ] Schedule/phases (WHEN) are documented with dependencies
-- [ ] section 7 Traceability links to upstream REQ/ADR
-- [ ] Downstream artifacts (CTR/SPEC/TASKS) are identified
+- [ ] section 7 Traceability links to upstream 07_REQ/ADR
+- [ ] Downstream artifacts (09_CTR/10_SPEC/TASKS) are identified
 - [ ] Milestone dates are realistic and dependency-aware
 
 ### Validation Commands
@@ -1620,7 +1620,7 @@ The SDD framework employs two types of change management based on scope and impa
 ⚠️ **IMPORTANT**: CHG is NOT a layer in the 16-layer architecture - it's an archival and immutability enforcement procedure.
 
 **When to Use CHG** (rare - \u003c5% of changes):
-- Complete architectural restructuring requiring new BRD/PRD
+- Complete architectural restructuring requiring new 01_BRD/PRD
 - Deprecating entire workflow modules
 - Major scope pivots affecting 5+ downstream artifacts
 - Framework-wide pattern changes
@@ -1636,8 +1636,8 @@ LLMs are probabilistic - editing complex documents in place can introduce subtle
 mkdir -p CHG/CHG-01_architecture_pivot/archive/
 
 # Move old documents
-mv BRD/BRD-05_old_architecture/ CHG/CHG-01_architecture_pivot/archive/
-mv PRD/PRD-08_old_product/ CHG/CHG-01_architecture_pivot/archive/
+mv 01_BRD/BRD-05_old_architecture/ CHG/CHG-01_architecture_pivot/archive/
+mv 02_PRD/PRD-08_old_product/ CHG/CHG-01_architecture_pivot/archive/
 ```
 
 **Step 2: Create CHG Definition Document**
@@ -1680,7 +1680,7 @@ Scalability requirements exceeded monolithic architecture capabilities.
 When upstream documents change:
 
 1. Identify all downstream artifacts using traceability links
-2. Update ADR/BDD/CTR/SPEC accordingly
+2. Update 05_ADR/04_BDD/09_CTR/SPEC accordingly
 3. Re-run validation scripts
 4. Update code docstrings if requirements changed
 5. Verify all links still resolve
@@ -1766,7 +1766,7 @@ Note: Script name canonicalization — use `scripts/generate_traceability_matrix
  - Implementation Plan: IMPL-01_phase1_risk_services
  - Contract: CTR-01_position_risk_validation (if implementing contract)
 - Specification: SPEC-03_resource_limit_service.yaml
-- BDD: BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature
+- BDD: 04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature
 """
 ```
 
@@ -1780,7 +1780,7 @@ Risk Validator Service - Contract Provider
 - Architecture: ADR-33
  - Contract: CTR-01_position_risk_validation.md + .yaml (IMPLEMENTS)
 - Specification: SPEC-05_risk_validator_service.yaml
-- BDD: BDD/BDD-04_contract_validation/BDD-04.1_contract_validation.feature
+- BDD: 04_BDD/BDD-04_contract_validation/BDD-04.1_contract_validation.feature
 - Role: Provider (implements contract interface)
 """
 ```
@@ -1789,16 +1789,16 @@ Risk Validator Service - Contract Provider
 
 ### Creating a New Requirement
 
-1. Identify upstream PRD/EARS sources
+1. Identify upstream 02_PRD/EARS sources
 2. Create REQ file with `## Traceability` section
-3. Link to upstream PRD/EARS in table format
+3. Link to upstream 02_PRD/EARS in table format
 4. Create placeholder downstream entries (ADR, BDD, CTR if interface, SPEC)
 5. Update upstream documents to link to this REQ
 6. Validate all links resolve
 
 ### Creating a New Contract (CTR)
 
-1. Identify upstream REQ/ADR that specify interface needs
+1. Identify upstream 07_REQ/ADR that specify interface needs
 2. Reserve next CTR-NN number from CTR-00_index.md
 3. Copy CTR-TEMPLATE.md and CTR-TEMPLATE.yaml
 4. Create both files: `CTR-NN_slug.md` + `CTR-NN_slug.yaml`
@@ -1806,7 +1806,7 @@ Risk Validator Service - Contract Provider
    - Status, Context, Contract Definition
    - Interface specification with request/response schemas
    - Error handling, quality attributes, versioning strategy
-   - section 7 Traceability with upstream REQ/ADR links
+   - section 7 Traceability with upstream 07_REQ/ADR links
 6. Complete YAML file:
    - contract_id (lowercase_snake_case)
    - endpoints with JSON Schema definitions
@@ -1821,12 +1821,12 @@ Risk Validator Service - Contract Provider
 
 1. Identify upstream REQ that need implementation coordination
 2. Reserve next IMPL-NN number from IMPL-00_index.md
-3. Copy IMPL-TEMPLATE.md from ai_dev_flow/IMPL/
+3. Copy IMPL-TEMPLATE.md from ai_dev_flow/08_IMPL/
 4. Complete implementation plan:
    - Scope: What REQs are being implemented
    - Stakeholders: WHO (teams/roles responsible)
    - Schedule: WHEN (phases, milestones, dependencies)
-   - section 7 Traceability with upstream REQ/ADR links
+   - section 7 Traceability with upstream 07_REQ/ADR links
 5. Identify if any REQ requires interfaces (CTR)
 6. Create placeholder downstream entries (CTR if needed, SPEC, TASKS)
 7. Update IMPL-00_index.md with new plan entry

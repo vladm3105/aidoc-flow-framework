@@ -45,7 +45,7 @@ This reference document provides an overview of industry authentication standard
 
 ### 1.2 Scope
 
-Covers NIST, OWASP, and SOC 2 authentication guidelines. Does not cover implementation details (see ADR/SPEC documents).
+Covers NIST, OWASP, and SOC 2 authentication guidelines. Does not cover implementation details (see 05_ADR/SPEC documents).
 
 ---
 

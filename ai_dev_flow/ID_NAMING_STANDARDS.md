@@ -161,9 +161,9 @@ Format
 - **Use for**: MVP documents, single-file documents under 25KB, streamlined artifacts
 - **H1 Title**: `# TYPE-DOC_NUM: Document Title` (no `.0` suffix)
 - **Examples**:
-  - `docs/BRD/BRD-01_platform_architecture.md`
-  - `docs/PRD/PRD-02_user_authentication.md`
-  - `docs/ADR/ADR-15_database_selection.md`
+  - `docs/01_BRD/BRD-01_platform_architecture.md`
+  - `docs/02_PRD/PRD-02_user_authentication.md`
+  - `docs/05_ADR/ADR-15_database_selection.md`
 - **Rule**: Do NOT create a folder for monolithic files. The file lives directly in the type directory.
 
 ### Nested Structure (Section-Based Documents)
@@ -174,9 +174,9 @@ Format
 - **H1 Title**: `# TYPE-DOC_NUM.S: Section Title` (includes `.S` suffix matching filename)
 - **Folder slug MUST match** the index file slug
 - **Examples**:
-  - `docs/BRD/BRD-03_complex_system/BRD-03.0_index.md`
-  - `docs/BRD/BRD-03_complex_system/BRD-03.1_executive_summary.md`
-  - `docs/BRD/BRD-03_complex_system/BRD-03.2_requirements.md`
+  - `docs/01_BRD/BRD-03_complex_system/BRD-03.0_index.md`
+  - `docs/01_BRD/BRD-03_complex_system/BRD-03.1_executive_summary.md`
+  - `docs/01_BRD/BRD-03_complex_system/BRD-03.2_requirements.md`
 
 ### Type-Specific Exceptions
 
@@ -245,17 +245,17 @@ Document ID Standards (ai_dev_flow)
 - ADRs
   - H1 ID: `ADR-DOC_NUM` (e.g., `# ADR-33: Risk Limit Enforcement Architecture`).
   - Filename: `ADR-DOC_NUM.S_{slug}.md` (section-based is REQUIRED)
-  - Location: `docs/ADR/ADR-DOC_NUM_{slug}/` (nested folder per document with descriptive slug)
+  - Location: `docs/05_ADR/ADR-DOC_NUM_{slug}/` (nested folder per document with descriptive slug)
   - Folder Naming: `ADR-DOC_NUM_{slug}/` where slug MUST match the index file slug
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - **REQUIRED**: Section-based structure with nested folders (`.0`, `.1`, etc.)
   - Notes: All ADR documents use nested folder structure. Each ADR gets its own folder containing all section files. Section suffix is ALWAYS required. Use `split_type` metadata to distinguish sectional vs related documents. Use `descriptive_slug` metadata to capture the folder's descriptive name.
   - Examples (shortened pattern - PREFERRED):
-    - Section files: `docs/ADR/ADR-01_database_selection/ADR-01.0_index.md`, `docs/ADR/ADR-01_database_selection/ADR-01.1_context.md`
-    - Single section: `docs/ADR/ADR-02_api_versioning/ADR-02.0_overview.md` (still requires `.0`)
-    - Extended: `docs/ADR/ADR-100_cloud_migration/ADR-100.0_index.md` (when >99 ADRs)
+    - Section files: `docs/05_ADR/ADR-01_database_selection/ADR-01.0_index.md`, `docs/05_ADR/ADR-01_database_selection/ADR-01.1_context.md`
+    - Single section: `docs/05_ADR/ADR-02_api_versioning/ADR-02.0_overview.md` (still requires `.0`)
+    - Extended: `docs/05_ADR/ADR-100_cloud_migration/ADR-100.0_index.md` (when >99 ADRs)
   - Examples (full pattern - backward compatible):
-    - Section files: `docs/ADR/ADR-01_database_selection/ADR-01.0_database_selection_index.md`
+    - Section files: `docs/05_ADR/ADR-01_database_selection/ADR-01.0_database_selection_index.md`
 - BDD Features and Tags
   - **File Format Clarification**:
     - **Test Scenarios**: `BDD-DOC_NUM_{slug}.feature` (Gherkin format - `.feature` extension)
@@ -265,7 +265,7 @@ Document ID Standards (ai_dev_flow)
 
   **Section-Based File Organization** (MANDATORY):
 
-  All BDD files use section-based numbering (dot notation) aligned with PRD/BRD standards.
+  All BDD files use section-based numbering (dot notation) aligned with 02_PRD/BRD standards.
 
   **Three Valid Patterns**:
 
@@ -411,7 +411,7 @@ Document ID Standards (ai_dev_flow)
 - Reference Documents (REF)
   - H1 ID: `{TYPE}-REF-DOC_NUM` (e.g., `# BRD-REF-01: Project Overview`)
   - Filename: `{TYPE}-REF-DOC_NUM_{slug}.md` (e.g., `BRD-REF-01_project_overview.md`)
-  - Location: Within parent TYPE directory (e.g., `docs/BRD/BRD-REF-01_project_overview.md`)
+  - Location: Within parent TYPE directory (e.g., `docs/01_BRD/BRD-REF-01_project_overview.md`)
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - Numbering: Independent sequence per parent TYPE (BRD-REF-01, ADR-REF-01 are separate sequences)
   - Traceability: Optional (encouraged but not required)
@@ -427,33 +427,33 @@ Document ID Standards (ai_dev_flow)
 - Business Requirements Documents (BRD)
   - H1 ID: `BRD-DOC_NUM` (e.g., `# BRD-09: [EXTERNAL_INTEGRATION - e.g., third-party API, service provider] Integration`)
   - Filename: `BRD-DOC_NUM.S_{slug}.md` (section-based is REQUIRED)
-  - Location: `docs/BRD/BRD-DOC_NUM_{slug}/` (nested folder per document with descriptive slug)
+  - Location: `docs/01_BRD/BRD-DOC_NUM_{slug}/` (nested folder per document with descriptive slug)
   - Folder Naming: `BRD-DOC_NUM_{slug}/` where slug MUST match the index file slug
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - **REQUIRED**: Section-based structure with nested folders (`.0`, `.1`, etc.)
   - Notes: All BRD documents use nested folder structure. Each BRD gets its own folder containing all section files. Section suffix is ALWAYS required. Use `split_type` metadata to distinguish sectional vs related documents. Use `descriptive_slug` metadata to capture the folder's descriptive name.
   - Examples (shortened pattern - PREFERRED):
-    - Section files: `docs/BRD/BRD-01_platform_architecture/BRD-01.0_index.md`, `docs/BRD/BRD-01_platform_architecture/BRD-01.1_executive_summary.md`
-    - Single section: `docs/BRD/BRD-02_user_authentication/BRD-02.0_overview.md` (still requires `.0`)
-    - Extended: `docs/BRD/BRD-100_enterprise_integration/BRD-100.0_index.md` (when >99 BRDs)
+    - Section files: `docs/01_BRD/BRD-01_platform_architecture/BRD-01.0_index.md`, `docs/01_BRD/BRD-01_platform_architecture/BRD-01.1_executive_summary.md`
+    - Single section: `docs/01_BRD/BRD-02_user_authentication/BRD-02.0_overview.md` (still requires `.0`)
+    - Extended: `docs/01_BRD/BRD-100_enterprise_integration/BRD-100.0_index.md` (when >99 BRDs)
   - Examples (full pattern - backward compatible):
-    - Section files: `docs/BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md`
+    - Section files: `docs/01_BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md`
 
 PRD, SYS, and EARS Document Types
 - Product Requirements Documents (PRD)
   - H1 ID: `PRD-DOC_NUM` (e.g., `# PRD-03: resource Risk Limits`)
   - Filename: `PRD-DOC_NUM.S_{section_type}.md` (shortened) or `PRD-DOC_NUM.S_{folder_slug}_{section_type}.md` (full)
-  - Location: `docs/PRD/PRD-DOC_NUM_{slug}/` (nested folder per document with descriptive slug)
+  - Location: `docs/02_PRD/PRD-DOC_NUM_{slug}/` (nested folder per document with descriptive slug)
   - Folder Naming: `PRD-DOC_NUM_{slug}/` - descriptive slug in folder name
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - **REQUIRED**: Section-based structure with nested folders (`.0`, `.1`, etc.)
   - Notes: All PRD documents use nested folder structure. Each PRD gets its own folder containing all section files. Section suffix is ALWAYS required. Use `split_type` metadata to distinguish sectional vs related documents. Use `descriptive_slug` metadata to capture the folder's descriptive name.
   - Examples (shortened pattern - PREFERRED):
-    - Section files: `docs/PRD/PRD-01_user_authentication/PRD-01.0_index.md`, `docs/PRD/PRD-01_user_authentication/PRD-01.1_overview.md`
-    - Single section: `docs/PRD/PRD-02_payment_processing/PRD-02.0_overview.md` (still requires `.0`)
-    - Extended: `docs/PRD/PRD-100_enterprise_features/PRD-100.0_index.md` (when >99 PRDs)
+    - Section files: `docs/02_PRD/PRD-01_user_authentication/PRD-01.0_index.md`, `docs/02_PRD/PRD-01_user_authentication/PRD-01.1_overview.md`
+    - Single section: `docs/02_PRD/PRD-02_payment_processing/PRD-02.0_overview.md` (still requires `.0`)
+    - Extended: `docs/02_PRD/PRD-100_enterprise_features/PRD-100.0_index.md` (when >99 PRDs)
   - Examples (full pattern - backward compatible):
-    - Section files: `docs/PRD/PRD-01_user_authentication/PRD-01.0_user_authentication_index.md`
+    - Section files: `docs/02_PRD/PRD-01_user_authentication/PRD-01.0_user_authentication_index.md`
 - System Architecture Documents (SYS)
   - H1 ID: `SYS-DOC_NUM` (e.g., `# SYS-03: resource Risk Limits`)
   - Filename: `SYS/SYS-DOC_NUM_{slug}.md`
@@ -523,10 +523,10 @@ The framework uses three distinct ID patterns for different purposes:
 | What You're Referencing | Format | Example |
 |------------------------|--------|---------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| A **document file** | Dash format | `BRD-01`, `[BRD-01](../BRD/BRD-01.md)` |
+| A **document file** | Dash format | `BRD-01`, `[BRD-01](../01_BRD/BRD-01.md)` |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| A **section file** | Dash+dot format | `BRD-01.1`, `[BRD-01.1](../BRD/BRD-01.1_summary.md)` |
+| A **section file** | Dash+dot format | `BRD-01.1`, `[BRD-01.1](../01_BRD/BRD-01.1_summary.md)` |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 | A **specific element** (requirement, feature, constraint) | 4-segment dot format | `BRD.01.01.05`, `@brd: BRD.01.01.05` |
 
@@ -543,7 +543,7 @@ For enhanced navigability, traceability tags MAY be converted to clickable hyper
 
 **Hyperlinked Format** (Enhanced - Recommended for Published Docs):
 ```markdown
-[@brd: BRD.01.09.01](../../BRD/BRD-01_platform/BRD-01.5_user_stories.md#brd010901-feature-name)
+[@brd: BRD.01.09.01](../../01_BRD/BRD-01_platform/BRD-01.5_user_stories.md#brd010901-feature-name)
 ```
 
 **Anchor ID Convention**: Convert element ID to lowercase, remove dots, append slug:
@@ -569,8 +569,8 @@ For enhanced navigability, traceability tags MAY be converted to clickable hyper
 | Reference Type | Pattern | Example |
 |----------------|---------|---------|
 | Same folder | `[text](./file.md#anchor)` | `[BRD.01.01.01](./BRD-01.1_summary.md#brd010101)` |
-| Parent folder | `[text](../TYPE/file.md#anchor)` | `[BRD.01.01.01](../BRD/BRD-01.1_summary.md#brd010101)` |
-| Nested folder | `[text](../TYPE/TYPE-NN_slug/file.md#anchor)` | `[BRD.01.01.01](../BRD/BRD-01_platform/BRD-01.1_summary.md#brd010101)` |
+| Parent folder | `[text](../TYPE/file.md#anchor)` | `[BRD.01.01.01](../01_BRD/BRD-01.1_summary.md#brd010101)` |
+| Nested folder | `[text](../TYPE/TYPE-NN_slug/file.md#anchor)` | `[BRD.01.01.01](../01_BRD/BRD-01_platform/BRD-01.1_summary.md#brd010101)` |
 
 **Internal Section Links** (within same document or folder):
 
@@ -728,7 +728,7 @@ custom_fields:
 **Split into Section Files (shortened pattern - PREFERRED)**:
 
 ```
-docs/BRD/
+docs/01_BRD/
 └── BRD-03_platform_example/             # Nested folder with descriptive slug
     ├── BRD-03.0_index.md                        # Section 0: Index/Overview
 <!-- VALIDATOR:IGNORE-LINKS-START -->
@@ -744,7 +744,7 @@ docs/BRD/
 **Split into Section Files (full pattern - backward compatible)**:
 
 ```
-docs/BRD/
+docs/01_BRD/
 └── BRD-03_platform_example/             # Nested folder with descriptive slug
     ├── BRD-03.0_platform_example_index.md              # Section 0
     ├── BRD-03.1_platform_example_executive_summary.md  # Section 1
@@ -855,7 +855,7 @@ custom_fields:
 - Same directory: `[BRD-03.1](BRD-03.1_executive_summary.md)`
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-- Cross-directory: `[BRD-03.1](../BRD/BRD-03.1_executive_summary.md)`
+- Cross-directory: `[BRD-03.1](../01_BRD/BRD-03.1_executive_summary.md)`
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
 ### Metadata Tags for Document Type Distinction
@@ -949,21 +949,21 @@ Cross-Reference Link Format (MANDATORY)
 - Use atomic (DOC_NUM) patterns for standalone documents, Section Files (DOC_NUM.S) for split documents.
 - DOC_NUM: Variable-length, starts at 2 digits (01, 99, 100, 1000).
 - Formats:
-  - REQ in ADR: `[REQ-DOC_NUM](../REQ/.../REQ-DOC_NUM_{slug}.md#REQ-DOC_NUM)`
-  - ADR in BDD: `@adr:[ADR-DOC_NUM](../ADR/ADR-DOC_NUM_{slug}.md#ADR-DOC_NUM)`
-  - REQ in BDD: `@requirement:[REQ-DOC_NUM](../REQ/.../REQ-DOC_NUM_{slug}.md#REQ-DOC_NUM)`
-  - REQ/ADR in CTR:
-    - `[REQ-DOC_NUM](../REQ/.../REQ-DOC_NUM_{slug}.md#REQ-DOC_NUM)` in Traceability section
-    - `[ADR-DOC_NUM](../ADR/ADR-DOC_NUM_{slug}.md#ADR-DOC_NUM)` in Traceability section
+  - REQ in ADR: `[REQ-DOC_NUM](../07_REQ/.../REQ-DOC_NUM_{slug}.md#REQ-DOC_NUM)`
+  - ADR in BDD: `@adr:[ADR-DOC_NUM](../05_ADR/ADR-DOC_NUM_{slug}.md#ADR-DOC_NUM)`
+  - REQ in BDD: `@requirement:[REQ-DOC_NUM](../07_REQ/.../REQ-DOC_NUM_{slug}.md#REQ-DOC_NUM)`
+  - 07_REQ/ADR in CTR:
+    - `[REQ-DOC_NUM](../07_REQ/.../REQ-DOC_NUM_{slug}.md#REQ-DOC_NUM)` in Traceability section
+    - `[ADR-DOC_NUM](../05_ADR/ADR-DOC_NUM_{slug}.md#ADR-DOC_NUM)` in Traceability section
   - CTR in SPEC:
     - `contract_ref: CTR-DOC_NUM_{slug}` (YAML field)
-    - `[CTR-DOC_NUM](../../CTR/CTR-DOC_NUM_{slug}.md#CTR-DOC_NUM)` (markdown reference)
-    - `[CTR-DOC_NUM Schema](../../CTR/CTR-DOC_NUM_{slug}.yaml)` (schema reference)
-  - REQ/ADR in SPEC:
+    - `[CTR-DOC_NUM](../../09_CTR/CTR-DOC_NUM_{slug}.md#CTR-DOC_NUM)` (markdown reference)
+    - `[CTR-DOC_NUM Schema](../../09_CTR/CTR-DOC_NUM_{slug}.yaml)` (schema reference)
+  - 07_REQ/ADR in SPEC:
     - `requirements_source:
-      - "[REQ-DOC_NUM](../../REQ/.../REQ-DOC_NUM_{slug}.md#REQ-DOC_NUM)"`
+      - "[REQ-DOC_NUM](../../07_REQ/.../REQ-DOC_NUM_{slug}.md#REQ-DOC_NUM)"`
     - `architecture:
-      - "[ADR-DOC_NUM](../../ADR/ADR-DOC_NUM_{slug}.md#ADR-DOC_NUM)"`
+      - "[ADR-DOC_NUM](../../05_ADR/ADR-DOC_NUM_{slug}.md#ADR-DOC_NUM)"`
   - BDD in SPEC verification:
     - `verification:
 <!-- VALIDATOR:IGNORE-LINKS-START -->
@@ -973,18 +973,18 @@ Cross-Reference Link Format (MANDATORY)
     - `[BRD-DOC_NUM](BRD-DOC_NUM_{slug}.md)` (same directory)
     - `[BRD-DOC_NUM.S](BRD-DOC_NUM.S_{slug}.md)` (section file reference)
   - BRD in other docs:
-    - `[BRD-DOC_NUM](../BRD/BRD-DOC_NUM_{slug}.md#BRD-DOC_NUM)`
+    - `[BRD-DOC_NUM](../01_BRD/BRD-DOC_NUM_{slug}.md#BRD-DOC_NUM)`
 
 Traceability Requirements
 - REQ: link ADR(s), BDD, CTR (if interface requirement), IMPL (if part of larger implementation), and SPEC via markdown links.
-- IMPL: link upstream REQ/ADR (upstream sources), downstream CTR/SPEC/TASKS (deliverables).
+- IMPL: link upstream 07_REQ/ADR (upstream sources), downstream 09_CTR/10_SPEC/TASKS (deliverables).
 - ADR: list addressed REQ(s) via markdown links.
-- CTR: link upstream REQ/ADR (Traceability section), downstream SPEC/Code (Traceability section).
+- CTR: link upstream 07_REQ/ADR (Traceability section), downstream 10_SPEC/Code (Traceability section).
 - BDD: include `@requirement` (mandatory) and `@adr` (when applicable).
-- SPEC: include `requirements_source` (REQ/EARS), `architecture` (ADR), `contract_ref` (CTR if applicable), `impl_plan` (IMPL if part of phased implementation), `verification` (BDD); all as markdown links.
+- SPEC: include `requirements_source` (07_REQ/EARS), `architecture` (ADR), `contract_ref` (CTR if applicable), `impl_plan` (IMPL if part of phased implementation), `verification` (BDD); all as markdown links.
 - TASKS: include `@spec` (mandatory - which SPEC being implemented), `@impl` (optional - parent implementation plan if applicable).
 - IPLAN: include `@tasks` (mandatory - which TASKS being executed), cumulative tags from all upstream artifacts.
-- BRD: link downstream REQ/IMPL/CTR (if applicable), related BRD sub-documents via markdown links.
+- BRD: link downstream 07_REQ/08_IMPL/CTR (if applicable), related BRD sub-documents via markdown links.
 - Code: reference SPEC, CTR (if contract implementation), and IPLAN (if session-based) in docstrings or header comments using relative paths.
 
 
@@ -1038,7 +1038,7 @@ Validation Rules & Aids
 
 Examples (ai_dev_flow) - Atomic Documents (DOC_NUM)
 - **Nested Folder Types (monolithic option, still in nested folder)**:
-  - BRD: `docs/BRD/BRD-01_foundation/BRD-01.0_foundation_overview.md` (H1: `# BRD-01.0: Foundation & Overview`)
+  - BRD: `docs/01_BRD/BRD-01_foundation/BRD-01.0_foundation_overview.md` (H1: `# BRD-01.0: Foundation & Overview`)
   - PRD: `PRD/PRD-03_risk_limits/PRD-03.0_risk_limits_overview.md` (H1: `# PRD-03.0: resource Risk Limits`)
   - ADR: `ADR/ADR-33_risk_enforcement/ADR-33.0_risk_enforcement_architecture.md` (H1: `# ADR-33.0: Risk Limit Enforcement Architecture`)
 - **Flat Types**:
@@ -1054,18 +1054,18 @@ Examples (ai_dev_flow) - Atomic Documents (DOC_NUM)
 
 Examples (ai_dev_flow) - Section Files (DOC_NUM.S) - Nested Folder Structure
 - Split BRD document (150KB original → 7 sections):
-  - Index: `docs/BRD/BRD-03_platform_example/BRD-03.0_platform_example_index.md` (H1: `# BRD-03.0: Platform Requirements - Index`)
-  - Section 1: `docs/BRD/BRD-03_platform_example/BRD-03.1_platform_example_executive_summary.md` (H1: `# BRD-03.1: Executive Summary`)
-  - Section 2: `docs/BRD/BRD-03_platform_example/BRD-03.2_platform_example_business_context.md` (H1: `# BRD-03.2: Business Context`)
-  - Section 3: `docs/BRD/BRD-03_platform_example/BRD-03.3_platform_example_functional_requirements.md` (H1: `# BRD-03.3: Functional Requirements`)
+  - Index: `docs/01_BRD/BRD-03_platform_example/BRD-03.0_platform_example_index.md` (H1: `# BRD-03.0: Platform Requirements - Index`)
+  - Section 1: `docs/01_BRD/BRD-03_platform_example/BRD-03.1_platform_example_executive_summary.md` (H1: `# BRD-03.1: Executive Summary`)
+  - Section 2: `docs/01_BRD/BRD-03_platform_example/BRD-03.2_platform_example_business_context.md` (H1: `# BRD-03.2: Business Context`)
+  - Section 3: `docs/01_BRD/BRD-03_platform_example/BRD-03.3_platform_example_functional_requirements.md` (H1: `# BRD-03.3: Functional Requirements`)
 - Split PRD document with subsections:
-  - Index: `docs/PRD/PRD-15_product_features/PRD-15.0_product_features_index.md`
-  - Section 2.1: `docs/PRD/PRD-15_product_features/PRD-15.2.1_product_features_api.md` (H1: `# PRD-15.2.1: API Features`)
-  - Section 2.2: `docs/PRD/PRD-15_product_features/PRD-15.2.2_product_features_ui.md` (H1: `# PRD-15.2.2: UI Features`)
+  - Index: `docs/02_PRD/PRD-15_product_features/PRD-15.0_product_features_index.md`
+  - Section 2.1: `docs/02_PRD/PRD-15_product_features/PRD-15.2.1_product_features_api.md` (H1: `# PRD-15.2.1: API Features`)
+  - Section 2.2: `docs/02_PRD/PRD-15_product_features/PRD-15.2.2_product_features_ui.md` (H1: `# PRD-15.2.2: UI Features`)
 - Split ADR document:
-  - Index: `docs/ADR/ADR-01_database_selection/ADR-01.0_database_selection_index.md` (H1: `# ADR-01.0: Database Selection - Index`)
-  - Section 1: `docs/ADR/ADR-01_database_selection/ADR-01.1_database_selection_context.md` (H1: `# ADR-01.1: Context`)
-  - Section 2: `docs/ADR/ADR-01_database_selection/ADR-01.2_database_selection_decision.md` (H1: `# ADR-01.2: Decision`)
+  - Index: `docs/05_ADR/ADR-01_database_selection/ADR-01.0_database_selection_index.md` (H1: `# ADR-01.0: Database Selection - Index`)
+  - Section 1: `docs/05_ADR/ADR-01_database_selection/ADR-01.1_database_selection_context.md` (H1: `# ADR-01.1: Context`)
+  - Section 2: `docs/05_ADR/ADR-01_database_selection/ADR-01.2_database_selection_decision.md` (H1: `# ADR-01.2: Decision`)
 
 Component Abbreviations (examples)
 - SVC (Service), CL (Client), SRV (Server), GW (Gateway), AGG (Aggregator), MGR (Manager), CTRL (Controller), ADPT (Adapter), REPO (Repository), PROC (Processor), VAL (Validator), ORCH (Orchestrator), PROV (Provider)
@@ -1074,8 +1074,8 @@ Component Abbreviations (examples)
 BDD Tag Examples
 ```gherkin
 # Document-level references (dash format for file links)
-@requirement:[REQ-03](../REQ/risk/lim/REQ-03_resource_limit_enforcement.md#REQ-03)
-@adr:[ADR-33](../ADR/ADR-33_risk_enforcement/ADR-33.0_risk_enforcement_index.md#ADR-33)
+@requirement:[REQ-03](../07_REQ/risk/lim/REQ-03_resource_limit_enforcement.md#REQ-03)
+@adr:[ADR-33](../05_ADR/ADR-33_risk_enforcement/ADR-33.0_risk_enforcement_index.md#ADR-33)
 
 # Internal element references (dot format for element IDs)
 # Format: TYPE.DOC_NUM.ELEM_TYPE.SEQ
@@ -1419,12 +1419,12 @@ python3 scripts/validate_all.py . --all
 
 ## Checklist
 
-- H1 titles contain IDs for PRD/SYS/EARS/REQ/ADR/CTR/IMPL/TASKS/BRD where applicable (use `TYPE-DOC_NUM` format).
+- H1 titles contain IDs for 02_PRD/06_SYS/03_EARS/07_REQ/05_ADR/09_CTR/08_IMPL/11_TASKS/BRD where applicable (use `TYPE-DOC_NUM` format).
 - BDD tags are markdown links with valid relative paths and anchors.
 - Spec files named `SPEC-DOC_NUM_{slug}.yaml`; inside, `id:` is snake_case and used by `@spec` tags; `requirements_source`/`architecture`/`verification` links resolve.
 - All document types follow universal numbering pattern: DOC_NUM = 2+ digits (01-99, 100-999, 1000+).
 - Element ID DOC_NUM MUST match filename digit count exactly.
-- BRD/PRD/ADR: Section suffix is ALWAYS required (`.0` minimum for single-file documents).
+- 01_BRD/02_PRD/ADR: Section suffix is ALWAYS required (`.0` minimum for single-file documents).
 - Other types: Section suffix is OPTIONAL (used when splitting large documents).
 - For large documents (>50KB), use Section Files (`TYPE-DOC_NUM.S_{slug}.md`) with appropriate `split_type` metadata.
 - Internal element IDs use unified 4-segment format: `TYPE.DOC_NUM.TT.SS`.

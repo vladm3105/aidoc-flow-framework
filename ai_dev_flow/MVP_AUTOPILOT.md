@@ -63,9 +63,9 @@ Run these quick checks before generating each layer (BRD → … → SPEC):
   - PRD needs BRD-01
   - EARS needs PRD-01
   - BDD needs EARS-01
-  - ADR/SYS need BRD-01, PRD-01, EARS-01
+  - 05_ADR/SYS need BRD-01, PRD-01, EARS-01
   - REQ needs ADR-01, SYS-01
-  - SPEC/TASKS need required REQ files
+  - 10_SPEC/TASKS need required REQ files
 
 Tip: Use `--strict` with the path validator when you want failures to block generation.
 
@@ -102,16 +102,16 @@ Tip: Use `--strict` with the path validator when you want failures to block gene
 ## 4) Generated Artifacts
 
 - Files (examples for `--nn 01`, `--slug trading_bot`):
-  - `ai_dev_flow/BRD/BRD-01_trading_bot.md`
-  - `ai_dev_flow/PRD/PRD-01_trading_bot.md`
-  - `ai_dev_flow/EARS/EARS-01_trading_bot.md`
-  - `ai_dev_flow/BDD/BDD-01_trading_bot.feature`
-  - `ai_dev_flow/ADR/ADR-01_trading_bot.md`
-  - `ai_dev_flow/SYS/SYS-01_trading_bot.md`
-  - `ai_dev_flow/REQ/REQ-01_trading_bot.md`
-  - `ai_dev_flow/SPEC/SPEC-01_trading_bot.yaml`
-  - `ai_dev_flow/TASKS/TASKS-01_trading_bot.md`
-  - `ai_dev_flow/IPLAN/IPLAN-01_trading_bot.md`
+  - `ai_dev_flow/01_BRD/BRD-01_trading_bot.md`
+  - `ai_dev_flow/02_PRD/PRD-01_trading_bot.md`
+  - `ai_dev_flow/03_EARS/EARS-01_trading_bot.md`
+  - `ai_dev_flow/04_BDD/BDD-01_trading_bot.feature`
+  - `ai_dev_flow/05_ADR/ADR-01_trading_bot.md`
+  - `ai_dev_flow/06_SYS/SYS-01_trading_bot.md`
+  - `ai_dev_flow/07_REQ/REQ-01_trading_bot.md`
+  - `ai_dev_flow/10_SPEC/SPEC-01_trading_bot.yaml`
+  - `ai_dev_flow/11_TASKS/TASKS-01_trading_bot.md`
+  - `ai_dev_flow/12_IPLAN/IPLAN-01_trading_bot.md`
 
 - Planning stubs:
   - `X-00_required_documents_list.md` created per layer, listing the generated file.
@@ -341,7 +341,7 @@ The Autopilot can be used to continue a partially created project or to fork an 
   - Decide target layers (e.g., only `REQ`, `SPEC`, `IPLAN`) with `--up-to` and `--include-layers`/`--exclude-layers`.
   - Choose Resume vs Fork:
     - Resume: prefer non-destructive fixes; do not overwrite existing content unless `--force-overwrite` is given.
-    - Fork: pick `--new-nn` and `--new-slug`; add “Supersedes {OLD-ID}” note in the new BRD/PRD and “Superseded by {NEW-ID}” note in old docs (optional).
+    - Fork: pick `--new-nn` and `--new-slug`; add “Supersedes {OLD-ID}” note in the new 01_BRD/PRD and “Superseded by {NEW-ID}” note in old docs (optional).
 
 - **Execution**:
   - Run Autopilot with `--auto-fix` for conservative passes; iterate content to resolve remaining validator errors.
@@ -365,7 +365,7 @@ The Autopilot can be used to continue a partially created project or to fork an 
     - Frontmatter: `title`, `custom_fields.layer`, `artifact_type`, etc.
     - H1/Feature lines: `# X-NEWNN: {New Title}`.
     - Traceability tags: convert `BRD-OLDNN` → `BRD.NEWNN.01.01` (and similar for all layers) where dotted forms are required.
-  - Add a small “Supersedes”/“Derived from” note in the new BRD/PRD and optionally a “Superseded by” in the old documents.
+  - Add a small “Supersedes”/“Derived from” note in the new 01_BRD/PRD and optionally a “Superseded by” in the old documents.
 
 - **ID and Link Consistency**:
   - Maintain a simple ID map while forking: `BRD-01→BRD-02`, `PRD-01→PRD-02`, etc., and propagate to dotted references (`BRD.01.01.01→BRD.02.01.01`).
@@ -393,6 +393,6 @@ The Autopilot can be used to continue a partially created project or to fork an 
 
   - **Start with Resume (non-destructive)** for teams picking up partial work; enable `--auto-fix --report markdown` to normalize and see what’s missing. Use `--plan-only` first to review intended actions.
 - **Fork only when scope diverges** or IDs need to branch cleanly; pick a fresh `NN` and add “Supersedes” info to keep the lineage auditable.
-- **Incremental layers**: If BRD/PRD/EARS are stable but implementation isn’t, set `--up-to IPLAN` while targeting `SYS/REQ/SPEC/TASKS/IPLAN` phases.
+- **Incremental layers**: If 01_BRD/02_PRD/EARS are stable but implementation isn’t, set `--up-to IPLAN` while targeting `SYS/07_REQ/10_SPEC/11_TASKS/IPLAN` phases.
   - Use `--from-layer BDD` (or `ADR`/`SYS`) to skip earlier layers cleanly.
 - **Reports & Plans**: Save reports and plans in `work_plans/` and attach to review PRs.

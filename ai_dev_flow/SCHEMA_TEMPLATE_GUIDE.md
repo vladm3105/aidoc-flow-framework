@@ -153,18 +153,18 @@ Validate any document against its schema:
 
 ```bash
 # Validate a single document
-python3 scripts/validate_artifact.py PRD/PRD-01_example.md
+python3 scripts/validate_artifact.py 02_PRD/PRD-01_example.md
 
 # Verbose output with details
-python3 scripts/validate_artifact.py PRD/PRD-01_example.md --verbose
+python3 scripts/validate_artifact.py 02_PRD/PRD-01_example.md --verbose
 
 # Strict mode (treat warnings as errors)
-python3 scripts/validate_artifact.py PRD/PRD-01_example.md --strict
+python3 scripts/validate_artifact.py 02_PRD/PRD-01_example.md --strict
 ```
 
 **Output Example**:
 ```
-  docs/PRD/PRD-01_example.md
+  docs/02_PRD/PRD-01_example.md
    Artifact Type: PRD
    Schema: PRD_SCHEMA.yaml
    Layer: 2
@@ -226,7 +226,7 @@ flowchart TD
 
 1. **Schema is truth**: Use schemas as the source of truth for validation
 2. **Templates for structure**: Use templates to understand expected document structure
-3. **Handle special cases**: BRD has no schema, BDD/SPEC have non-standard formats
+3. **Handle special cases**: BRD has no schema, 04_BDD/SPEC have non-standard formats
 4. **Version compatibility**: Check `schema_version` for compatibility
 
 ## Troubleshooting

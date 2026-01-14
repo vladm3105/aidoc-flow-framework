@@ -19,9 +19,9 @@ Development Principles Guide
 ### Splitting Rules
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./BDD/BDD_SPLITTING_RULES.md)
-- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./CTR/CTR_SPLITTING_RULES.md)
-- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./SPEC/SPEC_SPLITTING_RULES.md)
+- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
+- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
+- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
 > MVP Mode: For MVP workflows, use single flat files and ignore splitting rules and references to `DOCUMENT_SPLITTING_RULES.md`.
@@ -170,7 +170,7 @@ graph LR
 **Layer Descriptions** (Formal Layer Numbers 0-15):
 - **Layer 1 - Business Requirements** (Blue): BRD - Business objectives, stakeholder groups (business-level), high-level functional requirements and quality attributes, business constraints
 - **Layer 2 - Product Requirements** (Blue): PRD - User personas, user stories, user roles, product features, detailed functional requirements derived from business objectives
-- **Layer 3 - Engineering Requirements** (Blue): EARS - Event-Action-Response-State requirements bridging PRD to BDD/ADR/SYS
+- **Layer 3 - Engineering Requirements** (Blue): EARS - Event-Action-Response-State requirements bridging PRD to 04_BDD/05_ADR/SYS
 - **Layer 4 - Testing** (Yellow): BDD - Acceptance criteria and test scenarios
 - **Layers 5-6 - Architecture** (Green): ADR (L5) → SYS (L6) - Technical decisions and system design
 - **Layer 7 - Requirements** (Red): REQ - Detailed atomic requirements
@@ -193,7 +193,7 @@ graph LR
 - BRD template optimized to ~21K tokens through modular appendices and content extraction
 - Teaching materials (FR examples, content exclusion rules) moved to standalone reference guides
 - User stories, user roles, and product appendices relocated to PRD for proper layer separation
-- See [BRD/FR_EXAMPLES_GUIDE.md](./BRD/FR_EXAMPLES_GUIDE.md) for functional requirement examples
+- See [BRD/FR_EXAMPLES_GUIDE.md](./01_BRD/FR_EXAMPLES_GUIDE.md) for functional requirement examples
 
 See [index.md](./index.md#traceability-flow) for additional workflow visualizations and [TRACEABILITY.md](./TRACEABILITY.md) for complete traceability guidelines.
 
@@ -204,9 +204,9 @@ PRDs should reference the documentation in this directory, but the documentation
 
 **Note**: File paths shown below are illustrative examples. Replace `{category}`, `{subcategory}`, `{NN}`, and `{slug}` with actual values for your project.
 
-@requirement:[REQ-NN](./REQ/{category}/{subcategory}/REQ-NN_{slug}.md#REQ-NN)
-@adr:[ADR-NN](./ADR/ADR-NN_{slug}.md#ADR-NN)
-@spec:[{service_name}](./SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml)
+@requirement:[REQ-NN](./07_REQ/{category}/{subcategory}/REQ-NN_{slug}.md#REQ-NN)
+@adr:[ADR-NN](./05_ADR/ADR-NN_{slug}.md#ADR-NN)
+@spec:[{service_name}](./10_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml)
 
 Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructions/DOCUMENT_ID_CORE_RULES.md`, `docs/DOCUMENT_ID_CORE_RULES.md`, `TRACEABILITY.md`, and `ID_NAMING_STANDARDS.md`.
 
@@ -220,7 +220,7 @@ Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructi
 
 ## Principles
 - Single Source of Truth: The technical specification defines the implementation.
-- One-Doc-Per-ID: Each REQ/ADR/SPEC file holds one document; filenames include IDs.
+- One-Doc-Per-ID: Each 07_REQ/05_ADR/SPEC file holds one document; filenames include IDs.
 - Specification-First: Technical specifications precede implementation.
 - Complete Traceability: All cross-references use markdown link format with anchors. User story derivation flows: Business Objectives (BRD) → User Stories (PRD) → Functional Requirements (PRD) with full bidirectional traceability.
 - Executable Examples: Provide concrete I/O examples in SPEC for deterministic codegen.
@@ -547,7 +547,7 @@ This AI Agent BRD depends on the following Platform BRDs:
   - Description: Precise SHALL statement defining one behavior
   - Acceptance Criteria: Measurable validation conditions
   - Related ADRs: Architecture decisions implementing the requirement
-  - Source Requirements: Links to upstream PRD/EARS requirements
+  - Source Requirements: Links to upstream 02_PRD/EARS requirements
   - Verification: Method to prove requirement satisfaction
 - **Hierarchical Organization**: Grouped by functional domains (api, risk, data, etc.)
 - **Key Characteristics**: One atomic requirement per file, measurable criteria, BDD scenario linkage
@@ -750,7 +750,7 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 | `@related-{type}:` | Related same-type doc | `@related-req: REQ-01` |
 | `@depends-{type}:` | Prerequisite same-type | `@depends-req: REQ-02` |
 
-> **Threshold Naming Standards**: For `@threshold:` tag format (`@threshold: DOC_TYPE.DOC_NUM.key`) and threshold key naming conventions, see [THRESHOLD_NAMING_RULES.md](./THRESHOLD_NAMING_RULES.md). Thresholds are defined in BRD/PRD/ADR YAML blocks (BRD: business, PRD: product, ADR: technical) and referenced via `@threshold:` tags in downstream documents.
+> **Threshold Naming Standards**: For `@threshold:` tag format (`@threshold: DOC_TYPE.DOC_NUM.key`) and threshold key naming conventions, see [THRESHOLD_NAMING_RULES.md](./THRESHOLD_NAMING_RULES.md). Thresholds are defined in 01_BRD/02_PRD/ADR YAML blocks (BRD: business, PRD: product, ADR: technical) and referenced via `@threshold:` tags in downstream documents.
 
 **Invalid Tags** (do NOT use): `@fr:`, `@contract:`, `@tests:`
 
@@ -864,7 +864,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 
 **Principle**: Each layer inherits ALL tags from upstream layers and adds its own.
 
-**Example**: A SPEC file includes tags from: BRD, PRD, EARS, BDD, ADR, SYS, REQ, and optionally IMPL/CTR if they exist in the chain.
+**Example**: A SPEC file includes tags from: BRD, PRD, EARS, BDD, ADR, SYS, REQ, and optionally 08_IMPL/CTR if they exist in the chain.
 
 **Format**: `@artifact-type: TYPE.NN.TT.SS` (e.g., `@brd: BRD.01.01.30`)
 
@@ -889,7 +889,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 | 8 | **IMPL** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req` | Formal Template | Cumulative: BRD through REQ |
 | 9 | **CTR** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl` | Formal Template | Cumulative: BRD through IMPL (optional layer) |
 | 10 | **SPEC** | All upstream through `@req` + optional `@impl`, `@ctr` | Formal Template (YAML) | Full upstream chain |
-| 11 | **TASKS** | All upstream through `@spec` | Formal Template | Include optional IMPL/CTR if present |
+| 11 | **TASKS** | All upstream through `@spec` | Formal Template | Include optional 08_IMPL/CTR if present |
 | 12 | **IPLAN** | All upstream through `@tasks` | Project Files | All formal artifact tags |
 | 13 | **Code** | **ALL tags** including `@iplan` | Docstring Tags | Complete traceability chain |
 | 14 | **Tests** | All upstream through `@code` | Docstring Tags + BDD | All upstream + code reference |
@@ -1197,7 +1197,7 @@ def test_validate_resource_limit_within_threshold():
   - Implementation Guidance: Algorithms, patterns, architectural patterns
   - Acceptance Criteria: Measurable validation conditions with verification methods
   - Verification Methods: BDD scenarios, unit tests, integration tests, security tests
-  - Traceability: Upstream sources (BRD/PRD/SYS/EARS) and downstream artifacts (ADR/SPEC/Code)
+  - Traceability: Upstream sources (01_BRD/02_PRD/06_SYS/EARS) and downstream artifacts (05_ADR/10_SPEC/Code)
   - Related ADRs: Architecture decisions implementing the requirement
 - **Organization**: Hierarchical by functional domains (`REQ/{domain}/{subdomain}/`)
 - **Guidelines**:
@@ -1292,7 +1292,7 @@ REQ (Requirement Layer)                    SPEC (Technical Specs)
 - **Input**: Interface-focused REQ, ADR architecture decisions
 - **Output**: Dual-file contract (CTR-NN_slug.md + CTR-NN_slug.yaml)
 - **Process**:
-  1. Identify upstream REQ/ADR specifying interface needs
+  1. Identify upstream 07_REQ/ADR specifying interface needs
   2. Reserve next CTR-NN from CTR-00_index.md
   3. Copy CTR-TEMPLATE.md + CTR-TEMPLATE.yaml
   4. Complete markdown file:
@@ -1301,7 +1301,7 @@ REQ (Requirement Layer)                    SPEC (Technical Specs)
      - Error Handling: Complete error taxonomy with retry policies
      - Quality Attributes: Latency, idempotency, rate limiting
      - Versioning Strategy: Semantic versioning rules, deprecation policy
-     - section 7 Traceability: Upstream REQ/ADR links, downstream SPEC placeholders
+     - section 7 Traceability: Upstream 07_REQ/ADR links, downstream SPEC placeholders
   5. Complete YAML file:
      - contract_id (lowercase_snake_case matching slug)
      - endpoints with JSON Schema request/response definitions
@@ -1548,7 +1548,7 @@ SPEC-01 → TASKS-01 (Provider) → ICON-01 → TASKS-02-009 (Consumers) → Cod
 - **Format**: Embedded in TASKS section 8 OR standalone ICON files
 - **Examples**: `ServiceConnector` Protocol, `ConnectionState` State Machine
 - **Tag**: `@icon: TASKS-01:ServiceConnector` or `@icon: ICON-01:ServiceConnector`
-- **Location**: `docs/ICON/` or embedded in `docs/TASKS/`
+- **Location**: `docs/ICON/` or embedded in `docs/11_TASKS/`
 - **Versioning**: Tied to TASKS implementation cycles
 
 **CTR (Data Contracts)** - Layer 9 (External):
@@ -1557,7 +1557,7 @@ SPEC-01 → TASKS-01 (Provider) → ICON-01 → TASKS-02-009 (Consumers) → Cod
 - **Format**: Dual-file (.md + .yaml) with JSON Schema definitions
 - **Examples**: REST API contracts, gRPC service definitions, message schemas
 - **Tag**: `@ctr: CTR-01`
-- **Location**: `docs/CTR/`
+- **Location**: `docs/09_CTR/`
 - **Versioning**: Semantic versioning (MAJOR.MINOR.PATCH), strict compatibility rules
 
 **Summary**: Use ICON for internal parallel development, CTR for external API contracts.
@@ -1571,19 +1571,19 @@ SPEC-01 → TASKS-01 (Provider) → ICON-01 → TASKS-02-009 (Consumers) → Cod
 find docs/ICON/ -name "ICON-*.md" | wc -l
 
 # Count @icon: references in TASKS files
-grep -r "@icon:" docs/TASKS/ | wc -l
+grep -r "@icon:" docs/11_TASKS/ | wc -l
 
 # Count section 8 headers in TASKS files
-grep -r "## 8. Implementation Contracts" docs/TASKS/ | wc -l
+grep -r "## 8. Implementation Contracts" docs/11_TASKS/ | wc -l
 
 # Verify specific ICON integration
-grep -r "@icon: ICON-01" docs/TASKS/
+grep -r "@icon: ICON-01" docs/11_TASKS/
 
 # Check provider roles
-grep -r "@icon-role: provider" docs/TASKS/
+grep -r "@icon-role: provider" docs/11_TASKS/
 
 # Check consumer roles
-grep -r "@icon-role: consumer" docs/TASKS/
+grep -r "@icon-role: consumer" docs/11_TASKS/
 ```
 
 **Expected Results** (IB MCP Project):
@@ -1598,7 +1598,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 
 ❌ **Problem**: ICON file created but no TASKS files reference it
 - ICON-01 exists in `docs/ICON/`
-- `grep -r "@icon: ICON-01" docs/TASKS/` returns 0 results
+- `grep -r "@icon: ICON-01" docs/11_TASKS/` returns 0 results
 - No section 8 in any TASKS file
 
 ✅ **Solution**: Update all provider and consumer TASKS files with section 8
@@ -1731,14 +1731,14 @@ grep -r "@icon-role: consumer" docs/TASKS/
 - CTR (if applicable):
   - Both .md and .yaml files exist with matching slugs
   - YAML contract_id uses lowercase_snake_case matching slug
-  - Upstream REQ/ADR links present in section 7 Traceability
+  - Upstream 07_REQ/ADR links present in section 7 Traceability
   - Schema validation passes (valid JSON Schema in YAML)
   - Contract version follows semantic versioning
 - SPEC: Interface definitions and data schemas are complete and unambiguous.
 - BDD: Scenarios tagged with valid `@requirement`, `@adr`, and `@contract` (if applicable) links.
 - Quality Attributes: Latency/timeouts, error taxonomy, logging/metrics defined in spec/contract.
 - Observability: Key logs/metrics/traces named and fields enumerated.
-- Code: Docstring lists PRD/EARS/REQ/ADR/CTR(if applicable)/BDD/SPEC links; symbol names match spec; contract compliance validated.
+- Code: Docstring lists 02_PRD/03_EARS/07_REQ/05_ADR/CTR(if applicable)/04_BDD/SPEC links; symbol names match spec; contract compliance validated.
 
 ## AI Assistant Best Practices
 - Provide Inputs: Tech Spec excerpt, concrete examples, constraints, target file paths.
@@ -1747,7 +1747,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 - Diffs: Prefer minimal, reviewable changes; justify deviations against spec if unavoidable.
 
 ## Change Management
-- Upstream Changes (PRD/EARS/REQ): Update ADR/BDD/Spec; re-run validations.
+- Upstream Changes (02_PRD/03_EARS/REQ): Update 05_ADR/04_BDD/Spec; re-run validations.
 - Spec Changes: Update Code + BDD; maintain backward compatibility or bump versions.
 - Always update Traceability sections and code docstrings to keep links current.
 
@@ -1762,15 +1762,15 @@ grep -r "@icon-role: consumer" docs/TASKS/
 
 **Note**: File paths shown are generic examples. Replace with actual paths for your project.
 
-- PRD: [PRD-NN](./PRD/PRD-NN_{slug}.md)
-- SYS: [SYS-NN](./SYS/SYS-NN_{slug}.md)
-- EARS: [EARS-NN](./EARS/EARS-NN_{slug}.md)
+- PRD: [PRD-NN](./02_PRD/PRD-NN_{slug}.md)
+- SYS: [SYS-NN](./06_SYS/SYS-NN_{slug}.md)
+- EARS: [EARS-NN](./03_EARS/EARS-NN_{slug}.md)
 - BDD: `BDD/BDD-NN_{suite}/BDD-NN.SS_{section}.feature`
-- ADR: [ADR-NN](./ADR/ADR-NN_{slug}.md#ADR-NN)
-- **REQ V2**: [REQ-NN](./REQ/{category}/{subcategory}/REQ-NN_{slug}.md#REQ-NN) ← Contains complete interface/schema/error/config specifications
-- CTR: [CTR-NN](./CTR/CTR-NN_{slug}.md#CTR-NN) + [CTR-NN.yaml](./CTR/CTR-NN_{slug}.yaml) ← Contract for service interface
-- SPEC: [{service_name}.yaml](./SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml) ← Derived from REQ content
-- TASKS: [{service_name}_tasks.md](./TASKS/{service_name}_tasks.md)
+- ADR: [ADR-NN](./05_ADR/ADR-NN_{slug}.md#ADR-NN)
+- **REQ V2**: [REQ-NN](./07_REQ/{category}/{subcategory}/REQ-NN_{slug}.md#REQ-NN) ← Contains complete interface/schema/error/config specifications
+- CTR: [CTR-NN](./09_CTR/CTR-NN_{slug}.md#CTR-NN) + [CTR-NN.yaml](./09_CTR/CTR-NN_{slug}.yaml) ← Contract for service interface
+- SPEC: [{service_name}.yaml](./10_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml) ← Derived from REQ content
+- TASKS: [{service_name}_tasks.md](./11_TASKS/{service_name}_tasks.md)
 - Code: `{project_root}/{module}/{service_name}.py`
 
 ### Example: REQ V2 → SPEC Workflow
@@ -1786,7 +1786,7 @@ grep -r "@icon-role: consumer" docs/TASKS/
 
 **Step 2: Generate SPEC** (SPEC-01_external_data_client.yaml)
 ```yaml
-# @requirement:[REQ-01](../REQ/api/REQ-01_api_integration_example.md#REQ-01)
+# @requirement:[REQ-01](../07_REQ/api/REQ-01_api_integration_example.md#REQ-01)
 
 id: external_data_client
 interfaces:
@@ -1802,8 +1802,8 @@ interfaces:
 
 schemas:
   # Copy from REQ-01 section 4
-  QuoteRequest: {$ref: "../REQ/api/REQ-01_api_integration_example.md#json-schema"}
-  QuoteResponse: {$ref: "../REQ/api/REQ-01_api_integration_example.md#pydantic-model"}
+  QuoteRequest: {$ref: "../07_REQ/api/REQ-01_api_integration_example.md#json-schema"}
+  QuoteResponse: {$ref: "../07_REQ/api/REQ-01_api_integration_example.md#pydantic-model"}
 
 errors:
   # Copy from REQ-01 section 5
@@ -1837,7 +1837,7 @@ performance:
 ## Validation Commands
 
 ### Core Validation Scripts
-- **REQ V2 Validation**: `python scripts/validate_req_spec_readiness.py --req-file REQ/api/REQ-01.md`
+- **REQ V2 Validation**: `python scripts/validate_req_spec_readiness.py --req-file 07_REQ/api/REQ-01.md`
   - Checks for interface definitions with type signatures
   - Validates schema completeness (JSON Schema/Pydantic)
   - Verifies error catalog with recovery strategies
@@ -1851,12 +1851,12 @@ performance:
 ### Artifact-Specific Validation Scripts
 ```bash
 # Document structure validation (available scripts)
-bash scripts/validate_brd_template.sh docs/BRD/BRD-01_platform_overview/BRD-01.0_platform_overview_index.md    # BRD template compliance (nested folder)
-bash scripts/validate_req_template.sh docs/REQ/REQ-01.md    # REQ 12-section format
-bash scripts/validate_ctr.sh docs/CTR/CTR-01_*.md           # CTR dual-file format (.md + .yaml)
-bash scripts/validate_impl.sh docs/IMPL/IMPL-01_*.md        # IMPL 4-PART structure
-bash scripts/validate_tasks.sh docs/TASKS/TASKS-01_*.md     # TASKS format including Section 8
-bash scripts/validate_iplan.sh docs/IPLAN/IPLAN-01_*.md     # IPLAN session-based execution plans
+bash scripts/validate_brd_template.sh docs/01_BRD/BRD-01_platform_overview/BRD-01.0_platform_overview_index.md    # BRD template compliance (nested folder)
+bash scripts/validate_req_template.sh docs/07_REQ/REQ-01.md    # REQ 12-section format
+bash scripts/validate_ctr.sh docs/09_CTR/CTR-01_*.md           # CTR dual-file format (.md + .yaml)
+bash scripts/validate_impl.sh docs/08_IMPL/IMPL-01_*.md        # IMPL 4-PART structure
+bash scripts/validate_tasks.sh docs/11_TASKS/TASKS-01_*.md     # TASKS format including Section 8
+bash scripts/validate_iplan.sh docs/12_IPLAN/IPLAN-01_*.md     # IPLAN session-based execution plans
 bash scripts/validate_icon.sh docs/ICON/ICON-01_*.md        # ICON Implementation Contracts
 ```
 
@@ -1992,13 +1992,13 @@ Use validation scripts for automated matrix management:
 
 ```bash
 # Generate new matrix
-python scripts/generate_traceability_matrix.py --type ADR --output docs/ADR/
+python scripts/generate_traceability_matrix.py --type ADR --output docs/05_ADR/
 
 # Validate existing matrix
-python scripts/validate_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATRIX_ADR.md
+python scripts/validate_traceability_matrix.py --matrix docs/05_ADR/TRACEABILITY_MATRIX_ADR.md
 
 # Update matrix incrementally
-python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATRIX_ADR.md
+python scripts/update_traceability_matrix.py --matrix docs/05_ADR/TRACEABILITY_MATRIX_ADR.md
 ```
 
 ## Documentation Standards (No Marketing, Code Separation)
@@ -2038,12 +2038,12 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 
 ## Quality Attribute Templates
 - **Performance**: Add to SPEC performance section, e.g., latency_p95_ms: 50, throughput: 1000 rps; to ADR impact analysis, e.g., "p95 latency < 50 ms, trade-off: reduced batch size".
-- **Reliability**: SYS/REQ: "System availability > 99.9%"; ADR: [SAFETY_MECHANISM - e.g., rate limiter, error threshold] on >5 failures/1min; SPEC: retry_policy with exponential backoff.
+- **Reliability**: 06_SYS/REQ: "System availability > 99.9%"; ADR: [SAFETY_MECHANISM - e.g., rate limiter, error threshold] on >5 failures/1min; SPEC: retry_policy with exponential backoff.
 - **security**: ADR: "Input validation per OWASP; no Secrets in logs"; SPEC: errors for auth failures, observability: log correlation_id only (avoid PII).
 - **Observability**: SPEC: logs with fields [correlation_id, error_code, timestamp]; ADR: "Alert on >10% reject rate, monitor via Cloud Monitoring".
 - **Compliance Checklist**: 
-  - [ ] Quality attributes quantified in SYS/REQ (e.g., uptime, latency bounds).
-  - [ ] security in ADR/SPEC (validation, Secrets policy).
+  - [ ] Quality attributes quantified in 06_SYS/REQ (e.g., uptime, latency bounds).
+  - [ ] security in 05_ADR/SPEC (validation, Secrets policy).
   - [ ] Observability in SPEC (log fields, metrics).
   - [ ] Trace to PROJECT_CORE_RULES: numeric IDs, absolute link validation.
 
@@ -2077,13 +2077,13 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 - Each split file must be independently understandable (minimal context header and links back to index)
 - Maintain an index page listing split files and their dependencies
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-- Example: For complex SPEC exceeding 100K tokens, create SPEC-03_part1.yaml (interfaces/state), SPEC-03_part2.yaml (performance/verification); reference as [SPEC-03_part1.yaml](./SPEC/SPEC-03_part1.yaml), with [index.md](./index.md) enumerating splits and dependencies
+- Example: For complex SPEC exceeding 100K tokens, create SPEC-03_part1.yaml (interfaces/state), SPEC-03_part2.yaml (performance/verification); reference as [SPEC-03_part1.yaml](./10_SPEC/SPEC-03_part1.yaml), with [index.md](./index.md) enumerating splits and dependencies
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 - Estimate tokens using tools like `wc -w` or AI token counters for maintenance
 - External References: Paths to project files are placeholders; verify existence or update to local copies for standalone use
 
 ## Developer Checklist (Copyable)
-- PRD/EARS/BDD/ADR/SYS/REQ updated; H1 contains IDs and anchors.
+- 02_PRD/03_EARS/04_BDD/05_ADR/06_SYS/REQ updated; H1 contains IDs and anchors.
 - **REQ V2 Completeness**:
   - [ ] section 3: Interface Specifications (Protocol/ABC with type annotations)
   - [ ] section 4: Data Schemas (JSON Schema + Pydantic + SQLAlchemy)
@@ -2097,7 +2097,7 @@ python scripts/update_traceability_matrix.py --matrix docs/ADR/TRACEABILITY_MATR
 - AI tasks file includes scope, plan, constraints, acceptance criteria, and traceability links.
 - security implications documented (input validation, Secrets policy references, correlation id handling).
 - Run validators:
-  - `python scripts/validate_req_spec_readiness.py --req-file REQ/{domain}/REQ-NN.md`
+  - `python scripts/validate_req_spec_readiness.py --req-file 07_REQ/{domain}/REQ-NN.md`
   - `python scripts/validate_requirement_ids.py`
   - Manual link checks
 

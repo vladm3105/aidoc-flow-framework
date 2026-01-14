@@ -34,7 +34,7 @@ Comprehensive recovery procedures for the 7 most common ICON creation errors, ba
 
 **Symptoms**:
 - ICON-XXX.md exists in docs/ICON/
-- `grep -r "@icon: ICON-XXX" docs/TASKS/` returns 0 results
+- `grep -r "@icon: ICON-XXX" docs/11_TASKS/` returns 0 results
 - README.md does not list ICON-XXX
 - development_status may be "active" (incorrectly)
 
@@ -59,7 +59,7 @@ Comprehensive recovery procedures for the 7 most common ICON creation errors, ba
 2. **Verify Consumer TASKS Exist**:
    ```bash
    # Check if listed TASKS files exist
-   ls docs/TASKS/TASKS-02.md docs/TASKS/TASKS-03.md
+   ls docs/11_TASKS/TASKS-02.md docs/11_TASKS/TASKS-03.md
    ```
 
 3. **Update Provider TASKS** (if missing section 8.1):
@@ -94,7 +94,7 @@ Comprehensive recovery procedures for the 7 most common ICON creation errors, ba
 
 **Symptoms**:
 - Frontmatter shows `consumer_count: N`
-- `grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l` shows different number M
+- `grep -r "@icon: ICON-XXX" docs/11_TASKS/ | wc -l` shows different number M
 - N ≠ M (usually N > M, indicating inflation)
 
 **Root Cause**: Manual counting instead of grep-based validation
@@ -108,13 +108,13 @@ Comprehensive recovery procedures for the 7 most common ICON creation errors, ba
 
 1. **Calculate Accurate Count**:
    ```bash
-   actual_count=$(grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l)
+   actual_count=$(grep -r "@icon: ICON-XXX" docs/11_TASKS/ | wc -l)
    echo "Actual consumer count: $actual_count"
    ```
 
 2. **List Actual Consumers**:
    ```bash
-   grep -r "@icon: ICON-XXX" docs/TASKS/ | cut -d: -f1 | sort -u
+   grep -r "@icon: ICON-XXX" docs/11_TASKS/ | cut -d: -f1 | sort -u
    # Shows list of TASKS files with @icon tags
    ```
 
@@ -162,7 +162,7 @@ Comprehensive recovery procedures for the 7 most common ICON creation errors, ba
 1. **Identify Self-Reference**:
    ```bash
    # Check if provider TASKS has section 8.2
-   grep -A 5 "### 8.2 Consumed Contracts" docs/TASKS/TASKS-XXX.md
+   grep -A 5 "### 8.2 Consumed Contracts" docs/11_TASKS/TASKS-XXX.md
    ```
 
 2. **Remove Section 8.2**:
@@ -173,7 +173,7 @@ Comprehensive recovery procedures for the 7 most common ICON creation errors, ba
 3. **Update Consumer Count**:
    ```bash
    # Re-calculate without self-reference
-   new_count=$(grep -r "@icon: ICON-XXX" docs/TASKS/ | grep -v "TASKS-XXX" | wc -l)
+   new_count=$(grep -r "@icon: ICON-XXX" docs/11_TASKS/ | grep -v "TASKS-XXX" | wc -l)
    ```
 
 4. **Update ICON Frontmatter**:
@@ -498,7 +498,7 @@ for icon_file in docs/ICON/ICON-*.md; do
     declared=$(grep "consumer_count:" "$icon_file" | awk '{print $2}')
 
     # Get actual count from grep
-    actual=$(grep -r "@icon: $icon_id" docs/TASKS/ | wc -l)
+    actual=$(grep -r "@icon: $icon_id" docs/11_TASKS/ | wc -l)
 
     if [ "$declared" -ne "$actual" ]; then
         echo "Fixing $icon_id: $declared → $actual"
@@ -521,7 +521,7 @@ for icon_file in docs/ICON/ICON-*.md; do
     icon_id=$(basename "$icon_file" | cut -d_ -f1)
 
     # Check if orphaned
-    ref_count=$(grep -r "@icon: $icon_id" docs/TASKS/ | wc -l)
+    ref_count=$(grep -r "@icon: $icon_id" docs/11_TASKS/ | wc -l)
 
     if [ "$ref_count" -eq 0 ]; then
         echo "Orphaned ICON detected: $icon_id"

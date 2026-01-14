@@ -27,7 +27,7 @@ docs/CHG/CHG-XX_{slug}/
 
 ### Common Pitfalls (Anti-Patterns)
 1.  **Over-Scoping**: Assuming "Unified" means "Replace Everything". Always check `Retaining` lists.
-2.  **Skipping Layers**: Ignoring EARS/BDD/SYS artifacts because they are "middle layers". They MUST be replaced to maintain V-Model integrity.
+2.  **Skipping Layers**: Ignoring 03_EARS/04_BDD/SYS artifacts because they are "middle layers". They MUST be replaced to maintain V-Model integrity.
 3.  **Missing Artifacts**: Failing to grep/search for all files related to a technology (e.g., REQ files in subfolders).
 4.  **Implicit Replacement**: Editing files instead of Archiving + Creating New. (Violates Immutable History).
 

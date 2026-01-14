@@ -256,7 +256,7 @@ if [ -n "$provider" ]; then
 fi
 
 # Count total references in TASKS directory
-ref_count=$(grep -r "@icon: $ICON_ID" ../TASKS/ 2>/dev/null | wc -l)
+ref_count=$(grep -r "@icon: $ICON_ID" ../11_TASKS/ 2>/dev/null | wc -l)
 if [ "$ref_count" -eq 0 ]; then
   echo "ERROR: Orphaned ICON - no TASKS references found"
 fi
@@ -280,13 +280,13 @@ fi
 ICON_ID=$(basename "$ICON_FILE" | grep -oE "ICON-[0-9]+")
 
 # Count providers (must be exactly 1)
-provider_count=$(grep -r "@icon-role: provider" ../TASKS/ | grep "$ICON_ID" | wc -l)
+provider_count=$(grep -r "@icon-role: provider" ../11_TASKS/ | grep "$ICON_ID" | wc -l)
 if [ "$provider_count" -ne 1 ]; then
   echo "ERROR: Expected 1 provider, found $provider_count"
 fi
 
 # Count consumers (informational)
-consumer_count=$(grep -r "@icon-role: consumer" ../TASKS/ | grep "$ICON_ID" | wc -l)
+consumer_count=$(grep -r "@icon-role: consumer" ../11_TASKS/ | grep "$ICON_ID" | wc -l)
 echo "INFO: Found $consumer_count consumer(s)"
 ```
 
@@ -434,7 +434,7 @@ ICON should only be standalone if ALL criteria met:
 ```bash
 # Count consumers
 ICON_ID=$(basename "$ICON_FILE" | grep -oE "ICON-[0-9]+")
-consumer_count=$(grep -r "@icon-role: consumer" ../TASKS/ | grep "$ICON_ID" | wc -l)
+consumer_count=$(grep -r "@icon-role: consumer" ../11_TASKS/ | grep "$ICON_ID" | wc -l)
 
 if [ "$consumer_count" -lt 5 ]; then
   echo "WARNING: Standalone ICON with <5 consumers ($consumer_count found)"
@@ -561,7 +561,7 @@ Result: PASSED WITH WARNINGS
 - [ICON-00_index.md](./ICON-00_index.md) - Contract registry
 - [validate_icon.sh](../scripts/validate_icon.sh) - Validation script
 - [README.md](./README.md) - Directory overview
-- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md) - Contracts guide
+- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md) - Contracts guide
 
 ---
 

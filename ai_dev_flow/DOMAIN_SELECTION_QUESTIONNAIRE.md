@@ -136,11 +136,11 @@ Enter selection (1-6) or press Enter for default (1):
 ```
 
 **Requirements Subdirectories**:
-- `docs/REQ/risk/` - Risk management requirements
-- `docs/REQ/trading/` - operation execution requirements
-- `docs/REQ/collection/` - collection management requirements
-- `docs/REQ/compliance/` - Regulatory compliance requirements
-- `docs/REQ/ml/` - ML model requirements (pricing, sentiment, regime detection)
+- `docs/07_REQ/risk/` - Risk management requirements
+- `docs/07_REQ/trading/` - operation execution requirements
+- `docs/07_REQ/collection/` - collection management requirements
+- `docs/07_REQ/compliance/` - Regulatory compliance requirements
+- `docs/07_REQ/ml/` - ML model requirements (pricing, sentiment, regime detection)
 
 **Example Use Cases**:
 - Algorithmic trading platform
@@ -183,10 +183,10 @@ Enter selection (1-6) or press Enter for default (1):
 ```
 
 **Requirements Subdirectories**:
-- `docs/REQ/tenant/` - Multi-tenancy requirements
-- `docs/REQ/subscription/` - Subscription management
-- `docs/REQ/billing/` - Billing and invoicing
-- `docs/REQ/workspace/` - Workspace features
+- `docs/07_REQ/tenant/` - Multi-tenancy requirements
+- `docs/07_REQ/subscription/` - Subscription management
+- `docs/07_REQ/billing/` - Billing and invoicing
+- `docs/07_REQ/workspace/` - Workspace features
 
 **Example Use Cases**:
 - Project management SaaS
@@ -229,10 +229,10 @@ Enter selection (1-6) or press Enter for default (1):
 ```
 
 **Requirements Subdirectories**:
-- `docs/REQ/patient/` - Patient management
-- `docs/REQ/clinical/` - Clinical workflows
-- `docs/REQ/ehr/` - EMR/EHR features
-- `docs/REQ/hipaa/` - HIPAA compliance
+- `docs/07_REQ/patient/` - Patient management
+- `docs/07_REQ/clinical/` - Clinical workflows
+- `docs/07_REQ/ehr/` - EMR/EHR features
+- `docs/07_REQ/hipaa/` - HIPAA compliance
 
 **Example Use Cases**:
 - Telemedicine platform
@@ -275,11 +275,11 @@ Enter selection (1-6) or press Enter for default (1):
 ```
 
 **Requirements Subdirectories**:
-- `docs/REQ/catalog/` - Product catalog features
-- `docs/REQ/cart/` - Shopping cart
-- `docs/REQ/order/` - Order management
-- `docs/REQ/payment/` - Payment processing
-- `docs/REQ/inventory/` - Inventory management
+- `docs/07_REQ/catalog/` - Product catalog features
+- `docs/07_REQ/cart/` - Shopping cart
+- `docs/07_REQ/order/` - Order management
+- `docs/07_REQ/payment/` - Payment processing
+- `docs/07_REQ/inventory/` - Inventory management
 
 **Example Use Cases**:
 - Online store platform
@@ -322,10 +322,10 @@ Enter selection (1-6) or press Enter for default (1):
 ```
 
 **Requirements Subdirectories**:
-- `docs/REQ/device/` - Device management
-- `docs/REQ/telemetry/` - Data collection
-- `docs/REQ/firmware/` - OTA updates
-- `docs/REQ/edge/` - Edge computing
+- `docs/07_REQ/device/` - Device management
+- `docs/07_REQ/telemetry/` - Data collection
+- `docs/07_REQ/firmware/` - OTA updates
+- `docs/07_REQ/edge/` - Edge computing
 
 **Example Use Cases**:
 - Smart building management
@@ -572,10 +572,10 @@ Applying Software/SaaS terminology:
 - [REGULATORY_REQUIREMENT] → SOC2 Control
 
 Creating folder structure...
-✓ Created: docs/REQ/tenant/
-✓ Created: docs/REQ/subscription/
-✓ Created: docs/REQ/billing/
-✓ Created: docs/REQ/workspace/
+✓ Created: docs/07_REQ/tenant/
+✓ Created: docs/07_REQ/subscription/
+✓ Created: docs/07_REQ/billing/
+✓ Created: docs/07_REQ/workspace/
 
 Ready to proceed. Next: Run contract decision questionnaire.
 ```

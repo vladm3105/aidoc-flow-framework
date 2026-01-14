@@ -115,7 +115,7 @@ find docs/ -type f -name "*.md" -exec sed -i \
 
 ```bash
 # Apply to YAML SPEC
-find docs/SPEC/ -type f -name "*.yaml" -exec sed -i \
+find docs/10_SPEC/ -type f -name "*.yaml" -exec sed -i \
   -e 's/resource_collection/collection/g' \
   -e 's/resource_item/position/g' \
   -e 's/ResourceCollection/collection/g' \
@@ -262,18 +262,18 @@ The following subdirectories are recommended for Financial Services projects. Th
 
 | Subdirectory | Description | Child Directories |
 |--------------|-------------|-------------------|
-| `docs/REQ/risk/` | Risk management requirements | `lim/`, `var/`, `stress/` |
-| `docs/REQ/trading/` | Operation execution requirements | `ord/`, `exec/`, `rou/` |
-| `docs/REQ/collection/` | Collection management | `alloc/`, `rebal/`, `perf/` |
-| `docs/REQ/compliance/` | Regulatory compliance | `regulatory/`, `compliance/`, `audit/` |
-| `docs/REQ/ml/` | ML model requirements | `pricing/`, `sentiment/`, `regime/` |
+| `docs/07_REQ/risk/` | Risk management requirements | `lim/`, `var/`, `stress/` |
+| `docs/07_REQ/trading/` | Operation execution requirements | `ord/`, `exec/`, `rou/` |
+| `docs/07_REQ/collection/` | Collection management | `alloc/`, `rebal/`, `perf/` |
+| `docs/07_REQ/compliance/` | Regulatory compliance | `regulatory/`, `compliance/`, `audit/` |
+| `docs/07_REQ/ml/` | ML model requirements | `pricing/`, `sentiment/`, `regime/` |
 
 **Note**: Folders are NOT created at project initialization. The `doc-req` skill creates the appropriate folder structure when generating a REQ document, ensuring only used folders exist.
 
 ### Example Requirements Organization
 
 ```
-docs/REQ/
+docs/07_REQ/
 ├── risk/
 │   ├── REQ-01_resource_limit_enforcement.md
 │   ├── REQ-02_var_calculation_methodology.md
@@ -716,11 +716,11 @@ AI Assistant should automatically apply FINANCIAL_DOMAIN_CONFIG.md when:
 
 After applying financial domain configuration, verify:
 
-- [ ] `docs/REQ/risk/` directory exists
-- [ ] `docs/REQ/trading/` directory exists
-- [ ] `docs/REQ/collection/` directory exists
-- [ ] `docs/REQ/compliance/` directory exists
-- [ ] `docs/REQ/ml/` directory exists
+- [ ] `docs/07_REQ/risk/` directory exists
+- [ ] `docs/07_REQ/trading/` directory exists
+- [ ] `docs/07_REQ/collection/` directory exists
+- [ ] `docs/07_REQ/compliance/` directory exists
+- [ ] `docs/07_REQ/ml/` directory exists
 - [ ] Placeholder `[RESOURCE_COLLECTION]` replaced with "collection"
 - [ ] Placeholder `[RESOURCE_ITEM]` replaced with "Position"
 - [ ] Regulatory requirements include regulatory/compliance references

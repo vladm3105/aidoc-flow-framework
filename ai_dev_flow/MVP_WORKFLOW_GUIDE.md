@@ -11,9 +11,19 @@ custom_fields:
 
 # MVP Development Workflow Guide
 
-**Version**: 1.0
+**Version**: 2.0
 **Purpose**: Streamlined workflow for rapid Minimum Viable Product (MVP) development using AI Dev Flow.
 **Target Audience**: AI Assistants and small teams (2-10 people) building early-stage products.
+
+> **🎯 MVP IS NOW THE FRAMEWORK DEFAULT**
+>
+> As of v2.0, MVP templates are automatically selected for all new document creation.
+> Full templates are only used when explicitly triggered via:
+> - Project setting: `template_profile: enterprise`
+> - Prompt keywords: "use full template", "enterprise mode", "regulatory compliance"
+>
+> See [LAYER_REGISTRY.yaml](./LAYER_REGISTRY.yaml) for `mvp_available` and `default_template` fields.
+> See [.autopilot.yaml](./.autopilot.yaml) for profile configuration.
 
 Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live under `ai_dev_flow/` without the `docs/` prefix. Run commands from the repo root and use explicit paths, e.g., `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/PRD`.
 
@@ -86,7 +96,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 5.  **Corpus Validation**: Verify Gherkin syntax across suite.
 
 ### Step 5: Lean Architecture (ADR & SYS) — **Day 2 (Morning)**
-**Artifacts**: MVP Templates for ADR/SYS.
+**Artifacts**: MVP Templates for 05_ADR/SYS.
 1.  **Plan**: Identify *irreversible* decisions (ADR) and System Boundary (SYS).
 2.  **Pre-Check**: Ensure upstream docs exist (`BRD-01`, `PRD-01`, `EARS-01`); verify `ADR-00_index.md` and `SYS-00_index.md` + required lists; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: `ADR-01` (Tech Stack), `SYS-01` (System Spec).
@@ -107,7 +117,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 ### Step 7: Spec & Code (SPEC -> TASKS) — **Day 2 (Afternoon)**
 **Artifacts**: Standard `SPEC` (YAML), `TASKS`.
 1.  **Plan**: Map REQs to Specs.
-2.  **Pre-Check**: Ensure required REQ files exist; verify any SPEC/TASKS index/required lists used; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+2.  **Pre-Check**: Ensure required REQ files exist; verify any 10_SPEC/TASKS index/required lists used; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: Specs and Task Lists.
 4.  **Validate**: `python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/SPEC`.
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow` (final pre-code check).

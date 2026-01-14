@@ -810,7 +810,7 @@ if __name__ == '__main__':
 #!/bin/bash
 # .git/hooks/pre-commit
 
-# Validate metadata on BRD/ADR files
+# Validate metadata on 01_BRD/ADR files
 for file in $(git diff --cached --name-only | grep -E '(BRD|ADR)/.*\.md$'); do
   if [ -f "$file" ]; then
     python scripts/validate_metadata.py "$file"
@@ -867,7 +867,7 @@ echo "✅ Metadata validation passed"
 
 # Add metadata to all AI Agent BRDs (BRD-22 to BRD-29)
 for i in {022..029}; do
-  file="docs/BRD/BRD-${i}_*.md"
+  file="docs/01_BRD/BRD-${i}_*.md"
   if [ -f $file ]; then
     # Insert frontmatter at beginning
     echo "Processing $file"
@@ -1518,17 +1518,17 @@ Update all BRDs from BRD-22 to BRD-29:
 
 **List all primary (recommended) BRDs:**
 ```bash
-grep -l "priority: primary" docs/BRD/*.md
+grep -l "priority: primary" docs/01_BRD/*.md
 ```
 
 **Find all AI Agent documents:**
 ```bash
-grep -l "ai-agent-primary" docs/BRD/*.md
+grep -l "ai-agent-primary" docs/01_BRD/*.md
 ```
 
 **Extract all agent IDs:**
 ```bash
-grep "agent_id:" docs/BRD/*.md | sed 's/.*agent_id: //'
+grep "agent_id:" docs/01_BRD/*.md | sed 's/.*agent_id: //'
 ```
 
 **Python query script:**

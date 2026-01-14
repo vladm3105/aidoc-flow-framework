@@ -31,7 +31,7 @@ This framework provides:
 
 ### 1.2 Threshold Definition Strategy
 
-Thresholds are defined in **source documents** (BRD/PRD/ADR) and referenced via **`@threshold:` tags** in downstream artifacts:
+Thresholds are defined in **source documents** (01_BRD/02_PRD/ADR) and referenced via **`@threshold:` tags** in downstream artifacts:
 
 **Source Documents** (define thresholds in YAML blocks):
 
@@ -41,11 +41,11 @@ Thresholds are defined in **source documents** (BRD/PRD/ADR) and referenced via 
 
 **Consumer Documents** (reference thresholds using `@threshold:` tags):
 
-- **EARS, BDD, SYS, REQ, CTR, SPEC**: Reference thresholds from BRD/PRD/ADR
-- **ADR**: May also reference BRD/PRD thresholds when satisfying business/product requirements
+- **EARS, BDD, SYS, REQ, CTR, SPEC**: Reference thresholds from 01_BRD/02_PRD/ADR
+- **ADR**: May also reference 01_BRD/PRD thresholds when satisfying business/product requirements
 - **Code/Config**: Reference source document thresholds for implementation
 
-> **Note**: ADR has a dual role - it can define technical thresholds AND reference business/product thresholds from BRD/PRD.
+> **Note**: ADR has a dual role - it can define technical thresholds AND reference business/product thresholds from 01_BRD/PRD.
 
 This approach eliminates separate registry documents while maintaining full traceability.
 
@@ -236,7 +236,7 @@ Consumer Documents (reference via @threshold: tags):
 Code (implements with config reference)
 ```
 
-> **ADR Dual Role**: An ADR can define its own technical thresholds (e.g., `ADR.15.circuit.failure.count`) while also referencing business/product thresholds from BRD/PRD (e.g., `@threshold: PRD.01.perf.api.p95`) that the architecture must satisfy.
+> **ADR Dual Role**: An ADR can define its own technical thresholds (e.g., `ADR.15.circuit.failure.count`) while also referencing business/product thresholds from 01_BRD/PRD (e.g., `@threshold: PRD.01.perf.api.p95`) that the architecture must satisfy.
 
 ---
 
@@ -286,7 +286,7 @@ These categories apply to ALL projects and SHOULD be used when applicable:
 
 #### 2.2.3 Domain-Specific Categories (Project-Defined)
 
-Projects define domain-specific categories in the BRD/PRD Thresholds section. Document new categories with a comment:
+Projects define domain-specific categories in the 01_BRD/PRD Thresholds section. Document new categories with a comment:
 
 ```yaml
 thresholds:
@@ -313,8 +313,8 @@ thresholds:
 #### 2.2.4 Category Registration Process
 
 1. **Check Universal Categories** - Use predefined if applicable
-2. **Check Existing Project Categories** - Review BRD/PRD threshold sections for duplicates
-3. **Define New Category** - Add to appropriate BRD/PRD with YAML comment metadata:
+2. **Check Existing Project Categories** - Review 01_BRD/PRD threshold sections for duplicates
+3. **Define New Category** - Add to appropriate 01_BRD/PRD with YAML comment metadata:
    - Name (3-12 chars, lowercase)
    - Purpose (one sentence)
    - Domain scope
@@ -360,7 +360,7 @@ thresholds:
 
 #### 3.2.2 Domain-Specific Abbreviations (Define Per Project)
 
-Projects MAY define additional abbreviations in BRD/PRD threshold sections using YAML comments:
+Projects MAY define additional abbreviations in 01_BRD/PRD threshold sections using YAML comments:
 
 ```yaml
 thresholds:
@@ -376,7 +376,7 @@ thresholds:
 
 - Maximum 5 characters
 - Lowercase only
-- Must be documented in BRD/PRD threshold section comments
+- Must be documented in 01_BRD/PRD threshold section comments
 - Avoid conflicts with universal abbreviations
 
 **Common Domain Abbreviations** (examples):
@@ -591,7 +591,7 @@ When multiple documents could define similar thresholds, establish clear ownersh
 
 **Conflict Resolution Rules**:
 
-1. **Business vs Technical**: BRD/PRD own business thresholds; ADR owns technical thresholds
+1. **Business vs Technical**: 01_BRD/PRD own business thresholds; ADR owns technical thresholds
 2. **Platform vs Product**: BRD takes precedence over PRD for platform-level thresholds
 3. **When unclear**: The document where the threshold is first justified owns it
 
@@ -854,7 +854,7 @@ thresholds:
 |--------------|---------|------------------|
 | Hardcoded values | No single source of truth | Use `@threshold:` tag |
 | Inline magic numbers | Unmaintainable | Use `@threshold:` tag with key |
-| Duplicate definitions | Conflicts | Single BRD/PRD definition |
+| Duplicate definitions | Conflicts | Single 01_BRD/PRD definition |
 | Missing units | Ambiguous | Comment with unit in YAML |
 | No @threshold: tags | Broken traceability | Always reference source doc |
 
@@ -887,7 +887,7 @@ thresholds:
 
 - [ ] Key follows `category.subcategory.attribute` format
 - [ ] Uses lowercase with dot separators
-- [ ] Defined in appropriate BRD/PRD with YAML block
+- [ ] Defined in appropriate 01_BRD/PRD with YAML block
 - [ ] Type specified (integer/decimal/ratio/percent/score)
 - [ ] Unit specified in YAML comment
 - [ ] Boundary behavior documented in comment
@@ -904,7 +904,7 @@ thresholds:
 | 1.0 | 2025-12-16 | AI Dev Flow Team | Initial creation based on PRD-NN analysis |
 | 1.1 | 2025-12-16 | AI Dev Flow Team | Added detailed Boundary Specification, Reference Format, Definition, and Environment Override rules |
 | 1.2 | 2025-12-16 | AI Dev Flow Team | Converted to framework: replaced fixed categories with category creation rules; added universal vs domain-specific categories and abbreviations |
-| 1.3 | 2025-12-16 | AI Dev Flow Team | Removed Threshold Registry requirement; thresholds now defined in BRD/PRD/ADR YAML blocks; introduced `@threshold:` tags for traceability; ADR added as source for technical thresholds (circuit breakers, pools, performance SLAs) |
+| 1.3 | 2025-12-16 | AI Dev Flow Team | Removed Threshold Registry requirement; thresholds now defined in 01_BRD/02_PRD/ADR YAML blocks; introduced `@threshold:` tags for traceability; ADR added as source for technical thresholds (circuit breakers, pools, performance SLAs) |
 
 ---
 

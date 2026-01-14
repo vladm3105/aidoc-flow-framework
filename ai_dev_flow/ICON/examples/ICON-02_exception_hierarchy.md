@@ -714,8 +714,8 @@ async def payment_exception_handler(request: Request, exc: PaymentException):
 ## 8. References
 
 ### 8.1 Internal Documentation
-- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
-- [TASKS-TEMPLATE.md](../../TASKS/TASKS-TEMPLATE.md)
+- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../../11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
+- [TASKS-TEMPLATE.md](../../11_TASKS/TASKS-TEMPLATE.md)
 - [TRACEABILITY.md](../../TRACEABILITY.md)
 
 ### 8.2 Related Contracts

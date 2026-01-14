@@ -75,7 +75,7 @@ flowchart LR
 
     BRD01 --> PRD01
 
-    click BRD01 "../../BRD/BRD-01_platform/" "View BRD-01"
+    click BRD01 "../../01_BRD/BRD-01_platform/" "View BRD-01"
     click PRD01 "../PRD-01_core/" "View PRD-01"
 ```
 

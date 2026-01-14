@@ -398,16 +398,16 @@ Before committing documents with metadata:
 
 ```bash
 # Validate single file
-python scripts/validate_metadata.py docs/BRD/BRD-NN_name.md
+python scripts/validate_metadata.py docs/01_BRD/BRD-NN_name.md
 
 # Validate all BRDs
-for file in docs/BRD/*.md; do
+for file in docs/01_BRD/*.md; do
   python scripts/validate_metadata.py "$file"
 done
 
 # Check bidirectional references
-grep -l "fallback_reference: BRD-NN" docs/BRD/*.md  # Should find BRD-NN
-grep -l "primary_alternative: BRD-NN" docs/BRD/*.md  # Should find BRD-NN
+grep -l "fallback_reference: BRD-NN" docs/01_BRD/*.md  # Should find BRD-NN
+grep -l "primary_alternative: BRD-NN" docs/01_BRD/*.md  # Should find BRD-NN
 ```
 
 ---

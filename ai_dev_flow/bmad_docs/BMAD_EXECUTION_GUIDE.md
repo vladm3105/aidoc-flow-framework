@@ -88,24 +88,24 @@ graph TD
     end
 
     subgraph "BMAD Sub-Agents"
-        E[DocAgent: Generate BRD/PRD/EARS/BDD]
-        F[ArchAgent: Generate ADR/SYS]
-        G[SpecAgent: Generate REQ/IMPL/CTR/SPEC/TASKS/IPLAN]
+        E[DocAgent: Generate 01_BRD/02_PRD/03_EARS/BDD]
+        F[ArchAgent: Generate 05_ADR/SYS]
+        G[SpecAgent: Generate 07_REQ/08_IMPL/09_CTR/10_SPEC/11_TASKS/IPLAN]
         H[CodeGenAgent: Generate Source Code]
         I[TestingAgent: Generate & Run Tests]
         J[DebuggerAgent: Analyze & Fix Bugs]
     end
 
     subgraph "Human Architect Review"
-        K[5. Review & Approve BRD/PRD/ADR]
+        K[5. Review & Approve 01_BRD/02_PRD/ADR]
     end
 
     subgraph "AI Dev Flow Artifacts - 12 Layers"
-        L1[Layer 1-2: BRD/PRD]
-        L2[Layer 3-4: EARS/BDD]
-        L3[Layer 5-6: ADR/SYS]
-        L4[Layer 7-9: REQ/IMPL/CTR]
-        L5[Layer 10-12: SPEC/TASKS/IPLAN]
+        L1[Layer 1-2: 01_BRD/PRD]
+        L2[Layer 3-4: 03_EARS/BDD]
+        L3[Layer 5-6: 05_ADR/SYS]
+        L4[Layer 7-9: 07_REQ/08_IMPL/CTR]
+        L5[Layer 10-12: 10_SPEC/11_TASKS/IPLAN]
         L6[Source Code]
         L7[Test Results]
     end
@@ -184,7 +184,7 @@ The Master Architect Agent now takes over, executing the setup rules defined in 
 2. **Folder Creation:** It uses its `Bash` tool to execute `mkdir` commands to create the 12-layer directory structure and specific subdirectories as per `AI_ASSISTANT_RULES.md`.
     * *BMAD Action:* `Agent.invoke_tool("Bash", command="mkdir -p /path/to/project/docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}")`
 3. **Template Initialization:** It copies all necessary `AI_DEV_FLOW` templates into the new project structure and initializes all `*-00_index.md` files.
-    * *BMAD Action:* `Agent.invoke_tool("Bash", command="cp /path/to/ai_dev_flow/BRD/* /path/to/project/docs/BRD/")`
+    * *BMAD Action:* `Agent.invoke_tool("Bash", command="cp /path/to/ai_dev_flow/01_BRD/* /path/to/project/docs/01_BRD/")`
 
 ### Step 3: Generating the Initial BRD (BMAD Documentation Sub-Agent)
 
@@ -196,9 +196,9 @@ The Master Architect Agent delegates to a specialized "Documentation Sub-Agent" 
 1. **Content Generation:** The DocAgent receives the initial project description and the empty `BRD-TEMPLATE.md`. Using its LLM capabilities, it generates the content for the initial `BRD-01`. It populates sections like "Business Objectives," "Project Scope," and high-level "Business Capabilities."
     * *BMAD Action:* `DocAgent.generate_document(template_path="BRD-TEMPLATE.md", context=mission_description)`
 2. **Metadata and Traceability:** The DocAgent ensures the YAML frontmatter is correctly populated and the "Document Control" section (including `PRD-Ready Score`) is initialized.
-3. **File Operations:** It uses its tools to save `BRD-01_local_analysis_service.md` and update `docs/BRD/BRD-00_index.md`.
-    * *BMAD Action:* `DocAgent.invoke_tool("WriteFile", path="docs/BRD/BRD-01_local_analysis_service.md", content=generated_brd)`
-    * *BMAD Action:* `DocAgent.invoke_tool("UpdateIndexTool", index_path="docs/BRD/BRD-00_index.md", doc_id="BRD-01", title="Local Analysis Service")`
+3. **File Operations:** It uses its tools to save `BRD-01_local_analysis_service.md` and update `docs/01_BRD/BRD-00_index.md`.
+    * *BMAD Action:* `DocAgent.invoke_tool("WriteFile", path="docs/01_BRD/BRD-01_local_analysis_service.md", content=generated_brd)`
+    * *BMAD Action:* `DocAgent.invoke_tool("UpdateIndexTool", index_path="docs/01_BRD/BRD-00_index.md", doc_id="BRD-01", title="Local Analysis Service")`
 
 ### Step 4: Human Review and Approval (Human Architect)
 
@@ -208,7 +208,7 @@ This is a critical checkpoint where you, the Architect, provide explicit approva
 
 **Action:**
 1. **Review:** The Master Architect Agent will notify you that `BRD-01` is ready for review. You inspect its content to ensure it accurately reflects your vision.
-    * *BMAD Output:* "BRD-01 has been generated and is awaiting your review at `/path/to/project/docs/BRD/BRD-01_local_analysis_service.md`. Please provide 'Approved' or 'Changes Required' feedback."
+    * *BMAD Output:* "BRD-01 has been generated and is awaiting your review at `/path/to/project/docs/01_BRD/BRD-01_local_analysis_service.md`. Please provide 'Approved' or 'Changes Required' feedback."
 2. **Feedback:** You signal your approval or request changes to the Master Architect Agent.
     * *Human Input:* `agent.feedback("BRD-01 Approved")`
 

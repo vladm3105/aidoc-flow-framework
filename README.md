@@ -12,6 +12,40 @@ The AI Dev Flow Framework is a comprehensive template system for implementing AI
 
 > MVP Note: When using the MVP track, all artifacts are single, flat files. Do not use document splitting or `DOCUMENT_SPLITTING_RULES.md`.
 
+## Default Template Selection (MVP is Default)
+
+**MVP templates are the framework default** for all new document creation. Full templates are available for enterprise/regulatory projects.
+
+### Available MVP Templates (Layers 1-7)
+| Layer | Artifact | Default Template |
+|-------|----------|-----------------|
+| 1 | BRD | `BRD-MVP-TEMPLATE.md` |
+| 2 | PRD | `PRD-MVP-TEMPLATE.md` |
+| 3 | EARS | `EARS-MVP-TEMPLATE.md` |
+| 4 | BDD | `BDD-MVP-TEMPLATE.feature` |
+| 5 | ADR | `ADR-MVP-TEMPLATE.md` |
+| 6 | SYS | `SYS-MVP-TEMPLATE.md` |
+| 7 | REQ | `REQ-MVP-TEMPLATE.md` |
+
+Layers 8-15 use full templates only (no MVP variants).
+
+### Triggering Full Templates
+
+When full documentation is required, trigger full templates using:
+
+**Method 1 - Project Settings** (in `.autopilot.yaml` or `CLAUDE.md`):
+```yaml
+template_profile: enterprise  # or "full" or "strict"
+```
+
+**Method 2 - Prompt Keywords** (include in your request):
+- "use full template"
+- "use enterprise template"
+- "enterprise mode"
+- "full documentation"
+- "comprehensive template"
+- "regulatory compliance"
+
 ### Key Features
 
 - **16-Layer Architecture**: Structured progression from strategy to validation (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation)

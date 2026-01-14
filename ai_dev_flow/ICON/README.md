@@ -45,17 +45,17 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 cd [project_root]/
 
 # Check total references (must equal 1 provider + N consumers)
-grep -r "@icon: ICON-XXX" docs/TASKS/ | wc -l
+grep -r "@icon: ICON-XXX" docs/11_TASKS/ | wc -l
 
 # Verify provider role exists
-grep -r "@icon-role: provider" docs/TASKS/ | grep "ICON-XXX"
+grep -r "@icon-role: provider" docs/11_TASKS/ | grep "ICON-XXX"
 
 # Verify consumer roles exist (count must equal N consumers)
-grep -r "@icon-role: consumer" docs/TASKS/ | grep "ICON-XXX" | wc -l
+grep -r "@icon-role: consumer" docs/11_TASKS/ | grep "ICON-XXX" | wc -l
 
 # Check no orphaned ICON files
 for icon in ICON-01 ICON-02 ICON-03; do
-  count=$(grep -r "@icon: $icon" docs/TASKS/ | wc -l)
+  count=$(grep -r "@icon: $icon" docs/11_TASKS/ | wc -l)
   if [ $count -eq 0 ]; then
     echo "ERROR: $icon is orphaned (0 TASKS references)"
   else
@@ -113,7 +113,7 @@ done
    ```
 
 4. **Update Provider TASKS** (5 min):
-   - Open provider TASKS file (e.g., `docs/TASKS/TASKS-XXX.md`)
+   - Open provider TASKS file (e.g., `docs/11_TASKS/TASKS-XXX.md`)
    - Add section 8.1 with @icon tag:
      ```markdown
      ## 8. Implementation Contracts
@@ -189,7 +189,7 @@ Requires ServiceConnector protocol for service connections.
 | Error | Symptom | Solution | Reference |
 |-------|---------|----------|-----------|
 | **Orphaned ICON** | 0 TASKS references found | Add @icon tags to provider/consumer TASKS | ICON_ERROR_RECOVERY.md §2.1 |
-| **Consumer Count Mismatch** | grep count ≠ frontmatter | Update frontmatter with: `grep -r "@icon: ICON-XXX" docs/TASKS/ \| wc -l` | ICON_ERROR_RECOVERY.md §2.2 |
+| **Consumer Count Mismatch** | grep count ≠ frontmatter | Update frontmatter with: `grep -r "@icon: ICON-XXX" docs/11_TASKS/ \| wc -l` | ICON_ERROR_RECOVERY.md §2.2 |
 | **Self-Reference** | Provider TASKS has section 8.2 | Remove section 8.2, keep only 8.1 | ICON_ERROR_RECOVERY.md §2.3 |
 | **Missing YAML** | No frontmatter in ICON file | Copy lines 1-15 from ICON-TEMPLATE.md | ICON_ERROR_RECOVERY.md §2.4 |
 | **Incomplete Sections** | < 10 sections in ICON | Use ICON-TEMPLATE.md checklist | ICON_ERROR_RECOVERY.md §2.5 |
@@ -466,18 +466,18 @@ sequenceDiagram
 
 ```bash
 # Verify exactly 1 provider exists
-grep -r "@icon-role: provider" docs/TASKS/ | grep "ICON-01"
+grep -r "@icon-role: provider" docs/11_TASKS/ | grep "ICON-01"
 
 # Count consumers (should be N)
-grep -r "@icon-role: consumer" docs/TASKS/ | grep "ICON-01" | wc -l
+grep -r "@icon-role: consumer" docs/11_TASKS/ | grep "ICON-01" | wc -l
 
 # Total references should equal 1 provider + N consumers
-grep -r "@icon: ICON-01" docs/TASKS/ | wc -l
+grep -r "@icon: ICON-01" docs/11_TASKS/ | wc -l
 
 # Validate no orphaned ICON (must have provider + at least 1 consumer)
 for icon in ICON-01 ICON-02; do
-  provider=$(grep -r "@icon-role: provider" docs/TASKS/ | grep "$icon" | wc -l)
-  consumers=$(grep -r "@icon-role: consumer" docs/TASKS/ | grep "$icon" | wc -l)
+  provider=$(grep -r "@icon-role: provider" docs/11_TASKS/ | grep "$icon" | wc -l)
+  consumers=$(grep -r "@icon-role: consumer" docs/11_TASKS/ | grep "$icon" | wc -l)
   echo "$icon: $provider provider(s), $consumers consumer(s)"
   if [ $provider -ne 1 ]; then
     echo "  ERROR: Must have exactly 1 provider"
@@ -599,7 +599,7 @@ done
 
 **Layer 12 (IPLAN)**: Implementation plans
 - `@iplan:` tags reference execution plans
-- Consume contracts defined in TASKS/ICON
+- Consume contracts defined in 11_TASKS/ICON
 
 ---
 
@@ -608,13 +608,13 @@ done
 ### Internal Documentation
 
 **Primary Guides**:
-- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md) - Comprehensive guide
+- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md) - Comprehensive guide
 - [ICON_CREATION_RULES.md](./ICON_CREATION_RULES.md) - Decision criteria
 - [ICON-00_index.md](./ICON-00_index.md) - Contract registry
 - [ICON-TEMPLATE.md](./ICON-TEMPLATE.md) - Contract template
 
 **Related Artifacts**:
-- [TASKS-TEMPLATE.md](../TASKS/TASKS-TEMPLATE.md) - Embedded contracts (default)
+- [TASKS-TEMPLATE.md](../11_TASKS/TASKS-TEMPLATE.md) - Embedded contracts (default)
 - [TRACEABILITY.md](../TRACEABILITY.md) - Traceability tags
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Naming conventions
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

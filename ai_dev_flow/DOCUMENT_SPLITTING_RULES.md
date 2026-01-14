@@ -29,7 +29,7 @@ Scope: Applies to narrative Markdown types (e.g., BRD, PRD) and test/spec artifa
 
 ### Monolithic Documents (Flat Structure)
 
-- **Location**: Directly in type directory (e.g., `docs/BRD/BRD-01_platform.md`)
+- **Location**: Directly in type directory (e.g., `docs/01_BRD/BRD-01_platform.md`)
 - **No nested folder**: File lives at type root, not inside a subfolder
 - **No section suffix**: Filename uses `TYPE-DOC_NUM_{slug}.md` pattern
 - **H1 Title**: `# TYPE-DOC_NUM: Title` (no `.S` suffix)
@@ -37,7 +37,7 @@ Scope: Applies to narrative Markdown types (e.g., BRD, PRD) and test/spec artifa
 
 ### Section-Based Documents (Nested Structure)
 
-- **Location**: Inside nested folder (e.g., `docs/BRD/BRD-03_complex/BRD-03.0_index.md`)
+- **Location**: Inside nested folder (e.g., `docs/01_BRD/BRD-03_complex/BRD-03.0_index.md`)
 - **Folder required**: Create `TYPE-DOC_NUM_{slug}/` folder containing all section files
 - **Section suffix required**: All files use `TYPE-DOC_NUM.S_{section}.md` pattern
 - **H1 Title**: `# TYPE-DOC_NUM.S: Section Title` (includes `.S` suffix)
@@ -47,7 +47,7 @@ Scope: Applies to narrative Markdown types (e.g., BRD, PRD) and test/spec artifa
 
 - Trigger: Size linter warnings/errors or poor readability during review.
 - Readability: If sequential reading becomes hard (> ~25–50KB or > ~500 lines), split.
-- Traceability: If section‑level linking improves mapping to REQ/TEST/SPEC, split.
+- Traceability: If section‑level linking improves mapping to 07_REQ/TEST/SPEC, split.
 - Exceptions: SPEC YAML typically stays monolithic per component; split only when necessary.
 
 ## Canonical IDs And Structure
@@ -106,7 +106,7 @@ next_section: "TYPE-NN.(S+1)_{slug}.md"
 
 # Generalized Rules By Type
 
-- Narrative product docs (BRD/PRD):
+- Narrative product docs (01_BRD/PRD):
   - Lead with overview/context, then move into specifications/stories; place appendices and traceability at the end.
   - Keep acceptance criteria adjacent to the relevant stories/features for clarity.
   - Avoid splitting a single coherent unit (e.g., one feature spec) across multiple files unless it exceeds limits; if split, keep numbering contiguous and cross‑link precisely.

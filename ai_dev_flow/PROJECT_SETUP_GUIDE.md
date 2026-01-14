@@ -213,19 +213,19 @@ Options:
 **Commands**:
 ```bash
 # Create index files
-touch docs/BRD/BRD-00_index.md
-touch docs/PRD/PRD-00_index.md
-touch docs/EARS/EARS-00_index.md
+touch docs/01_BRD/BRD-00_index.md
+touch docs/02_PRD/PRD-00_index.md
+touch docs/03_EARS/EARS-00_index.md
 # Create a BDD suite folder and index file (per suite)
-mkdir -p docs/BDD/BDD-NN_{slug}
-touch docs/BDD/BDD-NN_{slug}/BDD-NN.0_index.md
-touch docs/ADR/ADR-00_index.md
-touch docs/SYS/SYS-00_index.md
-touch docs/REQ/REQ-00_index.md
-touch docs/IMPL/IMPL-00_index.md
-touch docs/CTR/CTR-00_index.md
-touch docs/SPEC/SPEC-00_index.yaml
-touch docs/TASKS/TASKS-00_index.md
+mkdir -p docs/04_BDD/BDD-NN_{slug}
+touch docs/04_BDD/BDD-NN_{slug}/BDD-NN.0_index.md
+touch docs/05_ADR/ADR-00_index.md
+touch docs/06_SYS/SYS-00_index.md
+touch docs/07_REQ/REQ-00_index.md
+touch docs/08_IMPL/IMPL-00_index.md
+touch docs/09_CTR/CTR-00_index.md
+touch docs/10_SPEC/SPEC-00_index.yaml
+touch docs/11_TASKS/TASKS-00_index.md
 ```
 
 **Output**: All index files created
@@ -334,8 +334,8 @@ After all documents of type created:
 # Use: doc-brd, doc-prd, doc-req, etc.
 
 # 2. Automated validation (framework scripts)
-./scripts/validate_req_template.sh docs/REQ/REQ-01_example.md
-python scripts/validate_metadata.py docs/REQ/REQ-01_example.md
+./scripts/validate_req_template.sh docs/07_REQ/REQ-01_example.md
+python scripts/validate_metadata.py docs/07_REQ/REQ-01_example.md
 
 # 3. Manual validation checklist
 # - Verify YAML frontmatter structure
@@ -357,7 +357,7 @@ python scripts/validate_metadata.py docs/REQ/REQ-01_example.md
 # After all documents of type created
 
 # 1. Cross-document consistency
-grep -r "@prd: PRD-" docs/REQ/*.md | sort | uniq
+grep -r "@prd: PRD-" docs/07_REQ/*.md | sort | uniq
 # Verify all PRD references exist
 
 # 2. Upstream validation
@@ -495,7 +495,7 @@ Initialize the project with 12-layer SDD documentation structure using STRICT fr
 **Validation Commands**:
 ```bash
 # Automated validation
-python scripts/validate_metadata.py docs/BRD/BRD-01_*.md
+python scripts/validate_metadata.py docs/01_BRD/BRD-01_*.md
 
 # Manual checks
 # - Business language (not technical)
@@ -516,11 +516,11 @@ python scripts/validate_metadata.py docs/BRD/BRD-01_*.md
 **Validation Commands**:
 ```bash
 # Automated validation
-python scripts/validate_metadata.py docs/PRD/PRD-01_*.md
+python scripts/validate_metadata.py docs/02_PRD/PRD-01_*.md
 
 # Cross-reference check
-grep "@brd:" docs/PRD/*.md | cut -d: -f2 | sort | uniq
-ls docs/BRD/BRD-*.md
+grep "@brd:" docs/02_PRD/*.md | cut -d: -f2 | sort | uniq
+ls docs/01_BRD/BRD-*.md
 # Verify all @brd references exist
 ```
 
@@ -538,10 +538,10 @@ ls docs/BRD/BRD-*.md
 **Validation Commands**:
 ```bash
 # Primary validation
-./scripts/validate_req_template.sh docs/REQ/REQ-01_*.md
+./scripts/validate_req_template.sh docs/07_REQ/REQ-01_*.md
 
 # Duplicate detection
-grep -h "^## REQ-" docs/REQ/*.md | sort | uniq -d
+grep -h "^## REQ-" docs/07_REQ/*.md | sort | uniq -d
 # Output should be empty (no duplicates)
 
 # Traceability check
@@ -561,13 +561,13 @@ python scripts/trace_check.py --type REQ --strict
 **Validation Commands**:
 ```bash
 # YAML syntax validation
-python -c "import yaml; yaml.safe_load(open('docs/SPEC/SPEC-01_*.yaml'))"
+python -c "import yaml; yaml.safe_load(open('docs/10_SPEC/SPEC-01_*.yaml'))"
 
 # Schema validation
-python scripts/validate_spec_schema.py docs/SPEC/SPEC-01_*.yaml
+python scripts/validate_spec_schema.py docs/10_SPEC/SPEC-01_*.yaml
 
 # REQ coverage check
-grep "@req:" docs/SPEC/*.yaml | cut -d: -f2 | sort | uniq
+grep "@req:" docs/10_SPEC/*.yaml | cut -d: -f2 | sort | uniq
 # Verify all requirements covered
 ```
 
@@ -584,10 +584,10 @@ grep "@req:" docs/SPEC/*.yaml | cut -d: -f2 | sort | uniq
 **Validation Commands**:
 ```bash
 # Dependency validation
-python scripts/validate_task_dependencies.py docs/TASKS/TASKS-01_*.md
+python scripts/validate_task_dependencies.py docs/11_TASKS/TASKS-01_*.md
 
 # Contract verification (if present)
-grep "@icon:" docs/TASKS/*.md
+grep "@icon:" docs/11_TASKS/*.md
 # Verify implementation contracts defined when needed
 ```
 
@@ -659,7 +659,7 @@ DO NOT:
 
 ```bash
 # Detection
-grep -h "^## REQ-" docs/REQ/*.md | sort | uniq -d
+grep -h "^## REQ-" docs/07_REQ/*.md | sort | uniq -d
 
 # Resolution
 # 1. Manually review duplicates
@@ -685,7 +685,7 @@ python scripts/trace_check.py --strict
 
 ```bash
 # Detection
-python scripts/validate_metadata.py docs/REQ/*.md
+python scripts/validate_metadata.py docs/07_REQ/*.md
 
 # Resolution
 # 1. Fix YAML syntax errors (indentation, quotes)
@@ -698,7 +698,7 @@ python scripts/validate_metadata.py docs/REQ/*.md
 
 ```bash
 # Detection
-grep -L "Acceptance Criteria" docs/REQ/*.md
+grep -L "Acceptance Criteria" docs/07_REQ/*.md
 
 # Resolution
 # 1. Add acceptance criteria section
@@ -751,7 +751,7 @@ REQ Phase:
   Generate REQ-01 → Validate → Fix → Complete
   Generate REQ-02 → Validate → Fix → Complete
   ...
-  Phase Review → Verify PRD/EARS traceability → Quality Gate → Update work_plans/ → Proceed to SPEC
+  Phase Review → Verify 02_PRD/EARS traceability → Quality Gate → Update work_plans/ → Proceed to SPEC
 
 SPEC Phase:
   Generate SPEC-01 → Validate → Fix → Complete
@@ -857,26 +857,26 @@ AI Assistant:
 ✓ Domain-specific subdirectories: risk, operations, data, compliance, ml
 
 Creating folder structure...
-✓ Created: docs/BRD/
-✓ Created: docs/PRD/
-✓ Created: docs/EARS/
-✓ Created: docs/BDD/
-✓ Created: docs/ADR/
-✓ Created: docs/SYS/
-✓ Created: docs/REQ/
-✓ Created: docs/IMPL/
-✓ Created: docs/CTR/
-✓ Created: docs/SPEC/
-✓ Created: docs/TASKS/
+✓ Created: docs/01_BRD/
+✓ Created: docs/02_PRD/
+✓ Created: docs/03_EARS/
+✓ Created: docs/04_BDD/
+✓ Created: docs/05_ADR/
+✓ Created: docs/06_SYS/
+✓ Created: docs/07_REQ/
+✓ Created: docs/08_IMPL/
+✓ Created: docs/09_CTR/
+✓ Created: docs/10_SPEC/
+✓ Created: docs/11_TASKS/
 
-✓ Created: docs/REQ/api/
-✓ Created: docs/REQ/auth/
-✓ Created: docs/REQ/data/
-✓ Created: docs/REQ/risk/
-✓ Created: docs/REQ/operations/
-✓ Created: docs/REQ/collection/
-✓ Created: docs/REQ/compliance/
-✓ Created: docs/REQ/ml/
+✓ Created: docs/07_REQ/api/
+✓ Created: docs/07_REQ/auth/
+✓ Created: docs/07_REQ/data/
+✓ Created: docs/07_REQ/risk/
+✓ Created: docs/07_REQ/operations/
+✓ Created: docs/07_REQ/collection/
+✓ Created: docs/07_REQ/compliance/
+✓ Created: docs/07_REQ/ml/
 
 ✓ Created: scripts/
 ✓ Created: work_plans/
@@ -972,7 +972,7 @@ Next: Review PROJECT_KICKOFF_TASKS.md for Day 1-7 action plan
 # Step 2: Create Folders
 mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
 mkdir -p scripts work_plans
-# NOTE: REQ/CTR subdirectories created on-demand by doc-req/doc-ctr skills
+# NOTE: 07_REQ/CTR subdirectories created on-demand by doc-req/doc-ctr skills
 
 # Step 3: Copy Templates
 FRAMEWORK_ROOT=/path/to/ai_dev_flow

@@ -1,21 +1,68 @@
-# Default MVP Autopilot configuration (optional)
+# MVP Autopilot Configuration
+# Version: 2.0
+# Last Updated: 2026-01-13
 # This file is auto-detected by mvp_autopilot.py unless overridden with --config
 
 defaults:
   auto_fix: true
   mvp_validators: true
   report: markdown
+  default_profile: mvp  # MVP templates are now the framework default
 
-# default_profile: mvp
+# Template Selection Configuration
+# MVP templates are DEFAULT. Full templates triggered via settings or prompt keywords.
+template_selection:
+  default: mvp
+  # Trigger full template via project settings OR prompt keywords
+  full_template_triggers:
+    project_settings:
+      - "template_profile: enterprise"
+      - "template_profile: full"
+      - "template_profile: strict"
+    prompt_keywords:
+      - "use full template"
+      - "use enterprise template"
+      - "enterprise mode"
+      - "full documentation"
+      - "comprehensive template"
+      - "regulatory compliance"
 
+# Available Profiles
 profiles:
+  # MVP Profile (DEFAULT) - Streamlined templates for rapid development
   mvp:
     auto_fix: true
     strict: false
     mvp_validators: true
+    template_type: mvp
     report: markdown
+    description: "Streamlined templates for rapid MVP development (DEFAULT)"
+
+  # Enterprise Profile - Full templates for enterprise/regulatory projects
+  enterprise:
+    auto_fix: true
+    strict: true
+    mvp_validators: false
+    template_type: full
+    no_skeleton: true
+    report: markdown
+    description: "Full templates for enterprise/regulatory projects"
+
+  # Strict Profile - Alias for enterprise
   strict:
     auto_fix: true
     strict: true
+    mvp_validators: false
+    template_type: full
     no_skeleton: true
     report: markdown
+    description: "Alias for enterprise profile"
+
+  # Full Profile - Alias for enterprise
+  full:
+    auto_fix: true
+    strict: true
+    mvp_validators: false
+    template_type: full
+    report: markdown
+    description: "Alias for enterprise profile"

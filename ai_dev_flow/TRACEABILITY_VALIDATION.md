@@ -127,17 +127,17 @@ validate_quality_gates() {
 
     for file in $changed_files; do
         case "$file" in
-            BRD/*.md) ./scripts/validate_brd_template.sh "$file" ;;
-            PRD/*.md) python scripts/validate_prd.py "$file" ;;
-            EARS/*.md) python scripts/validate_ears.py --path "$file" ;;
-            BDD/BDD-*/BDD-*.feature) python scripts/validate_bdd.py "$file" ;;
-            ADR/*.md) python scripts/validate_adr.py "$file" ;;
-            SYS/*.md) python scripts/validate_sys.py "$file" ;;
-            REQ/**/*.md|REQ/*.md) ./scripts/validate_req_template.sh "$file" ;;
-            SPEC/*.yaml|SPEC/**/*.yaml) python scripts/validate_spec.py "$file" ;;
-            TASKS/*.md) ./scripts/validate_tasks.sh "$file" ;;
+            01_BRD/*.md) ./scripts/validate_brd_template.sh "$file" ;;
+            02_PRD/*.md) python scripts/validate_prd.py "$file" ;;
+            03_EARS/*.md) python scripts/validate_ears.py --path "$file" ;;
+            04_BDD/BDD-*/BDD-*.feature) python scripts/validate_bdd.py "$file" ;;
+            05_ADR/*.md) python scripts/validate_adr.py "$file" ;;
+            06_SYS/*.md) python scripts/validate_sys.py "$file" ;;
+            07_REQ/**/*.md|REQ/*.md) ./scripts/validate_req_template.sh "$file" ;;
+            10_SPEC/*.yaml|SPEC/**/*.yaml) python scripts/validate_spec.py "$file" ;;
+            11_TASKS/*.md) ./scripts/validate_tasks.sh "$file" ;;
             ICON/*.md) ./scripts/validate_icon.sh "$file" ;;
-            IPLAN/*.md) ./scripts/validate_iplan.sh "$file" ;;
+            12_IPLAN/*.md) ./scripts/validate_iplan.sh "$file" ;;
         esac
 
         # Check cumulative tagging (TRACEABILITY.md §4)
@@ -244,15 +244,15 @@ validate_quality_gates() {
     local file="$1"
 
     case "$file" in
-        docs/BRD/*.md) validate_score "$file" "EARS-Ready Score" ;;
-        docs/PRD/*.md) validate_score "$file" "BDD-Ready Score" ;;
-        docs/EARS/*.md) validate_score "$file" "ADR-Ready Score" ;;
-        docs/BDD/BDD-*/BDD-*.feature) validate_score "$file" "SYS-Ready Score" ;;
-        docs/ADR/*.md) validate_score "$file" "REQ-Ready Score" ;;
-        docs/SYS/*.md) validate_score "$file" "SPEC-Ready Score" ;;
-        docs/REQ/*.md) validate_score "$file" "IMPL-Ready Score" ;;
-        docs/SPEC/*.yaml) validate_meta_score "$file" "task_ready_score" ;;
-        docs/TASKS/*.md) validate_score "$file" "IPLAN-Ready Score" ;;
+        docs/01_BRD/*.md) validate_score "$file" "EARS-Ready Score" ;;
+        docs/02_PRD/*.md) validate_score "$file" "BDD-Ready Score" ;;
+        docs/03_EARS/*.md) validate_score "$file" "ADR-Ready Score" ;;
+        docs/04_BDD/BDD-*/BDD-*.feature) validate_score "$file" "SYS-Ready Score" ;;
+        docs/05_ADR/*.md) validate_score "$file" "REQ-Ready Score" ;;
+        docs/06_SYS/*.md) validate_score "$file" "SPEC-Ready Score" ;;
+        docs/07_REQ/*.md) validate_score "$file" "IMPL-Ready Score" ;;
+        docs/10_SPEC/*.yaml) validate_meta_score "$file" "task_ready_score" ;;
+        docs/11_TASKS/*.md) validate_score "$file" "IPLAN-Ready Score" ;;
     esac
 
     validate_cumulative_tags "$file"
@@ -293,9 +293,9 @@ validate_cumulative_tags() {
 
     # Check required tags based on file path
     case "$file" in
-        docs/REQ/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys") ;;
-        docs/SPEC/*.yaml) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req") ;;
-        docs/TASKS/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "spec") ;;
+        docs/07_REQ/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys") ;;
+        docs/10_SPEC/*.yaml) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req") ;;
+        docs/11_TASKS/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "spec") ;;
     esac
 
     for tag in "${required_tags[@]}"; do
@@ -325,11 +325,11 @@ chmod +x scripts/validate_quality_gates.sh
 **Single File Validation:**
 ```bash
 # Validate specific artifact
-./scripts/validate_quality_gates.sh docs/SYS/SYS-01.md
+./scripts/validate_quality_gates.sh docs/06_SYS/SYS-01.md
 
 # Output: ✅ SPEC-Ready Score: 95% ≥90%
 # Output: ✅ Cumulative tagging valid
-# Output: ✅ Quality gates passed for docs/SYS/SYS-01.md
+# Output: ✅ Quality gates passed for docs/06_SYS/SYS-01.md
 ```
 
 **Batch Validation:**
@@ -364,21 +364,21 @@ git diff --name-only | grep '^docs/' | xargs ./scripts/validate_quality_gates.sh
 **Fix Missing Ready Score:**
 ```bash
 # Add ready score to document
-./scripts/fix_quality_gate.sh docs/SYS/SYS-01.md "add-score"
+./scripts/fix_quality_gate.sh docs/06_SYS/SYS-01.md "add-score"
 # Output: Added SYS-Ready Score field to Document Control
 ```
 
 **Auto-generate Cumulative Tags:**
 ```bash
 # Generate missing tags
-./scripts/fix_quality_gate.sh docs/SYS/SYS-01.md "add-tags"
+./scripts/fix_quality_gate.sh docs/06_SYS/SYS-01.md "add-tags"
 # Output: Added @brd @prd @ears @bdd @adr tags to traceability section
 ```
 
 **Quality Improvement Suggestions:**
 ```bash
 # Get specific improvement recommendations
-./scripts/suggest_quality_improvements.sh docs/REQ/REQ-01.md
+./scripts/suggest_quality_improvements.sh docs/07_REQ/REQ-01.md
 # Output: 
 # 💡 IMPROVEMENT: Add interface schemas (section 3)
 # 💡 IMPROVEMENT: Add error handling examples (section 5)

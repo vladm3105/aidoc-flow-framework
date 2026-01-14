@@ -112,7 +112,7 @@ find docs/ -type f -name "*.md" -exec sed -i \
 
 ```bash
 # Apply to YAML SPEC
-find docs/SPEC/ -type f -name "*.yaml" -exec sed -i \
+find docs/10_SPEC/ -type f -name "*.yaml" -exec sed -i \
   -e 's/resource_collection/workspace/g' \
   -e 's/resource_item/resource/g' \
   -e 's/ResourceCollection/Workspace/g' \
@@ -237,10 +237,10 @@ The following subdirectories are recommended for Software/SaaS projects. They ar
 
 | Subdirectory | Description | Child Directories |
 |--------------|-------------|-------------------|
-| `docs/REQ/tenant/` | Multi-tenancy requirements | `isolation/`, `onboard/` |
-| `docs/REQ/subscription/` | Subscription management | `plan/`, `billing/` |
-| `docs/REQ/billing/` | Billing engine | `metered/`, `invoice/` |
-| `docs/REQ/workspace/` | Workspace features | `collab/`, `perm/` |
+| `docs/07_REQ/tenant/` | Multi-tenancy requirements | `isolation/`, `onboard/` |
+| `docs/07_REQ/subscription/` | Subscription management | `plan/`, `billing/` |
+| `docs/07_REQ/billing/` | Billing engine | `metered/`, `invoice/` |
+| `docs/07_REQ/workspace/` | Workspace features | `collab/`, `perm/` |
 
 **Note**: Folders are NOT created at project initialization. The `doc-req` skill creates the appropriate folder structure when generating a REQ document, ensuring only used folders exist.
 
@@ -313,10 +313,10 @@ Apply SOFTWARE_DOMAIN_CONFIG.md when:
 
 ### Validation Checklist
 
-- [ ] `docs/REQ/tenant/` directory exists
-- [ ] `docs/REQ/subscription/` directory exists
-- [ ] `docs/REQ/billing/` directory exists
-- [ ] `docs/REQ/workspace/` directory exists
+- [ ] `docs/07_REQ/tenant/` directory exists
+- [ ] `docs/07_REQ/subscription/` directory exists
+- [ ] `docs/07_REQ/billing/` directory exists
+- [ ] `docs/07_REQ/workspace/` directory exists
 - [ ] Placeholder `[RESOURCE_COLLECTION]` replaced with "Workspace"
 - [ ] Placeholder `[USER_ROLE]` replaced with "Account Admin"
 - [ ] SOC2 controls referenced in compliance requirements

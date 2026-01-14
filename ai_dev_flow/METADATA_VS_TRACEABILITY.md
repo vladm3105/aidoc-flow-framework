@@ -149,7 +149,7 @@ custom_fields:
 ```
 
 **What This Tells Us**:
-- Exact BRD/PRD/EARS/BDD/ADR/SYS document IDs this requirement traces to
+- Exact 01_BRD/02_PRD/03_EARS/04_BDD/05_ADR/SYS document IDs this requirement traces to
 - Specific sections within each upstream document
 - Why each upstream artifact matters (rationale)
 - Which downstream documents implement this requirement

@@ -27,7 +27,7 @@ custom_fields:
 
 - Numbering: allocate sequentially starting at `01`; keep numbers stable
 - SYS documents define functional requirements and quality attributes
-- Each SYS links upstream to ADR/BDD and downstream to REQ
+- Each SYS links upstream to 05_ADR/BDD and downstream to REQ
 - Use MVP template for focused systems (5-10 capabilities)
 - Use Full template for enterprise systems (20+ capabilities)
 
@@ -36,7 +36,7 @@ custom_fields:
 ### Framework Base Path
 
 ```
-/opt/data/docs_flow_framework/ai_dev_flow/SYS/
+/opt/data/docs_flow_framework/ai_dev_flow/06_SYS/
 ```
 
 ### Document Templates
@@ -73,7 +73,7 @@ custom_fields:
 ### Full Path Reference
 
 ```
-/opt/data/docs_flow_framework/ai_dev_flow/SYS/
+/opt/data/docs_flow_framework/ai_dev_flow/06_SYS/
 ├── README.md                              # Overview and guidelines
 ├── SYS-TEMPLATE.md                        # Full template (~1,000 lines)
 ├── SYS-MVP-TEMPLATE.md                    # MVP template (~350 lines)

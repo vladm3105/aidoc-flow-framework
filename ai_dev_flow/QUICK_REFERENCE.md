@@ -35,9 +35,9 @@ See also: [README → Units & Conversions](./README.md#units--conversions-kb-vs-
 ### Splitting Rules
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./BDD/BDD_SPLITTING_RULES.md)
-- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./CTR/CTR_SPLITTING_RULES.md)
-- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./SPEC/SPEC_SPLITTING_RULES.md)
+- BDD addendum: [BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
+- CTR addendum: [CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
+- SPEC addendum: [SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
 > MVP Mode: For MVP workflows, use a single flat file per artifact and ignore splitting rules and references to `DOCUMENT_SPLITTING_RULES.md`.
@@ -107,15 +107,15 @@ TASKS-23_implement_risk_calculator.md
 - Pattern: `{DOC_TYPE}-00_{slug}.{ext}` (e.g., `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`, `ICON-00_index.md`).
 - Usage: May be referenced across artifacts but are excluded from sequential DOC_NUM series. Keep guidance, templates, matrices, and reference content here.
 
-### Section Files (DEFAULT for BRD/PRD/ADR)
+### Section Files (DEFAULT for 01_BRD/02_PRD/ADR)
 ```
 docs/{TYPE}/{TYPE}-{NN}_{slug}/{TYPE}-{NN}.{S}_{section_slug}.{ext}
 
-Folder:       docs/BRD/BRD-01_platform_architecture/
-Index File:   docs/BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md
-Section File: docs/BRD/BRD-01_platform_architecture/BRD-01.1_platform_architecture_executive_summary.md
-Section File: docs/PRD/PRD-02_user_authentication/PRD-02.3_user_authentication_problem_statement.md
-Section File: docs/ADR/ADR-05_database_selection/ADR-05.2_database_selection_alternatives.md
+Folder:       docs/01_BRD/BRD-01_platform_architecture/
+Index File:   docs/01_BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md
+Section File: docs/01_BRD/BRD-01_platform_architecture/BRD-01.1_platform_architecture_executive_summary.md
+Section File: docs/02_PRD/PRD-02_user_authentication/PRD-02.3_user_authentication_problem_statement.md
+Section File: docs/05_ADR/ADR-05_database_selection/ADR-05.2_database_selection_alternatives.md
 ```
 
 **Note**: Folder slug MUST match the index file slug (e.g., `BRD-01_platform_architecture/` contains `BRD-01.0_platform_architecture_index.md`).
@@ -141,13 +141,13 @@ Examples:
 
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 Examples (nested folder structure):
-[BRD-01](../BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md#BRD-01)
-[PRD-02](../PRD/PRD-02_user_authentication/PRD-02.0_user_authentication_index.md#PRD-02)
-[ADR-05](../ADR/ADR-05_database_selection/ADR-05.0_database_selection_index.md#ADR-05)
+[BRD-01](../01_BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md#BRD-01)
+[PRD-02](../02_PRD/PRD-02_user_authentication/PRD-02.0_user_authentication_index.md#PRD-02)
+[ADR-05](../05_ADR/ADR-05_database_selection/ADR-05.0_database_selection_index.md#ADR-05)
 
 Examples (flat structure - legacy):
-[REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)
-[SPEC-23](../SPEC/SPEC-23_risk_calculator/SPEC-23_risk_calculator.yaml)
+[REQ-03](../07_REQ/risk/REQ-03_resource_limit.md#REQ-03)
+[SPEC-23](../10_SPEC/SPEC-23_risk_calculator/SPEC-23_risk_calculator.yaml)
 ```
 
 ---
@@ -203,22 +203,22 @@ Use the Standard set for general projects, and add Financial sets as needed for 
 mkdir -p docs/{BRD,PRD,ADR}
 mkdir -p docs/{EARS,BDD,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
 # REQ: Nested per-document folders (DEFAULT)
-mkdir -p docs/REQ/REQ-01_resource_limits
+mkdir -p docs/07_REQ/REQ-01_resource_limits
 
 # Create nested document folders (ALL TYPES - DEFAULT)
 # Folder slug MUST match the index file slug
-mkdir -p docs/BRD/BRD-01_platform_architecture  # Creates docs/BRD/BRD-01_platform_architecture/
-mkdir -p docs/PRD/PRD-01_user_authentication    # Creates docs/PRD/PRD-01_user_authentication/
-mkdir -p docs/ADR/ADR-01_cloud_migration        # Creates docs/ADR/ADR-01_cloud_migration/
+mkdir -p docs/01_BRD/BRD-01_platform_architecture  # Creates docs/01_BRD/BRD-01_platform_architecture/
+mkdir -p docs/02_PRD/PRD-01_user_authentication    # Creates docs/02_PRD/PRD-01_user_authentication/
+mkdir -p docs/05_ADR/ADR-01_cloud_migration        # Creates docs/05_ADR/ADR-01_cloud_migration/
 
 # Examples for other types (nested per document)
-mkdir -p docs/EARS/EARS-01_event_processing
-mkdir -p docs/SYS/SYS-01_api_gateway
-mkdir -p docs/REQ/REQ-01_resource_limits
-mkdir -p docs/SPEC/SPEC-01_rate_limiter
-mkdir -p docs/TASKS/TASKS-01_implement_rate_limiter
-mkdir -p docs/CTR/CTR-01_data_service_api
-mkdir -p docs/IPLAN/IPLAN-01_initial_session
+mkdir -p docs/03_EARS/EARS-01_event_processing
+mkdir -p docs/06_SYS/SYS-01_api_gateway
+mkdir -p docs/07_REQ/REQ-01_resource_limits
+mkdir -p docs/10_SPEC/SPEC-01_rate_limiter
+mkdir -p docs/11_TASKS/TASKS-01_implement_rate_limiter
+mkdir -p docs/09_CTR/CTR-01_data_service_api
+mkdir -p docs/12_IPLAN/IPLAN-01_initial_session
 
 # Legacy category folders are not used in new projects.
 
@@ -241,7 +241,7 @@ python scripts/validate_requirement_ids.py
 python scripts/validate_links.py
 
 # Generate traceability matrix
-python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
+python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
 
 # Lint file sizes (target 300–500, max 600)
 ./scripts/lint_file_sizes.sh
@@ -273,14 +273,14 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --ou
 ### Upstream Sources (REQUIRED - except BRD)
 | Source | Type | Reference |
 |--------|------|-----------|
-| [BRD-01](../BRD/BRD-01_business.md#BRD-01) | Business Requirements | Context |
-| [PRD-02](../PRD/PRD-02_product.md#PRD-02) | Product Requirements | Feature spec |
+| [BRD-01](../01_BRD/BRD-01_business.md#BRD-01) | Business Requirements | Context |
+| [PRD-02](../02_PRD/PRD-02_product.md#PRD-02) | Product Requirements | Feature spec |
 
 ### Downstream Artifacts (OPTIONAL - only existing docs)
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| [SPEC-23](../SPEC/SPEC-23_impl/SPEC-23_impl.yaml) | Technical Specification | Implementation |
-| [TASKS-23](../TASKS/TASKS-23_impl.md#TASKS-23) | Implementation Tasks | TODOs |
+| [SPEC-23](../10_SPEC/SPEC-23_impl/SPEC-23_impl.yaml) | Technical Specification | Implementation |
+| [TASKS-23](../11_TASKS/TASKS-23_impl.md#TASKS-23) | Implementation Tasks | TODOs |
 
 ### Primary Anchor/ID
 - **REQ-03**: [placeholder] requirement title
@@ -501,7 +501,7 @@ Purpose: Suite overview, section map, traceability matrix
 
 ### File Organization (Nested Suite)
 ```
-docs/BDD/
+docs/04_BDD/
 └── BDD-02_knowledge_engine/
     ├── BDD-02.0_index.md                       # Index (MANDATORY)
     ├── BDD-02.1_ingest.feature                 # Section-only
@@ -525,16 +525,16 @@ docs/BDD/
 ### Cross-Doc BDD Link Format
 ```markdown
 # Suite folder
-../BDD/BDD-NN_{suite}/
+../04_BDD/BDD-NN_{suite}/
 
 # Section link (most common)
-[BDD-NN.SS](../BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
+[BDD-NN.SS](../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
 
 # Subsection link
-[BDD-NN.SS.mm](../BDD/BDD-NN_{suite}/BDD-NN.SS.mm_{slug}.feature#scenario-1)
+[BDD-NN.SS.mm](../04_BDD/BDD-NN_{suite}/BDD-NN.SS.mm_{slug}.feature#scenario-1)
 
 # Aggregator link (redirect, 0 scenarios)
-[BDD-NN.SS.00](../BDD/BDD-NN_{suite}/BDD-NN.SS.00_{slug}.feature)
+[BDD-NN.SS.00](../04_BDD/BDD-NN_{suite}/BDD-NN.SS.00_{slug}.feature)
 ```
 
 ### Validation
@@ -587,7 +587,7 @@ python3 scripts/migrate_bdd_to_sections.py --root BDD --suite BDD-02_knowledge_e
 python scripts/validate_links.py
 
 # Fix pattern
-[REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)
+[REQ-03](../07_REQ/risk/REQ-03_resource_limit.md#REQ-03)
          ^^^^^ correct path ^^^^^ ^^^^^^^ anchor matches ID ^^^^^^^
 ```
 

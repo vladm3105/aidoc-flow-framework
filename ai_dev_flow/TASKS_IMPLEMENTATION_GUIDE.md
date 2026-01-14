@@ -9,7 +9,7 @@ Before starting code:
 
 ## 2. Create Implementation Plan (IPLAN)
 Translation of `TASKS` into concrete work steps.
-1.  **Create File**: `docs/IPLAN/IPLAN-XX_[slug].md`.
+1.  **Create File**: `docs/12_IPLAN/IPLAN-XX_[slug].md`.
 2.  **Structure (Standard Pattern)**:
     *   **Phase 1: Domain & Protocols**: 
         *   Define Pydantic Models (`domain.py`)

@@ -41,7 +41,7 @@ custom_fields:
 **AI Assistant Actions**:
 ```bash
 # Create BRD-01
-cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-01_business_objectives.md
+cp docs/01_BRD/BRD-TEMPLATE.md docs/01_BRD/BRD-01_business_objectives.md
 # Fill BRD-01 with project-specific content
 # Update index
 ```
@@ -88,7 +88,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-01_business_objectives.md
 ```bash
 # Create BDD-01.feature
 # Create ADR documents for major decisions
-# Link to PRD/EARS in traceability
+# Link to 02_PRD/EARS in traceability
 ```
 
 **Deliverable**: BDD-01 and initial ADRs approved
@@ -125,7 +125,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-01_business_objectives.md
 1. Create IMPL-01 (Implementation Plan)
    - WHO does WHAT, WHEN
    - Phases and milestones
-   - Identify CTR/SPEC/TASKS deliverables
+   - Identify 09_CTR/10_SPEC/TASKS deliverables
 2. If contracts needed: Create CTR documents
    - Dual files: .md + .yaml
    - OpenAPI/AsyncAPI specifications
@@ -181,7 +181,7 @@ cp docs/BRD/BRD-TEMPLATE.md docs/BRD/BRD-01_business_objectives.md
 # Create TASKS documents
 python scripts/validate_requirement_ids.py
 python scripts/validate_links.py
-python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
+python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
 ```
 
 **Deliverable**: TASKS documents approved, validation passed, ready for code generation
@@ -215,7 +215,7 @@ Task 1-4: ✓ Project initialization complete (from PROJECT_SETUP_GUIDE.md)
 
 Task 5: Creating BRD-01 (Business Requirements Document)
 
-Creating docs/BRD/BRD-01_service_platform.md...
+Creating docs/01_BRD/BRD-01_service_platform.md...
 
 Content:
 - Strategic Objectives: Build algorithmic service platform
@@ -246,7 +246,7 @@ Running: python scripts/validate_requirement_ids.py
 Day 1 Complete!
 
 Deliverables:
-- BRD-01: docs/BRD/BRD-01_service_platform.md ✓
+- BRD-01: docs/01_BRD/BRD-01_service_platform.md ✓
 
 Next: Day 2 - Product Requirements & Acceptance Criteria
 ```
@@ -294,11 +294,11 @@ python scripts/validate_links.py
 python scripts/complete_traceability_matrix.py
 
 # Generate matrices
-python scripts/generate_traceability_matrix.py --type ADR --input docs/ADR/ --output docs/TRACEABILITY_MATRIX_ADR.md
-python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
+python scripts/generate_traceability_matrix.py --type ADR --input docs/05_ADR/ --output docs/TRACEABILITY_MATRIX_ADR.md
+python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
 
 # Verify YAML SPEC valid
-find docs/SPEC/ -name "*.yaml" -exec python -m yamllint {} \;
+find docs/10_SPEC/ -name "*.yaml" -exec python -m yamllint {} \;
 ```
 
 ---
@@ -310,7 +310,7 @@ After Week 1 complete, plan for:
 1. **Complete requirements**: Fill out remaining REQ documents
 2. **Complete specifications**: SPEC for all REQ
 3. **Complete tasks**: TASKS for all SPEC
-4. **Begin code generation**: Implement from SPEC/TASKS
+4. **Begin code generation**: Implement from 10_SPEC/TASKS
 5. **Test development**: Unit tests, integration tests, E2E tests
 6. **Validation cycles**: Continuous traceability checking
 

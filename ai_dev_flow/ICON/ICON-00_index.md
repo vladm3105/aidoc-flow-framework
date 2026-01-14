@@ -144,7 +144,7 @@ grep -r "@icon: ICON-" docs/
 ls -la docs/ICON/ICON-*.md
 
 # Verify provider/consumer pairs
-grep -A1 "@icon: ICON-01" docs/TASKS/
+grep -A1 "@icon: ICON-01" docs/11_TASKS/
 ```
 
 ---
@@ -180,13 +180,13 @@ grep -A1 "@icon: ICON-01" docs/TASKS/
 ## References
 
 ### Internal Documentation
-- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md) - Comprehensive guide
+- [IMPLEMENTATION_CONTRACTS_GUIDE.md](../11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md) - Comprehensive guide
 - [ICON-TEMPLATE.md](./ICON-TEMPLATE.md) - Contract template
 - [ICON_CREATION_RULES.md](./ICON_CREATION_RULES.md) - Decision criteria
 - [README.md](./README.md) - ICON directory overview
 
 ### Related Artifacts
-- [TASKS-TEMPLATE.md](../TASKS/TASKS-TEMPLATE.md) - Embedded contracts (default)
+- [TASKS-TEMPLATE.md](../11_TASKS/TASKS-TEMPLATE.md) - Embedded contracts (default)
 - [TRACEABILITY.md](../TRACEABILITY.md) - Traceability tags
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Naming conventions
 

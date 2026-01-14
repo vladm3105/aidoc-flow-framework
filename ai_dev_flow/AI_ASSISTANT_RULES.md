@@ -129,38 +129,38 @@ mkdir -p docs/IPLAN
 mkdir -p docs/ICON   # Optional (Implementation Contracts)
 
 # Requirements subdirectories (domain-agnostic structure)
-mkdir -p docs/REQ/api
-mkdir -p docs/REQ/auth
-mkdir -p docs/REQ/data
-mkdir -p docs/REQ/core
-mkdir -p docs/REQ/integration
-mkdir -p docs/REQ/monitoring
-mkdir -p docs/REQ/reporting
-mkdir -p docs/REQ/security
-mkdir -p docs/REQ/ui
+mkdir -p docs/07_REQ/api
+mkdir -p docs/07_REQ/auth
+mkdir -p docs/07_REQ/data
+mkdir -p docs/07_REQ/core
+mkdir -p docs/07_REQ/integration
+mkdir -p docs/07_REQ/monitoring
+mkdir -p docs/07_REQ/reporting
+mkdir -p docs/07_REQ/security
+mkdir -p docs/07_REQ/ui
 
 # Domain-specific subdirectories (add based on domain selection)
 # For Financial Services:
-mkdir -p docs/REQ/risk
-mkdir -p docs/REQ/trading
-mkdir -p docs/REQ/collection
-mkdir -p docs/REQ/compliance
+mkdir -p docs/07_REQ/risk
+mkdir -p docs/07_REQ/trading
+mkdir -p docs/07_REQ/collection
+mkdir -p docs/07_REQ/compliance
 
 # For Healthcare:
-mkdir -p docs/REQ/patient
-mkdir -p docs/REQ/clinical
-mkdir -p docs/REQ/ehr
+mkdir -p docs/07_REQ/patient
+mkdir -p docs/07_REQ/clinical
+mkdir -p docs/07_REQ/ehr
 
 # For E-commerce:
-mkdir -p docs/REQ/catalog
-mkdir -p docs/REQ/cart
-mkdir -p docs/REQ/order
-mkdir -p docs/REQ/payment
+mkdir -p docs/07_REQ/catalog
+mkdir -p docs/07_REQ/cart
+mkdir -p docs/07_REQ/order
+mkdir -p docs/07_REQ/payment
 
 # For Software/SaaS:
-mkdir -p docs/REQ/tenant
-mkdir -p docs/REQ/subscription
-mkdir -p docs/REQ/billing
+mkdir -p docs/07_REQ/tenant
+mkdir -p docs/07_REQ/subscription
+mkdir -p docs/07_REQ/billing
 
 # Support directories
 mkdir -p scripts
@@ -173,44 +173,44 @@ mkdir -p work_plans
 
 **Financial Services** (add these):
 ```bash
-mkdir -p docs/REQ/risk
-mkdir -p docs/REQ/trading
-mkdir -p docs/REQ/collection
-mkdir -p docs/REQ/compliance
-mkdir -p docs/REQ/ml
+mkdir -p docs/07_REQ/risk
+mkdir -p docs/07_REQ/trading
+mkdir -p docs/07_REQ/collection
+mkdir -p docs/07_REQ/compliance
+mkdir -p docs/07_REQ/ml
 ```
 
 **Software/SaaS** (add these):
 ```bash
-mkdir -p docs/REQ/tenant
-mkdir -p docs/REQ/subscription
-mkdir -p docs/REQ/billing
-mkdir -p docs/REQ/workspace
+mkdir -p docs/07_REQ/tenant
+mkdir -p docs/07_REQ/subscription
+mkdir -p docs/07_REQ/billing
+mkdir -p docs/07_REQ/workspace
 ```
 
 **Healthcare** (add these):
 ```bash
-mkdir -p docs/REQ/patient
-mkdir -p docs/REQ/clinical
-mkdir -p docs/REQ/ehr
-mkdir -p docs/REQ/hipaa
+mkdir -p docs/07_REQ/patient
+mkdir -p docs/07_REQ/clinical
+mkdir -p docs/07_REQ/ehr
+mkdir -p docs/07_REQ/hipaa
 ```
 
 **E-commerce** (add these):
 ```bash
-mkdir -p docs/REQ/catalog
-mkdir -p docs/REQ/cart
-mkdir -p docs/REQ/order
-mkdir -p docs/REQ/payment
-mkdir -p docs/REQ/inventory
+mkdir -p docs/07_REQ/catalog
+mkdir -p docs/07_REQ/cart
+mkdir -p docs/07_REQ/order
+mkdir -p docs/07_REQ/payment
+mkdir -p docs/07_REQ/inventory
 ```
 
 **IoT** (add these):
 ```bash
-mkdir -p docs/REQ/device
-mkdir -p docs/REQ/telemetry
-mkdir -p docs/REQ/firmware
-mkdir -p docs/REQ/edge
+mkdir -p docs/07_REQ/device
+mkdir -p docs/07_REQ/telemetry
+mkdir -p docs/07_REQ/firmware
+mkdir -p docs/07_REQ/edge
 ```
 
 ### Validation
@@ -226,7 +226,7 @@ ls -la docs/
 # Optional: ICON (if using implementation contracts)
 
 # Verify requirements subdirectories
-ls -la docs/REQ/
+ls -la docs/07_REQ/
 
 # Expected output should include domain-specific subdirectories
 
@@ -279,8 +279,8 @@ AI Assistant **MUST**:
 
 ```bash
 # For each template file copied:
-sed -i 's/\[RESOURCE_COLLECTION\]/collection/g' docs/REQ/REQ-01_example.md
-sed -i 's/\[RESOURCE_ITEM\]/Position/g' docs/REQ/REQ-01_example.md
+sed -i 's/\[RESOURCE_COLLECTION\]/collection/g' docs/07_REQ/REQ-01_example.md
+sed -i 's/\[RESOURCE_ITEM\]/Position/g' docs/07_REQ/REQ-01_example.md
 # ... apply all domain mappings
 ```
 
@@ -297,17 +297,17 @@ Or use domain-aware template generation when creating documents.
 FRAMEWORK_ROOT=/path/to/ai_dev_flow
 
 # Copy templates by artifact type (portable example uses docs/)
-cp -r "$FRAMEWORK_ROOT/BRD"/*   docs/BRD/
-cp -r "$FRAMEWORK_ROOT/PRD"/*   docs/PRD/
-cp -r "$FRAMEWORK_ROOT/EARS"/*  docs/EARS/
-cp -r "$FRAMEWORK_ROOT/BDD"/*   docs/BDD/
-cp -r "$FRAMEWORK_ROOT/ADR"/*   docs/ADR/
-cp -r "$FRAMEWORK_ROOT/SYS"/*   docs/SYS/
-cp -r "$FRAMEWORK_ROOT/REQ"/*   docs/REQ/
-cp -r "$FRAMEWORK_ROOT/IMPL"/*  docs/IMPL/
-cp -r "$FRAMEWORK_ROOT/CTR"/*   docs/CTR/
-cp -r "$FRAMEWORK_ROOT/SPEC"/*  docs/SPEC/
-cp -r "$FRAMEWORK_ROOT/TASKS"/* docs/TASKS/
+cp -r "$FRAMEWORK_ROOT/BRD"/*   docs/01_BRD/
+cp -r "$FRAMEWORK_ROOT/PRD"/*   docs/02_PRD/
+cp -r "$FRAMEWORK_ROOT/EARS"/*  docs/03_EARS/
+cp -r "$FRAMEWORK_ROOT/BDD"/*   docs/04_BDD/
+cp -r "$FRAMEWORK_ROOT/ADR"/*   docs/05_ADR/
+cp -r "$FRAMEWORK_ROOT/SYS"/*   docs/06_SYS/
+cp -r "$FRAMEWORK_ROOT/REQ"/*   docs/07_REQ/
+cp -r "$FRAMEWORK_ROOT/IMPL"/*  docs/08_IMPL/
+cp -r "$FRAMEWORK_ROOT/CTR"/*   docs/09_CTR/
+cp -r "$FRAMEWORK_ROOT/SPEC"/*  docs/10_SPEC/
+cp -r "$FRAMEWORK_ROOT/TASKS"/* docs/11_TASKS/
 cp -r "$FRAMEWORK_ROOT/ICON"/*  docs/ICON/ 2>/dev/null || true  # optional
 
 # Copy validation scripts
@@ -321,18 +321,18 @@ AI Assistant **MUST** create index files for each document type:
 
 ```bash
 # Create index files
-touch docs/BRD/BRD-00_index.md
-touch docs/PRD/PRD-00_index.md
-touch docs/EARS/EARS-00_index.md
-touch docs/BDD/BDD-00_index.md
-touch docs/ADR/ADR-00_index.md
-touch docs/SYS/SYS-00_index.md
-touch docs/REQ/REQ-00_index.md
-touch docs/IMPL/IMPL-00_index.md
-touch docs/CTR/CTR-00_index.md
-touch docs/SPEC/SPEC-00_index.md
-touch docs/TASKS/TASKS-00_index.md
-touch docs/IPLAN/IPLAN-00_index.md
+touch docs/01_BRD/BRD-00_index.md
+touch docs/02_PRD/PRD-00_index.md
+touch docs/03_EARS/EARS-00_index.md
+touch docs/04_BDD/BDD-00_index.md
+touch docs/05_ADR/ADR-00_index.md
+touch docs/06_SYS/SYS-00_index.md
+touch docs/07_REQ/REQ-00_index.md
+touch docs/08_IMPL/IMPL-00_index.md
+touch docs/09_CTR/CTR-00_index.md
+touch docs/10_SPEC/SPEC-00_index.md
+touch docs/11_TASKS/TASKS-00_index.md
+touch docs/12_IPLAN/IPLAN-00_index.md
 touch docs/ICON/ICON-00_index.md  # optional
 ```
 
@@ -488,8 +488,8 @@ For CTR documents, AI Assistant **MUST** create both files:
 
 ```bash
 # Create both markdown and YAML with matching slugs
-touch docs/CTR/CTR-012_data_service_api.md
-touch docs/CTR/CTR-012_data_service_api.yaml
+touch docs/09_CTR/CTR-012_data_service_api.md
+touch docs/09_CTR/CTR-012_data_service_api.yaml
 ```
 
 **Matching slug requirement**: `data_service_api` must be identical in both filenames.
@@ -509,14 +509,14 @@ AI Assistant **MUST** use this format for all document references:
 #### Examples
 ```markdown
 # Nested folder structure (ALL TYPES - DEFAULT)
-[BRD-01](../BRD/BRD-01/BRD-01.0_index.md#BRD-01)
-[PRD-02](../PRD/PRD-02/PRD-02.0_index.md#PRD-02)
-[ADR-005](../ADR/ADR-005/ADR-005.0_index.md#ADR-005)
+[BRD-01](../01_BRD/BRD-01/BRD-01.0_index.md#BRD-01)
+[PRD-02](../02_PRD/PRD-02/PRD-02.0_index.md#PRD-02)
+[ADR-005](../05_ADR/ADR-005/ADR-005.0_index.md#ADR-005)
 
 # Flat structure (REQ, SPEC, CTR, etc.)
-[REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)
-[CTR-012](../CTR/CTR-012_data_service_api.md#CTR-012)
-[SPEC-023](../SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
+[REQ-03](../07_REQ/risk/REQ-03_resource_limit.md#REQ-03)
+[CTR-012](../09_CTR/CTR-012_data_service_api.md#CTR-012)
+[SPEC-023](../10_SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
 ```
 
 ### Section 7: Traceability
@@ -679,7 +679,7 @@ python scripts/validate_links.py
 python scripts/validate_requirement_ids.py
 
 # Generate traceability matrix (after documents created)
-python scripts/generate_traceability_matrix.py --type REQ --input docs/REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
+python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
 ```
 
 ### Continuous Validation
@@ -768,13 +768,13 @@ Step 1: Create REQ-023_risk_calculator.md
   - Downstream section: "SPEC-023 (to be created)"
 
 Step 2: Create SPEC-023_risk_calculator.yaml
-  - Upstream section: [REQ-023](../REQ/risk/REQ-023_risk_calculator.md#REQ-023)
+  - Upstream section: [REQ-023](../07_REQ/risk/REQ-023_risk_calculator.md#REQ-023)
 
 Step 3: Update REQ-023
-  - Downstream section: [SPEC-023](../SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
+  - Downstream section: [SPEC-023](../10_SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
 
 Step 4: Create TASKS-023_implement_risk_calculator.md
-  - Upstream section: [SPEC-023](../SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
+  - Upstream section: [SPEC-023](../10_SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
 
 Step 5: Update SPEC-023 and REQ-023
   - Add TASKS-023 to downstream sections
@@ -866,10 +866,10 @@ AI Assistant **MUST** inject traceability comments:
 # PURPOSE: Enforce resource limits per REQ-023 acceptance criteria
 class PositionLimiter:
     """
-    resource limit enforcement per [REQ-023](../docs/REQ/risk/REQ-023_resource_limit.md).
+    resource limit enforcement per [REQ-023](../docs/07_REQ/risk/REQ-023_resource_limit.md).
 
-    Architecture: [ADR-008](../docs/ADR/ADR-008_realtime_enforcement/ADR-008.0_realtime_enforcement_index.md) - Real-time enforcement
-    Acceptance Tests: [BDD-015](../docs/BDD/BDD-015_resource_limits/BDD-015.1_resource_limits.feature)
+    Architecture: [ADR-008](../docs/05_ADR/ADR-008_realtime_enforcement/ADR-008.0_realtime_enforcement_index.md) - Real-time enforcement
+    Acceptance Tests: [BDD-015](../docs/04_BDD/BDD-015_resource_limits/BDD-015.1_resource_limits.feature)
     """
 
     def enforce_limit(self, position: Position) -> EnforcementResult:
@@ -1549,4 +1549,4 @@ Quality: recommendation accuracy ≥85%; context relevance ≥90%; validation fa
 - Quality check integration (hooks vs inline)
 - State management (file‑based vs in‑memory)
 
-Traceability note: This appendix documents product intent within execution rules; formal ADRs/EARS/BDD remain separate artifacts at their respective layers.
+Traceability note: This appendix documents product intent within execution rules; formal ADRs/03_EARS/BDD remain separate artifacts at their respective layers.

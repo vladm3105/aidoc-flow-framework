@@ -108,13 +108,13 @@ ICON policy: Embed contracts in TASKS by default; promote to a standalone ICON o
 
 | Workflow Stage | Expected Documents | Actual Documents | Gap | Status |
 |----------------|-------------------|------------------|-----|--------|
-| Strategy → Business | [X] BRD/PRD/EARS | [Y] | [Z] | [Status] |
+| Strategy → Business | [X] 01_BRD/02_PRD/EARS | [Y] | [Z] | [Status] |
 | Business → Testing | [X] BDD | [Y] | [Z] | [Status] |
-| Business → Architecture | [X] ADR/SYS | [Y] | [Z] | [Status] |
+| Business → Architecture | [X] 05_ADR/SYS | [Y] | [Z] | [Status] |
 | Architecture → Requirements | [X] REQ | [Y] | [Z] | [Status] |
 | Requirements → Planning | [X] IMPL | [Y] | [Z] | [Status] |
 | Planning → Interface | [X] CTR | [Y] | [Z] | [Status] |
-| Planning → Implementation | [X] SPEC/TASKS (ICON optional) | [Y] | [Z] | [Status] |
+| Planning → Implementation | [X] 10_SPEC/TASKS (ICON optional) | [Y] | [Z] | [Status] |
 | Implementation → Code | [X] Code/Tests | [Y] | [Z] | [Status] |
 
 ---
@@ -557,9 +557,9 @@ Production: ✅ Deployed v1.1.0
 |---------------|-------------------|--------|-----------------|
 | PRD | [List PRD IDs] | No business justification | Link to BRD or create BRD |
 | EARS | [List EARS IDs] | No product context | Link to PRD or validate necessity |
-| REQ | [List REQ IDs] | No requirements source | Link to EARS/SYS or deprecate |
+| REQ | [List REQ IDs] | No requirements source | Link to 03_EARS/SYS or deprecate |
 | SPEC | [List SPEC IDs] | No requirements basis | Link to REQ or validate purpose |
-| Code | [List file paths] | No specification | Create SPEC/TASKS or refactor |
+| Code | [List file paths] | No specification | Create 10_SPEC/TASKS or refactor |
 
 ### 4.4 Missing Downstream Artifacts (Incomplete Chains)
 
@@ -652,7 +652,7 @@ graph TD
 When making changes to any document, use this matrix to identify affected artifacts:
 
 **Step 1: Identify Changed Document**
-- Document Type: [BRD/PRD/EARS/etc.]
+- Document Type: [BRD/02_PRD/03_EARS/etc.]
 - Document ID: [DOC-NN]
 - Change Type: [New/Modified/Deprecated]
 
@@ -730,7 +730,7 @@ Before making changes, verify:
 - [ ] Relative paths correct
 
 **Workflow Completeness Validation**:
-- [ ] Business requirements (BRD/PRD/EARS) complete
+- [ ] Business requirements (01_BRD/02_PRD/EARS) complete
 - [ ] Acceptance criteria (BDD) defined
 - [ ] Architecture decisions (ADR) documented
 - [ ] Atomic requirements (REQ) specified
@@ -826,17 +826,17 @@ python scripts/validate_requirement_ids.py \
 
 ### 9.1 Internal Documentation
 - **Individual Matrix Templates**:
-  - [BRD Matrix](BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
-  - [PRD Matrix](PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
-  - [EARS Matrix](EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
-  - [BDD Matrix](BDD/BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
-  - [ADR Matrix](ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
-  - [SYS Matrix](SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
-  - [REQ Matrix](REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md)
-  - [IMPL Matrix](IMPL/IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md)
-  - [CTR Matrix](CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
-  - [SPEC Matrix](SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)
-  - [TASKS Matrix](TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+  - [BRD Matrix](01_BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+  - [PRD Matrix](02_PRD/PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+  - [EARS Matrix](03_EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+  - [BDD Matrix](04_BDD/BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+  - [ADR Matrix](05_ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+  - [SYS Matrix](06_SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+  - [REQ Matrix](07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+  - [IMPL Matrix](08_IMPL/IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+  - [CTR Matrix](09_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+  - [SPEC Matrix](10_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+  - [TASKS Matrix](11_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 - **Workflow Guides**:
   - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
@@ -873,9 +873,9 @@ python scripts/validate_requirement_ids.py \
 3. **Analyze**: Determine if issue is:
    - Implementation bug (Code/TASKS)
    - Specification error (SPEC)
-   - Requirements gap (REQ/EARS)
-   - Design flaw (ADR/SYS)
-   - Business misalignment (BRD/PRD)
+   - Requirements gap (07_REQ/EARS)
+   - Design flaw (05_ADR/SYS)
+   - Business misalignment (01_BRD/PRD)
 4. **Fix**: Update appropriate layer
 5. **Impact Analysis**: Use matrix to identify all affected artifacts
 6. **Remediate**: Update downstream artifacts
@@ -884,7 +884,7 @@ python scripts/validate_requirement_ids.py \
 ### 10.3 Scenario 3: Requirements Change Request
 1. **Change Request**: Update to EARS-NN
 2. **Impact Analysis**: Use matrix to find:
-   - Upstream: Which PRD/BRD drives this requirement?
+   - Upstream: Which 02_PRD/BRD drives this requirement?
    - Downstream: Which BDD, REQ, SPEC, Code affected?
 3. **Assess**: Determine change scope and effort
 4. **Approve**: Stakeholder sign-off on impact
@@ -895,7 +895,7 @@ python scripts/validate_requirement_ids.py \
 ### 10.4 Scenario 4: Architecture Decision Update
 1. **New ADR**: ADR (TBD) supersedes ADR (previous)
 2. **Find Affected**:
-   - Upstream: Which BRD/PRD/EARS drove ADR (previous)?
+   - Upstream: Which 01_BRD/02_PRD/EARS drove ADR (previous)?
    - Downstream: Which SYS, REQ, SPEC, Code implement ADR (previous)?
 3. **Plan Migration**:
    - Create IMPL for architecture change

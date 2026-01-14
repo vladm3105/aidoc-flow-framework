@@ -346,7 +346,7 @@ def send_metrics():
 2. Verify file path is correct (relative from current document)
 3. Verify anchor ID matches document ID
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-4. Example fix: `[REQ-03](../REQ/risk/REQ-03_resource_limit.md#REQ-03)`
+4. Example fix: `[REQ-03](../07_REQ/risk/REQ-03_resource_limit.md#REQ-03)`
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Issue**: Duplicate requirement IDs

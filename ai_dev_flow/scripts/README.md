@@ -42,7 +42,7 @@ Automatically generates traceability matrices by scanning document directories a
 
 **Usage:**
 ```bash
-python generate_traceability_matrix.py --type ADR --input ../ADR/ --output TRACEABILITY_MATRIX_ADR.md
+python generate_traceability_matrix.py --type ADR --input ../05_ADR/ --output TRACEABILITY_MATRIX_ADR.md
 ```
 
 **Features:**
@@ -61,13 +61,13 @@ python generate_traceability_matrix.py --type ADR --input ../ADR/ --output TRACE
 **Examples:**
 ```bash
 # Generate ADR matrix
-python generate_traceability_matrix.py --type ADR --input ../ADR/ --output ../ADR/TRACEABILITY_MATRIX_ADR.md
+python generate_traceability_matrix.py --type ADR --input ../05_ADR/ --output ../05_ADR/TRACEABILITY_MATRIX_ADR.md
 
 # Generate REQ matrix from specific domain
-python generate_traceability_matrix.py --type REQ --input ../REQ/api/ --output ../REQ/api/matrix.md
+python generate_traceability_matrix.py --type REQ --input ../07_REQ/api/ --output ../07_REQ/api/matrix.md
 
 # Generate SPEC matrix
-python generate_traceability_matrix.py --type SPEC --input ../SPEC/ --output ../SPEC/TRACEABILITY_MATRIX_SPEC.md
+python generate_traceability_matrix.py --type SPEC --input ../10_SPEC/ --output ../10_SPEC/TRACEABILITY_MATRIX_SPEC.md
 ```
 
 ---
@@ -78,7 +78,7 @@ Validates traceability matrices against actual documents to ensure consistency a
 
 **Usage:**
 ```bash
-python3 validate_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 validate_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --input ../05_ADR/
 ```
 
 **Features:**
@@ -98,13 +98,13 @@ python3 validate_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --in
 **Examples:**
 ```bash
 # Validate ADR matrix
-python3 validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 validate_traceability_matrix.py --matrix ../05_ADR/TRACEABILITY_MATRIX_ADR.md --input ../05_ADR/
 
 # Strict validation (warnings = errors)
-python3 validate_traceability_matrix.py --matrix ../REQ/matrix.md --input ../REQ/ --strict
+python3 validate_traceability_matrix.py --matrix ../07_REQ/matrix.md --input ../07_REQ/ --strict
 
 # Save validation report
-python3 validate_traceability_matrix.py --matrix ../SPEC/matrix.md --input ../SPEC/ --output validation_report.md
+python3 validate_traceability_matrix.py --matrix ../10_SPEC/matrix.md --input ../10_SPEC/ --output validation_report.md
 ```
 
 **Exit Codes:**
@@ -119,7 +119,7 @@ Incrementally updates existing traceability matrices by detecting new, modified,
 
 **Usage:**
 ```bash
-python3 update_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 update_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --input ../05_ADR/
 ```
 
 **Features:**
@@ -140,13 +140,13 @@ python3 update_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --inpu
 **Examples:**
 ```bash
 # Update ADR matrix
-python3 update_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 update_traceability_matrix.py --matrix ../05_ADR/TRACEABILITY_MATRIX_ADR.md --input ../05_ADR/
 
 # Preview changes without modifying file
-python3 update_traceability_matrix.py --matrix ../SPEC/matrix.md --input ../SPEC/ --dry-run
+python3 update_traceability_matrix.py --matrix ../10_SPEC/matrix.md --input ../10_SPEC/ --dry-run
 
 # Update and save changelog
-python3 update_traceability_matrix.py --matrix ../REQ/matrix.md --input ../REQ/ --changelog changelog.md
+python3 update_traceability_matrix.py --matrix ../07_REQ/matrix.md --input ../07_REQ/ --changelog changelog.md
 ```
 
 ---
@@ -196,7 +196,7 @@ python3 validate_iplan_naming.py || exit 1
 
 **Example Output:**
 ```
-Validating IPLAN files in: IPLAN/
+Validating IPLAN files in: 12_IPLAN/
 ================================================================================
 
 ✅ IPLAN Naming Validation PASSED
@@ -316,7 +316,7 @@ Cross-document validation for the SDD framework. Validates semantic consistency 
 **Usage:**
 ```bash
 # Per-document validation (Phase 1) - nested folder structure (DEFAULT)
-python scripts/validate_cross_document.py --document docs/ADR/ADR-NN_cloud_migration/ADR-NN.0_cloud_migration_index.md --auto-fix
+python scripts/validate_cross_document.py --document docs/05_ADR/ADR-NN_cloud_migration/ADR-NN.0_cloud_migration_index.md --auto-fix
 
 # Layer validation (Phase 2)
 python scripts/validate_cross_document.py --layer ADR --auto-fix
@@ -345,7 +345,7 @@ python scripts/validate_cross_document.py --full --auto-fix
 **Examples:**
 ```bash
 # Validate single REQ document with auto-fix
-python scripts/validate_cross_document.py --document docs/REQ/REQ-NN_api_validation.md --auto-fix
+python scripts/validate_cross_document.py --document docs/07_REQ/REQ-NN_api_validation.md --auto-fix
 
 # Validate all SPEC documents
 python scripts/validate_cross_document.py --layer SPEC --auto-fix
@@ -423,7 +423,7 @@ python scripts/validate_cross_document.py --full --output validation_report.md
 Cross-Document Validation Report
 ================================================================================
 Phase: Per-Document
-Document: docs/REQ/REQ-NN_api_validation.md
+Document: docs/07_REQ/REQ-NN_api_validation.md
 Layer: 7 (REQ)
 
 Checking cumulative tags...
@@ -435,12 +435,12 @@ Checking cumulative tags...
   ✅ @sys: SYS.NN.25.NN
 
 Checking upstream references...
-  ✅ BRD-NN exists: docs/BRD/BRD-NN_platform/BRD-NN.0_platform_index.md
-  ✅ PRD-NN exists: docs/PRD/PRD-NN_integration/PRD-NN.0_integration_index.md
-  ✅ EARS-NN exists: docs/EARS/EARS-NN_risk.md
-  ✅ BDD-NN exists: docs/BDD/BDD-NN_limits/BDD-NN.1_limits.feature
-  ✅ ADR-NN exists: docs/ADR/ADR-NN_database/ADR-NN.0_database_index.md
-  ✅ SYS-NN exists: docs/SYS/SYS-NN_example.md
+  ✅ BRD-NN exists: docs/01_BRD/BRD-NN_platform/BRD-NN.0_platform_index.md
+  ✅ PRD-NN exists: docs/02_PRD/PRD-NN_integration/PRD-NN.0_integration_index.md
+  ✅ EARS-NN exists: docs/03_EARS/EARS-NN_risk.md
+  ✅ BDD-NN exists: docs/04_BDD/BDD-NN_limits/BDD-NN.1_limits.feature
+  ✅ ADR-NN exists: docs/05_ADR/ADR-NN_database/ADR-NN.0_database_index.md
+  ✅ SYS-NN exists: docs/06_SYS/SYS-NN_example.md
 
 Checking internal links...
   ✅ 12 links validated
@@ -463,10 +463,10 @@ Validates Business Requirements Document (BRD) structure and template compliance
 **Usage:**
 ```bash
 # For nested folder structure (DEFAULT)
-./scripts/validate_brd_template.sh docs/BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md
+./scripts/validate_brd_template.sh docs/01_BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md
 
 # For monolithic files (OPTIONAL for <25KB)
-./scripts/validate_brd_template.sh docs/BRD/BRD-01_platform_architecture.md
+./scripts/validate_brd_template.sh docs/01_BRD/BRD-01_platform_architecture.md
 ```
 
 ### 7. validate_req_template.sh
@@ -475,7 +475,7 @@ Validates REQ documents against the 12-section REQ v3.0 format.
 
 **Usage:**
 ```bash
-./scripts/validate_req_template.sh docs/REQ/REQ-01_*.md
+./scripts/validate_req_template.sh docs/07_REQ/REQ-01_*.md
 ```
 
 ### 8. validate_ctr.sh
@@ -484,7 +484,7 @@ Validates CTR (Contract) documents for dual-file format compliance (.md + .yaml)
 
 **Usage:**
 ```bash
-./scripts/validate_ctr.sh docs/CTR/CTR-01_*.md
+./scripts/validate_ctr.sh docs/09_CTR/CTR-01_*.md
 ```
 
 **Features:**
@@ -499,7 +499,7 @@ Validates IMPL documents for 4-PART structure compliance.
 
 **Usage:**
 ```bash
-./scripts/validate_impl.sh docs/IMPL/IMPL-01_*.md
+./scripts/validate_impl.sh docs/08_IMPL/IMPL-01_*.md
 ```
 
 **Validates:**
@@ -514,7 +514,7 @@ Validates TASKS documents including Section 8 Implementation Contracts.
 
 **Usage:**
 ```bash
-./scripts/validate_tasks.sh docs/TASKS/TASKS-01_*.md
+./scripts/validate_tasks.sh docs/11_TASKS/TASKS-01_*.md
 ```
 
 **Features:**
@@ -529,7 +529,7 @@ Validates IPLAN (Implementation Plan) session-based execution plans.
 
 **Usage:**
 ```bash
-./scripts/validate_iplan.sh docs/IPLAN/IPLAN-01_*.md
+./scripts/validate_iplan.sh docs/12_IPLAN/IPLAN-01_*.md
 ```
 
 **Features:**
@@ -560,7 +560,7 @@ Comprehensive EARS document validator against EARS_VALIDATION_RULES.md.
 **Usage:**
 ```bash
 python3 validate_ears.py                                # Validate all EARS docs
-python3 validate_ears.py --path docs/EARS/EARS-01.md    # Validate single file
+python3 validate_ears.py --path docs/03_EARS/EARS-01.md    # Validate single file
 python3 validate_ears.py --verbose                       # Show all checks
 python3 validate_ears.py --fix-suggestions               # Show fix commands
 ```
@@ -586,8 +586,8 @@ Validates EARS documents for duplicate requirement IDs within individual files.
 
 **Usage:**
 ```bash
-./validate_ears_duplicates.sh                    # Use default docs/EARS/
-./validate_ears_duplicates.sh /path/to/EARS/     # Custom EARS directory
+./validate_ears_duplicates.sh                    # Use default docs/03_EARS/
+./validate_ears_duplicates.sh /path/to/03_EARS/     # Custom EARS directory
 ```
 
 **Features:**
@@ -606,7 +606,7 @@ Validates EARS documents for duplicate requirement IDs within individual files.
 ========================================
 EARS Duplicate Requirement ID Check
 ========================================
-Directory: docs/EARS/
+Directory: docs/03_EARS/
 
 ✅ No duplicate requirement IDs found
 Files checked: 11
@@ -619,8 +619,8 @@ Validates structural consistency across all EARS documents for required sections
 **Usage:**
 ```bash
 ./validate_ears_consistency.sh                      # Use default, warning mode
-./validate_ears_consistency.sh docs/EARS/           # Custom directory
-./validate_ears_consistency.sh docs/EARS/ --strict  # Strict mode (fail on missing References)
+./validate_ears_consistency.sh docs/03_EARS/           # Custom directory
+./validate_ears_consistency.sh docs/03_EARS/ --strict  # Strict mode (fail on missing References)
 ```
 
 **Required Sections (Critical):**
@@ -649,7 +649,7 @@ Validates structural consistency across all EARS documents for required sections
 ========================================
 EARS Structural Consistency Check
 ========================================
-Directory: docs/EARS/
+Directory: docs/03_EARS/
 Strict mode: false
 
 Checking EARS-01_analytics_platform.md...
@@ -677,25 +677,25 @@ Note: 8 file(s) have non-blocking warnings
 **1. Initial Matrix Creation**
 ```bash
 # Create new matrix from scratch
-python generate_traceability_matrix.py --type ADR --input ../ADR/ --output ../ADR/TRACEABILITY_MATRIX_ADR.md
+python generate_traceability_matrix.py --type ADR --input ../05_ADR/ --output ../05_ADR/TRACEABILITY_MATRIX_ADR.md
 
 # Validate newly created matrix
-python3 validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 validate_traceability_matrix.py --matrix ../05_ADR/TRACEABILITY_MATRIX_ADR.md --input ../05_ADR/
 ```
 
 **2. Incremental Updates**
 ```bash
 # After adding new ADR documents, update matrix incrementally
-python3 update_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 update_traceability_matrix.py --matrix ../05_ADR/TRACEABILITY_MATRIX_ADR.md --input ../05_ADR/
 
 # Validate updates
-python3 validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/
+python3 validate_traceability_matrix.py --matrix ../05_ADR/TRACEABILITY_MATRIX_ADR.md --input ../05_ADR/
 ```
 
 **3. Regular Validation**
 ```bash
 # Run validation as part of CI/CD pipeline
-python3 validate_traceability_matrix.py --matrix ../ADR/TRACEABILITY_MATRIX_ADR.md --input ../ADR/ --strict
+python3 validate_traceability_matrix.py --matrix ../05_ADR/TRACEABILITY_MATRIX_ADR.md --input ../05_ADR/ --strict
 
 # Validate IPLAN naming conventions
 python3 validate_iplan_naming.py
@@ -710,9 +710,9 @@ Add to `.git/hooks/pre-commit`:
 # Validate all traceability matrices before commit
 echo "Validating traceability matrices..."
 
-python3 scripts/validate_traceability_matrix.py --matrix ADR/TRACEABILITY_MATRIX_ADR.md --input ADR/ || exit 1
-python3 scripts/validate_traceability_matrix.py --matrix REQ/TRACEABILITY_MATRIX_REQ.md --input REQ/ || exit 1
-python3 scripts/validate_traceability_matrix.py --matrix SPEC/TRACEABILITY_MATRIX_SPEC.md --input SPEC/ || exit 1
+python3 scripts/validate_traceability_matrix.py --matrix 05_ADR/TRACEABILITY_MATRIX_ADR.md --input 05_ADR/ || exit 1
+python3 scripts/validate_traceability_matrix.py --matrix 07_REQ/TRACEABILITY_MATRIX_REQ.md --input 07_REQ/ || exit 1
+python3 scripts/validate_traceability_matrix.py --matrix 10_SPEC/TRACEABILITY_MATRIX_SPEC.md --input 10_SPEC/ || exit 1
 
 echo "Validating IPLAN naming conventions..."
 python3 scripts/validate_iplan_naming.py || exit 1
@@ -742,22 +742,22 @@ jobs:
       - name: Validate ADR Matrix
         run: |
           python3 scripts/validate_traceability_matrix.py \
-            --matrix ADR/TRACEABILITY_MATRIX_ADR.md \
-            --input ADR/ \
+            --matrix 05_ADR/TRACEABILITY_MATRIX_ADR.md \
+            --input 05_ADR/ \
             --strict
 
       - name: Validate REQ Matrix
         run: |
           python3 scripts/validate_traceability_matrix.py \
-            --matrix REQ/TRACEABILITY_MATRIX_REQ.md \
-            --input REQ/ \
+            --matrix 07_REQ/TRACEABILITY_MATRIX_REQ.md \
+            --input 07_REQ/ \
             --strict
 
       - name: Validate SPEC Matrix
         run: |
           python3 scripts/validate_traceability_matrix.py \
-            --matrix SPEC/TRACEABILITY_MATRIX_SPEC.md \
-            --input SPEC/ \
+            --matrix 10_SPEC/TRACEABILITY_MATRIX_SPEC.md \
+            --input 10_SPEC/ \
             --strict
 
       - name: Validate IPLAN Naming
@@ -814,13 +814,13 @@ Run scripts with example matrices to verify functionality:
 
 ```bash
 # Test generation (will warn about missing documents)
-python generate_traceability_matrix.py --type ADR --input ../ADR/examples/ --output /tmp/test_matrix.md
+python generate_traceability_matrix.py --type ADR --input ../05_ADR/examples/ --output /tmp/test_matrix.md
 
 # Test validation (use generated matrix)
-python3 validate_traceability_matrix.py --matrix /tmp/test_matrix.md --input ../ADR/examples/
+python3 validate_traceability_matrix.py --matrix /tmp/test_matrix.md --input ../05_ADR/examples/
 
 # Test update in dry-run mode
-python3 update_traceability_matrix.py --matrix /tmp/test_matrix.md --input ../ADR/examples/ --dry-run
+python3 update_traceability_matrix.py --matrix /tmp/test_matrix.md --input ../05_ADR/examples/ --dry-run
 ```
 
 ---
@@ -928,10 +928,10 @@ MVP (Minimum Viable Product) templates provide streamlined versions of full docu
 
 ```bash
 # Validate only produced documents, not templates
-python3 scripts/validate_brd.py BRD/ 2>&1 | grep -v "MVP-TEMPLATE"
+python3 scripts/validate_brd.py 01_BRD/ 2>&1 | grep -v "MVP-TEMPLATE"
 
 # Or use find to exclude MVP templates
-find BRD/ -name "BRD-*.md" ! -name "*MVP-TEMPLATE*" -exec python3 scripts/validate_brd.py {} \;
+find 01_BRD/ -name "BRD-*.md" ! -name "*MVP-TEMPLATE*" -exec python3 scripts/validate_brd.py {} \;
 ```
 
 **Option 2: Validate Produced Documents Only**
@@ -940,8 +940,8 @@ When validating a directory, validation scripts automatically detect templates v
 
 ```bash
 # Validate specific produced documents (not templates)
-python3 scripts/validate_brd.py BRD/BRD-01_my_project.md
-python3 scripts/validate_prd.py PRD/PRD-01_my_feature.md
+python3 scripts/validate_brd.py 01_BRD/BRD-01_my_project.md
+python3 scripts/validate_prd.py 02_PRD/PRD-01_my_feature.md
 ```
 
 **Option 3: Accept MVP Template Errors as Expected**
