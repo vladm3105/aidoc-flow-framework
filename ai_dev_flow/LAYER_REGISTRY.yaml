@@ -1,15 +1,16 @@
 # SDD Framework Layer Registry
 # Single source of truth for all layer definitions
-# Version: 1.2
+# Version: 1.3
 # Last Updated: 2026-01-13
 
-version: "1.2"
+version: "1.3"
 metadata:
   framework: "Specification-Driven Development (SDD)"
   total_layers: 16
   additional_artifacts: ["ICON"]
   maintainer: "SDD Framework Team"
-  default_template_profile: mvp  # MVP templates are the framework default
+  template_policy: mvp_only  # Framework uses MVP templates exclusively
+  deprecated_templates: archived/  # Full/section templates moved to archived/ subdirectories
 
 # Optional pre-artifact layer (not part of core 16 artifact layers)
 conceptual_layers:
@@ -31,9 +32,7 @@ layers:
     error_prefix: BRD
     optional: false
     description: "Layer 1 - Business-level functional requirements and objectives"
-    mvp_available: true
-    default_template: "BRD-MVP-TEMPLATE.md"
-    full_template: "BRD-TEMPLATE.md"
+    template: "BRD-MVP-TEMPLATE.md"
 
   - number: 2
     artifact: PRD
@@ -45,9 +44,7 @@ layers:
     error_prefix: PRD
     optional: false
     description: "Layer 2 - Product features and user stories derived from BRD"
-    mvp_available: true
-    default_template: "PRD-MVP-TEMPLATE.md"
-    full_template: "PRD-TEMPLATE.md"
+    template: "PRD-MVP-TEMPLATE.md"
 
   - number: 3
     artifact: EARS
@@ -59,9 +56,7 @@ layers:
     error_prefix: EARS
     optional: false
     description: "Layer 3 - Formal requirements using WHEN-THE-SHALL-WITHIN syntax"
-    mvp_available: true
-    default_template: "EARS-MVP-TEMPLATE.md"
-    full_template: "EARS-TEMPLATE.md"
+    template: "EARS-MVP-TEMPLATE.md"
 
   - number: 4
     artifact: BDD
@@ -73,9 +68,7 @@ layers:
     error_prefix: BDD
     optional: false
     description: "Layer 4 - Test scenarios using Given-When-Then format"
-    mvp_available: true
-    default_template: "BDD-MVP-TEMPLATE.feature"
-    full_template: "BDD-TEMPLATE.feature"
+    template: "BDD-MVP-TEMPLATE.feature"
 
   - number: 5
     artifact: ADR
@@ -87,9 +80,7 @@ layers:
     error_prefix: ADR
     optional: false
     description: "Layer 5 - Architectural decisions with Context-Decision-Consequences"
-    mvp_available: true
-    default_template: "ADR-MVP-TEMPLATE.md"
-    full_template: "ADR-TEMPLATE.md"
+    template: "ADR-MVP-TEMPLATE.md"
 
   - number: 6
     artifact: SYS
@@ -101,9 +92,7 @@ layers:
     error_prefix: SYS
     optional: false
     description: "Layer 6 - Functional requirements and quality attributes"
-    mvp_available: true
-    default_template: "SYS-MVP-TEMPLATE.md"
-    full_template: "SYS-TEMPLATE.md"
+    template: "SYS-MVP-TEMPLATE.md"
 
   - number: 7
     artifact: REQ
@@ -115,9 +104,7 @@ layers:
     error_prefix: REQ
     optional: false
     description: "Layer 7 - Single, granular, testable requirements"
-    mvp_available: true
-    default_template: "REQ-MVP-TEMPLATE.md"
-    full_template: "REQ-TEMPLATE.md"
+    template: "REQ-MVP-TEMPLATE.md"
 
   - number: 8
     artifact: IMPL
@@ -129,8 +116,7 @@ layers:
     error_prefix: IMPL
     optional: true
     description: "Layer 8 - WHO-WHEN-WHAT implementation strategy"
-    mvp_available: false
-    default_template: "IMPL-TEMPLATE.md"
+    template: "IMPL-TEMPLATE.md"
 
   - number: 9
     artifact: CTR
@@ -142,8 +128,7 @@ layers:
     error_prefix: CTR
     optional: true
     description: "Layer 9 - API/data contracts using dual-file format"
-    mvp_available: false
-    default_template: "CTR-TEMPLATE.md"
+    template: "CTR-TEMPLATE.md"
 
   - number: 10
     artifact: SPEC
@@ -155,8 +140,7 @@ layers:
     error_prefix: SPEC
     optional: false
     description: "Layer 10 - Implementation-ready YAML specifications"
-    mvp_available: false
-    default_template: "SPEC-TEMPLATE.yaml"
+    template: "SPEC-TEMPLATE.yaml"
 
   - number: 11
     artifact: TASKS
@@ -168,8 +152,7 @@ layers:
     error_prefix: TASKS
     optional: false
     description: "Layer 11 - AI-structured TODO tasks from SPEC"
-    mvp_available: false
-    default_template: "TASKS-TEMPLATE.md"
+    template: "TASKS-TEMPLATE.md"
 
   - number: 12
     artifact: IPLAN
@@ -181,8 +164,7 @@ layers:
     error_prefix: IPLAN
     optional: false
     description: "Layer 12 - Session-based bash command execution plans"
-    mvp_available: false
-    default_template: "IPLAN-TEMPLATE.md"
+    template: "IPLAN-TEMPLATE.md"
 
   - number: 13
     artifact: CODE
@@ -194,8 +176,7 @@ layers:
     error_prefix: CODE
     optional: false
     description: "Layer 13 - Source code implementation generated from 12_IPLAN/TASKS"
-    mvp_available: false
-    default_template: null  # Code layer - no documentation template
+    template: null  # Code layer - no documentation template
 
   - number: 14
     artifact: TESTS
@@ -207,8 +188,7 @@ layers:
     error_prefix: TEST
     optional: false
     description: "Layer 14 - Unit, integration, and end-to-end test implementations"
-    mvp_available: false
-    default_template: null  # Test layer - no documentation template
+    template: null  # Test layer - no documentation template
 
   - number: 15
     artifact: VALIDATION
@@ -220,8 +200,7 @@ layers:
     error_prefix: VAL
     optional: false
     description: "Layer 15 - Production readiness validation and quality gate results"
-    mvp_available: false
-    default_template: null  # Validation layer - no documentation template
+    template: null  # Validation layer - no documentation template
 
 # Change Management Utilities (NOT layers)
 change_management:
@@ -242,8 +221,7 @@ additional_artifacts:
     error_prefix: ICON
     optional: true
     description: "Non-layer artifact - Type contracts for parallel development"
-    mvp_available: false
-    default_template: "ICON-TEMPLATE.md"
+    template: "ICON-TEMPLATE.md"
 
 layer_groups:
   core_requirements:

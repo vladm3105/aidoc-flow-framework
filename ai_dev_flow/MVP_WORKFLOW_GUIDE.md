@@ -15,15 +15,12 @@ custom_fields:
 **Purpose**: Streamlined workflow for rapid Minimum Viable Product (MVP) development using AI Dev Flow.
 **Target Audience**: AI Assistants and small teams (2-10 people) building early-stage products.
 
-> **🎯 MVP IS NOW THE FRAMEWORK DEFAULT**
+> **🎯 MVP-ONLY FRAMEWORK**
 >
-> As of v2.0, MVP templates are automatically selected for all new document creation.
-> Full templates are only used when explicitly triggered via:
-> - Project setting: `template_profile: enterprise`
-> - Prompt keywords: "use full template", "enterprise mode", "regulatory compliance"
+> As of v2.0, the framework uses MVP templates exclusively.
+> Full templates have been deprecated and archived in `archived/` subdirectories.
 >
-> See [LAYER_REGISTRY.yaml](./LAYER_REGISTRY.yaml) for `mvp_available` and `default_template` fields.
-> See [.autopilot.yaml](./.autopilot.yaml) for profile configuration.
+> See [LAYER_REGISTRY.yaml](./LAYER_REGISTRY.yaml) for `template` field definitions.
 
 Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live under `ai_dev_flow/` without the `docs/` prefix. Run commands from the repo root and use explicit paths, e.g., `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/PRD`.
 

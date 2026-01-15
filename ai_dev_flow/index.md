@@ -6,37 +6,30 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 
 > MVP Note: MVP templates are single, flat files. Ignore document splitting and `DOCUMENT_SPLITTING_RULES.md` when using the MVP track.
 
-## Template Selection (MVP is Default)
+## Template Selection (MVP-Only)
 
-**MVP templates are now the framework default** for all new document creation. Full templates are used only when explicitly triggered.
+**The framework uses MVP templates exclusively.** Full templates have been deprecated and archived.
 
-### Quick Decision
+### Templates by Layer
 
-| Condition | Template Used |
-|-----------|---------------|
-| No special settings or keywords | **MVP** (automatic) |
-| `template_profile: enterprise` in settings | Full |
-| Prompt contains "use full template" | Full |
-| Prompt contains "enterprise mode" | Full |
-| Prompt contains "regulatory compliance" | Full |
-
-### Available MVP Templates
-
-| Layer | Type | MVP Template | Full Template |
-|-------|------|--------------|---------------|
-| 1 | BRD | `BRD-MVP-TEMPLATE.md` ✓ | `BRD-TEMPLATE.md` |
-| 2 | PRD | `PRD-MVP-TEMPLATE.md` ✓ | `PRD-TEMPLATE.md` |
-| 3 | EARS | `EARS-MVP-TEMPLATE.md` ✓ | `EARS-TEMPLATE.md` |
-| 4 | BDD | `BDD-MVP-TEMPLATE.feature` ✓ | `BDD-TEMPLATE.feature` |
-| 5 | ADR | `ADR-MVP-TEMPLATE.md` ✓ | `ADR-TEMPLATE.md` |
-| 6 | SYS | `SYS-MVP-TEMPLATE.md` ✓ | `SYS-TEMPLATE.md` |
-| 7 | REQ | `REQ-MVP-TEMPLATE.md` ✓ | `REQ-TEMPLATE.md` |
-| 8-12 | IMPL, CTR, SPEC, TASKS, IPLAN | — | Full only |
+| Layer | Type | Template |
+|-------|------|----------|
+| 1 | BRD | `BRD-MVP-TEMPLATE.md` |
+| 2 | PRD | `PRD-MVP-TEMPLATE.md` |
+| 3 | EARS | `EARS-MVP-TEMPLATE.md` |
+| 4 | BDD | `BDD-MVP-TEMPLATE.feature` |
+| 5 | ADR | `ADR-MVP-TEMPLATE.md` |
+| 6 | SYS | `SYS-MVP-TEMPLATE.md` |
+| 7 | REQ | `REQ-MVP-TEMPLATE.md` |
+| 8 | IMPL | `IMPL-TEMPLATE.md` |
+| 9 | CTR | `CTR-TEMPLATE.md` |
+| 10 | SPEC | `SPEC-TEMPLATE.yaml` |
+| 11 | TASKS | `TASKS-TEMPLATE.md` |
+| 12 | IPLAN | `IPLAN-TEMPLATE.md` |
 
 ### Configuration Reference
 
-- Registry: [LAYER_REGISTRY.yaml](./LAYER_REGISTRY.yaml) - `mvp_available` and `default_template` fields
-- Profiles: [.autopilot.yaml](./.autopilot.yaml) - `template_selection` and `profiles` sections
+- Registry: [LAYER_REGISTRY.yaml](./LAYER_REGISTRY.yaml) - `template` field definitions
 - Workflow: [MVP_WORKFLOW_GUIDE.md](./MVP_WORKFLOW_GUIDE.md) - Detailed MVP workflow
 
 ## Framework Purpose
