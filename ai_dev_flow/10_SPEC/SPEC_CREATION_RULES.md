@@ -1,8 +1,8 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of SPEC-TEMPLATE.md / SPEC-TEMPLATE.yaml
-# - Authority: SPEC-TEMPLATE files are the single source of truth for SPEC structure
+# 📋 Document Role: This is a DERIVATIVE of SPEC-TEMPLATE.yaml
+# - Authority: SPEC-TEMPLATE.yaml is the single source of truth for SPEC structure
 # - Purpose: AI guidance for document creation (derived from template)
-# - On conflict: Defer to SPEC-TEMPLATE.md / SPEC-TEMPLATE.yaml
+# - On conflict: Defer to SPEC-TEMPLATE.yaml
 # =============================================================================
 ---
 title: "SPEC Creation Rules"
@@ -18,7 +18,7 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is a **CREATION HELPER** for SPEC-TEMPLATE.md/.yaml.
+> **📋 Document Role**: This is a **CREATION HELPER** for SPEC-TEMPLATE.yaml.
 > - **Authority**: `SPEC-TEMPLATE.yaml` is the primary source of truth for SPEC structure
 > - **Validation**: Use `SPEC_VALIDATION_RULES.md` after SPEC creation/changes
 
@@ -31,12 +31,12 @@ custom_fields:
 
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
-**Version**: 1.2
+**Version**: 1.3
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-30
 **Source**: Derived from SPEC-TEMPLATE.yaml and technical specification patterns
 **Purpose**: Complete reference for creating SPEC YAML files according to AI Dev Flow SDD framework
-**Changes**: Added Threshold Registry Integration section (v1.2). Previous: Status/Score mapping, common mistakes section (v1.1)
+**Changes**: v1.3: Added file size limits as warning, removed document splitting requirement. v1.2: Added Threshold Registry Integration section. v1.1: Status/Score mapping, common mistakes section
 
 ---
 
@@ -61,12 +61,13 @@ custom_fields:
 
 ## 1. File Organization and Directory Structure
 
-- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+- Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → "Using This Repo" for path mapping.
 - **Location**: `docs/10_SPEC/` within project docs directory
 - **Naming**: `SPEC-{DOC_NUM}_{descriptive_component_name}.yaml` (DOC_NUM = variable-length, starts at 2 digits)
-- **Structure**:
-  - One monolithic YAML file per architectural component (codegen source)
-  - Split Markdown narrative as needed using `SPEC-SECTION-0-TEMPLATE.md` and `SPEC-SECTION-TEMPLATE.md`
+- **Structure**: One monolithic YAML file per architectural component (codegen source)
+- **File Size Limits** (Warning):
+  - Markdown: Target 300-500 lines, warning at 600 lines
+  - YAML: Warning at 1000 lines
 
 ---
 
@@ -89,7 +90,14 @@ metadata:
 traceability:
   upstream_sources: [...]
   downstream_artifacts: [...]
-  cumulative_tags: [...]
+  cumulative_tags: [...]  # Include @threshold registry tag and use null only when an upstream type truly does not exist
+
+# Threshold registry references (required when using @threshold)
+threshold_references:
+  registry_document: "PRD-NN"
+  keys_used:
+    - perf.api.p95_latency
+    - timeout.request.sync
 
 # Architecture definition
 architecture: [...]
@@ -239,16 +247,17 @@ TASKS-ready scoring measures SPEC maturity and readiness for progression to TASK
 **Complete Upstream Tag Chain**:
 ```yaml
 cumulative_tags:
-  brd: "BRD.NN.EE.SS"         # Unified dot notation for sub-ID references
-  prd: "PRD.NN.EE.SS"         # Unified dot notation for sub-ID references
-  ears: "EARS.NN.EE.SS"       # Unified dot notation
-  bdd: "BDD.NN.EE.SS"         # Unified dot notation for sub-ID references
-  adr: "ADR-NN"             # Document-level reference (no sub-ID)
-  sys: "SYS.NN.EE.SS"         # Unified dot notation for sub-ID references
-  req: "REQ.NN.EE.SS"         # Unified dot notation for sub-ID references
+  brd: "BRD.NN.EE.SS"         # Unified dot notation for sub-ID references (use null only if the artifact type does not exist)
+  prd: "PRD.NN.EE.SS"         # Unified dot notation for sub-ID references (use null only if the artifact type does not exist)
+  ears: "EARS.NN.EE.SS"       # Unified dot notation (use null only if the artifact type does not exist)
+  bdd: "BDD.NN.EE.SS"         # Unified dot notation for sub-ID references (use null only if the artifact type does not exist)
+  adr: "ADR-NN"             # Document-level reference (no sub-ID, use null only if the artifact type does not exist)
+  sys: "SYS.NN.EE.SS"         # Unified dot notation for sub-ID references (use null only if the artifact type does not exist)
+  req: "REQ.NN.EE.SS"         # Unified dot notation for sub-ID references (use null only if the artifact type does not exist)
+  threshold: "PRD-NN"         # Threshold registry document reference (use null only if thresholds are not applicable)
 ```
 
-**Layer 10 Requirements**: SPEC must reference ALL previous artifacts
+**Layer 10 Requirements**: SPEC must reference ALL previous artifacts or explicitly mark `null` when genuinely absent
 
 ---
 

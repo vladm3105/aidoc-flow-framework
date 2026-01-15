@@ -544,7 +544,7 @@ LOOP:
 - **REQ** (`REQ/`): `REQ-TEMPLATE.md` (v3.0 with 12 sections)
 - **IMPL** (`IMPL/`): `IMPL-TEMPLATE.md`
 - **CTR** (`CTR/`): `CTR-TEMPLATE.md` + `CTR-TEMPLATE.yaml` (dual-file)
-- **SPEC** (`SPEC/`): `SPEC-TEMPLATE.yaml` + `SPEC-TEMPLATE.md`
+- **SPEC** (`10_SPEC/`): `SPEC-TEMPLATE.yaml`
 - **TASKS** (`TASKS/`): `TASKS-TEMPLATE.md` (includes Section 8 for ICON)
 - **ICON** (`ICON/`): `ICON-TEMPLATE.md` (Implementation Contracts)
 - **IPLAN** (`IPLAN/`): `IPLAN-TEMPLATE.md`

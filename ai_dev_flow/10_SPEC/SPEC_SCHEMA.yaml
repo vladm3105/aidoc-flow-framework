@@ -1,8 +1,8 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of SPEC-TEMPLATE.md / SPEC-TEMPLATE.yaml
-# - Authority: SPEC-TEMPLATE files are the single source of truth for SPEC structure
+# 📋 Document Role: This is a DERIVATIVE of SPEC-TEMPLATE.yaml
+# - Authority: SPEC-TEMPLATE.yaml is the single source of truth for SPEC structure
 # - Purpose: Machine-readable validation rules derived from the template
-# - On conflict: Defer to SPEC-TEMPLATE.md / SPEC-TEMPLATE.yaml
+# - On conflict: Defer to SPEC-TEMPLATE.yaml
 # =============================================================================
 #
 # SPEC Schema Definition v1.0
@@ -108,6 +108,11 @@ top_level:
       type: object
       required: true
       description: "Implementation specifics"
+
+    threshold_references:
+      type: object
+      required: true
+      description: "Registry document reference and keys used for @threshold tags"
 
   optional_fields:
     caching:
@@ -239,24 +244,35 @@ traceability_schema:
         brd:
           type: string
           pattern: "^BRD-\\d{2,}:[A-Z]+-\\d{2,}$"
+          allow_null: true
         prd:
           type: string
           pattern: "^PRD-\\d{2,}:[A-Z]+-\\d{2,}$"
+          allow_null: true
         ears:
           type: string
           pattern: "^EARS-\\d{2,}:\\d{2,}$"
+          allow_null: true
         bdd:
           type: string
           pattern: "^BDD-\\d{2,}:[a-z\\-]+"
+          allow_null: true
         adr:
           type: string
           pattern: "^ADR-\\d{2,}$"
+          allow_null: true
         sys:
           type: string
           pattern: "^SYS-\\d{2,}:[A-Z]+-\\d{2,}$"
+          allow_null: true
         req:
           type: string
           pattern: "^REQ-\\d{2,}:[a-z\\-]+"
+          allow_null: true
+        threshold:
+          type: string
+          pattern: "^PRD-\\d{2,}$"
+          allow_null: true
       optional_fields:
         impl:
           type: string
@@ -290,6 +306,22 @@ traceability_schema:
     same_type_references:
       type: object
       description: "Related/dependent SPEC documents"
+
+# =============================================================================
+# Threshold References Requirements
+# =============================================================================
+
+threshold_references_schema:
+  required_fields:
+    registry_document:
+      type: string
+      pattern: "^PRD-\\d{2,}$"
+      description: "PRD registry document providing threshold keys"
+
+    keys_used:
+      type: array
+      min_items: 1
+      description: "List of threshold keys referenced via @threshold tags"
 
 # =============================================================================
 # Architecture Section Requirements
@@ -437,29 +469,31 @@ performance_schema:
       type: object
       required_properties:
         p50_milliseconds:
-          type: integer
-          minimum: 0
+          type: string
+          pattern: "^@threshold: PRD\\.\\d{2,}\\.[A-Za-z0-9_.-]+$"
         p95_milliseconds:
-          type: integer
-          minimum: 0
+          type: string
+          pattern: "^@threshold: PRD\\.\\d{2,}\\.[A-Za-z0-9_.-]+$"
         p99_milliseconds:
-          type: integer
-          minimum: 0
+          type: string
+          pattern: "^@threshold: PRD\\.\\d{2,}\\.[A-Za-z0-9_.-]+$"
 
     throughput_targets:
       type: object
       required_properties:
         sustained_requests_per_second:
-          type: integer
-          minimum: 0
+          type: string
+          pattern: "^@threshold: PRD\\.\\d{2,}\\.[A-Za-z0-9_.-]+$"
 
     resource_limits:
       type: object
       required_properties:
         cpu_cores_allocated:
-          type: number
+          type: string
+          pattern: "^@threshold: PRD\\.\\d{2,}\\.[A-Za-z0-9_.-]+$"
         memory_mb_allocated:
-          type: integer
+          type: string
+          pattern: "^@threshold: PRD\\.\\d{2,}\\.[A-Za-z0-9_.-]+$"
 
   optional_fields:
     scaling_characteristics:
@@ -630,6 +664,15 @@ validation_rules:
     - rule: "id field must match file name slug"
       severity: warning
 
+    - rule: "threshold_references section must be present with registry document and keys_used"
+      severity: error
+
+    - rule: "Markdown file should not exceed 600 lines"
+      severity: warning
+
+    - rule: "YAML file should not exceed 1000 lines"
+      severity: warning
+
   # Metadata validation
   metadata:
     - rule: "version must be semantic version format"
@@ -651,6 +694,12 @@ validation_rules:
 
     - rule: "cumulative_tags must include all required upstream tags"
       severity: warning
+
+    - rule: "cumulative_tags.threshold must reference PRD registry document when thresholds are used"
+      severity: warning
+
+    - rule: "cumulative_tags entries may be null only when the upstream artifact type genuinely does not exist"
+      severity: info
 
     - rule: "downstream_artifacts must include implementation paths"
       severity: warning
@@ -676,6 +725,9 @@ validation_rules:
   performance:
     - rule: "latency_targets must include p50, p95, p99"
       severity: warning
+
+    - rule: "Latency, throughput, and resource values must be @threshold references (no raw numbers)"
+      severity: error
 
     - rule: "p95 must be greater than p50"
       severity: warning
@@ -812,3 +864,5 @@ error_messages:
   SPEC-I002: "Consider adding rate_limiting section"
   SPEC-I003: "Consider adding circuit_breaker section for resilience"
   SPEC-I004: "Consider adding operations runbook"
+  SPEC-W010: "Markdown file exceeds 600 lines (target: 300-500)"
+  SPEC-W011: "YAML file exceeds 1000 lines"

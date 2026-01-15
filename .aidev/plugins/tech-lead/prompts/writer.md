@@ -24,10 +24,10 @@ You must align exactly with the following schema rules.
 
 ```yaml
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of SPEC-TEMPLATE.md / SPEC-TEMPLATE.yaml
-# - Authority: SPEC-TEMPLATE files are the single source of truth for SPEC structure
+# 📋 Document Role: This is a DERIVATIVE of SPEC-TEMPLATE.yaml
+# - Authority: SPEC-TEMPLATE.yaml is the single source of truth for SPEC structure
 # - Purpose: Machine-readable validation rules derived from the template
-# - On conflict: Defer to SPEC-TEMPLATE.md / SPEC-TEMPLATE.yaml
+# - On conflict: Defer to SPEC-TEMPLATE.yaml
 # =============================================================================
 #
 # SPEC Schema Definition v1.0

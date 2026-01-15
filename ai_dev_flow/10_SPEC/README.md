@@ -24,21 +24,20 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 
 Specifications (SPEC) are machine-readable technical blueprints that define how software components should be implemented. SPECs transform requirements into actionable design decisions, providing complete implementation guidance for developers while establishing contracts for testing and integration.
 
-Note: `SPEC-TEMPLATE.md`/`.yaml` are reference templates. YAML stays monolithic per component for code generation. When narrative grows, split the Markdown only (index + section files) per `10_SPEC/SPEC_SPLITTING_RULES.md` and `../DOCUMENT_SPLITTING_RULES.md`.
+Note: `SPEC-TEMPLATE.yaml` is the reference template. YAML stays monolithic per component for code generation.
 
 ## Structure Policy
 
 - YAML: Monolithic single file per component (`SPEC-{DOC_NUM}_{slug}.yaml`).
-- Markdown: Split as needed using `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md`.
 - DOC_NUM: Variable-length starting at 2 digits (01, 02, 99, 100, 1000).
 - Layout:
-  - Nested (default): `10_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml` with Markdown section files alongside.
+  - Nested (default): `10_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml`
   - Flat (exception): `10_SPEC/SPEC-{DOC_NUM}_{slug}.yaml` for small, stable specs.
 
 ### Examples
 
 - Flat (small): [SPEC-01_api_client_example.yaml](./SPEC-01_api_client_example.yaml)
-- Nested (recommended): [SPEC-02_nested_example.yaml](./examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) with [index](./examples/SPEC-02_nested_example/SPEC-02.0_index.md)
+- Nested (recommended): [SPEC-02_nested_example.yaml](./examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml)
 
 ## Codegen Compatibility
 
@@ -76,8 +75,6 @@ SPECs sit between REQ (atomic requirements) and TASKS (implementation tasks) in 
 **⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ## SPEC YAML Structure
-
-Note: For large specifications that warrant splitting, see `10_SPEC/SPEC_SPLITTING_RULES.md` for SPEC-specific guidance and `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
 
 ### Header with Traceability Comments
 
@@ -672,17 +669,9 @@ validate-metrics --spec 10_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml --actual-metr
 ## Example SPEC Template
 
 See `10_SPEC/SPEC-01_external_api_client.yaml` for a flat example (small, stable). For nested default, see `10_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml`.
-## File Size Limits
 
-- Target: 300–500 lines per file
-- Maximum (Markdown): 600 lines per file (absolute)
-- YAML Exception (monolithic): Warnings at ~1000 lines, errors at ~2000 lines in linter; splitting is not required unless readability suffers.
-- If a file approaches/exceeds limits, split specifications by domain/component while preserving coherent interfaces (prefer keeping YAML monolithic where logical).
+## File Size Limits (Warning)
 
-## Document Splitting Standard
-
-SPEC files (YAML) are typically monolithic per component/domain:
-- Prefer monolithic unless extremely large or impacting readability
-- If splitting, create multiple YAML specs grouped by domain/component and update references
-- Keep interfaces coherent and avoid cross-file fragmentation of single interfaces
-- Validate references and run size lints
+- Target: 300-500 lines per file
+- Maximum (Markdown): 600 lines (warning threshold)
+- YAML (monolithic): Warning at ~1000 lines

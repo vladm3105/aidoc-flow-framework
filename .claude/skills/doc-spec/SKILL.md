@@ -740,17 +740,12 @@ For supplementary documentation needs, create:
 
 ## Related Resources
 
-- **Template (YAML)**: `ai_dev_flow/SPEC/SPEC-TEMPLATE.yaml` (primary authority for YAML format)
-- **Template (Markdown)**: `ai_dev_flow/SPEC/SPEC-TEMPLATE.md` (primary authority for Markdown format)
-- **SPEC Creation Rules**: `ai_dev_flow/SPEC/SPEC_CREATION_RULES.md`
-- **SPEC Validation Rules**: `ai_dev_flow/SPEC/SPEC_VALIDATION_RULES.md`
-- **SPEC README**: `ai_dev_flow/SPEC/README.md`
+- **Template**: `ai_dev_flow/10_SPEC/SPEC-TEMPLATE.yaml` (primary authority)
+- **SPEC Creation Rules**: `ai_dev_flow/10_SPEC/SPEC_CREATION_RULES.md`
+- **SPEC Validation Rules**: `ai_dev_flow/10_SPEC/SPEC_VALIDATION_RULES.md`
+- **SPEC Schema**: `ai_dev_flow/10_SPEC/SPEC_SCHEMA.yaml`
+- **SPEC README**: `ai_dev_flow/10_SPEC/README.md`
 - **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-
-**Section Templates** (for documents >25K tokens):
-- Index template: `ai_dev_flow/SPEC/SPEC-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_flow/SPEC/SPEC-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 
 ## Quick Reference
 

@@ -1,5 +1,5 @@
 # =============================================================================
-# 📋 Document Authority: This is the PRIMARY STANDARD for SPEC YAML structure.
+# 📋 Document Authority: This is the PRIMARY STANDARD for SPEC structure.
 # All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
 # - In case of conflict, this template is the single source of truth
 # - Schema: SPEC_SCHEMA.yaml - Machine-readable validation (derivative)
@@ -15,7 +15,7 @@
 # SPEC-NN: [Component Name]
 # ===================
 #
-# Reference Template — For learning and small specs only. Real SPECs are monolithic per component by default; split only when needed per '../DOCUMENT_SPLITTING_RULES.md' and '10_SPEC/SPEC_SPLITTING_RULES.md'.
+# Reference Template — For learning and small specs only. Real SPECs are monolithic YAML per component for code generation.
 #
 # ⚠️ CRITICAL: Always reference SPEC_DRIVEN_DEVELOPMENT_GUIDE.md as the single source of truth
 #              for workflow steps, artifact definitions, and quality gates.
@@ -51,6 +51,12 @@ summary: Single-sentence description of component purpose, scope, and primary va
 #
 
 metadata:
+  # ===================
+  # FILE SIZE LIMITS (Warning)
+  # - Target (Markdown): 300-500 lines per section file
+  # - Maximum (Markdown): 600 lines (warning threshold)
+  # - YAML (monolithic): Warning at ~1000 lines
+  # ===================
   version: "1.0.0"
   status: "draft"  # draft, review, approved, implemented, deprecated
   # ⚠️ REQUIRED: Ensure these dates are valid YYYY-MM-DD
@@ -370,7 +376,8 @@ traceability:
     # Purpose: Complete traceability from business requirements to implementation
     # See: ../TRACEABILITY.md#cumulative-tagging-hierarchy
 
-  # Threshold Registry References (Required when performance/SLA values specified)
+  # =======================================================================
+  # THRESHOLD REGISTRY REFERENCES (Required when performance/SLA values specified)
   # =======================================================================
   # Purpose: SPEC documents REFERENCE thresholds defined in the PRD threshold registry.
   # All quantitative values in performance, rate limiting, and operational sections
@@ -378,6 +385,22 @@ traceability:
   #
   # Threshold Naming Convention: @threshold: PRD.NN.category.subcategory.key
   # Format Reference: See THRESHOLD_NAMING_RULES.md for complete naming standards.
+  #
+  # Common threshold categories:
+  #   performance: perf.api.p50_latency, perf.api.p95_latency, perf.api.p99_latency, perf.throughput.rps
+  #   sla: sla.uptime.target, sla.error_rate.max
+  #   timeout: timeout.request.sync, timeout.request.async, timeout.connection.default
+  #   limits: limit.api.requests_per_second, limit.batch.size, limit.batch.concurrent
+  #   resource: resource.cpu.max_utilization, resource.memory.max_mb
+  #
+  # Example Usage in Specification:
+  #   performance_requirements:
+  #     api_latency:
+  #       p95_target: "@threshold: PRD.NN.perf.api.p95_latency"
+  #       p99_target: "@threshold: PRD.NN.perf.api.p99_latency"
+  #   configuration:
+  #     timeouts:
+  #       request_timeout: "@threshold: PRD.NN.timeout.request.sync"
   # =======================================================================
   threshold_references:
     registry_document: "PRD-NN"  # Threshold registry document ID

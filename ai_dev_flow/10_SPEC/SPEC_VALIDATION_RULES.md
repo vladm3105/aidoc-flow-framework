@@ -1,9 +1,9 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of SPEC-TEMPLATE.md / SPEC-TEMPLATE.yaml
-# - Authority: SPEC-TEMPLATE files are the single source of truth for SPEC structure
+# 📋 Document Role: This is a DERIVATIVE of SPEC-TEMPLATE.yaml
+# - Authority: SPEC-TEMPLATE.yaml is the single source of truth for SPEC structure
 # - Purpose: AI checklist after document creation (derived from template)
 # - Scope: Includes all rules from SPEC_CREATION_RULES.md plus validation extensions
-# - On conflict: Defer to SPEC-TEMPLATE.md / SPEC-TEMPLATE.yaml
+# - On conflict: Defer to SPEC-TEMPLATE.yaml
 # =============================================================================
 ---
 title: "SPEC Validation Rules Reference"
@@ -28,14 +28,14 @@ custom_fields:
 
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
-**Version**: 1.1
-**Date**: 2026-01-06
-**Last Updated**: 2026-01-06
+**Version**: 1.2
+**Date**: 2025-11-30
+**Last Updated**: 2025-11-30
 **Purpose**: Complete validation rules for SPEC YAML files
 **Script**: `python scripts/validate_spec.py`
 **Primary Template**: `SPEC-TEMPLATE.yaml`
 **Framework**: AI Dev Flow SDD (100% compliant)
-**Changes**: Relaxed method naming (dunder support), downgraded missing latency targets to Warning, added TASKS-ready scoring validation system
+**Changes**: v1.2: Added file size warnings, removed document splitting requirement. v1.1: Relaxed method naming (dunder support), downgraded missing latency targets to Warning, added TASKS-ready scoring validation system
 
 ---
 
@@ -107,24 +107,35 @@ The SPEC validation script ensures YAML specification files meet quality standar
 
 **Error Message**: `❌ MISSING: TASKS-ready score with ✅ emoji and percentage`
 
-### CHECK 4: Complete Traceability Chain
+### CHECK 4: Threshold Registry Compliance ⭐ NEW
 
-**Purpose**: Verify all upstream artifacts referenced
+**Purpose**: Enforce @threshold usage and registry traceability
+**Type**: Error (blocking)
+
+**Requirements**:
+- All quantitative values (performance, timeouts, limits, resource caps) use `@threshold: PRD.NN.*`
+- `threshold_references.registry_document` present (PRD ID) and `keys_used` lists all referenced keys
+- No raw numeric literals in quantitative fields
+
+### CHECK 5: Complete Traceability Chain
+
+**Purpose**: Verify all upstream artifacts referenced while allowing `null` only when an upstream type truly does not exist
 **Type**: Error (blocking)
 
 **Required Tag Chain**:
 ```yaml
 cumulative_tags:
-  brd: "BRD.NN.EE.SS"         # Unified dot notation for sub-ID references
-  prd: "PRD.NN.EE.SS"         # Unified dot notation for sub-ID references
-  ears: "EARS.NN.EE.SS"       # Unified dot notation
-  bdd: "BDD.NN.EE.SS"         # Unified dot notation for sub-ID references
-  adr: "ADR-NN"             # Document-level reference (no sub-ID)
-  sys: "SYS.NN.EE.SS"         # Unified dot notation for sub-ID references
-  req: "REQ.NN.EE.SS"         # Unified dot notation for sub-ID references
+  brd: "BRD.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
+  prd: "PRD.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
+  ears: "EARS.NN.EE.SS"       # Unified dot notation (or null if absent)
+  bdd: "BDD.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
+  adr: "ADR-NN"             # Document-level reference (no sub-ID, or null if absent)
+  sys: "SYS.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
+  req: "REQ.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
+  threshold: "PRD-NN"         # Threshold registry document reference (or null if registry not applicable)
 ```
 
-### CHECK 5: Interface Specifications
+### CHECK 6: Interface Specifications
 
 **Purpose**: Verify CTR contract references are valid
 **Type**: Warning
@@ -134,7 +145,7 @@ cumulative_tags:
 - Contract references are resolvable
 - CTR files exist and match interface definitions
 
-### CHECK 6: Implementation Readiness
+### CHECK 7: Implementation Readiness
 
 **Purpose**: Ensure SPEC enables code generation
 **Type**: Warning
@@ -144,7 +155,7 @@ cumulative_tags:
 - Implementation paths and dependencies specified
 - Configuration schemas valid
 
-### CHECK 7: Code Generation Compatibility
+### CHECK 8: Code Generation Compatibility
 
 **Purpose**: Verify SCHEMA sections enable TASKS creation
 **Type**: Warning
@@ -156,7 +167,22 @@ cumulative_tags:
 
 ---
 
-### CHECK 8: Element ID Format Compliance ⭐ NEW
+### CHECK 9: File Size Limits
+
+**Purpose**: Warn when files exceed recommended size thresholds
+**Type**: Warning
+
+**Thresholds**:
+- Markdown files: 600 lines maximum (target: 300-500 lines)
+- YAML files: 1000 lines maximum
+
+**Warning Messages**:
+- `SPEC-W010`: Markdown file exceeds 600 lines
+- `SPEC-W011`: YAML file exceeds 1000 lines
+
+---
+
+### CHECK 10: Element ID Format Compliance
 
 **Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
 **Type**: Error
@@ -195,8 +221,10 @@ cumulative_tags:
 | **CHECK 1** | Fix YAML syntax (indentation, quotes, colons) |
 | **CHECK 2** | Add missing metadata fields |
 | **CHECK 3** | Add properly formatted TASKS-ready score |
-| **CHECK 4** | Complete traceability tag chain |
-| **CHECK 8** | Replace legacy element IDs (STEP-XXX, IF-XXX, DM-XXX) with unified format `SPEC.NN.TT.SS` |
+| **CHECK 4** | Replace raw quantitative values with `@threshold: PRD.NN.*` and add `threshold_references` registry + keys |
+| **CHECK 5** | Complete traceability tag chain; use `null` only when an upstream artifact type does not exist |
+| **CHECK 9** | Reduce file size or accept warning (non-blocking) |
+| **CHECK 10** | Replace legacy element IDs (STEP-XXX, IF-XXX, DM-XXX) with unified format `SPEC.NN.TT.SS` |
 
 ---
 
@@ -238,8 +266,8 @@ find docs/SPEC -name "SPEC-*.yaml" -exec python scripts/validate_spec.py {} \;
 
 | Tier | Type | Checks | Action |
 |------|------|--------|--------|
-| **Tier 1** | Error | 1-4 | Must fix before commit |
-| **Tier 2** | Warning | 5-7 | Recommended to fix |
+| **Tier 1** | Error | 1-5, 10 | Must fix before commit |
+| **Tier 2** | Warning | 6-9 | Recommended to fix |
 | **Tier 3** | Info | - | No action required |
 
 ---
@@ -267,6 +295,7 @@ find docs/SPEC -name "SPEC-*.yaml" -exec python scripts/validate_spec.py {} \;
 ```
 ❌ cumulative_tags:
     brd: "BRD-NN"
+    threshold: null  # missing registry reference despite thresholds in spec
 ✅ cumulative_tags:
     brd: "BRD.01.01.30"
     prd: "PRD.03.01.02"
@@ -275,6 +304,7 @@ find docs/SPEC -name "SPEC-*.yaml" -exec python scripts/validate_spec.py {} \;
     adr: "ADR-NN"
     sys: "SYS.01.25.01"
     req: "REQ.02.26.05"
+    threshold: "PRD-03"      # use null only when thresholds not applicable
 ```
 
 ### Mistake #4: CTR Contract Mismatch
