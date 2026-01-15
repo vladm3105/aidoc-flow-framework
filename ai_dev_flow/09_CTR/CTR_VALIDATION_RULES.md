@@ -1,9 +1,9 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of CTR-TEMPLATE.md / CTR-TEMPLATE.yaml
-# - Authority: CTR-TEMPLATE files are the single source of truth for CTR structure
+# 📋 Document Role: This is a DERIVATIVE of CTR-TEMPLATE.md
+# - Authority: CTR-TEMPLATE.md is the single source of truth for CTR structure
 # - Purpose: AI checklist after document creation (derived from template)
 # - Scope: Includes all rules from CTR_CREATION_RULES.md plus validation extensions
-# - On conflict: Defer to CTR-TEMPLATE.md / CTR-TEMPLATE.yaml
+# - On conflict: Defer to CTR-TEMPLATE.md
 # =============================================================================
 ---
 title: "CTR Validation Rules"
@@ -21,7 +21,7 @@ custom_fields:
 
 > **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for CTR documents.
 > - Apply these rules after CTR creation or modification
-> - **Authority**: Validates compliance with `CTR-TEMPLATE.md/.yaml` (the primary standards)
+> - **Authority**: Validates compliance with `CTR-TEMPLATE.md` (the primary standard) and OpenAPI 3.x for YAML schemas
 > - **Scope**: Use for quality gates before committing CTR changes
 
 # CTR Validation Rules
@@ -140,34 +140,44 @@ fi
 
 ---
 
-## 4. Section Structure Validation
+## 4. Section Structure Validation (12-Section Format)
 
 ### Required Sections (Markdown)
 
-| Section | Required | Validation |
-|---------|----------|------------|
-| Executive Summary | Yes | Non-empty content |
-| API Endpoints | Yes | At least one endpoint |
-| Data Models | Yes | At least one model |
-| Authentication | Yes | Security defined or "None required" |
-| Error Handling | Yes | Error codes documented |
-| Versioning Strategy | Yes | Strategy documented |
-| SLA Requirements | Yes | Targets defined |
-| Traceability Tags | Yes | Valid tag format |
+| Section | Required | Validation | Notes |
+|---------|----------|------------|-------|
+| 1. Document Control | Yes | Contract ID, version, status defined | Absorbs old Status section |
+| 2. Context | Yes | Business problem documented | Absorbs old Consequences/Trade-offs |
+| 3. Contract Definition | Yes | Format, naming conventions | - |
+| 4. Requirements Satisfied | Yes | Upstream requirements linked | - |
+| 5. Interface Definition | Yes | At least one endpoint/schema | Absorbs old Schema Reference |
+| 6. Error Handling | Yes | Error codes documented | - |
+| 7. Quality Attributes | Yes | Performance, security defined | Absorbs old Monitoring section |
+| 8. Versioning Strategy | Yes | Strategy documented | - |
+| 9. Examples | Yes | At least one request/response | - |
+| 10. Verification | Yes | Testing criteria defined | Absorbs old Impact Analysis |
+| 11. Traceability | Yes | Valid tag format | Absorbs old Related Contracts |
+| 12. References | Yes | Internal/external links | - |
+
+**Optional Appendices**: Appendix A (Alternatives Considered), Appendix B (Implementation Notes)
 
 ### Validation Commands
 
 ```bash
-# Check required sections
+# Check required sections (12-section structure)
 required_sections=(
-  "## 1. Executive Summary"
-  "## 2. API Endpoints"
-  "## 3. Data Models"
-  "## 4. Authentication"
-  "## 5. Error Handling"
-  "## 6. Versioning Strategy"
-  "## 7. SLA Requirements"
-  "## Traceability"
+  "## 1. Document Control"
+  "## 2. Context"
+  "## 3. Contract Definition"
+  "## 4. Requirements Satisfied"
+  "## 5. Interface Definition"
+  "## 6. Error Handling"
+  "## 7. Quality Attributes"
+  "## 8. Versioning Strategy"
+  "## 9. Examples"
+  "## 10. Verification"
+  "## 11. Traceability"
+  "## 12. References"
 )
 
 for section in "${required_sections[@]}"; do
@@ -379,7 +389,7 @@ CHECK 2: Frontmatter
   ✅ Required fields present
 
 CHECK 3: Required Sections
-  ✅ All 8 required sections found
+  ✅ All 12 required sections found
 
 CHECK 4: YAML Schema (if .yaml exists)
   ✅ OpenAPI schema valid
@@ -457,7 +467,8 @@ Result: PASSED WITH WARNINGS
 ## References
 
 - [CTR_CREATION_RULES.md](./CTR_CREATION_RULES.md) - Creation guidelines
-- [CTR-TEMPLATE.md](./CTR-TEMPLATE.md) - Contract template
+- [CTR-TEMPLATE.md](./CTR-TEMPLATE.md) - Contract template (primary standard)
+- [CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
 - [validate_ctr.sh](../scripts/validate_ctr.sh) - Validation script
 - [README.md](./README.md) - Directory overview
 

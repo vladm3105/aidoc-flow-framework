@@ -1,8 +1,8 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of CTR-TEMPLATE.md / CTR-TEMPLATE.yaml
-# - Authority: CTR-TEMPLATE files are the single source of truth for CTR structure
+# 📋 Document Role: This is a DERIVATIVE of CTR-TEMPLATE.md
+# - Authority: CTR-TEMPLATE.md is the single source of truth for CTR structure
 # - Purpose: AI guidance for document creation (derived from template)
-# - On conflict: Defer to CTR-TEMPLATE.md / CTR-TEMPLATE.yaml
+# - On conflict: Defer to CTR-TEMPLATE.md
 # =============================================================================
 ---
 title: "CTR Creation Rules"
@@ -18,8 +18,8 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is a **CREATION HELPER** for CTR-TEMPLATE.md/.yaml.
-> - **Authority**: `CTR-TEMPLATE.md` and `CTR-TEMPLATE.yaml` are the sources of truth for CTR structure
+> **📋 Document Role**: This is a **CREATION HELPER** for CTR-TEMPLATE.md.
+> - **Authority**: `CTR-TEMPLATE.md` is the source of truth for CTR structure; YAML schemas must follow OpenAPI 3.x
 > - **Validation**: Use `CTR_VALIDATION_RULES.md` after CTR creation/changes
 
 # CTR Creation Rules
@@ -153,16 +153,24 @@ custom_fields:
 | Consumers | Yes | List of consuming systems |
 | Providers | Yes | List of providing systems |
 
-### 3.3 Mandatory Sections
+### 3.3 Mandatory Sections (12-Section Structure)
 
-1. **Executive Summary** - Contract purpose and scope
-2. **API Endpoints** - Complete endpoint documentation
-3. **Data Models** - Request/response schemas
-4. **Authentication** - Security requirements
-5. **Error Handling** - Error codes and responses
-6. **Versioning Strategy** - How versions evolve
-7. **SLA Requirements** - Performance and availability targets
-8. **Traceability Tags** - Links to upstream artifacts
+1. **Document Control** - Contract metadata, status, version (absorbs old Status section)
+2. **Context** - Business problem, contract scope, trade-offs (absorbs old Consequences section)
+3. **Contract Definition** - Format, naming conventions, thresholds
+4. **Requirements Satisfied** - Upstream requirements this contract addresses
+5. **Interface Definition** - Schema reference, endpoints, data models (absorbs old Schema Reference section)
+6. **Error Handling** - Error codes and response formats
+7. **Quality Attributes** - Performance, security, reliability, observability (absorbs old Monitoring section)
+8. **Versioning Strategy** - Version policy, backwards compatibility
+9. **Examples** - Request/response examples
+10. **Verification** - Contract testing, BDD scenarios, validation criteria (absorbs old Impact Analysis section)
+11. **Traceability** - Upstream/downstream artifacts, related contracts, tags (absorbs old Related Contracts section)
+12. **References** - Internal/external links, additional context
+
+**Optional Appendices**:
+- **Appendix A**: Alternatives Considered
+- **Appendix B**: Implementation Notes
 
 ---
 
@@ -355,8 +363,8 @@ Include ONLY if relationships exist between CTR documents sharing API context or
 
 ## References
 
-- [CTR-TEMPLATE.md](./CTR-TEMPLATE.md) - Contract template
-- [CTR-TEMPLATE.yaml](./CTR-TEMPLATE.yaml) - YAML template
+- [CTR-TEMPLATE.md](./CTR-TEMPLATE.md) - Contract template (primary standard)
+- [CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
 - [CTR-00_index.md](./CTR-00_index.md) - Contract registry
 - [README.md](./README.md) - Directory overview
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Workflow guide

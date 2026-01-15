@@ -1,12 +1,3 @@
-# =============================================================================
-# 📋 Document Authority: This is the PRIMARY STANDARD for CTR structure.
-# All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
-# - In case of conflict, this template is the single source of truth
-# - Schema: CTR_SCHEMA.yaml - Machine-readable validation (derivative)
-# - Creation Rules: CTR_CREATION_RULES.md - AI guidance for document creation (derivative)
-# - Validation Rules: CTR_VALIDATION_RULES.md - AI checklist after document creation (derivative)
-#   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
-# =============================================================================
 ---
 title: "CTR-TEMPLATE: Contract Specification"
 tags:
@@ -26,14 +17,9 @@ custom_fields:
   schema_version: "1.0"
 ---
 
-> Reference Template — For learning and small contracts only. Real CTRs should follow `../DOCUMENT_SPLITTING_RULES.md` and `09_CTR/CTR_SPLITTING_RULES.md`:
-> - Split into paired sections when needed: `CTR-{NN}.{S}_{slug}.md` + `CTR-{NN}.{S}_{slug}.yaml`
-> - Use `CTR-SECTION-0-TEMPLATE.md` for the index and `CTR-SECTION-TEMPLATE.md` for Markdown sections
-
-> **📋 Document Authority**: This is the **PRIMARY STANDARD** for CTR structure.
-> - **Schema**: `CTR_SCHEMA.yaml v1.0` - Validation rules
-> - **Creation Rules**: `CTR_CREATION_RULES.md` - Usage guidance
-> - **Validation Rules**: `CTR_VALIDATION_RULES.md` - Post-creation checks
+> **Reference Template** — For learning and small contracts only. Real CTRs should follow `../DOCUMENT_SPLITTING_RULES.md` and `09_CTR/CTR_SPLITTING_RULES.md`. Split into paired sections when needed: `CTR-{NN}.{S}_{slug}.md` + `CTR-{NN}.{S}_{slug}.yaml`. Use `CTR-SECTION-0-TEMPLATE.md` for the index and `CTR-SECTION-TEMPLATE.md` for Markdown sections.
+>
+> **📋 Document Authority**: This is the **PRIMARY STANDARD** for CTR structure. Schema: `CTR_SCHEMA.yaml v1.0`. Creation Rules: `CTR_CREATION_RULES.md`. Validation Rules: `CTR_VALIDATION_RULES.md`.
 
 # CTR-NN: [Contract Title]
 
@@ -44,7 +30,7 @@ custom_fields:
 | **Project Name** | [Enter project name] |
 | **Document Version** | [e.g., 1.0] |
 | **Date** | [Current date] |
-| **Document Owner** | [Name and title] |
+| **Document Owner** | [Name and owner's title] |
 | **Prepared By** | [API Designer/Architect name] |
 | **Status** | [Draft / In Review / Approved] |
 
@@ -55,67 +41,42 @@ custom_fields:
 | 1.0 | [Date] | [Name] | Initial draft | |
 | | | | | |
 
----
+### 1.2 Contract Status
 
-> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags:
-> 1. **Check existing artifacts**: List what upstream documents actually exist in `docs/`
-> 2. **Reference only existing documents**: Use actual document IDs, not placeholders
-> 3. **Use `null` appropriately**: Only when upstream artifact type genuinely doesn't exist for this feature
-> 4. **Do NOT create phantom references**: Never reference documents that don't exist
-> 5. **Do NOT create missing upstream artifacts**: If upstream artifacts are missing, skip that functionality. Only create functionality for existing upstream artifacts.
-
-
-
-## Position in Document Workflow
-
-**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
-
-**CTR (API Contracts)** ← YOU ARE HERE (Layer 9 - Interface Layer)
-
-For the complete traceability workflow with visual diagram, see: [index.md - Traceability Flow](../index.md#traceability-flow)
-
-**Quick Reference**:
-```
-... → REQ → IMPL → **CTR** → SPEC → TASKS → Code → Tests → ...
-                      ↑
-              Interface Layer
-              (API contracts, event schemas, data models)
-```
-
-**CTR Purpose**: Define interface contracts between components
-- **Input**: REQ (atomic requirements), IMPL (project plan)
-- **Output**: Machine-readable schemas (.yaml) + human-readable docs (.md)
-- **Consumer**: SPEC uses CTR to implement the interface
+- **Status**: Draft | Active | Deprecated
+- **Contract Owner**: [Team/Person names]
+- **Version**: 1.0.0 (semantic versioning)
 
 ---
 
-# PART 1: Contract Context and Requirements
+> **⚠️ UPSTREAM ARTIFACT REQUIREMENT**: Before completing traceability tags: (1) Check existing artifacts in `docs/`, (2) Reference only existing documents with actual IDs, (3) Use `null` only when upstream artifact type doesn't exist for this feature, (4) Do NOT create phantom references to non-existent documents, (5) Do NOT create missing upstream artifacts - skip that functionality.
 
-## 2. Status
-**Status**: Draft | Active | Deprecated
-**Date**: YYYY-MM-DD
-**Contract Owner**: [Team/Person names]
-**CTR Author**: [Name]
-**Last Updated**: YYYY-MM-DD
-**Version**: 1.0.0 (semantic versioning)
+---
 
-## 3. Context
+## PART 1: Contract Context and Requirements
 
-### 3.1 Interface Problem Statement
+## 2. Context
+
+### 2.1 Interface Problem Statement
+
 [What interface contract is needed? What components need to communicate?
 Example: "[ORCHESTRATION_COMPONENT] needs to validate resource risk before executing trades. Risk Validation Service must provide a synchronous validation endpoint with deterministic responses."]
 
-### 3.2 Background
+### 2.2 Background
+
 [Current state of component integration, existing APIs, pain points.
 Example: "Currently, each strategy agent implements its own risk validation logic, leading to inconsistency. This contract establishes a centralized risk validation interface to ensure uniform risk checks across all agents."]
 
-### 3.3 Driving Forces
+### 2.3 Driving Forces
+
 [Why this contract is needed now - new feature, refactoring, service decoupling.
+
 - Business: Regulatory requirement for audit trail of risk decisions
 - Technical: Reduce code duplication across 11 strategy agents
 - Operational: Enable independent deployment of risk validation logic]
 
-### 3.4 Constraints
+### 2.4 Constraints
+
 - **Technical**: Protocol limitations, serialization formats, payload size limits
   - Must support synchronous request/response (< 100ms latency)
   - JSON serialization for human readability
@@ -133,13 +94,21 @@ Example: "Currently, each strategy agent implements its own risk validation logi
   - RBAC for agent authorization
   - No PII in logs or error messages
 
-## 4. Contract Definition
+### 2.5 Trade-offs
 
-### 4.1 Interface Overview
+**Benefits**: Parallel development, early validation, type safety, testability, decoupling
+**Costs**: Contract coordination overhead, network latency vs in-process, single point of failure risk
+**Risk Mitigations**: Contract tests in CI/CD, semantic versioning, circuit breaker + fallback
+
+## 3. Contract Definition
+
+### 3.1 Interface Overview
+
 [Concise description of what this contract defines - request/response, message schema, event format.
 Example: "Synchronous REST-style request/response contract for resource risk validation. Provider accepts resource parameters and risk limits, returns validation result with specific violation details if applicable."]
 
-### 4.2 Parties
+### 3.2 Parties
+
 - **Provider**: [Service/component that implements this contract]
   - [SERVICE_NAME - e.g., Validation Service, Data Service] (service layer)
   - Implements [FUNCTIONALITY] logic against [ADR-NN] parameters
@@ -148,15 +117,16 @@ Example: "Synchronous REST-style request/response contract for resource risk val
   - [ADDITIONAL_CONSUMERS - e.g., Service Agents, Worker Agents]
   - [BATCH_CONSUMER - e.g., Batch Processing Agent]
 
-### 4.3 Communication Pattern
+### 3.3 Communication Pattern
+
 - **Type**: Synchronous
 - **Protocol**: REST over HTTP/2
 - **Data Format**: JSON
 - **Transport**: Internal service network/service mesh (e.g., Istio, Linkerd, cloud-native runtime)
 
-## 5. Requirements Satisfied
+## 4. Requirements Satisfied
 
-### 5.1 Primary Requirements
+### 4.1 Primary Requirements
 
 | Requirement ID | Description | How This Contract Satisfies It |
 |----------------|-------------|-------------------------------|
@@ -165,83 +135,49 @@ Example: "Synchronous REST-style request/response contract for resource risk val
 | [SYS-NN] | [System requirement description] | [How contract satisfies this requirement] |
 | [ADR-NN] | [Architecture decision description] | [How contract satisfies this requirement] |
 
-### 5.2 Source Business Logic
-[References to product strategy or business rules requiring this interface.
+### 4.2 Source Business Logic
+
+References to product strategy or business rules requiring this interface:
+
 - `{domain_strategy}/business_logic.md` section 4.2: Dynamic Risk Budgeting requires pre-trade validation
-- `{domain_strategy}/risk_management.md` section 2.2: Resource limits must be checked before new positions]
+- `{domain_strategy}/risk_management.md` section 2.2: Resource limits must be checked before new positions
 
-### 5.3 Quality Attributes
-- **Performance**: p99 latency < @threshold: PRD.NN.perf.api.p99_latency, throughput > @threshold: PRD.NN.limit.api.requests_per_second
-- **security**: mTLS authentication, RBAC authorization, audit logging
-- **Scalability**: Horizontal scaling to handle @threshold: PRD.NN.limit.api.burst during rebalancing
-- **Reliability**: Idempotent validation, retry-safe, @threshold: PRD.NN.sla.uptime.target uptime SLA
+### 4.3 Quality Attributes
 
-### 5.4 Thresholds Referenced
+See [Section 7: Quality Attributes](#7-quality-attributes) for detailed performance, security, reliability, and observability requirements.
 
-**⚠️ IMPORTANT**: CTR documents have a **dual role** for thresholds:
-1. **Reference** platform-wide thresholds from PRD threshold registry
-2. **Define** API-specific thresholds unique to this contract
+### 4.4 Thresholds Referenced
 
-**Platform Thresholds Referenced** (from PRD-NN Threshold Registry):
-```yaml
-performance:
-  - "@threshold: PRD.NN.perf.api.p95_latency"
-  - "@threshold: PRD.NN.perf.api.p99_latency"
-sla:
-  - "@threshold: PRD.NN.sla.uptime.target"
-  - "@threshold: PRD.NN.sla.error_rate.target"
-limits:
-  - "@threshold: PRD.NN.limit.api.requests_per_second"
-  - "@threshold: PRD.NN.limit.api.burst"
-timeouts:
-  - "@threshold: PRD.NN.timeout.request.sync"
-  - "@threshold: PRD.NN.timeout.connection.default"
-```
+| Category | Platform Thresholds (from PRD) | API-Specific (unique to CTR) |
+|----------|-------------------------------|------------------------------|
+| Performance | `@threshold: PRD.NN.perf.api.p99_latency` | N/A |
+| SLA | `@threshold: PRD.NN.sla.uptime.target` | N/A |
+| Limits | `@threshold: PRD.NN.limit.api.requests_per_second` | `@threshold: CTR.NN.limit.consumer.requests_per_minute` |
+| Timeouts | `@threshold: PRD.NN.timeout.request.sync` | N/A |
+| Payload | N/A | `@threshold: CTR.NN.limit.payload.max_size_bytes` |
+| Retry | N/A | `@threshold: CTR.NN.retry.max_attempts` |
 
-**API-Specific Thresholds Defined** (unique to this CTR):
-```yaml
-# Define thresholds specific to this API contract
-# Format: @threshold: CTR.NN.category.key
-rate_limits:
-  - "@threshold: CTR.NN.limit.consumer.requests_per_minute"
-  - "@threshold: CTR.NN.limit.consumer.burst"
-payload:
-  - "@threshold: CTR.NN.limit.payload.max_size_bytes"
-retry:
-  - "@threshold: CTR.NN.retry.max_attempts"
-  - "@threshold: CTR.NN.retry.backoff_base_ms"
-```
-
-**Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
+**Reference**: [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md)
 
 ---
 
-# PART 2: Interface Specification and Schema
+## PART 2: Interface Specification and Schema
 
-## 6. Schema Reference
+## 5. Interface Definition
 
-### 6.1 YAML Schema File
+### 5.1 Schema Reference
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 [Schema: CTR-NN_descriptive_name.yaml](./CTR-NN_descriptive_name.yaml)
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
-### 6.2 Schema Overview
-Contract defines two primary operations:
-- `validatePositionRisk`: Validate single resource against resource collection limits
-- `validatecollectionRisk`: Validate entire resource collection state (future extension)
+**Operations**: `validatePositionRisk` (single resource), `validatecollectionRisk` (batch)
 
-### 6.3 Data Types
-Common types across endpoints:
-- `resource`: Symbol, [METRIC_1 - e.g., error rate, response time], [METRIC_2 - e.g., throughput, success rate], [METRIC_4], [METRIC_3], [VALUE - e.g., subscription fee, processing cost], [DEADLINE - e.g., session timeout, cache expiry]
-- `collectionState`: Open positions, available capital, current [METRICS - e.g., performance indicators, quality scores]
-- `RiskLimits`: Max positions, max heat, max [METRIC_1 - e.g., error rate, response time], [VOLATILITY_INDICATOR - e.g., system load, error frequency] thresholds
-- `ValidationResult`: Boolean decision + violation details
+**Data Types**: `resource` (symbol, metrics), `collectionState` (positions, capital), `RiskLimits` (constraints), `ValidationResult` (decision + violations)
 
-## 7. Interface Definition
-
-### 7.1 Endpoints / Functions / Messages
+### 5.2 Endpoints / Functions / Messages
 
 #### Endpoint 1: validatePositionRisk
+
 - **Description**: Validates a single proposed resource against current resource collection state and risk limits
 - **Request Schema**: See YAML `request_schema` for `validatePositionRisk`
   - `resource`: Proposed resource parameters (symbol, [METRIC_1 - e.g., error rate, response time], [VALUE - e.g., subscription fee, processing cost], etc.)
@@ -256,15 +192,16 @@ Common types across endpoints:
 - **Retry Safe**: Yes (no side effects, read-only operation)
 
 #### Endpoint 2: validatecollectionRisk (Future)
+
 - **Description**: Validates entire resource collection against risk limits (for batch rebalancing)
 - **Request Schema**: See YAML `request_schema` for `validatecollectionRisk`
 - **Response Schema**: See YAML `response_schema` for `validatecollectionRisk`
 - **Idempotent**: Yes
 - **Retry Safe**: Yes
 
-## 8. Error Handling
+## 6. Error Handling
 
-### 8.1 Error Codes
+### 6.1 Error Codes
 
 | Error Code | HTTP Status | Description | Retry Strategy |
 |------------|-------------|-------------|----------------|
@@ -275,7 +212,8 @@ Common types across endpoints:
 | SERVICE_UNAVAILABLE | 503 | Risk validation service temporarily unavailable | Exponential backoff, max 5 retries |
 | INTERNAL_ERROR | 500 | Unexpected server processing error | Exponential backoff, max 3 retries |
 
-### 8.2 Failure Modes & Recovery
+### 6.2 Failure Modes & Recovery
+
 - **Critical Failure Modes**:
   - Service crash during validation (likelihood: low, SLA: 99.9%)
   - Configuration service unavailable (ADR-008 parameters unreachable)
@@ -286,57 +224,20 @@ Common types across endpoints:
   - Monitoring: Alert on >1% error rate or >200ms p99 latency
 - **[SAFETY_MECHANISM - e.g., rate limiter, error threshold]**: Open after 5 failures within 60s, enter half-open state after 60s cooldown
 
-## 9. Consequences
-
-### 9.1 Positive Outcomes
-
-**Requirements Satisfaction**:
-- Satisfies REQ-03 ([RESOURCE_LIMIT - e.g., request quota, concurrent sessions] enforcement) through structured validation endpoint
-- Satisfies ADR-008 (centralized risk control) by providing single source of truth for validation
-- Enables REQ-008 audit trail through `decision_id` in every response
-
-**Technical Benefits**:
-- **Parallel Development**: Agent teams and risk service team can develop independently against contract
-- **Early Validation**: Schema validation catches integration issues before deployment
-- **Type Safety**: JSON Schema enforcement prevents runtime type errors
-- **Testability**: Contract tests validate both provider and consumer implementations
-- **Decoupling**: Risk logic changes don't require agent code changes
-
-**Business Benefits**:
-- **Faster Integration**: Clear contract reduces integration time from weeks to days
-- **Reduced Defects**: Contract testing catches 80% of integration bugs pre-production
-- **Regulatory Compliance**: Audit trail enables compliance reporting
-- **Risk Consistency**: All agents use identical validation logic
-
-### 9.2 Negative Outcomes
-
-**Trade-offs**:
-- **Rigidity**: Contract changes require coordination across 11 consumer agents
-- **Latency**: Network call adds 5-10ms vs in-process validation
-- **Single Point of Failure**: Risk validation service becomes critical dependency
-
-**Risks**:
-- **Risk 1**: Contract drift if providers/consumers don't enforce schema | **Mitigation**: Contract tests in CI/CD, schema validation middleware | **Likelihood**: Low
-- **Risk 2**: Breaking changes disrupt production | **Mitigation**: Semantic versioning, 30-day deprecation policy | **Likelihood**: Medium
-- **Risk 3**: Service unavailable blocks all operations | **Mitigation**: [SAFETY_MECHANISM - e.g., rate limiter, error threshold], conservative fallback, 99.9% SLA | **Likelihood**: Low
-
-**Costs**:
-- **Development**: 1 week for contract definition, validation setup, contract tests
-- **Operational**: Additional compute for dedicated risk service, monitoring overhead
-- **Maintenance**: Version management, deprecation coordination across teams
-
 ---
 
-# PART 3: Quality Attributes and Operations
+## PART 3: Quality Attributes and Operations
 
-## 10. Quality Attributes
+## 7. Quality Attributes
 
-### 10.1 Performance Targets
+### 7.1 Performance Targets
+
 - **Max Latency**: <100ms p99 (critical for [OPERATION_EXECUTION - e.g., order processing, task execution])
 - **Min Throughput**: >1000 req/s sustained (resource collection rebalancing peak)
 - **Payload Size Limit**: <1MB per request (typical: 10KB)
 
-### 10.2 Reliability Requirements
+### 7.2 Reliability Requirements
+
 - **Idempotency**: Yes - same input always produces same output for given resource collection state
 - **Retry Strategy**: Exponential backoff (100ms, 200ms, 400ms), max 3 retries for 500/503 errors
 - **Timeout**: 5000ms request timeout (fails fast to avoid blocking agents)
@@ -345,28 +246,39 @@ Common types across endpoints:
   - Half-open after 60s cooldown
   - Close after 3 successful calls in half-open state
 
-### security Requirements
+### 7.3 Security Requirements
+
 - **Authentication**: mTLS for service-to-service (GCP service mesh)
 - **Authorization**: RBAC - only agents with `risk:validate` permission can call endpoint
 - **Encryption**: TLS 1.3 in transit, no at-rest encryption needed (ephemeral data)
 - **Rate Limiting**: 100 req/s per consumer, burst up to 150 req/s
 - **Audit Logging**: Log all validation requests with `decision_id`, consumer identity, timestamp
 
-## 11. Versioning Strategy
+### 7.4 Observability
 
-### 11.1 Version Policy
+- **Success Rate**: Target >99.9%, Alert if >1% error rate for 5 minutes
+- **Latency**: p50 <20ms, p95 <50ms, p99 <100ms
+- **Throughput**: 1000 req/s sustained, 5000 req/s peak
+- **Alerting**: Page on-call if >5% error rate or >3 consecutive failures
+
+## 8. Versioning Strategy
+
+### 8.1 Version Policy
+
 - **Current Version**: 1.0.0
 - **Semantic Versioning**: MAJOR.MINOR.PATCH
   - **MAJOR**: Breaking changes (incompatible request/response schema)
   - **MINOR**: Backward-compatible additions (new optional fields, new endpoints)
   - **PATCH**: Backward-compatible fixes (bug fixes, documentation)
 
-### 11.2 Compatibility Rules
+### 8.2 Compatibility Rules
+
 - **Backward Compatibility**: Provider must accept requests from consumers on n-1 major version
 - **Forward Compatibility**: Consumers must ignore unknown fields in responses
 - **Breaking Changes**: Require new major version, 30-day migration period, simultaneous deployment of n and n+1
 
-### 11.3 Deprecation Policy
+### 8.3 Deprecation Policy
+
 - **Notice Period**: 30 days minimum before removal
 - **Migration Path**: Provider supports both old and new versions simultaneously during transition
 - **Sunset Schedule**:
@@ -374,349 +286,146 @@ Common types across endpoints:
   - Day 30: Remove old version from documentation
   - Day 60: Remove old version from service (enforce via contract tests)
 
-## 12. Examples
+## 9. Examples
 
-### 12.1 Example 1: Successful Validation
-**Request**:
+### 9.1 Success Response
+
+**Request**: `POST /validate` with `resource`, `collection_state`, `risk_limits`
+
 ```json
-{
-  "resource": {
-    "symbol": "ITEM-001",
-    "[METRIC_1 - e.g., error rate, response time]": 25.3,
-    "[METRIC_2 - e.g., throughput, success rate]": 0.05,
-    "[METRIC_4]": 12.5,
-    "[METRIC_3]": -0.15,
-    "premium_collected": 250.00,
-    "expiration_dte": 30
-  },
-  "collection_state": {
-    "open_positions": 8,
-    "total_delta": -12.5,
-    "total_capital": 100000,
-    "heat_deployed": 15000
-  },
-  "risk_limits": {
-    "max_positions": 12,
-    "max_resource_usage": 25000,
-    "max_collection_delta": 50,
-    "max_system_load_for_new_trades": 35
-  }
-}
+{"resource": {"symbol": "ITEM-001", "metric_1": 25.3}, "collection_state": {"open_positions": 8}, "risk_limits": {"max_positions": 12}}
 ```
 
-**Response**:
+**Response** (HTTP 200):
+
 ```json
-{
-  "is_valid": true,
-  "decision_id": "550e8400-e29b-41d4-a716-446655440000",
-  "violations": [],
-  "risk_impact": {
-    "projected_delta": 12.8,
-    "projected_positions": 9,
-    "projected_heat": 15250,
-    "heat_percentage": 15.25
-  },
-  "timestamp": "2025-11-02T14:30:00Z"
-}
+{"is_valid": true, "decision_id": "550e8400-e29b-41d4-a716-446655440000", "violations": [], "risk_impact": {"projected_positions": 9}}
 ```
 
-### 12.2 Example 2: Validation Failure - [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Exceeded
-**Request**:
+### 9.2 Validation Failure
+
+**Request**: Resource exceeds limit
+
 ```json
-{
-  "resource": {
-    "symbol": "TSLA",
-    "[METRIC_1 - e.g., error rate, response time]": 30.0,
-    "premium_collected": 500.00
-  },
-  "collection_state": {
-    "open_positions": 12,
-    "total_capital": 100000
-  },
-  "risk_limits": {
-    "max_positions": 12
-  }
-}
+{"resource": {"symbol": "ITEM-002"}, "collection_state": {"open_positions": 12}, "risk_limits": {"max_positions": 12}}
 ```
 
-**Response**:
+**Response** (HTTP 200 - valid response, failed validation):
+
 ```json
-{
-  "is_valid": false,
-  "decision_id": "660e8400-e29b-41d4-a716-446655440001",
-  "violations": [
-    {
-      "rule": "max_positions",
-      "limit": 12,
-      "current": 12,
-      "projected": 13,
-      "severity": "critical",
-      "message": "Adding resource would exceed maximum [RESOURCE_LIMIT - e.g., request quota, concurrent sessions]"
-    }
-  ],
-  "risk_impact": null,
-  "timestamp": "2025-11-02T14:31:00Z"
-}
+{"is_valid": false, "decision_id": "...", "violations": [{"rule": "max_positions", "limit": 12, "projected": 13, "severity": "critical"}]}
 ```
 
-### 12.3 Example 3: Error Response - Invalid Input
-**Request**:
+### 9.3 Error Response
+
+**Request**: Invalid input (missing required fields)
+
 ```json
-{
-  "resource": {
-    "symbol": "",
-    "[METRIC_1 - e.g., error rate, response time]": -999
-  }
-}
+{"resource": {"symbol": "", "metric_1": -999}}
 ```
 
-**Response**:
+**Response** (HTTP 400):
+
 ```json
-{
-  "error_code": "INVALID_INPUT",
-  "error_message": "Validation failed: 'symbol' cannot be empty, '[METRIC_1 - e.g., error rate, response time]' must be >= 0, missing required field 'collection_state'",
-  "timestamp": "2025-11-02T14:32:00Z"
-}
+{"error_code": "INVALID_INPUT", "error_message": "Validation failed: 'symbol' cannot be empty, missing required field 'collection_state'"}
 ```
-
-## 13. Monitoring & Observability
-
-### 13.1 Success Metrics
-- **Request Success Rate**: Target >99.9% (exclude 400 client errors)
-- **Latency Percentiles**: p50 <20ms, p95 <50ms, p99 <100ms
-- **Throughput**: Sustained 1000 req/s, peak 5000 req/s
-
-### 13.2 Error Tracking
-- **Error Rate**: Alert if >1% for 5 minutes
-- **Error Categories**: Track by error code (400, 429, 500, 503)
-- **Alert Thresholds**: Page on-call if >5% error rate or >3 consecutive service failures
-
-### 13.3 Performance Metrics
-- **Latency Breakdown**: Network (5ms), validation logic (10ms), database lookup (5ms)
-- **Resource Usage**: CPU <50%, memory <70%, network <100 MB/s
-- **Queue Depths**: N/A (synchronous, no queuing)
-
-## 14. Alternatives Considered
-
-### 14.1 Alternative A: In-Process Validation (Library)
-**Description**: Distribute risk validation as a shared Python library imported by each agent
-
-**Pros**:
-- Zero network latency (in-process function call)
-- No additional infrastructure cost
-- Simpler deployment (no separate service)
-
-**Cons**:
-- Code duplication across 11 agents
-- Configuration inconsistency (each agent loads own config)
-- Difficult to update validation logic (requires redeploying all agents)
-- No centralized audit trail
-
-**Rejection Reason**: Violates ADR-008 requirement for centralized risk control. Configuration drift led to compliance issues in V3 architecture.
-**Fit Score**: Poor
-
-### 14.2 Alternative B: Asynchronous Event-Driven Validation
-**Description**: Agents publish PositionProposed events, risk service responds asynchronously
-
-**Pros**:
-- Decouples agents from risk service (no blocking)
-- Better scalability (can queue validation requests)
-- Enables complex multi-step validation workflows
-
-**Cons**:
-- Adds 50-200ms latency (event propagation + processing)
-- Complex state management (agents must track validation status)
-- Difficult to implement atomic trade decisions (validate + execute)
-- Increased operational complexity (event store, dead letter queues)
-
-**Rejection Reason**: Unacceptable latency for [OPERATION_EXECUTION - e.g., order processing, task execution]. Synchronous validation required for atomic decision-making.
-**Fit Score**: Good for non-critical validation, poor for [OPERATION_EXECUTION - e.g., order processing, task execution]
-
-### 14.3 Alternative C: GraphQL Contract
-**Description**: Use GraphQL schema instead of REST-style contract
-
-**Pros**:
-- Flexible querying (consumers request only needed fields)
-- Built-in schema validation and introspection
-- Strongly typed contract with code generation
-
-**Cons**:
-- Additional complexity (GraphQL server, schema evolution)
-- Overkill for simple request/response pattern
-- Team unfamiliarity with GraphQL (learning curve)
-
-**Rejection Reason**: Adds unnecessary complexity for straightforward validation use case. REST-style contract sufficient.
-**Fit Score**: Good for complex APIs, poor for simple validation
 
 ---
 
-# PART 4: Testing and Implementation
+## PART 4: Testing and Traceability
 
-## 15. Verification
+## 10. Verification
 
-### 15.1 Contract Testing
+### 10.1 Contract Testing
+
 **Provider Tests** (Risk Validation Service):
+
 - Schema validation: All responses match CTR-NN YAML schema
 - Error handling: Each error code tested with appropriate scenarios
 - Performance: Load test validates <100ms p99 latency at 1000 req/s
 - Idempotency: Same request produces same result (deterministic)
 
 **Consumer Tests** (All Agents):
+
 - Request generation: Agent constructs valid requests per schema
 - Response handling: Agent correctly interprets validation results
 - Error handling: Agent handles all error codes gracefully
 - Retry logic: Exponential backoff implemented correctly
 
 **Contract Tests** (Pact/Spring Cloud Contract):
+
 - Consumer-driven: Each agent publishes expected request/response pairs
 - Provider validation: Risk service validates it satisfies all consumer expectations
 - CI/CD integration: Contract tests run on every PR
 
-### 15.2 BDD Scenarios
+### 10.2 BDD Scenarios
+
 [BDD scenarios that validate this contract:
+
 - Scenario: Agent validates resource before execution - File: BDD-012_risk_validation.feature#L15
 - Scenario: Multiple agents validate concurrently - File: BDD-012_risk_validation.feature#L45
 - Scenario: Risk service returns validation failure for limit breach - File: BDD-012_risk_validation.feature#L60]
 
-### 15.3 Specification Impact
+### 10.3 Specification Impact
+
 [SPEC files that will implement this contract:
+
 - SPEC-05_risk_validation_service.yaml: Provider implementation
 - SPEC-01_service_orchestrator.yaml: Primary consumer
 - SPEC-015_service_request_agent.yaml: Strategy agent consumer]
 
-### 15.4 Validation Criteria
+### 10.4 Validation Criteria
+
 **Technical Validation**:
+
 - Schema validation passes for all request/response examples
 - Performance benchmarks: p99 <100ms at 1000 req/s sustained
 - security: mTLS authentication, RBAC authorization, audit logging implemented
 - Idempotency: Same request produces same result across 1000 test iterations
 
 **Integration Validation**:
+
 - Provider implements contract correctly (all contract tests pass)
 - All 11 consumer agents migrate successfully (contract tests pass)
 - End-to-end test: resource collection rebalancing with 100 positions completes successfully
 
-## 16. Impact Analysis
+### 10.5 Impact Analysis
 
-### 16.1 Affected Components
-- **Provider**: Risk Validation Service (new service to be created)
-- **Consumers**:
-  - [ORCHESTRATION_COMPONENT] (critical path)
-  - 11 Strategy Execution Agents ([STRATEGY_NAME - e.g., multi-step workflow, approval process], CSP, [STRATEGY_NAME], [STRATEGY_NAME], etc.)
-  - resource collection balancing Agent
-- **Data Flow**:
-  - Agent → Risk Validation Service (synchronous request)
-  - Risk Validation Service → Configuration Service (load ADR-008 parameters)
-  - Risk Validation Service → Audit Log (record decision)
+- **Provider**: [Service to implement contract]
+- **Consumers**: [List of consuming services/agents]
+- **Data Flow**: Consumer → Provider (sync/async) → Dependencies → Audit
 
-### 16.2 Migration Strategy
-- **Phase 1**: Contract definition and validation setup (Week 1)
-  - Define CTR contract with stakeholders
-  - Create YAML schema and markdown documentation
-  - Set up contract test framework
-- **Phase 2**: Provider implementation with feature flag (Weeks 2-3)
-  - Implement Risk Validation Service
-  - Deploy behind feature flag (disabled)
-  - Run contract tests, load tests, security tests
-- **Phase 3**: Consumer migration and cleanup (Weeks 4-6)
-  - Migrate [ORCHESTRATION_COMPONENT] first (canary)
-  - Migrate remaining agents in batches (3 agents/week)
-  - Enable feature flag, monitor for 1 week
-  - Remove old in-process validation code
+### 10.6 Migration Strategy
 
-### 16.3 Testing Requirements
-- **Unit Tests**: Schema validation (request/response match YAML schema)
-- **Integration Tests**: Provider-consumer integration (end-to-end validation flow)
-- **Contract Tests**: Pact tests for each consumer-provider pair
-- **Performance Tests**: Load test at 1000 req/s for 1 hour, measure p99 latency
-- **Chaos Tests**: Inject service failures, validate [SAFETY_MECHANISM - e.g., rate limiter, error threshold] and fallback behavior
+1. Contract definition and validation setup
+2. Provider implementation with feature flag
+3. Consumer migration (canary first, then batches)
+4. Enable feature flag, monitor, remove legacy code
 
-## security
+## 11. Traceability
 
-### 16.4 Input Validation
-- JSON schema validation on all requests (enforce required fields, types, ranges)
-- Boundary checks: [METRIC_1 - e.g., error rate, response time] ≥ 0, positions ≥ 0, capital > 0
-- Malformed payload handling: Return 400 INVALID_INPUT with specific error message
-- Injection prevention: No SQL/NoSQL queries, validation logic only
-
-### 16.5 Authentication & Authorization
-- **Authentication**: mTLS via GCP service mesh (mutual certificate validation)
-- **Authorization**: RBAC - consumers must have `risk:validate` permission in IAM
-- **Token Validation**: Service mesh validates service account tokens
-- **Deny by Default**: Unauthenticated requests rejected at mesh layer
-
-### 16.6 Data Protection
-- **Encryption in Transit**: TLS 1.3 (enforced by service mesh)
-- **Encryption at Rest**: Not required (no persistent data, ephemeral validation)
-- **PII Handling**: No PII in requests/responses/logs (symbol/[METRIC_1 - e.g., error rate, response time]/[VALUE - e.g., subscription fee, processing cost] only)
-- **Data Minimization**: Contracts include only data required for validation
-
-### security Monitoring
-- **Authentication Failures**: Alert if >10 failures/minute (potential attack)
-- **Anomaly Detection**: Alert if consumer request pattern changes significantly
-- **Audit Logging**: Log all validation requests with decision_id, consumer, timestamp
-
-### Secrets Management
-- **Service Certificates**: Managed by GCP Certificate Authority Service
-- **Certificate Rotation**: Automatic 90-day rotation via Workload Identity
-- **API Keys**: Not applicable (mTLS authentication)
-
-## 17. Related Contracts
+### 11.1 Related Contracts
 
 **Depends On**:
+
 - CTR-NN (Common Data Types): Shared resource/resource collection types
 - ADR-008 (Risk Parameters): Configuration contract for risk limits
 
 **Supersedes**:
+
 - None (new contract, replaces informal in-process validation)
 
 **Related**:
+
 - CTR-02 ([METRICS - e.g., performance indicators, quality scores] Calculation): Provides [METRICS - e.g., performance indicators, quality scores] values used in validation
 - CTR-006 (resource collection State): Provides current resource collection state
 
 **Impacts**:
+
 - CTR-NN (Future strategy contracts): Will reference this validation contract
 
-## 18. Implementation Notes
+### 11.2 Upstream Sources
 
-### 18.1 Development Phases
-1. **Phase 1**: Contract definition and YAML schema creation (Week 1)
-   - Collaborative contract design with agent teams
-   - YAML schema finalization
-   - Contract test framework setup
-2. **Phase 2**: Provider implementation with contract tests (Weeks 2-3)
-   - Risk Validation Service implementation
-   - Contract tests (provider validates all consumer expectations)
-   - Load testing and performance optimization
-3. **Phase 3**: Consumer integration and validation (Weeks 4-6)
-   - Agent code changes to call validation endpoint
-   - Contract tests (consumer validates provider contract)
-   - End-to-end integration testing
-
-### 18.2 Code Locations
-- **Provider Implementation**: `src/services/risk_validation_service.py`
-- **Consumer Implementation**:
-  - `src/agents/service_orchestrator/risk_validator_client.py`
-  - `src/agents/strategies/*/risk_validator_client.py`
-- **Contract Tests**:
-  - `tests/09_CTR/risk_validation/provider_contract_test.py`
-  - `tests/09_CTR/risk_validation/consumer_contract_test.py`
-- **Schema Validation**: `src/common/schemas/ctr_nnn_validation.py`
-
-### 18.3 Configuration Management
-- **Contract Version**: Environment variable `RISK_VALIDATION_CONTRACT_VERSION=1.0.0`
-- **Feature Flags**: `ENABLE_CENTRALIZED_RISK_VALIDATION=true|false`
-- **Environment-Specific**:
-  - Dev: Lower rate limits (10 req/s)
-  - Prod: Full rate limits (100 req/s)
-
----
-
-# PART 5: Traceability and Documentation
-
-## 19. Traceability
-
-### 19.1 Upstream Sources
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
@@ -726,7 +435,8 @@ Common types across endpoints:
 | ADR | [ADR-008](../05_ADR/ADR-008_centralized_risk_parameters.md) | Centralized Risk Parameters | section 4.0 | Architecture decision for centralization |
 | SYS | [SYS-004](../06_SYS/SYS-004_centralized_risk_controls.md) | Centralized Risk Controls | section 5.2 | System requirement for validation service |
 
-### 19.2 Downstream Artifacts
+### 11.3 Downstream Artifacts
+
 | Artifact Type | Document ID | Document Title | Relationship |
 |---------------|-------------|----------------|--------------|
 <!-- VALIDATOR:IGNORE-LINKS-START -->
@@ -741,7 +451,8 @@ Common types across endpoints:
 | Code | src/services/risk_validation_service.py | Risk Validation Service | Provider implementation |
 | Code | src/agents/service_orchestrator/risk_validator_client.py | Risk Validator Client | Consumer implementation |
 
-### 19.3 Document Links
+### 11.4 Document Links
+
 - **Anchors/IDs**: `#CTR-NN` (internal document reference)
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 - **YAML Schema**: [CTR-NN_risk_validation.yaml](./CTR-NN_risk_validation.yaml)
@@ -750,7 +461,7 @@ Common types across endpoints:
   - Provider: `src/services/risk_validation_service.py`
   - Consumers: `src/agents/*/risk_validator_client.py`
 
-### 19.4 Same-Type References (Conditional)
+### 11.5 Same-Type References (Conditional)
 
 **Include this section only if same-type relationships exist between CTR documents.**
 
@@ -764,58 +475,28 @@ Common types across endpoints:
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
 **Tags:**
+
 ```markdown
 @related-ctr: CTR-NN
 @depends-ctr: CTR-NN
 ```
 
-### 19.5 Traceability Tags
+### 11.6 Traceability Tags
 
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 9):
+**Required Tags** (Layer 9 - Cumulative Hierarchy):
+
 ```markdown
-@brd: BRD.NN.EE.SS
-@prd: PRD.NN.EE.SS
-@ears: EARS.NN.EE.SS
-@bdd: BDD.NN.EE.SS
-@adr: ADR-NN
-@sys: SYS.NN.EE.SS
-@req: REQ.NN.EE.SS
-@impl: IMPL.NN.EE.SS
+@brd: BRD.01.01.30    @prd: PRD.03.01.02    @ears: EARS.01.24.03    @bdd: BDD.03.13.01
+@adr: ADR-NN         @sys: SYS.08.25.01    @req: REQ.03.26.01      @impl: IMPL.01.28.01
 ```
 
-**Format**: `@artifact-type: TYPE.NN.TT.SS`
+**Format**: `@artifact-type: TYPE.NN.TT.SS` (or `TYPE-NN` for ADR)
+**Validation**: All tags must reference existing documents. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for hierarchy rules.
 
-**Layer 9 Requirements**: CTR must reference ALL upstream artifacts:
-- `@brd`: Business Requirements Document(s)
-- `@prd`: Product Requirements Document(s)
-- `@ears`: EARS Requirements
-- `@bdd`: BDD Scenarios
-- `@adr`: Architecture Decision Records
-- `@sys`: System Requirements
-- `@req`: Atomic Requirements
-- `@impl`: Implementation Plans (optional - include if exists in chain)
+## 12. References
 
-**Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
+### 12.1 Internal Links
 
-**Example**:
-```markdown
-@brd: BRD.01.01.30
-@prd: PRD.03.01.02
-@ears: EARS.01.24.03
-@bdd: BDD.03.13.01
-@adr: ADR-NN
-@sys: SYS.08.25.01
-@req: REQ.03.26.01
-@impl: IMPL.01.28.01
-```
-
-**Validation**: Tags must reference existing documents and requirement IDs. Complete chain validation ensures all upstream artifacts (BRD through IMPL) are properly linked.
-
-**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through API contracts. CTR is optional layer - only created when interface requirements exist. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
-
-## 20. References
-
-### 20.1 Internal Links
 - [REQ-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement](../07_REQ/risk/lim/REQ-03_resource_limit_enforcement.md)
 - [REQ-008: Centralized Risk Parameters](../07_REQ/risk/cfg/REQ-008_centralized_risk_parameters.md)
 - [ADR-008: Centralized Risk Parameters Architecture](../05_ADR/ADR-008_centralized_risk_parameters.md)
@@ -826,13 +507,15 @@ Common types across endpoints:
 - [BDD-NN: Risk Validation Scenarios] (../04_BDD/BDD-NN_risk_validation/BDD-NN.1_risk_validation.feature)  
   (example placeholder)
 
-### 20.2 External Links
+### 12.2 External Links
+
 - [JSON Schema Specification](https://json-schema.org/): JSON schema validation standard
 - [OpenAPI 3.0](https://spec.openapis.org/oas/v3.0.0): REST API contract standard
 - [Pact Contract Testing](https://docs.pact.io/): Consumer-driven contract testing framework
 - [gRPC Best Practices](https://grpc.io/docs/guides/): Alternative protocol considerations
 
-### 20.3 Additional Context
+### 12.3 Additional Context
+
 - **Related Patterns**:
   - API Gateway pattern for centralized validation
   - [SAFETY_MECHANISM - e.g., rate limiter, error threshold] pattern for failure resilience
@@ -848,18 +531,77 @@ Common types across endpoints:
 
 ---
 
+## Appendix A: Alternatives Considered
+
+### A.1 Alternative A: In-Process Validation (Library)
+
+**Description**: Distribute validation as a shared library imported by each consumer
+
+**Pros**: Zero network latency, no additional infrastructure, simpler deployment
+**Cons**: Code duplication, configuration inconsistency, difficult updates, no centralized audit trail
+**Rejection Reason**: Violates centralization requirements; configuration drift leads to compliance issues
+**Fit Score**: Poor
+
+### A.2 Alternative B: Asynchronous Event-Driven
+
+**Description**: Consumers publish events, service responds asynchronously
+
+**Pros**: Decoupling, better scalability, enables complex workflows
+**Cons**: 50-200ms latency, complex state management, difficult atomic decisions
+**Rejection Reason**: Unacceptable latency for synchronous operations
+**Fit Score**: Good for non-critical validation, poor for synchronous operations
+
+### A.3 Alternative C: GraphQL Contract
+
+**Description**: Use GraphQL schema instead of REST-style contract
+
+**Pros**: Flexible querying, built-in schema validation, strongly typed
+**Cons**: Additional complexity, overkill for simple patterns, learning curve
+**Rejection Reason**: Adds unnecessary complexity for straightforward use case
+**Fit Score**: Good for complex APIs, poor for simple validation
+
+---
+
+## Appendix B: Implementation Notes
+
+### B.1 Development Phases
+
+1. **Phase 1**: Contract definition and YAML schema creation
+   - Collaborative contract design with consumer teams
+   - YAML schema finalization
+   - Contract test framework setup
+2. **Phase 2**: Provider implementation with contract tests
+   - Provider service implementation
+   - Contract tests (provider validates all consumer expectations)
+   - Load testing and performance optimization
+3. **Phase 3**: Consumer integration and validation
+   - Consumer code changes to call endpoint
+   - Contract tests (consumer validates provider contract)
+   - End-to-end integration testing
+
+### B.2 Code Locations
+
+- **Provider Implementation**: `src/services/[service_name].py`
+- **Consumer Implementation**: `src/agents/[agent_name]/[service]_client.py`
+- **Contract Tests**: `tests/09_CTR/[contract]/provider_contract_test.py`, `consumer_contract_test.py`
+- **Schema Validation**: `src/common/schemas/ctr_nnn_validation.py`
+
+### B.3 Configuration Management
+
+- **Contract Version**: Environment variable `[CONTRACT]_VERSION=1.0.0`
+- **Feature Flags**: `ENABLE_[FEATURE]=true|false`
+- **Environment-Specific**: Different rate limits per environment (dev/prod)
+
+---
+
 **Template Version**: 1.0
 **Last Reviewed**: YYYY-MM-DD
 **Next Review**: YYYY-MM-DD (recommend quarterly for active contracts)
-## File Size Limits
 
-- Target: 300–500 lines per file
-- Maximum (Markdown): 600 lines per file (absolute)
-- YAML Exception (monolithic): Warnings at ~1000 lines, errors at ~2000 lines in linter; splitting is not required unless readability suffers.
-- If this contract approaches/exceeds limits, split content logically (e.g., separate endpoint groups) and maintain the dual-file `.md` + `.yaml` structure (prefer monolithic YAML where logical).
+---
 
-## Document Splitting Standard
-
-- Prefer monolithic dual-file contracts (`.md` + `.yaml`) per service
-- If necessary, split by endpoint groups/modules with matching pairs and clear naming
-- Update cross-links, indexes, and validation
+> **Template Guidance** (remove when creating actual contracts):
+>
+> - Target: 300–500 lines; Maximum: 600 lines (Markdown)
+> - Split large contracts by endpoint groups with matching `.md` + `.yaml` pairs
+> - See `CTR_CREATION_RULES.md` and `README.md` for detailed guidance

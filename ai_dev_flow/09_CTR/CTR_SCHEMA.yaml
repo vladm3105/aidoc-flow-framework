@@ -119,96 +119,82 @@ structure:
       yaml: "^CTR-\\d{2,}_[a-z0-9_]+\\.yaml$"
     description: "CTR-NN_descriptive_name.md + CTR-NN_descriptive_name.yaml"
 
-  # Required sections in .md file (organized in 5 parts)
+  # Required sections in .md file (12-section structure)
   required_sections:
-    # Part 1: Contract Context and Requirements
+    # Title
     - pattern: "^# CTR-\\d{2,}:"
       name: "Title (H1)"
       description: "Single H1 with format CTR-NN: Title"
 
+    # Section 1: Document Control (absorbs Status)
     - pattern: "^## 1\\. Document Control$"
       name: "Document Control"
-      description: "Section 1 with metadata table"
+      description: "Section 1 with metadata table, status, and versioning info"
 
-    - pattern: "^## 2\\. Status$"
-      name: "Status"
-      description: "Section 2 with contract status and versioning"
-
-    - pattern: "^## 3\\. Context$"
+    # Section 2: Context (absorbs Consequences/Trade-offs)
+    - pattern: "^## 2\\. Context$"
       name: "Context"
-      description: "Section 3 with Problem Statement, Background, Driving Forces, Constraints"
+      description: "Section 2 with Problem Statement, Background, Driving Forces, Constraints, Trade-offs"
 
-    - pattern: "^## 4\\. Contract Definition$"
+    # Section 3: Contract Definition
+    - pattern: "^## 3\\. Contract Definition$"
       name: "Contract Definition"
-      description: "Section 4 with Interface Overview, Parties, Communication Pattern"
+      description: "Section 3 with Interface Overview, Parties, Communication Pattern"
 
-    - pattern: "^## 5\\. Requirements Satisfied$"
+    # Section 4: Requirements Satisfied
+    - pattern: "^## 4\\. Requirements Satisfied$"
       name: "Requirements Satisfied"
-      description: "Section 5 with Primary Requirements, Source Business Logic, Quality Attributes"
+      description: "Section 4 with Primary Requirements, Source Business Logic"
 
-    # Part 2: Interface Specification and Schema
-    - pattern: "^## 6\\. Schema Reference$"
-      name: "Schema Reference"
-      description: "Section 6 with YAML schema file link and overview"
-
-    - pattern: "^## 7\\. Interface Definition$"
+    # Section 5: Interface Definition (absorbs Schema Reference)
+    - pattern: "^## 5\\. Interface Definition$"
       name: "Interface Definition"
-      description: "Section 7 with Endpoints/Functions/Messages"
+      description: "Section 5 with Schema Reference, Endpoints/Functions/Messages"
 
-    - pattern: "^## 8\\. Error Handling$"
+    # Section 6: Error Handling
+    - pattern: "^## 6\\. Error Handling$"
       name: "Error Handling"
-      description: "Section 8 with Error Codes and Failure Modes"
+      description: "Section 6 with Error Codes and Failure Modes"
 
-    - pattern: "^## 9\\. Consequences$"
-      name: "Consequences"
-      description: "Section 9 with Positive and Negative Outcomes"
-
-    # Part 3: Quality Attributes and Operations
-    - pattern: "^## 10\\. Quality Attributes$"
+    # Section 7: Quality Attributes (absorbs Monitoring)
+    - pattern: "^## 7\\. Quality Attributes$"
       name: "Quality Attributes"
-      description: "Section 10 with Performance, Reliability, Security"
+      description: "Section 7 with Performance, Reliability, Security, Observability"
 
-    - pattern: "^## 11\\. Versioning Strategy$"
+    # Section 8: Versioning Strategy
+    - pattern: "^## 8\\. Versioning Strategy$"
       name: "Versioning Strategy"
-      description: "Section 11 with Version Policy, Compatibility, Deprecation"
+      description: "Section 8 with Version Policy, Compatibility, Deprecation"
 
-    - pattern: "^## 12\\. Examples$"
+    # Section 9: Examples
+    - pattern: "^## 9\\. Examples$"
       name: "Examples"
-      description: "Section 12 with Request/Response examples"
+      description: "Section 9 with Request/Response examples"
 
-    - pattern: "^## 13\\. Monitoring & Observability$"
-      name: "Monitoring & Observability"
-      description: "Section 13 with Success Metrics, Error Tracking"
-
-    - pattern: "^## 14\\. Alternatives Considered$"
-      name: "Alternatives Considered"
-      description: "Section 14 with rejected alternative approaches"
-
-    # Part 4: Testing and Implementation
-    - pattern: "^## 15\\. Verification$"
+    # Section 10: Verification (absorbs Impact Analysis)
+    - pattern: "^## 10\\. Verification$"
       name: "Verification"
-      description: "Section 15 with Contract Testing, BDD Scenarios"
+      description: "Section 10 with Contract Testing, BDD Scenarios, Impact Analysis"
 
-    - pattern: "^## 16\\. Impact Analysis$"
-      name: "Impact Analysis"
-      description: "Section 16 with Affected Components, Migration, Security"
-
-    - pattern: "^## 17\\. Related Contracts$"
-      name: "Related Contracts"
-      description: "Section 17 with contract dependencies and relations"
-
-    - pattern: "^## 18\\. Implementation Notes$"
-      name: "Implementation Notes"
-      description: "Section 18 with Development Phases, Code Locations"
-
-    # Part 5: Traceability and Documentation
-    - pattern: "^## 19\\. Traceability$"
+    # Section 11: Traceability (absorbs Related Contracts)
+    - pattern: "^## 11\\. Traceability$"
       name: "Traceability"
-      description: "Section 19 with Upstream Sources, Downstream Artifacts"
+      description: "Section 11 with Upstream Sources, Downstream Artifacts, Related Contracts"
 
-    - pattern: "^## 20\\. References$"
+    # Section 12: References
+    - pattern: "^## 12\\. References$"
       name: "References"
-      description: "Section 20 with Internal and External Links"
+      description: "Section 12 with Internal and External Links"
+
+  # Optional Appendices
+  optional_sections:
+    - pattern: "^## Appendix A"
+      name: "Appendix A: Alternatives Considered"
+      description: "Optional - rejected alternative approaches"
+
+    - pattern: "^## Appendix B"
+      name: "Appendix B: Implementation Notes"
+      description: "Optional - Development Phases, Code Locations"
 
   # Document Control table requirements
   document_control:
@@ -233,10 +219,11 @@ structure:
   # Section numbering rules
   section_numbering:
     start: 1
-    end: 20
+    end: 12
     format: "## N. Section Title"
     subsection_format: "### N.N Subsection Title"
     no_duplicate_numbers: true
+    appendices: ["Appendix A", "Appendix B"]
 
 # =============================================================================
 # YAML Schema File Requirements
@@ -381,10 +368,10 @@ validation_rules:
     - rule: "Single H1 heading only"
       severity: warning
 
-    - rule: "All 20 required sections must be present"
+    - rule: "All 12 required sections must be present"
       severity: error
 
-    - rule: "Sections must be numbered 1-20 sequentially"
+    - rule: "Sections must be numbered 1-12 sequentially"
       severity: error
 
     - rule: "Document Control must have minimum 6 fields"
@@ -451,29 +438,29 @@ traceability:
     required:
       - type: BRD
         format: "@brd: BRD.NN.EE.SS"
-        location: "Section 19 or Traceability Tags section"
+        location: "Section 11 or Traceability Tags section"
       - type: PRD
         format: "@prd: PRD.NN.EE.SS"
-        location: "Section 19 or Traceability Tags section"
+        location: "Section 11 or Traceability Tags section"
       - type: EARS
         format: "@ears: EARS.NN.EE.SS"
-        location: "Section 19 or Traceability Tags section"
+        location: "Section 11 or Traceability Tags section"
       - type: BDD
         format: "@bdd: BDD.NN.EE.SS"
-        location: "Section 19 or Traceability Tags section"
+        location: "Section 11 or Traceability Tags section"
       - type: ADR
         format: "@adr: ADR-NN"
-        location: "Section 19 or Traceability Tags section"
+        location: "Section 11 or Traceability Tags section"
       - type: SYS
         format: "@sys: SYS.NN.EE.SS"
-        location: "Section 19 or Traceability Tags section"
+        location: "Section 11 or Traceability Tags section"
       - type: REQ
         format: "@req: REQ.NN.EE.SS"
-        location: "Section 19 or Traceability Tags section"
+        location: "Section 11 or Traceability Tags section"
     optional:
       - type: IMPL
         format: "@impl: IMPL.NN.EE.SS"
-        location: "Section 19 or Traceability Tags section"
+        location: "Section 11 or Traceability Tags section"
 
   downstream:
     expected:
@@ -505,7 +492,7 @@ error_messages:
   CTR-E005: "Forbidden tag pattern detected"
   CTR-E006: "Missing required section"
   CTR-E007: "Multiple H1 headings detected"
-  CTR-E008: "Section numbering not sequential (1-20)"
+  CTR-E008: "Section numbering not sequential (1-12)"
   CTR-E009: "Document Control missing required fields"
   CTR-E010: "Missing companion YAML schema file"
   CTR-E011: "YAML schema is not valid OpenAPI 3.x or JSON Schema"
