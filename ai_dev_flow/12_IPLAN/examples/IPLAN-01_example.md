@@ -1,19 +1,26 @@
 ---
-title: "IPLAN-01: User Authentication API Implementation"
+title: "IPLAN-01: User Authentication API Implementation [DEPRECATED]"
 tags:
   - iplan-example
   - layer-12-artifact
   - shared-architecture
+  - deprecated
 custom_fields:
   document_type: example
   artifact_type: IPLAN
   layer: 12
   architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
+  priority: deprecated
+  development_status: deprecated
+  deprecated_date: "2026-01-15"
+  replacement: "ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md"
 ---
 
-# IPLAN-01: User Authentication API Implementation
+# IPLAN-01: User Authentication API Implementation [DEPRECATED]
+
+> **⚠️ DEPRECATED**: IPLAN has been merged into TASKS (Layer 11) as of 2026-01-15.
+> Use [`ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`](../../11_TASKS/TASKS-TEMPLATE.md) for all new work.
+> See [../DEPRECATED.md](../DEPRECATED.md) for migration guide.
 
 **Position**: Layer 12 (Implementation Work Plans) - translates TASKS into executable session plans.
 

@@ -583,7 +583,7 @@ done
 ## Position in Document Workflow
 
 **Layer 11**: TASKS (Task Breakdown)
-- Bridges SPEC (Layer 10) and IPLAN (Layer 12)
+- Bridges SPEC (Layer 10) and Code (Layer 12)
 - Coordinates parallel implementation
 - Enables type-safe integration
 
@@ -597,9 +597,11 @@ done
 - `@icon:` tags reference implementation contracts
 - Embedded in TASKS or standalone ICON
 
-**Layer 12 (IPLAN)**: Implementation plans
-- `@iplan:` tags reference execution plans
-- Consume contracts defined in 11_TASKS/ICON
+**Layer 12 (CODE)**: Source code implementation
+- Consumes contracts defined in 11_TASKS/ICON
+- Uses `@tasks:` tags for traceability
+
+> **Note**: IPLAN (formerly Layer 12) has been **DEPRECATED** as of 2026-01-15 and merged into TASKS. Execution commands are now part of TASKS Section 4.
 
 ---
 

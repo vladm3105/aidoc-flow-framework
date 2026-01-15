@@ -2,14 +2,18 @@
 
 This guide describes the standard workflow for implementing a feature defined in a `TASKS` artifact.
 
+> **Note**: As of 2026-01-15, IPLAN has been **DEPRECATED** and merged into TASKS. Execution commands and implementation steps are now part of TASKS Section 4. See `12_IPLAN/DEPRECATED.md` for migration guide.
+
 ## 1. Initial Assessment
 Before starting code:
 1.  **Check Status**: Review `DEVELOPMENT_PLAN.md` (created from `11_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`) to confirm the task is next in the queue and prerequisites are met.
 2.  **Review TASKS Artifact**: Read the `TASKS-XX.md` file to understand the scope, requirements, and design constraints.
 
-## 2. Create Implementation Plan (IPLAN)
-Translation of `TASKS` into concrete work steps.
-1.  **Create File**: `docs/12_IPLAN/IPLAN-XX_[slug].md`.
+## 2. Implementation Planning (in TASKS Section 4)
+
+Translation of `TASKS` into concrete work steps is now done within the TASKS document itself.
+
+1.  **Use TASKS Section 4**: Add execution commands and implementation steps to your TASKS document.
 2.  **Structure (Standard Pattern)**:
     *   **Phase 1: Domain & Protocols**: 
         *   Define Pydantic Models (`domain.py`)
@@ -23,7 +27,7 @@ Translation of `TASKS` into concrete work steps.
     *   **Phase 4: Testing**: 
         *   Unit Tests (`tests/unit/...`)
         *   Integration Tests (`tests/integration/...`)
-3.  **Cross-Reference**: Ensure mapped Tasks in IPLAN correspond to TASKS requirements.
+3.  **Cross-Reference**: Ensure mapped tasks in Section 4 correspond to TASKS requirements.
 
 ## 3. Implementation Loop
 Execute the plan phase by phase.
@@ -33,14 +37,14 @@ Execute the plan phase by phase.
 3.  **Test**: Write corresponding tests in `tests/`.
     *   *Tip*: Use `pytest` for automated testing.
     *   *Tip*: Use manual verification scripts if environment isolation is complex.
-4.  **Mark Progress**: Check off items in `IPLAN` and `task.md` as you go.
+4.  **Mark Progress**: Check off items in TASKS and `task.md` as you go.
 
 ## 4. Verification & Validation
 1.  **Run Tests**: Ensure all new tests pass and no regressions in related modules.
 2.  **Manual Check**: If applicable, run a usage script to verify end-to-end behavior.
 
 ## 5. Documentation & Completion
-1.  **Update IPLAN**: Mark all tasks as `[x]`.
+1.  **Update TASKS**: Mark all tasks as `[x]` in Section 4.
 2.  **Update Development Plan**:
     *   Change status icon to ✅ in the Phase Table.
     *   Add an entry to the **Session Log** summarizing the work.

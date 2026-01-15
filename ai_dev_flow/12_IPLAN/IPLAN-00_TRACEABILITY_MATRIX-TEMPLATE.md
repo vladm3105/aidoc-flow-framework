@@ -1,21 +1,29 @@
 ---
-title: "IPLAN-000 TRACEABILITY_MATRIX TEMPLATE"
+title: "IPLAN-000 TRACEABILITY_MATRIX TEMPLATE [DEPRECATED]"
 tags:
   - traceability-matrix-template
   - layer-12-artifact
   - shared-architecture
   - document-template
+  - deprecated
 custom_fields:
   document_type: template
   artifact_type: IPLAN-TRACEABILITY-MATRIX
   layer: 12
   architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
+  priority: deprecated
+  development_status: deprecated
+  deprecated_date: "2026-01-15"
+  replacement: "ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md"
   template_for: traceability-matrix
 ---
 
-# Traceability Matrix: IPLAN-01 through IPLAN-NN
+# Traceability Matrix: IPLAN-01 through IPLAN-NN [DEPRECATED]
+
+> **⚠️ DEPRECATED**: IPLAN has been merged into TASKS (Layer 11) as of 2026-01-15.
+> Traceability is now tracked within TASKS documents.
+> Use [`ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`](../11_TASKS/TASKS-TEMPLATE.md) for all new work.
+> See [DEPRECATED.md](./DEPRECATED.md) for migration guide.
 
 ## Document Control
 

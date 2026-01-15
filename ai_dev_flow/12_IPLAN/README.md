@@ -1,14 +1,47 @@
 ---
-title: "Implementation Plans (IPLAN): Session-Based Execution Plans"
+title: "Implementation Plans (IPLAN): Session-Based Execution Plans [DEPRECATED]"
 tags:
   - index-document
   - layer-12-artifact
   - shared-architecture
+  - deprecated
 custom_fields:
   document_type: readme
   artifact_type: IPLAN
   layer: 12
-  priority: shared
+  priority: deprecated
+  development_status: deprecated
+  deprecated_date: "2026-01-15"
+  replacement: "ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md"
+---
+
+# ⚠️ DEPRECATED: Implementation Plans (IPLAN)
+
+> **Deprecation Date**: 2026-01-15
+> **Status**: IPLAN has been merged into TASKS (Layer 11)
+> **Replacement**: [`ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`](../11_TASKS/TASKS-TEMPLATE.md)
+
+---
+
+## Migration Notice
+
+IPLAN functionality is now part of the unified TASKS template:
+
+| IPLAN Section | TASKS Section |
+|---------------|---------------|
+| Verification Checklist | Development Plan Tracking (YAML block) |
+| Context & Current State | Section 2: Scope |
+| Implementation Steps | Section 3: Implementation Plan |
+| Bash Commands | Section 4: Execution Commands |
+| Validation Commands | Section 4.3: Validation Commands |
+| Session Notes | Section 10: Session Log |
+
+**For new work**: Use `ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`
+
+**For existing IPLAN documents**: Continue using them if implementation is in progress, then migrate to TASKS for new features.
+
+See [DEPRECATED.md](./DEPRECATED.md) for full migration guide.
+
 ---
 
 # Implementation Plans (IPLAN): Session-Based Execution Plans

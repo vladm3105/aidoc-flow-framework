@@ -20,7 +20,7 @@ The Autopilot lives at:
 - `ai_dev_flow/scripts/mvp_autopilot.py`
 
 It generates and validates the entire MVP pipeline in one command:
-- BRD → PRD → EARS → BDD → ADR → SYS → REQ → SPEC → TASKS → IPLAN
+- BRD → PRD → EARS → BDD → ADR → SYS → REQ → SPEC → TASKS → Code
 
 ---
 
@@ -41,13 +41,13 @@ It generates and validates the entire MVP pipeline in one command:
 ## 2) Quick Start
 
 - MVP speed run (warnings allowed; auto-fix; write report):
-  - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP" --slug my_mvp --up-to IPLAN --auto-fix --report markdown`
+  - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP" --slug my_mvp --up-to TASKS --auto-fix --report markdown`
 
 - Strict validation (warnings fail):
-  - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP" --slug my_mvp --up-to IPLAN --auto-fix --strict --report markdown`
+  - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP" --slug my_mvp --up-to TASKS --auto-fix --strict --report markdown`
 
 - Lighter MVP validators for BRD (`--mvp-validators`):
-- `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP" --slug my_mvp --up-to IPLAN --auto-fix --mvp-validators`
+- `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP" --slug my_mvp --up-to TASKS --auto-fix --mvp-validators`
 
   - Pre‑Check (one‑liner): `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow` and verify `X-00_index.md`, `X-00_required_documents_list.md`, and upstream docs exist before each layer.
 
@@ -86,7 +86,7 @@ Tip: Use `--strict` with the path validator when you want failures to block gene
 - `--intent`: Short description used to seed names/titles.
 - `--slug`: Lowercase underscore slug used in filenames (e.g., `trading_bot`).
 - `--nn`: Numeric ID (default `01`) used in document IDs.
-- `--up-to`: Last layer to generate/validate. One of: `BRD|PRD|EARS|BDD|ADR|SYS|REQ|SPEC|TASKS|IPLAN`.
+- `--up-to`: Last layer to generate/validate. One of: `BRD|PRD|EARS|BDD|ADR|SYS|REQ|SPEC|TASKS`.
 - `--from-layer`: Start from this layer (e.g., `BDD`) instead of BRD.
 - `--auto-fix`: Enables deterministic auto-fixers (safe rewriting of frontmatter, titles, required sections, tags).
 - `--strict`: Treat warnings as errors (validator must exit code 0).
@@ -111,7 +111,6 @@ Tip: Use `--strict` with the path validator when you want failures to block gene
   - `ai_dev_flow/07_REQ/REQ-01_trading_bot.md`
   - `ai_dev_flow/10_SPEC/SPEC-01_trading_bot.yaml`
   - `ai_dev_flow/11_TASKS/TASKS-01_trading_bot.md`
-  - `ai_dev_flow/12_IPLAN/IPLAN-01_trading_bot.md`
 
 - Planning stubs:
   - `X-00_required_documents_list.md` created per layer, listing the generated file.
@@ -150,9 +149,7 @@ Tip: Use `--strict` with the path validator when you want failures to block gene
 
 - TASKS:
   - Generated from template; validated.
-
-- IPLAN:
-  - Fixes: frontmatter (`artifact_type: IPLAN`, `layer: 12`, `parent_tasks: TASKS-NN`), required sections, bash code blocks + verification, 9 cumulative tags, prerequisites/tools/files.
+  - Now includes execution commands (formerly in IPLAN) in Section 4.
 
 ---
 
@@ -178,7 +175,7 @@ Tip: Use `--strict` with the path validator when you want failures to block gene
   - SYS: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`
   - REQ: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`
   - SPEC: cumulative tags include `req`
-  - IPLAN: includes 9 tags (`@brd` … `@tasks`)
+  - TASKS: includes 8 tags (`@brd` … `@spec`)
 - Dotted vs hyphenated IDs: autopilot converts `BRD-NN` → `BRD.NN.01.01` where required by validators.
 
 ---
@@ -196,16 +193,16 @@ Tip: Use `--strict` with the path validator when you want failures to block gene
 ## 9) Examples
 
 - MVP speed run (recommended day-1):
-  - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "MVP idea" --slug idea --up-to IPLAN --auto-fix --report markdown`
+  - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "MVP idea" --slug idea --up-to TASKS --auto-fix --report markdown`
 
 - MVP + lighter validators + strict:
-  - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "MVP" --slug mvp --up-to IPLAN --auto-fix --mvp-validators --strict --report markdown`
+  - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "MVP" --slug mvp --up-to TASKS --auto-fix --mvp-validators --strict --report markdown`
 
   - Non-destructive strict gate:
-  - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "MVP" --slug mvp --up-to IPLAN --auto-fix --strict --report json`
+  - `python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "MVP" --slug mvp --up-to TASKS --auto-fix --strict --report json`
 
 - Partial pipeline:
-  - `--from-layer BDD --up-to IPLAN` to continue from BDD.
+  - `--from-layer BDD --up-to TASKS` to continue from BDD.
   - Or `--up-to BDD` to stop at BDD.
 
 ### Validate Only (No Generation)
@@ -272,7 +269,7 @@ Tip: Use `--strict` with the path validator when you want failures to block gene
 
 - The Autopilot writes only inside the docs repo (`ai_dev_flow/`).
 - It does not execute arbitrary commands; it only reads/writes files and invokes validators.
-- IPLAN documents may include bash blocks; these are content only and not executed by the Autopilot.
+- TASKS documents may include bash execution commands in Section 4; these are content only and not executed by the Autopilot.
 
 ---
 
@@ -338,7 +335,7 @@ The Autopilot can be used to continue a partially created project or to fork an 
   - Run `validate_all.py ai_dev_flow --all --report markdown` to get a baseline status.
 
 - **Planning**:
-  - Decide target layers (e.g., only `REQ`, `SPEC`, `IPLAN`) with `--up-to` and `--include-layers`/`--exclude-layers`.
+  - Decide target layers (e.g., only `REQ`, `SPEC`, `TASKS`) with `--up-to` and `--include-layers`/`--exclude-layers`.
   - Choose Resume vs Fork:
     - Resume: prefer non-destructive fixes; do not overwrite existing content unless `--force-overwrite` is given.
     - Fork: pick `--new-nn` and `--new-slug`; add “Supersedes {OLD-ID}” note in the new 01_BRD/PRD and “Superseded by {NEW-ID}” note in old docs (optional).
@@ -393,6 +390,6 @@ The Autopilot can be used to continue a partially created project or to fork an 
 
   - **Start with Resume (non-destructive)** for teams picking up partial work; enable `--auto-fix --report markdown` to normalize and see what’s missing. Use `--plan-only` first to review intended actions.
 - **Fork only when scope diverges** or IDs need to branch cleanly; pick a fresh `NN` and add “Supersedes” info to keep the lineage auditable.
-- **Incremental layers**: If 01_BRD/02_PRD/EARS are stable but implementation isn’t, set `--up-to IPLAN` while targeting `06_SYS/07_REQ/10_SPEC/11_TASKS/IPLAN` phases.
+- **Incremental layers**: If 01_BRD/02_PRD/EARS are stable but implementation isn’t, set `--up-to TASKS` while targeting `06_SYS/07_REQ/10_SPEC/11_TASKS` phases.
   - Use `--from-layer BDD` (or `ADR`/`SYS`) to skip earlier layers cleanly.
 - **Reports & Plans**: Save reports and plans in `work_plans/` and attach to review PRs.

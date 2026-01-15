@@ -1,35 +1,39 @@
 # =============================================================================
-# 📋 Document Authority: This is the PRIMARY STANDARD for IPLAN structure.
-# All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
-# - In case of conflict, this template is the single source of truth
-# - Schema: IPLAN_SCHEMA.yaml - Machine-readable validation (derivative)
-# - Creation Rules: IPLAN_CREATION_RULES.md - AI guidance for document creation (derivative)
-# - Validation Rules: IPLAN_VALIDATION_RULES.md - AI checklist after document creation (derivative)
-#   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
+# DEPRECATED: IPLAN has been merged into TASKS (Layer 11)
+# 
+# As of 2026-01-15, IPLAN functionality is now part of TASKS-TEMPLATE.md:
+# - Execution commands: TASKS Section 4 "Execution Commands"
+# - Verification checklists: TASKS "Development Plan Tracking" YAML block
+# - Session context: TASKS Section 10 "Session Log"
+#
+# Use TASKS-TEMPLATE.md for all new implementation work.
+# See: ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md
 # =============================================================================
 ---
-title: "IPLAN-TEMPLATE: Implementation Plan"
+title: "IPLAN-TEMPLATE: Implementation Plan [DEPRECATED]"
 tags:
   - iplan-template
   - layer-12-artifact
-  - shared-architecture
+  - deprecated
   - document-template
 custom_fields:
   document_type: template
   artifact_type: IPLAN
   layer: 12
   architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
+  priority: deprecated
+  development_status: deprecated
   template_for: implementation-plan
   schema_reference: "IPLAN_SCHEMA.yaml"
   schema_version: "1.0"
+  deprecated_date: "2026-01-15"
+  replacement: "ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md"
 ---
 
-> **Document Authority**: This is the **PRIMARY STANDARD** for IPLAN structure.
-> - **Schema**: `IPLAN_SCHEMA.yaml v1.0` - Validation rules
-> - **Creation Rules**: `IPLAN_CREATION_RULES.md` - Usage guidance
-> - **Validation Rules**: `IPLAN_VALIDATION_RULES.md` - Post-creation checks
+> **DEPRECATED**: This template has been superseded by the unified TASKS template.
+> - **Replacement**: `ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`
+> - **Reason**: IPLAN functionality merged into TASKS to reduce document overhead
+> - **Migration**: Use TASKS Section 4 "Execution Commands" for bash commands
 
 # Implementation Plan - IPLAN-NN: [Descriptive Task/Feature Name]
 

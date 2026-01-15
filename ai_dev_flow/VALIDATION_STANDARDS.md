@@ -21,18 +21,19 @@ This document defines the complete error code registry, validation rules, and ex
 
 ## Validation Scope
 
-**Artifact Layers (1-12)**: This validation system covers all 12 artifact layers defined in `LAYER_REGISTRY.yaml`:
+**Artifact Layers (1-11)**: This validation system covers all 11 documentation artifact layers defined in `LAYER_REGISTRY.yaml`:
 
 | Layer | Artifact | Description |
 |-------|----------|-------------|
 | 1-4 | BRD, PRD, EARS, BDD | Core requirements |
 | 5-7 | ADR, SYS, REQ | Architecture and detailed requirements |
-| 8-12 | IMPL, CTR, SPEC, TASKS, IPLAN | Implementation artifacts |
+| 8-11 | IMPL, CTR, SPEC, TASKS | Implementation artifacts |
 
 **Out of Scope**:
 - Layer 0 (Strategy): Optional pre-artifact planning, not validated
-- Layers 13-15 (Code, Tests, QA): Source code traceability not implemented
+- Layers 12-14 (Code, Tests, Validation): Source code traceability not implemented
 - ICON: Non-layer artifact, optional validation
+- IPLAN: **DEPRECATED** as of 2026-01-15 (merged into TASKS)
 
 ### MVP Validator Profile
 
@@ -254,7 +255,9 @@ Prevents upstream documents from referencing specific downstream IDs.
 | 9 | CTR | Layers 1-8 |
 | 10 | SPEC | Layers 1-9 |
 | 11 | TASKS | Layers 1-10 |
-| 12 | IPLAN | Layers 1-11 |
+| 12 | CODE | Layers 1-11 |
+
+> **Note**: IPLAN (formerly Layer 12) has been deprecated as of 2026-01-15 and merged into TASKS.
 
 **Correct** (PRD describing decision needs):
 ```markdown
@@ -288,8 +291,7 @@ See ADR-01 through ADR-05 for implementation details.
 | `validate_impl.sh` | 8 | Implementation approach |
 | `validate_ctr.sh` | 9 | Contract validation |
 | `validate_spec.py` | 10 | SPEC YAML format |
-| `validate_tasks.sh` | 11 | Task breakdown |
-| `validate_iplan.sh` | 12 | Implementation plan |
+| `validate_tasks.sh` | 11 | Task breakdown (now includes execution commands) |
 
 ### Cross-Document Validators
 

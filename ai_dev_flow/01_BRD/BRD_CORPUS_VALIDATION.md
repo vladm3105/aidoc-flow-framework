@@ -123,7 +123,7 @@ See [BRD-07: AI Gateway Architecture](./BRD-07_ai_gateway_architecture.md) for d
 | `ADR-NN` | 5 | ADRs don't exist during BRD creation |
 | `SPEC-NN` | 10 | SPECs don't exist during BRD creation |
 | `TASKS-NN` | 11 | TASKS don't exist during BRD creation |
-| `IPLAN-NN` | 12 | IPLANs don't exist during BRD creation |
+| `IPLAN-NN` | 12 | **DEPRECATED** - IPLAN merged into TASKS (2026-01-15) |
 
 **Allowed Patterns** (generic references):
 - "This will inform PRD development"

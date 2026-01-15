@@ -1,15 +1,23 @@
 ---
-title: "BDD Scenario to Test Case Mapping"
+title: "BDD Scenario to Test Case Mapping [DEPRECATED]"
 tags:
   - framework-guide
   - shared-architecture
+  - deprecated
 custom_fields:
   document_type: guide
-  priority: shared
-  development_status: active
+  priority: deprecated
+  development_status: deprecated
+  deprecated_date: "2026-01-15"
+  replacement: "ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md"
 ---
 
-# BDD Scenario to Test Case Mapping
+# BDD Scenario to Test Case Mapping [DEPRECATED]
+
+> **⚠️ DEPRECATED**: IPLAN has been merged into TASKS (Layer 11) as of 2026-01-15.
+> This mapping is now part of the TASKS document structure.
+> Use [`ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`](../11_TASKS/TASKS-TEMPLATE.md) for all new work.
+> See [DEPRECATED.md](./DEPRECATED.md) for migration guide.
 
 **Document ID**: BDD_SCENARIO_MAPPING
 **Version**: 1.0

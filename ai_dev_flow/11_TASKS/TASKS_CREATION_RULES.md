@@ -1,5 +1,5 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of TASKS-TEMPLATE.md
+# Document Role: This is a DERIVATIVE of TASKS-TEMPLATE.md
 # - Authority: TASKS-TEMPLATE.md is the single source of truth for TASKS structure
 # - Purpose: AI guidance for document creation (derived from template)
 # - On conflict: Defer to TASKS-TEMPLATE.md
@@ -16,13 +16,16 @@ custom_fields:
   layer: 11
   priority: shared
   development_status: active
+  schema_version: "2.0"
+  last_updated: "2026-01-15"
 ---
 
-> **📋 Document Role**: This is a **CREATION HELPER** for TASKS-TEMPLATE.md.
+> **Document Role**: This is a **CREATION HELPER** for TASKS-TEMPLATE.md v2.0.
 > - **Authority**: `TASKS-TEMPLATE.md` is the single source of truth for TASKS structure
 > - **Validation**: Use `TASKS_VALIDATION_RULES.md` after TASKS creation/changes
+> - **Note**: IPLAN (Layer 12) deprecated - execution commands now in TASKS Section 4
 
-# TASKS Creation Rules
+# TASKS Creation Rules (v2.0)
 
 ## Index-Only Generation Workflow
 
@@ -37,10 +40,11 @@ Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 
 | Field | Value |
 |-------|-------|
-| **Version** | 1.0.0 |
+| **Version** | 2.0.0 |
 | **Created** | 2025-11-27 |
-| **Last Updated** | 2025-11-27 |
+| **Last Updated** | 2026-01-15 |
 | **Status** | Active |
+| **Breaking Change** | v2.0: 11 sections, execution commands in Section 4, IPLAN deprecated |
 
 ---
 
@@ -154,18 +158,23 @@ custom_fields:
 | Parent SPEC | Yes | SPEC-NN reference |
 | Complexity | Yes | 1-5 scale |
 
-### 3.3 Mandatory Sections
+### 3.3 Mandatory Sections (v2.0 - 11 sections)
 
 | Section | Purpose |
 |---------|---------|
-| 1. Scope | Define implementation boundaries |
-| 2. Plan | Numbered implementation steps |
-| 3. Constraints | Technical and development limitations |
-| 4. Acceptance | Verification requirements |
-| 5. Dependencies | Upstream/downstream artifacts |
-| 6. Traceability Tags | Links to all upstream artifacts |
-| 7. File Structure | Output file organization |
-| 8. Implementation Contracts | ICON integration (mandatory) |
+| 1. Objective | Deliverables and business value |
+| 2. Scope | Inclusions, exclusions, prerequisites |
+| 3. Implementation Plan | Phased steps with durations |
+| 4. Execution Commands | Setup, implementation, validation (replaces IPLAN) |
+| 5. Constraints | Technical and quality constraints |
+| 6. Acceptance Criteria | Functional, quality, operational criteria |
+| 7. Implementation Contracts | ICON integration (mandatory) |
+| 8. Traceability | Upstream refs, tags, code locations |
+| 9. Risk & Mitigation | Risk table with mitigations |
+| 10. Session Log | Progress tracking |
+| 11. Change History | Version history |
+
+> **Note**: v1.x had 8 mandatory sections. v2.0 has 11, with execution commands (formerly IPLAN) in Section 4.
 
 ---
 
@@ -300,40 +309,39 @@ Build the whole gateway system.
 
 ---
 
-## 8. Implementation Contracts Section (MANDATORY)
+## 8. Implementation Contracts Section (MANDATORY) - v2.0: Section 7
 
-### Section 8 Requirements
+### Section 7 Requirements (v2.0)
 
-Every TASKS document MUST include "## 8. Implementation Contracts":
+Every TASKS document MUST include "## 7. Implementation Contracts":
 
 ```markdown
-## 8. Implementation Contracts
+## 7. Implementation Contracts
 
-### 8.1 Contracts Provided (if provider)
+### 7.1 Contracts Provided (if provider)
 
-@icon: ICON-01:ContractName
-@icon-role: provider
+| Contract Name | Type | Consumers | File |
+|---------------|------|-----------|------|
+| [InterfaceName] | Protocol | TASKS-XX, TASKS-YY | `src/contracts/[name].py` |
 
-This TASKS implements the following contract:
-- [ICON-01](../ICON/ICON-01.md): [Contract description]
+### 7.2 Contracts Consumed (if consumer)
 
-### 8.2 Contracts Consumed (if consumer)
+| Source | Contract Name | Type | Usage |
+|--------|---------------|------|-------|
+| TASKS-NN | [ContractName] | Protocol | [How it's used] |
 
-@icon: ICON-01:ContractName
-@icon-role: consumer
-
-This TASKS depends on:
-- [ICON-01](../ICON/ICON-01.md): [Usage description]
-
-### 8.3 No Contracts (if neither)
-
-No implementation contracts for this TASKS.
 ```
+
+If no contracts: State "No implementation contracts for this TASKS."
+
+> **Note**: In v1.x, this was Section 8. Updated to Section 7 in v2.0.
 
 ### Validation
 
 ```bash
-# Section 8 must exist
+# Section 7 must exist (v2.0)
+grep -q "## 7. Implementation Contracts" TASKS-NN.md
+# Or check for legacy v1.x
 grep -q "## 8. Implementation Contracts" TASKS-NN.md
 ```
 
@@ -375,21 +383,22 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 - [ ] BDD scenarios are defined
 - [ ] Architecture decisions (ADR) documented
 
-### During Creation
+### During Creation (v2.0)
 
-- [ ] Use TASKS-TEMPLATE.md as starting point
-- [ ] Follow all section rules above
+- [ ] Use TASKS-TEMPLATE.md v2.0 as starting point
+- [ ] Follow all 11 section rules above
 - [ ] Include specific SPEC line references
-- [ ] Define measurable acceptance criteria
-- [ ] Include Section 8 (Implementation Contracts)
+- [ ] Include execution commands in Section 4
+- [ ] Define measurable acceptance criteria (Section 6)
+- [ ] Include Section 7 (Implementation Contracts)
 
 ### After Creation
 
-- [ ] All traceability tags valid
+- [ ] All traceability tags valid (Section 8)
 - [ ] Links resolve to existing documents
 - [ ] Update TASKS-00_index.md
 - [ ] Run validation script
-- [ ] Notify downstream IPLAN creators
+- [ ] Update DEVELOPMENT_PLAN.md with new TASKS entry
 
 ---
 
@@ -397,12 +406,14 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 
 ### Avoid
 
-1. **Vague scope** - Be specific about boundaries
-2. **Generic steps** - Each step should be actionable
-3. **Missing SPEC references** - Always link to SPEC lines
-4. **No acceptance criteria** - Must be verifiable
-5. **Missing Section 8** - ALWAYS include contracts section
-6. **Orphaned contracts** - ICON references must exist
+1. **Vague scope** - Be specific about boundaries (Section 2)
+2. **Generic steps** - Each step should be actionable (Section 3)
+3. **Missing execution commands** - Section 4 required in v2.0
+4. **Missing SPEC references** - Always link to SPEC lines
+5. **No acceptance criteria** - Must be verifiable (Section 6)
+6. **Missing Section 7** - ALWAYS include contracts section
+7. **Orphaned contracts** - ICON references must exist
+8. **Using deprecated IPLAN** - Execution commands now in Section 4
 
 ---
 
@@ -414,12 +425,13 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 ./scripts/validate_tasks.sh /path/to/TASKS-NN_name.md
 ```
 
-### Manual Checklist
+### Manual Checklist (v2.0)
 
 - [ ] Filename follows convention
-- [ ] All 8 required sections present
-- [ ] Traceability tags complete
-- [ ] Section 8 Implementation Contracts included
+- [ ] All 11 required sections present
+- [ ] Execution commands in Section 4
+- [ ] Traceability tags complete (Section 8)
+- [ ] Section 7 Implementation Contracts included
 - [ ] SPEC references valid
 - [ ] BDD scenario links valid
 
@@ -493,8 +505,9 @@ Include ONLY if relationships exist between TASKS documents sharing implementati
 
 ---
 
-**Document Version**: 1.0.0
-**Last Updated**: 2025-11-27
+**Document Version**: 2.0.0
+**Last Updated**: 2026-01-15
+**Schema Version**: TASKS v2.0 (11 sections, IPLAN deprecated)
 
 ---
 
@@ -551,4 +564,8 @@ python scripts/validate_cross_document.py --layer TASKS --auto-fix
 
 ### Quality Gate
 
-**Blocking**: YES - Cannot proceed to IPLAN creation until Phase 1 validation passes with 0 errors.
+**Blocking**: YES - Cannot proceed to implementation until Phase 1 validation passes with 0 errors.
+
+**Workflow (v2.0)**: `SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
+
+> **Note**: IPLAN (Layer 12) has been deprecated. Execution commands are now included directly in TASKS Section 4. See `12_IPLAN/DEPRECATED.md` for migration guidance.

@@ -1,17 +1,25 @@
 ---
-title: "IPLAN Example Documents"
+title: "IPLAN Example Documents [DEPRECATED]"
 tags:
   - index-document
   - layer-12-artifact
   - shared-architecture
+  - deprecated
 custom_fields:
   document_type: readme
   artifact_type: IPLAN
   layer: 12
-  priority: shared
+  priority: deprecated
+  development_status: deprecated
+  deprecated_date: "2026-01-15"
+  replacement: "ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md"
 ---
 
-# IPLAN Example Documents
+# IPLAN Example Documents [DEPRECATED]
+
+> **⚠️ DEPRECATED**: IPLAN has been merged into TASKS (Layer 11) as of 2026-01-15.
+> Use [`ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`](../../11_TASKS/TASKS-TEMPLATE.md) for all new work.
+> See [../DEPRECATED.md](../DEPRECATED.md) for migration guide.
 
 ## Purpose
 

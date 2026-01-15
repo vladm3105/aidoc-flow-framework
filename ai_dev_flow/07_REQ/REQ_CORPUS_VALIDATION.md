@@ -90,7 +90,7 @@ docs/07_REQ/
 | `CTR-NN` | 9 | CTR don't exist during REQ creation |
 | `SPEC-NN` | 10 | SPECs don't exist during REQ creation |
 | `TASKS-NN` | 11 | TASKS don't exist during REQ creation |
-| `IPLAN-NN` | 12 | IPLANs don't exist during REQ creation |
+| `IPLAN-NN` | 12 | **DEPRECATED** - IPLAN merged into TASKS (2026-01-15) |
 
 **Allowed Patterns** (generic references):
 - "This will inform SPEC development"

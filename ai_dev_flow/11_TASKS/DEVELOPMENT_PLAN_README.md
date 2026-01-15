@@ -1,8 +1,15 @@
 # Development Plan & Implementation Tracker - User Guide
 
+**Schema Version**: 2.0 (TASKS v2.0 - IPLAN deprecated)
+**Last Updated**: 2026-01-15
+
 ## Purpose
 
 The Development Plan serves as the **central command center** for tracking TASKS (Layer 11) implementation across all development phases. It organizes work into priority-ordered phases with built-in quality gates and workflow enforcement.
+
+**Workflow (v2.0)**: `SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
+
+> **Note**: IPLAN (Layer 12) has been deprecated. Execution commands are now in TASKS Section 4.
 
 **Key Functions:**
 - **Implementation Roadmap**: Organize TASKS by phase and priority
@@ -37,49 +44,45 @@ For each phase, add TASKS entries in the YAML blocks following the template stru
 
 ---
 
-## YAML-Based TASKS Structure
+## YAML-Based TASKS Structure (v2.0)
 
-Each TASKS entry uses this comprehensive structure:
+Each TASKS entry uses this structure (matching the YAML block in TASKS-TEMPLATE.md v2.0):
 
 ```yaml
-phase_N_tasks:
-  - id: TASKS-XX                      # Unique TASKS identifier
-    service_name: "[Service Name]"    # Human-readable description
-    priority: P0                      # P0 (critical), P1, P2
-    dependents: "[Component Names]"   # What depends on this
+# Machine-parsable tracking for DEVELOPMENT_PLAN.md integration
+tasks_tracking:
+  id: TASKS-NN                        # Unique TASKS identifier
+  service_name: "[Service/Component Name]"  # Human-readable description
+  priority: P0                        # P0 (critical), P1, P2
+  dependents: "[Components that depend on this]"  # What depends on this
+  
+  workflow:
+    # PRE-EXECUTION VERIFICATION (Rule 3)
+    pre_check:
+      status: NOT_STARTED             # NOT_STARTED → COMPLETED
+      checklist:
+        - verified_req: false         # Verified against REQ-NN
+        - verified_spec: false        # Verified against SPEC-NN
+        - confirmed_arch: false       # Confirmed architecture pattern
+        - checked_deps: false         # All dependencies available
     
-    workflow:
-      # PRE-EXECUTION VERIFICATION (Rule 3)
-      pre_check:
-        status: NOT_STARTED           # NOT_STARTED → COMPLETED
-        checklist:
-          - verified_req: false       # ✅ Verified against REQ-NN
-          - verified_tasks: false     # ✅ Verified against TASKS-NN  
-          - confirmed_arch: false     # ✅ Confirmed Architecture
-          - checked_gaps: false       # ✅ Checked for gaps
-          - reviewed_upstream: false  # ✅ Reviewed upstream docs
-          - confirmed_deps: false     # ✅ Confirmed dependencies
-      
-      # MAIN IMPLEMENTATION
-      tasks:
-        status: NOT_STARTED           # Status progression tracking
-        iplan_id: IPLAN-XX            # Associated implementation plan
-        iplan_status: NOT_STARTED     # IPLAN execution status
-      
-      # POST-EXECUTION UPDATES (Rules 1 & 2)
-      post_check:
-        status: NOT_STARTED
-        checklist:
-          # Rule 2: Phase Tracker Update
-          - tasks_status_updated: false    # ✅ Update TASKS status
-          - iplan_status_updated: false    # ✅ Update IPLAN status
-          - completion_date_added: false   # ✅ Add completion date
-          # Rule 1: Session Log Update
-          - session_log_date: false        # ✅ Log completion date
-          - session_log_task_id: false     # ✅ Log TASKS ID
-          - session_log_status: false      # ✅ Log COMPLETED status
-          - session_log_summary: false     # ✅ Log work summary
+    # MAIN IMPLEMENTATION
+    implementation:
+      status: NOT_STARTED             # NOT_STARTED → IN_PROGRESS → COMPLETED
+      started: null                   # YYYY-MM-DD
+      completed: null                 # YYYY-MM-DD
+    
+    # POST-EXECUTION UPDATES (Rules 1 & 2)
+    post_check:
+      status: NOT_STARTED
+      checklist:
+        - tests_passing: false        # All tests pass
+        - coverage_met: false         # Coverage thresholds met
+        - docs_updated: false         # Documentation updated
+        - session_logged: false       # Session log entry added
 ```
+
+> **Note**: This structure is embedded in each TASKS document's "Development Plan Tracking" section. The DEVELOPMENT_PLAN.md aggregates these into phase groups.
 
 ---
 
@@ -87,18 +90,16 @@ phase_N_tasks:
 
 ### Rule 3: Pre-Execution Verification (BEFORE Implementation)
 
-**When**: Before starting ANY 11_TASKS/IPLAN implementation
+**When**: Before starting ANY TASKS implementation
 
 **Complete These Checks:**
 ```yaml
 pre_check:
   checklist:
     - verified_req: true          # Read and understood REQ-NN
-    - verified_tasks: true        # Reviewed TASKS-NN scope
+    - verified_spec: true         # Reviewed SPEC-NN technical spec
     - confirmed_arch: true        # Validated architecture pattern
-    - checked_gaps: true          # No missing logic/fields
-    - reviewed_upstream: true     # Consistency with upstream
-    - confirmed_deps: true        # All dependencies available
+    - checked_deps: true          # All dependencies available
 ```
 
 **How to Mark Complete:**
@@ -117,19 +118,20 @@ pre_check:
 ```yaml
 post_check:
   checklist:
-    - tasks_status_updated: true       # Updated in YAML above
-    - iplan_status_updated: true       # Updated in YAML above
-    - completion_date_added: true      # Added to notes
+    - tests_passing: true         # All tests pass
+    - coverage_met: true          # Coverage thresholds met
+    - docs_updated: true          # Documentation updated
+    - session_logged: true        # Session log entry added
 ```
 
 **How to Execute:**
 1. In the YAML block, update:
    ```yaml
-   tasks:
-     status: COMPLETED              # Change from IN_PROGRESS
-     iplan_status: COMPLETED        # If IPLAN was used
+   implementation:
+     status: COMPLETED            # Change from IN_PROGRESS
+     completed: 2026-01-15        # Add completion date
    ```
-2. Mark phase tracker checklist items as `true`
+2. Mark post_check checklist items as `true`
 
 ---
 
@@ -169,13 +171,15 @@ post_check:
 | `COMPLETED` | Finished & verified | All work done, tests pass, documented |
 | `DEFERRED` | Postponed | Moved to later phase or release |
 
-### Typical Status Flow
+### Typical Status Flow (v2.0)
 
 ```
-pre_check:   NOT_STARTED → COMPLETED (verify all checklist items)
-tasks:       NOT_STARTED → IN_PROGRESS → COMPLETED
-post_check:  NOT_STARTED → COMPLETED (update tracking)
+pre_check:      NOT_STARTED → COMPLETED (verify all checklist items)
+implementation: NOT_STARTED → IN_PROGRESS → COMPLETED
+post_check:     NOT_STARTED → COMPLETED (update tracking)
 ```
+
+> **Note**: The v2.0 YAML structure uses `implementation` (not `tasks`) as the main workflow block.
 
 ---
 
@@ -207,7 +211,7 @@ post_check:  NOT_STARTED → COMPLETED (update tracking)
 
 **Required Fields:**
 - **Date**: YYYY-MM-DD format
-- **Task ID**: TASKS-NN or IPLAN-NN
+- **Task ID**: TASKS-NN
 - **Status**: Current status after this session
 - **Notes**: Key accomplishments, technologies, blockers, verification
 
@@ -240,7 +244,8 @@ with open('DEVELOPMENT_PLAN.md') as f:
 ### 2. Progress Dashboards
 ```python
 def calculate_phase_progress(phase_data):
-    completed = sum(1 for t in phase_data if t['workflow']['tasks']['status'] == 'COMPLETED')
+    # v2.0: Use 'implementation' instead of 'tasks'
+    completed = sum(1 for t in phase_data if t['workflow']['implementation']['status'] == 'COMPLETED')
     total = len(phase_data)
     return (completed / total) * 100
 ```
@@ -248,30 +253,31 @@ def calculate_phase_progress(phase_data):
 ### 3. Validation Scripts
 ```python
 def validate_workflow(task):
-    """Ensure workflow rules are followed"""
+    """Ensure workflow rules are followed (v2.0 structure)"""
     pre = task['workflow']['pre_check']
-    main = task['workflow']['tasks']
+    impl = task['workflow']['implementation']  # v2.0: 'implementation' not 'tasks'
     post = task['workflow']['post_check']
     
-    # Rule: Can't start TASKS without pre_check complete
-    if main['status'] != 'NOT_STARTED' and pre['status'] != 'COMPLETED':
+    # Rule: Can't start implementation without pre_check complete
+    if impl['status'] != 'NOT_STARTED' and pre['status'] != 'COMPLETED':
         raise ValidationError(f"{task['id']}: Started without pre-check")
     
-    # Rule: Can't complete TASKS without post_check
-    if main['status'] == 'COMPLETED' and post['status'] != 'COMPLETED':
+    # Rule: Can't complete implementation without post_check
+    if impl['status'] == 'COMPLETED' and post['status'] != 'COMPLETED':
         raise ValidationError(f"{task['id']}: Completed without post-check")
 ```
 
 ### 4. Dependency Tracking
 ```python
 def check_dependencies(plan):
-    """Verify all dependencies are met before starting"""
+    """Verify all dependencies are met before starting (v2.0 structure)"""
     for task in plan['tasks']:
-        if task['workflow']['tasks']['status'] == 'IN_PROGRESS':
+        # v2.0: Use 'implementation' instead of 'tasks'
+        if task['workflow']['implementation']['status'] == 'IN_PROGRESS':
             # Check all dependents are complete
             for dep_id in parse_dependents(task['dependents']):
                 dep_task = find_task(plan, dep_id)
-                if dep_task['workflow']['tasks']['status'] != 'COMPLETED':
+                if dep_task['workflow']['implementation']['status'] != 'COMPLETED':
                     print(f"WARNING: {task['id']} started but {dep_id} not complete")
 ```
 
@@ -332,27 +338,52 @@ python scripts/validate_development_plan.py docs/DEVELOPMENT_PLAN.md
 
 ## Integration with Framework
 
-### Relationship to Other Artifacts
+### Relationship to Other Artifacts (v2.0)
 
 ```
-REQ (Layer 7) → TASKS (Layer 11) → IPLAN (Layer 12) → Implementation
-                     ↓
-            DEVELOPMENT_PLAN.md
-            (tracks TASKS execution)
+REQ (Layer 7) → SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests
+                                        ↓
+                                DEVELOPMENT_PLAN.md
+                                (tracks TASKS execution)
 ```
+
+### TASKS v2.0 Document Structure
+
+The unified TASKS document (v2.0) has **11 sections**:
+
+| Section | Purpose | Development Plan Relevance |
+|---------|---------|---------------------------|
+| 1. Objective | Deliverables and business value | What to track |
+| 2. Scope | Inclusions, exclusions, prerequisites | Dependencies |
+| 3. Implementation Plan | Phased steps with durations | Phase mapping |
+| 4. Execution Commands | Setup, implementation, validation | **Replaces IPLAN** |
+| 5. Constraints | Technical and quality constraints | Verification criteria |
+| 6. Acceptance Criteria | Functional, quality, operational | Success measures |
+| 7. Implementation Contracts | Provider/consumer contracts | Parallel dev coordination |
+| 8. Traceability | Upstream refs, tags, code locations | Audit trail |
+| 9. Risk & Mitigation | Risk table | Blocker prediction |
+| 10. Session Log | Progress tracking | **Syncs with Dev Plan** |
+| 11. Change History | Version history | Change tracking |
+
+**Key Changes from v1.x:**
+- **Section 4 (Execution Commands)**: Now contains bash commands previously in IPLAN
+- **Section 7 (Implementation Contracts)**: Was Section 8 in v1.x
+- **YAML Tracking Block**: Embedded in each TASKS for Development Plan integration
 
 **Development Plan Role:**
 - Organizes TASKS into phases
 - Tracks TASKS implementation status
-- Links TASKS to IPLAN
-- Enforces workflow rules
-- Maintains audit trail
+- Enforces workflow rules (pre/post checks)
+- Maintains audit trail via session log
+- Aggregates YAML tracking blocks from individual TASKS documents
 
 ### References
 - **Template**: `ai_dev_flow/11_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`
+- **TASKS Template**: `ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`
 - **TASKS Documentation**: `ai_dev_flow/11_TASKS/README.md`
-- **IPLAN Documentation**: `ai_dev_flow/12_IPLAN/README.md`
 - **Workflow Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+
+> **Note**: IPLAN (Layer 12) has been deprecated. Execution commands are now included directly in TASKS documents.
 
 ---
 
@@ -365,38 +396,38 @@ pre_check:
   status: NOT_STARTED
   checklist:
     - verified_req: false
-    ...
+    - verified_spec: false
+    - confirmed_arch: false
+    - checked_deps: false
 ```
 
-**Action**: Review REQ-42, TASKS-42, check architecture
+**Action**: Review REQ-NN, SPEC-NN, check architecture
 ```yaml
 # AFTER verification
 pre_check:
   status: COMPLETED          # ← Changed
   checklist:
     - verified_req: true     # ← All true
-    - verified_tasks: true
+    - verified_spec: true    # v2.0: 'spec' not 'tasks'
     - confirmed_arch: true
-    - checked_gaps: true
-    - reviewed_upstream: true
-    - confirmed_deps: true
+    - checked_deps: true
 ```
 
 ### 2. Implementation
 ```yaml
-tasks:
+implementation:
   status: IN_PROGRESS        # ← Mark when you start
-  iplan_id: IPLAN-42
-  iplan_status: IN_PROGRESS
+  started: 2026-01-15        # ← Add start date
+  completed: null
 ```
 
-**Action**: Implement code, write tests, verify
+**Action**: Implement code using execution commands in TASKS document, write tests, verify
 
 ```yaml
-tasks:
+implementation:
   status: COMPLETED          # ← Mark when done
-  iplan_id: IPLAN-42
-  iplan_status: COMPLETED
+  started: 2026-01-15
+  completed: 2026-01-15      # ← Add completion date
 ```
 
 ### 3. Post-Execution (Rules 1 & 2)
@@ -404,22 +435,21 @@ tasks:
 post_check:
   status: NOT_STARTED
   checklist:
-    - tasks_status_updated: false
-    ...
+    - tests_passing: false
+    - coverage_met: false
+    - docs_updated: false
+    - session_logged: false
 ```
 
-**Action**: Update YAML above, add session log entry
+**Action**: Verify tests, update documentation, add session log entry
 ```yaml
 post_check:
   status: COMPLETED               # ← Changed
   checklist:
-    - tasks_status_updated: true  # ← All true
-    - iplan_status_updated: true
-    - completion_date_added: true
-    - session_log_date: true
-    - session_log_task_id: true
-    - session_log_status: true
-    - session_log_summary: true
+    - tests_passing: true         # ← All true
+    - coverage_met: true
+    - docs_updated: true
+    - session_logged: true
 ```
 
 **Session Log Entry Added:**
@@ -433,10 +463,27 @@ post_check:
 
 The Development Plan transforms implementation tracking from "optional documentation" to "enforced workflow" by:
 
-✅ Embedding quality gates (pre/post checks) directly in TASKS structure
-✅ Using machine-parsable YAML for automation and reporting
-✅ Maintaining complete audit trail through session log
-✅ Enforcing discipline through detailed checklists
-✅ Providing clear status progression and dependency tracking
+- Embedding quality gates (pre/post checks) directly in TASKS structure
+- Using machine-parsable YAML for automation and reporting
+- Maintaining complete audit trail through session log
+- Enforcing discipline through detailed checklists
+- Providing clear status progression and dependency tracking
+- **v2.0**: Integrating with unified TASKS documents (IPLAN merged into Section 4)
+
+### Key v2.0 Changes
+
+| Aspect | v1.x | v2.0 |
+|--------|------|------|
+| Workflow | SPEC → TASKS → IPLAN → Code | SPEC → TASKS → Code |
+| Execution commands | Separate IPLAN document | TASKS Section 4 |
+| YAML field | `tasks.status` | `implementation.status` |
+| Pre-check | `verified_tasks` | `verified_spec` |
+| Contracts section | Section 8 | Section 7 |
 
 **Remember**: The plan is only useful if you update it! Make updates immediately after completing work, not days later.
+
+---
+
+**Document Version**: 2.0
+**Last Updated**: 2026-01-15
+**Schema Reference**: TASKS-TEMPLATE.md v2.0

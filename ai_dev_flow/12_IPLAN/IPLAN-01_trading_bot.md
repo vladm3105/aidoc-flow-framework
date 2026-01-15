@@ -1,4 +1,10 @@
 # =============================================================================
+# DEPRECATED: IPLAN has been merged into TASKS (Layer 11)
+# 
+# As of 2026-01-15, IPLAN functionality is now part of TASKS-TEMPLATE.md.
+# Use TASKS-TEMPLATE.md for all new implementation work.
+# See: ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md
+# =============================================================================
 # 📋 Document Authority: This is the PRIMARY STANDARD for IPLAN structure.
 # All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
 # - In case of conflict, this template is the single source of truth
@@ -8,30 +14,37 @@
 #   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
 # =============================================================================
 ---
-title: "IPLAN-TEMPLATE: Implementation Plan"
+title: "IPLAN-01: Trading Bot Example [DEPRECATED]"
 tags:
   - iplan-template
   - layer-12-artifact
   - shared-architecture
   - document-template
+  - deprecated
 custom_fields:
   document_type: template
   artifact_type: IPLAN
   layer: 12
   architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
+  priority: deprecated
+  development_status: deprecated
+  deprecated_date: "2026-01-15"
+  replacement: "ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md"
   template_for: implementation-plan
   schema_reference: "IPLAN_SCHEMA.yaml"
   schema_version: "1.0"
 ---
+
+> **⚠️ DEPRECATED**: IPLAN has been merged into TASKS (Layer 11) as of 2026-01-15.
+> Use [`ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`](../11_TASKS/TASKS-TEMPLATE.md) for all new work.
+> See [DEPRECATED.md](./DEPRECATED.md) for migration guide.
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for IPLAN structure.
 > - **Schema**: `IPLAN_SCHEMA.yaml v1.0` - Validation rules
 > - **Creation Rules**: `IPLAN_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `IPLAN_VALIDATION_RULES.md` - Post-creation checks
 
-# Implementation Plan - IPLAN-01: [Descriptive Task/Feature Name]
+# Implementation Plan - IPLAN-01: [Descriptive Task/Feature Name] [DEPRECATED]
 
 **⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 

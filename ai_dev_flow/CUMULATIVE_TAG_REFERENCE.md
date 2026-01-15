@@ -29,10 +29,11 @@ Each layer N requires tags from layers 1 through N-1, with adjustments for optio
 | 9 | CTR | 7 | 8 | @brd→@req, +opt @impl | Optional layer |
 | 10 | SPEC | 7 | 9 | @brd→@req, +opt @impl/@ctr | |
 | 11 | TASKS | 8 | 10 | @brd→@spec, +opt @impl/@ctr | +opt @icon (excluded from count) |
-| 12 | IPLAN | 9 | 11 | @brd→@tasks, +opt @impl/@ctr | |
-| 13 | Code | 10 | 12 | @brd→@iplan, +opt @impl/@ctr | |
-| 14 | Tests | 11 | 13 | @brd→@code, +opt @impl/@ctr | |
-| 15 | Validation | 10+ | 15+ | All upstream (advisory) | Count not strictly enforced |
+| 12 | Code | 9 | 11 | @brd→@tasks, +opt @impl/@ctr | |
+| 13 | Tests | 10 | 12 | @brd→@code, +opt @impl/@ctr | |
+| 14 | Validation | 9+ | 14+ | All upstream (advisory) | Count not strictly enforced |
+
+**Note**: IPLAN (formerly Layer 12) has been **deprecated** as of 2026-01-15. Execution commands are now part of TASKS (Section 4).
 
 **CHG Note**: CHG is NOT a layer - it's a change management procedure. CHG artifacts don't require tags.
 
@@ -54,13 +55,13 @@ Each layer N requires tags from layers 1 through N-1, with adjustments for optio
 Expected Tags = Layer Number - 1
 ```
 
-### Layers 10-15 (Range)
+### Layers 10-14 (Range)
 ```
 Min Tags = Base + Present Optional Layers
 Max Tags = Base + Total Optional Layers (2)
 
 Where:
-  Base = 7 for L10, 8 for L11, 9 for L12, 10 for L13, 11 for L14
+  Base = 7 for L10, 8 for L11, 9 for L12, 10 for L13
   Present Optional Layers = count(IMPL in project, CTR in project)
   Total Optional Layers = 2 (IMPL + CTR)
 ```
@@ -73,27 +74,24 @@ Where:
 ```
 SPEC (L10):  7 tags  (@brd, @prd, @ears, @bdd, @adr, @sys, @req)
 TASKS (L11): 8 tags  (@brd→@spec)
-IPLAN (L12): 9 tags  (@brd→@tasks)
-Code (L13):  10 tags (@brd→@iplan)
-Tests (L14): 11 tags (@brd→@code)
+Code (L12):  9 tags  (@brd→@tasks)
+Tests (L13): 10 tags (@brd→@code)
 ```
 
 ### Scenario B: Project WITH IMPL, WITHOUT CTR
 ```
 SPEC (L10):  8 tags  (@brd→@req + @impl)
 TASKS (L11): 9 tags  (@brd→@spec)
-IPLAN (L12): 10 tags (@brd→@tasks)
-Code (L13):  11 tags (@brd→@iplan)
-Tests (L14): 12 tags (@brd→@code)
+Code (L12):  10 tags (@brd→@tasks)
+Tests (L13): 11 tags (@brd→@code)
 ```
 
 ### Scenario C: Project WITH IMPL AND CTR
 ```
 SPEC (L10):  9 tags  (@brd→@req + @impl + @ctr)
 TASKS (L11): 10 tags (@brd→@spec)
-IPLAN (L12): 11 tags (@brd→@tasks)
-Code (L13):  12 tags (@brd→@iplan)
-Tests (L14): 13 tags (@brd→@code)
+Code (L12):  11 tags (@brd→@tasks)
+Tests (L13): 12 tags (@brd→@code)
 ```
 
 ---
@@ -127,14 +125,13 @@ def get_expected_tag_count(layer: int, has_impl: bool, has_ctr: bool) -> tuple[i
     if has_ctr:
         optional_layers += 1
     
-    # Layer-specific base counts
+    # Layer-specific base counts (IPLAN deprecated - layers shifted)
     layer_bases = {
         10: 7,   # SPEC
         11: 8,   # TASKS
-        12: 9,   # IPLAN
-        13: 10,  # Code
-        14: 11,  # Tests
-        15: 10,  # Validation (advisory)
+        12: 9,   # Code (was 13, shifted after IPLAN deprecation)
+        13: 10,  # Tests (was 14, shifted after IPLAN deprecation)
+        14: 9,   # Validation (advisory) (was 15, shifted after IPLAN deprecation)
     }
     
     if layer not in layer_bases:
@@ -142,11 +139,11 @@ def get_expected_tag_count(layer: int, has_impl: bool, has_ctr: bool) -> tuple[i
     
     base = layer_bases[layer]
     
-    # Layer 15 (Validation) has advisory range
-    if layer == 15:
-        return (base, 15)
+    # Layer 14 (Validation) has advisory range
+    if layer == 14:
+        return (base, 14)
     
-    # Layers 10-14: Range based on optional layers
+    # Layers 10-13: Range based on optional layers
     min_count = base + optional_layers
     max_count = base + 2  # Maximum 2 optional layers (IMPL + CTR)
     

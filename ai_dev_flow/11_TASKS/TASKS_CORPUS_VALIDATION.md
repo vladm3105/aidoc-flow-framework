@@ -14,7 +14,9 @@
 
 ## Overview
 
-This document defines **corpus-level validation rules** that run AFTER all TASKS (Task Breakdown) files are created but BEFORE IPLAN creation begins. TASKS documents decompose SPEC into AI-structured TODO tasks with dependency tracking.
+This document defines **corpus-level validation rules** that run AFTER all TASKS (Task Breakdown) files are created but BEFORE code implementation begins. TASKS documents decompose SPEC into AI-structured TODO tasks with dependency tracking.
+
+> **Note**: As of 2026-01-15, IPLAN has been **DEPRECATED** and merged into TASKS. Execution commands are now part of TASKS Section 4.
 
 ### Validation Hierarchy
 
@@ -32,7 +34,7 @@ All TASKS Complete
         ↓
 TASKS_CORPUS_VALIDATION.md (corpus-level) ← Quality Gate
         ↓
-PASS → Begin IPLAN Creation (Layer 12)
+PASS → Begin Code Implementation (Layer 12)
 FAIL → Fix issues, re-run corpus validation
 ```
 
@@ -72,17 +74,19 @@ docs/11_TASKS/
 
 **Severity**: Error (blocking)
 
-**Rationale**: TASKS is Layer 11. It should NOT reference specific numbered IPLAN documents that don't exist yet.
+**Rationale**: TASKS is Layer 11. It should NOT reference specific code file paths that don't exist yet.
 
 **Patterns to Flag**:
 | Pattern | Layer | Issue |
 |---------|-------|-------|
-| `IPLAN-NN` | 12 | IPLANs don't exist during TASKS creation |
+| Non-existent source file paths | 12 | Code files don't exist during TASKS creation |
 
 **Allowed Patterns** (generic references):
-- "This will inform IPLAN development"
+- "This will be implemented in..."
 - "Downstream execution will..."
-- "See future implementation plan"
+- "See implementation section"
+
+> **Note**: IPLAN (formerly Layer 12) has been deprecated. Execution commands are now part of TASKS Section 4.
 
 ---
 
@@ -366,7 +370,7 @@ done
 
 ## 4. Validation Checklist
 
-### Pre-IPLAN Gate Checklist
+### Pre-Code Gate Checklist
 
 - [ ] **CORPUS-01**: No placeholder text for existing documents
 - [ ] **CORPUS-02**: No premature downstream references
@@ -455,24 +459,26 @@ validate-tasks-verbose:
 	@./scripts/validate_tasks_corpus.sh docs/TASKS --verbose
 
 # Include in combined validation target
-validate-all: validate-brd validate-prd validate-ears validate-bdd validate-adr validate-sys validate-req validate-spec validate-tasks validate-iplan
+validate-all: validate-brd validate-prd validate-ears validate-bdd validate-adr validate-sys validate-req validate-spec validate-tasks
 	@echo "All corpus validations complete"
 ```
 
-### Integration with IPLAN Layer Gate
+### Integration with Code Layer Gate
 
-TASKS corpus validation should pass before creating IPLAN documents:
+TASKS corpus validation should pass before beginning code implementation:
 
 ```bash
-# Pre-IPLAN gate check
+# Pre-Code gate check
 ./scripts/validate_tasks_corpus.sh docs/TASKS
 if [ $? -eq 0 ]; then
-  echo "✓ TASKS corpus valid - ready for IPLAN layer creation"
+  echo "✓ TASKS corpus valid - ready for code implementation (Layer 12)"
 else
-  echo "❌ Fix TASKS corpus errors before proceeding to IPLAN layer"
+  echo "❌ Fix TASKS corpus errors before proceeding to code implementation"
   exit 1
 fi
 ```
+
+> **Note**: IPLAN has been deprecated. Execution commands are now in TASKS Section 4.
 
 ---
 

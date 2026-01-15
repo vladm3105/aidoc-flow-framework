@@ -228,8 +228,9 @@ CTR must reference:
 
 CTR is referenced by:
 - `@tasks: TASKS.NN.EE.SS` - Implementation tasks
-- `@iplan: IPLAN-NN` - Implementation plans
-- Code implementations
+- Code implementations (Layer 12)
+
+> **Note**: IPLAN has been deprecated as of 2026-01-15 and merged into TASKS.
 
 ### 5.3 Tag Format
 

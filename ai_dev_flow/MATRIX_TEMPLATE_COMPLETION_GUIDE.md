@@ -85,10 +85,10 @@ custom_fields:
     - Tag count: 8-10
     - Implementation tasks with all upstream references
 
-13. **IPLAN-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 12)
-    - Required tags: `@brd` through `@tasks`
-    - Tag count: 9-11
-    - Session-specific implementation plans
+13. **IPLAN-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 12 - **DEPRECATED**)
+    - **Status**: DEPRECATED as of 2026-01-15
+    - IPLAN has been merged into TASKS (execution commands are now in TASKS Section 4)
+    - See 12_IPLAN/DEPRECATED.md for migration guide
 
 ## 3. Remaining Templates
 
@@ -189,7 +189,7 @@ Layer 8 (IMPL): @brd through @req (7 tags)  # Optional
 Layer 9 (CTR): @brd through @impl (8 tags)  # Optional
 Layer 10 (SPEC): @brd through @req + optional @impl, @ctr (7-9 tags)
 Layer 11 (TASKS): @brd through @spec (8-10 tags)
-Layer 12 (IPLAN): @brd through @tasks (9-11 tags)
+Layer 12 (IPLAN - DEPRECATED): @brd through @tasks (9-11 tags)
 ```
 
 ### 3.3 Validation Commands Template
@@ -236,7 +236,7 @@ python scripts/generate_traceability_matrix.py \
 4. ✅ Examples use consistent request submission Service scenario
 5. ✅ Proper section renumbering across all templates
 
-**Files Modified**: 7 templates (BDD, ADR, SYS, IMPL, CTR, TASKS, IPLAN)
+**Files Modified**: 6 templates (BDD, ADR, SYS, IMPL, CTR, TASKS) [IPLAN deprecated]
 **Files Created**: 1 script (add_cumulative_tagging_to_matrices.py)
 **Total Lines Added**: 1,186 lines across all templates
 

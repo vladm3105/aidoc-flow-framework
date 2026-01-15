@@ -50,7 +50,7 @@ python generate_traceability_matrix.py --type ADR --input ../05_ADR/ --output TR
 - Extracts metadata from section 7 Traceability
 - Calculates coverage metrics automatically
 - Generates inventory tables and Mermaid diagrams
-- Supports all document types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN
+- Supports all document types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
 
 **Parameters:**
 - `--type`: Document type (required)
@@ -151,73 +151,11 @@ python3 update_traceability_matrix.py --matrix ../07_REQ/matrix.md --input ../07
 
 ---
 
-### 4. validate_iplan_naming.py
+### 4. ~~validate_iplan_naming.py~~ **DEPRECATED**
 
-Validates IPLAN (Implementation Plan) files against non-timestamped naming conventions.
-
-**Usage:**
-```bash
-python3 validate_iplan_naming.py [base_path]
-```
-
-**Features:**
-- Validates filename format: `IPLAN-NN_{descriptive_slug}.md`
-- Checks sequential ID format (2+ digits, zero-padded)
-- Validates descriptive slug (lowercase, underscore-separated)
-- Confirms H1 ID inside file matches filename ID
-- Detects sequential ID gaps (warnings only)
-- Skips template files (IPLAN-TEMPLATE.md, IPLAN-00_*.md)
-
-**Parameters:**
-- `base_path`: Base directory path (optional, defaults to script parent directory)
-
-**Examples:**
-```bash
-# Validate IPLAN files in default location
-python3 validate_iplan_naming.py
-
-# Validate IPLAN files in specific project
-python3 validate_iplan_naming.py /path/to/project/ai_dev_flow/
-
-# Use in CI/CD pipeline
-python3 validate_iplan_naming.py || exit 1
-```
-
-**Validation Checks:**
-1. **Filename Pattern**: `IPLAN-NN_{slug}.md`
-2. **ID Format**: 2+ digits with zero-padding
-3. **Slug Format**: Lowercase alphanumeric with underscores only, no consecutive/leading/trailing underscores
-4. **H1 ID Match**: Header ID in file matches filename ID
-5. **Sequential Order**: Warns if ID gaps exist (non-blocking)
-
-**Exit Codes:**
-- `0`: Validation passed (warnings allowed)
-- `1`: Validation failed (errors found)
-
-**Example Output:**
-```
-Validating IPLAN files in: 12_IPLAN/
-================================================================================
-
-✅ IPLAN Naming Validation PASSED
-================================================================================
-All IPLAN files follow naming conventions.
-```
-
-**Error Examples:**
-```
-❌ IPLAN Naming Validation FAILED
-================================================================================
-
-ERRORS:
-  • IPLAN-01_test_20251113_140000.md: ID must be 3-4 digits (found 2 digits)
-  • IPLAN-01_Test_Plan_20251113_140000.md: Slug must be lowercase (found 'Test_Plan')
-  • IPLAN-01_test-plan_20251313_140000.md: Invalid month 13 (expected 1-12)
-  • IPLAN-01_test-plan_20251113_140000.md: H1 ID mismatch (filename has IPLAN-01, H1 has IPLAN-02)
-
-⚠️  WARNINGS:
-  • Sequential gap: Expected IPLAN-02, found IPLAN-03 in IPLAN-03_refactor_20251114_100000.md
-```
+> **DEPRECATION NOTICE**: IPLAN has been deprecated and merged into TASKS Section 4 as of 2025-01.
+> The `validate_iplan_naming.py` script is no longer needed for new projects.
+> Execution commands that were in IPLAN files are now in TASKS Section 4.
 
 ---
 
@@ -386,8 +324,8 @@ python scripts/validate_cross_document.py --full --output validation_report.md
 | 8 | IMPL | @brd through @req | 7 |
 | 9 | CTR | @brd through @req (+ optional @impl) | 7-8 |
 | 10 | SPEC | @brd through @req (+ optional @impl, @ctr) | 7-9 |
-| 11 | TASKS | @brd through @spec (+ optional @impl, @ctr) | 8-10 |
-| 12 | IPLAN | @brd through @tasks (+ optional @impl, @ctr) | 9-11 |
+| 11 | TASKS | @brd through @spec (+ optional @impl, @ctr); includes execution commands | 8-10 |
+| 12 | Code | @brd through @tasks | 9-11 |
 
 **Auto-Fix Actions:**
 
@@ -523,20 +461,10 @@ Validates TASKS documents including Section 8 Implementation Contracts.
 - Verifies `@icon` tag integration
 - Validates cumulative tagging hierarchy
 
-### 11. validate_iplan.sh
+### 11. ~~validate_iplan.sh~~ **DEPRECATED**
 
-Validates IPLAN (Implementation Plan) session-based execution plans.
-
-**Usage:**
-```bash
-./scripts/validate_iplan.sh docs/12_IPLAN/IPLAN-01_*.md
-```
-
-**Features:**
-- Validates filename format (no timestamps)
-- Checks session structure
-- Verifies bash command syntax
-- Validates cumulative tagging (Layers 1-11)
+> **DEPRECATION NOTICE**: IPLAN has been deprecated and merged into TASKS Section 4.
+> Use `validate_tasks.sh` instead for validating TASKS files including Section 4 execution commands.
 
 ### 12. validate_icon.sh
 
@@ -697,8 +625,7 @@ python3 validate_traceability_matrix.py --matrix ../05_ADR/TRACEABILITY_MATRIX_A
 # Run validation as part of CI/CD pipeline
 python3 validate_traceability_matrix.py --matrix ../05_ADR/TRACEABILITY_MATRIX_ADR.md --input ../05_ADR/ --strict
 
-# Validate IPLAN naming conventions
-python3 validate_iplan_naming.py
+# Note: IPLAN naming validation deprecated - IPLAN merged into TASKS Section 4
 ```
 
 ### Pre-Commit Hook Example
@@ -714,8 +641,7 @@ python3 scripts/validate_traceability_matrix.py --matrix 05_ADR/TRACEABILITY_MAT
 python3 scripts/validate_traceability_matrix.py --matrix 07_REQ/TRACEABILITY_MATRIX_REQ.md --input 07_REQ/ || exit 1
 python3 scripts/validate_traceability_matrix.py --matrix 10_SPEC/TRACEABILITY_MATRIX_SPEC.md --input 10_SPEC/ || exit 1
 
-echo "Validating IPLAN naming conventions..."
-python3 scripts/validate_iplan_naming.py || exit 1
+# Note: IPLAN naming validation deprecated - IPLAN merged into TASKS Section 4
 
 echo "All validations passed successfully!"
 ```
@@ -760,9 +686,7 @@ jobs:
             --input 10_SPEC/ \
             --strict
 
-      - name: Validate IPLAN Naming
-        run: |
-          python3 scripts/validate_iplan_naming.py
+      # Note: IPLAN naming validation deprecated - IPLAN merged into TASKS Section 4
 ```
 
 ---
@@ -784,7 +708,7 @@ All scripts support the following document types:
 | CTR | API Contracts | `CTR-NN_*.md`, `CTR-NN_*.yaml` |
 | SPEC | Technical Specifications | `SPEC-NN_*.yaml` |
 | TASKS | Code Generation Tasks | `TASKS-NN_*.md` |
-| IPLAN | Session Implementation Plans | `IPLAN-NN_*.md` |
+| ~~IPLAN~~ | ~~Session Implementation Plans~~ | ~~`IPLAN-NN_*.md`~~ | **DEPRECATED** |
 
 Document IDs support both formats:
 - Simple: `TYPE-NN` (e.g., `ADR-01`)
@@ -893,7 +817,7 @@ Matrix templates for each document type:
 - `09_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `10_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `11_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `12_IPLAN/IPLAN-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- ~~`12_IPLAN/IPLAN-00_TRACEABILITY_MATRIX-TEMPLATE.md`~~ **DEPRECATED**
 - `TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` (master template)
 
 ---

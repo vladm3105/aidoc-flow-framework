@@ -65,15 +65,17 @@ Before creating this ICON, verify:
 
 **ICON (Layer 11)** ← Creates integration contracts **parallel after TASKS**
 - **Input**: TASKS (code generation specifications)
-- **Output**: Type-safe contracts for IPLAN source code implementation
+- **Output**: Type-safe contracts for Code (Layer 12) source code implementation
 - **Purpose**: Enable parallel development by defining stable interfaces
 
 ```
 TASKS (Layer 11) ──┬──> ICON (Layer 11, parallel)
                    │         │
                    │         ▼
-                   └──> IPLAN (Layer 12) uses ICON contracts
+                   └──> Code (Layer 12) uses ICON contracts
 ```
+
+> **Note**: IPLAN has been deprecated as of 2026-01-15 and merged into TASKS.
 
 **⚠️ NOTE**: Most implementation contracts should be embedded in TASKS files. Use standalone ICON files only when:
 - 5+ consumer TASKS files

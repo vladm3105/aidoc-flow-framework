@@ -113,43 +113,10 @@ implementation:
 ```
 - **Note**: ICON (Implementation Contracts) shares Layer 11 with TASKS. Use @icon/@icon-role when referencing standalone ICON documents or embedded implementation contracts.
 
-### Layer 12: IPLAN (Implementation Work Plans)
-```markdown
-# IPLAN-NN: Request Endpoint Session Plan
+### Layer 12: Code (Implementation)
 
-## Objective
-Implement TASKS-NN request submission endpoint in a single session.
+> **Note**: Layer 12 was formerly IPLAN. As of 2026-01-15, IPLAN has been **DEPRECATED** and merged into TASKS. Execution commands are now in TASKS Section 4.
 
-## Context
-- Parent TASKS: TASKS-NN
-- Related: SPEC-NN, REQ-NN
-
-## Execution Steps
-
-### Step 1: Create Module
-```bash
-mkdir -p src/services
-touch src/services/request_service.py
-```
-
-### Step 2: Run Tests
-```bash
-pytest tests/unit/test_request_service.py -v
-```
-
-## Tags
-@brd: BRD-NN
-@prd: PRD-NN
-@ears: EARS.NN.24.NN
-@bdd: BDD.NN.13.NN
-@adr: ADR-NN
-@sys: SYS.NN.25.NN
-@req: REQ.NN.NN.NN
-@spec: SPEC-NN
-@tasks: TASKS.NN.NN.NN
-```
-
-### Layer 13: Code (Implementation)
 ```python
 """Request service implementation
 @brd: BRD-NN
@@ -161,7 +128,6 @@ pytest tests/unit/test_request_service.py -v
 @req: REQ.NN.NN.NN
 @spec: SPEC-NN
 @tasks: TASKS.NN.NN.NN
-@iplan: IPLAN-NN
 @impl-status: complete
 """
 from fastapi import APIRouter
@@ -172,7 +138,7 @@ async def submit_request(payload: dict):
     return {"status": "accepted", "id": "REQ-123"}
 ```
 
-### Layer 14: Tests (Test Suites)
+### Layer 13: Tests (Test Suites)
 ```python
 """Test: Request processing
 @brd: BRD-NN
@@ -184,14 +150,13 @@ async def submit_request(payload: dict):
 @req: REQ.NN.NN.NN
 @spec: SPEC-NN
 @tasks: TASKS.NN.NN.NN
-@iplan: IPLAN-NN
 @code: src/services/request_service.py
 """
 def test_submit_request_accepts_valid_payload():
     assert True
 ```
 
-### Layer 15: Validation (Results)
+### Layer 14: Validation (Results)
 - All cumulative tags present from BRD through Tests.
 - No gaps detected; coverage acceptable.
 
@@ -208,10 +173,11 @@ Layer 8  IMPL  -> +@req (Optional - skip if not needed)
 Layer 9  CTR   -> +@impl if exists (Optional - skip if not needed)
 Layer 10 SPEC  -> +@req (+@impl/@ctr if exist)
 Layer 11 TASKS -> +@spec (+@icon/@icon-role optional, ICON shares Layer 11)
-Layer 12 IPLAN -> +@tasks
-Layer 13 Code  -> +@iplan
-Layer 14 Tests -> +@code
-Layer 15 Valid -> all upstream tags
+Layer 12 Code  -> +@tasks (IPLAN deprecated - merged into TASKS)
+Layer 13 Tests -> +@code
+Layer 14 Valid -> all upstream tags
 ```
+
+> **Note**: IPLAN (formerly Layer 12) has been **DEPRECATED** as of 2026-01-15 and merged into TASKS. Execution commands are now part of TASKS Section 4.
 
 **Note on Layer 0 (Strategy/STRAT)**: Layer 0 represents strategic planning inputs that exist before formal documentation begins. The formal documentation layers start at Layer 1 (BRD).

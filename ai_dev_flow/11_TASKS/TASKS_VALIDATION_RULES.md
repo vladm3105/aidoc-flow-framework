@@ -1,5 +1,5 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of TASKS-TEMPLATE.md
+# Document Role: This is a DERIVATIVE of TASKS-TEMPLATE.md
 # - Authority: TASKS-TEMPLATE.md is the single source of truth for TASKS structure
 # - Purpose: AI checklist after document creation (derived from template)
 # - Scope: Includes all rules from TASKS_CREATION_RULES.md plus validation extensions
@@ -17,14 +17,17 @@ custom_fields:
   layer: 11
   priority: shared
   development_status: active
+  schema_version: "2.0"
+  last_updated: "2026-01-15"
 ---
 
-> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for TASKS documents.
+> **Document Role**: This is the **POST-CREATION VALIDATOR** for TASKS documents (v2.0).
 > - Apply these rules after TASKS creation or modification
-> - **Authority**: Validates compliance with `TASKS-TEMPLATE.md` (the primary standard)
+> - **Authority**: Validates compliance with `TASKS-TEMPLATE.md v2.0` (the primary standard)
 > - **Scope**: Use for quality gates before committing TASKS changes
+> - **Note**: IPLAN (Layer 12) has been deprecated. TASKS now includes execution commands.
 
-# TASKS Validation Rules
+# TASKS Validation Rules (v2.0)
 
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
@@ -34,10 +37,11 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 
 | Field | Value |
 |-------|-------|
-| **Version** | 1.0.0 |
+| **Version** | 2.0.0 |
 | **Created** | 2025-11-27 |
-| **Last Updated** | 2025-11-27 |
+| **Last Updated** | 2026-01-15 |
 | **Status** | Active |
+| **Breaking Change** | TASKS v2.0: 11 sections (was 12), includes execution commands, IPLAN deprecated |
 
 ### Reserved ID Exemption (TASKS-00_*)
 
@@ -144,33 +148,41 @@ fi
 
 ---
 
-## 4. Section Structure Validation
+## 4. Section Structure Validation (v2.0)
 
-### Required Sections
+### Required Sections (TASKS v2.0 - 11 sections)
 
 | Section | Required | Validation |
 |---------|----------|------------|
-| 1. Scope | Yes | Non-empty, has exclusions |
-| 2. Plan | Yes | Numbered steps exist |
-| 3. Constraints | Yes | At least 3 constraints |
-| 4. Acceptance | Yes | Checkboxes present |
-| 5. Dependencies | Yes | Upstream/downstream listed |
-| 6. Traceability Tags | Yes | Valid tag format |
-| 7. File Structure | Yes | Output files listed |
-| 8. Implementation Contracts | Yes | ICON integration documented |
+| 1. Objective | Yes | Non-empty, deliverables defined |
+| 2. Scope | Yes | Inclusions, exclusions, prerequisites |
+| 3. Implementation Plan | Yes | Phased steps with durations |
+| 4. Execution Commands | Yes | Setup, implementation, validation commands |
+| 5. Constraints | Yes | Technical and quality constraints |
+| 6. Acceptance Criteria | Yes | Functional, quality, operational criteria |
+| 7. Implementation Contracts | Yes | Contract integration documented (or "none") |
+| 8. Traceability | Yes | Upstream refs, tags, code locations |
+| 9. Risk & Mitigation | Yes | Risk table with mitigations |
+| 10. Session Log | Yes | Progress tracking table |
+| 11. Change History | Yes | Version history |
+
+> **Note**: This replaces the v1.x 8-section + 4-section structure (12 total). IPLAN content merged into Section 4.
 
 ### Validation Commands
 
 ```bash
 required_sections=(
-  "## 1. Scope"
-  "## 2. Plan"
-  "## 3. Constraints"
-  "## 4. Acceptance"
-  "## 5. Dependencies"
-  "## 6. Traceability"
-  "## 7. File Structure"
-  "## 8. Implementation Contracts"
+  "## 1. Objective"
+  "## 2. Scope"
+  "## 3. Implementation Plan"
+  "## 4. Execution Commands"
+  "## 5. Constraints"
+  "## 6. Acceptance Criteria"
+  "## 7. Implementation Contracts"
+  "## 8. Traceability"
+  "## 9. Risk"
+  "## 10. Session Log"
+  "## 11. Change History"
 )
 
 for section in "${required_sections[@]}"; do
@@ -239,29 +251,39 @@ fi
 
 ---
 
-## 7. Section 8 (Implementation Contracts) Validation
+## 7. Section 7 (Implementation Contracts) Validation (v2.0)
 
 ### CRITICAL: Mandatory Section
 
 | Check | Error Level |
 |-------|-------------|
-| Section 8 exists | ERROR |
-| Has 8.1, 8.2, or 8.3 subsection | ERROR |
+| Section 7 exists | ERROR |
+| Has 7.1, 7.2 subsection or "none" statement | ERROR |
 | @icon tags if provider/consumer | ERROR |
 | @icon-role tag if @icon present | WARNING |
+
+> **Note**: In TASKS v1.x, this was Section 8. Updated for v2.0.
 
 ### Validation Commands
 
 ```bash
-# Section 8 MUST exist
-if ! grep -q "## 8. Implementation Contracts" "$TASKS_FILE"; then
-  echo "ERROR: Missing MANDATORY Section 8: Implementation Contracts"
-  exit 1
+# Section 7 MUST exist (v2.0) - also check for legacy Section 8
+if ! grep -q "## 7. Implementation Contracts" "$TASKS_FILE"; then
+  # Check for legacy v1.x format
+  if grep -q "## 8. Implementation Contracts" "$TASKS_FILE"; then
+    echo "WARNING: Using legacy v1.x Section 8 format. Update to v2.0 Section 7."
+  else
+    echo "ERROR: Missing MANDATORY Section 7: Implementation Contracts"
+    exit 1
+  fi
 fi
 
-# Check for proper subsections
-if ! grep -qE "### 8\.[123]" "$TASKS_FILE"; then
-  echo "ERROR: Section 8 must have 8.1, 8.2, or 8.3 subsection"
+# Check for proper subsections (v2.0 uses 7.1, 7.2)
+if ! grep -qE "### 7\.[12]" "$TASKS_FILE"; then
+  # Check if "No implementation contracts" statement exists
+  if ! grep -qi "No implementation contracts" "$TASKS_FILE"; then
+    echo "ERROR: Section 7 must have 7.1/7.2 subsection or 'No implementation contracts' statement"
+  fi
 fi
 
 # If @icon tag present, @icon-role should also be present
@@ -432,11 +454,11 @@ CHECK 2: Frontmatter
   ✅ YAML frontmatter present
   ✅ Required fields present
 
-CHECK 3: Required Sections
-  ✅ All 8 required sections found
+CHECK 3: Required Sections (v2.0)
+  ✅ All 11 required sections found
 
-CHECK 4: Section 8 Implementation Contracts
-  ✅ Section 8 exists
+CHECK 4: Section 7 Implementation Contracts (v2.0)
+  ✅ Section 7 exists
   ✅ Proper subsections present
 
 CHECK 5: Traceability Tags
@@ -488,10 +510,12 @@ Result: PASSED WITH WARNINGS
 
 ## 15. Common Validation Errors
 
-### Error: Missing Section 8
+### Error: Missing Section 7 (v2.0)
 
-**Symptom**: "ERROR: Missing MANDATORY Section 8"
-**Fix**: Add complete Section 8 with 8.1, 8.2, or 8.3 subsection
+**Symptom**: "ERROR: Missing MANDATORY Section 7: Implementation Contracts"
+**Fix**: Add complete Section 7 with 7.1, 7.2 subsection or "No implementation contracts" statement
+
+> **Note**: In v1.x templates, this was Section 8. Update to v2.0 numbering.
 
 ### Error: Invalid Parent SPEC
 
@@ -519,5 +543,6 @@ Result: PASSED WITH WARNINGS
 
 ---
 
-**Document Version**: 1.0.0
-**Last Updated**: 2025-11-27
+**Document Version**: 2.0.0
+**Last Updated**: 2026-01-15
+**Schema Version**: TASKS v2.0 (11 sections, IPLAN deprecated)

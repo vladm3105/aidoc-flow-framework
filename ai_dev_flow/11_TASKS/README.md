@@ -9,6 +9,8 @@ custom_fields:
   artifact_type: TASKS
   layer: 11
   priority: shared
+  schema_version: "2.0"
+  last_updated: "2026-01-15"
 ---
 
 # AI Tasks (TASKS): SPEC Implementation Plans and TODOs
@@ -41,7 +43,7 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 
 **YAML-Based TASKS Structure**: Each TASKS includes:
 - **Pre-Check** (Rule 3): Verification before implementation starts
-- **Main Implementation**: TASKS and IPLAN status tracking  
+- **Implementation**: TASKS execution with embedded commands  
 - **Post-Check** (Rules 1 & 2): Updates after implementation completes
 
 **Mandatory Workflow Rules**:
@@ -72,19 +74,64 @@ Tasks create the **code generation roadmap** that:
 - **Ensures Quality**: Provides acceptance criteria and verification methods for generated code
 - **Maintains Traceability**: Links code implementation to YAML SPEC and upstream requirements
 
-## TASKS vs IMPL Plans
+## TASKS: Unified Implementation Documents
 
-**Critical Distinction**:
+**TASKS v2.0** combines planning (WHAT to build) with execution (HOW to implement) in a single document:
 
-| Aspect | IMPL Plans | TASKS Documents |
-|--------|-----------|-----------------|
-| **Purpose** | Project management (WHO/WHEN) | Code generation plans (exact TODOs) |
-| **Scope** | Multi-component systems | Single YAML SPEC implementation |
-| **Audience** | Project managers, architects | AI code generators, developers |
-| **Content** | Phases, teams, deliverables (09_CTR/10_SPEC/TASKS) | Exact steps to implement SPEC in code |
-| **Example** | "Phase 1: Build resource management (Week 1-2)" | "Step 3: Generate PositionLimitService class from SPEC-03.yaml line 45-78" |
+| Aspect | TASKS Document (v2.0) |
+|--------|----------------------|
+| **Purpose** | Complete implementation plan with execution commands |
+| **Scope** | Single component/feature implementation |
+| **Audience** | AI code generators, developers |
+| **Content** | Scope, steps, constraints, acceptance criteria, AND bash commands |
+| **Tracking** | YAML block for DEVELOPMENT_PLAN.md integration |
 
-**Flow**: IMPL Plans organize work → Create SPEC → TASKS plans code generation from SPEC → Code generated
+**Workflow**: `SPEC (Layer 10) → TASKS (Layer 11) → Code (Layer 12) → Tests (Layer 13)`
+
+---
+
+## IPLAN Deprecation Notice (v2.0)
+
+> **⚠️ IMPORTANT**: As of 2026-01-15, **IPLAN (formerly Layer 12) has been deprecated** and merged into TASKS v2.0.
+
+### What Changed
+
+| Before (v1.x) | After (v2.0) |
+|---------------|--------------|
+| TASKS → IPLAN → Code | TASKS → Code |
+| Execution commands in IPLAN | Execution commands in TASKS Section 4 |
+| Session context in IPLAN | Session context in TASKS Section 10 |
+| Verification checklist in IPLAN | Development Plan Tracking YAML block |
+| 2 documents per feature | 1 unified document per feature |
+
+### IPLAN Content Migration to TASKS
+
+| IPLAN Section | TASKS Section |
+|---------------|---------------|
+| Verification Checklist | Development Plan Tracking (YAML block) |
+| Context & Current State | Section 2: Scope |
+| Implementation Steps | Section 3: Implementation Plan |
+| Bash Commands | Section 4: Execution Commands |
+| Validation Commands | Section 4.3: Validation Commands |
+| Session Notes | Section 10: Session Log |
+
+### Benefits of Unification
+
+- **Reduced document overhead**: ~500 lines vs ~2000 lines per feature
+- **Single source of truth**: All implementation context in one place
+- **Simpler workflow**: `SPEC → TASKS → Code` (no intermediate step)
+- **Better AI context**: Complete implementation plan in single document
+
+### Migration Guide
+
+For existing IPLAN documents:
+1. **In-progress implementations**: Continue using existing IPLAN
+2. **New features**: Use TASKS v2.0 template (includes Section 4 for execution commands)
+3. **Historical IPLANs**: Archive completed ones, no conversion needed
+
+See [`12_IPLAN/DEPRECATED.md`](../12_IPLAN/DEPRECATED.md) for detailed migration guidance.
+
+---
 
 ## Position in Document Workflow
 
@@ -95,7 +142,7 @@ Tasks are the **code generation bridge** that connects YAML specifications to ex
 
 **⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 **Key Points**:
 - **REQ**: Business requirements (WHAT to build)
@@ -306,22 +353,27 @@ Verification Methods:
 
 ## Task Quality Gates
 
-**Every TASK must:**
-- Clearly define implementation scope with specific deliverables
-- Reference upstream requirements and downstream specifications
-- Include sequential, actionable implementation steps
-- Specify constraints and limitations for implementation
-- Provide measurable acceptance criteria for verification
-- Maintain traceability to all related development artifacts
+**Every TASKS must (TASKS v2.0 - 11 sections):**
+- Clearly define implementation scope with specific deliverables (Section 1-2)
+- Include phased implementation steps with execution commands (Section 3-4)
+- Specify constraints and limitations for implementation (Section 5)
+- Provide measurable acceptance criteria for verification (Section 6)
+- Document implementation contracts if parallel development needed (Section 7)
+- Maintain traceability to all related development artifacts (Section 8)
+- Include risk assessment and session logging (Sections 9-10)
 
-**Task validation checklist:**
-- ✅ Scope statement clearly defines what will be implemented
-- ✅ Plan contains numbered, actionable implementation steps
-- ✅ Constraints section defines required standards and limitations
-- ✅ Acceptance criteria are specific and verifiable
-- ✅ Cross-reference links resolve to existing artifacts
-- ✅ Implementation plan is feasible within given constraints
-- ✅ Task scope aligns with component specifications
+**Task validation checklist (v2.0):**
+- ✅ Objective and deliverables clearly defined (Section 1)
+- ✅ Scope has inclusions, exclusions, and prerequisites (Section 2)
+- ✅ Implementation plan with phased steps and durations (Section 3)
+- ✅ Execution commands for setup, implementation, and validation (Section 4)
+- ✅ Technical and quality constraints specified (Section 5)
+- ✅ Acceptance criteria are specific and verifiable (Section 6)
+- ✅ Implementation contracts documented if applicable (Section 7)
+- ✅ Traceability tags and code locations defined (Section 8)
+- ✅ Risk assessment with mitigation strategies (Section 9)
+- ✅ Session log for tracking progress (Section 10)
+- ✅ Change history maintained (Section 11)
 
 ## Common Task Patterns
 
@@ -558,12 +610,14 @@ See `TASKS-01_resource_limit_service_tasks.md` for a complete example of a well-
 
 ## ICON Contract Integration Rules
 
-### CRITICAL: section 8 is Mandatory
+### CRITICAL: Section 7 is Mandatory (v2.0)
 
-Every TASKS document MUST include "## 8. Implementation Contracts":
-- If providing contracts: Complete section 8.1
-- If consuming contracts: Complete section 8.2
+Every TASKS document MUST include "## 7. Implementation Contracts":
+- If providing contracts: Complete section 7.1
+- If consuming contracts: Complete section 7.2
 - If neither: State "No implementation contracts for this TASKS"
+
+> **Note**: In TASKS v1.x, this was Section 8. With TASKS v2.0 template consolidation, Implementation Contracts moved to Section 7.
 
 ### Integration Validation Commands
 
@@ -572,8 +626,11 @@ Every TASKS document MUST include "## 8. Implementation Contracts":
 grep -r "@icon:" docs/11_TASKS/ | wc -l
 ```
 
-**Check section 8 count**:
+**Check Section 7 (v2.0) or Section 8 (v1.x) count**:
 ```bash
+# v2.0 templates
+grep -r "## 7. Implementation Contracts" docs/11_TASKS/ | wc -l
+# Legacy v1.x templates (if any remain)
 grep -r "## 8. Implementation Contracts" docs/11_TASKS/ | wc -l
 ```
 
@@ -590,27 +647,27 @@ grep -r "@icon-role: consumer" docs/11_TASKS/
 
 ### Common Anti-Patterns to Avoid
 
-❌ **Anti-Pattern 1**: ICON file exists but 0 TASKS references
+**Anti-Pattern 1**: ICON file exists but 0 TASKS references
 ```bash
 # Bad: This should never return 0
 grep -r "@icon: ICON-01" docs/11_TASKS/ | wc -l
 ```
 
-❌ **Anti-Pattern 2**: Provider TASKS missing section 8
+**Anti-Pattern 2**: Provider TASKS missing Implementation Contracts section
 ```
 TASKS-01 provides ICON-01
-But TASKS-01 has no "## 8. Implementation Contracts"
+But TASKS-01 has no "## 7. Implementation Contracts" (v2.0)
 ```
 
-❌ **Anti-Pattern 3**: Consumer TASKS missing section 8
+**Anti-Pattern 3**: Consumer TASKS missing Implementation Contracts section
 ```
 TASKS-02 consumes ICON-01
-But TASKS-02 has no "## 8. Implementation Contracts"
+But TASKS-02 has no "## 7. Implementation Contracts" (v2.0)
 ```
 
-✅ **Correct Pattern**: Bidirectional integration
+**Correct Pattern**: Bidirectional integration
 ```
-ICON-01 created → TASKS-01 section 8.1 added → TASKS-02 section 8.2 added
+ICON-01 created → TASKS-01 section 7.1 added → TASKS-02 section 7.2 added
 grep "@icon: ICON-01" docs/11_TASKS/ returns 2+ matches
 ```
 
@@ -630,12 +687,13 @@ grep "@icon: ICON-01" docs/11_TASKS/ returns 2+ matches
 - Basic verification and testing plans
 - Minimal traceability to specifications
 
-### Level 3 - Comprehensive Tasks
-- Detailed implementation plans with dependencies
-- Complete constraints and operational requirements
-- Automated verification and quality gates
-- Full traceability to all development artifacts
-- section 8 contracts defined and integrated
+### Level 3 - Comprehensive Tasks (v2.0)
+- Detailed implementation plans with execution commands (Sections 3-4)
+- Complete constraints and operational requirements (Section 5)
+- Automated verification and quality gates (Section 4.3-4.4)
+- Full traceability to all development artifacts (Section 8)
+- Implementation contracts defined and integrated (Section 7)
+- YAML tracking block for DEVELOPMENT_PLAN.md integration
 
 ### Level 4 - AI-Driven Tasks
 - Specification-derived task generation
@@ -643,6 +701,7 @@ grep "@icon: ICON-01" docs/11_TASKS/ returns 2+ matches
 - Adaptive planning based on implementation progress
 - Automated dependency and risk analysis
 - Bidirectional contract integration validated
+- Session logging and change history (Sections 10-11)
 ## File Size Limits
 
 - Target: 300–500 lines per file
@@ -653,5 +712,5 @@ grep "@icon: ICON-01" docs/11_TASKS/ returns 2+ matches
 
 When TASKS grow large, split by scope/phase:
 - Create additional TASKS files (e.g., `TASKS-{NN}_phase1_{slug}.md`, `TASKS-{NN}_phase2_{slug}.md`)
-- Update any mapping tables and the parent plan (08_IMPL/IPLAN)
+- Update any mapping tables and the DEVELOPMENT_PLAN.md
 - Validate links and run size lints

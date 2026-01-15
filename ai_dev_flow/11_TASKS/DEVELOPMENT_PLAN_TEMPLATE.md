@@ -9,13 +9,16 @@ custom_fields:
   artifact_type: TASKS
   layer: 11
   priority: shared
+  schema_version: "2.0"
+  last_updated: "2026-01-15"
 ---
 
 # Development Plan & Implementation Tracker
 
-> **Template Purpose**: This template provides structured tracking for TASKS (Layer 11) implementation across development phases. It organizes TASKS and IPLAN documents into executable phases with dependencies and status tracking.
+> **Template Purpose**: This template provides structured tracking for TASKS (Layer 11) implementation across development phases. It organizes TASKS documents into executable phases with dependencies and status tracking.
 > 
 > **Document Authority**: This becomes the live tracking document for implementation of your system.
+> **Schema Version**: 2.0 (IPLAN deprecated - execution commands now in TASKS Section 4)
 > **Last Updated**: YYYY-MM-DD
 
 ## 1. Implementation Strategy
@@ -29,9 +32,11 @@ custom_fields:
 6. **Agents**: L0-L5 Autonomous Units.
 7. **UI**: Reporting & Visualization.
 
-**Workflow**: SPEC (Layer 10) → TASKS (Layer 11) → **IPLAN (Layer 12)** → Implementation.
+**Workflow (v2.0)**: SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests
 
-> **CRITICAL**: **Mandatory Review**: Before implementing any IPLAN, verify it against upstream TASKS and REQ. If any inconsistencies are found, **STOP** implementation immediately and ask for instructions.
+> **Note**: IPLAN (Layer 12) has been **deprecated**. Execution commands are now included in TASKS Section 4.
+
+> **CRITICAL**: **Mandatory Review**: Before implementing any TASKS, verify it against upstream SPEC and REQ. If any inconsistencies are found, **STOP** implementation immediately and ask for instructions.
 
 ---
 
@@ -51,15 +56,14 @@ custom_fields:
 - **When**: As soon as a TASKS is completed
 - **Action**: Update Phase Tracker (Section 2):
   - Change TASKS Status from `IN_PROGRESS` → `COMPLETED`
-  - Update IPLAN Status to `COMPLETED` if applicable
   - Add completion date/notes if tracking column exists
 
 **Rule 3: Pre-Execution Verification Checklist**
-- **When**: Before starting implementation of any 11_TASKS/IPLAN
+- **When**: Before starting implementation of any TASKS
 - **Purpose**: Force self-correction and validation before code changes begin
 - **Action**: Complete this checklist:
   - [ ] Verified against REQ-NN (Atomic Requirements) - all requirements understood
-  - [ ] Verified against TASKS-NN (Task Breakdown) - scope and approach confirmed
+  - [ ] Verified against SPEC-NN (Technical Specification) - technical approach confirmed
   - [ ] Confirmed Architecture Decision (Shared Service vs Agent vs other pattern)
   - [ ] Checked for Missing Logic/Fields - no gaps in specification
   - [ ] Reviewed upstream artifacts for consistency
@@ -107,6 +111,7 @@ custom_fields:
 > 3. Post-Execution Rules (update tracking immediately after completion)
 
 ```yaml
+# v2.0 YAML format (IPLAN deprecated - execution in TASKS Section 4)
 phase_1_tasks:
   - id: TASKS-XX
     service_name: "[P0 Service Name]"
@@ -117,21 +122,20 @@ phase_1_tasks:
         status: NOT_STARTED
         checklist:
           - verified_req: false      # Verified against REQ-NN
-          - verified_tasks: false    # Verified against TASKS-NN
+          - verified_spec: false     # Verified against SPEC-NN
           - confirmed_arch: false    # Confirmed Architecture Decision
           - checked_gaps: false      # Checked for Missing Logic/Fields
           - reviewed_upstream: false # Reviewed upstream artifacts
           - confirmed_deps: false    # Confirmed dependencies available
-      tasks:
+      implementation:
         status: NOT_STARTED
-        iplan_id: IPLAN-XX
-        iplan_status: NOT_STARTED
+        started: null                # YYYY-MM-DD when started
+        completed: null              # YYYY-MM-DD when completed
       post_check:
         status: NOT_STARTED
         checklist:
           # Rule 2: Phase Tracker Update
           - tasks_status_updated: false     # Changed TASKS Status to COMPLETED
-          - iplan_status_updated: false     # Updated IPLAN Status to COMPLETED
           - completion_date_added: false    # Added completion date/notes
           # Rule 1: Session Log Update
           - session_log_date: false         # Added completion date
@@ -148,20 +152,19 @@ phase_1_tasks:
         status: NOT_STARTED
         checklist:
           - verified_req: false
-          - verified_tasks: false
+          - verified_spec: false
           - confirmed_arch: false
           - checked_gaps: false
           - reviewed_upstream: false
           - confirmed_deps: false
-      tasks:
+      implementation:
         status: NOT_STARTED
-        iplan_id: IPLAN-YY
-        iplan_status: NOT_STARTED
+        started: null
+        completed: null
       post_check:
         status: NOT_STARTED
         checklist:
           - tasks_status_updated: false
-          - iplan_status_updated: false
           - completion_date_added: false
           - session_log_date: false
           - session_log_task_id: false
@@ -182,6 +185,7 @@ phase_1_tasks:
 > 3. Post-Execution Rules (update tracking immediately after completion)
 
 ```yaml
+# v2.0 YAML format
 phase_2_tasks:
   - id: TASKS-ZZ
     service_name: "[Service Name]"
@@ -192,20 +196,19 @@ phase_2_tasks:
         status: NOT_STARTED
         checklist:
           - verified_req: false
-          - verified_tasks: false
+          - verified_spec: false
           - confirmed_arch: false
           - checked_gaps: false
           - reviewed_upstream: false
           - confirmed_deps: false
-      tasks:
+      implementation:
         status: NOT_STARTED
-        iplan_id: IPLAN-ZZ
-        iplan_status: NOT_STARTED
+        started: null
+        completed: null
       post_check:
         status: NOT_STARTED
         checklist:
           - tasks_status_updated: false
-          - iplan_status_updated: false
           - completion_date_added: false
           - session_log_date: false
           - session_log_task_id: false
@@ -221,20 +224,19 @@ phase_2_tasks:
         status: NOT_STARTED
         checklist:
           - verified_req: false
-          - verified_tasks: false
+          - verified_spec: false
           - confirmed_arch: false
           - checked_gaps: false
           - reviewed_upstream: false
           - confirmed_deps: false
-      tasks:
+      implementation:
         status: NOT_STARTED
-        iplan_id: IPLAN-AA
-        iplan_status: NOT_STARTED
+        started: null
+        completed: null
       post_check:
         status: NOT_STARTED
         checklist:
           - tasks_status_updated: false
-          - iplan_status_updated: false
           - completion_date_added: false
           - session_log_date: false
           - session_log_task_id: false
@@ -254,6 +256,8 @@ phase_2_tasks:
 
 **Session Log Guidelines**:
 - **Date**: Record session date (YYYY-MM-DD format)
-- **Task ID**: Reference TASKS-NN or IPLAN-NN being worked on
+- **Task ID**: Reference TASKS-NN being worked on
 - **Status**: Current status after this session
 - **Notes**: Key accomplishments, technologies used, blockers encountered, verification results
+
+> **Note**: IPLAN references deprecated. Use TASKS-NN only.

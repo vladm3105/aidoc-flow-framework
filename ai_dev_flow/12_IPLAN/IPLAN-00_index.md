@@ -1,17 +1,27 @@
 ---
-title: "IPLAN-000: IPLAN Index"
+title: "IPLAN-000: IPLAN Index [DEPRECATED]"
 tags:
   - index-document
   - layer-12-artifact
   - shared-architecture
+  - deprecated
 custom_fields:
   document_type: index
   artifact_type: IPLAN
   layer: 12
-  priority: shared
+  priority: deprecated
+  development_status: deprecated
+  deprecated_date: "2026-01-15"
+  replacement: "ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md"
 ---
 
-# IPLAN-000: Implementation Work Plans Master Index
+# ⚠️ DEPRECATED: IPLAN-000: Implementation Work Plans Master Index
+
+> **Deprecation Date**: 2026-01-15
+> **Status**: IPLAN has been merged into TASKS (Layer 11)
+> **Replacement**: [`ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`](../11_TASKS/TASKS-TEMPLATE.md)
+> 
+> See [DEPRECATED.md](./DEPRECATED.md) for migration guide.
 
 Note: Some examples in this index show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 

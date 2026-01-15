@@ -1,18 +1,20 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of TASKS-TEMPLATE.md
+# Document Role: This is a DERIVATIVE of TASKS-TEMPLATE.md
 # - Authority: TASKS-TEMPLATE.md is the single source of truth for TASKS structure
 # - Purpose: Machine-readable validation rules derived from the template
 # - On conflict: Defer to TASKS-TEMPLATE.md
 # =============================================================================
 #
-# TASKS Schema Definition v1.0
+# TASKS Schema Definition v2.0
 # Purpose: Define valid metadata structure and validation rules for TASKS documents
 # Usage: Reference by validate_tasks.py for automated validation
+# Breaking Change: v2.0 has 11 sections (was 12), includes execution commands, IPLAN deprecated
 
-schema_version: "1.0"
+schema_version: "2.0"
 artifact_type: TASKS
 layer: 11
-last_updated: "2025-11-30"
+last_updated: "2026-01-15"
+deprecation_notice: "IPLAN (Layer 12) deprecated - execution commands now in TASKS Section 4"
 
 references:
   template: "TASKS-TEMPLATE.md"
@@ -109,7 +111,8 @@ metadata:
 # =============================================================================
 
 structure:
-  # Required sections (12 sections)
+  # Required sections (11 sections - v2.0)
+  # Note: v1.x had 12 sections. v2.0 consolidates and includes execution commands.
   required_sections:
     - pattern: "^# TASKS-\\d{2,}:"
       name: "Title (H1)"
@@ -119,55 +122,59 @@ structure:
       name: "Document Control"
       description: "Document control section with metadata table"
 
-    - pattern: "^## 1\\. Executive Summary$"
-      name: "Executive Summary"
-      description: "Section 1 with objectives, scope, dependencies"
+    - pattern: "^## Development Plan Tracking$"
+      name: "Development Plan Tracking"
+      description: "YAML block for DEVELOPMENT_PLAN.md integration"
+
+    - pattern: "^## 1\\. Objective$"
+      name: "Objective"
+      description: "Section 1 with deliverables and business value"
 
     - pattern: "^## 2\\. Scope$"
       name: "Scope"
-      description: "Section 2 with Inclusions, Exclusions, Boundaries"
+      description: "Section 2 with Inclusions, Exclusions, Prerequisites"
 
     - pattern: "^## 3\\. Implementation Plan$"
       name: "Implementation Plan"
-      description: "Section 3 with Phases, Tasks, Dependencies"
+      description: "Section 3 with Phases, Steps, Durations"
 
-    - pattern: "^## 8\\. Implementation Contracts$"
-      name: "Implementation Contracts"
-      description: "Section 8 with Protocols, Exceptions, State Machines"
+    - pattern: "^## 4\\. Execution Commands$"
+      name: "Execution Commands"
+      description: "Section 4 with Setup, Implementation, Validation commands (replaces IPLAN)"
 
     - pattern: "^## 5\\. Constraints$"
       name: "Constraints"
-      description: "Section 5 with Technical, Business, Operational constraints"
+      description: "Section 5 with Technical, Quality, Performance constraints"
 
     - pattern: "^## 6\\. Acceptance Criteria$"
       name: "Acceptance Criteria"
-      description: "Section 6 with Functional, Technical, Quality criteria"
+      description: "Section 6 with Functional, Quality, Operational criteria"
 
-    - pattern: "^## 7\\. Risk Assessment$"
-      name: "Risk Assessment"
-      description: "Section 7 with Risk Matrix, Mitigation Strategies"
+    - pattern: "^## 7\\. Implementation Contracts$"
+      name: "Implementation Contracts"
+      description: "Section 7 with Contracts Provided/Consumed (was Section 8 in v1.x)"
 
-    - pattern: "^## 9\\. Success Metrics$"
-      name: "Success Metrics"
-      description: "Section 9 with Completion, Quality, Performance metrics"
-
-    - pattern: "^## 10\\. Traceability$"
+    - pattern: "^## 8\\. Traceability$"
       name: "Traceability"
-      description: "Section 10 with Upstream Sources, Downstream Artifacts"
+      description: "Section 8 with Upstream refs, Tags, Code locations"
 
-    - pattern: "^## 11\\. Implementation Notes$"
-      name: "Implementation Notes"
-      description: "Section 11 with Technical Details, Best Practices"
+    - pattern: "^## 9\\. Risk"
+      name: "Risk & Mitigation"
+      description: "Section 9 with Risk table and mitigations"
 
-    - pattern: "^## 12\\. Change History$"
+    - pattern: "^## 10\\. Session Log$"
+      name: "Session Log"
+      description: "Section 10 with Progress tracking table"
+
+    - pattern: "^## 11\\. Change History$"
       name: "Change History"
-      description: "Section 12 with version history table"
+      description: "Section 11 with version history table"
 
   # Optional sections
   optional_sections:
-    - pattern: "^## 13\\. References$"
+    - pattern: "^## References$"
       name: "References"
-      description: "Section 13 with Internal and External Links"
+      description: "Links to related documents (unnumbered)"
 
   # Document Control table requirements
   document_control:
@@ -184,9 +191,11 @@ structure:
     optional_fields:
       - Reviewer
       - Approver
-      - IPLAN-Ready Score
       - Estimated Effort
       - Actual Effort
+      - Complexity
+      - Assigned To
+      - Priority
 
     status_values:
       - Draft
@@ -196,13 +205,14 @@ structure:
       - Completed
       - Blocked
 
-  # Section numbering rules
+  # Section numbering rules (v2.0)
   section_numbering:
     start: 1
-    end: 12
+    end: 11
     format: "## N. Section Title"
     subsection_format: "### N.N Subsection Title"
     no_duplicate_numbers: true
+    note: "v2.0 has 11 sections (was 12 in v1.x). Section 4 now contains execution commands."
 
   # File naming convention
   file_naming:
@@ -268,31 +278,32 @@ tasks_patterns:
       - "Completed"
       - "Deferred"
 
-  # IPLAN-Ready Score components
-  iplan_ready_score:
+  # Execution Readiness Score (v2.0 - replaces IPLAN-Ready Score)
+  execution_ready_score:
     min_threshold: 90
+    note: "IPLAN deprecated. Execution commands now in TASKS Section 4."
     components:
       task_completeness:
         weight: 20
-        criteria: "All tasks defined with TASK-NNN format"
-      dependency_mapping:
-        weight: 15
-        criteria: "Task dependencies clearly defined"
+        criteria: "All phases defined with steps and durations"
+      execution_commands:
+        weight: 20
+        criteria: "Section 4 has setup, implementation, and validation commands"
       acceptance_criteria:
         weight: 20
-        criteria: "Each task has measurable acceptance criteria"
+        criteria: "Section 6 has measurable acceptance criteria"
       implementation_contracts:
-        weight: 15
-        criteria: "Required contracts defined for parallel development"
+        weight: 10
+        criteria: "Section 7 documents contracts or states 'none'"
       risk_assessment:
         weight: 10
-        criteria: "Technical risks identified with mitigation"
+        criteria: "Section 9 identifies risks with mitigations"
       effort_estimation:
         weight: 10
-        criteria: "Tasks have effort estimates"
+        criteria: "Document Control has effort estimates"
       traceability:
         weight: 10
-        criteria: "Complete upstream references (SPEC through BRD)"
+        criteria: "Section 8 has complete upstream references"
 
 # =============================================================================
 # Validation Rules
@@ -319,10 +330,10 @@ validation_rules:
     - rule: "Single H1 heading only"
       severity: warning
 
-    - rule: "All 12 required sections must be present"
+    - rule: "All 11 required sections must be present (v2.0)"
       severity: error
 
-    - rule: "Sections must be numbered 1-12 sequentially"
+    - rule: "Sections must be numbered 1-11 sequentially (v2.0)"
       severity: error
 
     - rule: "Document Control must have minimum 8 fields"
@@ -408,13 +419,16 @@ traceability:
         location: "Section 10 Traceability or Traceability Tags section"
 
   downstream:
+    # Note: IPLAN deprecated in v2.0. TASKS flows directly to Code.
     expected:
-      - type: IPLAN
-        format: "IPLAN-NN"
       - type: Code
         format: "src/..."
       - type: Tests
         format: "tests/..."
+    deprecated:
+      - type: IPLAN
+        format: "IPLAN-NN"
+        note: "IPLAN deprecated. Execution commands now in TASKS Section 4."
 
   implementation_contracts:
     format: "@icon: TASKS-NN:ContractName"
@@ -442,10 +456,10 @@ error_messages:
   TASKS-E005: "Forbidden tag pattern detected"
   TASKS-E006: "Missing required section"
   TASKS-E007: "Multiple H1 headings detected"
-  TASKS-E008: "Section numbering not sequential (1-12)"
+  TASKS-E008: "Section numbering not sequential (1-11 for v2.0)"
   TASKS-E009: "Document Control missing required fields"
-  TASKS-E010: "Missing Implementation Plan section (Section 4)"
-  TASKS-E011: "Missing Traceability section (Section 10)"
+  TASKS-E010: "Missing Execution Commands section (Section 4 in v2.0)"
+  TASKS-E011: "Missing Traceability section (Section 8 in v2.0)"
   TASKS-E012: "Implementation Plan has no Phases defined"
   TASKS-E013: "File name does not match TASKS-NN_name.md format"
   TASKS-E014: "Source SPEC not in valid SPEC-NN format"
@@ -453,9 +467,11 @@ error_messages:
   TASKS-W002: "Phase has no tasks defined"
   TASKS-W003: "Task missing acceptance criteria"
   TASKS-W004: "Missing upstream traceability tags (require 8: @brd through @spec)"
-  TASKS-W005: "IPLAN-Ready Score below 90% threshold"
+  TASKS-W005: "Execution-Ready Score below 90% threshold (v2.0)"
   TASKS-W006: "Task missing effort estimate"
-  TASKS-W007: "Implementation Contracts empty but parallel development indicated"
+  TASKS-W007: "Implementation Contracts (Section 7) empty but parallel development indicated"
+  TASKS-W008: "Using legacy v1.x section numbering (migrate to v2.0)"
   TASKS-I001: "Consider defining Implementation Contracts for parallel development"
   TASKS-I002: "Consider adding Risk Assessment for high-complexity tasks"
   TASKS-I003: "Consider using @icon tags for contract references"
+  TASKS-I004: "IPLAN deprecated - execution commands should be in Section 4"

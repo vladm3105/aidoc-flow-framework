@@ -1,7 +1,9 @@
 # MVP Automation Strategy: "The MVP Autopilot"
 
 ## Goal
-Create a unified automation tool (`mvp_autopilot.py`) that executes the **6-Step MVP Workflow** sequentially from BRD to IPLAN with a single command.
+Create a unified automation tool (`mvp_autopilot.py`) that executes the **6-Step MVP Workflow** sequentially from BRD to TASKS with a single command.
+
+> **Note**: As of 2026-01-15, IPLAN has been deprecated and merged into TASKS. Execution commands are now part of TASKS Section 4.
 
 ## Core Philosophy
 The automation treats the `ai_dev_flow` framework as a **compile target**. It moves through layers (BRD -> PRD -> EARS -> ...) only when the previous layer passes validation gates.

@@ -1,4 +1,10 @@
 # =============================================================================
+# DEPRECATED: IPLAN has been merged into TASKS (Layer 11)
+# 
+# As of 2026-01-15, IPLAN functionality is now part of TASKS-TEMPLATE.md.
+# Use TASKS-TEMPLATE.md for all new implementation work.
+# See: ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md
+# =============================================================================
 # 📋 Document Role: This is a DERIVATIVE of IPLAN-TEMPLATE.md
 # - Authority: IPLAN-TEMPLATE.md is the single source of truth for IPLAN structure
 # - Purpose: AI checklist after document creation (derived from template)
@@ -6,25 +12,32 @@
 # - On conflict: Defer to IPLAN-TEMPLATE.md
 # =============================================================================
 ---
-title: "IPLAN Validation Rules"
+title: "IPLAN Validation Rules [DEPRECATED]"
 tags:
   - validation-rules
   - layer-12-artifact
   - shared-architecture
+  - deprecated
 custom_fields:
   document_type: validation_rules
   artifact_type: IPLAN
   layer: 12
-  priority: shared
-  development_status: active
+  priority: deprecated
+  development_status: deprecated
+  deprecated_date: "2026-01-15"
+  replacement: "ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md"
 ---
+
+> **⚠️ DEPRECATED**: IPLAN has been merged into TASKS (Layer 11) as of 2026-01-15.
+> Use [`ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`](../11_TASKS/TASKS-TEMPLATE.md) for all new work.
+> See [DEPRECATED.md](./DEPRECATED.md) for migration guide.
 
 > **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for IPLAN documents.
 > - Apply these rules after IPLAN creation or modification
 > - **Authority**: Validates compliance with `IPLAN-TEMPLATE.md` (the primary standard)
 > - **Scope**: Use for quality gates before committing IPLAN changes
 
-# IPLAN Validation Rules
+# IPLAN Validation Rules [DEPRECATED]
 
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 

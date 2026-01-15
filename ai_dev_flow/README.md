@@ -28,7 +28,7 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 
 - The AI's Instruction Set: The subsequent layers (REQ, SPEC, TASKS) act as a detailed, unambiguous instruction set automatically derived from the architect's blueprint. This breakdown translates high-level architectural decisions into granular tasks that are ideal for consumption by an AI code generator.
 
-- The Governance and Audit Layer: The framework's most critical function is providing a robust governance and audit mechanism. The full traceability chain, from BRD to TASKS and IPLAN, creates an unimpeachable record of the AI's intended actions. This allows the architect to:
+- The Governance and Audit Layer: The framework's most critical function is providing a robust governance and audit mechanism. The full traceability chain, from BRD to TASKS, creates an unimpeachable record of the AI's intended actions. This allows the architect to:
   1. Verify Compliance: Ensure the AI's generated code adheres strictly to the established architectural and business rules.
   2. Mitigate AI Risk: Audit the AI's plans to prevent hallucinations or unintended features before code is even written.
   3. Validate at a High Level: Confirm the success of the project by reviewing BDD test results and traceability matrices, rather than performing a line-by-line code review.
@@ -56,7 +56,7 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 
 ## Using This Repo
 
-- Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_IMPL/`, `09_CTR/`, `10_SPEC/`, `11_TASKS/`, `12_IPLAN/`, `ICON/`, `CHG/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
+- Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_IMPL/`, `09_CTR/`, `10_SPEC/`, `11_TASKS/`, `ICON/`, `CHG/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
 - BDD layout: Uses nested per-suite folders `04_BDD/BDD-NN_{slug}/` with sectioned `.feature` files.
 - Index width: This repo commonly uses `-00_index.md` for indices; follow existing width and do not rename history. New repos should choose a consistent zero width (`00` or `000`) and keep it stable.
 - Validators: Use the validators listed in TRACEABILITY_VALIDATION.md (e.g., `python scripts/validate_prd.py`, `./scripts/validate_req_template.sh`). Older `*_template.sh` examples in some guides have been updated here.
@@ -117,7 +117,7 @@ Validators support relaxed MVP validation via `template_profile: mvp` in frontma
 - Start with 2 digits and expand only as needed; avoid unnecessary leading zeros.
 - Correct: `BRD-01`, `BRD-99`, `BRD-102`, `BRD-999`, `BRD-1000`.
 - Incorrect: `BRD-001`, `BRD-009`.
-- Unified across all doc types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN (and ICON).
+- Unified across all doc types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS (and ICON).
 - Element IDs must match filename digit width (e.g., `BRD-06` ↔ `BRD.06.xx.xx`).
 - Reserved infra docs may use `-000` (e.g., `BRD-00_index.md`). Source code and tests follow coding standards, not this rule.
 - See details in [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md).
@@ -140,7 +140,6 @@ This repository uses consistent **2-digit width** (`00`) for all index files acr
 | SPEC | SPEC-00_index.md | 2-digit | `SPEC-00_index.md` |
 | TASKS | TASKS-00_index.md | 2-digit | `TASKS-00_index.md` |
 | ICON | ICON-00_index.md | 2-digit | `ICON-00_index.md` |
-| IPLAN | IPLAN-00_index.md | 2-digit | `IPLAN-00_index.md` |
 
 **Policy for New Repositories**:
 - Choose either 2-digit (`00`) or 3-digit (`000`) width consistently
@@ -184,7 +183,7 @@ custom_fields:
 
 **Location**: "Document Control" section within markdown body (typically section 1).
 
-**Required in**: All production documents (BRD through IPLAN).
+**Required in**: All production documents (BRD through TASKS).
 
 **Example**:
 ```markdown
@@ -244,10 +243,9 @@ flowchart LR
     IMPL --> CTR[CTR<br/>Layer 9]
     CTR --> SPEC[SPEC<br/>Layer 10]
     SPEC --> TASKS[TASKS<br/>Layer 11]
-    TASKS --> IPLAN[IPLAN<br/>Layer 12]
-    IPLAN --> Code[Code<br/>Layer 13]
-    Code --> Tests[Tests<br/>Layer 14]
-    Tests --> Val[Validation<br/>Layer 15]
+    TASKS --> Code[Code<br/>Layer 12]
+    Code --> Tests[Tests<br/>Layer 13]
+    Tests --> Val[Validation<br/>Layer 14]
 ```
 
 ### Splitting Rules
@@ -258,7 +256,7 @@ flowchart LR
 - SPEC addendum: [10_SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
-### 16-Layer Architecture with Cumulative Tagging
+### 15-Layer Architecture with Cumulative Tagging
 
 The AI Dev Flow transforms business requirements into production code through a structured, traceable workflow. Each layer includes cumulative tags from ALL upstream layers, creating complete audit trails for regulatory compliance (regulatory, FDA, ISO).
 
@@ -275,16 +273,15 @@ The AI Dev Flow transforms business requirements into production code through a 
 | **8** | IMPL | Implementation plans (optional) | @brd→@req (7) | WHO/WHEN to build |
 | **9** | CTR | API contracts (optional) | @brd→@impl (8) | INTERFACE definitions |
 | **10** | SPEC | YAML technical specifications | @brd→@req (+optional) (7-9) | HOW to build |
-| **11** | TASKS | Implementation task breakdown | @brd→@spec (8-10) | EXACT TODOs |
+| **11** | TASKS | Implementation task breakdown | @brd→@spec (8-10) | EXACT TODOs + execution commands |
 | **11 (shared, optional)** | ICON | Implementation contracts | @brd→@spec (8-10) | Interface definitions |
-| **12** | IPLAN | Session-specific plans | @brd→@tasks (9-11) | Session work scope |
-| **13** | Code | Source code implementation | @brd→@tasks (9-11) | RUNNABLE artifacts |
-| **14** | Tests | Test suite implementation | @brd→@code (10-12) | Quality validation |
-| **15** | Validation | Production readiness verification | All upstream (10-15) | PRODUCTION-READY |
+| **12** | Code | Source code implementation | @brd→@tasks (9-11) | RUNNABLE artifacts |
+| **13** | Tests | Test suite implementation | @brd→@code (10-11) | Quality validation |
+| **14** | Validation | Production readiness verification | All upstream (10-14) | PRODUCTION-READY |
 
 **Note**: Layers 8 (IMPL) and 9 (CTR) are optional - include only when needed for project management or API contracts.
 
-#### 16-Layer Architecture Diagram
+#### 15-Layer Architecture Diagram
 
 ```mermaid
 graph TB
@@ -307,27 +304,26 @@ graph TB
         L9[CTR - Contracts/APIs]
         L10[SPEC - Technical Specs]
     end
-    subgraph "Implementation Layers 11-15"
-        L11[TASKS - Task Breakdown]
-        L12[IPLAN - Session Plans]
-        L13[Code - Source Code]
-        L14[Tests - Test Suite]
-        L15[Validation - Quality Gates]
+    subgraph "Implementation Layers 11-14"
+        L11[TASKS - Task Breakdown + Execution]
+        L12[Code - Source Code]
+        L13[Tests - Test Suite]
+        L14[Validation - Quality Gates]
     end
 
     L0 --> L1 --> L2 --> L3 --> L4 --> L5 --> L6 --> L7
-    L7 --> L8 --> L9 --> L10 --> L11 --> L12 --> L13 --> L14 --> L15
+    L7 --> L8 --> L9 --> L10 --> L11 --> L12 --> L13 --> L14
 ```
 
 #### Layer Numbering Explained
 
-The 16-layer architecture uses the following structure:
+The 15-layer architecture uses the following structure:
 
 - **Layer 0**: Strategy (pre-artifact foundational layer)
   - Product strategy documents, market analysis, vision statements
   - No formal artifact type, no traceability tags
 
-- **Layers 1-12**: Formal Documentation Artifacts
+- **Layers 1-11**: Formal Documentation Artifacts
   - Layer 1: BRD (Business Requirements)
   - Layer 2: PRD (Product Requirements)
   - Layer 3: EARS (Event-Action-Response-State) — Engineering Requirements
@@ -338,17 +334,16 @@ The 16-layer architecture uses the following structure:
   - Layer 8: IMPL (Implementation Specifications) - optional
   - Layer 9: CTR (Contracts) - optional
   - Layer 10: SPEC (Technical Specifications)
-  - Layer 11: TASKS (Task Breakdowns)
-  - Layer 12: IPLAN (Implementation Work Plans)
+  - Layer 11: TASKS (Task Breakdowns with execution commands)
 
-- **Layers 13-15**: Execution Layers
-  - Layer 13: Code (source code files)
-  - Layer 14: Tests (test implementations)
-  - Layer 15: Validation (test results, metrics)
+- **Layers 12-14**: Execution Layers
+  - Layer 12: Code (source code files)
+  - Layer 13: Tests (test implementations)
+  - Layer 14: Validation (test results, metrics)
 
 **Important Note on Layer Numbering:**
-- **Formal layer numbers (0-15)**: Used in cumulative tagging, templates, and specifications
-- **Mermaid diagram groupings**: May use simplified labels (L1-L11) for visual organization
+- **Formal layer numbers (0-14)**: Used in cumulative tagging, templates, and specifications
+- **Mermaid diagram groupings**: May use simplified labels (L1-L10) for visual organization
 - **Always use formal layer numbers** when implementing cumulative tagging or referencing layers in documentation
 - Mermaid subgraph labels (e.g., "Layer 1 - Business") are visual groupings that may combine multiple formal layers for diagram clarity
 
@@ -369,17 +364,16 @@ The 16-layer architecture uses the following structure:
 | 8 | Implementation Specifications (IMPL) | Project management plans |
 | 9 | Contracts (CTR) | Interface contracts (dual-file format) |
 | 10 | Specifications (SPEC) | Detailed technical specs |
-| 11 | Tasks (TASKS) | Development task breakdown |
-| 12 | Implementation Work Plans (IPLAN) | Session execution plans |
-| 13 | Code | Actual implementation |
-| 14 | Tests | Unit/integration tests |
-| 15 | Validation | End-to-end validation |
+| 11 | Tasks (TASKS) | Development task breakdown + execution commands |
+| 12 | Code | Actual implementation |
+| 13 | Tests | Unit/integration tests |
+| 14 | Validation | End-to-end validation |
 
 Note: ICON (Implementation Contracts) is an optional artifact that shares Layer 11 alongside TASKS. ICON provides standalone implementation contracts when needed for parallel development.
 
-Important: “Review” and “Production” are outcomes, not formal layers. The formal model is fixed at Layers 0–15.
+Important: "Review" and "Production" are outcomes, not formal layers. The formal model is fixed at Layers 0–14.
 
-#### Mermaid Diagram Visual Groupings (L1-L11)
+#### Mermaid Diagram Visual Groupings (L1-L10)
 
 Diagrams use simplified labels for visual clarity:
 
@@ -391,11 +385,10 @@ Diagrams use simplified labels for visual clarity:
 - **L6**: Interface Layer (contains Layer 9: CTR)
 - **L7**: Technical Specs (contains Layer 10: SPEC)
 - **L8**: Code Generation (contains Layer 11: TASKS)
-- **L9**: Session Planning (contains Layer 12: IPLAN)
-- **L10**: Code Layer (contains Layer 13: Code)
-- **L11**: Validation Layer (contains Layers 14-15: Tests, Validation)
+- **L9**: Code Layer (contains Layer 12: Code)
+- **L10**: Validation Layer (contains Layers 13-14: Tests, Validation)
 
-**Important**: Always use formal layer numbers (0-15) in:
+**Important**: Always use formal layer numbers (0-14) in:
 - Cumulative tagging implementations
 - Documentation references
 - Code comments
@@ -519,13 +512,13 @@ flowchart TD
 - **Files**: [ICON-00_index.md](./ICON/ICON-00_index.md) | [Template](./ICON/ICON-TEMPLATE.md)
 - **Guide**: [IMPLEMENTATION_CONTRACTS_GUIDE.md](./11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
 
-### 9. Session Planning Layer
+### Note on Deprecated IPLAN Layer
 
-**12_IPLAN/** - Implementation Work Plans (Layer 12)
-- Organize multiple TASKS into session-scoped work packages
-- Track progress across related implementation units
-- Maintain context between AI coding sessions
-- **Files**: Session plans saved via `/save-plan` command
+**12_IPLAN/** - Implementation Work Plans (DEPRECATED as of 2026-01-15)
+- IPLAN functionality has been merged into TASKS (Layer 11)
+- Execution commands are now in TASKS Section 4
+- Session tracking is now in TASKS Section 10 "Session Log"
+- See `12_IPLAN/DEPRECATED.md` for migration guide
 
 ## Document ID Standards
 
@@ -547,7 +540,7 @@ flowchart TD
 Format: `{TYPE}-{NN}_{descriptive_slug}.{ext}`
 Note: `NN` denotes a variable-width 2+ digit number (e.g., 01, 12, 105, 1002).
 
-- **TYPE**: Document type prefix (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS)
+- **TYPE**: Document type prefix (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, ICON)
 - **NNN**: 2+ digit sequence number (01, 02, 03, 100); examples and placeholders may show `NN` to indicate variable width
 - **descriptive_slug**: snake_case description
 - **ext**: File extension (md, feature, yaml)
@@ -611,7 +604,6 @@ Note on ADR references:
 | SPEC | SPEC_SCHEMA.yaml | 10 | |
 | TASKS | TASKS_SCHEMA.yaml | 11 | |
 | ICON | ICON_SCHEMA.yaml | 11 | Optional artifact |
-| IPLAN | IPLAN_SCHEMA.yaml | 12 | |
 
 ¹ BRD schema is OPTIONAL. BRD validation is human-centric with advisory-only automated checks. All validation rules in BRD_SCHEMA.yaml have 'warning' or 'info' severity (not 'error'). See BRD_SCHEMA.yaml header (lines 1-12) for enforcement level details.
 
@@ -625,7 +617,7 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 
 **Tag Format**:
 - Hierarchical artifacts (BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS): `@type: TYPE-NN:TYPE.NN.TT.SS` (document ID + element ID)
-- File-level artifacts (ADR, SPEC, CTR, IPLAN): `@type: TYPE-NN`
+- File-level artifacts (ADR, SPEC, CTR): `@type: TYPE-NN`
 - ICON contracts: `@icon: ICON-NN:ContractName`
 
 **Example Progression**:
@@ -1046,7 +1038,6 @@ python scripts/validate_artifact.py --type REQ --strict
 | 9 | CTR | @brd through @impl (optional layer) |
 | 10 | SPEC | @brd through @req + optional @impl, @ctr |
 | 11 | TASKS | @brd through @spec |
-| 12 | IPLAN | @brd through @tasks |
 
 ## Workflow Guides
 
@@ -1054,7 +1045,7 @@ python scripts/validate_artifact.py --type REQ --strict
 
 The AI Dev Flow follows a structured progression through 16 layers:
 
-**Documentation Layers (0-12)**:
+**Documentation Layers (0-11)**:
 1. **Strategy** (Layer 0) - External business strategy documents
 2. **BRD** (Layer 1) - Business objectives and market context
 3. **PRD** (Layer 2) - Product features and user stories
@@ -1066,13 +1057,12 @@ The AI Dev Flow follows a structured progression through 16 layers:
 9. **IMPL** (Layer 8) - Implementation plans (optional)
 10. **CTR** (Layer 9) - API contracts (optional)
 11. **SPEC** (Layer 10) - YAML technical specifications
-12. **TASKS** (Layer 11) - Implementation task breakdown
-13. **IPLAN** (Layer 12) - Session-specific plans
+12. **TASKS** (Layer 11) - Implementation task breakdown with execution commands
 
-**Execution Layers (13-15)**:
-14. **Code** (Layer 13) - Source code with cumulative tags
-15. **Tests** (Layer 14) - Test suite with cumulative tags
-16. **Validation** (Layer 15) - Production readiness verification
+**Execution Layers (12-14)**:
+13. **Code** (Layer 12) - Source code with cumulative tags
+14. **Tests** (Layer 13) - Test suite with cumulative tags
+15. **Validation** (Layer 14) - Production readiness verification
 
 **Key Workflow Patterns**:
 - **Cumulative Tagging**: Every artifact includes tags from ALL upstream layers
@@ -1174,8 +1164,7 @@ graph LR
             IMPL["08_IMPL/ - Implementation Plans"]
             CTR["09_CTR/ - API Contracts"]
             SPEC["10_SPEC/ - Technical Specs"]
-            TASKS["11_TASKS/ - Code Gen Plans"]
-            IPLAN["12_IPLAN/ - Session Plans"]
+            TASKS["11_TASKS/ - Code Gen Plans + Execution"]
         end
 
         subgraph tools["Tooling"]
@@ -1210,7 +1199,7 @@ graph LR
 | `09_CTR/` | API Contracts - dual-file format (.md + .yaml) |
 | `10_SPEC/` | Technical Specifications (YAML) |
 | `11_TASKS/` | Code Generation Plans |
-| `12_IPLAN/` | Session-specific implementation plans (Layer 12) |
+| `12_IPLAN/` | **DEPRECATED** - Merged into TASKS (Layer 11) |
 
 **Tooling & Guides**:
 
@@ -1232,7 +1221,7 @@ graph LR
 **Last Updated**: 2025-11-30
 
 **Version 2.0 - Cumulative Tagging Hierarchy** (November 2025):
-- ✅ **16-Layer Architecture**: Expanded from 10 to 16 layers (added Strategy, IPLAN, Code, Tests, Validation)
+- ✅ **15-Layer Architecture**: Expanded from 10 to 15 layers (added Strategy, Code, Tests, Validation)
 - ✅ **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
 - ✅ **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
 - ✅ **Traceability Matrix Templates**: All 13 artifact types have cumulative tagging sections
@@ -1250,7 +1239,7 @@ graph LR
 
 **Framework Evolution**:
 - Proven in production: 48x code generation speed improvement
-- 16-layer architecture with complete cumulative tagging
+- 15-layer architecture with complete cumulative tagging
 - Automated traceability validation and matrix generation
 - Complete audit trail from business strategy to production code
 - AI-optimized YAML specifications for deterministic generation

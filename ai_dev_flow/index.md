@@ -24,8 +24,10 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 | 8 | IMPL | `IMPL-TEMPLATE.md` |
 | 9 | CTR | `CTR-TEMPLATE.md` |
 | 10 | SPEC | `SPEC-TEMPLATE.yaml` |
-| 11 | TASKS | `TASKS-TEMPLATE.md` |
-| 12 | IPLAN | `IPLAN-TEMPLATE.md` |
+| 11 | TASKS | `TASKS-TEMPLATE.md` (v2.0 - includes execution commands) |
+| 12 | IPLAN | `IPLAN-TEMPLATE.md` **(DEPRECATED)** |
+
+> **Note**: As of 2026-01-15, IPLAN (Layer 12) has been **deprecated**. Execution commands are now included directly in TASKS documents (Section 4: Execution Commands). See `12_IPLAN/DEPRECATED.md` for migration guidance.
 
 ### Configuration Reference
 
@@ -40,7 +42,7 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 
 - The AI's Instruction Set: The subsequent layers (REQ, SPEC, TASKS) act as a detailed, unambiguous instruction set automatically derived from the architect's blueprint. This breakdown translates high-level architectural decisions into granular tasks that are ideal for consumption by an AI code generator.
 
-- The Governance and Audit Layer: The framework's most critical function is providing a robust governance and audit mechanism. The full traceability chain, from BRD to TASKS and IPLAN, creates an unimpeachable record of the AI's intended actions. This allows the architect to:
+- The Governance and Audit Layer: The framework's most critical function is providing a robust governance and audit mechanism. The full traceability chain, from BRD to TASKS, creates an unimpeachable record of the AI's intended actions. This allows the architect to:
   1. Verify Compliance: Ensure the AI's generated code adheres strictly to the established architectural and business rules.
   2. Mitigate AI Risk: Audit the AI's plans to prevent hallucinations or unintended features before code is even written.
   3. Validate at a High Level: Confirm the success of the project by reviewing BDD test results and traceability matrices, rather than performing a line-by-line code review.
@@ -54,7 +56,7 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 - ✅ **Decision Frameworks**: Contract decision questionnaire and IMPL creation guidelines
 - ✅ **Tool Optimization**: Guidance for AI coding assistants (see AI_TOOL_OPTIMIZATION_GUIDE.md)
 - ✅ **BRD Guidance**: Platform vs Feature BRD selection guide
-- ✅ **IPLAN Layer**: Formalized Layer 12 Implementation Plans with stable, non-timestamped naming
+- ⚠️ **IPLAN Layer Deprecated**: Layer 12 Implementation Plans merged into TASKS v2.0 (Section 4: Execution Commands)
 
 ## Document Structure
 
@@ -64,7 +66,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Change Management (CHG) - Archival Procedure
 
-⚠️ **Note**: CHG is NOT a layer in the 16-layer architecture - it's a change management archival procedure.
+⚠️ **Note**: CHG is NOT a layer in the 15-layer architecture - it's a change management archival procedure.
 
 - **CHG** (`CHG/`) - Document immutability enforcement through archival
   - Template: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md)
@@ -101,7 +103,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Index: `04_BDD/BDD-00_index.md`
   - Template: [BDD-TEMPLATE.feature](./04_BDD/BDD-TEMPLATE.feature)
   - Purpose: Executable acceptance tests written before implementation (Test-First approach)
-  - Maps to IPLAN scenarios for test-driven development workflow
+  - Maps to TASKS execution plans for test-driven development workflow
 
 ### Architecture Layer (Layers 5-6)
 
@@ -181,17 +183,15 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Default: Embed contracts in TASKS Section 8 (standalone only when 5+ consumers)
   - Creation Guide: [ICON_CREATION_RULES.md](./ICON/ICON_CREATION_RULES.md)
 
-### Session Execution Layer (Layer 12)
+### Session Execution Layer (Layer 12) - DEPRECATED
 
-- **IPLAN** (`12_IPLAN/`) - Layer 12: Implementation Work Plans for specific coding sessions
-  - Index: [IPLAN-00_index.md](./12_IPLAN/IPLAN-00_index.md)
-  - Template: [IPLAN-TEMPLATE.md](./12_IPLAN/IPLAN-TEMPLATE.md)
-  - Purpose: Session-based execution context with executable bash commands
-  - Format: Sequential naming `IPLAN-NN_{descriptive_slug}.md` (no timestamps)
-  - Enables context resumption across AI coding sessions
-  - Contains bash commands for setup, execution, and validation
-  - Each IPLAN executes one or more TASKS within a session
-  - BDD Scenario Mapping: [BDD_SCENARIO_MAPPING.md](./12_IPLAN/BDD_SCENARIO_MAPPING.md)
+> **DEPRECATED as of 2026-01-15**: IPLAN functionality has been merged into TASKS v2.0. Execution commands are now in TASKS Section 4. See `12_IPLAN/DEPRECATED.md` for migration guidance.
+
+- **IPLAN** (`12_IPLAN/`) - Layer 12: Implementation Work Plans **(DEPRECATED)**
+  - Status: [DEPRECATED.md](./12_IPLAN/DEPRECATED.md) - Migration guidance
+  - Legacy Template: [IPLAN-TEMPLATE.md](./12_IPLAN/IPLAN-TEMPLATE.md) (marked deprecated)
+  - **New Workflow**: `SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
+  - Execution commands now in TASKS Section 4: Execution Commands
 
 <!-- See README.md → “Using This Repo” for path mapping guidance. -->
 
@@ -201,7 +201,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 
-> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid diagram below uses visual groupings for clarity. Always use formal layer numbers (0-15) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
+> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid diagram below uses visual groupings for clarity. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
 
 ```mermaid
 flowchart TD
@@ -230,13 +230,10 @@ flowchart TD
     SPEC[SPEC<br/>Technical Specifications<br/>HOW - Implementation blueprints<br/>YAML format with full details<br/><small><i>@brd through @req + opt</i></small>]
 
     %% Code Generation Layer
-    TASKS[TASKS<br/>Code Generation Plans<br/>AI-structured implementation steps<br/>Section 8: Implementation Contracts<br/><small><i>@brd through @spec + opt @icon</i></small>]
-
-    %% Session Execution Layer
-    IPLAN[IPLAN<br/>Implementation Work Plans<br/>Executable bash commands for sessions<br/><small><i>@brd through @tasks</i></small>]
+    TASKS[TASKS<br/>Code Generation Plans<br/>AI-structured implementation steps<br/>Section 4: Execution Commands<br/>Section 8: Implementation Contracts<br/><small><i>@brd through @spec + opt @icon</i></small>]
 
     %% Execution Layer
-    Code[Code<br/>Python Implementation<br/>Generated from SPEC + TASKS + IPLAN<br/><small><i>@brd through @iplan</i></small>]
+    Code[Code<br/>Python Implementation<br/>Generated from SPEC + TASKS<br/><small><i>@brd through @tasks</i></small>]
     Tests[Tests<br/>Test Suites<br/>Unit, Integration, E2E tests<br/><small><i>@brd through @code</i></small>]
 
     %% Validation Layer
@@ -260,8 +257,7 @@ flowchart TD
 
     %% Implementation Flow
     SPEC --> TASKS
-    TASKS --> IPLAN
-    IPLAN --> Code
+    TASKS --> Code
     Code --> Tests
     Tests --> Validation
     %% Note: Review and Prod are outcomes, not formal layers
@@ -277,7 +273,6 @@ flowchart TD
     classDef interfaceLayer fill:#f8bbd0,stroke:#c2185b,stroke-width:2px
     classDef implementationLayer fill:#dcedc8,stroke:#689f38,stroke-width:2px
     classDef codegenLayer fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef sessionLayer fill:#fff3e0,stroke:#e65100,stroke-width:2px
     classDef executionLayer fill:#d1c4e9,stroke:#512da8,stroke-width:2px
 
     class BRD,PRD,EARS businessLayer
@@ -288,7 +283,6 @@ flowchart TD
     class CTR interfaceLayer
     class SPEC implementationLayer
     class TASKS codegenLayer
-    class IPLAN sessionLayer
     class Code,Tests,Validation,Review,Prod executionLayer
 ```
 
@@ -300,7 +294,7 @@ flowchart TD
 - SPEC addendum: [10_SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only. “Review” and “Prod” are outcomes, not formal layers.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only. “Review” and “Prod” are outcomes, not formal layers.
 
 ### Workflow Explanation
 
@@ -386,7 +380,7 @@ Validate document structure and traceability using automated scripts:
 # Core validation scripts
 python scripts/validate_requirement_ids.py               # REQ-ID format and uniqueness
 python scripts/validate_req_spec_readiness.py            # REQ SPEC-readiness scoring
-python scripts/validate_iplan_naming.py                  # IPLAN naming conventions
+python scripts/validate_iplan_naming.py                  # IPLAN naming (legacy - deprecated)
 python scripts/validate_documentation_paths.py           # Path consistency
 python scripts/validate_links.py                         # Markdown link validation
 python scripts/validate_tags_against_docs.py             # Tag extraction and validation
@@ -399,7 +393,7 @@ bash scripts/validate_req_template.sh                    # REQ template complian
 bash scripts/validate_ctr.sh                             # CTR dual-file format compliance
 bash scripts/validate_impl.sh                            # IMPL 4-PART structure compliance
 bash scripts/validate_tasks.sh                           # TASKS format including Section 8
-bash scripts/validate_iplan.sh                           # IPLAN session-based execution plans
+bash scripts/validate_iplan.sh                           # IPLAN (legacy - deprecated)
 bash scripts/validate_icon.sh                            # ICON Implementation Contracts
 
 # Traceability generation

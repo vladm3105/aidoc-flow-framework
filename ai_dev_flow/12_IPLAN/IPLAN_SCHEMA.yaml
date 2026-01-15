@@ -1,18 +1,27 @@
 # =============================================================================
+# DEPRECATED: IPLAN has been merged into TASKS (Layer 11)
+# 
+# As of 2026-01-15, IPLAN functionality is now part of TASKS-TEMPLATE.md.
+# Use TASKS-TEMPLATE.md for all new implementation work.
+# See: ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md
+# =============================================================================
 # 📋 Document Role: This is a DERIVATIVE of IPLAN-TEMPLATE.md
 # - Authority: IPLAN-TEMPLATE.md is the single source of truth for IPLAN structure
 # - Purpose: Machine-readable validation rules derived from the template
 # - On conflict: Defer to IPLAN-TEMPLATE.md
 # =============================================================================
 #
-# IPLAN Schema Definition v1.0
+# IPLAN Schema Definition v1.0 [DEPRECATED]
 # Purpose: Define valid metadata structure and validation rules for IPLAN documents
 # Usage: Reference by validate_iplan.py for automated validation
 
 schema_version: "1.0"
 artifact_type: IPLAN
 layer: 12
-last_updated: "2025-11-30"
+last_updated: "2026-01-15"
+status: deprecated
+deprecated_date: "2026-01-15"
+replacement: "ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md"
 
 references:
   template: "IPLAN-TEMPLATE.md"

@@ -1,18 +1,19 @@
 # SDD Framework Layer Registry
 # Single source of truth for all layer definitions
-# Version: 1.3
-# Last Updated: 2026-01-13
+# Version: 1.4
+# Last Updated: 2026-01-15
 
-version: "1.3"
+version: "1.4"
 metadata:
   framework: "Specification-Driven Development (SDD)"
-  total_layers: 16
+  total_layers: 15  # Changed from 16: IPLAN (Layer 12) deprecated and merged into TASKS
   additional_artifacts: ["ICON"]
   maintainer: "SDD Framework Team"
   template_policy: mvp_only  # Framework uses MVP templates exclusively
   deprecated_templates: archived/  # Full/section templates moved to archived/ subdirectories
+  deprecated_artifacts: ["IPLAN"]  # IPLAN merged into TASKS as of 2026-01-15
 
-# Optional pre-artifact layer (not part of core 16 artifact layers)
+# Optional pre-artifact layer (not part of core 15 artifact layers)
 conceptual_layers:
   - number: 0
     artifact: STRAT
@@ -154,52 +155,50 @@ layers:
     description: "Layer 11 - AI-structured TODO tasks from SPEC"
     template: "TASKS-TEMPLATE.md"
 
-  - number: 12
-    artifact: IPLAN
-    name: "Implementation Plan"
-    folder: 12_IPLAN/
-    extensions: [.md]
-    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS]
-    error_prefix: IPLAN
-    optional: false
-    description: "Layer 12 - Session-based bash command execution plans"
-    template: "IPLAN-TEMPLATE.md"
+  # DEPRECATED: Layer 12 IPLAN has been merged into TASKS (Layer 11)
+  # Execution commands are now in TASKS Section 4
+  # See 12_IPLAN/DEPRECATED.md for migration guide
+  # Keeping this entry commented for historical reference:
+  # - number: 12
+  #   artifact: IPLAN
+  #   name: "Implementation Plan"
+  #   folder: 12_IPLAN/
+  #   status: DEPRECATED (merged into TASKS as of 2026-01-15)
 
-  - number: 13
+  - number: 12
     artifact: CODE
     name: "Source Code"
     folder: src/
     extensions: [.py, .js, .ts, .java, .go, .rb, .php, .cpp, .c, .h]
-    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks, iplan]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN]
+    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS]
     error_prefix: CODE
     optional: false
-    description: "Layer 13 - Source code implementation generated from 12_IPLAN/TASKS"
+    description: "Layer 12 - Source code implementation generated from TASKS"
     template: null  # Code layer - no documentation template
 
-  - number: 14
+  - number: 13
     artifact: TESTS
     name: "Test Suite"
     folder: tests/
     extensions: [.py, .js, .ts, .java, .go, .rb, .php, .cpp]
-    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks, iplan, code]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, CODE]
+    required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks, code]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, CODE]
     error_prefix: TEST
     optional: false
-    description: "Layer 14 - Unit, integration, and end-to-end test implementations"
+    description: "Layer 13 - Unit, integration, and end-to-end test implementations"
     template: null  # Test layer - no documentation template
 
-  - number: 15
+  - number: 14
     artifact: VALIDATION
     name: "Validation Results"
     folder: validation/
     extensions: [.md, .json, .yaml, .xml]
     required_tags: []  # Consumes all upstream tags, count not strictly enforced
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, CODE, TESTS]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, CODE, TESTS]
     error_prefix: VAL
     optional: false
-    description: "Layer 15 - Production readiness validation and quality gate results"
+    description: "Layer 14 - Production readiness validation and quality gate results"
     template: null  # Validation layer - no documentation template
 
 # Change Management Utilities (NOT layers)
@@ -233,11 +232,11 @@ layer_groups:
     description: "Architecture and detailed requirements"
 
   implementation_design:
-    layers: [8, 9, 10, 11, 12]
+    layers: [8, 9, 10, 11]
     description: "Implementation design artifacts"
   
   execution:
-    layers: [13, 14, 15]
+    layers: [12, 13, 14]
     description: "Code execution and validation layers"
 
 id_patterns:

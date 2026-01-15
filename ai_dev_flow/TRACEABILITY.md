@@ -10,8 +10,8 @@ custom_fields:
   priority: shared
   development_status: active
   applies_to: [all-artifacts, sdd-workflow]
-  version: "1.0"
-  workflow_layers: 16
+  version: "1.1"
+  workflow_layers: 15
 ---
 
 # Traceability Guidelines for AI Dev Flow
@@ -66,7 +66,7 @@ The following rules govern traceability in the SDD workflow:
 | SPEC | `ai_dev_flow/10_SPEC/SPEC_SCHEMA.yaml` | 10 |
 | TASKS | `ai_dev_flow/11_TASKS/TASKS_SCHEMA.yaml` | 11 |
 | ICON | `ai_dev_flow/ICON/ICON_SCHEMA.yaml` | 11 |
-| IPLAN | `ai_dev_flow/12_IPLAN/IPLAN_SCHEMA.yaml` | 12 |
+| ~~IPLAN~~ | ~~`ai_dev_flow/12_IPLAN/IPLAN_SCHEMA.yaml`~~ | ~~12~~ | **DEPRECATED** - merged into TASKS |
 
 ## ⚠️ Upstream Artifact Verification (CRITICAL)
 
@@ -87,7 +87,7 @@ ls -la docs/08_IMPL/   # Layer 8 - Implementation Plans
 ls -la docs/09_CTR/    # Layer 9 - Contracts
 ls -la docs/10_SPEC/   # Layer 10 - Specifications
 ls -la docs/11_TASKS/  # Layer 11 - Task Breakdowns
-ls -la docs/12_IPLAN/  # Layer 12 - Implementation Plans
+# Note: Layer 12 (IPLAN) has been deprecated and merged into TASKS
 ```
 
 ### Step 2: Map Existing Documents to Traceability Tags
@@ -132,11 +132,11 @@ ls -la docs/12_IPLAN/  # Layer 12 - Implementation Plans
 @adr: ADR-05      # Verified: docs/05_ADR/ADR-05_architecture.md exists
 ```
 
-**16-Layer Workflow**: This traceability system implements the 16-layer SDD workflow (Layer 0: Strategy through Layer 15: Validation):
+**15-Layer Workflow**: This traceability system implements the 15-layer SDD workflow (Layer 0: Strategy through Layer 14: Validation):
 ```
 Strategy (Layer 0) → Business (01_BRD/02_PRD/EARS) → Testing (BDD) → Architecture (05_ADR/SYS) →
 Requirements (REQ) → Project Management (IMPL) → Interface (CTR) → Implementation (SPEC) →
-Code Generation (TASKS) → Implementation Plans (IPLAN) → Execution (Code/Tests) → Validation
+Code Generation (TASKS) → Execution (Code/Tests) → Validation
 ```
 
 ## Standard Traceability section Structure
@@ -145,11 +145,12 @@ Code Generation (TASKS) → Implementation Plans (IPLAN) → Execution (Code/Tes
 
 **Note**: Layers group related artifacts by function. The arrows show the actual sequential workflow. Follow the connections (arrows) for the correct document order, not the layer positioning.
 
-**Sequential Flow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation
+**Sequential Flow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code → Tests → Validation
+> **Note**: IPLAN (formerly Layer 12) has been deprecated and merged into TASKS Section 4.
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 
-> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L11) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-15) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
+> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L10) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
 
 ```mermaid
 graph LR
@@ -185,15 +186,11 @@ graph LR
         TASKS["TASKS<br/>Generation Plans<br/><small>(@brd through @spec)</small>"]
     end
 
-    subgraph L9["Implementation Plans Layer"]
-        TP["IPLAN<br/>Session Context<br/><small>(@brd through @tasks)</small>"]
-    end
-
-    subgraph L10["Execution Layer"]
+    subgraph L9["Execution Layer"]
         CODE["Code<br/><small>(@brd through @tasks)</small>"] --> TESTS["Tests<br/><small>(@brd through @code)</small>"]
     end
 
-    subgraph L11["Validation Layer"]
+    subgraph L10["Validation Layer"]
         VAL["Validation<br/><small>(all upstream)</small>"] --> REV[Review] --> PROD[Production]
     end
 
@@ -204,8 +201,7 @@ graph LR
     IMPL --> CTR
     CTR --> SPEC
     SPEC --> TASKS
-    TASKS --> TP
-    TP --> CODE
+    TASKS --> CODE
     TESTS --> VAL
     PROD -.-> BRD
 
@@ -220,7 +216,6 @@ graph LR
     style CTR fill:#e2e3e5,stroke:#616161,stroke-width:2px
     style SPEC fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     style TASKS fill:#fce4ec,stroke:#c2185b,stroke-width:2px
-    style TP fill:#e1f5fe,stroke:#01579b,stroke-width:2px
     style CODE fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     style TESTS fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
     style VAL fill:#e0f2f1,stroke:#00897b,stroke-width:2px
@@ -228,13 +223,13 @@ graph LR
     style PROD fill:#e0f2f1,stroke:#00897b,stroke-width:2px
 ```
 
-> **Note on Diagram Labels**: Mermaid subgraph labels (L1-L11) are visual groupings for diagram clarity, not formal layer numbers. Always use formal layer numbers (0-15) when implementing cumulative tagging or referencing layers in code/documentation.
+> **Note on Diagram Labels**: Mermaid subgraph labels (L1-L10) are visual groupings for diagram clarity, not formal layer numbers. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation.
 
-**16-Layer Workflow Flow:**
+**15-Layer Workflow Flow:**
 ```
 Business (BRD → PRD → EARS) → Testing (BDD) → Architecture (ADR → SYS) →
 Requirements (REQ) → Project Management (IMPL) → Interface (CTR - optional) →
-Implementation (SPEC) → Code Generation (TASKS) → Implementation Plans (IPLAN) →
+Implementation (SPEC) → Code Generation (TASKS) →
 Execution (Code → Tests) → Validation (Validation → Review → Production)
 ```
 
@@ -255,11 +250,12 @@ Execution (Code → Tests) → Validation (Validation → Review → Production)
 | 8 | Implementation Specifications (IMPL) | Project management plans |
 | 9 | Contracts (CTR) | Interface contracts (dual-file format) |
 | 10 | Specifications (SPEC) | Detailed technical specs |
-| 11 | Tasks (TASKS) | Development task breakdown |
-| 12 | Implementation Work Plans (IPLAN) | Session execution plans |
-| 13 | Code | Actual implementation |
-| 14 | Tests | Unit/integration tests |
-| 15 | Validation | End-to-end validation |
+| 11 | Tasks (TASKS) | Development task breakdown (includes execution commands) |
+| 12 | Code | Actual implementation |
+| 13 | Tests | Unit/integration tests |
+| 14 | Validation | End-to-end validation |
+
+> **Note**: IPLAN (formerly Layer 12) has been deprecated. Execution commands are now in TASKS Section 4.
 
 **Note**: REF (Reference Documents) are supplementary documentation that does NOT participate in the formal traceability chain. Use REF for external research, standards references, glossaries, and other supporting material.
 
@@ -275,17 +271,16 @@ Diagrams use simplified labels for visual clarity:
 - **L6**: Interface Layer (contains Layer 9: CTR)
 - **L7**: Technical Specs (contains Layer 10: SPEC)
 - **L8**: Code Generation (contains Layer 11: TASKS)
-- **L9**: Session Planning (contains Layer 12: IPLAN)
-- **L10**: Code Layer (contains Layer 13: Code)
-- **L11**: Validation Layer (contains Layers 14-15: Tests, Validation)
+- **L9**: Execution Layer (contains Layer 12: Code)
+- **L10**: Validation Layer (contains Layers 13-14: Tests, Validation)
 
-**Important**: Always use formal layer numbers (0-15) in:
+**Important**: Always use formal layer numbers (0-14) in:
 - Cumulative tagging implementations
 - Documentation references
 - Code comments
 - Traceability matrices
 
-**Legend** (Formal Layer Numbers 0-15):
+**Legend** (Formal Layer Numbers 0-14):
 - **Layers 1-3 - Business** (Blue): BRD (L1) → PRD (L2) → EARS (L3) - Strategic direction and product vision
 - **Layer 4 - Testing** (Yellow): BDD - Acceptance criteria and test scenarios
 - **Layers 5-6 - Architecture** (Green): ADR (L5) → SYS (L6) - Technical decisions and system design
@@ -293,11 +288,10 @@ Diagrams use simplified labels for visual clarity:
 - **Layer 8 - Project Management** (Cyan): IMPL - Implementation planning (WHO/WHEN) - optional
 - **Layer 9 - Interface** (Gray): CTR - API contracts (created when needed) - optional
 - **Layer 10 - Technical Specifications** (Orange): SPEC - Technical specifications (YAML)
-- **Layer 11 - Code Generation** (Pink): TASKS - Detailed implementation tasks
-- **Layer 12 - Implementation Plans** (Light Blue): IPLAN - Session context with bash commands
-- **Layer 13 - Code** (Purple): Source code implementation
-- **Layer 14 - Tests** (Green): Test execution and verification
-- **Layer 15 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
+- **Layer 11 - Code Generation** (Pink): TASKS - Detailed implementation tasks (includes execution commands)
+- **Layer 12 - Code** (Purple): Source code implementation
+- **Layer 13 - Tests** (Green): Test execution and verification
+- **Layer 14 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
 
 ## Quick Reference Card
 
@@ -316,7 +310,7 @@ Diagrams use simplified labels for visual clarity:
 | 9 | CTR | 7 | 8 |
 | 10 | SPEC | 7 | 9 |
 | 11 | TASKS | 8 | 10 |
-| 12 | IPLAN | 9 | 11 |
+| 12 | Code | 9 | 11 |
 
 ### Tag Separator Rules
 
@@ -356,8 +350,7 @@ Document the technical specifications and designs derived from this document.
 | CTR | [CTR-NN](../09_CTR/CTR-NN_...md#CTR-NN) | [API contract] | Interface contract (if interface requirement) |
 | BDD | [BDD-NN.SS](../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios) | [Test scenarios] | Acceptance test scenarios |
 | SPEC | [SPEC-NN](../10_SPEC/.../SPEC-NN_...yaml) | [Technical specification] | Implementation blueprint (HOW to build) |
-| TASKS | [TASKS-NN](../11_TASKS/TASKS-NN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code |
-| IPLAN | [IPLAN-NN](../12_IPLAN/IPLAN-NN_...md) | [Implementation work plan] | Session context with bash commands to execute TASKS |
+| TASKS | [TASKS-NN](../11_TASKS/TASKS-NN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code (includes execution commands) |
 
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 ### Same-Type References (Conditional)
@@ -438,7 +431,7 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 
 | Notation | Artifacts | Rationale |
 |----------|-----------|-----------|
-| **Dash** (Document-level) | ADR, SPEC, CTR, IPLAN, ICON | Referenced as complete self-contained units |
+| **Dash** (Document-level) | ADR, SPEC, CTR, ICON | Referenced as complete self-contained units |
 | **Dot** (Element-level) | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Contain multiple numbered elements requiring specific references |
 
 **Why Two Systems?**
@@ -477,7 +470,7 @@ These tags reference documents in the SDD workflow hierarchy. Use the document t
 | `@ctr` | 9 | Data Contracts | `@ctr: CTR-NN` | `@ctr: CTR-01` |
 | `@spec` | 10 | Technical Specs | `@spec: SPEC-NN` | `@spec: SPEC-03` |
 | `@tasks` | 11 | Task Breakdowns | `@tasks: TASKS-NN:TASKS.NN.EE.SS` | `@tasks: TASKS-01:TASKS.01.29.03` |
-| `@iplan` | 12 | Implementation Plans | `@iplan: IPLAN-NN` | `@iplan: IPLAN-01` |
+| ~~`@iplan`~~ | ~~12~~ | ~~Implementation Plans~~ | ~~`@iplan: IPLAN-NN`~~ | ~~`@iplan: IPLAN-01`~~ | **DEPRECATED** - merged into TASKS |
 
 **Note**: All requirements use sequential numbering (001, 002, 003...) within documents.
 
@@ -507,7 +500,7 @@ These tags define relationships between documents of the same artifact type.
 | `@related-{type}` | Related context | `@related-req: REQ-NN` | `@related-req: REQ-01, REQ-005` |
 | `@depends-{type}` | Implementation prerequisite | `@depends-req: REQ-NN` | `@depends-req: REQ-01` |
 
-**Supported Types**: req, spec, tasks, adr, bdd, sys, ears, prd, ctr, impl, iplan
+**Supported Types**: req, spec, tasks, adr, bdd, sys, ears, prd, ctr, impl
 
 #### Invalid Tag Patterns (Deprecated/Incorrect)
 
@@ -535,7 +528,7 @@ Do NOT use these tag patterns:
 @spec: SPEC-03
 @ctr: CTR-01
 @test: BDD.03.13.01
-@iplan: IPLAN-01
+# Note: @iplan tag is deprecated - IPLAN merged into TASKS Section 4
 ```
 
 ### Validation
@@ -634,8 +627,10 @@ Cumulative tagging ensures complete traceability chains from business requiremen
 ### Mandatory Hierarchy
 
 ```
-Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → IPLAN → Code → Tests → Validation
+Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → Code → Tests → Validation
 ```
+
+> **Note**: IPLAN (formerly between TASKS and Code) has been deprecated. Execution commands are now in TASKS Section 4.
 
 ### Cumulative Inheritance Rules
 
@@ -666,11 +661,10 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 | 8 | **IMPL** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req` | Formal Template | Cumulative: BRD through REQ |
 | 9 | **CTR** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl` | Formal Template | Cumulative: BRD through IMPL (optional layer) |
 | 10 | **SPEC** | All upstream through `@req` + optional `@impl`, `@ctr` | Formal Template (YAML) | Full upstream chain |
-| 11 | **TASKS** | All upstream through `@spec` + optional `@icon` | Formal Template | Include optional 08_IMPL/09_CTR/ICON if present |
-| 12 | **IPLAN** | All upstream through `@tasks` | Project Files | All formal artifact tags |
-| 13 | **Code** | **ALL tags** including `@iplan` | Docstring Tags | Complete traceability chain |
-| 14 | **Tests** | All upstream through `@code` | Docstring Tags + BDD | All upstream + code reference |
-| 15 | **Validation** | **ALL tags from all documents** | Embedded Tags + CI/CD | Complete audit trail |
+| 11 | **TASKS** | All upstream through `@spec` + optional `@icon` | Formal Template | Include optional 08_IMPL/09_CTR/ICON if present; includes execution commands |
+| 12 | **Code** | **ALL tags** through `@tasks` | Docstring Tags | Complete traceability chain |
+| 13 | **Tests** | All upstream through `@code` | Docstring Tags + BDD | All upstream + code reference |
+| 14 | **Validation** | **ALL tags from all documents** | Embedded Tags + CI/CD | Complete audit trail |
 
 ### Tag Format Specification
 
@@ -680,7 +674,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 ```
 
 **Components**:
-- **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`, `@icon`, `@iplan`)
+- **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`, `@icon`)
 - **TYPE**: Document type (BRD, PRD, SYS, REQ, etc.)
 - **DOC_NUM**: 3-digit document number, zero-padded (e.g., `001`, `003`, `008`)
 - **FEATURE_NUM**: 3-digit feature number, zero-padded (e.g., `030`, `006`, `001`), or contract names for ICON tags
@@ -709,6 +703,8 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @icon-role: consumer
 ```
 
+> **Note**: `@iplan` tag is deprecated. IPLAN has been merged into TASKS Section 4.
+
 **Implementation Contracts** (`@icon` - Layer 11, optional; shares with TASKS):
 - Tags implementation contracts for parallel development
 - Format: `@icon: TASKS-XXX:ContractName` or `@icon: ICON-XXX:ContractName`
@@ -734,7 +730,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 | Related | `@related-{type}:` | Supporting context, shared domain knowledge |
 | Depends | `@depends-{type}:` | Implementation prerequisite (must complete first) |
 
-**Supported Types**: req, spec, tasks, adr, bdd, sys, ears, prd, ctr, impl, iplan
+**Supported Types**: req, spec, tasks, adr, bdd, sys, ears, prd, ctr, impl
 
 **Examples**:
 ```markdown
@@ -830,7 +826,6 @@ Implements real-time resource limit validation and enforcement.
 @ctr: CTR-01
 @spec: SPEC-03
 @tasks: TASKS.01.29.03
-@iplan: IPLAN-01
 """
 ```
 
@@ -1317,11 +1312,10 @@ The SDD workflow employs different tracking methods for different artifact types
 | 8 | IMPL | Formal Template + Tags | Yes | Yes | 7 | @brd through @req |
 | 9 | CTR | Formal Template + Tags | Yes (Dual: .md + .yaml) | Yes | 8 | @brd through @impl (optional) |
 | 10 | SPEC | Formal Template + Tags | Yes (YAML) | Yes | 7-9 | @brd through @req + optional |
-| 11 | TASKS | Formal Template + Tags | Yes | Yes | 8-11 | @brd through @spec + optional @icon |
-| 12 | IPLAN | Project Files + Tags | No (Project-specific) | Yes | 9-11 | All formal artifact tags |
-| 13 | Code | Docstring Tags | No (Implementation) | Yes | 10-12 | ALL upstream tags |
-| 14 | Tests | BDD + Docstring Tags | Mixed | Yes | 11-13 | All upstream + code |
-| 15 | Validation | Embedded Tags + CI/CD | Mixed | Yes | ALL | Complete audit trail |
+| 11 | TASKS | Formal Template + Tags | Yes | Yes | 8-11 | @brd through @spec + optional @icon; includes execution commands |
+| 12 | Code | Docstring Tags | No (Implementation) | Yes | 9-11 | ALL upstream tags |
+| 13 | Tests | BDD + Docstring Tags | Mixed | Yes | 10-12 | All upstream + code |
+| 14 | Validation | Embedded Tags + CI/CD | Mixed | Yes | ALL | Complete audit trail |
 
 ### Example: Complete Tag Chain in Code
 
@@ -1351,7 +1345,6 @@ excessive collection concentration risk through automated validation.
 @ctr: CTR-01
 @spec: SPEC-03
 @tasks: TASKS.01.29.03, TASKS.01.29.05
-@iplan: IPLAN-01
 
 @impl-status: complete
 @test-coverage: 95%
@@ -1617,7 +1610,7 @@ The SDD framework employs two types of change management based on scope and impa
 
 ### CHG: Change Management for Architectural Pivots
 
-⚠️ **IMPORTANT**: CHG is NOT a layer in the 16-layer architecture - it's an archival and immutability enforcement procedure.
+⚠️ **IMPORTANT**: CHG is NOT a layer in the 15-layer architecture - it's an archival and immutability enforcement procedure.
 
 **When to Use CHG** (rare - \u003c5% of changes):
 - Complete architectural restructuring requiring new 01_BRD/PRD
@@ -1669,7 +1662,7 @@ Scalability requirements exceeded monolithic architecture capabilities.
 
 **Step 4: Regenerate Entire Downstream Chain**
 1. Create new BRD → PRD → EARS → BDD → ADR → SYS → REQ
-2. Create new SPEC → TASKS → IPLAN
+2. Create new SPEC → TASKS
 3. Regenerate all source code
 4. Update all tests
 

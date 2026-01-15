@@ -113,7 +113,8 @@ If user does not specify or says "default", use **Financial Services** configura
 ### Execution Command
 
 ```bash
-# Core 16-layer architecture (13 documentation artifacts + 3 execution layers)
+# Core 15-layer architecture (12 documentation artifacts + 3 execution layers)
+# Note: IPLAN (formerly Layer 12) has been deprecated and merged into TASKS (Layer 11)
 mkdir -p docs/BRD
 mkdir -p docs/PRD
 mkdir -p docs/EARS
@@ -125,7 +126,6 @@ mkdir -p docs/IMPL
 mkdir -p docs/CTR
 mkdir -p docs/SPEC
 mkdir -p docs/TASKS
-mkdir -p docs/IPLAN
 mkdir -p docs/ICON   # Optional (Implementation Contracts)
 
 # Requirements subdirectories (domain-agnostic structure)
@@ -221,8 +221,8 @@ After folder creation, AI Assistant **MUST** verify:
 # Verify directory structure
 ls -la docs/
 
-# Expected to include at least 12 directories:
-# BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN
+# Expected to include at least 11 directories:
+# BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
 # Optional: ICON (if using implementation contracts)
 
 # Verify requirements subdirectories
@@ -332,7 +332,6 @@ touch docs/08_IMPL/IMPL-00_index.md
 touch docs/09_CTR/CTR-00_index.md
 touch docs/10_SPEC/SPEC-00_index.md
 touch docs/11_TASKS/TASKS-00_index.md
-touch docs/12_IPLAN/IPLAN-00_index.md
 touch docs/ICON/ICON-00_index.md  # optional
 ```
 
@@ -414,6 +413,7 @@ AI Assistant asks:
 ```
 REQ → IMPL → CTR → SPEC → TASKS → Code
 ```
+Note: Execution commands are now part of TASKS (Section 4), not a separate IPLAN layer.
 
 **Without Contracts**:
 ```
@@ -567,6 +567,7 @@ Every document **MUST** include section 7 with:
 
 When creating ANY artifact document type:
 - BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
+Note: IPLAN has been deprecated and merged into TASKS (execution commands are now in TASKS Section 4).
 
 You MUST:
 1. Create or update the corresponding `[TYPE]-00_TRACEABILITY_MATRIX.md`
@@ -958,7 +959,6 @@ AI Assistant **MUST** enforce these rules for EVERY TASKS:
 
 **Rule 2: Phase Tracker Update** (AFTER completing)
 - Update TASKS status: `IN_PROGRESS` → `COMPLETED` in YAML
-- Update IPLAN status to `COMPLETED` if applicable
 - Mark `post_check` checklist items as complete
 - **Required BEFORE moving to next TASKS**
 
@@ -971,12 +971,11 @@ AI Assistant **MUST** enforce these rules for EVERY TASKS:
 ### Execution Steps
 
 1. **Verify Pre-Conditions**: Check Development Plan that TASKS is next in queue and `pre_check` complete
-2. **Create IPLAN**: Generate `IPLAN-XX` breaking down TASKS into Phases (Domain, Logic, Service, Test)
+2. **Review TASKS Execution Commands**: Use Section 4 of TASKS document for bash commands and verification steps
 3. **Update Task Artifact**: Maintain `task.md` with granular progress
 4. **Execute & Verify**: TDD loop with `pytest`
 5. **Update Development Plan**: 
    - Mark TASKS status as `COMPLETED` in YAML
-   - Mark IPLAN status as `COMPLETED` in YAML
    - Complete `post_check` checklist in YAML
    - Add Session Log entry
 6. **Document**: Update `walkthrough.md` with implementation summary
@@ -996,8 +995,7 @@ phase_N_tasks:
         checklist: [6 items: all must be true]
       tasks:            # Main implementation tracking
         status: COMPLETED
-        iplan_id: IPLAN-XX
-        iplan_status: COMPLETED
+        # Note: Execution commands are now in TASKS Section 4 (IPLAN deprecated)
       post_check:       # Rules 1 & 2: Updates after completion
         status: COMPLETED
         checklist: [7 items: all must be true]
@@ -1009,6 +1007,8 @@ phase_N_tasks:
 - `pre_check.status != COMPLETED` → Cannot start implementation
 - `tasks.status == COMPLETED` AND `post_check.status != COMPLETED` → Cannot move to next TASKS
 - Session Log missing entry for completed TASKS → Audit trail incomplete
+
+> **Note**: IPLAN has been deprecated as of 2026-01-15. Execution commands are now part of TASKS (Section 4).
 
 ---
 
@@ -1043,7 +1043,7 @@ AI Assistant **MUST** complete this checklist for every new project:
 - [ ] **Step 12**: Create tests matching BDD scenarios
 - [ ] **Step 13**: Generate traceability matrices
 - [ ] **Step 14**: Final validation before marking project setup complete
-- [ ] **Step 15**: Implement TASKS using Phase-based workflow (IPLAN -> Code -> Verify)
+- [ ] **Step 15**: Implement TASKS using Phase-based workflow (TASKS Section 4 → Code → Verify)
 
 ---
 
@@ -1056,7 +1056,7 @@ User: "Initialize new financial services trading platform project"
 
 Claude Code:
 1. Domain Selection: "Financial Services (default) detected. Loading FINANCIAL_DOMAIN_CONFIG.md"
-2. Folder Creation: "Creating 16-layer architecture (13 artifact directories) + finance subdirectories..."
+2. Folder Creation: "Creating 15-layer architecture (12 artifact directories) + finance subdirectories..."
    [Runs mkdir commands]
 3. Validation: "Verifying structure... ✓ All directories created"
 4. Template Setup: "Copying templates and applying financial domain placeholders..."

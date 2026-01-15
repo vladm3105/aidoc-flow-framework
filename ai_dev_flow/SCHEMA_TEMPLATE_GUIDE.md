@@ -203,7 +203,8 @@ flowchart TD
 | 9 | CTR | `CTR-TEMPLATE.md` | `CTR_SCHEMA.yaml` | `CTR_CREATION_RULES.md` | `CTR_VALIDATION_RULES.md` |
 | 10 | SPEC | `SPEC-TEMPLATE.yaml` | `SPEC_SCHEMA.yaml` | `SPEC_CREATION_RULES.md` | `SPEC_VALIDATION_RULES.md` |
 | 11 | TASKS | `TASKS-TEMPLATE.md` | `TASKS_SCHEMA.yaml` | `TASKS_CREATION_RULES.md` | `TASKS_VALIDATION_RULES.md` |
-| 12 | IPLAN | `IPLAN-TEMPLATE.md` | `IPLAN_SCHEMA.yaml` | `IPLAN_CREATION_RULES.md` | `IPLAN_VALIDATION_RULES.md` |
+
+> **Note**: Layer 12 (IPLAN) has been **DEPRECATED** as of 2026-01-15 and merged into TASKS. Execution commands are now part of TASKS Section 4.
 
 ## Best Practices
 

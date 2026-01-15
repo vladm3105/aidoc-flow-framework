@@ -44,16 +44,16 @@ See also: [README → Units & Conversions](./README.md#units--conversions-kb-vs-
 
 <!-- See README.md → “Using This Repo” for path mapping guidance. -->
 
-## 16-Layer Workflow
+## 15-Layer Workflow
 
 ```
-BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation
+BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code → Tests → Validation
 ```
 
 **Note**: Layer 0 (Strategy/STRAT) is external business context; formal documentation begins at Layer 1 (BRD). "Production" is an outcome, not a formal layer.
 
-**With Contracts**: `REQ → IMPL → CTR → SPEC → TASKS → IPLAN`
-**Without Contracts**: `REQ → IMPL → SPEC → TASKS → IPLAN`
+**With Contracts**: `REQ → IMPL → CTR → SPEC → TASKS`
+**Without Contracts**: `REQ → IMPL → SPEC → TASKS`
 
 **BRD Section Requirements**:
 - Platform BRDs (001-005): Foundation architecture, cross-cutting concerns
@@ -85,7 +85,7 @@ TASKS-23_implement_risk_calculator.md
 - Start at 2 digits and expand only when needed (no extra leading zeros).
 - Correct: `BRD-01`, `BRD-99`, `BRD-102`, `BRD-999`, `BRD-1000`.
 - Incorrect: `BRD-001`, `BRD-009`.
-- Applies to all document types (BRD→IPLAN). Element IDs must match filename digit width (e.g., `PRD-16` ↔ `PRD.16.xx.xx`).
+- Applies to all document types (BRD→TASKS). Element IDs must match filename digit width (e.g., `PRD-16` ↔ `PRD.16.xx.xx`).
 - Reserved infra docs: This repository uses `-000` for index/registry and general utility docs. Code and tests use their language-specific naming rules.
 - See: `ID_NAMING_STANDARDS.md` for full details.
 
@@ -97,7 +97,7 @@ TASKS-23_implement_risk_calculator.md
 | **Element** | Dot | `TYPE.NN.TT.SS` | `BRD.07.01.01` | Specific item within document |
 
 **Which uses which?**
-- **Dash** (document-level): ADR, SPEC, CTR, IPLAN, ICON
+- **Dash** (document-level): ADR, SPEC, CTR, ICON
 - **Dot** (element-level): BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS
 
 **Common mistakes**: `@brd: BRD-07` ❌ → `@brd: BRD.07.01.01` ✓ | `@adr: ADR.33.10.01` ❌ → `@adr: ADR-33` ✓
@@ -168,7 +168,7 @@ graph TB
     CTR["09_CTR/CTR-NN_{slug}/ - API Contracts"]
     SPEC["10_SPEC/SPEC-NN_{slug}/ - Technical Specs"]
     TASKS["11_TASKS/TASKS-NN_{slug}/ - Implementation Tasks"]
-    IPLAN["12_IPLAN/IPLAN-NN_{slug}/ - Session Plans"]
+    IPLAN["12_IPLAN/ - DEPRECATED (merged into TASKS)"]
   end
 
   subgraph nested_example["Nested Example: BRD-01_platform_architecture/"]
@@ -201,7 +201,7 @@ Use the Standard set for general projects, and add Financial sets as needed for 
 # NOTE: In this repo, drop any `docs/` prefix used in generic examples.
 # Create top-level folders (nested structure is DEFAULT for all document types)
 mkdir -p docs/{BRD,PRD,ADR}
-mkdir -p docs/{EARS,BDD,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
+mkdir -p docs/{EARS,BDD,SYS,REQ,IMPL,CTR,SPEC,TASKS}
 # REQ: Nested per-document folders (DEFAULT)
 mkdir -p docs/07_REQ/REQ-01_resource_limits
 
@@ -218,7 +218,7 @@ mkdir -p docs/07_REQ/REQ-01_resource_limits
 mkdir -p docs/10_SPEC/SPEC-01_rate_limiter
 mkdir -p docs/11_TASKS/TASKS-01_implement_rate_limiter
 mkdir -p docs/09_CTR/CTR-01_data_service_api
-mkdir -p docs/12_IPLAN/IPLAN-01_initial_session
+# mkdir -p docs/12_IPLAN/  # DEPRECATED - IPLAN merged into TASKS
 
 # Legacy category folders are not used in new projects.
 
@@ -422,7 +422,7 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 | **CTR** | API contracts | .md + .yaml | **Nested** | `09_CTR/CTR-09_market_api/CTR-09_market_api.{md,yaml}` |
 | **SPEC** | Technical SPEC | .yaml | **Nested** | `10_SPEC/SPEC-10_limiter/SPEC-10_limiter.yaml` |
 | **TASKS** | Implementation TODOs | .md | **Nested** | `11_TASKS/TASKS-10_implement_limiter/TASKS-10_implement_limiter.md` |
-| **IPLAN** | Session execution plans | .md | **Nested** | `12_IPLAN/IPLAN-01_db_migration/IPLAN-01_db_migration.md` |
+| **IPLAN** | **DEPRECATED** - Merged into TASKS | .md | N/A | See TASKS Section 4: Execution Commands |
 | **REF** | Supplementary docs | .md | **Nested** | `REF/TYPE-REF-NN_{slug}/TYPE-REF-NN_{slug}.md` |
 
 **Note**: REF (Reference Documents) are supplementary and do not participate in formal traceability chain.

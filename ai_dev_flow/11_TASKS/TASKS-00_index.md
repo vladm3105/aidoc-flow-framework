@@ -9,6 +9,8 @@ custom_fields:
   artifact_type: TASKS
   layer: 11
   priority: shared
+  schema_version: "2.0"
+  last_updated: "2026-01-15"
 ---
 
 # TASKS-000: Code Generation Plans Master Index
@@ -24,7 +26,7 @@ This document serves as the master index for all Code Generation Plans (TASKS) i
 - **Coordinate** code generation across components
 - **Reference** implementation tasks and their completion status
 
-## Position in Document Workflow
+## Position in Document Workflow (v2.0)
 
 ```mermaid
 flowchart LR
@@ -32,14 +34,18 @@ flowchart LR
     IMPL --> CTR[CTR]
     IMPL --> SPEC[SPEC]
     CTR --> SPEC
-    SPEC --> TASKS[TASKS]
+    SPEC --> TASKS[TASKS v2.0]
     TASKS --> Code
     Code --> Tests
 
     style TASKS fill:#e1f5fe,stroke:#01579b,stroke-width:3px
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+**Workflow (v2.0)**: `SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
+
+> **Note**: IPLAN (Layer 12) has been **deprecated**. Execution commands are now included directly in TASKS documents (Section 4: Execution Commands).
+
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 ## Code Generation Plans Index
 
@@ -275,11 +281,11 @@ flowchart TB
     Deploy --> End([Code Ready])
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 ---
 
-**Index Version**: 1.0
-**Last Updated**: 2025-11-02
+**Index Version**: 2.0
+**Last Updated**: 2026-01-15
 **Maintained By**: Development Team
-**Next Review**: 2025-11-09 (weekly)
+**Schema Version**: TASKS v2.0 (11 sections, IPLAN deprecated)

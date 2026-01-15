@@ -1,4 +1,8 @@
-# IPLAN Corpus Validation Rules
+# IPLAN Corpus Validation Rules [DEPRECATED]
+
+> **⚠️ DEPRECATED**: IPLAN has been merged into TASKS (Layer 11) as of 2026-01-15.
+> Use [`ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`](../11_TASKS/TASKS-TEMPLATE.md) for all new work.
+> See [DEPRECATED.md](./DEPRECATED.md) for migration guide.
 
 ## Document Control
 
@@ -7,6 +11,9 @@
 | Document ID | IPLAN_CORPUS_VALIDATION |
 | Version | 1.0 |
 | Created | 2026-01-04 |
+| **Status** | **DEPRECATED** |
+| **Deprecated Date** | 2026-01-15 |
+| **Replacement** | ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md |
 | Purpose | Quality gate for complete IPLAN corpus |
 | Trigger | Run after ALL IPLAN files are complete |
 | Scope | Entire IPLAN corpus validation |

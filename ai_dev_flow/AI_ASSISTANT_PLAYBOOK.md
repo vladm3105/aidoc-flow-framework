@@ -41,7 +41,8 @@ Purpose: A concise index that routes AI assistants and developers to the right g
 2) Use Tool Optimization Guide to pick sizes and run validation commands.
 3) Create artifacts using templates; keep content token‑efficient and actionable.
 4) Validate links, metadata, and traceability; fix findings before commit/PR.
-5) Repeat per layer (BRD → … → TASKS → IPLAN) maintaining complete cumulative tags.
+5) Repeat per layer (BRD → … → TASKS → Code) maintaining complete cumulative tags.
+   Note: IPLAN has been deprecated and merged into TASKS (execution commands are now in TASKS Section 4).
 
 ## Style & Tone (All Tools)
 

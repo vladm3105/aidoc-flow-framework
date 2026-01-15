@@ -86,7 +86,7 @@ User is prompted with:
 "Is this a full enterprise project or a rapid Minimum Viable Product (MVP)?"
 
 Options:
-1. Standard Flow (Full templates, 16 layers, strict validation) - Recommended for Enterprise
+1. Standard Flow (Full templates, 15 layers, strict validation) - Recommended for Enterprise
 2. MVP Track (Streamlined templates, faster setup, "Good Enough" validation) - Recommended for Startups/Prototypes
 ```
 
@@ -110,8 +110,9 @@ cd /opt/data/project_name
 
 **Commands**:
 ```bash
-# Core 12-layer architecture artifact directories (BRD through IPLAN)
-mkdir -p docs/BRD docs/PRD docs/EARS docs/BDD docs/ADR docs/SYS docs/REQ docs/IMPL docs/CTR docs/SPEC docs/TASKS docs/IPLAN
+# Core 11-layer architecture artifact directories (BRD through TASKS)
+# Note: IPLAN (formerly Layer 12) has been deprecated and merged into TASKS
+mkdir -p docs/BRD docs/PRD docs/EARS docs/BDD docs/ADR docs/SYS docs/REQ docs/IMPL docs/CTR docs/SPEC docs/TASKS
 
 # NOTE: REQ and CTR subdirectories are created on-demand by doc-req and doc-ctr skills
 # when documents are generated. This ensures folders match actual project needs.
@@ -121,11 +122,11 @@ mkdir -p scripts
 mkdir -p work_plans
 ```
 
-Note: `work_plans/` is an optional helper directory for scratch operational notes and is not part of the formal IPLAN artifact set (Layer 12).
+Note: `work_plans/` is an optional helper directory for scratch operational notes.
 
 **Validation**:
 ```bash
-ls -la docs/  # Verify 12 artifact directories created (BRD through IPLAN)
+ls -la docs/  # Verify 11 artifact directories created (BRD through TASKS)
 ls -la work_plans/  # Verify work_plans directory
 ```
 
@@ -249,7 +250,7 @@ ls scripts/*.py
 ```
 
 **Success Criteria**:
-- All 13 artifact directories exist (BRD through IPLAN)
+- All 11 artifact directories exist (BRD through TASKS)
 - Domain-specific subdirectories exist
 - All index files created
 - Validation scripts present
@@ -272,13 +273,13 @@ ls scripts/*.py
 ✓ Index Files: Initialized
 ✓ Scripts: Ready
 
-Workflow: 16-layer architecture: BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → IPLAN → Code → Tests → Deployment (brackets indicate optional layers)
+Workflow: 15-layer architecture: BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → Code → Tests → Deployment (brackets indicate optional layers)
 
 Next Steps:
 1. Use `doc-flow` skill to begin workflow execution (recommended)
 2. Or manually review [PROJECT_KICKOFF_TASKS.md](./PROJECT_KICKOFF_TASKS.md) for Day 1-7 tasks
 3. Start with BRD-01 (Business Requirements Document)
-4. Follow 16-layer architecture sequentially
+4. Follow 15-layer architecture sequentially
 
 ═══════════════════════════════════════════════════════════
 ```
@@ -391,7 +392,7 @@ python scripts/trace_check.py --type REQ
 - Naming: `{project-name}-project-init_YYYYMMDD.md` or `{project-name}-project-init_REVISED_YYYYMMDD.md`
 - Purpose: Track project initialization and documentation creation workflow
 - Created by: `/save-plan` command or manually during project setup
-- NOT the IPLAN Layer 12 code implementation plans (those are for source code generation)
+- Execution commands are now part of TASKS Section 4 (IPLAN has been deprecated)
 
 **Plan Contents**:
 - Current progress summary with completion status
@@ -969,8 +970,8 @@ Next: Review PROJECT_KICKOFF_TASKS.md for Day 1-7 action plan
 # Step 1: Domain Selection (interactive)
 # AI Assistant runs DOMAIN_SELECTION_QUESTIONNAIRE.md
 
-# Step 2: Create Folders
-mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
+# Step 2: Create Folders (IPLAN deprecated - not included)
+mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
 mkdir -p scripts work_plans
 # NOTE: 07_REQ/CTR subdirectories created on-demand by doc-req/doc-ctr skills
 
