@@ -19,9 +19,6 @@ Development Principles Guide
 ### Splitting Rules
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- BDD addendum: [04_BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
-- CTR addendum: [09_CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
-- SPEC addendum: [10_SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
 > MVP Mode: For MVP workflows, use single flat files and ignore splitting rules and references to `DOCUMENT_SPLITTING_RULES.md`.
@@ -79,8 +76,6 @@ Quality gates prevent progression to downstream layers until artifacts meet spec
 The quality gates ensure smooth 15-layer transitions and prevent immature artifacts from affecting downstream development.
 
 **Strategy Layer** (Layer 0) → **Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Project Management Layer** (IMPL) → **Interface Layer** (CTR - optional) → **Technical Specs (SPEC)** → **Code Generation Layer** (TASKS) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
-
-> **Note**: IPLAN (formerly Layer 12) has been deprecated and merged into TASKS Section 4.
 
 **Key Decision Point**: After IMPL, if the requirement involves an interface (API, event schema, data model), create CTR before SPEC. Otherwise, go directly to SPEC.
 
@@ -724,7 +719,6 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 | `@ctr:` | 9 | Data Contracts | `@ctr: CTR-01` |
 | `@spec:` | 10 | Technical Specs | `@spec: SPEC-03` |
 | `@tasks:` | 11 | Task Breakdowns | `@tasks: TASKS.01.29.03` |
-| ~~`@iplan:`~~ | ~~12~~ | ~~Implementation Plans~~ | ~~`@iplan: IPLAN-01`~~ | **DEPRECATED** |
 
 **Note**: Quality attributes use unified sequential numbering (e.g., `@sys: SYS.08.25.15` for a performance quality attribute).
 
@@ -735,8 +729,6 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 | `@test:` | Test file reference | `@test: tests/test_service.py` |
 | `@code:` | Source code reference | `@code: src/services/limit.py` |
 | `@impl-status:` | Implementation status | `@impl-status: complete` (pending\|in-progress\|complete\|deprecated) |
-| `@icon:` | Implementation contract | `@icon: TASKS-01:ServiceConnector` |
-| `@icon-role:` | Contract role | `@icon-role: provider` (provider\|consumer) |
 | `@threshold:` | Threshold reference | `@threshold: PRD.001.kyc.l1.daily` |
 | `@entity:` | Data entity reference | `@entity: PRD.004.UserProfile` |
 | `@priority:` | Requirement priority | `@priority: critical` |
@@ -1043,7 +1035,7 @@ The SDD workflow employs different tracking methods for different artifact types
 | 8 | IMPL | Formal Template + Tags | Yes | Yes | 7 | @brd through @req |
 | 9 | CTR | Formal Template + Tags | Yes (Dual: .md + .yaml) | Yes | 8 | @brd through @impl (optional) |
 | 10 | SPEC | Formal Template + Tags | Yes (YAML) | Yes | 7-9 | @brd through @req + optional |
-| 11 | TASKS | Formal Template + Tags | Yes | Yes | 8-11 | @brd through @spec + optional @icon; includes execution commands |
+| 11 | TASKS | Formal Template + Tags | Yes | Yes | 8-10 | @brd through @spec; includes execution commands |
 | 12 | Code | Docstring Tags | No (Implementation) | Yes | 9-11 | ALL upstream tags |
 | 13 | Tests | BDD + Docstring Tags | Mixed | Yes | 10-12 | All upstream + code |
 | 14 | Validation | Embedded Tags + CI/CD | Mixed | Yes | ALL | Complete audit trail |
@@ -1286,7 +1278,6 @@ REQ (Requirement Layer)                    SPEC (Technical Specs)
 - **Process**:
   1. Identify upstream 07_REQ/ADR specifying interface needs
   2. Reserve next CTR-NN from CTR-00_index.md
-  3. Copy CTR-TEMPLATE.md + CTR-TEMPLATE.yaml
   4. Complete markdown file:
      - Contract Definition: Interface overview, provider/consumer parties, communication pattern
      - Interface Specification: Detailed request/response structure
@@ -1319,331 +1310,6 @@ REQ (Requirement Layer)                    SPEC (Technical Specs)
   - Constraints: Technical boundaries and limitations
   - Acceptance: Verification requirements for completion
 - **Guidelines**: Task decomposition for parallel work; acceptanceCriteria for verification
-
-### 7.5. Define Implementation Contracts (ICON) [IF PARALLEL DEVELOPMENT]
-
-**Layer 11 (Code Generation) - Optional**: Create ICON only when ALL criteria are met: 5+ consumer TASKS and contract definition >500 lines (otherwise keep contracts embedded in TASKS Section 8).
-
-#### When to Create ICON
-
-**Decision Criteria**:
-- ✅ **Create ICON** when provider TASKS has:
-  - 5+ downstream consumer TASKS files
-  - Contract definition exceeds 500 lines
-  - Shared interfaces requiring type safety
-  - Complex state machines or exception hierarchies
-  - Parallel development required (dependencies can't wait for full implementation)
-
-- ❌ **Skip ICON** when:
-  - Provider TASKS has <3 consumers
-  - Simple sequential implementation (no parallel work)
-  - Internal implementation details (no shared interfaces)
-
-**Standalone vs Embedded**:
-- **Standalone ICON file** when:
-  - 5+ consumer TASKS files
-  - Contract exceeds 500 lines
-  - Platform-level shared interface
-  - Complex state machines or exception hierarchies
-- **Embedded in TASKS section 8** otherwise (default)
-
-#### Contract Types
-
-**1. Protocol Interface** (`typing.Protocol`):
-```python
-from typing import Protocol, runtime_checkable
-
-@runtime_checkable
-class ServiceConnector(Protocol):
-    async def connect(self, host: str, port: int, client_id: int) -> ConnectionResult: ...
-    async def disconnect(self) -> None: ...
-    async def is_connected(self) -> bool: ...
-```
-
-**2. State Machine Contract** (`Enum` + Transition Mapping):
-```python
-from enum import Enum
-
-class ConnectionState(Enum):
-    DISCONNECTED = "disconnected"
-    CONNECTING = "connecting"
-    CONNECTED = "connected"
-    DISCONNECTING = "disconnecting"
-    RECONNECTING = "reconnecting"
-
-VALID_TRANSITIONS = {
-    ConnectionState.DISCONNECTED: [ConnectionState.CONNECTING],
-    ConnectionState.CONNECTING: [ConnectionState.CONNECTED, ConnectionState.DISCONNECTED],
-    # ... etc
-}
-```
-
-**3. Exception Hierarchy** (Typed Exceptions):
-```python
-class GatewayError(Exception):
-    error_code: str
-    retry_allowed: bool
-
-class ConnectionError(GatewayError): ...
-class AuthenticationError(GatewayError): ...
-```
-
-**4. Data Model** (Pydantic/TypedDict):
-```python
-from pydantic import BaseModel
-
-class ConnectionResult(BaseModel):
-    success: bool
-    state: ConnectionState
-    error_code: Optional[str] = None
-```
-
-**5. Dependency Injection Interface** (ABC):
-```python
-from abc import ABC, abstractmethod
-
-class EventCallbackRegistry(ABC):
-    @abstractmethod
-    def register_callback(self, event_type: str, callback: Callable) -> None: ...
-```
-
-#### Integration Workflow
-
-**Critical Principle**: Creating an ICON file is only 50% of the work. Integration into TASKS files is mandatory for the contract to be usable.
-
-**Provider → ICON → Consumer Chain**:
-```
-SPEC-01 → TASKS-01 (Provider) → ICON-01 → TASKS-02-009 (Consumers) → Code
-                ↓                       ↓              ↓
-         section 8.1             Contract Def    section 8.2
-         @icon-role:            Type-Safe       @icon-role:
-          provider              Interface         consumer
-```
-
-#### Provider TASKS Integration (section 8.1)
-
-**In TASKS-01 (Provider)**:
-
-```markdown
-## 8. Implementation Contracts
-
-### 8.1 Contracts Provided by This TASKS
-
-#### ICON-01: ServiceConnector Protocol
-
-- **Purpose**: Protocol interface defining async IB Gateway connection operations
-- **Location**: `[project_root]/docs/ICON/ICON-01_gateway_connector_protocol.md`
-- **Contract Type**: Protocol Interface (typing.Protocol)
-- **Consumers**: TASKS-02, 003, 004, 005, 007, 008, 009, 010
-- **Traceability**: @icon: ICON-01:ServiceConnector
-- **Role**: @icon-role: provider
-
-**Key Interface Methods**:
-- `async connect(host, port, client_id) -> ConnectionResult`
-- `async disconnect() -> None`
-- `async is_connected() -> bool`
-- `async reconnect() -> ConnectionResult`
-- `async get_connection_state() -> ConnectionState`
-- `register_callback(event_type, callback) -> None`
-
-**Type Safety**: Use `@runtime_checkable` decorator, validate with `mypy --strict`
-
-**Contract Status**: Active (2025-11-25)
-```
-
-**Traceability Tags** (in TASKS-01):
-```markdown
-## Traceability Tags
-
-@spec: SPEC-01
-@tasks: TASKS.01.29.01
-@icon: ICON-01:ServiceConnector
-@icon: ICON-03:GatewayExceptions
-@icon-role: provider
-```
-
-#### Consumer TASKS Integration (section 8.2)
-
-**In TASKS-02 (Consumer)**:
-
-```markdown
-## 8. Implementation Contracts
-
-### 8.2 Contracts Consumed by This TASKS
-
-#### ICON-01: ServiceConnector Protocol
-
-- **Provider**: TASKS-01 (IB Gateway Connection Implementation)
-- **Purpose**: Connection operations for heartbeat monitoring
-- **Location**: `[project_root]/docs/ICON/ICON-01_gateway_connector_protocol.md`
-- **Usage in This TASKS**:
-  - Use `is_connected()` to verify connection before heartbeat
-  - Use `register_callback()` to monitor connection events
-  - Use `get_connection_state()` for state validation
-- **Traceability**: @icon: ICON-01:ServiceConnector
-- **Role**: @icon-role: consumer
-
-#### ICON-02: ConnectionState State Machine
-
-- **Provider**: TASKS-05 (Connection State Machine)
-- **Purpose**: Connection lifecycle state definitions
-- **Location**: `[project_root]/docs/ICON/ICON-02_connection_state_machine.md`
-- **Usage in This TASKS**:
-  - Validate connection is in CONNECTED state before heartbeat
-  - Handle DISCONNECTED and RECONNECTING states
-  - Use valid state transitions
-- **Traceability**: @icon: ICON-02:ConnectionState
-- **Role**: @icon-role: consumer
-```
-
-**Traceability Tags** (in TASKS-02):
-```markdown
-## Traceability Tags
-
-@spec: SPEC-02
-@tasks: TASKS.02.29.01
-@icon: ICON-01:ServiceConnector
-@icon: ICON-02:ConnectionState
-@icon: ICON-03:GatewayExceptions
-@icon-role: consumer
-```
-
-#### Benefits of ICON Contracts
-
-**Quantified Impact** (from TASKS-01 implementation analysis):
-
-**65% Faster Delivery**:
-- **Without ICON**: 11.5 weeks sequential (TASKS-01 complete → TASKS-02-009 start)
-- **With ICON**: 4 weeks parallel (TASKS-01 provides contract → TASKS-02-009 start immediately)
-- **Time saved**: 7.5 weeks (65% reduction)
-
-**90% Reduction in Integration Bugs**:
-- Type safety at boundaries (`typing.Protocol`, `@runtime_checkable`)
-- Mypy validation catches mismatches pre-merge
-- Contract tests prevent breaking changes
-
-**87% Reduction in Rework**:
-- Stable interfaces prevent cascade changes
-- Consumer TASKS use contracts from day 1
-- No late-stage integration rewrites
-
-**Complete Traceability**:
-- Provider → ICON → Consumer chains explicit
-- Impact analysis automated (grep @icon: tags)
-- Documentation always in sync with code
-
-#### ICON vs CTR Distinction
-
-**ICON (Implementation Contracts)** - Layer 11 (Internal; shares with TASKS):
-- **Purpose**: Enable parallel development within codebase
-- **Audience**: Internal implementation teams (provider and consumer TASKS)
-- **Format**: Embedded in TASKS section 8 OR standalone ICON files
-- **Examples**: `ServiceConnector` Protocol, `ConnectionState` State Machine
-- **Tag**: `@icon: TASKS-01:ServiceConnector` or `@icon: ICON-01:ServiceConnector`
-- **Location**: `docs/ICON/` or embedded in `docs/11_TASKS/`
-- **Versioning**: Tied to TASKS implementation cycles
-
-**CTR (Data Contracts)** - Layer 9 (External):
-- **Purpose**: Define external API contracts with versioning/governance
-- **Audience**: External consumers, API clients, microservices
-- **Format**: Dual-file (.md + .yaml) with JSON Schema definitions
-- **Examples**: REST API contracts, gRPC service definitions, message schemas
-- **Tag**: `@ctr: CTR-01`
-- **Location**: `docs/09_CTR/`
-- **Versioning**: Semantic versioning (MAJOR.MINOR.PATCH), strict compatibility rules
-
-**Summary**: Use ICON for internal parallel development, CTR for external API contracts.
-
-#### Validation Commands
-
-**Check ICON Integration Completeness**:
-
-```bash
-# Count total ICON files
-find docs/ICON/ -name "ICON-*.md" | wc -l
-
-# Count @icon: references in TASKS files
-grep -r "@icon:" docs/11_TASKS/ | wc -l
-
-# Count section 8 headers in TASKS files
-grep -r "## 8. Implementation Contracts" docs/11_TASKS/ | wc -l
-
-# Verify specific ICON integration
-grep -r "@icon: ICON-01" docs/11_TASKS/
-
-# Check provider roles
-grep -r "@icon-role: provider" docs/11_TASKS/
-
-# Check consumer roles
-grep -r "@icon-role: consumer" docs/11_TASKS/
-```
-
-**Expected Results** (IB MCP Project):
-- 3 ICON files → 21 @icon: tags (1 provider + 6 consumers × 3 contracts = 21)
-- 9 TASKS files with section 8 (2 providers + 7 consumers)
-- 3 provider role tags (TASKS-01 × 2 contracts + TASKS-05 × 1 contract)
-- 18 consumer role tags (8 consumers × ICON-01 + 7 consumers × ICON-02 + 3 consumers × ICON-03)
-
-#### Common Anti-Patterns
-
-**Anti-Pattern 1: Orphaned ICON Files**
-
-❌ **Problem**: ICON file created but no TASKS files reference it
-- ICON-01 exists in `docs/ICON/`
-- `grep -r "@icon: ICON-01" docs/11_TASKS/` returns 0 results
-- No section 8 in any TASKS file
-
-✅ **Solution**: Update all provider and consumer TASKS files with section 8
-
-**Anti-Pattern 2: Missing Provider section 8.1**
-
-❌ **Problem**: Provider TASKS doesn't document contracts it provides
-- TASKS-01 implements ServiceConnector interface
-- No section 8.1 documenting ICON-01
-- Consumers don't know contract exists
-
-✅ **Solution**: Add section 8.1 to TASKS-01 with contract details
-
-**Anti-Pattern 3: Missing Consumer section 8.2**
-
-❌ **Problem**: Consumer TASKS doesn't document contracts it uses
-- TASKS-02 uses ServiceConnector methods
-- No section 8.2 documenting dependency on ICON-01
-- Unclear which contracts are required
-
-✅ **Solution**: Add section 8.2 to TASKS-02 listing all consumed contracts
-
-**Anti-Pattern 4: Missing @icon: Tags**
-
-❌ **Problem**: section 8 exists but no traceability tags
-- TASKS-01 has section 8.1
-- No @icon: ICON-01:ServiceConnector tag
-- Automated validation fails
-
-✅ **Solution**: Add @icon: and @icon-role: tags to all TASKS files with section 8
-
-#### Validation Checklist
-
-**Before Marking ICON as Active**:
-
-- [ ] ICON file created (if standalone required)
-- [ ] Provider TASKS has section 8.1 documenting contract
-- [ ] Provider TASKS has @icon: and @icon-role: provider tags
-- [ ] All consumer TASKS have section 8.2 documenting contract usage
-- [ ] All consumer TASKS have @icon: and @icon-role: consumer tags
-- [ ] Validation commands return expected counts
-- [ ] section 8 exists in all provider and consumer TASKS
-- [ ] Contract type documented (Protocol/State Machine/Exception/Data Model/DI)
-- [ ] Usage examples provided for consumers
-
-#### Guidelines
-
-- **Create contracts early**: Define ICON immediately after SPEC-01, before TASKS-02-009 start
-- **section 8 is mandatory**: All TASKS files with contracts must have section 8
-- **Bidirectional traceability**: Provider lists consumers, consumers list provider
-- **Type safety first**: Use `typing.Protocol`, `@runtime_checkable`, validate with mypy
-- **Contract tests**: Write contract validation tests before implementation
-- **Documentation**: Provide usage examples for each contract method/state/exception
 
 ### 8. Implement Code
 - **Input**: SPEC specifications, CTR contracts (if applicable), TASKS implementation plans
@@ -1847,9 +1513,7 @@ bash scripts/validate_brd_template.sh docs/01_BRD/BRD-01_platform_overview/BRD-0
 bash scripts/validate_req_template.sh docs/07_REQ/REQ-01.md    # REQ 12-section format
 bash scripts/validate_ctr.sh docs/09_CTR/CTR-01_*.md           # CTR dual-file format (.md + .yaml)
 bash scripts/validate_impl.sh docs/08_IMPL/IMPL-01_*.md        # IMPL 4-PART structure
-bash scripts/validate_tasks.sh docs/11_TASKS/TASKS-01_*.md     # TASKS format including Section 4 (execution commands) and Section 8
-# Note: IPLAN validation deprecated - IPLAN merged into TASKS Section 4
-bash scripts/validate_icon.sh docs/ICON/ICON-01_*.md        # ICON Implementation Contracts
+bash scripts/validate_tasks.sh docs/11_TASKS/TASKS-01_*.md     # TASKS format including Section 4 (execution commands) and Section 7-8 (contracts)
 ```
 
 ## Traceability Matrix Management (MANDATORY)

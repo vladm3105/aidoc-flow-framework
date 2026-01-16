@@ -1,3 +1,17 @@
+---
+title: "EARS Corpus Validation"
+tags:
+  - corpus-validation
+  - layer-3-artifact
+  - shared-architecture
+custom_fields:
+  document_type: corpus-validation
+  artifact_type: EARS
+  layer: 3
+  priority: shared
+  development_status: active
+---
+
 # EARS Corpus Validation Rules
 
 ## Document Control
@@ -84,7 +98,7 @@ See [EARS-03: Authentication](./EARS-03_authentication.md) for details.
 
 **Severity**: Error (blocking)
 
-**Rationale**: EARS is Layer 3. It should NOT reference specific numbered BDD, ADR, SYS, REQ, SPEC, TASKS, or IPLAN documents that don't exist yet.
+**Rationale**: EARS is Layer 3. It should NOT reference specific numbered BDD, ADR, SYS, REQ, SPEC, or TASKS documents that don't exist yet.
 
 **Patterns to Flag**:
 | Pattern | Layer | Issue |
@@ -95,7 +109,6 @@ See [EARS-03: Authentication](./EARS-03_authentication.md) for details.
 | `REQ-NN` | 7 | REQs don't exist during EARS creation |
 | `SPEC-NN` | 10 | SPECs don't exist during EARS creation |
 | `TASKS-NN` | 11 | TASKS don't exist during EARS creation |
-| `IPLAN-NN` | 12 | **DEPRECATED** - IPLAN merged into TASKS (2026-01-15) |
 
 **Allowed Patterns** (generic references):
 - "This will inform BDD development"
@@ -105,7 +118,7 @@ See [EARS-03: Authentication](./EARS-03_authentication.md) for details.
 **Validation Logic**:
 ```bash
 # Flag specific numbered references to downstream artifacts
-grep -rnE "(BDD|ADR|SYS|REQ|SPEC|TASKS|IPLAN)-[0-9]{2,}" "$EARS_DIR" | \
+grep -rnE "(BDD|ADR|SYS|REQ|SPEC|TASKS)-[0-9]{2,}" "$EARS_DIR" | \
   grep -v "Layer [0-9]" | \
   grep -v "SDD workflow"
 ```

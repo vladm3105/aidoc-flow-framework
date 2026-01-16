@@ -56,7 +56,7 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 
 ## Using This Repo
 
-- Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_IMPL/`, `09_CTR/`, `10_SPEC/`, `11_TASKS/`, `ICON/`, `CHG/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
+- Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_IMPL/`, `09_CTR/`, `10_SPEC/`, `11_TASKS/`, `CHG/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
 - BDD layout: Uses nested per-suite folders `04_BDD/BDD-NN_{slug}/` with sectioned `.feature` files.
 - Index width: This repo commonly uses `-00_index.md` for indices; follow existing width and do not rename history. New repos should choose a consistent zero width (`00` or `000`) and keep it stable.
 - Validators: Use the validators listed in TRACEABILITY_VALIDATION.md (e.g., `python scripts/validate_prd.py`, `./scripts/validate_req_template.sh`). Older `*_template.sh` examples in some guides have been updated here.
@@ -117,7 +117,7 @@ Validators support relaxed MVP validation via `template_profile: mvp` in frontma
 - Start with 2 digits and expand only as needed; avoid unnecessary leading zeros.
 - Correct: `BRD-01`, `BRD-99`, `BRD-102`, `BRD-999`, `BRD-1000`.
 - Incorrect: `BRD-001`, `BRD-009`.
-- Unified across all doc types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS (and ICON).
+- Unified across all doc types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS.
 - Element IDs must match filename digit width (e.g., `BRD-06` ↔ `BRD.06.xx.xx`).
 - Reserved infra docs may use `-000` (e.g., `BRD-00_index.md`). Source code and tests follow coding standards, not this rule.
 - See details in [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md).
@@ -139,7 +139,6 @@ This repository uses consistent **2-digit width** (`00`) for all index files acr
 | CTR | CTR-00_index.md | 2-digit | `CTR-00_index.md` |
 | SPEC | SPEC-00_index.md | 2-digit | `SPEC-00_index.md` |
 | TASKS | TASKS-00_index.md | 2-digit | `TASKS-00_index.md` |
-| ICON | ICON-00_index.md | 2-digit | `ICON-00_index.md` |
 
 **Policy for New Repositories**:
 - Choose either 2-digit (`00`) or 3-digit (`000`) width consistently
@@ -251,9 +250,6 @@ flowchart LR
 ### Splitting Rules
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- BDD addendum: [04_BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
-- CTR addendum: [09_CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
-- SPEC addendum: [10_SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
 ### 15-Layer Architecture with Cumulative Tagging
@@ -274,7 +270,6 @@ The AI Dev Flow transforms business requirements into production code through a 
 | **9** | CTR | API contracts (optional) | @brd→@impl (8) | INTERFACE definitions |
 | **10** | SPEC | YAML technical specifications | @brd→@req (+optional) (7-9) | HOW to build |
 | **11** | TASKS | Implementation task breakdown | @brd→@spec (8-10) | EXACT TODOs + execution commands |
-| **11 (shared, optional)** | ICON | Implementation contracts | @brd→@spec (8-10) | Interface definitions |
 | **12** | Code | Source code implementation | @brd→@tasks (9-11) | RUNNABLE artifacts |
 | **13** | Tests | Test suite implementation | @brd→@code (10-11) | Quality validation |
 | **14** | Validation | Production readiness verification | All upstream (10-14) | PRODUCTION-READY |
@@ -369,8 +364,6 @@ The 15-layer architecture uses the following structure:
 | 13 | Tests | Unit/integration tests |
 | 14 | Validation | End-to-end validation |
 
-Note: ICON (Implementation Contracts) is an optional artifact that shares Layer 11 alongside TASKS. ICON provides standalone implementation contracts when needed for parallel development.
-
 Important: "Review" and "Production" are outcomes, not formal layers. The formal model is fixed at Layers 0–14.
 
 #### Mermaid Diagram Visual Groupings (L1-L10)
@@ -440,7 +433,6 @@ flowchart TD
 **04_BDD/** - Behavior-Driven Development Scenarios
 - Executable acceptance tests in Gherkin format
 - Business-readable behavioral specifications
-- **Files**: [BDD-00_index.md](./04_BDD/BDD-00_index.md) | Main template: [BDD-TEMPLATE.feature](./04_BDD/BDD-TEMPLATE.feature) | Section templates: `BDD-SECTION-TEMPLATE.feature`, `BDD-SUBSECTION-TEMPLATE.feature`, `BDD-AGGREGATOR-TEMPLATE.feature`
 
 ### Architecture Layer
 
@@ -482,8 +474,7 @@ flowchart TD
   - `.yaml` file: Machine-readable schema (OpenAPI/AsyncAPI/JSON Schema)
 - **When to use**: Created when REQ specifies interface requirements (APIs, events, data models)
 - **Benefits**: Enables parallel development and contract testing
-- **Files**: [CTR-00_index.md](./09_CTR/CTR-00_index.md) | [Template .md](./09_CTR/CTR-TEMPLATE.md) + [Template .yaml](./09_CTR/CTR-TEMPLATE.yaml)
-- **Examples**: [CTR-01_service_contract_example.md](./09_CTR/CTR-01_service_contract_example.md) + [CTR-01_service_contract_example.yaml](./09_CTR/CTR-01_service_contract_example.yaml)
+- **Examples**: [CTR-01_service_contract_example.md](./09_CTR/examples/CTR-01_service_contract_example.md) + [CTR-01_service_contract_example.yaml](./09_CTR/examples/CTR-01_service_contract_example.yaml)
 
 ### Technical Specs (SPEC)
 
@@ -502,24 +493,6 @@ flowchart TD
 - **1:1 mapping**: Each TASKS document corresponds to one SPEC
 - **Files**: [TASKS-00_index.md](./11_TASKS/TASKS-00_index.md) | [Template](./11_TASKS/TASKS-TEMPLATE.md)
 
-### Implementation Contracts (Optional, Layer 11)
-
-**ICON/** - Implementation Contracts (Layer 11, Optional; shares with TASKS)
-- Type-safe interface definitions for parallel development coordination
-- Protocol interfaces, exception hierarchies, state machines, data models
-- **When to use**: 5+ consumer TASKS, >500 lines, platform-level, cross-project
-- **Default**: Embed contracts in TASKS section 8 unless criteria met
-- **Files**: [ICON-00_index.md](./ICON/ICON-00_index.md) | [Template](./ICON/ICON-TEMPLATE.md)
-- **Guide**: [IMPLEMENTATION_CONTRACTS_GUIDE.md](./11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
-
-### Note on Deprecated IPLAN Layer
-
-**12_IPLAN/** - Implementation Work Plans (DEPRECATED as of 2026-01-15)
-- IPLAN functionality has been merged into TASKS (Layer 11)
-- Execution commands are now in TASKS Section 4
-- Session tracking is now in TASKS Section 10 "Session Log"
-- See `12_IPLAN/DEPRECATED.md` for migration guide
-
 ## Document ID Standards
 
 ### Scope: Documentation Artifacts Only
@@ -527,7 +500,7 @@ flowchart TD
 **IMPORTANT**: These ID naming standards apply ONLY to **documentation artifacts** in the SDD workflow, NOT to source code files.
 
 #### ✅ Apply To (Documentation):
-- Documents in `docs/` directories: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, ICON
+- Documents in `docs/` directories: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
 - BDD feature files (`.feature` format) in `tests/bdd/` directories
 
 #### ❌ Do NOT Apply To (Source Code):
@@ -540,7 +513,7 @@ flowchart TD
 Format: `{TYPE}-{NN}_{descriptive_slug}.{ext}`
 Note: `NN` denotes a variable-width 2+ digit number (e.g., 01, 12, 105, 1002).
 
-- **TYPE**: Document type prefix (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, ICON)
+- **TYPE**: Document type prefix (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS)
 - **NNN**: 2+ digit sequence number (01, 02, 03, 100); examples and placeholders may show `NN` to indicate variable width
 - **descriptive_slug**: snake_case description
 - **ext**: File extension (md, feature, yaml)
@@ -603,7 +576,6 @@ Note on ADR references:
 | CTR | CTR_SCHEMA.yaml | 9 | |
 | SPEC | SPEC_SCHEMA.yaml | 10 | |
 | TASKS | TASKS_SCHEMA.yaml | 11 | |
-| ICON | ICON_SCHEMA.yaml | 11 | Optional artifact |
 
 ¹ BRD schema is OPTIONAL. BRD validation is human-centric with advisory-only automated checks. All validation rules in BRD_SCHEMA.yaml have 'warning' or 'info' severity (not 'error'). See BRD_SCHEMA.yaml header (lines 1-12) for enforcement level details.
 
@@ -618,7 +590,6 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 **Tag Format**:
 - Hierarchical artifacts (BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS): `@type: TYPE-NN:TYPE.NN.TT.SS` (document ID + element ID)
 - File-level artifacts (ADR, SPEC, CTR): `@type: TYPE-NN`
-- ICON contracts: `@icon: ICON-NN:ContractName`
 
 **Example Progression**:
 ```markdown
@@ -815,7 +786,6 @@ See [CUMULATIVE_TAG_REFERENCE.md](./CUMULATIVE_TAG_REFERENCE.md) for complete ta
 - Layers 10-15: Range based on optional layers (IMPL, CTR)
 - Layer 15 (Validation): Advisory count (10-15 tags)
 
-Note: ICON (Implementation Contracts) is optional and does not affect tag counts. If present, `@icon` tags are allowed but excluded from cumulative count and chain validation.
 
 **Output Example**:
 ```
@@ -1011,7 +981,6 @@ Each artifact type has a corresponding YAML schema file (`{TYPE}_SCHEMA.yaml`) t
 | 9 | CTR | [CTR_SCHEMA.yaml](./09_CTR/CTR_SCHEMA.yaml) | Dual-file, OpenAPI/AsyncAPI |
 | 10 | SPEC | [SPEC_SCHEMA.yaml](./10_SPEC/SPEC_SCHEMA.yaml) | YAML structure, code gen ready |
 | 11 | TASKS | [TASKS_SCHEMA.yaml](./11_TASKS/TASKS_SCHEMA.yaml) | TASK-NN, implementation contracts |
-| 12 | IPLAN | [IPLAN_SCHEMA.yaml](./12_IPLAN/IPLAN_SCHEMA.yaml) | Session format, bash commands |
 
 ### Schema Validation Usage
 
@@ -1199,7 +1168,6 @@ graph LR
 | `09_CTR/` | API Contracts - dual-file format (.md + .yaml) |
 | `10_SPEC/` | Technical Specifications (YAML) |
 | `11_TASKS/` | Code Generation Plans |
-| `12_IPLAN/` | **DEPRECATED** - Merged into TASKS (Layer 11) |
 
 **Tooling & Guides**:
 
@@ -1213,7 +1181,6 @@ graph LR
 
 <!-- Directory Structure Migration History -->
 <!-- 2025-01-13: CONTRACTS/ → 09_CTR/ (contracts now use dual-file format) -->
-<!-- 2025-01-13: tasks_plans/ → 12_IPLAN/ (implementation plans; filenames no longer use timestamps) -->
 
 ## Framework Versions and Updates
 

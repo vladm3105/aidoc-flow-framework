@@ -18,7 +18,7 @@ MAX_YAML_ERROR=2000
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 
 # Directories to scan (relative to ROOT_DIR)
-DIRS=(BRD PRD EARS BDD ADR SYS REQ SPEC CTR TASKS IPLAN)
+DIRS=(BRD PRD EARS BDD ADR SYS REQ SPEC CTR TASKS)
 
 # File globs per type
 GLOBS=("*.md" "*.feature" "*.yaml")

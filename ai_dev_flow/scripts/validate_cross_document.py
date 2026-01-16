@@ -94,7 +94,6 @@ LAYER_CONFIG = {
     "CTR": {"layer": 9, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "impl"], "extensions": [".md", ".yaml"]},
     "SPEC": {"layer": 10, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req"], "extensions": [".yaml"]},
     "TASKS": {"layer": 11, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "spec"], "extensions": [".md"]},
-    "IPLAN": {"layer": 12, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "spec", "tasks"], "extensions": [".md"]},
 }
 
 # Tag format patterns
@@ -422,7 +421,7 @@ class CrossDocumentValidator:
                 ))
 
         # Check for gaps in cumulative chain
-        tag_order = ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "impl", "ctr", "spec", "tasks", "iplan"]
+        tag_order = ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "impl", "ctr", "spec", "tasks"]
         found_tags = [t for t in tag_order if t in existing_tags]
 
         if found_tags:

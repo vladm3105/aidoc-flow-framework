@@ -43,7 +43,6 @@ supersedes: [List, of, Artifact, IDs]
 | 9 | **(Interface)** | `CTR-XX` | `CTR-YY` |
 | 10| **(Spec)**      | `SPEC-XX` | `SPEC-YY` |
 | 11| **(CodeGen)**   | `TASKS-XX` | `TASKS-YY` |
-| 12| **(Session)**   | `IPLAN-XX` | `IPLAN-YY` |
 | --| **(Code)**      | `src/...` | `src/...` |
 
 ### 2.3 Dependency Check

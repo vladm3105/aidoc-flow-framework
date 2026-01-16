@@ -1,9 +1,23 @@
+---
+title: "BDD AI Agent Extension"
+tags:
+  - bdd-guide
+  - ai-agent-primary
+  - layer-4-artifact
+custom_fields:
+  document_type: guide
+  artifact_type: BDD
+  layer: 4
+  priority: primary
+  development_status: active
+---
+
 # =============================================================================
-# 📋 Document Role: This is an EXTENSION to BDD-TEMPLATE.feature
-# - Authority: BDD-TEMPLATE.feature is the single source of truth for BDD structure
+# 📋 Document Role: This is an EXTENSION to BDD-MVP-TEMPLATE.feature
+# - Authority: BDD-MVP-TEMPLATE.feature is the single source of truth for BDD structure
 # - Purpose: Additional requirements for AI-Agent Primary architecture BDD files
 # - Scope: Applies to BDD files with AGENT-NNN identifiers
-# - On conflict: Defer to BDD-TEMPLATE.feature for base requirements
+# - On conflict: Defer to BDD-MVP-TEMPLATE.feature for base requirements
 # =============================================================================
 ---
 title: "BDD AI-Agent Extension"
@@ -25,7 +39,7 @@ custom_fields:
 **Date**: 2025-11-30
 **Purpose**: Additional standards for AI-Agent Primary architecture BDD files
 **Applies To**: BDD-022, BDD-023, BDD-025, and future AI-agent BDD documents
-**Base Template**: BDD-TEMPLATE.feature (all base requirements apply)
+**Base Template**: BDD-MVP-TEMPLATE.feature (all base requirements apply)
 
 ---
 

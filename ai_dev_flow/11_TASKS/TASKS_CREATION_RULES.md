@@ -1,3 +1,17 @@
+---
+title: "TASKS Creation Rules"
+tags:
+  - creation-rules
+  - layer-11-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: TASKS
+  layer: 11
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # Document Role: This is a DERIVATIVE of TASKS-TEMPLATE.md
 # - Authority: TASKS-TEMPLATE.md is the single source of truth for TASKS structure
@@ -23,7 +37,6 @@ custom_fields:
 > **Document Role**: This is a **CREATION HELPER** for TASKS-TEMPLATE.md v2.0.
 > - **Authority**: `TASKS-TEMPLATE.md` is the single source of truth for TASKS structure
 > - **Validation**: Use `TASKS_VALIDATION_RULES.md` after TASKS creation/changes
-> - **Note**: IPLAN (Layer 12) deprecated - execution commands now in TASKS Section 4
 
 # TASKS Creation Rules (v2.0)
 
@@ -44,7 +57,7 @@ Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 | **Created** | 2025-11-27 |
 | **Last Updated** | 2026-01-15 |
 | **Status** | Active |
-| **Breaking Change** | v2.0: 11 sections, execution commands in Section 4, IPLAN deprecated |
+| **Breaking Change** | v2.0: 11 sections, execution commands in Section 4 |
 
 ---
 
@@ -165,16 +178,16 @@ custom_fields:
 | 1. Objective | Deliverables and business value |
 | 2. Scope | Inclusions, exclusions, prerequisites |
 | 3. Implementation Plan | Phased steps with durations |
-| 4. Execution Commands | Setup, implementation, validation (replaces IPLAN) |
+| 4. Execution Commands | Setup, implementation, validation |
 | 5. Constraints | Technical and quality constraints |
 | 6. Acceptance Criteria | Functional, quality, operational criteria |
-| 7. Implementation Contracts | ICON integration (mandatory) |
+| 7. Implementation Contracts | Embedded contract definitions (mandatory) |
 | 8. Traceability | Upstream refs, tags, code locations |
 | 9. Risk & Mitigation | Risk table with mitigations |
 | 10. Session Log | Progress tracking |
 | 11. Change History | Version history |
 
-> **Note**: v1.x had 8 mandatory sections. v2.0 has 11, with execution commands (formerly IPLAN) in Section 4.
+> **Note**: v1.x had 8 mandatory sections. v2.0 has 11.
 
 ---
 
@@ -368,8 +381,7 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 
 ```markdown
 @impl: IMPL.NN.EE.SS (if project uses IMPL)
-@ctr: CTR-NN (if contracts defined)
-@icon: ICON-NN:ContractName (if implementation contracts)
+@ctr: CTR-NN (if external API contracts defined)
 ```
 
 ---
@@ -412,8 +424,8 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 4. **Missing SPEC references** - Always link to SPEC lines
 5. **No acceptance criteria** - Must be verifiable (Section 6)
 6. **Missing Section 7** - ALWAYS include contracts section
-7. **Orphaned contracts** - ICON references must exist
-8. **Using deprecated IPLAN** - Execution commands now in Section 4
+7. **Missing contracts** - Section 7-8 must define contracts for parallel development
+8. **Missing execution commands** - Use Section 4 for bash commands
 
 ---
 
@@ -507,7 +519,7 @@ Include ONLY if relationships exist between TASKS documents sharing implementati
 
 **Document Version**: 2.0.0
 **Last Updated**: 2026-01-15
-**Schema Version**: TASKS v2.0 (11 sections, IPLAN deprecated)
+**Schema Version**: TASKS v2.0 (11 sections)
 
 ---
 
@@ -568,4 +580,3 @@ python scripts/validate_cross_document.py --layer TASKS --auto-fix
 
 **Workflow (v2.0)**: `SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
 
-> **Note**: IPLAN (Layer 12) has been deprecated. Execution commands are now included directly in TASKS Section 4. See `12_IPLAN/DEPRECATED.md` for migration guidance.

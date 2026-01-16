@@ -1,3 +1,17 @@
+---
+title: "CTR Validation Rules"
+tags:
+  - validation-rules
+  - layer-9-artifact
+  - shared-architecture
+custom_fields:
+  document_type: validation-rules
+  artifact_type: CTR
+  layer: 9
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # 📋 Document Role: This is a DERIVATIVE of CTR-TEMPLATE.md
 # - Authority: CTR-TEMPLATE.md is the single source of truth for CTR structure

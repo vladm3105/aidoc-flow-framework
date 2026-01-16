@@ -1,3 +1,16 @@
+---
+title: "EARS-01: Event-Driven Example"
+tags:
+  - ears-example
+  - layer-3-artifact
+  - example-document
+custom_fields:
+  document_type: example
+  artifact_type: EARS
+  layer: 3
+  development_status: example
+---
+
 # =============================================================================
 # EARS-01: Event-Driven Requirements Example
 # =============================================================================

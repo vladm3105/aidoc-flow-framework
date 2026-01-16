@@ -559,4 +559,3 @@ Splitting BDD suites follows section/subsection rules:
 - Primary files: `BDD-NN.SS_{slug}.feature` (≤12 scenarios; target 300–500 lines)
 - If a section grows: create `BDD-NN.SS.mm_{slug}.feature` and add `.SS.00_{slug}.feature` with `@redirect` for many subsections
 - Update `BDD-NN.0_index.md` with section/subsection map and statuses
-- See `BDD_SPLITTING_RULES.md` for full details; validate with size lints

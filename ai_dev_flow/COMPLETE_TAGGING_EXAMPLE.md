@@ -1,3 +1,15 @@
+---
+title: "Complete Tagging Example"
+tags:
+  - framework-guide
+  - traceability
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # Minimal End-to-End Tagging Example (TYPE-NN)
 
 ## Purpose
@@ -107,15 +119,9 @@ implementation:
 @sys: SYS.NN.25.NN
 @req: REQ.NN.NN.NN
 @spec: SPEC-NN
-## Optional ICON Tags (Layer 11 shared with TASKS)
-@icon: TASKS-NN:ValidationProtocol
-@icon-role: provider
 ```
-- **Note**: ICON (Implementation Contracts) shares Layer 11 with TASKS. Use @icon/@icon-role when referencing standalone ICON documents or embedded implementation contracts.
 
 ### Layer 12: Code (Implementation)
-
-> **Note**: Layer 12 was formerly IPLAN. As of 2026-01-15, IPLAN has been **DEPRECATED** and merged into TASKS. Execution commands are now in TASKS Section 4.
 
 ```python
 """Request service implementation
@@ -172,12 +178,10 @@ Layer 7  REQ   -> +@sys
 Layer 8  IMPL  -> +@req (Optional - skip if not needed)
 Layer 9  CTR   -> +@impl if exists (Optional - skip if not needed)
 Layer 10 SPEC  -> +@req (+@impl/@ctr if exist)
-Layer 11 TASKS -> +@spec (+@icon/@icon-role optional, ICON shares Layer 11)
-Layer 12 Code  -> +@tasks (IPLAN deprecated - merged into TASKS)
+Layer 11 TASKS -> +@spec (+@impl/@ctr if exist)
+Layer 12 Code  -> +@tasks
 Layer 13 Tests -> +@code
 Layer 14 Valid -> all upstream tags
 ```
-
-> **Note**: IPLAN (formerly Layer 12) has been **DEPRECATED** as of 2026-01-15 and merged into TASKS. Execution commands are now part of TASKS Section 4.
 
 **Note on Layer 0 (Strategy/STRAT)**: Layer 0 represents strategic planning inputs that exist before formal documentation begins. The formal documentation layers start at Layer 1 (BRD).

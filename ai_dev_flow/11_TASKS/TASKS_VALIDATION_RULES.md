@@ -1,3 +1,17 @@
+---
+title: "TASKS Validation Rules"
+tags:
+  - validation-rules
+  - layer-11-artifact
+  - shared-architecture
+custom_fields:
+  document_type: validation-rules
+  artifact_type: TASKS
+  layer: 11
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # Document Role: This is a DERIVATIVE of TASKS-TEMPLATE.md
 # - Authority: TASKS-TEMPLATE.md is the single source of truth for TASKS structure
@@ -25,7 +39,6 @@ custom_fields:
 > - Apply these rules after TASKS creation or modification
 > - **Authority**: Validates compliance with `TASKS-TEMPLATE.md v2.0` (the primary standard)
 > - **Scope**: Use for quality gates before committing TASKS changes
-> - **Note**: IPLAN (Layer 12) has been deprecated. TASKS now includes execution commands.
 
 # TASKS Validation Rules (v2.0)
 
@@ -41,7 +54,7 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 | **Created** | 2025-11-27 |
 | **Last Updated** | 2026-01-15 |
 | **Status** | Active |
-| **Breaking Change** | TASKS v2.0: 11 sections (was 12), includes execution commands, IPLAN deprecated |
+| **Breaking Change** | TASKS v2.0: 11 sections (was 12), includes execution commands |
 
 ### Reserved ID Exemption (TASKS-00_*)
 
@@ -166,8 +179,6 @@ fi
 | 10. Session Log | Yes | Progress tracking table |
 | 11. Change History | Yes | Version history |
 
-> **Note**: This replaces the v1.x 8-section + 4-section structure (12 total). IPLAN content merged into Section 4.
-
 ### Validation Commands
 
 ```bash
@@ -259,8 +270,7 @@ fi
 |-------|-------------|
 | Section 7 exists | ERROR |
 | Has 7.1, 7.2 subsection or "none" statement | ERROR |
-| @icon tags if provider/consumer | ERROR |
-| @icon-role tag if @icon present | WARNING |
+| Contract definitions with type hints | WARNING |
 
 > **Note**: In TASKS v1.x, this was Section 8. Updated for v2.0.
 
@@ -283,13 +293,6 @@ if ! grep -qE "### 7\.[12]" "$TASKS_FILE"; then
   # Check if "No implementation contracts" statement exists
   if ! grep -qi "No implementation contracts" "$TASKS_FILE"; then
     echo "ERROR: Section 7 must have 7.1/7.2 subsection or 'No implementation contracts' statement"
-  fi
-fi
-
-# If @icon tag present, @icon-role should also be present
-if grep -q "@icon:" "$TASKS_FILE"; then
-  if ! grep -q "@icon-role:" "$TASKS_FILE"; then
-    echo "WARNING: @icon tag found but @icon-role missing"
   fi
 fi
 ```
@@ -316,8 +319,7 @@ fi
 | Tag | Required | Format |
 |-----|----------|--------|
 | @impl | Conditional | IMPL-NN (if project uses IMPL) |
-| @ctr | Conditional | CTR-NN (if contracts defined) |
-| @icon | Conditional | ICON-NN:ContractName |
+| @ctr | Conditional | CTR-NN (if external API contracts defined) |
 
 ### Validation Commands
 
@@ -377,7 +379,6 @@ fi
 | SPEC references | SPEC-NN file exists | ERROR |
 | BDD references | BDD-NN file exists | WARNING |
 | REQ references | REQ-NN file exists | WARNING |
-| ICON references | ICON-NN file exists | ERROR |
 
 ### Validation Commands
 
@@ -385,19 +386,11 @@ fi
 # Validate SPEC reference
 parent_spec=$(grep "parent_spec:" "$TASKS_FILE" | grep -oE "SPEC-[0-9]+")
 if [ -n "$parent_spec" ]; then
-  spec_file=$(find ../SPEC -name "${parent_spec}*.yaml" 2>/dev/null)
+  spec_file=$(find ../10_SPEC -name "${parent_spec}*.yaml" 2>/dev/null)
   if [ -z "$spec_file" ]; then
     echo "ERROR: Parent SPEC file not found: $parent_spec"
   fi
 fi
-
-# Validate ICON references
-grep -oE "ICON-[0-9]+" "$TASKS_FILE" | while read -r icon_ref; do
-  icon_file=$(find ../ICON -name "${icon_ref}*.md" 2>/dev/null)
-  if [ -z "$icon_file" ]; then
-    echo "ERROR: Referenced ICON file not found: $icon_ref"
-  fi
-done
 ```
 
 ---
@@ -467,7 +460,7 @@ CHECK 5: Traceability Tags
 
 CHECK 6: Cross-References
   ✅ Parent SPEC exists
-  ✅ All ICON references valid
+  ✅ Section 7-8 contracts have type hints
 
 =========================================
 SUMMARY
@@ -545,4 +538,4 @@ Result: PASSED WITH WARNINGS
 
 **Document Version**: 2.0.0
 **Last Updated**: 2026-01-15
-**Schema Version**: TASKS v2.0 (11 sections, IPLAN deprecated)
+**Schema Version**: TASKS v2.0 (11 sections)

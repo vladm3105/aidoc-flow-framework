@@ -86,12 +86,10 @@ Aligned with the 16-Layer Architecture (TRACEABILITY.md §1.2.1):
 | **8** | IMPL | N/A (Project Management) | `./scripts/validate_impl.sh` | `@brd→@req` |
 | **9** | CTR | N/A (Interface Contracts) | `./scripts/validate_ctr.sh` | `@brd→@req @impl` |
 | **10** | SPEC | `TASKS-Ready Score` | `python scripts/validate_spec.py` | `@brd→@req +optional` |
-| **11** | TASKS | `IPLAN-Ready Score` | `./scripts/validate_tasks.sh` | `@brd→@spec` |
-| **11 (optional)** | ICON | N/A (Implementation Contracts) | `./scripts/validate_icon.sh` | `@brd→@spec (+ optional @icon)` |
-| **12** | IPLAN | N/A (Implementation Plans) | `./scripts/validate_iplan.sh` | `@brd→@tasks` |
-| **13** | Code | N/A | TBD | `@brd→@iplan` |
-| **14** | Tests | N/A | TBD | `@brd→@code` |
-| **15** | Validation | N/A | Deployment verification | All upstream tags |
+| **11** | TASKS | `Code-Ready Score` | `./scripts/validate_tasks.sh` | `@brd→@spec` |
+| **12** | Code | N/A | TBD | `@brd→@tasks` |
+| **13** | Tests | N/A | TBD | `@brd→@code` |
+| **14** | Validation | N/A | Deployment verification | All upstream tags |
 
 ### Layer Transition Quality Gates
 
@@ -105,8 +103,8 @@ Aligned with the 16-Layer Architecture (TRACEABILITY.md §1.2.1):
 | **L6→L7** | System requirements specified | SPEC-ready score ≥90% | Atomic requirements contain all information needed for SPEC generation |
 | **L7→L8** | Requirements atomicized | IMPL-ready score ≥90% | Technical conclusion reached, ready for project management |
 | **L8→L10** | Project plans approved | TASKS-ready score ≥90% | Technical specifications machine-readable and complete |
-| **L10→L11** | Specs created | IPLAN-ready score ≥90% | Code generation plan structured and AI-ready |
-| **L11→L12** | Tasks planned | Implementation plan complete | Session execution plans with bash commands validated |
+| **L10→L11** | Specs created | Code-ready score ≥90% | Implementation tasks structured and AI-ready |
+| **L11→L12** | Tasks planned | Code generation complete | Source code implemented per TASKS guidance |
 
 ---
 
@@ -136,8 +134,6 @@ validate_quality_gates() {
             07_REQ/**/*.md|07_REQ/*.md) ./scripts/validate_req_template.sh "$file" ;;
             10_SPEC/*.yaml|10_SPEC/**/*.yaml) python scripts/validate_spec.py "$file" ;;
             11_TASKS/*.md) ./scripts/validate_tasks.sh "$file" ;;
-            ICON/*.md) ./scripts/validate_icon.sh "$file" ;;
-            12_IPLAN/*.md) ./scripts/validate_iplan.sh "$file" ;;
         esac
 
         # Check cumulative tagging (TRACEABILITY.md §4)
@@ -252,7 +248,7 @@ validate_quality_gates() {
         docs/06_SYS/*.md) validate_score "$file" "SPEC-Ready Score" ;;
         docs/07_REQ/*.md) validate_score "$file" "IMPL-Ready Score" ;;
         docs/10_SPEC/*.yaml) validate_meta_score "$file" "task_ready_score" ;;
-        docs/11_TASKS/*.md) validate_score "$file" "IPLAN-Ready Score" ;;
+        docs/11_TASKS/*.md) validate_score "$file" "Code-Ready Score" ;;
     esac
 
     validate_cumulative_tags "$file"

@@ -183,7 +183,6 @@ Every API contract requires:
    - **Verify**: Emphasizes dual-file requirement
    - **Add**: Reference to this ADR
 
-5. **CTR-TEMPLATE.yaml** (already exists):
    - **Verify**: Provides OpenAPI/AsyncAPI base definition
    - **Add**: Comment referencing CTR-TEMPLATE.md
 
@@ -283,7 +282,6 @@ Before merging PR with new CTR:
 ### Related Documents
 
 - [CTR-TEMPLATE.md](../09_CTR/CTR-TEMPLATE.md) - Markdown template
-- [CTR-TEMPLATE.yaml](../09_CTR/CTR-TEMPLATE.yaml) - YAML schema template
 - [09_CTR/README.md](../09_CTR/README.md) - Contracts overview
 - [SPEC-TEMPLATE.yaml](../10_SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
 - [TRACEABILITY.md](../TRACEABILITY.md) - Document linking standards

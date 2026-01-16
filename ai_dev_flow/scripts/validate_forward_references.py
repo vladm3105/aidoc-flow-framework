@@ -36,17 +36,16 @@ LAYER_MAP = {
     "CTR": 9,
     "SPEC": 10,
     "TASKS": 11,
-    "IPLAN": 12,
 }
 
 # Regex pattern for document IDs
 DOC_ID_PATTERN = re.compile(
-    r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|IMPL|CTR|SPEC|TASKS|IPLAN)-(\d{2,})\b'
+    r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|IMPL|CTR|SPEC|TASKS)-(\d{2,})\b'
 )
 
 # Regex pattern for element IDs (dot notation)
 ELEMENT_ID_PATTERN = re.compile(
-    r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|IMPL|CTR|SPEC|TASKS|IPLAN)\.(\d{2,})\.(\d{2})\.(\d{2,})\b'
+    r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|IMPL|CTR|SPEC|TASKS)\.(\d{2,})\.(\d{2})\.(\d{2,})\b'
 )
 
 
@@ -116,8 +115,8 @@ def find_document_count_claims(content: str) -> List[Tuple[str, int, int]]:
 
     # Pattern: "5 ADRs", "3 REQ documents", "ADR-01 through ADR-05"
     patterns = [
-        r'(\d+)\s+(ADR|SYS|REQ|SPEC|TASKS|IMPL|CTR|IPLAN)s?\b',
-        r'(ADR|SYS|REQ|SPEC|TASKS|IMPL|CTR|IPLAN)-\d+\s+through\s+\1-(\d+)',
+        r'(\d+)\s+(ADR|SYS|REQ|SPEC|TASKS|IMPL|CTR)s?\b',
+        r'(ADR|SYS|REQ|SPEC|TASKS|IMPL|CTR)-\d+\s+through\s+\1-(\d+)',
     ]
 
     for pattern in patterns:

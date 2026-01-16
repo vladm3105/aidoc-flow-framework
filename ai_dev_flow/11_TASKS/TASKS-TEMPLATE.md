@@ -22,7 +22,6 @@ custom_fields:
 > - **Creation Rules**: `TASKS_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `TASKS_VALIDATION_RULES.md` - Post-creation checks
 
-> **⚠️ IPLAN DEPRECATED (v2.0)**: IPLAN (formerly Layer 12) has been merged into TASKS. Execution commands that were in IPLAN are now in **Section 4: Execution Commands** of this template. See `12_IPLAN/DEPRECATED.md` for migration guidance.
 
 # TASKS-NN: [Descriptive Component/Feature Name]
 

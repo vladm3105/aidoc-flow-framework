@@ -1,3 +1,17 @@
+---
+title: "SPEC Corpus Validation"
+tags:
+  - corpus-validation
+  - layer-10-artifact
+  - shared-architecture
+custom_fields:
+  document_type: corpus-validation
+  artifact_type: SPEC
+  layer: 10
+  priority: shared
+  development_status: active
+---
+
 # SPEC Corpus Validation Rules
 
 ## Document Control
@@ -72,18 +86,17 @@ docs/10_SPEC/
 
 **Severity**: Error (blocking)
 
-**Rationale**: SPEC is Layer 10. It should NOT reference specific numbered TASKS or IPLAN documents that don't exist yet.
+**Rationale**: SPEC is Layer 10. It should NOT reference specific numbered TASKS documents that don't exist yet.
 
 **Patterns to Flag**:
 | Pattern | Layer | Issue |
 |---------|-------|-------|
 | `TASKS-NN` | 11 | TASKS don't exist during SPEC creation |
-| `IPLAN-NN` | 12 | IPLANs don't exist during SPEC creation |
 
 **Allowed Patterns** (generic references):
 - "This will inform TASKS development"
 - "Downstream implementation will..."
-- "See future IPLAN for execution"
+- "See future TASKS for execution"
 
 ---
 
@@ -436,7 +449,7 @@ validate-spec-verbose:
 	@./scripts/validate_spec_corpus.sh docs/SPEC --verbose
 
 # Include in combined validation target
-validate-all: validate-brd validate-prd validate-ears validate-bdd validate-adr validate-sys validate-req validate-spec validate-tasks validate-iplan
+validate-all: validate-brd validate-prd validate-ears validate-bdd validate-adr validate-sys validate-req validate-spec validate-tasks
 	@echo "All corpus validations complete"
 ```
 

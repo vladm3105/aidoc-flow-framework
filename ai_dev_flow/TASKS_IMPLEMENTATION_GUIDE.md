@@ -1,8 +1,21 @@
+---
+title: "TASKS Implementation Guide"
+tags:
+  - framework-guide
+  - layer-11-artifact
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  artifact_type: TASKS
+  layer: 11
+  priority: shared
+  development_status: active
+---
+
 # TASKS Implementation Guide
 
 This guide describes the standard workflow for implementing a feature defined in a `TASKS` artifact.
 
-> **Note**: As of 2026-01-15, IPLAN has been **DEPRECATED** and merged into TASKS. Execution commands and implementation steps are now part of TASKS Section 4. See `12_IPLAN/DEPRECATED.md` for migration guide.
 
 ## 1. Initial Assessment
 Before starting code:

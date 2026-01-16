@@ -1,3 +1,17 @@
+---
+title: "PRD Creation Rules"
+tags:
+  - creation-rules
+  - layer-2-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: PRD
+  layer: 2
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # 📋 Document Role: This is a DERIVATIVE of PRD-TEMPLATE.md
 # - Authority: PRD-TEMPLATE.md is the single source of truth for PRD structure

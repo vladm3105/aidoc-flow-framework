@@ -111,7 +111,6 @@ cd /opt/data/project_name
 **Commands**:
 ```bash
 # Core 11-layer architecture artifact directories (BRD through TASKS)
-# Note: IPLAN (formerly Layer 12) has been deprecated and merged into TASKS
 mkdir -p docs/BRD docs/PRD docs/EARS docs/BDD docs/ADR docs/SYS docs/REQ docs/IMPL docs/CTR docs/SPEC docs/TASKS
 
 # NOTE: REQ and CTR subdirectories are created on-demand by doc-req and doc-ctr skills
@@ -392,7 +391,6 @@ python scripts/trace_check.py --type REQ
 - Naming: `{project-name}-project-init_YYYYMMDD.md` or `{project-name}-project-init_REVISED_YYYYMMDD.md`
 - Purpose: Track project initialization and documentation creation workflow
 - Created by: `/save-plan` command or manually during project setup
-- Execution commands are now part of TASKS Section 4 (IPLAN has been deprecated)
 
 **Plan Contents**:
 - Current progress summary with completion status
@@ -587,9 +585,7 @@ grep "@req:" docs/10_SPEC/*.yaml | cut -d: -f2 | sort | uniq
 # Dependency validation
 python scripts/validate_task_dependencies.py docs/11_TASKS/TASKS-01_*.md
 
-# Contract verification (if present)
-grep "@icon:" docs/11_TASKS/*.md
-# Verify implementation contracts defined when needed
+# Contract verification: Check TASKS Section 7-8 for implementation contracts
 ```
 
 ### Error Resolution Protocol
@@ -970,7 +966,7 @@ Next: Review PROJECT_KICKOFF_TASKS.md for Day 1-7 action plan
 # Step 1: Domain Selection (interactive)
 # AI Assistant runs DOMAIN_SELECTION_QUESTIONNAIRE.md
 
-# Step 2: Create Folders (IPLAN deprecated - not included)
+# Step 2: Create Folders
 mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
 mkdir -p scripts work_plans
 # NOTE: 07_REQ/CTR subdirectories created on-demand by doc-req/doc-ctr skills

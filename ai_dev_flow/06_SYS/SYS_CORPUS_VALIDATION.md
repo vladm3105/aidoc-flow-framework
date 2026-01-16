@@ -79,7 +79,7 @@ FAIL → Fix issues, re-run corpus validation
 
 **Severity**: Error (blocking)
 
-**Rationale**: SYS is Layer 6. It should NOT reference specific numbered REQ, SPEC, TASKS, or IPLAN documents that don't exist yet.
+**Rationale**: SYS is Layer 6. It should NOT reference specific numbered REQ, SPEC, or TASKS documents that don't exist yet.
 
 **Patterns to Flag**:
 | Pattern | Layer | Issue |
@@ -87,7 +87,6 @@ FAIL → Fix issues, re-run corpus validation
 | `REQ-NN` | 7 | REQs don't exist during SYS creation |
 | `SPEC-NN` | 10 | SPECs don't exist during SYS creation |
 | `TASKS-NN` | 11 | TASKS don't exist during SYS creation |
-| `IPLAN-NN` | 12 | **DEPRECATED** - IPLAN merged into TASKS (2026-01-15) |
 
 **Allowed Patterns** (generic references):
 - "This will inform REQ development"

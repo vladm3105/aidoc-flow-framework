@@ -43,8 +43,6 @@ flowchart LR
 
 **Workflow (v2.0)**: `SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
 
-> **Note**: IPLAN (Layer 12) has been **deprecated**. Execution commands are now included directly in TASKS documents (Section 4: Execution Commands).
-
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 ## Code Generation Plans Index
@@ -288,4 +286,4 @@ flowchart TB
 **Index Version**: 2.0
 **Last Updated**: 2026-01-15
 **Maintained By**: Development Team
-**Schema Version**: TASKS v2.0 (11 sections, IPLAN deprecated)
+**Schema Version**: TASKS v2.0 (11 sections)

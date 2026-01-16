@@ -300,12 +300,11 @@ flowchart TB
     L9["Layer 9: CTR<br/>(optional, requires IMPL or REQ)"]:::optional
     L10["Layer 10: SPEC<br/>(requires REQ, optional 08_IMPL/CTR)"]
     L11["Layer 11: TASKS<br/>(requires SPEC)"]
-    L12["Layer 12: IPLAN<br/>(requires TASKS)"]
 
     L1 --> L2 --> L3 --> L4 --> L5 --> L6 --> L7
     L7 --> L8 --> L9 --> L10
     L7 --> L10
-    L10 --> L11 --> L12
+    L10 --> L11
 
     classDef optional fill:#f9f9f9,stroke:#999,stroke-dasharray: 5 5
 ```

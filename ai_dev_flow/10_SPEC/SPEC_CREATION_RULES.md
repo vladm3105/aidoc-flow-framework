@@ -1,3 +1,17 @@
+---
+title: "SPEC Creation Rules"
+tags:
+  - creation-rules
+  - layer-10-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: SPEC
+  layer: 10
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # 📋 Document Role: This is a DERIVATIVE of SPEC-TEMPLATE.yaml
 # - Authority: SPEC-TEMPLATE.yaml is the single source of truth for SPEC structure

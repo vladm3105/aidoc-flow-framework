@@ -33,8 +33,7 @@ LAYER_HIERARCHY = {
     9: {'type': 'CTR', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'impl'], 'tag_count': 8, 'optional': True},
     10: {'type': 'SPEC', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req'], 'tag_count_min': 7, 'tag_count_max': 9, 'optional': False},
     11: {'type': 'TASKS', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'spec'], 'tag_count_min': 8, 'tag_count_max': 10, 'optional': False},
-    12: {'type': 'iplan', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'spec', 'tasks'], 'tag_count_min': 9, 'tag_count_max': 11, 'optional': False},
-    13: {'type': 'Code', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'spec', 'tasks'], 'tag_count_min': 9, 'tag_count_max': 11, 'optional': False},
+    12: {'type': 'Code', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'spec', 'tasks'], 'tag_count_min': 9, 'tag_count_max': 11, 'optional': False},
     14: {'type': 'Tests', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'spec', 'tasks', 'code'], 'tag_count_min': 10, 'tag_count_max': 12, 'optional': False},
     15: {'type': 'Validation', 'required_tags': [], 'tag_count_min': 10, 'tag_count_max': 15, 'optional': False}
 }
@@ -43,7 +42,7 @@ LAYER_HIERARCHY = {
 ARTIFACT_TYPE_TO_LAYER = {
     'brd': 1, 'prd': 2, 'ears': 3, 'bdd': 4, 'adr': 5, 'sys': 6,
     'req': 7, 'impl': 8, 'ctr': 9, 'spec': 10, 'tasks': 11,
-    'iplan': 12, 'code': 13, 'tests': 14, 'validation': 15
+    'code': 12, 'tests': 13, 'validation': 14
 }
 
 
@@ -80,7 +79,7 @@ def build_document_index(docs_dir: Path) -> Dict:
         return doc_index
 
     # Document type directories
-    doc_types = ['BRD', 'PRD', 'EARS', 'SYS', 'ADR', 'REQ', 'SPEC', 'CTR', 'BDD', 'IMPL', 'TASKS', 'IPLAN']
+    doc_types = ['BRD', 'PRD', 'EARS', 'SYS', 'ADR', 'REQ', 'SPEC', 'CTR', 'BDD', 'IMPL', 'TASKS']
 
     # Patterns for extracting requirement IDs from documents
     req_patterns = [
@@ -323,8 +322,8 @@ def validate_cumulative_tags(file_path: str, tags: Dict, artifact_layer: int) ->
 
     required_tags = layer_config['required_tags']
     # Exclude optional/non-chain tags from counting and chain checks
-    # Custom supplementary tags (related-impl, depends-ctr, icon-role) are not part of cumulative hierarchy
-    present_tags = set(tags.keys()) - {'impl-status', 'icon', 'related-impl', 'depends-ctr', 'icon-role'}
+    # Custom supplementary tags (related-impl, depends-ctr) are not part of cumulative hierarchy
+    present_tags = set(tags.keys()) - {'impl-status', 'related-impl', 'depends-ctr'}
 
     # Calculate expected tag count (accounting for optional layers)
     if 'tag_count' in layer_config:

@@ -38,5 +38,5 @@ Demonstrates the recommended nested layout: monolithic YAML for codegen plus spl
 
 - Upstream: BRD → PRD → EARS → BDD → ADR → SYS → REQ
 - Current: SPEC-02 (this component)
-- Downstream: TASKS → IPLAN → Code → Tests
+- Downstream: TASKS → Code → Tests
 

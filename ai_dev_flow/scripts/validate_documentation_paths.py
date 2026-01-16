@@ -79,7 +79,6 @@ class DocumentationPathValidator:
             r'BDD-\d{3}',
             r'IMPL-\d{3}',
             r'TASKS-\d{3}',
-            r'IPLAN-\d{3}',
         ]
 
     def validate_all(self) -> List[Issue]:

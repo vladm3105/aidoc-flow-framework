@@ -1,3 +1,16 @@
+---
+title: "REQ-01: API Integration Example"
+tags:
+  - req-example
+  - layer-7-artifact
+  - example-document
+custom_fields:
+  document_type: example
+  artifact_type: REQ
+  layer: 7
+  development_status: example
+---
+
 # REQ-01: API Integration (Example)
 
 

@@ -31,8 +31,8 @@ BDD_LINK_TAG_PATTERN = re.compile(
 # Keep some aliases for backward compatibility (handled via TAG_ALIASES)
 VALID_TAG_TYPES = {
     'brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'impl', 'ctr', 'spec',
-    'tasks', 'iplan', 'code', 'tests', 'icon', 'contract', 'test', 'impl-status',
-    'related-impl', 'depends-ctr', 'icon-role'  # Custom supplementary tags
+    'tasks', 'code', 'tests', 'contract', 'test', 'impl-status',
+    'related-impl', 'depends-ctr'  # Custom supplementary tags
 }
 
 # Legacy/common aliases mapped to canonical keys
@@ -42,7 +42,6 @@ TAG_ALIASES = {
     'requirement': 'req',
     'related': 'related-impl',   # Shorthand for related implementation
     'depends': 'depends-ctr',    # Shorthand for contract dependency
-    'role': 'icon-role',         # Shorthand for ICON role designation
 }
 
 # Valid implementation status values

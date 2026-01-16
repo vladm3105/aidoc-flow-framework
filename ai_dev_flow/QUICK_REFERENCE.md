@@ -35,9 +35,6 @@ See also: [README → Units & Conversions](./README.md#units--conversions-kb-vs-
 ### Splitting Rules
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- BDD addendum: [04_BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
-- CTR addendum: [09_CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
-- SPEC addendum: [10_SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
 > MVP Mode: For MVP workflows, use a single flat file per artifact and ignore splitting rules and references to `DOCUMENT_SPLITTING_RULES.md`.
@@ -97,14 +94,14 @@ TASKS-23_implement_risk_calculator.md
 | **Element** | Dot | `TYPE.NN.TT.SS` | `BRD.07.01.01` | Specific item within document |
 
 **Which uses which?**
-- **Dash** (document-level): ADR, SPEC, CTR, ICON
+- **Dash** (document-level): ADR, SPEC, CTR
 - **Dot** (element-level): BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS
 
 **Common mistakes**: `@brd: BRD-07` ❌ → `@brd: BRD.07.01.01` ✓ | `@adr: ADR.33.10.01` ❌ → `@adr: ADR-33` ✓
 
 ### General Utility Documents (`{DOC_TYPE}-00_*`)
 - Purpose: Group general-purpose, cross-project, or utility documents not tied to a specific project artifact.
-- Pattern: `{DOC_TYPE}-00_{slug}.{ext}` (e.g., `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`, `ICON-00_index.md`).
+- Pattern: `{DOC_TYPE}-00_{slug}.{ext}` (e.g., `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`, `TASKS-00_index.md`).
 - Usage: May be referenced across artifacts but are excluded from sequential DOC_NUM series. Keep guidance, templates, matrices, and reference content here.
 
 ### Section Files (DEFAULT for 01_BRD/02_PRD/ADR)
@@ -168,7 +165,6 @@ graph TB
     CTR["09_CTR/CTR-NN_{slug}/ - API Contracts"]
     SPEC["10_SPEC/SPEC-NN_{slug}/ - Technical Specs"]
     TASKS["11_TASKS/TASKS-NN_{slug}/ - Implementation Tasks"]
-    IPLAN["12_IPLAN/ - DEPRECATED (merged into TASKS)"]
   end
 
   subgraph nested_example["Nested Example: BRD-01_platform_architecture/"]
@@ -218,7 +214,6 @@ mkdir -p docs/07_REQ/REQ-01_resource_limits
 mkdir -p docs/10_SPEC/SPEC-01_rate_limiter
 mkdir -p docs/11_TASKS/TASKS-01_implement_rate_limiter
 mkdir -p docs/09_CTR/CTR-01_data_service_api
-# mkdir -p docs/12_IPLAN/  # DEPRECATED - IPLAN merged into TASKS
 
 # Legacy category folders are not used in new projects.
 
@@ -422,7 +417,6 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 | **CTR** | API contracts | .md + .yaml | **Nested** | `09_CTR/CTR-09_market_api/CTR-09_market_api.{md,yaml}` |
 | **SPEC** | Technical SPEC | .yaml | **Nested** | `10_SPEC/SPEC-10_limiter/SPEC-10_limiter.yaml` |
 | **TASKS** | Implementation TODOs | .md | **Nested** | `11_TASKS/TASKS-10_implement_limiter/TASKS-10_implement_limiter.md` |
-| **IPLAN** | **DEPRECATED** - Merged into TASKS | .md | N/A | See TASKS Section 4: Execution Commands |
 | **REF** | Supplementary docs | .md | **Nested** | `REF/TYPE-REF-NN_{slug}/TYPE-REF-NN_{slug}.md` |
 
 **Note**: REF (Reference Documents) are supplementary and do not participate in formal traceability chain.

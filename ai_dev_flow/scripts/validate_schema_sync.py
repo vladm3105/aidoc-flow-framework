@@ -42,7 +42,6 @@ ARTIFACT_TYPES = {
     "CTR": {"template": "CTR-TEMPLATE.md", "schema": "CTR_SCHEMA.yaml", "layer": 9},
     "EARS": {"template": "EARS-TEMPLATE.md", "schema": "EARS_SCHEMA.yaml", "layer": 3},
     "IMPL": {"template": "IMPL-TEMPLATE.md", "schema": "IMPL_SCHEMA.yaml", "layer": 8},
-    "IPLAN": {"template": "IPLAN-TEMPLATE.md", "schema": "IPLAN_SCHEMA.yaml", "layer": 12},
     "PRD": {"template": "PRD-TEMPLATE.md", "schema": "PRD_SCHEMA.yaml", "layer": 2},
     "REQ": {"template": "REQ-TEMPLATE.md", "schema": "REQ_SCHEMA.yaml", "layer": 7},
     "SPEC": {"template": "SPEC-TEMPLATE.yaml", "schema": "SPEC_SCHEMA.yaml", "layer": 10},

@@ -1,3 +1,16 @@
+---
+title: "ADR-02: API Architecture Example"
+tags:
+  - adr-example
+  - layer-5-artifact
+  - example-document
+custom_fields:
+  document_type: example
+  artifact_type: ADR
+  layer: 5
+  development_status: example
+---
+
 # =============================================================================
 # ADR-02: API Architecture Example
 # =============================================================================

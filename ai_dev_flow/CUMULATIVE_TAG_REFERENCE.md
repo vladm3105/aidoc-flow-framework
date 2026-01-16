@@ -1,3 +1,15 @@
+---
+title: "Cumulative Tag Reference"
+tags:
+  - framework-guide
+  - traceability
+  - shared-architecture
+custom_fields:
+  document_type: reference
+  priority: shared
+  development_status: active
+---
+
 # Cumulative Tagging Reference - Tag Count by Layer
 
 **Purpose**: Single source of truth for expected tag counts at each layer  
@@ -28,12 +40,10 @@ Each layer N requires tags from layers 1 through N-1, with adjustments for optio
 | 8 | IMPL | 7 | 7 | @brd→@req | Optional layer |
 | 9 | CTR | 7 | 8 | @brd→@req, +opt @impl | Optional layer |
 | 10 | SPEC | 7 | 9 | @brd→@req, +opt @impl/@ctr | |
-| 11 | TASKS | 8 | 10 | @brd→@spec, +opt @impl/@ctr | +opt @icon (excluded from count) |
+| 11 | TASKS | 8 | 10 | @brd→@spec, +opt @impl/@ctr | |
 | 12 | Code | 9 | 11 | @brd→@tasks, +opt @impl/@ctr | |
 | 13 | Tests | 10 | 12 | @brd→@code, +opt @impl/@ctr | |
 | 14 | Validation | 9+ | 14+ | All upstream (advisory) | Count not strictly enforced |
-
-**Note**: IPLAN (formerly Layer 12) has been **deprecated** as of 2026-01-15. Execution commands are now part of TASKS (Section 4).
 
 **CHG Note**: CHG is NOT a layer - it's a change management procedure. CHG artifacts don't require tags.
 
@@ -43,8 +53,7 @@ Each layer N requires tags from layers 1 through N-1, with adjustments for optio
 
 1. **Base Count**: Layer number minus 1 (e.g., Layer 7 REQ = 6 base tags)
 2. **Optional Layers**: Add 0-2 tags depending on whether IMPL and/or CTR exist in project
-3. **ICON Exception**: `@icon` tags are allowed but NOT counted toward cumulative total
-4. **Validation Layer**: Consumes all upstream tags; count is advisory (10-15 expected range)
+3. **Validation Layer**: Consumes all upstream tags; count is advisory (10-15 expected range)
 
 ---
 
@@ -125,13 +134,13 @@ def get_expected_tag_count(layer: int, has_impl: bool, has_ctr: bool) -> tuple[i
     if has_ctr:
         optional_layers += 1
     
-    # Layer-specific base counts (IPLAN deprecated - layers shifted)
+    # Layer-specific base counts
     layer_bases = {
         10: 7,   # SPEC
         11: 8,   # TASKS
-        12: 9,   # Code (was 13, shifted after IPLAN deprecation)
-        13: 10,  # Tests (was 14, shifted after IPLAN deprecation)
-        14: 9,   # Validation (advisory) (was 15, shifted after IPLAN deprecation)
+        12: 9,   # Code
+        13: 10,  # Tests
+        14: 9,   # Validation (advisory)
     }
     
     if layer not in layer_bases:

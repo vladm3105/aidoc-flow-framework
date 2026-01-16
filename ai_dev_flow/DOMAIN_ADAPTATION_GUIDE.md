@@ -1,3 +1,15 @@
+---
+title: "Domain Adaptation Guide"
+tags:
+  - framework-guide
+  - domain-customization
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # Domain Adaptation Guide
 
 **Version**: 1.0
@@ -361,33 +373,29 @@ SLA Targets:
 - **IoT**: OTA update strategy, fleet-wide rollout
 - **Generic**: Standard agile sprints, feature flags
 
-### IPLAN (Implementation Plans) by Domain
+### TASKS Execution Commands by Domain
 
-Implementation plans provide session-based execution context. Customize for domain-specific workflows:
+TASKS Section 4 contains session-based execution commands. Customize for domain-specific workflows:
 
 #### Financial Services
 - **Focus**: Trading system execution, market data integration
 - **Bash commands**: Database migrations for time-series data, API deployments
 - **Compliance**: Include audit trail commands, regulatory checkpoint verification
-- **Example**: `IPLAN-01_options_pricing_migration.md`
 
 #### Healthcare
 - **Focus**: HIPAA compliance, PHI data handling
 - **Bash commands**: Encrypted backup procedures, access logging
 - **Compliance**: Include data retention commands, audit log generation
-- **Example**: `IPLAN-02_patient_portal_deployment.md`
 
 #### E-commerce
 - **Focus**: Deployment and scaling, inventory management
 - **Bash commands**: Blue-green deployment scripts, cache invalidation
 - **Performance**: Include load testing commands, monitoring setup
-- **Example**: `IPLAN-03_payment_gateway_integration.md`
 
 #### SaaS
 - **Focus**: Multi-tenant rollout, feature flags
 - **Bash commands**: Tenant provisioning, configuration management
 - **Scaling**: Include database sharding, service replication
-- **Example**: `IPLAN-004_tenant_onboarding_automation.md`
 
 ---
 

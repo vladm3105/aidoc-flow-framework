@@ -362,12 +362,7 @@ traceability:
         format: "@tasks: TASKS.NN.EE.SS"
         description: "Code Generation Plans"
 
-  # Implementation Contract Tags (optional)
-  implementation_contracts:
-    format: "@icon: TASKS-XXX:ContractName"
-    description: "Implementation contracts when IMPL coordinates shared interfaces"
-    role_tag: "@icon-role: provider|consumer"
-    optional: true
+  # Note: Implementation contracts are now embedded in TASKS Section 7-8
 
   lateral:
     format: "@impl: IMPL.NN.EE.SS"

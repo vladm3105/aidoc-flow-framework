@@ -1,8 +1,22 @@
+---
+title: "BDD Creation Rules"
+tags:
+  - creation-rules
+  - layer-4-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: BDD
+  layer: 4
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of BDD-TEMPLATE.feature
-# - Authority: BDD-TEMPLATE.feature is the single source of truth for BDD structure
+# 📋 Document Role: This is a DERIVATIVE of BDD-MVP-TEMPLATE.feature
+# - Authority: BDD-MVP-TEMPLATE.feature is the single source of truth for BDD structure
 # - Purpose: AI guidance for document creation (derived from template)
-# - On conflict: Defer to BDD-TEMPLATE.feature
+# - On conflict: Defer to BDD-MVP-TEMPLATE.feature
 # =============================================================================
 ---
 title: "BDD Creation Rules"
@@ -19,7 +33,7 @@ custom_fields:
 ---
 
 > **📋 Document Role**: CREATION GUIDANCE for BDD documents (DERIVATIVE).
-> - **Authority**: `BDD-TEMPLATE.feature` is the PRIMARY STANDARD (single source of truth)
+> - **Authority**: `BDD-MVP-TEMPLATE.feature` is the PRIMARY STANDARD (single source of truth)
 > - **Purpose**: Human-readable explanation of Template structure
 > - **Scope**: Does NOT define new rules - only explains Template
 > - **Conflict Resolution**: If this conflicts with Template, update this document
@@ -34,7 +48,7 @@ custom_fields:
 | Template | File | When to Use |
 |----------|------|-------------|
 | **MVP (DEFAULT)** | `BDD-MVP-TEMPLATE.feature` | All new projects unless full template is explicitly requested |
-| Full | `BDD-TEMPLATE.feature` | Enterprise projects, regulatory compliance, or when prompted |
+| Full | `BDD-MVP-TEMPLATE.feature` | Enterprise projects, regulatory compliance, or when prompted |
 
 **Triggering Full Template**:
 - Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
@@ -48,7 +62,6 @@ custom_fields:
 **Version**: 1.3
 **Date**: 2025-11-19
 **Last Updated**: 2025-12-26
-**Source**: Derived from BDD-TEMPLATE.feature, EARS requirements, Gherkin best practices, and BDD_SPLITTING_RULES.md
 **Purpose**: Complete reference for creating BDD feature files according to AI Dev Flow SDD framework
 **Changes**: Added Split-File Structure section (v1.3). Previous: Threshold Registry Integration section (v1.2)
 
@@ -238,7 +251,6 @@ Unify BDD naming with 02_PRD/BRD section-based standards. All BDD files use sect
 - Multiple domains/modules/agents
 - Complex requirement coverage across multiple EARS sections
 
-**Authority**: See `BDD_SPLITTING_RULES.md` for comprehensive guidance.
 
 ### 1.2.1 Three Valid File Patterns (ONLY)
 
@@ -519,8 +531,6 @@ cp ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02.0_index.md
 
 **Step 3**: Create section files from template
 ```bash
-# Use BDD-SECTION-TEMPLATE.feature for standard sections
-# Use BDD-SUBSECTION-TEMPLATE.feature for subsections
 # Use BDD-AGGREGATOR-TEMPLATE.feature for aggregators
 ```
 
@@ -877,7 +887,7 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 
 ## 8. Traceability Requirements (MANDATORY - Layer 4)
 
-**Required Tags** (ALL are MANDATORY per BDD-TEMPLATE.feature):
+**Required Tags** (ALL are MANDATORY per BDD-MVP-TEMPLATE.feature):
 ```gherkin
 @brd: BRD.NN.EE.SS    # MANDATORY - business requirements
 @prd: PRD.NN.EE.SS    # MANDATORY - product requirements

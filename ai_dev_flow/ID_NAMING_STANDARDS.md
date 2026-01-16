@@ -38,10 +38,9 @@ Purpose
   - `08_IMPL/` - Implementation Plans
   - `09_CTR/` - API Contracts (CTR)
   - `10_SPEC/` - Technical Specifications (YAML)
-  - `11_TASKS/` - AI Task Lists (includes execution commands formerly in IPLAN)
+  - `11_TASKS/` - AI Task Lists
   - `REF/` - Reference Documents (supplementary, non-workflow documentation)
 
-> **Note**: `12_IPLAN/` has been **DEPRECATED**. IPLAN functionality is now merged into TASKS Section 4.
 
 ### ❌ Do NOT Apply ID_NAMING_STANDARDS To:
 - **Python source code**: Follow PEP 8 naming conventions
@@ -113,7 +112,7 @@ The SDD framework uses **two distinct notations** that serve different purposes.
 
 | Notation | Document Types | Rationale |
 |----------|---------------|-----------|
-| **Dash** (Document-level) | ADR, SPEC, CTR, ICON | Referenced as complete units |
+| **Dash** (Document-level) | ADR, SPEC, CTR | Referenced as complete units |
 | **Dot** (Element-level) | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Contain multiple numbered elements |
 
 ### Common Mistakes to Avoid
@@ -145,7 +144,7 @@ Definition and Purpose
 - Typical uses: indexes, templates, traceability matrix templates, validation checklists, and reference guides.
 
 Format
-- Pattern: `{DOC_TYPE}-00_{slug}.{ext}` (e.g., `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`, `ICON-00_index.md`).
+- Pattern: `{DOC_TYPE}-00_{slug}.{ext}` (e.g., `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`, `TASKS-00_index.md`).
 - These do not participate in the sequential DOC_NUM series and are globally recognizable as general/utility artifacts.
 
 ## Default Directory Model (All Types)
@@ -262,7 +261,7 @@ Document ID Standards (ai_dev_flow)
   - **File Format Clarification**:
     - **Test Scenarios**: `BDD-DOC_NUM_{slug}.feature` (Gherkin format - `.feature` extension)
     - **Index/Directory**: `BDD-00_index.md` (Markdown format - `.md` extension)
-    - **Template**: `BDD-TEMPLATE.feature` (Gherkin format - `.feature` extension)
+    - **Template**: `BDD-MVP-TEMPLATE.feature` (Gherkin format - `.feature` extension)
     - **Traceability Matrix**: `BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md` (Markdown format - `.md` extension)
 
   **Section-Based File Organization** (MANDATORY):
@@ -333,7 +332,6 @@ Document ID Standards (ai_dev_flow)
     - `@ears:EARS.NN.SS.RR` (upstream EARS requirement)
   - Tags appear before `Scenario:` using valid relative paths + anchors
   - Index: Each suite MUST have `04_BDD/BDD-DOC_NUM.0_index.md` listing all sections
-  - Reference: `BDD_SPLITTING_RULES.md` for section-based structure rules
 - Technical Specifications (SPEC)
   - YAML `id:` uses lowercase snake_case; pattern: `^[a-z][a-z0-9_]*[a-z0-9]$`.
   - Directory: `10_SPEC/SPEC-DOC_NUM_{slug}/`
@@ -360,45 +358,6 @@ Document ID Standards (ai_dev_flow)
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - Notes: SPEC implementation plans with exact TODOs for code generation. Each TASKS corresponds to one SPEC. Use Section Files when document exceeds 50KB.
   - Allocation: reserve next number, do not reuse; keep slugs stable.
-- ~~Implementation Plans (IPLAN)~~ **DEPRECATED**
-
-  > **DEPRECATION NOTICE**: IPLAN has been merged into TASKS Section 4 as of 2025-01. Execution commands that were in IPLAN are now in TASKS files.
-  >
-  > **Migration**: Use TASKS Section 4 "Execution Commands" for session-based commands.
-  > **Tag**: `@iplan` tag is deprecated. Use `@tasks` instead.
-  > **Layer**: IPLAN was formerly Layer 12. New layer numbering: Code=12, Tests=13, Validation=14.
-  >
-  > **Historical Reference** (for existing documents only):
-  > - Filename Format: `IPLAN-DOC_NUM_{descriptive_slug}.md`
-  > - Examples: `IPLAN-01_database_migration.md`
-- Implementation Contracts (ICON) - Optional
-  - **Default**: Embed contracts in TASKS files (section 8: Implementation Contracts)
-  - **Standalone ICON Files** (when 5+ consumers, >500 lines, platform-level):
-    - H1 ID: `ICON-DOC_NUM` (e.g., `# ICON-01: Gateway Connector Protocol`)
-    - Filename Format: `ICON-DOC_NUM_descriptive_name.md`
-    - Components:
-      - `ICON-DOC_NUM`: Sequential ID (01, 02, etc.)
-      - `descriptive_name`: Lowercase with underscores
-    - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
-    - Location: `ai_dev_flow/ICON/` or `docs/ICON/`
-    - Layer: 11 (same as TASKS)
-    - Purpose: Standalone implementation contracts for parallel development coordination
-    - Examples:
-      - `ICON-01_gateway_connector_protocol.md`
-      - `ICON-02_external_data_event_bus.md`
-      - `ICON-03_order_execution_exceptions.md`
-    - Traceability Tag Format: `@icon: TASKS-DOC_NUM:ContractName` or `@icon: ICON-DOC_NUM:ContractName`
-    - Tag Rules:
-      - Tag format: `@icon:` with contract reference and optional `@icon-role: provider|consumer`
-      - Used in: TASKS files (provider/consumer), Code files (implementation)
-      - Distinguishes from `@ctr:` (Layer 9 external API contracts)
-    - Decision Criteria (ALL must be met):
-      - 5+ consumer TASKS files
-      - Contract definition >500 lines
-      - Platform-level shared interface
-      - Cross-project usage
-    - Registry: `ICON-00_index.md` tracks all standalone contracts
-    - Notes: Most implementation contracts should be embedded in TASKS files. Use standalone ICON only when criteria met. See [ICON_CREATION_RULES.md](ICON/ICON_CREATION_RULES.md).
 - Reference Documents (REF)
   - H1 ID: `{TYPE}-REF-DOC_NUM` (e.g., `# BRD-REF-01: Project Overview`)
   - Filename: `{TYPE}-REF-DOC_NUM_{slug}.md` (e.g., `BRD-REF-01_project_overview.md`)
@@ -459,7 +418,6 @@ PRD, SYS, and EARS Document Types
 File Organization Rules
 - One document per file (PRD, SYS, REQ, ADR, SPEC, BDD, EARS, CTR, IMPL, AI-TASKS, BRD).
 - **Exception**: CTR (API Contracts) requires dual files: .md + .yaml per contract.
-- **Note**: IPLAN has been deprecated and merged into TASKS Section 4.
 - Filenames use variable-length `DOC_NUM` numbering (2+ digits); H1 contains the full ID where applicable.
 - For large documents (>50KB), use Section Files: `TYPE-DOC_NUM.S_{slug}.md`
 - Structure (this example):
@@ -591,7 +549,7 @@ For enhanced navigability, traceability tags MAY be converted to clickable hyper
 - Start with 2 digits and expand only as needed. Do not use unnecessary leading zeros beyond the active width of the current number.
 - Correct examples: `BRD-01`, `BRD-99`, `BRD-102`, `BRD-999`, `BRD-1000`.
 - Incorrect examples: `BRD-001`, `BRD-009` (extra leading zero not required by the number).
-- This rule is unified across all document types: `BRD`, `PRD`, `EARS`, `BDD`, `ADR`, `SYS`, `REQ`, `IMPL`, `CTR`, `SPEC`, `TASKS` (and `ICON`).
+- This rule is unified across all document types: `BRD`, `PRD`, `EARS`, `BDD`, `ADR`, `SYS`, `REQ`, `IMPL`, `CTR`, `SPEC`, `TASKS`.
 - Element IDs MUST match filename digit width exactly (e.g., `BRD-06` ⇄ `BRD.06.xx.xx`; `PRD-22` ⇄ `PRD.22.xx.xx`).
 - Exception: Reserved infrastructure artifacts use `-000` (e.g., `BRD-00_index.md`, `PRD-00_index.md`) by design.
 - Note: Source code and unit test files follow coding standards for their languages and are excluded from this document ID filename policy.
@@ -933,7 +891,7 @@ Each document type has dedicated section templates providing type-specific metad
 | CTR | 9 | `09_CTR/CTR-SECTION-0-TEMPLATE.md` | `09_CTR/CTR-SECTION-TEMPLATE.md` |
 | SPEC | 10 | `10_SPEC/SPEC-SECTION-0-TEMPLATE.md` | `10_SPEC/SPEC-SECTION-TEMPLATE.md` |
 
-**Types NOT requiring section templates**: TASKS, ICON (typically remain under 25KB)
+**Types NOT requiring section templates**: TASKS (typically remain under 25KB)
 
 Cross-Reference Link Format (MANDATORY)
 - Universal rule: use markdown links for all references.
@@ -973,7 +931,7 @@ Traceability Requirements
 - CTR: link upstream 07_REQ/ADR (Traceability section), downstream 10_SPEC/Code (Traceability section).
 - BDD: include `@requirement` (mandatory) and `@adr` (when applicable).
 - SPEC: include `requirements_source` (07_REQ/EARS), `architecture` (ADR), `contract_ref` (CTR if applicable), `impl_plan` (IMPL if part of phased implementation), `verification` (BDD); all as markdown links.
-- TASKS: include `@spec` (mandatory - which SPEC being implemented), `@impl` (optional - parent implementation plan if applicable). TASKS Section 4 contains execution commands (formerly in IPLAN).
+- TASKS: include `@spec` (mandatory - which SPEC being implemented), `@impl` (optional - parent implementation plan if applicable).
 - BRD: link downstream 07_REQ/08_IMPL/CTR (if applicable), related BRD sub-documents via markdown links.
 - Code: reference SPEC, CTR (if contract implementation), and TASKS in docstrings or header comments using relative paths.
 
@@ -1002,8 +960,6 @@ Validation Rules & Aids
   - IMPL filename: `IMPL-\d{2,}_.+\.md$`
   - TASKS H1 ID: `^#\sTASKS-\d{2,}:.+$`
   - TASKS filename: `TASKS-\d{2,}_.+\.md$`
-  - ~~IPLAN H1 ID~~: `^#\sIPLAN-\d{2,}:.+$` **DEPRECATED**
-  - ~~IPLAN filename~~: `IPLAN-\d{2,}_.+\.md$` **DEPRECATED**
   - BRD H1 ID: `^#\sBRD-\d{2,}:.+$`
   - BRD filename: `BRD-\d{2,}_.+\.md$`
   - PRD H1 ID: `^#\sPRD-\d{2,}:.+$`
@@ -1040,7 +996,6 @@ Examples (ai_dev_flow) - Atomic Documents (DOC_NUM)
   - SPEC: `10_SPEC/SPEC-03_resource_limit_service.yaml` (id: `resource_limit_service`)
   - IMPL: `08_IMPL/IMPL-01_risk_management_system.md` (H1: `# IMPL-01: resource management System Implementation`)
   - TASKS: `11_TASKS/TASKS-03_resource_limit_service.md` (H1: `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
-  - ~~IPLAN~~: **DEPRECATED** - merged into TASKS Section 4
 
 Examples (ai_dev_flow) - Section Files (DOC_NUM.S) - Nested Folder Structure
 - Split BRD document (150KB original → 7 sections):
@@ -1348,8 +1303,8 @@ For the complete list of valid traceability tags, see [TRACEABILITY.md - Complet
 
 **Quick Reference:**
 
-- **Document Type Tags**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks` (Note: `@iplan` is deprecated)
-- **Non-Document Tags**: `@test`, `@code`, `@impl-status`, `@icon`, `@icon-role`, `@threshold`, `@entity`, `@priority`, `@component`, `@supersedes`
+- **Document Type Tags**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`
+- **Non-Document Tags**: `@test`, `@code`, `@impl-status`, `@threshold`, `@entity`, `@priority`, `@component`, `@supersedes`
 - **Same-Type Tags**: `@related-{type}`, `@depends-{type}`
 - **Invalid Tags**: `@nfr:`, `@fr:`, `@contract:`, `@tests:` (deprecated, do NOT use)
 

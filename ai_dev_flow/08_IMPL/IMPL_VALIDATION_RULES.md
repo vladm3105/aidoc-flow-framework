@@ -1,3 +1,17 @@
+---
+title: "IMPL Validation Rules"
+tags:
+  - validation-rules
+  - layer-8-artifact
+  - shared-architecture
+custom_fields:
+  document_type: validation-rules
+  artifact_type: IMPL
+  layer: 8
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # 📋 Document Role: This is a DERIVATIVE of IMPL-TEMPLATE.md
 # - Authority: IMPL-TEMPLATE.md is the single source of truth for IMPL structure
@@ -383,13 +397,6 @@ fi
 | @ctr | When applicable | CTR.NN.EE.SS |
 | @spec | When applicable | SPEC.NN.EE.SS |
 | @tasks | When applicable | TASKS.NN.EE.SS |
-
-### Implementation Contract Tags (Optional)
-
-| Tag | Required | Format |
-|-----|----------|--------|
-| @icon | No | TASKS-XXX:ContractName |
-| @icon-role | No | provider\|consumer |
 
 ### Validation Commands
 

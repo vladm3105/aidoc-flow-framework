@@ -1,3 +1,17 @@
+---
+title: "EARS Required Documents List"
+tags:
+  - ears-guide
+  - layer-3-artifact
+  - temporary
+custom_fields:
+  document_type: reference
+  artifact_type: EARS
+  layer: 3
+  priority: shared
+  development_status: temporary
+---
+
 # Required EARS Documents List - Trading Nexus
 
 **Version**: 1.0

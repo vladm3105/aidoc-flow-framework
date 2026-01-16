@@ -120,7 +120,6 @@ Choose split criteria (in priority order):
 ### For Each Section
 
 - [ ] Create section file: `docs/04_BDD/BDD-NN_{slug}/BDD-NN.SS_{slug}.feature`
-- [ ] Copy from `BDD-SECTION-TEMPLATE.feature`
 - [ ] Update file-level traceability tags:
   ```gherkin
   @section: N.S
@@ -136,7 +135,6 @@ Choose split criteria (in priority order):
 - [ ] Update Background with timezone and preconditions
 - [ ] Author scenarios (see Section File Requirements below)
 
-**Template Source**: `04_BDD/BDD-SECTION-TEMPLATE.feature`
 
 ### Section File Requirements
 
@@ -170,7 +168,6 @@ If a section file exceeds 500 lines or 12 scenarios:
 **Option A: Create Subsections**
 
 - [ ] Split section into subsections: `BDD-NN.SS.01_{slug}.feature`, `BDD-NN.SS.02_{slug}.feature`
-- [ ] Copy from `BDD-SUBSECTION-TEMPLATE.feature`
 - [ ] Update subsection traceability tags:
   ```gherkin
   @section: N.S.m
@@ -190,7 +187,6 @@ If a section file exceeds 500 lines or 12 scenarios:
 - [ ] Create numbered subsections: `.01`, `.02`, `.03`, etc.
 
 **Template Sources**:
-- Subsection: `04_BDD/BDD-SUBSECTION-TEMPLATE.feature`
 - Aggregator: `04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
 
 ---
@@ -405,7 +401,6 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 
 ## References
 
-- **BDD_SPLITTING_RULES.md** — Split-suite structure standards
 - **BDD_VALIDATION_RULES.md** — Validation rules (CHECK 9)
 - **BDD_CREATION_RULES.md** — General BDD creation guidelines
 - **ID_NAMING_STANDARDS.md** — Element ID format (BDD.NN.TT.SS)

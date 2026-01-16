@@ -1,9 +1,23 @@
+---
+title: "BDD Pre-Generation Checklist"
+tags:
+  - bdd-checklist
+  - layer-4-artifact
+  - shared-architecture
+custom_fields:
+  document_type: checklist
+  artifact_type: BDD
+  layer: 4
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of BDD-TEMPLATE.feature
-# - Authority: BDD-TEMPLATE.feature is the single source of truth for BDD structure
+# 📋 Document Role: This is a DERIVATIVE of BDD-MVP-TEMPLATE.feature
+# - Authority: BDD-MVP-TEMPLATE.feature is the single source of truth for BDD structure
 # - Purpose: Pre-generation checklist to prevent common errors
 # - Scope: Use BEFORE generating any BDD feature file
-# - On conflict: Defer to BDD-TEMPLATE.feature
+# - On conflict: Defer to BDD-MVP-TEMPLATE.feature
 # =============================================================================
 ---
 title: "BDD Pre-Generation Checklist"
@@ -141,7 +155,7 @@ Ensure all 8 categories are planned:
 
 ### Traditional BDD File
 
-Use `BDD-TEMPLATE.feature` directly.
+Use `BDD-MVP-TEMPLATE.feature` directly.
 
 **Copy-paste the following tags**:
 ```gherkin
@@ -153,7 +167,7 @@ Feature: [Feature Title]
 
 ### AI-Agent Primary BDD File
 
-Use `BDD-TEMPLATE.feature` + `BDD_AI_AGENT_EXTENSION.md`.
+Use `BDD-MVP-TEMPLATE.feature` + `BDD_AI_AGENT_EXTENSION.md`.
 
 **Copy-paste the following tags**:
 ```gherkin

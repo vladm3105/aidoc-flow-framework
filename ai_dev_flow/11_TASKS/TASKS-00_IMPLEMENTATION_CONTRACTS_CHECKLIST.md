@@ -540,82 +540,32 @@ except ValidationError as e:
 
 ---
 
-## 10. @icon Tag Quick Reference
+## 10. Contract Embedding Guidelines
 
-### Tag Format
+### Default Approach
+All implementation contracts are embedded in TASKS Section 7-8.
 
-**Primary**:
-```yaml
-@icon: TASKS-XXX:ContractName
-```
+### Contract Locations
+- **Section 7.1**: Provided contracts (contracts this TASKS defines)
+- **Section 7.2**: Consumed contracts (contracts this TASKS depends on)
+- **Section 8**: Traceability including contract references
 
-**With Role**:
-```yaml
-@icon: TASKS-01:ServiceConnector
-@icon-role: provider
-```
-
-### Role Types
-- `provider` - Implements the contract
-- `consumer` - Depends on the contract
-- (no role) - Reference only
-
-### Usage Examples
-
-**Provider** (in TASKS-01):
-```markdown
-## 8. Implementation Contracts
-@icon: TASKS-01:ServiceConnector
-@icon-role: provider
-```
-
-**Consumer** (in TASKS-02):
-```markdown
-## 3. Dependencies
-@icon: TASKS-01:ServiceConnector
-@icon-role: consumer
-```
-
-**Code Comment**:
-```python
-# @icon: TASKS-01:ServiceConnector
-# @icon-role: provider
-class ServiceConnector(Protocol):
-    ...
-```
+### Contract Type Selection
+| Type | When to Use |
+|------|-------------|
+| Protocol Interface | Public method signatures |
+| Exception Hierarchy | Error handling boundaries |
+| State Machine | Stateful components |
+| Data Model | Input/output validation |
+| DI Interface | Dependency injection points |
 
 ### Relationship to Other Tags
-- `@ctr:` - Layer 9 external API contracts
-- `@icon:` - Layer 11 internal implementation contracts
-- `@iplan:` - Layer 12 implementation plans
+- `@ctr:` - Layer 9 external API contracts (OpenAPI, etc.)
+- Implementation contracts in Section 7-8 don't require separate tags
 
 ---
 
-## 11. ICON File Decision (Optional)
-
-**Default**: Embed contracts in TASKS files
-
-**Use Standalone ICON Files When** (ALL must be met):
-- [ ] 5+ consumer TASKS files
-- [ ] Contract definition >500 lines
-- [ ] Platform-level shared interface
-- [ ] Cross-project usage
-
-**ICON Resources**:
-- [ICON Directory README](../ICON/README.md)
-- [ICON_CREATION_RULES.md](../ICON/ICON_CREATION_RULES.md)
-- [ICON-00_index.md](../ICON/ICON-00_index.md)
-- [ICON-TEMPLATE.md](../ICON/ICON-TEMPLATE.md)
-
-**Quick Decision**:
-```
-3 consumers, 200 lines → Embed in TASKS ✅
-8 consumers, 600 lines, 3 projects → Create ICON ✅
-```
-
----
-
-## 12. Reference Links
+## 11. Reference Links
 
 ### Internal Documentation
 - [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) - Comprehensive guide

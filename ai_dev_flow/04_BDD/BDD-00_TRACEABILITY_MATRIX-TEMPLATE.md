@@ -485,7 +485,7 @@ graph TD
 
 ### 13.1 Internal Documentation
 - **BDD Index**: [BDD-00_index.md](BDD-00_index.md)
-- **BDD Template**: [BDD-TEMPLATE.feature](BDD-TEMPLATE.feature)
+- **BDD Template**: [BDD-MVP-TEMPLATE.feature](BDD-MVP-TEMPLATE.feature)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
 

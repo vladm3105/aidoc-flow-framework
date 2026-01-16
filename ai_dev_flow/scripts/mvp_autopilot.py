@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MVP Autopilot: Generate and validate the MVP workflow from BRD to IPLAN.
+MVP Autopilot: Generate and validate the MVP workflow from BRD to TASKS.
 
 This tool scaffolds single-file MVP artifacts using existing templates,
 runs layer validators, and optionally attempts simple auto-fixes.
@@ -9,7 +9,7 @@ Usage:
   python3 ai_dev_flow/scripts/mvp_autopilot.py \
     --root ai_dev_flow \
     --intent "My MVP idea" \
-    --up-to IPLAN \
+    --up-to TASKS \
     --auto-fix
 
 Notes:
@@ -446,64 +446,6 @@ def _fix_bdd(content: str, nn: str, upstream_ids: Dict[str, str], human_slug: st
     return "\n".join(lines)
 
 
-def _fix_iplan(content: str, nn: str, upstream_ids: Dict[str, str], human_slug: str) -> str:
-    content = _move_frontmatter_to_top(content)
-    content = _ensure_frontmatter_keys(
-        content,
-        required_tags=["layer-12-artifact"],
-        required_cf={
-            "artifact_type": "IPLAN",
-            "layer": 12,
-            "parent_tasks": f"TASKS-{nn}",
-            "complexity": 3,
-        },
-    )
-    content = _ensure_h1(content, "IPLAN", nn, human_slug)
-    # Required sections
-    content = _ensure_section(content, "## Position in", "Layer 12 — Implementation Plan")
-    content = _ensure_section(content, "## Objective", "Deliver MVP capability")
-    content = _ensure_section(content, "## Context", "Linked to TASKS and SPEC")
-    # Task List with phases and checkbox
-    if "## Task List" not in content:
-        content += "\n\n## Task List\n\n### Phase 1\n- [ ] Setup repository (2 hours)\n"
-    else:
-        if "### Phase" not in content:
-            content = content.replace("## Task List", "## Task List\n\n### Phase 1\n- [ ] Initial task (2 hours)")
-    # Implementation guide with bash + verification keyword
-    if "## Implementation Guide" not in content:
-        content += "\n\n## Implementation Guide\n\n```bash\n# commands\n```\n\nVerification: confirm build succeeds.\n"
-    else:
-        if "```bash" not in content:
-            content += "\n```bash\n# commands\n```\n"
-        if re.search(r"verification|verify|expected", content, re.IGNORECASE) is None:
-            content += "\nVerification: describe expected outcome.\n"
-    # Traceability Tags (9 mandatory)
-    tag_lines = [
-        f"@brd: {upstream_ids.get('brd', f'BRD.{nn}.01.01').replace('-', '.')}",
-        f"@prd: PRD.{nn}.01.01",
-        f"@ears: EARS.{nn}.01.01",
-        f"@bdd: BDD.{nn}.01.01",
-        f"@adr: ADR.{nn}.01.01",
-        f"@sys: SYS.{nn}.01.01",
-        f"@req: REQ.{nn}.01.01",
-        f"@spec: SPEC.{nn}",
-        f"@tasks: TASKS-{nn}",
-    ]
-    trace_block = "\n".join([f"- `{t}`" for t in tag_lines])
-    content = _ensure_section(content, "## Traceability Tags", trace_block)
-    content = _ensure_section(content, "## Traceability", "[Describe how this plan maps to requirements]")
-    content = _ensure_section(content, "## Risk", "[Key risks]")
-    content = _ensure_section(content, "## Success Criteria", "[Measurable criteria]")
-    # Prerequisites/tools/files
-    if re.search(r"prerequisites", content, re.IGNORECASE) is None:
-        content += "\n\n### Prerequisites\n- Access to repo\n"
-    if re.search(r"required tools|tools:", content, re.IGNORECASE) is None:
-        content += "\n### Required tools\n- bash\n"
-    if re.search(r"file.* access|required files", content, re.IGNORECASE) is None:
-        content += "\n### Required files\n- README.md\n"
-    return content
-
-
 def try_minimal_autofix(file: Path, layer: Layer, upstream_ids: Dict[str, str]) -> None:
     """Deterministic auto-fixes per layer: frontmatter, headings, sections, tags."""
     try:
@@ -523,8 +465,6 @@ def try_minimal_autofix(file: Path, layer: Layer, upstream_ids: Dict[str, str]) 
         newc = _fix_ears(content, nn, upstream_ids, human_slug)
     elif layer.name == "BDD":
         newc = _fix_bdd(content, nn, upstream_ids, human_slug)
-    elif layer.name == "IPLAN":
-        newc = _fix_iplan(content, nn, upstream_ids, human_slug)
     elif layer.name == "SYS":
         # Build minimal if heavy gaps; simple fixer first
         def _fix_sys(c: str) -> str:
@@ -664,15 +604,15 @@ def run_layer_validation(root_or_file: Path, layer_name: str, strict: bool = Fal
 
 
 def main():
-    parser = argparse.ArgumentParser(description="MVP Autopilot (BRD → IPLAN)")
+    parser = argparse.ArgumentParser(description="MVP Autopilot (BRD → TASKS)")
     parser.add_argument("--root", default="ai_dev_flow", help="Docs root (default: ai_dev_flow)")
     parser.add_argument("--intent", default="", help="Seed idea to name the MVP")
     parser.add_argument("--nn", default="01", help="Numeric ID to assign (default: 01)")
     parser.add_argument(
         "--up-to",
-        default="IPLAN",
-        choices=["BRD","PRD","EARS","BDD","ADR","SYS","REQ","SPEC","TASKS","IPLAN"],
-        help="Last layer to generate/validate (default: IPLAN)",
+        default="TASKS",
+        choices=["BRD","PRD","EARS","BDD","ADR","SYS","REQ","SPEC","TASKS"],
+        help="Last layer to generate/validate (default: TASKS)",
     )
     parser.add_argument("--from-layer", default="", help="Start from this layer (e.g., BDD) instead of BRD")
     parser.add_argument("--auto-fix", action="store_true", help="Attempt simple auto-fixes on failures")
@@ -767,7 +707,6 @@ def main():
         Layer("REQ", 7, "REQ-MVP-TEMPLATE.md", ".md", upstream_tags=["brd","prd","ears","bdd","adr","sys"]),
         Layer("SPEC",10, "SPEC-TEMPLATE.yaml", ".yaml", upstream_tags=["req"]),
         Layer("TASKS",11, "TASKS-TEMPLATE.md", ".md", upstream_tags=["spec","req"]),
-        Layer("IPLAN",12, "IPLAN-TEMPLATE.md", ".md", upstream_tags=["tasks","spec","bdd","req"]),
     ]
 
     # Apply template overrides from config (optional)
@@ -864,7 +803,7 @@ def main():
             content = re.sub(r'(?m)^Feature:\s*.*$', f'Feature: {layer_name}-{new_nn} — {new_human_slug}', content, count=1)
         else:
             content = re.sub(r'(?m)^#\s+.*$', f'# {layer_name}-{new_nn}: {new_human_slug}', content, count=1)
-        for prefix in ["BRD","PRD","EARS","BDD","ADR","SYS","REQ","SPEC","TASKS","IPLAN"]:
+        for prefix in ["BRD","PRD","EARS","BDD","ADR","SYS","REQ","SPEC","TASKS"]:
             content = content.replace(f"{prefix}-{old_nn}", f"{prefix}-{new_nn}")
         content = content.replace(f".{old_nn}.", f".{new_nn}.")
         if supersede_note:

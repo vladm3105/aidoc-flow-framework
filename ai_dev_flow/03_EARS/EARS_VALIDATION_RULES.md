@@ -1,3 +1,17 @@
+---
+title: "EARS Validation Rules"
+tags:
+  - validation-rules
+  - layer-3-artifact
+  - shared-architecture
+custom_fields:
+  document_type: validation-rules
+  artifact_type: EARS
+  layer: 3
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # 📋 Document Role: This is a DERIVATIVE of EARS-TEMPLATE.md
 # - Authority: EARS-TEMPLATE.md is the single source of truth for EARS structure

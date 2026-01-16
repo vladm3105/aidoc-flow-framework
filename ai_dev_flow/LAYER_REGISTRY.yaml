@@ -1,17 +1,15 @@
 # SDD Framework Layer Registry
 # Single source of truth for all layer definitions
-# Version: 1.4
-# Last Updated: 2026-01-15
+# Version: 1.5
+# Last Updated: 2026-01-16
 
-version: "1.4"
+version: "1.5"
 metadata:
   framework: "Specification-Driven Development (SDD)"
-  total_layers: 15  # Changed from 16: IPLAN (Layer 12) deprecated and merged into TASKS
-  additional_artifacts: ["ICON"]
+  total_layers: 15
   maintainer: "SDD Framework Team"
-  template_policy: mvp_only  # Framework uses MVP templates exclusively
-  deprecated_templates: archived/  # Full/section templates moved to archived/ subdirectories
-  deprecated_artifacts: ["IPLAN"]  # IPLAN merged into TASKS as of 2026-01-15
+  template_policy: mvp_only
+  deprecated_templates: archived/
 
 # Optional pre-artifact layer (not part of core 15 artifact layers)
 conceptual_layers:
@@ -155,16 +153,6 @@ layers:
     description: "Layer 11 - AI-structured TODO tasks from SPEC"
     template: "TASKS-TEMPLATE.md"
 
-  # DEPRECATED: Layer 12 IPLAN has been merged into TASKS (Layer 11)
-  # Execution commands are now in TASKS Section 4
-  # See 12_IPLAN/DEPRECATED.md for migration guide
-  # Keeping this entry commented for historical reference:
-  # - number: 12
-  #   artifact: IPLAN
-  #   name: "Implementation Plan"
-  #   folder: 12_IPLAN/
-  #   status: DEPRECATED (merged into TASKS as of 2026-01-15)
-
   - number: 12
     artifact: CODE
     name: "Source Code"
@@ -209,18 +197,6 @@ change_management:
   purpose: "Document archival and immutability enforcement"
   not_a_layer: true
   description: "Archival mechanism for superseded documents. When requirements change, old documents are archived in CHG/ and NEW documents are created from scratch to prevent LLM probabilistic errors. After archival, entire layer chain must be regenerated."
-
-additional_artifacts:
-  - artifact: ICON
-    name: "Implementation Contracts"
-    folder: ICON/
-    extensions: [.md]
-    required_tags: [tasks]
-    can_reference: [TASKS]
-    error_prefix: ICON
-    optional: true
-    description: "Non-layer artifact - Type contracts for parallel development"
-    template: "ICON-TEMPLATE.md"
 
 layer_groups:
   core_requirements:

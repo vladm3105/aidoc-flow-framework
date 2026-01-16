@@ -3,7 +3,7 @@
 Standardized Error Code Registry for SDD Document Validation
 
 Pattern: {TYPE}-{SEVERITY}{NNN}
-- TYPE: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, XDOC, VAL
+- TYPE: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, XDOC, VAL
 - SEVERITY: E (Error), W (Warning), I (Info)
 - NNN: 001-999
 
@@ -217,17 +217,6 @@ ERROR_REGISTRY: Dict[str, Tuple[str, str]] = {
     "TASKS-E005": ("Invalid task ID format", "Use TASKS.NN.TT.SS format"),
     "TASKS-W001": ("Missing dependency links", "Add task dependencies"),
     "TASKS-W002": ("Missing acceptance criteria", "Add task completion criteria"),
-
-    # -------------------------------------------------------------------------
-    # IPLAN (Layer 12) - Implementation Plans
-    # -------------------------------------------------------------------------
-    "IPLAN-E001": ("Invalid filename format", "Use IPLAN-NNN_{slug}.md format"),
-    "IPLAN-E002": ("Missing required tag 'iplan'", "Add @iplan tag"),
-    "IPLAN-E003": ("Missing required tag 'layer-12-artifact'", "Add layer tag"),
-    "IPLAN-E004": ("Missing TASKS reference", "Add @tasks traceability"),
-    "IPLAN-E005": ("Missing session sections", "Add session-based structure"),
-    "IPLAN-W001": ("Missing bash commands", "Add executable commands"),
-    "IPLAN-W002": ("Missing validation steps", "Add verification commands"),
 
     # -------------------------------------------------------------------------
     # Section File Validation (SEC) - Section count and structure validation

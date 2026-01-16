@@ -1,3 +1,21 @@
+---
+title: "ADR-MVP-TEMPLATE: Architecture Decision Record (MVP)"
+tags:
+  - adr-template
+  - mvp-template
+  - layer-5-artifact
+  - document-template
+  - shared-architecture
+custom_fields:
+  document_type: template
+  artifact_type: ADR
+  layer: 5
+  template_variant: mvp
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+---
+
 <!--
 AI_CONTEXT_START
 Role: AI Software Architect

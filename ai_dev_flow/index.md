@@ -1,3 +1,16 @@
+---
+title: "AI Dev Flow Framework Index"
+tags:
+  - framework-guide
+  - shared-architecture
+custom_fields:
+  document_type: index
+  artifact_type: REF
+  layer: 0
+  priority: shared
+  development_status: active
+---
+
 # AI Dev Flow Template Index
 
 This directory provides comprehensive templates for the AI-Driven Specification-Driven Development (SDD) workflow. All artifacts follow numeric ID standards and use relative markdown links for traceability.
@@ -24,10 +37,7 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 | 8 | IMPL | `IMPL-TEMPLATE.md` |
 | 9 | CTR | `CTR-TEMPLATE.md` |
 | 10 | SPEC | `SPEC-TEMPLATE.yaml` |
-| 11 | TASKS | `TASKS-TEMPLATE.md` (v2.0 - includes execution commands) |
-| 12 | IPLAN | `IPLAN-TEMPLATE.md` **(DEPRECATED)** |
-
-> **Note**: As of 2026-01-15, IPLAN (Layer 12) has been **deprecated**. Execution commands are now included directly in TASKS documents (Section 4: Execution Commands). See `12_IPLAN/DEPRECATED.md` for migration guidance.
+| 11 | TASKS | `TASKS-TEMPLATE.md` |
 
 ### Configuration Reference
 
@@ -56,7 +66,6 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 - ✅ **Decision Frameworks**: Contract decision questionnaire and IMPL creation guidelines
 - ✅ **Tool Optimization**: Guidance for AI coding assistants (see AI_TOOL_OPTIMIZATION_GUIDE.md)
 - ✅ **BRD Guidance**: Platform vs Feature BRD selection guide
-- ⚠️ **IPLAN Layer Deprecated**: Layer 12 Implementation Plans merged into TASKS v2.0 (Section 4: Execution Commands)
 
 ## Document Structure
 
@@ -101,7 +110,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 - **BDD** (`04_BDD/`) - Layer 4: Behavior-Driven Development feature files defining acceptance criteria
   - Nested: One folder per suite: `04_BDD/BDD-NN_{slug}/`
   - Index: `04_BDD/BDD-00_index.md`
-  - Template: [BDD-TEMPLATE.feature](./04_BDD/BDD-TEMPLATE.feature)
+  - Template: [BDD-MVP-TEMPLATE.feature](./04_BDD/BDD-MVP-TEMPLATE.feature)
   - Purpose: Executable acceptance tests written before implementation (Test-First approach)
   - Maps to TASKS execution plans for test-driven development workflow
 
@@ -145,7 +154,6 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 - **CTR** (`09_CTR/`) - Layer 9: API Contracts defining component-to-component interfaces
   - Index: [CTR-00_index.md](./09_CTR/CTR-00_index.md)
-  - Templates: [CTR-TEMPLATE.md](./09_CTR/CTR-TEMPLATE.md), [CTR-TEMPLATE.yaml](./09_CTR/CTR-TEMPLATE.yaml)
   - Dual-file format: `.md` (human-readable context) + `.yaml` (machine-readable schema)
   - When to use: [CONTRACT_DECISION_QUESTIONNAIRE.md](./CONTRACT_DECISION_QUESTIONNAIRE.md)
   - Enables parallel development and contract testing
@@ -174,22 +182,12 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Template: [TASKS-TEMPLATE.md](./11_TASKS/TASKS-TEMPLATE.md)
   - Purpose: Step-by-step guide to generate code from YAML SPEC
   - Each TASKS document corresponds to one SPEC
-  - **Section 8**: Implementation Contracts for parallel development coordination
-
-- **ICON** (`ICON/`) - Layer 11 (optional; shares with TASKS): Implementation Contracts
-  - Index: [ICON-00_index.md](./ICON/ICON-00_index.md)
-  - Template: [ICON-TEMPLATE.md](./ICON/ICON-TEMPLATE.md)
-  - Purpose: Standalone contracts for parallel development coordination
-  - Default: Embed contracts in TASKS Section 8 (standalone only when 5+ consumers)
-  - Creation Guide: [ICON_CREATION_RULES.md](./ICON/ICON_CREATION_RULES.md)
+  - **Section 7-8**: Implementation Contracts for parallel development coordination (embedded)
+  - Contracts Guide: [IMPLEMENTATION_CONTRACTS_GUIDE.md](./11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
 
 ### Session Execution Layer (Layer 12) - DEPRECATED
 
-> **DEPRECATED as of 2026-01-15**: IPLAN functionality has been merged into TASKS v2.0. Execution commands are now in TASKS Section 4. See `12_IPLAN/DEPRECATED.md` for migration guidance.
 
-- **IPLAN** (`12_IPLAN/`) - Layer 12: Implementation Work Plans **(DEPRECATED)**
-  - Status: [DEPRECATED.md](./12_IPLAN/DEPRECATED.md) - Migration guidance
-  - Legacy Template: [IPLAN-TEMPLATE.md](./12_IPLAN/IPLAN-TEMPLATE.md) (marked deprecated)
   - **New Workflow**: `SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
   - Execution commands now in TASKS Section 4: Execution Commands
 
@@ -230,7 +228,7 @@ flowchart TD
     SPEC[SPEC<br/>Technical Specifications<br/>HOW - Implementation blueprints<br/>YAML format with full details<br/><small><i>@brd through @req + opt</i></small>]
 
     %% Code Generation Layer
-    TASKS[TASKS<br/>Code Generation Plans<br/>AI-structured implementation steps<br/>Section 4: Execution Commands<br/>Section 8: Implementation Contracts<br/><small><i>@brd through @spec + opt @icon</i></small>]
+    TASKS[TASKS<br/>Code Generation Plans<br/>AI-structured implementation steps<br/>Section 4: Execution Commands<br/>Section 7-8: Implementation Contracts<br/><small><i>@brd through @spec</i></small>]
 
     %% Execution Layer
     Code[Code<br/>Python Implementation<br/>Generated from SPEC + TASKS<br/><small><i>@brd through @tasks</i></small>]
@@ -289,9 +287,6 @@ flowchart TD
 ### Splitting Rules
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- BDD addendum: [04_BDD/BDD_SPLITTING_RULES.md](./04_BDD/BDD_SPLITTING_RULES.md)
-- CTR addendum: [09_CTR/CTR_SPLITTING_RULES.md](./09_CTR/CTR_SPLITTING_RULES.md)
-- SPEC addendum: [10_SPEC/SPEC_SPLITTING_RULES.md](./10_SPEC/SPEC_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
 > **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only. “Review” and “Prod” are outcomes, not formal layers.
@@ -380,7 +375,6 @@ Validate document structure and traceability using automated scripts:
 # Core validation scripts
 python scripts/validate_requirement_ids.py               # REQ-ID format and uniqueness
 python scripts/validate_req_spec_readiness.py            # REQ SPEC-readiness scoring
-python scripts/validate_iplan_naming.py                  # IPLAN naming (legacy - deprecated)
 python scripts/validate_documentation_paths.py           # Path consistency
 python scripts/validate_links.py                         # Markdown link validation
 python scripts/validate_tags_against_docs.py             # Tag extraction and validation
@@ -392,9 +386,7 @@ bash scripts/validate_brd_template.sh                    # BRD template complian
 bash scripts/validate_req_template.sh                    # REQ template compliance
 bash scripts/validate_ctr.sh                             # CTR dual-file format compliance
 bash scripts/validate_impl.sh                            # IMPL 4-PART structure compliance
-bash scripts/validate_tasks.sh                           # TASKS format including Section 8
-bash scripts/validate_iplan.sh                           # IPLAN (legacy - deprecated)
-bash scripts/validate_icon.sh                            # ICON Implementation Contracts
+bash scripts/validate_tasks.sh                           # TASKS format including Section 7-8
 
 # Traceability generation
 python scripts/generate_traceability_matrix.py           # Generate traceability matrices

@@ -1,3 +1,17 @@
+---
+title: "PRD Corpus Validation"
+tags:
+  - corpus-validation
+  - layer-2-artifact
+  - shared-architecture
+custom_fields:
+  document_type: corpus-validation
+  artifact_type: PRD
+  layer: 2
+  priority: shared
+  development_status: active
+---
+
 # PRD Corpus Validation Rules
 
 ## Document Control
@@ -102,7 +116,6 @@ See [PRD-07: AI Gateway Product](./PRD-07_ai_gateway_product.md) for details.
 | `REQ-NN` | 7 | REQs don't exist during PRD creation |
 | `SPEC-NN` | 10 | SPECs don't exist during PRD creation |
 | `TASKS-NN` | 11 | TASKS don't exist during PRD creation |
-| `IPLAN-NN` | 12 | **DEPRECATED** - IPLAN merged into TASKS (2026-01-15) |
 
 **Allowed Patterns** (generic references):
 - "This will inform EARS development"
@@ -112,7 +125,7 @@ See [PRD-07: AI Gateway Product](./PRD-07_ai_gateway_product.md) for details.
 **Validation Logic**:
 ```bash
 # Flag specific numbered references to downstream artifacts
-grep -rnE "(ADR|SYS|REQ|SPEC|TASKS|IPLAN)-[0-9]{2,}" "$PRD_DIR" | \
+grep -rnE "(ADR|SYS|REQ|SPEC|TASKS)-[0-9]{2,}" "$PRD_DIR" | \
   grep -v "Layer [0-9]" | \
   grep -v "SDD workflow"
 ```

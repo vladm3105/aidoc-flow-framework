@@ -1,15 +1,27 @@
+---
+title: "Development Plan README"
+tags:
+  - tasks-guide
+  - layer-11-artifact
+  - shared-architecture
+custom_fields:
+  document_type: readme
+  artifact_type: TASKS
+  layer: 11
+  priority: shared
+  development_status: active
+---
+
 # Development Plan & Implementation Tracker - User Guide
 
-**Schema Version**: 2.0 (TASKS v2.0 - IPLAN deprecated)
+**Schema Version**: 2.0
 **Last Updated**: 2026-01-15
 
 ## Purpose
 
 The Development Plan serves as the **central command center** for tracking TASKS (Layer 11) implementation across all development phases. It organizes work into priority-ordered phases with built-in quality gates and workflow enforcement.
 
-**Workflow (v2.0)**: `SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
-
-> **Note**: IPLAN (Layer 12) has been deprecated. Execution commands are now in TASKS Section 4.
+**Workflow**: `SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
 
 **Key Functions:**
 - **Implementation Roadmap**: Organize TASKS by phase and priority
@@ -356,7 +368,7 @@ The unified TASKS document (v2.0) has **11 sections**:
 | 1. Objective | Deliverables and business value | What to track |
 | 2. Scope | Inclusions, exclusions, prerequisites | Dependencies |
 | 3. Implementation Plan | Phased steps with durations | Phase mapping |
-| 4. Execution Commands | Setup, implementation, validation | **Replaces IPLAN** |
+| 4. Execution Commands | Setup, implementation, validation | Bash commands |
 | 5. Constraints | Technical and quality constraints | Verification criteria |
 | 6. Acceptance Criteria | Functional, quality, operational | Success measures |
 | 7. Implementation Contracts | Provider/consumer contracts | Parallel dev coordination |
@@ -365,9 +377,9 @@ The unified TASKS document (v2.0) has **11 sections**:
 | 10. Session Log | Progress tracking | **Syncs with Dev Plan** |
 | 11. Change History | Version history | Change tracking |
 
-**Key Changes from v1.x:**
-- **Section 4 (Execution Commands)**: Now contains bash commands previously in IPLAN
-- **Section 7 (Implementation Contracts)**: Was Section 8 in v1.x
+**Key Features:**
+- **Section 4 (Execution Commands)**: Contains bash commands for implementation
+- **Section 7 (Implementation Contracts)**: Type-safe interfaces for parallel development
 - **YAML Tracking Block**: Embedded in each TASKS for Development Plan integration
 
 **Development Plan Role:**
@@ -382,8 +394,6 @@ The unified TASKS document (v2.0) has **11 sections**:
 - **TASKS Template**: `ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`
 - **TASKS Documentation**: `ai_dev_flow/11_TASKS/README.md`
 - **Workflow Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-
-> **Note**: IPLAN (Layer 12) has been deprecated. Execution commands are now included directly in TASKS documents.
 
 ---
 
@@ -468,18 +478,6 @@ The Development Plan transforms implementation tracking from "optional documenta
 - Maintaining complete audit trail through session log
 - Enforcing discipline through detailed checklists
 - Providing clear status progression and dependency tracking
-- **v2.0**: Integrating with unified TASKS documents (IPLAN merged into Section 4)
-
-### Key v2.0 Changes
-
-| Aspect | v1.x | v2.0 |
-|--------|------|------|
-| Workflow | SPEC → TASKS → IPLAN → Code | SPEC → TASKS → Code |
-| Execution commands | Separate IPLAN document | TASKS Section 4 |
-| YAML field | `tasks.status` | `implementation.status` |
-| Pre-check | `verified_tasks` | `verified_spec` |
-| Contracts section | Section 8 | Section 7 |
-
 **Remember**: The plan is only useful if you update it! Make updates immediately after completing work, not days later.
 
 ---

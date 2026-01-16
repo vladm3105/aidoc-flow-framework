@@ -1,3 +1,17 @@
+---
+title: "PRD-00: Threshold Registry Template"
+tags:
+  - prd-template
+  - threshold-registry
+  - layer-2-artifact
+custom_fields:
+  document_type: registry-template
+  artifact_type: PRD
+  layer: 2
+  priority: shared
+  development_status: active
+---
+
 # PRD-000: Platform Threshold Registry Template
 
 > Deprecated: Prefer defining thresholds in source documents (01_BRD/02_PRD/ADR) with YAML blocks and reference them via `@threshold:` tags, per THRESHOLD_NAMING_RULES.md. This centralized registry template is kept for legacy projects only.

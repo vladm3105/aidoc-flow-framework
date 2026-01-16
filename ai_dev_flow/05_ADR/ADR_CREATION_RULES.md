@@ -1,3 +1,17 @@
+---
+title: "ADR Creation Rules"
+tags:
+  - creation-rules
+  - layer-5-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: ADR
+  layer: 5
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # 📋 Document Role: This is a DERIVATIVE of ADR-TEMPLATE.md
 # - Authority: ADR-TEMPLATE.md is the single source of truth for ADR structure

@@ -8,13 +8,10 @@
 # TASKS Schema Definition v2.0
 # Purpose: Define valid metadata structure and validation rules for TASKS documents
 # Usage: Reference by validate_tasks.py for automated validation
-# Breaking Change: v2.0 has 11 sections (was 12), includes execution commands, IPLAN deprecated
-
 schema_version: "2.0"
 artifact_type: TASKS
 layer: 11
-last_updated: "2026-01-15"
-deprecation_notice: "IPLAN (Layer 12) deprecated - execution commands now in TASKS Section 4"
+last_updated: "2026-01-16"
 
 references:
   template: "TASKS-TEMPLATE.md"
@@ -140,7 +137,7 @@ structure:
 
     - pattern: "^## 4\\. Execution Commands$"
       name: "Execution Commands"
-      description: "Section 4 with Setup, Implementation, Validation commands (replaces IPLAN)"
+      description: "Section 4 with Setup, Implementation, Validation commands"
 
     - pattern: "^## 5\\. Constraints$"
       name: "Constraints"
@@ -278,10 +275,8 @@ tasks_patterns:
       - "Completed"
       - "Deferred"
 
-  # Execution Readiness Score (v2.0 - replaces IPLAN-Ready Score)
   execution_ready_score:
     min_threshold: 90
-    note: "IPLAN deprecated. Execution commands now in TASKS Section 4."
     components:
       task_completeness:
         weight: 20
@@ -419,21 +414,11 @@ traceability:
         location: "Section 10 Traceability or Traceability Tags section"
 
   downstream:
-    # Note: IPLAN deprecated in v2.0. TASKS flows directly to Code.
     expected:
       - type: Code
         format: "src/..."
       - type: Tests
         format: "tests/..."
-    deprecated:
-      - type: IPLAN
-        format: "IPLAN-NN"
-        note: "IPLAN deprecated. Execution commands now in TASKS Section 4."
-
-  implementation_contracts:
-    format: "@icon: TASKS-NN:ContractName"
-    optional_role: "@icon-role: provider|consumer"
-    description: "Links to implementation contract definitions within TASKS"
 
   same_type:
     optional:
@@ -473,5 +458,4 @@ error_messages:
   TASKS-W008: "Using legacy v1.x section numbering (migrate to v2.0)"
   TASKS-I001: "Consider defining Implementation Contracts for parallel development"
   TASKS-I002: "Consider adding Risk Assessment for high-complexity tasks"
-  TASKS-I003: "Consider using @icon tags for contract references"
-  TASKS-I004: "IPLAN deprecated - execution commands should be in Section 4"
+  TASKS-I003: "Consider embedding implementation contracts in Section 7-8"

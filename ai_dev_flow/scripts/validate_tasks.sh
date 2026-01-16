@@ -309,31 +309,24 @@ fi
 echo ""
 
 # ============================================
-# CHECK 9: Implementation Contracts (Optional)
+# CHECK 9: Implementation Contracts (Section 7-8)
 # ============================================
-echo "CHECK 9: Implementation Contracts (Optional)"
+echo "CHECK 9: Implementation Contracts (Section 7-8)"
 echo "-----------------------------------------"
 
-# Check for ICON references
-icon_refs=$(grep -oE "ICON-[0-9]+" "$TASKS_FILE" 2>/dev/null | sort -u || echo "")
-if [ -n "$icon_refs" ]; then
-  icon_count=$(echo "$icon_refs" | wc -l)
-  echo -e "  ${GREEN}✅ Found $icon_count ICON reference(s)${NC}"
+# Check for embedded contracts in Section 7-8
+if grep -qE "(Protocol|TypedDict|BaseModel|dataclass)" "$TASKS_FILE"; then
+  echo -e "  ${GREEN}✅ Embedded contract definitions found${NC}"
 
-  # Check for provider/consumer roles
-  if grep -q "@icon-role:" "$TASKS_FILE"; then
-    echo -e "  ${GREEN}✅ ICON role annotations present${NC}"
+  # Check for type hints
+  if grep -qE "-> [A-Za-z\[\]|]+:" "$TASKS_FILE"; then
+    echo -e "  ${GREEN}✅ Type hints present in contracts${NC}"
   else
-    echo -e "  ${YELLOW}⚠️  WARNING: Add @icon-role: provider/consumer annotations${NC}"
+    echo -e "  ${YELLOW}⚠️  WARNING: Add return type hints to contract methods${NC}"
     ((WARNINGS++))
   fi
 else
-  echo -e "  ${BLUE}ℹ️  INFO: No ICON references (contracts may be embedded)${NC}"
-fi
-
-# Check for embedded contracts
-if grep -qE "(Protocol|TypedDict|BaseModel|dataclass)" "$TASKS_FILE"; then
-  echo -e "  ${GREEN}✅ Embedded contract definitions found${NC}"
+  echo -e "  ${BLUE}ℹ️  INFO: No embedded contracts (may not be needed)${NC}"
 fi
 
 echo ""
@@ -397,7 +390,7 @@ for tag in "${required_tags[@]}"; do
 done
 
 # Check optional tags
-optional_tags=("@impl" "@ctr" "@icon")
+optional_tags=("@impl" "@ctr")
 for tag in "${optional_tags[@]}"; do
   if grep -qE "^${tag}:|^\- \`${tag}:" "$TASKS_FILE"; then
     echo -e "  ${GREEN}✅ Optional tag present: $tag${NC}"

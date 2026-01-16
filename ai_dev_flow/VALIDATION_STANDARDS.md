@@ -32,8 +32,6 @@ This document defines the complete error code registry, validation rules, and ex
 **Out of Scope**:
 - Layer 0 (Strategy): Optional pre-artifact planning, not validated
 - Layers 12-14 (Code, Tests, Validation): Source code traceability not implemented
-- ICON: Non-layer artifact, optional validation
-- IPLAN: **DEPRECATED** as of 2026-01-15 (merged into TASKS)
 
 ### MVP Validator Profile
 
@@ -256,8 +254,6 @@ Prevents upstream documents from referencing specific downstream IDs.
 | 10 | SPEC | Layers 1-9 |
 | 11 | TASKS | Layers 1-10 |
 | 12 | CODE | Layers 1-11 |
-
-> **Note**: IPLAN (formerly Layer 12) has been deprecated as of 2026-01-15 and merged into TASKS.
 
 **Correct** (PRD describing decision needs):
 ```markdown

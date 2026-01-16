@@ -149,7 +149,7 @@ Tip: Use `--strict` with the path validator when you want failures to block gene
 
 - TASKS:
   - Generated from template; validated.
-  - Now includes execution commands (formerly in IPLAN) in Section 4.
+  - Includes execution commands in Section 4.
 
 ---
 

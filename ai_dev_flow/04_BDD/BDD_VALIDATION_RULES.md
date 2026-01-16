@@ -1,9 +1,23 @@
+---
+title: "BDD Validation Rules"
+tags:
+  - validation-rules
+  - layer-4-artifact
+  - shared-architecture
+custom_fields:
+  document_type: validation-rules
+  artifact_type: BDD
+  layer: 4
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of BDD-TEMPLATE.feature
-# - Authority: BDD-TEMPLATE.feature is the single source of truth for BDD structure
+# 📋 Document Role: This is a DERIVATIVE of BDD-MVP-TEMPLATE.feature
+# - Authority: BDD-MVP-TEMPLATE.feature is the single source of truth for BDD structure
 # - Purpose: AI checklist after document creation (derived from template)
 # - Scope: Includes all rules from BDD_CREATION_RULES.md plus validation extensions
-# - On conflict: Defer to BDD-TEMPLATE.feature
+# - On conflict: Defer to BDD-MVP-TEMPLATE.feature
 # =============================================================================
 ---
 title: "BDD Validation Rules Reference"
@@ -20,7 +34,7 @@ custom_fields:
 ---
 
 > **📋 Document Role**: VALIDATION CHECKLIST for BDD documents (DERIVATIVE).
-> - **Authority**: Validates compliance with `BDD-TEMPLATE.feature` (PRIMARY STANDARD)
+> - **Authority**: Validates compliance with `BDD-MVP-TEMPLATE.feature` (PRIMARY STANDARD)
 > - **Purpose**: Post-creation quality gate checks
 > - **Scope**: Use for quality gates before committing BDD changes
 > - **Conflict Resolution**: If this conflicts with Template, update this document
@@ -70,7 +84,7 @@ python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/BDD --profile full
 **Last Updated**: 2025-12-26
 **Purpose**: Complete validation rules for BDD feature files
 **Script**: `python scripts/validate_bdd.py`
-**Primary Template**: `BDD-TEMPLATE.feature`
+**Primary Template**: `BDD-MVP-TEMPLATE.feature`
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added split-file structure validation (v1.1). Previous: ADR-ready scoring validation system (v1.0)
 
@@ -148,7 +162,7 @@ The BDD validation script ensures feature files meet quality standards for ADR p
 
 ### CHECK 4: Upstream Traceability Tags
 
-**Purpose**: Verify complete tag chain per BDD-TEMPLATE.feature
+**Purpose**: Verify complete tag chain per BDD-MVP-TEMPLATE.feature
 **Type**: Error (blocking)
 
 **Required Tags** (ALL MANDATORY):

@@ -115,7 +115,7 @@ def find_undefined_acronyms(content: str, defined_acronyms: Set[str]) -> List[Tu
         'TODO', 'TBD', 'TBC', 'WIP', 'POC', 'MVP', 'EOF', 'ETL',
         # SDD specific
         'SDD', 'BRD', 'PRD', 'ADR', 'SYS', 'REQ', 'SPEC', 'IMPL', 'CTR',
-        'TASKS', 'IPLAN', 'BDD', 'EARS', 'YAML', 'MD', 'MCP',
+        'TASKS', 'BDD', 'EARS', 'YAML', 'MD', 'MCP',
     }
 
     all_known = defined_acronyms | well_known

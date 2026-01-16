@@ -1,3 +1,21 @@
+---
+title: "BRD-MVP-TEMPLATE: Business Requirements Document (MVP)"
+tags:
+  - brd-template
+  - mvp-template
+  - layer-1-artifact
+  - document-template
+  - shared-architecture
+custom_fields:
+  document_type: template
+  artifact_type: BRD
+  layer: 1
+  template_variant: mvp
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+---
+
 # BRD-MVP-TEMPLATE: Business Requirements Document (MVP)
 
 <!--

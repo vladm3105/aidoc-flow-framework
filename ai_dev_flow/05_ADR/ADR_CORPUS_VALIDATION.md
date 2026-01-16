@@ -1,3 +1,17 @@
+---
+title: "ADR Corpus Validation"
+tags:
+  - corpus-validation
+  - layer-5-artifact
+  - shared-architecture
+custom_fields:
+  document_type: corpus-validation
+  artifact_type: ADR
+  layer: 5
+  priority: shared
+  development_status: active
+---
+
 # ADR Corpus Validation Rules
 
 ## Document Control
@@ -109,7 +123,7 @@ grep -rn "(future ADR)\|(when created)\|(to be defined)\|(pending)\|(TBD)" "$ADR
 
 **Severity**: Error (blocking)
 
-**Rationale**: ADR is Layer 5. It should NOT reference specific numbered SYS, REQ, SPEC, TASKS, or IPLAN documents that don't exist yet.
+**Rationale**: ADR is Layer 5. It should NOT reference specific numbered SYS, REQ, SPEC, or TASKS documents that don't exist yet.
 
 **Patterns to Flag**:
 | Pattern | Layer | Issue |
@@ -118,7 +132,6 @@ grep -rn "(future ADR)\|(when created)\|(to be defined)\|(pending)\|(TBD)" "$ADR
 | `REQ-NN` | 7 | REQs don't exist during ADR creation |
 | `SPEC-NN` | 10 | SPECs don't exist during ADR creation |
 | `TASKS-NN` | 11 | TASKS don't exist during ADR creation |
-| `IPLAN-NN` | 12 | **DEPRECATED** - IPLAN merged into TASKS (2026-01-15) |
 
 **Allowed Patterns** (generic references):
 - "This will inform SYS development"
@@ -128,7 +141,7 @@ grep -rn "(future ADR)\|(when created)\|(to be defined)\|(pending)\|(TBD)" "$ADR
 **Validation Logic**:
 ```bash
 # Check 2: Premature downstream references (Layer 6+)
-grep -rn "SYS-[0-9]\|REQ-[0-9]\|SPEC-[0-9]\|TASKS-[0-9]\|IPLAN-[0-9]" "$ADR_DIR"/ADR-*.md
+grep -rn "SYS-[0-9]\|REQ-[0-9]\|SPEC-[0-9]\|TASKS-[0-9]" "$ADR_DIR"/ADR-*.md
 # Expected: No output (ADR should not reference future layer documents)
 ```
 
@@ -573,10 +586,10 @@ fi
 
 # CORPUS-02: Premature downstream references
 echo "Checking CORPUS-02: Premature downstream references..."
-DOWNSTREAM=$(grep -rn "SYS-[0-9]\|REQ-[0-9]\|SPEC-[0-9]\|TASKS-[0-9]\|IPLAN-[0-9]" "$ADR_DIR"/ADR-*.md 2>/dev/null | wc -l)
+DOWNSTREAM=$(grep -rn "SYS-[0-9]\|REQ-[0-9]\|SPEC-[0-9]\|TASKS-[0-9]" "$ADR_DIR"/ADR-*.md 2>/dev/null | wc -l)
 if [ "$DOWNSTREAM" -gt 0 ]; then
   echo "  ERROR: Found $DOWNSTREAM premature Layer 6+ references"
-  $VERBOSE && grep -rn "SYS-[0-9]\|REQ-[0-9]\|SPEC-[0-9]\|TASKS-[0-9]\|IPLAN-[0-9]" "$ADR_DIR"/ADR-*.md 2>/dev/null
+  $VERBOSE && grep -rn "SYS-[0-9]\|REQ-[0-9]\|SPEC-[0-9]\|TASKS-[0-9]" "$ADR_DIR"/ADR-*.md 2>/dev/null
   ERRORS=$((ERRORS + 1))
 else
   $ERRORS_ONLY || echo "  PASS"

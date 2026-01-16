@@ -131,13 +131,6 @@ VALIDATOR_REGISTRY: Dict[str, ValidatorConfig] = {
         layer=11,
         description="Task breakdown validator"
     ),
-    "IPLAN": ValidatorConfig(
-        script="validate_iplan.sh",
-        script_type="shell",
-        implemented=True,
-        layer=12,
-        description="Implementation Plan validator"
-    ),
 }
 
 # Cross-document validators (not layer-specific)

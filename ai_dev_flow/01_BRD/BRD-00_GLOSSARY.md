@@ -114,7 +114,6 @@ Standard abbreviations used across BRD framework.
 | BRD | Business Requirements Document | SDD Framework |
 | EARS | Event-Action-Response-State (Engineering Requirements) | SDD Framework |
 | FR | Functional Requirement | BRD Framework |
-| IPLAN | Implementation Plan | SDD Framework |
 | KPI | Key Performance Indicator | Business |
 | Verification | Identity verification (individual or business) | Compliance |
 | MCP | Model Context Protocol | Technical |

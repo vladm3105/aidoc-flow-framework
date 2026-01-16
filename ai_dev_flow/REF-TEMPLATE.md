@@ -1,3 +1,17 @@
+---
+title: "REF-TEMPLATE: Reference Document"
+tags:
+  - ref-template
+  - document-template
+  - shared-architecture
+custom_fields:
+  document_type: template
+  artifact_type: REF
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # Reference Document Template
 # For supplementary documentation that doesn't participate in formal traceability

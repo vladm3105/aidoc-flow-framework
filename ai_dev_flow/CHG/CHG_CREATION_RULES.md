@@ -1,3 +1,16 @@
+---
+title: "CHG Creation Rules"
+tags:
+  - creation-rules
+  - change-management
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: CHG
+  priority: shared
+  development_status: active
+---
+
 # CHG Creation Rules
 
 Create a **Change Artifact (CHG)** when:

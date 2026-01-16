@@ -1,3 +1,17 @@
+---
+title: "EARS Creation Rules"
+tags:
+  - creation-rules
+  - layer-3-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: EARS
+  layer: 3
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # 📋 Document Role: This is a DERIVATIVE of EARS-TEMPLATE.md
 # - Authority: EARS-TEMPLATE.md is the single source of truth for EARS structure

@@ -1,3 +1,20 @@
+---
+title: "IMPL-TEMPLATE: Implementation Plan"
+tags:
+  - impl-template
+  - layer-8-artifact
+  - document-template
+  - shared-architecture
+custom_fields:
+  document_type: template
+  artifact_type: IMPL
+  layer: 8
+  template_variant: monolithic
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # 📋 Document Authority: This is the PRIMARY STANDARD for IMPL structure.
 # All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
@@ -498,11 +515,7 @@ Before marking a phase complete, verify:
 - `@spec`: Technical specifications produced by this implementation
 - `@tasks`: Task breakdown documents produced by this implementation
 
-**Implementation Contract Tags** (Optional - for complex parallel development):
-```markdown
-@icon: TASKS-XXX:ContractName
-@icon-role: provider|consumer
-```
+> **Note**: Implementation contracts are embedded in TASKS Section 7-8.
 
 **Tag Placement**: Include tags in this section or at the top of the document (after Document Control).
 

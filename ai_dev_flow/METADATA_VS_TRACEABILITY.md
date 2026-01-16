@@ -39,7 +39,7 @@ AI Dev Flow uses **TWO SEPARATE SYSTEMS** for document information:
 | **Content** | Classification tags, layer info, architecture approach | Specific document IDs with descriptions |
 | **Machine-Readable** | Yes (YAML parsers) | Yes (regex: `@[a-z]+: [A-Z]+-\d+`) |
 | **Human-Readable** | Moderate (structured data) | High (prose with inline references) |
-| **Required In** | Templates, index files, published docs | All production documents (BRD → IPLAN) |
+| **Required In** | Templates, index files, published docs | All production documents (BRD → TASKS) |
 | **Quality Gate** | `validate_metadata.py` must pass | `validate_tags_against_docs.py` must pass |
 | **Git Conflicts** | Low risk (top of file) | Low risk (section 7 only) |
 
@@ -188,7 +188,7 @@ Each SDD layer inherits ALL upstream traceability tags:
 | Layer 9 (CTR) | All Layer 8 + new tags | 8+ | Add contracts (if applicable) |
 | Layer 10 (SPEC) | All previous + new tags | 9+ | Add technical spec |
 | Layer 11 (TASKS) | All previous + new tags | 10+ | Add task breakdown |
-| Layer 12 (IPLAN) | All previous + new tags | 11+ | Complete audit trail |
+| Layer 12 (Code) | All previous + new tags | 11+ | Complete audit trail |
 
 **Rule**: Each layer MUST include ALL upstream tags from previous layers.
 

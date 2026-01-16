@@ -1,3 +1,17 @@
+---
+title: "CTR Creation Rules"
+tags:
+  - creation-rules
+  - layer-9-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: CTR
+  layer: 9
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # 📋 Document Role: This is a DERIVATIVE of CTR-TEMPLATE.md
 # - Authority: CTR-TEMPLATE.md is the single source of truth for CTR structure
@@ -72,7 +86,7 @@ Rules for creating Data Contracts (CTR) documents in the SDD framework.
 ### Do NOT Create CTR When
 
 - [ ] Internal-only data structures (use SPEC instead)
-- [ ] Implementation contracts between TASKS (use ICON instead)
+- [ ] Implementation contracts between TASKS (embed in TASKS Section 7-8 instead)
 - [ ] Temporary or experimental interfaces
 - [ ] Simple configuration without external consumers
 
@@ -229,8 +243,6 @@ CTR must reference:
 CTR is referenced by:
 - `@tasks: TASKS.NN.EE.SS` - Implementation tasks
 - Code implementations (Layer 12)
-
-> **Note**: IPLAN has been deprecated as of 2026-01-15 and merged into TASKS.
 
 ### 5.3 Tag Format
 

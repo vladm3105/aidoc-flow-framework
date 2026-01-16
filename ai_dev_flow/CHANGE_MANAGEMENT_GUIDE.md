@@ -1,3 +1,15 @@
+---
+title: "Change Management Guide"
+tags:
+  - framework-guide
+  - change-management
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # Change Management & Architectural Pivots
 
 This guide defines the universal standard workflow for managing major architectural changes, pivots, or strategic shifts in any AI Development Flow project.

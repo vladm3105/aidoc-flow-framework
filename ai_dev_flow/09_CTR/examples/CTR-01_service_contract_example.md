@@ -1,3 +1,16 @@
+---
+title: "CTR-01: Service Contract Example"
+tags:
+  - ctr-example
+  - layer-9-artifact
+  - example-document
+custom_fields:
+  document_type: example
+  artifact_type: CTR
+  layer: 9
+  development_status: example
+---
+
 # CTR-01: [SERVICE_NAME] API Contract
 
 **Contract ID**: CTR-01

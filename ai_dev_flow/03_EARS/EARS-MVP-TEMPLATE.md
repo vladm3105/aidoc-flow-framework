@@ -1,3 +1,21 @@
+---
+title: "EARS-MVP-TEMPLATE: EARS Requirements (MVP)"
+tags:
+  - ears-template
+  - mvp-template
+  - layer-3-artifact
+  - document-template
+  - shared-architecture
+custom_fields:
+  document_type: template
+  artifact_type: EARS
+  layer: 3
+  template_variant: mvp
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+---
+
 <!--
 AI_CONTEXT_START
 Role: AI Logic Engineer

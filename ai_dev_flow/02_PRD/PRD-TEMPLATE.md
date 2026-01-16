@@ -1,3 +1,20 @@
+---
+title: "PRD-TEMPLATE: Product Requirements Document"
+tags:
+  - prd-template
+  - layer-2-artifact
+  - document-template
+  - traditional-fallback
+custom_fields:
+  document_type: template
+  artifact_type: PRD
+  layer: 2
+  template_variant: monolithic
+  architecture_approaches: [traditional-8layer]
+  priority: fallback
+  development_status: active
+---
+
 # =============================================================================
 # 📋 Document Authority: This is the PRIMARY STANDARD for PRD structure.
 # All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.

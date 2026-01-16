@@ -90,49 +90,6 @@ Tasks create the **code generation roadmap** that:
 
 ---
 
-## IPLAN Deprecation Notice (v2.0)
-
-> **⚠️ IMPORTANT**: As of 2026-01-15, **IPLAN (formerly Layer 12) has been deprecated** and merged into TASKS v2.0.
-
-### What Changed
-
-| Before (v1.x) | After (v2.0) |
-|---------------|--------------|
-| TASKS → IPLAN → Code | TASKS → Code |
-| Execution commands in IPLAN | Execution commands in TASKS Section 4 |
-| Session context in IPLAN | Session context in TASKS Section 10 |
-| Verification checklist in IPLAN | Development Plan Tracking YAML block |
-| 2 documents per feature | 1 unified document per feature |
-
-### IPLAN Content Migration to TASKS
-
-| IPLAN Section | TASKS Section |
-|---------------|---------------|
-| Verification Checklist | Development Plan Tracking (YAML block) |
-| Context & Current State | Section 2: Scope |
-| Implementation Steps | Section 3: Implementation Plan |
-| Bash Commands | Section 4: Execution Commands |
-| Validation Commands | Section 4.3: Validation Commands |
-| Session Notes | Section 10: Session Log |
-
-### Benefits of Unification
-
-- **Reduced document overhead**: ~500 lines vs ~2000 lines per feature
-- **Single source of truth**: All implementation context in one place
-- **Simpler workflow**: `SPEC → TASKS → Code` (no intermediate step)
-- **Better AI context**: Complete implementation plan in single document
-
-### Migration Guide
-
-For existing IPLAN documents:
-1. **In-progress implementations**: Continue using existing IPLAN
-2. **New features**: Use TASKS v2.0 template (includes Section 4 for execution commands)
-3. **Historical IPLANs**: Archive completed ones, no conversion needed
-
-See [`12_IPLAN/DEPRECATED.md`](../12_IPLAN/DEPRECATED.md) for detailed migration guidance.
-
----
-
 ## Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**
@@ -608,68 +565,38 @@ ai-codegen --task 11_TASKS/TASKS-01_resource_limit_service_tasks.md --framework 
 
 See `TASKS-01_resource_limit_service_tasks.md` for a complete example of a well-structured tasks document that includes scope definition, implementation plan, constraints, acceptance criteria, and comprehensive traceability.
 
-## ICON Contract Integration Rules
+## Implementation Contracts in TASKS
 
 ### CRITICAL: Section 7 is Mandatory (v2.0)
 
 Every TASKS document MUST include "## 7. Implementation Contracts":
-- If providing contracts: Complete section 7.1
-- If consuming contracts: Complete section 7.2
+- If providing contracts: Complete section 7.1 with embedded contract definitions
+- If consuming contracts: Complete section 7.2 with dependency references
 - If neither: State "No implementation contracts for this TASKS"
 
-> **Note**: In TASKS v1.x, this was Section 8. With TASKS v2.0 template consolidation, Implementation Contracts moved to Section 7.
+### Contract Validation Commands
 
-### Integration Validation Commands
-
-**Check total @icon tags**:
+**Check Section 7 count**:
 ```bash
-grep -r "@icon:" docs/11_TASKS/ | wc -l
-```
-
-**Check Section 7 (v2.0) or Section 8 (v1.x) count**:
-```bash
-# v2.0 templates
 grep -r "## 7. Implementation Contracts" docs/11_TASKS/ | wc -l
-# Legacy v1.x templates (if any remain)
-grep -r "## 8. Implementation Contracts" docs/11_TASKS/ | wc -l
 ```
 
-**Check specific ICON integration**:
+**Verify type hints in contracts**:
 ```bash
-grep -r "@icon: ICON-01" docs/11_TASKS/
+grep -A5 "typing.Protocol" docs/11_TASKS/*.md | head -20
 ```
 
-**Check provider/consumer roles**:
-```bash
-grep -r "@icon-role: provider" docs/11_TASKS/
-grep -r "@icon-role: consumer" docs/11_TASKS/
-```
+### Contract Types (Embedded in Section 7-8)
 
-### Common Anti-Patterns to Avoid
+| Type | Pattern | Use Case |
+|------|---------|----------|
+| Protocol Interface | `typing.Protocol` | Method signatures |
+| Exception Hierarchy | `class MyError(Exception)` | Error handling |
+| State Machine | `Enum` with transitions | State management |
+| Data Model | Pydantic/TypedDict | Data validation |
+| DI Interface | ABC classes | Dependency injection |
 
-**Anti-Pattern 1**: ICON file exists but 0 TASKS references
-```bash
-# Bad: This should never return 0
-grep -r "@icon: ICON-01" docs/11_TASKS/ | wc -l
-```
-
-**Anti-Pattern 2**: Provider TASKS missing Implementation Contracts section
-```
-TASKS-01 provides ICON-01
-But TASKS-01 has no "## 7. Implementation Contracts" (v2.0)
-```
-
-**Anti-Pattern 3**: Consumer TASKS missing Implementation Contracts section
-```
-TASKS-02 consumes ICON-01
-But TASKS-02 has no "## 7. Implementation Contracts" (v2.0)
-```
-
-**Correct Pattern**: Bidirectional integration
-```
-ICON-01 created → TASKS-01 section 7.1 added → TASKS-02 section 7.2 added
-grep "@icon: ICON-01" docs/11_TASKS/ returns 2+ matches
-```
+See [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) for detailed patterns.
 
 ---
 

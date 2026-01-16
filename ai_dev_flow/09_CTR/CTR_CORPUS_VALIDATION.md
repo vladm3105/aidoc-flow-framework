@@ -1,3 +1,17 @@
+---
+title: "CTR Corpus Validation"
+tags:
+  - corpus-validation
+  - layer-9-artifact
+  - shared-architecture
+custom_fields:
+  document_type: corpus-validation
+  artifact_type: CTR
+  layer: 9
+  priority: shared
+  development_status: active
+---
+
 # CTR Corpus Validation Rules
 
 ## Document Control
@@ -80,14 +94,13 @@ docs/09_CTR/{subdomain}/
 
 **Severity**: Error (blocking)
 
-**Rationale**: CTR is Layer 9. It should NOT reference specific numbered SPEC, TASKS, or IPLAN documents that don't exist yet.
+**Rationale**: CTR is Layer 9. It should NOT reference specific numbered SPEC or TASKS documents that don't exist yet.
 
 **Patterns to Flag**:
 | Pattern | Layer | Issue |
 |---------|-------|-------|
 | `SPEC-NN` | 10 | SPECs don't exist during CTR creation |
 | `TASKS-NN` | 11 | TASKS don't exist during CTR creation |
-| `IPLAN-NN` | 12 | **DEPRECATED** - IPLAN merged into TASKS (2026-01-15) |
 
 ---
 

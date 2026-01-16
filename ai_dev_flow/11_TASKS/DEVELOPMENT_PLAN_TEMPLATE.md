@@ -18,7 +18,7 @@ custom_fields:
 > **Template Purpose**: This template provides structured tracking for TASKS (Layer 11) implementation across development phases. It organizes TASKS documents into executable phases with dependencies and status tracking.
 > 
 > **Document Authority**: This becomes the live tracking document for implementation of your system.
-> **Schema Version**: 2.0 (IPLAN deprecated - execution commands now in TASKS Section 4)
+> **Schema Version**: 2.0
 > **Last Updated**: YYYY-MM-DD
 
 ## 1. Implementation Strategy
@@ -32,9 +32,7 @@ custom_fields:
 6. **Agents**: L0-L5 Autonomous Units.
 7. **UI**: Reporting & Visualization.
 
-**Workflow (v2.0)**: SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests
-
-> **Note**: IPLAN (Layer 12) has been **deprecated**. Execution commands are now included in TASKS Section 4.
+**Workflow**: SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests
 
 > **CRITICAL**: **Mandatory Review**: Before implementing any TASKS, verify it against upstream SPEC and REQ. If any inconsistencies are found, **STOP** implementation immediately and ask for instructions.
 
@@ -111,7 +109,7 @@ custom_fields:
 > 3. Post-Execution Rules (update tracking immediately after completion)
 
 ```yaml
-# v2.0 YAML format (IPLAN deprecated - execution in TASKS Section 4)
+# v2.0 YAML format
 phase_1_tasks:
   - id: TASKS-XX
     service_name: "[P0 Service Name]"
@@ -259,5 +257,3 @@ phase_2_tasks:
 - **Task ID**: Reference TASKS-NN being worked on
 - **Status**: Current status after this session
 - **Notes**: Key accomplishments, technologies used, blockers encountered, verification results
-
-> **Note**: IPLAN references deprecated. Use TASKS-NN only.

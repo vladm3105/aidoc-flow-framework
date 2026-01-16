@@ -151,15 +151,7 @@ python3 update_traceability_matrix.py --matrix ../07_REQ/matrix.md --input ../07
 
 ---
 
-### 4. ~~validate_iplan_naming.py~~ **DEPRECATED**
-
-> **DEPRECATION NOTICE**: IPLAN has been deprecated and merged into TASKS Section 4 as of 2025-01.
-> The `validate_iplan_naming.py` script is no longer needed for new projects.
-> Execution commands that were in IPLAN files are now in TASKS Section 4.
-
----
-
-### 5. validate_documentation_paths.py
+### 4. validate_documentation_paths.py
 
 Validates path references in markdown documentation to identify broken links, missing files, and path inconsistencies.
 
@@ -456,32 +448,12 @@ Validates TASKS documents including Section 8 Implementation Contracts.
 ```
 
 **Features:**
-- Validates 8-section TASKS format
-- Checks Section 8 Implementation Contracts structure
-- Verifies `@icon` tag integration
+- Validates 11-section TASKS format (v2.0)
+- Checks Section 7 Implementation Contracts structure
 - Validates cumulative tagging hierarchy
+- Verifies embedded contracts have type hints
 
-### 11. ~~validate_iplan.sh~~ **DEPRECATED**
-
-> **DEPRECATION NOTICE**: IPLAN has been deprecated and merged into TASKS Section 4.
-> Use `validate_tasks.sh` instead for validating TASKS files including Section 4 execution commands.
-
-### 12. validate_icon.sh
-
-Validates ICON (Implementation Contracts) documents.
-
-**Usage:**
-```bash
-./scripts/validate_icon.sh docs/ICON/ICON-01_*.md
-```
-
-**Features:**
-- Validates contract type definitions
-- Checks provider/consumer documentation
-- Verifies protocol interface syntax
-- Validates `@icon` tag references
-
-### 13. validate_ears.py
+### 11. validate_ears.py
 
 Comprehensive EARS document validator against EARS_VALIDATION_RULES.md.
 
@@ -624,8 +596,6 @@ python3 validate_traceability_matrix.py --matrix ../05_ADR/TRACEABILITY_MATRIX_A
 ```bash
 # Run validation as part of CI/CD pipeline
 python3 validate_traceability_matrix.py --matrix ../05_ADR/TRACEABILITY_MATRIX_ADR.md --input ../05_ADR/ --strict
-
-# Note: IPLAN naming validation deprecated - IPLAN merged into TASKS Section 4
 ```
 
 ### Pre-Commit Hook Example
@@ -640,8 +610,6 @@ echo "Validating traceability matrices..."
 python3 scripts/validate_traceability_matrix.py --matrix 05_ADR/TRACEABILITY_MATRIX_ADR.md --input 05_ADR/ || exit 1
 python3 scripts/validate_traceability_matrix.py --matrix 07_REQ/TRACEABILITY_MATRIX_REQ.md --input 07_REQ/ || exit 1
 python3 scripts/validate_traceability_matrix.py --matrix 10_SPEC/TRACEABILITY_MATRIX_SPEC.md --input 10_SPEC/ || exit 1
-
-# Note: IPLAN naming validation deprecated - IPLAN merged into TASKS Section 4
 
 echo "All validations passed successfully!"
 ```
@@ -685,8 +653,6 @@ jobs:
             --matrix 10_SPEC/TRACEABILITY_MATRIX_SPEC.md \
             --input 10_SPEC/ \
             --strict
-
-      # Note: IPLAN naming validation deprecated - IPLAN merged into TASKS Section 4
 ```
 
 ---
@@ -708,7 +674,6 @@ All scripts support the following document types:
 | CTR | API Contracts | `CTR-NN_*.md`, `CTR-NN_*.yaml` |
 | SPEC | Technical Specifications | `SPEC-NN_*.yaml` |
 | TASKS | Code Generation Tasks | `TASKS-NN_*.md` |
-| ~~IPLAN~~ | ~~Session Implementation Plans~~ | ~~`IPLAN-NN_*.md`~~ | **DEPRECATED** |
 
 Document IDs support both formats:
 - Simple: `TYPE-NN` (e.g., `ADR-01`)
@@ -817,7 +782,6 @@ Matrix templates for each document type:
 - `09_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `10_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `11_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- ~~`12_IPLAN/IPLAN-00_TRACEABILITY_MATRIX-TEMPLATE.md`~~ **DEPRECATED**
 - `TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` (master template)
 
 ---

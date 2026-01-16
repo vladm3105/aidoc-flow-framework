@@ -30,7 +30,6 @@ API Contracts (CTR) define precise interface specifications between components u
 
 Contracts enable parallel development by allowing providers and consumers to implement independently against the same specification, reducing integration time and defects.
 
-Note: `CTR-TEMPLATE.md`/`.yaml` are reference templates. For real CTRs, keep paired `.md`+`.yaml` files, and when splitting is needed follow `09_CTR/CTR_SPLITTING_RULES.md` and `../DOCUMENT_SPLITTING_RULES.md`.
 
 ## 2. Position in Document Workflow
 
@@ -49,7 +48,6 @@ Note: `CTR-TEMPLATE.md`/`.yaml` are reference templates. For real CTRs, keep pai
 
 ## 3. Dual-File Structure
 
-Each contract consists of TWO synchronized files (see `09_CTR/CTR_SPLITTING_RULES.md` for CTR-specific split rules and `../DOCUMENT_SPLITTING_RULES.md` for core standards):
 
 ### 3.1 Markdown File (.md)
 **Purpose**: Human-readable documentation
@@ -412,7 +410,6 @@ Contracts MUST reference:
 | Source Type | Document ID | Document Title | Relevant sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
 | REQ | [REQ-03](../07_REQ/.../REQ-03.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement | section 3.1 | Interface requirement |
-| ADR | [ADR-008](../05_ADR/ADR-008.md) | Centralized Risk Parameters | Architecture pattern |
 ```
 
 **Format** (in .yaml metadata):
@@ -420,7 +417,6 @@ Contracts MUST reference:
 upstream_requirements:
   - REQ-03
 upstream_adrs:
-  - ADR-008
 ```
 
 ### 9.2 Downstream Traceability (OPTIONAL)

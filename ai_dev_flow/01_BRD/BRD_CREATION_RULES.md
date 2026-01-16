@@ -1,3 +1,17 @@
+---
+title: "BRD Creation Rules"
+tags:
+  - creation-rules
+  - layer-1-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: BRD
+  layer: 1
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # 📋 Document Role: This is a DERIVATIVE of BRD-TEMPLATE.md
 # - Authority: BRD-TEMPLATE.md is the single source of truth for BRD structure

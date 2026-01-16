@@ -1,3 +1,17 @@
+---
+title: "BDD Corpus Validation"
+tags:
+  - corpus-validation
+  - layer-4-artifact
+  - shared-architecture
+custom_fields:
+  document_type: corpus-validation
+  artifact_type: BDD
+  layer: 4
+  priority: shared
+  development_status: active
+---
+
 # BDD Corpus Validation Rules
 
 ## Document Control
@@ -105,7 +119,7 @@ grep -rniE "\(when created\)|\(to be defined\)|\(TBD\)" "$BDD_DIR"
 
 **Severity**: Error (blocking)
 
-**Rationale**: BDD is Layer 4. It should NOT reference specific numbered ADR, SYS, REQ, SPEC, TASKS, or IPLAN documents that don't exist yet.
+**Rationale**: BDD is Layer 4. It should NOT reference specific numbered ADR, SYS, REQ, SPEC, or TASKS documents that don't exist yet.
 
 **Patterns to Flag**:
 | Pattern | Layer | Issue |
@@ -115,7 +129,6 @@ grep -rniE "\(when created\)|\(to be defined\)|\(TBD\)" "$BDD_DIR"
 | `REQ-NN` | 7 | REQs don't exist during BDD creation |
 | `SPEC-NN` | 10 | SPECs don't exist during BDD creation |
 | `TASKS-NN` | 11 | TASKS don't exist during BDD creation |
-| `IPLAN-NN` | 12 | **DEPRECATED** - IPLAN merged into TASKS (2026-01-15) |
 
 **Allowed Patterns** (generic references):
 - "This will inform ADR decisions"
@@ -125,7 +138,7 @@ grep -rniE "\(when created\)|\(to be defined\)|\(TBD\)" "$BDD_DIR"
 **Validation Logic**:
 ```bash
 # Check 3: Flag specific numbered references to downstream artifacts
-grep -rnE "(ADR|SYS|REQ|SPEC|TASKS|IPLAN)-[0-9]{2,}" "$BDD_DIR" | \
+grep -rnE "(ADR|SYS|REQ|SPEC|TASKS)-[0-9]{2,}" "$BDD_DIR" | \
   grep -v "(pending)" | \
   grep -v "Layer [0-9]"
 # Expected: No output (all downstream refs should be generic or have (pending))
@@ -938,6 +951,6 @@ fi
 ## References
 
 - [BDD_VALIDATION_RULES.md](./BDD_VALIDATION_RULES.md) - Individual file validation
-- [BDD-TEMPLATE.feature](./BDD-TEMPLATE.feature) - BDD document template
+- [BDD-MVP-TEMPLATE.feature](./BDD-MVP-TEMPLATE.feature) - BDD document template
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

@@ -95,8 +95,6 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 
 ### Templates
 
-- **[BDD-SECTION-TEMPLATE.feature](./BDD-SECTION-TEMPLATE.feature)**: Primary section file template
-- **[BDD-SUBSECTION-TEMPLATE.feature](./BDD-SUBSECTION-TEMPLATE.feature)**: Subsection template for splits
 - **[BDD-AGGREGATOR-TEMPLATE.feature](./BDD-AGGREGATOR-TEMPLATE.feature)**: Redirect stub when many subsections
 
 ## Planned
@@ -187,8 +185,6 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 2. **Create Suite Folder**: `04_BDD/BDD-NN_{suite_slug}`
 3. **Create Index**: Copy `BDD-SECTION-0-TEMPLATE.md` to `04_BDD/BDD-NN_{suite_slug}/BDD-NN.0_index.md`
 4. **Plan Sections**: Define `.1`, `.2`, `.3` sections and slugs
-5. **Create Section Files**: Copy `BDD-SECTION-TEMPLATE.feature` to `04_BDD/BDD-NN_{suite_slug}/BDD-NN.SS_{slug}.feature`
-6. **If Needed, Create Subsections**: Copy `BDD-SUBSECTION-TEMPLATE.feature` to `04_BDD/BDD-NN_{suite_slug}/BDD-NN.SS.mm_{slug}.feature`
 7. **Add Traceability Tags**: `@brd`, `@prd`, `@ears` at file top (Gherkin-native)
 8. **Write Scenarios**: Given/When/Then; include primary, negative, edge, quality, integration, data-driven
 9. **Use Thresholds**: Reference PRD threshold registry via `@threshold:` keys (no hardcoded numbers)
@@ -322,7 +318,7 @@ Track acceptance test coverage for requirements:
 ### Internal Links
 
 - [BDD README](./README.md): Comprehensive BDD documentation and guidelines
-- [BDD-TEMPLATE.feature](./BDD-TEMPLATE.feature): Template for creating new BDD feature files
+- [BDD-MVP-TEMPLATE.feature](./BDD-MVP-TEMPLATE.feature): Template for creating new BDD feature files
 - [AI Dev Flow Index](../index.md): Master index with complete traceability workflow
 
 ### External Links
@@ -355,5 +351,5 @@ Track acceptance test coverage for requirements:
 ---
 
 **Index Version**: 1.0
-**Template Compliance**: BDD-TEMPLATE.feature v1.0
+**Template Compliance**: BDD-MVP-TEMPLATE.feature v1.0
 **Traceability Standard**: AI Dev Flow Traceability v1.0

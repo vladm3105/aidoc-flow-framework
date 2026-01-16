@@ -17,7 +17,6 @@ custom_fields:
   schema_version: "1.0"
 ---
 
-> **Reference Template** — For learning and small contracts only. Real CTRs should follow `../DOCUMENT_SPLITTING_RULES.md` and `09_CTR/CTR_SPLITTING_RULES.md`. Split into paired sections when needed: `CTR-{NN}.{S}_{slug}.md` + `CTR-{NN}.{S}_{slug}.yaml`. Use `CTR-SECTION-0-TEMPLATE.md` for the index and `CTR-SECTION-TEMPLATE.md` for Markdown sections.
 >
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for CTR structure. Schema: `CTR_SCHEMA.yaml v1.0`. Creation Rules: `CTR_CREATION_RULES.md`. Validation Rules: `CTR_VALIDATION_RULES.md`.
 

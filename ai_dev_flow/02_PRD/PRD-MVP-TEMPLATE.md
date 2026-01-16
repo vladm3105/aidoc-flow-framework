@@ -1,3 +1,21 @@
+---
+title: "PRD-MVP-TEMPLATE: Product Requirements Document (MVP)"
+tags:
+  - prd-template
+  - mvp-template
+  - layer-2-artifact
+  - document-template
+  - shared-architecture
+custom_fields:
+  document_type: template
+  artifact_type: PRD
+  layer: 2
+  template_variant: mvp
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+---
+
 <!--
 AI_CONTEXT_START
 Role: AI Product Manager

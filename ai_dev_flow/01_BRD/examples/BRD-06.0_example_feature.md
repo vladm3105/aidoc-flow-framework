@@ -1,3 +1,16 @@
+---
+title: "BRD-06: Example Feature"
+tags:
+  - brd-example
+  - layer-1-artifact
+  - example-document
+custom_fields:
+  document_type: example
+  artifact_type: BRD
+  layer: 1
+  development_status: example
+---
+
 # Business Requirements Document (BRD)
 
 ## Document Control

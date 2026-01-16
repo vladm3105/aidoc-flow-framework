@@ -1,3 +1,17 @@
+---
+title: "IMPL Creation Rules"
+tags:
+  - creation-rules
+  - layer-8-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: IMPL
+  layer: 8
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # 📋 Document Role: This is a DERIVATIVE of IMPL-TEMPLATE.md
 # - Authority: IMPL-TEMPLATE.md is the single source of truth for IMPL structure
@@ -366,13 +380,7 @@ IMPL produces (as deliverables) with traceability tags:
 - `@spec: SPEC.NN.EE.SS` - Technical specifications
 - `@tasks: TASKS.NN.EE.SS` - Code generation plans
 
-### 8.3 Implementation Contract Tags (Optional)
-
-When IMPL coordinates shared interfaces across multiple teams:
-- `@icon: TASKS-XXX:ContractName` - Implementation contract reference
-- `@icon-role: provider|consumer` - Role in contract
-
-### 8.4 Tag Format
+### 8.3 Tag Format
 
 ```markdown
 ## Traceability Tags

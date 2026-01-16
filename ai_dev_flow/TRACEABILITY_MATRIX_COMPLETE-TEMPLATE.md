@@ -1,3 +1,14 @@
+---
+title: "Traceability Matrix Complete Template"
+tags:
+  - traceability-template
+  - shared-architecture
+custom_fields:
+  document_type: template
+  priority: shared
+  development_status: active
+---
+
 # Complete Traceability Matrix: End-to-End SDD Workflow
 
 ## Document Control
@@ -10,7 +21,7 @@
 | Version | 1.0.0 |
 | Date Created | YYYY-MM-DD |
 | Author | [Team Name] |
-| Purpose | Track complete traceability chain: Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Production |
+| Purpose | Track complete traceability chain: Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code → Production |
 
 ---
 
@@ -60,9 +71,8 @@ This matrix tracks the complete 16-layer AI-Driven Specification-Driven Developm
 **Layer 8 - Project Management**: IMPL (WHO/WHEN) - optional
 **Layer 9 - Interface**: CTR (API contracts) - optional
 **Layer 10 - Technical Specifications**: SPEC (YAML blueprints)
-**Layer 11 - Code Generation**: TASKS (implementation steps), ICON (optional implementation contracts)
-**Layer 12 - Implementation Plans**: IPLAN (session context with bash commands)
-**Layer 13 - Code**: Source code implementation
+**Layer 11 - Code Generation**: TASKS (implementation steps with execution commands)
+**Layer 12 - Code**: Source code implementation
 **Layer 14 - Tests**: Test execution and verification
 **Layer 15 - Validation**: Validation → Review → Production
 
@@ -94,15 +104,10 @@ python scripts/generate_traceability_matrix.py --auto --report
 | SPEC | [X]/[Y] | XX% | [Status] |
 | **Code Generation Layer (Layer 11)** | | | |
 | TASKS | [X]/[Y] | XX% | [Status] |
-| ICON | [X]/[Y] | XX% | [Status] |
-| **Implementation Plans Layer** | | | |
-| IPLAN | [X]/[Y] | XX% | [Status] |
 | **Execution Layer** | | | |
 | Code Files | [X]/[Y] | XX% | [Status] |
 | Test Files | [X]/[Y] | XX% | [Status] |
 | **Total** | **[X]/[Y]** | **XX%** | **[Status]** |
-
-ICON policy: Embed contracts in TASKS by default; promote to a standalone ICON only when scale justifies it (≥5 consumers, large/complex, or cross-project/shared protocol).
 
 ### 1.3 Workflow Completeness Metrics
 
@@ -114,7 +119,7 @@ ICON policy: Embed contracts in TASKS by default; promote to a standalone ICON o
 | Architecture → Requirements | [X] REQ | [Y] | [Z] | [Status] |
 | Requirements → Planning | [X] IMPL | [Y] | [Z] | [Status] |
 | Planning → Interface | [X] CTR | [Y] | [Z] | [Status] |
-| Planning → Implementation | [X] 10_SPEC/TASKS (ICON optional) | [Y] | [Z] | [Status] |
+| Planning → Implementation | [X] 10_SPEC/TASKS | [Y] | [Z] | [Status] |
 | Implementation → Code | [X] Code/Tests | [Y] | [Z] | [Status] |
 
 ---
@@ -147,7 +152,7 @@ AI Dev Flow implements **cumulative tagging** where each artifact type must incl
 
 **Format Rules**:
 - Prefix: `@` symbol
-- Artifact Type: lowercase (brd, prd, ears, bdd, adr, sys, req, impl, ctr, spec, tasks, iplan)
+- Artifact Type: lowercase (brd, prd, ears, bdd, adr, sys, req, impl, ctr, spec, tasks)
 - Separator: colon `:` after artifact type
 - Document ID: `TYPE-NN` format
 - Requirement ID: specific requirement/section identifier
@@ -169,9 +174,7 @@ AI Dev Flow implements **cumulative tagging** where each artifact type must incl
 | 9 | **CTR** | `@brd` through `@impl` | 8 | Formal Template (Markdown + YAML) | Optional layer - include if exists |
 | 10 | **SPEC** | `@brd` through `@req` + optional `@impl`, `@ctr` | 7-9 | Formal Template (YAML) | YAML cumulative_tags section |
 | 11 | **TASKS** | `@brd` through `@spec` | 8-10 | Formal Template (Markdown) | Cumulative: BRD through SPEC |
-| 11 | **ICON** | All upstream through `@spec` + `@tasks` | 9-11 | Formal Template (Markdown) | Optional - standalone when 5+ consumers |
-| 12 | **IPLAN** | `@brd` through `@tasks` | 9-11 | Project Files (Markdown) | Implementation session plans |
-| 13 | **Code** | `@brd` through `@tasks` + optional `@iplan` | 9-12 | Code Docstrings (Python/JS/etc.) | Tags in module/class/function docstrings |
+| 12 | **Code** | `@brd` through `@tasks` | 9-11 | Code Docstrings (Python/JS/etc.) | Tags in module/class/function docstrings |
 | 14 | **Tests** | `@brd` through code tags + `@code` | 10-13 | BDD + Docstrings | Test files reference code + all upstream |
 | 15 | **Validation** | All upstream tags | 11-14 | Embedded + CI/CD | Deployment and validation artifacts |
 
@@ -219,7 +222,6 @@ Handles request submission with validation and execution.
 @ctr: CTR-NN
 @spec: SPEC-NN
 @tasks: TASKS.18.29.03, TASKS.18.29.07
-@iplan: IPLAN-03
 
 @impl-status: complete
 @test-coverage: 95%
@@ -247,7 +249,6 @@ Test suite for request submission Service
 @ctr: CTR-NN
 @spec: SPEC-NN
 @tasks: TASKS.18.29.03, TASKS.18.29.07
-@iplan: IPLAN-03
 @code: src/execution/order_service.py:OrderService
 
 @test-type: integration
@@ -379,11 +380,11 @@ Code (tags: @brd through @tasks = 9 tags)
 
 **Note:** This table can be auto-generated from @brd:, @req:, @spec:, @test: tags in code docstrings.
 
-| REQ ID | IMPL ID | CTR ID | SPEC ID | TASKS ID | IPLAN ID | Code Files | Tag Discovery | Tests | Status |
-|--------|---------|--------|---------|----------|---------------|------------|---------------|-------|--------|
-| REQ-NN | IMPL-NN | CTR-NN | SPEC-NN | TASKS-NN | IPLAN-NN | src/module.py | @req: REQ.NN.EE.SS | test_module.py | ✅ Complete |
-| REQ-NN | IMPL-NN | N/A | SPEC-NN | TASKS-NN | IPLAN-NN | src/service.py | test_service.py | ✅ Complete |
-| REQ-NN | IMPL-NN | CTR-NN | SPEC-NN | TASKS-NN | IPLAN-NN | src/api.py | test_api.py | 🟡 In Progress |
+| REQ ID | IMPL ID | CTR ID | SPEC ID | TASKS ID | Code Files | Tag Discovery | Tests | Status |
+|--------|---------|--------|---------|----------|------------|---------------|-------|--------|
+| REQ-NN | IMPL-NN | CTR-NN | SPEC-NN | TASKS-NN | src/module.py | @req: REQ.NN.EE.SS | test_module.py | ✅ Complete |
+| REQ-NN | IMPL-NN | N/A | SPEC-NN | TASKS-NN | src/service.py | N/A | test_service.py | ✅ Complete |
+| REQ-NN | IMPL-NN | CTR-NN | SPEC-NN | TASKS-NN | src/api.py | N/A | test_api.py | 🟡 In Progress |
 | REQ-NN | IMPL-NN | N/A | SPEC-NN | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Not Started |
 | ... | ... | ... | ... | ... | ... | ... | ... |
 

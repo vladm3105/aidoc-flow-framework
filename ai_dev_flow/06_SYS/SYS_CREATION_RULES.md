@@ -1,3 +1,17 @@
+---
+title: "SYS Creation Rules"
+tags:
+  - creation-rules
+  - layer-6-artifact
+  - shared-architecture
+custom_fields:
+  document_type: creation-rules
+  artifact_type: SYS
+  layer: 6
+  priority: shared
+  development_status: active
+---
+
 # =============================================================================
 # 📋 Document Role: This is a DERIVATIVE of SYS-TEMPLATE.md
 # - Authority: SYS-TEMPLATE.md is the single source of truth for SYS structure

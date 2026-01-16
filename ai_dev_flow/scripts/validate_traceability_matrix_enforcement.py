@@ -19,7 +19,7 @@ from typing import List, Dict, Set, Tuple
 # Artifact types with traceability matrices
 ARTIFACT_TYPES = [
     'BRD', 'PRD', 'EARS', 'BDD', 'ADR', 'SYS',
-    'REQ', 'IMPL', 'CTR', 'SPEC', 'TASKS', 'IPLAN'
+    'REQ', 'IMPL', 'CTR', 'SPEC', 'TASKS'
 ]
 
 class TraceabilityValidator:

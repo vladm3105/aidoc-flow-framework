@@ -1,3 +1,15 @@
+---
+title: "Layer Evolution Guide"
+tags:
+  - framework-guide
+  - layer-management
+  - shared-architecture
+custom_fields:
+  document_type: guide
+  priority: shared
+  development_status: active
+---
+
 # SDD Framework Layer Evolution Guide
 
 **Version**: 1.0
@@ -26,8 +38,8 @@ Add the new layer entry in the `layers` array:
   name: "New Layer Name"
   folder: NEWTYPE/
   extensions: [.md]
-  required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks, iplan]
-  can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN]
+  required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks]
+  can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS]
   error_prefix: NEWTYPE
   optional: false
   description: "Layer 13 - Description of purpose"
@@ -120,7 +132,6 @@ Communicate timeline for complete removal (recommend 6-12 months).
 
 - [x] Create `LAYER_REGISTRY.yaml`
 - [x] Document all 12 layers
-- [x] Include additional artifacts (ICON)
 
 ### Phase 2: Validation Tools (Future)
 

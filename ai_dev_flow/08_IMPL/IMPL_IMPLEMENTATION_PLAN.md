@@ -1,3 +1,17 @@
+---
+title: "IMPL Implementation Plan"
+tags:
+  - impl-guide
+  - layer-8-artifact
+  - shared-architecture
+custom_fields:
+  document_type: plan
+  artifact_type: IMPL
+  layer: 8
+  priority: shared
+  development_status: active
+---
+
 # IMPL_IMPLEMENTATION_PLAN: IMPL Artifact System Creation
 
 **⚠️ CRITICAL**: This document tracks the implementation of the IMPL artifact system itself within the AI Dev Flow Framework.
@@ -85,7 +99,6 @@ Create complete IMPL artifact system including folder structure, templates, inde
 
 **Out of Scope**:
 - Actual project implementation plans (those are created by project teams)
-- IPLAN (Implementation Plan session files - different artifact type)
 - Code implementation
 - Test automation
 
@@ -387,8 +400,7 @@ Create complete IMPL artifact system including folder structure, templates, inde
 | Layer 9: Contracts | CTR | **Direct - IMPL produces CTR deliverables** |
 | Layer 10: Specification | SPEC | **Direct - IMPL produces SPEC deliverables** |
 | Layer 11: Task Planning | TASKS | **Direct - IMPL produces TASKS deliverables** |
-| Layer 12: Implementation | IPLAN | Indirect - IPLAN created from TASKS deliverables |
-| Layer 13: Code | Source Code | Indirect - Code generated from 12_IPLAN/TASKS |
+| Layer 12: Code | Code | Source code implementation |
 | Layer 14: Testing | Test Suites | Indirect - Tests generated with code |
 | Layer 15: Documentation | Runtime Docs | Indirect - Documentation from implementation |
 
@@ -440,7 +452,7 @@ Create complete IMPL artifact system including folder structure, templates, inde
 
 **Challenges**:
 - Distinguishing IMPL (project management) from SPEC (technical design) required clear documentation
-- Ensuring IMPL didn't duplicate TASKS or IPLAN content
+- Ensuring IMPL didn't duplicate TASKS content
 - Balancing template detail with usability
 
 **Improvements for Next Time**:

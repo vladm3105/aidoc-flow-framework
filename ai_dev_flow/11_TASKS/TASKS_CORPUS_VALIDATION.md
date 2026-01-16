@@ -1,3 +1,17 @@
+---
+title: "TASKS Corpus Validation"
+tags:
+  - corpus-validation
+  - layer-11-artifact
+  - shared-architecture
+custom_fields:
+  document_type: corpus-validation
+  artifact_type: TASKS
+  layer: 11
+  priority: shared
+  development_status: active
+---
+
 # TASKS Corpus Validation Rules
 
 ## Document Control
@@ -10,13 +24,11 @@
 | Purpose | Quality gate for complete TASKS corpus |
 | Trigger | Run after ALL TASKS files are complete |
 | Scope | Entire TASKS corpus validation |
-| Layer | Layer 11 → Layer 12 transition gate |
+| Layer | Layer 11 → Code Implementation transition gate |
 
 ## Overview
 
 This document defines **corpus-level validation rules** that run AFTER all TASKS (Task Breakdown) files are created but BEFORE code implementation begins. TASKS documents decompose SPEC into AI-structured TODO tasks with dependency tracking.
-
-> **Note**: As of 2026-01-15, IPLAN has been **DEPRECATED** and merged into TASKS. Execution commands are now part of TASKS Section 4.
 
 ### Validation Hierarchy
 
@@ -34,7 +46,7 @@ All TASKS Complete
         ↓
 TASKS_CORPUS_VALIDATION.md (corpus-level) ← Quality Gate
         ↓
-PASS → Begin Code Implementation (Layer 12)
+PASS → Begin Code Implementation
 FAIL → Fix issues, re-run corpus validation
 ```
 
@@ -85,8 +97,6 @@ docs/11_TASKS/
 - "This will be implemented in..."
 - "Downstream execution will..."
 - "See implementation section"
-
-> **Note**: IPLAN (formerly Layer 12) has been deprecated. Execution commands are now part of TASKS Section 4.
 
 ---
 
@@ -241,9 +251,8 @@ done
 **Checks**:
 | Check | Description |
 |-------|-------------|
-| `@icon` tags | Implementation contracts referenced |
-| Contract definitions | Contracts defined in Implementation Contracts section |
-| Provider/consumer roles | `@icon-role` specified where applicable |
+| Contract definitions | Contracts defined in Implementation Contracts section (Section 7-8) |
+| Type annotations | Python typing.Protocol and type hints present |
 
 **Contract Types**:
 | Type | Description |
@@ -477,8 +486,6 @@ else
   exit 1
 fi
 ```
-
-> **Note**: IPLAN has been deprecated. Execution commands are now in TASKS Section 4.
 
 ---
 

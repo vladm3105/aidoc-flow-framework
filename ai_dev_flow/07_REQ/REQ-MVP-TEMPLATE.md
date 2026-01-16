@@ -1,3 +1,21 @@
+---
+title: "REQ-MVP-TEMPLATE: Requirements Document (MVP)"
+tags:
+  - req-template
+  - mvp-template
+  - layer-7-artifact
+  - document-template
+  - shared-architecture
+custom_fields:
+  document_type: template
+  artifact_type: REQ
+  layer: 7
+  template_variant: mvp
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+---
+
 <!--
 AI_CONTEXT_START
 Role: AI Requirements Engineer

@@ -1,3 +1,17 @@
+---
+title: "IMPL Corpus Validation"
+tags:
+  - corpus-validation
+  - layer-8-artifact
+  - shared-architecture
+custom_fields:
+  document_type: corpus-validation
+  artifact_type: IMPL
+  layer: 8
+  priority: shared
+  development_status: active
+---
+
 # IMPL Corpus Validation Rules
 
 ## Document Control
@@ -71,7 +85,7 @@ FAIL → Fix issues, re-run corpus validation
 
 **Severity**: Error (blocking)
 
-**Rationale**: IMPL is Layer 8. It should NOT reference specific numbered CTR, SPEC, TASKS, or IPLAN documents that don't exist yet.
+**Rationale**: IMPL is Layer 8. It should NOT reference specific numbered CTR, SPEC, or TASKS documents that don't exist yet.
 
 **Patterns to Flag**:
 | Pattern | Layer | Issue |
@@ -79,7 +93,6 @@ FAIL → Fix issues, re-run corpus validation
 | `CTR-NN` | 9 | CTR don't exist during IMPL creation |
 | `SPEC-NN` | 10 | SPECs don't exist during IMPL creation |
 | `TASKS-NN` | 11 | TASKS don't exist during IMPL creation |
-| `IPLAN-NN` | 12 | IPLANs don't exist during IMPL creation |
 
 **Allowed Patterns** (generic references):
 - "This will inform SPEC development"

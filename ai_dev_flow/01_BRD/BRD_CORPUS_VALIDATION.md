@@ -1,3 +1,17 @@
+---
+title: "BRD Corpus Validation"
+tags:
+  - corpus-validation
+  - layer-1-artifact
+  - shared-architecture
+custom_fields:
+  document_type: corpus-validation
+  artifact_type: BRD
+  layer: 1
+  priority: shared
+  development_status: active
+---
+
 # BRD Corpus Validation Rules
 
 ## Document Control
@@ -123,7 +137,6 @@ See [BRD-07: AI Gateway Architecture](./BRD-07_ai_gateway_architecture.md) for d
 | `ADR-NN` | 5 | ADRs don't exist during BRD creation |
 | `SPEC-NN` | 10 | SPECs don't exist during BRD creation |
 | `TASKS-NN` | 11 | TASKS don't exist during BRD creation |
-| `IPLAN-NN` | 12 | **DEPRECATED** - IPLAN merged into TASKS (2026-01-15) |
 
 **Allowed Patterns** (generic references):
 - "This will inform PRD development"
@@ -133,7 +146,7 @@ See [BRD-07: AI Gateway Architecture](./BRD-07_ai_gateway_architecture.md) for d
 **Validation Logic**:
 ```bash
 # Check 3: Flag specific numbered references to downstream artifacts
-grep -rnE "(PRD|ADR|SPEC|TASKS|IPLAN)-[0-9]{2,}" "$BRD_DIR" | \
+grep -rnE "(PRD|ADR|SPEC|TASKS)-[0-9]{2,}" "$BRD_DIR" | \
   grep -v "Layer [0-9]" | \
   grep -v "SDD workflow"
 # Expected: No output (all downstream refs should be generic)
@@ -632,7 +645,7 @@ done
 
 # CORPUS-02: Premature Downstream References
 echo "Checking CORPUS-02: Premature downstream references..."
-DOWNSTREAM=$(grep -rnE "(PRD|ADR|SPEC|TASKS|IPLAN)-[0-9]{2,}" "$BRD_DIR" 2>/dev/null | grep -v "Layer [0-9]" | grep -v "SDD workflow" | wc -l)
+DOWNSTREAM=$(grep -rnE "(PRD|ADR|SPEC|TASKS)-[0-9]{2,}" "$BRD_DIR" 2>/dev/null | grep -v "Layer [0-9]" | grep -v "SDD workflow" | wc -l)
 if [ $DOWNSTREAM -gt 0 ]; then
   echo "  ERROR: $DOWNSTREAM premature downstream references found"
   ERRORS=$((ERRORS + 1))
@@ -813,7 +826,7 @@ validate-all: validate-brd validate-prd validate-ears
 grep -rniE "\(future (BRD|PRD|ADR)\)|\(when created\)|\(to be defined\)|\(pending\)" docs/BRD
 
 # Find premature downstream references
-grep -rnE "(PRD|ADR|SPEC|TASKS|IPLAN)-[0-9]{2,}" docs/BRD
+grep -rnE "(PRD|ADR|SPEC|TASKS)-[0-9]{2,}" docs/BRD
 
 # Find missing hyperlinks
 grep -rnE "BRD-[0-9]+" docs/BRD | grep -v "\[BRD-"
