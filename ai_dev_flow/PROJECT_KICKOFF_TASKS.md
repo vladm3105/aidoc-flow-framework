@@ -23,7 +23,7 @@ custom_fields:
 > **⚡ Building an MVP?**
 > If you selected the **MVP Track**, do NOT use the schedule below.
 > Instead, follow the accelerated **[MVP Development Workflow](./MVP_WORKFLOW_GUIDE.md)**.
-> The schedule below is for the **Standard 16-Layer Enterprise Flow**.
+> The schedule below is for the **Standard 15-Layer Enterprise Flow**.
 
 ### Day 1: Project Setup & Business Requirements
 

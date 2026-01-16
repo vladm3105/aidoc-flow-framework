@@ -48,7 +48,7 @@ template_profile: enterprise  # or "full" or "strict"
 
 ### Key Features
 
-- **16-Layer Architecture**: Structured progression from strategy to validation (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation)
+- **15-Layer Architecture**: Structured progression from strategy to validation (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code → Tests → Validation)
 - **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
 - **REQ v3.0 Support**: Enhanced REQ templates with sections 3-7 (interfaces/schemas/errors/config/quality attributes) for ≥90% SPEC-readiness
 - **Tag-Based Auto-Discovery**: Lightweight @tags in code auto-generate bidirectional traceability matrices
@@ -186,7 +186,7 @@ Choose your entry point based on project context. For new documents, prefer the 
 ```bash
 # Use project-init skill (if using Claude Code)
 # Or manually create directory structure
-mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
+mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
 ```
 
 **Option B: Existing Project**
@@ -208,8 +208,7 @@ cp -r ai_dev_flow/* your-project/docs/
 9. **API Contracts** → Specify with `CTR/CTR-TEMPLATE.md + .yaml` (Layer 9 - if interfaces)
 10. **Technical Specs** → Design with `SPEC/SPEC-TEMPLATE.yaml` (Layer 10)
 11. **Code Generation** → Guide with `TASKS/TASKS-TEMPLATE.md` (Layer 11)
-12. **Session Planning** → Create `IPLAN/IPLAN-NNN_*.md` (Layer 12 - via /save-plan)
-13. **Implementation** → Write code with cumulative traceability tags (Layer 13)
+12. **Implementation** → Write code with cumulative traceability tags (Layer 12)
 
 ### 6. Add Cumulative Traceability Tags (Recommended)
 
@@ -290,16 +289,13 @@ Layer 10: Technical Specifications
 Layer 11: Task Breakdown
 └── TASKS (Code Generation Plans)
 
-Layer 12: Session Planning
-└── IPLAN (Session-Specific Implementation Plans)
-
-Layer 13: Implementation
+Layer 12: Implementation
 └── Code (Source code with cumulative tags)
 
-Layer 14: Testing
+Layer 13: Testing
 └── Tests (Test implementations with cumulative tags)
 
-Layer 15: Validation
+Layer 14: Validation
 └── Validation → Review → Production
 ```
 
@@ -325,7 +321,6 @@ Layer 15: Validation
 - **CTR-TEMPLATE.md + .yaml**: API contracts (dual-file format) [Layer 9 - optional]
 - **SPEC-TEMPLATE.yaml**: Technical specifications (HOW to build) [Layer 10]
 - **TASKS-TEMPLATE.md**: Code generation plans (exact TODOs) [Layer 11]
-- **IPLAN**: Session-specific implementation plans [Layer 12]
 
 ## Traceability System
 
@@ -622,8 +617,6 @@ python ai_dev_flow/scripts/validate_traceability_matrix.py --matrix path/to/matr
 # Update traceability matrices incrementally
 python ai_dev_flow/scripts/update_traceability_matrix.py --matrix path/to/matrix.md --input path/to/docs/
 
-# Validate IPLAN naming conventions
-python ai_dev_flow/scripts/validate_iplan_naming.py
 ```
 
 ### Quality Gates
@@ -638,7 +631,6 @@ Pre-commit checklist:
 - [ ] No gaps in cumulative tag chains (e.g., if @adr exists, @brd through @bdd must exist)
 - [ ] Traceability matrices generated: `python ai_dev_flow/scripts/generate_traceability_matrices.py --auto`
 - [ ] Implementation status tags present (@impl-status: complete|in-progress|pending)
-- [ ] IPLAN files follow naming convention: `IPLAN-NNN_slug_YYYYMMDD_HHMMSS.md`
 
 **Traditional Projects (Legacy):**
 - [ ] IDs comply with naming standards (XXX or XXX-YY format)
@@ -721,8 +713,7 @@ aidoc-flow-framework/
 │   ├── CTR/                           # API contract templates - dual-file (Layer 9)
 │   ├── SPEC/                          # Technical specification templates (Layer 10)
 │   ├── TASKS/                         # Code generation templates (Layer 11)
-│   ├── IPLAN/                         # Session planning templates (Layer 12)
-│   └── scripts/                       # Validation and automation scripts (15 total)
+│   └── scripts/                       # Validation and automation scripts
 │       ├── extract_tags.py            # Extract tags from codebase
 │       ├── validate_tags_against_docs.py  # Validate cumulative tagging
 │       ├── generate_traceability_matrices.py  # Generate matrices
@@ -732,7 +723,6 @@ aidoc-flow-framework/
 │       ├── update_traceability_matrix.py      # Update existing matrices
 │       ├── validate_requirement_ids.py  # Validate REQ-ID format
 │       ├── validate_req_spec_readiness.py  # REQ SPEC-readiness scoring
-│       ├── validate_iplan_naming.py   # Validate IPLAN naming conventions
 │       ├── validate_documentation_paths.py  # Path consistency validation
 │       ├── validate_links.py          # Markdown link validation
 │       ├── validate_brd_template.sh   # BRD template compliance
@@ -741,7 +731,7 @@ aidoc-flow-framework/
 ├── scripts/                           # Project setup scripts (root level)
 │   ├── setup_project_hybrid.sh        # Automated hybrid project setup
 │   └── standardize_workflow_refs.sh   # Standardize workflow references
-├── work_plans/                        # Implementation plans (IPLAN output)
+├── work_plans/                        # Implementation plans
 └── docs/                              # Additional documentation
 ```
 
@@ -774,13 +764,11 @@ Layer 10: SPEC-001: Technical Specification (YAML) (@brd→@req + optional impl/
     ↓
 Layer 11: TASKS-001: Code Generation Plan (@brd→@spec)
     ↓
-Layer 12: IPLAN-001: Session Plan (@brd→@tasks)
+Layer 12: Code Implementation (cumulative tags @brd→@tasks)
     ↓
-Layer 13: Code Implementation (cumulative tags @brd→@tasks)
+Layer 13: Test Suite (cumulative tags @brd→@code)
     ↓
-Layer 14: Test Suite (cumulative tags @brd→@code)
-    ↓
-Layer 15: Production Validation (all upstream tags)
+Layer 14: Production Validation (all upstream tags)
 ```
 
 **Each layer includes ALL upstream tags** for complete audit trail and regulatory compliance.
@@ -869,7 +857,6 @@ MIT License - See LICENSE file for details
 - `ai_dev_flow/scripts/update_traceability_matrix.py` - Update existing matrices
 - `ai_dev_flow/scripts/validate_requirement_ids.py` - Validate REQ-ID format
 - `ai_dev_flow/scripts/validate_req_spec_readiness.py` - REQ SPEC-readiness scoring
-- `ai_dev_flow/scripts/validate_iplan_naming.py` - Validate IPLAN naming conventions
 - `ai_dev_flow/scripts/validate_documentation_paths.py` - Path consistency validation
 - `ai_dev_flow/scripts/validate_links.py` - Markdown link validation
 - `ai_dev_flow/scripts/validate_brd_template.sh` - BRD template compliance
@@ -923,11 +910,10 @@ Developed for AI-assisted software engineering workflows optimized for:
 - ✅ **Tool Optimization**: Token limits guide for Claude Code, Gemini CLI, GitHub Copilot
 
 ### Version 2.1 (2025-11-19)
-- Added IPLAN references (Layer 12, timestamp naming)
 - Updated REQ references to v3.0 (REQ v3.0 sections 3-7 for SPEC-ready ≥90%)
 
 ### Version 2.0 (2025-11-13) - Cumulative Tagging Hierarchy
-- ✅ **16-Layer Architecture**: Expanded from 10 to 16 layers (Strategy → Validation)
+- ✅ **15-Layer Architecture**: Expanded from 10 to 15 layers (Strategy → Validation)
 - ✅ **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
 - ✅ **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
   - `extract_tags.py` - Extract tags from codebase
@@ -938,8 +924,7 @@ Developed for AI-assisted software engineering workflows optimized for:
   - `COMPLETE_TAGGING_EXAMPLE.md` - End-to-end cumulative tagging example
   - `TRACEABILITY_SETUP.md` - Setup guide with CI/CD integration
   - `DOMAIN_ADAPTATION_GUIDE.md` - Domain customization checklists
-- ✅ **Layer 12 (IPLAN)**: Session-specific implementation plans (`IPLAN-NNN_*_YYYYMMDD_HHMMSS.md`)
-- ✅ **Directory Updates**: CONTRACTS → CTR (dual-file format), TASKS_PLANS → IPLAN
+- ✅ **Directory Updates**: CONTRACTS → CTR (dual-file format)
 - ✅ **Regulatory Compliance**: Complete audit trails for SEC, FINRA, FDA, ISO
 - ✅ **Impact Analysis**: Instant identification of affected downstream artifacts
 

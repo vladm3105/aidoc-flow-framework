@@ -92,7 +92,7 @@ check_premature_references() {
 
   local found=0
   # Layer 8+ artifacts that shouldn't be referenced with specific numbers
-  local downstream_patterns="(IMPL|CTR|SPEC|TASKS|IPLAN)-[0-9]{2,}"
+  local downstream_patterns="(IMPL|CTR|SPEC|TASKS-[0-9]{2,}"
 
   while IFS= read -r line; do
     if [[ -n "$line" ]]; then

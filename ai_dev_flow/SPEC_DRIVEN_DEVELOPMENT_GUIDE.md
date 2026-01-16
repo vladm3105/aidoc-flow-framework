@@ -34,7 +34,7 @@ Development Principles Guide
 
 ### Change Management (CHG) - Document Immutability
 
-⚠️ **Important**: CHG is NOT a layer in the 16-layer architecture - it's a **change management archival procedure**.
+⚠️ **Important**: CHG is NOT a layer in the 15-layer architecture - it's a **change management archival procedure**.
 
 **Purpose**: Ensure document immutability by archiving superseded documents when requirements change fundamentally
 

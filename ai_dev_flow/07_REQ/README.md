@@ -506,8 +506,6 @@ See `07_REQ/api/av/REQ-01_external_api_integration.md` for a complete example of
 | Version | File | Status | Lines | Notes |
 |---------|------|--------|-------|-------|
 | **V3.0** | [REQ-TEMPLATE.md](REQ-TEMPLATE.md) | **✅ CURRENT** | 1274 | Enhanced with REST API, DB schema, Circuit Breaker, DI setup, Layer 7, absolute paths |
-| V2.0 | [archived/REQ-TEMPLATE-V2-ARCHIVED.md](archived/REQ-TEMPLATE-V2-ARCHIVED.md) | 📦 ARCHIVED | 930 | Legacy V2 template (archived 2025-11-19) |
-| V1.0 | [archived/REQ-TEMPLATE-V1-ARCHIVED.md](archived/REQ-TEMPLATE-V1-ARCHIVED.md) | 📦 DEPRECATED | 30-48 | Basic requirements only |
 
 ### Template Evolution
 
@@ -684,7 +682,7 @@ stateDiagram-v2
     Error --> Reconnecting: retry
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 **Circuit Breaker Configuration**:
 ```python

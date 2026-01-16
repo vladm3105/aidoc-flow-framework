@@ -146,10 +146,10 @@ check_downstream_refs() {
       ((ERRORS++)) || true
       ((found++)) || true
     fi
-  done < <(grep -rnE "(PRD|ADR|SPEC|TASKS|IPLAN)-[0-9]{2,}" "$BRD_DIR" 2>/dev/null | \
+  done < <(grep -rnE "(PRD|ADR|SPEC|TASKS)-[0-9]{2,}" "$BRD_DIR" 2>/dev/null | \
            grep -v "BRD_CORPUS_VALIDATION" | \
            grep -v "_SCHEMA\|_TEMPLATE\|_RULES\|_GUIDE" | \
-           grep -v "^.*:- \*\*\(PRD\|ADR\|SPEC\|TASKS\|IPLAN\|EARS\|BDD\)-" || true)
+           grep -v "^.*:- \*\*\(PRD\|ADR\|SPEC\|TASKS\\|EARS\|BDD\)-" || true)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No premature downstream references${NC}"

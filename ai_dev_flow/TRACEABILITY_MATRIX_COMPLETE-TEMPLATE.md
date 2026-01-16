@@ -62,7 +62,7 @@ See: [TRACEABILITY.md](./TRACEABILITY.md#tag-based-auto-discovery-alternative) f
 
 ### 1.1 Complete SDD Workflow
 
-This matrix tracks the complete 16-layer AI-Driven Specification-Driven Development workflow (Layer 0: Strategy through Layer 15: Validation):
+This matrix tracks the complete 15-layer AI-Driven Specification-Driven Development workflow (Layer 0: Strategy through Layer 14: Validation):
 
 **Layers 1-3 - Business**: BRD (L1) → PRD (L2) → EARS (L3)
 **Layer 4 - Testing**: BDD (acceptance criteria)
@@ -623,7 +623,7 @@ graph TD
     style Production fill:#a5d6a7
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 16-layer architecture (Layers 0-15) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
 
 ### 5.2 Document Type Relationships Matrix
 

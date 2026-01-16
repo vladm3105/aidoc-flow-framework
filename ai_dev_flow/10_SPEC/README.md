@@ -70,7 +70,7 @@ SPECs serve as the **technical implementation contracts** that:
 
 **Layer 10: Technical Specifications**
 
-SPECs sit between REQ (atomic requirements) and TASKS (implementation tasks) in the 16-layer architecture (Layer 0-15):
+SPECs sit between REQ (atomic requirements) and TASKS (implementation tasks) in the 15-layer architecture (Layers 0-14):
 
 **⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 

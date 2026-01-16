@@ -30,7 +30,7 @@ Important MVP note: MVP artifacts are single, flat files. Do not use document sp
 
 ## 🚀 The MVP Track
 
-The **MVP Track** offers a faster, lighter alternative to the standard 16-layer framework while maintaining full traceability and compliance.
+The **MVP Track** offers a faster, lighter alternative to the standard 15-layer framework while maintaining full traceability and compliance.
 
 ### Key Differences vs Standard Flow
 

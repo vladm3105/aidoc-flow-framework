@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # doc_flow Quality Gates Validation Script
-# Ensures 16-layer SDD workflow progression with TRACEABILITY.md alignment
+# Ensures 15-layer SDD workflow progression with TRACEABILITY.md alignment
 #
 # TRACEABILITY RULES (REQUIRED vs OPTIONAL):
 # +-----------------------+-----------------------+------------------------+
@@ -50,13 +50,10 @@ validate_quality_gates() {
             validate_tasks_ready "$file"
             ;;
         docs/TASKS/*.md)
-            validate_iplan_ready "$file"
+            echo "ℹ️ TASKS is terminal layer - no downstream validation"
             ;;
         docs/IMPL/*.md)
             validate_ctr_ready "$file"
-            ;;
-        docs/IPLAN/*.md)
-            echo "ℹ️ IPLAN is terminal layer - no downstream validation"
             ;;
         docs/CTR/*.md)
             validate_ctr_files "$file"
@@ -104,10 +101,6 @@ validate_impl_ready() {
 validate_tasks_ready() {
     # SPEC uses YAML metadata format
     validate_yaml_meta_score "$1" "task_ready_score" 90
-}
-
-validate_iplan_ready() {
-    validate_ready_score "$1" "IPLAN-Ready Score" 90
 }
 
 validate_ctr_ready() {
@@ -200,7 +193,6 @@ validate_cumulative_tags() {
         docs/CTR/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "impl") ;;
         docs/SPEC/*.yaml) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "impl" "ctr") ;;
         docs/TASKS/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "impl" "ctr" "spec") ;;
-        docs/IPLAN/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "impl" "ctr" "spec" "tasks") ;;
     esac
 
     validate_tags_presence "$file" "${required_tags[@]}"
@@ -241,8 +233,7 @@ show_usage() {
     echo "  docs/IMPL/*.md       → CTR-ready score ≥90%"
     echo "  docs/CTR/*.md        → Dual-file validation (md+yaml)"
     echo "  docs/SPEC/*.yaml     → TASKS-ready score ≥90%"
-    echo "  docs/TASKS/*.md      → IPLAN-ready score ≥90%"
-    echo "  docs/IPLAN/*.md      → Terminal layer (no downstream)"
+    echo "  docs/TASKS/*.md      → Terminal layer (no downstream)"
     echo ""
     echo "Also validates cumulative tagging alignment with TRACEABILITY.md"
     echo ""

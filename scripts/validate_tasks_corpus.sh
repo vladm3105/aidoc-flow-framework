@@ -1,8 +1,8 @@
 #!/bin/bash
 # =============================================================================
 # TASKS Corpus Validation Script
-# Validates entire TASKS document set before IPLAN creation
-# Layer 11 → Layer 12 transition gate
+# Validates entire TASKS document set before implementation
+# Layer 11 → Code transition gate
 # =============================================================================
 
 set -euo pipefail
@@ -29,7 +29,7 @@ VERBOSE="${2:-}"
 
 print_header() {
   echo "=========================================="
-  echo "TASKS Corpus Validation (Pre-IPLAN Gate)"
+  echo "TASKS Corpus Validation (Pre-Implementation Gate)"
   echo "=========================================="
   echo "Directory: $TASKS_DIR"
   echo "Date: $(TZ=America/New_York date '+%Y-%m-%d %H:%M:%S %Z')"
@@ -87,7 +87,8 @@ check_premature_references() {
   echo "--- CORPUS-02: Premature Downstream References ---"
 
   local found=0
-  local downstream_patterns="IPLAN-[0-9]{2,}"
+  # TASKS is the final documentation layer before Code - no downstream doc patterns
+  local downstream_patterns=""
 
   while IFS= read -r line; do
     if [[ -n "$line" ]]; then
@@ -471,7 +472,7 @@ print_summary() {
   echo ""
 
   if [[ $ERRORS -gt 0 ]]; then
-    echo -e "${RED}FAILED: $ERRORS error(s) must be fixed before IPLAN creation${NC}"
+    echo -e "${RED}FAILED: $ERRORS error(s) must be fixed before implementation${NC}"
     exit 1
   elif [[ $WARNINGS -gt 0 ]]; then
     echo -e "${YELLOW}PASSED with $WARNINGS warning(s)${NC}"

@@ -139,7 +139,7 @@ check_downstream_refs() {
       ((ERRORS++)) || true
       ((found++)) || true
     fi
-  done < <(grep -rnE "(ADR|SYS|REQ|SPEC|TASKS|IPLAN)-[0-9]{2,}" "$PRD_DIR" 2>/dev/null | \
+  done < <(grep -rnE "(ADR|SYS|REQ|SPEC|TASKS-[0-9]{2,}" "$PRD_DIR" 2>/dev/null | \
            grep -v "PRD_CORPUS_VALIDATION" | \
            grep -v "_SCHEMA\|_TEMPLATE\|_RULES\|_GUIDE" || true)
 

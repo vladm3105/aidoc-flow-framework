@@ -172,7 +172,7 @@ cd /opt/data/project_name
 # In Claude Code: /skill project-init
 
 # OR manually create folder structure
-mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
+mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
 mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
 mkdir -p work_plans
 mkdir -p scripts
@@ -189,7 +189,7 @@ mkdir -p scripts
 **`/skill project-init`** (Full Structure):
 - Creates complete documentation structure (`docs/`)
 - Creates `work_plans/` directory
-- Initializes all 13 artifact directories (BRD through IPLAN)
+- Initializes all 12 artifact directories (BRD through TASKS)
 - Ideal for: Starting new projects from scratch
 - Includes: Domain selection, contract decision, template customization
 
@@ -258,7 +258,7 @@ done
 │       └── matrices/
 │
 ├── work_plans/                      # Implementation plans (auto-created by project-init)
-│   └── IPLAN-001_*.md
+│   └── PLAN-001_*.md
 │
 ├── scripts/
 │   ├── validate/                    # Symlink → framework scripts
@@ -641,7 +641,7 @@ mkdir -p /opt/data/new_project
 cd /opt/data/new_project
 # Use /skill project-init for full structure
 # OR manually:
-mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS,IPLAN}
+mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
 mkdir -p work_plans
 mkdir -p src tests
 

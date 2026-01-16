@@ -1,5 +1,5 @@
 ---
-title: "Quality Gates Integration with 16-Layer Traceability"
+title: "Quality Gates Integration with 15-Layer Traceability"
 tags:
   - framework-guide
   - shared-architecture
@@ -9,20 +9,20 @@ custom_fields:
   development_status: active
 ---
 
-# Quality Gates Integration with 16-Layer Traceability
+# Quality Gates Integration with 15-Layer Traceability
 
 **Version**: 1.0
 **Date**: 2025-11-19
 **Status**: Active
 **Framework**: AI Dev Flow SDD (100% Compliant with TRACEABILITY.md)
-**Purpose**: Quality gate system aligned with 16-layer architecture and cumulative tagging hierarchy
+**Purpose**: Quality gate system aligned with 15-layer architecture and cumulative tagging hierarchy
 
 ---
 
 ## Table of Contents
 
 1. [Quality Gate Architecture](#1-quality-gate-architecture)
-2. [16-Layer Quality Gates Matrix](#2-16-layer-quality-gates-matrix)
+2. [15-Layer Quality Gates Matrix](#2-15-layer-quality-gates-matrix)
 3. [Validation Integration](#3-validation-integration)
 4. [Pre-Commit Implementation](#4-pre-commit-implementation)
 5. [Quality Gate Commands](#5-quality-gate-commands)
@@ -31,7 +31,7 @@ custom_fields:
 
 ## 1. Quality Gate Architecture
 
-Quality gates ensure that artifacts meet maturity thresholds before progressing to the next layer in the 16-layer SDD workflow (Layers 0-15, per TRACEABILITY.md §1.2.1).
+Quality gates ensure that artifacts meet maturity thresholds before progressing to the next layer in the 15-layer SDD workflow (Layers 0-14, per TRACEABILITY.md §1.2.1).
 
 ### Traceability Rules (REQUIRED vs OPTIONAL)
 
@@ -69,9 +69,9 @@ metadata:
 
 ---
 
-## 2. 16-Layer Quality Gates Matrix
+## 2. 15-Layer Quality Gates Matrix
 
-Aligned with the 16-Layer Architecture (TRACEABILITY.md §1.2.1):
+Aligned with the 15-Layer Architecture (TRACEABILITY.md §1.2.1):
 
 | **Layer** | **Artifact Type** | **Ready Score Field** | **Validation Command** | **Gates Upstream Tags** |
 |-----------|-------------------|----------------------|------------------------|------------------------|
@@ -206,7 +206,7 @@ cat > .git/hooks/pre-commit << 'EOF'
 #!/bin/sh
 
 # AI Dev Flow Quality Gates Integration
-# Validates against 16-Layer Architecture (TRACEABILITY.md)
+# Validates against 15-Layer Architecture (TRACEABILITY.md)
 
 echo "🔍 Running AI Dev Flow quality gate validation..."
 
@@ -389,7 +389,7 @@ git diff --name-only | grep '^docs/' | xargs ./scripts/validate_quality_gates.sh
 
 This quality gate system is **100% aligned** with TRACEABILITY.md requirements:
 
-- **Layer Numbers**: Uses 16-layer formal numbering (0-15)
+- **Layer Numbers**: Uses 15-layer formal numbering (0-14)
 - **Cumulative Tagging**: Enforces cumulative inheritance rules (§4.3)
 - **Diagram Conventions**: Follows L1-L11 visual groupings with formal layer references
 - **Tag Format**: Uses `@artifact-type: TYPE.NN.TT.SS (Unified Feature ID)` format (§4.1)
@@ -414,7 +414,7 @@ This quality gate system provides **smooth transitions** between SDD workflow la
 3. **Pre-commit blocking** prevents immature artifacts
 4. **Automated recovery** provides immediate improvement guidance
 
-**Result**: Zero-defect progression through the 16-layer SDD architecture with complete traceability coverage.
+**Result**: Zero-defect progression through the 15-layer SDD architecture with complete traceability coverage.
 
 ---
 

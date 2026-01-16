@@ -87,7 +87,7 @@ check_premature_references() {
   echo "--- CORPUS-02: Premature Downstream References ---"
 
   local found=0
-  local downstream_patterns="(TASKS|IPLAN)-[0-9]{2,}"
+  local downstream_patterns="(TASKS-[0-9]{2,}"
 
   while IFS= read -r line; do
     if [[ -n "$line" ]]; then

@@ -205,7 +205,6 @@ get_layer_for_artifact() {
         CTR) echo "9" ;;
         SPEC) echo "10" ;;
         TASKS) echo "11" ;;
-        IPLAN) echo "12" ;;
         *) echo "0" ;;
     esac
 }

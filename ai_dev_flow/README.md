@@ -46,7 +46,7 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 - ✅ **Complete Traceability**: Bidirectional links from business requirements to production code
 - ✅ **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
 - ✅ **AI-Optimized**: YAML specifications designed for deterministic code generation
-- ✅ **16-Layer Architecture**: Structured progression from strategy through validation
+- ✅ **15-Layer Architecture**: Structured progression from strategy through validation
  - ✅ **Dual-File Contracts (CTR only)**: Human-readable `.md` + machine-readable `.yaml` for API Contracts
 - ✅ **Strict ID Standards**: Consistent naming and organization across all documents
 - ✅ **Example-Driven**: Generic examples with `[PLACEHOLDER]` format for easy customization
@@ -1012,7 +1012,7 @@ python scripts/validate_artifact.py --type REQ --strict
 
 ### Business Requirements → Production Code
 
-The AI Dev Flow follows a structured progression through 16 layers:
+The AI Dev Flow follows a structured progression through 15 layers:
 
 **Documentation Layers (0-11)**:
 1. **Strategy** (Layer 0) - External business strategy documents
@@ -1218,7 +1218,7 @@ graph LR
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Detailed SDD methodology
 - [TRACEABILITY.md](./TRACEABILITY.md) - Traceability format standards and cumulative tagging hierarchy
 - [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md) - Setup guide for cumulative tagging validation and CI/CD
-- [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) - End-to-end example across all 16 layers
+- [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) - End-to-end example across all 15 layers
 - [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) - Domain customization checklists
 - [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) - Document naming conventions
 

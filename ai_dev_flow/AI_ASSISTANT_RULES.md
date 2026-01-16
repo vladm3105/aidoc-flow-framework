@@ -1477,7 +1477,7 @@ Current challenges in assisted documentation creation:
 - Skill selection complexity (25+ skills; steep learning curve)
 - Context loss across artifacts and sessions
 - Quality inconsistency vs templates and validators
-- Workflow friction choosing next steps across 16 layers
+- Workflow friction choosing next steps across 15 layers
 
 Business impact:
 - Productivity loss (40–60% on skill/workflow overhead)

@@ -53,7 +53,7 @@ VALID_TAGS = {
     'layer-9-artifact',  # CTR
     'layer-10-artifact', # SPEC
     'layer-11-artifact', # TASKS
-    'layer-12-artifact', # IPLAN
+    'layer-12-artifact', # Code
 
     # Skill categories
     'documentation-skill',
@@ -76,7 +76,6 @@ VALID_TAGS = {
     'ctr-template',
     'ears-template',
     'impl-template',
-    'iplan-template',
     'prd-template',
     'req-template',
     'spec-template',

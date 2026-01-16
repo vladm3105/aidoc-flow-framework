@@ -20,7 +20,7 @@ custom_fields:
 
 ## Overview
 
-The SDD Framework uses a 12-layer document hierarchy. This guide documents the procedures and files that must be updated when evolving the layer structure.
+The SDD Framework uses a 15-layer document hierarchy (Layers 0-14). This guide documents the procedures and files that must be updated when evolving the layer structure.
 
 **Authoritative Source**: `LAYER_REGISTRY.yaml` is the single source of truth for layer definitions.
 
@@ -131,7 +131,7 @@ Communicate timeline for complete removal (recommend 6-12 months).
 ### Phase 1: Registry Creation (Complete)
 
 - [x] Create `LAYER_REGISTRY.yaml`
-- [x] Document all 12 layers
+- [x] Document all 15 layers
 
 ### Phase 2: Validation Tools (Future)
 

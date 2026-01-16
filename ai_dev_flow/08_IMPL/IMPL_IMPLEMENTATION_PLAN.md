@@ -65,7 +65,7 @@ Create complete IMPL artifact system including folder structure, templates, inde
 
 | Requirement | Description | Implementation Approach |
 |-------------|-------------|------------------------|
-| Framework Completeness | All artifact types in 16-layer architecture (Layers 0-15) documented | Add IMPL as Layer 8 (Implementation Planning) |
+| Framework Completeness | All artifact types in 15-layer architecture (Layers 0-14) documented | Add IMPL as Layer 8 (Implementation Planning) |
 | Traceability | End-to-end artifact linkage | IMPL bridges REQ → 09_CTR/10_SPEC/TASKS |
 | Project Management | WHO/WHAT/WHEN tracking | IMPL provides phase planning structure |
 | Team Coordination | Multi-team delivery coordination | IMPL assigns ownership and dependencies |
@@ -73,7 +73,7 @@ Create complete IMPL artifact system including folder structure, templates, inde
 **Source Business Logic**:
 - SPEC_DRIVEN_DEVELOPMENT_GUIDE.md (workflow definitions)
 - AI Dev Flow Framework architecture
-- 16-layer architecture (Layers 0-15)
+- 15-layer architecture (Layers 0-14)
 
 **Success Criteria**:
 - [ ] 08_IMPL/ folder structure created

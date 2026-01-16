@@ -43,7 +43,7 @@ custom_fields:
 
 ### Background
 
-The AI Dev Flow framework provides 25+ documentation skills for creating SDD artifacts. Users must manually select appropriate skills, understand project context, and navigate the 16-layer workflow. This creates friction and inconsistency in documentation quality.
+The AI Dev Flow framework provides 25+ documentation skills for creating SDD artifacts. Users must manually select appropriate skills, understand project context, and navigate the 15-layer workflow. This creates friction and inconsistency in documentation quality.
 
 ### Problem Statement
 

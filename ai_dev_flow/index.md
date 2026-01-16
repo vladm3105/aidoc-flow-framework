@@ -95,7 +95,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 ### Business Layer (Layers 1-3)
 
 - **BRD** (`01_BRD/`) - Layer 1: Business Requirements Documents defining business objectives and constraints
-  - Template: [BRD-TEMPLATE.md](./01_BRD/BRD-TEMPLATE.md) | **MVP**: [BRD-MVP-TEMPLATE.md](./01_BRD/BRD-MVP-TEMPLATE.md)
+  - Template: [BRD-MVP-TEMPLATE.md](./01_BRD/BRD-MVP-TEMPLATE.md) (MVP Default)
   - Index: [BRD-00_index.md](./01_BRD/BRD-00_index.md)
   - Guidance: [PLATFORM_VS_FEATURE_BRD.md](./PLATFORM_VS_FEATURE_BRD.md)
 - **PRD** (`02_PRD/`) - Layer 2: Product Requirements Documents translating business needs to product features
@@ -103,7 +103,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Template: [PRD-TEMPLATE.md](./02_PRD/PRD-TEMPLATE.md) | **MVP**: [PRD-MVP-TEMPLATE.md](./02_PRD/PRD-MVP-TEMPLATE.md)
 - **EARS** (`03_EARS/`) - Layer 3: Event-Action-Response-State (Engineering Requirements)
   - Index: [EARS-00_index.md](./03_EARS/EARS-00_index.md)
-  - Template: [EARS-TEMPLATE.md](./03_EARS/EARS-TEMPLATE.md)
+  - Template: [EARS-MVP-TEMPLATE.md](./03_EARS/EARS-MVP-TEMPLATE.md) (MVP Default)
 
 ### Testing Layer (Layer 4)
 
@@ -118,18 +118,18 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 - **ADR** (`05_ADR/`) - Layer 5: Architecture Decision Records documenting key architectural choices
   - Index: [ADR-00_index.md](./05_ADR/ADR-00_index.md)
-  - Template: [ADR-TEMPLATE.md](./05_ADR/ADR-TEMPLATE.md) | **MVP**: [ADR-MVP-TEMPLATE.md](./05_ADR/ADR-MVP-TEMPLATE.md)
+  - Template: [ADR-MVP-TEMPLATE.md](./05_ADR/ADR-MVP-TEMPLATE.md) (MVP Default)
   - Purpose: Technical decisions with context, decision, and consequences
 - **SYS** (`06_SYS/`) - Layer 6: System Requirements Specifications consolidating requirements into system designs
   - Index: [SYS-00_index.md](./06_SYS/SYS-00_index.md)
-  - Template: [SYS-TEMPLATE.md](./06_SYS/SYS-TEMPLATE.md) | **MVP**: [SYS-MVP-TEMPLATE.md](./06_SYS/SYS-MVP-TEMPLATE.md)
+  - Template: [SYS-MVP-TEMPLATE.md](./06_SYS/SYS-MVP-TEMPLATE.md) (MVP Default)
   - Purpose: System-level functional requirements and quality attributes
 
 ### Requirements Layer (Layer 7)
 
 - **REQ** (`07_REQ/`) - Layer 7: Atomic, testable requirements with SPEC-readiness scoring
   - Index: [REQ-00_index.md](./07_REQ/REQ-00_index.md)
-  - Template: [REQ-TEMPLATE.md](./07_REQ/REQ-TEMPLATE.md) | **MVP**: [REQ-MVP-TEMPLATE.md](./07_REQ/REQ-MVP-TEMPLATE.md)
+  - Template: [REQ-MVP-TEMPLATE.md](./07_REQ/REQ-MVP-TEMPLATE.md) (MVP Default)
   - Organization: Nested per-document folders (DEFAULT)
     - Folder: `07_REQ/REQ-NN_{slug}/`
     - Primary file (atomic): `07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
