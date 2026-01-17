@@ -119,12 +119,10 @@ phase_1_tasks:
       pre_check:
         status: NOT_STARTED
         checklist:
-          - verified_req: false      # Verified against REQ-NN
-          - verified_spec: false     # Verified against SPEC-NN
-          - confirmed_arch: false    # Confirmed Architecture Decision
-          - checked_gaps: false      # Checked for Missing Logic/Fields
-          - reviewed_upstream: false # Reviewed upstream artifacts
-          - confirmed_deps: false    # Confirmed dependencies available
+          - verified_req: false       # Verified against REQ-NN
+          - verified_spec: false      # Verified against SPEC-NN
+          - confirmed_arch: false     # Confirmed architecture pattern
+          - checked_deps: false       # All dependencies available
       implementation:
         status: NOT_STARTED
         started: null                # YYYY-MM-DD when started
@@ -132,15 +130,10 @@ phase_1_tasks:
       post_check:
         status: NOT_STARTED
         checklist:
-          # Rule 2: Phase Tracker Update
-          - tasks_status_updated: false     # Changed TASKS Status to COMPLETED
-          - completion_date_added: false    # Added completion date/notes
-          # Rule 1: Session Log Update
-          - session_log_date: false         # Added completion date
-          - session_log_task_id: false      # Added TASKS ID
-          - session_log_status: false       # Status marked as COMPLETED
-          - session_log_summary: false      # Added implementation summary
-    
+          - tests_passing: false      # All tests pass
+          - coverage_met: false       # Coverage thresholds met
+          - docs_updated: false       # Documentation updated
+          - session_logged: false     # Session log entry added
   - id: TASKS-YY
     service_name: "[P1 Service Name]"
     priority: P1
@@ -152,9 +145,7 @@ phase_1_tasks:
           - verified_req: false
           - verified_spec: false
           - confirmed_arch: false
-          - checked_gaps: false
-          - reviewed_upstream: false
-          - confirmed_deps: false
+          - checked_deps: false
       implementation:
         status: NOT_STARTED
         started: null
@@ -162,12 +153,10 @@ phase_1_tasks:
       post_check:
         status: NOT_STARTED
         checklist:
-          - tasks_status_updated: false
-          - completion_date_added: false
-          - session_log_date: false
-          - session_log_task_id: false
-          - session_log_status: false
-          - session_log_summary: false
+          - tests_passing: false
+          - coverage_met: false
+          - docs_updated: false
+          - session_logged: false
 ```
 
 ---
@@ -196,9 +185,7 @@ phase_2_tasks:
           - verified_req: false
           - verified_spec: false
           - confirmed_arch: false
-          - checked_gaps: false
-          - reviewed_upstream: false
-          - confirmed_deps: false
+          - checked_deps: false
       implementation:
         status: NOT_STARTED
         started: null
@@ -206,13 +193,10 @@ phase_2_tasks:
       post_check:
         status: NOT_STARTED
         checklist:
-          - tasks_status_updated: false
-          - completion_date_added: false
-          - session_log_date: false
-          - session_log_task_id: false
-          - session_log_status: false
-          - session_log_summary: false
-    
+          - tests_passing: false
+          - coverage_met: false
+          - docs_updated: false
+          - session_logged: false
   - id: TASKS-AA
     service_name: "[Service Name]"
     priority: P1
@@ -224,9 +208,7 @@ phase_2_tasks:
           - verified_req: false
           - verified_spec: false
           - confirmed_arch: false
-          - checked_gaps: false
-          - reviewed_upstream: false
-          - confirmed_deps: false
+          - checked_deps: false
       implementation:
         status: NOT_STARTED
         started: null
@@ -234,12 +216,10 @@ phase_2_tasks:
       post_check:
         status: NOT_STARTED
         checklist:
-          - tasks_status_updated: false
-          - completion_date_added: false
-          - session_log_date: false
-          - session_log_task_id: false
-          - session_log_status: false
-          - session_log_summary: false
+          - tests_passing: false
+          - coverage_met: false
+          - docs_updated: false
+          - session_logged: false
 ```
 
 ## 3. Session Log

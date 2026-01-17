@@ -250,7 +250,7 @@ with open('DEVELOPMENT_PLAN.md') as f:
     for block in yaml_blocks:
         data = yaml.safe_load(block)
         for task in data.values():
-            print(f"{task['id']}: {task['workflow']['tasks']['status']}")
+            print(f"{task['id']}: {task['workflow']['implementation']['status']}")
 ```
 
 ### 2. Progress Dashboards
@@ -371,15 +371,13 @@ The unified TASKS document (v2.0) has **11 sections**:
 | 4. Execution Commands | Setup, implementation, validation | Bash commands |
 | 5. Constraints | Technical and quality constraints | Verification criteria |
 | 6. Acceptance Criteria | Functional, quality, operational | Success measures |
-| 7. Implementation Contracts | Provider/consumer contracts | Parallel dev coordination |
-| 8. Traceability | Upstream refs, tags, code locations | Audit trail |
-| 9. Risk & Mitigation | Risk table | Blocker prediction |
-| 10. Session Log | Progress tracking | **Syncs with Dev Plan** |
-| 11. Change History | Version history | Change tracking |
+| 7. Traceability | Upstream refs, tags, code locations | Audit trail |
+| 8. Risk & Mitigation | Risk table | Blocker prediction |
+| 9. Session Log | Progress tracking | **Syncs with Dev Plan** |
+| 10. Change History | Version history | Change tracking |
 
 **Key Features:**
 - **Section 4 (Execution Commands)**: Contains bash commands for implementation
-- **Section 7 (Implementation Contracts)**: Type-safe interfaces for parallel development
 - **YAML Tracking Block**: Embedded in each TASKS for Development Plan integration
 
 **Development Plan Role:**
@@ -393,7 +391,7 @@ The unified TASKS document (v2.0) has **11 sections**:
 - **Template**: `ai_dev_flow/11_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`
 - **TASKS Template**: `ai_dev_flow/11_TASKS/TASKS-TEMPLATE.md`
 - **TASKS Documentation**: `ai_dev_flow/11_TASKS/README.md`
-- **Workflow Guide**: `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- **Workflow Guide**: `../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 
 ---
 
