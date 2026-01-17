@@ -674,6 +674,6 @@ Projects may document intentional framework deviations. Use this template:
 ## References
 
 - [EARS_VALIDATION_RULES.md](./EARS_VALIDATION_RULES.md) - Individual file validation
-- [EARS-TEMPLATE.md](./EARS-TEMPLATE.md) - EARS document template
+- [EARS-MVP-TEMPLATE.md](./EARS-MVP-TEMPLATE.md) - EARS document template (full template archived)
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

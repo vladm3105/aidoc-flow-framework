@@ -742,6 +742,6 @@ fi
 ## References
 
 - [REQ_VALIDATION_RULES.md](./REQ_VALIDATION_RULES.md) - Individual file validation
-- [REQ-TEMPLATE.md](./REQ-TEMPLATE.md) - REQ document template
+- [REQ-MVP-TEMPLATE.md](./REQ-MVP-TEMPLATE.md) - REQ document template (full template archived)
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

@@ -145,7 +145,7 @@ Tip: Use `--strict` with the path validator when you want failures to block gene
   - Generation: Create from `REQ-MVP-TEMPLATE.md` with Document Control (semver, ISO dates, P-level, SPEC-Ready Score), upstream chain, and cumulative tags.
 
 - SPEC:
-  - Generation: Create from `SPEC-TEMPLATE.yaml` with required top-level keys; `traceability.cumulative_tags` and `upstream_sources`; `interfaces.classes`; `performance.latency_targets`; `security` (auth/authz/input_validation); `observability` (metrics/logging/health); `verification` stubs.
+  - Generation: Create from `SPEC-MVP-TEMPLATE.yaml` with required top-level keys; `traceability.cumulative_tags` and `upstream_sources`; `interfaces.classes`; `performance.latency_targets`; `security` (auth/authz/input_validation); `observability` (metrics/logging/health); `verification` stubs.
 
 - TASKS:
   - Generated from template; validated.

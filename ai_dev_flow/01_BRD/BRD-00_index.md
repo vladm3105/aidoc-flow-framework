@@ -35,7 +35,7 @@ Document Organization
 
 Templates
 
-- [BRD-TEMPLATE.md](./BRD-TEMPLATE.md): Comprehensive BRD template with detailed sections
+- [BRD-MVP-TEMPLATE.md](./BRD-MVP-TEMPLATE.md): BRD template (default; full template archived)
 - [BRD_CREATION_RULES.md](./BRD_CREATION_RULES.md): Complete reference for creating BRD documents according to doc-flow SDD framework
 - [BRD_VALIDATION_RULES.md](./BRD_VALIDATION_RULES.md): Validation rules and quality gates for BRD documents
 

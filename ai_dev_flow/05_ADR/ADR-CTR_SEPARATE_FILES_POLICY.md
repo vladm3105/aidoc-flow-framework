@@ -44,7 +44,7 @@ The AI dev flow templates previously provided contradictory guidance, with some 
 
 ### Current Template Conflicts
 
-**SPEC-TEMPLATE.yaml** (lines 314-336) suggested:
+**SPEC-MVP-TEMPLATE.yaml** (lines 314-336) suggested:
 ```yaml
 # Option A: Reference separate contract files
 contracts:
@@ -165,7 +165,7 @@ Every API contract requires:
 
 ### Template Updates Required
 
-1. **SPEC-TEMPLATE.yaml** (lines 314-336):
+1. **SPEC-MVP-TEMPLATE.yaml** (lines 314-336):
    - **Remove**: "Option B: Embed contract inline" section
    - **Keep**: "Option A: Reference separate contract files"
    - **Add**: "Contract References" section with CTR-NNN links
@@ -179,12 +179,12 @@ Every API contract requires:
    - **Create**: Index file listing all contracts
    - **Format**: Table with CTR-ID, title, status, SPECs using it
 
-4. **CTR-TEMPLATE.md** (already exists):
+4. **CTR-MVP-TEMPLATE.md** (already exists):
    - **Verify**: Emphasizes dual-file requirement
    - **Add**: Reference to this ADR
 
    - **Verify**: Provides OpenAPI/AsyncAPI base definition
-   - **Add**: Comment referencing CTR-TEMPLATE.md
+   - **Add**: Comment referencing CTR-MVP-TEMPLATE.md
 
 ### Validation
 
@@ -281,9 +281,9 @@ Before merging PR with new CTR:
 
 ### Related Documents
 
-- [CTR-TEMPLATE.md](../09_CTR/CTR-TEMPLATE.md) - Markdown template
+- [CTR-MVP-TEMPLATE.md](../09_CTR/CTR-MVP-TEMPLATE.md) - Markdown template
 - [09_CTR/README.md](../09_CTR/README.md) - Contracts overview
-- [SPEC-TEMPLATE.yaml](../10_SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
+- [SPEC-MVP-TEMPLATE.yaml](../10_SPEC/SPEC-MVP-TEMPLATE.yaml) - Technical specification template
 - [TRACEABILITY.md](../TRACEABILITY.md) - Document linking standards
 
 ### Standards

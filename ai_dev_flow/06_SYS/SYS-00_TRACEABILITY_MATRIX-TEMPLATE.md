@@ -316,6 +316,6 @@ graph TD
 
 - **SYS Index**: [SYS-00_index.md](SYS-00_index.md)
 - **SYS MVP Template**: [SYS-MVP-TEMPLATE.md](SYS-MVP-TEMPLATE.md) (default)
-- **SYS Full Template**: [SYS-TEMPLATE.md](SYS-TEMPLATE.md)
+- **SYS Full Template**: [SYS-TEMPLATE.md](SYS-TEMPLATE.md) (archived; use only if enterprise/full explicitly required)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Related Matrices**: [ADR](../05_ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md), [REQ](../07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../10_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)

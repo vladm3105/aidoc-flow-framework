@@ -628,7 +628,7 @@ except ValidationError as e:
 ## 14. Examples
 
 ### 14.1 Template Files
-- **[CTR-TEMPLATE.md](./CTR-TEMPLATE.md)**: 12-section markdown template (primary standard)
+- **[CTR-MVP-TEMPLATE.md](./CTR-MVP-TEMPLATE.md)**: 12-section markdown template (primary standard)
 - **[CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml)**: Validation schema defining 12-section structure and OpenAPI 3.x requirements
 
 ### 14.2 Example Scenarios
@@ -654,7 +654,7 @@ except ValidationError as e:
 
 | Task | Location |
 |------|----------|
-| **Copy template** | CTR-TEMPLATE.md (structure) + OpenAPI 3.x YAML |
+| **Copy template** | CTR-MVP-TEMPLATE.md (structure) + OpenAPI 3.x YAML |
 | **Reserve ID** | CTR-00_index.md (check next available) |
 | **Naming format** | CTR-NN_snake_case_slug.md + .yaml |
 | **Organize by type** | Optional: 09_CTR/{agents,mcp,infra}/ |

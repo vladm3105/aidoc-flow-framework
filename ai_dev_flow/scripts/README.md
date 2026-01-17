@@ -226,7 +226,7 @@ Total Issues Found: 0
 HIGH SEVERITY ISSUES
 --------------------------------------------------------------------------------
 
-ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md:966
+ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
   [HIGH] SPACE_IN_LINK
   Space character in link path: '(.. /DOCUMENT_ID_CORE_RULES.md)'
   💡 Suggestion: Remove space: change '(.. /' to '(../'

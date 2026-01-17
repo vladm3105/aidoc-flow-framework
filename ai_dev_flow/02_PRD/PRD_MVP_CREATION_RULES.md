@@ -13,10 +13,10 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of PRD-TEMPLATE.md
-# - Authority: PRD-TEMPLATE.md is the single source of truth for PRD structure
-# - Purpose: AI guidance for document creation (derived from template)
-# - On conflict: Defer to PRD-TEMPLATE.md
+# 📋 Document Role: Guides creation of PRD-MVP-TEMPLATE.md (default)
+# - Authority: PRD-MVP-TEMPLATE.md is the primary standard for PRD structure; full template is archived
+# - Purpose: AI guidance for document creation (derived from MVP template)
+# - On conflict: Defer to PRD-MVP-TEMPLATE.md
 # =============================================================================
 ---
 title: "PRD Creation Rules"
@@ -32,12 +32,12 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is a **CREATION HELPER** for PRD-TEMPLATE.md.
-> - **Authority**: `PRD-TEMPLATE.md` is the single source of truth for PRD structure
+> **📋 Document Role**: This is a **CREATION HELPER** for PRD-MVP-TEMPLATE.md (default).
+> - **Authority**: `PRD-MVP-TEMPLATE.md` is the primary standard for PRD structure; full template archived
 > - **Validation**: Use `PRD_VALIDATION_RULES.md` after PRD creation/changes
 >
 > **⚠️ Numbering Note**: This document's Table of Contents uses rule category numbers (0-15),
-> which are different from PRD section numbers (1-21). Always refer to PRD-TEMPLATE.md for
+> which are different from PRD section numbers (1-21). Always refer to PRD-MVP-TEMPLATE.md for
 > actual PRD section structure.
 
 # PRD Creation Rules
@@ -49,7 +49,6 @@ custom_fields:
 | Template | File | When to Use |
 |----------|------|-------------|
 | **MVP (DEFAULT)** | `PRD-MVP-TEMPLATE.md` | All new projects unless full template is explicitly requested |
-| Full | `PRD-TEMPLATE.md` | Enterprise projects, regulatory compliance, or when prompted |
 
 **Triggering Full Template**:
 - Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
@@ -65,7 +64,7 @@ custom_fields:
 **Version**: 2.1
 **Date**: 2025-11-26
 **Last Updated**: 2025-11-30
-**Source**: Extracted from PRD-TEMPLATE.md, PRD-VALIDATION_RULES.md, README.md, and PRD-00_index.md
+**Source**: Extracted from PRD-MVP-TEMPLATE.md (full template archived), PRD-VALIDATION_RULES.md, README.md, and PRD-00_index.md
 **Purpose**: Complete reference for creating PRD files according to doc-flow SDD framework
 **Changes**: Updated to 21-section structure (1-21) with Section 20 (EARS Enhancement Appendix) and Section 21 (Quality Assurance & Testing Strategy). Previous: 19-section structure (0-18)
 
@@ -207,7 +206,7 @@ Every PRD must contain these exact 21 sections (1-21) in order. Section numberin
 - All 21 sections are MANDATORY with explicit numbering (## 1. Title, ## 2. Title, etc.)
 - Section 10 (Customer-Facing Content) is blocking requirement - must contain substantive content
 - Section 8 (User Stories) must include layer separation scope note
-- Section 21 (QA & Testing Strategy) moved from BRD-TEMPLATE.md as technical QA belongs at product level
+- Section 21 (QA & Testing Strategy) moved from BRD-MVP-TEMPLATE.md as technical QA belongs at product level (full template archived)
 
 ---
 
@@ -461,7 +460,7 @@ Business constraints          Evaluation criteria        Trade-off analysis
 **ADR Requirements**: [What ADR must decide for THIS topic - e.g., "Select one option based on evaluation. Document trade-offs and rollback strategy."]
 ```
 
-**Reference**: See `ai_dev_flow/02_PRD/PRD-TEMPLATE.md` Section 18 for template
+**Reference**: See `ai_dev_flow/02_PRD/PRD-MVP-TEMPLATE.md` Section 18 for template (full template archived)
 
 ---
 
@@ -729,7 +728,6 @@ python scripts/validate_prd.py docs/02_PRD/PRD-01_product_requirements.md
 find docs/PRD -name "PRD-*.md" -exec python scripts/validate_prd.py {} \;
 ```
 
-**Template Location**: [PRD-TEMPLATE.md](PRD-TEMPLATE.md)
 **Validation Rules**: [PRD_VALIDATION_RULES.md](PRD_VALIDATION_RULES.md)
 **Index**: [PRD-00_index.md](PRD-00_index.md)
 
@@ -830,7 +828,7 @@ Add template variant to Document Control:
 ### Variant-Specific Sections
 
 **Standard Template (21 sections)**:
-- Sections 1-21 as defined in PRD-TEMPLATE.md
+- Sections follow PRD-MVP-TEMPLATE.md (full template removed from workflow)
 - Full EARS Enhancement Appendix (Section 20)
 - Quality Assurance & Testing Strategy (Section 21)
 

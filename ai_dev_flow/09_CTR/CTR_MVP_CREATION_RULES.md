@@ -13,27 +13,13 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of CTR-TEMPLATE.md
-# - Authority: CTR-TEMPLATE.md is the single source of truth for CTR structure
+# 📋 Document Role: This is a DERIVATIVE of CTR-MVP-TEMPLATE.md
+# - Authority: CTR-MVP-TEMPLATE.md is the single source of truth for CTR structure
 # - Purpose: AI guidance for document creation (derived from template)
-# - On conflict: Defer to CTR-TEMPLATE.md
+# - On conflict: Defer to CTR-MVP-TEMPLATE.md
 # =============================================================================
----
-title: "CTR Creation Rules"
-tags:
-  - creation-rules
-  - layer-9-artifact
-  - shared-architecture
-custom_fields:
-  document_type: creation-rules
-  artifact_type: CTR
-  layer: 9
-  priority: shared
-  development_status: active
----
-
-> **📋 Document Role**: This is a **CREATION HELPER** for CTR-TEMPLATE.md.
-> - **Authority**: `CTR-TEMPLATE.md` is the source of truth for CTR structure; YAML schemas must follow OpenAPI 3.x
+> **📋 Document Role**: This is a **CREATION HELPER** for CTR-MVP-TEMPLATE.md.
+> - **Authority**: `CTR-MVP-TEMPLATE.md` is the source of truth for CTR structure; YAML schemas must follow OpenAPI 3.x
 > - **Validation**: Use `CTR_VALIDATION_RULES.md` after CTR creation/changes
 
 # CTR Creation Rules
@@ -41,7 +27,7 @@ custom_fields:
 ## Index-Only Generation Workflow
 
 - Maintain `CTR-00_index.md` as the authoritative source of planned and active CTR files (mark planned items with Status: Planned).
-- Generators use: `CTR-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
+- Generators use: `CTR-00_index.md` + `CTR-MVP-TEMPLATE.md` (MVP default; no separate full variant provided).
 
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
@@ -267,7 +253,7 @@ CTR is referenced by:
 
 ### During Creation
 
-- [ ] Use CTR-TEMPLATE.md as starting point
+- [ ] Use CTR-MVP-TEMPLATE.md as starting point
 - [ ] Follow OpenAPI 3.0+ specification
 - [ ] Include complete error handling
 - [ ] Document all data models
@@ -376,7 +362,7 @@ Include ONLY if relationships exist between CTR documents sharing API context or
 
 ## References
 
-- [CTR-TEMPLATE.md](./CTR-TEMPLATE.md) - Contract template (primary standard)
+- [CTR-MVP-TEMPLATE.md](./CTR-MVP-TEMPLATE.md) - Contract template (primary standard)
 - [CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
 - [CTR-00_index.md](./CTR-00_index.md) - Contract registry
 - [README.md](./README.md) - Directory overview

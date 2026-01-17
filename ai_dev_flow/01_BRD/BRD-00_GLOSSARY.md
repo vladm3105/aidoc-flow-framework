@@ -137,7 +137,7 @@ References to related BRDs and framework documents.
 
 | Term/Concept | Referenced Document | section | Relationship |
 |--------------|---------------------|---------|--------------|
-| BRD Template | ai_dev_flow/01_BRD/BRD-TEMPLATE.md | All | Reference template for creating BRDs |
+| BRD Template | ai_dev_flow/01_BRD/BRD-MVP-TEMPLATE.md | All | Reference template for creating BRDs (full template archived) |
 | BRD Creation Rules | ai_dev_flow/01_BRD/BRD_CREATION_RULES.md | N/A | Authoring guidelines and best practices |
 | BRD Validation Rules | ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md | N/A | Quality assurance and validation checks |
 | FR Examples Guide | ai_dev_flow/01_BRD/FR_EXAMPLES_GUIDE.md | N/A | Functional requirement writing examples |

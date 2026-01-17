@@ -269,11 +269,11 @@ Standard metadata including version, date, owner, status, revision history
 - **Glossary**: Business term definitions (6 subsections)
 - **Appendices**: Detailed supporting information
 
-> **Note**: Technical QA standards, testing strategy, and defect management are documented in PRD-TEMPLATE.md Section 21 (product level).
+> **Note**: Technical QA standards, testing strategy, and defect management are documented in PRD-MVP-TEMPLATE.md (full template archived).
 
 ## Available Templates
 
-This directory provides the **BRD-TEMPLATE.md** for business requirements documentation:
+This directory provides the MVP template for business requirements (full template archived):
 
 > **Schema Policy: Optional BRD_SCHEMA.yaml**
 >
@@ -286,17 +286,12 @@ This directory provides the **BRD-TEMPLATE.md** for business requirements docume
 >
 > **Validation Approach**: Use `scripts/validate_brd_template.sh` for structural validation; use the optional schema for advisory checks only.
 
-**BRD-TEMPLATE.md** - Comprehensive business requirements template
-- Full-featured template with all sections
-- Suitable for all project types
-- Includes business objectives, functional requirements, quality attributes, architecture decision requirements, and acceptance criteria
-
-**BRD-MVP-TEMPLATE.md** - Streamlined MVP version in a single file without sectioning
+**BRD-MVP-TEMPLATE.md** (default) - Streamlined MVP version in a single file without sectioning
 - Focused on core MVP features and rapid development
 - Maintains framework compliance while reducing documentation overhead
 - Ideal for quick MVP launches and hypothesis validation
 
-**Usage**: Use `BRD-TEMPLATE.md` for full-featured BRDs and `BRD-MVP-TEMPLATE.md` for MVP-focused BRDs.
+Full template is archived; stay on MVP unless an enterprise/full template is explicitly required.
 
 ## File Naming Convention
 

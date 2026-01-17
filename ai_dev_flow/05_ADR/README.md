@@ -24,16 +24,12 @@ Architecture Decision Records (ADRs) document significant architectural decision
 
 ## Available Templates
 
-**ADR-TEMPLATE.md** - Comprehensive ADR template (~700 lines)
-- Full-featured template with all sections (4-part structure)
-- For real ADRs, prefer sectioned docs using `ADR-SECTION-0-TEMPLATE.md` and `ADR-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`
-
-**ADR-MVP-TEMPLATE.md** - Streamlined MVP version in a single file without sectioning (~250 lines)
+**ADR-MVP-TEMPLATE.md** (default) - Streamlined MVP version in a single file without sectioning (~250 lines)
 - Focused on decision + rationale + 2-3 alternatives
 - Maintains framework compliance while reducing documentation overhead
 - Ideal for MVP architecture decisions with quick turnaround
 
-**Usage**: Use `ADR-TEMPLATE.md` for comprehensive ADRs and `ADR-MVP-TEMPLATE.md` for MVP-focused decisions.
+Full template is archived; stay on MVP unless an enterprise/full template is explicitly required.
 
 ## Purpose
 

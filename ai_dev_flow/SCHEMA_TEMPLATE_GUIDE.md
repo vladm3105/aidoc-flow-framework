@@ -90,7 +90,7 @@ references:
 |----------|----------|--------|-------|
 | **BRD** | `BRD-TEMPLATE.md` | None | Layer 1 entry point, human-authored, no schema required |
 | **BDD** | `BDD-MVP-TEMPLATE.feature` | `BDD_SCHEMA.yaml` | Gherkin format, schema reference in comments |
-| **SPEC** | `SPEC-TEMPLATE.yaml` | `SPEC_SCHEMA.yaml` | Both files are YAML, schema reference in comments |
+| **SPEC** | `SPEC-MVP-TEMPLATE.yaml` | `SPEC_SCHEMA.yaml` | Both files are YAML, schema reference in comments |
 
 ## Version Synchronization
 
@@ -192,16 +192,16 @@ flowchart TD
 
 | Layer | Type | Template | Schema | Creation Rules | Validation Rules |
 |-------|------|----------|--------|----------------|------------------|
-| 1 | BRD | `BRD-TEMPLATE.md` | None | `BRD_CREATION_RULES.md` | `BRD_VALIDATION_RULES.md` |
-| 2 | PRD | `PRD-TEMPLATE.md` | `PRD_SCHEMA.yaml` | `PRD_CREATION_RULES.md` | `PRD_VALIDATION_RULES.md` |
-| 3 | EARS | `EARS-TEMPLATE.md` | `EARS_SCHEMA.yaml` | `EARS_CREATION_RULES.md` | `EARS_VALIDATION_RULES.md` |
+| 1 | BRD | `BRD-MVP-TEMPLATE.md` (default; full archived) | None | `BRD_CREATION_RULES.md` | `BRD_VALIDATION_RULES.md` |
+| 2 | PRD | `PRD-MVP-TEMPLATE.md` (default; full archived) | `PRD_SCHEMA.yaml` | `PRD_CREATION_RULES.md` | `PRD_VALIDATION_RULES.md` |
+| 3 | EARS | `EARS-MVP-TEMPLATE.md` (default; full archived) | `EARS_SCHEMA.yaml` | `EARS_CREATION_RULES.md` | `EARS_VALIDATION_RULES.md` |
 | 4 | BDD | `BDD-MVP-TEMPLATE.feature` | `BDD_SCHEMA.yaml` | `BDD_CREATION_RULES.md` | `BDD_VALIDATION_RULES.md` |
-| 5 | ADR | `ADR-TEMPLATE.md` | `ADR_SCHEMA.yaml` | `ADR_CREATION_RULES.md` | `ADR_VALIDATION_RULES.md` |
-| 6 | SYS | `SYS-TEMPLATE.md` | `SYS_SCHEMA.yaml` | `SYS_CREATION_RULES.md` | `SYS_VALIDATION_RULES.md` |
-| 7 | REQ | `REQ-TEMPLATE.md` | `REQ_SCHEMA.yaml` | `REQ_CREATION_RULES.md` | `REQ_VALIDATION_RULES.md` |
+| 5 | ADR | `ADR-MVP-TEMPLATE.md` (default; full archived) | `ADR_SCHEMA.yaml` | `ADR_CREATION_RULES.md` | `ADR_VALIDATION_RULES.md` |
+| 6 | SYS | `SYS-MVP-TEMPLATE.md` (default; full archived) | `SYS_SCHEMA.yaml` | `SYS_CREATION_RULES.md` | `SYS_VALIDATION_RULES.md` |
+| 7 | REQ | `REQ-MVP-TEMPLATE.md` (default; full archived) | `REQ_SCHEMA.yaml` | `REQ_CREATION_RULES.md` | `REQ_VALIDATION_RULES.md` |
 | 8 | IMPL | `IMPL-TEMPLATE.md` | `IMPL_SCHEMA.yaml` | `IMPL_CREATION_RULES.md` | `IMPL_VALIDATION_RULES.md` |
-| 9 | CTR | `CTR-TEMPLATE.md` | `CTR_SCHEMA.yaml` | `CTR_CREATION_RULES.md` | `CTR_VALIDATION_RULES.md` |
-| 10 | SPEC | `SPEC-TEMPLATE.yaml` | `SPEC_SCHEMA.yaml` | `SPEC_CREATION_RULES.md` | `SPEC_VALIDATION_RULES.md` |
+| 9 | CTR | `CTR-MVP-TEMPLATE.md` | `CTR_SCHEMA.yaml` | `CTR_CREATION_RULES.md` | `CTR_VALIDATION_RULES.md` |
+| 10 | SPEC | `SPEC-MVP-TEMPLATE.yaml` | `SPEC_SCHEMA.yaml` | `SPEC_CREATION_RULES.md` | `SPEC_VALIDATION_RULES.md` |
 | 11 | TASKS | `TASKS-TEMPLATE.md` | `TASKS_SCHEMA.yaml` | `TASKS_CREATION_RULES.md` | `TASKS_VALIDATION_RULES.md` |
 
 ## Best Practices

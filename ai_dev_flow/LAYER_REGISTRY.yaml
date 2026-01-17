@@ -127,7 +127,7 @@ layers:
     error_prefix: CTR
     optional: true
     description: "Layer 9 - API/data contracts using dual-file format"
-    template: "CTR-TEMPLATE.md"
+    template: "CTR-MVP-TEMPLATE.md"
 
   - number: 10
     artifact: SPEC
@@ -139,7 +139,7 @@ layers:
     error_prefix: SPEC
     optional: false
     description: "Layer 10 - Implementation-ready YAML specifications"
-    template: "SPEC-TEMPLATE.yaml"
+    template: "SPEC-MVP-TEMPLATE.yaml"
 
   - number: 11
     artifact: TASKS

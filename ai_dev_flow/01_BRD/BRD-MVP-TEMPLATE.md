@@ -49,7 +49,7 @@ custom_fields:
   schema_version: "1.0"
   schema_status: optional
   template_profile: mvp
-  template_source: "BRD-TEMPLATE.md"
+  template_source: "BRD-MVP-TEMPLATE.md" (full template archived)
   creation_rules_reference: "BRD_CREATION_RULES.md"
   validation_rules_reference: "BRD_VALIDATION_RULES.md"
   traceability_matrix_template: "BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md"
@@ -63,9 +63,7 @@ custom_fields:
 > - You need working product for real users, not just technical validation
 > - Team size is small (2-10 people)
 >
-> **Use full BRD-TEMPLATE.md when**:
-> - Building complex systems with 20+ requirements
-> - Regulatory compliance requires detailed documentation
+> Full template is archived; use only if enterprise/full is explicitly required.
 > - Multiple partner integrations with complex SLAs
 > - Enterprise-scale projects with extensive stakeholder matrices
 
@@ -80,7 +78,7 @@ custom_fields:
 > - **Must Pass**: CHECK 2-6, CHECK 13-18 (FR structure)
 > See `scripts/README.md` → "MVP Template Validation" for guidance.
 
-> References: Full Template `BRD-TEMPLATE.md` | Schema `BRD_SCHEMA.yaml` | Rules `BRD_CREATION_RULES.md`, `BRD_VALIDATION_RULES.md` | Matrix `BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `BRD_SCHEMA.yaml` | Rules `BRD_CREATION_RULES.md`, `BRD_VALIDATION_RULES.md` | Matrix `BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ---
 
@@ -718,7 +716,6 @@ Quick Core MVP Requirements Checklist:
 
 ### When to Migrate
 
-Migrate from MVP BRD to full `BRD-TEMPLATE.md` when:
 - [ ] MVP validation complete (30-90 day metrics achieved)
 - [ ] Product scope expanding beyond MVP features
 - [ ] Regulatory or compliance requirements demand comprehensive documentation
@@ -727,7 +724,6 @@ Migrate from MVP BRD to full `BRD-TEMPLATE.md` when:
 
 ### Migration Steps
 
-1. **Create new document**: Copy `BRD-TEMPLATE.md` to `BRD-NN_{slug}.md`
 2. **Transfer core content**: Copy sections 1-7 from MVP to corresponding full template sections
 3. **Expand sections**: Add missing sections from full template:
    - Extended stakeholder analysis (Section 4 in full)
@@ -762,7 +758,6 @@ Migrate from MVP BRD to full `BRD-TEMPLATE.md` when:
 - This BRD is intentionally lean for rapid iteration
 - Detailed requirements will be evolved based on user feedback
 - Expect frequent updates during MVP phase
-- Transition to full BRD-TEMPLATE.md post-MVP validation
 
 **Version Management**:
 - Track all changes in revision history

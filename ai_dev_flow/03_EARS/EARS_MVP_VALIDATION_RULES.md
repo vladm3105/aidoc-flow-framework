@@ -13,11 +13,11 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of EARS-TEMPLATE.md
-# - Authority: EARS-TEMPLATE.md is the single source of truth for EARS structure
-# - Purpose: AI checklist after document creation (derived from template)
+# 📋 Document Role: Validates EARS-MVP-TEMPLATE.md (default)
+# - Authority: EARS-MVP-TEMPLATE.md is the primary standard for EARS structure; full template is archived
+# - Purpose: AI checklist after document creation (derived from MVP template)
 # - Scope: Includes all rules from EARS_CREATION_RULES.md plus validation extensions
-# - On conflict: Defer to EARS-TEMPLATE.md
+# - On conflict: Defer to EARS-MVP-TEMPLATE.md
 # =============================================================================
 ---
 title: "EARS Validation Rules Reference"
@@ -35,7 +35,7 @@ custom_fields:
 
 > **Document Role**: This is the **POST-CREATION VALIDATOR** for EARS documents.
 > - Apply these rules after EARS creation or modification
-> - **Authority**: Validates compliance with `EARS-TEMPLATE.md` (the primary standard)
+> - **Authority**: Validates compliance with `EARS-MVP-TEMPLATE.md` (primary standard; full template archived)
 > - **Scope**: Use for quality gates before committing EARS changes
 
 # EARS Validation Rules Reference
@@ -68,10 +68,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/EARS --profile mvp
+python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/03_EARS --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/EARS --profile full
+python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/03_EARS --profile full
 ```
 
 ---
@@ -83,7 +83,7 @@ python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/EARS --profile f
 **Last Updated**: 2025-11-29
 **Purpose**: Complete validation rules for EARS documents
 **Script**: `scripts/validate_ears.py`
-**Primary Template**: `EARS-TEMPLATE.md`
+**Primary Template**: `EARS-MVP-TEMPLATE.md` (full template archived)
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: v2.0 - Added requirement ID, table syntax, custom_fields, traceability format checks
 

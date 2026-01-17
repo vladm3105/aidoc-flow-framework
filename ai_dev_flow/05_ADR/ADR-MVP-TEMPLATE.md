@@ -54,11 +54,11 @@ custom_fields:
 
 > **MVP Template** — Single-file, streamlined ADR for rapid MVP decisions.
 > Use this template for MVP architecture decisions with 2-3 alternatives.
-> For comprehensive ADRs (complex tradeoffs, extensive analysis), use `ADR-TEMPLATE.md`.
+> Full template is archived; stay on MVP unless enterprise/full is explicitly required.
 
 > **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_adr.py`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
-> References: Full Template `ADR-TEMPLATE.md` | Schema `ADR_SCHEMA.yaml` | Rules `ADR_CREATION_RULES.md`, `ADR_VALIDATION_RULES.md` | Matrix `ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `ADR_SCHEMA.yaml` | Rules `ADR_CREATION_RULES.md`, `ADR_VALIDATION_RULES.md` | Matrix `ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # ADR-NN: [Architecture Decision Title]
 

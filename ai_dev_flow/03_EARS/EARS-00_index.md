@@ -46,7 +46,7 @@ flowchart LR
 
 | EARS ID | Title | Requirement Type | Status | Related PRD | Test Coverage | Last Updated |
 |---------|-------|------------------|--------|-------------|---------------|--------------|
-| [EARS-TEMPLATE](./EARS-TEMPLATE.md) | Template | Reference | Reference | - | - | 2025-11-13 |
+| [EARS-MVP-TEMPLATE.md](./EARS-MVP-TEMPLATE.md) | Template (default) | Reference | Reference | - | - | 2025-11-13 |
 
 ## Planned
 

@@ -41,7 +41,7 @@ custom_fields:
 **AI Assistant Actions**:
 ```bash
 # Create BRD-01
-cp docs/01_BRD/BRD-TEMPLATE.md docs/01_BRD/BRD-01_business_objectives.md
+cp docs/01_BRD/BRD-MVP-TEMPLATE.md docs/01_BRD/BRD-01_business_objectives.md
 # Fill BRD-01 with project-specific content
 # Update index
 ```

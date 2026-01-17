@@ -16,15 +16,15 @@ custom_fields:
 ## Generation Rules
 
 - Index-only: maintain `SPEC-00_index.md` as the authoritative plan and registry (mark planned items with Status: Planned).
-- Templates: default to the MVP template; use the full (sectioned) template only when explicitly set in project settings or clearly requested in the prompt.
-- Inputs used for generation: `SPEC-00_index.md` + selected template profile; no skeletons are used.
+- Templates: default to the MVP template (`SPEC-MVP-TEMPLATE.yaml`); use the full profile only when explicitly set in project settings or clearly requested in the prompt.
+- Inputs used for generation: `SPEC-00_index.md` + selected template profile (MVP by default); no skeletons are used.
 - Example index: `ai_dev_flow/tmp/SYS-00_index.md`.
 
 Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
 Specifications (SPEC) are machine-readable technical blueprints that define how software components should be implemented. SPECs transform requirements into actionable design decisions, providing complete implementation guidance for developers while establishing contracts for testing and integration.
 
-Note: `SPEC-TEMPLATE.yaml` is the reference template. YAML stays monolithic per component for code generation.
+Note: `SPEC-MVP-TEMPLATE.yaml` is the reference template. YAML stays monolithic per component for code generation.
 
 ## Structure Policy
 

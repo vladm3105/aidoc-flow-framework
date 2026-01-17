@@ -473,6 +473,6 @@ fi
 ## References
 
 - [SPEC_VALIDATION_RULES.md](./SPEC_VALIDATION_RULES.md) - Individual file validation
-- [SPEC-TEMPLATE.yaml](./SPEC-TEMPLATE.yaml) - SPEC document template
+- [SPEC-MVP-TEMPLATE.yaml](./SPEC-MVP-TEMPLATE.yaml) - SPEC document template
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

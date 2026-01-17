@@ -329,8 +329,8 @@ Track acceptance test coverage for requirements:
 
 ### Related Standards
 
-- [REQ-TEMPLATE.md](../07_REQ/REQ-TEMPLATE.md): Requirements template (BDD validates requirements)
-- [SPEC-TEMPLATE.yaml](../10_SPEC/SPEC-TEMPLATE.yaml): Technical SPEC template (implements BDD scenarios)
+- [REQ-MVP-TEMPLATE.md](../07_REQ/REQ-MVP-TEMPLATE.md): Requirements template (BDD validates requirements; full template archived)
+- [SPEC-MVP-TEMPLATE.yaml](../10_SPEC/SPEC-MVP-TEMPLATE.yaml): Technical SPEC template (implements BDD scenarios)
 - [TASKS-TEMPLATE.md](../11_TASKS/TASKS-TEMPLATE.md): Code generation template (generates BDD test code)
 
 ---

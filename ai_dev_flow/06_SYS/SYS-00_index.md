@@ -46,7 +46,7 @@ flowchart LR
 
 | SYS ID | Title | System Category | Status | Related ADR | Requirements | Last Updated |
 |--------|-------|-----------------|--------|-------------|--------------|--------------|
-| [SYS-TEMPLATE](./SYS-TEMPLATE.md) | Template | Reference | Reference | - | - | 2025-11-13 |
+| [SYS-MVP-TEMPLATE.md](./SYS-MVP-TEMPLATE.md) | Template (default) | Reference | Reference | - | - | 2025-11-13 |
 
 ## Planned
 

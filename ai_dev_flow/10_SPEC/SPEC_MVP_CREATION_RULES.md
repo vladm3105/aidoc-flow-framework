@@ -12,28 +12,8 @@ custom_fields:
   development_status: active
 ---
 
-# =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of SPEC-TEMPLATE.yaml
-# - Authority: SPEC-TEMPLATE.yaml is the single source of truth for SPEC structure
-# - Purpose: AI guidance for document creation (derived from template)
-# - On conflict: Defer to SPEC-TEMPLATE.yaml
-# =============================================================================
----
-title: "SPEC Creation Rules"
-tags:
-  - creation-rules
-  - layer-10-artifact
-  - shared-architecture
-custom_fields:
-  document_type: creation-rules
-  artifact_type: SPEC
-  layer: 10
-  priority: shared
-  development_status: active
----
-
-> **📋 Document Role**: This is a **CREATION HELPER** for SPEC-TEMPLATE.yaml.
-> - **Authority**: `SPEC-TEMPLATE.yaml` is the primary source of truth for SPEC structure
+> **📋 Document Role**: This is a **CREATION HELPER** for SPEC-MVP-TEMPLATE.yaml (MVP profile).
+> - **Authority**: `SPEC-MVP-TEMPLATE.yaml` (MVP profile) is the primary source of truth for SPEC structure; use the full profile only when explicitly requested
 > - **Validation**: Use `SPEC_VALIDATION_RULES.md` after SPEC creation/changes
 
 # SPEC Creation Rules
@@ -41,14 +21,14 @@ custom_fields:
 ## Index-Only Generation Workflow
 
 - Maintain `SPEC-00_index.md` as the authoritative source of planned and active SPEC files (mark planned items with Status: Planned).
-- Generators use: `SPEC-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
+- Generators use: `SPEC-00_index.md` + selected template profile (`SPEC-MVP-TEMPLATE.yaml` as MVP default; full profile only when explicitly requested).
 
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.3
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-30
-**Source**: Derived from SPEC-TEMPLATE.yaml and technical specification patterns
+**Source**: Derived from SPEC-MVP-TEMPLATE.yaml and technical specification patterns
 **Purpose**: Complete reference for creating SPEC YAML files according to AI Dev Flow SDD framework
 **Changes**: v1.3: Added file size limits as warning, removed document splitting requirement. v1.2: Added Threshold Registry Integration section. v1.1: Status/Score mapping, common mistakes section
 

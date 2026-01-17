@@ -154,7 +154,7 @@ cp "$FRAMEWORK_ROOT/scripts"/*.py scripts/
 ```
 
 **Directory Purpose**:
-- `ai_dev_flow/` = Framework templates (BRD-TEMPLATE.md, BRD-MVP-TEMPLATE.md, etc.)
+- `ai_dev_flow/` = Framework templates (MVP defaults: `*-MVP-TEMPLATE.*`; full templates archived)
 - `docs/` = Project documentation (BRD-01.md, PRD-01.md, etc.)
 
 **Action for MVP Track**:

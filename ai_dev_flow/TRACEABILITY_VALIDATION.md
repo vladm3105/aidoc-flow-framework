@@ -14,8 +14,8 @@ custom_fields:
 **Version**: 1.0
 **Date**: 2025-11-19
 **Status**: Active
-**Framework**: AI Dev Flow SDD (100% Compliant with TRACEABILITY.md)
-**Purpose**: Quality gate system aligned with 15-layer architecture and cumulative tagging hierarchy
+**Framework**: AI Dev Flow SDD (MVP-first)
+**Purpose**: Quality gate system aligned with 15-layer architecture and cumulative tagging hierarchy; supports the MVP-to-production loop (create MVP → fix defects → promote → add new MVP features → fix → repeat)
 
 ---
 
@@ -31,7 +31,7 @@ custom_fields:
 
 ## 1. Quality Gate Architecture
 
-Quality gates ensure that artifacts meet maturity thresholds before progressing to the next layer in the 15-layer SDD workflow (Layers 0-14, per TRACEABILITY.md §1.2.1).
+Quality gates ensure that artifacts meet maturity thresholds before progressing to the next layer in the 15-layer SDD workflow (Layers 0-14, per TRACEABILITY.md §1.2.1), while supporting the MVP-to-production loop.
 
 ### Traceability Rules (REQUIRED vs OPTIONAL)
 
@@ -58,7 +58,7 @@ Quality gates ensure that artifacts meet maturity thresholds before progressing 
 Each artifact includes a readiness assessment field:
 
 ```yaml
-# SPEC-TEMPLATE.yaml (Layer 10)
+# SPEC-MVP-TEMPLATE.yaml (Layer 10)
 metadata:
   task_ready_score: "✅ 95% (Target: ≥90%)"
 

@@ -13,10 +13,10 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of ADR-TEMPLATE.md
-# - Authority: ADR-TEMPLATE.md is the single source of truth for ADR structure
-# - Purpose: AI guidance for document creation (derived from template)
-# - On conflict: Defer to ADR-TEMPLATE.md
+# 📋 Document Role: Guides creation of ADR-MVP-TEMPLATE.md (default)
+# - Authority: ADR-MVP-TEMPLATE.md is the primary standard for ADR structure; full template is archived
+# - Purpose: AI guidance for document creation (derived from MVP template)
+# - On conflict: Defer to ADR-MVP-TEMPLATE.md
 # =============================================================================
 ---
 title: "ADR Creation Rules"
@@ -32,8 +32,8 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is a **CREATION HELPER** for ADR-TEMPLATE.md.
-> - **Authority**: `ADR-TEMPLATE.md` is the single source of truth for ADR structure
+> **📋 Document Role**: This is a **CREATION HELPER** for ADR-MVP-TEMPLATE.md (default).
+> - **Authority**: `ADR-MVP-TEMPLATE.md` is the primary standard for ADR structure; full template archived
 > - **Validation**: Use `ADR_VALIDATION_RULES.md` after ADR creation/changes
 
 # ADR Creation Rules
@@ -45,7 +45,7 @@ custom_fields:
 | Template | File | When to Use |
 |----------|------|-------------|
 | **MVP (DEFAULT)** | `ADR-MVP-TEMPLATE.md` | All new projects unless full template is explicitly requested |
-| Full | `ADR-TEMPLATE.md` | Enterprise projects, regulatory compliance, or when prompted |
+| Full | `ADR-TEMPLATE.md` (archived) | Only when explicitly required for enterprise/full mode |
 
 **Triggering Full Template**:
 - Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
@@ -61,7 +61,7 @@ custom_fields:
 **Version**: 1.1
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-30
-**Source**: Derived from ADR-TEMPLATE.md and SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
+**Source**: Derived from ADR-MVP-TEMPLATE.md and SPEC_DRIVEN_DEVELOPMENT_GUIDE.md (full template archived)
 **Purpose**: Complete reference for creating ADR documents according to AI Dev Flow SDD framework
 **Changes**: Added Status/Score mapping table, new common mistakes section. Previous: SYS-ready scoring system
 

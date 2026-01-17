@@ -39,12 +39,12 @@ ARTIFACT_TYPES = {
     "ADR": {"template": "ADR-TEMPLATE.md", "schema": "ADR_SCHEMA.yaml", "layer": 5},
     "BDD": {"template": "BDD-TEMPLATE.feature", "schema": "BDD_SCHEMA.yaml", "layer": 4},
     "BRD": {"template": "BRD-TEMPLATE.md", "schema": "BRD_SCHEMA.yaml", "layer": 1},
-    "CTR": {"template": "CTR-TEMPLATE.md", "schema": "CTR_SCHEMA.yaml", "layer": 9},
+    "CTR": {"template": "CTR-MVP-TEMPLATE.md", "schema": "CTR_SCHEMA.yaml", "layer": 9},
     "EARS": {"template": "EARS-TEMPLATE.md", "schema": "EARS_SCHEMA.yaml", "layer": 3},
     "IMPL": {"template": "IMPL-TEMPLATE.md", "schema": "IMPL_SCHEMA.yaml", "layer": 8},
     "PRD": {"template": "PRD-TEMPLATE.md", "schema": "PRD_SCHEMA.yaml", "layer": 2},
     "REQ": {"template": "REQ-TEMPLATE.md", "schema": "REQ_SCHEMA.yaml", "layer": 7},
-    "SPEC": {"template": "SPEC-TEMPLATE.yaml", "schema": "SPEC_SCHEMA.yaml", "layer": 10},
+    "SPEC": {"template": "SPEC-MVP-TEMPLATE.yaml", "schema": "SPEC_SCHEMA.yaml", "layer": 10},
     "SYS": {"template": "SYS-TEMPLATE.md", "schema": "SYS_SCHEMA.yaml", "layer": 6},
     "TASKS": {"template": "TASKS-TEMPLATE.md", "schema": "TASKS_SCHEMA.yaml", "layer": 11},
 }
@@ -111,7 +111,7 @@ def extract_schema_version_from_template(template_path: Path) -> Optional[str]:
                 return match.group(1)
             return None
 
-        # For .yaml files (like SPEC-TEMPLATE.yaml), look for comment or field
+        # For .yaml files (like SPEC-MVP-TEMPLATE.yaml), look for comment or field
         if template_path.suffix == '.yaml':
             match = re.search(r'#\s*SCHEMA_VERSION:\s*(\d+\.\d+)', content)
             if match:

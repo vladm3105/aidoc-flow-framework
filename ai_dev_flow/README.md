@@ -12,26 +12,20 @@ custom_fields:
 
 **Purpose**: Enable AI-assisted software development across any project domain through structured, traceable requirements and specifications.
 
-**Status**: Production-ready framework with generic templates, domain adaptation guidance, cumulative tagging hierarchy, and automated validation tooling.
+**Status**: Active framework with MVP templates, domain adaptation guidance, cumulative tagging, and validation tooling.
 
 **Version**: 2.2 | **Last Updated**: 2025-11-30
 
 ## Overview
 
-This directory provides a **universal, reusable framework** for Specification-Driven Development (SDD), transforming business needs into production-ready code through a systematic, traceable workflow.
+This directory provides a structured, traceable framework for Specification-Driven Development (SDD), enabling AI-assisted delivery using MVP templates by default.
 
 ### Framework Purpose
 
-This framework is a sophisticated and well-conceived system for a new paradigm of software development where human architects design systems and AI assistants build them.
-
-- The Architect's Blueprint: The initial layers (BRD, PRD, ADR, SYS) serve as the formal blueprint created by the software architect. This is where human expertise in system design, architectural trade-offs, and business strategy is captured.
-
-- The AI's Instruction Set: The subsequent layers (REQ, SPEC, TASKS) act as a detailed, unambiguous instruction set automatically derived from the architect's blueprint. This breakdown translates high-level architectural decisions into granular tasks that are ideal for consumption by an AI code generator.
-
-- The Governance and Audit Layer: The framework's most critical function is providing a robust governance and audit mechanism. The full traceability chain, from BRD to TASKS, creates an unimpeachable record of the AI's intended actions. This allows the architect to:
-  1. Verify Compliance: Ensure the AI's generated code adheres strictly to the established architectural and business rules.
-  2. Mitigate AI Risk: Audit the AI's plans to prevent hallucinations or unintended features before code is even written.
-  3. Validate at a High Level: Confirm the success of the project by reviewing BDD test results and traceability matrices, rather than performing a line-by-line code review.
+- Blueprint: Early layers (BRD, PRD, ADR, SYS) capture business objectives and architectural decisions.
+- Instruction Set: Downstream layers (REQ, SPEC, TASKS) translate those decisions into granular, implementation-ready guidance for AI assistants.
+- Governance: The traceability chain from BRD through TASKS documents decisions and checks for consistent implementation.
+- Delivery Loop: Create an MVP, fix defects, promote to production, add features as a new MVP based on the current product, fix defects, and repeat.
 
 ### Why AI Dev Flow?
 
@@ -47,9 +41,9 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 - ✅ **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
 - ✅ **AI-Optimized**: YAML specifications designed for deterministic code generation
 - ✅ **15-Layer Architecture**: Structured progression from strategy through validation
- - ✅ **Dual-File Contracts (CTR only)**: Human-readable `.md` + machine-readable `.yaml` for API Contracts
-- ✅ **Strict ID Standards**: Consistent naming and organization across all documents
+- ✅ **Dual-File Contracts (CTR only)**: Human-readable `.md` + machine-readable `.yaml` for API contracts
 - ✅ **Example-Driven**: Generic examples with `[PLACEHOLDER]` format for easy customization
+
 - ✅ **Automated Validation**: Scripts for tag validation, traceability matrix generation, cumulative hierarchy enforcement
 
 **📚 New to this framework?** Start with [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) for domain-specific guidance (financial, healthcare, e-commerce, SaaS, IoT, or generic software).
@@ -85,22 +79,11 @@ This framework is a sophisticated and well-conceived system for a new paradigm o
 
 Layers 8-15 use full templates only (no MVP variants).
 
-#### Switching to Full Templates
+#### MVP Template Profile (Default)
+- Default: `custom_fields.template_profile: mvp` (relaxed, MVP drafting)
+- Strict: omit the field or set `custom_fields.template_profile: enterprise` when a project explicitly requires strict validation.
 
-**Option 1 - Project Setting** (persistent):
-```yaml
-# In .autopilot.yaml or CLAUDE.md
-template_profile: enterprise  # or "full" or "strict"
-```
-
-**Option 2 - Prompt Keyword** (per-request):
-Say any of: "use full template", "enterprise mode", "regulatory compliance", "comprehensive template"
-
-**Option 3 - Direct Reference** (explicit):
-"Create BRD-01 using BRD-TEMPLATE.md" (specify full template by name)
-
-#### Validation Profile
-Validators support relaxed MVP validation via `template_profile: mvp` in frontmatter. Set `template_profile: enterprise` for strict validation.
+Full/archived templates are not used in the MVP-facing workflow.
 
 ### Units & Conversions (KB vs tokens)
 
@@ -416,17 +399,17 @@ flowchart TD
 **01_BRD/** - Business Requirements Documents
 - High-level business objectives and market context
 - Strategic goals and success criteria
-- **Files**: [BRD-00_index.md](./01_BRD/BRD-00_index.md) | [Template](./01_BRD/BRD-TEMPLATE.md) | **MVP**: [BRD-MVP-TEMPLATE.md](./01_BRD/BRD-MVP-TEMPLATE.md)
+- **Files**: [BRD-00_index.md](./01_BRD/BRD-00_index.md) | [BRD-MVP-TEMPLATE.md](./01_BRD/BRD-MVP-TEMPLATE.md) (default; full template archived)
 
 **02_PRD/** - Product Requirements Documents
 - User-facing features and product capabilities
 - Business requirements and acceptance criteria
-- **Files**: [PRD-00_index.md](./02_PRD/PRD-00_index.md) | [Template](./02_PRD/PRD-TEMPLATE.md) | **MVP**: [PRD-MVP-TEMPLATE.md](./02_PRD/PRD-MVP-TEMPLATE.md)
+- **Files**: [PRD-00_index.md](./02_PRD/PRD-00_index.md) | [PRD-MVP-TEMPLATE.md](./02_PRD/PRD-MVP-TEMPLATE.md) (default; full template archived)
 
 **03_EARS/** - Event-Action-Response-State (Engineering Requirements)
 - Measurable requirements using WHEN-THE-SHALL-WITHIN format
 - Event-driven and state-driven requirements
-- **Files**: [EARS-00_index.md](./03_EARS/EARS-00_index.md) | [Template](./03_EARS/EARS-TEMPLATE.md)
+- **Files**: [EARS-00_index.md](./03_EARS/EARS-00_index.md) | [EARS-MVP-TEMPLATE.md](./03_EARS/EARS-MVP-TEMPLATE.md) (default; full template archived)
 
 ### Testing Layer
 
@@ -439,12 +422,12 @@ flowchart TD
 **05_ADR/** - Architecture Decision Records
 - Architectural choices and rationale
 - Technology selections and trade-offs
-- **Files**: [ADR-00_index.md](./05_ADR/ADR-00_index.md) | [Template](./05_ADR/ADR-TEMPLATE.md) | **MVP**: [ADR-MVP-TEMPLATE.md](./05_ADR/ADR-MVP-TEMPLATE.md)
+- **Files**: [ADR-00_index.md](./05_ADR/ADR-00_index.md) | [ADR-MVP-TEMPLATE.md](./05_ADR/ADR-MVP-TEMPLATE.md) (default; full template archived)
 
 **06_SYS/** - System Requirements Specifications
 - System-level functional requirements and quality attributes
 - Performance, security, and operational characteristics
-- **Files**: [SYS-00_index.md](./06_SYS/SYS-00_index.md) | [Template](./06_SYS/SYS-TEMPLATE.md) | **MVP**: [SYS-MVP-TEMPLATE.md](./06_SYS/SYS-MVP-TEMPLATE.md)
+- **Files**: [SYS-00_index.md](./06_SYS/SYS-00_index.md) | [SYS-MVP-TEMPLATE.md](./06_SYS/SYS-MVP-TEMPLATE.md) (default; full template archived)
 
 ### Requirements Layer
 
@@ -454,7 +437,7 @@ flowchart TD
   - Folder: `07_REQ/REQ-NN_{slug}/`
   - Primary file (atomic): `07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
   - Split (optional when large): index + sections `07_REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ-NN.1_{section}.md`, ...
-- Files: [REQ-00_index.md](./07_REQ/REQ-00_index.md) | [Template](./07_REQ/REQ-TEMPLATE.md) | **MVP**: [REQ-MVP-TEMPLATE.md](./07_REQ/REQ-MVP-TEMPLATE.md)
+- Files: [REQ-00_index.md](./07_REQ/REQ-00_index.md) | [REQ-MVP-TEMPLATE.md](./07_REQ/REQ-MVP-TEMPLATE.md) (default; full template archived)
 
 ### Project Management Layer
 
@@ -482,7 +465,7 @@ flowchart TD
 - YAML: Monolithic per component (code generation source)
 - Markdown: Split narrative with `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` when needed
 - References CTR contracts when implementing interfaces
-- **Files**: [SPEC-00_index.md](./10_SPEC/SPEC-00_index.md) | [Template](./10_SPEC/SPEC-TEMPLATE.yaml)
+- **Files**: [SPEC-00_index.md](./10_SPEC/SPEC-00_index.md) | [Template](./10_SPEC/SPEC-MVP-TEMPLATE.yaml)
 - **Examples**: [SPEC-01_api_client_example.yaml](./10_SPEC/SPEC-01_api_client_example.yaml)
 
 ### Code Generation Layer

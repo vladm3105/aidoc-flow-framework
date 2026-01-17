@@ -13,16 +13,16 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of SYS-TEMPLATE.md
-# - Authority: SYS-TEMPLATE.md is the single source of truth for SYS structure
-# - Purpose: AI checklist after document creation (derived from template)
+# 📋 Document Role: Validates SYS-MVP-TEMPLATE.md (default)
+# - Authority: SYS-MVP-TEMPLATE.md is the primary standard for SYS structure; full template is archived
+# - Purpose: AI checklist after document creation (derived from MVP template)
 # - Scope: Includes all rules from SYS_CREATION_RULES.md plus validation extensions
-# - On conflict: Defer to SYS-TEMPLATE.md
+# - On conflict: Defer to SYS-MVP-TEMPLATE.md
 # =============================================================================
 
 **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for SYS documents.
  Apply these rules after SYS creation or modification
- **Authority**: Validates compliance with `SYS-TEMPLATE.md` (the primary standard)
+ **Authority**: Validates compliance with `SYS-MVP-TEMPLATE.md` (primary standard; full template archived)
  **Scope**: Use for quality gates before committing SYS changes
 
 # SYS Validation Rules Reference
@@ -55,10 +55,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/scripts/validate_sys.py --path ai_dev_flow/SYS --profile mvp
+python3 ai_dev_flow/scripts/validate_sys.py --path ai_dev_flow/06_SYS --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/scripts/validate_sys.py --path ai_dev_flow/SYS --profile full
+python3 ai_dev_flow/scripts/validate_sys.py --path ai_dev_flow/06_SYS --profile full
 ```
 
 
@@ -70,7 +70,7 @@ Path conventions: Examples below use a portable `docs/` root for new projects. I
 **Last Updated**: 2025-11-19
 **Purpose**: Complete validation rules for SYS documents
 **Script**: `python scripts/validate_sys.py`
-**Primary Template**: `SYS-TEMPLATE.md`
+**Primary Template**: `SYS-MVP-TEMPLATE.md` (full template archived)
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added REQ-ready scoring validation system
 

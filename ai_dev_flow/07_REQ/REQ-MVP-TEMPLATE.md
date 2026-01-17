@@ -35,11 +35,11 @@ AI_CONTEXT_END
 
 **MVP Template** — Single-file, streamlined REQ for rapid MVP development.
  Use this template for MVP atomic requirements (10-20 core requirements).
- For comprehensive requirements (50+ detailed specs), use `REQ-TEMPLATE.md`.
+ Full template is archived; stay on MVP unless enterprise/full is explicitly required.
 
 **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_req_template.sh`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
- References: Full Template `REQ-TEMPLATE.md` | Schema `REQ_SCHEMA.yaml` | Rules `REQ_CREATION_RULES.md`, `REQ_VALIDATION_RULES.md` | Matrix `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+ References: Schema `REQ_SCHEMA.yaml` | Rules `REQ_CREATION_RULES.md`, `REQ_VALIDATION_RULES.md` | Matrix `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # REQ-NN: [RESOURCE_TYPE] [Requirement Title]
 

@@ -80,7 +80,7 @@ This section documents errors discovered during corpus validation. Copy and popu
 | # | Warning Type | ADRs Affected | Description | Recommendation |
 |---|--------------|---------------|-------------|----------------|
 | W01 | **ASCII Diagrams** | - | Text-based diagrams instead of Mermaid | Convert all ASCII diagrams to Mermaid per DIAGRAM_STANDARDS.md |
-| W02 | **Custom Fields Inconsistency** | - | YAML custom_fields differ from template | Standardize YAML frontmatter per ADR-TEMPLATE.md |
+| W02 | **Custom Fields Inconsistency** | - | YAML custom_fields differ from template | Standardize YAML frontmatter per ADR-MVP-TEMPLATE.md (full template archived) |
 | W03 | **Index Title Format** | - | Title uses `ADR-000` instead of `ADR-00` | Change to 2-digit format for consistency |
 
 ### 0.3 Issues Fixed (Reference)
@@ -766,7 +766,7 @@ fi
 |-------|-------------------|
 | **E01: Title Numbering** | 1. Open YAML frontmatter<br>2. Change `title: "ADR-001:` to `title: "ADR-01:`<br>3. Search/replace `ADR-00X` with `ADR-0X` in body |
 | **E02: Header Level** | 1. Find all `### Context`, `### Decision`, etc.<br>2. Change `###` to `##` for major sections<br>3. Verify H1 for main title, H2 for sections, H3 for subsections |
-| **E03: Missing Document Control** | 1. Insert after YAML frontmatter, before Section 1<br>2. Use template from ADR-TEMPLATE.md<br>3. Include all required fields |
+| **E03: Missing Document Control** | 1. Insert after YAML frontmatter, before Section 1<br>2. Use template from ADR-MVP-TEMPLATE.md (full template archived)<br>3. Include all required fields |
 | **E04: Missing Traceability** | 1. Add Section 16 before References<br>2. Include all 4 upstream tags (@brd, @prd, @ears, @bdd)<br>3. Use TYPE.NN.TT.SS format for element references |
 | **E05: Missing SYS-Ready Score** | 1. Add to Document Control table<br>2. Calculate score using criteria in Section 3.3<br>3. Format: `SYS-Ready NN% (Target: ≥90%)` |
 | **E06: H1 Title** | 1. Change `## ADR-NN:` to `# ADR-NN:`<br>2. Ensure only one H1 per document |
@@ -776,7 +776,7 @@ fi
 | Warning | Remediation Steps |
 |---------|-------------------|
 | **W01: ASCII Diagrams** | 1. Identify all ASCII art (boxes, arrows, lines)<br>2. Convert to Mermaid syntax<br>3. Use `mermaid-gen` skill for assistance<br>4. Reference: DIAGRAM_STANDARDS.md |
-| **W02: Custom Fields** | 1. Compare YAML to ADR-TEMPLATE.md<br>2. Standardize custom_fields structure<br>3. Required: artifact_type, layer, priority |
+| **W02: Custom Fields** | 1. Compare YAML to ADR-MVP-TEMPLATE.md (full template archived)<br>2. Standardize custom_fields structure<br>3. Required: artifact_type, layer, priority |
 | **W03: Index Title** | 1. Change `ADR-000` to `ADR-00` in YAML<br>2. Update header if present |
 
 ---
@@ -953,6 +953,6 @@ fi
 ## References
 
 - [ADR_VALIDATION_RULES.md](./ADR_VALIDATION_RULES.md) - Individual file validation
-- [ADR-TEMPLATE.md](./ADR-TEMPLATE.md) - ADR document template
+- [ADR-MVP-TEMPLATE.md](./ADR-MVP-TEMPLATE.md) - ADR document template (full template archived)
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

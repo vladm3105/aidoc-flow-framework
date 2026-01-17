@@ -52,12 +52,12 @@ custom_fields:
 ---
 
 > **MVP Template** — Single-file, streamlined EARS for logic mapping.
-> MVP Note: Single flat file; do not use `DOCUMENT_SPLITTING_RULES.md`.
+> MVP Note: Single flat file; split only if too large for AI assistants; otherwise ignore `DOCUMENT_SPLITTING_RULES.md`.
 > Use this template to translate PRD features into Atomic Logic for code generation.
 
 > **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators. This is expected behavior.
 
-> References: Full Template `EARS-TEMPLATE.md` | Schema `EARS_SCHEMA.yaml` | Rules `EARS_CREATION_RULES.md`, `EARS_VALIDATION_RULES.md` | Matrix `EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `EARS_SCHEMA.yaml` | Rules `EARS_CREATION_RULES.md`, `EARS_VALIDATION_RULES.md` | Matrix `EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md` (full template archived)
 
 # EARS-NN: [Target Component/Feature]
 

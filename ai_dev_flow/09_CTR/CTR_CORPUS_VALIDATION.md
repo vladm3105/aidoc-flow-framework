@@ -469,7 +469,7 @@ fi
 ## References
 
 - [CTR_VALIDATION_RULES.md](./CTR_VALIDATION_RULES.md) - Individual file validation
-- [CTR-TEMPLATE.md](./CTR-TEMPLATE.md) - CTR document template (primary standard)
+- [CTR-MVP-TEMPLATE.md](./CTR-MVP-TEMPLATE.md) - CTR document template (primary standard)
 - [CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

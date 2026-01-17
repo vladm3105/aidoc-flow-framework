@@ -69,10 +69,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/BDD --profile mvp
+python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/04_BDD --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/BDD --profile full
+python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/04_BDD --profile full
 ```
 
 ---

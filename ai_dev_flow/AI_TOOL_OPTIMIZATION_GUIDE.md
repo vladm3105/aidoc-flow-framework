@@ -403,7 +403,7 @@ python -c "import tiktoken; enc = tiktoken.get_encoding('cl100k_base'); print(le
 
 ### Example 2: Comprehensive BRD (60KB)
 
-**File**: BRD-TEMPLATE.md (60KB, ~15,000 tokens)
+**File**: BRD-MVP-TEMPLATE.md (default; full template archived) (60KB, ~15,000 tokens)
 
 **Tool Usage:**
 - **Claude Code**: ✅ Optimal (uses 7.5% of context, can load 10+ files simultaneously)
@@ -415,9 +415,9 @@ python -c "import tiktoken; enc = tiktoken.get_encoding('cl100k_base'); print(le
 gemini
 
 # Let Gemini use file read tool
-> "Read BRD-TEMPLATE.md and identify key requirements"
-> "Analyze section 5 of BRD-TEMPLATE.md for functional SPEC"
-> "What are the security requirements in BRD-TEMPLATE.md?"
+> "Read BRD-MVP-TEMPLATE.md and identify key requirements"
+> "Analyze section 5 of BRD-MVP-TEMPLATE.md for functional SPEC"
+> "What are the security requirements in BRD-MVP-TEMPLATE.md?"
 ```
 
 **Recommendation**: Keep as single file, provide tool-specific usage notes.

@@ -1,7 +1,7 @@
 #!/bin/bash
 # CTR (Contract) Template Validator v1.0
 # Validates CTR documents against:
-# - CTR-TEMPLATE.md and CTR-TEMPLATE.yaml (authoritative templates)
+# - CTR-MVP-TEMPLATE.md and CTR-TEMPLATE.yaml (authoritative templates)
 # - AI Dev Flow SDD framework standards
 # - Layer 9 artifact requirements
 # Usage: ./scripts/validate_ctr.sh <CTR_FILE>
@@ -486,7 +486,7 @@ if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
   echo -e "${GREEN}✅ PASSED: All validation checks passed${NC}"
   echo ""
   echo "Document complies with:"
-  echo "  - CTR-TEMPLATE.md structure"
+  echo "  - CTR-MVP-TEMPLATE.md structure"
   echo "  - AI Dev Flow SDD framework requirements"
   echo "  - Layer 9 artifact standards"
   exit 0
@@ -495,14 +495,14 @@ elif [ $ERRORS -eq 0 ]; then
   echo ""
   echo "Recommendations:"
   echo "  - Review warnings for quality improvements"
-  echo "  - See CTR-TEMPLATE.md for best practices"
+  echo "  - See CTR-MVP-TEMPLATE.md for best practices"
   exit 0
 else
   echo -e "${RED}❌ FAILED: $ERRORS critical errors found${NC}"
   echo ""
   echo "Action Required:"
   echo "  1. Fix all errors listed above"
-  echo "  2. Review CTR-TEMPLATE.md for requirements"
+  echo "  2. Review CTR-MVP-TEMPLATE.md for requirements"
   echo "  3. Check CTR_CREATION_RULES.md for standards"
   echo "  4. Re-run validation: ./scripts/validate_ctr.sh $CTR_FILE"
   exit 1

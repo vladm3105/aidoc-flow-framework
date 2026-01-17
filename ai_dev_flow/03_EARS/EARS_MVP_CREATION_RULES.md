@@ -13,10 +13,10 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of EARS-TEMPLATE.md
-# - Authority: EARS-TEMPLATE.md is the single source of truth for EARS structure
-# - Purpose: AI guidance for document creation (derived from template)
-# - On conflict: Defer to EARS-TEMPLATE.md
+# 📋 Document Role: Guides creation of EARS-MVP-TEMPLATE.md (default)
+# - Authority: EARS-MVP-TEMPLATE.md is the primary standard for EARS structure; full template is archived
+# - Purpose: AI guidance for document creation (derived from MVP template)
+# - On conflict: Defer to EARS-MVP-TEMPLATE.md
 # =============================================================================
 ---
 title: "EARS Creation Rules"
@@ -32,8 +32,8 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is a **CREATION HELPER** for EARS-TEMPLATE.md.
-> - **Authority**: `EARS-TEMPLATE.md` is the single source of truth for EARS structure
+> **📋 Document Role**: This is a **CREATION HELPER** for EARS-MVP-TEMPLATE.md (default).
+> - **Authority**: `EARS-MVP-TEMPLATE.md` is the primary standard for EARS structure; full template archived
 > - **Schema**: `EARS_SCHEMA.yaml` defines machine-readable validation rules
 > - **Validation**: Use `EARS_VALIDATION_RULES.md` or `scripts/validate_ears.py`
 
@@ -46,7 +46,7 @@ custom_fields:
 | Template | File | When to Use |
 |----------|------|-------------|
 | **MVP (DEFAULT)** | `EARS-MVP-TEMPLATE.md` | All new projects unless full template is explicitly requested |
-| Full | `EARS-TEMPLATE.md` | Enterprise projects, regulatory compliance, or when prompted |
+| Full | `EARS-TEMPLATE.md` (archived) | Only when explicitly required for enterprise/full mode |
 
 **Triggering Full Template**:
 - Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
@@ -62,7 +62,7 @@ custom_fields:
 **Version**: 1.1
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-30
-**Source**: Extracted from EARS-TEMPLATE.md, PRD requirements, and behavioral specification patterns
+**Source**: Extracted from EARS-MVP-TEMPLATE.md, PRD requirements, and behavioral specification patterns (full template archived)
 **Purpose**: Complete reference for creating EARS files according to doc-flow SDD framework
 **Changes**: Merged EARS_STYLE_GUIDE.md content - added Status/BDD-Score mapping, code block formatting, traceability format details, and extended common mistakes table
 

@@ -47,7 +47,7 @@ flowchart LR
 
 | SPEC ID | Title | Specification Type | Status | Related REQ | Related CTR | Priority | Last Updated |
 |---------|-------|--------------------|--------|-------------|-------------|----------|--------------|
-| [SPEC-TEMPLATE](./SPEC-TEMPLATE.yaml) | Template | Reference | Reference | - | - | - | 2025-11-13 |
+| [SPEC-MVP-TEMPLATE](./SPEC-MVP-TEMPLATE.yaml) | Template | Reference | Reference | - | - | - | 2025-11-13 |
 | [SPEC-01_api_client_example](./SPEC-01_api_client_example.yaml) | API Client (flat example) | Example | Draft | REQ-.. | CTR-.. | Medium | 2025-12-28 |
 | [SPEC-02_nested_example](./examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) | Nested Example (YAML+MD) | Example | Draft | REQ-.. | CTR-.. | Low | 2025-12-28 |
 
@@ -90,9 +90,9 @@ When creating a new SPEC:
    ```bash
    # Nested (default)
    mkdir -p 10_SPEC/SPEC-01_component_name
-   cp ai_dev_flow/10_SPEC/SPEC-TEMPLATE.yaml 10_SPEC/SPEC-01_component_name/SPEC-01_component_name.yaml
+   cp ai_dev_flow/10_SPEC/SPEC-MVP-TEMPLATE.yaml 10_SPEC/SPEC-01_component_name/SPEC-01_component_name.yaml
    # Flat (exception)
-   # cp ai_dev_flow/10_SPEC/SPEC-TEMPLATE.yaml 10_SPEC/SPEC-01_component_name.yaml
+   # cp ai_dev_flow/10_SPEC/SPEC-MVP-TEMPLATE.yaml 10_SPEC/SPEC-01_component_name.yaml
    ```
 
 2. **Assign SPEC ID**: Use next sequential number (SPEC-01, SPEC-02, 100, 1000 ...)
@@ -183,7 +183,7 @@ When creating a new SPEC:
 
 ## Related Documents
 
-- **Template**: [SPEC-TEMPLATE.yaml](./SPEC-TEMPLATE.yaml) - Use this to create new SPECs
+- **Template**: [SPEC-MVP-TEMPLATE.yaml](./SPEC-MVP-TEMPLATE.yaml) - Use this to create new SPECs
 - **README**: [README.md](./README.md) - Learn about SPEC purpose, format, and structure
 - **Traceability Matrix**: [SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md](./SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 - **Example**: [SPEC-01_api_client_example.yaml](./SPEC-01_api_client_example.yaml) - Reference specification

@@ -705,7 +705,7 @@ def main():
         Layer("ADR", 5, "ADR-MVP-TEMPLATE.md", ".md", upstream_tags=["brd","prd","ears","bdd"]),
         Layer("SYS", 6, "SYS-MVP-TEMPLATE.md", ".md", upstream_tags=["brd","prd","ears","bdd","adr"]),
         Layer("REQ", 7, "REQ-MVP-TEMPLATE.md", ".md", upstream_tags=["brd","prd","ears","bdd","adr","sys"]),
-        Layer("SPEC",10, "SPEC-TEMPLATE.yaml", ".yaml", upstream_tags=["req"]),
+        Layer("SPEC",10, "SPEC-MVP-TEMPLATE.yaml", ".yaml", upstream_tags=["req"]),
         Layer("TASKS",11, "TASKS-TEMPLATE.md", ".md", upstream_tags=["spec","req"]),
     ]
 

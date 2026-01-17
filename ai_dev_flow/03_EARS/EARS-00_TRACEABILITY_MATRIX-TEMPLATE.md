@@ -488,7 +488,7 @@ graph TD
 
 ### 14.1 Internal Documentation
 - **EARS Index**: [EARS-00_index.md](EARS-00_index.md)
-- **EARS Template**: [EARS-TEMPLATE.md](EARS-TEMPLATE.md)
+- **EARS Template**: [EARS-MVP-TEMPLATE.md](EARS-MVP-TEMPLATE.md) (default; full template archived)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
 - **SDD Workflow Guide**: [../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)

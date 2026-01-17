@@ -773,7 +773,7 @@ BDD scenarios and acceptance tests validating this system.
 
 **Document Metadata**:
 - Document format: Markdown (.md)
-- Schema version: 1.0 (SYS-TEMPLATE v1.0)
+- Schema version: 1.0 (MVP profile; full template archived)
 - Line count: [Auto-generated on save]
 - Last modified: [Auto-generated on save]
 - Git hash: [Commit SHA when checked in]

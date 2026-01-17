@@ -16,12 +16,14 @@ custom_fields:
 
 Development Principles Guide
 
+**MVP-to-Production Loop**: Create an MVP, fix defects, promote to production, add features as a new MVP based on the current product, fix defects, and repeat.
+
 ### Splitting Rules
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
-> MVP Mode: For MVP workflows, use single flat files and ignore splitting rules and references to `DOCUMENT_SPLITTING_RULES.md`.
+> MVP Mode: Default to single flat files. Split only when a document is too large for AI assistants to handle in one file; otherwise ignore `DOCUMENT_SPLITTING_RULES.md` in MVP.
 
 > ⚠️ **Token Limit Update (2025-11)**: This guide contains historical 10K token limits.
 > For current token limits (Claude Code: 50K-100K), see [AI_TOOL_OPTIMIZATION_GUIDE.md](./AI_TOOL_OPTIMIZATION_GUIDE.md).

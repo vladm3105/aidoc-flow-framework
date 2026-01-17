@@ -12,30 +12,9 @@ custom_fields:
   development_status: active
 ---
 
-# =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of SPEC-TEMPLATE.yaml
-# - Authority: SPEC-TEMPLATE.yaml is the single source of truth for SPEC structure
-# - Purpose: AI checklist after document creation (derived from template)
-# - Scope: Includes all rules from SPEC_CREATION_RULES.md plus validation extensions
-# - On conflict: Defer to SPEC-TEMPLATE.yaml
-# =============================================================================
----
-title: "SPEC Validation Rules Reference"
-tags:
-  - validation-rules
-  - layer-10-artifact
-  - shared-architecture
-custom_fields:
-  document_type: validation-rules
-  artifact_type: SPEC
-  layer: 10
-  priority: shared
-  development_status: active
----
-
 > **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for SPEC documents.
 > - Apply these rules after SPEC creation or modification
-> - **Authority**: Validates compliance with `SPEC-TEMPLATE.yaml` (the primary standard)
+> - **Authority**: Validates compliance with `SPEC-MVP-TEMPLATE.yaml` (MVP default profile; use full profile only when explicitly requested)
 > - **Scope**: Use for quality gates before committing SPEC changes
 
 # SPEC Validation Rules Reference
@@ -47,7 +26,7 @@ custom_fields:
 **Last Updated**: 2025-11-30
 **Purpose**: Complete validation rules for SPEC YAML files
 **Script**: `python scripts/validate_spec.py`
-**Primary Template**: `SPEC-TEMPLATE.yaml`
+**Primary Template**: `SPEC-MVP-TEMPLATE.yaml`
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: v1.2: Added file size warnings, removed document splitting requirement. v1.1: Relaxed method naming (dunder support), downgraded missing latency targets to Warning, added TASKS-ready scoring validation system
 

@@ -22,9 +22,9 @@ custom_fields:
 >
 > See [LAYER_REGISTRY.yaml](./LAYER_REGISTRY.yaml) for `template` field definitions.
 
-Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live under `ai_dev_flow/` without the `docs/` prefix. Run commands from the repo root and use explicit paths, e.g., `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/PRD`.
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live under `ai_dev_flow/` without the `docs/` prefix. Use zero-padded paths (e.g., `01_BRD`, `02_PRD`). Run commands from the repo root, e.g., `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/02_PRD`.
 
-Important MVP note: MVP artifacts are single, flat files. Do not use document splitting; `DOCUMENT_SPLITTING_RULES.md` does not apply to the MVP track.
+Important MVP note: MVP artifacts are single, flat files. Split only when a document is too large for AI assistants to handle in one file; otherwise ignore `DOCUMENT_SPLITTING_RULES.md` for MVP.
 
 ---
 
@@ -65,7 +65,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 1.  **Plan**: Edit `BRD-00_index.md`. Create `BRD-00_required_documents_list.md` (List: BRD-01).
 2.  **Pre-Check**: Verify index/required lists structure; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: "Create BRD-01 using BRD-MVP-TEMPLATE. Focus on Hypothesis."
-4.  **Validate**: `python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/BRD`
+4.  **Validate**: `python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/01_BRD`
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer BRD`
 
 ### Step 2: Core Product Definition (PRD) — **Day 1 (Morning)**
@@ -73,7 +73,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 1.  **Plan**: Edit `PRD-00_index.md`. Create `PRD-00_required_documents_list.md` (List: PRD-01).
 2.  **Pre-Check**: Ensure `BRD-01` exists; verify PRD index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: "Create PRD-01 using PRD-MVP-TEMPLATE. List P1 features."
-4.  **Validate**: `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/PRD`
+4.  **Validate**: `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/02_PRD`
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow` (check traceability)
 
 ### Step 3: Logic Mapping (EARS) — **Day 1 (Afternoon)**
@@ -81,7 +81,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 1.  **Plan**: Edit `EARS-00_index.md`, `EARS-00_required_documents_list.md`.
 2.  **Pre-Check**: Ensure `PRD-01` exists; verify EARS index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: "Create EARS-01. Map PRD features to MVP Logic."
-4.  **Validate**: `python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/EARS`
+4.  **Validate**: `python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/03_EARS`
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer EARS`
 
 ### Step 4: Critical Scenarios (BDD) — **Day 1 (Late Afternoon)**
@@ -89,7 +89,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 1.  **Plan**: Edit `BDD-00_index.md` (one per suite), `required_documents_list`.
 2.  **Pre-Check**: Ensure `EARS-01` exists; verify BDD index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: "Create `BDD-01_checkout.feature`. Include Happy Path + Critical Error Path scenarios."
-4.  **Validate**: `python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/BDD`
+4.  **Validate**: `python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/04_BDD`
 5.  **Corpus Validation**: Verify Gherkin syntax across suite.
 
 ### Step 5: Lean Architecture (ADR & SYS) — **Day 2 (Morning)**
@@ -98,8 +98,8 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 2.  **Pre-Check**: Ensure upstream docs exist (`BRD-01`, `PRD-01`, `EARS-01`); verify `ADR-00_index.md` and `SYS-00_index.md` + required lists; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: `ADR-01` (Tech Stack), `SYS-01` (System Spec).
 4.  **Validate**:
-    - `python3 ai_dev_flow/scripts/validate_adr.py ai_dev_flow/ADR`
-    - `python3 ai_dev_flow/scripts/validate_sys.py ai_dev_flow/SYS`
+    - `python3 ai_dev_flow/scripts/validate_adr.py ai_dev_flow/05_ADR`
+    - `python3 ai_dev_flow/scripts/validate_sys.py ai_dev_flow/06_SYS`
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer ADR --layer SYS`
 
 ### Step 6: Atomic Requirements (REQ) — **Day 2 (Mid-Day)**
@@ -108,18 +108,22 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 2.  **Pre-Check**: Ensure upstream docs exist (`ADR-01`, `SYS-01`); verify REQ index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: Batch creation of atomic requirements.
 4.  **Validate** (per file):
-    - `find ai_dev_flow/REQ -name 'REQ-*.md' -exec bash ai_dev_flow/scripts/validate_req_template.sh {} \;`
-5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_requirement_ids.py --directory ai_dev_flow/REQ` (unique IDs)
+    - `find ai_dev_flow/07_REQ -name 'REQ-*.md' -exec bash ai_dev_flow/scripts/validate_req_template.sh {} \;`
+5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_requirement_ids.py --directory ai_dev_flow/07_REQ` (unique IDs)
 
 ### Step 7: Spec & Code (SPEC -> TASKS) — **Day 2 (Afternoon)**
 **Artifacts**: Standard `SPEC` (YAML), `TASKS`.
 1.  **Plan**: Map REQs to Specs.
 2.  **Pre-Check**: Ensure required REQ files exist; verify any 10_SPEC/TASKS index/required lists used; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: Specs and Task Lists.
-4.  **Validate**: `python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/SPEC`.
+4.  **Validate**: `python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/10_SPEC`.
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow` (final pre-code check).
 
 ---
+
+## 🔁 MVP-to-Production Loop
+
+Create an MVP, fix defects, promote to production, add features as a new MVP based on the current product, fix defects, and repeat. Use MVP templates by default; split files only when size blocks AI assistants.
 
 ## 🛠️ Validation for MVP
 
@@ -179,12 +183,12 @@ python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --resume --skip-
 
 - **Orchestrator (All)**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --all --report markdown`
 - **Plan Check**: `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`
-- **BRD**: `python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/BRD`
-- **PRD**: `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/PRD`
-- **EARS**: `python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/EARS`
-- **BDD**: `python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/BDD`
-- **ADR**: `python3 ai_dev_flow/scripts/validate_adr.py ai_dev_flow/ADR`
-- **SYS**: `python3 ai_dev_flow/scripts/validate_sys.py ai_dev_flow/SYS`
-- **REQ**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer REQ` (Auto-runs shell script)
-- **SPEC**: `python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/SPEC`
+- **BRD**: `python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/01_BRD`
+- **PRD**: `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/02_PRD`
+- **EARS**: `python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/03_EARS`
+- **BDD**: `python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/04_BDD`
+- **ADR**: `python3 ai_dev_flow/scripts/validate_adr.py ai_dev_flow/05_ADR`
+- **SYS**: `python3 ai_dev_flow/scripts/validate_sys.py ai_dev_flow/06_SYS`
+- **SPEC**: `python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/10_SPEC`
+
 - **Links**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow`

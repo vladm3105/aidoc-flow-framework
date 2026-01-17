@@ -13,29 +13,15 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of CTR-TEMPLATE.md
-# - Authority: CTR-TEMPLATE.md is the single source of truth for CTR structure
+# 📋 Document Role: This is a DERIVATIVE of CTR-MVP-TEMPLATE.md
+# - Authority: CTR-MVP-TEMPLATE.md is the single source of truth for CTR structure
 # - Purpose: AI checklist after document creation (derived from template)
 # - Scope: Includes all rules from CTR_CREATION_RULES.md plus validation extensions
-# - On conflict: Defer to CTR-TEMPLATE.md
+# - On conflict: Defer to CTR-MVP-TEMPLATE.md
 # =============================================================================
----
-title: "CTR Validation Rules"
-tags:
-  - validation-rules
-  - layer-9-artifact
-  - shared-architecture
-custom_fields:
-  document_type: validation_rules
-  artifact_type: CTR
-  layer: 9
-  priority: shared
-  development_status: active
----
-
 > **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for CTR documents.
 > - Apply these rules after CTR creation or modification
-> - **Authority**: Validates compliance with `CTR-TEMPLATE.md` (the primary standard) and OpenAPI 3.x for YAML schemas
+> - **Authority**: Validates compliance with `CTR-MVP-TEMPLATE.md` (the primary standard) and OpenAPI 3.x for YAML schemas
 > - **Scope**: Use for quality gates before committing CTR changes
 
 # CTR Validation Rules
@@ -481,7 +467,7 @@ Result: PASSED WITH WARNINGS
 ## References
 
 - [CTR_CREATION_RULES.md](./CTR_CREATION_RULES.md) - Creation guidelines
-- [CTR-TEMPLATE.md](./CTR-TEMPLATE.md) - Contract template (primary standard)
+- [CTR-MVP-TEMPLATE.md](./CTR-MVP-TEMPLATE.md) - Contract template (primary standard)
 - [CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
 - [validate_ctr.sh](../scripts/validate_ctr.sh) - Validation script
 - [README.md](./README.md) - Directory overview

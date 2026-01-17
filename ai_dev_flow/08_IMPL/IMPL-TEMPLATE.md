@@ -546,7 +546,7 @@ Before marking a phase complete, verify:
 
 **Internal**: [REQ-NN](<!-- VALIDATOR:IGNORE-LINKS-START -->../07_REQ/.../REQ-NN.md<!-- VALIDATOR:IGNORE-LINKS-END -->) \| [ADR-PPP](../05_ADR/ADR-PPP.md) \| [IMPL-00 Index](./IMPL-00_index.md)
 
-**Templates**: [CTR-TEMPLATE](../09_CTR/CTR-TEMPLATE.md) \| [SPEC-TEMPLATE](../10_SPEC/SPEC-TEMPLATE.yaml) \| [TASKS-TEMPLATE](../11_TASKS/TASKS-TEMPLATE.md)
+**Templates**: [CTR-MVP-TEMPLATE](../09_CTR/CTR-MVP-TEMPLATE.md) \| [SPEC-MVP-TEMPLATE](../10_SPEC/SPEC-MVP-TEMPLATE.yaml) \| [TASKS-TEMPLATE](../11_TASKS/TASKS-TEMPLATE.md)
 
 **Guidelines**: [IMPL README](./README.md) \| [SPEC README](../10_SPEC/README.md)
 

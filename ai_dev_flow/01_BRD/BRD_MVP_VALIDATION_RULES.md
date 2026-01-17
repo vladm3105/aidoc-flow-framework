@@ -1,5 +1,5 @@
 ---
-title: "BRD Validation Rules"
+title: "BRD MVP Validation Rules"
 tags:
   - validation-rules
   - layer-1-artifact
@@ -13,11 +13,11 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of BRD-TEMPLATE.md
-# - Authority: BRD-TEMPLATE.md is the single source of truth for BRD structure
-# - Purpose: AI checklist after document creation (derived from template)
+# 📋 Document Role: Validates BRD-MVP-TEMPLATE.md (default)
+# - Authority: BRD-MVP-TEMPLATE.md is the primary standard for BRD structure; full template is archived
+# - Purpose: AI checklist after document creation (derived from MVP template)
 # - Scope: Includes all rules from BRD_CREATION_RULES.md plus validation extensions
-# - On conflict: Defer to BRD-TEMPLATE.md
+# - On conflict: Defer to BRD-MVP-TEMPLATE.md
 # =============================================================================
 ---
 title: "BRD Validation Rules Reference"
@@ -35,7 +35,7 @@ custom_fields:
 
 > **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for BRD documents.
 > - Apply these rules after BRD creation or modification
-> - **Authority**: Validates compliance with `BRD-TEMPLATE.md` (the primary standard)
+> - **Authority**: Validates compliance with `BRD-MVP-TEMPLATE.md` (primary standard; full template archived)
 > - **Scope**: Use for quality gates before committing BRD changes
 
 # BRD Validation Rules Reference
@@ -69,10 +69,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/BRD --profile mvp
+python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/01_BRD --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/BRD --profile full
+python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/01_BRD --profile full
 ```
 
 ---
@@ -82,7 +82,7 @@ python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/BRD --profile full
 **Last Updated**: 2025-12-19
 **Purpose**: Complete validation rules for BRD documents
 **Script**: `scripts/validate_brd_template.sh`
-**Primary Template**: `BRD-TEMPLATE.md`
+**Primary Template**: `BRD-MVP-TEMPLATE.md` (full template archived)
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added Section Classification (MANDATORY/OPTIONAL/CONDITIONAL); Section 15 (Quality Assurance) now MANDATORY; 18 total sections
 
@@ -128,7 +128,7 @@ Note: Some examples in this guide show a portable `docs/` root. In this reposito
 
 The BRD validation script (`validate_brd_template.sh`) performs **24 validation checks** to ensure compliance with:
 
-- **BRD-TEMPLATE.md**: Complete business requirements structure
+- **BRD-MVP-TEMPLATE.md**: Complete business requirements structure (full template archived)
 - **AI Dev Flow SDD Framework**: Business-driven SDD methodology
 - **Platform vs Feature BRD**: Different validation requirements by type
 - **Business Requirements Quality**: Measurable objectives, acceptance criteria, strategic alignment
@@ -761,7 +761,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 
 **Required sections** (CHECK 1):
 - **Deduction**: -1 point per missing section (max -10 points)
-- **Required**: All 18 mandatory sections from BRD-TEMPLATE.md
+- **Required**: All 18 mandatory sections from BRD-MVP-TEMPLATE.md (full template archived)
 
 **Revision History** (CHECK 3):
 - **Deduction**: -3 points if Document Revision History table missing or empty
@@ -826,7 +826,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 **Fix**:
 1. Run automated validation script: `./scripts/validate_brd.py docs/01_BRD/BRD-XXX.md`
 2. Review detailed deduction report
-3. Address violations using BRD-TEMPLATE.md Appendix B (REMOVE/KEEP guidelines)
+3. Address violations using BRD-MVP-TEMPLATE.md Appendix B (REMOVE/KEEP guidelines; full template archived)
 4. Re-run validation until score ≥90/100
 5. Update Document Control with final score
 
@@ -879,10 +879,10 @@ Code blocks are PRD-level content and must be removed from BRDs.
 
 **Fix**:
 1. Remove code block entirely
-2. Replace with business-level description (see BRD-TEMPLATE.md Appendix B)
+2. Replace with business-level description (see BRD-MVP-TEMPLATE.md Appendix B; full template archived)
 3. Reference technical implementation in Related Requirements (e.g., "Fee calculation algorithm defined in PRD-XXX")
 
-**Reference**: BRD-TEMPLATE.md Appendix B, Edge Case 4 (Code Blocks)
+**Reference**: BRD-MVP-TEMPLATE.md Appendix B, Edge Case 4 (Code Blocks; full template archived)
 
 ---
 
@@ -917,7 +917,7 @@ Suggested business-level rewrites:
 - Line X: "Customer initiates cross-border transaction"
 - Line Y: "System validates recipient is active and eligible"
 
-See BRD-TEMPLATE.md Appendix B for REMOVE/KEEP guidelines.
+See BRD-MVP-TEMPLATE.md Appendix B for REMOVE/KEEP guidelines (full template archived).
 ```
 
 **Fix**:
@@ -925,7 +925,7 @@ See BRD-TEMPLATE.md Appendix B for REMOVE/KEEP guidelines.
 2. Rewrite in business-level language (what business capability, not how technically implemented)
 3. Defer technical implementation to PRD Related Requirements
 
-**Reference**: BRD-TEMPLATE.md Appendix B (REMOVE/KEEP Rules), BRD_CREATION_RULES.md section 6.5 (Edge Cases)
+**Reference**: BRD-MVP-TEMPLATE.md Appendix B (REMOVE/KEEP Rules; full template archived), BRD_CREATION_RULES.md section 6.5 (Edge Cases)
 
 ---
 
@@ -967,7 +967,7 @@ UI implementation details should be deferred to PRD.
 2. Rewrite focusing on business action/outcome (what customer accomplishes, not which UI element they interact with)
 3. Defer UI/UX design to PRD Related Requirements
 
-**Reference**: BRD-TEMPLATE.md Appendix B (REMOVE Category: UI Flows and Screens)
+**Reference**: BRD-MVP-TEMPLATE.md Appendix B (REMOVE Category: UI Flows and Screens; full template archived)
 
 ---
 
@@ -1024,15 +1024,15 @@ Found structure:
 ❌ Business Capability
 ❌ Complexity
 
-Fix: Add missing subsections per BRD-TEMPLATE.md section 7.2 format
+Fix: Add missing subsections per BRD-MVP-TEMPLATE.md section 7.2 format (full template archived)
 ```
 
 **Fix**:
 1. Verify each FR has all 6 subsections in correct order
-2. Add missing subsections using BRD-TEMPLATE.md section 7.2 as reference
+2. Add missing subsections using BRD-MVP-TEMPLATE.md section 7.2 as reference (full template archived)
 3. Ensure subsection headers match exactly (case-sensitive)
 
-**Reference**: BRD-TEMPLATE.md section 7.2, BRD_CREATION_RULES.md section 5.5 (Complexity Rating)
+**Reference**: BRD-MVP-TEMPLATE.md section 7.2 (full template archived), BRD_CREATION_RULES.md section 5.5 (Complexity Rating)
 
 ---
 
@@ -1074,7 +1074,7 @@ Fix: Verify all BRD references exist and use correct ID format (BRD-NN)
 3. Correct invalid ID formats (BRD-2 → BRD-02, BRD-99 → BRD-099)
 4. Remove references to non-existent BRDs or create placeholder BRD if needed
 
-**Reference**: BRD-TEMPLATE.md Appendix C (FR Examples with cross-references)
+**Reference**: BRD-MVP-TEMPLATE.md Appendix C (FR Examples with cross-references; full template archived)
 
 ---
 
@@ -1127,7 +1127,7 @@ Missing elements:
 - Investment required (no budget range or cost estimate)
 
 Recommendation: Add quantitative data for better stakeholder impact assessment
-Reference: BRD-TEMPLATE.md lines 76-111 for Executive Summary pattern
+Reference: BRD-MVP-TEMPLATE.md lines 76-111 for Executive Summary pattern (full template archived)
 ```
 
 **Fix**:
@@ -1137,7 +1137,7 @@ Reference: BRD-TEMPLATE.md lines 76-111 for Executive Summary pattern
 4. Mention implementation timeline (phases, quarters, duration)
 5. Reference investment level if known at BRD stage
 
-**Reference**: BRD-TEMPLATE.md section 1.1, BRD_CREATION_RULES.md section 2.2
+**Reference**: BRD-MVP-TEMPLATE.md section 1.1 (full template archived), BRD_CREATION_RULES.md section 2.2
 
 ---
 
@@ -1186,7 +1186,7 @@ Add section with high-level summary:
 - Aggregate counts (Primary, Operational, Total)
 - Reference link to PRD for complete details
 
-Reference: BRD-TEMPLATE.md section 5 (lines 453-488)
+Reference: BRD-MVP-TEMPLATE.md section 5 (lines 453-488; full template archived)
 ```
 
 **Warning Message** (quality issues):
@@ -1206,7 +1206,7 @@ Fix: Simplify to high-level summary and add PRD reference link
 3. Add reference link to PRD-TEMPLATE.md User Stories section
 4. Keep only business-level summary (detailed content belongs in PRD)
 
-**Reference**: BRD-TEMPLATE.md section 5 (simplified), BRD_CREATION_RULES.md section 5.6, PRD-TEMPLATE.md User Stories & User Roles
+**Reference**: BRD-MVP-TEMPLATE.md section 5 (simplified; full template archived), BRD_CREATION_RULES.md section 5.6, PRD-MVP-TEMPLATE.md User Stories & User Roles
 
 ---
 
@@ -1258,7 +1258,7 @@ Missing sections:
 - section 3.5.5 (Exception Handling) not found
 
 Recommendation: Add Mermaid sequence diagrams to visualize business processes
-Reference: BRD-TEMPLATE.md lines 173-254
+Reference: BRD-MVP-TEMPLATE.md lines 173-254 (full template archived)
 ```
 
 **Quality Checks**:
@@ -1273,7 +1273,7 @@ Reference: BRD-TEMPLATE.md lines 173-254
 4. Add section 3.5.5 for exception handling workflows
 5. Ensure participants and actions are business-level (no technical implementation)
 
-**Reference**: BRD-TEMPLATE.md sections 3.5.4-3.5.5, BRD_CREATION_RULES.md section 2.3
+**Reference**: BRD-MVP-TEMPLATE.md sections 3.5.4-3.5.5 (full template archived), BRD_CREATION_RULES.md section 2.3
 
 ---
 
@@ -1316,7 +1316,7 @@ Add section with structure:
 - 15.3 Test Coverage Traceability
 - 15.4 Traceability Summary (Health Score)
 
-Reference: BRD-TEMPLATE.md section 15
+Reference: BRD-MVP-TEMPLATE.md section 15 (full template archived)
 ```
 
 **Warning Message** (orphan detection):
@@ -1347,7 +1347,8 @@ Fix: Ensure bidirectional links for all objectives, BRD requirements, and user s
 6. Calculate Traceability Health Score: Average of all coverage percentages
 7. Ensure score ≥90% by eliminating orphans
 
-**Reference**: BRD-TEMPLATE.md section 15, BRD_CREATION_RULES.md section 8
+**Reference**: BRD-MVP-TEMPLATE.md section 15 (full template archived)
+, BRD_CREATION_RULES.md section 8
 
 ---
 
@@ -1380,7 +1381,7 @@ Add subsection within section 14 (Project Governance):
 - 14.5.2 Approval Criteria (conditions for approval)
 - 14.5.3 Change Control Process (version management)
 
-Reference: BRD-TEMPLATE.md section 14.5
+Reference: BRD-MVP-TEMPLATE.md section 14.5 (full template archived)
 ```
 
 **Required Approval Table Structure**:
@@ -1410,7 +1411,7 @@ Issues found:
 - Approval Criteria lists only 3 conditions (minimum 5 required)
 - Change Control missing version impact definitions
 
-Fix: Complete all required subsections per BRD-TEMPLATE.md section 14.5
+Fix: Complete all required subsections per BRD-MVP-TEMPLATE.md section 14.5 (full template archived)
 ```
 
 **Fix**:
@@ -1425,7 +1426,7 @@ Fix: Complete all required subsections per BRD-TEMPLATE.md section 14.5
 4. Define Change Control Process table with version impact rules
 5. Use semantic versioning: major.minor.patch
 
-**Reference**: BRD-TEMPLATE.md section 14.5, BRD_CREATION_RULES.md section 11.5
+**Reference**: BRD-MVP-TEMPLATE.md section 14.5 (full template archived), BRD_CREATION_RULES.md section 11.5
 
 ---
 
@@ -1464,7 +1465,7 @@ Missing subsections:
 - 17.6 External Standards not found
 
 Recommendation: Add all 6 subsections for comprehensive terminology coverage
-Reference: BRD-TEMPLATE.md section 17
+Reference: BRD-MVP-TEMPLATE.md section 17 (full template archived)
 ```
 
 **Required Structure**:
@@ -1519,7 +1520,7 @@ Reference: BRD-TEMPLATE.md section 17
 7. List Cross-References to related BRDs and documents
 8. Document External Standards referenced (regulatory, industry, technical)
 
-**Reference**: BRD-TEMPLATE.md section 17, BRD_CREATION_RULES.md section 2 (line 76)
+**Reference**: BRD-MVP-TEMPLATE.md section 17 (full template archived), BRD_CREATION_RULES.md section 2 (line 76)
 
 ---
 
@@ -1769,4 +1770,4 @@ BRD.NN.23.03: Reduce average order processing time from current 10 seconds to 5 
 
 **Maintained By**: Business Analyst Team, Quality Assurance Team
 **Review Frequency**: Updated with BRD template enhancements
-**Support**: See [BRD-TEMPLATE.md](../01_BRD/BRD-TEMPLATE.md) for comprehensive template guidance
+**Support**: See [BRD-MVP-TEMPLATE.md](../01_BRD/BRD-MVP-TEMPLATE.md) for comprehensive template guidance (full template archived)

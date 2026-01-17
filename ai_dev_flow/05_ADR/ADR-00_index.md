@@ -54,7 +54,7 @@ flowchart LR
 
 | ADR ID | Title | Status | Category | Related BDD | Impact | Last Updated |
 |--------|-------|--------|----------|-------------|--------|--------------|
-| [ADR-TEMPLATE](./ADR-TEMPLATE.md) | Template | Reference | Reference | - | - | 2025-11-13 |
+| [ADR-MVP-TEMPLATE.md](./ADR-MVP-TEMPLATE.md) | Template (default) | Reference | Reference | - | - | 2025-11-13 |
 
 ## Planned
 

@@ -348,5 +348,5 @@ Before skipping IMPL, verify:
 
 - [IMPL-TEMPLATE.md](08_IMPL/IMPL-TEMPLATE.md) - Full IMPL template
 - [IMPL-00_index.md](08_IMPL/IMPL-00_index.md) - IMPL document index
-- [SPEC-TEMPLATE.yaml](10_SPEC/SPEC-TEMPLATE.yaml) - Technical specification template
+- [SPEC-MVP-TEMPLATE.yaml](10_SPEC/SPEC-MVP-TEMPLATE.yaml) - Technical specification template
 - [Traceability Standards](TRACEABILITY.md) - Document linking requirements

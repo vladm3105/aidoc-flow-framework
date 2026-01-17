@@ -42,7 +42,7 @@ custom_fields:
   development_status: draft
   template_variant: mvp
   template_profile: mvp
-  template_source: "PRD-TEMPLATE.md"
+  template_source: "PRD-MVP-TEMPLATE.md"
   schema_reference: "PRD_SCHEMA.yaml"
   schema_version: "1.0"
   schema_status: optional
@@ -53,11 +53,11 @@ custom_fields:
 
 > **MVP Template** — Single-file, streamlined PRD for rapid MVP development.
 > Use this template for MVPs with 5-15 core features and short development cycles.
-> For comprehensive PRDs (20+ features, enterprise projects), use `PRD-TEMPLATE.md`.
+> Full template is archived; use only if enterprise/full is explicitly required.
 
 > **Validation Note**: MVP templates are intentionally streamlined (17 sections vs 21 standard) and use ≥85% score thresholds (vs ≥90% standard). These will show validation errors when run against full template validators. This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
-> References: Full Template `PRD-TEMPLATE.md` | Schema `PRD_SCHEMA.yaml` | Rules `PRD_CREATION_RULES.md`, `PRD_VALIDATION_RULES.md` | Matrix `PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `PRD_SCHEMA.yaml` | Rules `PRD_CREATION_RULES.md`, `PRD_VALIDATION_RULES.md` | Matrix `PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # PRD-NN: [MVP Product/Feature Name]
 
@@ -556,7 +556,6 @@ custom_fields:
 
 ### When to Migrate
 
-Migrate from MVP PRD to full `PRD-TEMPLATE.md` when:
 - [ ] MVP validation complete and proceeding to full product
 - [ ] Feature count exceeds 20
 - [ ] Need detailed user story matrices
@@ -565,7 +564,6 @@ Migrate from MVP PRD to full `PRD-TEMPLATE.md` when:
 
 ### Migration Steps
 
-1. **Create new document**: Copy `PRD-TEMPLATE.md` to `PRD-NN_{slug}.md`
 2. **Transfer core content**: Map MVP sections to full template (see table below)
 3. **Keep monolithic**: Maintain a single-file document; defer any sectioning to the full framework phase.
 4. **Add missing sections**: Product Vision, detailed User Stories, full NFRs
@@ -602,4 +600,3 @@ Migrate from MVP PRD to full `PRD-TEMPLATE.md` when:
 > - This template is ~500 lines (vs 1,393 lines for full PRD)
 > - Single file - no sectioning per user requirement
 > - Maintains ai_dev_flow framework compliance
-> - Expands to full PRD-TEMPLATE.md structure upon MVP success

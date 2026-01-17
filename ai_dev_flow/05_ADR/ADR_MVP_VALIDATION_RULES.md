@@ -13,11 +13,11 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of ADR-TEMPLATE.md
-# - Authority: ADR-TEMPLATE.md is the single source of truth for ADR structure
-# - Purpose: AI checklist after document creation (derived from template)
+# 📋 Document Role: Validates ADR-MVP-TEMPLATE.md (default)
+# - Authority: ADR-MVP-TEMPLATE.md is the primary standard for ADR structure; full template is archived
+# - Purpose: AI checklist after document creation (derived from MVP template)
 # - Scope: Includes all rules from ADR_CREATION_RULES.md plus validation extensions
-# - On conflict: Defer to ADR-TEMPLATE.md
+# - On conflict: Defer to ADR-MVP-TEMPLATE.md
 # =============================================================================
 ---
 title: "ADR Validation Rules Reference"
@@ -35,7 +35,7 @@ custom_fields:
 
 > **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for ADR documents.
 > - Apply these rules after ADR creation or modification
-> - **Authority**: Validates compliance with `ADR-TEMPLATE.md` (the primary standard)
+> - **Authority**: Validates compliance with `ADR-MVP-TEMPLATE.md` (primary standard; full template archived)
 > - **Scope**: Use for quality gates before committing ADR changes
 
 # ADR Validation Rules Reference
@@ -68,10 +68,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/scripts/validate_adr.py --path ai_dev_flow/ADR --profile mvp
+python3 ai_dev_flow/scripts/validate_adr.py --path ai_dev_flow/05_ADR --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/scripts/validate_adr.py --path ai_dev_flow/ADR --profile full
+python3 ai_dev_flow/scripts/validate_adr.py --path ai_dev_flow/05_ADR --profile full
 ```
 
 ---
@@ -83,7 +83,7 @@ python3 ai_dev_flow/scripts/validate_adr.py --path ai_dev_flow/ADR --profile ful
 **Last Updated**: 2025-12-12
 **Purpose**: Complete validation rules for ADR documents
 **Script**: `python scripts/validate_adr.py`
-**Primary Template**: `ADR-TEMPLATE.md`
+**Primary Template**: `ADR-MVP-TEMPLATE.md` (full template archived)
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added ADR-REF as second document category with reduced validation; Updated CHECK 3 and CHECK 4 for reference documents
 

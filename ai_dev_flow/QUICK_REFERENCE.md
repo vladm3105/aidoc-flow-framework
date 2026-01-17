@@ -18,7 +18,7 @@ custom_fields:
 
 ---
 
-Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
+Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; use zero-padded directories (`01_BRD`, `02_PRD`, etc.). See README → “Using This Repo” for path mapping.
 
 ## Units & Conversions (KB vs tokens)
 
@@ -32,12 +32,11 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 
 See also: [README → Units & Conversions](./README.md#units--conversions-kb-vs-tokens)
 
-### Splitting Rules
+### Splitting Rules (MVP context)
 
-- Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
-- Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
-
-> MVP Mode: For MVP workflows, use a single flat file per artifact and ignore splitting rules and references to `DOCUMENT_SPLITTING_RULES.md`.
+- MVP default: Single flat file per artifact.
+- Split only when a document is too large for AI assistants to handle in one file; otherwise ignore `DOCUMENT_SPLITTING_RULES.md` in MVP.
+- Sectioned templates apply only when splitting is explicitly required.
 
 <!-- See README.md → “Using This Repo” for path mapping guidance. -->
 

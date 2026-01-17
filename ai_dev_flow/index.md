@@ -17,7 +17,7 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 
 > Units & Conversions (KB vs tokens): KB = 1,024 bytes; tokens ≈ 4 characters. Rough conversions: tokens ≈ (KB × 1024) ÷ 4 and KB ≈ (tokens × 4) ÷ 1024. Examples: 10 KB ≈ 2,500 tokens; 50 KB ≈ 12,500 tokens; 10,000 tokens ≈ 39 KB.
 
-> MVP Note: MVP templates are single, flat files. Ignore document splitting and `DOCUMENT_SPLITTING_RULES.md` when using the MVP track.
+> MVP Note: MVP templates default to single, flat files. Split only when a document is too large for AI assistants to handle in one file; otherwise ignore `DOCUMENT_SPLITTING_RULES.md` for MVP.
 
 ## Template Selection (MVP-Only)
 
@@ -35,8 +35,8 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 | 6 | SYS | `SYS-MVP-TEMPLATE.md` |
 | 7 | REQ | `REQ-MVP-TEMPLATE.md` |
 | 8 | IMPL | `IMPL-TEMPLATE.md` |
-| 9 | CTR | `CTR-TEMPLATE.md` |
-| 10 | SPEC | `SPEC-TEMPLATE.yaml` |
+| 9 | CTR | `CTR-MVP-TEMPLATE.md` |
+| 10 | SPEC | `SPEC-MVP-TEMPLATE.yaml` |
 | 11 | TASKS | `TASKS-TEMPLATE.md` |
 
 ### Configuration Reference
@@ -46,16 +46,12 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 
 ## Framework Purpose
 
-This framework is a sophisticated and well-conceived system for a new paradigm of software development where human architects design systems and AI assistants build them.
+This framework provides structured, traceable steps for AI-assisted software development using MVP templates as the default.
 
-- The Architect's Blueprint: The initial layers (BRD, PRD, ADR, SYS) serve as the formal blueprint created by the software architect. This is where human expertise in system design, architectural trade-offs, and business strategy is captured.
-
-- The AI's Instruction Set: The subsequent layers (REQ, SPEC, TASKS) act as a detailed, unambiguous instruction set automatically derived from the architect's blueprint. This breakdown translates high-level architectural decisions into granular tasks that are ideal for consumption by an AI code generator.
-
-- The Governance and Audit Layer: The framework's most critical function is providing a robust governance and audit mechanism. The full traceability chain, from BRD to TASKS, creates an unimpeachable record of the AI's intended actions. This allows the architect to:
-  1. Verify Compliance: Ensure the AI's generated code adheres strictly to the established architectural and business rules.
-  2. Mitigate AI Risk: Audit the AI's plans to prevent hallucinations or unintended features before code is even written.
-  3. Validate at a High Level: Confirm the success of the project by reviewing BDD test results and traceability matrices, rather than performing a line-by-line code review.
+- Blueprint: Early layers (BRD, PRD, ADR, SYS) capture business and architectural decisions.
+- Instruction Set: Downstream layers (REQ, SPEC, TASKS) translate those decisions into granular, implementation-ready guidance for AI assistants.
+- Governance: The traceability chain from BRD through TASKS documents decisions and checks for consistent implementation.
+- Delivery Loop: Create an MVP, fix defects, promote to production, add features as a new MVP based on the current product, fix defects, and repeat.
 
 ## Recent Updates (2025-11-20)
 
@@ -100,7 +96,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Guidance: [PLATFORM_VS_FEATURE_BRD.md](./PLATFORM_VS_FEATURE_BRD.md)
 - **PRD** (`02_PRD/`) - Layer 2: Product Requirements Documents translating business needs to product features
   - Index: [PRD-00_index.md](./02_PRD/PRD-00_index.md)
-  - Template: [PRD-TEMPLATE.md](./02_PRD/PRD-TEMPLATE.md) | **MVP**: [PRD-MVP-TEMPLATE.md](./02_PRD/PRD-MVP-TEMPLATE.md)
+  - Template: [PRD-MVP-TEMPLATE.md](./02_PRD/PRD-MVP-TEMPLATE.md)
 - **EARS** (`03_EARS/`) - Layer 3: Event-Action-Response-State (Engineering Requirements)
   - Index: [EARS-00_index.md](./03_EARS/EARS-00_index.md)
   - Template: [EARS-MVP-TEMPLATE.md](./03_EARS/EARS-MVP-TEMPLATE.md) (MVP Default)
@@ -133,7 +129,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
   - Organization: Nested per-document folders (DEFAULT)
     - Folder: `07_REQ/REQ-NN_{slug}/`
     - Primary file (atomic): `07_REQ/REQ-NN_{slug}/REQ-NN_{slug}.md`
-    - Split (optional when large): `07_REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ-NN.1_{section}.md`, ...
+    - Split (only if files are too large for AI assistants): `07_REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ-NN.1_{section}.md`, ...
   - Format: 12-section framework with validation rules
 <!-- VALIDATOR:IGNORE-LINKS-START -->
   - Examples:
@@ -164,11 +160,11 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 - **SPEC** (`10_SPEC/`) - Layer 10: Technical specifications ready for code generation
   - YAML: Monolithic single file per component (codegen source)
-  - Markdown: Split narrative using `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` when needed
+  - Markdown: Split narrative using `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` only if the document is too large for AI assistants
   - Layout:
     - Nested (default): `10_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml` (+ Markdown sections alongside)
     - Flat (exception): `10_SPEC/SPEC-{DOC_NUM}_{slug}.yaml` for small, stable specs
-  - Template: [SPEC-TEMPLATE.yaml](./10_SPEC/SPEC-TEMPLATE.yaml)
+  - Template: [SPEC-MVP-TEMPLATE.yaml](./10_SPEC/SPEC-MVP-TEMPLATE.yaml)
   - Purpose: YAML format with classes, methods, algorithms (HOW to build)
   - References CTR contracts when implementing interfaces
   - Examples:

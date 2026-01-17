@@ -425,7 +425,7 @@ python scripts/find_orphaned_artifacts.py --type PRD --check-upstream
 
 ### 13.1 Internal Documentation
 - **PRD Index**: [PRD-00_index.md](PRD-00_index.md)
-- **PRD Template**: [PRD-TEMPLATE.md](PRD-TEMPLATE.md)
+- **PRD Template**: [PRD-MVP-TEMPLATE.md](PRD-MVP-TEMPLATE.md) (default; full template archived)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
 - **SDD Workflow Guide**: [../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)

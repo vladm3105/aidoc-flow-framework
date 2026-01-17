@@ -1,5 +1,5 @@
 ---
-title: "BRD Creation Rules"
+title: "BRD MVP Creation Rules"
 tags:
   - creation-rules
   - layer-1-artifact
@@ -13,13 +13,13 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of BRD-TEMPLATE.md
-# - Authority: BRD-TEMPLATE.md is the single source of truth for BRD structure
-# - Purpose: AI guidance for document creation (derived from template)
-# - On conflict: Defer to BRD-TEMPLATE.md
+# 📋 Document Role: Guides creation of BRD-MVP-TEMPLATE.md (default)
+# - Authority: BRD-MVP-TEMPLATE.md is the primary standard for BRD structure; full template is archived
+# - Purpose: AI guidance for document creation (derived from MVP template)
+# - On conflict: Defer to BRD-MVP-TEMPLATE.md
 # =============================================================================
 ---
-title: "BRD Creation Rules"
+title: "BRD MVP Creation Rules"
 tags:
   - creation-rules
   - layer-1-artifact
@@ -32,8 +32,8 @@ custom_fields:
   development_status: active
 ---
 
-> **📋 Document Role**: This is a **CREATION HELPER** for BRD-TEMPLATE.md.
-> - **Authority**: `BRD-TEMPLATE.md` is the single source of truth for BRD structure
+> **📋 Document Role**: This is a **CREATION HELPER** for BRD-MVP-TEMPLATE.md (default).
+> - **Authority**: `BRD-MVP-TEMPLATE.md` is the primary standard for BRD structure
 > - **Validation**: Use `BRD_VALIDATION_RULES.md` after BRD creation/changes
 
 # BRD Creation Rules
@@ -45,7 +45,6 @@ custom_fields:
 | Template | File | When to Use |
 |----------|------|-------------|
 | **MVP (DEFAULT)** | `BRD-MVP-TEMPLATE.md` | All new projects unless full template is explicitly requested |
-| Full | `BRD-TEMPLATE.md` | Enterprise projects, regulatory compliance, or when prompted |
 
 **Triggering Full Template**:
 - Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
@@ -61,7 +60,7 @@ custom_fields:
 **Version**: 1.3
 **Date**: 2025-11-19
 **Last Updated**: 2025-12-19
-**Source**: Extracted from BRD-TEMPLATE.md, BRD-VALIDATION_RULES.md, README.md, and BRD-00_index.md
+**Source**: Extracted from BRD-MVP-TEMPLATE.md, BRD-VALIDATION_RULES.md, README.md, and BRD-00_index.md
 **Purpose**: Complete reference for creating BRD files according to doc-flow SDD framework
 **Changes**: Added Section Classification table (MANDATORY/OPTIONAL/CONDITIONAL); Section 15 (Quality Assurance) now MANDATORY; 18 total sections
 
@@ -198,7 +197,7 @@ Every BRD contains these sections (mandatory unless noted):
 17. **Glossary** - Business terms, technical terms, domain-specific terms, acronyms, cross-references, external standards
 18. **Appendices** - References, supporting documentation, process flow diagrams, data requirements, UI mockups, integration specifications, stakeholder interview notes
 
-> **Note**: Technical QA (quality standards, testing strategy, defect management) moved to PRD-TEMPLATE.md Section 21.
+> **Note**: Technical QA (quality standards, testing strategy, defect management) is handled in PRD-MVP-TEMPLATE.md.
 
 **Important Updates (2025-11-26)**: Several sections have been simplified for better 01_BRD/PRD layer separation:
 - **section 4 (Stakeholders)**: Now high-level identification only. Detailed stakeholder analysis, communication plans, and team structure moved to PRD.
@@ -242,7 +241,7 @@ See section 5.6 below for detailed guidance on the simplified user stories appro
 - ❌ "The solution will significantly improve the customer experience" - Subjective, not measurable
 - ❌ "We expect strong market adoption" - No specific targets
 
-**Reference**: See BRD-TEMPLATE.md section 1 (Introduction) and section 3 (Business Objectives) for template structure.
+**Reference**: See BRD-MVP-TEMPLATE.md for template structure.
 
 ### 2.3 Workflow Diagram Requirements (Template sections 3.5.4-3.5.5)
 
@@ -322,7 +321,7 @@ sequenceDiagram
 - Define escalation paths for different error types
 - Include retry policies and backoff strategies (business terms)
 
-**Reference**: See BRD-TEMPLATE.md sections 3.5.4 and 3.5.5 for complete examples and table structures.
+**Reference**: See BRD-MVP-TEMPLATE.md for examples and table structures.
 
 ---
 
@@ -478,7 +477,7 @@ When performing major refactoring (version X.0), document the transformation:
 1. Assess current PRD-Ready Score (should be <90/100 to justify refactoring)
 2. Create backup of current version (`.backup_vX.Y` suffix)
 3. Increment to next major version (1.0 → 2.0)
-4. Transform FRs using 4-subsection structure (see BRD-TEMPLATE.md section 6.2)
+4. Transform FRs using 4-subsection structure (see BRD-MVP-TEMPLATE.md section 6.2)
 5. Remove PRD-level content per Appendix B exclusion rules
 6. Add Complexity ratings and Related Requirements
 7. Document changes in Revision History with "Major Refactoring" label
@@ -771,7 +770,7 @@ When performing major refactoring (version X.0), document the transformation:
 - ❌ "4/5 (Requires significant development effort)" - technical rationale, not business-level
 - ❌ "4/5 (A, B, C partners)" - missing chain notation, unclear dependencies
 
-**Reference Examples**: See BRD-TEMPLATE.md Appendix C for complete FR examples at each complexity level.
+**Reference Examples**: See BRD-MVP-TEMPLATE.md Appendix C for complete FR examples at each complexity level.
 
 ---
 
@@ -783,7 +782,7 @@ When performing major refactoring (version X.0), document the transformation:
 
 **Location in Template**: section 5 (between Stakeholders and Functional Requirements)
 
-**Reference**: See [PRD-TEMPLATE.md - User Stories & User Roles section](../02_PRD/PRD-TEMPLATE.md#user-stories--user-roles) for detailed user story tables, role definitions, and mapping
+**Reference**: See [PRD-MVP-TEMPLATE.md - User Stories & User Roles section](../02_PRD/PRD-MVP-TEMPLATE.md#user-stories--user-roles)
 
 ### Simplified BRD Requirements (High-Level Summary)
 
@@ -806,7 +805,7 @@ When performing major refactoring (version X.0), document the transformation:
 3. **Business Objective Alignment**: High-level mapping only
    - Example: "Business Objective 1: Supported by [XX] user stories (See PRD for details)"
 
-**Complete Requirements Moved to PRD**: The following detailed content now belongs in PRD-TEMPLATE.md section "User Stories & User Roles":
+**Complete Requirements Moved to PRD**: The following detailed content now belongs in PRD-MVP-TEMPLATE.md section "User Stories & User Roles":
 - ❌ ~~Detailed user story tables with Story ID, Priority, Acceptance Criteria~~
 - ❌ ~~User story to FR mapping tables~~
 - ❌ ~~Detailed user story to business objective mapping~~
@@ -834,7 +833,7 @@ When performing major refactoring (version X.0), document the transformation:
 - ❌ "As a user, I want to click the submit button" - UI implementation detail
 - ✓ "As a **sender**, I want to **track transaction status in real-time**, so that **I know when funds are received**" - business-level need
 
-**Reference**: See BRD-TEMPLATE.md section 5 for complete structure and additional examples.
+**Reference**: See BRD-MVP-TEMPLATE.md section 5 for complete structure and additional examples.
 
 ---
 
@@ -937,7 +936,7 @@ Business Rules Count?
 │   └── Single conditions? → Use BULLETS
 ```
 
-**Reference**: See BRD-TEMPLATE.md Appendix C, Subsection 3: Business Rules for complete pattern examples.
+**Reference**: See BRD-MVP-TEMPLATE.md Appendix C, Subsection 3: Business Rules for complete pattern examples.
 
 ---
 

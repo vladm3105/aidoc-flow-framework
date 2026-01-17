@@ -689,8 +689,7 @@ fi
 ## References
 
 - [SYS_VALIDATION_RULES.md](./SYS_VALIDATION_RULES.md) - Individual file validation
-- [SYS-MVP-TEMPLATE.md](./SYS-MVP-TEMPLATE.md) - SYS MVP document template (default)
-- [SYS-TEMPLATE.md](./SYS-TEMPLATE.md) - SYS full document template
+- [SYS-MVP-TEMPLATE.md](./SYS-MVP-TEMPLATE.md) - SYS document template (default; full template archived)
 - [SYS_CREATION_RULES.md](./SYS_CREATION_RULES.md) - SYS creation guidelines
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

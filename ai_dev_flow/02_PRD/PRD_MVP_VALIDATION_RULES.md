@@ -1,5 +1,5 @@
 ---
-title: "PRD Validation Rules"
+title: "PRD MVP Validation Rules"
 tags:
   - validation-rules
   - layer-2-artifact
@@ -13,11 +13,11 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of PRD-TEMPLATE.md
-# - Authority: PRD-TEMPLATE.md is the single source of truth for PRD structure
-# - Purpose: AI checklist after document creation (derived from template)
+# 📋 Document Role: Validates PRD-MVP-TEMPLATE.md (default)
+# - Authority: PRD-MVP-TEMPLATE.md is the primary standard for PRD structure; full template is archived
+# - Purpose: AI checklist after document creation (derived from MVP template)
 # - Scope: Includes all rules from PRD_CREATION_RULES.md plus validation extensions
-# - On conflict: Defer to PRD-TEMPLATE.md
+# - On conflict: Defer to PRD-MVP-TEMPLATE.md
 # =============================================================================
 ---
 title: "PRD Validation Rules Reference"
@@ -35,7 +35,7 @@ custom_fields:
 
 > **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for PRD documents.
 > - Apply these rules after PRD creation or modification
-> - **Authority**: Validates compliance with `PRD-TEMPLATE.md` (the primary standard)
+> - **Authority**: Validates compliance with `PRD-MVP-TEMPLATE.md` (primary standard; full template archived)
 > - **Scope**: Use for quality gates before committing PRD changes
 
 # PRD Validation Rules Reference
@@ -69,10 +69,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/PRD --profile mvp
+python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/02_PRD --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/PRD --profile full
+python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/02_PRD --profile full
 ```
 
 ---
@@ -84,7 +84,7 @@ python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/PRD --profile full
 **Last Updated**: 2025-11-26
 **Purpose**: Complete validation rules for PRD documents
 **Script**: `python scripts/validate_prd.py`
-**Primary Template**: `PRD-TEMPLATE.md`
+**Primary Template**: `PRD-MVP-TEMPLATE.md` (full template archived)
 **Framework**: AI Dev Flow SDD (100% compliant)
 
 ---
@@ -326,7 +326,7 @@ All PRD requirements must include:
 **Resolution Steps**:
 1. Add missing section with correct header format
 2. Populate with substantive content (not "TBD" or "TODO")
-3. Follow section-specific requirements from PRD-TEMPLATE.md
+3. Follow section-specific requirements from PRD-MVP-TEMPLATE.md (full template archived)
 
 ### CHECK 6: section Title Consistency
 
@@ -334,7 +334,7 @@ All PRD requirements must include:
 **Type**: Warning (recommended fix)
 
 **Title Matching Rules**:
-- section titles must match PRD-TEMPLATE.md character-for-character
+- section titles must match PRD-MVP-TEMPLATE.md character-for-character (full template archived)
 - Capitalization must be identical
 - Special markers like (MANDATORY) must be included where specified
 
@@ -345,7 +345,7 @@ All PRD requirements must include:
 ```
 
 **Resolution Steps**:
-1. Copy exact title from PRD-TEMPLATE.md
+1. Copy exact title from PRD-MVP-TEMPLATE.md (full template archived)
 2. Preserve capitalization and punctuation
 3. Include (MANDATORY) marker for section 8
 
@@ -382,7 +382,7 @@ All PRD requirements must include:
 ```
 
 **Resolution Steps**:
-1. Add scope note from PRD-TEMPLATE.md
+1. Add scope note from PRD-MVP-TEMPLATE.md (full template archived)
 2. Move EARS-level content to placeholder for future EARS document
 3. Move BDD-level content to placeholder for future BDD tests
 4. Keep only PRD-level role definitions and story summaries
@@ -685,7 +685,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
    ```
 2. Verify sequential numbering 1-21 with no gaps
 3. Check for duplicate section numbers
-4. Compare with PRD-TEMPLATE.md for correct sequence
+4. Compare with PRD-MVP-TEMPLATE.md for correct sequence (full template archived)
 
 ### Issue 3: User Stories Scope Violations
 
@@ -698,7 +698,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 **Root Cause**: Mixing PRD-level requirements with 03_EARS/BDD-level technical details
 
 **Fix**:
-1. Add scope note from PRD-TEMPLATE.md to section 8
+1. Add scope note from PRD-MVP-TEMPLATE.md to section 8 (full template archived)
 2. Keep only PRD-level content:
    - User role definitions (who they are)
    - Story titles and summaries (what they need)
@@ -788,7 +788,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 ```
 
 **Resolution Steps**:
-1. Add Section 20 from PRD-TEMPLATE.md
+1. Add Section 20 from PRD-MVP-TEMPLATE.md (full template archived)
 2. Complete timing profile matrix with p50/p95/p99 for all operations
 3. Specify boundary operators for all threshold values
 4. Add error state transitions to state diagram
