@@ -83,7 +83,7 @@ tasks_tracking:
 
 ---
 
-## 1. Objective
+## TASKS.NN.18.01: Objective
 
 [2-3 sentences: What this task accomplishes and its role in the system]
 
@@ -97,7 +97,7 @@ tasks_tracking:
 
 ---
 
-## 2. Scope
+## TASKS.NN.18.02: Scope
 
 ### 2.1 Included
 
@@ -118,7 +118,7 @@ tasks_tracking:
 
 ---
 
-## 3. Implementation Plan
+## TASKS.NN.18.03: Implementation Plan
 
 ### Phase 1: Setup & Foundation
 
@@ -154,7 +154,7 @@ tasks_tracking:
 
 ---
 
-## 4. Execution Commands
+## TASKS.NN.18.04: Execution Commands
 
 ### 4.1 Environment Setup
 
@@ -218,7 +218,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## 5. Constraints
+## TASKS.NN.18.05: Constraints
 
 ### 5.1 Technical Constraints
 
@@ -248,7 +248,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## 6. Acceptance Criteria
+## TASKS.NN.18.06: Acceptance Criteria
 
 ### 6.1 Functional
 
@@ -273,7 +273,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## 7. Implementation Contracts
+## TASKS.NN.18.07: Implementation Contracts
 
 > **Note**: Include this section only if this TASKS provides or consumes contracts for parallel development.
 
@@ -293,7 +293,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## 8. Traceability
+## TASKS.NN.18.08: Traceability
 
 ### 8.1 Upstream References
 
@@ -313,6 +313,8 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 @bdd: BDD-NN.SS
 @prd: PRD-NN.XX.YY
 @sys: SYS-NN.XX.YY
+@related-tasks: TASKS-NN
+@depends-tasks: TASKS-NN
 ```
 
 ### 8.3 Code Locations
@@ -327,7 +329,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## 9. Risk & Mitigation
+## TASKS.NN.18.09: Risk & Mitigation
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|------------|
@@ -337,7 +339,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## 10. Session Log
+## TASKS.NN.18.10: Session Log
 
 | Date | Status | Summary |
 |------|--------|---------|
@@ -346,7 +348,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## 11. Change History
+## TASKS.NN.18.11: Change History
 
 | Date | Version | Change | Author |
 |------|---------|--------|--------|
