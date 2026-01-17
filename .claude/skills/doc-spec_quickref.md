@@ -70,7 +70,7 @@ implementation:
 ## Upstream/Downstream
 
 ```
-BRD through REQ/IMPL/CTR → SPEC → TASKS, IPLAN, Code
+BRD through REQ/IMPL/CTR → SPEC → TASKS → Code
 ```
 
 ## Quick Validation

@@ -12,77 +12,36 @@ custom_fields:
   development_status: active
 ---
 
-# =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of SYS-TEMPLATE.md
-# - Authority: SYS-TEMPLATE.md is the single source of truth for SYS structure
-# - Purpose: AI guidance for document creation (derived from template)
-# - On conflict: Defer to SYS-TEMPLATE.md
-# =============================================================================
----
-title: "SYS Creation Rules"
-tags:
-  - creation-rules
-  - layer-6-artifact
-  - shared-architecture
-custom_fields:
-  document_type: creation-rules
-  artifact_type: SYS
-  layer: 6
-  priority: shared
-  development_status: active
----
-
-> **📋 Document Role**: This is a **CREATION HELPER** for SYS-TEMPLATE.md.
-> - **Authority**: `SYS-TEMPLATE.md` is the single source of truth for SYS structure
-> - **Validation**: Use `SYS_VALIDATION_RULES.md` after SYS creation/changes
+ **Document Role**: This is a **CREATION HELPER** derived from `SYS-MVP-TEMPLATE.md`.
+ **Authority**: `SYS-MVP-TEMPLATE.md` is the single source of truth for SYS structure
+ **Validation**: Use `SYS_VALIDATION_RULES.md` after SYS creation/changes
 
 # SYS Creation Rules
 
-## Template Selection (MVP Default)
-
-**MVP templates are the framework default.** Full templates are used only when explicitly triggered.
+**SYS-MVP-TEMPLATE.md is the standard template for all SYS documents.**
 
 | Template | File | When to Use |
 |----------|------|-------------|
-| **MVP (DEFAULT)** | `SYS-MVP-TEMPLATE.md` | All new projects unless full template is explicitly requested |
-| Full | `SYS-TEMPLATE.md` | Enterprise projects, regulatory compliance, or when prompted |
+| **Standard (MVP)** | `SYS-MVP-TEMPLATE.md` | All SYS documents (default and recommended) |
 
-**Triggering Full Template**:
-- Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
-- Prompt keywords: "use full template", "enterprise mode", "regulatory compliance"
-
-### Migration from MVP to Full Template
-
-**When to Migrate**:
-- Capabilities exceed 10 for this system
-- Compliance requirements demand comprehensive testing
-- Multi-region or high-availability needed
-- Full 15-section format required for audits
-
-**Migration Steps**:
-1. Copy `SYS-TEMPLATE.md` to new `SYS-NN_{slug}.md`
-2. Transfer core content from MVP sections 1-12
-3. Expand detailed sections (all 6 quality attribute categories, compliance)
-4. Add missing sections (14. Implementation Notes, 15. Change History)
-5. Update `template_profile: full` in frontmatter
-6. Run `python3 scripts/validate_sys.py` on new document
-7. Archive MVP version with "superseded" note
+**Note**: Previous framework versions included a separate full template. The current SYS-MVP-TEMPLATE.md is the primary standard and should be used for all SYS work.
 
 ## Index-Only Generation Workflow
 
-- Maintain `SYS-00_index.md` as the authoritative source of planned and active SYS files (mark planned items with Status: Planned).
-- Generators use: `SYS-00_index.md` + selected template profile (MVP by default; full when explicitly requested in settings or prompt).
+Maintain `SYS-00_index.md` as the authoritative source of planned and active SYS files (mark planned items with Status: Planned).
+Generators use: `SYS-00_index.md` + standard template profile (`mvp`).
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix. When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.2
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-30
-**Source**: Derived from SYS-TEMPLATE.md and ADR decisions
+
+
+**Source**: Derived from SYS-MVP-TEMPLATE.md and ADR decisions
 **Purpose**: Complete reference for creating SYS documents according to AI Dev Flow SDD framework
 **Changes**: Added Threshold Registry Integration section (v1.2). Previous: Status/Score mapping, common mistakes section (v1.1)
 
----
 
 ## Table of Contents
 
@@ -142,19 +101,18 @@ SYS documents follow a comprehensive structure translating ADR decisions into sy
 ```markdown
 | Item | Details |
 |------|---------|
-| **REQ-Ready Score** | ✅ 95% (Target: ≥85% for MVP, ≥90% for Full) |
+| **REQ-Ready Score** | ✅ 95% (Target: ≥90%) |
 ```
 
-> **Note**: SYS documents do NOT require EARS-Ready Score. The "-Ready Score" indicates readiness for the next downstream artifact. SYS (Layer 6) comes after EARS (Layer 3), so SYS has REQ-Ready Score (for progression to REQ at Layer 7).
+> **Note**: SYS templates include REQ-Ready Score (mandatory for Layer 7 progression). EARS-Ready Score is optional and informational when present.
 
 ### Status and REQ-Ready Score Mapping
 
 | REQ-Ready Score | Required Status | Notes |
 |-----------------|-----------------|-------|
-| ≥90% | Approved | Full template threshold |
-| ≥85% | Approved | MVP template threshold |
-| 70-84% | In Review | Below both thresholds |
-| <70% | Draft | Early development |
+| ≥90% | Approved | Meets SYS-MVP standard |
+| 75-89% | In Review | Needs refinement before approval |
+| <75% | Draft | Early development |
 
 ---
 
@@ -218,9 +176,9 @@ SYS documents follow a comprehensive structure translating ADR decisions into sy
 ### Overview
 REQ-ready scoring measures SYS maturity and readiness for progression to Requirements (REQ) decomposition.
 
-**Format**: `✅ NN% (Target: ≥85% for MVP, ≥90% for Full)`
+**Format**: `✅ NN% (Target: ≥90%)`
 **Location**: Document Control table
-**Validation**: Enforced before REQ creation (threshold depends on template profile)
+**Validation**: Enforced before REQ creation (single standard profile)
 
 ### Scoring Criteria
 
@@ -247,9 +205,9 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 - Monitoring and observability requirements quantified: 5%
 
 ### Quality Gate Enforcement
-- Score below threshold prevents REQ artifact creation (MVP: <85%, Full: <90%)
+- Score below 90% prevents REQ artifact creation
 - Format validation requires ✅ emoji and percentage
-- Threshold enforcement at pre-commit based on template profile
+- Threshold enforcement at pre-commit uses the standard SYS profile
 
 ---
 
@@ -290,7 +248,7 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 ## 10. Quality Gates (Pre-Commit Validation)
 
 - SYS completeness and ADR alignment validation
-- REQ-ready score verification (≥85% for MVP, ≥90% for Full)
+- REQ-ready score verification (Target: ≥90%)
 - Quality attribute quantification and measurability checks
 - Interface specification completeness
 
@@ -337,7 +295,7 @@ SYS documents establish system requirements that must be decomposed into atomic 
 
 | Mistake | Correct |
 |---------|---------|
-| `Status: Approved` (with score below threshold) | Match status to score threshold (MVP: ≥85%, Full: ≥90%) |
+| `Status: Approved` (with score below threshold) | Match status to score threshold (Target: ≥90%) |
 | Quality attributes without percentiles | Use p50/p95/p99 for performance targets |
 | Missing criticality level | Specify Mission-Critical/Business-Critical/Operational |
 | Interface specs without CTR reference | Create CTR for external APIs |

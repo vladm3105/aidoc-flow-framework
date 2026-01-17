@@ -78,7 +78,6 @@ Extract action verbs and targets from the user request:
 | contracts | ctr, contract, api, interface | doc-ctr |
 | specifications | spec, specification, yaml | doc-spec |
 | tasks | tasks, todo, implementation tasks | doc-tasks |
-| execution plans | iplan, execution, session | doc-iplan |
 | traceability | trace, traceability, links | trace-check |
 | validation | validate, quality, compliance | doc-validator |
 | diagrams | diagram, mermaid, chart, flow | charts-flow, mermaid-gen |
@@ -104,7 +103,6 @@ Match parsed intent against skill catalog:
 | doc-ctr | core-workflow | 9 | API Contracts (optional) |
 | doc-spec | core-workflow | 10 | Technical Specifications |
 | doc-tasks | core-workflow | 11 | Implementation Tasks |
-| doc-iplan | core-workflow | 12 | Execution Plans |
 
 **Quality Assurance Skills**:
 

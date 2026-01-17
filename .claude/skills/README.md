@@ -60,7 +60,7 @@
 **Purpose**: AI-Driven Specification-Driven Development workflow transformation (business requirements → production code)
 
 **Key Features**:
-- Complete 16-layer SDD workflow (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code → Tests → Validation)
+- Complete 15-layer SDD workflow (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code → Tests → Validation)
 - **Cumulative Tagging Hierarchy**: Each artifact includes traceability tags from ALL upstream layers
 - Automated traceability validation and matrix generation
 - Tag-based audit trail for regulatory compliance (SEC, FINRA, FDA, ISO)
@@ -772,7 +772,6 @@ pip install google-adk
 9. CTR (Interface Contracts) - optional
 10. SPEC (Technical Specifications)
 11. TASKS (Implementation Tasks)
-12. IPLAN (Execution Plans)
 
 **When to Use**:
 - After completing any artifact
@@ -1168,11 +1167,6 @@ The following skills implement the 12-layer SDD workflow. Each creates specific 
 **Quick Reference**: [doc-tasks_quickref.md](./doc-tasks_quickref.md)
 **Use**: Break SPEC into actionable tasks with dependencies and effort estimates
 
-#### 34. doc-iplan (Layer 12)
-**Purpose**: Create Implementation Plans with session-based bash commands
-**Quick Reference**: [doc-iplan_quickref.md](./doc-iplan_quickref.md)
-**Use**: Convert TASKS into executable bash command sequences
-
 ---
 
 ## Skill Development
@@ -1359,7 +1353,7 @@ The framework uses **functional layer groupings** for workflow clarity rather th
 - **Implementation Strategy Layer**: IMPL (optional)
 - **Interface Layer**: CTR (optional)
 - **Technical Specs Layer**: SPEC
-- **Execution Planning Layer**: TASKS → IPLAN
+- **Execution Planning Layer**: TASKS
 - **Code & Validation Layer**: Code → Tests → Validation → Review → Production
 
 This functional grouping simplifies understanding the workflow while maintaining full traceability. Each artifact accumulates tags from previous functional layers as it progresses through the workflow.

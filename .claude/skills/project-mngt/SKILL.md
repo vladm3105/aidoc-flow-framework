@@ -13,7 +13,7 @@ custom_fields:
   development_status: active
   skill_category: utility
   upstream_artifacts: [BRD, PRD, REQ]
-  downstream_artifacts: [TASKS, IPLAN]
+  downstream_artifacts: [TASKS, Code]
 ---
 
 # project-mngt
@@ -49,7 +49,6 @@ Works with:
 - **Planning Documents**: `PLAN-NNN` (e.g., PLAN-01, PLAN-02)
 - **Requirements**: `REQ-NN` or `REQ-NN-YY` (e.g., REQ-01, REQ-01-01)
 - **Tasks**: `TASK-NNN` or `TASK-NNN-YY` (e.g., TASK-01, TASK-01-01)
-- **Implementation Plans**: `IPLAN-NN` (e.g., IPLAN-01)
 
 **Format Rules**:
 - Use TYPE-NN for primary documents (three digits with leading zeros)

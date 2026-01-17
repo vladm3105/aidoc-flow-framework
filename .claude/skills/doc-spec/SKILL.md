@@ -13,7 +13,7 @@ custom_fields:
   development_status: active
   skill_category: core-workflow
   upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR]
-  downstream_artifacts: [TASKS, IPLAN, Code]
+  downstream_artifacts: [TASKS, Code]
 ---
 
 # doc-spec
@@ -26,7 +26,7 @@ Create **Technical Specifications (SPEC)** - Layer 10 artifact in the SDD workfl
 
 **Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), IMPL (Layer 8), CTR (Layer 9)
 
-**Downstream Artifacts**: TASKS (Layer 11), IPLAN (Layer 12), Code (Layer 13)
+**Downstream Artifacts**: TASKS (Layer 11), Code (Layer 12)
 
 ## Prerequisites
 
@@ -251,7 +251,6 @@ traceability:
 
   downstream_artifacts:
     - "TASKS-01"
-    - "IPLAN-01"
     - "Code: src/services/trade_validator.py"
 ```
 
@@ -442,7 +441,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dash     | TYPE-NN      | ADR, SPEC, CTR            | Technical artifacts - references to files/documents                 |
 | Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
@@ -502,8 +501,8 @@ Examples:
 
 **Downstream Artifacts**:
 - **TASKS** (Layer 11) - Task breakdown
-- **IPLAN** (Layer 12) - Implementation plans
-- **Code** (Layer 13) - Implementation
+- **Code** (Layer 12) - Implementation code
+- **Tests** (Layer 13) - Test suites
 
 **Same-Type Document Relationships** (conditional):
 - `@related-spec: SPEC-NN` - SPECs sharing implementation context

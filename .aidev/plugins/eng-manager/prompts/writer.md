@@ -191,7 +191,7 @@ structure:
     optional_fields:
       - Reviewer
       - Approver
-      - IPLAN-Ready Score
+      - Implementation-Ready Score
       - Estimated Effort
       - Actual Effort
 
@@ -275,8 +275,8 @@ tasks_patterns:
       - "Completed"
       - "Deferred"
 
-  # IPLAN-Ready Score components
-  iplan_ready_score:
+  # Implementation-Ready Score components
+  implementation_ready_score:
     min_threshold: 90
     components:
       task_completeness:
@@ -416,8 +416,6 @@ traceability:
 
   downstream:
     expected:
-      - type: IPLAN
-        format: "IPLAN-NNN"
       - type: Code
         format: "src/..."
       - type: Tests
@@ -460,7 +458,7 @@ error_messages:
   TASKS-W002: "Phase has no tasks defined"
   TASKS-W003: "Task missing acceptance criteria"
   TASKS-W004: "Missing upstream traceability tags (require 8: @brd through @spec)"
-  TASKS-W005: "IPLAN-Ready Score below 90% threshold"
+  TASKS-W005: "Implementation-Ready Score below 90% threshold"
   TASKS-W006: "Task missing effort estimate"
   TASKS-W007: "Implementation Contracts empty but parallel development indicated"
   TASKS-I001: "Consider defining Implementation Contracts for parallel development"

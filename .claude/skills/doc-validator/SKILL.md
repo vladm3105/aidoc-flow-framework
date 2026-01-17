@@ -15,7 +15,7 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: quality-assurance
-  upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN]
+  upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS]
   downstream_artifacts: []
 ---
 
@@ -53,9 +53,8 @@ Validates relationships and consistency ACROSS documents in the SDD framework.
 | 7 | REQ | `ai_dev_flow/REQ/REQ_VALIDATION_RULES.md` |
 | 8 | IMPL | `ai_dev_flow/IMPL/IMPL_VALIDATION_RULES.md` |
 | 9 | CTR | `ai_dev_flow/CTR/CTR_VALIDATION_RULES.md` |
-| 10 | SPEC | `ai_dev_flow/SPEC/SPEC_VALIDATION_RULES.md` |
-| 11 | TASKS | `ai_dev_flow/TASKS/TASKS_VALIDATION_RULES.md` |
-| 12 | IPLAN | `ai_dev_flow/IPLAN/IPLAN_VALIDATION_RULES.md` |
+| 10 | SPEC | `ai_dev_flow/10_SPEC/SPEC_VALIDATION_RULES.md` |
+| 11 | TASKS | `ai_dev_flow/11_TASKS/TASKS_VALIDATION_RULES.md` |
 
 **ID Format Validation**: For unified ID format validation (4-segment element IDs), use `doc-naming` skill.
 
@@ -255,7 +254,6 @@ Each layer must include ALL upstream tags per the SDD hierarchy:
 | 9 | CTR | @brd through @req (7 tags) |
 | 10 | SPEC | @brd through @req (7 tags) |
 | 11 | TASKS | @brd through @spec (8 tags) |
-| 12 | IPLAN | @brd through @tasks (9 tags) |
 
 **Validation Script**: `validate_tags_against_docs.py`
 
@@ -369,7 +367,7 @@ Cumulative Tag Warnings (2):
 - [XDOC-E002] TASKS-02 missing required @adr tag
   → Add @adr: ADR-NN to traceability section
 
-- [XDOC-E002] IPLAN-01 missing required @spec tag
+- [XDOC-E002] TASKS-01 missing required @spec tag
   → Add @spec: SPEC-NN to traceability section
 
 Summary:

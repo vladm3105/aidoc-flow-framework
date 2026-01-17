@@ -188,7 +188,7 @@ reference_checks:
     error_code: "REF-E003"
 
   tag_format:
-    pattern: "@(brd|prd|ears|bdd|adr|sys|req|spec|impl|ctr|tasks|iplan):"
+    pattern: "@(brd|prd|ears|bdd|adr|sys|req|spec|impl|ctr|tasks):"
     validate: "follows TYPE.NN.TT.SS format"
     error_code: "REF-E004"
 

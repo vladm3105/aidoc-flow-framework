@@ -4,7 +4,7 @@
 
 # 1. Configuration
 INPUT_FILE="docs/TASKS/Todo.md"
-OUTPUT_FILE="docs/IPLAN/Context.md"
+OUTPUT_FILE="docs/TASKS/SessionContext.md"
 PROMPT_DIR=".aidev/plugins/session-planner/prompts"
 
 echo "🤖 session-planner (gemini) starting..."

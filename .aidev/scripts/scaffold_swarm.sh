@@ -128,10 +128,9 @@ create_workflow "project-manager"   "docs/REQ/Atomic.md"      "docs/IMPL/Plan.md
 create_workflow "api-designer"      "docs/REQ/Atomic.md"      "docs/CTR/OpenAPI.yaml" "Codex"  "Claude" "codex"  "claude"
 create_workflow "tech-lead"         "docs/CTR/OpenAPI.yaml"   "docs/SPEC/Microspec.yaml" "Claude" "Gemini" "claude" "gemini"
 create_workflow "eng-manager"       "docs/SPEC/Microspec.yaml" "docs/TASKS/Todo.md"   "Claude" "Gemini" "claude" "gemini"
-create_workflow "session-planner"   "docs/TASKS/Todo.md"      "docs/IPLAN/Context.md" "Gemini" "Claude" "gemini" "claude"
 
 # Part 3: Execution
-create_workflow "senior-dev"        "docs/IPLAN/Context.md"   "src/main.py"           "Claude" "Codex"  "claude" "codex"
+create_workflow "senior-dev"        "docs/TASKS/Todo.md"      "src/main.py"           "Claude" "Codex"  "claude" "codex"
 create_workflow "test-automation"   "src/main.py"             "tests/test_main.py"    "Codex"  "Claude" "codex"  "claude"
 create_workflow "release-eng"       "tests/test_main.py"      "docs/VALID/Report.md"  "Gemini" "Claude" "gemini" "claude"
 create_workflow "sre"               "docs/VALID/Report.md"    "docs/MAINT/Runbook.md" "Claude" "Gemini" "claude" "gemini"

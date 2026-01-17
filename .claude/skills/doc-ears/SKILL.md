@@ -303,7 +303,7 @@ error:
 
 | Notation | Format | Artifacts | Purpose |
 |----------|--------|-----------|---------|
-| Dash | TYPE-NN | ADR, SPEC, CTR, IPLAN | Technical artifacts - document references |
+| Dash | TYPE-NN | ADR, SPEC, CTR | Technical artifacts - document references |
 | Dot | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - element references |
 
 ## Cumulative Tagging Requirements

@@ -43,7 +43,6 @@ TYPE.NN.TT.SS              Example: BRD.02.06.01
 | 16 | Interface | SPEC, CTR |
 | 17 | Data Model | SPEC, CTR |
 | 18 | Task | TASKS |
-| 19 | Command | IPLAN |
 | 20 | Contract Clause | CTR |
 | 21 | Validation Rule | SPEC |
 | 22 | Feature Item | BRD, PRD |
@@ -55,7 +54,6 @@ TYPE.NN.TT.SS              Example: BRD.02.06.01
 | 28 | Specification Element | SPEC |
 | 29 | Implementation Phase | IMPL |
 | 30 | Task Item | TASKS |
-| 31 | Plan Step | IPLAN |
 
 ---
 
@@ -111,7 +109,6 @@ TYPE.NN.TT.SS              Example: BRD.02.06.01
 | CTR | 16, 17, 20 |
 | SPEC | 15, 16, 17, 21, 28 |
 | TASKS | 18, 30 |
-| IPLAN | 19, 31 |
 
 ---
 

@@ -63,7 +63,7 @@ ai_dev_flow/TASKS/TASKS-NNN_{slug}.md
 ## Upstream/Downstream
 
 ```
-BRD through SPEC → TASKS → IPLAN, Code
+BRD through SPEC → TASKS → Code
 ```
 
 ## Quick Validation
@@ -86,4 +86,4 @@ ai_dev_flow/TASKS/TASKS-TEMPLATE.md
 ## Related Skills
 
 - `doc-spec` - Technical specifications (upstream)
-- `doc-iplan` - Implementation plans (downstream)
+- Implementation - Code, Tests, Validation (downstream)

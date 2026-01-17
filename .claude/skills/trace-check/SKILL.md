@@ -42,7 +42,7 @@ Requirements Layer: REQ →
 Implementation Strategy Layer: IMPL (optional) →
 Interface Layer: CTR (optional) →
 Technical Specs Layer: SPEC →
-Execution Planning Layer: TASKS → IPLAN →
+Execution Planning Layer: TASKS →
 Code & Validation Layer: Code → Tests → Validation → Review → Production
 ```
 
@@ -248,7 +248,6 @@ Technical Specs Layer:
 
 Execution Planning Layer:
   TASKS: 8-10 tags (@brd through @spec)
-  IPLAN: 9-11 tags (@brd through @tasks)
 
 Code & Validation Layer:
   Code: 9-11 tags (@brd through @tasks)
@@ -256,7 +255,7 @@ Code & Validation Layer:
   Validation: ALL tags from all upstream artifacts
 ```
 
-**Note**: Functional layers group artifacts by purpose in the workflow. Tag counts accumulate as artifacts progress through the layers. Numbers indicate artifact sequence position (0-15) in the 16-layer architecture.
+**Note**: Functional layers group artifacts by purpose in the workflow. Tag counts accumulate as artifacts progress through the layers. Numbers indicate artifact sequence position (0-14) in the 15-layer architecture.
 
 **Validation Script**:
 ```bash
@@ -294,7 +293,7 @@ python scripts/validate_tags_against_docs.py \
 - H1 header contains full ID: `# BRD-01`
 - Zero-padding: `001` not `1`
 - No ID collisions (each XXX unique per type)
-- Valid TYPE: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN
+- Valid TYPE: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
 - **CTR dual-file validation**: For each CTR, both .md and .yaml must exist with matching slugs (see below)
 
 **Reference**: `{project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md`
@@ -1030,7 +1029,7 @@ tar -xzf ../backups/docs_backup_20251111_174001.tar.gz
 - [TRACEABILITY_SETUP.md]({project_root}/ai_dev_flow/TRACEABILITY_SETUP.md) - Setup guide for automated validation and CI/CD integration
 - [COMPLETE_TAGGING_EXAMPLE.md]({project_root}/ai_dev_flow/COMPLETE_TAGGING_EXAMPLE.md) - End-to-end cumulative tagging example
 
-**Workflow Sequence** (v2.0): BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR (optional) → SPEC → TASKS → IPLAN → Code → Tests → Validation
+**Workflow Sequence** (v2.0): BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR (optional) → SPEC → TASKS → Code → Tests → Validation
 
 ### Related Skills
 
@@ -1065,7 +1064,6 @@ tar -xzf ../backups/docs_backup_20251111_174001.tar.gz
 ### Validation Scripts
 
 **Available Validators**:
-- [validate_iplan_naming.py]({project_root}/ai_dev_flow/scripts/validate_iplan_naming.py) - Validates IPLAN naming convention compliance
 - [add_cumulative_tagging_to_matrices.py]({project_root}/ai_dev_flow/scripts/add_cumulative_tagging_to_matrices.py) - Adds cumulative tagging sections to traceability matrices
 - [batch_update_matrix_templates.py]({project_root}/ai_dev_flow/scripts/batch_update_matrix_templates.py) - Batch updates matrix templates with new features
 - [validate_traceability_matrix_enforcement.py]({project_root}/ai_dev_flow/scripts/validate_traceability_matrix_enforcement.py) - Enforces traceability matrix presence and completeness
@@ -1108,7 +1106,7 @@ tar -xzf ../backups/docs_backup_20251111_174001.tar.gz
 - 2.0.0 (2025-11-13): Major update for SDD Framework v2.0
   - Added cumulative tagging hierarchy validation (Step 2.6)
   - Added artifact-type-specific tag count validation
-  - Updated artifact types: Added IMPL, IPLAN; clarified CTR as optional
+  - Updated artifact types: Added IMPL; clarified CTR as optional
   - Updated workflow to 11-layer structure (aligned with TRACEABILITY.md v2.0)
   - Added new validation parameter: validate_cumulative
   - Added expected tag counts by artifact type (Artifact 0-15)

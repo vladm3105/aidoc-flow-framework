@@ -32,41 +32,18 @@ Constraints:
 - Maintain single-file structure (no document splitting in MVP).
 AI_CONTEXT_END
 -->
----
-title: "REQ-MVP-TEMPLATE: Atomic Requirements Document (MVP Version)"
-tags:
-  - req-template
-  - mvp-template
-  - layer-7-artifact
-custom_fields:
-  document_type: template
-  artifact_type: REQ
-  layer: 7
-  architecture_approaches: [ai-agent-primary]
-  priority: shared
-  development_status: draft
-  template_variant: mvp
-  template_profile: mvp
-  template_source: "REQ-TEMPLATE.md"
-  schema_reference: "REQ_SCHEMA.yaml"
-  schema_version: "1.0"
-  schema_status: optional
-  creation_rules_reference: "REQ_CREATION_RULES.md"
-  validation_rules_reference: "REQ_VALIDATION_RULES.md"
-  traceability_matrix_template: "REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md"
----
 
-> **MVP Template** — Single-file, streamlined REQ for rapid MVP development.
-> Use this template for MVP atomic requirements (10-20 core requirements).
-> For comprehensive requirements (50+ detailed specs), use `REQ-TEMPLATE.md`.
+**MVP Template** — Single-file, streamlined REQ for rapid MVP development.
+ Use this template for MVP atomic requirements (10-20 core requirements).
+ For comprehensive requirements (50+ detailed specs), use `REQ-TEMPLATE.md`.
 
-> **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_req_template.sh`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
+**Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_req_template.sh`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
-> References: Full Template `REQ-TEMPLATE.md` | Schema `REQ_SCHEMA.yaml` | Rules `REQ_CREATION_RULES.md`, `REQ_VALIDATION_RULES.md` | Matrix `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+ References: Full Template `REQ-TEMPLATE.md` | Schema `REQ_SCHEMA.yaml` | Rules `REQ_CREATION_RULES.md`, `REQ_VALIDATION_RULES.md` | Matrix `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # REQ-NN: [RESOURCE_TYPE] [Requirement Title]
 
-**⚠️ MVP Scope**: This requirement document focuses on essential, SPEC-ready requirements for MVP delivery.
+**MVP Scope**: This requirement document focuses on essential, SPEC-ready requirements for MVP delivery.
 
 > **Resource Tags**: Replace `[RESOURCE_TYPE]` with project-specific resource classification (e.g., `[EXTERNAL_SERVICE_GATEWAY]`, `[HEALTH_CHECK_SERVICE]`, `[DATA_VALIDATION]`). See project ADR for resource taxonomy.
 

@@ -47,7 +47,7 @@ After completing project initialization, AI Assistant **MUST** inform user:
 Next: Use the `doc-flow` skill to begin workflow execution:
 - Create BRD (Business Requirements)
 - Create PRD (Product Requirements)
-- Follow 16-layer architecture (Layers 0-15) with 12 artifact directories (BRD through IPLAN): BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → IPLAN → Code → Tests → Validation
+- Follow 15-layer architecture (Layers 0-14) with 11 artifact directories (BRD through TASKS): BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → Code → Tests → Validation
 ```
 
 ---
@@ -151,7 +151,7 @@ cd {project_root}
 **Commands to Execute**:
 
 ```bash
-# Core 12-layer architecture artifact directories (BRD through IPLAN)
+# Core 11 artifact directories (BRD through TASKS)
 mkdir -p docs/BRD
 mkdir -p docs/PRD
 mkdir -p docs/EARS
@@ -163,7 +163,6 @@ mkdir -p docs/IMPL
 mkdir -p docs/CTR
 mkdir -p docs/SPEC
 mkdir -p docs/TASKS
-mkdir -p docs/IPLAN
 
 # NOTE: REQ and CTR subdirectories are created on-demand by doc-req and doc-ctr skills
 # when documents are generated. This ensures folders match actual project needs.
@@ -177,7 +176,7 @@ mkdir -p work_plans
 
 **Validation**:
 ```bash
-ls -la docs/  # Verify 12 artifact directories created
+ls -la docs/  # Verify 11 artifact directories created
 ls -la work_plans/  # Verify work_plans directory
 ```
 
@@ -340,12 +339,12 @@ ls -laR docs/
 # Verify index files exist
 ls docs/*/index.* || ls docs/*/*_index.*
 
-# Expected: 12 artifact directories (BRD through IPLAN) + domain subdirectories
-# Expected: 12 index files
+# Expected: 11 artifact directories (BRD through TASKS) + domain subdirectories
+# Expected: 11 index files
 ```
 
 **Success Criteria**:
-- ✅ All 12 artifact directories exist (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN)
+- ✅ All 11 artifact directories exist (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS)
 - ✅ Domain-specific subdirectories exist (risk/, trading/, tenant/, etc.)
 - ✅ All index files created
 - ✅ All templates include Document Control sections
@@ -369,10 +368,10 @@ ls docs/*/index.* || ls docs/*/*_index.*
 ═══════════════════════════════════════════════════════════
 
 ✓ Domain: [Financial Services / Software/SaaS / etc.]
-✓ Folders: Created (12 artifact directories + domain subdirectories)
+✓ Folders: Created (11 artifact directories + domain subdirectories)
 ✓ Domain Config: Applied ([PLACEHOLDERS] → [domain terms])
 ✓ Contracts: [Included / Skipped] (CTR layer [active / inactive])
-✓ Index Files: Initialized (12 files)
+✓ Index Files: Initialized (11 files)
 ✓ Validation: Passed
 
 Workflow Configuration:
@@ -457,7 +456,6 @@ Creating 16-layer architecture (12 artifact directories)...
 ✓ Created: docs/CTR/
 ✓ Created: docs/SPEC/
 ✓ Created: docs/TASKS/
-✓ Created: docs/IPLAN/
 ✓ Created: docs/REQ/tenant/
 ✓ Created: docs/REQ/subscription/
 ✓ Created: docs/REQ/billing/
@@ -483,7 +481,7 @@ AI Assistant:
 ✓ Workflow: REQ → IMPL → CTR → SPEC → TASKS
 
 Step 6: Index Files
-✓ All 12 index files created
+✓ All 11 index files created
 
 Step 7: Validation
 ✓ All directories verified
@@ -494,7 +492,7 @@ Step 7: Validation
 ═══════════════════════════════════════════════════════════
 
 ✓ Domain: Software/SaaS
-✓ Folders: Created (12 artifact directories + 4 SaaS subdirectories)
+✓ Folders: Created (11 artifact directories + 4 SaaS subdirectories)
 ✓ Contracts: Included (CTR layer active)
 ✓ Workflow: REQ → IMPL → CTR → SPEC → TASKS
 
@@ -605,8 +603,8 @@ Run follow-up questions from DOMAIN_SELECTION_QUESTIONNAIRE.md:
 
 **After project-init completes, use:**
 - **doc-flow** - Main workflow execution skill
-  - Create BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN
-  - Follow 16-layer architecture (Layers 0-15: Strategy layer + 11 functional layers (15 artifact types) + 3 execution layers)
+  - Create BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
+  - Follow 15-layer architecture (Layers 0-14: Strategy layer + 11 artifact directories + 3 execution layers)
   - Generate code from specifications
 
 **Other complementary skills:**

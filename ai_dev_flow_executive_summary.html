@@ -405,21 +405,10 @@
                         <text x="395" y="305" text-anchor="middle" fill="#4a5568" font-size="9">Plans</text>
                     </g>
                     
-                    <!-- Implementation Plans Layer (L12) -->
+                    <!-- Execution Layer (L12-14) -->
                     <g filter="url(#shadow)">
-                        <rect x="480" y="210" width="130" height="130" rx="10" fill="#4299e1"/>
-                        <text x="545" y="235" text-anchor="middle" fill="white" font-weight="bold" font-size="14">PLANS (L12)</text>
-                        
-                        <rect x="500" y="250" width="90" height="70" rx="6" fill="white" fill-opacity="0.95"/>
-                        <text x="545" y="275" text-anchor="middle" font-weight="bold" fill="#2b6cb0" font-size="13">IPLAN</text>
-                        <text x="545" y="292" text-anchor="middle" fill="#4a5568" font-size="9">Session</text>
-                        <text x="545" y="305" text-anchor="middle" fill="#4a5568" font-size="9">Context</text>
-                    </g>
-                    
-                    <!-- Execution Layer (L13-14) -->
-                    <g filter="url(#shadow)">
-                        <rect x="630" y="210" width="220" height="130" rx="10" fill="url(#codeGrad)"/>
-                        <text x="740" y="235" text-anchor="middle" fill="white" font-weight="bold" font-size="14">EXECUTION (L13-14)</text>
+                        <rect x="480" y="210" width="370" height="130" rx="10" fill="url(#codeGrad)"/>
+                        <text x="665" y="235" text-anchor="middle" fill="white" font-weight="bold" font-size="14">EXECUTION (L12-14)</text>
                         
                         <rect x="650" y="250" width="80" height="70" rx="6" fill="white" fill-opacity="0.95"/>
                         <text x="690" y="275" text-anchor="middle" font-weight="bold" fill="#6b46c1" font-size="13">CODE</text>
@@ -495,9 +484,7 @@
                         <text x="770" y="20" text-anchor="middle" font-weight="bold" fill="#c53030" font-size="11">REQ</text>
                         <text x="770" y="38" text-anchor="middle" fill="#4a5568" font-size="7">@brd...@sys</text>
                         
-                        <rect x="840" y="0" width="100" height="50" rx="5" fill="#e6fffa" stroke="#319795"/>
-                        <text x="890" y="20" text-anchor="middle" font-weight="bold" fill="#285e61" font-size="11">IPLAN</text>
-                        <text x="890" y="38" text-anchor="middle" fill="#4a5568" font-size="7">9 cumulative</text>
+                        <!-- TASKS is final documentation layer (Layer 11) -->
                         
                         <!-- Arrows -->
                         <path d="M 100 25 L 120 25" stroke="#718096" stroke-width="1.5" marker-end="url(#arrowhead)"/>
@@ -526,7 +513,6 @@
                         <text x="630" y="35" fill="#4a5568" font-size="10">CTR</text>
                         <text x="700" y="35" fill="#c05621" font-size="10">SPEC</text>
                         <text x="770" y="35" fill="#b83280" font-size="10">TASKS</text>
-                        <text x="850" y="35" fill="#285e61" font-size="10">IPLAN</text>
                         
                         <rect x="0" y="45" width="940" height="30" fill="white"/>
                         <text x="10" y="65" fill="#4a5568" font-size="10" font-weight="bold">Tags:</text>
@@ -615,15 +601,9 @@
                         <td>ICON optional</td>
                     </tr>
                     <tr>
-                        <td><span class="badge badge-blue">12</span></td>
-                        <td>IPLAN</td>
-                        <td>Session-specific execution plans</td>
-                        <td>Required</td>
-                    </tr>
-                    <tr>
-                        <td><span class="badge badge-purple">13-14</span></td>
-                        <td>Code → Tests</td>
-                        <td>Source implementation → Test execution</td>
+                        <td><span class="badge badge-purple">12-14</span></td>
+                        <td>Code → Tests → Validation</td>
+                        <td>Source implementation → Test execution → Quality gates</td>
                         <td>Required</td>
                     </tr>
                     <tr>

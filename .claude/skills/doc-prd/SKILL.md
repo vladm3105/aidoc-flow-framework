@@ -246,7 +246,7 @@ Business constraints           Evaluation criteria         Trade-off analysis
 
 | Notation | Format | Artifacts | Purpose |
 |----------|--------|-----------|---------|
-| Dash | TYPE-NN | ADR, SPEC, CTR, IPLAN, ICON | Technical artifacts - file references |
+| Dash | TYPE-NN | ADR, SPEC, CTR | Technical artifacts - file references |
 | Dot | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical - element references |
 
 **Key Distinction**:

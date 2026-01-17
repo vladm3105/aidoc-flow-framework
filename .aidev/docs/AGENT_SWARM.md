@@ -1,6 +1,6 @@
 # CLI Agent Swarm Architecture
 
-This document defines the **Agent Swarm** for the 16-layer `ai_dev_flow` framework, strictly using **CLI Agents** (`claude`, `gemini`, `codex`) as the workforce.
+This document defines the **Agent Swarm** for the 15-layer `ai_dev_flow` framework, strictly using **CLI Agents** (`claude`, `gemini`, `codex`) as the workforce.
 
 ## Strategy: The "Adversarial Pair" Model
 To minimize hallucinations and maximize quality, every layer uses an **Executor** (Writer) and a **Reviewer** (Critic). We alternate models to ensure diverse "thought processes."
@@ -25,7 +25,7 @@ To minimize hallucinations and maximize quality, every layer uses an **Executor*
 
 ---
 
-## Part 2: The Detailed Design Swarm (Layers 7-12)
+## Part 2: The Detailed Design Swarm (Layers 7-11)
 *Focus: Technical Specification and Task Breakdown*
 
 | Layer | Artifact | Agent Role | Executor (The Writer) | Reviewer (The Critic) | Rationale |
@@ -35,16 +35,15 @@ To minimize hallucinations and maximize quality, every layer uses an **Executor*
 | **L9** | `CTR` | **API Designer** | **Codex** | **Claude** | API Contracts (OpenAPI/Protobuf) require strict syntax. Codex is specialized here. |
 | **L10** | `SPEC` | **Tech Lead** | **Claude** | **Gemini** | The `SPEC` is the "Technical Blueprint". Claude's reasoning is crucial here to prevent architectural bugs. |
 | **L11** | `TASKS` | **Eng Manager** | **Claude** | **Gemini** | Breaking SPEC into step-by-step TODOs requires understanding dependencies. Claude is best at this logic. |
-| **L12** | `IPLAN` | **Session Planner** | **Gemini** | **Claude** | Preparing the immediate context packet for the coder. |
 
 ---
 
-## Part 3: The Execution Swarm (Layers 13-16)
+## Part 3: The Execution Swarm (Layers 12-15)
 *Focus: Code, Tests, and Validation*
 
 | Layer | Artifact | Agent Role | Executor (The Writer) | Reviewer (The Critic) | Rationale |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **L13** | `Code` | **Senior Dev** | **Claude Code** | **Codex** | `claude` (Claude Code) is specifically designed for agentic coding loops. Codex reviews for linting/syntax. |
-| **L14** | `Tests` | **Test Automation** | **Codex** | **Claude** | Writing unit tests is a pattern-matching task where Codex excels. Claude reviews for test coverage gaps. |
-| **L15** | `Valid` | **Release Eng** | **Gemini** | **Claude** | "Read all logs and verifying against BRD". Gemini's large context window is mandatory here. |
-| **L16** | `Maint` | **SRE** | **Claude** | **Gemini** | Debugging and fixing specific issues requires high reasoning concepts. |
+| **L12** | `Code` | **Senior Dev** | **Claude Code** | **Codex** | `claude` (Claude Code) is specifically designed for agentic coding loops. Codex reviews for linting/syntax. |
+| **L13** | `Tests` | **Test Automation** | **Codex** | **Claude** | Writing unit tests is a pattern-matching task where Codex excels. Claude reviews for test coverage gaps. |
+| **L14** | `Valid` | **Release Eng** | **Gemini** | **Claude** | "Read all logs and verifying against BRD". Gemini's large context window is mandatory here. |
+| **L15** | `Maint` | **SRE** | **Claude** | **Gemini** | Debugging and fixing specific issues requires high reasoning concepts. |

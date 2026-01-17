@@ -135,9 +135,9 @@ ls /opt/data/docs_flow_framework/.claude/skills/
 # View templates
 ls /opt/data/docs_flow_framework/ai_dev_flow/
 
-# Template directories:
+# Template directories (11 artifacts):
 # BRD/, PRD/, EARS/, BDD/, ADR/, SYS/, REQ/,
-# IMPL/, CTR/, SPEC/, TASKS/, IPLAN/
+# IMPL/, CTR/, SPEC/, TASKS/
 ```
 
 ### Validation Scripts (All Projects)

@@ -13,28 +13,16 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of REQ-TEMPLATE.md
-# - Authority: REQ-TEMPLATE.md is the single source of truth for REQ structure
+# 📋 Document Role: This is a DERIVATIVE of REQ-MVP-TEMPLATE.md
+# - Authority: REQ-MVP-TEMPLATE.md is the single source of truth for REQ structure
 # - Purpose: AI guidance for document creation (derived from template)
-# - On conflict: Defer to REQ-TEMPLATE.md
+# - On conflict: Defer to REQ-MVP-TEMPLATE.md
 # =============================================================================
----
-title: "REQ Creation Rules"
-tags:
-  - creation-rules
-  - layer-7-artifact
-  - shared-architecture
-custom_fields:
-  document_type: creation-rules
-  artifact_type: REQ
-  layer: 7
-  priority: shared
-  development_status: active
----
 
-> **📋 Document Role**: This is a **CREATION HELPER** for REQ-TEMPLATE.md.
-> - **Authority**: `REQ-TEMPLATE.md` is the single source of truth for REQ structure
-> - **Validation**: Use `REQ_VALIDATION_RULES.md` after REQ creation/changes
+
+**📋 Document Role**: This is a **CREATION HELPER** for REQ-MVP-TEMPLATE.md.
+- **Authority**: `REQ-MVP-TEMPLATE.md` is the single source of truth for REQ structure
+- **Validation**: Use `REQ_VALIDATION_RULES.md` after REQ creation/changes
 
 # REQ Creation Rules
 
@@ -45,7 +33,7 @@ custom_fields:
 | Template | File | When to Use |
 |----------|------|-------------|
 | **MVP (DEFAULT)** | `REQ-MVP-TEMPLATE.md` | All new projects unless full template is explicitly requested |
-| Full | `REQ-TEMPLATE.md` | Enterprise projects, regulatory compliance, or when prompted |
+
 
 **Triggering Full Template**:
 - Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
@@ -61,7 +49,7 @@ custom_fields:
 **Version**: 3.2
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-30
-**Source**: Extracted from REQ-TEMPLATE.md, REQ_VALIDATION_RULES.md, README.md, and REQ-00_index.md
+**Source**: Extracted from REQ-MVP-TEMPLATE.md, REQ_VALIDATION_RULES.md, README.md, and REQ-00_index.md
 **Purpose**: Complete reference for creating REQ files according to doc-flow SDD framework
 **Changes**: Added Threshold Registry Integration section (v3.2). Previous: Status/Score mapping, common mistakes section (v3.1)
 
@@ -98,29 +86,29 @@ custom_fields:
 
 ## 2. Document Structure (12 Required sections)
 
-Every REQ must contain these exact sections in order:
+Every REQ must contain these exact sections in order (MVP profile):
 
-1. **Document Control** - Metadata table with 11 required fields
-2. **Description** - Atomic requirement + SHALL/SHOULD/MAY language + context + scenario
-3. **Functional Requirements** - Core capabilities + business rules
-4. **Interface Specifications** - Protocol/ABC definitions + DTOs + REST endpoints (if applicable)
-5. **Data Schemas** - JSON Schema + Pydantic models + Database schema (if applicable)
-6. **Error Handling Specifications** - Exception catalog + error response schema + state machine + circuit breaker config
-7. **Configuration Specifications** - YAML schema + environment variables + validation
-8. **Quality Attributes** - Performance targets (p50/p95/p99) + reliability/security/scalability/observability
-9. **Implementation Guidance** - Algorithms/patterns + concurrency/async + dependency injection
-10. **Acceptance Criteria** - ≥15 measurable criteria covering functional/error/quality/data/integration
-11. **Verification Methods** - BDD scenarios + unit/integration/contract/performance tests
+1. **Document Control** - Metadata table with 12 required fields
+2. **Requirement Description** - Atomic requirement + SHALL/SHOULD/MAY language + context + scenario
+3. **Functional Specification** - Core capabilities + business rules + I/O
+4. **Interface Definition** - API contract + schemas/DTOs
+5. **Error Handling** - Exception catalog + recovery strategies
+6. **Quality Attributes** - Performance/security/reliability targets using @threshold
+7. **Configuration** - Parameters, feature flags, validation
+8. **Testing Requirements** - Unit, integration, and BDD scenarios
+9. **Acceptance Criteria** - ≥15 measurable criteria (functional + quality)
+10. **Traceability** - Upstream chain, downstream artifacts, cumulative tags
+11. **Implementation Notes** - Technical approach, code locations, dependencies
 12. **Change History** - Version control table
 
 ---
 
-## 3. Document Control Requirements (10 Mandatory Fields)
+## 3. Document Control Requirements (12 Mandatory Fields)
 
 - Status, Version (semantic X.Y.Z), Date Created (ISO 8601), Last Updated
 - Author, Priority (with P-level: P1/P2/P3/P4), Category (Functional/Security/Performance/etc.)
 - Source Document (format: "DOC-ID section X.Y.Z"), Verification Method, Assigned Team
-- SPEC-Ready Score (format: "✅ XX% (Target: ≥90%)"), IMPL-Ready Score (format: "✅ XX% (Target: ≥90%)")
+- SPEC-Ready Score (format: "✅ XX% (Target: ≥70%)"), IMPL-Ready Score (format: "✅ XX% (Target: ≥70%)")
 
 > **Note**: Template Version is informational only (not validated). Each template may use its own version numbering.
 
@@ -128,9 +116,9 @@ Every REQ must contain these exact sections in order:
 
 | Ready Score | Required Status |
 |-------------|-----------------|
-| >= 90% | Approved |
-| 70-89% | In Review |
-| < 70% | Draft |
+| >= 70% | Approved |
+| 50-69% | In Review |
+| < 50% | Draft |
 
 **Note**: For REQ documents with dual scores (SPEC-Ready + IMPL-Ready), use the lower score to determine status.
 
@@ -166,7 +154,7 @@ Every REQ must contain these exact sections in order:
 - **Single Responsibility**: Each REQ defines exactly one requirement
 - **Measurable**: Acceptance criteria provide true/false outcomes
 - **Self-Contained**: Understandable without external context
-- **SPEC-Ready**: Contains ALL information for automated SPEC generation (≥90% completeness)
+- **SPEC-Ready**: Contains ALL information for automated SPEC generation (≥70% completeness)
 - **Modal Language**: SHALL (absolute), SHOULD (preferred), MAY (optional)
 
 ---
@@ -203,10 +191,10 @@ Every REQ must contain these exact sections in order:
 
 ## 9. Quality Gates (Pre-Commit Validation)
 
-- **18 Validation Checks**: Run `./scripts/validate_req_template.sh filename.md`
+- **20 Validation Checks**: Run `./scripts/validate_req_template.sh filename.md`
 - **Blockers**: Missing sections, format errors, broken links, incomplete traceability
 - **Warnings**: Missing resource tags, low SPEC-Ready score, incomplete upstream chain
-- **SPEC-Ready Threshold**: ≥90% or reduce claimed score
+- **SPEC-Ready Threshold**: ≥70% for MVP profile (adjust claimed score if lower)
 - **Link Resolution**: All cross-references must resolve to existing files
 
 ---
@@ -242,7 +230,7 @@ Every REQ must contain these exact sections in order:
 find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template.sh {} \;
 ```
 
-**Template Location**: [REQ-TEMPLATE.md](REQ-TEMPLATE.md)
+**Template Location**: [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md)
 **Validation Rules**: [REQ_VALIDATION_RULES.md](REQ_VALIDATION_RULES.md)
 **Index**: [REQ-00_index.md](REQ-00_index.md)
 
@@ -258,7 +246,7 @@ find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template.sh {} \;
 
 | Mistake | Correct |
 |---------|---------|
-| `Status: Approved` (with <90% SPEC-Ready score) | Match status to score threshold |
+| `Status: Approved` (with <70% SPEC-Ready score) | Match status to score threshold |
 | Missing upstream tags (need all 6) | Include @brd, @prd, @ears, @bdd, @adr, @sys |
 | <15 acceptance criteria | Minimum 15 covering functional/error/quality |
 | Missing resource classification tag | Add [RESOURCE_INSTANCE] to H1 header |

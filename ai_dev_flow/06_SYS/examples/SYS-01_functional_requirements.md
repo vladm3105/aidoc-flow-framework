@@ -349,22 +349,22 @@ flowchart LR
 
 ## 12. Traceability
 
-### 12.1 Upstream References
+### 12.1 Upstream Sources
 
-| Source | Document | Relevant Section |
-|--------|----------|------------------|
-| BRD | BRD.01 | Order processing business objectives |
-| PRD | PRD.01 | Order management product features |
-| EARS | EARS.01 | Event-driven order requirements |
-| ADR | ADR.03 | Order service architecture decision |
+| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+|-------------|-------------|----------------|-------------------|--------------|
+| BRD | [BRD-01](../../01_BRD/BRD-01_order_processing.md) | Order Processing Business Requirements | Section 2.4, 4.1 | Business objectives driving system design |
+| PRD | [PRD-01](../../02_PRD/PRD-01_order_management.md) | Order Management Product Requirements | Functional Requirements 4.x | Product features this system implements |
+| EARS | [EARS-01](../../03_EARS/EARS-01_order_events.md) | Event-Driven Order Requirements | Event-driven, State-driven | Formal requirements this system satisfies |
+| ADR | [ADR-03](../../05_ADR/ADR-03_order_service.md) | Order Service Architecture | Decision, Consequences | Architectural approach enabling this system |
 
 ### 12.2 Downstream Artifacts
 
-| Artifact | Status | Relationship |
-|----------|--------|--------------|
-| REQ | TBD | Atomic requirements from this SYS |
-| SPEC | TBD | Technical specifications |
-| CTR | TBD | API contracts |
+| Artifact | Requirement Title | SYS Features Driving Requirement | Verification Method | Relationship |
+|----------|------------------|----------------------------------|---------------------|--------------|
+| REQ (TBD) | Order Creation Requirements | SYS.01.01.01 - SYS.01.01.03 | Unit test, Integration test | Detailed implementation requirement |
+| SPEC (TBD) | Order Service Specification | Sections 4.1, 6.1 | BDD scenario, Contract test | Implementation blueprint |
+| CTR (TBD) | Order API Contract | Section 6.1 | Contract test | API/contract definition |
 
 ### 12.3 Traceability Tags
 

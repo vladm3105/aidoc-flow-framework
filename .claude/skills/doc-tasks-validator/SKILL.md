@@ -93,7 +93,7 @@ Pattern: `TASKS-NNN_descriptive_name.md`
 - Data Models: Pydantic BaseModel with validation
 - Dependency Injection: ABC interface patterns
 
-**IPLAN-Ready Score:**
+**Implementation-Ready Score:**
 - Minimum threshold: 90%
 - Components: Task completeness (20%), Dependency mapping (15%), Acceptance criteria (20%), Implementation contracts (15%), Risk assessment (10%), Effort estimation (10%), Traceability (10%)
 
@@ -116,7 +116,6 @@ Pattern: `TASKS-NNN_descriptive_name.md`
 - @icon-role: provider|consumer (optional)
 
 **Downstream Expected:**
-- IPLAN documents
 - Code (src/...)
 - Tests (tests/...)
 
@@ -146,7 +145,7 @@ Pattern: `TASKS-NNN_descriptive_name.md`
 | TASKS-W002 | warning | Phase has no tasks defined |
 | TASKS-W003 | warning | Task missing acceptance criteria |
 | TASKS-W004 | warning | Missing upstream tags (require 8) |
-| TASKS-W005 | warning | IPLAN-Ready Score below 90% |
+| TASKS-W005 | warning | Implementation-Ready Score below 90% |
 | TASKS-W006 | warning | Task missing effort estimate |
 | TASKS-W007 | warning | Implementation Contracts empty but parallel development indicated |
 | TASKS-I001 | info | Consider defining Implementation Contracts |
@@ -178,7 +177,7 @@ python ai_dev_flow/scripts/validate_tasks.py docs/TASKS/ --verbose
 8. Check each task has acceptance criteria
 9. Validate Implementation Contracts (if parallel development)
 10. Validate upstream references (8 required)
-11. Calculate IPLAN-Ready Score
+11. Calculate Implementation-Ready Score
 12. Verify file naming convention
 13. Generate validation report
 
@@ -212,7 +211,7 @@ Implementation Contracts:
 - State Machines: N
 - Data Models: N
 
-IPLAN-Ready Score: N%
+Implementation-Ready Score: N%
 
 Errors: N
 Warnings: N

@@ -13,17 +13,17 @@ custom_fields:
 ---
 
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of REQ-TEMPLATE.md
-# - Authority: REQ-TEMPLATE.md is the single source of truth for REQ structure
+# 📋 Document Role: This is a DERIVATIVE of REQ-MVP-TEMPLATE.md
+# - Authority: REQ-MVP-TEMPLATE.md is the single source of truth for REQ structure
 # - Purpose: AI checklist after document creation (derived from template)
 # - Scope: Includes all rules from REQ_CREATION_RULES.md plus validation extensions
-# - On conflict: Defer to REQ-TEMPLATE.md
+# - On conflict: Defer to REQ-MVP-TEMPLATE.md
 # =============================================================================
 
-> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for REQ documents.
-> - Apply these rules after REQ creation or modification
-> - **Authority**: Validates compliance with `REQ-TEMPLATE.md` (the primary standard)
-> - **Scope**: Use for quality gates before committing REQ changes
+**Document Role**: This is the **POST-CREATION VALIDATOR** for REQ documents.
+- Apply these rules after REQ creation or modification
+- **Authority**: Validates compliance with `REQ-MVP-TEMPLATE.md` (the primary standard)
+- **Scope**: Use for quality gates before committing REQ changes
 
 # REQ Validation Rules Reference
 
@@ -71,8 +71,8 @@ custom_fields:
 **Last Updated**: 2025-11-19
 **Purpose**: Complete validation rules for REQ documents
 **Script**: `scripts/validate_req_template.sh`
-**Primary Template**: `REQ-TEMPLATE.md` (v3.0)
-**Baseline Template**: `REQ-TEMPLATE.md` (v2.0)
+**Primary Template**: `REQ-MVP-TEMPLATE.md` (MVP profile)
+**Baseline Template**: `REQ-MVP-TEMPLATE.md`
 **Framework**: AI Dev Flow SDD (100% compliant)
 
 ---
@@ -91,12 +91,12 @@ custom_fields:
 
 Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
-The REQ validation script (`validate_req_template.sh`) performs **17 validation checks** to ensure compliance with:
+The REQ validation script (`validate_req_template.sh`) performs **20 validation checks** to ensure compliance with:
 
-- **REQ-TEMPLATE.md**: Current template (v3.0 - 100% doc_flow compliant)
+- **REQ-MVP-TEMPLATE.md**: Current template (MVP profile)
 - **AI Dev Flow SDD Framework**: Traceability and ID naming standards
 - **Cumulative Tagging Hierarchy**: Layer 7 requirements (6 upstream tags)
-- **Document Control**: 10 required fields (v3.0 enhancement)
+- **Document Control**: 12 required fields (MVP profile)
 
 ### Validation Tiers
 
@@ -132,23 +132,23 @@ The REQ validation script (`validate_req_template.sh`) performs **17 validation 
 
 **Required sections**:
 ```markdown
-## 1. Description
-## 2. Functional Requirements
-## 3. Interface Specifications
-## 4. Data Schemas
-## 5. Error Handling Specifications
-## 6. Configuration Specifications
-## 7. Quality Attributes
-## 8. Implementation Guidance
+## 1. Document Control
+## 2. Requirement Description
+## 3. Functional Specification
+## 4. Interface Definition
+## 5. Error Handling
+## 6. Quality Attributes
+## 7. Configuration
+## 8. Testing Requirements
 ## 9. Acceptance Criteria
-## 10. Verification Methods
-## 11. Traceability
+## 10. Traceability
+## 11. Implementation Notes
 ## 12. Change History
 ```
 
 **Error Message**:
 ```
-❌ MISSING: ## 3. Interface Specifications
+❌ MISSING: ## 3. Functional Specification
 ```
 
 **Fix**:
@@ -163,7 +163,7 @@ The REQ validation script (`validate_req_template.sh`) performs **17 validation 
 **Purpose**: Validate metadata table completeness
 **Type**: Error (blocking)
 
-**Required Fields** (10 total):
+**Required Fields** (12 total):
 - Status
 - Version
 - Date Created
@@ -175,6 +175,7 @@ The REQ validation script (`validate_req_template.sh`) performs **17 validation 
 - Verification Method
 - Assigned Team
 - SPEC-Ready Score
+- IMPL-Ready Score
 
 **Error Message**:
 ```
@@ -207,12 +208,12 @@ The REQ validation script (`validate_req_template.sh`) performs **17 validation 
 
 **Error Message**:
 ```
-❌ MISSING: Upstream Sources subsection in section 11
+❌ MISSING: Upstream Sources subsection in section 10
 ```
 
 **Fix**:
 ```markdown
-## 11. Traceability
+## 10. Traceability
 
 ### Upstream Sources
 
@@ -351,8 +352,8 @@ The REQ validation script (`validate_req_template.sh`) performs **17 validation 
 **Type**: Error + Warning
 
 **Valid Examples**:
-- `✅ 95% (Target: ≥90%)` ✅
-- `✅ 92% (Target: ≥90%)` ✅
+- `✅ 85% (Target: ≥70%)` ✅
+- `✅ 92% (Target: ≥70%)` ✅
 
 **Invalid Examples**:
 - `95%` ❌
@@ -366,12 +367,12 @@ The REQ validation script (`validate_req_template.sh`) performs **17 validation 
 
 **Warning Message** (threshold):
 ```
-⚠️  WARNING: SPEC-Ready Score below 90%: 85%
+⚠️  WARNING: SPEC-Ready Score below 70%: 65%
 ```
 
 **Fix**:
 ```markdown
-| **SPEC-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **SPEC-Ready Score** | ✅ 85% (Target: ≥70%) |
 ```
 
 ---
@@ -498,7 +499,7 @@ The REQ validation script (`validate_req_template.sh`) performs **17 validation 
 # REQ-02: [HEALTH_CHECK_SERVICE] Connection Heartbeat Monitoring
 ```
 
-**Reference**: `REQ-TEMPLATE.md` (H1 Header Format - includes resource instance tags)
+**Reference**: `REQ-MVP-TEMPLATE.md` (H1 Header Format - includes resource instance tags)
 
 ---
 
@@ -547,7 +548,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 ```
 
 **Fix**:
-1. Add all 6 missing tags to section 11 (Traceability)
+1. Add all 6 missing tags to section 10 (Traceability)
 2. Use format: `@type: TYPE.NN.TT.SS (Unified 4-Segment Element ID)`
 3. Verify all referenced documents exist
 
@@ -586,7 +587,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 ```
 ❌ ERROR: Incomplete upstream chain - missing: EARS BDD ADR
          Complete chain required: BRD → PRD → EARS (Engineering Requirements) → BDD → ADR → SYS
-         Reference: REQ-TEMPLATE.md section 11 (Traceability)
+         Reference: REQ-MVP-TEMPLATE.md section 10 (Traceability)
 ```
 
 **Fix**:
@@ -594,7 +595,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 2. Ensure markdown links include relative paths
 3. Add specific relationship descriptions (not generic)
 
-**Reference**: `REQ-TEMPLATE.md` section 11 (Traceability - Complete Upstream Chain)
+**Reference**: `REQ-MVP-TEMPLATE.md` section 10 (Traceability - Complete Upstream Chain)
 
 ---
 
@@ -645,11 +646,11 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 **Warning Message**:
 ```
-⚠️  WARNING: Complex REQ detected but section 11.4 (Traceability Matrix) missing
+⚠️  WARNING: Complex REQ detected but section 10.4 (Traceability Matrix) missing
          Upstream sources: 7 (≥5 suggests complexity)
          Sub-components: yes
-         Recommendation: Add section 11.4 or create separate REQ-NN_TRACEABILITY_MATRIX.md
-         Reference: REQ-TEMPLATE.md section 11 (Traceability)
+         Recommendation: Add section 10.4 or create separate REQ-NN_TRACEABILITY_MATRIX.md
+         Reference: REQ-MVP-TEMPLATE.md section 10 (Traceability)
 ```
 
 **Fix Options**:
@@ -667,9 +668,9 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 **Option 2 - Separate File** (10+ components):
 - Create: `REQ-045_TRACEABILITY_MATRIX.md`
 - Template: Available in AI Dev Flow framework
-- Link from section 11
+- Link from section 10
 
-**Reference**: `REQ-TEMPLATE.md` section 11 (Traceability - includes matrix guidance)
+**Reference**: `REQ-MVP-TEMPLATE.md` section 10 (Traceability - includes matrix guidance)
 
 ---
 
@@ -678,7 +679,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 **Purpose**: Verify SPEC-ready documents have actual implementation code
 **Type**: Warning
 
-**Applies When**: SPEC-Ready Score ≥ 90%
+**Applies When**: SPEC-Ready Score ≥ 70%
 
 **Checks**:
 1. **section 3**: Protocol/ABC class present
@@ -688,10 +689,10 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 **Warning Messages**:
 ```
-⚠️  WARNING: SPEC-Ready ≥90% but no Protocol/ABC class in section 3
-⚠️  WARNING: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4
-⚠️  WARNING: SPEC-Ready ≥90% but no exception definitions in section 5
-⚠️  WARNING: SPEC-Ready ≥90% but no YAML configuration in section 6
+⚠️  WARNING: SPEC-Ready ≥70% but no Protocol/ABC class in section 3
+⚠️  WARNING: SPEC-Ready ≥70% but no Pydantic/dataclass models in section 4
+⚠️  WARNING: SPEC-Ready ≥70% but no exception definitions in section 5
+⚠️  WARNING: SPEC-Ready ≥70% but no YAML configuration in section 6
 ```
 
 **Fix**: Add missing code examples to achieve claimed SPEC-Ready score
@@ -719,7 +720,7 @@ class HeartbeatConfig(BaseModel):
 **Purpose**: Validate IMPL-ready score format and threshold for project management transition
 **Type**: Error (blocking)
 
-**Valid Examples**: `✅ 95% (Target: ≥90%)`
+**Valid Examples**: `✅ 85% (Target: ≥70%)`
 
 **Error Message**: `❌ MISSING: IMPL-Ready Score with ✅ emoji and percentage`
 
@@ -764,10 +765,10 @@ class HeartbeatConfig(BaseModel):
 | Error Check | Quick Fix |
 |-------------|-----------|
 | **CHECK 1** | Add missing section: `## N. section Name` |
-| **CHECK 2** | Add all 10 required fields to Document Control table |
+| **CHECK 2** | Add all 12 required fields to Document Control table |
 | **CHECK 5** | Change version to semver: `2.0.1` |
 | **CHECK 6** | Change dates to ISO 8601: `2025-11-18` |
-| **CHECK 9** | Update score format: `✅ 95% (Target: ≥90%)` |
+| **CHECK 9** | Update score format: `✅ 85% (Target: ≥70%)` |
 | **CHECK 11** | Add change history entry for current version |
 | **CHECK 12** | Rename file to match pattern, update H1 header |
 | **CHECK 13** | Add resource tag to H1: `[HEALTH_CHECK_SERVICE]` |
@@ -819,7 +820,7 @@ Warnings: 1
 
 | Tier | Checks | Type | Action |
 |------|--------|------|--------|
-| **Tier 1** | 1, 2, 3 (Upstream Sources), 5, 6, 9, 11, 12, 13, 14, 15, 16 | Error | Must fix before commit |
+| **Tier 1** | 1, 2, 3 (Upstream Sources), 5, 6, 9, 11, 12, 13, 14, 15, 16, 19, 20 | Error | Must fix before commit |
 | **Tier 2** | 3 (Downstream/Code paths), 7, 8, 17, 18 | Warning | Recommended to fix |
 | **Tier 3** | 4 | Info | No action required |
 
@@ -839,7 +840,7 @@ Warnings: 1
 
 **Fix**:
 ```markdown
-## 11. Traceability
+## 10. Traceability
 
 @brd: BRD.09.01.15
 @prd: PRD.16.01.03
@@ -936,8 +937,8 @@ Warnings: 1
 
 **Warning**:
 ```
-⚠️  WARNING: SPEC-Ready ≥90% but no Protocol/ABC class in section 3
-⚠️  WARNING: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4
+⚠️  WARNING: SPEC-Ready ≥70% but no Protocol/ABC class in section 3
+⚠️  WARNING: SPEC-Ready ≥70% but no Pydantic/dataclass models in section 4
 ```
 
 **Cause**: Claimed SPEC-Ready score but missing implementation code
@@ -959,8 +960,8 @@ Warnings: 1
 
 **Maintained By**: System Architect, Quality Assurance Team
 **Review Frequency**: Updated with script and template enhancements
-**Support**: See [REQ-TEMPLATE.md](REQ-TEMPLATE.md) for comprehensive template guidance
+**Support**: See [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md) for comprehensive template guidance
 **Related Documents**:
-- [REQ-TEMPLATE.md](REQ-TEMPLATE.md) - Current template (v3.0)
+- [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md) - Current template (v3.0)
 - [README.md](README.md) - REQ directory guide with creation steps
-- [<!-- VALIDATOR:IGNORE-LINKS-START -->archived/REQ-TEMPLATE-UNIFIED-ARCHIVED.md<!-- VALIDATOR:IGNORE-LINKS-END -->](<!-- VALIDATOR:IGNORE-LINKS-START -->archived/REQ-TEMPLATE-UNIFIED-ARCHIVED.md<!-- VALIDATOR:IGNORE-LINKS-END -->) - Archived template (v3.0.2)
+- [<!-- VALIDATOR:IGNORE-LINKS-START -->archived/REQ-MVP-TEMPLATE-UNIFIED-ARCHIVED.md<!-- VALIDATOR:IGNORE-LINKS-END -->](<!-- VALIDATOR:IGNORE-LINKS-START -->archived/REQ-MVP-TEMPLATE-UNIFIED-ARCHIVED.md<!-- VALIDATOR:IGNORE-LINKS-END -->) - Archived MVP template (v3.0.2)

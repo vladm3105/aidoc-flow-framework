@@ -392,22 +392,22 @@ flowchart LR
 
 ## 12. Traceability
 
-### 12.1 Upstream References
+### 12.1 Upstream Sources
 
-| Source | Document | Relevant Section |
-|--------|----------|------------------|
-| BRD | BRD.01 | Platform reliability objectives |
-| PRD | PRD.01 | Non-functional product requirements |
-| EARS | EARS.01 | Quality attribute constraints |
-| ADR | ADR.05 | Observability architecture decision |
+| Source Type | Document ID | Document Title | Relevant Sections | Relationship |
+|-------------|-------------|----------------|-------------------|--------------|
+| BRD | [BRD-01](../../01_BRD/BRD-01_platform_reliability.md) | Platform Reliability Business Requirements | Section 2.3, 4.2 | Business objectives driving quality requirements |
+| PRD | [PRD-01](../../02_PRD/PRD-01_nfr_requirements.md) | Non-Functional Product Requirements | Quality Attributes 5.x | Product quality expectations |
+| EARS | [EARS-01](../../03_EARS/EARS-01_quality_constraints.md) | Quality Attribute Constraints | State-driven, Performance | Formal requirements this system satisfies |
+| ADR | [ADR-05](../../05_ADR/ADR-05_observability.md) | Observability Architecture Decision | Decision, Consequences | Architectural approach enabling observability |
 
 ### 12.2 Downstream Artifacts
 
-| Artifact | Status | Relationship |
-|----------|--------|--------------|
-| REQ | TBD | Atomic quality requirements |
-| SPEC | TBD | Monitoring specifications |
-| CTR | TBD | Observability API contracts |
+| Artifact | Requirement Title | SYS Features Driving Requirement | Verification Method | Relationship |
+|----------|------------------|----------------------------------|---------------------|--------------|
+| REQ (TBD) | Quality Attribute Requirements | SYS.02.02.01 - SYS.02.02.04 | Unit test, Load test | Atomic quality requirements |
+| SPEC (TBD) | Monitoring Specification | Sections 5.4, 7.2 | Integration test | Implementation blueprint |
+| CTR (TBD) | Observability API Contract | Section 6.1 | Contract test | API/contract definition |
 
 ### 12.3 Traceability Tags
 

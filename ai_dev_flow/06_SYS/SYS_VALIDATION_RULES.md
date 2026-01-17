@@ -19,24 +19,11 @@ custom_fields:
 # - Scope: Includes all rules from SYS_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to SYS-TEMPLATE.md
 # =============================================================================
----
-title: "SYS Validation Rules Reference"
-tags:
-  - validation-rules
-  - layer-6-artifact
-  - shared-architecture
-custom_fields:
-  document_type: validation-rules
-  artifact_type: SYS
-  layer: 6
-  priority: shared
-  development_status: active
----
 
-> **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for SYS documents.
-> - Apply these rules after SYS creation or modification
-> - **Authority**: Validates compliance with `SYS-TEMPLATE.md` (the primary standard)
-> - **Scope**: Use for quality gates before committing SYS changes
+**📋 Document Role**: This is the **POST-CREATION VALIDATOR** for SYS documents.
+ Apply these rules after SYS creation or modification
+ **Authority**: Validates compliance with `SYS-TEMPLATE.md` (the primary standard)
+ **Scope**: Use for quality gates before committing SYS changes
 
 # SYS Validation Rules Reference
 
@@ -74,9 +61,9 @@ python3 ai_dev_flow/scripts/validate_sys.py --path ai_dev_flow/SYS --profile mvp
 python3 ai_dev_flow/scripts/validate_sys.py --path ai_dev_flow/SYS --profile full
 ```
 
----
 
-> Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
+
+Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
 **Version**: 1.0
 **Date**: 2025-11-19

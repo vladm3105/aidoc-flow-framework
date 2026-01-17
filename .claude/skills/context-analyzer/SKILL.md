@@ -70,8 +70,7 @@ Enumerate all documentation artifacts by type and location:
 │   ├── IMPL/
 │   ├── CTR/
 │   ├── SPEC/
-│   ├── TASKS/
-│   └── IPLAN/
+│   └── TASKS/
 └── ai_dev_flow/  (framework templates)
 ```
 
@@ -201,7 +200,6 @@ Calculate current position in SDD workflow:
 | 9 | CTR | IMPL or REQ (optional) |
 | 10 | SPEC | REQ, optional IMPL/CTR |
 | 11 | TASKS | SPEC |
-| 12 | IPLAN | TASKS |
 
 **Position Analysis**:
 ```yaml

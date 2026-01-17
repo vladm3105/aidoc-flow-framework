@@ -13,7 +13,7 @@ custom_fields:
   development_status: active
   skill_category: utility
   upstream_artifacts: [ADR]
-  downstream_artifacts: [TASKS, IPLAN]
+  downstream_artifacts: [TASKS, Code]
 ---
 
 # adr-roadmap

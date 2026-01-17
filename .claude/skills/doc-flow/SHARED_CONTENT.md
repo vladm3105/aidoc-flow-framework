@@ -1,6 +1,6 @@
 # Shared Content for Doc-Flow Skills
 
-This document contains standards and guidelines shared across all document artifact skills (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-iplan).
+This document contains standards and guidelines shared across all document artifact skills (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks).
 
 **Import Reference**: All artifact-specific skills MUST reference this document for ID standards, traceability format, cumulative tagging hierarchy, and quality gates.
 
@@ -35,8 +35,6 @@ This document contains standards and guidelines shared across all document artif
 - CTR: `CTR/CTR-NNN_{slug}.md` + `CTR-NNN_{slug}.yaml` or `CTR-NNN-YY_{slug}.{md,yaml}` (API Contracts - dual-file format) - **Location: docs/CTR/**
 - SPEC: `SPEC/SPEC-NNN_{slug}.yaml` or `SPEC-NNN-YY_{slug}.yaml` (Technical Specifications) - **Location: docs/SPEC/**
 - TASKS: `TASKS/TASKS-NNN_{slug}.md` or `TASKS-NNN-YY_{slug}.md` (Code Generation Plans) - **Location: docs/TASKS/**
-- IPLAN: `IPLAN/IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md` (Implementation Plans - session-based) - **Location: docs/IPLAN/**
-- ICON: `ICON/ICON-NNN_{slug}.md` (Implementation Contracts) - **Location: docs/ICON/**
 
 ### ID Format Rules
 
@@ -125,7 +123,7 @@ Every document must include a `## Traceability` section (typically Section 7):
 
 Each artifact layer must include traceability tags from ALL upstream artifact layers, creating a complete audit trail from business requirements through production code.
 
-### Cumulative Tagging Table (16 Layers)
+### Cumulative Tagging Table (15 Layers)
 
 | Layer | Artifact Type | Required Tags | Tag Count | Format | Notes |
 |-------|---------------|---------------|-----------|--------|-------|
@@ -141,15 +139,14 @@ Each artifact layer must include traceability tags from ALL upstream artifact la
 | 9 | **CTR** | `@brd` through `@impl` | 8 | Markdown + YAML | Optional layer |
 | 10 | **SPEC** | `@brd` through `@req` + optional | 7-9 | YAML (`cumulative_tags`) | YAML cumulative_tags section |
 | 11 | **TASKS** | `@brd` through `@spec` | 8-10 | Markdown | Cumulative: BRD through SPEC |
-| 12 | **IPLAN** | `@brd` through `@tasks` | 9-11 | Markdown | Implementation session plans (Format: IPLAN-NNN_{slug}_YYYYMMDD_HHMMSS.md, Tag: @iplan: IPLAN-001 - ID only) |
-| 13 | **Code** | `@brd` through `@tasks` | 9-11 | Docstrings | Python/source code |
-| 14 | **Tests** | `@brd` through `@code` | 10-12 | Docstrings | Test suites |
-| 15 | **Validation** | All upstream | 10-15 | Various | Validation results |
+| 12 | **Code** | `@brd` through `@tasks` | 9-11 | Docstrings | Python/source code |
+| 13 | **Tests** | `@brd` through `@code` | 10-12 | Docstrings | Test suites |
+| 14 | **Validation** | All upstream | 10-14 | Various | Validation results |
 
 ### Optional Layers Impact on Tag Counts
 
-| Development Path | IMPL? | CTR? | SPEC Tags | TASKS Tags | IPLAN Tags |
-|------------------|-------|------|-----------|------------|------------|
+| Development Path | IMPL? | CTR? | SPEC Tags | TASKS Tags | Code Tags |
+|------------------|-------|------|-----------|------------|-----------|
 | Direct path | No | No | 7 | 8 | 9 |
 | With IMPL only | Yes | No | 8 | 9 | 10 |
 | With CTR only | No | Yes | 8 | 9 | 10 |
@@ -166,7 +163,7 @@ Each artifact layer must include traceability tags from ALL upstream artifact la
 **Examples**:
 - **Layer 2 (PRD)**: 1 upstream tag (@brd)
 - **Layer 7 (REQ)**: 6 upstream tags (@brd, @prd, @ears, @bdd, @adr, @sys)
-- **Layer 12 (IPLAN)**: 9-11 upstream tags (varies with optional IMPL, CTR)
+- **Layer 12 (Code)**: 9-11 upstream tags (varies with optional IMPL, CTR)
 
 **Validation Method**:
 1. Count `@artifact:` lines in Traceability section
@@ -187,8 +184,6 @@ Each artifact layer must include traceability tags from ALL upstream artifact la
 @ctr: CTR-005  # Optional - include only if exists
 @spec: SPEC-018
 @tasks: TASKS.15.29.01
-@iplan: IPLAN-001  # Use ID only (IPLAN-NNN), NOT full filename with timestamp
-@icon: TASKS-001:ContractName  # Implementation Contract (optional, Layer 11)
 ```
 
 ### Feature-Level Traceability Tags
@@ -269,7 +264,7 @@ Before creating ANY artifact, consult:
 2. **Validation Rules**: `ai_dev_flow/{TYPE}/{TYPE}_VALIDATION_RULES.md` - Quality validation requirements
 3. **Template**: `ai_dev_flow/{TYPE}/{TYPE}-TEMPLATE.{ext}` - Starting structure
 
-**Available for artifact types**: BRD, PRD, EARS, BDD, ADR, SYS, REQ, SPEC, IMPL, CTR, TASKS, IPLAN, ICON
+**Available for artifact types**: BRD, PRD, EARS, BDD, ADR, SYS, REQ, SPEC, IMPL, CTR, TASKS
 
 **Note**: All artifact types have creation/validation rules files in their respective `ai_dev_flow/{TYPE}/` directories. Consult `{TYPE}_CREATION_RULES.md` and `{TYPE}_VALIDATION_RULES.md` for authoritative guidance.
 
@@ -281,8 +276,6 @@ Before creating ANY artifact, consult:
 - CTR: `./ai_dev_flow/scripts/validate_ctr.sh` ✓
 - IMPL: `./ai_dev_flow/scripts/validate_impl.sh` ✓
 - TASKS: `./ai_dev_flow/scripts/validate_tasks.sh` ✓
-- IPLAN: `./ai_dev_flow/scripts/validate_iplan.sh` ✓
-- ICON: `./ai_dev_flow/scripts/validate_icon.sh` ✓
 
 **Under Development**:
 - PRD: `./ai_dev_flow/scripts/validate_prd.sh` (planned)
@@ -395,7 +388,6 @@ When creating a downstream artifact, you MUST update the upstream document's tra
 | REQ | SYS (and upstream) | `Downstream Artifacts: REQ-NNN` |
 | SPEC | REQ (and upstream) | `Downstream Artifacts: SPEC-NNN` |
 | TASKS | SPEC (and upstream) | `Downstream Artifacts: TASKS-NNN` |
-| IPLAN | TASKS (and upstream) | `Downstream Artifacts: IPLAN-NNN` |
 
 **Practical Guidance**:
 

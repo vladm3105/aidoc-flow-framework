@@ -13,7 +13,7 @@ custom_fields:
   development_status: active
   skill_category: core-workflow
   upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC]
-  downstream_artifacts: [IPLAN]
+  downstream_artifacts: [Code]
 ---
 
 # doc-tasks
@@ -26,7 +26,7 @@ Create **Task Breakdown (TASKS)** - Layer 11 artifact in the SDD workflow that d
 
 **Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), IMPL (Layer 8), CTR (Layer 9), SPEC (Layer 10)
 
-**Downstream Artifacts**: IPLAN (Layer 12), Code (Layer 13)
+**Downstream Artifacts**: Code (Layer 12)
 
 ## Prerequisites
 
@@ -299,7 +299,7 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NN      | ADR, SPEC, CTR, IPLAN, ICON            | Technical artifacts - references to files/documents                 |
+| Dash     | TYPE-NN      | ADR, SPEC, CTR            | Technical artifacts - references to files/documents                 |
 | Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
@@ -383,8 +383,8 @@ Examples:
 - **SPEC** (Layer 10) - Technical specifications (PRIMARY SOURCE)
 
 **Downstream Artifacts**:
-- **IPLAN** (Layer 12) - Implementation plans (created in `docs/IPLAN/`)
-- **Code** (Layer 13) - Implementation
+- **Code** (Layer 12) - Implementation code (created in `src/`)
+- **Tests** (Layer 13) - Test suites
 
 **Same-Type Document Relationships** (conditional):
 - `@related-tasks: TASKS-NN` - TASKS sharing implementation context
@@ -608,15 +608,10 @@ python ai_dev_flow/scripts/validate_cross_document.py --layer TASKS --auto-fix
 
 ## Next Skill
 
-After creating TASKS, use:
-
-**`doc-iplan`** - Create Implementation Plans (Layer 12)
-
-The IPLAN will:
-- Reference TASKS as upstream source
-- Include all 9-11 upstream tags
-- Convert tasks to bash command sequences
-- Provide session-based execution plan
+After completing TASKS, proceed to implementation:
+- **Code** (Layer 12) - Write implementation code
+- **Tests** (Layer 13) - Create test suites
+- **Validation** (Layer 14) - Run validation checks
 
 ## Reference Documents
 
@@ -672,4 +667,4 @@ For supplementary documentation needs, create:
 - Effort Summary
 - Implementation Contracts (Section 8 - MANDATORY)
 
-**Next**: doc-iplan
+**Next**: Implementation (Code → Tests → Validation)

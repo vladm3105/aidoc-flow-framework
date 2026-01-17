@@ -15,7 +15,7 @@ custom_fields:
   development_status: active
   skill_category: core-workflow
   upstream_artifacts: []
-  downstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, ICON, REF]
+  downstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, REF]
 ---
 
 # doc-flow (Orchestrator)
@@ -25,11 +25,11 @@ custom_fields:
 This skill serves as the **orchestrator** for the AI-Driven Specification-Driven Development (SDD) workflow. It provides:
 
 1. **Skill Selection Guidance**: Helps determine which artifact-specific skill to use
-2. **Workflow Overview**: Complete 16-layer SDD architecture
+2. **Workflow Overview**: Complete 15-layer SDD architecture
 3. **General SDD Principles**: Specification-driven methodology fundamentals
 4. **Integration Guidance**: How skills work together
 
-**For Artifact Creation**: Use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-iplan, doc-ref, doc-naming).
+**For Artifact Creation**: Use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-ref, doc-naming).
 
 **Authoritative Reference**: [ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
@@ -63,8 +63,7 @@ Answer these questions to find the right skill:
 - **Have REQ/CTR, need technical specifications** → Use `doc-spec` skill
 - **Have SPEC, need task breakdown** → Use `doc-tasks` skill
 - **Have TASKS, need implementation contracts** → Add Section 8 to TASKS (see `doc-tasks` skill)
-- **Have TASKS, need execution plan** → Use `doc-iplan` skill
-- **Have IPLAN, ready to code** → Implement code per IPLAN
+- **Have TASKS, ready to code** → Implement code per TASKS
 - **Need supplementary documentation (overview, glossary, guides)** → Use `doc-ref` skill
 
 **Q2: What are you trying to do?**
@@ -81,13 +80,12 @@ Answer these questions to find the right skill:
 - **Write technical specifications** → `doc-spec`
 - **Break down into AI tasks** → `doc-tasks`
 - **Define implementation contracts for parallel dev** → Add Section 8 to TASKS (see `doc-tasks` skill)
-- **Create session execution plan** → `doc-iplan`
 - **Create supplementary documentation (project overview, glossary, guides)** → `doc-ref`
 - **General guidance or unsure** → Stay with `doc-flow` (this skill)
 
 ---
 
-## Complete SDD Workflow (16 Layers)
+## Complete SDD Workflow (15 Layers)
 
 **Authoritative Reference**: [ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
@@ -118,13 +116,11 @@ SPEC (Layer 10) → doc-spec skill
   ↓
 TASKS (Layer 11) → doc-tasks skill
   ↓
-IPLAN (Layer 12) → doc-iplan skill
+Code (Layer 12)
   ↓
-Code (Layer 13)
+Tests (Layer 13)
   ↓
-Tests (Layer 14)
-  ↓
-Validation (Layer 15)
+Validation (Layer 14)
 ```
 
 ### Layer Descriptions
@@ -144,10 +140,9 @@ Validation (Layer 15)
 | 10 | **SPEC** | Technical specifications (HOW) | `doc-spec` |
 | 11 | **TASKS** | Task breakdown for implementation | `doc-tasks` |
 | 11+ | **ICON** | Implementation Contracts (Section 8 of TASKS) | `doc-tasks` |
-| 12 | **IPLAN** | Session execution plans | `doc-iplan` |
-| 13 | **Code** | Python implementation | Implementation |
-| 14 | **Tests** | Test suites | Implementation |
-| 15 | **Validation** | BDD + contract + traceability | Validation |
+| 12 | **Code** | Python implementation | Implementation |
+| 13 | **Tests** | Test suites | Implementation |
+| 14 | **Validation** | BDD + contract + traceability | Validation |
 
 ### Optional Layers Decision Logic
 
@@ -238,7 +233,6 @@ strategy/ (WHAT - Product Owner Voice)
 - `docs/IMPL/` - Implementation Plans (Project Management: WHO/WHEN)
 - `docs/SPEC/` - YAML technical specifications
 - `docs/TASKS/` - Code Generation Plans (AI-structured implementation tasks)
-- `docs/IPLAN/` - Implementation Plans (session-based execution with bash commands)
 
 **Note**: BRD, PRD, ADR use section-based nested folders by default. Other types use flat structure.
 
@@ -248,8 +242,8 @@ strategy/ (WHAT - Product Owner Voice)
 **Development Standard and Templates**: The single source of truth for SDD workflow
 
 - **Status**: Authoritative development standard for this project
-- **Contents**: Complete SDD workflow (BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → IPLAN → Code)
-- **Templates**: `{TYPE}-TEMPLATE.{ext}` for each artifact type (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, IPLAN, REF)
+- **Contents**: Complete SDD workflow (BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code)
+- **Templates**: `{TYPE}-TEMPLATE.{ext}` for each artifact type (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, REF)
 - **Indices**: `{TYPE}-00_index.{ext}` listing all documents of each type
 - **READMEs**: Detailed usage guides and best practices for each artifact type
 - **Standards**: ID naming, traceability format, cross-referencing rules
@@ -380,9 +374,8 @@ If a required upstream artifact is missing, the downstream functionality **MUST 
 10. doc-ctr        → Create CTR (if interface)
 11. doc-spec       → Create SPEC
 12. doc-tasks      → Create TASKS
-13. doc-iplan      → Create IPLAN
-14. Implementation → Execute based on IPLAN
-15. trace-check    → Validate traceability
+13. Implementation → Execute based on TASKS
+14. trace-check    → Validate traceability
 ```
 
 ---
@@ -402,7 +395,7 @@ This document contains:
 6. Documentation Standards
 7. Document Control Section Requirements
 
-**All artifact skills (doc-brd through doc-iplan, plus doc-ref, doc-naming) import these shared standards.**
+**All artifact skills (doc-brd through doc-tasks, plus doc-ref, doc-naming) import these shared standards.**
 
 ### Diagram Standards (Global Requirement)
 
@@ -484,7 +477,6 @@ LOOP:
 | 9 | CTR | @brd through @req (+ optional @impl) | 7-8 |
 | 10 | SPEC | @brd through @req (+ optional @impl, @ctr) | 7-9 |
 | 11 | TASKS | @brd through @spec (+ optional @impl, @ctr) | 8-10 |
-| 12 | IPLAN | @brd through @tasks (+ optional @impl, @ctr) | 9-11 |
 
 ### Auto-Fix Actions (No Confirmation Required)
 
@@ -522,7 +514,7 @@ LOOP:
 
 **Primary References - Authoritative Development Standard:**
 
-- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 16-layer workflow
+- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 15-layer workflow
 - **Workflow Diagram**: [index.md]({project_root}/ai_dev_flow/index.md#traceability-flow) - Complete Mermaid diagram
 - **ID Standards**: [ID_NAMING_STANDARDS.md]({project_root}/ai_dev_flow/ID_NAMING_STANDARDS.md) - File naming, ID format rules
 - **Traceability**: [TRACEABILITY.md]({project_root}/ai_dev_flow/TRACEABILITY.md) - Cross-reference format, link standards
@@ -545,9 +537,7 @@ LOOP:
 - **IMPL** (`IMPL/`): `IMPL-TEMPLATE.md`
 - **CTR** (`CTR/`): `CTR-TEMPLATE.md` + `CTR-TEMPLATE.yaml` (dual-file)
 - **SPEC** (`10_SPEC/`): `SPEC-TEMPLATE.yaml`
-- **TASKS** (`TASKS/`): `TASKS-TEMPLATE.md` (includes Section 8 for ICON)
-- **ICON** (`ICON/`): `ICON-TEMPLATE.md` (Implementation Contracts)
-- **IPLAN** (`IPLAN/`): `IPLAN-TEMPLATE.md`
+- **TASKS** (`TASKS/`): `TASKS-TEMPLATE.md` (includes Section 8 for Implementation Contracts)
 - **REF** (root): `REF-TEMPLATE.md` (Reference Documents)
 
 **Each artifact type directory also contains:**
@@ -576,8 +566,7 @@ LOOP:
 | REQ/IMPL (interface) | API contracts | `doc-ctr` |
 | REQ/CTR | Technical specs | `doc-spec` |
 | SPEC | Task breakdown | `doc-tasks` |
-| TASKS | Execution plan | `doc-iplan` |
-| IPLAN | Code | Implement! |
+| TASKS | Code | Implement! |
 | Any stage | Supplementary documentation | `doc-ref` |
 
 ### Development ROI
@@ -613,7 +602,7 @@ Based on your current progress, I'll recommend the appropriate skill to use next
 
 ---
 
-**For detailed artifact creation guidance, use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-iplan, doc-ref, doc-naming).**
+**For detailed artifact creation guidance, use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-ref, doc-naming).**
 
 ---
 
@@ -621,6 +610,7 @@ Based on your current progress, I'll recommend the appropriate skill to use next
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.2 | 2025-12-29 | Fixed workflow sequence; Added doc-naming and doc-validator to Integration section; Updated layer count to 16 |
-| 1.1 | 2025-11-30 | Added IPLAN layer, REF documents, ICON section |
+| 1.3 | 2026-01-17 | Updated to 15-layer architecture (Layers 0-14) |
+| 1.2 | 2025-12-29 | Fixed workflow sequence; Added doc-naming and doc-validator to Integration section |
+| 1.1 | 2025-11-30 | Added REF documents, ICON section |
 | 1.0 | 2025-11-01 | Initial skill creation |

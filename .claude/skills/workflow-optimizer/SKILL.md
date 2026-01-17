@@ -166,13 +166,7 @@ workflow_layers:
     type: TASKS
     name: Implementation Tasks
     prerequisite: SPEC
-    description: "Code generation task lists"
-
-  layer_12:
-    type: IPLAN
-    name: Execution Plans
-    prerequisite: TASKS
-    description: "Session-based execution plans"
+    description: "Code generation task lists - flows to Code layer"
 ```
 
 **Position Calculation**:
@@ -180,7 +174,7 @@ workflow_layers:
 workflow_position:
   completed_layers: [1, 2]  # BRD, PRD done
   in_progress_layers: [3]   # EARS in progress
-  blocked_layers: [4, 5, 6, 7, 10, 11, 12]  # Waiting on prerequisites
+  blocked_layers: [4, 5, 6, 7, 10, 11]  # Waiting on prerequisites
   ready_layers: [3]         # Can start now
   optional_ready: [8, 9]    # Optional, prereqs met
 
@@ -189,7 +183,7 @@ workflow_position:
     type: EARS
     status: in_progress
 
-  progress_percentage: 17%  # 2 of 12 layers complete
+  progress_percentage: 18%  # 2 of 11 layers complete
 ```
 
 ### Step 3: Identify Required Next Steps
@@ -408,12 +402,12 @@ project_status:
     - Layer 3 (EARS): 0 documents, target 5
 
   blocked:
-    - Layers 4-12: Waiting on upstream completion
+    - Layers 4-11: Waiting on upstream completion
 
-  progress: 17%
+  progress: 18%
 
   critical_path:
-    EARS → BDD → ADR → SYS → REQ → SPEC → TASKS → IPLAN
+    EARS → BDD → ADR → SYS → REQ → SPEC → TASKS
 
   recommended_focus:
     "Complete EARS layer to unblock BDD and ADR"

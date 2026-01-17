@@ -50,7 +50,6 @@ This skill covers all 12 SDD document types:
 | 9 | CTR | Data Contracts |
 | 10 | SPEC | Technical Specifications |
 | 11 | TASKS | AI Task Breakdown |
-| 12 | IPLAN | Implementation Plans |
 
 ---
 
@@ -205,7 +204,6 @@ All 31 element type codes with document type applicability:
 | 16 | Interface | SPEC, CTR |
 | 17 | Data Model | SPEC, CTR |
 | 18 | Task | TASKS |
-| 19 | Command | IPLAN |
 | 20 | Contract Clause | CTR |
 | 21 | Validation Rule | SPEC |
 | 22 | Feature Item | BRD, PRD |
@@ -217,7 +215,6 @@ All 31 element type codes with document type applicability:
 | 28 | Specification Element | SPEC |
 | 29 | Implementation Phase | IMPL |
 | 30 | Task Item | TASKS |
-| 31 | Plan Step | IPLAN |
 
 ### Quick Lookup by Document Type
 
@@ -234,7 +231,6 @@ All 31 element type codes with document type applicability:
 | CTR | 16, 17, 20 |
 | SPEC | 15, 16, 17, 21, 28 |
 | TASKS | 18, 30 |
-| IPLAN | 19, 31 |
 
 ---
 
@@ -265,8 +261,6 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 | `DEC-XXX` | `TYPE.NN.10.SS` | ADR |
 | `ALT-XXX` | `TYPE.NN.12.SS` | ADR |
 | `CON-XXX` | `TYPE.NN.13.SS` | ADR |
-| `CMD-XXX` | `TYPE.NN.19.SS` | IPLAN |
-| `STEP-XXX` | `TYPE.NN.31.SS` | IPLAN |
 
 ### Migration Examples
 
@@ -279,7 +273,6 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 | `### Phase-01: Init` | `### IMPL.02.29.01: Init` |
 | `### DEC-01: Use PostgreSQL` | `### ADR.05.10.01: Use PostgreSQL` |
 | `### ALT-01: MongoDB Option` | `### ADR.05.12.01: MongoDB Option` |
-| `### CMD-01: Install deps` | `### IPLAN.01.19.01: Install deps` |
 
 ---
 
@@ -400,13 +393,6 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 ### IMPL.02.29.02: Integration Phase
 ```
 
-### IPLAN Examples
-
-```markdown
-### IPLAN.01.19.01: Initialize Repository
-### IPLAN.01.31.01: Deploy to Staging
-```
-
 ---
 
 ## 9. Pre-Flight Checklist
@@ -425,7 +411,7 @@ Run this checklist BEFORE creating any SDD document:
 - [ ] All element IDs use 4-segment dot notation: `TYPE.NN.TT.SS`
 - [ ] Element type code (TT) is valid for this document type (see Section 5)
 - [ ] Sequential numbers (SS) are unique within the document
-- [ ] No legacy patterns (AC-XXX, FR-XXX, DEC-XXX, CMD-XXX, etc.) are used
+- [ ] No legacy patterns (AC-XXX, FR-XXX, DEC-XXX, etc.) are used
 
 ### Threshold Tags
 
@@ -451,7 +437,7 @@ Use grep to find legacy patterns:
 # Find all legacy patterns in a file
 grep -E "(AC|FR|BC|BA|QA|BO|RISK|METRIC)-[0-9]+" file.md
 grep -E "(Event|State|TASK|Phase|IP|IF|DM|CC)-[0-9]+" file.md
-grep -E "(DEC|ALT|CON|CMD|STEP)-[0-9]+" file.md
+grep -E "(DEC|ALT|CON)-[0-9]+" file.md
 grep -E "Feature F-[0-9]+" file.md
 grep -E "T-[0-9]+" file.md
 ```
@@ -464,26 +450,23 @@ grep -E "T-[0-9]+" file.md
 2. **Look up the element type code** from Section 5
    - Example: `AC-XXX` → Acceptance Criteria → Code 06
    - Example: `DEC-XXX` → Decision → Code 10
-   - Example: `CMD-XXX` → Command → Code 19
 
 3. **Construct the unified ID**
    - Pattern: `{DOC_TYPE}.{DOC_NUM}.{ELEM_TYPE}.{SEQ}`
    - Example: `AC-001` in BRD-02 → `BRD.02.06.01`
    - Example: `DEC-01` in ADR-05 → `ADR.05.10.01`
-   - Example: `CMD-01` in IPLAN-01 → `IPLAN.01.19.01`
 
 4. **Replace all occurrences**
    ```bash
    # Example sed replacement
    sed -i 's/### AC-001:/### BRD.02.06.01:/g' file.md
    sed -i 's/### DEC-01:/### ADR.05.10.01:/g' file.md
-   sed -i 's/### CMD-01:/### IPLAN.01.19.01:/g' file.md
    ```
 
 5. **Validate the result**
    ```bash
    # Verify no legacy patterns remain
-   grep -E "(AC|FR|BC|BA|DEC|ALT|CON|CMD|STEP)-[0-9]+" file.md
+   grep -E "(AC|FR|BC|BA|DEC|ALT|CON)-[0-9]+" file.md
    ```
 
 ### Common Migration Errors
@@ -494,7 +477,6 @@ grep -E "T-[0-9]+" file.md
 | Missing document number | `BRD..06.01` | Include document number: `BRD.02.06.01` |
 | Dash instead of dot | `BRD-02-06-01` | Use dots: `BRD.02.06.01` |
 | Lowercase type | `brd.02.06.01` | Uppercase: `BRD.02.06.01` |
-| Wrong IPLAN code | Using 15 (Step) for Plan Step | Use code 31 for Plan Step |
 
 ---
 
@@ -524,7 +506,6 @@ Each document type has validation rules with Element ID compliance checks:
 | CTR | `ai_dev_flow/CTR/CTR_VALIDATION_RULES.md` |
 | SPEC | `ai_dev_flow/SPEC/SPEC_VALIDATION_RULES.md` |
 | TASKS | `ai_dev_flow/TASKS/TASKS_VALIDATION_RULES.md` |
-| IPLAN | `ai_dev_flow/IPLAN/IPLAN_VALIDATION_RULES.md` |
 
 ### Related Skills
 
@@ -545,5 +526,6 @@ See: `ai_dev_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.1.0 | 2025-12-29 | Added Reserved ID Exemption, REF document pattern, ADR/IPLAN removed patterns, fixed element type codes for BRD |
+| 1.2.0 | 2026-01-17 | Updated to 11 active artifact types; Removed legacy element codes 19, 31 |
+| 1.1.0 | 2025-12-29 | Added Reserved ID Exemption, REF document pattern, ADR removed patterns, fixed element type codes for BRD |
 | 1.0.0 | 2025-12-19 | Initial release with all 31 element codes and 18 removed patterns |
