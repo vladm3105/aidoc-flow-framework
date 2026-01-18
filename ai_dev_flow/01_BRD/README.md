@@ -511,8 +511,8 @@ Note: `BRD-MVP-TEMPLATE.md` is the reference template. For sectioned docs, use `
 These demonstrate well-structured BRDs following these conventions with proper Architecture Decision Requirements sections.
 ## File Size Limits
 
-- Target: 300–500 lines per file
-- Maximum: 600 lines per file (absolute)
+- **Target**: 800 lines per file
+- **Maximum**: 1200 lines per file (absolute)
 - If a file approaches/exceeds limits, split into section files using `BRD-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
 
 ## Document Splitting Standard

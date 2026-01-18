@@ -35,10 +35,9 @@ Purpose
   - `05_ADR/` - Architecture Decision Records
   - `06_SYS/` - System Requirements
   - `07_REQ/` - Requirements
-  - `08_IMPL/` - Implementation Plans
-  - `09_CTR/` - API Contracts (CTR)
-  - `10_SPEC/` - Technical Specifications (YAML)
-  - `11_TASKS/` - AI Task Lists
+  - `08_CTR/` - API Contracts (CTR)
+  - `09_SPEC/` - Technical Specifications (YAML)
+  - `10_TASKS/` - AI Task Lists
   - `REF/` - Reference Documents (supplementary, non-workflow documentation)
 
 
@@ -113,7 +112,7 @@ The SDD framework uses **two distinct notations** that serve different purposes.
 | Notation | Document Types | Rationale |
 |----------|---------------|-----------|
 | **Dash** (Document-level) | ADR, SPEC, CTR | Referenced as complete units |
-| **Dot** (Element-level) | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Contain multiple numbered elements |
+| **Dot** (Element-level) | BRD, PRD, EARS, BDD, SYS, REQ, TASKS | Contain multiple numbered elements |
 
 ### Common Mistakes to Avoid
 
@@ -126,7 +125,7 @@ The SDD framework uses **two distinct notations** that serve different purposes.
 ---
 
 Scope & Authority
-- Applies to: PRD, SYS, REQ, ADR, BDD, SPEC, EARS, CTR, IMPL, AI-TASKS in this example.
+- Applies to: PRD, SYS, REQ, ADR, BDD, SPEC, EARS, CTR, AI-TASKS in this example.
 - One document per file.
 - Filenames use sequential numeric prefixes for ordering; the full document IDs live in the H1 headings and tags.
 - Categories are expressed by folder paths (e.g., `07_REQ/api/av`, `07_REQ/risk/lim`).
@@ -347,11 +346,7 @@ Document ID Standards (ai_dev_flow)
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - YAML `contract_id:` uses lowercase_snake_case (e.g., `contract_id: position_risk_validation`)
   - Notes: Both .md and .yaml must exist for each CTR-DOC_NUM; slugs must match exactly. Use Section Files when contract documentation exceeds 50KB.
-- Implementation Plans (IMPL)
-  - H1 ID: `IMPL-DOC_NUM` (e.g., `# IMPL-01: resource management System Implementation`)
-  - Filename: `08_IMPL/IMPL-DOC_NUM_{slug}.md` (e.g., `08_IMPL/IMPL-01_risk_management_system.md`)
-  - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
-  - Notes: Project management documents (WHO/WHEN), not technical specifications (HOW). Lists deliverables: CTR, SPEC, TASKS to be created. Use Section Files when document exceeds 50KB.
+
 - AI Tasks (TASKS)
   - H1 ID: `TASKS-DOC_NUM` (e.g., `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
   - Filename: `11_TASKS/TASKS-DOC_NUM_{slug}.md` with a tasks index at `11_TASKS/TASKS-00_index.md`.
@@ -416,7 +411,7 @@ PRD, SYS, and EARS Document Types
   - Notes: Use Section Files (`EARS-DOC_NUM.S_{slug}.md`) when document exceeds 50KB.
 
 File Organization Rules
-- One document per file (PRD, SYS, REQ, ADR, SPEC, BDD, EARS, CTR, IMPL, AI-TASKS, BRD).
+- One document per file (PRD, SYS, REQ, ADR, SPEC, BDD, EARS, CTR, AI-TASKS, BRD).
 - **Exception**: CTR (API Contracts) requires dual files: .md + .yaml per contract.
 - Filenames use variable-length `DOC_NUM` numbering (2+ digits); H1 contains the full ID where applicable.
 - For large documents (>50KB), use Section Files: `TYPE-DOC_NUM.S_{slug}.md`
@@ -434,7 +429,7 @@ File Organization Rules
     - `04_BDD/BDD-DOC_NUM_{suite}/BDD-DOC_NUM.SECTION_{slug}.feature`
     - `10_SPEC/{type}/SPEC-DOC_NUM_{slug}.yaml`
     - `09_CTR/CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml` (optional subdirs: `09_CTR/{agents,mcp,infra}/`)
-    - `08_IMPL/IMPL-DOC_NUM_{slug}.md`
+    - `IMPL-DOC_NUM_{slug}.md`
     - `11_TASKS/TASKS-DOC_NUM_{slug}.md`
     - `06_SYS/SYS-DOC_NUM_{slug}.md`
     - `03_EARS/EARS-DOC_NUM_{slug}.md`
@@ -887,7 +882,6 @@ Each document type has dedicated section templates providing type-specific metad
 | ADR | 5 | `05_ADR/ADR-SECTION-0-TEMPLATE.md` | `05_ADR/ADR-SECTION-TEMPLATE.md` |
 | SYS | 6 | `06_SYS/SYS-SECTION-0-TEMPLATE.md` | `06_SYS/SYS-SECTION-TEMPLATE.md` |
 | REQ | 7 | `07_REQ/REQ-SECTION-0-TEMPLATE.md` | `07_REQ/REQ-SECTION-TEMPLATE.md` |
-| IMPL | 8 | `08_IMPL/IMPL-SECTION-0-TEMPLATE.md` | `08_IMPL/IMPL-SECTION-TEMPLATE.md` |
 | CTR | 9 | `09_CTR/CTR-SECTION-0-TEMPLATE.md` | `09_CTR/CTR-SECTION-TEMPLATE.md` |
 | SPEC | 10 | `10_SPEC/SPEC-SECTION-0-TEMPLATE.md` | `10_SPEC/SPEC-SECTION-TEMPLATE.md` |
 
@@ -925,14 +919,14 @@ Cross-Reference Link Format (MANDATORY)
     - `[BRD-DOC_NUM](../01_BRD/BRD-DOC_NUM_{slug}.md#BRD-DOC_NUM)`
 
 Traceability Requirements
-- REQ: link ADR(s), BDD, CTR (if interface requirement), IMPL (if part of larger implementation), and SPEC via markdown links.
+- REQ: link ADR(s), BDD, CTR (if interface requirement) (if part of larger implementation), and SPEC via markdown links.
 - IMPL: link upstream 07_REQ/ADR (upstream sources), downstream 09_CTR/10_SPEC/TASKS (deliverables).
 - ADR: list addressed REQ(s) via markdown links.
 - CTR: link upstream 07_REQ/ADR (Traceability section), downstream 10_SPEC/Code (Traceability section).
 - BDD: include `@requirement` (mandatory) and `@adr` (when applicable).
 - SPEC: include `requirements_source` (07_REQ/EARS), `architecture` (ADR), `contract_ref` (CTR if applicable), `impl_plan` (IMPL if part of phased implementation), `verification` (BDD); all as markdown links.
 - TASKS: include `@spec` (mandatory - which SPEC being implemented), `@impl` (optional - parent implementation plan if applicable).
-- BRD: link downstream 07_REQ/08_IMPL/CTR (if applicable), related BRD sub-documents via markdown links.
+- BRD: link downstream 07_REQ/CTR (if applicable), related BRD sub-documents via markdown links.
 - Code: reference SPEC, CTR (if contract implementation), and TASKS in docstrings or header comments using relative paths.
 
 
@@ -957,7 +951,6 @@ Validation Rules & Aids
   - CTR H1 ID: `^#\sCTR-\d{2,}:.+$`
   - CTR filename: `CTR-\d{2,}_.+\.(md|yaml)$`
   - IMPL H1 ID: `^#\sIMPL-\d{2,}:.+$`
-  - IMPL filename: `IMPL-\d{2,}_.+\.md$`
   - TASKS H1 ID: `^#\sTASKS-\d{2,}:.+$`
   - TASKS filename: `TASKS-\d{2,}_.+\.md$`
   - BRD H1 ID: `^#\sBRD-\d{2,}:.+$`
@@ -994,7 +987,6 @@ Examples (ai_dev_flow) - Atomic Documents (DOC_NUM)
   - CTR: `09_CTR/CTR-01_position_risk_validation.md` + `CTR-01_position_risk_validation.yaml` (H1: `# CTR-01: resource Risk Validation Contract`, YAML: `contract_id: position_risk_validation`)
   - BDD: `04_BDD/BDD-03_risk_limits_requirements/BDD-03.1_risk_limits_requirements.feature`
   - SPEC: `10_SPEC/SPEC-03_resource_limit_service.yaml` (id: `resource_limit_service`)
-  - IMPL: `08_IMPL/IMPL-01_risk_management_system.md` (H1: `# IMPL-01: resource management System Implementation`)
   - TASKS: `11_TASKS/TASKS-03_resource_limit_service.md` (H1: `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
 
 Examples (ai_dev_flow) - Section Files (DOC_NUM.S) - Nested Folder Structure
@@ -1364,7 +1356,7 @@ python3 scripts/validate_all.py . --all
 
 ## Checklist
 
-- H1 titles contain IDs for 02_PRD/06_SYS/03_EARS/07_REQ/05_ADR/09_CTR/08_IMPL/11_TASKS/BRD where applicable (use `TYPE-DOC_NUM` format).
+- H1 titles contain IDs for 02_PRD/06_SYS/03_EARS/07_REQ/05_ADR/09_CTR/11_TASKS/BRD where applicable (use `TYPE-DOC_NUM` format).
 - BDD tags are markdown links with valid relative paths and anchors.
 - Spec files named `SPEC-DOC_NUM_{slug}.yaml`; inside, `id:` is snake_case and used by `@spec` tags; `requirements_source`/`architecture`/`verification` links resolve.
 - All document types follow universal numbering pattern: DOC_NUM = 2+ digits (01-99, 100-999, 1000+).

@@ -185,9 +185,11 @@ docs/08_CTR/{subdomain}/
 
 ### CORPUS-10: File Size Compliance
 
-**Purpose**: Ensure documents don't exceed token limits
+**Purpose**: Ensure documents don't exceed readability limits
 
-**Severity**: Warning at 600 lines, Error at 1200 lines
+**Severity**: Warning at 800 lines, Error at 1200 lines
+
+**Target**: 800 lines per file (optimal for readability and maintenance)
 
 ---
 
@@ -312,7 +314,7 @@ done
 | CORPUS-W001 | Internal count mismatch | CORPUS-03 |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
 | CORPUS-W004 | Index out of sync | CORPUS-04 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 800 lines | CORPUS-10 |
 | CORPUS-W009 | Version format inconsistency | CORPUS-09 |
 | CORPUS-W013 | Breaking change not documented | CORPUS-13 |
 | CORPUS-W014 | Invalid subdomain | CORPUS-14 |

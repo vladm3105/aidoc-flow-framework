@@ -580,8 +580,8 @@ These examples demonstrate well-structured system requirements specifications in
 **Purpose in SDD Workflow**: Ensures SYS quality meets REQ phase requirements, preventing immature system requirements from progressing to atomic requirements decomposition.
 ## File Size Limits
 
-- Target: 300–500 lines per file
-- Maximum: 600 lines per file (absolute)
+- **Target**: 800 lines per file
+- **Maximum**: 1200 lines per file (absolute)
 - If a file approaches/exceeds limits, split into section files using `SYS-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
 
 ## Document Splitting Standard

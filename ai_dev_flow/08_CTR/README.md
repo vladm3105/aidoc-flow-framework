@@ -670,9 +670,9 @@ except ValidationError as e:
 **Next Review**: YYYY-MM-DD (recommend quarterly for active documentation)
 ## File Size Limits
 
-- Target: 300–500 lines per file
-- Maximum (Markdown): 600 lines per file (absolute)
-- YAML Exception (monolithic): Warnings at ~1000 lines, errors at ~2000 lines in linter; splitting is not required unless readability suffers.
+- **Target**: 800 lines per file
+- **Maximum (Markdown)**: 1200 lines (absolute)
+- **YAML Exception (monolithic)**: Warnings at ~1000 lines, errors at ~2000 lines in linter; splitting is not required unless readability suffers.
 - If a contract approaches/exceeds limits, split content logically (e.g., separate endpoints/schemas) and maintain dual-file `.md` + `.yaml` structure (prefer monolithic YAML where logical).
 
 ## Document Splitting Standard

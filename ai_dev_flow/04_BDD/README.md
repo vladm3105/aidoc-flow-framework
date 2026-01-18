@@ -549,8 +549,8 @@ Scenario: Response within time limits
 See `04_BDD/BDD-01_example_suite/BDD-01.1_external_api_integration.feature` for a complete example of a well-structured, section-based BDD feature file that follows these conventions.
 ## File Size Limits
 
-- Target: 300–500 lines per `.feature` file
-- Maximum: 600 lines per file (absolute)
+- **Target**: 800 lines per `.feature` file
+- **Maximum**: 1200 lines per `.feature` file (absolute)
 - If a section approaches/exceeds limits, split into subsections `BDD-NN.SS.mm_{slug}.feature` and add an aggregator `BDD-NN.SS.00_{slug}.feature` if many subsections.
 
 ## Document Splitting Standard

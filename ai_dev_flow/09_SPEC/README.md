@@ -670,6 +670,6 @@ See `09_SPEC/SPEC-01_external_api_client.yaml` for a flat example (small, stable
 
 ## File Size Limits (Warning)
 
-- Target: 300-500 lines per file
-- Maximum (Markdown): 600 lines (warning threshold)
-- YAML (monolithic): Warning at ~1000 lines
+- **Target**: 800 lines per file
+- **Maximum (Markdown)**: 1200 lines (warning threshold)
+- **YAML (monolithic)**: Warning at ~1000 lines

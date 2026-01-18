@@ -631,8 +631,8 @@ See [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) for
 - Session logging and change history (Sections 10-11)
 ## File Size Limits
 
-- Target: 300–500 lines per file
-- Maximum: 600 lines per file (absolute)
+- **Target**: 800 lines per file
+- **Maximum**: 1200 lines per file (absolute)
 - If a file approaches/exceeds limits, split tasks by scope or phase and update the task index.
 
 ## Document Splitting Standard

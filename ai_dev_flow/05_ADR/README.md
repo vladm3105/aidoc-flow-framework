@@ -1100,8 +1100,8 @@ See `{project_root}/docs/05_ADR/ADR-00_technology_stack.md` for a comprehensive 
 - [TRACEABILITY.md](../TRACEABILITY.md): Cross-document traceability standards
 ## File Size Limits
 
-- Target: 300–500 lines per file
-- Maximum: 600 lines per file (absolute)
+- **Target**: 800 lines per file
+- **Maximum (Markdown)**: 1200 lines (absolute)
 - If a file approaches/exceeds limits, split into section files using `ADR-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
 
 ## Document Splitting Standard

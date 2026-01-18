@@ -903,8 +903,8 @@ python scripts/add_requirement_anchors.py --req-file 07_REQ/api/REQ-01.md
 For detailed examples, see the V2 example files in `07_REQ/api/`, `07_REQ/data/`, and `07_REQ/auth/`.
 ## File Size Limits
 
-- Target: 300–500 lines per file
-- Maximum: 600 lines per file (absolute)
+- **Target**: 800 lines per REQ file
+- **Maximum**: 1200 lines (absolute)
 - If a file approaches/exceeds limits, split into section files where appropriate and update indexes or mapping tables.
 
 ## Document Splitting Standard
