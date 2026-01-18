@@ -24,7 +24,7 @@ The Implementation Plan serves as the **central command center** for tracking TA
 **Workflow**: `SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
 
 **Key Functions:**
-- **Implementation Roadmap**: Organize TASKS by phase and priority
+- **Orchestration & Ordering**: Dictates the sequence of task execution by organizing `TASKS` files into phases and priority order.
 - **Workflow Enforcement**: Embed pre/post-execution verification checklists
 - **Status Tracking**: Track progress through YAML-based structured data
 - **Audit Trail**: Maintain session log for continuity and regulatory compliance

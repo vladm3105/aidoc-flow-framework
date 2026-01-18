@@ -71,6 +71,23 @@ custom_fields:
 
 ---
 
+## AI Assistant Execution Protocol
+
+**Objective**: Execute the implementation plan by processing `TASKS` files in the specified order and maintain continuous tracking of progress.
+
+**Protocol**:
+1.  **Parse this document (`IMPLEMENTATION_PLAN.md`)**: Identify the current phase and the highest-priority task (`P0`, then `P1`, etc.) with an `implementation.status` of `NOT_STARTED`.
+2.  **Retrieve Target Task File**: Open the `TASKS-NN.md` file corresponding to the identified task ID.
+3.  **Execute Pre-Checks**: Before implementation, verify all items in the `pre_check.checklist` of the `TASKS-NN.md` file's YAML block. If any check fails, update the task status to `BLOCKED` and report the blocking dependency. Do not proceed.
+4.  **Execute Implementation**: Follow the "Execution Commands" in the `TASKS-NN.md` file to implement the task.
+5.  **Perform Continuous Tracking**: After *any* significant sub-step within the implementation (e.g., completing a major code block, passing a set of tests), update the `implementation.status` (e.g., `IN_PROGRESS`) and record progress in the `session_log` within the `TASKS-NN.md` file. This ensures continuous, granular tracking of completed work.
+6.  **Execute Post-Checks**: After successful completion of implementation, verify all items in the `post_check.checklist` of the `TASKS-NN.md` file's YAML block.
+7.  **Update This Plan**: After a task reaches `COMPLETED` status in its `TASKS-NN.md` file, copy the entire updated `tasks_tracking` YAML block from the `TASKS-NN.md` file and replace the corresponding block in this `IMPLEMENTATION_PLAN.md`.
+8.  **Log Session**: For every update made in step 5, 6 or 7 add a new entry to the "Session Log" in this document detailing the actions taken and any completed work.
+9.  **Loop**: Repeat the process with the next available task.
+
+---
+
 ## 2. Phase Tracker
 
 > **Organization Guidelines**:
