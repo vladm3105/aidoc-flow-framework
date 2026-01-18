@@ -136,6 +136,8 @@ Requirements (REQ) → Project Management (IMPL) → Interface (CTR) → Impleme
 Code Generation (TASKS) → Execution (Code/Tests) → Validation
 ```
 
+**Note**: This repository does not use IPLAN. Layer 12 is Code, followed by Tests and Validation.
+
 ## Standard Traceability section Structure
 
 ### Traceability Flow Visualization

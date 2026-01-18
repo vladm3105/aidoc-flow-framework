@@ -15,8 +15,8 @@ last_updated: "2026-01-16"
 
 references:
   template: "TASKS-TEMPLATE.md"
-  creation_rules: "TASKS_CREATION_RULES.md"
-  validation_rules: "TASKS_VALIDATION_RULES.md"
+  creation_rules: "TASKS_MVP_CREATION_RULES.md"
+  validation_rules: "TASKS_MVP_VALIDATION_RULES.md"
 
 # =============================================================================
 # Profiles (Full vs MVP)
@@ -108,8 +108,8 @@ metadata:
 # =============================================================================
 
 structure:
-  # Required sections (11 sections - v2.0)
-  # Note: v1.x had 12 sections. v2.0 consolidates and includes execution commands.
+  # Required sections (13 elements listed below) - align description with enumerated fields
+  # Note: v2.0 consolidates sections and includes execution commands in Section 4.
   required_sections:
     - pattern: "^# TASKS-\\d{2,}:"
       name: "Title (H1)"
@@ -178,11 +178,13 @@ structure:
     required_fields:
       - TASKS ID
       - Document Name
+      - Status
       - Version
       - Date Created
       - Last Updated
       - Author
-      - Status
+      - Assigned To
+      - Priority
       - Source SPEC
 
     optional_fields:
@@ -193,6 +195,7 @@ structure:
       - Complexity
       - Assigned To
       - Priority
+
 
     status_values:
       - Draft
@@ -209,7 +212,7 @@ structure:
     format: "## N. Section Title"
     subsection_format: "### N.N Subsection Title"
     no_duplicate_numbers: true
-    note: "v2.0 has 11 sections (was 12 in v1.x). Section 4 now contains execution commands."
+    note: "v2.0 uses numbered sections 1-11 plus unnumbered Document Control and Development Plan Tracking. Section 4 contains execution commands."
 
   # File naming convention
   file_naming:

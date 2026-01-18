@@ -16,8 +16,8 @@ last_updated: "2026-01-13"
 
 references:
   template: "IMPL-TEMPLATE.md"
-  creation_rules: "IMPL_CREATION_RULES.md"
-  validation_rules: "IMPL_VALIDATION_RULES.md"
+  creation_rules: "IMPL_MVP_CREATION_RULES.md"
+  validation_rules: "IMPL_MVP_VALIDATION_RULES.md"
 
 # =============================================================================
 # YAML Frontmatter Requirements

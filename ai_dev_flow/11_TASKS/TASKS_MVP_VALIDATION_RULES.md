@@ -10,30 +10,17 @@ custom_fields:
   layer: 11
   priority: shared
   development_status: active
+  schema_version: "2.0"
+  last_updated: "2026-01-15"
 ---
 
 # =============================================================================
 # Document Role: This is a DERIVATIVE of TASKS-TEMPLATE.md
 # - Authority: TASKS-TEMPLATE.md is the single source of truth for TASKS structure
 # - Purpose: AI checklist after document creation (derived from template)
-# - Scope: Includes all rules from TASKS_CREATION_RULES.md plus validation extensions
+# - Scope: Includes all rules from TASKS_MVP_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to TASKS-TEMPLATE.md
 # =============================================================================
----
-title: "TASKS MVP Validation Rules"
-tags:
-  - validation-rules
-  - layer-11-artifact
-  - shared-architecture
-custom_fields:
-  document_type: validation_rules
-  artifact_type: TASKS
-  layer: 11
-  priority: shared
-  development_status: active
-  schema_version: "2.0"
-  last_updated: "2026-01-15"
----
 
 > **Document Role**: This is the **POST-CREATION VALIDATOR** for TASKS documents (v2.0).
 > - Apply these rules after TASKS creation or modification
@@ -65,7 +52,7 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 **Document Types**:
 - Index documents (`TASKS-00_index.md`)
 - Traceability matrix templates (`TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
-- Implementation contracts checklists (`TASKS-00_IMPLEMENTATION_CONTRACTS_CHECKLIST.md`)
+- Implementation contracts checklists (`TASKS-00_IMPLEMENTATION_CONTRACTS_CHECKLIST.md`) **(deprecated reference—file not provided)**
 - Glossaries, registries
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.

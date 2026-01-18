@@ -1,5 +1,5 @@
 ---
-title: "Traceability Matrix Automation Scripts"
+title: "Validation and Traceability Scripts"
 tags:
   - index-document
   - shared-architecture
@@ -8,9 +8,9 @@ custom_fields:
   priority: shared
 ---
 
-# Traceability Matrix Automation Scripts
+# Validation and Traceability Scripts
 
-This directory contains Python scripts for automated generation, validation, and maintenance of traceability matrices for the AI-Driven Specification-Driven Development (SDD) framework.
+This directory contains Python scripts for validation, traceability matrices, and helper tooling for the AI-Driven Specification-Driven Development (SDD) framework.
 
 Note: See README.md → “Using This Repo” for path mapping and validator guidance specific to this repository.
 
@@ -70,6 +70,8 @@ python generate_traceability_matrix.py --type REQ --input ../07_REQ/api/ --outpu
 python generate_traceability_matrix.py --type SPEC --input ../10_SPEC/ --output ../10_SPEC/TRACEABILITY_MATRIX_SPEC.md
 ```
 
+**Note on paths**: Examples use `../0X_TYPE/` relative to this folder. In this repository, artifact folders live under `ai_dev_flow/0X_TYPE/`; adjust paths accordingly when running scripts here (drop any `docs/` prefix seen in older examples).
+
 ---
 
 ### 2. validate_traceability_matrix.py
@@ -80,6 +82,8 @@ Validates traceability matrices against actual documents to ensure consistency a
 ```bash
 python3 validate_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --input ../05_ADR/
 ```
+
+**Note on coverage**: Not invoked by `validate_all.py` (orchestrator). Run manually when matrix validation is required.
 
 **Features:**
 - Validates document counts match actual files
@@ -159,6 +163,8 @@ Validates path references in markdown documentation to identify broken links, mi
 ```bash
 python3 validate_documentation_paths.py [--strict] [--root PATH]
 ```
+
+**Note on coverage**: Not currently invoked by `validate_all.py`; run manually for link/path sweeps.
 
 **Features:**
 - Detects broken markdown links (space characters, invalid syntax)
@@ -386,18 +392,15 @@ Checking internal links...
 
 The following bash scripts validate artifact-specific document structure and compliance:
 
-### 6. validate_brd_template.sh
+### 6. validate_brd.py (replaces legacy validate_brd_template.sh)
 
 Validates Business Requirements Document (BRD) structure and template compliance.
 
 **Usage:**
 ```bash
-# For nested folder structure (DEFAULT)
-./scripts/validate_brd_template.sh docs/01_BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md
-
-# For monolithic files (OPTIONAL for <25KB)
-./scripts/validate_brd_template.sh docs/01_BRD/BRD-01_platform_architecture.md
+python3 validate_brd.py --file ../01_BRD/BRD-01_example.md
 ```
+
 
 ### 7. validate_req_template.sh
 

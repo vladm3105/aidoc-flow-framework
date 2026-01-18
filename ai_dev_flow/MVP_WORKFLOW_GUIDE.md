@@ -22,7 +22,7 @@ custom_fields:
 >
 > See [LAYER_REGISTRY.yaml](./LAYER_REGISTRY.yaml) for `template` field definitions.
 
-Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live under `ai_dev_flow/` without the `docs/` prefix. Use zero-padded paths (e.g., `01_BRD`, `02_PRD`). Run commands from the repo root, e.g., `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/02_PRD`.
+Note: Some examples in this guide show a portable `docs/` root. In this repository, artifact folders live under `ai_dev_flow/` without the `docs/` prefix. Use zero-padded paths (e.g., `01_BRD`, `02_PRD`). Run commands from the repo root, e.g., `python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/02_PRD`. For the automation-focused flow, see `ai_dev_flow/SDD_AUTOMATION_WORKFLOW.md`.
 
 Important MVP note: MVP artifacts are single, flat files. Split only when a document is too large for AI assistants to handle in one file; otherwise ignore `DOCUMENT_SPLITTING_RULES.md` for MVP.
 

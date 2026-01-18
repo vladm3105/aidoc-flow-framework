@@ -1,30 +1,4 @@
 ---
-title: "IMPL-TEMPLATE: Implementation Plan"
-tags:
-  - impl-template
-  - layer-8-artifact
-  - document-template
-  - shared-architecture
-custom_fields:
-  document_type: template
-  artifact_type: IMPL
-  layer: 8
-  template_variant: monolithic
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
----
-
-# =============================================================================
-# 📋 Document Authority: This is the PRIMARY STANDARD for IMPL structure.
-# All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
-# - In case of conflict, this template is the single source of truth
-# - Schema: IMPL_SCHEMA.yaml - Machine-readable validation (derivative)
-# - Creation Rules: IMPL_CREATION_RULES.md - AI guidance for document creation (derivative)
-# - Validation Rules: IMPL_VALIDATION_RULES.md - AI checklist after document creation (derivative)
-#   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
-# =============================================================================
----
 title: "IMPL-TEMPLATE: Implementation Approach Document"
 tags:
   - impl-template
@@ -40,8 +14,18 @@ custom_fields:
   development_status: active
   template_for: implementation-approach-document
   schema_reference: "IMPL_SCHEMA.yaml"
-  schema_version: "1.0"
+  schema_version: "1.1"
 ---
+
+# =============================================================================
+# 📋 Document Authority: This is the PRIMARY STANDARD for IMPL structure.
+# All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
+# - In case of conflict, this template is the single source of truth
+# - Schema: IMPL_SCHEMA.yaml - Machine-readable validation (derivative)
+# - Creation Rules: IMPL_MVP_CREATION_RULES.md - AI guidance for document creation (derivative)
+# - Validation Rules: IMPL_MVP_VALIDATION_RULES.md - AI checklist after document creation (derivative)
+#   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
+# =============================================================================
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for IMPL structure.
 > - **Schema**: `IMPL_SCHEMA.yaml v1.0` - Validation rules

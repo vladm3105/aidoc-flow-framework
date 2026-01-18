@@ -10,6 +10,8 @@ custom_fields:
   layer: 11
   priority: shared
   development_status: active
+  schema_version: "2.0"
+  last_updated: "2026-01-15"
 ---
 
 # =============================================================================
@@ -18,21 +20,6 @@ custom_fields:
 # - Purpose: AI guidance for document creation (derived from template)
 # - On conflict: Defer to TASKS-TEMPLATE.md
 # =============================================================================
----
-title: "TASKS MVP Creation Rules"
-tags:
-  - creation-rules
-  - layer-11-artifact
-  - shared-architecture
-custom_fields:
-  document_type: creation-rules
-  artifact_type: TASKS
-  layer: 11
-  priority: shared
-  development_status: active
-  schema_version: "2.0"
-  last_updated: "2026-01-15"
----
 
 > **Document Role**: This is a **CREATION HELPER** for TASKS-TEMPLATE.md v2.0.
 > - **Authority**: `TASKS-TEMPLATE.md` is the single source of truth for TASKS structure

@@ -1,6 +1,7 @@
 ---
 title: "TASKS-000: TASKS Index"
 tags:
+  - tasks
   - index-document
   - layer-11-artifact
   - shared-architecture

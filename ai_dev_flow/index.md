@@ -52,6 +52,7 @@ This framework provides structured, traceable steps for AI-assisted software dev
 - Instruction Set: Downstream layers (REQ, SPEC, TASKS) translate those decisions into granular, implementation-ready guidance for AI assistants.
 - Governance: The traceability chain from BRD through TASKS documents decisions and checks for consistent implementation.
 - Delivery Loop: Create an MVP, fix defects, promote to production, add features as a new MVP based on the current product, fix defects, and repeat.
+- Automation Flow: See `ai_dev_flow/SDD_AUTOMATION_WORKFLOW.md` for the extended automation playbook complementing `MVP_WORKFLOW_GUIDE.md`.
 
 ## Recent Updates (2025-11-20)
 
