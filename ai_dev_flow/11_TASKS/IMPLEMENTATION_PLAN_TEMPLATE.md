@@ -1,5 +1,5 @@
 ---
-title: "Development Plan & Implementation Tracker Template"
+title: "Implementation Plan Tracker Template"
 tags:
   - tasks-infrastructure
   - layer-11-artifact
@@ -13,7 +13,7 @@ custom_fields:
   last_updated: "2026-01-15"
 ---
 
-# Development Plan & Implementation Tracker
+# Implementation Plan Tracker
 
 > **Template Purpose**: This template provides structured tracking for TASKS (Layer 11) implementation across development phases. It organizes TASKS documents into executable phases with dependencies and status tracking.
 > 

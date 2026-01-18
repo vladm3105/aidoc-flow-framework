@@ -1,5 +1,5 @@
 ---
-title: "TASKS Validation Rules"
+title: "TASKS MVP Validation Rules"
 tags:
   - validation-rules
   - layer-11-artifact
@@ -20,7 +20,7 @@ custom_fields:
 # - On conflict: Defer to TASKS-TEMPLATE.md
 # =============================================================================
 ---
-title: "TASKS Validation Rules"
+title: "TASKS MVP Validation Rules"
 tags:
   - validation-rules
   - layer-11-artifact

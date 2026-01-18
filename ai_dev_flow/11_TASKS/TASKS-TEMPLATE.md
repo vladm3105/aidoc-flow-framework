@@ -31,7 +31,7 @@ custom_fields:
 
 ---
 
-## Document Control
+<h2>Document Control</h2>
 
 | Field | Value |
 |-------|-------|
@@ -48,10 +48,10 @@ custom_fields:
 
 ---
 
-## Development Plan Tracking
+<h2>Development Plan Tracking</h2>
 
 ```yaml
-# Machine-parsable tracking for DEVELOPMENT_PLAN.md integration
+# Machine-parsable tracking for IMPLEMENTATION_PLAN.md integration
 tasks_tracking:
   id: TASKS-NN
   service_name: "[Service/Component Name]"
@@ -83,7 +83,7 @@ tasks_tracking:
 
 ---
 
-## TASKS.NN.18.01: Objective
+<h2>TASKS.NN.18.01: Objective</h2>
 
 [2-3 sentences: What this task accomplishes and its role in the system]
 
@@ -97,20 +97,20 @@ tasks_tracking:
 
 ---
 
-## TASKS.NN.18.02: Scope
+<h2>TASKS.NN.18.02: Scope</h2>
 
-### 2.1 Included
+<h3>2.1 Included</h3>
 
 - [Feature/functionality #1]
 - [Feature/functionality #2]
 - [Integration point #1]
 
-### 2.2 Excluded
+<h3>2.2 Excluded</h3>
 
 - [Out of scope item #1 - future task]
 - [Out of scope item #2 - different component]
 
-### 2.3 Prerequisites
+<h3>2.3 Prerequisites</h3>
 
 - [ ] [Infrastructure requirement]
 - [ ] [Dependency requirement]
@@ -118,9 +118,9 @@ tasks_tracking:
 
 ---
 
-## TASKS.NN.18.03: Implementation Plan
+<h2>TASKS.NN.18.03: Implementation Plan</h2>
 
-### Phase 1: Setup & Foundation
+<h3>Phase 1: Setup & Foundation</h3>
 
 | Step | Action | Success Criteria | Duration |
 |------|--------|------------------|----------|
@@ -128,7 +128,7 @@ tasks_tracking:
 | 1.2 | Create module structure | Files created, imports work | [X min] |
 | 1.3 | Define interfaces/types | Type hints complete, mypy passes | [X min] |
 
-### Phase 2: Core Implementation
+<h3>Phase 2: Core Implementation</h3>
 
 | Step | Action | Success Criteria | Duration |
 |------|--------|------------------|----------|
@@ -136,7 +136,7 @@ tasks_tracking:
 | 2.2 | Add error handling | All error paths covered | [X min] |
 | 2.3 | Implement integrations | External calls functional | [X min] |
 
-### Phase 3: Testing & Validation
+<h3>Phase 3: Testing & Validation</h3>
 
 | Step | Action | Success Criteria | Duration |
 |------|--------|------------------|----------|
@@ -144,7 +144,7 @@ tasks_tracking:
 | 3.2 | Write integration tests | All integrations verified | [X min] |
 | 3.3 | Run BDD scenarios | All scenarios pass | [X min] |
 
-### Phase 4: Completion
+<h3>Phase 4: Completion</h3>
 
 | Step | Action | Success Criteria | Duration |
 |------|--------|------------------|----------|
@@ -154,9 +154,9 @@ tasks_tracking:
 
 ---
 
-## TASKS.NN.18.04: Execution Commands
+<h2>TASKS.NN.18.04: Execution Commands</h2>
 
-### 4.1 Environment Setup
+<h3>4.1 Environment Setup</h3>
 
 ```bash
 # Verify environment
@@ -171,7 +171,7 @@ poetry install
 poetry run python -c "import [package]; print('OK')"
 ```
 
-### 4.2 Implementation Commands
+<h3>4.2 Implementation Commands</h3>
 
 ```bash
 # Create module structure
@@ -188,7 +188,7 @@ poetry run mypy src/[module] --strict
 poetry run pytest tests/unit/[module] -v --tb=short
 ```
 
-### 4.3 Validation Commands
+<h3>4.3 Validation Commands</h3>
 
 ```bash
 # Full test suite
@@ -206,7 +206,7 @@ poetry run mypy src/[module] --strict
 poetry run bandit -r src/[module]
 ```
 
-### 4.4 Verification Checklist
+<h3>4.4 Verification Checklist</h3>
 
 ```bash
 # Run all verification steps
@@ -218,9 +218,9 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## TASKS.NN.18.05: Constraints
+<h2>TASKS.NN.18.05: Constraints</h2>
 
-### 5.1 Technical Constraints
+<h3>5.1 Technical Constraints</h3>
 
 | Category | Constraint |
 |----------|------------|
@@ -229,7 +229,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 | **Database** | PostgreSQL / Redis |
 | **Patterns** | Hexagonal architecture, Repository pattern |
 
-### 5.2 Quality Constraints
+<h3>5.2 Quality Constraints</h3>
 
 | Metric | Target |
 |--------|--------|
@@ -238,7 +238,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 | **Lint Score** | 0 errors (Flake8) |
 | **Complexity** | < 10 cyclomatic per function |
 
-### 5.3 Performance Constraints
+<h3>5.3 Performance Constraints</h3>
 
 | Metric | Target |
 |--------|--------|
@@ -248,23 +248,23 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## TASKS.NN.18.06: Acceptance Criteria
+<h2>TASKS.NN.18.06: Acceptance Criteria</h2>
 
-### 6.1 Functional
+<h3>6.1 Functional</h3>
 
 - [ ] Implements all requirements from REQ-NN
 - [ ] Business logic matches SPEC-NN specification
 - [ ] All integration points functional
 - [ ] Error handling covers all edge cases
 
-### 6.2 Quality
+<h3>6.2 Quality</h3>
 
 - [ ] Unit test coverage ≥ 85%
 - [ ] All BDD scenarios pass
 - [ ] mypy --strict passes with no errors
 - [ ] No high/critical security vulnerabilities
 
-### 6.3 Operational
+<h3>6.3 Operational</h3>
 
 - [ ] Documentation complete (docstrings, README)
 - [ ] Logging implemented with correlation IDs
@@ -273,29 +273,9 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## TASKS.NN.18.07: Implementation Contracts
+<h2>TASKS.NN.18.07: Traceability</h2>
 
-> **Note**: Include this section only if this TASKS provides or consumes contracts for parallel development.
-
-### 7.1 Contracts Provided
-
-| Contract Name | Type | Consumers | File |
-|---------------|------|-----------|------|
-| [InterfaceName] | Protocol | TASKS-XX, TASKS-YY | `src/contracts/[name].py` |
-
-### 7.2 Contracts Consumed
-
-| Source | Contract Name | Type | Usage |
-|--------|---------------|------|-------|
-| TASKS-NN | [ContractName] | Protocol | [How it's used] |
-
-**Reference**: See [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) for contract templates.
-
----
-
-## TASKS.NN.18.08: Traceability
-
-### 8.1 Upstream References
+<h3>8.1 Upstream References</h3>
 
 | Type | ID | Title | Relevant Sections |
 |------|-----|-------|-------------------|
@@ -304,7 +284,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 | ADR | ADR-NN | [Decision title] | Decision, Rationale |
 | BDD | BDD-NN | [Feature file] | Scenarios 1-N |
 
-### 8.2 Traceability Tags
+<h3>8.2 Traceability Tags</h3>
 
 ```markdown
 @spec: SPEC-NN
@@ -317,7 +297,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 @depends-tasks: TASKS-NN
 ```
 
-### 8.3 Code Locations
+<h3>8.3 Code Locations</h3>
 
 | Component | Path | Purpose |
 |-----------|------|---------|
@@ -329,7 +309,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## TASKS.NN.18.09: Risk & Mitigation
+<h2>TASKS.NN.18.08: Risk & Mitigation</h2>
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|------------|
@@ -339,7 +319,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## TASKS.NN.18.10: Session Log
+<h2>TASKS.NN.18.09: Session Log</h2>
 
 | Date | Status | Summary |
 |------|--------|---------|
@@ -348,7 +328,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## TASKS.NN.18.11: Change History
+<h2>TASKS.NN.18.10: Change History</h2>
 
 | Date | Version | Change | Author |
 |------|---------|--------|--------|
@@ -356,7 +336,7 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-## References
+<h2>References</h2>
 
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Workflow guide
 - [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) - Contract patterns

@@ -1,5 +1,5 @@
 ---
-title: "TASKS Creation Rules"
+title: "TASKS MVP Creation Rules"
 tags:
   - creation-rules
   - layer-11-artifact
@@ -19,7 +19,7 @@ custom_fields:
 # - On conflict: Defer to TASKS-TEMPLATE.md
 # =============================================================================
 ---
-title: "TASKS Creation Rules"
+title: "TASKS MVP Creation Rules"
 tags:
   - creation-rules
   - layer-11-artifact
@@ -410,7 +410,7 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 - [ ] Links resolve to existing documents
 - [ ] Update TASKS-00_index.md
 - [ ] Run validation script
-- [ ] Update DEVELOPMENT_PLAN.md with new TASKS entry
+- [ ] Update IMPLEMENTATION_PLAN.md with new TASKS entry
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: "Development Plan README"
+title: "Implementation Plan README"
 tags:
   - tasks-guide
   - layer-11-artifact
@@ -12,14 +12,14 @@ custom_fields:
   development_status: active
 ---
 
-# Development Plan & Implementation Tracker - User Guide
+# Implementation Plan & Tracker - User Guide
 
 **Schema Version**: 2.0
 **Last Updated**: 2026-01-15
 
 ## Purpose
 
-The Development Plan serves as the **central command center** for tracking TASKS (Layer 11) implementation across all development phases. It organizes work into priority-ordered phases with built-in quality gates and workflow enforcement.
+The Implementation Plan serves as the **central command center** for tracking TASKS (Layer 11) implementation across all development phases. It organizes work into priority-ordered phases with built-in quality gates and workflow enforcement.
 
 **Workflow**: `SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
 
@@ -34,11 +34,11 @@ The Development Plan serves as the **central command center** for tracking TASKS
 
 ## Quick Start
 
-### 1. Create Your Development Plan
+### 1. Create Your Implementation Plan
 
 ```bash
 # Copy template to your project
-cp ai_dev_flow/11_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md docs/DEVELOPMENT_PLAN.md
+cp ai_dev_flow/11_TASKS/IMPLEMENTATION_PLAN_TEMPLATE.md docs/IMPLEMENTATION_PLAN.md
 ```
 
 ### 2. Customize Implementation Strategy
@@ -61,7 +61,7 @@ For each phase, add TASKS entries in the YAML blocks following the template stru
 Each TASKS entry uses this structure (matching the YAML block in TASKS-TEMPLATE.md v2.0):
 
 ```yaml
-# Machine-parsable tracking for DEVELOPMENT_PLAN.md integration
+# Machine-parsable tracking for IMPLEMENTATION_PLAN.md integration
 tasks_tracking:
   id: TASKS-NN                        # Unique TASKS identifier
   service_name: "[Service/Component Name]"  # Human-readable description
@@ -94,7 +94,7 @@ tasks_tracking:
         - session_logged: false       # Session log entry added
 ```
 
-> **Note**: This structure is embedded in each TASKS document's "Development Plan Tracking" section. The DEVELOPMENT_PLAN.md aggregates these into phase groups.
+> **Note**: This structure is embedded in each TASKS document's "Implementation Plan Tracking" section. The IMPLEMENTATION_PLAN.md aggregates these into phase groups.
 
 ---
 
@@ -115,7 +115,7 @@ pre_check:
 ```
 
 **How to Mark Complete:**
-1. Open `DEVELOPMENT_PLAN.md`
+1. Open `IMPLEMENTATION_PLAN.md`
 2. Find your TASKS entry in the YAML block
 3. Change each `false` to `true` as you verify
 4. Update `status: NOT_STARTED` to `status: COMPLETED`
@@ -242,7 +242,7 @@ The YAML-based structure enables:
 ```python
 import yaml
 
-with open('DEVELOPMENT_PLAN.md') as f:
+with open('IMPLEMENTATION_PLAN.md') as f:
     content = f.read()
     # Extract YAML blocks
     yaml_blocks = extract_yaml_blocks(content)
@@ -330,7 +330,7 @@ def check_dependencies(plan):
 **Problem**: Invalid YAML breaks parsing
 **Solution**: Use online validator or:
 ```bash
-python -c "import yaml; yaml.safe_load(open('DEVELOPMENT_PLAN.md').read())"
+python -c "import yaml; yaml.safe_load(open('IMPLEMENTATION_PLAN.md').read())"
 ```
 
 ### Forgotten Updates
@@ -338,7 +338,7 @@ python -c "import yaml; yaml.safe_load(open('DEVELOPMENT_PLAN.md').read())"
 **Problem**: Completed TASKS but forgot to update
 **Solution**: Run validation script:
 ```bash
-python scripts/validate_development_plan.py docs/DEVELOPMENT_PLAN.md
+python scripts/validate_implementation_plan.py docs/IMPLEMENTATION_PLAN.md
 ```
 
 ### Lost Context Between Sessions
@@ -355,7 +355,7 @@ python scripts/validate_development_plan.py docs/DEVELOPMENT_PLAN.md
 ```
 REQ (Layer 7) → SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests
                                         ↓
-                                DEVELOPMENT_PLAN.md
+                                IMPLEMENTATION_PLAN.md
                                 (tracks TASKS execution)
 ```
 
@@ -380,7 +380,7 @@ The unified TASKS document (v2.0) has **11 sections**:
 - **Section 4 (Execution Commands)**: Contains bash commands for implementation
 - **YAML Tracking Block**: Embedded in each TASKS for Development Plan integration
 
-**Development Plan Role:**
+**Implementation Plan Role:**
 - Organizes TASKS into phases
 - Tracks TASKS implementation status
 - Enforces workflow rules (pre/post checks)
@@ -469,7 +469,7 @@ post_check:
 
 ## Summary
 
-The Development Plan transforms implementation tracking from "optional documentation" to "enforced workflow" by:
+The Implementation Plan transforms implementation tracking from "optional documentation" to "enforced workflow" by:
 
 - Embedding quality gates (pre/post checks) directly in TASKS structure
 - Using machine-parsable YAML for automation and reporting

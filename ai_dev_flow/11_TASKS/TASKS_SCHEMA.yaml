@@ -121,7 +121,7 @@ structure:
 
     - pattern: "^## Development Plan Tracking$"
       name: "Development Plan Tracking"
-      description: "YAML block for DEVELOPMENT_PLAN.md integration"
+      description: "YAML block for IMPLEMENTATION_PLAN.md integration"
 
     - pattern: "^## 1\\. Objective$"
       name: "Objective"
