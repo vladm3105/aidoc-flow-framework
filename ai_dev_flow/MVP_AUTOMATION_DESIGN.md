@@ -12,11 +12,20 @@ custom_fields:
 
 # MVP Automation Strategy: "The MVP Autopilot"
 
+**Framework Philosophy**: Maximum velocity to production through 90%+ automation with strategic human oversight.
+
 ## Goal
-Create a unified automation tool (`mvp_autopilot.py`) that executes the **6-Step MVP Workflow** sequentially from BRD to TASKS with a single command.
+Create a unified automation tool (`mvp_autopilot.py`) that executes the **6-Step MVP Workflow** sequentially from BRD to TASKS with a single command, enabling rapid 1-2 week cycles from business idea to production MVP.
+
+**Automation Capabilities**:
+- Single-command scaffolding of all MVP artifacts (BRD → TASKS)
+- Quality-gated progression with auto-approve when score ≥90%
+- Auto-fix strategies to maintain velocity
+- Complete traceability chain automation
+- Supports continuous delivery loop: MVP v1.0 → Defects → Production → MVP v2.0
 
 ## Core Philosophy
-The automation treats the `ai_dev_flow` framework as a **compile target**. It moves through layers (BRD -> PRD -> EARS -> ...) only when the previous layer passes validation gates.
+The automation treats the `ai_dev_flow` framework as a **compile target**. It moves through layers (BRD -> PRD -> EARS -> ...) only when the previous layer passes validation gates, enabling rapid iteration while preserving quality.
 
 ## Architecture
 

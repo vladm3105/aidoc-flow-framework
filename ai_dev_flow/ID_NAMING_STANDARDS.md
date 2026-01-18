@@ -198,7 +198,7 @@ Universal Numbering Pattern (All Document Types)
 - **Format**:
   - **Monolithic Documents (BRD, PRD, ADR)** - flat structure, no section suffix:
     - **Pattern**: `TYPE-DOC_NUM_{slug}.md` (e.g., `BRD-01_platform_architecture.md`)
-    - **Use for**: MVP templates, single-file documents <25KB
+    - **Use for**: MVP documents, single-file documents under 25KB, streamlined artifacts
     - **H1 Title**: `# TYPE-DOC_NUM: Title` (no `.S` suffix)
     - **Location**: Directly in type directory (no nested folder)
   - **Section-Based Documents (BRD, PRD, ADR)** - nested folder, section suffix required:
@@ -544,7 +544,7 @@ For enhanced navigability, traceability tags MAY be converted to clickable hyper
 - Start with 2 digits and expand only as needed. Do not use unnecessary leading zeros beyond the active width of the current number.
 - Correct examples: `BRD-01`, `BRD-99`, `BRD-102`, `BRD-999`, `BRD-1000`.
 - Incorrect examples: `BRD-001`, `BRD-009` (extra leading zero not required by the number).
-- This rule is unified across all document types: `BRD`, `PRD`, `EARS`, `BDD`, `ADR`, `SYS`, `REQ`, `IMPL`, `CTR`, `SPEC`, `TASKS`.
+- This rule is unified across all document types: `BRD`, `PRD`, `EARS`, `BDD`, `ADR`, `SYS`, `REQ`, `CTR`, `SPEC`, `TASKS`.
 - Element IDs MUST match filename digit width exactly (e.g., `BRD-06` ⇄ `BRD.06.xx.xx`; `PRD-22` ⇄ `PRD.22.xx.xx`).
 - Exception: Reserved infrastructure artifacts use `-000` (e.g., `BRD-00_index.md`, `PRD-00_index.md`) by design.
 - Note: Source code and unit test files follow coding standards for their languages and are excluded from this document ID filename policy.
@@ -645,7 +645,7 @@ custom_fields:
   descriptive_slug: folder_slug  # Folder's descriptive name (for shortened filenames)
   total_sections: N
   section_type: content  # or "index" for section 0
-  architecture_approach: approach-name
+  architecture_approach: ai-agent-primary
   priority: primary|fallback|shared
   split_date: YYYY-MM-DD
 ---
@@ -919,13 +919,12 @@ Cross-Reference Link Format (MANDATORY)
     - `[BRD-DOC_NUM](../01_BRD/BRD-DOC_NUM_{slug}.md#BRD-DOC_NUM)`
 
 Traceability Requirements
-- REQ: link ADR(s), BDD, CTR (if interface requirement) (if part of larger implementation), and SPEC via markdown links.
-- IMPL: link upstream 07_REQ/ADR (upstream sources), downstream 09_CTR/10_SPEC/TASKS (deliverables).
+
 - ADR: list addressed REQ(s) via markdown links.
 - CTR: link upstream 07_REQ/ADR (Traceability section), downstream 10_SPEC/Code (Traceability section).
 - BDD: include `@requirement` (mandatory) and `@adr` (when applicable).
-- SPEC: include `requirements_source` (07_REQ/EARS), `architecture` (ADR), `contract_ref` (CTR if applicable), `impl_plan` (IMPL if part of phased implementation), `verification` (BDD); all as markdown links.
-- TASKS: include `@spec` (mandatory - which SPEC being implemented), `@impl` (optional - parent implementation plan if applicable).
+- SPEC: include `requirements_source` (07_REQ/EARS), `architecture` (ADR), `contract_ref` (CTR if applicable), `verification` (BDD); all as markdown links.
+- TASKS: include `@spec` (mandatory - which SPEC being implemented).
 - BRD: link downstream 07_REQ/CTR (if applicable), related BRD sub-documents via markdown links.
 - Code: reference SPEC, CTR (if contract implementation), and TASKS in docstrings or header comments using relative paths.
 
@@ -946,11 +945,10 @@ Validation Rules & Aids
   - ADR filename: `ADR-\d{2,}_.+\.md$`
   - BDD filename: `BDD-\d{2,}_.+\.feature$`
   - BDD tag: `^@requirement:\[REQ-\d{2,}\]\(.+\.md#REQ-\d{2,}\)$`
-  - SPEC id: `^[a-z][a-z0-9_]*[a-z0-9]$`
+  - SPEC id: `^[a-z][a-z0-9_]*[a-z0-9]$`.
   - SPEC filename: `SPEC-\d{2,}_.+\.ya?ml$`
   - CTR H1 ID: `^#\sCTR-\d{2,}:.+$`
   - CTR filename: `CTR-\d{2,}_.+\.(md|yaml)$`
-  - IMPL H1 ID: `^#\sIMPL-\d{2,}:.+$`
   - TASKS H1 ID: `^#\sTASKS-\d{2,}:.+$`
   - TASKS filename: `TASKS-\d{2,}_.+\.md$`
   - BRD H1 ID: `^#\sBRD-\d{2,}:.+$`
@@ -1101,7 +1099,6 @@ Consistent across ALL document types:
 | 26 | System Requirement | SYS |
 | 27 | Atomic Requirement | REQ |
 | 28 | Specification Element | SPEC |
-| 29 | Implementation Phase | IMPL |
 | 30 | Task Item | TASKS |
 | 31 | Plan Step | TASKS (Section 4) |
 | 32 | Architecture Topic | BRD |
@@ -1295,8 +1292,8 @@ For the complete list of valid traceability tags, see [TRACEABILITY.md - Complet
 
 **Quick Reference:**
 
-- **Document Type Tags**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`
-- **Non-Document Tags**: `@test`, `@code`, `@impl-status`, `@threshold`, `@entity`, `@priority`, `@component`, `@supersedes`
+- **Document Type Tags**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@ctr`, `@spec`, `@tasks`
+- **Non-Document Tags**: `@test`, `@code`, `@threshold`, `@entity`, `@priority`, `@component`, `@supersedes`
 - **Same-Type Tags**: `@related-{type}`, `@depends-{type}`
 - **Invalid Tags**: `@nfr:`, `@fr:`, `@contract:`, `@tests:` (deprecated, do NOT use)
 

@@ -47,11 +47,21 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 
 This framework provides structured, traceable steps for AI-assisted software development using MVP templates as the default.
 
-- Blueprint: Early layers (BRD, PRD, ADR, SYS) capture business and architectural decisions.
-- Instruction Set: Downstream layers (REQ, SPEC, TASKS) translate those decisions into granular, implementation-ready guidance for AI assistants.
-- Governance: The traceability chain from BRD through TASKS documents decisions and checks for consistent implementation.
-- Delivery Loop: Create an MVP, fix defects, promote to production, add features as a new MVP based on the current product, fix defects, and repeat.
-- Automation Flow: See `ai_dev_flow/SDD_AUTOMATION_WORKFLOW.md` for the extended automation playbook complementing `MVP_WORKFLOW_GUIDE.md`.
+- **Blueprint**: Early layers (BRD, PRD, ADR, SYS) capture business and architectural decisions.
+- **Instruction Set**: Downstream layers (REQ, SPEC, TASKS) translate those decisions into granular, implementation-ready guidance for AI assistants.
+- **Governance**: The traceability chain from BRD through TASKS documents decisions and checks for consistent implementation.
+- **Delivery Loop**: Continuous MVP iteration - Create MVP → Fix Defects → Production → Add Features as new MVP → Repeat
+  - Enables rapid product evolution with 1-2 week cycles
+  - Automation accelerates each cycle (90%+ layers automated)
+  - Cumulative traceability preserves knowledge across iterations
+- **Automation Flow**: See `ai_dev_flow/SDD_AUTOMATION_WORKFLOW.md` for the extended automation playbook complementing `MVP_WORKFLOW_GUIDE.md`.
+
+**Key Automation Benefits**:
+- 90%+ automation (12 of 13 production layers)
+- Quality gates enable optional human checkpoints (auto-approve if score ≥90%)
+- Code-from-specs capability (YAML → Python)
+- Auto-fix testing with 3 retry attempts
+- Maximum velocity to production MVP
 
 ## Recent Updates (2025-11-20)
 

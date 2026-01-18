@@ -14,9 +14,23 @@ custom_fields:
   workflow_layers: 14
 ---
 
-Development Principles Guide
+# Specification-Driven Development Principles Guide
 
-**MVP-to-Production Loop**: Create an MVP, fix defects, promote to production, add features as a new MVP based on the current product, fix defects, and repeat.
+**Framework Philosophy**: AI Dev Flow enables maximum velocity to production through 90%+ automation and strategic human oversight.
+
+**MVP-to-Production Loop**: Continuous product evolution through rapid MVP cycles:
+- Create MVP v1.0 → Fix Defects → Production Release
+- Add Features (MVP v2.0) ← Market Feedback → Fix Defects → Production
+- Iterate continuously with 1-2 week cycles
+- Automation accelerates each cycle (12 of 13 production layers automated)
+- Strategic human checkpoints preserve quality (5 critical decision points, optional if quality score ≥90%)
+
+**Automation Capabilities**:
+- Document Generation: 90% automated (L1-L13, human review optional if score ≥90%)
+- Code Generation: Full automation from SPEC+TASKS to Python
+- Test Execution: Auto-retry with 3 max attempts, 80% coverage minimum
+- Quality Gates: AI-scored validation enables auto-approval
+- Deployment Pipeline: Automated build, security scans, optional human approval
 
 ### Splitting Rules
 
@@ -59,13 +73,25 @@ Development Principles Guide
 
 ### Workflow Overview
 
-The SDD workflow transforms business needs into production-ready code through traceable artifacts organized in 14 layers (Layer 0: Strategy through Layer 13: Validation). The workflow includes automated quality gates that ensure each layer meets maturity thresholds before progressing to the next layer.
+The SDD workflow transforms business needs into production-ready code through traceable artifacts organized in 14 layers (Layer 0: Strategy through Layer 13: Validation). **The framework enables 90%+ automation** with strategic human oversight, achieving rapid 1-2 week MVP cycles from idea to production.
+
+**Automation Architecture**:
+- **12 of 13 Production Layers Automated**: L1-L13 (excluding strategic L0)
+- **Quality-Gated Progression**: AI-scored validation at each layer (auto-approve if score ≥90%)
+- **5 Strategic Checkpoints** (optional if quality score ≥90%):
+  - L1 (BRD): Business owner approval - strategic business alignment
+  - L2 (PRD): Product manager approval - product vision validation  
+  - L5 (ADR): Architect approval - technical architecture decisions
+  - L11 (Code): Developer review - code quality and security
+  - L13 (Deployment): Ops approval - production release gating
+- **8 Fully Automated Layers**: L3 (EARS), L4 (BDD), L6 (SYS), L7 (REQ), L8 (CTR), L9 (SPEC), L10 (TASKS), L12 (Tests)
 
 #### Quality Gates Integration
 
 Quality gates prevent progression to downstream layers until artifacts meet specified maturity thresholds:
 
 - **Ready Score Gates**: Each artifact includes a score field (e.g., `EARS-Ready Score: ✅ 95% ≥90%`) indicating readiness for next layer
+- **Automated Approval**: Artifacts with scores ≥90% can proceed automatically without human review
 - **Cumulative Tag Validation**: Each artifact must include ALL upstream traceability tags (e.g., `@brd @prd @ears @bdd`)
 - **Pre-commit Blocking**: Git hooks enforce quality gates, preventing immature artifacts from being committed
 - **Automated Recovery**: Validation scripts provide specific guidance for reaching quality thresholds
@@ -76,6 +102,8 @@ Quality gates prevent progression to downstream layers until artifacts meet spec
 - Refer to [TRACEABILITY_VALIDATION.md](./TRACEABILITY_VALIDATION.md) for complete quality gate specifications
 
 The quality gates ensure smooth 14-layer transitions and prevent immature artifacts from affecting downstream development.
+
+**Workflow Progression**:
 
 **Strategy Layer** (Layer 0) → **Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Interface Layer** (CTR - optional) → **Technical Specs (SPEC)** → **Code Generation Layer** (TASKS) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
 

@@ -115,6 +115,12 @@ top_level:
       description: "Registry document reference and keys used for @threshold tags"
 
   optional_fields:
+    req_implementations:
+      type: array
+      description: "Per-REQ implementation details"
+      recommended: true
+      notes: "Maps each upstream REQ to implementation specifics"
+
     caching:
       type: object
       description: "Caching strategy and configuration"
@@ -230,12 +236,20 @@ traceability_schema:
         - business_requirements
         - product_requirements
         - architecture_decisions
+        - atomic_requirements  # REQ is PRIMARY upstream input
+      notes:
+        - "atomic_requirements (REQ) is the PRIMARY input to SPEC"
+        - "REQ defines WHAT to implement; SPEC defines HOW"
+        - "See req_implementations section for per-REQ implementation details"
 
     downstream_artifacts:
       type: object
       description: "References to downstream artifacts"
       required_subsections:
         - implementation
+      notes:
+        - "REQ is NOT a downstream artifact - it is upstream"
+        - "TASKS is the primary downstream artifact"
 
     cumulative_tags:
       type: object
@@ -319,6 +333,94 @@ threshold_references_schema:
       type: array
       min_items: 1
       description: "List of threshold keys referenced via @threshold tags"
+
+# =============================================================================
+# REQ Implementations Schema
+# =============================================================================
+
+req_implementations_schema:
+  description: "Maps upstream REQ files to implementation details (HOW)"
+  notes:
+    - "REQ file = Source of truth for WHAT (requirements, acceptance criteria)"
+    - "req_implementations = Source of truth for HOW (interfaces, types, methods)"
+    - "DO NOT duplicate requirement text - reference REQ files instead"
+
+  item_schema:
+    required_fields:
+      req_id:
+        type: string
+        pattern: "^REQ-\\d{3,}$"
+        description: "REQ document ID being implemented"
+
+      req_link:
+        type: string
+        description: "Relative path to the REQ file"
+
+      implementation:
+        type: object
+        description: "Implementation details for this REQ"
+
+    implementation_structure:
+      required_subsections:
+        interfaces:
+          type: array
+          description: "Classes and methods implementing this REQ"
+          item_schema:
+            class:
+              type: string
+              pattern: "^[A-Z][a-zA-Z0-9]+$"
+              description: "Class name (PascalCase)"
+            method:
+              type: string
+              pattern: "^[a-z][a-z0-9_]*$"
+              description: "Method name (snake_case)"
+            signature:
+              type: string
+              description: "Full method signature with types"
+            purpose:
+              type: string
+              description: "What this method does for the REQ"
+
+      optional_subsections:
+        data_models:
+          type: array
+          description: "Data models required for this REQ"
+          item_schema:
+            name:
+              type: string
+            fields:
+              type: array
+
+        validation_rules:
+          type: array
+          description: "Validation rules implementing REQ acceptance criteria"
+          item_schema:
+            rule:
+              type: string
+            implementation:
+              type: string
+
+        error_handling:
+          type: array
+          description: "Error handling for this REQ"
+          item_schema:
+            error_code:
+              type: string
+            condition:
+              type: string
+            http_status:
+              type: integer
+            response_message:
+              type: string
+
+        test_approach:
+          type: object
+          description: "Testing strategy for this REQ"
+          properties:
+            unit_tests:
+              type: array
+            integration_tests:
+              type: array
 
 # =============================================================================
 # Architecture Section Requirements
@@ -704,6 +806,32 @@ validation_rules:
     - rule: "All referenced document IDs must exist"
       severity: warning
 
+    - rule: "upstream_sources must include atomic_requirements (REQ is primary input)"
+      severity: warning
+
+    - rule: "atomic_requirements must not be in downstream_artifacts (REQ is upstream)"
+      severity: error
+
+  # REQ Implementations validation
+  req_implementations:
+    - rule: "req_implementations section is recommended when upstream atomic_requirements exist"
+      severity: info
+
+    - rule: "Each req_implementations entry must have req_id matching upstream atomic_requirements"
+      severity: warning
+
+    - rule: "Each req_implementations entry must have req_link pointing to valid REQ file"
+      severity: warning
+
+    - rule: "implementation.interfaces must have at least one entry"
+      severity: warning
+
+    - rule: "Do NOT duplicate requirement text from REQ files - reference only"
+      severity: info
+
+    - rule: "Each atomic_requirement should have corresponding req_implementations entry"
+      severity: info
+
   # Interface validation
   interfaces:
     - rule: "At least one class must be defined"
@@ -859,3 +987,13 @@ error_messages:
   SPEC-I004: "Consider adding operations runbook"
   SPEC-W010: "Markdown file exceeds 600 lines (target: 300-500)"
   SPEC-W011: "YAML file exceeds 1000 lines"
+
+  # REQ Implementations errors
+  SPEC-E016: "atomic_requirements found in downstream_artifacts - REQ is upstream, not downstream"
+  SPEC-W012: "Missing atomic_requirements in upstream_sources - REQ is primary input to SPEC"
+  SPEC-W013: "req_implementations section missing - recommended when atomic_requirements exist"
+  SPEC-W014: "req_implementations entry missing req_id or req_link"
+  SPEC-W015: "req_implementations entry has no interfaces defined"
+  SPEC-W016: "req_id in req_implementations does not match any upstream atomic_requirements"
+  SPEC-I005: "Consider adding req_implementations for complete REQ-to-implementation traceability"
+  SPEC-I006: "atomic_requirement has no corresponding req_implementations entry"

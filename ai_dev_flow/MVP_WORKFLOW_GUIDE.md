@@ -121,9 +121,34 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 ---
 
-## 🔁 MVP-to-Production Loop
+## 🔁 MVP-to-Production Loop: Continuous Delivery
 
-Create an MVP, fix defects, promote to production, add features as a new MVP based on the current product, fix defects, and repeat. Use MVP templates by default; split files only when size blocks AI assistants.
+The framework enables **continuous product evolution** through rapid MVP cycles:
+
+**The Delivery Loop**:
+```
+MVP v1.0 → Fix Defects → Production Release
+    ↓
+MVP v2.0 (Add Features) ← Market Feedback
+    ↓
+Fix Defects → Production
+    ↓
+MVP v3.0 (Add Features) ← Iterate...
+```
+
+**Key Benefits**:
+- **Rapid Iteration**: 1-2 week cycles from idea to production
+- **Automation Acceleration**: 90%+ layers automated with quality gates
+- **Incremental Features**: Add features as new MVPs, preserve working product
+- **Cumulative Traceability**: Each MVP inherits and extends previous version's artifacts
+
+**How Automation Enables the Loop**:
+- Quality gates enable auto-approval (score ≥90%)
+- Auto-fix capabilities reduce manual debugging
+- Complete L1-L13 pipeline automation
+- Strategic human checkpoints preserve quality (5 critical decisions)
+
+Use MVP templates by default; split files only when size blocks AI assistants.
 
 ## 🛠️ Validation for MVP
 

@@ -44,6 +44,7 @@ custom_fields:
 6. [TASKS Relationship Guidelines](#6-tasks-relationship-guidelines)
 7. [TASKS-Ready Scoring System](#7-tasks-ready-scoring-system)
 8. [Traceability Requirements](#8-traceability-requirements)
+   - 8.1 [REQ → SPEC Relationship (Critical)](#81-req--spec-relationship-critical)
 9. [Quality Attributes](#9-quality-attributes)
 10. [Quality Gates](#10-quality-gates)
 11. [Additional Requirements](#11-additional-requirements)
@@ -255,6 +256,77 @@ cumulative_tags:
 
 ---
 
+## 8.1 REQ → SPEC Relationship (Critical)
+
+### Source of Truth Principle
+
+**Core Concept**: REQ files define WHAT to implement; SPEC files define HOW to implement.
+
+| Document | Role | Contents |
+|----------|------|----------|
+| REQ | Source of Truth for WHAT | Requirements, acceptance criteria, constraints |
+| SPEC | Source of Truth for HOW | Interfaces, methods, types, implementation details |
+
+### Option A: Reference, Don't Duplicate
+
+SPECs **reference** REQ files - they do NOT copy requirement text:
+
+```yaml
+# ✅ CORRECT: Reference the REQ
+traceability:
+  upstream_sources:
+    atomic_requirements:
+      - id: "REQ-042"
+        link: "../07_REQ/SYS-03_session/REQ-042_session_creation.md"
+        title: "Session Creation Requirements"
+
+# ❌ WRONG: Duplicating requirement text
+# requirement_text: "The system shall create a session within 100ms..."
+```
+
+### Option D: Per-REQ Implementation Sections
+
+Each SPEC contains a `req_implementations` section mapping REQs to implementation details:
+
+```yaml
+req_implementations:
+  - req_id: "REQ-042"
+    req_link: "../07_REQ/SYS-03_session/REQ-042_session_creation.md"
+    implementation:
+      interfaces:
+        - class: "SessionManager"
+          method: "create_session"
+          signature: "async def create_session(user_id: str) -> Session"
+      data_models:
+        - name: "Session"
+          fields: ["session_id", "user_id", "created_at", "expires_at"]
+      validation_rules:
+        - "user_id must be non-empty string"
+      error_handling:
+        - error_code: "INVALID_USER_ID"
+          condition: "user_id is empty"
+          http_status: 400
+```
+
+### Why This Pattern
+
+| Benefit | Explanation |
+|---------|-------------|
+| No Information Loss | REQ files remain authoritative - nothing is "melted" |
+| Clear Separation | REQ = WHAT, SPEC = HOW (no overlap) |
+| Easy Updates | Change REQ without touching SPEC implementation |
+| Traceability | Direct mapping from requirement to implementation |
+| Code Generation | `req_implementations` feeds directly to TASKS |
+
+### Workflow
+
+1. **Read REQ file** - Understand the requirement (WHAT)
+2. **Design implementation** - Determine interfaces, types, methods (HOW)
+3. **Write SPEC** - Reference REQ in `upstream_sources`, detail HOW in `req_implementations`
+4. **Verify traceability** - Ensure every REQ has corresponding implementation entry
+
+---
+
 ## 9. Quality Attributes
 
 **Machine-Readable**: All specifications parseable by code generation tools
@@ -303,6 +375,9 @@ cumulative_tags:
 | `latency_ms: 200` (hardcoded) | `latency_ms: "@threshold: PRD.NN.perf.api.p95_latency"` |
 | **Split List Syntax** (e.g., `tests:` under `- path:`) | **Use nested structure**: `tests:` as a child key of the list item |
 | Missing `security` or `observability` | **Mandatory**: Include `authentication` (method specified) and `health_checks` (endpoints specified) |
+| **Duplicating REQ text in SPEC** | **Reference REQ, don't duplicate**: Use `upstream_sources.atomic_requirements` for references |
+| **Missing `req_implementations` section** | **Required**: Map each REQ to its implementation details (interfaces, models, validation) |
+| REQ in `downstream_artifacts` | **REQ is upstream**: Move to `upstream_sources.atomic_requirements` |
 
 ---
 

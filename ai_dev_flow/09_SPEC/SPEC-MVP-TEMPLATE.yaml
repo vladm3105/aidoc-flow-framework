@@ -132,6 +132,26 @@ traceability:
         context: "[Which API endpoints/events this SPEC implements]"
         policy: "See ADR-CTR_SEPARATE_FILES_POLICY.md - separate CTR files REQUIRED"
 
+    # ===================
+    # ATOMIC REQUIREMENTS (Primary Input - UPSTREAM)
+    # ===================
+    # REQ files are the PRIMARY input to SPEC - they define WHAT to implement
+    # SPEC defines HOW to implement - see req_implementations section below
+    atomic_requirements:
+      - id: "REQ-NN"
+        link: "../07_REQ/SYS-XX_{module}/REQ-NN_{slug}.md"
+        title: "[Atomic requirement title]"
+        relevant_sections: ["Acceptance Criteria", "Constraints"]
+        relationship: "Requirement this SPEC implements"
+        context: "[Which capability/feature this REQ defines]"
+
+      - id: "REQ-MM"
+        link: "../07_REQ/SYS-XX_{module}/REQ-MM_{slug}.md"
+        title: "[Another requirement title]"
+        relevant_sections: ["Acceptance Criteria", "Constraints"]
+        relationship: "Requirement this SPEC implements"
+        context: "[Which capability/feature this REQ defines]"
+
     cumulative_tags:
       brd: "TBD"
       prd: "TBD"
@@ -143,20 +163,9 @@ traceability:
       ctr: "TBD"
 
   downstream_artifacts:
-    atomic_requirements:
-      - id: "REQ-NN"
-        link: "../07_REQ/.../REQ-NN_...md#REQ-NN"
-        title: "[Atomic requirement title]"
-        spec_sections: ["interfaces", "behavior"]
-        relationship: "Detailed implementation requirement this SPEC satisfies"
-        verification_method: "Unit test, Integration test"
-
-      - id: "REQ-MM"
-        link: "../07_REQ/.../REQ-MM_...md#REQ-MM"
-        title: "[Another requirement title]"
-        spec_sections: ["performance", "security"]
-        relationship: "Quality attribute this SPEC satisfies"
-        verification_method: "Performance test, security scan"
+    # NOTE: REQs are now UPSTREAM (inputs to SPEC), not downstream
+    # See upstream_sources.atomic_requirements for REQ references
+    # See req_implementations section below for per-REQ implementation details
 
     behavioral_tests:
       - id: "BDD-NN"
@@ -472,6 +481,54 @@ cumulative_tags:
     related_spec: []  # List of related SPEC-NN IDs sharing domain context
     depends_spec: []  # List of prerequisite SPEC-NN IDs (must complete before this)
     # Tags: @related-spec: SPEC-NN, @depends-spec: SPEC-NN
+
+# ===================
+# REQ IMPLEMENTATIONS
+# ===================
+# Maps each upstream REQ to its implementation details
+# - REQ file = WHAT to implement (source of truth for requirements)
+# - This section = HOW to implement (interfaces, methods, types, validation)
+# - DO NOT duplicate requirement text - reference REQ files instead
+
+req_implementations:
+  # Each entry corresponds to one REQ from upstream_sources.atomic_requirements
+  - req_id: "REQ-NN"
+    req_link: "../07_REQ/SYS-XX_{module}/REQ-NN_{slug}.md"
+    # Implementation details for this specific requirement
+    implementation:
+      # Interfaces that implement this requirement
+      interfaces:
+        - class: "ClassName"
+          method: "method_name"
+          signature: "async def method_name(param: Type) -> ReturnType"
+          purpose: "[Brief description of what this method does for the REQ]"
+      # Data models required for this requirement
+      data_models:
+        - name: "ModelName"
+          fields:
+            - name: "field1"
+              type: "str"
+              constraints: "[Validation constraints]"
+      # Validation rules implementing REQ acceptance criteria
+      validation_rules:
+        - rule: "Rule description"
+          implementation: "How it's validated in code"
+      # Error handling for this requirement
+      error_handling:
+        - error_code: "ERROR_CODE"
+          condition: "When this error occurs"
+          http_status: 400
+          response_message: "User-facing error message"
+      # Testing approach for this requirement
+      test_approach:
+        unit_tests: ["Test case 1", "Test case 2"]
+        integration_tests: ["Integration scenario"]
+
+  # Additional REQ implementations follow the same pattern
+  # - req_id: "REQ-MM"
+  #   req_link: "../07_REQ/SYS-XX_{module}/REQ-MM_{slug}.md"
+  #   implementation:
+  #     interfaces: [...]
 
 # ===================
 # COMPONENT ARCHITECTURE

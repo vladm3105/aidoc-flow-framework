@@ -12,6 +12,78 @@ The AI Dev Flow Framework is a comprehensive template system for implementing AI
 
 > MVP Note: When using the MVP track, all artifacts are single, flat files. Do not use document splitting or `DOCUMENT_SPLITTING_RULES.md`.
 
+## Automation Philosophy: Maximum Velocity to Production
+
+**PRIMARY GOAL: Fastest Transition from Business Idea to Production MVP**
+
+AI Dev Flow eliminates manual bottlenecks through intelligent automation and strategic human oversight.
+
+**Automation Capabilities**:
+- **Quality-Gated Automation**: Replace mandatory checkpoints with AI-scored quality validation
+  - Auto-approve if quality score ≥ threshold (90-95%)
+  - Human review only if score fails
+  - Result: Up to 93% automation (12 of 13 production layers)
+- **AI Code Generation**: YAML specs → Production-ready code
+- **Auto-Fix Testing**: 3 retry attempts reduce manual debugging
+- **Strategic Checkpoints**: Only 5 critical decisions need human approval if quality score < threshold (90%)
+- **Continuous Pipeline**: Automated validation, security scanning, deployment builds
+
+**Human-in-the-Loop Checkpoints** (Quality Gates):
+
+| Layer | Checkpoint | Why Human Review? |
+|-------|------------|------------------|
+| L1 (BRD) | Business owner approves | Strategic business alignment |
+| L2 (PRD) | Product manager approves | Product vision validation |
+| L5 (ADR) | Architect approves | Technical architecture decisions |
+| L11 (Code) | Developer reviews | Code quality and security |
+| L13 (Deployment) | Ops approves | Production release gating |
+
+**Automated Layers** (No human intervention required):
+- L3 (EARS), L4 (BDD), L6 (SYS), L7 (REQ), L8 (CTR), L9 (SPEC), L10 (TASKS), L12 (Tests)
+
+**Result**: Dramatically reduced manual effort while maintaining quality through strategic oversight.
+
+## MVP Delivery Loop: Iterative Product Development
+
+AI Dev Flow supports **continuous product evolution** through iterative MVP cycles:
+
+**The Delivery Loop**:
+```
+┌─────────────────────────────────────────────────┐
+│ MVP v1.0 → Defect Fixes → Production Release   │
+│     ↓                                           │
+│ MVP v2.0 (Add Features) ← Market Feedback       │
+│     ↓                                           │
+│ Defect Fixes → Production                       │
+│     ↓                                           │
+│ MVP v3.0 (Add Features) ← ...                   │
+└─────────────────────────────────────────────────┘
+```
+
+**Key Benefits**:
+- **Rapid Iteration**: Complete L1-L13 pipeline with 90% automation
+- **Incremental Features**: Add features as new MVPs, preserve working product
+- **Production Focus**: Every MVP targets production deployment
+- **Cumulative Traceability**: Each MVP inherits and extends previous version's artifacts
+
+**How Automation Enables the Loop**:
+
+| Stage | Automation Support |
+|-------|-------------------|
+| **Build MVP v1.0** | Full L1-L13 automation (90% automated) |
+| **Fix Defects** | Auto-retry testing (3x), auto-fix capabilities |
+| **Deploy to Production** | Automated build, validation, security scans |
+| **Add Features (MVP v2.0)** | Reuse or create new BRD/PRD/ADR, auto-generate new REQ→CODE |
+| **Iterate** | Cumulative tags enable impact analysis |
+
+**MVP Evolution Example**:
+- **MVP 1.0**: User authentication → Production
+- **Defect Fixes**: Password reset bugs → Production
+- **MVP 2.0**: Add social login (Google, GitHub) → Production
+- **MVP 3.0**: Add 2FA and session management → Production
+
+Each cycle leverages automation to maintain velocity while ensuring quality through human checkpoints.
+
 ## Default Template Selection (MVP is Default)
 
 **MVP templates are the framework default** for all new document creation. Full templates are available for enterprise/regulatory projects.
@@ -48,6 +120,11 @@ template_profile: enterprise  # or "full" or "strict"
 
 ### Key Features
 
+- **90%+ Automation**: 12 of 13 production layers generate automatically with quality gates
+- **Strategic Human Oversight**: Only 5 critical checkpoints require human approval (if quality score < 90%)
+- **Code-from-Specs**: Direct YAML-to-Python code generation from technical specifications
+- **Auto-Fix Testing**: Failing tests trigger automatic code corrections (max 3 retries)
+- **Continuous Delivery Loop**: MVP → Defects → Production → Next MVP rapid iteration
 - **15-Layer Architecture**: Structured progression from strategy to validation (Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code → Tests → Validation)
 - **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
 - **REQ v3.0 Support**: Enhanced REQ templates with sections 3-7 (interfaces/schemas/errors/config/quality attributes) for ≥90% SPEC-readiness
@@ -168,6 +245,29 @@ For organizations managing multiple projects with shared framework resources:
 - Zero duplication across projects
 - Instant framework updates across all projects
 - Project-specific customizations supported
+
+## Automation Capabilities
+
+### What Gets Automated
+
+| Capability | Status | Description |
+|------------|--------|-------------|
+| Document Generation | ✅ 90% | 12 layers auto-generate from upstream |
+| Code Generation | ✅ Full | SPEC+TASKS → Production Python code |
+| Test Generation | ✅ Full | BDD scenarios → pytest test suites |
+| Test Execution | ✅ Full | Unit + Integration + BDD with auto-retry |
+| Traceability | ✅ Full | Automated tag extraction and matrix generation |
+| Validation | ✅ Full | Contract compliance, security scans, coverage |
+| Deployment | ⚠️ Partial | Automated build, optional human-approved deployment |
+
+### What Requires Human Review
+
+- **Business decisions** (BRD, PRD) - Optional if quality score ≥90%
+- **Architecture decisions** (ADR) - Optional if quality score ≥90%
+- **Code quality** (before testing) - Optional if quality score ≥90%
+- **Production deployment** (final gate) - Optional if quality score ≥90%
+
+**Philosophy**: Automate repetitive work, preserve human judgment for critical decisions.
 
 ### 3. Explore the Templates
 
@@ -300,6 +400,36 @@ Layer 14: Validation
 ```
 
 **Cumulative Tagging**: Each layer includes tags from ALL upstream layers, creating complete audit trails for regulatory compliance.
+
+### Complete Automation Pipeline
+
+The framework supports full automation from requirements to production:
+
+**Phase 1: Business Input** → Human provides initial requirements
+
+**Phase 2: Document Generation (L1-L10)**
+- Human review (optional if quality score ≥90%): BRD, PRD, ADR
+- Auto-generates: EARS, BDD, SYS, REQ, CTR, SPEC, TASKS
+- Quality gates ensure each layer meets 90% readiness before proceeding
+
+**Phase 3: Code Generation (L11)**
+- AI generates code from SPEC + TASKS + CTR
+- Validates contract compliance and traceability
+- Human reviews before testing (optional if quality score ≥90%)
+
+**Phase 4: Test Execution (L12)**
+- Auto-generates tests from BDD scenarios
+- Runs unit, integration, and behavioral tests
+- Auto-fix with max 3 retries
+- Enforces 80% coverage minimum
+
+**Phase 5: Validation & Deployment (L13)**
+- Tag validation and traceability matrix generation
+- Security scanning (bandit, safety)
+- Build artifacts
+- Human approves deployment to production (optional if quality score ≥90%)
+
+See [SDD_AUTOMATION_WORKFLOW.md](./ai_dev_flow/SDD_AUTOMATION_WORKFLOW.md) for complete automation playbook.
 
 ### Template Categories
 

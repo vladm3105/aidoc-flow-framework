@@ -64,6 +64,70 @@ SPECs serve as the **technical implementation contracts** that:
 - **Support Verification**: Define measurable criteria for implementation correctness
 - **Enable Independent Development**: Allow teams to develop components in parallel with well-defined contracts
 
+## REQ → SPEC Relationship (Critical)
+
+**Core Principle**: SPEC implements REQ requirements without duplicating them.
+
+### Source of Truth
+- **REQ files** = Source of truth for the "WHAT" (requirements, acceptance criteria, constraints)
+- **SPEC files** = Source of truth for the "HOW" (interfaces, methods, types, implementation details)
+
+### Reference, Don't Duplicate (Option A)
+SPECs **reference** REQ files rather than copying requirement text:
+
+```yaml
+# ✅ CORRECT: Reference the REQ
+traceability:
+  upstream_sources:
+    atomic_requirements:
+      - id: "REQ-042"
+        link: "../07_REQ/SYS-03_session/REQ-042_session_creation.md"
+        title: "Session Creation Requirements"
+
+# ❌ WRONG: Duplicating requirement text in SPEC
+# requirement_text: "The system shall create a session within 100ms..."
+```
+
+### Per-REQ Implementation Sections (Option D)
+Each SPEC contains a `req_implementations` section that maps REQs to implementation details:
+
+```yaml
+req_implementations:
+  - req_id: "REQ-042"
+    req_link: "../07_REQ/SYS-03_session/REQ-042_session_creation.md"
+    implementation:
+      interfaces:
+        - class: "SessionManager"
+          method: "create_session"
+          signature: "async def create_session(user_id: str, context: dict) -> Session"
+      data_models:
+        - name: "Session"
+          fields: ["session_id", "user_id", "created_at", "expires_at"]
+      validation_rules:
+        - "user_id must be non-empty string"
+        - "context must contain 'client_ip'"
+      error_handling:
+        - error: "INVALID_USER_ID"
+          condition: "user_id is empty or None"
+          response: "400 Bad Request"
+
+  - req_id: "REQ-043"
+    req_link: "../07_REQ/SYS-03_session/REQ-043_session_validation.md"
+    implementation:
+      interfaces:
+        - class: "SessionManager"
+          method: "validate_session"
+          signature: "async def validate_session(session_id: str) -> ValidationResult"
+      # ... implementation details for this REQ
+```
+
+### Benefits of This Approach
+1. **Single Source of Truth**: Requirements live in REQ files only
+2. **No Information Loss**: Every REQ gets its own implementation section
+3. **Clear Traceability**: Direct mapping from REQ to implementation code
+4. **Maintainability**: Update requirement in REQ file, not in multiple SPECs
+5. **Code Generation Ready**: Implementation sections are machine-readable
+
 ## Position in Document Workflow
 
 **⚠️ See [../index.md](../index.md#traceability-flow) for the authoritative workflow visualization.**

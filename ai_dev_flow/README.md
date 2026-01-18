@@ -22,10 +22,13 @@ This directory provides a structured, traceable framework for Specification-Driv
 
 ### Framework Purpose
 
-- Blueprint: Early layers (BRD, PRD, ADR, SYS) capture business objectives and architectural decisions.
-- Instruction Set: Downstream layers (REQ, SPEC, TASKS) translate those decisions into granular, implementation-ready guidance for AI assistants.
-- Governance: The traceability chain from BRD through TASKS documents decisions and checks for consistent implementation.
-- Delivery Loop: Create an MVP, fix defects, promote to production, add features as a new MVP based on the current product, fix defects, and repeat.
+- **Blueprint**: Early layers (BRD, PRD, ADR, SYS) capture business objectives and architectural decisions.
+- **Instruction Set**: Downstream layers (REQ, SPEC, TASKS) translate those decisions into granular, implementation-ready guidance for AI assistants.
+- **Governance**: The traceability chain from BRD through TASKS documents decisions and checks for consistent implementation.
+- **Delivery Loop**: Continuous MVP iteration - Create MVP → Fix Defects → Production → Add Features as new MVP → Repeat
+ - Enables rapid product evolution with 1-2 week cycles
+  - Automation accelerates each cycle (90%+ layers automated)
+  - Cumulative traceability preserves knowledge across iterations
 
 ### Why AI Dev Flow?
 
@@ -34,8 +37,14 @@ This directory provides a structured, traceable framework for Specification-Driv
 - Manual traceability is incomplete and outdated
 - Inconsistent documentation across teams
 - AI code generation requires unstructured guidance
+- Slow transition from idea to production MVP
 
 **AI Dev Flow Solutions**:
+- ✅ **90%+ Automation**: 12 of 13 production layers generate automatically with quality gates
+- ✅ **Strategic Human Oversight**: Only 5 critical checkpoints require human approval (if quality score < 90%)
+- ✅ **Code-from-Specs**: Direct YAML-to-Python code generation from technical specifications
+- ✅ **Auto-Fix Testing**: Failing tests trigger automatic code corrections (max 3 retries)
+- ✅ **Continuous Delivery Loop**: MVP → Defects → Production → Next MVP rapid iteration
 - ✅ **Domain-Agnostic**: Adaptable to any software project (e-commerce, SaaS, IoT, healthcare, finance)
 - ✅ **Complete Traceability**: Bidirectional links from business requirements to production code
 - ✅ **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
@@ -43,7 +52,6 @@ This directory provides a structured, traceable framework for Specification-Driv
 - ✅ **14-Layer Architecture**: Structured progression from strategy through validation
 - ✅ **Dual-File Contracts (CTR only)**: Human-readable `.md` + machine-readable `.yaml` for API contracts
 - ✅ **Example-Driven**: Generic examples with `[PLACEHOLDER]` format for easy customization
-
 - ✅ **Automated Validation**: Scripts for tag validation, traceability matrix generation, cumulative hierarchy enforcement
 
 **📚 New to this framework?** Start with [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) for domain-specific guidance (financial, healthcare, e-commerce, SaaS, IoT, or generic software).
