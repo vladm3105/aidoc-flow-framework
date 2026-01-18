@@ -10,3 +10,4 @@ work_plans/
 # Python bytecode
 *.pyc
 __pycache__/
+ai_dev_flow/scripts/__pycache__
