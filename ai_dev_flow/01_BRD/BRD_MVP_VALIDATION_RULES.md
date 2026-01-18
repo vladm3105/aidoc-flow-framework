@@ -1287,8 +1287,8 @@ Reference: BRD-MVP-TEMPLATE.md lines 173-254 (full template archived)
 **Required Subsections**:
 - [ ] 15.1 Requirements Traceability Matrix
   - [ ] 15.1.1 Business Objectives → Functional Requirements
-  - [ ] 15.1.2 Functional Requirements → Technical Specifications
-  - [ ] 15.1.3 Quality Attributes → Technical Specifications
+  - [ ] 15.1.2 Functional Requirements → SPEC (Layer 9)
+  - [ ] 15.1.3 Quality Attributes → SPEC (Layer 9)
 - [ ] 15.2 Cross-BRD Dependencies
 - [ ] 15.3 Test Coverage Traceability
 - [ ] 15.4 Traceability Summary (with Health Score)
@@ -1297,7 +1297,8 @@ Reference: BRD-MVP-TEMPLATE.md lines 173-254 (full template archived)
 - [ ] section 15 header exists
 - [ ] All 4 subsections present (15.1-15.4)
 - [ ] Business Objectives table includes Coverage Status column
-- [ ] Functional Requirements table includes downstream 10_SPEC/IMPL references
+- [ ] Functional Requirements table includes downstream 09_SPEC and 10_TASKS references
+- [ ] Downstream layer numbering aligns with CTR=8, SPEC=9, TASKS=10
 - [ ] Cross-BRD Dependencies table lists all dependencies
 - [ ] Traceability Summary includes Health Score calculation
 - [ ] Health Score target documented (≥90%)
@@ -1310,8 +1311,8 @@ Required in BRD v1.1 template
 Add section with structure:
 - 15.1 Requirements Traceability Matrix
   - 15.1.1 Business Objectives → FRs
-  - 15.1.2 FRs → Technical Specs
-  - 15.1.3 QAs → Technical Specs
+  - 15.1.2 FRs → SPEC (Layer 9)
+  - 15.1.3 QAs → SPEC (Layer 9)
 - 15.2 Cross-BRD Dependencies
 - 15.3 Test Coverage Traceability
 - 15.4 Traceability Summary (Health Score)
@@ -1336,12 +1337,12 @@ Fix: Ensure bidirectional links for all objectives, BRD requirements, and user s
 - [ ] Zero orphaned Business Objectives (all have Coverage Status = "Complete" or "Partial")
 - [ ] Zero orphaned Functional Requirements (all appear in BO→BRD.NN table)
 - [ ] Zero orphaned User Stories (all have Related BRD.NN.EE.SS links)
-- [ ] All BRD.NN.EE.SS requirements have planned downstream SPEC references
+- [ ] All BRD.NN.EE.SS requirements have planned downstream 09_SPEC and 10_TASKS references
 
 **Fix**:
 1. Add section 15 with all 4 subsections
 2. Create Business Objectives → FRs table listing all BOs from section 2.4
-3. Create FRs → Technical Specs table with planned SPEC-XXX-NN references
+3. Create FRs → SPEC (Layer 9) and TASKS (Layer 10) table with planned SPEC-XXX-NN and TASKS-XXX-NN references
 4. Document Cross-BRD Dependencies if any exist
 5. Map requirements to planned test artifacts (TEST-XXX-UNIT, TEST-XXX-INT, etc.)
 6. Calculate Traceability Health Score: Average of all coverage percentages

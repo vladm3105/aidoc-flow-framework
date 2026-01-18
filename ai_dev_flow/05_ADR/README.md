@@ -86,12 +86,12 @@ See [ADR-MVP-TEMPLATE.md](ADR-MVP-TEMPLATE.md) for the compliance section templa
 
 ADR is in the **Architecture Layer** within the complete SDD workflow:
 
-**Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) → **Architecture Layer** (ADR → SYS) ← **YOU ARE HERE** → **Requirements Layer** (REQ) → **Project Management Layer** (IMPL) → **Interface Layer** (CTR - optional) → **Technical Specs (SPEC)** → **Code Generation Layer** (TASKS) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
+**Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) → **Architecture Layer** (ADR → SYS) ← **YOU ARE HERE** → **Requirements Layer** (REQ) → **Interface Layer** (CTR - optional) → **Technical Specs (SPEC)** → **Code Generation Layer** (TASKS) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
 
 **Key Points**:
 - **Upstream**: BDD (Behavior-Driven Development scenarios)
 - **Downstream**: SYS (System Requirements Specification)
-- **Decision Point**: After IMPL, CTR is created if the requirement specifies an interface; otherwise, proceed directly to SPEC
+- **Decision Point**: After REQ, CTR is created if the requirement specifies an interface; otherwise, proceed directly to SPEC
 
 For the complete workflow diagram with all relationships and styling, see [index.md](../index.md#traceability-flow).
 
@@ -106,7 +106,7 @@ ADRs should be created **immediately after** initial requirements and BDD scenar
 **⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
 ```text
-Requirements (02_PRD/EARS) → BDD Scenarios ← ADR Decision → 06_SYS/10_SPEC/Implementation
+Requirements (02_PRD/EARS) → BDD Scenarios ← ADR Decision → 06_SYS/09_SPEC/Implementation
                                           ↓
                                   Architectural Validation
 ```
@@ -221,7 +221,7 @@ All ADRs include mandatory traceability linking to upstream and downstream artif
 
 @SYS:[SYS-NN](../06_SYS/SYS-NN_descriptive_title.md)
 @requirement:[REQ-NN](../07_REQ/infrastructure/REQ-NN_descriptive_title.md#REQ-NN)
-@spec:[spec-name.yaml](../10_SPEC/compute/spec-name.yaml)
+@spec:[spec-name.yaml](../09_SPEC/compute/spec-name.yaml)
 ```
 
 ### Four-Part Structure
@@ -302,7 +302,7 @@ An `ADR-00_index.md` file maintains a central index of all ADRs:
 
 ## Allocation Rules
 - Numbering: keep ADR-NN aligned with decisions referenced by this example set
-- Include a brief description and cross-links to 07_REQ/02_PRD/03_EARS/10_SPEC/BDD when applicable
+- Include a brief description and cross-links to 07_REQ/02_PRD/03_EARS/09_SPEC/BDD when applicable
 
 ## Documents (example set)
 - [ADR-033_risk_limit_enforcement_architecture.md](./ADR-033_risk_limit_enforcement_architecture.md)
@@ -804,7 +804,8 @@ Document downstream artifact relationships in PART 4:
 - [REQ-03 - Regional High Availability](../07_REQ/infrastructure/REQ-03_regional_ha.md#REQ-03)
 
 **Technical Specifications**: 
-- [SPEC-01 - Cloud Run Configuration](../10_SPEC/compute/cloud_run_service.yaml): 
+- [SPEC-01 - Cloud Run Configuration](../09_SPEC/compute/cloud_run_service.yaml):
+
   Declarative specification for per-agent resource allocation, health check configuration
 
 **Implementation Code**: 
@@ -940,7 +941,7 @@ Document your ADR's relationship to other project artifacts:
 
 **Downstream Implementation:**
 - [SYS-01: System Requirements - Cloud Run](../06_SYS/SYS-01_cloud_run_compute.md): System-level compute specifications
-- [SPEC-01: Cloud Run Configuration](../10_SPEC/compute/cloud_run_service.yaml): Terraform/declarative configuration
+- [SPEC-01: Cloud Run Configuration](../09_SPEC/compute/cloud_run_service.yaml): Terraform/declarative configuration
 - [Cloud Run Deployment Runbook](../../docs/deployment_runbook.md): Operational procedures
 ```
 
@@ -1081,7 +1082,7 @@ See `ADR-MVP-TEMPLATE.md` for the structural template with all sections and help
 See `{project_root}/docs/05_ADR/ADR-00_technology_stack.md` for a comprehensive real-world example of a fully-developed ADR demonstrating all best practices including:
 
 - Complete upstream source traceability to 02_PRD/03_EARS/BDD
-- Detailed downstream artifact mapping to 06_SYS/07_REQ/10_SPEC/code
+- Detailed downstream artifact mapping to 06_SYS/07_REQ/09_SPEC/code
 - References to external documentation and research
 - Risk assessments with mitigation strategies
 - Performance benchmarks and actual production metrics

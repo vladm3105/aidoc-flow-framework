@@ -16,7 +16,7 @@ custom_fields:
 **Target**: AI coding assistants (see AI_TOOL_OPTIMIZATION_GUIDE.md for tool-specific notes)
 **Status**: Production
 
-> **Note**: The artifact type for contracts is 'CTR', not 'CONTRACTS'. Files are stored in `09_CTR/` directory using dual-file format (`.md` + `.yaml`).
+> **Note**: The artifact type for contracts is 'CTR', not 'CONTRACTS'. Files are stored in `08_CTR/` directory using dual-file format (`.md` + `.yaml`).
 
 ---
 
@@ -67,8 +67,8 @@ Enter selections (comma-separated, e.g., "1,2" or single "7"):
 
 | Selection | Interpretation | Include CTR? | Workflow |
 |-----------|----------------|--------------|----------|
-| 1, 2, 3, 4, 5, 6 | External interfaces exist | **YES** | REQ → IMPL → CTR → SPEC → TASKS |
-| 7 | Internal logic only | **NO** | REQ → IMPL → SPEC → TASKS |
+| 1, 2, 3, 4, 5, 6 | External interfaces exist | **YES** | REQ → CTR → SPEC → TASKS |
+| 7 | Internal logic only | **NO** | REQ → SPEC → TASKS |
 | 8 | Unsure | **Ask follow-up questions** | See Follow-Up section |
 
 ---
@@ -247,10 +247,10 @@ Question 4: Interface Stability
 # Pseudocode for decision logic
 if any_external_consumers or multiple_teams or contract_first_needed or needs_versioning:
     include_ctr = True
-    workflow = "REQ → IMPL → CTR → SPEC → TASKS"
+    workflow = "REQ → CTR → SPEC → TASKS"
 else:
     include_ctr = False
-    workflow = "REQ → IMPL → SPEC → TASKS"
+    workflow = "REQ → SPEC → TASKS"
 ```
 
 ---
@@ -267,7 +267,7 @@ else:
 3. Data contracts? **YES** - Order and position data models
 
 **Decision**: **Include CTR layer**
-**Workflow**: `REQ → IMPL → CTR → SPEC → TASKS → Code`
+**Workflow**: `REQ → CTR → SPEC → TASKS → Code`
 
 **Contracts to Create**:
 - CTR-01: request submission API (OpenAPI 3.0)
@@ -286,7 +286,7 @@ else:
 3. Data contracts? **NO** - Private data structures
 
 **Decision**: **Skip CTR layer**
-**Workflow**: `REQ → IMPL → SPEC → TASKS → Code`
+**Workflow**: `REQ → SPEC → TASKS → Code`
 
 **Rationale**: Internal logic with no external consumers doesn't require formal contracts. SPEC alone is sufficient for code generation.
 
@@ -302,7 +302,7 @@ else:
 3. Contract-first needed? **YES** - Parallel development
 
 **Decision**: **Include CTR layer**
-**Workflow**: `REQ → IMPL → CTR → SPEC → TASKS → Code`
+**Workflow**: `REQ → CTR → SPEC → TASKS → Code`
 
 **Contracts to Create**:
 - CTR-NN: User Service API (OpenAPI 3.0)
@@ -325,7 +325,7 @@ def process_contract_decision(user_selections):
     # Decision logic
     if "7" in selections:  # None - internal only
         include_ctr = False
-        message = "✓ No contracts needed. Workflow: REQ → IMPL → SPEC → TASKS"
+        message = "✓ No contracts needed. Workflow: REQ → SPEC → TASKS"
 
     elif "8" in selections:  # Unsure
         run_follow_up_questions()
@@ -335,7 +335,7 @@ def process_contract_decision(user_selections):
         include_ctr = True
         contract_types = map_selections_to_contract_types(selections)
         message = f"✓ Contracts needed. Contract types: {contract_types}"
-        message += "\n✓ Workflow: REQ → IMPL → CTR → SPEC → TASKS"
+        message += "\n✓ Workflow: REQ → CTR → SPEC → TASKS"
 
     # Apply decision
     set_workflow_mode(include_ctr)
@@ -343,9 +343,9 @@ def process_contract_decision(user_selections):
 
     # Proceed to next step
     if include_ctr:
-        print("\nNext: Create IMPL (Implementation Plan) → then CTR (Contracts)")
+        print("\nNext: Create CTR (Contracts) → then SPEC (Specifications)")
     else:
-        print("\nNext: Create IMPL (Implementation Plan) → then SPEC (Specifications)")
+        print("\nNext: Create SPEC (Specifications)")
 
     return include_ctr
 
@@ -369,14 +369,13 @@ def map_selections_to_contract_types(selections):
 ### With Contracts (CTR Layer Included)
 
 ```
-BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code
-                                                      ↑
-                                            Contract-first design
-                                            Enables parallel development
+BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS → Code
+                                                ↑
+                                      Contract-first design
+                                      Enables parallel development
 ```
 
 **Key Points**:
-- IMPL identifies CTR documents to create
 - CTR defines interface contracts (dual .md + .yaml files)
 - SPEC implements interfaces defined in CTR
 - Multiple teams can work in parallel once CTR approved
@@ -386,14 +385,13 @@ BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC �
 ### Without Contracts (Skip CTR Layer)
 
 ```
-BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → SPEC → TASKS → Code
-                                                     ↑
-                                          Direct to implementation SPEC
-                                          Simpler workflow for internal logic
+BRD → PRD → EARS → BDD → ADR → SYS → REQ → SPEC → TASKS → Code
+                                            ↑
+                                   Direct to implementation SPEC
+                                   Simpler workflow for internal logic
 ```
 
 **Key Points**:
-- IMPL directly identifies SPEC documents to create
 - SPEC contains complete implementation details
 - No formal interface contracts needed
 - Faster workflow for internal-only features
@@ -449,17 +447,16 @@ Contract Types:
 - Event Schemas (AsyncAPI 2.x)
 
 Workflow:
-REQ → IMPL → CTR → SPEC → TASKS → Code
+REQ → CTR → SPEC → TASKS → Code
          or
-REQ → IMPL → SPEC → TASKS → Code
+REQ → SPEC → TASKS → Code
 
 Next Steps:
 1. Create requirements (REQ documents)
-2. Create implementation plan (IMPL document)
-3. [If CTR included] Create contracts (CTR documents)
-4. Create specifications (SPEC documents)
-5. Create implementation tasks (TASKS documents)
-6. Generate code from SPEC
+2. [If CTR included] Create contracts (CTR documents)
+3. Create specifications (SPEC documents)
+4. Create implementation tasks (TASKS documents)
+5. Generate code from SPEC
 
 ═══════════════════════════════════════════════════════════
 ```
@@ -469,8 +466,7 @@ Next Steps:
 ## References
 
 - [AI_ASSISTANT_RULES.md](./AI_ASSISTANT_RULES.md#rule-5-contract-decision-questionnaire) - Rule 5: Contract Questionnaire
-- [WHEN_TO_CREATE_IMPL.md](./WHEN_TO_CREATE_IMPL.md) - Implementation plan guidance
-- [CTR-MVP-TEMPLATE.md](./09_CTR/CTR-MVP-TEMPLATE.md) - Contract template
+- [CTR-MVP-TEMPLATE.md](./08_CTR/CTR-MVP-TEMPLATE.md) - Contract template
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete workflow
 - [DOMAIN_SELECTION_QUESTIONNAIRE.md](./DOMAIN_SELECTION_QUESTIONNAIRE.md) - Previous step
 

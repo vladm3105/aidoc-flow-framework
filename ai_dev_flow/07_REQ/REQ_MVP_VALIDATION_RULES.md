@@ -48,7 +48,7 @@ custom_fields:
 | Document Control fields | Error | Error |
 | Traceability tags (@brd through @sys) | Error | Error |
 | SPEC-Ready Score threshold | 70/100 | 90/100 |
-| IMPL-Ready Score threshold | 70/100 | 90/100 |
+| CTR-Ready Score threshold | 70/100 | 90/100 |
 | Resource tag validation | **Warning** | Error |
 | Link resolution | **Warning** | Error |
 
@@ -175,7 +175,7 @@ The REQ validation script (`validate_req_template.sh`) performs **20 validation 
 - Verification Method
 - Assigned Team
 - SPEC-Ready Score
-- IMPL-Ready Score
+- CTR-Ready Score
 
 **Error Message**:
 ```
@@ -715,18 +715,14 @@ class HeartbeatConfig(BaseModel):
     connection_timeout_regulatory: float = Field(5.0, gt=0, le=60.0)
 ```
 
-### CHECK 19: IMPL-Ready Score Validation ⭐ NEW
+### CHECK 19: CTR-Ready Score Validation ⭐ NEW
 
-**Purpose**: Validate IMPL-ready score format and threshold for project management transition
-**Type**: Error (blocking)
+**Purpose**: Validate CTR-ready score format and threshold for interface contract transition
 
-**Valid Examples**: `✅ 85% (Target: ≥70%)`
+**Error Message**: `❌ MISSING: CTR-Ready Score with ✅ emoji and percentage`
 
-**Error Message**: `❌ MISSING: IMPL-Ready Score with ✅ emoji and percentage`
+**Action**: Enforces REQ → CTR progression quality gates
 
-**Applies To**: All REQ documents progressing to project management layer
-
-**Action**: Enforces REQ → IMPL progression quality gates
 
 ---
 

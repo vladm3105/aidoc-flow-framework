@@ -113,7 +113,7 @@ If user does not specify or says "default", use **Financial Services** configura
 ### Execution Command
 
 ```bash
-# Core 15-layer architecture (12 documentation artifacts + 3 execution layers)
+# Core 14-layer architecture (11 documentation artifacts + 3 execution layers)
 mkdir -p docs/BRD
 mkdir -p docs/PRD
 mkdir -p docs/EARS
@@ -121,7 +121,6 @@ mkdir -p docs/BDD
 mkdir -p docs/ADR
 mkdir -p docs/SYS
 mkdir -p docs/REQ
-mkdir -p docs/IMPL
 mkdir -p docs/CTR
 mkdir -p docs/SPEC
 mkdir -p docs/TASKS
@@ -219,8 +218,8 @@ After folder creation, AI Assistant **MUST** verify:
 # Verify directory structure
 ls -la docs/
 
-# Expected to include at least 11 directories:
-# BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
+# Expected to include at least 10 directories:
+# BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS
 
 # Verify requirements subdirectories
 ls -la docs/07_REQ/
@@ -301,10 +300,9 @@ cp -r "$FRAMEWORK_ROOT/BDD"/*   docs/04_BDD/
 cp -r "$FRAMEWORK_ROOT/ADR"/*   docs/05_ADR/
 cp -r "$FRAMEWORK_ROOT/SYS"/*   docs/06_SYS/
 cp -r "$FRAMEWORK_ROOT/REQ"/*   docs/07_REQ/
-cp -r "$FRAMEWORK_ROOT/IMPL"/*  docs/08_IMPL/
-cp -r "$FRAMEWORK_ROOT/CTR"/*   docs/09_CTR/
-cp -r "$FRAMEWORK_ROOT/SPEC"/*  docs/10_SPEC/
-cp -r "$FRAMEWORK_ROOT/TASKS"/* docs/11_TASKS/
+cp -r "$FRAMEWORK_ROOT/CTR"/*   docs/08_CTR/
+cp -r "$FRAMEWORK_ROOT/SPEC"/*  docs/09_SPEC/
+cp -r "$FRAMEWORK_ROOT/TASKS"/* docs/10_TASKS/
 
 # Copy validation scripts
 mkdir -p scripts
@@ -324,10 +322,9 @@ touch docs/04_BDD/BDD-00_index.md
 touch docs/05_ADR/ADR-00_index.md
 touch docs/06_SYS/SYS-00_index.md
 touch docs/07_REQ/REQ-00_index.md
-touch docs/08_IMPL/IMPL-00_index.md
-touch docs/09_CTR/CTR-00_index.md
-touch docs/10_SPEC/SPEC-00_index.md
-touch docs/11_TASKS/TASKS-00_index.md
+touch docs/08_CTR/CTR-00_index.md
+touch docs/09_SPEC/SPEC-00_index.md
+touch docs/10_TASKS/TASKS-00_index.md
 ```
 
 ### Index File Content Template
@@ -399,19 +396,13 @@ AI Assistant asks:
 | Answer | Action |
 |--------|--------|
 | 1, 2, 3 (Yes) | Include CTR (contracts) layer in workflow |
-| 4 (No) | Skip CTR layer, go directly IMPL → SPEC |
-| 5 (Unsure) | Run full CONTRACT_DECISION_QUESTIONNAIRE.md |
+| 4 (No) | Skip CTR layer, go directly REQ → SPEC |
 
-### Workflow Adjustment
+```
+REQ → CTR → SPEC → TASKS → Code
 
-**With Contracts**:
-```
-REQ → IMPL → CTR → SPEC → TASKS → Code
-```
-
-**Without Contracts**:
-```
-REQ → IMPL → SPEC → TASKS → Code
+If CTR skipped:
+REQ → SPEC → TASKS → Code
 ```
 
 ---
@@ -423,7 +414,7 @@ REQ → IMPL → SPEC → TASKS → Code
 **CRITICAL**: ID naming standards apply ONLY to **documentation artifacts** in the SDD workflow. Source code files follow language-specific conventions.
 
 #### ✅ Apply ID Standards To:
-- Documentation in `docs/` directories: BRD, PRD, REQ, ADR, SPEC, CTR, IMPL, TASKS, EARS, SYS
+- Documentation in `docs/` directories: BRD, PRD, REQ, ADR, SPEC, CTR, TASKS, EARS, SYS
 - BDD feature files (`.feature`) in `tests/bdd/` or similar directories
 
 #### ❌ Do NOT Apply ID Standards To:
@@ -482,8 +473,8 @@ For CTR documents, AI Assistant **MUST** create both files:
 
 ```bash
 # Create both markdown and YAML with matching slugs
-touch docs/09_CTR/CTR-012_data_service_api.md
-touch docs/09_CTR/CTR-012_data_service_api.yaml
+touch docs/08_CTR/CTR-012_data_service_api.md
+touch docs/08_CTR/CTR-012_data_service_api.yaml
 ```
 
 **Matching slug requirement**: `data_service_api` must be identical in both filenames.
@@ -509,8 +500,8 @@ AI Assistant **MUST** use this format for all document references:
 
 # Flat structure (REQ, SPEC, CTR, etc.)
 [REQ-03](../07_REQ/risk/REQ-03_resource_limit.md#REQ-03)
-[CTR-012](../09_CTR/CTR-012_data_service_api.md#CTR-012)
-[SPEC-023](../10_SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
+[CTR-012](../08_CTR/CTR-012_data_service_api.md#CTR-012)
+[SPEC-023](../09_SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
 ```
 
 ### Section 7: Traceability
@@ -560,7 +551,7 @@ Every document **MUST** include section 7 with:
 ### Enforcement
 
 When creating ANY artifact document type:
-- BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
+- BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS
 
 You MUST:
 1. Create or update the corresponding `[TYPE]-00_TRACEABILITY_MATRIX.md`
@@ -765,10 +756,10 @@ Step 2: Create SPEC-023_risk_calculator.yaml
   - Upstream section: [REQ-023](../07_REQ/risk/REQ-023_risk_calculator.md#REQ-023)
 
 Step 3: Update REQ-023
-  - Downstream section: [SPEC-023](../10_SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
+  - Downstream section: [SPEC-023](../09_SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
 
 Step 4: Create TASKS-023_implement_risk_calculator.md
-  - Upstream section: [SPEC-023](../10_SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
+  - Upstream section: [SPEC-023](../09_SPEC/SPEC-023_risk_calculator/SPEC-023_risk_calculator.yaml)
 
 Step 5: Update SPEC-023 and REQ-023
   - Add TASKS-023 to downstream sections
@@ -794,7 +785,7 @@ AI Assistant **SHOULD** target these sizes:
 | ADR | 3-8KB | 20KB | Decision record (one decision) |
 | SYS | 10-25KB | 50KB | System specifications |
 | REQ | 2-5KB | 10KB | **One atomic requirement per file** |
-| IMPL | 10-30KB | 50KB | Project plan |
+| CTR | 10-30KB | 50KB | Contract definition |
 | CTR (.md) | 10-25KB | 50KB | Contract context |
 | CTR (.yaml) | 5-15KB | 30KB | OpenAPI/AsyncAPI schema |
 | SPEC | 15-40KB | 100KB | Complete technical spec |
@@ -931,11 +922,11 @@ AI Assistant should suggest framework updates when:
 **Before ANY TASKS Implementation**: The Development Plan (`docs/DEVELOPMENT_PLAN.md`) is the **central command center** for organizing and tracking all TASKS across implementation phases.
 
 **Mandatory Setup**:
-1. Copy `11_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md` to `docs/DEVELOPMENT_PLAN.md` at project start
+1. Copy `10_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md` to `docs/DEVELOPMENT_PLAN.md` at project start
 2. Populate with all TASKS organized by phase and priority
 3. Use YAML-based structure for machine-parsable tracking
 
-**See**: `11_TASKS/DEVELOPMENT_PLAN_README.md` for complete documentation.
+**See**: `10_TASKS/DEVELOPMENT_PLAN_README.md` for complete documentation.
 
 ### Mandatory Workflow Rules
 

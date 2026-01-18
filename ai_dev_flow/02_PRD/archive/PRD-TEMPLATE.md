@@ -119,7 +119,7 @@ Schema: See `ai_dev_flow/02_PRD/PRD_SCHEMA.yaml` for complete rules
 | **EARS-Ready Score** | ✅ 95% (Target: ≥90%) |
 | **Template Variant** | Standard / Agent-Based / Automation-Focused |
 
-### Template Variant Selection
+### 1.1 Template Variant Selection
 
 Select the appropriate template variant based on domain:
 
@@ -134,7 +134,7 @@ Select the appropriate template variant based on domain:
 2. Does this PRD describe n8n workflows or automation? → **Automation-Focused**
 3. Otherwise → **Standard**
 
-### Document Revision History
+### 1.2 Document Revision History
 
 | Version | Date | Author | Changes Made | Approver |
 |---------|------|--------|--------------|----------|
@@ -144,11 +144,11 @@ Select the appropriate template variant based on domain:
 
 [2-3 sentence high-level overview of what this product/feature accomplishes, who benefits, and the expected business impact]
 
-### Business Value Proposition
+### 2.1 Business Value Proposition
 
 [Clear statement of value to customers, users, or the business with quantifiable benefits where possible]
 
-### Timeline
+### 2.2 Timeline
 
 - **Discovery & Planning**: YYYY-MM-DD to YYYY-MM-DD ([duration])
 - **Development**: YYYY-MM-DD to YYYY-MM-DD ([duration])
@@ -169,14 +169,14 @@ Select the appropriate template variant based on domain:
 
 ## 3. Problem Statement
 
-### Current State
+### 3.1 Current State
 
 [Describe the current situation and its pain points:
 - What users currently do and why it doesn't work well
 - Business impacts of the current situation
 - Quantitative data on friction points, errors, time waste, etc.]
 
-### Business Impact
+### 3.2 Business Impact
 
 [Quantify the problem's effect on:
 - Revenue/efficiency losses
@@ -185,7 +185,7 @@ Select the appropriate template variant based on domain:
 - Competitive disadvantages
 - Risk exposure or compliance issues]
 
-### Root Cause Analysis
+### 3.3 Root Cause Analysis
 
 [Identify the core issues driving this initiative:
 - Process gaps or inefficiencies
@@ -194,7 +194,7 @@ Select the appropriate template variant based on domain:
 - Market or regulatory drivers
 - Customer feedback patterns]
 
-### Opportunity Assessment
+### 3.4 Opportunity Assessment
 
 [Describe the market or business opportunity:
 - Market size and growth potential
@@ -206,7 +206,7 @@ Select the appropriate template variant based on domain:
 
 ## 4. Target Audience & User Personas
 
-### Primary Users
+### 4.1 Primary Users
 
 [Who will use this product most frequently:
 - Role and job function
@@ -214,14 +214,14 @@ Select the appropriate template variant based on domain:
 - Pain points this solves
 - Usage patterns and frequency]
 
-### Secondary Users
+### 4.2 Secondary Users
 
 [Other stakeholders who benefit:
 - Roles affected by or affecting this feature
 - Their relationship to primary users
 - How they interact with the product]
 
-### Business Stakeholders
+### 4.3 Business Stakeholders
 
 [Internal decision-makers and organizations:
 - Who approves and funds this initiative
@@ -232,21 +232,21 @@ Select the appropriate template variant based on domain:
 
 ## 5. Success Metrics (KPIs)
 
-### Primary KPIs
+### 5.1 Primary KPIs
 
 [Most important measures of business success - 3-5 key metrics:
 - **Metric Name**: Target value (e.g., "Time to Complete Task: Reduce from 45 minutes to 15 minutes (66% improvement)")
 - **Customer Satisfaction Score**: ≥ 4.5/5 within 90 days post-launch
 - **Adoption Rate**: ≥ 80% of eligible users actively using within 60 days]
 
-### Secondary KPIs
+### 5.2 Secondary KPIs
 
 [Supporting metrics that indicate progress toward goals:
 - **Feature Usage**: [Measure] across [user segment]
 - **Error Reduction**: [X]% decrease in [error type] incidents
 - **Process Efficiency**: [Time/resource savings achieved]]
 
-### Success Criteria by Phase
+### 5.3 Success Criteria by Phase
 
 **Phase 1 - Launch (YYYY-MM-DD)**:
 - [Measurable outcomes for initial release]
@@ -267,21 +267,21 @@ Select the appropriate template variant based on domain:
 
 ## 6. Goals & Objectives
 
-### Primary Business Goals
+### 6.1 Primary Business Goals
 
 [What we must achieve - prioritized list:
 1. **Goal 1**: [Specific, measurable outcome] by [deadline], measured by [KPIs]
 2. **Goal 2**: [Specific, measurable outcome] by [deadline], measured by [KPIs]
 3. **Goal 3**: [Specific, measurable outcome] by [deadline], measured by [KPIs]]
 
-### Secondary Objectives
+### 6.2 Secondary Objectives
 
 [Important but not blocking objectives:
 - **Objective A**: [Supporting goal] enabling [larger outcome]
 - **Objective B**: [Foundation-building goal] for [future capability]
 - **Objective C**: [Efficiency improvement] resulting in [cost/time savings]]
 
-### Stretch Goals
+### 6.3 Stretch Goals
 
 [Desirable but not required achievements:
 - **Stretch Goal 1**: [Ambitious outcome] if [conditions] allow
@@ -291,7 +291,7 @@ Select the appropriate template variant based on domain:
 
 ## 7. Scope & Requirements
 
-### In Scope (Included Features/Capabilities)
+### 7.1 In Scope (Included Features/Capabilities)
 
 #### Core Features
 
@@ -306,7 +306,7 @@ Select the appropriate template variant based on domain:
 - **Integration 1**: [System/connection point], Purpose: [why needed], Data flow: [what data]
 - **Integration 2**: [System/connection point], Purpose: [why needed], Data flow: [what data]]
 
-### Out of Scope (Non-Goals)
+### 7.2 Out of Scope (Non-Goals)
 
 [What we explicitly will NOT do in this initiative - critical for managing expectations and preventing scope creep:
 
@@ -333,7 +333,7 @@ Select the appropriate template variant based on domain:
 - [Organizational changes not addressed]
 - [Metrics and reporting not included]]
 
-### Dependencies & Prerequisites
+### 7.3 Dependencies & Prerequisites
 
 [What must exist or be completed before this can succeed:
 
@@ -358,7 +358,7 @@ Select the appropriate template variant based on domain:
 
 This section documents user stories that capture who benefits from the system, what they need to accomplish, and why it matters to them. User stories provide a user-centric view of requirements and help ensure the solution meets actual user needs.
 
-### Layer Separation
+### 8.1 Layer Separation
 
 **PRD (Layer 2) Scope**:
 - User role definitions (who they are)
@@ -378,12 +378,12 @@ This section documents user stories that capture who benefits from the system, w
 
 > **Scope Note**: This section provides role definitions and story summaries. Detailed behavioral requirements are captured in EARS; executable test specifications are in BDD feature files.
 
-### User Story Format
+### 8.2 User Story Format
 
 User stories follow the standard format:
 **As a** [user type/persona], **I want to** [goal/action], **so that** [business value/benefit].
 
-### Primary User Stories
+### 8.3 Primary User Stories
 
 [Document user stories for the primary personas identified in the stakeholder analysis]
 
@@ -408,7 +408,7 @@ User stories follow the standard format:
 |----------|------------|----------|---------------------|-------------------------|
 | PRD.NN.09.SS | As a [persona], I want to [action], so that [benefit] | P1/P2/P3 | [Measurable criteria for story completion] | BRD.NN.01.SS |
 
-### Operational User Stories
+### 8.4 Operational User Stories
 
 [Document user stories for internal operations, support, and administrative personas]
 
@@ -418,7 +418,7 @@ User stories follow the standard format:
 | PRD.NN.09.SS | As a **support agent**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NN.01.SS |
 | PRD.NN.09.SS | As an **operations manager**, I want to [action], so that [benefit] | P1/P2/P3 | [Criteria] | BRD.NN.01.SS |
 
-### User Story Summary
+### 8.5 User Story Summary
 
 | Category | P1 Stories | P2 Stories | P3 Stories | Total |
 |----------|------------|------------|------------|-------|
@@ -427,7 +427,7 @@ User stories follow the standard format:
 | Operational | [Count] | [Count] | [Count] | [Total] |
 | **Total** | [Total P1] | [Total P2] | [Total P3] | [Grand Total] |
 
-### User Story to Business Objective Mapping
+### 8.6 User Story to Business Objective Mapping
 
 [Map user stories to business objectives to demonstrate alignment]
 
@@ -437,7 +437,7 @@ User stories follow the standard format:
 | [BRD.NN.23.02: Objective description] | PRD.NN.09.02, PRD.NN.09.05, PRD.NN.09.12 | [How stories address objective] |
 | [BRD.NN.23.03: Objective description] | PRD.NN.09.04, PRD.NN.09.09, PRD.NN.09.15 | [How stories address objective] |
 
-### User Roles and Permissions
+### 8.7 User Roles and Permissions
 
 [Define detailed user roles with specific permissions - more granular than BRD stakeholder identification]
 
@@ -452,7 +452,7 @@ User stories follow the standard format:
 - **Operations Manager**: Internal staff who can view dashboards, generate reports, modify system configuration
 - **System Administrator**: Technical staff with full system access for maintenance, monitoring, troubleshooting
 
-### Threshold Registry References
+### 8.8 Threshold Registry References
 
 **⚠️ IMPORTANT**: PRD documents serve as the **PRIMARY DEFINITION SOURCE** for technical thresholds. All downstream artifacts (EARS, BDD, SYS, SPEC, CTR) REFERENCE thresholds defined here.
 
@@ -551,7 +551,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 **Upstream/Downstream Flow**:
 - **BRD**: Defines business-level thresholds (customer SLAs, compliance requirements)
 - **PRD**: Refines into technical thresholds (THIS DOCUMENT - primary definition source)
-- **03_EARS/04_BDD/06_SYS/10_SPEC/CTR**: Reference PRD thresholds using `@threshold:` tags
+- **03_EARS/04_BDD/06_SYS/09_SPEC/CTR**: Reference PRD thresholds using `@threshold:` tags
 
 **Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
 
@@ -559,7 +559,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 
 ## 9. Functional Requirements
 
-### User Journey Mapping
+### 9.1 User Journey Mapping
 
 [Key user workflows this product enables:]
 
@@ -575,7 +575,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 - **Recovery Scenario**: When [failure occurs], system should [recovery behavior]
 - **Performance Scenario**: Under [stress conditions], system maintains [slas]
 
-### Capability Requirements
+### 9.2 Capability Requirements
 
 #### Must-Have Capabilities
 
@@ -598,7 +598,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 **📚 Complete Business Context**: For business-level messaging requirements and approval workflows, see:
 - **[BRD-MVP Template - Appendix N: Customer Communication Templates](../01_BRD/BRD-MVP-TEMPLATE.md#appendix-n-customer-communication-templates-required-for-customer-facing-brds)** - Business approval and messaging strategy
 
-### Transaction Status Messages
+### 10.1 Transaction Status Messages
 
 | Status | Customer Message | Channel | Trigger |
 |--------|-----------------|---------|---------|
@@ -611,7 +611,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 | Delivered | "Great news! Your $[amount] transfer to [recipient] was delivered successfully." | Push + Email | On delivery confirmation |
 | Failed | "We couldn't complete your transfer. [Reason]. Funds will be returned within [X] days." | Push + Email | On delivery failure |
 
-### Error Messages
+### 10.2 Error Messages
 
 | Error Condition | Customer Message | Recommended Action | Support Escalation |
 |----------------|-----------------|-------------------|-------------------|
@@ -624,7 +624,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 | Recipient Blocked | "We cannot send to this recipient. Please contact support for details." | "Contact Support" | Immediate - compliance |
 | Network Timeout | "Connection lost. We'll retry automatically. Check status in 5 minutes." | "View Status" | After 3 retries |
 
-### Promotional Messages (If Applicable)
+### 10.3 Promotional Messages (If Applicable)
 
 | Campaign | Message | Eligibility | Duration | Terms Link |
 |----------|---------|-------------|----------|-----------|
@@ -635,7 +635,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 |----------|---------|-------------|----------|-----------|
 | First Transfer Free | "Send your first transfer fee-free! No promo code needed." | New users, first 30 days | 2025-Q1 | /terms/promo-q1 |
 
-### In-App Guidance & Tooltips
+### 10.4 In-App Guidance & Tooltips
 
 | Feature/Screen | Element | Tooltip/Help Text | Trigger |
 |----------------|---------|------------------|---------|
@@ -647,7 +647,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 | Send Money | Amount Field | "Enter amount in USD. Recipient gets [currency] at [rate]." | On focus |
 | Recipient List | Save Button | "Save this recipient for faster future transfers." | On hover |
 
-### Compliance & Legal Disclosures
+### 10.5 Compliance & Legal Disclosures
 
 | Requirement | Disclosure Text | Placement | Acknowledgment Required |
 |-------------|----------------|-----------|------------------------|
@@ -663,7 +663,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 
 ## 11. Acceptance Criteria
 
-### Business Acceptance Criteria
+### 11.1 Business Acceptance Criteria
 
 [High-level, business-focused measures that stakeholders sign off on:
 
@@ -681,7 +681,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 - Risk reduction: [Specific risk] exposure decreases by [percentage]
 - Scalability: System supports [growth target, e.g., 10x current users] without performance degradation]
 
-### Technical Acceptance Criteria
+### 11.2 Technical Acceptance Criteria
 
 [Engineering-focused validation points:
 
@@ -706,7 +706,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 - Audit logging captures all [critical operations] with proper attribution
 - Privacy regulations compliance verified through [assessment/review]]
 
-### Quality Assurance Criteria
+### 11.3 Quality Assurance Criteria
 
 - Code coverage meets [X]% minimum threshold for all new functionality
 - Automated test suite includes positive, negative, and edge case scenarios
@@ -718,27 +718,27 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 
 ## 12. Constraints & Assumptions
 
-### Business Constraints
+### 12.1 Business Constraints
 
 - **Budget**: [Available budget for this initiative: $X for development, $Y for operations]
 - **Timeline**: [Fixed release dates, regulatory deadlines, seasonal considerations]
 - **Resources**: [Available teams, contractors, or external resources]
 - **Organizational**: [Company policies, procurement processes, approval workflows]
 
-### Technical Constraints
+### 12.2 Technical Constraints
 
 - **Existing Systems**: [Legacy systems that cannot be changed, APIs we must use]
 - **Infrastructure**: [Hosting environment, data center limitations, network constraints]
 - **Technology Stack**: [Required or prohibited technologies, frameworks, languages]
 - **Data**: [Data availability, quality, privacy restrictions, and processing limitations]
 
-### External Constraints
+### 12.3 External Constraints
 
 - **Vendor Contracts**: [Third-party service agreements, pricing structures, service level agreements]
 - **Regulatory**: [Legal requirements, compliance standards, certification needs]
 - **Market**: [Competitive landscape, industry standards, partner requirements]
 
-### Key Assumptions
+### 12.4 Key Assumptions
 
 [Important assumptions that could impact this project if incorrect:
 
@@ -756,7 +756,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 
 ## 13. Risk Assessment
 
-### High-Risk Items
+### 13.1 High-Risk Items
 
 [Risks that could derail the project:
 
@@ -770,7 +770,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 - **Risk 1**: [Market adoption challenge], Likelihood: [High/Medium/Low], Impact: [High/Medium/Low], Mitigation: [Strategy]
 - **Risk 2**: [Competitive response], Likelihood: [High/Medium/Low], Impact: [High/Medium/Low], Mitigation: [Strategy]]
 
-### Risk Mitigation Plan
+### 13.2 Risk Mitigation Plan
 
 [Overall approach to managing risk:
 - Regular risk reviews with stakeholders
@@ -782,7 +782,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 
 ## 14. Success Definition
 
-### Go-Live Success Criteria
+### 14.1 Go-Live Success Criteria
 
 [Conditions that must be met to launch:
 - All [critical] features functional and tested
@@ -791,7 +791,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 - Support team familiar with the new system
 - Business stakeholders approve based on acceptance criteria]
 
-### Post-Launch Validation
+### 14.2 Post-Launch Validation
 
 [How we confirm the solution delivers value:
 - User adoption reaches [X]% within [Y] days
@@ -800,7 +800,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 - System stability demonstrates [99.X]% uptime
 - Business case ROI achieved within [timeframe]]
 
-### Success Measurement Timeline
+### 14.3 Success Measurement Timeline
 
 - **Day 1-7**: System stability and initial user adoption
 - **Month 1**: Feature adoption and process efficiency gains
@@ -811,21 +811,21 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 
 ## 15. Stakeholders & Communication
 
-### Core Team
+### 15.1 Core Team
 
 - **Product Owner**: [Name], Role: [Define success criteria, prioritize features]
 - **Engineering Lead**: [Name], Role: [Technical architecture and delivery]
 - **Design Lead**: [Name], Role: [User experience and design validation]
 - **QA Lead**: [Name], Role: [Testing strategy and quality assurance]
 
-### Stakeholders
+### 15.2 Stakeholders
 
 - **Executive Sponsor**: [Name/Title], Interests: [Business impact, ROI]
 - **Business Users**: [Team/Department], Interests: [Feature functionality, usability]
 - **IT Operations**: [Team], Interests: [Deployment, maintenance, uptime]
 - **Legal/Compliance**: [Department], Interests: [Regulatory compliance, privacy]
 
-### Communication Plan
+### 15.3 Communication Plan
 
 - **Weekly Status Updates**: [Distribution list], Content: [Progress, risks, next steps]
 - **Monthly Steering Committee**: [Attendees], Focus: [Business alignment, key decisions]
@@ -836,7 +836,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 
 ## 16. Implementation Approach
 
-### Development Phases
+### 16.1 Development Phases
 
 [MVP-first approach with iterative delivery:
 
@@ -858,7 +858,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 - Value: [Enterprise-grade reliability and scalability]
 - Success Criteria: [Full KPI achievement and operational readiness]]
 
-### Testing Strategy
+### 16.2 Testing Strategy
 
 - **Unit Testing**: [Code-level validation coverage requirements]
 - **Integration Testing**: [Component interaction validation schedule]
@@ -870,7 +870,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 
 ## 17. Budget & Resources
 
-### Development Budget
+### 17.1 Development Budget
 
 - **Engineering**: [FTE allocation: X engineers for Y months = $Z]
 - **Design**: [UI/UX design and user research costs]
@@ -878,7 +878,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 - **Infrastructure**: [Cloud hosting, databases, third-party services]
 - **Contingency**: [Additional budget for risks and unforeseen issues]
 
-### Operational Budget
+### 17.2 Operational Budget
 
 - **Post-Launch Support**: [Production monitoring and incident response]
 - **Maintenance**: [Ongoing code maintenance and updates]
@@ -889,7 +889,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 
 ## 18. Traceability
 
-### Upstream Sources
+### 18.1 Upstream Sources
 
 Document the business strategy and research that drive this PRD.
 
@@ -909,7 +909,7 @@ Document the business strategy and research that drive this PRD.
 - Need: [Customer pain point] → Solved by [specific product capability]
 - Need: [Market requirement] → Addressed by [specific feature]
 
-### Downstream Artifacts
+### 18.2 Downstream Artifacts
 
 > Note: Use generic downstream names until artifacts exist. Avoid numeric IDs like `SYS-##`, `EARS-##`, `REQ-##`, `SPEC-##`.
 
@@ -1043,7 +1043,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 | `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature` | Maps to PRD Feature [name] | [Scenario list] | Functional validation |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 
-### Same-Type References (Conditional)
+### 18.3 Same-Type References (Conditional)
 
 **Include this section only if same-type relationships exist between PRDs.**
 
@@ -1062,7 +1062,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 @depends-prd: PRD-NN
 ```
 
-### Traceability Tags
+### 18.4 Traceability Tags
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 2):
 ```markdown
@@ -1084,7 +1084,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 **Purpose**: Cumulative tagging enables complete traceability chains from business requirements through implementation. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
 
-### Bidirectional Reference Validation
+### 18.5 Bidirectional Reference Validation
 
 **⚠️ IMPORTANT**: All cross-PRD references must be bidirectional. If PRD-A references PRD-B, then PRD-B must also reference PRD-A.
 
@@ -1115,7 +1115,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 3. During review: Run bidirectional reference validation script
 4. Before commit: Confirm all A→B relationships have B→A counterparts
 
-### Document Links and Cross-References
+### 18.6 Document Links and Cross-References
 
 #### Internal Document Structure
 
@@ -1150,7 +1150,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 | BDD Scenarios | [count] | [count] | [count] | YYYY-MM-DD |
 | External References | [count] | [count] | [count] | YYYY-MM-DD |
 
-### Validation Evidence
+### 18.7 Validation Evidence
 
 Document evidence that PRD requirements have been translated to technical specifications and validated.
 
@@ -1170,20 +1170,20 @@ Document evidence that PRD requirements have been translated to technical specif
 
 ## 19. References
 
-### Internal Documentation
+### 19.1 Internal Documentation
 
 - [PRD Writing Guidelines](../README.md) - Product requirements best practices
 - [BRD Template](../01_BRD/BRD-TEMPLATE.md) - Business requirements structure
 - [EARS Template](../03_EARS/EARS-TEMPLATE.md) - Engineering requirements format
 - [ADR Template](../05_ADR/ADR-TEMPLATE.md) - Architecture decision records
 
-### External Standards
+### 19.2 External Standards
 
 - **Product Management**: [Product Management Body of Knowledge (PMBOK)]
 - **User Experience**: [Nielsen Norman Group UX Guidelines]
 - **Agile Methodology**: [Scrum Guide / SAFe Framework]
 
-### Domain References
+### 19.3 Domain References
 
 [Add domain-specific references relevant to your project:]
 
@@ -1191,7 +1191,7 @@ Document evidence that PRD requirements have been translated to technical specif
 - **[Domain_Standard_2: e.g., Compliance, security]**: [Regulatory body, compliance framework]
 - **[Domain_Best_Practice: e.g., resource management, Quality Assurance]**: [Industry guidelines, best practices]
 
-### Technology References
+### 19.4 Technology References
 
 [Add technology-specific references relevant to your project:]
 
@@ -1394,13 +1394,13 @@ Before progressing to EARS creation, verify:
 **Approval Status**: [Draft/Under Review/Approved/Rejected]
 **Approver Signatures**: [Space for stakeholder signatures or approval tracking]
 **Maintained By**: [Product Manager/Team responsible for PRD maintenance]
-## File Size Limits
+## 22. File Size Limits
 
 - Target: 300–500 lines per file
 - Maximum: 600 lines per file (absolute)
 - If this document approaches/exceeds limits, split into `PRD-{NN}.{S}_{slug}.md` section files using `PRD-SECTION-TEMPLATE.md` and update `PRD-{NN}.0_index.md`.
 
-## Document Splitting Standard
+## 23. Document Splitting Standard
 
 Split PRD when size or scope requires:
 - Prepare `PRD-{NN}.0_index.md` and section map

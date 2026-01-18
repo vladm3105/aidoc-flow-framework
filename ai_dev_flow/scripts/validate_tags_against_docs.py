@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Dict, List, Set, Tuple, Optional
 from collections import defaultdict
 
-# Cumulative Tagging Hierarchy Definition (16 layers)
+# Cumulative Tagging Hierarchy Definition (14 layers)
 LAYER_HIERARCHY = {
     0: {'type': 'Strategy', 'required_tags': [], 'tag_count': 0, 'optional': False},
     1: {'type': 'BRD', 'required_tags': [], 'tag_count': 0, 'optional': False},
@@ -29,20 +29,19 @@ LAYER_HIERARCHY = {
     5: {'type': 'ADR', 'required_tags': ['brd', 'prd', 'ears', 'bdd'], 'tag_count': 4, 'optional': False},
     6: {'type': 'SYS', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr'], 'tag_count': 5, 'optional': False},
     7: {'type': 'REQ', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys'], 'tag_count': 6, 'optional': False},
-    8: {'type': 'IMPL', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req'], 'tag_count': 7, 'optional': True},
-    9: {'type': 'CTR', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'impl'], 'tag_count': 8, 'optional': True},
-    10: {'type': 'SPEC', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req'], 'tag_count_min': 7, 'tag_count_max': 9, 'optional': False},
-    11: {'type': 'TASKS', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'spec'], 'tag_count_min': 8, 'tag_count_max': 10, 'optional': False},
-    12: {'type': 'Code', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'spec', 'tasks'], 'tag_count_min': 9, 'tag_count_max': 11, 'optional': False},
-    14: {'type': 'Tests', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'spec', 'tasks', 'code'], 'tag_count_min': 10, 'tag_count_max': 12, 'optional': False},
-    15: {'type': 'Validation', 'required_tags': [], 'tag_count_min': 10, 'tag_count_max': 15, 'optional': False}
+    8: {'type': 'CTR', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req'], 'tag_count': 7, 'optional': True},
+    9: {'type': 'SPEC', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req'], 'tag_count_min': 7, 'tag_count_max': 8, 'optional': False},
+    10: {'type': 'TASKS', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'spec'], 'tag_count_min': 8, 'tag_count_max': 9, 'optional': False},
+    11: {'type': 'Code', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'spec', 'tasks'], 'tag_count_min': 9, 'tag_count_max': 10, 'optional': False},
+    12: {'type': 'Tests', 'required_tags': ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'spec', 'tasks', 'code'], 'tag_count_min': 10, 'tag_count_max': 11, 'optional': False},
+    13: {'type': 'Validation', 'required_tags': [], 'tag_count_min': 10, 'tag_count_max': 14, 'optional': False}
 }
 
 # Map artifact types to layers
 ARTIFACT_TYPE_TO_LAYER = {
     'brd': 1, 'prd': 2, 'ears': 3, 'bdd': 4, 'adr': 5, 'sys': 6,
-    'req': 7, 'impl': 8, 'ctr': 9, 'spec': 10, 'tasks': 11,
-    'code': 12, 'tests': 13, 'validation': 14
+    'req': 7, 'ctr': 8, 'spec': 9, 'tasks': 10,
+    'code': 11, 'tests': 12, 'validation': 13
 }
 
 
@@ -79,7 +78,7 @@ def build_document_index(docs_dir: Path) -> Dict:
         return doc_index
 
     # Document type directories
-    doc_types = ['BRD', 'PRD', 'EARS', 'SYS', 'ADR', 'REQ', 'SPEC', 'CTR', 'BDD', 'IMPL', 'TASKS']
+    doc_types = ['BRD', 'PRD', 'EARS', 'SYS', 'ADR', 'REQ', 'SPEC', 'CTR', 'BDD', 'TASKS']
 
     # Patterns for extracting requirement IDs from documents
     req_patterns = [
@@ -284,7 +283,7 @@ def detect_artifact_layer(file_path: str, tags: Dict) -> Optional[int]:
 
     # Check filename patterns
     filename = Path(file_path).stem.lower()
-    for artifact_type in ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'impl', 'ctr', 'spec', 'tasks']:
+    for artifact_type in ['brd', 'prd', 'ears', 'bdd', 'adr', 'sys', 'req', 'ctr', 'spec', 'tasks']:
         if filename.startswith(artifact_type + '-'):
             return ARTIFACT_TYPE_TO_LAYER[artifact_type]
 
@@ -292,8 +291,8 @@ def detect_artifact_layer(file_path: str, tags: Dict) -> Optional[int]:
     if path_lower.endswith(('.py', '.js', '.ts', '.java', '.go')):
         # Check if it's a test file
         if 'test' in filename or path_lower.endswith('_test.py'):
-            return 14  # Tests layer
-        return 13  # Code layer
+            return 12  # Tests layer
+        return 11  # Code layer
 
     return None
 
@@ -305,7 +304,7 @@ def validate_cumulative_tags(file_path: str, tags: Dict, artifact_layer: int) ->
     1. All required upstream tags are present
     2. No gaps in the tag chain
     3. Tag count is within expected range
-    4. Optional layers (IMPL, CTR) are handled correctly
+    4. Optional layers (CTR) are handled correctly
 
     Returns:
         List of validation errors
@@ -322,8 +321,8 @@ def validate_cumulative_tags(file_path: str, tags: Dict, artifact_layer: int) ->
 
     required_tags = layer_config['required_tags']
     # Exclude optional/non-chain tags from counting and chain checks
-    # Custom supplementary tags (related-impl, depends-ctr) are not part of cumulative hierarchy
-    present_tags = set(tags.keys()) - {'impl-status', 'related-impl', 'depends-ctr'}
+    # Custom supplementary tags (related-ctr, depends-ctr) are not part of cumulative hierarchy
+    present_tags = set(tags.keys()) - {'impl-status', 'related-ctr', 'depends-ctr'}
 
     # Calculate expected tag count (accounting for optional layers)
     if 'tag_count' in layer_config:
@@ -337,10 +336,10 @@ def validate_cumulative_tags(file_path: str, tags: Dict, artifact_layer: int) ->
     # Check 1: Missing required tags (no gaps allowed)
     missing_tags = set(required_tags) - present_tags
 
-    # Handle optional layers: impl and ctr
-    # If impl or ctr are in required_tags but missing, only error if they should exist
-    optional_missing = missing_tags & {'impl', 'ctr'}
-    mandatory_missing = missing_tags - {'impl', 'ctr'}
+    # Handle optional layers: ctr
+    # If ctr is in required_tags but missing, only error if it should exist
+    optional_missing = missing_tags & {'ctr'}
+    mandatory_missing = missing_tags - {'ctr'}
 
     if mandatory_missing:
         errors.append({
@@ -374,7 +373,7 @@ def validate_cumulative_tags(file_path: str, tags: Dict, artifact_layer: int) ->
     for layer_num in range(2, max_layer):
         layer_type = LAYER_HIERARCHY[layer_num]['type'].lower()
         # Skip optional layers in gap check
-        if layer_type in {'impl', 'ctr'}:
+        if layer_type in {'ctr'}:
             continue
         if layer_type not in present_tags:
             errors.append({

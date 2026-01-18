@@ -23,7 +23,7 @@ custom_fields:
 > **⚡ Building an MVP?**
 > If you selected the **MVP Track**, do NOT use the schedule below.
 > Instead, follow the accelerated **[MVP Development Workflow](./MVP_WORKFLOW_GUIDE.md)**.
-> The schedule below is for the **Standard 15-Layer Enterprise Flow**.
+> The schedule below is for the **Standard 14-Layer Enterprise Flow**.
 
 ### Day 1: Project Setup & Business Requirements
 
@@ -119,27 +119,25 @@ cp docs/01_BRD/BRD-MVP-TEMPLATE.md docs/01_BRD/BRD-01_business_objectives.md
 
 ---
 
-### Day 5: Implementation Planning & Contracts
+### Day 5: Contracts & Planning Alignment
 
 **Tasks**:
-1. Create IMPL-01 (Implementation Plan)
-   - WHO does WHAT, WHEN
-   - Phases and milestones
-   - Identify 09_CTR/10_SPEC/TASKS deliverables
+1. Confirm layer sequencing and deliverables
+   - Identify 08_CTR/09_SPEC/10_TASKS deliverables
+   - Confirm downstream traceability targets
 2. If contracts needed: Create CTR documents
    - Dual files: .md + .yaml
    - OpenAPI/AsyncAPI specifications
    - Contract-first design
-3. Update IMPL-00_index.md and CTR-00_index.md
+3. Update CTR-00_index.md
 
 **AI Assistant Actions**:
 ```bash
-# Create IMPL-01 (project management plan)
 # If CTR layer active: Create CTR documents
-# Link REQ → IMPL → CTR in traceability
+# Link REQ → CTR in traceability
 ```
 
-**Deliverable**: IMPL-01 and CTR documents (if applicable) approved
+**Deliverable**: CTR documents (if applicable) approved
 
 ---
 
@@ -261,8 +259,7 @@ By end of Week 1, project should have:
 - [ ] **Testing Layer**: BDD scenarios defined
 - [ ] **Architecture Layer**: Key ADRs documented, SYS specifications
 - [ ] **Requirements Layer**: Initial REQ documents (10-20 requirements)
-- [ ] **Project Management Layer**: IMPL plan with phases
-- [ ] **Interface Layer**: CTR contracts (if applicable)
+- [ ] - [ ] **Interface Layer**: CTR contracts (if applicable)
 - [ ] **Technical Specs (SPEC)**: Initial SPEC documents (3-5 SPEC)
 - [ ] **Code Generation Layer**: Initial TASKS documents
 - [ ] **Validation**: All traceability links verified
@@ -298,7 +295,7 @@ python scripts/generate_traceability_matrix.py --type ADR --input docs/05_ADR/ -
 python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
 
 # Verify YAML SPEC valid
-find docs/10_SPEC/ -name "*.yaml" -exec python -m yamllint {} \;
+find docs/09_SPEC/ -name "*.yaml" -exec python -m yamllint {} \;
 ```
 
 ---
@@ -310,7 +307,7 @@ After Week 1 complete, plan for:
 1. **Complete requirements**: Fill out remaining REQ documents
 2. **Complete specifications**: SPEC for all REQ
 3. **Complete tasks**: TASKS for all SPEC
-4. **Begin code generation**: Implement from 10_SPEC/TASKS
+4. **Begin code generation**: Implement from 09_SPEC/10_TASKS
 5. **Test development**: Unit tests, integration tests, E2E tests
 6. **Validation cycles**: Continuous traceability checking
 

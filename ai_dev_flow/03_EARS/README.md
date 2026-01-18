@@ -101,7 +101,7 @@ All EARS files start with traceability tags linking to related artifacts:
 @adr:[ADR-NN](../05_ADR/ADR-NN_...md#ADR-NN)
 @PRD:[PRD-NN](../02_PRD/PRD-NN_...md)
 @SYS:[SYS-NN](../06_SYS/SYS-NN_...md)
-@spec:[SPEC-NN](../10_SPEC/.../SPEC-NN_...yaml)
+@spec:[SPEC-NN](../09_SPEC/.../SPEC-NN_...yaml)
 @bdd:[BDD-NN.SS:scenarios](../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
 ```
 
@@ -136,7 +136,7 @@ Document upstream sources and downstream artifacts:
 ```markdown
 ## Traceability
 - Upstream Sources: [PRD-NN](../02_PRD/PRD-NN_...md), [SYS-NN](../06_SYS/SYS-NN_...md)
-- Downstream Artifacts: [REQ-NN](../07_REQ/.../REQ-NN_...md#REQ-NN), [SPEC-NN](../10_SPEC/.../SPEC-NN_...yaml)
+- Downstream Artifacts: [REQ-NN](../07_REQ/.../REQ-NN_...md#REQ-NN), [SPEC-NN](../09_SPEC/.../SPEC-NN_...yaml)
 - Anchors/IDs: `# EARS-NN`
 - Code Path(s): `src/domain/component/module.py`
 ```

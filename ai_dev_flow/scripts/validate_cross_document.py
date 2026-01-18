@@ -90,10 +90,9 @@ LAYER_CONFIG = {
     "ADR": {"layer": 5, "required_tags": ["brd", "prd", "ears", "bdd"], "extensions": [".md"]},
     "SYS": {"layer": 6, "required_tags": ["brd", "prd", "ears", "bdd", "adr"], "extensions": [".md"]},
     "REQ": {"layer": 7, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys"], "extensions": [".md"]},
-    "IMPL": {"layer": 8, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req"], "extensions": [".md"]},
-    "CTR": {"layer": 9, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "impl"], "extensions": [".md", ".yaml"]},
-    "SPEC": {"layer": 10, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req"], "extensions": [".yaml"]},
-    "TASKS": {"layer": 11, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "spec"], "extensions": [".md"]},
+    "CTR": {"layer": 8, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req"], "extensions": [".md", ".yaml"]},
+    "SPEC": {"layer": 9, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "ctr"], "extensions": [".yaml"]},
+    "TASKS": {"layer": 10, "required_tags": ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "spec"], "extensions": [".md"]},
 }
 
 # Tag format patterns
@@ -421,7 +420,7 @@ class CrossDocumentValidator:
                 ))
 
         # Check for gaps in cumulative chain
-        tag_order = ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "impl", "ctr", "spec", "tasks"]
+        tag_order = ["brd", "prd", "ears", "bdd", "adr", "sys", "req", "ctr", "spec", "tasks"]
         found_tags = [t for t in tag_order if t in existing_tags]
 
         if found_tags:

@@ -296,15 +296,14 @@ flowchart TB
     L5["Layer 5: ADR<br/>(requires BDD)"]
     L6["Layer 6: SYS<br/>(requires ADR)"]
     L7["Layer 7: REQ<br/>(requires SYS)"]
-    L8["Layer 8: IMPL<br/>(optional, requires REQ)"]:::optional
-    L9["Layer 9: CTR<br/>(optional, requires IMPL or REQ)"]:::optional
-    L10["Layer 10: SPEC<br/>(requires REQ, optional 08_IMPL/CTR)"]
-    L11["Layer 11: TASKS<br/>(requires SPEC)"]
+    L8["Layer 8: CTR<br/>(optional, requires REQ)"]:::optional
+    L9["Layer 9: SPEC<br/>(requires REQ, optional CTR)"]
+    L10["Layer 10: TASKS<br/>(requires SPEC)"]
 
     L1 --> L2 --> L3 --> L4 --> L5 --> L6 --> L7
-    L7 --> L8 --> L9 --> L10
-    L7 --> L10
-    L10 --> L11
+    L7 --> L8 --> L9
+    L7 --> L9
+    L9 --> L10
 
     classDef optional fill:#f9f9f9,stroke:#999,stroke-dasharray: 5 5
 ```

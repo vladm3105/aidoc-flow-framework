@@ -34,10 +34,9 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 | 5 | ADR | `ADR-MVP-TEMPLATE.md` |
 | 6 | SYS | `SYS-MVP-TEMPLATE.md` |
 | 7 | REQ | `REQ-MVP-TEMPLATE.md` |
-| 8 | IMPL | `IMPL-TEMPLATE.md` |
-| 9 | CTR | `CTR-MVP-TEMPLATE.md` |
-| 10 | SPEC | `SPEC-MVP-TEMPLATE.yaml` |
-| 11 | TASKS | `TASKS-TEMPLATE.md` |
+| 8 | CTR | `CTR-MVP-TEMPLATE.md` |
+| 9 | SPEC | `SPEC-MVP-TEMPLATE.yaml` |
+| 10 | TASKS | `TASKS-TEMPLATE.md` |
 
 ### Configuration Reference
 
@@ -60,7 +59,7 @@ This framework provides structured, traceable steps for AI-assisted software dev
 - ✅ **Domain Adaptation**: Added domain-specific configuration guides (Financial, Software, Generic) with [PLACEHOLDER] examples
 - ✅ **Project Setup**: New comprehensive setup guide with domain selection questionnaire
 - ✅ **Traceability Enhancements**: Added setup guide, validation guide, and complete tagging examples
-- ✅ **Decision Frameworks**: Contract decision questionnaire and IMPL creation guidelines
+- ✅ **Decision Frameworks**: Contract decision questionnaire and CTR guidance
 - ✅ **Tool Optimization**: Guidance for AI coding assistants (see AI_TOOL_OPTIMIZATION_GUIDE.md)
 - ✅ **BRD Guidance**: Platform vs Feature BRD selection guide
 
@@ -137,55 +136,45 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
     - [REQ-01: API Integration Example](./07_REQ/examples/api/REQ-01_api_integration_example.md)
     - See more in [07_REQ/examples/](./07_REQ/examples/)
 
-### Project Management Layer (Layer 8 - Optional)
+### Interface Layer (Layer 8 - Optional)
 
-- **IMPL** (`08_IMPL/`) - Layer 8: Implementation planning documents organizing work into phases
-  - Index: [IMPL-00_index.md](./08_IMPL/IMPL-00_index.md)
-  - Template: [IMPL-TEMPLATE.md](./08_IMPL/IMPL-TEMPLATE.md)
-  - Purpose: Project management (WHO does WHAT, WHEN) - NOT technical specifications
-  - Identifies deliverables: which CTR, SPEC, TASKS to create
-  - When to use: [WHEN_TO_CREATE_IMPL.md](./WHEN_TO_CREATE_IMPL.md)
-  - Example: [IMPL-01](./08_IMPL/examples/IMPL-01_feature_implementation_example.md)
-
-### Interface Layer (Layer 9 - Optional)
-
-- **CTR** (`09_CTR/`) - Layer 9: API Contracts defining component-to-component interfaces
-  - Index: [CTR-00_index.md](./09_CTR/CTR-00_index.md)
+- **CTR** (`08_CTR/`) - Layer 8: API Contracts defining component-to-component interfaces
+  - Index: [CTR-00_index.md](./08_CTR/CTR-00_index.md)
   - Dual-file format: `.md` (human-readable context) + `.yaml` (machine-readable schema)
   - When to use: [CONTRACT_DECISION_QUESTIONNAIRE.md](./CONTRACT_DECISION_QUESTIONNAIRE.md)
   - Enables parallel development and contract testing
   - Optional organization: subdirectories by service type (agents/, mcp/, infra/)
-  - Examples: [CTR-01](./09_CTR/examples/CTR-01_data_validation_api.md)
+  - Examples: [CTR-01](./08_CTR/examples/CTR-01_data_validation_api.md)
 
-### Technical Specs (SPEC) (Layer 10)
+### Technical Specs (SPEC) (Layer 9)
 
-- **SPEC** (`10_SPEC/`) - Layer 10: Technical specifications ready for code generation
+- **SPEC** (`09_SPEC/`) - Layer 9: Technical specifications ready for code generation
   - YAML: Monolithic single file per component (codegen source)
   - Markdown: Split narrative using `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` only if the document is too large for AI assistants
   - Layout:
-    - Nested (default): `10_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml` (+ Markdown sections alongside)
-    - Flat (exception): `10_SPEC/SPEC-{DOC_NUM}_{slug}.yaml` for small, stable specs
-  - Template: [SPEC-MVP-TEMPLATE.yaml](./10_SPEC/SPEC-MVP-TEMPLATE.yaml)
+    - Nested (default): `09_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml` (+ Markdown sections alongside)
+    - Flat (exception): `09_SPEC/SPEC-{DOC_NUM}_{slug}.yaml` for small, stable specs
+  - Template: [SPEC-MVP-TEMPLATE.yaml](./09_SPEC/SPEC-MVP-TEMPLATE.yaml)
   - Purpose: YAML format with classes, methods, algorithms (HOW to build)
   - References CTR contracts when implementing interfaces
   - Examples:
-    - Flat (small): [SPEC-01](./10_SPEC/SPEC-01_api_client_example.yaml)
-    - Nested (recommended): [SPEC-02 nested example](./10_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) with [index](./10_SPEC/examples/SPEC-02_nested_example/SPEC-02.0_index.md)
+    - Flat (small): [SPEC-01](./09_SPEC/SPEC-01_api_client_example.yaml)
+    - Nested (recommended): [SPEC-02 nested example](./09_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) with [index](./09_SPEC/examples/SPEC-02_nested_example/SPEC-02.0_index.md)
 
-### Code Generation Layer (Layer 11)
+### Code Generation Layer (Layer 10)
 
-- **TASKS** (`11_TASKS/`) - Layer 11: Code generation plans with exact TODOs
-  - Index: [TASKS-00_index.md](./11_TASKS/TASKS-00_index.md)
-  - Template: [TASKS-TEMPLATE.md](./11_TASKS/TASKS-TEMPLATE.md)
+- **TASKS** (`10_TASKS/`) - Layer 10: Code generation plans with exact TODOs
+  - Index: [TASKS-00_index.md](./10_TASKS/TASKS-00_index.md)
+  - Template: [TASKS-TEMPLATE.md](./10_TASKS/TASKS-TEMPLATE.md)
   - Purpose: Step-by-step guide to generate code from YAML SPEC
   - Each TASKS document corresponds to one SPEC
   - **Section 7-8**: Implementation Contracts for parallel development coordination (embedded)
-  - Contracts Guide: [IMPLEMENTATION_CONTRACTS_GUIDE.md](./11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
+  - Contracts Guide: [IMPLEMENTATION_CONTRACTS_GUIDE.md](./10_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
 
-### Session Execution Layer (Layer 12) - DEPRECATED
+### Session Execution Layer (Layer 11) - DEPRECATED
 
 
-  - **New Workflow**: `SPEC (Layer 10) → TASKS (Layer 11) → Code → Tests`
+  - **New Workflow**: `SPEC (Layer 9) → TASKS (Layer 10) → Code → Tests`
   - Execution commands now in TASKS Section 4: Execution Commands
 
 <!-- See README.md → “Using This Repo” for path mapping guidance. -->
@@ -196,7 +185,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 
-> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid diagram below uses visual groupings for clarity. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
+> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid diagram below uses visual groupings for clarity. Always use formal layer numbers (0-13) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
 
 ```mermaid
 flowchart TD
@@ -215,11 +204,8 @@ flowchart TD
     %% Requirements Layer
     REQ[REQ<br/>Atomic Requirements<br/>Granular, testable requirements<br/><small><i>@brd through @sys</i></small>]
 
-    %% Project Management Layer
-    IMPL[IMPL<br/>Implementation Specifications<br/>WHO/WHEN - Phases, teams, deliverables<br/><small><i>@brd through @req</i></small>]
-
     %% Interface Layer
-    CTR[CTR<br/>API Contracts<br/>Interface definitions between components<br/>Dual format: .md + .yaml<br/><small><i>@brd through @impl</i></small>]
+    CTR[CTR<br/>API Contracts<br/>Interface definitions between components<br/>Dual format: .md + .yaml<br/><small><i>@brd through @req</i></small>]
 
     %% Technical Specs (SPEC)
     SPEC[SPEC<br/>Technical Specifications<br/>HOW - Implementation blueprints<br/>YAML format with full details<br/><small><i>@brd through @req + opt</i></small>]
@@ -243,11 +229,9 @@ flowchart TD
     BDD --> ADR
     ADR --> SYS
     SYS --> REQ
-    REQ --> IMPL
+    REQ --> CTR
 
     %% Interface Branch Decision
-    IMPL --> CTR
-    IMPL --> SPEC
     CTR --> SPEC
 
     %% Implementation Flow
@@ -264,7 +248,6 @@ flowchart TD
     classDef testingLayer fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
     classDef architectureLayer fill:#e1bee7,stroke:#7b1fa2,stroke-width:2px
     classDef requirementsLayer fill:#ffccbc,stroke:#e64a19,stroke-width:2px
-    classDef projectLayer fill:#b3e5fc,stroke:#0277bd,stroke-width:2px
     classDef interfaceLayer fill:#f8bbd0,stroke:#c2185b,stroke-width:2px
     classDef implementationLayer fill:#dcedc8,stroke:#689f38,stroke-width:2px
     classDef codegenLayer fill:#e1f5fe,stroke:#01579b,stroke-width:2px
@@ -274,7 +257,6 @@ flowchart TD
     class BDD testingLayer
     class ADR,SYS architectureLayer
     class REQ requirementsLayer
-    class IMPL projectLayer
     class CTR interfaceLayer
     class SPEC implementationLayer
     class TASKS codegenLayer
@@ -286,13 +268,13 @@ flowchart TD
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only. “Review” and “Prod” are outcomes, not formal layers.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only. “Review” and “Prod” are outcomes, not formal layers.
 
 ### Workflow Explanation
 
-**Business Layer** → **Testing Layer** → **Architecture Layer** → **Requirements Layer** → **Project Management Layer** → **Interface Layer** → **Technical Specs (SPEC)** → **Code Generation Layer** → **Execution Layer**
+**Business Layer** → **Testing Layer** → **Architecture Layer** → **Requirements Layer** → **Interface Layer** → **Technical Specs (SPEC)** → **Code Generation Layer** → **Execution Layer**
 
-**Key Decision Point**: After IMPL, if the requirement involves an interface (API, event schema, data model), create CTR before SPEC. Otherwise, go directly to SPEC.
+**Key Decision Point**: After REQ, if the requirement involves an interface (API, event schema, data model), create CTR before SPEC. Otherwise, go directly to SPEC.
 
 Each document maintains bidirectional traceability:
 
@@ -342,7 +324,6 @@ All documents follow strict ID conventions defined in [ID_NAMING_STANDARDS.md](.
 ### Decision Frameworks
 
 - **Contract Decision**: [CONTRACT_DECISION_QUESTIONNAIRE.md](./CONTRACT_DECISION_QUESTIONNAIRE.md) - When to create CTR documents
-- **IMPL Decision**: [WHEN_TO_CREATE_IMPL.md](./WHEN_TO_CREATE_IMPL.md) - When to create IMPL documents
 
 ### Tool Optimization
 
@@ -382,7 +363,6 @@ python scripts/validate_traceability_matrix_enforcement.py  # Matrix enforcement
 bash scripts/validate_brd_template.sh                    # BRD template compliance
 bash scripts/validate_req_template.sh                    # REQ template compliance
 bash scripts/validate_ctr.sh                             # CTR dual-file format compliance
-bash scripts/validate_impl.sh                            # IMPL 4-PART structure compliance
 bash scripts/validate_tasks.sh                           # TASKS format including Section 7-8
 
 # Traceability generation

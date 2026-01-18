@@ -79,7 +79,7 @@ For the complete traceability workflow with visual diagram, see: [index.md - Tra
 ```gherkin
 @requirement:[REQ-NN](../07_REQ/.../REQ-NN.md)
 @adr:[ADR-NN](../05_ADR/ADR-NN.md)
-@spec:[SPEC-NN](../10_SPEC/.../SPEC-NN.yaml)
+@spec:[SPEC-NN](../09_SPEC/.../SPEC-NN.yaml)
 @priority:high|medium|low
 @component:component_name
 ```
@@ -309,7 +309,7 @@ Track acceptance test coverage for requirements:
 | REQ | [REQ-NN](../07_REQ/.../REQ-NN.md) | Atomic requirements validated by BDD scenarios |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 <!-- VALIDATOR:IGNORE-LINKS-START -->
-| SPEC | [SPEC-NN](../10_SPEC/.../SPEC-NN.yaml) | Technical SPEC implement BDD acceptance criteria |
+| SPEC | [SPEC-NN](../09_SPEC/.../SPEC-NN.yaml) | Technical SPEC implement BDD acceptance criteria |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 | Code | `src/module/component.py` | Implementation satisfies BDD tests |
 
@@ -330,8 +330,8 @@ Track acceptance test coverage for requirements:
 ### Related Standards
 
 - [REQ-MVP-TEMPLATE.md](../07_REQ/REQ-MVP-TEMPLATE.md): Requirements template (BDD validates requirements; full template archived)
-- [SPEC-MVP-TEMPLATE.yaml](../10_SPEC/SPEC-MVP-TEMPLATE.yaml): Technical SPEC template (implements BDD scenarios)
-- [TASKS-TEMPLATE.md](../11_TASKS/TASKS-TEMPLATE.md): Code generation template (generates BDD test code)
+- [SPEC-MVP-TEMPLATE.yaml](../09_SPEC/SPEC-MVP-TEMPLATE.yaml): Technical SPEC template (implements BDD scenarios)
+- [TASKS-TEMPLATE.md](../10_TASKS/TASKS-TEMPLATE.md): Code generation template (generates BDD test code)
 
 ---
 

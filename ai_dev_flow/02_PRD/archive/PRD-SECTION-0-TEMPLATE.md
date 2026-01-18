@@ -25,7 +25,7 @@ custom_fields:
 
 # PRD-{NN}.0: {Document Title} - Index
 
-## Document Overview
+## 1. Document Overview
 
 | Field | Value |
 |-------|-------|
@@ -40,13 +40,13 @@ custom_fields:
 
 ---
 
-## Purpose
+## 2. Purpose
 
 {Brief description of product requirements scope and why split into sections}
 
 ---
 
-## Section Map
+## 3. Section Map
 
 | Section | File | Title | Description |
 |---------|------|-------|-------------|
@@ -57,22 +57,22 @@ custom_fields:
 
 ---
 
-## Dependencies
+## 4. Dependencies
 
-### Upstream References
+### 4.1 Upstream References
 - @ref: BRD-{NN} - Business Requirements this PRD implements
 
-### Downstream References
+### 4.2 Downstream References
 - @ref: EARS-{NN} - Formal requirements derived from this PRD
 - @ref: BDD-{NN} - Behavior scenarios based on PRD features
 
-### Cross-Section Dependencies
+### 4.3 Cross-Section Dependencies
 - Section 2 depends on Section 1 (product vision)
 - Section 3 references all prior sections
 
 ---
 
-## Reading Order
+## 5. Reading Order
 
 **Recommended reading sequence:**
 1. **Section 1**: {Title 1} - Start here for product vision
@@ -86,7 +86,7 @@ custom_fields:
 
 ---
 
-## Version History
+## 6. Version History
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
@@ -94,10 +94,10 @@ custom_fields:
 
 ---
 
-## Traceability
+## 7. Traceability
 
 - **Original Document**: PRD-{NN} (before split)
 - **Element ID Range**: PRD.{NN}.{TT}.01 through PRD.{NN}.{TT}.{MAX}
 - **Tag Format**: @ref: PRD-{NN}.{S} (section reference)
 - **Upstream Trace**: BRD
-- **Downstream Trace**: EARS -> BDD -> ADR -> SYS -> REQ -> IMPL -> CTR -> SPEC
+- **Downstream Trace**: EARS -> BDD -> ADR -> SYS -> REQ -> CTR -> SPEC

@@ -52,7 +52,7 @@ class TraceabilityMatrixGenerator:
 
     SUPPORTED_TYPES = [
         'BRD', 'PRD', 'EARS', 'BDD', 'ADR', 'SYS',
-        'REQ', 'IMPL', 'CTR', 'SPEC', 'TASKS'
+        'REQ', 'CTR', 'SPEC', 'TASKS'
     ]
 
     def __init__(self, doc_type: str, input_dir: str, template_path: Optional[str] = None):

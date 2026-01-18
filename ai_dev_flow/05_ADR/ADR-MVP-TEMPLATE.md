@@ -14,6 +14,7 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
+  complexity: 1 # 1-5 scale
 ---
 
 <!--
@@ -334,9 +335,9 @@ flowchart TD
 
 ---
 
-## Migration to Full ADR Template
+## 11. Migration to Full ADR Template
 
-### When to Migrate
+### 11.1 When to Migrate
 
 - [ ] Decision requires 4+ alternatives analysis
 - [ ] Complex trade-off evaluation needed
@@ -344,7 +345,7 @@ flowchart TD
 - [ ] Decision impacts multiple systems/teams
 - [ ] Detailed implementation assessment required
 
-### Migration Steps
+### 11.2 Migration Steps
 
 2. **Transfer core content**: Map MVP sections to full template
 3. **Add detailed analysis**: Expand alternatives, add scoring matrices
@@ -357,7 +358,7 @@ flowchart TD
 6. **Archive MVP version**: Move to archive with "superseded" note
 7. **Run validation**: Execute `python3 scripts/validate_adr.py` on new document
 
-### Section Mapping (MVP → Full)
+### 11.3 Section Mapping (MVP → Full)
 
 | MVP Section | Full Template Section |
 |-------------|-----------------------|

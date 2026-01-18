@@ -197,7 +197,8 @@ check_visualization() {
     if [[ "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then continue; fi
     ((total++)) || true
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
     if [[ $diagram_count -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
         echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
@@ -335,9 +336,12 @@ check_gherkin_syntax() {
 
     # Check for Given/When/Then
     local has_given has_when has_then
-    has_given=$(grep -cE "^\s+Given " "$f" 2>/dev/null || echo 0)
-    has_when=$(grep -cE "^\s+When " "$f" 2>/dev/null || echo 0)
-    has_then=$(grep -cE "^\s+Then " "$f" 2>/dev/null || echo 0)
+    has_given=$(grep -cE "^\s+Given " "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_given" || ! "$has_given" =~ ^[0-9]+$ ]] && has_given=0
+    has_when=$(grep -cE "^\s+When " "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_when" || ! "$has_when" =~ ^[0-9]+$ ]] && has_when=0
+    has_then=$(grep -cE "^\s+Then " "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_then" || ! "$has_then" =~ ^[0-9]+$ ]] && has_then=0
 
     if [[ $has_given -eq 0 && $has_when -eq 0 && $has_then -eq 0 ]]; then
       echo -e "${RED}CORPUS-E011: $(basename $f) has no Given/When/Then steps${NC}"
@@ -366,9 +370,12 @@ check_traceability() {
     if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
 
     local has_brd has_prd has_ears
-    has_brd=$(grep -c "@brd:" "$f" 2>/dev/null || echo 0)
-    has_prd=$(grep -c "@prd:" "$f" 2>/dev/null || echo 0)
-    has_ears=$(grep -c "@ears:" "$f" 2>/dev/null || echo 0)
+    has_brd=$(grep -c "@brd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_brd" || ! "$has_brd" =~ ^[0-9]+$ ]] && has_brd=0
+    has_prd=$(grep -c "@prd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_prd" || ! "$has_prd" =~ ^[0-9]+$ ]] && has_prd=0
+    has_ears=$(grep -c "@ears:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_ears" || ! "$has_ears" =~ ^[0-9]+$ ]] && has_ears=0
 
     if [[ $has_brd -eq 0 ]]; then
       echo -e "${RED}CORPUS-E012: $(basename $f) missing @brd traceability tag${NC}"

@@ -35,7 +35,7 @@ custom_fields:
 - **Numbering**: Allocate sequentially starting at `01`; keep numbers stable
 - **Slugs**: Short, descriptive, lower_snake_case by functional area
 - **Organization**: By category subtree: `07_REQ/api/`, `07_REQ/risk/`, `07_REQ/ml/`, `07_REQ/data/`, etc.
-- **Traceability**: Each requirement links to upstream 02_PRD/EARS and downstream 06_SYS/10_SPEC/BDD
+- **Traceability**: Each requirement links to upstream 02_PRD/EARS and downstream 06_SYS/09_SPEC/BDD
 - **Template Selection**: Use MVP template (default) for rapid development; use full template for comprehensive requirements
 
 ## Organization

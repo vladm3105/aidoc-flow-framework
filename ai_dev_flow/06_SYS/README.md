@@ -62,7 +62,7 @@ Comprehensive bidirectional linking establishes system context:
 @adr:[ADR-NN](../05_ADR/ADR-NN_...md#ADR-NN)
 @PRD:[PRD-NN](../02_PRD/PRD-NN_...md)
 @EARS:[EARS-NN](../03_EARS/EARS-NN_...md)
-@spec:[SPEC-NN](../10_SPEC/.../SPEC-NN_...yaml)
+@spec:[SPEC-NN](../09_SPEC/.../SPEC-NN_...yaml)
 @bdd:[BDD-NN.SS:scenarios](../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
 ```
 

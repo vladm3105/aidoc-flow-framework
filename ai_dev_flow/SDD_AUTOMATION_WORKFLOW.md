@@ -16,11 +16,11 @@ custom_fields:
 
 ## Summary
 
-Design an end-to-end automation workflow for the 15-layer SDD framework that produces working source code and a deployable product. Includes human-in-the-loop checkpoints for critical documents (BRD, PRD, ADR, Code Review, Deployment) and automated generation for other layers through validation and deployment. This document complements `ai_dev_flow/MVP_WORKFLOW_GUIDE.md` and `ai_dev_flow/index.md` as an extended automation playbook.
+Design an end-to-end automation workflow for the 14-layer SDD framework that produces working source code and a deployable product. Includes human-in-the-loop checkpoints for critical documents (BRD, PRD, ADR, Code Review, Deployment) and automated generation for other layers through validation and deployment. This document complements `ai_dev_flow/MVP_WORKFLOW_GUIDE.md` and `ai_dev_flow/index.md` as an extended automation playbook.
 
 **Plan Date**: 2026-01-17
 **Status**: FINAL REVIEW
-**Scope**: Full L1-L14 pipeline (Documentation → Code → Tests → Validation → Production)
+**Scope**: Full L1-L13 pipeline (Documentation → Code → Tests → Validation → Production)
 
 ---
 
@@ -33,8 +33,8 @@ Design an end-to-end automation workflow for the 15-layer SDD framework that pro
 | L1 (BRD) | Human | Business owner reviews AI-generated BRD |
 | L2 (PRD) | Human | Product manager reviews AI-generated PRD |
 | L5 (ADR) | Human | Architect reviews AI-generated ADR |
-| L12 (Code) | Human | Code review before test execution |
-| L14 (Validation) | Human | Final deployment approval |
+| L11 (Code) | Human | Code review before test execution |
+| L13 (Validation) | Human | Final deployment approval |
 
 ### Automated Layers
 
@@ -44,11 +44,10 @@ Design an end-to-end automation workflow for the 15-layer SDD framework that pro
 | L4 (BDD) | EARS | BDD feature files |
 | L6 (SYS) | ADR | System requirements |
 | L7 (REQ) | SYS | Atomic requirements |
-| L8 (IMPL) | REQ | Implementation approach |
-| L9 (CTR) | REQ | Data contracts (OpenAPI) |
-| L10 (SPEC) | CTR | Technical specifications (YAML) |
-| L11 (TASKS) | SPEC | Task breakdown |
-| L13 (Tests) | Code + BDD | Test execution |
+| L8 (CTR) | REQ | Data contracts (OpenAPI) |
+| L9 (SPEC) | CTR | Technical specifications (YAML) |
+| L10 (TASKS) | SPEC | Task breakdown |
+| L12 (Tests) | Code + BDD | Test execution |
 
 ---
 
@@ -62,7 +61,7 @@ flowchart TB
         BO[Business Owner] --> REQ[Initial Requirements<br/>notes.txt, email, meeting]
     end
 
-    subgraph P2["PHASE 2: Document Generation L1-L11"]
+    subgraph P2["PHASE 2: Document Generation L1-L10"]
         REQ --> L1
         L1[L1:BRD<br/>HUMAN] --> |Approve/Revise| L2[L2:PRD<br/>HUMAN]
         L2 --> |Approve/Revise| L3[L3:EARS<br/>AUTO]
@@ -70,16 +69,15 @@ flowchart TB
         L4 --> L5[L5:ADR<br/>HUMAN]
         L5 --> |Approve/Revise| L6[L6:SYS<br/>AUTO]
         L6 --> L7[L7:REQ<br/>AUTO]
-        L7 --> L8[L8:IMPL<br/>AUTO]
-        L8 --> L9[L9:CTR<br/>AUTO]
-        L9 --> L10[L10:SPEC<br/>AUTO]
-        L10 --> L11[L11:TASKS<br/>AUTO]
+        L7 --> L8[L8:CTR<br/>AUTO]
+        L8 --> L9[L9:SPEC<br/>AUTO]
+        L9 --> L10[L10:TASKS<br/>AUTO]
     end
 
-    subgraph P3["PHASE 3: Code Generation L12"]
-        L11 --> CODE
+    subgraph P3["PHASE 3: Code Generation L11"]
         L10 --> CODE
         L9 --> CODE
+        L8 --> CODE
         CODE[Generate Code<br/>claude/codex] --> CONTRACT[Contract Check<br/>CTR compliance]
         CONTRACT --> TRACE[Traceability<br/>docstring tags]
         TRACE --> REVIEW{HUMAN CODE REVIEW}
@@ -88,7 +86,7 @@ flowchart TB
         REVIEW --> |Reject| STOP1[Stop Workflow]
     end
 
-    subgraph P4["PHASE 4: Test Execution L13"]
+    subgraph P4["PHASE 4: Test Execution L12"]
         P4_START[src/*.py] --> UNIT[Unit Tests<br/>pytest]
         L4 --> BDD_IN
         UNIT --> INTEG[Integration Tests<br/>pytest]
@@ -102,7 +100,7 @@ flowchart TB
         AUTOFIX --> |max retries| STOP2[Stop Workflow]
     end
 
-    subgraph P5["PHASE 5: Validation & Deployment L14"]
+    subgraph P5["PHASE 5: Validation & Deployment L13"]
         P5_START[tests/*.py] --> TAG[Tag Validation<br/>scripts/*.py]
         TAG --> MATRIX[Traceability<br/>Matrix Gen]
         MATRIX --> SEC[Security Scan<br/>bandit/safety]
@@ -124,7 +122,7 @@ flowchart TB
     style DEPLOY_CHECK fill:#ffcdd2
 ```
 
-### Phase 2: Document Generation Pipeline (L1-L11)
+### Phase 2: Document Generation Pipeline (L1-L10)
 
 ```mermaid
 flowchart LR
@@ -139,10 +137,9 @@ flowchart LR
     subgraph Design["Design Layers"]
         direction TB
         L6[L6:SYS<br/>Claude→Gemini<br/>AUTO] --> L7[L7:REQ<br/>Gemini→Claude<br/>AUTO]
-        L7 --> L8[L8:IMPL<br/>Gemini→Claude<br/>AUTO]
-        L7 --> L9[L9:CTR<br/>Codex→Claude<br/>AUTO]
-        L9 --> L10[L10:SPEC<br/>Claude→Gemini<br/>AUTO]
-        L10 --> L11[L11:TASKS<br/>Claude→Gemini<br/>AUTO]
+        L7 --> L8[L8:CTR<br/>Codex→Claude<br/>AUTO]
+        L8 --> L9[L9:SPEC<br/>Claude→Gemini<br/>AUTO]
+        L9 --> L10[L10:TASKS<br/>Claude→Gemini<br/>AUTO]
     end
 
     L5 --> L6
@@ -152,14 +149,14 @@ flowchart LR
     style L5 fill:#ffcdd2
 ```
 
-### Phase 3: Code Generation (L12)
+### Phase 3: Code Generation (L11)
 
 ```mermaid
 flowchart TB
     subgraph Inputs["Input Artifacts"]
-        TASKS[L11:TASKS]
-        SPEC[L10:SPEC]
-        CTR[L9:CTR]
+        TASKS[L10:TASKS]
+        SPEC[L9:SPEC]
+        CTR[L8:CTR]
         BDD[L4:BDD]
     end
 
@@ -193,12 +190,12 @@ flowchart TB
     style OUTPUT fill:#c8e6c9
 ```
 
-### Phase 4: Test Execution (L13)
+### Phase 4: Test Execution (L12)
 
 ```mermaid
 flowchart TB
     subgraph Inputs["Inputs"]
-        CODE[L12:Code<br/>src/*.py]
+        CODE[L11:Code<br/>src/*.py]
         BDD[L4:BDD<br/>scenarios]
     end
 
@@ -234,7 +231,7 @@ flowchart TB
     style OUTPUT fill:#c8e6c9
 ```
 
-### Phase 5: Validation & Deployment (L14)
+### Phase 5: Validation & Deployment (L13)
 
 ```mermaid
 flowchart TB
@@ -302,10 +299,9 @@ sdd-workflow-orchestrator/
 │   ├── auto-chain.sh              # Automated layer executor
 │   ├── generate.sh                # Single layer generator
 │   ├── validation.sh              # Readiness scorer
-│   ├── code-generator.sh          # L12: Code generation handler
-│   ├── test-executor.sh           # L13: Test execution handler
-│   ├── auto-fix.sh                # Auto-fix failed tests
-│   └── deploy.sh                  # L14: Validation & deployment handler
+│   ├── code-generator.sh          # L11: Code generation handler
+│   ├── test-executor.sh           # L12: Test execution handler
+│   └── deploy.sh                  # L13: Validation & deployment handler
 ├── prompts/
 │   ├── brd-generator.md
 │   ├── prd-generator.md
@@ -388,16 +384,7 @@ layers:
     reviewer: "claude"
     min_readiness_score: 90
 
-  - id: L8_IMPL
-    name: "Implementation Approach"
-    checkpoint: auto
-    input: "L7_REQ"
-    output: "docs/IMPL/"
-    generator: "gemini"
-    reviewer: "claude"
-    min_readiness_score: 90
-
-  - id: L9_CTR
+  - id: L8_CTR
     name: "Data Contracts"
     checkpoint: auto
     input: "L7_REQ"
@@ -406,28 +393,28 @@ layers:
     reviewer: "claude"
     min_readiness_score: 90
 
-  - id: L10_SPEC
+  - id: L9_SPEC
     name: "Technical Specification"
     checkpoint: auto
-    input: "L9_CTR"
+    input: "L8_CTR"
     output: "docs/SPEC/"
     generator: "claude"
     reviewer: "gemini"
     min_readiness_score: 90
 
-  - id: L11_TASKS
+  - id: L10_TASKS
     name: "Task Breakdown"
     checkpoint: auto
-    input: "L10_SPEC"
+    input: "L9_SPEC"
     output: "docs/TASKS/"
     generator: "claude"
     reviewer: "gemini"
     min_readiness_score: 90
 
-  - id: L12_CODE
+  - id: L11_CODE
     name: "Source Code"
     checkpoint: human
-    input: ["L11_TASKS", "L10_SPEC", "L9_CTR"]
+    input: ["L10_TASKS", "L9_SPEC", "L8_CTR"]
     output: "src/"
     generator: "claude"
     reviewer: "codex"
@@ -437,10 +424,10 @@ layers:
       - traceability_tags: true
       - syntax_check: true
 
-  - id: L13_TESTS
+  - id: L12_TESTS
     name: "Test Execution"
     checkpoint: auto
-    input: ["L12_CODE", "L4_BDD"]
+    input: ["L11_CODE", "L4_BDD"]
     output: "tests/"
     test_frameworks:
       - pytest
@@ -449,10 +436,10 @@ layers:
     min_pass_rate: 100
     max_retries: 3
 
-  - id: L14_VALIDATION
+  - id: L13_VALIDATION
     name: "Validation & Deployment"
     checkpoint: human
-    input: ["L13_TESTS", "L12_CODE"]
+    input: ["L12_TESTS", "L11_CODE"]
     output: "dist/"
     validations:
       - tag_completeness
@@ -471,8 +458,8 @@ workflow:
   id: "SDD-2026-001"
   project: "project-name"
   started: "2026-01-17T10:00:00Z"
-  current_layer: 12
-  status: "awaiting_code_review"
+    current_layer: 11
+    status: "awaiting_code_review"
 
 layers:
   L1_BRD:
@@ -489,9 +476,9 @@ layers:
     approved_at: "2026-01-17T11:00:00Z"
     readiness_score: 92
 
-  # ... L3-L11 states ...
+  # ... L3-L10 states ...
 
-  L12_CODE:
+  L11_CODE:
     status: "pending_review"
     files:
       - "src/services/auth_service.py"
@@ -501,7 +488,7 @@ layers:
     contract_compliance: 95
     traceability_score: 100
 
-  L13_TESTS:
+  L12_TESTS:
     status: "not_started"
     test_results:
       unit_tests: null
@@ -509,7 +496,7 @@ layers:
       bdd_scenarios: null
     coverage: null
 
-  L14_VALIDATION:
+  L13_VALIDATION:
     status: "not_started"
     traceability_matrix: null
     security_scan: null
@@ -526,10 +513,10 @@ checkpoints:
   - layer: "L5_ADR"
     type: "human"
     action: "approved"
-  - layer: "L12_CODE"
+  - layer: "L11_CODE"
     type: "human"
     action: null
-  - layer: "L14_VALIDATION"
+  - layer: "L13_VALIDATION"
     type: "human"
     action: null
 ```
@@ -587,19 +574,19 @@ esac
 
 ```bash
 #!/bin/bash
-# L12: Code generation handler
+# L11: Code generation handler
 
 STATE=".aidev/plugins/sdd-workflow-orchestrator/state/state.yaml"
 PROMPTS=".aidev/plugins/sdd-workflow-orchestrator/prompts"
 
-echo "═══════════════════════════════════════════════════════════"
-echo " L12: CODE GENERATION"
-echo "═══════════════════════════════════════════════════════════"
+ echo "═══════════════════════════════════════════════════════════"
+ echo " L11: CODE GENERATION"
+ echo "═══════════════════════════════════════════════════════════"
 
 # Get input artifacts
-TASKS_FILE=$(yq '.layers.L11_TASKS.file' "$STATE")
-SPEC_FILE=$(yq '.layers.L10_SPEC.file' "$STATE")
-CTR_FILE=$(yq '.layers.L9_CTR.file' "$STATE")
+TASKS_FILE=$(yq '.layers.L10_TASKS.file' "$STATE")
+SPEC_FILE=$(yq '.layers.L9_SPEC.file' "$STATE")
+CTR_FILE=$(yq '.layers.L8_CTR.file' "$STATE")
 BDD_FILE=$(yq '.layers.L4_BDD.file' "$STATE")
 
 # Collect all upstream traceability tags
@@ -651,10 +638,10 @@ python scripts/validate_tags.py --source src/ --strict
 TAG_SCORE=$?
 
 # Update state
-yq -i ".layers.L12_CODE.status = \"pending_review\"" "$STATE"
-yq -i ".layers.L12_CODE.contract_compliance = $CONTRACT_SCORE" "$STATE"
-yq -i ".layers.L12_CODE.traceability_score = $TAG_SCORE" "$STATE"
-yq -i ".layers.L12_CODE.generated_at = \"$(date -Iseconds)\"" "$STATE"
+yq -i ".layers.L11_CODE.status = \"pending_review\"" "$STATE"
+yq -i ".layers.L11_CODE.contract_compliance = $CONTRACT_SCORE" "$STATE"
+yq -i ".layers.L11_CODE.traceability_score = $TAG_SCORE" "$STATE"
+yq -i ".layers.L11_CODE.generated_at = \"$(date -Iseconds)\"" "$STATE"
 
 echo "✅ Code generated. Ready for human review."
 ```
@@ -663,13 +650,13 @@ echo "✅ Code generated. Ready for human review."
 
 ```bash
 #!/bin/bash
-# L13: Test execution handler
+# L12: Test execution handler
 
 STATE=".aidev/plugins/sdd-workflow-orchestrator/state/state.yaml"
 
-echo "═══════════════════════════════════════════════════════════"
-echo " L13: TEST EXECUTION"
-echo "═══════════════════════════════════════════════════════════"
+ echo "═══════════════════════════════════════════════════════════"
+ echo " L12: TEST EXECUTION"
+ echo "═══════════════════════════════════════════════════════════"
 
 # Generate test files if not exists
 BDD_FILE=$(yq '.layers.L4_BDD.file' "$STATE")
@@ -708,24 +695,24 @@ echo "Coverage:          ${COVERAGE}% (min: ${MIN_COVERAGE}%)"
 echo "═══════════════════════════════════════════════════════════"
 
 # Update state
-yq -i ".layers.L13_TESTS.test_results.unit_tests = $UNIT_RESULT" "$STATE"
-yq -i ".layers.L13_TESTS.test_results.integration_tests = $INTEGRATION_RESULT" "$STATE"
-yq -i ".layers.L13_TESTS.test_results.bdd_scenarios = $BDD_RESULT" "$STATE"
-yq -i ".layers.L13_TESTS.coverage = $COVERAGE" "$STATE"
+    yq -i ".layers.L12_TESTS.test_results.unit_tests = $UNIT_RESULT" "$STATE"
+    yq -i ".layers.L12_TESTS.test_results.integration_tests = $INTEGRATION_RESULT" "$STATE"
+    yq -i ".layers.L12_TESTS.test_results.bdd_scenarios = $BDD_RESULT" "$STATE"
+    yq -i ".layers.L12_TESTS.coverage = $COVERAGE" "$STATE"
 
 # Check if all tests pass
 if [ $UNIT_RESULT -eq 0 ] && [ $INTEGRATION_RESULT -eq 0 ] && [ $BDD_RESULT -eq 0 ]; then
   if (( $(echo "$COVERAGE >= $MIN_COVERAGE" | bc -l) )); then
-    yq -i ".layers.L13_TESTS.status = \"completed\"" "$STATE"
+    yq -i ".layers.L12_TESTS.status = \"completed\"" "$STATE"
     echo "✅ All tests passed. Proceeding to validation..."
     exit 0
   else
     echo "⚠️ Coverage below threshold. Generating additional tests..."
-    yq -i ".layers.L13_TESTS.status = \"needs_more_coverage\"" "$STATE"
+    yq -i ".layers.L12_TESTS.status = \"needs_more_coverage\"" "$STATE"
   fi
 else
   echo "❌ Tests failed. Triggering code fix..."
-  yq -i ".layers.L13_TESTS.status = \"failed\"" "$STATE"
+  yq -i ".layers.L12_TESTS.status = \"failed\"" "$STATE"
   exit 1
 fi
 ```
@@ -734,13 +721,13 @@ fi
 
 ```bash
 #!/bin/bash
-# L14: Validation and deployment handler
+# L13: Validation and deployment handler
 
 STATE=".aidev/plugins/sdd-workflow-orchestrator/state/state.yaml"
 
-echo "═══════════════════════════════════════════════════════════"
-echo " L14: VALIDATION & DEPLOYMENT"
-echo "═══════════════════════════════════════════════════════════"
+ echo "═══════════════════════════════════════════════════════════"
+ echo " L13: VALIDATION & DEPLOYMENT"
+ echo "═══════════════════════════════════════════════════════════"
 
 # 1. Tag Validation
 echo "📋 Validating traceability tags..."
@@ -780,17 +767,17 @@ echo "Build:              $([ $BUILD_RESULT -eq 0 ] && echo '✅ SUCCESS' || ech
 echo "═══════════════════════════════════════════════════════════"
 
 # Update state
-yq -i ".layers.L14_VALIDATION.tag_validation = $TAG_VALID" "$STATE"
-yq -i ".layers.L14_VALIDATION.traceability_matrix = \"docs/generated/traceability_matrix.md\"" "$STATE"
-yq -i ".layers.L14_VALIDATION.security_scan = $SECURITY_RESULT" "$STATE"
-yq -i ".layers.L14_VALIDATION.build_status = $BUILD_RESULT" "$STATE"
+yq -i ".layers.L13_VALIDATION.tag_validation = $TAG_VALID" "$STATE"
+yq -i ".layers.L13_VALIDATION.traceability_matrix = \"docs/generated/traceability_matrix.md\"" "$STATE"
+yq -i ".layers.L13_VALIDATION.security_scan = $SECURITY_RESULT" "$STATE"
+yq -i ".layers.L13_VALIDATION.build_status = $BUILD_RESULT" "$STATE"
 
 if [ $BUILD_RESULT -eq 0 ]; then
-  yq -i ".layers.L14_VALIDATION.status = \"pending_deployment_approval\"" "$STATE"
+  yq -i ".layers.L13_VALIDATION.status = \"pending_deployment_approval\"" "$STATE"
   echo ""
   echo "🚀 Build successful. Awaiting human approval for deployment."
 else
-  yq -i ".layers.L14_VALIDATION.status = \"build_failed\"" "$STATE"
+  yq -i ".layers.L13_VALIDATION.status = \"build_failed\"" "$STATE"
   exit 1
 fi
 ```
@@ -810,11 +797,11 @@ CONFIG_FILE="$SCRIPT_DIR/config.yaml"
 
 main() {
   echo "🚀 SDD Full Automation Workflow Starting..."
-  echo "   Scope: L1 (BRD) → L14 (Production Deployment)"
+  echo "   Scope: L1 (BRD) → L13 (Production Deployment)"
   echo ""
 
   # ═══════════════════════════════════════════════════════════
-  # PHASE 2: Document Generation (L1-L11)
+  # PHASE 2: Document Generation (L1-L10)
   # ═══════════════════════════════════════════════════════════
 
   # Phase 2a: BRD (Human Checkpoint)
@@ -837,24 +824,24 @@ main() {
   ./handlers/checkpoint.sh L5_ADR "docs/ADR/ADR-001.md"
 
   # Phase 2e: Auto-chain SYS → TASKS
-  echo "═══ Layers 6-11: Auto-generation ═══"
-  ./handlers/auto-chain.sh L6 L11
+  echo "═══ Layers 6-10: Auto-generation ═══"
+  ./handlers/auto-chain.sh L6 L10
 
   # ═══════════════════════════════════════════════════════════
-  # PHASE 3: Code Generation (L12)
+  # PHASE 3: Code Generation (L11)
   # ═══════════════════════════════════════════════════════════
 
   echo ""
-  echo "═══ Layer 12: Code Generation ═══"
+  echo "═══ Layer 11: Code Generation ═══"
   ./handlers/code-generator.sh
-  ./handlers/checkpoint.sh L12_CODE "src/"
+  ./handlers/checkpoint.sh L11_CODE "src/"
 
   # ═══════════════════════════════════════════════════════════
-  # PHASE 4: Test Execution (L13)
+  # PHASE 4: Test Execution (L12)
   # ═══════════════════════════════════════════════════════════
 
   echo ""
-  echo "═══ Layer 13: Test Execution ═══"
+  echo "═══ Layer 12: Test Execution ═══"
 
   # Retry loop for failed tests
   MAX_RETRIES=3
@@ -881,13 +868,13 @@ main() {
   fi
 
   # ═══════════════════════════════════════════════════════════
-  # PHASE 5: Validation & Deployment (L14)
+  # PHASE 5: Validation & Deployment (L13)
   # ═══════════════════════════════════════════════════════════
 
   echo ""
-  echo "═══ Layer 14: Validation & Deployment ═══"
+  echo "═══ Layer 13: Validation & Deployment ═══"
   ./handlers/deploy.sh
-  ./handlers/checkpoint.sh L14_VALIDATION "dist/"
+  ./handlers/checkpoint.sh L13_VALIDATION "dist/"
 
   # ═══════════════════════════════════════════════════════════
   # COMPLETE
@@ -900,7 +887,7 @@ main() {
   echo ""
   echo "Generated Artifacts:"
   echo "  📄 Documents: docs/BRD/, docs/PRD/, docs/EARS/, docs/BDD/, docs/ADR/"
-  echo "                docs/SYS/, docs/REQ/, docs/IMPL/, docs/CTR/, docs/SPEC/, docs/TASKS/"
+  echo "                docs/SYS/, docs/REQ/, docs/CTR/, docs/SPEC/, docs/TASKS/"
   echo "  💻 Source:    src/"
   echo "  🧪 Tests:     tests/"
   echo "  📊 Reports:   reports/"
@@ -940,7 +927,7 @@ You are generating Python source code from SDD (Spec-Driven Development) artifac
 2. **Contract Compliance**: All data structures MUST match the CTR (Data Contract) schemas
 3. **BDD Validation**: Code MUST pass all BDD scenarios when tested
 4. **Traceability Tags**: Include cumulative tags in ALL docstrings:
-   - Module-level: All upstream tags (@brd, @prd, @ears, @bdd, @adr, @sys, @req, @impl, @ctr, @spec, @tasks)
+   - Module-level: All upstream tags (@brd, @prd, @ears, @bdd, @adr, @sys, @req, @ctr, @spec, @tasks)
    - Class-level: Relevant subset of tags
    - Function-level: Specific requirement tags (e.g., @req: REQ.03.26.01)
 
@@ -962,7 +949,6 @@ Module/Class/Function description.
 @spec: SPEC-03
 @tasks: TASKS.01.29.03
 
-@impl-status: complete
 """
 \`\`\`
 
@@ -1003,13 +989,12 @@ Generate complete, production-ready Python code.
 | L5 ADR | `architect` | Generator |
 | L6 SYS | `sysadmin` | Generator |
 | L7 REQ | `tech-analyst` | Generator |
-| L8 IMPL | `project-manager` | Generator |
-| L9 CTR | `api-designer` | Generator |
-| L10 SPEC | `tech-lead` | Generator |
-| L11 TASKS | `eng-manager` | Generator |
-| **L12 Code** | `senior-dev` | **Code Generator** |
-| **L13 Tests** | `test-automation` | **Test Executor** |
-| **L14 Validation** | `release-eng` | **Deployment** |
+| L8 CTR | `api-designer` | Generator |
+| L9 SPEC | `tech-lead` | Generator |
+| L10 TASKS | `eng-manager` | Generator |
+| **L11 Code** | `senior-dev` | **Code Generator** |
+| **L12 Tests** | `test-automation` | **Test Executor** |
+| **L13 Validation** | `release-eng` | **Deployment** |
 
 ### Skills Usage (Extended)
 
@@ -1037,9 +1022,9 @@ Generate complete, production-ready Python code.
 │   ├── auto-chain.sh
 │   ├── generate.sh
 │   ├── validation.sh
-│   ├── code-generator.sh            # NEW: L12 handler
-│   ├── test-executor.sh             # NEW: L13 handler
-│   ├── deploy.sh                    # NEW: L14 handler
+│   ├── code-generator.sh            # NEW: L11 handler
+│   ├── test-executor.sh             # NEW: L12 handler
+│   ├── deploy.sh                    # NEW: L13 handler
 │   └── auto-fix.sh                  # NEW: Auto-fix failed tests
 ├── prompts/
 │   ├── code-generator.md            # NEW: Code generation prompt
@@ -1058,7 +1043,7 @@ Generate complete, production-ready Python code.
 
 ### Modifications to Existing Files
 ```
-.aidev/scripts/scaffold_swarm.sh     # Add L12-L14 workflows
+.aidev/scripts/scaffold_swarm.sh     # Add L11-L13 workflows
 .aidev/docs/AGENT_SWARM.md           # Document extended workflow
 work_plans/SDD_AUTOMATION_WORKFLOW.svg  # Update diagram
 ```
@@ -1072,7 +1057,7 @@ work_plans/SDD_AUTOMATION_WORKFLOW.svg  # Update diagram
 Each layer in the SDD framework follows a standardized 12-step generation workflow. This workflow ensures consistent, validated artifact generation with traceability compliance.
 
 **Workflow ID**: LGW-{LAYER_ID}
-**Applies to**: All layers L1-L14
+**Applies to**: All layers L1-L13
 
 ---
 
@@ -1624,7 +1609,7 @@ echo "Build a user authentication system with login, logout, and password reset"
 
 # Verify all artifacts
 ls -la docs/BRD/ docs/PRD/ docs/EARS/ docs/BDD/ docs/ADR/
-ls -la docs/SYS/ docs/REQ/ docs/IMPL/ docs/CTR/ docs/SPEC/ docs/TASKS/
+ls -la docs/SYS/ docs/REQ/ docs/CTR/ docs/SPEC/ docs/TASKS/
 ls -la src/
 ls -la tests/
 ls -la reports/
@@ -1642,9 +1627,9 @@ python -m src.main
 1. **L1 BRD**: Verify human approval flow
 2. **L2 PRD**: Verify human approval flow
 3. **L5 ADR**: Verify human approval flow
-4. **L12 Code**: Verify code review checkpoint
-5. **L13 Tests**: Verify auto-retry on failure
-6. **L14 Validation**: Verify deployment approval
+4. **L11 Code**: Verify code review checkpoint
+5. **L12 Tests**: Verify auto-retry on failure
+6. **L13 Validation**: Verify deployment approval
 
 ---
 
@@ -1652,15 +1637,13 @@ python -m src.main
 
 | Component | Action |
 |-----------|--------|
-| `workflow.sh` | EXTEND with L12-L14 phases |
-| `config.yaml` | EXTEND with L12-L14 configuration |
-| `handlers/code-generator.sh` | CREATE for L12 |
-| `handlers/test-executor.sh` | CREATE for L13 |
-| `handlers/deploy.sh` | CREATE for L14 |
-| `handlers/auto-fix.sh` | CREATE for auto-fix |
-| `prompts/code-generator.md` | CREATE code generation prompt |
-| `scripts/*.py` | CREATE validation scripts |
-| Existing plugins (`senior-dev`, `test-automation`, `release-eng`) | REUSE for L12-L14 |
+| `workflow.sh` | EXTEND with L11-L13 phases |
+| `config.yaml` | EXTEND with L11-L13 configuration |
+| `handlers/code-generator.sh` | CREATE for L11 |
+| `handlers/test-executor.sh` | CREATE for L12 |
+| `handlers/deploy.sh` | CREATE for L13 |
+| Existing plugins (`senior-dev`, `test-automation`, `release-eng`) | REUSE for L11-L13 |
+
 | `SDD_AUTOMATION_WORKFLOW.svg` | UPDATE with extended diagram |
 
 ---
@@ -1669,7 +1652,7 @@ python -m src.main
 
 | Metric | Value |
 |--------|-------|
-| Total Layers | 14 |
+| Total Layers | 13 |
 | Human Checkpoints | 5 (BRD, PRD, ADR, Code, Deploy) |
 | Automated Layers | 9 |
 | Min Readiness Score | 90% |

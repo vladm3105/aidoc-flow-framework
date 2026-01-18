@@ -39,7 +39,7 @@ BRDs transform strategic business goals into concrete, actionable requirements t
 
 BRDs are the **first step** in specification-driven development within the complete SDD workflow:
 
-**Authoritative flow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code. See [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) for details.
+**Authoritative flow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS → Code. See [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) for details.
 
 ## ADR References in BRD
 
@@ -49,7 +49,7 @@ BRDs are the **first step** in specification-driven development within the compl
 
 ✅ **DO** include "Architecture Decision Requirements" section describing what decisions are needed
 
-**Correct Workflow Order**: **BRD** → PRD → EARS → BDD → **ADR** → SYS → REQ → IMPL → CTR → SPEC → TASKS
+**Correct Workflow Order**: **BRD** → PRD → EARS → BDD → **ADR** → SYS → REQ → CTR → SPEC → TASKS
 
 **Rationale**:
 - 01_BRD/PRD identify **WHAT** architectural decisions are needed
@@ -408,7 +408,7 @@ BRDs now include PRD-ready scoring (mirroring REQ SPEC-ready scoring) to ensure 
 ### Workflow Integration
 
 ```
-BRD (with PRD-Ready Score ≥90/100) → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code
+BRD (with PRD-Ready Score ≥90/100) → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS → Code
 ```
 
 **Quality Gate**: BRD documents must achieve ≥90% PRD-ready score before proceeding to PRD phase, ensuring business requirements are sufficiently mature for product implementation planning.

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SPEC (Technical Specification) Validator - Layer 10
+SPEC (Technical Specification) Validator - Layer 9
 
 Validates SPEC YAML documents against SPEC_SCHEMA.yaml requirements.
 SPEC is the most complex artifact in the SDD framework, requiring
@@ -87,11 +87,11 @@ PASCAL_CASE_PATTERN = r"^[A-Z][a-zA-Z0-9]+$"
 # Method name pattern (snake_case, allowing dunder methods like __init__)
 SNAKE_CASE_PATTERN = r"^_{0,2}[a-z][a-z0-9_]*_{0,2}$"
 
-# Required cumulative tags (Layer 10)
+# Required cumulative tags (Layer 9)
 REQUIRED_CUMULATIVE_TAGS = ["brd", "prd", "ears", "bdd", "adr", "sys", "req"]
 
 # Optional cumulative tags
-OPTIONAL_CUMULATIVE_TAGS = ["impl", "ctr"]
+OPTIONAL_CUMULATIVE_TAGS = ["ctr"]
 
 
 # =============================================================================
@@ -317,7 +317,7 @@ def validate_traceability(data: Dict, result: ValidationResult):
         if missing_tags:
             result.add_warning(
                 "SPEC-W002",
-                f"Missing cumulative tags (Layer 10 requires 7): {', '.join(missing_tags)}"
+                f"Missing cumulative tags (Layer 9 requires 7): {', '.join(missing_tags)}"
             )
 
 
@@ -605,7 +605,7 @@ def validate_directory(dir_path: Path) -> List[ValidationResult]:
 def main():
     """CLI entry point."""
     parser = argparse.ArgumentParser(
-        description="SPEC Document Validator (Layer 10)",
+        description="SPEC Document Validator (Layer 9)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

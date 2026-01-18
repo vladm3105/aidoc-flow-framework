@@ -52,14 +52,31 @@ count_files() {
 # -----------------------------------------------------------------------------
 # CORPUS-01: Placeholder Text Detection
 # -----------------------------------------------------------------------------
+# PURPOSE: Detect LITERAL placeholder text patterns that indicate incomplete
+#          references to documents that already exist.
+#
+# IMPORTANT: Uses grep -F (fixed string matching) to match literal patterns.
+#            Patterns like "(TBD)" must match exactly "(TBD)", not just "TBD".
+#
+# FALSE POSITIVE PREVENTION:
+#   - Uses grep -F to avoid regex interpretation of special characters
+#   - Parentheses and brackets are matched literally, not as regex operators
+#   - "TBD" in downstream reference tables (e.g., "| SPEC-NN | TBD |") is
+#     EXPECTED and NOT flagged because it doesn't match "(TBD)" or "[TBD]"
+# -----------------------------------------------------------------------------
 
 check_placeholder_text() {
   echo "--- CORPUS-01: Placeholder Text Detection ---"
 
   local found=0
+  # These patterns must be matched LITERALLY (not as regex)
+  # - "(TBD)" matches only "(TBD)", not "TBD" alone
+  # - "[TODO]" matches only "[TODO]", not "TODO" alone
   local patterns=("(future REQ)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
 
   for pattern in "${patterns[@]}"; do
+    # Use grep -F for FIXED STRING matching (no regex interpretation)
+    # This prevents parentheses/brackets from being treated as regex operators
     while IFS= read -r line; do
       if [[ -n "$line" ]]; then
         # Extract REQ reference if present
@@ -74,8 +91,9 @@ check_placeholder_text() {
           fi
         fi
       fi
-    done < <(find "$REQ_DIR" -name "*.md" -exec grep -Hn "$pattern" {} \; 2>/dev/null || true)
+    done < <(find "$REQ_DIR" -name "*.md" -exec grep -FHn "$pattern" {} \; 2>/dev/null || true)
   done
+  echo "DEBUG: Finished processing all files..."
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
@@ -152,6 +170,7 @@ check_index_sync() {
       break
     fi
   done
+  echo "DEBUG: Finished processing all files..."
 
   if [[ -z "$index_file" || ! -f "$index_file" ]]; then
     echo -e "${YELLOW}  Index file not found: $REQ_DIR/REQ-000_index.md${NC}"
@@ -249,18 +268,31 @@ check_glossary() {
 
 check_element_ids() {
   echo ""
-  echo "--- CORPUS-08: Element ID Uniqueness ---"
+  echo "--- CORPUS-08: Element ID Uniqueness (Cross-File) ---"
 
+  # Check for IDs that appear in multiple different files
+  # Within-file duplicates are acceptable (same ID in AC and traceability sections)
   local duplicates
-  duplicates=$(find "$REQ_DIR" -name "REQ-*.md" -exec grep -ohE "REQ\.[0-9]+\.[0-9]+\.[0-9]+" {} \; 2>/dev/null | sort | uniq -d || true)
+  duplicates=$(
+    for f in "$REQ_DIR"/REQ-*.md; do
+      [[ -f "$f" ]] || continue
+      # Get unique IDs from this file only
+      grep -ohE "REQ\.[0-9]+\.[0-9]+\.[0-9]+" "$f" 2>/dev/null | sort -u
+    done | sort | uniq -d
+  )
 
+  local dup_count=0
   if [[ -n "$duplicates" ]]; then
-    echo "$duplicates" | while read dup; do
-      echo -e "${RED}CORPUS-E004: Duplicate element ID: $dup${NC}"
+    while IFS= read -r dup; do
+      [[ -z "$dup" ]] && continue
+      echo -e "${RED}CORPUS-E004: Duplicate element ID: $dup (in multiple files)${NC}"
       ((ERRORS++)) || true
-    done
-  else
-    echo -e "${GREEN}  ✓ No duplicate element IDs${NC}"
+      ((dup_count++)) || true
+    done <<< "$duplicates"
+  fi
+
+  if [[ $dup_count -eq 0 ]]; then
+    echo -e "${GREEN}  ✓ No cross-file duplicate element IDs${NC}"
   fi
 }
 
@@ -336,12 +368,18 @@ check_traceability() {
     if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
     local has_brd has_prd has_ears has_bdd has_adr has_sys
-    has_brd=$(grep -c "@brd:" "$f" 2>/dev/null || echo 0)
-    has_prd=$(grep -c "@prd:" "$f" 2>/dev/null || echo 0)
-    has_ears=$(grep -c "@ears:" "$f" 2>/dev/null || echo 0)
-    has_bdd=$(grep -c "@bdd:" "$f" 2>/dev/null || echo 0)
-    has_adr=$(grep -c "@adr:" "$f" 2>/dev/null || echo 0)
-    has_sys=$(grep -c "@sys:" "$f" 2>/dev/null || echo 0)
+    has_brd=$(grep -c "@brd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_brd" || ! "$has_brd" =~ ^[0-9]+$ ]] && has_brd=0
+    has_prd=$(grep -c "@prd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_prd" || ! "$has_prd" =~ ^[0-9]+$ ]] && has_prd=0
+    has_ears=$(grep -c "@ears:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_ears" || ! "$has_ears" =~ ^[0-9]+$ ]] && has_ears=0
+    has_bdd=$(grep -c "@bdd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_bdd" || ! "$has_bdd" =~ ^[0-9]+$ ]] && has_bdd=0
+    has_adr=$(grep -c "@adr:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_adr" || ! "$has_adr" =~ ^[0-9]+$ ]] && has_adr=0
+    has_sys=$(grep -c "@sys:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_sys" || ! "$has_sys" =~ ^[0-9]+$ ]] && has_sys=0
 
     if [[ $has_brd -eq 0 ]]; then
       echo -e "${RED}CORPUS-E011: $(basename $f) missing @brd traceability tag${NC}"
@@ -386,31 +424,98 @@ check_traceability() {
 }
 
 # -----------------------------------------------------------------------------
+# CORPUS-22: Upstream TBD References
+# -----------------------------------------------------------------------------
+# PURPOSE: Detect TBD placeholders in UPSTREAM traceability references.
+#          Upstream documents (BRD, PRD, EARS, BDD, ADR, SYS) must exist
+#          BEFORE REQ creation, so TBD is not acceptable for these.
+#
+# NOTE: This is different from downstream TBD (SPEC, TASKS) which is expected
+#       because those documents are created AFTER REQ.
+# -----------------------------------------------------------------------------
+
+check_upstream_tbd() {
+  echo ""
+  echo "--- CORPUS-22: Upstream TBD References ---"
+
+  local found=0
+  # Upstream tags that must have real references (not TBD)
+  local upstream_tags=("@brd:" "@prd:" "@ears:" "@bdd:" "@adr:" "@sys:")
+
+  while IFS= read -r -d '' f; do
+    if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
+
+    for tag in "${upstream_tags[@]}"; do
+      # Check if tag exists with TBD value (various formats)
+      # Matches: @brd: TBD, @brd:TBD, @brd: (TBD), @brd: [TBD]
+      if grep -qE "${tag}\s*(TBD|\(TBD\)|\[TBD\])" "$f" 2>/dev/null; then
+        local tag_name="${tag%:}"  # Remove trailing colon for display
+        echo -e "${RED}CORPUS-E022: $(basename $f) has TBD for upstream ${tag_name} reference${NC}"
+        echo "  → Upstream documents must exist before REQ creation"
+        ((ERRORS++)) || true
+        ((found++)) || true
+      fi
+    done
+  echo "DEBUG: Finished processing all files..."
+  done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
+
+  if [[ $found -eq 0 ]]; then
+    echo -e "${GREEN}  ✓ No TBD placeholders in upstream references${NC}"
+  fi
+}
+
+# -----------------------------------------------------------------------------
 # CORPUS-12: 12-Section Format Compliance
 # -----------------------------------------------------------------------------
 
 check_section_format() {
   echo ""
-  echo "--- CORPUS-12: 12-Section Format Compliance (REQ v3.0) ---"
+  echo "--- CORPUS-12: 12-Section Format Compliance (REQ v3.0 / MVP) ---"
 
   local found=0
-  local required_sections=("Requirement Statement" "Priority" "Source" "Rationale"
-                           "Acceptance Criteria" "Dependencies" "Traceability" "Verification")
+
+  # Required sections with alternatives for MVP template formats
+  # Format: "LegacyName|MVPAltPattern1|MVPAltPattern2|..."
+  # Supports: Document Control, Requirement Overview, Metadata variants
+  local section_patterns=(
+    "Requirement Statement|Statement|Requirement Description|Purpose Statement"
+    "Priority|Document Control|Requirement Overview|Metadata"
+    "Source|Source Document|Document Control|Requirement Overview|SYS Element|Metadata|SYS Reference"
+    "Rationale|Context|Use Case|Scope Boundaries|Scope"
+    "Acceptance Criteria"
+    "Dependencies|Implementation Notes|Integration Points"
+    "Traceability"
+    "Verification|Testing Requirements|Test|Validation"
+  )
 
   while IFS= read -r -d '' f; do
     if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
-    for section in "${required_sections[@]}"; do
-      if ! grep -qE "^#+.*$section" "$f" 2>/dev/null; then
-        echo -e "${RED}CORPUS-E017: $(basename $f) missing '$section' section${NC}"
+    for pattern_set in "${section_patterns[@]}"; do
+      local section_found=false
+      # Split alternatives by |
+      IFS='|' read -ra patterns <<< "$pattern_set"
+      local primary_name="${patterns[0]}"
+
+      for pattern in "${patterns[@]}"; do
+        if grep -qiE "^#+.*$pattern" "$f" 2>/dev/null; then
+          section_found=true
+          break
+        fi
+      done
+  echo "DEBUG: Finished processing all files..."
+
+      if [[ "$section_found" == "false" ]]; then
+        echo -e "${RED}CORPUS-E017: $(basename $f) missing '$primary_name' section${NC}"
         ((ERRORS++)) || true
         ((found++)) || true
       fi
     done
+  echo "DEBUG: Finished processing all files..."
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All REQ follow 12-section format${NC}"
+    echo -e "${GREEN}  ✓ All REQ follow 12-section format (MVP/Legacy)${NC}"
   fi
 }
 
@@ -447,6 +552,7 @@ check_domain_classification() {
         break
       fi
     done
+  echo "DEBUG: Finished processing all files..."
 
     if [[ $valid -eq 0 ]]; then
       echo -e "${YELLOW}CORPUS-W013: $(basename $f) is in unrecognized domain '$dir_name'${NC}"
@@ -540,9 +646,13 @@ check_acceptance_criteria() {
     if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
     # Count acceptance criteria (looking for numbered lists after AC header)
+    # Note: Use tr -d '\n' to ensure single numeric value (grep -c can output multiple lines)
     local ac_count
-    ac_count=$(grep -cE "^[0-9]+\.|^- \[" "$f" 2>/dev/null || echo 0)
+    ac_count=$(grep -cE "^[0-9]+\.|^- \[" "$f" 2>/dev/null | tr -d '\n' || echo "0")
+    # Default to 0 if empty
+    [[ -z "$ac_count" ]] && ac_count=0
 
+    # Use arithmetic comparison
     if [[ $ac_count -lt 3 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
         echo -e "${YELLOW}CORPUS-W016: $(basename $f) may have insufficient acceptance criteria ($ac_count found)${NC}"
@@ -620,6 +730,7 @@ main() {
   check_priority_distribution
   check_file_size
   check_traceability
+  check_upstream_tbd
   check_section_format
   check_domain_classification
   check_spec_ready

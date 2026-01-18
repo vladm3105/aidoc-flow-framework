@@ -2,7 +2,7 @@
 # =============================================================================
 # CTR Corpus Validation Script
 # Validates entire CTR document set before SPEC creation
-# Layer 9 (Optional) → Layer 10 transition gate
+# Layer 8 (Optional) → Layer 9 transition gate
 # =============================================================================
 
 set -euo pipefail
@@ -36,7 +36,7 @@ print_header() {
   echo "=========================================="
   echo "Directory: $CTR_DIR"
   echo "Date: $(TZ=America/New_York date '+%Y-%m-%d %H:%M:%S %Z')"
-  echo "Note: CTR is an optional layer (Layer 9)"
+  echo "Note: CTR is an optional layer (Layer 8)"
   echo ""
 }
 
@@ -166,7 +166,8 @@ check_visualization() {
     if [[ "$(basename "$f")" =~ _index|TEMPLATE ]]; then continue; fi
     ((total++)) || true
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
     if [[ $diagram_count -eq 0 ]]; then
       ((found++)) || true
     fi
@@ -358,7 +359,8 @@ check_version_compat() {
 
     # Check for breaking change documentation
     local has_breaking
-    has_breaking=$(grep -ciE "breaking.*change|deprecat|migration" "$f" 2>/dev/null || echo 0)
+    has_breaking=$(grep -ciE "breaking.*change|deprecat|migration" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_breaking" || ! "$has_breaking" =~ ^[0-9]+$ ]] && has_breaking=0
 
     # Check version number
     local version

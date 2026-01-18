@@ -57,7 +57,7 @@ PRDs are the **starting point** of specification-driven development within the c
 
 ✅ **DO** include "Architecture Decision Requirements" section describing what decisions are needed
 
-**Correct Workflow Order**: BRD → PRD → EARS → BDD → **ADR** → SYS → REQ → IMPL → CTR → SPEC → TASKS
+**Correct Workflow Order**: BRD → PRD → EARS → BDD → **ADR** → SYS → REQ → CTR → SPEC → TASKS
 
 **Rationale**:
 - 01_BRD/PRD identify **WHAT** architectural decisions are needed
@@ -90,7 +90,7 @@ All PRDs include traceability links to related artifacts (note: ADR links added 
 @requirement:[REQ-NN](../07_REQ/.../REQ-NN_...md#REQ-NN)
 @SYS:[SYS-NN](../06_SYS/SYS-NN_...md)
 @EARS:[EARS-NN](../03_EARS/EARS-NN_...md)
-@spec:[SPEC-NN](../10_SPEC/.../SPEC-NN_...yaml)
+@spec:[SPEC-NN](../09_SPEC/.../SPEC-NN_...yaml)
 @bdd:[BDD-NN.SS:scenarios](../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
 
 Note: @adr tags added to PRD AFTER ADRs are created (not during initial PRD creation)

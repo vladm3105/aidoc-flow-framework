@@ -214,7 +214,8 @@ To discover which downstream documents reference a specific SYS, use reverse tra
 grep -r "@sys: SYS.12" ../07_REQ/
 
 # Find all SPEC documents referencing any SYS
-grep -r "@sys:" ../10_SPEC/
+  grep -r "@sys:" ../09_SPEC/
+
 
 # Generate reverse traceability report
 python scripts/generate_reverse_traceability.py \
@@ -227,7 +228,7 @@ python scripts/generate_reverse_traceability.py \
 | Downstream Type | Layer | Required Upstream Tags | SYS Relationship |
 |-----------------|-------|------------------------|------------------|
 | REQ | 7 | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys` | Atomic requirements decompose system requirements |
-| SPEC | 10 | All upstream layers | Specifications detail system requirement implementation |
+| SPEC | 9 | All upstream layers | Specifications detail system requirement implementation |
 
 ---
 
@@ -278,7 +279,7 @@ graph TD
     style SYS002 fill:#fff3e0
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
 
 ---
 
@@ -318,4 +319,4 @@ graph TD
 - **SYS MVP Template**: [SYS-MVP-TEMPLATE.md](SYS-MVP-TEMPLATE.md) (default)
 - **SYS Full Template**: (removed from workflow)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
-- **Related Matrices**: [ADR](../05_ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md), [REQ](../07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../10_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Related Matrices**: [ADR](../05_ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md), [REQ](../07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)

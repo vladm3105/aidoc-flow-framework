@@ -14,6 +14,7 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
+  complexity: 1 # 1-5 scale
 ---
 
 <!--
@@ -86,7 +87,7 @@ custom_fields:
 | **SYS-Ready Score** | [Score]/100 (Target: ≥85 for MVP) |
 | **EARS-Ready Score** | [Score]/100 (Target: ≥85 for MVP) |
 
-### Document Revision History
+### 1.1 Document Revision History
 
 | Version | Date | Author | Changes Made |
 |---------|------|--------|--------------|
@@ -98,13 +99,13 @@ custom_fields:
 
 [2-3 sentences: What problem does this MVP solve? Who benefits? What's the expected business impact?]
 
-### MVP Hypothesis
+### 2.1 MVP Hypothesis
 
 **We believe that** [target users] **will** [key behavior/outcome] **if we** [MVP solution].
 
 **We will know this is true when** [measurable validation criteria].
 
-### Timeline Overview
+### 2.2 Timeline Overview
 
 | Phase | Dates | Duration |
 |-------|-------|----------|
@@ -117,7 +118,7 @@ custom_fields:
 
 ## 3. Problem Statement
 
-### Current State
+### 3.1 Current State
 
 [Brief description of the current situation and pain points - 3-5 bullet points]
 
@@ -125,7 +126,7 @@ custom_fields:
 - [Pain point 2]: [Impact]
 - [Pain point 3]: [Impact]
 
-### Business Impact
+### 3.2 Business Impact
 
 [Quantify the problem - use available data]
 
@@ -133,7 +134,7 @@ custom_fields:
 - Customer satisfaction impact: [estimate]
 - Competitive disadvantage: [brief description]
 
-### Opportunity
+### 3.3 Opportunity
 
 [1-2 sentences: What market or business opportunity does this MVP address?]
 
@@ -141,7 +142,7 @@ custom_fields:
 
 ## 4. Target Audience & User Personas
 
-### Primary User Persona
+### 4.1 Primary User Persona
 
 **[Persona Name]** - [Role/Description]
 
@@ -150,7 +151,7 @@ custom_fields:
 - **Success criteria**: [What outcome they need]
 - **Usage frequency**: [How often they'll use the product]
 
-### Secondary Users (Optional)
+### 4.2 Secondary Users (Optional)
 
 [List any secondary users if relevant for MVP - keep brief]
 
@@ -158,7 +159,7 @@ custom_fields:
 
 ## 5. Success Metrics (KPIs)
 
-### MVP Validation Metrics (30-Day)
+### 5.1 MVP Validation Metrics (30-Day)
 
 | Metric | Baseline | Target | Measurement |
 |--------|----------|--------|-------------|
@@ -166,14 +167,14 @@ custom_fields:
 | [Engagement metric] | N/A | [target] | [how measured] |
 | [Satisfaction metric] | N/A | ≥[target]/5 | User survey |
 
-### Business Success Metrics (90-Day)
+### 5.2 Business Success Metrics (90-Day)
 
 | Metric | Target | Decision Threshold |
 |--------|--------|-------------------|
 | [Primary business metric] | [target] | < [threshold] = Pivot |
 | [Secondary metric] | [target] | < [threshold] = Iterate |
 
-### Go/No-Go Decision Gate
+### 5.3 Go/No-Go Decision Gate
 
 **At MVP+90 days**, evaluate:
 - ✅ **Proceed to Full Product**: All targets met
@@ -184,7 +185,7 @@ custom_fields:
 
 ## 6. Scope & Requirements
 
-### In-Scope (MVP Core Features)
+### 6.1 In-Scope (MVP Core Features)
 
 [List 5-15 must-have features for MVP - prioritized]
 
@@ -196,17 +197,17 @@ custom_fields:
 | 4 | [Feature name] | P2-Should | [Brief description] |
 | 5 | [Feature name] | P2-Should | [Brief description] |
 
-### Dependencies (keep short)
+### 6.2 Dependencies (keep short)
 - Technical: [System/API/infra] — status, impact
 - Business: [Org/process prerequisite] — owner, date
 - External: [Vendor/regulatory] — status, impact
 
-### Out-of-Scope (Post-MVP)
+### 6.3 Out-of-Scope (Post-MVP)
 - [Feature]: Deferred to Phase 2 - [reason]
 - [Feature]: Deferred to Phase 2 - [reason]
 - [Integration]: Not included - [reason]
 
-### Dependencies
+### 6.4 Dependencies
 
 | Dependency | Status | Impact | Owner |
 |------------|--------|--------|-------|
@@ -221,7 +222,7 @@ custom_fields:
 
 **Scope split**: PRD = roles + story summaries; EARS = detailed behaviors; BDD = executable scenarios.
 
-### Core User Stories
+### 7.1 Core User Stories
 
 | ID | User Story | Priority | Acceptance Criteria |
 |----|------------|----------|---------------------|
@@ -231,13 +232,13 @@ custom_fields:
 | PRD.NN.09.04 | As a [persona], I want to [action], so that [benefit] | P2 | [Brief criteria] |
 | PRD.NN.09.05 | As a [persona], I want to [action], so that [benefit] | P2 | [Brief criteria] |
 
-### User Roles (brief)
+### 7.2 User Roles (brief)
 | Role | Purpose | Permissions |
 |------|---------|-------------|
 | [Role] | [What they do] | [Access level] |
 | [Role] | [What they do] | [Access level] |
 
-### Story Summary
+### 7.3 Story Summary
 
 | Priority | Count | Notes |
 |----------|-------|-------|
@@ -249,19 +250,19 @@ custom_fields:
 
 ## 8. Functional Requirements
 
-### Core Capabilities (brief)
+### 8.1 Core Capabilities (brief)
 | ID | Capability | Success Criteria |
 |----|------------|------------------|
 | PRD.NN.01.01 | [Capability name] | [How to validate] |
 | PRD.NN.01.02 | [Capability name] | [How to validate] |
 | PRD.NN.01.03 | [Capability name] | [How to validate] |
 
-### User Journey (happy path)
+### 8.2 User Journey (happy path)
 1. User [action] → System [response]
 2. User [action] → System [response]
 3. [Outcome]
 
-### Error Handling (MVP)
+### 8.3 Error Handling (MVP)
 | Error Scenario | User Experience | System Behavior |
 |----------------|-----------------|-----------------|
 | [Error type] | [What user sees] | [What system does] |
@@ -270,19 +271,19 @@ custom_fields:
 
 ## 9. Quality Attributes
 
-### Performance (baseline)
+### 9.1 Performance (baseline)
 | Metric | Target | Notes |
 |--------|--------|-------|
 | API Response Time (p95) | < [X]ms | Core endpoints |
 | Page Load Time | < [X]s | Primary screens |
 | Concurrent Users | [X] | MVP capacity |
 
-### Security (baseline)
+### 9.2 Security (baseline)
 - [ ] Authentication approach noted
 - [ ] Encryption at transit/rest
 - [ ] Input validation in place
 
-### Availability (baseline)
+### 9.3 Availability (baseline)
 - Uptime target: [95-99]% (MVP)
 - Planned maintenance window: [if any]
 
@@ -399,7 +400,7 @@ custom_fields:
 
 ## 13. Implementation Approach
 
-### MVP Development Phases
+### 13.1 MVP Development Phases
 
 | Phase | Duration | Deliverables | Success Criteria |
 |-------|----------|--------------|------------------|
@@ -407,7 +408,7 @@ custom_fields:
 | **Phase 2: Polish** | [X] weeks | [Secondary features, bug fixes] | [Criteria] |
 | **Phase 3: Launch** | [X] days | [Deployment, monitoring] | [Criteria] |
 
-### Testing Strategy (MVP)
+### 13.2 Testing Strategy (MVP)
 
 | Test Type | Coverage | Responsible |
 |-----------|----------|-------------|
@@ -420,7 +421,7 @@ custom_fields:
 
 ## 14. Acceptance Criteria
 
-### Acceptance Criteria (trimmed)
+### 14.1 Acceptance Criteria (trimmed)
 - Business: P1 features deliver observable user value; KPIs instrumented.
 - Technical: Core journeys pass; perf targets met; logging/monitoring enabled; security baseline checked.
 - QA: Critical bugs resolved; basic docs/support ready; analytics tracking configured.
@@ -438,7 +439,7 @@ custom_fields:
 
 ## 15. Budget & Resources
 
-### MVP Development Cost
+### 15.1 MVP Development Cost
 
 | Category | Estimate | Notes |
 |----------|----------|-------|
@@ -447,7 +448,7 @@ custom_fields:
 | Third-party services | $[X] | APIs, tools |
 | **Total MVP Cost** | **$[X]** | |
 
-### ROI Hypothesis
+### 15.2 ROI Hypothesis
 
 **Investment**: $[MVP cost]
 
@@ -461,14 +462,14 @@ custom_fields:
 
 ## 16. Traceability
 
-### Upstream References
+### 16.1 Upstream References
 
 | Source | Document | Relationship |
 |--------|----------|--------------|
 | BRD | @brd: BRD.NN.TT.SS | Business requirements source |
 | Strategy | [Strategic document] | Strategic alignment |
 
-### Downstream Artifacts
+### 16.2 Downstream Artifacts
 
 | Artifact Type | Status | Notes |
 |---------------|--------|-------|
@@ -476,7 +477,7 @@ custom_fields:
 | BDD | TBD | Created after EARS |
 | ADR | TBD | Created for selected architecture decisions |
 
-### Traceability Tags
+### 16.3 Traceability Tags
 
 ```markdown
 @brd: BRD.NN.TT.SS
@@ -495,16 +496,16 @@ custom_fields:
 
 ---
 
-## Appendix A: Future Roadmap (Post-MVP)
+## 18. Appendix A: Future Roadmap (Post-MVP)
 
-### Phase 2 Features (If MVP Succeeds)
+### 18.1 Phase 2 Features (If MVP Succeeds)
 
 | Feature | Priority | Estimated Effort | Dependency |
 |---------|----------|------------------|------------|
 | [Feature] | P1 | [X] weeks | MVP complete |
 | [Feature] | P2 | [X] weeks | [Dependency] |
 
-### Scaling Considerations
+### 18.2 Scaling Considerations
 
 [Brief notes on what needs to change for full product scale]
 
@@ -514,9 +515,9 @@ custom_fields:
 
 ---
 
-## Migration to Full PRD Template
+## 19. Migration to Full PRD Template
 
-### When to Migrate
+### 19.1 When to Migrate
 
 - [ ] MVP validation complete and proceeding to full product
 - [ ] Feature count exceeds 20
@@ -524,7 +525,7 @@ custom_fields:
 - [ ] Require comprehensive non-functional requirements
 - [ ] Enterprise stakeholder communication required
 
-### Migration Steps
+### 19.2 Migration Steps
 
 2. **Transfer core content**: Map MVP sections to full template (see table below)
 3. **Keep monolithic**: Maintain a single-file document; defer any sectioning to the full framework phase.
@@ -533,7 +534,7 @@ custom_fields:
 6. **Archive MVP version**: Move to archive with "superseded by PRD-NN" note
 7. **Run validation**: Execute `python3 scripts/validate_prd.py` on new document
 
-### Section Mapping (MVP → Full)
+### 19.3 Section Mapping (MVP → Full)
 
 | MVP Section | Full Template Section |
 |-------------|-----------------------|

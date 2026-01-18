@@ -972,7 +972,7 @@ Business Rules Count?
 
 #### Edge Case 2: Quantitative Thresholds - Customer SLA vs Technical Metrics
 
-**Rule**: Keep customer-facing SLAs and business outcomes; remove technical performance metrics (defer to 02_PRD/SPEC).
+**Rule**: Keep customer-facing SLAs and business outcomes; remove technical performance metrics (defer to 09_SPEC/10_TASKS).
 
 **Customer-Facing SLAs (KEEP)**:
 - ✅ "95% of transactions complete in <15 minutes" (customer experience requirement)
@@ -1089,7 +1089,7 @@ if (amount >= 501 && amount <= 2000) {
 
 #### Edge Case 6: ML Model Specifications (AI Agent BRDs)
 
-**Rule**: Extract business risk policies, scoring thresholds, and operational outcomes; move ML model architecture to 02_PRD/SPEC.
+**Rule**: Extract business risk policies, scoring thresholds, and operational outcomes; move ML model architecture to 09_SPEC/10_TASKS.
 
 **PRD-Level Content (REMOVE)**:
 - ❌ Feature extraction code: `features = ['transaction_amount', 'device_risk_score', 'velocity_24h']`
@@ -1129,7 +1129,7 @@ if (amount >= 501 && amount <= 2000) {
 
 **Context**: Multi-region requirements (US, EU, APAC) involve both business variations (different regulations, limits, partners) and infrastructure concerns (data residency, latency). BRDs focus on business variations only.
 
-**Infrastructure Content (REMOVE to 02_PRD/SPEC)**:
+**Infrastructure Content (REMOVE to 09_SPEC/10_TASKS)**:
 - ❌ Cloud region specifications: "Deploy to us-east-1 and eu-west-1"
 - ❌ Data residency implementation: "PII stored in region-local PostgreSQL"
 - ❌ CDN and latency optimization: "Use CloudFront edge locations"
@@ -1188,7 +1188,7 @@ if (amount >= 501 && amount <= 2000) {
 
 **Context**: Retry policies for failed transactions involve business decisions (when to retry, customer notification, escalation) and technical implementation (exponential backoff, circuit breakers). BRDs capture business policies only.
 
-**Technical Content (REMOVE to 02_PRD/SPEC)**:
+**Technical Content (REMOVE to 09_SPEC/10_TASKS)**:
 - ❌ Retry implementation: "Exponential backoff with jitter: delay = base * 2^attempt + random(0, 1000ms)"
 - ❌ Circuit breaker configuration: "Trip after 5 failures, half-open after 30s"
 - ❌ Queue implementation: "Dead letter queue after 3 retries"
@@ -1248,7 +1248,7 @@ if (amount >= 501 && amount <= 2000) {
 - Retry with silent recovery: +1 complexity
 - Retry with customer notification and escalation: +2 complexity
 
-**Cross-Reference Pattern**: "Retry implementation patterns documented in SPEC-XXX Transaction Retry Handling"
+**Cross-Reference Pattern**: "Retry implementation patterns documented in 09_SPEC/SPEC-XXX Transaction Retry Handling or 10_TASKS/TASKS-XXX implementation notes"
 
 ---
 
@@ -1365,16 +1365,16 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 
 **Required Table Format**:
 
-| Functional Requirement | Downstream SPEC (Planned) | Downstream IMPL (Planned) | Status |
+| Functional Requirement | Downstream CTR (Planned) | Downstream SPEC (Planned) | Status |
 |------------------------|---------------------------|---------------------------|--------|
-| BRD.NN.001: [Requirement title] | SPEC-XXX-01: [Specification name] | IMPL-XXX-01: [Implementation name] | Planned |
+| BRD.NN.001: [Requirement title] | CTR-XXX: [Contract name] | SPEC-XXX-01: [Specification name] | Planned |
 
 **Requirements**:
 
 - Every Functional Requirement (section 4) MUST appear in this table
-- Downstream artifacts initially marked "Planned" (created during 02_PRD/SPEC phases)
+- Downstream artifacts initially marked "Planned" (created during 08_CTR/09_SPEC/10_TASKS phases)
 - SPEC-XXX format: Use BRD ID as XXX (e.g., BRD-05 → SPEC-05.1)
-- IMPL-XXX format: Use BRD ID as XXX (e.g., BRD-05 → IMPL-05.1)
+- CTR-XXX format: Use BRD ID as XXX (e.g., BRD-05 → CTR-05)
 
 **Forward Traceability**: Enables impact analysis when changing functional requirements
 
@@ -1459,14 +1459,14 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 | Category | Total Items | Traced Forward | Traced Backward | Coverage % |
 |----------|-------------|----------------|-----------------|------------|
 | Business Objectives | [Count] | [Count with FR links] | N/A | [%] |
-| Functional Requirements | [Count] | [Count with SPEC links] | [Count with BO links] | [%] |
-| Quality Attributes | [Count] | [Count with SPEC links] | [Count with BO links] | [%] |
+| Functional Requirements | [Count] | [Count with CTR/SPEC links] | [Count with BO links] | [%] |
+| Quality Attributes | [Count] | [Count with CTR/SPEC links] | [Count with BO links] | [%] |
 | User Stories | [Count] | [Count with FR links] | [Count with BO links] | [%] |
 
 **Traceability Health Score**: [X]% (Target: ≥90%)
 
 **Calculation**:
-- Forward traceability: Percentage of items with downstream links (to SPECs, IMPLs)
+- Forward traceability: Percentage of items with downstream links (to CTRs and SPECs)
 - Backward traceability: Percentage of items with upstream links (to Business Objectives)
 - Health Score: Average of all coverage percentages
 - Target: ≥90% for BRD approval
@@ -1475,7 +1475,7 @@ The traceability matrix provides three levels of bidirectional mapping to ensure
 - **Zero Orphaned Objectives**: Every BO must link to at least one FR
 - **Zero Orphaned FRs**: Every FR must link to at least one BO
 - **Zero Orphaned User Stories**: Every US must link to at least one FR
-- **Complete Forward Links**: Every FR/QA must have planned downstream SPEC
+- **Complete Forward Links**: Every FR/QA must have planned downstream CTR and SPEC
 
 ### 8.5 Element ID Patterns in Index Files (MANDATORY for Split BRDs)
 
@@ -1605,7 +1605,7 @@ For projects with existing strategy documents:
 **Required Traceability Fields**:
 
 - **Upstream Sources**: Business strategy documents (domain-specific business logic sections)
-- **Downstream Artifacts**: PRD, SYS, EARS, BDD, REQ sequences
+- **Downstream Artifacts**: PRD, SYS, EARS, BDD, REQ, CTR, SPEC, TASKS sequences
 - **Strategy References**: Specific sections from strategy documents
 - **Business Rationale**: Business justification for each requirement
 - **Acceptance Criteria**: Verifiable by business stakeholders
@@ -1799,7 +1799,7 @@ During BRD generation, AI assistants should clarify missing ADR information:
 | Detailed technical specs | Technical exploration | PRD §18 "Technical Options" |
 | Performance benchmarks | Technical criteria | PRD §18 "Evaluation Criteria" |
 | Implementation patterns | Technical approach | ADR "Decision" |
-| Configuration details | Technical implementation | SPEC documents |
+| Configuration details | Technical implementation | 09_SPEC/10_TASKS documents |
 
 ### 9.8 Layer Separation Principle
 

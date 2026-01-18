@@ -77,7 +77,6 @@ class DocumentationPathValidator:
             r'SYS-\d{3}',
             r'CTR-\d{3}',
             r'BDD-\d{3}',
-            r'IMPL-\d{3}',
             r'TASKS-\d{3}',
         ]
 

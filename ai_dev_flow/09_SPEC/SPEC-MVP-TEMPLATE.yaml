@@ -1,0 +1,1378 @@
+# =============================================================================
+# 📋 Document Authority: This is the PRIMARY STANDARD for SPEC structure.
+# All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
+# - In case of conflict, this template is the single source of truth
+# - Schema: SPEC_SCHEMA.yaml - Machine-readable validation (derivative)
+# - Creation Rules: SPEC_CREATION_RULES.md - AI guidance for document creation (derivative)
+# - Validation Rules: SPEC_VALIDATION_RULES.md - AI checklist after document creation (derivative)
+#   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
+# =============================================================================
+#
+# SCHEMA_REFERENCE: SPEC_SCHEMA.yaml
+# SCHEMA_VERSION: 1.0
+
+# ===================
+# SPEC-NN: [Component Name]
+# ===================
+#
+# Reference Template — For learning and small specs only. Real SPECs are monolithic YAML per component for code generation.
+#
+# ⚠️ CRITICAL: Always reference SPEC_DRIVEN_DEVELOPMENT_GUIDE.md as the single source of truth
+#              for workflow steps, artifact definitions, and quality gates.
+#              Location: ../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md
+#
+# [RESOURCE_INSTANCE - e.g., database connection, workflow instance] in Workflow: SPEC (Technical Specifications) - Layer 9 (Technical Specification Layer)
+#
+# For complete traceability workflow with visual diagram, see:
+# ../index.md#traceability-flow
+#
+# Quick Reference: ... → CTR → **SPEC** → TASKS → Code → ...
+#
+# SPEC Purpose: Define HOW to implement components
+# - Input: REQ (requirements), CTR (contracts), ADR (architecture)
+# - Output: Complete technical blueprint in YAML format
+# - Consumer: TASKS uses SPEC to generate implementation code
+#
+# ===================
+
+id: component_name
+summary: Single-sentence description of component purpose, scope, and primary value proposition.
+
+# ===================
+# METADATA & DOCUMENT CONTROL
+# ===================
+#
+# ⚠️ UPSTREAM ARTIFACT REQUIREMENT: Before completing traceability tags:
+# 1. Check existing artifacts: List what upstream documents actually exist in docs/
+# 2. Reference only existing documents: Use actual document IDs, not placeholders
+# 3. Use null appropriately: Only when upstream artifact type genuinely doesn't exist
+# 4. Do NOT create phantom references: Never reference documents that don't exist
+# 5. Do NOT create missing upstream artifacts: If upstream are missing, skip that functionality
+#
+
+metadata:
+  # ===================
+  # FILE SIZE LIMITS (Warning)
+  # - Target (Markdown): 300-500 lines per section file
+  # - Maximum (Markdown): 600 lines (warning threshold)
+  # - YAML (monolithic): Warning at ~1000 lines
+  # ===================
+  version: "1.0.0"
+  status: "draft"  # draft, review, approved, implemented, deprecated
+  # ⚠️ REQUIRED: Ensure these dates are valid YYYY-MM-DD
+  created_date: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  task_ready_score: "✅ 95% (Target: ≥90%)"  # Added for quality gates
+  authors:
+    - name: "Primary Author"
+      email: "author@company.com"
+      role: "Technical Lead"
+  reviewers:
+    - name: "Reviewer Name"
+      email: "reviewer@company.com"
+      role: "Architecture Lead"
+  owners:
+    - team: "Development Team"
+      contact: "team@company.com"
+      slack: "#team-channel"
+
+# ===================
+# TRACEABILITY
+# ===================
+
+traceability:
+  upstream_sources:
+    business_requirements:
+      - id: "BRD-NN"
+        link: "../01_BRD/BRD-NN_...md"
+        title: "[Business requirements title]"
+        relevant_sections: ["2.4", "4.x"]
+        relationship: "Business objectives driving this component"
+        context: "[Specific business goals that justify this component]"
+
+    product_requirements:
+      - id: "PRD-NN"
+        link: "../02_PRD/PRD-NN_...md"
+        title: "[Product requirements title]"
+        relevant_sections: ["Functional Requirements 4.x"]
+        relationship: "Product features this component implements"
+        context: "[User needs this component fulfills]"
+
+    system_requirements:
+      - id: "SYS-NN"
+        link: "../06_SYS/SYS-NN_...md"
+        title: "[System requirements title]"
+        relevant_sections: ["System Requirements 3.x"]
+        relationship: "System-level specification this component satisfies"
+        context: "[System capabilities this component provides]"
+
+    engineering_requirements:
+      - id: "EARS-NN"
+        link: "../03_EARS/EARS-NN_...md"
+        title: "[Engineering requirements]"
+        relevant_sections: ["Event-driven", "State-driven", "Ubiquitous"]
+        relationship: "Formal engineering requirements this component satisfies"
+        context: "[EARS statements this component implements]"
+
+    architecture_decisions:
+      - id: "ADR-NN"
+        link: "../05_ADR/ADR-NN_...md#ADR-NN"
+        title: "[Architecture decision title]"
+        relevant_sections: ["Decision", "Consequences", "Implementation"]
+        relationship: "Architectural approach enabling this component"
+        context: "[Technology selections and patterns applied]"
+
+    contracts:
+      - id: "CTR-NN"
+        link: "../08_CTR/CTR-NN_...md#CTR-NN"
+        schema: "../08_CTR/CTR-NN_...yaml"
+        title: "[API contract title]"
+        relevant_sections: ["Request Schema", "Response Schema", "Error Codes"]
+        relationship: "Interface contract this component implements"
+        context: "[Which API endpoints/events this SPEC implements]"
+        policy: "See ADR-CTR_SEPARATE_FILES_POLICY.md - separate CTR files REQUIRED"
+
+    cumulative_tags:
+      brd: "TBD"
+      prd: "TBD"
+      ears: "TBD"
+      bdd: "TBD"
+      adr: "TBD"
+      sys: "TBD"
+      req: "TBD"
+      ctr: "TBD"
+
+  downstream_artifacts:
+    atomic_requirements:
+      - id: "REQ-NN"
+        link: "../07_REQ/.../REQ-NN_...md#REQ-NN"
+        title: "[Atomic requirement title]"
+        spec_sections: ["interfaces", "behavior"]
+        relationship: "Detailed implementation requirement this SPEC satisfies"
+        verification_method: "Unit test, Integration test"
+
+      - id: "REQ-MM"
+        link: "../07_REQ/.../REQ-MM_...md#REQ-MM"
+        title: "[Another requirement title]"
+        spec_sections: ["performance", "security"]
+        relationship: "Quality attribute this SPEC satisfies"
+        verification_method: "Performance test, security scan"
+
+    behavioral_tests:
+      - id: "BDD-NN"
+        link: "../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature"
+        title: "Feature: [Feature name]"
+        scenarios:
+          - name: "Scenario: Primary success path"
+            line_ref: "#L23"
+            spec_coverage: ["interfaces.methods.process_request"]
+          - name: "Scenario: Error handling"
+            line_ref: "#L45"
+            spec_coverage: ["behavior.error_handling", "circuit_breaker"]
+          - name: "Scenario: Performance under load"
+            line_ref: "#L67"
+            spec_coverage: ["performance.latency_targets"]
+        relationship: "Acceptance tests validating this SPEC"
+        coverage_percentage: 0  # Target: 100%
+
+      - id: "BDD-MM"
+        link: "../04_BDD/BDD-MM_{suite}/BDD-MM.SS_{slug}.feature"
+        title: "Feature: [Integration scenarios]"
+        scenarios:
+          - name: "Scenario: External service integration"
+            line_ref: "#L12"
+            spec_coverage: ["architecture.dependencies.external"]
+        relationship: "Integration tests for external dependencies"
+        coverage_percentage: 0  # Target: 100%
+
+    implementation:
+      primary_code:
+        - path: "src/[module_name]/[component_name].py"
+          description: "Core component implementation"
+          spec_sections: ["interfaces", "behavior", "caching"]
+        - path: "src/[module_name]/interfaces/[interface_name].py"
+          description: "External API and integration interfaces"
+          spec_sections: ["interfaces.classes"]
+
+      supporting_code:
+        - path: "src/[module_name]/services/[service_name].py"
+          description: "Business logic and service layer"
+          spec_sections: ["behavior.request_processing"]
+        - path: "src/[module_name]/validators/[validator_name].py"
+          description: "Input and output validation"
+          spec_sections: ["security.input_validation"]
+        - path: "src/[module_name]/handlers/[handler_name].py"
+          description: "Event and error handlers"
+          spec_sections: ["behavior.error_handling"]
+
+      configuration:
+        - path: "config/[component_name].yaml"
+          description: "Component configuration"
+          spec_sections: ["implementation.configuration_files"]
+        - path: "config/environments/[env]/[component_name].yaml"
+          description: "Environment-specific config"
+          spec_sections: ["implementation.environment_variables"]
+
+      tests:
+        unit_tests:
+          - path: "tests/unit/[module_name]/test_[component].py"
+            description: "Unit tests for this component"
+            coverage_target: ">=85%"
+            spec_sections: ["verification.unit_tests"]
+        integration_tests:
+          - path: "tests/integration/[module_name]/test_[workflow].py"
+            description: "Integration tests for component workflows"
+            coverage_target: ">=75%"
+            spec_sections: ["verification.integration_tests"]
+        acceptance_tests:
+          - path: "tests/acceptance/[module_name]/"
+            description: "BDD scenarios and acceptance tests"
+            coverage_target: "100%"
+            spec_sections: ["verification.bdd_scenarios"]
+        performance_tests:
+          - path: "tests/performance/[module_name]/"
+            description: "Load and performance tests"
+            spec_sections: ["verification.performance_tests"]
+
+    implementation_tasks:
+      - id: "TASKS-NN"
+        link: "../10_TASKS/TASKS-NN_....md"
+        title: "[Implementation plan title]"
+        status: "pending"  # pending, in_progress, completed
+        spec_sections: ["interfaces", "behavior", "implementation"]
+        relationship: "AI-assisted development plan for this component"
+
+  requirements_source:
+    business_domain:
+      - link: "../07_REQ/domain/requirement.md"
+        description: "[Business domain requirements description]"
+    system_level:
+      - link: "../06_SYS/system_requirement.md"
+        description: "[System-level requirements description]"
+    integration:
+      - link: "../07_REQ/integration/requirement.md"
+        description: "[Integration requirements description]"
+
+  validation_evidence:
+    requirements_coverage:
+      total_requirements: 0  # X requirements total
+      mapped_requirements: 0  # Y requirements mapped to SPEC sections
+      coverage_percentage: 0  # Z% coverage
+      target_percentage: 100
+      unmapped_requirements: []  # List of REQ-IDs not covered
+
+    test_coverage:
+      unit_tests:
+        coverage_percentage: 0  # X%
+        target_percentage: 85
+        lines_covered: 0
+        lines_total: 0
+      integration_tests:
+        coverage_percentage: 0  # Y%
+        target_percentage: 75
+        scenarios_covered: 0
+        scenarios_total: 0
+      bdd_scenarios:
+        coverage_percentage: 0  # Z%
+        target_percentage: 100
+        acceptance_criteria_covered: 0
+        acceptance_criteria_total: 0
+
+    traceability_metrics:
+      upstream_traceability:
+        percentage: 0  # X% requirements traced to source
+        target: 100
+        broken_links: []
+      downstream_traceability:
+        percentage: 0  # Y% artifacts traced to implementation
+        target: 100
+        missing_implementations: []
+      bidirectional_traceability:
+        percentage: 0  # Z% complete trace chains
+        target: 100
+        incomplete_chains: []
+      orphaned_artifacts:
+        count: 0  # Number of artifacts without source requirements
+        target: 0
+        artifact_list: []
+
+    verification_status:
+      automated_tests:
+        passing: 0  # X
+        total: 0  # Y
+        pass_rate: 0  # X/Y percentage
+        target: 100
+      manual_validation:
+        completed: false
+        date: "YYYY-MM-DD"
+        validator: "[Name]"
+      security_assessment:
+        completed: false
+        date: "YYYY-MM-DD"
+        findings: []
+      performance_benchmarks:
+        met: false
+        date: "YYYY-MM-DD"
+        results: {}
+
+  cross_reference_validation:
+    validation_checklist:
+      brd_references_valid: false
+      prd_references_valid: false
+      sys_references_valid: false
+      ears_references_valid: false
+      adr_references_valid: false
+      req_references_valid: false
+      bdd_references_valid: false
+      code_paths_exist: false
+      test_paths_exist: false
+      config_files_exist: false
+
+    reference_integrity:
+      last_validated: "YYYY-MM-DD"
+      validation_tool: "[Tool name/version]"
+      validation_method: "[Manual/Automated]"
+      broken_references:
+        count: 0
+        target: 0
+        list: []
+      stale_references:
+        count: 0  # References to deprecated/superseded documents
+        target: 0
+        list: []
+
+    document_metadata:
+      format: "YAML"
+      schema_version: "1.0"
+      spec_template_version: "1.0"
+      line_count: 0  # Auto-generated on save
+      last_modified: "YYYY-MM-DD"
+      git_hash: "[Commit SHA when checked in]"
+      spec_complexity: "medium"  # low, medium, high
+      implementation_status: "not_started"  # not_started, in_progress, completed, deprecated
+
+# Cumulative Tagging Hierarchy (Layer 9)
+# Required tags from ALL upstream artifacts for complete traceability
+# Format: artifact-type: TYPE.NN.TT.SS (Unified Element ID: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
+cumulative_tags:
+  brd: "BRD.NN.EE.SS"  # Business Requirements
+  prd: "PRD.NN.EE.SS"  # Product Requirements
+  ears: "EARS.NN.24.SS"  # Engineering Requirements (24=EARS Statement)
+  bdd: "BDD.NN.13.SS"  # BDD Test Scenarios (13=Test Scenario)
+  adr: "ADR-NN"  # Architecture Decisions
+  sys: "SYS.NN.25.SS"  # System Requirements (25=System Requirement)
+  req: "REQ.NN.26.SS"  # Atomic Requirements (26=Atomic Requirement)
+  ctr: "CTR-NN"  # API Contracts (optional)
+  threshold: "PRD-NN"  # Threshold Registry (when performance/SLA values used)
+  # Layer 9: SPEC must include all upstream tags (BRD through REQ)
+  # Optional: CTR and threshold if they exist in the traceability chain
+  # Purpose: Complete traceability from business requirements to implementation
+  # See: ../TRACEABILITY.md#cumulative-tagging-hierarchy
+
+  # =======================================================================
+  # THRESHOLD REGISTRY REFERENCES (Required when performance/SLA values specified)
+  # =======================================================================
+  # Purpose: SPEC documents REFERENCE thresholds defined in the PRD threshold registry.
+  # All quantitative values in performance, rate limiting, and operational sections
+  # must use @threshold: tags to ensure single source of truth.
+  #
+  # Threshold Naming Convention: @threshold: PRD.NN.category.subcategory.key
+  # Format Reference: See THRESHOLD_NAMING_RULES.md for complete naming standards.
+  #
+  # Common threshold categories:
+  #   performance: perf.api.p50_latency, perf.api.p95_latency, perf.api.p99_latency, perf.throughput.rps
+  #   sla: sla.uptime.target, sla.error_rate.max
+  #   timeout: timeout.request.sync, timeout.request.async, timeout.connection.default
+  #   limits: limit.api.requests_per_second, limit.batch.size, limit.batch.concurrent
+  #   resource: resource.cpu.max_utilization, resource.memory.max_mb
+  #
+  # Example Usage in Specification:
+  #   performance_requirements:
+  #     api_latency:
+  #       p95_target: "@threshold: PRD.NN.perf.api.p95_latency"
+  #       p99_target: "@threshold: PRD.NN.perf.api.p99_latency"
+  #   configuration:
+  #     timeouts:
+  #       request_timeout: "@threshold: PRD.NN.timeout.request.sync"
+  # =======================================================================
+  threshold_references:
+    registry_document: "PRD-NN"  # Threshold registry document ID
+    format_reference: "../THRESHOLD_NAMING_RULES.md"
+
+    # Comprehensive list of threshold keys used in this SPEC
+    keys_used:
+      performance:
+        # Response time and latency requirements
+        - key: "perf.api.p50_latency"
+          usage: "performance.latency_targets, verification.performance_tests"
+        - key: "perf.api.p95_latency"
+          usage: "performance.latency_targets, operations.monitoring_dashboard"
+        - key: "perf.api.p99_latency"
+          usage: "performance.latency_targets"
+        - key: "perf.api.max_latency"
+          usage: "performance.latency_targets"
+
+      sla:
+        # Service level agreements and error rates
+        - key: "sla.error_rate.target"
+          usage: "verification.performance_tests"
+        - key: "sla.error_rate.warning"
+          usage: "operations.monitoring_dashboard.alerting_rules"
+
+      timeout:
+        # Timeout configurations
+        - key: "timeout.request.sync"
+          usage: "behavior.request_processing"
+        - key: "timeout.connection.default"
+          usage: "architecture.dependencies"
+
+      limit:
+        # Rate limits and capacity limits
+        - key: "limit.api.requests_per_second"
+          usage: "rate_limiting.global_limits, performance.throughput_targets"
+        - key: "limit.api.requests_per_minute"
+          usage: "rate_limiting.global_limits"
+        - key: "limit.api.requests_per_hour"
+          usage: "rate_limiting.global_limits"
+        - key: "limit.api.burst"
+          usage: "rate_limiting.global_limits, performance.throughput_targets"
+        - key: "limit.user.requests_per_minute"
+          usage: "rate_limiting.per_client_limits"
+        - key: "limit.user.requests_per_hour"
+          usage: "rate_limiting.per_client_limits"
+        - key: "limit.anonymous.requests_per_minute"
+          usage: "rate_limiting.per_client_limits"
+        - key: "limit.anonymous.requests_per_hour"
+          usage: "rate_limiting.per_client_limits"
+
+      resource:
+        # Resource allocation limits
+        - key: "resource.compute.cpu_cores"
+          usage: "performance.resource_limits"
+        - key: "resource.memory.max_heap"
+          usage: "performance.resource_limits"
+        - key: "resource.network.bandwidth_mbps"
+          usage: "performance.resource_limits"
+        - key: "resource.storage.iops"
+          usage: "performance.resource_limits"
+        - key: "resource.connections.pool_size"
+          usage: "architecture.scalability"
+
+    # Validation: All keys must exist in PRD-NN threshold registry
+    # See: ../02_PRD/PRD-00_threshold_registry_template.md
+
+    # Example Usage in SPEC Sections:
+    # performance.latency_targets.p95_milliseconds: "@threshold: PRD.NN.perf.api.p95_latency"
+    # rate_limiting.global_limits.requests_per_minute: "@threshold: PRD.NN.limit.api.requests_per_minute"
+    # operations.alerting_rules[].condition: "error_rate > @threshold: PRD.NN.sla.error_rate.warning"
+
+  # Same-Type References (Conditional)
+  # Include only if same-type relationships exist between SPEC documents
+  same_type_references:
+    related_spec: []  # List of related SPEC-NN IDs sharing domain context
+    depends_spec: []  # List of prerequisite SPEC-NN IDs (must complete before this)
+    # Tags: @related-spec: SPEC-NN, @depends-spec: SPEC-NN
+
+# ===================
+# COMPONENT ARCHITECTURE
+# ===================
+
+architecture:
+  pattern: "service"  # service, library, component, integration
+  domain: "business_domain"  # api, data, core, operations, etc.
+  category: "functional_category"  # client, service, processor, validator, etc.
+  dependencies:
+    internal:
+      - name: "internal_component"
+        interface: "component_interface"
+        version: ">=1.0.0"
+        required: true
+    external:
+      - name: "external_service"
+        interface: "API_contract"
+        protocol: "https"
+        required: false
+        fallback_strategy: "cached_response"
+
+  scalability:
+    horizontal_scaling: true  # Can component run multiple instances?
+    stateless: true  # Does component maintain session state?
+    shared_state_strategy: "external_cache"  # redis, database, none
+
+  resilience:
+    circuit_breaker_enabled: true
+    retry_policy:
+      max_attempts: 3
+      backoff_strategy: "exponential"
+      base_delay_ms: 100
+      max_delay_ms: 5000
+    graceful_degradation: true
+
+# ===================
+# INTERFACE DEFINITIONS (REFERENCE SEPARATE CTR FILES)
+# ===================
+#
+# POLICY: API contracts MUST be maintained as separate CTR (Contract) files.
+# See: ADR-CTR_SEPARATE_FILES_POLICY.md
+#
+# Contract References:
+# - API contracts → See 08_CTR/CTR-NN_{slug}.md + CTR-NN_{slug}.yaml
+# - Event schemas → See 08_CTR/CTR-NN_{slug}.yaml (AsyncAPI)
+# - Data models → See 08_CTR/CTR-NN_{slug}.yaml (JSON Schema)
+#
+# This SPEC defines:
+# - Implementation classes, methods, and logic flows
+# - Internal data structures (not exposed via API)
+# - Configuration, dependencies, and deployment
+#
+# Interface Structure:
+# - classes[].constructor.params → Internal constructor parameters (not API)
+# - classes[].methods[].input → Internal method inputs (not API)
+# - classes[].methods[].output → Internal method outputs (not API)
+# - classes[].methods[].errors → Internal error handling (not API)
+#
+# For API contracts (exposed interfaces):
+# 1. Create separate CTR files: CTR-NN.md + CTR-NN.yaml
+# 2. Reference CTR in traceability.upstream_sources.contracts[] section
+# 3. Document implementation details here (HOW to implement the contract)
+#
+# ===================
+
+interfaces:
+  classes:
+    - name: "PrimaryServiceClass"
+      description: "Main service class implementing the component interface"
+      constructor:
+        params:
+          config:
+            type: object
+            required: true
+            properties:
+              endpoint_url:
+                type: string
+                format: uri
+                description: "Service endpoint URL"
+              timeout_seconds:
+                type: integer
+                minimum: 1
+                maximum: 300
+                default: 30
+                description: "Request timeout in seconds"
+              max_connections:
+                type: integer
+                minimum: 1
+                maximum: 100
+                default: 10
+                description: "Maximum concurrent connections"
+          logger:
+            type: object
+            description: "Logging interface"
+          metrics_collector:
+            type: object
+            description: "Metrics collection interface"
+
+      methods:
+        - name: "initialize"
+          description: "Initialize the service with configuration and dependencies"
+          input:
+            correlation_id:
+              type: string
+              format: uuid
+              required: false
+              description: "Request correlation identifier"
+          output:
+            success:
+              type: boolean
+              description: "Initialization success indicator"
+            error_message:
+              type: string
+              nullable: true
+              description: "Error message if initialization failed"
+
+        - name: "process_request"
+          description: "Process a business request and return structured response"
+          input:
+            request_id:
+              type: string
+              format: uuid
+              required: true
+              description: "Unique request identifier"
+            parameters:
+              type: object
+              required: true
+              properties:
+                primary_param:
+                  type: string
+                  minLength: 1
+                  maxLength: 100
+                  description: "Primary business parameter"
+                options:
+                  type: object
+                  required: false
+                  properties:
+                    validate_only:
+                      type: boolean
+                      default: false
+                      description: "Validate without executing"
+                    timeout_override:
+                      type: integer
+                      minimum: 1
+                      maximum: 300
+                      description: "Request-specific timeout"
+          output:
+            success:
+              type: boolean
+              description: "Operation success indicator"
+            data:
+              type: object
+              nullable: true
+              description: "Business data result"
+            metadata:
+              type: object
+              properties:
+                processing_time_ms:
+                  type: integer
+                  minimum: 0
+                  description: "Server-side processing time"
+                correlation_id:
+                  type: string
+                  format: uuid
+                  description: "Request correlation identifier"
+                warnings:
+                  type: array
+                  items:
+                    type: string
+                  description: "Non-blocking warnings"
+          errors:
+            VALIDATION_ERROR:
+              code: "VALIDATION_ERROR"
+              message: "Input validation failed"
+              http_status: 400
+              details_schema:
+                type: object
+                properties:
+                  field_errors:
+                    type: object
+                    additionalProperties:
+                      type: string
+            RATE_LIMIT_EXCEEDED:
+              code: "RATE_LIMIT_EXCEEDED"
+              message: "Request rate limit exceeded"
+              http_status: 429
+              details_schema:
+                type: object
+                properties:
+                  available_in_seconds:
+                    type: integer
+                    minimum: 0
+                  current_limit_perMinute:
+                    type: integer
+                    minimum: 0
+            EXTERNAL_SERVICE_ERROR:
+              code: "EXTERNAL_SERVICE_ERROR"
+              message: "External service temporarily unavailable"
+              http_status: 503
+              details_schema:
+                type: object
+                properties:
+                  retryable:
+                    type: boolean
+                  estimated_recovery_minutes:
+                    type: integer
+                    minimum: 0
+
+# ===================
+# BEHAVIORAL SPECIFICATIONS
+# ===================
+
+behavior:
+  lifecycle:
+    startup_sequence:
+      - validate_configuration
+      - establish_connections
+      - preload_cache
+      - enable_request_processing
+    shutdown_sequence:
+      - stop_accepting_requests
+      - drain_existing_connections
+      - flush_pending_operations
+      - cleanup_resources
+
+  state_management:
+    states:
+      - UNINITIALIZED
+      - INITIALIZING
+      - HEALTH_CHECKING
+      - READY
+      - PROCESSING_REQUESTS
+      - DEGRADED
+      - ERROR
+      - SHUTTING_DOWN
+      - TERMINATED
+
+    transitions:
+      UNINITIALIZED -> INITIALIZING: "start()"
+      INITIALIZING -> HEALTH_CHECKING: "configuration_validated"
+      HEALTH_CHECKING -> READY: "health_checks_passed"
+      READY -> PROCESSING_REQUESTS: "first_request_received"
+      ANY -> DEGRADED: "degraded_performance_detected"
+      DEGRADED -> READY: "performance_restored"
+      ANY -> ERROR: "fatal_error_occurred"
+      ANY -> SHUTTING_DOWN: "shutdown_signal_received"
+      SHUTTING_DOWN -> TERMINATED: "cleanup_completed"
+
+    invariants:
+      - "active_connections <= max_connections"
+      - "memory_usage_percent <= memory_limit_percent"
+      - "error_rate_percent <= error_threshold_percent"
+
+  request_processing:
+    concurrency_model: "async"  # sync, async, thread_pool, event_loop
+    max_concurrent_requests: 100
+    queue_strategy: "fifo"  # fifo, priority, weighted
+    timeout_handling:
+      request_timeout_seconds: 30
+      connection_timeout_seconds: 10
+      read_timeout_seconds: 10
+
+    validation_strategy:
+      input_validation: "strict"  # strict, lenient, none
+      schema_validation: true
+      business_rule_validation: true
+      sanitization: true
+
+    retry_strategy:
+      enabled: true
+      max_retries: 3
+      retryable_errors: ["NETWORK_TIMEOUT", "SERVICE_UNAVAILABLE", "TEMPORARY_ERROR"]
+      backoff_strategy: "exponential"
+      jitter_enabled: true
+
+# ===================
+# CACHING STRATEGY
+# ===================
+
+caching:
+  enabled: true
+  strategy: "multi_level"  # memory, distributed, hybrid, none
+
+  policies:
+    # Key-based TTL policies
+    global_quote:
+      ttl_seconds: 300  # 5 minutes
+      max_entries: 10000
+      eviction_policy: "lru"  # lru, lfu, random, ttl
+    time_series_intraday:
+      ttl_seconds: 3600  # 1 hour
+      max_entries: 5000
+      eviction_policy: "lru"
+    fundamentals:
+      ttl_seconds: 86400  # 24 hours
+      max_entries: 2000
+      eviction_policy: "lru"
+
+    # Error response caching
+    error_responses:
+      ttl_seconds: 60  # 1 minute
+      max_entries: 1000
+
+  layers:
+    - level: "memory"
+      backend: "redis"
+      configuration:
+        host: "redis-cluster"
+        port: 6379
+        password_Secret: "redis-password"
+        ssl_enabled: true
+        connection_pool_size: 20
+        max_idle_connections: 5
+        idle_timeout_seconds: 300
+
+    - level: "persistent"
+      backend: "disk"
+      configuration:
+        directory: "/var/cache/component"
+        max_size_gb: 10
+        compression: "gzip"
+        filename_pattern: "{key_hash}.cache"
+
+  cache_keys:
+    strategy: "hash_parameter_based"  # hash_parameter_based, policy_based, custom
+    include_parameters: ["symbol", "interval", "api_key_tier"]
+    exclude_parameters: ["correlation_id", "request_timestamp"]
+    hashing_algorithm: "sha256"
+
+  invalidation:
+    strategies:
+      - "manual"  # Explicit cache invalidation API
+      - "time_based"  # TTL [DEADLINE - e.g., session timeout, cache expiry]
+      - "event_based"  # Invalidation on data change events
+      - "size_based"  # LRU eviction
+
+# ===================
+# RATE LIMITING
+# ===================
+# NOTE: Use @threshold registry references for rate limit values
+# Format: "@threshold: PRD.NN.limit.category.key"
+
+rate_limiting:
+  enabled: true
+  strategy: "token_bucket"  # token_bucket, sliding_window, fixed_window, leaky_bucket
+
+  global_limits:
+    requests_per_minute: "@threshold: PRD.NN.limit.api.requests_per_minute"
+    requests_per_hour: "@threshold: PRD.NN.limit.api.requests_per_hour"
+    burst_limit: "@threshold: PRD.NN.limit.api.burst"
+
+  per_client_limits:
+    identified_users:
+      requests_per_minute: "@threshold: PRD.NN.limit.user.requests_per_minute"
+      requests_per_hour: "@threshold: PRD.NN.limit.user.requests_per_hour"
+    anonymous_users:
+      requests_per_minute: "@threshold: PRD.NN.limit.anonymous.requests_per_minute"
+      requests_per_hour: "@threshold: PRD.NN.limit.anonymous.requests_per_hour"
+
+  per_endpoint_limits:
+    "/api/expensive-operation":
+      requests_per_minute: 50
+      burst_limit: 10
+    "/api/lightweight-operation":
+      requests_per_minute: 500
+      burst_limit: 100
+
+  enforcement:
+    rejection_strategy: "http_429"  # http_429, queue, degrade
+    retry_after_header: true
+    quota_headers_enabled: true
+    custom_headers:
+      X-RateLimit-Limit: "requests_per_minute"
+      X-RateLimit-Remaining: "remaining_requests"
+      X-RateLimit-Reset: "reset_timestamp"
+
+  tier_support:
+    enabled: true
+    tiers:
+      free:
+        requests_per_minute: 5
+        burst_limit: 10
+      "[VALUE - e.g., subscription fee, processing cost]":
+        requests_per_minute: 75
+        burst_limit: 150
+      enterprise:
+        requests_per_minute: 500
+        burst_limit: 1000
+
+    identification_strategy: "api_key_based"  # api_key_based, jwt_claim_based, database_lookup
+    upgrade_prompting: true
+
+  monitoring:
+    metrics_enabled: true
+    alerting_thresholds:
+      per_client_limit_exceeded: "warning"
+      global_limit_approaching_80: "info"
+      global_limit_exceeded: "critical"
+
+# ===================
+# [SAFETY_MECHANISM - e.g., rate limiter, error threshold]
+# ===================
+
+circuit_breaker:
+  enabled: true
+  strategy: "time_based"  # time_based, request_count_based, hybrid
+
+  thresholds:
+    failure_percentage: 50  # Percentage of failures
+    min_request_volume: 10  # Minimum requests to evaluate
+    evaluation_window_seconds: 60  # Rolling window for evaluation
+
+  states:
+    closed:
+      name: "CLOSED"
+      behavior: "normal_operation"
+      failure_count: 0
+
+    open:
+      name: "OPEN"
+      behavior: "reject_all_requests"
+      wait_seconds: 30
+      timeout_to_half_open: 300
+
+    half_open:
+      name: "HALF_OPEN"
+      behavior: "test_request_flow"
+      test_request_percentage: 10  # Percentage of requests to allow through
+      max_test_requests: 5  # Maximum number of test requests
+      success_threshold: 3  # Number of successes needed to close
+
+  monitoring:
+    state_transitions_log_level: "INFO"
+    metrics_emitted: true
+    failure_details_tracked: true
+
+# ===================
+# PERFORMANCE SPECIFICATIONS
+# ===================
+# NOTE: Use @threshold registry references for all quantitative values
+# Format: "@threshold: PRD.NN.category.subcategory.key"
+# See: ../02_PRD/PRD-00_threshold_registry_template.md
+
+performance:
+  latency_targets:
+    p50_milliseconds: "@threshold: PRD.NN.perf.api.p50_latency"
+    p95_milliseconds: "@threshold: PRD.NN.perf.api.p95_latency"
+    p99_milliseconds: "@threshold: PRD.NN.perf.api.p99_latency"
+    max_milliseconds: "@threshold: PRD.NN.perf.api.max_latency"
+
+  throughput_targets:
+    sustained_requests_per_second: "@threshold: PRD.NN.limit.api.requests_per_second"
+    burst_requests_per_second: "@threshold: PRD.NN.limit.api.burst"
+    cooldown_period_minutes: 5  # Non-critical operational value
+
+  resource_limits:
+    cpu_cores_allocated: "@threshold: PRD.NN.resource.compute.cpu_cores"
+    memory_mb_allocated: "@threshold: PRD.NN.resource.memory.max_heap"
+    network_bandwidth_mbps: "@threshold: PRD.NN.resource.network.bandwidth_mbps"
+    disk_iops: "@threshold: PRD.NN.resource.storage.iops"
+
+  scaling_characteristics:
+    vertical_scaling_supported: true
+    horizontal_scaling_supported: true
+    memory_scaling_curve: "linear"  # linear, exponential, logarithmic
+    cpu_scaling_curve: "linear"
+
+  bottlenecks_identified:
+    - database_connection_pooling
+    - network_round_trips_to_external_services
+    - memory_allocation_for_large_responses
+
+  optimization_priorities:
+    - reduce_external_service_calls_through_caching
+    - implement_connection_pooling
+    - optimize_serialization_deserialization
+
+# ===================
+# SECURITY SPECIFICATIONS
+# ===================
+
+security:
+  authentication:
+    required: true
+    methods: ["bearer_jwt", "api_key"]
+    jwt_validation:
+      issuer_whitelist: ["trusted-issuer-1", "trusted-issuer-2"]
+      audience_validation: true
+      algorithm_whitelist: ["RS256", "RS384", "RS512"]
+      expiration_grace_period_seconds: 30
+
+  authorization:
+    enabled: true
+    model: "role_based_access_control"  # rbac, attribute_based_access_control, policy_based
+    roles:
+      - name: "user"
+        permissions: ["read_own_data"]
+      - name: "admin"
+        permissions: ["read_all_data", "write_all_data", "admin_operations"]
+    context_providers:
+      - request_parameters
+      - user_attributes
+      - resource_attributes
+
+  input_validation:
+    strategy: "schema_based_validation"
+    sanitization_enabled: true
+    schema_strictness: "strict"
+    error_detail_level: "field_level"
+
+  data_protection:
+    encryption_at_rest: true
+    encryption_in_transit: true
+    sensitive_fields: ["password", "credit_card", "social_security_number"]
+    log_sanitization: true
+
+  rate_limiting_security:
+    enabled: true
+    ip_based_anti_abuse: true
+    user_based_rate_limiting: true
+    progressive_delays: true
+
+  audit_trail:
+    enabled: true
+    events_captured: ["authentication", "authorization", "data_access", "configuration_changes"]
+    retention_period_days: 365
+    tamper_proofing: true
+
+# ===================
+# OBSERVABILITY SPECIFICATIONS
+# ===================
+
+observability:
+  metrics:
+    standard_metrics:
+      - name: "component_requests_total"
+        type: "counter"
+        labels: ["method", "endpoint", "status_code", "client_type"]
+        description: "Total number of requests processed"
+
+      - name: "component_request_duration_seconds"
+        type: "histogram"
+        buckets: [0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 30.0, 60.0]
+        labels: ["method", "endpoint", "status_code"]
+        description: "Request processing duration distribution"
+
+      - name: "component_active_connections"
+        type: "gauge"
+        description: "Number of currently active connections"
+
+      - name: "component_error_rate"
+        type: "gauge"
+        labels: ["error_type"]
+        description: "Current error rate as percentage"
+
+      - name: "component_cache_hit_ratio"
+        type: "gauge"
+        labels: ["cache_level"]
+        description: "Cache effectiveness ratio"
+
+      - name: "component_rate_limit_hits_total"
+        type: "counter"
+        labels: ["limit_type", "client_id"]
+        description: "Rate limit enforcement events"
+
+      - name: "component_circuit_breaker_state"
+        type: "gauge"
+        labels: ["state"]
+        description: "[SAFETY_MECHANISM - e.g., rate limiter, error threshold] current state (0=closed, 1=half_open, 2=open)"
+
+    custom_metrics:
+      - name: "business_outcome_success_rate"
+        type: "gauge"
+        labels: ["outcome_type"]
+        description: "Business-level success metrics"
+
+  logging:
+    level: "INFO"
+    format: "json"
+    correlation_tracking_enabled: true
+    sensitive_data_masking: true
+
+    events:
+      - event: "request_received"
+        level: "DEBUG"
+        fields: ["correlation_id", "request_id", "method", "endpoint", "client_ip"]
+        condition: "debug_logging_enabled"
+
+      - event: "external_service_call"
+        level: "DEBUG"
+        fields: ["correlation_id", "service_name", "endpoint", "method", "status_code", "duration_ms"]
+
+      - event: "validation_failure"
+        level: "WARN"
+        fields: ["correlation_id", "validation_errors", "input_parameters"]
+
+      - event: "rate_limit_exceeded"
+        level: "WARN"
+        fields: ["correlation_id", "client_id", "limit_type", "retry_after_seconds"]
+
+      - event: "circuit_breaker_tripped"
+        level: "ERROR"
+        fields: ["correlation_id", "failure_reason", "affected_service", "estimated_recovery_time"]
+
+      - event: "fatal_error"
+        level: "ERROR"
+        fields: ["correlation_id", "error_type", "stack_trace", "recovery_action_taken"]
+
+    log_rotation:
+      strategy: "size_based"
+      max_file_size_mb: 100
+      max_files_retained: 10
+      compression_enabled: true
+
+  health_checks:
+    enabled: true
+    endpoints:
+      - path: "/health/live"
+        description: "Liveness probe - indicates if service should be restarted"
+        checks:
+          - memory_usage_check
+          - thread_deadlock_check
+      - path: "/health/ready"
+        description: "Readiness probe - indicates if service can accept traffic"
+        checks:
+          - dependency_connectivity_check
+          - database_connectivity_check
+          - external_service_availability_check
+
+    check_interval_seconds: 30
+    timeout_seconds: 5
+    consecutive_failures_before_unhealthy: 3
+
+  distributed_tracing:
+    enabled: true
+    sampling_rate: 0.1
+    trace_context_propagation: true
+    traceable_operations: ["all_external_calls", "business_transaction_boundaries", "error_paths"]
+
+# ===================
+# VERIFICATION & VALIDATION
+# ===================
+
+verification:
+  bdd_scenarios:
+    - "`04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-primary-success-path`"
+    - "`04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-error-handling`"
+    - "`04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-performance-under-load`"
+
+  performance_tests:
+    - target_p95_latency_ms: "@threshold: PRD.NN.perf.api.p95_latency"
+      test_scenario: "mixed_workload_100_rps"
+      success_criteria: "p95_latency < @threshold: PRD.NN.perf.api.p95_latency AND error_rate < @threshold: PRD.NN.sla.error_rate.target"
+
+  security_tests:
+    - vulnerability_scanning: true
+    - penetration_testing_boundary: "gray_box"
+    - compliance_audit: ["owasp_top_10", "pci_dss_if_applicable"]
+
+  load_tests:
+    - sustained_load_rps: "@threshold: PRD.NN.limit.api.requests_per_second"
+      duration_minutes: 60
+      success_criteria: "no_degradation_in_latency OR graceful_degradation"
+    - burst_load_rps: "@threshold: PRD.NN.limit.api.burst"
+      duration_minutes: 5
+      success_criteria: "no_service_disruption"
+
+  integration_tests:
+    - dependencies_tested: ["database", "external_api_1", "external_api_2"]
+    - test_coverage_min_percent: 85
+    - end_to_end_scenarios_covered: ["happy_path", "error_recovery", "data_validation"]
+
+  deployment_tests:
+    - blue_green_deployment_validation: true
+    - canary_deployment_support: true
+    - rollback_validation: true
+    - configuration_drift_detection: true
+
+# ===================
+# IMPLEMENTATION SPECIFICS
+# ===================
+
+implementation:
+  language: "python"  # Primary implementation language
+  framework: "fastapi"  # Framework used
+  module_path: "path/to/implementing/module.py"
+  entry_point: "main.py"  # Application entry point
+
+  dependencies:
+    runtime:
+      - name: "fastapi"
+        version: ">=0.100.0"
+      - name: "redis"
+        version: ">=4.5.0"
+      - name: "pydantic"
+        version: ">=2.0.0"
+    development:
+      - name: "pytest"
+        version: ">=7.0.0"
+      - name: "pytest-asyncio"
+        version: ">=0.21.0"
+
+  environment_variables:
+    - name: "REDIS_URL"
+      required: true
+      sensitive: false
+      description: "Redis cluster connection URL"
+    - name: "API_KEY_SECRET_NAME"
+      required: true
+      sensitive: true
+      description: "Secret manager reference for API keys"
+    - name: "LOG_LEVEL"
+      required: false
+      default: "INFO"
+      values: ["DEBUG", "INFO", "WARN", "ERROR"]
+      description: "Application logging level"
+
+  configuration_files:
+    - path: "config/component_config.yaml"
+      format: "yaml"
+      reloadable: true
+      validation_enabled: true
+    - path: "config/external_service_endpoints.json"
+      format: "json"
+      reloadable: false
+      validation_enabled: true
+
+  database_schemas:
+    tables:
+      - name: "component_cache"
+        engine: "redis"
+        ttl_seconds: 3600
+        partitioning_strategy: "none"
+      - name: "audit_log"
+        engine: "postgresql"
+        retention_days: 365
+        partitioning_strategy: "monthly"
+
+  deployment:
+    container_image: "company/component-name:v1.0.0"
+    ports_exposed: [8080, 8443]
+    health_check_path: "/health/live"
+    readiness_check_path: "/health/ready"
+
+    scaling:
+      min_instances: 2
+      max_instances: 10
+      scaling_metrics: ["cpu_utilization", "request_queue_depth"]
+
+    resource_requests:
+      cpu: "500m"
+      memory: "512Mi"
+    resource_limits:
+      cpu: "2000m"
+      memory: "2Gi"
+
+  migration_strategy:
+    from_version: "0.9.0"
+    compatibility_breaking_changes: false
+    data_migration_required: false
+    rolling_deployment_safe: true
+
+# ===================
+# OPERATIONAL RUNBOOK
+# ===================
+
+operations:
+  startup_procedure:
+    steps:
+      - "Validate configuration files"
+      - "Check dependency availability (Redis, external APIs)"
+      - "Initialize connection pools"
+      - "Load initial cache data if configured"
+      - "Enable request processing"
+    estimated_duration_minutes: 5
+    automated_checklist: ["config_validation", "dependency_checks", "health_endpoint"]
+
+  shutdown_procedure:
+    steps:
+      - "Stop accepting new requests"
+      - "Allow in-flight requests to complete (grace period: 30s)"
+      - "Flush pending audit logs"
+      - "Close database connections gracefully"
+      - "Clear ephemeral cache data"
+    estimated_duration_minutes: 2
+    automated_checklist: ["shutdown_signal_handled", "connections_closed", "audit_logs_flushed"]
+
+  monitoring_dashboard:
+    key_charts:
+      - request_rate_over_time
+      - p95_latency_trend
+      - error_rate_by_type
+      - cache_hit_ratio
+      - circuit_breaker_state
+    alerting_rules:
+      # Use @threshold references for alert thresholds
+      - condition: "error_rate > @threshold: PRD.NN.sla.error_rate.warning"
+        severity: "warning"
+        notification_channels: ["slack", "email"]
+      - condition: "p95_latency > @threshold: PRD.NN.perf.api.p95_latency for 5 minutes"
+        severity: "warning"
+        notification_channels: ["slack", "pagerduty"]
+      - condition: "circuit_breaker_open for 5 minutes"
+        severity: "critical"
+        notification_channels: ["slack", "pagerduty", "sms"]
+
+  troubleshooting_guide:
+    common_issues:
+      - symptom: "High latency"
+        likely_causes: ["external_service_down", "database_slow_queries", "resource_contention"]
+        diagnostic_steps: ["check_external_service_health", "query_performance_monitoring", "resource_usage_analysis"]
+        resolution_steps: ["restart_external_service", "optimize_query", "scale_resources"]
+
+      - symptom: "[SAFETY_MECHANISM - e.g., rate limiter, error threshold] open"
+        likely_causes: ["external_service_degraded", "network_timeout", "resource_exhaustion"]
+        diagnostic_steps: ["check_external_service_status", "network_connectivity_test", "resource_limits_check"]
+        resolution_steps: ["fix_external_service", "network_troubleshooting", "resource_scaling"]
+
+    diagnostic_commands:
+      - "curl -f http://localhost:8080/health/live" # Liveness check
+      - "curl http://localhost:8080/health/ready"    # Readiness check
+      - "docker logs component-container"             # Application logs
+      - "kubectl describe pod component-pod"        # Kubernetes status
+
+  backup_and_recovery:
+    data_backup:
+      strategy: "point_in_time_snapshots"
+      frequency: "daily"
+      retention_period_days: 30
+      automated: true
+    configuration_backup:
+      strategy: "git_repository"
+      frequency: "on_change"
+      retention_period_days: 365
+      automated: true
+    recovery_procedures:
+      - failure_type: "pod_restart"
+        procedure: ["kubernetes_automatic", "monitor_logs"]
+        estimated_downtime: "30 seconds"
+      - failure_type: "service_degradation"
+        procedure: ["circuit_breaker_isolation", "scale_up", "roll_back_if_needed"]
+        estimated_downtime: "5-15 minutes"
+      - failure_type: "data_corruption"
+        procedure: ["stop_service", "restore_from_backup", "validate_data_integrity", "restart_service"]
+        estimated_downtime: "1-4 hours"
+
+# ===================
+# CHANGE MANAGEMENT
+# ===================
+
+changelog:
+  - version: "1.0.0"
+    date: "YYYY-MM-DD"
+    type: "initial_release"  # initial_release, feature_addition, bug_fix, breaking_change
+    summary: "Initial release of component with core functionality"
+    changes:
+      - "Implement basic request processing pipeline"
+      - "Add rate limiting and [SAFETY_MECHANISM - e.g., rate limiter, error threshold] protection"
+      - "Establish caching layer for performance optimization"
+      - "Implement comprehensive logging and metrics collection"
+    breaking_changes: []
+    migration_guide: "No migration required for initial release"
+    testing_notes: "All BDD scenarios validated, load testing completed"
+    rollback_plan: "Immediate rollback possible, no data migration"
+
+maintenance:
+  review_cadence: "quarterly"
+  deprecation_policy:
+    warning_period_months: 6
+    breaking_changes_policy: "major_version_only"
+  security_updates:
+    patch_cadence: "monthly"
+    emergency_response_hours: 4
+  feature_requests:
+    intake_process: "issue_template_in_github"
+    priority_framework: "impact_vs_effort_matrix"
+    roadmap_planning: "quarterly_feature_review"
+
+# ===================
+# ADDITIONAL NOTES
+# ===================
+
+notes:
+  assumptions:
+    - "External services will maintain 99.9% uptime"
+    - "Network latency between services < 50ms average"
+    - "Data consistency requirements allow for eventual consistency in edge cases"
+
+  constraints:
+    - "Must maintain backward compatibility within major version boundaries"
+    - "Cannot introduce external dependencies without security review"
+    - "All personal data must be masked in logs regardless of environment"
+
+  future_enhancements:
+    - "Async processing for high-throughput scenarios"
+    - "Advanced caching strategies (write-through, write-behind)"
+    - "Machine learning-based anomaly detection"
+    - "Multi-region deployment support"
+
+  lessons_learned:
+    - "Always implement comprehensive logging early"
+    - "Circuit breakers should have service-specific configurations"
+    - "Cache invalidation strategy impacts must be carefully considered"

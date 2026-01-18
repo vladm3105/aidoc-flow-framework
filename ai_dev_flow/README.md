@@ -40,7 +40,7 @@ This directory provides a structured, traceable framework for Specification-Driv
 - ✅ **Complete Traceability**: Bidirectional links from business requirements to production code
 - ✅ **Cumulative Tagging Hierarchy**: Each artifact includes tags from ALL upstream layers for complete audit trails
 - ✅ **AI-Optimized**: YAML specifications designed for deterministic code generation
-- ✅ **15-Layer Architecture**: Structured progression from strategy through validation
+- ✅ **14-Layer Architecture**: Structured progression from strategy through validation
 - ✅ **Dual-File Contracts (CTR only)**: Human-readable `.md` + machine-readable `.yaml` for API contracts
 - ✅ **Example-Driven**: Generic examples with `[PLACEHOLDER]` format for easy customization
 
@@ -50,7 +50,7 @@ This directory provides a structured, traceable framework for Specification-Driv
 
 ## Using This Repo
 
-- Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_IMPL/`, `09_CTR/`, `10_SPEC/`, `11_TASKS/`, `CHG/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
+- Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_CTR/`, `09_SPEC/`, `10_TASKS/`, `CHG/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
 - BDD layout: Uses nested per-suite folders `04_BDD/BDD-NN_{slug}/` with sectioned `.feature` files.
 - Index width: This repo commonly uses `-00_index.md` for indices; follow existing width and do not rename history. New repos should choose a consistent zero width (`00` or `000`) and keep it stable.
 - Validators: Use the validators listed in TRACEABILITY_VALIDATION.md (e.g., `python scripts/validate_prd.py`, `./scripts/validate_req_template.sh`). Older `*_template.sh` examples in some guides have been updated here.
@@ -100,7 +100,7 @@ Full/archived templates are not used in the MVP-facing workflow.
 - Start with 2 digits and expand only as needed; avoid unnecessary leading zeros.
 - Correct: `BRD-01`, `BRD-99`, `BRD-102`, `BRD-999`, `BRD-1000`.
 - Incorrect: `BRD-001`, `BRD-009`.
-- Unified across all doc types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS.
+- Unified across all doc types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS.
 - Element IDs must match filename digit width (e.g., `BRD-06` ↔ `BRD.06.xx.xx`).
 - Reserved infra docs may use `-000` (e.g., `BRD-00_index.md`). Source code and tests follow coding standards, not this rule.
 - See details in [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md).
@@ -118,7 +118,6 @@ This repository uses consistent **2-digit width** (`00`) for all index files acr
 | ADR | ADR-00_index.md | 2-digit | `ADR-00_index.md` |
 | SYS | SYS-00_index.md | 2-digit | `SYS-00_index.md` |
 | REQ | REQ-00_index.md | 2-digit | `REQ-00_index.md` |
-| IMPL | IMPL-00_index.md | 2-digit | `IMPL-00_index.md` |
 | CTR | CTR-00_index.md | 2-digit | `CTR-00_index.md` |
 | SPEC | SPEC-00_index.md | 2-digit | `SPEC-00_index.md` |
 | TASKS | TASKS-00_index.md | 2-digit | `TASKS-00_index.md` |
@@ -221,13 +220,12 @@ flowchart LR
     BDD --> ADR[ADR<br/>Layer 5]
     ADR --> SYS[SYS<br/>Layer 6]
     SYS --> REQ[REQ<br/>Layer 7]
-    REQ --> IMPL[IMPL<br/>Layer 8]
-    IMPL --> CTR[CTR<br/>Layer 9]
-    CTR --> SPEC[SPEC<br/>Layer 10]
-    SPEC --> TASKS[TASKS<br/>Layer 11]
-    TASKS --> Code[Code<br/>Layer 12]
-    Code --> Tests[Tests<br/>Layer 13]
-    Tests --> Val[Validation<br/>Layer 14]
+    REQ --> CTR[CTR<br/>Layer 8]
+    CTR --> SPEC[SPEC<br/>Layer 9]
+    SPEC --> TASKS[TASKS<br/>Layer 10]
+    TASKS --> Code[Code<br/>Layer 11]
+    Code --> Tests[Tests<br/>Layer 12]
+    Tests --> Val[Validation<br/>Layer 13]
 ```
 
 ### Splitting Rules
@@ -235,7 +233,7 @@ flowchart LR
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
 
-### 15-Layer Architecture with Cumulative Tagging
+### 14-Layer Architecture with Cumulative Tagging
 
 The AI Dev Flow transforms business requirements into production code through a structured, traceable workflow. Each layer includes cumulative tags from ALL upstream layers, creating complete audit trails for regulatory compliance (regulatory, FDA, ISO).
 
@@ -249,17 +247,16 @@ The AI Dev Flow transforms business requirements into production code through a 
 | **5** | ADR | Architectural decisions and rationale | @brd→@bdd (4) | TECHNICAL approach |
 | **6** | SYS | System-level requirements | @brd→@adr (5) | System specifications |
 | **7** | REQ | Atomic, testable requirements | @brd→@sys (6) | GRANULAR specifications |
-| **8** | IMPL | Implementation plans (optional) | @brd→@req (7) | WHO/WHEN to build |
-| **9** | CTR | API contracts (optional) | @brd→@impl (8) | INTERFACE definitions |
-| **10** | SPEC | YAML technical specifications | @brd→@req (+optional) (7-9) | HOW to build |
-| **11** | TASKS | Implementation task breakdown | @brd→@spec (8-10) | EXACT TODOs + execution commands |
-| **12** | Code | Source code implementation | @brd→@tasks (9-11) | RUNNABLE artifacts |
-| **13** | Tests | Test suite implementation | @brd→@code (10-11) | Quality validation |
-| **14** | Validation | Production readiness verification | All upstream (10-14) | PRODUCTION-READY |
+| **8** | CTR | API contracts (optional) | @brd→@req (7) | INTERFACE definitions |
+| **9** | SPEC | YAML technical specifications | @brd→@req (+optional ctr) (7-8) | HOW to build |
+| **10** | TASKS | Implementation task breakdown | @brd→@spec (8-9) | EXACT TODOs + execution commands |
+| **11** | Code | Source code implementation | @brd→@tasks (9-10) | RUNNABLE artifacts |
+| **12** | Tests | Test suite implementation | @brd→@code (10-11) | Quality validation |
+| **13** | Validation | Production readiness verification | All upstream (10-13) | PRODUCTION-READY |
 
-**Note**: Layers 8 (IMPL) and 9 (CTR) are optional - include only when needed for project management or API contracts.
+**Note**: Layer 8 (CTR) is optional - include only when needed for external API contracts.
 
-#### 15-Layer Architecture Diagram
+#### 14-Layer Architecture Diagram
 
 ```mermaid
 graph TB
@@ -277,31 +274,30 @@ graph TB
         L6[SYS - System Requirements]
         L7[REQ - Atomic Requirements]
     end
-    subgraph "Design Layers 8-10"
-        L8[IMPL - Implementation Approach]
-        L9[CTR - Contracts/APIs]
-        L10[SPEC - Technical Specs]
+    subgraph "Design Layers 8-9"
+        L8[CTR - Contracts/APIs]
+        L9[SPEC - Technical Specs]
     end
-    subgraph "Implementation Layers 11-14"
-        L11[TASKS - Task Breakdown + Execution]
-        L12[Code - Source Code]
-        L13[Tests - Test Suite]
-        L14[Validation - Quality Gates]
+    subgraph "Implementation Layers 10-13"
+        L10[TASKS - Task Breakdown + Execution]
+        L11[Code - Source Code]
+        L12[Tests - Test Suite]
+        L13[Validation - Quality Gates]
     end
 
     L0 --> L1 --> L2 --> L3 --> L4 --> L5 --> L6 --> L7
-    L7 --> L8 --> L9 --> L10 --> L11 --> L12 --> L13 --> L14
+    L7 --> L8 --> L9 --> L10 --> L11 --> L12 --> L13
 ```
 
 #### Layer Numbering Explained
 
-The 15-layer architecture uses the following structure:
+The 14-layer architecture uses the following structure:
 
 - **Layer 0**: Strategy (pre-artifact foundational layer)
   - Product strategy documents, market analysis, vision statements
   - No formal artifact type, no traceability tags
 
-- **Layers 1-11**: Formal Documentation Artifacts
+- **Layers 1-10**: Formal Documentation Artifacts
   - Layer 1: BRD (Business Requirements)
   - Layer 2: PRD (Product Requirements)
   - Layer 3: EARS (Event-Action-Response-State) — Engineering Requirements
@@ -309,18 +305,17 @@ The 15-layer architecture uses the following structure:
   - Layer 5: ADR (Architecture Decision Records)
   - Layer 6: SYS (System Architecture)
   - Layer 7: REQ (Requirements Specifications)
-  - Layer 8: IMPL (Implementation Specifications) - optional
-  - Layer 9: CTR (Contracts) - optional
-  - Layer 10: SPEC (Technical Specifications)
-  - Layer 11: TASKS (Task Breakdowns with execution commands)
+  - Layer 8: CTR (Contracts) - optional
+  - Layer 9: SPEC (Technical Specifications)
+  - Layer 10: TASKS (Task Breakdowns with execution commands)
 
-- **Layers 12-14**: Execution Layers
-  - Layer 12: Code (source code files)
-  - Layer 13: Tests (test implementations)
-  - Layer 14: Validation (test results, metrics)
+- **Layers 11-13**: Execution Layers
+  - Layer 11: Code (source code files)
+  - Layer 12: Tests (test implementations)
+  - Layer 13: Validation (test results, metrics)
 
 **Important Note on Layer Numbering:**
-- **Formal layer numbers (0-14)**: Used in cumulative tagging, templates, and specifications
+- **Formal layer numbers (0-13)**: Used in cumulative tagging, templates, and specifications
 - **Mermaid diagram groupings**: May use simplified labels (L1-L10) for visual organization
 - **Always use formal layer numbers** when implementing cumulative tagging or referencing layers in documentation
 - Mermaid subgraph labels (e.g., "Layer 1 - Business") are visual groupings that may combine multiple formal layers for diagram clarity
@@ -339,15 +334,14 @@ The 15-layer architecture uses the following structure:
 | 5 | Architecture Decisions (ADR) | Technical architecture choices |
 | 6 | System Requirements (SYS) | System-level specifications |
 | 7 | Requirements (REQ) | Atomic requirements |
-| 8 | Implementation Specifications (IMPL) | Project management plans |
-| 9 | Contracts (CTR) | Interface contracts (dual-file format) |
-| 10 | Specifications (SPEC) | Detailed technical specs |
-| 11 | Tasks (TASKS) | Development task breakdown + execution commands |
-| 12 | Code | Actual implementation |
-| 13 | Tests | Unit/integration tests |
-| 14 | Validation | End-to-end validation |
+| 8 | Contracts (CTR) | Interface contracts (dual-file format) |
+| 9 | Specifications (SPEC) | Detailed technical specs |
+| 10 | Tasks (TASKS) | Development task breakdown + execution commands |
+| 11 | Code | Actual implementation |
+| 12 | Tests | Unit/integration tests |
+| 13 | Validation | End-to-end validation |
 
-Important: "Review" and "Production" are outcomes, not formal layers. The formal model is fixed at Layers 0–14.
+Important: "Review" and "Production" are outcomes, not formal layers. The formal model is fixed at Layers 0–13.
 
 #### Mermaid Diagram Visual Groupings (L1-L10)
 
@@ -357,14 +351,13 @@ Diagrams use simplified labels for visual clarity:
 - **L2**: Testing Layer (contains Layer 4: BDD)
 - **L3**: Architecture Layer (contains Layers 5-6: ADR, SYS)
 - **L4**: Requirements Layer (contains Layer 7: REQ)
-- **L5**: Project Management (contains Layer 8: IMPL)
-- **L6**: Interface Layer (contains Layer 9: CTR)
-- **L7**: Technical Specs (contains Layer 10: SPEC)
-- **L8**: Code Generation (contains Layer 11: TASKS)
-- **L9**: Code Layer (contains Layer 12: Code)
-- **L10**: Validation Layer (contains Layers 13-14: Tests, Validation)
+- **L5**: Interface Layer (contains Layer 8: CTR)
+- **L6**: Technical Specs (contains Layer 9: SPEC)
+- **L7**: Code Generation (contains Layer 10: TASKS)
+- **L8**: Code Layer (contains Layer 11: Code)
+- **L9**: Validation Layer (contains Layers 12-13: Tests, Validation)
 
-**Important**: Always use formal layer numbers (0-14) in:
+**Important**: Always use formal layer numbers (0-13) in:
 - Cumulative tagging implementations
 - Documentation references
 - Code comments
@@ -372,7 +365,7 @@ Diagrams use simplified labels for visual clarity:
 
 ### Critical Decision Point
 
-**After IMPL (Project Management Layer)**:
+**After REQ (Requirements Layer)**:
 - **Interface requirement** (API, event schema, data model) → Create **CTR** (API Contract) → then **SPEC**
 - **No interface requirement** (internal logic, business rules) → Create **SPEC** directly
 
@@ -382,8 +375,7 @@ Diagrams use simplified labels for visual clarity:
 
 ```mermaid
 flowchart TD
-    REQ[REQ - Atomic Requirements] --> IMPL[IMPL - Implementation Approach]
-    IMPL --> Decision{Interface<br/>Required?}
+    REQ[REQ - Atomic Requirements] --> Decision{Interface<br/>Required?}
     Decision -->|Yes| CTR[CTR - API Contracts]
     Decision -->|No| SPEC[SPEC - Technical Specs]
     CTR --> SPEC
@@ -439,42 +431,33 @@ flowchart TD
   - Split (optional when large): index + sections `07_REQ/REQ-NN_{slug}/REQ-NN.0_index.md`, `REQ-NN.1_{section}.md`, ...
 - Files: [REQ-00_index.md](./07_REQ/REQ-00_index.md) | [REQ-MVP-TEMPLATE.md](./07_REQ/REQ-MVP-TEMPLATE.md) (default; full template archived)
 
-### Project Management Layer
-
-**08_IMPL/** - Implementation Specifications (Layer 8)
-- Project management documents organizing work into phases, teams, deliverables
-- **Focus**: WHO does WHAT, WHEN - NOT technical specifications (HOW)
-- Identifies which CTR, SPEC, TASKS to create
-- **Files**: [IMPL-00_index.md](./08_IMPL/IMPL-00_index.md) | [Template](./08_IMPL/IMPL-TEMPLATE.md)
-- **Examples**: [IMPL-01_feature_implementation_example.md](./08_IMPL/examples/IMPL-01_feature_implementation_example.md)
-
 ### Interface Layer
 
-**09_CTR/** - API Contracts (CTR)
+**08_CTR/** - API Contracts (CTR)
 - Formal interface specifications for component-to-component communication
 - **Dual-file format**:
   - `.md` file: Human-readable context, business rationale, traceability links
   - `.yaml` file: Machine-readable schema (OpenAPI/AsyncAPI/JSON Schema)
 - **When to use**: Created when REQ specifies interface requirements (APIs, events, data models)
 - **Benefits**: Enables parallel development and contract testing
-- **Examples**: [CTR-01_service_contract_example.md](./09_CTR/examples/CTR-01_service_contract_example.md) + [CTR-01_service_contract_example.yaml](./09_CTR/examples/CTR-01_service_contract_example.yaml)
+- **Examples**: [CTR-01_service_contract_example.md](./08_CTR/examples/CTR-01_service_contract_example.md) + [CTR-01_service_contract_example.yaml](./08_CTR/examples/CTR-01_service_contract_example.yaml)
 
 ### Technical Specs (SPEC)
 
-**10_SPEC/** - Technical Specifications
+**09_SPEC/** - Technical Specifications
 - YAML: Monolithic per component (code generation source)
 - Markdown: Split narrative with `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` when needed
 - References CTR contracts when implementing interfaces
-- **Files**: [SPEC-00_index.md](./10_SPEC/SPEC-00_index.md) | [Template](./10_SPEC/SPEC-MVP-TEMPLATE.yaml)
-- **Examples**: [SPEC-01_api_client_example.yaml](./10_SPEC/SPEC-01_api_client_example.yaml)
+- **Files**: [SPEC-00_index.md](./09_SPEC/SPEC-00_index.md) | [Template](./09_SPEC/SPEC-MVP-TEMPLATE.yaml)
+- **Examples**: [SPEC-01_api_client_example.yaml](./09_SPEC/SPEC-01_api_client_example.yaml)
 
 ### Code Generation Layer
 
-**11_TASKS/** - Code Generation Plans (TASKS)
+**10_TASKS/** - Code Generation Plans (TASKS)
 - Exact TODOs to implement SPEC in source code
 - Step-by-step guide for AI code generation from YAML specifications
 - **1:1 mapping**: Each TASKS document corresponds to one SPEC
-- **Files**: [TASKS-00_index.md](./11_TASKS/TASKS-00_index.md) | [Template](./11_TASKS/TASKS-TEMPLATE.md)
+- **Files**: [TASKS-00_index.md](./10_TASKS/TASKS-00_index.md) | [Template](./10_TASKS/TASKS-TEMPLATE.md)
 
 ## Document ID Standards
 
@@ -483,7 +466,7 @@ flowchart TD
 **IMPORTANT**: These ID naming standards apply ONLY to **documentation artifacts** in the SDD workflow, NOT to source code files.
 
 #### ✅ Apply To (Documentation):
-- Documents in `docs/` directories: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
+- Documents in `docs/` directories: BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS
 - BDD feature files (`.feature` format) in `tests/bdd/` directories
 
 #### ❌ Do NOT Apply To (Source Code):
@@ -496,7 +479,7 @@ flowchart TD
 Format: `{TYPE}-{NN}_{descriptive_slug}.{ext}`
 Note: `NN` denotes a variable-width 2+ digit number (e.g., 01, 12, 105, 1002).
 
-- **TYPE**: Document type prefix (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS)
+- **TYPE**: Document type prefix (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS)
 - **NNN**: 2+ digit sequence number (01, 02, 03, 100); examples and placeholders may show `NN` to indicate variable width
 - **descriptive_slug**: snake_case description
 - **ext**: File extension (md, feature, yaml)
@@ -555,10 +538,9 @@ Note on ADR references:
 | ADR | ADR_SCHEMA.yaml | 5 | |
 | SYS | SYS_SCHEMA.yaml | 6 | |
 | REQ | REQ_SCHEMA.yaml | 7 | |
-| IMPL | IMPL_SCHEMA.yaml | 8 | |
-| CTR | CTR_SCHEMA.yaml | 9 | |
-| SPEC | SPEC_SCHEMA.yaml | 10 | |
-| TASKS | TASKS_SCHEMA.yaml | 11 | |
+| CTR | CTR_SCHEMA.yaml | 8 | |
+| SPEC | SPEC_SCHEMA.yaml | 9 | |
+| TASKS | TASKS_SCHEMA.yaml | 10 | |
 
 ¹ BRD schema is OPTIONAL. BRD validation is human-centric with advisory-only automated checks. All validation rules in BRD_SCHEMA.yaml have 'warning' or 'info' severity (not 'error'). See BRD_SCHEMA.yaml header (lines 1-12) for enforcement level details.
 
@@ -571,7 +553,7 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 **Core Principle**: Each layer N includes tags from layers 1 through N-1 plus its own identifier.
 
 **Tag Format**:
-- Hierarchical artifacts (BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS): `@type: TYPE-NN:TYPE.NN.TT.SS` (document ID + element ID)
+- Hierarchical artifacts (BRD, PRD, EARS, BDD, SYS, REQ, TASKS): `@type: TYPE-NN:TYPE.NN.TT.SS` (document ID + element ID)
 - File-level artifacts (ADR, SPEC, CTR): `@type: TYPE-NN`
 
 **Example Progression**:
@@ -592,10 +574,9 @@ Every document maintains bidirectional traceability through **Cumulative Tagging
 @adr: ADR-33
 @sys: SYS-06:SYS.06.02.01
 
-# Layer 13 (Code)
+# Layer 11 (Code)
 @brd: BRD-01:BRD.01.01.30
 ... [all upstream tags through @tasks]
-@impl-status: complete
 ```
 
 ### Benefits
@@ -624,7 +605,7 @@ python scripts/generate_traceability_matrix.py --auto
 
 See [TRACEABILITY.md](./TRACEABILITY.md) and [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) for complete guidelines.
 
-Note on Validation layer (Layer 15): Validation consumes all upstream tags. Documentation presents counts as advisory; the validator enforces a broad acceptable range (10–15) to preserve complete chains.
+Note on Validation layer (Layer 13): Validation consumes all upstream tags. Documentation presents counts as advisory; the validator enforces a broad acceptable range (9–13) to preserve complete chains.
 
 ## Getting Started
 
@@ -754,20 +735,20 @@ python scripts/validate_tags_against_docs.py \
 2. **Required Tags**: Ensures all required upstream tags are present (no gaps)
 3. **Tag Count**: Validates tag count matches layer requirements
 4. **Tag Chain**: Verifies no gaps in cumulative tag chain
-5. **Optional Layers**: Correctly handles IMPL (Layer 8) and CTR (Layer 9)
+5. **Optional Layers**: Correctly handles CTR (Layer 8)
 
 **Expected Tag Counts by Layer**:
 
 See [CUMULATIVE_TAG_REFERENCE.md](./CUMULATIVE_TAG_REFERENCE.md) for complete tag count formulas by layer, including:
-- Full reference table (Layers 1-15)
-- Handling of optional layers (IMPL, CTR)
+- Full reference table (Layers 1-13)
+- Handling of optional layers (CTR)
 - Validation formulas and Python implementation
 - Example scenarios for different project configurations
 
 **Quick Reference**:
-- Layers 1-9: Fixed count (layer number - 1)
-- Layers 10-15: Range based on optional layers (IMPL, CTR)
-- Layer 15 (Validation): Advisory count (10-15 tags)
+- Layers 1-8: Fixed count (layer number - 1)
+- Layers 9-13: Range based on optional layer (CTR)
+- Layer 13 (Validation): Advisory count (9-13 tags)
 
 
 **Output Example**:
@@ -790,7 +771,8 @@ MISSING_REQUIRED_TAGS: 1
      ❌ Missing required upstream tags for REQ (Layer 7): bdd
 
 TAG_CHAIN_GAP: 2
-  📄 docs/10_SPEC/service.yaml
+   📄 docs/09_SPEC/service.yaml
+
      ❌ Gap in cumulative tag chain: @bdd (Layer 4) missing but higher layers present
 ```
 
@@ -960,10 +942,9 @@ Each artifact type has a corresponding YAML schema file (`{TYPE}_SCHEMA.yaml`) t
 | 5 | ADR | [ADR_SCHEMA.yaml](./05_ADR/ADR_SCHEMA.yaml) | Context-Decision-Consequences |
 | 6 | SYS | [SYS_SCHEMA.yaml](./06_SYS/SYS_SCHEMA.yaml) | FR-NN, unified sequential formats |
 | 7 | REQ | [REQ_SCHEMA.yaml](./07_REQ/REQ_SCHEMA.yaml) | 12 sections, interface schemas |
-| 8 | IMPL | [IMPL_SCHEMA.yaml](./08_IMPL/IMPL_SCHEMA.yaml) | Phase organization, deliverables |
-| 9 | CTR | [CTR_SCHEMA.yaml](./09_CTR/CTR_SCHEMA.yaml) | Dual-file, OpenAPI/AsyncAPI |
-| 10 | SPEC | [SPEC_SCHEMA.yaml](./10_SPEC/SPEC_SCHEMA.yaml) | YAML structure, code gen ready |
-| 11 | TASKS | [TASKS_SCHEMA.yaml](./11_TASKS/TASKS_SCHEMA.yaml) | TASK-NN, implementation contracts |
+| 8 | CTR | [CTR_SCHEMA.yaml](./08_CTR/CTR_SCHEMA.yaml) | Dual-file, OpenAPI/AsyncAPI |
+| 9 | SPEC | [SPEC_SCHEMA.yaml](./09_SPEC/SPEC_SCHEMA.yaml) | YAML structure, code gen ready |
+| 10 | TASKS | [TASKS_SCHEMA.yaml](./10_TASKS/TASKS_SCHEMA.yaml) | TASK-NN, implementation contracts |
 
 ### Schema Validation Usage
 
@@ -986,18 +967,17 @@ python scripts/validate_artifact.py --type REQ --strict
 | 5 | ADR | @brd, @prd, @ears, @bdd |
 | 6 | SYS | @brd, @prd, @ears, @bdd, @adr |
 | 7 | REQ | @brd, @prd, @ears, @bdd, @adr, @sys |
-| 8 | IMPL | @brd through @req (optional layer) |
-| 9 | CTR | @brd through @impl (optional layer) |
-| 10 | SPEC | @brd through @req + optional @impl, @ctr |
-| 11 | TASKS | @brd through @spec |
+| 8 | CTR | @brd through @req (optional layer) |
+| 9 | SPEC | @brd through @req + optional @ctr |
+| 10 | TASKS | @brd through @spec |
 
 ## Workflow Guides
 
 ### Business Requirements → Production Code
 
-The AI Dev Flow follows a structured progression through 15 layers:
+The AI Dev Flow follows a structured progression through 14 layers:
 
-**Documentation Layers (0-11)**:
+**Documentation Layers (0-10)**:
 1. **Strategy** (Layer 0) - External business strategy documents
 2. **BRD** (Layer 1) - Business objectives and market context
 3. **PRD** (Layer 2) - Product features and user stories
@@ -1006,15 +986,14 @@ The AI Dev Flow follows a structured progression through 15 layers:
 6. **ADR** (Layer 5) - Architectural decisions and rationale
 7. **SYS** (Layer 6) - System-level requirements
 8. **REQ** (Layer 7) - Atomic, testable requirements
-9. **IMPL** (Layer 8) - Implementation plans (optional)
-10. **CTR** (Layer 9) - API contracts (optional)
-11. **SPEC** (Layer 10) - YAML technical specifications
-12. **TASKS** (Layer 11) - Implementation task breakdown with execution commands
+9. **CTR** (Layer 8) - API contracts (optional)
+10. **SPEC** (Layer 9) - YAML technical specifications
+11. **TASKS** (Layer 10) - Implementation task breakdown with execution commands
 
-**Execution Layers (12-14)**:
-13. **Code** (Layer 12) - Source code with cumulative tags
-14. **Tests** (Layer 13) - Test suite with cumulative tags
-15. **Validation** (Layer 14) - Production readiness verification
+**Execution Layers (11-13)**:
+12. **Code** (Layer 11) - Source code with cumulative tags
+13. **Tests** (Layer 12) - Test suite with cumulative tags
+14. **Validation** (Layer 13) - Production readiness verification
 
 **Key Workflow Patterns**:
 - **Cumulative Tagging**: Every artifact includes tags from ALL upstream layers
@@ -1082,14 +1061,6 @@ Templates are optimized for AI code generation:
 4. **Traceability Comments**: Include REQ-IDs, ADR references, BDD scenarios
 5. **AI-Ready**: Structure for deterministic code generation
 
-### IMPL (Implementation Plan) Best Practices
-
-1. **Project Management Focus**: WHO does WHAT, WHEN - not HOW (technical details)
-2. **Deliverable Identification**: List which CTR, SPEC, TASKS documents will be created
-3. **Phase Organization**: Break large projects into manageable phases
-4. **Team Assignments**: Clearly assign responsibilities to teams/individuals
-5. **Dependencies**: Document inter-phase and inter-deliverable dependencies
-
 ### General Guidelines
 
 - **Run Validation**: Check links and IDs before committing (if validation scripts available)
@@ -1113,10 +1084,9 @@ graph LR
             ADR["05_ADR/ - Architecture Decisions"]
             SYS["06_SYS/ - System Requirements"]
             REQ["07_REQ/ - Atomic Requirements"]
-            IMPL["08_IMPL/ - Implementation Plans"]
-            CTR["09_CTR/ - API Contracts"]
-            SPEC["10_SPEC/ - Technical Specs"]
-            TASKS["11_TASKS/ - Code Gen Plans + Execution"]
+            CTR["08_CTR/ - API Contracts"]
+            SPEC["09_SPEC/ - Technical Specs"]
+            TASKS["10_TASKS/ - Code Gen Plans + Execution"]
         end
 
         subgraph tools["Tooling"]
@@ -1133,7 +1103,6 @@ graph LR
     end
 
     REQ --> REQ_sub["api/ auth/ data/ risk/"]
-    IMPL --> IMPL_sub["examples/"]
 ```
 
 **Artifact Directories**:
@@ -1147,10 +1116,9 @@ graph LR
 | `05_ADR/` | Architecture Decision Records |
 | `06_SYS/` | System Requirements Specifications |
 | `07_REQ/` | Atomic Requirements (subdirs: api/, auth/, data/, risk/) |
-| `08_IMPL/` | Implementation Plans (subdirs: examples/) |
-| `09_CTR/` | API Contracts - dual-file format (.md + .yaml) |
-| `10_SPEC/` | Technical Specifications (YAML) |
-| `11_TASKS/` | Code Generation Plans |
+| `08_CTR/` | API Contracts - dual-file format (.md + .yaml) |
+| `09_SPEC/` | Technical Specifications (YAML) |
+| `10_TASKS/` | Code Generation Plans |
 
 **Tooling & Guides**:
 
@@ -1163,7 +1131,7 @@ graph LR
 | `TRACEABILITY.md` | Traceability requirements and conventions |
 
 <!-- Directory Structure Migration History -->
-<!-- 2025-01-13: CONTRACTS/ → 09_CTR/ (contracts now use dual-file format) -->
+<!-- 2025-01-13: CONTRACTS/ → 08_CTR/ (contracts now use dual-file format) -->
 
 ## Framework Versions and Updates
 
@@ -1171,7 +1139,7 @@ graph LR
 **Last Updated**: 2025-11-30
 
 **Version 2.0 - Cumulative Tagging Hierarchy** (November 2025):
-- ✅ **15-Layer Architecture**: Expanded from 10 to 15 layers (added Strategy, Code, Tests, Validation)
+- ✅ **14-Layer Architecture**: Expanded from 10 to 14 layers (added Strategy, Code, Tests, Validation)
 - ✅ **Cumulative Tagging System**: Each artifact includes tags from ALL upstream layers
 - ✅ **Automated Validation**: Enhanced scripts enforce cumulative tagging compliance
 - ✅ **Traceability Matrix Templates**: All 13 artifact types have cumulative tagging sections
@@ -1181,15 +1149,14 @@ graph LR
 - ✅ **Impact Analysis**: Instant identification of affected downstream artifacts
 
 **Version 1.0 Enhancements** (November 2025):
-- Added IMPL (Implementation Plans) for project management layer
+- Added CTR (API Contracts) dual-file format for interface definitions
 - Created DOMAIN_ADAPTATION_GUIDE.md with 5 domain checklists
 - Introduced dual-file CTR format (.md + .yaml)
 - Added generic examples with placeholder format
 - Enhanced TASKS templates for AI code generation
 
 **Framework Evolution**:
-- Proven in production: 48x code generation speed improvement
-- 15-layer architecture with complete cumulative tagging
+- 14-layer architecture with complete cumulative tagging
 - Automated traceability validation and matrix generation
 - Complete audit trail from business strategy to production code
 - AI-optimized YAML specifications for deterministic generation
@@ -1201,13 +1168,13 @@ graph LR
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Detailed SDD methodology
 - [TRACEABILITY.md](./TRACEABILITY.md) - Traceability format standards and cumulative tagging hierarchy
 - [TRACEABILITY_SETUP.md](./TRACEABILITY_SETUP.md) - Setup guide for cumulative tagging validation and CI/CD
-- [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) - End-to-end example across all 15 layers
+- [COMPLETE_TAGGING_EXAMPLE.md](./COMPLETE_TAGGING_EXAMPLE.md) - End-to-end example across all 14 layers
 - [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) - Domain customization checklists
 - [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) - Document naming conventions
 
 **For Original Project Context** (example references - replace with your project path):
 - [CLAUDE.md]({project_root}/CLAUDE.md) - Project-level SDD guidance
-- [docs/10_SPEC/]({project_root}/docs/10_SPEC/) - Production specifications
+- [docs/09_SPEC/]({project_root}/docs/09_SPEC/) - Production specifications
 - [docs/src/]({project_root}/docs/src/) - Component implementations
 
 ## BDD Tag Examples
@@ -1223,7 +1190,6 @@ The framework supports two BDD tagging styles. Prefer the canonical inline form 
 @adr: ADR-NN
 @sys: SYS-NN
 @req: REQ-NN
-@impl-status: in-progress
 
 Feature: Request validation
   Scenario: Submit a valid request
@@ -1247,7 +1213,7 @@ Feature: Request validation
 Notes:
 - Both forms are extracted by `scripts/extract_tags.py`.
 - Link-style tags capture the document ID; inline tags are recommended for cumulative tagging checks.
-- Optional layers (e.g., 08_IMPL/CTR) may be omitted when not applicable.
+- Optional layers (e.g., 08_CTR) may be omitted when not applicable.
 
 ## Adoption and Support
 

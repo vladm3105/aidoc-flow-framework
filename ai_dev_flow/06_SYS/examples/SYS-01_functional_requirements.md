@@ -197,7 +197,7 @@ The Order Management System (OMS) provides core order processing capabilities fo
 
 ### 6.1 API Interfaces (High-Level)
 
-> **Note**: Detailed API contracts (endpoints, schemas) created as CTR documents during IMPL phase.
+> **Note**: Detailed API contracts (endpoints, schemas) created as CTR documents after REQ approval.
 
 **Interface Style**: REST
 

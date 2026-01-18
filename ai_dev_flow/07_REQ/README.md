@@ -73,7 +73,7 @@ Comprehensive links establish the requirement's context and relationships:
 @prd:[PRD-NN](../../02_PRD/PRD-NN_...md)
 @sys:[SYS-NN](../../06_SYS/SYS-NN_...md)
 @ears:[EARS-NN](../../03_EARS/EARS-NN_...md)
-@spec:[SPEC-NN](../../10_SPEC/.../SPEC-NN_...yaml)
+@spec:[SPEC-NN](../../09_SPEC/.../SPEC-NN_...yaml)
 @bdd:[BDD-NN.SS:scenarios](../../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
 ```
 
@@ -118,7 +118,7 @@ How this requirement will be tested and validated:
 ```markdown
 ### Verification
 - BDD: `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios`
-- Spec: [SPEC-NN.yaml](../../10_SPEC/.../SPEC-NN.yaml)
+- Spec: [SPEC-NN.yaml](../../09_SPEC/.../SPEC-NN.yaml)
 - [Additional verification methods: performance tests, security tests, etc.]
 ```
 
@@ -287,7 +287,7 @@ Track implementation artifacts that realize the requirement:
 ### Verification
 - ADR: [ADR-NN](../05_ADR/ADR-NN_...md#ADR-NN) - [Implementation approach]
 - BDD: `04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenario-1`
-- Spec: [SPEC-NN.yaml](../../10_SPEC/.../SPEC-NN.yaml)
+- Spec: [SPEC-NN.yaml](../../09_SPEC/.../SPEC-NN.yaml)
 - Code Module: `component.module.function()`
 ```
 

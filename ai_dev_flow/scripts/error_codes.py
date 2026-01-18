@@ -3,7 +3,7 @@
 Standardized Error Code Registry for SDD Document Validation
 
 Pattern: {TYPE}-{SEVERITY}{NNN}
-- TYPE: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, XDOC, VAL
+- TYPE: BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS, XDOC, VAL
 - SEVERITY: E (Error), W (Warning), I (Info)
 - NNN: 001-999
 
@@ -176,14 +176,7 @@ ERROR_REGISTRY: Dict[str, Tuple[str, str]] = {
     "REQ-W002": ("Weak acceptance criteria", "Add measurable criteria"),
 
     # -------------------------------------------------------------------------
-    # IMPL (Layer 8) - Implementation Approach
-    # -------------------------------------------------------------------------
-    "IMPL-E001": ("Invalid H1 format", "Use format: # IMPL-NNN: Title"),
-    "IMPL-E002": ("Missing required tag 'impl'", "Add @impl tag"),
-    "IMPL-E003": ("Missing required tag 'layer-8-artifact'", "Add layer tag"),
-    "IMPL-E004": ("Missing cumulative tags", "Add upstream tags"),
-    "IMPL-E005": ("Missing implementation strategy", "Add WHO-WHEN-WHAT section"),
-    "IMPL-W001": ("Missing risk assessment", "Document implementation risks"),
+# -------------------------------------------------------------------------
 
     # -------------------------------------------------------------------------
     # CTR (Layer 9) - Contracts

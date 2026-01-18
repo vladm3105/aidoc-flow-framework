@@ -54,7 +54,7 @@ class TraceabilityMatrixValidator:
 
     SUPPORTED_TYPES = [
         'BRD', 'PRD', 'EARS', 'BDD', 'ADR', 'SYS',
-        'REQ', 'IMPL', 'CTR', 'SPEC', 'TASKS'
+        'REQ', 'CTR', 'SPEC', 'TASKS'
     ]
 
     def __init__(self, matrix_path: str, input_dir: str, strict: bool = False):

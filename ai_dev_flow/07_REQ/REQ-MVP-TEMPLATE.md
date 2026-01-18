@@ -14,6 +14,7 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
+  complexity: 1 # 1-5 scale
 ---
 
 <!--
@@ -25,7 +26,7 @@ Constraints:
 - 12 sections required (aligned with MVP requirements template).
 - All 6 upstream traceability tags required (@brd, @prd, @ears, @bdd, @adr, @sys).
 - Use @threshold tags for all quantitative values.
-- SPEC-Ready/IMPL-Ready thresholds: ≥70% for MVP profile.
+- SPEC-Ready thresholds: ≥70% for MVP profile.
 - Ensure SPEC-ready clarity (Inputs, Processing, Outputs).
 - Use distinct P1/P2/P3 priorities.
 - Do not create external references to non-existent files.
@@ -62,7 +63,7 @@ AI_CONTEXT_END
 | **Verification Method** | BDD / Unit Test / Integration Test |
 | **Assigned Team** | [Team name] |
 | **SPEC-Ready Score** | ✅ [XX]% (Target: ≥70%) |
-| **IMPL-Ready Score** | ✅ [XX]% (Target: ≥70%) |
+| **CTR-Ready Score** | ✅ [XX]% (Target: ≥70%) |
 | **Template Version** | 1.0 |
 
 ---
@@ -366,9 +367,9 @@ class ResponseModel(BaseModel):
 
 ---
 
-## Migration to Full REQ Template
+## 13. Migration to Full REQ Template
 
-### When to Migrate
+### 13.1 When to Migrate
 
 - [ ] Requirement complexity requires 12-section format
 - [ ] Need comprehensive interface protocols (Python)
@@ -376,7 +377,7 @@ class ResponseModel(BaseModel):
 - [ ] SPEC generation requires maximum detail
 - [ ] Compliance requires comprehensive test coverage
 
-### Migration Steps
+### 13.2 Migration Steps
 
 2. **Transfer core content**: Map MVP sections to full template
 3. **Expand detailed sections**:
@@ -389,7 +390,7 @@ class ResponseModel(BaseModel):
 6. **Archive MVP version**: Move to archive with "superseded" note
 7. **Run validation**: Execute `./scripts/validate_req_template.sh` on new document
 
-### Section Mapping (MVP → Full)
+### 13.3 Section Mapping (MVP → Full)
 
 | MVP Section | Full Template Section | Migration Notes |
 |-------------|----------------------|-----------------|
@@ -419,5 +420,5 @@ class ResponseModel(BaseModel):
 > - Single file - no document splitting required
 > - Focus on SPEC-ready, atomic requirements
 > - All 6 upstream traceability tags required (Layer 7)
-> - SPEC-Ready/IMPL-Ready thresholds: ≥70% (vs ≥90% for full template)
+> - SPEC-Ready/CTR-Ready thresholds: ≥70% (vs ≥90% for full template)
 > - Uses `@threshold` tags for quantitative values

@@ -279,7 +279,8 @@ check_diagrams() {
   for f in "$BRD_DIR"/BRD-[0-9]*_*.md "$BRD_DIR"/BRD-[0-9]*/BRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
     if [[ "$diagram_count" -eq 0 ]]; then
       echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
       ((INFOS++)) || true
@@ -338,10 +339,31 @@ check_glossary() {
 # =============================================================================
 check_duplicates() {
   echo "--- CORPUS-08: Element ID Uniqueness ---"
-  local found=0
+  local misplaced_found=0
+  local duplicates_found=0
   local max_show=10
 
-  # Check for element IDs defined in wrong files
+  # --- Check 1: Find true duplicate element IDs across all files ---
+  echo "  Checking for globally duplicate element IDs..."
+  # We only check for duplicates in definition contexts (headings ### or tables |)
+  # to avoid flagging valid cross-references.
+  while IFS= read -r duplicate_id; do
+    if [[ -n "$duplicate_id" ]]; then
+      echo -e "${RED}CORPUS-E004: Duplicate element ID found: $duplicate_id${NC}"
+      # Show which files contain the duplicate definition
+      grep -rnE "(^###\s+$duplicate_id:|^\|.*$duplicate_id.*\|)" "$BRD_DIR"
+      echo ""
+      ((ERRORS++)) || true
+      ((duplicates_found++)) || true
+    fi
+  done < <(grep -rohE "(^###\s+BRD\.[0-9]+\.[0-9]+\.[0-9]+:|^\|.*BRD\.[0-9]+\.[0-9]+\.[0-9]+.*\|)" "$BRD_DIR" 2>/dev/null | grep -oE "BRD\.[0-9]+\.[0-9]+\.[0-9]+" | sort | uniq -d)
+
+  if [[ $duplicates_found -eq 0 ]]; then
+    echo -e "${GREEN}  ✓ No duplicate element IDs found across corpus${NC}"
+  fi
+
+  # --- Check 2: Find potentially misplaced element IDs ---
+  echo "  Checking for potentially misplaced element IDs..."
   # e.g., BRD.07.01.01 should only be defined in BRD-07_*.md
   shopt -s nullglob
   for f in "$BRD_DIR"/BRD-[0-9]*_*.md "$BRD_DIR"/BRD-[0-9]*/BRD-[0-9]*.md; do
@@ -352,32 +374,29 @@ check_duplicates() {
     file_num=$(echo "$filename" | grep -oE "BRD-[0-9]+" | sed 's/BRD-//')
 
     # Find element IDs in this file that don't match the file's number
-    # These are either cross-references (OK) or misplaced definitions (Error)
+    # These are either cross-references (OK) or misplaced definitions (Warning)
     # We'll only flag if they appear in definition context (tables, headings)
     while IFS= read -r line; do
       if [[ -n "$line" ]]; then
         wrong_id=$(echo "$line" | grep -oE "BRD\.[0-9]+\.[0-9]+\.[0-9]+" | head -1)
         id_num=$(echo "$wrong_id" | cut -d. -f2)
-        # Check if ID number doesn't match file number AND appears in table format (| ID |)
         if [[ "$id_num" != "$file_num" ]]; then
-          if echo "$line" | grep -qE "^\|.*\|.*\|"; then
-            if [[ $found -lt $max_show ]]; then
-              echo -e "${YELLOW}CORPUS-W008: Potential misplaced ID in $(basename $f)${NC}"
-              echo "  → $wrong_id defined in BRD-$file_num file"
-            fi
-            ((WARNINGS++)) || true
-            ((found++)) || true
+          if [[ $misplaced_found -lt $max_show ]]; then
+            echo -e "${YELLOW}CORPUS-W008: Potential misplaced ID in $(basename $f)${NC}"
+            echo "  → ID $wrong_id found in a BRD-$file_num file. Line: $line"
           fi
+          ((WARNINGS++)) || true
+          ((misplaced_found++)) || true
         fi
       fi
-    done < <(grep -nE "BRD\.[0-9]+\.[0-9]+\.[0-9]+" "$f" 2>/dev/null | grep -E ":[0-9]+:\|" || true)
+    done < <(grep -nE "(^###\s+BRD\.[0-9]+\.[0-9]+\.[0-9]+:|^\|.*BRD\.[0-9]+\.[0-9]+\.[0-9]+.*\|)" "$f" 2>/dev/null)
   done
   shopt -u nullglob
 
-  if [[ $found -ge $max_show ]]; then
-    echo -e "${YELLOW}  (Showing first $max_show of $found potential issues)${NC}"
-  elif [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Element IDs appear correctly placed${NC}"
+  if [[ $misplaced_found -ge $max_show ]]; then
+    echo -e "${YELLOW}  (Showing first $max_show of $misplaced_found potential misplaced ID warnings)${NC}"
+  elif [[ $misplaced_found -eq 0 ]]; then
+    echo -e "${GREEN}  ✓ No misplaced element IDs found${NC}"
   fi
   echo ""
 }

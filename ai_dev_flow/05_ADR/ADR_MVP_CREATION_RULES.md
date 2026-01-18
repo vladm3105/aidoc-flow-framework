@@ -8,6 +8,7 @@ custom_fields:
   document_type: creation-rules
   artifact_type: ADR
   layer: 5
+  complexity: 1
   priority: shared
   development_status: active
 ---
@@ -428,3 +429,32 @@ python scripts/validate_cross_document.py --layer ADR --auto-fix
 ### Quality Gate
 
 **Blocking**: YES - Cannot proceed to SYS creation until Phase 1 validation passes with 0 errors.
+
+## 16. ADR Generation Planning
+
+When creating an **ADR Generation Plan** (e.g., `ADR_GENERATION_PLAN.md`), ensure the document includes the following to prevent common issues:
+
+### 16.1 Required Frontmatter
+Must include standard fields plus `complexity`:
+```yaml
+---
+type: plan
+project: [Project Name]
+status: planning
+date: YYYY-MM-DD
+complexity: [1-5]
+---
+```
+
+### 16.2 Mandatory Sections
+1. **Executive Summary**: Scope assessment and key findings.
+2. **Prerequisites & Dependencies**: Upstream requirements (BRD/PRD), and current architecture state.
+3. **Risk Assessment**: Identify risks (e.g., conflicting decisions) and failure modes with mitigations.
+4. **Phases**: Break down work into P0/P1/P2 phases.
+   - **MUST Include**: Tasks with complexity ratings, Acceptance Criteria, Validation Steps, and Deliverables.
+5. **Validation Commands**: Explicit commands to run for verification.
+
+### 16.3 Common Pitfalls to Avoid
+- **Count Mismatch**: Ensure summary counts match the task list items.
+- **Missing Complexity**: Rate every task (1-5) and the overall document.
+- **Vague Archives**: Clearly state how legacy/archive files are handled.

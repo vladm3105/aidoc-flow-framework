@@ -61,20 +61,20 @@ class RequirementIDValidator:
 
     # Document ID patterns (hyphen notation: TYPE-NN)
     DOC_ID_HYPHEN_PATTERN = re.compile(
-        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|IMPL|CTR|SPEC|TASKS)-(\d{2,})\b'
+        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|CTR|SPEC|TASKS)-(\d{2,})\b'
     )
 
     # Element ID patterns (dot notation: TYPE.NN.TT.SS)
     ELEM_ID_DOT_PATTERN = re.compile(
-        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|IMPL|CTR|SPEC|TASKS)\.(\d{2,})\.(\d{2})\.(\d{2,})\b'
+        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|CTR|SPEC|TASKS)\.(\d{2,})\.(\d{2})\.(\d{2,})\b'
     )
 
     # Mixed notation detection (invalid patterns)
     MIXED_HYPHEN_DOT_PATTERN = re.compile(
-        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|IMPL|CTR|SPEC|TASKS)-(\d{2,})\.(\d{2})\b'
+        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|CTR|SPEC|TASKS)-(\d{2,})\.(\d{2})\b'
     )
     MIXED_DOT_HYPHEN_PATTERN = re.compile(
-        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|IMPL|CTR|SPEC|TASKS)\.(\d{2,})-(\d{2})\b'
+        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|CTR|SPEC|TASKS)\.(\d{2,})-(\d{2})\b'
     )
 
     # Standard element type codes (2-digit codes)

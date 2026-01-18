@@ -202,7 +202,8 @@ check_visualization() {
     if [[ "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then continue; fi
     ((total++)) || true
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
     if [[ $diagram_count -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
         echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
@@ -340,9 +341,12 @@ check_adr_structure() {
     if is_adr_ref "$(basename $f)"; then continue; fi
 
     local has_context has_decision has_consequences
-    has_context=$(grep -cE "^#+.*Context" "$f" 2>/dev/null || echo 0)
-    has_decision=$(grep -cE "^#+.*Decision" "$f" 2>/dev/null || echo 0)
-    has_consequences=$(grep -cE "^#+.*(Consequences|Implications)" "$f" 2>/dev/null || echo 0)
+    has_context=$(grep -cE "^#+.*Context" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_context" || ! "$has_context" =~ ^[0-9]+$ ]] && has_context=0
+    has_decision=$(grep -cE "^#+.*Decision" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_decision" || ! "$has_decision" =~ ^[0-9]+$ ]] && has_decision=0
+    has_consequences=$(grep -cE "^#+.*(Consequences|Implications)" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_consequences" || ! "$has_consequences" =~ ^[0-9]+$ ]] && has_consequences=0
 
     if [[ $has_context -eq 0 ]]; then
       echo -e "${RED}CORPUS-E011: $(basename $f) missing Context section${NC}"
@@ -383,10 +387,14 @@ check_traceability() {
     if is_adr_ref "$(basename $f)"; then continue; fi
 
     local has_brd has_prd has_ears has_bdd
-    has_brd=$(grep -c "@brd:" "$f" 2>/dev/null || echo 0)
-    has_prd=$(grep -c "@prd:" "$f" 2>/dev/null || echo 0)
-    has_ears=$(grep -c "@ears:" "$f" 2>/dev/null || echo 0)
-    has_bdd=$(grep -c "@bdd:" "$f" 2>/dev/null || echo 0)
+    has_brd=$(grep -c "@brd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_brd" || ! "$has_brd" =~ ^[0-9]+$ ]] && has_brd=0
+    has_prd=$(grep -c "@prd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_prd" || ! "$has_prd" =~ ^[0-9]+$ ]] && has_prd=0
+    has_ears=$(grep -c "@ears:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_ears" || ! "$has_ears" =~ ^[0-9]+$ ]] && has_ears=0
+    has_bdd=$(grep -c "@bdd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_bdd" || ! "$has_bdd" =~ ^[0-9]+$ ]] && has_bdd=0
 
     if [[ $has_brd -eq 0 ]]; then
       echo -e "${RED}CORPUS-E014: $(basename $f) missing @brd traceability tag${NC}"

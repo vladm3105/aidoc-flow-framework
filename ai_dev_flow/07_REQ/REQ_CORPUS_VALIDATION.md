@@ -24,11 +24,11 @@ custom_fields:
 | Purpose | Quality gate for complete REQ corpus |
 | Trigger | Run after ALL REQ files are complete |
 | Scope | Entire REQ corpus validation |
-| Layer | Layer 7 → Layer 8/10 transition gate |
+| Layer | Layer 7 → Layer 8/9 transition gate |
 
 ## Overview
 
-This document defines **corpus-level validation rules** that run AFTER all REQ (Atomic Requirements) files are created but BEFORE IMPL or SPEC creation begins. These rules validate the entire REQ corpus as a cohesive set, checking for cross-document consistency, domain coverage, and quality standards that cannot be verified at the individual file level.
+This document defines **corpus-level validation rules** that run AFTER all REQ (Atomic Requirements) files are created but BEFORE CTR or SPEC creation begins. These rules validate the entire REQ corpus as a cohesive set, checking for cross-document consistency, domain coverage, and quality standards that cannot be verified at the individual file level.
 
 ### Validation Hierarchy
 
@@ -46,7 +46,7 @@ All REQ Complete
         ↓
 REQ_CORPUS_VALIDATION.md (corpus-level) ← Quality Gate
         ↓
-PASS → Begin IMPL (Layer 8) or SPEC (Layer 10)
+PASS → Begin CTR (Layer 8) or SPEC (Layer 9)
 FAIL → Fix issues, re-run corpus validation
 ```
 
@@ -78,7 +78,9 @@ docs/07_REQ/
 
 **Severity**: Error (blocking SPEC creation)
 
-**Patterns to Detect**:
+**Important**: The validation script uses `grep -F` (fixed string matching) to match these patterns LITERALLY. Parentheses and brackets are matched as actual characters, not regex operators.
+
+**Patterns to Detect** (matched LITERALLY):
 | Pattern | Description |
 |---------|-------------|
 | `(future REQ)` | REQ-NN exists but still marked as future |
@@ -86,6 +88,18 @@ docs/07_REQ/
 | `(to be defined)` | Item has been defined elsewhere |
 | `(pending)` | Work completed but placeholder remains |
 | `(TBD)` | Generic placeholder for defined content |
+| `[TBD]` | Generic placeholder in brackets |
+| `[TODO]` | Task marker that should be resolved |
+
+**What This Check Does NOT Flag** (expected patterns):
+
+| Pattern | Location | Why It's Valid |
+|---------|----------|----------------|
+| `TBD` (unbracketed) | Downstream reference tables | SPEC/TASKS don't exist during REQ phase |
+| `\| SPEC-NN \| TBD \|` | Traceability tables | Downstream artifacts are created later |
+| `\| TASKS-NN \| TBD \|` | Traceability tables | Layer 10 doesn't exist at Layer 7 |
+
+**Rationale**: REQ documents (Layer 7) legitimately contain "TBD" in downstream reference tables because SPEC (Layer 9) and TASKS (Layer 10) documents don't exist yet during REQ creation. The validation only flags bracketed placeholders like `(TBD)` or `[TBD]` which indicate incomplete content within the current document.
 
 ---
 
@@ -95,15 +109,14 @@ docs/07_REQ/
 
 **Severity**: Error (blocking)
 
-**Rationale**: REQ is Layer 7. It should NOT reference specific numbered IMPL, CTR, SPEC, or TASKS documents that don't exist yet.
+**Rationale**: REQ is Layer 7. It should NOT reference specific numbered CTR, SPEC, or TASKS documents that don't exist yet.
 
 **Patterns to Flag**:
 | Pattern | Layer | Issue |
 |---------|-------|-------|
-| `IMPL-NN` | 8 | IMPL don't exist during REQ creation |
-| `CTR-NN` | 9 | CTR don't exist during REQ creation |
-| `SPEC-NN` | 10 | SPECs don't exist during REQ creation |
-| `TASKS-NN` | 11 | TASKS don't exist during REQ creation |
+| `CTR-NN` | 8 | CTR don't exist during REQ creation |
+| `SPEC-NN` | 9 | SPECs don't exist during REQ creation |
+| `TASKS-NN` | 10 | TASKS don't exist during REQ creation |
 
 **Allowed Patterns** (generic references):
 - "This will inform SPEC development"
@@ -377,13 +390,13 @@ done
 
 ---
 
-### CORPUS-15: IMPL-Readiness Scoring
+### CORPUS-15: CTR-Readiness Scoring
 
-**Purpose**: Verify IMPL-Ready scores are present for atomic requirements
+**Purpose**: Verify CTR-Ready scores are present for interface-relevant requirements
 
 **Severity**: Info
 
-**Threshold**: IMPL-Ready Score ≥85% recommended
+**Threshold**: CTR-Ready Score ≥85% recommended
 
 ---
 
@@ -415,7 +428,7 @@ done
 | `layer` | `7` | Yes |
 | `upstream_sys` | `SYS-NN` | Yes |
 | `spec_ready_score` | `NN%` | Yes |
-| `impl_ready_score` | `NN%` | No |
+| `ctr_ready_score` | `NN%` | No |
 
 **Validation Logic**:
 ```bash
@@ -519,6 +532,42 @@ done
 
 ---
 
+### CORPUS-22: Upstream TBD References
+
+**Purpose**: Detect TBD placeholders in upstream traceability references
+
+**Severity**: Error (blocking SPEC creation)
+
+**Rationale**: Upstream documents (BRD, PRD, EARS, BDD, ADR, SYS) from Layers 1-6 must exist BEFORE REQ (Layer 7) creation. TBD is not acceptable for upstream references.
+
+**Important**: This is different from **downstream** TBD references (SPEC, TASKS) which ARE expected because those documents are created AFTER REQ.
+
+**Upstream vs Downstream TBD**:
+| Direction | Documents | TBD Allowed? | Reason |
+|-----------|-----------|--------------|--------|
+| **Upstream** | BRD, PRD, EARS, BDD, ADR, SYS | ✗ No | Must exist before REQ |
+| **Downstream** | SPEC, TASKS, CTR | ✓ Yes | Created after REQ |
+
+**Patterns Flagged**:
+| Pattern | Error |
+|---------|-------|
+| `@brd: TBD` | Upstream BRD reference is TBD |
+| `@prd: TBD` | Upstream PRD reference is TBD |
+| `@ears: TBD` | Upstream EARS reference is TBD |
+| `@bdd: TBD` | Upstream BDD reference is TBD |
+| `@adr: TBD` | Upstream ADR reference is TBD |
+| `@sys: TBD` | Upstream SYS reference is TBD |
+
+**Validation Logic**:
+```bash
+# Check for TBD in upstream traceability tags
+for tag in "@brd:" "@prd:" "@ears:" "@bdd:" "@adr:" "@sys:"; do
+  grep -rE "${tag}\s*(TBD|\(TBD\)|\[TBD\])" "$REQ_DIR"/*.md
+done
+```
+
+---
+
 ## 2. Error Codes
 
 ### Error Codes (Blocking)
@@ -541,6 +590,7 @@ done
 | CORPUS-E019 | Wrong tag notation (dot vs dash) | CORPUS-18 |
 | CORPUS-E020 | Invalid date format | CORPUS-19 |
 | CORPUS-E021 | Invalid custom_fields key name | CORPUS-21 |
+| CORPUS-E022 | TBD in upstream traceability reference | CORPUS-22 |
 
 ### Warning Codes (Recommended)
 
@@ -560,7 +610,7 @@ done
 | Code | Description | Check |
 |------|-------------|-------|
 | CORPUS-I001 | No Mermaid diagrams found | CORPUS-06 |
-| CORPUS-I015 | IMPL-Ready Score below 85% | CORPUS-15 |
+| CORPUS-I015 | CTR-Ready Score below 85% | CORPUS-15 |
 
 ---
 
@@ -578,6 +628,16 @@ done
 # Check specific category
 ./scripts/validate_req_corpus.sh docs/REQ --check=traceability
 ```
+
+### Script Implementation Notes
+
+**CORPUS-01 Pattern Matching**: The validation script uses `grep -F` (fixed string matching) instead of regex to prevent false positives. This ensures:
+
+- `(TBD)` matches only the literal string `(TBD)`, not just `TBD`
+- `[TODO]` matches only the literal string `[TODO]`, not a character class
+- Parentheses and brackets are not interpreted as regex operators
+
+**Why This Matters**: Without `-F`, patterns like `(pending)` would match any occurrence of "pending" because parentheses are regex grouping operators. The fixed string matching ensures accurate detection of actual placeholder markers.
 
 ### Exit Codes
 
@@ -608,13 +668,14 @@ done
 - [ ] **CORPUS-12**: All REQ follow 12-section format
 - [ ] **CORPUS-13**: All REQ in valid domain subdirectories
 - [ ] **CORPUS-14**: All REQ have SPEC-Ready Score ≥90%
-- [ ] **CORPUS-15**: IMPL-Ready scores present
+- [ ] **CORPUS-15**: CTR-Ready scores present
 - [ ] **CORPUS-16**: Adequate acceptance criteria coverage
 - [ ] **CORPUS-17**: Required YAML frontmatter fields present
 - [ ] **CORPUS-18**: Tag notation consistent (dot vs dash)
 - [ ] **CORPUS-19**: All dates use ISO 8601 format
 - [ ] **CORPUS-20**: No ASCII art in non-index files
 - [ ] **CORPUS-21**: custom_fields keys use correct naming
+- [ ] **CORPUS-22**: No TBD in upstream traceability references
 
 ---
 
@@ -721,6 +782,7 @@ fi
 - Tag notation errors (CORPUS-18)
 - Invalid date formats (CORPUS-19)
 - custom_fields key naming (CORPUS-21)
+- Upstream TBD references (CORPUS-22)
 
 ### Priority 2: Quality (Recommended Before Approval)
 
@@ -736,7 +798,7 @@ fi
 ### Priority 3: Continuous (Address During Maintenance)
 
 - SPEC-Ready Score below 90% (CORPUS-14)
-- IMPL-Ready Score below 85% (CORPUS-15)
+- CTR-Ready Score below 85% (CORPUS-15)
 
 ---
 

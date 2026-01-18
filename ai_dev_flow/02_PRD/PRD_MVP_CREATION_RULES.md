@@ -8,6 +8,7 @@ custom_fields:
   document_type: creation-rules
   artifact_type: PRD
   layer: 2
+  complexity: 1
   priority: shared
   development_status: active
 ---
@@ -1215,3 +1216,32 @@ From BRD sections, extract for PRD:
 
 - Reference entire BRD: `@brd: BRD-01`
 - Reference specific elements: `@brd: BRD.01.01.05`
+
+## 21. PRD Generation Planning
+
+When creating a **PRD Generation Plan** (e.g., `PRD_GENERATION_PLAN.md`), ensure the document includes the following to prevent common issues:
+
+### 21.1 Required Frontmatter
+Must include standard fields plus `complexity`:
+```yaml
+---
+type: plan
+project: [Project Name]
+status: planning
+date: YYYY-MM-DD
+complexity: [1-5]
+---
+```
+
+### 21.2 Mandatory Sections
+1. **Executive Summary**: Scope assessment and key findings.
+2. **Prerequisites & Dependencies**: Upstream requirements (BRD), decisions (ADR), and templates.
+3. **Risk Assessment**: Identify risks (e.g., incomplete BRD) and failure modes with mitigations.
+4. **Phases**: Break down work into P0/P1/P2 phases.
+   - **MUST Include**: Tasks with complexity ratings, Acceptance Criteria, Validation Steps, and Deliverables.
+5. **Validation Commands**: Explicit commands to run for verification.
+
+### 21.3 Common Pitfalls to Avoid
+- **Count Mismatch**: Ensure summary counts match the task list items.
+- **Missing Complexity**: Rate every task (1-5) and the overall document.
+- **Vague Archives**: Clearly state how legacy/archive files are handled.

@@ -8,6 +8,7 @@ custom_fields:
   document_type: creation-rules
   artifact_type: REQ
   layer: 7
+  complexity: 1
   priority: shared
   development_status: active
 ---
@@ -103,7 +104,7 @@ Every REQ must contain these exact sections in order (MVP profile):
 - Status, Version (semantic X.Y.Z), Date Created (ISO 8601), Last Updated
 - Author, Priority (with P-level: P1/P2/P3/P4), Category (Functional/Security/Performance/etc.)
 - Source Document (format: "DOC-ID section X.Y.Z"), Verification Method, Assigned Team
-- SPEC-Ready Score (format: "✅ XX% (Target: ≥70%)"), IMPL-Ready Score (format: "✅ XX% (Target: ≥70%)")
+- SPEC-Ready Score (format: "✅ XX% (Target: ≥70%)"), CTR-Ready Score (format: "✅ XX% (Target: ≥70%)")
 
 > **Note**: Template Version is informational only (not validated). Each template may use its own version numbering.
 
@@ -115,7 +116,7 @@ Every REQ must contain these exact sections in order (MVP profile):
 | 50-69% | In Review |
 | < 50% | Draft |
 
-**Note**: For REQ documents with dual scores (SPEC-Ready + IMPL-Ready), use the lower score to determine status.
+**Note**: For REQ documents with dual scores (SPEC-Ready + CTR-Ready), use the lower score to determine status.
 
 ---
 
@@ -445,4 +446,33 @@ python scripts/validate_cross_document.py --layer REQ --auto-fix
 
 ### Quality Gate
 
-**Blocking**: YES - Cannot proceed to 08_IMPL/SPEC creation until Phase 1 validation passes with 0 errors.
+**Blocking**: YES - Cannot proceed to 08_CTR/SPEC creation until Phase 1 validation passes with 0 errors.
+
+## 15. REQ Generation Planning
+
+When creating a **REQ Generation Plan** (e.g., `REQ_GENERATION_PLAN.md`), ensure the document includes the following to prevent common issues:
+
+### 15.1 Required Frontmatter
+Must include standard fields plus `complexity`:
+```yaml
+---
+type: plan
+project: [Project Name]
+status: planning
+date: YYYY-MM-DD
+complexity: [1-5]
+---
+```
+
+### 15.2 Mandatory Sections
+1. **Executive Summary**: Scope assessment and key findings.
+2. **Prerequisites & Dependencies**: Upstream requirements (SYS/ADR), and templates.
+3. **Risk Assessment**: Identify risks (e.g., schema deviation) and failure modes with mitigations.
+4. **Phases**: Break down work into P0/P1/P2 phases.
+   - **MUST Include**: Tasks with complexity ratings, Acceptance Criteria, Validation Steps, and Deliverables.
+5. **Validation Commands**: Explicit commands to run for verification.
+
+### 15.3 Common Pitfalls to Avoid
+- **Count Mismatch**: Ensure summary counts match the task list items.
+- **Missing Complexity**: Rate every task (1-5) and the overall document.
+- **Vague Archives**: Clearly state how legacy/archive files are handled.

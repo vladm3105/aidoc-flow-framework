@@ -319,7 +319,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-### BRD.NN.01.01: [MVP Core Feature 1 - Business Capability Name]
+### 6.3 BRD.NN.01.01: [MVP Core Feature 1 - Business Capability Name]
 
 **ID Format**: `BRD.NN.01.SS` (Feature Requirement)
 
@@ -347,7 +347,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-### BRD.NN.01.02: [MVP Core Feature 2]
+### 6.4 BRD.NN.01.02: [MVP Core Feature 2]
 
 [Repeat structure above for each core MVP feature - aim for 5-15 requirements total]
 
@@ -665,7 +665,7 @@ Quick Core MVP Requirements Checklist:
 
 📚 **Master Glossary**: For common terminology, see [BRD-00_GLOSSARY.md](BRD-00_GLOSSARY.md)
 
-### MVP-Specific Terms
+### 14.1 MVP-Specific Terms
 
 | Term | Definition | Context |
 |------|------------|---------|
@@ -682,14 +682,14 @@ Quick Core MVP Requirements Checklist:
 
 ## 15. Appendices
 
-### Appendix A: MVP Metrics Dashboard
+### 15.1 Appendix A: MVP Metrics Dashboard
 
 | Metric | Target | Data Source | Review Frequency |
 |--------|--------|-------------|------------------|
 | [Metric 1] | [Target] | [System] | Daily |
 | [Metric 2] | [Target] | [System] | Weekly |
 
-### Appendix B: Future Roadmap (Post-MVP)
+### 15.2 Appendix B: Future Roadmap (Post-MVP)
 
 **If MVP Succeeds**:
 - Phase 2 features: [List]
@@ -701,9 +701,9 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-## Migration to Full BRD Template
+## 16. Migration to Full BRD Template
 
-### When to Migrate
+### 16.1 When to Migrate
 
 - [ ] MVP validation complete (30-90 day metrics achieved)
 - [ ] Product scope expanding beyond MVP features
@@ -711,7 +711,7 @@ Quick Core MVP Requirements Checklist:
 - [ ] Stakeholder matrix requires formal communication plan
 - [ ] Partner integrations require detailed SLAs
 
-### Migration Steps
+### 16.2 Migration Steps
 
 2. **Transfer core content**: Copy sections 1-7 from MVP to corresponding full template sections
 3. **Expand sections**: Add missing sections from full template:
@@ -724,7 +724,7 @@ Quick Core MVP Requirements Checklist:
 5. **Archive MVP version**: Move MVP BRD to archive with "superseded by BRD-NN" note
 6. **Run validation**: Execute `python3 scripts/validate_brd.py` on new document
 
-### Section Mapping (MVP → Full)
+### 16.3 Section Mapping (MVP → Full)
 
 | MVP Section | Full Template Section |
 |-------------|-----------------------|
@@ -755,7 +755,7 @@ Quick Core MVP Requirements Checklist:
 
 ---
 
-## File Size Guidelines
+## 17. File Size Guidelines
 
 - **MVP BRD Target**: 200-400 lines (this template ~600 lines with instructions)
 - **If exceeding 500 lines**: Consider whether this is truly an MVP scope or needs full BRD

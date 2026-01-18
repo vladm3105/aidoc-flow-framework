@@ -203,7 +203,8 @@ check_visualization() {
     if [[ "$(basename $f)" =~ _index ]]; then continue; fi
     ((total++)) || true
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
     if [[ $diagram_count -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
         echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
@@ -346,7 +347,8 @@ check_ears_syntax() {
     if [[ "$(basename $f)" =~ _index ]]; then continue; fi
 
     local shall_count
-    shall_count=$(grep -cE "SHALL " "$f" 2>/dev/null || echo 0)
+    shall_count=$(grep -cE "SHALL " "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$shall_count" || ! "$shall_count" =~ ^[0-9]+$ ]] && shall_count=0
 
     if [[ $shall_count -eq 0 ]]; then
       echo -e "${RED}CORPUS-E011: $(basename $f) has no SHALL statements${NC}"
@@ -375,8 +377,10 @@ check_traceability() {
     if [[ "$(basename $f)" =~ _index ]]; then continue; fi
 
     local has_brd has_prd
-    has_brd=$(grep -c "@brd:" "$f" 2>/dev/null || echo 0)
-    has_prd=$(grep -c "@prd:" "$f" 2>/dev/null || echo 0)
+    has_brd=$(grep -c "@brd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_brd" || ! "$has_brd" =~ ^[0-9]+$ ]] && has_brd=0
+    has_prd=$(grep -c "@prd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_prd" || ! "$has_prd" =~ ^[0-9]+$ ]] && has_prd=0
 
     if [[ $has_brd -eq 0 ]]; then
       echo -e "${RED}CORPUS-E012: $(basename $f) missing @brd traceability tag${NC}"

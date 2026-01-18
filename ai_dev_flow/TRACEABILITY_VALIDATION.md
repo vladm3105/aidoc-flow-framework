@@ -1,5 +1,5 @@
 ---
-title: "Quality Gates Integration with 15-Layer Traceability"
+title: "Quality Gates Integration with 14-Layer Traceability"
 tags:
   - framework-guide
   - shared-architecture
@@ -9,20 +9,20 @@ custom_fields:
   development_status: active
 ---
 
-# Quality Gates Integration with 15-Layer Traceability
+# Quality Gates Integration with 14-Layer Traceability
 
 **Version**: 1.0
 **Date**: 2025-11-19
 **Status**: Active
 **Framework**: AI Dev Flow SDD (MVP-first)
-**Purpose**: Quality gate system aligned with 15-layer architecture and cumulative tagging hierarchy; supports the MVP-to-production loop (create MVP → fix defects → promote → add new MVP features → fix → repeat)
+**Purpose**: Quality gate system aligned with 14-layer architecture and cumulative tagging hierarchy; supports the MVP-to-production loop (create MVP → fix defects → promote → add new MVP features → fix → repeat)
 
 ---
 
 ## Table of Contents
 
 1. [Quality Gate Architecture](#1-quality-gate-architecture)
-2. [15-Layer Quality Gates Matrix](#2-15-layer-quality-gates-matrix)
+2. [14-Layer Quality Gates Matrix](#2-14-layer-quality-gates-matrix)
 3. [Validation Integration](#3-validation-integration)
 4. [Pre-Commit Implementation](#4-pre-commit-implementation)
 5. [Quality Gate Commands](#5-quality-gate-commands)
@@ -31,7 +31,7 @@ custom_fields:
 
 ## 1. Quality Gate Architecture
 
-Quality gates ensure that artifacts meet maturity thresholds before progressing to the next layer in the 15-layer SDD workflow (Layers 0-14, per TRACEABILITY.md §1.2.1), while supporting the MVP-to-production loop.
+Quality gates ensure that artifacts meet maturity thresholds before progressing to the next layer in the 14-layer SDD workflow (Layers 0-13, per TRACEABILITY.md §1.2.1), while supporting the MVP-to-production loop.
 
 ### Traceability Rules (REQUIRED vs OPTIONAL)
 
@@ -58,20 +58,20 @@ Quality gates ensure that artifacts meet maturity thresholds before progressing 
 Each artifact includes a readiness assessment field:
 
 ```yaml
-# SPEC-MVP-TEMPLATE.yaml (Layer 10)
+# SPEC-MVP-TEMPLATE.yaml (Layer 9)
 metadata:
   task_ready_score: "✅ 95% (Target: ≥90%)"
 
 # Document Control (MarkDown artifacts)
 | SPEC-Ready Score | ✅ 92% (Target: ≥90%) |
-| IMPL-Ready Score | ✅ 95% (Target: ≥90%) |
+| CTR-Ready Score | ✅ 95% (Target: ≥90%) |
 ```
 
 ---
 
-## 2. 15-Layer Quality Gates Matrix
+## 2. 14-Layer Quality Gates Matrix
 
-Aligned with the 15-Layer Architecture (TRACEABILITY.md §1.2.1):
+Aligned with the 14-Layer Architecture (TRACEABILITY.md §1.2.1):
 
 | **Layer** | **Artifact Type** | **Ready Score Field** | **Validation Command** | **Gates Upstream Tags** |
 |-----------|-------------------|----------------------|------------------------|------------------------|
@@ -82,14 +82,13 @@ Aligned with the 15-Layer Architecture (TRACEABILITY.md §1.2.1):
 | **4** | BDD | `SYS-Ready Score` | `python scripts/validate_bdd.py` | `@brd @prd @ears` |
 | **5** | ADR | `REQ-Ready Score` | `python scripts/validate_adr.py` | `@brd→@bdd` |
 | **6** | SYS | `SPEC-Ready Score` | `python scripts/validate_sys.py` | `@brd→@adr` |
-| **7** | REQ | `IMPL-Ready Score` | `./scripts/validate_req_template.sh` | `@brd→@sys` |
-| **8** | IMPL | N/A (Project Management) | `./scripts/validate_impl.sh` | `@brd→@req` |
-| **9** | CTR | N/A (Interface Contracts) | `./scripts/validate_ctr.sh` | `@brd→@req @impl` |
-| **10** | SPEC | `TASKS-Ready Score` | `python scripts/validate_spec.py` | `@brd→@req +optional` |
-| **11** | TASKS | `Code-Ready Score` | `./scripts/validate_tasks.sh` | `@brd→@spec` |
-| **12** | Code | N/A | TBD | `@brd→@tasks` |
-| **13** | Tests | N/A | TBD | `@brd→@code` |
-| **14** | Validation | N/A | Deployment verification | All upstream tags |
+| **7** | REQ | `CTR-Ready Score` | `./scripts/validate_req_template.sh` | `@brd→@sys` |
+| **8** | CTR | `SPEC-Ready Score` | `./scripts/validate_ctr.sh` | `@brd→@req` |
+| **9** | SPEC | `TASKS-Ready Score` | `python scripts/validate_spec.py` | `@brd→@req +optional @ctr` |
+| **10** | TASKS | `Code-Ready Score` | `./scripts/validate_tasks.sh` | `@brd→@spec +optional @ctr` |
+| **11** | Code | N/A | TBD | `@brd→@tasks` |
+| **12** | Tests | N/A | TBD | `@brd→@code` |
+| **13** | Validation | N/A | Deployment verification | All upstream tags |
 
 ### Layer Transition Quality Gates
 
@@ -101,10 +100,11 @@ Aligned with the 15-Layer Architecture (TRACEABILITY.md §1.2.1):
 | **L4→L5** | Behavioral tests defined | SYS-ready score ≥90% | Architecture decisions can be evaluated against test requirements |
 | **L5→L6** | Architecture decisions made | REQ-ready score ≥90% | System specifications can be decomposed into atomic requirements |
 | **L6→L7** | System requirements specified | SPEC-ready score ≥90% | Atomic requirements contain all information needed for SPEC generation |
-| **L7→L8** | Requirements atomicized | IMPL-ready score ≥90% | Technical conclusion reached, ready for project management |
-| **L8→L10** | Project plans approved | TASKS-ready score ≥90% | Technical specifications machine-readable and complete |
-| **L10→L11** | Specs created | Code-ready score ≥90% | Implementation tasks structured and AI-ready |
-| **L11→L12** | Tasks planned | Code generation complete | Source code implemented per TASKS guidance |
+| **L7→L8** | Requirements atomicized | CTR-ready score ≥90% | Interface contracts structured and reviewable |
+| **L8→L9** | Contracts reviewed | SPEC-ready score ≥90% | Technical specifications complete and validated |
+| **L9→L10** | Specs created | TASKS-ready score ≥90% | Implementation tasks structured and AI-ready |
+| **L10→L11** | Tasks planned | Code-ready score ≥90% | Source code implemented per TASKS guidance |
+| **L11→L12** | Code implemented | Tests complete | Test execution validates implementation coverage |
 
 ---
 
@@ -132,8 +132,9 @@ validate_quality_gates() {
             05_ADR/*.md) python scripts/validate_adr.py "$file" ;;
             06_SYS/*.md) python scripts/validate_sys.py "$file" ;;
             07_REQ/**/*.md|07_REQ/*.md) ./scripts/validate_req_template.sh "$file" ;;
-            10_SPEC/*.yaml|10_SPEC/**/*.yaml) python scripts/validate_spec.py "$file" ;;
-            11_TASKS/*.md) ./scripts/validate_tasks.sh "$file" ;;
+            08_CTR/*.md) ./scripts/validate_ctr.sh "$file" ;;
+            09_SPEC/*.yaml|09_SPEC/**/*.yaml) python scripts/validate_spec.py "$file" ;;
+            10_TASKS/*.md) ./scripts/validate_tasks.sh "$file" ;;
         esac
 
         # Check cumulative tagging (TRACEABILITY.md §4)
@@ -206,7 +207,7 @@ cat > .git/hooks/pre-commit << 'EOF'
 #!/bin/sh
 
 # AI Dev Flow Quality Gates Integration
-# Validates against 15-Layer Architecture (TRACEABILITY.md)
+# Validates against 14-Layer Architecture (TRACEABILITY.md)
 
 echo "🔍 Running AI Dev Flow quality gate validation..."
 
@@ -246,9 +247,10 @@ validate_quality_gates() {
         docs/04_BDD/BDD-*/BDD-*.feature) validate_score "$file" "SYS-Ready Score" ;;
         docs/05_ADR/*.md) validate_score "$file" "REQ-Ready Score" ;;
         docs/06_SYS/*.md) validate_score "$file" "SPEC-Ready Score" ;;
-        docs/07_REQ/*.md) validate_score "$file" "IMPL-Ready Score" ;;
-        docs/10_SPEC/*.yaml) validate_meta_score "$file" "task_ready_score" ;;
-        docs/11_TASKS/*.md) validate_score "$file" "Code-Ready Score" ;;
+        docs/07_REQ/*.md) validate_score "$file" "CTR-Ready Score" ;;
+        docs/08_CTR/*.md) validate_score "$file" "SPEC-Ready Score" ;;
+        docs/09_SPEC/*.yaml) validate_meta_score "$file" "task_ready_score" ;;
+        docs/10_TASKS/*.md) validate_score "$file" "Code-Ready Score" ;;
     esac
 
     validate_cumulative_tags "$file"
@@ -290,8 +292,9 @@ validate_cumulative_tags() {
     # Check required tags based on file path
     case "$file" in
         docs/07_REQ/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys") ;;
-        docs/10_SPEC/*.yaml) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req") ;;
-        docs/11_TASKS/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "spec") ;;
+        docs/08_CTR/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req") ;;
+        docs/09_SPEC/*.yaml) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req") ;;
+        docs/10_TASKS/*.md) required_tags=("brd" "prd" "ears" "bdd" "adr" "sys" "req" "spec") ;;
     esac
 
     for tag in "${required_tags[@]}"; do
@@ -389,9 +392,9 @@ git diff --name-only | grep '^docs/' | xargs ./scripts/validate_quality_gates.sh
 
 This quality gate system is **100% aligned** with TRACEABILITY.md requirements:
 
-- **Layer Numbers**: Uses 15-layer formal numbering (0-14)
+- **Layer Numbers**: Uses 14-layer formal numbering (0-13)
 - **Cumulative Tagging**: Enforces cumulative inheritance rules (§4.3)
-- **Diagram Conventions**: Follows L1-L11 visual groupings with formal layer references
+- **Diagram Conventions**: Follows L1-L9 visual groupings with formal layer references
 - **Tag Format**: Uses `@artifact-type: TYPE.NN.TT.SS (Unified Feature ID)` format (§4.1)
 
 ### Success Metrics
@@ -414,7 +417,7 @@ This quality gate system provides **smooth transitions** between SDD workflow la
 3. **Pre-commit blocking** prevents immature artifacts
 4. **Automated recovery** provides immediate improvement guidance
 
-**Result**: Zero-defect progression through the 15-layer SDD architecture with complete traceability coverage.
+**Result**: Zero-defect progression through the 14-layer SDD architecture with complete traceability coverage.
 
 ---
 

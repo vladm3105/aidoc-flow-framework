@@ -30,7 +30,7 @@ Important MVP note: MVP artifacts are single, flat files. Split only when a docu
 
 ## 🚀 The MVP Track
 
-The **MVP Track** offers a faster, lighter alternative to the standard 15-layer framework while maintaining full traceability and compliance.
+The **MVP Track** offers a faster, lighter alternative to the standard 14-layer framework while maintaining full traceability and compliance.
 
 ### Key Differences vs Standard Flow
 
@@ -114,9 +114,9 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 ### Step 7: Spec & Code (SPEC -> TASKS) — **Day 2 (Afternoon)**
 **Artifacts**: Standard `SPEC` (YAML), `TASKS`.
 1.  **Plan**: Map REQs to Specs.
-2.  **Pre-Check**: Ensure required REQ files exist; verify any 10_SPEC/TASKS index/required lists used; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
+2.  **Pre-Check**: Ensure required REQ files exist; verify any 09_SPEC/TASKS index/required lists used; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: Specs and Task Lists.
-4.  **Validate**: `python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/10_SPEC`.
+4.  **Validate**: `python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/09_SPEC`.
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow` (final pre-code check).
 
 ---
@@ -189,6 +189,6 @@ python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --resume --skip-
 - **BDD**: `python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/04_BDD`
 - **ADR**: `python3 ai_dev_flow/scripts/validate_adr.py ai_dev_flow/05_ADR`
 - **SYS**: `python3 ai_dev_flow/scripts/validate_sys.py ai_dev_flow/06_SYS`
-- **SPEC**: `python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/10_SPEC`
+- **SPEC**: `python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/09_SPEC`
 
 - **Links**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow`

@@ -365,13 +365,13 @@ SLA Targets:
 - **IoT**: "GIVEN device offline WHEN command dispatched..."
 - **Generic**: "GIVEN valid credentials WHEN user logs in..."
 
-### Implementation Plans (IMPL)
-- **Financial**: Phased rollout with paper trading → live trading
-- **Healthcare**: HIPAA compliance validation, PHI encryption
-- **E-commerce**: PCI-DSS certification, load testing for Black Friday
-- **SaaS**: Multi-tenant migration, zero-downtime deployment
-- **IoT**: OTA update strategy, fleet-wide rollout
-- **Generic**: Standard agile sprints, feature flags
+### Contract Planning (CTR)
+- **Financial**: Market data contract schemas, order routing payloads
+- **Healthcare**: PHI access APIs, audit event contracts
+- **E-commerce**: Payment gateway contracts, inventory sync schemas
+- **SaaS**: Tenant provisioning APIs, usage metering schemas
+- **IoT**: Device telemetry contracts, OTA update payloads
+- **Generic**: CRUD API contracts, event schema baselines
 
 ### TASKS Execution Commands by Domain
 

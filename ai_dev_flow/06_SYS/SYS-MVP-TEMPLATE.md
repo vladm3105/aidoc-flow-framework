@@ -172,7 +172,7 @@ custom_fields:
 
 #### API Interface Requirements
 
-**Note**: Define high-level interface requirements here. Detailed API contracts (endpoints, schemas, request/response formats) should be created as separate CTR documents in the 09_CTR/ directory during the IMPL phase.
+**Note**: Define high-level interface requirements here. Detailed API contracts (endpoints, schemas, request/response formats) should be created as separate CTR documents in the 08_CTR/ directory after REQ approval.
 
 - **API Design**: [RESTful, GraphQL, or other interface patterns]
   - Endpoint nouns and verbs that accurately represent resources and actions
@@ -638,7 +638,7 @@ BDD scenarios and acceptance tests validating this system.
 
 #### API Contracts (CTR Documents)
 
-**Note**: Detailed API contracts (endpoints, schemas, request/response formats) are created as separate CTR documents in the 09_CTR/ directory during the IMPL phase. See Section 4.4 for high-level interface requirements.
+**Note**: Detailed API contracts (endpoints, schemas, request/response formats) are created as separate CTR documents in the 08_CTR/ directory after REQ approval. See Section 4.4 for high-level interface requirements.
 
 ### 13.3 BDD Mapping
 

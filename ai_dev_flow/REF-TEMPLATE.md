@@ -91,7 +91,7 @@ custom_fields:
 
 ---
 
-## Template Usage Notes
+## 4. Template Usage Notes
 
 **Scope**: REF documents are LIMITED to **BRD and ADR artifact types ONLY**.
 
@@ -111,7 +111,7 @@ custom_fields:
 - BRD-REF: Project overviews, executive summaries, strategic vision, stakeholder guides
 - ADR-REF: Technology stack summaries, architecture overviews, infrastructure guides
 
-### Ready-Score Exemptions (NO SCORES)
+### 4.1 Ready-Score Exemptions (NO SCORES)
 
 **REF documents are EXEMPT from ALL ready-scores and quality gates:**
 

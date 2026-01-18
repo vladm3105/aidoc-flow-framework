@@ -33,7 +33,7 @@ custom_fields:
 
 ---
 
-## Overview
+## 1. Overview
 
 {Brief description of what this section covers}
 
@@ -43,25 +43,25 @@ custom_fields:
 
 {Section content goes here}
 
-### Product Vision
+### 1.1 Product Vision
 
 {Product goals and vision}
 
-### Feature Specifications
+### 1.2 Feature Specifications
 
 {Detailed feature requirements}
 
-### User Stories
+### 1.3 User Stories
 
 {User story format: As a [role], I want [feature], so that [benefit]}
 
-### Acceptance Criteria
+### 1.4 Acceptance Criteria
 
 {Measurable acceptance criteria}
 
 ---
 
-## References
+## 2. References
 
 - **Parent Document**: @ref: PRD-{NN}.0
 - **Related Sections**: @ref: PRD-{NN}.{related}

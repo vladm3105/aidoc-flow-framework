@@ -11,7 +11,7 @@ custom_fields:
   development_status: active
   applies_to: [all-artifacts, sdd-workflow]
   version: "1.1"
-  workflow_layers: 15
+  workflow_layers: 14
 ---
 
 # Traceability Guidelines for AI Dev Flow
@@ -61,10 +61,9 @@ The following rules govern traceability in the SDD workflow:
 | ADR | `ai_dev_flow/05_ADR/ADR_SCHEMA.yaml` | 5 |
 | SYS | `ai_dev_flow/06_SYS/SYS_SCHEMA.yaml` | 6 |
 | REQ | `ai_dev_flow/07_REQ/REQ_SCHEMA.yaml` | 7 |
-| IMPL | `ai_dev_flow/08_IMPL/IMPL_SCHEMA.yaml` | 8 |
-| CTR | `ai_dev_flow/09_CTR/CTR_SCHEMA.yaml` | 9 |
-| SPEC | `ai_dev_flow/10_SPEC/SPEC_SCHEMA.yaml` | 10 |
-| TASKS | `ai_dev_flow/11_TASKS/TASKS_SCHEMA.yaml` | 11 |
+| CTR | `ai_dev_flow/08_CTR/CTR_SCHEMA.yaml` | 8 |
+| SPEC | `ai_dev_flow/09_SPEC/SPEC_SCHEMA.yaml` | 9 |
+| TASKS | `ai_dev_flow/10_TASKS/TASKS_SCHEMA.yaml` | 10 |
 
 ## ⚠️ Upstream Artifact Verification (CRITICAL)
 
@@ -81,10 +80,9 @@ ls -la docs/04_BDD/    # Layer 4 - Behavior Tests
 ls -la docs/05_ADR/    # Layer 5 - Architecture Decisions
 ls -la docs/06_SYS/    # Layer 6 - System Requirements
 ls -la docs/07_REQ/    # Layer 7 - Atomic Requirements
-ls -la docs/08_IMPL/   # Layer 8 - Implementation Plans
-ls -la docs/09_CTR/    # Layer 9 - Contracts
-ls -la docs/10_SPEC/   # Layer 10 - Specifications
-ls -la docs/11_TASKS/  # Layer 11 - Task Breakdowns
+ls -la docs/08_CTR/    # Layer 8 - Contracts
+ls -la docs/09_SPEC/   # Layer 9 - Specifications
+ls -la docs/10_TASKS/  # Layer 10 - Task Breakdowns
 ```
 
 ### Step 2: Map Existing Documents to Traceability Tags
@@ -129,14 +127,14 @@ ls -la docs/11_TASKS/  # Layer 11 - Task Breakdowns
 @adr: ADR-05      # Verified: docs/05_ADR/ADR-05_architecture.md exists
 ```
 
-**15-Layer Workflow**: This traceability system implements the 15-layer SDD workflow (Layer 0: Strategy through Layer 14: Validation):
+**14-Layer Workflow**: This traceability system implements the 14-layer SDD workflow (Layer 0: Strategy through Layer 13: Validation):
 ```
 Strategy (Layer 0) → Business (01_BRD/02_PRD/EARS) → Testing (BDD) → Architecture (05_ADR/SYS) →
-Requirements (REQ) → Project Management (IMPL) → Interface (CTR) → Implementation (SPEC) →
+Requirements (REQ) → Interface (CTR) → Implementation (SPEC) →
 Code Generation (TASKS) → Execution (Code/Tests) → Validation
 ```
 
-**Note**: This repository does not use IPLAN. Layer 12 is Code, followed by Tests and Validation.
+**Note**: This repository does not use IPLAN. Layer 11 is Code, followed by Tests and Validation.
 
 ## Standard Traceability section Structure
 
@@ -144,11 +142,11 @@ Code Generation (TASKS) → Execution (Code/Tests) → Validation
 
 **Note**: Layers group related artifacts by function. The arrows show the actual sequential workflow. Follow the connections (arrows) for the correct document order, not the layer positioning.
 
-**Sequential Flow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code → Tests → Validation
+**Sequential Flow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS → Code → Tests → Validation
 
 **Cumulative Tagging**: Each artifact includes tags from ALL upstream artifacts (see diagram annotations below)
 
-> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L10) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
+> ⚠️ **IMPORTANT - Layer Numbering**: The Mermaid subgraph labels (L1-L10) below are visual groupings for diagram clarity ONLY. Always use formal layer numbers (0-13) when implementing cumulative tagging or referencing layers in code/documentation. See layer mapping table in README.md.
 
 ```mermaid
 graph LR
@@ -168,35 +166,30 @@ graph LR
         REQ["REQ<br/>Atomic Requirements<br/><small>(@brd through @sys)</small>"]
     end
 
-    subgraph L5["Project Management Layer"]
-        IMPL["IMPL<br/><i>WHO/WHEN</i><br/><small>(@brd through @req)</small>"]
+    subgraph L5["Interface Layer"]
+        CTR["CTR<br/><i>optional</i><br/><small>(@brd through @req)</small>"]
     end
 
-    subgraph L6["Interface Layer"]
-        CTR["CTR<br/><i>optional</i><br/><small>(@brd through @impl)</small>"]
-    end
-
-    subgraph L7["Technical Specs (SPEC)"]
+    subgraph L6["Technical Specs (SPEC)"]
         SPEC["SPEC<br/><i>YAML</i><br/><small>(@brd through @req + opt)</small>"]
     end
 
-    subgraph L8["Code Generation Layer"]
+    subgraph L7["Code Generation Layer"]
         TASKS["TASKS<br/>Generation Plans<br/><small>(@brd through @spec)</small>"]
     end
 
-    subgraph L9["Execution Layer"]
+    subgraph L8["Execution Layer"]
         CODE["Code<br/><small>(@brd through @tasks)</small>"] --> TESTS["Tests<br/><small>(@brd through @code)</small>"]
     end
 
-    subgraph L10["Validation Layer"]
+    subgraph L9["Validation Layer"]
         VAL["Validation<br/><small>(all upstream)</small>"] --> REV[Review] --> PROD[Production]
     end
 
     EARS --> BDD
     BDD --> ADR
     SYS --> REQ
-    REQ --> IMPL
-    IMPL --> CTR
+    REQ --> CTR
     CTR --> SPEC
     SPEC --> TASKS
     TASKS --> CODE
@@ -210,7 +203,6 @@ graph LR
     style ADR fill:#d4edda,stroke:#388e3c,stroke-width:2px
     style SYS fill:#d4edda,stroke:#388e3c,stroke-width:2px
     style REQ fill:#f8d7da,stroke:#d32f2f,stroke-width:2px
-    style IMPL fill:#d1ecf1,stroke:#0097a7,stroke-width:2px
     style CTR fill:#e2e3e5,stroke:#616161,stroke-width:2px
     style SPEC fill:#fff3e0,stroke:#f57c00,stroke-width:2px
     style TASKS fill:#fce4ec,stroke:#c2185b,stroke-width:2px
@@ -221,12 +213,12 @@ graph LR
     style PROD fill:#e0f2f1,stroke:#00897b,stroke-width:2px
 ```
 
-> **Note on Diagram Labels**: Mermaid subgraph labels (L1-L10) are visual groupings for diagram clarity, not formal layer numbers. Always use formal layer numbers (0-14) when implementing cumulative tagging or referencing layers in code/documentation.
+> **Note on Diagram Labels**: Mermaid subgraph labels (L1-L9) are visual groupings for diagram clarity, not formal layer numbers. Always use formal layer numbers (0-13) when implementing cumulative tagging or referencing layers in code/documentation.
 
-**15-Layer Workflow Flow:**
+**14-Layer Workflow Flow:**
 ```
 Business (BRD → PRD → EARS) → Testing (BDD) → Architecture (ADR → SYS) →
-Requirements (REQ) → Project Management (IMPL) → Interface (CTR - optional) →
+Requirements (REQ) → Interface (CTR - optional) →
 Implementation (SPEC) → Code Generation (TASKS) →
 Execution (Code → Tests) → Validation (Validation → Review → Production)
 ```
@@ -245,17 +237,16 @@ Execution (Code → Tests) → Validation (Validation → Review → Production)
 | 5 | Architecture Decisions (ADR) | Technical architecture choices |
 | 6 | System Requirements (SYS) | System-level specifications |
 | 7 | Requirements (REQ) | Atomic requirements |
-| 8 | Implementation Specifications (IMPL) | Project management plans |
-| 9 | Contracts (CTR) | Interface contracts (dual-file format) |
-| 10 | Specifications (SPEC) | Detailed technical specs |
-| 11 | Tasks (TASKS) | Development task breakdown (includes execution commands) |
-| 12 | Code | Actual implementation |
-| 13 | Tests | Unit/integration tests |
-| 14 | Validation | End-to-end validation |
+| 8 | Contracts (CTR) | Interface contracts (dual-file format) |
+| 9 | Specifications (SPEC) | Detailed technical specs |
+| 10 | Tasks (TASKS) | Development task breakdown (includes execution commands) |
+| 11 | Code | Actual implementation |
+| 12 | Tests | Unit/integration tests |
+| 13 | Validation | End-to-end validation |
 
 **Note**: REF (Reference Documents) are supplementary documentation that does NOT participate in the formal traceability chain. Use REF for external research, standards references, glossaries, and other supporting material.
 
-#### Mermaid Diagram Visual Groupings (L1-L11)
+#### Mermaid Diagram Visual Groupings (L1-L9)
 
 Diagrams use simplified labels for visual clarity:
 
@@ -263,31 +254,29 @@ Diagrams use simplified labels for visual clarity:
 - **L2**: Testing Layer (contains Layer 4: BDD)
 - **L3**: Architecture Layer (contains Layers 5-6: ADR, SYS)
 - **L4**: Requirements Layer (contains Layer 7: REQ)
-- **L5**: Project Management (contains Layer 8: IMPL)
-- **L6**: Interface Layer (contains Layer 9: CTR)
-- **L7**: Technical Specs (contains Layer 10: SPEC)
-- **L8**: Code Generation (contains Layer 11: TASKS)
-- **L9**: Execution Layer (contains Layer 12: Code)
-- **L10**: Validation Layer (contains Layers 13-14: Tests, Validation)
+- **L5**: Interface Layer (contains Layer 8: CTR)
+- **L6**: Technical Specs (contains Layer 9: SPEC)
+- **L7**: Code Generation (contains Layer 10: TASKS)
+- **L8**: Execution Layer (contains Layer 11: Code)
+- **L9**: Validation Layer (contains Layers 12-13: Tests, Validation)
 
-**Important**: Always use formal layer numbers (0-14) in:
+**Important**: Always use formal layer numbers (0-13) in:
 - Cumulative tagging implementations
 - Documentation references
 - Code comments
 - Traceability matrices
 
-**Legend** (Formal Layer Numbers 0-14):
+**Legend** (Formal Layer Numbers 0-13):
 - **Layers 1-3 - Business** (Blue): BRD (L1) → PRD (L2) → EARS (L3) - Strategic direction and product vision
 - **Layer 4 - Testing** (Yellow): BDD - Acceptance criteria and test scenarios
 - **Layers 5-6 - Architecture** (Green): ADR (L5) → SYS (L6) - Technical decisions and system design
 - **Layer 7 - Requirements** (Red): REQ - Detailed atomic requirements
-- **Layer 8 - Project Management** (Cyan): IMPL - Implementation planning (WHO/WHEN) - optional
-- **Layer 9 - Interface** (Gray): CTR - API contracts (created when needed) - optional
-- **Layer 10 - Technical Specifications** (Orange): SPEC - Technical specifications (YAML)
-- **Layer 11 - Code Generation** (Pink): TASKS - Detailed implementation tasks (includes execution commands)
-- **Layer 12 - Code** (Purple): Source code implementation
-- **Layer 13 - Tests** (Green): Test execution and verification
-- **Layer 14 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
+- **Layer 8 - Interface** (Gray): CTR - API contracts (created when needed) - optional
+- **Layer 9 - Technical Specifications** (Orange): SPEC - Technical specifications (YAML)
+- **Layer 10 - Code Generation** (Pink): TASKS - Detailed implementation tasks (includes execution commands)
+- **Layer 11 - Code** (Purple): Source code implementation
+- **Layer 12 - Tests** (Green): Test execution and verification
+- **Layer 13 - Validation** (Teal): Validation → Review → Production (Quality gates and deployment)
 
 ## Quick Reference Card
 
@@ -302,11 +291,12 @@ Diagrams use simplified labels for visual clarity:
 | 5 | ADR | 4 | 4 |
 | 6 | SYS | 5 | 5 |
 | 7 | REQ | 6 | 6 |
-| 8 | IMPL | 7 | 7 |
-| 9 | CTR | 7 | 8 |
-| 10 | SPEC | 7 | 9 |
-| 11 | TASKS | 8 | 10 |
-| 12 | Code | 9 | 11 |
+| 8 | CTR | 7 | 7 |
+| 9 | SPEC | 7 | 8 |
+| 10 | TASKS | 8 | 9 |
+| 11 | Code | 9 | 10 |
+| 12 | Tests | 10 | 11 |
+| 13 | Validation | 11 | 12 |
 
 ### Tag Separator Rules
 
@@ -317,7 +307,7 @@ Examples:
 - Multiple PRD elements: `@prd: PRD-03:PRD.03.01.01, PRD-03:PRD.03.01.05`
 - Adjacent tag types (visual only): `@prd: ... | @ears: ...`
 
-### For Markdown Documents (PRD, SYS, EARS, REQ, ADR, CTR, IMPL, TASKS)
+### For Markdown Documents (PRD, SYS, EARS, REQ, ADR, CTR, TASKS)
 
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 ```markdown
@@ -342,11 +332,10 @@ Document the technical specifications and designs derived from this document.
 |---------------|-------------|----------------|--------------|
 | ADR | [ADR-NN](../05_ADR/ADR-NN_...md#ADR-NN) | [Architecture decision title] | Architectural approach implementing these requirements |
 | REQ | [REQ-NN](../07_REQ/.../REQ-NN_...md#REQ-NN) | [Detailed requirement] | Detailed atomic requirement |
-| IMPL | [IMPL-NN](../08_IMPL/IMPL-NN_...md#IMPL-NN) | [Implementation plan] | Project management plan (WHO/WHEN) |
-| CTR | [CTR-NN](../09_CTR/CTR-NN_...md#CTR-NN) | [API contract] | Interface contract (if interface requirement) |
+| CTR | [CTR-NN](../08_CTR/CTR-NN_...md#CTR-NN) | [API contract] | Interface contract (if interface requirement) |
 | BDD | [BDD-NN.SS](../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios) | [Test scenarios] | Acceptance test scenarios |
-| SPEC | [SPEC-NN](../10_SPEC/.../SPEC-NN_...yaml) | [Technical specification] | Implementation blueprint (HOW to build) |
-| TASKS | [TASKS-NN](../11_TASKS/TASKS-NN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code (includes execution commands) |
+| SPEC | [SPEC-NN](../09_SPEC/.../SPEC-NN_...yaml) | [Technical specification] | Implementation blueprint (HOW to build) |
+| TASKS | [TASKS-NN](../10_TASKS/TASKS-NN_...md) | [Code generation plan] | Exact TODOs to implement SPEC in code (includes execution commands) |
 
 <!-- VALIDATOR:IGNORE-LINKS-END -->
 ### Same-Type References (Conditional)
@@ -368,7 +357,7 @@ Document the technical specifications and designs derived from this document.
 ```
 
 ### Document Links
-- **Anchors/IDs**: `#PRIMARY-ID` (e.g., `#REQ-03`, `#ADR-33`, `#IMPL-01`)
+- **Anchors/IDs**: `#PRIMARY-ID` (e.g., `#REQ-03`, `#ADR-33`, `#CTR-01`)
 - **Code Path(s)**: `path/to/implementation.py` (if applicable)
 - **Cross-references**: [Related documents and their relationship]
 ```
@@ -428,7 +417,7 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 | Notation | Artifacts | Rationale |
 |----------|-----------|-----------|
 | **Dash** (Document-level) | ADR, SPEC, CTR | Referenced as complete self-contained units |
-| **Dot** (Element-level) | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Contain multiple numbered elements requiring specific references |
+| **Dot** (Element-level) | BRD, PRD, EARS, BDD, SYS, REQ, TASKS | Contain multiple numbered elements requiring specific references |
 
 **Why Two Systems?**
 
@@ -462,10 +451,9 @@ These tags reference documents in the SDD workflow hierarchy. Use the document t
 | `@adr` | 5 | Architecture Decisions | `@adr: ADR-NN` | `@adr: ADR-33` |
 | `@sys` | 6 | System Requirements | `@sys: SYS-NN:SYS.NN.EE.SS` | `@sys: SYS-08:SYS.08.25.01` |
 | `@req` | 7 | Atomic Requirements | `@req: REQ-NN:REQ.NN.EE.SS` | `@req: REQ-03:REQ.03.26.01` |
-| `@impl` | 8 | Implementation Plans | `@impl: IMPL-NN:IMPL.NN.EE.SS` | `@impl: IMPL-01:IMPL.01.28.01` |
-| `@ctr` | 9 | Data Contracts | `@ctr: CTR-NN` | `@ctr: CTR-01` |
-| `@spec` | 10 | Technical Specs | `@spec: SPEC-NN` | `@spec: SPEC-03` |
-| `@tasks` | 11 | Task Breakdowns | `@tasks: TASKS-NN:TASKS.NN.EE.SS` | `@tasks: TASKS-01:TASKS.01.29.03` |
+| `@ctr` | 8 | Data Contracts | `@ctr: CTR-NN` | `@ctr: CTR-01` |
+| `@spec` | 9 | Technical Specs | `@spec: SPEC-NN` | `@spec: SPEC-03` |
+| `@tasks` | 10 | Task Breakdowns | `@tasks: TASKS-NN:TASKS.NN.EE.SS` | `@tasks: TASKS-01:TASKS.01.29.03` |
 
 **Note**: All requirements use sequential numbering (001, 002, 003...) within documents.
 
@@ -493,7 +481,7 @@ These tags define relationships between documents of the same artifact type.
 | `@related-{type}` | Related context | `@related-req: REQ-NN` | `@related-req: REQ-01, REQ-005` |
 | `@depends-{type}` | Implementation prerequisite | `@depends-req: REQ-NN` | `@depends-req: REQ-01` |
 
-**Supported Types**: req, spec, tasks, adr, bdd, sys, ears, prd, ctr, impl
+**Supported Types**: req, spec, tasks, adr, bdd, sys, ears, prd, ctr
 
 #### Invalid Tag Patterns (Deprecated/Incorrect)
 
@@ -619,14 +607,14 @@ Cumulative tagging ensures complete traceability chains from business requiremen
 ### Mandatory Hierarchy
 
 ```
-Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → Code → Tests → Validation
+Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [CTR] → SPEC → TASKS → Code → Tests → Validation
 ```
 
 ### Cumulative Inheritance Rules
 
 **Principle**: Each layer inherits ALL tags from upstream layers and adds its own.
 
-**Example**: A SPEC file includes tags from: BRD, PRD, EARS, BDD, ADR, SYS, REQ, and optionally 08_IMPL/CTR if they exist in the chain.
+**Example**: A SPEC file includes tags from: BRD, PRD, EARS, BDD, ADR, SYS, REQ, and optionally CTR if they exist in the chain.
 
 **Format**: `@artifact-type: TYPE.NN.TT.SS` (e.g., `@brd: BRD.01.01.30`)
 
@@ -648,13 +636,12 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 | 5 | **ADR** | `@brd`, `@prd`, `@ears`, `@bdd` | Formal Template | Cumulative: BRD through BDD |
 | 6 | **SYS** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr` | Formal Template | Cumulative: BRD through ADR |
 | 7 | **REQ** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys` | Formal Template | Cumulative: BRD through SYS |
-| 8 | **IMPL** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req` | Formal Template | Cumulative: BRD through REQ |
-| 9 | **CTR** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl` | Formal Template | Cumulative: BRD through IMPL (optional layer) |
-| 10 | **SPEC** | All upstream through `@req` + optional `@impl`, `@ctr` | Formal Template (YAML) | Full upstream chain |
-| 11 | **TASKS** | All upstream through `@spec` | Formal Template | Include optional 08_IMPL/09_CTR if present; includes execution commands |
-| 12 | **Code** | **ALL tags** through `@tasks` | Docstring Tags | Complete traceability chain |
-| 13 | **Tests** | All upstream through `@code` | Docstring Tags + BDD | All upstream + code reference |
-| 14 | **Validation** | **ALL tags from all documents** | Embedded Tags + CI/CD | Complete audit trail |
+| 8 | **CTR** | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req` | Formal Template | Cumulative: BRD through REQ |
+| 9 | **SPEC** | All upstream through `@req` + optional `@ctr` | Formal Template (YAML) | Full upstream chain |
+| 10 | **TASKS** | All upstream through `@spec` | Formal Template | Include optional CTR if present; includes execution commands |
+| 11 | **Code** | **ALL tags** through `@tasks` | Docstring Tags | Complete traceability chain |
+| 12 | **Tests** | All upstream through `@code` | Docstring Tags + BDD | All upstream + code reference |
+| 13 | **Validation** | **ALL tags from all documents** | Embedded Tags + CI/CD | Complete audit trail |
 
 ### Tag Format Specification
 
@@ -664,7 +651,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 ```
 
 **Components**:
-- **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`)
+- **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@ctr`, `@spec`, `@tasks`)
 - **TYPE**: Document type (BRD, PRD, SYS, REQ, etc.)
 - **DOC_NUM**: 3-digit document number, zero-padded (e.g., `001`, `003`, `008`)
 - **FEATURE_NUM**: 3-digit feature number, zero-padded (e.g., `030`, `006`, `001`)
@@ -684,7 +671,6 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 @adr: ADR-33
 @sys: SYS.08.25.01
 @req: REQ.03.26.01, REQ.04.26.02
-@impl: IMPL.01.28.01
 @ctr: CTR-01
 @spec: SPEC-03
 @tasks: TASKS.01.29.03
@@ -697,7 +683,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] →
 | Related | `@related-{type}:` | Supporting context, shared domain knowledge |
 | Depends | `@depends-{type}:` | Implementation prerequisite (must complete first) |
 
-**Supported Types**: req, spec, tasks, adr, bdd, sys, ears, prd, ctr, impl
+**Supported Types**: req, spec, tasks, adr, bdd, sys, ears, prd, ctr
 
 **Examples**:
 ```markdown
@@ -789,7 +775,6 @@ Implements real-time resource limit validation and enforcement.
 @adr: ADR-33
 @sys: SYS.08.25.01
 @req: REQ.03.26.01
-@impl: IMPL.01.28.01
 @ctr: CTR-01
 @spec: SPEC-03
 @tasks: TASKS.01.29.03
@@ -910,7 +895,7 @@ In addition to upstream/downstream layer traceability, documents may have relati
 grep -r "@depends-req:.*REQ-01" docs/07_REQ/
 
 # Find all documents related to SPEC-03
-grep -r "@related-spec:.*SPEC-03" docs/10_SPEC/
+grep -r "@related-spec:.*SPEC-03" docs/09_SPEC/
 ```
 
 ## Artifact Tracking Methods
@@ -966,13 +951,12 @@ The SDD workflow employs different tracking methods for different artifact types
 | 5 | ADR | Formal Template + Tags | Yes | Yes | 4 | @brd through @bdd |
 | 6 | SYS | Formal Template + Tags | Yes | Yes | 5 | @brd through @adr |
 | 7 | REQ | Formal Template + Tags | Yes | Yes | 6 | @brd through @sys |
-| 8 | IMPL | Formal Template + Tags | Yes | Yes | 7 | @brd through @req |
-| 9 | CTR | Formal Template + Tags | Yes (Dual: .md + .yaml) | Yes | 8 | @brd through @impl (optional) |
-| 10 | SPEC | Formal Template + Tags | Yes (YAML) | Yes | 7-9 | @brd through @req + optional |
-| 11 | TASKS | Formal Template + Tags | Yes | Yes | 8-11 | @brd through @spec; includes execution commands |
-| 12 | Code | Docstring Tags | No (Implementation) | Yes | 9-11 | ALL upstream tags |
-| 13 | Tests | BDD + Docstring Tags | Mixed | Yes | 10-12 | All upstream + code |
-| 14 | Validation | Embedded Tags + CI/CD | Mixed | Yes | ALL | Complete audit trail |
+| 8 | CTR | Formal Template + Tags | Yes (Dual: .md + .yaml) | Yes | 7 | @brd through @req (optional) |
+| 9 | SPEC | Formal Template + Tags | Yes (YAML) | Yes | 7-8 | @brd through @req + optional ctr |
+| 10 | TASKS | Formal Template + Tags | Yes | Yes | 8-9 | @brd through @spec; includes execution commands |
+| 11 | Code | Docstring Tags | No (Implementation) | Yes | 9-10 | ALL upstream tags |
+| 12 | Tests | BDD + Docstring Tags | Mixed | Yes | 10-11 | All upstream + code |
+| 13 | Validation | Embedded Tags + CI/CD | Mixed | Yes | ALL | Complete audit trail |
 
 ### Example: Complete Tag Chain in Code
 
@@ -998,7 +982,6 @@ excessive collection concentration risk through automated validation.
 @adr: ADR-33
 @sys: SYS.08.25.01, SYS.08.25.02
 @req: REQ.03.26.01, REQ.04.26.01
-@impl: IMPL.01.28.01
 @ctr: CTR-01
 @spec: SPEC-03
 @tasks: TASKS.01.29.03, TASKS.01.29.05
@@ -1117,24 +1100,17 @@ def test_validate_resource_limit_within_threshold():
 
 ### REQ (Atomic Requirements)
 - **Upstream**: EARS (formal requirements), SYS (system requirements), ADR (architectural constraints)
-- **Downstream**: IMPL (implementation plans), CTR (interface contracts if interface requirement), BDD (test scenarios), SPEC (implementation), Code
+- **Downstream**: CTR (interface contracts if interface requirement), BDD (test scenarios), SPEC (implementation), Code
 - **section**: Detailed requirement with acceptance criteria
 
-### IMPL (Implementation Plans)
-- **Upstream**: REQ (requirements to implement), ADR (architectural constraints)
-- **Downstream**: CTR (interface contracts), SPEC (technical specifications), TASKS (implementation tasks)
-- **Purpose**: Project management artifacts defining WHO implements and WHEN (schedule/phases)
-- **section**: Scope, stakeholders, milestones, dependencies, traceability to requirements
-- **resource**: Project management layer between requirements (WHAT) and implementation (HOW)
-
 ### CTR (API Contracts)
-- **Upstream**: REQ (interface requirements), ADR (architecture decisions), IMPL (implementation schedules)
+- **Upstream**: REQ (interface requirements), ADR (architecture decisions)
 - **Downstream**: SPEC (technical implementation), TASKS (implementation plans), Code (provider/consumer implementations)
 - **Format**: Dual-file format (.md + .yaml), section 7 Traceability in markdown
 - **Note**: Both .md and .yaml files must exist for each CTR-NN
 
 ### SPEC (Technical Specifications)
-- **Upstream**: REQ, ADR (requirements and architecture), CTR (interface contracts), IMPL (implementation plans)
+- **Upstream**: REQ, ADR (requirements and architecture), CTR (interface contracts)
 - **Downstream**: TASKS (implementation plans), Code
 - **Format**: YAML with `traceability` mapping and `contract_ref` field (if implementing contract)
 
@@ -1143,7 +1119,7 @@ def test_validate_resource_limit_within_threshold():
 - **Downstream**: Code (implementation), Tests
 - **section**: Implementation scope with requirement links
 - **Contracts**: Embedded in Section 7-8 of TASKS files
-- **Layer**: 11 (Code Generation)
+- **Layer**: 10 (Code Generation)
 
 ## Cross-Reference Link Format
 
@@ -1154,8 +1130,8 @@ All traceability references MUST use markdown links with anchors:
 ```markdown
 [REQ-03](../07_REQ/risk/lim/REQ-03_resource_limit_enforcement.md#REQ-03)
 [ADR-33](../05_ADR/ADR-33_risk_limit_enforcement_architecture.md#ADR-33)
-\[CTR-01](../09_CTR/CTR-01_position_risk_validation.md#CTR-01)
-\[CTR-01 Schema](../09_CTR/CTR-01_position_risk_validation.yaml)
+\[CTR-01](../08_CTR/CTR-01_position_risk_validation.md#CTR-01)
+\[CTR-01 Schema](../08_CTR/CTR-01_position_risk_validation.yaml)
 [PRD-01](../02_PRD/PRD-01_risk_management.md)
 [BDD-03.1](../04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature#scenarios)
 ```
@@ -1175,7 +1151,7 @@ All traceability references MUST use markdown links with anchors:
    - Revalidate after any edits
 
 4. **Schema References** (CTR-specific): Link to `.yaml` files
-   - Format (example): `[CTR-NN Schema] (../09_CTR/CTR-NN_example.yaml)`
+   - Format (example): `[CTR-NN Schema] (../08_CTR/CTR-NN_example.yaml)`
    - Used for referencing machine-readable contract schemas
 
 ### Relative Path Rules
@@ -1183,10 +1159,9 @@ All traceability references MUST use markdown links with anchors:
 - Use relative paths from current file location
 - Examples:
 - From `07_REQ/risk/lim/` to `05_ADR/`: `../../../05_ADR/ADR-33_...md`
-  - From `07_REQ/risk/lim/` to `09_CTR/`: `../../../09_CTR/CTR-01_...md`
-  - From `02_PRD/` to `03_EARS/`: `../03_EARS/EARS-01_...md`
-  - From `10_SPEC/` to `07_REQ/`: `../../07_REQ/.../REQ-03_...md`
-  - From `10_SPEC/` to `09_CTR/`: `../../09_CTR/CTR-01_...md`
+- From `07_REQ/risk/lim/` to `08_CTR/`: `../../../08_CTR/CTR-01_...md`
+- From `09_SPEC/` to `07_REQ/`: `../../07_REQ/.../REQ-03_...md`
+- From `09_SPEC/` to `08_CTR/`: `../../08_CTR/CTR-01_...md`
 
 ## Validation Requirements
 
@@ -1208,16 +1183,16 @@ Before committing any document:
 - [ ] Slugs match exactly between `.md` and `.yaml` files
 - [ ] YAML `contract_id:` field uses lowercase_snake_case matching slug
 - [ ] Contract markdown file includes section 7 Traceability with upstream 07_REQ/ADR links
-- [ ] Contract markdown file includes downstream 10_SPEC/Code links
+- [ ] Contract markdown file includes downstream 09_SPEC/Code links
 - [ ] YAML schema is valid (passes JSON Schema validation)
 - [ ] Both files are referenced correctly from SPEC (if implemented)
 
-**IMPL-Specific Validation** (when creating/updating implementation plans):
-- [ ] IMPL file references upstream 07_REQ/ADR that drive the implementation
-- [ ] Stakeholders (WHO) are clearly defined
+**CTR-Specific Validation** (when creating/updating contracts):
+- [ ] CTR file references upstream 07_REQ/ADR that drive the contract
+- [ ] Interface boundaries are clearly defined
 - [ ] Schedule/phases (WHEN) are documented with dependencies
 - [ ] section 7 Traceability links to upstream 07_REQ/ADR
-- [ ] Downstream artifacts (09_CTR/10_SPEC/TASKS) are identified
+- [ ] Downstream artifacts (08_CTR/09_SPEC/TASKS) are identified
 - [ ] Milestone dates are realistic and dependency-aware
 
 ### Validation Commands
@@ -1323,7 +1298,7 @@ Scalability requirements exceeded monolithic architecture capabilities.
 When upstream documents change:
 
 1. Identify all downstream artifacts using traceability links
-2. Update 05_ADR/04_BDD/09_CTR/SPEC accordingly
+2. Update 05_ADR/04_BDD/08_CTR/SPEC accordingly
 3. Re-run validation scripts
 4. Update code docstrings if requirements changed
 5. Verify all links still resolve
@@ -1364,11 +1339,10 @@ When specifications change (including contract implementations):
 
 Every requirement should have:
 ```
-BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code → Tests
+BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS → Code → Tests
 ```
 
 **Note**:
-- **IMPL** (Implementation Plans) defines WHO implements and WHEN (project management layer - WHO/WHEN)
 - **CTR** (API Contracts) is created when REQ specifies interface requirements
 - Not all REQs require CTR - only those defining component-to-component communication
 
@@ -1406,7 +1380,6 @@ In code docstrings, include:
 Note: Script name canonicalization — use `scripts/generate_traceability_matrix.py` (singular). A backward-compatible wrapper `scripts/generate_traceability_matrix.py` exists but is deprecated.
 - Requirements: REQ-03, REQ-04
 - Architecture: ADR-33
- - Implementation Plan: IMPL-01_phase1_risk_services
  - Contract: CTR-01_position_risk_validation (if implementing contract)
 - Specification: SPEC-03_resource_limit_service.yaml
 - BDD: 04_BDD/BDD-03_risk_limits/BDD-03.1_risk_limits.feature
@@ -1421,7 +1394,7 @@ Risk Validator Service - Contract Provider
 ## Traceability
 - Requirements: REQ-05
 - Architecture: ADR-33
- - Contract: CTR-01_position_risk_validation.md + .yaml (IMPLEMENTS)
+  - Contract: CTR-01_position_risk_validation.md + .yaml (implements)
 - Specification: SPEC-05_risk_validator_service.yaml
 - BDD: 04_BDD/BDD-04_contract_validation/BDD-04.1_contract_validation.feature
 - Role: Provider (implements contract interface)
@@ -1459,22 +1432,6 @@ Risk Validator Service - Contract Provider
 9. Validate both files, verify slugs match
 10. Run contract schema validation
 
-### Creating a New Implementation Plan (IMPL)
-
-1. Identify upstream REQ that need implementation coordination
-2. Reserve next IMPL-NN number from IMPL-00_index.md
-3. Copy IMPL-TEMPLATE.md from ai_dev_flow/08_IMPL/
-4. Complete implementation plan:
-   - Scope: What REQs are being implemented
-   - Stakeholders: WHO (teams/roles responsible)
-   - Schedule: WHEN (phases, milestones, dependencies)
-   - section 7 Traceability with upstream 07_REQ/ADR links
-5. Identify if any REQ requires interfaces (CTR)
-6. Create placeholder downstream entries (CTR if needed, SPEC, TASKS)
-7. Update IMPL-00_index.md with new plan entry
-8. Update upstream REQ to link to IMPL
-9. Validate all links resolve
-
 ### Implementing from Specification
 
 1. Read SPEC traceability section
@@ -1490,11 +1447,10 @@ Risk Validator Service - Contract Provider
 
 1. Identify document being changed
 2. Check Downstream Artifacts section
-3. **If REQ changed**: Check if IMPL exists (project scheduling impact)
-4. Follow all downstream links
-5. Assess impact on each downstream artifact (including IMPL schedules)
-6. Plan updates to affected documents
-7. Execute updates maintaining traceability chain
+3. Follow all downstream links
+4. Assess impact on each downstream artifact
+5. Plan updates to affected documents
+6. Execute updates maintaining traceability chain
 
 ## Related Resources
 

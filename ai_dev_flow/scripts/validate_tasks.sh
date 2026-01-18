@@ -3,7 +3,7 @@
 # Validates TASKS documents against:
 # - TASKS-TEMPLATE.md (authoritative template)
 # - AI Dev Flow SDD framework standards
-# - Layer 11 artifact requirements
+# - Layer 10 artifact requirements
 # - Code generation task structure
 # Usage: ./scripts/validate_tasks.sh <TASKS_FILE>
 
@@ -36,7 +36,7 @@ echo "========================================="
 echo "TASKS Template Validator v${SCRIPT_VERSION}"
 echo "========================================="
 echo "File: $TASKS_FILE"
-echo "Artifact Type: TASKS (Code Generation Plan) - Layer 11"
+echo "Artifact Type: TASKS (Code Generation Plan) - Layer 10"
 echo ""
 
 # ============================================
@@ -81,17 +81,17 @@ if grep -q "^---" "$TASKS_FILE"; then
     ((ERRORS++))
   fi
 
-  if grep -q "layer: 11" "$TASKS_FILE"; then
-    echo -e "  ${GREEN}✅ layer: 11${NC}"
+  if grep -q "layer: 10" "$TASKS_FILE"; then
+    echo -e "  ${GREEN}✅ layer: 10${NC}"
   else
-    echo -e "  ${RED}❌ ERROR: Missing or invalid layer (must be 11)${NC}"
+    echo -e "  ${RED}❌ ERROR: Missing or invalid layer (must be 10)${NC}"
     ((ERRORS++))
   fi
 
-  if grep -q "layer-11-artifact" "$TASKS_FILE"; then
-    echo -e "  ${GREEN}✅ layer-11-artifact tag present${NC}"
+  if grep -q "layer-10-artifact" "$TASKS_FILE"; then
+    echo -e "  ${GREEN}✅ layer-10-artifact tag present${NC}"
   else
-    echo -e "  ${YELLOW}⚠️  WARNING: Missing layer-11-artifact tag${NC}"
+    echo -e "  ${YELLOW}⚠️  WARNING: Missing layer-10-artifact tag${NC}"
     ((WARNINGS++))
   fi
 
@@ -179,7 +179,8 @@ echo "CHECK 5: Phase Structure Validation"
 echo "-----------------------------------------"
 
 # Count phases
-phase_count=$(grep -cE "^### Phase [0-9]+" "$TASKS_FILE" 2>/dev/null || echo "0")
+phase_count=$(grep -cE "^### Phase [0-9]+" "$TASKS_FILE" 2>/dev/null | tr -d '\n' || echo "0")
+[[ -z "$phase_count" || ! "$phase_count" =~ ^[0-9]+$ ]] && phase_count=0
 
 if [ "$phase_count" -ge 1 ]; then
   echo -e "  ${GREEN}✅ Found $phase_count phase(s)${NC}"
@@ -189,7 +190,8 @@ else
 fi
 
 # Check for task structure within phases
-task_count=$(grep -cE "^#### TASK-[0-9]+" "$TASKS_FILE" 2>/dev/null || echo "0")
+task_count=$(grep -cE "^#### TASK-[0-9]+" "$TASKS_FILE" 2>/dev/null | tr -d '\n' || echo "0")
+[[ -z "$task_count" || ! "$task_count" =~ ^[0-9]+$ ]] && task_count=0
 if [ "$task_count" -ge 1 ]; then
   echo -e "  ${GREEN}✅ Found $task_count task(s)${NC}"
 else
@@ -198,7 +200,8 @@ else
 fi
 
 # Check for checkboxes
-checkbox_count=$(grep -c "\[[ x]\]" "$TASKS_FILE" 2>/dev/null || echo "0")
+checkbox_count=$(grep -c "\[[ x]\]" "$TASKS_FILE" 2>/dev/null | tr -d '\n' || echo "0")
+[[ -z "$checkbox_count" || ! "$checkbox_count" =~ ^[0-9]+$ ]] && checkbox_count=0
 if [ "$checkbox_count" -ge 1 ]; then
   echo -e "  ${GREEN}✅ Found $checkbox_count checkbox(es)${NC}"
 else
@@ -222,7 +225,8 @@ task_fields=(
 )
 
 for field in "${task_fields[@]}"; do
-  field_count=$(grep -ci "$field" "$TASKS_FILE" 2>/dev/null || echo "0")
+  field_count=$(grep -ci "$field" "$TASKS_FILE" 2>/dev/null | tr -d '\n' || echo "0")
+  [[ -z "$field_count" || ! "$field_count" =~ ^[0-9]+$ ]] && field_count=0
   if [ "$field_count" -ge 1 ]; then
     echo -e "  ${GREEN}✅ Found $field_count \"$field\" field(s)${NC}"
   else
@@ -233,7 +237,8 @@ done
 
 # Check for file references
 if grep -qE "\`[a-z_/]+\.(py|ts|js|yaml|json|md)\`" "$TASKS_FILE"; then
-  file_refs=$(grep -cE "\`[a-z_/]+\.(py|ts|js|yaml|json|md)\`" "$TASKS_FILE" 2>/dev/null || echo "0")
+  file_refs=$(grep -cE "\`[a-z_/]+\.(py|ts|js|yaml|json|md)\`" "$TASKS_FILE" 2>/dev/null | tr -d '\n' || echo "0")
+  [[ -z "$file_refs" || ! "$file_refs" =~ ^[0-9]+$ ]] && file_refs=0
   echo -e "  ${GREEN}✅ Found $file_refs file reference(s)${NC}"
 else
   echo -e "  ${YELLOW}⚠️  WARNING: No file references found${NC}"
@@ -346,7 +351,8 @@ deprecated_patterns=(
 
 deprecated_found=0
 for pattern in "${deprecated_patterns[@]}"; do
-  matches=$(grep -cE "$pattern" "$TASKS_FILE" 2>/dev/null || echo "0")
+  matches=$(grep -cE "$pattern" "$TASKS_FILE" 2>/dev/null | tr -d '\n' || echo "0")
+  [[ -z "$matches" || ! "$matches" =~ ^[0-9]+$ ]] && matches=0
   if [ "$matches" -gt 0 ]; then
     echo -e "  ${RED}❌ ERROR: Deprecated element ID format found ($matches occurrences)${NC}"
     echo "           Pattern: $pattern"
@@ -361,7 +367,8 @@ fi
 
 # Validate unified format element IDs (TYPE.NN.TT.SS)
 unified_pattern="TASKS\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}"
-unified_count=$(grep -cE "$unified_pattern" "$TASKS_FILE" 2>/dev/null || echo "0")
+unified_count=$(grep -cE "$unified_pattern" "$TASKS_FILE" 2>/dev/null | tr -d '\n' || echo "0")
+[[ -z "$unified_count" || ! "$unified_count" =~ ^[0-9]+$ ]] && unified_count=0
 echo "  Unified format element IDs found: $unified_count"
 
 if [ "$deprecated_found" -gt 0 ]; then
@@ -371,9 +378,9 @@ fi
 echo ""
 
 # ============================================
-# CHECK 11: Traceability Tags (Layer 11)
-# ============================================
-echo "CHECK 11: Traceability Tags (Layer 11)"
+# CHECK 11: Traceability Tags (Layer 10)
+echo "CHECK 11: Traceability Tags (Layer 10)"
+
 echo "-----------------------------------------"
 
 required_tags=("@brd" "@prd" "@ears" "@bdd" "@adr" "@sys" "@req" "@spec")
@@ -390,7 +397,7 @@ for tag in "${required_tags[@]}"; do
 done
 
 # Check optional tags
-optional_tags=("@impl" "@ctr")
+optional_tags=("@ctr")
 for tag in "${optional_tags[@]}"; do
   if grep -qE "^${tag}:|^\- \`${tag}:" "$TASKS_FILE"; then
     echo -e "  ${GREEN}✅ Optional tag present: $tag${NC}"
@@ -400,7 +407,7 @@ done
 
 echo "  Total traceability tags: $tag_count"
 if [ $tag_count -lt 8 ]; then
-  echo -e "  ${RED}❌ ERROR: Minimum 8 tags required for Layer 11${NC}"
+  echo -e "  ${RED}❌ ERROR: Minimum 8 tags required for Layer 10${NC}"
 fi
 
 # Check for empty tags
@@ -418,7 +425,7 @@ echo "CHECK 11: Cross-Reference Validation"
 echo "-----------------------------------------"
 
 base_dir="$(dirname "$TASKS_FILE")"
-spec_dir="$base_dir/../SPEC"
+spec_dir="$base_dir/../09_SPEC"
 
 # Validate parent SPEC reference
 parent_spec=$(grep -oE "SPEC-[0-9]+" "$TASKS_FILE" | head -1 || echo "")
@@ -532,7 +539,7 @@ if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
   echo "Document complies with:"
   echo "  - TASKS-TEMPLATE.md structure"
   echo "  - AI Dev Flow SDD framework requirements"
-  echo "  - Layer 11 artifact standards"
+  echo "  - Layer 10 artifact standards"
   echo "  - Code generation readiness requirements"
   exit 0
 elif [ $ERRORS -eq 0 ]; then

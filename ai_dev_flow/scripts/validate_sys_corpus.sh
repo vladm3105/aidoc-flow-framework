@@ -203,7 +203,8 @@ check_visualization() {
     if [[ "$(basename $f)" =~ _index ]]; then continue; fi
     ((total++)) || true
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
     if [[ $diagram_count -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
         echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
@@ -342,11 +343,16 @@ check_traceability() {
     if [[ "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
     local has_brd has_prd has_ears has_bdd has_adr
-    has_brd=$(grep -c "@brd:" "$f" 2>/dev/null || echo 0)
-    has_prd=$(grep -c "@prd:" "$f" 2>/dev/null || echo 0)
-    has_ears=$(grep -c "@ears:" "$f" 2>/dev/null || echo 0)
-    has_bdd=$(grep -c "@bdd:" "$f" 2>/dev/null || echo 0)
-    has_adr=$(grep -c "@adr:" "$f" 2>/dev/null || echo 0)
+    has_brd=$(grep -c "@brd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_brd" || ! "$has_brd" =~ ^[0-9]+$ ]] && has_brd=0
+    has_prd=$(grep -c "@prd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_prd" || ! "$has_prd" =~ ^[0-9]+$ ]] && has_prd=0
+    has_ears=$(grep -c "@ears:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_ears" || ! "$has_ears" =~ ^[0-9]+$ ]] && has_ears=0
+    has_bdd=$(grep -c "@bdd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_bdd" || ! "$has_bdd" =~ ^[0-9]+$ ]] && has_bdd=0
+    has_adr=$(grep -c "@adr:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_adr" || ! "$has_adr" =~ ^[0-9]+$ ]] && has_adr=0
 
     if [[ $has_brd -eq 0 ]]; then
       echo -e "${RED}CORPUS-E011: $(basename $f) missing @brd traceability tag${NC}"
@@ -456,8 +462,10 @@ check_interface_completeness() {
     if [[ ! -f "$f" ]]; then continue; fi
 
     local has_protocol has_format
-    has_protocol=$(grep -ciE "protocol|http|grpc|websocket|rest" "$f" 2>/dev/null || echo 0)
-    has_format=$(grep -ciE "json|protobuf|xml|format" "$f" 2>/dev/null || echo 0)
+    has_protocol=$(grep -ciE "protocol|http|grpc|websocket|rest" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_protocol" || ! "$has_protocol" =~ ^[0-9]+$ ]] && has_protocol=0
+    has_format=$(grep -ciE "json|protobuf|xml|format" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_format" || ! "$has_format" =~ ^[0-9]+$ ]] && has_format=0
 
     if [[ $has_protocol -eq 0 ]]; then
       echo -e "${YELLOW}CORPUS-W014: $(basename $f) may be missing protocol specification${NC}"

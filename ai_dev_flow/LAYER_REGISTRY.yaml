@@ -6,7 +6,7 @@
 version: "1.5"
 metadata:
   framework: "Specification-Driven Development (SDD)"
-  total_layers: 15
+  total_layers: 14
   maintainer: "SDD Framework Team"
   template_policy: mvp_only
   deprecated_templates: archived/
@@ -106,87 +106,75 @@ layers:
     template: "REQ-MVP-TEMPLATE.md"
 
   - number: 8
-    artifact: IMPL
-    name: "Implementation Approach"
-    folder: 08_IMPL/
-    extensions: [.md]
-    required_tags: [brd, prd, ears, bdd, adr, sys, req]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ]
-    error_prefix: IMPL
-    optional: true
-    description: "Layer 8 - WHO-WHEN-WHAT implementation strategy"
-    template: "IMPL-TEMPLATE.md"
-
-  - number: 9
     artifact: CTR
     name: "Data Contracts"
-    folder: 09_CTR/
+    folder: 08_CTR/
     extensions: [.md, .yaml]
     required_tags: [brd, prd, ears, bdd, adr, sys, req]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ]
     error_prefix: CTR
     optional: true
-    description: "Layer 9 - API/data contracts using dual-file format"
+    description: "Layer 8 - API/data contracts using dual-file format"
     template: "CTR-MVP-TEMPLATE.md"
 
-  - number: 10
+  - number: 9
     artifact: SPEC
     name: "Technical Specifications"
-    folder: 10_SPEC/
+    folder: 09_SPEC/
     extensions: [.yaml, .md]
     required_tags: [brd, prd, ears, bdd, adr, sys, req]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR]
     error_prefix: SPEC
     optional: false
-    description: "Layer 10 - Implementation-ready YAML specifications"
+    description: "Layer 9 - Implementation-ready YAML specifications"
     template: "SPEC-MVP-TEMPLATE.yaml"
 
-  - number: 11
+  - number: 10
     artifact: TASKS
     name: "Task Breakdown"
-    folder: 11_TASKS/
+    folder: 10_TASKS/
     extensions: [.md]
     required_tags: [brd, prd, ears, bdd, adr, sys, req, spec]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC]
     error_prefix: TASKS
     optional: false
-    description: "Layer 11 - AI-structured TODO tasks from SPEC"
+    description: "Layer 10 - AI-structured TODO tasks from SPEC"
     template: "TASKS-TEMPLATE.md"
 
-  - number: 12
+  - number: 11
     artifact: CODE
     name: "Source Code"
     folder: src/
     extensions: [.py, .js, .ts, .java, .go, .rb, .php, .cpp, .c, .h]
     required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS]
     error_prefix: CODE
     optional: false
-    description: "Layer 12 - Source code implementation generated from TASKS"
+    description: "Layer 11 - Source code implementation generated from TASKS"
     template: null  # Code layer - no documentation template
 
-  - number: 13
+  - number: 12
     artifact: TESTS
     name: "Test Suite"
     folder: tests/
     extensions: [.py, .js, .ts, .java, .go, .rb, .php, .cpp]
     required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks, code]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, CODE]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS, CODE]
     error_prefix: TEST
     optional: false
-    description: "Layer 13 - Unit, integration, and end-to-end test implementations"
+    description: "Layer 12 - Unit, integration, and end-to-end test implementations"
     template: null  # Test layer - no documentation template
 
-  - number: 14
+  - number: 13
     artifact: VALIDATION
     name: "Validation Results"
     folder: validation/
     extensions: [.md, .json, .yaml, .xml]
     required_tags: []  # Consumes all upstream tags, count not strictly enforced
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, CODE, TESTS]
+    can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS, CODE, TESTS]
     error_prefix: VAL
     optional: false
-    description: "Layer 14 - Production readiness validation and quality gate results"
+    description: "Layer 13 - Production readiness validation and quality gate results"
     template: null  # Validation layer - no documentation template
 
 # Change Management Utilities (NOT layers)
@@ -208,11 +196,11 @@ layer_groups:
     description: "Architecture and detailed requirements"
 
   implementation_design:
-    layers: [8, 9, 10, 11]
+    layers: [8, 9, 10]
     description: "Implementation design artifacts"
   
   execution:
-    layers: [12, 13, 14]
+    layers: [11, 12, 13]
     description: "Code execution and validation layers"
 
 id_patterns:

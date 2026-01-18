@@ -103,32 +103,25 @@ VALIDATOR_REGISTRY: Dict[str, ValidatorConfig] = {
         layer=7,
         description="Atomic Requirements validator"
     ),
-    "IMPL": ValidatorConfig(
-        script="validate_impl.sh",
-        script_type="shell",
-        implemented=True,
-        layer=8,
-        description="Implementation Approach validator"
-    ),
     "CTR": ValidatorConfig(
         script="validate_ctr.sh",
         script_type="shell",
         implemented=True,
-        layer=9,
+        layer=8,
         description="Contract validator"
     ),
     "SPEC": ValidatorConfig(
         script="validate_spec.py",
         script_type="python",
         implemented=True,
-        layer=10,
+        layer=9,
         description="Technical Specification validator"
     ),
     "TASKS": ValidatorConfig(
         script="validate_tasks.sh",
         script_type="shell",
         implemented=True,
-        layer=11,
+        layer=10,
         description="Task breakdown validator"
     ),
 }

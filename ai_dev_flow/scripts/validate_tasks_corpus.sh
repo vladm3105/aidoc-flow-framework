@@ -2,7 +2,7 @@
 # =============================================================================
 # TASKS Corpus Validation Script
 # Validates entire TASKS document set before implementation
-# Layer 11 → Code transition gate
+# Layer 10 → Code transition gate
 # =============================================================================
 
 set -euo pipefail
@@ -123,6 +123,7 @@ check_count_consistency() {
 check_index_sync() {
   echo ""
   echo "--- CORPUS-04: Index Synchronization ---"
+  local found_warnings=0
 
   local index_file=""
   shopt -s nullglob
@@ -135,11 +136,45 @@ check_index_sync() {
   shopt -u nullglob
 
   if [[ -z "$index_file" || ! -f "$index_file" ]]; then
-    echo -e "${YELLOW}  Index file not found${NC}"
+    echo -e "${YELLOW}CORPUS-W004: Index file not found (e.g., TASKS-000_index.md). Skipping sync check.${NC}"
+    ((WARNINGS++)) || true
     return
   fi
 
-  echo -e "${GREEN}  ✓ Index file found${NC}"
+  # 1. Check for files marked "Planned" in the index that already exist.
+  while IFS= read -r line; do
+    if [[ -n "$line" ]]; then
+      local tasks_id
+      tasks_id=$(echo "$line" | grep -oE "TASKS-[0-9]+")
+      if ls "$TASKS_DIR/${tasks_id}_"*.md &>/dev/null; then
+        echo -e "${YELLOW}CORPUS-W004: $(basename "$index_file") lists '$tasks_id' as 'Planned', but the file exists.${NC}"
+        ((WARNINGS++)) || true
+        ((found_warnings++)) || true
+      fi
+    fi
+  done < <(grep -i "| *Planned *" "$index_file" 2>/dev/null || true)
+
+  # 2. Check for existing TASKS files that are not mentioned in the index.
+  local all_tasks_files
+  all_tasks_files=$(find "$TASKS_DIR" -name "TASKS-[0-9]*_*.md" -exec basename {} \; 2>/dev/null)
+  
+  for tasks_file in $all_tasks_files; do
+    # Ignore index and template files in this check
+    if [[ "$tasks_file" =~ _index.md$|_TEMPLATE.md$ ]]; then
+        continue
+    fi
+    local tasks_id
+    tasks_id=$(echo "$tasks_file" | grep -oE "TASKS-[0-9]+")
+    if ! grep -q "$tasks_id" "$index_file" 2>/dev/null; then
+      echo -e "${YELLOW}CORPUS-W004: '$tasks_file' exists but is not mentioned in the index file ($(basename "$index_file")).${NC}"
+      ((WARNINGS++)) || true
+      ((found_warnings++)) || true
+    fi
+  done
+
+  if [[ $found_warnings -eq 0 ]]; then
+    echo -e "${GREEN}  ✓ Index file appears to be synchronized.${NC}"
+  fi
 }
 
 # -----------------------------------------------------------------------------
@@ -167,7 +202,8 @@ check_visualization() {
     if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
     ((total++)) || true
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
     if [[ $diagram_count -eq 0 ]]; then
       ((found++)) || true
     fi
@@ -265,22 +301,49 @@ check_dependency_dag() {
   echo ""
   echo "--- CORPUS-11: Task Dependency DAG Validation ---"
 
-  # Simple check for obvious circular references
+  # A full DAG cycle detection is complex for a shell script.
+  # This check finds self-references and direct mutual dependencies (A->B and B->A).
   local found=0
   shopt -s nullglob
   for f in "$TASKS_DIR"/TASKS-[0-9]*_*.md; do
-    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
+    if [[ "$(basename "$f")" =~ _index|TEMPLATE ]]; then continue; fi
 
-    # Extract task ID from filename
-    local task_id
-    task_id=$(basename "$f" | grep -oE "TASKS-[0-9]+" || true)
+    # Extract task ID from filename, e.g., TASKS-01
+    local current_task_id
+    current_task_id=$(basename "$f" | grep -oE "TASKS-[0-9]+" || true)
+    if [[ -z "$current_task_id" ]]; then continue; fi
 
-    # Check if file references itself as dependency
-    if grep -qE "depends.on.*$task_id|blocked.by.*$task_id|prerequisite.*$task_id" "$f" 2>/dev/null; then
-      echo -e "${RED}CORPUS-E011: $task_id may have self-referential dependency${NC}"
+    # 1. Check for self-referential dependency
+    if grep -qE "depends-tasks:.*$current_task_id|depends.on.*$current_task_id" "$f" 2>/dev/null; then
+      echo -e "${RED}CORPUS-E011: Self-referential dependency found in $(basename "$f")${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
+
+    # 2. Check for direct mutual dependencies
+    # Find all tasks that this file depends on
+    local dependencies
+    dependencies=$(grep -oE "depends-tasks:.*TASKS-[0-9]+" "$f" | grep -oE "TASKS-[0-9]+" || true)
+    
+    for dep_id in $dependencies; do
+      if [[ "$dep_id" == "$current_task_id" ]]; then continue; fi
+      
+      # Find the file for the dependency
+      local dep_file
+      dep_file=$(find "$TASKS_DIR" -name "${dep_id}_*.md" 2>/dev/null | head -n 1)
+
+      if [[ -n "$dep_file" && -f "$dep_file" ]]; then
+        # Check if the dependency file also depends on the current task
+        if grep -qE "depends-tasks:.*$current_task_id" "$dep_file" 2>/dev/null; then
+          echo -e "${RED}CORPUS-E011: Circular dependency detected between $(basename "$f") and $(basename "$dep_file")${NC}"
+          echo "  - $(basename "$f") depends on $dep_id"
+          echo "  - $(basename "$dep_file") depends on $current_task_id"
+          ((ERRORS++)) || true
+          ((found++)) || true
+        fi
+      fi
+    done
+
   done
   shopt -u nullglob
 
@@ -298,27 +361,38 @@ check_spec_coverage() {
   echo "--- CORPUS-12: SPEC Coverage ---"
 
   local found=0
-  shopt -s nullglob
-  for f in "$TASKS_DIR"/TASKS-[0-9]*_*.md; do
-    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
+  local spec_dir
+  spec_dir=$(dirname "$TASKS_DIR")/09_SPEC
+  
+  if [[ ! -d "$spec_dir" ]]; then
+    echo -e "${YELLOW}  SPEC directory not found at '$spec_dir'. Skipping coverage check.${NC}"
+    ((WARNINGS++)) || true
+    return
+  fi
 
-    local spec_refs
-    spec_refs=$(grep -coE "SPEC-[0-9]+" "$f" 2>/dev/null || echo 0)
+  # 1. Get all SPEC IDs from the SPEC directory
+  local all_spec_ids
+  all_spec_ids=$(find "$spec_dir" -name "SPEC-[0-9]*_*.yaml" -exec basename {} \; 2>/dev/null | grep -oE "SPEC-[0-9]+" | sort -u)
 
-    if [[ $spec_refs -eq 0 ]]; then
-      if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W012: $(basename $f) has no SPEC references${NC}"
-      fi
-      ((WARNINGS++)) || true
+  # 2. Get all unique SPEC IDs referenced in TASKS files
+  local referenced_spec_ids
+  referenced_spec_ids=$(grep -rohE "SPEC-[0-9]+" "$TASKS_DIR" 2>/dev/null | sort -u)
+
+  # 3. Find which SPECs are not referenced
+  local orphaned_specs
+  orphaned_specs=$(comm -23 <(echo "$all_spec_ids") <(echo "$referenced_spec_ids"))
+
+  if [[ -n "$orphaned_specs" ]]; then
+    echo -e "${RED}CORPUS-E012: Found orphaned SPEC files not covered by any TASKS document:${NC}"
+    for orphan in $orphaned_specs; do
+      echo "  - $orphan"
+      ((ERRORS++)) || true
       ((found++)) || true
-    fi
-  done
-  shopt -u nullglob
+    done
+  fi
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ SPEC coverage appears complete${NC}"
-  else
-    echo -e "${YELLOW}  $found TASKS files may need SPEC references${NC}"
+    echo -e "${GREEN}  ✓ All SPEC files are covered by TASKS documents.${NC}"
   fi
 }
 
@@ -337,7 +411,8 @@ check_impl_contracts() {
 
     # Check for @icon tags or Implementation Contracts section
     local has_contracts
-    has_contracts=$(grep -ciE "@icon|Implementation Contract" "$f" 2>/dev/null || echo 0)
+    has_contracts=$(grep -ciE "@icon|Implementation Contract" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_contracts" || ! "$has_contracts" =~ ^[0-9]+$ ]] && has_contracts=0
 
     if [[ $has_contracts -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
@@ -370,7 +445,8 @@ check_task_status() {
     if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
 
     local has_status
-    has_status=$(grep -ciE "status:|state:|\\[x\\]|\\[ \\]|pending|in.progress|completed" "$f" 2>/dev/null || echo 0)
+    has_status=$(grep -ciE "status:|state:|\\[x\\]|\\[ \\]|pending|in.progress|completed" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_status" || ! "$has_status" =~ ^[0-9]+$ ]] && has_status=0
 
     if [[ $has_status -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
@@ -440,7 +516,8 @@ check_effort_estimates() {
     if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
 
     local has_estimate
-    has_estimate=$(grep -ciE "SP:|story.point|effort|size:|complexity|estimate" "$f" 2>/dev/null || echo 0)
+    has_estimate=$(grep -ciE "SP:|story.point|effort|size:|complexity|estimate" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$has_estimate" || ! "$has_estimate" =~ ^[0-9]+$ ]] && has_estimate=0
 
     if [[ $has_estimate -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then

@@ -68,7 +68,7 @@ See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) 
 Architecture Decision Records (ADRs) document significant architectural decisions, their context, rationale, consequences, and alternatives considered. ADRs provide the "WHY" behind technical choices.
 
 ### 1.2 Coverage Scope
-This matrix tracks all ADRs and their upstream sources (BRD, PRD, EARS, BDD). Downstream documents (SYS, REQ, SPEC, IMPL) track their own upstream references to ADRs—this matrix does not maintain downstream links.
+This matrix tracks all ADRs and their upstream sources (BRD, PRD, EARS, BDD). Downstream documents (SYS, REQ, CTR, SPEC, TASKS, Code) track their own upstream references to ADRs—this matrix does not maintain downstream links.
 
 ### 1.3 Statistics
 - **Total ADRs Tracked**: [X] documents
@@ -125,7 +125,7 @@ This matrix tracks all ADRs and their upstream sources (BRD, PRD, EARS, BDD). Do
 ```
 
 ### 7.2 Downstream Artifacts
-[Links to SPEC, TASKS, Code that reference this ADR]
+[Links to CTR, SPEC, TASKS, Code that reference this ADR]
 ```
 
 ### 2.4 Validation Rules
@@ -224,7 +224,7 @@ python scripts/generate_traceability_matrix.py \
 
 ## 6. Downstream Reference Guidance
 
-> **Upstream-Only Traceability Rule**: This matrix does NOT track downstream documents. Each downstream artifact (SYS, REQ, SPEC, IMPL) tracks its own upstream references to ADRs. This eliminates post-creation maintenance and ensures traceability accuracy.
+> **Upstream-Only Traceability Rule**: This matrix does NOT track downstream documents. Each downstream artifact (SYS, REQ, CTR, SPEC, TASKS, Code) tracks its own upstream references to ADRs. This eliminates post-creation maintenance and ensures traceability accuracy.
 
 ### 6.1 How Downstream Documents Reference ADRs
 
@@ -232,8 +232,10 @@ python scripts/generate_traceability_matrix.py \
 |-----------------|---------------------|---------|
 | SYS | `@adr: ADR-NNN` | `@adr: ADR-NN` |
 | REQ | `@adr: ADR-NNN` | `@adr: ADR-NN` |
+| CTR | `@adr: ADR-NNN` | `@adr: ADR-NN` |
 | SPEC | `@adr: ADR-NNN` | `@adr: ADR-NN` |
-| IMPL | `@adr: ADR-NNN` | `@adr: ADR-NN` |
+| TASKS | `@adr: ADR-NNN` | `@adr: ADR-NN` |
+| Code | `@adr: ADR-NNN` | `@adr: ADR-NN` |
 
 ### 6.2 Finding Downstream References
 
@@ -249,7 +251,7 @@ grep -r "@adr:" ../07_REQ/
 # Generate reverse traceability report
 python scripts/generate_reverse_traceability.py \
   --upstream ADR-NN \
-  --downstream SYS,REQ,SPEC,IMPL
+  --downstream SYS,REQ,CTR,SPEC,TASKS,Code
 ```
 
 ### 6.3 Downstream Document Responsibilities
@@ -258,8 +260,10 @@ python scripts/generate_reverse_traceability.py \
 |-----------------|-------|------------------------|------------------|
 | SYS | 6 | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr` | System requirements derived from architecture |
 | REQ | 7 | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys` | Atomic requirements implement architecture |
-| SPEC | 10 | All upstream layers | Specifications detail architecture implementation |
-| IMPL | 8 | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req` | Implementation plans execute architecture |
+| CTR | 8 | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req` | Interface contracts implement architecture |
+| SPEC | 9 | All upstream layers | Specifications detail architecture implementation |
+| TASKS | 10 | `@brd` through `@spec` | Implementation tasks derived from specs |
+| Code | 11 | `@brd` through `@tasks` | Source code implementing requirements |
 
 ---
 
@@ -371,18 +375,19 @@ graph TD
 |---------------|----------|---------|---------|------------|
 | SYS | [X] | [Y] | [Z] | XX% |
 | REQ | [X] | [Y] | [Z] | XX% |
+| CTR | [X] | [Y] | [Z] | XX% |
 | SPEC | [X] | [Y] | [Z] | XX% |
-| IMPL | [X] | [Y] | [Z] | XX% |
+| TASKS | [X] | [Y] | [Z] | XX% |
 | Code | [X] | [Y] | [Z] | XX% |
 | **Total** | **[X]** | **[Y]** | **[Z]** | **XX%** |
 
 ### 9.2 ADR Implementation Status
 
-| ADR ID | SYS Status | REQ Status | SPEC Status | Code Status | Overall Status | Completion % |
-|--------|------------|------------|-------------|-------------|----------------|--------------|
-| ADR-01 | ✅ Complete | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
-| ADR-02 | ✅ Complete | 🟡 In Progress | 🟡 In Progress | ⏳ Pending | In Progress | 60% |
-| ADR-03 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | ⏳ Pending | Started | 25% |
+| ADR ID | SYS Status | REQ Status | CTR Status | SPEC Status | TASKS Status | Code Status | Overall Status | Completion % |
+|--------|------------|------------|-----------|-------------|-------------|-------------|----------------|--------------|
+| ADR-01 | ✅ Complete | ✅ Complete | ✅ Complete | ✅ Complete | ✅ Complete | ✅ Complete | Complete | 100% |
+| ADR-02 | ✅ Complete | 🟡 In Progress | ⏳ Pending | 🟡 In Progress | ⏳ Pending | ⏳ Pending | In Progress | 60% |
+| ADR-03 | 🟡 In Progress | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | ⏳ Pending | Started | 25% |
 | ADR-NN | ... | ... | ... | ... | ... | ... |
 
 ### 9.3 Gap Analysis
@@ -399,7 +404,7 @@ graph TD
 **To find downstream coverage** (reverse traceability):
 ```bash
 # Run reverse traceability to find downstream references
-python scripts/generate_reverse_traceability.py --upstream ADR --downstream SYS,REQ,SPEC,IMPL
+python scripts/generate_reverse_traceability.py --upstream ADR --downstream SYS,REQ,CTR,SPEC,TASKS,Code
 ```
 
 ---
@@ -454,7 +459,7 @@ python scripts/generate_reverse_traceability.py --upstream ADR --downstream SYS,
 ### 13.3 Related Matrices
 - [SYS Traceability Matrix](../06_SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 - [REQ Traceability Matrix](../07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md)
-- [SPEC Traceability Matrix](../10_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- [SPEC Traceability Matrix](../09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 

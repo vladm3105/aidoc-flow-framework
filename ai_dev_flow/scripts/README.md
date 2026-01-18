@@ -50,7 +50,7 @@ python generate_traceability_matrix.py --type ADR --input ../05_ADR/ --output TR
 - Extracts metadata from section 7 Traceability
 - Calculates coverage metrics automatically
 - Generates inventory tables and Mermaid diagrams
-- Supports all document types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
+- Supports all document types: BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS
 
 **Parameters:**
 - `--type`: Document type (required)
@@ -67,7 +67,7 @@ python generate_traceability_matrix.py --type ADR --input ../05_ADR/ --output ..
 python generate_traceability_matrix.py --type REQ --input ../07_REQ/api/ --output ../07_REQ/api/matrix.md
 
 # Generate SPEC matrix
-python generate_traceability_matrix.py --type SPEC --input ../10_SPEC/ --output ../10_SPEC/TRACEABILITY_MATRIX_SPEC.md
+python generate_traceability_matrix.py --type SPEC --input ../09_SPEC/ --output ../09_SPEC/TRACEABILITY_MATRIX_SPEC.md
 ```
 
 **Note on paths**: Examples use `../0X_TYPE/` relative to this folder. In this repository, artifact folders live under `ai_dev_flow/0X_TYPE/`; adjust paths accordingly when running scripts here (drop any `docs/` prefix seen in older examples).
@@ -108,7 +108,7 @@ python3 validate_traceability_matrix.py --matrix ../05_ADR/TRACEABILITY_MATRIX_A
 python3 validate_traceability_matrix.py --matrix ../07_REQ/matrix.md --input ../07_REQ/ --strict
 
 # Save validation report
-python3 validate_traceability_matrix.py --matrix ../10_SPEC/matrix.md --input ../10_SPEC/ --output validation_report.md
+python3 validate_traceability_matrix.py --matrix ../09_SPEC/matrix.md --input ../09_SPEC/ --output validation_report.md
 ```
 
 **Exit Codes:**
@@ -147,7 +147,7 @@ python3 update_traceability_matrix.py --matrix TRACEABILITY_MATRIX_ADR.md --inpu
 python3 update_traceability_matrix.py --matrix ../05_ADR/TRACEABILITY_MATRIX_ADR.md --input ../05_ADR/
 
 # Preview changes without modifying file
-python3 update_traceability_matrix.py --matrix ../10_SPEC/matrix.md --input ../10_SPEC/ --dry-run
+python3 update_traceability_matrix.py --matrix ../09_SPEC/matrix.md --input ../09_SPEC/ --dry-run
 
 # Update and save changelog
 python3 update_traceability_matrix.py --matrix ../07_REQ/matrix.md --input ../07_REQ/ --changelog changelog.md
@@ -319,7 +319,7 @@ python scripts/validate_cross_document.py --full --output validation_report.md
 | 5 | ADR | @brd, @prd, @ears, @bdd | 4 |
 | 6 | SYS | @brd, @prd, @ears, @bdd, @adr | 5 |
 | 7 | REQ | @brd, @prd, @ears, @bdd, @adr, @sys | 6 |
-| 8 | IMPL | @brd through @req | 7 |
+| 8 | CTR | @brd through @req | 7 |
 | 9 | CTR | @brd through @req (+ optional @impl) | 7-8 |
 | 10 | SPEC | @brd through @req (+ optional @impl, @ctr) | 7-9 |
 | 11 | TASKS | @brd through @spec (+ optional @impl, @ctr); includes execution commands | 8-10 |
@@ -417,7 +417,7 @@ Validates CTR (Contract) documents for dual-file format compliance (.md + .yaml)
 
 **Usage:**
 ```bash
-./scripts/validate_ctr.sh docs/09_CTR/CTR-01_*.md
+./scripts/validate_ctr.sh docs/08_CTR/CTR-01_*.md
 ```
 
 **Features:**
@@ -428,11 +428,7 @@ Validates CTR (Contract) documents for dual-file format compliance (.md + .yaml)
 
 ### 9. validate_impl.sh
 
-Validates IMPL documents for 4-PART structure compliance.
 
-**Usage:**
-```bash
-./scripts/validate_impl.sh docs/08_IMPL/IMPL-01_*.md
 ```
 
 **Validates:**
@@ -447,7 +443,7 @@ Validates TASKS documents including Section 8 Implementation Contracts.
 
 **Usage:**
 ```bash
-./scripts/validate_tasks.sh docs/11_TASKS/TASKS-01_*.md
+./scripts/validate_tasks.sh docs/10_TASKS/TASKS-01_*.md
 ```
 
 **Features:**
@@ -612,7 +608,7 @@ echo "Validating traceability matrices..."
 
 python3 scripts/validate_traceability_matrix.py --matrix 05_ADR/TRACEABILITY_MATRIX_ADR.md --input 05_ADR/ || exit 1
 python3 scripts/validate_traceability_matrix.py --matrix 07_REQ/TRACEABILITY_MATRIX_REQ.md --input 07_REQ/ || exit 1
-python3 scripts/validate_traceability_matrix.py --matrix 10_SPEC/TRACEABILITY_MATRIX_SPEC.md --input 10_SPEC/ || exit 1
+python3 scripts/validate_traceability_matrix.py --matrix 09_SPEC/TRACEABILITY_MATRIX_SPEC.md --input 09_SPEC/ || exit 1
 
 echo "All validations passed successfully!"
 ```
@@ -653,8 +649,8 @@ jobs:
       - name: Validate SPEC Matrix
         run: |
           python3 scripts/validate_traceability_matrix.py \
-            --matrix 10_SPEC/TRACEABILITY_MATRIX_SPEC.md \
-            --input 10_SPEC/ \
+            --matrix 09_SPEC/TRACEABILITY_MATRIX_SPEC.md \
+            --input 09_SPEC/ \
             --strict
 ```
 
@@ -673,7 +669,7 @@ All scripts support the following document types:
 | ADR | Architecture Decision Record | `ADR-NN_*.md` |
 | SYS | System Requirements | `SYS-NN_*.md` |
 | REQ | Atomic Requirements | `REQ-NN_*.md` |
-| IMPL | Implementation Plans | `IMPL-NN_*.md` |
+| CTR | Data Contracts | `CTR-NN_*.md` |
 | CTR | API Contracts | `CTR-NN_*.md`, `CTR-NN_*.yaml` |
 | SPEC | Technical Specifications | `SPEC-NN_*.yaml` |
 | TASKS | Code Generation Tasks | `TASKS-NN_*.md` |
@@ -781,10 +777,9 @@ Matrix templates for each document type:
 - `05_ADR/ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `06_SYS/SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `08_IMPL/IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `09_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `10_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`
-- `11_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `08_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+- `10_TASKS/TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 - `TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md` (master template)
 
 ---

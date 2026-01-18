@@ -110,8 +110,8 @@ cd /opt/data/project_name
 
 **Commands**:
 ```bash
-# Core 11-layer architecture artifact directories (BRD through TASKS)
-mkdir -p docs/BRD docs/PRD docs/EARS docs/BDD docs/ADR docs/SYS docs/REQ docs/IMPL docs/CTR docs/SPEC docs/TASKS
+# Core 10-layer architecture artifact directories (BRD through TASKS)
+mkdir -p docs/BRD docs/PRD docs/EARS docs/BDD docs/ADR docs/SYS docs/REQ docs/CTR docs/SPEC docs/TASKS
 
 # NOTE: REQ and CTR subdirectories are created on-demand by doc-req and doc-ctr skills
 # when documents are generated. This ensures folders match actual project needs.
@@ -201,8 +201,8 @@ Options:
 
 **Output**: Workflow determined
 
-- **With CTR**: `REQ → IMPL → CTR → SPEC → TASKS`
-- **Without CTR**: `REQ → IMPL → SPEC → TASKS`
+- **With CTR**: `REQ → CTR → SPEC → TASKS`
+- **Without CTR**: `REQ → SPEC → TASKS`
 
 ---
 
@@ -222,10 +222,10 @@ touch docs/04_BDD/BDD-NN_{slug}/BDD-NN.0_index.md
 touch docs/05_ADR/ADR-00_index.md
 touch docs/06_SYS/SYS-00_index.md
 touch docs/07_REQ/REQ-00_index.md
-touch docs/08_IMPL/IMPL-00_index.md
-touch docs/09_CTR/CTR-00_index.md
-touch docs/10_SPEC/SPEC-00_index.yaml
-touch docs/11_TASKS/TASKS-00_index.md
+touch docs/08_CTR/CTR-00_index.md
+  touch docs/09_SPEC/SPEC-00_index.yaml
+  touch docs/10_TASKS/TASKS-00_index.md
+
 ```
 
 **Output**: All index files created
@@ -249,7 +249,7 @@ ls scripts/*.py
 ```
 
 **Success Criteria**:
-- All 11 artifact directories exist (BRD through TASKS)
+- All 10 artifact directories exist (BRD through TASKS)
 - Domain-specific subdirectories exist
 - All index files created
 - Validation scripts present
@@ -272,13 +272,13 @@ ls scripts/*.py
 ✓ Index Files: Initialized
 ✓ Scripts: Ready
 
-Workflow: 15-layer architecture: BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → Code → Tests → Deployment (brackets indicate optional layers)
+Workflow: 14-layer architecture: BRD → PRD → EARS → BDD → ADR → SYS → REQ → [CTR] → SPEC → TASKS → Code → Tests → Deployment (brackets indicate optional layers)
 
 Next Steps:
 1. Use `doc-flow` skill to begin workflow execution (recommended)
 2. Or manually review [PROJECT_KICKOFF_TASKS.md](./PROJECT_KICKOFF_TASKS.md) for Day 1-7 tasks
 3. Start with BRD-01 (Business Requirements Document)
-4. Follow 15-layer architecture sequentially
+4. Follow 14-layer architecture sequentially
 
 ═══════════════════════════════════════════════════════════
 ```
@@ -560,13 +560,13 @@ python scripts/trace_check.py --type REQ --strict
 **Validation Commands**:
 ```bash
 # YAML syntax validation
-python -c "import yaml; yaml.safe_load(open('docs/10_SPEC/SPEC-01_*.yaml'))"
+python -c "import yaml; yaml.safe_load(open('docs/09_SPEC/SPEC-01_*.yaml'))"
 
 # Schema validation
-python scripts/validate_spec_schema.py docs/10_SPEC/SPEC-01_*.yaml
+python scripts/validate_spec_schema.py docs/09_SPEC/SPEC-01_*.yaml
 
 # REQ coverage check
-grep "@req:" docs/10_SPEC/*.yaml | cut -d: -f2 | sort | uniq
+grep "@req:" docs/09_SPEC/*.yaml | cut -d: -f2 | sort | uniq
 # Verify all requirements covered
 ```
 
@@ -583,7 +583,7 @@ grep "@req:" docs/10_SPEC/*.yaml | cut -d: -f2 | sort | uniq
 **Validation Commands**:
 ```bash
 # Dependency validation
-python scripts/validate_task_dependencies.py docs/11_TASKS/TASKS-01_*.md
+python scripts/validate_task_dependencies.py docs/10_TASKS/TASKS-01_*.md
 
 # Contract verification: Check TASKS Section 7-8 for implementation contracts
 ```
@@ -861,10 +861,9 @@ Creating folder structure...
 ✓ Created: docs/05_ADR/
 ✓ Created: docs/06_SYS/
 ✓ Created: docs/07_REQ/
-✓ Created: docs/08_IMPL/
-✓ Created: docs/09_CTR/
-✓ Created: docs/10_SPEC/
-✓ Created: docs/11_TASKS/
+✓ Created: docs/08_CTR/
+✓ Created: docs/09_SPEC/
+✓ Created: docs/10_TASKS/
 
 ✓ Created: docs/07_REQ/api/
 ✓ Created: docs/07_REQ/auth/
@@ -902,7 +901,7 @@ User: "1,2" (REST APIs and Event Schemas)
 AI Assistant:
 ✓ Contracts needed
 ✓ Contract types: REST/GraphQL APIs (OpenAPI), Event Schemas (AsyncAPI)
-✓ Workflow: REQ → IMPL → CTR → SPEC → TASKS
+✓ Workflow: REQ → CTR → SPEC → TASKS
 
 Initializing index files...
 ✓ All index files created
@@ -967,7 +966,7 @@ Next: Review PROJECT_KICKOFF_TASKS.md for Day 1-7 action plan
 # AI Assistant runs DOMAIN_SELECTION_QUESTIONNAIRE.md
 
 # Step 2: Create Folders
-mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,IMPL,CTR,SPEC,TASKS}
+mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SYS,REQ,CTR,SPEC,TASKS}
 mkdir -p scripts work_plans
 # NOTE: 07_REQ/CTR subdirectories created on-demand by doc-req/doc-ctr skills
 
@@ -984,7 +983,7 @@ cp "$FRAMEWORK_ROOT/scripts"/*.py scripts/
 # AI Assistant runs CONTRACT_DECISION_QUESTIONNAIRE.md
 
 # Step 6: Initialize Index Files
-for type in BRD PRD EARS BDD ADR SYS REQ IMPL CTR SPEC TASKS; do
+for type in BRD PRD EARS BDD ADR SYS REQ CTR SPEC TASKS; do
   touch docs/$type/*_index.*
 done
 

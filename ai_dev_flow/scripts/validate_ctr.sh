@@ -3,7 +3,7 @@
 # Validates CTR documents against:
 # - CTR-MVP-TEMPLATE.md and CTR-TEMPLATE.yaml (authoritative templates)
 # - AI Dev Flow SDD framework standards
-# - Layer 9 artifact requirements
+# - Layer 8 artifact requirements
 # Usage: ./scripts/validate_ctr.sh <CTR_FILE>
 
 set -e
@@ -34,7 +34,7 @@ echo "========================================="
 echo "CTR Template Validator v${SCRIPT_VERSION}"
 echo "========================================="
 echo "File: $CTR_FILE"
-echo "Artifact Type: CTR (Contract) - Layer 9"
+echo "Artifact Type: CTR (Contract) - Layer 8"
 echo ""
 
 # ============================================
@@ -79,17 +79,17 @@ if grep -q "^---" "$CTR_FILE"; then
     ((ERRORS++))
   fi
 
-  if grep -q "layer: 9" "$CTR_FILE"; then
-    echo -e "  ${GREEN}✅ layer: 9${NC}"
+  if grep -q "layer: 8" "$CTR_FILE"; then
+    echo -e "  ${GREEN}✅ layer: 8${NC}"
   else
-    echo -e "  ${RED}❌ ERROR: Missing or invalid layer (must be 9)${NC}"
+    echo -e "  ${RED}❌ ERROR: Missing or invalid layer (must be 8)${NC}"
     ((ERRORS++))
   fi
 
-  if grep -q "layer-9-artifact" "$CTR_FILE"; then
-    echo -e "  ${GREEN}✅ layer-9-artifact tag present${NC}"
+  if grep -q "layer-8-artifact" "$CTR_FILE"; then
+    echo -e "  ${GREEN}✅ layer-8-artifact tag present${NC}"
   else
-    echo -e "  ${YELLOW}⚠️  WARNING: Missing layer-9-artifact tag${NC}"
+    echo -e "  ${YELLOW}⚠️  WARNING: Missing layer-8-artifact tag${NC}"
     ((WARNINGS++))
   fi
 
@@ -177,7 +177,8 @@ echo "CHECK 5: API Endpoint Validation"
 echo "-----------------------------------------"
 
 # Check for endpoint definitions
-endpoint_count=$(grep -cE "(GET|POST|PUT|DELETE|PATCH)\s+/" "$CTR_FILE" 2>/dev/null || echo "0")
+endpoint_count=$(grep -cE "(GET|POST|PUT|DELETE|PATCH)\s+/" "$CTR_FILE" 2>/dev/null | tr -d '\n' || echo "0")
+[[ -z "$endpoint_count" || ! "$endpoint_count" =~ ^[0-9]+$ ]] && endpoint_count=0
 
 if [ "$endpoint_count" -gt 0 ]; then
   echo -e "  ${GREEN}✅ Found $endpoint_count API endpoint(s)${NC}"
@@ -205,7 +206,8 @@ echo "-----------------------------------------"
 
 # Check for data model definitions (JSON/TypedDict/Pydantic)
 if grep -qE '```(json|python|yaml)' "$CTR_FILE"; then
-  code_block_count=$(grep -c '```' "$CTR_FILE" || echo "0")
+  code_block_count=$(grep -c '```' "$CTR_FILE" 2>/dev/null | tr -d '\n' || echo "0")
+  [[ -z "$code_block_count" || ! "$code_block_count" =~ ^[0-9]+$ ]] && code_block_count=0
   code_block_count=$((code_block_count / 2))
   echo -e "  ${GREEN}✅ Found $code_block_count code block(s) for data models${NC}"
 
@@ -234,7 +236,8 @@ if grep -q "## 4. Error Handling" "$CTR_FILE"; then
 
   # Check for error code table
   if grep -qE "\|\s*[0-9]{3}\s*\|" "$CTR_FILE"; then
-    error_code_count=$(grep -cE "\|\s*[0-9]{3}\s*\|" "$CTR_FILE" || echo "0")
+    error_code_count=$(grep -cE "\|\s*[0-9]{3}\s*\|" "$CTR_FILE" 2>/dev/null | tr -d '\n' || echo "0")
+    [[ -z "$error_code_count" || ! "$error_code_count" =~ ^[0-9]+$ ]] && error_code_count=0
     echo -e "  ${GREEN}✅ Found $error_code_count HTTP error code(s)${NC}"
   else
     echo -e "  ${YELLOW}⚠️  WARNING: No HTTP error codes found in table format${NC}"
@@ -301,7 +304,8 @@ deprecated_patterns=(
 
 deprecated_found=0
 for pattern in "${deprecated_patterns[@]}"; do
-  matches=$(grep -cE "$pattern" "$CTR_FILE" 2>/dev/null || echo "0")
+  matches=$(grep -cE "$pattern" "$CTR_FILE" 2>/dev/null | tr -d '\n' || echo "0")
+  [[ -z "$matches" || ! "$matches" =~ ^[0-9]+$ ]] && matches=0
   if [ "$matches" -gt 0 ]; then
     echo -e "  ${RED}❌ ERROR: Deprecated element ID format found ($matches occurrences)${NC}"
     echo "           Pattern: $pattern"
@@ -316,7 +320,8 @@ fi
 
 # Validate unified format element IDs (TYPE.NN.TT.SS)
 unified_pattern="CTR\.[0-9]{2,9}\.[0-9]{2,9}\.[0-9]{2,9}"
-unified_count=$(grep -cE "$unified_pattern" "$CTR_FILE" 2>/dev/null || echo "0")
+unified_count=$(grep -cE "$unified_pattern" "$CTR_FILE" 2>/dev/null | tr -d '\n' || echo "0")
+[[ -z "$unified_count" || ! "$unified_count" =~ ^[0-9]+$ ]] && unified_count=0
 echo "  Unified format element IDs found: $unified_count"
 
 if [ "$deprecated_found" -gt 0 ]; then
@@ -326,9 +331,9 @@ fi
 echo ""
 
 # ============================================
-# CHECK 10: Traceability Tags (Layer 9)
+# CHECK 10: Traceability Tags (Layer 8)
 # ============================================
-echo "CHECK 10: Traceability Tags (Layer 9)"
+echo "CHECK 10: Traceability Tags (Layer 8)"
 echo "-----------------------------------------"
 
 required_tags=("@brd" "@prd" "@ears" "@bdd" "@adr" "@sys" "@req")
@@ -345,7 +350,7 @@ for tag in "${required_tags[@]}"; do
 done
 
 # Check optional tags
-optional_tags=("@impl" "@spec")
+optional_tags=("@spec")
 for tag in "${optional_tags[@]}"; do
   if grep -qE "^${tag}:|^\- \`${tag}:" "$CTR_FILE"; then
     echo -e "  ${GREEN}✅ Optional tag present: $tag${NC}"
@@ -355,7 +360,7 @@ done
 
 echo "  Total traceability tags: $tag_count"
 if [ $tag_count -lt 7 ]; then
-  echo -e "  ${RED}❌ ERROR: Minimum 7 tags required for Layer 9${NC}"
+  echo -e "  ${RED}❌ ERROR: Minimum 7 tags required for Layer 8${NC}"
   ((ERRORS++))
 fi
 
@@ -488,7 +493,7 @@ if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
   echo "Document complies with:"
   echo "  - CTR-MVP-TEMPLATE.md structure"
   echo "  - AI Dev Flow SDD framework requirements"
-  echo "  - Layer 9 artifact standards"
+  echo "  - Layer 8 artifact standards"
   exit 0
 elif [ $ERRORS -eq 0 ]; then
   echo -e "${YELLOW}⚠️  PASSED WITH WARNINGS: Document valid but has $WARNINGS warnings${NC}"

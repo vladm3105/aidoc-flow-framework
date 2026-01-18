@@ -57,7 +57,7 @@ contracts:
     ...
 ```
 
-**09_CTR/README.md** stated:
+**08_CTR/README.md** stated:
 > "Each contract SHOULD have dual files (.md + .yaml)"
 
 Use of "SHOULD" (optional) vs "MUST" (mandatory) created ambiguity.
@@ -109,7 +109,8 @@ Every API contract requires:
    - CI/CD validation tools need isolated contract files
 
 3. **Clear Traceability** (zero broken links):
-   - REQ → IMPL → **CTR** → SPEC → TASKS (explicit chain)
+    - REQ → **CTR** → SPEC → TASKS (explicit chain)
+
    - Git history shows contract evolution independently
    - Impact analysis: "Which SPECs use CTR-NN?"
 
@@ -170,12 +171,12 @@ Every API contract requires:
    - **Keep**: "Option A: Reference separate contract files"
    - **Add**: "Contract References" section with CTR-NNN links
 
-2. **09_CTR/README.md**:
+2. **08_CTR/README.md**:
    - **Change**: "SHOULD" → "MUST"
    - **Strengthen**: "ALWAYS create dual files (.md + .yaml)"
    - **Remove**: Any "optional" wording
 
-3. **09_CTR/CTR-00_index.md**:
+3. **08_CTR/CTR-00_index.md**:
    - **Create**: Index file listing all contracts
    - **Format**: Table with CTR-ID, title, status, SPECs using it
 
@@ -192,9 +193,9 @@ Add pre-commit hook:
 
 ```bash
 # Check: Every CTR-NNN.md has matching CTR-NNN.yaml
-for md in 09_CTR/CTR-*.md; do
-  base=$(basename "$md" .md)
-  yaml="09_CTR/${base}.yaml"
+for md in 08_CTR/CTR-*.md; do
+  yaml="08_CTR/${base}.yaml"
+
   if [ ! -f "$yaml" ]; then
     echo "ERROR: Missing $yaml for $md"
     exit 1
@@ -202,7 +203,7 @@ for md in 09_CTR/CTR-*.md; do
 done
 
 # Check: No embedded contracts in SPEC files
-if grep -q "inline:" 10_SPEC/**/*.yaml; then
+if grep -q "inline:" 09_SPEC/**/*.yaml; then
   echo "ERROR: Found embedded contracts in SPEC files"
   echo "Policy: Use separate CTR files (see ADR-CTR)"
   exit 1
@@ -222,7 +223,7 @@ fi
 **New Projects**:
 
 1. **REQ Completed**: Requirements defined and approved
-2. **IMPL Created** (if complex project): Project plan established
+2. **REQ Complete**: Requirements approved and stable
 3. **CTR Created**: Define API contract (dual files) ← **BEFORE SPEC**
 4. **SPEC Created**: Reference CTR, define implementation
 5. **TASKS Created**: Code generation plan references CTR + SPEC
@@ -233,7 +234,7 @@ fi
 
 - ✅ **Parallel Development**: Teams start implementation while SPEC is drafted
 - ✅ **Tool Compatibility**: Contract testing, mocking, validation tools work
-- ✅ **Clear Traceability**: Explicit REQ → IMPL → CTR → SPEC → TASKS chain
+- ✅ **Clear Traceability**: Explicit REQ → CTR → SPEC → TASKS chain
 - ✅ **Version Control**: Granular commits, easier code review
 - ✅ **Reusability**: Multiple SPECs share common CTR contracts
 - ✅ **Documentation Quality**: Markdown + YAML ensures completeness
@@ -281,9 +282,9 @@ Before merging PR with new CTR:
 
 ### Related Documents
 
-- [CTR-MVP-TEMPLATE.md](../09_CTR/CTR-MVP-TEMPLATE.md) - Markdown template
-- [09_CTR/README.md](../09_CTR/README.md) - Contracts overview
-- [SPEC-MVP-TEMPLATE.yaml](../10_SPEC/SPEC-MVP-TEMPLATE.yaml) - Technical specification template
+- [CTR-MVP-TEMPLATE.md](../08_CTR/CTR-MVP-TEMPLATE.md) - Markdown template
+- [08_CTR/README.md](../08_CTR/README.md) - Contracts overview
+- [SPEC-MVP-TEMPLATE.yaml](../09_SPEC/SPEC-MVP-TEMPLATE.yaml) - Technical specification template
 - [TRACEABILITY.md](../TRACEABILITY.md) - Document linking standards
 
 ### Standards

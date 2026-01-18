@@ -258,7 +258,8 @@ check_diagrams() {
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null | tr -d '\n' || echo 0)
+    [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
     if [[ "$diagram_count" -eq 0 ]]; then
       echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
       ((INFOS++)) || true
@@ -460,7 +461,8 @@ check_traceability() {
       ((ERRORS++)) || true
       ((found++)) || true
     elif $VERBOSE; then
-      brd_count=$(grep -c "@brd:" "$f" 2>/dev/null || echo 0)
+      brd_count=$(grep -c "@brd:" "$f" 2>/dev/null | tr -d '\n' || echo 0)
+      [[ -z "$brd_count" || ! "$brd_count" =~ ^[0-9]+$ ]] && brd_count=0
       echo "  $(basename $f): $brd_count @brd tags"
     fi
   done

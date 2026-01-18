@@ -40,16 +40,16 @@ See also: [README → Units & Conversions](./README.md#units--conversions-kb-vs-
 
 <!-- See README.md → “Using This Repo” for path mapping guidance. -->
 
-## 15-Layer Workflow
+## 14-Layer Workflow
 
 ```
-BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code → Tests → Validation
+BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS → Code → Tests → Validation
 ```
 
 **Note**: Layer 0 (Strategy/STRAT) is external business context; formal documentation begins at Layer 1 (BRD). "Production" is an outcome, not a formal layer.
 
-**With Contracts**: `REQ → IMPL → CTR → SPEC → TASKS`
-**Without Contracts**: `REQ → IMPL → SPEC → TASKS`
+**With Contracts**: `REQ → CTR → SPEC → TASKS`
+**Without Contracts**: `REQ → SPEC → TASKS`
 
 **BRD Section Requirements**:
 - Platform BRDs (001-005): Foundation architecture, cross-cutting concerns
@@ -94,7 +94,7 @@ TASKS-23_implement_risk_calculator.md
 
 **Which uses which?**
 - **Dash** (document-level): ADR, SPEC, CTR
-- **Dot** (element-level): BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS
+- **Dot** (element-level): BRD, PRD, EARS, BDD, SYS, REQ, TASKS
 
 **Common mistakes**: `@brd: BRD-07` ❌ → `@brd: BRD.07.01.01` ✓ | `@adr: ADR.33.10.01` ❌ → `@adr: ADR-33` ✓
 
@@ -121,12 +121,12 @@ Section File: docs/05_ADR/ADR-05_database_selection/ADR-05.2_database_selection_
 - YAML: Keep monolithic per component for codegen (`SPEC-{DOC_NUM}_{slug}.yaml`).
 - Markdown: Split narrative with `SPEC-{DOC_NUM}.0_index.md` and `SPEC-{DOC_NUM}.{S}_{slug}.md` when needed.
 - Layout:
-  - Nested default: `10_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml`
-  - Flat exception: `10_SPEC/SPEC-{DOC_NUM}_{slug}.yaml` (small, stable specs)
+  - Nested default: `09_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml`
+  - Flat exception: `09_SPEC/SPEC-{DOC_NUM}_{slug}.yaml` (small, stable specs)
 
 Examples:
-- Flat: `10_SPEC/SPEC-01_api_client_example.yaml`
-- Nested: `10_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml` (+ `SPEC-02.0_index.md`)
+- Flat: `09_SPEC/SPEC-01_api_client_example.yaml`
+- Nested: `09_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml` (+ `SPEC-02.0_index.md`)
 
 ---
 
@@ -143,7 +143,7 @@ Examples (nested folder structure):
 
 Examples (flat structure - legacy):
 [REQ-03](../07_REQ/risk/REQ-03_resource_limit.md#REQ-03)
-[SPEC-23](../10_SPEC/SPEC-23_risk_calculator/SPEC-23_risk_calculator.yaml)
+[SPEC-23](../09_SPEC/SPEC-23_risk_calculator/SPEC-23_risk_calculator.yaml)
 ```
 
 ---
@@ -160,10 +160,9 @@ graph TB
     BDD["04_BDD/BDD-NN_{suite}/ - BDD Gherkin (sections)"]
     SYS["06_SYS/SYS-NN_{slug}/ - System Specs"]
     REQ["07_REQ/REQ-NN_{slug}/ - Atomic Requirements"]
-    IMPL["08_IMPL/IMPL-NN_{slug}/ - Implementation Plans"]
-    CTR["09_CTR/CTR-NN_{slug}/ - API Contracts"]
-    SPEC["10_SPEC/SPEC-NN_{slug}/ - Technical Specs"]
-    TASKS["11_TASKS/TASKS-NN_{slug}/ - Implementation Tasks"]
+    CTR["08_CTR/CTR-NN_{slug}/ - API Contracts"]
+    SPEC["09_SPEC/SPEC-NN_{slug}/ - Technical Specs"]
+    TASKS["10_TASKS/TASKS-NN_{slug}/ - Implementation Tasks"]
   end
 
   subgraph nested_example["Nested Example: BRD-01_platform_architecture/"]
@@ -196,7 +195,7 @@ Use the Standard set for general projects, and add Financial sets as needed for 
 # NOTE: In this repo, drop any `docs/` prefix used in generic examples.
 # Create top-level folders (nested structure is DEFAULT for all document types)
 mkdir -p docs/{BRD,PRD,ADR}
-mkdir -p docs/{EARS,BDD,SYS,REQ,IMPL,CTR,SPEC,TASKS}
+mkdir -p docs/{EARS,BDD,SYS,REQ,CTR,SPEC,TASKS}
 # REQ: Nested per-document folders (DEFAULT)
 mkdir -p docs/07_REQ/REQ-01_resource_limits
 
@@ -210,9 +209,9 @@ mkdir -p docs/05_ADR/ADR-01_cloud_migration        # Creates docs/05_ADR/ADR-01_
 mkdir -p docs/03_EARS/EARS-01_event_processing
 mkdir -p docs/06_SYS/SYS-01_api_gateway
 mkdir -p docs/07_REQ/REQ-01_resource_limits
-mkdir -p docs/10_SPEC/SPEC-01_rate_limiter
-mkdir -p docs/11_TASKS/TASKS-01_implement_rate_limiter
-mkdir -p docs/09_CTR/CTR-01_data_service_api
+mkdir -p docs/09_SPEC/SPEC-01_rate_limiter
+mkdir -p docs/10_TASKS/TASKS-01_implement_rate_limiter
+mkdir -p docs/08_CTR/CTR-01_data_service_api
 
 # Legacy category folders are not used in new projects.
 
@@ -273,8 +272,8 @@ python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ -
 ### Downstream Artifacts (OPTIONAL - only existing docs)
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| [SPEC-23](../10_SPEC/SPEC-23_impl/SPEC-23_impl.yaml) | Technical Specification | Implementation |
-| [TASKS-23](../11_TASKS/TASKS-23_impl.md#TASKS-23) | Implementation Tasks | TODOs |
+| [SPEC-23](../09_SPEC/SPEC-23_impl/SPEC-23_impl.yaml) | Technical Specification | Implementation |
+| [TASKS-23](../10_TASKS/TASKS-23_impl.md#TASKS-23) | Implementation Tasks | TODOs |
 
 ### Primary Anchor/ID
 - **REQ-03**: [placeholder] requirement title
@@ -412,10 +411,9 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 | **BDD** | Acceptance tests | .feature | **Nested (section-based)** | `04_BDD/BDD-02_query/BDD-02.14_query_filtering.feature` |
 | **SYS** | System specifications | .md | **Nested** | `06_SYS/SYS-06_api_gateway/SYS-06_api_gateway.md` |
 | **REQ** | Atomic requirements | .md | **Nested** | `07_REQ/REQ-07_limit_enforcement/REQ-07_limit_enforcement.md` |
-| **IMPL** | Implementation plan | .md | **Nested** | `08_IMPL/IMPL-08_phase1_plan/IMPL-08_phase1_plan.md` |
-| **CTR** | API contracts | .md + .yaml | **Nested** | `09_CTR/CTR-09_market_api/CTR-09_market_api.{md,yaml}` |
-| **SPEC** | Technical SPEC | .yaml | **Nested** | `10_SPEC/SPEC-10_limiter/SPEC-10_limiter.yaml` |
-| **TASKS** | Implementation TODOs | .md | **Nested** | `11_TASKS/TASKS-10_implement_limiter/TASKS-10_implement_limiter.md` |
+| **CTR** | API contracts | .md + .yaml | **Nested** | `08_CTR/CTR-09_market_api/CTR-09_market_api.{md,yaml}` |
+| **SPEC** | Technical SPEC | .yaml | **Nested** | `09_SPEC/SPEC-10_limiter/SPEC-10_limiter.yaml` |
+| **TASKS** | Implementation TODOs | .md | **Nested** | `10_TASKS/TASKS-10_implement_limiter/TASKS-10_implement_limiter.md` |
 | **REF** | Supplementary docs | .md | **Nested** | `REF/TYPE-REF-NN_{slug}/TYPE-REF-NN_{slug}.md` |
 
 **Note**: REF (Reference Documents) are supplementary and do not participate in formal traceability chain.

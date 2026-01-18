@@ -114,7 +114,7 @@ def find_undefined_acronyms(content: str, defined_acronyms: Set[str]) -> List[Tu
         'CI', 'CD', 'DevOps', 'SRE', 'SLA', 'SLO', 'SLI', 'KPI', 'OKR',
         'TODO', 'TBD', 'TBC', 'WIP', 'POC', 'MVP', 'EOF', 'ETL',
         # SDD specific
-        'SDD', 'BRD', 'PRD', 'ADR', 'SYS', 'REQ', 'SPEC', 'IMPL', 'CTR',
+        'SDD', 'BRD', 'PRD', 'ADR', 'SYS', 'REQ', 'SPEC', 'CTR',
         'TASKS', 'BDD', 'EARS', 'YAML', 'MD', 'MCP',
     }
 

@@ -68,10 +68,10 @@ See: [TRACEABILITY.md](../TRACEABILITY.md#tag-based-auto-discovery-alternative) 
 ## 4. Overview
 
 ### 4.1 Document Type Description
-Atomic Requirements Documents (REQ) define single, testable, implementation-ready requirements. REQ documents are the bridge between formal requirements (03_EARS/SYS) and technical specifications (10_SPEC/Code).
+Atomic Requirements Documents (REQ) define single, testable, implementation-ready requirements. REQ documents are the bridge between formal requirements (03_EARS/SYS) and technical specifications (09_SPEC/Code).
 
 ### 4.2 Coverage Scope
-This matrix tracks all REQ documents and their upstream sources (BRD, PRD, EARS, BDD, ADR, SYS). Downstream documents (IMPL, CTR, SPEC, TASKS, Code) track their own upstream references to REQ—this matrix does not maintain downstream links.
+This matrix tracks all REQ documents and their upstream sources (BRD, PRD, EARS, BDD, ADR, SYS). Downstream documents (CTR, SPEC, TASKS, Code) track their own upstream references to REQ—this matrix does not maintain downstream links.
 
 ### 4.3 Statistics
 - **Total REQ Tracked**: [X] documents
@@ -238,15 +238,13 @@ SYS (Layer 6) → System requirements (@brd through @adr)
   ↓
 REQ (Layer 7) → Atomic requirements (@brd through @sys)
   ↓
-IMPL (Layer 8) → Implementation plans (@brd through @req)
+CTR (Layer 8) → API contracts (@brd through @req)
   ↓
-CTR (Layer 9) → API contracts (@brd through @impl)
+SPEC (Layer 9) → Technical specifications (@brd through @req + optional ctr)
   ↓
-SPEC (Layer 10) → Technical specifications (@brd through @req + optional)
+TASKS (Layer 10) → Implementation tasks (@brd through @spec)
   ↓
-TASKS (Layer 11) → Implementation tasks (@brd through @spec)
-  ↓
-Code (Layer 13) → Source code (@brd through @tasks)
+Code (Layer 11) → Source code (@brd through @tasks)
 ```
 
 **Key Role**: REQ decomposes high-level requirements (EARS, SYS) into single-concern, atomic, testable requirements that map directly to code implementations, serving as the bridge between requirements and implementation.
@@ -294,13 +292,12 @@ Code (Layer 13) → Source code (@brd through @tasks)
 
 ## 11. Downstream Reference Guidance
 
-> **Upstream-Only Traceability Rule**: This matrix does NOT track downstream documents. Each downstream artifact (IMPL, CTR, SPEC, TASKS, Code) tracks its own upstream references to REQ. This eliminates post-creation maintenance and ensures traceability accuracy.
+> **Upstream-Only Traceability Rule**: This matrix does NOT track downstream documents. Each downstream artifact (CTR, SPEC, TASKS, Code) tracks its own upstream references to REQ. This eliminates post-creation maintenance and ensures traceability accuracy.
 
 ### 11.1 How Downstream Documents Reference REQ
 
 | Downstream Type | Required Tag Format | Example |
 |-----------------|---------------------|---------|
-| IMPL | `@req: REQ.NN.26.SS` | `@req: REQ.45.26.01` |
 | CTR | `@req: REQ.NN.26.SS` | `@req: REQ.10.26.03, REQ.10.26.04` |
 | SPEC | `@req: REQ.NN.26.SS` | `@req: REQ.03.26.01` |
 | TASKS | `@req: REQ.NN.26.SS` | `@req: REQ.20.26.02` |
@@ -311,11 +308,12 @@ Code (Layer 13) → Source code (@brd through @tasks)
 To discover which downstream documents reference a specific REQ, use reverse traceability:
 
 ```bash
-# Find all IMPL documents referencing REQ-045
-grep -r "@req: REQ.45" ../08_IMPL/
+# Find all CTR documents referencing REQ-045
+  grep -r "@req: REQ.45" ../08_CTR/
 
 # Find all SPEC documents referencing any REQ
-grep -r "@req:" ../10_SPEC/
+  grep -r "@req:" ../09_SPEC/
+
 
 # Find code files with REQ tags
 grep -r "@req:" src/
@@ -323,18 +321,17 @@ grep -r "@req:" src/
 # Generate reverse traceability report
 python scripts/generate_reverse_traceability.py \
   --upstream REQ-045 \
-  --downstream IMPL,CTR,SPEC,TASKS,Code
+  --downstream CTR,SPEC,TASKS,Code
 ```
 
 ### 11.3 Downstream Document Responsibilities
 
 | Downstream Type | Layer | Required Upstream Tags | REQ Relationship |
 |-----------------|-------|------------------------|------------------|
-| IMPL | 8 | `@brd` through `@req` | Implementation plans for requirement delivery |
-| CTR | 9 | `@brd` through `@impl` | API contracts defined by requirements |
-| SPEC | 10 | All upstream layers | Technical specifications implementing requirements |
-| TASKS | 11 | `@brd` through `@spec` | Development tasks derived from requirements |
-| Code | 13 | `@brd` through `@tasks` | Source code implementing requirements |
+| CTR | 8 | `@brd` through `@req` | API contracts defined by requirements |
+| SPEC | 9 | All upstream layers | Technical specifications implementing requirements |
+| TASKS | 10 | `@brd` through `@spec` | Development tasks derived from requirements |
+| Code | 11 | `@brd` through `@tasks` | Source code implementing requirements |
 
 ---
 
@@ -426,8 +423,8 @@ graph TD
 
 ### 15.1 REQ Implementation Progress
 
-| REQ ID | IMPL Status | CTR Status | SPEC Status | Code Status | Overall | Completion % |
-|--------|-------------|------------|-------------|-------------|---------|--------------|
+| REQ ID | CTR Status | SPEC Status | Code Status | Overall | Completion % |
+|--------|-----------|-------------|-------------|---------|--------------|
 | REQ-01 | ✅ | ✅ | ✅ | ✅ | Complete | 100% |
 | REQ-02 | ✅ | N/A | 🟡 | 🟡 | In Progress | 60% |
 | REQ-03 | 🟡 | N/A | ⏳ | ⏳ | Started | 25% |
@@ -447,7 +444,7 @@ graph TD
 **To find downstream coverage** (reverse traceability):
 ```bash
 # Run reverse traceability to find downstream references
-python scripts/generate_reverse_traceability.py --upstream REQ --downstream IMPL,CTR,SPEC,TASKS,Code
+python scripts/generate_reverse_traceability.py --upstream REQ --downstream CTR,SPEC,TASKS,Code
 ```
 
 ---
@@ -476,7 +473,7 @@ python scripts/generate_reverse_traceability.py --upstream REQ --downstream IMPL
 - **REQ Full Template**: (removed from workflow)
 - **REQ Schema**: [REQ_SCHEMA.yaml](REQ_SCHEMA.yaml) (Supports MVP/full profiles)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
-- **Related Matrices**: [EARS](../03_EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../10_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md), [CTR](../09_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
+- **Related Matrices**: [EARS](../03_EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md), [CTR](../08_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 
 ---
 
