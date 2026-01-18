@@ -251,7 +251,7 @@ done
 ```bash
 # Check for REQ references in SPEC files
 for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
-  req_refs=$(grep -coE "REQ-[0-9]+" "$f" 2>/dev/null || echo 0)
+  req_refs=$(grep -coE "REQ-[0-9]+" "$f" 2>/dev/null || true)
   if [[ $req_refs -eq 0 ]]; then
     echo "WARNING: $(basename $f) has no REQ references"
   fi

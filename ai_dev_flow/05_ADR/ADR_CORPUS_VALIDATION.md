@@ -221,8 +221,8 @@ grep -c "| ADR-[0-9]" "$ADR_DIR"/ADR-*_index.md
 ```bash
 # Check 5: Mermaid diagram presence
 for f in "$ADR_DIR"/ADR-[0-9]*_*.md; do
-  count=$(grep -c "^```mermaid" "$f" 2>/dev/null || echo 0)
-  if [ "$count" -eq 0 ]; then
+  diagram_count=$(grep -c "^```mermaid" "$f" 2>/dev/null || true)
+  if [ "$diagram_count" -eq 0 ]; then
     echo "INFO: $(basename $f) has no Mermaid diagrams"
   fi
 done

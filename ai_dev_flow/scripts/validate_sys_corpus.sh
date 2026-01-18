@@ -203,7 +203,7 @@ check_visualization() {
     if [[ "$(basename $f)" =~ _index ]]; then continue; fi
     ((total++)) || true
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || echo 0)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
     if [[ $diagram_count -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
         echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"

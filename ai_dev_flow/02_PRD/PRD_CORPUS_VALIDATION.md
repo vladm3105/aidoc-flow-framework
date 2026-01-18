@@ -253,7 +253,7 @@ done
 ```bash
 # Check for Mermaid code blocks
 for f in "$PRD_DIR"/PRD-[0-9]*_*.md; do
-  diagram_count=$(grep -c '```mermaid' "$f" || echo 0)
+  diagram_count=$(grep -c '```mermaid' "$f" || true)
   if [ "$diagram_count" -eq 0 ]; then
     echo "INFO: $(basename $f) has no Mermaid diagrams"
   fi
@@ -348,6 +348,11 @@ grep -rohE "PRD\.[0-9]+\.[0-9]+\.[0-9]+" "$PRD_DIR" | \
 |--------|---------|-------|
 | Lines | 600 | 1,200 |
 | Tokens | 50,000 | 100,000 |
+
+**MVP PRD Thresholds**:
+- Target: 300-500 lines
+- Warning: 500 lines
+- Error: 800 lines (exceeds MVP scope)
 
 ---
 

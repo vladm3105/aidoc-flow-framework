@@ -233,12 +233,13 @@ traceability:
             spec_sections: ["verification.integration_tests"]
         acceptance_tests:
           - path: "tests/acceptance/[module_name]/"
-          description: "BDD scenarios and acceptance tests"
-          coverage_target: "100%"
-          spec_sections: ["verification.bdd_scenarios"]
-        - path: "tests/performance/[module_name]/"
-          description: "Load and performance tests"
-          spec_sections: ["verification.performance_tests"]
+            description: "BDD scenarios and acceptance tests"
+            coverage_target: "100%"
+            spec_sections: ["verification.bdd_scenarios"]
+        performance_tests:
+          - path: "tests/performance/[module_name]/"
+            description: "Load and performance tests"
+            spec_sections: ["verification.performance_tests"]
 
     implementation_tasks:
       - id: "TASKS-NN"
@@ -862,7 +863,7 @@ rate_limiting:
       free:
         requests_per_minute: 5
         burst_limit: 10
-      [VALUE - e.g., subscription fee, processing cost]:
+      "[VALUE - e.g., subscription fee, processing cost]":
         requests_per_minute: 75
         burst_limit: 150
       enterprise:

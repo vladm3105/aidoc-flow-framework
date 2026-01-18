@@ -36,7 +36,7 @@ from error_codes import Severity, calculate_exit_code, format_error
 
 # Required metadata custom_fields
 REQUIRED_CUSTOM_FIELDS = {
-    "document_type": {"allowed": ["brd"]},
+    "document_type": {"allowed": ["brd", "template"]},
     "artifact_type": {"allowed": ["BRD"]},
     "layer": {"allowed": [1]},
     "architecture_approaches": {"type": "array"},
@@ -283,12 +283,18 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
     else:
         h1_text = h1_sections[0][0]
         if not re.match(r"^# BRD-\d{2,}:", h1_text):
-            result.add_error("BRD-E001", f"Invalid H1 format. Expected '# BRD-NN: Title', got '{h1_text[:50]}'")
+            # Relax check for templates which might use placeholders
+            if "TEMPLATE" in getattr(result, 'file_path', '').upper():
+                pass
+            else:
+                result.add_error("BRD-E001", f"Invalid H1 format. Expected '# BRD-NN: Title', got '{h1_text[:50]}'")
 
     # Determine profile and required sections
     profile = "standard"
     if metadata and "custom_fields" in metadata:
         profile = metadata["custom_fields"].get("template_profile", "standard")
+        if profile == "standard" and "template_variant" in metadata["custom_fields"]:
+            profile = metadata["custom_fields"]["template_variant"]
     
     # Handle unknown profile (default to standard)
     if profile not in SECTION_MAP:
@@ -349,6 +355,8 @@ def validate_business_requirements(content: str, result: ValidationResult, metad
     profile = "standard"
     if metadata and "custom_fields" in metadata:
         profile = metadata["custom_fields"].get("template_profile", "standard")
+        if profile == "standard" and "template_variant" in metadata["custom_fields"]:
+            profile = metadata["custom_fields"]["template_variant"]
         
     if profile == "mvp":
         # MVP: Section 6. Functional Requirements

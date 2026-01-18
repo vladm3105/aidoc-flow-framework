@@ -36,7 +36,7 @@ from error_codes import Severity, calculate_exit_code, format_error
 
 # Required metadata custom_fields
 REQUIRED_CUSTOM_FIELDS = {
-    "document_type": {"allowed": ["prd"]},
+    "document_type": {"allowed": ["prd", "template"]},
     "artifact_type": {"allowed": ["PRD"]},
     "layer": {"allowed": [2]},
     "architecture_approaches": {"type": "array"},
@@ -248,17 +248,20 @@ def validate_metadata(metadata: Optional[Dict], result: ValidationResult):
                 )
 
     # Validate required tags
+    # Skip strict tag validation for templates which might use template-specific tags
+    is_template = "TEMPLATE" in getattr(result, 'file_path', '').upper()
     tags = metadata.get("tags", [])
     if not isinstance(tags, list):
         result.add_error("PRD-E003", "Tags must be an array")
         tags = []
 
-    for required_tag in REQUIRED_TAGS:
-        if required_tag not in tags:
-            if required_tag == "prd":
-                result.add_error("PRD-E003", f"Missing required tag: '{required_tag}'")
-            elif required_tag == "layer-2-artifact":
-                result.add_error("PRD-E004", f"Missing required tag: '{required_tag}'")
+    if not is_template:
+        for required_tag in REQUIRED_TAGS:
+            if required_tag not in tags:
+                if required_tag == "prd":
+                    result.add_error("PRD-E003", f"Missing required tag: '{required_tag}'")
+                elif required_tag == "layer-2-artifact":
+                    result.add_error("PRD-E004", f"Missing required tag: '{required_tag}'")
 
     # Check for forbidden tags
     for tag in tags:
@@ -279,12 +282,21 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
     else:
         h1_text = h1_sections[0][0]
         if not re.match(r"^# PRD-\d{2,}:", h1_text):
-            result.add_error("PRD-E001", f"Invalid H1 format. Expected '# PRD-NN+: Title', got '{h1_text[:50]}'")
+            # Relax check for templates
+            if "TEMPLATE" in getattr(result, 'file_path', '').upper():
+                pass
+            else:
+                result.add_error("PRD-E001", f"Invalid H1 format. Expected '# PRD-NN+: Title', got '{h1_text[:50]}'")
 
     # Determine profile and required sections
     profile = "standard"
     if metadata and "custom_fields" in metadata:
         profile = metadata["custom_fields"].get("template_profile", "standard")
+    
+    # Check template_variant as fallback
+    if profile == "standard" and metadata and "custom_fields" in metadata:
+         if "template_variant" in metadata["custom_fields"]:
+             profile = metadata["custom_fields"]["template_variant"]
     
     # Handle unknown profile (default to standard)
     if profile not in SECTION_MAP:
@@ -336,7 +348,10 @@ def validate_traceability(content: str, result: ValidationResult):
                 if not re.search(r"@brd:", doc_control):
                     result.add_error("PRD-E005", "Related BRD missing @brd: prefix")
             else:
-                result.add_error("PRD-E005", "Missing BRD traceability in Document Control")
+                # Relax for templates
+                is_template = "TEMPLATE" in getattr(result, 'file_path', '').upper()
+                if not is_template:
+                    result.add_error("PRD-E005", "Missing BRD traceability in Document Control")
 
 
 def validate_feature_ids(content: str, result: ValidationResult):

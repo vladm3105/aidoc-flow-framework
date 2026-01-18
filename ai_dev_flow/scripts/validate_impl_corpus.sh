@@ -1,8 +1,8 @@
 #!/bin/bash
 # =============================================================================
-# CTR Corpus Validation Script
-# Validates entire CTR document set before SPEC creation
-# Layer 9 (Optional) → Layer 10 transition gate
+# IMPL Corpus Validation Script
+# Validates entire IMPL document set before SPEC creation
+# Layer 8 (Optional) → Layer 9/10 transition gate
 # =============================================================================
 
 set -euo pipefail
@@ -20,11 +20,8 @@ WARNINGS=0
 INFO=0
 
 # Configuration
-CTR_DIR="${1:-docs/CTR}"
+IMPL_DIR="${1:-docs/IMPL}"
 VERBOSE="${2:-}"
-
-# Valid subdomains
-VALID_SUBDOMAINS=("rest" "events" "schemas")
 
 # -----------------------------------------------------------------------------
 # Helper Functions
@@ -32,21 +29,23 @@ VALID_SUBDOMAINS=("rest" "events" "schemas")
 
 print_header() {
   echo "=========================================="
-  echo "CTR Corpus Validation (Pre-SPEC Gate)"
+  echo "IMPL Corpus Validation (Pre-SPEC Gate)"
   echo "=========================================="
-  echo "Directory: $CTR_DIR"
+  echo "Directory: $IMPL_DIR"
   echo "Date: $(TZ=America/New_York date '+%Y-%m-%d %H:%M:%S %Z')"
-  echo "Note: CTR is an optional layer (Layer 9)"
+  echo "Note: IMPL is an optional layer (Layer 8)"
   echo ""
 }
 
 count_files() {
   local count=0
-  while IFS= read -r -d '' f; do
-    if [[ ! "$(basename "$f")" =~ _index|TEMPLATE ]]; then
+  shopt -s nullglob
+  for f in "$IMPL_DIR"/IMPL-[0-9]*_*.md; do
+    if [[ ! "$(basename $f)" =~ _index|TEMPLATE ]]; then
       ((count++)) || true
     fi
-  done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
+  done
+  shopt -u nullglob
   echo "$count"
 }
 
@@ -58,21 +57,21 @@ check_placeholder_text() {
   echo "--- CORPUS-01: Placeholder Text Detection ---"
 
   local found=0
-  local patterns=("(future CTR)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
+  local patterns=("(future IMPL)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
 
   for pattern in "${patterns[@]}"; do
     while IFS= read -r line; do
       if [[ -n "$line" ]]; then
-        ctr_ref=$(echo "$line" | grep -oE "CTR-[0-9]+" | head -1 || true)
-        if [[ -n "$ctr_ref" ]]; then
-          if find "$CTR_DIR" -name "${ctr_ref}_*.md" 2>/dev/null | head -1 | grep -v "_index" >/dev/null; then
+        impl_ref=$(echo "$line" | grep -oE "IMPL-[0-9]+" | head -1 || true)
+        if [[ -n "$impl_ref" ]]; then
+          if ls "$IMPL_DIR/${impl_ref}_"*.md 2>/dev/null | grep -v "_index" >/dev/null; then
             echo -e "${RED}CORPUS-E001: $line${NC}"
             ((ERRORS++)) || true
             ((found++)) || true
           fi
         fi
       fi
-    done < <(find "$CTR_DIR" -name "*.md" -exec grep -Hn "$pattern" {} \; 2>/dev/null || true)
+    done < <(grep -rn "$pattern" "$IMPL_DIR"/*.md 2>/dev/null || true)
   done
 
   if [[ $found -eq 0 ]]; then
@@ -89,7 +88,7 @@ check_premature_references() {
   echo "--- CORPUS-02: Premature Downstream References ---"
 
   local found=0
-  local downstream_patterns="(SPEC|TASKS-[0-9]{2,}"
+  local downstream_patterns="(CTR|SPEC|TASKS-[0-9]{2,}"
 
   while IFS= read -r line; do
     if [[ -n "$line" ]]; then
@@ -100,7 +99,7 @@ check_premature_references() {
       ((ERRORS++)) || true
       ((found++)) || true
     fi
-  done < <(find "$CTR_DIR" -name "*.md" -exec grep -HnE "$downstream_patterns" {} \; 2>/dev/null | head -20 || true)
+  done < <(grep -rnE "$downstream_patterns" "$IMPL_DIR"/*.md 2>/dev/null | head -20 || true)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No premature downstream references${NC}"
@@ -126,12 +125,14 @@ check_index_sync() {
   echo "--- CORPUS-04: Index Synchronization ---"
 
   local index_file=""
-  for f in "$CTR_DIR"/CTR-*_index.md "$CTR_DIR"/CTR-000_index.md; do
+  shopt -s nullglob
+  for f in "$IMPL_DIR"/IMPL-*_index.md; do
     if [[ -f "$f" ]]; then
       index_file="$f"
       break
     fi
   done
+  shopt -u nullglob
 
   if [[ -z "$index_file" || ! -f "$index_file" ]]; then
     echo -e "${YELLOW}  Index file not found${NC}"
@@ -142,12 +143,12 @@ check_index_sync() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-05: Inter-CTR Cross-Linking (DEPRECATED)
+# CORPUS-05: Inter-IMPL Cross-Linking (DEPRECATED)
 # -----------------------------------------------------------------------------
 
 check_cross_linking() {
   echo ""
-  echo "--- CORPUS-05: Inter-CTR Cross-Linking ---"
+  echo "--- CORPUS-05: Inter-IMPL Cross-Linking ---"
   echo -e "${BLUE}  ℹ DEPRECATED: Document name references are sufficient per SDD rules${NC}"
 }
 
@@ -161,23 +162,24 @@ check_visualization() {
 
   local found=0
   local total=0
-
-  while IFS= read -r -d '' f; do
-    if [[ "$(basename "$f")" =~ _index|TEMPLATE ]]; then continue; fi
+  shopt -s nullglob
+  for f in "$IMPL_DIR"/IMPL-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
     ((total++)) || true
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || echo 0)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
     if [[ $diagram_count -eq 0 ]]; then
       ((found++)) || true
     fi
-  done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
+  done
+  shopt -u nullglob
 
   if [[ $total -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No CTR files to check${NC}"
+    echo -e "${GREEN}  ✓ No IMPL files to check${NC}"
   elif [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All CTR have diagrams${NC}"
+    echo -e "${GREEN}  ✓ All IMPL have diagrams${NC}"
   else
-    echo -e "${BLUE}  ℹ $found of $total CTR files have no Mermaid diagrams${NC}"
+    echo -e "${BLUE}  ℹ $found of $total IMPL files have no Mermaid diagrams${NC}"
   fi
 }
 
@@ -192,52 +194,56 @@ check_glossary() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-08: Contract ID Uniqueness
+# CORPUS-08: Element ID Uniqueness
 # -----------------------------------------------------------------------------
 
-check_contract_ids() {
+check_element_ids() {
   echo ""
-  echo "--- CORPUS-08: Contract ID Uniqueness ---"
+  echo "--- CORPUS-08: Element ID Uniqueness ---"
 
   local duplicates
-  duplicates=$(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -exec basename {} \; 2>/dev/null | \
-               grep -oE "CTR-[0-9]+" | sort | uniq -d || true)
+  duplicates=$(grep -rohE "IMPL\.[0-9]+\.[0-9]+\.[0-9]+" "$IMPL_DIR"/*.md 2>/dev/null | sort | uniq -d || true)
 
   if [[ -n "$duplicates" ]]; then
     echo "$duplicates" | while read dup; do
-      echo -e "${RED}CORPUS-E004: Duplicate contract ID: $dup${NC}"
+      echo -e "${RED}CORPUS-E004: Duplicate element ID: $dup${NC}"
       ((ERRORS++)) || true
     done
   else
-    echo -e "${GREEN}  ✓ No duplicate contract IDs${NC}"
+    echo -e "${GREEN}  ✓ No duplicate element IDs${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-09: Version Format Consistency
+# CORPUS-09: Resource Specification
 # -----------------------------------------------------------------------------
 
-check_version_format() {
+check_resource_spec() {
   echo ""
-  echo "--- CORPUS-09: Version Format Consistency ---"
+  echo "--- CORPUS-09: Resource Specification ---"
 
-  local semantic=0
-  local date_based=0
+  local found=0
+  shopt -s nullglob
+  for f in "$IMPL_DIR"/IMPL-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
 
-  while IFS= read -r -d '' f; do
-    if grep -qE "version.*[0-9]+\.[0-9]+\.[0-9]+" "$f" 2>/dev/null; then
-      ((semantic++)) || true
+    local has_who has_when has_what
+    has_who=$(grep -ciE "^#+.*(WHO|Responsible|Team|Owner|Assign)" "$f" 2>/dev/null || echo 0)
+    has_when=$(grep -ciE "^#+.*(WHEN|Timeline|Schedule|Phase|Milestone)" "$f" 2>/dev/null || echo 0)
+    has_what=$(grep -ciE "^#+.*(WHAT|Deliverable|Output|Outcome|Task)" "$f" 2>/dev/null || echo 0)
+
+    if [[ $has_who -eq 0 || $has_when -eq 0 || $has_what -eq 0 ]]; then
+      if [[ "$VERBOSE" == "--verbose" ]]; then
+        echo -e "${YELLOW}CORPUS-W009: $(basename $f) may be missing WHO/WHEN/WHAT${NC}"
+      fi
+      ((WARNINGS++)) || true
+      ((found++)) || true
     fi
-    if grep -qE "version.*[0-9]{4}-[0-9]{2}-[0-9]{2}" "$f" 2>/dev/null; then
-      ((date_based++)) || true
-    fi
-  done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
+  done
+  shopt -u nullglob
 
-  if [[ $semantic -gt 0 && $date_based -gt 0 ]]; then
-    echo -e "${YELLOW}CORPUS-W009: Mixed version formats (semantic: $semantic, date: $date_based)${NC}"
-    ((WARNINGS++)) || true
-  else
-    echo -e "${GREEN}  ✓ Version formats consistent${NC}"
+  if [[ $found -eq 0 ]]; then
+    echo -e "${GREEN}  ✓ Resource specifications complete${NC}"
   fi
 }
 
@@ -250,9 +256,9 @@ check_file_size() {
   echo "--- CORPUS-10: File Size Compliance ---"
 
   local found=0
-
-  while IFS= read -r -d '' f; do
-    if [[ "$(basename "$f")" =~ _index|TEMPLATE ]]; then continue; fi
+  shopt -s nullglob
+  for f in "$IMPL_DIR"/IMPL-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
 
     local lines
     lines=$(wc -l < "$f")
@@ -266,7 +272,8 @@ check_file_size() {
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
-  done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
+  done
+  shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ All files within size limits${NC}"
@@ -274,182 +281,135 @@ check_file_size() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-11: Dual-File Consistency
+# CORPUS-11: WHO-WHEN-WHAT Structure
 # -----------------------------------------------------------------------------
 
-check_dual_file() {
+check_www_structure() {
   echo ""
-  echo "--- CORPUS-11: Dual-File Consistency (.md + .yaml) ---"
+  echo "--- CORPUS-11: WHO-WHEN-WHAT Structure Compliance ---"
 
   local found=0
+  shopt -s nullglob
+  for f in "$IMPL_DIR"/IMPL-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
-  # Check for missing .yaml files
-  while IFS= read -r -d '' md_file; do
-    if [[ "$(basename "$md_file")" =~ _index|TEMPLATE ]]; then continue; fi
+    local has_who has_when has_what
+    has_who=$(grep -ciE "^#+.*(WHO|Responsible|Team|Owner)" "$f" 2>/dev/null || echo 0)
+    has_when=$(grep -ciE "^#+.*(WHEN|Timeline|Schedule|Phase)" "$f" 2>/dev/null || echo 0)
+    has_what=$(grep -ciE "^#+.*(WHAT|Deliverable|Output|Outcome)" "$f" 2>/dev/null || echo 0)
 
-    local yaml_file="${md_file%.md}.yaml"
-    if [[ ! -f "$yaml_file" ]]; then
-      echo -e "${RED}CORPUS-E011: $(basename $md_file) missing paired .yaml file${NC}"
+    if [[ $has_who -eq 0 ]]; then
+      echo -e "${RED}CORPUS-E011: $(basename $f) missing WHO section${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
-  done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
 
-  # Check for orphaned .yaml files
-  while IFS= read -r -d '' yaml_file; do
-    if [[ "$(basename "$yaml_file")" =~ TEMPLATE ]]; then continue; fi
-
-    local md_file="${yaml_file%.yaml}.md"
-    if [[ ! -f "$md_file" ]]; then
-      echo -e "${RED}CORPUS-E012: $(basename $yaml_file) missing paired .md file${NC}"
+    if [[ $has_when -eq 0 ]]; then
+      echo -e "${RED}CORPUS-E012: $(basename $f) missing WHEN section${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
-  done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.yaml" -print0 2>/dev/null)
+
+    if [[ $has_what -eq 0 ]]; then
+      echo -e "${RED}CORPUS-E013: $(basename $f) missing WHAT section${NC}"
+      ((ERRORS++)) || true
+      ((found++)) || true
+    fi
+  done
+  shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All CTR have matching .md/.yaml pairs${NC}"
+    echo -e "${GREEN}  ✓ All IMPL follow WHO-WHEN-WHAT structure${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-12: YAML Schema Validation
+# CORPUS-12: REQ Coverage
 # -----------------------------------------------------------------------------
 
-check_yaml_syntax() {
+check_req_coverage() {
   echo ""
-  echo "--- CORPUS-12: YAML Schema Validation ---"
+  echo "--- CORPUS-12: REQ Coverage ---"
 
   local found=0
+  shopt -s nullglob
+  for f in "$IMPL_DIR"/IMPL-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
-  # Check if python3 is available
-  if ! command -v python3 &> /dev/null; then
-    echo -e "${YELLOW}  Python3 not found - YAML validation skipped${NC}"
-    return
-  fi
+    local req_refs
+    req_refs=$(grep -coE "REQ-[0-9]+" "$f" 2>/dev/null || echo 0)
 
-  while IFS= read -r -d '' yaml_file; do
-    if [[ "$(basename "$yaml_file")" =~ TEMPLATE ]]; then continue; fi
-
-    if ! python3 -c "import yaml; yaml.safe_load(open('$yaml_file'))" 2>/dev/null; then
-      echo -e "${RED}CORPUS-E014: $(basename $yaml_file) has invalid YAML syntax${NC}"
-      ((ERRORS++)) || true
-      ((found++)) || true
-    fi
-  done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.yaml" -print0 2>/dev/null)
-
-  if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All YAML files are valid${NC}"
-  fi
-}
-
-# -----------------------------------------------------------------------------
-# CORPUS-13: Version Compatibility Tracking
-# -----------------------------------------------------------------------------
-
-check_version_compat() {
-  echo ""
-  echo "--- CORPUS-13: Version Compatibility Tracking ---"
-
-  local found=0
-
-  while IFS= read -r -d '' f; do
-    if [[ "$(basename "$f")" =~ _index|TEMPLATE ]]; then continue; fi
-
-    # Check for breaking change documentation
-    local has_breaking
-    has_breaking=$(grep -ciE "breaking.*change|deprecat|migration" "$f" 2>/dev/null || echo 0)
-
-    # Check version number
-    local version
-    version=$(grep -oE "version.*[0-9]+\.[0-9]+\.[0-9]+" "$f" 2>/dev/null | grep -oE "[0-9]+" | head -1 || echo "0")
-
-    # If major version > 0, should have breaking change docs
-    if [[ $version -gt 0 && $has_breaking -eq 0 ]]; then
+    if [[ $req_refs -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W013: $(basename $f) is v$version but has no breaking change documentation${NC}"
+        echo -e "${YELLOW}CORPUS-W012: $(basename $f) has no REQ references${NC}"
       fi
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
-  done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
+  done
+  shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Version compatibility documented${NC}"
+    echo -e "${GREEN}  ✓ REQ coverage appears complete${NC}"
+  else
+    echo -e "${YELLOW}  $found IMPL files may need REQ references${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-14: Subdomain Classification
+# CORPUS-13: Dependency Tracking
 # -----------------------------------------------------------------------------
 
-check_subdomain() {
+check_dependencies() {
   echo ""
-  echo "--- CORPUS-14: Subdomain Classification ---"
+  echo "--- CORPUS-13: Dependency Tracking ---"
 
   local found=0
+  shopt -s nullglob
+  for f in "$IMPL_DIR"/IMPL-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
-  while IFS= read -r -d '' f; do
-    if [[ "$(basename "$f")" =~ _index|TEMPLATE ]]; then continue; fi
+    local has_deps
+    has_deps=$(grep -ciE "^#+.*(Dependenc|Blocker|Prerequisite)" "$f" 2>/dev/null || echo 0)
 
-    local dir_name
-    dir_name=$(dirname "$f" | xargs basename)
-
-    # Check if file is in root CTR directory
-    if [[ "$dir_name" == "CTR" ]]; then
+    if [[ $has_deps -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W014: $(basename $f) is not in a subdomain directory${NC}"
-      fi
-      ((WARNINGS++)) || true
-      ((found++)) || true
-      continue
-    fi
-
-    # Check if subdomain is valid
-    local valid=0
-    for subdomain in "${VALID_SUBDOMAINS[@]}"; do
-      if [[ "$dir_name" == "$subdomain" ]]; then
-        valid=1
-        break
-      fi
-    done
-
-    if [[ $valid -eq 0 ]]; then
-      if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W014: $(basename $f) is in unrecognized subdomain '$dir_name'${NC}"
+        echo -e "${YELLOW}CORPUS-W013: $(basename $f) may be missing dependency documentation${NC}"
       fi
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
-  done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
+  done
+  shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All CTR in valid subdirectories${NC}"
+    echo -e "${GREEN}  ✓ Dependencies documented${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-15: SPEC-Ready Score
+# CORPUS-14: SPEC-Ready Score
 # -----------------------------------------------------------------------------
 
 check_spec_ready() {
   echo ""
-  echo "--- CORPUS-15: SPEC-Ready Score Threshold ---"
+  echo "--- CORPUS-14: SPEC-Ready Score Threshold ---"
 
   local found=0
-
-  while IFS= read -r -d '' f; do
-    if [[ "$(basename "$f")" =~ _index|TEMPLATE ]]; then continue; fi
+  shopt -s nullglob
+  for f in "$IMPL_DIR"/IMPL-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
     local score
     score=$(grep -oE "SPEC-Ready Score[^0-9]*[0-9]+" "$f" 2>/dev/null | grep -oE "[0-9]+" | head -1 || echo "")
 
-    if [[ -n "$score" && $score -lt 90 ]]; then
-      echo -e "${YELLOW}CORPUS-W015: $(basename $f) has SPEC-Ready Score $score% (target: ≥90%)${NC}"
+    if [[ -n "$score" && $score -lt 85 ]]; then
+      echo -e "${YELLOW}CORPUS-W014: $(basename $f) has SPEC-Ready Score $score% (target: ≥85%)${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
-  done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
+  done
+  shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ SPEC-Ready scores acceptable${NC}"
@@ -487,8 +447,8 @@ print_summary() {
 # -----------------------------------------------------------------------------
 
 main() {
-  if [[ ! -d "$CTR_DIR" ]]; then
-    echo -e "${RED}ERROR: Directory not found: $CTR_DIR${NC}"
+  if [[ ! -d "$IMPL_DIR" ]]; then
+    echo -e "${RED}ERROR: Directory not found: $IMPL_DIR${NC}"
     exit 3
   fi
 
@@ -496,11 +456,11 @@ main() {
 
   local file_count
   file_count=$(count_files)
-  echo "Found $file_count CTR documents"
+  echo "Found $file_count IMPL documents"
   echo ""
 
   if [[ $file_count -eq 0 ]]; then
-    echo -e "${YELLOW}No CTR documents found - Layer 9 may be skipped${NC}"
+    echo -e "${YELLOW}No IMPL documents found - Layer 8 may be skipped${NC}"
     exit 0
   fi
 
@@ -511,13 +471,12 @@ main() {
   check_cross_linking
   check_visualization
   check_glossary
-  check_contract_ids
-  check_version_format
+  check_element_ids
+  check_resource_spec
   check_file_size
-  check_dual_file
-  check_yaml_syntax
-  check_version_compat
-  check_subdomain
+  check_www_structure
+  check_req_coverage
+  check_dependencies
   check_spec_ready
 
   print_summary

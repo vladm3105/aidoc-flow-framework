@@ -258,7 +258,7 @@ check_diagrams() {
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || echo 0)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
     if [[ "$diagram_count" -eq 0 ]]; then
       echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
       ((INFOS++)) || true
@@ -394,18 +394,40 @@ check_sizes() {
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
 
-    lines=$(wc -l < "$f")
-    if [[ "$lines" -gt 1200 ]]; then
-      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1200 lines ($lines)${NC}"
-      ((ERRORS++)) || true
-      ((errors++)) || true
-    elif [[ "$lines" -gt 600 ]]; then
-      if ! $ERRORS_ONLY; then
-        echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 600 lines ($lines)${NC}"
-        ((WARNINGS++)) || true
-        ((warnings++)) || true
+    # MVP detection
+    is_mvp=false
+    if [[ "$f" == *"MVP"* ]] || grep -q "template_variant: mvp" "$f" 2>/dev/null || grep -q "template_profile: mvp" "$f" 2>/dev/null; then
+      is_mvp=true
+    fi
+
+    if $is_mvp; then
+      if [[ "$lines" -gt 800 ]]; then
+        echo -e "${RED}CORPUS-E005: MVP file $(basename $f) exceeds 800 lines ($lines)${NC}"
+        ((ERRORS++)) || true
+        ((errors++)) || true
+      elif [[ "$lines" -gt 500 ]]; then
+        if ! $ERRORS_ONLY; then
+          echo -e "${YELLOW}CORPUS-W005: MVP file $(basename $f) exceeds 500 lines ($lines)${NC}"
+          ((WARNINGS++)) || true
+          ((warnings++)) || true
+        fi
       fi
-    elif $VERBOSE; then
+    else
+      # Standard limits
+      if [[ "$lines" -gt 1200 ]]; then
+        echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1200 lines ($lines)${NC}"
+        ((ERRORS++)) || true
+        ((errors++)) || true
+      elif [[ "$lines" -gt 600 ]]; then
+        if ! $ERRORS_ONLY; then
+          echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 600 lines ($lines)${NC}"
+          ((WARNINGS++)) || true
+          ((warnings++)) || true
+        fi
+      fi
+    fi 
+
+    if $VERBOSE; then
       echo "  $(basename $f): $lines lines"
     fi
   done
@@ -479,7 +501,7 @@ check_template_structure() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
-    [[ "$(basename $f)" =~ _index|TEMPLATE ]] && continue
+    [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     for section in "${REQUIRED_SECTIONS[@]}"; do
       if ! grep -qiE "^##? .*$section" "$f" 2>/dev/null; then
@@ -507,7 +529,7 @@ check_sys_ready_score() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
-    [[ "$(basename $f)" =~ _index|TEMPLATE ]] && continue
+    [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     score=$(grep -oP 'sys_ready_score:\s*\K[0-9]+' "$f" 2>/dev/null || echo "0")
     if [[ $score -lt 85 ]]; then
@@ -538,7 +560,7 @@ check_mvp_hypothesis() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
-    [[ "$(basename $f)" =~ _index|TEMPLATE ]] && continue
+    [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     if ! grep -qiE 'We believe that.*will.*if we' "$f" 2>/dev/null; then
       echo -e "${YELLOW}CORPUS-W015: $(basename $f) may lack properly formatted MVP hypothesis${NC}"
@@ -566,7 +588,7 @@ check_glossary_path() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
-    [[ "$(basename $f)" =~ _index|TEMPLATE ]] && continue
+    [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     if grep -q "Glossary" "$f" 2>/dev/null; then
       if ! grep -qE 'glossary\.md|Glossary.*\|' "$f" 2>/dev/null; then
@@ -595,7 +617,7 @@ check_token_count() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
-    [[ "$(basename $f)" =~ _index|TEMPLATE ]] && continue
+    [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     words=$(wc -w < "$f")
     tokens=$((words * 13 / 10))
@@ -636,7 +658,7 @@ check_yaml_frontmatter() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
-    [[ "$(basename $f)" =~ _index|TEMPLATE ]] && continue
+    [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     if head -1 "$f" | grep -q "^---"; then
       for field in "${REQUIRED_FIELDS[@]}"; do
@@ -668,7 +690,7 @@ check_date_format() {
   shopt -s nullglob
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
-    [[ "$(basename $f)" =~ _index|TEMPLATE ]] && continue
+    [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     bad_dates=$(grep -oE '[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}|[A-Za-z]{3} [0-9]{1,2},? [0-9]{4}' "$f" 2>/dev/null | head -3 || true)
     if [[ -n "$bad_dates" ]]; then

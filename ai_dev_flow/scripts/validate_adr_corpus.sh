@@ -1,8 +1,8 @@
 #!/bin/bash
 # =============================================================================
-# EARS Corpus Validation Script
-# Validates entire EARS document set before BDD creation
-# Layer 3 → Layer 4 transition gate
+# ADR Corpus Validation Script
+# Validates entire ADR document set before SYS creation
+# Layer 5 → Layer 6 transition gate
 # =============================================================================
 
 set -euo pipefail
@@ -20,7 +20,7 @@ WARNINGS=0
 INFO=0
 
 # Configuration
-EARS_DIR="${1:-docs/EARS}"
+ADR_DIR="${1:-docs/ADR}"
 VERBOSE="${2:-}"
 
 # -----------------------------------------------------------------------------
@@ -29,9 +29,9 @@ VERBOSE="${2:-}"
 
 print_header() {
   echo "=========================================="
-  echo "EARS Corpus Validation (Pre-BDD Gate)"
+  echo "ADR Corpus Validation (Pre-SYS Gate)"
   echo "=========================================="
-  echo "Directory: $EARS_DIR"
+  echo "Directory: $ADR_DIR"
   echo "Date: $(TZ=America/New_York date '+%Y-%m-%d %H:%M:%S %Z')"
   echo ""
 }
@@ -39,13 +39,18 @@ print_header() {
 count_files() {
   local count=0
   shopt -s nullglob
-  for f in "$EARS_DIR"/EARS-[0-9]*_*.md; do
-    if [[ ! "$(basename $f)" =~ _index ]]; then
+  for f in "$ADR_DIR"/ADR-[0-9]*_*.md; do
+    if [[ ! "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then
       ((count++)) || true
     fi
   done
   shopt -u nullglob
   echo "$count"
+}
+
+is_adr_ref() {
+  local filename="$1"
+  [[ "$filename" =~ ADR-REF ]]
 }
 
 # -----------------------------------------------------------------------------
@@ -56,24 +61,22 @@ check_placeholder_text() {
   echo "--- CORPUS-01: Placeholder Text Detection ---"
 
   local found=0
-  local patterns=("(future EARS)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
+  local patterns=("(future ADR)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
 
   for pattern in "${patterns[@]}"; do
     while IFS= read -r line; do
       if [[ -n "$line" ]]; then
-        # Extract EARS reference if present
-        ears_ref=$(echo "$line" | grep -oE "EARS-[0-9]+" | head -1 || true)
-        if [[ -n "$ears_ref" ]]; then
-          # Check if the referenced EARS file exists
-          if ls "$EARS_DIR/${ears_ref}_"*.md 2>/dev/null | grep -v "_index" >/dev/null; then
+        adr_ref=$(echo "$line" | grep -oE "ADR-[0-9]+" | head -1 || true)
+        if [[ -n "$adr_ref" ]]; then
+          if ls "$ADR_DIR/${adr_ref}_"*.md 2>/dev/null | grep -v "_index" >/dev/null; then
             echo -e "${RED}CORPUS-E001: $line${NC}"
-            echo "  → $ears_ref exists but marked as placeholder"
+            echo "  → $adr_ref exists but marked as placeholder"
             ((ERRORS++)) || true
             ((found++)) || true
           fi
         fi
       fi
-    done < <(grep -rn "$pattern" "$EARS_DIR"/*.md 2>/dev/null || true)
+    done < <(grep -rn "$pattern" "$ADR_DIR"/*.md 2>/dev/null || true)
   done
 
   if [[ $found -eq 0 ]]; then
@@ -90,12 +93,11 @@ check_premature_references() {
   echo "--- CORPUS-02: Premature Downstream References ---"
 
   local found=0
-  # Layer 4+ artifacts that shouldn't be referenced with specific numbers
-  local downstream_patterns="(BDD|ADR|SYS|REQ|SPEC|TASKS-)-[0-9]{2,}"
+  # Layer 6+ artifacts that shouldn't be referenced with specific numbers
+  local downstream_patterns="(SYS|REQ|SPEC|TASKS-)-[0-9]{2,}"
 
   while IFS= read -r line; do
     if [[ -n "$line" ]]; then
-      # Skip if it's in a layer description or workflow diagram
       if echo "$line" | grep -qE "Layer [0-9]|→|SDD workflow|development workflow"; then
         continue
       fi
@@ -103,7 +105,7 @@ check_premature_references() {
       ((ERRORS++)) || true
       ((found++)) || true
     fi
-  done < <(grep -rnE "$downstream_patterns" "$EARS_DIR"/*.md 2>/dev/null | head -20 || true)
+  done < <(grep -rnE "$downstream_patterns" "$ADR_DIR"/*.md 2>/dev/null | head -20 || true)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No premature downstream references${NC}"
@@ -119,7 +121,6 @@ check_count_consistency() {
   echo "--- CORPUS-03: Internal Count Consistency ---"
 
   local found=0
-  # Check for count claims that might be inconsistent
   while IFS= read -r line; do
     if [[ -n "$line" ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
@@ -127,7 +128,7 @@ check_count_consistency() {
       fi
       ((found++)) || true
     fi
-  done < <(grep -rnE "[0-9]+ requirements?|[0-9]+ EARS" "$EARS_DIR"/*.md 2>/dev/null | head -5 || true)
+  done < <(grep -rnE "[0-9]+ alternatives?|[0-9]+ consequences?|[0-9]+ decisions?" "$ADR_DIR"/*.md 2>/dev/null | head -5 || true)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No obvious count inconsistencies detected${NC}"
@@ -144,10 +145,9 @@ check_index_sync() {
   echo ""
   echo "--- CORPUS-04: Index Synchronization ---"
 
-  # Find index file
   local index_file=""
   shopt -s nullglob
-  for f in "$EARS_DIR"/EARS-*_index.md "$EARS_DIR"/EARS-00_index.md; do
+  for f in "$ADR_DIR"/ADR-*_index.md "$ADR_DIR"/ADR-00_index.md; do
     if [[ -f "$f" ]]; then
       index_file="$f"
       break
@@ -156,17 +156,16 @@ check_index_sync() {
   shopt -u nullglob
 
   if [[ -z "$index_file" || ! -f "$index_file" ]]; then
-    echo -e "${YELLOW}  Index file not found: $EARS_DIR/EARS-00_index.md${NC}"
+    echo -e "${YELLOW}  Index file not found: $ADR_DIR/ADR-00_index.md${NC}"
     return
   fi
 
   local found=0
-  # Check for files marked "Planned" that actually exist
   while IFS= read -r line; do
-    ears_ref=$(echo "$line" | grep -oE "EARS-[0-9]+" | head -1 || true)
-    if [[ -n "$ears_ref" ]]; then
-      if ls "$EARS_DIR/${ears_ref}_"*.md 2>/dev/null | grep -v "_index" >/dev/null; then
-        echo -e "${RED}CORPUS-E003: $ears_ref exists but marked Planned in index${NC}"
+    adr_ref=$(echo "$line" | grep -oE "ADR-[0-9]+" | head -1 || true)
+    if [[ -n "$adr_ref" ]]; then
+      if ls "$ADR_DIR/${adr_ref}_"*.md 2>/dev/null | grep -v "_index" >/dev/null; then
+        echo -e "${RED}CORPUS-E003: $adr_ref exists but marked Planned in index${NC}"
         ((ERRORS++)) || true
         ((found++)) || true
       fi
@@ -179,12 +178,12 @@ check_index_sync() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-05: Inter-EARS Cross-Linking (DEPRECATED)
+# CORPUS-05: Inter-ADR Cross-Linking (DEPRECATED)
 # -----------------------------------------------------------------------------
 
 check_cross_linking() {
   echo ""
-  echo "--- CORPUS-05: Inter-EARS Cross-Linking ---"
+  echo "--- CORPUS-05: Inter-ADR Cross-Linking ---"
   echo -e "${BLUE}  ℹ DEPRECATED: Document name references are sufficient per SDD rules${NC}"
 }
 
@@ -199,11 +198,11 @@ check_visualization() {
   local found=0
   local total=0
   shopt -s nullglob
-  for f in "$EARS_DIR"/EARS-[0-9]*_*.md; do
-    if [[ "$(basename $f)" =~ _index ]]; then continue; fi
+  for f in "$ADR_DIR"/ADR-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then continue; fi
     ((total++)) || true
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || echo 0)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
     if [[ $diagram_count -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
         echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
@@ -215,9 +214,9 @@ check_visualization() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All EARS have diagrams${NC}"
+    echo -e "${GREEN}  ✓ All ADRs have diagrams${NC}"
   else
-    echo -e "${BLUE}  ℹ $found of $total EARS files have no Mermaid diagrams${NC}"
+    echo -e "${BLUE}  ℹ $found of $total ADR files have no Mermaid diagrams${NC}"
   fi
 }
 
@@ -231,23 +230,12 @@ check_glossary() {
 
   local found=0
 
-  # Check for SHALL/MUST inconsistency
-  local shall_count=$(grep -roh "SHALL " "$EARS_DIR"/*.md 2>/dev/null | wc -l || echo 0)
-  local must_count=$(grep -roh "MUST " "$EARS_DIR"/*.md 2>/dev/null | wc -l || echo 0)
+  # Check for Decision/decision inconsistency
+  local decision_upper=$(grep -roh "Decision:" "$ADR_DIR"/*.md 2>/dev/null | wc -l || echo 0)
+  local decision_lower=$(grep -roh "decision:" "$ADR_DIR"/*.md 2>/dev/null | wc -l || echo 0)
 
-  if [[ $shall_count -gt 0 && $must_count -gt 0 ]]; then
-    echo -e "${YELLOW}CORPUS-W003: Mixed SHALL ($shall_count) and MUST ($must_count) usage${NC}"
-    echo "  → Standardize on SHALL for EARS syntax"
-    ((WARNINGS++)) || true
-    ((found++)) || true
-  fi
-
-  # Check for WHEN case inconsistency
-  local when_upper=$(grep -roh "WHEN " "$EARS_DIR"/*.md 2>/dev/null | wc -l || echo 0)
-  local when_lower=$(grep -roh "when " "$EARS_DIR"/*.md 2>/dev/null | wc -l || echo 0)
-
-  if [[ $when_upper -gt 0 && $when_lower -gt 5 ]]; then
-    echo -e "${YELLOW}CORPUS-W003: Mixed WHEN ($when_upper) and when ($when_lower) usage${NC}"
+  if [[ $decision_upper -gt 0 && $decision_lower -gt 5 ]]; then
+    echo -e "${YELLOW}CORPUS-W003: Mixed 'Decision:' ($decision_upper) and 'decision:' ($decision_lower) usage${NC}"
     ((WARNINGS++)) || true
     ((found++)) || true
   fi
@@ -258,51 +246,56 @@ check_glossary() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-08: Element ID Uniqueness
+# CORPUS-08: Element ID Uniqueness (Document-level for ADR)
 # -----------------------------------------------------------------------------
 
 check_element_ids() {
   echo ""
-  echo "--- CORPUS-08: Element ID Uniqueness ---"
+  echo "--- CORPUS-08: ADR Reference Uniqueness ---"
 
   local duplicates
-  duplicates=$(grep -rohE "EARS\.[0-9]+\.[0-9]+\.[0-9]+" "$EARS_DIR"/*.md 2>/dev/null | sort | uniq -d || true)
+  duplicates=$(ls "$ADR_DIR"/ADR-[0-9]*_*.md 2>/dev/null | \
+    xargs -I{} basename {} | grep -oE "ADR-[0-9]+" | sort | uniq -d || true)
 
   if [[ -n "$duplicates" ]]; then
     echo "$duplicates" | while read dup; do
-      echo -e "${RED}CORPUS-E004: Duplicate element ID: $dup${NC}"
+      echo -e "${RED}CORPUS-E004: Duplicate ADR reference: $dup${NC}"
       ((ERRORS++)) || true
     done
   else
-    echo -e "${GREEN}  ✓ No duplicate element IDs${NC}"
+    echo -e "${GREEN}  ✓ No duplicate ADR references${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-09: Timing Constraint Format
+# CORPUS-09: Decision Status Tracking
 # -----------------------------------------------------------------------------
 
-check_timing_format() {
+check_decision_status() {
   echo ""
-  echo "--- CORPUS-09: Timing Constraint Format ---"
+  echo "--- CORPUS-09: Decision Status Tracking ---"
 
   local found=0
+  local valid_statuses="Proposed|Accepted|Deprecated|Superseded|Draft|Active"
 
-  # Check for vague timing constraints
-  local vague_patterns=("reasonable time" "as soon as possible" "quickly" "timely manner")
+  shopt -s nullglob
+  for f in "$ADR_DIR"/ADR-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
-  for pattern in "${vague_patterns[@]}"; do
-    while IFS= read -r line; do
-      if [[ -n "$line" ]]; then
-        echo -e "${YELLOW}CORPUS-W004: Vague timing constraint - $line${NC}"
-        ((WARNINGS++)) || true
-        ((found++)) || true
-      fi
-    done < <(grep -rni "$pattern" "$EARS_DIR"/*.md 2>/dev/null | head -5 || true)
+    # Check for Status field
+    local status
+    status=$(grep -oE "\| *Status *\| *[^|]+" "$f" 2>/dev/null | sed 's/.*| *//' | head -1 || echo "")
+
+    if [[ -n "$status" ]] && ! echo "$status" | grep -qE "$valid_statuses"; then
+      echo -e "${YELLOW}CORPUS-W009: $(basename $f) has invalid status: $status${NC}"
+      ((WARNINGS++)) || true
+      ((found++)) || true
+    fi
   done
+  shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Timing constraints use measurable formats${NC}"
+    echo -e "${GREEN}  ✓ All decision statuses are valid${NC}"
   fi
 }
 
@@ -315,8 +308,8 @@ check_file_size() {
   echo "--- CORPUS-10: File Size Compliance ---"
 
   shopt -s nullglob
-  for f in "$EARS_DIR"/EARS-[0-9]*_*.md; do
-    if [[ "$(basename $f)" =~ _index ]]; then continue; fi
+  for f in "$ADR_DIR"/ADR-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
     local lines
     lines=$(wc -l < "$f")
@@ -333,23 +326,36 @@ check_file_size() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-11: WHEN-THE-SHALL-WITHIN Syntax Compliance
+# CORPUS-11: Context-Decision-Consequences Structure
 # -----------------------------------------------------------------------------
 
-check_ears_syntax() {
+check_adr_structure() {
   echo ""
-  echo "--- CORPUS-11: WHEN-THE-SHALL-WITHIN Syntax Compliance ---"
+  echo "--- CORPUS-11: Context-Decision-Consequences Structure ---"
 
   local found=0
   shopt -s nullglob
-  for f in "$EARS_DIR"/EARS-[0-9]*_*.md; do
-    if [[ "$(basename $f)" =~ _index ]]; then continue; fi
+  for f in "$ADR_DIR"/ADR-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then continue; fi
+    if is_adr_ref "$(basename $f)"; then continue; fi
 
-    local shall_count
-    shall_count=$(grep -cE "SHALL " "$f" 2>/dev/null || echo 0)
+    local has_context has_decision has_consequences
+    has_context=$(grep -cE "^#+.*Context" "$f" 2>/dev/null || echo 0)
+    has_decision=$(grep -cE "^#+.*Decision" "$f" 2>/dev/null || echo 0)
+    has_consequences=$(grep -cE "^#+.*(Consequences|Implications)" "$f" 2>/dev/null || echo 0)
 
-    if [[ $shall_count -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E011: $(basename $f) has no SHALL statements${NC}"
+    if [[ $has_context -eq 0 ]]; then
+      echo -e "${RED}CORPUS-E011: $(basename $f) missing Context section${NC}"
+      ((ERRORS++)) || true
+      ((found++)) || true
+    fi
+    if [[ $has_decision -eq 0 ]]; then
+      echo -e "${RED}CORPUS-E012: $(basename $f) missing Decision section${NC}"
+      ((ERRORS++)) || true
+      ((found++)) || true
+    fi
+    if [[ $has_consequences -eq 0 ]]; then
+      echo -e "${RED}CORPUS-E013: $(basename $f) missing Consequences/Implications section${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -357,35 +363,51 @@ check_ears_syntax() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All EARS have SHALL statements${NC}"
+    echo -e "${GREEN}  ✓ All ADRs have Context-Decision-Consequences structure${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-12: Cumulative Traceability (@brd + @prd)
+# CORPUS-12: Cumulative Traceability (@brd + @prd + @ears + @bdd)
 # -----------------------------------------------------------------------------
 
 check_traceability() {
   echo ""
-  echo "--- CORPUS-12: Cumulative Traceability (@brd + @prd) ---"
+  echo "--- CORPUS-12: Cumulative Traceability (@brd + @prd + @ears + @bdd) ---"
 
   local found=0
   shopt -s nullglob
-  for f in "$EARS_DIR"/EARS-[0-9]*_*.md; do
-    if [[ "$(basename $f)" =~ _index ]]; then continue; fi
+  for f in "$ADR_DIR"/ADR-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then continue; fi
+    # Skip ADR-REF documents
+    if is_adr_ref "$(basename $f)"; then continue; fi
 
-    local has_brd has_prd
+    local has_brd has_prd has_ears has_bdd
     has_brd=$(grep -c "@brd:" "$f" 2>/dev/null || echo 0)
     has_prd=$(grep -c "@prd:" "$f" 2>/dev/null || echo 0)
+    has_ears=$(grep -c "@ears:" "$f" 2>/dev/null || echo 0)
+    has_bdd=$(grep -c "@bdd:" "$f" 2>/dev/null || echo 0)
 
     if [[ $has_brd -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E012: $(basename $f) missing @brd traceability tag${NC}"
+      echo -e "${RED}CORPUS-E014: $(basename $f) missing @brd traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_prd -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E013: $(basename $f) missing @prd traceability tag${NC}"
+      echo -e "${RED}CORPUS-E015: $(basename $f) missing @prd traceability tag${NC}"
+      ((ERRORS++)) || true
+      ((found++)) || true
+    fi
+
+    if [[ $has_ears -eq 0 ]]; then
+      echo -e "${RED}CORPUS-E016: $(basename $f) missing @ears traceability tag${NC}"
+      ((ERRORS++)) || true
+      ((found++)) || true
+    fi
+
+    if [[ $has_bdd -eq 0 ]]; then
+      echo -e "${RED}CORPUS-E017: $(basename $f) missing @bdd traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -393,47 +415,61 @@ check_traceability() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All EARS have cumulative traceability tags (@brd + @prd)${NC}"
+    echo -e "${GREEN}  ✓ All standard ADRs have cumulative traceability tags${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-13: BDD Translateability Readiness
+# CORPUS-13: Decision Conflict Detection
 # -----------------------------------------------------------------------------
 
-check_bdd_ready() {
+check_decision_conflicts() {
   echo ""
-  echo "--- CORPUS-13: BDD Translateability Readiness ---"
+  echo "--- CORPUS-13: Decision Conflict Detection ---"
+
+  # Extract decision topics and check for potential overlaps
+  local decisions
+  decisions=$(grep -rhE "^#+.*Decision:" "$ADR_DIR"/ADR-[0-9]*_*.md 2>/dev/null | \
+    sed 's/.*Decision:\s*//' | sort | uniq -d || true)
+
+  if [[ -n "$decisions" ]]; then
+    echo -e "${YELLOW}CORPUS-W013: Potential decision topic overlaps detected:${NC}"
+    echo "$decisions" | while read topic; do
+      echo -e "${YELLOW}  → $topic${NC}"
+      ((WARNINGS++)) || true
+    done
+  else
+    echo -e "${GREEN}  ✓ No decision conflicts detected${NC}"
+  fi
+}
+
+# -----------------------------------------------------------------------------
+# CORPUS-14: SYS-Ready Score Threshold
+# -----------------------------------------------------------------------------
+
+check_sys_ready() {
+  echo ""
+  echo "--- CORPUS-14: SYS-Ready Score Threshold ---"
 
   local found=0
   shopt -s nullglob
-  for f in "$EARS_DIR"/EARS-[0-9]*_*.md; do
-    if [[ "$(basename $f)" =~ _index ]]; then continue; fi
+  for f in "$ADR_DIR"/ADR-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE|RULES ]]; then continue; fi
+    if is_adr_ref "$(basename $f)"; then continue; fi
 
-    # Check BDD-Ready Score
     local score
-    score=$(grep -oE "BDD-Ready Score[^0-9]*[0-9]+" "$f" 2>/dev/null | grep -oE "[0-9]+" | head -1 || echo "")
+    score=$(grep -oE "SYS-Ready Score[^0-9]*[0-9]+" "$f" 2>/dev/null | grep -oE "[0-9]+" | head -1 || echo "")
 
     if [[ -n "$score" && $score -lt 90 ]]; then
-      echo -e "${YELLOW}CORPUS-W013: $(basename $f) has BDD-Ready Score $score% (target: ≥90%)${NC}"
+      echo -e "${YELLOW}CORPUS-W014: $(basename $f) has SYS-Ready Score $score% (target: ≥90%)${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
   done
   shopt -u nullglob
 
-  # Check for compound requirements
-  local compound_count
-  compound_count=$(grep -rE "SHALL.*and.*and.*and" "$EARS_DIR"/EARS-[0-9]*_*.md 2>/dev/null | wc -l || echo 0)
-
-  if [[ $compound_count -gt 0 ]]; then
-    echo -e "${YELLOW}CORPUS-W014: $compound_count compound requirements detected - consider splitting${NC}"
-    ((WARNINGS++)) || true
-    ((found++)) || true
-  fi
-
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All EARS are BDD-ready${NC}"
+    echo -e "${GREEN}  ✓ All ADRs are SYS-ready${NC}"
   fi
 }
 
@@ -452,7 +488,7 @@ print_summary() {
   echo ""
 
   if [[ $ERRORS -gt 0 ]]; then
-    echo -e "${RED}FAILED: $ERRORS error(s) must be fixed before BDD creation${NC}"
+    echo -e "${RED}FAILED: $ERRORS error(s) must be fixed before SYS creation${NC}"
     exit 1
   elif [[ $WARNINGS -gt 0 ]]; then
     echo -e "${YELLOW}PASSED with $WARNINGS warning(s)${NC}"
@@ -468,9 +504,8 @@ print_summary() {
 # -----------------------------------------------------------------------------
 
 main() {
-  # Validate directory exists
-  if [[ ! -d "$EARS_DIR" ]]; then
-    echo -e "${RED}ERROR: Directory not found: $EARS_DIR${NC}"
+  if [[ ! -d "$ADR_DIR" ]]; then
+    echo -e "${RED}ERROR: Directory not found: $ADR_DIR${NC}"
     exit 3
   fi
 
@@ -478,11 +513,11 @@ main() {
 
   local file_count
   file_count=$(count_files)
-  echo "Found $file_count EARS documents"
+  echo "Found $file_count ADR documents"
   echo ""
 
   if [[ $file_count -eq 0 ]]; then
-    echo -e "${YELLOW}No EARS documents found to validate${NC}"
+    echo -e "${YELLOW}No ADR documents found to validate${NC}"
     exit 0
   fi
 
@@ -495,14 +530,14 @@ main() {
   check_visualization
   check_glossary
   check_element_ids
-  check_timing_format
+  check_decision_status
   check_file_size
-  check_ears_syntax
+  check_adr_structure
   check_traceability
-  check_bdd_ready
+  check_decision_conflicts
+  check_sys_ready
 
   print_summary
 }
 
-# Run main function
 main "$@"

@@ -263,10 +263,14 @@ def validate_metadata(data: Dict, result: ValidationResult):
     for date_field in ["created_date", "last_updated"]:
         date_value = metadata.get(date_field)
         if date_value and not re.match(DATE_PATTERN, str(date_value)):
-            result.add_error(
-                "SPEC-E006",
-                f"Invalid date format for {date_field}: '{date_value}'. Expected YYYY-MM-DD"
-            )
+            # Relax check for templates
+            if "TEMPLATE" in getattr(result, 'file_path', '').upper():
+                pass
+            else:
+                result.add_error(
+                    "SPEC-E006",
+                    f"Invalid date format for {date_field}: '{date_value}'. Expected YYYY-MM-DD"
+                )
 
     # Validate authors
     authors = metadata.get("authors")

@@ -279,7 +279,7 @@ check_diagrams() {
   for f in "$BRD_DIR"/BRD-[0-9]*_*.md "$BRD_DIR"/BRD-[0-9]*/BRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || echo 0)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
     if [[ "$diagram_count" -eq 0 ]]; then
       echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
       ((INFOS++)) || true
@@ -427,17 +427,41 @@ check_sizes() {
     [[ -f "$f" ]] || continue
 
     lines=$(wc -l < "$f")
-    if [[ "$lines" -gt 1200 ]]; then
-      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1200 lines ($lines)${NC}"
-      ((ERRORS++)) || true
-      ((errors++)) || true
-    elif [[ "$lines" -gt 600 ]]; then
-      if ! $ERRORS_ONLY; then
-        echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 600 lines ($lines)${NC}"
-        ((WARNINGS++)) || true
-        ((warnings++)) || true
+    
+    # MVP detection
+    is_mvp=false
+    if [[ "$f" == *"MVP"* ]] || grep -q "template_profile: mvp" "$f"; then
+      is_mvp=true
+    fi
+
+    if $is_mvp; then
+      if [[ "$lines" -gt 600 ]]; then
+        echo -e "${RED}CORPUS-E005: MVP file $(basename $f) exceeds 600 lines ($lines)${NC}"
+        ((ERRORS++)) || true
+        ((errors++)) || true
+      elif [[ "$lines" -gt 400 ]]; then
+        if ! $ERRORS_ONLY; then
+          echo -e "${YELLOW}CORPUS-W005: MVP file $(basename $f) exceeds 400 lines ($lines)${NC}"
+          ((WARNINGS++)) || true
+          ((warnings++)) || true
+        fi
       fi
-    elif $VERBOSE; then
+    else
+      # Standard limits
+      if [[ "$lines" -gt 1200 ]]; then
+        echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1200 lines ($lines)${NC}"
+        ((ERRORS++)) || true
+        ((errors++)) || true
+      elif [[ "$lines" -gt 600 ]]; then
+        if ! $ERRORS_ONLY; then
+          echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 600 lines ($lines)${NC}"
+          ((WARNINGS++)) || true
+          ((warnings++)) || true
+        fi
+      fi
+    fi 
+
+    if $VERBOSE; then
       echo "  $(basename $f): $lines lines"
     fi
   done

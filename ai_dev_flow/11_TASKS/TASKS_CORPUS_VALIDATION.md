@@ -233,7 +233,7 @@ docs/11_TASKS/
 ```bash
 # Check for SPEC references in TASKS files
 for f in "$TASKS_DIR"/TASKS-[0-9]*_*.md; do
-  spec_refs=$(grep -coE "SPEC-[0-9]+" "$f" 2>/dev/null || echo 0)
+  spec_refs=$(grep -coE "SPEC-[0-9]+" "$f" 2>/dev/null || true)
   if [[ $spec_refs -eq 0 ]]; then
     echo "WARNING: $(basename $f) has no SPEC references"
   fi

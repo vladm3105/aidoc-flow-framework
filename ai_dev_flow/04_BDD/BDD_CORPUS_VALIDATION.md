@@ -233,7 +233,7 @@ done
 ```bash
 # Check 7: Find files without Mermaid diagrams
 for f in "$BDD_DIR"/BDD-[0-9]*_*.md; do
-  diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || echo 0)
+  diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
   if [ "$diagram_count" -eq 0 ]; then
     echo "INFO: $(basename $f) has no Mermaid diagrams"
   fi

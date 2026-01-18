@@ -228,7 +228,7 @@ done
 ```bash
 # Check for Mermaid code blocks
 for f in "$EARS_DIR"/EARS-[0-9]*_*.md; do
-  diagram_count=$(grep -c '```mermaid' "$f" || echo 0)
+  diagram_count=$(grep -c '```mermaid' "$f" || true)
   if [ "$diagram_count" -eq 0 ]; then
     echo "INFO: $(basename $f) has no Mermaid diagrams"
   fi

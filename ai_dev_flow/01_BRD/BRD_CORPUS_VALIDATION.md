@@ -214,10 +214,10 @@ The system uses an 8-state position lifecycle:
 1. Pending, 2. Open, 3. Partial, 4. Filled, 5. Closing, 6. Closed, 7. Cancelled, 8. Expired
 ```
 
-**MVP BRD Thresholds** (different from full BRD):
+**MVP BRD Thresholds**:
 - Target: 200-400 lines
-- Warning: 500 lines (consider if truly MVP scope)
-- Error: 600 lines (likely not MVP - use full BRD template)
+- Warning: 400 lines
+- Error: 600 lines (exceeds MVP scope - use full BRD template)
 
 ---
 
@@ -318,7 +318,7 @@ See [BRD-07: AI Gateway](./BRD-07_ai_gateway_architecture.md) for routing detail
 ```bash
 # Check 8: Find files without Mermaid diagrams
 for f in "$BRD_DIR"/BRD-[0-9]*_*.md; do
-  diagram_count=$(grep -c '```mermaid' "$f" || echo 0)
+  diagram_count=$(grep -c '```mermaid' "$f" || true)
   if [ "$diagram_count" -eq 0 ]; then
     echo "INFO: $(basename $f) has no Mermaid diagrams"
   fi
@@ -327,7 +327,7 @@ done
 # Check 9: Count diagrams per file
 echo "=== Diagram Coverage ==="
 for f in "$BRD_DIR"/BRD-[0-9]*_*.md; do
-  count=$(grep -c '```mermaid' "$f" 2>/dev/null || echo 0)
+  count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
   echo "$(basename $f): $count diagrams"
 done
 ```
@@ -712,12 +712,29 @@ echo "Checking CORPUS-10: File size compliance..."
 for f in "$BRD_DIR"/BRD-[0-9]*_*.md; do
   if [ -f "$f" ]; then
     lines=$(wc -l < "$f")
-    if [ "$lines" -gt 1200 ]; then
-      echo "  ERROR: $(basename $f) exceeds 1200 lines ($lines)"
-      ERRORS=$((ERRORS + 1))
-    elif [ "$lines" -gt 600 ]; then
-      echo "  WARNING: $(basename $f) exceeds 600 lines ($lines)"
-      WARNINGS=$((WARNINGS + 1))
+    # MVP detection: filename contains MVP or content has MVP template marker
+    is_mvp=false
+    if [[ "$f" == *"MVP"* ]] || grep -q "template_profile: mvp" "$f"; then
+      is_mvp=true
+    fi
+
+    if $is_mvp; then
+      if [ "$lines" -gt 600 ]; then
+        echo "  ERROR: MVP file $(basename $f) exceeds 600 lines ($lines)"
+        ERRORS=$((ERRORS + 1))
+      elif [ "$lines" -gt 400 ]; then
+        echo "  WARNING: MVP file $(basename $f) exceeds 400 lines ($lines)"
+        WARNINGS=$((WARNINGS + 1))
+      fi
+    else
+      # Standard limits
+      if [ "$lines" -gt 1200 ]; then
+        echo "  ERROR: $(basename $f) exceeds 1200 lines ($lines)"
+        ERRORS=$((ERRORS + 1))
+      elif [ "$lines" -gt 600 ]; then
+        echo "  WARNING: $(basename $f) exceeds 600 lines ($lines)"
+        WARNINGS=$((WARNINGS + 1))
+      fi
     fi
   fi
 done

@@ -270,12 +270,13 @@ find "$REQ_DIR" -name "REQ-*.md" -exec grep -ohE "REQ\.[0-9]+\.[0-9]+\.[0-9]+" {
 find "$REQ_DIR" -name "REQ-[0-9]*_*.md" | while read f; do
   if [[ "$(basename $f)" =~ _index ]]; then continue; fi
 
-  has_brd=$(grep -c "@brd:" "$f" 2>/dev/null || echo 0)
-  has_prd=$(grep -c "@prd:" "$f" 2>/dev/null || echo 0)
-  has_ears=$(grep -c "@ears:" "$f" 2>/dev/null || echo 0)
-  has_bdd=$(grep -c "@bdd:" "$f" 2>/dev/null || echo 0)
-  has_adr=$(grep -c "@adr:" "$f" 2>/dev/null || echo 0)
-  has_sys=$(grep -c "@sys:" "$f" 2>/dev/null || echo 0)
+  diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
+  has_brd=$(grep -c "@brd:" "$f" 2>/dev/null || true)
+  has_prd=$(grep -c "@prd:" "$f" 2>/dev/null || true)
+  has_ears=$(grep -c "@ears:" "$f" 2>/dev/null || true)
+  has_bdd=$(grep -c "@bdd:" "$f" 2>/dev/null || true)
+  has_adr=$(grep -c "@adr:" "$f" 2>/dev/null || true)
+  has_sys=$(grep -c "@sys:" "$f" 2>/dev/null || true)
 
   if [[ $has_brd -eq 0 ]]; then
     echo "ERROR: $(basename $f) missing @brd traceability tag"

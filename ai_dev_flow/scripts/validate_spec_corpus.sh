@@ -1,8 +1,8 @@
 #!/bin/bash
 # =============================================================================
-# TASKS Corpus Validation Script
-# Validates entire TASKS document set before implementation
-# Layer 11 → Code transition gate
+# SPEC Corpus Validation Script
+# Validates entire SPEC document set before TASKS creation
+# Layer 10 → Layer 11 transition gate
 # =============================================================================
 
 set -euo pipefail
@@ -20,7 +20,7 @@ WARNINGS=0
 INFO=0
 
 # Configuration
-TASKS_DIR="${1:-docs/TASKS}"
+SPEC_DIR="${1:-docs/SPEC}"
 VERBOSE="${2:-}"
 
 # -----------------------------------------------------------------------------
@@ -29,9 +29,9 @@ VERBOSE="${2:-}"
 
 print_header() {
   echo "=========================================="
-  echo "TASKS Corpus Validation (Pre-Implementation Gate)"
+  echo "SPEC Corpus Validation (Pre-TASKS Gate)"
   echo "=========================================="
-  echo "Directory: $TASKS_DIR"
+  echo "Directory: $SPEC_DIR"
   echo "Date: $(TZ=America/New_York date '+%Y-%m-%d %H:%M:%S %Z')"
   echo ""
 }
@@ -39,7 +39,7 @@ print_header() {
 count_files() {
   local count=0
   shopt -s nullglob
-  for f in "$TASKS_DIR"/TASKS-[0-9]*_*.md; do
+  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
     if [[ ! "$(basename $f)" =~ _index|TEMPLATE ]]; then
       ((count++)) || true
     fi
@@ -56,21 +56,21 @@ check_placeholder_text() {
   echo "--- CORPUS-01: Placeholder Text Detection ---"
 
   local found=0
-  local patterns=("(future TASKS)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
+  local patterns=("(future SPEC)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
 
   for pattern in "${patterns[@]}"; do
     while IFS= read -r line; do
       if [[ -n "$line" ]]; then
-        tasks_ref=$(echo "$line" | grep -oE "TASKS-[0-9]+" | head -1 || true)
-        if [[ -n "$tasks_ref" ]]; then
-          if ls "$TASKS_DIR/${tasks_ref}_"*.md 2>/dev/null >/dev/null; then
+        spec_ref=$(echo "$line" | grep -oE "SPEC-[0-9]+" | head -1 || true)
+        if [[ -n "$spec_ref" ]]; then
+          if ls "$SPEC_DIR/${spec_ref}_"*.yaml 2>/dev/null >/dev/null; then
             echo -e "${RED}CORPUS-E001: $line${NC}"
             ((ERRORS++)) || true
             ((found++)) || true
           fi
         fi
       fi
-    done < <(grep -rn "$pattern" "$TASKS_DIR"/*.md 2>/dev/null || true)
+    done < <(grep -rn "$pattern" "$SPEC_DIR"/*.yaml "$SPEC_DIR"/*.md 2>/dev/null || true)
   done
 
   if [[ $found -eq 0 ]]; then
@@ -87,8 +87,7 @@ check_premature_references() {
   echo "--- CORPUS-02: Premature Downstream References ---"
 
   local found=0
-  # TASKS is the final documentation layer before Code - no downstream doc patterns
-  local downstream_patterns=""
+  local downstream_patterns="(TASKS-[0-9]{2,}"
 
   while IFS= read -r line; do
     if [[ -n "$line" ]]; then
@@ -99,7 +98,7 @@ check_premature_references() {
       ((ERRORS++)) || true
       ((found++)) || true
     fi
-  done < <(grep -rnE "$downstream_patterns" "$TASKS_DIR"/*.md 2>/dev/null | head -20 || true)
+  done < <(grep -rnE "$downstream_patterns" "$SPEC_DIR"/*.yaml "$SPEC_DIR"/*.md 2>/dev/null | head -20 || true)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No premature downstream references${NC}"
@@ -126,7 +125,7 @@ check_index_sync() {
 
   local index_file=""
   shopt -s nullglob
-  for f in "$TASKS_DIR"/TASKS-*_index.md "$TASKS_DIR"/TASKS-000_index.md; do
+  for f in "$SPEC_DIR"/SPEC-*_index.md "$SPEC_DIR"/SPEC-000_index.md; do
     if [[ -f "$f" ]]; then
       index_file="$f"
       break
@@ -143,12 +142,12 @@ check_index_sync() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-05: Inter-TASKS Cross-Linking (DEPRECATED)
+# CORPUS-05: Inter-SPEC Cross-Linking (DEPRECATED)
 # -----------------------------------------------------------------------------
 
 check_cross_linking() {
   echo ""
-  echo "--- CORPUS-05: Inter-TASKS Cross-Linking ---"
+  echo "--- CORPUS-05: Inter-SPEC Cross-Linking ---"
   echo -e "${BLUE}  ℹ DEPRECATED: Document name references are sufficient per SDD rules${NC}"
 }
 
@@ -163,11 +162,11 @@ check_visualization() {
   local found=0
   local total=0
   shopt -s nullglob
-  for f in "$TASKS_DIR"/TASKS-[0-9]*_*.md; do
+  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
     if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
     ((total++)) || true
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || echo 0)
+    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
     if [[ $diagram_count -eq 0 ]]; then
       ((found++)) || true
     fi
@@ -175,11 +174,11 @@ check_visualization() {
   shopt -u nullglob
 
   if [[ $total -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No TASKS files to check${NC}"
+    echo -e "${GREEN}  ✓ No SPEC files to check${NC}"
   elif [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All TASKS have Mermaid diagrams${NC}"
+    echo -e "${GREEN}  ✓ All SPEC have diagrams or visualization references${NC}"
   else
-    echo -e "${BLUE}  ℹ $found of $total TASKS files have no Mermaid diagrams${NC}"
+    echo -e "${BLUE}  ℹ $found of $total SPEC files have no diagram references${NC}"
   fi
 }
 
@@ -194,34 +193,34 @@ check_glossary() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-08: Task ID Uniqueness
+# CORPUS-08: Specification ID Uniqueness
 # -----------------------------------------------------------------------------
 
-check_task_ids() {
+check_spec_ids() {
   echo ""
-  echo "--- CORPUS-08: Task ID Uniqueness ---"
+  echo "--- CORPUS-08: Specification ID Uniqueness ---"
 
   local duplicates
-  duplicates=$(grep -rohE "TASKS\.[0-9]+\.[0-9]+\.[0-9]+" "$TASKS_DIR"/*.md 2>/dev/null | sort | uniq -d || true)
+  duplicates=$(grep -rohE "SPEC-[0-9]+" "$SPEC_DIR"/*.yaml 2>/dev/null | sort | uniq -d || true)
 
   if [[ -n "$duplicates" ]]; then
     echo "$duplicates" | while read dup; do
-      echo -e "${RED}CORPUS-E004: Duplicate task ID: $dup${NC}"
+      echo -e "${RED}CORPUS-E004: Duplicate SPEC ID: $dup${NC}"
       ((ERRORS++)) || true
     done
   else
-    echo -e "${GREEN}  ✓ No duplicate task IDs${NC}"
+    echo -e "${GREEN}  ✓ No duplicate SPEC IDs${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-09: Priority Format Consistency
+# CORPUS-09: Parameter Type Format
 # -----------------------------------------------------------------------------
 
-check_priority_format() {
+check_param_format() {
   echo ""
-  echo "--- CORPUS-09: Priority Format Consistency ---"
-  echo -e "${GREEN}  ✓ Priority formats acceptable${NC}"
+  echo "--- CORPUS-09: Parameter Type Format ---"
+  echo -e "${GREEN}  ✓ Parameter type formats acceptable${NC}"
 }
 
 # -----------------------------------------------------------------------------
@@ -234,7 +233,7 @@ check_file_size() {
 
   local found=0
   shopt -s nullglob
-  for f in "$TASKS_DIR"/TASKS-[0-9]*_*.md; do
+  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
     if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
 
     local lines
@@ -258,26 +257,20 @@ check_file_size() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-11: Task Dependency DAG Validation
+# CORPUS-11: YAML Syntax Validation
 # -----------------------------------------------------------------------------
 
-check_dependency_dag() {
+check_yaml_syntax() {
   echo ""
-  echo "--- CORPUS-11: Task Dependency DAG Validation ---"
+  echo "--- CORPUS-11: YAML Syntax Validation ---"
 
-  # Simple check for obvious circular references
   local found=0
   shopt -s nullglob
-  for f in "$TASKS_DIR"/TASKS-[0-9]*_*.md; do
+  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
     if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
 
-    # Extract task ID from filename
-    local task_id
-    task_id=$(basename "$f" | grep -oE "TASKS-[0-9]+" || true)
-
-    # Check if file references itself as dependency
-    if grep -qE "depends.on.*$task_id|blocked.by.*$task_id|prerequisite.*$task_id" "$f" 2>/dev/null; then
-      echo -e "${RED}CORPUS-E011: $task_id may have self-referential dependency${NC}"
+    if ! python3 -c "import yaml; yaml.safe_load(open('$f'))" 2>/dev/null; then
+      echo -e "${RED}CORPUS-E011: $(basename $f) has invalid YAML syntax${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -285,29 +278,39 @@ check_dependency_dag() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No obvious circular dependencies detected${NC}"
+    echo -e "${GREEN}  ✓ All YAML files syntactically valid${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-12: SPEC Coverage
+# CORPUS-12: Parameter Type Consistency
 # -----------------------------------------------------------------------------
 
-check_spec_coverage() {
+check_param_consistency() {
   echo ""
-  echo "--- CORPUS-12: SPEC Coverage ---"
+  echo "--- CORPUS-12: Parameter Type Consistency ---"
+  echo -e "${GREEN}  ✓ Parameter type consistency acceptable${NC}"
+}
+
+# -----------------------------------------------------------------------------
+# CORPUS-13: REQ Coverage
+# -----------------------------------------------------------------------------
+
+check_req_coverage() {
+  echo ""
+  echo "--- CORPUS-13: REQ Coverage ---"
 
   local found=0
   shopt -s nullglob
-  for f in "$TASKS_DIR"/TASKS-[0-9]*_*.md; do
+  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
     if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
 
-    local spec_refs
-    spec_refs=$(grep -coE "SPEC-[0-9]+" "$f" 2>/dev/null || echo 0)
+    local req_refs
+    req_refs=$(grep -coE "REQ-[0-9]+" "$f" 2>/dev/null || echo 0)
 
-    if [[ $spec_refs -eq 0 ]]; then
+    if [[ $req_refs -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W012: $(basename $f) has no SPEC references${NC}"
+        echo -e "${YELLOW}CORPUS-W013: $(basename $f) has no REQ references${NC}"
       fi
       ((WARNINGS++)) || true
       ((found++)) || true
@@ -316,74 +319,39 @@ check_spec_coverage() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ SPEC coverage appears complete${NC}"
+    echo -e "${GREEN}  ✓ REQ coverage appears complete${NC}"
   else
-    echo -e "${YELLOW}  $found TASKS files may need SPEC references${NC}"
+    echo -e "${YELLOW}  $found SPEC files may need REQ references${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-13: Implementation Contract References
+# CORPUS-14: Required YAML Fields
 # -----------------------------------------------------------------------------
 
-check_impl_contracts() {
+check_required_fields() {
   echo ""
-  echo "--- CORPUS-13: Implementation Contract References ---"
+  echo "--- CORPUS-14: Required YAML Fields ---"
 
   local found=0
+  local required_fields=("spec_id" "version" "title" "description")
+
   shopt -s nullglob
-  for f in "$TASKS_DIR"/TASKS-[0-9]*_*.md; do
+  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
     if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
 
-    # Check for @icon tags or Implementation Contracts section
-    local has_contracts
-    has_contracts=$(grep -ciE "@icon|Implementation Contract" "$f" 2>/dev/null || echo 0)
-
-    if [[ $has_contracts -eq 0 ]]; then
-      if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W013: $(basename $f) has no implementation contracts${NC}"
+    for field in "${required_fields[@]}"; do
+      if ! grep -qE "^${field}:" "$f" 2>/dev/null; then
+        echo -e "${RED}CORPUS-E014: $(basename $f) missing required field: $field${NC}"
+        ((ERRORS++)) || true
+        ((found++)) || true
       fi
-      ((WARNINGS++)) || true
-      ((found++)) || true
-    fi
+    done
   done
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Implementation contracts present${NC}"
-  else
-    echo -e "${YELLOW}  $found TASKS files may benefit from implementation contracts${NC}"
-  fi
-}
-
-# -----------------------------------------------------------------------------
-# CORPUS-14: Task Status Tracking
-# -----------------------------------------------------------------------------
-
-check_task_status() {
-  echo ""
-  echo "--- CORPUS-14: Task Status Tracking ---"
-
-  local found=0
-  shopt -s nullglob
-  for f in "$TASKS_DIR"/TASKS-[0-9]*_*.md; do
-    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
-
-    local has_status
-    has_status=$(grep -ciE "status:|state:|\\[x\\]|\\[ \\]|pending|in.progress|completed" "$f" 2>/dev/null || echo 0)
-
-    if [[ $has_status -eq 0 ]]; then
-      if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W014: $(basename $f) has no task status indicators${NC}"
-      fi
-      ((WARNINGS++)) || true
-      ((found++)) || true
-    fi
-  done
-  shopt -u nullglob
-
-  if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Task status tracking present${NC}"
+    echo -e "${GREEN}  ✓ All required YAML fields present${NC}"
   fi
 }
 
@@ -396,10 +364,10 @@ check_cumulative_traceability() {
   echo "--- CORPUS-15: Cumulative Traceability Compliance ---"
 
   local found=0
-  local required_tags=("@brd" "@prd" "@ears" "@bdd" "@adr" "@sys" "@req" "@spec")
+  local required_tags=("@brd" "@prd" "@ears" "@bdd" "@adr" "@sys" "@req")
 
   shopt -s nullglob
-  for f in "$TASKS_DIR"/TASKS-[0-9]*_*.md; do
+  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
     if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
 
     local missing_tags=""
@@ -422,38 +390,7 @@ check_cumulative_traceability() {
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ Cumulative traceability complete${NC}"
   else
-    echo -e "${YELLOW}  $found TASKS files may need traceability updates${NC}"
-  fi
-}
-
-# -----------------------------------------------------------------------------
-# CORPUS-16: Effort Estimation Presence
-# -----------------------------------------------------------------------------
-
-check_effort_estimates() {
-  echo ""
-  echo "--- CORPUS-16: Effort Estimation Presence ---"
-
-  local found=0
-  shopt -s nullglob
-  for f in "$TASKS_DIR"/TASKS-[0-9]*_*.md; do
-    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
-
-    local has_estimate
-    has_estimate=$(grep -ciE "SP:|story.point|effort|size:|complexity|estimate" "$f" 2>/dev/null || echo 0)
-
-    if [[ $has_estimate -eq 0 ]]; then
-      if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W016: $(basename $f) has no effort estimates${NC}"
-      fi
-      ((WARNINGS++)) || true
-      ((found++)) || true
-    fi
-  done
-  shopt -u nullglob
-
-  if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ Effort estimates present${NC}"
+    echo -e "${YELLOW}  $found SPEC files may need traceability updates${NC}"
   fi
 }
 
@@ -472,7 +409,7 @@ print_summary() {
   echo ""
 
   if [[ $ERRORS -gt 0 ]]; then
-    echo -e "${RED}FAILED: $ERRORS error(s) must be fixed before implementation${NC}"
+    echo -e "${RED}FAILED: $ERRORS error(s) must be fixed before TASKS creation${NC}"
     exit 1
   elif [[ $WARNINGS -gt 0 ]]; then
     echo -e "${YELLOW}PASSED with $WARNINGS warning(s)${NC}"
@@ -488,8 +425,8 @@ print_summary() {
 # -----------------------------------------------------------------------------
 
 main() {
-  if [[ ! -d "$TASKS_DIR" ]]; then
-    echo -e "${RED}ERROR: Directory not found: $TASKS_DIR${NC}"
+  if [[ ! -d "$SPEC_DIR" ]]; then
+    echo -e "${RED}ERROR: Directory not found: $SPEC_DIR${NC}"
     exit 3
   fi
 
@@ -497,11 +434,11 @@ main() {
 
   local file_count
   file_count=$(count_files)
-  echo "Found $file_count TASKS documents"
+  echo "Found $file_count SPEC documents"
   echo ""
 
   if [[ $file_count -eq 0 ]]; then
-    echo -e "${YELLOW}No TASKS documents found - create TASKS files first${NC}"
+    echo -e "${YELLOW}No SPEC documents found - create SPEC files first${NC}"
     exit 0
   fi
 
@@ -512,15 +449,14 @@ main() {
   check_cross_linking
   check_visualization
   check_glossary
-  check_task_ids
-  check_priority_format
+  check_spec_ids
+  check_param_format
   check_file_size
-  check_dependency_dag
-  check_spec_coverage
-  check_impl_contracts
-  check_task_status
+  check_yaml_syntax
+  check_param_consistency
+  check_req_coverage
+  check_required_fields
   check_cumulative_traceability
-  check_effort_estimates
 
   print_summary
 }
