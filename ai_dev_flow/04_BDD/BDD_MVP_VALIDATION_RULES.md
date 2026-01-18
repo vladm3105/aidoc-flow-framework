@@ -1,5 +1,5 @@
 ---
-title: "BDD Validation Rules"
+title: "BDD MVP Validation Rules"
 tags:
   - validation-rules
   - layer-4-artifact

@@ -503,10 +503,10 @@ See `01_BRD/examples/` for minimal, validator-compliant examples:
 - `BRD-06.0_example_feature.md` (Feature BRD)
 
 Also consult:
-- `BRD-TEMPLATE.md` (primary standard)
+- `BRD-MVP-TEMPLATE.md` (primary standard)
 - `FR_EXAMPLES_GUIDE.md` (functional requirements patterns)
 
-Note: `BRD-TEMPLATE.md` is a reference template. For real BRDs, prefer sectioned docs using `BRD-SECTION-0-TEMPLATE.md` and `BRD-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`.
+Note: `BRD-MVP-TEMPLATE.md` is the reference template. For sectioned docs, use `BRD-SECTION-0-TEMPLATE.md` and `BRD-SECTION-TEMPLATE.md` per `../DOCUMENT_SPLITTING_RULES.md`.
 
 These demonstrate well-structured BRDs following these conventions with proper Architecture Decision Requirements sections.
 ## File Size Limits

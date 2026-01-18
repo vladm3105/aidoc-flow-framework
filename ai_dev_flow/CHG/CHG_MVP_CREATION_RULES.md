@@ -1,5 +1,5 @@
 ---
-title: "CHG Creation Rules"
+title: "CHG MVP Creation Rules"
 tags:
   - creation-rules
   - change-management

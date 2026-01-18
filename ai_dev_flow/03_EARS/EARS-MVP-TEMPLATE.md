@@ -42,12 +42,12 @@ custom_fields:
   development_status: draft
   template_variant: mvp
   template_profile: mvp
-  template_source: "EARS-TEMPLATE.md"
+  template_source: "EARS-MVP-TEMPLATE.md"
   schema_reference: "EARS_SCHEMA.yaml"
   schema_version: "1.0"
   schema_status: optional
-  creation_rules_reference: "EARS_CREATION_RULES.md"
-  validation_rules_reference: "EARS_VALIDATION_RULES.md"
+  creation_rules_reference: "EARS_MVP_CREATION_RULES.md"
+  validation_rules_reference: "EARS_MVP_VALIDATION_RULES.md"
   traceability_matrix_template: "EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md"
 ---
 
@@ -57,7 +57,7 @@ custom_fields:
 
 > **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators. This is expected behavior.
 
-> References: Schema `EARS_SCHEMA.yaml` | Rules `EARS_CREATION_RULES.md`, `EARS_VALIDATION_RULES.md` | Matrix `EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md` (full template archived)
+> References: Schema `EARS_SCHEMA.yaml` | Rules `EARS_MVP_CREATION_RULES.md`, `EARS_MVP_VALIDATION_RULES.md` | Matrix `EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # EARS-NN: [Target Component/Feature]
 
@@ -102,19 +102,6 @@ THE [system component] SHALL [continuous behavior]
 **Traceability**: @prd: PRD.NN.feature
 
 ---
-
-## Migration to Full EARS Template
-
-### When to Migrate
-- [ ] Logic becomes too complex for simple list
-- [ ] Need detailed State Transition Diagrams
-- [ ] Need comprehensive quality attribute mapping
-
-### Migration Steps
-1. Create `EARS-TEMPLATE.md`
-2. Copy logic statements to Section 3
-3. Expand Quality Attributes matrices
-4. Archive MVP version
 
 ---
 

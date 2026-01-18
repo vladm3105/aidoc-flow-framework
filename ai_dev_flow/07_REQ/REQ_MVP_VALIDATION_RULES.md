@@ -1,5 +1,5 @@
 ---
-title: "REQ Validation Rules"
+title: "REQ MVP Validation Rules"
 tags:
   - validation-rules
   - layer-7-artifact

@@ -1,8 +1,8 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of REQ-TEMPLATE.md
-# - Authority: REQ-TEMPLATE.md is the single source of truth for REQ structure
+# 📋 Document Role: This is a DERIVATIVE of REQ-MVP-TEMPLATE.md
+# - Authority: REQ-MVP-TEMPLATE.md is the single source of truth for REQ structure
 # - Purpose: Machine-readable validation rules derived from the template
-# - On conflict: Defer to REQ-TEMPLATE.md
+# - On conflict: Defer to REQ-MVP-TEMPLATE.md
 # =============================================================================
 #
 # REQ Schema Definition v1.1
@@ -16,10 +16,10 @@ layer: 7
 last_updated: "2026-01-13"
 
 references:
-  template: "REQ-TEMPLATE.md"
+  template: "REQ-MVP-TEMPLATE.md"
   mvp_template: "REQ-MVP-TEMPLATE.md"
-  creation_rules: "REQ_CREATION_RULES.md"
-  validation_rules: "REQ_VALIDATION_RULES.md"
+  creation_rules: "REQ_MVP_CREATION_RULES.md"
+  validation_rules: "REQ_MVP_VALIDATION_RULES.md"
 
 # =============================================================================
 # Profiles (Full vs MVP)

@@ -420,7 +420,7 @@ graph TD
 
 ### 14.1 Internal Documentation
 - **BRD Index**: [BRD-00_index.md](BRD-00_index.md)
-- **BRD Template**: [BRD-TEMPLATE.md](BRD-TEMPLATE.md)
+- **BRD Template**: [BRD-MVP-TEMPLATE.md](BRD-MVP-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Traceability Standards**: [../TRACEABILITY.md](../TRACEABILITY.md)
 - **SDD Workflow Guide**: [../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)

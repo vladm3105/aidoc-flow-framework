@@ -8,7 +8,7 @@ Usage:
   scripts/check_monolith_outline.sh TYPE [-n NN] [-f TEMPLATE_PATH]
 
 Description:
-  Extracts the H2 (##) outline from a monolithic template (e.g., BRD-TEMPLATE.md)
+  Extracts the H2 (##) outline from a monolithic template (e.g., BRD-MVP-TEMPLATE.md)
   and prints suggested section filenames following DOCUMENT_SPLITTING_RULES.md.
 
 Arguments:
@@ -21,7 +21,7 @@ Options:
 Examples:
   scripts/check_monolith_outline.sh BRD -n 12
   scripts/check_monolith_outline.sh PRD
-  scripts/check_monolith_outline.sh ADR -f ./ADR/ADR-TEMPLATE.md -n 03
+  scripts/check_monolith_outline.sh ADR -f ./ADR/ADR-MVP-TEMPLATE.md -n 03
 
 Notes:
   - Only H2 headings (##) are considered sections. Code fences are ignored.

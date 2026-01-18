@@ -22,7 +22,7 @@ Role: AI Requirements Engineer
 Objective: Create a streamlined MVP Atomic Requirement.
 Constraints:
 - Define exactly ONE atomic requirement per document.
-- 12 sections required (aligned with full REQ template).
+- 12 sections required (aligned with MVP requirements template).
 - All 6 upstream traceability tags required (@brd, @prd, @ears, @bdd, @adr, @sys).
 - Use @threshold tags for all quantitative values.
 - SPEC-Ready/IMPL-Ready thresholds: ≥70% for MVP profile.
@@ -35,11 +35,11 @@ AI_CONTEXT_END
 
 **MVP Template** — Single-file, streamlined REQ for rapid MVP development.
  Use this template for MVP atomic requirements (10-20 core requirements).
- Full template is archived; stay on MVP unless enterprise/full is explicitly required.
 
 **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_req_template.sh`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
- References: Schema `REQ_SCHEMA.yaml` | Rules `REQ_CREATION_RULES.md`, `REQ_VALIDATION_RULES.md` | Matrix `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+  References: Schema `REQ_SCHEMA.yaml` | Rules `REQ_MVP_CREATION_RULES.md`, `REQ_MVP_VALIDATION_RULES.md` | Matrix `REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+
 
 # REQ-NN: [RESOURCE_TYPE] [Requirement Title]
 
@@ -370,7 +370,6 @@ class ResponseModel(BaseModel):
 
 ### When to Migrate
 
-Migrate from MVP REQ to full `REQ-TEMPLATE.md` when:
 - [ ] Requirement complexity requires 12-section format
 - [ ] Need comprehensive interface protocols (Python)
 - [ ] Full error catalog with state machines required
@@ -379,7 +378,6 @@ Migrate from MVP REQ to full `REQ-TEMPLATE.md` when:
 
 ### Migration Steps
 
-1. **Create new document**: Copy `REQ-TEMPLATE.md` to `REQ-NN_{slug}.md`
 2. **Transfer core content**: Map MVP sections to full template
 3. **Expand detailed sections**:
    - Full interface protocols (Python classes)
@@ -423,4 +421,3 @@ Migrate from MVP REQ to full `REQ-TEMPLATE.md` when:
 > - All 6 upstream traceability tags required (Layer 7)
 > - SPEC-Ready/IMPL-Ready thresholds: ≥70% (vs ≥90% for full template)
 > - Uses `@threshold` tags for quantitative values
-> - Expands to full REQ-TEMPLATE.md structure for complex requirements

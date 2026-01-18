@@ -111,7 +111,7 @@ Create an IMPL Plan when:
 
 ## IMPL Plan Structure
 
-IMPL Plans follow a **4-part structure** (adapted from ADR-TEMPLATE.md):
+IMPL Plans follow a **4-part structure** (aligned to ADR-MVP-TEMPLATE.md):
 
 ### PART 1: Project Context and Strategy
 - **Overview**: What system/feature is being built (from REQ)

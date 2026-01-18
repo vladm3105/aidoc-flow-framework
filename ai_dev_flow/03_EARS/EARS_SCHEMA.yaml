@@ -1,8 +1,8 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of EARS-TEMPLATE.md
-# - Authority: EARS-TEMPLATE.md is the single source of truth for EARS structure
+# 📋 Document Role: This is a DERIVATIVE of EARS-MVP-TEMPLATE.md
+# - Authority: EARS-MVP-TEMPLATE.md is the single source of truth for EARS structure
 # - Purpose: Machine-readable validation rules derived from the template
-# - On conflict: Defer to EARS-TEMPLATE.md
+# - On conflict: Defer to EARS-MVP-TEMPLATE.md
 # =============================================================================
 #
 # EARS Schema Definition v1.0
@@ -15,9 +15,9 @@ layer: 3
 last_updated: "2025-11-30"
 
 references:
-  template: "EARS-TEMPLATE.md"
-  creation_rules: "EARS_CREATION_RULES.md"
-  validation_rules: "EARS_VALIDATION_RULES.md"
+  template: "EARS-MVP-TEMPLATE.md"
+  creation_rules: "EARS_MVP_CREATION_RULES.md"
+  validation_rules: "EARS_MVP_VALIDATION_RULES.md"
 
 # =============================================================================
 # Profiles (Full vs MVP)

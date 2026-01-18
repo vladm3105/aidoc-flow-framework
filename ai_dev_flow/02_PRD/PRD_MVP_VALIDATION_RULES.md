@@ -345,7 +345,7 @@ All PRD requirements must include:
 ```
 
 **Resolution Steps**:
-1. Copy exact title from PRD-MVP-TEMPLATE.md (full template archived)
+1. Copy exact title from PRD-MVP-TEMPLATE.md
 2. Preserve capitalization and punctuation
 3. Include (MANDATORY) marker for section 8
 
@@ -788,7 +788,7 @@ python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PR
 ```
 
 **Resolution Steps**:
-1. Add Section 20 from PRD-MVP-TEMPLATE.md (full template archived)
+1. Add Section 20 from PRD-MVP-TEMPLATE.md
 2. Complete timing profile matrix with p50/p95/p99 for all operations
 3. Specify boundary operators for all threshold values
 4. Add error state transitions to state diagram

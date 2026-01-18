@@ -420,7 +420,7 @@ done
 
 ### CORPUS-13: Template Structure Compliance
 
-**Purpose**: Validate PRD files have all required sections from PRD-TEMPLATE.md
+**Purpose**: Validate PRD files have all required sections from PRD-MVP-TEMPLATE.md
 
 **Severity**: Error
 
@@ -428,20 +428,7 @@ done
 
 | Template | Sections | Score Threshold | Use Case |
 |----------|----------|-----------------|----------|
-| **Standard** | 21 (1-21) | ≥90% | Business features, core platform |
 | **MVP** | 17 (1-17) | ≥85% | Rapid prototyping, hypothesis validation |
-
-**Standard Template Required Sections** (21 sections):
-| # | Section | Required |
-|---|---------|----------|
-| 1 | Document Control | Yes |
-| 2 | Executive Summary | Yes |
-| 3 | Problem Statement | Yes |
-| 4 | Target Audience & User Personas | Yes |
-| 5 | Success Metrics (KPIs) | Yes |
-| 6 | Goals & Objectives | Yes |
-| 7 | Scope & Requirements | Yes |
-| 8 | User Stories & User Roles | Yes |
 | 9 | Functional Requirements | Yes |
 | 10 | Customer-Facing Content & Messaging | Yes |
 | 11 | Acceptance Criteria | Yes |
@@ -755,7 +742,7 @@ done
 | CORPUS-E004 | Rename duplicate IDs to unique values |
 | CORPUS-E011 | Add @brd tags in Traceability section |
 | CORPUS-E011a | Change `@brd: BRD-07` to `@brd: BRD.07.TT.SS` format |
-| CORPUS-E013 | Add missing section from PRD-TEMPLATE.md |
+| CORPUS-E013 | Add missing section from PRD-MVP-TEMPLATE.md |
 | CORPUS-E014 | Improve PRD quality until sys_ready_score >= 85 |
 | CORPUS-W015 | Add hypothesis: "We believe that [X] will [Y] if we [Z]" |
 | CORPUS-W018 | Add YAML frontmatter with required fields |
@@ -899,6 +886,6 @@ fi
 ## References
 
 - [PRD_VALIDATION_RULES.md](./PRD_VALIDATION_RULES.md) - Individual file validation
-- [PRD-TEMPLATE.md](./PRD-TEMPLATE.md) - PRD document template
+- [PRD-MVP-TEMPLATE.md](./PRD-MVP-TEMPLATE.md) - PRD document template
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

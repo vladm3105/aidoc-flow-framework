@@ -88,7 +88,7 @@ references:
 
 | Artifact | Template | Schema | Notes |
 |----------|----------|--------|-------|
-| **BRD** | `BRD-TEMPLATE.md` | None | Layer 1 entry point, human-authored, no schema required |
+| **BRD** | `BRD-MVP-TEMPLATE.md` | None | Layer 1 entry point, human-authored, no schema required |
 | **BDD** | `BDD-MVP-TEMPLATE.feature` | `BDD_SCHEMA.yaml` | Gherkin format, schema reference in comments |
 | **SPEC** | `SPEC-MVP-TEMPLATE.yaml` | `SPEC_SCHEMA.yaml` | Both files are YAML, schema reference in comments |
 

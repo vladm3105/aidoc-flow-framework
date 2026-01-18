@@ -1,5 +1,5 @@
 ---
-title: "SYS Validation Rules"
+title: "SYS MVP Validation Rules"
 tags:
   - validation-rules
   - layer-6-artifact

@@ -916,7 +916,7 @@ done
 
 ## References
 
-- [BRD_VALIDATION_RULES.md](./BRD_VALIDATION_RULES.md) - Individual file validation
-- [BRD-TEMPLATE.md](./BRD-TEMPLATE.md) - BRD document template
+- [BRD_MVP_VALIDATION_RULES.md](./BRD_MVP_VALIDATION_RULES.md) - Individual file validation
+- [BRD-MVP-TEMPLATE.md](./BRD-MVP-TEMPLATE.md) - BRD document template
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

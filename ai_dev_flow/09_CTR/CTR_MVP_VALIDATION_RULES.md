@@ -1,5 +1,5 @@
 ---
-title: "CTR Validation Rules"
+title: "CTR MVP Validation Rules"
 tags:
   - validation-rules
   - layer-9-artifact

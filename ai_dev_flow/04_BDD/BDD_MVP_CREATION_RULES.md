@@ -1,5 +1,5 @@
 ---
-title: "BDD Creation Rules"
+title: "BDD MVP Creation Rules"
 tags:
   - creation-rules
   - layer-4-artifact
@@ -19,7 +19,7 @@ custom_fields:
 # - On conflict: Defer to BDD-MVP-TEMPLATE.feature
 # =============================================================================
 ---
-title: "BDD Creation Rules"
+title: "BDD MVP Creation Rules"
 tags:
   - creation-rules
   - layer-4-artifact

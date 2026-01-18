@@ -36,17 +36,17 @@ class SyncResult:
 
 # Artifact types and their expected files
 ARTIFACT_TYPES = {
-    "ADR": {"template": "ADR-TEMPLATE.md", "schema": "ADR_SCHEMA.yaml", "layer": 5},
-    "BDD": {"template": "BDD-TEMPLATE.feature", "schema": "BDD_SCHEMA.yaml", "layer": 4},
-    "BRD": {"template": "BRD-TEMPLATE.md", "schema": "BRD_SCHEMA.yaml", "layer": 1},
+    "ADR": {"template": "ADR-MVP-TEMPLATE.md", "schema": "ADR_SCHEMA.yaml", "layer": 5},
+    "BDD": {"template": "BDD-MVP-TEMPLATE.feature", "schema": "BDD_SCHEMA.yaml", "layer": 4},
+    "BRD": {"template": "BRD-MVP-TEMPLATE.md", "schema": "BRD_SCHEMA.yaml", "layer": 1},
     "CTR": {"template": "CTR-MVP-TEMPLATE.md", "schema": "CTR_SCHEMA.yaml", "layer": 9},
-    "EARS": {"template": "EARS-TEMPLATE.md", "schema": "EARS_SCHEMA.yaml", "layer": 3},
-    "IMPL": {"template": "IMPL-TEMPLATE.md", "schema": "IMPL_SCHEMA.yaml", "layer": 8},
-    "PRD": {"template": "PRD-TEMPLATE.md", "schema": "PRD_SCHEMA.yaml", "layer": 2},
-    "REQ": {"template": "REQ-TEMPLATE.md", "schema": "REQ_SCHEMA.yaml", "layer": 7},
+    "EARS": {"template": "EARS-MVP-TEMPLATE.md", "schema": "EARS_SCHEMA.yaml", "layer": 3},
+    "IMPL": {"template": "IMPL-MVP-TEMPLATE.md", "schema": "IMPL_SCHEMA.yaml", "layer": 8},
+    "PRD": {"template": "PRD-MVP-TEMPLATE.md", "schema": "PRD_SCHEMA.yaml", "layer": 2},
+    "REQ": {"template": "REQ-MVP-TEMPLATE.md", "schema": "REQ_SCHEMA.yaml", "layer": 7},
     "SPEC": {"template": "SPEC-MVP-TEMPLATE.yaml", "schema": "SPEC_SCHEMA.yaml", "layer": 10},
-    "SYS": {"template": "SYS-TEMPLATE.md", "schema": "SYS_SCHEMA.yaml", "layer": 6},
-    "TASKS": {"template": "TASKS-TEMPLATE.md", "schema": "TASKS_SCHEMA.yaml", "layer": 11},
+    "SYS": {"template": "SYS-MVP-TEMPLATE.md", "schema": "SYS_SCHEMA.yaml", "layer": 6},
+    "TASKS": {"template": "TASKS-MVP-TEMPLATE.md", "schema": "TASKS_SCHEMA.yaml", "layer": 11},
 }
 
 

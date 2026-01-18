@@ -1,5 +1,5 @@
 ---
-title: "IMPL Creation Rules"
+title: "IMPL MVP Creation Rules"
 tags:
   - creation-rules
   - layer-8-artifact
@@ -19,7 +19,7 @@ custom_fields:
 # - On conflict: Defer to IMPL-TEMPLATE.md
 # =============================================================================
 ---
-title: "IMPL Creation Rules"
+title: "IMPL MVP Creation Rules"
 tags:
   - creation-rules
   - layer-8-artifact

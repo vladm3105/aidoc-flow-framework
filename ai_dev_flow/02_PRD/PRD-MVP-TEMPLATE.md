@@ -28,7 +28,7 @@ Constraints:
 AI_CONTEXT_END
 -->
 ---
-title: "PRD-MVP-TEMPLATE: Product Requirements Document (MVP Version)"
+title: "PRD-MVP-TEMPLATE: Product Requirements Document (MVP)"
 tags:
   - prd-template
   - mvp-template
@@ -46,22 +46,27 @@ custom_fields:
   schema_reference: "PRD_SCHEMA.yaml"
   schema_version: "1.0"
   schema_status: optional
-  creation_rules_reference: "PRD_CREATION_RULES.md"
-  validation_rules_reference: "PRD_VALIDATION_RULES.md"
+  creation_rules_reference: "PRD_MVP_CREATION_RULES.md"
+  validation_rules_reference: "PRD_MVP_VALIDATION_RULES.md"
   traceability_matrix_template: "PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md"
 ---
 
 > **MVP Template** — Single-file, streamlined PRD for rapid MVP development.
 > Use this template for MVPs with 5-15 core features and short development cycles.
-> Full template is archived; use only if enterprise/full is explicitly required.
 
 > **Validation Note**: MVP templates are intentionally streamlined (17 sections vs 21 standard) and use ≥85% score thresholds (vs ≥90% standard). These will show validation errors when run against full template validators. This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
-> References: Schema `PRD_SCHEMA.yaml` | Rules `PRD_CREATION_RULES.md`, `PRD_VALIDATION_RULES.md` | Matrix `PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `PRD_SCHEMA.yaml` | Rules `PRD_MVP_CREATION_RULES.md`, `PRD_MVP_VALIDATION_RULES.md` | Matrix `PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # PRD-NN: [MVP Product/Feature Name]
 
-**⚠️ MVP Scope**: This PRD focuses on core hypothesis validation. Detailed specifications defer to PRD full template upon MVP success.
+**⚠️ MVP Scope**: This PRD focuses on core hypothesis validation. Use MVP only.
+
+**Upstream guardrails**: Use only existing upstream artifacts (BRD/ADR/EARS/BDD/SYS); set `null` only when a layer is absent.
+
+**Thresholds pointer**: Define thresholds once; reuse via `@threshold:` tags; follow `THRESHOLD_NAMING_RULES.md`.
+
+**User-story scope**: PRD holds role/story summaries; detailed behaviors live in EARS and executable scenarios in BDD.
 
 ## 1. Document Control
 
@@ -191,10 +196,12 @@ custom_fields:
 | 4 | [Feature name] | P2-Should | [Brief description] |
 | 5 | [Feature name] | P2-Should | [Brief description] |
 
+### Dependencies (keep short)
+- Technical: [System/API/infra] — status, impact
+- Business: [Org/process prerequisite] — owner, date
+- External: [Vendor/regulatory] — status, impact
+
 ### Out-of-Scope (Post-MVP)
-
-[Explicitly list features NOT included in MVP]
-
 - [Feature]: Deferred to Phase 2 - [reason]
 - [Feature]: Deferred to Phase 2 - [reason]
 - [Integration]: Not included - [reason]
@@ -206,11 +213,13 @@ custom_fields:
 | [Technical dependency] | [Status] | [Blocking/Non-blocking] | [Team] |
 | [Business dependency] | [Status] | [Blocking/Non-blocking] | [Owner] |
 
+**Dependency checklist**: status current; owner assigned; blocking noted; fallback path defined.
+
 ---
 
 ## 7. User Stories & User Roles
 
-[5-10 core user stories for MVP - detailed stories go in backlog/EARS]
+**Scope split**: PRD = roles + story summaries; EARS = detailed behaviors; BDD = executable scenarios.
 
 ### Core User Stories
 
@@ -221,6 +230,12 @@ custom_fields:
 | PRD.NN.09.03 | As a [persona], I want to [action], so that [benefit] | P1 | [Brief criteria] |
 | PRD.NN.09.04 | As a [persona], I want to [action], so that [benefit] | P2 | [Brief criteria] |
 | PRD.NN.09.05 | As a [persona], I want to [action], so that [benefit] | P2 | [Brief criteria] |
+
+### User Roles (brief)
+| Role | Purpose | Permissions |
+|------|---------|-------------|
+| [Role] | [What they do] | [Access level] |
+| [Role] | [What they do] | [Access level] |
 
 ### Story Summary
 
@@ -234,72 +249,59 @@ custom_fields:
 
 ## 8. Functional Requirements
 
-[10-20 essential capabilities for MVP]
+### Core Capabilities (brief)
+| ID | Capability | Success Criteria |
+|----|------------|------------------|
+| PRD.NN.01.01 | [Capability name] | [How to validate] |
+| PRD.NN.01.02 | [Capability name] | [How to validate] |
+| PRD.NN.01.03 | [Capability name] | [How to validate] |
 
-### Core Capabilities
-
-| ID | Capability | Description | Success Criteria |
-|----|------------|-------------|------------------|
-| PRD.NN.01.01 | [Capability name] | [What it does] | [How to validate] |
-| PRD.NN.01.02 | [Capability name] | [What it does] | [How to validate] |
-| PRD.NN.01.03 | [Capability name] | [What it does] | [How to validate] |
-
-### User Journey (Happy Path)
-
-[Primary user flow for MVP - numbered steps]
-
+### User Journey (happy path)
 1. User [action] → System [response]
 2. User [action] → System [response]
-3. User [action] → System [response]
-4. [Result]: [Outcome achieved]
+3. [Outcome]
 
 ### Error Handling (MVP)
-
 | Error Scenario | User Experience | System Behavior |
 |----------------|-----------------|-----------------|
-| [Error type] | [What user sees] | [What system does] |
 | [Error type] | [What user sees] | [What system does] |
 
 ---
 
 ## 9. Quality Attributes
 
-### Performance (MVP Baseline)
-
+### Performance (baseline)
 | Metric | Target | Notes |
 |--------|--------|-------|
 | API Response Time (p95) | < [X]ms | Core endpoints |
 | Page Load Time | < [X]s | Primary screens |
 | Concurrent Users | [X] | MVP capacity |
 
-### Security (MVP Baseline)
+### Security (baseline)
+- [ ] Authentication approach noted
+- [ ] Encryption at transit/rest
+- [ ] Input validation in place
 
-- [ ] Authentication: [OAuth2 / JWT / Session-based]
-- [ ] Data encryption: [TLS 1.3 for transit, AES-256 for rest]
-- [ ] Input validation: [Implemented for all user inputs]
-
-### Availability (MVP Target)
-
-- **Uptime**: [95-99]% (MVP target; full product: 99.9%)
-- **Planned maintenance window**: [specify if needed]
+### Availability (baseline)
+- Uptime target: [95-99]% (MVP)
+- Planned maintenance window: [if any]
 
 ---
 
 ## 10. Architecture Requirements
 
-> **Note**: This section identifies architecture decisions needed for MVP. Full ADR documents created separately per SDD workflow.
+> Brief: Capture architecture topics needing ADRs. Keep MVP summaries short; full ADRs live separately.
 
-**ID Format**: `PRD.NN.32.SS` (Architecture Topic)
+**ID Format**: `PRD.NN.32.SS`
 
-### 10.1 Infrastructure (PRD.NN.32.01)
+- Infrastructure: status, driver, approach
+- Data: status, driver, approach
+- Integrations: status, driver, approach
+- Security: status, driver, approach
+- Observability: status, driver, approach
+- AI/ML (if relevant): status, driver, approach
+- Tech selection: status, driver, approach
 
-**Status**: [ ] Selected | [ ] Pending | [ ] N/A
-
-**Business Driver**: [Why MVP needs this decision]
-
-**MVP Approach**: [Selected option or recommendation]
-
-**Rationale**: [1-2 sentence justification]
 
 **Estimated Cost**: $[X]/month
 
@@ -377,44 +379,21 @@ custom_fields:
 
 ---
 
-## 11. Constraints & Assumptions
+## 11. Constraints & Assumptions (brief)
+- Budget/timeline limits: [X]
+- Resource limits: [team/skills]
+- Technical constraints: [stack/infra]
+- Key assumptions (H/M/L risk): [list 2-3]
 
-### MVP Constraints
-
-**ID Format**: `PRD.NN.03.SS` (Constraint)
-
-| Constraint ID | Constraint Type | Description | Impact |
-|---------------|-----------------|-------------|--------|
-| PRD.NN.03.01 | **Budget** | $[X] total for MVP | [How it limits scope] |
-| PRD.NN.03.02 | **Timeline** | [X] weeks to launch | [Trade-offs made] |
-| PRD.NN.03.03 | **Team** | [X] developers | [What can be accomplished] |
-| PRD.NN.03.04 | **Technical** | [Specific limitation] | [Workaround/approach] |
-
-### Key Assumptions
-
-**ID Format**: `PRD.NN.04.SS` (Assumption)
-
-| Assumption ID | Assumption | Risk Level | Validation Method |
-|---------------|------------|------------|-------------------|
-| PRD.NN.04.01 | [Assumption about users] | [H/M/L] | [How we'll validate] |
-| PRD.NN.04.02 | [Assumption about market] | [H/M/L] | [How we'll validate] |
-| PRD.NN.04.03 | [Technical assumption] | [H/M/L] | [How we'll validate] |
+**Constraints/Risks (short)**: surface single blockers; pair each risk with owner and trigger.
 
 ---
 
-## 12. Risk Assessment
-
-**ID Format**: `PRD.NN.07.SS` (Risk)
-
-### MVP Risks
-
-| Risk ID | Risk | Likelihood | Impact | Mitigation |
-|---------|------|------------|--------|------------|
-| PRD.NN.07.01 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
-| PRD.NN.07.02 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
-| PRD.NN.07.03 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
-| PRD.NN.07.04 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
-| PRD.NN.07.05 | [Risk description] | H/M/L | H/M/L | [Mitigation strategy] |
+## 12. Risk Assessment (brief)
+| Risk | Likelihood | Impact | Mitigation |
+|------|------------|--------|------------|
+| [Risk 1] | H/M/L | H/M/L | [Mitigation] |
+| [Risk 2] | H/M/L | H/M/L | [Mitigation] |
 
 ---
 
@@ -441,36 +420,19 @@ custom_fields:
 
 ## 14. Acceptance Criteria
 
-### Launch Criteria (Must-Have)
-
-- [ ] All P1 features implemented and tested
-- [ ] Core user journey works end-to-end
-- [ ] Performance targets met in staging
-- [ ] Security baseline verified
-- [ ] Error monitoring in place
-- [ ] Basic documentation complete
-
-### Launch Criteria (Should-Have)
-
-- [ ] P2 features implemented
-- [ ] Edge case handling complete
-- [ ] Analytics tracking configured
-
-### Post-Launch Validation
-
-**Day 1-7**: Stability monitoring
-- [ ] No critical bugs
-- [ ] System uptime meets target
-- [ ] Error rates within acceptable range
-
-**Day 8-30**: User validation
-- [ ] Adoption metrics on track
+### Acceptance Criteria (trimmed)
+- Business: P1 features deliver observable user value; KPIs instrumented.
+- Technical: Core journeys pass; perf targets met; logging/monitoring enabled; security baseline checked.
+- QA: Critical bugs resolved; basic docs/support ready; analytics tracking configured.
 - [ ] User feedback collected
 - [ ] Initial satisfaction survey
 
-**Day 31-90**: Business validation
-- [ ] KPIs trending toward targets
-- [ ] Go/No-Go decision prepared
+**Small messaging table** (core flows only)
+| Channel | Message | Owner |
+|---------|---------|-------|
+| [Email/Push/In-app] | [Copy stub] | [Name] |
+
+**Compliance note**: capture data handling notes; confirm PII scope; log approvals.
 
 ---
 

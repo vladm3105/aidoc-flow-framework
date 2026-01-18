@@ -1,5 +1,5 @@
 ---
-title: "IMPL Validation Rules"
+title: "IMPL MVP Validation Rules"
 tags:
   - validation-rules
   - layer-8-artifact
@@ -20,7 +20,7 @@ custom_fields:
 # - On conflict: Defer to IMPL-TEMPLATE.md
 # =============================================================================
 ---
-title: "IMPL Validation Rules"
+title: "IMPL MVP Validation Rules"
 tags:
   - validation-rules
   - layer-8-artifact

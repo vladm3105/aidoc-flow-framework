@@ -85,7 +85,7 @@ When creating a new SYS document:
 
 1. **Copy Template**:
    ```bash
-   cp ai_dev_flow/06_SYS/SYS-TEMPLATE.md \
+   cp ai_dev_flow/06_SYS/SYS-MVP-TEMPLATE.md \
       docs/06_SYS/SYS-NN_system_area.md
    ```
 
@@ -180,7 +180,7 @@ When creating a new SYS document:
 
 ## Related Documents
 
-- **Template**: [SYS-TEMPLATE.md](./SYS-TEMPLATE.md) - Use this to create new SYS
+- **Template**: [SYS-MVP-TEMPLATE.md](./SYS-MVP-TEMPLATE.md)
 - **README**: [README.md](./README.md) - Learn about SYS purpose and structure
 - **Traceability Matrix**: [SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md](./SYS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 

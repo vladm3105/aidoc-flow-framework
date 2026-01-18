@@ -1,8 +1,8 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of PRD-TEMPLATE.md
-# - Authority: PRD-TEMPLATE.md is the single source of truth for PRD structure
+# 📋 Document Role: This is a DERIVATIVE of PRD-MVP-TEMPLATE.md
+# - Authority: PRD-MVP-TEMPLATE.md is the single source of truth for PRD structure
 # - Purpose: Machine-readable validation rules derived from the template
-# - On conflict: Defer to PRD-TEMPLATE.md
+# - On conflict: Defer to PRD-MVP-TEMPLATE.md
 # =============================================================================
 #
 # PRD Schema Definition v1.0
@@ -15,9 +15,9 @@ layer: 2
 last_updated: "2025-11-30"
 
 references:
-  template: "PRD-TEMPLATE.md"
-  creation_rules: "PRD_CREATION_RULES.md"
-  validation_rules: "PRD_VALIDATION_RULES.md"
+  template: "PRD-MVP-TEMPLATE.md"
+  creation_rules: "PRD_MVP_CREATION_RULES.md"
+  validation_rules: "PRD_MVP_VALIDATION_RULES.md"
 
 # =============================================================================
 # Profiles (Full vs MVP)

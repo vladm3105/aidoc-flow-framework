@@ -260,7 +260,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 - **16.2 Same-Type References**: Only required if cross-BRD dependencies exist
 - **Appendix H: Fee Schedule**: Only required for financial/transactional BRDs
 
-> **Note**: For technical QA standards, testing strategy, and defect management, see PRD-TEMPLATE.md Section 21.
+> **Note**: For technical QA standards, testing strategy, and defect management, see PRD-MVP-TEMPLATE.md.
 
 **Error Message**:
 ```
@@ -1155,7 +1155,7 @@ Reference: BRD-MVP-TEMPLATE.md lines 76-111 for Executive Summary pattern (full 
 ## 5. User Stories (High-Level Summary)
 
 📚 Complete User Stories: For detailed user stories with acceptance criteria, permissions, and user roles, see:
-- [PRD Template - User Stories & User Roles section](../02_PRD/PRD-TEMPLATE.md#user-stories--user-roles)
+- [PRD MVP Template - User Stories & User Roles section](../02_PRD/PRD-MVP-TEMPLATE.md#user-stories--user-roles)
 
 ### Key User Story Categories
 [List 2-3 primary user categories with 3-5 sample stories]
@@ -1203,10 +1203,10 @@ Fix: Simplify to high-level summary and add PRD reference link
 **Fix**:
 1. Replace detailed user story tables with 3-5 bullet points per category
 2. Replace detailed statistics tables with aggregate counts only
-3. Add reference link to PRD-TEMPLATE.md User Stories section
+3. Add reference link to PRD-MVP-TEMPLATE.md User Stories section
 4. Keep only business-level summary (detailed content belongs in PRD)
 
-**Reference**: BRD-MVP-TEMPLATE.md section 5 (simplified; full template archived), BRD_CREATION_RULES.md section 5.6, PRD-MVP-TEMPLATE.md User Stories & User Roles
+**Reference**: BRD-MVP-TEMPLATE.md section 5 (simplified), BRD_MVP_CREATION_RULES.md section 5.6, PRD-MVP-TEMPLATE.md User Stories & User Roles
 
 ---
 

@@ -640,7 +640,7 @@ Note on Validation layer (Layer 15): Validation consumes all upstream tags. Docu
 cp -r ai_dev_flow/ <your_project>/docs/
 
 # Or copy specific templates as needed
-cp ai_dev_flow/07_REQ/REQ-TEMPLATE.md <your_project>/docs/07_REQ/
+cp ai_dev_flow/07_REQ/REQ-MVP-TEMPLATE.md <your_project>/docs/07_REQ/
 ```
 
 **Step 3: Replace Placeholders**

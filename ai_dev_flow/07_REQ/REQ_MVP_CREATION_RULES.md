@@ -1,5 +1,5 @@
 ---
-title: "REQ Creation Rules"
+title: "REQ MVP Creation Rules"
 tags:
   - creation-rules
   - layer-7-artifact
@@ -22,22 +22,17 @@ custom_fields:
 
 **📋 Document Role**: This is a **CREATION HELPER** for REQ-MVP-TEMPLATE.md.
 - **Authority**: `REQ-MVP-TEMPLATE.md` is the single source of truth for REQ structure
-- **Validation**: Use `REQ_VALIDATION_RULES.md` after REQ creation/changes
+- **Validation**: Use `REQ_MVP_VALIDATION_RULES.md` after REQ creation/changes
 
-# REQ Creation Rules
+# REQ MVP Creation Rules
 
 ## Template Selection (MVP Default)
 
-**MVP templates are the framework default.** Full templates are used only when explicitly triggered.
+**MVP templates are the framework default.**
 
 | Template | File | When to Use |
 |----------|------|-------------|
-| **MVP (DEFAULT)** | `REQ-MVP-TEMPLATE.md` | All new projects unless full template is explicitly requested |
-
-
-**Triggering Full Template**:
-- Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
-- Prompt keywords: "use full template", "enterprise mode", "regulatory compliance"
+| **MVP (DEFAULT)** | `REQ-MVP-TEMPLATE.md` | All REQs |
 
 ## Index-Only Generation Workflow
 

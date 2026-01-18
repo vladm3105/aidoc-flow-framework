@@ -83,7 +83,7 @@ When creating a new EARS document:
 
 1. **Copy Template**:
    ```bash
-   cp ai_dev_flow/03_EARS/EARS-TEMPLATE.md \
+   cp ai_dev_flow/03_EARS/EARS-MVP-TEMPLATE.md \
       docs/03_EARS/EARS-NN_requirement_area.md
    ```
 
@@ -154,7 +154,7 @@ When creating a new EARS document:
 
 ## Related Documents
 
-- **Template**: [EARS-TEMPLATE.md](./EARS-TEMPLATE.md) - Use this to create new EARS
+- **Template**: [EARS-MVP-TEMPLATE.md](./EARS-MVP-TEMPLATE.md)
 - **README**: [README.md](./README.md) - Learn about EARS purpose and statement types
 - **Traceability Matrix**: [EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md](./EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 

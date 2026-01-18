@@ -1,5 +1,5 @@
 ---
-title: "SYS Creation Rules"
+title: "SYS MVP Creation Rules"
 tags:
   - creation-rules
   - layer-6-artifact

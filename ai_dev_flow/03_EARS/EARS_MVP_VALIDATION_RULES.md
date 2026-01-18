@@ -1,5 +1,5 @@
 ---
-title: "EARS Validation Rules"
+title: "EARS MVP Validation Rules"
 tags:
   - validation-rules
   - layer-3-artifact

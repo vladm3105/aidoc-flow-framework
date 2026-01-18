@@ -1,8 +1,8 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of SYS-TEMPLATE.md
-# - Authority: SYS-TEMPLATE.md is the single source of truth for SYS structure
+# 📋 Document Role: This is a DERIVATIVE of SYS-MVP-TEMPLATE.md
+# - Authority: SYS-MVP-TEMPLATE.md is the single source of truth for SYS structure
 # - Purpose: Machine-readable validation rules derived from the template
-# - On conflict: Defer to SYS-TEMPLATE.md
+# - On conflict: Defer to SYS-MVP-TEMPLATE.md
 # =============================================================================
 #
 # SYS Schema Definition v1.0
@@ -15,9 +15,9 @@ layer: 6
 last_updated: "2025-11-30"
 
 references:
-  template: "SYS-TEMPLATE.md"
-  creation_rules: "SYS_CREATION_RULES.md"
-  validation_rules: "SYS_VALIDATION_RULES.md"
+  template: "SYS-MVP-TEMPLATE.md"
+  creation_rules: "SYS_MVP_CREATION_RULES.md"
+  validation_rules: "SYS_MVP_VALIDATION_RULES.md"
 
 # =============================================================================
 # Profiles (Full vs MVP)

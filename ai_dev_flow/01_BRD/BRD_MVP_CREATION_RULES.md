@@ -942,7 +942,7 @@ Business Rules Count?
 
 ### 6.5 Edge Case Handling: Business vs Technical Content
 
-**Purpose**: Guidance for handling edge cases where content could be interpreted as either business-level (BRD-appropriate) or technical-level (PRD-appropriate). See also: BRD-TEMPLATE.md Appendix B for complete REMOVE/KEEP rules.
+**Purpose**: Guidance for handling edge cases where content could be interpreted as either business-level (BRD-appropriate) or technical-level (PRD-appropriate). See also: BRD-MVP-TEMPLATE.md Appendix B for complete REMOVE/KEEP rules.
 
 ---
 
@@ -1304,7 +1304,7 @@ if (amount >= 501 && amount <= 2000) {
 | Compliance | "[Requirement]: [threshold] from [trigger] ([regulatory reference])" | "Sanctions updates: ≤24 hours from official publication (regulatory mandate)" |
 | Customer | "[Outcome] [condition] ([business benefit])" | "Recipient auto-saved after successful delivery (reduces friction)" |
 
-**Reference**: See BRD-TEMPLATE.md Appendix C for complete FR examples using business language patterns.
+**Reference**: See BRD-MVP-TEMPLATE.md Appendix C for complete FR examples using business language patterns.
 
 ---
 
@@ -1995,7 +1995,7 @@ All business objectives in section 2.4 must follow SMART criteria:
 - ❌ No change control process defined
 - ❌ Approval table left entirely blank (populate with [TBD])
 
-**Reference**: See BRD-TEMPLATE.md section 14.5 for complete structure and table examples.
+**Reference**: See BRD-MVP-TEMPLATE.md section 14.5 for complete structure and table examples.
 
 ---
 
@@ -2020,7 +2020,7 @@ All business objectives in section 2.4 must follow SMART criteria:
 find docs/BRD -name "BRD-*.md" -exec ./scripts/validate_brd_template.sh {} \;
 ```
 
-**Template Location**: [BRD-TEMPLATE.md](BRD-TEMPLATE.md)
+**Template Location**: [BRD-MVP-TEMPLATE.md](BRD-MVP-TEMPLATE.md)
 **Validation Rules**: [BRD_VALIDATION_RULES.md](BRD_VALIDATION_RULES.md)
 **Index**: [BRD-00_index.md](BRD-00_index.md)
 

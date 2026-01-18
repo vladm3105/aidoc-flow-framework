@@ -596,7 +596,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 **Purpose**: Define product-approved messaging for customer communications at key touchpoints. This ensures consistency, compliance, and consistent user experience across all customer interactions.
 
 **📚 Complete Business Context**: For business-level messaging requirements and approval workflows, see:
-- **[BRD Template - Appendix N: Customer Communication Templates](../01_BRD/BRD-TEMPLATE.md#appendix-n-customer-communication-templates-required-for-customer-facing-brds)** - Business approval and messaging strategy
+- **[BRD-MVP Template - Appendix N: Customer Communication Templates](../01_BRD/BRD-MVP-TEMPLATE.md#appendix-n-customer-communication-templates-required-for-customer-facing-brds)** - Business approval and messaging strategy
 
 ### Transaction Status Messages
 

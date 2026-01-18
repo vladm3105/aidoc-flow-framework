@@ -37,16 +37,12 @@ Requirements (REQ) documents capture atomic, testable requirements that serve as
 
 ## Available Templates
 
-**REQ-TEMPLATE.md** - Comprehensive atomic requirements template (~1,400 lines)
-- Full-featured template with all sections (V3.0)
-- SPEC-ready with interfaces, schemas, error handling, configuration
-
-**REQ-MVP-TEMPLATE.md** - Streamlined MVP version in a single file without sectioning (~350 lines)
+**REQ-MVP-TEMPLATE.md** - Streamlined MVP version in a single file (~350 lines)
 - Focused on SPEC-ready, atomic requirements for MVP
 - Maintains framework compliance while reducing documentation overhead
 - Ideal for MVPs with 10-20 core requirements
 
-**Usage**: Use `REQ-TEMPLATE.md` for full-featured requirements and `REQ-MVP-TEMPLATE.md` for MVP-focused requirements.
+REQ full template is removed from the workflow (archived only).
 
 ## Purpose
 
@@ -505,7 +501,7 @@ See `07_REQ/api/av/REQ-01_external_api_integration.md` for a complete example of
 
 | Version | File | Status | Lines | Notes |
 |---------|------|--------|-------|-------|
-| **V3.0** | [REQ-TEMPLATE.md](REQ-TEMPLATE.md) | **✅ CURRENT** | 1274 | Enhanced with REST API, DB schema, Circuit Breaker, DI setup, Layer 7, absolute paths |
+| **MVP** | [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md) | **✅ CURRENT** | ~350 | Streamlined MVP atomic requirements |
 
 ### Template Evolution
 

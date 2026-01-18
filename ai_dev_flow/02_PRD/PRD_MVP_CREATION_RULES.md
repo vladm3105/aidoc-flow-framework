@@ -1,5 +1,5 @@
 ---
-title: "PRD Creation Rules"
+title: "PRD MVP Creation Rules"
 tags:
   - creation-rules
   - layer-2-artifact
@@ -19,7 +19,7 @@ custom_fields:
 # - On conflict: Defer to PRD-MVP-TEMPLATE.md
 # =============================================================================
 ---
-title: "PRD Creation Rules"
+title: "PRD MVP Creation Rules"
 tags:
   - creation-rules
   - layer-2-artifact
@@ -33,8 +33,8 @@ custom_fields:
 ---
 
 > **📋 Document Role**: This is a **CREATION HELPER** for PRD-MVP-TEMPLATE.md (default).
-> - **Authority**: `PRD-MVP-TEMPLATE.md` is the primary standard for PRD structure; full template archived
-> - **Validation**: Use `PRD_VALIDATION_RULES.md` after PRD creation/changes
+> - **Authority**: `PRD-MVP-TEMPLATE.md` is the primary standard for PRD structure
+> - **Validation**: Use `PRD_MVP_VALIDATION_RULES.md` after PRD creation/changes
 >
 > **⚠️ Numbering Note**: This document's Table of Contents uses rule category numbers (0-15),
 > which are different from PRD section numbers (1-21). Always refer to PRD-MVP-TEMPLATE.md for
@@ -44,11 +44,11 @@ custom_fields:
 
 ## Template Selection (MVP Default)
 
-**MVP templates are the framework default.** Full templates are used only when explicitly triggered.
+**MVP templates are the framework default.**
 
 | Template | File | When to Use |
 |----------|------|-------------|
-| **MVP (DEFAULT)** | `PRD-MVP-TEMPLATE.md` | All new projects unless full template is explicitly requested |
+| **MVP (DEFAULT)** | `PRD-MVP-TEMPLATE.md` | All PRDs |
 
 **Triggering Full Template**:
 - Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)

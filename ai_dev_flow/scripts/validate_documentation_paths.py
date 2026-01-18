@@ -232,7 +232,7 @@ class DocumentationPathValidator:
                     line_number=line_num,
                     issue_type="CASE_MISMATCH",
                     description=f"Case mismatch in path: '{link_path}'",
-                    suggestion="Check filename case (e.g., BRD-TEMPLATE.md vs BRD-template.md)"
+                    suggestion="Check filename case (e.g., BRD-MVP-TEMPLATE.md vs brd-mvp-template.md)"
                 ))
             else:
                 self.issues.append(Issue(

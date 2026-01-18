@@ -43,22 +43,21 @@ custom_fields:
   development_status: draft
   template_variant: mvp
   template_profile: mvp
-  template_source: "ADR-TEMPLATE.md"
+  template_source: "ADR-MVP-TEMPLATE.md"
   schema_reference: "ADR_SCHEMA.yaml"
   schema_version: "1.0"
   schema_status: optional
-  creation_rules_reference: "ADR_CREATION_RULES.md"
-  validation_rules_reference: "ADR_VALIDATION_RULES.md"
+  creation_rules_reference: "ADR_MVP_CREATION_RULES.md"
+  validation_rules_reference: "ADR_MVP_VALIDATION_RULES.md"
   traceability_matrix_template: "ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md"
 ---
 
 > **MVP Template** — Single-file, streamlined ADR for rapid MVP decisions.
 > Use this template for MVP architecture decisions with 2-3 alternatives.
-> Full template is archived; stay on MVP unless enterprise/full is explicitly required.
 
 > **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_adr.py`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
-> References: Schema `ADR_SCHEMA.yaml` | Rules `ADR_CREATION_RULES.md`, `ADR_VALIDATION_RULES.md` | Matrix `ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `ADR_SCHEMA.yaml` | Rules `ADR_MVP_CREATION_RULES.md`, `ADR_MVP_VALIDATION_RULES.md` | Matrix `ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # ADR-NN: [Architecture Decision Title]
 
@@ -339,7 +338,6 @@ flowchart TD
 
 ### When to Migrate
 
-Migrate from MVP ADR to full `ADR-TEMPLATE.md` when:
 - [ ] Decision requires 4+ alternatives analysis
 - [ ] Complex trade-off evaluation needed
 - [ ] Regulatory/compliance documentation required
@@ -348,7 +346,6 @@ Migrate from MVP ADR to full `ADR-TEMPLATE.md` when:
 
 ### Migration Steps
 
-1. **Create new document**: Copy `ADR-TEMPLATE.md` to `ADR-NN_{slug}.md`
 2. **Transfer core content**: Map MVP sections to full template
 3. **Add detailed analysis**: Expand alternatives, add scoring matrices
 4. **Add missing sections**: 
@@ -388,4 +385,3 @@ Migrate from MVP ADR to full `ADR-TEMPLATE.md` when:
 > - Single file - no sectioning
 > - Focus on decision + rationale + 2-3 alternatives
 > - Maintains ai_dev_flow framework compliance
-> - Expands to full ADR-TEMPLATE.md structure for complex decisions

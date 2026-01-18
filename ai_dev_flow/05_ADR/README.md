@@ -60,7 +60,7 @@ Foundation ADRs establish project-wide standards that all other ADRs must refere
 
 **When to Reference ADR-000**:
 - ✅ **Before proposing new technologies**: Check if technology is already approved in ADR-000
-- ✅ **When writing new ADRs**: Include "Technology Stack Compliance" section (see ADR-TEMPLATE.md)
+- ✅ **When writing new ADRs**: Include "Technology Stack Compliance" section (see ADR-MVP-TEMPLATE.md)
 - ✅ **When creating specifications**: Ensure SPEC technologies align with ADR-000
 - ✅ **If proposing technology not in ADR-000**: Document justification and recommend updating ADR-000
 
@@ -78,7 +78,7 @@ Every ADR proposing new technologies must include a "Technology Stack Compliance
 4. Integration impact and migration plan
 5. Recommendation to update ADR-000 if new technology is adopted
 
-See [ADR-TEMPLATE.md](ADR-TEMPLATE.md) for the complete compliance section template.
+See [ADR-MVP-TEMPLATE.md](ADR-MVP-TEMPLATE.md) for the compliance section template.
 
 ## Position in Document Workflow
 
@@ -1076,7 +1076,7 @@ When writing an ADR, include references that:
 
 ## Example ADR Template
 
-See `ADR-TEMPLATE.md` for the complete structural template with all sections and helpful prompts for each part.
+See `ADR-MVP-TEMPLATE.md` for the structural template with all sections and helpful prompts.
 
 See `{project_root}/docs/05_ADR/ADR-00_technology_stack.md` for a comprehensive real-world example of a fully-developed ADR demonstrating all best practices including:
 
@@ -1090,7 +1090,7 @@ See `{project_root}/docs/05_ADR/ADR-00_technology_stack.md` for a comprehensive 
 
 **README Version**: 1.0
 **Last Updated**: 2025-10-28
-**Template Version**: ADR-TEMPLATE.md v1.0
+**Template Version**: ADR-MVP-TEMPLATE.md v1.0
 
 **Related Documentation:**
 

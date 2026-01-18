@@ -1,5 +1,5 @@
 ---
-title: "ADR Creation Rules"
+title: "ADR MVP Creation Rules"
 tags:
   - creation-rules
   - layer-5-artifact
@@ -19,7 +19,7 @@ custom_fields:
 # - On conflict: Defer to ADR-MVP-TEMPLATE.md
 # =============================================================================
 ---
-title: "ADR Creation Rules"
+title: "ADR MVP Creation Rules"
 tags:
   - creation-rules
   - layer-5-artifact
@@ -40,16 +40,11 @@ custom_fields:
 
 ## Template Selection (MVP Default)
 
-**MVP templates are the framework default.** Full templates are used only when explicitly triggered.
+**MVP templates are the framework default.**
 
 | Template | File | When to Use |
 |----------|------|-------------|
-| **MVP (DEFAULT)** | `ADR-MVP-TEMPLATE.md` | All new projects unless full template is explicitly requested |
-| Full | `ADR-TEMPLATE.md` (archived) | Only when explicitly required for enterprise/full mode |
-
-**Triggering Full Template**:
-- Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
-- Prompt keywords: "use full template", "enterprise mode", "regulatory compliance"
+| **MVP (DEFAULT)** | `ADR-MVP-TEMPLATE.md` | All ADRs |
 
 ## Index-Only Generation Workflow
 

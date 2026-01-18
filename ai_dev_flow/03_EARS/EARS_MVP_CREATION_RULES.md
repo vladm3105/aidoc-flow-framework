@@ -1,5 +1,5 @@
 ---
-title: "EARS Creation Rules"
+title: "EARS MVP Creation Rules"
 tags:
   - creation-rules
   - layer-3-artifact
@@ -19,7 +19,7 @@ custom_fields:
 # - On conflict: Defer to EARS-MVP-TEMPLATE.md
 # =============================================================================
 ---
-title: "EARS Creation Rules"
+title: "EARS MVP Creation Rules"
 tags:
   - creation-rules
   - layer-3-artifact
@@ -41,16 +41,11 @@ custom_fields:
 
 ## Template Selection (MVP Default)
 
-**MVP templates are the framework default.** Full templates are used only when explicitly triggered.
+**MVP templates are the framework default.**
 
 | Template | File | When to Use |
 |----------|------|-------------|
-| **MVP (DEFAULT)** | `EARS-MVP-TEMPLATE.md` | All new projects unless full template is explicitly requested |
-| Full | `EARS-TEMPLATE.md` (archived) | Only when explicitly required for enterprise/full mode |
-
-**Triggering Full Template**:
-- Project setting: `template_profile: enterprise` (in `.autopilot.yaml` or `CLAUDE.md`)
-- Prompt keywords: "use full template", "enterprise mode", "regulatory compliance"
+| **MVP (DEFAULT)** | `EARS-MVP-TEMPLATE.md` | All EARS |
 
 ## Index-Only Generation Workflow
 
@@ -622,7 +617,7 @@ ls -la docs/03_EARS/EARS-*.md | tail -5
 **Step 2: Create Document from Template**
 
 ```bash
-cp docs/03_EARS/EARS-TEMPLATE.md docs/03_EARS/EARS-20_new_category_name.md
+cp docs/03_EARS/EARS-MVP-TEMPLATE.md docs/03_EARS/EARS-20_new_category_name.md
 ```
 
 **Step 3: Update Schema (if new element types needed)**

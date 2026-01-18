@@ -1,5 +1,5 @@
 ---
-title: "ADR Validation Rules"
+title: "ADR MVP Validation Rules"
 tags:
   - validation-rules
   - layer-5-artifact
@@ -14,12 +14,11 @@ custom_fields:
 
 # =============================================================================
 # 📋 Document Role: Validates ADR-MVP-TEMPLATE.md (default)
-# - Authority: ADR-MVP-TEMPLATE.md is the primary standard for ADR structure; full template is archived
+# - Authority: ADR-MVP-TEMPLATE.md is the primary standard for ADR structure
 # - Purpose: AI checklist after document creation (derived from MVP template)
-# - Scope: Includes all rules from ADR_CREATION_RULES.md plus validation extensions
+# - Scope: Includes all rules from ADR_MVP_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to ADR-MVP-TEMPLATE.md
 # =============================================================================
----
 title: "ADR Validation Rules Reference"
 tags:
   - validation-rules

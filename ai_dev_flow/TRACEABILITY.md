@@ -556,7 +556,7 @@ python3 scripts/generate_traceability_matrix.py --tags docs/generated/tags.json 
 
 ### Example: Complete Traceability section
 
-From EARS-TEMPLATE.md:
+From EARS-MVP-TEMPLATE.md:
 
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 ```markdown

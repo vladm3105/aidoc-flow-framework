@@ -91,7 +91,7 @@ When creating a new ADR:
 
 1. **Copy Template**:
    ```bash
-   cp ai_dev_flow/05_ADR/ADR-TEMPLATE.md \
+   cp ai_dev_flow/05_ADR/ADR-MVP-TEMPLATE.md \
       docs/05_ADR/ADR-NN_decision_title.md
    ```
 
@@ -182,7 +182,7 @@ gantt
 
 ## Related Documents
 
-- **Template**: [ADR-TEMPLATE.md](./ADR-TEMPLATE.md) - Use this to create new ADRs
+- **Template**: [ADR-MVP-TEMPLATE.md](./ADR-MVP-TEMPLATE.md)
 - **README**: [README.md](./README.md) - Learn about ADR purpose, structure, and best practices
 - **Traceability Matrix**: [ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md](./ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 - **CTR Policy**: [ADR-CTR_SEPARATE_FILES_POLICY.md](./ADR-CTR_SEPARATE_FILES_POLICY.md) - Contract file naming policy

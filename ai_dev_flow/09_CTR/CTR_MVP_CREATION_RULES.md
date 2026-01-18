@@ -1,5 +1,5 @@
 ---
-title: "CTR Creation Rules"
+title: "CTR MVP Creation Rules"
 tags:
   - creation-rules
   - layer-9-artifact

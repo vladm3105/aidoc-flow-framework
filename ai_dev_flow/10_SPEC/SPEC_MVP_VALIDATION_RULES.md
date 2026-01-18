@@ -1,5 +1,5 @@
 ---
-title: "SPEC Validation Rules"
+title: "SPEC MVP Validation Rules"
 tags:
   - validation-rules
   - layer-10-artifact

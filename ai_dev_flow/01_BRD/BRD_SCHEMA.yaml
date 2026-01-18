@@ -1,9 +1,9 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of BRD-TEMPLATE.md (OPTIONAL SCHEMA)
-# - Authority: BRD-TEMPLATE.md is the single source of truth for BRD structure
+# 📋 Document Role: This is a DERIVATIVE of BRD-MVP-TEMPLATE.md (OPTIONAL SCHEMA)
+# - Authority: BRD-MVP-TEMPLATE.md is the single source of truth for BRD structure
 # - Purpose: Machine-readable validation rules (OPTIONAL - Layer 1 is human-authored)
 # - Usage: Optional automated validation for consistency checking
-# - On conflict: Defer to BRD-TEMPLATE.md
+# - On conflict: Defer to BRD-MVP-TEMPLATE.md
 # =============================================================================
 #
 # BRD Schema Definition v1.0
@@ -18,9 +18,9 @@ last_updated: "2025-12-16"
 schema_status: optional  # BRD is human-authored, schema validation not required
 
 references:
-  template: "BRD-TEMPLATE.md"
-  creation_rules: "BRD_CREATION_RULES.md"
-  validation_rules: "BRD_VALIDATION_RULES.md"
+  template: "BRD-MVP-TEMPLATE.md"
+  creation_rules: "BRD_MVP_CREATION_RULES.md"
+  validation_rules: "BRD_MVP_VALIDATION_RULES.md"
 
 # =============================================================================
 # Profiles (Full vs MVP)

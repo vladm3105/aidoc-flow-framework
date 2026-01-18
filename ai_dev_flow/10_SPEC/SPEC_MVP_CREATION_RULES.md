@@ -1,5 +1,5 @@
 ---
-title: "SPEC Creation Rules"
+title: "SPEC MVP Creation Rules"
 tags:
   - creation-rules
   - layer-10-artifact

@@ -49,9 +49,9 @@ custom_fields:
   schema_version: "1.0"
   schema_status: optional
   template_profile: mvp
-  template_source: "BRD-MVP-TEMPLATE.md" (full template archived)
-  creation_rules_reference: "BRD_CREATION_RULES.md"
-  validation_rules_reference: "BRD_VALIDATION_RULES.md"
+  template_source: "BRD-MVP-TEMPLATE.md"
+  creation_rules_reference: "BRD_MVP_CREATION_RULES.md"
+  validation_rules_reference: "BRD_MVP_VALIDATION_RULES.md"
   traceability_matrix_template: "BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md"
 ---
 
@@ -62,23 +62,12 @@ custom_fields:
 > - Fast iteration is prioritized over comprehensive planning
 > - You need working product for real users, not just technical validation
 > - Team size is small (2-10 people)
->
-> Full template is archived; use only if enterprise/full is explicitly required.
-> - Multiple partner integrations with complex SLAs
-> - Enterprise-scale projects with extensive stakeholder matrices
 
-> **Section Mapping Note**: This MVP template uses condensed section numbering:
-> - MVP Section 13 (Traceability) maps to Full BRD Section 16
-> - MVP Section 14 (Glossary) maps to Full BRD Section 17
-> - MVP Section 15 (Appendices) maps to Full BRD Section 18
-> - Sections 15 (Quality Assurance), 12 (Support), 13 (Cost-Benefit) consolidated/simplified
+> **Section Mapping Note**: MVP template uses condensed section numbering tailored for MVP scope.
 
-> **Validation Note**: MVP templates are intentionally streamlined. When validated against `validate_brd_template.sh`:
-> - **Expected Errors**: CHECK 1 (missing sections 15-18), CHECK 20 (detailed user stories), CHECK 22 (full traceability matrix), CHECK 24 (6 glossary subsections)
-> - **Must Pass**: CHECK 2-6, CHECK 13-18 (FR structure)
-> See `scripts/README.md` → "MVP Template Validation" for guidance.
+> **Validation Note**: MVP templates are intentionally streamlined; some full-template checks will report expected differences (e.g., reduced sections). See `scripts/README.md` → "MVP Template Validation" for guidance.
 
-> References: Schema `BRD_SCHEMA.yaml` | Rules `BRD_CREATION_RULES.md`, `BRD_VALIDATION_RULES.md` | Matrix `BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `BRD_SCHEMA.yaml` | Rules `BRD_MVP_CREATION_RULES.md`, `BRD_MVP_VALIDATION_RULES.md` | Matrix `BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ---
 

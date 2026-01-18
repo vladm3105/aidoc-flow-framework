@@ -13,7 +13,7 @@ custom_fields:
 
 ## Overview
 
-BRDs fall into two categories based on their focus. Both use the same template (BRD-TEMPLATE.md) but with different emphasis on technology prerequisites.
+BRDs fall into two categories based on their focus. Both use the same template (BRD-MVP-TEMPLATE.md) but with different emphasis on technology prerequisites.
 
 ## Platform BRDs
 
@@ -235,7 +235,7 @@ This feature must comply with all Platform BRD-01 mandatory technology condition
 ---
 
 **See Also**:
-- [BRD-TEMPLATE.md](./01_BRD/BRD-TEMPLATE.md) - Standard template for both types
+- [BRD-MVP-TEMPLATE.md](./01_BRD/BRD-MVP-TEMPLATE.md) - Standard template for both types
 - [01_BRD/README.md](./01_BRD/README.md) - BRD documentation guidelines
 - [05_ADR/README.md](./05_ADR/README.md) - Architecture decision record creation
 <!-- VALIDATOR:IGNORE-LINKS-START -->

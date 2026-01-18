@@ -1,8 +1,8 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of ADR-TEMPLATE.md
-# - Authority: ADR-TEMPLATE.md is the single source of truth for ADR structure
+# 📋 Document Role: This is a DERIVATIVE of ADR-MVP-TEMPLATE.md
+# - Authority: ADR-MVP-TEMPLATE.md is the single source of truth for ADR structure
 # - Purpose: Machine-readable validation rules derived from the template
-# - On conflict: Defer to ADR-TEMPLATE.md
+# - On conflict: Defer to ADR-MVP-TEMPLATE.md
 # =============================================================================
 #
 # ADR Schema Definition v1.0
@@ -15,9 +15,9 @@ layer: 5
 last_updated: "2025-11-30"
 
 references:
-  template: "ADR-TEMPLATE.md"
-  creation_rules: "ADR_CREATION_RULES.md"
-  validation_rules: "ADR_VALIDATION_RULES.md"
+  template: "ADR-MVP-TEMPLATE.md"
+  creation_rules: "ADR_MVP_CREATION_RULES.md"
+  validation_rules: "ADR_MVP_VALIDATION_RULES.md"
 
 # =============================================================================
 # Profiles (Full vs MVP)
