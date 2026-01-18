@@ -56,16 +56,10 @@ custom_fields:
   - Change TASKS Status from `IN_PROGRESS` → `COMPLETED`
   - Add completion date/notes if tracking column exists
 
-**Rule 3: Pre-Execution Verification Checklist**
-- **When**: Before starting implementation of any TASKS
-- **Purpose**: Force self-correction and validation before code changes begin
-- **Action**: Complete this checklist:
-  - [ ] Verified against REQ-NN (Atomic Requirements) - all requirements understood
-  - [ ] Verified against SPEC-NN (Technical Specification) - technical approach confirmed
-  - [ ] Confirmed Architecture Decision (Shared Service vs Agent vs other pattern)
-  - [ ] Checked for Missing Logic/Fields - no gaps in specification
-  - [ ] Reviewed upstream artifacts for consistency
-  - [ ] Confirmed all dependencies are available/implemented
+**Rule 3: Pre-Execution Verification (YAML Checklist)**
+- **When**: Before starting implementation of any TASKS.
+- **Purpose**: To enforce validation before code changes begin.
+- **Action**: The AI assistant must complete the `pre_check.checklist` within the task's YAML block before setting `implementation.status` to `IN_PROGRESS`. Each item in the checklist must be verified and set to `true`.
 
 **Enforcement**: These updates are NOT optional and must be done before moving to the next TASK.
 
