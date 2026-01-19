@@ -173,13 +173,11 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Code Generation Layer (Layer 10)
 
-- **TASKS** (`10_TASKS/`) - Layer 10: Code generation plans with exact TODOs
-  - Index: [TASKS-00_index.md](./10_TASKS/TASKS-00_index.md)
-  - Template: [TASKS-TEMPLATE.md](./10_TASKS/TASKS-TEMPLATE.md)
-  - Purpose: Step-by-step guide to generate code from YAML SPEC
-  - Each TASKS document corresponds to one SPEC
-  - **Section 7-8**: Implementation Contracts for parallel development coordination (embedded)
-  - Contracts Guide: [IMPLEMENTATION_CONTRACTS_GUIDE.md](./10_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md)
+  - **TASKS** (`10_TASKS/`) - Layer 10: Code generation plans with exact TODOs
+   - Index: [TASKS-00_index.md](./10_TASKS/TASKS-00_index.md)
+   - Template: [TASKS-TEMPLATE.md](./10_TASKS/TASKS-TEMPLATE.md)
+   - Purpose: Step-by-step guide to generate code from YAML SPEC
+   - Each TASKS document corresponds to one SPEC
 
 ### Session Execution Layer (Layer 11) - DEPRECATED
 

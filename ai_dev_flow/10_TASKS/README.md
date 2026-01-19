@@ -2,12 +2,12 @@
 title: "AI Tasks (TASKS): SPEC Implementation Plans and TODOs"
 tags:
   - index-document
-  - layer-11-artifact
+  - layer-10-artifact
   - shared-architecture
 custom_fields:
   document_type: readme
   artifact_type: TASKS
-  layer: 11
+  layer: 10
   priority: shared
   schema_version: "2.0"
   last_updated: "2026-01-15"
@@ -601,8 +601,6 @@ grep -A5 "typing.Protocol" docs/10_TASKS/*.md | head -20
 | State Machine | `Enum` with transitions | State management |
 | Data Model | Pydantic/TypedDict | Data validation |
 | DI Interface | ABC classes | Dependency injection |
-
-See implementation contracts guidance in `ai_dev_flow/11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md`.
 
 ---
 

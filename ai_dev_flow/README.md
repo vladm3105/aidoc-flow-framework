@@ -1180,6 +1180,13 @@ graph LR
 - [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) - Domain customization checklists
 - [ID_NAMING_STANDARDS.md](./ID_NAMING_STANDARDS.md) - Document naming conventions
 
+**Automation & Workflow**:
+- [AUTOPILOT/MVP_AUTOPILOT.md](./AUTOPILOT/MVP_AUTOPILOT.md) - Complete automation guide for MVP workflow
+- [MVP_WORKFLOW_GUIDE.md](./MVP_WORKFLOW_GUIDE.md) - Workflow patterns and execution steps
+- [MVP_AUTOMATION_DESIGN.md](./MVP_AUTOMATION_DESIGN.md) - Automation architecture and design patterns
+- [AUTOPILOT/MVP_GITHUB_CICD_INTEGRATION_PLAN.md](./AUTOPILOT/MVP_GITHUB_CICD_INTEGRATION_PLAN.md) - CI/CD integration plan
+- [AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md](./AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md) - End-to-end user guide
+
 **For Original Project Context** (example references - replace with your project path):
 - [CLAUDE.md]({project_root}/CLAUDE.md) - Project-level SDD guidance
 - [docs/09_SPEC/]({project_root}/docs/09_SPEC/) - Production specifications

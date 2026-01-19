@@ -131,7 +131,7 @@ Communicate timeline for complete removal (recommend 6-12 months).
 ### Phase 1: Registry Creation (Complete)
 
 - [x] Create `LAYER_REGISTRY.yaml`
-- [x] Document all 15 layers
+- [x] Document all 14 layers
 
 ### Phase 2: Validation Tools (Future)
 

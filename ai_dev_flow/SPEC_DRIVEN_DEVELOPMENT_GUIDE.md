@@ -634,7 +634,7 @@ This AI Agent BRD depends on the following Platform BRDs:
   - Plan: Numbered sequence of development activities
   - Constraints: Technical boundaries and limitations
   - Acceptance: Verification requirements for completion
-- **Reference**: See [`TASKS_IMPLEMENTATION_GUIDE.md`](./TASKS_IMPLEMENTATION_GUIDE.md) for detailed workflow.
+- **Reference**: See [`10_TASKS/TASKS_IMPLEMENTATION_GUIDE.md`](./10_TASKS/TASKS_IMPLEMENTATION_GUIDE.md) for detailed workflow.
 - **resource**: Implementation roadmap connecting specifications to code
 
 ### Code Implementation
@@ -706,7 +706,6 @@ Documents with reserved ID `000` are framework infrastructure, not project artif
 | `{TYPE}-00_TRACEABILITY_MATRIX-TEMPLATE.md` | Matrix templates | All 12 artifact types |
 | `{TYPE}-00_GLOSSARY.md` | Term definitions | `BRD-00_GLOSSARY.md` |
 | `{TYPE}-00_*_template.md` | Document templates | `BRD-00_TEMPLATE.md`, `PRD-00_TEMPLATE.md` |
-| `{TYPE}-00_*_CHECKLIST.md` | Checklists | `TASKS-00_IMPLEMENTATION_CONTRACTS_CHECKLIST.md` |
 
 #### Validation Exemption
 

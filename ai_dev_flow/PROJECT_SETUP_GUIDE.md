@@ -85,8 +85,8 @@ Options:
 User is prompted with:
 "Is this a full enterprise project or a rapid Minimum Viable Product (MVP)?"
 
-Options:
-1. Standard Flow (Full templates, 15 layers, strict validation) - Recommended for Enterprise
+ Options:
+1. Standard Flow (Full templates, 14 layers, strict validation) - Recommended for Enterprise
 2. MVP Track (Streamlined templates, faster setup, "Good Enough" validation) - Recommended for Startups/Prototypes
 ```
 

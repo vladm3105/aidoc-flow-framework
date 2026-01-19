@@ -52,7 +52,6 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 **Document Types**:
 - Index documents (`TASKS-00_index.md`)
 - Traceability matrix templates (`TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
-- Implementation contracts checklists (`TASKS-00_IMPLEMENTATION_CONTRACTS_CHECKLIST.md`) **(deprecated reference—file not provided)**
 - Glossaries, registries
 
 **Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.

@@ -158,7 +158,7 @@ MVP v3.0 (Add Features) ← Iterate...
 
 #### Scenario 1: Brand New MVP (Recommended)
 ```bash
-python3 ai_dev_flow/scripts/mvp_autopilot.py \
+python3 AUTOPILOT/scripts/mvp_autopilot.py \
   --root ai_dev_flow \
   --intent "Your MVP idea" \
   --slug your_mvp \
@@ -171,7 +171,7 @@ python3 ai_dev_flow/scripts/mvp_autopilot.py \
 
 #### Scenario 2: Resume Existing Project
 ```bash
-python3 ai_dev_flow/scripts/mvp_autopilot.py \
+python3 AUTOPILOT/scripts/mvp_autopilot.py \
   --root ai_dev_flow \
   --resume \
   --auto-fix \
@@ -181,7 +181,7 @@ python3 ai_dev_flow/scripts/mvp_autopilot.py \
 
 #### Scenario 3: Strict Validation (Pre-Release)
 ```bash
-python3 ai_dev_flow/scripts/mvp_autopilot.py \
+python3 AUTOPILOT/scripts/mvp_autopilot.py \
   --root ai_dev_flow \
   --resume \
   --strict \
@@ -207,7 +207,7 @@ Let's walk through generating a **crypto trading bot** from idea to production u
 
 **Initial Command**:
 ```bash
-python3 ai_dev_flow/scripts/mvp_autopilot.py \
+python3 AUTOPILOT/scripts/mvp_autopilot.py \
   --root ai_dev_flow \
   --intent "Crypto trading bot with moving average crossover strategy" \
   --slug trading_bot \
@@ -322,13 +322,13 @@ See the "Migration" section at the bottom of every MVP template when you are rea
 
 ```bash
 # Start new project
-python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP Idea" --auto-fix
+python3 AUTOPILOT/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP Idea" --auto-fix
 
 # Resume existing project (Generate missing files + Validate)
-python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --resume --auto-fix
+python3 AUTOPILOT/scripts/mvp_autopilot.py --root ai_dev_flow --resume --auto-fix
 
 # Validate only (no new files)
-python3 ai_dev_flow/scripts/mvp_autopilot.py --root ai_dev_flow --resume --skip-validate
+python3 AUTOPILOT/scripts/mvp_autopilot.py --root ai_dev_flow --resume --skip-validate
 ```
 
 ### Manual Validation Commands (Debugging)
