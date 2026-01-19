@@ -463,12 +463,25 @@ Downstream: BDD, ADR, SYS
 
 **Valid**:
 ```markdown
-#### EARS.02.25.01: First Requirement
-...
 #### EARS.02.25.02: Second Requirement  ← UNIQUE ID
 ```
 
 **Fix**: Renumber duplicate IDs sequentially
+
+---
+
+### E050: Universal Splitting Trigger (Size/Cardinality) ⭐ NEW
+
+**Purpose**: Enforce Nested Directory Pattern when triggers are met.
+**Type**: Error (blocking)
+
+**Triggers**:
+1. **Size**: File > 1000 lines.
+2. **Cardinality**: More than 1 file for this ID.
+
+**Action**: Move to `04_EARS/EARS-{PRD_ID}_{Slug}/` folder.
+
+**Error Message**: `❌ ERROR: EARS-NN triggers nested folder rule (>1000 lines or >1 file). Move to 04_EARS/EARS-NN_{Slug}/`
 
 ---
 

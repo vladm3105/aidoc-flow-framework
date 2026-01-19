@@ -52,7 +52,7 @@ custom_fields:
 |----------|------|---------|
 | **Creation Rules** | `SYS_CREATION_RULES.md` | Document creation standards and procedures |
 | **Validation Rules** | `SYS_VALIDATION_RULES.md` | Quality gates and validation criteria |
-| **Corpus Validation** | `SYS_CORPUS_VALIDATION.md` | Multi-document consistency checks |
+| **Quality Gate Validation** | `SYS_QUALITY_GATE_VALIDATION.md` | Multi-document consistency checks |
 | **README** | `README.md` | SYS overview, patterns, and best practices |
 
 ### Example Documents
@@ -86,7 +86,7 @@ custom_fields:
 ├── SYS-01_trading_bot.md                  # Complete example
 ├── SYS_CREATION_RULES.md                  # Creation standards
 ├── SYS_VALIDATION_RULES.md                # Validation criteria
-├── SYS_CORPUS_VALIDATION.md               # Corpus consistency
+├── SYS_QUALITY_GATE_VALIDATION.md               # Corpus consistency
 └── examples/
     ├── SYS-01_functional_requirements.md  # Functional example
     └── SYS-02_quality_attributes.md       # Quality example

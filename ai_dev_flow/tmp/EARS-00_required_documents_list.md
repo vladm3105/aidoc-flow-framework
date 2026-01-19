@@ -458,7 +458,7 @@ After creating each EARS document:
 ./scripts/validate_ears_post_creation.sh
 
 # Or use manual validation checklist
-# See: docs/03_EARS/EARS_CORPUS_VALIDATION_RULES.md
+# See: docs/03_EARS/EARS_QUALITY_GATE_VALIDATION_RULES.md
 ```
 
 ---

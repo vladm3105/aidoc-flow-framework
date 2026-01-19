@@ -140,7 +140,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 | **Individual** | Single BRD file | `validate_brd_template.sh` | After each BRD creation |
 | **Corpus** | Entire BRD set | `validate_brd_corpus.sh` | Before PRD creation begins |
 
-> **Note**: After all BRDs are complete, run corpus-level validation using [BRD_CORPUS_VALIDATION.md](./BRD_CORPUS_VALIDATION.md) before proceeding to PRD layer. This validates cross-document consistency, reference integrity, and corpus-wide quality standards.
+> **Note**: After all BRDs are complete, run corpus-level validation using [BRD_QUALITY_GATE_VALIDATION.md](./BRD_QUALITY_GATE_VALIDATION.md) before proceeding to PRD layer. This validates cross-document consistency, reference integrity, and corpus-wide quality standards.
 
 ### BRD Document Categories
 

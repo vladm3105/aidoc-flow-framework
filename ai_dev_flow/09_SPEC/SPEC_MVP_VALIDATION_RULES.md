@@ -216,18 +216,24 @@ cumulative_tags:
 
 ---
 
-### CHECK 9: File Size Limits
+### CHECK 9: File Size Limits (Universal Splitting Rule)
 
-**Purpose**: Warn when files exceed recommended size thresholds
-**Type**: Warning
+**Purpose**: Warn when files exceed recommended size thresholds, Enforce Universal Trigger.
+**Type**: Error + Warning
 
 **Thresholds**:
 - Markdown files: 500 lines soft limit (target: 300-500 lines)
-- YAML files: 1000 lines HARD limit (Universal Trigger)
+- YAML files: **1000 lines HARD limit** (Universal Trigger)
 
-**Warning Messages**:
+**Triggers (Universal)**:
+1. **Size**: File > 1000 lines (YAML).
+2. **Cardinality**: More than 1 file for this ID.
+
+**Action**: Move to `09_SPEC/SPEC-{PRD_ID}_{Slug}/` folder.
+
+**Messages**:
 - `SPEC-W010`: Markdown file exceeds 500 lines
-- `SPEC-E011`: YAML file exceeds 1000 lines (MUST SPLIT)
+- `SPEC-E011`: YAML file triggers nested folder rule (>1000 lines). Move to `09_SPEC/SPEC-{ID}_{Slug}/`
 
 ---
 
