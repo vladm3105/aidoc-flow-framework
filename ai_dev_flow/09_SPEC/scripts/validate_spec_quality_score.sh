@@ -20,8 +20,11 @@ WARNINGS=0
 INFO=0
 
 # Configuration
-SPEC_DIR="${1:-docs/SPEC}"
+SPEC_DIR="${1:-09_SPEC}"
 VERBOSE="${2:-}"
+
+# Enable recursive globbing
+shopt -s globstar
 
 # -----------------------------------------------------------------------------
 # Helper Functions
@@ -36,16 +39,12 @@ print_header() {
   echo ""
 }
 
+get_spec_files() {
+  find "$SPEC_DIR" -type f -name "SPEC-[0-9]*_*.yaml" ! -name "*_index.md" ! -name "*TEMPLATE*"
+}
+
 count_files() {
-  local count=0
-  shopt -s nullglob
-  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
-    if [[ ! "$(basename $f)" =~ _index|TEMPLATE ]]; then
-      ((count++)) || true
-    fi
-  done
-  shopt -u nullglob
-  echo "$count"
+  get_spec_files | wc -l
 }
 
 # -----------------------------------------------------------------------------
@@ -63,7 +62,8 @@ check_placeholder_text() {
       # Only flag if line contains both a placeholder phrase AND a SPEC reference
       if [[ "$line" =~ \(future\ SPEC\)|\(when\ created\) ]]; then
         spec_ref=$(echo "$line" | grep -oE "SPEC-[0-9]+" | head -1 || true)
-        if [[ -n "$spec_ref" ]] && ls "$SPEC_DIR/${spec_ref}_"*.yaml 2>/dev/null >/dev/null; then
+        # Check if validated spec exists (recursively)
+        if [[ -n "$spec_ref" ]] && find "$SPEC_DIR" -name "${spec_ref}_*.yaml" -print -quit | grep -q .; then
           echo -e "${RED}CORPUS-E001: Placeholder references existing document:${NC}"
           echo "  $line"
           ((ERRORS++)) || true
@@ -71,24 +71,20 @@ check_placeholder_text() {
         fi
       fi
     fi
-  done < <(grep -rn "(future SPEC)\|(when created)" "$SPEC_DIR"/*.yaml "$SPEC_DIR"/*.md 2>/dev/null || true)
+  done < <(grep -rn "(future SPEC)\|(when created)" "$SPEC_DIR" --include="*.yaml" --include="*.md" 2>/dev/null || true)
 
   # Check 2: Look for TBD/TODO in traceability sections (cumulative_tags, upstream_sources)
-  shopt -s nullglob
-  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
-    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
-
+  while IFS= read -r f; do
     # Extract cumulative_tags section and check for TBD patterns
     local tags_section=$(sed -n '/^cumulative_tags:/,/^[^ ]/p' "$f" 2>/dev/null)
     if echo "$tags_section" | grep -qE ':\s*"?TBD"?|:\s*"?TODO"?'; then
       echo -e "${RED}CORPUS-E001: TBD/TODO found in cumulative_tags:${NC}"
-      echo "  File: $(basename $f)"
+      echo "  File: $(basename "$f")"
       echo "$tags_section" | grep -E ':\s*"?TBD"?|:\s*"?TODO"?' | sed 's/^/    /'
       ((ERRORS++)) || true
       ((found++)) || true
     fi
-  done
-  shopt -u nullglob
+  done < <(get_spec_files)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
@@ -115,7 +111,7 @@ check_premature_references() {
       ((ERRORS++)) || true
       ((found++)) || true
     fi
-  done < <(grep -rnE "$downstream_patterns" "$SPEC_DIR"/*.yaml "$SPEC_DIR"/*.md 2>/dev/null | head -20 || true)
+  done < <(grep -rnE "$downstream_patterns" "$SPEC_DIR" --include="*.yaml" --include="*.md" 2>/dev/null | head -20 || true)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No premature downstream references${NC}"
@@ -141,49 +137,47 @@ check_index_sync() {
   echo "--- CORPUS-04: Index Synchronization ---"
   local found_warnings=0
 
-  local index_file=""
-  shopt -s nullglob
-  for f in "$SPEC_DIR"/SPEC-*_index.md "$SPEC_DIR"/SPEC-000_index.md; do
-    if [[ -f "$f" ]]; then
-      index_file="$f"
-      break
-    fi
-  done
-  shopt -u nullglob
-
-  if [[ -z "$index_file" || ! -f "$index_file" ]]; then
-    echo -e "${YELLOW}CORPUS-W004: Index file not found (e.g., SPEC-000_index.md). Skipping sync check.${NC}"
-    ((WARNINGS++)) || true
-    return
+  spec_index_files=$(find "$SPEC_DIR" -name "SPEC-*_index.md" -o -name "SPEC-000_index.md")
+  
+  if [[ -z "$spec_index_files" ]]; then
+     echo -e "${YELLOW}CORPUS-W004: Index file not found (e.g., SPEC-000_index.md). Skipping sync check.${NC}"
+     ((WARNINGS++)) || true
+     return
   fi
 
-  # 1. Check for files marked "Planned" in the index that already exist.
-  while IFS= read -r line; do
-    if [[ -n "$line" ]]; then
-      local spec_id
-      # Extract only the FIRST SPEC ID from the line (to avoid multi-line variables)
-      spec_id=$(echo "$line" | grep -oE "SPEC-[0-9]+" | head -1)
-      if [[ -n "$spec_id" ]] && ls "$SPEC_DIR/${spec_id}_"*.yaml &>/dev/null; then
-        echo -e "${YELLOW}CORPUS-W004: $(basename "$index_file") lists '$spec_id' as 'Planned', but the file exists.${NC}"
-        ((WARNINGS++)) || true
-        ((found_warnings++)) || true
-      fi
-    fi
-  done < <(grep -i "| *Planned *" "$index_file" 2>/dev/null || true)
-
-  # 2. Check for existing SPEC files that are not mentioned in the index.
-  local all_spec_files
-  all_spec_files=$(find "$SPEC_DIR" -name "SPEC-[0-9]*_*.yaml" -exec basename {} \; 2>/dev/null)
-  
-  for spec_file in $all_spec_files; do
-    local spec_id
-    spec_id=$(echo "$spec_file" | grep -oE "SPEC-[0-9]+" || echo "")
-    if [[ -n "$spec_id" ]] && ! grep -q "$spec_id" "$index_file" 2>/dev/null; then
-      echo -e "${YELLOW}CORPUS-W004: '$spec_file' exists but is not mentioned in the index file ($(basename "$index_file")).${NC}"
-      ((WARNINGS++)) || true
-      ((found_warnings++)) || true
-    fi
+  # For each index file found (usually one root index, or per-subfolder indices)
+  for index_file in $spec_index_files; do
+      # 1. Check for files marked "Planned" in the index that already exist.
+      while IFS= read -r line; do
+        if [[ -n "$line" ]]; then
+          local spec_id
+          # Extract only the FIRST SPEC ID from the line (to avoid multi-line variables)
+          spec_id=$(echo "$line" | grep -oE "SPEC-[0-9]+" | head -1)
+          if [[ -n "$spec_id" ]] && find "$SPEC_DIR" -name "${spec_id}_*.yaml" -print -quit | grep -q .; then
+            echo -e "${YELLOW}CORPUS-W004: $(basename "$index_file") lists '$spec_id' as 'Planned', but the file exists.${NC}"
+            ((WARNINGS++)) || true
+            ((found_warnings++)) || true
+          fi
+        fi
+      done < <(grep -i "| *Planned *" "$index_file" 2>/dev/null || true)
   done
+
+  # 2. Check for existing SPEC files that are not mentioned in ANY index.
+  # This is tricky with multiple indices. Simplified to check if mentioned in the nearest index or root index.
+  # For now, we'll check if it's in the ROOT index if it exists.
+  
+  local root_index=$(find "$SPEC_DIR" -maxdepth 1 -name "SPEC-000_index.md" | head -1)
+  if [[ -n "$root_index" ]]; then
+      while IFS= read -r spec_file; do
+        local spec_id
+        spec_id=$(basename "$spec_file" | grep -oE "SPEC-[0-9]+" || echo "")
+        if [[ -n "$spec_id" ]] && ! grep -q "$spec_id" "$root_index" 2>/dev/null; then
+          echo -e "${YELLOW}CORPUS-W004: '$(basename "$spec_file")' exists but is not mentioned in the root index ($(basename "$root_index")).${NC}"
+          ((WARNINGS++)) || true
+          ((found_warnings++)) || true
+        fi
+      done < <(get_spec_files)
+  fi
 
   if [[ $found_warnings -eq 0 ]]; then
     echo -e "${GREEN}  ✓ Index file appears to be synchronized.${NC}"
@@ -210,9 +204,7 @@ check_visualization() {
 
   local found=0
   local total=0
-  shopt -s nullglob
-  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
-    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
+  while IFS= read -r f; do
     ((total++)) || true
 
     diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null | tr -d '\n' || echo 0)
@@ -220,8 +212,7 @@ check_visualization() {
     if [[ $diagram_count -eq 0 ]]; then
       ((found++)) || true
     fi
-  done
-  shopt -u nullglob
+  done < <(get_spec_files)
 
   if [[ $total -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No SPEC files to check${NC}"
@@ -251,14 +242,14 @@ check_spec_ids() {
   echo "--- CORPUS-08: Specification ID Uniqueness ---"
 
   local duplicates
-  # Grep for lines starting with 'id:', extract the value, sort, and find duplicates.
-  duplicates=$(grep -rhE "^id:" "$SPEC_DIR"/SPEC-[0-9]*_*.yaml 2>/dev/null | sed 's/^id: *//' | sort | uniq -d || true)
+  # Recursive grep
+  duplicates=$(grep -rhE "^id:" "$SPEC_DIR" --include="SPEC-[0-9]*_*.yaml" 2>/dev/null | sed 's/^id: *//' | sort | uniq -d || true)
 
   if [[ -n "$duplicates" ]]; then
     echo "$duplicates" | while read dup; do
       echo -e "${RED}CORPUS-E004: Duplicate internal 'id:' field found in corpus: $dup${NC}"
       # Find which files contain this duplicate id
-      grep -rlE "^id: $dup" "$SPEC_DIR" | sed 's/^/  - Found in: /'
+      grep -rEb "^id: $dup" "$SPEC_DIR" --include="SPEC-[0-9]*_*.yaml" | cut -d: -f1 | sort | uniq | sed 's/^/  - Found in: /'
       ((ERRORS++)) || true
     done
   else
@@ -277,10 +268,6 @@ check_param_format() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-10: File Size Compliance
-# -----------------------------------------------------------------------------
-
-# -----------------------------------------------------------------------------
 # CORPUS-10: File Size Compliance (Universal Rule)
 # -----------------------------------------------------------------------------
 
@@ -289,32 +276,26 @@ check_file_size() {
   echo "--- CORPUS-10: File Size Compliance ---"
 
   local found=0
-  # Recursive search using globstar (enabled in main)
-  for f in "$SPEC_DIR"/**/SPEC-[0-9]*_*.yaml; do
-    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
-    # Skip if directory (globstar might match dirs)
-    [[ -f "$f" ]] || continue
-
+  while IFS= read -r f; do
     local lines
     lines=$(wc -l <"$f")
 
     # Universal Rule: >1000 lines is an ERROR (Must Split)
     if [[ $lines -gt 1000 ]]; then
-      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1000 lines ($lines) - MUST SPLIT per Universal Rule${NC}"
+      echo -e "${RED}CORPUS-E005: $(basename "$f") exceeds 1000 lines ($lines) - MUST SPLIT per Universal Rule${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     elif [[ $lines -gt 500 ]]; then
-      echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 500 lines ($lines) - Consider splitting${NC}"
+      echo -e "${YELLOW}CORPUS-W005: $(basename "$f") exceeds 500 lines ($lines) - Consider splitting${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
-  done
+  done < <(get_spec_files)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ All files within size limits (≤1000 lines)${NC}"
   fi
 }
-
 
 # -----------------------------------------------------------------------------
 # CORPUS-11: YAML Syntax Validation
@@ -325,17 +306,13 @@ check_yaml_syntax() {
   echo "--- CORPUS-11: YAML Syntax Validation ---"
 
   local found=0
-  shopt -s nullglob
-  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
-    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
-
+  while IFS= read -r f; do
     if ! python3 -c "import yaml; yaml.safe_load(open('$f'))" 2>/dev/null; then
-      echo -e "${RED}CORPUS-E011: $(basename $f) has invalid YAML syntax${NC}"
+      echo -e "${RED}CORPUS-E011: $(basename "$f") has invalid YAML syntax${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
-  done
-  shopt -u nullglob
+  done < <(get_spec_files)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ All YAML files syntactically valid${NC}"
@@ -361,22 +338,18 @@ check_req_coverage() {
   echo "--- CORPUS-13: REQ Coverage ---"
 
   local found=0
-  shopt -s nullglob
-  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
-    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
-
+  while IFS= read -r f; do
     local req_refs
     # Check for the presence of the req tag in the cumulative_tags section
     req_refs=$(grep -A 10 "cumulative_tags:" "$f" | grep -c "req:" 2>/dev/null | tr -d '\n' || echo 0)
     [[ -z "$req_refs" || ! "$req_refs" =~ ^[0-9]+$ ]] && req_refs=0
 
     if [[ $req_refs -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E013: $(basename $f) is missing required upstream REQ traceability${NC}"
+      echo -e "${RED}CORPUS-E013: $(basename "$f") is missing required upstream REQ traceability${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
-  done
-  shopt -u nullglob
+  done < <(get_spec_files)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ All SPEC files have REQ coverage${NC}"
@@ -397,30 +370,21 @@ check_required_fields() {
   # Corrected fields based on SPEC-MVP-TEMPLATE.yaml
   local required_fields=("id" "version" "title" "summary" "traceability")
 
-  shopt -s nullglob
-  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
-    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
-
+  while IFS= read -r f; do
     for field in "${required_fields[@]}"; do
-      # Check for top-level keys. This is a simple grep check.
-      # For 'traceability', it just checks for the block's existence.
+      # Simple grep for key starting string at start of line
       if ! grep -qE "^${field}:" "$f" 2>/dev/null; then
-        echo -e "${RED}CORPUS-E014: $(basename $f) missing required top-level field: '${field}:'${NC}"
+        echo -e "${RED}CORPUS-E014: $(basename "$f") missing required top-level field: '${field}:'${NC}"
         ((ERRORS++)) || true
         ((found++)) || true
       fi
     done
-  done
-  shopt -u nullglob
+  done < <(get_spec_files)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ All required YAML fields present${NC}"
   fi
 }
-
-# -----------------------------------------------------------------------------
-# CORPUS-15: Cumulative Traceability Compliance
-# -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
 # CORPUS-15: Cumulative Traceability Compliance
@@ -434,14 +398,10 @@ check_cumulative_traceability() {
   # Per rules, 7 tags are required. CTR is optional.
   local required_tags=("brd:" "prd:" "ears:" "bdd:" "adr:" "sys:" "req:")
 
-  shopt -s globstar nullglob
-  for f in "$SPEC_DIR"/**/SPEC-[0-9]*_*.yaml; do
-    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
-    [[ -f "$f" ]] || continue
-
+  while IFS= read -r f; do
     # Check for the cumulative_tags block first
     if ! grep -q "cumulative_tags:" "$f" 2>/dev/null; then
-        echo -e "${RED}CORPUS-E015: $(basename $f) is missing the 'cumulative_tags' block entirely.${NC}"
+        echo -e "${RED}CORPUS-E015: $(basename "$f") is missing the 'cumulative_tags' block entirely.${NC}"
         ((ERRORS++)) || true
         ((found++)) || true
         continue
@@ -450,20 +410,17 @@ check_cumulative_traceability() {
     local missing_tags=""
     # Check for each required tag within the cumulative_tags block
     for tag in "${required_tags[@]}"; do
-      # Use a yaml-aware tool or a more robust grep if available.
-      # This simple grep assumes tags are on their own line under cumulative_tags.
       if ! sed -n '/cumulative_tags:/,/^[^ ]/p' "$f" | grep -qE "^\s*${tag}"; then
         missing_tags="$missing_tags ${tag}"
       fi
     done
 
     if [[ -n "$missing_tags" ]]; then
-      echo -e "${RED}CORPUS-E015: $(basename $f) is missing required cumulative tags:$missing_tags${NC}"
+      echo -e "${RED}CORPUS-E015: $(basename "$f") is missing required cumulative tags:$missing_tags${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
-  done
-  shopt -u globstar nullglob
+  done < <(get_spec_files)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ Cumulative traceability complete${NC}"

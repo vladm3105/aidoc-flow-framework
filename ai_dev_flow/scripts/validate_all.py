@@ -55,70 +55,70 @@ class ValidatorConfig:
 
 VALIDATOR_REGISTRY: Dict[str, ValidatorConfig] = {
     "BRD": ValidatorConfig(
-        script="../01_BRD/scripts/validate_brd.py",
-        script_type="python",
+        script="../01_BRD/scripts/validate_brd_quality_score.sh",
+        script_type="shell",
         implemented=True,
         layer=1,
         description="Business Requirements Document validator"
     ),
     "PRD": ValidatorConfig(
-        script="../02_PRD/scripts/validate_prd.py",
-        script_type="python",
+        script="../02_PRD/scripts/validate_prd_quality_score.sh",
+        script_type="shell",
         implemented=True,
         layer=2,
         description="Product Requirements Document validator"
     ),
     "EARS": ValidatorConfig(
-        script="../03_EARS/scripts/validate_ears.py",
-        script_type="python",
+        script="../03_EARS/scripts/validate_ears_quality_score.sh",
+        script_type="shell",
         implemented=True,
         layer=3,
         description="EARS requirements syntax validator"
     ),
     "BDD": ValidatorConfig(
-        script="../04_BDD/scripts/validate_bdd.py",
-        script_type="python",
+        script="../04_BDD/scripts/validate_bdd_quality_score.sh",
+        script_type="shell",
         implemented=True,
         layer=4,
         description="BDD feature file validator"
     ),
     "ADR": ValidatorConfig(
-        script="../05_ADR/scripts/validate_adr.py",
-        script_type="python",
+        script="../05_ADR/scripts/validate_adr_quality_score.sh",
+        script_type="shell",
         implemented=True,
         layer=5,
         description="Architecture Decision Record validator"
     ),
     "SYS": ValidatorConfig(
-        script="../06_SYS/scripts/validate_sys.py",
-        script_type="python",
+        script="../06_SYS/scripts/validate_sys_quality_score.sh",
+        script_type="shell",
         implemented=True,
         layer=6,
         description="System Requirements validator"
     ),
     "REQ": ValidatorConfig(
-        script="../07_REQ/scripts/validate_req_template.sh",
+        script="../07_REQ/scripts/validate_req_quality_score.sh",
         script_type="shell",
         implemented=True,
         layer=7,
         description="Atomic Requirements validator"
     ),
     "CTR": ValidatorConfig(
-        script="../08_CTR/scripts/validate_ctr.sh",
+        script="../08_CTR/scripts/validate_ctr_quality_score.sh",
         script_type="shell",
         implemented=True,
         layer=8,
         description="Contract validator"
     ),
     "SPEC": ValidatorConfig(
-        script="../09_SPEC/scripts/validate_spec.py",
-        script_type="python",
+        script="../09_SPEC/scripts/validate_spec_quality_score.sh",
+        script_type="shell",
         implemented=True,
         layer=9,
         description="Technical Specification validator"
     ),
     "TASKS": ValidatorConfig(
-        script="../10_TASKS/scripts/validate_tasks.sh",
+        script="../10_TASKS/scripts/validate_tasks_quality_score.sh",
         script_type="shell",
         implemented=True,
         layer=10,
@@ -149,13 +149,7 @@ CROSS_VALIDATORS = {
         layer=0,
         description="Tag compliance validator"
     ),
-    "SECTION": ValidatorConfig(
-        script="validate_section_count.py",
-        script_type="python",
-        implemented=True,
-        layer=0,
-        description="Section file count validator"
-    ),
+
     "DIAGRAM": ValidatorConfig(
         script="validate_diagram_consistency.py",
         script_type="python",
