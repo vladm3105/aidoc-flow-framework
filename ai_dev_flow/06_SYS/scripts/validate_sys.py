@@ -61,7 +61,7 @@ FORBIDDEN_TAG_PATTERNS = [
 # Required sections (patterns) - 15 sections
 # Required sections (patterns) - Standard (15 sections)
 REQUIRED_SECTIONS_STANDARD = [
-    (r"^# SYS-\d{2,}:", "Title (H1 with SYS-NN+ format)"),
+    (r"^# SYS-\d{2,}(\.\d+)?:", "Title (H1 with SYS-NN or SYS-NN.DD format)"),
     (r"^## 1\. Document Control", "Section 1: Document Control"),
     (r"^## 2\. Executive Summary", "Section 2: Executive Summary"),
     (r"^## 3\. Scope", "Section 3: Scope"),
@@ -81,7 +81,7 @@ REQUIRED_SECTIONS_STANDARD = [
 
 # Required sections (patterns) - MVP (12 sections)
 REQUIRED_SECTIONS_MVP = [
-    (r"^# SYS-\d{2,}:", "Title (H1 with SYS-NN+ format)"),
+    (r"^# SYS-\d{2,}(\.\d+)?:", "Title (H1 with SYS-NN or SYS-NN.DD format)"),
     (r"^## 1\. Document Control", "Section 1: Document Control"),
     (r"^## 2\. Executive Summary", "Section 2: Executive Summary"),
     (r"^## 3\. Scope", "Section 3: Scope"),
@@ -118,8 +118,11 @@ QUALITY_CATEGORIES = [
     "maintainability",
 ]
 
-# File naming pattern (2+ digits per ID_NAMING_STANDARDS.md)
-FILE_NAME_PATTERN = r"^SYS-\d{2,}_[a-z0-9_]+\.md$"
+# File naming patterns
+# Monolithic: SYS-NN+_slug.md (2+ digits per ID_NAMING_STANDARDS.md)
+FILE_NAME_PATTERN_MONOLITHIC = r"^SYS-\d{2,}_[A-Za-z0-9_]+\.md$"
+# Decimal suffix (one-to-many): SYS-NN.DD_slug.md (Vertical ID Alignment)
+FILE_NAME_PATTERN_DECIMAL = r"^SYS-\d{2,}\.\d+_[A-Za-z0-9_]+\.md$"
 
 
 # =============================================================================
@@ -203,7 +206,15 @@ def extract_sections(content: str) -> List[Tuple[str, int]]:
     sections = []
     lines = content.split("\n")
 
+    in_code_block = False
     for i, line in enumerate(lines, 1):
+        if line.strip().startswith("```"):
+            in_code_block = not in_code_block
+            continue
+            
+        if in_code_block:
+            continue
+
         if line.startswith("#"):
             sections.append((line, i))
 
@@ -217,8 +228,16 @@ def extract_section_content(content: str, section_pattern: str) -> Optional[str]
     Returns:
         Section content or None if not found
     """
+    # Escape pattern for regex but keep \d+ etc
+    # We want to match: ## 4. Functional... or ## 4. Functional...
+    # The input section_pattern is like r"## 4\. Functional Requirements"
+    # We need to make the number flexible: r"## \d+\. Functional Requirements"
+    
+    # Simple heuristic: if pattern contains "## N\.", replace with "## \d+\."
+    flexible_pattern = re.sub(r"## \d+\\.", r"## \\d+\\.", section_pattern)
+    
     match = re.search(
-        f"({section_pattern}.*?)(?=^## \\d+\\.|\\Z)",
+        f"({flexible_pattern}.*?)(?=^## \\d+\\.|\\Z)",
         content,
         re.MULTILINE | re.DOTALL
     )
@@ -237,10 +256,15 @@ def validate_file_name(file_path: Path, result: ValidationResult):
     if "TEMPLATE" in file_name.upper():
         return
 
-    if not re.match(FILE_NAME_PATTERN, file_name):
+    # Check against all valid patterns
+    is_monolithic = re.match(FILE_NAME_PATTERN_MONOLITHIC, file_name)
+    is_decimal = re.match(FILE_NAME_PATTERN_DECIMAL, file_name)
+
+    if not (is_monolithic or is_decimal):
         result.add_warning(
             "SYS-E001",
-            f"File name '{file_name}' doesn't match SYS-NNN_name.md format"
+            f"File name '{file_name}' doesn't match valid SYS format. "
+            "Expected: SYS-NNN_slug.md or SYS-NN.DD_slug.md (one-to-many)"
         )
 
 
@@ -313,8 +337,8 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
         result.add_error("SYS-E001", f"Multiple H1 headings found ({len(h1_sections)})")
     else:
         h1_text = h1_sections[0][0]
-        if not re.match(r"^# SYS-\d{2,}:", h1_text):
-            result.add_error("SYS-E001", f"Invalid H1 format. Expected '# SYS-NN+: Title', got '{h1_text[:50]}'")
+        if not re.match(r"^# SYS-\d{2,}(\.\d+)?:", h1_text):
+            result.add_error("SYS-E001", f"Invalid H1 format. Expected '# SYS-NN: Title' or '# SYS-NN.DD: Title', got '{h1_text[:50]}'")
 
     # Determine profile and required sections
     profile = "standard"
@@ -367,10 +391,12 @@ def validate_functional_requirements(content: str, result: ValidationResult):
         result.add_error("SYS-E005", "Missing Section 4: Functional Requirements")
         return
 
-    # Check for FR-NNN format
-    fr_ids = re.findall(r"\bFR-(\d{3})\b", fr_content)
-    if not fr_ids:
-        result.add_warning("SYS-W001", "No FR-NNN format requirements found in Section 4")
+    # Check for FR-NNN format OR SYS.NN.NN.NN format (Element Reference)
+    fr_ids_legacy = re.findall(r"\bFR-(\d{3})\b", fr_content)
+    fr_ids_modern = re.findall(r"SYS\.\d{2,}\.\d+\.\d+", fr_content)
+    
+    if not fr_ids_legacy and not fr_ids_modern:
+        result.add_warning("SYS-W001", "No IDs found in Section 4. Expected format: SYS.NN.TT.SS (or legacy FR-NNN)")
 
 
 def validate_quality_attributes(content: str, result: ValidationResult):
@@ -395,7 +421,9 @@ def validate_quality_attributes(content: str, result: ValidationResult):
 
     # Check for 4-segment numbering pattern
     qa_ids = re.findall(r"SYS\.\d{2,9}\.\d{2,9}\.\d{2,9}", qa_content)
+    print(f"DEBUG: {result.file_path} - Found QA IDs: {qa_ids}")
     if not qa_ids:
+        # Check standard format too just in case (e.g. QA-NNN)? No, strict MVP.
         result.add_warning("SYS-W001", "Quality attributes not using 4-segment format (SYS.NN.EE.SS)")
 
 
@@ -427,9 +455,14 @@ def validate_traceability(content: str, result: ValidationResult):
         )
 
 
-def validate_testing_requirements(content: str, result: ValidationResult):
-    """Validate Testing Requirements section (Section 8)."""
-    test_content = extract_section_content(content, r"## 8\. Testing Requirements")
+def validate_testing_requirements(content: str, result: ValidationResult, profile: str = "standard"):
+    """Validate Testing Requirements section (Section 8 or 9 depending on profile)."""
+    if profile == "mvp":
+        pattern = r"## 9\. Testing and Validation Requirements"
+    else:
+        pattern = r"## 8\. Testing Requirements"
+
+    test_content = extract_section_content(content, pattern)
 
     if not test_content:
         result.add_warning("SYS-W001", "Missing Section 8: Testing Requirements")
@@ -498,13 +531,19 @@ def validate_sys_file(file_path: Path) -> ValidationResult:
     # Extract sections
     sections = extract_sections(content)
 
+    # Determine profile
+    profile = "standard"
+    if metadata and "custom_fields" in metadata:
+        profile = metadata["custom_fields"].get("template_profile", "standard")
+
+
     # Run validations
     validate_metadata(metadata, result, is_template)
     validate_structure(content, sections, result, metadata)
     validate_functional_requirements(content, result)
     validate_quality_attributes(content, result)
     validate_interface_specs(content, result)
-    validate_testing_requirements(content, result)
+    validate_testing_requirements(content, result, profile)
     validate_traceability(content, result)
 
     return result
@@ -523,11 +562,18 @@ def validate_directory(dir_path: Path) -> List[ValidationResult]:
     results = []
 
     # Find SYS files
-    patterns = ["SYS-*.md", "sys-*.md", "SYS_*.md"]
+    patterns = ["SYS-*.md", "sys-*.md"]
     sys_files = []
 
     for pattern in patterns:
         sys_files.extend(dir_path.glob(f"**/{pattern}"))
+
+    # Exclude supporting documents (templates, indexes, planning docs)
+    excluded_patterns = ['TEMPLATE', 'INDEX', '_CREATION_PLAN', '_SCHEMA', '_VALIDATION', '_QUALITY', '_RULES', 'TRACEABILITY_MATRIX']
+    
+    # Also exclude framework infrastructure files (TYPE-00_*)
+    sys_files = [f for f in sys_files if not any(excl in f.name.upper() for excl in excluded_patterns)]
+    sys_files = [f for f in sys_files if not re.match(r'^SYS-00[_.]', f.name)]
 
     if not sys_files:
         print(f"[WARNING] VAL-W001: No SYS files found in {dir_path}")

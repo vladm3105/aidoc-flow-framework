@@ -39,8 +39,11 @@ from error_codes import Severity, calculate_exit_code, format_error
 # VALIDATION CONSTANTS
 # =============================================================================
 
-# File naming pattern (2+ digits per ID_NAMING_STANDARDS.md)
-FILE_NAME_PATTERN = r"^SPEC-\d{2,}_[a-z0-9_]+\.yaml$"
+# File naming patterns
+# Monolithic: SPEC-NN+_slug.yaml (2+ digits per ID_NAMING_STANDARDS.md)
+FILE_NAME_PATTERN_MONOLITHIC = r"^SPEC-\d{2,}_[A-Za-z0-9_]+\.yaml$"
+# Decimal suffix (one-to-many): SPEC-NN.DD_slug.yaml (Vertical ID Alignment)
+FILE_NAME_PATTERN_DECIMAL = r"^SPEC-\d{2,}\.\d+_[A-Za-z0-9_]+\.yaml$"
 
 # Required top-level fields
 REQUIRED_TOP_LEVEL = [
@@ -184,10 +187,15 @@ def validate_file_name(file_path: Path, result: ValidationResult):
     if "TEMPLATE" in file_name.upper():
         return
 
-    if not re.match(FILE_NAME_PATTERN, file_name):
+    # Check against all valid patterns
+    is_monolithic = re.match(FILE_NAME_PATTERN_MONOLITHIC, file_name)
+    is_decimal = re.match(FILE_NAME_PATTERN_DECIMAL, file_name)
+
+    if not (is_monolithic or is_decimal):
         result.add_error(
             "SPEC-E013",
-            f"File name '{file_name}' doesn't match SPEC-NNN_name.yaml format"
+            f"File name '{file_name}' doesn't match valid SPEC format. "
+            "Expected: SPEC-NNN_slug.yaml or SPEC-NN.DD_slug.yaml"
         )
 
 
@@ -223,8 +231,15 @@ def validate_id_field(data: Dict, file_path: Path, result: ValidationResult):
         )
 
     # Check if id matches filename slug
+    # Check if id matches filename slug
     file_name = file_path.stem  # SPEC-01_component_name
+    
+    # Try monolithic pattern
     match = re.match(r"SPEC-\d{3}_(.+)", file_name)
+    if not match:
+        # Try decimal pattern
+        match = re.match(r"SPEC-\d{2,}\.\d+_(.+)", file_name)
+    
     if match:
         expected_id = match.group(1)
         if str(spec_id) != expected_id:
@@ -584,8 +599,21 @@ def validate_directory(dir_path: Path) -> List[ValidationResult]:
     patterns = ["SPEC-*.yaml", "SPEC-*.yml", "spec-*.yaml"]
     spec_files = []
 
+    raw_files = []
     for pattern in patterns:
-        spec_files.extend(dir_path.glob(f"**/{pattern}"))
+        raw_files.extend(dir_path.glob(f"**/{pattern}"))
+
+    # Exclude supporting documents (templates, indexes, planning docs)
+    excluded_patterns = ['TEMPLATE', 'INDEX', '_CREATION_PLAN']
+    
+    for f in raw_files:
+         # Check exclusion patterns in filename
+        if any(excl in f.name.upper() for excl in excluded_patterns):
+            continue
+        # Also exclude framework infrastructure files (SPEC-00_*)
+        if re.match(r'^SPEC-00[_.]', f.name):
+            continue
+        spec_files.append(f)
 
     if not spec_files:
         print(f"[WARNING] VAL-W001: No SPEC files found in {dir_path}")

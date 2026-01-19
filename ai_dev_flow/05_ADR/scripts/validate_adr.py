@@ -61,7 +61,7 @@ FORBIDDEN_TAG_PATTERNS = [
 # Required sections (patterns)
 # Required regions (patterns) - Standard
 REQUIRED_SECTIONS_STANDARD = [
-    (r"^# ADR-\d{2,}:", "Title (H1 with ADR-NN+ format)"),
+    (r"^# ADR-\d{2,}(\.\d{2})?:", "Title (H1 with ADR-NN or ADR-NN.DD format)"),
     (r"^## 1\. Document Control", "Section 1: Document Control"),
     (r"^## 2\. Position in Development Workflow", "Section 2: Position in Development Workflow"),
     (r"^## 3\. Status", "Section 3: Status"),
@@ -76,7 +76,7 @@ REQUIRED_SECTIONS_STANDARD = [
 
 # Required regions (patterns) - MVP
 REQUIRED_SECTIONS_MVP = [
-    (r"^# ADR-\d{2,}:", "Title (H1 with ADR-NN+ format)"),
+    (r"^# ADR-\d{2,}(\.\d{2})?:", "Title (H1 with ADR-NN or ADR-NN.DD format)"),
     (r"^## 1\. Document Control", "Section 1: Document Control"),
     (r"^## 2\. Context", "Section 2: Context"),
     (r"^## 3\. Decision", "Section 3: Decision"),
@@ -119,11 +119,13 @@ VALID_STATUS_VALUES = ["Proposed", "Accepted", "Deprecated", "Superseded", "Draf
 
 # File naming patterns
 # Monolithic: ADR-NN+_slug.md (2+ digits per ID_NAMING_STANDARDS.md)
-FILE_NAME_PATTERN_MONOLITHIC = r"^ADR-\d{2,}_[a-z0-9_]+\.md$"
+FILE_NAME_PATTERN_MONOLITHIC = r"^ADR-\d{2,}_[A-Za-z0-9_]+\.md$"
+# Decimal suffix (one-to-many): ADR-NN.DD_slug.md (Vertical ID Alignment)
+FILE_NAME_PATTERN_DECIMAL = r"^ADR-\d{2,}\.\d+_[A-Za-z0-9_]+\.md$"
 # Section (shortened): ADR-NN+.S_section_type.md (PREFERRED for nested folders)
-FILE_NAME_PATTERN_SECTION_SHORT = r"^ADR-\d{2,}\.\d+_[a-z_]+\.md$"
+FILE_NAME_PATTERN_SECTION_SHORT = r"^ADR-\d{2,}\.\d+_[A-Za-z_]+\.md$"
 # Section (full): ADR-NN+.S_slug_section_type.md (backward compatible)
-FILE_NAME_PATTERN_SECTION_FULL = r"^ADR-\d{2,}\.\d+_[a-z0-9_]+_[a-z_]+\.md$"
+FILE_NAME_PATTERN_SECTION_FULL = r"^ADR-\d{2,}\.\d+_[A-Za-z0-9_]+_[A-Za-z_]+\.md$"
 
 
 # =============================================================================
@@ -243,14 +245,15 @@ def validate_file_name(file_path: Path, result: ValidationResult):
 
     # Check against all valid patterns
     is_monolithic = re.match(FILE_NAME_PATTERN_MONOLITHIC, file_name)
+    is_decimal = re.match(FILE_NAME_PATTERN_DECIMAL, file_name)
     is_section_short = re.match(FILE_NAME_PATTERN_SECTION_SHORT, file_name)
     is_section_full = re.match(FILE_NAME_PATTERN_SECTION_FULL, file_name)
 
-    if not (is_monolithic or is_section_short or is_section_full):
+    if not (is_monolithic or is_decimal or is_section_short or is_section_full):
         result.add_warning(
             "ADR-E001",
             f"File name '{file_name}' doesn't match valid ADR format. "
-            "Expected: ADR-NNN_slug.md (monolithic) or ADR-NNN.S_section.md (nested)"
+            "Expected: ADR-NNN_slug.md, ADR-NN.DD_slug.md (one-to-many), or ADR-NNN.S_section.md (nested)"
         )
 
 
@@ -323,8 +326,8 @@ def validate_structure(content: str, sections: List[Tuple[str, int]], result: Va
         result.add_error("ADR-E001", f"Multiple H1 headings found ({len(h1_sections)})")
     else:
         h1_text = h1_sections[0][0]
-        if not re.match(r"^# ADR-\d{2,}:", h1_text):
-            result.add_error("ADR-E001", f"Invalid H1 format. Expected '# ADR-NN+: Title', got '{h1_text[:50]}'")
+        if not re.match(r"^# ADR-\d{2,}(\.\d{2})?:", h1_text):
+            result.add_error("ADR-E001", f"Invalid H1 format. Expected '# ADR-NN: Title' or '# ADR-NN.DD: Title', got '{h1_text[:50]}'")
 
     # Determine profile and required sections
     profile = "standard"
@@ -606,11 +609,18 @@ def validate_directory(dir_path: Path) -> List[ValidationResult]:
     results = []
 
     # Find ADR files
-    patterns = ["ADR-*.md", "adr-*.md", "ADR_*.md"]
+    patterns = ["ADR-*.md", "adr-*.md"]
     adr_files = []
 
     for pattern in patterns:
         adr_files.extend(dir_path.glob(f"**/{pattern}"))
+
+    # Exclude supporting documents (templates, indexes, planning docs)
+    excluded_patterns = ['TEMPLATE', 'INDEX', '_CREATION_PLAN', '_SCHEMA', '_VALIDATION', '_QUALITY', '_RULES', 'TRACEABILITY_MATRIX']
+    
+    # Also exclude framework infrastructure files (TYPE-00_*)
+    adr_files = [f for f in adr_files if not any(excl in f.name.upper() for excl in excluded_patterns)]
+    adr_files = [f for f in adr_files if not re.match(r'^ADR-00[_.]', f.name)]
 
     if not adr_files:
         print(f"[WARNING] VAL-W001: No ADR files found in {dir_path}")

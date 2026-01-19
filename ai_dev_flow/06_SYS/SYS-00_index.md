@@ -1,5 +1,5 @@
 ---
-title: "SYS-000: SYS Index"
+title: "SYS-00: SYS Index"
 tags:
   - index-document
   - layer-6-artifact
@@ -11,7 +11,7 @@ custom_fields:
   priority: shared
 ---
 
-# SYS-000: System Requirements Specification Master Index
+# SYS-00: System Requirements Specification Master Index
 
 Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 

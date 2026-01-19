@@ -98,7 +98,9 @@ class EarsValidator:
     MALFORMED_TABLE_SEPARATOR = r"\|-+\|\s*\|$"
 
     # === TRACEABILITY ===
-    SOURCE_DOC_PATTERN = r"@prd:\s*PRD\.\d{2,9}\.\d{2,9}\.\d{2,9}"
+    # === TRACEABILITY ===
+    # Updated to support PRD-NN, PRD.NN and deep IDs
+    SOURCE_DOC_PATTERN = r"@prd:\s*PRD[-.][\w.-]+"
     TRACEABILITY_TAG_PATTERN = r"@(prd|brd|ears|threshold|entity):\s*\S+"
 
     def __init__(self, verbose: bool = False):
@@ -119,13 +121,16 @@ class EarsValidator:
             return self.results
 
         content = file_path.read_text(encoding="utf-8")
-        lines = content.split("\n")
+        
+        
+        clean_content = content
+        lines = clean_content.split("\n")
 
         # Extract document ID from filename
         doc_id_match = re.search(r"EARS-(\d{3})", file_path.name)
         doc_id = doc_id_match.group(1) if doc_id_match else None
 
-        # Extract frontmatter
+        # Extract frontmatter (use original content to preserve YAML structure)
         frontmatter = self._extract_frontmatter(content)
         if frontmatter is None:
             self.results.append(ValidationResult(
@@ -141,10 +146,10 @@ class EarsValidator:
         self._validate_custom_fields(file_path, frontmatter)
 
         # === STRUCTURE VALIDATIONS ===
-        self._validate_required_sections(file_path, content, frontmatter)
-        self._validate_section_numbering(file_path, content)
-        self._validate_document_control(file_path, content)
-        self._validate_single_h1(file_path, content)
+        self._validate_required_sections(file_path, clean_content, frontmatter)
+        self._validate_section_numbering(file_path, clean_content)
+        self._validate_document_control(file_path, clean_content)
+        self._validate_single_h1(file_path, clean_content)
 
         # === TABLE SYNTAX VALIDATIONS ===
         self._validate_table_syntax(file_path, lines)
@@ -153,26 +158,27 @@ class EarsValidator:
         self._validate_requirement_ids(file_path, lines, doc_id)
 
         # === EARS SYNTAX VALIDATIONS ===
-        self._validate_ears_syntax(file_path, content)
-        self._validate_atomic_requirements(file_path, content)
-        self._validate_measurable_constraints(file_path, content)
+        # === EARS SYNTAX VALIDATIONS ===
+        self._validate_ears_syntax(file_path, clean_content)
+        self._validate_atomic_requirements(file_path, clean_content)
+        self._validate_measurable_constraints(file_path, clean_content)
 
         # === TRACEABILITY VALIDATIONS ===
-        self._validate_source_document(file_path, content)
-        self._validate_traceability_format(file_path, content)
-        self._validate_brd_tag_presence(file_path, content)
+        self._validate_source_document(file_path, clean_content)
+        self._validate_traceability_format(file_path, clean_content)
+        self._validate_brd_tag_presence(file_path, clean_content)
 
         # === BDD-READY SCORE ===
-        self._validate_bdd_ready_score(file_path, content)
+        self._validate_bdd_ready_score(file_path, clean_content)
 
         # === STATUS vs BDD-READY SCORE CONSISTENCY ===
-        self._validate_status_bdd_consistency(file_path, content)
+        self._validate_status_bdd_consistency(file_path, clean_content)
 
         # === AUTHOR STANDARDIZATION ===
-        self._validate_author(file_path, content)
+        self._validate_author(file_path, clean_content)
 
         # === BLOCK QUOTE TAGS (E050) ===
-        self._validate_no_block_quote_tags(file_path, content)
+        self._validate_no_block_quote_tags(file_path, clean_content)
 
         return self.results
 
@@ -403,7 +409,7 @@ class EarsValidator:
             match = re.match(self.CORRECT_REQ_ID_PATTERN, line)
             if match:
                 correct_count += 1
-                req_id = f"EARS-{match.group(1)}-{match.group(2)}"
+                req_id = f"EARS-{match.group(1)}-{match.group(2)}-{match.group(3)}"
                 found_ids.append((req_id, i))
 
         # Summary if many incorrect
@@ -565,7 +571,7 @@ class EarsValidator:
             return  # Skip if no traceability section at all
 
         # Check for @brd: anywhere in traceability or references sections (dot notation: BRD.NN.EE.SS)
-        has_brd_tag = bool(re.search(r"@brd:\s*BRD\.\d{3}\.\d{3}", content))
+        has_brd_tag = bool(re.search(r"@brd:\s*BRD\.\d{2,3}\.\d{2,3}", content))
 
         if not has_brd_tag:
             self.results.append(ValidationResult(
@@ -697,10 +703,18 @@ def main():
         description="Validate EARS documents against comprehensive schema rules (v2.0)"
     )
     parser.add_argument(
-        "--path",
+        "path",
+        nargs="?",
         type=str,
         default="docs/EARS",
         help="Path to EARS file or directory"
+    )
+    # kept for backward compatibility but hidden
+    parser.add_argument(
+        "--path",
+        dest="legacy_path",
+        type=str,
+        help=argparse.SUPPRESS
     )
     parser.add_argument(
         "--verbose",
@@ -721,7 +735,10 @@ def main():
     args = parser.parse_args()
 
     validator = EarsValidator(verbose=args.verbose)
-    path = Path(args.path)
+    
+    # Handle positional vs legacy arg
+    path_str = args.legacy_path if args.legacy_path else args.path
+    path = Path(path_str)
 
     if path.is_file():
         results = validator.validate_file(path)

@@ -367,6 +367,290 @@ spec:
       target:
         type: Utilization
         averageUtilization: 70
+  ```
+
+---
+
+## Generate Deployment Scripts from REQ
+
+```bash
+devops-flow generate-deployment-scripts \
+  --req docs/07_REQ/REQ-NN.md \
+  --spec docs/09_SPEC/SPEC-NN.yaml \
+  --output scripts/
+```
+
+Generated shell scripts structure:
+```
+scripts/
+├── setup.sh              # Initial environment setup
+├── install.sh            # Application installation
+├── deploy.sh             # Main deployment orchestration
+├── rollback.sh           # Rollback to previous version
+├── health-check.sh       # Health verification
+└── cleanup.sh            # Cleanup old versions
+```
+
+**Script Generation Logic**:
+- Parse REQ Section 9.5.3 for script requirements
+- Parse SPEC deployment section for technical details
+- Apply script standards (Bash 4.0+, error handling, logging)
+- Reference cloud provider from REQ @adr tags
+- Use environment-specific configurations from REQ 9.5.2
+
+**Example generated script** (setup.sh):
+```bash
+#!/bin/bash
+set -euo pipefail
+
+# Setup environment for deployment
+LOG_FILE="logs/deployment_$(date +%Y%m%d_%H%M%S).log"
+mkdir -p logs
+
+log() {
+  echo "[$(date +%Y-%m-%d %H:%M:%S)] $*" | tee -a "$LOG_FILE"
+}
+
+log "Starting environment setup..."
+
+# Install dependencies
+if [ ! -f .tool-versions ]; then
+  log "Installing Python dependencies..."
+  pip install -r requirements.txt
+fi
+
+# Configure environment variables
+if [ -f .env.deployment ]; then
+  log "Loading deployment environment variables..."
+  export $(cat .env.deployment | grep -v '^#' | xargs)
+fi
+
+log "Environment setup complete"
+exit 0
+```
+
+**Example generated script** (deploy.sh):
+```bash
+#!/bin/bash
+set -euo pipefail
+
+# Main deployment orchestration script
+LOG_FILE="logs/deployment_$(date +%Y%m%d_%H%M%S).log"
+ENVIRONMENT="${1:-staging}"
+
+log() {
+  echo "[$(date +%Y-%m-%d %H:%M:%S)] $*" | tee -a "$LOG_FILE"
+}
+
+# Step 1: Setup
+log "Running setup..."
+./scripts/setup.sh
+
+# Step 2: Install
+log "Installing application..."
+./scripts/install.sh --env "$ENVIRONMENT"
+
+# Step 3: Deploy
+log "Deploying application..."
+if [ "$ENVIRONMENT" = "production" ]; then
+  ./scripts/deploy-prod.sh
+else
+  ./scripts/deploy-staging.sh
+fi
+
+# Step 4: Health check
+log "Running health check..."
+./scripts/health-check.sh --env "$ENVIRONMENT"
+
+if [ $? -eq 0 ]; then
+  log "Deployment successful"
+else
+  log "Deployment failed, initiating rollback..."
+  ./scripts/rollback.sh --env "$ENVIRONMENT"
+  exit 1
+fi
+```
+
+**Example generated script** (health-check.sh):
+```bash
+#!/bin/bash
+set -euo pipefail
+
+# Health verification script
+HEALTH_URL="${1:-http://localhost:8000/health/live}"
+TIMEOUT=60
+RETRIES=3
+
+log() {
+  echo "[$(date +%Y-%m-%d %H:%M:%S)] $*"
+}
+
+log "Starting health check..."
+
+for i in $(seq 1 $RETRIES); do
+  log "Attempt $i of $RETRIES..."
+  RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" --max-time $TIMEOUT "$HEALTH_URL")
+  
+  if [ "$RESPONSE" = "200" ]; then
+    log "Health check passed"
+    exit 0
+  fi
+  
+  log "Health check failed, sleeping before retry..."
+  sleep 5
+done
+
+log "Health check failed after $RETRIES attempts"
+exit 1
+```
+
+## Generate Ansible Playbooks from REQ
+
+```bash
+devops-flow generate-ansible-playbooks \
+  --req docs/07_REQ/REQ-NN.md \
+  --spec docs/09_SPEC/SPEC-NN.yaml \
+  --output ansible/
+```
+
+Generated Ansible playbooks structure:
+```
+ansible/
+├── provision_infra.yml         # Infrastructure provisioning
+├── configure_instances.yml      # Instance configuration
+├── deploy_app.yml              # Application deployment
+├── configure_monitoring.yml     # Monitoring setup
+├── configure_security.yml       # Security hardening
+└── backup_restore.yml          # Backup/restore procedures
+```
+
+**Playbook Generation Logic**:
+- Parse REQ Section 9.5.4 for playbook requirements
+- Parse Section 9.5.1 for infrastructure configuration
+- Apply Ansible standards (2.9+, modular roles, idempotency)
+- Reference cloud provider from REQ @adr tags
+- Use environment-specific variables from REQ 9.5.2
+
+**Example generated playbook** (provision_infra.yml):
+```yaml
+---
+- name: Provision Infrastructure
+  hosts: localhost
+  gather_facts: no
+  vars_files:
+    - "environments/{{ target_env }}.yml"
+
+  tasks:
+    - name: Create VPC
+      ec2_vpc_net:
+        name: "{{ vpc_name }}"
+        cidr_block: "{{ vpc_cidr }}"
+        region: "{{ aws_region }}"
+        tags:
+          Project: "{{ project_name }}"
+          Environment: "{{ target_env }}"
+          ManagedBy: "Ansible"
+
+    - name: Create security groups
+      ec2_security_group:
+        name: "{{ security_group_name }}"
+        description: "Security group for {{ application_name }}"
+        vpc_id: "{{ vpc.vpc_id }}"
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 443
+            to_port: 443
+            cidr_ip: 0.0.0.0/0
+        region: "{{ aws_region }}"
+        tags:
+          Project: "{{ project_name }}"
+          Environment: "{{ target_env }}"
+
+    - name: Create RDS instance
+      rds:
+        db_name: "{{ db_name }}"
+        engine: postgres
+        engine_version: "{{ db_version }}"
+        instance_type: "{{ db_instance_class }}"
+        allocated_storage: "{{ db_storage_gb }}"
+        username: "{{ db_username }}"
+        password: "{{ db_password }}"
+        vpc_security_group_ids:
+          - "{{ security_group.group_id }}"
+        subnet_group_name: "{{ db_subnet_group }}"
+        backup_retention_period: "{{ backup_retention_days }}"
+        multi_az: true
+        region: "{{ aws_region }}"
+        tags:
+          Project: "{{ project_name }}"
+          Environment: "{{ target_env }}"
+          ManagedBy: "Ansible"
+```
+
+**Example generated playbook** (deploy_app.yml):
+```yaml
+---
+- name: Deploy Application
+  hosts: app_servers
+  gather_facts: yes
+  become: yes
+  vars_files:
+    - "environments/{{ target_env }}.yml"
+
+  tasks:
+    - name: Ensure application directory exists
+      file:
+        path: "{{ app_directory }}"
+        state: directory
+        mode: '0755'
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+
+    - name: Copy application code
+      synchronize:
+        src: "{{ app_source_directory }}/"
+        dest: "{{ app_directory }}/"
+        delete: yes
+        recursive: yes
+
+    - name: Install Python dependencies
+      pip:
+        requirements: "{{ app_directory }}/requirements.txt"
+        virtualenv: "{{ app_venv }}"
+        state: present
+
+    - name: Configure application
+      template:
+        src: "templates/{{ target_env }}_config.yml"
+        dest: "{{ app_directory }}/config.yml"
+        owner: "{{ app_user }}"
+        group: "{{ app_group }}"
+        mode: '0640'
+
+    - name: Restart application service
+      systemd:
+        name: "{{ app_service_name }}"
+        state: restarted
+        daemon_reload: yes
+      notify: Run Health Check
+
+    - name: Wait for application to be ready
+      wait_for:
+        port: 8000
+        host: "{{ inventory_hostname }}"
+        timeout: 300
+
+  handlers:
+    - name: Run Health Check
+      uri:
+        url: "http://localhost:8000/health/ready"
+        method: GET
+        status_code: 200
+      register: health_check
 ```
 
 ---

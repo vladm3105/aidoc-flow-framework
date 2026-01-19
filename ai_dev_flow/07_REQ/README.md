@@ -913,7 +913,108 @@ For detailed examples, see the V2 example files in `07_REQ/api/`, `07_REQ/data/`
 
 - **Target**: <15,000 tokens per REQ file
 - **Maximum**: 20,000 tokens (absolute)
-- If a file approaches/exceeds limits, split into section files where appropriate and update indexes or mapping tables.
+- If a file approaches/exceeds limits, split it into multiple focused REQ files (by capability/domain)
+- Maintain consistent numbering and update any mapping tables or indexes
+
+---
+
+## Section 9.5: Deployment Requirements
+
+### Purpose
+
+Section 9.5 captures deployment infrastructure, scripts, and Ansible playbooks requirements for fully automated MVP deployment. This section enables Autopilot to generate:
+
+- Shell scripts (setup, install, deploy, rollback, health-check, cleanup)
+- Ansible playbooks (provisioning, configuration, deployment, monitoring, security, backup)
+- IaC templates (Terraform, CloudFormation)
+- CI/CD pipeline configurations
+
+### Deployment Complexity Profiles
+
+Section 9.5 supports three deployment complexity tiers to guide requirements for different project types:
+
+| Deployment Complexity | When to Use | Subsections Required |
+|---------------------|-------------|---------------------|
+| Simple (PaaS) | Cloud Run, Lambda, App Engine, Cloud Functions | 9.5.1, 9.5.2, 9.5.3 (skip 9.5.1, 9.5.4, 9.5.6, 9.5.7, 9.5.8) |
+| Standard (Container/VM) | ECS, GKE, Cloud Run with provisioned infrastructure | All 8 subsections (9.5.1-9.5.8) |
+| Enterprise (Multi-Cloud) | Multi-region, multi-cloud with full observability | All 8 subsections (9.5.1-9.5.8) |
+
+### When to Use Section 9.5
+
+Use Section 9.5 when your requirement involves:
+- Cloud infrastructure provisioning (AWS, GCP, Azure)
+- Deployment automation needs (scripts, Ansible playbooks)
+- Observability requirements (logging, metrics, tracing, dashboards)
+- Security requirements (secrets management, TLS/SSL, IAM)
+- Cost constraints and optimization strategies
+
+### Traceability
+
+Section 9.5 includes traceability to:
+- **Upstream**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys` (all 6 required for cloud provider decisions)
+- **Downstream**: `@deployment`, `@ansible`, `@iac` (scripts, playbooks, IaC templates)
+
+### Autopilot Generation
+
+When Autopilot processes REQ documents with Section 9.5, it generates deployment artifacts automatically:
+
+**Shell Scripts** (`scripts/` directory):
+- `setup.sh` - Environment setup (dependencies, tools, paths)
+- `install.sh` - Application installation/configuration
+- `deploy.sh` - Main deployment orchestration
+- `rollback.sh` - Rollback to previous version
+- `health-check.sh` - Health verification
+- `cleanup.sh` - Cleanup old versions
+
+**Ansible Playbooks** (`ansible/` directory):
+- `provision_infra.yml` - Infrastructure provisioning
+- `configure_instances.yml` - Instance configuration
+- `deploy_app.yml` - Application deployment
+- `configure_monitoring.yml` - Monitoring setup
+- `configure_security.yml` - Security hardening
+- `backup_restore.yml` - Backup/restore procedures
+
+**IaC Templates** (`terraform/` or `cloudformation/` directory):
+- VPC and network configuration
+- Compute resources (EC2, ECS, Lambda)
+- Database resources (RDS, DynamoDB)
+- Storage resources (S3, EBS)
+- Security groups and IAM roles
+
+**Docker Configuration**:
+- `Dockerfile` - Container image definition
+- `docker-compose.yml` - Multi-container orchestration
+
+**CI/CD Pipeline** (`.github/workflows/` directory):
+- Automated build and deployment pipeline
+- Integration with deployment scripts and playbooks
+- Health check verification
+- Automatic rollback on failure
+
+### Examples
+
+See `examples/deployment/` directory for complete examples:
+- `REQ-02_deployment_requirements_example.md` - Full example showing all 8 subsections
+- `README.md` - Detailed explanation of each subsection and usage guidance
+
+### Validation
+
+Section 9.5 is validated by:
+- `REQ_MVP_SCHEMA.yaml` - Schema validation rules
+- `REQ_MVP_VALIDATION_RULES.md` - CHECK 21 and CHECK 22 validation rules
+
+### Related Skills
+
+- [devops-flow](../../.claude/skills/devops-flow/SKILL.md) - Infrastructure as Code, CI/CD pipeline automation, deployment strategies
+- Provides generation commands for deployment scripts and Ansible playbooks
+
+### Related Documents
+
+- [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md) - Updated REQ template with Section 9.5
+- [REQ_MVP_SCHEMA.yaml](REQ_MVP_SCHEMA.yaml) - Schema with Section 9.5 validation
+- [REQ_MVP_VALIDATION_RULES.md](REQ_MVP_VALIDATION_RULES.md) - Validation rules for Section 9.5
+
+---
 
 ## Document Splitting Standard
 

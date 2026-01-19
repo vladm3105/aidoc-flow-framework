@@ -36,8 +36,11 @@ from error_codes import Severity, calculate_exit_code, format_error
 # VALIDATION CONSTANTS
 # =============================================================================
 
-# File naming pattern (2+ digits per ID_NAMING_STANDARDS.md)
-FILE_NAME_PATTERN = r"^BDD-\d{2,}_[a-z0-9_]+\.feature$"
+# File naming patterns
+# Monolithic: BDD-NN+_slug.feature (2+ digits per ID_NAMING_STANDARDS.md)
+FILE_NAME_PATTERN_MONOLITHIC = r"^BDD-\d{2,}_[A-Za-z0-9_]+\.feature$"
+# Decimal suffix (one-to-many): BDD-NN.DD_slug.feature (Vertical ID Alignment)
+FILE_NAME_PATTERN_DECIMAL = r"^BDD-\d{2,}\.\d+_[A-Za-z0-9_]+\.feature$"
 
 # Gherkin keywords
 FEATURE_KEYWORD = "Feature:"
@@ -230,10 +233,15 @@ def validate_file_name(file_path: Path, result: ValidationResult):
     if "TEMPLATE" in file_name.upper():
         return
 
-    if not re.match(FILE_NAME_PATTERN, file_name):
+    # Check against all valid patterns
+    is_monolithic = re.match(FILE_NAME_PATTERN_MONOLITHIC, file_name)
+    is_decimal = re.match(FILE_NAME_PATTERN_DECIMAL, file_name)
+
+    if not (is_monolithic or is_decimal):
         result.add_warning(
             "BDD-E004",
-            f"File name '{file_name}' doesn't match BDD-NNN_name.feature format"
+            f"File name '{file_name}' doesn't match valid BDD format. "
+            "Expected: BDD-NNN_slug.feature or BDD-NN.DD_slug.feature"
         )
 
 
@@ -461,7 +469,22 @@ def validate_directory(dir_path: Path) -> List[ValidationResult]:
     results = []
 
     # Find .feature files
-    feature_files = list(dir_path.glob("**/*.feature"))
+    # Find .feature files
+    feature_files = []
+    # Use glob recursively
+    raw_files = dir_path.glob("**/*.feature")
+
+    # Exclude supporting documents (templates, indexes, planning docs)
+    excluded_patterns = ['TEMPLATE', 'INDEX', '_CREATION_PLAN']
+    
+    for f in raw_files:
+        # Check exclusion patterns in filename
+        if any(excl in f.name.upper() for excl in excluded_patterns):
+            continue
+        # Also exclude framework infrastructure files (BDD-00_*)
+        if re.match(r'^BDD-00[_.]', f.name):
+            continue
+        feature_files.append(f)
 
     if not feature_files:
         print(f"[WARNING] VAL-W001: No .feature files found in {dir_path}")

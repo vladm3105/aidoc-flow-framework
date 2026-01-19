@@ -96,11 +96,13 @@ SECTION_MAP = {
 
 # File naming patterns
 # Monolithic: BRD-NN_slug.md
-FILE_NAME_PATTERN_MONOLITHIC = r"^BRD-\d{2,}_[a-z0-9_]+\.md$"
+# File naming patterns
+# Monolithic: BRD-NN_slug.md
+FILE_NAME_PATTERN_MONOLITHIC = r"^BRD-\d{2,}_[A-Za-z0-9_]+\.md$"
 # Section (shortened): BRD-NN.S_section_type.md (PREFERRED for nested folders)
-FILE_NAME_PATTERN_SECTION_SHORT = r"^BRD-\d{2,}\.\d+_[a-z_]+\.md$"
+FILE_NAME_PATTERN_SECTION_SHORT = r"^BRD-\d{2,}\.\d+_[A-Za-z_]+\.md$"
 # Section (full): BRD-NN.S_slug_section_type.md (backward compatible)
-FILE_NAME_PATTERN_SECTION_FULL = r"^BRD-\d{2,}\.\d+_[a-z0-9_]+_[a-z_]+\.md$"
+FILE_NAME_PATTERN_SECTION_FULL = r"^BRD-\d{2,}\.\d+_[A-Za-z0-9_]+_[A-Za-z_]+\.md$"
 
 
 # =============================================================================
@@ -183,8 +185,18 @@ def extract_sections(content: str) -> List[Tuple[str, int]]:
     """
     sections = []
     lines = content.split("\n")
+    in_code_block = False
 
     for i, line in enumerate(lines, 1):
+        # Toggle code block state
+        if line.strip().startswith("```"):
+            in_code_block = not in_code_block
+            continue
+            
+        # Skip content inside code blocks
+        if in_code_block:
+            continue
+
         if line.startswith("#"):
             sections.append((line, i))
 
@@ -452,8 +464,21 @@ def validate_directory(dir_path: Path) -> List[ValidationResult]:
     patterns = ["BRD-*.md", "brd-*.md", "BRD_*.md"]
     brd_files = []
 
+    raw_files = []
     for pattern in patterns:
-        brd_files.extend(dir_path.glob(f"**/{pattern}"))
+        raw_files.extend(dir_path.glob(f"**/{pattern}"))
+    
+    # Exclude supporting documents (templates, indexes, planning docs)
+    excluded_patterns = ['TEMPLATE', 'INDEX', '_CREATION_PLAN', '_SCHEMA']
+    
+    for f in raw_files:
+        # Check exclusion patterns in filename
+        if any(excl in f.name.upper() for excl in excluded_patterns):
+            continue
+        # Also exclude framework infrastructure files (BRD-00_*)
+        if re.match(r'^BRD-00[_.]', f.name):
+            continue
+        brd_files.append(f)
 
     if not brd_files:
         print(f"[WARNING] VAL-W001: No BRD files found in {dir_path}")

@@ -66,6 +66,7 @@ AI_CONTEXT_END
 | **SPEC-Ready Score** | ✅ [XX]% (Target: ≥70%) |
 | **CTR-Ready Score** | ✅ [XX]% (Target: ≥70%) |
 | **Template Version** | 1.0 |
+| **Deployment Complexity** | simple / standard / enterprise (see Section 9.5 Guidance) |
 
 ---
 
@@ -303,6 +304,174 @@ class ResponseModel(BaseModel):
 
 ---
 
+## 9.5 Deployment Requirements
+
+> **Note**: Deployment scope and cloud provider are defined in upstream BRD, PRD, and ADR documents. This section captures specific infrastructure and deployment artifact requirements for automated generation.
+
+> **Quick Start** (For Simple Deployments): Complete only these subsections based on `Deployment Complexity`:
+> - **Simple (PaaS)**: 9.5.1, 9.5.2, 9.5.3 (skip 9.5.1, 9.5.4, 9.5.6, 9.5.7, 9.5.8)
+> - **Standard/Enterprise**: All 8 subsections (9.5.1 through 9.5.8)
+> See examples in `examples/deployment/` for complete patterns
+
+### 9.5.0 Deployment Tier Selection
+
+> **Tier Selection**: Choose one tier based on deployment complexity. This determines which subsections are required in Section 9.5.
+
+**Decision Tree**:
+
+```
+Does your deployment require infrastructure provisioning?
+├── No → Tier 1: Simple PaaS (Cloud Run, Lambda, App Engine)
+│   ├── Subsection 9.5.1: ❌ Skip (Optional)
+│   ├── Subsection 9.5.2: ✅ Required
+│   ├── Subsection 9.5.3: ✅ Required (Simple: deploy.sh + health-check.sh)
+│   └── Subsections 9.5.4-9.5.8: ❌ Optional
+│
+├── Yes → Is deployment multi-region/multi-cloud?
+│   ├── Yes → Tier 3: Enterprise (Multi-Cloud)
+│   │   ├── Subsection 9.5.1: ✅ Required
+│   │   ├── Subsection 9.5.2: ✅ Required
+│   │   ├── Subsection 9.5.3: ✅ Required
+│   │   ├── Subsection 9.5.4: ✅ Required
+│   │   ├── Subsection 9.5.5: ✅ Required
+│   │   ├── Subsection 9.5.6: ✅ Required
+│   │   ├── Subsection 9.5.7: ✅ Required
+│   │   └── Subsection 9.5.8: ✅ Required
+│   │
+│   └── No → Tier 2: Standard (Containerized VM/ECS)
+│       ├── Subsection 9.5.1: ✅ Required
+│       ├── Subsection 9.5.2: ✅ Required
+│       ├── Subsection 9.5.3: ✅ Required
+│       ├── Subsection 9.5.4: ⚠️ Optional (Infrastructure already provisioned)
+│       ├── Subsection 9.5.5: ✅ Required
+│       ├── Subsection 9.5.6: ✅ Required
+│       ├── Subsection 9.5.7: ✅ Required
+│       └── Subsection 9.5.8: ✅ Required
+```
+
+**Tier Definitions**:
+- **Tier 1: Simple PaaS** - Platform-as-a-Service (Cloud Run, Lambda, App Engine, App Engine, Cloud Functions)
+- **Tier 2: Standard** - Containerized VMs on ECS/GKE/Cloud Run with provisioned infrastructure
+- **Tier 3: Enterprise** - Multi-region, multi-cloud deployments with full observability, cost management
+
+### 9.5.1 Infrastructure Requirements
+
+| Resource Type | Provider | Configuration | Requirements |
+|---------------|----------|--------------|--------------|
+| Compute | [From @adr: ADR-NN] | [Type: EC2/ECS/Cloud Run/GKE] | [CPU, Memory, Scaling: min/max] |
+| Database | [From @adr: ADR-NN] | [Type: RDS/Cloud SQL/Postgres] | [Version, Storage: GB, HA: yes/no] |
+| Storage | [From @adr: ADR-NN] | [Type: S3/Cloud Storage/EBS] | [Bucket type, Retention: days] |
+| Network | [From @adr: ADR-NN] | [VPC, Subnets, Load Balancer] | [CIDR, AZs, Security Groups] |
+| Cache | [Optional] | [Type: Redis/Memcached/ElastiCache] | [Memory: GB, TTL: seconds] |
+| Message Queue | [Optional] | [Type: SQS/PubSub/Kafka] | [Queue type, Retention: days] |
+
+> **Reference**: Cloud provider decisions in `@brd: BRD.NN.TT.SS`, `@prd: PRD.NN.TT.SS`, `@adr: ADR-NN`
+
+> **Complexity Indicator**: ⚠️ [Standard+] - Required for Standard/Enterprise deployments, Optional for Simple (PaaS) deployments
+
+### 9.5.2 Environment Configuration
+
+| Environment | Deployment Strategy | Rollback Time | Replicas | Regions |
+|-------------|---------------------|---------------|-----------|---------|
+| Development | [Manual/CI] | N/A | [1] | [Region] |
+| Staging | [Blue-Green/Canary/Rolling] | [X minutes] | [N] | [Region] |
+| Production | [Blue-Green/Canary/Rolling] | [X minutes] | [N] | [Regions for HA] |
+
+**Health Endpoints**:
+- Liveness: `/health/live` - Container health check
+- Readiness: `/health/ready` - Service availability check
+- Startup: `/health/startup` - Initialization complete check
+
+### 9.5.3 Deployment Scripts Requirements
+
+> **Note**: All scripts generated automatically by Autopilot from this section.
+
+| Script Name | Purpose | Automation Level | Required for Environments |
+|-------------|---------|------------------|-------------------------|
+| `setup.sh` | Initial environment setup (dependencies, tools, paths) | Fully automated | All |
+| `install.sh` | Application installation/configuration (packages, config files) | Fully automated | All |
+| `deploy.sh` | Main deployment orchestration (build, push, deploy) | Fully automated | Staging, Production |
+| `rollback.sh` | Rollback to previous version | Fully automated | Staging, Production |
+| `health-check.sh` | Health verification post-deployment | Fully automated | All |
+| `cleanup.sh` | Cleanup old versions, temporary files | Fully automated | All |
+
+**Script Standards**:
+- Shell: Bash 4.0+ compatible
+- Logging: All scripts log to `logs/deployment_YYYYMMDD_HHMMSS.log`
+- Exit codes: 0 (success), 1 (error), 2 (warning)
+- Error handling: `set -euo pipefail` for all scripts
+- Idempotency: All scripts safe to run multiple times
+
+### 9.5.4 Ansible Playbook Requirements
+
+> **Note**: All playbooks generated automatically by Autopilot from this section.
+
+| Playbook Name | Purpose | Target | Variables | Tags |
+|---------------|---------|--------|------------|------|
+| `provision_infra.yml` | Provision infrastructure (VPC, EC2, RDS, etc.) | Cloud provider API | Cloud resources config | `infra, provision` |
+| `configure_instances.yml` | Configure instances (OS settings, packages, users) | Instance hosts | Instance config, packages | `config, instances` |
+| `deploy_app.yml` | Deploy application (copy code, restart service) | Application hosts | App version, config | `deploy, app` |
+| `configure_monitoring.yml` | Setup monitoring/alerting (Prometheus, Grafana) | Monitoring hosts | Monitoring config, alerts | `monitoring, observability` |
+| `configure_security.yml` | Setup security (firewall, IAM, TLS) | All hosts | Security rules, certificates | `security, hardening` |
+| `backup_restore.yml` | Backup/restore procedures (database, config) | Backup hosts | Backup schedule, retention | `backup, recovery` |
+
+**Playbook Standards**:
+- Ansible version: 2.9+
+- Inventory: Dynamic inventory from cloud provider
+- Roles: Modular role-based structure
+- Idempotency: All playbooks idempotent
+- Handlers: Service restart handlers for configuration changes
+- Check mode: Support `--check` for dry-run
+
+### 9.5.5 Observability Requirements
+
+| Type | Tool | Metrics/Logs | Retention | Alerts |
+|------|------|--------------|-----------|--------|
+| Logging | [Cloud Logging/ELK] | [Format: JSON] | [X days] | [Error threshold, rate thresholds] |
+| Metrics | [Prometheus/Datadog] | [p50/p95/p99 latency, throughput, errors] | [X days] | [SLA breaches, degradation] |
+| Tracing | [Jaeger/Cloud Trace/OpenTelemetry] | [Sample rate: %] | [X days] | [Slow requests, errors] |
+| Dashboards | [Grafana/Datadog] | [Business metrics, health metrics] | N/A | N/A |
+
+### 9.5.6 Security Requirements
+
+| Security Aspect | Requirement | Tool/Service | Verification |
+|-----------------|-------------|---------------|---------------|
+| Secrets Management | [Vault/AWS Secrets Manager/GCP Secret Manager] | [Service name, path] | [Secrets rotated every X days] |
+| TLS/SSL | [Certificate manager/Let's Encrypt] | [Domain, certificate type] | [TLS 1.3+, valid certificate] |
+| IAM | [Roles/Policies] | [Permissions: read/write/admin] | [Least privilege enforced] |
+| Network Security | [VPC, Security Groups, NACLs] | [Allowed IPs, ports] | [Firewall rules audited] |
+| Container Security | [Image scanning] | [Vulnerability thresholds] | [No critical vulnerabilities] |
+
+### 9.5.7 Cost Constraints
+
+| Resource | Budget | Alerts | Optimization |
+|----------|--------|--------|--------------|
+| Compute | [Monthly: $X] | [Threshold: 80%] | [Savings plans, spot instances] |
+| Storage | [Monthly: $X] | [Threshold: 80%] | [Lifecycle policies, compression] |
+| Network | [Monthly: $X] | [Threshold: 80%] | [CDN, compression] |
+| Total | [Monthly: $X] | [Threshold: 80%] | [Resource rightsizing] |
+
+### 9.5.8 Deployment Automation Requirements
+
+**Automation Level**: Fully automated (no manual steps)
+
+**Deployment Workflow**:
+1. Autopilot generates deployment artifacts (scripts, playbooks)
+2. CI/CD pipeline triggers on merge to main
+3. Scripts run setup → install → deploy → health-check
+4. If health-check fails: auto-rollback
+5. Success: update load balancer, monitoring dashboards
+
+**Validation Requirements**:
+- Pre-deployment: All tests pass, no security vulnerabilities
+- Post-deployment: Health checks pass, performance within SLA
+- Monitoring: All metrics collected, dashboards updated
+- Rollback: Ready within X minutes
+
+> **Downstream Artifacts**: See Section 10.2 for generated scripts and playbooks
+
+---
+
 ## 10. Traceability
 
 ### 10.1 Upstream References
@@ -322,8 +491,31 @@ class ResponseModel(BaseModel):
 
 | Artifact | Status | Relationship |
 |----------|--------|--------------|
+| CTR-NN | TBD | API contract (if external interface) |
 | SPEC-NN | TBD | Technical specification |
 | TASKS-NN | TBD | Implementation tasks |
+
+#### Deployment Artifacts (Generated by Autopilot)
+
+| Artifact Type | Artifact | Status | Generation Source |
+|--------------|----------|--------|-------------------|
+| Shell Scripts | `scripts/setup.sh` | TBD | Section 9.5.3 |
+| Shell Scripts | `scripts/install.sh` | TBD | Section 9.5.3 |
+| Shell Scripts | `scripts/deploy.sh` | TBD | Section 9.5.3 |
+| Shell Scripts | `scripts/rollback.sh` | TBD | Section 9.5.3 |
+| Shell Scripts | `scripts/health-check.sh` | TBD | Section 9.5.3 |
+| Shell Scripts | `scripts/cleanup.sh` | TBD | Section 9.5.3 |
+| Ansible Playbooks | `ansible/provision_infra.yml` | TBD | Section 9.5.4 |
+| Ansible Playbooks | `ansible/configure_instances.yml` | TBD | Section 9.5.4 |
+| Ansible Playbooks | `ansible/deploy_app.yml` | TBD | Section 9.5.4 |
+| Ansible Playbooks | `ansible/configure_monitoring.yml` | TBD | Section 9.5.4 |
+| Ansible Playbooks | `ansible/configure_security.yml` | TBD | Section 9.5.4 |
+| Ansible Playbooks | `ansible/backup_restore.yml` | TBD | Section 9.5.4 |
+| IaC Templates | `terraform/` or `cloudformation/` | TBD | Section 9.5.1 + devops-flow |
+| Docker Config | `Dockerfile`, `docker-compose.yml` | TBD | Section 9.5.1 |
+| CI/CD Pipeline | `.github/workflows/deploy.yml` | TBD | Section 9.5.8 |
+
+> **Note**: All deployment artifacts are generated automatically by Autopilot from REQ Section 9.5 and SPEC deployment section.
 
 ### 10.3 Traceability Tags
 
@@ -337,6 +529,19 @@ class ResponseModel(BaseModel):
 ```
 
 > **Note**: Document references use dash notation (`ADR-NN`). Element references within documents use 4-segment dot notation (`BRD.NN.TT.SS`). Layer 7 (REQ) requires ALL 6 upstream tags.
+
+**Downstream Traceability Tags** (for generated artifacts):
+
+```markdown
+@ctr: CTR-NN          # If API contract exists
+@spec: SPEC-NN         # Technical specification
+@tasks: TASKS-NN       # Implementation tasks
+@deployment: scripts/   # Deployment scripts directory
+@ansible: ansible/      # Ansible playbooks directory
+@iac: terraform/       # IaC templates directory
+```
+
+> **Note**: Downstream tags reference generated artifacts (scripts, playbooks, IaC) for bidirectional traceability.
 
 ---
 
