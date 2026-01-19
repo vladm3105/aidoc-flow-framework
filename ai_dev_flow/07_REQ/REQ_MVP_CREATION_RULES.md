@@ -73,18 +73,18 @@ custom_fields:
 ## 1. File Organization and Directory Structure
 
 - Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
-- **Location**: `07_REQ/{domain}/{subdomain}/` within project docs directory
-- **Domains**: `api/` (external integrations), `risk/` (risk management), `data/` (data requirements), `ml/` (ML requirements), `auth/` (security), etc.
-- **Naming**: `REQ-NN_descriptive_slug.md` (NN matches parent PRD ID e.g. `PRD-12` -> `REQ-12` or `REQ-12.01` for multiple)
-- **Section Files**: For large requirements (>50KB), use Section Files format: `REQ-NN.S_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
+- **Location**: `07_REQ/REQ-{PRD_ID}_{Slug}/` (Vertical Slice Grouping)
+- **Organization**: Group REQs by their parent PRD to maintain vertical alignment.
+- **Naming**: `REQ-{DOC_NUM}_{slug}.md` (Sequential 01-401)
+- **Example**: `07_REQ/REQ-01_iam/REQ-01_jwt_auth.md` (where REQ-01 maps to PRD-01)
 
 ---
 
-## 2. Document Structure (12 Required sections)
+## 2. Document Structure (13 Required sections)
 
 Every REQ must contain these exact sections in order (MVP profile):
 
-1. **Document Control** - Metadata table with 12 required fields
+1. **Document Control** - Metadata table with 13 required fields
 2. **Requirement Description** - Atomic requirement + SHALL/SHOULD/MAY language + context + scenario
 3. **Functional Specification** - Core capabilities + business rules + I/O
 4. **Interface Definition** - API contract + schemas/DTOs
@@ -95,16 +95,20 @@ Every REQ must contain these exact sections in order (MVP profile):
 9. **Acceptance Criteria** - ≥15 measurable criteria (functional + quality)
 10. **Traceability** - Upstream chain, downstream artifacts, cumulative tags
 11. **Implementation Notes** - Technical approach, code locations, dependencies
-12. **Change History** - Version control table
+12. **Section 9.5: Deployment Requirements** - Infrastructure, scripts, Ansible, observability, security, cost, automation (optional based on Deployment Complexity)
+13. **Change History** - Version control table
+
+> **Note**: Section 9.5 is **OPTIONAL** and should be included only when deployment automation is required. See Section 9.5.0 Deployment Tier Selection in REQ-MVP-TEMPLATE.md for guidance on which subsections to include based on deployment complexity (Simple/Standard/Enterprise).
 
 ---
 
-## 3. Document Control Requirements (12 Mandatory Fields)
+## 3. Document Control Requirements (13 Mandatory Fields)
 
 - Status, Version (semantic X.Y.Z), Date Created (ISO 8601), Last Updated
 - Author, Priority (with P-level: P1/P2/P3/P4), Category (Functional/Security/Performance/etc.)
 - Source Document (format: "DOC-ID section X.Y.Z"), Verification Method, Assigned Team
 - SPEC-Ready Score (format: "✅ XX% (Target: ≥70%)"), CTR-Ready Score (format: "✅ XX% (Target: ≥70%)")
+- Deployment Complexity: simple / standard / enterprise (see Section 9.5.0 Deployment Tier Selection in REQ-MVP-TEMPLATE.md for guidance on tier selection)
 
 > **Note**: Template Version is informational only (not validated). Each template may use its own version numbering.
 
