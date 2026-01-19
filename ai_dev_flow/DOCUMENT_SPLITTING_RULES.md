@@ -22,10 +22,10 @@ Scope: Applies to narrative Markdown types (e.g., BRD, PRD) and test/spec artifa
 
 **Choose the appropriate structure based on document size and complexity:**
 
-| Structure | File Pattern | Use When |
+| structure | File Pattern | Use When |
 |-----------|--------------|----------|
-| **Monolithic (Flat)** | `TYPE-DOC_NUM_{slug}.md` | Single-file documents <25KB, MVP templates |
-| **Section-Based (Nested)** | `TYPE-DOC_NUM_{slug}/TYPE-DOC_NUM.S_{section}.md` | Documents >25KB, complex multi-section artifacts |
+| **Monolithic (Flat)** | `TYPE-DOC_NUM_{slug}.md` | Single-file documents <20k tokens, MVP templates |
+| **Section-Based (Nested)** | `TYPE-DOC_NUM_{slug}/TYPE-DOC_NUM.S_{section}.md` | Documents >20k tokens, complex multi-section artifacts |
 
 ### Monolithic Documents (Flat Structure)
 
@@ -33,7 +33,7 @@ Scope: Applies to narrative Markdown types (e.g., BRD, PRD) and test/spec artifa
 - **No nested folder**: File lives at type root, not inside a subfolder
 - **No section suffix**: Filename uses `TYPE-DOC_NUM_{slug}.md` pattern
 - **H1 Title**: `# TYPE-DOC_NUM: Title` (no `.S` suffix)
-- **Use for**: MVP templates, streamlined documents, single-file artifacts under 25KB
+- **Use for**: MVP templates, streamlined documents, single-file artifacts under 20k tokens
 
 ### Section-Based Documents (Nested Structure)
 
@@ -41,12 +41,12 @@ Scope: Applies to narrative Markdown types (e.g., BRD, PRD) and test/spec artifa
 - **Folder required**: Create `TYPE-DOC_NUM_{slug}/` folder containing all section files
 - **Section suffix required**: All files use `TYPE-DOC_NUM.S_{section}.md` pattern
 - **H1 Title**: `# TYPE-DOC_NUM.S: Section Title` (includes `.S` suffix)
-- **Use for**: Large documents, complex multi-section artifacts, documents requiring splitting
+- **Use for**: Large documents (>20k tokens), complex multi-section artifacts, documents requiring splitting
 
 ## When To Split
 
 - Trigger: Size linter warnings/errors or poor readability during review.
-- Readability: If sequential reading becomes hard (> ~25–50KB or > ~500 lines), split.
+- Readability: If sequential reading becomes hard (> ~20k tokens), split.
 - Traceability: If section‑level linking improves mapping to 07_REQ/TEST/SPEC, split.
 - Exceptions: SPEC YAML typically stays monolithic per component; split only when necessary.
 
@@ -85,12 +85,13 @@ next_section: "TYPE-NN.(S+1)_{slug}.md"
 ## Universal Splitting Triggers
 
 **You MUST split into a Nested Folder structure if:**
-1.  **Size**: Any single file exceeds **1000 lines**.
+1.  **Size**: Any single file exceeds **20,000 tokens**.
 2.  **Cardinality**: A component requires **more than 1 file** (e.g. narrative + list, or multiple modules).
 
 ### Size Limits
-- **Markdown**: Target 500 lines. Hard Limit 1000 lines.
-- **YAML**: Target 500 lines. Hard Limit 1000 lines.
+- **Markdown**: Target 15,000 tokens (Warning). Hard Limit 20,000 tokens (Error).
+- **YAML**: Target 15,000 tokens (Warning). Hard Limit 20,000 tokens (Error).
+- **Line Limits**: Removed. Token count is the only metric to account for variable density (code vs text).
 - **Action**: Create `TYPE-{ID}_{Slug}/` folder and split content.
 - Always run validations after splitting:
   - File size lint: `./scripts/lint_file_sizes.sh`

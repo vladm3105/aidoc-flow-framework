@@ -84,10 +84,10 @@ echo "Found ${#EXISTING_BRDS[@]} BRD documents"
 echo ""
 
 # =============================================================================
-# CORPUS-01: Placeholder Text for Existing Documents
+# GATE-01: Placeholder Text for Existing Documents
 # =============================================================================
 check_placeholders() {
-  echo "--- CORPUS-01: Placeholder Text Detection ---"
+  echo "--- GATE-01: Placeholder Text Detection ---"
   local found=0
 
   # Patterns to search
@@ -108,7 +108,7 @@ check_placeholders() {
         # Check if content contains a BRD reference (not from filepath)
         brd_ref=$(echo "$content" | grep -oE "BRD-[0-9]+" | head -1 || true)
         if [[ -n "$brd_ref" && -n "${EXISTING_BRDS[$brd_ref]:-}" ]]; then
-          echo -e "${RED}CORPUS-E001: $line${NC}"
+          echo -e "${RED}GATE-E001: $line${NC}"
           echo "  → $brd_ref exists but marked with placeholder"
           ((ERRORS++)) || true
           ((found++)) || true
@@ -128,10 +128,10 @@ check_placeholders() {
 }
 
 # =============================================================================
-# CORPUS-02: Premature Downstream References
+# GATE-02: Premature Downstream References
 # =============================================================================
 check_downstream_refs() {
-  echo "--- CORPUS-02: Premature Downstream References ---"
+  echo "--- GATE-02: Premature Downstream References ---"
   local found=0
 
   # Check for specific numbered references to Layer 2+ artifacts
@@ -142,7 +142,7 @@ check_downstream_refs() {
       if echo "$line" | grep -qiE "layer|workflow|sdd|example|template|schema|downstream|expected"; then
         continue
       fi
-      echo -e "${RED}CORPUS-E002: $line${NC}"
+      echo -e "${RED}GATE-E002: $line${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -158,12 +158,12 @@ check_downstream_refs() {
 }
 
 # =============================================================================
-# CORPUS-03: Internal Count Consistency
+# GATE-03: Internal Count Consistency
 # =============================================================================
 check_count_consistency() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- CORPUS-03: Internal Count Consistency ---"
+  echo "--- GATE-03: Internal Count Consistency ---"
   local found=0
 
   # This check is designed to find obvious mismatches like "7-state lifecycle" when 8 states listed
@@ -183,7 +183,7 @@ check_count_consistency() {
           # Count comma-separated items in parentheses
           actual=$(echo "$paren_content" | tr ',' '\n' | wc -l)
           if [[ "$actual" -gt 0 && "$actual" -ne "$claimed" ]]; then
-            echo -e "${YELLOW}CORPUS-W001: $(basename $f):$linenum${NC}"
+            echo -e "${YELLOW}GATE-W001: $(basename $f):$linenum${NC}"
             echo "  → Claims '$claimed' items but found '$actual' in list"
             ((WARNINGS++)) || true
             ((found++)) || true
@@ -201,10 +201,10 @@ check_count_consistency() {
 }
 
 # =============================================================================
-# CORPUS-04: Index Synchronization
+# GATE-04: Index Synchronization
 # =============================================================================
 check_index_sync() {
-  echo "--- CORPUS-04: Index Synchronization ---"
+  echo "--- GATE-04: Index Synchronization ---"
   local found=0
 
   # Find index file using glob pattern (BRD-*_index.md or BRD-*_index*.md)
@@ -232,7 +232,7 @@ check_index_sync() {
   while IFS= read -r line; do
     brd=$(echo "$line" | grep -oE "BRD-[0-9]+" | head -1)
     if [[ -n "$brd" && -n "${EXISTING_BRDS[$brd]:-}" ]]; then
-      echo -e "${RED}CORPUS-E003: $brd exists but marked Planned in index${NC}"
+      echo -e "${RED}GATE-E003: $brd exists but marked Planned in index${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -241,7 +241,7 @@ check_index_sync() {
   # Check for existing files not in index
   for brd in "${!EXISTING_BRDS[@]}"; do
     if [[ "$brd" != "BRD-000" ]] && ! grep -q "$brd" "$index_file" 2>/dev/null; then
-      echo -e "${RED}CORPUS-E003: $brd exists but not listed in index${NC}"
+      echo -e "${RED}GATE-E003: $brd exists but not listed in index${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -254,25 +254,25 @@ check_index_sync() {
 }
 
 # =============================================================================
-# CORPUS-05: Inter-BRD Cross-Linking (DEPRECATED)
+# GATE-05: Inter-BRD Cross-Linking (DEPRECATED)
 # =============================================================================
 # NOTE: This check has been deprecated per traceability rules.
 # Document name references (e.g., BRD-01, BRD-07) are valid per traceability
 # standards and do not require hyperlink formatting.
 # Hyperlinks are optional - document IDs are sufficient for traceability.
 check_crosslinks() {
-  echo "--- CORPUS-05: Inter-BRD Cross-Linking ---"
+  echo "--- GATE-05: Inter-BRD Cross-Linking ---"
   echo -e "${GREEN}  ✓ Check deprecated - document name references are valid per traceability rules${NC}"
   echo ""
 }
 
 # =============================================================================
-# CORPUS-06: Visualization Coverage
+# GATE-06: Visualization Coverage
 # =============================================================================
 check_diagrams() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- CORPUS-06: Visualization Coverage ---"
+  echo "--- GATE-06: Visualization Coverage ---"
   local no_diagrams=0
 
   shopt -s nullglob
@@ -282,7 +282,7 @@ check_diagrams() {
     diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null | tr -d '\n' || echo 0)
     [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
     if [[ "$diagram_count" -eq 0 ]]; then
-      echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
+      echo -e "${BLUE}GATE-I001: $(basename $f) has no Mermaid diagrams${NC}"
       ((INFOS++)) || true
       ((no_diagrams++)) || true
     elif $VERBOSE; then
@@ -298,12 +298,12 @@ check_diagrams() {
 }
 
 # =============================================================================
-# CORPUS-07: Glossary Consistency
+# GATE-07: Glossary Consistency
 # =============================================================================
 check_glossary() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- CORPUS-07: Glossary Consistency ---"
+  echo "--- GATE-07: Glossary Consistency ---"
 
   # Check for term variations (generic examples applicable to any project)
   declare -A term_variations
@@ -321,7 +321,7 @@ check_glossary() {
     var_count=${var_count:-0}
 
     if [[ "$primary_count" -gt 0 && "$var_count" -gt 0 ]]; then
-      echo -e "${YELLOW}CORPUS-W003: Inconsistent terminology detected${NC}"
+      echo -e "${YELLOW}GATE-W003: Inconsistent terminology detected${NC}"
       echo "  → '$term' used in $primary_count files, variations ($variations) in $var_count files"
       ((WARNINGS++)) || true
       ((found++)) || true
@@ -335,10 +335,10 @@ check_glossary() {
 }
 
 # =============================================================================
-# CORPUS-08: Element ID Uniqueness
+# GATE-08: Element ID Uniqueness
 # =============================================================================
 check_duplicates() {
-  echo "--- CORPUS-08: Element ID Uniqueness ---"
+  echo "--- GATE-08: Element ID Uniqueness ---"
   local misplaced_found=0
   local duplicates_found=0
   local max_show=10
@@ -349,7 +349,7 @@ check_duplicates() {
   # to avoid flagging valid cross-references.
   while IFS= read -r duplicate_id; do
     if [[ -n "$duplicate_id" ]]; then
-      echo -e "${RED}CORPUS-E004: Duplicate element ID found: $duplicate_id${NC}"
+      echo -e "${RED}GATE-E004: Duplicate element ID found: $duplicate_id${NC}"
       # Show which files contain the duplicate definition
       grep -rnE "(^###\s+$duplicate_id:|^\|.*$duplicate_id.*\|)" "$BRD_DIR"
       echo ""
@@ -382,7 +382,7 @@ check_duplicates() {
         id_num=$(echo "$wrong_id" | cut -d. -f2)
         if [[ "$id_num" != "$file_num" ]]; then
           if [[ $misplaced_found -lt $max_show ]]; then
-            echo -e "${YELLOW}CORPUS-W008: Potential misplaced ID in $(basename $f)${NC}"
+            echo -e "${YELLOW}GATE-W008: Potential misplaced ID in $(basename $f)${NC}"
             echo "  → ID $wrong_id found in a BRD-$file_num file. Line: $line"
           fi
           ((WARNINGS++)) || true
@@ -402,12 +402,12 @@ check_duplicates() {
 }
 
 # =============================================================================
-# CORPUS-09: Cost Estimate Format
+# GATE-09: Cost Estimate Format
 # =============================================================================
 check_costs() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- CORPUS-09: Cost Estimate Format ---"
+  echo "--- GATE-09: Cost Estimate Format ---"
   local found=0
 
   # Find exact dollar amounts without range indicators
@@ -417,7 +417,7 @@ check_costs() {
       if echo "$line" | grep -qiE "range|approximately|~|\-"; then
         continue
       fi
-      echo -e "${YELLOW}CORPUS-W004: $line${NC}"
+      echo -e "${YELLOW}GATE-W004: $line${NC}"
       echo "  → Consider using range format: \$X-\$Y or ~\$X"
       ((WARNINGS++)) || true
       ((found++)) || true
@@ -434,10 +434,10 @@ check_costs() {
 }
 
 # =============================================================================
-# CORPUS-10: File Size Compliance
+# GATE-10: File Size Compliance
 # =============================================================================
 check_sizes() {
-  echo "--- CORPUS-10: File Size Compliance ---"
+  echo "--- GATE-10: File Size Compliance ---"
   local errors=0
   local warnings=0
 
@@ -445,49 +445,32 @@ check_sizes() {
   for f in "$BRD_DIR"/BRD-[0-9]*_*.md "$BRD_DIR"/BRD-[0-9]*/BRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
 
-    lines=$(wc -l < "$f")
-    
-    # MVP detection
-    is_mvp=false
-    if [[ "$f" == *"MVP"* ]] || grep -q "template_profile: mvp" "$f"; then
-      is_mvp=true
+    local lines
+    lines=$(wc -l <"$f")
+    local words
+    words=$(wc -w <"$f")
+    local tokens=$((words * 13 / 10))
+
+    if [[ $tokens -gt 20000 ]]; then
+      echo -e "${RED}GATE-E006: $(basename "$f") exceeds 20,000 tokens (~$tokens) - MUST SPLIT per Universal Rule${NC}"
+      ((ERRORS++)) || true
+      ((errors++)) || true
+    elif [[ $tokens -gt 15000 ]]; then
+      if ! $ERRORS_ONLY; then
+        echo -e "${YELLOW}GATE-W006: $(basename "$f") exceeds 15,000 tokens (~$tokens) - Consider splitting${NC}"
+        ((WARNINGS++)) || true
+        ((warnings++)) || true
+      fi
     fi
 
-    if $is_mvp; then
-      if [[ "$lines" -gt 600 ]]; then
-        echo -e "${RED}CORPUS-E005: MVP file $(basename $f) exceeds 600 lines ($lines)${NC}"
-        ((ERRORS++)) || true
-        ((errors++)) || true
-      elif [[ "$lines" -gt 400 ]]; then
-        if ! $ERRORS_ONLY; then
-          echo -e "${YELLOW}CORPUS-W005: MVP file $(basename $f) exceeds 400 lines ($lines)${NC}"
-          ((WARNINGS++)) || true
-          ((warnings++)) || true
-        fi
-      fi
-    else
-      # Standard limits
-      if [[ "$lines" -gt 1200 ]]; then
-        echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1200 lines ($lines)${NC}"
-        ((ERRORS++)) || true
-        ((errors++)) || true
-      elif [[ "$lines" -gt 600 ]]; then
-        if ! $ERRORS_ONLY; then
-          echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 600 lines ($lines)${NC}"
-          ((WARNINGS++)) || true
-          ((warnings++)) || true
-        fi
-      fi
-    fi 
-
     if $VERBOSE; then
-      echo "  $(basename $f): $lines lines"
+      echo "  $(basename "$f"): $lines lines, ~$tokens tokens"
     fi
   done
   shopt -u nullglob
 
   if [[ $errors -eq 0 && $warnings -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits${NC}"
+    echo -e "${GREEN}  ✓ All files within size limits (≤1000 lines, ≤10k tokens)${NC}"
   fi
   echo ""
 }

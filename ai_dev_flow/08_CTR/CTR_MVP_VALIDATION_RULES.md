@@ -468,7 +468,7 @@ Result: PASSED WITH WARNINGS
 
 - [CTR_MVP_CREATION_RULES.md](./CTR_MVP_CREATION_RULES.md) - Creation guidelines
 - [CTR-MVP-TEMPLATE.md](./CTR-MVP-TEMPLATE.md) - Contract template (primary standard)
-- [CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
+- [CTR_MVP_SCHEMA.yaml](./CTR_MVP_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
 - [validate_ctr.sh](../08_CTR/scripts/validate_ctr.sh) - Validation script
 - [README.md](./README.md) - Directory overview
 

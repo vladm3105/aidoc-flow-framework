@@ -476,12 +476,12 @@ Downstream: BDD, ADR, SYS
 **Type**: Error (blocking)
 
 **Triggers**:
-1. **Size**: File > 1000 lines.
+1. **Size**: File > 20,000 tokens.
 2. **Cardinality**: More than 1 file for this ID.
 
 **Action**: Move to `04_EARS/EARS-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: EARS-NN triggers nested folder rule (>1000 lines or >1 file). Move to 04_EARS/EARS-NN_{Slug}/`
+**Error Message**: `❌ ERROR: EARS-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 04_EARS/EARS-NN_{Slug}/`
 
 ---
 

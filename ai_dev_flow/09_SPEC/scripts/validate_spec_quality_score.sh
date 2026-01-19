@@ -48,11 +48,11 @@ count_files() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-01: Placeholder Text Detection
+# GATE-01: Placeholder Text Detection
 # -----------------------------------------------------------------------------
 
 check_placeholder_text() {
-  echo "--- CORPUS-01: Placeholder Text Detection ---"
+  echo "--- GATE-01: Placeholder Text Detection ---"
 
   local found=0
 
@@ -64,7 +64,7 @@ check_placeholder_text() {
         spec_ref=$(echo "$line" | grep -oE "SPEC-[0-9]+" | head -1 || true)
         # Check if validated spec exists (recursively)
         if [[ -n "$spec_ref" ]] && find "$SPEC_DIR" -name "${spec_ref}_*.yaml" -print -quit | grep -q .; then
-          echo -e "${RED}CORPUS-E001: Placeholder references existing document:${NC}"
+          echo -e "${RED}GATE-E001: Placeholder references existing document:${NC}"
           echo "  $line"
           ((ERRORS++)) || true
           ((found++)) || true
@@ -78,7 +78,7 @@ check_placeholder_text() {
     # Extract cumulative_tags section and check for TBD patterns
     local tags_section=$(sed -n '/^cumulative_tags:/,/^[^ ]/p' "$f" 2>/dev/null)
     if echo "$tags_section" | grep -qE ':\s*"?TBD"?|:\s*"?TODO"?'; then
-      echo -e "${RED}CORPUS-E001: TBD/TODO found in cumulative_tags:${NC}"
+      echo -e "${RED}GATE-E001: TBD/TODO found in cumulative_tags:${NC}"
       echo "  File: $(basename "$f")"
       echo "$tags_section" | grep -E ':\s*"?TBD"?|:\s*"?TODO"?' | sed 's/^/    /'
       ((ERRORS++)) || true
@@ -92,12 +92,12 @@ check_placeholder_text() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-02: Premature Downstream References
+# GATE-02: Premature Downstream References
 # -----------------------------------------------------------------------------
 
 check_premature_references() {
   echo ""
-  echo "--- CORPUS-02: Premature Downstream References ---"
+  echo "--- GATE-02: Premature Downstream References ---"
 
   local found=0
   local downstream_patterns="(TASKS-[0-9]{2,}"
@@ -107,7 +107,7 @@ check_premature_references() {
       if echo "$line" | grep -qE "Layer [0-9]|→|SDD workflow"; then
         continue
       fi
-      echo -e "${RED}CORPUS-E002: $line${NC}"
+      echo -e "${RED}GATE-E002: $line${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -119,28 +119,28 @@ check_premature_references() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-03: Internal Count Consistency
+# GATE-03: Internal Count Consistency
 # -----------------------------------------------------------------------------
 
 check_count_consistency() {
   echo ""
-  echo "--- CORPUS-03: Internal Count Consistency ---"
+  echo "--- GATE-03: Internal Count Consistency ---"
   echo -e "${GREEN}  ✓ Count consistency check (manual verification recommended)${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-04: Index Synchronization
+# GATE-04: Index Synchronization
 # -----------------------------------------------------------------------------
 
 check_index_sync() {
   echo ""
-  echo "--- CORPUS-04: Index Synchronization ---"
+  echo "--- GATE-04: Index Synchronization ---"
   local found_warnings=0
 
   spec_index_files=$(find "$SPEC_DIR" -name "SPEC-*_index.md" -o -name "SPEC-000_index.md")
   
   if [[ -z "$spec_index_files" ]]; then
-     echo -e "${YELLOW}CORPUS-W004: Index file not found (e.g., SPEC-000_index.md). Skipping sync check.${NC}"
+     echo -e "${YELLOW}GATE-W004: Index file not found (e.g., SPEC-000_index.md). Skipping sync check.${NC}"
      ((WARNINGS++)) || true
      return
   fi
@@ -154,7 +154,7 @@ check_index_sync() {
           # Extract only the FIRST SPEC ID from the line (to avoid multi-line variables)
           spec_id=$(echo "$line" | grep -oE "SPEC-[0-9]+" | head -1)
           if [[ -n "$spec_id" ]] && find "$SPEC_DIR" -name "${spec_id}_*.yaml" -print -quit | grep -q .; then
-            echo -e "${YELLOW}CORPUS-W004: $(basename "$index_file") lists '$spec_id' as 'Planned', but the file exists.${NC}"
+            echo -e "${YELLOW}GATE-W004: $(basename "$index_file") lists '$spec_id' as 'Planned', but the file exists.${NC}"
             ((WARNINGS++)) || true
             ((found_warnings++)) || true
           fi
@@ -172,7 +172,7 @@ check_index_sync() {
         local spec_id
         spec_id=$(basename "$spec_file" | grep -oE "SPEC-[0-9]+" || echo "")
         if [[ -n "$spec_id" ]] && ! grep -q "$spec_id" "$root_index" 2>/dev/null; then
-          echo -e "${YELLOW}CORPUS-W004: '$(basename "$spec_file")' exists but is not mentioned in the root index ($(basename "$root_index")).${NC}"
+          echo -e "${YELLOW}GATE-W004: '$(basename "$spec_file")' exists but is not mentioned in the root index ($(basename "$root_index")).${NC}"
           ((WARNINGS++)) || true
           ((found_warnings++)) || true
         fi
@@ -185,22 +185,22 @@ check_index_sync() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-05: Inter-SPEC Cross-Linking (DEPRECATED)
+# GATE-05: Inter-SPEC Cross-Linking (DEPRECATED)
 # -----------------------------------------------------------------------------
 
 check_cross_linking() {
   echo ""
-  echo "--- CORPUS-05: Inter-SPEC Cross-Linking ---"
+  echo "--- GATE-05: Inter-SPEC Cross-Linking ---"
   echo -e "${BLUE}  ℹ DEPRECATED: Document name references are sufficient per SDD rules${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-06: Visualization Coverage
+# GATE-06: Visualization Coverage
 # -----------------------------------------------------------------------------
 
 check_visualization() {
   echo ""
-  echo "--- CORPUS-06: Visualization Coverage ---"
+  echo "--- GATE-06: Visualization Coverage ---"
 
   local found=0
   local total=0
@@ -224,22 +224,22 @@ check_visualization() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-07: Glossary Consistency
+# GATE-07: Glossary Consistency
 # -----------------------------------------------------------------------------
 
 check_glossary() {
   echo ""
-  echo "--- CORPUS-07: Glossary Consistency ---"
+  echo "--- GATE-07: Glossary Consistency ---"
   echo -e "${GREEN}  ✓ Terminology consistent (no major issues detected)${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-08: Specification ID Uniqueness
+# GATE-08: Specification ID Uniqueness
 # -----------------------------------------------------------------------------
 
 check_spec_ids() {
   echo ""
-  echo "--- CORPUS-08: Specification ID Uniqueness ---"
+  echo "--- GATE-08: Specification ID Uniqueness ---"
 
   local duplicates
   # Recursive grep
@@ -247,7 +247,7 @@ check_spec_ids() {
 
   if [[ -n "$duplicates" ]]; then
     echo "$duplicates" | while read dup; do
-      echo -e "${RED}CORPUS-E004: Duplicate internal 'id:' field found in corpus: $dup${NC}"
+      echo -e "${RED}GATE-E004: Duplicate internal 'id:' field found in corpus: $dup${NC}"
       # Find which files contain this duplicate id
       grep -rEb "^id: $dup" "$SPEC_DIR" --include="SPEC-[0-9]*_*.yaml" | cut -d: -f1 | sort | uniq | sed 's/^/  - Found in: /'
       ((ERRORS++)) || true
@@ -258,57 +258,61 @@ check_spec_ids() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-09: Parameter Type Format
+# GATE-09: Parameter Type Format
 # -----------------------------------------------------------------------------
 
 check_param_format() {
   echo ""
-  echo "--- CORPUS-09: Parameter Type Format ---"
+  echo "--- GATE-09: Parameter Type Format ---"
   echo -e "${GREEN}  ✓ Parameter type formats acceptable${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-10: File Size Compliance (Universal Rule)
+# GATE-10: File Size Compliance (Universal Rule)
 # -----------------------------------------------------------------------------
 
 check_file_size() {
   echo ""
-  echo "--- CORPUS-10: File Size Compliance ---"
+  echo "--- GATE-10: File Size & Token Compliance ---"
 
   local found=0
   while IFS= read -r f; do
     local lines
     lines=$(wc -l <"$f")
+    local words
+    words=$(wc -w <"$f")
+    local tokens=$((words * 13 / 10))
 
-    # Universal Rule: >1000 lines is an ERROR (Must Split)
-    if [[ $lines -gt 1000 ]]; then
-      echo -e "${RED}CORPUS-E005: $(basename "$f") exceeds 1000 lines ($lines) - MUST SPLIT per Universal Rule${NC}"
+    # Universal Rule: >20,000 tokens is an ERROR (Must Split)
+    # Universal Rule: >20k tokens is an ERROR (Must Split)
+    if [[ $tokens -gt 20000 ]]; then
+      echo -e "${RED}GATE-E006: $(basename "$f") exceeds 20,000 tokens (~$tokens) - MUST SPLIT per Universal Rule${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
-    elif [[ $lines -gt 500 ]]; then
-      echo -e "${YELLOW}CORPUS-W005: $(basename "$f") exceeds 500 lines ($lines) - Consider splitting${NC}"
+    elif [[ $tokens -gt 15000 ]]; then
+      echo -e "${YELLOW}GATE-W006: $(basename "$f") exceeds 15,000 tokens (~$tokens) - Consider splitting${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
   done < <(get_spec_files)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits (≤1000 lines)${NC}"
+    echo -e "${GREEN}  ✓ All files within size limits (≤20,000 tokens)${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-11: YAML Syntax Validation
+# GATE-11: YAML Syntax Validation
 # -----------------------------------------------------------------------------
 
 check_yaml_syntax() {
   echo ""
-  echo "--- CORPUS-11: YAML Syntax Validation ---"
+  echo "--- GATE-11: YAML Syntax Validation ---"
 
   local found=0
   while IFS= read -r f; do
     if ! python3 -c "import yaml; yaml.safe_load(open('$f'))" 2>/dev/null; then
-      echo -e "${RED}CORPUS-E011: $(basename "$f") has invalid YAML syntax${NC}"
+      echo -e "${RED}GATE-E011: $(basename "$f") has invalid YAML syntax${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -320,22 +324,22 @@ check_yaml_syntax() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-12: Parameter Type Consistency
+# GATE-12: Parameter Type Consistency
 # -----------------------------------------------------------------------------
 
 check_param_consistency() {
   echo ""
-  echo "--- CORPUS-12: Parameter Type Consistency ---"
+  echo "--- GATE-12: Parameter Type Consistency ---"
   echo -e "${GREEN}  ✓ Parameter type consistency acceptable${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-13: REQ Coverage
+# GATE-13: REQ Coverage
 # -----------------------------------------------------------------------------
 
 check_req_coverage() {
   echo ""
-  echo "--- CORPUS-13: REQ Coverage ---"
+  echo "--- GATE-13: REQ Coverage ---"
 
   local found=0
   while IFS= read -r f; do
@@ -345,7 +349,7 @@ check_req_coverage() {
     [[ -z "$req_refs" || ! "$req_refs" =~ ^[0-9]+$ ]] && req_refs=0
 
     if [[ $req_refs -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E013: $(basename "$f") is missing required upstream REQ traceability${NC}"
+      echo -e "${RED}GATE-E013: $(basename "$f") is missing required upstream REQ traceability${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -359,12 +363,12 @@ check_req_coverage() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-14: Required YAML Fields
+# GATE-14: Required YAML Fields
 # -----------------------------------------------------------------------------
 
 check_required_fields() {
   echo ""
-  echo "--- CORPUS-14: Required YAML Fields ---"
+  echo "--- GATE-14: Required YAML Fields ---"
 
   local found=0
   # Corrected fields based on SPEC-MVP-TEMPLATE.yaml
@@ -374,7 +378,7 @@ check_required_fields() {
     for field in "${required_fields[@]}"; do
       # Simple grep for key starting string at start of line
       if ! grep -qE "^${field}:" "$f" 2>/dev/null; then
-        echo -e "${RED}CORPUS-E014: $(basename "$f") missing required top-level field: '${field}:'${NC}"
+        echo -e "${RED}GATE-E014: $(basename "$f") missing required top-level field: '${field}:'${NC}"
         ((ERRORS++)) || true
         ((found++)) || true
       fi
@@ -387,12 +391,12 @@ check_required_fields() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-15: Cumulative Traceability Compliance
+# GATE-15: Cumulative Traceability Compliance
 # -----------------------------------------------------------------------------
 
 check_cumulative_traceability() {
   echo ""
-  echo "--- CORPUS-15: Cumulative Traceability Compliance ---"
+  echo "--- GATE-15: Cumulative Traceability Compliance ---"
 
   local found=0
   # Per rules, 7 tags are required. CTR is optional.
@@ -401,7 +405,7 @@ check_cumulative_traceability() {
   while IFS= read -r f; do
     # Check for the cumulative_tags block first
     if ! grep -q "cumulative_tags:" "$f" 2>/dev/null; then
-        echo -e "${RED}CORPUS-E015: $(basename "$f") is missing the 'cumulative_tags' block entirely.${NC}"
+        echo -e "${RED}GATE-E015: $(basename "$f") is missing the 'cumulative_tags' block entirely.${NC}"
         ((ERRORS++)) || true
         ((found++)) || true
         continue
@@ -416,7 +420,7 @@ check_cumulative_traceability() {
     done
 
     if [[ -n "$missing_tags" ]]; then
-      echo -e "${RED}CORPUS-E015: $(basename "$f") is missing required cumulative tags:$missing_tags${NC}"
+      echo -e "${RED}GATE-E015: $(basename "$f") is missing required cumulative tags:$missing_tags${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi

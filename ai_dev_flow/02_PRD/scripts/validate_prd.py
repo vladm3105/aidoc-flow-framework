@@ -2,7 +2,7 @@
 """
 PRD (Product Requirements Document) Validator - Layer 2
 
-Validates PRD documents against PRD_SCHEMA.yaml requirements.
+Validates PRD documents against PRD_MVP_SCHEMA.yaml requirements.
 
 Usage:
     python validate_prd.py <file_or_directory>

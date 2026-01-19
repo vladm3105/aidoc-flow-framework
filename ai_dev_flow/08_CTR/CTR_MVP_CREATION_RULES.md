@@ -368,7 +368,7 @@ Include ONLY if relationships exist between CTR documents sharing API context or
 ## References
 
 - [CTR-MVP-TEMPLATE.md](./CTR-MVP-TEMPLATE.md) - Contract template (primary standard)
-- [CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
+- [CTR_MVP_SCHEMA.yaml](./CTR_MVP_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
 - [CTR-00_index.md](./CTR-00_index.md) - Contract registry
 - [README.md](./README.md) - Directory overview
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Workflow guide

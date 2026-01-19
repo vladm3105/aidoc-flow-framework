@@ -249,7 +249,7 @@ architecture_decision_requirements:
   mandatory_categories:
     - id: 1
       name: "Infrastructure"
-      element_pattern: "^BRD\\.\\d+\\.32\.01$"
+      element_pattern: "^BRD\\.\\d+\\.32\\.01$"
       description: "Compute, deployment, scaling"
       valid_na_reasons:
         - "Pure data/analytics project"
@@ -257,7 +257,7 @@ architecture_decision_requirements:
 
     - id: 2
       name: "Data Architecture"
-      element_pattern: "^BRD\\.\\d+\\.32\.02$"
+      element_pattern: "^BRD\\.\\d+\\.32\\.02$"
       description: "Database, storage, caching"
       valid_na_reasons:
         - "No persistent data needed"
@@ -265,7 +265,7 @@ architecture_decision_requirements:
 
     - id: 3
       name: "Integration"
-      element_pattern: "^BRD\\.\\d+\\.32\.03$"
+      element_pattern: "^BRD\\.\\d+\\.32\\.03$"
       description: "APIs, messaging, external systems"
       valid_na_reasons:
         - "Standalone system"
@@ -273,7 +273,7 @@ architecture_decision_requirements:
 
     - id: 4
       name: "Security"
-      element_pattern: "^BRD\\.\\d+\\.32\.04$"
+      element_pattern: "^BRD\\.\\d+\\.32\\.04$"
       description: "Auth, encryption, access control"
       valid_na_reasons:
         - "Internal tool, no sensitive data"
@@ -281,7 +281,7 @@ architecture_decision_requirements:
 
     - id: 5
       name: "Observability"
-      element_pattern: "^BRD\\.\\d+\\.32\.05$"
+      element_pattern: "^BRD\\.\\d+\\.32\\.05$"
       description: "Monitoring, logging, alerting"
       valid_na_reasons:
         - "MVP/prototype only"
@@ -289,7 +289,7 @@ architecture_decision_requirements:
 
     - id: 6
       name: "AI/ML"
-      element_pattern: "^BRD\\.\\d+\\.32\.06$"
+      element_pattern: "^BRD\\.\\d+\\.32\\.06$"
       description: "Model serving, training, MLOps"
       valid_na_reasons:
         - "No AI/ML components"
@@ -297,7 +297,7 @@ architecture_decision_requirements:
 
     - id: 7
       name: "Technology Selection"
-      element_pattern: "^BRD\\.\\d+\\.32\.07$"
+      element_pattern: "^BRD\\.\\d+\\.32\\.07$"
       description: "Languages, frameworks, platforms"
       valid_na_reasons:
         - "Using existing stack"

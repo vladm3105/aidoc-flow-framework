@@ -89,6 +89,14 @@ Contracts enable parallel development by allowing providers and consumers to imp
 
 **Best Practice**: Markdown provides context and rationale, YAML enables automation. Both must be synchronized (same CTR-NN, same schema structure).
 
+## Layer Scripts
+
+This layer includes a dedicated `scripts/` directory containing validation and utility scripts specific to this document type.
+
+- **Location**: `08_CTR/scripts/`
+- **Primary Validator**: `validate_ctr_quality_score.sh`
+- **Usage**: Run scripts directly or usage via `validate_all.py`.
+
 ## 4. File Naming Convention
 
 ### 4.1 Format
@@ -629,7 +637,7 @@ except ValidationError as e:
 
 ### 14.1 Template Files
 - **[CTR-MVP-TEMPLATE.md](./CTR-MVP-TEMPLATE.md)**: 12-section markdown template (primary standard)
-- **[CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml)**: Validation schema defining 12-section structure and OpenAPI 3.x requirements
+- **[CTR_MVP_SCHEMA.yaml](./CTR_MVP_SCHEMA.yaml)**: Validation schema defining 12-section structure and OpenAPI 3.x requirements
 
 ### 14.2 Example Scenarios
 
@@ -670,10 +678,9 @@ except ValidationError as e:
 **Next Review**: YYYY-MM-DD (recommend quarterly for active documentation)
 ## File Size Limits
 
-- **Target**: 800 lines per file
-- **Maximum (Markdown)**: 1200 lines (absolute)
-- **YAML Exception (monolithic)**: Warnings at ~1000 lines, errors at ~2000 lines in linter; splitting is not required unless readability suffers.
-- If a contract approaches/exceeds limits, split content logically (e.g., separate endpoints/schemas) and maintain dual-file `.md` + `.yaml` structure (prefer monolithic YAML where logical).
+- **Target**: <15,000 tokens per file
+- **Maximum**: 20,000 tokens (Error limit)
+- **YAML Exception**: If a contract approaches/exceeds limits, split content logically (e.g., separate endpoints/schemas) and maintain dual-file `.md` + `.yaml` structure (prefer monolithic YAML where logical).
 
 ## Document Splitting Standard
 

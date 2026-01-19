@@ -19,6 +19,7 @@ Exit Codes:
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 from dataclasses import dataclass, field
@@ -129,7 +130,7 @@ VALIDATOR_REGISTRY: Dict[str, ValidatorConfig] = {
 # Cross-document validators (not layer-specific)
 CROSS_VALIDATORS = {
     "XDOC": ValidatorConfig(
-        script="validate_cross_document.py",
+        script="validate_traceability.py",
         script_type="python",
         implemented=True,
         layer=0,
@@ -346,12 +347,27 @@ def run_validator(
 
     # Build command
     if config.script_type == "python":
-        cmd = [sys.executable, str(script_path), str(docs_dir)]
+        cmd = [sys.executable, str(script_path)]
+        if target_files:
+            # Python scripts usually take args
+            cmd.extend([str(f) for f in target_files])
+        else:
+             # Default to docs dir if no target files
+            cmd.append(str(docs_dir))
     else:
+        # Shell scripts usually take DIR as first arg
         cmd = ["bash", str(script_path), str(docs_dir)]
+        if target_files:
+            cmd.extend([str(f) for f in target_files])
 
-    if target_files:
-        cmd.extend([str(f) for f in target_files])
+    if verbose and config.script_type == "shell":
+        cmd.append("--verbose")
+    elif verbose and config.script_type == "python":
+        # Python scripts might handle verbose differently, assuming standard argparse
+        if "validate_terminology" in str(script_path): # Special case as it takes path as first arg
+             pass 
+        else:
+             cmd.append("--verbose")
 
     try:
         result = subprocess.run(
@@ -374,7 +390,9 @@ def run_validator(
                 continue
 
             # Parse error code format: [SEVERITY] CODE: message
-            if line.startswith("[ERROR]") or "-E" in line:
+            # Stricter check: Must have [ERROR] prefix OR contain a valid error code like COR-E001
+            has_error_code = re.search(r'[A-Z]+-E\d{3}', line)
+            if line.startswith("[ERROR]") or has_error_code:
                 errors.append(ValidationIssue(
                     code=extract_code(line),
                     message=line,

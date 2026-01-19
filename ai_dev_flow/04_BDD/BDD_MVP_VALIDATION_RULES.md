@@ -406,15 +406,15 @@ echo "BDD-02.12.00_query.feature" | grep -qE "\.00_" && echo "✅ Valid aggregat
 **Requirement**: Individual .feature files MUST stay under size limits
 
 **Hard Limits**:
-- **Maximum lines per .feature file**: 500 lines (soft limit: 400 lines)
+- **Maximum tokens per .feature file**: 20,000 tokens (warning: 15,000 tokens)
 - **Maximum scenarios per Feature block**: 12 scenarios
 
 **Rationale**: Keep files executable, maintainable, and within test framework limits
 
 **Validation Commands**:
 ```bash
-# Check line count for each .feature file inside suite folders
-find docs/04_BDD/BDD-* -maxdepth 1 -name "BDD-*.feature" -exec wc -l {} \; | awk '$1 > 500 {print "❌ " $2 ": " $1 " lines (max 500)"}'
+# Check token count using the validator script
+python3 04_BDD/scripts/validate_bdd.py docs/04_BDD --profile mvp
 
 # Check scenario count per Feature block
 for f in docs/04_BDD/BDD-*/BDD-*.feature; do
@@ -426,8 +426,8 @@ done
 ```
 
 **Error Messages**:
-- `❌ ERROR: File exceeds 500 line limit (current: NNN lines)`
-- `⚠️  WARNING: File exceeds soft limit of 400 lines (current: NNN lines)`
+- `❌ ERROR: File exceeds 20,000 token limit (current: NNN tokens)`
+- `⚠️  WARNING: File exceeds soft limit of 15,000 tokens (current: NNN tokens)`
 - `❌ ERROR: Feature block contains NN scenarios (max 12 per block)`
 
 **Fix**: Split into subsections using `BDD-NN.SS.mm_{slug}.feature` format

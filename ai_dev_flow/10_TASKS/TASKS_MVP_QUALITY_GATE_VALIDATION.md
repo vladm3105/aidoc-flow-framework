@@ -44,7 +44,7 @@ Individual TASKS Creation → TASKS_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All TASKS Complete
         ↓
-TASKS_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
+TASKS_MVP_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
         ↓
 PASS → Begin Code Implementation
 FAIL → Fix issues, re-run Quality Gate validation
@@ -190,11 +190,11 @@ docs/10_TASKS/
 
 **Purpose**: Ensure documents don't exceed token limits
 
-**Severity**: Warning at 600 lines, Error at 1200 lines
+**Severity**: Warning at 15,000 tokens, Error at 20,000 tokens
 
 **File Format**: Markdown (.md)
 
-**Note**: TASKS files use Markdown format. For comparison, SPEC files (YAML format) use different thresholds (Warning at 1000 lines, Error at 2000 lines) due to format differences in verbosity.
+**Note**: TASKS files use Markdown format. For comparison, SPEC files (YAML format) use different thresholds (Warning at 20,000 tokens) due to format differences in verbosity.
 
 ---
 
@@ -332,7 +332,7 @@ done
 | CORPUS-E001 | Placeholder text for existing document | CORPUS-01 |
 | CORPUS-E002 | Premature downstream reference | CORPUS-02 |
 | CORPUS-E004 | Duplicate task ID | CORPUS-08 |
-| CORPUS-E005 | File exceeds 1,200 lines | CORPUS-10 |
+| CORPUS-E005 | File exceeds 20,000 tokens | CORPUS-10 |
 | CORPUS-E011 | Circular dependency detected | CORPUS-11 |
 | CORPUS-E012 | SPEC without TASKS coverage | CORPUS-12 |
 | CORPUS-E015 | Missing cumulative traceability | CORPUS-15 |
@@ -344,7 +344,7 @@ done
 | CORPUS-W001 | Internal count mismatch | CORPUS-03 |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
 | CORPUS-W004 | Index out of sync | CORPUS-04 |
-| CORPUS-W005 | File exceeds 600 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 15,000 tokens | CORPUS-10 |
 | CORPUS-W009 | Priority format inconsistency | CORPUS-09 |
 | CORPUS-W013 | Missing implementation contract | CORPUS-13 |
 | CORPUS-W014 | Missing task status | CORPUS-14 |

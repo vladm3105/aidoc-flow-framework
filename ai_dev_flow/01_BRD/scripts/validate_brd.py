@@ -2,7 +2,7 @@
 """
 BRD (Business Requirements Document) Validator - Layer 1
 
-Validates BRD documents against BRD_SCHEMA.yaml requirements.
+Validates BRD documents against BRD_MVP_SCHEMA.yaml requirements.
 
 Usage:
     python validate_brd.py <file_or_directory>

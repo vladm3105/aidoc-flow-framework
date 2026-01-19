@@ -49,11 +49,11 @@ count_files() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-01: Placeholder Text Detection
+# GATE-01: Placeholder Text Detection
 # -----------------------------------------------------------------------------
 
 check_placeholder_text() {
-  echo "--- CORPUS-01: Placeholder Text Detection ---"
+  echo "--- GATE-01: Placeholder Text Detection ---"
 
   local found=0
 
@@ -64,7 +64,7 @@ check_placeholder_text() {
       if [[ "$line" =~ \(future\ TASKS\)|\(when\ created\) ]]; then
         tasks_ref=$(echo "$line" | grep -oE "TASKS-[0-9]+" | head -1 || true)
         if [[ -n "$tasks_ref" ]] && ls "$TASKS_DIR/${tasks_ref}_"*.md 2>/dev/null >/dev/null; then
-          echo -e "${RED}CORPUS-E001: Placeholder references existing document:${NC}"
+          echo -e "${RED}GATE-E001: Placeholder references existing document:${NC}"
           echo "  $line"
           ((ERRORS++)) || true
           ((found++)) || true
@@ -80,7 +80,7 @@ check_placeholder_text() {
     
     # Extract traceability tag section and check for TBD patterns
     if grep -A 20 "^@spec:\|^@req:\|^@adr:\|^@brd:\|^@prd:" "$f" 2>/dev/null | grep -qE "TBD|TODO"; then
-      echo -e "${RED}CORPUS-E001: TBD/TODO found in traceability tags:${NC}"
+      echo -e "${RED}GATE-E001: TBD/TODO found in traceability tags:${NC}"
       echo "  File: $(basename $f)"
       grep -A 20 "^@spec:\|^@req:\|^@adr:\|^@brd:\|^@prd:" "$f" 2>/dev/null | grep -E "TBD|TODO" | sed 's/^/    /'
       ((ERRORS++)) || true
@@ -95,12 +95,12 @@ check_placeholder_text() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-02: Premature Downstream References
+# GATE-02: Premature Downstream References
 # -----------------------------------------------------------------------------
 
 check_premature_references() {
   echo ""
-  echo "--- CORPUS-02: Premature Downstream References ---"
+  echo "--- GATE-02: Premature Downstream References ---"
 
   local found=0
   # TASKS is the final documentation layer before Code - no downstream doc patterns
@@ -111,7 +111,7 @@ check_premature_references() {
       if echo "$line" | grep -qE "Layer [0-9]|→|SDD workflow"; then
         continue
       fi
-      echo -e "${RED}CORPUS-E002: $line${NC}"
+      echo -e "${RED}GATE-E002: $line${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -123,22 +123,22 @@ check_premature_references() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-03: Internal Count Consistency
+# GATE-03: Internal Count Consistency
 # -----------------------------------------------------------------------------
 
 check_count_consistency() {
   echo ""
-  echo "--- CORPUS-03: Internal Count Consistency ---"
+  echo "--- GATE-03: Internal Count Consistency ---"
   echo -e "${GREEN}  ✓ Count consistency check (manual verification recommended)${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-04: Index Synchronization
+# GATE-04: Index Synchronization
 # -----------------------------------------------------------------------------
 
 check_index_sync() {
   echo ""
-  echo "--- CORPUS-04: Index Synchronization ---"
+  echo "--- GATE-04: Index Synchronization ---"
   local found_warnings=0
 
   local index_file=""
@@ -152,7 +152,7 @@ check_index_sync() {
   shopt -u nullglob
 
   if [[ -z "$index_file" || ! -f "$index_file" ]]; then
-    echo -e "${YELLOW}CORPUS-W004: Index file not found (e.g., TASKS-000_index.md). Skipping sync check.${NC}"
+    echo -e "${YELLOW}GATE-W004: Index file not found (e.g., TASKS-000_index.md). Skipping sync check.${NC}"
     ((WARNINGS++)) || true
     return
   fi
@@ -163,7 +163,7 @@ check_index_sync() {
       local tasks_id
       tasks_id=$(echo "$line" | grep -oE "TASKS-[0-9]+")
       if ls "$TASKS_DIR/${tasks_id}_"*.md &>/dev/null; then
-        echo -e "${YELLOW}CORPUS-W004: $(basename "$index_file") lists '$tasks_id' as 'Planned', but the file exists.${NC}"
+        echo -e "${YELLOW}GATE-W004: $(basename "$index_file") lists '$tasks_id' as 'Planned', but the file exists.${NC}"
         ((WARNINGS++)) || true
         ((found_warnings++)) || true
       fi
@@ -182,7 +182,7 @@ check_index_sync() {
     local tasks_id
     tasks_id=$(echo "$tasks_file" | grep -oE "TASKS-[0-9]+")
     if ! grep -q "$tasks_id" "$index_file" 2>/dev/null; then
-      echo -e "${YELLOW}CORPUS-W004: '$tasks_file' exists but is not mentioned in the index file ($(basename "$index_file")).${NC}"
+      echo -e "${YELLOW}GATE-W004: '$tasks_file' exists but is not mentioned in the index file ($(basename "$index_file")).${NC}"
       ((WARNINGS++)) || true
       ((found_warnings++)) || true
     fi
@@ -194,22 +194,22 @@ check_index_sync() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-05: Inter-TASKS Cross-Linking (DEPRECATED)
+# GATE-05: Inter-TASKS Cross-Linking (DEPRECATED)
 # -----------------------------------------------------------------------------
 
 check_cross_linking() {
   echo ""
-  echo "--- CORPUS-05: Inter-TASKS Cross-Linking ---"
+  echo "--- GATE-05: Inter-TASKS Cross-Linking ---"
   echo -e "${BLUE}  ℹ DEPRECATED: Document name references are sufficient per SDD rules${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-06: Visualization Coverage
+# GATE-06: Visualization Coverage
 # -----------------------------------------------------------------------------
 
 check_visualization() {
   echo ""
-  echo "--- CORPUS-06: Visualization Coverage ---"
+  echo "--- GATE-06: Visualization Coverage ---"
 
   local found=0
   local total=0
@@ -236,29 +236,29 @@ check_visualization() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-07: Glossary Consistency
+# GATE-07: Glossary Consistency
 # -----------------------------------------------------------------------------
 
 check_glossary() {
   echo ""
-  echo "--- CORPUS-07: Glossary Consistency ---"
+  echo "--- GATE-07: Glossary Consistency ---"
   echo -e "${GREEN}  ✓ Terminology consistent (no major issues detected)${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-08: Task ID Uniqueness
+# GATE-08: Task ID Uniqueness
 # -----------------------------------------------------------------------------
 
 check_task_ids() {
   echo ""
-  echo "--- CORPUS-08: Task ID Uniqueness ---"
+  echo "--- GATE-08: Task ID Uniqueness ---"
 
   local duplicates
   duplicates=$(grep -rohE "TASKS\.[0-9]+\.[0-9]+\.[0-9]+" "$TASKS_DIR"/*.md 2>/dev/null | sort | uniq -d || true)
 
   if [[ -n "$duplicates" ]]; then
     echo "$duplicates" | while read dup; do
-      echo -e "${RED}CORPUS-E004: Duplicate task ID: $dup${NC}"
+      echo -e "${RED}GATE-E004: Duplicate task ID: $dup${NC}"
       ((ERRORS++)) || true
     done
   else
@@ -267,22 +267,22 @@ check_task_ids() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-09: Priority Format Consistency
+# GATE-09: Priority Format Consistency
 # -----------------------------------------------------------------------------
 
 check_priority_format() {
   echo ""
-  echo "--- CORPUS-09: Priority Format Consistency ---"
+  echo "--- GATE-09: Priority Format Consistency ---"
   echo -e "${GREEN}  ✓ Priority formats acceptable${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-10: File Size Compliance
+# GATE-10: File Size Compliance
 # -----------------------------------------------------------------------------
 
 check_file_size() {
   echo ""
-  echo "--- CORPUS-10: File Size Compliance ---"
+  echo "--- GATE-10: File Size & Token Compliance ---"
 
   local found=0
   shopt -s nullglob
@@ -291,13 +291,16 @@ check_file_size() {
 
     local lines
     lines=$(wc -l < "$f")
+    local words
+    words=$(wc -w < "$f")
+    local tokens=$((words * 13 / 10))
 
-    if [[ $lines -gt 1200 ]]; then
-      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1200 lines ($lines)${NC}"
+    if [[ $tokens -gt 20000 ]]; then
+      echo -e "${RED}GATE-E006: $(basename "$f") exceeds 20,000 tokens (~$tokens) - MUST SPLIT per Universal Rule${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
-    elif [[ $lines -gt 600 ]]; then
-      echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 600 lines ($lines)${NC}"
+    elif [[ $tokens -gt 15000 ]]; then
+      echo -e "${YELLOW}GATE-W006: $(basename "$f") exceeds 15,000 tokens (~$tokens) - Consider splitting${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
@@ -305,17 +308,17 @@ check_file_size() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits${NC}"
+    echo -e "${GREEN}  ✓ All files within size limits (≤20,000 tokens, ≤10k tokens)${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-11: Task Dependency DAG Validation
+# GATE-11: Task Dependency DAG Validation
 # -----------------------------------------------------------------------------
 
 check_dependency_dag() {
   echo ""
-  echo "--- CORPUS-11: Task Dependency DAG Validation ---"
+  echo "--- GATE-11: Task Dependency DAG Validation ---"
 
   # A full DAG cycle detection is complex for a shell script.
   # This check finds self-references and direct mutual dependencies (A->B and B->A).
@@ -331,7 +334,7 @@ check_dependency_dag() {
 
     # 1. Check for self-referential dependency
     if grep -qE "depends-tasks:.*$current_task_id|depends.on.*$current_task_id" "$f" 2>/dev/null; then
-      echo -e "${RED}CORPUS-E011: Self-referential dependency found in $(basename "$f")${NC}"
+      echo -e "${RED}GATE-E011: Self-referential dependency found in $(basename "$f")${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -351,7 +354,7 @@ check_dependency_dag() {
       if [[ -n "$dep_file" && -f "$dep_file" ]]; then
         # Check if the dependency file also depends on the current task
         if grep -qE "depends-tasks:.*$current_task_id" "$dep_file" 2>/dev/null; then
-          echo -e "${RED}CORPUS-E011: Circular dependency detected between $(basename "$f") and $(basename "$dep_file")${NC}"
+          echo -e "${RED}GATE-E011: Circular dependency detected between $(basename "$f") and $(basename "$dep_file")${NC}"
           echo "  - $(basename "$f") depends on $dep_id"
           echo "  - $(basename "$dep_file") depends on $current_task_id"
           ((ERRORS++)) || true
@@ -369,12 +372,12 @@ check_dependency_dag() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-12: SPEC Coverage
+# GATE-12: SPEC Coverage
 # -----------------------------------------------------------------------------
 
 check_spec_coverage() {
   echo ""
-  echo "--- CORPUS-12: SPEC Coverage ---"
+  echo "--- GATE-12: SPEC Coverage ---"
 
   local found=0
   local spec_dir
@@ -399,7 +402,7 @@ check_spec_coverage() {
   orphaned_specs=$(comm -23 <(echo "$all_spec_ids") <(echo "$referenced_spec_ids"))
 
   if [[ -n "$orphaned_specs" ]]; then
-    echo -e "${RED}CORPUS-E012: Found orphaned SPEC files not covered by any TASKS document:${NC}"
+    echo -e "${RED}GATE-E012: Found orphaned SPEC files not covered by any TASKS document:${NC}"
     for orphan in $orphaned_specs; do
       echo "  - $orphan"
       ((ERRORS++)) || true
@@ -413,12 +416,12 @@ check_spec_coverage() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-13: Implementation Contract References
+# GATE-13: Implementation Contract References
 # -----------------------------------------------------------------------------
 
 check_impl_contracts() {
   echo ""
-  echo "--- CORPUS-13: Implementation Contract References ---"
+  echo "--- GATE-13: Implementation Contract References ---"
 
   local found=0
   shopt -s nullglob
@@ -432,7 +435,7 @@ check_impl_contracts() {
 
     if [[ $has_contracts -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W013: $(basename $f) has no implementation contracts${NC}"
+        echo -e "${YELLOW}GATE-W013: $(basename $f) has no implementation contracts${NC}"
       fi
       ((WARNINGS++)) || true
       ((found++)) || true
@@ -448,12 +451,12 @@ check_impl_contracts() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-14: Task Status Tracking
+# GATE-14: Task Status Tracking
 # -----------------------------------------------------------------------------
 
 check_task_status() {
   echo ""
-  echo "--- CORPUS-14: Task Status Tracking ---"
+  echo "--- GATE-14: Task Status Tracking ---"
 
   local found=0
   shopt -s nullglob
@@ -466,7 +469,7 @@ check_task_status() {
 
     if [[ $has_status -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W014: $(basename $f) has no task status indicators${NC}"
+        echo -e "${YELLOW}GATE-W014: $(basename $f) has no task status indicators${NC}"
       fi
       ((WARNINGS++)) || true
       ((found++)) || true
@@ -480,12 +483,12 @@ check_task_status() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-15: Cumulative Traceability Compliance
+# GATE-15: Cumulative Traceability Compliance
 # -----------------------------------------------------------------------------
 
 check_cumulative_traceability() {
   echo ""
-  echo "--- CORPUS-15: Cumulative Traceability Compliance ---"
+  echo "--- GATE-15: Cumulative Traceability Compliance ---"
 
   local found=0
   local required_tags=("@brd" "@prd" "@ears" "@bdd" "@adr" "@sys" "@req" "@spec")
@@ -503,7 +506,7 @@ check_cumulative_traceability() {
 
     if [[ -n "$missing_tags" ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W015: $(basename $f) may be missing tags:$missing_tags${NC}"
+        echo -e "${YELLOW}GATE-W015: $(basename $f) may be missing tags:$missing_tags${NC}"
       fi
       ((WARNINGS++)) || true
       ((found++)) || true
@@ -519,12 +522,12 @@ check_cumulative_traceability() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-16: Effort Estimation Presence
+# GATE-16: Effort Estimation Presence
 # -----------------------------------------------------------------------------
 
 check_effort_estimates() {
   echo ""
-  echo "--- CORPUS-16: Effort Estimation Presence ---"
+  echo "--- GATE-16: Effort Estimation Presence ---"
 
   local found=0
   shopt -s nullglob
@@ -537,7 +540,7 @@ check_effort_estimates() {
 
     if [[ $has_estimate -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W016: $(basename $f) has no effort estimates${NC}"
+        echo -e "${YELLOW}GATE-W016: $(basename $f) has no effort estimates${NC}"
       fi
       ((WARNINGS++)) || true
       ((found++)) || true

@@ -50,7 +50,7 @@ count_files() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-01: Placeholder Text Detection
+# GATE-01: Placeholder Text Detection
 # -----------------------------------------------------------------------------
 # PURPOSE: Detect LITERAL placeholder text patterns that indicate incomplete
 #          references to documents that already exist.
@@ -66,7 +66,7 @@ count_files() {
 # -----------------------------------------------------------------------------
 
 check_placeholder_text() {
-  echo "--- CORPUS-01: Placeholder Text Detection ---"
+  echo "--- GATE-01: Placeholder Text Detection ---"
 
   local found=0
   # These patterns must be matched LITERALLY (not as regex)
@@ -84,7 +84,7 @@ check_placeholder_text() {
         if [[ -n "$req_ref" ]]; then
           # Check if the referenced REQ file exists
           if find "$REQ_DIR" -name "${req_ref}_*.md" 2>/dev/null | grep -v "_index" | head -1 >/dev/null; then
-            echo -e "${RED}CORPUS-E001: $line${NC}"
+            echo -e "${RED}GATE-E001: $line${NC}"
             echo "  → $req_ref exists but marked as placeholder"
             ((ERRORS++)) || true
             ((found++)) || true
@@ -101,12 +101,12 @@ check_placeholder_text() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-02: Premature Downstream References
+# GATE-02: Premature Downstream References
 # -----------------------------------------------------------------------------
 
 check_premature_references() {
   echo ""
-  echo "--- CORPUS-02: Premature Downstream References ---"
+  echo "--- GATE-02: Premature Downstream References ---"
 
   local found=0
   # Layer 8+ artifacts that shouldn't be referenced with specific numbers
@@ -118,7 +118,7 @@ check_premature_references() {
       if echo "$line" | grep -qE "Layer [0-9]|→|SDD workflow|development workflow"; then
         continue
       fi
-      echo -e "${RED}CORPUS-E002: $line${NC}"
+      echo -e "${RED}GATE-E002: $line${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -130,18 +130,18 @@ check_premature_references() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-03: Internal Count Consistency
+# GATE-03: Internal Count Consistency
 # -----------------------------------------------------------------------------
 
 check_count_consistency() {
   echo ""
-  echo "--- CORPUS-03: Internal Count Consistency ---"
+  echo "--- GATE-03: Internal Count Consistency ---"
 
   local found=0
   while IFS= read -r line; do
     if [[ -n "$line" ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W001: Verify count - $line${NC}"
+        echo -e "${YELLOW}GATE-W001: Verify count - $line${NC}"
       fi
       ((found++)) || true
     fi
@@ -155,12 +155,12 @@ check_count_consistency() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-04: Index Synchronization
+# GATE-04: Index Synchronization
 # -----------------------------------------------------------------------------
 
 check_index_sync() {
   echo ""
-  echo "--- CORPUS-04: Index Synchronization ---"
+  echo "--- GATE-04: Index Synchronization ---"
 
   # Find index file
   local index_file=""
@@ -183,7 +183,7 @@ check_index_sync() {
     req_ref=$(echo "$line" | grep -oE "REQ-[0-9]+" | head -1 || true)
     if [[ -n "$req_ref" ]]; then
       if find "$REQ_DIR" -name "${req_ref}_*.md" 2>/dev/null | grep -v "_index" | head -1 >/dev/null; then
-        echo -e "${RED}CORPUS-E003: $req_ref exists but marked Planned in index${NC}"
+        echo -e "${RED}GATE-E003: $req_ref exists but marked Planned in index${NC}"
         ((ERRORS++)) || true
         ((found++)) || true
       fi
@@ -196,22 +196,22 @@ check_index_sync() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-05: Inter-REQ Cross-Linking (DEPRECATED)
+# GATE-05: Inter-REQ Cross-Linking (DEPRECATED)
 # -----------------------------------------------------------------------------
 
 check_cross_linking() {
   echo ""
-  echo "--- CORPUS-05: Inter-REQ Cross-Linking ---"
+  echo "--- GATE-05: Inter-REQ Cross-Linking ---"
   echo -e "${BLUE}  ℹ DEPRECATED: Document name references are sufficient per SDD rules${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-06: Visualization Coverage
+# GATE-06: Visualization Coverage
 # -----------------------------------------------------------------------------
 
 check_visualization() {
   echo ""
-  echo "--- CORPUS-06: Visualization Coverage ---"
+  echo "--- GATE-06: Visualization Coverage ---"
 
   local found=0
   local total=0
@@ -223,7 +223,7 @@ check_visualization() {
     diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
     if [[ $diagram_count -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
+        echo -e "${BLUE}GATE-I001: $(basename $f) has no Mermaid diagrams${NC}"
       fi
       ((INFO++)) || true
       ((found++)) || true
@@ -238,12 +238,12 @@ check_visualization() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-07: Glossary Consistency
+# GATE-07: Glossary Consistency
 # -----------------------------------------------------------------------------
 
 check_glossary() {
   echo ""
-  echo "--- CORPUS-07: Glossary Consistency ---"
+  echo "--- GATE-07: Glossary Consistency ---"
 
   local found=0
 
@@ -252,7 +252,7 @@ check_glossary() {
   local must_count=$(find "$REQ_DIR" -name "*.md" -exec grep -oh "MUST " {} \; 2>/dev/null | wc -l || echo 0)
 
   if [[ $shall_count -gt 10 && $must_count -gt 10 ]]; then
-    echo -e "${YELLOW}CORPUS-W003: Mixed SHALL ($shall_count) and MUST ($must_count) usage${NC}"
+    echo -e "${YELLOW}GATE-W003: Mixed SHALL ($shall_count) and MUST ($must_count) usage${NC}"
     ((WARNINGS++)) || true
     ((found++)) || true
   fi
@@ -263,12 +263,12 @@ check_glossary() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-08: Element ID Uniqueness
+# GATE-08: Element ID Uniqueness
 # -----------------------------------------------------------------------------
 
 check_element_ids() {
   echo ""
-  echo "--- CORPUS-08: Element ID Uniqueness (Cross-File) ---"
+  echo "--- GATE-08: Element ID Uniqueness (Cross-File) ---"
 
   # Check for IDs that appear in multiple different files
   # Within-file duplicates are acceptable (same ID in AC and traceability sections)
@@ -285,7 +285,7 @@ check_element_ids() {
   if [[ -n "$duplicates" ]]; then
     while IFS= read -r dup; do
       [[ -z "$dup" ]] && continue
-      echo -e "${RED}CORPUS-E004: Duplicate element ID: $dup (in multiple files)${NC}"
+      echo -e "${RED}GATE-E004: Duplicate element ID: $dup (in multiple files)${NC}"
       ((ERRORS++)) || true
       ((dup_count++)) || true
     done <<< "$duplicates"
@@ -297,12 +297,12 @@ check_element_ids() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-09: Priority Distribution
+# GATE-09: Priority Distribution
 # -----------------------------------------------------------------------------
 
 check_priority_distribution() {
   echo ""
-  echo "--- CORPUS-09: Priority Distribution ---"
+  echo "--- GATE-09: Priority Distribution ---"
 
   local must_count=$(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -exec grep -l "Priority.*MUST\|MUST.*Priority" {} \; 2>/dev/null | wc -l || echo 0)
   local should_count=$(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -exec grep -l "Priority.*SHOULD\|SHOULD.*Priority" {} \; 2>/dev/null | wc -l || echo 0)
@@ -314,7 +314,7 @@ check_priority_distribution() {
     echo "  Priority distribution: MUST=$must_count, SHOULD=$should_count, MAY=$may_count"
 
     if [[ $must_count -eq $total ]]; then
-      echo -e "${YELLOW}CORPUS-W009: 100% MUST priority - consider priority balance${NC}"
+      echo -e "${YELLOW}GATE-W009: 100% MUST priority - consider priority balance${NC}"
       ((WARNINGS++)) || true
     fi
   else
@@ -323,12 +323,12 @@ check_priority_distribution() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-10: File Size Compliance (Universal Rule)
+# GATE-10: File Size Compliance (Universal Rule)
 # -----------------------------------------------------------------------------
 
 check_file_size() {
   echo ""
-  echo "--- CORPUS-10: File Size Compliance ---"
+  echo "--- GATE-10: File Size & Token Compliance ---"
 
   local found=0
 
@@ -338,31 +338,34 @@ check_file_size() {
 
     local lines
     lines=$(wc -l < "$f")
+    local words
+    words=$(wc -w < "$f")
+    local tokens=$((words * 13 / 10))
 
-    # Universal Rule: >1000 lines is an ERROR (Must Split)
-    if [[ $lines -gt 1000 ]]; then
-      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1000 lines ($lines) - MUST SPLIT per Universal Rule${NC}"
+    # Universal Rule: >20k tokens is an ERROR (Must Split)
+    if [[ $tokens -gt 20000 ]]; then
+      echo -e "${RED}GATE-E006: $(basename "$f") exceeds 20,000 tokens (~$tokens) - MUST SPLIT per Universal Rule${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
-    elif [[ $lines -gt 500 ]]; then
-      echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 500 lines ($lines) - Consider splitting${NC}"
+    elif [[ $tokens -gt 15000 ]]; then
+      echo -e "${YELLOW}GATE-W006: $(basename "$f") exceeds 15,000 tokens (~$tokens) - Consider splitting${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits (≤1000 lines)${NC}"
+    echo -e "${GREEN}  ✓ All files within size limits (≤20,000 tokens, ≤10k tokens)${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-11: Cumulative Traceability (6 upstream tags)
+# GATE-11: Cumulative Traceability (6 upstream tags)
 # -----------------------------------------------------------------------------
 
 check_traceability() {
   echo ""
-  echo "--- CORPUS-11: Cumulative Traceability (@brd + @prd + @ears + @bdd + @adr + @sys) ---"
+  echo "--- GATE-11: Cumulative Traceability (@brd + @prd + @ears + @bdd + @adr + @sys) ---"
 
   local found=0
 
@@ -384,37 +387,37 @@ check_traceability() {
     [[ -z "$has_sys" || ! "$has_sys" =~ ^[0-9]+$ ]] && has_sys=0
 
     if [[ $has_brd -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E011: $(basename $f) missing @brd traceability tag${NC}"
+      echo -e "${RED}GATE-E011: $(basename $f) missing @brd traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_prd -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E012: $(basename $f) missing @prd traceability tag${NC}"
+      echo -e "${RED}GATE-E012: $(basename $f) missing @prd traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_ears -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E013: $(basename $f) missing @ears traceability tag${NC}"
+      echo -e "${RED}GATE-E013: $(basename $f) missing @ears traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_bdd -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E014: $(basename $f) missing @bdd traceability tag${NC}"
+      echo -e "${RED}GATE-E014: $(basename $f) missing @bdd traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_adr -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E015: $(basename $f) missing @adr traceability tag${NC}"
+      echo -e "${RED}GATE-E015: $(basename $f) missing @adr traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_sys -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E016: $(basename $f) missing @sys traceability tag${NC}"
+      echo -e "${RED}GATE-E016: $(basename $f) missing @sys traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -426,7 +429,7 @@ check_traceability() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-22: Upstream TBD References
+# GATE-22: Upstream TBD References
 # -----------------------------------------------------------------------------
 # PURPOSE: Detect TBD placeholders in UPSTREAM traceability references.
 #          Upstream documents (BRD, PRD, EARS, BDD, ADR, SYS) must exist
@@ -438,7 +441,7 @@ check_traceability() {
 
 check_upstream_tbd() {
   echo ""
-  echo "--- CORPUS-22: Upstream TBD References ---"
+  echo "--- GATE-22: Upstream TBD References ---"
 
   local found=0
   # Upstream tags that must have real references (not TBD)
@@ -452,7 +455,7 @@ check_upstream_tbd() {
       # Matches: @brd: TBD, @brd:TBD, @brd: (TBD), @brd: [TBD]
       if grep -qE "${tag}\s*(TBD|\(TBD\)|\[TBD\])" "$f" 2>/dev/null; then
         local tag_name="${tag%:}"  # Remove trailing colon for display
-        echo -e "${RED}CORPUS-E022: $(basename $f) has TBD for upstream ${tag_name} reference${NC}"
+        echo -e "${RED}GATE-E022: $(basename $f) has TBD for upstream ${tag_name} reference${NC}"
         echo "  → Upstream documents must exist before REQ creation"
         ((ERRORS++)) || true
         ((found++)) || true
@@ -467,12 +470,12 @@ check_upstream_tbd() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-12: 12-Section Format Compliance
+# GATE-12: 12-Section Format Compliance
 # -----------------------------------------------------------------------------
 
 check_section_format() {
   echo ""
-  echo "--- CORPUS-12: 12-Section Format Compliance (REQ v3.0 / MVP) ---"
+  echo "--- GATE-12: 12-Section Format Compliance (REQ v3.0 / MVP) ---"
 
   local found=0
 
@@ -508,7 +511,7 @@ check_section_format() {
   echo "DEBUG: Finished processing all files..."
 
       if [[ "$section_found" == "false" ]]; then
-        echo -e "${RED}CORPUS-E017: $(basename $f) missing '$primary_name' section${NC}"
+        echo -e "${RED}GATE-E017: $(basename $f) missing '$primary_name' section${NC}"
         ((ERRORS++)) || true
         ((found++)) || true
       fi
@@ -522,12 +525,12 @@ check_section_format() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-13: Domain Subdirectory Classification
+# GATE-13: Domain Subdirectory Classification
 # -----------------------------------------------------------------------------
 
 check_domain_classification() {
   echo ""
-  echo "--- CORPUS-13: Domain Subdirectory Classification ---"
+  echo "--- GATE-13: Domain Subdirectory Classification ---"
 
   local found=0
   local orphaned=0
@@ -540,7 +543,7 @@ check_domain_classification() {
 
     # Check if file is in root REQ directory (orphaned)
     if [[ "$dir_name" == "REQ" ]]; then
-      echo -e "${YELLOW}CORPUS-W013: $(basename $f) is not in a domain subdirectory${NC}"
+      echo -e "${YELLOW}GATE-W013: $(basename $f) is not in a domain subdirectory${NC}"
       ((WARNINGS++)) || true
       ((orphaned++)) || true
       continue
@@ -557,7 +560,7 @@ check_domain_classification() {
   echo "DEBUG: Finished processing all files..."
 
     if [[ $valid -eq 0 ]]; then
-      echo -e "${YELLOW}CORPUS-W013: $(basename $f) is in unrecognized domain '$dir_name'${NC}"
+      echo -e "${YELLOW}GATE-W013: $(basename $f) is in unrecognized domain '$dir_name'${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
@@ -569,12 +572,12 @@ check_domain_classification() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-14: SPEC-Readiness Scoring
+# GATE-14: SPEC-Readiness Scoring
 # -----------------------------------------------------------------------------
 
 check_spec_ready() {
   echo ""
-  echo "--- CORPUS-14: SPEC-Readiness Scoring ---"
+  echo "--- GATE-14: SPEC-Readiness Scoring ---"
 
   local found=0
   local missing=0
@@ -587,11 +590,11 @@ check_spec_ready() {
 
     if [[ -z "$score" ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W014: $(basename $f) missing SPEC-Ready Score${NC}"
+        echo -e "${YELLOW}GATE-W014: $(basename $f) missing SPEC-Ready Score${NC}"
       fi
       ((missing++)) || true
     elif [[ $score -lt 90 ]]; then
-      echo -e "${YELLOW}CORPUS-W014: $(basename $f) has SPEC-Ready Score $score% (target: ≥90%)${NC}"
+      echo -e "${YELLOW}GATE-W014: $(basename $f) has SPEC-Ready Score $score% (target: ≥90%)${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
@@ -605,12 +608,12 @@ check_spec_ready() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-15: IMPL-Readiness Scoring
+# GATE-15: IMPL-Readiness Scoring
 # -----------------------------------------------------------------------------
 
 check_impl_ready() {
   echo ""
-  echo "--- CORPUS-15: IMPL-Readiness Scoring ---"
+  echo "--- GATE-15: IMPL-Readiness Scoring ---"
 
   local found=0
 
@@ -622,7 +625,7 @@ check_impl_ready() {
 
     if [[ -n "$score" && $score -lt 85 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${BLUE}CORPUS-I015: $(basename $f) has IMPL-Ready Score $score% (recommended: ≥85%)${NC}"
+        echo -e "${BLUE}GATE-I015: $(basename $f) has IMPL-Ready Score $score% (recommended: ≥85%)${NC}"
       fi
       ((INFO++)) || true
       ((found++)) || true
@@ -635,12 +638,12 @@ check_impl_ready() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-16: Acceptance Criteria Coverage
+# GATE-16: Acceptance Criteria Coverage
 # -----------------------------------------------------------------------------
 
 check_acceptance_criteria() {
   echo ""
-  echo "--- CORPUS-16: Acceptance Criteria Coverage ---"
+  echo "--- GATE-16: Acceptance Criteria Coverage ---"
 
   local found=0
 
@@ -657,7 +660,7 @@ check_acceptance_criteria() {
     # Use arithmetic comparison
     if [[ $ac_count -lt 3 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W016: $(basename $f) may have insufficient acceptance criteria ($ac_count found)${NC}"
+        echo -e "${YELLOW}GATE-W016: $(basename $f) may have insufficient acceptance criteria ($ac_count found)${NC}"
       fi
       ((WARNINGS++)) || true
       ((found++)) || true

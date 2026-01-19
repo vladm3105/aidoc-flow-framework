@@ -44,7 +44,7 @@ Individual BRD Creation → BRD_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All BRDs Complete
         ↓
-BRD_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
+BRD_MVP_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
         ↓
 PASS → Begin PRD Creation (Layer 2)
 FAIL → Fix issues, re-run Quality Gate validation

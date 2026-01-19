@@ -54,11 +54,11 @@ is_adr_ref() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-01: Placeholder Text Detection
+# GATE-01: Placeholder Text Detection
 # -----------------------------------------------------------------------------
 
 check_placeholder_text() {
-  echo "--- CORPUS-01: Placeholder Text Detection ---"
+  echo "--- GATE-01: Placeholder Text Detection ---"
 
   local found=0
   local patterns=("(future ADR)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
@@ -69,7 +69,7 @@ check_placeholder_text() {
         adr_ref=$(echo "$line" | grep -oE "ADR-[0-9]+" | head -1 || true)
         if [[ -n "$adr_ref" ]]; then
           if ls "$ADR_DIR/${adr_ref}_"*.md 2>/dev/null | grep -v "_index" >/dev/null; then
-            echo -e "${RED}CORPUS-E001: $line${NC}"
+            echo -e "${RED}GATE-E001: $line${NC}"
             echo "  → $adr_ref exists but marked as placeholder"
             ((ERRORS++)) || true
             ((found++)) || true
@@ -85,12 +85,12 @@ check_placeholder_text() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-02: Premature Downstream References
+# GATE-02: Premature Downstream References
 # -----------------------------------------------------------------------------
 
 check_premature_references() {
   echo ""
-  echo "--- CORPUS-02: Premature Downstream References ---"
+  echo "--- GATE-02: Premature Downstream References ---"
 
   local found=0
   # Layer 6+ artifacts that shouldn't be referenced with specific numbers
@@ -101,7 +101,7 @@ check_premature_references() {
       if echo "$line" | grep -qE "Layer [0-9]|→|SDD workflow|development workflow"; then
         continue
       fi
-      echo -e "${RED}CORPUS-E002: $line${NC}"
+      echo -e "${RED}GATE-E002: $line${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -113,18 +113,18 @@ check_premature_references() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-03: Internal Count Consistency
+# GATE-03: Internal Count Consistency
 # -----------------------------------------------------------------------------
 
 check_count_consistency() {
   echo ""
-  echo "--- CORPUS-03: Internal Count Consistency ---"
+  echo "--- GATE-03: Internal Count Consistency ---"
 
   local found=0
   while IFS= read -r line; do
     if [[ -n "$line" ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W001: Verify count - $line${NC}"
+        echo -e "${YELLOW}GATE-W001: Verify count - $line${NC}"
       fi
       ((found++)) || true
     fi
@@ -138,12 +138,12 @@ check_count_consistency() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-04: Index Synchronization
+# GATE-04: Index Synchronization
 # -----------------------------------------------------------------------------
 
 check_index_sync() {
   echo ""
-  echo "--- CORPUS-04: Index Synchronization ---"
+  echo "--- GATE-04: Index Synchronization ---"
 
   local index_file=""
   shopt -s nullglob
@@ -165,7 +165,7 @@ check_index_sync() {
     adr_ref=$(echo "$line" | grep -oE "ADR-[0-9]+" | head -1 || true)
     if [[ -n "$adr_ref" ]]; then
       if ls "$ADR_DIR/${adr_ref}_"*.md 2>/dev/null | grep -v "_index" >/dev/null; then
-        echo -e "${RED}CORPUS-E003: $adr_ref exists but marked Planned in index${NC}"
+        echo -e "${RED}GATE-E003: $adr_ref exists but marked Planned in index${NC}"
         ((ERRORS++)) || true
         ((found++)) || true
       fi
@@ -178,22 +178,22 @@ check_index_sync() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-05: Inter-ADR Cross-Linking (DEPRECATED)
+# GATE-05: Inter-ADR Cross-Linking (DEPRECATED)
 # -----------------------------------------------------------------------------
 
 check_cross_linking() {
   echo ""
-  echo "--- CORPUS-05: Inter-ADR Cross-Linking ---"
+  echo "--- GATE-05: Inter-ADR Cross-Linking ---"
   echo -e "${BLUE}  ℹ DEPRECATED: Document name references are sufficient per SDD rules${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-06: Visualization Coverage
+# GATE-06: Visualization Coverage
 # -----------------------------------------------------------------------------
 
 check_visualization() {
   echo ""
-  echo "--- CORPUS-06: Visualization Coverage ---"
+  echo "--- GATE-06: Visualization Coverage ---"
 
   local found=0
   local total=0
@@ -206,7 +206,7 @@ check_visualization() {
     [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
     if [[ $diagram_count -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
+        echo -e "${BLUE}GATE-I001: $(basename $f) has no Mermaid diagrams${NC}"
       fi
       ((INFO++)) || true
       ((found++)) || true
@@ -222,12 +222,12 @@ check_visualization() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-07: Glossary Consistency
+# GATE-07: Glossary Consistency
 # -----------------------------------------------------------------------------
 
 check_glossary() {
   echo ""
-  echo "--- CORPUS-07: Glossary Consistency ---"
+  echo "--- GATE-07: Glossary Consistency ---"
 
   local found=0
 
@@ -236,7 +236,7 @@ check_glossary() {
   local decision_lower=$(grep -roh "decision:" "$ADR_DIR"/*.md 2>/dev/null | wc -l || echo 0)
 
   if [[ $decision_upper -gt 0 && $decision_lower -gt 5 ]]; then
-    echo -e "${YELLOW}CORPUS-W003: Mixed 'Decision:' ($decision_upper) and 'decision:' ($decision_lower) usage${NC}"
+    echo -e "${YELLOW}GATE-W003: Mixed 'Decision:' ($decision_upper) and 'decision:' ($decision_lower) usage${NC}"
     ((WARNINGS++)) || true
     ((found++)) || true
   fi
@@ -247,12 +247,12 @@ check_glossary() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-08: Element ID Uniqueness (Document-level for ADR)
+# GATE-08: Element ID Uniqueness (Document-level for ADR)
 # -----------------------------------------------------------------------------
 
 check_element_ids() {
   echo ""
-  echo "--- CORPUS-08: ADR Reference Uniqueness ---"
+  echo "--- GATE-08: ADR Reference Uniqueness ---"
 
   local duplicates
   duplicates=$(ls "$ADR_DIR"/ADR-[0-9]*_*.md 2>/dev/null | \
@@ -260,7 +260,7 @@ check_element_ids() {
 
   if [[ -n "$duplicates" ]]; then
     echo "$duplicates" | while read dup; do
-      echo -e "${RED}CORPUS-E004: Duplicate ADR reference: $dup${NC}"
+      echo -e "${RED}GATE-E004: Duplicate ADR reference: $dup${NC}"
       ((ERRORS++)) || true
     done
   else
@@ -269,12 +269,12 @@ check_element_ids() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-09: Decision Status Tracking
+# GATE-09: Decision Status Tracking
 # -----------------------------------------------------------------------------
 
 check_decision_status() {
   echo ""
-  echo "--- CORPUS-09: Decision Status Tracking ---"
+  echo "--- GATE-09: Decision Status Tracking ---"
 
   local found=0
   local valid_statuses="Proposed|Accepted|Deprecated|Superseded|Draft|Active"
@@ -288,7 +288,7 @@ check_decision_status() {
     status=$(grep -oE "\| *Status *\| *[^|]+" "$f" 2>/dev/null | sed 's/.*| *//' | head -1 || echo "")
 
     if [[ -n "$status" ]] && ! echo "$status" | grep -qE "$valid_statuses"; then
-      echo -e "${YELLOW}CORPUS-W009: $(basename $f) has invalid status: $status${NC}"
+      echo -e "${YELLOW}GATE-W009: $(basename $f) has invalid status: $status${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
@@ -301,16 +301,16 @@ check_decision_status() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-10: File Size Compliance
+# GATE-10: File Size Compliance
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-# CORPUS-10: File Size Compliance (Universal Rule)
+# GATE-10: File Size Compliance (Universal Rule)
 # -----------------------------------------------------------------------------
 
 check_file_size() {
   echo ""
-  echo "--- CORPUS-10: File Size Compliance ---"
+  echo "--- GATE-10: File Size & Token Compliance ---"
 
   shopt -s globstar nullglob
   for f in "$ADR_DIR"/**/ADR-[0-9]*_*.md; do
@@ -318,13 +318,15 @@ check_file_size() {
 
     local lines
     lines=$(wc -l < "$f")
+    local words
+    words=$(wc -w < "$f")
+    local tokens=$((words * 13 / 10))
 
-    # Universal Rule: >1000 lines is an ERROR (Must Split)
-    if [[ $lines -gt 1000 ]]; then
-      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1000 lines ($lines) - MUST SPLIT per Universal Rule${NC}"
+    if [[ $tokens -gt 20000 ]]; then
+      echo -e "${RED}GATE-E006: $(basename "$f") exceeds 20,000 tokens (~$tokens) - MUST SPLIT per Universal Rule${NC}"
       ((ERRORS++)) || true
-    elif [[ $lines -gt 500 ]]; then
-      echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 500 lines ($lines) - Consider splitting${NC}"
+    elif [[ $tokens -gt 15000 ]]; then
+      echo -e "${YELLOW}GATE-W006: $(basename "$f") exceeds 15,000 tokens (~$tokens) - Consider splitting${NC}"
       ((WARNINGS++)) || true
     fi
   done
@@ -332,12 +334,12 @@ check_file_size() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-11: Context-Decision-Consequences Structure
+# GATE-11: Context-Decision-Consequences Structure
 # -----------------------------------------------------------------------------
 
 check_adr_structure() {
   echo ""
-  echo "--- CORPUS-11: Context-Decision-Consequences Structure ---"
+  echo "--- GATE-11: Context-Decision-Consequences Structure ---"
 
   local found=0
   shopt -s nullglob
@@ -354,17 +356,17 @@ check_adr_structure() {
     [[ -z "$has_consequences" || ! "$has_consequences" =~ ^[0-9]+$ ]] && has_consequences=0
 
     if [[ $has_context -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E011: $(basename $f) missing Context section${NC}"
+      echo -e "${RED}GATE-E011: $(basename $f) missing Context section${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
     if [[ $has_decision -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E012: $(basename $f) missing Decision section${NC}"
+      echo -e "${RED}GATE-E012: $(basename $f) missing Decision section${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
     if [[ $has_consequences -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E013: $(basename $f) missing Consequences/Implications section${NC}"
+      echo -e "${RED}GATE-E013: $(basename $f) missing Consequences/Implications section${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -377,12 +379,12 @@ check_adr_structure() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-12: Cumulative Traceability (@brd + @prd + @ears + @bdd)
+# GATE-12: Cumulative Traceability (@brd + @prd + @ears + @bdd)
 # -----------------------------------------------------------------------------
 
 check_traceability() {
   echo ""
-  echo "--- CORPUS-12: Cumulative Traceability (@brd + @prd + @ears + @bdd) ---"
+  echo "--- GATE-12: Cumulative Traceability (@brd + @prd + @ears + @bdd) ---"
 
   local found=0
   shopt -s nullglob
@@ -402,25 +404,25 @@ check_traceability() {
     [[ -z "$has_bdd" || ! "$has_bdd" =~ ^[0-9]+$ ]] && has_bdd=0
 
     if [[ $has_brd -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E014: $(basename $f) missing @brd traceability tag${NC}"
+      echo -e "${RED}GATE-E014: $(basename $f) missing @brd traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_prd -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E015: $(basename $f) missing @prd traceability tag${NC}"
+      echo -e "${RED}GATE-E015: $(basename $f) missing @prd traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_ears -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E016: $(basename $f) missing @ears traceability tag${NC}"
+      echo -e "${RED}GATE-E016: $(basename $f) missing @ears traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_bdd -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E017: $(basename $f) missing @bdd traceability tag${NC}"
+      echo -e "${RED}GATE-E017: $(basename $f) missing @bdd traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -433,12 +435,12 @@ check_traceability() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-13: Decision Conflict Detection
+# GATE-13: Decision Conflict Detection
 # -----------------------------------------------------------------------------
 
 check_decision_conflicts() {
   echo ""
-  echo "--- CORPUS-13: Decision Conflict Detection ---"
+  echo "--- GATE-13: Decision Conflict Detection ---"
 
   # Extract decision topics and check for potential overlaps
   local decisions
@@ -446,7 +448,7 @@ check_decision_conflicts() {
     sed 's/.*Decision:\s*//' | sort | uniq -d || true)
 
   if [[ -n "$decisions" ]]; then
-    echo -e "${YELLOW}CORPUS-W013: Potential decision topic overlaps detected:${NC}"
+    echo -e "${YELLOW}GATE-W013: Potential decision topic overlaps detected:${NC}"
     echo "$decisions" | while read topic; do
       echo -e "${YELLOW}  → $topic${NC}"
       ((WARNINGS++)) || true
@@ -457,12 +459,12 @@ check_decision_conflicts() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-14: SYS-Ready Score Threshold
+# GATE-14: SYS-Ready Score Threshold
 # -----------------------------------------------------------------------------
 
 check_sys_ready() {
   echo ""
-  echo "--- CORPUS-14: SYS-Ready Score Threshold ---"
+  echo "--- GATE-14: SYS-Ready Score Threshold ---"
 
   local found=0
   shopt -s nullglob
@@ -474,7 +476,7 @@ check_sys_ready() {
     score=$(grep -oE "SYS-Ready Score[^0-9]*[0-9]+" "$f" 2>/dev/null | grep -oE "[0-9]+" | head -1 || echo "")
 
     if [[ -n "$score" && $score -lt 90 ]]; then
-      echo -e "${YELLOW}CORPUS-W014: $(basename $f) has SYS-Ready Score $score% (target: ≥90%)${NC}"
+      echo -e "${YELLOW}GATE-W014: $(basename $f) has SYS-Ready Score $score% (target: ≥90%)${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi

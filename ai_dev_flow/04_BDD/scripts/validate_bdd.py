@@ -2,7 +2,7 @@
 """
 BDD (Behavior-Driven Development) Validator - Layer 4
 
-Validates BDD .feature files against BDD_SCHEMA.yaml requirements.
+Validates BDD .feature files against BDD_MVP_SCHEMA.yaml requirements.
 Supports Gherkin syntax validation.
 
 Usage:

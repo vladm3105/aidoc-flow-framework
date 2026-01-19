@@ -44,7 +44,7 @@ Individual CTR Creation → CTR_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All CTR Complete (Optional Layer)
         ↓
-CTR_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
+CTR_MVP_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
         ↓
 PASS → Begin SPEC Creation (Layer 9)
 FAIL → Fix issues, re-run Quality Gate validation
@@ -187,20 +187,20 @@ docs/08_CTR/{subdomain}/
 
 **Purpose**: Enforce Nested Directory Pattern when triggers are met.
 
-**Severity**: **Error (blocking)** at 1000 lines
+**Severity**: **Error (blocking)** at 20,000 tokens
 
 **Triggers**:
-1. **Size**: File > 1000 lines.
+1. **Size**: File > 20,000 tokens.
 2. **Cardinality**: More than 1 file for this ID.
 
 **Action**: Move to `08_CTR/CTR-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: CTR-NN triggers nested folder rule (>1000 lines or >1 file). Move to 08_CTR/CTR-NN_{Slug}/`
+**Error Message**: `❌ ERROR: CTR-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 08_CTR/CTR-NN_{Slug}/`
 
 **Thresholds**:
 | Metric | Warning | Error |
 |--------|---------|-------|
-| Lines | 500 | 1,000 |
+| Tokens | 15,000 | 20,000 |
 
 ---
 
@@ -337,7 +337,7 @@ done
 | CORPUS-W001 | Internal count mismatch | CORPUS-03 |
 | CORPUS-W003 | Glossary term inconsistency | CORPUS-07 |
 | CORPUS-W004 | Index out of sync | CORPUS-04 |
-| CORPUS-W005 | File exceeds 800 lines | CORPUS-10 |
+| CORPUS-W005 | File exceeds 15,000 tokens | CORPUS-10 |
 | CORPUS-W009 | Version format inconsistency | CORPUS-09 |
 | CORPUS-W013 | Breaking change not documented | CORPUS-13 |
 | CORPUS-W014 | Invalid subdomain | CORPUS-14 |
@@ -495,6 +495,6 @@ fi
 
 - [CTR_MVP_VALIDATION_RULES.md](./CTR_MVP_VALIDATION_RULES.md) - Individual file validation
 - [CTR-MVP-TEMPLATE.md](./CTR-MVP-TEMPLATE.md) - CTR document template (primary standard)
-- [CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
+- [CTR_MVP_SCHEMA.yaml](./CTR_MVP_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

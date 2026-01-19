@@ -222,18 +222,18 @@ cumulative_tags:
 **Type**: Error + Warning
 
 **Thresholds**:
-- Markdown files: 500 lines soft limit (target: 300-500 lines)
-- YAML files: **1000 lines HARD limit** (Universal Trigger)
+- Markdown files: 15,000 tokens warning limit
+- YAML files: **20,000 tokens HARD limit** (Universal Trigger)
 
 **Triggers (Universal)**:
-1. **Size**: File > 1000 lines (YAML).
+1. **Size**: File > 20,000 tokens.
 2. **Cardinality**: More than 1 file for this ID.
 
 **Action**: Move to `09_SPEC/SPEC-{PRD_ID}_{Slug}/` folder.
 
 **Messages**:
-- `SPEC-W010`: Markdown file exceeds 500 lines
-- `SPEC-E011`: YAML file triggers nested folder rule (>1000 lines). Move to `09_SPEC/SPEC-{ID}_{Slug}/`
+- `SPEC-W010`: Markdown file exceeds 15,000 tokens
+- `SPEC-E011`: YAML file triggers nested folder rule (>20,000 tokens). Move to `09_SPEC/SPEC-{ID}_{Slug}/`
 
 ---
 

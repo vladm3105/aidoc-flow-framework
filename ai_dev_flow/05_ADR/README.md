@@ -268,6 +268,14 @@ Maintains comprehensive traceability:
 - **Validation Artifacts**: Test results, security assessments, performance benchmarks
 - **References**: Internal links, external documentation, research materials
 
+## Layer Scripts
+
+This layer includes a dedicated `scripts/` directory containing validation and utility scripts specific to this document type.
+
+- **Location**: `05_ADR/scripts/`
+- **Primary Validator**: `validate_adr_quality_score.sh`
+- **Usage**: Run scripts directly or usage via `validate_all.py`.
+
 ## File Naming Convention
 
 ```markdown
@@ -1100,8 +1108,8 @@ See `{project_root}/docs/05_ADR/ADR-00_technology_stack.md` for a comprehensive 
 - [TRACEABILITY.md](../TRACEABILITY.md): Cross-document traceability standards
 ## File Size Limits
 
-- **Target**: 800 lines per file
-- **Maximum (Markdown)**: 1200 lines (absolute)
+- **Target**: <15,000 tokens per file
+- **Maximum (Markdown)**: 20,000 tokens (absolute)
 - If a file approaches/exceeds limits, split into section files using `ADR-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
 
 ## Document Splitting Standard

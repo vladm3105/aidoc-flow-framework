@@ -49,11 +49,11 @@ count_files() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-01: Placeholder Text Detection
+# GATE-01: Placeholder Text Detection
 # -----------------------------------------------------------------------------
 
 check_placeholder_text() {
-  echo "--- CORPUS-01: Placeholder Text Detection ---"
+  echo "--- GATE-01: Placeholder Text Detection ---"
 
   local found=0
   local patterns=("(future EARS)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
@@ -66,7 +66,7 @@ check_placeholder_text() {
         if [[ -n "$ears_ref" ]]; then
           # Check if the referenced EARS file exists
           if ls "$EARS_DIR/${ears_ref}_"*.md 2>/dev/null | grep -v "_index" >/dev/null; then
-            echo -e "${RED}CORPUS-E001: $line${NC}"
+            echo -e "${RED}GATE-E001: $line${NC}"
             echo "  → $ears_ref exists but marked as placeholder"
             ((ERRORS++)) || true
             ((found++)) || true
@@ -82,12 +82,12 @@ check_placeholder_text() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-02: Premature Downstream References
+# GATE-02: Premature Downstream References
 # -----------------------------------------------------------------------------
 
 check_premature_references() {
   echo ""
-  echo "--- CORPUS-02: Premature Downstream References ---"
+  echo "--- GATE-02: Premature Downstream References ---"
 
   local found=0
   # Layer 4+ artifacts that shouldn't be referenced with specific numbers
@@ -99,7 +99,7 @@ check_premature_references() {
       if echo "$line" | grep -qE "Layer [0-9]|→|SDD workflow|development workflow"; then
         continue
       fi
-      echo -e "${RED}CORPUS-E002: $line${NC}"
+      echo -e "${RED}GATE-E002: $line${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -111,19 +111,19 @@ check_premature_references() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-03: Internal Count Consistency
+# GATE-03: Internal Count Consistency
 # -----------------------------------------------------------------------------
 
 check_count_consistency() {
   echo ""
-  echo "--- CORPUS-03: Internal Count Consistency ---"
+  echo "--- GATE-03: Internal Count Consistency ---"
 
   local found=0
   # Check for count claims that might be inconsistent
   while IFS= read -r line; do
     if [[ -n "$line" ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W001: Verify count - $line${NC}"
+        echo -e "${YELLOW}GATE-W001: Verify count - $line${NC}"
       fi
       ((found++)) || true
     fi
@@ -137,12 +137,12 @@ check_count_consistency() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-04: Index Synchronization
+# GATE-04: Index Synchronization
 # -----------------------------------------------------------------------------
 
 check_index_sync() {
   echo ""
-  echo "--- CORPUS-04: Index Synchronization ---"
+  echo "--- GATE-04: Index Synchronization ---"
 
   # Find index file
   local index_file=""
@@ -166,7 +166,7 @@ check_index_sync() {
     ears_ref=$(echo "$line" | grep -oE "EARS-[0-9]+" | head -1 || true)
     if [[ -n "$ears_ref" ]]; then
       if ls "$EARS_DIR/${ears_ref}_"*.md 2>/dev/null | grep -v "_index" >/dev/null; then
-        echo -e "${RED}CORPUS-E003: $ears_ref exists but marked Planned in index${NC}"
+        echo -e "${RED}GATE-E003: $ears_ref exists but marked Planned in index${NC}"
         ((ERRORS++)) || true
         ((found++)) || true
       fi
@@ -179,22 +179,22 @@ check_index_sync() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-05: Inter-EARS Cross-Linking (DEPRECATED)
+# GATE-05: Inter-EARS Cross-Linking (DEPRECATED)
 # -----------------------------------------------------------------------------
 
 check_cross_linking() {
   echo ""
-  echo "--- CORPUS-05: Inter-EARS Cross-Linking ---"
+  echo "--- GATE-05: Inter-EARS Cross-Linking ---"
   echo -e "${BLUE}  ℹ DEPRECATED: Document name references are sufficient per SDD rules${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-06: Visualization Coverage
+# GATE-06: Visualization Coverage
 # -----------------------------------------------------------------------------
 
 check_visualization() {
   echo ""
-  echo "--- CORPUS-06: Visualization Coverage ---"
+  echo "--- GATE-06: Visualization Coverage ---"
 
   local found=0
   local total=0
@@ -207,7 +207,7 @@ check_visualization() {
     [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
     if [[ $diagram_count -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
+        echo -e "${BLUE}GATE-I001: $(basename $f) has no Mermaid diagrams${NC}"
       fi
       ((INFO++)) || true
       ((found++)) || true
@@ -223,12 +223,12 @@ check_visualization() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-07: Glossary Consistency
+# GATE-07: Glossary Consistency
 # -----------------------------------------------------------------------------
 
 check_glossary() {
   echo ""
-  echo "--- CORPUS-07: Glossary Consistency ---"
+  echo "--- GATE-07: Glossary Consistency ---"
 
   local found=0
 
@@ -237,7 +237,7 @@ check_glossary() {
   local must_count=$(grep -roh "MUST " "$EARS_DIR"/*.md 2>/dev/null | wc -l || echo 0)
 
   if [[ $shall_count -gt 0 && $must_count -gt 0 ]]; then
-    echo -e "${YELLOW}CORPUS-W003: Mixed SHALL ($shall_count) and MUST ($must_count) usage${NC}"
+    echo -e "${YELLOW}GATE-W003: Mixed SHALL ($shall_count) and MUST ($must_count) usage${NC}"
     echo "  → Standardize on SHALL for EARS syntax"
     ((WARNINGS++)) || true
     ((found++)) || true
@@ -248,7 +248,7 @@ check_glossary() {
   local when_lower=$(grep -roh "when " "$EARS_DIR"/*.md 2>/dev/null | wc -l || echo 0)
 
   if [[ $when_upper -gt 0 && $when_lower -gt 5 ]]; then
-    echo -e "${YELLOW}CORPUS-W003: Mixed WHEN ($when_upper) and when ($when_lower) usage${NC}"
+    echo -e "${YELLOW}GATE-W003: Mixed WHEN ($when_upper) and when ($when_lower) usage${NC}"
     ((WARNINGS++)) || true
     ((found++)) || true
   fi
@@ -259,19 +259,19 @@ check_glossary() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-08: Element ID Uniqueness
+# GATE-08: Element ID Uniqueness
 # -----------------------------------------------------------------------------
 
 check_element_ids() {
   echo ""
-  echo "--- CORPUS-08: Element ID Uniqueness ---"
+  echo "--- GATE-08: Element ID Uniqueness ---"
 
   local duplicates
   duplicates=$(grep -rohE "EARS\.[0-9]+\.[0-9]+\.[0-9]+" "$EARS_DIR"/*.md 2>/dev/null | sort | uniq -d || true)
 
   if [[ -n "$duplicates" ]]; then
     echo "$duplicates" | while read dup; do
-      echo -e "${RED}CORPUS-E004: Duplicate element ID: $dup${NC}"
+      echo -e "${RED}GATE-E004: Duplicate element ID: $dup${NC}"
       ((ERRORS++)) || true
     done
   else
@@ -280,12 +280,12 @@ check_element_ids() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-09: Timing Constraint Format
+# GATE-09: Timing Constraint Format
 # -----------------------------------------------------------------------------
 
 check_timing_format() {
   echo ""
-  echo "--- CORPUS-09: Timing Constraint Format ---"
+  echo "--- GATE-09: Timing Constraint Format ---"
 
   local found=0
 
@@ -295,7 +295,7 @@ check_timing_format() {
   for pattern in "${vague_patterns[@]}"; do
     while IFS= read -r line; do
       if [[ -n "$line" ]]; then
-        echo -e "${YELLOW}CORPUS-W004: Vague timing constraint - $line${NC}"
+        echo -e "${YELLOW}GATE-W004: Vague timing constraint - $line${NC}"
         ((WARNINGS++)) || true
         ((found++)) || true
       fi
@@ -308,12 +308,12 @@ check_timing_format() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-10: File Size Compliance
+# GATE-10: File Size Compliance
 # -----------------------------------------------------------------------------
 
 check_file_size() {
   echo ""
-  echo "--- CORPUS-10: File Size Compliance ---"
+  echo "--- GATE-10: File Size & Token Compliance ---"
 
   shopt -s globstar nullglob
   for f in "$EARS_DIR"/**/EARS-[0-9]*_*.md; do
@@ -321,13 +321,15 @@ check_file_size() {
 
     local lines
     lines=$(wc -l < "$f")
+    local words
+    words=$(wc -w < "$f")
+    local tokens=$((words * 13 / 10))
 
-    # Universal Rule: >1000 lines is an ERROR (Must Split)
-    if [[ $lines -gt 1000 ]]; then
-      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1000 lines ($lines) - MUST SPLIT per Universal Rule${NC}"
+    if [[ $tokens -gt 20000 ]]; then
+      echo -e "${RED}GATE-E006: $(basename "$f") exceeds 20,000 tokens (~$tokens) - MUST SPLIT per Universal Rule${NC}"
       ((ERRORS++)) || true
-    elif [[ $lines -gt 500 ]]; then
-      echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 500 lines ($lines) - Consider splitting${NC}"
+    elif [[ $tokens -gt 15000 ]]; then
+      echo -e "${YELLOW}GATE-W006: $(basename "$f") exceeds 15,000 tokens (~$tokens) - Consider splitting${NC}"
       ((WARNINGS++)) || true
     fi
   done
@@ -335,12 +337,12 @@ check_file_size() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-11: WHEN-THE-SHALL-WITHIN Syntax Compliance
+# GATE-11: WHEN-THE-SHALL-WITHIN Syntax Compliance
 # -----------------------------------------------------------------------------
 
 check_ears_syntax() {
   echo ""
-  echo "--- CORPUS-11: WHEN-THE-SHALL-WITHIN Syntax Compliance ---"
+  echo "--- GATE-11: WHEN-THE-SHALL-WITHIN Syntax Compliance ---"
 
   local found=0
   shopt -s nullglob
@@ -352,7 +354,7 @@ check_ears_syntax() {
     [[ -z "$shall_count" || ! "$shall_count" =~ ^[0-9]+$ ]] && shall_count=0
 
     if [[ $shall_count -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E011: $(basename $f) has no SHALL statements${NC}"
+      echo -e "${RED}GATE-E011: $(basename $f) has no SHALL statements${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -365,12 +367,12 @@ check_ears_syntax() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-12: Cumulative Traceability (@brd + @prd)
+# GATE-12: Cumulative Traceability (@brd + @prd)
 # -----------------------------------------------------------------------------
 
 check_traceability() {
   echo ""
-  echo "--- CORPUS-12: Cumulative Traceability (@brd + @prd) ---"
+  echo "--- GATE-12: Cumulative Traceability (@brd + @prd) ---"
 
   local found=0
   shopt -s nullglob
@@ -384,13 +386,13 @@ check_traceability() {
     [[ -z "$has_prd" || ! "$has_prd" =~ ^[0-9]+$ ]] && has_prd=0
 
     if [[ $has_brd -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E012: $(basename $f) missing @brd traceability tag${NC}"
+      echo -e "${RED}GATE-E012: $(basename $f) missing @brd traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_prd -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E013: $(basename $f) missing @prd traceability tag${NC}"
+      echo -e "${RED}GATE-E013: $(basename $f) missing @prd traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -403,12 +405,12 @@ check_traceability() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-13: BDD Translateability Readiness
+# GATE-13: BDD Translateability Readiness
 # -----------------------------------------------------------------------------
 
 check_bdd_ready() {
   echo ""
-  echo "--- CORPUS-13: BDD Translateability Readiness ---"
+  echo "--- GATE-13: BDD Translateability Readiness ---"
 
   local found=0
   shopt -s nullglob
@@ -420,7 +422,7 @@ check_bdd_ready() {
     score=$(grep -oE "BDD-Ready Score[^0-9]*[0-9]+" "$f" 2>/dev/null | grep -oE "[0-9]+" | head -1 || echo "")
 
     if [[ -n "$score" && $score -lt 90 ]]; then
-      echo -e "${YELLOW}CORPUS-W013: $(basename $f) has BDD-Ready Score $score% (target: ≥90%)${NC}"
+      echo -e "${YELLOW}GATE-W013: $(basename $f) has BDD-Ready Score $score% (target: ≥90%)${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
@@ -432,7 +434,7 @@ check_bdd_ready() {
   compound_count=$(grep -rE "SHALL.*and.*and.*and" "$EARS_DIR"/EARS-[0-9]*_*.md 2>/dev/null | wc -l || echo 0)
 
   if [[ $compound_count -gt 0 ]]; then
-    echo -e "${YELLOW}CORPUS-W014: $compound_count compound requirements detected - consider splitting${NC}"
+    echo -e "${YELLOW}GATE-W014: $compound_count compound requirements detected - consider splitting${NC}"
     ((WARNINGS++)) || true
     ((found++)) || true
   fi

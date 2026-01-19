@@ -14,6 +14,7 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
+  schema_version: "1.0"
 ---
 
 <!--
@@ -43,7 +44,7 @@ custom_fields:
   template_variant: mvp
   template_profile: mvp
   template_source: "EARS-MVP-TEMPLATE.md"
-  schema_reference: "EARS_SCHEMA.yaml"
+  schema_reference: "EARS_MVP_SCHEMA.yaml"
   schema_version: "1.0"
   schema_status: optional
   creation_rules_reference: "EARS_MVP_CREATION_RULES.md"
@@ -57,7 +58,7 @@ custom_fields:
 
 > **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators. This is expected behavior.
 
-> References: Schema `EARS_SCHEMA.yaml` | Rules `EARS_MVP_CREATION_RULES.md`, `EARS_MVP_VALIDATION_RULES.md` | Matrix `EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `EARS_MVP_SCHEMA.yaml` | Rules `EARS_MVP_CREATION_RULES.md`, `EARS_MVP_VALIDATION_RULES.md` | Matrix `EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # EARS-NN: [Target Component/Feature]
 

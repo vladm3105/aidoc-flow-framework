@@ -255,6 +255,14 @@ Then data is returned immediately
 And cache hit metrics are incremented
 ```
 
+## Layer Scripts
+
+This layer includes a dedicated `scripts/` directory containing validation and utility scripts specific to this document type.
+
+- **Location**: `04_BDD/scripts/`
+- **Primary Validator**: `validate_bdd_quality_score.sh`
+- **Usage**: Run scripts directly or usage via `validate_all.py`.
+
 ## File Naming Convention (Section-Based, Nested Suite Folder)
 
 Location: `04_BDD/BDD-NN_{suite_slug}/`

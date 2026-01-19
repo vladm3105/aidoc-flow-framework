@@ -36,16 +36,16 @@ class SyncResult:
 
 # Artifact types and their expected files
 ARTIFACT_TYPES = {
-    "ADR": {"template": "ADR-MVP-TEMPLATE.md", "schema": "ADR_SCHEMA.yaml", "layer": 5},
-    "BDD": {"template": "BDD-MVP-TEMPLATE.feature", "schema": "BDD_SCHEMA.yaml", "layer": 4},
-    "BRD": {"template": "BRD-MVP-TEMPLATE.md", "schema": "BRD_SCHEMA.yaml", "layer": 1},
-    "CTR": {"template": "CTR-MVP-TEMPLATE.md", "schema": "CTR_SCHEMA.yaml", "layer": 8},
-    "EARS": {"template": "EARS-MVP-TEMPLATE.md", "schema": "EARS_SCHEMA.yaml", "layer": 3},
-    "PRD": {"template": "PRD-MVP-TEMPLATE.md", "schema": "PRD_SCHEMA.yaml", "layer": 2},
-    "REQ": {"template": "REQ-MVP-TEMPLATE.md", "schema": "REQ_SCHEMA.yaml", "layer": 7},
-    "SPEC": {"template": "SPEC-MVP-TEMPLATE.yaml", "schema": "SPEC_SCHEMA.yaml", "layer": 9},
-    "SYS": {"template": "SYS-MVP-TEMPLATE.md", "schema": "SYS_SCHEMA.yaml", "layer": 6},
-    "TASKS": {"template": "TASKS-MVP-TEMPLATE.md", "schema": "TASKS_SCHEMA.yaml", "layer": 10},
+    "ADR": {"dir": "05_ADR", "template": "ADR-MVP-TEMPLATE.md", "schema": "ADR_MVP_SCHEMA.yaml", "layer": 5},
+    "BDD": {"dir": "04_BDD", "template": "BDD-MVP-TEMPLATE.feature", "schema": "BDD_MVP_SCHEMA.yaml", "layer": 4},
+    "BRD": {"dir": "01_BRD", "template": "BRD-MVP-TEMPLATE.md", "schema": "BRD_MVP_SCHEMA.yaml", "layer": 1},
+    "CTR": {"dir": "08_CTR", "template": "CTR-MVP-TEMPLATE.md", "schema": "CTR_MVP_SCHEMA.yaml", "layer": 8},
+    "EARS": {"dir": "03_EARS", "template": "EARS-MVP-TEMPLATE.md", "schema": "EARS_MVP_SCHEMA.yaml", "layer": 3},
+    "PRD": {"dir": "02_PRD", "template": "PRD-MVP-TEMPLATE.md", "schema": "PRD_MVP_SCHEMA.yaml", "layer": 2},
+    "REQ": {"dir": "07_REQ", "template": "REQ-MVP-TEMPLATE.md", "schema": "REQ_MVP_SCHEMA.yaml", "layer": 7},
+    "SPEC": {"dir": "09_SPEC", "template": "SPEC-MVP-TEMPLATE.yaml", "schema": "SPEC_MVP_SCHEMA.yaml", "layer": 9},
+    "SYS": {"dir": "06_SYS", "template": "SYS-MVP-TEMPLATE.md", "schema": "SYS_MVP_SCHEMA.yaml", "layer": 6},
+    "TASKS": {"dir": "10_TASKS", "template": "TASKS-TEMPLATE.md", "schema": "TASKS_MVP_SCHEMA.yaml", "layer": 10},
 }
 
 
@@ -59,10 +59,11 @@ def find_ai_dev_flow_dir() -> Path:
     """
     # 1) Environment override
     env = Path(os.environ.get("AI_DEV_FLOW_ROOT", "")) if "AI_DEV_FLOW_ROOT" in os.environ else None
-    if env and env.exists() and (env / "PRD").exists():
+    if env and env.exists() and (env / "02_PRD").exists():
         return env.resolve()
 
-    sentinels = {"BRD", "PRD", "EARS", "BDD", "ADR", "SYS", "REQ", "CTR", "SPEC", "TASKS"}
+    # Check for numbered directories
+    sentinels = {"01_BRD", "02_PRD", "03_EARS", "09_SPEC", "10_TASKS"}
 
     def has_sentinels(p: Path) -> bool:
         try:
@@ -150,7 +151,7 @@ def extract_schema_version_from_schema(schema_path: Path) -> Optional[str]:
 def check_artifact_sync(artifact_type: str, base_dir: Path) -> SyncResult:
     """Check if template and schema versions are synchronized for an artifact type."""
     config = ARTIFACT_TYPES[artifact_type]
-    artifact_dir = base_dir / artifact_type
+    artifact_dir = base_dir / config["dir"]
 
     template_path = artifact_dir / config["template"]
     schema_filename = config["schema"]

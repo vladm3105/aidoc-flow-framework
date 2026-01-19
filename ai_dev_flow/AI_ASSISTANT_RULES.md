@@ -621,7 +621,7 @@ python scripts/check_traceability_coverage.py --all
 
 ### Claude Code
 - **Context**: 200K tokens (~600KB conversation)
-- **File limit**: 50K tokens standard (200KB), 100K maximum (400KB)
+- **File limit**: 20,000 tokens standard (Error), 15,000 tokens (Warning)
 - **Strategy**: Single comprehensive files, no artificial splitting
 - **Read command**: Use `Read` tool for all file operations
 - **Parallel operations**: Use multiple tool calls in single message
@@ -795,7 +795,7 @@ AI Assistant **SHOULD** target these sizes:
 
 AI Assistant **MUST** split documents when:
 
-1. **Single file exceeds 100KB (100K tokens)** - Hard limit
+1. **Single file exceeds 20,000 tokens** - Hard limit
 2. **REQ contains multiple concepts** - Split into one REQ per concept
 3. **SPEC covers multiple independent modules** - Create one SPEC per module
 4. **ADR documents multiple decisions** - Create one ADR per decision

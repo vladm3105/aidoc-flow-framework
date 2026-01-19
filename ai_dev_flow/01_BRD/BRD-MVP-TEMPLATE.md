@@ -14,6 +14,7 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
+  schema_version: "1.0"
 ---
 
 # BRD-MVP-TEMPLATE: Business Requirements Document (MVP)
@@ -45,7 +46,7 @@ custom_fields:
   development_status: draft
   template_for: mvp-business-requirements-document
   descriptive_slug: null
-  schema_reference: "BRD_SCHEMA.yaml"
+  schema_reference: "BRD_MVP_SCHEMA.yaml"
   schema_version: "1.0"
   schema_status: optional
   template_profile: mvp
@@ -67,7 +68,7 @@ custom_fields:
 
 > **Validation Note**: MVP templates are intentionally streamlined; some full-template checks will report expected differences (e.g., reduced sections). See `scripts/README.md` → "MVP Template Validation" for guidance.
 
-> References: Schema `BRD_SCHEMA.yaml` | Rules `BRD_MVP_CREATION_RULES.md`, `BRD_MVP_VALIDATION_RULES.md` | Matrix `BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `BRD_MVP_SCHEMA.yaml` | Rules `BRD_MVP_CREATION_RULES.md`, `BRD_MVP_VALIDATION_RULES.md` | Matrix `BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 ---
 

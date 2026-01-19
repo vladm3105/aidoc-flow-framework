@@ -44,7 +44,7 @@ Individual REQ Creation → REQ_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All REQ Complete
         ↓
-REQ_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
+REQ_MVP_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
         ↓
 PASS → Begin CTR (Layer 8) or SPEC (Layer 9)
 FAIL → Fix issues, re-run Quality Gate validation
@@ -243,15 +243,15 @@ find "$REQ_DIR" -name "REQ-*.md" -exec grep -ohE "REQ\.[0-9]+\.[0-9]+\.[0-9]+" {
 
 **Purpose**: Enforce Nested Directory Pattern when triggers are met.
 
-**Severity**: **Error (blocking)** at 1000 lines
+**Severity**: **Error (blocking)** at 20,000 tokens
 
 **Triggers**:
-1. **Size**: File > 1000 lines.
+1. **Size**: File > 20,000 tokens.
 2. **Cardinality**: More than 1 file for this ID.
 
 **Action**: Move to `07_REQ/REQ-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: REQ-NN triggers nested folder rule (>1000 lines or >1 file). Move to 07_REQ/REQ-NN_{Slug}/`
+**Error Message**: `❌ ERROR: REQ-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 07_REQ/REQ-NN_{Slug}/`
 
 **Thresholds**:
 | Metric | Warning | Error |

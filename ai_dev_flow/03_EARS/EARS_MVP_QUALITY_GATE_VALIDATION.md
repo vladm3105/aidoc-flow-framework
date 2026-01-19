@@ -45,7 +45,7 @@ Individual EARS Creation → EARS_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All EARS Complete
         ↓
-EARS_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
+EARS_MVP_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
         ↓
 PASS → Begin BDD Creation (Layer 4)
 FAIL → Fix issues, re-run Quality Gate validation
@@ -318,15 +318,15 @@ grep -rohE "EARS\.[0-9]+\.[0-9]+\.[0-9]+" "$EARS_DIR" | \
 
 **Purpose**: Enforce Nested Directory Pattern when triggers are met.
 
-**Severity**: **Error (blocking)** at 1000 lines
+**Severity**: **Error (blocking)** at 20,000 tokens
 
 **Triggers**:
-1. **Size**: File > 1000 lines.
+1. **Size**: File > 20,000 tokens.
 2. **Cardinality**: More than 1 file for this ID.
 
 **Action**: Move to `04_EARS/EARS-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: EARS-NN triggers nested folder rule (>1000 lines or >1 file). Move to 04_EARS/EARS-NN_{Slug}/`
+**Error Message**: `❌ ERROR: EARS-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 04_EARS/EARS-NN_{Slug}/`
 
 **Thresholds**:
 | Metric | Warning | Error |
@@ -639,7 +639,7 @@ fi
 | **CORPUS-W001** | Internal count mismatch | 1. Count actual items in document<br>2. Update claimed count to match<br>3. Reconcile summary sections |
 | **CORPUS-W003** | Glossary inconsistency | 1. Choose canonical term (e.g., SHALL not "shall" or "MUST")<br>2. Apply consistently across corpus<br>3. Document in project glossary |
 | **CORPUS-W004** | Timing not measurable | 1. Replace vague timing ("reasonable time")<br>2. Add specific threshold: `WITHIN 500ms`<br>3. Add threshold reference: `(@threshold: PRD.NN.name)` |
-| **CORPUS-W005** | File exceeds 600 lines | 1. Consider splitting at logical section boundaries<br>2. Monitor for growth toward 1,200 line limit<br>3. Document decision if keeping as single file |
+| **CORPUS-W005** | File exceeds 15,000 tokens | 1. Consider splitting at logical section boundaries<br>2. Monitor for growth toward 20,000 token limit<br>3. Document decision if keeping as single file |
 | **CORPUS-W013** | BDD-Ready Score <90% | 1. Review requirements for testability gaps<br>2. Add WITHIN timing clauses<br>3. Ensure clear actor identification<br>4. Add measurable thresholds |
 | **CORPUS-W014** | Compound requirement | 1. Split into atomic requirements<br>2. Each requirement = one SHALL<br>3. Link related requirements via traceability |
 

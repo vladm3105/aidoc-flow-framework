@@ -44,7 +44,7 @@ Individual SPEC Creation → SPEC_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All SPEC Complete
         ↓
-SPEC_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
+SPEC_MVP_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
         ↓
 PASS → Begin TASKS Creation (Layer 10)
 FAIL → Fix issues, re-run Quality Gate validation
@@ -190,15 +190,15 @@ docs/09_SPEC/
 
 **Purpose**: Enforce Nested Directory Pattern when triggers are met.
 
-**Severity**: **Error (blocking)** at 1000 lines
+**Severity**: **Error (blocking)** at 20,000 tokens
 
 **Triggers**:
-1. **Size**: File > 1000 lines.
+1. **Size**: File > 20,000 tokens.
 2. **Cardinality**: More than 1 file for this ID.
 
 **Action**: Move to `09_SPEC/SPEC-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: SPEC-NN triggers nested folder rule (>1000 lines or >1 file). Move to 09_SPEC/SPEC-NN_{Slug}/`
+**Error Message**: `❌ ERROR: SPEC-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 09_SPEC/SPEC-NN_{Slug}/`
 
 **File Format**: YAML (.yaml, .yml)
 

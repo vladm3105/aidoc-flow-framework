@@ -246,12 +246,12 @@ The ADR validation script ensures architecture decisions follow quality standard
 **Type**: Error (blocking)
 
 **Triggers**:
-1. **Size**: File > 1000 lines.
+1. **Size**: File > 20,000 tokens.
 2. **Cardinality**: More than 1 file for this ID.
 
 **Action**: Move to `05_ADR/ADR-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: ADR-NN triggers nested folder rule (>1000 lines or >1 file). Move to 05_ADR/ADR-NN_{Slug}/`
+**Error Message**: `❌ ERROR: ADR-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 05_ADR/ADR-NN_{Slug}/`
 
 ### CHECK 9: Element ID Format Compliance ⭐ NEW
 

@@ -51,11 +51,11 @@ count_files() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-01: Placeholder Text Detection
+# GATE-01: Placeholder Text Detection
 # -----------------------------------------------------------------------------
 
 check_placeholder_text() {
-  echo "--- CORPUS-01: Placeholder Text Detection ---"
+  echo "--- GATE-01: Placeholder Text Detection ---"
 
   local found=0
   local patterns=("(future CTR)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
@@ -66,7 +66,7 @@ check_placeholder_text() {
         ctr_ref=$(echo "$line" | grep -oE "CTR-[0-9]+" | head -1 || true)
         if [[ -n "$ctr_ref" ]]; then
           if find "$CTR_DIR" -name "${ctr_ref}_*.md" 2>/dev/null | head -1 | grep -v "_index" >/dev/null; then
-            echo -e "${RED}CORPUS-E001: $line${NC}"
+            echo -e "${RED}GATE-E001: $line${NC}"
             ((ERRORS++)) || true
             ((found++)) || true
           fi
@@ -81,12 +81,12 @@ check_placeholder_text() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-02: Premature Downstream References
+# GATE-02: Premature Downstream References
 # -----------------------------------------------------------------------------
 
 check_premature_references() {
   echo ""
-  echo "--- CORPUS-02: Premature Downstream References ---"
+  echo "--- GATE-02: Premature Downstream References ---"
 
   local found=0
   local downstream_patterns="(SPEC|TASKS-[0-9]{2,}"
@@ -96,7 +96,7 @@ check_premature_references() {
       if echo "$line" | grep -qE "Layer [0-9]|→|SDD workflow"; then
         continue
       fi
-      echo -e "${RED}CORPUS-E002: $line${NC}"
+      echo -e "${RED}GATE-E002: $line${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -108,22 +108,22 @@ check_premature_references() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-03: Internal Count Consistency
+# GATE-03: Internal Count Consistency
 # -----------------------------------------------------------------------------
 
 check_count_consistency() {
   echo ""
-  echo "--- CORPUS-03: Internal Count Consistency ---"
+  echo "--- GATE-03: Internal Count Consistency ---"
   echo -e "${GREEN}  ✓ Count consistency check (manual verification recommended)${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-04: Index Synchronization
+# GATE-04: Index Synchronization
 # -----------------------------------------------------------------------------
 
 check_index_sync() {
   echo ""
-  echo "--- CORPUS-04: Index Synchronization ---"
+  echo "--- GATE-04: Index Synchronization ---"
 
   local index_file=""
   for f in "$CTR_DIR"/CTR-*_index.md "$CTR_DIR"/CTR-000_index.md; do
@@ -142,22 +142,22 @@ check_index_sync() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-05: Inter-CTR Cross-Linking (DEPRECATED)
+# GATE-05: Inter-CTR Cross-Linking (DEPRECATED)
 # -----------------------------------------------------------------------------
 
 check_cross_linking() {
   echo ""
-  echo "--- CORPUS-05: Inter-CTR Cross-Linking ---"
+  echo "--- GATE-05: Inter-CTR Cross-Linking ---"
   echo -e "${BLUE}  ℹ DEPRECATED: Document name references are sufficient per SDD rules${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-06: Visualization Coverage
+# GATE-06: Visualization Coverage
 # -----------------------------------------------------------------------------
 
 check_visualization() {
   echo ""
-  echo "--- CORPUS-06: Visualization Coverage ---"
+  echo "--- GATE-06: Visualization Coverage ---"
 
   local found=0
   local total=0
@@ -183,22 +183,22 @@ check_visualization() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-07: Glossary Consistency
+# GATE-07: Glossary Consistency
 # -----------------------------------------------------------------------------
 
 check_glossary() {
   echo ""
-  echo "--- CORPUS-07: Glossary Consistency ---"
+  echo "--- GATE-07: Glossary Consistency ---"
   echo -e "${GREEN}  ✓ Terminology consistent (no major issues detected)${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-08: Contract ID Uniqueness
+# GATE-08: Contract ID Uniqueness
 # -----------------------------------------------------------------------------
 
 check_contract_ids() {
   echo ""
-  echo "--- CORPUS-08: Contract ID Uniqueness ---"
+  echo "--- GATE-08: Contract ID Uniqueness ---"
 
   local duplicates
   duplicates=$(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -exec basename {} \; 2>/dev/null | \
@@ -206,7 +206,7 @@ check_contract_ids() {
 
   if [[ -n "$duplicates" ]]; then
     echo "$duplicates" | while read dup; do
-      echo -e "${RED}CORPUS-E004: Duplicate contract ID: $dup${NC}"
+      echo -e "${RED}GATE-E004: Duplicate contract ID: $dup${NC}"
       ((ERRORS++)) || true
     done
   else
@@ -215,12 +215,12 @@ check_contract_ids() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-09: Version Format Consistency
+# GATE-09: Version Format Consistency
 # -----------------------------------------------------------------------------
 
 check_version_format() {
   echo ""
-  echo "--- CORPUS-09: Version Format Consistency ---"
+  echo "--- GATE-09: Version Format Consistency ---"
 
   local semantic=0
   local date_based=0
@@ -235,7 +235,7 @@ check_version_format() {
   done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $semantic -gt 0 && $date_based -gt 0 ]]; then
-    echo -e "${YELLOW}CORPUS-W009: Mixed version formats (semantic: $semantic, date: $date_based)${NC}"
+    echo -e "${YELLOW}GATE-W009: Mixed version formats (semantic: $semantic, date: $date_based)${NC}"
     ((WARNINGS++)) || true
   else
     echo -e "${GREEN}  ✓ Version formats consistent${NC}"
@@ -243,12 +243,12 @@ check_version_format() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-10: File Size Compliance
+# GATE-10: File Size Compliance
 # -----------------------------------------------------------------------------
 
 check_file_size() {
   echo ""
-  echo "--- CORPUS-10: File Size Compliance ---"
+  echo "--- GATE-10: File Size & Token Compliance ---"
 
   local found=0
 
@@ -257,31 +257,33 @@ check_file_size() {
 
     local lines
     lines=$(wc -l < "$f")
+    local words
+    words=$(wc -w < "$f")
+    local tokens=$((words * 13 / 10))
 
-    # Universal Rule: >1000 lines is an ERROR (Must Split)
-    if [[ $lines -gt 1000 ]]; then
-      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1000 lines ($lines) - MUST SPLIT per Universal Rule${NC}"
+    if [[ $tokens -gt 20000 ]]; then
+      echo -e "${RED}GATE-E006: $(basename "$f") exceeds 20,000 tokens (~$tokens) - MUST SPLIT per Universal Rule${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
-    elif [[ $lines -gt 500 ]]; then
-      echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 500 lines ($lines) - Consider splitting${NC}"
+    elif [[ $tokens -gt 15000 ]]; then
+      echo -e "${YELLOW}GATE-W006: $(basename "$f") exceeds 15,000 tokens (~$tokens) - Consider splitting${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
   done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits (≤1000 lines)${NC}"
+    echo -e "${GREEN}  ✓ All files within size limits (≤20,000 tokens)${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-11: Dual-File Consistency
+# GATE-11: Dual-File Consistency
 # -----------------------------------------------------------------------------
 
 check_dual_file() {
   echo ""
-  echo "--- CORPUS-11: Dual-File Consistency (.md + .yaml) ---"
+  echo "--- GATE-11: Dual-File Consistency (.md + .yaml) ---"
 
   local found=0
 
@@ -291,7 +293,7 @@ check_dual_file() {
 
     local yaml_file="${md_file%.md}.yaml"
     if [[ ! -f "$yaml_file" ]]; then
-      echo -e "${RED}CORPUS-E011: $(basename $md_file) missing paired .yaml file${NC}"
+      echo -e "${RED}GATE-E011: $(basename $md_file) missing paired .yaml file${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -303,7 +305,7 @@ check_dual_file() {
 
     local md_file="${yaml_file%.yaml}.md"
     if [[ ! -f "$md_file" ]]; then
-      echo -e "${RED}CORPUS-E012: $(basename $yaml_file) missing paired .md file${NC}"
+      echo -e "${RED}GATE-E012: $(basename $yaml_file) missing paired .md file${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -315,12 +317,12 @@ check_dual_file() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-12: YAML Schema Validation
+# GATE-12: YAML Schema Validation
 # -----------------------------------------------------------------------------
 
 check_yaml_syntax() {
   echo ""
-  echo "--- CORPUS-12: YAML Schema Validation ---"
+  echo "--- GATE-12: YAML Schema Validation ---"
 
   local found=0
 
@@ -334,7 +336,7 @@ check_yaml_syntax() {
     if [[ "$(basename "$yaml_file")" =~ TEMPLATE ]]; then continue; fi
 
     if ! python3 -c "import yaml; yaml.safe_load(open('$yaml_file'))" 2>/dev/null; then
-      echo -e "${RED}CORPUS-E014: $(basename $yaml_file) has invalid YAML syntax${NC}"
+      echo -e "${RED}GATE-E014: $(basename $yaml_file) has invalid YAML syntax${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -346,12 +348,12 @@ check_yaml_syntax() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-13: Version Compatibility Tracking
+# GATE-13: Version Compatibility Tracking
 # -----------------------------------------------------------------------------
 
 check_version_compat() {
   echo ""
-  echo "--- CORPUS-13: Version Compatibility Tracking ---"
+  echo "--- GATE-13: Version Compatibility Tracking ---"
 
   local found=0
 
@@ -370,7 +372,7 @@ check_version_compat() {
     # If major version > 0, should have breaking change docs
     if [[ $version -gt 0 && $has_breaking -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W013: $(basename $f) is v$version but has no breaking change documentation${NC}"
+        echo -e "${YELLOW}GATE-W013: $(basename $f) is v$version but has no breaking change documentation${NC}"
       fi
       ((WARNINGS++)) || true
       ((found++)) || true
@@ -383,12 +385,12 @@ check_version_compat() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-14: Subdomain Classification
+# GATE-14: Subdomain Classification
 # -----------------------------------------------------------------------------
 
 check_subdomain() {
   echo ""
-  echo "--- CORPUS-14: Subdomain Classification ---"
+  echo "--- GATE-14: Subdomain Classification ---"
 
   local found=0
 
@@ -401,7 +403,7 @@ check_subdomain() {
     # Check if file is in root CTR directory
     if [[ "$dir_name" == "CTR" ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W014: $(basename $f) is not in a subdomain directory${NC}"
+        echo -e "${YELLOW}GATE-W014: $(basename $f) is not in a subdomain directory${NC}"
       fi
       ((WARNINGS++)) || true
       ((found++)) || true
@@ -424,7 +426,7 @@ check_subdomain() {
 
     if [[ $valid -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W014: $(basename $f) is in unrecognized subdomain '$dir_name'${NC}"
+        echo -e "${YELLOW}GATE-W014: $(basename $f) is in unrecognized subdomain '$dir_name'${NC}"
       fi
       ((WARNINGS++)) || true
       ((found++)) || true
@@ -437,12 +439,12 @@ check_subdomain() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-15: SPEC-Ready Score
+# GATE-15: SPEC-Ready Score
 # -----------------------------------------------------------------------------
 
 check_spec_ready() {
   echo ""
-  echo "--- CORPUS-15: SPEC-Ready Score Threshold ---"
+  echo "--- GATE-15: SPEC-Ready Score Threshold ---"
 
   local found=0
 
@@ -453,7 +455,7 @@ check_spec_ready() {
     score=$(grep -oE "SPEC-Ready Score[^0-9]*[0-9]+" "$f" 2>/dev/null | grep -oE "[0-9]+" | head -1 || echo "")
 
     if [[ -n "$score" && $score -lt 90 ]]; then
-      echo -e "${YELLOW}CORPUS-W015: $(basename $f) has SPEC-Ready Score $score% (target: ≥90%)${NC}"
+      echo -e "${YELLOW}GATE-W015: $(basename $f) has SPEC-Ready Score $score% (target: ≥90%)${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi

@@ -49,11 +49,11 @@ count_files() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-01: Placeholder Text Detection
+# GATE-01: Placeholder Text Detection
 # -----------------------------------------------------------------------------
 
 check_placeholder_text() {
-  echo "--- CORPUS-01: Placeholder Text Detection ---"
+  echo "--- GATE-01: Placeholder Text Detection ---"
 
   local found=0
   local patterns=("(future SYS)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
@@ -66,7 +66,7 @@ check_placeholder_text() {
         if [[ -n "$sys_ref" ]]; then
           # Check if the referenced SYS file exists
           if ls "$SYS_DIR/${sys_ref}_"*.md 2>/dev/null | grep -v "_index" >/dev/null; then
-            echo -e "${RED}CORPUS-E001: $line${NC}"
+            echo -e "${RED}GATE-E001: $line${NC}"
             echo "  → $sys_ref exists but marked as placeholder"
             ((ERRORS++)) || true
             ((found++)) || true
@@ -82,12 +82,12 @@ check_placeholder_text() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-02: Premature Downstream References
+# GATE-02: Premature Downstream References
 # -----------------------------------------------------------------------------
 
 check_premature_references() {
   echo ""
-  echo "--- CORPUS-02: Premature Downstream References ---"
+  echo "--- GATE-02: Premature Downstream References ---"
 
   local found=0
   # Layer 7+ artifacts that shouldn't be referenced with specific numbers
@@ -99,7 +99,7 @@ check_premature_references() {
       if echo "$line" | grep -qE "Layer [0-9]|→|SDD workflow|development workflow"; then
         continue
       fi
-      echo -e "${RED}CORPUS-E002: $line${NC}"
+      echo -e "${RED}GATE-E002: $line${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -111,19 +111,19 @@ check_premature_references() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-03: Internal Count Consistency
+# GATE-03: Internal Count Consistency
 # -----------------------------------------------------------------------------
 
 check_count_consistency() {
   echo ""
-  echo "--- CORPUS-03: Internal Count Consistency ---"
+  echo "--- GATE-03: Internal Count Consistency ---"
 
   local found=0
   # Check for count claims that might be inconsistent
   while IFS= read -r line; do
     if [[ -n "$line" ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W001: Verify count - $line${NC}"
+        echo -e "${YELLOW}GATE-W001: Verify count - $line${NC}"
       fi
       ((found++)) || true
     fi
@@ -137,12 +137,12 @@ check_count_consistency() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-04: Index Synchronization
+# GATE-04: Index Synchronization
 # -----------------------------------------------------------------------------
 
 check_index_sync() {
   echo ""
-  echo "--- CORPUS-04: Index Synchronization ---"
+  echo "--- GATE-04: Index Synchronization ---"
 
   # Find index file
   local index_file=""
@@ -166,7 +166,7 @@ check_index_sync() {
     sys_ref=$(echo "$line" | grep -oE "SYS-[0-9]+" | head -1 || true)
     if [[ -n "$sys_ref" ]]; then
       if ls "$SYS_DIR/${sys_ref}_"*.md 2>/dev/null | grep -v "_index" >/dev/null; then
-        echo -e "${RED}CORPUS-E003: $sys_ref exists but marked Planned in index${NC}"
+        echo -e "${RED}GATE-E003: $sys_ref exists but marked Planned in index${NC}"
         ((ERRORS++)) || true
         ((found++)) || true
       fi
@@ -179,22 +179,22 @@ check_index_sync() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-05: Inter-SYS Cross-Linking (DEPRECATED)
+# GATE-05: Inter-SYS Cross-Linking (DEPRECATED)
 # -----------------------------------------------------------------------------
 
 check_cross_linking() {
   echo ""
-  echo "--- CORPUS-05: Inter-SYS Cross-Linking ---"
+  echo "--- GATE-05: Inter-SYS Cross-Linking ---"
   echo -e "${BLUE}  ℹ DEPRECATED: Document name references are sufficient per SDD rules${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-06: Visualization Coverage
+# GATE-06: Visualization Coverage
 # -----------------------------------------------------------------------------
 
 check_visualization() {
   echo ""
-  echo "--- CORPUS-06: Visualization Coverage ---"
+  echo "--- GATE-06: Visualization Coverage ---"
 
   local found=0
   local total=0
@@ -207,7 +207,7 @@ check_visualization() {
     [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
     if [[ $diagram_count -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
+        echo -e "${BLUE}GATE-I001: $(basename $f) has no Mermaid diagrams${NC}"
       fi
       ((INFO++)) || true
       ((found++)) || true
@@ -223,12 +223,12 @@ check_visualization() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-07: Glossary Consistency
+# GATE-07: Glossary Consistency
 # -----------------------------------------------------------------------------
 
 check_glossary() {
   echo ""
-  echo "--- CORPUS-07: Glossary Consistency ---"
+  echo "--- GATE-07: Glossary Consistency ---"
 
   local found=0
 
@@ -237,7 +237,7 @@ check_glossary() {
   local system_upper=$(grep -roh "the System " "$SYS_DIR"/*.md 2>/dev/null | wc -l || echo 0)
 
   if [[ $system_lower -gt 5 && $system_upper -gt 5 ]]; then
-    echo -e "${YELLOW}CORPUS-W003: Mixed 'system' ($system_lower) and 'System' ($system_upper) usage${NC}"
+    echo -e "${YELLOW}GATE-W003: Mixed 'system' ($system_lower) and 'System' ($system_upper) usage${NC}"
     ((WARNINGS++)) || true
     ((found++)) || true
   fi
@@ -248,19 +248,19 @@ check_glossary() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-08: Element ID Uniqueness
+# GATE-08: Element ID Uniqueness
 # -----------------------------------------------------------------------------
 
 check_element_ids() {
   echo ""
-  echo "--- CORPUS-08: Element ID Uniqueness ---"
+  echo "--- GATE-08: Element ID Uniqueness ---"
 
   local duplicates
   duplicates=$(grep -rohE "SYS\.[0-9]+\.[0-9]+\.[0-9]+" "$SYS_DIR"/*.md 2>/dev/null | sort | uniq -d || true)
 
   if [[ -n "$duplicates" ]]; then
     echo "$duplicates" | while read dup; do
-      echo -e "${RED}CORPUS-E004: Duplicate element ID: $dup${NC}"
+      echo -e "${RED}GATE-E004: Duplicate element ID: $dup${NC}"
       ((ERRORS++)) || true
     done
   else
@@ -269,12 +269,12 @@ check_element_ids() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-09: Quality Attribute Quantification
+# GATE-09: Quality Attribute Quantification
 # -----------------------------------------------------------------------------
 
 check_quality_quantification() {
   echo ""
-  echo "--- CORPUS-09: Quality Attribute Quantification ---"
+  echo "--- GATE-09: Quality Attribute Quantification ---"
 
   local found=0
 
@@ -284,7 +284,7 @@ check_quality_quantification() {
   for pattern in "${vague_patterns[@]}"; do
     while IFS= read -r line; do
       if [[ -n "$line" ]]; then
-        echo -e "${YELLOW}CORPUS-W004: Vague quality attribute - $line${NC}"
+        echo -e "${YELLOW}GATE-W004: Vague quality attribute - $line${NC}"
         ((WARNINGS++)) || true
         ((found++)) || true
       fi
@@ -297,27 +297,28 @@ check_quality_quantification() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-10: File Size Compliance
+# GATE-10: File Size Compliance
 # -----------------------------------------------------------------------------
 
 check_file_size() {
   echo ""
-  echo "--- CORPUS-10: File Size Compliance ---"
+  echo "--- GATE-10: File Size & Token Compliance ---"
 
   local found=0
   shopt -s nullglob
   for f in "$SYS_DIR"/SYS-[0-9]*_*.md; do
     if [[ "$(basename $f)" =~ _index ]]; then continue; fi
 
-    local lines
-    lines=$(wc -l < "$f")
+    local words
+    words=$(wc -w < "$f")
+    local tokens=$((words * 13 / 10))
 
-    if [[ $lines -gt 1200 ]]; then
-      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1200 lines ($lines)${NC}"
+    if [[ $tokens -gt 20000 ]]; then
+      echo -e "${RED}GATE-E006: $(basename "$f") exceeds 20,000 tokens (~$tokens) - MUST SPLIT per Universal Rule${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
-    elif [[ $lines -gt 600 ]]; then
-      echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 600 lines ($lines)${NC}"
+    elif [[ $tokens -gt 15000 ]]; then
+      echo -e "${YELLOW}GATE-W006: $(basename "$f") exceeds 15,000 tokens (~$tokens) - Consider splitting${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
@@ -325,17 +326,17 @@ check_file_size() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits${NC}"
+    echo -e "${GREEN}  ✓ All files within size limits (≤20k tokens)${NC}"
   fi
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-11: Cumulative Traceability (@brd + @prd + @ears + @bdd + @adr)
+# GATE-11: Cumulative Traceability (@brd + @prd + @ears + @bdd + @adr)
 # -----------------------------------------------------------------------------
 
 check_traceability() {
   echo ""
-  echo "--- CORPUS-11: Cumulative Traceability (@brd + @prd + @ears + @bdd + @adr) ---"
+  echo "--- GATE-11: Cumulative Traceability (@brd + @prd + @ears + @bdd + @adr) ---"
 
   local found=0
   shopt -s nullglob
@@ -355,31 +356,31 @@ check_traceability() {
     [[ -z "$has_adr" || ! "$has_adr" =~ ^[0-9]+$ ]] && has_adr=0
 
     if [[ $has_brd -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E011: $(basename $f) missing @brd traceability tag${NC}"
+      echo -e "${RED}GATE-E011: $(basename $f) missing @brd traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_prd -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E012: $(basename $f) missing @prd traceability tag${NC}"
+      echo -e "${RED}GATE-E012: $(basename $f) missing @prd traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_ears -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E013: $(basename $f) missing @ears traceability tag${NC}"
+      echo -e "${RED}GATE-E013: $(basename $f) missing @ears traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_bdd -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E014: $(basename $f) missing @bdd traceability tag${NC}"
+      echo -e "${RED}GATE-E014: $(basename $f) missing @bdd traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
 
     if [[ $has_adr -eq 0 ]]; then
-      echo -e "${RED}CORPUS-E015: $(basename $f) missing @adr traceability tag${NC}"
+      echo -e "${RED}GATE-E015: $(basename $f) missing @adr traceability tag${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -392,12 +393,12 @@ check_traceability() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-12: Quality Attribute Coverage
+# GATE-12: Quality Attribute Coverage
 # -----------------------------------------------------------------------------
 
 check_quality_coverage() {
   echo ""
-  echo "--- CORPUS-12: Quality Attribute Coverage ---"
+  echo "--- GATE-12: Quality Attribute Coverage ---"
 
   local found=0
   local qa_keywords=("performance" "reliability" "security" "maintainability" "scalability" "availability")
@@ -406,7 +407,7 @@ check_quality_coverage() {
     local count
     count=$(grep -ril "$qa" "$SYS_DIR"/SYS-[0-9]*_*.md 2>/dev/null | wc -l || echo 0)
     if [[ $count -eq 0 ]]; then
-      echo -e "${YELLOW}CORPUS-W012: No SYS documents address '$qa'${NC}"
+      echo -e "${YELLOW}GATE-W012: No SYS documents address '$qa'${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
@@ -418,12 +419,12 @@ check_quality_coverage() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-13: Non-Functional Requirement Completeness
+# GATE-13: Non-Functional Requirement Completeness
 # -----------------------------------------------------------------------------
 
 check_nfr_completeness() {
   echo ""
-  echo "--- CORPUS-13: Non-Functional Requirement Completeness ---"
+  echo "--- GATE-13: Non-Functional Requirement Completeness ---"
 
   local found=0
   local nfr_categories=("Performance" "Capacity" "Availability" "Security" "Integration")
@@ -433,7 +434,7 @@ check_nfr_completeness() {
     count=$(grep -rilE "^#+.*$nfr|$nfr Requirements" "$SYS_DIR"/SYS-[0-9]*_*.md 2>/dev/null | wc -l || echo 0)
     if [[ $count -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${YELLOW}CORPUS-W013: No SYS documents have '$nfr' section${NC}"
+        echo -e "${YELLOW}GATE-W013: No SYS documents have '$nfr' section${NC}"
       fi
       ((WARNINGS++)) || true
       ((found++)) || true
@@ -448,12 +449,12 @@ check_nfr_completeness() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-14: Interface Definition Completeness
+# GATE-14: Interface Definition Completeness
 # -----------------------------------------------------------------------------
 
 check_interface_completeness() {
   echo ""
-  echo "--- CORPUS-14: Interface Definition Completeness ---"
+  echo "--- GATE-14: Interface Definition Completeness ---"
 
   local found=0
   # Check if interface-related SYS files have protocol/format definitions
@@ -468,7 +469,7 @@ check_interface_completeness() {
     [[ -z "$has_format" || ! "$has_format" =~ ^[0-9]+$ ]] && has_format=0
 
     if [[ $has_protocol -eq 0 ]]; then
-      echo -e "${YELLOW}CORPUS-W014: $(basename $f) may be missing protocol specification${NC}"
+      echo -e "${YELLOW}GATE-W014: $(basename $f) may be missing protocol specification${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
@@ -481,12 +482,12 @@ check_interface_completeness() {
 }
 
 # -----------------------------------------------------------------------------
-# CORPUS-15: REQ-Ready Score Threshold
+# GATE-15: REQ-Ready Score Threshold
 # -----------------------------------------------------------------------------
 
 check_req_ready() {
   echo ""
-  echo "--- CORPUS-15: REQ-Ready Score Threshold ---"
+  echo "--- GATE-15: REQ-Ready Score Threshold ---"
 
   local found=0
   shopt -s nullglob
@@ -498,7 +499,7 @@ check_req_ready() {
     score=$(grep -oE "REQ-Ready Score[^0-9]*[0-9]+" "$f" 2>/dev/null | grep -oE "[0-9]+" | head -1 || echo "")
 
     if [[ -n "$score" && $score -lt 90 ]]; then
-      echo -e "${YELLOW}CORPUS-W015: $(basename $f) has REQ-Ready Score $score% (target: ≥90%)${NC}"
+      echo -e "${YELLOW}GATE-W015: $(basename $f) has REQ-Ready Score $score% (target: ≥90%)${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi

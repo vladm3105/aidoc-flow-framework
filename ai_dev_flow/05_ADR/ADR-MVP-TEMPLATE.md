@@ -14,6 +14,7 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
+  schema_version: "1.0"
   complexity: 1 # 1-5 scale
 ---
 
@@ -45,7 +46,7 @@ custom_fields:
   template_variant: mvp
   template_profile: mvp
   template_source: "ADR-MVP-TEMPLATE.md"
-  schema_reference: "ADR_SCHEMA.yaml"
+  schema_reference: "ADR_MVP_SCHEMA.yaml"
   schema_version: "1.0"
   schema_status: optional
   creation_rules_reference: "ADR_MVP_CREATION_RULES.md"
@@ -58,7 +59,7 @@ custom_fields:
 
 > **Validation Note**: MVP templates are intentionally streamlined and will show validation errors when run against full template validators (e.g., `validate_adr.py`). This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
-> References: Schema `ADR_SCHEMA.yaml` | Rules `ADR_MVP_CREATION_RULES.md`, `ADR_MVP_VALIDATION_RULES.md` | Matrix `ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `ADR_MVP_SCHEMA.yaml` | Rules `ADR_MVP_CREATION_RULES.md`, `ADR_MVP_VALIDATION_RULES.md` | Matrix `ADR-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # ADR-NN: [Architecture Decision Title]
 

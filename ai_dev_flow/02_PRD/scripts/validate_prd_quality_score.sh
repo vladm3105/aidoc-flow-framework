@@ -82,14 +82,16 @@ for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
 done
 shopt -u nullglob
 
+set +u
 echo "Found ${#EXISTING_PRDS[@]} PRD documents"
+set -u
 echo ""
 
 # =============================================================================
-# CORPUS-01: Placeholder Text for Existing Documents
+# GATE-01: Placeholder Text for Existing Documents
 # =============================================================================
 check_placeholders() {
-  echo "--- CORPUS-01: Placeholder Text Detection ---"
+  echo "--- GATE-01: Placeholder Text Detection ---"
   local found=0
 
   local patterns=(
@@ -107,7 +109,7 @@ check_placeholders() {
         content=$(echo "$line" | sed 's/^[^:]*:[0-9]*://')
         prd_ref=$(echo "$content" | grep -oE "PRD-[0-9]+" | head -1 || true)
         if [[ -n "$prd_ref" && -n "${EXISTING_PRDS[$prd_ref]:-}" ]]; then
-          echo -e "${RED}CORPUS-E001: $line${NC}"
+          echo -e "${RED}GATE-E001: $line${NC}"
           echo "  → $prd_ref exists but marked with placeholder"
           ((ERRORS++)) || true
           ((found++)) || true
@@ -123,10 +125,10 @@ check_placeholders() {
 }
 
 # =============================================================================
-# CORPUS-02: Premature Downstream References
+# GATE-02: Premature Downstream References
 # =============================================================================
 check_downstream_refs() {
-  echo "--- CORPUS-02: Premature Downstream References ---"
+  echo "--- GATE-02: Premature Downstream References ---"
   local found=0
 
   # Check for specific numbered references to Layer 3+ artifacts
@@ -135,7 +137,7 @@ check_downstream_refs() {
       if echo "$line" | grep -qiE "layer|workflow|sdd|example|template|schema|downstream|expected"; then
         continue
       fi
-      echo -e "${RED}CORPUS-E002: $line${NC}"
+      echo -e "${RED}GATE-E002: $line${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -150,12 +152,12 @@ check_downstream_refs() {
 }
 
 # =============================================================================
-# CORPUS-03: Internal Count Consistency
+# GATE-03: Internal Count Consistency
 # =============================================================================
 check_count_consistency() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- CORPUS-03: Internal Count Consistency ---"
+  echo "--- GATE-03: Internal Count Consistency ---"
   local found=0
 
   shopt -s nullglob
@@ -169,7 +171,7 @@ check_count_consistency() {
         if [[ -n "$claimed" && -n "$paren_content" && "$claimed" -gt 2 && "$claimed" -lt 20 ]]; then
           actual=$(echo "$paren_content" | tr ',' '\n' | wc -l)
           if [[ "$actual" -gt 0 && "$actual" -ne "$claimed" ]]; then
-            echo -e "${YELLOW}CORPUS-W001: $(basename $f):$linenum${NC}"
+            echo -e "${YELLOW}GATE-W001: $(basename $f):$linenum${NC}"
             echo "  → Claims '$claimed' items but found '$actual' in list"
             ((WARNINGS++)) || true
             ((found++)) || true
@@ -187,10 +189,10 @@ check_count_consistency() {
 }
 
 # =============================================================================
-# CORPUS-04: Index Synchronization
+# GATE-04: Index Synchronization
 # =============================================================================
 check_index_sync() {
-  echo "--- CORPUS-04: Index Synchronization ---"
+  echo "--- GATE-04: Index Synchronization ---"
   local found=0
 
   local index_file=""
@@ -216,7 +218,7 @@ check_index_sync() {
   while IFS= read -r line; do
     prd=$(echo "$line" | grep -oE "PRD-[0-9]+" | head -1)
     if [[ -n "$prd" && -n "${EXISTING_PRDS[$prd]:-}" ]]; then
-      echo -e "${RED}CORPUS-E003: $prd exists but marked Planned in index${NC}"
+      echo -e "${RED}GATE-E003: $prd exists but marked Planned in index${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -224,7 +226,7 @@ check_index_sync() {
 
   for prd in "${!EXISTING_PRDS[@]}"; do
     if [[ "$prd" != "PRD-00" && "$prd" != "PRD-000" ]] && ! grep -q "$prd" "$index_file" 2>/dev/null; then
-      echo -e "${RED}CORPUS-E003: $prd exists but not listed in index${NC}"
+      echo -e "${RED}GATE-E003: $prd exists but not listed in index${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     fi
@@ -237,21 +239,21 @@ check_index_sync() {
 }
 
 # =============================================================================
-# CORPUS-05: Inter-PRD Cross-Linking (DEPRECATED)
+# GATE-05: Inter-PRD Cross-Linking (DEPRECATED)
 # =============================================================================
 check_crosslinks() {
-  echo "--- CORPUS-05: Inter-PRD Cross-Linking ---"
+  echo "--- GATE-05: Inter-PRD Cross-Linking ---"
   echo -e "${GREEN}  ✓ Check deprecated - document name references are valid per traceability rules${NC}"
   echo ""
 }
 
 # =============================================================================
-# CORPUS-06: Visualization Coverage
+# GATE-06: Visualization Coverage
 # =============================================================================
 check_diagrams() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- CORPUS-06: Visualization Coverage ---"
+  echo "--- GATE-06: Visualization Coverage ---"
   local no_diagrams=0
 
   shopt -s nullglob
@@ -261,7 +263,7 @@ check_diagrams() {
     diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null | tr -d '\n' || echo 0)
     [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
     if [[ "$diagram_count" -eq 0 ]]; then
-      echo -e "${BLUE}CORPUS-I001: $(basename $f) has no Mermaid diagrams${NC}"
+      echo -e "${BLUE}GATE-I001: $(basename $f) has no Mermaid diagrams${NC}"
       ((INFOS++)) || true
       ((no_diagrams++)) || true
     elif $VERBOSE; then
@@ -277,12 +279,12 @@ check_diagrams() {
 }
 
 # =============================================================================
-# CORPUS-07: Glossary Consistency
+# GATE-07: Glossary Consistency
 # =============================================================================
 check_glossary() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- CORPUS-07: Glossary Consistency ---"
+  echo "--- GATE-07: Glossary Consistency ---"
 
   declare -A term_variations
   term_variations["real-time"]="realtime|real time"
@@ -298,7 +300,7 @@ check_glossary() {
     var_count=${var_count:-0}
 
     if [[ "$primary_count" -gt 0 && "$var_count" -gt 0 ]]; then
-      echo -e "${YELLOW}CORPUS-W003: Inconsistent terminology detected${NC}"
+      echo -e "${YELLOW}GATE-W003: Inconsistent terminology detected${NC}"
       echo "  → '$term' used in $primary_count files, variations ($variations) in $var_count files"
       ((WARNINGS++)) || true
       ((found++)) || true
@@ -312,10 +314,10 @@ check_glossary() {
 }
 
 # =============================================================================
-# CORPUS-08: Element ID Uniqueness
+# GATE-08: Element ID Uniqueness
 # =============================================================================
 check_duplicates() {
-  echo "--- CORPUS-08: Element ID Uniqueness ---"
+  echo "--- GATE-08: Element ID Uniqueness ---"
   local misplaced_found=0
   local duplicates_found=0
   local max_show=10
@@ -326,7 +328,7 @@ check_duplicates() {
   # to avoid flagging valid cross-references.
   while IFS= read -r duplicate_id; do
     if [[ -n "$duplicate_id" ]]; then
-      echo -e "${RED}CORPUS-E004: Duplicate element ID found: $duplicate_id${NC}"
+      echo -e "${RED}GATE-E004: Duplicate element ID found: $duplicate_id${NC}"
       # Show which files contain the duplicate definition
       grep -rnE "(^###\s+$duplicate_id:|^\|.*$duplicate_id.*\|)" "$PRD_DIR"
       echo ""
@@ -359,7 +361,7 @@ check_duplicates() {
         id_num=$(echo "$wrong_id" | cut -d. -f2)
         if [[ "$id_num" != "$file_num" ]]; then
           if [[ $misplaced_found -lt $max_show ]]; then
-            echo -e "${YELLOW}CORPUS-W008: Potential misplaced ID in $(basename $f)${NC}"
+            echo -e "${YELLOW}GATE-W008: Potential misplaced ID in $(basename $f)${NC}"
             echo "  → ID $wrong_id found in a PRD-$file_num file. Line: $line"
           fi
           ((WARNINGS++)) || true
@@ -379,12 +381,12 @@ check_duplicates() {
 }
 
 # =============================================================================
-# CORPUS-09: Cost Estimate Format
+# GATE-09: Cost Estimate Format
 # =============================================================================
 check_costs() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- CORPUS-09: Cost Estimate Format ---"
+  echo "--- GATE-09: Cost Estimate Format ---"
   local found=0
 
   while IFS= read -r line; do
@@ -392,7 +394,7 @@ check_costs() {
       if echo "$line" | grep -qiE "range|approximately|~|\-"; then
         continue
       fi
-      echo -e "${YELLOW}CORPUS-W004: $line${NC}"
+      echo -e "${YELLOW}GATE-W004: $line${NC}"
       echo "  → Consider using range format: \$X-\$Y or ~\$X"
       ((WARNINGS++)) || true
       ((found++)) || true
@@ -409,10 +411,10 @@ check_costs() {
 }
 
 # =============================================================================
-# CORPUS-10: File Size Compliance
+# GATE-10: File Size Compliance
 # =============================================================================
 check_sizes() {
-  echo "--- CORPUS-10: File Size Compliance ---"
+  echo "--- GATE-10: File Size Compliance ---"
   local errors=0
   local warnings=0
 
@@ -420,56 +422,41 @@ check_sizes() {
   for f in "$PRD_DIR"/PRD-[0-9]*_*.md "$PRD_DIR"/PRD-[0-9]*/PRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
 
-    # MVP detection
-    is_mvp=false
-    if [[ "$f" == *"MVP"* ]] || grep -q "template_variant: mvp" "$f" 2>/dev/null || grep -q "template_profile: mvp" "$f" 2>/dev/null; then
-      is_mvp=true
+    local lines
+    lines=$(wc -l <"$f")
+    local words
+    words=$(wc -w <"$f")
+    local tokens=$((words * 13 / 10))
+
+    if [[ $tokens -gt 20000 ]]; then
+      echo -e "${RED}GATE-E006: $(basename "$f") exceeds 20,000 tokens (~$tokens) - MUST SPLIT per Universal Rule${NC}"
+      ((ERRORS++)) || true
+      ((errors++)) || true
+    elif [[ $tokens -gt 15000 ]]; then
+      if ! $ERRORS_ONLY; then
+        echo -e "${YELLOW}GATE-W006: $(basename "$f") exceeds 15,000 tokens (~$tokens) - Consider splitting${NC}"
+        ((WARNINGS++)) || true
+        ((warnings++)) || true
+      fi
     fi
 
-    if $is_mvp; then
-      if [[ "$lines" -gt 800 ]]; then
-        echo -e "${RED}CORPUS-E005: MVP file $(basename $f) exceeds 800 lines ($lines)${NC}"
-        ((ERRORS++)) || true
-        ((errors++)) || true
-      elif [[ "$lines" -gt 500 ]]; then
-        if ! $ERRORS_ONLY; then
-          echo -e "${YELLOW}CORPUS-W005: MVP file $(basename $f) exceeds 500 lines ($lines)${NC}"
-          ((WARNINGS++)) || true
-          ((warnings++)) || true
-        fi
-      fi
-    else
-      # Standard limits
-      if [[ "$lines" -gt 1200 ]]; then
-        echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1200 lines ($lines)${NC}"
-        ((ERRORS++)) || true
-        ((errors++)) || true
-      elif [[ "$lines" -gt 600 ]]; then
-        if ! $ERRORS_ONLY; then
-          echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 600 lines ($lines)${NC}"
-          ((WARNINGS++)) || true
-          ((warnings++)) || true
-        fi
-      fi
-    fi 
-
     if $VERBOSE; then
-      echo "  $(basename $f): $lines lines"
+      echo "  $(basename "$f"): $lines lines, ~$tokens tokens"
     fi
   done
   shopt -u nullglob
 
   if [[ $errors -eq 0 && $warnings -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits${NC}"
+    echo -e "${GREEN}  ✓ All files within size limits (≤1000 lines, ≤10k tokens)${NC}"
   fi
   echo ""
 }
 
 # =============================================================================
-# CORPUS-11: BRD Traceability Completeness
+# GATE-11: BRD Traceability Completeness
 # =============================================================================
 check_traceability() {
-  echo "--- CORPUS-11: BRD Traceability Completeness ---"
+  echo "--- GATE-11: BRD Traceability Completeness ---"
   local found=0
 
   shopt -s nullglob
@@ -482,7 +469,7 @@ check_traceability() {
     fi
 
     if ! grep -q "@brd:" "$f" 2>/dev/null; then
-      echo -e "${RED}CORPUS-E011: $(basename $f) missing @brd traceability tags${NC}"
+      echo -e "${RED}GATE-E011: $(basename $f) missing @brd traceability tags${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     elif $VERBOSE; then
@@ -500,21 +487,21 @@ check_traceability() {
 }
 
 # =============================================================================
-# CORPUS-12: User Story Coverage
+# GATE-12: User Story Coverage
 # =============================================================================
 check_coverage() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- CORPUS-12: User Story Coverage ---"
+  echo "--- GATE-12: User Story Coverage ---"
   echo -e "${BLUE}  ℹ Manual verification recommended for BRD→PRD coverage${NC}"
   echo ""
 }
 
 # =============================================================================
-# CORPUS-13: Template Structure Compliance
+# GATE-13: Template Structure Compliance
 # =============================================================================
 check_template_structure() {
-  echo "--- CORPUS-13: Template Structure Compliance ---"
+  echo "--- GATE-13: Template Structure Compliance ---"
   local found=0
 
   local REQUIRED_SECTIONS=(
@@ -532,7 +519,7 @@ check_template_structure() {
 
     for section in "${REQUIRED_SECTIONS[@]}"; do
       if ! grep -qiE "^##? .*$section" "$f" 2>/dev/null; then
-        echo -e "${RED}CORPUS-E013: $(basename $f) missing section: $section${NC}"
+        echo -e "${RED}GATE-E013: $(basename $f) missing section: $section${NC}"
         ((ERRORS++)) || true
         ((found++)) || true
       fi
@@ -547,10 +534,10 @@ check_template_structure() {
 }
 
 # =============================================================================
-# CORPUS-14: SYS-Ready Score Validation
+# GATE-14: SYS-Ready Score Validation
 # =============================================================================
 check_sys_ready_score() {
-  echo "--- CORPUS-14: SYS-Ready Score Validation ---"
+  echo "--- GATE-14: SYS-Ready Score Validation ---"
   local found=0
 
   shopt -s nullglob
@@ -560,7 +547,7 @@ check_sys_ready_score() {
 
     score=$(grep -oP 'sys_ready_score:\s*\K[0-9]+' "$f" 2>/dev/null || echo "0")
     if [[ $score -lt 85 ]]; then
-      echo -e "${RED}CORPUS-E014: $(basename $f) SYS-Ready score $score < 85 (MVP threshold)${NC}"
+      echo -e "${RED}GATE-E014: $(basename $f) SYS-Ready score $score < 85 (MVP threshold)${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
     elif $VERBOSE; then
@@ -576,12 +563,12 @@ check_sys_ready_score() {
 }
 
 # =============================================================================
-# CORPUS-15: MVP Hypothesis Format
+# GATE-15: MVP Hypothesis Format
 # =============================================================================
 check_mvp_hypothesis() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- CORPUS-15: MVP Hypothesis Format ---"
+  echo "--- GATE-15: MVP Hypothesis Format ---"
   local found=0
 
   shopt -s nullglob
@@ -590,7 +577,7 @@ check_mvp_hypothesis() {
     [[ "$(basename $f)" =~ _index|TEMPLATE|template ]] && continue
 
     if ! grep -qiE 'We believe that.*will.*if we' "$f" 2>/dev/null; then
-      echo -e "${YELLOW}CORPUS-W015: $(basename $f) may lack properly formatted MVP hypothesis${NC}"
+      echo -e "${YELLOW}GATE-W015: $(basename $f) may lack properly formatted MVP hypothesis${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
@@ -604,12 +591,12 @@ check_mvp_hypothesis() {
 }
 
 # =============================================================================
-# CORPUS-16: Glossary Path Standardization
+# GATE-16: Glossary Path Standardization
 # =============================================================================
 check_glossary_path() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- CORPUS-16: Glossary Path Standardization ---"
+  echo "--- GATE-16: Glossary Path Standardization ---"
   local found=0
 
   shopt -s nullglob
@@ -619,7 +606,7 @@ check_glossary_path() {
 
     if grep -q "Glossary" "$f" 2>/dev/null; then
       if ! grep -qE 'glossary\.md|Glossary.*\|' "$f" 2>/dev/null; then
-        echo -e "${YELLOW}CORPUS-W016: $(basename $f) glossary path may not be standardized${NC}"
+        echo -e "${YELLOW}GATE-W016: $(basename $f) glossary path may not be standardized${NC}"
         ((WARNINGS++)) || true
         ((found++)) || true
       fi
@@ -634,10 +621,10 @@ check_glossary_path() {
 }
 
 # =============================================================================
-# CORPUS-17: Token Count Compliance
+# GATE-17: Token Count Compliance
 # =============================================================================
 check_token_count() {
-  echo "--- CORPUS-17: Token Count Compliance ---"
+  echo "--- GATE-17: Token Count Compliance ---"
   local errors=0
   local warnings=0
 
@@ -650,12 +637,12 @@ check_token_count() {
     tokens=$((words * 13 / 10))
 
     if [[ $tokens -gt 80000 ]]; then
-      echo -e "${RED}CORPUS-E017: $(basename $f) exceeds 80K tokens (~$tokens)${NC}"
+      echo -e "${RED}GATE-E017: $(basename $f) exceeds 80K tokens (~$tokens)${NC}"
       ((ERRORS++)) || true
       ((errors++)) || true
     elif [[ $tokens -gt 40000 ]]; then
       if ! $ERRORS_ONLY; then
-        echo -e "${YELLOW}CORPUS-W017: $(basename $f) exceeds 40K tokens (~$tokens)${NC}"
+        echo -e "${YELLOW}GATE-W017: $(basename $f) exceeds 40K tokens (~$tokens)${NC}"
         ((WARNINGS++)) || true
         ((warnings++)) || true
       fi
@@ -672,12 +659,12 @@ check_token_count() {
 }
 
 # =============================================================================
-# CORPUS-18: YAML Frontmatter Validation
+# GATE-18: YAML Frontmatter Validation
 # =============================================================================
 check_yaml_frontmatter() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- CORPUS-18: YAML Frontmatter Validation ---"
+  echo "--- GATE-18: YAML Frontmatter Validation ---"
   local found=0
 
   local REQUIRED_FIELDS=("title" "status" "version" "created" "modified")
@@ -690,7 +677,7 @@ check_yaml_frontmatter() {
     if head -1 "$f" | grep -q "^---"; then
       for field in "${REQUIRED_FIELDS[@]}"; do
         if ! grep -q "^$field:" "$f" 2>/dev/null; then
-          echo -e "${YELLOW}CORPUS-W018: $(basename $f) missing YAML field: $field${NC}"
+          echo -e "${YELLOW}GATE-W018: $(basename $f) missing YAML field: $field${NC}"
           ((WARNINGS++)) || true
           ((found++)) || true
         fi
@@ -706,12 +693,12 @@ check_yaml_frontmatter() {
 }
 
 # =============================================================================
-# CORPUS-19: ISO Date Format Compliance
+# GATE-19: ISO Date Format Compliance
 # =============================================================================
 check_date_format() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- CORPUS-19: ISO Date Format Compliance ---"
+  echo "--- GATE-19: ISO Date Format Compliance ---"
   local found=0
 
   shopt -s nullglob
@@ -721,7 +708,7 @@ check_date_format() {
 
     bad_dates=$(grep -oE '[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}|[A-Za-z]{3} [0-9]{1,2},? [0-9]{4}' "$f" 2>/dev/null | head -3 || true)
     if [[ -n "$bad_dates" ]]; then
-      echo -e "${YELLOW}CORPUS-W019: $(basename $f) contains non-ISO dates${NC}"
+      echo -e "${YELLOW}GATE-W019: $(basename $f) contains non-ISO dates${NC}"
       echo "  → Found: $(echo $bad_dates | tr '\n' ' ')"
       ((WARNINGS++)) || true
       ((found++)) || true

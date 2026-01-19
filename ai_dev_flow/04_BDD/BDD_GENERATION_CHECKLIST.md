@@ -140,7 +140,7 @@ Choose split criteria (in priority order):
 
 For each section file:
 
-- [ ] ≤500 lines (soft limit: 400)
+- [ ] ≤20,000 tokens (warning: 15,000)
 - [ ] ≤12 scenarios per Feature block
 - [ ] Use `America/New_York` or ET with HH:MM:SS times
 - [ ] Replace all numeric durations/retries with `@threshold:` keys

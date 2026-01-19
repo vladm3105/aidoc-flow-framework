@@ -70,9 +70,9 @@ custom_fields:
 
 ---
 
-## Design Decision: Optional BRD_SCHEMA.yaml (Human-Centric Validation)
+## Design Decision: Optional BRD_MVP_SCHEMA.yaml (Human-Centric Validation)
 
-> **Intentional Design Choice**: BRD validation is script-first and human-centric. An optional `BRD_SCHEMA.yaml` exists for non-blocking, machine-readable checks.
+> **Intentional Design Choice**: BRD validation is script-first and human-centric. An optional `BRD_MVP_SCHEMA.yaml` exists for non-blocking, machine-readable checks.
 >
 > **Rationale**:
 > - **Business Flexibility**: Layer 1 artifacts capture diverse business needs across domains (financial, healthcare, SaaS, IoT) - rigid schema validation would constrain legitimate business expression
@@ -86,8 +86,8 @@ custom_fields:
 > | Layer | Artifact | Schema File | Rationale |
 > |-------|----------|-------------|-----------|
 > | Layer 1 | BRD | Optional | Business flexibility, human-centric validation |
-> | Layer 2 | PRD | PRD_SCHEMA.yaml | Product specifications benefit from consistent structure |
-> | Layer 3+ | EARS, REQ, etc. | *_SCHEMA.yaml | Technical artifacts require strict validation |
+> | Layer 2 | PRD | PRD_MVP_SCHEMA.yaml | Product specifications benefit from consistent structure |
+> | Layer 3+ | EARS, REQ, etc. | *_MVP_SCHEMA.yaml | Technical artifacts require strict validation |
 
 ---
 

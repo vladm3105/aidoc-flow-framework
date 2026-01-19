@@ -471,7 +471,7 @@ python scripts/generate_reverse_traceability.py --upstream REQ --downstream CTR,
 - **REQ Index**: [REQ-00_index.md](REQ-00_index.md)
 - **REQ MVP Template**: [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md) (Default - ≥70% SPEC-Ready)
 - **REQ Full Template**: (removed from workflow)
-- **REQ Schema**: [REQ_SCHEMA.yaml](REQ_SCHEMA.yaml) (Supports MVP/full profiles)
+- **REQ Schema**: [REQ_MVP_SCHEMA.yaml](REQ_MVP_SCHEMA.yaml) (Supports MVP/full profiles)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Related Matrices**: [EARS](../03_EARS/EARS-00_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md), [CTR](../08_CTR/CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 

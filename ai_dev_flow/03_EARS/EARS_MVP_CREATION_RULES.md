@@ -34,7 +34,7 @@ custom_fields:
 
 > **📋 Document Role**: This is a **CREATION HELPER** for EARS-MVP-TEMPLATE.md (default).
 > - **Authority**: `EARS-MVP-TEMPLATE.md` is the primary standard for EARS structure; full template archived
-> - **Schema**: `EARS_SCHEMA.yaml` defines machine-readable validation rules
+> - **Schema**: `EARS_MVP_SCHEMA.yaml` defines machine-readable validation rules
 > - **Validation**: Use `EARS_MVP_VALIDATION_RULES.md` or `03_EARS/scripts/validate_ears.py`
 
 # EARS Creation Rules
@@ -428,7 +428,7 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 ### Pre-Batch Verification
 
 **Before starting batch creation:**
-1. Read `EARS_SCHEMA.yaml` to understand current metadata requirements
+1. Read `EARS_MVP_SCHEMA.yaml` to understand current metadata requirements
 2. Verify tag standards: `ears` (not `ears-requirements`, `ears-formal-requirements`, etc.)
 3. Verify document_type: `ears` (not `engineering-requirements`)
 4. Verify architecture format: `architecture_approaches: [value]` (array, not singular)
@@ -624,7 +624,7 @@ cp docs/03_EARS/EARS-MVP-TEMPLATE.md docs/03_EARS/EARS-20_new_category_name.md
 
 If the new category introduces new element types beyond `EARS.NN.25.SS`:
 
-1. Document in `EARS_SCHEMA.yaml` under `element_types`
+1. Document in `EARS_MVP_SCHEMA.yaml` under `element_types`
 2. Add validation rules to `03_EARS/scripts/validate_ears.py`
 3. Update `ID_NAMING_STANDARDS.md` element type table
 

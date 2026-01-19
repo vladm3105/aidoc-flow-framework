@@ -14,13 +14,14 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
+  schema_version: "1.0"
 ---
 
 > **📋 Document Authority**: This is the **STANDARD** for SYS structure.
-> - **Schema**: `SYS_SCHEMA.yaml v1.0` - Validation rules
+> - **Schema**: `SYS_MVP_SCHEMA.yaml v1.0` - Validation rules
 > - **Creation Rules**: `SYS_MVP_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `SYS_MVP_VALIDATION_RULES.md` - Post-creation checks
-> - **File Size Limits**: Target 300-500 lines, max 600 lines per file. Split using `SYS-SECTION-TEMPLATE.md` if exceeded.
+> - **File Size Limits**: Warning 15,000 tokens, max 20,000 tokens per file. Split using `SYS-SECTION-TEMPLATE.md` if exceeded.
 
 # SYS-NN: [System Name/Component Name]
 

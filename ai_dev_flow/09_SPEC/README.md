@@ -403,6 +403,14 @@ implementation:
     - rate_limiting_custom.py
 ```
 
+## Layer Scripts
+
+This layer includes a dedicated `scripts/` directory containing validation and utility scripts specific to this document type.
+
+- **Location**: `09_SPEC/scripts/`
+- **Primary Validator**: `validate_spec_quality_score.sh`
+- **Usage**: Run scripts directly or usage via `validate_all.py`.
+
 ## File Organization Hierarchy
 
 ```
@@ -734,9 +742,9 @@ See `09_SPEC/SPEC-01_external_api_client.yaml` for the flat default layout. For 
 
 ## File Size Limits (Warning)
 
-- **Target**: 800 lines per file
-- **Maximum (Markdown)**: 1200 lines (warning threshold)
-- **YAML (monolithic)**: Warning at ~1000 lines
+- **Target**: <15,000 tokens per file
+- **Maximum**: 20,000 tokens (Error limit)
+- **YAML (monolithic)**: Warning at 20,000 tokens
 
 ---
 
@@ -799,7 +807,7 @@ Every SPEC Generation Plan MUST include:
 | **Cross-Document Validation** | Validation loop and XDOC error codes | Creation Rules Section 15 |
 | **Threshold Registry Format** | `threshold_references` section with `keys_used` | Creation Rules Section 14 |
 | **Common Mistakes Reference** | Link to Creation Rules Section 12 | Creation Rules Section 12 |
-| **File Size Limits** | 1000 lines warning threshold for YAML | This section |
+| **File Size Limits** | 20,000 tokens hard limit, 15,000 warning | This section |
 
 ### TASKS-Ready Scoring Criteria (Include in Plan)
 
@@ -865,7 +873,7 @@ Plans MUST reference SPEC_MVP_CREATION_RULES.md Section 12 and include this summ
 | Hardcoded performance values | Use `@threshold: PRD.NN.key` references |
 | Missing `req_implementations` | Required for every upstream REQ |
 | REQ in `downstream_artifacts` | REQ is UPSTREAM - use `upstream_sources.atomic_requirements` |
-| File size > 1000 lines | Warning threshold; consider splitting |
+| File size > 20,000 tokens | Warning threshold; consider splitting |
 | Status/score mismatch | Match status to TASKS-ready score threshold |
 
 ### Plan Validation Checklist
@@ -879,5 +887,5 @@ Before finalizing a SPEC Generation Plan, verify:
 - [ ] Cross-document validation loop documented
 - [ ] Threshold registry format shown
 - [ ] Common mistakes section referenced
-- [ ] File size limit (1000 lines) documented
+- [ ] File size limit (20,000 tokens) documented
 - [ ] All REQ → SPEC mappings use verified ranges

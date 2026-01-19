@@ -539,18 +539,18 @@ Note on ADR references:
 
 | Artifact | Schema File | Layer | Notes |
 |----------|-------------|-------|-------|
-| BRD | BRD_SCHEMA.yaml | 1 | Optional¹ - advisory validation only |
-| PRD | PRD_SCHEMA.yaml | 2 | |
-| EARS | EARS_SCHEMA.yaml | 3 | |
-| BDD | BDD_SCHEMA.yaml | 4 | |
-| ADR | ADR_SCHEMA.yaml | 5 | |
-| SYS | SYS_SCHEMA.yaml | 6 | |
-| REQ | REQ_SCHEMA.yaml | 7 | |
-| CTR | CTR_SCHEMA.yaml | 8 | |
-| SPEC | SPEC_SCHEMA.yaml | 9 | |
-| TASKS | TASKS_SCHEMA.yaml | 10 | |
+| BRD | BRD_MVP_SCHEMA.yaml | 1 | Optional¹ - advisory validation only |
+| PRD | PRD_MVP_SCHEMA.yaml | 2 | |
+| EARS | EARS_MVP_SCHEMA.yaml | 3 | |
+| BDD | BDD_MVP_SCHEMA.yaml | 4 | |
+| ADR | ADR_MVP_SCHEMA.yaml | 5 | |
+| SYS | SYS_MVP_SCHEMA.yaml | 6 | |
+| REQ | REQ_MVP_SCHEMA.yaml | 7 | |
+| CTR | CTR_MVP_SCHEMA.yaml | 8 | |
+| SPEC | SPEC_MVP_SCHEMA.yaml | 9 | |
+| TASKS | TASKS_MVP_SCHEMA.yaml | 10 | |
 
-¹ BRD schema is OPTIONAL. BRD validation is human-centric with advisory-only automated checks. All validation rules in BRD_SCHEMA.yaml have 'warning' or 'info' severity (not 'error'). See BRD_SCHEMA.yaml header (lines 1-12) for enforcement level details.
+¹ BRD schema is OPTIONAL. BRD validation is human-centric with advisory-only automated checks. All validation rules in BRD_MVP_SCHEMA.yaml have 'warning' or 'info' severity (not 'error'). See BRD_MVP_SCHEMA.yaml header (lines 1-12) for enforcement level details.
 
 ## Traceability
 
@@ -931,7 +931,7 @@ pip install pyyaml  # For YAML parsing (SPEC documents)
 
 ## Schema Definitions
 
-Each artifact type has a corresponding YAML schema file (`{TYPE}_SCHEMA.yaml`) that defines:
+Each artifact type has a corresponding YAML schema file (`{TYPE}_MVP_SCHEMA.yaml`) that defines:
 - **Metadata Requirements**: YAML frontmatter fields and validation rules
 - **Document Structure**: Required/optional sections and numbering patterns
 - **Artifact-Specific Patterns**: Type-specific formats (Gherkin, FR-NN, TASK-NN, etc.)
@@ -943,22 +943,22 @@ Each artifact type has a corresponding YAML schema file (`{TYPE}_SCHEMA.yaml`) t
 
 | Layer | Artifact | Schema File | Key Patterns |
 |-------|----------|-------------|--------------|
-| 1 | BRD | [BRD_SCHEMA.yaml](./01_BRD/BRD_SCHEMA.yaml) | Business objectives format |
-| 2 | PRD | [PRD_SCHEMA.yaml](./02_PRD/PRD_SCHEMA.yaml) | FR/QA format, template variants |
-| 3 | EARS | [EARS_SCHEMA.yaml](./03_EARS/EARS_SCHEMA.yaml) | WHEN-THE-SHALL-WITHIN format |
-| 4 | BDD | [BDD_SCHEMA.yaml](./04_BDD/BDD_SCHEMA.yaml) | Gherkin syntax, step patterns |
-| 5 | ADR | [ADR_SCHEMA.yaml](./05_ADR/ADR_SCHEMA.yaml) | Context-Decision-Consequences |
-| 6 | SYS | [SYS_SCHEMA.yaml](./06_SYS/SYS_SCHEMA.yaml) | FR-NN, unified sequential formats |
-| 7 | REQ | [REQ_SCHEMA.yaml](./07_REQ/REQ_SCHEMA.yaml) | 12 sections, interface schemas |
-| 8 | CTR | [CTR_SCHEMA.yaml](./08_CTR/CTR_SCHEMA.yaml) | Dual-file, OpenAPI/AsyncAPI |
-| 9 | SPEC | [SPEC_SCHEMA.yaml](./09_SPEC/SPEC_SCHEMA.yaml) | YAML structure, code gen ready |
-| 10 | TASKS | [TASKS_SCHEMA.yaml](./10_TASKS/TASKS_SCHEMA.yaml) | TASK-NN, implementation contracts |
+| 1 | BRD | [BRD_MVP_SCHEMA.yaml](./01_BRD/BRD_MVP_SCHEMA.yaml) | Business objectives format |
+| 2 | PRD | [PRD_MVP_SCHEMA.yaml](./02_PRD/PRD_MVP_SCHEMA.yaml) | FR/QA format, template variants |
+| 3 | EARS | [EARS_MVP_SCHEMA.yaml](./03_EARS/EARS_MVP_SCHEMA.yaml) | WHEN-THE-SHALL-WITHIN format |
+| 4 | BDD | [BDD_MVP_SCHEMA.yaml](./04_BDD/BDD_MVP_SCHEMA.yaml) | Gherkin syntax, step patterns |
+| 5 | ADR | [ADR_MVP_SCHEMA.yaml](./05_ADR/ADR_MVP_SCHEMA.yaml) | Context-Decision-Consequences |
+| 6 | SYS | [SYS_MVP_SCHEMA.yaml](./06_SYS/SYS_MVP_SCHEMA.yaml) | FR-NN, unified sequential formats |
+| 7 | REQ | [REQ_MVP_SCHEMA.yaml](./07_REQ/REQ_MVP_SCHEMA.yaml) | 12 sections, interface schemas |
+| 8 | CTR | [CTR_MVP_SCHEMA.yaml](./08_CTR/CTR_MVP_SCHEMA.yaml) | Dual-file, OpenAPI/AsyncAPI |
+| 9 | SPEC | [SPEC_MVP_SCHEMA.yaml](./09_SPEC/SPEC_MVP_SCHEMA.yaml) | YAML structure, code gen ready |
+| 10 | TASKS | [TASKS_MVP_SCHEMA.yaml](./10_TASKS/TASKS_MVP_SCHEMA.yaml) | TASK-NN, implementation contracts |
 
 ### Schema Validation Usage
 
 ```bash
 # Validate document against schema (planned)
-python scripts/validate_artifact.py --schema ai_dev_flow/07_REQ/REQ_SCHEMA.yaml --document docs/07_REQ/REQ-01_example.md
+python scripts/validate_artifact.py --schema ai_dev_flow/07_REQ/REQ_MVP_SCHEMA.yaml --document docs/07_REQ/REQ-01_example.md
 
 # Validate all documents of a type
 python scripts/validate_artifact.py --type REQ --strict

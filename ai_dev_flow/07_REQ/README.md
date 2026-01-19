@@ -122,6 +122,14 @@ How this requirement will be tested and validated:
 - [Additional verification methods: performance tests, security tests, etc.]
 ```
 
+## Layer Scripts
+
+This layer includes a dedicated `scripts/` directory containing validation and utility scripts specific to this document type.
+
+- **Location**: `07_REQ/scripts/`
+- **Primary Validator**: `validate_req_quality_score.sh`
+- **Usage**: Run scripts directly or usage via `validate_all.py`.
+
 ## File Organization Hierarchy
 
 REQ files are organized by functional domains and subdomains:
@@ -903,8 +911,8 @@ python scripts/add_requirement_anchors.py --req-file 07_REQ/api/REQ-01.md
 For detailed examples, see the V2 example files in `07_REQ/api/`, `07_REQ/data/`, and `07_REQ/auth/`.
 ## File Size Limits
 
-- **Target**: 800 lines per REQ file
-- **Maximum**: 1200 lines (absolute)
+- **Target**: <15,000 tokens per REQ file
+- **Maximum**: 20,000 tokens (absolute)
 - If a file approaches/exceeds limits, split into section files where appropriate and update indexes or mapping tables.
 
 ## Document Splitting Standard

@@ -85,7 +85,7 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 - **CHG** (`CHG/`) - Document immutability enforcement through archival
   - Template: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md)
-  - Schema: [CHG_SCHEMA.yaml](./CHG/CHG_SCHEMA.yaml)
+  - Schema: [CHG_MVP_SCHEMA.yaml](./CHG/CHG_MVP_SCHEMA.yaml)
   - Rules: [CHG_MVP_CREATION_RULES.md](./CHG/CHG_MVP_CREATION_RULES.md)
   - Purpose: Archive superseded documents when requirements change; create NEW documents from scratch
   - Why: Prevents LLM probabilistic errors from partial edits; ensures document immutability

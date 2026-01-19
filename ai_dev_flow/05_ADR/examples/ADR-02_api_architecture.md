@@ -32,7 +32,7 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
-  schema_reference: "ADR_SCHEMA.yaml"
+  schema_reference: "ADR_MVP_SCHEMA.yaml"
   schema_version: "1.0"
 ---
 

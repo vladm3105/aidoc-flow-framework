@@ -197,12 +197,12 @@ The SYS validation script ensures system requirements meet quality standards for
 **Type**: Error (blocking)
 
 **Triggers**:
-1. **Size**: File > 1000 lines.
+1. **Size**: File > 20,000 tokens.
 2. **Cardinality**: More than 1 file for this ID.
 
 **Action**: Move to `06_SYS/SYS-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: SYS-NN triggers nested folder rule (>1000 lines or >1 file). Move to 06_SYS/SYS-NN_{Slug}/`
+**Error Message**: `❌ ERROR: SYS-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 06_SYS/SYS-NN_{Slug}/`
 
 ### CHECK 9: Element ID Format Compliance ⭐ NEW
 

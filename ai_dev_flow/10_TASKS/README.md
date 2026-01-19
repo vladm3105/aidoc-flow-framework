@@ -168,6 +168,14 @@ Verification requirements for completed implementation:
 - [Integration verification with dependent components]
 ```
 
+## Layer Scripts
+
+This layer includes a dedicated `scripts/` directory containing validation and utility scripts specific to this document type.
+
+- **Location**: `10_TASKS/scripts/`
+- **Primary Validator**: `validate_tasks_quality_score.sh`
+- **Usage**: Run scripts directly or usage via `validate_all.py`.
+
 ## Task Organization Hierarchy
 
 Tasks map to specific architectural components:
@@ -629,8 +637,8 @@ See implementation contracts guidance in `ai_dev_flow/11_TASKS/IMPLEMENTATION_CO
 - Session logging and change history (Sections 10-11)
 ## File Size Limits
 
-- **Target**: 800 lines per file
-- **Maximum**: 1200 lines per file (absolute)
+- **Target**: <15,000 tokens per file
+- **Maximum**: 20,000 tokens per file (Error limit)
 - If a file approaches/exceeds limits, split tasks by scope or phase and update the task index.
 
 ## Document Splitting Standard

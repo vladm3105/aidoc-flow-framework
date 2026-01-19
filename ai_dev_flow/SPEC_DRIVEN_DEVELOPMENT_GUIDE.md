@@ -36,12 +36,12 @@ custom_fields:
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
-- **Universal Rule**: If ANY file > 1000 lines OR > 1 file per ID, you **MUST** use the Nested Directory Pattern (`TYPE-{ID}_{Slug}/`).
+- **Universal Rule**: If ANY file > 20,000 tokens OR > 1 file per ID, you **MUST** use the Nested Directory Pattern (`TYPE-{ID}_{Slug}/`).
 
-> MVP Mode: Follow the Universal Splitting Rule. Default to single files until the 1000-line trigger is hit.
+> MVP Mode: Follow the Universal Splitting Rule. Default to single files until the 20,000-token trigger is hit.
 
-> ⚠️ **Token Limit Update (2025-11)**: This guide contains historical 10K token limits.
-> For current token limits (Claude Code: 50K-100K), see [AI_TOOL_OPTIMIZATION_GUIDE.md](./AI_TOOL_OPTIMIZATION_GUIDE.md).
+> ⚠️ **Token Limit Update (2025-11)**: This guide reflects the current **20,000 token** hard limit for corpus files.
+> For tool-specific optimization strategies, see [AI_TOOL_OPTIMIZATION_GUIDE.md](./AI_TOOL_OPTIMIZATION_GUIDE.md).
 >
 > Script name canonicalization: matrix generation uses `scripts/generate_traceability_matrix.py`. Historical references to `generate_traceability_matrix.py` refer to the same tool; use the singular script.
 
@@ -68,7 +68,7 @@ custom_fields:
 
 **Why Immutability Matters**: LLMs are probabilistic - editing documents in place can introduce subtle inconsistencies. Creating fresh documents ensures coherent, bug-free artifacts aligned with new requirements.
 
-**Files**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) | [CHG_MVP_CREATION_RULES.md](./CHG/CHG_MVP_CREATION_RULES.md) | [CHG_SCHEMA.yaml](./CHG/CHG_SCHEMA.yaml)
+**Files**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) | [CHG_MVP_CREATION_RULES.md](./CHG/CHG_MVP_CREATION_RULES.md) | [CHG_MVP_SCHEMA.yaml](./CHG/CHG_MVP_SCHEMA.yaml)
 
 **Note**: Most projects never use CHG - it's only for major pivots, not routine updates.
 
@@ -244,7 +244,7 @@ Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructi
 - Quality Attributes First-Class: Performance, reliability, observability, and security are explicit in SPEC.
 - Minimal, Reviewable Diffs: Small steps; verify at each gate.
 - Change via ADR: Architectural changes recorded and linked.
-- **Document Structure Simplicity**: Keep documents as single comprehensive files with clear section headings. Only split into multiple files when file exceeds 1,000 lines AND has multiple distinct audience needs OR complex dependency chains requiring separate documentation. Use table of contents for navigation within single documents.
+- **Document Structure Simplicity**: Keep documents as single comprehensive files with clear section headings. Only split into multiple files when file exceeds 20,000 tokens AND has multiple distinct audience needs OR complex dependency chains requiring separate documentation. Use table of contents for navigation within single documents.
 - Document ID Independence: IDs are sequential within artifact type; consult index files (ID: 000) to discover documents by topic or content
 
 ## Metadata Management Approaches

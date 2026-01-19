@@ -141,6 +141,14 @@ Document upstream sources and downstream artifacts:
 - Code Path(s): `src/domain/component/module.py`
 ```
 
+## Layer Scripts
+
+This layer includes a dedicated `scripts/` directory containing validation and utility scripts specific to this document type.
+
+- **Location**: `03_EARS/scripts/`
+- **Primary Validator**: `validate_ears_quality_score.sh`
+- **Usage**: Run scripts directly or usage via `validate_all.py`.
+
 ## File Naming Convention
 
 ```
@@ -252,7 +260,7 @@ See `EARS-01_external_api_integration.md` for a complete example of a well-struc
 - Changes should maintain backward traceability links
 ## File Size Limits
 
-- Target: 300–500 lines per file
+- Target: <15,000 tokens per file
 - Maximum: 600 lines per file (absolute)
 - If a file approaches/exceeds limits, split into section files using `EARS-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
 

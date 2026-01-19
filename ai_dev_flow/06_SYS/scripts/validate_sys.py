@@ -2,7 +2,7 @@
 """
 SYS (System Requirements) Validator - Layer 6
 
-Validates SYS documents against SYS_SCHEMA.yaml requirements.
+Validates SYS documents against SYS_MVP_SCHEMA.yaml requirements.
 
 Usage:
     python validate_sys.py <file_or_directory>

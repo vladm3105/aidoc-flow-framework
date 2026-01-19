@@ -14,6 +14,7 @@ custom_fields:
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
+  schema_version: "1.0"
   complexity: 1 # 1-5 scale
 ---
 
@@ -44,7 +45,7 @@ custom_fields:
   template_variant: mvp
   template_profile: mvp
   template_source: "PRD-MVP-TEMPLATE.md"
-  schema_reference: "PRD_SCHEMA.yaml"
+  schema_reference: "PRD_MVP_SCHEMA.yaml"
   schema_version: "1.0"
   schema_status: optional
   creation_rules_reference: "PRD_MVP_CREATION_RULES.md"
@@ -57,7 +58,7 @@ custom_fields:
 
 > **Validation Note**: MVP templates are intentionally streamlined (17 sections vs 21 standard) and use ≥85% score thresholds (vs ≥90% standard). These will show validation errors when run against full template validators. This is expected behavior. See `scripts/README.md` → "MVP Template Validation" for guidance.
 
-> References: Schema `PRD_SCHEMA.yaml` | Rules `PRD_MVP_CREATION_RULES.md`, `PRD_MVP_VALIDATION_RULES.md` | Matrix `PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+> References: Schema `PRD_MVP_SCHEMA.yaml` | Rules `PRD_MVP_CREATION_RULES.md`, `PRD_MVP_VALIDATION_RULES.md` | Matrix `PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
 
 # PRD-NN: [MVP Product/Feature Name]
 

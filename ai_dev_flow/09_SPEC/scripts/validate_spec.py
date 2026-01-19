@@ -2,7 +2,7 @@
 """
 SPEC (Technical Specification) Validator - Layer 9
 
-Validates SPEC YAML documents against SPEC_SCHEMA.yaml requirements.
+Validates SPEC YAML documents against SPEC_MVP_SCHEMA.yaml requirements.
 SPEC is the most complex artifact in the SDD framework, requiring
 comprehensive validation of interfaces, performance, security, and observability.
 

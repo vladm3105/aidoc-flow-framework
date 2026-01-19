@@ -336,7 +336,7 @@ graph TD
 ## 13. References
 
 - **CTR Index**: [CTR-00_index.md](CTR-00_index.md)
-- **CTR Template**: [CTR-MVP-TEMPLATE.md](CTR-MVP-TEMPLATE.md) (primary standard), [CTR_SCHEMA.yaml](CTR_SCHEMA.yaml) (validation schema)
+- **CTR Template**: [CTR-MVP-TEMPLATE.md](CTR-MVP-TEMPLATE.md) (primary standard), [CTR_MVP_SCHEMA.yaml](CTR_MVP_SCHEMA.yaml) (validation schema)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
 - **Related Matrices**: [REQ](../07_REQ/REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md), [SPEC](../09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md)
 

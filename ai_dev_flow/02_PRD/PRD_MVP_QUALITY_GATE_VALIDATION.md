@@ -44,7 +44,7 @@ Individual PRD Creation → PRD_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All PRDs Complete
         ↓
-PRD_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
+PRD_MVP_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
         ↓
 PASS → Begin EARS Creation (Layer 3)
 FAIL → Fix issues, re-run Quality Gate validation
@@ -794,7 +794,7 @@ done
 - [ ] **CORPUS-07**: Terminology consistent across corpus
 - [ ] **CORPUS-08**: No duplicate element IDs
 - [ ] **CORPUS-09**: Cost estimates use ranges
-- [ ] **CORPUS-10**: All files under size limits (lines)
+- [ ] **CORPUS-10**: All files under size limits (20k tokens)
 - [ ] **CORPUS-11**: All PRDs have @brd tags (4-segment format)
 - [ ] **CORPUS-12**: BRD objectives have PRD user stories
 - [ ] **CORPUS-13**: Required template sections present (21 Standard / 17 MVP)

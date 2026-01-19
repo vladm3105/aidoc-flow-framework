@@ -13,7 +13,7 @@ custom_fields:
   priority: shared
   development_status: active
   template_profile: mvp
-  schema_reference: "SYS_SCHEMA.yaml"
+  schema_reference: "SYS_MVP_SCHEMA.yaml"
   schema_version: "1.0"
 ---
 

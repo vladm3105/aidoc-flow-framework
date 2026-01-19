@@ -13,12 +13,12 @@ custom_fields:
   priority: shared
   development_status: active
   template_for: implementation-task-document
-  schema_reference: "TASKS_SCHEMA.yaml"
+  schema_reference: "TASKS_MVP_SCHEMA.yaml"
   schema_version: "2.0"
 ---
 
 > **Document Authority**: This is the **PRIMARY STANDARD** for TASKS structure.
-> - **Schema**: `TASKS_SCHEMA.yaml v2.0` - Validation rules
+> - **Schema**: `TASKS_MVP_SCHEMA.yaml v2.0` - Validation rules
 > - **Creation Rules**: `TASKS_MVP_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `TASKS_MVP_VALIDATION_RULES.md` - Post-creation checks
 
@@ -345,5 +345,5 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 ---
 
 **Template Version**: 2.0
-**File Size Target**: 400-600 lines
+**File Size Target**: <15,000 tokens
 **Last Updated**: 2026-01-15

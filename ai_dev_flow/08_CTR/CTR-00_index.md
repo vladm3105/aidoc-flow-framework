@@ -29,7 +29,7 @@ See [README.md](./README.md) for detailed guidance on organizational structure.
 
 ## Template References
 - **Markdown Template**: [CTR-MVP-TEMPLATE.md](./CTR-MVP-TEMPLATE.md) - Human-readable contract documentation (primary standard)
-- **Validation Schema**: [CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml) - Machine-readable validation rules (OpenAPI 3.x format)
+- **Validation Schema**: [CTR_MVP_SCHEMA.yaml](./CTR_MVP_SCHEMA.yaml) - Machine-readable validation rules (OpenAPI 3.x format)
 
 ## Contract Catalog
 

@@ -90,7 +90,7 @@ python3 ai_dev_flow/01_BRD/01_BRD/scripts/validate_brd.py ai_dev_flow/01_BRD --p
 
 ## Design Decision: Human-Centric Validation (Optional Schema)
 
-> **Intentional Design Choice**: BRD validation is script-first and human-centric. An optional `BRD_SCHEMA.yaml` exists for non-blocking, machine-readable checks.
+> **Intentional Design Choice**: BRD validation is script-first and human-centric. An optional `BRD_MVP_SCHEMA.yaml` exists for non-blocking, machine-readable checks.
 >
 > **Why Schema is Optional**:
 > - **Business Content Diversity**: Business requirements span multiple domains with varying terminology, structure, and emphasis
@@ -106,7 +106,7 @@ python3 ai_dev_flow/01_BRD/01_BRD/scripts/validate_brd.py ai_dev_flow/01_BRD --p
 > **Script vs Schema Validation**:
 > | Validation Type | BRD Approach | Other Layers |
 > |-----------------|--------------|--------------|
-> | Structure | `validate_brd_template.sh` | `*_SCHEMA.yaml` |
+> | Structure | `validate_brd_template.sh` | `*_MVP_SCHEMA.yaml` |
 > | Content | Human review + PRD-Ready Score | Schema field validation |
 > | Quality Gate | ≥90/100 PRD-Ready Score | Schema compliance + tests |
 
@@ -140,7 +140,7 @@ The BRD validation script (`validate_brd_template.sh`) performs **24 validation 
 | **Individual** | Single BRD file | `validate_brd_template.sh` | After each BRD creation |
 | **Corpus** | Entire BRD set | `validate_brd_corpus.sh` | Before PRD creation begins |
 
-> **Note**: After all BRDs are complete, run corpus-level validation using [BRD_QUALITY_GATE_VALIDATION.md](./BRD_QUALITY_GATE_VALIDATION.md) before proceeding to PRD layer. This validates cross-document consistency, reference integrity, and corpus-wide quality standards.
+> **Note**: After all BRDs are complete, run corpus-level validation using [BRD_MVP_QUALITY_GATE_VALIDATION.md](./BRD_MVP_QUALITY_GATE_VALIDATION.md) before proceeding to PRD layer. This validates cross-document consistency, reference integrity, and corpus-wide quality standards.
 
 ### BRD Document Categories
 

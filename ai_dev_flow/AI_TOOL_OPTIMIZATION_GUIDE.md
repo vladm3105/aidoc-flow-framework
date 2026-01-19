@@ -31,10 +31,10 @@ See also:
 ## Quick Start (Assistant-Agnostic)
 
 - Choose your assistant: Pick what you have handy; adjust size targets accordingly.
-  - IDE assistant (e.g., Copilot): Aim for 10–30KB per file; add summaries if larger.
-  - CLI assistant (e.g., Gemini CLI): Use file read tool for files >10KB; avoid `@` for large files.
-  - Full workspace assistant (e.g., Claude Code): 20–50KB typical; up to 100KB without splitting.
-- Suggested sizes: Standard docs 20–40KB; comprehensive guides ≤50KB; master references ≤100KB (split if >100KB).
+  - IDE assistant (e.g., Copilot): Aim for 5-10KB per file.
+  - CLI assistant (e.g., Gemini CLI): Use file read tool for large files.
+  - Full workspace assistant (e.g., Claude Code): 20,000 tokens (~75KB) max per file.
+- Suggested sizes: Standard docs <15,000 tokens; Split if >20,000 tokens.
 - Validate locally (recommended):
   ```bash
   # Metadata frontmatter
@@ -51,7 +51,7 @@ python3 scripts/validate_cross_document.py --document 09_SPEC/SPEC-01_api_client
 bash 10_TASKS/scripts/validate_tasks.sh 10_TASKS/TASKS-01_example.md
 
   ```
-- Split only when needed: Files >100KB or strong logical boundaries.
+- Split only when needed: Files >20,000 tokens or strong logical boundaries.
 - See details: Token limits by tool and full validation guidance below.
 
 ---
@@ -80,12 +80,19 @@ bash 10_TASKS/scripts/validate_tasks.sh 10_TASKS/TASKS-01_example.md
 
 ## Executive Summary
 
-This framework is optimized for large-context tools (e.g., **Claude Code**) while remaining compatible with **Gemini CLI** and **GitHub Copilot**. Token limits have been adjusted from the legacy 10K limit (Gemini CLI `@` reference constraint) to 50K tokens standard, 100K tokens maximum.
+This framework is optimized for large-context tools (e.g., **Claude Code**, **Gemini 1.5 Pro**) while maintaining strict corpus hygiene.
+
+### Token Limits
+- **Standard Corpus Limit**: 20,000 tokens (Error), 15,000 tokens (Warning).
+- **Reasoning**: While LLMs support 100k+, smaller files (20k) ensure precise retrieval, faster distinct edits, and lower risk of "lost in the middle" hallucinations.
+- **Tool Behavior**:
+    - **@ References**: Often truncated at ~10k-15k tokens by some interfaces.
+    - **File Read Tools**: Can read larger files, but 20k is the maintainability cut-off.
 
 **Key Changes from Previous Standards:**
-- **Old Limit**: 10,000 tokens per file (designed for Gemini CLI `@` references)
-- **New Limit**: 50,000 tokens standard, 100,000 tokens maximum (Claude Code optimized)
-- **Impact**: 5-10x larger documentation files without artificial splitting
+- **Old Limit**: 10,000 tokens (legacy) / 100k tokens (experimental)
+- **New Limit**: 20,000 tokens standard (Error), 15,000 tokens (Warning)
+- **Impact**: Ensures compatibility with all tools and better maintainability
 - **Migration**: Progressive adoption (new files and updates only)
 
 ---
@@ -257,16 +264,16 @@ gemini @SMALL_FILE.md "Analyze this document"
 ### When to Split Files
 
 **Split ONLY when:**
-1. File exceeds 100,000 tokens (Claude Code practical limit)
+1. File exceeds 20,000 tokens (Standard Corpus Limit)
 2. Logical module boundaries exist (separate functional concerns)
 3. Team collaboration benefits from smaller, focused files
 4. Independent maintenance is advantageous
 
 **Do NOT split for:**
 - Tool compatibility (use appropriate tool features instead)
-- Arbitrary token limits below 100K
-- Single cohesive documentation units
-- Files between 10K-100K tokens (optimal for Claude Code)
+- Arbitrary token limits below 15K
+- Single cohesive documentation units <15K
+- Files <15K tokens (optimal for maintenance)
 
 ### How to Split Files
 
@@ -342,10 +349,8 @@ Primary tool: Claude Code?
 | File Size | Claude Code | Gemini CLI | GitHub Copilot |
 |-----------|-------------|------------|----------------|
 | <10KB | ✅ Excellent | ✅ @ reference works | ✅ Excellent |
-| 10-30KB | ✅ Optimal | ✅ Use file read tool | ✅ Good |
-| 30-50KB | ✅ Optimal | ✅ Use file read tool | ⚠️ Create summary |
-| 50-100KB | ✅ Good | ✅ Use file read tool | ❌ Too large |
-| >100KB | ⚠️ Consider split | ✅ Use file read tool | ❌ Must split |
+| 10-50KB (~15k tokens) | ✅ Optimal | ✅ Use file read tool | ✅ Good |
+| >60KB (>20k tokens) | ❌ Must split | ✅ Use file read tool | ❌ Must split |
 
 ---
 
@@ -382,9 +387,8 @@ python -c "import tiktoken; enc = tiktoken.get_encoding('cl100k_base'); print(le
 ```
 
 **Validation rules:**
-- Critical: File >100,000 tokens
-- Warning: File >50,000 tokens (consider logical split)
-- Info: File >30,000 tokens (monitor growth)
+- Critical: File >20,000 tokens
+- Warning: File >15,000 tokens (consider logical split)
 
 ---
 

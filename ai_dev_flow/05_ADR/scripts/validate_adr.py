@@ -2,7 +2,7 @@
 """
 ADR (Architecture Decision Record) Validator - Layer 5
 
-Validates ADR documents against ADR_SCHEMA.yaml requirements.
+Validates ADR documents against ADR_MVP_SCHEMA.yaml requirements.
 
 Usage:
     python validate_adr.py <file_or_directory>

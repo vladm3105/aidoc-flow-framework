@@ -45,7 +45,7 @@ Individual ADR Creation → ADR_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All ADRs Complete
         ↓
-ADR_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
+ADR_MVP_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
         ↓
 PASS → Begin SYS Creation (Layer 6)
 FAIL → Fix issues, re-run Quality Gate validation
@@ -289,31 +289,33 @@ grep -rn "Status.*:\s*\(Proposed\|Accepted\|Deprecated\|Superseded\)" "$ADR_DIR"
 
 **Purpose**: Enforce Nested Directory Pattern when triggers are met.
 
-**Severity**: **Error (blocking)** at 1000 lines
+**Severity**: **Error (blocking)** at 20,000 tokens
 
 **Triggers**:
-1. **Size**: File > 1000 lines.
+1. **Size**: File > 20,000 tokens.
 2. **Cardinality**: More than 1 file for this ID.
 
 **Action**: Move to `05_ADR/ADR-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: ADR-NN triggers nested folder rule (>1000 lines or >1 file). Move to 05_ADR/ADR-NN_{Slug}/`
+**Error Message**: `❌ ERROR: ADR-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 05_ADR/ADR-NN_{Slug}/`
 
 **Thresholds**:
 | Metric | Warning | Error |
 |--------|---------|-------|
-| Lines | 500 | 1,000 |
-| Tokens | 50,000 | — |
+| Tokens | 15,000 | 20,000 |
 
 **Validation Logic**:
 ```bash
 # Check 8: File size compliance
 for f in "$ADR_DIR"/ADR-[0-9]*_*.md; do
   lines=$(wc -l < "$f")
-  if [ "$lines" -gt 1200 ]; then
-    echo "ERROR: $(basename $f) exceeds 1200 lines ($lines)"
-  elif [ "$lines" -gt 600 ]; then
-    echo "WARNING: $(basename $f) exceeds 600 lines ($lines)"
+  words=$(wc -w < "$f")
+  tokens=$((words * 13 / 10))
+
+  if [ "$tokens" -gt 20000 ]; then
+    echo "ERROR: $(basename $f) exceeds 20,000 tokens (~$tokens)"
+  elif [ "$tokens" -gt 15000 ]; then
+    echo "WARNING: $(basename $f) exceeds 15,000 tokens (~$tokens)"
   fi
 done
 ```
@@ -657,11 +659,13 @@ SIZE_WARNINGS=0
 for f in "$ADR_DIR"/ADR-[0-9]*_*.md; do
   if [ -f "$f" ]; then
     lines=$(wc -l < "$f")
-    if [ "$lines" -gt 1200 ]; then
-      echo "  ERROR: $(basename $f) exceeds 1200 lines ($lines)"
+    words=$(wc -w < "$f")
+    tokens=$((words * 13 / 10))
+    if [ "$tokens" -gt 20000 ]; then
+      echo "  ERROR: $(basename $f) exceeds 20,000 tokens (~$tokens)"
       SIZE_ERRORS=$((SIZE_ERRORS + 1))
-    elif [ "$lines" -gt 600 ]; then
-      $VERBOSE && echo "  WARNING: $(basename $f) exceeds 600 lines ($lines)"
+    elif [ "$tokens" -gt 15000 ]; then
+      $VERBOSE && echo "  WARNING: $(basename $f) exceeds 15,000 tokens (~$tokens)"
       SIZE_WARNINGS=$((SIZE_WARNINGS + 1))
     fi
   fi
@@ -669,7 +673,7 @@ done
 if [ "$SIZE_ERRORS" -gt 0 ]; then
   ERRORS=$((ERRORS + SIZE_ERRORS))
 elif [ "$SIZE_WARNINGS" -gt 0 ]; then
-  echo "  WARNING: $SIZE_WARNINGS files exceed 600 lines"
+  echo "  WARNING: $SIZE_WARNINGS files exceed 15,000 tokens"
   WARNINGS=$((WARNINGS + 1))
 else
   $ERRORS_ONLY || echo "  PASS"

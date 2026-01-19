@@ -14,12 +14,12 @@ custom_fields:
   development_status: active
   complexity: 1 # 1-5 scale
   template_for: contract-specification
-  schema_reference: "CTR_SCHEMA.yaml"
+  schema_reference: "CTR_MVP_SCHEMA.yaml"
   schema_version: "1.0"
 ---
 
 >
-> **📋 Document Authority**: This is the **PRIMARY STANDARD** for CTR structure. Schema: `CTR_SCHEMA.yaml v1.0`. Creation Rules: `CTR_MVP_CREATION_RULES.md`. Validation Rules: `CTR_MVP_VALIDATION_RULES.md`.
+> **📋 Document Authority**: This is the **PRIMARY STANDARD** for CTR structure. Schema: `CTR_MVP_SCHEMA.yaml v1.0`. Creation Rules: `CTR_MVP_CREATION_RULES.md`. Validation Rules: `CTR_MVP_VALIDATION_RULES.md`.
 
 # CTR-NN: [Contract Title]
 

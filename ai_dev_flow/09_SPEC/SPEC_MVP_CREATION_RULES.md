@@ -61,8 +61,8 @@ custom_fields:
 - **Naming**: `SPEC-{DOC_NUM}_{descriptive_component_name}.yaml` (DOC_NUM = variable-length, starts at 2 digits)
 - **Structure**: One monolithic YAML file per architectural component (codegen source)
 - **File Size Limits** (Warning):
-  - Markdown: Target 300-500 lines, warning at 600 lines
-  - YAML: Warning at 1000 lines
+  - Markdown: Target <15,000 tokens, warning at 20,000 tokens
+  - YAML: Warning at 20,000 tokens
 
 ---
 

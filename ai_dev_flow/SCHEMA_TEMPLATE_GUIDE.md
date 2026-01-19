@@ -20,7 +20,7 @@ custom_fields:
 
 The SDD framework maintains two complementary file types for each artifact type:
 - **Templates** (`{TYPE}-TEMPLATE.md/yaml/feature`): Human and AI-readable authoring guides
-- **Schemas** (`{TYPE}_SCHEMA.yaml`): Machine-readable validation rules
+- **Schemas** (`{TYPE}_MVP_SCHEMA.yaml`): Machine-readable validation rules
 
 This guide explains the relationship between these files, cross-reference conventions, and validation tooling.
 
@@ -55,7 +55,7 @@ Each template includes schema reference in its YAML frontmatter:
 ```yaml
 custom_fields:
   # ... other fields ...
-  schema_reference: "{TYPE}_SCHEMA.yaml"
+  schema_reference: "{TYPE}_MVP_SCHEMA.yaml"
   schema_version: "1.0"
 ```
 
@@ -63,7 +63,7 @@ The Document Authority block also references the schema:
 
 ```markdown
 > **Document Authority**: This is the **PRIMARY STANDARD** for {TYPE} structure.
-> - **Schema**: `{TYPE}_SCHEMA.yaml v1.0` - Validation rules
+> - **Schema**: `{TYPE}_MVP_SCHEMA.yaml v1.0` - Validation rules
 > - **Creation Rules**: `{TYPE}_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `{TYPE}_VALIDATION_RULES.md` - Post-creation checks
 ```
@@ -89,8 +89,8 @@ references:
 | Artifact | Template | Schema | Notes |
 |----------|----------|--------|-------|
 | **BRD** | `BRD-MVP-TEMPLATE.md` | None | Layer 1 entry point, human-authored, no schema required |
-| **BDD** | `BDD-MVP-TEMPLATE.feature` | `BDD_SCHEMA.yaml` | Gherkin format, schema reference in comments |
-| **SPEC** | `SPEC-MVP-TEMPLATE.yaml` | `SPEC_SCHEMA.yaml` | Both files are YAML, schema reference in comments |
+| **BDD** | `BDD-MVP-TEMPLATE.feature` | `BDD_MVP_SCHEMA.yaml` | Gherkin format, schema reference in comments |
+| **SPEC** | `SPEC-MVP-TEMPLATE.yaml` | `SPEC_MVP_SCHEMA.yaml` | Both files are YAML, schema reference in comments |
 
 ## 4. Version Synchronization
 
@@ -166,7 +166,7 @@ python3 scripts/validate_artifact.py 02_PRD/PRD-01_example.md --strict
 ```
   docs/02_PRD/PRD-01_example.md
    Artifact Type: PRD
-   Schema: PRD_SCHEMA.yaml
+   Schema: PRD_MVP_SCHEMA.yaml
    Layer: 2
    Schema Version: 1.0
    Summary: 0 errors, 2 warnings
@@ -193,15 +193,15 @@ flowchart TD
 | Layer | Type | Template | Schema | Creation Rules | Validation Rules |
 |-------|------|----------|--------|----------------|------------------|
 | 1 | BRD | `BRD-MVP-TEMPLATE.md` (default; full archived) | None | `BRD_MVP_CREATION_RULES.md` | `BRD_MVP_VALIDATION_RULES.md` |
-| 2 | PRD | `PRD-MVP-TEMPLATE.md` (default; full archived) | `PRD_SCHEMA.yaml` | `PRD_MVP_CREATION_RULES.md` | `PRD_MVP_VALIDATION_RULES.md` |
-| 3 | EARS | `EARS-MVP-TEMPLATE.md` (default; full archived) | `EARS_SCHEMA.yaml` | `EARS_MVP_CREATION_RULES.md` | `EARS_MVP_VALIDATION_RULES.md` |
-| 4 | BDD | `BDD-MVP-TEMPLATE.feature` | `BDD_SCHEMA.yaml` | `BDD_MVP_CREATION_RULES.md` | `BDD_MVP_VALIDATION_RULES.md` |
-| 5 | ADR | `ADR-MVP-TEMPLATE.md` (default; full archived) | `ADR_SCHEMA.yaml` | `ADR_MVP_CREATION_RULES.md` | `ADR_MVP_VALIDATION_RULES.md` |
-| 6 | SYS | `SYS-MVP-TEMPLATE.md` (default; full archived) | `SYS_SCHEMA.yaml` | `SYS_MVP_CREATION_RULES.md` | `SYS_MVP_VALIDATION_RULES.md` |
-| 7 | REQ | `REQ-MVP-TEMPLATE.md` (default; full archived) | `REQ_SCHEMA.yaml` | `REQ_MVP_CREATION_RULES.md` | `REQ_MVP_VALIDATION_RULES.md` |
-| 8 | CTR | `CTR-MVP-TEMPLATE.md` | `CTR_SCHEMA.yaml` | `CTR_MVP_CREATION_RULES.md` | `CTR_MVP_VALIDATION_RULES.md` |
-| 9 | SPEC | `SPEC-MVP-TEMPLATE.yaml` | `SPEC_SCHEMA.yaml` | `SPEC_MVP_CREATION_RULES.md` | `SPEC_MVP_VALIDATION_RULES.md` |
-| 10 | TASKS | `TASKS-TEMPLATE.md` | `TASKS_SCHEMA.yaml` | `TASKS_MVP_CREATION_RULES.md` | `TASKS_MVP_VALIDATION_RULES.md` |
+| 2 | PRD | `PRD-MVP-TEMPLATE.md` (default; full archived) | `PRD_MVP_SCHEMA.yaml` | `PRD_MVP_CREATION_RULES.md` | `PRD_MVP_VALIDATION_RULES.md` |
+| 3 | EARS | `EARS-MVP-TEMPLATE.md` (default; full archived) | `EARS_MVP_SCHEMA.yaml` | `EARS_MVP_CREATION_RULES.md` | `EARS_MVP_VALIDATION_RULES.md` |
+| 4 | BDD | `BDD-MVP-TEMPLATE.feature` | `BDD_MVP_SCHEMA.yaml` | `BDD_MVP_CREATION_RULES.md` | `BDD_MVP_VALIDATION_RULES.md` |
+| 5 | ADR | `ADR-MVP-TEMPLATE.md` (default; full archived) | `ADR_MVP_SCHEMA.yaml` | `ADR_MVP_CREATION_RULES.md` | `ADR_MVP_VALIDATION_RULES.md` |
+| 6 | SYS | `SYS-MVP-TEMPLATE.md` (default; full archived) | `SYS_MVP_SCHEMA.yaml` | `SYS_MVP_CREATION_RULES.md` | `SYS_MVP_VALIDATION_RULES.md` |
+| 7 | REQ | `REQ-MVP-TEMPLATE.md` (default; full archived) | `REQ_MVP_SCHEMA.yaml` | `REQ_MVP_CREATION_RULES.md` | `REQ_MVP_VALIDATION_RULES.md` |
+| 8 | CTR | `CTR-MVP-TEMPLATE.md` | `CTR_MVP_SCHEMA.yaml` | `CTR_MVP_CREATION_RULES.md` | `CTR_MVP_VALIDATION_RULES.md` |
+| 9 | SPEC | `SPEC-MVP-TEMPLATE.yaml` | `SPEC_MVP_SCHEMA.yaml` | `SPEC_MVP_CREATION_RULES.md` | `SPEC_MVP_VALIDATION_RULES.md` |
+| 10 | TASKS | `TASKS-TEMPLATE.md` | `TASKS_MVP_SCHEMA.yaml` | `TASKS_MVP_CREATION_RULES.md` | `TASKS_MVP_VALIDATION_RULES.md` |
 
 ## 7. Best Practices
 
@@ -240,7 +240,7 @@ flowchart TD
 
 ### 8.2 Getting Help
 
-- **Schema questions**: Check the specific `{TYPE}_SCHEMA.yaml` file
+- **Schema questions**: Check the specific `{TYPE}_MVP_SCHEMA.yaml` file
 - **Template questions**: Check the specific `{TYPE}-TEMPLATE.md` file
 - **Workflow questions**: See `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
 - **Traceability questions**: See `TRACEABILITY.md`

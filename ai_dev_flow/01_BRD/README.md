@@ -275,9 +275,9 @@ Standard metadata including version, date, owner, status, revision history
 
 This directory provides the MVP template for business requirements (full template archived):
 
-> **Schema Policy: Optional BRD_SCHEMA.yaml**
+> **Schema Policy: Optional BRD_MVP_SCHEMA.yaml**
 >
-> BRD validation is human-centric. An optional schema file (`BRD_SCHEMA.yaml`) exists for non-blocking, machine-readable consistency checks. Primary validation remains script-based and human review.
+> BRD validation is human-centric. An optional schema file (`BRD_MVP_SCHEMA.yaml`) exists for non-blocking, machine-readable consistency checks. Primary validation remains script-based and human review.
 >
 > **Rationale**:
 > - Business flexibility and domain variability require flexibility over rigidity
@@ -292,6 +292,14 @@ This directory provides the MVP template for business requirements (full templat
 - Ideal for quick MVP launches and hypothesis validation
 
 Full template is archived; stay on MVP unless an enterprise/full template is explicitly required.
+
+## Layer Scripts
+
+This layer includes a dedicated `scripts/` directory containing validation and utility scripts specific to this document type.
+
+- **Location**: `01_BRD/scripts/`
+- **Primary Validator**: `validate_brd_quality_score.sh`
+- **Usage**: Run scripts directly or usage via `validate_all.py`.
 
 ## File Naming Convention
 

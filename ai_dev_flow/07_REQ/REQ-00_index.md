@@ -52,7 +52,7 @@ custom_fields:
 | [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md) | 1.0 | ✅ DEFAULT | Streamlined MVP template for rapid development (≥70% SPEC-Ready) |
 | [REQ_MVP_VALIDATION_RULES.md](REQ_MVP_VALIDATION_RULES.md) | 3.0 | ✅ ACTIVE | V3 validation rules and fix guide |
 | [REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md](REQ-00_TRACEABILITY_MATRIX-TEMPLATE.md) | 3.0 | ✅ ACTIVE | Traceability matrix template |
-| [REQ_SCHEMA.yaml](REQ_SCHEMA.yaml) | 1.1 | ✅ ACTIVE | YAML schema with MVP/full profile support |
+| [REQ_MVP_SCHEMA.yaml](REQ_MVP_SCHEMA.yaml) | 1.1 | ✅ ACTIVE | YAML schema with MVP/full profile support |
 
 ## Example Requirements
 

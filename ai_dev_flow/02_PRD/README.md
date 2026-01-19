@@ -247,6 +247,16 @@ PRDs inherit categorization context from their source BRDs:
 
 **Purpose in SDD Workflow**: Ensures PRD quality meets SYS phase requirements, preventing immature product requirements from progressing to technical specification phases.
 
+**Purpose in SDD Workflow**: Ensures PRD quality meets SYS phase requirements, preventing immature product requirements from progressing to technical specification phases.
+
+## Layer Scripts
+
+This layer includes a dedicated `scripts/` directory containing validation and utility scripts specific to this document type.
+
+- **Location**: `02_PRD/scripts/`
+- **Primary Validator**: `validate_prd_quality_score.sh`
+- **Usage**: Run scripts directly or usage via `validate_all.py`.
+
 ## File Naming Convention
 
 ```

@@ -46,7 +46,7 @@ Individual SYS Creation → SYS_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All SYS Complete
         ↓
-SYS_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
+SYS_MVP_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
         ↓
 PASS → Begin REQ Creation (Layer 7)
 FAIL → Fix issues, re-run Quality Gate validation
@@ -214,15 +214,15 @@ grep -rohE "SYS\.[0-9]+\.[0-9]+\.[0-9]+" "$SYS_DIR"/*.md | sort | uniq -d
 
 **Purpose**: Enforce Nested Directory Pattern when triggers are met.
 
-**Severity**: **Error (blocking)** at 1000 lines
+**Severity**: **Error (blocking)** at 20,000 tokens
 
 **Triggers**:
-1. **Size**: File > 1000 lines.
+1. **Size**: File > 20,000 tokens.
 2. **Cardinality**: More than 1 file for this ID.
 
 **Action**: Move to `06_SYS/SYS-{PRD_ID}_{Slug}/` folder.
 
-**Error Message**: `❌ ERROR: SYS-NN triggers nested folder rule (>1000 lines or >1 file). Move to 06_SYS/SYS-NN_{Slug}/`
+**Error Message**: `❌ ERROR: SYS-NN triggers nested folder rule (>20,000 tokens or >1 file). Move to 06_SYS/SYS-NN_{Slug}/`
 
 **Thresholds**:
 | Metric | Warning | Error |

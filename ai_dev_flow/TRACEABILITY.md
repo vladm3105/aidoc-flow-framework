@@ -51,19 +51,19 @@ The following rules govern traceability in the SDD workflow:
 
 ### Schema Authority Principle
 
-**Critical Rule**: `*_SCHEMA.yaml` files are the single source of truth for their respective artifact types. When conflicts exist between style guides and schemas, **the schema is authoritative**.
+**Critical Rule**: `*_MVP_SCHEMA.yaml` files are the single source of truth for their respective artifact types. When conflicts exist between style guides and schemas, **the schema is authoritative**.
 
 | Artifact | Schema File | Layer |
 |----------|-------------|-------|
-| PRD | `ai_dev_flow/02_PRD/PRD_SCHEMA.yaml` | 2 |
-| EARS | `ai_dev_flow/03_EARS/EARS_SCHEMA.yaml` | 3 |
-| BDD | `ai_dev_flow/04_BDD/BDD_SCHEMA.yaml` | 4 |
-| ADR | `ai_dev_flow/05_ADR/ADR_SCHEMA.yaml` | 5 |
-| SYS | `ai_dev_flow/06_SYS/SYS_SCHEMA.yaml` | 6 |
-| REQ | `ai_dev_flow/07_REQ/REQ_SCHEMA.yaml` | 7 |
-| CTR | `ai_dev_flow/08_CTR/CTR_SCHEMA.yaml` | 8 |
-| SPEC | `ai_dev_flow/09_SPEC/SPEC_SCHEMA.yaml` | 9 |
-| TASKS | `ai_dev_flow/10_TASKS/TASKS_SCHEMA.yaml` | 10 |
+| PRD | `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml` | 2 |
+| EARS | `ai_dev_flow/03_EARS/EARS_MVP_SCHEMA.yaml` | 3 |
+| BDD | `ai_dev_flow/04_BDD/BDD_MVP_SCHEMA.yaml` | 4 |
+| ADR | `ai_dev_flow/05_ADR/ADR_MVP_SCHEMA.yaml` | 5 |
+| SYS | `ai_dev_flow/06_SYS/SYS_MVP_SCHEMA.yaml` | 6 |
+| REQ | `ai_dev_flow/07_REQ/REQ_MVP_SCHEMA.yaml` | 7 |
+| CTR | `ai_dev_flow/08_CTR/CTR_MVP_SCHEMA.yaml` | 8 |
+| SPEC | `ai_dev_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml` | 9 |
+| TASKS | `ai_dev_flow/10_TASKS/TASKS_MVP_SCHEMA.yaml` | 10 |
 
 ## ⚠️ Upstream Artifact Verification (CRITICAL)
 
@@ -1288,7 +1288,7 @@ Scalability requirements exceeded monolithic architecture capabilities.
 3. Regenerate all source code
 4. Update all tests
 
-**Files**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) | [CHG_MVP_CREATION_RULES.md](./CHG/CHG_MVP_CREATION_RULES.md) | [CHG_SCHEMA.yaml](./CHG/CHG_SCHEMA.yaml)
+**Files**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) | [CHG_MVP_CREATION_RULES.md](./CHG/CHG_MVP_CREATION_RULES.md) | [CHG_MVP_SCHEMA.yaml](./CHG/CHG_MVP_SCHEMA.yaml)
 
 ### Upstream Changes (BRD, PRD, SYS, EARS, REQ)
 

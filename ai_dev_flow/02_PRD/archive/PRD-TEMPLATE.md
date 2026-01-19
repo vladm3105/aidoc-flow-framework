@@ -19,7 +19,7 @@ custom_fields:
 # 📋 Document Authority: This is the PRIMARY STANDARD for PRD structure.
 # All other documents (Schema, Creation Rules, Validation Rules) DERIVE from this template.
 # - In case of conflict, this template is the single source of truth
-# - Schema: PRD_SCHEMA.yaml - Machine-readable validation (derivative)
+# - Schema: PRD_MVP_SCHEMA.yaml - Machine-readable validation (derivative)
 # - Creation Rules: PRD_CREATION_RULES.md - AI guidance for document creation (derivative)
 # - Validation Rules: PRD_MVP_VALIDATION_RULES.md - AI checklist after document creation (derivative)
 #   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
@@ -41,7 +41,7 @@ custom_fields:
   template_for: product-requirements-document
   descriptive_slug: null  # Folder's descriptive name (e.g., user_authentication)
   template_variant: standard | agent-based | automation-focused
-  schema_reference: "PRD_SCHEMA.yaml"
+  schema_reference: "PRD_MVP_SCHEMA.yaml"
   schema_version: "1.0"
 ---
 
@@ -77,11 +77,11 @@ FORBIDDEN values (will fail validation):
 - architecture_approach: value (singular form - use plural with array)
 
 Validation: Run `python 02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-NN*.md`
-Schema: See `ai_dev_flow/02_PRD/PRD_SCHEMA.yaml` for complete rules
+Schema: See `ai_dev_flow/02_PRD/PRD_MVP_SCHEMA.yaml` for complete rules
 ====================================================================== -->
 
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for PRD structure.
-> - **Schema**: `PRD_SCHEMA.yaml v1.0` - Validation rules (21 sections: 1-21)
+> - **Schema**: `PRD_MVP_SCHEMA.yaml v1.0` - Validation rules (21 sections: 1-21)
 > - **Creation Rules**: `PRD_CREATION_RULES.md` - Usage guidance
 > - **Validation Rules**: `PRD_MVP_VALIDATION_RULES.md` - Post-creation checks
 >

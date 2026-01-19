@@ -45,7 +45,7 @@ Individual BDD Creation → BDD_VALIDATION_RULES.md (per-file)
         ↓
 All BDD Complete
         ↓
-BDD_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
+BDD_MVP_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
         ↓
 PASS → Begin ADR Creation (Layer 5)
 FAIL → Fix issues, re-run Quality Gate validation

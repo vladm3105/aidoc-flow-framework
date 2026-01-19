@@ -172,6 +172,14 @@ Quality attributes and operational characteristics:
 - **Alerting**: Configurable alerts for error rates, latency thresholds, and resource usage
 ```
 
+## Layer Scripts
+
+This layer includes a dedicated `scripts/` directory containing validation and utility scripts specific to this document type.
+
+- **Location**: `06_SYS/scripts/`
+- **Primary Validator**: `validate_sys_quality_score.sh`
+- **Usage**: Run scripts directly or usage via `validate_all.py`.
+
 ## SYS File Organization
 
 ### Naming Convention
@@ -580,8 +588,8 @@ These examples demonstrate well-structured system requirements specifications in
 **Purpose in SDD Workflow**: Ensures SYS quality meets REQ phase requirements, preventing immature system requirements from progressing to atomic requirements decomposition.
 ## File Size Limits
 
-- **Target**: 800 lines per file
-- **Maximum**: 1200 lines per file (absolute)
+- **Target**: <15,000 tokens per file
+- **Maximum**: 20,000 tokens per file (absolute)
 - If a file approaches/exceeds limits, split into section files using `SYS-SECTION-TEMPLATE.md` and update the suite index. See `../DOCUMENT_SPLITTING_RULES.md` for core splitting standards.
 
 ## Document Splitting Standard

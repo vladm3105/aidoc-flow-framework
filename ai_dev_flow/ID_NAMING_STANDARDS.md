@@ -152,8 +152,8 @@ Format
 
 | Structure | Trigger | Format |
 |-----------|---------|--------|
-| **Flat** (Atomic) | < 1000 lines AND 1 file | `{TYPE}/{TYPE}-{ID}_{Slug}.{ext}` |
-| **Nested** (Folder) | > 1000 lines OR > 1 file | `{TYPE}/{TYPE}-{ID}_{Slug}/{TYPE}-{ID}-{Seq}_{Slug}.{ext}` |
+| **Flat** (Atomic) | < 20,000 tokens AND 1 file | `{TYPE}/{TYPE}-{ID}_{Slug}.{ext}` |
+| **Nested** (Folder) | > 20,000 tokens OR > 1 file | `{TYPE}/{TYPE}-{ID}_{Slug}/{TYPE}-{ID}-{Seq}_{Slug}.{ext}` |
 
 **Rule**: If a document crosses the threshold, **MOVE IT** to a folder. Do not mix patterns for the same ID.
 
@@ -275,7 +275,7 @@ Document ID Standards (ai_dev_flow)
      - Filename: `04_BDD/BDD-DOC_NUM.SECTION_{slug}.feature`
      - Pattern: `^BDD-\d{2,}\.\d+_[a-z0-9_]+\.feature$`
      - Example: `04_BDD/BDD-02_knowledge_engine/BDD-02.14_query_result_filtering.feature`
-     - Use when: Standard section file (≤500 lines, ≤12 scenarios)
+     - Use when: Standard section file (< 15,000 tokens)
 
   2. **Subsection Format** (when section >500 lines):
      - Filename: `04_BDD/BDD-DOC_NUM.SECTION.SUBSECTION_{slug}.feature`
@@ -303,9 +303,9 @@ Document ID Standards (ai_dev_flow)
   - Optional companion docs: `BDD-DOC_NUM_README.md`, `BDD-DOC_NUM_TRACEABILITY.md` (inside the suite folder)
 
   **Hard Limits**:
-  - Max file size: 500 lines per `.feature` file (soft limit: 400 lines)
+  - Max file size: 20,000 tokens per `.feature` file (warning: 15,000 tokens)
   - Max scenarios: 12 scenarios per Feature block
-  - If section exceeds 500 lines → Split into subsections (`.SS.mm` format)
+  - If section exceeds 20,000 tokens → Split into subsections (`.SS.mm` format)
   - If many subsections → Add aggregator (`.SS.00` format)
 
   **Prohibited Patterns** (cause validation ERROR):
