@@ -89,7 +89,7 @@ CTR-NN_{descriptive_slug}.yaml
 
 ### Rules
 
-1. **CTR-NN**: Sequential numbering starting from 001
+1. **CTR-NN**: Matches parent PRD ID (e.g., `PRD-12` -> `CTR-12`)
 2. **descriptive_slug**: Lowercase with underscores
 3. **Extension**: `.md` for documentation, `.yaml` for schema
 4. **Dual-file**: Create both `.md` and `.yaml` for complete contracts

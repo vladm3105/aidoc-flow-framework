@@ -1,0 +1,204 @@
+# MVP Documentation Generation Workflow
+# Generates MVP documentation from BRD to TASKS with automated validation
+
+name: MVP Documentation Generation
+
+on:
+  pull_request:
+    paths:
+      - 'ai_dev_flow/**'
+      - '.github/workflows/mvp-docs-generation.yml'
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      intent:
+        description: 'MVP idea/intent'
+        required: true
+        type: string
+      slug:
+        description: 'Project slug'
+        required: true
+        type: string
+      profile:
+        description: 'Autopilot profile (mvp|strict)'
+        required: false
+        type: choice
+        default: 'mvp'
+        options:
+          - mvp
+          - strict
+
+concurrency:
+  group: mvp-generation
+
+jobs:
+  validate-docs:
+    name: Validate Documentation Structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install Dependencies
+        run: |
+          pip install --quiet --upgrade pip
+          pip install --quiet --upgrade pyyaml
+          pip install -r ai_dev_flow/scripts/requirements.txt
+      
+      - name: Validate Documentation Paths
+        run: |
+          python3 ai_dev_flow/scripts/validate_documentation_paths.py \
+            --root ai_dev_flow \
+            --strict
+      
+      - name: Validate All Layers
+        run: |
+          python3 ai_dev_flow/scripts/validate_all.py \
+            ai_dev_flow \
+            --all \
+            --report json
+      
+      - name: Upload Validation Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-report
+          path: |
+            ai_dev_flow/work_plans/*.json
+
+  generate-docs:
+    name: Generate MVP Documentation
+    runs-on: ubuntu-latest
+    needs: validate-docs
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install Dependencies
+        run: |
+          pip install --quiet --upgrade pip
+          pip install --quiet --upgrade pyyaml
+          pip install -r ai_dev_flow/AUTOPILOT/scripts/requirements.txt
+      
+      - name: Run MVP Autopilot
+        run: |
+          python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+            --root ai_dev_flow \
+            --intent "${{ github.event.inputs.intent }}" \
+            --slug ${{ github.event.inputs.slug }} \
+            --profile ${{ github.event.inputs.profile }} \
+            --auto-fix \
+            --report markdown
+      
+      - name: Upload Autopilot Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: autopilot-report
+          path: |
+            ai_dev_flow/work_plans/mvp_autopilot_report_*.md
+
+  quality-gate:
+    name: Quality Gate Check
+    runs-on: ubuntu-latest
+    needs: generate-docs
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install Dependencies
+        run: |
+          pip install --quiet --upgrade pip
+          pip install --quiet --upgrade pyyaml
+      
+      - name: Load Validation Report
+        id: load_report
+        run: |
+          python3 -c "
+          import json
+          import sys
+          
+          try:
+              with open('ai_dev_flow/work_plans/validation_report.json') as f:
+                  report = json.load(f)
+          except FileNotFoundError:
+              print('No validation report found')
+              sys.exit(0)
+          
+          if report.get('layers'):
+              scores = [layer['score'] for layer in report['layers']]
+              avg_score = sum(scores) / len(scores)
+              print(f'average_score={int(avg_score)}')
+          "
+      
+      - name: Check Quality Gate
+        id: check_quality
+        run: |
+          python3 -c "
+          import sys
+          import json
+          import os
+          
+          try:
+              with open('ai_dev_flow/work_plans/validation_report.json') as f:
+                  report = json.load(f)
+                  avg_score = float('${{ steps.load_report.outputs.average_score }}')
+                  print(f'average_score={avg_score}')
+                  
+                  threshold = 90
+                  if avg_score >= threshold:
+                      sys.exit(0)
+                  else:
+                      print(f'Quality gate failed: score {avg_score}% < threshold {threshold}%')
+                      sys.exit(1)
+          except FileNotFoundError:
+              print('No validation report found')
+              avg_score = 0
+              if avg_score < threshold:
+                  sys.exit(1)
+          "
+      
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            import json
+            import os
+            
+            try:
+                with open('ai_dev_flow/work_plans/validation_report.json') as f:
+                    report = json.load(f)
+                    avg_score = float('${{ steps.check_quality.outputs.average_score }}')
+                    
+                message = f\"\"## Quality Gate\\n\\n\"
+                message += f\"\"✅ Average Score: {avg_score}%\\n\\n\"
+                message += f\"\"\\n\\n\" + ('✅ Auto-approved' if avg_score >= 90 else '⚠️ Manual review required')
+                message += f\"\"\\n\\n\"
+                message += f\"\"See attached autopilot report for details.\\n\\n\"\"
+                
+                github.rest.issues.createComment({
+                    'owner': context.repo.owner,
+                    'repo': context.repo.repo,
+                    'issue_number': context.issue.number,
+                    'body': message
+                })
+            except FileNotFoundError:
+                print('No validation report found')

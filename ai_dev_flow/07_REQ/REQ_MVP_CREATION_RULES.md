@@ -75,7 +75,7 @@ custom_fields:
 - Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `07_REQ/{domain}/{subdomain}/` within project docs directory
 - **Domains**: `api/` (external integrations), `risk/` (risk management), `data/` (data requirements), `ml/` (ML requirements), `auth/` (security), etc.
-- **Naming**: `REQ-NN_descriptive_slug.md` (NN = 3-digit sequential number, lowercase snake_case slug)
+- **Naming**: `REQ-NN_descriptive_slug.md` (NN matches parent PRD ID e.g. `PRD-12` -> `REQ-12` or `REQ-12.01` for multiple)
 - **Section Files**: For large requirements (>50KB), use Section Files format: `REQ-NN.S_section_title.md` (S = section number). See `ID_NAMING_STANDARDS.md` for metadata tags.
 
 ---

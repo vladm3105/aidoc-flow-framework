@@ -65,7 +65,7 @@ Path conventions: Examples below use a portable `docs/` root for new projects. I
 ## 1. File Organization and Directory Structure
 
 - **Location**: `docs/06_SYS/` within project docs directory
-- **Naming**: `SYS-NN_descriptive_system_name.md` (NN = 3-digit sequential)
+- **Naming**: `SYS-NN_descriptive_system_name.md` (NN matches parent PRD ID)
 - **Structure**: One primary SYS file per architectural subsystem
 
 ---

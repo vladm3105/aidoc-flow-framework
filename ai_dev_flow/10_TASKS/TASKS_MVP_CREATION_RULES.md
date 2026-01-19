@@ -98,7 +98,7 @@ TASKS-NN_{descriptive_component}_tasks.md
 
 ### Rules
 
-1. **TASKS-NN**: Sequential numbering starting from 001
+1. **TASKS-NN**: Matches parent PRD/SPEC ID (e.g., `SPEC-12` -> `TASKS-12`)
 2. **descriptive_component**: Lowercase with underscores
 3. **_tasks**: Required suffix
 4. **Extension**: Always `.md`

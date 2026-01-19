@@ -147,6 +147,7 @@ ADR documents follow a comprehensive 4-part structure:
 
 - **Filename**: `ADR-NN_descriptive_architecture_decision.md`
 - **H1**: `# ADR-NN: [Architecture Decision Title]`
+- **ID Alignment**: ADR-DOC_NUM MUST match parent PRD ID (e.g., `PRD-12` -> `ADR-12`).
 - **Status Tags**: Proposed, Accepted, Rejected, Superseded, Deprecated
 
 ### 4.1 Element ID Format (MANDATORY)

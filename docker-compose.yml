@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  autopilot:
+    build: .
+    volumes:
+      - .:/opt/data/docs_flow_framework
+      - work_plans:/workspace/work_plans
+    environment:
+      - PYTHONUNBUFFERED=1
+    working_dir: /opt/data/docs_flow_framework
+    stdin_open: true
+    tty: true
+
+  # Service for running specific scripts with overrides
+  autopilot-debug:
+    extends: autopilot
+    command: /bin/bash

@@ -1,5 +1,5 @@
 ---
-title: "MVP Autopilot: Core Guide"
+title: "MVP Autopilot: Core Guide (v5.0 - Simplified & Production-Ready)"
 tags:
   - framework-core
   - mvp-workflow
@@ -12,385 +12,673 @@ custom_fields:
   development_status: active
 ---
 
-# MVP Autopilot: Framework Core Guide
-
-This document is the authoritative reference for the MVP Autopilot in the AI Dev Flow framework. It explains what the autopilot does, how to use it, how it interacts with validators and templates, and how to tune it for different rigor levels (MVP speed vs. strict compliance).
-
-The Autopilot lives at:
-- `ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py`
-
-It generates and validates the entire MVP pipeline in one command:
-- BRD → PRD → EARS → BDD → ADR → SYS → REQ → SPEC → TASKS → Code
-
----
-
-## 1) What It Does
-
-- MVP artifacts are single, flat files; document splitting and `DOCUMENT_SPLITTING_RULES.md` do not apply in the MVP track.
-
-- Single-command scaffolding of all MVP artifacts using repo templates.
-- Per-layer validation via existing `ai_dev_flow/scripts/validate_*.{py|sh}`.
-- Auto-fix strategies to keep momentum:
-  - Non-destructive patching (frontmatter, H1, required sections, traceability tags).
-  
-- Traceability tagging across layers, using dotted forms where required (e.g., `BRD.NN.01.01`).
-- Optional reporting (markdown/json/text) for CI and run history.
-
----
-
-## 2) Quick Start
-
-- MVP speed run (warnings allowed; auto-fix; write report):
-  - `python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP" --slug my_mvp --up-to TASKS --auto-fix --report markdown`
-
-- Strict validation (warnings fail):
-  - `python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP" --slug my_mvp --up-to TASKS --auto-fix --strict --report markdown`
-
-- Lighter MVP validators for BRD (`--mvp-validators`):
-- `python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py --root ai_dev_flow --intent "My MVP" --slug my_mvp --up-to TASKS --auto-fix --mvp-validators`
-
-  - Pre‑Check (one‑liner): `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow` and verify `X-00_index.md`, `X-00_required_documents_list.md`, and upstream docs exist before each layer.
-
----
-
-## 2.1) Pre‑Check Routine (avoid token waste)
-
-Run these quick checks before generating each layer (BRD → … → SPEC):
-
-- Paths: `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`
-- Planning docs: Ensure `X-00_index.md` and `X-00_required_documents_list.md` exist for the target layer.
-- Upstream presence: Confirm required upstream docs exist before proceeding:
-  - PRD needs BRD-01
-  - EARS needs PRD-01
-  - BDD needs EARS-01
-  - 05_ADR/SYS need BRD-01, PRD-01, EARS-01
-  - REQ needs ADR-01, SYS-01
-  - 09_SPEC/TASKS need required REQ files
-
-Tip: Use `--strict` with the path validator when you want failures to block generation.
-
----
-
-## 2.2) Dependencies
-
-- Python dependencies for the Autopilot live in `ai_dev_flow/scripts/requirements.txt`.
-- Install (virtualenv recommended):
-  - `pip install -r ai_dev_flow/scripts/requirements.txt`
-- Required: PyYAML (used for config and YAML parsing).
-
----
-
-## 3) Command Reference
-
-- `--root`: Docs root. In this repo: `ai_dev_flow`.
-- `--intent`: Short description used to seed names/titles.
-- `--slug`: Lowercase underscore slug used in filenames (e.g., `trading_bot`).
-- `--nn`: Numeric ID (default `01`) used in document IDs.
-- `--up-to`: Last layer to generate/validate. One of: `BRD|PRD|EARS|BDD|ADR|SYS|REQ|SPEC|TASKS`.
-- `--from-layer`: Start from this layer (e.g., `BDD`) instead of BRD.
-- `--auto-fix`: Enables deterministic auto-fixers (safe rewriting of frontmatter, titles, required sections, tags).
-- `--strict`: Treat warnings as errors (validator must exit code 0).
-- `--no-precheck`: Skip pre-checks (path validator and upstream existence checks).
-- `--precheck-strict`: Fail fast when pre-checks report issues or missing upstreams.
-- `--mvp-validators`: Prefer lighter MVP validators when available (currently uses Python validator for BRD).
-- `--skip-validate`: Generate artifacts only; skip all validators.
-- `--report`: `none|markdown|json|text`. Writes a summary report.
-- `--report-path`: Custom path. If omitted, report is written to `work_plans/mvp_autopilot_report_<timestamp>.(md|json|txt)`.
-
----
-
-## 4) Generated Artifacts
-
-- Files (examples for `--nn 01`, `--slug trading_bot`):
-  - `ai_dev_flow/01_BRD/BRD-01_trading_bot.md`
-  - `ai_dev_flow/02_PRD/PRD-01_trading_bot.md`
-  - `ai_dev_flow/03_EARS/EARS-01_trading_bot.md`
-  - `ai_dev_flow/04_BDD/BDD-01_trading_bot.feature`
-  - `ai_dev_flow/05_ADR/ADR-01_trading_bot.md`
-  - `ai_dev_flow/06_SYS/SYS-01_trading_bot.md`
-  - `ai_dev_flow/07_REQ/REQ-01_trading_bot.md`
-- `ai_dev_flow/09_SPEC/SPEC-01_trading_bot.yaml`
-- `ai_dev_flow/10_TASKS/TASKS-01_trading_bot.md`
-
-
-- Planning stubs:
-  - `X-00_required_documents_list.md` created per layer, listing the generated file.
-
----
-
-## 5) Layer-by-Layer Behavior
-
-- BRD:
-  - Fixes: frontmatter (tags, custom_fields), `# BRD-NN: Title`, required early sections, Document Control stub.
-  - MVP-aware validation: use `--mvp-validators` to switch to the Python validator per file.
-  - Generation: Create from `BRD-MVP-TEMPLATE.md` with required early sections.
-
-- PRD:
-  - Fixes: frontmatter, H1, Document Control with `@brd: BRD.NN.01.01`, sections 1–3.
-  - Generation: Create from `PRD-MVP-TEMPLATE.md` with functional requirements stub.
-
-- EARS:
-  - Fixes: frontmatter, H1, `## Document Control`, `## Purpose`, `## Traceability` (`@brd`, `@prd`), one EARS requirement with SHALL.
-
-- BDD:
-  - Fixes: header cumulative tags (`@brd @prd @ears`), Feature line, one GWT scenario.
-
-- ADR:
-  - Generation: Create from `ADR-MVP-TEMPLATE.md` with required sections + subsections.
-
-- SYS:
-  - Fixes: frontmatter, H1, insert Sections 1–15; `## 13. Traceability` with `@brd/@prd/@ears/@bdd/@adr`.
-  - Generation: Create from `SYS-MVP-TEMPLATE.md` with stubs for all sections.
-
-- REQ:
-  - Generation: Create from `REQ-MVP-TEMPLATE.md` with Document Control (semver, ISO dates, P-level, SPEC-Ready Score), upstream chain, and cumulative tags.
-
-- SPEC:
-  - Generation: Create from `SPEC-MVP-TEMPLATE.yaml` with required top-level keys; `traceability.cumulative_tags` and `upstream_sources`; `interfaces.classes`; `performance.latency_targets`; `security` (auth/authz/input_validation); `observability` (metrics/logging/health); `verification` stubs.
-
-- TASKS:
-  - Generated from template; validated.
-  - Includes execution commands in Section 4.
-
----
-
-## 6) Validation Semantics
-
-- Default (non-strict): A layer passes if its validator exits 0 or 1 (warnings allowed).
-- `--strict`: A layer passes only if exit code is 0 (warnings fail the layer).
-- Auto-fix loop:
-  - Apply targeted fixes → revalidate.
-  - If still failing → halt and report errors for manual resolution.
-  - Halt on persistent errors.
-- End-of-run link check:
-  - Runs `validate_links.py`; warnings can be addressed after initial scaffolding.
-
----
-
-## 7) Traceability Rules
-
-- Upstream tags auto-populated per layer; examples:
-  - PRD: `@brd: BRD.NN.01.01`
-  - EARS: `@brd`, `@prd`
-  - BDD: `@brd`, `@prd`, `@ears`
-  - SYS: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`
-  - REQ: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`
-  - SPEC: cumulative tags include `req`
-  - TASKS: includes 8 tags (`@brd` … `@spec`)
-- Dotted vs hyphenated IDs: autopilot converts `BRD-NN` → `BRD.NN.01.01` where required by validators.
-
----
-
-## 8) Reporting
-
-- `--report`: `markdown|json|text` (default `none`).
-- Default output directory: `work_plans/`.
-- Contents:
-  - Summary: PASS/FAIL, target layer, flags (`strict`), link-check result.
-  - Layer table: layer, status (`pass|fixed|fail|generated`), file, notes.
-
----
-
-## 9) Examples
-
-- MVP speed run (recommended day-1):
-  - `python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py --root ai_dev_flow --intent "MVP idea" --slug idea --up-to TASKS --auto-fix --report markdown`
-
-- MVP + lighter validators + strict:
-  - `python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py --root ai_dev_flow --intent "MVP" --slug mvp --up-to TASKS --auto-fix --mvp-validators --strict --report markdown`
-
-  - Non-destructive strict gate:
-  - `python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py --root ai_dev_flow --intent "MVP" --slug mvp --up-to TASKS --auto-fix --strict --report json`
-
-- Partial pipeline:
-  - `--from-layer BDD --up-to TASKS` to continue from BDD.
-  - Or `--up-to BDD` to stop at BDD.
-
-### Validate Only (No Generation)
-
-- Preferred (pure validation, zero writes):
-  - Validate everything: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --all --report markdown`
-  - Validate subset: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer BRD --layer PRD --report text`
-  - Strict mode: add `--strict`
-
-- Using Autopilot to validate existing docs (no new files):
-  - `python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py --root ai_dev_flow --resume --include-layers BRD PRD EARS BDD ADR SYS REQ SPEC TASKS --up-to TASKS --mvp-validators --strict`
-  - Notes:
-    - `--resume` reuses existing files; it will generate missing ones unless you exclude those layers or ensure they exist.
-    - For guaranteed no writes, use `validate_all.py` above.
-
----
-
-## 10) CI Integration
-
-- Suggested targets:
-  - `make mvp`: run autopilot with `--auto-fix --report markdown`.
-  - `make validate`: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --all --report markdown`.
-  - Policy: allow warnings (non-strict) for MVP branches; enable `--strict` for release branches.
-
----
-
-## 11) Troubleshooting
-
-- BRD fails early with full-template checks:
-  - Use `--mvp-validators` to switch to the per-file Python validator.
-  - Or omit `--strict` until content is filled in.
-
-- Autopilot halts at a layer:
-  - Re-run with `--auto-fix` to allow fixers.
-  - Re-run without `--strict` to allow warnings while filling content.
-
-- Link integrity warnings at the end:
-  - Fill in real links and re-run `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow` later.
-
-- Auto-fixers brittle with major template changes:
-  - The fixers use regexes and rely on current template structure. If templates are significantly refactored, fixers may need corresponding updates in `mvp_autopilot.py`. Autopilot uses `<LAYER>-MVP-TEMPLATE.*` as the default starting point (fall back to full templates where an MVP variant is not available).
-
----
-
-## 12) Extensibility
-
-- Add per-layer fixers for additional patterns (e.g., custom section names).
-  - Add a config file (e.g., `ai_dev_flow/.autopilot.yaml`) to persist flags: `mvp_validators`, `strict`, `report`.
-- Add `--profile <name>` to load preset flag combinations.
-- Template overrides: In `.autopilot.yaml`, set `templates:<LAYER>: <filename>` to try alternate templates without changing code.
-
----
-
-## 13) Best Practices
-
-  - Start with speed: run non-strict with auto-fix to get a quick baseline.
-- Iterate content quickly: replace stubs with real material in each file.
-  - Tighten later: turn on `--strict` when stabilizing.
-- Validate frequently: run `validate_all.py` and `validate_links.py` as you fill content.
-
----
-
-## 14) Safety and Scope
-
-- The Autopilot writes only inside the docs repo (`ai_dev_flow/`).
-- It does not execute arbitrary commands; it only reads/writes files and invokes validators.
-- TASKS documents may include bash execution commands in Section 4; these are content only and not executed by the Autopilot.
-
----
-
-## 15) Pointers & Related Docs
-
-- Autopilot code: `ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py`
-- MVP Workflow guide: `ai_dev_flow/MVP_WORKFLOW_GUIDE.md`
-- Design notes: `ai_dev_flow/MVP_AUTOMATION_DESIGN.md`
-- Layer templates and validator scripts: see `ai_dev_flow/<LAYER>/` and `ai_dev_flow/scripts/`
-
----
-
-## 16) Configuration & Profiles
-
-You can persist preferred defaults and named profiles in a YAML config file.
-
-- Default path (auto-detected): `ai_dev_flow/.autopilot.yaml`
-- Override: `--config /path/to/.autopilot.yaml`
-
-Example:
-
-```
-defaults:
-  auto_fix: true
-  mvp_validators: true
-  report: markdown
-
-default_profile: mvp
-
-profiles:
-  mvp:
-    auto_fix: true
-    strict: false
-    mvp_validators: true
-    report: markdown
-  strict:
-    auto_fix: true
-    strict: true
-    report: markdown
+# MVP Autopilot: Core Guide (v5.0)
+
+This document is the authoritative reference for MVP Autopilot in the AI Dev Flow framework. It explains what autopilot does, how to use it, and provides practical guidance for both local development and GitHub Actions CI/CD.
+
+## Quick Start
+
+**Local Development**:
+```bash
+# Install dependencies
+pip install -r ai_dev_flow/AUTOPILOT/scripts/requirements.txt
+
+# Run autopilot with defaults
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --intent "My MVP" \
+  --slug my_mvp \
+  --auto-fix \
+  --report markdown
 ```
 
-Usage:
+**GitHub Actions**:
+```bash
+# Via Makefile (recommended)
+make docs
 
-- `--profile mvp` or `--profile strict`
-- CLI flags always win over config (only config fills in CLI defaults not explicitly set).
+# Or via GitHub UI
+# Go to Actions tab → Select "MVP Autopilot - Full Pipeline" → Click "Run workflow"
+```
 
 ---
 
-## 17) Continuing Existing Projects (Resume or Fork)
+## What It Does
 
-The Autopilot can be used to continue a partially created project or to fork an existing project as the base for a new one.
+### Core Capabilities
 
-### Modes
+1. **Single-Command Scaffolding**: Generates all MVP artifacts from BRD to TASKS
+2. **Template-Based Generation**: Uses repo templates with smart placeholder substitution
+3. **Per-Layer Validation**: Runs quality gate validators for each generated document
+4. **Auto-Fix Strategies**: Fixes frontmatter, titles, required sections, and traceability tags
+5. **Traceability Tagging**: Automatic cumulative tagging across all 14 layers
+6. **Flexible Execution**: Supports multiple execution modes and entry/exit points
 
-- **Resume In-Place**: Discover existing artifacts, validate and fix them, generate only missing layers/files, keep IDs/links intact.
-- **Fork-As-New**: Copy the existing project as a base for a new effort with a new `NN` and `slug`, update IDs/titles/traceability, and preserve a “supersedes/origin” link.
+### What It Does NOT Do
 
-### Recommended Workflow
+- Does NOT make network calls to LLMs
+- Does NOT execute arbitrary system commands
+- Does NOT write outside the project directory
+- Does NOT execute TASKS bash commands (content-only)
 
-- **Discovery**:
-  - Scan `ai_dev_flow/<LAYER>/` for existing `X-NN_{slug}.*` files (or sectioned patterns).
-  - Extract IDs/tags using `ai_dev_flow/scripts/extract_tags.py` to build an upstream/downstream map.
-  - Run `validate_all.py ai_dev_flow --all --report markdown` to get a baseline status.
+---
 
-- **Planning**:
-  - Decide target layers (e.g., only `REQ`, `SPEC`, `TASKS`) with `--up-to` and `--include-layers`/`--exclude-layers`.
-  - Choose Resume vs Fork:
-    - Resume: prefer non-destructive fixes; do not overwrite existing content unless `--force-overwrite` is given.
-    - Fork: pick `--new-nn` and `--new-slug`; add “Supersedes {OLD-ID}” note in the new 01_BRD/PRD and “Superseded by {NEW-ID}” note in old docs (optional).
+## Architecture Overview
 
-- **Execution**:
-  - Run Autopilot with `--auto-fix` for conservative passes; iterate content to resolve remaining validator errors.
-  - For Forks, use the new identifiers so the Autopilot generates new files and rewrites traceability accordingly.
+### Directory Structure
 
-- **Review**:
-  - Inspect the report (`--report markdown`) to see: reused vs generated vs skipped files.
-  - Resolve any link warnings by updating references and re-running `validate_links.py`.
+```
+ai_dev_flow/AUTOPILOT/
+├── MVP_AUTOPILOT.md              # This guide
+├── MVP_GITHUB_CICD_INTEGRATION_PLAN.md
+├── MVP_PIPELINE_END_TO_END_USER_GUIDE.md
+├── scripts/
+│   ├── mvp_autopilot.py         # Main orchestration script
+│   ├── validate_metadata.py        # Metadata validator
+│   ├── validate_quality_gates.py   # Quality gate checker (Python)
+│   ├── vertex_code_generator.py    # Optional code generator
+│   └── requirements.txt            # Python dependencies
+├── config/
+│   ├── default.yaml                # Default configuration
+│   ├── quality_gates.yaml           # Quality gate settings
+│   └── layers.yaml                # Layer-specific configs
+└── tests/                             # Test suite
+    ├── test_config_parsing.py
+    ├── test_prechecks.py
+    ├── test_cli_parsing.py
+    └── integration/
+        └── test_full_pipeline.py
+```
 
-### Non-Destructive Fixing (Resume)
+### Execution Flow
 
-- **Don’t overwrite** any existing file by default; restrict to patching frontmatter, titles, required section headers, and tags.
-  - Generate artifacts from MVP templates; avoid overwriting existing files unless `--force-overwrite` is explicitly requested.
-- Prefer `--strict` only after you’ve closed most warnings; early runs can allow warnings to speed progress.
+```
+┌─────────────────────────────────────────┐
+│  Configuration Loading              │
+│  (Load YAML configs)               │
+└─────────────────────────────────────────┘
+               ↓
+┌─────────────────────────────────────────┐
+│  Pre-Checks                       │
+│  (Validate paths, dependencies)       │
+└─────────────────────────────────────────┘
+               ↓
+┌─────────────────────────────────────────┐
+│  Document Generation                │
+│  (Use templates, auto-populate tags)  │
+└─────────────────────────────────────────┘
+               ↓
+┌─────────────────────────────────────────┐
+│  Validation                       │
+│  (Run quality gate scripts)         │
+└─────────────────────────────────────────┘
+               ↓
+┌─────────────────────────────────────────┐
+│  Post-Checks                      │
+│  (Verify outputs, link integrity)     │
+└─────────────────────────────────────────┘
+```
 
-### Forking a Project (Copy-As-New)
+---
 
-- **Copy Strategy**:
-  - Source selection: find `X-OLDNN_{old_slug}.*` artifacts per layer.
-  - Create new files as `X-NEWNN_{new_slug}.*` and update:
-    - Frontmatter: `title`, `custom_fields.layer`, `artifact_type`, etc.
-    - H1/Feature lines: `# X-NEWNN: {New Title}`.
-    - Traceability tags: convert `BRD-OLDNN` → `BRD.NEWNN.01.01` (and similar for all layers) where dotted forms are required.
-  - Add a small “Supersedes”/“Derived from” note in the new 01_BRD/PRD and optionally a “Superseded by” in the old documents.
+## Command Reference
 
-- **ID and Link Consistency**:
-  - Maintain a simple ID map while forking: `BRD-01→BRD-02`, `PRD-01→PRD-02`, etc., and propagate to dotted references (`BRD.01.01.01→BRD.02.01.01`).
-  - After generation, run `validate_links.py` to catch residual links to old IDs; fix or leave a redirect note.
+### Essential Flags
 
-### Flags (for Resume/Fork)
+| Flag | Short | Required | Description |
+|-------|--------|----------|-------------|
+| `--root` | `-r` | No | Project root directory (default: `.`) |
+| `--intent` | `-i` | No | Short description for project name (e.g., "A trading bot") |
+| `--slug` | `-s` | No | Lowercase underscore slug for filenames (e.g., `trading_bot`) |
+| `--nn` | `-n` | No | Numeric ID (default: `01`) |
+| `--from-layer` | `-f` | No | Start from specific layer (e.g., `PRD`) |
+| `--up-to` | `-u` | No | Last layer to generate (e.g., `TASKS`) |
+| `--auto-fix` | `-a` | No | Enable auto-fix strategies |
+| `--no-validate` | `-N` | No | Skip all validators, generate only |
+| `--strict` | `-S` | No | Treat warnings as errors |
+| `--profile` | `-P` | No | Load configuration profile (default: `mvp`) |
+| `--config` | `-c` | No | Custom configuration file |
+| `--report` | `-R` | No | Report format: `none\|markdown\|json\|text` |
 
-- **Resume**:
-  - `--resume`: enable discovery-first behavior and skip regenerating existing artifacts.
-  - `--no-overwrite`: explicit safeguard to avoid replacing any existing file content.
-  - `--include-layers / --exclude-layers`: limit the operation scope.
-  - `--plan-only`: write a plan/report without making any changes (plan file: `work_plans/mvp_plan_<timestamp>.md`).
+### Execution Modes
 
-- **Fork**:
-  - `--fork-from-nn 01 --new-nn 02 --new-slug new_product`: copy all `*-01_*` artifacts as `*-02_*` updating IDs and tags.
-  - `--id-map path/to/id_map.yaml`: advanced mappings across layers. Format: simple YAML dictionary `{"OLD-ID": "NEW-ID"}` (e.g., `REQ-15: REQ-03`).
-  - `--supersede`: inject “Supersedes/Derived from” blocks automatically.
-  - `--copy-assets`: copy images/diagrams referenced by relative paths (preserves sectional folder layouts).
+| Mode | Description | Use Case |
+|-------|-------------|----------|
+| **generate** | Default mode - Generate all layers from BRD to TASKS | Standard workflow |
+| **validate** | Run validators on existing documents | Quality assurance |
+| **resume** | Continue existing project, generate missing layers | Incremental updates |
+| **plan** | Generate execution plan without making changes | Preview mode |
 
-- **Safety**:
-  - `--dry-run`: simulate actions, mark outputs as planned, and skip validation.
-  - Always write a report (`--report markdown|json|text`) for audit trails; report includes plan actions.
+### Configuration Profiles
 
-### Practical Recommendations
+| Profile | Auto-Fix | Strict Mode | Quality Threshold |
+|---------|-----------|--------------|-------------------|
+| `mvp` | Enabled | Disabled | 90% auto-approve |
+| `strict` | Enabled | Enabled | 95% threshold |
 
-  - **Start with Resume (non-destructive)** for teams picking up partial work; enable `--auto-fix --report markdown` to normalize and see what’s missing. Use `--plan-only` first to review intended actions.
-- **Fork only when scope diverges** or IDs need to branch cleanly; pick a fresh `NN` and add “Supersedes” info to keep the lineage auditable.
-- **Incremental layers**: If 01_BRD/02_PRD/EARS are stable but implementation isn’t, set `--up-to TASKS` while targeting `06_SYS/07_REQ/09_SPEC/10_TASKS` phases.
-  - Use `--from-layer BDD` (or `ADR`/`SYS`) to skip earlier layers cleanly.
-- **Reports & Plans**: Save reports and plans in `work_plans/` and attach to review PRs.
+---
+
+## Layer-by-Layer Behavior
+
+### BRD (Layer 1)
+**Template**: `01_BRD/BRD-MVP-TEMPLATE.md`
+
+**Generation**:
+- Fixes: frontmatter (tags, custom_fields), H1 title, Document Control stub
+- MVP-aware validation: Uses per-file Python validator when available
+
+**Validation**:
+- Script: `01_BRD/scripts/validate_brd_quality_score.sh`
+- Minimum Score: 85% (non-strict), 95% (strict)
+
+### PRD (Layer 2)
+**Template**: `02_PRD/PRD-MVP-TEMPLATE.md`
+
+**Generation**:
+- Fixes: frontmatter, H1, Document Control with `@brd: BRD.NN.01.01`, sections 1-3
+- Auto-populates traceability tags: `@brd`, `@prd`
+
+**Validation**:
+- Script: `02_PRD/scripts/validate_prd_quality_score.sh`
+- Minimum Score: 90% (non-strict), 95% (strict)
+
+### EARS (Layer 3)
+**Template**: `03_EARS/EARS-MVP-TEMPLATE.md`
+
+**Generation**:
+- Fixes: frontmatter, H1, `## Document Control`, `## Purpose`, `## Traceability`
+- Converts PRD requirements to EARS format
+- Auto-populates tags: `@brd`, `@prd`, `@ears`
+
+**Validation**:
+- Script: `03_EARS/scripts/validate_ears_quality_score.sh`
+- Minimum Score: 90%
+
+### BDD (Layer 4)
+**Template**: `04_BDD/BDD-MVP-TEMPLATE.feature`
+
+**Generation**:
+- Fixes: header cumulative tags (`@brd @prd @ears`)
+- Feature line with proper format
+- One GWT scenario minimum
+
+**Validation**:
+- Script: `04_BDD/scripts/validate_bdd_quality_score.sh`
+- Minimum Score: 90%
+
+### ADR (Layer 5)
+**Template**: `05_ADR/ADR-MVP-TEMPLATE.md`
+
+**Generation**:
+- Creates from template with required sections + subsections
+- Context: BRD, PRD, EARS, BDD
+
+**Validation**:
+- Script: `05_ADR/scripts/validate_adr_quality_score.sh`
+- Minimum Score: 90%
+
+### SYS (Layer 6)
+**Template**: `06_SYS/SYS-MVP-TEMPLATE.md`
+
+**Generation**:
+- Fixes: frontmatter, H1
+- Inserts Sections 1-15
+- Auto-populates traceability: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`
+
+**Validation**:
+- Script: `06_SYS/scripts/validate_sys_quality_score.sh`
+- Minimum Score: 90%
+
+### REQ (Layer 7)
+**Template**: `07_REQ/REQ-MVP-TEMPLATE.md`
+
+**Generation**:
+- Creates 12 atomic requirement files
+- Document Control: SemVer, ISO dates, P-level, SPEC-Ready Score
+- Upstream chain, cumulative tags
+
+**Validation**:
+- Script: `07_REQ/scripts/validate_req_quality_score.sh`
+- Minimum Score: 90%
+
+### CTR (Layer 8)
+**Template**: `08_CTR/CTR-MVP-TEMPLATE.yaml`
+
+**Generation**:
+- Dual-file format: Human-readable `.md` + machine-readable `.yaml`
+- OpenAPI 3.x specification
+- Contract compliance checking
+
+**Validation**:
+- Script: `08_CTR/scripts/validate_ctr_quality_score.sh`
+- Minimum Score: 90%
+
+### SPEC (Layer 9)
+**Template**: `09_SPEC/SPEC-MVP-TEMPLATE.yaml`
+
+**Generation**:
+- YAML format with required top-level keys
+- Traceability: `traceability.cumulative_tags`, `upstream_sources`
+- Interfaces, performance, security, observability, verification stubs
+
+**Validation**:
+- Script: `09_SPEC/scripts/validate_spec_quality_score.sh`
+- Minimum Score: 92% (non-strict), 95% (strict)
+
+### TASKS (Layer 10)
+**Template**: `10_TASKS/TASKS-MVP-TEMPLATE.md`
+
+**Generation**:
+- Generated from template
+- Includes execution commands in Section 4
+- 8 cumulative tags: `@brd` through `@spec`
+
+**Validation**:
+- Script: `10_TASKS/scripts/validate_tasks_quality_score.sh`
+- Minimum Score: 90%
+
+---
+
+## Validation Semantics
+
+### Default Mode (Non-Strict)
+- A layer passes if validator exits 0 or 1 (warnings allowed)
+- Auto-fix loop: Apply targeted fixes → revalidate
+- If still failing: Halt and report errors for manual resolution
+- Halt on persistent errors
+
+### Strict Mode
+- A layer passes only if exit code is 0 (warnings fail the layer)
+- Use for production releases or critical quality gates
+
+### Auto-Fix Loop
+```python
+max_attempts = 3  # Configurable in default.yaml
+
+for attempt in range(1, max_attempts + 1):
+    apply_fixes()
+    run_validator()
+    if passes:
+        break
+    else:
+        continue  # Next attempt
+
+if attempt == max_attempts:
+    halt_and_report_error()
+```
+
+---
+
+## Traceability Rules
+
+### Cumulative Tagging Hierarchy
+
+Every artifact includes tags from ALL upstream layers:
+
+| Layer | Required Tags | Format |
+|-------|---------------|--------|
+| **BRD** (L1) | None | No upstream tags |
+| **PRD** (L2) | `@brd` | `@brd: BRD-01` |
+| **EARS** (L3) | `@brd`, `@prd` | `@brd: BRD-01`, `@prd: PRD-01` |
+| **BDD** (L4) | `@brd`, `@prd`, `@ears` | `@brd: BRD-01`, `@prd: PRD-01`, `@ears: EARS-01` |
+| **ADR** (L5) | `@brd`, `@prd`, `@ears`, `@bdd` | All upstream tags |
+| **SYS** (L6) | `@brd`, `@prd`, `@ears`, `@bdd`, `@adr` | All upstream tags |
+| **REQ** (L7) | `@brd` through `@sys` | All upstream tags |
+| **CTR** (L8) | `@brd` through `@req` | All upstream tags |
+| **SPEC** (L9) | `@brd` through `@ctr` | All upstream tags |
+| **TASKS** (L10) | `@brd` through `@spec` | All upstream tags |
+
+### Dotted vs Hyphenated IDs
+
+Auto-pilot converts hyphenated IDs to dotted forms where required:
+
+| Original | Converted | Where Used |
+|---------|----------|------------|
+| `BRD-01` | `BRD.01` | SYS, REQ, SPEC, TASKS references |
+| `PRD-01` | `PRD.01.01` | EARS, BDD, ADR, SYS, REQ, SPEC, TASKS |
+| `REQ-15` | `REQ.15.01.01` | SPEC, TASKS references |
+
+---
+
+## Reporting
+
+### Report Formats
+
+**Markdown** (`--report markdown`):
+```markdown
+# MVP Autopilot Report
+**Intent**: ${INTENT}
+**Slug**: ${SLUG}
+**Status**: PASS | FAIL
+**Configuration**: Profile: ${PROFILE}, Strict: ${STRICT}
+**Layers Summary**:
+| Layer | Status | Score | Notes |
+|-------|--------|-------|-------|
+| BRD | PASS | 92% | ✅ |
+| PRD | PASS | 91% | ✅ |
+| EARS | PASS | 90% | ✅ |
+| BDD | PASS | 94% | ✅ |
+| ADR | PASS | 88% | ⚠️ Manual review |
+| SYS | PASS | 91% | ✅ |
+| REQ | PASS | 90% | ✅ |
+| CTR | PASS | 95% | ✅ |
+| SPEC | PASS | 95% | ✅ |
+| TASKS | PASS | 92% | ✅ |
+```
+
+**JSON** (`--report json`):
+```json
+{
+  "intent": "${INTENT}",
+  "slug": "${SLUG}",
+  "profile": "${PROFILE}",
+  "timestamp": "2026-01-19T12:00:00Z",
+  "status": "PASS|FAIL",
+  "layers": [
+    {
+      "id": "BRD",
+      "status": "PASS|FAIL",
+      "score": 92,
+      "file": "01_BRD/BRD-01_${SLUG}.md"
+    }
+  ]
+}
+```
+
+**Text** (`--report text`):
+```
+BRD: PASS (92%)
+PRD: PASS (91%)
+EARS: PASS (90%)
+```
+
+### Output Directory
+
+- Default: `work_plans/`
+- Contains: `mvp_autopilot_report_*.md`, `mvp_autopilot_report_*.json`
+
+---
+
+## CI Integration
+
+### GitHub Actions Setup
+
+**Prerequisites**:
+1. Copy workflow files to `.github/workflows/`
+2. Configure repository secrets if needed (e.g., `GCP_PROJECT_ID`)
+3. Ensure workflow is enabled
+
+**Workflow Files**:
+- `mvp-docs-generation.yml` - Documentation pipeline (L1-L10)
+- `quality-checks.yml` - Validation (L1-L10)
+- `code-generation.yml` - L11 code generation (optional)
+- `full-mvp-pipeline.yml` - Orchestrated L1-L13 pipeline
+
+**Triggering**:
+- **Manual**: GitHub Actions UI
+- **Automatic**: On push to `main` or `develop` branches
+
+### Quality Gates
+
+Auto-approval threshold: 90%
+- Score ≥ 90%: Auto-approve PR
+- Score < 90%: Require manual review
+
+### Local Development Workflow
+
+```bash
+# Install dependencies
+pip install -r ai_dev_flow/AUTOPILOT/scripts/requirements.txt
+
+# Run with auto-fix (recommended for speed)
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --intent "My MVP" \
+  --slug my_mvp \
+  --auto-fix
+
+# Validate existing docs
+python3 ai_dev_flow/scripts/validate_all.py \
+  ai_dev_flow \
+  --all \
+  --report markdown
+```
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+**Issue**: Autopilot halts at a layer
+**Solution**: Re-run with `--auto-fix` to allow fixes
+
+**Issue**: Link integrity warnings at end
+**Solution**: Fill in real links and re-run `validate_links.py`
+
+**Issue**: Quality score below threshold
+**Solution**: Review document, improve content, re-run with `--auto-fix`
+
+**Issue**: Auto-fixers brittle with template changes
+**Solution**: Update fixer patterns in `mvp_autopilot.py` after major template refactors
+
+### Resume vs Fork
+
+**Resume In-Place**:
+- Discovers existing artifacts
+- Validates and fixes them
+- Generates only missing layers/files
+- Preserves IDs and links
+- Use for teams picking up partial work
+
+**Fork-As-New**:
+- Copies existing project as base
+- New identifiers (e.g., BRD-02 → BRD-01)
+- Updates traceability across all files
+- Use when project needs clean restart
+
+---
+
+## Best Practices
+
+### Development Workflow
+
+1. **Start with speed**: Run non-strict with auto-fix for quick baseline
+2. **Iterate quickly**: Replace stubs with real material between runs
+3. **Tighten gradually**: Turn on `--strict` when content stabilizes
+4. **Validate frequently**: Run `validate_all.py` to catch issues early
+
+### Local Development
+
+1. **Use Makefile**: Standardized commands for common operations
+2. **Watch mode**: Auto-reload on file changes (see Makefile target)
+3. **Test changes**: Run `pytest AUTOPILOT/tests/` after modifications
+4. **Commit frequently**: Small, focused commits for easier debugging
+
+### CI/CD
+
+1. **Automate validation**: Run quality gates on every PR
+2. **Require approval**: Manual review for scores < 90%
+3. **Parallel execution**: Run independent checks in parallel
+4. **Artifact storage**: Upload reports as workflow artifacts
+
+---
+
+## Configuration System
+
+### Configuration Files
+
+**Default Configuration** (`config/default.yaml`):
+- Auto-fix: Enabled
+- MVP validators: Enabled
+- Parallel execution: Disabled
+- Timeout per layer: 300 seconds
+- Quality threshold: 90% (auto-approve)
+
+**Quality Gates Configuration** (`config/quality_gates.yaml`):
+- Auto-approve threshold: 90%
+- Strict mode threshold: 95%
+- Enable auto-approval: Enabled
+
+**Layer-Specific Configuration** (`config/layers/*.yaml`):
+- Template overrides
+- Validator selections
+- Custom timeouts
+- Layer-specific auto-fix rules
+
+### Profiles
+
+**Profile: `mvp`** (Default):
+- Entry: L1_BRD
+- Exit: L10_TASKS
+- Auto-fix: Enabled
+- Strict: Disabled
+
+**Profile: `strict`** (Production):
+- Entry: L1_BRD
+- Exit: L10_TASKS
+- Auto-fix: Enabled
+- Strict: Enabled
+
+---
+
+## Safety & Security
+
+### File Operations
+- Writes only inside `--root` directory
+- No execution of arbitrary commands
+- TASKS documents: Bash commands in content-only mode
+- No network calls to external LLMs
+
+### Validation Scripts
+- Invoked via subprocess with `shell=True`
+- Output capture for reporting
+- Error handling with return codes
+
+### Secrets Management
+
+**GitHub Actions**:
+- Use repository secrets (e.g., `GCP_PROJECT_ID`)
+- Never log or print secrets
+- Validate secret configuration in workflows
+
+**Local Development**:
+- Never commit secrets
+- Use environment variables for sensitive data
+- Use `.env` files with appropriate permissions
+
+---
+
+## Advanced Features
+
+### Resume Operation
+
+Resume from last completed layer:
+```bash
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --resume \
+  --auto-fix \
+  --report markdown
+```
+
+### Plan-Only Mode
+
+Generate execution plan without making changes:
+```bash
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --plan-only \
+  --report markdown
+```
+
+### Parallel Execution (Experimental)
+
+Execute layers in parallel when possible:
+```bash
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --profile parallel \
+  --auto-fix
+```
+
+---
+
+## Extensibility
+
+### Custom Validators
+
+Add custom validation logic via configuration:
+```yaml
+# config/custom_validators.yaml
+custom_validators:
+  - name: business_logic_check
+    script: scripts/validate_business_logic.py
+    layers: [BRD, PRD, SYS]
+    min_score: 95
+```
+
+### Custom Code Generators
+
+Support for multiple AI providers via pluggable architecture:
+- Vertex AI (GCP)
+- OpenAI (via API)
+- Anthropic Claude
+- Local mock generator for testing
+
+---
+
+## Related Documentation
+
+**Framework Guides**:
+- `ai_dev_flow/MVP_WORKFLOW_GUIDE.md` - Workflow patterns
+- `ai_dev_flow/MVP_AUTOMATION_DESIGN.md` - Architecture design
+- `ai_dev_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` - SDD methodology
+- `ai_dev_flow/TRACEABILITY.md` - Traceability standards
+
+**Validation**:
+- `ai_dev_flow/VALIDATION_STANDARDS.md` - Validation rules
+- Layer-specific validation rules: `ai_dev_flow/{LAYER}/*_VALIDATION_RULES.md`
+
+**Scripts**:
+- `ai_dev_flow/scripts/README.md` - Script registry
+
+---
+
+## Version History
+
+**v5.0** (2026-01-19):
+- Simplified configuration system (modular YAML configs)
+- Added Makefile for common operations
+- Implemented actual GitHub Actions workflows
+- Converted quality gates to Python validator
+- Added Docker support
+- Created test suite structure
+- Improved local development workflow
+- Simplified CLI with better defaults
+- Decoupled code generation (plugin architecture)
+
+**v4.0** (2026-01-18):
+- Original comprehensive autopilot guide
+- Single monolithic YAML configuration
+- Documentation-only GitHub integration plan
+
+---
+
+## Summary
+
+The MVP Autopilot provides:
+- **90%+ automation** of the 14-layer SDD workflow (L1-L10)
+- **Quality enforcement** via automated validation gates
+- **Flexible execution** for local development and CI/CD
+- **Comprehensive documentation** for all features
+- **Extensible architecture** for custom validators and generators
+- **Production-ready** GitHub Actions integration
+
+**Key Principles**:
+- Simplicity over complexity
+- Convention over configuration
+- Standard operations via Makefile
+- Modular configuration files
+- Comprehensive testing
+- Clear documentation

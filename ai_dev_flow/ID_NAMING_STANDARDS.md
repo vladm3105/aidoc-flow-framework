@@ -234,7 +234,27 @@ Universal Numbering Pattern (All Document Types)
   - Section-based: `TYPE-DOC_NUM.S_{slug}.md` (e.g., `BRD-01.0_index.md`)
   - ❌ INVALID: Cannot have both `BRD-09_platform.md` AND `BRD-09.0_index.md` (collision - same DOC_NUM, different structure)
   - ✅ VALID: `BRD-09.0_index.md` AND `BRD-09.1_requirements.md` (same DOC_NUM, different sections in nested folder)
-- **Document ID Independence**: Document IDs are independent across types. BRD-09 does NOT necessarily relate to PRD-09, ADR-09, or SPEC-09. Each document type maintains its own sequential numbering.
+- **Vertical ID Alignment (Unified)**:
+  - **Rule**: All downstream artifacts (`ADR`, `EARS`, `BDD`, `SYS`, `REQ`, `CTR`, `SPEC`) MUST match the ID of their parent `PRD` (or `BRD` if no PRD exists). **Exception**: `TASKS` have independent sequential numbering.
+  - **Mapping**: `PRD-12` → `ADR-12`, `EARS-12`, `BDD-12`, `SPEC-12`, `SYS-12`, `REQ-12`, `CTR-12`.
+  - **One-to-One (Flat Structure)**: 
+    - Single artifact per PRD uses flat structure without decimal suffix.
+    - **Examples**:
+      - **ADR**: `PRD-05` → `ADR-05_caching_strategy.md` (single file, flat structure)
+      - **SYS**: `PRD-02` → `SYS-02_session_memory.md` (single file, flat structure)
+      - **BDD**: `PRD-04` → `BDD-04_authentication.feature` (single file, flat structure)
+      - **EARS**: `PRD-06` → `EARS-06_notifications.md` (single file, flat structure)
+  - **One-to-Many (Nested Structure)**: 
+    - Multiple artifacts of the same type per PRD use decimal suffixes starting from `.01` and increasing sequentially.
+    - **MUST use nested folder structure** when one-to-many mapping exists.
+    - **Examples**:
+      - **ADR**: `PRD-12` → `ADR-12_{slug}/` folder containing `ADR-12.01.md`, `ADR-12.02.md`
+      - **SYS**: `PRD-08` → `SYS-08_{slug}/` folder containing `SYS-08.01.md`, `SYS-08.02.md`, `SYS-08.03.md`
+      - **BDD**: `PRD-05` → `BDD-05_{slug}/` folder containing `BDD-05.01.feature`, `BDD-05.02.feature`
+  - **Roots**: `BRD` and `PRD` maintain independent sequential numbering starting from `01` and increasing sequentially.
+  - **Exceptions**: 
+    - `REF` and `*-00` utility files remain independent.
+    - **TASKS** have independent sequential numbering (not PRD-aligned). TASKS are special document types that provide AI code generation instructions and audit trail of code generation steps.
 
 Document ID Standards (ai_dev_flow)
 - Requirements (REQ)
@@ -246,18 +266,15 @@ Document ID Standards (ai_dev_flow)
   - **Notes**: Legacy category folders are not used. Use PRD-based vertical slice folders.
 - ADRs
   - H1 ID: `ADR-DOC_NUM` (e.g., `# ADR-33: Risk Limit Enforcement Architecture`).
-  - Filename: `ADR-DOC_NUM.S_{slug}.md` (section-based is REQUIRED)
-  - Location: `docs/05_ADR/ADR-DOC_NUM_{slug}/` (nested folder per document with descriptive slug)
-  - Folder Naming: `ADR-DOC_NUM_{slug}/` where slug MUST match the index file slug
-  - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
-  - **REQUIRED**: Section-based structure with nested folders (`.0`, `.1`, etc.)
-  - Notes: All ADR documents use nested folder structure. Each ADR gets its own folder containing all section files. Section suffix is ALWAYS required. Use `split_type` metadata to distinguish sectional vs related documents. Use `descriptive_slug` metadata to capture the folder's descriptive name.
-  - Examples (shortened pattern - PREFERRED):
-    - Section files: `docs/05_ADR/ADR-01_database_selection/ADR-01.0_index.md`, `docs/05_ADR/ADR-01_database_selection/ADR-01.1_context.md`
-    - Single section: `docs/05_ADR/ADR-02_api_versioning/ADR-02.0_overview.md` (still requires `.0`)
-    - Extended: `docs/05_ADR/ADR-100_cloud_migration/ADR-100.0_index.md` (when >99 ADRs)
-  - Examples (full pattern - backward compatible):
-    - Section files: `docs/05_ADR/ADR-01_database_selection/ADR-01.0_database_selection_index.md`
+  - **Structure**: Follow Default Directory Model (Flat vs Nested).
+  - **Flat**: `docs/05_ADR/ADR-DOC_NUM_{slug}.md`
+  - **Nested**: `docs/05_ADR/ADR-DOC_NUM_{slug}/` folder with section files.
+  - **ID Alignment**: DOC_NUM MUST match the parent PRD ID (e.g., `PRD-33` -> `ADR-33`).
+  - One-to-Many: `ADR-33.01`, `ADR-33.02` if multiple ADRs needed for one PRD.
+  - Notes: Use `split_type` metadata to distinguish sectional vs related documents.
+  - Examples:
+    - Flat: `docs/05_ADR/ADR-01_database_selection.md`
+    - Nested: `docs/05_ADR/ADR-100_cloud_migration/ADR-100.0_index.md`
 - BDD Features and Tags
   - **File Format Clarification**:
     - **Test Scenarios**: `BDD-DOC_NUM_{slug}.feature` (Gherkin format - `.feature` extension)
@@ -324,7 +341,8 @@ Document ID Standards (ai_dev_flow)
     Feature: BDD-02.1: Ingest and Analysis
     ```
 
-  - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
+  - **ID Alignment**: DOC_NUM MUST match the parent PRD ID (e.g., `PRD-02` -> `BDD-02`).
+  - Variable Length: DOC_NUM matches parent PRD.
   - Section Numbers: SECTION = 0 (index), 1+ (content sections)
   - Subsection Numbers: SUBSECTION = 01-99 (subsections), 00 (aggregator)
   - Tags (mandatory):
@@ -334,25 +352,29 @@ Document ID Standards (ai_dev_flow)
   - Tags appear before `Scenario:` using valid relative paths + anchors
   - Index: Each suite MUST have `04_BDD/BDD-DOC_NUM.0_index.md` listing all sections
 - Technical Specifications (SPEC)
-  - **Vertical ID Alignment**: SPEC ID MUST match the parent PRD ID where applicable (e.g., `PRD-12` -> `SPEC-12`).
-  - **Directory**: `09_SPEC/SPEC-{PRD_ID}_{Slug}/` (Nested "Micro-SPEC" Folder).
-  - **Files**: `SPEC-{PRD_ID}-{Seq}_{Slug}.yaml` (e.g. `SPEC-12-01_rules.yaml`).
-  - **Monolithic**: DEPRECATED for complex components. Use generated Micro-SPECs.
-  - **Traceability**: Each Micro-SPEC independently validates REQ coverage.
+  - **Vertical ID Alignment**: SPEC ID MUST match the parent PRD ID (e.g., `PRD-12` -> `SPEC-12`).
+  - **Structure**: Follow Default Directory Model (Flat vs Nested).
+  - **Flat (Single SPEC)**: `09_SPEC/SPEC-DOC_NUM_{slug}.yaml`
+  - **Nested (Micro-SPECs)**: `09_SPEC/SPEC-DOC_NUM_{slug}/` folder containing multiple YAML files.
+  - **One-to-Many**: Use decimal suffixes for multiple micro-SPECs (e.g., `SPEC-12.01_{slug}.yaml`, `SPEC-12.02_{slug}.yaml`).
+  - Variable Length: DOC_NUM matches parent PRD.
+  - **Traceability**: Each SPEC independently validates REQ coverage.
 - API Contracts (CTR)
   - H1 ID: `CTR-DOC_NUM` (e.g., `# CTR-01: resource Risk Validation Contract`).
   - Filename (Dual Format): `CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml` (both required)
   - Organization: Optional subdirectories by service type: `08_CTR/{agents,mcp,infra}/CTR-DOC_NUM_{slug}.{md,yaml}`
-  - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
+  - **ID Alignment**: DOC_NUM MUST match the parent PRD ID.
+  - Variable Length: DOC_NUM matches parent PRD.
   - YAML `contract_id:` uses lowercase_snake_case (e.g., `contract_id: position_risk_validation`)
   - Notes: Both .md and .yaml must exist for each CTR-DOC_NUM; slugs must match exactly. Use Section Files when contract documentation exceeds 50KB.
 
 - AI Tasks (TASKS)
-  - H1 ID: `TASKS-DOC_NUM` (e.g., `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
+  - H1 ID: `TASKS-DOC_NUM` (e.g., `# TASKS-03: [RESOURCE_LIMIT] Service Implementation`)
   - Filename: `10_TASKS/TASKS-DOC_NUM_{slug}.md` with a tasks index at `10_TASKS/TASKS-00_index.md`.
-  - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
+  - **ID Alignment**: DOC_NUM MUST match the parent PRD ID (and associated SPEC ID).
+  - Variable Length: DOC_NUM matches parent PRD.
   - Notes: SPEC implementation plans with exact TODOs for code generation. Each TASKS corresponds to one SPEC. Use Section Files when document exceeds 50KB.
-  - Allocation: reserve next number, do not reuse; keep slugs stable.
+  - Allocation: ID matched to parent PRD.
 - Reference Documents (REF)
   - H1 ID: `{TYPE}-REF-DOC_NUM` (e.g., `# BRD-REF-01: Project Overview`)
   - Filename: `{TYPE}-REF-DOC_NUM_{slug}.md` (e.g., `BRD-REF-01_project_overview.md`)
@@ -370,45 +392,92 @@ Document ID Standards (ai_dev_flow)
     - Reference material and guides
   - Notes: REF documents are supplementary and do not participate in formal traceability chain. Similar exemption treatment as `{TYPE}-00` index documents.
 - Business Requirements Documents (BRD)
-  - H1 ID: `BRD-DOC_NUM` (e.g., `# BRD-09: [EXTERNAL_INTEGRATION - e.g., third-party API, service provider] Integration`)
-  - Filename: `BRD-DOC_NUM.S_{slug}.md` (section-based is REQUIRED)
-  - Location: `docs/01_BRD/BRD-DOC_NUM_{slug}/` (nested folder per document with descriptive slug)
-  - Folder Naming: `BRD-DOC_NUM_{slug}/` where slug MUST match the index file slug
-  - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
-  - **REQUIRED**: Section-based structure with nested folders (`.0`, `.1`, etc.)
-  - Notes: All BRD documents use nested folder structure. Each BRD gets its own folder containing all section files. Section suffix is ALWAYS required. Use `split_type` metadata to distinguish sectional vs related documents. Use `descriptive_slug` metadata to capture the folder's descriptive name.
-  - Examples (shortened pattern - PREFERRED):
-    - Section files: `docs/01_BRD/BRD-01_platform_architecture/BRD-01.0_index.md`, `docs/01_BRD/BRD-01_platform_architecture/BRD-01.1_executive_summary.md`
-    - Single section: `docs/01_BRD/BRD-02_user_authentication/BRD-02.0_overview.md` (still requires `.0`)
-    - Extended: `docs/01_BRD/BRD-100_enterprise_integration/BRD-100.0_index.md` (when >99 BRDs)
-  - Examples (full pattern - backward compatible):
-    - Section files: `docs/01_BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md`
+  - H1 ID: `BRD-DOC_NUM` (e.g., `# BRD-09: [EXTERNAL_INTEGRATION] Integration`)
+  - **Structure**: Follow Default Directory Model (Flat for single files, Nested for complex/split docs).
+  - **Flat (Preferred for MVP)**: `docs/01_BRD/BRD-DOC_NUM_{slug}.md`
+  - **Nested**: `docs/01_BRD/BRD-DOC_NUM_{slug}/` folder with section files.
+  - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+).
+  - **Sequential**: Independent sequential numbering starting from `01`.
+  - Notes: Use Flat structure by default. Use Nested structure only when document exceeds 20k tokens or requires splitting.
+  - Examples:
+    - Flat: `docs/01_BRD/BRD-01_platform_architecture.md`
+    - Nested: `docs/01_BRD/BRD-03_complex_system/BRD-03.0_index.md`
 
 PRD, SYS, and EARS Document Types
 - Product Requirements Documents (PRD)
   - H1 ID: `PRD-DOC_NUM` (e.g., `# PRD-03: resource Risk Limits`)
-  - Filename: `PRD-DOC_NUM.S_{section_type}.md` (shortened) or `PRD-DOC_NUM.S_{folder_slug}_{section_type}.md` (full)
-  - Location: `docs/02_PRD/PRD-DOC_NUM_{slug}/` (nested folder per document with descriptive slug)
-  - Folder Naming: `PRD-DOC_NUM_{slug}/` - descriptive slug in folder name
-  - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
-  - **REQUIRED**: Section-based structure with nested folders (`.0`, `.1`, etc.)
-  - Notes: All PRD documents use nested folder structure. Each PRD gets its own folder containing all section files. Section suffix is ALWAYS required. Use `split_type` metadata to distinguish sectional vs related documents. Use `descriptive_slug` metadata to capture the folder's descriptive name.
-  - Examples (shortened pattern - PREFERRED):
-    - Section files: `docs/02_PRD/PRD-01_user_authentication/PRD-01.0_index.md`, `docs/02_PRD/PRD-01_user_authentication/PRD-01.1_overview.md`
-    - Single section: `docs/02_PRD/PRD-02_payment_processing/PRD-02.0_overview.md` (still requires `.0`)
-    - Extended: `docs/02_PRD/PRD-100_enterprise_features/PRD-100.0_index.md` (when >99 PRDs)
-  - Examples (full pattern - backward compatible):
-    - Section files: `docs/02_PRD/PRD-01_user_authentication/PRD-01.0_user_authentication_index.md`
+  - **Structure**: Follow Default Directory Model (Flat for single files, Nested for complex/split docs).
+  - **Flat (Preferred for MVP)**: `docs/02_PRD/PRD-DOC_NUM_{slug}.md`
+  - **Nested**: `docs/02_PRD/PRD-DOC_NUM_{slug}/` folder with section files.
+  - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+).
+  - **Sequential**: Independent sequential numbering starting from `01`.
+  - Notes: Use Flat structure by default. Use Nested structure only when document exceeds 20k tokens or requires splitting.
+  - Examples:
+    - Flat: `docs/02_PRD/PRD-01_user_authentication.md`
+    - Nested: `docs/02_PRD/PRD-02_complex_feature/PRD-02.0_index.md`
 - System Architecture Documents (SYS)
   - H1 ID: `SYS-DOC_NUM` (e.g., `# SYS-03: resource Risk Limits`)
-  - Filename: `06_SYS/SYS-DOC_NUM_{slug}.md`
-  - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
-  - Notes: Use Section Files (`SYS-DOC_NUM.S_{slug}.md`) when document exceeds 50KB.
+  - **Structure**: Follow Vertical ID Alignment rules (Flat vs Nested).
+  - **Flat (One-to-One)**: `06_SYS/SYS-DOC_NUM_{slug}.md`
+  - **Nested (One-to-Many)**: `06_SYS/SYS-DOC_NUM_{slug}/` folder containing `SYS-DOC_NUM.01_{slug}.md`, `SYS-DOC_NUM.02_{slug}.md`, etc.
+  - **ID Alignment**: DOC_NUM MUST match the parent PRD ID.
+  - Variable Length: DOC_NUM matches parent PRD.
+  - Notes: Use Section Files (`SYS-DOC_NUM.S_{slug}.md`) when individual document exceeds 50KB.
+  - **Examples**:
+    - Flat: `06_SYS/SYS-02_Session_Memory.md` (one SYS for PRD-02)
+    - Nested: `06_SYS/SYS-08_trading_intelligence/` containing `SYS-08.01_LLM_Context.md`, `SYS-08.02_LLM_Ensemble.md`, `SYS-08.03_Agent_Swarm.md` (three SYS for PRD-08)
 - EARS Requirements (EARS)
-  - H1 ID: `EARS-DOC_NUM` (e.g., `# EARS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
+  - H1 ID: `EARS-DOC_NUM` (e.g., `# EARS-03: [RESOURCE_LIMIT] Enforcement`)
   - Filename: `03_EARS/EARS-DOC_NUM_{slug}.md`
-  - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
+  - **ID Alignment**: DOC_NUM MUST match the parent PRD ID.
+  - Variable Length: DOC_NUM matches parent PRD.
   - Notes: Use Section Files (`EARS-DOC_NUM.S_{slug}.md`) when document exceeds 50KB.
+
+One-to-Many Structure Examples (Vertical ID Alignment)
+
+When a single PRD requires multiple downstream artifacts of the same type, ALL artifacts must use decimal suffixes starting from `.01` and must be organized in nested folders.
+
+**Pattern**: `{LAYER}_DIR/{TYPE}-{PRD_ID}_{slug}/` containing `{TYPE}-{PRD_ID}.01_{slug}.md`, `{TYPE}-{PRD_ID}.02_{slug}.md`
+
+**Complete Examples by Artifact Type**:
+
+- **ADR (Architecture Decision Records)**
+  ```
+  PRD-01 → 05_ADR/ADR-01_iam/
+    ├── ADR-01.01_Authentication_Architecture.md
+    └── ADR-01.02_4D_Authorization_Matrix.md
+  ```
+
+- **SYS (System Requirements)**
+  ```
+  PRD-08 → 06_SYS/SYS-08_trading_intelligence/
+    ├── SYS-08.01_LLM_Context_Automation.md
+    ├── SYS-08.02_LLM_Ensemble.md
+    └── SYS-08.03_Trading_Agent_Swarm.md
+  ```
+
+- **BDD (Behavior-Driven Development)**
+  ```
+  PRD-03 → 04_BDD/BDD-03_risk_management/
+    ├── BDD-03.01_position_limits.feature
+    ├── BDD-03.02_margin_requirements.feature
+    └── BDD-03.03_circuit_breakers.feature
+  ```
+
+- **EARS (Event-Action-Response-State)**
+  ```
+  PRD-05 → 03_EARS/EARS-05_data_feeds/
+    ├── EARS-05.01_market_data_ingestion.md
+    └── EARS-05.02_historical_data_sync.md
+  ```
+
+**Key Rules**:
+1. **Folder naming**: Use descriptive slug that encompasses all child artifacts
+2. **File naming**: Use decimal suffixes `.01`, `.02`, `.03` with specific descriptive slugs
+3. **Consistency**: ALL artifacts of same type for same PRD use this pattern
+4. **No mixing**: Don't mix flat and nested for same PRD-artifact type combination
+
+**Note**: TASKS documents are NOT part of Vertical ID Alignment. They have independent sequential numbering (TASKS-01, TASKS-02, etc.) and serve as special document types that provide AI code generation instructions and audit trail of code generation steps.
 
 File Organization Rules
 - One document per file (PRD, SYS, REQ, ADR, SPEC, BDD, EARS, CTR, AI-TASKS, BRD).
@@ -416,23 +485,17 @@ File Organization Rules
 - Filenames use variable-length `DOC_NUM` numbering (2+ digits); H1 contains the full ID where applicable.
 - For large documents (>50KB), use Section Files: `TYPE-DOC_NUM.S_{slug}.md`
 - Structure (this example):
-  - **Nested Folder Types (BRD, PRD, ADR)** - section ALWAYS required:
-    - **Shortened pattern** (PREFERRED): `01_BRD/BRD-DOC_NUM_{slug}/BRD-DOC_NUM.S_{section_type}.md`
+  - **Nested Folder Types** (when >20k tokens):
+    - Pattern: `01_BRD/BRD-DOC_NUM_{slug}/BRD-DOC_NUM.S_{section_type}.md`
       - Example: `01_BRD/BRD-01_platform_architecture/BRD-01.0_index.md`
-    - **Full pattern** (backward compatible): `01_BRD/BRD-DOC_NUM_{slug}/BRD-DOC_NUM.S_{slug}_{section_type}.md`
-      - Example: `01_BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md`
-    - Same patterns apply to PRD and ADR
-    - **Folder contains descriptive slug** - filenames can omit it since context is in path
-    - **Metadata field `descriptive_slug`** captures folder's descriptive name for tools
-  - **Flat Types** - section optional:
-    - `07_REQ/REQ-DOC_NUM_{slug}/REQ-DOC_NUM_{slug}.md`
-    - `04_BDD/BDD-DOC_NUM_{suite}/BDD-DOC_NUM.SECTION_{slug}.feature`
-- `09_SPEC/{type}/SPEC-DOC_NUM_{slug}.yaml`
-- `08_CTR/CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml` (optional subdirs: `08_CTR/{agents,mcp,infra}/`)
-- `10_TASKS/TASKS-DOC_NUM_{slug}.md`
-
-    - `06_SYS/SYS-DOC_NUM_{slug}.md`
-    - `03_EARS/EARS-DOC_NUM_{slug}.md`
+    - Folder slug matches document slug.
+  - **Flat Types** (Atomic, <20k tokens):
+    - Pattern: `TYPE/TYPE-DOC_NUM_{slug}.md`
+    - Example: `01_BRD/BRD-01_platform.md`, `05_ADR/ADR-33_risk.md`
+  - **Special Cases**:
+    - `09_SPEC/SPEC-{PRD_ID}_{Slug}/SPEC-{PRD_ID}-{Seq}_{Slug}.yaml`
+    - `08_CTR/CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml`
+    - `04_BDD/BDD-DOC_NUM_{suite}/` (Always Nested for Suites)
 
 ## Section-Based File Splitting (Document Chunking)
 

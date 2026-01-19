@@ -1,0 +1,95 @@
+# MVP Autopilot Quality Gates Configuration
+# Version: 5.0
+# Last Updated: 2026-01-19
+
+# Quality gate thresholds and approval policies
+
+defaults:
+  auto_approve_threshold: 90  # Auto-approve if score >= 90%
+  strict_threshold: 95          # Strict mode threshold
+  warning_threshold: 80         # Below this, always requires review
+  enable_auto_approval: true   # Allow quality gate auto-skip
+
+# Layer-specific quality thresholds
+layer_thresholds:
+  BRD:
+    min_score: 85
+    target_score: 90
+    notes: "Business documents - lower threshold for initial hypotheses"
+  
+  PRD:
+    min_score: 90
+    target_score: 90
+    notes: "Product requirements - high standard"
+  
+  EARS:
+    min_score: 90
+    target_score: 90
+    notes: "Formal requirements - high precision required"
+  
+  BDD:
+    min_score: 90
+    target_score: 90
+    notes: "Test scenarios - high clarity required"
+  
+  ADR:
+    min_score: 88
+    target_score: 90
+    notes: "Architecture decisions - lower threshold for flexibility"
+  
+  SYS:
+    min_score: 90
+    target_score: 90
+    notes: "System requirements - high standard"
+  
+  REQ:
+    min_score: 90
+    target_score: 90
+    notes: "Atomic requirements - high precision required"
+  
+  CTR:
+    min_score: 95
+    target_score: 90
+    notes: "API contracts - strict validation required"
+  
+  SPEC:
+    min_score: 92
+    target_score: 90
+    notes: "Technical specifications - high precision required"
+  
+  TASKS:
+    min_score: 90
+    target_score: 90
+    notes: "Implementation tasks - clarity and executability required"
+
+# Validation severity levels
+severity_levels:
+  error: Blocks workflow, must be fixed before proceeding
+  warning: Advisory only, allows workflow to continue
+  info: Informational, no action required
+  critical: Blocks workflow and requires immediate attention
+
+# Auto-fix strategies
+auto_fix_strategies:
+  frontmatter: true     # Fix YAML frontmatter errors
+  h1_title: true        # Fix missing or incorrect H1 titles
+  document_control: true  # Add missing Document Control sections
+  required_sections: true # Add missing required section headers
+  traceability_tags: true   # Fix cumulative tagging errors
+  placeholders: false     # Remove or replace placeholder text with real content
+  id_format: true        # Fix ID format issues (hyphen vs underscore)
+
+# Quality gate behaviors
+gate_behaviors:
+  on_failure:
+    action: "halt"
+    notify: true
+    retry_with_human: true
+  
+  on_warning:
+    action: "continue"
+    notify: true
+  
+  on_success:
+    auto_approve: true   # Auto-approve if score >= auto_approve_threshold
+    notify: true

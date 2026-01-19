@@ -139,7 +139,7 @@ docs/04_BDD/
 └── BDD-06_level0_system_agents.feature  (redirect stub - 0 scenarios)
 ```
 
-**Key Rule**: All `.feature` files MUST reside at the suite folder root (no `features/` subdirectory). Aggregator and section/subsection files live together.
+**Key Rule**: All `.feature` files MUST reside at the suite folder root. `BDD-NN` MUST match parent PRD ID.
 
 **See Section 1.2 for complete split-file structure details.**
 

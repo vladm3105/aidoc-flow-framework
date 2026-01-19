@@ -15,7 +15,7 @@ custom_fields:
 **Framework Philosophy**: Maximum velocity to production through 90%+ automation with strategic human oversight.
 
 ## Goal
-Create a unified automation tool (`mvp_autopilot.py`) that executes the **6-Step MVP Workflow** sequentially from BRD to TASKS with a single command, enabling rapid 1-2 week cycles from business idea to production MVP.
+Create a unified automation tool (`AUTOPILOT/scripts/mvp_autopilot.py`) that executes the **6-Step MVP Workflow** sequentially from BRD to TASKS with a single command, enabling rapid 1-2 week cycles from business idea to production MVP.
 
 **Automation Capabilities**:
 - Single-command scaffolding of all MVP artifacts (BRD → TASKS)
@@ -29,7 +29,7 @@ The automation treats the `ai_dev_flow` framework as a **compile target**. It mo
 
 ## Architecture
 
-### 1. The Controller (`AUTOPILOT/scripts/mvp_autopilot.py`)
+### 1. The Controller (`AUTOPILOT/scripts/AUTOPILOT/scripts/mvp_autopilot.py`)
 A Python script that manages the state machine.
 
 **Inputs:**
@@ -64,7 +64,7 @@ The script needs an `LLMProvider` interface.
 
 ```bash
 # Example Usage
-python3 AUTOPILOT/scripts/mvp_autopilot.py \
+python3 AUTOPILOT/scripts/AUTOPILOT/scripts/mvp_autopilot.py \
   --root /opt/data/my_project \
   --intent "A trading bot for crypto using moving averages" \
   --auto-fix
@@ -96,4 +96,4 @@ python3 AUTOPILOT/scripts/mvp_autopilot.py \
 ## Next Steps for User
 1.  Approve this architecture.
 2.  Decide on the LLM backend (API Key or CLI tool).
-3.  I can scaffold `mvp_autopilot.py` with the structure but "mock" the LLM generation for you to fill in.
+3.  I can scaffold `AUTOPILOT/scripts/mvp_autopilot.py` with the structure but "mock" the LLM generation for you to fill in.

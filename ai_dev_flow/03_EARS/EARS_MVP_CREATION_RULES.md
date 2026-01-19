@@ -90,7 +90,7 @@ custom_fields:
 
 - Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 - **Location**: `docs/03_EARS/` within project docs directory
-- **Naming**: `EARS-NN_descriptive_title.md` (NN = 2-digit minimum, expand when needed)
+- **Naming**: `EARS-NN_descriptive_title.md` (NN MUST match parent PRD ID e.g., `PRD-12` -> `EARS-12`)
 - **Subdocuments**: For complex systems: `EARS-NN-YY_additional_detail.md`
 
 ---
@@ -608,10 +608,8 @@ Create a new EARS document (not category prefix) when:
 
 ```bash
 # Check existing EARS documents
-ls -la docs/03_EARS/EARS-*.md | tail -5
-
-# Reserve next sequential number
-# If last is EARS-19, next is EARS-20
+# Align with parent PRD ID
+# If parent is PRD-20, use EARS-20
 ```
 
 **Step 2: Create Document from Template**

@@ -163,8 +163,57 @@ python3 AUTOPILOT/scripts/mvp_autopilot.py \
   --intent "Your MVP idea" \
   --slug your_mvp \
   --auto-fix \
-  --mvp-validators \
   --up-to TASKS \
+  --report markdown
+```
+*Generates complete MVP documentation (BRD → TASKS) with auto-approval for artifacts scoring ≥90%*
+
+#### Scenario 2: Resume Existing Project
+```bash
+python3 AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --resume \
+  --auto-fix \
+  --report markdown
+```
+*Validates existing artifacts, generates missing layers, applies fixes while preserving existing IDs and links*
+
+#### Scenario 3: Partial Execution (Start from ADR → SPEC)
+```bash
+python3 AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --from-layer ADR \
+  --up-to SPEC \
+  --auto-fix \
+  --report markdown
+```
+*Generate architecture decisions and technical specifications, skip early layers*
+
+#### Scenario 4: Partial Execution (Start from SPEC → TASKS)
+```bash
+python3 AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --from-layer SPEC \
+  --up-to TASKS \
+  --auto-fix \
+  --report markdown
+```
+*Generate implementation plans from existing specifications*
+
+#### Scenario 5: Strict Validation (Pre-Release)
+```bash
+python3 AUTOPILOT/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --resume \
+  --strict \
+  --report json
+```
+*Strict mode: warnings fail validation, full validators, JSON report for detailed metrics*
+
+#### Scenario 6: Validate Only (No Changes)
+```bash
+python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow \
+  --all \
   --report markdown
 ```
 *Generates complete MVP documentation (BRD → TASKS) with auto-approval for artifacts scoring ≥90%*

@@ -1,0 +1,109 @@
+# MVP Autopilot Default Configuration
+# Version: 5.0
+# Last Updated: 2026-01-19
+
+# Global settings that apply to all executions
+defaults:
+  auto_fix: true
+  mvp_validators: true
+  report: markdown
+  parallel_execution: false
+  timeout_per_layer: 300
+  max_retries: 3
+
+# Default entry and exit points
+default_entry_point: L1_BRD
+default_exit_point: L10_TASKS
+
+# Auto-detect project mode (greenfield vs brownfield)
+project_modes:
+  auto:
+    description: Auto-detect project mode
+    fallback: greenfield
+  
+  greenfield:
+    description: New project starting from scratch
+    detection:
+      condition: no_layers_exist
+      commands:
+        - test ! -f ai_dev_flow/01_BRD/BRD*.md
+        - test ! -f ai_dev_flow/02_PRD/PRD*.md
+      behavior:
+        skip_existing: false
+        overwrite_on_conflict: false
+        validate_before_generate: false
+        generate_index_files: true
+        create_directory_structure: true
+  
+  brownfield:
+    description: Existing project with partial artifacts
+    detection:
+      condition: layers_exist
+      commands:
+        - test -f ai_dev_flow/*/BRD*.md -o -f ai_dev_flow/*/PRD*.md
+      behavior:
+        skip_existing: true
+        overwrite_on_conflict: false
+        validate_before_generate: true
+        discover_existing_artifacts: true
+        resume_from_last_completed: true
+        update_index_files: true
+
+# Entry exit points (valid entry layers)
+entry_exit_points:
+  valid_entries:
+    - L1_BRD
+    - L2_PRD
+    - L3_EARS
+    - L4_BDD
+    - L5_ADR
+    - L6_SYS
+    - L7_REQ
+    - L8_CTR
+    - L9_SPEC
+    - L10_TASKS
+
+# Valid exit points (valid stop layers)
+valid_exits:
+    - L1_BRD
+    - L2_PRD
+    - L3_EARS
+    - L4_BDD
+    - L5_ADR
+    - L6_SYS
+    - L7_REQ
+    - L8_CTR
+    - L9_SPEC
+    - L10_TASKS
+
+# Common start/end combinations
+presets:
+  planning_phase:
+    entry: L1_BRD
+    exit: L5_ADR
+    description: Business planning through architecture decisions
+  
+  requirements_phase:
+    entry: L2_PRD
+    exit: L7_REQ
+    description: Requirements definition and decomposition
+  
+  specifications_phase:
+    entry: L7_REQ
+    exit: L9_SPEC
+    description: Technical specifications
+  
+  full_docs:
+    entry: L1_BRD
+    exit: L10_TASKS
+    description: Complete documentation pipeline
+  
+  testing_focus:
+    entry: L4_BDD
+    exit: L10_TASKS
+    description: Start from BDD, generate through implementation plan
+  
+  contracts_only:
+    entry: L7_REQ
+    exit: L8_CTR
+    description: Generate API contracts from requirements

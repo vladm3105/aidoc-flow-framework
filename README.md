@@ -935,6 +935,46 @@ Contributions welcome! Please:
 4. Update traceability documentation
 5. Submit a pull request
 
+## Automation & Workflow
+
+**MVP Autopilot Guide**:
+- [AUTOPILOT/MVP_AUTOPILOT.md](./AUTOPILOT/MVP_AUTOPILOT.md) - Complete automation guide for MVP workflow
+- [AUTOPILOT/MVP_GITHUB_CICD_INTEGRATION_PLAN.md](./AUTOPILOT/MVP_GITHUB_CICD_INTEGRATION_PLAN.md) - CI/CD integration plan
+- [AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md](./AUTOPILOT/MVP_PIPELINE_END_TO_END_USER_GUIDE.md) - End-to-end user guide
+
+**Configuration**:
+- [AUTOPILOT/config/default.yaml](./AUTOPILOT/config/default.yaml) - Default configuration
+- [AUTOPILOT/config/quality_gates.yaml](./AUTOPILOT/config/quality_gates.yaml) - Quality gate settings
+
+**Scripts**:
+- [AUTOPILOT/scripts/mvp_autopilot.py](./AUTOPILOT/scripts/mvp_autopilot.py) - Main orchestration script
+- [AUTOPILOT/scripts/validate_metadata.py](./AUTOPILOT/scripts/validate_metadata.py) - Metadata validator
+- [AUTOPILOT/scripts/validate_quality_gates.py](./AUTOPILOT/scripts/validate_quality_gates.py) - Quality gate checker (Python)
+- [AUTOPILOT/scripts/validate_quality_gates.sh](./AUTOPILOT/scripts/validate_quality_gates.sh) - Quality gate validator (shell)
+
+**Makefile**:
+- [Makefile](./Makefile) - Standardized commands for common operations
+
+**Docker Support**:
+- [Dockerfile](./Dockerfile) - Docker configuration
+- [docker-compose.yml](./docker-compose.yml) - Docker Compose setup
+
+**Quick Start**:
+
+```bash
+# Local development
+python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
+  --root . \
+  --intent "My MVP" \
+  --slug my_mvp \
+  --auto-fix \
+  --report markdown
+
+# GitHub Actions
+make docs  # Runs mvp-autopilot.yml workflow
+```
+
+---
 ## License
 
 MIT License - See LICENSE file for details
@@ -1202,13 +1242,3 @@ trading-nexus/
 |----------|--------|-----------|
 | Agent Framework | Google ADK | Native GCP, multi-agent, Dev UI |
 | Tool Protocol | MCP | Industry standard, 2000+ servers |
-| AI Gateway | LiteLLM | 200+ models, cost optimization |
-| Infrastructure | GCP | Managed services, scale-to-zero |
-
-## License
-
-Private - All rights reserved
-
----
-
-*Trading Nexus - Systematic AI-powered trading intelligence*
