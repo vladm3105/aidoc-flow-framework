@@ -1196,7 +1196,7 @@ Before committing any document:
 
 ```bash
 # Validate requirement IDs and format
-python scripts/validate_requirement_ids.py
+python 07_REQ/scripts/validate_requirement_ids.py
 
 # Check broken references (if available)
 python scripts/validate_links.py

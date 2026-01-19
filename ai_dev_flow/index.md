@@ -361,8 +361,8 @@ Validate document structure and traceability using automated scripts:
 
 ```bash
 # Core validation scripts
-python scripts/validate_requirement_ids.py               # REQ-ID format and uniqueness
-python scripts/validate_req_spec_readiness.py            # REQ SPEC-readiness scoring
+python 07_REQ/scripts/validate_requirement_ids.py               # REQ-ID format and uniqueness
+python 07_REQ/scripts/validate_req_spec_readiness.py            # REQ SPEC-readiness scoring
 python scripts/validate_documentation_paths.py           # Path consistency
 python scripts/validate_links.py                         # Markdown link validation
 python scripts/validate_tags_against_docs.py             # Tag extraction and validation
@@ -370,10 +370,10 @@ python scripts/validate_traceability_matrix.py           # Traceability matrix s
 python scripts/validate_traceability_matrix_enforcement.py  # Matrix enforcement rules
 
 # Template validation scripts
-bash scripts/validate_brd_template.sh                    # BRD template compliance
-bash scripts/validate_req_template.sh                    # REQ template compliance
-bash scripts/validate_ctr.sh                             # CTR dual-file format compliance
-bash scripts/validate_tasks.sh                           # TASKS format including Section 7-8
+bash 01_BRD/scripts/validate_brd.py                    # BRD template compliance
+bash 07_REQ/scripts/validate_req_template.sh                    # REQ template compliance
+bash 08_CTR/scripts/validate_ctr.sh                             # CTR dual-file format compliance
+bash 10_TASKS/scripts/validate_tasks.sh                           # TASKS format including Section 7-8
 
 # Traceability generation
 python scripts/generate_traceability_matrix.py           # Generate traceability matrices

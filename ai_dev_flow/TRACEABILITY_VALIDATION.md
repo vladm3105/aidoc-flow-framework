@@ -76,16 +76,16 @@ Aligned with the 14-Layer Architecture (TRACEABILITY.md §1.2.1):
 | **Layer** | **Artifact Type** | **Ready Score Field** | **Validation Command** | **Gates Upstream Tags** |
 |-----------|-------------------|----------------------|------------------------|------------------------|
 | **0** | Strategy | N/A | N/A | None |
-| **1** | BRD | `EARS-Ready Score` | `./scripts/validate_brd_template.sh` | None |
-| **2** | PRD | `BDD-Ready Score` | `python scripts/validate_prd.py` | `@brd` |
-| **3** | EARS | `ADR-Ready Score` | `python scripts/validate_ears.py` | `@brd @prd` |
-| **4** | BDD | `SYS-Ready Score` | `python scripts/validate_bdd.py` | `@brd @prd @ears` |
-| **5** | ADR | `REQ-Ready Score` | `python scripts/validate_adr.py` | `@brd→@bdd` |
-| **6** | SYS | `SPEC-Ready Score` | `python scripts/validate_sys.py` | `@brd→@adr` |
-| **7** | REQ | `CTR-Ready Score` | `./scripts/validate_req_template.sh` | `@brd→@sys` |
-| **8** | CTR | `SPEC-Ready Score` | `./scripts/validate_ctr.sh` | `@brd→@req` |
-| **9** | SPEC | `TASKS-Ready Score` | `python scripts/validate_spec.py` | `@brd→@req +optional @ctr` |
-| **10** | TASKS | `Code-Ready Score` | `./scripts/validate_tasks.sh` | `@brd→@spec +optional @ctr` |
+| **1** | BRD | `EARS-Ready Score` | `./01_BRD/scripts/validate_brd.py` | None |
+| **2** | PRD | `BDD-Ready Score` | `python 02_PRD/scripts/validate_prd.py` | `@brd` |
+| **3** | EARS | `ADR-Ready Score` | `python 03_EARS/scripts/validate_ears.py` | `@brd @prd` |
+| **4** | BDD | `SYS-Ready Score` | `python 04_BDD/scripts/validate_bdd.py` | `@brd @prd @ears` |
+| **5** | ADR | `REQ-Ready Score` | `python 05_ADR/scripts/validate_adr.py` | `@brd→@bdd` |
+| **6** | SYS | `SPEC-Ready Score` | `python 06_SYS/scripts/validate_sys.py` | `@brd→@adr` |
+| **7** | REQ | `CTR-Ready Score` | `./07_REQ/scripts/validate_req_template.sh` | `@brd→@sys` |
+| **8** | CTR | `SPEC-Ready Score` | `./08_CTR/scripts/validate_ctr.sh` | `@brd→@req` |
+| **9** | SPEC | `TASKS-Ready Score` | `python 09_SPEC/scripts/validate_spec.py` | `@brd→@req +optional @ctr` |
+| **10** | TASKS | `Code-Ready Score` | `./10_TASKS/scripts/validate_tasks.sh` | `@brd→@spec +optional @ctr` |
 | **11** | Code | N/A | TBD | `@brd→@tasks` |
 | **12** | Tests | N/A | TBD | `@brd→@code` |
 | **13** | Validation | N/A | Deployment verification | All upstream tags |
@@ -125,16 +125,16 @@ validate_quality_gates() {
 
     for file in $changed_files; do
         case "$file" in
-            01_BRD/*.md) ./scripts/validate_brd_template.sh "$file" ;;
-            02_PRD/*.md) python scripts/validate_prd.py "$file" ;;
-            03_EARS/*.md) python scripts/validate_ears.py --path "$file" ;;
-            04_BDD/BDD-*/BDD-*.feature) python scripts/validate_bdd.py "$file" ;;
-            05_ADR/*.md) python scripts/validate_adr.py "$file" ;;
-            06_SYS/*.md) python scripts/validate_sys.py "$file" ;;
-            07_REQ/**/*.md|07_REQ/*.md) ./scripts/validate_req_template.sh "$file" ;;
-            08_CTR/*.md) ./scripts/validate_ctr.sh "$file" ;;
-            09_SPEC/*.yaml|09_SPEC/**/*.yaml) python scripts/validate_spec.py "$file" ;;
-            10_TASKS/*.md) ./scripts/validate_tasks.sh "$file" ;;
+            01_BRD/*.md) ./01_BRD/scripts/validate_brd.py "$file" ;;
+            02_PRD/*.md) python 02_PRD/scripts/validate_prd.py "$file" ;;
+            03_EARS/*.md) python 03_EARS/scripts/validate_ears.py --path "$file" ;;
+            04_BDD/BDD-*/BDD-*.feature) python 04_BDD/scripts/validate_bdd.py "$file" ;;
+            05_ADR/*.md) python 05_ADR/scripts/validate_adr.py "$file" ;;
+            06_SYS/*.md) python 06_SYS/scripts/validate_sys.py "$file" ;;
+            07_REQ/**/*.md|07_REQ/*.md) ./07_REQ/scripts/validate_req_template.sh "$file" ;;
+            08_CTR/*.md) ./08_CTR/scripts/validate_ctr.sh "$file" ;;
+            09_SPEC/*.yaml|09_SPEC/**/*.yaml) python 09_SPEC/scripts/validate_spec.py "$file" ;;
+            10_TASKS/*.md) ./10_TASKS/scripts/validate_tasks.sh "$file" ;;
         esac
 
         # Check cumulative tagging (TRACEABILITY.md §4)
@@ -218,7 +218,7 @@ if [ -n "$changed_artifacts" ]; then
     # Run validation scripts
     for artifact in $changed_artifacts; do
         echo "Validating: $artifact"
-        if ! ./scripts/validate_quality_gates.sh "$artifact"; then
+        if ! ./AUTOPILOT/scripts/validate_quality_gates.sh "$artifact"; then
             echo "❌ Quality gate failed for $artifact"
             echo "💡 Run: ./scripts/fix_quality_gate.sh '$artifact'"
             exit 1
@@ -234,7 +234,7 @@ chmod +x .git/hooks/pre-commit
 
 **Step 2: Main quality gates validation script**
 ```bash
-cat > scripts/validate_quality_gates.sh << 'EOF'
+cat > AUTOPILOT/scripts/validate_quality_gates.sh << 'EOF'
 #!/bin/bash
 
 validate_quality_gates() {
@@ -312,7 +312,7 @@ validate_cumulative_tags() {
 validate_quality_gates "$1"
 EOF
 
-chmod +x scripts/validate_quality_gates.sh
+chmod +x AUTOPILOT/scripts/validate_quality_gates.sh
 ```
 
 ---
@@ -324,7 +324,7 @@ chmod +x scripts/validate_quality_gates.sh
 **Single File Validation:**
 ```bash
 # Validate specific artifact
-./scripts/validate_quality_gates.sh docs/06_SYS/SYS-01.md
+./AUTOPILOT/scripts/validate_quality_gates.sh docs/06_SYS/SYS-01.md
 
 # Output: ✅ SPEC-Ready Score: 95% ≥90%
 # Output: ✅ Cumulative tagging valid
@@ -334,10 +334,10 @@ chmod +x scripts/validate_quality_gates.sh
 **Batch Validation:**
 ```bash
 # Validate all artifacts in directory  
-find docs/ -type f \( -name "*.md" -o -name "*.yaml" \) -exec ./scripts/validate_quality_gates.sh {} \;
+find docs/ -type f \( -name "*.md" -o -name "*.yaml" \) -exec ./AUTOPILOT/scripts/validate_quality_gates.sh {} \;
 
 # Validate only changed files
-git diff --name-only | grep '^docs/' | xargs ./scripts/validate_quality_gates.sh
+git diff --name-only | grep '^docs/' | xargs ./AUTOPILOT/scripts/validate_quality_gates.sh
 ```
 
 **Quality Gate Status Report:**

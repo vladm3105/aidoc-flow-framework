@@ -187,7 +187,7 @@ Every REQ must contain these exact sections in order (MVP profile):
 
 ## 9. Quality Gates (Pre-Commit Validation)
 
-- **20 Validation Checks**: Run `./scripts/validate_req_template.sh filename.md`
+- **20 Validation Checks**: Run `./07_REQ/scripts/validate_req_template.sh filename.md`
 - **Blockers**: Missing sections, format errors, broken links, incomplete traceability
 - **Warnings**: Missing resource tags, low SPEC-Ready score, incomplete upstream chain
 - **SPEC-Ready Threshold**: ≥70% for MVP profile (adjust claimed score if lower)
@@ -220,10 +220,10 @@ Every REQ must contain these exact sections in order (MVP profile):
 **Pre-Commit Validation**:
 ```bash
 # Validate single file
-./scripts/validate_req_template.sh filename.md
+./07_REQ/scripts/validate_req_template.sh filename.md
 
 # Validate all REQ files
-find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template.sh {} \;
+find docs/REQ -name "REQ-*.md" -exec ./07_REQ/scripts/validate_req_template.sh {} \;
 ```
 
 **Template Location**: [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md)

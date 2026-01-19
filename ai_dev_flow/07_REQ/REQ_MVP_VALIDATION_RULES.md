@@ -56,10 +56,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-./ai_dev_flow/scripts/validate_req_template.sh --profile mvp
+./ai_dev_flow/07_REQ/scripts/validate_req_template.sh --profile mvp
 
 # Full validation (explicit)
-./ai_dev_flow/scripts/validate_req_template.sh --profile full
+./ai_dev_flow/07_REQ/scripts/validate_req_template.sh --profile full
 ```
 
 ---
@@ -70,7 +70,7 @@ custom_fields:
 **Date**: 2025-11-18
 **Last Updated**: 2025-11-19
 **Purpose**: Complete validation rules for REQ documents
-**Script**: `scripts/validate_req_template.sh`
+**Script**: `07_REQ/scripts/validate_req_template.sh`
 **Primary Template**: `REQ-MVP-TEMPLATE.md` (MVP profile)
 **Baseline Template**: `REQ-MVP-TEMPLATE.md`
 **Framework**: AI Dev Flow SDD (100% compliant)
@@ -793,10 +793,10 @@ class HeartbeatConfig(BaseModel):
 
 ```bash
 # Validate single file
-./scripts/validate_req_template.sh docs/07_REQ/api/ib/REQ-02_connection_heartbeat.md
+./07_REQ/scripts/validate_req_template.sh docs/07_REQ/api/ib/REQ-02_connection_heartbeat.md
 
 # Validate all REQ files
-find docs/REQ -name "REQ-*.md" -exec ./scripts/validate_req_template.sh {} \;
+find docs/REQ -name "REQ-*.md" -exec ./07_REQ/scripts/validate_req_template.sh {} \;
 ```
 
 ### Expected Output

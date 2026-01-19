@@ -35,7 +35,7 @@ custom_fields:
 > **📋 Document Role**: This is a **CREATION HELPER** for EARS-MVP-TEMPLATE.md (default).
 > - **Authority**: `EARS-MVP-TEMPLATE.md` is the primary standard for EARS structure; full template archived
 > - **Schema**: `EARS_SCHEMA.yaml` defines machine-readable validation rules
-> - **Validation**: Use `EARS_MVP_VALIDATION_RULES.md` or `scripts/validate_ears.py`
+> - **Validation**: Use `EARS_MVP_VALIDATION_RULES.md` or `03_EARS/scripts/validate_ears.py`
 
 # EARS Creation Rules
 
@@ -436,7 +436,7 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 ### Every 5-Document Checkpoint
 
 **After creating every 5 EARS documents:**
-1. Run validation: `python scripts/validate_ears.py --path docs/EARS`
+1. Run validation: `python 03_EARS/scripts/validate_ears.py --path docs/EARS`
 2. Check for:
    - Tag consistency (all use `ears`)
    - document_type consistency (all use `ears`)
@@ -447,7 +447,7 @@ When creating multiple EARS documents in a session, follow these checkpoint rule
 ### End-of-Session Validation
 
 **Before ending session:**
-1. Run full validation: `python scripts/validate_ears.py`
+1. Run full validation: `python 03_EARS/scripts/validate_ears.py`
 2. Verify 0 errors (warnings acceptable)
 3. Update EARS-00_index.md if document counts changed
 4. Document any issues in session notes
@@ -584,7 +584,7 @@ The total counts each requirement once by unique EARS ID, not by mapping.
 
 ### Validation
 
-Run `python scripts/validate_ears.py --check-counts` to verify:
+Run `python 03_EARS/scripts/validate_ears.py --check-counts` to verify:
 - Individual document counts match actual EARS statement count
 - Index total equals sum of individual counts
 - No duplicate EARS IDs across documents
@@ -625,7 +625,7 @@ cp docs/03_EARS/EARS-MVP-TEMPLATE.md docs/03_EARS/EARS-20_new_category_name.md
 If the new category introduces new element types beyond `EARS.NN.25.SS`:
 
 1. Document in `EARS_SCHEMA.yaml` under `element_types`
-2. Add validation rules to `scripts/validate_ears.py`
+2. Add validation rules to `03_EARS/scripts/validate_ears.py`
 3. Update `ID_NAMING_STANDARDS.md` element type table
 
 **Step 4: Update Index Document**
@@ -659,10 +659,10 @@ Downstream artifacts may need updates:
 
 ```bash
 # Validate new document
-python scripts/validate_ears.py --document docs/03_EARS/EARS-20_new_category.md
+python 03_EARS/scripts/validate_ears.py --document docs/03_EARS/EARS-20_new_category.md
 
 # Validate index counts
-python scripts/validate_ears.py --check-counts
+python 03_EARS/scripts/validate_ears.py --check-counts
 
 # Validate cross-document consistency
 python scripts/validate_cross_document.py --layer EARS

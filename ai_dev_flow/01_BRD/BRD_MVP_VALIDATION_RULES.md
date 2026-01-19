@@ -69,10 +69,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/01_BRD --profile mvp
+python3 ai_dev_flow/01_BRD/01_BRD/scripts/validate_brd.py ai_dev_flow/01_BRD --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/01_BRD --profile full
+python3 ai_dev_flow/01_BRD/01_BRD/scripts/validate_brd.py ai_dev_flow/01_BRD --profile full
 ```
 
 ---
@@ -81,7 +81,7 @@ python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/01_BRD --profile full
 **Date**: 2025-11-19
 **Last Updated**: 2025-12-19
 **Purpose**: Complete validation rules for BRD documents
-**Script**: `scripts/validate_brd_template.sh`
+**Script**: `01_BRD/scripts/validate_brd.py`
 **Primary Template**: `BRD-MVP-TEMPLATE.md` (full template archived)
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added Section Classification (MANDATORY/OPTIONAL/CONDITIONAL); Section 15 (Quality Assurance) now MANDATORY; 18 total sections
@@ -824,7 +824,7 @@ The PRD-Ready Score is calculated as: **100 - (Total Deductions)**
 - **Score <70/100**: ❌ FAIL - Heavy PRD-level contamination, major refactoring required
 
 **Fix**:
-1. Run automated validation script: `./scripts/validate_brd.py docs/01_BRD/BRD-XXX.md`
+1. Run automated validation script: `./01_BRD/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-XXX.md`
 2. Review detailed deduction report
 3. Address violations using BRD-MVP-TEMPLATE.md Appendix B (REMOVE/KEEP guidelines; full template archived)
 4. Re-run validation until score ≥90/100
@@ -1595,13 +1595,13 @@ Reference: BRD-MVP-TEMPLATE.md section 17 (full template archived)
 
 ```bash
 # Validate single BRD (nested folder structure - DEFAULT)
-./scripts/validate_brd_template.sh docs/01_BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md
+./01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_platform_architecture/BRD-01.0_platform_architecture_index.md
 
 # Validate all BRD files (section-based structure)
-find docs/BRD -type f -name "BRD-*.md" -exec ./scripts/validate_brd_template.sh {} \;
+find docs/BRD -type f -name "BRD-*.md" -exec ./01_BRD/scripts/validate_brd.py {} \;
 
 # Validate monolithic BRD (optional for <25KB)
-./scripts/validate_brd_template.sh docs/01_BRD/BRD-01_platform_architecture.md
+./01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_platform_architecture.md
 
 # Validate all BRD files (legacy pattern)
 **Business Requirements Completeness (40%)**:

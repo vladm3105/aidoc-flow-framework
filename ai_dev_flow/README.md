@@ -61,7 +61,7 @@ This directory provides a structured, traceable framework for Specification-Driv
 - Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_CTR/`, `09_SPEC/`, `10_TASKS/`, `CHG/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
 - BDD layout: Uses nested per-suite folders `04_BDD/BDD-NN_{slug}/` with sectioned `.feature` files.
 - Index width: This repo commonly uses `-00_index.md` for indices; follow existing width and do not rename history. New repos should choose a consistent zero width (`00` or `000`) and keep it stable.
-- Validators: Use the validators listed in TRACEABILITY_VALIDATION.md (e.g., `python scripts/validate_prd.py`, `./scripts/validate_req_template.sh`). Older `*_template.sh` examples in some guides have been updated here.
+- Validators: Use the validators listed in TRACEABILITY_VALIDATION.md (e.g., `python 02_PRD/scripts/validate_prd.py`, `./07_REQ/scripts/validate_req_template.sh`). Older `*_template.sh` examples in some guides have been updated here.
 - Path mapping example: `docs/02_PRD/PRD-01/...` in generic guides corresponds to `02_PRD/PRD-01/...` in this repo.
 
 ### Default Starting Point: MVP Templates (FRAMEWORK DEFAULT)
@@ -666,7 +666,7 @@ python scripts/validate_tags_against_docs.py --validate-cumulative --strict
 python scripts/generate_traceability_matrix.py --auto
 
 # Legacy validation (optional)
-python scripts/validate_requirement_ids.py
+python 07_REQ/scripts/validate_requirement_ids.py
 python scripts/validate_links.py
 ```
 

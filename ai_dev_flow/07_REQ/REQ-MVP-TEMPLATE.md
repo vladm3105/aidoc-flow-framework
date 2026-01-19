@@ -388,7 +388,7 @@ class ResponseModel(BaseModel):
 4. **Add missing sections**: EARS statements, verification matrix
 5. **Update traceability**: Ensure SPEC documents reference new REQ
 6. **Archive MVP version**: Move to archive with "superseded" note
-7. **Run validation**: Execute `./scripts/validate_req_template.sh` on new document
+7. **Run validation**: Execute `./07_REQ/scripts/validate_req_template.sh` on new document
 
 ### 13.3 Section Mapping (MVP → Full)
 

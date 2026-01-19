@@ -700,7 +700,7 @@ All business objectives follow SMART criteria and include:
 
 ## 14. Quality Gates (Pre-Commit Validation)
 
-- **Multiple Validation Checks**: Run `python scripts/validate_prd.py filename.md`
+- **Multiple Validation Checks**: Run `python 02_PRD/scripts/validate_prd.py filename.md`
 - **Blockers**: Missing sections, invalid formats, incomplete SYS-ready score, broken traceability
 - **Warnings**: Incomplete sections, missing references, unverified assumptions
 - **SYS-Ready Threshold**: ≥90% required for progression to SYS phase
@@ -723,10 +723,10 @@ All business objectives follow SMART criteria and include:
 **Pre-Commit Validation**:
 ```bash
 # Validate single file
-python scripts/validate_prd.py docs/02_PRD/PRD-01_product_requirements.md
+python 02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-01_product_requirements.md
 
 # Validate all PRD files
-find docs/PRD -name "PRD-*.md" -exec python scripts/validate_prd.py {} \;
+find docs/PRD -name "PRD-*.md" -exec python 02_PRD/scripts/validate_prd.py {} \;
 ```
 
 **Validation Rules**: [PRD_MVP_VALIDATION_RULES.md](PRD_MVP_VALIDATION_RULES.md)

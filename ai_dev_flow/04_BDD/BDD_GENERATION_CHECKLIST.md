@@ -243,7 +243,7 @@ rg -n "after\s+[0-9]+\s+(attempts?|retries?)" docs/04_BDD/BDD-NN_*/BDD-NN*.featu
 
 ```bash
 # Run section-based validation suite
-python ai_dev_flow/scripts/validate_bdd_suite.py \
+python ai_dev_flow/04_BDD/scripts/validate_bdd_suite.py \
   --root docs/BDD \
   --prd-root docs/PRD
 ```
@@ -405,7 +405,7 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 - **BDD_CREATION_RULES.md** — General BDD creation guidelines
 - **ID_NAMING_STANDARDS.md** — Element ID format (BDD.NN.TT.SS)
 - **Scaffold Script**: `scripts/scaffold_split_suite.sh`
-- **Validation Script**: `scripts/validate_bdd_suite.py`
+- **Validation Script**: `04_BDD/scripts/validate_bdd_suite.py`
 
 ---
 

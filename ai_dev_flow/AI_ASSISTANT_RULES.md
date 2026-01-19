@@ -661,7 +661,7 @@ ls docs/*/index.*
 python scripts/validate_links.py
 
 # Validate requirement IDs (after documents created)
-python scripts/validate_requirement_ids.py
+python 07_REQ/scripts/validate_requirement_ids.py
 
 # Generate traceability matrix (after documents created)
 python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md

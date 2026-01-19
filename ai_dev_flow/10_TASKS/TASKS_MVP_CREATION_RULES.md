@@ -420,7 +420,7 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 ### Automated Validation
 
 ```bash
-./scripts/validate_tasks.sh /path/to/TASKS-NN_name.md
+./10_TASKS/scripts/validate_tasks.sh /path/to/TASKS-NN_name.md
 ```
 
 ### Manual Checklist (v2.0)

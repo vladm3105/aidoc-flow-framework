@@ -48,7 +48,7 @@ python3 scripts/validate_cross_document.py --document 09_SPEC/SPEC-01_api_client
   python3 scripts/validate_links.py
 
   # TASKS structure (checks Section 8: Implementation Contracts)
-bash scripts/validate_tasks.sh 10_TASKS/TASKS-01_example.md
+bash 10_TASKS/scripts/validate_tasks.sh 10_TASKS/TASKS-01_example.md
 
   ```
 - Split only when needed: Files >100KB or strong logical boundaries.
@@ -107,7 +107,7 @@ python3 scripts/validate_cross_document.py --document 09_SPEC/SPEC-01_api_client
 python3 scripts/validate_links.py
 
 # TASKS structure rules (includes Section 8: Implementation Contracts)
-bash scripts/validate_tasks.sh 10_TASKS/TASKS-01_example.md
+bash 10_TASKS/scripts/validate_tasks.sh 10_TASKS/TASKS-01_example.md
 ```
 
 Assistant guidance:

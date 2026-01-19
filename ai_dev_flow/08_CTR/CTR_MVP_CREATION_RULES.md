@@ -294,7 +294,7 @@ CTR must specify requirements for future SPEC implementations:
 ### Automated Validation
 
 ```bash
-./scripts/validate_ctr.sh /path/to/CTR-NN_name.md
+./08_CTR/scripts/validate_ctr.sh /path/to/CTR-NN_name.md
 ```
 
 ### Manual Checklist

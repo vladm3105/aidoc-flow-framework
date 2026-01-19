@@ -68,10 +68,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/03_EARS --profile mvp
+python3 ai_dev_flow/03_EARS/scripts/validate_ears.py --path ai_dev_flow/03_EARS --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/03_EARS --profile full
+python3 ai_dev_flow/03_EARS/scripts/validate_ears.py --path ai_dev_flow/03_EARS --profile full
 ```
 
 ---
@@ -82,7 +82,7 @@ python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/03_EARS --profil
 **Date**: 2025-11-29
 **Last Updated**: 2025-11-29
 **Purpose**: Complete validation rules for EARS documents
-**Script**: `scripts/validate_ears.py`
+**Script**: `03_EARS/scripts/validate_ears.py`
 **Primary Template**: `EARS-MVP-TEMPLATE.md` (full template archived)
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: v2.0 - Added requirement ID, table syntax, custom_fields, traceability format checks
@@ -577,21 +577,21 @@ Downstream: BDD, ADR, SYS
 
 ```bash
 # Validate all EARS files
-python3 scripts/validate_ears.py
+python3 03_EARS/scripts/validate_ears.py
 
 # Validate single file
-python3 scripts/validate_ears.py --path 03_EARS/EARS-006.md
+python3 03_EARS/scripts/validate_ears.py --path 03_EARS/EARS-006.md
 
 # Show fix suggestions
-python3 scripts/validate_ears.py --fix-suggestions
+python3 03_EARS/scripts/validate_ears.py --fix-suggestions
 
 # Summary only (counts by rule)
-python3 scripts/validate_ears.py --summary-only
+python3 03_EARS/scripts/validate_ears.py --summary-only
 ```
 
 ### Pre-Commit Checklist
 
-- [ ] Run `python3 scripts/validate_ears.py` - 0 errors
+- [ ] Run `python3 03_EARS/scripts/validate_ears.py` - 0 errors
 - [ ] All files have `tags: ears, layer-3-artifact`
 - [ ] All files have `custom_fields` with document_type, artifact_type, layer
 - [ ] All requirement IDs use `EARS.NN.25.SS:` format
@@ -648,4 +648,4 @@ python3 scripts/validate_ears.py --summary-only
 
 **Maintained By**: Engineering Team
 **Review Frequency**: Updated with EARS template enhancements
-**Script Location**: `scripts/validate_ears.py`
+**Script Location**: `03_EARS/scripts/validate_ears.py`

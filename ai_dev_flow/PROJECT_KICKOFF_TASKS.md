@@ -177,7 +177,7 @@ cp docs/01_BRD/BRD-MVP-TEMPLATE.md docs/01_BRD/BRD-01_business_objectives.md
 **AI Assistant Actions**:
 ```bash
 # Create TASKS documents
-python scripts/validate_requirement_ids.py
+python 07_REQ/scripts/validate_requirement_ids.py
 python scripts/validate_links.py
 python scripts/generate_traceability_matrix.py --type REQ --input docs/07_REQ/ --output docs/TRACEABILITY_MATRIX_REQ.md
 ```
@@ -238,7 +238,7 @@ Added entry:
 ✓ Index updated
 
 Validation:
-Running: python scripts/validate_requirement_ids.py
+Running: python 07_REQ/scripts/validate_requirement_ids.py
 ✓ No broken references
 
 Day 1 Complete!
@@ -286,7 +286,7 @@ ls docs/*/index.* || ls docs/*/*_index.*  # All should exist
 
 ```bash
 # Comprehensive validation
-python scripts/validate_requirement_ids.py
+python 07_REQ/scripts/validate_requirement_ids.py
 python scripts/validate_links.py
 python scripts/complete_traceability_matrix.py
 

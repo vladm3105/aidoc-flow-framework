@@ -1508,13 +1508,13 @@ performance:
 ## Validation Commands
 
 ### Core Validation Scripts
-- **REQ V2 Validation**: `python scripts/validate_req_spec_readiness.py --req-file 07_REQ/api/REQ-01.md`
+- **REQ V2 Validation**: `python 07_REQ/scripts/validate_req_spec_readiness.py --req-file 07_REQ/api/REQ-01.md`
   - Checks for interface definitions with type signatures
   - Validates schema completeness (JSON Schema/Pydantic)
   - Verifies error catalog with recovery strategies
   - Confirms configuration examples present
   - Generates SPEC-Ready Score (0-100%)
-- Validate requirement IDs: `python scripts/validate_requirement_ids.py`
+- Validate requirement IDs: `python 07_REQ/scripts/validate_requirement_ids.py`
   - Enhanced to validate REQ V2 mandatory sections
 - Check links (repo-level tools if available): `python scripts/validate_links.py`
 - Generate matrices (if available): `python scripts/complete_traceability_matrix.py`
@@ -1522,10 +1522,10 @@ performance:
 ### Artifact-Specific Validation Scripts
 ```bash
 # Document structure validation (available scripts)
-bash scripts/validate_brd_template.sh docs/01_BRD/BRD-01_platform_overview/BRD-01.0_platform_overview_index.md    # BRD template compliance (nested folder)
-bash scripts/validate_req_template.sh docs/07_REQ/REQ-01.md    # REQ 12-section format
-bash scripts/validate_ctr.sh docs/08_CTR/CTR-01_*.md           # CTR dual-file format (.md + .yaml)
-bash scripts/validate_tasks.sh docs/10_TASKS/TASKS-01_*.md     # TASKS format including Section 4 (execution commands) and Section 7-8 (contracts)
+bash 01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_platform_overview/BRD-01.0_platform_overview_index.md    # BRD template compliance (nested folder)
+bash 07_REQ/scripts/validate_req_template.sh docs/07_REQ/REQ-01.md    # REQ 12-section format
+bash 08_CTR/scripts/validate_ctr.sh docs/08_CTR/CTR-01_*.md           # CTR dual-file format (.md + .yaml)
+bash 10_TASKS/scripts/validate_tasks.sh docs/10_TASKS/TASKS-01_*.md     # TASKS format including Section 4 (execution commands) and Section 7-8 (contracts)
 ```
 
 ## Traceability Matrix Management (MANDATORY)
@@ -1764,8 +1764,8 @@ python scripts/update_traceability_matrix.py --matrix docs/05_ADR/TRACEABILITY_M
 - AI tasks file includes scope, plan, constraints, acceptance criteria, and traceability links.
 - security implications documented (input validation, Secrets policy references, correlation id handling).
 - Run validators:
-  - `python scripts/validate_req_spec_readiness.py --req-file 07_REQ/{domain}/REQ-NN.md`
-  - `python scripts/validate_requirement_ids.py`
+  - `python 07_REQ/scripts/validate_req_spec_readiness.py --req-file 07_REQ/{domain}/REQ-NN.md`
+  - `python 07_REQ/scripts/validate_requirement_ids.py`
   - Manual link checks
 
 ## Appendix: Claude Instructions (Merged)

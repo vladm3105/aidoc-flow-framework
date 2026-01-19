@@ -133,7 +133,7 @@ python scripts/validate_tags_against_docs.py \
 
 ```bash
 # Validate requirement IDs
-python scripts/validate_requirement_ids.py
+python 07_REQ/scripts/validate_requirement_ids.py
 
 # Check for broken links
 python scripts/validate_links.py
@@ -272,7 +272,7 @@ jobs:
 
 def after_document_created(document_path):
     # Validate immediately
-    run_command("python scripts/validate_requirement_ids.py")
+    run_command("python 07_REQ/scripts/validate_requirement_ids.py")
     run_command("python scripts/validate_links.py")
 
     # Report results

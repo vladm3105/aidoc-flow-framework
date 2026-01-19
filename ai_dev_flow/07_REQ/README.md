@@ -543,7 +543,7 @@ See `07_REQ/api/av/REQ-01_external_api_integration.md` for a complete example of
 7. Add resource tag to H1 header (e.g., `# REQ-01: [EXTERNAL_SERVICE_GATEWAY] Title`)
 8. Add all 6 cumulative tags to section 11 (@brd, @prd, @ears, @bdd, @adr, @sys)
 9. Add new subsections (3.3, 4.3, 5.4, 8.3) as applicable
-10. Run `scripts/validate_req_template.sh` for verification
+10. Run `07_REQ/scripts/validate_req_template.sh` for verification
 
 **Migration Script**: `scripts/migrate_req_v2_to_v3.py` automates transformations 1-6
 
@@ -783,11 +783,11 @@ Before marking a REQ as complete, verify:
 
 #### V3 Shell-Based Validator (Recommended)
 
-**Script**: `scripts/validate_req_template.sh` (623 lines, 18 checks)
+**Script**: `07_REQ/scripts/validate_req_template.sh` (623 lines, 18 checks)
 
 ```bash
 # Validate single REQ file
-./scripts/validate_req_template.sh 07_REQ/api/REQ-01_api_integration.md
+./07_REQ/scripts/validate_req_template.sh 07_REQ/api/REQ-01_api_integration.md
 
 # Expected output (success):
 # ✅ PASSED: All validation checks passed with no warnings
@@ -795,7 +795,7 @@ Before marking a REQ as complete, verify:
 # Warnings: 0
 
 # Validate all REQ files
-find REQ -name "REQ-*.md" ! -path "*/archived/*" -exec ./scripts/validate_req_template.sh {} \;
+find REQ -name "REQ-*.md" ! -path "*/archived/*" -exec ./07_REQ/scripts/validate_req_template.sh {} \;
 ```
 
 **18 Validation Checks**:
@@ -808,10 +808,10 @@ find REQ -name "REQ-*.md" ! -path "*/archived/*" -exec ./scripts/validate_req_te
 
 #### Python-Based Validators
 
-**SPEC Readiness Checker** (`scripts/validate_req_spec_readiness.py`):
+**SPEC Readiness Checker** (`07_REQ/scripts/validate_req_spec_readiness.py`):
 ```bash
 # Score REQ files on SPEC-generation readiness
-python scripts/validate_req_spec_readiness.py --req-file 07_REQ/api/REQ-01.md
+python 07_REQ/scripts/validate_req_spec_readiness.py --req-file 07_REQ/api/REQ-01.md
 
 # Output:
 # REQ-01: External data service API Integration
@@ -827,7 +827,7 @@ python scripts/validate_req_spec_readiness.py --req-file 07_REQ/api/REQ-01.md
 **Requirement ID Validator**:
 ```bash
 # Validate V2/V3 mandatory sections
-python scripts/validate_requirement_ids.py --directory 07_REQ/
+python 07_REQ/scripts/validate_requirement_ids.py --directory 07_REQ/
 
 # Checks:
 # - Interface Specifications section present

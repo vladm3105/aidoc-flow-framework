@@ -764,7 +764,7 @@ python scripts/validate_links.py \
   --fix-relative-paths
 
 # Validate document naming conventions
-python scripts/validate_requirement_ids.py \
+python 07_REQ/scripts/validate_requirement_ids.py \
   --all-types \
   --check-anchors
 ```

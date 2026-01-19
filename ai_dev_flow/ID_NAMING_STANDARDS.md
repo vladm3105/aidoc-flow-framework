@@ -931,7 +931,7 @@ Traceability Requirements
 
 Validation Rules & Aids
 - Run before commit:
-  - `python scripts/validate_requirement_ids.py`
+  - `python 07_REQ/scripts/validate_requirement_ids.py`
   - Optional: `python scripts/validate_links.py` (broken references)
   - Optional: `python scripts/validate_traceability_matrix.py` (matrix compliance)
 - Quick regexes (conceptual):
@@ -1340,7 +1340,7 @@ ID naming standards are enforced by automated validators. For the complete error
 
 ```bash
 # Validate ID patterns
-python3 scripts/validate_requirement_ids.py .
+python3 07_REQ/scripts/validate_requirement_ids.py .
 
 # Validate forward references
 python3 scripts/validate_forward_references.py .
@@ -1362,4 +1362,4 @@ python3 scripts/validate_all.py . --all
 - Other types: Section suffix is OPTIONAL (used when splitting large documents).
 - For large documents (>50KB), use Section Files (`TYPE-DOC_NUM.S_{slug}.md`) with appropriate `split_type` metadata.
 - Internal element IDs use unified 4-segment format: `TYPE.DOC_NUM.TT.SS`.
-- Run `python scripts/validate_requirement_ids.py` and fix any violations before committing.
+- Run `python 07_REQ/scripts/validate_requirement_ids.py` and fix any violations before committing.

@@ -80,7 +80,7 @@ custom_fields:
 > - **Human-Centric Validation**: Business requirements require human judgment for quality assessment rather than automated schema validation
 > - **Sufficient Guidance**: This document (`BRD_MVP_CREATION_RULES.md`) and `BRD_MVP_VALIDATION_RULES.md` provide comprehensive guidance without rigid constraints
 >
-> **Validation Approach**: Use `scripts/validate_brd_template.sh` for structural validation while allowing content flexibility. Use the optional schema only for advisory checks.
+> **Validation Approach**: Use `01_BRD/scripts/validate_brd.py` for structural validation while allowing content flexibility. Use the optional schema only for advisory checks.
 >
 > **Comparison with Other Layers**:
 > | Layer | Artifact | Schema File | Rationale |
@@ -1890,7 +1890,7 @@ All business objectives in section 2.4 must follow SMART criteria:
 
 ## 11. Quality Gates (Pre-Commit Validation)
 
-- **12 Validation Checks**: Run `./scripts/validate_brd_template.sh filename.md`
+- **12 Validation Checks**: Run `./01_BRD/scripts/validate_brd.py filename.md`
 - **Blockers**: Missing sections, invalid formats, broken traceability
 - **Warnings**: Missing references, incomplete criteria, unverified assumptions
 - **Platform Feature Validation**: Different requirements for Platform vs Feature BRDs
@@ -2014,10 +2014,10 @@ All business objectives in section 2.4 must follow SMART criteria:
 **Pre-Commit Validation**:
 ```bash
 # Validate single file
-./scripts/validate_brd_template.sh docs/01_BRD/BRD-01_platform_architecture.md
+./01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-01_platform_architecture.md
 
 # Validate all BRD files
-find docs/BRD -name "BRD-*.md" -exec ./scripts/validate_brd_template.sh {} \;
+find docs/BRD -name "BRD-*.md" -exec ./01_BRD/scripts/validate_brd.py {} \;
 ```
 
 **Template Location**: [BRD-MVP-TEMPLATE.md](BRD-MVP-TEMPLATE.md)

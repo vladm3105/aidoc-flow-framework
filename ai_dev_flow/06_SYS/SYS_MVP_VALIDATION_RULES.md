@@ -55,10 +55,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/scripts/validate_sys.py --path ai_dev_flow/06_SYS --profile mvp
+python3 ai_dev_flow/06_SYS/scripts/validate_sys.py --path ai_dev_flow/06_SYS --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/scripts/validate_sys.py --path ai_dev_flow/06_SYS --profile full
+python3 ai_dev_flow/06_SYS/scripts/validate_sys.py --path ai_dev_flow/06_SYS --profile full
 ```
 
 
@@ -69,7 +69,7 @@ Path conventions: Examples below use a portable `docs/` root for new projects. I
 **Date**: 2025-11-19
 **Last Updated**: 2025-11-19
 **Purpose**: Complete validation rules for SYS documents
-**Script**: `python scripts/validate_sys.py`
+**Script**: `python 06_SYS/scripts/validate_sys.py`
 **Primary Template**: `SYS-MVP-TEMPLATE.md` (full template archived)
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added REQ-ready scoring validation system
@@ -255,10 +255,10 @@ The SYS validation script ensures system requirements meet quality standards for
 
 ```bash
 # Validate single SYS document
-python scripts/validate_sys.py docs/06_SYS/SYS-01_system_requirements.md
+python 06_SYS/scripts/validate_sys.py docs/06_SYS/SYS-01_system_requirements.md
 
 # Validate all SYS files
-find docs/SYS -name "SYS-*.md" -exec python scripts/validate_sys.py {} \;
+find docs/SYS -name "SYS-*.md" -exec python 06_SYS/scripts/validate_sys.py {} \;
 ```
 
 ### REQ-Ready Scoring Criteria ⭐ NEW

@@ -527,7 +527,7 @@ These examples demonstrate well-structured system requirements specifications in
 - **REQ-Ready Score**: MVP ≥85%, Full ≥90% to pass validation and progress to REQ phase
 - **Format**: `✅ NN% (Target: ≥85% for MVP)` or `✅ NN% (Target: ≥90%)` in Document Control table
 - **Location**: Required field in Document Control metadata
-- **Validation**: Enforced before commit via `python scripts/validate_sys.py`
+- **Validation**: Enforced before commit via `python 06_SYS/scripts/validate_sys.py`
 
 **Scoring Criteria**:
 
@@ -566,7 +566,7 @@ These examples demonstrate well-structured system requirements specifications in
 
 **Workflow Integration**:
 1. **SYS Creation**: Include REQ-Ready score in Document Control section
-2. **Quality Check**: Run `python scripts/validate_sys.py docs/06_SYS/SYS-01_name.md`
+2. **Quality Check**: Run `python 06_SYS/scripts/validate_sys.py docs/06_SYS/SYS-01_name.md`
 3. **REQ Readiness**: Score ≥85% (MVP) or ≥90% (Full) enables progression to REQ artifact creation
 4. **Improvement**: Rescore and revalidate if below threshold before REQ phase
 

@@ -25,7 +25,7 @@ custom_fields:
 **Date**: 2025-11-30
 **Last Updated**: 2025-11-30
 **Purpose**: Complete validation rules for SPEC YAML files
-**Script**: `python scripts/validate_spec.py`
+**Script**: `python 09_SPEC/scripts/validate_spec.py`
 **Primary Template**: `SPEC-MVP-TEMPLATE.yaml`
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: v1.2: Added file size warnings, removed document splitting requirement. v1.1: Relaxed method naming (dunder support), downgraded missing latency targets to Warning, added TASKS-ready scoring validation system
@@ -291,10 +291,10 @@ cumulative_tags:
 
 ```bash
 # Validate single SPEC YAML file
-python scripts/validate_spec.py docs/09_SPEC/SPEC-01_component_spec/SPEC-01_component_spec.yaml
+python 09_SPEC/scripts/validate_spec.py docs/09_SPEC/SPEC-01_component_spec/SPEC-01_component_spec.yaml
 
 # Validate all SPEC files
-find docs/SPEC -name "SPEC-*.yaml" -exec python scripts/validate_spec.py {} \;
+find docs/SPEC -name "SPEC-*.yaml" -exec python 09_SPEC/scripts/validate_spec.py {} \;
 ```
 
 ### TASKS-Ready Scoring Criteria ⭐ NEW

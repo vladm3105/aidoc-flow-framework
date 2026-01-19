@@ -356,7 +356,7 @@ flowchart TD
    - Status change history
 5. **Update traceability**: Link to SYS, REQ documents with cumulative tags
 6. **Archive MVP version**: Move to archive with "superseded" note
-7. **Run validation**: Execute `python3 scripts/validate_adr.py` on new document
+7. **Run validation**: Execute `python3 05_ADR/scripts/validate_adr.py` on new document
 
 ### 11.3 Section Mapping (MVP → Full)
 

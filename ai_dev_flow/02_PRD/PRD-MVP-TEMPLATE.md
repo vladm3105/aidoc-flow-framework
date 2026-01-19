@@ -532,7 +532,7 @@ custom_fields:
 4. **Add missing sections**: Product Vision, detailed User Stories, full NFRs
 5. **Update traceability**: Update downstream artifacts (EARS, BDD, etc.)
 6. **Archive MVP version**: Move to archive with "superseded by PRD-NN" note
-7. **Run validation**: Execute `python3 scripts/validate_prd.py` on new document
+7. **Run validation**: Execute `python3 02_PRD/scripts/validate_prd.py` on new document
 
 ### 19.3 Section Mapping (MVP → Full)
 

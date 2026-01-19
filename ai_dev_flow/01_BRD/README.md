@@ -284,7 +284,7 @@ This directory provides the MVP template for business requirements (full templat
 > - Human-centric validation is preferred at Layer 1
 > - Sufficient guidance via `BRD_MVP_CREATION_RULES.md` and `BRD_MVP_VALIDATION_RULES.md`
 >
-> **Validation Approach**: Use `scripts/validate_brd_template.sh` for structural validation; use the optional schema for advisory checks only.
+> **Validation Approach**: Use `01_BRD/scripts/validate_brd.py` for structural validation; use the optional schema for advisory checks only.
 
 **BRD-MVP-TEMPLATE.md** (default) - Streamlined MVP version in a single file without sectioning
 - Focused on core MVP features and rapid development
@@ -394,7 +394,7 @@ BRDs now include PRD-ready scoring (mirroring REQ SPEC-ready scoring) to ensure 
 ### How to Calculate Score
 
 1. **Self-Assessment**: Manually calculate based on completeness criteria
-2. **Validation Check**: Run `./scripts/validate_brd_template.sh` - includes format validation
+2. **Validation Check**: Run `./01_BRD/scripts/validate_brd.py` - includes format validation
 3. **Required ≥90%**: Scores below 90% block progression to PRD creation
 4. **Continuous Improvement**: Update score as BRD matures during development
 

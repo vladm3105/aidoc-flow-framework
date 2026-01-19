@@ -69,10 +69,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/04_BDD --profile mvp
+python3 ai_dev_flow/04_BDD/scripts/validate_bdd.py ai_dev_flow/04_BDD --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/04_BDD --profile full
+python3 ai_dev_flow/04_BDD/scripts/validate_bdd.py ai_dev_flow/04_BDD --profile full
 ```
 
 ---
@@ -83,7 +83,7 @@ python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/04_BDD --profile full
 **Date**: 2025-11-19
 **Last Updated**: 2025-12-26
 **Purpose**: Complete validation rules for BDD feature files
-**Script**: `python scripts/validate_bdd.py`
+**Script**: `python 04_BDD/scripts/validate_bdd.py`
 **Primary Template**: `BDD-MVP-TEMPLATE.feature`
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added split-file structure validation (v1.1). Previous: ADR-ready scoring validation system (v1.0)
@@ -590,10 +590,10 @@ grep -n "^# [^@]" docs/04_BDD/BDD-*/BDD-*.feature && echo "❌ Non-Gherkin Markd
 **Command**:
 ```bash
 # Validate section-based structure for all BDD files
-python3 scripts/validate_bdd_suite.py --root BDD --prd-root PRD
+python3 04_BDD/scripts/validate_bdd_suite.py --root BDD --prd-root PRD
 
 # Validate specific suite
-python3 scripts/validate_bdd_suite.py --root BDD --prd-root PRD | grep "BDD-02"
+python3 04_BDD/scripts/validate_bdd_suite.py --root BDD --prd-root PRD | grep "BDD-02"
 ```
 
 **Expected Output**:
@@ -693,10 +693,10 @@ done
 
 ```bash
 # Validate single BDD feature file
-python scripts/validate_bdd.py docs/04_BDD/BDD-01_feature_scenarios/BDD-01.1_feature_scenarios.feature
+python 04_BDD/scripts/validate_bdd.py docs/04_BDD/BDD-01_feature_scenarios/BDD-01.1_feature_scenarios.feature
 
 # Validate all BDD files
-find docs/BDD -name "BDD-*.feature" -exec python scripts/validate_bdd.py {} \;
+find docs/BDD -name "BDD-*.feature" -exec python 04_BDD/scripts/validate_bdd.py {} \;
 ```
 
 ### ADR-Ready Scoring Criteria ⭐ NEW

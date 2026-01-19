@@ -722,7 +722,7 @@ Quick Core MVP Requirements Checklist:
    - Complete appendices
 4. **Update traceability**: Ensure all downstream references point to new document ID
 5. **Archive MVP version**: Move MVP BRD to archive with "superseded by BRD-NN" note
-6. **Run validation**: Execute `python3 scripts/validate_brd.py` on new document
+6. **Run validation**: Execute `python3 01_BRD/01_BRD/scripts/validate_brd.py` on new document
 
 ### 16.3 Section Mapping (MVP → Full)
 

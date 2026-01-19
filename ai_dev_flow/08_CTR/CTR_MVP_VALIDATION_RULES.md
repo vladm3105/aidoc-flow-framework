@@ -361,15 +361,15 @@ fi
 ### Command
 
 ```bash
-./scripts/validate_ctr.sh <CTR_FILE>
+./08_CTR/scripts/validate_ctr.sh <CTR_FILE>
 ```
 
 ### Options
 
 ```bash
-./scripts/validate_ctr.sh --help
-./scripts/validate_ctr.sh --verbose CTR-01_api.md
-./scripts/validate_ctr.sh --strict CTR-01_api.md  # Treat warnings as errors
+./08_CTR/scripts/validate_ctr.sh --help
+./08_CTR/scripts/validate_ctr.sh --verbose CTR-01_api.md
+./08_CTR/scripts/validate_ctr.sh --strict CTR-01_api.md  # Treat warnings as errors
 ```
 
 ### Output Format
@@ -469,7 +469,7 @@ Result: PASSED WITH WARNINGS
 - [CTR_MVP_CREATION_RULES.md](./CTR_MVP_CREATION_RULES.md) - Creation guidelines
 - [CTR-MVP-TEMPLATE.md](./CTR-MVP-TEMPLATE.md) - Contract template (primary standard)
 - [CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
-- [validate_ctr.sh](../scripts/validate_ctr.sh) - Validation script
+- [validate_ctr.sh](../08_CTR/scripts/validate_ctr.sh) - Validation script
 - [README.md](./README.md) - Directory overview
 
 ---

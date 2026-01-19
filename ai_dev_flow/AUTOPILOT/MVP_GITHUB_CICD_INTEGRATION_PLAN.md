@@ -294,7 +294,7 @@ jobs:
       
       - name: Check ID Uniqueness
         run: |
-          python3 ai_dev_flow/scripts/validate_requirement_ids.py \
+          python3 ai_dev_flow/07_REQ/scripts/validate_requirement_ids.py \
             --directory ai_dev_flow/07_REQ
 ```
 

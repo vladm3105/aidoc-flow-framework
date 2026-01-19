@@ -76,7 +76,7 @@ FORBIDDEN values (will fail validation):
 - document_type: product-requirements, product_requirements
 - architecture_approach: value (singular form - use plural with array)
 
-Validation: Run `python scripts/validate_prd.py docs/02_PRD/PRD-NN*.md`
+Validation: Run `python 02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-NN*.md`
 Schema: See `ai_dev_flow/02_PRD/PRD_SCHEMA.yaml` for complete rules
 ====================================================================== -->
 

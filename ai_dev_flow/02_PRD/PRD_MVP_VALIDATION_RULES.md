@@ -69,10 +69,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/02_PRD --profile mvp
+python3 ai_dev_flow/02_PRD/scripts/validate_prd.py ai_dev_flow/02_PRD --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/02_PRD --profile full
+python3 ai_dev_flow/02_PRD/scripts/validate_prd.py ai_dev_flow/02_PRD --profile full
 ```
 
 ---
@@ -83,7 +83,7 @@ python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/02_PRD --profile full
 **Date**: 2025-11-26
 **Last Updated**: 2025-11-26
 **Purpose**: Complete validation rules for PRD documents
-**Script**: `python scripts/validate_prd.py`
+**Script**: `python 02_PRD/scripts/validate_prd.py`
 **Primary Template**: `PRD-MVP-TEMPLATE.md` (full template archived)
 **Framework**: AI Dev Flow SDD (100% compliant)
 
@@ -597,19 +597,19 @@ See ADR-033 for API design decisions                       ← BLOCKING ERROR
 - [ ] **@brd upstream tag** present in Traceability section
 - [ ] **Document Control** has all 11 required fields
 - [ ] **YAML frontmatter** valid syntax
-- [ ] **Run validation script**: `python scripts/validate_prd.py [filename]`
+- [ ] **Run validation script**: `python 02_PRD/scripts/validate_prd.py [filename]`
 
 ### Validation Script Commands
 
 ```bash
 # Validate single PRD (nested folder structure - DEFAULT)
-python scripts/validate_prd.py docs/02_PRD/PRD-01_product_name/PRD-01.0_product_name_index.md
+python 02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-01_product_name/PRD-01.0_product_name_index.md
 
 # Validate all PRDs (section-based structure)
-find docs/PRD -type f -name "PRD-*.md" -exec python scripts/validate_prd.py {} \;
+find docs/PRD -type f -name "PRD-*.md" -exec python 02_PRD/scripts/validate_prd.py {} \;
 
 # Validate monolithic PRD (optional for <25KB)
-python scripts/validate_prd.py docs/02_PRD/PRD-01_product_name.md
+python 02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-01_product_name.md
 
 # Check YAML frontmatter (nested structure)
 python3 -c "import yaml; yaml.safe_load(open('docs/02_PRD/PRD-01_product_name/PRD-01.0_product_name_index.md').read().split('---')[1])"

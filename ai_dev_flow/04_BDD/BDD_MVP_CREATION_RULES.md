@@ -547,7 +547,7 @@ cp ai_dev_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02.0_index.md
 
 **Step 7**: Run validation
 ```bash
-python3 scripts/validate_bdd_suite.py --root BDD
+python3 04_BDD/scripts/validate_bdd_suite.py --root BDD
 ```
 
 ### 1.2.10 Optional Companion Files

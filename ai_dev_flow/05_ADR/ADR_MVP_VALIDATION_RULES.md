@@ -67,10 +67,10 @@ custom_fields:
 
 ```bash
 # MVP validation (default)
-python3 ai_dev_flow/scripts/validate_adr.py --path ai_dev_flow/05_ADR --profile mvp
+python3 ai_dev_flow/05_ADR/scripts/validate_adr.py --path ai_dev_flow/05_ADR --profile mvp
 
 # Full validation (explicit)
-python3 ai_dev_flow/scripts/validate_adr.py --path ai_dev_flow/05_ADR --profile full
+python3 ai_dev_flow/05_ADR/scripts/validate_adr.py --path ai_dev_flow/05_ADR --profile full
 ```
 
 ---
@@ -81,7 +81,7 @@ python3 ai_dev_flow/scripts/validate_adr.py --path ai_dev_flow/05_ADR --profile 
 **Date**: 2025-11-19
 **Last Updated**: 2025-12-12
 **Purpose**: Complete validation rules for ADR documents
-**Script**: `python scripts/validate_adr.py`
+**Script**: `python 05_ADR/scripts/validate_adr.py`
 **Primary Template**: `ADR-MVP-TEMPLATE.md` (full template archived)
 **Framework**: AI Dev Flow SDD (100% compliant)
 **Changes**: Added ADR-REF as second document category with reduced validation; Updated CHECK 3 and CHECK 4 for reference documents
@@ -308,13 +308,13 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 ```bash
 # Validate single ADR document (nested folder structure)
-python scripts/validate_adr.py docs/05_ADR/ADR-01_architecture_decision/ADR-01.0_architecture_decision_index.md
+python 05_ADR/scripts/validate_adr.py docs/05_ADR/ADR-01_architecture_decision/ADR-01.0_architecture_decision_index.md
 
 # Validate all ADR files (section-based structure)
-find docs/ADR -type f -name "ADR-*.md" -exec python scripts/validate_adr.py {} \;
+find docs/ADR -type f -name "ADR-*.md" -exec python 05_ADR/scripts/validate_adr.py {} \;
 
 # Validate monolithic ADR (optional for <25KB)
-python scripts/validate_adr.py docs/05_ADR/ADR-01_architecture_decision.md
+python 05_ADR/scripts/validate_adr.py docs/05_ADR/ADR-01_architecture_decision.md
 ```
 
 ### SYS-Ready Scoring Criteria ⭐ NEW

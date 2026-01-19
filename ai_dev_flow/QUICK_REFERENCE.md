@@ -228,7 +228,7 @@ Index Width Policy: See README.md → “Using This Repo” for the `-000` index
 ```bash
 # NOTE: In this repo, drop any `docs/` prefix used in generic examples.
 # Validate requirement IDs
-python scripts/validate_requirement_ids.py
+python 07_REQ/scripts/validate_requirement_ids.py
 
 # Check broken references
 python scripts/validate_links.py
@@ -368,7 +368,7 @@ Quick link: AI Assistant Playbook (index): `AI_ASSISTANT_PLAYBOOK.md`
 - [ ] Validate all markdown links resolve correctly
 - [ ] Run validation scripts:
   ```bash
-  python scripts/validate_requirement_ids.py
+  python 07_REQ/scripts/validate_requirement_ids.py
   python scripts/validate_traceability_matrix.py --type [TYPE]
   ```
 - [ ] Commit files together (artifact + matrix + index)
@@ -531,10 +531,10 @@ docs/04_BDD/
 ### Validation
 ```bash
 # Validate section-based format
-python3 scripts/validate_bdd_suite.py --root BDD
+python3 04_BDD/scripts/validate_bdd_suite.py --root BDD
 
 # Migrate legacy formats
-python3 scripts/migrate_bdd_to_sections.py --root BDD --suite BDD-02_knowledge_engine
+python3 04_BDD/scripts/migrate_bdd_to_sections.py --root BDD --suite BDD-02_knowledge_engine
 ```
 
 ---
@@ -585,7 +585,7 @@ python scripts/validate_links.py
 ### Duplicate ID
 ```bash
 # Check for duplicates
-python scripts/validate_requirement_ids.py
+python 07_REQ/scripts/validate_requirement_ids.py
 
 # Resolution: Rename duplicate with next sequential ID
 # Update all references to new ID

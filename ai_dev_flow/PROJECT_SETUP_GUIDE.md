@@ -334,7 +334,7 @@ After all documents of type created:
 # Use: doc-brd, doc-prd, doc-req, etc.
 
 # 2. Automated validation (framework scripts)
-./scripts/validate_req_template.sh docs/07_REQ/REQ-01_example.md
+./07_REQ/scripts/validate_req_template.sh docs/07_REQ/REQ-01_example.md
 python scripts/validate_metadata.py docs/07_REQ/REQ-01_example.md
 
 # 3. Manual validation checklist
@@ -537,7 +537,7 @@ ls docs/01_BRD/BRD-*.md
 **Validation Commands**:
 ```bash
 # Primary validation
-./scripts/validate_req_template.sh docs/07_REQ/REQ-01_*.md
+./07_REQ/scripts/validate_req_template.sh docs/07_REQ/REQ-01_*.md
 
 # Duplicate detection
 grep -h "^## REQ-" docs/07_REQ/*.md | sort | uniq -d

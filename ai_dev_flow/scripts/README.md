@@ -409,7 +409,7 @@ Validates REQ documents against the 12-section REQ v3.0 format.
 
 **Usage:**
 ```bash
-./scripts/validate_req_template.sh docs/07_REQ/REQ-01_*.md
+./07_REQ/scripts/validate_req_template.sh docs/07_REQ/REQ-01_*.md
 ```
 
 ### 8. validate_ctr.sh
@@ -418,7 +418,7 @@ Validates CTR (Contract) documents for dual-file format compliance (.md + .yaml)
 
 **Usage:**
 ```bash
-./scripts/validate_ctr.sh docs/08_CTR/CTR-01_*.md
+./08_CTR/scripts/validate_ctr.sh docs/08_CTR/CTR-01_*.md
 ```
 
 **Features:**
@@ -444,7 +444,7 @@ Validates TASKS documents including Section 8 Implementation Contracts.
 
 **Usage:**
 ```bash
-./scripts/validate_tasks.sh docs/10_TASKS/TASKS-01_*.md
+./10_TASKS/scripts/validate_tasks.sh docs/10_TASKS/TASKS-01_*.md
 ```
 
 **Features:**
@@ -815,10 +815,10 @@ MVP (Minimum Viable Product) templates provide streamlined versions of full docu
 
 ```bash
 # Validate only produced documents, not templates
-python3 scripts/validate_brd.py 01_BRD/ 2>&1 | grep -v "MVP-TEMPLATE"
+python3 01_BRD/01_BRD/scripts/validate_brd.py 01_BRD/ 2>&1 | grep -v "MVP-TEMPLATE"
 
 # Or use find to exclude MVP templates
-find 01_BRD/ -name "BRD-*.md" ! -name "*MVP-TEMPLATE*" -exec python3 scripts/validate_brd.py {} \;
+find 01_BRD/ -name "BRD-*.md" ! -name "*MVP-TEMPLATE*" -exec python3 01_BRD/01_BRD/scripts/validate_brd.py {} \;
 ```
 
 **Option 2: Validate Produced Documents Only**
@@ -827,8 +827,8 @@ When validating a directory, validation scripts automatically detect templates v
 
 ```bash
 # Validate specific produced documents (not templates)
-python3 scripts/validate_brd.py 01_BRD/BRD-01_my_project.md
-python3 scripts/validate_prd.py 02_PRD/PRD-01_my_feature.md
+python3 01_BRD/01_BRD/scripts/validate_brd.py 01_BRD/BRD-01_my_project.md
+python3 02_PRD/scripts/validate_prd.py 02_PRD/PRD-01_my_feature.md
 ```
 
 **Option 3: Accept MVP Template Errors as Expected**
