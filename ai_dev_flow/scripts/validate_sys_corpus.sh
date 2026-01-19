@@ -38,13 +38,13 @@ print_header() {
 
 count_files() {
   local count=0
-  shopt -s nullglob
-  for f in "$SYS_DIR"/SYS-[0-9]*_*.md; do
+  shopt -s globstar nullglob
+  for f in "$SYS_DIR"/**/SYS-[0-9]*_*.md; do
     if [[ ! "$(basename $f)" =~ _index ]]; then
       ((count++)) || true
     fi
   done
-  shopt -u nullglob
+  shopt -u globstar nullglob
   echo "$count"
 }
 

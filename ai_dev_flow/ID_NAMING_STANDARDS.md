@@ -148,12 +148,14 @@ Format
 
 ## Default Directory Model (All Types)
 
-**Two Structure Options**:
+**Unified Directory Model (All Types)**:
 
-| Structure | Format | Use When |
-|-----------|--------|----------|
-| **Flat** (Monolithic) | `{TYPE}/{TYPE}-DOC_NUM_{slug}.md` | Single-file documents, MVP templates, <25KB |
-| **Nested** (Section-based) | `{TYPE}/{TYPE}-DOC_NUM_{slug}/` folder with section files | Multi-section documents, >25KB, complex structure |
+| Structure | Trigger | Format |
+|-----------|---------|--------|
+| **Flat** (Atomic) | < 1000 lines AND 1 file | `{TYPE}/{TYPE}-{ID}_{Slug}.{ext}` |
+| **Nested** (Folder) | > 1000 lines OR > 1 file | `{TYPE}/{TYPE}-{ID}_{Slug}/{TYPE}-{ID}-{Seq}_{Slug}.{ext}` |
+
+**Rule**: If a document crosses the threshold, **MOVE IT** to a folder. Do not mix patterns for the same ID.
 
 ### Flat Structure (Monolithic Documents)
 
@@ -236,12 +238,12 @@ Universal Numbering Pattern (All Document Types)
 
 Document ID Standards (ai_dev_flow)
 - Requirements (REQ)
-  - H1 ID: `REQ-DOC_NUM` (e.g., `# REQ-01: [EXTERNAL_DATA_PROVIDER - e.g., Weather API, item Data API] Integration`). Do not use category-coded IDs like `REQ-API-AV-01`.
-  - Directory Structure (DEFAULT): Nested per-document folders: `07_REQ/REQ-DOC_NUM_{slug}/`
-  - Primary File (atomic): `07_REQ/REQ-DOC_NUM_{slug}/REQ-DOC_NUM_{slug}.md`
-  - Split (optional when large): `07_REQ/REQ-DOC_NUM_{slug}/REQ-DOC_NUM.0_index.md`, `07_REQ/REQ-DOC_NUM.1_{section}.md`, ...
-  - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
-  - Notes: Legacy category folders are not used in new projects. Keep categorization in metadata/tags, not paths.
+  - **H1 ID**: `REQ-DOC_NUM` (e.g., `# REQ-12: [LEARNING_GOV] ...`).
+  - **Directory**: `07_REQ/REQ-{PRD_ID}_{Slug}/` (Vertical Slice Grouping).
+  - **Files**: `REQ-{PRD_ID}_{Slug}.md` or `REQ-{TotalSequence}_{Slug}.md` inside.
+  - **Alignment Rule**: REQ folder ID MUST match the parent PRD ID (e.g., `07_REQ/REQ-12_learning/` matches `PRD-12`).
+  - **Variable Length**: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
+  - **Notes**: Legacy category folders are not used. Use PRD-based vertical slice folders.
 - ADRs
   - H1 ID: `ADR-DOC_NUM` (e.g., `# ADR-33: Risk Limit Enforcement Architecture`).
   - Filename: `ADR-DOC_NUM.S_{slug}.md` (section-based is REQUIRED)
@@ -332,13 +334,11 @@ Document ID Standards (ai_dev_flow)
   - Tags appear before `Scenario:` using valid relative paths + anchors
   - Index: Each suite MUST have `04_BDD/BDD-DOC_NUM.0_index.md` listing all sections
 - Technical Specifications (SPEC)
-  - YAML `id:` uses lowercase snake_case; pattern: `^[a-z][a-z0-9_]*[a-z0-9]$`.
-  - Directory: `09_SPEC/SPEC-DOC_NUM_{slug}/`
-  - Filename: `09_SPEC/SPEC-DOC_NUM_{slug}/SPEC-DOC_NUM_{slug}.yaml`
-  - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
-  - The `id:` may differ from the filename; tags and prose should use the `id:` as the human-readable spec name.
-  - Include traceability fields with markdown links: `requirements_source`, `architecture`, `verification`.
-  - Monolithic: SPEC stays a single YAML file; optional companion markdown files may live alongside for human-readable context (e.g., `SPEC-DOC_NUM.0_readme.md`).
+  - **Vertical ID Alignment**: SPEC ID MUST match the parent PRD ID where applicable (e.g., `PRD-12` -> `SPEC-12`).
+  - **Directory**: `09_SPEC/SPEC-{PRD_ID}_{Slug}/` (Nested "Micro-SPEC" Folder).
+  - **Files**: `SPEC-{PRD_ID}-{Seq}_{Slug}.yaml` (e.g. `SPEC-12-01_rules.yaml`).
+  - **Monolithic**: DEPRECATED for complex components. Use generated Micro-SPECs.
+  - **Traceability**: Each Micro-SPEC independently validates REQ coverage.
 - API Contracts (CTR)
   - H1 ID: `CTR-DOC_NUM` (e.g., `# CTR-01: resource Risk Validation Contract`).
   - Filename (Dual Format): `CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml` (both required)

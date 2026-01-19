@@ -314,17 +314,24 @@ grep -rohE "EARS\.[0-9]+\.[0-9]+\.[0-9]+" "$EARS_DIR" | \
 
 ---
 
-### CORPUS-10: File Size Compliance
+### CORPUS-10: File Size Compliance (Universal Splitting Rule)
 
-**Purpose**: Ensure documents don't exceed token limits
+**Purpose**: Enforce Nested Directory Pattern when triggers are met.
 
-**Severity**: Warning at 600 lines, Error at 1200 lines
+**Severity**: **Error (blocking)** at 1000 lines
+
+**Triggers**:
+1. **Size**: File > 1000 lines.
+2. **Cardinality**: More than 1 file for this ID.
+
+**Action**: Move to `04_EARS/EARS-{PRD_ID}_{Slug}/` folder.
+
+**Error Message**: `❌ ERROR: EARS-NN triggers nested folder rule (>1000 lines or >1 file). Move to 04_EARS/EARS-NN_{Slug}/`
 
 **Thresholds**:
 | Metric | Warning | Error |
 |--------|---------|-------|
-| Lines | 600 | 1,200 |
-| Tokens | 50,000 | 100,000 |
+| Lines | 500 | 1,000 |
 
 ---
 

@@ -222,12 +222,12 @@ cumulative_tags:
 **Type**: Warning
 
 **Thresholds**:
-- Markdown files: 600 lines maximum (target: 300-500 lines)
-- YAML files: 2000 lines maximum
+- Markdown files: 500 lines soft limit (target: 300-500 lines)
+- YAML files: 1000 lines HARD limit (Universal Trigger)
 
 **Warning Messages**:
-- `SPEC-W010`: Markdown file exceeds 600 lines
-- `SPEC-W011`: YAML file exceeds 2000 lines
+- `SPEC-W010`: Markdown file exceeds 500 lines
+- `SPEC-E011`: YAML file exceeds 1000 lines (MUST SPLIT)
 
 ---
 

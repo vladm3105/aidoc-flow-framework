@@ -192,7 +192,20 @@ The SYS validation script ensures system requirements meet quality standards for
 
 ---
 
-### CHECK 8: Element ID Format Compliance ⭐ NEW
+### CHECK 8: Universal Splitting Trigger (Size/Cardinality) ⭐ NEW
+**Purpose**: Enforce Nested Directory Pattern when triggers are met.
+**Type**: Error (blocking)
+
+**Triggers**:
+1. **Size**: File > 1000 lines.
+2. **Cardinality**: More than 1 file for this ID.
+
+**Action**: Move to `06_SYS/SYS-{PRD_ID}_{Slug}/` folder.
+
+**Error Message**: `❌ ERROR: SYS-NN triggers nested folder rule (>1000 lines or >1 file). Move to 06_SYS/SYS-NN_{Slug}/`
+
+### CHECK 9: Element ID Format Compliance ⭐ NEW
+
 
 **Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
 **Type**: Error

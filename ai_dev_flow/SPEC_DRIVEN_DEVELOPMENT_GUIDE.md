@@ -36,8 +36,9 @@ custom_fields:
 
 - Core: [DOCUMENT_SPLITTING_RULES.md](./DOCUMENT_SPLITTING_RULES.md)
 - Templates: Use `{TYPE}-SECTION-0-TEMPLATE.md` (index) and `{TYPE}-SECTION-TEMPLATE.md` (sections)
+- **Universal Rule**: If ANY file > 1000 lines OR > 1 file per ID, you **MUST** use the Nested Directory Pattern (`TYPE-{ID}_{Slug}/`).
 
-> MVP Mode: Default to single flat files. Split only when a document is too large for AI assistants to handle in one file; otherwise ignore `DOCUMENT_SPLITTING_RULES.md` in MVP.
+> MVP Mode: Follow the Universal Splitting Rule. Default to single files until the 1000-line trigger is hit.
 
 > ⚠️ **Token Limit Update (2025-11)**: This guide contains historical 10K token limits.
 > For current token limits (Claude Code: 50K-100K), see [AI_TOOL_OPTIMIZATION_GUIDE.md](./AI_TOOL_OPTIMIZATION_GUIDE.md).
@@ -236,7 +237,10 @@ Status: Example-scoped standard for ai_dev_flow. Aligns with `.project_instructi
 - One-Doc-Per-ID: Each 07_REQ/05_ADR/SPEC file holds one document; filenames include IDs.
 - Specification-First: Technical specifications precede implementation.
 - Complete Traceability: All cross-references use markdown link format with anchors. User story derivation flows: Business Objectives (BRD) → User Stories (PRD) → Functional Requirements (PRD) with full bidirectional traceability.
-- Executable Examples: Provide concrete I/O examples in SPEC for deterministic codegen.
+- Executable Examples: Provide concrete- Structured specs (YAML‑heavy / SPEC):
+  - **Micro-SPEC Architecture**: Large components must be broken into granular "Micro-SPECs" (5-10 REQs) inside a component folder.
+  - **Generation**: SPEC files should be treated as **Generated Artifacts** derived from REQs using framework tools.
+  - **Traceability**: Independent validation per Micro-SPEC.
 - Quality Attributes First-Class: Performance, reliability, observability, and security are explicit in SPEC.
 - Minimal, Reviewable Diffs: Small steps; verify at each gate.
 - Change via ADR: Architectural changes recorded and linked.

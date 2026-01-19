@@ -82,10 +82,16 @@ next_section: "TYPE-NN.(S+1)_{slug}.md"
 ---
 ```
 
-## Size Limits And Validation
+## Universal Splitting Triggers
 
-- Markdown targets: 300–500 lines; warn > 500; error > 600.
-- YAML targets: prefer monolithic per component; warn > 1000; error > 2000.
+**You MUST split into a Nested Folder structure if:**
+1.  **Size**: Any single file exceeds **1000 lines**.
+2.  **Cardinality**: A component requires **more than 1 file** (e.g. narrative + list, or multiple modules).
+
+### Size Limits
+- **Markdown**: Target 500 lines. Hard Limit 1000 lines.
+- **YAML**: Target 500 lines. Hard Limit 1000 lines.
+- **Action**: Create `TYPE-{ID}_{Slug}/` folder and split content.
 - Always run validations after splitting:
   - File size lint: `./scripts/lint_file_sizes.sh`
   - Link check: `python3 ./scripts/validate_links.py`

@@ -161,8 +161,9 @@ check_index_sync() {
   while IFS= read -r line; do
     if [[ -n "$line" ]]; then
       local spec_id
-      spec_id=$(echo "$line" | grep -oE "SPEC-[0-9]+")
-      if ls "$SPEC_DIR/${spec_id}_"*.yaml &>/dev/null; then
+      # Extract only the FIRST SPEC ID from the line (to avoid multi-line variables)
+      spec_id=$(echo "$line" | grep -oE "SPEC-[0-9]+" | head -1)
+      if [[ -n "$spec_id" ]] && ls "$SPEC_DIR/${spec_id}_"*.yaml &>/dev/null; then
         echo -e "${YELLOW}CORPUS-W004: $(basename "$index_file") lists '$spec_id' as 'Planned', but the file exists.${NC}"
         ((WARNINGS++)) || true
         ((found_warnings++)) || true
@@ -176,8 +177,8 @@ check_index_sync() {
   
   for spec_file in $all_spec_files; do
     local spec_id
-    spec_id=$(echo "$spec_file" | grep -oE "SPEC-[0-9]+")
-    if ! grep -q "$spec_id" "$index_file" 2>/dev/null; then
+    spec_id=$(echo "$spec_file" | grep -oE "SPEC-[0-9]+" || echo "")
+    if [[ -n "$spec_id" ]] && ! grep -q "$spec_id" "$index_file" 2>/dev/null; then
       echo -e "${YELLOW}CORPUS-W004: '$spec_file' exists but is not mentioned in the index file ($(basename "$index_file")).${NC}"
       ((WARNINGS++)) || true
       ((found_warnings++)) || true
@@ -279,35 +280,41 @@ check_param_format() {
 # CORPUS-10: File Size Compliance
 # -----------------------------------------------------------------------------
 
+# -----------------------------------------------------------------------------
+# CORPUS-10: File Size Compliance (Universal Rule)
+# -----------------------------------------------------------------------------
+
 check_file_size() {
   echo ""
   echo "--- CORPUS-10: File Size Compliance ---"
 
   local found=0
-  shopt -s nullglob
-  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
+  # Recursive search using globstar (enabled in main)
+  for f in "$SPEC_DIR"/**/SPEC-[0-9]*_*.yaml; do
     if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
+    # Skip if directory (globstar might match dirs)
+    [[ -f "$f" ]] || continue
 
     local lines
     lines=$(wc -l <"$f")
 
-    # Updated thresholds for YAML files: Warning at 1000, Error at 2000
-    if [[ $lines -gt 2000 ]]; then
-      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 2000 lines ($lines)${NC}"
+    # Universal Rule: >1000 lines is an ERROR (Must Split)
+    if [[ $lines -gt 1000 ]]; then
+      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1000 lines ($lines) - MUST SPLIT per Universal Rule${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
-    elif [[ $lines -gt 1000 ]]; then
-      echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 1000 lines ($lines)${NC}"
+    elif [[ $lines -gt 500 ]]; then
+      echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 500 lines ($lines) - Consider splitting${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
   done
-  shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ All files within size limits (≤1000 lines)${NC}"
   fi
 }
+
 
 # -----------------------------------------------------------------------------
 # CORPUS-11: YAML Syntax Validation
@@ -415,6 +422,10 @@ check_required_fields() {
 # CORPUS-15: Cumulative Traceability Compliance
 # -----------------------------------------------------------------------------
 
+# -----------------------------------------------------------------------------
+# CORPUS-15: Cumulative Traceability Compliance
+# -----------------------------------------------------------------------------
+
 check_cumulative_traceability() {
   echo ""
   echo "--- CORPUS-15: Cumulative Traceability Compliance ---"
@@ -423,9 +434,10 @@ check_cumulative_traceability() {
   # Per rules, 7 tags are required. CTR is optional.
   local required_tags=("brd:" "prd:" "ears:" "bdd:" "adr:" "sys:" "req:")
 
-  shopt -s nullglob
-  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
+  shopt -s globstar nullglob
+  for f in "$SPEC_DIR"/**/SPEC-[0-9]*_*.yaml; do
     if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
+    [[ -f "$f" ]] || continue
 
     # Check for the cumulative_tags block first
     if ! grep -q "cumulative_tags:" "$f" 2>/dev/null; then
@@ -451,7 +463,7 @@ check_cumulative_traceability() {
       ((found++)) || true
     fi
   done
-  shopt -u nullglob
+  shopt -u globstar nullglob
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ Cumulative traceability complete${NC}"

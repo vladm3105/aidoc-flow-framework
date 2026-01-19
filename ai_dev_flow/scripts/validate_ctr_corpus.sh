@@ -258,19 +258,20 @@ check_file_size() {
     local lines
     lines=$(wc -l < "$f")
 
-    if [[ $lines -gt 1200 ]]; then
-      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1200 lines ($lines)${NC}"
+    # Universal Rule: >1000 lines is an ERROR (Must Split)
+    if [[ $lines -gt 1000 ]]; then
+      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1000 lines ($lines) - MUST SPLIT per Universal Rule${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
-    elif [[ $lines -gt 600 ]]; then
-      echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 600 lines ($lines)${NC}"
+    elif [[ $lines -gt 500 ]]; then
+      echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 500 lines ($lines) - Consider splitting${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
   done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits${NC}"
+    echo -e "${GREEN}  ✓ All files within size limits (≤1000 lines)${NC}"
   fi
 }
 
@@ -407,7 +408,12 @@ check_subdomain() {
       continue
     fi
 
-    # Check if subdomain is valid
+    # Allow CTR-NN_* directories (Vertical Slice)
+    if [[ "$dir_name" =~ ^CTR-[0-9]+.* ]]; then
+        continue
+    fi
+
+    # Check if subdomain is valid (Legacy)
     local valid=0
     for subdomain in "${VALID_SUBDOMAINS[@]}"; do
       if [[ "$dir_name" == "$subdomain" ]]; then

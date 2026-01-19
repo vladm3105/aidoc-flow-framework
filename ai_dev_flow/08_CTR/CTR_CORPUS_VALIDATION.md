@@ -292,6 +292,33 @@ done
 
 ---
 
+### CORPUS-16: Universal Splitting Trigger (Size/Cardinality) ⭐ NEW
+
+**Purpose**: Enforce Nested Directory Pattern when triggers are met.
+
+**Severity**: Error (blocking)
+
+**Triggers**:
+1. **Size**: File > 1000 lines.
+2. **Cardinality**: More than 1 file for this ID.
+
+**Action**: Move to `08_CTR/CTR-{PRD_ID}_{Slug}/` folder.
+
+**Error Message**: `❌ ERROR: CTR-NN triggers nested folder rule (>1000 lines or >1 file). Move to 08_CTR/CTR-NN_{Slug}/`
+
+---
+
+### CORPUS-17: Element ID Format Compliance ⭐ NEW
+
+**Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
+
+**Severity**: Error
+
+**Check**: `^###\s+CTR\.[0-9]{2,}\.[0-9]{2,}\.[0-9]{2,}:\s+.+$`
+
+
+---
+
 ## 2. Error Codes
 
 ### Error Codes (Blocking)

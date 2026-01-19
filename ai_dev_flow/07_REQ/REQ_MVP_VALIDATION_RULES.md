@@ -442,6 +442,19 @@ The REQ validation script (`validate_req_template.sh`) performs **20 validation 
          H1 Header: # REQ-03: Connection Monitoring
 ```
 
+### CHECK 12b: Universal Splitting Trigger (Size/Cardinality) ⭐ NEW
+**Purpose**: Enforce Nested Directory Pattern when triggers are met.
+**Type**: Error (blocking)
+
+**Triggers**:
+1. **Size**: File > 1000 lines.
+2. **Cardinality**: More than 1 file for this ID (e.g. `REQ-02_...` and `REQ-02_...`).
+
+**Action**: Move to `07_REQ/REQ-{PRD_ID}_{Slug}/` folder.
+
+**Error Message**: `❌ ERROR: REQ-NN triggers nested folder rule (>1000 lines or >1 file). Move to 07_REQ/REQ-NN_{Slug}/`
+
+
 **Fix**:
 1. Rename file to match pattern
 2. Ensure H1 header ID matches filename ID

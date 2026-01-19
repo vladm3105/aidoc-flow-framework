@@ -241,7 +241,20 @@ The ADR validation script ensures architecture decisions follow quality standard
 
 ---
 
-### CHECK 8: Element ID Format Compliance ⭐ NEW
+### CHECK 8: Universal Splitting Trigger (Size/Cardinality) ⭐ NEW
+**Purpose**: Enforce Nested Directory Pattern when triggers are met.
+**Type**: Error (blocking)
+
+**Triggers**:
+1. **Size**: File > 1000 lines.
+2. **Cardinality**: More than 1 file for this ID.
+
+**Action**: Move to `05_ADR/ADR-{PRD_ID}_{Slug}/` folder.
+
+**Error Message**: `❌ ERROR: ADR-NN triggers nested folder rule (>1000 lines or >1 file). Move to 05_ADR/ADR-NN_{Slug}/`
+
+### CHECK 9: Element ID Format Compliance ⭐ NEW
+
 
 **Purpose**: Verify element IDs use unified 4-segment format, flag removed patterns.
 **Type**: Error
