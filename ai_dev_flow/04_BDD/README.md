@@ -37,12 +37,12 @@ BDD files serve as the **living specification** that:
 
 BDD is in the **Testing Layer** within the complete SDD workflow:
 
-**Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) ← **YOU ARE HERE** → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Project Management Layer** (IMPL) → **Interface Layer** (CTR - optional) → **Technical Specs (SPEC)** → **Code Generation Layer** (TASKS) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
+**Business Layer** (BRD → PRD → EARS) → **Testing Layer** (BDD) ← **YOU ARE HERE** → **Architecture Layer** (ADR → SYS) → **Requirements Layer** (REQ) → **Interface Layer** (CTR - optional) → **Technical Specs (SPEC)** → **Code Generation Layer** (TASKS) → **Execution Layer** (Code → Tests) → **Validation Layer** (Validation → Review → Production)
 
 **Key Points**:
 - **Upstream**: EARS (Event-Action-Response-State) — Engineering Requirements
 - **Downstream**: ADR (Architecture Decision Records)
-- **Decision Point**: After IMPL, CTR is created if the requirement specifies an interface; otherwise, proceed directly to SPEC
+- **Decision Point**: After REQ, CTR is created if the requirement specifies an interface; otherwise, proceed directly to SPEC
 
 For the complete workflow diagram with all relationships and styling, see [index.md](../index.md#traceability-flow).
 
@@ -129,7 +129,7 @@ Feature files include mandatory traceability linking:
 #   - REQ-NN: [Brief description]
 # TRACEABILITY:
 #   Upstream: [REQ-NN](../07_REQ/.../REQ-NN_...md#REQ-NN), [ADR-NN](../../../05_ADR/ADR-NN_...md#ADR-NN)
-#   Downstream: Spec(../10_SPEC/.../SPEC-NN_...yaml), Code(`component.module`)
+#   Downstream: Spec(../09_SPEC/.../SPEC-NN_...yaml), Code(`component.module`)
 
 @requirement:[REQ-NN](../07_REQ/.../REQ-NN_...md#REQ-NN)
 @adr:[ADR-NN](../05_ADR/ADR-NN_...md#ADR-NN)

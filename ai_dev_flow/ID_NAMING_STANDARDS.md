@@ -333,8 +333,8 @@ Document ID Standards (ai_dev_flow)
   - Index: Each suite MUST have `04_BDD/BDD-DOC_NUM.0_index.md` listing all sections
 - Technical Specifications (SPEC)
   - YAML `id:` uses lowercase snake_case; pattern: `^[a-z][a-z0-9_]*[a-z0-9]$`.
-  - Directory: `10_SPEC/SPEC-DOC_NUM_{slug}/`
-  - Filename: `10_SPEC/SPEC-DOC_NUM_{slug}/SPEC-DOC_NUM_{slug}.yaml`
+  - Directory: `09_SPEC/SPEC-DOC_NUM_{slug}/`
+  - Filename: `09_SPEC/SPEC-DOC_NUM_{slug}/SPEC-DOC_NUM_{slug}.yaml`
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - The `id:` may differ from the filename; tags and prose should use the `id:` as the human-readable spec name.
   - Include traceability fields with markdown links: `requirements_source`, `architecture`, `verification`.
@@ -342,14 +342,14 @@ Document ID Standards (ai_dev_flow)
 - API Contracts (CTR)
   - H1 ID: `CTR-DOC_NUM` (e.g., `# CTR-01: resource Risk Validation Contract`).
   - Filename (Dual Format): `CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml` (both required)
-  - Organization: Optional subdirectories by service type: `09_CTR/{agents,mcp,infra}/CTR-DOC_NUM_{slug}.{md,yaml}`
+  - Organization: Optional subdirectories by service type: `08_CTR/{agents,mcp,infra}/CTR-DOC_NUM_{slug}.{md,yaml}`
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - YAML `contract_id:` uses lowercase_snake_case (e.g., `contract_id: position_risk_validation`)
   - Notes: Both .md and .yaml must exist for each CTR-DOC_NUM; slugs must match exactly. Use Section Files when contract documentation exceeds 50KB.
 
 - AI Tasks (TASKS)
   - H1 ID: `TASKS-DOC_NUM` (e.g., `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
-  - Filename: `11_TASKS/TASKS-DOC_NUM_{slug}.md` with a tasks index at `11_TASKS/TASKS-00_index.md`.
+  - Filename: `10_TASKS/TASKS-DOC_NUM_{slug}.md` with a tasks index at `10_TASKS/TASKS-00_index.md`.
   - Variable Length: DOC_NUM = 2+ digits (01-99, 100-999, 1000+)
   - Notes: SPEC implementation plans with exact TODOs for code generation. Each TASKS corresponds to one SPEC. Use Section Files when document exceeds 50KB.
   - Allocation: reserve next number, do not reuse; keep slugs stable.
@@ -427,10 +427,10 @@ File Organization Rules
   - **Flat Types** - section optional:
     - `07_REQ/REQ-DOC_NUM_{slug}/REQ-DOC_NUM_{slug}.md`
     - `04_BDD/BDD-DOC_NUM_{suite}/BDD-DOC_NUM.SECTION_{slug}.feature`
-    - `10_SPEC/{type}/SPEC-DOC_NUM_{slug}.yaml`
-    - `09_CTR/CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml` (optional subdirs: `09_CTR/{agents,mcp,infra}/`)
-    - `IMPL-DOC_NUM_{slug}.md`
-    - `11_TASKS/TASKS-DOC_NUM_{slug}.md`
+- `09_SPEC/{type}/SPEC-DOC_NUM_{slug}.yaml`
+- `08_CTR/CTR-DOC_NUM_{slug}.md` + `CTR-DOC_NUM_{slug}.yaml` (optional subdirs: `08_CTR/{agents,mcp,infra}/`)
+- `10_TASKS/TASKS-DOC_NUM_{slug}.md`
+
     - `06_SYS/SYS-DOC_NUM_{slug}.md`
     - `03_EARS/EARS-DOC_NUM_{slug}.md`
 
@@ -512,17 +512,17 @@ For enhanced navigability, traceability tags MAY be converted to clickable hyper
 
 | Reference Type | Pattern | Example |
 |----------------|---------|---------|
-| Same folder | `[text](./file.md#anchor)` | `[BRD.01.01.01](./BRD-01.1_summary.md#brd010101)` |
-| Parent folder | `[text](../TYPE/file.md#anchor)` | `[BRD.01.01.01](../01_BRD/BRD-01.1_summary.md#brd010101)` |
-| Nested folder | `[text](../TYPE/TYPE-NN_slug/file.md#anchor)` | `[BRD.01.01.01](../01_BRD/BRD-01_platform/BRD-01.1_summary.md#brd010101)` |
+| Same folder | Example only | `BRD.01.01.01 -> ./BRD-01.1_summary.md#brd010101` |
+| Parent folder | Example only | `BRD.01.01.01 -> ../01_BRD/BRD-01.1_summary.md#brd010101` |
+| Nested folder | Example only | `BRD.01.01.01 -> ../01_BRD/BRD-01_platform/BRD-01.1_summary.md#brd010101` |
 
 **Internal Section Links** (within same document or folder):
 
 | Link Type | Format | Example |
 |-----------|--------|---------|
-| Section reference | `[Section N](./file.md)` | `[PRD-01.8](./PRD-01.8_user_stories.md)` |
-| Index to section | `[PRD-01.N](PRD-01.N_slug.md)` | `[PRD-01.9](PRD-01.9_functional_requirements.md)` |
-| Cross-PRD | `[PRD-NN](../PRD-NN_slug/)` | `[PRD-02](../PRD-02_knowledge_engine/)` |
+| Section reference | Example only | `PRD-01.8 -> ./PRD-01.8_user_stories.md` |
+| Index to section | Example only | `PRD-01.9 -> PRD-01.9_functional_requirements.md` |
+| Cross-PRD | Example only | `PRD-02 -> ../PRD-02_knowledge_engine/` |
 
 ### Section File Naming Pattern
 
@@ -882,8 +882,8 @@ Each document type has dedicated section templates providing type-specific metad
 | ADR | 5 | `05_ADR/ADR-SECTION-0-TEMPLATE.md` | `05_ADR/ADR-SECTION-TEMPLATE.md` |
 | SYS | 6 | `06_SYS/SYS-SECTION-0-TEMPLATE.md` | `06_SYS/SYS-SECTION-TEMPLATE.md` |
 | REQ | 7 | `07_REQ/REQ-SECTION-0-TEMPLATE.md` | `07_REQ/REQ-SECTION-TEMPLATE.md` |
-| CTR | 9 | `09_CTR/CTR-SECTION-0-TEMPLATE.md` | `09_CTR/CTR-SECTION-TEMPLATE.md` |
-| SPEC | 10 | `10_SPEC/SPEC-SECTION-0-TEMPLATE.md` | `10_SPEC/SPEC-SECTION-TEMPLATE.md` |
+| CTR | 8 | `08_CTR/CTR-SECTION-0-TEMPLATE.md` | `08_CTR/CTR-SECTION-TEMPLATE.md` |
+| SPEC | 9 | `09_SPEC/SPEC-SECTION-0-TEMPLATE.md` | `09_SPEC/SPEC-SECTION-TEMPLATE.md` |
 
 **Types NOT requiring section templates**: TASKS (typically remain under 25KB)
 
@@ -900,8 +900,8 @@ Cross-Reference Link Format (MANDATORY)
     - `[ADR-DOC_NUM](../05_ADR/ADR-DOC_NUM_{slug}.md#ADR-DOC_NUM)` in Traceability section
   - CTR in SPEC:
     - `contract_ref: CTR-DOC_NUM_{slug}` (YAML field)
-    - `[CTR-DOC_NUM](../../09_CTR/CTR-DOC_NUM_{slug}.md#CTR-DOC_NUM)` (markdown reference)
-    - `[CTR-DOC_NUM Schema](../../09_CTR/CTR-DOC_NUM_{slug}.yaml)` (schema reference)
+    - `[CTR-DOC_NUM](../../08_CTR/CTR-DOC_NUM_{slug}.md#CTR-DOC_NUM)` (markdown reference)
+    - `[CTR-DOC_NUM Schema](../../08_CTR/CTR-DOC_NUM_{slug}.yaml)` (schema reference)
   - 07_REQ/ADR in SPEC:
     - `requirements_source:
       - "[REQ-DOC_NUM](../../07_REQ/.../REQ-DOC_NUM_{slug}.md#REQ-DOC_NUM)"`
@@ -921,7 +921,7 @@ Cross-Reference Link Format (MANDATORY)
 Traceability Requirements
 
 - ADR: list addressed REQ(s) via markdown links.
-- CTR: link upstream 07_REQ/ADR (Traceability section), downstream 10_SPEC/Code (Traceability section).
+- CTR: link upstream 07_REQ/ADR (Traceability section), downstream 09_SPEC/Code (Traceability section).
 - BDD: include `@requirement` (mandatory) and `@adr` (when applicable).
 - SPEC: include `requirements_source` (07_REQ/EARS), `architecture` (ADR), `contract_ref` (CTR if applicable), `verification` (BDD); all as markdown links.
 - TASKS: include `@spec` (mandatory - which SPEC being implemented).
@@ -982,10 +982,10 @@ Examples (ai_dev_flow) - Atomic Documents (DOC_NUM)
   - SYS: `06_SYS/SYS-03_position_risk_limits.md` (H1: `# SYS-03: resource Risk Limits`)
   - EARS: `03_EARS/EARS-03_resource_limit_enforcement.md` (H1: `# EARS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
   - REQ: `07_REQ/risk/lim/REQ-03_resource_limit_enforcement.md` (H1: `# REQ-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement`)
-  - CTR: `09_CTR/CTR-01_position_risk_validation.md` + `CTR-01_position_risk_validation.yaml` (H1: `# CTR-01: resource Risk Validation Contract`, YAML: `contract_id: position_risk_validation`)
-  - BDD: `04_BDD/BDD-03_risk_limits_requirements/BDD-03.1_risk_limits_requirements.feature`
-  - SPEC: `10_SPEC/SPEC-03_resource_limit_service.yaml` (id: `resource_limit_service`)
-  - TASKS: `11_TASKS/TASKS-03_resource_limit_service.md` (H1: `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
+- CTR: `08_CTR/CTR-01_position_risk_validation.md` + `CTR-01_position_risk_validation.yaml` (H1: `# CTR-01: resource Risk Validation Contract`, YAML: `contract_id: position_risk_validation`)
+- SPEC: `09_SPEC/SPEC-03_resource_limit_service.yaml` (id: `resource_limit_service`)
+- TASKS: `10_TASKS/TASKS-03_resource_limit_service.md` (H1: `# TASKS-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Service Implementation`)
+
 
 Examples (ai_dev_flow) - Section Files (DOC_NUM.S) - Nested Folder Structure
 - Split BRD document (150KB original → 7 sections):
@@ -1353,7 +1353,7 @@ python3 scripts/validate_all.py . --all
 
 ## Checklist
 
-- H1 titles contain IDs for 02_PRD/06_SYS/03_EARS/07_REQ/05_ADR/09_CTR/11_TASKS/BRD where applicable (use `TYPE-DOC_NUM` format).
+- H1 titles contain IDs for 02_PRD/06_SYS/03_EARS/07_REQ/05_ADR/08_CTR/10_TASKS/BRD where applicable (use `TYPE-DOC_NUM` format).
 - BDD tags are markdown links with valid relative paths and anchors.
 - Spec files named `SPEC-DOC_NUM_{slug}.yaml`; inside, `id:` is snake_case and used by `@spec` tags; `requirements_source`/`architecture`/`verification` links resolve.
 - All document types follow universal numbering pattern: DOC_NUM = 2+ digits (01-99, 100-999, 1000+).

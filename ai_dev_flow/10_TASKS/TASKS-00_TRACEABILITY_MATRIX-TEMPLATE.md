@@ -2,13 +2,13 @@
 title: "TASKS-000 TRACEABILITY_MATRIX TEMPLATE"
 tags:
   - traceability-matrix-template
-  - layer-11-artifact
+  - layer-10-artifact
   - shared-architecture
-  - document-template
 custom_fields:
   document_type: template
   artifact_type: TASKS-TRACEABILITY-MATRIX
-  layer: 11
+  layer: 10
+
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
@@ -50,7 +50,7 @@ python scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generate
 python scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
 
 # Generate TASKS traceability matrix
-python scripts/generate_traceability_matrix.py --type TASKS --output docs/11_TASKS/TASKS-00_TRACEABILITY_MATRIX.md
+python scripts/generate_traceability_matrix.py --type TASKS --output docs/10_TASKS/TASKS-00_TRACEABILITY_MATRIX.md
 ```
 
 **Benefits:**
@@ -83,14 +83,14 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 
 ---
 
-## 2. Required Tags (Cumulative Tagging Hierarchy - Layer 11)
+## 2. Required Tags (Cumulative Tagging Hierarchy - Layer 10)
 
 ### 2.1 Tag Requirements for TASKS Artifacts
 
-**Layer**: 11
+**Layer**: 10
 **Artifact Type**: TASKS (Implementation Tasks)
 **Required Tags**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@spec`
-**Tag Count**: 8-10 (includes @spec, optional @impl, @ctr)
+**Tag Count**: 8-9 (includes @spec, optional @ctr)
 
 ### 2.2 Tag Format
 
@@ -102,7 +102,6 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 @adr: ADR-NN
 @sys: SYS-NN
 @req: REQ-NN
-@impl: IMPL-NN
 @ctr: CTR-NN
 @spec: SPEC-NN
 ```
@@ -124,7 +123,7 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 
 ### 7.1 Upstream Sources
 
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 11):
+**Required Tags** (Cumulative Tagging Hierarchy - Layer 10):
 ```markdown
 @brd: BRD-NN
 @prd: PRD-NN
@@ -133,7 +132,6 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 @adr: ADR-NN
 @sys: SYS-NN
 @req: REQ-NN
-@impl: IMPL-NN
 @ctr: CTR-NN
 @spec: SPEC-NN
 ```
@@ -148,7 +146,7 @@ This matrix tracks all TASKS documents, mapping upstream specifications to downs
 2. **Format Compliance**: All tags must follow `@artifact-type: DOC-ID:NN` format
 3. **Valid References**: All referenced documents and requirements must exist
 4. **No Gaps**: Cannot skip any required upstream layer in the chain
-5. **Tag Count**: Must have exactly 8-10 (includes @spec, optional @impl, @ctr) tags for Layer 11
+5. **Tag Count**: Must have exactly 8-9 (includes @spec, optional @ctr) tags for Layer 10
 
 ### 2.5 Tag Discovery
 
@@ -281,7 +279,7 @@ graph TD
     style Tests1 fill:#e3f2fd
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
 
 ### 7.1 Inter-TASKS Dependencies
 
@@ -386,7 +384,7 @@ graph TD
 - **TASKS Index**: [TASKS-00_index.md](TASKS-00_index.md)
 - **TASKS Template**: [TASKS-TEMPLATE.md](TASKS-TEMPLATE.md)
 - **Complete Traceability Matrix**: [../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md](../TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md)
-- **Related Matrices**: [SPEC](../10_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md), Code Repository
+- **Related Matrices**: [SPEC](../09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md), Code Repository
 
 ---
 
@@ -396,7 +394,7 @@ graph TD
 ```bash
 python ../scripts/generate_traceability_matrix.py \
   --type TASKS \
-  --input ../11_TASKS/ \
+  --input ../10_TASKS/ \
   --template TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md \
   --output TRACEABILITY_MATRIX_TASKS.md \
   --scan-code-repo

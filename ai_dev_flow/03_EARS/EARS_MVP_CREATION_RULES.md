@@ -35,7 +35,7 @@ custom_fields:
 > **📋 Document Role**: This is a **CREATION HELPER** for EARS-MVP-TEMPLATE.md (default).
 > - **Authority**: `EARS-MVP-TEMPLATE.md` is the primary standard for EARS structure; full template archived
 > - **Schema**: `EARS_SCHEMA.yaml` defines machine-readable validation rules
-> - **Validation**: Use `EARS_VALIDATION_RULES.md` or `scripts/validate_ears.py`
+> - **Validation**: Use `EARS_MVP_VALIDATION_RULES.md` or `scripts/validate_ears.py`
 
 # EARS Creation Rules
 

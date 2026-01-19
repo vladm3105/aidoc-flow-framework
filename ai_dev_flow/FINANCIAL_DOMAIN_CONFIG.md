@@ -115,7 +115,7 @@ find docs/ -type f -name "*.md" -exec sed -i \
 
 ```bash
 # Apply to YAML SPEC
-find docs/10_SPEC/ -type f -name "*.yaml" -exec sed -i \
+find docs/09_SPEC/ -type f -name "*.yaml" -exec sed -i \
   -e 's/resource_collection/collection/g' \
   -e 's/resource_item/position/g' \
   -e 's/ResourceCollection/collection/g' \

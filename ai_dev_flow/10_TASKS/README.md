@@ -55,11 +55,11 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 
 | Resource | Purpose |
 |----------|---------|
-| `DEVELOPMENT_PLAN_TEMPLATE.md` | Template to copy to project (`docs/DEVELOPMENT_PLAN.md`) |
-| `DEVELOPMENT_PLAN_README.md` | **Complete user guide** - YAML structure, workflow rules, automation |
+| `IMPLEMENTATION_PLAN_TEMPLATE.md` | Template to copy to project (`docs/IMPLEMENTATION_PLAN.md`) |
+| `IMPLEMENTATION_PLAN_README.md` | **Complete user guide** - YAML structure, workflow rules, automation |
 | `TASKS-00_index.md` | Registry of all TASKS documents |
 
-**See Also**: [DEVELOPMENT_PLAN_README.md](./DEVELOPMENT_PLAN_README.md) for complete documentation.
+**See Also**: [IMPLEMENTATION_PLAN_README.md](./IMPLEMENTATION_PLAN_README.md) for complete documentation.
 
 ---
 
@@ -86,7 +86,7 @@ Tasks create the **code generation roadmap** that:
 | **Content** | Scope, steps, constraints, acceptance criteria, AND bash commands |
 | **Tracking** | YAML block for DEVELOPMENT_PLAN.md integration |
 
-**Workflow**: `SPEC (Layer 10) → TASKS (Layer 11) → Code (Layer 12) → Tests (Layer 13)`
+**Workflow**: `SPEC (Layer 9) → TASKS (Layer 10) → Code (Layer 11) → Tests (Layer 12)`
 
 ---
 
@@ -99,11 +99,10 @@ Tasks are the **code generation bridge** that connects YAML specifications to ex
 
 **⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
 
 **Key Points**:
 - **REQ**: Business requirements (WHAT to build)
-- **IMPL**: Implementation plan (WHO does WHAT, WHEN) - project management
 - **CTR**: API contracts (interface definitions)
 - **SPEC**: Technical specifications (HOW to build) - YAML with classes, methods, algorithms
 - **TASKS**: Code generation plans (exact steps to implement SPEC in source code)
@@ -121,7 +120,7 @@ Comprehensive links establish implementation context:
 @PRD:[PRD-NN](../02_PRD/PRD-NN_...md)
 @SYS:[SYS-NN](../06_SYS/SYS-NN_...md)
 @EARS:[EARS-NN](../03_EARS/EARS-NN_...md)
-@spec:[SPEC-NN](../10_SPEC/.../SPEC-NN_...yaml)
+@spec:[SPEC-NN](../09_SPEC/.../SPEC-NN_...yaml)
 
 @bdd:[BDD-NN.SS:scenarios](../04_BDD/BDD-NN_{suite}/BDD-NN.SS_{slug}.feature#scenarios)
 ```
@@ -174,7 +173,7 @@ Verification requirements for completed implementation:
 Tasks map to specific architectural components:
 
 ```
-`11_TASKS/
+`10_TASKS/
 ├── TASKS-01_resource_limit_service_tasks.md     # Service component
 ├── TASKS-02_ib_gateway_integration_tasks.md      # Integration component
 ├── TASKS-03_external_api_integration_tasks.md    # API client component
@@ -535,13 +534,12 @@ Capture lessons for future task planning:
 ### Task Validation Scripts
 ```bash
 # Validate task format and links
-python validate_tasks.py --directory 11_TASKS/
+python validate_tasks.py --directory 10_TASKS/
 
-# Check task completeness
-python check_task_coverage.py --task-file 11_TASKS/TASKS-01_*.md
+python check_task_coverage.py --task-file 10_TASKS/TASKS-01_*.md
 
-# Generate implementation reports
-python generate_task_reports.py --tasks 11_TASKS/TASKS-*.md --format html
+python generate_task_reports.py --tasks 10_TASKS/TASKS-*.md --format html
+
 ```
 
 ### Progress Tracking
@@ -556,7 +554,7 @@ python show_task_dependencies.py --output dependencies.png
 ### Code Generation Integration
 ```bash
 # Generate implementation from task
-ai-codegen --task 11_TASKS/TASKS-01_resource_limit_service_tasks.md --framework fastapi
+ai-codegen --task 10_TASKS/TASKS-01_resource_limit_service_tasks.md --framework fastapi
 
 # Validate generated code against contracts
 ```
@@ -578,12 +576,12 @@ Every TASKS document MUST include "## 7. Implementation Contracts":
 
 **Check Section 7 count**:
 ```bash
-grep -r "## 7. Implementation Contracts" docs/11_TASKS/ | wc -l
-```
+grep -r "## 7. Implementation Contracts" docs/10_TASKS/ | wc -l
 
 **Verify type hints in contracts**:
 ```bash
-grep -A5 "typing.Protocol" docs/11_TASKS/*.md | head -20
+grep -A5 "typing.Protocol" docs/10_TASKS/*.md | head -20
+
 ```
 
 ### Contract Types (Embedded in Section 7-8)
@@ -596,7 +594,7 @@ grep -A5 "typing.Protocol" docs/11_TASKS/*.md | head -20
 | Data Model | Pydantic/TypedDict | Data validation |
 | DI Interface | ABC classes | Dependency injection |
 
-See [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) for detailed patterns.
+See implementation contracts guidance in `ai_dev_flow/11_TASKS/IMPLEMENTATION_CONTRACTS_GUIDE.md`.
 
 ---
 

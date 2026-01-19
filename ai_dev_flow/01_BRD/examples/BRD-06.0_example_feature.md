@@ -379,7 +379,7 @@ All BRDs must address each of the 7 mandatory ADR topic categories below. For ea
 - **PRD**: PRD-06 (Product Requirements derived from this BRD)
 - **EARS**: EARS-06 (Formal requirements derived from PRD)
 - **Tag Format**: `@ref: BRD-06.{S}` (section reference)
-- **Downstream Trace**: PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC
+- **Downstream Trace**: PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC
 
 ## 17. Glossary
 - Project-specific terms and definitions.

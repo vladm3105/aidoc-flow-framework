@@ -38,7 +38,7 @@ Define YAML frontmatter metadata standards for projects supporting multiple arch
 - ADR (Architecture Decision Records)
 - PRD (Product Requirements Documents)
 - SPEC (Technical Specifications)
-- IMPL (Implementation Plans)
+- CTR (Contracts)
 
 **Does NOT Apply To:**
 - Source code files (use language-specific conventions)
@@ -609,7 +609,7 @@ The SDD framework uses two distinct notation systems for cross-references, each 
 | Notation | Format       | Artifacts                               | Purpose                                                             |
 |----------|--------------|----------------------------------------|---------------------------------------------------------------------|
 | Dash     | TYPE-NN     | ADR, SPEC, CTR                         | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - DOC_NUM.ELEM_TYPE.SEQ format |
+| Dot      | TYPE.NN.TT.SS | BRD, PRD, EARS, BDD, SYS, REQ, TASKS | Hierarchical artifacts - DOC_NUM.ELEM_TYPE.SEQ format |
 
 **Key Distinction**:
 

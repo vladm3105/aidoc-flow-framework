@@ -492,7 +492,7 @@ custom_fields:
 | [Term 1] | [Definition relevant to this MVP] |
 | [Term 2] | [Definition relevant to this MVP] |
 
-**Master Glossary Reference**: See [ai_dev_flow/GLOSSARY.md](../GLOSSARY.md)
+**Master Glossary Reference**: See [BRD-00_GLOSSARY.md](../01_BRD/BRD-00_GLOSSARY.md)
 
 ---
 

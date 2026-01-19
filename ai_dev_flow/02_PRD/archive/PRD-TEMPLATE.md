@@ -21,7 +21,7 @@ custom_fields:
 # - In case of conflict, this template is the single source of truth
 # - Schema: PRD_SCHEMA.yaml - Machine-readable validation (derivative)
 # - Creation Rules: PRD_CREATION_RULES.md - AI guidance for document creation (derivative)
-# - Validation Rules: PRD_VALIDATION_RULES.md - AI checklist after document creation (derivative)
+# - Validation Rules: PRD_MVP_VALIDATION_RULES.md - AI checklist after document creation (derivative)
 #   NOTE: VALIDATION_RULES includes all CREATION_RULES and may be extended for validation
 # =============================================================================
 ---
@@ -45,7 +45,7 @@ custom_fields:
   schema_version: "1.0"
 ---
 
-> Reference Template — For learning and small docs only. Real PRDs should be split per `../DOCUMENT_SPLITTING_RULES.md` using:
+> Reference Template — For learning and small docs only. Real PRDs should be split per `../../DOCUMENT_SPLITTING_RULES.md` using:
 > - `PRD-SECTION-0-TEMPLATE.md` to create `PRD-{NN}.0_index.md`
 > - `PRD-SECTION-TEMPLATE.md` to create `PRD-{NN}.{S}_{slug}.md`
 
@@ -83,7 +83,7 @@ Schema: See `ai_dev_flow/02_PRD/PRD_SCHEMA.yaml` for complete rules
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for PRD structure.
 > - **Schema**: `PRD_SCHEMA.yaml v1.0` - Validation rules (21 sections: 1-21)
 > - **Creation Rules**: `PRD_CREATION_RULES.md` - Usage guidance
-> - **Validation Rules**: `PRD_VALIDATION_RULES.md` - Post-creation checks
+> - **Validation Rules**: `PRD_MVP_VALIDATION_RULES.md` - Post-creation checks
 >
 > **Template Variants**:
 > - **Standard PRD** (21 sections): Default for business features - use this template
@@ -96,7 +96,7 @@ Schema: See `ai_dev_flow/02_PRD/PRD_SCHEMA.yaml` for complete rules
 
 # PRD-NN: [Descriptive Product Name/Feature Name]
 
-**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
+**⚠️ CRITICAL**: Always reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) as the single source of truth for workflow steps, artifact definitions, and quality gates.
 
 **resource**: PRD is in Layer 2 (Product Requirements Layer) - defines product requirements from BRD business needs.
 
@@ -553,7 +553,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 - **PRD**: Refines into technical thresholds (THIS DOCUMENT - primary definition source)
 - **03_EARS/04_BDD/06_SYS/09_SPEC/CTR**: Reference PRD thresholds using `@threshold:` tags
 
-**Reference**: See [THRESHOLD_NAMING_RULES.md](../THRESHOLD_NAMING_RULES.md) for naming conventions.
+**Reference**: See [THRESHOLD_NAMING_RULES.md](../../THRESHOLD_NAMING_RULES.md) for naming conventions.
 
 ---
 
@@ -596,7 +596,7 @@ API latency: p95 < 200ms (per @threshold: PRD.035.perf.api.p95_latency)
 **Purpose**: Define product-approved messaging for customer communications at key touchpoints. This ensures consistency, compliance, and consistent user experience across all customer interactions.
 
 **📚 Complete Business Context**: For business-level messaging requirements and approval workflows, see:
-- **[BRD-MVP Template - Appendix N: Customer Communication Templates](../01_BRD/BRD-MVP-TEMPLATE.md#appendix-n-customer-communication-templates-required-for-customer-facing-brds)** - Business approval and messaging strategy
+- **[BRD-MVP Template - Appendix N: Customer Communication Templates](../../01_BRD/BRD-MVP-TEMPLATE.md#appendix-n-customer-communication-templates-required-for-customer-facing-brds)** - Business approval and messaging strategy
 
 ### 10.1 Transaction Status Messages
 
@@ -1030,7 +1030,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 **Purpose**: This section adds technical evaluation context to BRD architecture topics. Specific ADRs will be created AFTER this PRD during the ADR phase of the SDD workflow.
 
-**ADR Creation Timing**: ADRs are created after BRD → PRD → EARS → BDD in the SDD workflow. Reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) for complete workflow order.
+**ADR Creation Timing**: ADRs are created after BRD → PRD → EARS → BDD in the SDD workflow. Reference [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) for complete workflow order.
 
 #### BDD Scenarios
 
@@ -1082,7 +1082,7 @@ PRD Section 18 **elaborates** architecture topics defined in BRD Section 7.2 by 
 
 **Validation**: Tags must reference existing BRD documents and requirement IDs within those documents.
 
-**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through implementation. See [TRACEABILITY.md](../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
+**Purpose**: Cumulative tagging enables complete traceability chains from business requirements through implementation. See [TRACEABILITY.md](../../TRACEABILITY.md#cumulative-tagging-hierarchy) for complete hierarchy documentation.
 
 ### 18.5 Bidirectional Reference Validation
 
@@ -1173,9 +1173,9 @@ Document evidence that PRD requirements have been translated to technical specif
 ### 19.1 Internal Documentation
 
 - [PRD Writing Guidelines](../README.md) - Product requirements best practices
-- [BRD Template](../01_BRD/BRD-TEMPLATE.md) - Business requirements structure
-- [EARS Template](../03_EARS/EARS-TEMPLATE.md) - Engineering requirements format
-- [ADR Template](../05_ADR/ADR-TEMPLATE.md) - Architecture decision records
+- [BRD Template](../../01_BRD/BRD-MVP-TEMPLATE.md) - Business requirements structure
+- [EARS Template](../../03_EARS/EARS-MVP-TEMPLATE.md) - Engineering requirements format
+- [ADR Template](../../05_ADR/ADR-MVP-TEMPLATE.md) - Architecture decision records
 
 ### 19.2 External Standards
 

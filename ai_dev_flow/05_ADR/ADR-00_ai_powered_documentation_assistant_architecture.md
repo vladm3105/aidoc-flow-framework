@@ -13,7 +13,7 @@ custom_fields:
   priority: primary
   development_status: active
   upstream_artifacts: [BRD, PRD, EARS, BDD]
-  downstream_artifacts: [SYS, REQ, SPEC]
+  downstream_artifacts: [SYS, REQ, CTR, SPEC, TASKS, Code]
 ---
 
 # ADR-000: AI-Powered Documentation Assistant Architecture
@@ -43,7 +43,7 @@ custom_fields:
 
 ### Background
 
-The AI Dev Flow framework provides 25+ documentation skills for creating SDD artifacts. Users must manually select appropriate skills, understand project context, and navigate the 15-layer workflow. This creates friction and inconsistency in documentation quality.
+The AI Dev Flow framework provides 25+ documentation skills for creating SDD artifacts. Users must manually select appropriate skills, understand project context, and navigate the 14-layer workflow. This creates friction and inconsistency in documentation quality.
 
 ### Problem Statement
 
@@ -407,7 +407,7 @@ workflow_recommendations:
 
 | Source | Type | Reference |
 |--------|------|-----------|
-| PRD-000 | Product Requirements | [PRD-000](../02_PRD/PRD-00_ai_assisted_documentation_features.md#PRD-000) |
+| PRD-000 | Product Requirements | [PRD-000](../02_PRD/PRD-00_index.md#PRD-000) |
 | SPEC_DRIVEN_DEVELOPMENT_GUIDE | Methodology Guide | [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) |
 
 ### Downstream Artifacts
@@ -431,7 +431,7 @@ workflow_recommendations:
 
 | Document | Purpose |
 |----------|---------|
-| [PRD-000](../02_PRD/PRD-00_ai_assisted_documentation_features.md) | Product requirements driving this decision |
+| [PRD-000](../02_PRD/PRD-00_index.md#PRD-000) | Product requirements driving this decision |
 | [SKILL README](../../.claude/skills/README.md) | Existing skill catalog and structure |
 | [doc-flow SKILL](../../.claude/skills/doc-flow/SKILL.md) | Reference skill architecture |
 | [trace-check SKILL](../../.claude/skills/trace-check/SKILL.md) | Quality validation patterns |

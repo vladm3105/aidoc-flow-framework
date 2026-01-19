@@ -35,7 +35,7 @@ custom_fields:
 
 > **📋 Document Role**: This is a **CREATION HELPER** for ADR-MVP-TEMPLATE.md (default).
 > - **Authority**: `ADR-MVP-TEMPLATE.md` is the primary standard for ADR structure; full template archived
-> - **Validation**: Use `ADR_VALIDATION_RULES.md` after ADR creation/changes
+> - **Validation**: Use `ADR_MVP_VALIDATION_RULES.md` after ADR creation/changes
 
 # ADR Creation Rules
 

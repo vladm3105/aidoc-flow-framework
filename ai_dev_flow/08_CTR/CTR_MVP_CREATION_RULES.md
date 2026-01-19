@@ -20,7 +20,7 @@ custom_fields:
 # =============================================================================
 > **📋 Document Role**: This is a **CREATION HELPER** for CTR-MVP-TEMPLATE.md.
 > - **Authority**: `CTR-MVP-TEMPLATE.md` is the source of truth for CTR structure; YAML schemas must follow OpenAPI 3.x
-> - **Validation**: Use `CTR_VALIDATION_RULES.md` after CTR creation/changes
+> - **Validation**: Use `CTR_MVP_VALIDATION_RULES.md` after CTR creation/changes
 
 # CTR Creation Rules
 

@@ -34,13 +34,13 @@ This document defines **corpus-level validation rules** that run AFTER all TASKS
 
 | Validation Type | When It Runs | Scope | File |
 |-----------------|--------------|-------|------|
-| **Individual TASKS Validation** | After each TASKS creation | Single file | `TASKS_VALIDATION_RULES.md` |
+| **Individual TASKS Validation** | After each TASKS creation | Single file | `TASKS_MVP_VALIDATION_RULES.md` |
 | **Corpus Validation** | After ALL TASKS complete | Entire TASKS set | This document |
 
 ### Workflow Position
 
 ```
-Individual TASKS Creation → TASKS_VALIDATION_RULES.md (per-file)
+Individual TASKS Creation → TASKS_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All TASKS Complete
         ↓
@@ -191,6 +191,10 @@ docs/10_TASKS/
 **Purpose**: Ensure documents don't exceed token limits
 
 **Severity**: Warning at 600 lines, Error at 1200 lines
+
+**File Format**: Markdown (.md)
+
+**Note**: TASKS files use Markdown format. For comparison, SPEC files (YAML format) use different thresholds (Warning at 1000 lines, Error at 2000 lines) due to format differences in verbosity.
 
 ---
 
@@ -491,8 +495,8 @@ fi
 
 ## References
 
-- [TASKS_VALIDATION_RULES.md](./TASKS_VALIDATION_RULES.md) - Individual file validation
+- [TASKS_MVP_VALIDATION_RULES.md](./TASKS_MVP_VALIDATION_RULES.md) - Individual file validation (MVP)
 - [TASKS-TEMPLATE.md](./TASKS-TEMPLATE.md) - TASKS document template
-- [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) - Contract patterns
+- Implementation contracts guide - reference only (link intentionally omitted)
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

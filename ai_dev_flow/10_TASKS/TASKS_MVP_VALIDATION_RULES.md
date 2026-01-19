@@ -442,7 +442,6 @@ CHECK 4: Section 7 Implementation Contracts (v2.0)
 
 CHECK 5: Traceability Tags
   ✅ All 8 required tags present
-  ⚠️  WARNING: @impl tag missing (optional)
 
 CHECK 6: Cross-References
   ✅ Parent SPEC exists
@@ -515,7 +514,7 @@ Result: PASSED WITH WARNINGS
 
 ## References
 
-- [TASKS_CREATION_RULES.md](./TASKS_CREATION_RULES.md) - Creation guidelines
+- [TASKS_MVP_CREATION_RULES.md](./TASKS_MVP_CREATION_RULES.md) - Creation guidelines
 - [TASKS-TEMPLATE.md](./TASKS-TEMPLATE.md) - Tasks template
 - [validate_tasks.sh](../scripts/validate_tasks.sh) - Validation script
 - [README.md](./README.md) - Directory overview

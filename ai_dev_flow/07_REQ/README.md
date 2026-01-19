@@ -678,7 +678,7 @@ stateDiagram-v2
     Error --> Reconnecting: retry
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
 
 **Circuit Breaker Configuration**:
 ```python
@@ -804,7 +804,7 @@ find REQ -name "REQ-*.md" ! -path "*/archived/*" -exec ./scripts/validate_req_te
 - CHECK 7-11: V2 sections (interfaces, schemas, errors, config, quality attributes)
 - CHECK 12-18: V3 enhancements (filename, resource tags, cumulative tagging, link resolution, traceability matrix, SPEC-Ready content)
 
-**Validation Reference**: See [REQ_VALIDATION_RULES.md](REQ_VALIDATION_RULES.md) for detailed fix instructions for each check.
+**Validation Reference**: See [REQ_MVP_VALIDATION_RULES.md](REQ_MVP_VALIDATION_RULES.md) for detailed fix instructions for each check.
 
 #### Python-Based Validators
 

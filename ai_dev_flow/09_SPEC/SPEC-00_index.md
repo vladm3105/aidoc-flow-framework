@@ -37,9 +37,9 @@ flowchart LR
     style SPEC fill:#e3f2fd,stroke:#1565c0,stroke-width:3px
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
 
-**Layer**: 10 (Implementation Specification Layer)
+**Layer**: 9 (Implementation Specification Layer)
 **Upstream**: BRD→REQ, CTR (optional)
 **Downstream**: TASKS, Code, Tests
 
@@ -88,11 +88,11 @@ When creating a new SPEC:
 
 1. **Copy Template**:
    ```bash
-   # Nested (default)
-   mkdir -p 09_SPEC/SPEC-01_component_name
-   cp ai_dev_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml 09_SPEC/SPEC-01_component_name/SPEC-01_component_name.yaml
-   # Flat (exception)
-   # cp ai_dev_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml 09_SPEC/SPEC-01_component_name.yaml
+   # Flat (default) - single YAML per component
+   cp ai_dev_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml 09_SPEC/SPEC-01_component_name.yaml
+   # Nested (exception) - when supporting files needed (diagrams, schemas, split MD)
+   # mkdir -p 09_SPEC/SPEC-01_component_name
+   # cp ai_dev_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml 09_SPEC/SPEC-01_component_name/SPEC-01_component_name.yaml
    ```
 
 2. **Assign SPEC ID**: Use next sequential number (SPEC-01, SPEC-02, 100, 1000 ...)
@@ -106,7 +106,7 @@ When creating a new SPEC:
 - **Numbering**: Allocate sequentially starting at `01` (variable-length DOC_NUM)
 - **One Component Per File**: Each `SPEC-NN` covers a single component or service
 - **Format**: YAML format for machine readability (monolithic per component)
-- **Organization**: Nested per spec (default) or flat (exception) depending on size/complexity
+- **Organization**: Flat (default) or nested (exception for specs with supporting files)
 - **Slugs**: Short, descriptive, lower_snake_case
 - **Index Updates**: Add entry for every new SPEC
 

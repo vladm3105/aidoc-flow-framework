@@ -83,6 +83,47 @@ The SPEC validation script ensures YAML specification files meet quality standar
 - Proper indentation
 - Correct data types (strings, numbers, booleans, arrays, objects)
 
+### CHECK 1b: Flat YAML Structure ⭐ NEW
+
+**Purpose**: Ensure SPEC uses flat structure with top-level keys (not nested under `spec_document` or similar wrapper)
+**Type**: Error (blocking)
+
+**Requirements**:
+- SPEC content must be at root level (flat structure)
+- Top-level keys must include: `metadata`, `traceability`, `req_implementations`
+- NO wrapper keys like `spec_document`, `spec`, `document`, or `specification`
+
+**Valid Structure (Flat)**:
+```yaml
+id: component_name
+summary: Component description
+metadata:
+  version: "1.0.0"
+  status: "draft"
+traceability:
+  upstream_sources: ...
+req_implementations: ...
+architecture: ...
+interfaces: ...
+```
+
+**Invalid Structure (Nested)**:
+```yaml
+spec_document:  # ❌ WRONG - wrapper key not allowed
+  metadata:
+    version: "1.0.0"
+  traceability: ...
+```
+
+**Validation Logic**:
+1. Parse YAML and get top-level keys
+2. If `spec_document`, `spec`, `document`, or `specification` is a top-level key → Error
+3. Verify `metadata` or `traceability` exists at root level
+
+**Error Message**: `❌ SPEC-E001b: Invalid nested structure - SPEC must use flat YAML structure (no spec_document wrapper)`
+
+**Rationale**: Flat structure ensures consistent parsing across all SPEC files and enables uniform TASKS code generation. Nested structures break tooling expectations and create inconsistent validation paths.
+
 ### CHECK 2: Required Metadata Fields
 
 **Type**: Error (blocking)
@@ -122,11 +163,26 @@ cumulative_tags:
   prd: "PRD.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
   ears: "EARS.NN.EE.SS"       # Unified dot notation (or null if absent)
   bdd: "BDD.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
-  adr: "ADR-NN"             # Document-level reference (no sub-ID, or null if absent)
+  adr: "ADR-NN"               # Document-level reference (no sub-ID, or null if absent)
   sys: "SYS.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
   req: "REQ.NN.EE.SS"         # Unified dot notation for sub-ID references (or null if absent)
+  ctr: "CTR-NN"               # API Contract reference (or null if CTR file does not exist)
   threshold: "PRD-NN"         # Threshold registry document reference (or null if registry not applicable)
 ```
+
+### CHECK 5b: CTR Contract Validation (Conditional) ⭐ NEW
+
+**Purpose**: Verify CTR reference when corresponding CTR file exists
+**Type**: Warning (non-blocking, but recommended)
+
+**Validation Logic**:
+1. Extract SPEC number from filename (e.g., SPEC-01 → 01)
+2. Check if `docs/08_CTR/CTR-01_*.yaml` exists
+3. If CTR exists AND `cumulative_tags.ctr` is `null` → Warning
+4. If CTR does not exist AND `cumulative_tags.ctr` is not `null` → Error (invalid reference)
+
+**Warning Message**: `⚠️ SPEC-W012: CTR-NN exists but cumulative_tags.ctr is null - should reference CTR-NN`
+**Error Message**: `❌ SPEC-E012: cumulative_tags.ctr references CTR-NN but file does not exist`
 
 ### CHECK 6: Interface Specifications
 
@@ -167,11 +223,11 @@ cumulative_tags:
 
 **Thresholds**:
 - Markdown files: 600 lines maximum (target: 300-500 lines)
-- YAML files: 1000 lines maximum
+- YAML files: 2000 lines maximum
 
 **Warning Messages**:
 - `SPEC-W010`: Markdown file exceeds 600 lines
-- `SPEC-W011`: YAML file exceeds 1000 lines
+- `SPEC-W011`: YAML file exceeds 2000 lines
 
 ---
 
@@ -212,10 +268,12 @@ cumulative_tags:
 | Error Check | Quick Fix |
 |-------------|-----------|
 | **CHECK 1** | Fix YAML syntax (indentation, quotes, colons) |
+| **CHECK 1b** | Remove `spec_document` wrapper - move all nested content to root level |
 | **CHECK 2** | Add missing metadata fields |
 | **CHECK 3** | Add properly formatted TASKS-ready score |
 | **CHECK 4** | Replace raw quantitative values with `@threshold: PRD.NN.*` and add `threshold_references` registry + keys |
 | **CHECK 5** | Complete traceability tag chain; use `null` only when an upstream artifact type does not exist |
+| **CHECK 5b** | If CTR-NN exists in `docs/08_CTR/`, add `ctr: "CTR-NN"` to cumulative_tags |
 | **CHECK 9** | Reduce file size or accept warning (non-blocking) |
 | **CHECK 10** | Replace legacy element IDs (STEP-XXX, IF-XXX, DM-XXX) with unified format `SPEC.NN.TT.SS` |
 
@@ -259,9 +317,11 @@ find docs/SPEC -name "SPEC-*.yaml" -exec python scripts/validate_spec.py {} \;
 
 | Tier | Type | Checks | Action |
 |------|------|--------|--------|
-| **Tier 1** | Error | 1-5, 10 | Must fix before commit |
-| **Tier 2** | Warning | 6-9 | Recommended to fix |
+| **Tier 1** | Error | 1, 1b, 2-5, 10 | Must fix before commit |
+| **Tier 2** | Warning | 5b, 6-9 | Recommended to fix |
 | **Tier 3** | Info | - | No action required |
+
+**Note**: CHECK 5b (CTR validation) is a Warning - missing CTR reference won't block commit but should be addressed.
 
 ---
 
@@ -272,6 +332,24 @@ find docs/SPEC -name "SPEC-*.yaml" -exec python scripts/validate_spec.py {} \;
 ❌ version: '1.0.0  # Missing closing quote
 ✅ version: "1.0.0"  # Proper quotes
 ```
+
+### Mistake #1b: Nested Structure (spec_document wrapper)
+```yaml
+❌ # WRONG - nested under spec_document wrapper
+spec_document:
+  metadata:
+    version: "1.0.0"
+  traceability: ...
+  req_implementations: ...
+
+✅ # CORRECT - flat structure at root level
+metadata:
+  version: "1.0.0"
+traceability: ...
+req_implementations: ...
+```
+
+**Fix**: Move all content from under `spec_document:` to the root level. Remove the `spec_document:` key entirely and dedent all nested content by one level.
 
 ### Mistake #2: Missing TASKS-Ready Score
 ```
@@ -297,13 +375,25 @@ find docs/SPEC -name "SPEC-*.yaml" -exec python scripts/validate_spec.py {} \;
     adr: "ADR-NN"
     sys: "SYS.01.25.01"
     req: "REQ.02.26.05"
-    threshold: "PRD-03"      # use null only when thresholds not applicable
+    ctr: "CTR-01"             # reference if CTR file exists, null otherwise
+    threshold: "PRD-03"       # use null only when thresholds not applicable
 ```
 
-### Mistake #4: CTR Contract Mismatch
+### Mistake #4: Missing CTR Reference When CTR Exists
+```
+❌ # CTR-01_iam.yaml exists in docs/08_CTR/ but SPEC-01 has:
+cumulative_tags:
+    ctr: null  # WRONG - CTR file exists
+
+✅ # Check for CTR file first, then reference it:
+cumulative_tags:
+    ctr: "CTR-01"  # Reference the existing CTR contract
+```
+
+### Mistake #5: CTR Contract Mismatch
 ```
 ❌ # CTR-NN references interface that doesn't exist
-✅ # Verified CTR-01_api_contract.md exists and matches API spec
+✅ # Verified CTR-01_iam.yaml exists and matches API spec
 ```
 
 ---

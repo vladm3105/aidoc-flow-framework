@@ -16,7 +16,7 @@ custom_fields:
 # 📋 Document Role: Validates BRD-MVP-TEMPLATE.md (default)
 # - Authority: BRD-MVP-TEMPLATE.md is the primary standard for BRD structure; full template is archived
 # - Purpose: AI checklist after document creation (derived from MVP template)
-# - Scope: Includes all rules from BRD_CREATION_RULES.md plus validation extensions
+# - Scope: Includes all rules from BRD_MVP_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to BRD-MVP-TEMPLATE.md
 # =============================================================================
 ---
@@ -381,7 +381,7 @@ These fields are recognized but not required by validation.
    - Reference: `BRD-REF-NN_{descriptive_slug}`
 2. Use lowercase with underscores for descriptive title
 
-**Reference**: `BRD_CREATION_RULES.md` section 4 (ID and Naming Standards), `REF-TEMPLATE.md` for reference documents
+**Reference**: `BRD_MVP_CREATION_RULES.md` section 4 (ID and Naming Standards), `REF-TEMPLATE.md` for reference documents
 
 ---
 
@@ -458,7 +458,7 @@ These fields are recognized but not required by validation.
 | Communication Protocol | Select inter-system messaging | BRD.NN.015: Real-time updates | Pub/Sub, gRPC, REST WebSocket |
 ```
 
-**Reference**: `BRD_CREATION_RULES.md` section 9 (Architecture Decision Requirements)
+**Reference**: `BRD_MVP_CREATION_RULES.md` section 9 (Architecture Decision Requirements)
 
 ---
 
@@ -488,7 +488,7 @@ These fields are recognized but not required by validation.
 BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (50% improvement) within 6 months of implementation, enabling <2-second competitive response times as specified in integrated_strategy_algo_v5.md section 4.2.
 ```
 
-**Reference**: `BRD_CREATION_RULES.md` section 10 (Business Objectives and Success Criteria)
+**Reference**: `BRD_MVP_CREATION_RULES.md` section 10 (Business Objectives and Success Criteria)
 
 ---
 
@@ -549,7 +549,7 @@ BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (5
 2. Ensure ADR references are only in section 7.2 as topic identification
 3. Add ADR references AFTER BRD approval when ADRs are created
 
-**Reference**: `BRD_CREATION_RULES.md` section 7 (ADR Relationship Guidelines)
+**Reference**: `BRD_MVP_CREATION_RULES.md` section 7 (ADR Relationship Guidelines)
 
 ---
 
@@ -577,7 +577,7 @@ BRD.NN.23.03: Reduce transaction processing time from 10 seconds to 5 seconds (5
 - **Business Rationale**: Enables business execution as specified in `{domain_strategy}/strategy_description.md` section 3.4
 ```
 
-**Reference**: `BRD_CREATION_RULES.md` section 8 (Traceability Requirements)
+**Reference**: `BRD_MVP_CREATION_RULES.md` section 8 (Traceability Requirements)
 
 ---
 
@@ -925,7 +925,7 @@ See BRD-MVP-TEMPLATE.md Appendix B for REMOVE/KEEP guidelines (full template arc
 2. Rewrite in business-level language (what business capability, not how technically implemented)
 3. Defer technical implementation to PRD Related Requirements
 
-**Reference**: BRD-MVP-TEMPLATE.md Appendix B (REMOVE/KEEP Rules; full template archived), BRD_CREATION_RULES.md section 6.5 (Edge Cases)
+**Reference**: BRD-MVP-TEMPLATE.md Appendix B (REMOVE/KEEP Rules; full template archived), BRD_MVP_CREATION_RULES.md section 6.5 (Edge Cases)
 
 ---
 
@@ -1032,7 +1032,7 @@ Fix: Add missing subsections per BRD-MVP-TEMPLATE.md section 7.2 format (full te
 2. Add missing subsections using BRD-MVP-TEMPLATE.md section 7.2 as reference (full template archived)
 3. Ensure subsection headers match exactly (case-sensitive)
 
-**Reference**: BRD-MVP-TEMPLATE.md section 7.2 (full template archived), BRD_CREATION_RULES.md section 5.5 (Complexity Rating)
+**Reference**: BRD-MVP-TEMPLATE.md section 7.2 (full template archived), BRD_MVP_CREATION_RULES.md section 5.5 (Complexity Rating)
 
 ---
 
@@ -1137,7 +1137,7 @@ Reference: BRD-MVP-TEMPLATE.md lines 76-111 for Executive Summary pattern (full 
 4. Mention implementation timeline (phases, quarters, duration)
 5. Reference investment level if known at BRD stage
 
-**Reference**: BRD-MVP-TEMPLATE.md section 1.1 (full template archived), BRD_CREATION_RULES.md section 2.2
+**Reference**: BRD-MVP-TEMPLATE.md section 1.1 (full template archived), BRD_MVP_CREATION_RULES.md section 2.2
 
 ---
 
@@ -1273,7 +1273,7 @@ Reference: BRD-MVP-TEMPLATE.md lines 173-254 (full template archived)
 4. Add section 3.5.5 for exception handling workflows
 5. Ensure participants and actions are business-level (no technical implementation)
 
-**Reference**: BRD-MVP-TEMPLATE.md sections 3.5.4-3.5.5 (full template archived), BRD_CREATION_RULES.md section 2.3
+**Reference**: BRD-MVP-TEMPLATE.md sections 3.5.4-3.5.5 (full template archived), BRD_MVP_CREATION_RULES.md section 2.3
 
 ---
 
@@ -1349,7 +1349,7 @@ Fix: Ensure bidirectional links for all objectives, BRD requirements, and user s
 7. Ensure score ≥90% by eliminating orphans
 
 **Reference**: BRD-MVP-TEMPLATE.md section 15 (full template archived)
-, BRD_CREATION_RULES.md section 8
+, BRD_MVP_CREATION_RULES.md section 8
 
 ---
 
@@ -1427,7 +1427,7 @@ Fix: Complete all required subsections per BRD-MVP-TEMPLATE.md section 14.5 (ful
 4. Define Change Control Process table with version impact rules
 5. Use semantic versioning: major.minor.patch
 
-**Reference**: BRD-MVP-TEMPLATE.md section 14.5 (full template archived), BRD_CREATION_RULES.md section 11.5
+**Reference**: BRD-MVP-TEMPLATE.md section 14.5 (full template archived), BRD_MVP_CREATION_RULES.md section 11.5
 
 ---
 
@@ -1521,7 +1521,7 @@ Reference: BRD-MVP-TEMPLATE.md section 17 (full template archived)
 7. List Cross-References to related BRDs and documents
 8. Document External Standards referenced (regulatory, industry, technical)
 
-**Reference**: BRD-MVP-TEMPLATE.md section 17 (full template archived), BRD_CREATION_RULES.md section 2 (line 76)
+**Reference**: BRD-MVP-TEMPLATE.md section 17 (full template archived), BRD_MVP_CREATION_RULES.md section 2 (line 76)
 
 ---
 
@@ -1555,7 +1555,7 @@ Reference: BRD-MVP-TEMPLATE.md section 17 (full template archived)
 
 **Fix**: Replace `### AC-01: Criterion` with `### BRD.02.06.01: Criterion`
 
-**Reference**: BRD_CREATION_RULES.md Section 4.1, [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
+**Reference**: BRD_MVP_CREATION_RULES.md Section 4.1, [ID_NAMING_STANDARDS.md — Cross-Reference Link Format](../ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
 
 ---
 

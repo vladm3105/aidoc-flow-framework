@@ -26,7 +26,7 @@ custom_fields:
 ### ✅ Complete Templates (13/13)
 
 1. **TRACEABILITY_MATRIX_COMPLETE-TEMPLATE.md**
-   - Comprehensive 15-layer cumulative tagging table
+   - Comprehensive 14-layer cumulative tagging table
    - Complete examples for all layers
    - Validation rules and patterns
 
@@ -50,9 +50,9 @@ custom_fields:
    - Tag count: 6
    - Atomic requirements pattern
 
-6. **SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 10)
-   - Required tags: `@brd` through `@req` + optional `@impl`, `@ctr`
-   - Tag count: 7-9
+6. **SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 9)
+   - Required tags: `@brd` through `@req` + optional `@ctr`
+   - Tag count: 7-8
    - YAML cumulative_tags format
 
 7. **BDD-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 4)
@@ -70,19 +70,14 @@ custom_fields:
    - Tag count: 5
    - System requirements with architecture decisions
 
-10. **IMPL-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 8)
+10. **CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 8)
     - Required tags: `@brd` through `@req`
     - Tag count: 7
-    - Implementation plans (optional layer)
-
-11. **CTR-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 9)
-    - Required tags: `@brd` through `@impl`
-    - Tag count: 8
     - API contracts (optional layer)
 
-12. **TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 11)
+11. **TASKS-00_TRACEABILITY_MATRIX-TEMPLATE.md** (Layer 10)
     - Required tags: `@brd` through `@spec`
-    - Tag count: 8-10
+    - Tag count: 8-9
     - Implementation tasks with all upstream references
 
 ## 3. Remaining Templates
@@ -180,10 +175,9 @@ Layer 4 (BDD): @brd, @prd, @ears (3+ tags)
 Layer 5 (ADR): @brd through @bdd (4 tags)
 Layer 6 (SYS): @brd through @adr (5 tags)
 Layer 7 (REQ): @brd through @sys (6 tags)
-Layer 8 (IMPL): @brd through @req (7 tags)  # Optional
-Layer 9 (CTR): @brd through @impl (8 tags)  # Optional
-Layer 10 (SPEC): @brd through @req + optional @impl, @ctr (7-9 tags)
-Layer 11 (TASKS): @brd through @spec (8-10 tags)
+Layer 8 (CTR): @brd through @req (7 tags)  # Optional
+Layer 9 (SPEC): @brd through @req + optional @ctr (7-8 tags)
+Layer 10 (TASKS): @brd through @spec (8-9 tags)
 ```
 
 ### 3.3 Validation Commands Template
@@ -211,7 +205,7 @@ python scripts/generate_traceability_matrix.py \
   - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](SPEC_DRIVEN_DEVELOPMENT_GUIDE.md#cumulative-tagging-hierarchy) - SDD workflow with tagging
 
 - **Helper Scripts**:
-  - [batch_update_matrix_templates.py](scripts/batch_update_matrix_templates.py) - Generates tag sections for all layers
+  - [generate_traceability_matrix.py](scripts/generate_traceability_matrix.py) - Generates traceability reports
 
 - **Completed Examples**:
   - Simple (1 tag): PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md
@@ -230,7 +224,7 @@ python scripts/generate_traceability_matrix.py \
 4. ✅ Examples use consistent request submission Service scenario
 5. ✅ Proper section renumbering across all templates
 
-**Files Modified**: 6 templates (BDD, ADR, SYS, IMPL, CTR, TASKS)
+**Files Modified**: 5 templates (BDD, ADR, SYS, CTR, TASKS)
 **Files Created**: 1 script (add_cumulative_tagging_to_matrices.py)
 **Total Lines Added**: 1,186 lines across all templates
 

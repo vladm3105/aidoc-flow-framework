@@ -125,7 +125,7 @@ Business constraints          Deep-dive analysis         Trade-off analysis
 Cost estimates                Evaluation criteria        Selected approach
 ```
 
-**Reference**: See `BRD_CREATION_RULES.md` Section 9 for detailed guidelines and `examples/BRD-06.0_example_feature.md` for complete demonstration
+**Reference**: See `BRD_MVP_CREATION_RULES.md` Section 9 for detailed guidelines and `examples/BRD-06.0_example_feature.md` for complete demonstration
 
 ## BRD Categories: Platform vs Feature
 
@@ -282,7 +282,7 @@ This directory provides the MVP template for business requirements (full templat
 > **Rationale**:
 > - Business flexibility and domain variability require flexibility over rigidity
 > - Human-centric validation is preferred at Layer 1
-> - Sufficient guidance via `BRD_CREATION_RULES.md` and `BRD_VALIDATION_RULES.md`
+> - Sufficient guidance via `BRD_MVP_CREATION_RULES.md` and `BRD_MVP_VALIDATION_RULES.md`
 >
 > **Validation Approach**: Use `scripts/validate_brd_template.sh` for structural validation; use the optional schema for advisory checks only.
 

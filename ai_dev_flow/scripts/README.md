@@ -320,10 +320,11 @@ python scripts/validate_cross_document.py --full --output validation_report.md
 | 6 | SYS | @brd, @prd, @ears, @bdd, @adr | 5 |
 | 7 | REQ | @brd, @prd, @ears, @bdd, @adr, @sys | 6 |
 | 8 | CTR | @brd through @req | 7 |
-| 9 | CTR | @brd through @req (+ optional @impl) | 7-8 |
-| 10 | SPEC | @brd through @req (+ optional @impl, @ctr) | 7-9 |
-| 11 | TASKS | @brd through @spec (+ optional @impl, @ctr); includes execution commands | 8-10 |
-| 12 | Code | @brd through @tasks | 9-11 |
+| 9 | SPEC | @brd through @req (+ optional @ctr) | 7-8 |
+| 10 | TASKS | @brd through @spec (+ optional @ctr); includes execution commands | 8-9 |
+| 11 | Code | @brd through @tasks | 9-10 |
+| 12 | Tests | @brd through @code | 10-11 |
+| 13 | Validation | All upstream tags | 11-12 |
 
 **Auto-Fix Actions:**
 
@@ -454,7 +455,7 @@ Validates TASKS documents including Section 8 Implementation Contracts.
 
 ### 11. validate_ears.py
 
-Comprehensive EARS document validator against EARS_VALIDATION_RULES.md.
+Comprehensive EARS document validator against EARS_MVP_VALIDATION_RULES.md.
 
 **Usage:**
 ```bash

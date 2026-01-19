@@ -30,18 +30,29 @@ Important MVP note: MVP artifacts are single, flat files. Split only when a docu
 
 ## 🚀 The MVP Track
 
-The **MVP Track** offers a faster, lighter alternative to the standard 14-layer framework while maintaining full traceability and compliance.
+The **MVP Track** delivers **90%+ automation** across 12 of 13 production layers, enabling **1-2 week cycles** from business idea to production MVP.
+
+### Automation Capabilities
+
+- **Automated Layers**: 12 of 13 (L1-L13, excluding L0 Strategy)
+- **Quality Gates**: Auto-approve artifacts scoring ≥90%
+- **Human Oversight**: 5 strategic checkpoints (optional if score ≥90%)
+- **Target Cycle**: 1-2 weeks idea → production
+- **Time Savings**: ~90% reduction in manual documentation
 
 ### Key Differences vs Standard Flow
 
 | Feature | Standard Flow | MVP Track |
 |---------|---------------|-----------|
+| **Automation Level** | 90%+ | **90%+ (12 of 13 layers)** |
+| **Quality Gates** | ≥90% | **Auto-approve ≥90%** |
 | **Templates** | Full multi-section templates | **Streamlined, single-file MVP templates** |
 | **File Structure** | May use document splitting rules | **Single flat files; no splitting** |
 | **BRD Layer** | Detailed strategy & finance | **Hypothesis & Core Validation** |
 | **Requirements** | BRD → PRD → EARS → REQ | **BRD → PRD → EARS → REQ** (Streamlined) |
 | **Validation** | Strict, full compliance | **Focus on active documents & links** |
 | **Time-to-Code** | 1-2 Weeks (Planning) | **1-2 Days (Planning)** |
+| **Human Checkpoints** | 5 strategic | **5 optional (auto-skip ≥90%)** |
 
 ---
 
@@ -51,7 +62,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 
 1.  **PLAN**: Create/Update `X-00_index.md` & `X-00_required_documents_list.md`.
 2.  **PRE-CHECK**: Run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow` (verify planning docs exist for the layer).
-3.  **SETUP**: Load `X_CREATION_RULES.md` + `X-MVP-TEMPLATE.md`. See also: [`ID_NAMING_STANDARDS.md`](./ID_NAMING_STANDARDS.md). Note: MVP uses flat files only; do not use document splitting rules.
+3.  **SETUP**: Load `X_MVP_CREATION_RULES.md` + `X-MVP-TEMPLATE.md`. See also: [`ID_NAMING_STANDARDS.md`](./ID_NAMING_STANDARDS.md). Note: MVP uses flat files only; do not use document splitting rules.
 4.  **GENERATE**: Create the file (e.g., `X-01.md`).
 5.  **VALIDATE**: Run single-file validator (e.g., `validate_brd.py`). Fix errors.
 6.  **CORPUS CHECK**: Once all files in *required list* are done, run full corpus validation.
@@ -61,7 +72,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 ## ⚡ 7-Step MVP Workflow
 
 ### Step 1: Business Hypothesis (BRD) — **Day 1 (Morning)**
-**Artifacts**: `01_BRD/BRD-MVP-TEMPLATE.md`, `BRD_CREATION_RULES.md`
+**Artifacts**: `01_BRD/BRD-MVP-TEMPLATE.md`, `BRD_MVP_CREATION_RULES.md`
 1.  **Plan**: Edit `BRD-00_index.md`. Create `BRD-00_required_documents_list.md` (List: BRD-01).
 2.  **Pre-Check**: Verify index/required lists structure; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: "Create BRD-01 using BRD-MVP-TEMPLATE. Focus on Hypothesis."
@@ -69,7 +80,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer BRD`
 
 ### Step 2: Core Product Definition (PRD) — **Day 1 (Morning)**
-**Artifacts**: `02_PRD/PRD-MVP-TEMPLATE.md`, `PRD_CREATION_RULES.md`
+**Artifacts**: `02_PRD/PRD-MVP-TEMPLATE.md`, `PRD_MVP_CREATION_RULES.md`
 1.  **Plan**: Edit `PRD-00_index.md`. Create `PRD-00_required_documents_list.md` (List: PRD-01).
 2.  **Pre-Check**: Ensure `BRD-01` exists; verify PRD index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: "Create PRD-01 using PRD-MVP-TEMPLATE. List P1 features."
@@ -77,7 +88,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow` (check traceability)
 
 ### Step 3: Logic Mapping (EARS) — **Day 1 (Afternoon)**
-**Artifacts**: `03_EARS/EARS-MVP-TEMPLATE.md`, `EARS_CREATION_RULES.md`
+**Artifacts**: `03_EARS/EARS-MVP-TEMPLATE.md`, `EARS_MVP_CREATION_RULES.md`
 1.  **Plan**: Edit `EARS-00_index.md`, `EARS-00_required_documents_list.md`.
 2.  **Pre-Check**: Ensure `PRD-01` exists; verify EARS index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: "Create EARS-01. Map PRD features to MVP Logic."
@@ -85,7 +96,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer EARS`
 
 ### Step 4: Critical Scenarios (BDD) — **Day 1 (Late Afternoon)**
-**Artifacts**: `04_BDD/BDD-MVP-TEMPLATE.feature`, `BDD_CREATION_RULES.md`
+**Artifacts**: `04_BDD/BDD-MVP-TEMPLATE.feature`, `BDD_MVP_CREATION_RULES.md`
 1.  **Plan**: Edit `BDD-00_index.md` (one per suite), `required_documents_list`.
 2.  **Pre-Check**: Ensure `EARS-01` exists; verify BDD index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: "Create `BDD-01_checkout.feature`. Include Happy Path + Critical Error Path scenarios."
@@ -103,7 +114,7 @@ For **EVERY** step in the workflow below (BRD, PRD, etc.), follow this exact mic
 5.  **Corpus Validation**: `python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow --layer ADR --layer SYS`
 
 ### Step 6: Atomic Requirements (REQ) — **Day 2 (Mid-Day)**
-**Artifacts**: `07_REQ/REQ-MVP-TEMPLATE.md`, `REQ_CREATION_RULES.md`
+**Artifacts**: `07_REQ/REQ-MVP-TEMPLATE.md`, `REQ_MVP_CREATION_RULES.md`
 1.  **Plan**: List all required REQ files in `REQ-00_required_documents_list.md`.
 2.  **Pre-Check**: Ensure upstream docs exist (`ADR-01`, `SYS-01`); verify REQ index/required list; run `python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow`.
 3.  **Generate**: Batch creation of atomic requirements.
@@ -138,6 +149,122 @@ MVP v3.0 (Add Features) ← Iterate...
 
 **Key Benefits**:
 - **Rapid Iteration**: 1-2 week cycles from idea to production
+
+---
+
+## 🚀 Quick-Start Commands
+
+### Common Scenarios
+
+#### Scenario 1: Brand New MVP (Recommended)
+```bash
+python3 ai_dev_flow/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --intent "Your MVP idea" \
+  --slug your_mvp \
+  --auto-fix \
+  --mvp-validators \
+  --up-to TASKS \
+  --report markdown
+```
+*Generates complete MVP documentation (BRD → TASKS) with auto-approval for artifacts scoring ≥90%*
+
+#### Scenario 2: Resume Existing Project
+```bash
+python3 ai_dev_flow/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --resume \
+  --auto-fix \
+  --report markdown
+```
+*Validates existing artifacts, generates missing layers, applies fixes*
+
+#### Scenario 3: Strict Validation (Pre-Release)
+```bash
+python3 ai_dev_flow/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --resume \
+  --strict \
+  --report json
+```
+*Strict mode: warnings fail validation, full validators, JSON report*
+
+#### Scenario 4: Validate Only (No Changes)
+```bash
+python3 ai_dev_flow/scripts/validate_all.py ai_dev_flow \
+  --all \
+  --report markdown
+```
+*Pure validation without generating or modifying files*
+
+---
+
+## 📘 Practical Example: Trading Bot MVP
+
+Let's walk through generating a **crypto trading bot** from idea to production using the MVP workflow.
+
+### Day 1 Morning: Automated Documentation (2 hours)
+
+**Initial Command**:
+```bash
+python3 ai_dev_flow/scripts/mvp_autopilot.py \
+  --root ai_dev_flow \
+  --intent "Crypto trading bot with moving average crossover strategy" \
+  --slug trading_bot \
+  --auto-fix \
+  --mvp-validators \
+  --up-to TASKS \
+  --report markdown
+```
+
+**What Happens** (automated):
+1. **BRD Generation** → `BRD-01_trading_bot.md`  
+   - Score: 92% → ✅ Auto-approved
+2. **PRD Generation** → `PRD-01_trading_bot.md`  
+   - Score: 94% → ✅ Auto-approved
+3. **EARS Generation** → `EARS-01_trading_bot.md`  
+   - Score: 95% → ✅ Auto-approved
+4. **BDD Generation** → `BDD-01_trading_bot.feature`  
+   - Score: 91% → ✅ Auto-approved
+5. **ADR Generation** → `ADR-01_trading_bot.md`  
+   - Score: 88% → ⚠️ Human review required
+   - Architect reviews (15 min), approves
+6. **SYS/REQ/SPEC/TASKS** → All auto-generated
+   - All artifacts score ≥90%
+
+**Result**: Complete documentation stack in ~2 hours
+
+### Day 1 Afternoon → Day 2: Implementation (Guided by TASKS)
+
+**Manual Steps**:
+- Implement code from `SPEC-01_trading_bot.yaml`  
+- Run tests based on `BDD-01_trading_bot.feature` scenarios
+- Deploy to production
+
+**Total Time**: <2 days from idea to deployed MVP
+
+### Generated Artifacts
+
+```
+ai_dev_flow/
+├── 01_BRD/BRD-01_trading_bot.md               (Business hypothesis)
+├── 02_PRD/PRD-01_trading_bot.md               (Product requirements)
+├── 03_EARS/EARS-01_trading_bot.md             (Engineering requirements)
+├── 04_BDD/BDD-01_trading_bot.feature          (Test scenarios)
+├── 05_ADR/ADR-01_trading_bot.md               (Tech stack decisions)
+├── 06_SYS/SYS-01_trading_bot.md               (System architecture)
+├── 07_REQ/REQ-01...15_trading_bot.md          (15 atomic requirements)
+├── 09_SPEC/SPEC-01_trading_bot.yaml           (Technical spec)
+└── 10_TASKS/TASKS-01_trading_bot.md           (Implementation plan)
+```
+
+### Key Takeaways
+
+- **Automation**: 12 of 13 layers automated (only 1 strategic review required)
+- **Speed**: ~2 hours for complete documentation
+- **Quality**: 6 of 7 artifacts auto-approved (score ≥90%)
+- **Traceability**: Complete tag chain from BRD to TASKS
+- **Human Time**: ~30 minutes total (1 review + final check)
 - **Automation Acceleration**: 90%+ layers automated with quality gates
 - **Incremental Features**: Add features as new MVPs, preserve working product
 - **Cumulative Traceability**: Each MVP inherits and extends previous version's artifacts

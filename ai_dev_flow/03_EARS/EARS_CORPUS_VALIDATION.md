@@ -35,13 +35,13 @@ This document defines **corpus-level validation rules** that run AFTER all EARS 
 
 | Validation Type | When It Runs | Scope | File |
 |-----------------|--------------|-------|------|
-| **Individual EARS Validation** | After each EARS creation | Single file | `EARS_VALIDATION_RULES.md` |
+| **Individual EARS Validation** | After each EARS creation | Single file | `EARS_MVP_VALIDATION_RULES.md` |
 | **Corpus Validation** | After ALL EARS complete | Entire EARS set | This document |
 
 ### Workflow Position
 
 ```
-Individual EARS Creation → EARS_VALIDATION_RULES.md (per-file)
+Individual EARS Creation → EARS_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All EARS Complete
         ↓
@@ -616,7 +616,7 @@ fi
 
 | Error Code | Error | Remediation Steps |
 |------------|-------|-------------------|
-| **CORPUS-E001** | Placeholder text for existing document | 1. Locate placeholder (e.g., `EARS-03 (future EARS)`)<br>2. Replace with hyperlink: `[EARS-03](./EARS-03_name.md)`<br>3. Re-run validation |
+| **CORPUS-E001** | Placeholder text for existing document | 1. Locate placeholder (e.g., `EARS-03 (future EARS)`)<br>2. Replace with hyperlink: `[EARS-00_index](./EARS-00_index.md)`<br>3. Re-run validation |
 | **CORPUS-E002** | Premature downstream reference | 1. Find specific downstream reference (e.g., `BDD-03`, `ADR-05`)<br>2. Replace with generic: "Test scenarios will be documented in the BDD layer"<br>3. Remove numbered references to non-existent Layer 4+ artifacts |
 | **CORPUS-E003** | Index out of sync with files | 1. Open index file (e.g., `EARS-00_index.md`)<br>2. Update status from "Planned" to "Draft" or "Complete"<br>3. Add missing file entries<br>4. Remove entries for deleted files |
 | **CORPUS-E004** | Duplicate element ID | 1. Search corpus for duplicate ID<br>2. Renumber one instance (increment sequence number)<br>3. Update all references to renamed ID |
@@ -673,7 +673,7 @@ Projects may document intentional framework deviations. Use this template:
 
 ## References
 
-- [EARS_VALIDATION_RULES.md](./EARS_VALIDATION_RULES.md) - Individual file validation
+- [EARS_MVP_VALIDATION_RULES.md](./EARS_MVP_VALIDATION_RULES.md) - Individual file validation
 - [EARS-MVP-TEMPLATE.md](./EARS-MVP-TEMPLATE.md) - EARS document template (full template archived)
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

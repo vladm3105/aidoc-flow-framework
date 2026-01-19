@@ -67,7 +67,7 @@ custom_fields:
 
 **Why Immutability Matters**: LLMs are probabilistic - editing documents in place can introduce subtle inconsistencies. Creating fresh documents ensures coherent, bug-free artifacts aligned with new requirements.
 
-**Files**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) | [CHG_CREATION_RULES.md](./CHG/CHG_CREATION_RULES.md) | [CHG_SCHEMA.yaml](./CHG/CHG_SCHEMA.yaml)
+**Files**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) | [CHG_MVP_CREATION_RULES.md](./CHG/CHG_MVP_CREATION_RULES.md) | [CHG_SCHEMA.yaml](./CHG/CHG_SCHEMA.yaml)
 
 **Note**: Most projects never use CHG - it's only for major pivots, not routine updates.
 
@@ -669,8 +669,8 @@ Reference documents provide supplementary context that supports workflow artifac
 | Format | Structured sections | **Free format** |
 
 **Specific Exemptions by Type:**
-- **BRD-REF**: No PRD-Ready Score required (reference: `BRD_VALIDATION_RULES.md`)
-- **ADR-REF**: No SYS-Ready Score required (reference: `ADR_VALIDATION_RULES.md`)
+- **BRD-REF**: No PRD-Ready Score required (reference: `BRD_MVP_VALIDATION_RULES.md`)
+- **ADR-REF**: No SYS-Ready Score required (reference: `ADR_MVP_VALIDATION_RULES.md`)
 
 **Validation**: Reduced (4 checks only):
 1. Document Control fields (required)
@@ -750,8 +750,8 @@ All artifacts (Markdown/YAML/Feature/Code) must include lightweight traceability
 |-----|---------|---------|
 | `@test:` | Test file reference | `@test: tests/test_service.py` |
 | `@code:` | Source code reference | `@code: src/services/limit.py` |
-| `@impl-status:` | Implementation status | `@impl-status: complete` (pending\|in-progress\|complete\|deprecated) |
 | `@threshold:` | Threshold reference | `@threshold: PRD.001.kyc.l1.daily` |
+
 | `@entity:` | Data entity reference | `@entity: PRD.004.UserProfile` |
 | `@priority:` | Requirement priority | `@priority: critical` |
 | `@component:` | Component reference | `@component: risk-engine` |
@@ -782,7 +782,6 @@ Python docstring:
 @ctr: CTR-01
 @spec: SPEC-02
 @test: BDD.02.13.01, BDD.08.13.01
-@impl-status: complete
 """
 ```
 
@@ -795,7 +794,6 @@ Markdown document:
 @ctr: CTR-01
 @spec: SPEC-02
 @test: BDD.01.13.01
-@impl-status: complete
 ```
 
 YAML comment header:
@@ -803,7 +801,6 @@ YAML comment header:
 # @brd: BRD.01.01.10, BRD.01.01.05
 # @req: REQ.03.26.02
 # @spec: SPEC-02
-# @impl-status: complete
 ```
 
 Gherkin feature file:
@@ -855,7 +852,6 @@ pre-commit run validate-traceability-tags
 2. **Document Exists:** DOCUMENT-ID must reference existing file in docs/{TYPE}/
 3. **Requirement Exists:** REQUIREMENT-ID must exist within the document
 4. **No Orphans:** All tags must resolve to actual requirements
-5. **Implementation Status:** @impl-status must be one of: pending|in-progress|complete|deprecated
 
 ## Cumulative Tagging Hierarchy
 
@@ -906,7 +902,7 @@ Strategy → BRD → PRD → EARS → BDD → ADR → SYS → REQ → [CTR] → 
 ```
 
 **Components**:
-- **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@impl`, `@ctr`, `@spec`, `@tasks`)
+- **Artifact Type**: Lowercase artifact name (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@ctr`, `@spec`, `@tasks`)
 - **Unified Format**: `TYPE.DOC.ELEM.SEQ` (e.g., `BRD.01.01.30`, `REQ.03.26.01`)
 - **Separator**: Dot (`.`) between all components
 - **Multiple Values**: Comma-separated
@@ -1049,14 +1045,12 @@ The SDD workflow employs different tracking methods for different artifact types
 | 5 | ADR | Formal Template + Tags | Yes | Yes | 4 | @brd through @bdd |
 | 6 | SYS | Formal Template + Tags | Yes | Yes | 5 | @brd through @adr |
 | 7 | REQ | Formal Template + Tags | Yes | Yes | 6 | @brd through @sys |
-| 8 | CTR | Formal Template + Tags | Yes | Yes | 7 | @brd through @req |
-| 9 | CTR | Formal Template + Tags | Yes (Dual: .md + .yaml) | Yes | 8 | @brd through @impl (optional) |
-| 10 | SPEC | Formal Template + Tags | Yes (YAML) | Yes | 7-9 | @brd through @req + optional |
-| 11 | TASKS | Formal Template + Tags | Yes | Yes | 8-10 | @brd through @spec; includes execution commands |
-| 12 | Code | Docstring Tags | No (Implementation) | Yes | 9-11 | ALL upstream tags |
-| 13 | Tests | BDD + Docstring Tags | Mixed | Yes | 10-12 | All upstream + code |
-| 14 | Validation | Embedded Tags + CI/CD | Mixed | Yes | ALL | Complete audit trail |
-| 15 | Validation | Embedded Tags + CI/CD | Mixed | Yes | ALL | Complete audit trail |
+| 8 | CTR | Formal Template + Tags | Yes (Dual: .md + .yaml) | Yes | 7 | @brd through @req |
+| 9 | SPEC | Formal Template + Tags | Yes (YAML) | Yes | 7-8 | @brd through @req + optional @ctr |
+| 10 | TASKS | Formal Template + Tags | Yes | Yes | 8-9 | @brd through @spec; includes execution commands |
+| 11 | Code | Docstring Tags | No (Implementation) | Yes | 9-10 | ALL upstream tags |
+| 12 | Tests | BDD + Docstring Tags | Mixed | Yes | 10-11 | All upstream + code |
+| 13 | Validation | Embedded Tags + CI/CD | Mixed | Yes | ALL | Complete audit trail |
 
 ### Example: Complete Tag Chain in Code
 
@@ -1087,7 +1081,6 @@ excessive collection concentration risk through automated validation.
 @spec: SPEC-03
 @tasks: TASKS.01.29.03, TASKS.01.29.05
 
-@impl-status: complete
 @test-coverage: 95%
 @performance: p95=45ms
 """
@@ -1372,7 +1365,6 @@ REQ (Requirement Layer)                    SPEC (Technical Specs)
   - [ ] Tags reference existing documents: `python scripts/validate_tags_against_docs.py --strict`
   - [ ] Matrices auto-generated: `python scripts/generate_traceability_matrix.py --auto`
   - [ ] No orphaned tags
-  - [ ] Implementation status defined (@impl-status)
 - [ ] BDD scenarios tagged with @requirement and @adr links
 - [ ] Validation scripts pass
 

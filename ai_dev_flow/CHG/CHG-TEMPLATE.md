@@ -39,10 +39,9 @@ supersedes: [List, of, Artifact, IDs]
 | 4 | **(Test)**      | `BDD-XX` | `BDD-YY` |
 | 6 | **(System)**    | `SYS-XX` | `SYS-YY` |
 | 7 | **(Reqs)**      | `REQ-XX` | `REQ-YY` |
-| 8 | **(Plan)**      | `IMPL-XX` | `IMPL-YY` |
-| 9 | **(Interface)** | `CTR-XX` | `CTR-YY` |
-| 10| **(Spec)**      | `SPEC-XX` | `SPEC-YY` |
-| 11| **(CodeGen)**   | `TASKS-XX` | `TASKS-YY` |
+| 8 | **(Interface)** | `CTR-XX` | `CTR-YY` |
+| 9 | **(Spec)**      | `SPEC-XX` | `SPEC-YY` |
+| 10| **(CodeGen)**   | `TASKS-XX` | `TASKS-YY` |
 | --| **(Code)**      | `src/...` | `src/...` |
 
 ### 2.3 Dependency Check

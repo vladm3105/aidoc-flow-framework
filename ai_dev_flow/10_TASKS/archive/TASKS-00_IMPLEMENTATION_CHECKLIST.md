@@ -22,7 +22,7 @@ Quick reference guide for determining when to create implementation contracts, s
 
 **Complexity**: 2/5 (straightforward decision process)
 
-**Reference**: See [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) for detailed documentation.
+**Reference**: Implementation contracts guide (link intentionally omitted).
 
 ---
 
@@ -464,7 +464,7 @@ mypy --strict contracts/your_contracts.py
 **Step 1** (5 min): Analyze dependencies
 ```bash
 # Count downstream TASKS
-grep -r "TASKS-YOUR-ID" ../11_TASKS/*.md | wc -l
+grep -r "TASKS-YOUR-ID" ../10_TASKS/*.md | wc -l
 ```
 
 **Step 2** (2 min): Select contract type
@@ -568,8 +568,8 @@ All implementation contracts are embedded in TASKS Section 7-8.
 ## 11. Reference Links
 
 ### Internal Documentation
-- [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) - Comprehensive guide
-- [TASKS-TEMPLATE.md](./TASKS-TEMPLATE.md) - TASKS template with contracts section
+- Implementation contracts guide (link intentionally omitted)
+- TASKS template with contracts section (see `TASKS-TEMPLATE.md` in the main 10_TASKS folder)
 - Example: CLAUDE.md (global instructions; link not included)
 
 ### External Resources

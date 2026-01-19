@@ -950,7 +950,7 @@ fi
 
 ## References
 
-- [BDD_VALIDATION_RULES.md](./BDD_VALIDATION_RULES.md) - Individual file validation
+- [BDD_MVP_VALIDATION_RULES.md](./BDD_MVP_VALIDATION_RULES.md) - Individual file validation
 - [BDD-MVP-TEMPLATE.feature](./BDD-MVP-TEMPLATE.feature) - BDD document template
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

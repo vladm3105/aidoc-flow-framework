@@ -34,13 +34,13 @@ This document defines **corpus-level validation rules** that run AFTER all REQ (
 
 | Validation Type | When It Runs | Scope | File |
 |-----------------|--------------|-------|------|
-| **Individual REQ Validation** | After each REQ creation | Single file | `REQ_VALIDATION_RULES.md` |
+| **Individual REQ Validation** | After each REQ creation | Single file | `REQ_MVP_VALIDATION_RULES.md` |
 | **Corpus Validation** | After ALL REQ complete | Entire REQ set | This document |
 
 ### Workflow Position
 
 ```
-Individual REQ Creation → REQ_VALIDATION_RULES.md (per-file)
+Individual REQ Creation → REQ_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All REQ Complete
         ↓
@@ -804,7 +804,7 @@ fi
 
 ## References
 
-- [REQ_VALIDATION_RULES.md](./REQ_VALIDATION_RULES.md) - Individual file validation
+- [REQ_MVP_VALIDATION_RULES.md](./REQ_MVP_VALIDATION_RULES.md) - Individual file validation
 - [REQ-MVP-TEMPLATE.md](./REQ-MVP-TEMPLATE.md) - REQ document template (full template archived)
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

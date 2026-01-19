@@ -23,7 +23,7 @@ custom_fields:
 
 > **Document Role**: This is a **CREATION HELPER** for TASKS-TEMPLATE.md v2.0.
 > - **Authority**: `TASKS-TEMPLATE.md` is the single source of truth for TASKS structure
-> - **Validation**: Use `TASKS_VALIDATION_RULES.md` after TASKS creation/changes
+> - **Validation**: Use `TASKS_MVP_VALIDATION_RULES.md` after TASKS creation/changes
 
 # TASKS Creation Rules (v2.0)
 
@@ -498,7 +498,7 @@ Include ONLY if relationships exist between TASKS documents sharing implementati
 - [TASKS-TEMPLATE.md](./TASKS-TEMPLATE.md) - Tasks template
 - [TASKS-00_index.md](./TASKS-00_index.md) - Tasks registry
 - [README.md](./README.md) - Directory overview
-- [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) - Contracts guide
+- Implementation contracts guide - reference only (link intentionally omitted)
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Workflow guide
 
 ---

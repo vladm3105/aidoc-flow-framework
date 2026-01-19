@@ -46,7 +46,7 @@ ADRs serve as the **architectural foundation** that:
 Foundation ADRs establish project-wide standards that all other ADRs must reference:
 
 ### ADR-000: Technology Stack
-**Location**: [ADR-00_technology_stack.md](ADR-00_technology_stack.md)
+**Location**: [ADR-00_index.md](ADR-00_index.md)
 
 **Purpose**: Single source of truth for all technology decisions across the entire options [SYSTEM_TYPE - e.g., inventory system, booking system].
 

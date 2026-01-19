@@ -21,17 +21,17 @@ This document defines the complete error code registry, validation rules, and ex
 
 ## Validation Scope
 
-**Artifact Layers (1-11)**: This validation system covers all 11 documentation artifact layers defined in `LAYER_REGISTRY.yaml`:
+**Artifact Layers (1-10)**: This validation system covers all 10 documentation artifact layers defined in `LAYER_REGISTRY.yaml`:
 
 | Layer | Artifact | Description |
 |-------|----------|-------------|
 | 1-4 | BRD, PRD, EARS, BDD | Core requirements |
 | 5-7 | ADR, SYS, REQ | Architecture and detailed requirements |
-| 8-11 | IMPL, CTR, SPEC, TASKS | Implementation artifacts |
+| 8-10 | CTR, SPEC, TASKS | Implementation artifacts |
 
 **Out of Scope**:
 - Layer 0 (Strategy): Optional pre-artifact planning, not validated
-- Layers 12-14 (Code, Tests, Validation): Source code traceability not implemented
+- Layers 11-13 (Code, Tests, Validation): Source code traceability not implemented
 
 ### MVP Validator Profile
 
@@ -249,11 +249,12 @@ Prevents upstream documents from referencing specific downstream IDs.
 | 5 | ADR | BRD, PRD, EARS, BDD |
 | 6 | SYS | Layers 1-5 |
 | 7 | REQ | Layers 1-6 |
-| 8 | IMPL | Layers 1-7 |
-| 9 | CTR | Layers 1-8 |
-| 10 | SPEC | Layers 1-9 |
-| 11 | TASKS | Layers 1-10 |
-| 12 | CODE | Layers 1-11 |
+| 8 | CTR | Layers 1-7 |
+| 9 | SPEC | Layers 1-8 |
+| 10 | TASKS | Layers 1-9 |
+| 11 | CODE | Layers 1-10 |
+| 12 | TESTS | Layers 1-11 |
+| 13 | VALIDATION | Layers 1-12 |
 
 **Correct** (PRD describing decision needs):
 ```markdown

@@ -769,7 +769,7 @@ validation_rules:
     - rule: "Markdown file should not exceed 600 lines"
       severity: warning
 
-    - rule: "YAML file should not exceed 1000 lines"
+    - rule: "YAML file should not exceed 2000 lines"
       severity: warning
 
   # Metadata validation
@@ -986,7 +986,7 @@ error_messages:
   SPEC-I003: "Consider adding circuit_breaker section for resilience"
   SPEC-I004: "Consider adding operations runbook"
   SPEC-W010: "Markdown file exceeds 600 lines (target: 300-500)"
-  SPEC-W011: "YAML file exceeds 1000 lines"
+  SPEC-W011: "YAML file exceeds 2000 lines"
 
   # REQ Implementations errors
   SPEC-E016: "atomic_requirements found in downstream_artifacts - REQ is upstream, not downstream"

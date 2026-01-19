@@ -729,7 +729,7 @@ python scripts/validate_prd.py docs/02_PRD/PRD-01_product_requirements.md
 find docs/PRD -name "PRD-*.md" -exec python scripts/validate_prd.py {} \;
 ```
 
-**Validation Rules**: [PRD_VALIDATION_RULES.md](PRD_VALIDATION_RULES.md)
+**Validation Rules**: [PRD_MVP_VALIDATION_RULES.md](PRD_MVP_VALIDATION_RULES.md)
 **Index**: [PRD-00_index.md](PRD-00_index.md)
 
 ---

@@ -396,10 +396,10 @@ flowchart LR
 
 | Source Type | Document ID | Document Title | Relevant Sections | Relationship |
 |-------------|-------------|----------------|-------------------|--------------|
-| BRD | [BRD-01](../../01_BRD/BRD-01_platform_reliability.md) | Platform Reliability Business Requirements | Section 2.3, 4.2 | Business objectives driving quality requirements |
-| PRD | [PRD-01](../../02_PRD/PRD-01_nfr_requirements.md) | Non-Functional Product Requirements | Quality Attributes 5.x | Product quality expectations |
-| EARS | [EARS-01](../../03_EARS/EARS-01_quality_constraints.md) | Quality Attribute Constraints | State-driven, Performance | Formal requirements this system satisfies |
-| ADR | [ADR-05](../../05_ADR/ADR-05_observability.md) | Observability Architecture Decision | Decision, Consequences | Architectural approach enabling observability |
+| BRD | [BRD-000](../../01_BRD/BRD-00_index.md) | Business Requirements Index | Index | Business objectives reference |
+| PRD | [PRD-000](../../02_PRD/PRD-00_index.md#PRD-000) | Product Requirements Index | Index | Product quality expectations reference |
+| EARS | [EARS-000](../../03_EARS/EARS-00_index.md#EARS-000) | EARS Index | Index | Formal requirements reference |
+| ADR | [ADR-000](../../05_ADR/ADR-00_index.md#ADR-000) | Architecture Decisions Index | Index | Observability reference |
 
 ### 12.2 Downstream Artifacts
 
@@ -416,7 +416,7 @@ flowchart LR
 @prd: PRD.01.07.05
 @ears: EARS.01.24.05
 @bdd: BDD.02.13.01
-@adr: ADR-05
+@adr: ADR-00
 ```
 
 ---

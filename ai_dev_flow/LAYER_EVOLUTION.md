@@ -20,7 +20,7 @@ custom_fields:
 
 ## Overview
 
-The SDD Framework uses a 15-layer document hierarchy (Layers 0-14). This guide documents the procedures and files that must be updated when evolving the layer structure.
+The SDD Framework uses a 14-layer document hierarchy (Layers 0-13). This guide documents the procedures and files that must be updated when evolving the layer structure.
 
 **Authoritative Source**: `LAYER_REGISTRY.yaml` is the single source of truth for layer definitions.
 
@@ -39,7 +39,7 @@ Add the new layer entry in the `layers` array:
   folder: NEWTYPE/
   extensions: [.md]
   required_tags: [brd, prd, ears, bdd, adr, sys, req, spec, tasks]
-  can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS]
+  can_reference: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC, TASKS]
   error_prefix: NEWTYPE
   optional: false
   description: "Layer 13 - Description of purpose"

@@ -71,19 +71,13 @@ Feature: Request processing
 - Tags:
   - @brd: BRD-NN, @prd: PRD-NN, @ears: EARS.NN.24.NN, @bdd: BDD.NN.13.NN, @adr: ADR-NN, @sys: SYS.NN.25.NN
 
-### Layer 8: IMPL (Optional - Skip if not needed)
-- IMPL-NN: Implementation approach document defining WHO does WHAT and WHEN.
-- Tags:
-  - @brd: BRD-NN, @prd: PRD-NN, @ears: EARS.NN.24.NN, @bdd: BDD.NN.13.NN, @adr: ADR-NN, @sys: SYS.NN.25.NN, @req: REQ.NN.NN.NN
-- **Note**: Skip this layer for simple features. Use when project management coordination is needed.
-
-### Layer 9: CTR (Optional - Skip if not needed)
+### Layer 8: CTR (Optional - Skip if not needed)
 - CTR-NN: API contract defining external interface specifications.
 - Tags:
-  - @brd: BRD-NN, @prd: PRD-NN, @ears: EARS.NN.24.NN, @bdd: BDD.NN.13.NN, @adr: ADR-NN, @sys: SYS.NN.25.NN, @req: REQ.NN.NN.NN, @impl: IMPL.NN.NN.NN (if Layer 8 exists)
+  - @brd: BRD-NN, @prd: PRD-NN, @ears: EARS.NN.24.NN, @bdd: BDD.NN.13.NN, @adr: ADR-NN, @sys: SYS.NN.25.NN, @req: REQ.NN.NN.NN
 - **Note**: Skip this layer for internal-only components. Use when external API contracts are required.
 
-### Layer 10: SPEC (Technical Specification)
+### Layer 9: SPEC (Technical Specification)
 ```yaml
 spec_id: SPEC-NN
 title: "Request Service"
@@ -104,7 +98,7 @@ implementation:
     method: POST
 ```
 
-### Layer 11: TASKS (Implementation Tasks)
+### Layer 10: TASKS (Implementation Tasks)
 ```markdown
 # TASKS-NN: Implement submission endpoint
 ## Plan
@@ -121,7 +115,7 @@ implementation:
 @spec: SPEC-NN
 ```
 
-### Layer 12: Code (Implementation)
+### Layer 11: Code (Implementation)
 
 ```python
 """Request service implementation
@@ -134,7 +128,6 @@ implementation:
 @req: REQ.NN.NN.NN
 @spec: SPEC-NN
 @tasks: TASKS.NN.NN.NN
-@impl-status: complete
 """
 from fastapi import APIRouter
 router = APIRouter()
@@ -144,7 +137,7 @@ async def submit_request(payload: dict):
     return {"status": "accepted", "id": "REQ-123"}
 ```
 
-### Layer 13: Tests (Test Suites)
+### Layer 12: Tests (Test Suites)
 ```python
 """Test: Request processing
 @brd: BRD-NN
@@ -162,7 +155,7 @@ def test_submit_request_accepts_valid_payload():
     assert True
 ```
 
-### Layer 14: Validation (Results)
+### Layer 13: Validation (Results)
 - All cumulative tags present from BRD through Tests.
 - No gaps detected; coverage acceptable.
 
@@ -175,13 +168,12 @@ Layer 4  BDD   -> @brd, @prd, @ears
 Layer 5  ADR   -> +@bdd
 Layer 6  SYS   -> +@adr
 Layer 7  REQ   -> +@sys
-Layer 8  IMPL  -> +@req (Optional - skip if not needed)
-Layer 9  CTR   -> +@impl if exists (Optional - skip if not needed)
-Layer 10 SPEC  -> +@req (+@impl/@ctr if exist)
-Layer 11 TASKS -> +@spec (+@impl/@ctr if exist)
-Layer 12 Code  -> +@tasks
-Layer 13 Tests -> +@code
-Layer 14 Valid -> all upstream tags
+Layer 8  CTR   -> +@req (Optional - skip if not needed)
+Layer 9  SPEC  -> +@req (+@ctr if exist)
+Layer 10 TASKS -> +@spec (+@ctr if exist)
+Layer 11 Code  -> +@tasks
+Layer 12 Tests -> +@code
+Layer 13 Valid -> all upstream tags
 ```
 
 **Note on Layer 0 (Strategy/STRAT)**: Layer 0 represents strategic planning inputs that exist before formal documentation begins. The formal documentation layers start at Layer 1 (BRD).

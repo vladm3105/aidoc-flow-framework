@@ -34,13 +34,13 @@ This document defines **corpus-level validation rules** that run AFTER all BRD f
 
 | Validation Type | When It Runs | Scope | File |
 |-----------------|--------------|-------|------|
-| **Individual BRD Validation** | After each BRD creation | Single file | `BRD_VALIDATION_RULES.md` |
+| **Individual BRD Validation** | After each BRD creation | Single file | `BRD_MVP_VALIDATION_RULES.md` |
 | **Corpus Validation** | After ALL BRDs complete | Entire BRD set | This document |
 
 ### Workflow Position
 
 ```
-Individual BRD Creation → BRD_VALIDATION_RULES.md (per-file)
+Individual BRD Creation → BRD_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All BRDs Complete
         ↓

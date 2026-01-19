@@ -36,7 +36,7 @@ flowchart LR
     style SYS fill:#fff3e0,stroke:#ff6f00,stroke-width:3px
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
 
 **Layer**: 6 (System Requirements Layer)
 **Upstream**: BRD, PRD, EARS, BDD, ADR

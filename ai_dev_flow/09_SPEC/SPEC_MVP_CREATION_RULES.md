@@ -14,7 +14,7 @@ custom_fields:
 
 > **📋 Document Role**: This is a **CREATION HELPER** for SPEC-MVP-TEMPLATE.yaml (MVP profile).
 > - **Authority**: `SPEC-MVP-TEMPLATE.yaml` (MVP profile) is the primary source of truth for SPEC structure; use the full profile only when explicitly requested
-> - **Validation**: Use `SPEC_VALIDATION_RULES.md` after SPEC creation/changes
+> - **Validation**: Use `SPEC_MVP_VALIDATION_RULES.md` after SPEC creation/changes
 
 # SPEC Creation Rules
 
@@ -246,9 +246,10 @@ cumulative_tags:
   prd: "PRD.NN.EE.SS"         # Unified dot notation for sub-ID references (use null only if the artifact type does not exist)
   ears: "EARS.NN.EE.SS"       # Unified dot notation (use null only if the artifact type does not exist)
   bdd: "BDD.NN.EE.SS"         # Unified dot notation for sub-ID references (use null only if the artifact type does not exist)
-  adr: "ADR-NN"             # Document-level reference (no sub-ID, use null only if the artifact type does not exist)
+  adr: "ADR-NN"               # Document-level reference (no sub-ID, use null only if the artifact type does not exist)
   sys: "SYS.NN.EE.SS"         # Unified dot notation for sub-ID references (use null only if the artifact type does not exist)
   req: "REQ.NN.EE.SS"         # Unified dot notation for sub-ID references (use null only if the artifact type does not exist)
+  ctr: "CTR-NN"               # API Contract reference (use null only if CTR file does not exist)
   threshold: "PRD-NN"         # Threshold registry document reference (use null only if thresholds are not applicable)
 ```
 
@@ -396,8 +397,25 @@ ls -la docs/04_BDD/    # Layer 4
 ls -la docs/05_ADR/    # Layer 5
 ls -la docs/06_SYS/    # Layer 6
 ls -la docs/07_REQ/    # Layer 7
+ls -la docs/08_CTR/    # Layer 8 - API Contracts (IMPORTANT for SPEC)
 # ... continue for applicable layers
 ```
+
+**Step 1b: Check for Corresponding CTR Contract (MANDATORY for SPEC)**
+
+```bash
+# Check if CTR file exists for this SPEC
+# Replace NN with the SPEC number being created (e.g., 01, 02, etc.)
+ls docs/08_CTR/CTR-NN_*.yaml 2>/dev/null && echo "CTR exists - MUST reference in cumulative_tags.ctr"
+
+# If CTR exists, read it to understand the API contract before writing SPEC
+cat docs/08_CTR/CTR-NN_*.yaml | head -100
+```
+
+**CTR Integration Rule**: If a corresponding CTR file exists (CTR-NN matching SPEC-NN), the SPEC MUST:
+1. Reference it in `cumulative_tags.ctr: "CTR-NN"`
+2. Ensure interface definitions in SPEC align with CTR API contract
+3. Use CTR schemas for data models where applicable
 
 **Step 2: Map Existing Documents to Traceability Tags**
 
@@ -405,7 +423,16 @@ ls -la docs/07_REQ/    # Layer 7
 |-----|------------------------|-------------------|--------|
 | @brd | Yes/No | BRD-NN or null | Reference/Create/Skip |
 | @prd | Yes/No | PRD-NN or null | Reference/Create/Skip |
-| ... | ... | ... | ... |
+| @ears | Yes/No | EARS-NN or null | Reference/Create/Skip |
+| @bdd | Yes/No | BDD-NN or null | Reference/Create/Skip |
+| @adr | Yes/No | ADR-NN or null | Reference/Create/Skip |
+| @sys | Yes/No | SYS-NN or null | Reference/Create/Skip |
+| @req | Yes (Layer 7) | REQ-NN or null | Reference/Create/Skip |
+| **@ctr** | **Conditional** | **CTR-NN or null** | **Reference if exists** |
+
+**CTR Tag Rule**: Unlike other upstream tags, `@ctr` is conditional:
+- If `docs/08_CTR/CTR-NN_*.yaml` exists → MUST reference as `ctr: "CTR-NN"`
+- If CTR does not exist → Set `ctr: null` (API contract not yet defined)
 
 **Step 3: Decision Rules**
 
@@ -567,7 +594,9 @@ python scripts/validate_cross_document.py --layer SPEC --auto-fix
 
 | This Layer | Required Upstream Tags | Tag Count |
 |------------|------------------------|-----------|
-| SPEC (Layer 9) | @brd through @req (+ optional @ctr) | 7-8 |
+| SPEC (Layer 9) | @brd through @req, @ctr (conditional), @threshold | 8-9 |
+
+**Note**: `@ctr` is conditional - required only when corresponding CTR-NN file exists in `docs/08_CTR/`.
 
 ### Auto-Fix Actions (No Confirmation Required)
 

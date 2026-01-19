@@ -65,7 +65,7 @@ Run these quick checks before generating each layer (BRD → … → SPEC):
   - BDD needs EARS-01
   - 05_ADR/SYS need BRD-01, PRD-01, EARS-01
   - REQ needs ADR-01, SYS-01
-  - 10_SPEC/TASKS need required REQ files
+  - 09_SPEC/TASKS need required REQ files
 
 Tip: Use `--strict` with the path validator when you want failures to block generation.
 
@@ -109,8 +109,9 @@ Tip: Use `--strict` with the path validator when you want failures to block gene
   - `ai_dev_flow/05_ADR/ADR-01_trading_bot.md`
   - `ai_dev_flow/06_SYS/SYS-01_trading_bot.md`
   - `ai_dev_flow/07_REQ/REQ-01_trading_bot.md`
-  - `ai_dev_flow/10_SPEC/SPEC-01_trading_bot.yaml`
-  - `ai_dev_flow/11_TASKS/TASKS-01_trading_bot.md`
+- `ai_dev_flow/09_SPEC/SPEC-01_trading_bot.yaml`
+- `ai_dev_flow/10_TASKS/TASKS-01_trading_bot.md`
+
 
 - Planning stubs:
   - `X-00_required_documents_list.md` created per layer, listing the generated file.
@@ -390,6 +391,6 @@ The Autopilot can be used to continue a partially created project or to fork an 
 
   - **Start with Resume (non-destructive)** for teams picking up partial work; enable `--auto-fix --report markdown` to normalize and see what’s missing. Use `--plan-only` first to review intended actions.
 - **Fork only when scope diverges** or IDs need to branch cleanly; pick a fresh `NN` and add “Supersedes” info to keep the lineage auditable.
-- **Incremental layers**: If 01_BRD/02_PRD/EARS are stable but implementation isn’t, set `--up-to TASKS` while targeting `06_SYS/07_REQ/10_SPEC/11_TASKS` phases.
+- **Incremental layers**: If 01_BRD/02_PRD/EARS are stable but implementation isn’t, set `--up-to TASKS` while targeting `06_SYS/07_REQ/09_SPEC/10_TASKS` phases.
   - Use `--from-layer BDD` (or `ADR`/`SYS`) to skip earlier layers cleanly.
 - **Reports & Plans**: Save reports and plans in `work_plans/` and attach to review PRs.

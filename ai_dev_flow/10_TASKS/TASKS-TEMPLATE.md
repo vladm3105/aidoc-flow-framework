@@ -19,8 +19,8 @@ custom_fields:
 
 > **Document Authority**: This is the **PRIMARY STANDARD** for TASKS structure.
 > - **Schema**: `TASKS_SCHEMA.yaml v2.0` - Validation rules
-> - **Creation Rules**: `TASKS_CREATION_RULES.md` - Usage guidance
-> - **Validation Rules**: `TASKS_VALIDATION_RULES.md` - Post-creation checks
+> - **Creation Rules**: `TASKS_MVP_CREATION_RULES.md` - Usage guidance
+> - **Validation Rules**: `TASKS_MVP_VALIDATION_RULES.md` - Post-creation checks
 
 
 # TASKS-NN: [Descriptive Component/Feature Name]
@@ -339,8 +339,8 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 <h2>References</h2>
 
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Workflow guide
-- [IMPLEMENTATION_CONTRACTS_GUIDE.md](./IMPLEMENTATION_CONTRACTS_GUIDE.md) - Contract patterns
-- [DEVELOPMENT_PLAN_README.md](./DEVELOPMENT_PLAN_README.md) - Tracking workflow
+- Implementation contracts guide - reference only (link intentionally omitted)
+- [IMPLEMENTATION_PLAN_README.md](./IMPLEMENTATION_PLAN_README.md) - Tracking workflow
 
 ---
 

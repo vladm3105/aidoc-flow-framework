@@ -88,7 +88,7 @@ custom_fields:
   priority: primary
   development_status: active
   upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS]
-  downstream_artifacts: [IMPL, CTR, SPEC]
+  downstream_artifacts: [CTR, SPEC]
 ---
 ```
 
@@ -138,10 +138,6 @@ custom_fields:
 
 ### Downstream References
 
-#### Implementation Approach (@impl)
-- @impl: IMPL.01.28.01 ([PRODUCT_NAME] Implementation Approach)
-  - section 3.2: Connection management strategy
-
 #### Technical Specifications (@spec)
 - @spec: SPEC-NN (WebSocket Quote Ingestion Technical Spec)
   - section 4: Reconnection algorithm implementation
@@ -184,11 +180,10 @@ Each SDD layer inherits ALL upstream traceability tags:
 | Layer 5 (ADR) | @brd, @prd, @ears, @bdd | 4 | Add architecture decisions |
 | Layer 6 (SYS) | @brd, @prd, @ears, @bdd, @adr | 5 | Add system requirements |
 | Layer 7 (REQ) | @brd, @prd, @ears, @bdd, @adr, @sys | 6 | Full upstream chain |
-| Layer 8 (IMPL) | All Layer 7 + new tags | 7+ | Add implementation approach |
-| Layer 9 (CTR) | All Layer 8 + new tags | 8+ | Add contracts (if applicable) |
-| Layer 10 (SPEC) | All previous + new tags | 9+ | Add technical spec |
-| Layer 11 (TASKS) | All previous + new tags | 10+ | Add task breakdown |
-| Layer 12 (Code) | All previous + new tags | 11+ | Complete audit trail |
+| Layer 8 (CTR) | All Layer 7 + new tags | 7+ | Add contracts (if applicable) |
+| Layer 9 (SPEC) | All previous + new tags | 8+ | Add technical spec |
+| Layer 10 (TASKS) | All previous + new tags | 9+ | Add task breakdown |
+| Layer 11 (Code) | All previous + new tags | 10+ | Complete audit trail |
 
 **Rule**: Each layer MUST include ALL upstream tags from previous layers.
 

@@ -208,7 +208,6 @@ we implement circuit breakers with @threshold: ADR.15.circuit.failure.count = 5.
 @adr: ADR-NN
 @threshold: PRD.01.kyc.l1.daily
 @threshold: ADR.15.circuit.failure.count
-@impl-status: complete
 """
 
 # Values loaded from configuration

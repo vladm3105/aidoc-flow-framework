@@ -34,13 +34,13 @@ This document defines **corpus-level validation rules** that run AFTER all SPEC 
 
 | Validation Type | When It Runs | Scope | File |
 |-----------------|--------------|-------|------|
-| **Individual SPEC Validation** | After each SPEC creation | Single file | `SPEC_VALIDATION_RULES.md` |
+| **Individual SPEC Validation** | After each SPEC creation | Single file | `SPEC_MVP_VALIDATION_RULES.md` |
 | **Corpus Validation** | After ALL SPEC complete | Entire SPEC set | This document |
 
 ### Workflow Position
 
 ```
-Individual SPEC Creation → SPEC_VALIDATION_RULES.md (per-file)
+Individual SPEC Creation → SPEC_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All SPEC Complete
         ↓
@@ -190,7 +190,11 @@ docs/09_SPEC/
 
 **Purpose**: Ensure documents don't exceed token limits
 
-**Severity**: Warning at 600 lines, Error at 1200 lines
+**Severity**: Warning at 1000 lines, Error at 2000 lines
+
+**File Format**: YAML (.yaml, .yml)
+
+**Note**: SPEC files use YAML format. For comparison, TASKS files (Markdown format) use different thresholds (Warning at 600 lines, Error at 1200 lines) due to format differences in verbosity.
 
 ---
 
@@ -472,7 +476,7 @@ fi
 
 ## References
 
-- [SPEC_VALIDATION_RULES.md](./SPEC_VALIDATION_RULES.md) - Individual file validation
+- [SPEC_MVP_VALIDATION_RULES.md](./SPEC_MVP_VALIDATION_RULES.md) - Individual file validation
 - [SPEC-MVP-TEMPLATE.yaml](./SPEC-MVP-TEMPLATE.yaml) - SPEC document template
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

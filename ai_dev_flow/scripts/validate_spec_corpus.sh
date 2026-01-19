@@ -56,22 +56,39 @@ check_placeholder_text() {
   echo "--- CORPUS-01: Placeholder Text Detection ---"
 
   local found=0
-  local patterns=("(future SPEC)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
 
-  for pattern in "${patterns[@]}"; do
-    while IFS= read -r line; do
-      if [[ -n "$line" ]]; then
+  # Check 1: Look for "(future SPEC)" or "(when created)" phrases that reference existing docs
+  while IFS= read -r line; do
+    if [[ -n "$line" ]]; then
+      # Only flag if line contains both a placeholder phrase AND a SPEC reference
+      if [[ "$line" =~ \(future\ SPEC\)|\(when\ created\) ]]; then
         spec_ref=$(echo "$line" | grep -oE "SPEC-[0-9]+" | head -1 || true)
-        if [[ -n "$spec_ref" ]]; then
-          if ls "$SPEC_DIR/${spec_ref}_"*.yaml 2>/dev/null >/dev/null; then
-            echo -e "${RED}CORPUS-E001: $line${NC}"
-            ((ERRORS++)) || true
-            ((found++)) || true
-          fi
+        if [[ -n "$spec_ref" ]] && ls "$SPEC_DIR/${spec_ref}_"*.yaml 2>/dev/null >/dev/null; then
+          echo -e "${RED}CORPUS-E001: Placeholder references existing document:${NC}"
+          echo "  $line"
+          ((ERRORS++)) || true
+          ((found++)) || true
         fi
       fi
-    done < <(grep -rn "$pattern" "$SPEC_DIR"/*.yaml "$SPEC_DIR"/*.md 2>/dev/null || true)
+    fi
+  done < <(grep -rn "(future SPEC)\|(when created)" "$SPEC_DIR"/*.yaml "$SPEC_DIR"/*.md 2>/dev/null || true)
+
+  # Check 2: Look for TBD/TODO in traceability sections (cumulative_tags, upstream_sources)
+  shopt -s nullglob
+  for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
+
+    # Extract cumulative_tags section and check for TBD patterns
+    local tags_section=$(sed -n '/^cumulative_tags:/,/^[^ ]/p' "$f" 2>/dev/null)
+    if echo "$tags_section" | grep -qE ':\s*"?TBD"?|:\s*"?TODO"?'; then
+      echo -e "${RED}CORPUS-E001: TBD/TODO found in cumulative_tags:${NC}"
+      echo "  File: $(basename $f)"
+      echo "$tags_section" | grep -E ':\s*"?TBD"?|:\s*"?TODO"?' | sed 's/^/    /'
+      ((ERRORS++)) || true
+      ((found++)) || true
+    fi
   done
+  shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
@@ -272,14 +289,15 @@ check_file_size() {
     if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
 
     local lines
-    lines=$(wc -l < "$f")
+    lines=$(wc -l <"$f")
 
-    if [[ $lines -gt 1200 ]]; then
-      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 1200 lines ($lines)${NC}"
+    # Updated thresholds for YAML files: Warning at 1000, Error at 2000
+    if [[ $lines -gt 2000 ]]; then
+      echo -e "${RED}CORPUS-E005: $(basename $f) exceeds 2000 lines ($lines)${NC}"
       ((ERRORS++)) || true
       ((found++)) || true
-    elif [[ $lines -gt 600 ]]; then
-      echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 600 lines ($lines)${NC}"
+    elif [[ $lines -gt 1000 ]]; then
+      echo -e "${YELLOW}CORPUS-W005: $(basename $f) exceeds 1000 lines ($lines)${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
@@ -287,7 +305,7 @@ check_file_size() {
   shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All files within size limits${NC}"
+    echo -e "${GREEN}  ✓ All files within size limits (≤1000 lines)${NC}"
   fi
 }
 

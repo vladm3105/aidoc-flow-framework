@@ -926,7 +926,7 @@ AI Assistant should suggest framework updates when:
 2. Populate with all TASKS organized by phase and priority
 3. Use YAML-based structure for machine-parsable tracking
 
-**See**: `10_TASKS/DEVELOPMENT_PLAN_README.md` for complete documentation.
+**See**: `10_TASKS/IMPLEMENTATION_PLAN_README.md` for complete documentation.
 
 ### Mandatory Workflow Rules
 
@@ -1037,7 +1037,7 @@ User: "Initialize new financial services trading platform project"
 
 Claude Code:
 1. Domain Selection: "Financial Services (default) detected. Loading FINANCIAL_DOMAIN_CONFIG.md"
-2. Folder Creation: "Creating 15-layer architecture (12 artifact directories) + finance subdirectories..."
+2. Folder Creation: "Creating 14-layer architecture (11 artifact directories) + finance subdirectories..."
    [Runs mkdir commands]
 3. Validation: "Verifying structure... ✓ All directories created"
 4. Template Setup: "Copying templates and applying financial domain placeholders..."

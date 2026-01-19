@@ -132,5 +132,5 @@ custom_fields:
 4. H1 ID match with filename (required)
 
 **References**:
-- BRD-REF validation: `ai_dev_flow/01_BRD/BRD_VALIDATION_RULES.md`
-- ADR-REF validation: `ai_dev_flow/05_ADR/ADR_VALIDATION_RULES.md`
+- BRD-REF validation: `ai_dev_flow/01_BRD/BRD_MVP_VALIDATION_RULES.md`
+- ADR-REF validation: `ai_dev_flow/05_ADR/ADR_MVP_VALIDATION_RULES.md`

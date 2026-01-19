@@ -35,13 +35,13 @@ This document defines **corpus-level validation rules** that run AFTER all ADR f
 
 | Validation Type | When It Runs | Scope | File |
 |-----------------|--------------|-------|------|
-| **Individual ADR Validation** | After each ADR creation | Single file | `ADR_VALIDATION_RULES.md` |
+| **Individual ADR Validation** | After each ADR creation | Single file | `ADR_MVP_VALIDATION_RULES.md` |
 | **Corpus Validation** | After ALL ADR complete | Entire ADR set | This document |
 
 ### Workflow Position
 
 ```
-Individual ADR Creation → ADR_VALIDATION_RULES.md (per-file)
+Individual ADR Creation → ADR_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All ADRs Complete
         ↓
@@ -952,7 +952,7 @@ fi
 
 ## References
 
-- [ADR_VALIDATION_RULES.md](./ADR_VALIDATION_RULES.md) - Individual file validation
+- [ADR_MVP_VALIDATION_RULES.md](./ADR_MVP_VALIDATION_RULES.md) - Individual file validation
 - [ADR-MVP-TEMPLATE.md](./ADR-MVP-TEMPLATE.md) - ADR document template (full template archived)
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

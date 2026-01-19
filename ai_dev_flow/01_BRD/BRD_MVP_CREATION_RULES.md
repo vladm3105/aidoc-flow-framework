@@ -34,7 +34,7 @@ custom_fields:
 
 > **📋 Document Role**: This is a **CREATION HELPER** for BRD-MVP-TEMPLATE.md (default).
 > - **Authority**: `BRD-MVP-TEMPLATE.md` is the primary standard for BRD structure
-> - **Validation**: Use `BRD_VALIDATION_RULES.md` after BRD creation/changes
+> - **Validation**: Use `BRD_MVP_VALIDATION_RULES.md` after BRD creation/changes
 
 # BRD Creation Rules
 
@@ -78,7 +78,7 @@ custom_fields:
 > - **Business Flexibility**: Layer 1 artifacts capture diverse business needs across domains (financial, healthcare, SaaS, IoT) - rigid schema validation would constrain legitimate business expression
 > - **Domain Variability**: Business requirements vary significantly by industry, organization size, and project type - a fixed schema cannot accommodate this diversity
 > - **Human-Centric Validation**: Business requirements require human judgment for quality assessment rather than automated schema validation
-> - **Sufficient Guidance**: This document (`BRD_CREATION_RULES.md`) and `BRD_VALIDATION_RULES.md` provide comprehensive guidance without rigid constraints
+> - **Sufficient Guidance**: This document (`BRD_MVP_CREATION_RULES.md`) and `BRD_MVP_VALIDATION_RULES.md` provide comprehensive guidance without rigid constraints
 >
 > **Validation Approach**: Use `scripts/validate_brd_template.sh` for structural validation while allowing content flexibility. Use the optional schema only for advisory checks.
 >
@@ -340,7 +340,7 @@ sequenceDiagram
 
 **Also Required**: Document Revision History table with at least one initial entry
 
-**PRD-Ready Score**: Quantifies business-level content quality (100 = perfect business-level requirements, no technical details). Score calculated by deducting points for code blocks, API/technical terms, UI implementation details, and structural issues. Target: ≥90/100. See BRD_VALIDATION_RULES.md CHECK 13 for calculation algorithm.
+**PRD-Ready Score**: Quantifies business-level content quality (100 = perfect business-level requirements, no technical details). Score calculated by deducting points for code blocks, API/technical terms, UI implementation details, and structural issues. Target: ≥90/100. See BRD_MVP_VALIDATION_RULES.md CHECK 13 for calculation algorithm.
 
 **Template**:
 ```markdown
@@ -2021,7 +2021,7 @@ find docs/BRD -name "BRD-*.md" -exec ./scripts/validate_brd_template.sh {} \;
 ```
 
 **Template Location**: [BRD-MVP-TEMPLATE.md](BRD-MVP-TEMPLATE.md)
-**Validation Rules**: [BRD_VALIDATION_RULES.md](BRD_VALIDATION_RULES.md)
+**Validation Rules**: [BRD_MVP_VALIDATION_RULES.md](BRD_MVP_VALIDATION_RULES.md)
 **Index**: [BRD-00_index.md](BRD-00_index.md)
 
 ---

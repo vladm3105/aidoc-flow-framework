@@ -192,16 +192,16 @@ flowchart TD
 
 | Layer | Type | Template | Schema | Creation Rules | Validation Rules |
 |-------|------|----------|--------|----------------|------------------|
-| 1 | BRD | `BRD-MVP-TEMPLATE.md` (default; full archived) | None | `BRD_CREATION_RULES.md` | `BRD_VALIDATION_RULES.md` |
-| 2 | PRD | `PRD-MVP-TEMPLATE.md` (default; full archived) | `PRD_SCHEMA.yaml` | `PRD_CREATION_RULES.md` | `PRD_VALIDATION_RULES.md` |
-| 3 | EARS | `EARS-MVP-TEMPLATE.md` (default; full archived) | `EARS_SCHEMA.yaml` | `EARS_CREATION_RULES.md` | `EARS_VALIDATION_RULES.md` |
-| 4 | BDD | `BDD-MVP-TEMPLATE.feature` | `BDD_SCHEMA.yaml` | `BDD_CREATION_RULES.md` | `BDD_VALIDATION_RULES.md` |
-| 5 | ADR | `ADR-MVP-TEMPLATE.md` (default; full archived) | `ADR_SCHEMA.yaml` | `ADR_CREATION_RULES.md` | `ADR_VALIDATION_RULES.md` |
-| 6 | SYS | `SYS-MVP-TEMPLATE.md` (default; full archived) | `SYS_SCHEMA.yaml` | `SYS_CREATION_RULES.md` | `SYS_VALIDATION_RULES.md` |
-| 7 | REQ | `REQ-MVP-TEMPLATE.md` (default; full archived) | `REQ_SCHEMA.yaml` | `REQ_CREATION_RULES.md` | `REQ_VALIDATION_RULES.md` |
-| 8 | CTR | `CTR-MVP-TEMPLATE.md` | `CTR_SCHEMA.yaml` | `CTR_CREATION_RULES.md` | `CTR_VALIDATION_RULES.md` |
-| 9 | SPEC | `SPEC-MVP-TEMPLATE.yaml` | `SPEC_SCHEMA.yaml` | `SPEC_CREATION_RULES.md` | `SPEC_VALIDATION_RULES.md` |
-| 10 | TASKS | `TASKS-TEMPLATE.md` | `TASKS_SCHEMA.yaml` | `TASKS_CREATION_RULES.md` | `TASKS_VALIDATION_RULES.md` |
+| 1 | BRD | `BRD-MVP-TEMPLATE.md` (default; full archived) | None | `BRD_MVP_CREATION_RULES.md` | `BRD_MVP_VALIDATION_RULES.md` |
+| 2 | PRD | `PRD-MVP-TEMPLATE.md` (default; full archived) | `PRD_SCHEMA.yaml` | `PRD_MVP_CREATION_RULES.md` | `PRD_MVP_VALIDATION_RULES.md` |
+| 3 | EARS | `EARS-MVP-TEMPLATE.md` (default; full archived) | `EARS_SCHEMA.yaml` | `EARS_MVP_CREATION_RULES.md` | `EARS_MVP_VALIDATION_RULES.md` |
+| 4 | BDD | `BDD-MVP-TEMPLATE.feature` | `BDD_SCHEMA.yaml` | `BDD_MVP_CREATION_RULES.md` | `BDD_MVP_VALIDATION_RULES.md` |
+| 5 | ADR | `ADR-MVP-TEMPLATE.md` (default; full archived) | `ADR_SCHEMA.yaml` | `ADR_MVP_CREATION_RULES.md` | `ADR_MVP_VALIDATION_RULES.md` |
+| 6 | SYS | `SYS-MVP-TEMPLATE.md` (default; full archived) | `SYS_SCHEMA.yaml` | `SYS_MVP_CREATION_RULES.md` | `SYS_MVP_VALIDATION_RULES.md` |
+| 7 | REQ | `REQ-MVP-TEMPLATE.md` (default; full archived) | `REQ_SCHEMA.yaml` | `REQ_MVP_CREATION_RULES.md` | `REQ_MVP_VALIDATION_RULES.md` |
+| 8 | CTR | `CTR-MVP-TEMPLATE.md` | `CTR_SCHEMA.yaml` | `CTR_MVP_CREATION_RULES.md` | `CTR_MVP_VALIDATION_RULES.md` |
+| 9 | SPEC | `SPEC-MVP-TEMPLATE.yaml` | `SPEC_SCHEMA.yaml` | `SPEC_MVP_CREATION_RULES.md` | `SPEC_MVP_VALIDATION_RULES.md` |
+| 10 | TASKS | `TASKS-TEMPLATE.md` | `TASKS_SCHEMA.yaml` | `TASKS_MVP_CREATION_RULES.md` | `TASKS_MVP_VALIDATION_RULES.md` |
 
 ## 7. Best Practices
 

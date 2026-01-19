@@ -46,14 +46,14 @@ custom_fields:
 
 | REQ ID | Title | Category | Status | Date | Upstream Sources | Downstream Artifacts |
 |---|---|---|---|---|---|---|
-| REQ-01 | Service registry MUST support automatic service discovery | service-discovery | Approved | 2024-11-16 | EARS-05, SYS-01, ADR-NN | IMPL-01, CTR-03, SPEC-08 |
-| REQ-02 | API gateway MUST route requests based on service path | api-gateway | Approved | 2024-11-16 | EARS-06, SYS-02, ADR-NN | IMPL-01, CTR-04, SPEC-09 |
-| REQ-03 | Load balancer MUST distribute traffic using round-robin algorithm | load-balancing | Approved | 2024-11-17 | EARS-07, SYS-01, ADR-NN | IMPL-02, SPEC-10 |
-| REQ-05 | Database connection pool MUST maintain minimum 10 connections | database | Approved | 2024-11-19 | EARS-10, SYS-03, ADR-NN | IMPL-03, CTR-05, SPEC-12 |
-| REQ-08 | Kafka producer MUST use idempotent writes | messaging | Approved | 2024-11-21 | EARS-15, SYS-04, ADR-NN | IMPL-04, CTR-06, SPEC-14 |
-| REQ-11 | Kubernetes pod MUST have resource limits defined | deployment | Approved | 2024-11-23 | EARS-20, SYS-05, ADR-NN | IMPL-05, SPEC-17 |
-| REQ-14 | OAuth token MUST expire after 1 hour | authentication | Approved | 2024-11-26 | EARS-25, SYS-06, ADR-NN | IMPL-06, CTR-08, SPEC-20 |
-| REQ-17 | GraphQL query MUST validate against schema | api | Approved | 2024-12-02 | EARS-30, SYS-07, ADR-NN | IMPL-07, CTR-09, SPEC-23 |
+| REQ-01 | Service registry MUST support automatic service discovery | service-discovery | Approved | 2024-11-16 | EARS-05, SYS-01, ADR-NN | CTR-03, SPEC-08 |
+| REQ-02 | API gateway MUST route requests based on service path | api-gateway | Approved | 2024-11-16 | EARS-06, SYS-02, ADR-NN | CTR-04, SPEC-09 |
+| REQ-03 | Load balancer MUST distribute traffic using round-robin algorithm | load-balancing | Approved | 2024-11-17 | EARS-07, SYS-01, ADR-NN | SPEC-10 |
+| REQ-05 | Database connection pool MUST maintain minimum 10 connections | database | Approved | 2024-11-19 | EARS-10, SYS-03, ADR-NN | CTR-05, SPEC-12 |
+| REQ-08 | Kafka producer MUST use idempotent writes | messaging | Approved | 2024-11-21 | EARS-15, SYS-04, ADR-NN | CTR-06, SPEC-14 |
+| REQ-11 | Kubernetes pod MUST have resource limits defined | deployment | Approved | 2024-11-23 | EARS-20, SYS-05, ADR-NN | SPEC-17 |
+| REQ-14 | OAuth token MUST expire after 1 hour | authentication | Approved | 2024-11-26 | EARS-25, SYS-06, ADR-NN | CTR-08, SPEC-20 |
+| REQ-17 | GraphQL query MUST validate against schema | api | Approved | 2024-12-02 | EARS-30, SYS-07, ADR-NN | CTR-09, SPEC-23 |
 | REQ-19 | Cache TTL SHOULD be configurable per data type | caching | In Review | 2024-12-11 | EARS-35, SYS-08, ADR-NN | None |
 
 ## 3. Upstream Traceability
@@ -85,16 +85,7 @@ custom_fields:
 
 ## 4. Downstream Traceability
 
-### 4.1 REQ → IMPL Traceability
-
-| REQ ID | REQ Title | IMPL IDs | IMPL Titles | Relationship |
-|--------|-----------|----------|-------------|--------------|
-| REQ-01, REQ-02 | Service discovery and routing | IMPL-01 | Microservices Core Infrastructure | Requirements drive implementation plan |
-| REQ-03 | Load balancing | IMPL-02 | Service Mesh Implementation | Requirement defines implementation scope |
-| REQ-11 | Deployment requirements | IMPL-05 | Kubernetes Cluster Setup | Infrastructure requirements drive deployment plan |
-| REQ-17 | API requirements | IMPL-07 | GraphQL Gateway Implementation | API requirements drive gateway implementation |
-
-### 4.2 REQ → CTR Traceability
+### 4.1 REQ → CTR Traceability
 
 | REQ ID | REQ Title | CTR IDs | CTR Titles | Relationship |
 |--------|-----------|---------|------------|--------------|
@@ -158,9 +149,9 @@ flowchart LR
     SYS001 --> REQ003[REQ-03: Load Balancer]
     ADR001[ADR-NN: Microservices] --> REQ001
     ADR001 --> REQ002
-    REQ001 --> IMPL001[IMPL-01]
-    REQ001 --> CTR003[CTR-03]
-    REQ001 --> SPEC008[SPEC-08]
+REQ001 --> CTR003[CTR-03]
+REQ001 --> SPEC008[SPEC-08]
+
 ```
 
 ## 8. Gap Analysis
@@ -169,5 +160,5 @@ flowchart LR
 
 | REQ ID | REQ Title | Status | Gap Type | Recommended Action |
 |--------|-----------|--------|----------|-------------------|
-| REQ-19 | Cache TTL configuration | In Review | No 08_IMPL/SPEC | Complete review, then create IMPL-08 |
+| REQ-19 | Cache TTL configuration | In Review | No CTR/SPEC | Complete review, then create CTR-XX if needed |
 

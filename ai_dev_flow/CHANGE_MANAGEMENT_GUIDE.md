@@ -68,7 +68,7 @@ Use this workflow when:
 1.  **Create New Artifacts**:
     - **Header**: Add "Supersedes: [Link to Archived Doc]" in metadata.
 2.  **Update Project Plan**:
-    - Update `DEVELOPMENT_PLAN.md` (created from `11_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`) to link to new artifacts.
+    - Update `DEVELOPMENT_PLAN.md` (created from `10_TASKS/DEVELOPMENT_PLAN_TEMPLATE.md`) to link to new artifacts.
 
 ### Step 4: Traceability Repair & Audit
 **What to do**: Re-stitch the documentation web and audit the change.
@@ -76,7 +76,7 @@ Use this workflow when:
 2.  **Update Development Plan**: You **MUST** add a specific sub-phase entry in `DEVELOPMENT_PLAN.md` to track the change execution.
     - **Format**: `Phase X.Y: {Change Title} (Architectural Pivot)`
     - **Link**: Must reference the frozen `implementation_plan.md` inside the CHG folder.
-    - **Example**: `Phase 1.1: [CHG-01 Unified Postgres](docs/CHG/CHG-01/implementation_plan.md)`
+    - **Example**: `Phase 1.1: CHG-01 Unified Postgres (implementation_plan.md)`
 
 ### Step 5: Revalidation
 **What to do**: Ensure quality is maintained.

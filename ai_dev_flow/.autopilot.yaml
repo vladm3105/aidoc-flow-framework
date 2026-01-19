@@ -1,24 +1,823 @@
 # MVP Autopilot Configuration
-# Version: 2.1
-# Last Updated: 2026-01-13
-# This file is auto-detected by mvp_autopilot.py unless overridden with --config
+# Version: 4.0
+# Last Updated: 2026-01-18
+# Full CI/CD-style pipeline configuration with entry/exit points and project mode support
+
+metadata:
+  version: "4.0"
+  last_updated: "2026-01-18"
+  description: "CI/CD-style pipeline for MVP automation with flexible entry/exit points"
+
+# ============================================================================
+# GLOBAL SETTINGS
+# ============================================================================
 
 defaults:
   auto_fix: true
   mvp_validators: true
   report: markdown
-  template_policy: mvp_only  # Framework uses MVP templates exclusively
+  parallel_execution: false
+  max_retries: 3
+  timeout_per_layer: 300  # seconds
+  up_to: TASKS  # Default exit point
 
-# Template Configuration
-# MVP templates are used exclusively. Full templates are deprecated and archived.
+# ============================================================================
+# QUALITY GATE CONFIGURATION
+# ============================================================================
+
+quality_gates:
+  auto_approve_threshold: 90  # Auto-approve if score ≥90%
+  strict_threshold: 95         # Strict mode threshold
+  enable_auto_approval: true   # Allow quality gate auto-skip
+  warning_threshold: 80        # Below this, always requires human review
+
+# ============================================================================
+# TEMPLATE POLICY
+# ============================================================================
+
 template_policy:
   mode: mvp_only
-  deprecated_templates: archived/  # Full/section templates moved here
+  deprecated_templates: archived/
+  fallback_to_full: false
 
-# Profile Configuration
-profile:
-  auto_fix: true
-  strict: false
-  mvp_validators: true
-  report: markdown
-  description: "Streamlined templates for rapid MVP development"
+# ============================================================================
+# PROJECT MODE DETECTION (Greenfield vs Brownfield)
+# ============================================================================
+
+project_modes:
+  # Greenfield: New project from scratch
+  greenfield:
+    description: "New project starting from scratch"
+    detection:
+      # If no layers exist, assume greenfield
+      condition: "no_layers_exist"
+      commands:
+        - "test ! -f ai_dev_flow/01_BRD/BRD-*.md"
+        - "test ! -f ai_dev_flow/02_PRD/PRD-*.md"
+    
+    behavior:
+      skip_existing: false
+      overwrite_on_conflict: false  # Prompt user
+      validate_before_generate: false
+      generate_index_files: true
+      create_directory_structure: true
+  
+  # Brownfield: Existing project with partial artifacts
+  brownfield:
+    description: "Existing project with some artifacts already present"
+    detection:
+      # If any layer exists, assume brownfield
+      condition: "layers_exist"
+      commands:
+        - "test -f ai_dev_flow/*/BRD-*.md -o -f ai_dev_flow/*/PRD-*.md"
+    
+    behavior:
+      skip_existing: true           # Don't regenerate existing files
+      overwrite_on_conflict: false  # Never overwrite without --force
+      validate_before_generate: true
+      discover_existing_artifacts: true
+      resume_from_last_completed: true
+      update_index_files: true
+
+  # Auto-detect mode (default)
+  auto:
+    description: "Auto-detect project mode"
+    fallback: "greenfield"
+
+# ============================================================================
+# ENTRY/EXIT POINT CONFIGURATION
+# ============================================================================
+
+entry_exit_points:
+  # Valid entry points (layers you can start from)
+  valid_entries:
+    - L1_BRD
+    - L2_PRD
+    - L3_EARS
+    - L4_BDD
+    - L5_ADR
+    - L6_SYS
+    - L7_REQ
+    - L8_CTR
+    - L9_SPEC
+    - L10_TASKS
+  
+  # Valid exit points (layers you can stop at)
+  valid_exits:
+    - L1_BRD
+    - L2_PRD
+    - L3_EARS
+    - L4_BDD
+    - L5_ADR
+    - L6_SYS
+    - L7_REQ
+    - L8_CTR
+    - L9_SPEC
+    - L10_TASKS
+  
+  # Common start/end combinations
+  presets:
+    planning_phase:
+      entry: L1_BRD
+      exit: L5_ADR
+      description: "Business planning through architecture decisions"
+    
+    requirements_phase:
+      entry: L2_PRD
+      exit: L7_REQ
+      description: "Requirements definition and decomposition"
+    
+    specifications_phase:
+      entry: L7_REQ
+      exit: L9_SPEC
+      description: "Technical specifications"
+    
+    full_docs:
+      entry: L1_BRD
+      exit: L10_TASKS
+      description: "Complete documentation pipeline"
+    
+    testing_focus:
+      entry: L4_BDD
+      exit: L10_TASKS
+      description: "Start from BDD, generate through implementation plan"
+    
+    contracts_only:
+      entry: L7_REQ
+      exit: L8_CTR
+      description: "Generate API contracts from requirements"
+
+# ============================================================================
+# LAYER PIPELINE CONFIGURATION
+# ============================================================================
+
+pipeline:
+  # --------------------------------------------------------------------------
+  # LAYER 1: Business Requirements Document (BRD)
+  # --------------------------------------------------------------------------
+  L1_BRD:
+    enabled: true
+    order: 1
+    dependencies: []  # No dependencies - can be entry point
+    
+    pre_checks:
+      - name: "Verify intent provided"
+        command: "test -n \"${INTENT}\""
+        required_for: greenfield
+        skip_for: brownfield
+      
+      - name: "Check docs directory structure"
+        command: "python3 ai_dev_flow/scripts/validate_documentation_paths.py --root ai_dev_flow --layer BRD"
+        required: false
+      
+      - name: "Brownfield: Check if BRD exists"
+        command: "test -f ai_dev_flow/01_BRD/BRD-${NN}_*.md"
+        required:false
+        mode: brownfield
+        on_exists: "skip_generation"
+    
+    generation:
+      template: "01_BRD/BRD-MVP-TEMPLATE.md"
+      output_pattern: "01_BRD/BRD-{nn}_{slug}.md"
+      auto_populate: true
+      placeholders:
+        hypothesis: "${INTENT}"
+        market_validation: "TBD - to be researched"
+        problem_statement: "${PROBLEM_STATEMENT}"
+      
+      index_files:
+        - "01_BRD/BRD-00_index.md"
+        - "01_BRD/BRD-00_required_documents_list.md"
+    
+    validation:
+      validator: "python"  # Use validate_brd.py
+      command: "python3 ai_dev_flow/scripts/validate_brd.py ai_dev_flow/01_BRD"
+      min_score: 85  # Lower for initial hypothesis
+      strict_mode: false
+      
+      auto_fix:
+        enabled: true
+        max_attempts: 2
+        fixes:
+          - frontmatter
+          - h1_title
+          - document_control
+          - required_sections
+    
+    post_checks:
+      - name: "Verify BRD file exists"
+        command: "test -f ai_dev_flow/01_BRD/BRD-{nn}_{slug}.md"
+        required: true
+      
+      - name: "Check readiness score"
+        command: "python3 ai_dev_flow/scripts/extract_score.py ai_dev_flow/01_BRD/BRD-{nn}_{slug}.md"
+        threshold: 85
+        required: false
+    
+    on_failure:
+      action: "halt"  # halt | skip | continue
+      notify: true
+      report_path: "work_plans/brd_failure_report_{timestamp}.md"
+
+  # --------------------------------------------------------------------------
+  # LAYER 2: Product Requirements Document (PRD)
+  # --------------------------------------------------------------------------
+  L2_PRD:
+    enabled: true
+    order: 2
+    dependencies: ["L1_BRD"]  # Requires BRD if starting from L1
+    optional_dependencies: true  # Can start from PRD if BRD exists
+    
+    pre_checks:
+      - name: "Verify BRD exists (if not entry point)"
+        command: "test -f ai_dev_flow/01_BRD/BRD-{nn}_*.md"
+        required: "if_not_entry_point"
+      
+      - name: "Check BRD approved status"
+        command: "python3 ai_dev_flow/scripts/check_approval_status.py --file ai_dev_flow/01_BRD/BRD-{nn}_*.md"
+        required: false
+        mode: any
+      
+      - name: "Brownfield: Check if PRD exists"
+        command: "test -f ai_dev_flow/02_PRD/PRD-${NN}_*.md"
+        required: false
+        mode: brownfield
+        on_exists: "skip_generation"
+    
+    generation:
+      template: "02_PRD/PRD-MVP-TEMPLATE.md"
+      output_pattern: "02_PRD/PRD-{nn}_{slug}.md"
+      auto_populate: true
+      
+      upstream_refs:
+        - type: "brd"
+          pattern: "BRD.{nn}.01.01"
+          required: "if_brd_exists"
+      
+      index_files:
+        - "02_PRD/PRD-00_index.md"
+        - "02_PRD/PRD-00_required_documents_list.md"
+    
+    validation:
+      validator: "python"
+      command: "python3 ai_dev_flow/scripts/validate_prd.py ai_dev_flow/02_PRD"
+      min_score: 90
+      strict_mode: false
+      
+      auto_fix:
+        enabled: true
+        max_attempts: 2
+        fixes:
+          - frontmatter
+          - h1_title
+          - traceability_tags
+          - functional_requirements
+          - document_control
+    
+    post_checks:
+      - name: "Verify PRD-ready score"
+        command: "python3 ai_dev_flow/scripts/check_prd_ready_score.py ai_dev_flow/02_PRD/PRD-{nn}_{slug}.md"
+        threshold: 90
+        required: false
+      
+      - name: "Validate BRD links (if BRD exists)"
+        command: "python3 ai_dev_flow/scripts/validate_links.py --source ai_dev_flow/02_PRD --target ai_dev_flow/01_BRD"
+        required: "if_brd_exists"
+    
+    on_failure:
+      action: "halt"
+      notify: true
+      retry_with_human: true
+
+  # --------------------------------------------------------------------------
+  # LAYER 3: EARS Requirements
+  # --------------------------------------------------------------------------
+  L3_EARS:
+    enabled: true
+    order: 3
+    dependencies: ["L2_PRD"]
+    optional_dependencies: true
+    
+    pre_checks:
+      - name: "Verify PRD exists"
+        command: "test -f ai_dev_flow/02_PRD/PRD-{nn}_*.md"
+        required: "if_not_entry_point"
+      
+      - name: "Brownfield: Check if EARS exists"
+        command: "test -f ai_dev_flow/03_EARS/EARS-${NN}_*.md"
+        required: false
+        mode: brownfield
+        on_exists: "skip_generation"
+    
+    generation:
+      template: "03_EARS/EARS-MVP-TEMPLATE.md"
+      output_pattern: "03_EARS/EARS-{nn}_{slug}.md"
+      auto_populate: true
+      
+      upstream_refs:
+        - type: "brd"
+          pattern: "BRD.{nn}.01.01"
+          required: "if_exists"
+        - type: "prd"
+          pattern: "PRD.{nn}.01.01"
+          required: "if_exists"
+      
+      index_files:
+        - "03_EARS/EARS-00_index.md"
+        - "03_EARS/EARS-00_required_documents_list.md"
+    
+    validation:
+      validator: "python"
+      command: "python3 ai_dev_flow/scripts/validate_ears.py --path ai_dev_flow/03_EARS"
+      min_score: 90
+      strict_mode: false
+      
+      auto_fix:
+        enabled: true
+        max_attempts: 2
+    
+    post_checks:
+      - name: "Verify SHALL statements"
+        command: "python3 ai_dev_flow/scripts/check_shall_count.py ai_dev_flow/03_EARS/EARS-{nn}_{slug}.md"
+        min_count: 1
+        required: true
+    
+    on_failure:
+      action: "halt"
+      notify: true
+
+  # --------------------------------------------------------------------------
+  # LAYER 4: BDD Test Scenarios
+  # --------------------------------------------------------------------------
+  L4_BDD:
+    enabled: true
+    order: 4
+    dependencies: ["L3_EARS"]
+    optional_dependencies: true  # Can start from BDD
+    
+    pre_checks:
+      - name: "Verify EARS exists"
+        command: "test -f ai_dev_flow/03_EARS/EARS-{nn}_*.md"
+        required: "if_not_entry_point"
+      
+      - name: "Brownfield: Check if BDD exists"
+        command: "test -f ai_dev_flow/04_BDD/BDD-${NN}_*.feature"
+        required: false
+        mode: brownfield
+        on_exists: "skip_generation"
+    
+    generation:
+      template: "04_BDD/BDD-MVP-TEMPLATE.feature"
+      output_pattern: "04_BDD/BDD-{nn}_{slug}.feature"
+      auto_populate: true
+      
+      upstream_refs:
+        - type: "brd"
+          pattern: "BRD.{nn}.01.01"
+          required: "if_exists"
+        - type: "prd"
+          pattern: "PRD.{nn}.01.01"
+          required: "if_exists"
+        - type: "ears"
+          pattern: "EARS.{nn}.01.01"
+          required: "if_exists"
+      
+      index_files:
+        - "04_BDD/BDD-00_index.md"
+    
+    validation:
+      validator: "python"
+      command: "python3 ai_dev_flow/scripts/validate_bdd.py ai_dev_flow/04_BDD"
+      min_score: 90
+      strict_mode: false
+      
+      auto_fix:
+        enabled: true
+        max_attempts: 2
+    
+    post_checks:
+      - name: "Verify Gherkin syntax"
+        command: "python3 ai_dev_flow/scripts/check_gherkin_syntax.py ai_dev_flow/04_BDD/BDD-{nn}_{slug}.feature"
+        required: true
+    
+    on_failure:
+      action: "halt"
+      notify: true
+
+  # --------------------------------------------------------------------------
+  # LAYER 5: Architecture Decision Records (ADR)
+  # --------------------------------------------------------------------------
+  L5_ADR:
+    enabled: true
+    order: 5
+    dependencies: ["L4_BDD"]
+    optional_dependencies: true
+    
+    pre_checks:
+      - name: "Verify upstream docs exist"
+        command: "test -f ai_dev_flow/01_BRD/BRD-{nn}_*.md -o -f ai_dev_flow/02_PRD/PRD-{nn}_*.md"
+        required: "if_not_entry_point"
+      
+      - name: "Brownfield: Check if ADR exists"
+        command: "test -f ai_dev_flow/05_ADR/ADR-${NN}_*.md"
+        required: false
+        mode: brownfield
+        on_exists: "skip_generation"
+    
+    generation:
+      template: "05_ADR/ADR-MVP-TEMPLATE.md"
+      output_pattern: "05_ADR/ADR-{nn}_{slug}.md"
+      auto_populate: true
+      
+      index_files:
+        - "05_ADR/ADR-00_index.md"
+        - "05_ADR/ADR-00_required_documents_list.md"
+    
+    validation:
+      validator: "python"
+      command: "python3 ai_dev_flow/scripts/validate_adr.py ai_dev_flow/05_ADR"
+      min_score: 90  # Higher threshold for architecture
+      strict_mode: false
+      
+      auto_fix:
+        enabled: false  # Manual review for architecture decisions
+    
+    post_checks:
+      - name: "Verify decision documented"
+        command: "python3 ai_dev_flow/scripts/check_adr_decision.py ai_dev_flow/05_ADR/ADR-{nn}_{slug}.md"
+        required: true
+    
+    on_failure:
+      action: "halt"
+      notify: true
+      human_review_required: true
+
+  # --------------------------------------------------------------------------
+  # LAYER 6: System Requirements (SYS)
+  # --------------------------------------------------------------------------
+  L6_SYS:
+    enabled: true
+    order: 6
+    dependencies: ["L5_ADR"]
+    optional_dependencies: true
+    
+    pre_checks:
+      - name: "Verify ADR exists"
+        command: "test -f ai_dev_flow/05_ADR/ADR-{nn}_*.md"
+        required: "if_not_entry_point"
+      
+      - name: "Brownfield: Check if SYS exists"
+        command: "test -f ai_dev_flow/06_SYS/SYS-${NN}_*.md"
+        required: false
+        mode: brownfield
+        on_exists: "skip_generation"
+    
+    generation:
+      template: "06_SYS/SYS-MVP-TEMPLATE.md"
+      output_pattern: "06_SYS/SYS-{nn}_{slug}.md"
+      auto_populate: true
+      
+      index_files:
+        - "06_SYS/SYS-00_index.md"
+        - "06_SYS/SYS-00_required_documents_list.md"
+    
+    validation:
+      validator: "python"
+      command: "python3 ai_dev_flow/scripts/validate_sys.py ai_dev_flow/06_SYS"
+      min_score: 90
+      strict_mode: false
+      
+      auto_fix:
+        enabled: true
+        max_attempts: 2
+    
+    post_checks:
+      - name: "Verify system spec complete"
+        command: "python3 ai_dev_flow/scripts/check_sys_completeness.py ai_dev_flow/06_SYS/SYS-{nn}_{slug}.md"
+        required: true
+    
+    on_failure:
+      action: "halt"
+      notify: true
+
+  # --------------------------------------------------------------------------
+  # LAYER 7: Atomic Requirements (REQ)
+  # --------------------------------------------------------------------------
+  L7_REQ:
+    enabled: true
+    order: 7
+    dependencies: ["L6_SYS"]
+    optional_dependencies: true  # Can start from REQ
+    
+    pre_checks:
+      - name: "Verify SYS exists"
+        command: "test -f ai_dev_flow/06_SYS/SYS-{nn}_*.md"
+        required: "if_not_entry_point"
+      
+      - name: "Brownfield: Discover existing REQ files"
+        command: "find ai_dev_flow/07_REQ -name 'REQ-*.md' -type f"
+        required: false
+        mode: brownfield
+        action: "catalog_existing"
+    
+    generation:
+      template: "07_REQ/REQ-MVP-TEMPLATE.md"
+      output_pattern: "07_REQ/REQ-{nn}_{slug}.md"
+      auto_populate: true
+      batch_generation: true  # May generate multiple REQ files
+      
+      index_files:
+        - "07_REQ/REQ-00_index.md"
+        - "07_REQ/REQ-00_required_documents_list.md"
+    
+    validation:
+      validator: "shell"
+      command: "find ai_dev_flow/07_REQ -name 'REQ-*.md' -exec bash ai_dev_flow/scripts/validate_req_template.sh {} \\;"
+      min_score: 90
+      strict_mode: false
+      
+      auto_fix:
+        enabled: true
+        max_attempts: 2
+    
+    post_checks:
+      - name: "Verify unique REQ IDs"
+        command: "python3 ai_dev_flow/scripts/validate_requirement_ids.py --directory ai_dev_flow/07_REQ"
+        required: true
+    
+    on_failure:
+      action: "halt"
+      notify: true
+
+  # --------------------------------------------------------------------------
+  # LAYER 8: API Contracts (CTR)
+  # --------------------------------------------------------------------------
+  L8_CTR:
+    enabled: true
+    order: 8
+    dependencies: ["L7_REQ"]
+    optional_dependencies: true  # Can stop at CTR
+    
+    pre_checks:
+      - name: "Verify REQ files exist"
+        command: "test -d ai_dev_flow/07_REQ && find ai_dev_flow/07_REQ -name 'REQ-*.md' | wc -l | grep -v '^0$'"
+        required: "if_not_entry_point"
+      
+      - name: "Brownfield: Discover existing CTR files"
+        command: "find ai_dev_flow/08_CTR -name 'CTR-*.yaml' -o -name 'CTR-*.md' -type f"
+        required: false
+        mode: brownfield
+        action: "catalog_existing"
+    
+    generation:
+      template: "08_CTR/CTR-MVP-TEMPLATE.yaml"
+      output_pattern: "08_CTR/CTR-{nn}_{slug}.yaml"
+      auto_populate: true
+      dual_file: true  # Generate both .yaml and .md
+      
+      index_files:
+        - "08_CTR/CTR-00_index.md"
+    
+    validation:
+      validator: "python"
+      command: "python3 ai_dev_flow/scripts/validate_ctr.py ai_dev_flow/08_CTR"
+      min_score: 90
+      strict_mode: false
+      
+      auto_fix:
+        enabled: true
+        max_attempts: 2
+    
+    post_checks:
+      - name: "Verify OpenAPI compliance"
+        command: "python3 ai_dev_flow/scripts/check_openapi_compliance.py ai_dev_flow/08_CTR/CTR-{nn}_{slug}.yaml"
+        required: true
+    
+    on_failure:
+      action: "halt"
+      notify: true
+
+  # --------------------------------------------------------------------------
+  # LAYER 9: Technical Specifications (SPEC)
+  # --------------------------------------------------------------------------
+  L9_SPEC:
+    enabled: true
+    order: 9
+    dependencies: ["L8_CTR", "L7_REQ"]
+    optional_dependencies: true
+    
+    pre_checks:
+      - name: "Verify CTR exists"
+        command: "test -f ai_dev_flow/08_CTR/CTR-{nn}_*.yaml"
+        required: "if_not_entry_point"
+      
+      - name: "Brownfield: Check if SPEC exists"
+        command: "test -f ai_dev_flow/09_SPEC/SPEC-${NN}_*.yaml"
+        required: false
+        mode: brownfield
+        on_exists: "skip_generation"
+    
+    generation:
+      template: "09_SPEC/SPEC-MVP-TEMPLATE.yaml"
+      output_pattern: "09_SPEC/SPEC-{nn}_{slug}.yaml"
+      auto_populate: true
+      
+      index_files:
+        - "09_SPEC/SPEC-00_index.md"
+    
+    validation:
+      validator: "python"
+      command: "python3 ai_dev_flow/scripts/validate_spec.py ai_dev_flow/09_SPEC"
+      min_score: 92  # Higher for technical specs
+      strict_mode: false
+      
+      auto_fix:
+        enabled: true
+        max_attempts: 2
+    
+    post_checks:
+      - name: "Verify TASKS-ready score"
+        command: "python3 ai_dev_flow/scripts/check_tasks_ready_score.py ai_dev_flow/09_SPEC/SPEC-{nn}_{slug}.yaml"
+        threshold: 90
+        required: true
+    
+    on_failure:
+      action: "halt"
+      notify: true
+
+  # --------------------------------------------------------------------------
+  # LAYER 10: Implementation Tasks (TASKS)
+  # --------------------------------------------------------------------------
+  L10_TASKS:
+    enabled: true
+    order: 10
+    dependencies: ["L9_SPEC"]
+    optional_dependencies: true
+    
+    pre_checks:
+      - name: "Verify SPEC exists"
+        command: "test -f ai_dev_flow/09_SPEC/SPEC-{nn}_*.yaml"
+        required: "if_not_entry_point"
+      
+      - name: "Brownfield: Check if TASKS exists"
+        command: "test -f ai_dev_flow/10_TASKS/TASKS-${NN}_*.md"
+        required: false
+        mode: brownfield
+        on_exists: "skip_generation"
+    
+    generation:
+      template: "10_TASKS/TASKS-MVP-TEMPLATE.md"
+      output_pattern: "10_TASKS/TASKS-{nn}_{slug}.md"
+      auto_populate: true
+      
+      index_files:
+        - "10_TASKS/TASKS-00_index.md"
+    
+    validation:
+      validator: "python"
+      command: "python3 ai_dev_flow/scripts/validate_tasks.py ai_dev_flow/10_TASKS"
+      min_score: 90
+      strict_mode: false
+      
+      auto_fix:
+        enabled: true
+        max_attempts: 2
+    
+    post_checks:
+      - name: "Verify execution commands present"
+        command: "python3 ai_dev_flow/scripts/check_execution_commands.py ai_dev_flow/10_TASKS/TASKS-{nn}_{slug}.md"
+        required: true
+      
+      - name: "Final link integrity check"
+        command: "python3 ai_dev_flow/scripts/validate_links.py --docs-dir ai_dev_flow"
+        required: false
+    
+    on_failure:
+      action: "halt"
+      notify: true
+
+# ============================================================================
+# EXECUTION MODES
+# ============================================================================
+
+execution:
+  # Standard MVP mode
+  mvp_mode:
+    parallel: false
+    stop_on_failure: true
+    auto_approve_enabled: true
+    default_entry: L1_BRD
+    default_exit: L10_TASKS
+    project_mode: auto
+    layers: ["L1_BRD", "L2_PRD", "L3_EARS", "L4_BDD", "L5_ADR", "L6_SYS", "L7_REQ", "L8_CTR", "L9_SPEC", "L10_TASKS"]
+  
+  # Strict validation mode
+  strict_mode:
+    parallel: false
+    stop_on_failure: true
+    auto_approve_enabled: false
+    override_min_scores:
+      all: 95
+    project_mode: auto
+  
+  # Brownfield resume mode
+  brownfield_mode:
+    parallel: false
+    stop_on_failure: false  # Continue to catalog all issues
+    auto_approve_enabled: true
+    project_mode: brownfield
+    discover_existing: true
+    skip_existing_layers: true
+    validate_existing: true
+
+# ============================================================================
+# NOTIFICATION CONFIGURATION
+# ============================================================================
+
+notifications:
+  enabled: true
+  
+  on_success:
+    - type: "report"
+      format: "markdown"
+      path: "work_plans/mvp_success_{timestamp}.md"
+    - type: "summary"
+      console: true
+  
+  on_failure:
+    - type: "report"
+      format: "markdown"
+      path: "work_plans/mvp_failure_{timestamp}.md"
+    - type: "summary"
+      console: true
+  
+  on_human_review:
+    - type: "alert"
+      message: "Layer {layer} requires human review (score: {score}%)"
+  
+  on_skip:
+    - type: "info"
+      message: "Skipping {layer} (already exists in brownfield project)"
+
+# ============================================================================
+# NAMED PROFILES
+# ============================================================================
+
+profiles:
+  # Default MVP profile
+  mvp:
+    execution: "mvp_mode"
+    entry: L1_BRD
+    exit: L10_TASKS
+    description: "Fast MVP iteration with auto-approval ≥90%"
+  
+  # Strict validation profile
+  strict:
+    execution: "strict_mode"
+    entry: L1_BRD
+    exit: L10_TASKS
+    description: "Full validation for production release"
+  
+  # Planning only
+  planning_only:
+    execution: "mvp_mode"
+    entry: L1_BRD
+    exit: L5_ADR
+    description: "Generate planning docs only (BRD→ADR)"
+  
+  # Requirements only
+  requirements_only:
+    execution: "mvp_mode"
+    entry: L2_PRD
+    exit: L7_REQ
+    description: "Generate requirements (PRD→REQ)"
+  
+  # Specifications only
+  specifications_only:
+    execution: "mvp_mode"
+    entry: L7_REQ
+    exit: L9_SPEC
+    description: "Generate specifications (REQ→SPEC)"
+  
+  # Testing focus (start from BDD)
+  testing_focus:
+    execution: "mvp_mode"
+    entry: L4_BDD
+    exit: L10_TASKS
+    description: "Start from BDD, generate through implementation plan"
+  
+  # Contracts only (your example)
+  contracts_only:
+    execution: "mvp_mode"
+    entry: L4_BDD
+    exit: L8_CTR
+    description: "Start from BDD, end at CTR contracts"
+  
+  # Brownfield resume
+  brownfield_resume:
+    execution: "brownfield_mode"
+    entry: auto  # Auto-detect last completed layer
+    exit: L10_TASKS
+    description: "Resume brownfield project from last completed layer"
+
+default_profile: mvp

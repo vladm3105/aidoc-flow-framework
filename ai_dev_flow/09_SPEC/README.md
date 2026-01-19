@@ -31,13 +31,13 @@ Note: `SPEC-MVP-TEMPLATE.yaml` is the reference template. YAML stays monolithic 
 - YAML: Monolithic single file per component (`SPEC-{DOC_NUM}_{slug}.yaml`).
 - DOC_NUM: Variable-length starting at 2 digits (01, 02, 99, 100, 1000).
 - Layout:
-  - Nested (default): `09_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml`
-  - Flat (exception): `09_SPEC/SPEC-{DOC_NUM}_{slug}.yaml` for small, stable specs.
+  - Flat (default): `09_SPEC/SPEC-{DOC_NUM}_{slug}.yaml` - single YAML per component
+  - Nested (exception): `09_SPEC/SPEC-{DOC_NUM}_{slug}/SPEC-{DOC_NUM}_{slug}.yaml` when supporting files needed
 
 ### Examples
 
-- Flat (small): [SPEC-01_api_client_example.yaml](./SPEC-01_api_client_example.yaml)
-- Nested (recommended): [SPEC-02_nested_example.yaml](./examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml)
+- Flat (default): [SPEC-01_api_client_example.yaml](./SPEC-01_api_client_example.yaml)
+- Nested (exception): [SPEC-02_nested_example.yaml](./examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml) - with split Markdown
 
 ## Codegen Compatibility
 
@@ -699,41 +699,185 @@ monitoring:
 
 ### Code Generation
 ```bash
-# Generate Python client from SPEC (nested default)
-generate-client --spec 09_SPEC/SPEC-01_external_api_client/SPEC-01_external_api_client.yaml --output client_sdk/
+# Generate Python client from SPEC (flat default)
+generate-client --spec 09_SPEC/SPEC-01_external_api_client.yaml --output client_sdk/
 
-generate-stubs --spec 09_SPEC/SPEC-02_ib_gateway_service/SPEC-02_ib_gateway_service.yaml --language python --framework flask
+generate-stubs --spec 09_SPEC/SPEC-02_ib_gateway_service.yaml --language python --framework flask
 
-generate-tests --spec 09_SPEC/SPEC-03_resource_limit_service/SPEC-03_resource_limit_service.yaml --framework pytest
+generate-tests --spec 09_SPEC/SPEC-03_resource_limit_service.yaml --framework pytest
 
 ```
 
 ### Validation and Compliance
 ```bash
-# Validate SPEC against schema (nested default)
-validate-spec --spec 09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml --schema spec_schema.json
+# Validate SPEC against schema (flat default)
+validate-spec --spec 09_SPEC/SPEC-NN_{slug}.yaml --schema spec_schema.json
 
-verify-spec-coverage --spec 09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml --tests tests/test_external_api/
+verify-spec-coverage --spec 09_SPEC/SPEC-NN_{slug}.yaml --tests tests/test_external_api/
 
-generate-docs --spec 09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml --format openapi --output docs/api/
+generate-docs --spec 09_SPEC/SPEC-NN_{slug}.yaml --format openapi --output docs/api/
 
 ```
 
 ### Monitoring Configuration
 ```bash
-# Generate monitoring configuration (nested default)
-generate-monitoring --spec 09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml --output prometheus.yml
+# Generate monitoring configuration (flat default)
+generate-monitoring --spec 09_SPEC/SPEC-NN_{slug}.yaml --output prometheus.yml
 
-validate-metrics --spec 09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml --actual-metrics metrics.json
+validate-metrics --spec 09_SPEC/SPEC-NN_{slug}.yaml --actual-metrics metrics.json
 
 ```
 
 ## Example SPEC Template
 
-See `09_SPEC/SPEC-01_external_api_client.yaml` for a flat example (small, stable). For nested default, see `09_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml`.
+See `09_SPEC/SPEC-01_external_api_client.yaml` for the flat default layout. For nested exception (with supporting files), see `09_SPEC/examples/SPEC-02_nested_example/SPEC-02_nested_example.yaml`.
 
 ## File Size Limits (Warning)
 
 - **Target**: 800 lines per file
 - **Maximum (Markdown)**: 1200 lines (warning threshold)
 - **YAML (monolithic)**: Warning at ~1000 lines
+
+---
+
+## SPEC Generation Plan Requirements (MANDATORY)
+
+When creating a `SPEC_GENERATION_PLAN.md` for a project, the following requirements MUST be satisfied to ensure accuracy and framework compliance.
+
+### Pre-Plan Verification Checklist
+
+Before writing any generation plan, execute these verification steps:
+
+#### 1. Verify Actual REQ Inventory
+
+```bash
+# Count actual REQ files in project
+find docs/07_REQ -name "REQ-*.md" | wc -l
+
+# List all REQ files to verify naming pattern
+find docs/07_REQ -name "REQ-*.md" | head -20
+
+# Determine structure: FLAT vs NESTED
+ls -la docs/07_REQ/
+```
+
+**Critical**: Do NOT assume REQ counts or ranges. Verify actual file inventory.
+
+#### 2. Verify REQ Path Structure
+
+REQ files may be organized in two patterns:
+
+| Pattern | Example Path | Detection |
+|---------|--------------|-----------|
+| **Flat** | `07_REQ/REQ-01_jwt_authentication.md` | Files directly in `07_REQ/` |
+| **Nested** | `07_REQ/SYS-01_iam/REQ-01_authentication.md` | Subdirectories per SYS module |
+
+**Use the actual project structure** - never assume nested when flat or vice versa.
+
+#### 3. Verify SYS Module Mapping
+
+```bash
+# List SYS modules if nested structure
+ls -d docs/07_REQ/SYS-* 2>/dev/null || echo "Flat structure detected"
+
+# Count REQs per SYS module (if nested)
+for dir in docs/07_REQ/SYS-*/; do
+  echo "$dir: $(ls "$dir"REQ-*.md 2>/dev/null | wc -l) REQs"
+done
+```
+
+### Required Plan Sections
+
+Every SPEC Generation Plan MUST include:
+
+| Section | Purpose | Reference |
+|---------|---------|-----------|
+| **Index-Only Workflow** | Explain `SPEC-00_index.md` role as authoritative registry | README.md line 18 |
+| **REQ Inventory (Verified)** | Actual REQ count and ranges from filesystem scan | Pre-Plan Step 1 |
+| **REQ Path Format** | Actual path structure (flat vs nested) | Pre-Plan Step 2 |
+| **TASKS-Ready Scoring Criteria** | 4×25% breakdown for scoring | Creation Rules Section 7 |
+| **Cross-Document Validation** | Validation loop and XDOC error codes | Creation Rules Section 15 |
+| **Threshold Registry Format** | `threshold_references` section with `keys_used` | Creation Rules Section 14 |
+| **Common Mistakes Reference** | Link to Creation Rules Section 12 | Creation Rules Section 12 |
+| **File Size Limits** | 1000 lines warning threshold for YAML | This section |
+
+### TASKS-Ready Scoring Criteria (Include in Plan)
+
+Plans MUST document the 4×25% scoring breakdown:
+
+| Category | Weight | Criteria |
+|----------|--------|----------|
+| **YAML Completeness** | 25% | Metadata (10%), Traceability (10%), Sections (5%) |
+| **Interface Definitions** | 25% | External APIs (15%), Internal interfaces (5%), Data schemas (5%) |
+| **Implementation Specs** | 25% | Behavior sections (15%), Performance/security targets (5%), Dependencies (5%) |
+| **Code Generation Readiness** | 25% | Machine-readable (15%), TASKS-ready metadata (5%), Validation schemas (5%) |
+
+**Quality Gate**: Score ≥90% required before TASKS generation.
+
+### Cross-Document Validation Loop (Include in Plan)
+
+Plans MUST include this mandatory validation workflow:
+
+```
+VALIDATION LOOP:
+1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+2. IF errors fixed: GOTO step 1 (re-validate)
+3. IF warnings fixed: GOTO step 1 (re-validate)
+4. IF unfixable issues: Log for manual review, continue
+5. IF clean: Mark VALIDATED, proceed to next artifact
+```
+
+**Validation Error Codes**:
+
+| Code | Description | Severity |
+|------|-------------|----------|
+| XDOC-001 | Referenced requirement ID not found | ERROR |
+| XDOC-002 | Missing cumulative tag | ERROR |
+| XDOC-003 | Upstream document not found | ERROR |
+| XDOC-006 | Tag format invalid | ERROR |
+| XDOC-007 | Gap in cumulative tag chain | ERROR |
+| XDOC-009 | Missing traceability section | ERROR |
+
+### Threshold Registry Format (Include in Plan)
+
+Plans MUST show the `threshold_references` section format:
+
+```yaml
+threshold_references:
+  registry_document: "PRD-NN"
+  keys_used:
+    - perf.api.p95_latency
+    - timeout.request.sync
+    - limit.api.requests_per_second
+    - retry.max_attempts
+```
+
+**Requirement**: No hardcoded performance/timeout values. All quantitative values MUST use `@threshold` references.
+
+### Common Mistakes to Avoid (Link in Plan)
+
+Plans MUST reference SPEC_MVP_CREATION_RULES.md Section 12 and include this summary:
+
+| Mistake | Correct Approach |
+|---------|------------------|
+| Assumed REQ counts/ranges | Verify actual filesystem inventory |
+| Wrong REQ path format | Check flat vs nested structure |
+| Hardcoded performance values | Use `@threshold: PRD.NN.key` references |
+| Missing `req_implementations` | Required for every upstream REQ |
+| REQ in `downstream_artifacts` | REQ is UPSTREAM - use `upstream_sources.atomic_requirements` |
+| File size > 1000 lines | Warning threshold; consider splitting |
+| Status/score mismatch | Match status to TASKS-ready score threshold |
+
+### Plan Validation Checklist
+
+Before finalizing a SPEC Generation Plan, verify:
+
+- [ ] REQ inventory verified via filesystem scan
+- [ ] REQ path format matches actual project structure
+- [ ] SPEC-00_index.md role documented
+- [ ] TASKS-ready scoring criteria (4×25%) included
+- [ ] Cross-document validation loop documented
+- [ ] Threshold registry format shown
+- [ ] Common mistakes section referenced
+- [ ] File size limit (1000 lines) documented
+- [ ] All REQ → SPEC mappings use verified ranges

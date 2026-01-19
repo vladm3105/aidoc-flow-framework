@@ -34,13 +34,13 @@ This document defines **corpus-level validation rules** that run AFTER all CTR (
 
 | Validation Type | When It Runs | Scope | File |
 |-----------------|--------------|-------|------|
-| **Individual CTR Validation** | After each CTR creation | Single file | `CTR_VALIDATION_RULES.md` |
+| **Individual CTR Validation** | After each CTR creation | Single file | `CTR_MVP_VALIDATION_RULES.md` |
 | **Corpus Validation** | After ALL CTR complete | Entire CTR set | This document |
 
 ### Workflow Position
 
 ```
-Individual CTR Creation → CTR_VALIDATION_RULES.md (per-file)
+Individual CTR Creation → CTR_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All CTR Complete (Optional Layer)
         ↓
@@ -470,7 +470,7 @@ fi
 
 ## References
 
-- [CTR_VALIDATION_RULES.md](./CTR_VALIDATION_RULES.md) - Individual file validation
+- [CTR_MVP_VALIDATION_RULES.md](./CTR_MVP_VALIDATION_RULES.md) - Individual file validation
 - [CTR-MVP-TEMPLATE.md](./CTR-MVP-TEMPLATE.md) - CTR document template (primary standard)
 - [CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format

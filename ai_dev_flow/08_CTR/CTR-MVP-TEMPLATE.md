@@ -19,7 +19,7 @@ custom_fields:
 ---
 
 >
-> **📋 Document Authority**: This is the **PRIMARY STANDARD** for CTR structure. Schema: `CTR_SCHEMA.yaml v1.0`. Creation Rules: `CTR_CREATION_RULES.md`. Validation Rules: `CTR_VALIDATION_RULES.md`.
+> **📋 Document Authority**: This is the **PRIMARY STANDARD** for CTR structure. Schema: `CTR_SCHEMA.yaml v1.0`. Creation Rules: `CTR_MVP_CREATION_RULES.md`. Validation Rules: `CTR_MVP_VALIDATION_RULES.md`.
 
 # CTR-NN: [Contract Title]
 
@@ -183,7 +183,7 @@ See [Section 7: Quality Attributes](#7-quality-attributes) for detailed performa
 - **Request Schema**: See YAML `request_schema` for `validatePositionRisk`
   - `resource`: Proposed resource parameters (symbol, [METRIC_1 - e.g., error rate, response time], [VALUE - e.g., subscription fee, processing cost], etc.)
   - `collection_state`: Current resource collection [METRICS - e.g., performance indicators, quality scores] and capital
-  - `risk_limits`: Risk parameters from ADR-008 configuration
+  - `risk_limits`: Risk parameters from ADR-00_index configuration
 - **Response Schema**: See YAML `response_schema` for `validatePositionRisk`
   - `is_valid`: Boolean - true if resource passes all checks
   - `decision_id`: UUID for audit trail
@@ -217,7 +217,7 @@ See [Section 7: Quality Attributes](#7-quality-attributes) for detailed performa
 
 - **Critical Failure Modes**:
   - Service crash during validation (likelihood: low, SLA: 99.9%)
-  - Configuration service unavailable (ADR-008 parameters unreachable)
+  - Configuration service unavailable (ADR-00_index parameters unreachable)
   - Network partition between consumer and provider
 - **Recovery Strategies**:
   - [SAFETY_MECHANISM - e.g., rate limiter, error threshold]: Open after 5 consecutive failures, half-open after 60s
@@ -410,7 +410,7 @@ See [Section 7: Quality Attributes](#7-quality-attributes) for detailed performa
 **Depends On**:
 
 - CTR-NN (Common Data Types): Shared resource/resource collection types
-- ADR-008 (Risk Parameters): Configuration contract for risk limits
+- ADR-00_index (Risk Parameters): Configuration contract for risk limits
 
 **Supersedes**:
 
@@ -432,9 +432,9 @@ See [Section 7: Quality Attributes](#7-quality-attributes) for detailed performa
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 | REQ | [REQ-03](../07_REQ/risk/lim/REQ-03_resource_limit_enforcement.md) | [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement | section 3.1 | Defines validation requirements |
 <!-- VALIDATOR:IGNORE-LINKS-END -->
-| REQ | [REQ-008](../07_REQ/risk/cfg/REQ-008_centralized_risk_parameters.md) | Centralized Risk Parameters | section 2.0 | Defines risk limits to validate against |
-| ADR | [ADR-008](../05_ADR/ADR-008_centralized_risk_parameters.md) | Centralized Risk Parameters | section 4.0 | Architecture decision for centralization |
-| SYS | [SYS-004](../06_SYS/SYS-004_centralized_risk_controls.md) | Centralized Risk Controls | section 5.2 | System requirement for validation service |
+| REQ | [REQ-000](../07_REQ/REQ-00_index.md) | Requirements Index | Index | Defines risk limits to validate against |
+| ADR | [ADR-000](../05_ADR/ADR-00_index.md#ADR-000) | Architecture Index | Index | Architecture reference |
+| SYS | [SYS-000](../06_SYS/SYS-00_index.md#SYS-000) | System Index | Index | System requirement reference |
 
 ### 11.3 SPEC Requirements
 
@@ -505,9 +505,9 @@ See [Section 7: Quality Attributes](#7-quality-attributes) for detailed performa
 ### 12.1 Internal Links
 
 - [REQ-03: [RESOURCE_LIMIT - e.g., request quota, concurrent sessions] Enforcement](../07_REQ/risk/lim/REQ-03_resource_limit_enforcement.md)
-- [REQ-008: Centralized Risk Parameters](../07_REQ/risk/cfg/REQ-008_centralized_risk_parameters.md)
-- [ADR-008: Centralized Risk Parameters Architecture](../05_ADR/ADR-008_centralized_risk_parameters.md)
-- [SYS-004: Centralized Risk Controls](../06_SYS/SYS-004_centralized_risk_controls.md)
+- [REQ-000: Requirements Index](../07_REQ/REQ-00_index.md#REQ-000)
+- [ADR-000: Architecture Index](../05_ADR/ADR-00_index.md#ADR-000)
+- [SYS-000: System Index](../06_SYS/SYS-00_index.md#SYS-000)
 <!-- VALIDATOR:IGNORE-LINKS-START -->
 - [SPEC-05: Risk Validation Service](../09_SPEC/SPEC-05_risk_validation_service/SPEC-05_risk_validation_service.yaml)
 <!-- VALIDATOR:IGNORE-LINKS-END -->
@@ -611,4 +611,4 @@ See [Section 7: Quality Attributes](#7-quality-attributes) for detailed performa
 >
 > - Target: 300–500 lines; Maximum: 600 lines (Markdown)
 > - Split large contracts by endpoint groups with matching `.md` + `.yaml` pairs
-> - See `CTR_CREATION_RULES.md` and `README.md` for detailed guidance
+> - See `CTR_MVP_CREATION_RULES.md` and `README.md` for detailed guidance

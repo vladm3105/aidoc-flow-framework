@@ -16,7 +16,7 @@ custom_fields:
 # 📋 Document Role: This is a DERIVATIVE of CTR-MVP-TEMPLATE.md
 # - Authority: CTR-MVP-TEMPLATE.md is the single source of truth for CTR structure
 # - Purpose: AI checklist after document creation (derived from template)
-# - Scope: Includes all rules from CTR_CREATION_RULES.md plus validation extensions
+# - Scope: Includes all rules from CTR_MVP_CREATION_RULES.md plus validation extensions
 # - On conflict: Defer to CTR-MVP-TEMPLATE.md
 # =============================================================================
 > **📋 Document Role**: This is the **POST-CREATION VALIDATOR** for CTR documents.
@@ -466,7 +466,7 @@ Result: PASSED WITH WARNINGS
 
 ## References
 
-- [CTR_CREATION_RULES.md](./CTR_CREATION_RULES.md) - Creation guidelines
+- [CTR_MVP_CREATION_RULES.md](./CTR_MVP_CREATION_RULES.md) - Creation guidelines
 - [CTR-MVP-TEMPLATE.md](./CTR-MVP-TEMPLATE.md) - Contract template (primary standard)
 - [CTR_SCHEMA.yaml](./CTR_SCHEMA.yaml) - Validation schema (OpenAPI 3.x format)
 - [validate_ctr.sh](../scripts/validate_ctr.sh) - Validation script

@@ -21,7 +21,7 @@ custom_fields:
 
 ## Tag Count Formula
 
-Each layer N requires tags from layers 1 through N-1, with adjustments for optional layers (IMPL at Layer 8, CTR at Layer 9).
+Each layer N requires tags from layers 1 through N-1, with adjustments for optional layer CTR at Layer 8.
 
 ---
 
@@ -37,13 +37,12 @@ Each layer N requires tags from layers 1 through N-1, with adjustments for optio
 | 5 | ADR | 4 | 4 | @brd→@bdd | |
 | 6 | SYS | 5 | 5 | @brd→@adr | |
 | 7 | REQ | 6 | 6 | @brd→@sys | |
-| 8 | IMPL | 7 | 7 | @brd→@req | Optional layer |
-| 9 | CTR | 7 | 8 | @brd→@req, +opt @impl | Optional layer |
-| 10 | SPEC | 7 | 9 | @brd→@req, +opt @impl/@ctr | |
-| 11 | TASKS | 8 | 10 | @brd→@spec, +opt @impl/@ctr | |
-| 12 | Code | 9 | 11 | @brd→@tasks, +opt @impl/@ctr | |
-| 13 | Tests | 10 | 12 | @brd→@code, +opt @impl/@ctr | |
-| 14 | Validation | 9+ | 14+ | All upstream (advisory) | Count not strictly enforced |
+| 8 | CTR | 7 | 7 | @brd→@req | Optional layer |
+| 9 | SPEC | 7 | 8 | @brd→@req, +opt @ctr | |
+| 10 | TASKS | 8 | 9 | @brd→@spec, +opt @ctr | |
+| 11 | Code | 9 | 10 | @brd→@tasks, +opt @ctr | |
+| 12 | Tests | 10 | 11 | @brd→@code, +opt @ctr | |
+| 13 | Validation | 11 | 12 | All upstream (advisory) | Count not strictly enforced |
 
 **CHG Note**: CHG is NOT a layer - it's a change management procedure. CHG artifacts don't require tags.
 
@@ -52,8 +51,8 @@ Each layer N requires tags from layers 1 through N-1, with adjustments for optio
 ## Tag Counting Rules
 
 1. **Base Count**: Layer number minus 1 (e.g., Layer 7 REQ = 6 base tags)
-2. **Optional Layers**: Add 0-2 tags depending on whether IMPL and/or CTR exist in project
-3. **Validation Layer**: Consumes all upstream tags; count is advisory (10-15 expected range)
+2. **Optional Layers**: Add 0-1 tags depending on whether CTR exists in project
+3. **Validation Layer**: Consumes all upstream tags; count is advisory (11-12 expected range)
 
 ---
 
@@ -64,43 +63,37 @@ Each layer N requires tags from layers 1 through N-1, with adjustments for optio
 Expected Tags = Layer Number - 1
 ```
 
-### Layers 10-14 (Range)
+### Layers 9-13 (Range)
 ```
 Min Tags = Base + Present Optional Layers
-Max Tags = Base + Total Optional Layers (2)
+Max Tags = Base + Total Optional Layers (1)
 
 Where:
-  Base = 7 for L10, 8 for L11, 9 for L12, 10 for L13
-  Present Optional Layers = count(IMPL in project, CTR in project)
-  Total Optional Layers = 2 (IMPL + CTR)
+  Base = 7 for L9, 8 for L10, 9 for L11, 10 for L12, 11 for L13
+  Present Optional Layers = count(CTR in project)
+  Total Optional Layers = 1 (CTR)
 ```
 
 ---
 
 ## Example Scenarios
 
-### Scenario A: Project WITHOUT IMPL or CTR
+### Scenario A: Project WITHOUT CTR
 ```
-SPEC (L10):  7 tags  (@brd, @prd, @ears, @bdd, @adr, @sys, @req)
-TASKS (L11): 8 tags  (@brd→@spec)
-Code (L12):  9 tags  (@brd→@tasks)
-Tests (L13): 10 tags (@brd→@code)
-```
-
-### Scenario B: Project WITH IMPL, WITHOUT CTR
-```
-SPEC (L10):  8 tags  (@brd→@req + @impl)
-TASKS (L11): 9 tags  (@brd→@spec)
-Code (L12):  10 tags (@brd→@tasks)
-Tests (L13): 11 tags (@brd→@code)
+SPEC (L9):  7 tags  (@brd, @prd, @ears, @bdd, @adr, @sys, @req)
+TASKS (L10): 8 tags  (@brd→@spec)
+Code (L11):  9 tags  (@brd→@tasks)
+Tests (L12): 10 tags (@brd→@code)
+Validation (L13): 11 tags (all upstream)
 ```
 
-### Scenario C: Project WITH IMPL AND CTR
+### Scenario B: Project WITH CTR
 ```
-SPEC (L10):  9 tags  (@brd→@req + @impl + @ctr)
-TASKS (L11): 10 tags (@brd→@spec)
-Code (L12):  11 tags (@brd→@tasks)
-Tests (L13): 12 tags (@brd→@code)
+SPEC (L9):  8 tags  (@brd→@req + @ctr)
+TASKS (L10): 9 tags (@brd→@spec + @ctr)
+Code (L11):  10 tags (@brd→@tasks + @ctr)
+Tests (L12): 11 tags (@brd→@code + @ctr)
+Validation (L13): 12 tags (all upstream)
 ```
 
 ---
@@ -110,37 +103,32 @@ Tests (L13): 12 tags (@brd→@code)
 ### Python Validation Logic
 
 ```python
-def get_expected_tag_count(layer: int, has_impl: bool, has_ctr: bool) -> tuple[int, int]:
+def get_expected_tag_count(layer: int, has_ctr: bool) -> tuple[int, int]:
     """
     Returns (min_count, max_count) for a given layer.
     
     Args:
-        layer: Layer number (1-15)
-        has_impl: Whether project uses IMPL (Layer 8)
-        has_ctr: Whether project uses CTR (Layer 9)
+        layer: Layer number (1-13)
+        has_ctr: Whether project uses CTR (Layer 8)
     
     Returns:
         (min_count, max_count) tuple
     """
-    # Layers 1-9: Fixed count
-    if layer <= 9:
+    # Layers 1-8: Fixed count
+    if layer <= 8:
         count = layer - 1
         return (count, count)
     
     # Calculate optional layer count
-    optional_layers = 0
-    if has_impl:
-        optional_layers += 1
-    if has_ctr:
-        optional_layers += 1
+    optional_layers = 1 if has_ctr else 0
     
     # Layer-specific base counts
     layer_bases = {
-        10: 7,   # SPEC
-        11: 8,   # TASKS
-        12: 9,   # Code
-        13: 10,  # Tests
-        14: 9,   # Validation (advisory)
+        9: 7,   # SPEC
+        10: 8,  # TASKS
+        11: 9,  # Code
+        12: 10, # Tests
+        13: 11, # Validation (advisory)
     }
     
     if layer not in layer_bases:
@@ -148,25 +136,25 @@ def get_expected_tag_count(layer: int, has_impl: bool, has_ctr: bool) -> tuple[i
     
     base = layer_bases[layer]
     
-    # Layer 14 (Validation) has advisory range
-    if layer == 14:
-        return (base, 14)
+    # Layer 13 (Validation) has advisory range
+    if layer == 13:
+        return (base, 12)
     
-    # Layers 10-13: Range based on optional layers
+    # Layers 9-12: Range based on optional layers
     min_count = base + optional_layers
-    max_count = base + 2  # Maximum 2 optional layers (IMPL + CTR)
+    max_count = base + 1
     
     return (min_count, max_count)
 
 
-def validate_tag_count(artifact_tags: list[str], layer: int, has_impl: bool, has_ctr: bool) -> tuple[bool, str]:
+def validate_tag_count(artifact_tags: list[str], layer: int, has_ctr: bool) -> tuple[bool, str]:
     """
     Validates that an artifact has the correct number of cumulative tags.
     
     Returns:
         (is_valid, error_message) tuple
     """
-    min_count, max_count = get_expected_tag_count(layer, has_impl, has_ctr)
+    min_count, max_count = get_expected_tag_count(layer, has_ctr)
     actual_count = len(artifact_tags)
     
     if actual_count < min_count or actual_count > max_count:

@@ -96,7 +96,7 @@ python scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs d
 **What it checks:**
 - Each artifact layer includes ALL required upstream tags (no gaps)
 - Tag count matches expected range for each layer
-- Optional layers (IMPL, CTR) handled correctly
+- Optional layer (CTR) handled correctly
 - Tag chain completeness (e.g., if @adr exists, @brd through @bdd must exist)
 
 **Layer-specific validation:**
@@ -116,12 +116,12 @@ python scripts/validate_tags_against_docs.py \
 - Layer 5 (ADR): 4 tags (@brd through @bdd)
 - Layer 6 (SYS): 5 tags (@brd through @adr)
 - Layer 7 (REQ): 6 tags (@brd through @sys)
-- Layer 8 (IMPL): 7 tags (@brd through @req) [optional]
-- Layer 9 (CTR): 8 tags (@brd through @impl) [optional]
-- Layer 10 (SPEC): 7-9 tags (@brd through @req + optional impl/ctr)
-- Layer 11 (TASKS): 8-10 tags (@brd through @spec)
-- Layer 12 (Code): 9-11 tags (@brd through @tasks)
-- Layer 14 (Tests): 10-12 tags (@brd through @code)
+- Layer 8 (CTR): 7 tags (@brd through @req) [optional]
+- Layer 9 (SPEC): 7-8 tags (@brd through @req + optional ctr)
+- Layer 10 (TASKS): 8-9 tags (@brd through @spec)
+- Layer 11 (Code): 9-10 tags (@brd through @tasks)
+- Layer 12 (Tests): 10-11 tags (@brd through @code)
+- Layer 13 (Validation): 11-12 tags (all upstream)
 
 **Benefits:**
 - Regulatory compliance (regulatory, FDA, ISO audit trails)

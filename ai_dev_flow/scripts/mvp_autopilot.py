@@ -43,6 +43,294 @@ except Exception:
     run_validator = None  # type: ignore
     ValidatorConfig = object  # type: ignore
 
+from enum import Enum
+from typing import Any, Union
+
+class ProjectMode(Enum):
+    GREENFIELD = "greenfield"
+    BROWNFIELD = "brownfield"
+    AUTO = "auto"
+
+@dataclass
+class PreCheck:
+    """Pre-check configuration"""
+    name: str
+    command: str
+    required: Union[bool, str] = True
+    required_for: Optional[str] = None  # greenfield | brownfield
+    skip_for: Optional[str] = None
+    mode: Optional[str] = None
+    on_exists: Optional[str] = None
+    action: Optional[str] = None
+
+@dataclass
+class ValidationConfig:
+    """Validation configuration for a layer"""
+    validator: str
+    command: str
+    min_score: int
+    strict_mode: bool
+    auto_fix: Dict[str, Any] = field(default_factory=dict)
+
+@dataclass
+class LayerPipelineConfig:
+    """Complete pipeline configuration for a layer"""
+    enabled: bool
+    order: int
+    dependencies: List[str]
+    optional_dependencies: bool = False
+    pre_checks: List[PreCheck] = field(default_factory=list)
+    generation: Dict[str, Any] = field(default_factory=dict)
+    validation: Optional[ValidationConfig] = None
+    post_checks: List[PreCheck] = field(default_factory=list)
+    on_failure: Dict[str, str] = field(default_factory=dict)
+
+def parse_layer_config(layer_config: Dict) -> LayerPipelineConfig:
+    """Parse individual layer configuration"""
+    pre_checks = [
+        PreCheck(**check) for check in layer_config.get('pre_checks', [])
+    ]
+    
+    post_checks = [
+        PreCheck(**check) for check in layer_config.get('post_checks', [])
+    ]
+    
+    validation_data = layer_config.get('validation', {})
+    validation = ValidationConfig(**validation_data) if validation_data else None
+    
+    return LayerPipelineConfig(
+        enabled=layer_config.get('enabled', True),
+        order=layer_config.get('order', 0),
+        dependencies=layer_config.get('dependencies', []),
+        optional_dependencies=layer_config.get('optional_dependencies', False),
+        pre_checks=pre_checks,
+        generation=layer_config.get('generation', {}),
+        validation=validation,
+        post_checks=post_checks,
+        on_failure=layer_config.get('on_failure', {}),
+    )
+
+def convert_v3_to_v4(v3_config: Dict) -> Dict:
+    """Convert v3.0 config to v4.0 format"""
+    return {
+        'metadata': {'version': '3.0-compat'},
+        'defaults': v3_config.get('defaults', {}),
+        'quality_gates': v3_config.get('quality_gates', {}),
+        'project_modes': {
+            'auto': {'fallback': 'greenfield'}
+        },
+        'pipeline': {},  # Basic pipeline from defaults will be used
+        'profiles': v3_config.get('profiles', {}),
+    }
+
+def parse_v4_config(config: Dict) -> Dict[str, Any]:
+    """Parse v4.0 configuration structure"""
+    parsed = {
+        'metadata': config.get('metadata', {}),
+        'defaults': config.get('defaults', {}),
+        'quality_gates': config.get('quality_gates', {}),
+        'project_modes': config.get('project_modes', {}),
+        'entry_exit_points': config.get('entry_exit_points', {}),
+        'pipeline': {},
+        'execution': config.get('execution', {}),
+        'profiles': config.get('profiles', {}),
+    }
+    
+    # Parse pipeline layers
+    for layer_id, layer_config in config.get('pipeline', {}).items():
+        parsed['pipeline'][layer_id] = parse_layer_config(layer_config)
+    
+    return parsed
+
+def load_v4_config(config_path: Path) -> Dict[str, Any]:
+    """Load and parse v4.0 configuration"""
+    try:
+        import yaml
+        with open(config_path, encoding='utf-8') as f:
+            config = yaml.safe_load(f) or {}
+    except ImportError:
+        print("Warning: PyYAML not installed. Config loading may fail.")
+        return {}
+    except Exception as e:
+        print(f"Error loading config {config_path}: {e}")
+        return {}
+    
+    # Check version
+    version = str(config.get('metadata', {}).get('version', '3.0'))
+    if version.startswith('4.'):
+        return parse_v4_config(config)
+    else:
+        # Backward compatibility: convert v3 to v4 format
+        return convert_v3_to_v4(config)
+
+def detect_project_mode(root_path: Path, forced_mode: Optional[str] = None) -> ProjectMode:
+    """
+    Detect if project is greenfield (new) or brownfield (existing).
+    
+    Args:
+        root_path: Project root directory
+        forced_mode: Explicitly requested mode (optional)
+        
+    Returns:
+        ProjectMode enum value
+    """
+    if forced_mode:
+        try:
+            return ProjectMode(forced_mode.lower())
+        except ValueError:
+            print(f"Warning: Invalid mode '{forced_mode}', falling back to auto detection")
+    
+    # Check for existing documentation layers
+    has_prd = list(root_path.glob("**/02_PRD/*.md"))
+    has_spec = list(root_path.glob("**/09_SPEC/*.yaml"))
+    has_code = (root_path / "src").exists() or (root_path / "app").exists()
+    
+    # Smart detection logic
+    if has_spec and has_code:
+        return ProjectMode.BROWNFIELD
+    elif has_prd and not has_spec:
+        return ProjectMode.GREENFIELD
+    
+    # Default fallback
+    return ProjectMode.GREENFIELD
+
+def resolve_layer_range(config: Dict, from_layer: Optional[str] = None, up_to: Optional[str] = None) -> List[str]:
+    """
+    Resolve which layers to execute based on entry/exit points.
+    
+    Args:
+        config: v4.0 pipeline configuration
+        from_layer: Starting layer ID (e.g. 'L2_PRD')
+        up_to: Ending layer ID (e.g. 'L9_SPEC')
+        
+    Returns:
+        List of layer IDs to execute in order
+    """
+    pipeline = config.get('pipeline', {})
+    
+    # Sort layers by order
+    sorted_layers = sorted(
+        pipeline.keys(),
+        key=lambda k: pipeline[k].order
+    )
+    
+    if not sorted_layers:
+        print("Warning: No layers found in pipeline config")
+        return []
+    
+    # Resolve start index
+    start_idx = 0
+    if from_layer:
+        # Normalize: 'PRD' -> 'L2_PRD' if needed, or exact match
+        # Try exact match first
+        if from_layer in pipeline:
+            start_idx = sorted_layers.index(from_layer)
+        else:
+            # Try partial match (e.g. 'PRD' matches 'L2_PRD')
+            matches = [l for l in sorted_layers if from_layer.upper() in l]
+            if matches:
+                start_idx = sorted_layers.index(matches[0])
+            else:
+                print(f"Warning: Start layer '{from_layer}' not found, starting from beginning")
+    
+    # Resolve end index
+    end_idx = len(sorted_layers) - 1
+    if up_to:
+        if up_to in pipeline:
+            end_idx = sorted_layers.index(up_to)
+        else:
+            matches = [l for l in sorted_layers if up_to.upper() in l]
+            if matches:
+                end_idx = sorted_layers.index(matches[0])
+            else:
+                print(f"Warning: End layer '{up_to}' not found, running to end")
+    
+    # Return slice
+        print(f"Warning: Start layer is after end layer, executing single layer {sorted_layers[start_idx]}")
+        return [sorted_layers[start_idx]]
+        
+    return sorted_layers[start_idx : end_idx + 1]
+
+def execute_checks(checks: List[PreCheck], context: Dict) -> bool:
+    """
+    Execute a list of pre/post checks.
+    
+    Args:
+        checks: List of Check objects
+        context: Execution context (project_mode, etc.)
+        
+    Returns:
+        True if all checks passed, False otherwise
+    """
+    if not checks:
+        return True
+        
+    mode = context.get('mode', ProjectMode.GREENFIELD)
+    
+    for check in checks:
+        # Check conditions
+        if check.mode and check.mode != mode.value:
+            continue
+            
+        if check.skip_for and check.skip_for == mode.value:
+            continue
+            
+        if check.required_for and check.required_for != mode.value:
+            # Not required for this mode, treat as optional
+            check.required = False
+            
+        print(f"  Running check: {check.name}...")
+        
+        # Execute command
+        try:
+            result = subprocess.run(
+                check.command,
+                shell=True,
+                check=False,
+                capture_output=True,
+                text=True
+            )
+            
+            if result.returncode != 0:
+                if check.required:
+                    print(f"  ❌ Check failed: {check.name}")
+                    print(f"  Output: {result.stderr}")
+                    if check.action == 'halt':
+                        return False
+                else:
+                    print(f"  ⚠️ Check failed (optional): {check.name}")
+            else:
+                print(f"  ✅ Check passed: {check.name}")
+                
+        except Exception as e:
+            print(f"  ❌ Check execution error: {e}")
+            if check.required:
+                return False
+                
+    return True
+
+def should_skip_layer(layer_config: LayerPipelineConfig, mode: ProjectMode) -> bool:
+    """
+    Determine if a layer should be skipped based on mode.
+    
+    Args:
+        layer_config: Layer configuration object
+        mode: Current project mode
+        
+    Returns:
+        True if layer should be skipped
+    """
+    if not layer_config.enabled:
+        return True
+        
+    # Example logic: Skip existing layers in brownfield if configured?
+    # For now, we trust the entry/exit points and manual flags
+    # But we could add 'skip_in_brownfield' to LayerPipelineConfig if needed
+    
+    return False
+
+
+
 
 @dataclass
 class Layer:
@@ -603,6 +891,87 @@ def run_layer_validation(root_or_file: Path, layer_name: str, strict: bool = Fal
         return False, f"Validator failed: {e}"
 
 
+
+def run_v4_pipeline(args, config: Dict[str, Any], layers_map: Dict[str, Any], root: Path):
+    """Execute the pipeline based on v4 configuration."""
+    print("🚀 Autopilot v4.0 Pipeline Starting...")
+    
+    # 1. Project Mode
+    mode = detect_project_mode(root, args.mode if hasattr(args, 'mode') else None)
+    print(f"📋 Project Mode: {mode.value.upper()}")
+    
+    # 2. Resolve Range
+    layer_ids = resolve_layer_range(config, args.from_layer, args.up_to)
+    if not layer_ids:
+        print("⚠️ No layers selected to run.")
+        return
+
+    print(f"🎯 Pipeline: [{' -> '.join(layer_ids)}]")
+    
+    # 3. Execution Loop
+    for layer_id in layer_ids:
+        layer_cfg = config['pipeline'].get(layer_id)
+        if not layer_cfg:
+            print(f"⚠️ Skipping unknown layer: {layer_id}")
+            continue
+            
+        # Resolve Layer Object (heuristic: 'L2_PRD' -> 'PRD')
+        layer_obj = None
+        for name, l_obj in layers_map.items():
+            if name in layer_id:
+                layer_obj = l_obj
+                break
+        
+        # Skip logic
+        if should_skip_layer(layer_cfg, mode):
+            print(f"  ⏭️ Skipping layer {layer_id} (disabled/skipped in {mode.value} mode)")
+            continue
+
+        print(f"\n▶️ Executing Layer: {layer_id}")
+
+        # Pre-checks
+        if layer_cfg.pre_checks:
+            print(f"  🔍 Running Pre-checks...")
+            if not execute_checks(layer_cfg.pre_checks, {'mode': mode}):
+                if layer_cfg.on_failure.get('pre_check', 'halt') == 'halt':
+                    print("  ❌ Pre-checks failed. Halting.")
+                    return
+                print("  ⚠️ Pre-checks failed but continuing (on_failure != halt)")
+
+        # Generation
+        if layer_obj:
+            intent = args.intent
+            nn = args.nn
+            slug_hint = args.slug
+            
+            print(f"  ⚙️ Generating {layer_obj.name}...")
+            # Reuse existing generation logic
+            generate_from_template(layer_obj, root, nn, intent, slug_hint)
+            
+        # Validation
+        if layer_obj and layer_cfg.validation and not getattr(args, 'skip_validate', False):
+            print(f"  ✅ Validating {layer_obj.name}...")
+            strict = getattr(args, 'strict', False) or layer_cfg.validation.strict_mode
+            
+            if layer_cfg.validation.command:
+                try:
+                    cmd = layer_cfg.validation.command.replace('{target}', str(root))
+                    res = subprocess.run(cmd, shell=True, check=False)
+                    if res.returncode != 0:
+                        print(f"  ❌ Validation command failed.")
+                    else:
+                        print(f"  ✅ Validation passed.")
+                except Exception as e:
+                    print(f"  ❌ Validation error: {e}")
+            else:
+                # Fallback to legcy validator
+                run_layer_validation(root, layer_obj.name, strict=strict, mvp_validators=getattr(args, 'mvp_validators', False))
+
+        # Post-checks
+        if layer_cfg.post_checks:
+            print(f"  🔍 Running Post-checks...")
+            execute_checks(layer_cfg.post_checks, {'mode': mode})
+
 def main():
     parser = argparse.ArgumentParser(description="MVP Autopilot (BRD → TASKS)")
     parser.add_argument("--root", default="ai_dev_flow", help="Docs root (default: ai_dev_flow)")
@@ -644,28 +1013,8 @@ def main():
     args = parser.parse_args()
 
     # Load config (before using args), merge profile/defaults into args where CLI kept defaults
-    def _load_config(cfg_path: Optional[str]) -> dict:
-        try:
-            import yaml  # type: ignore
-        except Exception:
-            return {}
-        config_file = None
-        if cfg_path:
-            p = Path(cfg_path)
-            if p.exists():
-                config_file = p
-        else:
-            p = Path(args.root or "ai_dev_flow") / ".autopilot.yaml"
-            if p.exists():
-                config_file = p
-        if not config_file:
-            return {}
-        try:
-            return yaml.safe_load(config_file.read_text(encoding="utf-8")) or {}
-        except Exception:
-            return {}
-
-    cfg = _load_config(args.config)
+    cfg_path = Path(args.config) if args.config else Path(args.root or "ai_dev_flow") / ".autopilot.yaml"
+    cfg = load_v4_config(cfg_path) if (args.config or cfg_path.exists()) else {}
 
     def _apply_cfg_flag(current_val, cfg_val):
         # Only apply when current equals parser default (False/"none").
@@ -708,6 +1057,13 @@ def main():
         Layer("SPEC",10, "SPEC-MVP-TEMPLATE.yaml", ".yaml", upstream_tags=["req"]),
         Layer("TASKS",11, "TASKS-TEMPLATE.md", ".md", upstream_tags=["spec","req"]),
     ]
+    
+    # Check version and switch to v4 pipeline
+    version = str(cfg.get('metadata', {}).get('version', '3.0'))
+    if version.startswith('4.'):
+        layers_map = {l.name: l for l in LAYERS}
+        run_v4_pipeline(args, cfg, layers_map, root)
+        return
 
     # Apply template overrides from config (optional)
     try:

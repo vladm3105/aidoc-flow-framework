@@ -14,7 +14,7 @@ custom_fields:
 
  **Document Role**: This is a **CREATION HELPER** derived from `SYS-MVP-TEMPLATE.md`.
  **Authority**: `SYS-MVP-TEMPLATE.md` is the single source of truth for SYS structure
- **Validation**: Use `SYS_VALIDATION_RULES.md` after SYS creation/changes
+ **Validation**: Use `SYS_MVP_VALIDATION_RULES.md` after SYS creation/changes
 
 # SYS Creation Rules
 

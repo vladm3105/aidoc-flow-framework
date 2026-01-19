@@ -34,13 +34,13 @@ This document defines **corpus-level validation rules** that run AFTER all PRD f
 
 | Validation Type | When It Runs | Scope | File |
 |-----------------|--------------|-------|------|
-| **Individual PRD Validation** | After each PRD creation | Single file | `PRD_VALIDATION_RULES.md` |
+| **Individual PRD Validation** | After each PRD creation | Single file | `PRD_MVP_VALIDATION_RULES.md` |
 | **Corpus Validation** | After ALL PRDs complete | Entire PRD set | This document |
 
 ### Workflow Position
 
 ```
-Individual PRD Creation → PRD_VALIDATION_RULES.md (per-file)
+Individual PRD Creation → PRD_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All PRDs Complete
         ↓
@@ -890,7 +890,7 @@ fi
 
 ## References
 
-- [PRD_VALIDATION_RULES.md](./PRD_VALIDATION_RULES.md) - Individual file validation
+- [PRD_MVP_VALIDATION_RULES.md](./PRD_MVP_VALIDATION_RULES.md) - Individual file validation
 - [PRD-MVP-TEMPLATE.md](./PRD-MVP-TEMPLATE.md) - PRD document template
 - [ID_NAMING_STANDARDS.md](../ID_NAMING_STANDARDS.md) - Element ID format
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - SDD workflow

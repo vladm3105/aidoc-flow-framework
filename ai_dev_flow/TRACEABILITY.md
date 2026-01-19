@@ -381,7 +381,6 @@ Instead of manually maintaining section 7, embed lightweight tags in code docstr
 @spec: SPEC-03
 @ctr: CTR-01
 @test: BDD.03.13.01, BDD.03.13.05
-@impl-status: complete
 """
 ```
 
@@ -465,7 +464,6 @@ These tags serve specific purposes beyond cross-layer document traceability.
 |-----|---------|--------|---------|-------|
 | `@test` | Test file reference | `@test: path` or `@test: BDD-NN:ID` | `@test: tests/test_service.py` | Links to test implementations |
 | `@code` | Source code reference | `@code: path` | `@code: src/services/limit.py` | Links to implementation files |
-| `@impl-status` | Implementation status | `@impl-status: status` | `@impl-status: complete` | Values: pending, in-progress, complete, deprecated |
 | `@threshold` | Threshold registry ref | `@threshold: PRD.NNN.key` | `@threshold: PRD.035.kyc.tier1_timeout` | References Platform Threshold Registry |
 | `@entity` | Data entity reference | `@entity: PRD.NNN.Name` | `@entity: PRD.004.UserProfile` | References Data Model document |
 | `@priority` | Requirement priority | `@priority: level` | `@priority: critical` | Values: critical, high, medium, low |
@@ -533,7 +531,6 @@ python3 scripts/generate_traceability_matrix.py --tags docs/generated/tags.json 
 2. **Document Exists:** DOCUMENT-ID must reference existing file in docs/{TYPE}/
 3. **Requirement Exists:** REQUIREMENT-ID must exist within the document
 4. **No Orphans:** All tags must resolve to actual requirements
-5. **Implementation Status:** @impl-status must be one of: pending|in-progress|complete|deprecated
 
 ### Benefits
 
@@ -986,8 +983,8 @@ excessive collection concentration risk through automated validation.
 @spec: SPEC-03
 @tasks: TASKS.01.29.03, TASKS.01.29.05
 
-@impl-status: complete
 @test-coverage: 95%
+
 @performance: p95=45ms
 """
 
@@ -1235,7 +1232,7 @@ The SDD framework employs two types of change management based on scope and impa
 
 ### CHG: Change Management for Architectural Pivots
 
-⚠️ **IMPORTANT**: CHG is NOT a layer in the 15-layer architecture - it's an archival and immutability enforcement procedure.
+⚠️ **IMPORTANT**: CHG is NOT a layer in the 14-layer architecture - it's an archival and immutability enforcement procedure.
 
 **When to Use CHG** (rare - \u003c5% of changes):
 - Complete architectural restructuring requiring new 01_BRD/PRD
@@ -1291,7 +1288,7 @@ Scalability requirements exceeded monolithic architecture capabilities.
 3. Regenerate all source code
 4. Update all tests
 
-**Files**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) | [CHG_CREATION_RULES.md](./CHG/CHG_CREATION_RULES.md) | [CHG_SCHEMA.yaml](./CHG/CHG_SCHEMA.yaml)
+**Files**: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md) | [CHG_MVP_CREATION_RULES.md](./CHG/CHG_MVP_CREATION_RULES.md) | [CHG_SCHEMA.yaml](./CHG/CHG_SCHEMA.yaml)
 
 ### Upstream Changes (BRD, PRD, SYS, EARS, REQ)
 

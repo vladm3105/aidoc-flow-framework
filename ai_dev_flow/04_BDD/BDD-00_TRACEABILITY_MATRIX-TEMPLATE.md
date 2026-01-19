@@ -305,7 +305,8 @@ grep -r "@bdd: BDD.15" ../05_ADR/
 grep -r "@bdd:" ../07_REQ/
 
 # Find all downstream references to a specific BDD scenario
-grep -r "BDD.15.13.01" ../05_ADR/ ../06_SYS/ ../07_REQ/ ../10_SPEC/
+  grep -r "BDD.15.13.01" ../05_ADR/ ../06_SYS/ ../07_REQ/ ../09_SPEC/
+
 
 # Generate reverse traceability report
 python scripts/generate_reverse_traceability.py --upstream BDD-15 --downstream ADR,SYS,REQ,SPEC
@@ -320,7 +321,7 @@ Each downstream artifact type has specific tagging responsibilities:
 | ADR | 5 | `@brd`, `@prd`, `@ears`, `@bdd` | Architecture decisions validated by BDD tests |
 | SYS | 6 | `@brd` through `@bdd`, `@adr` | System requirements derive from BDD scenarios |
 | REQ | 7 | `@brd` through `@sys` | Atomic requirements trace to acceptance tests |
-| SPEC | 10 | `@brd` through `@ctr` | Specifications implement tested requirements |
+| SPEC | 9 | `@brd` through `@ctr` | Specifications implement tested requirements |
 
 ---
 
@@ -386,7 +387,7 @@ graph TD
     style EARS002 fill:#e8f5e9
 ```
 
-> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 15-layer architecture (Layers 0-14) defined in README.md. Diagram groupings are for visual clarity only.
+> **Note on Diagram Labels**: The above flowchart shows the sequential workflow. For formal layer numbers used in cumulative tagging, always reference the 14-layer architecture (Layers 0-13) defined in README.md. Diagram groupings are for visual clarity only.
 
 ### 8.2 Inter-BDD Dependencies
 

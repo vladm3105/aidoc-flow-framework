@@ -63,7 +63,6 @@ Security: mTLS; RBAC; audit all decisions.
 @adr: ADR-NN
 @sys: SYS-NN
 @req: REQ-NN
-@impl: IMPL-NN
 @spec: SPEC-NN
 ```
 

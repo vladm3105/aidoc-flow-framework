@@ -56,22 +56,38 @@ check_placeholder_text() {
   echo "--- CORPUS-01: Placeholder Text Detection ---"
 
   local found=0
-  local patterns=("(future TASKS)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
 
-  for pattern in "${patterns[@]}"; do
-    while IFS= read -r line; do
-      if [[ -n "$line" ]]; then
+  # Check 1: Look for "(future TASKS)" or "(when created)" phrases that reference existing docs
+  while IFS= read -r line; do
+    if [[ -n "$line" ]]; then
+      # Only flag if line contains both a placeholder phrase AND a TASKS reference
+      if [[ "$line" =~ \(future\ TASKS\)|\(when\ created\) ]]; then
         tasks_ref=$(echo "$line" | grep -oE "TASKS-[0-9]+" | head -1 || true)
-        if [[ -n "$tasks_ref" ]]; then
-          if ls "$TASKS_DIR/${tasks_ref}_"*.md 2>/dev/null >/dev/null; then
-            echo -e "${RED}CORPUS-E001: $line${NC}"
-            ((ERRORS++)) || true
-            ((found++)) || true
-          fi
+        if [[ -n "$tasks_ref" ]] && ls "$TASKS_DIR/${tasks_ref}_"*.md 2>/dev/null >/dev/null; then
+          echo -e "${RED}CORPUS-E001: Placeholder references existing document:${NC}"
+          echo "  $line"
+          ((ERRORS++)) || true
+          ((found++)) || true
         fi
       fi
-    done < <(grep -rn "$pattern" "$TASKS_DIR"/*.md 2>/dev/null || true)
+    fi
+  done < <(grep -rn "(future TASKS)\|(when created)" "$TASKS_DIR"/*.md 2>/dev/null || true)
+
+  # Check 2: TBD/TODO in traceability tag sections
+  shopt -s nullglob
+  for f in "$TASKS_DIR"/TASKS-[0-9]*_*.md; do
+    if [[ "$(basename $f)" =~ _index|TEMPLATE ]]; then continue; fi
+    
+    # Extract traceability tag section and check for TBD patterns
+    if grep -A 20 "^@spec:\|^@req:\|^@adr:\|^@brd:\|^@prd:" "$f" 2>/dev/null | grep -qE "TBD|TODO"; then
+      echo -e "${RED}CORPUS-E001: TBD/TODO found in traceability tags:${NC}"
+      echo "  File: $(basename $f)"
+      grep -A 20 "^@spec:\|^@req:\|^@adr:\|^@brd:\|^@prd:" "$f" 2>/dev/null | grep -E "TBD|TODO" | sed 's/^/    /'
+      ((ERRORS++)) || true
+      ((found++)) || true
+    fi
   done
+  shopt -u nullglob
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"

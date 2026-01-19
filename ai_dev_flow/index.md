@@ -81,12 +81,12 @@ The AI Dev Flow organizes documentation through a hierarchical, traceable struct
 
 ### Change Management (CHG) - Archival Procedure
 
-⚠️ **Note**: CHG is NOT a layer in the 15-layer architecture - it's a change management archival procedure.
+⚠️ **Note**: CHG is NOT a layer in the 14-layer architecture - it's a change management archival procedure.
 
 - **CHG** (`CHG/`) - Document immutability enforcement through archival
   - Template: [CHG-TEMPLATE.md](./CHG/CHG-TEMPLATE.md)
   - Schema: [CHG_SCHEMA.yaml](./CHG/CHG_SCHEMA.yaml)
-  - Rules: [CHG_CREATION_RULES.md](./CHG/CHG_CREATION_RULES.md)
+  - Rules: [CHG_MVP_CREATION_RULES.md](./CHG/CHG_MVP_CREATION_RULES.md)
   - Purpose: Archive superseded documents when requirements change; create NEW documents from scratch
   - Why: Prevents LLM probabilistic errors from partial edits; ensures document immutability
   - Structure: Directory-based (`CHG/CHG-XX_{slug}/`) containing Definition, Frozen Plan, and Archive
