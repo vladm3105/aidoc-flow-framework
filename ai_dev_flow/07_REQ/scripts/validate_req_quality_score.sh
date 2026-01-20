@@ -213,29 +213,7 @@ check_cross_linking() {
 
 check_visualization() {
   echo ""
-
-  local found=0
-  local total=0
-
-  while IFS= read -r -d '' f; do
-    if [[ "$(basename "$f")" =~ _index|TEMPLATE ]]; then continue; fi
-    ((total++)) || true
-
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null || true)
-    if [[ $diagram_count -eq 0 ]]; then
-      if [[ "$VERBOSE" == "--verbose" ]]; then
-        echo -e "${BLUE}GATE-I001: $(basename $f) has no Mermaid diagrams${NC}"
-      fi
-      ((INFO++)) || true
-      ((found++)) || true
-    fi
-  done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
-
-  if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All REQ have diagrams${NC}"
-  else
-    echo -e "${BLUE}  ℹ $found of $total REQ files have no Mermaid diagrams${NC}"
-  fi
+  echo "  ℹ GATE-06 DEPRECATED: Mermaid diagram validation disabled for REQ layer"
 }
 
 # -----------------------------------------------------------------------------
