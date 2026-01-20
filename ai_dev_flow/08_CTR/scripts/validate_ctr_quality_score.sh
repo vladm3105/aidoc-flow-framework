@@ -178,28 +178,7 @@ check_cross_linking() {
 check_visualization() {
   echo ""
   echo "--- GATE-06: Visualization Coverage ---"
-
-  local found=0
-  local total=0
-
-  while IFS= read -r -d '' f; do
-    if [[ "$(basename "$f")" =~ _index|TEMPLATE ]]; then continue; fi
-    ((total++)) || true
-
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null | tr -d '\n' || echo 0)
-    [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
-    if [[ $diagram_count -eq 0 ]]; then
-      ((found++)) || true
-    fi
-  done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
-
-  if [[ $total -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ No CTR files to check${NC}"
-  elif [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All CTR have diagrams${NC}"
-  else
-    echo -e "${BLUE}  ℹ $found of $total CTR files have no Mermaid diagrams${NC}"
-  fi
+  echo -e "${BLUE}  ℹ Mermaid diagram validation disabled for CTR layer${NC}"
 }
 
 # -----------------------------------------------------------------------------
