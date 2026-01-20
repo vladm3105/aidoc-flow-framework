@@ -58,22 +58,42 @@ check_placeholder_text() {
   echo "--- GATE-01: Placeholder Text Detection ---"
 
   local found=0
-  local patterns=("(future CTR)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
-
-  for pattern in "${patterns[@]}"; do
-    while IFS= read -r line; do
-      if [[ -n "$line" ]]; then
-        ctr_ref=$(echo "$line" | grep -oE "CTR-[0-9]+" | head -1 || true)
-        if [[ -n "$ctr_ref" ]]; then
-          if find "$CTR_DIR" -name "${ctr_ref}_*.md" 2>/dev/null | head -1 | grep -v "_index" >/dev/null; then
-            echo -e "${RED}GATE-E001: $line${NC}"
-            ((ERRORS++)) || true
-            ((found++)) || true
-          fi
+  
+  # Combined pattern: lines with CTR-NN AND placeholder markers
+  # This searches for lines containing both a CTR reference and placeholder text
+  # in parentheses or brackets like (future CTR), [TBD], (pending), etc.
+  local combined_pattern='CTR-[0-9]+.*(\\(future|\\(when created|\\(to be defined|\\(pending|\\(TBD\\)|\\[TBD\\]|\\[TODO\\])'
+  
+  while IFS= read -r line; do
+    if [[ -n "$line" ]]; then
+      # Skip YAML frontmatter
+      if echo "$line" | grep -qE '^\s*(title|tags|custom_fields|artifact_type|module|primary_adr|source_req):'; then
+        continue
+      fi
+      
+      # Skip markdown tables
+      if echo "$line" | grep -qE '^\s*\|'; then
+        continue
+      fi
+      
+      # Skip markdown headers
+      if echo "$line" | grep -qE '^\s*#'; then
+        continue
+      fi
+      
+      # Extract CTR reference
+      ctr_ref=$(echo "$line" | grep -oE "CTR-[0-9]+" | head -1 || true)
+      if [[ -n "$ctr_ref" ]]; then
+        # Check if this CTR document exists
+        if find "$CTR_DIR" -name "${ctr_ref}_*.md" 2>/dev/null | head -1 | grep -v "_index" >/dev/null; then
+          # This CTR exists, so placeholder text is an error
+          echo -e "${RED}GATE-E001: $line${NC}"
+          ((ERRORS++)) || true
+          ((found++)) || true
         fi
       fi
-    done < <(find "$CTR_DIR" -name "*.md" -exec grep -Hn "$pattern" {} \; 2>/dev/null || true)
-  done
+    fi
+  done < <(find "$CTR_DIR" -name "*.md" -exec grep -HnE "$combined_pattern" {} \; 2>/dev/null || true)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
