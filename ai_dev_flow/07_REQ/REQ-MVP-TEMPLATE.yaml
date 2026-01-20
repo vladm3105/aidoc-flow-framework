@@ -1,0 +1,368 @@
+# =============================================================================
+# 📋 Document Authority: PRIMARY STANDARD for Autopilot Workflow
+# - Purpose: AI-consumable template for automated REQ artifact generation
+# - Validation: Validated by REQ_MVP_SCHEMA.yaml (shared with MD template)
+# - Human Reference: See REQ-MVP-TEMPLATE.md for narrative explanations
+# =============================================================================
+
+id: REQ-NN
+summary: "[Single-sentence description of requirement purpose, scope, and primary value proposition]"
+
+# =============================================================================
+# Document Control
+# =============================================================================
+
+document_control:
+  status: "Draft"  # Draft, Review, Approved, Implemented, Verified, Retired
+  version: "1.0.0"
+  date_created: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  author: "[Primary Author]"
+  priority: "Critical (P1)"  # Critical (P1), High (P2), Medium (P3), Low (P4)
+  category: "Functional"  # Functional, Security, Performance, Reliability, Scalability, Compliance
+  source_document: "@req: REQ.NN.EE.SS"
+  verification_method: "Automated Testing"
+  assigned_team: "[Team Name]"
+  spec_ready_score: 85  # Minimum 85 for MVP (90 for full template)
+
+# =============================================================================
+# Section 1: Description
+# =============================================================================
+
+section_1_description:
+  statement: "[Detailed requirement statement explaining what the system shall provide]"
+  
+  context: "[Business context and rationale for this requirement]"
+  
+  use_case_scenario: |
+    [User interaction description or scenario that this requirement enables]
+    Example: "As a system administrator, I need to configure database connections..."
+
+# =============================================================================
+# Section 2: Functional Specification
+# =============================================================================
+
+section_2_functional_specification:
+  primary_functionality:
+    - "[Core function 1 description]"
+    - "[Core function 2 description]"
+    - "[Core function 3 description]"
+  
+  business_rules:
+    - "[Business rule 1: When X, then Y]"
+    - "[Business rule 2: Constraint Z applies]"
+    - "[Business rule 3: Always/never condition]"
+  
+  input_specifications:
+    - name: "[input_name]"
+      type: "string|integer|boolean|object|array"
+      description: "[Input description]"
+      required: true
+      validation: "[validation rules]"
+    
+    - name: "[input_name]"
+      type: "string"
+      description: "[Input description]"
+      required: false
+      validation: "[optional]"
+  
+  output_specifications:
+    - name: "[output_name]"
+      type: "string|integer|boolean|object|array"
+      description: "[Output description]"
+      format: "[output format specification]"
+    
+    - name: "[output_name]"
+      type: "object"
+      description: "[Output description]"
+      properties:
+        - field_name: "[field description]"
+
+# =============================================================================
+# Section 3: Interface Definition
+# =============================================================================
+
+section_3_interface_definition:
+  api_contract: |
+    from typing import Protocol
+    from dataclasses import dataclass
+    
+    @dataclass
+    class RequestType:
+        """Request data structure."""
+        field_name: str
+        optional_field: int = 0
+    
+    class RequirementInterface(Protocol):
+        """Interface specification for this requirement."""
+        
+        def process(self, request: RequestType) -> ResponseType:
+            """Process request and return response."""
+            ...
+        
+        def validate(self, request: RequestType) -> bool:
+            """Validate request data."""
+            ...
+
+  data_schema: |
+    from pydantic import BaseModel, Field
+    from typing import Optional
+    
+    class RequestModel(BaseModel):
+        """Request data structure."""
+        field_name: str = Field(..., description="Field description")
+        optional_field: int = Field(0, ge=0, description="Optional field")
+    
+    class ResponseModel(BaseModel):
+        """Response data structure."""
+        result: str = Field(..., description="Operation result")
+        status_code: int = Field(..., ge=100, le=599, description="HTTP status code")
+  
+  rest_endpoints:
+    - endpoint_id: "REQ-NN.EP-01"
+      path: "/api/resource"
+      method: "POST"
+      description: "[Endpoint description]"
+      request_schema: "RequestModel"
+      response_schema: "ResponseModel"
+      authentication_required: true
+      rate_limiting:
+        requests_per_minute: 100
+        burst_limit: 10
+
+# =============================================================================
+# Section 4: Error Handling
+# =============================================================================
+
+section_4_error_handling:
+  error_catalog:
+    - error_code: "REQ-ERR-001"
+      error_type: "ValidationError"
+      description: "[Error description: Input data validation failed]"
+      severity: "High"
+      recovery_strategy: "[Recovery steps: Return 400 Bad Request with validation details]"
+      http_status_code: 400
+    
+    - error_code: "REQ-ERR-002"
+      error_type: "BusinessRuleViolation"
+      description: "[Error description: Business constraint violated]"
+      severity: "Medium"
+      recovery_strategy: "[Recovery steps: Return 403 Forbidden with constraint details]"
+      http_status_code: 403
+    
+    - error_code: "REQ-ERR-003"
+      error_type: "ResourceNotFound"
+      description: "[Error description: Requested resource does not exist]"
+      severity: "Medium"
+      recovery_strategy: "[Recovery steps: Return 404 Not Found with available resources]"
+      http_status_code: 404
+  
+  state_machine: |
+    stateDiagram-v2
+      [*] --> Idle
+      Idle --> Processing: Request Received
+      Processing --> Validating: Validate Input
+      Validating --> Processing: Valid
+      Validating --> Error: Invalid
+      Processing --> Executing: Execute Logic
+      Executing --> Success: Completed
+      Executing --> Error: Execution Failed
+      Error --> Idle: Return Error Response
+      Success --> Idle: Return Success Response
+
+# =============================================================================
+# Section 5: Quality Attributes
+# =============================================================================
+
+section_5_quality_attributes:
+  performance:
+    p50_latency_ms: 100
+    p95_latency_ms: 200
+    p99_latency_ms: 500
+    throughput_per_second: 1000
+    max_concurrent_requests: 50
+  
+  security:
+    - "[Security requirement 1: Authentication required]"
+    - "[Security requirement 2: Authorization checks]"
+    - "[Security requirement 3: Input sanitization]"
+    - "[Security requirement 4: Output filtering]"
+  
+  reliability:
+    availability_percentage: 99.9
+    mean_time_between_failures_hours: 8760
+    recovery_time_objective_minutes: 5
+  
+  scalability:
+    max_users: 10000
+    max_transactions_per_second: 1000
+    horizontal_scaling_enabled: true
+
+# =============================================================================
+# Section 6: Configuration
+# =============================================================================
+
+section_6_configuration:
+  parameters:
+    - name: "config_parameter_name"
+      type: "string|integer|boolean|list"
+      default_value: "[default value]"
+      description: "[Parameter description]"
+      validation: "[validation rules]"
+      required: true
+    
+    - name: "timeout_seconds"
+      type: "integer"
+      default_value: 30
+      description: "[Operation timeout in seconds]"
+      validation: "min: 1, max: 300"
+      required: true
+    
+    - name: "max_retries"
+      type: "integer"
+      default_value: 3
+      description: "[Maximum retry attempts]"
+      validation: "min: 0, max: 10"
+      required: false
+  
+  feature_flags:
+    - name: "feature_toggle_name"
+      enabled: false
+      description: "[Feature description]"
+      rollout_percentage: 0
+    
+    - name: "experimental_feature"
+      enabled: false
+      description: "[Experimental feature description]"
+      rollout_percentage: 0
+
+# =============================================================================
+# Section 7: Testing Requirements
+# =============================================================================
+
+section_7_testing_requirements:
+  unit_tests:
+    - name: "test_functionality_1"
+      description: "[Test description: Verify core function 1]"
+      coverage_target: ">=85%"
+    
+    - name: "test_business_rules"
+      description: "[Test description: Verify business rules enforcement]"
+      coverage_target: ">=90%"
+    
+    - name: "test_error_handling"
+      description: "[Test description: Verify error scenarios]"
+      coverage_target: ">=85%"
+  
+  integration_tests:
+    - name: "test_api_integration"
+      description: "[Test description: Verify API contract compliance]"
+      scenarios_covered: 5
+      coverage_target: ">=75%"
+    
+    - name: "test_database_integration"
+      description: "[Test description: Verify database operations]"
+      scenarios_covered: 3
+      coverage_target: ">=75%"
+  
+  bdd_scenarios:
+    - scenario: "feature_name.feature"
+      feature: "[Feature name]"
+      description: "[BDD scenario description]"
+      acceptance_criteria_covered: 3
+
+# =============================================================================
+# Section 8: Acceptance Criteria
+# =============================================================================
+
+section_8_acceptance_criteria:
+  functional_acceptance:
+    - id: "REQ.01.08.01"
+      criterion: "[Functional acceptance criterion: Primary functionality works as specified]"
+      verification_method: "Unit test"
+      priority: "High"
+    
+    - id: "REQ.01.08.02"
+      criterion: "[Functional acceptance criterion: Business rules enforced correctly]"
+      verification_method: "Integration test"
+      priority: "High"
+  
+  quality_acceptance:
+    - id: "REQ.01.08.03"
+      criterion: "[Quality acceptance criterion: Performance targets met (p50/p95/p99)]"
+      verification_method: "Performance test"
+      priority: "High"
+
+# Minimum: 3 acceptance criteria total (MVP profile)
+
+# =============================================================================
+# Section 9: Traceability
+# =============================================================================
+
+section_9_traceability:
+  upstream_references:
+    brd: "@brd: BRD.NN.EE.SS"
+    prd: "@prd: PRD.NN.EE.SS"
+    ears: "@ears: EARS.NN.EE.SS"
+    bdd: "@bdd: BDD.NN.EE.SS"
+    adr: "@adr: ADR-NN"
+    sys: "@sys: SYS.NN.EE.SS"
+  
+  downstream_artifacts:
+    spec: "SPEC"
+    ctr: "CTR"
+    tasks: "TASKS"
+  
+  tags:
+    - "@req: REQ.NN.EE.SS"
+    - "@brd: BRD.NN.EE.SS"
+    - "@prd: PRD.NN.EE.SS"
+    - "@ears: EARS.NN.EE.SS"
+    - "@bdd: BDD.NN.EE.SS"
+    - "@adr: ADR-NN"
+    - "@sys: SYS.NN.EE.SS"
+
+# =============================================================================
+# Section 10: Implementation Notes
+# =============================================================================
+
+section_10_implementation_notes:
+  technical_approach: |
+    [Implementation approach description: Describe how to implement this requirement.
+    Include design patterns, algorithms, and technical decisions.
+    Example: Use Strategy pattern for interchangeable algorithms,
+    implement caching with TTL-based invalidation, etc.]
+  
+  code_location: "src/module/requirement_name.py"
+  
+  dependencies:
+    - "[Dependency 1: library_name >= version]"
+    - "[Dependency 2: internal_module_name]"
+    - "[Dependency 3: external_service_name]"
+
+# =============================================================================
+# Section 11: Change History
+# =============================================================================
+
+section_11_change_history:
+  versions:
+    - version: "1.0.0"
+      date: "YYYY-MM-DD"
+      author: "[Author Name]"
+      changes: "Initial version"
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+# Template Reference: REQ-MVP-TEMPLATE.md (for narrative explanations)
+# Schema: REQ_MVP_SCHEMA.yaml (for validation rules)
+# Creation Rules: REQ_MVP_CREATION_RULES.md (for guidance)
+# Validation Rules: REQ_MVP_VALIDATION_RULES.md (for checklist)
+
+# MVP Profile Notes:
+# - Minimum SPEC-Ready Score: 70% (Full template: 90%)
+# - Minimum acceptance criteria: 3 (Full template: 15)
+# - Use simplified section names where applicable
+
+# =============================================================================

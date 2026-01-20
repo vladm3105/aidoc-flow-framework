@@ -1,26 +1,42 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of BRD-MVP-TEMPLATE.md (OPTIONAL SCHEMA)
-# - Authority: BRD-MVP-TEMPLATE.md is the single source of truth for BRD structure
-# - Purpose: Machine-readable validation rules (OPTIONAL - Layer 1 is human-authored)
-# - Usage: Optional automated validation for consistency checking
-# - On conflict: Defer to BRD-MVP-TEMPLATE.md
+# 📋 Document Role: This is a DERIVATIVE of template(s)
+# - Authority:
+#   * MD Template: BRD-MVP-TEMPLATE.md (primary for human workflow)
+#   * YAML Template: BRD-MVP-TEMPLATE.yaml (primary for autopilot workflow)
+# - Purpose: Machine-readable validation rules for both MD and YAML documents (OPTIONAL - Layer 1 is human-authored)
+# - On conflict: Defer to respective template (MD or YAML based on document format)
 # =============================================================================
+#
+# Authority Hierarchy:
+# Human Workflow:  MD Template → YAML Schema (validates MD) → Validators
+# Autopilot:    YAML Template → YAML Schema (validates YAML) → Validators
+#
+# Schema is DERIVATIVE of both templates (dual-authority)
 #
 # BRD Schema Definition v1.0
 # Purpose: Define valid metadata structure for BRD documents
-# Status: OPTIONAL - BRD is Layer 1 entry point, human-authored
+# Status: OPTIONAL - BRD is Layer1 entry point, human-authored
 # Usage: Optional reference by validate_brd.py for automated validation
 
 schema_version: "1.0"
 artifact_type: BRD
 layer: 1
-last_updated: "2025-12-16"
+last_updated: "2026-01-20"
 schema_status: optional  # BRD is human-authored, schema validation not required
 
 references:
-  template: "BRD-MVP-TEMPLATE.md"
+  md_template: "BRD-MVP-TEMPLATE.md"
+  yaml_template: "BRD-MVP-TEMPLATE.yaml"
   creation_rules: "BRD_MVP_CREATION_RULES.md"
   validation_rules: "BRD_MVP_VALIDATION_RULES.md"
+---
+> **🔄 Dual-Format Note**:
+> 
+> This MD template is a **primary source** for human workflow.
+> - **For Autopilot**: See `BRD-MVP-TEMPLATE.yaml` (YAML template)
+> - **Shared Validation**: Both formats are validated by `BRD_MVP_SCHEMA.yaml`
+> - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md) for full comparison of formats, authority hierarchy, and when to use each.
+>
 
 # =============================================================================
 # Profiles (Full vs MVP)

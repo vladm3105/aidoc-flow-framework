@@ -3,19 +3,28 @@
 # - Authority: BDD-TEMPLATE.feature is the single source of truth for BDD structure
 # - Purpose: Machine-readable validation rules derived from the template
 # - On conflict: Defer to BDD-TEMPLATE.feature
+# - Note: BDD uses .feature files (Gherkin syntax) only - no YAML template
 # =============================================================================
 #
+# Authority Hierarchy:
+# Human Workflow:  Gherkin Feature → BDD Schema (validates .feature) → Validators
+# Autopilot:    N/A (BDD not in autopilot workflow)
+#
+# Schema is DERIVATIVE of Gherkin template (BDD is .feature-only)
+#
 # BDD Schema Definition v1.1
-# Purpose: Define valid metadata structure and validation rules for BDD feature files
+# Purpose: Define valid metadata structure for BDD feature files
 # Usage: Reference by validate_bdd.py for automated validation
-
+# Supports both full and MVP template profiles
+#
 schema_version: "1.1"
 artifact_type: BDD
 layer: 4
-last_updated: "2025-11-30"
+last_updated: "2026-01-20"
 
 references:
-  template: "BDD-TEMPLATE.feature"
+  md_template: "BDD-MVP-TEMPLATE.feature"
+  yaml_template: "N/A (BDD is .feature-only, no YAML version)"
   creation_rules: "BDD_CREATION_RULES.md"
   validation_rules: "BDD_VALIDATION_RULES.md"
 

@@ -42,6 +42,8 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 
 - Registry: [LAYER_REGISTRY.yaml](./LAYER_REGISTRY.yaml) - `template` field definitions
 - Workflow: [MVP_WORKFLOW_GUIDE.md](./MVP_WORKFLOW_GUIDE.md) - Detailed MVP workflow
+- Autopilot: [AUTOPILOT/AUTOPILOT_WORKFLOW_GUIDE.md](./AUTOPILOT/AUTOPILOT_WORKFLOW_GUIDE.md) - YAML template usage documentation
+- Dual-Format Architecture: [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](./DUAL_MVP_TEMPLATES_ARCHITECTURE.md) - MD vs YAML templates, YAML schemas, authority hierarchy
 
 ## Framework Purpose
 
@@ -70,8 +72,8 @@ This framework provides structured, traceable steps for AI-assisted software dev
 - ✅ **Project Setup**: New comprehensive setup guide with domain selection questionnaire
 - ✅ **Traceability Enhancements**: Added setup guide, validation guide, and complete tagging examples
 - ✅ **Decision Frameworks**: Contract decision questionnaire and CTR guidance
-- ✅ **Tool Optimization**: Guidance for AI coding assistants (see AI_TOOL_OPTIMIZATION_GUIDE.md)
-- ✅ **BRD Guidance**: Platform vs Feature BRD selection guide
+- ✅ **Dual-Format Architecture**: Created DUAL_MVP_TEMPLATES_ARCHITECTURE.md with MD/YAML template authority hierarchy
+- ✅ **Autopilot Documentation**: Created AUTOPILOT/AUTOPILOT_WORKFLOW_GUIDE.md with YAML-only template usage guide
 
 ## Document Structure
 

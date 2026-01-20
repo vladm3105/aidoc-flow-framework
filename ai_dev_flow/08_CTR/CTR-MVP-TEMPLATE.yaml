@@ -1,0 +1,383 @@
+# =============================================================================
+# 📋 Document Authority: PRIMARY STANDARD for Autopilot Workflow
+# - Purpose: AI-consumable template for automated CTR artifact generation
+# - Validation: Validated by CTR_MVP_SCHEMA.yaml (shared with MD template)
+# - Human Reference: See CTR-MVP-TEMPLATE.md for narrative explanations
+# =============================================================================
+
+id: CTR-NN
+title: "[Contract Title: e.g., User Service API Contract]"
+
+# =============================================================================
+# Document Control
+# =============================================================================
+
+document_control:
+  project_name: "[Project Name]"
+  version: "1.0"
+  date: "YYYY-MM-DD"
+  owner: "[Team/Person Name]"
+  prepared_by: "[API Designer/Architect]"
+  status: "Draft"  # Draft, In Review, Approved, Deprecated
+  spec_ready_score: 85  # Minimum 85 for implementation readiness
+
+# =============================================================================
+# Contract Definition
+# =============================================================================
+
+contract_definition:
+  contract_type: "REST API"  # REST API, gRPC, GraphQL, WebSocket
+  protocol: "HTTP/1.1"  # HTTP/1.1, HTTP/2, GRPC, WebSocket
+  base_url: "https://api.example.com/v1"
+  description: |
+    [Contract description: What this contract defines.
+    Include scope, purpose, and consumption guidelines.
+    Example: Defines contract between User Service and Payment Service for
+    transaction processing, including request/response formats, error codes,
+    rate limiting, and versioning strategy.]
+
+# =============================================================================
+# Endpoints
+# =============================================================================
+
+contract_endpoints:
+  - endpoint_id: "CTR-NN.EP-001"
+    path: "/users"
+    method: "GET"
+    description: |
+      [Endpoint description: What this endpoint does.
+      Include business context and intended use case.
+      Example: Retrieve user profile by user ID. Returns user details
+      including name, email, preferences, and account status.]
+    
+    request:
+      headers:
+        - name: "Content-Type"
+          required: true
+          example: "application/json"
+          description: "[Header description]"
+        
+        - name: "Authorization"
+          required: true
+          example: "Bearer {token}"
+          description: "[Header description: OAuth2 Bearer token]"
+      
+      authentication_required: true
+      authentication_type: "Bearer"  # Bearer, Basic, API Key, None
+      body:
+        schema: |
+          from pydantic import BaseModel, Field
+          
+          class UserRequest(BaseModel):
+              """Request data structure for user endpoint."""
+              user_id: str = Field(..., description="Unique user identifier")
+              include_profile: bool = Field(default=False, description="Include full profile data")
+              fields: list = Field(default=[], description="Specific fields to return")
+        
+        content_type: "application/json"
+        example: |
+          {
+            "user_id": "user-12345",
+            "include_profile": true,
+            "fields": ["preferences", "account_status"]
+          }
+    
+    response:
+      success_code: 200
+      success_description: "User profile retrieved successfully"
+      
+      body:
+        schema: |
+          from pydantic import BaseModel, Field
+          
+          class UserResponse(BaseModel):
+              """Response data structure for user endpoint."""
+              user_id: str = Field(..., description="Unique user identifier")
+              name: str = Field(..., description="User full name")
+              email: str = Field(..., description="User email address")
+              created_at: str = Field(..., description="Account creation date")
+              status: str = Field(..., description="Account status")
+              preferences: dict = Field(default_factory=dict, description="User preferences")
+        
+        content_type: "application/json"
+        example: |
+          {
+            "user_id": "user-12345",
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "created_at": "2024-01-15",
+            "status": "active",
+            "preferences": {
+              "notifications": true,
+              "theme": "dark"
+            }
+          }
+      
+      error_codes:
+        - code: 400
+          description: "Bad Request - Invalid request parameters or JSON"
+          http_status: 400
+          error_schema: "ErrorResponse"
+        
+        - code: 401
+          description: "Unauthorized - Invalid or missing authentication"
+          http_status: 401
+          error_schema: "ErrorResponse"
+        
+        - code: 403
+          description: "Forbidden - Insufficient permissions"
+          http_status: 403
+          error_schema: "ErrorResponse"
+        
+        - code: 404
+          description: "Not Found - User does not exist"
+          http_status: 404
+          error_schema: "ErrorResponse"
+        
+        - code: 429
+          description: "Too Many Requests - Rate limit exceeded"
+          http_status: 429
+          error_schema: "ErrorResponse"
+      
+      retry_policy:
+        retryable: true
+        max_retries: 3
+        backoff_strategy: "exponential"
+        backoff_ms: 1000
+    
+    rate_limiting:
+      requests_per_minute: 60
+      burst_limit: 10
+      sliding_window_seconds: 60
+      throttle_response_code: 429
+      headers:
+        - name: "X-RateLimit-Limit"
+          value: "60"
+        - name: "X-RateLimit-Remaining"
+          value: "59"
+        - name: "X-RateLimit-Reset"
+          value: "{unix_timestamp}"
+
+  - endpoint_id: "CTR-NN.EP-002"
+    path: "/users"
+    method: "POST"
+    description: |
+      [Endpoint description: Create new user account.
+      Include validation rules and business constraints.]
+    
+    request:
+      headers:
+        - name: "Content-Type"
+          required: true
+          example: "application/json"
+        - name: "Authorization"
+          required: true
+          example: "Bearer {token}"
+      
+      authentication_required: true
+      authentication_type: "Bearer"
+      body:
+        schema: |
+          from pydantic import BaseModel, Field, EmailStr, field_validator
+          
+          class CreateUserRequest(BaseModel):
+              """Request data structure for create user endpoint."""
+              email: EmailStr = Field(..., description="User email address (unique)")
+              password: str = Field(..., min_length=8, max_length=128, description="User password")
+              first_name: str = Field(..., min_length=1, max_length=100, description="User first name")
+              last_name: str = Field(..., min_length=1, max_length=100, description="User last name")
+              accept_terms: bool = Field(..., description="Must accept terms of service")
+          
+          @field_validator('email')
+          def email_unique(cls, v):
+              """Validate email uniqueness (call external service)."""
+              if not is_email_unique(v):
+                  raise ValueError('Email already registered')
+        
+        content_type: "application/json"
+        example: |
+          {
+            "email": "newuser@example.com",
+            "password": "SecurePass123!",
+            "first_name": "Jane",
+            "last_name": "Smith",
+            "accept_terms": true
+          }
+    
+    response:
+      success_code: 201
+      success_description: "User account created successfully"
+      
+      body:
+        schema: |
+          from pydantic import BaseModel, Field
+          
+          class CreateUserResponse(BaseModel):
+              """Response data structure for create user endpoint."""
+              user_id: str = Field(..., description="Newly generated user ID")
+              created_at: str = Field(..., description="Account creation timestamp")
+              status: str = Field(..., description="Initial account status")
+              verification_required: bool = Field(..., description="Email verification required")
+        
+        content_type: "application/json"
+        example: |
+          {
+            "user_id": "user-67890",
+            "created_at": "2024-01-20T14:30:00Z",
+            "status": "pending_verification",
+            "verification_required": true
+          }
+      
+      error_codes:
+        - code: 400
+          description: "Bad Request - Invalid email format or weak password"
+          http_status: 400
+          error_schema: "ErrorResponse"
+        
+        - code: 409
+          description: "Conflict - Email already registered"
+          http_status: 409
+          error_schema: "ErrorResponse"
+    
+    rate_limiting:
+      requests_per_minute: 10
+      burst_limit: 3
+      sliding_window_seconds: 60
+      throttle_response_code: 429
+      headers:
+        - name: "X-RateLimit-Limit"
+          value: "10"
+        - name: "X-RateLimit-Remaining"
+          value: "9"
+        - name: "X-RateLimit-Reset"
+          value: "{unix_timestamp}"
+
+# =============================================================================
+# Data Models
+# =============================================================================
+
+data_models:
+  error_response: |
+    from pydantic import BaseModel, Field
+    
+    class ErrorResponse(BaseModel):
+        """Standard error response schema."""
+        error_code: str = Field(..., description="Machine-readable error code")
+        error_message: str = Field(..., description="Human-readable error description")
+        error_details: dict = Field(default_factory=dict, description="Additional error context")
+        request_id: str = Field(..., description="Unique request identifier for tracing")
+        timestamp: str = Field(..., description="Error occurrence timestamp")
+        http_status: int = Field(..., description="HTTP status code")
+  
+  pagination_response: |
+    from pydantic import BaseModel, Field
+    from typing import List, Optional
+    
+    class PaginationResponse(BaseModel):
+        """Pagination response schema."""
+        data: List[dict] = Field(..., description="Paginated data items")
+        total_count: int = Field(..., description="Total number of items")
+        page: int = Field(..., description="Current page number")
+        page_size: int = Field(..., description="Items per page")
+        total_pages: int = Field(..., description="Total number of pages")
+        has_next: bool = Field(..., description="Whether next page exists")
+        has_previous: bool = Field(..., description="Whether previous page exists")
+        next_cursor: Optional[str] = Field(None, description="Cursor for next page (cursor pagination)")
+
+# =============================================================================
+# Traceability
+# =============================================================================
+
+traceability:
+  upstream_references:
+    req: "@req: REQ.NN.EE.SS"
+    spec: "@spec: SPEC-NN"
+  
+  downstream_artifacts:
+    implementation: "src/services/user_service.py"
+    tests: "tests/contract/test_user_contract.py"
+    documentation: "docs/api/user_api.md"
+  
+  tags:
+    - "@ctr: CTR-NN"
+    - "@req: REQ.NN.EE.SS"
+    - "@spec: SPEC-NN"
+
+# =============================================================================
+# Versioning
+# =============================================================================
+
+versioning:
+  strategy: "URI Versioning"
+  current_version: "v1"
+  version_in_url: true
+  deprecation_policy: |
+    [Deprecation policy: How contract versions are managed.
+    Include notification timeline, breaking changes policy, and sunset period.
+    Example: New versions announced 90 days before release.
+    Old versions supported for 180 days after new release.
+    Breaking changes require major version bump.]
+  
+  changelog:
+    - version: "v1"
+      release_date: "2024-01-20"
+      breaking_changes: []
+      new_features:
+        - "Initial user management endpoints"
+        - "Rate limiting implementation"
+      deprecated_endpoints: []
+      removed_endpoints: []
+
+# =============================================================================
+# Security Considerations
+# =============================================================================
+
+security_considerations:
+  authentication:
+    method: "OAuth2 Bearer Tokens"
+    token_source: "[Token endpoint]"
+    token_refresh: true
+    token_expiry_seconds: 3600
+  
+  authorization:
+    model: "Role-Based Access Control (RBAC)"
+    roles:
+      - "admin"
+      - "user"
+      - "readonly"
+    scopes:
+      - "read:users"
+      - "write:users"
+      - "delete:users"
+  
+  data_protection:
+    encryption_in_transit: "TLS 1.3"
+    encryption_at_rest: "AES-256"
+    pii_fields:
+      - "email"
+      - "password"
+      - "personal_data"
+  
+  rate_limiting:
+    enabled: true
+    algorithm: "Sliding Window"
+    per_ip: true
+    per_user: true
+    per_api_key: true
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+# Template Reference: CTR-MVP-TEMPLATE.md (for narrative explanations)
+# Schema: CTR_MVP_SCHEMA.yaml (for validation rules)
+# Creation Rules: CTR_MVP_CREATION_RULES.md (for guidance)
+# Validation Rules: CTR_MVP_VALIDATION_RULES.md (for checklist)
+
+# MVP Profile Notes:
+# - Dual-file format (CTR-NN.md + CTR-NN.yaml) for actual contract documents
+# - This template matches YAML format used in actual CTR documents
+# - Minimum SPEC-Ready Score: 85
+# - Support for pagination, versioning, and security considerations
+
+# =============================================================================

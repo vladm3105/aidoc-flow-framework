@@ -1,0 +1,229 @@
+# =============================================================================
+# 📋 Document Authority: PRIMARY STANDARD for Autopilot Workflow
+# - Purpose: AI-consumable template for automated PRD artifact generation
+# - Validation: Validated by PRD_MVP_SCHEMA.yaml (shared with MD template)
+# - Human Reference: See PRD-MVP-TEMPLATE.md for narrative explanations
+#
+# NOTE: This is a MINIMAL YAML template (structure only).
+# PRD is primarily human-facing. Humans should use PRD-MVP-TEMPLATE.md
+# for narrative content, user stories, feature descriptions, and acceptance criteria.
+# =============================================================================
+
+id: PRD-NN
+title: "[Product Requirements Title: e.g., E-Commerce Platform MVP - Core Features]"
+
+# =============================================================================
+# Document Control
+# =============================================================================
+
+document_control:
+  product_name: "[Product Name]"
+  version: "1.0"
+  date_created: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  author: "[Primary Author]"
+
+# =============================================================================
+# Product Overview
+# =============================================================================
+
+product_overview:
+  product_vision: |
+    [Product vision statement: Inspiring and forward-looking statement of what
+    this product aims to become. Should be aspirational yet achievable.
+    Focus on long-term impact and value proposition.
+    
+    Example: Become the leading e-commerce platform for independent merchants,
+    empowering them to launch and grow their online businesses with minimal
+    technical barriers. Provide seamless, beautiful storefronts with powerful
+    inventory management, marketing tools, and analytics that rival enterprise
+    solutions while maintaining ease of use.]
+  
+  target_audience:
+    - "[Audience segment 1: e.g., Small business owners (1-10 employees)]"
+      description: "[Segment description: Needs and pain points]"
+    
+    - "[Audience segment 2: e.g., Independent artisans and creators]"
+      description: "[Segment description: Needs and pain points]"
+    
+    - "[Audience segment 3: e.g., Mid-market retailers (10-100 employees)]"
+      description: "[Segment description: Needs and pain points]"
+  
+  value_proposition: |
+    [Value proposition statement: Clear, concise statement of unique value
+    this product delivers. What problem does it solve and why is this solution
+    better than alternatives? Include key differentiators.
+    
+    Example: All-in-one e-commerce platform designed for independent merchants
+    that combines beautiful, customizable storefronts with powerful inventory
+    management and marketing automation. Unlike complex enterprise solutions
+    or generic website builders, our platform provides merchant-specific
+    templates, integrated shipping and payment processing, and real-time
+    analytics with AI-powered insights - all with zero technical setup required.]
+
+# =============================================================================
+# Features
+# =============================================================================
+
+features:
+  - id: "PRD-01.01"
+    feature_name: "[Feature 1: e.g., Product Catalog Management]"
+    priority: "P1"  # P1 (Critical), P2 (High), P3 (Medium), P4 (Low)
+    
+    description: |
+      [Feature description: What this feature does from user perspective.
+      Include primary functionality and key capabilities.
+      Be specific but avoid technical implementation details.
+      
+      Example: Merchants can manage their product catalog including
+      product listings, categories, pricing, inventory levels, and
+      product variants (size, color, etc.). Support bulk upload via CSV
+      and real-time inventory tracking. Enable scheduled promotions
+      and automatic stock alerts.]
+    
+    user_story: |
+      [User story: As a <role>, I want <action> so that <benefit>.
+      Follow standard user story format with clear acceptance criteria.
+      
+      Example: As a small business owner, I want to easily add and
+      organize my products so that customers can find and purchase them
+      quickly. Acceptance: Can add 100 products via bulk upload in under 5 minutes.]
+    
+    acceptance_criteria:
+      - "[Acceptance criterion 1: Merchant can create product listings]"
+      - "[Acceptance criterion 2: Merchant can categorize products]"
+      - "[Acceptance criterion 3: Merchant can set pricing and inventory]"
+      - "[Acceptance criterion 4: Bulk CSV upload supported]"
+      - "[Acceptance criterion 5: Real-time inventory tracking enabled]"
+    
+    dependencies:
+      - "[Dependency 1: e.g., Database schema for products]"
+      - "[Dependency 2: e.g., Image storage service]"
+      - "[Dependency 3: e.g., Search engine integration]"
+  
+  - id: "PRD-01.02"
+    feature_name: "[Feature 2: e.g., Shopping Cart]"
+    priority: "P1"
+    
+    description: |
+      [Feature description: What this feature does from user perspective.
+      
+      Example: Customers can add products to shopping cart, modify quantities,
+      remove items, and persist cart across sessions. Support guest
+      carts and logged-in users. Calculate totals including tax and
+      shipping estimates.]
+    
+    user_story: |
+      [User story: As a <role>, I want <action> so that <benefit>.
+      
+      Example: As a customer, I want to add items to my cart and
+      see my total before checkout so that I can make informed decisions
+      and avoid unexpected charges. Acceptance: Cart persists across browser sessions.]
+    
+    acceptance_criteria:
+      - "[Acceptance criterion 1: Users can add items to cart]"
+      - "[Acceptance criterion 2: Users can modify quantities]"
+      - "[Acceptance criterion 3: Users can remove items]"
+      - "[Acceptance criterion 4: Cart persists for 30 days]"
+      - "[Acceptance criterion 5: Shows estimated total with tax/shipping]"
+    
+    dependencies:
+      - "[Dependency 1: e.g., Product catalog API]"
+      - "[Dependency 2: e.g., Tax calculation service]"
+      - "[Dependency 3: e.g., Shipping rate API]"
+  
+  - id: "PRD-01.03"
+    feature_name: "[Feature 3: e.g., Checkout and Payment]"
+    priority: "P1"
+    
+    description: |
+      [Feature description: What this feature does from user perspective.
+      
+      Example: Secure checkout process supporting multiple payment methods.
+      Include shipping address management, payment method selection,
+      order confirmation, and receipt generation. Support saved
+      payment methods for returning customers.]
+    
+    user_story: |
+      [User story: As a <role>, I want <action> so that <benefit>.
+      
+      Example: As a customer, I want to complete my purchase securely
+      using my saved payment method so that I don't need to re-enter
+      information every time. Acceptance: Checkout completes in 3 minutes or less.]
+    
+    acceptance_criteria:
+      - "[Acceptance criterion 1: Supports credit card payments]"
+      - "[Acceptance criterion 2: Supports PayPal]"
+      - "[Acceptance criterion 3: Validates shipping addresses]"
+      - "[Acceptance criterion 4: Saves payment methods for future use]"
+      - "[Acceptance criterion 5: Generates order confirmation and receipt]"
+    
+    dependencies:
+      - "[Dependency 1: e.g., Payment gateway integration]"
+      - "[Dependency 2: e.g., Address validation API]"
+      - "[Dependency 3: e.g., PCI compliance certification]"
+  
+  - id: "PRD-01.04"
+    feature_name: "[Feature 4: e.g., User Account Management]"
+    priority: "P2"
+    
+    description: |
+      [Feature description: What this feature does from user perspective.
+      
+      Example: User registration, login, password management, profile management,
+      and order history. Support social login and guest checkout options.]
+    
+    user_story: |
+      [User story: As a <role>, I want <action> so that <benefit>.
+      
+      Example: As a customer, I want to create an account so that I can
+      track my orders and save my information for faster checkout.
+      Acceptance: Can complete registration in 2 minutes.]
+    
+    acceptance_criteria:
+      - "[Acceptance criterion 1: User registration workflow]"
+      - "[Acceptance criterion 2: Login and password reset]"
+      - "[Acceptance criterion 3: Social login (Google, Facebook)]"
+      - "[Acceptance criterion 4: Profile management]"
+      - "[Acceptance criterion 5: Order history view]"
+    
+    dependencies:
+      - "[Dependency 1: e.g., OAuth provider integrations]"
+      - "[Dependency 2: e.g., Email service for verification]"
+      - "[Dependency 3: e.g., Password hashing service]"
+
+# =============================================================================
+# Traceability
+# =============================================================================
+
+traceability:
+  upstream_references:
+    brd: "@brd: BRD.NN.EE.SS"
+  
+  downstream_artifacts:
+    ears: "EARS"
+    bdd: "BDD"
+    req: "REQ"
+    sys: "SYS"
+  
+  tags:
+    - "@prd: PRD.NN.EE.SS"
+    - "@brd: BRD.NN.EE.SS"
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+# Template Reference: PRD-MVP-TEMPLATE.md (for narrative explanations)
+# Schema: PRD_MVP_SCHEMA.yaml (for validation rules)
+# Creation Rules: PRD_MVP_CREATION_RULES.md (for guidance)
+# Validation Rules: PRD_MVP_VALIDATION_RULES.md (for checklist)
+
+# MVP Profile Notes:
+# - MINIMAL YAML template (structure only, no narrative sections)
+# - PRD is human-facing - use PRD-MVP-TEMPLATE.md for full narrative
+# - Features structured as array with user stories and acceptance criteria
+# - Product overview includes vision, target audience, and value proposition
+# - No personas, user journeys, or detailed feature descriptions (in MD template only)
+
+# =============================================================================

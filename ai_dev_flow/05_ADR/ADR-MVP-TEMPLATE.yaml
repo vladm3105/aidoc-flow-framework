@@ -1,0 +1,208 @@
+# =============================================================================
+# 📋 Document Authority: PRIMARY STANDARD for Autopilot Workflow
+# - Purpose: AI-consumable template for automated ADR artifact generation
+# - Validation: Validated by ADR_MVP_SCHEMA.yaml (shared with MD template)
+# - Human Reference: See ADR-MVP-TEMPLATE.md for narrative explanations
+# =============================================================================
+
+id: ADR-NN
+title: "[Decision Title: e.g., Use PostgreSQL for Data Storage]"
+status: "Proposed"  # Proposed, Accepted, Rejected, Deprecated
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+date: "YYYY-MM-DD"
+
+authors:
+  - name: "[Primary Author]"
+    email: "[author@company.com]"
+    role: "[Role: e.g., Technical Lead, Architect]"
+  
+  - name: "[Co-Author (optional)]"
+    email: "[coauthor@company.com]"
+    role: "[Role]"
+
+# =============================================================================
+# Context
+# =============================================================================
+
+context:
+  problem_statement: |
+    [Problem description: Clear statement of the problem or challenge
+    that this decision addresses. What issue are we trying to solve?
+    Example: "Current system experiences performance degradation with large datasets
+    due to MySQL query optimization limitations. We need a database that
+    handles complex analytical queries efficiently while maintaining data consistency."]
+  
+  constraints:
+    - "[Constraint 1: e.g., Must support ACID transactions]"
+    - "[Constraint 2: e.g., Must integrate with existing ETL pipelines]"
+    - "[Constraint 3: e.g., Must have horizontal scalability]"
+    - "[Constraint 4: e.g., Budget constraints prevent proprietary databases]"
+    - "[Constraint 5: e.g., Team expertise limited to SQL databases]"
+  
+  alternatives:
+    - name: "[Alternative 1: e.g., MySQL with query optimization]"
+      description: |
+        [Description of alternative approach.
+        How does this option address the problem?
+        What are its key features and implementation approach?]
+      
+      pros:
+        - "[Advantage 1: e.g., Minimal migration effort]"
+        - "[Advantage 2: e.g., Existing team expertise]"
+        - "[Advantage 3: e.g., No additional licensing costs]"
+      
+      cons:
+        - "[Disadvantage 1: e.g., Still has performance limitations]"
+        - "[Disadvantage 2: e.g., Limited analytical query support]"
+        - "[Disadvantage 3: e.g., Reaches scalability ceiling at 2TB]"
+
+    - name: "[Alternative 2: e.g., MongoDB]"
+      description: |
+        [Description of alternative approach.
+        How does this option address the problem?
+        What are its key features and implementation approach?]
+      
+      pros:
+        - "[Advantage 1: e.g., Excellent horizontal scalability]"
+        - "[Advantage 2: e.g., Flexible schema for analytics]"
+        - "[Advantage 3: e.g., Good for large document storage]"
+      
+      cons:
+        - "[Disadvantage 1: e.g., Eventual consistency (not ACID)]"
+        - "[Disadvantage 2: e.g., Complex data modeling]"
+        - "[Disadvantage 3: e.g., Requires team training]"
+        - "[Disadvantage 4: e.g., Additional operational complexity]"
+
+    - name: "[Alternative 3: e.g., PostgreSQL]"
+      description: |
+        [Description of alternative approach.
+        How does this option address the problem?
+        What are its key features and implementation approach?]
+      
+      pros:
+        - "[Advantage 1: e.g., Strong analytical query performance]"
+        - "[Advantage 2: e.g., ACID compliance]"
+        - "[Advantage 3: e.g., Extensible with PL/pgSQL]"
+        - "[Advantage 4: e.g., Good community support]"
+        - "[Advantage 5: e.g., Open source, no licensing costs]"
+      
+      cons:
+        - "[Disadvantage 1: e.g., Migration requires data transformation]"
+        - "[Disadvantage 2: e.g., Slightly slower write performance than MySQL]"
+        - "[Disadvantage 3: e.g., Larger storage footprint]"
+        - "[Disadvantage 4: e.g., Requires team learning curve]"
+
+# =============================================================================
+# Decision
+# =============================================================================
+
+decision:
+  chosen_alternative: "[Chosen Alternative: e.g., PostgreSQL]"
+  
+  rationale:
+    - "[Rationale 1: Best performance for analytical queries based on benchmarks]"
+    - "[Rationale 2: ACID compliance required for financial data]"
+    - "[Rationale 3: Horizontal scaling meets future growth requirements]"
+    - "[Rationale 4: Extensibility with stored procedures reduces application code]"
+    - "[Rationale 5: Team has PostgreSQL expertise or can acquire quickly]"
+    - "[Rationale 6: Open source with strong community support]"
+    - "[Rationale 7: Meets all constraints: scalability, compliance, budget]"
+
+# =============================================================================
+# Consequences
+# =============================================================================
+
+consequences:
+  positive:
+    - "[Positive consequence 1: Improved query performance 10x for analytics]"
+    - "[Positive consequence 2: Ability to handle 100x larger datasets]"
+    - "[Positive consequence 3: Better data integrity with ACID guarantees]"
+    - "[Positive consequence 4: Reduced operational overhead with unified database]"
+    - "[Positive consequence 5: Enables advanced features like stored procedures]"
+  
+  negative:
+    - "[Negative consequence 1: Migration effort 2-3 weeks]"
+    - "[Negative consequence 2: Temporary performance degradation during transition]"
+    - "[Negative consequence 3: Requires data transformation scripts]"
+    - "[Negative consequence 4: Storage footprint increases 20-30%]"
+    - "[Negative consequence 5: Team training required for PostgreSQL features]"
+
+# =============================================================================
+# Implementation Notes
+# =============================================================================
+
+implementation_notes:
+  migration_plan: |
+    [Migration strategy and timeline.
+    How will we transition from current state to chosen alternative?
+    Include phases, timelines, and rollback plans.
+    
+    Example: 
+    Phase 1: Set up PostgreSQL parallel environment (Week 1)
+    Phase 2: Migrate historical data (Week 2-3)
+    Phase 3: Update application database layer (Week 3-4)
+    Phase 4: Cut over to PostgreSQL (Week 4)
+    Phase 5: Decommission MySQL (Week 5)
+    
+    Rollback plan: Revert MySQL if issues detected within 48 hours]
+  
+  rollback_plan: |
+    [Rollback strategy: How to revert if chosen alternative fails or causes issues.
+    What triggers rollback? What are the rollback steps?
+    
+    Example:
+    Trigger: Critical data corruption or >10% performance degradation
+    Steps:
+    1. Stop writes to PostgreSQL
+    2. Switch DNS/read pool to MySQL
+    3. Verify data consistency
+    4. Resume application operations
+    Timeline: Complete rollback within 2 hours]
+  
+  dependencies:
+    - "[Dependency 1: Database schema migration tool: pgloader]"
+    - "[Dependency 2: Connection pool library: SQLAlchemy with psycopg2]"
+    - "[Dependency 3: Monitoring tools: pgAdmin, Prometheus exporter]"
+    - "[Dependency 4: Documentation: PostgreSQL 14 docs]"
+    - "[Dependency 5: Team training: PostgreSQL certification course]"
+
+# =============================================================================
+# Traceability
+# =============================================================================
+
+traceability:
+  upstream_references:
+    brd: "@brd: BRD.NN.EE.SS"
+    prd: "@prd: PRD.NN.EE.SS"
+    sys: "@sys: SYS.NN.EE.SS"
+  
+  downstream_artifacts:
+    spec: "SPEC"
+    req: "REQ"
+    tasks: "TASKS"
+  
+  tags:
+    - "@adr: ADR-NN"
+    - "@brd: BRD.NN.EE.SS"
+    - "@prd: PRD.NN.EE.SS"
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+# Template Reference: ADR-MVP-TEMPLATE.md (for narrative explanations)
+# Schema: ADR_MVP_SCHEMA.yaml (for validation rules)
+# Creation Rules: ADR_MVP_CREATION_RULES.md (for guidance)
+# Validation Rules: ADR_MVP_VALIDATION_RULES.md (for checklist)
+
+# MVP Profile Notes:
+# - Alternative-driven format with pros/cons analysis
+# - Decision rationale must be specific and data-driven
+# - Consequences must identify both positive and negative impacts
+# - Implementation notes include migration and rollback plans
+
+# =============================================================================

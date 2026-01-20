@@ -16,6 +16,14 @@ custom_fields:
   development_status: active
   schema_version: "1.0"
 ---
+> **🔄 Dual-Format Note**: 
+> 
+> This MD template is the **primary source** for human workflow. 
+> - **For Autopilot**: See `SYS-MVP-TEMPLATE.yaml` (YAML template) 
+> - **Shared Validation**: Both formats are validated by `SYS_MVP_SCHEMA.yaml` 
+> - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md) for full comparison of formats, authority hierarchy, and when to use each. 
+> 
+---
 
 > **📋 Document Authority**: This is the **STANDARD** for SYS structure.
 > - **Schema**: `SYS_MVP_SCHEMA.yaml v1.0` - Validation rules

@@ -18,36 +18,44 @@ custom_fields:
   complexity: 1 # 1-5 scale
 ---
 
+> **🔄 Dual-Format Note**:
+>
+> This MD template is the **primary source** for human workflow.
+> - **For Autopilot**: See `PRD-MVP-TEMPLATE.yaml` (YAML template)
+> - **Shared Validation**: Both formats are validated by `PRD_MVP_SCHEMA.yaml`
+> - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md) for full comparison of formats, authority hierarchy, and when to use each.
+> ---
+
 <!--
-AI_CONTEXT_START
+  AI_CONTEXT_START
 Role: AI Product Manager
 Objective: Create a streamlined MVP Product Requirements Document.
 Constraints:
-- Focus on hypothesis validation and core user stories.
-- Keep functional requirements atomic and testable.
-- Do not split file; keep it monolithic.
-- Prioritize essential features (P1) over nice-to-haves (P2).
+  - Focus on hypothesis validation and core user stories
+  - Keep functional requirements atomic and testable
+  - Do not split file; keep it monolithic
 AI_CONTEXT_END
--->
 ---
 title: "PRD-MVP-TEMPLATE: Product Requirements Document (MVP)"
 tags:
   - prd-template
   - mvp-template
   - layer-2-artifact
+  - document-template
 custom_fields:
-  document_type: template
+  document_type: prd
   artifact_type: PRD
   layer: 2
+  template_variant: mvp
   architecture_approaches: [ai-agent-based]
   priority: shared
   development_status: draft
-  template_variant: mvp
-  template_profile: mvp
-  template_source: "PRD-MVP-TEMPLATE.md"
+  template_for: mvp-product-requirements-document
+  descriptive_slug: null
   schema_reference: "PRD_MVP_SCHEMA.yaml"
   schema_version: "1.0"
   schema_status: optional
+---
   creation_rules_reference: "PRD_MVP_CREATION_RULES.md"
   validation_rules_reference: "PRD_MVP_VALIDATION_RULES.md"
   traceability_matrix_template: "PRD-00_TRACEABILITY_MATRIX-TEMPLATE.md"

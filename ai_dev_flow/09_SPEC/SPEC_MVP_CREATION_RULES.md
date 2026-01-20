@@ -86,13 +86,21 @@ traceability:
   upstream_sources: [...]
   downstream_artifacts: [...]
   cumulative_tags: [...]  # Include @threshold registry tag and use null only when an upstream type truly does not exist
-
-# Threshold registry references (required when using @threshold)
-threshold_references:
-  registry_document: "PRD-NN"
-  keys_used:
-    - perf.api.p95_latency
-    - timeout.request.sync
+  
+  # Threshold registry references (required when using @threshold)
+  # MUST be under traceability section
+  threshold_references:
+    registry_document: "PRD-NN"
+    keys_used:
+      - perf.api.p95_latency
+      - timeout.request.sync
+  
+  # REQ implementations (required)
+  # MUST be under traceability section  
+  req_implementations:
+    - req_id: "REQ-NN"
+      req_link: "../07_REQ/..."
+      implementation: { ... }
 
 # Architecture definition
 architecture: [...]

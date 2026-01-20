@@ -17,6 +17,14 @@ custom_fields:
   schema_version: "1.0"
 ---
 
+> **🔄 Dual-Format Note**:
+>
+> This MD template is the **primary source** for human workflow.
+> - **For Autopilot**: See `BRD-MVP-TEMPLATE.yaml` (YAML template)
+> - **Shared Validation**: Both formats are validated by `BRD_MVP_SCHEMA.yaml`
+> - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md) for full comparison of formats, authority hierarchy, and when to use each.
+> ---
+
 # BRD-MVP-TEMPLATE: Business Requirements Document (MVP)
 
 <!--
@@ -25,11 +33,10 @@ Role: AI Product Owner / Business Analyst
 Objective: Create a streamlined MVP Business Requirements Document.
 Constraints:
 - Focus strictly on MVP scope (5-15 core requirements).
-- Keep descriptions concise and avoiding generic filler.
-- Maintain single-file structure.
-- Prioritize P1 (Must Have) features.
-AI_CONTEXT_END
--->
+  - Keep descriptions concise and avoiding generic filler.
+  - Maintain single-file structure.
+  - Prioritize P1 (Must Have) features.
+  template_variant: mvp
 ---
 title: "BRD-MVP-TEMPLATE: Streamlined Business Requirements Document for MVP"
 tags:

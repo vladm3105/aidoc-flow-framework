@@ -1,21 +1,31 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of SPEC-MVP-TEMPLATE.yaml
-# - Authority: SPEC-MVP-TEMPLATE.yaml is the single source of truth for SPEC structure
-# - Purpose: Machine-readable validation rules derived from the template
+# 📋 Document Role: This is a DERIVATIVE of template(s)
+# - Authority:
+#   * MD Template: N/A (SPEC is YAML-only for both workflows)
+#   * YAML Template: SPEC-MVP-TEMPLATE.yaml (primary for both workflows)
+# - Purpose: Machine-readable validation rules for YAML documents
 # - On conflict: Defer to SPEC-MVP-TEMPLATE.yaml
 # =============================================================================
+#
+# Authority Hierarchy:
+# Human Workflow:  N/A (SPEC is YAML-only)
+# Autopilot:    YAML Template → YAML Schema (validates YAML) → Validators
+#
+# Schema is DERIVATIVE of YAML template (SPEC is YAML-only)
 #
 # SPEC Schema Definition v1.0
 # Purpose: Define valid structure and validation rules for SPEC YAML documents
 # Usage: Reference by validate_spec.py for automated validation
-
+# Supports both full and MVP template profiles
+#
 schema_version: "1.0"
 artifact_type: SPEC
 layer: 9
-last_updated: "2026-01-18"
+last_updated: "2026-01-20"
 
 references:
-  template: "SPEC-MVP-TEMPLATE.yaml"
+  md_template: "N/A (SPEC is YAML-only)"
+  yaml_template: "SPEC-MVP-TEMPLATE.yaml"
   creation_rules: "SPEC_CREATION_RULES.md"
   validation_rules: "SPEC_VALIDATION_RULES.md"
 

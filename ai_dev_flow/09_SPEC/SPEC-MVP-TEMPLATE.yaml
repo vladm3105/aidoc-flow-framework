@@ -482,53 +482,52 @@ cumulative_tags:
     depends_spec: []  # List of prerequisite SPEC-NN IDs (must complete before this)
     # Tags: @related-spec: SPEC-NN, @depends-spec: SPEC-NN
 
-# ===================
-# REQ IMPLEMENTATIONS
-# ===================
-# Maps each upstream REQ to its implementation details
-# - REQ file = WHAT to implement (source of truth for requirements)
-# - This section = HOW to implement (interfaces, methods, types, validation)
-# - DO NOT duplicate requirement text - reference REQ files instead
+  # ===================
+  # REQ IMPLEMENTATIONS
+  # ===================
+  # Maps each upstream REQ to its implementation details
+  # - REQ file = WHAT to implement (source of truth for requirements)
+  # - This section = HOW to implement (interfaces, methods, types, validation)
+  # - DO NOT duplicate requirement text - reference REQ files instead
+  req_implementations:
+    # Each entry corresponds to one REQ from upstream_sources.atomic_requirements
+    - req_id: "REQ-NN"
+      req_link: "../07_REQ/SYS-XX_{module}/REQ-NN_{slug}.md"
+      # Implementation details for this specific requirement
+      implementation:
+        # Interfaces that implement this requirement
+        interfaces:
+          - class: "ClassName"
+            method: "method_name"
+            signature: "async def method_name(param: Type) -> ReturnType"
+            purpose: "[Brief description of what this method does for the REQ]"
+        # Data models required for this requirement
+        data_models:
+          - name: "ModelName"
+            fields:
+              - name: "field1"
+                type: "str"
+                constraints: "[Validation constraints]"
+        # Validation rules implementing REQ acceptance criteria
+        validation_rules:
+          - rule: "Rule description"
+            implementation: "How it's validated in code"
+        # Error handling for this requirement
+        error_handling:
+          - error_code: "ERROR_CODE"
+            condition: "When this error occurs"
+            http_status: 400
+            response_message: "User-facing error message"
+        # Testing approach for this requirement
+        test_approach:
+          unit_tests: ["Test case 1", "Test case 2"]
+          integration_tests: ["Integration scenario"]
 
-req_implementations:
-  # Each entry corresponds to one REQ from upstream_sources.atomic_requirements
-  - req_id: "REQ-NN"
-    req_link: "../07_REQ/SYS-XX_{module}/REQ-NN_{slug}.md"
-    # Implementation details for this specific requirement
-    implementation:
-      # Interfaces that implement this requirement
-      interfaces:
-        - class: "ClassName"
-          method: "method_name"
-          signature: "async def method_name(param: Type) -> ReturnType"
-          purpose: "[Brief description of what this method does for the REQ]"
-      # Data models required for this requirement
-      data_models:
-        - name: "ModelName"
-          fields:
-            - name: "field1"
-              type: "str"
-              constraints: "[Validation constraints]"
-      # Validation rules implementing REQ acceptance criteria
-      validation_rules:
-        - rule: "Rule description"
-          implementation: "How it's validated in code"
-      # Error handling for this requirement
-      error_handling:
-        - error_code: "ERROR_CODE"
-          condition: "When this error occurs"
-          http_status: 400
-          response_message: "User-facing error message"
-      # Testing approach for this requirement
-      test_approach:
-        unit_tests: ["Test case 1", "Test case 2"]
-        integration_tests: ["Integration scenario"]
-
-  # Additional REQ implementations follow the same pattern
-  # - req_id: "REQ-MM"
-  #   req_link: "../07_REQ/SYS-XX_{module}/REQ-MM_{slug}.md"
-  #   implementation:
-  #     interfaces: [...]
+    # Additional REQ implementations follow the same pattern
+    # - req_id: "REQ-MM"
+    #   req_link: "../07_REQ/SYS-XX_{module}/REQ-MM_{slug}.md"
+    #   implementation:
+    #     interfaces: [...]
 
 # ===================
 # COMPONENT ARCHITECTURE

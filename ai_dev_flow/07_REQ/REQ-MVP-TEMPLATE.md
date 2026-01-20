@@ -17,6 +17,14 @@ custom_fields:
   schema_version: "1.1"
   complexity: 1 # 1-5 scale
 ---
+> **🔄 Dual-Format Note**: 
+> 
+> This MD template is the **primary source** for human workflow. 
+> - **For Autopilot**: See `REQ-MVP-TEMPLATE.yaml` (YAML template) 
+> - **Shared Validation**: Both formats are validated by `REQ_MVP_SCHEMA.yaml` 
+> - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md) for full comparison of formats, authority hierarchy, and when to use each. 
+> 
+---
 
 <!--
 AI_CONTEXT_START

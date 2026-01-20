@@ -1,20 +1,29 @@
 # =============================================================================
-# Document Role: This is a DERIVATIVE of TASKS-TEMPLATE.md
-# - Authority: TASKS-TEMPLATE.md is the single source of truth for TASKS structure
-# - Purpose: Machine-readable validation rules derived from the template
-# - On conflict: Defer to TASKS-TEMPLATE.md
+# 📋 Document Role: This is a DERIVATIVE of template(s)
+# - Authority:
+#   * MD Template: TASKS-TEMPLATE.md (primary for human workflow)
+#   * YAML Template: TASKS-MVP-TEMPLATE.yaml (primary for autopilot workflow)
+# - Purpose: Machine-readable validation rules for both MD and YAML documents
+# - On conflict: Defer to respective template (MD or YAML based on document format)
 # =============================================================================
+#
+# Authority Hierarchy:
+# Human Workflow:  MD Template → YAML Schema (validates MD) → Validators
+# Autopilot:    YAML Template → YAML Schema (validates YAML) → Validators
+#
+# Schema is DERIVATIVE of both templates (dual-authority)
 #
 # TASKS Schema Definition v2.0
 # Purpose: Define valid metadata structure and validation rules for TASKS documents
 # Usage: Reference by validate_tasks.py for automated validation
-schema_version: "2.0"
+# schema_version: "2.0"
 artifact_type: TASKS
 layer: 10
-last_updated: "2026-01-18"
+last_updated: "2026-01-20"
 
 references:
-  template: "TASKS-TEMPLATE.md"
+  md_template: "TASKS-TEMPLATE.md"
+  yaml_template: "TASKS-MVP-TEMPLATE.yaml"
   creation_rules: "TASKS_MVP_CREATION_RULES.md"
   validation_rules: "TASKS_MVP_VALIDATION_RULES.md"
 

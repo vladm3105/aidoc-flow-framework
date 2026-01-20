@@ -56,8 +56,159 @@ This directory provides a structured, traceable framework for Specification-Driv
 
 **📚 New to this framework?** Start with [DOMAIN_ADAPTATION_GUIDE.md](./DOMAIN_ADAPTATION_GUIDE.md) for domain-specific guidance (financial, healthcare, e-commerce, SaaS, IoT, or generic software).
 
+## Roles & Automation in AI Dev Flow
+
+The framework orchestrates three key participants to transform business ideas into production code:
+
+### Human Role: Strategic Decision-Making and Quality Validation
+
+**Philosophy**: Humans make strategic decisions, AI handles execution.
+
+**5 Critical Checkpoints** (only if quality score < 90%):
+- **BRD Approval** (Layer 1) - Business alignment and strategic direction
+- **PRD Approval** (Layer 2) - Product vision and feature validation
+- **ADR Approval** (Layer 5) - Architecture decisions and technical rationale
+- **Code Review** (Layer 11) - Code quality, security, and best practices
+- **Production Deployment** (Layer 13) - Final gate before live release
+
+**Responsibilities**:
+- Provides business requirements and strategic direction
+- Selects project domain (financial, software, healthcare, etc.)
+- Can override AI recommendations at quality gates
+- Reviews and approves critical decisions when automation score is below threshold
+
+**Quality-Gated Automation**: Human review is optional if quality score ≥ 90%. Only 5 checkpoints require manual intervention out of 13 production layers.
+
+---
+
+### AI Assistant Role: Framework-Aware Automation and Guidance
+
+**Philosophy**: Follows framework rules to execute systematic, traceable development.
+
+**Execution Rules**: Follows 18+ rules defined in [AI_ASSISTANT_RULES.md](./AI_ASSISTANT_RULES.md)
+
+**Key Capabilities**:
+
+| Capability | Description |
+|------------|-------------|
+| **Layer-by-Layer Generation** | Creates all documentation artifacts (BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TASKS) with traceability enforcement |
+| **Domain Configuration** | Loads domain-specific templates and applies placeholder replacements |
+| **Contract Decisions** | Runs contract questionnaire to determine if CTR layer is needed |
+| **Code Generation** | Converts YAML SPECs + TASKS → Python code with cumulative traceability tags |
+| **Test Automation** | Generates tests from BDD scenarios, runs with auto-fix (3 retries) |
+| **Quality Validation** | Runs validation scripts, checks SPEC-readiness scoring, enforces quality gates |
+| **Cross-Document Validation** | 3-phase validation (per-document, per-layer, layer transition) with auto-fix |
+| **Traceability Management** | Generates bidirectional matrices from cumulative tags |
+
+**Critical Execution Order**:
+1. Domain Selection → Ask user for project domain
+2. Folder Structure Creation → Create all directories before any documents
+3. Domain Configuration → Load and apply domain-specific settings
+4. Template Initialization → Copy templates and replace placeholders
+5. Contract Decision → Run contract questionnaire
+6. Index File Setup → Initialize all index files
+7. Document Creation → Begin generating project documents
+
+---
+
+### Autopilot: YAML-Only Automated Workflow Orchestration
+
+**Philosophy**: Maximize automation through machine-parseable YAML templates.
+
+**Key Differentiator**: Exclusively uses YAML templates (`*-MVP-TEMPLATE.yaml`) for machine parsing, not markdown.
+
+**Performance Advantages**:
+
+| Operation | MD Template | YAML Template | Improvement |
+|-----------|-------------|---------------|-------------|
+| Parse single doc | ~50ms | ~10ms | 5x faster |
+| Parse 100 docs | ~5s | ~1s | 5x faster |
+| Extract traceability | Regex (complex) | Key access (direct) | 3x faster |
+| Validate schema | After parse | During parse | Earlier errors |
+
+**Core Features**:
+
+- **90%+ Automation**: Full SDD workflow from BRD to Production with quality-gated auto-approval
+- **Quality-Gated Automation**: Auto-approves if quality score ≥ 90%, human review only when score fails
+- **Direct YAML→Dict Mapping**: Zero transformation between templates and code
+- **Type-Safe Schema Validation**: Errors detected during load, not after parsing
+- **CI/CD Ready**: Integrates with GitHub Actions, supports `--auto-fix` validation
+
+**Automated Workflow**:
+```
+Layer Transitions → Code Generation → Test Execution → Traceability Matrix Generation
+```
+
+**Trigger Methods**:
+
+| Method | Command |
+|--------|---------|
+| **Local CLI** | `python AUTOPILOT/scripts/mvp_autopilot.py --intent "My MVP" --slug my_mvp` |
+| **CI/CD** | GitHub Actions workflow `mvp-autopilot.yml` |
+| **GitHub CLI** | `make docs` (runs mvp-autopilot.yml workflow) |
+
+**YAML Template Authority**:
+- Autopilot loads ONLY `*-MVP-TEMPLATE.yaml` files (never markdown)
+- MD templates serve as human-readable reference documentation
+- Single schema validates both MD and YAML document formats
+- See [AUTOPILOT/AUTOPILOT_WORKFLOW_GUIDE.md](./AUTOPILOT/AUTOPILOT_WORKFLOW_GUIDE.md) for complete usage
+
+---
+
+### How They Work Together
+
+```mermaid
+flowchart TD
+    Input[Human Input<br/>Business Requirements] --> AI[AI Assistant / Autopilot]
+    
+    subgraph "AI Assistant / Autopilot"
+        AI --> Layer1[Generate BRD]
+        Layer1 --> Layer2[Generate PRD]
+        Layer2 --> Layer3[Generate EARS]
+        Layer3 --> Layer4[Generate BDD]
+        Layer4 --> Layer5[Generate ADR]
+        Layer5 --> Layer6[Generate SYS]
+        Layer6 --> Layer7[Generate REQ]
+        Layer7 --> Layer8[Generate CTR]
+        Layer8 --> Layer9[Generate SPEC]
+        Layer9 --> Layer10[Generate TASKS]
+    end
+    
+    Layer10 --> Code[Generate Code<br/>from SPEC+TASKS]
+    Code --> Tests[Generate & Run Tests<br/>with Auto-Fix]
+    
+    Tests --> Quality{Quality Score ≥ 90%?}
+    Quality -->|Yes| Auto[Auto-Approve]
+    Quality -->|No| Human[Human Review]
+    
+    Auto --> Deploy[Production Deployment]
+    Human --> Review[Review & Approve]
+    Review --> Deploy
+    
+    style Input fill:#e1f5fe
+    style AI fill:#fff9c4
+    style Code fill:#dcedc8
+    style Tests fill:#dcedc8
+    style Human fill:#ffccbc
+    style Auto fill:#c8e6c9
+    style Deploy fill:#c8e6c9
+```
+
+**Key Differentiation**:
+
+| Aspect | Human | AI Assistant | Autopilot |
+|--------|-------|--------------|------------|
+| **Scope** | Strategic decisions | Framework execution | Full workflow automation |
+| **Trigger** | Initial requirements | User prompts | CLI or CI/CD |
+| **Templates** | N/A | MD + YAML | YAML only |
+| **Decisions** | 5 critical checkpoints | 18+ execution rules | Quality-gated auto-approval |
+| **Output** | Business goals | Artifacts + code | Complete MVP |
+
+---
+
 ## Using This Repo
 
+- **📚 Dual-Format Architecture**: [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](./DUAL_MVP_TEMPLATES_ARCHITECTURE.md) - Complete explanation of MD vs YAML templates, YAML schemas, and authority hierarchy
 - Docs root: In this repository, artifact folders (`01_BRD/`, `02_PRD/`, `03_EARS/`, `04_BDD/`, `05_ADR/`, `06_SYS/`, `07_REQ/`, `08_CTR/`, `09_SPEC/`, `10_TASKS/`, `CHG/`) live at the `ai_dev_flow/` root. Many guides show a top-level `docs/` prefix for portability; when running commands here, drop the `docs/` prefix.
 - BDD layout: Uses nested per-suite folders `04_BDD/BDD-NN_{slug}/` with sectioned `.feature` files.
 - Index width: This repo commonly uses `-00_index.md` for indices; follow existing width and do not rename history. New repos should choose a consistent zero width (`00` or `000`) and keep it stable.

@@ -1,0 +1,317 @@
+# =============================================================================
+# 📋 Document Authority: PRIMARY STANDARD for Autopilot Workflow
+# - Purpose: AI-consumable template for automated SYS artifact generation
+# - Validation: Validated by SYS_MVP_SCHEMA.yaml (shared with MD template)
+# - Human Reference: See SYS-MVP-TEMPLATE.md for narrative explanations
+# =============================================================================
+
+id: SYS-NN
+summary: "[Single-sentence description: System requirements defining boundaries, functionality, and non-functional requirements]"
+
+# =============================================================================
+# Document Control
+# =============================================================================
+
+document_control:
+  status: "Draft"  # Draft, Review, Approved, Implemented, Deprecated
+  version: "1.0"
+  date_created: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  author: "[Primary Author]"
+  source_document: "@prd: PRD.NN.EE.SS"
+
+# =============================================================================
+# Section 1: System Boundary
+# =============================================================================
+
+section_1_system_boundary:
+  in_scope:
+    - "[In-scope component 1: e.g., User authentication service]"
+    - "[In-scope component 2: e.g., Payment processing system]"
+    - "[In-scope component 3: e.g., Data storage layer]"
+    - "[In-scope component 4: e.g., API gateway and rate limiting]"
+  
+  out_of_scope:
+    - "[Out-of-scope component 1: e.g., Legacy mainframe integration (future phase)]"
+    - "[Out-of-scope component 2: e.g., Mobile app (separate project)]"
+    - "[Out-of-scope component 3: e.g., Third-party analytics platform]"
+    - "[Out-of-scope component 4: e.g., Custom hardware development]"
+  
+  interfaces:
+    - name: "[Interface 1: e.g., REST API]"
+      type: "REST API"
+      protocol: "HTTPS/1.1"
+      description: |
+        [Interface description: What this interface provides.
+        Who are the consumers? What protocols are used?
+        Example: Public REST API for external partner integrations]
+    
+    - name: "[Interface 2: e.g., gRPC]"
+      type: "gRPC"
+      protocol: "HTTP/2 with Protobuf"
+      description: "[Interface description]"
+    
+    - name: "[Interface 3: e.g., Webhook]"
+      type: "Webhook"
+      protocol: "HTTPS POST"
+      description: "[Interface description]"
+    
+    - name: "[Interface 4: e.g., Database]"
+      type: "Database Connection"
+      protocol: "PostgreSQL wire protocol"
+      description: "[Interface description]"
+
+# =============================================================================
+# Section 2: Functional Requirements
+# =============================================================================
+
+section_2_functional_requirements:
+  user_actors:
+    - actor_name: "[Actor 1: e.g., End User]"
+      description: "[Actor description: What this actor does with the system]"
+      goals:
+        - "[Goal 1: Access their data]"
+        - "[Goal 2: Perform transactions]"
+        - "[Goal 3: Manage account settings]"
+    
+    - actor_name: "[Actor 2: e.g., System Administrator]"
+      description: "[Actor description]"
+      goals:
+        - "[Goal 1: Monitor system health]"
+        - "[Goal 2: Manage users and permissions]"
+        - "[Goal 3: Configure system settings]"
+    
+    - actor_name: "[Actor 3: e.g., External Partner System]"
+      description: "[Actor description]"
+      goals:
+        - "[Goal 1: Integrate via API]"
+        - "[Goal 2: Exchange data synchronously]"
+        - "[Goal 3: Handle error notifications]"
+  
+  system_functions:
+    - id: "SYS-FN-001"
+      description: "[Function description: e.g., User authentication and authorization]"
+      priority: "High"  # High, Medium, Low
+      triggered_by:
+        - "[Trigger 1: User login attempt]"
+        - "[Trigger 2: API authentication request]"
+      related_actors:
+        - "[Actor 1: End User]"
+        - "[Actor 2: External Partner System]"
+    
+    - id: "SYS-FN-002"
+      description: "[Function description: e.g., Data validation and sanitization]"
+      priority: "High"
+      triggered_by:
+        - "[Trigger 1: User input submission]"
+        - "[Trigger 2: API request received]"
+      related_actors:
+        - "[Actor 1: End User]"
+    
+    - id: "SYS-FN-003"
+      description: "[Function description: e.g., Rate limiting and throttling]"
+      priority: "Medium"
+      triggered_by:
+        - "[Trigger 1: API request rate exceeds threshold]"
+      related_actors:
+        - "[Actor 1: Any API consumer]"
+    
+    - id: "SYS-FN-004"
+      description: "[Function description: e.g., Error logging and monitoring]"
+      priority: "High"
+      triggered_by:
+        - "[Trigger 1: Application error occurs]"
+        - "[Trigger 2: System exception raised]"
+      related_actors:
+        - "[Actor 1: System Administrator]"
+
+# =============================================================================
+# Section 3: Non-Functional Requirements
+# =============================================================================
+
+section_3_non_functional_requirements:
+  performance:
+    - requirement: "[Performance requirement 1: e.g., API response time]"
+      metric: "p95 latency <= 200ms"
+      measurement: "95th percentile of API response times"
+      scope: "All REST API endpoints"
+      rationale: "[Rationale: Users expect sub-second response times]"
+    
+    - requirement: "[Performance requirement 2: e.g., Throughput]"
+      metric: "1000 requests/second sustained"
+      measurement: "Sustained request rate over 10-minute period"
+      scope: "API gateway"
+      rationale: "[Rationale: Support peak traffic during business hours]"
+    
+    - requirement: "[Performance requirement 3: e.g., Database query time]"
+      metric: "p99 query execution <= 100ms"
+      measurement: "99th percentile of database query times"
+      scope: "All database read operations"
+      rationale: "[Rationale: Ensure responsive UI for data-heavy pages]"
+  
+  reliability:
+    - requirement: "[Reliability requirement 1: e.g., Availability]"
+      metric: "99.9% uptime"
+      measurement: "Monthly uptime percentage"
+      scope: "Production environment"
+      rationale: "[Rationale: Business requires near-24/7 availability]"
+    
+    - requirement: "[Reliability requirement 2: e.g., Mean time to recovery]"
+      metric: "MTTR <= 15 minutes"
+      measurement: "Average time to restore service after failure"
+      scope: "All critical services"
+      rationale: "[Rationale: Minimize business disruption from outages]"
+    
+    - requirement: "[Reliability requirement 3: e.g., Data durability]"
+      metric: "99.999999999% durability"
+      measurement: "Data loss probability"
+      scope: "Database storage"
+      rationale: "[Rationale: Protect against data loss in event of hardware failure]"
+  
+  scalability:
+    - requirement: "[Scalability requirement 1: e.g., Horizontal scaling]"
+      metric: "Support 10x increase in capacity via additional instances"
+      measurement: "Capacity scaling ratio with additional infrastructure"
+      scope: "Application servers"
+      rationale: "[Rationale: Handle seasonal traffic spikes]"
+    
+    - requirement: "[Scalability requirement 2: e.g., Database scaling]"
+      metric: "Support 10TB data growth without performance degradation"
+      measurement: "Query performance at data scale"
+      scope: "Database"
+      rationale: "[Rationale: Accommodate 3-year data growth projection]"
+    
+    - requirement: "[Scalability requirement 3: e.g., Storage scaling]"
+      metric: "Auto-scaling storage to 100TB with 99% hit rate"
+      measurement: "Storage capacity and cache hit ratio"
+      scope: "Object storage"
+      rationale: "[Rationale: Handle growing user-generated content]"
+  
+  security:
+    - requirement: "[Security requirement 1: e.g., Authentication]"
+      metric: "MFA for all admin accounts"
+      measurement: "Authentication method requirement"
+      scope: "Administrative functions"
+      rationale: "[Rationale: Protect against unauthorized administrative access]"
+    
+    - requirement: "[Security requirement 2: e.g., Encryption]"
+      metric: "AES-256 encryption at rest, TLS 1.3 in transit"
+      measurement: "Encryption standards"
+      scope: "All data storage and transmission"
+      rationale: "[Rationale: Meet compliance requirements and protect data]"
+    
+    - requirement: "[Security requirement 3: e.g., Access control]"
+      metric: "Role-based access with principle of least privilege"
+      measurement: "Access control implementation"
+      scope: "All system functions and data"
+      rationale: "[Rationale: Minimize impact of compromised accounts]"
+    
+    - requirement: "[Security requirement 4: e.g., Audit logging]"
+      metric: "Log all access and changes with immutable audit trail"
+      measurement: "Logging completeness and retention"
+      scope: "All user actions and system events"
+      rationale: "[Rationale: Enable forensic analysis and compliance reporting]"
+
+# =============================================================================
+# Section 4: Technical Stack
+# =============================================================================
+
+section_4_technical_stack:
+  languages:
+    - language: "Python"
+      version: "3.9+"
+      usage: "[Usage description: e.g., Backend API services, data processing]"
+    
+    - language: "JavaScript"
+      version: "ES2020"
+      usage: "[Usage description: e.g., Frontend application]"
+    
+    - language: "SQL"
+      version: "PostgreSQL 14"
+      usage: "[Usage description: e.g., Database queries and stored procedures]"
+  
+  frameworks:
+    - framework: "FastAPI"
+      version: "0.104.1+"
+      usage: "[Usage description: e.g., REST API framework]"
+    
+    - framework: "React"
+      version: "18.2+"
+      usage: "[Usage description: e.g., Frontend UI framework]"
+    
+    - framework: "Celery"
+      version: "5.2+"
+      usage: "[Usage description: e.g., Asynchronous task queue]"
+  
+  databases:
+    - database: "PostgreSQL"
+      version: "14.x"
+      usage: "[Usage description: e.g., Primary relational database]"
+      role: "Primary data store for transactional data"
+    
+    - database: "Redis"
+      version: "7.x"
+      usage: "[Usage description: e.g., Cache and session store]"
+      role: "Caching layer for frequently accessed data"
+    
+    - database: "Elasticsearch"
+      version: "7.x"
+      usage: "[Usage description: e.g., Search and analytics]"
+      role: "Full-text search and log analytics"
+  
+  infrastructure:
+    - provider: "[Cloud Provider: e.g., AWS]"
+      services:
+        - "[Service 1: e.g., EC2 (compute)]"
+        - "[Service 2: e.g., RDS (database)]"
+        - "[Service 3: e.g., ElastiCache (cache)]"
+        - "[Service 4: e.g., S3 (object storage)]"
+        - "[Service 5: e.g., CloudFront (CDN)]"
+    
+    - provider: "[Cloud Provider: e.g., CDN]"
+      services:
+        - "[Service 1: e.g., Global content delivery]"
+    
+    - provider: "[Cloud Provider: e.g., Monitoring]"
+      services:
+        - "[Service 1: e.g., Metrics collection]"
+        - "[Service 2: e.g., Alerting]"
+        - "[Service 3: e.g., Dashboard visualization]"
+
+# =============================================================================
+# Traceability
+# =============================================================================
+
+traceability:
+  upstream_references:
+    brd: "@brd: BRD.NN.EE.SS"
+    prd: "@prd: PRD.NN.EE.SS"
+    ears: "@ears: EARS.NN.EE.SS"
+    adr: "@adr: ADR-NN"
+  
+  downstream_artifacts:
+    req: "REQ"
+    spec: "SPEC"
+    tasks: "TASKS"
+  
+  tags:
+    - "@sys: SYS.NN.EE.SS"
+    - "@brd: BRD.NN.EE.SS"
+    - "@prd: PRD.NN.EE.SS"
+    - "@ears: EARS.NN.EE.SS"
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+# Template Reference: SYS-MVP-TEMPLATE.md (for narrative explanations)
+# Schema: SYS_MVP_SCHEMA.yaml (for validation rules)
+# Creation Rules: SYS_MVP_CREATION_RULES.md (for guidance)
+# Validation Rules: SYS_MVP_VALIDATION_RULES.md (for checklist)
+
+# MVP Profile Notes:
+# - 4 sections: System Boundary, Functional Requirements, Non-Functional Requirements, Technical Stack
+# - Non-functional requirements cover performance, reliability, scalability, security
+# - Technical stack specifies languages, frameworks, databases, infrastructure
+
+# =============================================================================

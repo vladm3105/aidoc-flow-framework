@@ -1,21 +1,30 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of SYS-MVP-TEMPLATE.md
-# - Authority: SYS-MVP-TEMPLATE.md is the single source of truth for SYS structure
-# - Purpose: Machine-readable validation rules derived from the template
-# - On conflict: Defer to SYS-MVP-TEMPLATE.md
+# 📋 Document Role: This is a DERIVATIVE of template(s)
+# - Authority:
+#   * MD Template: SYS-MVP-TEMPLATE.md (primary for human workflow)
+#   * YAML Template: SYS-MVP-TEMPLATE.yaml (primary for autopilot workflow)
+# - Purpose: Machine-readable validation rules for both MD and YAML documents
+# - On conflict: Defer to respective template (MD or YAML based on document format)
 # =============================================================================
 #
-# SYS Schema Definition v1.0
-# Purpose: Define valid metadata structure and validation rules for SYS documents
-# Usage: Reference by validate_sys.py for automated validation
-
+# Authority Hierarchy:
+# Human Workflow:  MD Template → YAML Schema (validates MD) → Validators
+# Autopilot:    YAML Template → YAML Schema (validates YAML) → Validators
+#
+# Schema is DERIVATIVE of both templates (dual-authority)
+#
+# SYS Schema Definition v1.1
+# Purpose: Define valid metadata structure for SYS documents
+# Usage: Optional reference by validate_sys.py for automated validation
+#
 schema_version: "1.1"
 artifact_type: SYS
 layer: 6
-last_updated: "2026-01-19"
+last_updated: "2026-01-20"
 
 references:
-  template: "SYS-MVP-TEMPLATE.md"
+  md_template: "SYS-MVP-TEMPLATE.md"
+  yaml_template: "SYS-MVP-TEMPLATE.yaml"
   creation_rules: "SYS_MVP_CREATION_RULES.md"
   validation_rules: "SYS_MVP_VALIDATION_RULES.md"
 

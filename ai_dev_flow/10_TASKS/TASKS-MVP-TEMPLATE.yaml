@@ -1,0 +1,390 @@
+# =============================================================================
+# 📋 Document Authority: PRIMARY STANDARD for Autopilot Workflow
+# - Purpose: AI-consumable template for automated TASKS artifact generation
+# - Validation: Validated by TASKS_MVP_SCHEMA.yaml (shared with MD template)
+# - Human Reference: See TASKS-TEMPLATE.md for narrative explanations
+# =============================================================================
+
+id: TASKS-NN
+service_name: "[Service/Component Name]"
+summary: "[2-3 sentences: What this implementation plan accomplishes and its role in the system]"
+
+# =============================================================================
+# Document Control
+# =============================================================================
+
+document_control:
+  tasks_id: "TASKS-NN"
+  document_name: "[Implementation Plan Document Name]"
+  status: "Draft"  # Draft, Review, Approved, In Progress, Completed, Blocked
+  version: "1.0.0"
+  date_created: "YYYY-MM-DD"
+  last_updated: "YYYY-MM-DD"
+  author: "[Primary Author]"
+  assigned_to: "[Primary Developer]"
+  priority: "Critical (P0)"  # Critical (P0), High (P1), Medium (P2), Low (P3)
+  source_spec: "SPEC-NN"
+  
+  estimated_effort_hours: 8
+  actual_effort_hours: null
+  complexity: 3  # 1=minimal config, 5=architectural changes
+
+# =============================================================================
+# Development Plan Tracking
+# =============================================================================
+
+development_plan_tracking:
+  workflow:
+    pre_check:
+      status: "NOT_STARTED"  # NOT_STARTED → COMPLETED
+      checklist:
+        verified_req: false       # Verified against REQ-NN
+        verified_spec: false      # Verified against SPEC-NN
+        confirmed_arch: false     # Confirmed architecture pattern
+        checked_deps: false       # All dependencies available
+    
+    implementation:
+      status: "NOT_STARTED"  # NOT_STARTED → IN_PROGRESS → COMPLETED
+      started: null        # YYYY-MM-DD
+      completed: null      # YYYY-MM-DD
+    
+    post_check:
+      status: "NOT_STARTED"
+      checklist:
+        tests_passing: false      # All tests pass
+        coverage_met: false       # Coverage thresholds met
+        docs_updated: false       # Documentation updated
+        session_logged: false     # Session log entry added
+
+# =============================================================================
+# Section 1: Objective
+# =============================================================================
+
+section_1_objective:
+  summary: "[2-3 sentences description of what this implementation accomplishes]"
+  
+  deliverables:
+    - "[Deliverable 1: e.g., 'Core module with business logic']"
+    - "[Deliverable 2: e.g., 'Unit tests with 85%+ coverage']"
+    - "[Deliverable 3: e.g., 'Integration with external service']"
+    - "[Deliverable 4: e.g., 'API documentation']"
+  
+  business_value: "[Single sentence on why this matters to the business/product]"
+
+# =============================================================================
+# Section 2: Scope
+# =============================================================================
+
+section_2_scope:
+  inclusions:
+    - "[In-scope item 1: Feature or component to implement]"
+    - "[In-scope item 2: Specific functionality to deliver]"
+    - "[In-scope item 3: Integration points or APIs]"
+  
+  exclusions:
+    - "[Out-of-scope item 1: Feature intentionally excluded]"
+    - "[Out-of-scope item 2: Technical debt not addressed]"
+    - "[Out-of-scope item 3: Future functionality]"
+  
+  prerequisites:
+    - "[Prerequisite 1: Required infrastructure or service]"
+    - "[Prerequisite 2: Dependent component or module]"
+    - "[Prerequisite 3: External API or database availability]"
+
+# =============================================================================
+# Section 3: Implementation Plan
+# =============================================================================
+
+section_3_implementation_plan:
+  phases:
+    - phase_number: 1
+      phase_name: "[Phase Name: e.g., Setup and Environment]"
+      objective: "[Phase objective: What this phase achieves]"
+      
+      tasks:
+        - task_id: "TASK-01"
+          task_name: "[Task Title]"
+          description: "[Detailed task description]"
+          dependencies: []
+          acceptance_criteria:
+            - "[Criterion 1: Task completes when...]"
+            - "[Criterion 2: Task passes when...]"
+          estimated_hours: 2
+          status: "Not Started"
+        
+        - task_id: "TASK-02"
+          task_name: "[Task Title]"
+          description: "[Detailed task description]"
+          dependencies: ["TASK-01"]
+          acceptance_criteria:
+            - "[Criterion: Task completes when previous task done]"
+          estimated_hours: 1
+          status: "Not Started"
+      
+      deliverables:
+        - "[Deliverable 1: Development environment configured]"
+        - "[Deliverable 2: Base project structure created]"
+      
+      duration: "0.5 days"
+    
+    - phase_number: 2
+      phase_name: "[Phase Name: e.g., Core Implementation]"
+      objective: "[Phase objective]"
+      
+      tasks:
+        - task_id: "TASK-03"
+          task_name: "[Task Title]"
+          description: "[Detailed task description]"
+          dependencies: ["TASK-01", "TASK-02"]
+          acceptance_criteria:
+            - "[Criterion: Core functionality implemented]"
+          estimated_hours: 4
+          status: "Not Started"
+        
+        - task_id: "TASK-04"
+          task_name: "[Task Title]"
+          description: "[Detailed task description]"
+          dependencies: ["TASK-03"]
+          acceptance_criteria:
+            - "[Criterion: Error handling implemented]"
+          estimated_hours: 2
+          status: "Not Started"
+      
+      deliverables:
+        - "[Deliverable 1: Core feature implemented]"
+        - "[Deliverable 2: Unit tests written]"
+      
+      duration: "1 day"
+    
+    - phase_number: 3
+      phase_name: "[Phase Name: e.g., Testing and Validation]"
+      objective: "[Phase objective]"
+      
+      tasks:
+        - task_id: "TASK-05"
+          task_name: "[Task Title]"
+          description: "[Detailed task description]"
+          dependencies: ["TASK-04"]
+          acceptance_criteria:
+            - "[Criterion: All tests pass]"
+          estimated_hours: 1
+          status: "Not Started"
+      
+      deliverables:
+        - "[Deliverable 1: Test suite validated]"
+        - "[Deliverable 2: Code reviewed and approved]"
+      
+      duration: "0.5 days"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+
+section_4_execution_commands:
+  setup:
+    - command: "cd /path/to/project"
+      description: "Navigate to project directory"
+    
+    - command: "python3 -m venv venv && source venv/bin/activate"
+      description: "Create and activate virtual environment"
+    
+    - command: "pip install -r requirements.txt"
+      description: "Install dependencies"
+  
+  implementation:
+    - command: "mkdir -p src/module"
+      description: "Create module directory"
+    
+    - command: "touch src/module/implementation.py"
+      description: "Create implementation file"
+    
+    - command: "mkdir -p tests/unit"
+      description: "Create test directory structure"
+  
+  validation:
+    - command: "python3 -m pytest tests/ -v"
+      description: "Run unit tests"
+    
+    - command: "python3 -m pytest --cov=src --cov-report=term-missing"
+      description: "Check test coverage"
+    
+    - command: "python3 -m flake8 src/"
+      description: "Run linting checks"
+    
+    - command: "python3 -m mypy src/"
+      description: "Run type checking"
+
+# =============================================================================
+# Section 5: Constraints
+# =============================================================================
+
+section_5_constraints:
+  technical:
+    - "[Technical constraint 1: Must use Python 3.9+]"
+    - "[Technical constraint 2: Must integrate with existing authentication system]"
+    - "[Technical constraint 3: Maximum response time 200ms]"
+  
+  quality:
+    - "[Quality constraint 1: Code coverage must be >=85%]"
+    - "[Quality constraint 2: All tests must pass before commit]"
+    - "[Quality constraint 3: Must follow PEP 8 style guide]"
+  
+  performance:
+    - "[Performance constraint 1: API must handle 1000 req/s]"
+    - "[Performance constraint 2: Database queries must complete in <100ms]"
+    - "[Performance constraint 3: Memory usage must remain under 512MB]"
+
+# =============================================================================
+# Section 6: Acceptance Criteria
+# =============================================================================
+
+section_6_acceptance_criteria:
+  functional:
+    - "[Functional criterion 1: All core features work as specified]"
+    - "[Functional criterion 2: Integration with external systems works]"
+    - "[Functional criterion 3: Error conditions handled properly]"
+  
+  quality:
+    - "[Quality criterion 1: Code coverage >=85%]"
+    - "[Quality criterion 2: No critical linting issues]"
+    - "[Quality criterion 3: Performance benchmarks met]"
+  
+  operational:
+    - "[Operational criterion 1: Can be deployed to production environment]"
+    - "[Operational criterion 2: Monitoring and logging in place]"
+    - "[Operational criterion 3: Rollback plan documented]"
+
+# =============================================================================
+# Section 7: Implementation Contracts
+# =============================================================================
+
+section_7_implementation_contracts:
+  contracts_provided:
+    - contract_type: "protocol_interface"
+      description: "Protocol interface definition for this service"
+      code_reference: "src/module/interfaces.py"
+    
+    - contract_type: "data_model"
+      description: "Pydantic data models for input/output"
+      code_reference: "src/module/models.py"
+  
+  contracts_consumed:
+    - contract_type: "external_api"
+      description: "External API contract this service depends on"
+      provided_by: "CTR-NN"
+      interface_name: "ExternalServiceInterface"
+    
+    - contract_type: "database"
+      description: "Database schema contract"
+      provided_by: "SYS-NN"
+      table_names: ["table1", "table2"]
+
+# =============================================================================
+# Section 8: Traceability
+# =============================================================================
+
+section_8_traceability:
+  upstream_references:
+    brd: "@brd: BRD.NN.EE.SS"
+    prd: "@prd: PRD.NN.EE.SS"
+    ears: "@ears: EARS.NN.EE.SS"
+    bdd: "@bdd: BDD.NN.EE.SS"
+    adr: "@adr: ADR-NN"
+    sys: "@sys: SYS.NN.EE.SS"
+    req: "@req: REQ.NN.EE.SS"
+    spec: "@spec: SPEC-NN"
+  
+  downstream_artifacts:
+    code: "src/module/implementation.py"
+    tests: "tests/unit/test_implementation.py"
+    documentation: "docs/api/implementation.md"
+  
+  tags:
+    - "@tasks: TASKS-NN"
+    - "@spec: SPEC-NN"
+    - "@req: REQ.NN.EE.SS"
+
+# =============================================================================
+# Section 9: Risk & Mitigation
+# =============================================================================
+
+section_9_risk_mitigation:
+  risks:
+    - risk_id: "RISK-001"
+      risk_description: "[Risk description: e.g., Third-party API may have rate limits]"
+      probability: "High"  # High, Medium, Low
+      impact: "High"  # High, Medium, Low
+      mitigation_strategy: |
+        [Mitigation steps: e.g., Implement retry logic with exponential backoff,
+        cache responses locally, monitor API usage, have fallback service available]
+      owner: "[Risk Owner]"
+    
+    - risk_id: "RISK-002"
+      risk_description: "[Risk description: e.g., Database schema changes may break existing queries]"
+      probability: "Medium"
+      impact: "Medium"
+      mitigation_strategy: |
+        [Mitigation steps: e.g., Create database migration script,
+        test in staging environment first, maintain backward compatibility during transition]
+      owner: "[Risk Owner]"
+    
+    - risk_id: "RISK-003"
+      risk_description: "[Risk description: e.g., Team member may be unavailable during sprint]"
+      probability: "Low"
+      impact: "Medium"
+      mitigation_strategy: |
+        [Mitigation steps: e.g., Document code thoroughly,
+        ensure knowledge sharing, have backup developer available]
+      owner: "[Risk Owner]"
+
+# =============================================================================
+# Section 10: Session Log
+# =============================================================================
+
+section_10_session_log:
+  progress:
+    - date: "YYYY-MM-DD"
+      task_ids: ["TASK-01", "TASK-02"]
+      progress_summary: "[Progress description: Completed setup and initial implementation]"
+      blockers: []
+      next_steps: "[Next steps: Continue with core implementation in Phase 2]"
+    
+    - date: "YYYY-MM-DD"
+      task_ids: ["TASK-03", "TASK-04"]
+      progress_summary: "[Progress description: Core features implemented]"
+      blockers: ["[Blocker: External API latency issues]"]
+      next_steps: "[Next steps: Implement error handling and begin testing]"
+    
+    - date: "YYYY-MM-DD"
+      task_ids: ["TASK-05"]
+      progress_summary: "[Progress description: All tests passing, code review complete]"
+      blockers: []
+      next_steps: "[Next steps: Ready for deployment]"
+
+# =============================================================================
+# Section 11: Change History
+# =============================================================================
+
+section_11_change_history:
+  versions:
+    - version: "1.0.0"
+      date: "YYYY-MM-DD"
+      author: "[Author Name]"
+      changes: "Initial version"
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+# Template Reference: TASKS-TEMPLATE.md (for narrative explanations)
+# Schema: TASKS_MVP_SCHEMA.yaml (for validation rules)
+# Creation Rules: TASKS_MVP_CREATION_RULES.md (for guidance)
+# Validation Rules: TASKS_MVP_VALIDATION_RULES.md (for checklist)
+
+# MVP Profile Notes:
+# - 11 sections (1-11 numbered, plus Document Control and Development Plan Tracking)
+# - Section 4: Execution Commands added in v2.0
+# - Implementation Contracts section supports parallel development
+# - Minimum Execution-Ready Score: 90%
+
+# =============================================================================

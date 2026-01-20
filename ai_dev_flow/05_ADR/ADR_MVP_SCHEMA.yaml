@@ -1,9 +1,17 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of ADR-MVP-TEMPLATE.md
-# - Authority: ADR-MVP-TEMPLATE.md is the single source of truth for ADR structure
-# - Purpose: Machine-readable validation rules derived from the template
-# - On conflict: Defer to ADR-MVP-TEMPLATE.md
+# 📋 Document Role: This is a DERIVATIVE of template(s)
+# - Authority:
+#   * MD Template: ADR-MVP-TEMPLATE.md (primary for human workflow)
+#   * YAML Template: ADR-MVP-TEMPLATE.yaml (primary for autopilot workflow)
+# - Purpose: Machine-readable validation rules for both MD and YAML documents
+# - On conflict: Defer to respective template (MD or YAML based on document format)
 # =============================================================================
+#
+# Authority Hierarchy:
+# Human Workflow:  MD Template → YAML Schema (validates MD) → Validators
+# Autopilot:    YAML Template → YAML Schema (validates YAML) → Validators
+#
+# Schema is DERIVATIVE of both templates (dual-authority)
 #
 # ADR Schema Definition v1.0
 # Purpose: Define valid metadata structure and validation rules for ADR documents
@@ -12,10 +20,11 @@
 schema_version: "1.0"
 artifact_type: ADR
 layer: 5
-last_updated: "2025-11-30"
+last_updated: "2026-01-20"
 
 references:
-  template: "ADR-MVP-TEMPLATE.md"
+  md_template: "ADR-MVP-TEMPLATE.md"
+  yaml_template: "ADR-MVP-TEMPLATE.yaml"
   creation_rules: "ADR_MVP_CREATION_RULES.md"
   validation_rules: "ADR_MVP_VALIDATION_RULES.md"
 

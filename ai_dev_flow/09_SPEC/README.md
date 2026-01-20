@@ -22,6 +22,155 @@ custom_fields:
 
 Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
+## Pre-Generation Planning Checklist
+
+**⚠️ MANDATORY: Execute ALL checks below BEFORE creating a SPEC generation plan.**
+
+This checklist prevents critical errors discovered in production (e.g., Trading Nexus v4.2 where 13 of 16 SPECs exceeded 20KB file size limit by 2-9x).
+
+### 1. REQ-to-SPEC Mapping Analysis
+
+**Purpose**: Verify which specific REQ files will be implemented by each SPEC.
+
+**Required Actions**:
+- [ ] **List all REQ files** in project: `find docs/07_REQ -name "REQ-*.md" | wc -l`
+- [ ] **Identify REQ folder structure**: Verify FLAT vs NESTED organization
+  ```bash
+  ls -la docs/07_REQ/
+  # FLAT: REQ files directly in 07_REQ/
+  # NESTED: REQ-NN_{folder}/ subdirectories
+  ```
+- [ ] **Map REQs to SPECs**: Create detailed table showing:
+  - SPEC ID
+  - PRD alignment (vertical ID alignment check)
+  - Specific REQ files (e.g., REQ-01.01 through REQ-01.12)
+  - REQ count per SPEC
+  - REQ folder path (NESTED structure)
+
+**Output**: Section in generation plan titled "Detailed REQ-to-SPEC Mapping" with complete file-level assignments.
+
+### 2. File Size Impact Analysis
+
+**Purpose**: Estimate SPEC file sizes to prevent framework limit violations (20KB target, 20KB maximum for YAML).
+
+**Required Actions**:
+- [ ] **Check archived SPECs** (if available):
+  ```bash
+  ls -lh docs/09_SPEC/archive/*.yaml | awk '{print $5, $9}'
+  ```
+- [ ] **Calculate size-to-REQ ratio**: Analyze archived files
+  ```bash
+  for f in docs/09_SPEC/archive/SPEC-*.yaml; do
+    echo "=== $f ==="
+    wc -l "$f"
+    grep -c "req_id:" "$f" || echo "0"
+  done
+  ```
+- [ ] **Estimate new SPEC sizes** using formula:
+  ```
+  Estimated Size = (Average KB per REQ) × (REQ count for this SPEC)
+
+  Example:
+  - Archived SPEC-11: 79KB with 32 REQs = 2.47 KB/REQ
+  - New SPEC with 60 REQs ≈ 148KB (7.4x over limit!)
+  ```
+- [ ] **Identify violations**: Flag any SPEC estimated >20KB
+- [ ] **Document mitigation strategy**:
+  - Option A: Accept warnings (not recommended)
+  - Option B: Split into micro-SPECs (SPEC-NN.01, SPEC-NN.02)
+  - Option C: Condensed YAML format (experimental)
+
+**Output**: Section in generation plan titled "File Size Impact Analysis" with:
+- Estimated size per SPEC
+- Violation flags (⚠️ 2-5x over, 🔴 5x+ over)
+- Mitigation recommendations
+
+### 3. One-to-Many Structure Validation
+
+**Purpose**: Verify correct application of vertical ID alignment and one-to-many rules.
+
+**Required Actions**:
+- [ ] **Count PRDs**: `ls docs/02_PRD/PRD-*.md | grep -v "00_Index" | wc -l`
+- [ ] **Check SYS structure**: Identify which PRDs use one-to-many
+  ```bash
+  # Look for nested SYS folders
+  ls -d docs/06_SYS/SYS-*/ 2>/dev/null
+  ```
+- [ ] **Verify SPEC IDs match PRD IDs**: SPEC-01 for PRD-01, SPEC-08.01 for PRD-08, etc.
+- [ ] **Validate folder structure**:
+  - Flat SPECs: `SPEC-NN_{slug}.yaml` (one-to-one)
+  - Nested SPECs: `SPEC-NN_{slug}/SPEC-NN.01_{component}.yaml` (one-to-many)
+
+**Output**: Section in generation plan showing SPEC structure (flat vs nested) aligned with PRD/SYS patterns.
+
+### 4. CTR Integration Verification
+
+**Purpose**: Ensure all required CTR (API Contract) files exist before referencing in SPECs.
+
+**Required Actions**:
+- [ ] **List available CTRs**:
+  ```bash
+  ls docs/08_CTR/CTR-*.{md,yaml} | grep -oE "CTR-[0-9]+" | sort -u
+  ```
+- [ ] **Map CTRs to SPECs**: Verify each SPEC has corresponding CTR
+- [ ] **Check external CTRs**: Identify vendor API contracts (e.g., CTR-21 Vertex AI, CTR-22 Anthropic)
+
+**Output**: CTR integration table in generation plan with status verification.
+
+### 5. Framework Document Review
+
+**Purpose**: Confirm latest framework rules are applied.
+
+**Required Actions**:
+- [ ] **Read creation rules**: `/opt/data/docs_flow_framework/ai_dev_flow/09_SPEC/SPEC_MVP_CREATION_RULES.md`
+- [ ] **Check template version**: Verify `SPEC-MVP-TEMPLATE.yaml` is current
+- [ ] **Review validation rules**: `/opt/data/docs_flow_framework/ai_dev_flow/09_SPEC/SPEC_MVP_VALIDATION_RULES.md`
+- [ ] **Verify ID naming standards**: `/opt/data/docs_flow_framework/ai_dev_flow/ID_NAMING_STANDARDS.md`
+
+**Output**: Reference to framework documents in generation plan with version/date confirmation.
+
+### Checklist Summary
+
+| Check | Purpose | Critical Risk if Skipped |
+|-------|---------|--------------------------|
+| 1. REQ Mapping | Complete traceability | Missing REQ implementations |
+| 2. File Size Analysis | Prevent limit violations | Unprocessable YAML files, code gen failures |
+| 3. One-to-Many Validation | Correct structure | ID misalignment, broken traceability |
+| 4. CTR Integration | Complete API contracts | Missing interface definitions |
+| 5. Framework Review | Latest rules applied | Non-compliant documents |
+
+**Execution Time**: 15-30 minutes for thorough analysis
+**Benefit**: Prevents hours of rework and generation failures
+
+---
+
+### Pre-Generation Plan Template Section
+
+Every SPEC generation plan MUST include these sections (copy to generation plan):
+
+```markdown
+## Pre-Plan Verification (COMPLETED ✅)
+
+### REQ Inventory Verification
+- Total REQ files: [COUNT]
+- REQ structure: [FLAT/NESTED]
+- REQ naming pattern: [PATTERN]
+
+### File Size Analysis
+[TABLE with SPEC, REQ Count, Estimated Size, Status]
+
+### One-to-Many Structure
+[LIST of PRDs and their SPEC mapping]
+
+### CTR Availability
+[TABLE of CTR files with verification status]
+
+### Framework Compliance
+- Creation rules version: [DATE]
+- Template version: [VERSION]
+- ID naming standards: [COMPLIANCE %]
+```
+
 Specifications (SPEC) are machine-readable technical blueprints that define how software components should be implemented. SPECs transform requirements into actionable design decisions, providing complete implementation guidance for developers while establishing contracts for testing and integration.
 
 Note: `SPEC-MVP-TEMPLATE.yaml` is the reference template. YAML stays monolithic per component for code generation.

@@ -17,6 +17,14 @@ custom_fields:
   schema_reference: "CTR_MVP_SCHEMA.yaml"
   schema_version: "1.0"
 ---
+> **🔄 Dual-Format Note**: 
+> 
+> This MD template is the **primary source** for human workflow. 
+> - **For Autopilot**: See `CTR-MVP-TEMPLATE.yaml` (YAML template) 
+> - **Shared Validation**: Both formats are validated by `CTR_MVP_SCHEMA.yaml` 
+> - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md) for full comparison of formats, authority hierarchy, and when to use each. 
+> 
+---
 
 >
 > **📋 Document Authority**: This is the **PRIMARY STANDARD** for CTR structure. Schema: `CTR_MVP_SCHEMA.yaml v1.0`. Creation Rules: `CTR_MVP_CREATION_RULES.md`. Validation Rules: `CTR_MVP_VALIDATION_RULES.md`.

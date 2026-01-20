@@ -1,9 +1,17 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of PRD-MVP-TEMPLATE.md
-# - Authority: PRD-MVP-TEMPLATE.md is the single source of truth for PRD structure
-# - Purpose: Machine-readable validation rules derived from the template
-# - On conflict: Defer to PRD-MVP-TEMPLATE.md
+# 📋 Document Role: This is a DERIVATIVE of template(s)
+# - Authority:
+#   * MD Template: PRD-MVP-TEMPLATE.md (primary for human workflow)
+#   * YAML Template: PRD-MVP-TEMPLATE.yaml (primary for autopilot workflow)
+# - Purpose: Machine-readable validation rules for both MD and YAML documents
+# - On conflict: Defer to respective template (MD or YAML based on document format)
 # =============================================================================
+#
+# Authority Hierarchy:
+# Human Workflow:  MD Template → YAML Schema (validates MD) → Validators
+# Autopilot:    YAML Template → YAML Schema (validates YAML) → Validators
+#
+# Schema is DERIVATIVE of both templates (dual-authority)
 #
 # PRD Schema Definition v1.0
 # Purpose: Define valid metadata structure and validation rules for PRD documents
@@ -12,10 +20,11 @@
 schema_version: "1.0"
 artifact_type: PRD
 layer: 2
-last_updated: "2025-11-30"
+last_updated: "2026-01-20"
 
 references:
-  template: "PRD-MVP-TEMPLATE.md"
+  md_template: "PRD-MVP-TEMPLATE.md"
+  yaml_template: "PRD-MVP-TEMPLATE.yaml"
   creation_rules: "PRD_MVP_CREATION_RULES.md"
   validation_rules: "PRD_MVP_VALIDATION_RULES.md"
 

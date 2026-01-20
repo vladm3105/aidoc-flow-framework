@@ -1,23 +1,31 @@
 # =============================================================================
-# 📋 Document Role: This is a DERIVATIVE of REQ-MVP-TEMPLATE.md
-# - Authority: REQ-MVP-TEMPLATE.md is the single source of truth for REQ structure
-# - Purpose: Machine-readable validation rules derived from the template
-# - On conflict: Defer to REQ-MVP-TEMPLATE.md
+# 📋 Document Role: This is a DERIVATIVE of template(s)
+# - Authority:
+#   * MD Template: REQ-MVP-TEMPLATE.md (primary for human workflow)
+#   * YAML Template: REQ-MVP-TEMPLATE.yaml (primary for autopilot workflow)
+# - Purpose: Machine-readable validation rules for both MD and YAML documents
+# - On conflict: Defer to respective template (MD or YAML based on document format)
 # =============================================================================
+#
+# Authority Hierarchy:
+# Human Workflow:  MD Template → YAML Schema (validates MD) → Validators
+# Autopilot:    YAML Template → YAML Schema (validates YAML) → Validators
+#
+# Schema is DERIVATIVE of both templates (dual-authority)
 #
 # REQ Schema Definition v1.1
 # Purpose: Define valid metadata structure and validation rules for REQ documents
 # Usage: Reference by validate_req.py for automated validation
 # Supports both full and MVP template profiles
-
+#
 schema_version: "1.1"
 artifact_type: REQ
 layer: 7
-last_updated: "2026-01-13"
+last_updated: "2026-01-20"
 
 references:
-  template: "REQ-MVP-TEMPLATE.md"
-  mvp_template: "REQ-MVP-TEMPLATE.md"
+  md_template: "REQ-MVP-TEMPLATE.md"
+  yaml_template: "REQ-MVP-TEMPLATE.yaml"
   creation_rules: "REQ_MVP_CREATION_RULES.md"
   validation_rules: "REQ_MVP_VALIDATION_RULES.md"
 
