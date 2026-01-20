@@ -108,6 +108,36 @@ metadata:
       type: string
       description: "Required when document_type is 'template'"
 
+    infrastructure_type:
+      type: string
+      allowed_values: ["Compute", "Database", "Storage", "Network", "Cache", "Messaging", "Deployment_Automation", "Observability", "Security", "Cost", "None"]
+      description: "Type of infrastructure requirement (from SYS 9.1.x)"
+
+    category:
+      type: string
+      allowed_values: ["Functional", "Logic", "API", "UI", "UX", "Database", "Config", "Infra", "FinOps", "Security", "Performance", "Reliability", "Scalability", "Compliance", "None"]
+      description: "Category of requirement (Functional, Logic, API, UI, UX, Database, Config, Infra, FinOps, Security, Performance, Reliability, Scalability, Compliance)"
+
+    iac_provider:
+      type: string
+      allowed_values: ["terraform", "cloudformation", "ansible", "pulumi", "kubernetes", "helm", "None"]
+      description: "IaC provider used for deployment"
+
+    config_file_type:
+      type: string
+      allowed_values: ["shell", "yaml", "json", "toml", "ini", "None"]
+      description: "Configuration file format type for config generation"
+
+    shell_scripts_dir:
+      type: string
+      allowed_values: ["scripts/"]
+      description: "Directory path for generated shell scripts"
+
+    source_code_url:
+      type: string
+      format: "url"
+      description: "URL to generated source code repository"
+
   # Required tags
   required_tags:
     - req                 # Primary identifier (or req-template for templates)
@@ -519,6 +549,18 @@ validation_rules:
       severity: info
 
     - rule: "Infrastructure requirements must include compute and database"
+      severity: warning
+
+    - rule: "When infrastructure_type is set, iac_provider must be set or 'None'"
+      severity: warning
+
+    - rule: "When infrastructure_type is 'Deployment_Automation', iac_provider must include 'ansible' or 'terraform'"
+      severity: warning
+
+    - rule: "source_code_url must be valid URL format when set"
+      severity: error
+
+    - rule: "shell_scripts_dir must be 'scripts/' when deployment artifacts are generated"
       severity: warning
 
   # Code block validation

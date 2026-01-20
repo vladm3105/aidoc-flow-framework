@@ -18,11 +18,18 @@ custom_fields:
 
 | Item | Details |
 |------|---------|
-| Status | Example/Approved |
-| Version | 2.0.0 |
-| Author | Example Team |
-| Category | Functional - Integration |
-| Verification | 04_BDD/Integration/Contract |
+| **Status** | Approved |
+| **Version** | 2.0.0 |
+| **Date Created** | 2026-01-01 |
+| **Last Updated** | 2026-01-20 |
+| **Author** | Example Team |
+| **Priority** | Medium (P3) |
+| **Category** | API |
+| **Infrastructure Type** | None |
+| **Source Document** | SYS-01 |
+| **Verification Method** | Contract Test |
+| **Assigned Team** | Backend |
+| **SPEC-Ready Score** | ✅ 90% |
 
 ---
 

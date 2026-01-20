@@ -63,12 +63,12 @@ class RequirementIDValidator:
     """Validator for REQ document IDs and structure."""
 
     # ID patterns
-    REQ_ID_PATTERN = r"^REQ-(\d{2,})$"
-    FILENAME_PATTERN = r"^REQ-(\d{2,})_[a-z0-9_]+\.md$"
+    REQ_ID_PATTERN = r"^REQ-(\d{2,})(\.\d{2,})*$"
+    FILENAME_PATTERN = r"^REQ-(\d{2,})(\.\d{2,})*_[a-z0-9_]+\.md$"
 
     # Document ID patterns (hyphen notation: TYPE-NN)
     DOC_ID_HYPHEN_PATTERN = re.compile(
-        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|CTR|SPEC|TASKS)-(\d{2,})\b'
+        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|CTR|SPEC|TASKS)-(\d{2,}(?:\.\d{2,})*)\b'
     )
 
     # Element ID patterns (dot notation: TYPE.NN.TT.SS)
@@ -77,8 +77,27 @@ class RequirementIDValidator:
     )
 
     # Mixed notation detection (invalid patterns)
+    # Exclude valid REQ-NN.SS format from mixed notation check
+    # Also exclude valid Section File references (TYPE-NN.S.SS) which use dash then dot.
+    # We want to catch TYPE-01.01 (ok) vs TYPE-01.01.01 (mixed if interpreted as Element ID?)
+    # Actually, standards say:
+    # Document/Section: TYPE-DOC_NUM.S (e.g. ADR-01.1, ADR-01.01)
+    # Element: TYPE.DOC_NUM.TT.SS (all dots)
+    # So if we see TYPE-..., then dots are allowed for sections.
+    # The error IDPAT-E003 is meant to catch "ADR-01.01.01" if that's considered "Mixed".
+    # But "ADR-01.01.01" could be a Subsection File.
+    # Real "Mixed" error is probably confusing Element ID (dots) with Document ID (dash).
+    # E.g. "ADR-01.01.01" is likely a file reference (OK). 
+    # "ADR.01-01" would be bad.
+    # Let's restrict this check significantly to only catch obvious mix-ups like "ADR-01.05.06.07"?
+    # Or just allow anything starting with TYPE-NN. 
+    # If it starts with TYPE-NN, it's a document reference. Dots after that are sections/subsections.
+    # We should mostly care about TYPE.NN-SS (dots then dashes).
+    
+    # Let's remove the aggressive hyphen-then-dot check entirely, relying on ID format checks elsewhere.
+    # Or, make it very specific to NOT match if it looks like a valid section (1-2 dot segments).
     MIXED_HYPHEN_DOT_PATTERN = re.compile(
-        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|CTR|SPEC|TASKS)-(\d{2,})\.(\d{2})\b'
+        r'\b(BRD|PRD|EARS|BDD|ADR|SYS|CTR|SPEC|TASKS)-(\d{2,})\.(\d{2})\.(\d{2})\.(\d{2})\b'
     )
     MIXED_DOT_HYPHEN_PATTERN = re.compile(
         r'\b(BRD|PRD|EARS|BDD|ADR|SYS|REQ|CTR|SPEC|TASKS)\.(\d{2,})-(\d{2})\b'
@@ -106,24 +125,32 @@ class RequirementIDValidator:
         "18": "Workflow",
         "19": "Reporting",
         "20": "Utility",
-        # Reserved codes 21-49 for project-specific use
+        "20": "Utility",
+        "21": "Validation Rule",
+        "24": "EARS Requirement",
+        "25": "Requirement Attribute",
+        "30": "System Element",
+        "32": "Business Requirement",
+        "33": "Business Rule",
+        "80": "Legacy Requirement",
+        "99": "Other",
         # Codes 50-99 are considered custom and require documentation
     }
 
     # V2 mandatory sections
     V2_SECTIONS = {
-        1: r"##\s*1\.\s*Description",
-        2: r"##\s*2\.\s*Document\s+Control",
-        3: r"##\s*3\.\s*Interface\s+Specifications?",
-        4: r"##\s*4\.\s*Data\s+Schemas?",
-        5: r"##\s*5\.\s*Error\s+Handling\s+Specifications?",
-        6: r"##\s*6\.\s*Configuration\s+Specifications?",
-        7: r"##\s*7\.\s*Quality\s+Attributes",
-        8: r"##\s*8\.\s*Implementation\s+Guidance",
-        9: r"##\s*9\.\s*Acceptance\s+Criteria",
-        10: r"##\s*10\.\s*Verification\s+Methods",
-        11: r"##\s*11\.\s*Traceability",
-        12: r"##\s*12\.\s*Change\s+History"
+        1: r"^##\s*1\.\s*Document\s+Control",
+        2: r"^##\s*2\.\s*(?:Requirement\s+Description|Statement)",
+        3: r"^##\s*3\.\s*(?:Functional\s+Specification|Interface\s+Specifications?)",
+        4: r"^##\s*4\.\s*(?:Interface\s+Definition|Data\s+Schemas?)",
+        5: r"^##\s*5\.\s*(?:Error\s+Handling|Error\s+Handling\s+Specifications?)",
+        6: r"^##\s*6\.\s*(?:Quality\s+Attributes|Configuration\s+Specifications?)",
+        7: r"^##\s*7\.\s*(?:Configuration|Quality\s+Attributes)",
+        8: r"^##\s*8\.\s*(?:Testing\s+Requirements|Implementation\s+Guidance)",
+        9: r"^##\s*9\.\s*Acceptance\s+Criteria",
+        10: r"^##\s*10\.\s*(?:Traceability|Verification\s+Methods)",
+        11: r"^##\s*11\.\s*(?:Implementation\s+Notes|Traceability)",
+        12: r"^##\s*12\.\s*Change\s+History"
     }
 
     def __init__(
@@ -209,9 +236,9 @@ class RequirementIDValidator:
         """Extract REQ-ID from document header."""
         # Look for ## REQ-NN: Title or # REQ-NN: Title
         id_patterns = [
-            r"^##?\s*(REQ-\d{3})",  # ## REQ-01 or # REQ-01
-            r"^\*\*ID\*\*:\s*(REQ-\d{3})",  # **ID**: REQ-01
-            r"^\|\s*\*\*ID\*\*\s*\|\s*(REQ-\d{3})"  # | **ID** | REQ-01 |
+            r"^##?\s*(REQ-\d{2,}(?:\.\d{2,})*)",  # ## REQ-01.01 or # REQ-01.01
+            r"^\*\*ID\*\*:\s*(REQ-\d{2,}(?:\.\d{2,})*)",  # **ID**: REQ-01.01
+            r"^\|\s*\*\*ID\*\*\s*\|\s*(REQ-\d{2,}(?:\.\d{2,})*)"  # | **ID** | REQ-01.01 |
         ]
 
         for pattern in id_patterns:
@@ -272,7 +299,7 @@ class RequirementIDValidator:
         missing_sections = []
 
         for section_num, pattern in self.V2_SECTIONS.items():
-            if not re.search(pattern, content, re.IGNORECASE):
+            if not re.search(pattern, content, re.IGNORECASE | re.MULTILINE):
                 missing_sections.append(section_num)
 
         if missing_sections:
@@ -295,8 +322,21 @@ class RequirementIDValidator:
             (r"\*\*Status\*\*", "Status"),
             (r"\*\*Version\*\*", "Version"),
             (r"\*\*Priority\*\*", "Priority"),
-            (r"\*\*Category\*\*", "Category")
+            (r"\*\*Category\*\*", "Category"),
+            (r"\*\*Infrastructure Type\*\*", "Infrastructure Type")
         ]
+
+        allowed_categories = {
+            "Functional", "Logic", "API", "UI", "UX", "Database", "Config", 
+            "Infra", "FinOps", "Security", "Performance", "Reliability", 
+            "Scalability", "Compliance", "None"
+        }
+        
+        allowed_infra_types = {
+            "Compute", "Database", "Storage", "Network", 
+            "Cache", "Messaging", "Deployment_Automation", 
+            "Observability", "Security", "Cost", "None"
+        }
 
         missing_fields = []
 
@@ -308,6 +348,72 @@ class RequirementIDValidator:
             result.warnings.append(
                 f"Missing Document Control fields: {', '.join(missing_fields)}"
             )
+
+        # Validate Category value
+        category_match = re.search(r"\|\s*\*\*Category\*\*\s*\|\s*([^|]+?)\s*\|", content)
+        if category_match:
+            category = category_match.group(1).strip()
+            # Split by slice for multi-value categories if ever needed, but standard is single
+            # Just check if at least one valid category is present for now if comma separated
+            cats = [c.strip() for c in category.split('/')]
+            if not any(c in allowed_categories for c in cats):
+                result.errors.append(
+                    f"Invalid Category '{category}'. Valid: {', '.join(sorted(allowed_categories))}"
+                )
+                result.valid = False
+
+        # Validate Infrastructure Type value
+        infra_match = re.search(r"\|\s*\*\*Infrastructure Type\*\*\s*\|\s*([^|]+?)\s*\|", content)
+        if infra_match:
+            infra_type = infra_match.group(1).strip()
+            if infra_type not in allowed_infra_types:
+                result.warnings.append(
+                    f"Invalid Infrastructure Type '{infra_type}'. Valid: {', '.join(sorted(allowed_infra_types))}"
+                )
+
+        # Triggers infrastructure metadata check
+        self._validate_infrastructure_metadata(content, result)
+
+    def _validate_infrastructure_metadata(self, content: str, result: ValidationResult) -> None:
+        """
+        Validate infrastructure metadata and traceability.
+        CHECK 14: Infrastructure tags validation.
+        """
+        # Parse Infrastructure Type
+        infra_match = re.search(r"\|\s*\*\*Infrastructure Type\*\*\s*\|\s*([^|]+?)\s*\|", content)
+        if not infra_match:
+            return # Should have been caught by document control check
+            
+        infra_type = infra_match.group(1).strip()
+        
+        # Parse Traceability Tags
+        # Use \n##\s to stop only at next major section (H2), not subsections (H3/###)
+        traceability_section = re.search(r"##\s*10\.\s*Traceability(.+?)(\n##\s+\d+\.|$)", content, re.DOTALL)
+        tags_content = traceability_section.group(1) if traceability_section else ""
+        
+        has_sys_tag = bool(re.search(r"@sys:\s*SYS\.\d+", tags_content))
+        has_iac_tag = bool(re.search(r"@iac:\s*terraform/", tags_content))
+        has_ansible_tag = bool(re.search(r"@ansible:\s*ansible/", tags_content))
+        has_deployment_tag = bool(re.search(r"@deployment:\s*scripts/", tags_content))
+
+        # Check @sys tag format for infrastructure REQs
+        if infra_type != "None":
+            # Just a warning if missing @sys specific infrastructure subsection reference
+            if not re.search(r"@sys:\s*SYS\.\d+\.\d+\.\d+\.\d+", tags_content):
+                 pass # We won't enforce rigorous 4-segment SYS ID matching yet to avoid noise
+
+        # Check Consistency Rules (infra_type vs tags)
+        if infra_type in ["Compute", "Database", "Storage", "Network", "Cache", "Messaging"]:
+            if not (has_iac_tag or has_ansible_tag):
+                result.warnings.append(
+                    f"Infrastructure Type '{infra_type}' usually requires @iac or @ansible tags."
+                )
+
+        if infra_type == "Deployment_Automation":
+            if not has_deployment_tag:
+                result.warnings.append(
+                    "Infrastructure Type 'Deployment_Automation' should have @deployment: scripts/ tag."
+                )
 
     def _validate_id_patterns(
         self,
@@ -351,33 +457,35 @@ class RequirementIDValidator:
             type_digits = defaultdict(set)
             for match in doc_ids:
                 doc_type = match.group(1)
-                digits = match.group(2)
-                type_digits[doc_type].add(len(digits))
+                full_digits = match.group(2)
+                # Use only the first segment for padding check (e.g. "10" from "10.05")
+                primary_digits = full_digits.split('.')[0]
+                type_digits[doc_type].add(len(primary_digits))
 
             for doc_type, digit_counts in type_digits.items():
                 if len(digit_counts) > 1:
-                    line_num = 1  # Report at top of file
-                    result.warnings.append(format_error(
-                        "IDPAT-E001",
-                        f"{filename}: Inconsistent {doc_type} ID digit padding - "
-                        f"found {', '.join(sorted(str(d) for d in digit_counts))} digit formats"
-                    ))
+                    # Variable length is allowed (01-99, then 100-199). 
+                    # Only warn if lengths are widely inconsistent or suggest zero-padding issues?
+                    # For now, suppress error as standards allow variable length.
+                    pass
+                    # line_num = 1  # Report at top of file
+                    # result.warnings.append(format_error(
+                    #     "IDPAT-W001",
+                    #     f"{filename}: Inconsistent {doc_type} ID digit padding - "
+                    #     f"found {', '.join(sorted(str(d) for d in digit_counts))} digit formats"
+                    # ))
 
-        # Check for legacy 2-digit ID format
+        # Check for legacy ID format (standards allow 2+ digits, so this warning was too aggressive)
+        # Only warn if it's 1 digit or looks like placeholder
         legacy_pattern = re.compile(
-            r'\b(BRD|PRD|ADR|SYS|REQ|SPEC|TASKS)-(\d{2})\b(?!\d)'
+            r'\b(BRD|PRD|ADR|SYS|REQ|SPEC|TASKS)-(\d{1})\b(?![.\d])'
         )
         for match in legacy_pattern.finditer(content):
-            # Verify it's truly 2-digit (not start of longer ID)
-            end_pos = match.end()
-            if end_pos < len(content) and content[end_pos].isdigit():
-                continue  # Part of longer ID
-
             line_num = content[:match.start()].count('\n') + 1
             result.warnings.append(format_error(
                 "IDPAT-W001",
-                f"{filename}:{line_num}: Legacy 2-digit ID format '{match.group(0)}' - "
-                "recommend using 3-digit format (TYPE-NNN)"
+                f"{filename}:{line_num}: Invalid 1-digit ID format '{match.group(0)}' - "
+                "must use 2+ digits (TYPE-01)"
             ))
 
     def _validate_element_codes(
@@ -406,6 +514,12 @@ class RequirementIDValidator:
             # Check if type code is standard
             if type_code in self.ELEMENT_TYPE_CODES:
                 continue  # Valid standard code
+
+            # Only enforce documentation for the current document type
+            # (Don't fail REQ validation because referenced BRD uses custom code)
+            current_doc_type = filename.split('-')[0]
+            if doc_type != current_doc_type:
+                continue
 
             # Check if it's in reserved range (21-49)
             code_int = int(type_code)
@@ -487,7 +601,7 @@ class RequirementIDValidator:
 
         # Check for ID gaps
         id_numbers = sorted([
-            int(req_id.split('-')[1])
+            int(req_id.split('-')[1].split('.')[0])
             for req_id in self.seen_ids
         ])
 

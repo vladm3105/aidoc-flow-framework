@@ -105,7 +105,8 @@ Every REQ must contain these exact sections in order (MVP profile):
 ## 3. Document Control Requirements (12 Mandatory Fields)
 
 - Status, Version (semantic X.Y.Z), Date Created (ISO 8601), Last Updated
-- Author, Priority (with P-level: P1/P2/P3/P4), Category (Functional/Security/Performance/etc.)
+- Author, Priority (with P-level: P1/P2/P3/P4), Category (Functional/Logic/API/UI/Database/Config/Infra/Security/Performance)
+- Infrastructure Type (Compute/Database/Storage/Network/Deployment/None)
 - Source Document (format: "DOC-ID section X.Y.Z"), Verification Method, Assigned Team
 - SPEC-Ready Score (format: "✅ XX% (Target: ≥70%)"), CTR-Ready Score (format: "✅ XX% (Target: ≥70%)")
 - Template Version (informational only, not validated)
@@ -163,7 +164,8 @@ Every REQ must contain these exact sections in order (MVP profile):
 
 - **Upstream Chain**: Must reference ALL 6 artifact types: BRD, PRD, EARS, BDD, ADR, SYS
 - **Cumulative Tagging**: All 6 tags required with format `@type: DOC-ID:NN` (numeric sub-IDs)
-- **Downstream Links**: SPEC, TASKS, CTR (if applicable), BDD scenarios
+- **Downstream Links**: SPEC, TASKS, CTR, BDD scenarios, and generated artifacts
+- **Generated Artifact Tags**: `@deployment`, `@ansible`, `@iac`, `@config_file_type`, `@source_code`
 - **Code Paths**: Actual file paths for implementation
 
 ---

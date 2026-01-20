@@ -30,7 +30,8 @@ custom_fields:
 | **Last Updated** | 2026-01-19 |
 | **Author** | Example Team |
 | **Priority** | High (P2) |
-| **Category** | Functional - Deployment |
+| **Category** | Infra |
+| **Infrastructure Type** | Deployment_Automation |
 | **Source Document** | [SYS-02 section 9.1.1](../06_SYS/SYS-02_deployment_requirements.md#sys021101) |
 | **Verification Method** | BDD + Integration Test |
 | **Assigned Team** | DevOps Team |

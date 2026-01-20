@@ -73,7 +73,7 @@ check_placeholder_text() {
           fi
         fi
       fi
-    done < <(grep -rn "$pattern" "$SYS_DIR"/*.md 2>/dev/null || true)
+    done < <(grep -rnF "$pattern" "$SYS_DIR" --include="*.md" 2>/dev/null || true)
   done
 
   if [[ $found -eq 0 ]]; then
@@ -103,7 +103,7 @@ check_premature_references() {
       ((ERRORS++)) || true
       ((found++)) || true
     fi
-  done < <(grep -rnE "$downstream_patterns" "$SYS_DIR"/*.md 2>/dev/null | head -20 || true)
+  done < <(grep -rnE "$downstream_patterns" "$SYS_DIR" --include="*.md" 2>/dev/null | head -20 || true)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No premature downstream references${NC}"
@@ -127,7 +127,7 @@ check_count_consistency() {
       fi
       ((found++)) || true
     fi
-  done < <(grep -rnE "[0-9]+ requirements?|[0-9]+ SYS|[0-9]+ interfaces?" "$SYS_DIR"/*.md 2>/dev/null | head -5 || true)
+  done < <(grep -rnE "[0-9]+ requirements?|[0-9]+ SYS|[0-9]+ interfaces?" "$SYS_DIR" --include="*.md" 2>/dev/null | head -5 || true)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No obvious count inconsistencies detected${NC}"
@@ -233,8 +233,8 @@ check_glossary() {
   local found=0
 
   # Check for term inconsistency (e.g., system vs System)
-  local system_lower=$(grep -roh "the system " "$SYS_DIR"/*.md 2>/dev/null | wc -l || echo 0)
-  local system_upper=$(grep -roh "the System " "$SYS_DIR"/*.md 2>/dev/null | wc -l || echo 0)
+  local system_lower=$(grep -roh "the system " "$SYS_DIR" --include="*.md" 2>/dev/null | wc -l || echo 0)
+  local system_upper=$(grep -roh "the System " "$SYS_DIR" --include="*.md" 2>/dev/null | wc -l || echo 0)
 
   if [[ $system_lower -gt 5 && $system_upper -gt 5 ]]; then
     echo -e "${YELLOW}GATE-W003: Mixed 'system' ($system_lower) and 'System' ($system_upper) usage${NC}"
@@ -256,7 +256,7 @@ check_element_ids() {
   echo "--- GATE-08: Element ID Uniqueness ---"
 
   local duplicates
-  duplicates=$(grep -rohE "SYS\.[0-9]+\.[0-9]+\.[0-9]+" "$SYS_DIR"/*.md 2>/dev/null | sort | uniq -d || true)
+  duplicates=$(grep -rohE "SYS\.[0-9]+\.[0-9]+\.[0-9]+" "$SYS_DIR" --include="*.md" --exclude="SYS_Traceability_Matrix.md" --exclude="SYS_Creation_Plan.md" --exclude="SYS-00_index.md" 2>/dev/null | sort | uniq -d || true)
 
   if [[ -n "$duplicates" ]]; then
     echo "$duplicates" | while read dup; do
@@ -288,7 +288,7 @@ check_quality_quantification() {
         ((WARNINGS++)) || true
         ((found++)) || true
       fi
-    done < <(grep -rni "$pattern" "$SYS_DIR"/*.md 2>/dev/null | head -5 || true)
+    done < <(grep -rni "$pattern" "$SYS_DIR" --include="*.md" 2>/dev/null | head -5 || true)
   done
 
   if [[ $found -eq 0 ]]; then
@@ -405,8 +405,8 @@ check_quality_coverage() {
 
   for qa in "${qa_keywords[@]}"; do
     local count
-    count=$(grep -ril "$qa" "$SYS_DIR"/SYS-[0-9]*_*.md 2>/dev/null | wc -l || echo 0)
-    if [[ $count -eq 0 ]]; then
+    count=$(grep -ril "$qa" "$SYS_DIR" --include="*.md" 2>/dev/null | wc -l | tr -d '[:space:]' || echo 0)
+    if [[ "$count" -eq 0 ]]; then
       echo -e "${YELLOW}GATE-W012: No SYS documents address '$qa'${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
@@ -431,8 +431,8 @@ check_nfr_completeness() {
 
   for nfr in "${nfr_categories[@]}"; do
     local count
-    count=$(grep -rilE "^#+.*$nfr|$nfr Requirements" "$SYS_DIR"/SYS-[0-9]*_*.md 2>/dev/null | wc -l || echo 0)
-    if [[ $count -eq 0 ]]; then
+    count=$(grep -rilE "^#+.*$nfr|$nfr Requirements" "$SYS_DIR" --include="*.md" 2>/dev/null | wc -l | tr -d '[:space:]' || echo 0)
+    if [[ "$count" -eq 0 ]]; then
       if [[ "$VERBOSE" == "--verbose" ]]; then
         echo -e "${YELLOW}GATE-W013: No SYS documents have '$nfr' section${NC}"
       fi

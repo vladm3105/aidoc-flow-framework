@@ -417,7 +417,17 @@ custom_fields:
 ### 9.1 Deployment Requirements
 [How the system must be deployed and released]
 
+> **Infrastructure Changes Required**: Yes | No
+>
+> - **If Yes**: Complete all subsections below with infrastructure details
+> - **If No**: Mark all subsections below as "Not Applicable" with brief rationale
+
 #### Infrastructure Requirements
+
+> **Applicability**: Required | Not Applicable
+>
+> - **If Required**: Provide detailed infrastructure specifications in table below
+> - **If Not Applicable**: Provide rationale explaining why infrastructure changes are not required
 
 > **Reference**: Cloud provider decisions in `@brd: BRD.NN.TT.SS`, `@prd: PRD.NN.TT.SS`, `@adr: ADR-NN`
 
@@ -432,6 +442,11 @@ custom_fields:
 
 #### Environment Configuration
 
+> **Applicability**: Required | Not Applicable
+>
+> - **If Required**: Provide environment configuration details in table below
+> - **If Not Applicable**: Provide rationale explaining why environment changes are not required
+
 | Environment | Deployment Strategy | Rollback Time | Replicas | Regions |
 |-------------|---------------------|---------------|-----------|---------|
 | Development | Manual | N/A | 1 | [region] |
@@ -444,6 +459,11 @@ custom_fields:
 - Startup: `/health/startup` - Initialization complete check
 
 #### Deployment Scripts Requirements
+
+> **Applicability**: Required | Not Applicable
+>
+> - **If Required**: Provide deployment scripts specifications in table below
+> - **If Not Applicable**: Provide rationale explaining why deployment script changes are not required
 
 > **Note**: All scripts generated automatically by Autopilot from this section.
 
@@ -464,6 +484,11 @@ custom_fields:
 - Idempotency: All scripts safe to run multiple times
 
 #### Ansible Playbook Requirements
+
+> **Applicability**: Required | Not Applicable
+>
+> - **If Required**: Provide Ansible playbook specifications in table below
+> - **If Not Applicable**: Provide rationale explaining why playbook changes are not required
 
 > **Note**: All playbooks generated automatically by Autopilot from this section.
 
@@ -486,6 +511,11 @@ custom_fields:
 
 #### Observability Requirements
 
+> **Applicability**: Required | Not Applicable
+>
+> - **If Required**: Provide observability specifications in table below
+> - **If Not Applicable**: Provide rationale explaining why observability changes are not required
+
 | Type | Tool | Metrics/Logs | Retention | Alerts |
 |------|------|--------------|-----------|--------|
 | Logging | Logging service | Format: JSON | [days] | Error threshold, Rate threshold |
@@ -494,6 +524,11 @@ custom_fields:
 | Dashboards | Dashboard tool | Business metrics, health metrics | N/A | N/A |
 
 #### Security Requirements
+
+> **Applicability**: Required | Not Applicable
+>
+> - **If Required**: Provide security specifications in table below
+> - **If Not Applicable**: Provide rationale explaining why security changes are not required
 
 | Security Aspect | Requirement | Tool/Service | Verification |
 |-----------------|-------------|---------------|---------------|
@@ -504,6 +539,11 @@ custom_fields:
 | Container Security | Image scanning | Vulnerability thresholds | No critical vulnerabilities |
 
 #### Cost Constraints
+
+> **Applicability**: Required | Not Applicable
+>
+> - **If Required**: Provide cost constraints specifications in table below
+> - **If Not Applicable**: Provide rationale explaining why cost constraint changes are not required
 
 | Resource | Budget | Alerts | Optimization |
 |----------|--------|--------|--------------|
@@ -516,6 +556,11 @@ custom_fields:
 > **Cost Management**: Cost monitoring enabled with monthly billing reports and anomaly detection
 
 #### Deployment Automation Requirements
+
+> **Applicability**: Required | Not Applicable
+>
+> - **If Required**: Provide deployment automation specifications below
+> - **If Not Applicable**: Provide rationale explaining why deployment automation changes are not required
 
 **Automation Level**: [Fully automated / Semi-automated / Manual]
 
@@ -538,17 +583,39 @@ custom_fields:
 ### 9.2 Operational Requirements
 [Day-to-day system operation and management]
 
+> **Operational Changes Required**: Yes | No
+>
+> - **If Yes**: Complete all subsections below with operational details
+> - **If No**: Mark all subsections below as "Not Applicable" with brief rationale
+
 #### Monitoring and Alerting
+
+> **Applicability**: Required | Not Applicable
+>
+> - **If Required**: Provide operational requirements details below
+> - **If Not Applicable**: Provide rationale explaining why operational changes are not required
 - **System Health Monitoring**: Continuous health checks and status reporting
 - **Performance Monitoring**: Real-time performance metrics with historical trending
 - **Error Tracking**: Comprehensive error logging with aggregation and analysis
 
 #### Backup and Recovery
+
+> **Applicability**: Required | Not Applicable
+>
+> - **If Required**: Provide backup and recovery requirements details below
+> - **If Not Applicable**: Provide rationale explaining why backup/recovery changes are not required
+
 - **Regular Backups**: Automated backup schedule with validation and integrity checking
 - **Disaster Recovery**: Multi-region backup with tested recovery procedures
 - **Data Restoration**: Tested procedures for data recovery with minimal data loss
 
 #### Maintenance Procedures
+
+> **Applicability**: Required | Not Applicable
+>
+> - **If Required**: Provide maintenance procedure details below
+> - **If Not Applicable**: Provide rationale explaining why maintenance procedure changes are not required
+
 - **Scheduled Maintenance**: Planned maintenance windows with service degradation notifications
 - **Emergency Maintenance**: Emergency change procedures with rapid deployment capabilities
 - **Post-Maintenance Validation**: Comprehensive testing after maintenance activities

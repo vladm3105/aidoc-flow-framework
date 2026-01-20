@@ -59,13 +59,14 @@ AI_CONTEXT_END
 | **Last Updated** | YYYY-MM-DD |
 | **Author** | [Author name] |
 | **Priority** | P1 (Critical) / P2 (High) / P3 (Medium) |
-| **Category** | Functional / Security / Performance |
+| **Category** | Functional / Logic / API / UI / UX / Database / Config / Infra / FinOps / Security / Performance / Reliability / Scalability / Compliance |
+| **Infrastructure Type** | Compute / Database / Storage / Network / Cache / Messaging / Deployment_Automation / Observability / Security / Cost / None |
 | **Source Document** | [SYS-NN section X.Y.Z] |
 | **Verification Method** | BDD / Unit Test / Integration Test |
 | **Assigned Team** | [Team name] |
 | **SPEC-Ready Score** | ✅ [XX]% (Target: ≥70%) |
 | **CTR-Ready Score** | ✅ [XX]% (Target: ≥70%) |
-| **Template Version** | 1.0 |
+| **Template Version** | 1.1 |
 
 ---
 
@@ -348,12 +349,14 @@ class ResponseModel(BaseModel):
 **Downstream Traceability Tags** (for generated artifacts):
 
 ```markdown
-@ctr: CTR-NN          # If API contract exists
-@spec: SPEC-NN         # Technical specification
-@tasks: TASKS-NN       # Implementation tasks
+@ctr: CTR-NN            # If API contract exists
+@spec: SPEC-NN          # Technical specification
+@tasks: TASKS-NN        # Implementation tasks
 @deployment: scripts/   # Deployment scripts directory
 @ansible: ansible/      # Ansible playbooks directory
-@iac: terraform/       # IaC templates directory
+@iac: terraform/        # IaC templates directory
+@config_file_type: yaml # Configuration file format (yaml/json/toml)
+@source_code: [URL, PATH]     # Link to generated source code repo
 ```
 
 > **Note**: Downstream tags reference generated artifacts (scripts, playbooks, IaC) for bidirectional traceability.

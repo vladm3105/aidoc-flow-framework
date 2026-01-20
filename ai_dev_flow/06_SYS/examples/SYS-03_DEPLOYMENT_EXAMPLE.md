@@ -575,3 +575,238 @@ class Order(Base):
 | Date | Version | Change | Author |
 |------|---------|--------|---------|
 | 2026-01-19 | 1.0.0 | Initial draft - SYS deployment example demonstrating Section 9 deployment requirements | System Architect |
+| 2026-01-19 | 1.1.0 | Added Appendix A (No Infrastructure Changes) and Appendix B (Mixed Infrastructure Scenario) | System Architect |
+
+---
+
+## Appendix A: No Infrastructure Changes Scenario
+
+**Purpose**: Example showing how to mark all deployment subsections as "Not Applicable" for pure logic changes.
+
+**Scenario**: Pure validation logic enhancement to existing order management service.
+
+### A.1 Example: Validation Logic Enhancement
+
+**Scenario**: Add validation logic to existing order management service without infrastructure changes.
+
+#### Section 9.1 Deployment Requirements
+
+> **Infrastructure Changes Required**: No
+>
+> **Rationale**: Enhancement adds validation logic to existing service. No new infrastructure, scripts, playbooks, or operational procedures are required.
+
+**9.1.1 Infrastructure Requirements**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Validation logic enhancement does not require new infrastructure resources. Existing compute resources (2 vCPU, 2GB, scaling 2-10), database (PostgreSQL 15.3, 100GB storage, HA, Multi-AZ), storage (Standard tier, 30 days retention), network (VPC: 10.0.0.0/16, 4 AZs), cache (2GB, TTL 3600s), and message queue (Standard, 14 days retention) provide sufficient capacity. No additional infrastructure required.
+
+**9.1.2 Environment Configuration**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: No environment configuration changes required. Existing development (1 replica, us-east-1), staging (2 replicas, blue-green, us-east-1), and production (4 replicas, blue-green, us-east-1a/b/c/d) environments support validation logic enhancement. Environment variables, health endpoints, and deployment strategies remain unchanged.
+
+**9.1.3 Deployment Scripts Requirements**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing deployment scripts fully support validation logic deployment. Current scripts (setup.sh, install.sh, deploy.sh, rollback.sh, health-check.sh, cleanup.sh) with Bash 4.0+ compatibility, structured logging, proper exit codes, error handling, and idempotency work correctly. No new scripts or modifications required.
+
+**9.1.4 Ansible Playbook Requirements**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing Ansible playbooks support infrastructure without modifications. Current playbooks (provision_infra.yml, configure_instances.yml, deploy_app.yml, configure_monitoring.yml, configure_security.yml, backup_restore.yml) using Ansible 2.9+, dynamic inventory, modular roles, idempotency, handlers, and check mode continue to manage existing infrastructure. Validation logic enhancement does not require new playbooks.
+
+**9.1.5 Observability Requirements**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing observability infrastructure provides comprehensive monitoring coverage. Current observability stack (Cloud Logging: JSON, 30 days; Prometheus: p50/p95/p99, 15 days; Cloud Trace: 10%, 7 days; Grafana: dashboards) already monitors order creation latency, payment processing, validation success rates, and system uptime. Validation logic enhancement metrics are captured within existing infrastructure. No new observability requirements.
+
+**9.1.6 Security Requirements**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing security infrastructure meets all requirements. Current security controls (AWS Secrets Manager: 30-day rotation; Certificate Manager: TLS 1.3+, RSA 2048-bit; IAM: least privilege; Security Groups: allowed IPs, ports 443/3306; ECR: image scanning) provide comprehensive coverage. Validation logic enhancement does not introduce new security requirements. All existing security controls remain sufficient.
+
+**9.1.7 Cost Constraints**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Validation logic enhancement does not increase resource requirements. Existing cost budgets (Compute: $500/month; Storage: $200/month; Network: $150/month; Database: $300/month; Total: $1500/month) and thresholds (80% alerts) remain unchanged. No additional cost constraints required. Cost monitoring continues with existing configuration.
+
+**9.1.8 Deployment Automation Requirements**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing CI/CD pipeline supports automated deployment. Current workflow (merge to main → build → push → deploy → health-check → rollback on failure) works correctly for validation logic. Pre-deployment tests, post-deployment health checks, monitoring updates, and rollback capabilities (10 minutes) all function. No changes to deployment automation required.
+
+#### Section 9.2 Operational Requirements
+
+> **Operational Changes Required**: No
+>
+> **Rationale**: Validation logic enhancement does not change day-to-day operational procedures. Existing monitoring, backup, and maintenance procedures remain fully applicable.
+
+**9.2.1 Monitoring and Alerting**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing monitoring infrastructure provides comprehensive coverage. System health monitoring (continuous health checks), performance monitoring (real-time metrics: p50/p95/p99 latency, throughput, errors), and error tracking (comprehensive logging with aggregation) already capture order validation metrics. No new monitoring or alerting capabilities required.
+
+**9.2.2 Backup and Recovery**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing backup and recovery procedures adequately cover order management service data. Current backup procedures (automated RDS backups: every 6 hours; multi-region storage; S3 object versioning; tested recovery procedures) ensure data protection. Validation logic enhancement does not introduce new data requiring backup or change recovery procedures. Existing backup schedule and retention remain sufficient.
+
+**9.2.3 Maintenance Procedures**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing maintenance procedures continue to apply. Current maintenance procedures (scheduled maintenance windows with notifications, emergency change procedures, post-maintenance validation) remain applicable for validation logic enhancement. No new maintenance procedures or changes required. Existing maintenance windows and notification processes continue to work correctly.
+
+---
+
+**Key Demonstration Points**:
+
+1. **All 11 subsections present** - validation passes (8 in 9.1, 3 in 9.2)
+2. **All subsections marked "Not Applicable"** - consistency maintained
+3. **Rationale provided for each NA** - AI has complete context
+4. **Brief but complete rationale** - explains why NA without verbose details
+5. **References existing infrastructure** - demonstrates no changes needed
+
+**When to Use This Pattern**:
+- Pure logic or algorithm enhancements
+- Bug fixes without infrastructure impact
+- Refactoring or code improvements
+- Configuration changes only
+- Documentation updates only
+- Any change that doesn't affect deployment or operations
+
+---
+
+## Appendix B: Mixed Infrastructure Scenario
+
+**Purpose**: Example showing mixed case where some infrastructure subsections are Required and others are Not Applicable.
+
+**Scenario**: New monitoring dashboard for order management service (no new compute, database, or storage).
+
+### B.1 Example: New Observability Dashboard
+
+#### Section 9.1 Deployment Requirements
+
+> **Infrastructure Changes Required**: Partial
+>
+> **Rationale**: Enhancement adds new monitoring dashboard but does not require new compute, database, storage, network, or messaging resources. Existing infrastructure remains unchanged.
+
+**9.1.1 Infrastructure Requirements**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: No new compute, database, or storage infrastructure required. Existing resources (2 vCPU, 2GB, PostgreSQL 100GB) handle monitoring dashboard queries. Infrastructure provisioning, scaling, and configuration remain unchanged.
+
+**9.1.2 Environment Configuration**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: No environment changes required. Existing development, staging, and production environments support new monitoring dashboard. Environment variables, deployment strategies, and health endpoints remain unchanged.
+
+**9.1.3 Deployment Scripts Requirements**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing deployment scripts (setup.sh, install.sh, deploy.sh, rollback.sh, health-check.sh, cleanup.sh) fully support monitoring dashboard deployment. No new scripts or script modifications required. Current scripts handle dashboard artifacts correctly.
+
+**9.1.4 Ansible Playbook Requirements**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing Ansible playbooks manage infrastructure. Monitoring dashboard is a software component deployed via existing application playbooks (deploy_app.yml). No new infrastructure playbooks required.
+
+**9.1.5 Observability Requirements**
+
+> **Applicability**: Required
+>
+> **Details**: New monitoring dashboard for order management service visualization and analytics.
+
+| Type | Tool | Metrics/Logs | Retention | Alerts |
+|------|------|--------------|-----------|--------|
+| Logging | Cloud Logging | Dashboard access logs, error logs | 30 days | Error threshold: 10/min |
+| Metrics | Prometheus | Dashboard query performance, user access metrics | 15 days | SLA breaches, degradation |
+| Dashboards | Grafana | New business metrics dashboards | N/A | N/A |
+
+**9.1.6 Security Requirements**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing security infrastructure meets monitoring dashboard requirements. Current IAM policies (read/write/admin roles), security groups (allowed IPs, ports), and authentication mechanisms (existing token-based access) support new dashboard. No new security infrastructure required.
+
+**9.1.7 Cost Constraints**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Monitoring dashboard does not increase infrastructure costs. Dashboard queries utilize existing Prometheus and Grafana infrastructure with no additional resource consumption. Existing cost budgets ($1500/month total) remain unchanged.
+
+**9.1.8 Deployment Automation Requirements**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing CI/CD pipeline supports monitoring dashboard deployment. Dashboard artifacts are deployed alongside application using existing deploy_app.yml playbook. No changes to deployment automation required. Pre-deployment tests, post-deployment health checks, monitoring updates, and rollback capabilities all function.
+
+#### Section 9.2 Operational Requirements
+
+> **Operational Changes Required**: No
+>
+> **Rationale**: Monitoring dashboard does not change operational procedures. Existing monitoring, backup, and maintenance procedures remain fully applicable.
+
+**9.2.1 Monitoring and Alerting**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing monitoring infrastructure (Cloud Logging, Prometheus, Grafana) already supports the new dashboard. Dashboard visualization layer uses existing metrics collection infrastructure. No new monitoring procedures or alerting configurations required.
+
+**9.2.2 Backup and Recovery**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Monitoring dashboard does not introduce new data requiring backup. Dashboard configurations (Grafana dashboard definitions) are versioned via existing CI/CD pipeline. No new backup or recovery procedures required.
+
+**9.2.3 Maintenance Procedures**
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Monitoring dashboard maintenance follows existing application deployment procedures. No new maintenance procedures required. Dashboard updates occur via standard deployment workflow.
+
+---
+
+**Key Demonstration Points**:
+
+1. **Mixed case: 1 Required, 7 NA** - all subsections present with appropriate markings
+2. **Observability: Required** - provides detailed specifications for monitoring dashboard
+3. **Other subsections: NA** - provides rationale explaining why not required
+4. **Rationale for each NA** - AI has complete context for assistance
+5. **Section-level flag** - "Infrastructure Changes Required: Partial" clearly documents mixed scenario
+
+**When to Use This Pattern**:
+- New monitoring or observability features without new infrastructure
+- New security features using existing infrastructure
+- New deployment automation using existing scripts/playbooks
+- Partial infrastructure changes where some components unchanged
+
+---
+
+## Appendix Summary
+
+| Appendix | Scenario | Section 9.1 | Section 9.2 | Use Case |
+|-----------|-----------|-------------|--------------|----------|
+| A | Pure Logic Changes | All 8 NA + rationale | All 3 NA + rationale | Pure algorithmic enhancements, bug fixes, refactoring |
+| B | Mixed Infrastructure | 1 Required + 7 NA | All 3 NA | New features using existing infrastructure, partial infrastructure changes |
+
+**Validation Status**: All appendices pass validation with:
+- ✅ All 11 subsections present (8 in 9.1, 3 in 9.2)
+- ✅ All subsections have "Applicability" marker
+- ✅ NA subsections include rationale
+- ✅ Required subsections include detailed specifications
+- ✅ Consistent with SYS-MVP-TEMPLATE.md requirements

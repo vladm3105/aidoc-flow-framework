@@ -464,6 +464,59 @@ The REQ validation script (`validate_req_template.sh`) performs **20 validation 
 
 ---
 
+### CHECK 13: Document Control Category Validation ⭐ NEW
+
+**Purpose**: Verify category field in Document Control is set and valid (Functional, Logic, API, UI, UX, Database, Config, Infra, FinOps, Security, Performance, Reliability, Scalability, Compliance, None).
+
+**Validation Rules**:
+
+1. **Category Present**: Document Control table must include "Category" field
+
+2. **Valid Category Value**: Category must be one of allowed values
+
+3. **Category Alignment**: Category value should align with requirement description and scope
+
+**Type**: Warning
+
+**Error Messages**:
+- Missing: `⚠️ WARNING: Document Control missing 'Category' field`
+- Invalid: `❌ ERROR: Category '${category}' is not valid. Use one of: Functional, Logic, API, UI, UX, Database, Config, Infra, FinOps, Security, Performance, Reliability, Scalability, Compliance, None`
+
+### CHECK 14: Infrastructure Metadata Validation ⭐ NEW
+
+**Purpose**: Verify infrastructure-related REQs have proper metadata and traceability tags.
+
+**Validation Rules**:
+
+1. **infrastructure_type Set**: If REQ relates to SYS infrastructure requirements, infrastructure_type must be set
+
+2. **Valid infrastructure_type Value**: Must be one of allowed values (Compute, Database, Storage, Network, Cache, Messaging, Deployment_Automation, Observability, Security, Cost, None)
+
+3. **@sys Tag Format**: Must reference specific SYS subsection: `@sys: SYS.NN.09.01.X` (X = 1-8 for 9.1.x, X = 1-3 for 9.2.x)
+
+4. **@iac Tag Consistency**: When infrastructure_type requires IaC artifacts:
+   - infra_type = Compute/Database/Storage/Network/Cache/Messaging → Must include `@iac: terraform/` or `@ansible: ansible/`
+   - infra_type = Deployment_Automation → Must include `@ansible: ansible/`
+   - infra_type = Observability → May include `@ansible: ansible/` if scripts generated
+
+5. **@deployment Tag**: Required when infra_type = Deployment_Automation or Observability → `@deployment: scripts/`
+
+6. **@config_file_type**: Required when config files generated → `@config_file_type: shell`/`yaml`/`json`/`toml`/`ini`
+
+7. **@source_code**: Optional when code generation required → `@source_code: [URL]`
+
+**Type**: Warning
+
+**Error Messages**:
+- Missing infrastructure_type: `⚠️ WARNING: Infrastructure-related REQ missing infrastructure_type metadata`
+- Invalid infrastructure_type: `❌ ERROR: infrastructure_type '${type}' is not valid`
+- Invalid @sys format: `⚠️ WARNING: @sys tag format invalid. Use: @sys: SYS.NN.09.01.X where X matches SYS subsection number`
+- Missing @iac: `⚠️ WARNING: infrastructure_type '${type}' requires @iac or @ansible tag`
+- Missing @deployment: `⚠️ WARNING: infrastructure_type 'Deployment_Automation' requires @deployment: scripts/ tag`
+- Missing @config_file_type: `⚠️ WARNING: Config generation REQ missing @config_file_type tag`
+
+---
+
 ### CHECK 13: Resource Tag Validation (Template 2.0) ⭐ NEW
 
 **Purpose**: Verify [RESOURCE_INSTANCE] tag in H1 for Template 2.0
@@ -775,6 +828,8 @@ class HeartbeatConfig(BaseModel):
 |-------------|-----------|
 | **CHECK 1** | Add missing section: `## N. section Name` |
 | **CHECK 2** | Add all 12 required fields to Document Control table |
+| **CHECK 13** | Add valid Category field to Document Control table |
+| **CHECK 14** | Ensure infrastructure metadata (Type) and traceability tags (@sys, @iac) are complete |
 | **CHECK 5** | Change version to semver: `2.0.1` |
 | **CHECK 6** | Change dates to ISO 8601: `2025-11-18` |
 | **CHECK 9** | Update score format: `✅ 85% (Target: ≥70%)` |

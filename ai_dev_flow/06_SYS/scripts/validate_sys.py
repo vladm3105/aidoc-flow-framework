@@ -68,10 +68,10 @@ REQUIRED_SECTIONS_STANDARD = [
     (r"^## 4\. Functional Requirements", "Section 4: Functional Requirements"),
     (r"^## 5\. Quality Attributes", "Section 5: Quality Attributes"),
     (r"^## 6\. Interface Specifications", "Section 6: Interface Specifications"),
-    (r"^## 7\. Data Management", "Section 7: Data Management"),
-    (r"^## 8\. Testing Requirements", "Section 8: Testing Requirements"),
-    (r"^## 9\. Deployment Requirements", "Section 9: Deployment Requirements"),
-    (r"^## 10\. Compliance Requirements", "Section 10: Compliance Requirements"),
+    (r"^## 7\. Data Management Requirements", "Section 7: Data Management Requirements"),
+    (r"^## 8\. Testing and Validation Requirements", "Section 8: Testing and Validation Requirements"),
+    (r"^## 9\. Deployment and Operations Requirements", "Section 9: Deployment and Operations Requirements"),
+    (r"^## 10\. Compliance and Regulatory Requirements", "Section 10: Compliance and Regulatory Requirements"),
     (r"^## 11\. Acceptance Criteria", "Section 11: Acceptance Criteria"),
     (r"^## 12\. Risk Assessment", "Section 12: Risk Assessment"),
     (r"^## 13\. Traceability", "Section 13: Traceability"),
@@ -89,17 +89,15 @@ REQUIRED_SECTIONS_MVP = [
     (r"^## 5\. Quality Attributes", "Section 5: Quality Attributes"),
     (r"^## 6\. Interface Specifications", "Section 6: Interface Specifications"),
     (r"^## 7\. Data Management Requirements", "Section 7: Data Management Requirements"),
-    # MVP combines or reorders:
-    # 8. Deployment & Operations (matches standard 9 but different name/number)
-    (r"^## 8\. Deployment and Operations Requirements", "Section 8: Deployment and Operations Requirements"),
-    # 9. Testing Requirements (matches standard 8 but different number)
-    (r"^## 9\. Testing and Validation Requirements", "Section 9: Testing and Validation Requirements"),
-    # 10. Acceptance Criteria (matches standard 11)
-    (r"^## 10\. Acceptance Criteria", "Section 10: Acceptance Criteria"),
-    # 11. Risk Assessment (matches standard 12)
-    (r"^## 11\. Risk Assessment", "Section 11: Risk Assessment"),
-    # 12. Traceability (matches standard 13)
-    (r"^## 12\. Traceability", "Section 12: Traceability"),
+    (r"^## 8\. Testing and Validation Requirements", "Section 8: Testing and Validation Requirements"),
+    (r"^## 9\. Deployment and Operations Requirements", "Section 9: Deployment and Operations Requirements"),
+    (r"^## 10\. Compliance and Regulatory Requirements", "Section 10: Compliance and Regulatory Requirements"),
+    # 11. Acceptance Criteria (matches standard 11)
+    (r"^## 11\. Acceptance Criteria", "Section 11: Acceptance Criteria"),
+    # 12. Risk Assessment (matches standard 12)
+    (r"^## 12\. Risk Assessment", "Section 12: Risk Assessment"),
+    # 13. Traceability (matches standard 13)
+    (r"^## 13\. Traceability", "Section 13: Traceability"),
 ]
 
 # Map profiles to section lists
@@ -458,7 +456,7 @@ def validate_traceability(content: str, result: ValidationResult):
 def validate_testing_requirements(content: str, result: ValidationResult, profile: str = "standard"):
     """Validate Testing Requirements section (Section 8 or 9 depending on profile)."""
     if profile == "mvp":
-        pattern = r"## 9\. Testing and Validation Requirements"
+        pattern = r"## 8\. Testing and Validation Requirements"
     else:
         pattern = r"## 8\. Testing Requirements"
 

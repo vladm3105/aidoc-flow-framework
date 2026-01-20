@@ -80,7 +80,7 @@ check_placeholder_text() {
     while IFS= read -r line; do
       if [[ -n "$line" ]]; then
         # Extract REQ reference if present
-        req_ref=$(echo "$line" | grep -oE "REQ-[0-9]+" | head -1 || true)
+        req_ref=$(echo "$line" | grep -oE "REQ-[0-9]+(\.[0-9]+)*" | head -1 || true)
         if [[ -n "$req_ref" ]]; then
           # Check if the referenced REQ file exists
           if find "$REQ_DIR" -name "${req_ref}_*.md" 2>/dev/null | grep -v "_index" | head -1 >/dev/null; then
@@ -180,7 +180,7 @@ check_index_sync() {
   local found=0
   # Check for files marked "Planned" that actually exist
   while IFS= read -r line; do
-    req_ref=$(echo "$line" | grep -oE "REQ-[0-9]+" | head -1 || true)
+    req_ref=$(echo "$line" | grep -oE "REQ-[0-9]+(\.[0-9]+)*" | head -1 || true)
     if [[ -n "$req_ref" ]]; then
       if find "$REQ_DIR" -name "${req_ref}_*.md" 2>/dev/null | grep -v "_index" | head -1 >/dev/null; then
         echo -e "${RED}GATE-E003: $req_ref exists but marked Planned in index${NC}"
@@ -201,17 +201,18 @@ check_index_sync() {
 
 check_cross_linking() {
   echo ""
-  echo "--- GATE-05: Inter-REQ Cross-Linking ---"
-  echo -e "${BLUE}  ℹ DEPRECATED: Document name references are sufficient per SDD rules${NC}"
+  # --- GATE-05: Inter-REQ Cross-Linking (DEPRECATED) ---
+  # echo -e "\n--- GATE-05: Inter-REQ Cross-Linking ---"
+  # echo -e "  ℹ DEPRECATED: Document name references are sufficient per SDD rules"
+  echo -e "${BLUE}  ℹ GATE-05 DEPRECATED: Inter-REQ Cross-Linking checks disabled per user request${NC}"
 }
 
 # -----------------------------------------------------------------------------
-# GATE-06: Visualization Coverage
+# GATE-06: Visualization Coverage (DEPRECATED)
 # -----------------------------------------------------------------------------
 
 check_visualization() {
   echo ""
-  echo "--- GATE-06: Visualization Coverage ---"
 
   local found=0
   local total=0
@@ -277,7 +278,7 @@ check_element_ids() {
     for f in "$REQ_DIR"/REQ-*.md; do
       [[ -f "$f" ]] || continue
       # Get unique IDs from this file only
-      grep -ohE "REQ\.[0-9]+\.[0-9]+\.[0-9]+" "$f" 2>/dev/null | sort -u
+      grep -ohE "REQ\.[0-9]+\.[0-9]+\.[0-9]+" "$f" 2>/dev/null | sort -u || true
     done | sort | uniq -d
   )
 

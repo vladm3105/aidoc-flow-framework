@@ -88,6 +88,125 @@ SYS documents follow a comprehensive structure translating ADR decisions into sy
   - Section 9.1 Deployment Requirements (with 8 subsections: Infrastructure, Environment, Scripts, Ansible, Observability, Security, Cost, Automation)
   - Section 9.2 Operational Requirements
 
+---
+
+### 9.1 Deployment Requirements Guidance
+
+**Section Purpose**: Define how system must be deployed and released.
+
+**Required Structure**: All 8 subsections must be present, each with "Applicability" marker.
+
+**When Infrastructure Changes Are Required**:
+
+Use "Applicability: Required" when:
+- New system deployment (initial infrastructure provisioning)
+- Infrastructure scaling or modifications
+- New cloud resources (compute, database, storage, network, cache, queue)
+- Deployment strategy changes (blue-green, rolling, canary)
+- Observability enhancements (new monitoring, logging, tracing, dashboards)
+- Security infrastructure updates (secrets, TLS/SSL, IAM, network security, container security)
+- Cost management changes (budgeting, alerts, optimization)
+- New deployment automation requirements (scripts, playbooks, CI/CD)
+
+**When Infrastructure Changes Are NOT Required**:
+
+Use "Applicability: Not Applicable" when:
+- Pure logic or algorithm changes without infrastructure impact
+- Documentation-only updates
+- Cross-cutting concerns that don't affect deployment
+- Enhancements to existing infrastructure (no new resources)
+- Configuration changes within existing infrastructure
+- Bug fixes without deployment changes
+- Refactoring or code improvements (no infrastructure impact)
+
+**If Infrastructure Changes Not Required**:
+
+For each subsection:
+1. Mark as "Applicability: Not Applicable"
+2. Provide rationale explaining why this infrastructure change is not required
+3. Rationale is mandatory for AI assistance (no minimum length)
+4. All 8 subsections must be present (even if all NA)
+
+**Example NA Subsection**:
+```markdown
+#### Infrastructure Requirements
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: This system enhancement adds validation logic to existing service without requiring new infrastructure resources. Existing compute resources (2 vCPU, 2GB, scaling 2-10 instances), database (PostgreSQL 15.3, 100GB storage, HA, Multi-AZ), and storage (Standard tier, 30 days retention) are sufficient to handle enhanced validation logic. No new infrastructure provisioning required.
+```
+
+**Mixed Cases**:
+
+When some infrastructure changes are required but others are not:
+- Mark applicable subsections as "Applicability: Required"
+- Mark non-applicable subsections as "Applicability: Not Applicable"
+- Provide rationale for each NA subsection individually
+- Provide details for each Required subsection individually
+
+**Example Mixed Case**:
+```markdown
+#### Observability Requirements
+
+> **Applicability**: Required
+>
+> **Details**: This enhancement requires new metrics for validation logic performance.
+> | Type | Tool | Metrics/Logs | Retention | Alerts |
+> |------|------|--------------|-----------|--------|
+> | Metrics | Prometheus | Validation latency, success rate | 15 days | SLA breaches |
+
+#### Infrastructure Requirements
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: No new compute, database, or storage resources required. Existing infrastructure (2 vCPU, 2GB RAM, PostgreSQL 100GB) handles validation logic enhancement.
+```
+
+---
+
+### 9.2 Operational Requirements Guidance
+
+**Section Purpose**: Define day-to-day system operation and management requirements.
+
+**Required Structure**: All 3 subsections must be present, each with "Applicability" marker.
+
+**When Operational Changes Are Required**:
+
+Use "Applicability: Required" when:
+- New monitoring and alerting requirements
+- New backup and recovery procedures
+- New maintenance windows or procedures
+- Changes to existing operational support documentation
+- New SLAs or operational agreements
+
+**When Operational Changes Are NOT Required**:
+
+Use "Applicability: Not Applicable" when:
+- Pure deployment changes (infrastructure only)
+- Configuration updates that don't affect operations
+- Existing operational procedures remain unchanged
+- Bug fixes without operational impact
+- Documentation updates only
+
+**If Operational Changes Not Required**:
+
+For each subsection:
+1. Mark as "Applicability: Not Applicable"
+2. Provide rationale explaining why operational changes are not required
+3. Rationale is mandatory for AI assistance (no minimum length)
+4. All 3 subsections must be present (even if all NA)
+
+**Example NA Subsection**:
+```markdown
+#### Monitoring and Alerting
+
+> **Applicability**: Not Applicable
+>
+> **Rationale**: Existing monitoring infrastructure (Cloud Logging, Prometheus, Grafana) provides comprehensive coverage for order management service. Validation logic enhancement does not require new monitoring or alerting capabilities. Existing metrics (order creation latency, payment processing latency, system uptime) are sufficient.
+```
+
+---
+
 #### **Part 5: Validation and Control**
 - Acceptance Criteria, Risk Assessment, Traceability, Implementation Notes
 

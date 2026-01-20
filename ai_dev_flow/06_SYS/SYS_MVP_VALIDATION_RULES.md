@@ -237,22 +237,72 @@ The SYS validation script ensures system requirements meet quality standards for
 
 ### CHECK 10: Deployment Requirements Completeness ⭐ NEW
 
-**Purpose**: Verify Section 4.1 Deployment Requirements includes all required subsections (4.1.1-4.1.8).
+**Purpose**: Verify Section 9.1 Deployment Requirements includes all required subsections with either details or appropriate NA markings.
 **Type**: Warning
 
-**Required Subsections**:
-- 4.1.1 Infrastructure Requirements
-- 4.1.2 Environment Configuration
-- 4.1.3 Deployment Scripts Requirements
-- 4.1.4 Ansible Playbook Requirements
-- 4.1.5 Observability Requirements
-- 4.1.6 Security Requirements
-- 4.1.7 Cost Constraints
-- 4.1.8 Deployment Automation Requirements
+**Required Subsections** (9.1.1-9.1.8):
+- Infrastructure Requirements
+- Environment Configuration
+- Deployment Scripts Requirements
+- Ansible Playbook Requirements
+- Observability Requirements
+- Security Requirements
+- Cost Constraints
+- Deployment Automation Requirements
 
-**Validation**: All 8 subsections must be present in Section 4.1
+**Validation Options**:
+1. All 8 subsections present with detailed tables → PASS
+2. All 8 subsections present with "Not Applicable" + rationale → PASS
+3. Mixed case (some Required with details, some NA with rationale) → PASS
+4. Missing subsections → FAIL
+5. Empty subsections without "Not Applicable" marker → FAIL
 
-**Architectural Principle**: Deployment infrastructure is a **system-level concern**
+**Validation Requirements**:
+1. All 8 subsection headings must be present
+2. Each subsection must have "Applicability" marker (Required | Not Applicable)
+3. If marked "Not Applicable", must include rationale
+4. Accept detailed tables OR "Not Applicable" + brief rationale
+5. No minimum length requirement for rationale, but must be present
+
+**Architectural Principle**: Deployment infrastructure is a **system-level concern**, not an atomic requirement. When no infrastructure changes are needed, mark subsections as NA rather than omitting them.
+
+**Error Messages**:
+- Missing: `❌ ERROR: Section 9.1 missing subsection [9.1.x]`
+- Empty without NA: `⚠️ WARNING: Subsection [9.1.x] present but empty. Mark as NA with rationale or provide details.`
+- NA without rationale: `⚠️ WARNING: Subsection [9.1.x] marked Not Applicable but missing rationale. AI requires rationale for assistance.`
+
+---
+
+### CHECK 11: Operational Requirements Completeness ⭐ NEW
+
+**Purpose**: Verify Section 9.2 Operational Requirements includes all required subsections with either details or appropriate NA markings.
+**Type**: Warning
+
+**Required Subsections** (9.2.1-9.2.3):
+- Monitoring and Alerting
+- Backup and Recovery
+- Maintenance Procedures
+
+**Validation Options**:
+1. All 3 subsections present with details → PASS
+2. All 3 subsections present with "Not Applicable" + rationale → PASS
+3. Mixed case (some Required with details, some NA with rationale) → PASS
+4. Missing subsections → FAIL
+5. Empty subsections without "Not Applicable" marker → FAIL
+
+**Validation Requirements**:
+1. All 3 subsection headings must be present
+2. Each subsection must have "Applicability" marker (Required | Not Applicable)
+3. If marked "Not Applicable", must include rationale
+4. Accept detailed requirements OR "Not Applicable" + brief rationale
+5. No minimum length requirement for rationale, but must be present
+
+**Architectural Principle**: Operational requirements are **system-level concerns**, not atomic requirements. When no operational changes are needed, mark subsections as NA rather than omitting them.
+
+**Error Messages**:
+- Missing: `❌ ERROR: Section 9.2 missing subsection [9.2.x]`
+- Empty without NA: `⚠️ WARNING: Subsection [9.2.x] present but empty. Mark as NA with rationale or provide details.`
+- NA without rationale: `⚠️ WARNING: Subsection [9.2.x] marked Not Applicable but missing rationale. AI requires rationale for assistance.`
 
 ---
 
@@ -267,7 +317,8 @@ The SYS validation script ensures system requirements meet quality standards for
 | **CHECK 3** | Add properly formatted REQ-Ready Score |
 | **CHECK 4** | Quantify all quality attributes with measurable thresholds |
 | **CHECK 9** | Replace legacy element IDs (FR-XXX, QA-XXX, SR-XXX) with unified format `SYS.NN.TT.SS` |
-| **CHECK 10** | Ensure Section 4.1 includes all 8 deployment subsections (4.1.1-4.1.8) |
+| **CHECK 10** | Add missing Section 9.1 subsections or mark as NA with rationale |
+| **CHECK 11** | Add missing Section 9.2 subsections or mark as NA with rationale |
 
 ---
 
