@@ -9,10 +9,10 @@
 # Purpose: Define valid metadata structure and validation rules for SYS documents
 # Usage: Reference by validate_sys.py for automated validation
 
-schema_version: "1.0"
+schema_version: "1.1"
 artifact_type: SYS
 layer: 6
-last_updated: "2025-11-30"
+last_updated: "2026-01-19"
 
 references:
   template: "SYS-MVP-TEMPLATE.md"
@@ -139,20 +139,20 @@ structure:
       name: "Interface Specifications"
       description: "Section 6 with External Interfaces, Internal Interfaces, Data Formats"
 
-    - pattern: "^## 7\\. Data Management$"
-      name: "Data Management"
+    - pattern: "^## 7\\. Data Management Requirements$"
+      name: "Data Management Requirements"
       description: "Section 7 with Data Model, Storage, Migration"
 
-    - pattern: "^## 8\\. Testing Requirements$"
-      name: "Testing Requirements"
+    - pattern: "^## 8\\. Testing and Validation Requirements$"
+      name: "Testing and Validation Requirements"
       description: "Section 8 with Test Strategy, Coverage, Acceptance Criteria"
 
-    - pattern: "^## 9\\. Deployment Requirements$"
-      name: "Deployment Requirements"
-      description: "Section 9 with Infrastructure, Configuration, Rollback"
+    - pattern: "^## 9\\. Deployment and Operations Requirements$"
+      name: "Deployment and Operations Requirements"
+      description: "Section 9 with Infrastructure, Scripts, Ansible, Observability, Security, Cost, Automation (9.1.1-9.1.8) and Operational Requirements (9.2)"
 
-    - pattern: "^## 10\\. Compliance Requirements$"
-      name: "Compliance Requirements"
+    - pattern: "^## 10\\. Compliance and Regulatory Requirements$"
+      name: "Compliance and Regulatory Requirements"
       description: "Section 10 with Regulatory, Security, Audit"
 
     - pattern: "^## 11\\. Acceptance Criteria$"

@@ -417,15 +417,123 @@ custom_fields:
 ### 9.1 Deployment Requirements
 [How the system must be deployed and released]
 
-#### Deployment Strategy
-- **Blue-Green Deployment**: Zero-downtime deployments with instant rollback capability
-- **Rolling Deployment**: Gradual rollout across instances to minimize impact
-- **Canary Deployment**: Percentage-based rollout with automated traffic shifting
+#### Infrastructure Requirements
 
-#### Environment Requirements
-- **Development Environment**: Local development setup with all required dependencies
-- **Testing Environment**: Staging environment mirroring production configuration
-- **Production Environment**: Deployed across multiple availability zones for fault tolerance
+> **Reference**: Cloud provider decisions in `@brd: BRD.NN.TT.SS`, `@prd: PRD.NN.TT.SS`, `@adr: ADR-NN`
+
+| Resource Type | Provider | Configuration | Requirements |
+|---------------|----------|--------------|--------------|
+| Compute | Cloud provider service | CPU, Memory, Scaling | Scalable compute platform |
+| Database | Database service | Version, Storage, HA, Multi-AZ | High availability database |
+| Storage | Object storage | Type, Retention, Encryption | Secure object storage |
+| Network | VPC | CIDR, AZs, Security Groups | Private network isolation |
+| Cache | Caching service | Memory, TTL | Session and data caching |
+| Message Queue | Queue service | Queue type, Retention | Asynchronous processing |
+
+#### Environment Configuration
+
+| Environment | Deployment Strategy | Rollback Time | Replicas | Regions |
+|-------------|---------------------|---------------|-----------|---------|
+| Development | Manual | N/A | 1 | [region] |
+| Staging | [Strategy] | [time] | [count] | [region] |
+| Production | [Strategy] | [time] | [count] | [regions] |
+
+**Health Endpoints**:
+- Liveness: `/health/live` - Container health check
+- Readiness: `/health/ready` - Service availability check
+- Startup: `/health/startup` - Initialization complete check
+
+#### Deployment Scripts Requirements
+
+> **Note**: All scripts generated automatically by Autopilot from this section.
+
+| Script Name | Purpose | Automation Level | Required for Environments |
+|-------------|---------|------------------|-------------------------|
+| `setup.sh` | Initial environment setup (dependencies, tools, paths) | Fully automated | All |
+| `install.sh` | Application installation/configuration (packages, config files) | Fully automated | All |
+| `deploy.sh` | Main deployment orchestration (build, push, deploy) | Fully automated | Staging, Production |
+| `rollback.sh` | Rollback to previous version | Fully automated | Staging, Production |
+| `health-check.sh` | Health verification post-deployment | Fully automated | All |
+| `cleanup.sh` | Cleanup old versions, temporary files | Fully automated | Staging, Production |
+
+**Script Standards**:
+- Shell: Bash 4.0+ compatible
+- Logging: All scripts log to `logs/deployment_YYYYMMDD_HHMMSS.log`
+- Exit codes: 0 (success), 1 (error), 2 (warning)
+- Error handling: `set -euo pipefail` for all scripts
+- Idempotency: All scripts safe to run multiple times
+
+#### Ansible Playbook Requirements
+
+> **Note**: All playbooks generated automatically by Autopilot from this section.
+
+| Playbook Name | Purpose | Target | Variables | Tags |
+|---------------|---------|--------|------------|------|
+| `provision_infra.yml` | Provision infrastructure (VPC, EC2, RDS, etc.) | Cloud provider API | Cloud resources config | `infra, provision` |
+| `configure_instances.yml` | Configure instances (OS settings, packages, users) | Instance hosts | Instance config, packages | `config, instances` |
+| `deploy_app.yml` | Deploy application (copy code, restart service) | Application hosts | App version, config | `deploy, app` |
+| `configure_monitoring.yml` | Setup monitoring/alerting (Prometheus, Grafana) | Monitoring hosts | Monitoring config, alerts | `monitoring, observability` |
+| `configure_security.yml` | Setup security (firewall, IAM, TLS) | All hosts | Security rules, certificates | `security, hardening` |
+| `backup_restore.yml` | Backup/restore procedures (database, config) | Backup hosts | Backup schedule, retention | `backup, recovery` |
+
+**Playbook Standards**:
+- Ansible version: 2.9+
+- Inventory: Dynamic inventory from cloud provider
+- Roles: Modular role-based structure
+- Idempotency: All playbooks idempotent
+- Handlers: Service restart handlers for configuration changes
+- Check mode: Support `--check` for dry-run
+
+#### Observability Requirements
+
+| Type | Tool | Metrics/Logs | Retention | Alerts |
+|------|------|--------------|-----------|--------|
+| Logging | Logging service | Format: JSON | [days] | Error threshold, Rate threshold |
+| Metrics | Metrics service | p50/p95/p99 latency, throughput, errors | [days] | SLA breaches, degradation |
+| Tracing | Tracing service | Sample rate: [percentage] | [days] | Slow requests, errors |
+| Dashboards | Dashboard tool | Business metrics, health metrics | N/A | N/A |
+
+#### Security Requirements
+
+| Security Aspect | Requirement | Tool/Service | Verification |
+|-----------------|-------------|---------------|---------------|
+| Secrets Management | Secrets Manager service | Service name, Path | Secrets rotation schedule |
+| TLS/SSL | Certificate Manager | Domain, Certificate type | TLS version, valid certificate |
+| IAM | IAM service | Permissions | Least privilege enforced |
+| Network Security | Security groups and NACLs | Allowed IPs, Ports | Firewall rules audit schedule |
+| Container Security | Image scanning | Vulnerability thresholds | No critical vulnerabilities |
+
+#### Cost Constraints
+
+| Resource | Budget | Alerts | Optimization |
+|----------|--------|--------|--------------|
+| Compute | Monthly: $[amount] | Threshold: 80% | Savings plans, Reserved instances |
+| Storage | Monthly: $[amount] | Threshold: 80% | Lifecycle policies |
+| Network | Monthly: $[amount] | Threshold: 80% | CDN, Compression, TLS optimization |
+| Database | Monthly: $[amount] | Storage: [amount], Multi-AZ | Threshold: 80% | Reserved instances, Backups |
+| Total | Monthly: $[amount] | Threshold: 80% | Optimized resource allocation |
+
+> **Cost Management**: Cost monitoring enabled with monthly billing reports and anomaly detection
+
+#### Deployment Automation Requirements
+
+**Automation Level**: [Fully automated / Semi-automated / Manual]
+
+**Deployment Workflow**:
+1. Autopilot generates deployment artifacts (scripts, playbooks, IaC templates)
+2. CI/CD pipeline triggers on merge to main branch
+3. Scripts run: setup → install → deploy → health-check
+4. If health-check fails: auto-rollback
+5. Success: update distributions, monitoring dashboards
+6. Rollback: Restore previous distribution within [time]
+
+**Validation Requirements**:
+- Pre-deployment: All tests pass, no security vulnerabilities
+- Post-deployment: Health checks pass (liveness, readiness), performance within SLA
+- Monitoring: All metrics collected, dashboards updated
+- Rollback: Ready within [time], tested procedure executed successfully
+
+> **Downstream Artifacts**: See Section 13 for generated scripts and playbooks
 
 ### 9.2 Operational Requirements
 [Day-to-day system operation and management]

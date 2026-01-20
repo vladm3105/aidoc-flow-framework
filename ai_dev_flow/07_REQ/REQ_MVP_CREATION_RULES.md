@@ -80,7 +80,7 @@ custom_fields:
 
 ---
 
-## 2. Document Structure (13 Required sections)
+## 2. Document Structure (12 Required sections)
 
 Every REQ must contain these exact sections in order (MVP profile):
 
@@ -96,19 +96,19 @@ Every REQ must contain these exact sections in order (MVP profile):
 10. **Traceability** - Upstream chain, downstream artifacts, cumulative tags
 11. **Implementation Notes** - Technical approach, code locations, dependencies
 12. **Section 9.5: Deployment Requirements** - Infrastructure, scripts, Ansible, observability, security, cost, automation (optional based on Deployment Complexity)
-13. **Change History** - Version control table
+12. **Change History** - Version control table
 
-> **Note**: Section 9.5 is **OPTIONAL** and should be included only when deployment automation is required. See Section 9.5.0 Deployment Tier Selection in REQ-MVP-TEMPLATE.md for guidance on which subsections to include based on deployment complexity (Simple/Standard/Enterprise).
+> **Note**: Deployment Requirements are system-level concerns defined in SYS-NN documents, not in individual REQ files. See SYS-NN Section 9: Deployment and Operations Requirements for infrastructure, scripts, Ansible playbooks, observability, security, and cost management.
 
 ---
 
-## 3. Document Control Requirements (13 Mandatory Fields)
+## 3. Document Control Requirements (12 Mandatory Fields)
 
 - Status, Version (semantic X.Y.Z), Date Created (ISO 8601), Last Updated
 - Author, Priority (with P-level: P1/P2/P3/P4), Category (Functional/Security/Performance/etc.)
 - Source Document (format: "DOC-ID section X.Y.Z"), Verification Method, Assigned Team
 - SPEC-Ready Score (format: "✅ XX% (Target: ≥70%)"), CTR-Ready Score (format: "✅ XX% (Target: ≥70%)")
-- Deployment Complexity: simple / standard / enterprise (see Section 9.5.0 Deployment Tier Selection in REQ-MVP-TEMPLATE.md for guidance on tier selection)
+- Template Version (informational only, not validated)
 
 > **Note**: Template Version is informational only (not validated). Each template may use its own version numbering.
 

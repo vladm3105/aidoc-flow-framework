@@ -65,14 +65,14 @@ python3 ai_dev_flow/06_SYS/scripts/validate_sys.py --path ai_dev_flow/06_SYS --p
 
 Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
-**Version**: 1.0
+**Version**: 1.1
 **Date**: 2025-11-19
-**Last Updated**: 2025-11-19
+**Last Updated**: 2026-01-19
 **Purpose**: Complete validation rules for SYS documents
 **Script**: `python 06_SYS/scripts/validate_sys.py`
 **Primary Template**: `SYS-MVP-TEMPLATE.md` (full template archived)
 **Framework**: AI Dev Flow SDD (100% compliant)
-**Changes**: Added REQ-ready scoring validation system
+**Changes**: Added deployment requirements validation (CHECK 10), architectural correction from REQ to SYS layer
 
 ---
 
@@ -235,6 +235,27 @@ The SYS validation script ensures system requirements meet quality standards for
 
 ---
 
+### CHECK 10: Deployment Requirements Completeness ⭐ NEW
+
+**Purpose**: Verify Section 4.1 Deployment Requirements includes all required subsections (4.1.1-4.1.8).
+**Type**: Warning
+
+**Required Subsections**:
+- 4.1.1 Infrastructure Requirements
+- 4.1.2 Environment Configuration
+- 4.1.3 Deployment Scripts Requirements
+- 4.1.4 Ansible Playbook Requirements
+- 4.1.5 Observability Requirements
+- 4.1.6 Security Requirements
+- 4.1.7 Cost Constraints
+- 4.1.8 Deployment Automation Requirements
+
+**Validation**: All 8 subsections must be present in Section 4.1
+
+**Architectural Principle**: Deployment infrastructure is a **system-level concern**
+
+---
+
 ## Error Fix Guide
 
 ### Quick Fix Matrix
@@ -245,7 +266,8 @@ The SYS validation script ensures system requirements meet quality standards for
 | **CHECK 2** | Align SYS requirements with ADR decisions |
 | **CHECK 3** | Add properly formatted REQ-Ready Score |
 | **CHECK 4** | Quantify all quality attributes with measurable thresholds |
-| **CHECK 8** | Replace legacy element IDs (FR-XXX, QA-XXX, SR-XXX) with unified format `SYS.NN.TT.SS` |
+| **CHECK 9** | Replace legacy element IDs (FR-XXX, QA-XXX, SR-XXX) with unified format `SYS.NN.TT.SS` |
+| **CHECK 10** | Ensure Section 4.1 includes all 8 deployment subsections (4.1.1-4.1.8) |
 
 ---
 
@@ -289,8 +311,8 @@ find docs/SYS -name "SYS-*.md" -exec python 06_SYS/scripts/validate_sys.py {} \;
 
 | Tier | Type | Checks | Action |
 |------|------|--------|--------|
-| **Tier 1** | Error | 1-4 | Must fix before commit |
-| **Tier 2** | Warning | 5-7 | Recommended to fix |
+| **Tier 1** | Error | 1-4, 8-9 | Must fix before commit |
+| **Tier 2** | Warning | 5-7, 10 | Recommended to fix |
 | **Tier 3** | Info | - | No action required |
 
 ---

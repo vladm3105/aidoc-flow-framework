@@ -800,44 +800,6 @@ fi
 
 ---
 
-## Deployment Complexity Tier Guidance
-
-### Deployment Complexity Field
-
-**Section 9.5 Deployment Requirements** is **OPTIONAL** and should be included based on the `Deployment Complexity` field in Document Control.
-
-**Tier Selection**: Choose tier based on deployment automation needs
-
-| Deployment Complexity | When to Use | Section 9.5 Subsections Required |
-|---------------------|-------------|------------------------------------|
-| **Simple (PaaS)** | Cloud Run, Lambda, App Engine, Cloud Functions | 9.5.1 (Skip), 9.5.2, 9.5.3, 9.5.4-9.5.8 (Skip) |
-| **Standard** | ECS, GKE, Cloud Run with provisioned infrastructure | All 8 subsections (9.5.0 through 9.5.8) with 9.5.4 marked Optional |
-| **Enterprise** | Multi-region, multi-cloud with full observability | All 8 subsections (9.5.0 through 9.5.8) |
-
-### Quality Impact of Deployment Complexity
-
-| Complexity | Min SPEC-Ready Score | Max Warnings for Auto-Approve |
-|-----------|-------------------|------------------------------|
-| Simple (No Section 9.5) | 70% | 2 |
-| Standard (Section 9.5 + Tier 2) | 80% | 5 |
-| Enterprise (Section 9.5 + Tier 3) | 85% | 10 |
-
-> **Note**: Projects with higher deployment complexity may require higher SPEC-Ready scores due to additional specification requirements.
-
-### Validation Rules for Deployment Complexity
-
-**CHECK 21**: Validates Section 9.5 structure based on Deployment Complexity
-- Simple deployments: Section 9.5 optional (INFO level if present)
-- Standard deployments: Tier 2 validation (WARNING if subsections missing)
-- Enterprise deployments: Full 8-subsection validation (ERROR if incomplete)
-
-**CHECK 22**: Validates downstream deployment artifacts traceability
-- Shell scripts list in Section 10.2
-- Ansible playbooks list in Section 10.2
-- IaC templates reference in Section 10.2
-- Downstream traceability tags in Section 10.3
-
----
 
 ## References
 

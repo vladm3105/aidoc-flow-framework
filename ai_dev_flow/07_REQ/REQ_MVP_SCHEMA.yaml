@@ -226,10 +226,6 @@ structure:
       name: "Acceptance Criteria"
       description: "Section 9 with Functional and Quality Acceptance (≥3 criteria for MVP)"
 
-    - pattern: "^## 9\\.5 Deployment Requirements$"
-      name: "Deployment Requirements"
-      description: "Section 9.5 with infrastructure, environment, scripts, Ansible, observability, security, cost, automation requirements"
-
     - pattern: "^## 10\\. Traceability$"
       name: "Traceability"
       description: "Section 10 with Upstream References, Downstream Artifacts, Tags"

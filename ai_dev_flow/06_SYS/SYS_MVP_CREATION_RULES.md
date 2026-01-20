@@ -33,14 +33,14 @@ Generators use: `SYS-00_index.md` + standard template profile (`mvp`).
 
 Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix. When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.
 
-**Version**: 1.2
+**Version**: 1.3
 **Date**: 2025-11-19
-**Last Updated**: 2025-11-30
+**Last Updated**: 2026-01-19
 
 
 **Source**: Derived from SYS-MVP-TEMPLATE.md and ADR decisions
 **Purpose**: Complete reference for creating SYS documents according to AI Dev Flow SDD framework
-**Changes**: Added Threshold Registry Integration section (v1.2). Previous: Status/Score mapping, common mistakes section (v1.1)
+**Changes**: Added deployment requirements section (v1.3). Previous: Threshold Registry Integration (v1.2), Status/Score mapping (v1.1)
 
 
 ## Table of Contents
@@ -81,10 +81,12 @@ SYS documents follow a comprehensive structure translating ADR decisions into sy
 - Functional Requirements, Quality Attributes
 
 #### **Part 3: System Specification**
-- Interface Specifications, Data Management Requirements, Testing and Validation Requirements
+- Interface Specifications, Data Management Requirements, Testing Requirements
 
 #### **Part 4: System Operations**
 - Deployment and Operations Requirements, Compliance and Regulatory Requirements
+  - Section 9.1 Deployment Requirements (with 8 subsections: Infrastructure, Environment, Scripts, Ansible, Observability, Security, Cost, Automation)
+  - Section 9.2 Operational Requirements
 
 #### **Part 5: Validation and Control**
 - Acceptance Criteria, Risk Assessment, Traceability, Implementation Notes

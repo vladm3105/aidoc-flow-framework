@@ -918,101 +918,45 @@ For detailed examples, see the V2 example files in `07_REQ/api/`, `07_REQ/data/`
 
 ---
 
-## Section 9.5: Deployment Requirements
+## Deployment Infrastructure (System-Level Concern)
 
-### Purpose
+**Architectural Principle**: Deployment infrastructure belongs at the **system level (SYS)**, not at the atomic requirement level (REQ).
 
-Section 9.5 captures deployment infrastructure, scripts, and Ansible playbooks requirements for fully automated MVP deployment. This section enables Autopilot to generate:
+### Why Deployment Belongs in SYS (Layer 6)
 
-- Shell scripts (setup, install, deploy, rollback, health-check, cleanup)
-- Ansible playbooks (provisioning, configuration, deployment, monitoring, security, backup)
-- IaC templates (Terraform, CloudFormation)
-- CI/CD pipeline configurations
+REQ documents represent atomic, individual requirements (e.g., "The system SHALL validate input parameters"). Deployment infrastructure:
+- Affects multiple atomic requirements
+- Represents system-level operational concerns
+- Is orchestrated across entire system deployment
+- Requires coordination between services and components
 
-### Deployment Complexity Profiles
+### Where to Define Deployment Requirements
 
-Section 9.5 supports three deployment complexity tiers to guide requirements for different project types:
+**SYS (Layer 6)** - Section 9. Deployment and Operations Requirements:
+- Infrastructure Requirements (compute, database, storage, network, cache)
+- Environment Configuration (dev, staging, production)
+- Deployment Scripts Requirements (setup, install, deploy, rollback, health-check, cleanup)
+- Ansible Playbook Requirements (provisioning, configuration, deployment, monitoring, security, backup)
+- Observability Requirements (logging, metrics, tracing, dashboards)
+- Security Requirements (secrets management, TLS/SSL, IAM, network security)
+- Cost Constraints (budgeting, alerts, optimization)
+- Deployment Automation Requirements (workflow, validation, rollback)
 
-| Deployment Complexity | When to Use | Subsections Required |
-|---------------------|-------------|---------------------|
-| Simple (PaaS) | Cloud Run, Lambda, App Engine, Cloud Functions | 9.5.1, 9.5.2, 9.5.3 (skip 9.5.1, 9.5.4, 9.5.6, 9.5.7, 9.5.8) |
-| Standard (Container/VM) | ECS, GKE, Cloud Run with provisioned infrastructure | All 8 subsections (9.5.1-9.5.8) |
-| Enterprise (Multi-Cloud) | Multi-region, multi-cloud with full observability | All 8 subsections (9.5.1-9.5.8) |
-
-### When to Use Section 9.5
-
-Use Section 9.5 when your requirement involves:
-- Cloud infrastructure provisioning (AWS, GCP, Azure)
-- Deployment automation needs (scripts, Ansible playbooks)
-- Observability requirements (logging, metrics, tracing, dashboards)
-- Security requirements (secrets management, TLS/SSL, IAM)
-- Cost constraints and optimization strategies
-
-### Traceability
-
-Section 9.5 includes traceability to:
-- **Upstream**: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys` (all 6 required for cloud provider decisions)
-- **Downstream**: `@deployment`, `@ansible`, `@iac` (scripts, playbooks, IaC templates)
-
-### Autopilot Generation
-
-When Autopilot processes REQ documents with Section 9.5, it generates deployment artifacts automatically:
-
-**Shell Scripts** (`scripts/` directory):
-- `setup.sh` - Environment setup (dependencies, tools, paths)
-- `install.sh` - Application installation/configuration
-- `deploy.sh` - Main deployment orchestration
-- `rollback.sh` - Rollback to previous version
-- `health-check.sh` - Health verification
-- `cleanup.sh` - Cleanup old versions
-
-**Ansible Playbooks** (`ansible/` directory):
-- `provision_infra.yml` - Infrastructure provisioning
-- `configure_instances.yml` - Instance configuration
-- `deploy_app.yml` - Application deployment
-- `configure_monitoring.yml` - Monitoring setup
-- `configure_security.yml` - Security hardening
-- `backup_restore.yml` - Backup/restore procedures
-
-**IaC Templates** (`terraform/` or `cloudformation/` directory):
-- VPC and network configuration
-- Compute resources (EC2, ECS, Lambda)
-- Database resources (RDS, DynamoDB)
-- Storage resources (S3, EBS)
-- Security groups and IAM roles
-
-**Docker Configuration**:
-- `Dockerfile` - Container image definition
-- `docker-compose.yml` - Multi-container orchestration
-
-**CI/CD Pipeline** (`.github/workflows/` directory):
-- Automated build and deployment pipeline
-- Integration with deployment scripts and playbooks
-- Health check verification
-- Automatic rollback on failure
+**REQ (Layer 7)** - References SYS deployment needs:
+- Use `@sys: SYS.NN.09.01` traceability tags in Section 10.3
+- Reference system deployment infrastructure defined in SYS documents
+- Focus on atomic requirement behavior, not deployment orchestration
 
 ### Examples
 
-See `examples/deployment/` directory for complete examples:
-- `REQ-02_deployment_requirements_example.md` - Full example showing all 8 subsections
-- `README.md` - Detailed explanation of each subsection and usage guidance
-
-### Validation
-
-Section 9.5 is validated by:
-- `REQ_MVP_SCHEMA.yaml` - Schema validation rules
-- `REQ_MVP_VALIDATION_RULES.md` - CHECK 21 and CHECK 22 validation rules
+See SYS layer for deployment examples:
+- `06_SYS/examples/SYS-DEPLOYMENT_EXAMPLE.md` - Complete deployment requirements example
+- `06_SYS/SYS-MVP-TEMPLATE.md` - Section 9 deployment requirements template
 
 ### Related Skills
 
 - [devops-flow](../../.claude/skills/devops-flow/SKILL.md) - Infrastructure as Code, CI/CD pipeline automation, deployment strategies
-- Provides generation commands for deployment scripts and Ansible playbooks
-
-### Related Documents
-
-- [REQ-MVP-TEMPLATE.md](REQ-MVP-TEMPLATE.md) - Updated REQ template with Section 9.5
-- [REQ_MVP_SCHEMA.yaml](REQ_MVP_SCHEMA.yaml) - Schema with Section 9.5 validation
-- [REQ_MVP_VALIDATION_RULES.md](REQ_MVP_VALIDATION_RULES.md) - Validation rules for Section 9.5
+- Operates at system level, generates deployment artifacts from SYS documents
 
 ---
 
