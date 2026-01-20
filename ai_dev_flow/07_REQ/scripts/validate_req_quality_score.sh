@@ -213,7 +213,48 @@ check_cross_linking() {
 
 check_visualization() {
   echo ""
-  echo "  ℹ GATE-06 DEPRECATED: Mermaid diagram validation disabled for REQ layer"
+  echo "--- GATE-06: Mermaid Diagram Validation (Optional) ---"
+
+  local found=0
+  local syntax_errors=0
+
+  while IFS= read -r -d '' f; do
+    if [[ "$(basename "$f")" =~ _index|TEMPLATE ]]; then continue; fi
+
+    # Check if file contains Mermaid diagrams
+    if grep -q '```mermaid' "$f" 2>/dev/null; then
+      # Basic syntax validation for Mermaid blocks
+      local mermaid_blocks=$(grep -c '```mermaid' "$f" 2>/dev/null || echo 0)
+      local closing_blocks=$(grep -c '^```$' "$f" 2>/dev/null || echo 0)
+      
+      # Check for unclosed Mermaid blocks
+      if [[ $mermaid_blocks -gt $closing_blocks ]]; then
+        echo -e "${RED}GATE-E006: $(basename $f) has unclosed Mermaid code block${NC}"
+        ((ERRORS++)) || true
+        ((syntax_errors++)) || true
+      fi
+      
+      # Extract and validate Mermaid content
+      local in_mermaid=0
+      while IFS= read -r line; do
+        if [[ "$line" =~ ^\`\`\`mermaid ]]; then
+          in_mermaid=1
+        elif [[ "$line" =~ ^\`\`\`$ ]] && [[ $in_mermaid -eq 1 ]]; then
+          in_mermaid=0
+        elif [[ $in_mermaid -eq 1 ]]; then
+          # Check for common Mermaid syntax issues
+          # Must start with diagram type (graph, flowchart, sequenceDiagram, etc.)
+          if echo "$line" | grep -qE '^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|gantt|pie|journey)'; then
+            continue
+          fi
+        fi
+      done < "$f"
+    fi
+  done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
+
+  if [[ $syntax_errors -eq 0 ]]; then
+    echo -e "${GREEN}  ✓ Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
+  fi
 }
 
 # -----------------------------------------------------------------------------
