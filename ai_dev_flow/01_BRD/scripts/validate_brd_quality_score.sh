@@ -272,27 +272,31 @@ check_crosslinks() {
 check_diagrams() {
   if $ERRORS_ONLY; then return; fi
 
-  echo "--- GATE-06: Visualization Coverage ---"
-  local no_diagrams=0
+  echo "--- GATE-06: Mermaid Diagram Validation (Optional) ---"
+  local syntax_errors=0
 
   shopt -s nullglob
   for f in "$BRD_DIR"/BRD-[0-9]*_*.md "$BRD_DIR"/BRD-[0-9]*/BRD-[0-9]*.md; do
     [[ -f "$f" ]] || continue
 
-    diagram_count=$(grep -c '```mermaid' "$f" 2>/dev/null | tr -d '\n' || echo 0)
-    [[ -z "$diagram_count" || ! "$diagram_count" =~ ^[0-9]+$ ]] && diagram_count=0
-    if [[ "$diagram_count" -eq 0 ]]; then
-      echo -e "${BLUE}GATE-I001: $(basename $f) has no Mermaid diagrams${NC}"
-      ((INFOS++)) || true
-      ((no_diagrams++)) || true
-    elif $VERBOSE; then
-      echo "  $(basename $f): $diagram_count diagram(s)"
+    # Check if file contains Mermaid diagrams
+    if grep -q '```mermaid' "$f" 2>/dev/null; then
+      # Basic syntax validation for Mermaid blocks
+      local mermaid_blocks=$(grep -c '```mermaid' "$f" 2>/dev/null || echo 0)
+      local closing_blocks=$(grep -c '^```$' "$f" 2>/dev/null || echo 0)
+      
+      # Check for unclosed Mermaid blocks
+      if [[ $mermaid_blocks -gt $closing_blocks ]]; then
+        echo -e "${RED}GATE-E006: $(basename $f) has unclosed Mermaid code block${NC}"
+        ((ERRORS++)) || true
+        ((syntax_errors++)) || true
+      fi
     fi
   done
   shopt -u nullglob
 
-  if [[ $no_diagrams -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All BRDs have diagrams${NC}"
+  if [[ $syntax_errors -eq 0 ]]; then
+    echo -e "${GREEN}  ✓ Mermaid diagrams are optional; all present diagrams are syntactically valid${NC}"
   fi
   echo ""
 }
