@@ -40,6 +40,7 @@ The Implementation Plan serves as the **central command center** for tracking TA
 ```bash
 # Copy template to your project
 cp ai_dev_flow/10_TASKS/IMPLEMENTATION_PLAN_TEMPLATE.md docs/IMPLEMENTATION_PLAN.md
+cp ai_dev_flow/10_TASKS/IMPLEMENTATION_PLAN_TEMPLATE.yaml docs/IMPLEMENTATION_PLAN.yaml
 ```
 
 ### 2. Customize Implementation Strategy
@@ -200,7 +201,7 @@ post_check:     NOT_STARTED → COMPLETED (update tracking)
 
 ### Prerequisites: Tooling Setup
 - **Goal**: Simulation & Testing Environment
-- **Examples**: Install Dev Tools (Mock MCP, Evaluator), Configure Scenarios
+- **Examples**: Local Environment (SETUP-ENV), Install Dev Tools (Mock MCP, Evaluator), Configure Scenarios
 - **Priority**: Absolute P0
 
 ### Phase 0: Project Initialization

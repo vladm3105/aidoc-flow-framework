@@ -1,0 +1,139 @@
+# =============================================================================
+# MASTER IMPLEMENTATION PLAN (Machine Readable)
+# =============================================================================
+# Purpose: AI Autopilot Guidance for Layer 11 (Code Implementation)
+# Context: Orchestrates execution of TASKS-01 to TASKS-NN
+# =============================================================================
+
+plan_id: "IMP-[PROJECT_ID]-MASTER"
+project: "[project_name]"
+version: "1.0.0"
+status: "ready"
+creation_date: "YYYY-MM-DD"
+
+# -----------------------------------------------------------------------------
+# GLOBAL METRICS & GATES
+# -----------------------------------------------------------------------------
+global_constraints:
+  code_coverage_min: 90
+  linting_strict: true
+  max_doc_staleness_hours: 24
+  allowed_languages:
+    - python ("3.12+")
+    - typescript (wrapper optional)
+
+# -----------------------------------------------------------------------------
+# EXECUTION PHASES
+# -----------------------------------------------------------------------------
+phases:
+  - id: "PREREQUISITES"
+    name: "Tooling Setup"
+    priority: "P0"
+    description: "Establish simulation and testing environment."
+    dependency_rationale: "Dev Tools required for local validation of all subsequent phases."
+    dependencies: []
+    tasks:
+      - task_id: "SETUP-ENV"
+        name: "Local Environment"
+        spec_path: "pyproject.toml"
+        status: "pending"
+        steps:
+          - "Initialize pyproject.toml"
+          - "Create .env from template"
+          - "Install project dependencies (uv sync)"
+        exit_criteria:
+          - "Virtual environment active"
+          - "Imports resolvable"
+          
+      - task_id: "TASKS-00"
+        name: "Dev Tools Installation"
+        spec_path: "docs/10_TASKS/TASKS-00_dev_tools.yaml" # Virtual
+        status: "pending"
+        steps:
+          - "Copy framework dev_tools to project"
+          - "Install dependencies"
+          - "Configure Mock Services"
+          - "Update completion status in IMPLEMENTATION_PLAN.md"
+        exit_criteria:
+          - "make tools-test passes"
+          - "Mock Servers operational"
+
+  - id: "PHASE-1"
+    name: "Foundation Core"
+    priority: "P0"
+    description: "Establish deep infrastructure, security, and observability."
+    dependency_rationale: "Config > Obs > Infra > SecOps > IAM. Utilities must exist before Services."
+    dependencies: ["PREREQUISITES"]
+    tasks:
+      - task_id: "TASKS-XX"
+        name: "[Foundation Service Name]"
+        spec_path: "docs/10_TASKS/TASKS-XX_[service_name].md"
+        status: "pending"
+        steps:
+          - "Initialize src/domain/[module] module"
+          - "Implement Core Logic"
+          - "Implement Adapters"
+          - "Update completion status in IMPLEMENTATION_PLAN.md"
+        exit_criteria:
+          - "Unit tests pass"
+          - "Service operational"
+
+  - id: "PHASE-2"
+    name: "Foundation Support"
+    priority: "P1"
+    description: "Enable session management and self-healing operations."
+    dependency_rationale: "Depends on Foundation Core."
+    dependencies: ["PHASE-1"]
+    tasks:
+      - task_id: "TASKS-YY"
+        name: "[Support Service Name]"
+        spec_path: "docs/10_TASKS/TASKS-YY_[service_name].md"
+        status: "pending"
+        steps:
+          - "Initialize module"
+          - "Implement Logic"
+        exit_criteria:
+          - "Functionality verified"
+
+  - id: "PHASE-3"
+    name: "Domain Core"
+    priority: "P1"
+    description: "Implement primary business capabilities."
+    dependency_rationale: "Depends on Foundation Support."
+    dependencies: ["PHASE-2"]
+    tasks:
+      - task_id: "TASKS-ZZ"
+        name: "[Domain Service Name]"
+        spec_path: "docs/10_TASKS/TASKS-ZZ_[service_name].md"
+        status: "pending"
+        steps:
+          - "Initialize module"
+          - "Implement Business Logic"
+        exit_criteria:
+          - "Business value delivered"
+
+  - id: "PHASE-4"
+    name: "User Experience"
+    priority: "P2"
+    description: "UI and advanced domain logic."
+    dependency_rationale: "Depends on Domain Core."
+    dependencies: ["PHASE-3"]
+    tasks:
+      - task_id: "TASKS-AA"
+        name: "[UX Component]"
+        spec_path: "docs/10_TASKS/TASKS-AA_[component_name].md"
+        status: "pending"
+        steps:
+          - "Initialize src/web"
+          - "Implement UI Components"
+        exit_criteria:
+          - "UI renders correctly"
+
+# -----------------------------------------------------------------------------
+# AUTOMATION INSTRUCTIONS
+# -----------------------------------------------------------------------------
+automation:
+  start_command: "python scripts/start_phase.py --phase {phase_id}"
+  validate_command: "python scripts/validate_phase.py --phase {phase_id}"
+  on_failure: "halt_and_notify"
+  on_success: "proceed_to_next_task"
