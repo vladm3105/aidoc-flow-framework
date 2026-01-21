@@ -170,7 +170,7 @@ structure:
 
     - pattern: "^## 10\\. Session Log$"
       name: "Session Log"
-      description: "Section 10 with Progress tracking table"
+      description: "Section 10 with Progress tracking table. For 'COMPLETED' status, MUST include sub-list with: Summary, Tests (Pass/Fail/Cov), and Artifacts."
 
     - pattern: "^## 11\\. Change History$"
       name: "Change History"

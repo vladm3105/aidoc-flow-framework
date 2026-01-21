@@ -155,7 +155,7 @@ phase_1_tasks:
           - tests_passing: false      # All tests pass
           - coverage_met: false       # Coverage thresholds met
           - docs_updated: false       # Documentation updated
-          - session_logged: false     # Session log entry added
+          - session_logged: false     # Detailed 'COMPLETED' entry in Session Log
   - id: TASKS-YY
     service_name: "[P1 Service Name]"
     priority: P1
