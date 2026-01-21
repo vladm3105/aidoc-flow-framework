@@ -22,7 +22,7 @@ layer: 10
 last_updated: "2026-01-20"
 
 references:
-  md_template: "TASKS-TEMPLATE.md"
+  md_template: "TASKS-MVP-TEMPLATE.md"
   yaml_template: "TASKS-MVP-TEMPLATE.yaml"
   creation_rules: "TASKS_MVP_CREATION_RULES.md"
   validation_rules: "TASKS_MVP_VALIDATION_RULES.md"
@@ -117,7 +117,7 @@ metadata:
 # =============================================================================
 
 structure:
-  # Required sections (13 elements listed below) - align description with enumerated fields
+  # Required sections (15 elements listed below) - align description with enumerated fields
   # Note: v2.0 consolidates sections and includes execution commands in Section 4.
   required_sections:
     - pattern: "^# TASKS-\\d{2,}:"
@@ -168,13 +168,21 @@ structure:
       name: "Risk & Mitigation"
       description: "Section 9 with Risk table and mitigations"
 
-    - pattern: "^## 10\\. Session Log$"
-      name: "Session Log"
-      description: "Section 10 with Progress tracking table. For 'COMPLETED' status, MUST include sub-list with: Summary, Tests (Pass/Fail/Cov), and Artifacts."
+    - pattern: "^## 10\\. Unit Test Results$"
+      name: "Unit Test Results"
+      description: "Section 10 with executing unit tests and their results"
 
-    - pattern: "^## 11\\. Change History$"
+    - pattern: "^## 11\\. Implementation Summary$"
+      name: "Implementation Summary"
+      description: "Section 11 with summary, accomplishments, issues, and remaining work"
+
+    - pattern: "^## 12\\. Session Log$"
+      name: "Session Log"
+      description: "Section 12 with Progress tracking table. For 'COMPLETED' status, MUST include sub-list with: Summary, Tests (Pass/Fail/Cov), and Artifacts."
+
+    - pattern: "^## 13\\. Change History$"
       name: "Change History"
-      description: "Section 11 with version history table"
+      description: "Section 13 with version history table"
 
   # Optional sections
   optional_sections:
@@ -217,11 +225,11 @@ structure:
   # Section numbering rules (v2.0)
   section_numbering:
     start: 1
-    end: 11
+    end: 13
     format: "## N. Section Title"
     subsection_format: "### N.N Subsection Title"
     no_duplicate_numbers: true
-    note: "v2.0 uses numbered sections 1-11 plus unnumbered Document Control and Development Plan Tracking. Section 4 contains execution commands."
+    note: "v2.0 uses numbered sections 1-13 plus unnumbered Document Control and Development Plan Tracking. Section 4 contains execution commands."
 
   # File naming convention
   file_naming:
@@ -337,10 +345,10 @@ validation_rules:
     - rule: "Single H1 heading only"
       severity: warning
 
-    - rule: "All 11 required sections must be present (v2.0)"
+    - rule: "All 13 required sections must be present (v2.0)"
       severity: error
 
-    - rule: "Sections must be numbered 1-11 sequentially (v2.0)"
+    - rule: "Sections must be numbered 1-13 sequentially (v2.0)"
       severity: error
 
     - rule: "Document Control must have minimum 8 fields"

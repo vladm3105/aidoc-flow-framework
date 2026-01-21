@@ -44,7 +44,7 @@ Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 | **Created** | 2025-11-27 |
 | **Last Updated** | 2026-01-15 |
 | **Status** | Active |
-| **Breaking Change** | v2.0: 11 sections, execution commands in Section 4 |
+| **Breaking Change** | v2.0: 13 sections, execution commands in Section 4 |
 
 ---
 
@@ -59,11 +59,13 @@ Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 7. [Acceptance Section Rules](#7-acceptance-section-rules)
 8. [Implementation Contracts Section](#8-implementation-contracts-section-mandatory)
 9. [Traceability Tag Requirements](#9-traceability-tag-requirements)
-10. [Quality Checklist](#10-quality-checklist)
-11. [Common Anti-Patterns](#11-common-anti-patterns)
-12. [Validation](#12-validation)
-13. [Upstream Artifact Verification Process](#13-upstream-artifact-verification-process)
-14. [Cross-Document Validation](#14-cross-document-validation-mandatory)
+10. [Unit Test Results Rules](#10-unit-test-results-rules)
+11. [Implementation Summary Rules](#11-implementation-summary-rules)
+12. [Quality Checklist](#12-quality-checklist)
+13. [Common Anti-Patterns](#13-common-anti-patterns)
+14. [Validation](#14-validation)
+15. [Upstream Artifact Verification Process](#15-upstream-artifact-verification-process)
+16. [Cross-Document Validation](#16-cross-document-validation-mandatory)
 
 ---
 
@@ -245,7 +247,7 @@ custom_fields:
 | Parent SPEC | Yes | SPEC-NN reference |
 | Complexity | Yes | 1-5 scale |
 
-### 3.3 Mandatory Sections (v2.0 - 11 sections)
+### 3.3 Mandatory Sections (v2.0 - 13 sections)
 
 | Section | Purpose |
 |---------|---------|
@@ -258,10 +260,12 @@ custom_fields:
 | 7. Implementation Contracts | Embedded contract definitions (mandatory) |
 | 8. Traceability | Upstream refs, tags, code locations |
 | 9. Risk & Mitigation | Risk table with mitigations |
-| 10. Session Log | Progress tracking |
-| 11. Change History | Version history |
+| 10. Unit Test Results | Unit tests execution and results |
+| 11. Implementation Summary | Summary, accomplishments, issues, remaining work |
+| 12. Session Log | Progress tracking |
+| 13. Change History | Version history |
 
-> **Note**: v1.x had 8 mandatory sections. v2.0 has 11.
+> **Note**: v1.x had 8 mandatory sections. v2.0 has 13.
 
 ---
 
@@ -459,7 +463,59 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 
 ---
 
-## 10. Quality Checklist
+---
+
+## 10. Unit Test Results Rules
+
+### Requirements
+
+- Record of executed unit tests
+- Summary of results (Pass/Fail)
+- Coverage metrics per suite
+- Must be updated after Verification phase
+
+### Example
+```markdown
+## 10. Unit Test Results
+
+| Test Suite | Function | Result | Coverage |
+|------------|----------|--------|----------|
+| `tests/unit/auth` | User Authentication | ✅ Passed | 98% |
+| `tests/unit/api` | API Endpoints | ✅ Passed | 92% |
+```
+
+---
+
+## 11. Implementation Summary Rules
+
+### Requirements
+
+- concise summary of the implementation
+- bulleted list of accomplishments
+- description of any issues encountered and their efficient/workaround
+- list of remaining work (if incomplete)
+
+### Example
+```markdown
+## 11. Implementation Summary
+
+**Summary**:
+Implemented the core Auth Service.
+
+**Accomplishments**:
+- Created User model
+- Implemented JWT logic
+
+**Issues Encountered**:
+- None
+
+**Remaining Work**:
+- Integration tests
+```
+
+---
+
+## 12. Quality Checklist
 
 ### Before Creating
 
@@ -471,7 +527,7 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 ### During Creation (v2.0)
 
 - [ ] Use TASKS-TEMPLATE.md v2.0 as starting point
-- [ ] Follow all 11 section rules above
+- [ ] Follow all 13 section rules above
 - [ ] Include specific SPEC line references
 - [ ] Include execution commands in Section 4
 - [ ] Define measurable acceptance criteria (Section 6)
@@ -487,7 +543,7 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 
 ---
 
-## 11. Common Anti-Patterns
+## 13. Common Anti-Patterns
 
 ### Avoid
 
@@ -502,7 +558,7 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 
 ---
 
-## 12. Validation
+## 14. Validation
 
 ### Automated Validation
 
@@ -513,7 +569,7 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 ### Manual Checklist (v2.0)
 
 - [ ] Filename follows convention
-- [ ] All 11 required sections present
+- [ ] All 13 required sections present
 - [ ] Execution commands in Section 4
 - [ ] Traceability tags complete (Section 8)
 - [ ] Section 7 Implementation Contracts included
@@ -522,7 +578,7 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 
 ---
 
-## 13. Upstream Artifact Verification Process
+## 15. Upstream Artifact Verification Process
 
 ### Before Creating This Document
 
@@ -592,11 +648,11 @@ Include ONLY if relationships exist between TASKS documents sharing implementati
 
 **Document Version**: 2.0.0
 **Last Updated**: 2026-01-15
-**Schema Version**: TASKS v2.0 (11 sections)
+**Schema Version**: TASKS v2.0 (13 sections)
 
 ---
 
-## 14. Cross-Document Validation (MANDATORY)
+## 16. Cross-Document Validation (MANDATORY)
 
 **CRITICAL**: Execute cross-document validation IMMEDIATELY after creating any TASKS document. Do NOT proceed to downstream artifacts until validation passes.
 

@@ -2,7 +2,7 @@
 # 📋 Document Authority: PRIMARY STANDARD for Autopilot Workflow
 # - Purpose: AI-consumable template for automated TASKS artifact generation
 # - Validation: Validated by TASKS_MVP_SCHEMA.yaml (shared with MD template)
-# - Human Reference: See TASKS-TEMPLATE.md for narrative explanations
+# - Human Reference: See TASKS-MVP-TEMPLATE.md for narrative explanations
 # =============================================================================
 
 id: TASKS-NN
@@ -339,10 +339,41 @@ section_9_risk_mitigation:
       owner: "[Risk Owner]"
 
 # =============================================================================
-# Section 10: Session Log
+# Section 10: Unit Test Results
 # =============================================================================
 
-section_10_session_log:
+section_10_unit_test_results:
+  test_suites:
+    - suite_path: "tests/unit/..."
+      function: "[Core Logic]"
+      result: "Passed"
+      coverage: "95%"
+    - suite_path: "tests/integration/..."
+      function: "[API Integration]"
+      result: "Passed"
+      coverage: "88%"
+
+# =============================================================================
+# Section 11: Implementation Summary
+# =============================================================================
+
+section_11_implementation_summary:
+  summary: "[Short description of the implementation execution]"
+  accomplishments:
+    - "[Completed configuration]"
+    - "[Implemented core logic]"
+    - "[Verified via tests]"
+  issues_encountered:
+    - issue: "[Issue 1]"
+      description: "[Description and resolution/workaround]"
+  remaining_work:
+    - "[Pending item 1]"
+
+# =============================================================================
+# Section 12: Session Log
+# =============================================================================
+
+section_12_session_log:
   progress:
     - date: "YYYY-MM-DD"
       task_ids: ["TASK-01", "TASK-02"]
@@ -367,10 +398,10 @@ section_10_session_log:
       next_steps: "[Next steps: Ready for deployment]"
 
 # =============================================================================
-# Section 11: Change History
+# Section 13: Change History
 # =============================================================================
 
-section_11_change_history:
+section_13_change_history:
   versions:
     - version: "1.0.0"
       date: "YYYY-MM-DD"
@@ -381,7 +412,7 @@ section_11_change_history:
 # Template Metadata
 # =============================================================================
 
-# Template Reference: TASKS-TEMPLATE.md (for narrative explanations)
+# Template Reference: TASKS-MVP-TEMPLATE.md (for narrative explanations)
 # Schema: TASKS_MVP_SCHEMA.yaml (for validation rules)
 # Creation Rules: TASKS_MVP_CREATION_RULES.md (for guidance)
 # Validation Rules: TASKS_MVP_VALIDATION_RULES.md (for checklist)

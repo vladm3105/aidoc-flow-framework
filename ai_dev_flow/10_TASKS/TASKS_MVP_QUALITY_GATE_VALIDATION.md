@@ -314,12 +314,39 @@ done
 
 **Severity**: Warning
 
-**Valid Estimation Formats**:
 | Format | Example |
 |--------|---------|
 | Story points | `SP: 3`, `Story Points: 5` |
 | T-shirt size | `Size: M`, `Effort: L` |
 | Complexity | `Complexity: 3/5` |
+
+---
+
+### CORPUS-17: Unit Test Results Presence
+
+**Purpose**: Verify Unit Test Results section exists (Section 10)
+
+**Severity**: Error
+
+**Checks**:
+| Check | Description |
+|-------|-------------|
+| Section exists | "## 10. Unit Test Results" heading found |
+| Table content | Test suite, result, and coverage columns present |
+
+---
+
+### CORPUS-18: Implementation Summary Presence
+
+**Purpose**: Verify Implementation Summary section exists (Section 11)
+
+**Severity**: Error
+
+**Checks**:
+| Check | Description |
+|-------|-------------|
+| Section exists | "## 11. Implementation Summary" heading found |
+| Content | Summary, Accomplishments, Issues, Remaining Work headings found |
 
 ---
 
@@ -401,6 +428,8 @@ done
 - [ ] **CORPUS-14**: Task status fields present
 - [ ] **CORPUS-15**: Cumulative traceability complete (8 tags)
 - [ ] **CORPUS-16**: Effort estimates present
+- [ ] **CORPUS-17**: Unit Test Results section present (Section 10)
+- [ ] **CORPUS-18**: Implementation Summary section present (Section 11)
 
 ---
 
