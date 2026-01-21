@@ -1,0 +1,8 @@
+[2024-01-01 10:00:00] INFO - Starting Agent
+[2024-01-01 10:00:01] INFO - Processing Input...
+[2024-01-01 10:00:05] INFO - LLM Response Generated. Tokens Used: 1500
+[2024-01-01 10:00:06] ERROR - RateLimitError: API quota exceeded
+[2024-01-01 10:00:07] INFO - Retrying...
+[2024-01-01 10:00:10] INFO - LLM Response Generated. Tokens Used: 2000
+[2024-01-01 10:00:11] WARNING - High Latency detected
+[2024-01-01 10:00:12] INFO - Task Complete.

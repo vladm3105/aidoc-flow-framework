@@ -1,0 +1,16 @@
+[project]
+name = "mock-a2a-server"
+version = "0.1.0"
+description = "Mock A2A Server for testing Agent Communication"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "websockets",
+    "pyyaml",
+    "pydantic"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

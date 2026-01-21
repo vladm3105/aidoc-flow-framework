@@ -1,0 +1,10 @@
+[project]
+name = "chaos-proxy"
+version = "0.1.0"
+description = "Fault Injection Proxy"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "httpx"
+]

@@ -1,0 +1,15 @@
+[project]
+name = "event-replay"
+version = "0.1.0"
+description = "Generic Event Replay Tool for Testing"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx",
+    "websockets",
+    "pandas",
+    "python-dateutil"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

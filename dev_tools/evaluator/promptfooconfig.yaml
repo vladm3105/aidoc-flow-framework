@@ -1,0 +1,29 @@
+# promptfooconfig.yaml
+description: "Agent Evaluation Suite"
+
+prompts: [
+  "Summarize the market trend for {ticker}.",
+  "Analyze the risk for {ticker}."
+]
+
+providers: [
+  {
+    id: "python:agent_wrapper.py",
+    label: "My Agent"
+  }
+]
+
+tests:
+  - vars:
+      ticker: "AAPL"
+    assert:
+      - type: contains
+        value: "price"
+      - type: llm-rubric
+        value: "ensure the tone is professional"
+
+  - vars:
+      ticker: "TSLA"
+    assert:
+      - type: max-time
+        value: 2000 # ms

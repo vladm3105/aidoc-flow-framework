@@ -1,0 +1,7 @@
+scenarios:
+  - tool: "fetch_market_data"
+    params: 
+      symbol: "AAPL"
+  - tool: "analyze_sentiment"
+    params:
+      text: "Market is looking bullish today."

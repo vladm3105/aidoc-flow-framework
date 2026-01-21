@@ -99,6 +99,16 @@ custom_fields:
 
 ---
 
+### 2.0 Prerequisites: Tooling Setup
+**Goal**: Install and verify simulation/testing tools.
+
+| Status | ID | Task / Service | Priority | Dependents |
+|--------|----|--------------------|:--------:|------------|
+| NOT_STARTED | **SETUP-00** | **Dev Tools Installation** | **P0** | All Verification |
+| NOT_STARTED | **MOCK-01** | **Mock Services Config** | **P0** | Domain Logic |
+
+---
+
 ### 2.1 Phase 0: Project Initialization
 **Goal**: Standardize development environment and dependency management.
 

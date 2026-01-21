@@ -1,0 +1,10 @@
+[project]
+name = "log-analyzer"
+version = "0.1.0"
+description = "Agent Log Analysis Tool"
+requires-python = ">=3.12"
+dependencies = [
+    "pandas",
+    "rich",
+    "typer"
+]

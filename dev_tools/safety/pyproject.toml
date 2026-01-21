@@ -1,0 +1,9 @@
+[project]
+name = "agent-safety"
+version = "0.1.0"
+description = "Runtime Guardrails for Agents"
+requires-python = ">=3.12"
+dependencies = [
+    "guardrails-ai",
+    "pydantic"
+]

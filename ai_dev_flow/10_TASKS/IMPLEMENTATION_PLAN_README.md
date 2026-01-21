@@ -198,6 +198,11 @@ post_check:     NOT_STARTED → COMPLETED (update tracking)
 
 ## Phase Organization
 
+### Prerequisites: Tooling Setup
+- **Goal**: Simulation & Testing Environment
+- **Examples**: Install Dev Tools (Mock MCP, Evaluator), Configure Scenarios
+- **Priority**: Absolute P0
+
 ### Phase 0: Project Initialization
 - **Goal**: Environment setup
 - **Examples**: Poetry init, directory structure, dependency management

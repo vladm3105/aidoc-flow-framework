@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Context Viewer</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 10px 0; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+        a { text-decoration: none; color: #007bff; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Debug Contexts</h1>
+    <p>Directory: <code>debug_contexts/</code></p>
+    <ul>
+    {% for file in files %}
+        <li>
+            <a href="/view/{{ file.name }}">{{ file.name }}</a>
+            <span style="color: #666; font-size: 0.9em;">({{ file.size }} bytes)</span>
+        </li>
+    {% else %}
+        <li>No context files found. Run agents to generate some!</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>

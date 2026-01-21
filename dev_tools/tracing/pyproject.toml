@@ -1,0 +1,10 @@
+[project]
+name = "agent-tracing"
+version = "0.1.0"
+description = "Headless OpenTelemetry Tracing"
+requires-python = ">=3.12"
+dependencies = [
+    "arize-phoenix",
+    "opentelemetry-api",
+    "opentelemetry-sdk"
+]

@@ -1,0 +1,27 @@
+scenarios:
+  - method: "GET"
+    path: "/api/v1/market/status"
+    response:
+      status: 200
+      body: 
+        is_open: true
+        session: "REGULAR"
+
+  - method: "POST"
+    path: "/api/v1/orders"
+    response:
+      status: 201
+      body:
+        order_id: "ord-mock-123"
+        status: "accepted"
+
+  # V2 Features
+  - method: "GET"
+    path: "/api/v1/users/{user_id}"
+    latency: 500
+    response:
+      status: 200
+      body:
+        id: "{user_id}"
+        name: "Dynamic User {user_id}"
+        role: "admin"

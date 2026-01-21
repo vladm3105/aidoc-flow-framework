@@ -974,6 +974,25 @@ python3 ai_dev_flow/AUTOPILOT/scripts/mvp_autopilot.py \
 make docs  # Runs mvp-autopilot.yml workflow
 ```
 
+## Development Tools
+
+A comprehensive suite of tools is included for building, testing, and debugging AI agents:
+
+| Tool | Category | Purpose |
+|------|----------|---------|
+| **[Mock MCP Server](dev_tools/mcp/README.md)** | Mocking | Simulate MCP tools for offline testing |
+| **[Mock A2A Server](dev_tools/a2a/README.md)** | Mocking | Simulate agent-to-agent interactions |
+| **[Agent Evaluator](dev_tools/evaluator/README.md)** | Testing | "LLM-as-a-Judge" semantic testing |
+| **[Chaos Proxy](dev_tools/chaos_proxy/README.md)** | Testing | Test agent resilience to network faults |
+| **[Log Analyzer](dev_tools/log_analyzer/README.md)** | Observability | Calculate token usage and costs |
+| **[Context Viewer](dev_tools/context_viewer/README.md)** | Observability | Visual debugger for agent prompts |
+| **[Headless Tracing](dev_tools/tracing/README.md)** | Observability | OpenTelemetry implementation for visual tracing |
+| **[Event Replay](dev_tools/event_replay/README.md)** | Data | Time-travel debugging with historical data |
+| **[Runtime Validator](dev_tools/safety/README.md)** | Safety | Ensure agent handling of safe structured outputs |
+| **[Human Inspector](dev_tools/inspector/README.md)** | Manual | Interactive REPL for manual debugging |
+
+👉 **[View All Development Tools](dev_tools/README.md)**
+
 ---
 ## License
 

@@ -1,0 +1,10 @@
+[project]
+name = "context-viewer"
+version = "0.1.0"
+description = "Web UI for inspecting Agent Prompts"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "jinja2"
+]

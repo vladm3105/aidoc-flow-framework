@@ -43,6 +43,13 @@ help: ## Show this help message
 	@echo "$(COLOR_GREEN)docs-prd      $(COLOR_RESET)  Start from PRD (generate PRD→TASKS)"
 	@echo "$(COLOR_GREEN)docs-ears     $(COLOR_RESET)  Start from EARS (generate EARS→TASKS)"
 	@echo ""
+	@echo "$(COLOR_BOLD)Dev Tools (Agent Automation):$(COLOR_RESET)"
+	@echo "$(COLOR_GREEN)  tools-install  $(COLOR_RESET) Install dependencies"
+	@echo "$(COLOR_GREEN)  tools-test     $(COLOR_RESET) Run Promptfoo evaluations"
+	@echo "$(COLOR_GREEN)  tools-safety   $(COLOR_RESET) Run safety validator"
+	@echo "$(COLOR_GREEN)  mock-mcp       $(COLOR_RESET) Start Mock MCP server"
+	@echo "$(COLOR_GREEN)  mock-a2a       $(COLOR_RESET) Start Mock A2A server"
+	@echo ""
 
 validate: ## Run all validators
 	@echo "$(COLOR_BOLD)Running framework validation...$(COLOR_RESET)"
@@ -213,5 +220,37 @@ docker-run: ## Run Docker containers
 watch: ## Watch for file changes and auto-reload config
 	@echo "$(COLOR_GREEN)Watching for file changes...$(COLOR_RESET)"
 	python3 ai_dev_flow/AUTOPILOT/scripts/dev_mode.py --watch --root ai_dev_flow
+
+# ==============================================================================
+# Development Tools (Agent Automation)
+# ==============================================================================
+
+mock-mcp: ## Start Mock MCP Server
+	@echo "$(COLOR_GREEN)Starting Mock MCP Server...$(COLOR_RESET)"
+	@cd dev_tools/mcp && uv pip install -e . && python server.py
+
+mock-a2a: ## Start Mock A2A Server
+	@echo "$(COLOR_GREEN)Starting Mock A2A Server...$(COLOR_RESET)"
+	@cd dev_tools/a2a && uv pip install -e . && python server.py
+
+tools-test: ## Run Agent Evaluator (Unit Tests)
+	@echo "$(COLOR_GREEN)Running Agent Semantic Tests...$(COLOR_RESET)"
+	@cd dev_tools/evaluator && npx promptfoo eval
+
+tools-safety: ## Run Runtime Safety Checks
+	@echo "$(COLOR_GREEN)Running Safety Validator...$(COLOR_RESET)"
+	@cd dev_tools/safety && python validator.py
+
+tools-replay: ## Run Event Replay (Simulation)
+	@echo "$(COLOR_GREEN)Running Event Replay...$(COLOR_RESET)"
+	@cd dev_tools/event_replay && python replay.py --help
+
+tools-install: ## Install all dev tool dependencies
+	@echo "$(COLOR_GREEN)Installing Development Tool Dependencies...$(COLOR_RESET)"
+	@pip install -r dev_tools/mcp/requirements.txt
+	@pip install -r dev_tools/a2a/requirements.txt
+	@pip install -r dev_tools/evaluator/requirements.txt
+	@pip install -r dev_tools/safety/requirements.txt
+	@pip install -r dev_tools/chaos_proxy/requirements.txt
 
 .DEFAULT_GOAL := help
