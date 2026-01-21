@@ -302,6 +302,21 @@ traceability_schema:
           type: string
           pattern: "^CTR-\\d{2,}$"
 
+    # ADDED: Upstream links for quick reference to source documents
+    upstream_links:
+      type: array
+      description: "Simple list of upstream document references"
+      item_schema:
+        artifact:
+          type: string
+          description: "Artifact ID (e.g., BRD-01, PRD-01, SYS-01, CTR-01)"
+        path:
+          type: string
+          description: "Relative path to artifact file"
+        sections:
+          type: array
+          description: "Relevant section references"
+
   optional_sections:
     system_requirements:
       type: object
@@ -438,6 +453,44 @@ req_implementations_schema:
 
 architecture_schema:
   required_fields:
+    # ADDED: Architecture overview - high-level description
+    overview:
+      type: string
+      format: multiline
+      description: "High-level component description including purpose, technologies, and integration"
+    
+    # ADDED: Component structure - logical breakdown
+    component_structure:
+      type: array
+      description: "Logical component breakdown"
+      item_schema:
+        name:
+          type: string
+          description: "Component name"
+        responsibility:
+          type: string
+          description: "What this component does"
+        dependencies:
+          type: array
+          description: "Component dependencies"
+    
+    # ADDED: Element IDs - unique identifiers for interfaces, models, rules
+    element_ids:
+      type: array
+      description: "Unique element identifiers for traceability"
+      item_schema:
+        id:
+          type: string
+          pattern: "^SPEC\\.\\d{2}\\.\\d{2}\\.\\d{2}$"
+          description: "Format: SPEC.{DOC}.{TYPE}.{SEQ} where TYPE: 16=interface, 17=data_model, 21=validation_rule"
+        type:
+          type: string
+          allowed_values: ["interface", "data_model", "validation_rule"]
+        name:
+          type: string
+        description:
+          type: string
+
     pattern:
       type: string
       allowed_values: ["service", "library", "component", "integration"]
@@ -487,6 +540,48 @@ architecture_schema:
 
 interfaces_schema:
   required_fields:
+    # ADDED: External APIs - HTTP endpoints exposed to clients
+    external_apis:
+      type: array
+      description: "HTTP endpoints exposed to external clients"
+      item_schema:
+        endpoint:
+          type: string
+          description: "HTTP method and path (e.g., POST /api/v1/auth/login)"
+        method:
+          type: string
+          allowed_values: ["GET", "POST", "PUT", "DELETE", "PATCH"]
+        auth:
+          type: string
+          description: "Authentication requirement (None, JWT Bearer, API Key)"
+        rate_limit:
+          type: string
+          description: "Rate limit specification"
+        request_schema:
+          type: object
+          description: "JSON schema for request body"
+        response_schema:
+          type: object
+          description: "JSON schema for response body"
+        latency_target:
+          type: string
+          description: "@threshold reference or milliseconds"
+
+    # ADDED: Internal APIs - service method signatures
+    internal_apis:
+      type: array
+      description: "Internal service method signatures"
+      item_schema:
+        interface:
+          type: string
+          description: "ClassName.method_name() format"
+        signature:
+          type: string
+          description: "Full method signature with types"
+        purpose:
+          type: string
+          description: "What this method does"
+
     classes:
       type: array
       min_items: 1

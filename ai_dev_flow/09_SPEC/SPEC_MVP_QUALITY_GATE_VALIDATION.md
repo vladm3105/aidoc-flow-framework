@@ -308,6 +308,38 @@ done
 
 ---
 
+### CORPUS-16: Required Subsection Coverage ⭐ NEW
+
+**Purpose**: Verify all SPEC files contain the 6 required subsections
+
+**Severity**: Error (blocking)
+
+**Required Subsections**:
+| Section | Subsection | Purpose |
+|---------|------------|---------|
+| `traceability` | `upstream_links` | Quick reference to source documents |
+| `architecture` | `overview` | High-level component description |
+| `architecture` | `component_structure` | Logical component breakdown |
+| `architecture` | `element_ids` | Unique element identifiers |
+| `interfaces` | `external_apis` | HTTP endpoints |
+| `interfaces` | `internal_apis` | Internal method signatures |
+
+**Validation Logic**:
+```bash
+# Check for required subsections in SPEC files
+for f in "$SPEC_DIR"/SPEC-[0-9]*_*.yaml; do
+  for subsection in "upstream_links" "overview" "component_structure" "element_ids" "external_apis" "internal_apis"; do
+    if ! grep -q "$subsection:" "$f" 2>/dev/null; then
+      echo "ERROR: $(basename $f) missing required subsection: $subsection"
+    fi
+  done
+done
+```
+
+**Error Message**: `❌ CORPUS-E016: Missing required subsection {subsection} in {filename}`
+
+---
+
 ## 2. Error Codes
 
 ### Error Codes (Blocking)
@@ -322,6 +354,7 @@ done
 | CORPUS-E013 | REQ without SPEC coverage | CORPUS-13 |
 | CORPUS-E014 | Missing required YAML field | CORPUS-14 |
 | CORPUS-E015 | Missing cumulative traceability | CORPUS-15 |
+| CORPUS-E016 | Missing required subsection | CORPUS-16 |
 
 ### Warning Codes (Recommended)
 
@@ -384,6 +417,7 @@ done
 - [ ] **CORPUS-13**: All REQs have SPEC coverage
 - [ ] **CORPUS-14**: All SPEC have required YAML fields
 - [ ] **CORPUS-15**: Cumulative traceability complete (7 tags)
+- [ ] **CORPUS-16**: All required subsections present (upstream_links, overview, component_structure, element_ids, external_apis, internal_apis)
 
 ---
 

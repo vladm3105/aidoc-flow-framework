@@ -162,6 +162,22 @@ traceability:
       req: "TBD"
       ctr: "TBD"
 
+  # Upstream Document Links
+  # REQUIRED: Simple list of source document references
+  upstream_links:
+    - artifact: "BRD-NN"
+      path: "../01_BRD/BRD-NN_{slug}.md"
+      sections: ["§X Business Requirements"]
+    - artifact: "PRD-NN"
+      path: "../02_PRD/PRD-NN_{slug}.md"
+      sections: ["§Y Functional Requirements"]
+    - artifact: "SYS-NN"
+      path: "../06_SYS/SYS-NN_{name}.md"
+      sections: ["§Z System Architecture"]
+    - artifact: "CTR-NN"
+      path: "../08_CTR/CTR-NN_{slug}.md"
+      sections: ["§A API Contracts"]
+
   downstream_artifacts:
     # NOTE: REQs are now UPSTREAM (inputs to SPEC), not downstream
     # See upstream_sources.atomic_requirements for REQ references
@@ -491,49 +507,120 @@ cumulative_tags:
   # - DO NOT duplicate requirement text - reference REQ files instead
   req_implementations:
     # Each entry corresponds to one REQ from upstream_sources.atomic_requirements
-    - req_id: "REQ-NN"
-      req_link: "../07_REQ/SYS-XX_{module}/REQ-NN_{slug}.md"
+    # EXAMPLE: JWT Authentication requirement implementation
+    - req_id: "REQ-01"
+      req_link: "../07_REQ/SYS-01_iam/REQ-01_jwt_authentication.md"
       # Implementation details for this specific requirement
       implementation:
         # Interfaces that implement this requirement
         interfaces:
-          - class: "ClassName"
-            method: "method_name"
-            signature: "async def method_name(param: Type) -> ReturnType"
-            purpose: "[Brief description of what this method does for the REQ]"
+          - class: "JWTHandler"
+            method: "create_access_token"
+            signature: "async def create_access_token(user_id: str, claims: dict[str, Any]) -> str"
+            purpose: "Generate RS256-signed JWT access token with 15-minute expiry"
+          - class: "JWTHandler"
+            method: "verify_token"
+            signature: "async def verify_token(token: str, token_type: TokenType) -> TokenPayload"
+            purpose: "Verify and decode JWT token with blacklist check"
         # Data models required for this requirement
         data_models:
-          - name: "ModelName"
+          - name: "TokenPayload"
             fields:
-              - name: "field1"
+              - name: "sub"
                 type: "str"
-                constraints: "[Validation constraints]"
+                constraints: "User ID, required"
+              - name: "jti"
+                type: "str"
+                constraints: "JWT ID, UUID format"
+              - name: "exp"
+                type: "int"
+                constraints: "Expiration timestamp"
+              - name: "roles"
+                type: "list[str]"
+                constraints: "User roles"
         # Validation rules implementing REQ acceptance criteria
         validation_rules:
-          - rule: "Rule description"
-            implementation: "How it's validated in code"
+          - rule: "RS256 algorithm enforcement"
+            implementation: "Reject any token not signed with RS256"
+          - rule: "Key rotation support"
+            implementation: "Maintain current + previous key for graceful rotation"
         # Error handling for this requirement
         error_handling:
-          - error_code: "ERROR_CODE"
-            condition: "When this error occurs"
-            http_status: 400
-            response_message: "User-facing error message"
+          - error_code: "TOKEN_EXPIRED"
+            condition: "Token exp claim is in the past"
+            http_status: 401
+            response_message: "Token has expired"
+          - error_code: "TOKEN_INVALID_SIGNATURE"
+            condition: "Signature verification fails"
+            http_status: 401
+            response_message: "Invalid token signature"
         # Testing approach for this requirement
         test_approach:
-          unit_tests: ["Test case 1", "Test case 2"]
-          integration_tests: ["Integration scenario"]
+          unit_tests:
+            - "Test valid token generation and verification"
+            - "Test expired token rejection"
+            - "Test blacklisted token rejection"
+          integration_tests:
+            - "Test key rotation without service interruption"
 
     # Additional REQ implementations follow the same pattern
-    # - req_id: "REQ-MM"
-    #   req_link: "../07_REQ/SYS-XX_{module}/REQ-MM_{slug}.md"
+    # - req_id: "REQ-02"
+    #   req_link: "../07_REQ/SYS-XX_{module}/REQ-02_{slug}.md"
     #   implementation:
     #     interfaces: [...]
+    #     data_models: [...]
+    #     validation_rules: [...]
+    #     error_handling: [...]
+    #     test_approach: [...]
 
 # ===================
 # COMPONENT ARCHITECTURE
 # ===================
 
 architecture:
+  # Architecture Overview - REQUIRED
+  # Example: IAM Service Architecture
+  overview: |
+    IAM Service provides authentication and authorization for the platform.
+    Built on JWT tokens (access + refresh), OAuth 2.0/OIDC integration, and RBAC
+    with 4D permission matrix (user, role, resource, action).
+    
+    Components: Auth Service, Token Manager, Permission Evaluator, Session Manager
+    Access Pattern: Stateless JWT validation with Redis token blacklist
+    Integration: FastAPI middleware on all protected endpoints
+
+  # Component Structure - REQUIRED
+  component_structure:
+    - name: "AuthenticationService"
+      responsibility: "User login, logout, JWT issuance, OAuth integration"
+      dependencies: ["PostgreSQL (user store)", "Redis (token blacklist)", "OAuth providers"]
+    - name: "TokenManager"
+      responsibility: "JWT generation, validation, refresh, rotation, blacklisting"
+      dependencies: ["Redis (blacklist)", "Cloud KMS (signing keys)"]
+    - name: "AuthorizationService"
+      responsibility: "Permission evaluation, RBAC, 4D matrix resolution"
+      dependencies: ["PostgreSQL (permission store)", "Policy cache (Redis)"]
+
+  # Element IDs - REQUIRED (Format: SPEC.{DOC}.{TYPE}.{SEQ})
+  # Type Codes: 16=interface, 17=data_model, 21=validation_rule
+  element_ids:
+    - id: "SPEC.01.16.01"
+      type: "interface"
+      name: "POST /auth/login"
+      description: "User authentication endpoint"
+    - id: "SPEC.01.16.02"
+      type: "interface"
+      name: "POST /auth/refresh"
+      description: "Token refresh endpoint"
+    - id: "SPEC.01.17.01"
+      type: "data_model"
+      name: "TokenPayload"
+      description: "JWT token payload structure"
+    - id: "SPEC.01.21.01"
+      type: "validation_rule"
+      name: "RS256 Algorithm Enforcement"
+      description: "Validate token uses RS256 algorithm"
+
   pattern: "service"  # service, library, component, integration
   domain: "business_domain"  # api, data, core, operations, etc.
   category: "functional_category"  # client, service, processor, validator, etc.
@@ -595,6 +682,53 @@ architecture:
 # ===================
 
 interfaces:
+  # External APIs - REQUIRED (HTTP endpoints exposed to clients)
+  # Example: IAM Authentication APIs
+  external_apis:
+    - endpoint: "POST /api/v1/auth/login"
+      method: "POST"
+      auth: "None"
+      rate_limit: "10 req/min per IP"
+      request_schema:
+        type: "object"
+        required: ["email", "password"]
+        properties:
+          email: { type: "string", format: "email" }
+          password: { type: "string", minLength: 12 }
+      response_schema:
+        type: "object"
+        properties:
+          access_token: { type: "string" }
+          refresh_token: { type: "string" }
+          expires_in: { type: "integer" }
+      latency_target: "@threshold:perf.api.p95_latency"
+
+    - endpoint: "POST /api/v1/auth/refresh"
+      method: "POST"
+      auth: "JWT Bearer (refresh token)"
+      rate_limit: "20 req/min"
+      request_schema:
+        type: "object"
+        required: ["refresh_token"]
+      response_schema:
+        type: "object"
+        properties:
+          access_token: { type: "string" }
+          expires_in: { type: "integer" }
+      latency_target: "@threshold:perf.api.p95_latency"
+
+  # Internal APIs - REQUIRED (service method signatures)
+  internal_apis:
+    - interface: "AuthService.authenticate()"
+      signature: "authenticate(email: str, password: str) -> TokenPair"
+      purpose: "Authenticate user credentials and return JWT tokens"
+    - interface: "AuthService.validate_token()"
+      signature: "validate_token(token: str) -> JWTPayload"
+      purpose: "Validate JWT token and return decoded claims"
+    - interface: "PermissionService.check_permission()"
+      signature: "check_permission(user_id: UUID, resource: str, action: str) -> bool"
+      purpose: "Check if user has permission for action on resource"
+
   classes:
     - name: "PrimaryServiceClass"
       description: "Main service class implementing the component interface"

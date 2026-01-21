@@ -83,9 +83,18 @@ metadata:
 
 # Complete traceability chain
 traceability:
-  upstream_sources: [...]
+  upstream_sources: [...] 
   downstream_artifacts: [...]
   cumulative_tags: [...]  # Include @threshold registry tag and use null only when an upstream type truly does not exist
+  
+  # Upstream links (REQUIRED) - Quick reference to source documents
+  upstream_links:
+    - artifact: "BRD-01"
+      path: "../01_BRD/BRD-NN_{slug}.md"
+      sections: ["§X Business Requirements"]
+    - artifact: "PRD-01"
+      path: "../02_PRD/PRD-NN_{slug}.md"
+      sections: ["§Y Functional Requirements"]
   
   # Threshold registry references (required when using @threshold)
   # MUST be under traceability section
@@ -100,13 +109,38 @@ traceability:
   req_implementations:
     - req_id: "REQ-NN"
       req_link: "../07_REQ/..."
-      implementation: { ... }
+      implementation: { interfaces, data_models, validation_rules, error_handling, test_approach }
 
-# Architecture definition
-architecture: [...]
+# Architecture definition (REQUIRED subsections: overview, component_structure, element_ids)
+architecture:
+  overview: |
+    Component description, technologies, integration...
+  component_structure:
+    - name: "ComponentName"
+      responsibility: "What it does"
+      dependencies: [...]
+  element_ids:
+    - id: "SPEC.NN.16.01"   # Type 16=interface, 17=data_model, 21=validation_rule
+      type: "interface"
+      name: "Endpoint name"
+  pattern: "service"
+  dependencies: [...]
 
-# Interface definitions (CTR references)
-interfaces: [...]
+# Interface definitions (REQUIRED subsections: external_apis, internal_apis)
+interfaces:
+  external_apis:
+    - endpoint: "POST /api/v1/auth/login"
+      method: "POST"
+      auth: "None"
+      rate_limit: "10 req/min"
+      request_schema: {...}
+      response_schema: {...}
+      latency_target: "@threshold:perf.api.p95_latency"
+  internal_apis:
+    - interface: "AuthService.authenticate()"
+      signature: "authenticate(email: str, password: str) -> TokenPair"
+      purpose: "Authenticate user and return tokens"
+  classes: [...]
 
 # Behavioral specifications
 behavior: [...]

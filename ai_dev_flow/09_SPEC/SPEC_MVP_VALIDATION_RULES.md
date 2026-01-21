@@ -267,6 +267,49 @@ cumulative_tags:
 
 ---
 
+### CHECK 11: Required Subsection Compliance ⭐ NEW
+
+**Purpose**: Verify all new required subsections are present in SPEC files
+**Type**: Error (blocking)
+
+**Required Subsections**:
+
+| Section | Subsection | Description |
+|---------|------------|-------------|
+| `traceability` | `upstream_links` | Simple list of upstream document references (BRD, PRD, SYS, CTR) |
+| `architecture` | `overview` | High-level component description |
+| `architecture` | `component_structure` | Logical component breakdown with responsibilities |
+| `architecture` | `element_ids` | Unique identifiers (SPEC.NN.TT.SS format) |
+| `interfaces` | `external_apis` | HTTP endpoints exposed to clients |
+| `interfaces` | `internal_apis` | Internal service method signatures |
+
+**Validation Logic**:
+```python
+# Required subsection checks
+required_subsections = [
+    ('traceability', 'upstream_links'),
+    ('architecture', 'overview'),
+    ('architecture', 'component_structure'),
+    ('architecture', 'element_ids'),
+    ('interfaces', 'external_apis'),
+    ('interfaces', 'internal_apis'),
+]
+
+for section, subsection in required_subsections:
+    if section not in spec or subsection not in spec[section]:
+        errors.append(f"Missing required subsection: {section}.{subsection}")
+```
+
+**Error Messages**:
+- `❌ SPEC-E020: Missing traceability.upstream_links`
+- `❌ SPEC-E021: Missing architecture.overview`
+- `❌ SPEC-E022: Missing architecture.component_structure`
+- `❌ SPEC-E023: Missing architecture.element_ids`
+- `❌ SPEC-E024: Missing interfaces.external_apis`
+- `❌ SPEC-E025: Missing interfaces.internal_apis`
+
+---
+
 ## Error Fix Guide
 
 ### Quick Fix Matrix
@@ -282,6 +325,7 @@ cumulative_tags:
 | **CHECK 5b** | If CTR-NN exists in `docs/08_CTR/`, add `ctr: "CTR-NN"` to cumulative_tags |
 | **CHECK 9** | Reduce file size or accept warning (non-blocking) |
 | **CHECK 10** | Replace legacy element IDs (STEP-XXX, IF-XXX, DM-XXX) with unified format `SPEC.NN.TT.SS` |
+| **CHECK 11** | Add missing required subsections (upstream_links, overview, component_structure, element_ids, external_apis, internal_apis) |
 
 ---
 
