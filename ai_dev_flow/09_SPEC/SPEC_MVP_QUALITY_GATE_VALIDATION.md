@@ -44,7 +44,11 @@ Individual SPEC Creation → SPEC_MVP_VALIDATION_RULES.md (per-file)
         ↓
 All SPEC Complete
         ↓
-SPEC_MVP_QUALITY_GATE_VALIDATION.md (corpus-level) ← Quality Gate
+SPEC_MVP_QUALITY_GATE_VALIDATION.md CORPUS-01 to CORPUS-15 (automated)
+        ↓
+CORPUS-FINAL: Holistic AI Review (manual) ← FINAL GATE
+        ↓
+Fix ALL inconsistencies
         ↓
 PASS → Begin TASKS Creation (Layer 10)
 FAIL → Fix issues, re-run Quality Gate validation
@@ -510,6 +514,115 @@ else
   echo "❌ Fix SPEC corpus errors before proceeding to TASKS layer"
   exit 1
 fi
+```
+
+---
+
+## 3. CORPUS-FINAL: Holistic Project-Level Review (MANDATORY)
+
+> **⚠️ CRITICAL**: This is the FINAL validation step before TASKS creation. All errors and inconsistencies MUST be fixed.
+
+### Purpose
+
+Perform a comprehensive, manual AI-assisted review of ALL SPEC files as a cohesive code generation skeleton. This is NOT automated validation—it requires intelligent analysis of the entire SPEC corpus as a project.
+
+### When to Run
+
+- After ALL automated quality gate checks pass (CORPUS-01 through CORPUS-15)
+- Before creating ANY TASKS documents
+- Must be performed by AI assistant, not scripts
+
+### Review Scope
+
+| Category | What to Check |
+|----------|--------------|
+| **Cross-SPEC Consistency** | Same concepts use same values across files |
+| **Dependency Coherence** | All internal dependencies reference valid SPECs |
+| **Interface Contracts** | APIs match between provider and consumer SPECs |
+| **Technology Alignment** | All SPECs use approved ADR-00 stack |
+| **Parameter Consistency** | Same parameters have same types/formats |
+| **Link Validity** | All upstream links point to existing documents |
+| **Threshold References** | Use @threshold instead of hardcoded values |
+| **Naming Conventions** | Consistent YAML formatting and quoting |
+
+### Required Analysis Steps
+
+1. **Inventory all SPEC files**: Count and list all YAML files
+2. **Extract cross-SPEC patterns**: 
+   - `auth:` values across all files
+   - `latency_target:` values  
+   - `rate_limit:` values
+   - `language:` values
+   - `domain:` values
+3. **Identify inconsistencies**: Flag format variations
+4. **Verify dependency graph**: Ensure no circular or missing dependencies
+5. **Check REQ coverage**: Confirm all REQs mapped with no duplicates
+6. **Technology stack alignment**: Verify against ADR-00
+
+### Output Requirements
+
+Generate a **SPEC Skeleton Review Report** with:
+
+| Section | Content |
+|---------|---------|
+| Executive Summary | File count, critical/minor issues, overall status |
+| Structure Consistency | Required fields, section ordering |
+| Cross-SPEC Inconsistencies | List all format/value inconsistencies |
+| Dependency Coherence | Internal/external dependency validation |
+| Interface Contract Coherence | API consistency |
+| REQ Traceability | Coverage and duplicate check |
+| Technology Stack Alignment | ADR-00 compliance |
+| Recommendations | Must-fix and should-fix items |
+| Verdict | READY or NOT READY for TASKS |
+
+### Pass/Fail Criteria
+
+| Severity | Impact |
+|----------|--------|
+| **Critical Issues** | MUST fix before TASKS - blocks code generation |
+| **Consistency Issues** | MUST fix - affects code consistency |
+| **Minor Issues** | SHOULD fix - cosmetic but recommended |
+
+**To PASS**: 0 critical issues, 0 consistency issues (minor issues acceptable)
+
+### Fixing Inconsistencies
+
+All inconsistencies identified MUST be fixed before proceeding to TASKS:
+
+```bash
+# Example fixes for common inconsistencies
+
+# 1. Auth format - standardize to quoted strings
+auth: "JWT Bearer"  # Not: auth: JWT Bearer
+
+# 2. Latency - use threshold references
+latency_target: "@threshold:perf.api.p95_latency"  # Not: latency_target: "50ms"
+
+# 3. Domain - consistent naming
+domain: "foundation"  # Not: domain: "d1_foundation"
+
+# 4. Language - include version
+language: "Python 3.12+"  # Not: language: "python"
+```
+
+### Workflow Integration
+
+```
+All SPECS Complete
+        ↓
+CORPUS-01 through CORPUS-15 (automated) ← Pass required
+        ↓
+CORPUS-FINAL: Holistic AI Review (manual) ← THIS STEP
+        ↓
+Fix ALL inconsistencies
+        ↓
+Re-run holistic review
+        ↓
+PASS → SPEC Skeleton READY
+        ↓
+Begin SPEC Dependency Analysis (TASKS_MVP_CREATION_RULES Section 0)
+        ↓
+Create TASKS documents
 ```
 
 ---

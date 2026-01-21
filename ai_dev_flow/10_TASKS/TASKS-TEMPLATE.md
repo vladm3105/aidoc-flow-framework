@@ -43,6 +43,7 @@ custom_fields:
 
 | Field | Value |
 |-------|-------|
+| **TASKS ID** | TASKS-NN |
 | **Status** | Draft / Ready / In Progress / Completed / Blocked |
 | **Version** | 1.0.0 |
 | **Created** | YYYY-MM-DD |
@@ -281,7 +282,27 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-<h2>TASKS.NN.18.07: Traceability</h2>
+---
+
+<h2>TASKS.NN.18.07: Implementation Contracts</h2>
+
+> **Mandatory Interface Compliance**: The implementation MUST adhere to these contracts.
+
+<h3>7.1 Contracts Provided (if provider)</h3>
+
+| Contract Name | Type | Consumers | File |
+|---------------|------|-----------|------|
+| [InterfaceName] | Protocol | TASKS-XX, TASKS-YY | `src/contracts/[name].py` |
+
+<h3>7.2 Contracts Consumed (if consumer)</h3>
+
+| Source | Contract Name | Type | Usage |
+|--------|---------------|------|-------|
+| TASKS-NN | [ContractName] | Protocol | [How it's used] |
+
+---
+
+<h2>TASKS.NN.18.08: Traceability</h2>
 
 <h3>8.1 Upstream References</h3>
 
@@ -317,7 +338,9 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-<h2>TASKS.NN.18.08: Risk & Mitigation</h2>
+---
+
+<h2>TASKS.NN.18.09: Risk & Mitigation</h2>
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|------------|
@@ -327,7 +350,9 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-<h2>TASKS.NN.18.09: Session Log</h2>
+---
+
+<h2>TASKS.NN.18.10: Session Log</h2>
 
 | Date | Status | Summary |
 |------|--------|---------|
@@ -336,7 +361,9 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 
 ---
 
-<h2>TASKS.NN.18.10: Change History</h2>
+---
+
+<h2>TASKS.NN.18.11: Change History</h2>
 
 | Date | Version | Change | Author |
 |------|---------|--------|--------|

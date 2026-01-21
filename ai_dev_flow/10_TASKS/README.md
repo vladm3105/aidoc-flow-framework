@@ -182,29 +182,28 @@ Tasks map to specific architectural components:
 
 ```
 `10_TASKS/
-├── TASKS-01_resource_limit_service_tasks.md     # Service component
-├── TASKS-02_ib_gateway_integration_tasks.md      # Integration component
-├── TASKS-03_external_api_integration_tasks.md    # API client component
-└── TASKS-004_user_interface_implementation_tasks.md # UI component
+├── TASKS-01_resource_limit_service.md     # Service component
+├── TASKS-02_ib_gateway_integration.md      # Integration component
+├── TASKS-03_external_api_integration.md    # API client component
+└── TASKS-004_user_interface_implementation.md # UI component
 ```
 
 ## File Naming Convention
 
 ```
-TASKS-NN_descriptive_component_tasks.md
+TASKS-NN_descriptive_component.md
 ```
 
 Where:
 - `TASKS` is the constant prefix indicating AI Task instructions
 - `NNN` is the 2+ digit sequence number (01, 02, 003, etc.)
 - `descriptive_component` uses snake_case describing the component being implemented
-- `tasks` is the constant suffix indicating implementation tasks
 - `.md` is the required file extension
 
 **Examples:**
-- `TASKS-01_resource_limit_service_tasks.md`
-- `TASKS-02_ib_gateway_integration_tasks.md`
-- `TASKS-03_external_api_integration_tasks.md`
+- `TASKS-01_resource_limit_service.md`
+- `TASKS-02_ib_gateway_integration.md`
+- `TASKS-03_external_api_integration.md`
 
 ## Writing Guidelines
 
@@ -562,14 +561,14 @@ python show_task_dependencies.py --output dependencies.png
 ### Code Generation Integration
 ```bash
 # Generate implementation from task
-ai-codegen --task 10_TASKS/TASKS-01_resource_limit_service_tasks.md --framework fastapi
+ai-codegen --task 10_TASKS/TASKS-01_resource_limit_service.md --framework fastapi
 
 # Validate generated code against contracts
 ```
 
 ## Example Task Template
 
-See `TASKS-01_resource_limit_service_tasks.md` for a complete example of a well-structured tasks document that includes scope definition, implementation plan, constraints, acceptance criteria, and comprehensive traceability.
+See `TASKS-01_resource_limit_service.md` for a complete example of a well-structured tasks document that includes scope definition, implementation plan, constraints, acceptance criteria, and comprehensive traceability.
 
 ## Implementation Contracts in TASKS
 

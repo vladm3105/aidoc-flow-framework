@@ -67,10 +67,95 @@ Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 
 ---
 
+## 0. SPEC Dependency Analysis (MANDATORY FIRST STEP)
+
+> **⚠️ CRITICAL**: Before creating ANY TASKS documents, you MUST complete SPEC dependency analysis to determine the correct code generation order.
+
+### 0.1 Why This Matters
+
+TASKS documents define code generation instructions. The order in which code is generated affects:
+- Build success (dependencies must exist before dependents)
+- Test execution (integration tests require dependent services)
+- Contract verification (consumers need provider interfaces)
+
+### 0.2 Dependency Analysis Process
+
+**Before planning TASKS, execute these steps:**
+
+1. **Inventory all SPEC files**: List all SPEC-NN files to be implemented
+2. **Extract dependencies from each SPEC**:
+   - `architecture.dependencies.internal` - other services/modules required
+   - `interfaces.internal_apis` - contracts consumed from other services
+   - `traceability.upstream_links` - upstream SPEC references
+3. **Build dependency graph**: Map which SPECs depend on which
+4. **Determine generation order**: Topological sort (dependencies first)
+5. **Group into phases**: Parallelizable SPECs in same phase
+
+### 0.3 Required Analysis Outputs
+
+Before creating TASKS, document:
+
+| Output | Purpose |
+|--------|---------|
+| **Dependency Matrix** | Which SPEC depends on which |
+| **Generation Order** | Sequence for code generation |
+| **Phase Groupings** | Parallelizable TASKS per phase |
+| **Blocking Relationships** | What blocks what |
+
+### 0.4 Dependency Extraction Checklist
+
+For each SPEC file, extract:
+
+```yaml
+# From SPEC-NN.yaml, extract:
+architecture:
+  dependencies:
+    internal:
+      - name: "redis_client"      # → depends on Redis
+      - name: "iam_service"       # → depends on SPEC-01
+    external:
+      - name: "vertex_ai"         # → external, no SPEC dependency
+
+interfaces:
+  internal_apis:
+    - interface: "AuthService.validate()"  # → consumes from SPEC-01
+```
+
+### 0.5 Example Dependency Analysis
+
+```
+SPEC-01 (IAM) ────────────────→ No dependencies (Foundation)
+SPEC-02 (Session) ────────────→ Depends on SPEC-01 (IAM)
+SPEC-03 (Observability) ──────→ No dependencies (Foundation)
+SPEC-08 (Trading Intelligence) → Depends on SPEC-01, SPEC-03, SPEC-07
+```
+
+**Resulting Order**:
+1. Phase 1: SPEC-01, SPEC-03, SPEC-07 (parallel - no interdeps)
+2. Phase 2: SPEC-02 (depends on 01)
+3. Phase 3: SPEC-08 (depends on 01, 03, 07)
+
+### 0.6 Anti-Pattern: Skipping Dependency Analysis
+
+**DO NOT**:
+- Create TASKS in arbitrary order
+- Assume PRD numbering equals dependency order
+- Generate code for dependents before dependencies
+- Skip dependency extraction from SPEC files
+
+**ALWAYS**:
+- Review all SPEC files before planning TASKS
+- Extract actual dependencies from SPEC YAML
+- Build explicit dependency graph
+- Document generation order in TASKS generation plan
+
+---
+
 ## 1. When to Create a TASKS Document
 
 ### Create TASKS When
 
+- [ ] **SPEC dependency analysis is complete** (Section 0)
 - [ ] SPEC (YAML specification) is complete and approved
 - [ ] Code generation plan needed for a single SPEC
 - [ ] AI code generator requires structured implementation instructions
@@ -80,6 +165,7 @@ Rules for creating AI Tasks (TASKS) documents in the SDD framework.
 ### Do NOT Create TASKS When
 
 - [ ] No SPEC exists yet (create SPEC first)
+- [ ] **SPEC dependency analysis not done** (do Section 0 first)
 - [ ] Need project management plan (use TASKS execution plan instead)
 - [ ] Simple configuration changes only
 - [ ] Documentation-only updates
@@ -93,21 +179,22 @@ Note: Some examples in this document show a portable `docs/` root. In this repos
 ### Format
 
 ```
-TASKS-NN_{descriptive_component}_tasks.md
+TASKS-NN_{descriptive_component}.md
 ```
 
 ### Rules
 
-1. **TASKS-NN**: Matches parent PRD/SPEC ID (e.g., `SPEC-12` -> `TASKS-12`)
+1. **TASKS-NN**: Sequential ID based on creation order/dependency graph (e.g., `TASKS-01`, `TASKS-02`).
+   - **Note**: TASKS IDs do **NOT** need to match SPEC IDs.
+   - Example: `TASKS-02` might implement `SPEC-03`.
 2. **descriptive_component**: Lowercase with underscores
-3. **_tasks**: Required suffix
-4. **Extension**: Always `.md`
+3. **Extension**: Always `.md`
 
 ### Examples
 
-- `TASKS-01_service_connector_tasks.md`
-- `TASKS-02_data_integration_tasks.md`
-- `TASKS-03_request_execution_service_tasks.md`
+- `TASKS-01_service_connector.md`
+- `TASKS-02_data_integration.md`
+- `TASKS-03_request_execution_service.md`
 
 ### 2.1 Element ID Format (MANDATORY)
 

@@ -65,7 +65,7 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 ### Pattern
 
 ```regex
-^TASKS-[0-9]{2,}_[a-z0-9_]+_tasks\.md$
+^TASKS-[0-9]{2,}_[a-z0-9_]+\.md$
 ```
 
 ### Rules
@@ -75,18 +75,16 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 | TASKS prefix | Must start with "TASKS-" | ERROR |
 | ID format | NN or NNN digits | ERROR |
 | Slug format | lowercase, underscores only | ERROR |
-| _tasks suffix | Must end with "_tasks" | ERROR |
 | Extension | .md only | ERROR |
 
 ### Examples
 
 | Filename | Valid | Reason |
 |----------|-------|--------|
-| `TASKS-01_gateway_service_tasks.md` | ✅ | Correct format |
-| `tasks-001_gateway_service_tasks.md` | ❌ | Lowercase prefix |
-| `TASKS-1_gateway_service_tasks.md` | ❌ | Single digit ID |
-| `TASKS-01_gateway_service.md` | ❌ | Missing _tasks suffix |
-| `TASKS-01-gateway-service-tasks.md` | ❌ | Hyphens in slug |
+| `TASKS-01_gateway_service.md` | ✅ | Correct format |
+| `tasks-001_gateway_service.md` | ❌ | Lowercase prefix |
+| `TASKS-1_gateway_service.md` | ❌ | Single digit ID |
+| `TASKS-01-gateway-service.md` | ❌ | Hyphens in slug |
 
 ---
 
@@ -422,7 +420,7 @@ fi
 =========================================
 TASKS Validation Report
 =========================================
-File: TASKS-01_gateway_service_tasks.md
+File: TASKS-01_gateway_service.md
 Version: 1.0.0
 
 CHECK 1: Filename Format
