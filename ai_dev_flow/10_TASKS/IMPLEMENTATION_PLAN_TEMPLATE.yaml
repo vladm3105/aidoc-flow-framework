@@ -41,7 +41,9 @@ phases:
           - "Initialize pyproject.toml"
           - "Create .env from template"
           - "Install project dependencies (uv sync)"
-          - "Hand-off: Update Session Log with completion summary and test results"
+          - "Hand-off: Update Unit Test Results"
+          - "Hand-off: Update Implementation Summary"
+          - "Hand-off: Update Session Log"
         session_logged: false     # Detailed 'COMPLETED' entry in Session Log
         exit_criteria:
           - "Virtual environment active"
@@ -56,7 +58,9 @@ phases:
           - "Install dependencies"
           - "Configure Mock Services"
           - "Update completion status in IMPLEMENTATION_PLAN.md"
-          - "Hand-off: Update Session Log with completion summary and test results"
+          - "Hand-off: Update Unit Test Results"
+          - "Hand-off: Update Implementation Summary"
+          - "Hand-off: Update Session Log"
         exit_criteria:
           - "make tools-test passes"
           - "Mock Servers operational"
@@ -77,7 +81,9 @@ phases:
           - "Implement Core Logic"
           - "Implement Adapters"
           - "Update completion status in IMPLEMENTATION_PLAN.md"
-          - "Hand-off: Update Session Log with completion summary and test results"
+          - "Hand-off: Update Unit Test Results"
+          - "Hand-off: Update Implementation Summary"
+          - "Hand-off: Update Session Log"
         exit_criteria:
           - "Unit tests pass"
           - "Service operational"
@@ -96,7 +102,9 @@ phases:
         steps:
           - "Initialize module"
           - "Implement Logic"
-          - "Hand-off: Update Session Log with completion summary and test results"
+          - "Hand-off: Update Unit Test Results"
+          - "Hand-off: Update Implementation Summary"
+          - "Hand-off: Update Session Log"
         exit_criteria:
           - "Functionality verified"
 
@@ -114,7 +122,9 @@ phases:
         steps:
           - "Initialize module"
           - "Implement Business Logic"
-          - "Hand-off: Update Session Log with completion summary and test results"
+          - "Hand-off: Update Unit Test Results"
+          - "Hand-off: Update Implementation Summary"
+          - "Hand-off: Update Session Log"
         exit_criteria:
           - "Business value delivered"
 
@@ -132,7 +142,9 @@ phases:
         steps:
           - "Initialize src/web"
           - "Implement UI Components"
-          - "Hand-off: Update Session Log with completion summary and test results"
+          - "Hand-off: Update Unit Test Results"
+          - "Hand-off: Update Implementation Summary"
+          - "Hand-off: Update Session Log"
         exit_criteria:
           - "UI renders correctly"
 
