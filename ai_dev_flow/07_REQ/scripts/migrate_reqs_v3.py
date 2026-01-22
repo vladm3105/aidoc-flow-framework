@@ -32,15 +32,18 @@ def migrate_file(file_path):
         # This is hard to automate perfectly without knowing the ID, so we'll do a generic fix to remove text titles if they break regex
         # For now, let's leave this manual or simple replace if exact match found
         
-        # 3. Rename "Logical TDD" to "Unit Tests (TDD)"
-        content = re.sub(r'### 8.1\s+Logical TDD', '### 8.1 Unit Tests (TDD)', content)
-        content = re.sub(r'### 8.1\s+Unit Tests\s*(?!\(TDD\))', '### 8.1 Unit Tests (TDD)', content)
+        # 3. Rename "Logical TDD" or "Unit Tests (TDD)" to "Unit Tests"
+        content = re.sub(r'### 8.1\s+Logical TDD', '### 8.1 Unit Tests', content)
+        content = re.sub(r'### 8.1\s+Unit Tests \(TDD\)', '### 8.1 Unit Tests', content)
         
+        # FIX: Ensure newline between Header and Table if they got merged
+        content = re.sub(r'### 8.1 Unit Tests\s*\|', '### 8.1 Unit Tests\n\n|', content)
+
         # 4. Add Mandatory Instruction to Section 8.1
         instruction = "> **IMPORTANT:** Check (and recreate if needed) this list during every validation to capture any hidden requirement changes."
-        if "### 8.1 Unit Tests (TDD)" in content and instruction not in content:
-            # Look for the blockquote line
-            content = re.sub(r'(### 8.1 Unit Tests \(TDD\)\n\n> \*\*Define WHAT to test before HOW.\*\*.*?)(\n)', 
+        if "### 8.1 Unit Tests" in content and instruction not in content:
+            # Look for the blockquote line (handling both old TDD and new Unit Tests headers in case of partial matches)
+            content = re.sub(r'(### 8.1 Unit Tests(?: \(TDD\))?\n\n> \*\*Define WHAT to test before HOW.\*\*.*?)(\n)', 
                              r'\1\n' + instruction + r'\2', content, flags=re.DOTALL)
             
             # If the standard blockquote isn't there, just append after header
@@ -83,9 +86,9 @@ def migrate_file(file_path):
         # Let's just fix the specific warning pattern if possible or rely on manual
         
         # 11. Add Category Prefixes to Unit Tests if missing (SCOPED TO SECTION 8.1)
-        if "### 8.1 Unit Tests (TDD)" in content:
+        if "### 8.1 Unit Tests" in content:
             # Extract Section 8.1 content
-            section_start = content.find("### 8.1 Unit Tests (TDD)")
+            section_start = content.find("### 8.1 Unit Tests")
             # Find end of section (next Header or end of file)
             section_end_match = re.search(r'\n##\s', content[section_start:])
             section_end = section_start + section_end_match.start() if section_end_match else len(content)

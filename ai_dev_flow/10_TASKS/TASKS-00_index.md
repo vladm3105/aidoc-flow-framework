@@ -250,7 +250,7 @@ This index should be reviewed:
 1. **Always Start with SPEC**: Ensure SPEC-NN.yaml is complete before creating TASKS
 2. **Reference CTR**: Link to API contracts for interface definitions
 3. **Include Traceability**: Every generated file should have 07_REQ/05_ADR/BDD comments
-4. **Generate Tests First**: Create test files before implementation (TDD)
+4. **Generate Tests First**: Create test files before implementation
 5. **Validate Generated Code**: Run linters, type checkers, and tests immediately
 6. **Review AI Output**: Always review AI-generated code before committing
 7. **Update Metrics**: Track generation time, lines of code, success rate

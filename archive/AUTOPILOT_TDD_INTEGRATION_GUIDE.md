@@ -17,7 +17,7 @@ custom_fields:
 
 # Autopilot TDD Integration Guide
 
-**Purpose**: Define how Test-Driven Development (TDD) integrates with Autopilot automated workflow, enabling tests to guide specification creation.
+**Purpose**: Define how Test-Driven Development integrates with Autopilot automated workflow, enabling tests to guide specification creation.
 
 **Version**: 1.0
 **Last Updated**: 2026-01-21

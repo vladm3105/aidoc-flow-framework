@@ -17,7 +17,7 @@ custom_fields:
 
 # SDD Testing Strategy with Test-Driven Development
 
-**Purpose**: Define comprehensive testing approach for AI Dev Flow framework integrating Test-Driven Development (TDD) with specification-driven development.
+**Purpose**: Define comprehensive testing approach for AI Dev Flow framework integrating Test-Driven Development with specification-driven development.
 
 **Version**: 1.0
 **Last Updated**: 2026-01-21
@@ -37,7 +37,7 @@ This strategy defines a comprehensive testing approach that:
 
 ## Testing Philosophy
 
-### Test-Driven Development (TDD) Integration
+### Test-Driven Development Integration
 
 **Core Principle**: Generate unit tests **before** code generation to drive implementation.
 
@@ -78,7 +78,7 @@ graph TD
         TASKS[L10: TASKS Plans]
     end
 
-    subgraph "Unit Testing Phase (TDD)"
+    subgraph "Unit Testing Phase"
         UnitGen[Generate Unit Tests from SPEC]
         UnitTests[Unit Tests Fail - Expected]
     end
@@ -579,7 +579,7 @@ pytest tests/acceptance/ \
 
 ## Best Practices
 
-### Unit Tests (TDD)
+### Unit Tests
 1. **Generate tests first** before any code
 2. **Expect failures** initially - this is correct
 3. **Update traceability tags** after code generation
@@ -631,7 +631,7 @@ name: CI/CD Pipeline
 on: [push, pull_request]
 
 jobs:
-  # Phase 1: Unit Tests (TDD)
+  # Phase 1: Unit Tests
   unit-tests:
     runs-on: ubuntu-latest
     steps:

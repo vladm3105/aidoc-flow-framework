@@ -158,18 +158,18 @@ docs/07_REQ/
 
 ---
 
-### CORPUS-05: Unit Tests (TDD) Coverage ⭐ NEW
+### CORPUS-05: Unit Tests Coverage ⭐ NEW
 
-**Purpose**: Verify all REQ files contain Section 8.1 Unit Tests (TDD) tables
+**Purpose**: Verify all REQ files contain Section 8.1 Unit Tests tables
 
 **Severity**: Warning
 
-**Rationale**: Unit Tests (TDD) drive SPEC interface design. REQs without TDD tables may produce incomplete SPECs.
+**Rationale**: Unit Tests drive SPEC interface design. REQs without TDD tables may produce incomplete SPECs.
 
 **Checks**:
 | Check | Description |
 |-------|-------------|
-| Section 8.1 exists | Must be titled "Unit Tests (TDD)" |
+| Section 8.1 exists | Must be titled "Unit Tests" |
 | Minimum 3 entries | At least 3 test cases per REQ |
 | Category prefixes | `[Logic]`, `[State]`, `[Validation]`, `[Edge]` |
 
