@@ -820,20 +820,20 @@ class HeartbeatConfig(BaseModel):
 
 ---
 
-### CHECK 21: Logical TDD Table Validation ⭐ NEW
+### CHECK 21: Unit Tests (TDD) Table Validation ⭐ NEW
 
-**Purpose**: Verify Section 8.1 contains Logical TDD table with minimum entries
+**Purpose**: Verify Section 8.1 contains Unit Tests (TDD) table with minimum entries
 **Type**: Warning
 
 **Requirements**:
-1. Section 8.1 must be titled "Logical TDD (Pre-Code Unit Tests)"
+1. Section 8.1 must be titled "Unit Tests (TDD)"
 2. Table must have 4 columns: Test Case | Input | Expected Output | Coverage
 3. Minimum 3 entries required
 4. Test Case should use category prefixes: `[Logic]`, `[State]`, `[Validation]`, `[Edge]`
 
 **Valid Example**:
 ```markdown
-### 8.1 Logical TDD (Pre-Code Unit Tests)
+### 8.1 Unit Tests (TDD)
 
 | Test Case | Input | Expected Output | Coverage |
 |-----------|-------|-----------------|----------|
@@ -844,14 +844,14 @@ class HeartbeatConfig(BaseModel):
 
 **Warning Messages**:
 ```
-⚠️  WARNING: Section 8.1 missing "Logical TDD" title - drives SPEC interface design
-⚠️  WARNING: Logical TDD table has < 3 entries (found: 2, required: ≥3)
-⚠️  WARNING: Logical TDD entries missing category prefix [Logic/State/Validation/Edge]
+⚠️  WARNING: Section 8.1 missing "Unit Tests (TDD)" title - drives SPEC interface design
+⚠️  WARNING: Unit Tests (TDD) table has < 3 entries (found: 2, required: ≥3)
+⚠️  WARNING: Unit Tests (TDD) entries missing category prefix [Logic/State/Validation/Edge]
 ```
 
-**Fix**: Add Logical TDD table with Input/Output/Coverage columns and category prefixes
+**Fix**: Add Unit Tests (TDD) table with Input/Output/Coverage columns and category prefixes
 
-**Reference**: TESTING_STRATEGY_TDD.md (Logical TDD Phase)
+**Reference**: TESTING_STRATEGY_TDD.md (Unit Tests Phase)
 
 ---
 

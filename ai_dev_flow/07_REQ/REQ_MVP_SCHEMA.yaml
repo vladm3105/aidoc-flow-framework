@@ -258,9 +258,9 @@ structure:
 
     - pattern: "^## 8\\. Testing Requirements$"
       name: "Testing Requirements"
-      description: "Section 8 with Logical TDD (Pre-Code), Unit Tests, Integration Tests, BDD Scenarios"
+      description: "Section 8 with Unit Tests (TDD), Integration Tests, BDD Scenarios"
       subsections:
-        - name: "8.1 Logical TDD (Pre-Code Unit Tests)"
+        - name: "8.1 Unit Tests (TDD)"
           required: true
           description: "Define WHAT to test before HOW - drives SPEC interface design"
           schema:

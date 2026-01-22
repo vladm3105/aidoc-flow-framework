@@ -158,18 +158,18 @@ docs/07_REQ/
 
 ---
 
-### CORPUS-05: Logical TDD Coverage ⭐ NEW
+### CORPUS-05: Unit Tests (TDD) Coverage ⭐ NEW
 
-**Purpose**: Verify all REQ files contain Section 8.1 Logical TDD tables
+**Purpose**: Verify all REQ files contain Section 8.1 Unit Tests (TDD) tables
 
 **Severity**: Warning
 
-**Rationale**: Logical TDD drives SPEC interface design. REQs without Logical TDD tables may produce incomplete SPECs.
+**Rationale**: Unit Tests (TDD) drive SPEC interface design. REQs without TDD tables may produce incomplete SPECs.
 
 **Checks**:
 | Check | Description |
 |-------|-------------|
-| Section 8.1 exists | Must be titled "Logical TDD" |
+| Section 8.1 exists | Must be titled "Unit Tests (TDD)" |
 | Minimum 3 entries | At least 3 test cases per REQ |
 | Category prefixes | `[Logic]`, `[State]`, `[Validation]`, `[Edge]` |
 
@@ -178,7 +178,7 @@ docs/07_REQ/
 - Warning: <90% coverage
 - Error: <70% coverage
 
-**Reference**: TESTING_STRATEGY_TDD.md (Logical TDD Phase)
+**Reference**: TESTING_STRATEGY_TDD.md (Unit Tests Phase)
 
 ---
 

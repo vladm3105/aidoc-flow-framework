@@ -432,12 +432,12 @@ else
       echo "  ❌ ERROR: Invalid tag format: $tag_line"
       echo "           Expected: @type: DOC-ID:REQ-ID"
       echo "           Example: @brd: BRD.09.01.15"
-      ((tag_format_errors++))
+      ((tag_format_errors++)) || true
     fi
   done < <(grep -E '^@(brd|prd|ears|bdd|adr|sys):' "$REQ_FILE")
 
   if [[ $tag_format_errors -gt 0 ]]; then
-    ((ERRORS += tag_format_errors))
+    ((ERRORS += tag_format_errors)) || true
   else
     echo "  ✅ All tag formats valid (@type: DOC-ID:REQ-ID)"
   fi
@@ -459,7 +459,7 @@ for type in "${required_upstream[@]}"; do
   set +e
   grep -qE "^\| ${type} \|" "$REQ_FILE"
   found=$?
-  set -e
+  # set -e (disabled)
 
   if [ $found -eq 0 ]; then
     echo "  ✅ Found: $type upstream source"
@@ -472,11 +472,12 @@ if [[ ${#missing_upstream[@]} -gt 0 ]]; then
   echo "  ❌ ERROR: Incomplete upstream chain - missing: ${missing_upstream[*]}"
   echo "           Complete chain required: BRD → PRD → EARS → BDD → ADR → SYS"
   echo "           Reference: REQ-TEMPLATE-UNIFIED.md Section 15 (RULE 2)"
-  ((ERRORS++))
+  ((ERRORS++)) || true
 else
   echo "  ✅ Complete upstream traceability chain (all 6 layers)"
 fi
 
+echo "DEBUG: Check 14 completed, starting Check 15..."
 echo ""
 
 # ============================================
@@ -560,7 +561,7 @@ if [ "$upstream_count" -ge 5 ] || [ "$has_subcomponents" = "yes" ]; then
     echo "           Sub-components: $has_subcomponents"
     echo "           Recommendation: Add Section 11.4 or create separate REQ-NN_TRACEABILITY_MATRIX.md"
     echo "           Reference: REQ-TEMPLATE-UNIFIED.md Section 11.4"
-    ((WARNINGS++))
+    ((WARNINGS++)) || true
   fi
 else
   echo "  ℹ️  Simple REQ - Traceability Matrix optional"
@@ -621,6 +622,54 @@ if [ -n "$score" ] && [ "$score" -ge 90 ]; then
   fi
 else
   echo "  ℹ️  SPEC-Ready score <90% - content validation skipped"
+fi
+
+# ============================================
+# CHECK 21: Unit Tests (TDD) Table Validation
+# ============================================
+echo "CHECK 21: Unit Tests (TDD) Table Validation"
+echo "-----------------------------------------"
+
+if [ "$PROFILE" = "mvp" ]; then
+  # Check if Section 8.1 Unit Tests (TDD) title exists
+  if grep -q "### 8.1 Unit Tests (TDD)" "$REQ_FILE"; then
+    echo "  ✅ Found: Section 8.1 Unit Tests (TDD) title"
+    
+    # Check for table structure (pipes and hyphens)
+    if grep -q "| Test Case | Input | Expected Output | Coverage |" "$REQ_FILE"; then
+       echo "  ✅ Found: Unit Tests (TDD) table structure"
+       
+       # Count table rows (excluding header and separator) in Section 8.1
+       # Extract lines between 8.1 and 8.2 (or end of file)
+       section_content=$(sed -n '/### 8.1 Unit Tests (TDD)/,/^### 8.2/p' "$REQ_FILE")
+       
+       # Count rows starting with |, excluding header/sep
+       row_count=$(echo "$section_content" | grep "^|" | grep -v "Test Case" | grep -v "\-\-\-" | wc -l)
+       
+       if [ "$row_count" -ge 3 ]; then
+         echo "  ✅ Found: $row_count Unit Test entries (min 3)"
+         
+         # Check for category prefixes
+         if echo "$section_content" | grep -qE "\[Logic\]|\[State\]|\[Validation\]|\[Edge\]"; then
+           echo "  ✅ Found: Category prefixes ([Logic], [State], etc.)"
+         else
+           echo "  ⚠️  WARNING: Unit Tests (TDD) entries missing category prefix [Logic/State/Validation/Edge]"
+           ((WARNINGS++))
+         fi
+       else
+         echo "  ⚠️  WARNING: Unit Tests (TDD) table has < 3 entries (found: $row_count, required: ≥3)"
+         ((WARNINGS++))
+       fi
+    else
+       echo "  ⚠️  WARNING: Unit Tests (TDD) table missing required columns: Test Case | Input | Expected Output | Coverage"
+       ((WARNINGS++))
+    fi
+  else
+    echo "  ⚠️  WARNING: Section 8.1 missing 'Unit Tests (TDD)' title - drives SPEC interface design"
+    ((WARNINGS++))
+  fi
+else
+  echo "  ℹ️  Standard Profile: Skipping Unit Tests (TDD) check"
 fi
 
 echo ""

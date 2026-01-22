@@ -260,21 +260,15 @@ class ResponseModel(BaseModel):
 
 ## 8. Testing Requirements
 
-### 8.1 Logical TDD (Pre-Code Unit Tests)
+### 8.1 Unit Tests (TDD)
 
 > **Define WHAT to test before HOW.** These tests drive the SPEC interface design.
 
 | Test Case | Input | Expected Output | Coverage |
 |-----------|-------|-----------------|----------|
-| **[Logic] Calc Fee** | `amount=100` | `fee=1.50` | REQ.NN.01.01 |
-| **[State] Valid Trans** | `state=PENDING` | `state=PAID` | REQ.NN.01.02 |
-| **[Validation] Bad Input** | `amount=-50` | `Error: INVALID_AMOUNT` | REQ.NN.05.01 |
-
-| Test Case | Input | Expected Output | Coverage |
-|-----------|-------|-----------------|----------|
-| **[Logic] Fee Calc** | `amount=100, tier='basic'` | `fee=1.50` | Business Rule REQ.NN.21.01 |
-| **[State] Circuit Trip** | `fail_count=5` | `State=OPEN` | Resilience REQ.NN.02.03 |
-| **[Validation] Bad Input** | `amount=-1` | `Error: INVALID_AMOUNT` | Input Validation |
+| **[Logic] Fee Calc** | `amount=100, tier='basic'` | `fee=1.50` | REQ.NN.21.01 |
+| **[State] Circuit Trip** | `fail_count=5` | `State=OPEN` | REQ.NN.02.03 |
+| **[Validation] Bad Input** | `amount=-1` | `Error: INVALID_AMOUNT` | REQ.NN.05.01 |
 | **[Edge] Boundary** | `amount=MAX_INT` | `Success` | Overflow check |
 
 ### 8.2 Integration Tests
