@@ -57,6 +57,12 @@ metadata:
   # - Maximum (Markdown): 20,000 tokens (Error limit)
   # - YAML (monolithic): Warning at 20,000 tokens
   # ===================
+  # 🧠 HIGH-GUIDANCE MODE: This template is optimized for "Algorithmic Specificity"
+  # Strategy:
+  # 1. Logic-First Interfaces: Define HOW (pseudocode/steps), not just WHAT.
+  # 2. Mapper Pattern: Map REQ items to specific code logic/exceptions.
+  # 3. Explicit State Machines: Define transitions and side effects.
+  # ===================
   version: "1.0.0"
   status: "draft"  # draft, review, approved, implemented, deprecated
   # ⚠️ REQUIRED: Ensure these dates are valid YYYY-MM-DD
@@ -152,15 +158,7 @@ traceability:
         relationship: "Requirement this SPEC implements"
         context: "[Which capability/feature this REQ defines]"
 
-    cumulative_tags:
-      brd: "TBD"
-      prd: "TBD"
-      ears: "TBD"
-      bdd: "TBD"
-      adr: "TBD"
-      sys: "TBD"
-      req: "TBD"
-      ctr: "TBD"
+
 
   # Upstream Document Links
   # REQUIRED: Simple list of source document references
@@ -376,202 +374,209 @@ traceability:
       spec_complexity: "medium"  # low, medium, high
       implementation_status: "not_started"  # not_started, in_progress, completed, deprecated
 
-# Cumulative Tagging Hierarchy (Layer 9)
-# Required tags from ALL upstream artifacts for complete traceability
-# Format: artifact-type: TYPE.NN.TT.SS (Unified Element ID: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
-cumulative_tags:
-  brd: "BRD.NN.EE.SS"  # Business Requirements
-  prd: "PRD.NN.EE.SS"  # Product Requirements
-  ears: "EARS.NN.24.SS"  # Engineering Requirements (24=EARS Statement)
-  bdd: "BDD.NN.13.SS"  # BDD Test Scenarios (13=Test Scenario)
-  adr: "ADR-NN"  # Architecture Decisions
-  sys: "SYS.NN.25.SS"  # System Requirements (25=System Requirement)
-  req: "REQ.NN.26.SS"  # Atomic Requirements (26=Atomic Requirement)
-  ctr: "CTR-NN"  # API Contracts (optional)
-  threshold: "PRD-NN"  # Threshold Registry (when performance/SLA values used)
-  # Layer 9: SPEC must include all upstream tags (BRD through REQ)
-  # Optional: CTR and threshold if they exist in the traceability chain
-  # Purpose: Complete traceability from business requirements to implementation
-  # See: ../TRACEABILITY.md#cumulative-tagging-hierarchy
+  # Cumulative Tagging Hierarchy (Layer 9)
+  # Required tags from ALL upstream artifacts for complete traceability
+  # Format: artifact-type: TYPE.NN.TT.SS (Unified Element ID: DOC_TYPE.DOC_NUM.ELEM_TYPE.SEQ)
+  cumulative_tags:
+    brd: "BRD.NN.EE.SS"  # Business Requirements
+    prd: "PRD.NN.EE.SS"  # Product Requirements
+    ears: "EARS.NN.24.SS"  # Engineering Requirements (24=EARS Statement)
+    bdd: "BDD.NN.13.SS"  # BDD Test Scenarios (13=Test Scenario)
+    adr: "ADR-NN"  # Architecture Decisions
+    sys: "SYS.NN.25.SS"  # System Requirements (25=System Requirement)
+    req: "REQ.NN.26.SS"  # Atomic Requirements (26=Atomic Requirement)
+    ctr: "CTR-NN"  # API Contracts (optional)
+    threshold: "PRD-NN"  # Threshold Registry (when performance/SLA values used)
+    # Layer 9: SPEC must include all upstream tags (BRD through REQ)
+    # Optional: CTR and threshold if they exist in the traceability chain
+    # Purpose: Complete traceability from business requirements to implementation
+    # See: ../TRACEABILITY.md#cumulative-tagging-hierarchy
 
-  # =======================================================================
-  # THRESHOLD REGISTRY REFERENCES (Required when performance/SLA values specified)
-  # =======================================================================
-  # Purpose: SPEC documents REFERENCE thresholds defined in the PRD threshold registry.
-  # All quantitative values in performance, rate limiting, and operational sections
-  # must use @threshold: tags to ensure single source of truth.
-  #
-  # Threshold Naming Convention: @threshold: PRD.NN.category.subcategory.key
-  # Format Reference: See THRESHOLD_NAMING_RULES.md for complete naming standards.
-  #
-  # Common threshold categories:
-  #   performance: perf.api.p50_latency, perf.api.p95_latency, perf.api.p99_latency, perf.throughput.rps
-  #   sla: sla.uptime.target, sla.error_rate.max
-  #   timeout: timeout.request.sync, timeout.request.async, timeout.connection.default
-  #   limits: limit.api.requests_per_second, limit.batch.size, limit.batch.concurrent
-  #   resource: resource.cpu.max_utilization, resource.memory.max_mb
-  #
-  # Example Usage in Specification:
-  #   performance_requirements:
-  #     api_latency:
-  #       p95_target: "@threshold: PRD.NN.perf.api.p95_latency"
-  #       p99_target: "@threshold: PRD.NN.perf.api.p99_latency"
-  #   configuration:
-  #     timeouts:
-  #       request_timeout: "@threshold: PRD.NN.timeout.request.sync"
-  # =======================================================================
-  threshold_references:
-    registry_document: "PRD-NN"  # Threshold registry document ID
-    format_reference: "../THRESHOLD_NAMING_RULES.md"
+# =======================================================================
+# THRESHOLD REGISTRY REFERENCES (Required when performance/SLA values specified)
+# =======================================================================
+# Purpose: SPEC documents REFERENCE thresholds defined in the PRD threshold registry.
+# All quantitative values in performance, rate limiting, and operational sections
+# must use @threshold: tags to ensure single source of truth.
+#
+# Threshold Naming Convention: @threshold: PRD.NN.category.subcategory.key
+# Format Reference: See THRESHOLD_NAMING_RULES.md for complete naming standards.
+#
+# Common threshold categories:
+#   performance: perf.api.p50_latency, perf.api.p95_latency, perf.api.p99_latency, perf.throughput.rps
+#   sla: sla.uptime.target, sla.error_rate.max
+#   timeout: timeout.request.sync, timeout.request.async, timeout.connection.default
+#   limits: limit.api.requests_per_second, limit.batch.size, limit.batch.concurrent
+#   resource: resource.cpu.max_utilization, resource.memory.max_mb
+#
+# Example Usage in Specification:
+#   performance_requirements:
+#     api_latency:
+#       p95_target: "@threshold: PRD.NN.perf.api.p95_latency"
+#       p99_target: "@threshold: PRD.NN.perf.api.p99_latency"
+#   configuration:
+#     timeouts:
+#       request_timeout: "@threshold: PRD.NN.timeout.request.sync"
+# =======================================================================
+threshold_references:
+  registry_document: "PRD-NN"  # Threshold registry document ID
+  format_reference: "../THRESHOLD_NAMING_RULES.md"
 
-    # Comprehensive list of threshold keys used in this SPEC
-    keys_used:
-      performance:
-        # Response time and latency requirements
-        - key: "perf.api.p50_latency"
-          usage: "performance.latency_targets, verification.performance_tests"
-        - key: "perf.api.p95_latency"
-          usage: "performance.latency_targets, operations.monitoring_dashboard"
-        - key: "perf.api.p99_latency"
-          usage: "performance.latency_targets"
-        - key: "perf.api.max_latency"
-          usage: "performance.latency_targets"
+  # Comprehensive list of threshold keys used in this SPEC
+  keys_used:
+    performance:
+      # Response time and latency requirements
+      - key: "perf.api.p50_latency"
+        usage: "performance.latency_targets, verification.performance_tests"
+      - key: "perf.api.p95_latency"
+        usage: "performance.latency_targets, operations.monitoring_dashboard"
+      - key: "perf.api.p99_latency"
+        usage: "performance.latency_targets"
+      - key: "perf.api.max_latency"
+        usage: "performance.latency_targets"
 
-      sla:
-        # Service level agreements and error rates
-        - key: "sla.error_rate.target"
-          usage: "verification.performance_tests"
-        - key: "sla.error_rate.warning"
-          usage: "operations.monitoring_dashboard.alerting_rules"
+    sla:
+      # Service level agreements and error rates
+      - key: "sla.error_rate.target"
+        usage: "verification.performance_tests"
+      - key: "sla.error_rate.warning"
+        usage: "operations.monitoring_dashboard.alerting_rules"
 
-      timeout:
-        # Timeout configurations
-        - key: "timeout.request.sync"
-          usage: "behavior.request_processing"
-        - key: "timeout.connection.default"
-          usage: "architecture.dependencies"
+    timeout:
+      # Timeout configurations
+      - key: "timeout.request.sync"
+        usage: "behavior.request_processing"
+      - key: "timeout.connection.default"
+        usage: "architecture.dependencies"
 
-      limit:
-        # Rate limits and capacity limits
-        - key: "limit.api.requests_per_second"
-          usage: "rate_limiting.global_limits, performance.throughput_targets"
-        - key: "limit.api.requests_per_minute"
-          usage: "rate_limiting.global_limits"
-        - key: "limit.api.requests_per_hour"
-          usage: "rate_limiting.global_limits"
-        - key: "limit.api.burst"
-          usage: "rate_limiting.global_limits, performance.throughput_targets"
-        - key: "limit.user.requests_per_minute"
-          usage: "rate_limiting.per_client_limits"
-        - key: "limit.user.requests_per_hour"
-          usage: "rate_limiting.per_client_limits"
-        - key: "limit.anonymous.requests_per_minute"
-          usage: "rate_limiting.per_client_limits"
-        - key: "limit.anonymous.requests_per_hour"
-          usage: "rate_limiting.per_client_limits"
+    limit:
+      # Rate limits and capacity limits
+      - key: "limit.api.requests_per_second"
+        usage: "rate_limiting.global_limits, performance.throughput_targets"
+      - key: "limit.api.requests_per_minute"
+        usage: "rate_limiting.global_limits"
+      - key: "limit.api.requests_per_hour"
+        usage: "rate_limiting.global_limits"
+      - key: "limit.api.burst"
+        usage: "rate_limiting.global_limits, performance.throughput_targets"
+      - key: "limit.user.requests_per_minute"
+        usage: "rate_limiting.per_client_limits"
+      - key: "limit.user.requests_per_hour"
+        usage: "rate_limiting.per_client_limits"
+      - key: "limit.anonymous.requests_per_minute"
+        usage: "rate_limiting.per_client_limits"
+      - key: "limit.anonymous.requests_per_hour"
+        usage: "rate_limiting.per_client_limits"
 
-      resource:
-        # Resource allocation limits
-        - key: "resource.compute.cpu_cores"
-          usage: "performance.resource_limits"
-        - key: "resource.memory.max_heap"
-          usage: "performance.resource_limits"
-        - key: "resource.network.bandwidth_mbps"
-          usage: "performance.resource_limits"
-        - key: "resource.storage.iops"
-          usage: "performance.resource_limits"
-        - key: "resource.connections.pool_size"
-          usage: "architecture.scalability"
+    resource:
+      # Resource allocation limits
+      - key: "resource.compute.cpu_cores"
+        usage: "performance.resource_limits"
+      - key: "resource.memory.max_heap"
+        usage: "performance.resource_limits"
+      - key: "resource.network.bandwidth_mbps"
+        usage: "performance.resource_limits"
+      - key: "resource.storage.iops"
+        usage: "performance.resource_limits"
+      - key: "resource.connections.pool_size"
+        usage: "architecture.scalability"
 
-    # Validation: All keys must exist in PRD-NN threshold registry
-    # See: ../02_PRD/PRD-00_threshold_registry_template.md
+  # Validation: All keys must exist in PRD-NN threshold registry
+  # See: ../02_PRD/PRD-00_threshold_registry_template.md
 
-    # Example Usage in SPEC Sections:
-    # performance.latency_targets.p95_milliseconds: "@threshold: PRD.NN.perf.api.p95_latency"
-    # rate_limiting.global_limits.requests_per_minute: "@threshold: PRD.NN.limit.api.requests_per_minute"
-    # operations.alerting_rules[].condition: "error_rate > @threshold: PRD.NN.sla.error_rate.warning"
+  # Example Usage in SPEC Sections:
+  # performance.latency_targets.p95_milliseconds: "@threshold: PRD.NN.perf.api.p95_latency"
+  # rate_limiting.global_limits.requests_per_minute: "@threshold: PRD.NN.limit.api.requests_per_minute"
+  # operations.alerting_rules[].condition: "error_rate > @threshold: PRD.NN.sla.error_rate.warning"
 
-  # Same-Type References (Conditional)
-  # Include only if same-type relationships exist between SPEC documents
-  same_type_references:
-    related_spec: []  # List of related SPEC-NN IDs sharing domain context
-    depends_spec: []  # List of prerequisite SPEC-NN IDs (must complete before this)
-    # Tags: @related-spec: SPEC-NN, @depends-spec: SPEC-NN
+# Same-Type References (Conditional)
+# Include only if same-type relationships exist between SPEC documents
+same_type_references:
+  related_spec: []  # List of related SPEC-NN IDs sharing domain context
+  depends_spec: []  # List of prerequisite SPEC-NN IDs (must complete before this)
+  # Tags: @related-spec: SPEC-NN, @depends-spec: SPEC-NN
 
-  # ===================
-  # REQ IMPLEMENTATIONS
-  # ===================
-  # Maps each upstream REQ to its implementation details
-  # - REQ file = WHAT to implement (source of truth for requirements)
-  # - This section = HOW to implement (interfaces, methods, types, validation)
-  # - DO NOT duplicate requirement text - reference REQ files instead
-  req_implementations:
-    # Each entry corresponds to one REQ from upstream_sources.atomic_requirements
-    # EXAMPLE: JWT Authentication requirement implementation
-    - req_id: "REQ-01"
-      req_link: "../07_REQ/SYS-01_iam/REQ-01_jwt_authentication.md"
-      # Implementation details for this specific requirement
-      implementation:
-        # Interfaces that implement this requirement
-        interfaces:
-          - class: "JWTHandler"
-            method: "create_access_token"
-            signature: "async def create_access_token(user_id: str, claims: dict[str, Any]) -> str"
-            purpose: "Generate RS256-signed JWT access token with 15-minute expiry"
-          - class: "JWTHandler"
-            method: "verify_token"
-            signature: "async def verify_token(token: str, token_type: TokenType) -> TokenPayload"
-            purpose: "Verify and decode JWT token with blacklist check"
-        # Data models required for this requirement
-        data_models:
-          - name: "TokenPayload"
-            fields:
-              - name: "sub"
-                type: "str"
-                constraints: "User ID, required"
-              - name: "jti"
-                type: "str"
-                constraints: "JWT ID, UUID format"
-              - name: "exp"
-                type: "int"
-                constraints: "Expiration timestamp"
-              - name: "roles"
-                type: "list[str]"
-                constraints: "User roles"
-        # Validation rules implementing REQ acceptance criteria
-        validation_rules:
-          - rule: "RS256 algorithm enforcement"
-            implementation: "Reject any token not signed with RS256"
-          - rule: "Key rotation support"
-            implementation: "Maintain current + previous key for graceful rotation"
-        # Error handling for this requirement
-        error_handling:
-          - error_code: "TOKEN_EXPIRED"
-            condition: "Token exp claim is in the past"
-            http_status: 401
-            response_message: "Token has expired"
-          - error_code: "TOKEN_INVALID_SIGNATURE"
-            condition: "Signature verification fails"
-            http_status: 401
-            response_message: "Invalid token signature"
-        # Testing approach for this requirement
-        test_approach:
-          unit_tests:
-            - "Test valid token generation and verification"
-            - "Test expired token rejection"
-            - "Test blacklisted token rejection"
-          integration_tests:
-            - "Test key rotation without service interruption"
+# ===================
+# REQ IMPLEMENTATIONS
+# ===================
+# Maps each upstream REQ to its implementation details
+# - REQ file = WHAT to implement (source of truth for requirements)
+# - This section = HOW to implement (interfaces, methods, types, validation)
+# - DO NOT duplicate requirement text - reference REQ files instead
+req_implementations:
+  # Each entry corresponds to one REQ from upstream_sources.atomic_requirements
+  # EXAMPLE: JWT Authentication requirement implementation (The "Mapper" Pattern)
+  - req_id: "REQ-01"
+    req_link: "../07_REQ/SYS-01_iam/REQ-01_jwt_authentication.md"
+    # Implementation details for this specific requirement
+    implementation:
+      # Interfaces that implement this requirement
+      interfaces:
+        - class: "JWTHandler"
+          method: "create_access_token"
+          signature: "async def create_access_token(user_id: str, claims: dict[str, Any]) -> str"
+          purpose: "Generate RS256-signed JWT access token with 15-minute expiry"
+        - class: "JWTHandler"
+          method: "verify_token"
+          signature: "async def verify_token(token: str, token_type: TokenType) -> TokenPayload"
+          purpose: "Verify and decode JWT token with blacklist check"
+      
+      # Data models required for this requirement
+      data_models:
+        - name: "TokenPayload"
+          fields:
+            - name: "sub"
+              type: "str"
+              constraints: "User ID, required"
+            - name: "jti"
+              type: "str"
+              constraints: "JWT ID, UUID format"
+            - name: "exp"
+              type: "int"
+              constraints: "Expiration timestamp (UTC)"
+            - name: "roles"
+              type: "list[str]"
+              constraints: "User roles (e.g., 'admin', 'user')"
 
-    # Additional REQ implementations follow the same pattern
-    # - req_id: "REQ-02"
-    #   req_link: "../07_REQ/SYS-XX_{module}/REQ-02_{slug}.md"
-    #   implementation:
-    #     interfaces: [...]
-    #     data_models: [...]
-    #     validation_rules: [...]
-    #     error_handling: [...]
-    #     test_approach: [...]
+      # 🟢 HIGH-GUIDANCE: Specific logic rules mapped to REQ acceptance criteria
+      validation_rules:
+        - rule: "RS256 Algorithm Enforcement"
+          implementation: |
+            if header['alg'] != 'RS256':
+                raise SecurityInfoError(code='INVALID_ALG', message='Algorithm not allowed')
+        - rule: "Expiration Check"
+          implementation: |
+            if claims['exp'] < current_utc_timestamp():
+                raise TokenExpiredError(code='TOKEN_EXP', message='Token has expired')
+      
+      # Specific error mapping required by the REQ
+      error_handling:
+        - error_code: "TOKEN_EXPIRED"
+          condition: "Token exp claim is in the past"
+          http_status: 401
+          response_message: "Token has expired"
+        - error_code: "TOKEN_INVALID_SIGNATURE"
+          condition: "Signature verification fails"
+          http_status: 401
+          response_message: "Invalid token signature"
+      
+      # Testing approach
+      test_approach:
+        unit_tests:
+          - "Test valid token generation and verification"
+          - "Test expired token rejection"
+        integration_tests:
+          - "Test key rotation without service interruption"
+
+  # Additional REQ implementations follow the same pattern
+  # - req_id: "REQ-02"
+  #   req_link: "../07_REQ/SYS-XX_{module}/REQ-02_{slug}.md"
+  #   implementation:
+  #     interfaces: [...]
+  #     data_models: [...]
+  #     validation_rules: [...]
+  #     error_handling: [...]
+  #     test_approach: [...]
 
 # ===================
 # COMPONENT ARCHITECTURE
@@ -718,16 +723,32 @@ interfaces:
       latency_target: "@threshold:perf.api.p95_latency"
 
   # Internal APIs - REQUIRED (service method signatures)
+  # 🟢 HIGH-GUIDANCE: Use 'purpose' to write Logic-First pseudocode steps
   internal_apis:
     - interface: "AuthService.authenticate()"
       signature: "authenticate(email: str, password: str) -> TokenPair"
-      purpose: "Authenticate user credentials and return JWT tokens"
+      purpose: |
+        1. Fetch user by email from UserRepository.
+        2. If user not found OR !HashUtils.verify(password, user.password_hash):
+             raise AuthenticationError("Invalid credentials")
+        3. Check User.is_active status.
+        4. Generate AccessToken (15m) and RefreshToken (7d).
+        5. Store RefreshToken hash in Redis (key: "refresh:{user_id}").
+        6. Return TokenPair.
+
     - interface: "AuthService.validate_token()"
       signature: "validate_token(token: str) -> JWTPayload"
-      purpose: "Validate JWT token and return decoded claims"
+      purpose: |
+        1. Decode header without verification to check 'kid'.
+        2. Fetch public key from KeyProvider using 'kid'.
+        3. Verify JWT signature using public key.
+        4. Validate standard claims (exp, nbf, iss).
+        5. Check Redis blacklist (key: "blacklist:{jti}").
+        6. Return payload claims or raise specific validation error.
+
     - interface: "PermissionService.check_permission()"
       signature: "check_permission(user_id: UUID, resource: str, action: str) -> bool"
-      purpose: "Check if user has permission for action on resource"
+      purpose: "Check if user has permission for action on resource via 4D matrix"
 
   classes:
     - name: "PrimaryServiceClass"
@@ -889,27 +910,36 @@ behavior:
       - cleanup_resources
 
   state_management:
+    # 🟢 HIGH-GUIDANCE: Explicit State Transitions & Side Effects
+    description: "Lifecycle of an Entity (e.g. Order, Session)"
     states:
       - UNINITIALIZED
-      - INITIALIZING
-      - HEALTH_CHECKING
-      - READY
-      - PROCESSING_REQUESTS
-      - DEGRADED
+      - PENDING
+      - ACTIVE
+      - COMPLETED
       - ERROR
-      - SHUTTING_DOWN
       - TERMINATED
 
     transitions:
-      UNINITIALIZED -> INITIALIZING: "start()"
-      INITIALIZING -> HEALTH_CHECKING: "configuration_validated"
-      HEALTH_CHECKING -> READY: "health_checks_passed"
-      READY -> PROCESSING_REQUESTS: "first_request_received"
-      ANY -> DEGRADED: "degraded_performance_detected"
-      DEGRADED -> READY: "performance_restored"
-      ANY -> ERROR: "fatal_error_occurred"
-      ANY -> SHUTTING_DOWN: "shutdown_signal_received"
-      SHUTTING_DOWN -> TERMINATED: "cleanup_completed"
+      - from: "UNINITIALIZED"
+        to: "PENDING"
+        trigger: "create()"
+        side_effects: ["Generate ID", "Log creation"]
+
+      - from: "PENDING"
+        to: "ACTIVE"
+        trigger: "activate()"
+        side_effects: ["Enable processing", "Notify listeners"]
+
+      - from: "ACTIVE"
+        to: "COMPLETED"
+        trigger: "finish()"
+        side_effects: ["Archive state", "Send summary"]
+
+      - from: "ANY"
+        to: "ERROR"
+        trigger: "fatal_error"
+        side_effects: ["Log stack trace", "Alert ops"]
 
     invariants:
       - "active_connections <= max_connections"

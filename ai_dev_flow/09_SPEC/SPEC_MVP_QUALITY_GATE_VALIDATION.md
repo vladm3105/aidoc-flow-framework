@@ -344,6 +344,27 @@ done
 
 ---
 
+### CORPUS-17: High-Guidance Coverage ⭐ NEW
+
+**Purpose**: Verify significant portion of implementation is defined via High-Guidance fields
+
+**Severity**: Warning
+
+**Target Fields**:
+- `req_implementations.implementation` (pseudocode)
+- `interfaces.internal_apis.purpose` (pseudocode)
+- `behavior.state_management.transitions` (explicit states)
+
+**Metrics**:
+- **High-Guidance Ratio**: % of REQs with detailed `req_implementation`
+- **State Coverage**: % of State Machine SPECs with `transitions` defined
+
+**Thresholds**:
+- Warning: <80% of REQs have implementation details
+- Warning: <50% of internal_apis have pseudocode purpose
+
+---
+
 ## 2. Error Codes
 
 ### Error Codes (Blocking)

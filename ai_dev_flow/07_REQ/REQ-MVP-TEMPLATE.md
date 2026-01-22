@@ -10,7 +10,7 @@ custom_fields:
   document_type: template
   artifact_type: REQ
   layer: 7
-  template_variant: mvp
+  template_profile: mvp
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
@@ -260,13 +260,22 @@ class ResponseModel(BaseModel):
 
 ## 8. Testing Requirements
 
-### 8.1 Unit Tests
+### 8.1 Logical TDD (Pre-Code Unit Tests)
+
+> **Define WHAT to test before HOW.** These tests drive the SPEC interface design.
 
 | Test Case | Input | Expected Output | Coverage |
 |-----------|-------|-----------------|----------|
-| [Happy path] | [valid input] | [expected result] | Core logic |
-| [Edge case] | [boundary input] | [expected behavior] | Boundary |
-| [Error case] | [invalid input] | [error response] | Error handling |
+| **[Logic] Calc Fee** | `amount=100` | `fee=1.50` | REQ.NN.01.01 |
+| **[State] Valid Trans** | `state=PENDING` | `state=PAID` | REQ.NN.01.02 |
+| **[Validation] Bad Input** | `amount=-50` | `Error: INVALID_AMOUNT` | REQ.NN.05.01 |
+
+| Test Case | Input | Expected Output | Coverage |
+|-----------|-------|-----------------|----------|
+| **[Logic] Fee Calc** | `amount=100, tier='basic'` | `fee=1.50` | Business Rule REQ.NN.21.01 |
+| **[State] Circuit Trip** | `fail_count=5` | `State=OPEN` | Resilience REQ.NN.02.03 |
+| **[Validation] Bad Input** | `amount=-1` | `Error: INVALID_AMOUNT` | Input Validation |
+| **[Edge] Boundary** | `amount=MAX_INT` | `Success` | Overflow check |
 
 ### 8.2 Integration Tests
 
@@ -316,7 +325,7 @@ class ResponseModel(BaseModel):
 
 ## 10. Traceability
 
-### 10.1 Upstream References
+### 10.1 Upstream Sources
 
 | Source Type | Document ID | Element Reference | Relationship |
 |-------------|-------------|-------------------|--------------|

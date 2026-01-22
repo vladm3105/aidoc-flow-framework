@@ -820,6 +820,41 @@ class HeartbeatConfig(BaseModel):
 
 ---
 
+### CHECK 21: Logical TDD Table Validation ⭐ NEW
+
+**Purpose**: Verify Section 8.1 contains Logical TDD table with minimum entries
+**Type**: Warning
+
+**Requirements**:
+1. Section 8.1 must be titled "Logical TDD (Pre-Code Unit Tests)"
+2. Table must have 4 columns: Test Case | Input | Expected Output | Coverage
+3. Minimum 3 entries required
+4. Test Case should use category prefixes: `[Logic]`, `[State]`, `[Validation]`, `[Edge]`
+
+**Valid Example**:
+```markdown
+### 8.1 Logical TDD (Pre-Code Unit Tests)
+
+| Test Case | Input | Expected Output | Coverage |
+|-----------|-------|-----------------|----------|
+| **[Logic] Fee Calc** | `amount=100` | `fee=1.50` | REQ.NN.21.01 |
+| **[State] Circuit Trip** | `fails=5` | `State=OPEN` | Resilience |
+| **[Validation] Bad Input** | `amount=-1` | `Error: INVALID` | Input Check |
+```
+
+**Warning Messages**:
+```
+⚠️  WARNING: Section 8.1 missing "Logical TDD" title - drives SPEC interface design
+⚠️  WARNING: Logical TDD table has < 3 entries (found: 2, required: ≥3)
+⚠️  WARNING: Logical TDD entries missing category prefix [Logic/State/Validation/Edge]
+```
+
+**Fix**: Add Logical TDD table with Input/Output/Coverage columns and category prefixes
+
+**Reference**: TESTING_STRATEGY_TDD.md (Logical TDD Phase)
+
+---
+
 ## Error Fix Guide
 
 ### Quick Fix Matrix

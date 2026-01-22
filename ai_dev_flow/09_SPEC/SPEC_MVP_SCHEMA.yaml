@@ -424,6 +424,7 @@ req_implementations_schema:
               type: string
             implementation:
               type: string
+              description: "Pseudocode implementation (if/else logic)"
 
         error_handling:
           type: array
@@ -580,7 +581,7 @@ interfaces_schema:
           description: "Full method signature with types"
         purpose:
           type: string
-          description: "What this method does"
+          description: "Step-by-step pseudocode describing logic flow"
 
     classes:
       type: array
@@ -648,7 +649,13 @@ behavior_schema:
         states:
           type: array
         transitions:
-          type: object
+          type: array
+          items:
+            properties:
+              from: { type: string }
+              to: { type: string }
+              trigger: { type: string }
+              side_effects: { type: array, items: { type: string } }
         invariants:
           type: array
 

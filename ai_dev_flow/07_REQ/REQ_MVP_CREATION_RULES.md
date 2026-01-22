@@ -91,7 +91,10 @@ Every REQ must contain these exact sections in order (MVP profile):
 5. **Error Handling** - Exception catalog + recovery strategies
 6. **Quality Attributes** - Performance/security/reliability targets using @threshold
 7. **Configuration** - Parameters, feature flags, validation
-8. **Testing Requirements** - Unit, integration, and BDD scenarios
+8. **Testing Requirements** - **Logical TDD (Pre-Code)**, Unit, Integration, and BDD scenarios
+   - **8.1 Logical TDD**: Define WHAT to test before HOW (drives SPEC interface design)
+   - Format: `| Test Case | Input | Expected Output | Coverage |`
+   - Min 3 entries with prefixes: `[Logic]`, `[State]`, `[Validation]`, `[Edge]`
 9. **Acceptance Criteria** - ≥15 measurable criteria (functional + quality)
 10. **Traceability** - Upstream chain, downstream artifacts, cumulative tags
 11. **Implementation Notes** - Technical approach, code locations, dependencies

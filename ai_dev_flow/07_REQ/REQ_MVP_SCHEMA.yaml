@@ -258,7 +258,34 @@ structure:
 
     - pattern: "^## 8\\. Testing Requirements$"
       name: "Testing Requirements"
-      description: "Section 8 with Unit Tests, Integration Tests, BDD Scenarios"
+      description: "Section 8 with Logical TDD (Pre-Code), Unit Tests, Integration Tests, BDD Scenarios"
+      subsections:
+        - name: "8.1 Logical TDD (Pre-Code Unit Tests)"
+          required: true
+          description: "Define WHAT to test before HOW - drives SPEC interface design"
+          schema:
+            type: array
+            min_items: 3
+            items:
+              type: object
+              required: [test_case, input, expected_output, coverage]
+              properties:
+                test_case:
+                  type: string
+                  description: "Test name with category prefix [Logic], [State], [Validation], [Edge]"
+                input:
+                  type: string
+                  description: "Input parameters"
+                expected_output:
+                  type: string
+                  description: "Expected result or error"
+                coverage:
+                  type: string
+                  description: "Requirement ID or category covered"
+        - name: "8.2 Integration Tests"
+          required: false
+        - name: "8.3 BDD Scenarios"
+          required: false
 
     - pattern: "^## 9\\. Acceptance Criteria$"
       name: "Acceptance Criteria"

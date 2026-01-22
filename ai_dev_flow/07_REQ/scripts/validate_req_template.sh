@@ -6,7 +6,7 @@
 # - Cumulative tagging hierarchy (Layer 7: 6 required tags)
 # Usage: ./validate_req_template.sh <REQ_FILE>
 
-set -e
+# set -e (disabled to prevent exit on arithmetic ((VAR++)) when VAR=0)
 
 REQ_FILE=$1
 ERRORS=0
@@ -45,7 +45,7 @@ if grep -q "template_profile: mvp" "$REQ_FILE"; then
 fi
 
 required_sections_standard=(
-  "## 1. Description"
+  "## 1. Document Control"
   "## 2. Functional Requirements"
   "## 3. Interface Specifications"
   "## 4. Data Schemas"

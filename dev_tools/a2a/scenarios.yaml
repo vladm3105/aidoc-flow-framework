@@ -25,3 +25,14 @@ scenarios:
         id: "{user_id}"
         name: "Dynamic User {user_id}"
         role: "admin"
+
+  - method: "GET"
+    path: "/api/v1/knowledge/{topic}"
+    latency: 200
+    response:
+      status: 200
+      body:
+        topic: "{topic}"
+        summary: "Fundamental analysis for {topic} shows strong growth potential."
+        source: "Nexus Knowledge Base"
+        timestamp: "2026-01-21T10:00:00Z"

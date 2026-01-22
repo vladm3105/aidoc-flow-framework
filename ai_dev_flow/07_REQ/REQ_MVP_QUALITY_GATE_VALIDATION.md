@@ -158,11 +158,27 @@ docs/07_REQ/
 
 ---
 
-### CORPUS-05: Inter-REQ Cross-Linking (DEPRECATED)
+### CORPUS-05: Logical TDD Coverage ⭐ NEW
 
-**Status**: Deprecated
+**Purpose**: Verify all REQ files contain Section 8.1 Logical TDD tables
 
-**Reason for Deprecation**: Per SDD traceability rules, document name references are valid and sufficient for traceability. Hyperlinks are optional enhancements.
+**Severity**: Warning
+
+**Rationale**: Logical TDD drives SPEC interface design. REQs without Logical TDD tables may produce incomplete SPECs.
+
+**Checks**:
+| Check | Description |
+|-------|-------------|
+| Section 8.1 exists | Must be titled "Logical TDD" |
+| Minimum 3 entries | At least 3 test cases per REQ |
+| Category prefixes | `[Logic]`, `[State]`, `[Validation]`, `[Edge]` |
+
+**Aggregate Metrics**:
+- Target: 100% of REQ files have Section 8.1
+- Warning: <90% coverage
+- Error: <70% coverage
+
+**Reference**: TESTING_STRATEGY_TDD.md (Logical TDD Phase)
 
 ---
 

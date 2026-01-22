@@ -308,6 +308,28 @@ for section, subsection in required_subsections:
 - `❌ SPEC-E024: Missing interfaces.external_apis`
 - `❌ SPEC-E025: Missing interfaces.internal_apis`
 
+- `❌ SPEC-E025: Missing interfaces.internal_apis`
+
+---
+
+### CHECK 12: High-Guidance Pseudocode Validation ⭐ NEW
+
+**Purpose**: Verify "High-Guidance" fields contain meaningful logic descriptions, not just placeholders.
+**Type**: Warning
+
+**Target Fields**:
+- `req_implementations.implementation`
+- `interfaces.internal_apis.purpose`
+
+**Heuristics**:
+1. **Length Check**: Logic description < 10 characters suggests placeholder.
+2. **Keyword Check**: Should contain logic keywords (if, else, for, validate, emit, check).
+3. **Placeholder Detection**: Should not be "TBD", "TODO", "Coming soon".
+
+**Messages**:
+- `⚠️ SPEC-W030: Pseudocode in REQ-NN implementation too short (<10 chars). Describe the logic.`
+- `⚠️ SPEC-W031: Internal API 'process_order' purpose missing logic keywords (if/else/validate).`
+
 ---
 
 ## Error Fix Guide

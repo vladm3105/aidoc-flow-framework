@@ -227,17 +227,41 @@ operations: [...]
 
 ---
 
-## 6. TASKS Relationship Guidelines
+## 6. High-Guidance Design Workflow (Logic-First)
 
-**SPEC → TASKS Workflow**:
-- SPECs define technical HOW (implementation blueprints)
-- TASKS provide AI-assisted coding instructions using SPEC definitions
-- Code generation tools consume SPEC YAML directly
+**Core Principle**: Define INTERNAL LOGIC before EXTERNAL CONTRACTS.
 
-**TASKS Implementation Requirements**:
-- All SPEC sections must be translatable to TASKS tasks
-- Interface definitions must enable API contract generation
-- Behavior sections must enable method implementation planning
+### Step 1: Map REQs to Implementation (req_implementations)
+Create specific implementation plans for every upstream REQ.
+- **Interfaces**: Define method signatures.
+- **Data Models**: Define types.
+- **Validation**: Define rules.
+- **Pseudocode**: Write step-by-step logic in the `purpose` or `implementation` fields.
+
+### Step 2: Define State Machines (behavior.state_management)
+Explicitly map state transitions to prevent invalid flows.
+- **States**: List all valid states (e.g., PENDING, ACTIVE, CLOSED).
+- **Transitions**: Define valid moves (from -> to) and triggers.
+- **Side Effects**: What happens during transition (e.g., emit_event).
+
+### Step 3: Define Internal Logic (internal_apis)
+Use pseudocode to drive implementation.
+```yaml
+internal_apis:
+  - interface: "process_order"
+    purpose: |
+      1. Validate inventory
+      2. If valid, lock items
+      3. Create Order(PENDING)
+      4. Emit ORDER_CREATED
+```
+
+### Step 4: Define External Contracts (external_apis)
+Only now define the JSON schema/API contract, derived from the internal logic.
+
+### SPEC → TASKS Hand-off
+- **High-Guidance**: TASKS simply executing the pseudocode defined in SPEC.
+- **Low-Guidance**: TASKS figuring out the logic (AVOID THIS).
 
 ---
 
