@@ -335,12 +335,12 @@ echo "-----------------------------------------"
 
 filename=$(basename "$REQ_FILE")
 
-# Pattern: REQ-NN or REQ-NN-YY_{slug}.md
-if [[ $filename =~ ^REQ-[0-9]{2,}(-[0-9]{2,3})?_[a-z0-9_]+\.md$ ]]; then
+# Pattern: REQ-NN or REQ-NN-YY_{slug}.md or REQ-NN.YY_{slug}.md
+if [[ $filename =~ ^REQ-[0-9]{2,}([-.][0-9]{2,3})?_[a-z0-9_]+\.md$ ]]; then
   echo "  ✅ Filename format valid: $filename"
 
   # Extract ID from filename
-  file_id=$(echo "$filename" | sed -E 's/^(REQ-[0-9]{2,}(-[0-9]{2,3})?)_.*/\1/')
+  file_id=$(echo "$filename" | sed -E 's/^(REQ-[0-9]{2,}([-.][0-9]{2,3})?)_.*/\1/')
 
   # Check H1 header matches
   h1_header=$(grep -m1 "^# REQ-" "$REQ_FILE" || echo "")
@@ -426,9 +426,9 @@ if [[ ${#missing_tags[@]} -gt 0 ]]; then
 else
   echo "  ✅ All 6 cumulative tags present"
 
-  # Validate tag format: @artifact-type: DOCUMENT-ID:REQUIREMENT-ID
+  # Validate tag format: @artifact-type: DOCUMENT-ID:REQUIREMENT-ID (supports dot notation)
   while IFS= read -r tag_line; do
-    if ! [[ $tag_line =~ ^@(brd|prd|ears|bdd|adr|sys):[[:space:]][A-Z]+-[0-9]{2,}(-[0-9]{2,3})?(:[A-Z0-9_-]+)? ]]; then
+    if ! [[ $tag_line =~ ^@(brd|prd|ears|bdd|adr|sys):[[:space:]]([A-Z]+-[0-9]{2,}|[A-Z]+\.[0-9]{2,}(\.[0-9]+)*)(:[A-Z0-9_-]+)? ]]; then
       echo "  ❌ ERROR: Invalid tag format: $tag_line"
       echo "           Expected: @type: DOC-ID:REQ-ID"
       echo "           Example: @brd: BRD.09.01.15"
@@ -552,7 +552,7 @@ upstream_count=$(grep -E "^\| (BRD|PRD|EARS|BDD|ADR|SYS) \|" "$REQ_FILE" | wc -l
 has_subcomponents=$(grep -qE "REQ-[0-9]{2,}:[A-Z]+-[0-9]+" "$REQ_FILE" && echo "yes" || echo "no")
 
 if [ "$upstream_count" -ge 5 ] || [ "$has_subcomponents" = "yes" ]; then
-  if grep -q "### Traceability Matrix\|### 11.4\|## 11.4" "$REQ_FILE"; then
+if grep -q "### .*Traceability Matrix\|### 11.4\|## 11.4\|### 10.4\|## 10.4" "$REQ_FILE"; then
     echo "  ✅ Traceability Matrix section found (complex REQ)"
     echo "     Upstream sources: $upstream_count, Sub-components: $has_subcomponents"
   else
@@ -625,23 +625,23 @@ else
 fi
 
 # ============================================
-# CHECK 21: Unit Tests (TDD) Table Validation
+# CHECK 21: Unit Tests Table Validation
 # ============================================
-echo "CHECK 21: Unit Tests (TDD) Table Validation"
+echo "CHECK 21: Unit Tests Table Validation"
 echo "-----------------------------------------"
 
 if [ "$PROFILE" = "mvp" ]; then
-  # Check if Section 8.1 Unit Tests (TDD) title exists
-  if grep -q "### 8.1 Unit Tests (TDD)" "$REQ_FILE"; then
-    echo "  ✅ Found: Section 8.1 Unit Tests (TDD) title"
+  # Check if Section 8.1 Unit Tests title exists
+  if grep -q "### 8.1 Unit Tests" "$REQ_FILE"; then
+    echo "  ✅ Found: Section 8.1 Unit Tests title"
     
     # Check for table structure (pipes and hyphens)
     if grep -q "| Test Case | Input | Expected Output | Coverage |" "$REQ_FILE"; then
-       echo "  ✅ Found: Unit Tests (TDD) table structure"
+       echo "  ✅ Found: Unit Tests table structure"
        
        # Count table rows (excluding header and separator) in Section 8.1
        # Extract lines between 8.1 and 8.2 (or end of file)
-       section_content=$(sed -n '/### 8.1 Unit Tests (TDD)/,/^### 8.2/p' "$REQ_FILE")
+       section_content=$(sed -n '/### 8.1 Unit Tests/,/^### 8.2/p' "$REQ_FILE")
        
        # Count rows starting with |, excluding header/sep
        row_count=$(echo "$section_content" | grep "^|" | grep -v "Test Case" | grep -v "\-\-\-" | wc -l)
@@ -653,23 +653,23 @@ if [ "$PROFILE" = "mvp" ]; then
          if echo "$section_content" | grep -qE "\[Logic\]|\[State\]|\[Validation\]|\[Edge\]"; then
            echo "  ✅ Found: Category prefixes ([Logic], [State], etc.)"
          else
-           echo "  ⚠️  WARNING: Unit Tests (TDD) entries missing category prefix [Logic/State/Validation/Edge]"
+           echo "  ⚠️  WARNING: Unit Tests entries missing category prefix [Logic/State/Validation/Edge]"
            ((WARNINGS++))
          fi
        else
-         echo "  ⚠️  WARNING: Unit Tests (TDD) table has < 3 entries (found: $row_count, required: ≥3)"
+         echo "  ⚠️  WARNING: Unit Tests table has < 3 entries (found: $row_count, required: ≥3)"
          ((WARNINGS++))
        fi
     else
-       echo "  ⚠️  WARNING: Unit Tests (TDD) table missing required columns: Test Case | Input | Expected Output | Coverage"
+       echo "  ⚠️  WARNING: Unit Tests table missing required columns: Test Case | Input | Expected Output | Coverage"
        ((WARNINGS++))
     fi
   else
-    echo "  ⚠️  WARNING: Section 8.1 missing 'Unit Tests (TDD)' title - drives SPEC interface design"
+    echo "  ⚠️  WARNING: Section 8.1 missing 'Unit Tests' title - drives SPEC interface design"
     ((WARNINGS++))
   fi
 else
-  echo "  ℹ️  Standard Profile: Skipping Unit Tests (TDD) check"
+  echo "  ℹ️  Standard Profile: Skipping Unit Tests check"
 fi
 
 echo ""

@@ -35,7 +35,7 @@ Constraints:
 - 12 sections required (aligned with MVP requirements template).
 - All 6 upstream traceability tags required (@brd, @prd, @ears, @bdd, @adr, @sys).
 - Use @threshold tags for all quantitative values.
-- SPEC-Ready thresholds: ≥70% for MVP profile.
+- SPEC-Ready thresholds: ≥90% for MVP profile.
 - Ensure SPEC-ready clarity (Inputs, Processing, Outputs).
 - Use distinct P1/P2/P3 priorities.
 - Do not create external references to non-existent files.
@@ -72,8 +72,8 @@ AI_CONTEXT_END
 | **Source Document** | [SYS-NN section X.Y.Z] |
 | **Verification Method** | BDD / Unit Test / Integration Test |
 | **Assigned Team** | [Team name] |
-| **SPEC-Ready Score** | ✅ [XX]% (Target: ≥70%) |
-| **CTR-Ready Score** | ✅ [XX]% (Target: ≥70%) |
+| **SPEC-Ready Score** | ✅ [XX]% (Target: ≥90%) |
+| **CTR-Ready Score** | ✅ [XX]% (Target: ≥90%) |
 | **Template Version** | 1.1 |
 
 ---
@@ -260,9 +260,10 @@ class ResponseModel(BaseModel):
 
 ## 8. Testing Requirements
 
-### 8.1 Unit Tests (TDD)
+### 8.1 Unit Tests
 
 > **Define WHAT to test before HOW.** These tests drive the SPEC interface design.
+> **IMPORTANT:** Check (and recreate if needed) this list during every validation to capture any hidden requirement changes.
 
 | Test Case | Input | Expected Output | Coverage |
 |-----------|-------|-----------------|----------|

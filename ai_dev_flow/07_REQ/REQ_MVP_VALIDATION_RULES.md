@@ -47,8 +47,8 @@ custom_fields:
 | Required sections (12 total) | Error | Error |
 | Document Control fields | Error | Error |
 | Traceability tags (@brd through @sys) | Error | Error |
-| SPEC-Ready Score threshold | 70/100 | 90/100 |
-| CTR-Ready Score threshold | 70/100 | 90/100 |
+| SPEC-Ready Score threshold | 90/100 | 90/100 |
+| CTR-Ready Score threshold | 90/100 | 90/100 |
 | Resource tag validation | **Warning** | Error |
 | Link resolution | **Warning** | Error |
 
@@ -352,8 +352,8 @@ The REQ validation script (`validate_req_template.sh`) performs **20 validation 
 **Type**: Error + Warning
 
 **Valid Examples**:
-- `✅ 85% (Target: ≥70%)` ✅
-- `✅ 92% (Target: ≥70%)` ✅
+- `✅ 92% (Target: ≥90%)` ✅
+- `✅ 95% (Target: ≥90%)` ✅
 
 **Invalid Examples**:
 - `95%` ❌
@@ -367,12 +367,12 @@ The REQ validation script (`validate_req_template.sh`) performs **20 validation 
 
 **Warning Message** (threshold):
 ```
-⚠️  WARNING: SPEC-Ready Score below 70%: 65%
+⚠️  WARNING: SPEC-Ready Score below 90%: 65%
 ```
 
 **Fix**:
 ```markdown
-| **SPEC-Ready Score** | ✅ 85% (Target: ≥70%) |
+| **SPEC-Ready Score** | ✅ 90% (Target: ≥90%) |
 ```
 
 ---
@@ -745,7 +745,7 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 **Purpose**: Verify SPEC-ready documents have actual implementation code
 **Type**: Warning
 
-**Applies When**: SPEC-Ready Score ≥ 70%
+**Applies When**: SPEC-Ready Score ≥ 90%
 
 **Checks**:
 1. **section 3**: Protocol/ABC class present
@@ -755,10 +755,10 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 **Warning Messages**:
 ```
-⚠️  WARNING: SPEC-Ready ≥70% but no Protocol/ABC class in section 3
-⚠️  WARNING: SPEC-Ready ≥70% but no Pydantic/dataclass models in section 4
-⚠️  WARNING: SPEC-Ready ≥70% but no exception definitions in section 5
-⚠️  WARNING: SPEC-Ready ≥70% but no YAML configuration in section 6
+⚠️  WARNING: SPEC-Ready ≥90% but no Protocol/ABC class in section 3
+⚠️  WARNING: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4
+⚠️  WARNING: SPEC-Ready ≥90% but no exception definitions in section 5
+⚠️  WARNING: SPEC-Ready ≥90% but no YAML configuration in section 6
 ```
 
 **Fix**: Add missing code examples to achieve claimed SPEC-Ready score
@@ -820,20 +820,20 @@ class HeartbeatConfig(BaseModel):
 
 ---
 
-### CHECK 21: Unit Tests (TDD) Table Validation ⭐ NEW
+### CHECK 21: Unit Tests Table Validation ⭐ NEW
 
-**Purpose**: Verify Section 8.1 contains Unit Tests (TDD) table with minimum entries
+**Purpose**: Verify Section 8.1 contains Unit Tests table with minimum entries
 **Type**: Warning
 
 **Requirements**:
-1. Section 8.1 must be titled "Unit Tests (TDD)"
+1. Section 8.1 must be titled "Unit Tests"
 2. Table must have 4 columns: Test Case | Input | Expected Output | Coverage
 3. Minimum 3 entries required
 4. Test Case should use category prefixes: `[Logic]`, `[State]`, `[Validation]`, `[Edge]`
 
 **Valid Example**:
 ```markdown
-### 8.1 Unit Tests (TDD)
+### 8.1 Unit Tests
 
 | Test Case | Input | Expected Output | Coverage |
 |-----------|-------|-----------------|----------|
@@ -844,12 +844,12 @@ class HeartbeatConfig(BaseModel):
 
 **Warning Messages**:
 ```
-⚠️  WARNING: Section 8.1 missing "Unit Tests (TDD)" title - drives SPEC interface design
-⚠️  WARNING: Unit Tests (TDD) table has < 3 entries (found: 2, required: ≥3)
-⚠️  WARNING: Unit Tests (TDD) entries missing category prefix [Logic/State/Validation/Edge]
+⚠️  WARNING: Section 8.1 missing "Unit Tests" title - drives SPEC interface design
+⚠️  WARNING: Unit Tests table has < 3 entries (found: 2, required: ≥3)
+⚠️  WARNING: Unit Tests entries missing category prefix [Logic/State/Validation/Edge]
 ```
 
-**Fix**: Add Unit Tests (TDD) table with Input/Output/Coverage columns and category prefixes
+**Fix**: Add Unit Tests table with Input/Output/Coverage columns and category prefixes
 
 **Reference**: TESTING_STRATEGY_TDD.md (Unit Tests Phase)
 
@@ -867,7 +867,7 @@ class HeartbeatConfig(BaseModel):
 | **CHECK 14** | Ensure infrastructure metadata (Type) and traceability tags (@sys, @iac) are complete |
 | **CHECK 5** | Change version to semver: `2.0.1` |
 | **CHECK 6** | Change dates to ISO 8601: `2025-11-18` |
-| **CHECK 9** | Update score format: `✅ 85% (Target: ≥70%)` |
+| **CHECK 9** | Update score format: `✅ 90% (Target: ≥90%)` |
 | **CHECK 11** | Add change history entry for current version |
 | **CHECK 12** | Rename file to match pattern, update H1 header |
 | **CHECK 13** | Add resource tag to H1: `[HEALTH_CHECK_SERVICE]` |
@@ -1036,8 +1036,8 @@ Warnings: 1
 
 **Warning**:
 ```
-⚠️  WARNING: SPEC-Ready ≥70% but no Protocol/ABC class in section 3
-⚠️  WARNING: SPEC-Ready ≥70% but no Pydantic/dataclass models in section 4
+⚠️  WARNING: SPEC-Ready ≥90% but no Protocol/ABC class in section 3
+⚠️  WARNING: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4
 ```
 
 **Cause**: Claimed SPEC-Ready score but missing implementation code

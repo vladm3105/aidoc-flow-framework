@@ -92,7 +92,7 @@ Every REQ must contain these exact sections in order (MVP profile):
 6. **Quality Attributes** - Performance/security/reliability targets using @threshold
 7. **Configuration** - Parameters, feature flags, validation
 8. **Testing Requirements** - **Logical TDD (Pre-Code)**, Unit, Integration, and BDD scenarios
-   - **8.1 Logical TDD**: Define WHAT to test before HOW (drives SPEC interface design)
+   - **8.1 Logical Unit test **: Define WHAT to test before HOW (drives SPEC interface design)
    - Format: `| Test Case | Input | Expected Output | Coverage |`
    - Min 3 entries with prefixes: `[Logic]`, `[State]`, `[Validation]`, `[Edge]`
 9. **Acceptance Criteria** - ≥15 measurable criteria (functional + quality)
@@ -111,7 +111,7 @@ Every REQ must contain these exact sections in order (MVP profile):
 - Author, Priority (with P-level: P1/P2/P3/P4), Category (Functional/Logic/API/UI/Database/Config/Infra/Security/Performance)
 - Infrastructure Type (Compute/Database/Storage/Network/Deployment/None)
 - Source Document (format: "DOC-ID section X.Y.Z"), Verification Method, Assigned Team
-- SPEC-Ready Score (format: "✅ XX% (Target: ≥70%)"), CTR-Ready Score (format: "✅ XX% (Target: ≥70%)")
+- SPEC-Ready Score (format: "✅ XX% (Target: ≥90%)"), CTR-Ready Score (format: "✅ XX% (Target: ≥90%)")
 - Template Version (informational only, not validated)
 
 > **Note**: Template Version is informational only (not validated). Each template may use its own version numbering.
@@ -120,7 +120,7 @@ Every REQ must contain these exact sections in order (MVP profile):
 
 | Ready Score | Required Status |
 |-------------|-----------------|
-| >= 70% | Approved |
+| >= 90% | Approved |
 | 50-69% | In Review |
 | < 50% | Draft |
 
@@ -158,7 +158,7 @@ Every REQ must contain these exact sections in order (MVP profile):
 - **Single Responsibility**: Each REQ defines exactly one requirement
 - **Measurable**: Acceptance criteria provide true/false outcomes
 - **Self-Contained**: Understandable without external context
-- **SPEC-Ready**: Contains ALL information for automated SPEC generation (≥70% completeness)
+- **SPEC-Ready**: Contains ALL information for automated SPEC generation (≥90% completeness)
 - **Modal Language**: SHALL (absolute), SHOULD (preferred), MAY (optional)
 
 ---
@@ -199,7 +199,7 @@ Every REQ must contain these exact sections in order (MVP profile):
 - **20 Validation Checks**: Run `./07_REQ/scripts/validate_req_template.sh filename.md`
 - **Blockers**: Missing sections, format errors, broken links, incomplete traceability
 - **Warnings**: Missing resource tags, low SPEC-Ready score, incomplete upstream chain
-- **SPEC-Ready Threshold**: ≥70% for MVP profile (adjust claimed score if lower)
+- **SPEC-Ready Threshold**: ≥90% for MVP profile (adjust claimed score if lower)
 - **Link Resolution**: All cross-references must resolve to existing files
 
 ---
@@ -251,7 +251,7 @@ find docs/REQ -name "REQ-*.md" -exec ./07_REQ/scripts/validate_req_template.sh {
 
 | Mistake | Correct |
 |---------|---------|
-| `Status: Approved` (with <70% SPEC-Ready score) | Match status to score threshold |
+| `Status: Approved` (with <90% SPEC-Ready score) | Match status to score threshold |
 | Missing upstream tags (need all 6) | Include @brd, @prd, @ears, @bdd, @adr, @sys |
 | <15 acceptance criteria | Minimum 15 covering functional/error/quality |
 | Missing resource classification tag | Add [RESOURCE_INSTANCE] to H1 header |
