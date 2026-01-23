@@ -755,10 +755,10 @@ brd: BRD.09.01.15 ❌ (missing @ prefix)
 
 **Warning Messages**:
 ```
-⚠️  WARNING: SPEC-Ready ≥90% but no Protocol/ABC class in section 3
-⚠️  WARNING: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4
-⚠️  WARNING: SPEC-Ready ≥90% but no exception definitions in section 5
-⚠️  WARNING: SPEC-Ready ≥90% but no YAML configuration in section 6
+❌ ERROR: SPEC-Ready ≥90% but no Protocol/ABC class in section 3.4
+❌ ERROR: SPEC-Ready ≥90% but no Pydantic/dataclass models in section 4.2
+❌ ERROR: SPEC-Ready ≥90% but no exception definitions in section 5.3
+❌ ERROR: SPEC-Ready ≥90% but no YAML configuration in section 7.3
 ```
 
 **Fix**: Add missing code examples to achieve claimed SPEC-Ready score

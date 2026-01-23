@@ -175,12 +175,13 @@ Every REQ must contain these exact sections in order (MVP profile):
 
 ## 7. Interface and Implementation Specifications
 
-- **Protocol/ABC**: Complete class definitions with type annotations
+- **Protocol/ABC (REQUIRED)**: Complete class definitions with type annotations (Section 3.4)
 - **DTOs**: Data transfer objects with validation
 - **REST Endpoints**: Rate limits, schemas for request/response (if applicable)
 - **Error Handling**: Catalog with retry strategies, state diagrams, circuit breaker
+- **Exceptions (REQUIRED)**: Custom Python Exception classes (Section 5.3)
 - **Schemas**: JSON Schema + Pydantic validators + Database constraints
-- **Configuration**: YAML examples + environment variables + validation
+- **Configuration (REQUIRED)**: YAML schema + environment variables + validation (Section 7.3)
 - **Quality Attribute Metrics**: Performance (p50/p95/p99), reliability, security, scalability targets
 
 ---

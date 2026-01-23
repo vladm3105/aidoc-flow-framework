@@ -134,6 +134,37 @@ AI_CONTEXT_END
 | [field1] | [string/int/etc] | [what it contains] |
 | [field2] | [string/int/etc] | [what it contains] |
 
+### 3.4 Interface Protocol
+
+> **Note**: Define the interface contract as a Python `Protocol` or Abstract Base Class (ABC). This drives the SPEC generation.
+
+```python
+from typing import Protocol, List, Optional
+from datetime import datetime
+
+class ResourceStrategy(Protocol):
+    """Interface for [Resource Name] operations."""
+
+    def execute_operation(self, param1: str) -> bool:
+        """
+        Execute the main operation.
+        
+        Args:
+            param1: Description of parameter.
+            
+        Returns:
+            bool: True if successful.
+            
+        Raises:
+            ResourceError: If operation fails.
+        """
+        ...
+
+    async def validate_state(self) -> bool:
+        """Check if resource is in valid state."""
+        ...
+```
+
 ---
 
 ## 4. Interface Definition
@@ -212,6 +243,26 @@ class ResponseModel(BaseModel):
 | Transient failure | Yes (3x) | Queue/Cache | After retries |
 | Permanent failure | No | Graceful error | Yes |
 
+### 5.3 Exception Definitions
+
+```python
+class ResourceError(Exception):
+    """Base exception for [Resource Name] errors."""
+    pass
+
+class ValidationError(ResourceError):
+    """Raised when input validation fails."""
+    pass
+
+class StateError(ResourceError):
+    """Raised when resource is in invalid state."""
+    pass
+
+class UpstreamError(ResourceError):
+    """Raised when upstream service fails."""
+    pass
+```
+
 ---
 
 ## 6. Quality Attributes
@@ -256,6 +307,19 @@ class ResponseModel(BaseModel):
 |------|---------|-------------|
 | [FLAG_NAME] | false | [When to enable] |
 
+### 7.3 Configuration Schema
+
+```yaml
+resource_config:
+  enabled: true
+  timeout_ms: 5000  # @threshold: PRD.NN.timeout.default
+  retry_policy:
+    max_attempts: 3
+    backoff_factor: 1.5
+  feature_flags:
+    enable_experimental: false
+```
+
 ---
 
 ## 8. Testing Requirements
@@ -263,7 +327,8 @@ class ResponseModel(BaseModel):
 ### 8.1 Unit Tests
 
 > **Define WHAT to test before HOW.** These tests drive the SPEC interface design.
-> **IMPORTANT:** Check (and recreate if needed) this list during every validation to capture any hidden requirement changes.
+> **IMPORTANT:** Check (and recreate if needed) this list during every validation.
+> **REQUIRED:** Use category prefixes: `[Logic]`, `[State]`, `[Validation]`, and `[Edge]`.
 
 | Test Case | Input | Expected Output | Coverage |
 |-----------|-------|-----------------|----------|

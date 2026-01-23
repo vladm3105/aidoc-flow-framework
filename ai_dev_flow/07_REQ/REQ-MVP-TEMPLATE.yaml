@@ -104,6 +104,11 @@ section_3_interface_definition:
             """Validate request data."""
             ...
 
+  interface_protocol: |
+    # Add Python Protocol definition here
+    class ResourceStrategy(Protocol):
+        ...
+
   data_schema: |
     from pydantic import BaseModel, Field
     from typing import Optional
@@ -157,6 +162,11 @@ section_4_error_handling:
       recovery_strategy: "[Recovery steps: Return 404 Not Found with available resources]"
       http_status_code: 404
   
+  exception_definitions: |
+    # Add Python Exception classes here
+    class ResourceError(Exception):
+        pass
+
   state_machine: |
     stateDiagram-v2
       [*] --> Idle
@@ -235,6 +245,12 @@ section_6_configuration:
       enabled: false
       description: "[Experimental feature description]"
       rollout_percentage: 0
+
+  configuration_schema: |
+    # Add YAML Config Schema here
+    resource_config:
+      enabled: true
+
 
 # =============================================================================
 # Section 7: Testing Requirements

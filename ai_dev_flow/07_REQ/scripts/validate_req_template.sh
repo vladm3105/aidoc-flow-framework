@@ -263,6 +263,27 @@ else
   ((ERRORS++))
 fi
 
+# ============================================
+# CHECK 8b: CTR-Ready Score
+# ============================================
+echo "CHECK 8b: CTR-Ready Score"
+echo "-----------------------------------------"
+
+ctr_ready_line=$(grep "| \*\*CTR-Ready Score\*\* |" "$REQ_FILE")
+
+if echo "$ctr_ready_line" | grep -qE "✅.*[0-9]+%"; then
+  ctr_score=$(echo "$ctr_ready_line" | grep -oE "[0-9]+%" | head -1 | tr -d '%')
+  if [ "$ctr_score" -ge 90 ]; then
+    echo "  ✅ CTR-Ready Score ≥ 90%: $ctr_score%"
+  else
+    echo "  ⚠️  WARNING: CTR-Ready Score below 90%: $ctr_score%"
+    ((WARNINGS++))
+  fi
+else
+  echo "  ❌ MISSING: CTR-Ready Score with ✅ emoji and percentage"
+  ((ERRORS++))
+fi
+
 echo ""
 
 # ============================================
@@ -471,7 +492,7 @@ done
 if [[ ${#missing_upstream[@]} -gt 0 ]]; then
   echo "  ❌ ERROR: Incomplete upstream chain - missing: ${missing_upstream[*]}"
   echo "           Complete chain required: BRD → PRD → EARS → BDD → ADR → SYS"
-  echo "           Reference: REQ-TEMPLATE-UNIFIED.md Section 15 (RULE 2)"
+  echo "           Reference: REQ-MVP-TEMPLATE.md Section 15 (RULE 2)"
   ((ERRORS++)) || true
 else
   echo "  ✅ Complete upstream traceability chain (all 6 layers)"
@@ -560,7 +581,7 @@ if grep -q "### .*Traceability Matrix\|### 11.4\|## 11.4\|### 10.4\|## 10.4" "$R
     echo "           Upstream sources: $upstream_count (≥5 suggests complexity)"
     echo "           Sub-components: $has_subcomponents"
     echo "           Recommendation: Add Section 11.4 or create separate REQ-NN_TRACEABILITY_MATRIX.md"
-    echo "           Reference: REQ-TEMPLATE-UNIFIED.md Section 11.4"
+    echo "           Reference: REQ-MVP-TEMPLATE.md Section 11.4"
     ((WARNINGS++)) || true
   fi
 else
@@ -581,11 +602,11 @@ if [ -n "$score" ] && [ "$score" -ge 90 ]; then
 
   content_warnings=0
 
-  # Section 3: Interface Specifications
+  # Section 3.4: Interface Protocol
   if grep -qE "class.*Protocol|class.*ABC|from typing import Protocol|from abc import.*ABC" "$REQ_FILE"; then
-    echo "  ✅ Section 3: Protocol/ABC class found"
+    echo "  ✅ Section 3.4: Protocol/ABC class found"
   else
-    echo "  ⚠️  WARNING: SPEC-Ready ≥90% but no Protocol/ABC class in Section 3"
+    echo "  ❌ ERROR: SPEC-Ready ≥90% but no Protocol/ABC class in Section 3.4"
     ((content_warnings++))
   fi
 
@@ -593,30 +614,35 @@ if [ -n "$score" ] && [ "$score" -ge 90 ]; then
   if grep -qE "BaseModel|@dataclass|from pydantic import|from dataclasses import dataclass" "$REQ_FILE"; then
     echo "  ✅ Section 4: Pydantic/dataclass models found"
   else
-    echo "  ⚠️  WARNING: SPEC-Ready ≥90% but no Pydantic/dataclass models in Section 4"
+    echo "  ❌ ERROR: SPEC-Ready ≥90% but no Pydantic/dataclass models in Section 4"
     ((content_warnings++))
   fi
 
-  # Section 5: Error Handling
-  if grep -qE "Exception.*Error|class.*Error|raise.*Error" "$REQ_FILE"; then
-    echo "  ✅ Section 5: Exception definitions found"
+  # Section 5.3: Exception Definitions
+  if grep -qE "class.*Error\(.*Exception\)|class.*Error\(.*Error\)" "$REQ_FILE"; then
+    echo "  ✅ Section 5.3: Exception definitions found"
   else
-    echo "  ⚠️  WARNING: SPEC-Ready ≥90% but no exception definitions in Section 5"
+    echo "  ❌ ERROR: SPEC-Ready ≥90% but no exception definitions in Section 5.3"
     ((content_warnings++))
   fi
 
-  # Section 6: Configuration
+  # Section 7.3: Configuration Schema
   if grep -qE "\`\`\`yaml|\`\`\`yml" "$REQ_FILE"; then
-    echo "  ✅ Section 6: YAML configuration found"
+    if grep -q "### .*Configuration Schema" "$REQ_FILE" || grep -q "7.3 Configuration Schema" "$REQ_FILE"; then
+       echo "  ✅ Section 7.3: YAML configuration found"
+    else
+       # Fallback for old templates if yaml exists but not explicitly in 7.3
+       echo "  ⚠️  WARNING: YAML configuration found but not in Section 7.3"
+    fi
   else
-    echo "  ⚠️  WARNING: SPEC-Ready ≥90% but no YAML configuration in Section 6"
+    echo "  ❌ ERROR: SPEC-Ready ≥90% but no YAML configuration in Section 7.3"
     ((content_warnings++))
   fi
 
   if [ $content_warnings -gt 0 ]; then
-    echo "  ⚠️  SPEC-Ready content validation: $content_warnings warnings"
-    echo "           Score may be inaccurate - verify Sections 3-6 completeness"
-    ((WARNINGS += content_warnings))
+    echo "  ❌ SPEC-Ready content validation: $content_warnings ERRORS"
+    echo "           Required: Protocol/ABC, Pydantic Models, Exceptions, YAML Config"
+    ((ERRORS += content_warnings))
   else
     echo "  ✅ SPEC-Ready content validation complete - all critical sections present"
   fi
@@ -691,7 +717,7 @@ if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
   echo "✅ PASSED: All validation checks passed with no warnings"
   echo ""
   echo "Document complies with:"
-  echo "  - REQ-TEMPLATE-UNIFIED.md"
+  echo "  - REQ-MVP-TEMPLATE.md"
   echo "  - doc-flow SDD framework"
   echo "  - Cumulative tagging hierarchy (Layer 7)"
   exit 0
@@ -700,14 +726,14 @@ elif [ $ERRORS -eq 0 ]; then
   echo ""
   echo "Recommendations:"
   echo "  - Review warnings for quality improvements"
-  echo "  - See REQ-TEMPLATE-UNIFIED.md for best practices"
+  echo "  - See REQ-MVP-TEMPLATE.md for best practices"
   exit 0
 else
   echo "❌ FAILED: $ERRORS critical errors found"
   echo ""
   echo "Action Required:"
   echo "  1. Fix all errors listed above"
-  echo "  2. Review REQ-TEMPLATE-UNIFIED.md for requirements"
+  echo "  2. Review REQ-MVP-TEMPLATE.md for requirements"
   echo "  3. Check doc-flow TRACEABILITY.md for tagging rules"
   echo "  4. Re-run validation: ./scripts/validate_req_template.sh $REQ_FILE"
   exit 1
