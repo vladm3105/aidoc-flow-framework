@@ -9,13 +9,17 @@ custom_fields:
   document_type: ai-guide
   artifact_type: REQ
   priority: critical
-  version: "1.0"
+  version: "1.1"
   scope: validation-and-quality
 ---
 
 # AI Assistant Guide: REQ Validation Decision-Making
 
-**Scope**: REQ-specific validation guidance. For universal decision rules (when to fix the document vs the validator vs accept a warning), refer to the core framework guide: [VALIDATION_DECISION_FRAMEWORK.md](../VALIDATION_DECISION_FRAMEWORK.md).
+**REQ-Specific Guide:** This document provides detailed REQ-focused patterns, validator nuances, and common fixes for REQ artifacts.
+
+**Framework-Level Guidance:** For universal decision rules applicable to all document types (when to fix the document vs the validator vs accept a warning), see:
+- [../AI_VALIDATION_DECISION_GUIDE.md](../AI_VALIDATION_DECISION_GUIDE.md) - Framework-wide decision guide
+- [../VALIDATION_DECISION_FRAMEWORK.md](../VALIDATION_DECISION_FRAMEWORK.md) - Core universal rules
 
 **Purpose**: REQ-focused patterns, validator nuances, and common fixes tailored to REQ artifacts.
 
@@ -33,6 +37,8 @@ custom_fields:
 4. [Common Validation Issues & Resolutions](#common-validation-issues--resolutions)
 5. [Validator Rules Reference](#validator-rules-reference)
 6. [Step-by-Step Resolution Process](#step-by-step-resolution-process)
+7. [GATE-05: Inter-REQ Cross-Linking Decision Guide](#gate-05-inter-req-cross-linking-decision-guide)
+8. [GATE-13: Domain Subdirectory Classification](#gate-13-domain-subdirectory-classification)
 
 ---
 
@@ -658,10 +664,81 @@ Re-validation:
 
 ---
 
+## GATE-05: Inter-REQ Cross-Linking Decision Guide
+
+**What it checks**: Whether REQ documents in the same folder reference each other (e.g., REQ-05.13 → REQ-05.14).
+
+**Status**: Optional, Informational. Does NOT block SPEC-readiness passing (score ≥90%).
+
+### When to Add Cross-References (Fix Document)
+
+Add a **"Related Requirements"** section to section 10 (Traceability) if your REQ logically depends on or relates to other requirements in the same folder:
+
+| Scenario | Example | Action |
+|----------|---------|--------|
+| **Deployment chain** | Rolling updates → Canary → Blue-green → Rollback | Add "Related Requirements" section |
+| **Prerequisite dependency** | Feature X requires Feature Y | Add "Depends On" subsection |
+| **Complementary patterns** | Circuit breaker + retry policy | Add "Related Requirements" |
+| **Alternatives** | Blue-green deployment vs Rolling updates | Add "Alternative Approaches" |
+| **Truly standalone** | Health check probe (no dependencies) | Accept no cross-references |
+
+### Template: Related Requirements Section
+
+Add this to section 10 if cross-references exist:
+
+```markdown
+### 10.5 Related Requirements
+
+**Depends On**:
+| Related REQ | Relationship | Impact |
+|------------|--------------|--------|
+| REQ-05.16 | Rollback automation | Rolling updates require automated rollback |
+| REQ-05.09 | Fallback handling | Fallback used on deployment failure |
+
+**Enables**:
+| Related REQ | Relationship |
+|------------|--------------|
+| REQ-05.14 | Canary deployment (safer pattern built on rolling updates) |
+| REQ-05.15 | Blue-green deployment (alternative to rolling) |
+
+**Alternatives**:
+| Related REQ | When to use instead |
+|------------|-------------------|
+| REQ-05.15 | Blue-green when zero-downtime verification needed |
+| REQ-05.14 | Canary when gradual rollout with metrics validation needed |
+```
+
+### When NOT to Require Cross-References (Accept Warnings)
+
+These are genuinely standalone and should NOT have forced cross-references:
+- **Health probes** (liveness, readiness) - used by all deployments, not specific to rolling updates
+- **Resource limits** - orthogonal to deployment strategy
+- **Incident response** - general ops pattern, not tied to specific deployment
+
+**Decision Rule**: If a REQ can be implemented independently without first implementing another REQ in the same folder → likely standalone → accept no cross-references.
+
+---
+
+## GATE-13: Domain Subdirectory Classification
+
+**What it checks**: Whether REQ files are organized in correct subfolders per domain (e.g., trading requirements in `REQ-08_trading_intelligence`).
+
+**Status**: Required for full template. May be informational for MVP in early development.
+
+**Common Issues**:
+
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| "REQ in wrong folder" | File placed in wrong domain directory | Move file to correct folder |
+| "Unknown domain" | Domain category doesn't match project taxonomy | Check `docs/01_BRD/DOMAIN_TAXONOMY.md` or ADR |
+
+---
+
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1 | 2026-01-24 | Added GATE-05 cross-linking guidance and GATE-13 domain classification |
 | 1.0 | 2026-01-24 | Initial creation based on REQ-02 validation session |
 
 ---

@@ -39,6 +39,8 @@ Purpose: Give AI assistants a consistent, framework-wide process to decide wheth
 | Arbitrary thresholds (e.g., ≥3 functions) and interface is already complete | Adjust validator or accept | Enforce value, not vanity |
 | Placeholders in prose/tables | Fix document | Incomplete content |
 | Protocol/ABC stubs | Prefer `NotImplementedError` stubs; if ellipsis flagged, fix validator | Raising clarifies contract and avoids ambiguous placeholders |
+| REQ missing inter-folder cross-links (GATE-05) | Fix document if logically related; accept if standalone | Traceability improves downstream work; standalone requirements are valid |
+| REQ in wrong domain subdirectory | Fix document (move file) | Organization matters for discovery and governance |
 
 ## Priority Rules
 
