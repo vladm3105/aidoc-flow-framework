@@ -259,6 +259,31 @@ Every REQ must contain these exact sections in order (MVP profile):
 
 ---
 
+## 9.1 Cross-Linking Tags (AI-Friendly)
+
+**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across REQ documents without blocking validation.
+
+**Tags Supported**:
+- `@depends: REQ-NN` — Hard prerequisite; this REQ cannot proceed without the referenced REQ
+- `@discoverability: REQ-NN (short rationale)` — Related document for AI search and ranking (informational)
+
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `REQ-01`, `REQ-02`).
+
+**Placement**: Add tags to the Traceability section or inline with requirement descriptions.
+
+**Example**:
+```markdown
+@depends: REQ-01 (Core Requirements)
+@discoverability: REQ-02 (Extended Requirements - shared specification domain)
+```
+
+**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
+
+**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for REQ approval; they are purely informational.
+
+---
+
+
 ## 10. Business Rules and Validation
 
 - **Source Documents**: Link to specific strategy sections (01_BRD/PRD)
@@ -370,9 +395,13 @@ Include ONLY if relationships exist between REQ documents sharing domain context
 
 **Tags**:
 ```markdown
-@related-req: REQ-NN
-@depends-req: REQ-NN
+@depends: REQ-NN   # Hard prerequisite requirements
+@discoverability: REQ-NN (short rationale); REQ-NN (short rationale)
 ```
+
+- Use `@depends` for sequencing/blocking dependencies.
+- Use `@discoverability` for related REQs with a one-phrase rationale (AI/search-friendly).
+- Avoid legacy "See also" strings; prefer the structured tags above.
 
 ---
 

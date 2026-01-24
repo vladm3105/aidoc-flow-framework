@@ -162,18 +162,35 @@ check_index_sync() {
   echo ""
   echo "--- GATE-04: Index Synchronization ---"
 
-  # Find index file
+  # Find index file (check in REQ root first, then in passed directory)
+  # Index file format: *-00_index.md (e.g., REQ-00_index.md)
   local index_file=""
-  for f in "$REQ_DIR"/REQ-*_index.md "$REQ_DIR"/REQ-000_index.md; do
-    if [[ -f "$f" ]]; then
-      index_file="$f"
-      break
-    fi
-  done
+  local req_root="$(dirname "$REQ_DIR")"
+  
+  # If passed dir is a subdirectory (e.g., REQ-01_f1_iam), check parent for index
+  if [[ -d "$req_root" ]] && [[ "$(basename "$req_root")" == "07_REQ" ]]; then
+    for f in "$req_root"/*-00_index.md; do
+      if [[ -f "$f" ]]; then
+        index_file="$f"
+        break
+      fi
+    done
+  fi
+  
+  # Also check passed directory itself
+  if [[ -z "$index_file" ]]; then
+    for f in "$REQ_DIR"/*-00_index.md; do
+      if [[ -f "$f" ]]; then
+        index_file="$f"
+        break
+      fi
+    done
+  fi
+  
   echo "DEBUG: Finished processing all files..."
 
   if [[ -z "$index_file" || ! -f "$index_file" ]]; then
-    echo -e "${YELLOW}  Index file not found: $REQ_DIR/REQ-000_index.md${NC}"
+    echo -e "${YELLOW}  Index file not found: $(dirname "$REQ_DIR")/*-00_index.md or $REQ_DIR/*-00_index.md${NC}"
     return
   fi
 
@@ -195,20 +212,117 @@ check_index_sync() {
   fi
 }
 
-# -----------------------------------------------------------------------------
-# GATE-05: Inter-REQ Cross-Linking (DEPRECATED)
-# -----------------------------------------------------------------------------
+# -----------------------------------------------
+# GATE-05: Inter-REQ Cross-Linking (Optional, Informational)
+# -----------------------------------------------
+# PURPOSE: Map cross-references between related REQ files
+#          Helps detect orphaned/isolated requirements
+#          Non-blocking, informational only
+# -----------------------------------------------
 
 check_cross_linking() {
   echo ""
-  # --- GATE-05: Inter-REQ Cross-Linking (DEPRECATED) ---
-  # echo -e "\n--- GATE-05: Inter-REQ Cross-Linking ---"
-  # echo -e "  ℹ DEPRECATED: Document name references are sufficient per SDD rules"
-  echo -e "${BLUE}  ℹ GATE-05 DEPRECATED: Inter-REQ Cross-Linking checks disabled per user request${NC}"
+  echo "--- GATE-05: Inter-REQ Cross-Linking (Optional, Informational) ---"
+
+  local found=0
+  local isolated=0
+
+  # Patterns that indicate cross-references to other REQ files
+  local xref_patterns=("See also REQ-" "Related to REQ-" "@depends:" "@discoverability:" "cross-reference:" "implements REQ-")
+
+  while IFS= read -r -d '' f; do
+    if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
+
+    local filename
+    filename=$(basename "$f")
+    local has_xref=0
+
+    # Check for any cross-reference patterns
+    for pattern in "${xref_patterns[@]}"; do
+      if grep -qi "$pattern" "$f" 2>/dev/null; then
+        has_xref=1
+        break
+      fi
+    done
+
+    # Check for references to OTHER REQ files (simpler approach)
+    local req_refs=0
+    local self_ref
+    self_ref=$(echo "$filename" | grep -oE "REQ-[0-9]+\.[0-9]+" | head -1)
+    
+    if [[ -n "$self_ref" ]]; then
+      # Count REQ references that are NOT self-references
+      while read -r ref; do
+        if [[ "$ref" != "$self_ref" ]]; then
+          ((req_refs++)) || true
+        fi
+      done < <(grep -oE "REQ-[0-9]+\.[0-9]+" "$f" 2>/dev/null || true)
+    else
+      # Count ALL REQ references in file
+      while read -r ref; do
+        if [[ -n "$ref" ]]; then
+          ((req_refs++)) || true
+        fi
+      done < <(grep -oE "REQ-[0-9]+\.[0-9]+" "$f" 2>/dev/null || true)
+    fi
+
+    # Additionally, detect references by REQ title phrases (natural language cross-links)
+    # This helps when authors mention other requirements by name rather than code
+    local title_refs=0
+    while IFS= read -r -d '' other; do
+      [[ "$other" == "$f" ]] && continue
+      # Extract other code
+      local other_code
+      local other_code_raw
+      other_code_raw=$(basename "$other" | grep -oE "REQ-[0-9]+\.[0-9]+" | head -1 || true)
+      other_code="$other_code_raw"
+      [[ -n "$self_ref" && "$other_code" == "$self_ref" ]] && continue
+
+      # Try YAML title first
+      local other_title
+      local raw_title
+      raw_title=$(grep -m1 '^title:' "$other" 2>/dev/null || true)
+      other_title=$(echo "$raw_title" | sed -E 's/^title:\s*"?([^"\n]+)"?.*/\1/' | tr -d '\r')
+      # If title includes code, strip leading code and colon
+      if [[ -n "$other_title" ]]; then
+        other_title=$(echo "$other_title" | sed -E 's/^REQ-[0-9]+\.[0-9]+:\s*//')
+      fi
+      # Fallback to H1 header pattern
+      if [[ -z "$other_title" ]]; then
+        local raw_h1
+        raw_h1=$(grep -m1 -E '^#\s*REQ-[0-9]+\.[0-9]+:' "$other" 2>/dev/null || true)
+        other_title=$(echo "$raw_h1" | sed -E 's/^#\s*REQ-[0-9]+\.[0-9]+:\s*(\[[^]]*\]\s*)?//')
+      fi
+      # If we have a reasonably specific title, check for its mention
+      if [[ -n "$other_title" && ${#other_title} -ge 6 ]]; then
+        if grep -qiF "$other_title" "$f" 2>/dev/null; then
+          ((title_refs++)) || true
+        fi
+      fi
+    done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
+
+    local total_refs=$((req_refs + title_refs))
+    if [[ $has_xref -eq 0 && $total_refs -eq 0 ]]; then
+      echo -e "${BLUE}  ℹ INFO: $(basename $f) has no cross-references (may be isolated)${NC}"
+      ((INFO++)) || true
+      ((isolated++)) || true
+    elif [[ $total_refs -gt 0 ]]; then
+      if [[ "$VERBOSE" == "--verbose" ]]; then
+        echo -e "${BLUE}  ℹ INFO: $(basename $f) references ${req_refs} by code and ${title_refs} by title${NC}"
+      fi
+      ((found++)) || true
+    fi
+  done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
+
+  if [[ $isolated -eq 0 ]]; then
+    echo -e "${GREEN}  ✓ No isolated requirements found${NC}"
+  elif [[ $isolated -gt 0 ]]; then
+    echo -e "${BLUE}  ℹ $isolated REQ file(s) with no cross-references (informational)${NC}"
+  fi
 }
 
-# -----------------------------------------------------------------------------
-# GATE-06: Visualization Coverage (DEPRECATED)
+# -----------------------------------------------
+# GATE-06: Mermaid Diagram Validation (Optional)
 # -----------------------------------------------------------------------------
 
 check_visualization() {

@@ -46,7 +46,31 @@ docs/CHG/CHG-XX_{slug}/
 
 ## 3. The Workflow (The "5 Steps")
 
-### Step 1: Initialize
+### 3.1 Cross-Linking Tags (AI-Friendly)
+
+**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across CHG documents without blocking validation.
+
+**Tags Supported**:
+- `@depends: CHG-NN` — Hard prerequisite; this CHG cannot proceed without the referenced CHG
+- `@discoverability: CHG-NN (short rationale)` — Related document for AI search and ranking (informational)
+
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `CHG-01`, `CHG-02`).
+
+**Placement**: Add tags to the CHG document header or implementation plan.
+
+**Example**:
+```markdown
+@depends: CHG-01 (Infrastructure Migration)
+@discoverability: CHG-02 (Data Pipeline Changes - related architecture pivot)
+```
+
+**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
+
+**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for CHG approval; they are purely informational.
+
+---
+
+### 3.2 Initialize
 - Create the directory.
 - Create `CHG-XX_{slug}.md` using `CHG-TEMPLATE.md`.
 - Create `implementation_plan.md` listing the specific execution steps.

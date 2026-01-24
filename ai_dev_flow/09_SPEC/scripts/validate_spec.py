@@ -534,6 +534,27 @@ def validate_optional_sections(data: Dict, result: ValidationResult):
         result.add_info("SPEC-I004", "Consider adding operations runbook")
 
 
+def validate_crosslinking_tags(content: str, result: ValidationResult):
+    """Detect and report cross-linking tags for AI assistance (info-level)."""
+    # Detect @depends tags
+    depends_matches = re.findall(r'@depends:\s*(SPEC-\d+)', content)
+    if depends_matches:
+        unique_deps = set(depends_matches)
+        result.add_info(
+            "SPEC-I005",
+            f"Document has @depends cross-links: {', '.join(sorted(unique_deps))} (for AI relationship discovery)"
+        )
+    
+    # Detect @discoverability tags
+    discoverability_matches = re.findall(r'@discoverability:\s*(SPEC-\d+)', content)
+    if discoverability_matches:
+        unique_disc = set(discoverability_matches)
+        result.add_info(
+            "SPEC-I006",
+            f"Document has @discoverability tags: {', '.join(sorted(unique_disc))} (for AI ranking)"
+        )
+
+
 def validate_spec_file(file_path: Path) -> ValidationResult:
     """
     Validate a single SPEC YAML file.
@@ -558,6 +579,12 @@ def validate_spec_file(file_path: Path) -> ValidationResult:
     # Validate file name
     validate_file_name(file_path, result)
 
+    # Read content for cross-linking detection
+    try:
+        content = file_path.read_text(encoding="utf-8")
+    except Exception:
+        content = ""
+
     # Parse YAML
     data, error = parse_yaml_file(file_path)
     if error:
@@ -579,6 +606,7 @@ def validate_spec_file(file_path: Path) -> ValidationResult:
     validate_observability(data, result)
     validate_verification(data, result)
     validate_optional_sections(data, result)
+    validate_crosslinking_tags(content, result)
 
     return result
 

@@ -464,6 +464,16 @@ Result: PASSED WITH WARNINGS
 
 ---
 
+### Cross-Linking Tags (AI-Friendly)
+
+Use same-layer cross-links to document CTR relationships:
+- `@depends: CTR-NN` — hard prerequisite CTRs that must be satisfied first.
+- `@discoverability: CTR-NN (short rationale); CTR-NN (short rationale)` — related CTRs with brief reasons to aid AI search and ranking.
+
+Validation handling: Info-level (non-blocking). Reported for visibility only.
+
+---
+
 ## References
 
 - [CTR_MVP_CREATION_RULES.md](./CTR_MVP_CREATION_RULES.md) - Creation guidelines

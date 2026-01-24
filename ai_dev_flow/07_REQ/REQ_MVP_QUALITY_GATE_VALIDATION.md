@@ -32,6 +32,14 @@ This document defines **corpus-level validation rules** that run AFTER all REQ (
 
 **Consistency Note**: All MVP artifacts (creation rules, validation rules, quality gates, schema) MUST stay consistent with `REQ-MVP-TEMPLATE.md` and `REQ-MVP-TEMPLATE.yaml`; keep changes synchronized.
 
+### Cross-Linking Tags
+
+REQ documents may include same-layer cross-links for clarity and AI ranking:
+- `@depends: REQ-NN` — prerequisite REQs that must be satisfied first.
+- `@discoverability: REQ-NN (short rationale); REQ-NN (short rationale)` — related REQs with brief reasons to aid search.
+
+Legacy "See also …" strings are deprecated. Corpus validation may report presence of these tags for visibility (informational only).
+
 ### Validation Hierarchy
 
 | Validation Type | When It Runs | Scope | File |

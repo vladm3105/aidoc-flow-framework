@@ -300,6 +300,12 @@ traceability:
     - "@prd: PRD.NN.EE.SS"
     - "@ears: EARS.NN.EE.SS"
 
+  cross_links:
+    depends:
+      - "@depends: SYS-NN"   # Hard prerequisite SYS docs
+    discoverability:
+      - "@discoverability: SYS-NN (short rationale)"
+
 # =============================================================================
 # Template Metadata
 # =============================================================================

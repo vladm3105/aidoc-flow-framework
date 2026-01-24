@@ -167,6 +167,12 @@ traceability:
   tags:
     - "@brd: BRD-NN"
 
+  cross_links:
+    depends:
+      - "@depends: BRD-NN"   # Hard prerequisite BRDs
+    discoverability:
+      - "@discoverability: BRD-NN (short rationale)"
+
 # =============================================================================
 # Template Metadata
 # =============================================================================

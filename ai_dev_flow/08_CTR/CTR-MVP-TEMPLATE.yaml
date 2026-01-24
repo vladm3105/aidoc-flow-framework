@@ -303,6 +303,12 @@ traceability:
     - "@req: REQ.NN.EE.SS"
     - "@spec: SPEC-NN"
 
+  cross_links:
+    depends:
+      - "@depends: CTR-NN"   # Hard prerequisite CTRs
+    discoverability:
+      - "@discoverability: CTR-NN (short rationale)"
+
 # =============================================================================
 # Versioning
 # =============================================================================

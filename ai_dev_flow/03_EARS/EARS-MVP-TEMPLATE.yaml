@@ -198,6 +198,12 @@ section_4_traceability:
     - "@prd: PRD.NN.EE.SS"
     - "@threshold: PRD-NN"
 
+  cross_links:
+    depends:
+      - "@depends: EARS-NN"   # Hard prerequisite EARS
+    discoverability:
+      - "@discoverability: EARS-NN (short rationale)"
+
 # =============================================================================
 # Template Metadata
 # =============================================================================

@@ -56,7 +56,7 @@ class REQSpecReadinessValidator:
     PYDANTIC_PATTERN = r"class\s+\w+\(BaseModel\):"
     SQLALCHEMY_PATTERN = r"class\s+\w+\(Base\):"
 
-    EXCEPTION_CATALOG_PATTERN = r"\|\s*Exception\s+Type\s*\|.*HTTP\s+Code"
+    EXCEPTION_CATALOG_PATTERN = r"\|\s*(Exception\s+Type|Error\s+Code)\s*\|.*(HTTP\s+(Code|Status)|Status)"
     STATE_MACHINE_PATTERN = r"```mermaid\s+stateDiagram"
 
     YAML_CONFIG_PATTERN = r"```yaml"

@@ -75,6 +75,14 @@ python3 ai_dev_flow/04_BDD/scripts/validate_bdd.py ai_dev_flow/04_BDD --profile 
 python3 ai_dev_flow/04_BDD/scripts/validate_bdd.py ai_dev_flow/04_BDD --profile full
 ```
 
+### Cross-Linking Tags (AI-Friendly)
+
+Use same-layer cross-links to document BDD relationships:
+- `@depends: BDD-NN` — hard prerequisite BDD suite(s) that must be satisfied first.
+- `@discoverability: BDD-NN (short rationale)` — related BDD suites with brief reasons to aid AI search and ranking.
+
+Validation handling: Info-level (non-blocking). Reported for visibility only. Tags may be added to feature file headers or companion `BDD-NN_README.md` files.
+
 ---
 
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.

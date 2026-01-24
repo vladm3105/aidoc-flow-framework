@@ -492,6 +492,14 @@ custom_fields:
 @brd: BRD.NN.TT.SS
 ```
 
+### 16.4 Cross-Links (Same-Layer)
+
+Use machine-parseable tags to document relationships between PRDs:
+- `@depends: PRD-NN` — hard prerequisite PRD(s) that must be satisfied first.
+- `@discoverability: PRD-NN (short rationale); PRD-NN (short rationale)` — related PRDs with brief reasons to aid AI search and ranking.
+
+Prefer these tags over legacy "See also …" strings.
+
 ---
 
 ## 17. Glossary

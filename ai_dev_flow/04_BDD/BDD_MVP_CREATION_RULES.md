@@ -919,6 +919,34 @@ ADR-ready scoring measures BDD maturity and readiness for progression to Archite
 
 ---
 
+## 9.1 Cross-Linking Tags (AI-Friendly)
+
+**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across BDD documents without blocking validation.
+
+**Tags Supported**:
+- `@depends: BDD-NN` — Hard prerequisite; this BDD cannot proceed without the referenced BDD
+- `@discoverability: BDD-NN (short rationale)` — Related document for AI search and ranking (informational)
+
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `BDD-01`, `BDD-02`).
+
+**Placement**: Add tags to feature file headers (as metadata tags) or in companion `BDD-NN_README.md` or `BDD-NN_TRACEABILITY.md` files.
+
+**Example**:
+```gherkin
+@depends: BDD-01
+@discoverability: BDD-02 (Extended scenarios - related behavior spec)
+
+Feature: BDD-03: Core Behaviors
+```
+
+**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
+
+**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for BDD approval; they are purely informational.
+
+---
+
+## 10. Quality Gates (Pre-Commit Validation)
+
 ## 10. Quality Gates (Pre-Commit Validation)
 
 - BDD syntax validation

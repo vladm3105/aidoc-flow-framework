@@ -94,6 +94,14 @@ The REQ validation script (`validate_req_template.sh`) performs **20 validation 
 - **Cumulative Tagging Hierarchy**: Layer 7 requirements (6 upstream tags)
 - **Document Control**: 12 required fields (MVP profile)
 
+### Cross-Linking Tags (AI-Friendly)
+
+In addition to upstream traceability tags, REQ documents may include structured same-layer cross-links:
+- `@depends: REQ-NN` — hard prerequisite requirement(s) that must be satisfied first.
+- `@discoverability: REQ-NN (short rationale); REQ-NN (short rationale)` — related REQs with brief reasons to aid AI search and ranking.
+
+Prefer these tags over legacy “See also …” strings. Corpus-level Gate-05 reports presence of cross-links for visibility (informational).
+
 ### Validation Tiers
 
 | Tier | Type | Exit Code | Description |

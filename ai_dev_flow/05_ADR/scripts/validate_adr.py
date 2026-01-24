@@ -540,6 +540,27 @@ def validate_optional_sections(content: str, result: ValidationResult):
         result.add_info("ADR-I002", "Consider adding Section 12: Security Considerations")
 
 
+def validate_crosslinking_tags(content: str, result: ValidationResult):
+    """Detect and report cross-linking tags for AI assistance (info-level)."""
+    # Detect @depends tags
+    depends_matches = re.findall(r'@depends:\s*(ADR-\d+)', content)
+    if depends_matches:
+        unique_deps = set(depends_matches)
+        result.add_info(
+            "ADR-I003",
+            f"Document has @depends cross-links: {', '.join(sorted(unique_deps))} (for AI relationship discovery)"
+        )
+    
+    # Detect @discoverability tags
+    discoverability_matches = re.findall(r'@discoverability:\s*(ADR-\d+)', content)
+    if discoverability_matches:
+        unique_disc = set(discoverability_matches)
+        result.add_info(
+            "ADR-I004",
+            f"Document has @discoverability tags: {', '.join(sorted(unique_disc))} (for AI ranking)"
+        )
+
+
 def validate_adr_file(file_path: Path) -> ValidationResult:
     """
     Validate a single ADR file.
@@ -592,6 +613,7 @@ def validate_adr_file(file_path: Path) -> ValidationResult:
     validate_status(content, result, metadata)
     validate_traceability(content, result)
     validate_optional_sections(content, result)
+    validate_crosslinking_tags(content, result)
 
     return result
 

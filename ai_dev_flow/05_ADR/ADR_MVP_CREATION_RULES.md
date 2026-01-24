@@ -256,6 +256,30 @@ SYS-ready scoring measures ADR maturity and readiness for progression to System 
 
 ---
 
+## 8.1 Cross-Linking Tags (AI-Friendly)
+
+**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across ADR documents without blocking validation.
+
+**Tags Supported**:
+- `@depends: ADR-NN` — Hard prerequisite; this ADR cannot proceed without the referenced ADR
+- `@discoverability: ADR-NN (short rationale)` — Related document for AI search and ranking (informational)
+
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `ADR-01`, `ADR-02`).
+
+**Placement**: Add tags to the Traceability section or inline with decision descriptions.
+
+**Example**:
+```markdown
+@depends: ADR-01 (Technology Stack)
+@discoverability: ADR-02 (Database Strategy - related architecture decision)
+```
+
+**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
+
+**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for ADR approval; they are purely informational.
+
+---
+
 ## 9. Quality Attributes
 
 **Decision Rationale**: Evidence-based with quantitative trade-off analysis

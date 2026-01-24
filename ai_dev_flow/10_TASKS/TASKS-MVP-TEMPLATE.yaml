@@ -305,6 +305,12 @@ section_8_traceability:
     - "@spec: SPEC-NN"
     - "@req: REQ.NN.EE.SS"
 
+  cross_links:
+    depends:
+      - "@depends: TASKS-NN"   # Hard prerequisite TASKS docs
+    discoverability:
+      - "@discoverability: TASKS-NN (short rationale)"
+
 # =============================================================================
 # Section 9: Risk & Mitigation
 # =============================================================================

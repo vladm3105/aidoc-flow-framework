@@ -330,6 +330,14 @@ flowchart TD
 @ears: EARS.NN.24.SS
 ```
 
+### 9.4 Cross-Links (Same-Layer)
+
+Use machine-parseable tags to document relationships between ADRs:
+- `@depends: ADR-NN` — hard prerequisite ADR(s) that must be satisfied first.
+- `@discoverability: ADR-NN (short rationale); ADR-NN (short rationale)` — related ADRs with brief reasons to aid AI search and ranking.
+
+Prefer these tags over legacy "See also …" strings.
+
 ---
 
 ## 10. Related Decisions

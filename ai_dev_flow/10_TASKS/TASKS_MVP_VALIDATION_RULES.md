@@ -58,6 +58,14 @@ Rules for validating AI Tasks (TASKS) documents in the SDD framework.
 
 **Validation Behavior**: Skip all checks when filename matches `TASKS-00_*` pattern.
 
+### Cross-Linking Tags (AI-Friendly)
+
+Use same-layer cross-links to document TASKS relationships:
+- `@depends: TASKS-NN` — hard prerequisite TASKS that must be completed first.
+- `@discoverability: TASKS-NN (short rationale); TASKS-NN (short rationale)` — related TASKS with brief reasons to aid AI search and ranking.
+
+Validation handling: Info-level (non-blocking). Reported for visibility only.
+
 ---
 
 ## 1. Filename Validation

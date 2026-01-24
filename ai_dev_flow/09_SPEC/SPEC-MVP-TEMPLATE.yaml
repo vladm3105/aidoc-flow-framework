@@ -218,6 +218,11 @@ traceability:
           spec_sections: ["interfaces.classes"]
 
       supporting_code:
+          cross_links:
+            depends:
+              - "@depends: SPEC-NN"   # Hard prerequisite SPECs
+            discoverability:
+              - "@discoverability: SPEC-NN (short rationale)"
         - path: "src/[module_name]/services/[service_name].py"
           description: "Business logic and service layer"
           spec_sections: ["behavior.request_processing"]

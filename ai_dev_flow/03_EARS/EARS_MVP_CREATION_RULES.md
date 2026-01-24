@@ -362,6 +362,32 @@ BDD-ready scoring measures EARS maturity and readiness for progression to Behavi
 **Integration**: Enforces EARS → BDD progression quality gates
 
 
+---
+
+## 12.1 Cross-Linking Tags (AI-Friendly)
+
+**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across EARS documents without blocking validation.
+
+**Tags Supported**:
+- `@depends: EARS-NN` — Hard prerequisite; this EARS cannot proceed without the referenced EARS
+- `@discoverability: EARS-NN (short rationale)` — Related document for AI search and ranking (informational)
+
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `EARS-01`, `EARS-02`).
+
+**Placement**: Add tags to the Traceability section or inline with dependency descriptions.
+
+**Example**:
+```markdown
+@depends: EARS-01 (Core Behavior)
+@discoverability: EARS-02 (Extended Features - shared context)
+```
+
+**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
+
+**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for EARS approval; they are purely informational.
+
+---
+
 ## 13. Upstream Artifact Verification Process
 
 ### Before Creating This Document

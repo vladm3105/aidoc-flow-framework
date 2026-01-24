@@ -130,6 +130,15 @@ This layer includes a dedicated `scripts/` directory containing validation and u
 - **Primary Validator**: `validate_req_quality_score.sh`
 - **Usage**: Run scripts directly or usage via `validate_all.py`.
 
+### Cross-Linking Tags
+
+To document relationships between REQs in a structured, machine-parseable way:
+- `@depends: REQ-NN` — hard prerequisite requirement(s) that must be satisfied first.
+- `@discoverability: REQ-NN (short rationale); REQ-NN (short rationale)` — related REQs with brief reasons to aid AI search and ranking.
+
+Notes:
+- The quality gate’s Cross-Linking check (GATE-05) recognizes both tags.
+
 ## File Organization Hierarchy
 
 REQ files are organized by functional domains and subdomains:

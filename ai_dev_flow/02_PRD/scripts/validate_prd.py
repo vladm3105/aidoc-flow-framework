@@ -398,6 +398,27 @@ def validate_feature_ids(content: str, result: ValidationResult):
                             )
 
 
+def validate_crosslinking_tags(content: str, result: ValidationResult):
+    """Detect and report cross-linking tags for AI assistance (info-level)."""
+    # Detect @depends tags
+    depends_matches = re.findall(r'@depends:\s*(PRD-\d+)', content)
+    if depends_matches:
+        unique_deps = set(depends_matches)
+        result.add_info(
+            "PRD-I001",
+            f"Document has @depends cross-links: {', '.join(sorted(unique_deps))} (for AI relationship discovery)"
+        )
+    
+    # Detect @discoverability tags
+    discoverability_matches = re.findall(r'@discoverability:\s*(PRD-\d+)', content)
+    if discoverability_matches:
+        unique_disc = set(discoverability_matches)
+        result.add_info(
+            "PRD-I002",
+            f"Document has @discoverability tags: {', '.join(sorted(unique_disc))} (for AI ranking)"
+        )
+
+
 def validate_prd_file(file_path: Path) -> ValidationResult:
     """
     Validate a single PRD file.
@@ -439,6 +460,7 @@ def validate_prd_file(file_path: Path) -> ValidationResult:
     validate_structure(content, sections, result, metadata)
     validate_traceability(content, result)
     validate_feature_ids(content, result)
+    validate_crosslinking_tags(content, result)
 
     return result
 

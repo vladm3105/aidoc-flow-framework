@@ -406,6 +406,30 @@ req_implementations:
 
 ---
 
+## 9.1 Cross-Linking Tags (AI-Friendly)
+
+**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across SPEC documents without blocking validation.
+
+**Tags Supported**:
+- `@depends: SPEC-NN` — Hard prerequisite; this SPEC cannot proceed without the referenced SPEC
+- `@discoverability: SPEC-NN (short rationale)` — Related document for AI search and ranking (informational)
+
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `SPEC-01`, `SPEC-02`).
+
+**Placement**: Add tags to the Traceability section or inline with specification descriptions.
+
+**Example**:
+```markdown
+@depends: SPEC-01 (Core Services)
+@discoverability: SPEC-02 (Extended Services - shared specification domain)
+```
+
+**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
+
+**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for SPEC approval; they are purely informational.
+
+---
+
 ## 10. Quality Gates (Pre-Commit Validation)
 
 - YAML syntax validation

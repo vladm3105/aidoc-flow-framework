@@ -75,6 +75,14 @@ python3 ai_dev_flow/01_BRD/01_BRD/scripts/validate_brd.py ai_dev_flow/01_BRD --p
 python3 ai_dev_flow/01_BRD/01_BRD/scripts/validate_brd.py ai_dev_flow/01_BRD --profile full
 ```
 
+### Cross-Linking Tags (AI-Friendly)
+
+Use same-layer cross-links to document BRD relationships:
+- `@depends: BRD-NN` — hard prerequisite BRD(s) that must be satisfied first.
+- `@discoverability: BRD-NN (short rationale); BRD-NN (short rationale)` — related BRDs with brief reasons to aid AI search and ranking.
+
+Validation handling: Info-level (non-blocking). Reported for visibility only.
+
 ---
 
 **Version**: 1.4.0

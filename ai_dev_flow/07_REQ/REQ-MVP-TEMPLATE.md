@@ -439,6 +439,19 @@ resource_config:
 
 > **Note**: Downstream tags reference generated artifacts (scripts, playbooks, IaC) for bidirectional traceability.
 
+### 10.4 Cross-Links (Same-Layer)
+
+Use cross-links to make dependencies and discoverability AI-friendly:
+
+```markdown
+@depends: REQ-NN   # Hard prerequisite requirements (must be satisfied first)
+@discoverability: REQ-NN (short rationale); REQ-NN (short rationale)
+```
+
+- `@depends` captures sequencing/blocking relationships across REQs.
+- `@discoverability` lists related REQs with a one-phrase rationale to aid search/ranking.
+- Avoid legacy "See also" strings; use the tags above for structured linkage.
+
 ---
 
 ## 11. Implementation Notes

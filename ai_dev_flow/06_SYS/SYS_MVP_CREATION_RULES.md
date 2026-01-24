@@ -352,6 +352,30 @@ REQ-ready scoring measures SYS maturity and readiness for progression to Require
 
 ---
 
+## 8.1 Cross-Linking Tags (AI-Friendly)
+
+**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across SYS documents without blocking validation.
+
+**Tags Supported**:
+- `@depends: SYS-NN` — Hard prerequisite; this SYS cannot proceed without the referenced SYS
+- `@discoverability: SYS-NN (short rationale)` — Related document for AI search and ranking (informational)
+
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `SYS-01`, `SYS-02`).
+
+**Placement**: Add tags to the Traceability section or inline with system descriptions.
+
+**Example**:
+```markdown
+@depends: SYS-01 (Core Platform)
+@discoverability: SYS-02 (Integration Layer - shared architectural domain)
+```
+
+**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
+
+**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for SYS approval; they are purely informational.
+
+---
+
 ## 9. Quality Attributes
 
 **Technical Accuracy**: All requirements must be implementable within ADR architectural boundaries

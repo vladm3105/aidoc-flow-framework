@@ -327,6 +327,14 @@ poetry run pytest --cov=src/[module] --cov-fail-under=85  # Coverage met
 @depends-tasks: TASKS-NN
 ```
 
+<h3>8.4 Cross-Links (Same-Layer)</h3>
+
+Use machine-parseable tags to document relationships between TASKS documents:
+- `@depends: TASKS-NN` — hard prerequisite TASKS that must be completed first.
+- `@discoverability: TASKS-NN (short rationale); TASKS-NN (short rationale)` — related TASKS with brief reasons to aid AI search and ranking.
+
+Prefer these tags over legacy "See also …" strings.
+
 <h3>8.3 Code Locations</h3>
 
 | Component | Path | Purpose |

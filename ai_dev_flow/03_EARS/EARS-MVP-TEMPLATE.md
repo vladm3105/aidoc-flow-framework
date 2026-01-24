@@ -115,3 +115,13 @@ THE [system component] SHALL [continuous behavior]
 ---
 
 **Document Version**: 0.1.0 (MVP)
+
+---
+
+## Cross-Linking Tags (AI-Friendly)
+
+Use machine-parseable tags to document relationships between EARS documents:
+- `@depends: EARS-NN` — hard prerequisite EARS that must be satisfied first.
+- `@discoverability: EARS-NN (short rationale); EARS-NN (short rationale)` — related EARS with brief reasons to aid AI search and ranking.
+
+Prefer these tags over legacy "See also …" strings.

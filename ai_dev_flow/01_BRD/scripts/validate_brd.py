@@ -400,6 +400,27 @@ def validate_business_requirements(content: str, result: ValidationResult, metad
         result.add_warning("BRD-W001", f"{section_name} appears to lack structured requirements (no tables or bullet lists)")
 
 
+def validate_crosslinking_tags(content: str, result: ValidationResult):
+    """Detect and report cross-linking tags for AI assistance (info-level)."""
+    # Detect @depends tags
+    depends_matches = re.findall(r'@depends:\s*(BRD-\d+)', content)
+    if depends_matches:
+        unique_deps = set(depends_matches)
+        result.add_info(
+            "BRD-I001",
+            f"Document has @depends cross-links: {', '.join(sorted(unique_deps))} (for AI relationship discovery)"
+        )
+    
+    # Detect @discoverability tags
+    discoverability_matches = re.findall(r'@discoverability:\s*(BRD-\d+)', content)
+    if discoverability_matches:
+        unique_disc = set(discoverability_matches)
+        result.add_info(
+            "BRD-I002",
+            f"Document has @discoverability tags: {', '.join(sorted(unique_disc))} (for AI ranking)"
+        )
+
+
 def validate_brd_file(file_path: Path) -> ValidationResult:
     """
     Validate a single BRD file.
@@ -444,6 +465,7 @@ def validate_brd_file(file_path: Path) -> ValidationResult:
     validate_structure(content, sections, result, metadata)
     validate_document_control(content, result)
     validate_business_requirements(content, result, metadata)
+    validate_crosslinking_tags(content, result)
 
     return result
 

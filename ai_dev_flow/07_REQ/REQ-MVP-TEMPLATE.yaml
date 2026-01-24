@@ -341,6 +341,12 @@ section_10_traceability:
     - "@adr: ADR-NN"
     - "@sys: SYS.NN.EE.SS"
 
+  cross_links:
+    depends:
+      - "@depends: REQ-NN"   # Hard prerequisite REQs
+    discoverability:
+      - "@discoverability: REQ-NN (short rationale)"
+
 # =============================================================================
 # Section 11: Implementation Notes
 # =============================================================================

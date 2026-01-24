@@ -364,6 +364,28 @@ Include ONLY if relationships exist between CTR documents sharing API context or
 @depends-ctr: CTR-NN
 ```
 
+### 5.1 Cross-Linking Tags (AI-Friendly)
+
+**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across CTR documents without blocking validation.
+
+**Tags Supported**:
+- `@depends: CTR-NN` — Hard prerequisite; this CTR cannot proceed without the referenced CTR
+- `@discoverability: CTR-NN (short rationale)` — Related document for AI search and ranking (informational)
+
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `CTR-01`, `CTR-02`).
+
+**Placement**: Add tags to the Traceability section or inline with contract descriptions.
+
+**Example**:
+```markdown
+@depends: CTR-01 (Base API)
+@discoverability: CTR-02 (Extended APIs - shared contract domain)
+```
+
+**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
+
+**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for CTR approval; they are purely informational.
+
 
 ## References
 

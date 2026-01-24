@@ -410,6 +410,27 @@ def validate_scenario_names(parsed: Dict, result: ValidationResult):
             )
 
 
+def validate_crosslinking_tags(content: str, result: ValidationResult):
+    """Detect and report cross-linking tags for AI assistance (info-level)."""
+    # Detect @depends tags
+    depends_matches = re.findall(r'@depends:\s*(BDD-\d+)', content)
+    if depends_matches:
+        unique_deps = set(depends_matches)
+        result.add_info(
+            "BDD-I001",
+            f"Document has @depends cross-links: {', '.join(sorted(unique_deps))} (for AI relationship discovery)"
+        )
+    
+    # Detect @discoverability tags
+    discoverability_matches = re.findall(r'@discoverability:\s*(BDD-\d+)', content)
+    if discoverability_matches:
+        unique_disc = set(discoverability_matches)
+        result.add_info(
+            "BDD-I002",
+            f"Document has @discoverability tags: {', '.join(sorted(unique_disc))} (for AI ranking)"
+        )
+
+
 def validate_bdd_file(file_path: Path) -> ValidationResult:
     """
     Validate a single BDD feature file.
@@ -452,6 +473,7 @@ def validate_bdd_file(file_path: Path) -> ValidationResult:
     validate_traceability_tags(parsed, result)
     validate_scenario_categories(parsed, result)
     validate_scenario_names(parsed, result)
+    validate_crosslinking_tags(content, result)
 
     return result
 

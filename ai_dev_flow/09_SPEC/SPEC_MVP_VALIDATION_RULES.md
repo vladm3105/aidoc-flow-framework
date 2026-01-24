@@ -69,6 +69,14 @@ The SPEC validation script ensures YAML specification files meet quality standar
 
 **Validation Behavior**: Skip all checks when filename matches `SPEC-00_*` pattern.
 
+### Cross-Linking Tags (AI-Friendly)
+
+Use same-layer cross-links to document SPEC relationships:
+- `@depends: SPEC-NN` — hard prerequisite SPECs that must be satisfied first.
+- `@discoverability: SPEC-NN (short rationale); SPEC-NN (short rationale)` — related SPECs with brief reasons to aid AI search and ranking.
+
+Validation handling: Info-level (non-blocking). Reported for visibility only.
+
 ---
 
 ## Validation Checks

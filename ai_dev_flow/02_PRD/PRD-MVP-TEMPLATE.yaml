@@ -210,6 +210,12 @@ traceability:
     - "@prd: PRD.NN.EE.SS"
     - "@brd: BRD.NN.EE.SS"
 
+  cross_links:
+    depends:
+      - "@depends: PRD-NN"   # Hard prerequisite PRDs
+    discoverability:
+      - "@discoverability: PRD-NN (short rationale)"
+
 # =============================================================================
 # Template Metadata
 # =============================================================================

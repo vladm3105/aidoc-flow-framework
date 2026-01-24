@@ -667,6 +667,14 @@ Quick Core MVP Requirements Checklist:
 |-------------|----------------|-----------|
 | Platform BRD (e.g., BRD-01) | Foundation | [Infrastructure/services required] |
 
+### 13.4 Cross-Links (Same-Layer)
+
+Use machine-parseable tags to document relationships between BRDs:
+- `@depends: BRD-NN` — hard prerequisite BRD(s) that must be satisfied first.
+- `@discoverability: BRD-NN (short rationale); BRD-NN (short rationale)` — related BRDs with brief reasons to aid AI search and ranking.
+
+Prefer these over legacy "See also …" strings to improve cross-document analysis and tooling.
+
 ---
 
 ## 14. Glossary

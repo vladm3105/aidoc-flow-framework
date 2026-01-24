@@ -75,6 +75,14 @@ python3 ai_dev_flow/02_PRD/scripts/validate_prd.py ai_dev_flow/02_PRD --profile 
 python3 ai_dev_flow/02_PRD/scripts/validate_prd.py ai_dev_flow/02_PRD --profile full
 ```
 
+### Cross-Linking Tags (AI-Friendly)
+
+Use same-layer cross-links to document PRD relationships in a machine-parseable way:
+- `@depends: PRD-NN` — hard prerequisite PRD(s) that must be satisfied first.
+- `@discoverability: PRD-NN (short rationale); PRD-NN (short rationale)` — related PRDs with brief reasons to aid AI search and ranking.
+
+Validation handling: Recognized as info-level (non-blocking). Reported for visibility only.
+
 ---
 
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.

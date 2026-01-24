@@ -303,7 +303,17 @@ See [Section 7: Quality Attributes](#7-quality-attributes) for detailed performa
 
 ```json
 {"resource": {"symbol": "ITEM-001", "metric_1": 25.3}, "collection_state": {"open_positions": 8}, "risk_limits": {"max_positions": 12}}
-```
+``` 
+
+---
+
+## Cross-Linking Tags (AI-Friendly)
+
+Use machine-parseable tags to document relationships between CTR documents:
+- `@depends: CTR-NN` — hard prerequisite contracts that must be satisfied first.
+- `@discoverability: CTR-NN (short rationale); CTR-NN (short rationale)` — related CTRs with brief reasons to aid AI search and ranking.
+
+Prefer these over legacy "See also …" strings to improve cross-document analysis and tooling.
 
 **Response** (HTTP 200):
 

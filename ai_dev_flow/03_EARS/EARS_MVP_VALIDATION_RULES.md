@@ -74,6 +74,14 @@ python3 ai_dev_flow/03_EARS/scripts/validate_ears.py --path ai_dev_flow/03_EARS 
 python3 ai_dev_flow/03_EARS/scripts/validate_ears.py --path ai_dev_flow/03_EARS --profile full
 ```
 
+### Cross-Linking Tags (AI-Friendly)
+
+Use same-layer cross-links to document EARS relationships:
+- `@depends: EARS-NN` — hard prerequisite EARS document(s) that must be satisfied first.
+- `@discoverability: EARS-NN (short rationale)` — related EARS documents with brief reasons to aid AI search and ranking.
+
+Validation handling: Info-level (non-blocking). Reported for visibility only.
+
 ---
 
 > Path conventions: Examples below use a portable `docs/` root for new projects. In this repository, artifact folders live at the ai_dev_flow root (no `docs/` prefix). When running commands here, drop the `docs/` prefix. See README → "Using This Repo" for path mapping.

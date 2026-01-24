@@ -488,6 +488,27 @@ def validate_interface_specs(content: str, result: ValidationResult):
         result.add_warning("SYS-W001", "Interface Specifications missing External Interfaces")
 
 
+def validate_crosslinking_tags(content: str, result: ValidationResult):
+    """Detect and report cross-linking tags for AI assistance (info-level)."""
+    # Detect @depends tags
+    depends_matches = re.findall(r'@depends:\s*(SYS-\d+)', content)
+    if depends_matches:
+        unique_deps = set(depends_matches)
+        result.add_info(
+            "SYS-I001",
+            f"Document has @depends cross-links: {', '.join(sorted(unique_deps))} (for AI relationship discovery)"
+        )
+    
+    # Detect @discoverability tags
+    discoverability_matches = re.findall(r'@discoverability:\s*(SYS-\d+)', content)
+    if discoverability_matches:
+        unique_disc = set(discoverability_matches)
+        result.add_info(
+            "SYS-I002",
+            f"Document has @discoverability tags: {', '.join(sorted(unique_disc))} (for AI ranking)"
+        )
+
+
 def validate_sys_file(file_path: Path) -> ValidationResult:
     """
     Validate a single SYS file.
@@ -543,6 +564,7 @@ def validate_sys_file(file_path: Path) -> ValidationResult:
     validate_interface_specs(content, result)
     validate_testing_requirements(content, result, profile)
     validate_traceability(content, result)
+    validate_crosslinking_tags(content, result)
 
     return result
 

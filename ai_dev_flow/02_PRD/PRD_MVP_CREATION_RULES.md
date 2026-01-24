@@ -679,6 +679,28 @@ Include ONLY if relationships exist between PRD documents sharing domain context
 @depends-prd: PRD-NN
 ```
 
+### 12.1 Cross-Linking Tags (AI-Friendly)
+
+**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across PRD documents without blocking validation.
+
+**Tags Supported**:
+- `@depends: PRD-NN` — Hard prerequisite; this PRD cannot proceed without the referenced PRD
+- `@discoverability: PRD-NN (short rationale)` — Related document for AI search and ranking (informational)
+
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `PRD-01`, `PRD-02`).
+
+**Placement**: Add tags to the Traceability section or inline with dependency descriptions.
+
+**Example**:
+```markdown
+@depends: PRD-01 (Core Platform)
+@discoverability: PRD-02 (Feature Enhancements - shared architecture)
+```
+
+**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
+
+**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for PRD approval; they are purely informational.
+
 ---
 
 ## 13. Business Objectives and Success Criteria

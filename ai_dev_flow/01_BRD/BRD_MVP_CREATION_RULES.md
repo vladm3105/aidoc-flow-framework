@@ -1656,6 +1656,37 @@ Quality attribute IDs use unified element ID format consistently across all down
 
 ---
 
+## 8.6 Cross-Linking Tags (AI-Friendly)
+
+**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across BRD documents without blocking validation.
+
+**Tags Supported**:
+- `@depends: BRD-NN` — Hard prerequisite; this BRD cannot proceed without the referenced BRD
+- `@discoverability: BRD-NN (short rationale)` — Related document for AI search and ranking (informational)
+
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `BRD-01`, `BRD-02`).
+
+**Placement**: Add tags to the Traceability section (section 16.2) or inline with dependency descriptions.
+
+**Example**:
+```markdown
+### 16.2 Same-Type References / Cross-BRD Dependencies
+
+@depends: BRD-01 (Platform Architecture)
+@discoverability: BRD-02 (Partner Integrations - shared domain context)
+
+| Relationship | Document ID | Document Title | Purpose |
+|--------------|-------------|----------------|---------|
+| Depends | BRD-01 | Platform Architecture | Foundation infrastructure |
+| Related | BRD-02 | Partner Integrations | Shared domain context |
+```
+
+**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
+
+**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for BRD approval; they are purely informational.
+
+---
+
 ## 9. Architecture Decision Requirements (MANDATORY)
 
 Every BRD **MUST** include **Section 7.2: "Architecture Decision Requirements"** addressing all 7 mandatory ADR topic categories. For each category, provide either a complete topic entry OR mark as "N/A - [reason]" if not applicable.

@@ -461,7 +461,27 @@ grep -q "## 8. Implementation Contracts" TASKS-NN.md
 @ctr: CTR-NN (if external API contracts defined)
 ```
 
----
+### 9.1 Cross-Linking Tags (AI-Friendly)
+
+**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across TASKS documents without blocking validation.
+
+**Tags Supported**:
+- `@depends: TASKS-NN` — Hard prerequisite; this TASKS cannot proceed without the referenced TASKS
+- `@discoverability: TASKS-NN (short rationale)` — Related document for AI search and ranking (informational)
+
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `TASKS-01`, `TASKS-02`).
+
+**Placement**: Add tags to the Traceability section or inline with task descriptions.
+
+**Example**:
+```markdown
+@depends: TASKS-01 (Infrastructure Setup)
+@discoverability: TASKS-02 (Application Development - dependent implementation track)
+```
+
+**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
+
+**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for TASKS approval; they are purely informational.
 
 ---
 
