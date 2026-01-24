@@ -138,6 +138,7 @@ AI_CONTEXT_END
 ### 3.4 Interface Protocol
 
 > **Note**: Define the interface contract as a Python `Protocol` or Abstract Base Class (ABC). This drives the SPEC generation.
+> **Linting Reminder**: In Protocol/ABC examples, prefer `raise NotImplementedError("method not implemented")` over `pass` or `...` so stubs are explicit contracts and not mistaken for incomplete code.
 
 ```python
 from typing import Protocol, List, Optional

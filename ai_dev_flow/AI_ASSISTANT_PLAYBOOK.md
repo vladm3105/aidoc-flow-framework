@@ -34,6 +34,9 @@ Purpose: A concise index that routes AI assistants and developers to the right g
     - Traceability and Validation (local scripts + assistant tips)
     - Token limits and file splitting guidelines
     - Decision tree and decision matrix by assistant
+- Validation Decision-Making (fix doc vs validator vs accept):
+  - VALIDATION_DECISION_FRAMEWORK.md (core, all artifacts)
+  - 07_REQ/AI_VALIDATION_DECISION_GUIDE.md (REQ-specific addendum)
 
 ## Suggested Flow
 

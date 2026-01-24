@@ -38,6 +38,11 @@ This directory provides comprehensive templates for the AI-Driven Specification-
 | 9 | SPEC | `SPEC-MVP-TEMPLATE.yaml` |
 | 10 | TASKS | `TASKS-TEMPLATE.md` |
 
+## Validation Decision Framework
+
+- Core framework guidance for triaging validation findings and choosing whether to fix documents, adjust validators, or accept warnings: [VALIDATION_DECISION_FRAMEWORK.md](./VALIDATION_DECISION_FRAMEWORK.md)
+- REQ-specific addendum with validator patterns and common fixes: [07_REQ/AI_VALIDATION_DECISION_GUIDE.md](./07_REQ/AI_VALIDATION_DECISION_GUIDE.md)
+
 ### Configuration Reference
 
 - Registry: [LAYER_REGISTRY.yaml](./LAYER_REGISTRY.yaml) - `template` field definitions
