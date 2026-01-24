@@ -28,7 +28,7 @@ echo "========================================="
 echo "REQ Template Validator v${SCRIPT_VERSION}"
 echo "========================================="
 echo "File: $REQ_FILE"
-echo "Template: REQ-TEMPLATE-V3.md + AI Dev Flow framework"
+echo "Template: REQ-MVP-TEMPLATE (MVP-only profile)"
 echo ""
 
 # ============================================
@@ -37,29 +37,7 @@ echo ""
 echo "CHECK 1: Required Sections"
 echo "-----------------------------------------"
 
-# Detect profile
-PROFILE="standard"
-if grep -q "template_profile: mvp" "$REQ_FILE"; then
-  PROFILE="mvp"
-  echo "  ℹ️  MVP Profile detected"
-fi
-
-required_sections_standard=(
-  "## 1. Document Control"
-  "## 2. Functional Requirements"
-  "## 3. Interface Specifications"
-  "## 4. Data Schemas"
-  "## 5. Error Handling Specifications"
-  "## 6. Configuration Specifications"
-  "## 7. Quality Attributes"
-  "## 8. Implementation Guidance"
-  "## 9. Acceptance Criteria"
-  "## 10. Verification Methods"
-  "## 11. Traceability"
-  "## 12. Change History"
-)
-
-required_sections_mvp=(
+required_sections=(
   "## 1. Document Control"
   "## 2. Requirement Description"
   "## 3. Functional Specification"
@@ -72,12 +50,6 @@ required_sections_mvp=(
   "## 10. Traceability"
   "## 11. Implementation Notes"
 )
-
-if [ "$PROFILE" = "mvp" ]; then
-  required_sections=("${required_sections_mvp[@]}")
-else
-  required_sections=("${required_sections_standard[@]}")
-fi
 
 for section in "${required_sections[@]}"; do
   if grep -q "^$section" "$REQ_FILE"; then
@@ -101,9 +73,18 @@ required_fields=(
   "| \*\*Version\*\* |"
   "| \*\*Date Created\*\* |"
   "| \*\*Last Updated\*\* |"
+  "| \*\*Author\*\* |"
   "| \*\*Priority\*\* |"
+  "| \*\*Category\*\* |"
+  "| \*\*Infrastructure Type\*\* |"
   "| \*\*Source Document\*\* |"
+  "| \*\*Verification Method\*\* |"
+  "| \*\*Assigned Team\*\* |"
   "| \*\*SPEC-Ready Score\*\* |"
+)
+
+optional_fields=(
+  "| \*\*CTR-Ready Score\*\* |"
   "| \*\*Template Version\*\* |"
 )
 
@@ -112,10 +93,14 @@ field_names=(
   "Version"
   "Date Created"
   "Last Updated"
+  "Author"
   "Priority"
+  "Category"
+  "Infrastructure Type"
   "Source Document"
+  "Verification Method"
+  "Assigned Team"
   "SPEC-Ready Score"
-  "Template Version"
 )
 
 for i in "${!required_fields[@]}"; do
@@ -124,6 +109,12 @@ for i in "${!required_fields[@]}"; do
   else
     echo "  ❌ MISSING: ${field_names[$i]}"
     ((ERRORS++))
+  fi
+done
+
+for opt in "${optional_fields[@]}"; do
+  if grep -q "$opt" "$REQ_FILE"; then
+    echo "  ℹ️  Found optional: $opt"
   fi
 done
 
@@ -271,17 +262,21 @@ echo "-----------------------------------------"
 
 ctr_ready_line=$(grep "| \*\*CTR-Ready Score\*\* |" "$REQ_FILE")
 
-if echo "$ctr_ready_line" | grep -qE "✅.*[0-9]+%"; then
-  ctr_score=$(echo "$ctr_ready_line" | grep -oE "[0-9]+%" | head -1 | tr -d '%')
-  if [ "$ctr_score" -ge 90 ]; then
-    echo "  ✅ CTR-Ready Score ≥ 90%: $ctr_score%"
+if [ -n "$ctr_ready_line" ]; then
+  if echo "$ctr_ready_line" | grep -qE "✅.*[0-9]+%"; then
+    ctr_score=$(echo "$ctr_ready_line" | grep -oE "[0-9]+%" | head -1 | tr -d '%')
+    if [ "$ctr_score" -ge 90 ]; then
+      echo "  ✅ CTR-Ready Score ≥ 90%: $ctr_score%"
+    else
+      echo "  ⚠️  WARNING: CTR-Ready Score below 90%: $ctr_score%"
+      ((WARNINGS++))
+    fi
   else
-    echo "  ⚠️  WARNING: CTR-Ready Score below 90%: $ctr_score%"
+    echo "  ⚠️  WARNING: CTR-Ready Score present but format invalid (expected ✅ XX%)"
     ((WARNINGS++))
   fi
 else
-  echo "  ❌ MISSING: CTR-Ready Score with ✅ emoji and percentage"
-  ((ERRORS++))
+  echo "  ℹ️  CTR-Ready Score not provided (optional for MVP)"
 fi
 
 echo ""
@@ -294,13 +289,15 @@ echo "-----------------------------------------"
 
 template_version=$(grep "| \*\*Template Version\*\* |" "$REQ_FILE" | sed 's/.*| \(.*\) |.*/\1/' | xargs)
 
-if [ "$template_version" = "2.0" ]; then
-  echo "  ✅ Template Version is 2.0"
-elif [ "$template_version" = "1.0" ]; then
-  echo "  ✅ Template Version is 1.0"
+if [ -n "$template_version" ]; then
+  if [ "$template_version" = "1.1" ]; then
+    echo "  ✅ Template Version is 1.1"
+  else
+    echo "  ⚠️  WARNING: Template Version is '$template_version' (expected 1.1 for MVP)"
+    ((WARNINGS++))
+  fi
 else
-  echo "  ⚠️  WARNING: Template Version is '$template_version' (expected 1.0 or 2.0)"
-  ((WARNINGS++))
+  echo "  ℹ️  Template Version not provided (optional for MVP)"
 fi
 
 echo ""
@@ -310,41 +307,7 @@ echo ""
 # ============================================
 echo "CHECK 10: Change History"
 echo "-----------------------------------------"
-
-# Skip Change History check for MVP if not present, or enforce relaxed rule
-if [ "$PROFILE" = "mvp" ]; then
-  if grep -q "## .*Change History" "$REQ_FILE"; then
-     # Use standard check logic if section exists
-     check_history=true
-  else
-     echo "  ℹ️  MVP Profile: Skipping Change History check (optional)"
-     check_history=false
-  fi
-else
-  check_history=true
-fi
-
-if [ "$check_history" = "true" ]; then
-  # Count change history entries (rows in the table)
-  change_count=$(grep -A 100 "## .*Change History" "$REQ_FILE" | grep "^|.*|.*|.*|.*|$" | grep -v "^| Date " | grep -v "^|---" | wc -l)
-
-  if [ "$change_count" -gt 0 ]; then
-    echo "  ✅ Change History has $change_count entries"
-
-    # Check if latest change matches current version
-    latest_change_version=$(grep -A 100 "## .*Change History" "$REQ_FILE" | grep "^|.*|.*|.*|.*|$" | grep -v "^| Date " | grep -v "^|---" | head -1 | awk -F'|' '{print $3}' | xargs)
-
-    if [ "$latest_change_version" = "$version" ]; then
-      echo "  ✅ Latest change history entry matches current version: $version"
-    else
-      echo "  ⚠️  WARNING: Latest change history version ($latest_change_version) doesn't match document version ($version)"
-      ((WARNINGS++))
-    fi
-  else
-    echo "  ❌ MISSING: Change History entries"
-    ((ERRORS++))
-  fi
-fi
+echo "  ℹ️  Change History is not included in MVP 11-section format; skipping"
 
 echo ""
 
@@ -383,12 +346,12 @@ fi
 echo ""
 
 # ============================================
-# CHECK 12: Resource Tag Validation (Template 2.0)
+# CHECK 12: Resource Tag Validation (Template 1.1)
 # ============================================
-echo "CHECK 12: Resource Tag Validation (Template 2.0)"
+echo "CHECK 12: Resource Tag Validation"
 echo "-----------------------------------------"
 
-if [ "$template_version" = "2.0" ]; then
+if [ "$template_version" = "1.1" ]; then
   h1_line=$(grep -m1 "^# REQ-" "$REQ_FILE")
 
   # Check for resource tag pattern [TAG_NAME]
@@ -403,14 +366,14 @@ if [ "$template_version" = "2.0" ]; then
       ((ERRORS++))
     fi
   else
-    echo "  ❌ ERROR: Template 2.0 requires [RESOURCE_INSTANCE] tag in H1"
+    echo "  ❌ ERROR: Template 1.1 requires [RESOURCE_INSTANCE] tag in H1"
     echo "           Current H1: $h1_line"
     echo "           Expected: # REQ-NN: [TAG] Title"
     echo "           Valid tags: [EXTERNAL_SERVICE_GATEWAY], [HEALTH_CHECK_SERVICE], etc."
     ((ERRORS++))
   fi
 else
-  echo "  ℹ️  Template 1.0: Resource tag not required (skip)"
+  echo "  ℹ️  Resource tag check skipped (Template Version not 1.1)"
 fi
 
 echo ""

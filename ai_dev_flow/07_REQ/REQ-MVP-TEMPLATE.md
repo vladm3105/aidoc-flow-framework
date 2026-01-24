@@ -23,6 +23,7 @@ custom_fields:
 > - **For Autopilot**: See `REQ-MVP-TEMPLATE.yaml` (YAML template) 
 > - **Shared Validation**: Both formats are validated by `REQ_MVP_SCHEMA.yaml` 
 > - **Complete Explanation**: See [DUAL_MVP_TEMPLATES_ARCHITECTURE.md](../DUAL_MVP_TEMPLATES_ARCHITECTURE.md) for full comparison of formats, authority hierarchy, and when to use each. 
+> - **Consistency Requirement**: `REQ-MVP-TEMPLATE.md` and `REQ-MVP-TEMPLATE.yaml` MUST remain consistent; keep changes synchronized.
 > 
 ---
 
@@ -32,7 +33,7 @@ Role: AI Requirements Engineer
 Objective: Create a streamlined MVP Atomic Requirement.
 Constraints:
 - Define exactly ONE atomic requirement per document.
-- 12 sections required (aligned with MVP requirements template).
+- 11 sections required (aligned with MVP requirements template).
 - All 6 upstream traceability tags required (@brd, @prd, @ears, @bdd, @adr, @sys).
 - Use @threshold tags for all quantitative values.
 - SPEC-Ready thresholds: ≥90% for MVP profile.
@@ -460,11 +461,7 @@ resource_config:
 
 ---
 
-## 12. Change History
-
-| Date | Version | Change | Author |
-|------|---------|--------|--------|
-| YYYY-MM-DD | 0.1.0 | Initial draft | [Author] |
+<!-- Change History section is intentionally omitted for MVP to keep 11-section structure. -->
 
 ---
 

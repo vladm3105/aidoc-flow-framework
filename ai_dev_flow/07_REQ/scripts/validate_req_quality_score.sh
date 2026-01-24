@@ -490,57 +490,44 @@ check_upstream_tbd() {
 }
 
 # -----------------------------------------------------------------------------
-# GATE-12: 12-Section Format Compliance
+# GATE-12: 11-Section Format Compliance (MVP)
 # -----------------------------------------------------------------------------
 
 check_section_format() {
   echo ""
-  echo "--- GATE-12: 12-Section Format Compliance (REQ v3.0 / MVP) ---"
+  echo "--- GATE-12: 11-Section Format Compliance (MVP) ---"
 
   local found=0
 
-  # Required sections with alternatives for MVP template formats
-  # Format: "LegacyName|MVPAltPattern1|MVPAltPattern2|..."
-  # Supports: Document Control, Requirement Overview, Metadata variants
+  # Required MVP sections (11 sections, no Change History)
   local section_patterns=(
-    "Requirement Statement|Statement|Requirement Description|Purpose Statement"
-    "Priority|Document Control|Requirement Overview|Metadata"
-    "Source|Source Document|Document Control|Requirement Overview|SYS Element|Metadata|SYS Reference"
-    "Rationale|Context|Use Case|Scope Boundaries|Scope"
+    "Document Control"
+    "Requirement Description"
+    "Functional Specification"
+    "Interface Definition"
+    "Error Handling"
+    "Quality Attributes"
+    "Configuration"
+    "Testing Requirements"
     "Acceptance Criteria"
-    "Dependencies|Implementation Notes|Integration Points"
     "Traceability"
-    "Verification|Testing Requirements|Test|Validation"
+    "Implementation Notes"
   )
 
   while IFS= read -r -d '' f; do
     if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
-    for pattern_set in "${section_patterns[@]}"; do
-      local section_found=false
-      # Split alternatives by |
-      IFS='|' read -ra patterns <<< "$pattern_set"
-      local primary_name="${patterns[0]}"
-
-      for pattern in "${patterns[@]}"; do
-        if grep -qiE "^#+.*$pattern" "$f" 2>/dev/null; then
-          section_found=true
-          break
-        fi
-      done
-  echo "DEBUG: Finished processing all files..."
-
-      if [[ "$section_found" == "false" ]]; then
-        echo -e "${RED}GATE-E017: $(basename $f) missing '$primary_name' section${NC}"
+    for pattern in "${section_patterns[@]}"; do
+      if ! grep -qiE "^## .*${pattern}" "$f" 2>/dev/null; then
+        echo -e "${RED}GATE-E017: $(basename $f) missing '${pattern}' section${NC}"
         ((ERRORS++)) || true
         ((found++)) || true
       fi
     done
-  echo "DEBUG: Finished processing all files..."
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All REQ follow 12-section format (MVP/Legacy)${NC}"
+    echo -e "${GREEN}  ✓ All REQ have required MVP sections${NC}"
   fi
 }
 

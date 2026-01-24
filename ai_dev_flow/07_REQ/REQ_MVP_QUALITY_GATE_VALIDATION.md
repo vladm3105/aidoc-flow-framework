@@ -30,6 +30,8 @@ custom_fields:
 
 This document defines **corpus-level validation rules** that run AFTER all REQ (Atomic Requirements) files are created but BEFORE CTR or SPEC creation begins. These rules validate the entire REQ corpus as a cohesive set, checking for cross-document consistency, domain coverage, and quality standards that cannot be verified at the individual file level.
 
+**Consistency Note**: All MVP artifacts (creation rules, validation rules, quality gates, schema) MUST stay consistent with `REQ-MVP-TEMPLATE.md` and `REQ-MVP-TEMPLATE.yaml`; keep changes synchronized.
+
 ### Validation Hierarchy
 
 | Validation Type | When It Runs | Scope | File |
@@ -314,33 +316,33 @@ done
 
 ---
 
-### CORPUS-12: 12-Section Format Compliance (REQ v3.0)
+### CORPUS-12: MVP 11-Section Format Compliance
 
-**Purpose**: Verify all REQ follow the v3.0 12-section format
+**Purpose**: Verify all REQ follow the MVP 11-section format (no Change History)
 
 **Severity**: Error
 
-**Required Sections**:
+**Required Sections (MVP)**:
 | # | Section | Required |
 |---|---------|----------|
-| 1 | Requirement Statement | Yes |
-| 2 | Priority | Yes |
-| 3 | Source | Yes |
-| 4 | Rationale | Yes |
-| 5 | Acceptance Criteria | Yes |
-| 6 | Dependencies | Yes |
-| 7 | Traceability | Yes |
-| 8 | Verification Methods | Yes |
-| 9 | Assumptions | No |
-| 10 | Constraints | No |
-| 11 | Notes | No |
-| 12 | Change History | No |
+| 1 | Document Control | Yes |
+| 2 | Requirement Description | Yes |
+| 3 | Functional Specification | Yes |
+| 4 | Interface Definition | Yes |
+| 5 | Error Handling | Yes |
+| 6 | Quality Attributes | Yes |
+| 7 | Configuration | Yes |
+| 8 | Testing Requirements | Yes |
+| 9 | Acceptance Criteria | Yes |
+| 10 | Traceability | Yes |
+| 11 | Implementation Notes | Yes |
 
 **Validation Logic**:
 ```bash
-# Check for required sections
-required_sections=("Requirement Statement" "Priority" "Source" "Rationale"
-                   "Acceptance Criteria" "Dependencies" "Traceability" "Verification")
+# Check for required sections (MVP 11-section format)
+required_sections=("Document Control" "Requirement Description" "Functional Specification" "Interface Definition"
+                   "Error Handling" "Quality Attributes" "Configuration" "Testing Requirements"
+                   "Acceptance Criteria" "Traceability" "Implementation Notes")
 for f in $(find "$REQ_DIR" -name "REQ-[0-9]*_*.md"); do
   for section in "${required_sections[@]}"; do
     if ! grep -qE "^#+.*$section" "$f"; then
@@ -599,7 +601,7 @@ done
 | CORPUS-E014 | Missing @bdd traceability tag | CORPUS-11 |
 | CORPUS-E015 | Missing @adr traceability tag | CORPUS-11 |
 | CORPUS-E016 | Missing @sys traceability tag | CORPUS-11 |
-| CORPUS-E017 | Missing required section (12-section format) | CORPUS-12 |
+| CORPUS-E017 | Missing required section (MVP 11-section format) | CORPUS-12 |
 | CORPUS-E018 | Missing required YAML frontmatter field | CORPUS-17 |
 | CORPUS-E019 | Wrong tag notation (dot vs dash) | CORPUS-18 |
 | CORPUS-E020 | Invalid date format | CORPUS-19 |
@@ -679,7 +681,7 @@ done
 - [ ] **CORPUS-09**: Priority distribution is balanced
 - [ ] **CORPUS-10**: All files under size limits
 - [ ] **CORPUS-11**: All REQ have cumulative traceability (6 tags)
-- [ ] **CORPUS-12**: All REQ follow 12-section format
+- [ ] **CORPUS-12**: All REQ follow MVP 11-section format (no Change History)
 - [ ] **CORPUS-13**: All REQ in valid domain subdirectories
 - [ ] **CORPUS-14**: All REQ have SPEC-Ready Score ≥90%
 - [ ] **CORPUS-15**: CTR-Ready scores present

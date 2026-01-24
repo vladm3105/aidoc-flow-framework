@@ -3,6 +3,7 @@
 # - Purpose: AI-consumable template for automated REQ artifact generation
 # - Validation: Validated by REQ_MVP_SCHEMA.yaml (shared with MD template)
 # - Human Reference: See REQ-MVP-TEMPLATE.md for narrative explanations
+# - Consistency Requirement: REQ-MVP-TEMPLATE.yaml and REQ-MVP-TEMPLATE.md MUST remain consistent; keep changes synchronized.
 # =============================================================================
 
 id: REQ-NN
@@ -17,17 +18,19 @@ document_control:
   version: "1.0.0"
   date_created: "YYYY-MM-DD"
   last_updated: "YYYY-MM-DD"
+  infrastructure_type: "Compute"  # Compute, Database, Storage, Network, Cache, Messaging, Deployment_Automation, Observability, Security, Cost, None
   author: "[Primary Author]"
   priority: "Critical (P1)"  # Critical (P1), High (P2), Medium (P3), Low (P4)
-  category: "Functional"  # Functional, Security, Performance, Reliability, Scalability, Compliance
-  source_document: "@req: REQ.NN.EE.SS"
+  category: "Functional"  # See REQ_MVP_CREATION_RULES.md (line 110) for valid category values.
+
   verification_method: "Automated Testing"
   assigned_team: "[Team Name]"
-  spec_ready_score: 85  # Minimum 85 for MVP (90 for full template)
-
+  ctr_ready_score: 90  # Optional for MVP; include when scored
+# =============================================================================
+# Section 2: Requirement Description
 # =============================================================================
 # Section 1: Description
-# =============================================================================
+section_2_requirement_description:
 
 section_1_description:
   statement: "[Detailed requirement statement explaining what the system shall provide]"
@@ -39,10 +42,10 @@ section_1_description:
     Example: "As a system administrator, I need to configure database connections..."
 
 # =============================================================================
-# Section 2: Functional Specification
+# Section 3: Functional Specification
 # =============================================================================
 
-section_2_functional_specification:
+section_3_functional_specification:
   primary_functionality:
     - "[Core function 1 description]"
     - "[Core function 2 description]"
@@ -79,10 +82,10 @@ section_2_functional_specification:
         - field_name: "[field description]"
 
 # =============================================================================
-# Section 3: Interface Definition
+# Section 4: Interface Definition
 # =============================================================================
 
-section_3_interface_definition:
+section_4_interface_definition:
   api_contract: |
     from typing import Protocol
     from dataclasses import dataclass
@@ -136,10 +139,10 @@ section_3_interface_definition:
         burst_limit: 10
 
 # =============================================================================
-# Section 4: Error Handling
+# Section 5: Error Handling
 # =============================================================================
 
-section_4_error_handling:
+section_5_error_handling:
   error_catalog:
     - error_code: "REQ-ERR-001"
       error_type: "ValidationError"
@@ -181,10 +184,10 @@ section_4_error_handling:
       Success --> Idle: Return Success Response
 
 # =============================================================================
-# Section 5: Quality Attributes
+# Section 6: Quality Attributes
 # =============================================================================
 
-section_5_quality_attributes:
+section_6_quality_attributes:
   performance:
     p50_latency_ms: 100
     p95_latency_ms: 200
@@ -209,10 +212,10 @@ section_5_quality_attributes:
     horizontal_scaling_enabled: true
 
 # =============================================================================
-# Section 6: Configuration
+# Section 7: Configuration
 # =============================================================================
 
-section_6_configuration:
+section_7_configuration:
   parameters:
     - name: "config_parameter_name"
       type: "string|integer|boolean|list"
@@ -253,10 +256,10 @@ section_6_configuration:
 
 
 # =============================================================================
-# Section 7: Testing Requirements
+# Section 8: Testing Requirements
 # =============================================================================
 
-section_7_testing_requirements:
+section_8_testing_requirements:
   unit_tests:
     - name: "test_functionality_1"
       description: "[Test description: Verify core function 1]"
@@ -288,23 +291,23 @@ section_7_testing_requirements:
       acceptance_criteria_covered: 3
 
 # =============================================================================
-# Section 8: Acceptance Criteria
+# Section 9: Acceptance Criteria
 # =============================================================================
 
-section_8_acceptance_criteria:
+section_9_acceptance_criteria:
   functional_acceptance:
-    - id: "REQ.01.08.01"
+    - id: "REQ.01.06.01"
       criterion: "[Functional acceptance criterion: Primary functionality works as specified]"
       verification_method: "Unit test"
       priority: "High"
     
-    - id: "REQ.01.08.02"
+    - id: "REQ.01.06.02"
       criterion: "[Functional acceptance criterion: Business rules enforced correctly]"
       verification_method: "Integration test"
       priority: "High"
   
   quality_acceptance:
-    - id: "REQ.01.08.03"
+    - id: "REQ.01.06.03"
       criterion: "[Quality acceptance criterion: Performance targets met (p50/p95/p99)]"
       verification_method: "Performance test"
       priority: "High"
@@ -312,10 +315,10 @@ section_8_acceptance_criteria:
 # Minimum: 3 acceptance criteria total (MVP profile)
 
 # =============================================================================
-# Section 9: Traceability
+# Section 10: Traceability
 # =============================================================================
 
-section_9_traceability:
+section_10_traceability:
   upstream_references:
     brd: "@brd: BRD.NN.EE.SS"
     prd: "@prd: PRD.NN.EE.SS"
@@ -339,10 +342,10 @@ section_9_traceability:
     - "@sys: SYS.NN.EE.SS"
 
 # =============================================================================
-# Section 10: Implementation Notes
+# Section 11: Implementation Notes
 # =============================================================================
 
-section_10_implementation_notes:
+section_11_implementation_notes:
   technical_approach: |
     [Implementation approach description: Describe how to implement this requirement.
     Include design patterns, algorithms, and technical decisions.
@@ -357,16 +360,6 @@ section_10_implementation_notes:
     - "[Dependency 3: external_service_name]"
 
 # =============================================================================
-# Section 11: Change History
-# =============================================================================
-
-section_11_change_history:
-  versions:
-    - version: "1.0.0"
-      date: "YYYY-MM-DD"
-      author: "[Author Name]"
-      changes: "Initial version"
-
 # =============================================================================
 # Template Metadata
 # =============================================================================
@@ -377,8 +370,8 @@ section_11_change_history:
 # Validation Rules: REQ_MVP_VALIDATION_RULES.md (for checklist)
 
 # MVP Profile Notes:
-# - Minimum SPEC-Ready Score: 70% (Full template: 90%)
-# - Minimum acceptance criteria: 3 (Full template: 15)
-# - Use simplified section names where applicable
+# - Minimum SPEC-Ready Score: 90% (MVP profile)
+# - Minimum acceptance criteria: 3 (REQ.NN.06.SS format)
+# - 11 mandatory sections; Change History removed for MVP
 
 # =============================================================================

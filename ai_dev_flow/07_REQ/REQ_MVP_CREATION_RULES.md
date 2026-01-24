@@ -24,6 +24,7 @@ custom_fields:
 **📋 Document Role**: This is a **CREATION HELPER** for REQ-MVP-TEMPLATE.md.
 - **Authority**: `REQ-MVP-TEMPLATE.md` is the single source of truth for REQ structure
 - **Validation**: Use `REQ_MVP_VALIDATION_RULES.md` after REQ creation/changes
+- **Consistency Note**: All MVP artifacts (creation rules, validation rules, quality gates, schema) MUST stay consistent with `REQ-MVP-TEMPLATE.md` and `REQ-MVP-TEMPLATE.yaml`; keep changes synchronized.
 
 # REQ MVP Creation Rules
 
@@ -80,11 +81,11 @@ custom_fields:
 
 ---
 
-## 2. Document Structure (12 Required sections)
+## 2. Document Structure (11 Required sections — MVP)
 
 Every REQ must contain these exact sections in order (MVP profile):
 
-1. **Document Control** - Metadata table with 13 required fields
+1. **Document Control** - Metadata table with required fields
 2. **Requirement Description** - Atomic requirement + SHALL/SHOULD/MAY language + context + scenario
 3. **Functional Specification** - Core capabilities + business rules + I/O
 4. **Interface Definition** - API contract + schemas/DTOs
@@ -92,39 +93,38 @@ Every REQ must contain these exact sections in order (MVP profile):
 6. **Quality Attributes** - Performance/security/reliability targets using @threshold
 7. **Configuration** - Parameters, feature flags, validation
 8. **Testing Requirements** - **Logical TDD (Pre-Code)**, Unit, Integration, and BDD scenarios
-   - **8.1 Logical Unit test **: Define WHAT to test before HOW (drives SPEC interface design)
-   - Format: `| Test Case | Input | Expected Output | Coverage |`
-   - Min 3 entries with prefixes: `[Logic]`, `[State]`, `[Validation]`, `[Edge]`
-9. **Acceptance Criteria** - ≥15 measurable criteria (functional + quality)
+  - **8.1 Logical Unit test **: Define WHAT to test before HOW (drives SPEC interface design)
+  - Format: `| Test Case | Input | Expected Output | Coverage |`
+  - Min 3 entries with prefixes: `[Logic]`, `[State]`, `[Validation]`, `[Edge]`
+9. **Acceptance Criteria** - ≥3 measurable criteria (MVP) with IDs `REQ.NN.06.SS`
 10. **Traceability** - Upstream chain, downstream artifacts, cumulative tags
 11. **Implementation Notes** - Technical approach, code locations, dependencies
-12. **Section 9.5: Deployment Requirements** - Infrastructure, scripts, Ansible, observability, security, cost, automation (optional based on Deployment Complexity)
-12. **Change History** - Version control table
 
-> **Note**: Deployment Requirements are system-level concerns defined in SYS-NN documents, not in individual REQ files. See SYS-NN Section 9: Deployment and Operations Requirements for infrastructure, scripts, Ansible playbooks, observability, security, and cost management.
+> **Note**: Deployment requirements and Change History are omitted in the MVP structure to keep a lean 11-section flow. Deployment concerns live in SYS-NN documents.
 
 ---
 
 ## 3. Document Control Requirements (12 Mandatory Fields)
 
 - Status, Version (semantic X.Y.Z), Date Created (ISO 8601), Last Updated
-- Author, Priority (with P-level: P1/P2/P3/P4), Category (Functional/Logic/API/UI/Database/Config/Infra/Security/Performance)
+- Author, Priority (with P-level: P1/P2/P3/P4), Category (Functional/Security/Performance/Reliability/Scalability/Compliance)
 - Infrastructure Type (Compute/Database/Storage/Network/Deployment/None)
 - Source Document (format: "DOC-ID section X.Y.Z"), Verification Method, Assigned Team
-- SPEC-Ready Score (format: "✅ XX% (Target: ≥90%)"), CTR-Ready Score (format: "✅ XX% (Target: ≥90%)")
-- Template Version (informational only, not validated)
+- SPEC-Ready Score (format: "✅ XX% (Target: ≥90%)")
+
+**Optional (not validated):** CTR-Ready Score, Template Version
 
 > **Note**: Template Version is informational only (not validated). Each template may use its own version numbering.
 
-### Status and Ready Score Mapping
+### Status and Ready Score Mapping (MVP)
 
 | Ready Score | Required Status |
 |-------------|-----------------|
 | >= 90% | Approved |
-| 50-69% | In Review |
-| < 50% | Draft |
+| 70-89% | In Review |
+| < 70% | Draft |
 
-**Note**: For REQ documents with dual scores (SPEC-Ready + CTR-Ready), use the lower score to determine status.
+**Note**: If CTR-Ready Score is present, use the lower score of SPEC/CTR when assigning status.
 
 ---
 

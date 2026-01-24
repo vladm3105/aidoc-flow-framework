@@ -24,12 +24,13 @@ custom_fields:
 - Apply these rules after REQ creation or modification
 - **Authority**: Validates compliance with `REQ-MVP-TEMPLATE.md` (the primary standard)
 - **Scope**: Use for quality gates before committing REQ changes
+- **Consistency Note**: All MVP artifacts (creation rules, validation rules, quality gates, schema) MUST stay consistent with `REQ-MVP-TEMPLATE.md` and `REQ-MVP-TEMPLATE.yaml`; keep changes synchronized.
 
 # REQ Validation Rules Reference
 
-## MVP Validation Profile (DEFAULT)
+## MVP Validation Profile (DEFAULT and ONLY)
 
-**MVP validation is the framework default.** Full validation is applied only when explicitly triggered or when using full templates.
+**MVP validation is the only supported profile.** Full profile checks are removed.
 
 ### MVP Detection
 
@@ -38,28 +39,23 @@ custom_fields:
 | Filename | `*-MVP-*.md` | MVP profile |
 | Frontmatter | `template_profile: mvp` | MVP profile |
 | Default (no markers) | — | MVP profile |
-| Frontmatter | `template_profile: full` or `enterprise` | Full profile |
 
-### Validation Differences
+### Validation Scope (MVP)
 
-| Check Category | MVP Profile | Full Profile |
-|----------------|-------------|--------------|
-| Required sections (12 total) | Error | Error |
-| Document Control fields | Error | Error |
-| Traceability tags (@brd through @sys) | Error | Error |
-| SPEC-Ready Score threshold | 90/100 | 90/100 |
-| CTR-Ready Score threshold | 90/100 | 90/100 |
-| Resource tag validation | **Warning** | Error |
-| Link resolution | **Warning** | Error |
+| Check Category | MVP Profile |
+|----------------|-------------|
+| Required sections (11 total) | Error |
+| Document Control fields | Error |
+| Traceability tags (@brd through @sys) | Error |
+| SPEC-Ready Score threshold | 90/100 |
+| CTR-Ready Score threshold | Warning/optional |
+| Resource tag validation | Warning |
+| Link resolution | Warning |
 
 ### Usage
 
 ```bash
-# MVP validation (default)
 ./ai_dev_flow/07_REQ/scripts/validate_req_template.sh --profile mvp
-
-# Full validation (explicit)
-./ai_dev_flow/07_REQ/scripts/validate_req_template.sh --profile full
 ```
 
 ---
@@ -127,7 +123,7 @@ The REQ validation script (`validate_req_template.sh`) performs **20 validation 
 
 ### CHECK 1: Required sections
 
-**Purpose**: Verify all 12 mandatory sections exist
+**Purpose**: Verify all 11 mandatory sections exist
 **Type**: Error (blocking)
 
 **Required sections**:
@@ -143,7 +139,6 @@ The REQ validation script (`validate_req_template.sh`) performs **20 validation 
 ## 9. Acceptance Criteria
 ## 10. Traceability
 ## 11. Implementation Notes
-## 12. Change History
 ```
 
 **Error Message**:
@@ -154,7 +149,7 @@ The REQ validation script (`validate_req_template.sh`) performs **20 validation 
 **Fix**:
 1. Add missing section header
 2. Ensure exact spelling and numbering
-3. sections must be in order (1-12)
+3. sections must be in order (1-11)
 
 ---
 
@@ -171,11 +166,13 @@ The REQ validation script (`validate_req_template.sh`) performs **20 validation 
 - Author
 - Priority
 - Category
+- Infrastructure Type
 - Source Document
 - Verification Method
 - Assigned Team
 - SPEC-Ready Score
-- CTR-Ready Score
+
+**Optional (not validated)**: CTR-Ready Score, Template Version
 
 **Error Message**:
 ```

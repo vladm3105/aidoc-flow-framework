@@ -5,6 +5,7 @@
 #   * YAML Template: REQ-MVP-TEMPLATE.yaml (primary for autopilot workflow)
 # - Purpose: Machine-readable validation rules for both MD and YAML documents
 # - On conflict: Defer to respective template (MD or YAML based on document format)
+# - Consistency Requirement: All MVP artifacts (creation rules, validation rules, quality gates, schema) MUST stay consistent with REQ-MVP-TEMPLATE.md and REQ-MVP-TEMPLATE.yaml; keep changes synchronized.
 # =============================================================================
 #
 # Authority Hierarchy:
@@ -16,7 +17,7 @@
 # REQ Schema Definition v1.1
 # Purpose: Define valid metadata structure and validation rules for REQ documents
 # Usage: Reference by validate_req.py for automated validation
-# Supports both full and MVP template profiles
+# Supports MVP template profile
 #
 schema_version: "1.1"
 artifact_type: REQ
@@ -30,18 +31,12 @@ references:
   validation_rules: "REQ_MVP_VALIDATION_RULES.md"
 
 # =============================================================================
-# Profiles (Full vs MVP)
+# Profiles (MVP)
 # =============================================================================
 
 profiles:
   default: mvp
-  allowed: [full, mvp]
-  full:
-    spec_ready_min: 90
-    acceptance_criteria_min: 15
-    acceptance_criteria_format: "AC-NN"
-    acceptance_criteria_pattern: "^AC-\\d{2,}$"
-    sections: required_sections
+  allowed: [mvp]
   mvp:
     enforcement_level: optional
     spec_ready_min: 90
@@ -51,8 +46,8 @@ profiles:
     sections: mvp_sections
     notes:
       - "MVP REQs emphasize atomicity and SPEC-ready clarity; breadth checks are warnings."
-      - "MVP uses streamlined section names different from full template."
-      - "MVP allows fewer acceptance criteria (≥3 vs ≥15 for full)."
+      - "MVP uses streamlined section names that remove Change History."
+      - "MVP allows ≥3 acceptance criteria using REQ.NN.06.SS."
 
 # =============================================================================
 # YAML Frontmatter Requirements
@@ -109,8 +104,8 @@ metadata:
 
     template_profile:
       type: string
-      allowed_values: ["mvp", "full"]
-      description: "Template profile hint for validators (e.g., 'mvp')"
+      allowed_values: ["mvp"]
+      description: "Template profile hint for validators (MVP-only)"
 
     template_for:
       type: string
@@ -163,66 +158,8 @@ metadata:
 # =============================================================================
 
 structure:
-  # Required sections (12 sections)
-  required_sections:
-    - pattern: "^# REQ-\\d{2,}:"
-      name: "Title (H1)"
-      description: "Single H1 with format REQ-NN: Title"
-
-    - pattern: "^## Document Control$"
-      name: "Document Control"
-      description: "Contains metadata table with 11+ fields"
-
-    - pattern: "^## 1\\. Description$"
-      name: "Description"
-      description: "Section 1 with Context and Use Case Scenario subsections"
-
-    - pattern: "^## 2\\. Functional Requirements$"
-      name: "Functional Requirements"
-      description: "Section 2 with Primary Functionality and Business Rules"
-
-    - pattern: "^## 3\\. Interface Specifications$"
-      name: "Interface Specifications"
-      description: "Section 3 with Protocol/ABC, DTOs, REST API endpoints"
-
-    - pattern: "^## 4\\. Data Schemas$"
-      name: "Data Schemas"
-      description: "Section 4 with JSON Schema, Pydantic, Database schema"
-
-    - pattern: "^## 5\\. Error Handling Specifications$"
-      name: "Error Handling"
-      description: "Section 5 with Exception Catalog, Error Response, State Machine"
-
-    - pattern: "^## 6\\. Configuration Specifications$"
-      name: "Configuration"
-      description: "Section 6 with YAML schema, Environment Variables"
-
-    - pattern: "^## 7\\. Quality Attributes"
-      name: "Quality Attributes"
-      description: "Section 7 with Performance, Reliability, Security, Scalability"
-
-    - pattern: "^## 8\\. Implementation Guidance$"
-      name: "Implementation Guidance"
-      description: "Section 8 with Architecture Patterns, Concurrency, DI"
-
-    - pattern: "^## 9\\. Acceptance Criteria$"
-      name: "Acceptance Criteria"
-      description: "Section 9 with ≥15 criteria across 5 categories"
-
-    - pattern: "^## 10\\. Verification Methods$"
-      name: "Verification Methods"
-      description: "Section 10 with Automated Testing, Technical Validation"
-
-    - pattern: "^## 11\\. Traceability$"
-      name: "Traceability"
-      description: "Section 11 with Upstream Sources, Downstream Artifacts, Code Paths"
-
-    - pattern: "^## 12\\. Change History$"
-      name: "Change History"
-      description: "Section 12 with version history table"
-
   # MVP Template Section Patterns (streamlined structure)
-  # Used when profile=mvp; section names differ from full template
+  # Used when profile=mvp; section names differ from legacy full template
   mvp_sections:
     - pattern: "^# REQ-\\d{2,}:"
       name: "Title (H1)"
@@ -299,17 +236,13 @@ structure:
       name: "Implementation Notes"
       description: "Section 11 with Technical Approach, Code Location, Dependencies"
 
-    - pattern: "^## 12\\. Change History$"
-      name: "Change History"
-      description: "Section 12 with version history table"
-
   # Optional sections (Appendices)
   optional_sections:
-    - pattern: "^## 13\\. Appendix A:"
+    - pattern: "^## 12\\. Appendix A:"
       name: "Appendix A"
       description: "SPEC-Ready Score Calculation"
 
-    - pattern: "^## 14\\. Appendix B:"
+    - pattern: "^## 13\\. Appendix B:"
       name: "Appendix B"
       description: "Quick Reference"
 
@@ -323,6 +256,7 @@ structure:
       - Author
       - Priority
       - Category
+      - Infrastructure Type
       - Source Document
       - Verification Method
       - Assigned Team
@@ -355,8 +289,9 @@ structure:
 
   # Section numbering rules
   section_numbering:
+    # Core MVP has 11 mandatory sections (1–11); 12–13 are optional appendices (see optional_sections).
     start: 1
-    end: 12
+    end: 13
     format: "## N. Section Title"
     subsection_format: "### N.N Subsection Title"
     no_duplicate_numbers: true
@@ -385,22 +320,6 @@ req_patterns:
 
   # Acceptance criteria format (profile-specific)
   acceptance_criteria:
-    # Full profile: AC-NN format with ≥15 criteria
-    full:
-      format: "AC-NN+"
-      pattern: "^AC-\\d{2,}$"
-      min_count: 15
-      categories:
-        - name: "Primary Functional"
-          min_count: 5
-        - name: "Error and Edge Case"
-          min_count: 5
-        - name: "Quality and Constraint"
-          min_count: 3
-        - name: "Data Validation"
-          min_count: 2
-        - name: "Integration"
-          min_count: 3
     # MVP profile: REQ.NN.06.SS format with ≥3 criteria
     mvp:
       format: "REQ.NN.06.SS"
@@ -415,11 +334,9 @@ req_patterns:
   # SPEC-Ready Score components (profile-specific thresholds)
   spec_ready_score:
     # Profile-specific thresholds
-    full:
-      min_threshold: 90
     mvp:
       min_threshold: 90
-    # Score components (same for both profiles)
+    # Score components (MVP)
     components:
       interface_completeness:
         weight: 15
@@ -441,7 +358,7 @@ req_patterns:
         criteria: "Architecture patterns + concurrency + DI"
       acceptance_criteria:
         weight: 10
-        criteria: "≥15 criteria across 5 categories"
+        criteria: "Profile-specific minimums (MVP: ≥3 using REQ.NN.06.SS)"
       traceability_completeness:
         weight: 10
         criteria: "Complete upstream chain + downstream artifacts + code paths"
@@ -532,13 +449,13 @@ validation_rules:
     - rule: "Single H1 heading only"
       severity: warning
 
-    - rule: "All 12 required sections must be present"
+    - rule: "All 11 MVP sections must be present"
       severity: error
 
-    - rule: "Sections must be numbered 1-12 sequentially"
+    - rule: "Sections must be numbered 1-11 sequentially (Appendices optional)"
       severity: error
 
-    - rule: "Document Control must have minimum 11 fields"
+    - rule: "Document Control must include required fields (incl. Infrastructure Type)"
       severity: error
 
     - rule: "File name must match REQ-NN_name.md format"
@@ -561,10 +478,10 @@ validation_rules:
     - rule: "Error Handling must include Exception Catalog"
       severity: error
 
-    - rule: "Acceptance Criteria must meet profile minimum (full: ≥15, mvp: ≥3)"
+    - rule: "Acceptance Criteria must meet MVP minimum (≥3, REQ.NN.06.SS)"
       severity: warning
 
-    - rule: "SPEC-Ready Score must meet profile threshold (full: ≥90%, mvp: ≥90%)"
+    - rule: "SPEC-Ready Score must meet MVP threshold (≥90%)"
       severity: warning
 
     - rule: "Traceability must include all 6 upstream artifact types"
@@ -683,7 +600,7 @@ error_messages:
   REQ-E005: "Forbidden tag pattern detected"
   REQ-E006: "Missing required section"
   REQ-E007: "Multiple H1 headings detected"
-  REQ-E008: "Section numbering not sequential (1-12)"
+  REQ-E008: "Section numbering not sequential (1-11 for main sections)"
   REQ-E009: "Document Control missing required fields"
   REQ-E010: "Missing Interface Specifications (Section 3)"
   REQ-E011: "Missing Data Schemas (Section 4)"
@@ -694,8 +611,8 @@ error_messages:
   REQ-E016: "Missing JSON Schema or Pydantic models in Data Schemas"
   REQ-E017: "Missing Exception Catalog in Error Handling (Section 5.3)"
   REQ-E018: "Missing YAML Configuration Schema (Section 7.3)"
-  REQ-W001: "SPEC-Ready Score below profile threshold (full: 90%, mvp: 90%)"
-  REQ-W002: "Acceptance Criteria count below profile minimum (full: 15, mvp: 3)"
+  REQ-W001: "SPEC-Ready Score below MVP threshold (≥90%)"
+  REQ-W002: "Acceptance Criteria count below MVP minimum (≥3)"
   REQ-W003: "Missing upstream traceability tags (require all 6: @brd, @prd, @ears, @bdd, @adr, @sys) - use format DOC.NN.EE.SS"
   REQ-W004: "Missing Description Context or Use Case subsections"
   REQ-W005: "Missing Performance targets (p50/p95/p99)"

@@ -40,11 +40,12 @@ class REQSpecReadinessValidator:
     """Validator for REQ V2 SPEC-readiness."""
 
     # Section patterns
-    SECTION_3_PATTERN = r"##\s*3\.\s*Interface\s+Specifications?"
-    SECTION_4_PATTERN = r"##\s*4\.\s*Data\s+Schemas?"
-    SECTION_5_PATTERN = r"##\s*5\.\s*Error\s+Handling\s+Specifications?"
-    SECTION_6_PATTERN = r"##\s*6\.\s*Configuration\s+Specifications?"
-    SECTION_7_PATTERN = r"##\s*7\.\s*Quality\s+Attributes"
+    SECTION_INTERFACE = r"##\s*4\.\s*Interface\s+Definition"
+    SECTION_DATA = r"Data\s+Schema"
+    SECTION_ERROR = r"##\s*5\.\s*Error\s+Handling"
+    SECTION_QUALITY = r"##\s*6\.\s*Quality\s+Attributes"
+    SECTION_CONFIG = r"##\s*7\.\s*Configuration"
+    SECTION_TESTING = r"##\s*8\.\s*Testing\s+Requirements"
 
     # Content patterns
     PROTOCOL_PATTERN = r"class\s+\w+\(Protocol\):"
@@ -93,11 +94,12 @@ class REQSpecReadinessValidator:
         content = file_path.read_text(encoding='utf-8')
 
         # Check each section (10 points each = 60 points)
-        result.checks["section_3_interfaces"] = self._check_section_3(content, result)
-        result.checks["section_4_schemas"] = self._check_section_4(content, result)
-        result.checks["section_5_errors"] = self._check_section_5(content, result)
-        result.checks["section_6_config"] = self._check_section_6(content, result)
-        result.checks["section_7_nfrs"] = self._check_section_7(content, result)
+        result.checks["section_interfaces"] = self._check_interface(content, result)
+        result.checks["section_data_schemas"] = self._check_data_schema(content, result)
+        result.checks["section_errors"] = self._check_error(content, result)
+        result.checks["section_quality"] = self._check_quality(content, result)
+        result.checks["section_config"] = self._check_config(content, result)
+        result.checks["section_testing"] = self._check_testing(content, result)
         result.checks["no_placeholders"] = self._check_no_placeholders(content, result)
 
         # Additional quality checks (10 points each = 40 points)
@@ -112,46 +114,40 @@ class REQSpecReadinessValidator:
 
         return result
 
-    def _check_section_3(self, content: str, result: ValidationResult) -> bool:
-        """Check Section 3: Interface Specifications."""
-        if not re.search(self.SECTION_3_PATTERN, content, re.IGNORECASE):
-            result.errors.append("Missing Section 3: Interface Specifications")
+    def _check_interface(self, content: str, result: ValidationResult) -> bool:
+        """Check Section 4: Interface Definition (Protocol/ABC)."""
+        if not re.search(self.SECTION_INTERFACE, content, re.IGNORECASE):
+            result.errors.append("Missing Section 4: Interface Definition")
             return False
 
         has_protocol = bool(re.search(self.PROTOCOL_PATTERN, content))
         has_abc = bool(re.search(self.ABC_PATTERN, content))
 
         if not (has_protocol or has_abc):
-            result.warnings.append("Section 3 missing Protocol or ABC definitions")
+            result.warnings.append("Section 4 missing Protocol or ABC definitions")
             return False
 
         return True
 
-    def _check_section_4(self, content: str, result: ValidationResult) -> bool:
-        """Check Section 4: Data Schemas."""
-        if not re.search(self.SECTION_4_PATTERN, content, re.IGNORECASE):
-            result.errors.append("Missing Section 4: Data Schemas")
-            return False
+    def _check_data_schema(self, content: str, result: ValidationResult) -> bool:
+        """Check presence of Data Schema (within Section 4)."""
 
+        has_data_heading = bool(re.search(self.SECTION_DATA, content, re.IGNORECASE))
         has_json_schema = bool(re.search(self.JSON_SCHEMA_PATTERN, content))
         has_pydantic = bool(re.search(self.PYDANTIC_PATTERN, content))
-        has_sqlalchemy = bool(re.search(self.SQLALCHEMY_PATTERN, content))
 
-        schema_count = sum([has_json_schema, has_pydantic, has_sqlalchemy])
-
-        if schema_count < 2:
-            result.warnings.append(
-                f"Section 4 has only {schema_count}/3 schema types "
-                "(JSON Schema, Pydantic, SQLAlchemy)"
-            )
+        if not has_data_heading:
+            result.warnings.append("Section 4 missing Data Schema subsection")
+        if not (has_json_schema or has_pydantic):
+            result.errors.append("Data Schema missing JSON Schema or Pydantic models")
             return False
 
         return True
 
-    def _check_section_5(self, content: str, result: ValidationResult) -> bool:
-        """Check Section 5: Error Handling Specifications."""
-        if not re.search(self.SECTION_5_PATTERN, content, re.IGNORECASE):
-            result.errors.append("Missing Section 5: Error Handling Specifications")
+    def _check_error(self, content: str, result: ValidationResult) -> bool:
+        """Check Section 5: Error Handling."""
+        if not re.search(self.SECTION_ERROR, content, re.IGNORECASE):
+            result.errors.append("Missing Section 5: Error Handling")
             return False
 
         has_exception_catalog = bool(re.search(self.EXCEPTION_CATALOG_PATTERN, content))
@@ -162,32 +158,39 @@ class REQSpecReadinessValidator:
 
         return True
 
-    def _check_section_6(self, content: str, result: ValidationResult) -> bool:
-        """Check Section 6: Configuration Specifications."""
-        if not re.search(self.SECTION_6_PATTERN, content, re.IGNORECASE):
-            result.errors.append("Missing Section 6: Configuration Specifications")
-            return False
-
-        has_yaml = bool(re.search(self.YAML_CONFIG_PATTERN, content))
-
-        if not has_yaml:
-            result.warnings.append("Section 6 missing YAML configuration examples")
-            return False
-
-        return True
-
-    def _check_section_7(self, content: str, result: ValidationResult) -> bool:
-        """Check Section 7: Quality Attributes."""
-        if not re.search(self.SECTION_7_PATTERN, content, re.IGNORECASE):
-            result.errors.append("Missing Section 7: Quality Attributes")
+    def _check_quality(self, content: str, result: ValidationResult) -> bool:
+        """Check Section 6: Quality Attributes."""
+        if not re.search(self.SECTION_QUALITY, content, re.IGNORECASE):
+            result.errors.append("Missing Section 6: Quality Attributes")
             return False
 
         has_performance_targets = bool(re.search(self.PERFORMANCE_PATTERN, content))
 
         if not has_performance_targets:
-            result.warnings.append("Section 7 missing quantified performance targets")
+            result.warnings.append("Section 6 missing quantified performance targets")
             return False
 
+        return True
+
+    def _check_config(self, content: str, result: ValidationResult) -> bool:
+        """Check Section 7: Configuration."""
+        if not re.search(self.SECTION_CONFIG, content, re.IGNORECASE):
+            result.errors.append("Missing Section 7: Configuration")
+            return False
+
+        has_yaml = bool(re.search(self.YAML_CONFIG_PATTERN, content))
+
+        if not has_yaml:
+            result.warnings.append("Section 7 missing YAML configuration examples")
+            return False
+
+        return True
+
+    def _check_testing(self, content: str, result: ValidationResult) -> bool:
+        """Check Section 8: Testing Requirements."""
+        if not re.search(self.SECTION_TESTING, content, re.IGNORECASE):
+            result.errors.append("Missing Section 8: Testing Requirements")
+            return False
         return True
 
     def _check_no_placeholders(self, content: str, result: ValidationResult) -> bool:
