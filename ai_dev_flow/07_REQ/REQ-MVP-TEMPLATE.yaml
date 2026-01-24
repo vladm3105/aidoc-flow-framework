@@ -361,6 +361,38 @@ section_11_implementation_notes:
 
 # =============================================================================
 # =============================================================================
+# YAML Frontmatter Metadata (for Markdown-based REQ documents)
+# =============================================================================
+# When creating REQ documents in Markdown format, include this frontmatter:
+#
+# ---
+# title: "REQ-NN: Requirement Title"
+# tags:
+#   - req-document
+#   - layer-7-artifact
+#   - [additional-tags]
+# custom_fields:
+#   document_type: req
+#   artifact_type: REQ
+#   domain: auth            # ← Recommended: Functional domain derived from content
+#   layer: 7                #    Examples: auth, api, trading, data, risk, core, etc.
+#   template_profile: mvp
+#   architecture_approaches: [ai-agent-based]
+#   priority: P1
+#   development_status: draft
+#   parent_sys: SYS.NN.EE.SS
+#   module: "F{N}: Module Name"
+# ---
+#
+# Domain Field Reference:
+# - Define domain based on document's primary functional scope
+# - Examples: auth (authentication), api (API gateway), trading (trading logic),
+#   data (persistence), risk (risk mgmt), core (business logic), etc.
+# - Used by GATE-13 validator for domain classification
+# - Flat file structure is AI-friendly and preferred
+# - Domain classification via metadata, not folder structure
+# =============================================================================
+
 # Template Metadata
 # =============================================================================
 
@@ -373,5 +405,6 @@ section_11_implementation_notes:
 # - Minimum SPEC-Ready Score: 90% (MVP profile)
 # - Minimum acceptance criteria: 3 (REQ.NN.06.SS format)
 # - 11 mandatory sections; Change History removed for MVP
+# - Domain field: Optional but recommended (see Frontmatter Metadata section above)
 
 # =============================================================================

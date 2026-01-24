@@ -141,6 +141,12 @@ metadata:
       format: "url"
       description: "URL to generated source code repository"
 
+    domain:
+      type: string
+      required: false
+      pattern: "^[a-z_]+$"
+      description: "Functional domain classification derived from document content and scope. Define based on the primary business domain covered by the requirement (e.g., 'auth' for IAM requirements, 'api' for API gateway requirements, 'trading' for trading logic requirements). Used by GATE-13 validator for domain classification in flat file structures. Flat, metadata-based organization is AI-friendly and preferred over folder hierarchies."
+
   # Required tags
   required_tags:
     - req                 # Primary identifier (or req-template for templates)

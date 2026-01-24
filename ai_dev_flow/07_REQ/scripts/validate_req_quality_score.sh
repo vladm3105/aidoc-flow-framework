@@ -23,8 +23,8 @@ INFO=0
 REQ_DIR="${1:-docs/REQ}"
 VERBOSE="${2:-}"
 
-# Valid domain subdirectories
-VALID_DOMAINS=("api" "auth" "core" "data" "risk" "trading" "collection" "compliance" "ml")
+# Valid domain subdirectories (folder-based OR frontmatter metadata)
+VALID_DOMAINS=("api" "auth" "core" "data" "risk" "trading" "collection" "compliance" "ml" "iam")
 
 # -----------------------------------------------------------------------------
 # Helper Functions
@@ -540,7 +540,6 @@ check_domain_classification() {
   echo "--- GATE-13: Domain Subdirectory Classification ---"
 
   local found=0
-  local orphaned=0
 
   while IFS= read -r -d '' f; do
     if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
@@ -548,33 +547,34 @@ check_domain_classification() {
     local dir_name
     dir_name=$(dirname "$f" | xargs basename)
 
-    # Check if file is in root REQ directory (orphaned)
-    if [[ "$dir_name" == "REQ" ]]; then
-      echo -e "${YELLOW}GATE-W013: $(basename $f) is not in a domain subdirectory${NC}"
-      ((WARNINGS++)) || true
-      ((orphaned++)) || true
-      continue
+    # Extract domain from frontmatter (YAML: domain: <value>)
+    local metadata_domain=""
+    metadata_domain=$(grep -m1 "^\s*domain:\s*" "$f" 2>/dev/null | sed -E 's/^\s*domain:\s*([a-z_]+).*/\1/' | tr -d ' ')
+
+    # Use metadata domain if present; otherwise fall back to folder name
+    local domain_to_check="$metadata_domain"
+    if [[ -z "$domain_to_check" ]]; then
+      domain_to_check="$dir_name"
     fi
 
-    # Check if subdirectory is valid
+    # Check if domain is in VALID_DOMAINS list
     local valid=0
     for domain in "${VALID_DOMAINS[@]}"; do
-      if [[ "$dir_name" == "$domain" ]]; then
+      if [[ "$domain_to_check" == "$domain" ]]; then
         valid=1
         break
       fi
     done
-  echo "DEBUG: Finished processing all files..."
 
     if [[ $valid -eq 0 ]]; then
-      echo -e "${YELLOW}GATE-W013: $(basename $f) is in unrecognized domain '$dir_name'${NC}"
+      echo -e "${YELLOW}GATE-W013: $(basename $f) has invalid domain '$domain_to_check' (valid: ${VALID_DOMAINS[*]})${NC}"
       ((WARNINGS++)) || true
       ((found++)) || true
     fi
   done < <(find "$REQ_DIR" -name "REQ-[0-9]*_*.md" -print0 2>/dev/null)
 
-  if [[ $found -eq 0 && $orphaned -eq 0 ]]; then
-    echo -e "${GREEN}  ✓ All REQ in valid domain subdirectories${NC}"
+  if [[ $found -eq 0 ]]; then
+    echo -e "${GREEN}  ✓ All REQ have valid domain (folder or metadata)${NC}"
   fi
 }
 

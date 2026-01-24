@@ -79,6 +79,60 @@ custom_fields:
 - **Naming**: `REQ-{DOC_NUM}_{slug}.md` (Sequential 01-401)
 - **Example**: `07_REQ/REQ-01_iam/REQ-01_jwt_auth.md` (where REQ-01 maps to PRD-01)
 
+### 1.1 Domain Classification (Metadata-Based - AI-Friendly Flat Structure)
+
+REQ documents are classified by **functional domain** through metadata to support vertical slice organization while maintaining a flat, AI-friendly file structure.
+
+**Recommended Pattern: Flat Structure with Metadata**
+```
+07_REQ/
+├── REQ-01_jwt_authentication.md         # domain: auth (in metadata)
+├── REQ-02_token_refresh_mechanism.md    # domain: auth (in metadata)
+├── REQ-03_api_gateway_routing.md        # domain: api (in metadata)
+├── REQ-04_order_execution_logic.md      # domain: trading (in metadata)
+├── REQ-05_data_persistence_schema.md    # domain: data (in metadata)
+└── ... [flat structure, no subfolders]
+```
+
+**Why Flat Structure**:
+- ✅ **AI-Friendly**: Easier for language models to navigate and process
+- ✅ **Scalable**: No folder hierarchy management overhead
+- ✅ **Flexible**: Domain classification via metadata, not folder structure
+- ✅ **Simple**: Clear, flat organization that's intuitive to all tools
+- ✅ **Searchable**: Single directory for quick file discovery
+
+**Domain Definition**: Domain should be **derived from the document's primary functional scope**. Examples:
+- `auth` - Authentication, authorization, identity management
+- `api` - API gateways, HTTP routing, REST contract
+- `trading` - Trading logic, order execution, market data
+- `data` - Data persistence, schemas, database operations
+- `risk` - Risk management, compliance validation, monitoring
+- `core` - Core business logic, computation, algorithms
+- `collection` - Data collection, aggregation, ingestion
+- `compliance` - Regulatory requirements, audit trails
+- `ml` - Machine learning models, inference, training
+- Other custom domains based on your project structure
+
+**Validation**: GATE-13 validator checks domain classification by:
+1. Reading `domain:` field from frontmatter YAML metadata (primary source)
+2. Validating that domain is a valid identifier (lowercase alphanumeric + underscores)
+
+**Usage in Frontmatter**:
+```yaml
+---
+title: "REQ-01: JWT Authentication"
+tags:
+  - req-document
+  - layer-7-artifact
+custom_fields:
+  document_type: req
+  artifact_type: REQ
+  domain: auth          # ← Define based on requirement's primary domain
+  layer: 7
+  # ... other fields
+---
+```
+
 ---
 
 ## 2. Document Structure (11 Required sections — MVP)

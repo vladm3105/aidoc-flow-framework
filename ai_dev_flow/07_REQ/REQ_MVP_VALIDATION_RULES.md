@@ -193,6 +193,74 @@ The REQ validation script (`validate_req_template.sh`) performs **20 validation 
 
 ---
 
+### CHECK 2.5: Domain Field Validation (Frontmatter Metadata) ⭐ NEW
+
+**Purpose**: Verify domain field in frontmatter metadata for folder classification
+**Type**: Warning (non-blocking)
+
+**Applies To**: All REQ documents
+
+**Domain Definition**: Domain should be **derived from the document's primary functional scope**. Examples:
+- `auth` - Authentication, authorization, identity management  
+- `api` - API gateways, HTTP routing, REST contracts
+- `trading` - Trading logic, order execution, market data
+- `data` - Data persistence, schemas, database operations
+- `risk` - Risk management, compliance validation, monitoring
+- `core` - Core business logic, computation, algorithms
+- `collection` - Data collection, aggregation, ingestion
+- `compliance` - Regulatory requirements, audit trails
+- `ml` - Machine learning models, inference, training
+- Other custom domains based on your project structure
+
+**Validation Logic** (GATE-13 corpus-level validation):
+1. Read `domain:` field from frontmatter YAML metadata in `custom_fields` section
+2. Validate that domain is a valid identifier (lowercase alphanumeric + underscores only)
+3. Warn if domain contains invalid characters
+
+**Recommended Usage** (Flat Structure with Metadata):
+```yaml
+---
+title: "REQ-01: JWT Authentication"
+tags:
+  - req-document
+  - layer-7-artifact
+custom_fields:
+  document_type: req
+  artifact_type: REQ
+  domain: auth          # ← Define based on requirement's primary domain/scope
+  layer: 7
+  template_profile: mvp
+  # ... other fields
+---
+```
+
+**Flat File Pattern** (AI-Friendly - Recommended):
+```
+07_REQ/
+├── REQ-01_jwt_authentication.md         # domain: auth (in metadata)
+├── REQ-02_token_refresh_mechanism.md    # domain: auth (in metadata)
+├── REQ-03_api_gateway_routing.md        # domain: api (in metadata)
+├── REQ-04_order_execution_logic.md      # domain: trading (in metadata)
+├── REQ-05_data_persistence_schema.md    # domain: data (in metadata)
+└── ... [flat structure, organized by metadata]
+```
+
+**Why Flat Structure**:
+- ✅ **AI-Friendly**: Easier for language models to navigate and discover files
+- ✅ **Scalable**: No folder hierarchy complexity
+- ✅ **Flexible**: Domain classification via metadata, not folder structure
+- ✅ **Simple**: Single directory for all REQ files, consistent navigation
+
+**Warning Messages**:
+```
+⚠️ WARNING (GATE-W013): REQ-01_jwt_auth.md has invalid domain 'f1_iam-invalid' (must be lowercase alphanumeric + underscores)
+```
+
+**Fix** (metadata-based):
+Add `domain: auth` to frontmatter custom_fields section, using lowercase alphanumeric characters and underscores only.
+
+---
+
 ### CHECK 3: Traceability Structure
 
 **Purpose**: Verify traceability subsections exist
