@@ -416,8 +416,14 @@ def main() -> int:
             pass
         print(f"{prefix}: {rel}:{item.line}: {item.message}")
 
-    print(f"\n❌ Validation failed: {errors} error(s), {len(v)-errors} warning(s)")
-    return 1
+    warnings = len(v) - errors
+    print(f"\n❌ Validation failed: {errors} error(s), {warnings} warning(s)")
+
+    if errors:
+        return 2
+    if warnings:
+        return 1
+    return 0
 
 
 if __name__ == "__main__":

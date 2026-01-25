@@ -43,10 +43,20 @@ sys.path.insert(0, str(SHARED_SCRIPTS_DIR))
 sys.path.insert(0, str(SCRIPT_DIR))
 
 try:
-    from error_codes import format_error
+    from error_codes import format_error, calculate_exit_code
 except ImportError:
     def format_error(code: str, message: str) -> str:
         return f"[{code}] {message}"
+
+    def calculate_exit_code(errors: list, warnings: list, strict: bool = False) -> int:
+        """Fallback exit-code calculation mirroring framework semantics."""
+        if errors:
+            return 2
+        if strict and warnings:
+            return 2
+        if warnings:
+            return 1
+        return 0
 
 
 @dataclass
@@ -216,6 +226,7 @@ class RequirementIDValidator:
         if self.check_element_codes:
             self._validate_element_codes(content, file_path, result)
 
+        result.valid = len(result.errors) == 0
         return result
 
     def _validate_filename(self, file_path: Path, result: ValidationResult) -> bool:
@@ -700,11 +711,15 @@ def main():
 
     validator.print_report(results)
 
-    # Exit with error code if any validations failed
-    if any(not r.valid for r in results):
-        sys.exit(1)
+    all_errors: List[str] = []
+    all_warnings: List[str] = []
 
-    sys.exit(0)
+    for res in results:
+        all_errors.extend(res.errors)
+        all_warnings.extend(res.warnings)
+
+    exit_code = calculate_exit_code(all_errors, all_warnings, strict=False)
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":

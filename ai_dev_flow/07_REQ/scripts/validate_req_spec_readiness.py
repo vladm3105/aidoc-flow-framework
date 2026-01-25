@@ -111,7 +111,13 @@ class REQSpecReadinessValidator:
 
         # Calculate score
         result.score = sum(10 for check in result.checks.values() if check)
-        result.passed = result.score >= self.min_score
+        
+        # BLOCKING: If there are ANY errors, fail regardless of score
+        if result.errors:
+            result.passed = False
+        else:
+            # Otherwise, pass if score meets threshold
+            result.passed = result.score >= self.min_score
 
         return result
 
@@ -368,8 +374,14 @@ def main():
 
     validator.print_report(results)
 
-    # Exit with error code if any validations failed
+    errors = [err for res in results for err in res.errors]
+    warnings = [warn for res in results for warn in res.warnings]
+
+    if errors:
+        sys.exit(2)
+
     if any(not r.passed for r in results):
+        # Fails readiness threshold without explicit errors
         sys.exit(1)
 
     sys.exit(0)

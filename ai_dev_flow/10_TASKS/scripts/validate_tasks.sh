@@ -559,5 +559,5 @@ else
   echo "  3. Check TASKS_CREATION_RULES.md for standards"
   echo "  4. Ensure all 8 mandatory traceability tags present"
   echo "  5. Re-run validation: ./scripts/validate_tasks.sh $TASKS_FILE"
-  exit 1
+  exit 2
 fi

@@ -510,5 +510,5 @@ else
   echo "  2. Review CTR-MVP-TEMPLATE.md for requirements"
   echo "  3. Check CTR_CREATION_RULES.md for standards"
   echo "  4. Re-run validation: ./scripts/validate_ctr.sh $CTR_FILE"
-  exit 1
+  exit 2
 fi
