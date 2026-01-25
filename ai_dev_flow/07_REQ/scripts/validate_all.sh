@@ -99,6 +99,7 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         *)
+            if [[ -z "$TARGET" ]]; then
                 TARGET="$1"
                 # Auto-detect mode
                 if [[ -f "$TARGET" ]]; then

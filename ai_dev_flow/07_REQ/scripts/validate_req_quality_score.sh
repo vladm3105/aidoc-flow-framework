@@ -829,7 +829,7 @@ print_summary() {
 
   if [[ $ERRORS -gt 0 ]]; then
     echo -e "${RED}FAILED: $ERRORS error(s) must be fixed before SPEC creation${NC}"
-    exit 1
+    exit 2
   elif [[ $WARNINGS -gt 0 ]]; then
     echo -e "${YELLOW}PASSED with $WARNINGS warning(s)${NC}"
     exit 0
