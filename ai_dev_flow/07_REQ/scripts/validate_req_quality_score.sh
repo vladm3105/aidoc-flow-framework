@@ -23,8 +23,18 @@ INFO=0
 REQ_DIR="${1:-docs/REQ}"
 VERBOSE="${2:-}"
 
-# Valid domain subdirectories (folder-based OR frontmatter metadata)
-VALID_DOMAINS=("api" "auth" "core" "data" "risk" "trading" "collection" "compliance" "ml" "iam")
+# Valid domain labels (from custom_fields.domain in REQ files)
+VALID_DOMAINS=(
+  "auth"
+  "session"
+  "observability"
+  "security"
+  "selfops"
+  "infrastructure"
+  "config"
+  "connectivity"
+  "UX"
+)
 
 # -----------------------------------------------------------------------------
 # Helper Functions
@@ -679,14 +689,40 @@ check_domain_classification() {
     local dir_name
     dir_name=$(dirname "$f" | xargs basename)
 
-    # Extract domain from frontmatter (YAML: domain: <value>)
-    local metadata_domain=""
-    metadata_domain=$(grep -m1 "^\s*domain:\s*" "$f" 2>/dev/null | sed -E 's/^\s*domain:\s*([a-z_]+).*/\1/' | tr -d ' ')
+    # Derive canonical label from folder name (suffix after REQ-XX_)
+    local folder_label
+    folder_label=$(echo "$dir_name" | sed -E 's/^REQ-[0-9]{2}_//')
+
+    # Extract custom_fields.domain from frontmatter if present
+    local cf_domain=""
+    cf_domain=$(awk 'BEGIN{in_front=0; in_cf=0}
+      NR==1 && $0=="---"{in_front=1; next}
+      in_front==1 && $0=="---"{in_front=0; exit}
+      in_front==1 && $0 ~ /^custom_fields:\s*$/ {in_cf=1; next}
+      in_front==1 && in_cf==1 && $0 ~ /^\s*domain:\s*/ {
+        sub(/^.*domain:\s*/,"",$0);
+        gsub(/[" ]/,"",$0);
+        print; exit
+      }' "$f" 2>/dev/null)
+
+    # Fallback: top-level domain (legacy) inside frontmatter, if any
+    local root_domain=""
+    root_domain=$(awk 'BEGIN{in_front=0}
+      NR==1 && $0=="---"{in_front=1; next}
+      in_front==1 && $0=="---"{in_front=0; exit}
+      in_front==1 && $0 ~ /^domain:\s*/ {
+        sub(/^.*domain:\s*/,"",$0);
+        gsub(/[" ]/,"",$0);
+        print; exit
+      }' "$f" 2>/dev/null)
+
+    # Prefer custom_fields.domain, then root domain, then folder label
+    local metadata_domain="${cf_domain:-$root_domain}"
 
     # Use metadata domain if present; otherwise fall back to folder name
     local domain_to_check="$metadata_domain"
     if [[ -z "$domain_to_check" ]]; then
-      domain_to_check="$dir_name"
+      domain_to_check="$folder_label"
     fi
 
     # Check if domain is in VALID_DOMAINS list

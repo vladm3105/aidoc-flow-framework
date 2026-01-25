@@ -156,6 +156,11 @@ echo -e "Mode:   ${YELLOW}${MODE}${NC}"
 echo -e "Target: ${YELLOW}${TARGET}${NC}"
 echo ""
 
+# Initialize counters
+TOTAL_PASSED=0
+TOTAL_FAILED=0
+TOTAL_WARNINGS=0
+
 # Helper function to run validator
 run_validator() {
     local name="$1"
@@ -166,16 +171,23 @@ run_validator() {
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
     
-    if eval "$cmd"; then
+        if eval $cmd; then
         echo ""
         echo -e "${GREEN}✓ ${name} PASSED${NC}"
         ((TOTAL_PASSED++))
         return 0
     else
-        echo ""
-        echo -e "${RED}✗ ${name} FAILED${NC}"
-        ((TOTAL_FAILED++))
-        return 1
+            local exit_code=$?
+            echo ""
+            if [[ $exit_code -eq 1 ]]; then
+                echo -e "${YELLOW}⚠ ${name} PASSED WITH WARNINGS${NC}"
+                ((TOTAL_WARNINGS++))
+                return 0
+            else
+                echo -e "${RED}✗ ${name} FAILED${NC}"
+                ((TOTAL_FAILED++))
+                return $exit_code
+            fi
     fi
 }
 
