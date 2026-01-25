@@ -27,6 +27,7 @@ OPTIONS:
     --skip-spec             Skip SPEC-readiness validator
     --skip-template         Skip template compliance checker
     --skip-ids              Skip requirement IDs validator
+    --test-gate05           Run GATE-05 isolation detection test (creates isolated corpus)
 
 EXAMPLES:
     # Single file (all validators)
@@ -41,6 +42,9 @@ EXAMPLES:
     # Skip template check (for directory validation)
     $0 --directory /path/to/REQ-01_folder --skip-template
 
+    # Run GATE-05 isolation detection test
+    $0 --test-gate05
+
 EOF
     exit 0
 }
@@ -53,6 +57,7 @@ SKIP_QUALITY=false
 SKIP_SPEC=false
 SKIP_TEMPLATE=false
 SKIP_IDS=false
+TEST_GATE05=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -89,8 +94,11 @@ while [[ $# -gt 0 ]]; do
             SKIP_IDS=true
             shift
             ;;
+        --test-gate05)
+            TEST_GATE05=true
+            shift
+            ;;
         *)
-            if [[ -z "$TARGET" ]]; then
                 TARGET="$1"
                 # Auto-detect mode
                 if [[ -f "$TARGET" ]]; then
@@ -108,29 +116,44 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Validate input
-if [[ -z "$TARGET" ]]; then
+if [[ -z "$TARGET" ]] && [[ "$TEST_GATE05" == false ]]; then
     echo -e "${RED}Error: No file or directory specified${NC}" >&2
     usage
 fi
 
-if [[ ! -e "$TARGET" ]]; then
+if [[ -n "$TARGET" ]] && [[ ! -e "$TARGET" ]]; then
     echo -e "${RED}Error: Path does not exist: $TARGET${NC}" >&2
     exit 1
 fi
 
-# Convert to absolute path
-TARGET="$(cd "$(dirname "$TARGET")" && pwd)/$(basename "$TARGET")"
+# Convert to absolute path (if target specified)
+if [[ -n "$TARGET" ]]; then
+    TARGET="$(cd "$(dirname "$TARGET")" && pwd)/$(basename "$TARGET")"
+fi
 
 echo -e "${BLUE}╔══════════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║              REQ VALIDATION SUITE                                ║${NC}"
 echo -e "${BLUE}╚══════════════════════════════════════════════════════════════════╝${NC}"
 echo ""
+
+# Handle special test mode
+if [[ "$TEST_GATE05" == true ]]; then
+    echo -e "${YELLOW}▶ GATE-05 Isolation Detection Test${NC}"
+    echo ""
+    if bash "$SCRIPT_DIR/test_gate05_isolation.sh"; then
+        echo ""
+        echo -e "${GREEN}✓ GATE-05 Test PASSED${NC}"
+        exit 0
+    else
+        echo ""
+        echo -e "${RED}✗ GATE-05 Test FAILED${NC}"
+        exit 1
+    fi
+fi
+
 echo -e "Mode:   ${YELLOW}${MODE}${NC}"
 echo -e "Target: ${YELLOW}${TARGET}${NC}"
 echo ""
-
-TOTAL_PASSED=0
-TOTAL_FAILED=0
 
 # Helper function to run validator
 run_validator() {

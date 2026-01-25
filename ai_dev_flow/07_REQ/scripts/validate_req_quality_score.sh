@@ -222,10 +222,11 @@ check_index_sync() {
 
 check_cross_linking() {
   echo ""
-  echo "--- GATE-05: Inter-REQ Cross-Linking (Optional, Informational) ---"
+  echo "--- GATE-05: Inter-REQ Cross-Linking (Informational; Error if All Isolated) ---"
 
   local found=0
   local isolated=0
+  local total_files=0
 
   # Patterns that indicate cross-references to other REQ files
   local xref_patterns=("See also REQ-" "Related to REQ-" "@depends:" "@discoverability:" "cross-reference:" "implements REQ-")
@@ -233,6 +234,7 @@ check_cross_linking() {
   while IFS= read -r -d '' f; do
     if [[ "$(basename "$f")" =~ _index|TEMPLATE|RULES ]]; then continue; fi
 
+    ((total_files++)) || true
     local filename
     filename=$(basename "$f")
     local has_xref=0
@@ -316,6 +318,22 @@ check_cross_linking() {
 
   if [[ $isolated -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No isolated requirements found${NC}"
+  elif [[ $isolated -eq $total_files && $total_files -gt 0 ]]; then
+    # CRITICAL: ALL files are isolated - corpus has no cross-linking
+    echo -e "${RED}  ✗ GATE-05 ERROR: ALL $total_files files have no cross-references (corpus completely isolated)${NC}"
+    echo -e "${YELLOW}  → Attempting auto-fix: running cross-reference injection script${NC}"
+    ((ERRORS++)) || true
+    
+    # Run the cross-reference script if available
+    local xref_script="/tmp/add_cross_refs.py"
+    if [[ -f "$xref_script" ]]; then
+      echo "  → Executing: python3 $xref_script"
+      python3 "$xref_script" 2>&1 | sed 's/^/    /'
+      echo "  → Cross-references injected. Re-run validation to confirm."
+    else
+      echo -e "${YELLOW}  ⚠ Cross-reference script not found at $xref_script${NC}"
+      echo "  → Create it with: python3 -c 'from pathlib import Path; ...' (see directive DIR-05)"
+    fi
   elif [[ $isolated -gt 0 ]]; then
     echo -e "${BLUE}  ℹ $isolated REQ file(s) with no cross-references (informational)${NC}"
   fi
