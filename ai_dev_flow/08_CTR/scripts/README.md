@@ -1,11 +1,19 @@
 # CTR Validation Scripts
 
-Tools for validating CTR documents. Current scripts:
+Tools for validating CTR documents.
+
+## Available Scripts
+
+### Core Validators
 
 - [validate_ctr_quality_score.sh](./validate_ctr_quality_score.sh) — quality gates (see [../CTR_MVP_QUALITY_GATE_VALIDATION.md](../CTR_MVP_QUALITY_GATE_VALIDATION.md)).
-- [validate_ctr.sh](./validate_ctr.sh) — current validator (run with `--help` for modes).
+- [validate_ctr.sh](./validate_ctr.sh) — standard CTR validator (run with `--help` for usage).
+- [validate_ctr_spec_readiness.py](./validate_ctr_spec_readiness.py) — **NEW**: SPEC-readiness scorer evaluates CTR completeness for SPEC generation (≥90% target); checks for Pydantic models, type annotations, concrete examples, error recovery strategies, versioning, testing strategy.
+- [validate_ctr_ids.py](./validate_ctr_ids.py) — CTR ID and filename validation.
 
-Planned: add `validate_all.sh` orchestrator plus template/readiness/ID validators per the framework pattern described in [../CTR_VALIDATION_STRATEGY.md](../CTR_VALIDATION_STRATEGY.md) and [../../VALIDATION_TEMPLATE_GUIDE.md](../../VALIDATION_TEMPLATE_GUIDE.md).
+### Utility Scripts
+
+- [validate_ctr_all.sh](./validate_ctr_all.sh) — orchestrator for running all validators on a directory.
 
 ## Quick Start
 
@@ -13,12 +21,35 @@ Planned: add `validate_all.sh` orchestrator plus template/readiness/ID validator
 # Make scripts executable
 chmod +x *.sh
 
-# Quality gates (directory)
+# SPEC-Readiness validation (Python)
+python validate_ctr_spec_readiness.py --directory <ctr-directory> --min-score 90
+python validate_ctr_spec_readiness.py --ctr-file <path-to-ctr-file>
+
+# Quality gates (Shell)
 bash validate_ctr_quality_score.sh docs/08_CTR/<folder>
 
-# Inspect validator options
+# Standard validation
 bash validate_ctr.sh --help
 ```
+
+## SPEC-Readiness Validator Details
+
+The `validate_ctr_spec_readiness.py` script measures CTR readiness for SPEC generation based on 10 weighted criteria:
+
+1. **API Specification** — Section 2-5 with endpoints/methods documented
+2. **Data Models** — Pydantic BaseModel OR JSON Schema
+3. **Error Handling** — Exception catalog with HTTP codes, retry, recovery
+4. **Versioning** — Version policy and breaking changes documented
+5. **Testing** — Contract test strategy defined
+6. **Endpoints** — GET/POST/PUT/DELETE or equivalent methods listed
+7. **OpenAPI/Schema** — OpenAPI/JSON Schema reference or inline
+8. **Type Annotations** — 3+ functions with `param: Type -> ReturnType` patterns
+9. **Error Recovery** — 2+ recovery keywords (retry, backoff, fallback, circuit breaker, timeout)
+10. **Concrete Examples** — 10+ real domain instances (IDs, symbols, dates, amounts)
+
+**Pass Threshold**: ≥90 points (9/10 checks passing).
+
+**Output**: For each file, shows score, pass/fail status, and warnings for missing elements.
 
 ## Troubleshooting
 

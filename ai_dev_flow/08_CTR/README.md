@@ -195,7 +195,114 @@ Organize contracts in subdirectories by service type for better document managem
 
 **Recommendation**: Start flat, migrate to subdirectories when you have 3+ contracts per service type.
 
-## 6. Quality Gates
+## 6. SPEC-Readiness & Data Model Patterns
+
+### 6.1 SPEC-Readiness Scoring
+
+Before generating SPEC documents from CTR contracts, validate readiness using the `validate_ctr_spec_readiness.py` script. The validator scores CTR files on 10 dimensions (0-100 points):
+
+| Criterion | Requirement | Points |
+|-----------|-------------|--------|
+| API Specification | Endpoint/method documentation | 10 |
+| Data Models | Pydantic OR JSON Schema | 10 |
+| Error Handling | Exception catalog with HTTP codes | 10 |
+| Versioning | Version policy and breaking changes | 10 |
+| Testing | Contract test strategy | 10 |
+| Endpoints | GET/POST/PUT/DELETE documented | 10 |
+| OpenAPI/Schema | OpenAPI or JSON Schema reference | 10 |
+| Type Annotations | 3+ `param: Type -> ReturnType` examples | 10 |
+| Error Recovery | 2+ recovery strategies (retry, backoff, circuit breaker, timeout) | 10 |
+| Concrete Examples | 10+ real domain instances (IDs, dates, symbols) | 10 |
+
+**Target**: ≥90 points for SPEC generation readiness.
+
+**Usage**:
+```bash
+python scripts/validate_ctr_spec_readiness.py --directory docs/08_CTR --min-score 90
+```
+
+### 6.2 Pydantic Model Pattern
+
+Include Pydantic models with Literal types, Field validators, and concrete examples:
+
+```python
+from pydantic import BaseModel, Field
+from typing import Literal
+from datetime import datetime
+
+class OrderRequest(BaseModel):
+    """Contract request model with examples and constraints"""
+    trace_id: str = Field(..., example="trace_ord_123")
+    order_id: str = Field(..., example="ord_456")
+    symbol: str = Field(..., example="TSLA")
+    action: Literal["BUY", "SELL"] = Field(default="BUY", example="BUY")
+    quantity: int = Field(..., example=10, gt=0)
+    limit_price: float = Field(optional=True, example=150.50, gt=0)
+    order_type: Literal["MKT", "LMT", "STP", "STP_LMT"] = "MKT"
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+class OrderResponse(BaseModel):
+    """Contract response model"""
+    trace_id: str
+    order_id: str
+    status: Literal["accepted", "rejected", "pending"]
+    filled_quantity: int = 0
+    avg_price: float = Field(optional=True, example=150.25)
+    error_code: Literal[None, "INVALID_SYMBOL", "INSUFFICIENT_FUNDS", "RATE_LIMITED"] = None
+    message: str = Field(optional=True, example="Order accepted")
+```
+
+### 6.3 Type-Annotated Usage Examples
+
+Provide typed function examples showing contract usage:
+
+```python
+def validate_order(order: OrderRequest) -> bool:
+    """Validate order before submission"""
+    return order.quantity > 0 and order.limit_price > 0
+
+def route_order(order: OrderRequest, broker: str) -> str:
+    """Route order to broker endpoint"""
+    return f"{broker}:{order.symbol}:{order.action}:{order.order_id}"
+
+def format_response(order: OrderRequest, status: str) -> dict[str, object]:
+    """Format order response with tracing"""
+    return {
+        "trace_id": order.trace_id,
+        "order_id": order.order_id,
+        "status": status,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+async def submit_order(order: OrderRequest, client: BrokerClient) -> OrderResponse:
+    """Submit order with error recovery"""
+    for attempt in range(3):
+        try:
+            response = await client.submit(order.model_dump())
+            return OrderResponse(**response)
+        except RateLimitError:
+            if attempt < 2:
+                await asyncio.sleep(2 ** attempt)  # Exponential backoff
+                continue
+            raise
+```
+
+### 6.4 Concrete Domain Examples
+
+Include realistic examples with domain-specific data:
+
+| Aspect | Example | Guidance |
+|--------|---------|----------|
+| Symbols | `TSLA`, `GOOGL`, `SPY` | Use real trading symbols |
+| IDs | `ord_789`, `user_456`, `acct_123` | Prefix with entity type |
+| Dates | `2026-01-25T14:30:00Z` | ISO 8601 format |
+| Prices | `150.50`, `0.01` | Real market values |
+| Quantities | `10`, `100`, `1` | Domain-specific minimums |
+| Account IDs | `DU123456`, `U789012` | Real IB account format |
+
+---
+
+## 7. Quality Gates
 
 Before marking a contract as "Active", ensure:
 
@@ -210,7 +317,7 @@ Before marking a contract as "Active", ensure:
 - [ ] **Contract Tests Planned**: Test strategy for validating implementation compliance
 - [ ] **Index Updated**: CTR-00_index.md updated with new contract metadata
 
-## 7. Writing Guidelines
+## 8. Writing Guidelines
 
 ### 7.1 Request/Response Schema Design
 
@@ -301,7 +408,7 @@ events:
     delivery_guarantee: at_least_once
 ```
 
-## 8. Common Patterns
+## 9. Common Patterns
 
 ### 8.1 Synchronous Request/Response
 **Use Case**: Immediate validation, calculations, queries
@@ -401,7 +508,7 @@ response_schema:
           result: {type: object}
 ```
 
-## 9. Traceability Requirements
+## 10. Traceability Requirements
 
 ### 9.1 Upstream Traceability (REQUIRED)
 
@@ -461,7 +568,7 @@ upstream_adrs:
 [CTR-01](../08_CTR/agents/CTR-01_service_orchestrator_api.md)
 ```
 
-## 10. Integration with Workflow
+## 11. Integration with Workflow
 
 ### 10.1 How SPEC Files Reference Contracts
 
@@ -534,7 +641,7 @@ def test_consumer_expects_ctr001_schema(pact_consumer):
     assert result.is_valid is not None
 ```
 
-## 11. Benefits
+## 12. Benefits
 
 ### 11.1 Enables Parallel Development
 - **Independent Work**: Provider and consumer teams code simultaneously
@@ -564,7 +671,7 @@ def test_consumer_expects_ctr001_schema(pact_consumer):
 
 **CI/CD Integration**: Contract tests run on every PR, catch violations immediately.
 
-## 12. Avoiding Pitfalls
+## 13. Avoiding Pitfalls
 
 ### 12.1 Breaking Changes Without Version Bumps
 **Problem**: Changing request schema without updating major version

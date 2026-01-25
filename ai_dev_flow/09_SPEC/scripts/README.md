@@ -1,11 +1,18 @@
 # SPEC Validation Scripts
 
-Tools for validating SPEC documents. Current scripts:
+Tools for validating SPEC documents.
+
+## Available Scripts
+
+### Core Validators
 
 - [validate_spec_quality_score.sh](./validate_spec_quality_score.sh) — quality gates (see [../SPEC_MVP_QUALITY_GATE_VALIDATION.md](../SPEC_MVP_QUALITY_GATE_VALIDATION.md)).
-- [validate_spec.py](./validate_spec.py) — main validator (run with `--help` for modes).
+- [validate_spec.py](./validate_spec.py) — standard SPEC validator (run with `--help` for usage).
+- [validate_spec_implementation_readiness.py](./validate_spec_implementation_readiness.py) — **NEW**: Implementation-readiness scorer evaluates SPEC completeness for coding/development (≥90% target); checks for architecture, interfaces, behavior, performance, security, observability, verification, implementation details, REQ mapping, and concrete examples.
 
-Planned: add `validate_all.sh` orchestrator plus template/readiness/ID validators per the framework pattern described in [../SPEC_VALIDATION_STRATEGY.md](../SPEC_VALIDATION_STRATEGY.md) and [../../VALIDATION_TEMPLATE_GUIDE.md](../../VALIDATION_TEMPLATE_GUIDE.md).
+### Utility Scripts
+
+- Additional validators planned per framework pattern.
 
 ## Quick Start
 
@@ -13,11 +20,47 @@ Planned: add `validate_all.sh` orchestrator plus template/readiness/ID validator
 # Make scripts executable
 chmod +x *.sh
 
-# Quality gates (directory)
-bash validate_spec_quality_score.sh docs/09_SPEC/<folder>
+# Implementation-Readiness validation (Python)
+python validate_spec_implementation_readiness.py --spec-file docs/09_SPEC/SPEC-01_iam.yaml
+python validate_spec_implementation_readiness.py --directory docs/09_SPEC/ --min-score 90
 
-# Inspect validator options
+# Quality gates (Shell)
+bash validate_spec_quality_score.sh <spec-directory>
+
+# Standard validation
 python3 validate_spec.py --help
+```
+
+## Implementation-Readiness Validator Details
+
+The `validate_spec_implementation_readiness.py` script measures SPEC readiness for implementation based on 10 weighted criteria:
+
+1. **Architecture** — Component structure, dependencies, patterns
+2. **Interfaces** — External APIs, internal APIs, class definitions
+3. **Behavior** — State machines, algorithms, workflows
+4. **Performance** — Latency targets, throughput, resource limits
+5. **Security** — Authentication, authorization, encryption, rate limiting
+6. **Observability** — Logging, metrics, tracing, alerts
+7. **Verification** — Unit, integration, contract, and performance tests
+8. **Implementation** — Configuration, deployment, scaling, dependencies
+9. **REQ Mapping** — req_implementations section linking REQs to code/behavior
+10. **Concrete Examples** — Pseudocode, algorithms, API examples, data models
+
+**Pass Threshold**: ≥90 points (9/10 checks passing).
+
+**Output**: For each file, shows score, pass/fail status, and warnings for missing elements.
+
+### Usage Examples
+
+```bash
+# Check single file readiness
+python validate_spec_implementation_readiness.py --spec-file docs/09_SPEC/SPEC-01_iam.yaml
+
+# Check directory with detailed report
+python validate_spec_implementation_readiness.py --directory docs/09_SPEC/ --min-score 90
+
+# Check with custom threshold
+python validate_spec_implementation_readiness.py --directory docs/09_SPEC/ --min-score 80
 ```
 
 ## Troubleshooting

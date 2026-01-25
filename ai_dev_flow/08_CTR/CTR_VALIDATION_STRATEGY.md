@@ -26,13 +26,13 @@ custom_fields:
 
 ## CTR Validation Architecture
 
-- Current scripts live in [scripts](./scripts).
-- Present validators:
+- Validation scripts live in [scripts](./scripts).
+- Implemented validators:
   - [scripts/validate_ctr_quality_score.sh](scripts/validate_ctr_quality_score.sh) — quality gates (see [CTR_MVP_QUALITY_GATE_VALIDATION.md](./CTR_MVP_QUALITY_GATE_VALIDATION.md)).
-  - [scripts/validate_ctr.sh](scripts/validate_ctr.sh) — current validator; run with `--help` to view supported modes.
-- Planned alignment with the framework pattern (see [../VALIDATION_TEMPLATE_GUIDE.md](../VALIDATION_TEMPLATE_GUIDE.md)):
-  - Add `validate_all.sh` orchestrator for file/directory flows.
-  - Split checks into template, readiness, IDs, and cross-link validators following the REQ reference implementation.
+  - [scripts/validate_ctr.sh](scripts/validate_ctr.sh) — standard validator; run with `--help` to view supported modes.
+  - [scripts/validate_ctr_spec_readiness.py](scripts/validate_ctr_spec_readiness.py) — **SPEC-readiness scorer** (new; evaluates ≥90% compliance for SPEC generation readiness).
+  - [scripts/validate_ctr_ids.py](scripts/validate_ctr_ids.py) — CTR ID and naming validator.
+- Quality gates enforce Pydantic model examples, type-annotated usage examples, and concrete domain data (see below).
 
 ---
 
@@ -45,12 +45,67 @@ custom_fields:
 
 ---
 
-## Quick Usage (current tooling)
+## SPEC-Readiness Scoring Criteria
 
-- Quality gates (directory):
-  - `bash scripts/validate_ctr_quality_score.sh <directory>`
-- Main validator (check `--help` for modes):
-  - `bash scripts/validate_ctr.sh --help`
+The `validate_ctr_spec_readiness.py` validator awards 10 points per passing check (100 total):
+
+| Check | Criterion | Notes |
+|-------|-----------|-------|
+| **API Spec** | Section 2-5: API Specification OR Interface Definition present | Required for all contract types |
+| **Data Models** | Pydantic models OR JSON Schema examples | Type annotations required (see below) |
+| **Error Handling** | Error Handling section with exception catalog table | Must list HTTP codes, retry policy, recovery steps |
+| **Versioning** | Versioning section with policy and breaking changes | Semantic version, compatibility rules |
+| **Testing** | Testing/Verification section documented | Contract test strategy required |
+| **Endpoints/Methods** | Documented endpoints or functions | GET/POST/PUT/DELETE patterns or equivalent |
+| **OpenAPI/Schema** | OpenAPI reference or inline JSON Schema | Automated tooling validation |
+| **Type Annotations** | 3+ type-annotated function examples | Use Pydantic + `def fn(param: Type) -> ReturnType` patterns |
+| **Error Recovery** | 2+ recovery keywords: retry, backoff, fallback, circuit breaker, timeout | Strategic resilience documented |
+| **Concrete Examples** | 10+ concrete domain-specific instances | Real IDs, dates, symbols (e.g., `TSLA`, `2026-01-25`, `user_id: "usr_789"`) |
+
+**Target**: ≥90 points (9/10 checks) for SPEC generation readiness.
+
+**Pydantic Example Pattern**:
+```python
+from pydantic import BaseModel, Field
+from typing import Literal
+
+class OrderRequest(BaseModel):
+    order_id: str = Field(..., example="ord_123")
+    symbol: str = Field(..., example="TSLA")
+    action: Literal["BUY", "SELL"] = "BUY"
+    quantity: int = Field(..., example=10)
+    limit_price: float = Field(optional=True, example=150.50)
+```
+
+**Typed Usage Example**:
+```python
+def validate_order(order: OrderRequest) -> bool:
+    return order.quantity > 0
+
+def route_order(order: OrderRequest, broker: str) -> str:
+    return f"{broker}:{order.symbol}:{order.action}:{order.order_id}"
+```
+
+---
+
+## Quick Usage
+
+### Quality Gates & Structure
+```bash
+bash scripts/validate_ctr_quality_score.sh <directory>
+bash scripts/validate_ctr.sh --help
+```
+
+### SPEC-Readiness (≥90% compliance for SPEC generation)
+```bash
+python scripts/validate_ctr_spec_readiness.py --directory docs/08_CTR --min-score 90
+python scripts/validate_ctr_spec_readiness.py --ctr-file docs/08_CTR/CTR-01_iam.md
+```
+
+### ID Validation
+```bash
+python scripts/validate_ctr_ids.py --directory docs/08_CTR
+```
 
 ---
 

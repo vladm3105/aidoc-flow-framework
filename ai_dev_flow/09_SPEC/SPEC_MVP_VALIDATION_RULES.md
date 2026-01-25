@@ -16,6 +16,7 @@ custom_fields:
 > - Apply these rules after SPEC creation or modification
 > - **Authority**: Validates compliance with `SPEC-MVP-TEMPLATE.yaml` (MVP default profile; use full profile only when explicitly requested)
 > - **Scope**: Use for quality gates before committing SPEC changes
+> - **Implementation-Readiness**: After structural compliance, use `validate_spec_implementation_readiness.py` to score completeness for development (≥90% target)
 
 # SPEC Validation Rules Reference
 

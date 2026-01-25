@@ -287,6 +287,221 @@ SPECs sit between REQ (atomic requirements) and TASKS (implementation tasks) in 
 
 **⚠️ See for the full document flow: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](../SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)**
 
+## Implementation-Readiness & Concrete Examples
+
+### Implementation-Readiness Scoring
+
+Before starting code development, validate SPEC completeness using the `validate_spec_implementation_readiness.py` script. The validator scores SPEC files on 10 dimensions (0-100 points):
+
+| Criterion | Requirement | Points |
+|-----------|-------------|--------|
+| Architecture | Component structure, dependencies, patterns | 10 |
+| Interfaces | External APIs, internal APIs, classes | 10 |
+| Behavior | State machines, algorithms, workflows | 10 |
+| Performance | Latency targets, throughput, resource limits | 10 |
+| Security | Authentication, authorization, encryption | 10 |
+| Observability | Logging, metrics, tracing, alerts | 10 |
+| Verification | Unit, integration, contract, performance tests | 10 |
+| Implementation | Configuration, deployment, scaling details | 10 |
+| REQ Mapping | req_implementations linking REQs to code | 10 |
+| Concrete Examples | Pseudocode, algorithms, API examples, models | 10 |
+
+**Target**: ≥90 points for implementation readiness.
+
+**Usage**:
+```bash
+python scripts/validate_spec_implementation_readiness.py --directory docs/09_SPEC --min-score 90
+```
+
+### Pseudocode & Algorithm Pattern
+
+Include detailed algorithms and pseudocode in behavior sections:
+
+```yaml
+behavior:
+  process_order: |
+    Algorithm: Process Trading Order
+    
+    INPUTS: order (symbol, quantity, action, price)
+    OUTPUT: order_id or error
+    
+    STEPS:
+    1. Validate order parameters
+       - symbol in market_data.symbols → success
+       - quantity > 0 → success
+       - price > 0 → success
+       - On failure → throw ValidationError
+    
+    2. Check account resources
+       - If (action == BUY):
+         * Required funds = quantity × price
+         * If account.balance >= required_funds → success
+         * Else → throw InsufficientFundsError
+       - Else (action == SELL):
+         * If account.positions[symbol] >= quantity → success
+         * Else → throw InsufficientSharesError
+    
+    3. Submit to broker (with retries)
+       - MAX_RETRIES = 3
+       - For attempt = 1 to MAX_RETRIES:
+         * Try: call broker_api.submit_order(order)
+         * If success: break
+         * If RateLimitError: sleep(2^attempt), continue
+         * If ConnectionError: sleep(2^attempt), continue
+         * If ServiceError: log error, break
+       - If all attempts failed: throw BrokerSubmissionError
+    
+    4. Update state
+       - order_id = broker_response.order_id
+       - position_tracker.update(order)
+       - emit OrderExecuted(order_id, status)
+    
+    5. Return
+       - success: return order_id
+       - failure: raise error with recovery_hint
+  
+  error_recovery: |
+    Recovery Strategy by Error Type:
+    
+    - ValidationError:
+      * Action: Reject request, return 400
+      * Recovery: Client validates before retry
+    
+    - RateLimitError:
+      * Action: Exponential backoff (2^n seconds, max 32s)
+      * Recovery: Automatic retry, max 3 attempts
+    
+    - BrokerConnectionError:
+      * Action: Circuit breaker trips after 5 consecutive failures
+      * Recovery: Half-open state after 30s, test with single request
+    
+    - ResourceExhausted:
+      * Action: Shed low-priority requests
+      * Recovery: Scale horizontally or increase resource limits
+```
+
+### Concrete API Examples
+
+Include realistic request/response examples with actual data:
+
+```yaml
+interfaces:
+  external_apis:
+    - endpoint: "POST /api/v1/orders"
+      description: "Submit trading order"
+      
+      example_request:
+        symbol: "TSLA"
+        quantity: 10
+        action: "BUY"
+        order_type: "LMT"
+        limit_price: 150.50
+        time_in_force: "DAY"
+      
+      example_response:
+        order_id: "ord_789456"
+        status: "accepted"
+        filled_quantity: 0
+        avg_fill_price: null
+        created_at: "2026-01-25T14:30:00Z"
+      
+      example_error:
+        error_code: "INSUFFICIENT_FUNDS"
+        message: "Account balance insufficient"
+        required_amount: 1505.00
+        available_amount: 1000.00
+```
+
+### Data Model Examples (Pydantic)
+
+Include typed data models with Field validators and examples:
+
+```yaml
+implementation:
+  data_models:
+    # Python/Pydantic format
+    - name: "OrderRequest"
+      language: "python"
+      code: |
+        from pydantic import BaseModel, Field
+        from typing import Literal
+        from decimal import Decimal
+        
+        class OrderRequest(BaseModel):
+            symbol: str = Field(..., example="TSLA", min_length=1)
+            quantity: int = Field(..., example=10, gt=0)
+            action: Literal["BUY", "SELL"] = Field(default="BUY")
+            order_type: Literal["MKT", "LMT", "STP"] = "MKT"
+            limit_price: Decimal = Field(optional=True, example=150.50, decimal_places=2)
+            time_in_force: Literal["DAY", "GTC", "IOC"] = "DAY"
+    
+    - name: "OrderResponse"
+      language: "python"
+      code: |
+        class OrderResponse(BaseModel):
+            order_id: str = Field(..., example="ord_789")
+            status: Literal["pending", "accepted", "filled", "cancelled"]
+            filled_quantity: int = Field(default=0, ge=0)
+            avg_fill_price: Decimal = Field(optional=True, decimal_places=2)
+            created_at: datetime
+            expires_at: datetime = Field(optional=True)
+```
+
+### Configuration & Deployment Examples
+
+Include realistic deployment configurations:
+
+```yaml
+implementation:
+  configuration:
+    # Development environment
+    development:
+      broker:
+        host: "localhost"
+        port: 4002
+        timeout_ms: 20000
+        max_retries: 3
+      cache:
+        type: "in_memory"
+        max_entries: 1000
+      observability:
+        log_level: "DEBUG"
+        trace_sample_rate: 1.0
+    
+    # Production environment
+    production:
+      broker:
+        host: "${BROKER_HOST}"
+        port: 4002
+        timeout_ms: 5000
+        max_retries: 3
+      cache:
+        type: "redis"
+        host: "${REDIS_HOST}"
+        ttl_seconds: 300
+      observability:
+        log_level: "INFO"
+        trace_sample_rate: 0.1
+  
+  deployment:
+    container_image: "trading-engine:v1.0.0"
+    replicas:
+      min: 3
+      max: 10
+      target_cpu_percent: 70
+    resources:
+      memory: "2Gi"
+      cpu: "1000m"
+    health_checks:
+      startup_delay_seconds: 10
+      liveness_probe:
+        path: "/health/live"
+        interval_seconds: 30
+        timeout_seconds: 5
+```
+
+---
+
 ## SPEC YAML Structure
 
 ### Header with Traceability Comments
