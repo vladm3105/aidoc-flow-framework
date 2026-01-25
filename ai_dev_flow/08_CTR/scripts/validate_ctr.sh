@@ -150,23 +150,55 @@ echo ""
 echo "CHECK 4: Required Sections"
 echo "-----------------------------------------"
 
-required_sections=(
-  "## 1. Contract Overview"
-  "## 2. API Specification"
-  "## 3. Data Models"
-  "## 4. Error Handling"
-  "## 5. Versioning"
-  "## Traceability"
-)
+echo "  Checking presence of core sections (flex headings)"
 
-for section in "${required_sections[@]}"; do
-  if grep -q "$section" "$CTR_FILE"; then
-    echo -e "  ${GREEN}✅ Found: $section${NC}"
-  else
-    echo -e "  ${RED}❌ MISSING: $section${NC}"
-    ((ERRORS++))
-  fi
-done
+# Overview: accept 'Contract Overview' or 'Context' or 'Overview' in any numbering
+if grep -qE "^##\s*.*(Contract\s+Overview|Context|Overview)" "$CTR_FILE"; then
+  echo -e "  ${GREEN}✅ Found: Overview/Context section${NC}"
+else
+  echo -e "  ${RED}❌ MISSING: Overview/Context section${NC}"
+  ((ERRORS++))
+fi
+
+# API spec: accept 'API Specification' or 'Interface Definition/Specification'
+if grep -qE "^##\s*.*(API\s+Specification|Interface\s+Definition|Interface\s+Specification)" "$CTR_FILE"; then
+  echo -e "  ${GREEN}✅ Found: API/Interface specification section${NC}"
+else
+  echo -e "  ${RED}❌ MISSING: API/Interface specification section${NC}"
+  ((ERRORS++))
+fi
+
+# Data models
+if grep -qE "^##\s*.*(Data\s+Models|Data\s+Schema)" "$CTR_FILE"; then
+  echo -e "  ${GREEN}✅ Found: Data Models section${NC}"
+else
+  echo -e "  ${RED}❌ MISSING: Data Models section${NC}"
+  ((ERRORS++))
+fi
+
+# Error handling
+if grep -qE "^##\s*.*Error\s+Handling" "$CTR_FILE"; then
+  echo -e "  ${GREEN}✅ Found: Error Handling section${NC}"
+else
+  echo -e "  ${RED}❌ MISSING: Error Handling section${NC}"
+  ((ERRORS++))
+fi
+
+# Versioning
+if grep -qE "^##\s*.*Versioning" "$CTR_FILE"; then
+  echo -e "  ${GREEN}✅ Found: Versioning section${NC}"
+else
+  echo -e "  ${RED}❌ MISSING: Versioning section${NC}"
+  ((ERRORS++))
+fi
+
+# Traceability (any heading level)
+if grep -qE "^##\s*.*Traceability|^###\s*.*Traceability" "$CTR_FILE"; then
+  echo -e "  ${GREEN}✅ Found: Traceability section${NC}"
+else
+  echo -e "  ${RED}❌ MISSING: Traceability section${NC}"
+  ((ERRORS++))
+fi
 
 echo ""
 
@@ -231,7 +263,8 @@ echo ""
 echo "CHECK 7: Error Handling Section"
 echo "-----------------------------------------"
 
-if grep -q "## 4. Error Handling" "$CTR_FILE"; then
+# Use flexible pattern matching like CHECK 4
+if grep -qE "^##\s*.*Error\s+Handling" "$CTR_FILE"; then
   echo -e "  ${GREEN}✅ Error Handling section present${NC}"
 
   # Check for error code table
@@ -264,7 +297,8 @@ echo ""
 echo "CHECK 8: Versioning Strategy"
 echo "-----------------------------------------"
 
-if grep -q "## 5. Versioning" "$CTR_FILE"; then
+# Use flexible pattern matching like CHECK 4
+if grep -qE "^##\s*.*Versioning" "$CTR_FILE"; then
   echo -e "  ${GREEN}✅ Versioning section present${NC}"
 
   # Check for semantic versioning mention

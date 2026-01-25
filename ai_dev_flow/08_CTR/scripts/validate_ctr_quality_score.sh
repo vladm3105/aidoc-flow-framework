@@ -58,42 +58,39 @@ check_placeholder_text() {
   echo "--- GATE-01: Placeholder Text Detection ---"
 
   local found=0
-  
-  # Combined pattern: lines with CTR-NN AND placeholder markers
-  # This searches for lines containing both a CTR reference and placeholder text
-  # in parentheses or brackets like (future CTR), [TBD], (pending), etc.
-  local combined_pattern='CTR-[0-9]+.*(\\(future|\\(when created|\\(to be defined|\\(pending|\\(TBD\\)|\\[TBD\\]|\\[TODO\\])'
-  
-  while IFS= read -r line; do
-    if [[ -n "$line" ]]; then
-      # Skip YAML frontmatter
-      if echo "$line" | grep -qE '^\s*(title|tags|custom_fields|artifact_type|module|primary_adr|source_req):'; then
-        continue
-      fi
-      
-      # Skip markdown tables
-      if echo "$line" | grep -qE '^\s*\|'; then
-        continue
-      fi
-      
-      # Skip markdown headers
-      if echo "$line" | grep -qE '^\s*#'; then
-        continue
-      fi
-      
-      # Extract CTR reference
-      ctr_ref=$(echo "$line" | grep -oE "CTR-[0-9]+" | head -1 || true)
-      if [[ -n "$ctr_ref" ]]; then
-        # Check if this CTR document exists
-        if find "$CTR_DIR" -name "${ctr_ref}_*.md" 2>/dev/null | head -1 | grep -v "_index" >/dev/null; then
-          # This CTR exists, so placeholder text is an error
-          echo -e "${RED}GATE-E001: $line${NC}"
-          ((ERRORS++)) || true
-          ((found++)) || true
+  # Fixed-string patterns to avoid regex false positives
+  local patterns=("(future CTR)" "(when created)" "(to be defined)" "(pending)" "(TBD)" "[TBD]" "[TODO]")
+
+  while IFS= read -r -d '' f; do
+    # Iterate patterns as fixed strings
+    for pattern in "${patterns[@]}"; do
+      while IFS= read -r hit; do
+        [[ -z "$hit" ]] && continue
+        # Skip YAML frontmatter keys
+        if echo "$hit" | grep -qE '^\s*(title|tags|custom_fields|artifact_type|module|primary_adr|source_req):'; then
+          continue
         fi
-      fi
-    fi
-  done < <(find "$CTR_DIR" -name "*.md" -exec grep -HnE "$combined_pattern" {} \; 2>/dev/null || true)
+        # Skip table rows
+        if echo "$hit" | grep -qE '^\s*\|'; then
+          continue
+        fi
+        # Skip markdown headers
+        if echo "$hit" | grep -qE '^\s*#'; then
+          continue
+        fi
+        # If line references an existing CTR, flag error
+        local ctr_ref
+        ctr_ref=$(echo "$hit" | grep -oE "CTR-[0-9]+" | head -1 || true)
+        if [[ -n "$ctr_ref" ]]; then
+          if find "$CTR_DIR" -name "${ctr_ref}_*.md" 2>/dev/null | grep -v "_index" | head -1 >/dev/null; then
+            echo -e "${RED}GATE-E001: $(basename "$f"): $hit${NC}"
+            ((ERRORS++)) || true
+            ((found++)) || true
+          fi
+        fi
+      done < <(grep -FHn "$pattern" "$f" 2>/dev/null || true)
+    done
+  done < <(find "$CTR_DIR" -name "CTR-[0-9]*_*.md" -print0 2>/dev/null)
 
   if [[ $found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No placeholder text for existing documents${NC}"
@@ -159,6 +156,25 @@ check_index_sync() {
   fi
 
   echo -e "${GREEN}  ✓ Index file found${NC}"
+
+  # Flag CTR entries marked Planned that actually exist
+  local found=0
+  while IFS= read -r line; do
+    ctr_ref=$(echo "$line" | grep -oE "CTR-[0-9]+" | head -1 || true)
+    if [[ -n "$ctr_ref" ]]; then
+      if echo "$line" | grep -qE "\| *Planned *\|"; then
+        if find "$CTR_DIR" -name "${ctr_ref}_*.md" 2>/dev/null | grep -v "_index" | head -1 >/dev/null; then
+          echo -e "${RED}GATE-E004: $ctr_ref exists but marked Planned in index${NC}"
+          ((ERRORS++)) || true
+          ((found++)) || true
+        fi
+      fi
+    fi
+  done < <(grep -E "CTR-[0-9]+" "$index_file" 2>/dev/null || true)
+
+  if [[ $found -eq 0 ]]; then
+    echo -e "${GREEN}  ✓ Index synchronized with actual files${NC}"
+  fi
 }
 
 # -----------------------------------------------------------------------------
