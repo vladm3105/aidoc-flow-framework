@@ -40,7 +40,14 @@ print_header() {
 }
 
 get_spec_files() {
-  find "$SPEC_DIR" -type f -name "SPEC-[0-9]*_*.yaml" ! -name "*_index.md" ! -name "*TEMPLATE*"
+  find "$SPEC_DIR" \
+    -type f \
+    -name "SPEC-[0-9]*_*.yaml" \
+    ! -name "*_index.md" \
+    ! -name "*TEMPLATE*" \
+    ! -path "*/archive/*" \
+    ! -path "*/archive2/*" \
+    ! -name "SPEC-00_*"
 }
 
 count_files() {
@@ -137,7 +144,11 @@ check_index_sync() {
   echo "--- GATE-04: Index Synchronization ---"
   local found_warnings=0
 
-  spec_index_files=$(find "$SPEC_DIR" -name "SPEC-*_index.md" -o -name "SPEC-000_index.md")
+  spec_index_files=$(find "$SPEC_DIR" \
+    ! -path "*/archive/*" \
+    ! -path "*/archive2/*" \
+    -name "SPEC-*_index.md" \
+    ! -name "SPEC-00*_index.md")
   
   if [[ -z "$spec_index_files" ]]; then
      echo -e "${YELLOW}GATE-W004: Index file not found (e.g., SPEC-000_index.md). Skipping sync check.${NC}"
@@ -166,7 +177,7 @@ check_index_sync() {
   # This is tricky with multiple indices. Simplified to check if mentioned in the nearest index or root index.
   # For now, we'll check if it's in the ROOT index if it exists.
   
-  local root_index=$(find "$SPEC_DIR" -maxdepth 1 -name "SPEC-000_index.md" | head -1)
+  local root_index=$(find "$SPEC_DIR" -maxdepth 1 -name "SPEC-000_index.md" ! -name "SPEC-00*_index.md" | head -1)
   if [[ -n "$root_index" ]]; then
       while IFS= read -r spec_file; do
         local spec_id
@@ -241,18 +252,34 @@ check_spec_ids() {
   echo ""
   echo "--- GATE-08: Specification ID Uniqueness ---"
 
-  local duplicates
-  # Recursive grep
-  duplicates=$(grep -rhE "^id:" "$SPEC_DIR" --include="SPEC-[0-9]*_*.yaml" 2>/dev/null | sed 's/^id: *//' | sort | uniq -d || true)
+  local spec_files
+  IFS=$'\n' read -r -d '' -a spec_files < <(get_spec_files && printf '\0')
 
-  if [[ -n "$duplicates" ]]; then
-    echo "$duplicates" | while read dup; do
-      echo -e "${RED}GATE-E004: Duplicate internal 'id:' field found in corpus: $dup${NC}"
-      # Find which files contain this duplicate id
-      grep -rEb "^id: $dup" "$SPEC_DIR" --include="SPEC-[0-9]*_*.yaml" | cut -d: -f1 | sort | uniq | sed 's/^/  - Found in: /'
-      ((ERRORS++)) || true
-    done
-  else
+  declare -A id_map
+  local duplicates_found=0
+
+  for f in "${spec_files[@]}"; do
+    local fid
+    fid=$(grep -E "^id:" "$f" 2>/dev/null | head -1 | sed 's/^id: *//')
+    if [[ -n "$fid" ]]; then
+      if [[ -n "${id_map[$fid]:-}" ]]; then
+        if [[ "${id_map[$fid]}" != "__reported__" ]]; then
+          echo -e "${RED}GATE-E004: Duplicate internal 'id:' field found in corpus: $fid${NC}"
+          echo "  - Found in: ${id_map[$fid]}"
+          echo "  - Found in: $f"
+          id_map[$fid]="__reported__"
+          ((ERRORS++)) || true
+          ((duplicates_found++)) || true
+        else
+          echo "  - Found in: $f"
+        fi
+      else
+        id_map[$fid]="$f"
+      fi
+    fi
+  done
+
+  if [[ $duplicates_found -eq 0 ]]; then
     echo -e "${GREEN}  ✓ No duplicate internal component IDs found${NC}"
   fi
 }

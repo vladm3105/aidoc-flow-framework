@@ -40,28 +40,15 @@ class ValidationResult:
 
 
 class SPECImplementationReadinessValidator:
-    """Validates SPEC files for implementation readiness"""
+    """Validates SPEC files for implementation readiness (schema-aware)"""
 
-    ARCHITECTURE_PATTERN = r"architecture:\s*\n\s+overview:|component_structure:|element_ids:|dependencies:"
-    INTERFACES_PATTERN = r"interfaces:\s*\n\s+(external_apis:|internal_apis:|classes:)"
-    BEHAVIOR_PATTERN = r"behavior:\s*\n\s*-|behavior:\s*\{\{|behavior:" # Flexible behavior format
-    PERFORMANCE_PATTERN = r"performance:\s*\n\s+(latency_targets:|throughput_targets:|resource_limits:|caching:)"
-    SECURITY_PATTERN = r"security:\s*\n\s+(authentication:|authorization:|encryption:|rate_limiting:)"
-    OBSERVABILITY_PATTERN = r"observability:\s*\n\s+(logging:|metrics:|tracing:|alerts:)"
-    VERIFICATION_PATTERN = r"verification:\s*\n\s+(unit_tests:|integration_tests:|contract_tests:|performance_tests:)"
-    IMPLEMENTATION_PATTERN = r"implementation:\s*\n\s+(configuration:|deployment:|scaling:|dependencies:)"
-    REQ_IMPLEMENTATIONS_PATTERN = r"req_implementations:\s*\n\s*-|traceability:.*req_implementations:"
-    
-    # Concrete examples: pseudocode, algorithms, code snippets
+    # Legacy regexes kept for example counting and permissive fallback detection
     PSEUDOCODE_PATTERN = r"(pseudocode|algorithm|steps|procedure):|```(python|javascript|java|go|rust|pseudocode)"
     EXAMPLE_PATTERN = r"example|```json|```yaml|payload:|request:|response:|"
     REQUEST_SCHEMA_PATTERN = r"request_schema:|request:|payload:|input:"
     RESPONSE_SCHEMA_PATTERN = r"response_schema:|response:|output:|result:"
     PYDANTIC_PATTERN = r"class\s+\w+\(BaseModel\):|Field\(|Literal\[|Optional\["
     TYPE_ANNOTATION_PATTERN = r"def\s+\w+\([^)]*:\s*\w+|->.*:"
-
-    ERROR_HANDLING_PATTERN = r"error_handling:|error_codes:|exception:|handling:|recovery:"
-    STATE_MACHINE_PATTERN = r"state|transition|sm_|fsm|state_machine"
 
     def __init__(self, min_score: int = 90):
         self.min_score = min_score
@@ -89,46 +76,46 @@ class SPECImplementationReadinessValidator:
             return result
 
         # Core sections (10 checks × 10 points = 100 points max)
-        result.checks["architecture"] = bool(re.search(self.ARCHITECTURE_PATTERN, content, re.IGNORECASE))
+        result.checks["architecture"] = self._has_architecture(spec_data)
         if not result.checks["architecture"]:
-            result.warnings.append("Missing or incomplete 'architecture' section")
+            result.warnings.append("Missing or incomplete 'architecture' (overview/component_structure/element_ids)")
 
-        result.checks["interfaces"] = bool(re.search(self.INTERFACES_PATTERN, content, re.IGNORECASE))
+        result.checks["interfaces"] = self._has_interfaces(spec_data)
         if not result.checks["interfaces"]:
-            result.warnings.append("Missing or incomplete 'interfaces' section (external_apis, internal_apis, classes)")
+            result.warnings.append("Missing 'interfaces' (need external_apis/internal_apis/classes)")
 
-        result.checks["behavior"] = bool(re.search(self.BEHAVIOR_PATTERN, content, re.IGNORECASE))
+        result.checks["behavior"] = self._has_behavior(spec_data)
         if not result.checks["behavior"]:
-            result.warnings.append("Missing 'behavior' section")
+            result.warnings.append("Missing 'behavior' section with pseudocode/steps")
 
-        result.checks["performance"] = bool(re.search(self.PERFORMANCE_PATTERN, content, re.IGNORECASE))
+        result.checks["performance"] = self._has_performance(spec_data)
         if not result.checks["performance"]:
-            result.warnings.append("Missing performance specifications (latency, throughput, resource limits)")
+            result.warnings.append("Missing performance targets (latency/throughput/resource_limits)")
 
-        result.checks["security"] = bool(re.search(self.SECURITY_PATTERN, content, re.IGNORECASE))
+        result.checks["security"] = self._has_security(spec_data)
         if not result.checks["security"]:
-            result.warnings.append("Missing security specifications (auth, encryption, rate limiting)")
+            result.warnings.append("Missing security specifications (authN/Z, encryption, rate limits/redaction)")
 
-        result.checks["observability"] = bool(re.search(self.OBSERVABILITY_PATTERN, content, re.IGNORECASE))
+        result.checks["observability"] = self._has_observability(spec_data)
         if not result.checks["observability"]:
-            result.warnings.append("Missing observability specs (logging, metrics, tracing)")
+            result.warnings.append("Missing observability (logging/metrics/tracing/alerting)")
 
-        result.checks["verification"] = bool(re.search(self.VERIFICATION_PATTERN, content, re.IGNORECASE))
+        result.checks["verification"] = self._has_verification(spec_data)
         if not result.checks["verification"]:
-            result.warnings.append("Missing verification strategy (unit/integration/contract tests)")
+            result.warnings.append("Missing verification strategy (unit+integration at minimum)")
 
-        result.checks["implementation"] = bool(re.search(self.IMPLEMENTATION_PATTERN, content, re.IGNORECASE))
+        result.checks["implementation"] = self._has_implementation(spec_data)
         if not result.checks["implementation"]:
-            result.warnings.append("Missing implementation details (config, deployment, scaling)")
+            result.warnings.append("Missing implementation details (config/env/deployment/scaling)")
 
-        result.checks["req_mapping"] = bool(re.search(self.REQ_IMPLEMENTATIONS_PATTERN, content, re.IGNORECASE))
+        result.checks["req_mapping"] = self._has_req_mapping(spec_data, result)
         if not result.checks["req_mapping"]:
-            result.warnings.append("Missing REQ-to-implementation mapping (req_implementations)")
+            result.warnings.append("REQ mapping incomplete (requires req_implementations with test_approach)")
 
         # Quality attributes
-        result.checks["concrete_examples"] = self._check_concrete_examples(content, result)
+        result.checks["concrete_examples"] = self._check_concrete_examples(content, result, spec_data)
         if not result.checks["concrete_examples"]:
-            result.warnings.append("Limited concrete examples (pseudocode, API examples, data models)")
+            result.warnings.append("Limited concrete examples (pseudocode, API examples, pydantic models)")
 
         # Score calculation: 10 points per true check
         result.score = sum(10 for ok in result.checks.values() if ok)
@@ -140,19 +127,106 @@ class SPECImplementationReadinessValidator:
 
         return result
 
-    def _check_concrete_examples(self, content: str, result: ValidationResult) -> bool:
+    # --- semantic checks ---
+    def _has_architecture(self, spec: dict) -> bool:
+        section = spec.get("architecture", {})
+        return bool(section and isinstance(section, dict) and any(section.get(k) for k in ["overview", "component_structure", "element_ids"]))
+
+    def _has_interfaces(self, spec: dict) -> bool:
+        interfaces = spec.get("interfaces", {})
+        if not isinstance(interfaces, dict):
+            return False
+        return any(interfaces.get(k) for k in ["external_apis", "internal_apis", "classes"])
+
+    def _has_behavior(self, spec: dict) -> bool:
+        behavior = spec.get("behavior")
+        return bool(behavior)
+
+    def _has_performance(self, spec: dict) -> bool:
+        perf = spec.get("performance", {})
+        if not isinstance(perf, dict):
+            return False
+        return any(perf.get(k) for k in ["latency_targets", "throughput_targets", "resource_limits", "caching"])
+
+    def _has_security(self, spec: dict) -> bool:
+        sec = spec.get("security", {})
+        if not isinstance(sec, dict):
+            return False
+        return any(sec.get(k) for k in ["authentication", "authorization", "encryption", "rate_limiting", "redaction", "immutability"])
+
+    def _has_observability(self, spec: dict) -> bool:
+        obs = spec.get("observability", {})
+        if not isinstance(obs, dict):
+            return False
+        return any(obs.get(k) for k in ["logging", "metrics", "tracing", "alerting", "alerts"])
+
+    def _has_verification(self, spec: dict) -> bool:
+        ver = spec.get("verification", {})
+        if not isinstance(ver, dict):
+            return False
+        has_unit = "unit_tests" in ver
+        has_integration = "integration_tests" in ver
+        return has_unit and has_integration
+
+    def _has_implementation(self, spec: dict) -> bool:
+        impl = spec.get("implementation", {})
+        if not isinstance(impl, dict):
+            return False
+        return any(impl.get(k) for k in ["configuration", "configuration_files", "environment_variables", "deployment", "scaling", "autoscaling"])
+
+    def _has_req_mapping(self, spec: dict, result: ValidationResult) -> bool:
+        reqs = spec.get("req_implementations")
+        if not reqs or not isinstance(reqs, list):
+            result.warnings.append("req_implementations missing or empty")
+            return False
+
+        missing = []
+        for idx, req in enumerate(reqs, start=1):
+            req_id = req.get("req_id") or f"REQ?#{idx}"
+            impl = req.get("implementation")
+            test_approach = req.get("test_approach")
+            if not impl:
+                missing.append(f"{req_id}: implementation block missing")
+            if not test_approach:
+                missing.append(f"{req_id}: test_approach missing (unit+integration required)")
+                continue
+            if not isinstance(test_approach, dict):
+                missing.append(f"{req_id}: test_approach should be a mapping")
+                continue
+            unit_cases = test_approach.get("unit_tests") or []
+            int_cases = test_approach.get("integration_tests") or []
+            if len(unit_cases) == 0:
+                missing.append(f"{req_id}: unit_tests empty")
+            if len(int_cases) == 0:
+                missing.append(f"{req_id}: integration_tests empty")
+
+        if missing:
+            result.warnings.extend([f"REQ mapping issue: {m}" for m in missing])
+            return False
+        return True
+
+    def _check_concrete_examples(self, content: str, result: ValidationResult, spec: dict) -> bool:
         """Check for pseudocode, algorithms, code examples, and concrete data"""
         pseudocode_count = len(re.findall(self.PSEUDOCODE_PATTERN, content, re.IGNORECASE))
         example_count = len(re.findall(self.EXAMPLE_PATTERN, content))
         request_count = len(re.findall(self.REQUEST_SCHEMA_PATTERN, content, re.IGNORECASE))
         response_count = len(re.findall(self.RESPONSE_SCHEMA_PATTERN, content, re.IGNORECASE))
-        
-        total_examples = pseudocode_count + example_count + request_count + response_count
-        
+
+        yaml_based = 0
+        if spec.get("pydantic_models"):
+            yaml_based += 1
+        if spec.get("behavioral_examples"):
+            yaml_based += 1
+        interfaces = spec.get("interfaces", {})
+        if isinstance(interfaces, dict) and interfaces.get("external_apis"):
+            yaml_based += 1
+
+        total_examples = pseudocode_count + example_count + request_count + response_count + yaml_based
+
         if total_examples < 5:
             result.warnings.append(
                 f"Limited concrete examples ({total_examples} found; target: 5+). "
-                f"Add pseudocode, API examples, request/response payloads, data models."
+                f"Add pseudocode, API examples, request/response payloads, pydantic models."
             )
             return False
         return True

@@ -24,6 +24,12 @@ custom_fields:
 
 ## Current Validators
 
+- All-in-one orchestrator:
+  - `bash scripts/validate_all_spec.sh --file docs/09_SPEC/SPEC-NN_xxx.yaml`
+  - `bash scripts/validate_all_spec.sh --directory docs/09_SPEC --min-score 90`
+- Implementation readiness (structure + per-REQ test coverage intent, ≥90% target):
+  - `python3 scripts/validate_spec_implementation_readiness.py --spec-file docs/09_SPEC/SPEC-NN_xxx.yaml --min-score 90`
+  - `python3 scripts/validate_spec_implementation_readiness.py --directory docs/09_SPEC --min-score 90`
 - Quality gates (directory):
   - `bash scripts/validate_spec_quality_score.sh <directory>`
 - Main validator (check supported flags with `--help`):
@@ -33,6 +39,10 @@ custom_fields:
 
 ## Workflows (current state)
 
+- **All-in-one (recommended):**
+  - `bash scripts/validate_all_spec.sh --directory docs/09_SPEC --min-score 90`
+- **Implementation readiness sweep:**
+  - `python3 scripts/validate_spec_implementation_readiness.py --directory docs/09_SPEC --min-score 90`
 - **Quality sweep:**
   - `bash scripts/validate_spec_quality_score.sh docs/09_SPEC/<folder>`
 - **Inspect validator options:**

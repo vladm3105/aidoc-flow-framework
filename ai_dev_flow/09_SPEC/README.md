@@ -22,6 +22,14 @@ custom_fields:
 
 Note: Some examples in this document show a portable `docs/` root. In this repository, artifact folders live at the ai_dev_flow root without the `docs/` prefix; see README → “Using This Repo” for path mapping.
 
+## Validation & Readiness (update)
+
+- Implementation readiness now enforced by `scripts/validate_spec_implementation_readiness.py` (≥90% target).
+- Required to pass: architecture, interfaces, behavior, performance, security, observability, verification, implementation, req_implementations **with per-REQ test_approach (unit + integration cases)**, and concrete examples (pseudocode/API samples/pydantic models).
+- Usage: `python 09_SPEC/scripts/validate_spec_implementation_readiness.py --spec-file docs/09_SPEC/SPEC-NN_xxx.yaml --min-score 90` or `--directory docs/09_SPEC`.
+- Expect failures when `test_approach` is missing inside `req_implementations`; add unit/integration cases per REQ to satisfy the gate.
+- Orchestrator: `bash 09_SPEC/scripts/validate_all_spec.sh --directory docs/09_SPEC --min-score 90` (runs quality gates, schema/template validator, and readiness scorer).
+
 ## Pre-Generation Planning Checklist
 
 **⚠️ MANDATORY: Execute ALL checks below BEFORE creating a SPEC generation plan.**

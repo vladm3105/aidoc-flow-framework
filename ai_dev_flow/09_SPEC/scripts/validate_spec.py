@@ -641,6 +641,9 @@ def validate_directory(dir_path: Path) -> List[ValidationResult]:
         # Also exclude framework infrastructure files (SPEC-00_*)
         if re.match(r'^SPEC-00[_.]', f.name):
             continue
+        # Exclude archived specs (archive, archive2 buckets)
+        if any(part in {"archive", "archive2"} for part in f.parts):
+            continue
         spec_files.append(f)
 
     if not spec_files:

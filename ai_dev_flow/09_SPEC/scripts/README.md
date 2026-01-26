@@ -12,12 +12,19 @@ Tools for validating SPEC documents.
 
 ### Utility Scripts
 
-- Additional validators planned per framework pattern.
+
+### Orchestrator
+
+- validate_all_spec.sh — runs quality gates, schema/template validator, and implementation-readiness scorer in one command (file or directory).
 
 ## Quick Start
 
 ```bash
 # Make scripts executable
+
+# All-in-one orchestrator
+bash validate_all_spec.sh --file docs/09_SPEC/SPEC-01_iam.yaml
+bash validate_all_spec.sh --directory docs/09_SPEC --min-score 90
 chmod +x *.sh
 
 # Implementation-Readiness validation (Python)
